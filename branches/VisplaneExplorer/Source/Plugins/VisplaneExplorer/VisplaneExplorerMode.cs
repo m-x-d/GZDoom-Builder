@@ -48,7 +48,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		
 		// This is the bitmap that we will be drawing on
 		private Bitmap canvas;
-
+		private ViewStats lastviewstats;
+		
 		// Temporary WAD file written for the vpo.dll library
 		private string tempfile;
 
@@ -63,6 +64,10 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 		// Are we processing?
 		private bool processingenabled;
+
+		// Labels for mouse-over
+		private TextLabel hoverlabel;
+		private bool showhoverlabel;
 		
 		#endregion
 
@@ -75,11 +80,19 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// Constructor
 		public VisplaneExplorerMode()
 		{
+			hoverlabel = new TextLabel(100);
+			hoverlabel.TransformCoords = false;
+			hoverlabel.AlignX = TextAlignmentX.Left;
+			hoverlabel.AlignY = TextAlignmentY.Top;
+			hoverlabel.Scale = 14f;
+			hoverlabel.Color = General.Colors.Highlight.WithAlpha(255);
+			hoverlabel.Backcolor = General.Colors.Background.WithAlpha(255);
 		}
 
 		// Disposer
 		public override void Dispose()
 		{
+			hoverlabel.Dispose();
 			base.Dispose();
 		}
 
@@ -117,6 +130,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			}
 
 			tiles.Clear();
+			BuilderPlug.InterfaceForm.RemoveFromInterface();
 		}
 
 		// This returns the tile position for the given map coordinate
@@ -130,6 +144,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		private unsafe void RedrawAllTiles()
 		{
 			if(canvas == null) return;
+
+			int viewstats = (int)BuilderPlug.InterfaceForm.ViewStats;
 			
 			Size canvassize = canvas.Size;
 			BitmapData bd = canvas.LockBits(new Rectangle(0, 0, canvassize.Width, canvassize.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
@@ -180,8 +196,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 						// Get the data and apply the color
 						TileData td = t.GetNearestPoint((int)ux, Tile.TILE_SIZE - 1 - (int)uy);
-						byte r = (byte)Math.Min(td.visplanes * 5, 255);
-						byte g = (byte)Math.Min(td.visplanes * 3, 255);
+						byte r = (byte)Math.Min(td.stats[viewstats] * 5, 255);
+						byte g = (byte)Math.Min(td.stats[viewstats] * 3, 255);
 						p[screeny * bd.Width + screenx] = (255 << 24) + (r << 16) + (g << 8);
 					}
 				}
@@ -204,6 +220,34 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			}
 		}
 
+		// This updates the overlay
+		private void UpdateOverlay()
+		{
+			// We must redraw the tiles to the canvas when the stats to view has changed
+			if(lastviewstats != BuilderPlug.InterfaceForm.ViewStats)
+			{
+				RedrawAllTiles();
+				lastviewstats = BuilderPlug.InterfaceForm.ViewStats;
+			}
+			
+			// Render the overlay
+			if(renderer.StartOverlay(true))
+			{
+				// Render the canvas to screen
+				RectangleF r = new RectangleF(0, 0, canvas.Width, canvas.Height);
+				renderer.RenderRectangleFilled(r, PixelColor.FromColor(Color.White), false, image);
+
+				// Render labels
+				if(showhoverlabel) renderer.RenderText(hoverlabel);
+
+				// Render any selection
+				if(selecting) RenderMultiSelection();
+
+				// Finish our rendering to this layer.
+				renderer.Finish();
+			}
+		}
+
 		#endregion
 
 		#region ================== Events
@@ -212,10 +256,14 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public override void OnEngage()
 		{
 			Cursor.Current = Cursors.WaitCursor;
+			General.Interface.SetCursor(Cursors.Cross);
 			base.OnEngage();
 			
 			CleanUp();
 
+			BuilderPlug.InterfaceForm.AddToInterface();
+			lastviewstats = BuilderPlug.InterfaceForm.ViewStats;
+			
 			// Export the current map to a temporary WAD file
 			tempfile = BuilderPlug.MakeTempFilename(".wad");
 			General.Map.ExportToFile(tempfile);
@@ -311,18 +359,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			base.OnRedrawDisplay();
 			
 			// Render the overlay
-			if(renderer.StartOverlay(true))
-			{
-				// Render the canvas to screen
-				RectangleF r = new RectangleF(0, 0, canvas.Width, canvas.Height);
-				renderer.RenderRectangleFilled(r, PixelColor.FromColor(Color.White), false, image);
-				
-				// Render any selection
-				if(selecting) RenderMultiSelection();
-				
-				// Finish our rendering to this layer.
-				renderer.Finish();
-			}
+			UpdateOverlay();
 
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
@@ -373,6 +410,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		protected override void OnSelectBegin()
 		{
 			StartMultiSelection();
+			showhoverlabel = false;
 			base.OnSelectBegin();
 		}
 
@@ -381,18 +419,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		{
 			base.OnUpdateMultiSelection();
 			
-			if(renderer.StartOverlay(true))
-			{
-				// Render the canvas to screen
-				RectangleF r = new RectangleF(0, 0, canvas.Width, canvas.Height);
-				renderer.RenderRectangleFilled(r, PixelColor.FromColor(Color.White), false, image);
-
-				// Render any selection
-				if(selecting) RenderMultiSelection();
-				
-				renderer.Finish();
-				renderer.Present();
-			}
+			UpdateOverlay();
+			renderer.Present();
 		}
 
 		// Multiselect ends
@@ -400,6 +428,54 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		{
 			base.OnEndMultiSelection();
 			base.CenterOnArea(selectionrect, 0.1f);
+		}
+
+		// Mouse moves
+		public override unsafe void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+
+			if(!selecting)
+			{
+				int viewstats = (int)BuilderPlug.InterfaceForm.ViewStats;
+				
+				// Get the tile data for the current position
+				Point tp = TileForPoint(mousemappos.x, mousemappos.y);
+				Tile t;
+				if(tiles.TryGetValue(tp, out t))
+				{
+					TileData td = t.GetNearestPoint((int)Math.Floor(mousemappos.x) - t.Position.X, (int)Math.Floor(mousemappos.y) - t.Position.Y);
+					if(td.stats[viewstats] > 0)
+					{
+						// Setup hoverlabel
+						hoverlabel.Rectangle = new RectangleF(mousepos.x + 5, mousepos.y + 5, 0.0f, 0.0f);
+						int value = (int)td.stats[viewstats] * Tile.STATS_COMPRESSOR[viewstats];
+						hoverlabel.Text = value + " / " + Tile.STATS_LIMITS[viewstats];
+						showhoverlabel = true;
+					}
+					else
+					{
+						// Void
+						showhoverlabel = false;
+					}
+				}
+				else
+				{
+					showhoverlabel = false;
+				}
+
+				UpdateOverlay();
+				renderer.Present();
+			}
+		}
+
+		// Mouse leaves
+		public override void OnMouseLeave(EventArgs e)
+		{
+			base.OnMouseLeave(e);
+			showhoverlabel = false;
+			UpdateOverlay();
+			renderer.Present();
 		}
 
 		#endregion

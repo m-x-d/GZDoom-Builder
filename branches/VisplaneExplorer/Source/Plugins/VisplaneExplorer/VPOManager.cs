@@ -145,8 +145,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			try
 			{
 				// Load the map
-				LoadWAD(filename);
-				OpenMap(mapname);
+				if(LoadWAD(filename) != 0) throw new Exception("VPO is unable to read this file.");
+				if(OpenMap(mapname) != 0) throw new Exception("VPO is unable to open this map.");
 
 				// Processing
 				Queue<Point> todo = new Queue<Point>(POINTS_PER_ITERATION);

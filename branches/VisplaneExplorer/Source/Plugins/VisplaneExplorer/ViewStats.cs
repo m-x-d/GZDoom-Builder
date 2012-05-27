@@ -1,4 +1,4 @@
-﻿#region === Copyright (c) 2010 Pascal van der Heiden ===
+#region === Copyright (c) 2010 Pascal van der Heiden ===
 
 using System;
 using System.Collections;
@@ -10,8 +10,13 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 {
-	internal unsafe struct TileData
+	internal enum ViewStats : int
 	{
-		public fixed byte stats[(int)ViewStats.NumStats];
+		Visplanes = 0,
+		Drawsegs = 1,
+		Solidsegs = 2,
+		Openings = 3,
+		
+		NumStats = 4
 	}
 }

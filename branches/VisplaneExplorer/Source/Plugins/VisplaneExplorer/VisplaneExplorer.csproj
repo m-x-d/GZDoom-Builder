@@ -51,11 +51,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuilderPlug.cs" />
+    <Compile Include="InterfaceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InterfaceForm.Designer.cs">
+      <DependentUpon>InterfaceForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PointData.cs" />
     <Compile Include="PointResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Tile.cs" />
     <Compile Include="TileData.cs" />
+    <Compile Include="ViewStats.cs" />
     <Compile Include="VisplaneExplorerMode.cs" />
     <Compile Include="VPOManager.cs" />
   </ItemGroup>
@@ -63,9 +75,24 @@
     <EmbeddedResource Include="Resources\Actions.cfg" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Drawsegs.png" />
+    <None Include="Resources\Drawsegs_pal.png" />
     <Content Include="Resources\Gauge.ico" />
+    <EmbeddedResource Include="InterfaceForm.resx">
+      <DependentUpon>InterfaceForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Gauge.png" />
     <Content Include="Resources\Gauge_large.ico" />
+    <None Include="Resources\Solidsegs_pal.png" />
+    <None Include="Resources\Openings_pal.png" />
+    <None Include="Resources\Visplanes_pal.png" />
+    <None Include="Resources\Openings.png" />
+    <None Include="Resources\Solidsegs.png" />
+    <None Include="Resources\Visplanes.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Builder.csproj">

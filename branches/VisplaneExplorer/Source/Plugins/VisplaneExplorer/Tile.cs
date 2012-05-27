@@ -17,6 +17,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 	{
 		// Constants
 		public const int TILE_SIZE = 64;
+		public static readonly int[] STATS_COMPRESSOR = new int[] { 1, 2, 1, 160 };
+		public static readonly int[] STATS_LIMITS = new int[] { 128, 256, 32, 320 * 64 };
 		
 		// Members
 		private Point position;
@@ -46,31 +48,31 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			switch(pd.result)
 			{
 				case PointResult.OK:
-					t.visplanes = (byte)Math.Min(pd.visplanes, 255);
-					t.drawsegs = (byte)Math.Min(pd.drawsegs, 255);
-					t.solidsegs = (byte)Math.Min(pd.solidsegs, 255);
-					t.openings = (byte)Math.Min(pd.openings, 255);
+					t.stats[(int)ViewStats.Visplanes] = (byte)Math.Min((pd.visplanes + (STATS_COMPRESSOR[(int)ViewStats.Visplanes] - 1)) / STATS_COMPRESSOR[(int)ViewStats.Visplanes], 255);
+					t.stats[(int)ViewStats.Drawsegs] = (byte)Math.Min((pd.drawsegs + (STATS_COMPRESSOR[(int)ViewStats.Drawsegs] - 1)) / STATS_COMPRESSOR[(int)ViewStats.Drawsegs], 255);
+					t.stats[(int)ViewStats.Solidsegs] = (byte)Math.Min((pd.solidsegs + (STATS_COMPRESSOR[(int)ViewStats.Solidsegs] - 1)) / STATS_COMPRESSOR[(int)ViewStats.Solidsegs], 255);
+					t.stats[(int)ViewStats.Openings] = (byte)Math.Min((pd.openings + (STATS_COMPRESSOR[(int)ViewStats.Openings] - 1)) / STATS_COMPRESSOR[(int)ViewStats.Openings], 255);
 					break;
 
 				case PointResult.BadZ:
-					t.visplanes = 1;
-					t.drawsegs = 0;
-					t.solidsegs = 0;
-					t.openings = 0;
+					t.stats[(int)ViewStats.Visplanes] = 1;
+					t.stats[(int)ViewStats.Drawsegs] = 0;
+					t.stats[(int)ViewStats.Solidsegs] = 0;
+					t.stats[(int)ViewStats.Openings] = 0;
 					break;
 					
 				case PointResult.Void:
-					t.visplanes = 0;
-					t.drawsegs = 0;
-					t.solidsegs = 0;
-					t.openings = 1;
+					t.stats[(int)ViewStats.Visplanes] = 0;
+					t.stats[(int)ViewStats.Drawsegs] = 0;
+					t.stats[(int)ViewStats.Solidsegs] = 0;
+					t.stats[(int)ViewStats.Openings] = 1;
 					break;
 
 				case PointResult.Overflow:
-					t.visplanes = 255;
-					t.drawsegs = 255;
-					t.solidsegs = 255;
-					t.openings = 255;
+					t.stats[(int)ViewStats.Visplanes] = 255;
+					t.stats[(int)ViewStats.Drawsegs] = 255;
+					t.stats[(int)ViewStats.Solidsegs] = 255;
+					t.stats[(int)ViewStats.Openings] = 255;
 					break;
 
 				default:
@@ -78,23 +80,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			}
 
 			points[pd.y - position.Y][pd.x - position.X] = t;
-
-			/*
-			// Redraw bitmap
-			BitmapData bd = bmp.LockBits(new Rectangle(0, 0, TILE_SIZE, TILE_SIZE), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-			int* p = (int*)bd.Scan0.ToInt32();
-			for(int y = 0; y < TILE_SIZE; y++)
-			{
-				for(int x = 0; x < TILE_SIZE; x++)
-				{
-					TileData td = GetNearestPoint(x, TILE_SIZE - 1 - y);
-					Color c = Color.FromArgb(255, Math.Min(td.visplanes * 5, 255), Math.Min(td.visplanes * 3, 255), 0);
-					*p = c.ToArgb();
-					p++;
-				}
-			}
-			bmp.UnlockBits(bd);
-			*/
 		}
 
 		// This returns the next point to process
@@ -153,7 +138,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// This method is actually slowing down the rendering quite a lot
 		// (about 75% of the time the display is drawn is in this function!!!)
 		// We should really think about a faster algorithm for this!
-		public TileData GetNearestPoint(int x, int y)
+		public unsafe TileData GetNearestPoint(int x, int y)
 		{
 			#if DEBUG
 			if((x < 0) || (x > TILE_SIZE - 1) || (y < 0) || (y > TILE_SIZE - 1))
@@ -163,7 +148,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			while(true)
 			{
 				TileData p = points[y][x];
-				if((p.visplanes > 0) || (p.openings > 0)) return p;
+				if((p.stats[(int)ViewStats.Visplanes] > 0) || (p.stats[(int)ViewStats.Openings] > 0)) return p;
 
 				// Move coordinate a step closer to (0,0)
 				// NOTE: if the 64x64 size is changes, this will need more/less stages

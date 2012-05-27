@@ -46,8 +46,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 		// Objects
 		private static BuilderPlug me;
-
 		private VPOManager vpo;
+		private InterfaceForm interfaceform;
 		
 		#endregion
 
@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public static BuilderPlug Me { get { return me; } }
 		public override string Name { get { return "VisplaneExplorer"; } }
 		internal static VPOManager VPO { get { return me.vpo; } }
+		internal static InterfaceForm InterfaceForm { get { return me.interfaceform; } }
 		
 		#endregion
 
@@ -69,6 +70,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 			General.Actions.BindMethods(this);
 
+			interfaceform = new InterfaceForm();
 			vpo = new VPOManager();
 
 			// Keep a static reference
@@ -79,6 +81,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public override void Dispose()
 		{
 			// Clean up
+			interfaceform.Dispose();
+			interfaceform = null;
 			vpo.Dispose();
 			vpo = null;
 			General.Actions.UnbindMethods(this);
