@@ -24,6 +24,7 @@ using System.Globalization;
 using System.Text;
 using System.Drawing;
 using CodeImp.DoomBuilder.Geometry;
+using SlimDX;
 using SlimDX.Direct3D9;
 using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Rendering;
@@ -70,6 +71,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		// Direct3D texture
 		private int mipmaplevels = 0;	// 0 = all mipmaps
+		protected bool dynamictexture;
 		private Texture texture;
 		
 		// Disposing
@@ -235,6 +237,9 @@ namespace CodeImp.DoomBuilder.Data
 					// Bitmap has incorrect format?
 					if(bitmap.PixelFormat != PixelFormat.Format32bppArgb)
 					{
+						if(dynamictexture)
+							throw new Exception("Dynamic images must be in 32 bits ARGB format.");
+						
 						//General.ErrorLogger.Add(ErrorType.Warning, "Image '" + name + "' does not have A8R8G8B8 pixel format. Conversion was needed.");
 						Bitmap oldbitmap = bitmap;
 						try
@@ -296,6 +301,12 @@ namespace CodeImp.DoomBuilder.Data
 					width = bitmap.Size.Width;
 					height = bitmap.Size.Height;
 
+					if(dynamictexture)
+					{
+						if((width != General.NextPowerOf2(width)) || (height != General.NextPowerOf2(height)))
+							throw new Exception("Dynamic images must have a size in powers of 2.");
+					}
+
 					// Do we still have to set a scale?
 					if((scale.x == 0.0f) && (scale.y == 0.0f))
 					{
@@ -334,10 +345,63 @@ namespace CodeImp.DoomBuilder.Data
 					memstream = new MemoryStream((img.Size.Width * img.Size.Height * 4) + 4096);
 					img.Save(memstream, ImageFormat.Bmp);
 					memstream.Seek(0, SeekOrigin.Begin);
-					texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length,
-									img.Size.Width, img.Size.Height, mipmaplevels, Usage.None, Format.Unknown,
-									Pool.Managed, General.Map.Graphics.PostFilter, General.Map.Graphics.MipGenerateFilter, 0);
+					if(dynamictexture)
+					{
+						texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length,
+										img.Size.Width, img.Size.Height, mipmaplevels, Usage.Dynamic, Format.A8R8G8B8,
+										Pool.Default, General.Map.Graphics.PostFilter, General.Map.Graphics.MipGenerateFilter, 0);
+					}
+					else
+					{
+						texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length,
+										img.Size.Width, img.Size.Height, mipmaplevels, Usage.None, Format.Unknown,
+										Pool.Managed, General.Map.Graphics.PostFilter, General.Map.Graphics.MipGenerateFilter, 0);
+					}
 					memstream.Dispose();
+					
+					if(dynamictexture)
+					{
+						if((width != texture.GetLevelDescription(0).Width) || (height != texture.GetLevelDescription(0).Height))
+							throw new Exception("Could not create a texture with the same size as the image.");
+					}
+				}
+			}
+		}
+
+		// This updates a dynamic texture
+		public void UpdateTexture()
+		{
+			if(!dynamictexture)
+				throw new Exception("The image must be a dynamic image to support direct updating.");
+			
+			lock(this)
+			{
+				if((texture != null) && !texture.Disposed)
+				{
+					// Lock the bitmap and texture
+					BitmapData bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+					DataRectangle texdata = texture.LockRectangle(0, LockFlags.Discard);
+
+					// Copy data
+					int* bp = (int*)bmpdata.Scan0.ToPointer();
+					int* tp = (int*)texdata.Data.DataPointer.ToPointer();
+					for(int y = 0; y < bmpdata.Height; y++)
+					{
+						for(int x = 0; x < bmpdata.Width; x++)
+						{
+							*tp = *bp;
+							bp++;
+							tp++;
+						}
+
+						// Skip extra data in texture
+						int extrapitch = (texdata.Pitch >> 2) - bmpdata.Width;
+						tp += extrapitch;
+					}
+
+					// Unlock
+					texture.UnlockRectangle(0);
+					bitmap.UnlockBits(bmpdata);
 				}
 			}
 		}
