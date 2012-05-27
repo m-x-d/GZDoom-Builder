@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		#region ================== Variables
 
 		// The image is the ImageData resource for Doom Builder to work with
-		private BitmapImage image;
+		private DynamicBitmapImage image;
 		
 		// This is the bitmap that we will be drawing on
 		private Bitmap canvas;
@@ -75,7 +75,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// Constructor
 		public VisplaneExplorerMode()
 		{
-			// Initialize
 		}
 
 		// Disposer
@@ -127,6 +126,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		}
 
 		// This draws all tiles on the image
+		// THIS MUST BE FAST! TOP PERFORMANCE REQUIRED!
 		private unsafe void RedrawAllTiles()
 		{
 			if(canvas == null) return;
@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			Size canvassize = canvas.Size;
 			BitmapData bd = canvas.LockBits(new Rectangle(0, 0, canvassize.Width, canvassize.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			RtlZeroMemory(bd.Scan0, bd.Width * bd.Height * 4);
-			int* p = (int*)bd.Scan0.ToInt32();
+			int* p = (int*)bd.Scan0.ToPointer();
 
 			foreach(Tile t in tiles.Values)
 			{
@@ -142,42 +142,53 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				Vector2D lb = Renderer.MapToDisplay(new Vector2D(t.Position.X, t.Position.Y));
 				Vector2D rt = Renderer.MapToDisplay(new Vector2D(t.Position.X + Tile.TILE_SIZE, t.Position.Y + Tile.TILE_SIZE));
 
-				// Make sure the coordinates are aligned with pixels
+				// Make sure the coordinates are aligned with canvas pixels
 				float x1 = (float)Math.Round(lb.x);
 				float x2 = (float)Math.Round(rt.x);
 				float y1 = (float)Math.Round(rt.y);
 				float y2 = (float)Math.Round(lb.y);
+
+				// Determine width and height of the screen space area for this tile
 				float w = x2 - x1;
 				float h = y2 - y1;
 				float winv = 1f / w;
 				float hinv = 1f / h;
+
+				// Loop ranges. These are relative to the left-top of the tile.
+				float sx = 0f;
+				float sy = 0f;
+				float ex = w;
+				float ey = h;
+				int screenx = (int)x1;
+				int screenystart = (int)y1;
+				
+				// Clipping the loop ranges against canvas boundary.
+				if(x1 < 0f) { sx = -x1; screenx = 0; }
+				if(y1 < 0f) { sy = -y1; screenystart = 0; }
+				if(x2 > bd.Width) ex = w - (x2 - bd.Width);
+				if(y2 > bd.Height) ey = h - (y2 - bd.Height);
 				
 				// Draw all pixels within this tile
-				int screenx = (int)x1;
-				for(float x = 0; x < w; x++, screenx++)
+				for(float x = sx; x < ex; x++, screenx++)
 				{
-					int screeny = (int)y1;
-					for(float y = 0; y < h; y++, screeny++)
+					int screeny = screenystart;
+					for(float y = sy; y < ey; y++, screeny++)
 					{
-						// TODO: Clip before loop!
-						if((screenx >= 0) && (screenx < bd.Width) && (screeny >= 0) && (screeny < bd.Height))
-						{
-							// Calculate the relative offset in map coordinates for this pixel
-							float ux = x * winv * Tile.TILE_SIZE;
-							float uy = y * hinv * Tile.TILE_SIZE;
+						// Calculate the relative offset in map coordinates for this pixel
+						float ux = x * winv * Tile.TILE_SIZE;
+						float uy = y * hinv * Tile.TILE_SIZE;
 
-							// Get the data and apply the color
-							TileData td = t.GetNearestPoint((int)ux, Tile.TILE_SIZE - 1 - (int)uy);
-							Color c = Color.FromArgb(255, Math.Min(td.visplanes * 5, 255), Math.Min(td.visplanes * 3, 255), 0);
-							p[screeny * bd.Width + screenx] = c.ToArgb();
-						}
+						// Get the data and apply the color
+						TileData td = t.GetNearestPoint((int)ux, Tile.TILE_SIZE - 1 - (int)uy);
+						byte r = (byte)Math.Min(td.visplanes * 5, 255);
+						byte g = (byte)Math.Min(td.visplanes * 3, 255);
+						p[screeny * bd.Width + screenx] = (255 << 24) + (r << 16) + (g << 8);
 					}
 				}
 			}
 			
 			canvas.UnlockBits(bd);
-			image.ReleaseTexture();
-			image.CreateTexture();
+			image.UpdateTexture();
 		}
 
 		// This queues points for all current tiles
@@ -200,8 +211,9 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// Mode starts
 		public override void OnEngage()
 		{
+			Cursor.Current = Cursors.WaitCursor;
 			base.OnEngage();
-
+			
 			CleanUp();
 
 			// Export the current map to a temporary WAD file
@@ -221,11 +233,13 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			// The BitmapImage for Doom Builder's resources must be Format32bppArgb and NOT using color correction,
 			// otherwise DB will make a copy of the bitmap when LoadImage() is called! This is normally not a problem,
 			// but we want to keep drawing to the same bitmap.
-			canvas = new Bitmap(General.Interface.Display.ClientSize.Width, General.Interface.Display.ClientSize.Height, PixelFormat.Format32bppArgb);
+			int width = General.NextPowerOf2(General.Interface.Display.ClientSize.Width);
+			int height = General.NextPowerOf2(General.Interface.Display.ClientSize.Height);
+			canvas = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 			Graphics g = Graphics.FromImage(canvas);
 			g.Clear(Color.Black);
 			g.Dispose();
-			image = new BitmapImage(canvas, "_CANVAS_");
+			image = new DynamicBitmapImage(canvas, "_CANVAS_");
 			image.UseColorCorrection = false;
 			image.LoadImage();
 			image.CreateTexture();
@@ -241,6 +255,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			nextupdate = DateTime.Now + new TimeSpan(0, 0, 0, 0, 100);
 			General.Interface.EnableProcessing();
 			processingenabled = true;
+
+			Cursor.Current = Cursors.Default;
 		}
 
 		// Mode ends
@@ -293,17 +309,16 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public override void OnRedrawDisplay()
 		{
 			base.OnRedrawDisplay();
-
-			// Clear the overlay and begin rendering to it.
+			
+			// Render the overlay
 			if(renderer.StartOverlay(true))
 			{
-				// Rectangle of coordinates where to draw the image.
-				// We use untranslated coordinates: this means the coordinates here
-				// are already in screen space.
-				RectangleF r = General.Interface.Display.ClientRectangle;
-
-				// Show the picture!
+				// Render the canvas to screen
+				RectangleF r = new RectangleF(0, 0, canvas.Width, canvas.Height);
 				renderer.RenderRectangleFilled(r, PixelColor.FromColor(Color.White), false, image);
+				
+				// Render any selection
+				if(selecting) RenderMultiSelection();
 				
 				// Finish our rendering to this layer.
 				renderer.Finish();
@@ -352,6 +367,39 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				// Queue more points if needed
 				QueuePoints(BuilderPlug.VPO.GetRemainingPoints());
 			}
+		}
+
+		// LMB pressed
+		protected override void OnSelectBegin()
+		{
+			StartMultiSelection();
+			base.OnSelectBegin();
+		}
+
+		// Multiselecting
+		protected override void OnUpdateMultiSelection()
+		{
+			base.OnUpdateMultiSelection();
+			
+			if(renderer.StartOverlay(true))
+			{
+				// Render the canvas to screen
+				RectangleF r = new RectangleF(0, 0, canvas.Width, canvas.Height);
+				renderer.RenderRectangleFilled(r, PixelColor.FromColor(Color.White), false, image);
+
+				// Render any selection
+				if(selecting) RenderMultiSelection();
+				
+				renderer.Finish();
+				renderer.Present();
+			}
+		}
+
+		// Multiselect ends
+		protected override void OnEndMultiSelection()
+		{
+			base.OnEndMultiSelection();
+			base.CenterOnArea(selectionrect, 0.1f);
 		}
 
 		#endregion

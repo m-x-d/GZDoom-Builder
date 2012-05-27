@@ -150,6 +150,9 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		}
 
 		// Return the tile data nearest to x/y
+		// This method is actually slowing down the rendering quite a lot
+		// (about 75% of the time the display is drawn is in this function!!!)
+		// We should really think about a faster algorithm for this!
 		public TileData GetNearestPoint(int x, int y)
 		{
 			#if DEBUG
