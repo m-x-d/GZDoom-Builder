@@ -32,7 +32,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	public class BitmapImage : ImageData
+	public class DynamicBitmapImage : BitmapImage, ID3DResource
 	{
 		#region ================== Variables
 
@@ -44,41 +44,37 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public BitmapImage(Bitmap img, string name)
+		public DynamicBitmapImage(Bitmap img, string name) : base(img, name)
 		{
 			// Initialize
-			this.img = img;
-			this.AllowUnload = false;
-			SetName(name);
+			this.UseColorCorrection = false;
+			this.dynamictexture = true;
 
-			// Get width and height from image
-			width = img.Size.Width;
-			height = img.Size.Height;
-			scale.x = 1.0f;
-			scale.y = 1.0f;
+			// This resource is volatile
+			General.Map.Graphics.RegisterResource(this);
+		}
 
-			// We have no destructor
-			GC.SuppressFinalize(this);
+		// Disposer
+		public override void Dispose()
+		{
+			General.Map.Graphics.UnregisterResource(this);
+			base.Dispose();
 		}
 
 		#endregion
 
 		#region ================== Methods
 
-		// This loads the image
-		protected override void LocalLoadImage()
+		// Unload the resource because Direct3D says so
+		public void UnloadResource()
 		{
-			lock(this)
-			{
-				// No failure checking here. I anything fails here, it is not the user's fault,
-				// because the resources this loads are in the assembly.
+			ReleaseTexture();
+		}
 
-				// Get resource from memory
-				bitmap = img;
-
-				// Pass on to base
-				base.LocalLoadImage();
-			}
+		// Reload the resource
+		public void ReloadResource()
+		{
+			CreateTexture();
 		}
 
 		#endregion

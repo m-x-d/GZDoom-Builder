@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Initialize
 			this.assembly = Assembly.GetCallingAssembly();
 			this.resourcename = resourcename;
+			this.AllowUnload = false;
 			SetName(resourcename);
 
 			// Temporarily load resource from memory

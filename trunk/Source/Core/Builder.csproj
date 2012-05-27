@@ -694,6 +694,7 @@
     <Compile Include="Data\HighResImage.cs" />
     <Compile Include="Data\PK3FileImage.cs" />
     <Compile Include="Data\PK3StructuredReader.cs" />
+    <Compile Include="Data\DynamicBitmapImage.cs" />
     <Compile Include="Editing\CustomThingsFilter.cs" />
     <Compile Include="General\CRC.cs" />
     <Compile Include="General\ErrorItem.cs" />
