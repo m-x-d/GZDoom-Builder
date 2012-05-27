@@ -133,6 +133,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)\vpo.dll"
+				ModuleDefinitionFile="exports.def"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

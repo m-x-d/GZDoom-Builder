@@ -21,11 +21,11 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// Members
 		private Point position;
 		private TileData[][] points;
-		private Bitmap bmp;
+		private int nextindex;
 		
 		// Properties
 		public Point Position { get { return position; } }
-		public Bitmap Bitmap { get { return bmp; } }
+		public bool IsComplete { get { return nextindex == (TILE_SIZE * TILE_SIZE); } }
 
 		// Constructor
 		public Tile(Point lefttoppos)
@@ -37,30 +37,73 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			points = new TileData[TILE_SIZE][];
 			for(int y = 0; y < TILE_SIZE; y++)
 				points[y] = new TileData[TILE_SIZE];
-
-			bmp = new Bitmap(TILE_SIZE, TILE_SIZE, PixelFormat.Format32bppArgb);
-			Graphics g = Graphics.FromImage(bmp);
-			Random rnd = new Random(lefttoppos.X ^ lefttoppos.Y ^ DateTime.Now.Millisecond);
-			Color testcolor = Color.FromArgb(255, rnd.Next(25, 255), rnd.Next(25, 255), rnd.Next(25, 255));
-			g.Clear(testcolor);
-			g.DrawLine(Pens.White, new Point(0, 60), new Point(60, 60));
-			g.Flush();
-			g.Dispose();
 		}
 
 		// This receives a processed point
-		public void StorePointData(PointData pd)
+		public unsafe void StorePointData(PointData pd)
 		{
 			TileData t;
-			t.visplanes = (byte)Math.Min(pd.visplanes, 255);
-			t.drawsegs = (byte)Math.Min(pd.drawsegs, 255);
-			t.solidsegs = (byte)Math.Min(pd.solidsegs, 255);
-			t.openings = (byte)Math.Min(pd.openings, 255);
-			int x = pd.x - position.X;
-			int y = pd.y - position.Y;
-			points[y][x] = t;
-			Color c = Color.FromArgb(255, Math.Min(t.visplanes * 5, 255), Math.Min(t.visplanes * 2, 255), 0);
-			bmp.SetPixel(x, y, c);
+			switch(pd.result)
+			{
+				case PointResult.OK:
+					t.visplanes = (byte)Math.Min(pd.visplanes, 255);
+					t.drawsegs = (byte)Math.Min(pd.drawsegs, 255);
+					t.solidsegs = (byte)Math.Min(pd.solidsegs, 255);
+					t.openings = (byte)Math.Min(pd.openings, 255);
+					break;
+
+				case PointResult.BadZ:
+					t.visplanes = 1;
+					t.drawsegs = 0;
+					t.solidsegs = 0;
+					t.openings = 0;
+					break;
+					
+				case PointResult.Void:
+					t.visplanes = 0;
+					t.drawsegs = 0;
+					t.solidsegs = 0;
+					t.openings = 1;
+					break;
+
+				case PointResult.Overflow:
+					t.visplanes = 255;
+					t.drawsegs = 255;
+					t.solidsegs = 255;
+					t.openings = 255;
+					break;
+
+				default:
+					throw new NotImplementedException();
+			}
+
+			points[pd.y - position.Y][pd.x - position.X] = t;
+
+			/*
+			// Redraw bitmap
+			BitmapData bd = bmp.LockBits(new Rectangle(0, 0, TILE_SIZE, TILE_SIZE), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			int* p = (int*)bd.Scan0.ToInt32();
+			for(int y = 0; y < TILE_SIZE; y++)
+			{
+				for(int x = 0; x < TILE_SIZE; x++)
+				{
+					TileData td = GetNearestPoint(x, TILE_SIZE - 1 - y);
+					Color c = Color.FromArgb(255, Math.Min(td.visplanes * 5, 255), Math.Min(td.visplanes * 3, 255), 0);
+					*p = c.ToArgb();
+					p++;
+				}
+			}
+			bmp.UnlockBits(bd);
+			*/
+		}
+
+		// This returns the next point to process
+		public Point GetNextPoint()
+		{
+			Point p = PointByIndex(nextindex++);
+			p.X += position.X;
+			p.Y += position.Y;
+			return p;
 		}
 
 		// Returns a position by index
@@ -109,10 +152,15 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// Return the tile data nearest to x/y
 		public TileData GetNearestPoint(int x, int y)
 		{
+			#if DEBUG
+			if((x < 0) || (x > TILE_SIZE - 1) || (y < 0) || (y > TILE_SIZE - 1))
+				throw new IndexOutOfRangeException();
+			#endif
+			
 			while(true)
 			{
-				TileData p = points[x][y];
-				if(p.visplanes > 0) return p;
+				TileData p = points[y][x];
+				if((p.visplanes > 0) || (p.openings > 0)) return p;
 
 				// Move coordinate a step closer to (0,0)
 				// NOTE: if the 64x64 size is changes, this will need more/less stages

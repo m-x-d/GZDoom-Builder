@@ -19,7 +19,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		#region ================== Constants
 
 		public const int POINTS_PER_ITERATION = 100;
-		private const int EXPECTED_RESULTS_BUFFER = 2000;
+		private const int EXPECTED_RESULTS_BUFFER = 200000;
 
 		private readonly int[] TEST_ANGLES = new int[] { 0, 90, 180, 270, 45, 135, 225, 315 /*, 22, 67, 112, 157, 202, 247, 292, 337 */ };
 		private const int TEST_HEIGHT = 41 + 8;
@@ -121,6 +121,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				for(int i = 0; i < dlls.Length; i++)
 				{
 					FreeLibrary(dlls[i]);
+					File.Delete(tempfiles[i]);
 				}
 				dlls = null;
 			}
@@ -179,36 +180,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 						for(int i = 0; i < TEST_ANGLES.Length; i++)
 						{
-							int vp = 0;
-							int ds = 0;
-							int ss = 0;
-							int op = 0;
-							int result = TestSpot(p.X, p.Y, TEST_HEIGHT, TEST_ANGLES[i], ref vp, ref ds, ref op, ref ss);
-
-							switch(result)
-							{
-								case RESULT_OK:
-									pd.visplanes = Math.Max(pd.visplanes, vp);
-									pd.drawsegs = Math.Max(pd.drawsegs, ds);
-									pd.solidsegs = Math.Max(pd.solidsegs, ss);
-									pd.openings = Math.Max(pd.openings, op);
-									break;
-
-								case RESULT_BAD_Z:
-									// Ignore this position.
-									break;
-
-								case RESULT_IN_VOID:
-									// No data.
-									break;
-
-								case RESULT_OVERFLOW:
-									pd.visplanes = int.MaxValue;
-									pd.drawsegs = int.MaxValue;
-									pd.solidsegs = int.MaxValue;
-									pd.openings = int.MaxValue;
-									break;
-							}
+							pd.result = (PointResult)TestSpot(p.X, p.Y, TEST_HEIGHT, TEST_ANGLES[i],
+								ref pd.visplanes, ref pd.drawsegs, ref pd.openings, ref pd.solidsegs);
 						}
 
 						done.Enqueue(pd);
@@ -275,20 +248,19 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			}
 		}
 
-		// This gives points to process
-		public void EnqueuePoints(IEnumerable<Point> newpoints)
+		// This gives points to process and returns the total points left in the buffer
+		public int EnqueuePoints(IEnumerable<Point> newpoints)
 		{
 			lock(points)
 			{
 				foreach(Point p in newpoints)
 					points.Enqueue(p);
+				return points.Count;
 			}
 		}
 
 		// This fetches results (in 'data') and returns the number of points
-		// remaining to be processed. Note that the number of points returned
-		// does not include the points currently being processed in a single
-		// iteration for each thread.
+		// remaining to be processed.
 		public int DequeueResults(List<PointData> data)
 		{
 			lock(points)
@@ -298,6 +270,15 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 					data.Capacity = data.Count + numresults;
 				for(int i = 0; i < numresults; i++)
 					data.Add(results.Dequeue());
+				return points.Count;
+			}
+		}
+
+		// This returns the number of points left in the buffer
+		public int GetRemainingPoints()
+		{
+			lock(points)
+			{
 				return points.Count;
 			}
 		}

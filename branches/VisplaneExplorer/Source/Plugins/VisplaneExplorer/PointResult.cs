@@ -10,14 +10,11 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 {
-	internal struct PointData
+	internal enum PointResult : int
 	{
-		public int x;
-		public int y;
-		public PointResult result;
-		public int visplanes;
-		public int drawsegs;
-		public int solidsegs;
-		public int openings;
+		OK = 0,
+		BadZ = -1,
+		Void = -2,
+		Overflow = -3,
 	}
 }

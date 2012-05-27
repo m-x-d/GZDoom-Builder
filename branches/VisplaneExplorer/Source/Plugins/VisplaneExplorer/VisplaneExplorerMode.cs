@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Data;
@@ -32,6 +33,13 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		#region ================== Constants
 
 		#endregion
+		
+		#region ================== APIs
+
+		[DllImport("kernel32.dll")]
+		static extern void RtlZeroMemory(IntPtr dst, int length);
+
+		#endregion
 
 		#region ================== Variables
 
@@ -40,7 +48,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		
 		// This is the bitmap that we will be drawing on
 		private Bitmap canvas;
-		private Graphics graphics;
 
 		// Temporary WAD file written for the vpo.dll library
 		private string tempfile;
@@ -54,6 +61,9 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// Time when to do another update
 		private DateTime nextupdate;
 
+		// Are we processing?
+		private bool processingenabled;
+		
 		#endregion
 
 		#region ================== Properties
@@ -71,7 +81,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// Disposer
 		public override void Dispose()
 		{
-			CleanUp();
 			base.Dispose();
 		}
 
@@ -83,17 +92,17 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		private void CleanUp()
 		{
 			BuilderPlug.VPO.Stop();
+
+			if(processingenabled)
+			{
+				General.Interface.DisableProcessing();
+				processingenabled = false;
+			}
 			
 			if(!string.IsNullOrEmpty(tempfile))
 			{
 				File.Delete(tempfile);
 				tempfile = null;
-			}
-
-			if(graphics != null)
-			{
-				graphics.Dispose();
-				graphics = null;
 			}
 
 			if(image != null)
@@ -112,26 +121,76 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		}
 
 		// This returns the tile position for the given map coordinate
-		private Point TileForPoint(int x, int y)
+		private Point TileForPoint(float x, float y)
 		{
-			return new Point(x / Tile.TILE_SIZE * Tile.TILE_SIZE, y / Tile.TILE_SIZE * Tile.TILE_SIZE);
+			return new Point((int)Math.Floor(x / (float)Tile.TILE_SIZE) * Tile.TILE_SIZE, (int)Math.Floor(y / (float)Tile.TILE_SIZE) * Tile.TILE_SIZE);
 		}
 
 		// This draws all tiles on the image
-		private void RedrawAllTiles()
+		private unsafe void RedrawAllTiles()
 		{
-			graphics.Clear(Color.Black);
+			if(canvas == null) return;
+			
+			Size canvassize = canvas.Size;
+			BitmapData bd = canvas.LockBits(new Rectangle(0, 0, canvassize.Width, canvassize.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			RtlZeroMemory(bd.Scan0, bd.Width * bd.Height * 4);
+			int* p = (int*)bd.Scan0.ToInt32();
+
 			foreach(Tile t in tiles.Values)
 			{
-				Vector2D lb = Renderer.MapToDisplay(new Vector2D(t.Position.X, t.Position.Y - 0.5f));
-				Vector2D rt = Renderer.MapToDisplay(new Vector2D(t.Position.X + Tile.TILE_SIZE + 0.5f, t.Position.Y + Tile.TILE_SIZE));
-				Point plb = new Point((int)lb.x, (int)lb.y);
-				Point prt = new Point((int)rt.x, (int)rt.y);
-				graphics.DrawImage(t.Bitmap, plb.X, prt.Y, prt.X - plb.X, plb.Y - prt.Y);
+				// Map this tile to screen space
+				Vector2D lb = Renderer.MapToDisplay(new Vector2D(t.Position.X, t.Position.Y));
+				Vector2D rt = Renderer.MapToDisplay(new Vector2D(t.Position.X + Tile.TILE_SIZE, t.Position.Y + Tile.TILE_SIZE));
+
+				// Make sure the coordinates are aligned with pixels
+				float x1 = (float)Math.Round(lb.x);
+				float x2 = (float)Math.Round(rt.x);
+				float y1 = (float)Math.Round(rt.y);
+				float y2 = (float)Math.Round(lb.y);
+				float w = x2 - x1;
+				float h = y2 - y1;
+				float winv = 1f / w;
+				float hinv = 1f / h;
+				
+				// Draw all pixels within this tile
+				int screenx = (int)x1;
+				for(float x = 0; x < w; x++, screenx++)
+				{
+					int screeny = (int)y1;
+					for(float y = 0; y < h; y++, screeny++)
+					{
+						// TODO: Clip before loop!
+						if((screenx >= 0) && (screenx < bd.Width) && (screeny >= 0) && (screeny < bd.Height))
+						{
+							// Calculate the relative offset in map coordinates for this pixel
+							float ux = x * winv * Tile.TILE_SIZE;
+							float uy = y * hinv * Tile.TILE_SIZE;
+
+							// Get the data and apply the color
+							TileData td = t.GetNearestPoint((int)ux, Tile.TILE_SIZE - 1 - (int)uy);
+							Color c = Color.FromArgb(255, Math.Min(td.visplanes * 5, 255), Math.Min(td.visplanes * 3, 255), 0);
+							p[screeny * bd.Width + screenx] = c.ToArgb();
+						}
+					}
+				}
 			}
-			graphics.Flush();
+			
+			canvas.UnlockBits(bd);
 			image.ReleaseTexture();
 			image.CreateTexture();
+		}
+
+		// This queues points for all current tiles
+		private void QueuePoints(int pointsleft)
+		{
+			while(pointsleft < (VPOManager.POINTS_PER_ITERATION * BuilderPlug.VPO.NumThreads * 10))
+			{
+				List<Point> newpoints = new List<Point>(tiles.Count);
+				foreach(Tile t in tiles.Values)
+					if(!t.IsComplete) newpoints.Add(t.GetNextPoint());
+				if(newpoints.Count == 0) break;
+				pointsleft = BuilderPlug.VPO.EnqueuePoints(newpoints);
+			}
 		}
 
 		#endregion
@@ -145,20 +204,27 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 			CleanUp();
 
+			// Export the current map to a temporary WAD file
+			tempfile = BuilderPlug.MakeTempFilename(".wad");
+			General.Map.ExportToFile(tempfile);
+			
+			// Load the map in VPO_DLL
+			BuilderPlug.VPO.Start(tempfile, General.Map.Options.LevelName);
+
 			// Determine map boundary
 			mapbounds = Rectangle.Round(MapSet.CreateArea(General.Map.Map.Vertices));
+
+			// Create tiles for current view and queue points to process
+			OnViewChanged();
 
 			// Make an image to draw on.
 			// The BitmapImage for Doom Builder's resources must be Format32bppArgb and NOT using color correction,
 			// otherwise DB will make a copy of the bitmap when LoadImage() is called! This is normally not a problem,
 			// but we want to keep drawing to the same bitmap.
 			canvas = new Bitmap(General.Interface.Display.ClientSize.Width, General.Interface.Display.ClientSize.Height, PixelFormat.Format32bppArgb);
-			graphics = Graphics.FromImage(canvas);
-			graphics.CompositingQuality = CompositingQuality.AssumeLinear;
-			graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-			graphics.SmoothingMode = SmoothingMode.None;
-			graphics.PixelOffsetMode = PixelOffsetMode.None;
-			graphics.Clear(Color.Black);
+			Graphics g = Graphics.FromImage(canvas);
+			g.Clear(Color.Black);
+			g.Dispose();
 			image = new BitmapImage(canvas, "_CANVAS_");
 			image.UseColorCorrection = false;
 			image.LoadImage();
@@ -171,27 +237,16 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			p.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
 			renderer.SetPresentation(p);
 
-			// Export the current map to a temporary WAD file
-			tempfile = BuilderPlug.MakeTempFilename(".wad");
-			General.Map.ExportToFile(tempfile);
-			
-			// Load the map in VPO_DLL
-			BuilderPlug.VPO.Start(tempfile, General.Map.Options.LevelName);
-
-			// Make sure tiles are created for the current view.
-			// This also queues new list of points.
-			OnViewChanged();
-
 			// Setup processing
-			nextupdate = DateTime.Now + new TimeSpan(0, 0, 1);
+			nextupdate = DateTime.Now + new TimeSpan(0, 0, 0, 0, 100);
 			General.Interface.EnableProcessing();
+			processingenabled = true;
 		}
 
 		// Mode ends
 		public override void OnDisengage()
 		{
 			CleanUp();
-			General.Interface.DisableProcessing();
 			base.OnDisengage();
 		}
 
@@ -228,6 +283,10 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			}
 
 			RedrawAllTiles();
+			QueuePoints(BuilderPlug.VPO.GetRemainingPoints());
+
+			// Update the screen sooner
+			nextupdate = DateTime.Now + new TimeSpan(0, 0, 0, 0, 100);
 		}
 
 		// Draw the display
@@ -245,7 +304,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 				// Show the picture!
 				renderer.RenderRectangleFilled(r, PixelColor.FromColor(Color.White), false, image);
-
+				
 				// Finish our rendering to this layer.
 				renderer.Finish();
 			}
@@ -264,16 +323,34 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public override void OnProcess(double deltatime)
 		{
 			base.OnProcess(deltatime);
-			if(DateTime.Now <= nextupdate)
+			if(DateTime.Now >= nextupdate)
 			{
 				// Get the processed points from the VPO manager
 				List<PointData> points = new List<PointData>();
 				int pointsleft = BuilderPlug.VPO.DequeueResults(points);
-				if(pointsleft < (VPOManager.POINTS_PER_ITERATION * BuilderPlug.VPO.NumThreads) * 100)
+
+				// Queue more points if needed
+				QueuePoints(pointsleft);
+
+				// Apply the points to the tiles
+				foreach(PointData pd in points)
 				{
+					Tile t;
+					Point tp = TileForPoint(pd.x, pd.y);
+					if(tiles.TryGetValue(tp, out t))
+						t.StorePointData(pd);
 				}
-				
-				nextupdate = DateTime.Now + new TimeSpan(0, 0, 1);
+
+				// Redraw
+				RedrawAllTiles();
+				General.Interface.RedrawDisplay();
+
+				nextupdate = DateTime.Now + new TimeSpan(0, 0, 0, 0, 600);
+			}
+			else
+			{
+				// Queue more points if needed
+				QueuePoints(BuilderPlug.VPO.GetRemainingPoints());
 			}
 		}
 
