@@ -23,6 +23,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		#region ================== Variables
 
 		private ViewStats viewstats;
+		Point oldttposition;
 
 		#endregion
 
@@ -62,7 +63,12 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			Point sp = General.Interface.Display.PointToScreen(p);
 			Point fp = (General.Interface as Form).Location;
 			Point tp = new Point(sp.X - fp.X, sp.Y - fp.Y);
-			tooltip.Show(text, General.Interface, tp);
+
+			if (oldttposition != tp)
+			{
+				tooltip.Show(text, General.Interface, tp);
+				oldttposition = tp;
+			}
 		}
 
 		// This hides the tooltip
