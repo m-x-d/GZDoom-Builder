@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -98,14 +99,23 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			// Load a DLL for each thread
 			dlls = new IntPtr[NumThreads];
 			tempfiles = new string[NumThreads];
-			string originaldll = Path.Combine(General.PluginsPath, "vpo.dll");
+			
+			// We must write the DLL file with a unique name for every thread,
+			// because LoadLibrary will share loaded libraries with the same
+			// names and LoadLibraryEx does not have a flag to force loading
+			// it multiple times.
+			Assembly thisasm = Assembly.GetExecutingAssembly();
+			Stream dllstream = thisasm.GetManifestResourceStream("CodeImp.DoomBuilder.Plugins.VisplaneExplorer.Resources.vpo.dll");
+			dllstream.Seek(0, SeekOrigin.Begin);
+			byte[] dllbytes = new byte[dllstream.Length];
+			dllstream.Read(dllbytes, 0, dllbytes.Length);
 			for(int i = 0; i < dlls.Length; i++)
 			{
-				// We must copy the DLL file with a unique name, because LoadLibrary will
-				// share loaded libraries with the same names and LoadLibraryEx does not
-				// have a flag to force loading it multiple times.
+				// Write file with unique filename
 				tempfiles[i] = BuilderPlug.MakeTempFilename(".dll");
-				File.Copy(originaldll, tempfiles[i]);
+				File.WriteAllBytes(tempfiles[i], dllbytes);
+				
+				// Load it
 				dlls[i] = LoadLibrary(tempfiles[i]);
 				if(dlls[i] == IntPtr.Zero) throw new Exception("Unable to load vpo.dll");
 			}

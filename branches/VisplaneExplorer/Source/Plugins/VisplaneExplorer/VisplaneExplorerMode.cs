@@ -26,6 +26,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			  ButtonImage = "Gauge.png",
 			  ButtonOrder = 300,
 			  ButtonGroup = "002_tools",
+			  Volatile = true,
 			  UseByDefault = true,
 			  AllowCopyPaste = false)]
 	public class VisplaneExplorerMode : ClassicMode
@@ -64,10 +65,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 		// Are we processing?
 		private bool processingenabled;
-
-		// Labels for mouse-over
-		private TextLabel hoverlabel;
-		private bool showhoverlabel;
 		
 		#endregion
 
@@ -80,19 +77,11 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// Constructor
 		public VisplaneExplorerMode()
 		{
-			hoverlabel = new TextLabel(100);
-			hoverlabel.TransformCoords = false;
-			hoverlabel.AlignX = TextAlignmentX.Left;
-			hoverlabel.AlignY = TextAlignmentY.Top;
-			hoverlabel.Scale = 14f;
-			hoverlabel.Color = General.Colors.Highlight.WithAlpha(255);
-			hoverlabel.Backcolor = General.Colors.Background.WithAlpha(255);
 		}
 
 		// Disposer
 		public override void Dispose()
 		{
-			hoverlabel.Dispose();
 			base.Dispose();
 		}
 
@@ -146,6 +135,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			if(canvas == null) return;
 
 			int viewstats = (int)BuilderPlug.InterfaceForm.ViewStats;
+			Palette pal = BuilderPlug.Palettes[viewstats];
 			
 			Size canvassize = canvas.Size;
 			BitmapData bd = canvas.LockBits(new Rectangle(0, 0, canvassize.Width, canvassize.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
@@ -196,9 +186,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 						// Get the data and apply the color
 						TileData td = t.GetNearestPoint((int)ux, Tile.TILE_SIZE - 1 - (int)uy);
-						byte r = (byte)Math.Min(td.stats[viewstats] * 5, 255);
-						byte g = (byte)Math.Min(td.stats[viewstats] * 3, 255);
-						p[screeny * bd.Width + screenx] = (255 << 24) + (r << 16) + (g << 8);
+						p[screeny * bd.Width + screenx] = pal.Colors[td.stats[viewstats]];
 					}
 				}
 			}
@@ -237,9 +225,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				RectangleF r = new RectangleF(0, 0, canvas.Width, canvas.Height);
 				renderer.RenderRectangleFilled(r, PixelColor.FromColor(Color.White), false, image);
 
-				// Render labels
-				if(showhoverlabel) renderer.RenderText(hoverlabel);
-
 				// Render any selection
 				if(selecting) RenderMultiSelection();
 
@@ -256,7 +241,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public override void OnEngage()
 		{
 			Cursor.Current = Cursors.WaitCursor;
-			General.Interface.SetCursor(Cursors.Cross);
 			base.OnEngage();
 			
 			CleanUp();
@@ -284,17 +268,15 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			int width = General.NextPowerOf2(General.Interface.Display.ClientSize.Width);
 			int height = General.NextPowerOf2(General.Interface.Display.ClientSize.Height);
 			canvas = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-			Graphics g = Graphics.FromImage(canvas);
-			g.Clear(Color.Black);
-			g.Dispose();
 			image = new DynamicBitmapImage(canvas, "_CANVAS_");
 			image.UseColorCorrection = false;
+			image.MipMapLevels = 1;
 			image.LoadImage();
 			image.CreateTexture();
 
 			// Make custom presentation
 			CustomPresentation p = new CustomPresentation();
-			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.None, 1f, false));
+			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Mask, 1f, true));
 			p.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
 			renderer.SetPresentation(p);
@@ -304,7 +286,9 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			General.Interface.EnableProcessing();
 			processingenabled = true;
 
+			RedrawAllTiles();
 			Cursor.Current = Cursors.Default;
+			General.Interface.SetCursor(Cursors.Cross);
 		}
 
 		// Mode ends
@@ -312,6 +296,16 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		{
 			CleanUp();
 			base.OnDisengage();
+		}
+
+		// Cancelled
+		public override void OnCancel()
+		{
+			// Cancel base class
+			base.OnCancel();
+
+			// Return to previous mode
+			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
 		}
 
 		// View position/scale changed!
@@ -333,10 +327,10 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			}
 
 			// Create tiles for all points inside the viewport rectangle
+			mapviewrect.Intersect(mapbounds);
 			Point lt = TileForPoint(mapviewrect.Left - Tile.TILE_SIZE, mapviewrect.Top - Tile.TILE_SIZE);
 			Point rb = TileForPoint(mapviewrect.Right + Tile.TILE_SIZE, mapviewrect.Bottom + Tile.TILE_SIZE);
 			Rectangle tilesrect = new Rectangle(lt.X, lt.Y, rb.X - lt.X, rb.Y - lt.Y);
-			tilesrect.Intersect(mapbounds);
 			for(int x = tilesrect.X; x <= tilesrect.Right; x += Tile.TILE_SIZE)
 			{
 				for(int y = tilesrect.Y; y <= tilesrect.Bottom; y += Tile.TILE_SIZE)
@@ -397,7 +391,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				RedrawAllTiles();
 				General.Interface.RedrawDisplay();
 
-				nextupdate = DateTime.Now + new TimeSpan(0, 0, 0, 0, 600);
+				nextupdate = DateTime.Now + new TimeSpan(0, 0, 0, 0, 500);
 			}
 			else
 			{
@@ -410,7 +404,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		protected override void OnSelectBegin()
 		{
 			StartMultiSelection();
-			showhoverlabel = false;
+			BuilderPlug.InterfaceForm.HideTooltip();
 			base.OnSelectBegin();
 		}
 
@@ -445,23 +439,22 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				if(tiles.TryGetValue(tp, out t))
 				{
 					TileData td = t.GetNearestPoint((int)Math.Floor(mousemappos.x) - t.Position.X, (int)Math.Floor(mousemappos.y) - t.Position.Y);
-					if(td.stats[viewstats] > 0)
+					if(td != TileData.VoidTile)
 					{
 						// Setup hoverlabel
-						hoverlabel.Rectangle = new RectangleF(mousepos.x + 5, mousepos.y + 5, 0.0f, 0.0f);
+						Point p = new Point((int)mousepos.x + 5, (int)mousepos.y + 5);
 						int value = (int)td.stats[viewstats] * Tile.STATS_COMPRESSOR[viewstats];
-						hoverlabel.Text = value + " / " + Tile.STATS_LIMITS[viewstats];
-						showhoverlabel = true;
+						BuilderPlug.InterfaceForm.ShowTooltip(value + " / " + Tile.STATS_LIMITS[viewstats], p);
 					}
 					else
 					{
 						// Void
-						showhoverlabel = false;
+						BuilderPlug.InterfaceForm.HideTooltip();
 					}
 				}
 				else
 				{
-					showhoverlabel = false;
+					BuilderPlug.InterfaceForm.HideTooltip();
 				}
 
 				UpdateOverlay();
@@ -473,7 +466,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public override void OnMouseLeave(EventArgs e)
 		{
 			base.OnMouseLeave(e);
-			showhoverlabel = false;
+			BuilderPlug.InterfaceForm.HideTooltip();
 			UpdateOverlay();
 			renderer.Present();
 		}

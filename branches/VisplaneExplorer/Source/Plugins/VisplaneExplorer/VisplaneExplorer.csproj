@@ -57,6 +57,7 @@
     <Compile Include="InterfaceForm.Designer.cs">
       <DependentUpon>InterfaceForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Palette.cs" />
     <Compile Include="PointData.cs" />
     <Compile Include="PointResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,6 +88,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Gauge.png" />
     <Content Include="Resources\Gauge_large.ico" />
+    <EmbeddedResource Include="Resources\vpo.dll" />
     <None Include="Resources\Solidsegs_pal.png" />
     <None Include="Resources\Openings_pal.png" />
     <None Include="Resources\Visplanes_pal.png" />

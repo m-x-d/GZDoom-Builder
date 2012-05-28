@@ -24,6 +24,7 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Plugins.VisplaneExplorer.Properties;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
@@ -48,6 +49,9 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		private static BuilderPlug me;
 		private VPOManager vpo;
 		private InterfaceForm interfaceform;
+
+		// Palettes
+		private Palette[] palettes;
 		
 		#endregion
 
@@ -58,6 +62,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public override string Name { get { return "VisplaneExplorer"; } }
 		internal static VPOManager VPO { get { return me.vpo; } }
 		internal static InterfaceForm InterfaceForm { get { return me.interfaceform; } }
+		internal static Palette[] Palettes { get { return me.palettes; } }
 		
 		#endregion
 
@@ -67,14 +72,41 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public override void OnInitialize()
 		{
 			base.OnInitialize();
-
+			
 			General.Actions.BindMethods(this);
-
+			
+			// Load interface controls
 			interfaceform = new InterfaceForm();
+
+			// Load VPO manager (manages multithreading and communication with vpo.dll)
 			vpo = new VPOManager();
 
 			// Keep a static reference
 			me = this;
+		}
+
+		// Some things cannot be initialized at plugin start, so we do them here
+		public override void OnMapOpenBegin()
+		{
+			base.OnMapOpenBegin();
+
+			if(palettes == null)
+			{
+				// Load palettes
+				palettes = new Palette[(int)ViewStats.NumStats];
+				palettes[(int)ViewStats.Visplanes] = new Palette(Resources.Visplanes_pal);
+				palettes[(int)ViewStats.Drawsegs] = new Palette(Resources.Drawsegs_pal);
+				palettes[(int)ViewStats.Solidsegs] = new Palette(Resources.Solidsegs_pal);
+				palettes[(int)ViewStats.Openings] = new Palette(Resources.Openings_pal);
+				ApplyUserColors();
+			}
+		}
+
+		// Preferences changed
+		public override void OnClosePreferences(PreferencesController controller)
+		{
+			base.OnClosePreferences(controller);
+			ApplyUserColors();
 		}
 
 		// This is called when the plugin is terminated
@@ -92,6 +124,16 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		#endregion
 
 		#region ================== Methods
+
+		// This applies user-defined appearance colors to the palettes
+		private void ApplyUserColors()
+		{
+			// Override special palette indices with user-defined colors
+			for(int i = 0; i < palettes.Length; i++)
+			{
+				palettes[i].SetColor(Tile.STAT_VOID, General.Colors.Background.WithAlpha(0).ToInt());
+			}
+		}
 
 		// This returns a unique temp filename
 		public static string MakeTempFilename(string extension)

@@ -17,6 +17,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 	{
 		// Constants
 		public const int TILE_SIZE = 64;
+		public const int STAT_VOID = 254;
+		public const int STAT_OVERFLOW = 255;
 		public static readonly int[] STATS_COMPRESSOR = new int[] { 1, 2, 1, 160 };
 		public static readonly int[] STATS_LIMITS = new int[] { 128, 256, 32, 320 * 64 };
 		
@@ -24,6 +26,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		private Point position;
 		private TileData[][] points;
 		private int nextindex;
+		private int pointsreceived;
 		
 		// Properties
 		public Point Position { get { return position; } }
@@ -33,17 +36,36 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public Tile(Point lefttoppos)
 		{
 			position = lefttoppos;
-			
-			// Make the jagged array
-			// I use a jagged array because, allegedly, it performs better than a multidimensional array.
-			points = new TileData[TILE_SIZE][];
-			for(int y = 0; y < TILE_SIZE; y++)
-				points[y] = new TileData[TILE_SIZE];
 		}
 
 		// This receives a processed point
 		public unsafe void StorePointData(PointData pd)
 		{
+			pointsreceived++;
+			
+			if(points == null)
+			{
+				// Don't allocate memory for void tiles
+				if(pd.result == PointResult.Void) return;
+				
+				// Make the jagged array
+				// I use a jagged array because, allegedly, it performs better than a multidimensional array.
+				points = new TileData[TILE_SIZE][];
+				for(int y = 0; y < TILE_SIZE; y++)
+					points[y] = new TileData[TILE_SIZE];
+				
+				// Fill previously received points with void
+				for(int i = 0; i < pointsreceived - 1; i++)
+				{
+					Point p = PointByIndex(i);
+					points[p.Y][p.X] = TileData.VoidTile;
+				}
+
+				// We have to get all points for this tile again,
+				// this causes a bit of overhead, but not really noticable.
+				nextindex = 0;
+			}
+			
 			TileData t;
 			switch(pd.result)
 			{
@@ -62,17 +84,17 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 					break;
 					
 				case PointResult.Void:
-					t.stats[(int)ViewStats.Visplanes] = 0;
-					t.stats[(int)ViewStats.Drawsegs] = 0;
-					t.stats[(int)ViewStats.Solidsegs] = 0;
-					t.stats[(int)ViewStats.Openings] = 1;
+					t.stats[(int)ViewStats.Visplanes] = STAT_VOID;
+					t.stats[(int)ViewStats.Drawsegs] = STAT_VOID;
+					t.stats[(int)ViewStats.Solidsegs] = STAT_VOID;
+					t.stats[(int)ViewStats.Openings] = STAT_VOID;
 					break;
 
 				case PointResult.Overflow:
-					t.stats[(int)ViewStats.Visplanes] = 255;
-					t.stats[(int)ViewStats.Drawsegs] = 255;
-					t.stats[(int)ViewStats.Solidsegs] = 255;
-					t.stats[(int)ViewStats.Openings] = 255;
+					t.stats[(int)ViewStats.Visplanes] = STAT_OVERFLOW;
+					t.stats[(int)ViewStats.Drawsegs] = STAT_OVERFLOW;
+					t.stats[(int)ViewStats.Solidsegs] = STAT_OVERFLOW;
+					t.stats[(int)ViewStats.Openings] = STAT_OVERFLOW;
 					break;
 
 				default:
@@ -95,7 +117,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public Point PointByIndex(int index)
 		{
 			#if DEBUG
-			if(index > (TILE_SIZE * TILE_SIZE)) throw new ArgumentOutOfRangeException("index");
+			if(index > (TILE_SIZE * TILE_SIZE))
+				throw new IndexOutOfRangeException();
 			#endif
 
 			Point p = new Point();
@@ -140,6 +163,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// We should really think about a faster algorithm for this!
 		public unsafe TileData GetNearestPoint(int x, int y)
 		{
+			if(points == null) return TileData.VoidTile;
+			
 			#if DEBUG
 			if((x < 0) || (x > TILE_SIZE - 1) || (y < 0) || (y > TILE_SIZE - 1))
 				throw new IndexOutOfRangeException();
@@ -148,7 +173,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			while(true)
 			{
 				TileData p = points[y][x];
-				if((p.stats[(int)ViewStats.Visplanes] > 0) || (p.stats[(int)ViewStats.Openings] > 0)) return p;
+				if(p.stats[(int)ViewStats.Visplanes] > 0) return p;
 
 				// Move coordinate a step closer to (0,0)
 				// NOTE: if the 64x64 size is changes, this will need more/less stages

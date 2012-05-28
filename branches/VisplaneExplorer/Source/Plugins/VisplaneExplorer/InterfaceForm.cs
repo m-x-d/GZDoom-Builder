@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Text;
 using System.ComponentModel;
@@ -53,6 +54,21 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public void RemoveFromInterface()
 		{
 			General.Interface.RemoveButton(statsbutton);
+		}
+
+		// This shows a tooltip
+		public void ShowTooltip(string text, Point p)
+		{
+			Point sp = General.Interface.Display.PointToScreen(p);
+			Point fp = (General.Interface as Form).Location;
+			Point tp = new Point(sp.X - fp.X, sp.Y - fp.Y);
+			tooltip.Show(text, General.Interface, tp);
+		}
+
+		// This hides the tooltip
+		public void HideTooltip()
+		{
+			tooltip.Hide(General.Interface);
 		}
 
 		#endregion

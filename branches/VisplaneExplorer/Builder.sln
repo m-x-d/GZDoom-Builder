@@ -14,6 +14,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vpo_dll", "Source\Plugins\vpo_dll\vpo_dll.vcproj", "{29C8D76F-DE3D-482D-AD7D-B86BBD0824DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisplaneExplorer", "Source\Plugins\VisplaneExplorer\VisplaneExplorer.csproj", "{CF670175-7099-4090-A330-EE25C7230139}"
+	ProjectSection(ProjectDependencies) = postProject
+		{29C8D76F-DE3D-482D-AD7D-B86BBD0824DE} = {29C8D76F-DE3D-482D-AD7D-B86BBD0824DE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
