@@ -421,6 +421,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		protected override void OnEndMultiSelection()
 		{
 			base.OnEndMultiSelection();
+			if((selectionrect.Width < 64f) && (selectionrect.Height < 64f))
+				selectionrect.Inflate(64f, 64f);
 			base.CenterOnArea(selectionrect, 0.1f);
 		}
 
