@@ -458,9 +458,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				{
 					BuilderPlug.InterfaceForm.HideTooltip();
 				}
-
-				UpdateOverlay();
-				renderer.Present();
 			}
 		}
 
