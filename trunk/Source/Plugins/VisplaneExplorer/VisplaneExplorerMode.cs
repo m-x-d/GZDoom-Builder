@@ -466,8 +466,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		{
 			base.OnMouseLeave(e);
 			BuilderPlug.InterfaceForm.HideTooltip();
-			UpdateOverlay();
-			renderer.Present();
 		}
 
 		#endregion
