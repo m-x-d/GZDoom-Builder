@@ -53,6 +53,7 @@
     <Compile Include="InterfaceForm.Designer.cs">
       <DependentUpon>InterfaceForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NearestLineBlockmap.cs" />
     <Compile Include="Palette.cs" />
     <Compile Include="PointData.cs" />
     <Compile Include="PointResult.cs" />
