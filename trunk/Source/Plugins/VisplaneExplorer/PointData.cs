@@ -12,8 +12,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 {
 	internal struct PointData
 	{
-		public int x;
-		public int y;
+		public TilePoint point;
 		public PointResult result;
 		public int visplanes;
 		public int drawsegs;

@@ -64,7 +64,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Tile.cs" />
-    <Compile Include="TileData.cs" />
+    <Compile Include="TilePoint.cs" />
     <Compile Include="ViewStats.cs" />
     <Compile Include="VisplaneExplorerMode.cs" />
     <Compile Include="VPOManager.cs" />

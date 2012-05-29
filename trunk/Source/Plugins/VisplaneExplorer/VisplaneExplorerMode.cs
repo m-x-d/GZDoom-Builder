@@ -16,6 +16,7 @@ using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -192,8 +193,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 						float uy = y * hinv * Tile.TILE_SIZE;
 
 						// Get the data and apply the color
-						TileData td = t.Value.GetNearestPoint((int)ux, Tile.TILE_SIZE - 1 - (int)uy);
-						p[screeny * bd.Width + screenx] = pal.Colors[td.stats[viewstats]];
+						byte value = t.Value.GetPointByte((int)ux, Tile.TILE_SIZE - 1 - (int)uy, viewstats);
+						p[screeny * bd.Width + screenx] = pal.Colors[value];
 					}
 				}
 			}
@@ -210,11 +211,20 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			Vector2D maprighttop = Renderer.DisplayToMap(new Vector2D(General.Interface.Display.ClientSize.Width, General.Interface.Display.ClientSize.Height));
 			Rectangle mapviewrect = new Rectangle((int)mapleftbot.x - Tile.TILE_SIZE, (int)maprighttop.y - Tile.TILE_SIZE, (int)maprighttop.x - (int)mapleftbot.x + Tile.TILE_SIZE, (int)mapleftbot.y - (int)maprighttop.y + Tile.TILE_SIZE);
 			
-			while(pointsleft < (VPOManager.POINTS_PER_ITERATION * BuilderPlug.VPO.NumThreads * 10))
+			while(pointsleft < (VPOManager.POINTS_PER_ITERATION * BuilderPlug.VPO.NumThreads * 5))
 			{
-				List<Point> newpoints = new List<Point>(tiles.Count);
+				// Collect points from the tiles in the current view
+				List<TilePoint> newpoints = new List<TilePoint>(tiles.Count);
 				foreach(KeyValuePair<Point, Tile> t in tiles)
 					if((!t.Value.IsComplete) && (mapviewrect.Contains(t.Key))) newpoints.Add(t.Value.GetNextPoint());
+				
+				// If the current view is complete, try getting points from all tiles
+				if(newpoints.Count == 0)
+				{
+					foreach(KeyValuePair<Point, Tile> t in tiles)
+						if(!t.Value.IsComplete) newpoints.Add(t.Value.GetNextPoint());
+				}
+				
 				if(newpoints.Count == 0) break;
 				pointsleft = BuilderPlug.VPO.EnqueuePoints(newpoints);
 			}
@@ -254,6 +264,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		{
 			Cursor.Current = Cursors.WaitCursor;
 			base.OnEngage();
+			General.Interface.DisplayStatus(StatusType.Busy, "Setting up test environment...");
 			
 			CleanUp();
 
@@ -311,7 +322,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 			// Make custom presentation
 			CustomPresentation p = new CustomPresentation();
-			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Mask, 1f, true));
+			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Mask, 1f, false));
 			p.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
 			renderer.SetPresentation(p);
@@ -324,6 +335,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			RedrawAllTiles();
 			Cursor.Current = Cursors.Default;
 			General.Interface.SetCursor(Cursors.Cross);
+			General.Interface.DisplayReady();
 		}
 
 		// Mode ends
@@ -389,7 +401,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				foreach(PointData pd in points)
 				{
 					Tile t;
-					Point tp = TileForPoint(pd.x, pd.y);
+					Point tp = TileForPoint(pd.point.x, pd.point.y);
 					if(tiles.TryGetValue(tp, out t))
 						t.StorePointData(pd);
 				}
@@ -434,7 +446,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		}
 
 		// Mouse moves
-		public override unsafe void OnMouseMove(MouseEventArgs e)
+		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
 
@@ -447,13 +459,16 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				Tile t;
 				if(tiles.TryGetValue(tp, out t))
 				{
-					TileData td = t.GetNearestPoint((int)Math.Floor(mousemappos.x) - t.Position.X, (int)Math.Floor(mousemappos.y) - t.Position.Y);
-					if(td != TileData.VoidTile)
+					int x = (int)Math.Floor(mousemappos.x) - t.Position.X;
+					int y = (int)Math.Floor(mousemappos.y) - t.Position.Y;
+					byte b = t.GetPointByte(x, y, viewstats);
+					if(b != Tile.POINT_VOID_B)
 					{
 						// Setup hoverlabel
+						int value = t.GetPointValue(x, y, viewstats);
 						Point p = new Point((int)mousepos.x + 5, (int)mousepos.y + 5);
-						int value = (int)td.stats[viewstats] * Tile.STATS_COMPRESSOR[viewstats];
-						BuilderPlug.InterfaceForm.ShowTooltip(value + " / " + Tile.STATS_LIMITS[viewstats], p);
+						string appendoverflow = (b == Tile.POINT_OVERFLOW_B) ? "+" : "";
+						BuilderPlug.InterfaceForm.ShowTooltip(value + appendoverflow + " / " + Tile.STATS_LIMITS[viewstats], p);
 					}
 					else
 					{

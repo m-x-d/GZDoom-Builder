@@ -20,7 +20,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		{
 			List<Linedef> singlesided = new List<Linedef>(General.Map.Map.Linedefs.Count);
 			foreach(Linedef ld in General.Map.Map.Linedefs)
-				if(ld.Back != null) singlesided.Add(ld);
+				if(ld.Back == null) singlesided.Add(ld);
 			AddLinedefsSet(singlesided);
 
 			// Blocks that do not have any linedefs in them must get the nearest line in them!

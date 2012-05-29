@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			// Override special palette indices with user-defined colors
 			for(int i = 0; i < palettes.Length; i++)
 			{
-				palettes[i].SetColor(Tile.STAT_VOID, General.Colors.Background.WithAlpha(0).ToInt());
+				palettes[i].SetColor(Tile.POINT_VOID_B, General.Colors.Background.WithAlpha(0).ToInt());
 			}
 		}
 

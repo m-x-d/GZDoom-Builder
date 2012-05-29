@@ -17,16 +17,18 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 	{
 		// Constants
 		public const int TILE_SIZE = 64;
-		public const int STAT_VOID = 254;
-		public const int STAT_OVERFLOW = 255;
 		public static readonly int[] STATS_COMPRESSOR = new int[] { 1, 2, 1, 160 };
 		public static readonly int[] STATS_LIMITS = new int[] { 128, 256, 32, 320 * 64 };
+		public const uint POINT_MAXRANGE = 254;
+		public const uint POINT_OVERFLOW = 0xFEFEFEFE;
+		public const uint POINT_VOID = 0xFFFFFFFF;
+		public const byte POINT_OVERFLOW_B = 0xFE;
+		public const byte POINT_VOID_B = 0xFF;
 		
 		// Members
 		private Point position;
-		private TileData[][] points;
+		private uint[][] points;
 		private int nextindex;
-		private int pointsreceived;
 		
 		// Properties
 		public Point Position { get { return position; } }
@@ -35,94 +37,112 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// Constructor
 		public Tile(Point lefttoppos)
 		{
+			// Make the jagged array
+			// I use a jagged array because, allegedly, it performs better than a multidimensional array.
+			points = new uint[TILE_SIZE][];
+			for(int y = 0; y < TILE_SIZE; y++)
+				points[y] = new uint[TILE_SIZE];
+			
 			position = lefttoppos;
 		}
 
 		// This receives a processed point
-		public unsafe void StorePointData(PointData pd)
+		public void StorePointData(PointData pd)
 		{
-			pointsreceived++;
-			
-			if(points == null)
-			{
-				// Don't allocate memory for void tiles
-				if(pd.result == PointResult.Void) return;
-				
-				// Make the jagged array
-				// I use a jagged array because, allegedly, it performs better than a multidimensional array.
-				points = new TileData[TILE_SIZE][];
-				for(int y = 0; y < TILE_SIZE; y++)
-					points[y] = new TileData[TILE_SIZE];
-				
-				// Fill previously received points with void
-				for(int i = 0; i < pointsreceived - 1; i++)
-				{
-					Point p = PointByIndex(i);
-					points[p.Y][p.X] = TileData.VoidTile;
-				}
-
-				// We have to get all points for this tile again,
-				// this causes a bit of overhead, but not really noticable.
-				nextindex = 0;
-			}
-			
-			TileData t;
+			uint t;
 			switch(pd.result)
 			{
 				case PointResult.OK:
-					t.stats[(int)ViewStats.Visplanes] = (byte)Math.Min((pd.visplanes + (STATS_COMPRESSOR[(int)ViewStats.Visplanes] - 1)) / STATS_COMPRESSOR[(int)ViewStats.Visplanes], 255);
-					t.stats[(int)ViewStats.Drawsegs] = (byte)Math.Min((pd.drawsegs + (STATS_COMPRESSOR[(int)ViewStats.Drawsegs] - 1)) / STATS_COMPRESSOR[(int)ViewStats.Drawsegs], 255);
-					t.stats[(int)ViewStats.Solidsegs] = (byte)Math.Min((pd.solidsegs + (STATS_COMPRESSOR[(int)ViewStats.Solidsegs] - 1)) / STATS_COMPRESSOR[(int)ViewStats.Solidsegs], 255);
-					t.stats[(int)ViewStats.Openings] = (byte)Math.Min((pd.openings + (STATS_COMPRESSOR[(int)ViewStats.Openings] - 1)) / STATS_COMPRESSOR[(int)ViewStats.Openings], 255);
+					uint vp = (uint)Math.Min((pd.visplanes + (STATS_COMPRESSOR[(int)ViewStats.Visplanes] - 1)) / STATS_COMPRESSOR[(int)ViewStats.Visplanes], POINT_MAXRANGE);
+					uint ds = (uint)Math.Min((pd.drawsegs + (STATS_COMPRESSOR[(int)ViewStats.Drawsegs] - 1)) / STATS_COMPRESSOR[(int)ViewStats.Drawsegs], POINT_MAXRANGE);
+					uint ss = (uint)Math.Min((pd.solidsegs + (STATS_COMPRESSOR[(int)ViewStats.Solidsegs] - 1)) / STATS_COMPRESSOR[(int)ViewStats.Solidsegs], POINT_MAXRANGE);
+					uint op = (uint)Math.Min((pd.openings + (STATS_COMPRESSOR[(int)ViewStats.Openings] - 1)) / STATS_COMPRESSOR[(int)ViewStats.Openings], POINT_MAXRANGE);
+					t = MakePointValue(vp, ds, ss, op);
 					break;
 
 				case PointResult.BadZ:
-					t.stats[(int)ViewStats.Visplanes] = 1;
-					t.stats[(int)ViewStats.Drawsegs] = 0;
-					t.stats[(int)ViewStats.Solidsegs] = 0;
-					t.stats[(int)ViewStats.Openings] = 0;
+					t = MakePointValue(1, 0, 0, 0);
 					break;
 					
 				case PointResult.Void:
-					t.stats[(int)ViewStats.Visplanes] = STAT_VOID;
-					t.stats[(int)ViewStats.Drawsegs] = STAT_VOID;
-					t.stats[(int)ViewStats.Solidsegs] = STAT_VOID;
-					t.stats[(int)ViewStats.Openings] = STAT_VOID;
+					t = POINT_VOID;
 					break;
 
 				case PointResult.Overflow:
-					t.stats[(int)ViewStats.Visplanes] = STAT_OVERFLOW;
-					t.stats[(int)ViewStats.Drawsegs] = STAT_OVERFLOW;
-					t.stats[(int)ViewStats.Solidsegs] = STAT_OVERFLOW;
-					t.stats[(int)ViewStats.Openings] = STAT_OVERFLOW;
-					break;
-
 				default:
-					throw new NotImplementedException();
+					t = POINT_OVERFLOW;
+					break;
 			}
 
-			points[pd.y - position.Y][pd.x - position.X] = t;
+			FillPoints(ref pd.point, t);
+		}
+
+		// This fills points with the given tile data over the specified granularity
+		private void FillPoints(ref TilePoint p, uint t)
+		{
+			int xs = p.x - position.X;
+			int ys = p.y - position.Y;
+			int xe = xs + p.granularity;
+			int ye = ys + p.granularity;
+			for(int x = xs; x < xe; x++)
+				for(int y = ys; y < ye; y++)
+					points[y][x] = t;
+		}
+
+		// This composes point values
+		private uint MakePointValue(uint vp, uint ds, uint ss, uint op)
+		{
+			unchecked
+			{
+				return vp + (ds << 8) + (ss << 16) + (op << 24);
+			}
+		}
+
+		// This returns a point value
+		public byte GetPointByte(int x, int y, int stat)
+		{
+			unchecked
+			{
+				uint v = points[y][x];
+				return (byte)((v >> (stat * 8)) & 0xFF);
+			}
+		}
+		
+		// This returns a point value
+		public int GetPointValue(int x, int y, int stat)
+		{
+			byte b = GetPointByte(x, y, stat);
+			return (int)b * STATS_COMPRESSOR[stat];
 		}
 
 		// This returns the next point to process
-		public Point GetNextPoint()
+		public TilePoint GetNextPoint()
 		{
-			Point p = PointByIndex(nextindex++);
-			p.X += position.X;
-			p.Y += position.Y;
+			TilePoint p = PointByIndex(nextindex++);
+			p.x += position.X;
+			p.y += position.Y;
 			return p;
 		}
 
 		// Returns a position by index
-		public Point PointByIndex(int index)
+		public TilePoint PointByIndex(int index)
 		{
 			#if DEBUG
 			if(index > (TILE_SIZE * TILE_SIZE))
 				throw new IndexOutOfRangeException();
 			#endif
 
-			Point p = new Point();
-
+			TilePoint p;
+			
+			// Would be nicer if this could be done without branching or looping...
+			if(index == 0) p.granularity = 64;
+			else if(index < 4) p.granularity = 32;
+			else if(index < 16) p.granularity = 16;
+			else if(index < 64) p.granularity = 8;
+			else if(index < 256) p.granularity = 4;
+			else if(index < 1024) p.granularity = 2;
+			else p.granularity = 1;
+			
 			// this is a "butterfly" style sequence, which begins like:
 			//    ( 0  0)  (32 32)  ( 0 32)  (32  0)
 			//    (16 16)  (48 48)  (16 48)  (48 16)
@@ -131,80 +151,30 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			//    ( 8  8)  (40 40)  ( 8 40)  (40  8)
 			//    etc....
 
-			p.X = (index & 1) << 5;
-			p.Y = (((index >> 1) ^ index) & 1) << 5;
+			p.x = (index & 1) << 5;
+			p.y = (((index >> 1) ^ index) & 1) << 5;
 
 			index >>= 2;
-			p.X += (index & 1) << 4;
-			p.Y += (((index >> 1) ^ index) & 1) << 4;
+			p.x += (index & 1) << 4;
+			p.y += (((index >> 1) ^ index) & 1) << 4;
 
 			index >>= 2;
-			p.X |= (index & 1) << 3;
-			p.Y |= (((index >> 1) ^ index) & 1) << 3;
+			p.x |= (index & 1) << 3;
+			p.y |= (((index >> 1) ^ index) & 1) << 3;
 
 			index >>= 2;
-			p.X |= (index & 1) << 2;
-			p.Y |= (((index >> 1) ^ index) & 1) << 2;
+			p.x |= (index & 1) << 2;
+			p.y |= (((index >> 1) ^ index) & 1) << 2;
 
 			index >>= 2;
-			p.X |= (index & 1) << 1;
-			p.Y |= (((index >> 1) ^ index) & 1) << 1;
+			p.x |= (index & 1) << 1;
+			p.y |= (((index >> 1) ^ index) & 1) << 1;
 
 			index >>= 2;
-			p.X |= index & 1;
-			p.Y |= ((index >> 1) ^ index) & 1;
+			p.x |= index & 1;
+			p.y |= ((index >> 1) ^ index) & 1;
 
 			return p;
-		}
-
-		// Return the tile data nearest to x/y
-		// This method is actually slowing down the rendering quite a lot
-		// (about 75% of the time the display is drawn is in this function!!!)
-		// We should really think about a faster algorithm for this!
-		public unsafe TileData GetNearestPoint(int x, int y)
-		{
-			#if DEBUG
-			if((x < 0) || (x > TILE_SIZE - 1) || (y < 0) || (y > TILE_SIZE - 1))
-				throw new IndexOutOfRangeException();
-			#endif
-
-			if(points == null) return TileData.VoidTile;
-			
-			while(true)
-			{
-				TileData p = points[y][x];
-				if(p.stats[(int)ViewStats.Visplanes] > 0) return p;
-
-				// Move coordinate a step closer to (0,0)
-				// NOTE: if the 64x64 size is changes, this will need more/less stages
-
-				int xy = x | y;
-
-				if((xy & 1) != 0)
-				{
-					x &= ~1; y &= ~1;
-				}
-				else if((xy & 2) != 0)
-				{
-					x &= ~2; y &= ~2;
-				}
-				else if((xy & 4) != 0)
-				{
-					x &= ~4; y &= ~4;
-				}
-				else if((xy & 8) != 0)
-				{
-					x &= ~8; y &= ~8;
-				}
-				else if((xy & 16) != 0)
-				{
-					x &= ~16; y &= ~16;
-				}
-				else
-				{
-					return points[0][0];
-				}
-			}
 		}
 	}
 }

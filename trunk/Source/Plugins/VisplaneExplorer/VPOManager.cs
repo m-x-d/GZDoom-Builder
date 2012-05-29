@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		private string mapname;
 
 		// Input and output queue (both require a lock on 'points' !)
-		private Queue<Point> points = new Queue<Point>(EXPECTED_RESULTS_BUFFER);
+		private Queue<TilePoint> points = new Queue<TilePoint>(EXPECTED_RESULTS_BUFFER);
 		private Queue<PointData> results = new Queue<PointData>(EXPECTED_RESULTS_BUFFER);
 		
 		#endregion
@@ -159,7 +159,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				if(OpenMap(mapname) != 0) throw new Exception("VPO is unable to open this map.");
 
 				// Processing
-				Queue<Point> todo = new Queue<Point>(POINTS_PER_ITERATION);
+				Queue<TilePoint> todo = new Queue<TilePoint>(POINTS_PER_ITERATION);
 				Queue<PointData> done = new Queue<PointData>(POINTS_PER_ITERATION);
 				while(true)
 				{
@@ -183,14 +183,13 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 					// Process the points
 					while(todo.Count > 0)
 					{
-						Point p = todo.Dequeue();
+						TilePoint p = todo.Dequeue();
 						PointData pd = new PointData();
-						pd.x = p.X;
-						pd.y = p.Y;
+						pd.point = p;
 
 						for(int i = 0; i < TEST_ANGLES.Length; i++)
 						{
-							pd.result = (PointResult)TestSpot(p.X, p.Y, TEST_HEIGHT, TEST_ANGLES[i],
+							pd.result = (PointResult)TestSpot(p.x, p.y, TEST_HEIGHT, TEST_ANGLES[i],
 								ref pd.visplanes, ref pd.drawsegs, ref pd.openings, ref pd.solidsegs);
 						}
 
@@ -260,11 +259,11 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		}
 
 		// This gives points to process and returns the total points left in the buffer
-		public int EnqueuePoints(IEnumerable<Point> newpoints)
+		public int EnqueuePoints(IEnumerable<TilePoint> newpoints)
 		{
 			lock(points)
 			{
-				foreach(Point p in newpoints)
+				foreach(TilePoint p in newpoints)
 					points.Enqueue(p);
 				return points.Count;
 			}
