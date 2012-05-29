@@ -1,4 +1,4 @@
-
+﻿
 #region ================== Copyright (c) 2007 Pascal vd Heiden
 
 /*
@@ -38,40 +38,40 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public class ResultStuckedThing : ErrorResult
+	public class ResultStuckThingInThing : ErrorResult
 	{
 		#region ================== Variables
 
 		private Thing thing;
-		
+
 		#endregion
-		
+
 		#region ================== Properties
 
 		public override int Buttons { get { return 1; } }
 		public override string Button1Text { get { return "Delete Thing"; } }
 
 		#endregion
-		
+
 		#region ================== Constructor / Destructor
-		
+
 		// Constructor
-		public ResultStuckedThing(Thing t)
+		public ResultStuckThingInThing(Thing t)
 		{
 			// Initialize
 			this.thing = t;
 			this.viewobjects.Add(t);
-			this.description = "This thing is stucked in a wall (single-sided line) and will likely not be able to move around.";
+			this.description = "This thing is stuck in another thing. Both will likely not be able to move around.";
 		}
-		
+
 		#endregion
-		
+
 		#region ================== Methods
-		
+
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			return General.Map.Data.GetThingInfo(thing.Type).Title + " is stucked in a wall at " + thing.Position.x + ", " + thing.Position.y;
+			return General.Map.Data.GetThingInfo(thing.Type).Title + " is stuck in another thing at " + thing.Position.x + ", " + thing.Position.y;
 		}
 
 		// Rendering
@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.ThingsFilter.Update();
 			return true;
 		}
-		
+
 		#endregion
 	}
 }

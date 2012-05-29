@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Config
 		public const int THING_BLOCKING_HEIGHT = 2;
 		public const int THING_ERROR_NONE = 0;
 		public const int THING_ERROR_INSIDE = 1;
-		public const int THING_ERROR_INSIDE_STUCKED = 2;
+		public const int THING_ERROR_INSIDE_STUCK = 2;
 		
 		#endregion
 
