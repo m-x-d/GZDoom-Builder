@@ -134,6 +134,11 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		{
 			if(canvas == null) return;
 
+			// Determine viewport rectangle in map space
+			Vector2D mapleftbot = Renderer.DisplayToMap(new Vector2D(0f, 0f));
+			Vector2D maprighttop = Renderer.DisplayToMap(new Vector2D(General.Interface.Display.ClientSize.Width, General.Interface.Display.ClientSize.Height));
+			Rectangle mapviewrect = new Rectangle((int)mapleftbot.x - Tile.TILE_SIZE, (int)maprighttop.y - Tile.TILE_SIZE, (int)maprighttop.x - (int)mapleftbot.x + Tile.TILE_SIZE, (int)mapleftbot.y - (int)maprighttop.y + Tile.TILE_SIZE);
+
 			int viewstats = (int)BuilderPlug.InterfaceForm.ViewStats;
 			Palette pal = BuilderPlug.Palettes[viewstats];
 			
@@ -142,11 +147,13 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			RtlZeroMemory(bd.Scan0, bd.Width * bd.Height * 4);
 			int* p = (int*)bd.Scan0.ToPointer();
 
-			foreach(Tile t in tiles.Values)
+			foreach(KeyValuePair<Point, Tile> t in tiles)
 			{
+				if(!mapviewrect.Contains(t.Key)) continue;
+				
 				// Map this tile to screen space
-				Vector2D lb = Renderer.MapToDisplay(new Vector2D(t.Position.X, t.Position.Y));
-				Vector2D rt = Renderer.MapToDisplay(new Vector2D(t.Position.X + Tile.TILE_SIZE, t.Position.Y + Tile.TILE_SIZE));
+				Vector2D lb = Renderer.MapToDisplay(new Vector2D(t.Value.Position.X, t.Value.Position.Y));
+				Vector2D rt = Renderer.MapToDisplay(new Vector2D(t.Value.Position.X + Tile.TILE_SIZE, t.Value.Position.Y + Tile.TILE_SIZE));
 
 				// Make sure the coordinates are aligned with canvas pixels
 				float x1 = (float)Math.Round(lb.x);
@@ -185,7 +192,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 						float uy = y * hinv * Tile.TILE_SIZE;
 
 						// Get the data and apply the color
-						TileData td = t.GetNearestPoint((int)ux, Tile.TILE_SIZE - 1 - (int)uy);
+						TileData td = t.Value.GetNearestPoint((int)ux, Tile.TILE_SIZE - 1 - (int)uy);
 						p[screeny * bd.Width + screenx] = pal.Colors[td.stats[viewstats]];
 					}
 				}
@@ -198,11 +205,16 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// This queues points for all current tiles
 		private void QueuePoints(int pointsleft)
 		{
+			// Determine viewport rectangle in map space
+			Vector2D mapleftbot = Renderer.DisplayToMap(new Vector2D(0f, 0f));
+			Vector2D maprighttop = Renderer.DisplayToMap(new Vector2D(General.Interface.Display.ClientSize.Width, General.Interface.Display.ClientSize.Height));
+			Rectangle mapviewrect = new Rectangle((int)mapleftbot.x - Tile.TILE_SIZE, (int)maprighttop.y - Tile.TILE_SIZE, (int)maprighttop.x - (int)mapleftbot.x + Tile.TILE_SIZE, (int)mapleftbot.y - (int)maprighttop.y + Tile.TILE_SIZE);
+			
 			while(pointsleft < (VPOManager.POINTS_PER_ITERATION * BuilderPlug.VPO.NumThreads * 10))
 			{
 				List<Point> newpoints = new List<Point>(tiles.Count);
-				foreach(Tile t in tiles.Values)
-					if(!t.IsComplete) newpoints.Add(t.GetNextPoint());
+				foreach(KeyValuePair<Point, Tile> t in tiles)
+					if((!t.Value.IsComplete) && (mapviewrect.Contains(t.Key))) newpoints.Add(t.Value.GetNextPoint());
 				if(newpoints.Count == 0) break;
 				pointsleft = BuilderPlug.VPO.EnqueuePoints(newpoints);
 			}
@@ -258,8 +270,31 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			// Determine map boundary
 			mapbounds = Rectangle.Round(MapSet.CreateArea(General.Map.Map.Vertices));
 
-			// Create tiles for current view and queue points to process
-			OnViewChanged();
+			// Create tiles for all points inside the map
+			Point lt = TileForPoint(mapbounds.Left - Tile.TILE_SIZE, mapbounds.Top - Tile.TILE_SIZE);
+			Point rb = TileForPoint(mapbounds.Right + Tile.TILE_SIZE, mapbounds.Bottom + Tile.TILE_SIZE);
+			Rectangle tilesrect = new Rectangle(lt.X, lt.Y, rb.X - lt.X, rb.Y - lt.Y);
+			NearestLineBlockmap blockmap = new NearestLineBlockmap(tilesrect);
+			for(int x = tilesrect.X; x <= tilesrect.Right; x += Tile.TILE_SIZE)
+			{
+				for(int y = tilesrect.Y; y <= tilesrect.Bottom; y += Tile.TILE_SIZE)
+				{
+					// If the tile is obviously outside the map, don't create it
+					Vector2D pc = new Vector2D(x + (Tile.TILE_SIZE >> 1), y + (Tile.TILE_SIZE >> 1));
+					Linedef ld = MapSet.NearestLinedef(blockmap.GetBlockAt(pc).Lines, pc);
+					float distancesq = ld.DistanceToSq(pc, true);
+					if(distancesq > (Tile.TILE_SIZE * Tile.TILE_SIZE))
+					{
+						float side = ld.SideOfLine(pc);
+						if((side > 0.0f) && (ld.Back == null)) continue;
+					}
+
+					Point tp = new Point(x, y);
+					tiles.Add(tp, new Tile(tp));
+				}
+			}
+
+			QueuePoints(0);
 
 			// Make an image to draw on.
 			// The BitmapImage for Doom Builder's resources must be Format32bppArgb and NOT using color correction,
@@ -313,36 +348,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		{
 			base.OnViewChanged();
 
-			// Determine viewport rectangle in map space
-			Vector2D mapleftbot = Renderer.DisplayToMap(new Vector2D(0f, 0f));
-			Vector2D maprighttop = Renderer.DisplayToMap(new Vector2D(General.Interface.Display.ClientSize.Width, General.Interface.Display.ClientSize.Height));
-			Rectangle mapviewrect = new Rectangle((int)mapleftbot.x, (int)maprighttop.y, (int)maprighttop.x - (int)mapleftbot.x, (int)mapleftbot.y - (int)maprighttop.y);
-			
-			// Forget tiles that are outside viewport rectangle
-			List<Point> tilepoints = new List<Point>(tiles.Keys);
-			foreach(Point p in tilepoints)
-			{
-				Rectangle prect = new Rectangle(p, new Size(Tile.TILE_SIZE, Tile.TILE_SIZE));
-				if(!mapviewrect.IntersectsWith(prect)) tiles.Remove(p);
-			}
-
-			// Create tiles for all points inside the viewport rectangle
-			mapviewrect.Intersect(mapbounds);
-			Point lt = TileForPoint(mapviewrect.Left - Tile.TILE_SIZE, mapviewrect.Top - Tile.TILE_SIZE);
-			Point rb = TileForPoint(mapviewrect.Right + Tile.TILE_SIZE, mapviewrect.Bottom + Tile.TILE_SIZE);
-			Rectangle tilesrect = new Rectangle(lt.X, lt.Y, rb.X - lt.X, rb.Y - lt.Y);
-			for(int x = tilesrect.X; x <= tilesrect.Right; x += Tile.TILE_SIZE)
-			{
-				for(int y = tilesrect.Y; y <= tilesrect.Bottom; y += Tile.TILE_SIZE)
-				{
-					Point p = new Point(x, y);
-					if(!tiles.ContainsKey(p)) tiles.Add(p, new Tile(p));
-				}
-			}
-
 			RedrawAllTiles();
-			QueuePoints(BuilderPlug.VPO.GetRemainingPoints());
-
+			
 			// Update the screen sooner
 			nextupdate = DateTime.Now + new TimeSpan(0, 0, 0, 0, 100);
 		}

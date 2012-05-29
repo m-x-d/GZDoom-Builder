@@ -245,6 +245,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 					}
 					threads = null;
 					points.Clear();
+					results.Clear();
 				}
 			}
 		}

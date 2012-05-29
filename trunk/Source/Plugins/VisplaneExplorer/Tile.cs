@@ -163,12 +163,12 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// We should really think about a faster algorithm for this!
 		public unsafe TileData GetNearestPoint(int x, int y)
 		{
-			if(points == null) return TileData.VoidTile;
-			
 			#if DEBUG
 			if((x < 0) || (x > TILE_SIZE - 1) || (y < 0) || (y > TILE_SIZE - 1))
 				throw new IndexOutOfRangeException();
 			#endif
+
+			if(points == null) return TileData.VoidTile;
 			
 			while(true)
 			{
