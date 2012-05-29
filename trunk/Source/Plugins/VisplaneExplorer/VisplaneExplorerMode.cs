@@ -120,6 +120,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			}
 
 			tiles.Clear();
+			BuilderPlug.InterfaceForm.HideTooltip();
 			BuilderPlug.InterfaceForm.RemoveFromInterface();
 		}
 
