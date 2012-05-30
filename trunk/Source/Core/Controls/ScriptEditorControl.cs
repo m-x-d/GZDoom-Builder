@@ -364,7 +364,10 @@ namespace CodeImp.DoomBuilder.Controls
 					autocompletelist.Add(k.ToUpperInvariant(), k + "?" + imageindex.ToString(CultureInfo.InvariantCulture));
 				}
 				string words = keywordslist.ToString();
-				scriptedit.KeyWords(keywordsindex, words.ToLowerInvariant());
+				if(scriptconfig.CaseSensitive)
+					scriptedit.KeyWords(keywordsindex, words);
+				else
+					scriptedit.KeyWords(keywordsindex, words.ToLowerInvariant());
 			}
 
 			// Create the constants list and apply it
@@ -380,7 +383,10 @@ namespace CodeImp.DoomBuilder.Controls
 					autocompletelist.Add(c.ToUpperInvariant(), c + "?" + imageindex.ToString(CultureInfo.InvariantCulture));
 				}
 				string words = constantslist.ToString();
-				scriptedit.KeyWords(constantsindex, words.ToLowerInvariant());
+				if(scriptconfig.CaseSensitive)
+					scriptedit.KeyWords(constantsindex, words);
+				else
+					scriptedit.KeyWords(constantsindex, words.ToLowerInvariant());
 			}
 			
 			// Sort the autocomplete list
