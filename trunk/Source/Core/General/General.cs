@@ -51,6 +51,9 @@ namespace CodeImp.DoomBuilder
 	{
 		#region ================== API Declarations
 
+		[DllImport("devil.dll")]
+		private static extern void ilInit();
+
 		[DllImport("user32.dll")]
 		internal static extern bool LockWindowUpdate(IntPtr hwnd);
 
@@ -603,6 +606,7 @@ namespace CodeImp.DoomBuilder
 
 				// Initialize static classes
 				MapSet.Initialize();
+				ilInit();
 
 				// Create main window
 				General.WriteLogLine("Loading main interface window...");
