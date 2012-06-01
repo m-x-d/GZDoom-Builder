@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		internal static VPOManager VPO { get { return me.vpo; } }
 		internal static InterfaceForm InterfaceForm { get { return me.interfaceform; } }
 		internal static Palette[] Palettes { get { return me.palettes; } }
+		public override int MinimumRevision { get { return 1545; } }
 		
 		#endregion
 
