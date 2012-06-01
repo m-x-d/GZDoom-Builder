@@ -76,11 +76,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			BlockMap<BlockEntry> blockmap = BuilderPlug.Me.ErrorCheckForm.BlockMap;
 			int progress = 0;
 			int stepprogress = 0;
+			float maxradius = 0;
 
-			// List of things that have been checked for being stuck in other things,
-			// so that they don't show up twice
-			List<Thing> checkedthings = new List<Thing>();
-			
+			foreach (ThingTypeInfo tti in General.Map.Data.ThingTypes)
+			{
+				if (tti.Radius > maxradius) maxradius = tti.Radius;
+			}
+
 			// Go for all the things
 			foreach(Thing t in General.Map.Map.Things)
 			{
@@ -94,11 +96,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Make square coordinates from thing
 					float blockingsize = t.Size - ALLOWED_STUCK_DISTANCE;
-					Vector2D lt = new Vector2D(t.Position.x - blockingsize, t.Position.y + blockingsize);
-					Vector2D rb = new Vector2D(t.Position.x + blockingsize, t.Position.y - blockingsize);
+					Vector2D lt = new Vector2D(t.Position.x - blockingsize, t.Position.y - blockingsize);
+					Vector2D rb = new Vector2D(t.Position.x + blockingsize, t.Position.y + blockingsize);
+					Vector2D bmlt = new Vector2D(t.Position.x - maxradius, t.Position.y - maxradius);
+					Vector2D bmrb = new Vector2D(t.Position.x + maxradius, t.Position.y + maxradius);
 
 					// Go for all the lines to see if this thing is stuck
-					List<BlockEntry> blocks = blockmap.GetSquareRange(new RectangleF(lt.x, lt.y, (rb.x - lt.x), (lt.y - rb.y)));
+					List<BlockEntry> blocks = blockmap.GetSquareRange(new RectangleF(bmlt.x, bmlt.y, (bmrb.x - bmlt.x), (bmrb.y - bmlt.y)));
 					Dictionary<Linedef, Linedef> doneblocklines = new Dictionary<Linedef, Linedef>(blocks.Count * 3);
 
 					foreach(BlockEntry b in blocks)
@@ -132,29 +136,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 
 						// Check if thing is stuck in other things
-						foreach (Thing ot in b.Things)
-						{
-							// Don't compare the thing with itself
-							if (t.Index == ot.Index) continue;
-
-							// Don't check things that have already been found to be stuck in
-							// other things
-							if (checkedthings.Contains(t)) continue;
-
-							// need to compare the flags
-							Dictionary<string, bool> flags1 = t.GetFlags();
-							Dictionary<string, bool> flags2 = ot.GetFlags();
-
-							// Make square coordinates from the other thing
-							float bsot = ot.Size /* - ALLOWED_STUCK_DISTANCE */;
-							Vector2D ltot = new Vector2D(ot.Position.x - bsot, ot.Position.y + bsot);
-							Vector2D rbot = new Vector2D(ot.Position.x + bsot, ot.Position.y - bsot);
-
-							if (ThingsOverlap(t, ot))
+						if(info.Blocking != ThingTypeInfo.THING_BLOCKING_NONE) {
+							foreach (Thing ot in b.Things)
 							{
-								stuck = true;
-								stucktype = StuckType.Thing;
-								checkedthings.Add(ot);
+								// Don't compare the thing with itself
+								if (t.Index == ot.Index) continue;
+
+								// Only check of items that can block
+								if (General.Map.Data.GetThingInfo(ot.Type).Blocking == ThingTypeInfo.THING_BLOCKING_NONE) continue;
+
+								// need to compare the flags
+								/* TODO: skill settings
+								Dictionary<string, bool> flags1 = t.GetFlags();
+								Dictionary<string, bool> flags2 = ot.GetFlags();
+								*/
+
+								if (ThingsOverlap(t, ot))
+								{
+									stuck = true;
+									stucktype = StuckType.Thing;
+								}
 							}
 						}
 					}
@@ -217,7 +218,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Point in rect?
 		private bool PointInRect(Vector2D lt, Vector2D rb, Vector2D p)
 		{
-			return (p.x >= lt.x) && (p.x <= rb.x) && (p.y >= lt.y) && (p.y <= rb.y);
+			return (p.x >= lt.x) && (p.x <= rb.x) && (p.y <= lt.y) && (p.y >= rb.y);
 		}
 
 		// Checks if two things overlap
@@ -225,12 +226,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			Vector3D p1 = t1.Position;
 			Vector3D p2 = t2.Position;
-
+	
 			// simple bounding box collision detection
-			if (	p1.x + t1.Size < p2.x - t2.Size ||
-					p1.x - t1.Size > p2.x + t2.Size	||
-					p1.y - t1.Size > p2.y + t2.Size ||
-					p1.y + t1.Size < p2.y - t2.Size)
+			if (	p1.x + t1.Size - ALLOWED_STUCK_DISTANCE < p2.x - t2.Size + ALLOWED_STUCK_DISTANCE ||
+					p1.x - t1.Size + ALLOWED_STUCK_DISTANCE > p2.x + t2.Size - ALLOWED_STUCK_DISTANCE ||
+					p1.y - t1.Size + ALLOWED_STUCK_DISTANCE > p2.y + t2.Size - ALLOWED_STUCK_DISTANCE ||
+					p1.y + t1.Size - ALLOWED_STUCK_DISTANCE < p2.y - t2.Size + ALLOWED_STUCK_DISTANCE)
 				return false;
 
 			return true;
