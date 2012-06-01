@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					Vector2D rb = new Vector2D(t.Position.x + blockingsize, t.Position.y - blockingsize);
 
 					// Go for all the lines to see if this thing is stuck
-					List<BlockEntry> blocks = blockmap.GetSquareRange(new RectangleF(lt.x, lt.y, (rb.x - lt.x), (rb.y + lt.y)));
+					List<BlockEntry> blocks = blockmap.GetSquareRange(new RectangleF(lt.x, lt.y, (rb.x - lt.x), (lt.y - rb.y)));
 					Dictionary<Linedef, Linedef> doneblocklines = new Dictionary<Linedef, Linedef>(blocks.Count * 3);
 
 					foreach(BlockEntry b in blocks)
