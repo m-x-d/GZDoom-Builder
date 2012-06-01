@@ -40,10 +40,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         string className = StripTokenQuotes(ReadToken()).ToLowerInvariant();
 
                         if (!string.IsNullOrEmpty(className)) {
-                            if (classNames.IndexOf(className) != -1) {
+                            if (classNames.IndexOf(className) != -1)
                                 continue; //already got this class; continue to next one
-                            }
-                            classNames.Add(className);
 
                             //now find opening brace
                             SkipWhitespace(true);

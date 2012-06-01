@@ -203,17 +203,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-            //mxd. check model state
-            if (General.Map.Data.ModeldefEntries.ContainsKey(Thing.Type)) {
-                ModeldefEntry mde = General.Map.Data.ModeldefEntries[Thing.Type];
-                if (mde.Model == null) {
-                    Thing.IsModel = General.Map.Data.LoadModelForThing(Thing);
-                } else {
-                    Thing.IsModel = true;
-                }
-            } else {
-                Thing.IsModel = false;
-            }
+            checkModelState(); //mxd. check model state
+            checkLightState(); //mxd. check gldefs light state
 			
 			// Apply settings
 			SetPosition(pos);
@@ -254,16 +245,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This forces to rebuild the whole thing
 		public void Rebuild()
 		{
-            // Find thing information //mxd. I think it should be here
-            info = General.Map.Data.GetThingInfo(Thing.Type);
+			// Find thing information
+			info = General.Map.Data.GetThingInfo(Thing.Type);
 
-            // Find sprite texture //mxd. and this 
-            if (info.Sprite.Length > 0) {
-                sprite = General.Map.Data.GetSpriteImage(info.Sprite);
-                if (sprite != null) sprite.AddReference();
-            }
-            
-            // Setup visual thing
+			// Find sprite texture
+			if(info.Sprite.Length > 0)
+			{
+				sprite = General.Map.Data.GetSpriteImage(info.Sprite);
+				if(sprite != null) sprite.AddReference();
+			}
+			
+			// Setup visual thing
 			Setup();
 		}
 		

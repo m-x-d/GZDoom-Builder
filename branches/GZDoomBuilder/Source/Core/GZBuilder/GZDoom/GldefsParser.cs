@@ -154,7 +154,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                         token = StripTokenQuotes(ReadToken());
                                         if (!ReadSignedFloat(token, ref light.Offset.Z)) {
                                             // Not numeric!
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Offset X value, but got '" + token + "'");
+                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Offset Y value, but got '" + token + "'");
                                             gotErrors = true;
                                             break;
                                         }
@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                         token = StripTokenQuotes(ReadToken());
                                         if (!ReadSignedFloat(token, ref light.Offset.Y)) {
                                             // Not numeric!
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Offset X value, but got '" + token + "'");
+                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Offset Z value, but got '" + token + "'");
                                             gotErrors = true;
                                             break;
                                         }
@@ -275,7 +275,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                                 break;
                                             }
 
-                                            if (scale < 0.0f || scale > 1.0f) {
+                                            if (scale > 1.0f) {
                                                 GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": scale must be in 0.0 - 1.0 range, but is " + scale);
                                                 gotErrors = true;
                                                 break;
@@ -315,8 +315,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                             }
 
                                             //offset it slightly to avoid shading glitches
-                                            if (light.Offset.Y == 0)
-                                                light.Offset.Y = 0.1f;
+                                            if (light.Offset.Z == 0.0f)
+                                                light.Offset.Z = 0.1f;
 
                                             if (!gotErrors) {
                                                 if (lightsByName.ContainsKey(lightName)) {

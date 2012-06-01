@@ -1298,7 +1298,7 @@ namespace CodeImp.DoomBuilder.Data
 										if(c.Name.ToLowerInvariant() == catname) cat = c;
 									}
 								}
-								
+
 								// Make the category if needed
 								if(cat == null)
 								{
@@ -1379,7 +1379,7 @@ namespace CodeImp.DoomBuilder.Data
             General.MainWindow.DisplayStatus(StatusType.Busy, "Loading models...");
 
             foreach (Thing t in General.Map.Map.Things)
-                LoadModelForThing(t);
+                t.IsModel = LoadModelForThing(t);
 
             General.MainWindow.RedrawDisplay();
         }
@@ -1550,6 +1550,9 @@ namespace CodeImp.DoomBuilder.Data
             GldefsParser parser = new GldefsParser();
             parser.OnInclude = loadGldefsFromLocation;
 
+            //dbg
+            //GZBuilder.GZGeneral.Trace("Base game is " + General.Map.Config.GameType);
+
             //load default GZDoom gldefs for current game
             if (loadDefaultDefinitions && General.Map.Config.GameType != GameType.UNKNOWN) {
                 string defaultGldefsPath = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)General.Map.Config.GameType].ToLowerInvariant() + ".txt";
@@ -1591,9 +1594,8 @@ namespace CodeImp.DoomBuilder.Data
             }
 
             //dbg
-            GZBuilder.GZGeneral.Trace("******************************************");
+            /*GZBuilder.GZGeneral.Trace("******************************************");
             foreach (KeyValuePair<int, GZDoomLight> group in gldefsEntries) {
-                if (group.Key == 2015) {
                     GZBuilder.GZGeneral.Trace("----------------------------------------");
                     GZBuilder.GZGeneral.Trace("gldefsEntry for id " + group.Key + ":");
                     GZBuilder.GZGeneral.Trace("Color: " + group.Value.Color.Red + "," + group.Value.Color.Green + "," + group.Value.Color.Blue);
@@ -1607,8 +1609,7 @@ namespace CodeImp.DoomBuilder.Data
 
                     GZBuilder.GZGeneral.Trace("Subtractive: " + group.Value.Subtractive);
                     GZBuilder.GZGeneral.Trace("DontLightSelf: " + group.Value.DontLightSelf);
-                }
-            }
+            }*/
         }
 
         //mxd. This loads (Z)MAPINFO
@@ -1667,7 +1668,7 @@ namespace CodeImp.DoomBuilder.Data
 
         // This finds the first IWAD resource
 		// Returns false when not found
-		internal bool FindFirstIWAD(out DataLocation result)
+		public bool FindFirstIWAD(out DataLocation result)
 		{
 			// Go for all data containers
 			foreach(DataReader dr in containers)

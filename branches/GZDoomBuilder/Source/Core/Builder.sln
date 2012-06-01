@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Builder", "Builder.csproj",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GZDoomEditing", "..\Plugins\GZDoomEditing\GZDoomEditing.csproj", "{760A9BC7-CB73-4C36-858B-994C14996FCD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuilderModes", "..\Plugins\BuilderModes\BuilderModes.csproj", "{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisplaneExplorer", "..\Plugins\VisplaneExplorer\VisplaneExplorer.csproj", "{CF670175-7099-4090-A330-EE25C7230139}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,28 @@ Global
 		{760A9BC7-CB73-4C36-858B-994C14996FCD}.Release|Mixed Platforms.Build.0 = Release|x86
 		{760A9BC7-CB73-4C36-858B-994C14996FCD}.Release|x86.ActiveCfg = Release|x86
 		{760A9BC7-CB73-4C36-858B-994C14996FCD}.Release|x86.Build.0 = Release|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Debug|x86.ActiveCfg = Debug|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Debug|x86.Build.0 = Debug|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Release|Any CPU.ActiveCfg = Release|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Release|Mixed Platforms.Build.0 = Release|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Release|x86.ActiveCfg = Release|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Release|x86.Build.0 = Release|x86
+		{CF670175-7099-4090-A330-EE25C7230139}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF670175-7099-4090-A330-EE25C7230139}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF670175-7099-4090-A330-EE25C7230139}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CF670175-7099-4090-A330-EE25C7230139}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CF670175-7099-4090-A330-EE25C7230139}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CF670175-7099-4090-A330-EE25C7230139}.Debug|x86.Build.0 = Debug|Any CPU
+		{CF670175-7099-4090-A330-EE25C7230139}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF670175-7099-4090-A330-EE25C7230139}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF670175-7099-4090-A330-EE25C7230139}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{CF670175-7099-4090-A330-EE25C7230139}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{CF670175-7099-4090-A330-EE25C7230139}.Release|x86.ActiveCfg = Release|Any CPU
+		{CF670175-7099-4090-A330-EE25C7230139}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

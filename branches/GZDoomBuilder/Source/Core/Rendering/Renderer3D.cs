@@ -82,10 +82,6 @@ namespace CodeImp.DoomBuilder.Rendering
         private int[] lightOffsets;
         private Dictionary<Texture, List<VisualGeometry>> litGeometry;
         private Dictionary<ModeldefEntry, List<VisualThing>> thingsWithModel;
-        //dbg
-        //int geoSkipped = 0;
-        //int totalGeo = 0;
-        //int totalThings = 0;
 		
 		// Crosshair
 		private FlatVertex[] crosshairverts;
@@ -511,21 +507,12 @@ namespace CodeImp.DoomBuilder.Rendering
             //mxd
             if (General.Settings.GZDrawLights) {
                 thingsWithLight = new List<VisualThing>();
-
-                //dbg
-                //GZBuilder.GZGeneral.ClearTrace();
-                //geoSkipped = 0;
-                //totalGeo = 0;
-                //totalThings = 0;
             }
 		}
 
 		// This ends rendering world geometry
 		public void FinishGeometry()
 		{
-			//dbg
-            //GZBuilder.GZGeneral.ClearTrace();
-            
             //mxd. sort lights
             if (General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0)
                 updateLights();
@@ -652,7 +639,6 @@ namespace CodeImp.DoomBuilder.Rendering
                 if (t.Selected && showselection) {
                     thingColor = General.Colors.Selection3D.ToColorValue();
                 } else {
-                    //thingColor = Color4.Modulate(t.Thing.Color.ToColorValue(), new Color4(t.VertexColor));
                     thingColor = t.Thing.Color.ToColorValue();
                     if (t != highlighted) thingColor.Alpha = 0.6f;
                 }
@@ -1185,8 +1171,10 @@ namespace CodeImp.DoomBuilder.Rendering
                         thingsWithLight.Add(t);
                     }
                 }
+            }
+
             //mxd. gather models
-            } else if (General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected) && t.Thing.IsModel) {
+            if (General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected) && t.Thing.IsModel) {
                 ModeldefEntry mde = General.Map.Data.ModeldefEntries[t.Thing.Type];
 
                 if (!isThingOnScreen(t.BoundingBox))
