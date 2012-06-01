@@ -293,6 +293,36 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			return token.Trim();
 		}
+
+        //mxd
+        protected internal bool ReadSignedFloat(string token, ref float value) {
+            int sign = 1;
+            if (token == "-") {
+                sign = -1;
+                token = StripTokenQuotes(ReadToken());
+            }
+
+            float val;
+            bool success = float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out val);
+            if (success)
+                value = val * sign;
+            return success;
+        }
+
+        //mxd
+        protected internal bool ReadSignedInt(string token, ref int value) {
+            int sign = 1;
+            if (token == "-") {
+                sign = -1;
+                token = StripTokenQuotes(ReadToken());
+            }
+
+            int val;
+            bool success = int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out val);
+            if (success)
+                value = val * sign;
+            return success;
+        }
 		
 		// This reports an error
 		protected internal void ReportError(string message)

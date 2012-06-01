@@ -49,6 +49,8 @@ namespace CodeImp.DoomBuilder.Windows
 			FillList();
 			checkerrors.Start();
 			checkshow.Checked = General.Settings.ShowErrorsWindow;
+            //mxd
+            grid.Focus();
 		}
 
 		#endregion

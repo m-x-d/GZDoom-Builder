@@ -10,12 +10,17 @@ using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
    
     public class ModeldefParser : ZDTextParser {
-        public static string INVALID_TEXTURE = "**INVALID_TEXTURE**";
-        
         private Dictionary<string, ModeldefEntry> modelDefEntries; //classname, entry
         public Dictionary<string, ModeldefEntry> ModelDefEntries { get { return modelDefEntries; } }
 
+        private List<string> classNames;
+
         public string Source { get { return sourcename; } }
+
+        public ModeldefParser() {
+            modelDefEntries = new Dictionary<string, ModeldefEntry>();
+            classNames = new List<string>();
+        }
 
         //should be called after all decorate actors are parsed 
         public override bool Parse(Stream stream, string sourcefilename) {
@@ -27,7 +32,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                 string token = ReadToken();
 
                 if (token != null) {
-                    token = token.ToLowerInvariant();
+                    token = StripTokenQuotes(token).ToLowerInvariant();
 
                     if (token == "model") { //model structure start
                         //find classname
@@ -35,8 +40,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         string className = StripTokenQuotes(ReadToken()).ToLowerInvariant();
 
                         if (!string.IsNullOrEmpty(className)) {
-                            if (modelDefEntries.ContainsKey(className))
+                            if (classNames.IndexOf(className) != -1) {
                                 continue; //already got this class; continue to next one
+                            }
+                            classNames.Add(className);
 
                             //now find opening brace
                             SkipWhitespace(true);
@@ -50,7 +57,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             ModeldefEntry mde = mds.Parse(this);
                             if (mde != null) {
                                 mde.ClassName = className;
-                                modelDefEntries.Add(className, mde); 
+                                modelDefEntries.Add(className, mde);
+                                classNames.Add(mde.ClassName);
                             }
                         }
 

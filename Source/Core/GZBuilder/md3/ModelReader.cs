@@ -55,11 +55,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                     if (string.IsNullOrEmpty(error)) {
                         string texturePath = Path.Combine(mde.Path, textureNames[i]);
                         
-                        if (textureNames[i] != ModeldefParser.INVALID_TEXTURE && reader.FileExists(texturePath)) {
+                        if (textureNames[i] != TextureData.INVALID_TEXTURE && reader.FileExists(texturePath)) {
                             mde.Model.Textures.Add(Texture.FromStream(D3DDevice, reader.LoadFile(texturePath)));
                         } else {
                             mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
-                            if (textureNames[i] != ModeldefParser.INVALID_TEXTURE)
+                            if (textureNames[i] != TextureData.INVALID_TEXTURE)
                                 GZBuilder.GZGeneral.LogAndTraceWarning("MD3Reader: unable to load texture '" + texturePath + "' - no such file");
                         }
                     } else {

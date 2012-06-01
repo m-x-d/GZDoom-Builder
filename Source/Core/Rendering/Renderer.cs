@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
+using CodeImp.DoomBuilder.Map;
+
 #endregion
 
 namespace CodeImp.DoomBuilder.Rendering
@@ -98,6 +100,32 @@ namespace CodeImp.DoomBuilder.Rendering
 			PixelColor c = new PixelColor(255, blevel, blevel, blevel);
 			return c.ToInt();
 		}
+
+        //mxd. This calculates wall brightness level with doom-style shading
+        public int CalculateBrightness(int level, Sidedef sd) {
+            if (!General.Map.Data.MapInfo.EvenLighting && sd != null) {
+                //all walls are shaded by their angle
+                if (General.Map.Data.MapInfo.SmoothLighting) {
+                    float ammount = Math.Abs((float)Math.Sin(sd.Angle));
+                    int hAmmount = (int)((1.0f - ammount) * General.Map.Data.MapInfo.HorizWallShade);
+                    int vAmmount = (int)(ammount * General.Map.Data.MapInfo.VertWallShade);
+
+                    level = General.Clamp(level - hAmmount - vAmmount, 0, 255);
+
+                } else { //only horizontal/verticel walls are shaded
+                    int angle = (int)(sd.Angle * 180.0f / Math.PI);
+                    //horizontal wall
+                    if (angle == 270 || angle == 90) {
+                        level = General.Clamp(level + General.Map.Data.MapInfo.HorizWallShade, 0, 255);
+                    //vertical wall
+                    } else if (angle == 0 || angle == 180) {
+                        level = General.Clamp(level + General.Map.Data.MapInfo.VertWallShade, 0, 255);
+                    }
+                }
+            }
+
+            return CalculateBrightness(level);
+        }
 
 		// This is called when the graphics need to be reset
 		public virtual void Reset() { }

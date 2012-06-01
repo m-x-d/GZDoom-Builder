@@ -184,7 +184,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				
 				// Determine initial color
 				int lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
-				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel));
+				//mxd
+                //PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel));
+                PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
 				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
 				poly.color = wallcolor.WithAlpha(255).ToInt();
 				

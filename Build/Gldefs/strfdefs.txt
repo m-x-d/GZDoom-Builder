@@ -1,0 +1,862 @@
+// ------------------
+// -- Strife Items --
+// ------------------
+
+// Degnin Ore
+flickerlight DEGORE_X1
+{
+    color 1.0 0.6 0.0
+    size 32
+    secondarySize 40
+    chance 0.3
+}
+
+flickerlight DEGORE_X2
+{
+    color 1.0 0.8 0.0
+    size 40
+    secondarySize 48
+    chance 0.3
+}
+
+flickerlight DEGORE_X3
+{
+    color 1.0 0.8 0.0
+    size 44
+    secondarySize 52
+    chance 0.3
+}
+
+flickerlight DEGORE_X4
+{
+    color 1.0 0.75 0.0
+    size 48
+    secondarySize 56
+    chance 0.3
+}
+
+flickerlight DEGORE_X5
+{
+    color 1.0 0.7 0.0
+    size 52
+    secondarySize 60
+    chance 0.3
+}
+
+flickerlight DEGORE_X6
+{
+    color 1.0 0.5 0.0
+    size 56
+    secondarySize 64
+    chance 0.3
+}
+
+flickerlight DEGORE_X7
+{
+    color 0.5 0.125 0.0
+    size 60
+    secondarySize 68
+    chance 0.3
+}
+
+flickerlight DEGORE_X8
+{
+    color 0.25 0.05 0.0
+    size 64
+    secondarySize 72
+    chance 0.3
+}
+
+object DegninOre
+{
+    frame BNG3A { light DEGORE_X1 }
+    frame BNG3B { light DEGORE_X2 }
+    frame BNG3C { light DEGORE_X3 }
+    frame BNG3D { light DEGORE_X4 }
+    frame BNG3E { light DEGORE_X5 }
+    frame BNG3F { light DEGORE_X6 }
+    frame BNG3G { light DEGORE_X7 }
+    frame BNG3H { light DEGORE_X8 }
+}
+
+// Power Coupling
+pointlight POWCOUP1
+{
+    color 0.5 0.5 1.0
+    size 24
+}
+
+pointlight POWCOUP2
+{
+    color 0.7 0.7 1.0
+    size 32
+}
+
+object PowerCoupling
+{
+    frame COUPA { light POWCOUP1 }
+    frame COUPB { light POWCOUP2 }
+}
+
+// Energy Ammo
+pointlight ENERGY1
+{
+    color 0.4 1.0 0.4
+    size 16
+}
+
+pointlight ENERGY2
+{
+    color 0.4 1.0 0.4
+    size 32
+}
+
+object EnergyPod
+{
+    frame BRY1B { light ENERGY1 }
+}
+
+object EnergyPack
+{
+    frame CPACB { light ENERGY2 }
+}
+
+// ------------------
+// - Strife Objects -
+// ------------------
+
+// Lights
+pointlight LIGHT1
+{
+    color 1.0 1.0 1.0
+    size 56
+    offset 0 30 0
+}
+
+pointlight LIGHT2
+{
+    color 1.0 1.0 1.0
+    size 40
+    offset 0 72 0
+}
+
+pointlight LIGHT3
+{
+    color 1.0 1.0 1.0
+    size 64
+}
+
+pointlight LIGHT4
+{
+    color 1.0 1.0 1.0
+    size 64
+    offset 0 80 0
+}
+
+pointlight LIGHT5
+{
+    color 1.0 1.0 1.0
+    size 56
+    offset 0 72 0
+}
+
+pointlight CLIGHT1
+{
+    color 1.0 1.0 0.0
+    size 24
+    offset 0 12 0
+}
+
+pulselight CLIGHT2
+{
+    color 1.0 1.0 0.0
+    size 48
+    secondarySize 50
+    interval 8.0    
+    offset 0 64 0
+}
+
+pulselight LLIGHT
+{
+    color 1.0 0.5 0.0
+    size 24
+    secondarySize 32
+    interval 12.0    
+    offset 0 76 0
+}
+
+pulselight TLLIGHT1
+{
+    color 0.9 0.9 1.0
+    size 56
+    secondarySize 64
+    interval 3.0    
+    offset 0 48 0
+}
+
+pointlight TLLIGHT2
+{
+    color 1.0 1.0 0.5
+    size 80
+    offset 0 56 0
+}
+
+flickerlight HTECH
+{
+    color 0.3 1.0 0.3
+    size 96
+    secondarySize 104
+    chance 0.5
+    offset 0 80 0
+}
+
+pulselight BCOLUMN
+{
+    color 0.5 1.0 0.5
+    size 120
+    secondarySize 128
+    interval 10.0    
+    offset 0 64 0
+}
+
+pulselight FBUBBLE
+{
+    color 0.5 1.0 0.5
+    size 60
+    secondarySize 64
+    interval 10.0    
+    offset 0 32 0
+}
+
+pulselight CBUBBLE
+{
+    color 0.5 1.0 0.5
+    size 60
+    secondarySize 64
+    interval 10.0
+}
+
+pointlight SPIDLGHT1
+{
+    color 0.5 1.0 0.5
+    size 64
+    offset 0 10 0
+}
+
+pointlight SPIDLGHT2
+{
+    color 0.2 0.75 0.2
+    size 56
+    offset 0 10 0
+}
+
+pointlight SPIDLGHT3
+{
+    color 0.0 0.25 0.0
+    size 48
+    offset 0 10 0
+}
+
+object LightSilverFluorescent 
+{
+    frame LITS { light LIGHT1 }
+}
+
+object LightBrownFluorescent 
+{
+    frame LITB { light LIGHT1 }
+}
+
+object LightGoldFluorescent 
+{
+    frame LITG { light LIGHT1 }
+}
+
+object LightGlobe
+{
+    frame LITE { light LIGHT5 }
+}
+
+object PillarHugeTech
+{
+    frame HUGE { light HTECH }
+}
+
+object Candle
+{
+    frame KNDL { light CLIGHT1 }
+}
+
+object StrifeCandelabra
+{
+    frame CLBR { light CLIGHT2 }
+}
+
+object CageLight
+{
+    frame CAGE { light LIGHT3 }
+}
+
+object OutsideLamp
+{
+    frame LAMP { light LIGHT4 }
+}
+
+object PoleLantern
+{
+    frame LANT { light LLIGHT }
+}
+
+object TechLampSilver
+{
+    frame TECHA { light TLLIGHT1 }
+}
+
+object TechLampBrass
+{
+    frame TECHB { light TLLIGHT2 }
+}
+
+object AlienBubbleColumn
+{
+    frame BUBB { light BCOLUMN }
+}
+
+object AlienFloorBubble
+{
+    frame BUBF { light FBUBBLE }
+}
+
+object AlienCeilingBubble
+{
+    frame BUBC { light CBUBBLE }
+}
+
+object AlienSpiderLight
+{
+    frame SPDLA { light SPIDLGHT1 }
+    frame SPDLB { light SPIDLGHT2 }
+    frame SPDLC { light SPIDLGHT3 }
+}
+
+// Burning Things
+flickerlight BBARREL
+{
+    color 1.0 0.6 0.0
+    size 32
+    secondarySize 40
+    chance 0.8
+    offset 0 32 0
+}
+
+flickerlight BBOWL
+{
+    color 1.0 0.7 0.0
+    size 24
+    secondarySize 32
+    chance 0.5
+    offset 0 10 0
+}
+
+flickerlight BBRAZIER
+{
+    color 1.0 0.8 0.0
+    size 40
+    secondarySize 48
+    chance 0.2
+    offset 0 32 0
+}
+
+pulselight STORCH
+{
+    color 1.0 0.6 0.0
+    size 28
+    secondarySize 32
+    interval 5.0    
+    offset 0 56 0
+}
+
+pulselight MTORCH
+{
+    color 1.0 0.6 0.0
+    size 56
+    secondarySize 64
+    interval 5.0    
+    offset 0 64 0
+}
+
+pulselight LTORCH
+{
+    color 1.0 0.8 0.0
+    size 64
+    secondarySize 72
+    interval 2.0    
+    offset 0 64 0
+}
+
+pulselight HTORCH
+{
+    color 1.0 0.6 0.0
+    size 72
+    secondarySize 76
+    interval 3.0    
+    offset 0 72 0
+}
+
+object StrifeBurningBarrel 
+{
+    frame BBAR { light BBARREL }
+}
+
+object BurningBowl
+{
+    frame BOWL { light BBOWL }
+}
+
+object BurningBrazier
+{
+    frame BRAZ { light BBRAZIER }
+}
+
+object SmallTorchLit
+{
+    frame TRHL { light STORCH }
+}
+
+object MediumTorch
+{
+    frame LTRH { light MTORCH }
+}
+
+object LargeTorch
+{
+    frame LMPC { light LTORCH }
+}
+
+object HugeTorch
+{
+    frame LOGS { light HTORCH }
+}
+
+// Power Crystal
+pointlight PCRYSTAL
+{
+    color 1.0 1.0 0.0
+    size 40
+    offset 0 16 0
+}
+
+pointlight PCRYSTAL1
+{
+    color 0.4 0.4 1.0
+    size 24
+    offset 0 12 0
+}
+
+pointlight PCRYSTAL2
+{
+    color 0.5 0.5 1.0
+    size 30
+    offset 0 18 0
+}
+
+pointlight PCRYSTAL3
+{
+    color 0.45 0.45 1.0
+    size 32
+    offset 0 24 0
+}
+
+pointlight PCRYSTAL4
+{
+    color 0.35 0.35 1.0
+    size 28
+    offset 0 32 0
+}
+
+pointlight PCRYSTAL5
+{
+    color 0.1 0.1 1.0
+    size 18
+    offset 0 40 0
+}
+
+flickerlight POWCRYS_X1
+{
+    color 1.0 0.7 0.1
+    size 108
+    secondarySize 112
+    chance 0.3
+}
+
+flickerlight POWCRYS_X2
+{
+    color 1.0 0.75 0.2
+    size 112
+    secondarySize 116
+    chance 0.3
+}
+
+flickerlight POWCRYS_X3
+{
+    color 1.0 0.8 0.4
+    size 116
+    secondarySize 120
+    chance 0.3
+}
+
+flickerlight POWCRYS_X4
+{
+    color 1.0 0.75 0.3
+    size 115
+    secondarySize 117
+    chance 0.3
+}
+
+flickerlight POWCRYS_X5
+{
+    color 1.0 0.7 0.27
+    size 114
+    secondarySize 113
+    chance 0.3
+}
+
+flickerlight POWCRYS_X6
+{
+    color 1.0 0.65 0.24
+    size 113
+    secondarySize 115
+    chance 0.3
+}
+
+flickerlight POWCRYS_X6
+{
+    color 1.0 0.62 0.22
+    size 112
+    secondarySize 114
+    chance 0.3
+}
+
+flickerlight POWCRYS_X7
+{
+    color 1.0 0.6 0.20
+    size 111
+    secondarySize 113
+    chance 0.3
+}
+
+flickerlight POWCRYS_X8
+{
+    color 1.0 0.58 0.18
+    size 110
+    secondarySize 112
+    chance 0.3
+}
+
+flickerlight POWCRYS_X9
+{
+    color 1.0 0.56 0.16
+    size 109
+    secondarySize 111
+    chance 0.3
+}
+
+flickerlight POWCRYS_X10
+{
+    color 1.0 0.54 0.14
+    size 108
+    secondarySize 110
+    chance 0.3
+}
+
+flickerlight POWCRYS_X11
+{
+    color 1.0 0.52 0.12
+    size 107
+    secondarySize 109
+    chance 0.3
+}
+
+flickerlight POWCRYS_X12
+{
+    color 1.0 0.5 0.10
+    size 106
+    secondarySize 108
+    chance 0.3
+}
+
+flickerlight POWCRYS_X13
+{
+    color 1.0 0.48 0.10
+    size 105
+    secondarySize 106
+    chance 0.3
+}
+
+flickerlight POWCRYS_X14
+{
+    color 1.0 0.46 0.08
+    size 103
+    secondarySize 104
+    chance 0.3
+}
+
+flickerlight POWCRYS_X15
+{
+    color 1.0 0.44 0.06
+    size 102
+    secondarySize 104
+    chance 0.3
+}
+
+flickerlight POWCRYS_X16
+{
+    color 1.0 0.42 0.04
+    size 101
+    secondarySize 103
+    chance 0.3
+}
+
+flickerlight POWCRYS_X15
+{
+    color 1.0 0.4 0.02
+    size 100
+    secondarySize 102
+    chance 0.3
+}
+
+flickerlight POWCRYS_X16
+{
+    color 1.0 0.38 0.0
+    size 99
+    secondarySize 101
+    chance 0.3
+}
+
+flickerlight POWCRYS_X17
+{
+    color 1.0 0.36 0.02
+    size 98
+    secondarySize 100
+    chance 0.3
+}
+
+flickerlight POWCRYS_X18
+{
+    color 1.0 0.34 0.0
+    size 97
+    secondarySize 100
+    chance 0.3
+}
+
+flickerlight POWCRYS_X19
+{
+    color 1.0 0.32 0.0
+    size 96
+    secondarySize 99
+    chance 0.3
+}
+
+flickerlight POWCRYS_X20
+{
+    color 1.0 0.3 0.0
+    size 95
+    secondarySize 98
+    chance 0.3
+}
+
+flickerlight POWCRYS_X21
+{
+    color 1.0 0.28 0.0
+    size 94
+    secondarySize 93
+    chance 0.3
+}
+
+flickerlight POWCRYS_X22
+{
+    color 1.0 0.26 0.0
+    size 93
+    secondarySize 92
+    chance 0.3
+}
+
+flickerlight POWCRYS_X23
+{
+    color 1.0 0.24 0.0
+    size 92
+    secondarySize 91
+    chance 0.3
+}
+
+flickerlight POWCRYS_X24
+{
+    color 1.0 0.22 0.0
+    size 90
+    secondarySize 92
+    chance 0.3
+}
+
+flickerlight POWCRYS_X25
+{
+    color 1.0 0.2 0.0
+    size 86
+    secondarySize 90
+    chance 0.3
+}
+
+object PowerCrystal
+{
+    frame CRYS  { light PCRYSTAL    }
+
+    frame CRYSB { light PCRYSTAL1   }
+    frame CRYSC { light PCRYSTAL2   }
+    frame CRYSD { light PCRYSTAL3   }
+    frame CRYSE { light PCRYSTAL4   }
+    frame CRYSF { light PCRYSTAL5   }
+
+    frame BOOMA { light POWCRYS_X1  }
+    frame BOOMB { light POWCRYS_X2  }
+    frame BOOMC { light POWCRYS_X3  }
+    frame BOOMD { light POWCRYS_X4  }
+    frame BOOME { light POWCRYS_X5  }
+    frame BOOMF { light POWCRYS_X6  }
+    frame BOOMG { light POWCRYS_X7  }
+    frame BOOMH { light POWCRYS_X8  }
+    frame BOOMI { light POWCRYS_X9  }
+    frame BOOMJ { light POWCRYS_X10 }
+    frame BOOMK { light POWCRYS_X11 }
+    frame BOOML { light POWCRYS_X12 }
+    frame BOOMM { light POWCRYS_X13 }
+    frame BOOMN { light POWCRYS_X14 }
+    frame BOOMO { light POWCRYS_X15 }
+    frame BOOMP { light POWCRYS_X16 }
+    frame BOOMQ { light POWCRYS_X17 }
+    frame BOOMR { light POWCRYS_X18 }
+    frame BOOMS { light POWCRYS_X19 }
+    frame BOOMT { light POWCRYS_X20 }
+    frame BOOMU { light POWCRYS_X21 }
+    frame BOOMV { light POWCRYS_X22 }
+    frame BOOMW { light POWCRYS_X23 }
+    frame BOOMX { light POWCRYS_X24 }
+    frame BOOMY { light POWCRYS_X25 }
+}
+
+// Computer
+pulselight COMPUTER
+{
+    color 0.25 1.0 0.25
+    size 112
+    secondarySize 128
+    interval 0.25    
+    offset 0 64 0
+}
+
+object Computer
+{
+    frame SECRA { light COMPUTER }
+    frame SECRB { light COMPUTER }
+    frame SECRC { light COMPUTER }
+    frame SECRD { light COMPUTER }
+}
+
+// Strife Explosive Barrel
+flickerlight BARREL_X1
+{
+    color 1.0 0.6 0.1
+    size 48
+    secondarySize 56
+    chance 0.3
+}
+
+flickerlight BARREL_X2
+{
+    color 1.0 0.8 0.0
+    size 56
+    secondarySize 64
+    chance 0.3
+}
+
+flickerlight BARREL_X3
+{
+    color 1.0 0.7 0.0
+    size 72
+    secondarySize 80
+    chance 0.3
+}
+
+flickerlight BARREL_X4
+{
+    color 1.0 0.6 0.0
+    size 80
+    secondarySize 88
+    chance 0.3
+}
+
+flickerlight BARREL_X5
+{
+    color 1.0 0.5 0.0
+    size 72
+    secondarySize 76
+    chance 0.3
+}
+
+flickerlight BARREL_X6
+{
+    color 1.0 0.45 0.0
+    size 56
+    secondarySize 60
+    chance 0.3
+}
+
+flickerlight BARREL_X7
+{
+    color 1.0 0.4 0.0
+    size 52
+    secondarySize 56
+    chance 0.3
+    offset 0 24 0
+}
+
+flickerlight BARREL_X8
+{
+    color 1.0 0.35 0.0
+    size 36
+    secondarySize 40
+    chance 0.3
+    offset 0 40 0
+}
+
+flickerlight BARREL_X9
+{
+    color 1.0 0.3 0.0
+    size 16
+    secondarySize 24
+    chance 0.3
+    offset 0 56 0
+}
+
+object ExplosiveBarrel2
+{
+    frame BARTC { light BARREL_X1 }
+    frame BARTD { light BARREL_X2 }
+    frame BARTE { light BARREL_X3 }
+    frame BARTF { light BARREL_X4 }
+    frame BARTG { light BARREL_X5 }
+    frame BARTH { light BARREL_X6 }
+    frame BARTI { light BARREL_X7 }
+    frame BARTJ { light BARREL_X8 }
+    frame BARTK { light BARREL_X9 }
+}
+
+// Alarm
+pointlight KLAXON
+{
+    color 1.0 0.0 0.0
+    size 24
+}
+
+object KlaxonWarningLight
+{
+    frame KLAXC { light KLAXON }
+}

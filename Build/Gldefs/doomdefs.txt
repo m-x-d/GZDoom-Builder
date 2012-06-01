@@ -1,0 +1,410 @@
+// ----------------------
+// -- Doom Decorations --
+// ----------------------
+
+// Barrel
+pulselight BARREL
+{
+    color 0.0 0.5 0.0
+    size 20
+    secondarySize 21
+    interval 0.5
+    offset 0 36 0
+	dontlightself 1
+}
+
+object ExplosiveBarrel
+{
+    frame BAR1  { light BARREL    }
+
+    frame BEXPC { light ROCKET_X1 }
+    frame BEXPD { light ROCKET_X2 }
+    frame BEXPE { light ROCKET_X3 }
+}
+
+// Floor lamp
+pointlight LAMP
+{
+    color 1.0 1.0 0.8
+    size 56
+    offset 0 44 0
+}
+
+object Column
+{
+    frame COLU { light LAMP }
+}
+
+// Short tech lamp
+pulselight SMALLLAMP
+{
+    color 0.8 0.8 1.0
+    size 56
+    secondarySize 58
+    interval 0.4
+    offset 0 44 0
+}
+
+object TechLamp2
+{
+    frame TLP2 { light SMALLLAMP }
+}
+
+// Tall tech lamp
+pulselight BIGLAMP
+{
+    color 0.8 0.8 1.0
+    size 64
+    secondarySize 66
+    interval 0.4
+    offset 0 72 0
+}
+
+object TechLamp
+{
+    frame TLMP { light BIGLAMP }
+}
+
+// Tall red torch
+flickerlight2 BIGREDTORCH
+{
+    color 1.0 0.3 0.0
+    size 64
+    secondarySize 72
+    interval 0.1
+    offset 0 60 0
+}
+
+object RedTorch
+{
+    frame TRED { light BIGREDTORCH }
+}
+
+// Tall green torch
+flickerlight2 BIGGREENTORCH
+{
+    color 0.0 1.0 0.0
+    size 64
+    secondarySize 72
+    interval 0.1
+    offset 0 60 0
+}
+
+object GreenTorch
+{
+    frame TGRN { light BIGGREENTORCH }
+}
+
+// Tall blue torch
+flickerlight2 BIGBLUETORCH
+{
+    color 0.0 0.0 1.0
+    size 64
+    secondarySize 72
+    interval 0.1
+    offset 0 60 0
+}
+
+object BlueTorch
+{
+    frame TBLU { light BIGBLUETORCH }
+}
+
+// Small red torch
+flickerlight2 SMALLREDTORCH
+{
+    color 1.0 0.3 0.0
+    size 48
+    secondarySize 54
+    interval 0.1
+    offset 0 35 0
+}
+
+object ShortRedTorch
+{
+    frame SMRT { light SMALLREDTORCH }
+}
+
+// Small green torch
+flickerlight2 SMALLGREENTORCH
+{
+    color 0.0 1.0 0.0
+    size 48
+    secondarySize 54
+    interval 0.1
+    offset 0 35 0
+}
+
+object ShortGreenTorch
+{
+    frame SMGT { light SMALLGREENTORCH }
+}
+
+// Small blue torch
+flickerlight2 SMALLBLUETORCH
+{
+    color 0.0 0.0 1.0
+    size 48
+    secondarySize 54
+    interval 0.1
+    offset 0 35 0
+}
+
+object ShortBlueTorch
+{
+    frame SMBT { light SMALLBLUETORCH }
+}
+
+// Burning barrel
+flickerlight2 FIREBARREL
+{
+    color 1.0 0.9 0.0
+    size 48
+    secondarySize 54
+    interval 0.1
+    offset 0 32 0
+}
+
+object BurningBarrel
+{
+    frame FCAN { light FIREBARREL }
+}
+
+// Skulls w/candles
+flickerlight2 SKULLCANDLES
+{
+    color 1.0 1.0 0.0
+    size 32
+    secondarySize 34
+    interval 0.1
+    offset 0 24 0
+}
+
+object HeadCandles
+{
+    frame POL3 { light SKULLCANDLES }
+}
+
+// Candle
+pointlight CANDLE
+{
+    color 1.0 1.0 0.0
+    size 16
+    offset 0 16 0
+}
+
+object Candlestick
+{
+    frame CAND { light CANDLE }
+}
+
+// Candelabra
+pointlight CANDELABRA
+{
+    color 1.0 1.0 0.0
+    size 48
+    offset 0 52 0
+}
+
+object Candelabra
+{
+    frame CBRA { light CANDELABRA }
+}
+
+
+
+// ----------------
+// -- Doom Items --
+// ----------------
+
+// Soul Sphere
+pulselight SOULSPHERE
+{
+    color 0.0 0.0 1.0
+    size 40
+    secondarySize 42
+    interval 2.0
+    offset 0 16 0
+}
+
+object SoulSphere
+{
+    frame SOUL { light SOULSPHERE }
+}
+
+// Invulnerability Sphere
+pulselight INVULN
+{
+    color 0.0 1.0 0.0
+    size 40
+    secondarySize 42
+    interval 2.0
+    offset 0 16 0
+}
+
+object InvulnerabilitySphere
+{
+    frame PINV { light INVULN }
+}
+
+// Blur Sphere
+pointlight BLURSPHERE1
+{
+    color 1.0 0.0 0.0
+    size 40
+    offset 0 16 0
+}
+
+pointlight BLURSPHERE2
+{
+    color 0.0 0.0 1.0
+    size 32
+    offset 0 16 0
+}
+
+pointlight BLURSPHERE3
+{
+    color 0.0 0.0 1.0
+    size 24
+    offset 0 16 0
+}
+
+pointlight BLURSPHERE4
+{
+    color 0.0 0.0 1.0
+    size 16
+    offset 0 16 0
+}
+
+pointlight BLURSPHERE5
+{
+    color 0.0 0.0 1.0
+    size 8
+    offset 0 16 0
+}
+
+object BlurSphere
+{
+    frame PINS { light BLURSPHERE1 }
+
+    frame PINSA { light BLURSPHERE2 }
+    frame PINSB { light BLURSPHERE3 }
+    frame PINSC { light BLURSPHERE4 }
+    frame PINSD { light BLURSPHERE5 }
+}
+
+// Health Potion
+pulselight HEALTHPOTION
+{
+    color 0.0 0.0 0.6
+    size 16
+    secondarySize 18
+    interval 2.0
+}
+
+object HealthBonus
+{
+    frame BON1 { light HEALTHPOTION }
+}
+
+// Armour Helmet
+pulselight ARMORBONUS
+{
+    color 0.0 0.6 0.0
+    size 16
+    secondarySize 14
+    interval 1.0
+	dontlightself 1
+}
+
+object ArmorBonus
+{
+    frame BON2 { light ARMORBONUS }
+}
+
+// Blue Keys
+object BlueCard
+{
+    frame BKEY { light HEALTHPOTION }
+}
+
+object BlueSkull
+{
+    frame BSKU { light HEALTHPOTION }
+}
+
+// Yellow Keys
+pulselight YELLOWKEY
+{
+    color 0.6 0.6 0.0
+    size 16
+    secondarySize 18
+    interval 2.0
+}
+
+object YellowCard
+{
+    frame YKEY { light YELLOWKEY }
+}
+
+object YellowSkull
+{
+    frame YSKU { light YELLOWKEY }
+}
+
+// Red Keys
+pulselight REDKEY
+{
+    color 0.6 0.0 0.0
+    size 16
+    secondarySize 18
+    interval 2.0
+}
+
+object RedCard
+{
+    frame RKEY { light REDKEY }
+}
+
+object RedSkull
+{
+    frame RSKU { light REDKEY }
+}
+
+// Green armour
+pointlight GREENARMOR1
+{
+    color 0.0 0.6 0.0
+    size 48
+}
+
+pointlight GREENARMOR2
+{
+    color 0.0 0.6 0.0
+    size 32
+}
+
+object GreenArmor
+{
+    frame ARM1A { light GREENARMOR1 }
+    frame ARM1B { light GREENARMOR2 }
+}
+
+// Blue armour
+pointlight BLUEARMOR1
+{
+    color 0.0 0.0 0.6
+    size 48
+}
+
+pointlight BLUEARMOR2
+{
+    color 0.0 0.0 0.6
+    size 32
+}
+
+object BlueArmor
+{
+    frame ARM2A { light BLUEARMOR1 }
+    frame ARM2B { light BLUEARMOR2 }
+}

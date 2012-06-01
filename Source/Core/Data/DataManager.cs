@@ -32,6 +32,7 @@ using System.Threading;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.ZDoom;
+using CodeImp.DoomBuilder.VisualModes;
 
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.GZDoom;
@@ -68,11 +69,10 @@ namespace CodeImp.DoomBuilder.Data
 		private List<ResourceTextureSet> resourcetextures;
 		private AllTextureSet alltextures;
 
-        //mxd Folders
-        //private List<string> folders;
-
-        //mxd modeldefs
-        private Dictionary<int, ModeldefEntry> modeldefEntries;
+        //mxd 
+        private Dictionary<int, ModeldefEntry> modeldefEntries; //Thing.Type, Model entry
+        private Dictionary<int, GZDoomLight> gldefsEntries; //Thing.Type, Light entry
+        private MapInfo mapInfo; //mapinfo
 		
 		// Background loading
 		private Queue<ImageData> imageque;
@@ -114,8 +114,9 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Properties
 
         //mxd
-        //public List<string> Folders { get { return folders; } }
         public Dictionary<int, ModeldefEntry> ModeldefEntries { get { return modeldefEntries; } }
+        public Dictionary<int, GZDoomLight> GldefsEntries { get { return gldefsEntries; } }
+        public MapInfo MapInfo { get { return mapInfo; } }
 
 		public Playpal Palette { get { return palette; } }
 		public PreviewManager Previews { get { return previews; } }
@@ -207,6 +208,14 @@ namespace CodeImp.DoomBuilder.Data
 				//thingbox = null;
 				whitetexture.Dispose();
 				whitetexture = null;
+
+                //mxd
+                if (modeldefEntries != null) {
+                    foreach (KeyValuePair<int, ModeldefEntry> group in modeldefEntries)
+                        group.Value.Dispose();
+                    modeldefEntries = null;
+                }
+                mapInfo = null;
 				
 				// Done
 				isdisposed = true;
@@ -325,7 +334,16 @@ namespace CodeImp.DoomBuilder.Data
 			LoadInternalSprites();
 
             //mxd
-            loadModeldefs();
+            General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing MAPINFO...");
+            loadMapInfo();
+            Dictionary<string, int> actorsByClass = createActorsByClassList();
+            General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing model definitions...");
+            loadModeldefs(actorsByClass);
+            General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing GLDEFS...");
+            loadGldefs(actorsByClass, true);
+            General.MainWindow.DisplayReady();
+            //don't need them any more
+            actorsByClass = null;
 			
 			// Process colormaps (we just put them in as textures)
 			foreach(KeyValuePair<long, ImageData> t in colormapsonly)
@@ -1354,8 +1372,9 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#endregion
 
-        #region ================== Modeldef and models
+        #region ================== Modeldef, Gldefs, Mapinfo and models loading
 
+        //mxd
         public void LoadModels() {
             General.MainWindow.DisplayStatus(StatusType.Busy, "Loading models...");
 
@@ -1365,6 +1384,7 @@ namespace CodeImp.DoomBuilder.Data
             General.MainWindow.RedrawDisplay();
         }
 
+        //mxd
         public bool LoadModelForThing(Thing t) {
             if (modeldefEntries.ContainsKey(t.Type)) {
                 if (modeldefEntries[t.Type].Model == null) {
@@ -1381,11 +1401,11 @@ namespace CodeImp.DoomBuilder.Data
                     currentreader = null;
 
                     if (mde.Model != null) {
-                        GZBuilder.GZGeneral.LogAndTraceWarning("Loaded model for Thing ¹" + t.Type);
+                        //GZBuilder.GZGeneral.Trace("Loaded model for Thing ¹" + t.Type);
                         return true;
                     } else {
                         modeldefEntries.Remove(t.Type);
-                        GZBuilder.GZGeneral.LogAndTraceWarning("Failed to load model(s) for Thing ¹" + t.Type + ", model(s) location is "+mde.Location+ "\\" + mde.Path +". MODELDEF node removed.");
+                        GZBuilder.GZGeneral.LogAndTraceWarning("Failed to load model" + (mde.ModelNames.Count > 1 ? "s" : "") + " for Thing ¹" + t.Type + " from '"+mde.Location+ "\\" + mde.Path +"'");
                         return false;
                     }
                 }
@@ -1394,25 +1414,83 @@ namespace CodeImp.DoomBuilder.Data
             return false;
         }
 
-        //mxd. This parses modeldefs. Should be called after all DECORATE actors are parsed
-        private void loadModeldefs() {
-            General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing model definitions...");
+        //mxd. This creates <Actor Class, Thing.Type> dictionary. Should be called after all DECORATE actors are parsed
+        private Dictionary<string, int> createActorsByClassList() {
+            Dictionary<string, int> actors = new Dictionary<string, int>();
 
-            Dictionary<string, int> Actors = new Dictionary<string, int>();
             Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
 
             //read our new shiny ClassNames for default game things
             foreach (KeyValuePair<int, ThingTypeInfo> ti in things) {
                 if (ti.Value.ClassName != null)
-                    Actors.Add(ti.Value.ClassName, ti.Key);
+                    actors.Add(ti.Value.ClassName, ti.Key);
             }
 
             //and for actors defined in DECORATE
-            ICollection<ActorStructure> ac = decorate.Actors; //General.Map.Data.Decorate.Actors;
+            ICollection<ActorStructure> ac = decorate.Actors;
             foreach (ActorStructure actor in ac) {
+                if (actor.DoomEdNum == -1) //we don't need actors without DoomEdNum
+                    continue;
+
                 string className = actor.ClassName.ToLower();
-                if (actor.DoomEdNum != -1 && !Actors.ContainsKey(className)) //we don't need actors without DoomEdNum
-                    Actors.Add(className, actor.DoomEdNum);
+                if (!actors.ContainsKey(className)) 
+                    actors.Add(className, actor.DoomEdNum);
+            }
+
+            return actors;
+        }
+
+        //mxd
+        public void ReloadModeldef() {
+            if (modeldefEntries != null) {
+                foreach (KeyValuePair<int, ModeldefEntry> group in modeldefEntries)
+                    group.Value.Dispose();
+            }
+            General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading model definitions...");
+            loadModeldefs(createActorsByClassList());
+
+            //rebuild geometry if in Visual mode
+            if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
+                General.Editing.Mode.OnReloadResources();
+            }
+
+            General.MainWindow.DisplayReady();
+        }
+
+        //mxd
+        public void ReloadGldefs() {
+            General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading GLDEFS...");
+            loadGldefs(createActorsByClassList(), false);
+
+            //rebuild geometry if in Visual mode
+            if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
+                General.Editing.Mode.OnReloadResources();
+            }
+
+            General.MainWindow.DisplayReady();
+        }
+
+        //mxd
+        public void ReloadMapInfo() {
+            General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading (Z)MAPINFO...");
+            loadMapInfo();
+
+            //rebuild geometry if in Visual mode
+            if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
+                General.Editing.Mode.OnReloadResources();
+            }
+
+            General.MainWindow.DisplayReady();
+        }
+
+        //mxd. This parses modeldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
+        private void loadModeldefs(Dictionary<string, int> actorsByClass) {
+            modeldefEntries = new Dictionary<int, ModeldefEntry>(); //create it in all cases, so we don't have to check if it's null every time we need to access it
+            
+            //if no actors defined in DECORATE or game config...
+            if (actorsByClass == null || actorsByClass.Count == 0) {
+                GZBuilder.GZGeneral.Trace("Warning: current game has no Actors!");
+                return;
             }
 
             Dictionary<string, ModeldefEntry> modelDefEntriesByName = new Dictionary<string, ModeldefEntry>();
@@ -1424,7 +1502,6 @@ namespace CodeImp.DoomBuilder.Data
                 Dictionary<string, Stream> streams = dr.GetModeldefData();
                 foreach (KeyValuePair<string, Stream> group in streams) {
                     // Parse the data
-                    group.Value.Seek(0, SeekOrigin.Begin);
                     if (mdeParser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key)) {
                         foreach (KeyValuePair<string, ModeldefEntry> g in mdeParser.ModelDefEntries) {
                             g.Value.Location = currentreader.Location.location;
@@ -1435,14 +1512,153 @@ namespace CodeImp.DoomBuilder.Data
             }
 
             currentreader = null;
-            modeldefEntries = new Dictionary<int, ModeldefEntry>();
 
             foreach (KeyValuePair<string, ModeldefEntry> e in modelDefEntriesByName) {
-                if (Actors.ContainsKey(e.Key))
-                    modeldefEntries[Actors[e.Key]] = modelDefEntriesByName[e.Key];
+                if (actorsByClass.ContainsKey(e.Key))
+                    modeldefEntries[actorsByClass[e.Key]] = modelDefEntriesByName[e.Key];
                 else
                     GZBuilder.GZGeneral.LogAndTraceWarning("Got MODELDEF override for class '" + e.Key + "', but haven't found such class in Decorate");
             }
+
+            //dbg
+            /*foreach (KeyValuePair<int, ModeldefEntry> group in modeldefEntries) {
+                GZBuilder.GZGeneral.Trace("MDE for thing " + group.Key + ":");
+                GZBuilder.GZGeneral.Trace("Name: " + group.Value.ClassName);
+                GZBuilder.GZGeneral.Trace("Path: " + group.Value.Path);
+
+                foreach (string d in group.Value.ModelNames)
+                    GZBuilder.GZGeneral.Trace("ModelName: " + d);
+
+                foreach (string d in group.Value.TextureNames)
+                    GZBuilder.GZGeneral.Trace("TextureName: " + d);
+
+                GZBuilder.GZGeneral.Trace("Scale: " + group.Value.Scale.X + "," + group.Value.Scale.Y + "," + group.Value.Scale.Z);
+                GZBuilder.GZGeneral.Trace("zOffset: " + group.Value.zOffset);
+            }*/
+        }
+
+        //mxd. This parses gldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
+        private void loadGldefs(Dictionary<string, int> actorsByClass, bool loadDefaultDefinitions) {
+            gldefsEntries = new Dictionary<int, GZDoomLight>();//create it in all cases, so we don't have to check if it's null every time we need to access it
+
+            //if no actors defined in DECORATE or game config...
+            if (actorsByClass == null || actorsByClass.Count == 0) {
+                GZBuilder.GZGeneral.Trace("Warning: current game has no Actors!");
+                return;
+            }
+
+            GldefsParser parser = new GldefsParser();
+            parser.OnInclude = loadGldefsFromLocation;
+
+            //load default GZDoom gldefs for current game
+            if (loadDefaultDefinitions && General.Map.Config.GameType != GameType.UNKNOWN) {
+                string defaultGldefsPath = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)General.Map.Config.GameType].ToLowerInvariant() + ".txt";
+                defaultGldefsPath = Path.Combine(Path.Combine(General.AppPath, "Gldefs"), defaultGldefsPath);
+
+                if (File.Exists(defaultGldefsPath)) {
+                    StreamReader s = File.OpenText(defaultGldefsPath);
+                    parser.Parse(s.BaseStream, defaultGldefsPath);
+                } else {
+                    GZBuilder.GZGeneral.LogAndTraceWarning("Unable to load default GLDEFS for current game: unable to load file '" + defaultGldefsPath + "'");
+                }
+            } else {
+                GZBuilder.GZGeneral.LogAndTraceWarning("Default GLDEFS for current game not found.");
+            }
+
+            //load gldefs from resources
+            foreach (DataReader dr in containers) {
+                currentreader = dr;
+                Dictionary<string, Stream> streams = dr.GetGldefsData(General.Map.Config.GameType);
+
+                foreach (KeyValuePair<string, Stream> group in streams)
+                    parser.Parse(group.Value, group.Key);
+            }
+
+            //create gldefsEntries dictionary
+            foreach (KeyValuePair<string, string> e in parser.Objects) { //ClassName, Light name
+                
+                //if we have decorate actor and light definition for given ClassName...
+                if (actorsByClass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) {
+                    int thingType = actorsByClass[e.Key];
+                    if (gldefsEntries.ContainsKey(thingType)) {
+                        gldefsEntries[thingType] = parser.LightsByName[e.Value];
+                    }else{
+                        gldefsEntries.Add(thingType, parser.LightsByName[e.Value]);
+                    }
+                } else {
+                    GZBuilder.GZGeneral.LogAndTraceWarning("Got GLDEFS for class '" + e.Key + "', but haven't found such class in Decorate");
+                }
+            }
+
+            //dbg
+            GZBuilder.GZGeneral.Trace("******************************************");
+            foreach (KeyValuePair<int, GZDoomLight> group in gldefsEntries) {
+                if (group.Key == 2015) {
+                    GZBuilder.GZGeneral.Trace("----------------------------------------");
+                    GZBuilder.GZGeneral.Trace("gldefsEntry for id " + group.Key + ":");
+                    GZBuilder.GZGeneral.Trace("Color: " + group.Value.Color.Red + "," + group.Value.Color.Green + "," + group.Value.Color.Blue);
+                    GZBuilder.GZGeneral.Trace("PrimaryRadius: " + group.Value.PrimaryRadius);
+                    GZBuilder.GZGeneral.Trace("SecondaryRadius: " + group.Value.SecondaryRadius);
+                    GZBuilder.GZGeneral.Trace("Interval: " + group.Value.Interval);
+                    GZBuilder.GZGeneral.Trace("Offset: " + group.Value.Offset.X + "," + group.Value.Offset.Y + "," + group.Value.Offset.Z);
+                    //GZBuilder.GZGeneral.Trace("Scale: " + group.Value.Scale);
+                    GZBuilder.GZGeneral.Trace("Type: " + group.Value.Type);
+                    //GZBuilder.GZGeneral.Trace("Chance: " + group.Value.Chance);
+
+                    GZBuilder.GZGeneral.Trace("Subtractive: " + group.Value.Subtractive);
+                    GZBuilder.GZGeneral.Trace("DontLightSelf: " + group.Value.DontLightSelf);
+                }
+            }
+        }
+
+        //mxd. This loads (Z)MAPINFO
+        private void loadMapInfo() {
+            //dbg
+            //GZBuilder.GZGeneral.Trace("Loading MAPINFO for map " + General.Map.Options.LevelName);
+
+            MapinfoParser parser = new MapinfoParser();
+
+            foreach (DataReader dr in containers) {
+                currentreader = dr;
+
+                Dictionary<string, Stream> streams = dr.GetMapinfoData();
+                foreach (KeyValuePair<string, Stream> group in streams) {
+                    // Parse the data
+                    //group.Value.Seek(0, SeekOrigin.Begin);
+                    parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), General.Map.Options.LevelName); 
+                }
+            }
+            currentreader = null;
+
+            if (parser.MapInfo != null)
+                mapInfo = parser.MapInfo;
+            else
+                mapInfo = new MapInfo();
+
+            //dbg
+            /*GZBuilder.GZGeneral.Trace("********************************");
+            GZBuilder.GZGeneral.Trace("MAPINFO for map " + General.Map.Options.LevelName + ":");
+            GZBuilder.GZGeneral.Trace("EvenLighting: " + mapInfo.EvenLighting);
+            GZBuilder.GZGeneral.Trace("HasFadeColor: " + mapInfo.HasFadeColor);
+            GZBuilder.GZGeneral.Trace("FadeColor: " + mapInfo.FadeColor.Red + "," + mapInfo.FadeColor.Green + "," + mapInfo.FadeColor.Blue);
+            GZBuilder.GZGeneral.Trace("HasOutsideFogColor: " + mapInfo.HasOutsideFogColor);
+            GZBuilder.GZGeneral.Trace("OutsideFogColor: " + mapInfo.OutsideFogColor.Red + "," + mapInfo.OutsideFogColor.Green + "," + mapInfo.OutsideFogColor.Blue);
+            GZBuilder.GZGeneral.Trace("Sky1: " + mapInfo.Sky1);
+            GZBuilder.GZGeneral.Trace("Sky1ScrollSpeed: " + mapInfo.Sky1ScrollSpeed);
+            GZBuilder.GZGeneral.Trace("Sky2: " + mapInfo.Sky2);
+            GZBuilder.GZGeneral.Trace("Sky2ScrollSpeed: " + mapInfo.Sky2ScrollSpeed);
+            GZBuilder.GZGeneral.Trace("DoubleSky: " + mapInfo.DoubleSky);
+            //GZBuilder.GZGeneral.Trace("SmoothLighting: " + mapInfo.SmoothLighting);
+            GZBuilder.GZGeneral.Trace("HorizWallShade: " + mapInfo.HorizWallShade);
+            GZBuilder.GZGeneral.Trace("VertWallShade: " + mapInfo.VertWallShade);
+            GZBuilder.GZGeneral.Trace("********************************");*/
+        }
+
+        private void loadGldefsFromLocation(GldefsParser parser, string location) {
+            Dictionary<string, Stream> streams = currentreader.GetGldefsData(location);
+
+            foreach (KeyValuePair<string, Stream> group in streams)
+                parser.Parse(group.Value, group.Key);
         }
 
         #endregion

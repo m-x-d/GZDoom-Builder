@@ -27,6 +27,7 @@ using System.IO;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
 
@@ -151,13 +152,20 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#endregion
 
-		#region ================== Decorate
+		#region ================== Decorate, Modeldef, Mapinfo, Gldefs
 
 		// When implemented, this returns the decorate lump
 		public virtual List<Stream> GetDecorateData(string pname) { return new List<Stream>(); }
 
-        //mxd. When implemented, this returns the modeldef lump
+        //mxd. When implemented, this returns the Modeldef lump
         public virtual Dictionary<string, Stream> GetModeldefData() { return new Dictionary<string, Stream>(); }
+
+        //mxd. When implemented, this returns the Mapinfo lump
+        public virtual Dictionary<string, Stream> GetMapinfoData() { return new Dictionary<string, Stream>(); }
+
+        //mxd. When implemented, this returns the Gldefs lump
+        public virtual Dictionary<string, Stream> GetGldefsData(GameType gameType) { return new Dictionary<string, Stream>(); }
+        public virtual Dictionary<string, Stream> GetGldefsData(string location) { return new Dictionary<string, Stream>(); }
 
 		#endregion
 	}

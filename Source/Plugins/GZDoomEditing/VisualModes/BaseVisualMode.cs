@@ -164,6 +164,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			return renderer.CalculateBrightness(level);
 		}
+
+        //mxd. This calculates brightness level with doom-style shading
+        internal int CalculateBrightness(int level, Sidedef sd) {
+            return renderer.CalculateBrightness(level, sd);
+        }
 		
 		// This adds a selected object
 		internal void AddSelectedObject(IVisualEventReceiver obj)
