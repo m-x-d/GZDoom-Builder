@@ -129,10 +129,13 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// This applies user-defined appearance colors to the palettes
 		private void ApplyUserColors()
 		{
-			// Override special palette indices with user-defined colors
-			for(int i = 0; i < palettes.Length; i++)
+			if(palettes != null)
 			{
-				palettes[i].SetColor(Tile.POINT_VOID_B, General.Colors.Background.WithAlpha(0).ToInt());
+				// Override special palette indices with user-defined colors
+				for(int i = 0; i < palettes.Length; i++)
+				{
+					palettes[i].SetColor(Tile.POINT_VOID_B, General.Colors.Background.WithAlpha(0).ToInt());
+				}
 			}
 		}
 
