@@ -11,7 +11,7 @@ using CodeImp.DoomBuilder.GZBuilder.Data;
 
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
     public sealed class ModeldefStructure {
-        private const int MAX_MODELS = 3; //maximum models per modeldef entry, zero-based
+        private const int MAX_MODELS = 4; //maximum models per modeldef entry, zero-based
 
         public ModeldefEntry Parse(ModeldefParser parser) {
             string[] textureNames = new string[4];
@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             break;
                         }
 
-                        if (modelIndex > MAX_MODELS) {
+                        if (modelIndex >= MAX_MODELS) {
                             GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " per MODELDEF entry!");
                             break;
                         }
@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             break;
                         }
 
-                        if (skinIndex > MAX_MODELS) {
+                        if (skinIndex >= MAX_MODELS) {
                             GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " per MODELDEF entry!");
                             break;
                         }
@@ -217,7 +217,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                         break;
                                     }
 
-                                    if (modelIndex > MAX_MODELS) {
+                                    if (modelIndex >= MAX_MODELS) {
                                         GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " per MODELDEF entry!");
                                         gotErrors = true;
                                         break;

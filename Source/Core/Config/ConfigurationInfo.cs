@@ -31,7 +31,7 @@ using System.Collections.Specialized;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	internal class ConfigurationInfo : IComparable<ConfigurationInfo>
+	public class ConfigurationInfo : IComparable<ConfigurationInfo>
 	{
 		#region ================== Constants
 
@@ -69,16 +69,16 @@ namespace CodeImp.DoomBuilder.Config
 		public string Name { get { return name; } }
 		public string Filename { get { return filename; } }
 		public string DefaultLumpName { get { return defaultlumpname; } }
-		public string NodebuilderSave { get { return nodebuildersave; } set { nodebuildersave = value; } }
-		public string NodebuilderTest { get { return nodebuildertest; } set { nodebuildertest = value; } }
-		public DataLocationList Resources { get { return resources; } }
-		public string TestProgram { get { return testprogram; } set { testprogram = value; } }
-		public string TestParameters { get { return testparameters; } set { testparameters = value; } }
-		public bool TestShortPaths { get { return testshortpaths; } set { testshortpaths = value; } }
-		public int TestSkill { get { return testskill; } set { testskill = value; } }
-		public bool CustomParameters { get { return customparameters; } set { customparameters = value; } }
+		public string NodebuilderSave { get { return nodebuildersave; } internal set { nodebuildersave = value; } }
+		public string NodebuilderTest { get { return nodebuildertest; } internal set { nodebuildertest = value; } }
+		internal DataLocationList Resources { get { return resources; } }
+		public string TestProgram { get { return testprogram; } internal set { testprogram = value; } }
+		public string TestParameters { get { return testparameters; } internal set { testparameters = value; } }
+		public bool TestShortPaths { get { return testshortpaths; } internal set { testshortpaths = value; } }
+		public int TestSkill { get { return testskill; } internal set { testskill = value; } }
+		public bool CustomParameters { get { return customparameters; } internal set { customparameters = value; } }
 		internal ICollection<ThingsFilter> ThingsFilters { get { return thingsfilters; } }
-		public List<DefinedTextureSet> TextureSets { get { return texturesets; } }
+		internal List<DefinedTextureSet> TextureSets { get { return texturesets; } }
 		internal Dictionary<string, bool> EditModes { get { return editmodes; } }
 		public string StartMode { get { return startmode; } internal set { startmode = value; } }
 		
@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ConfigurationInfo(Configuration cfg, string filename)
+		internal ConfigurationInfo(Configuration cfg, string filename)
 		{
 			// Initialize
 			this.filename = filename;
@@ -145,6 +145,14 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Methods
 
+		/// <summary>
+		/// This returns the resource locations as configured.
+		/// </summary>
+		public DataLocationList GetResources()
+		{
+			return new DataLocationList(resources);
+		}
+
 		// This compares it to other ConfigurationInfo objects
 		public int CompareTo(ConfigurationInfo other)
 		{
@@ -153,7 +161,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		// This saves the settings to program configuration
-		public void SaveSettings()
+		internal void SaveSettings()
 		{
 			// Write to configuration
 			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuildersave", nodebuildersave);
@@ -203,7 +211,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		// This clones the object
-		public ConfigurationInfo Clone()
+		internal ConfigurationInfo Clone()
 		{
 			ConfigurationInfo ci = new ConfigurationInfo();
 			ci.name = this.name;
@@ -228,7 +236,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// This applies settings from an object
-		public void Apply(ConfigurationInfo ci)
+		internal void Apply(ConfigurationInfo ci)
 		{
 			this.name = ci.name;
 			this.filename = ci.filename;
@@ -251,7 +259,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// This applies the defaults
-		public void ApplyDefaults(GameConfiguration gameconfig)
+		internal void ApplyDefaults(GameConfiguration gameconfig)
 		{
 			// Some of the defaults can only be applied from game configuration
 			if(gameconfig != null)

@@ -239,17 +239,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				}
 			}
 
-            //mxd. check model state
-            if (General.Map.Data.ModeldefEntries.ContainsKey(Thing.Type)) {
-                ModeldefEntry mde = General.Map.Data.ModeldefEntries[Thing.Type];
-                if (mde.Model == null) {
-                    Thing.IsModel = General.Map.Data.LoadModelForThing(Thing);
-                } else {
-                    Thing.IsModel = true;
-                }
-            } else {
-                Thing.IsModel = false;
-            }
+            checkModelState(); //mxd. check model state
+            checkLightState(); //mxd. check gldefs light state
 			
 			// Apply settings
 			SetPosition(pos);

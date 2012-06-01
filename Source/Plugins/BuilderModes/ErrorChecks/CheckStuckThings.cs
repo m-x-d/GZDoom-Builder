@@ -41,19 +41,26 @@ using System.Drawing;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[ErrorChecker("Check stuck things", true, 1000)]
-	public class CheckStuckedThings : ErrorChecker
+	public class CheckStuckThings : ErrorChecker
 	{
 		#region ================== Constants
 
 		private const int PROGRESS_STEP = 10;
 		private const float ALLOWED_STUCK_DISTANCE = 6.0f;
 
+		enum StuckType
+		{
+			None = 0,
+			Line,
+			Thing
+		}
+
 		#endregion
 
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public CheckStuckedThings()
+		public CheckStuckThings()
 		{
 			// Total progress is done when all things are checked
 			SetTotalProgress(General.Map.Map.Things.Count / PROGRESS_STEP);
@@ -69,38 +76,44 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			BlockMap<BlockEntry> blockmap = BuilderPlug.Me.ErrorCheckForm.BlockMap;
 			int progress = 0;
 			int stepprogress = 0;
+
+			// List of things that have been checked for being stuck in other things,
+			// so that they don't show up twice
+			List<Thing> checkedthings = new List<Thing>();
 			
 			// Go for all the things
 			foreach(Thing t in General.Map.Map.Things)
 			{
 				ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
-				bool stucked = false;
-				
-				// Check this thing for getting stucked?
-				if( (info.ErrorCheck == ThingTypeInfo.THING_ERROR_INSIDE_STUCKED) &&
+				bool stuck = false;
+				StuckType stucktype = StuckType.None;
+
+				// Check this thing for getting stuck?
+				if( (info.ErrorCheck == ThingTypeInfo.THING_ERROR_INSIDE_STUCK) &&
 					(info.Blocking > ThingTypeInfo.THING_BLOCKING_NONE))
 				{
 					// Make square coordinates from thing
 					float blockingsize = t.Size - ALLOWED_STUCK_DISTANCE;
-					Vector2D lt = new Vector2D(t.Position.x - blockingsize, t.Position.y - blockingsize);
-					Vector2D rb = new Vector2D(t.Position.x + blockingsize, t.Position.y + blockingsize);
-					
-					// Go for all the lines to see if this thing is stucked
-					List<BlockEntry> blocks = blockmap.GetSquareRange(new RectangleF(lt.x, lt.y, (rb.x - lt.x), (rb.y - lt.y)));
+					Vector2D lt = new Vector2D(t.Position.x - blockingsize, t.Position.y + blockingsize);
+					Vector2D rb = new Vector2D(t.Position.x + blockingsize, t.Position.y - blockingsize);
+
+					// Go for all the lines to see if this thing is stuck
+					List<BlockEntry> blocks = blockmap.GetSquareRange(new RectangleF(lt.x, lt.y, (rb.x - lt.x), (lt.y - rb.y)));
 					Dictionary<Linedef, Linedef> doneblocklines = new Dictionary<Linedef, Linedef>(blocks.Count * 3);
+
 					foreach(BlockEntry b in blocks)
 					{
 						foreach(Linedef l in b.Lines)
 						{
-							// Only test when sinlge-sided and not already checked
-							if((l.Back == null) && !doneblocklines.ContainsKey(l))
+							// Only test when sinlge-sided, two-sided + impassable and not already checked
+							if(((l.Back == null) || l.IsFlagSet(General.Map.Config.ImpassableFlag)) && !doneblocklines.ContainsKey(l))
 							{
 								// Test if line ends are inside the thing
 								if(PointInRect(lt, rb, l.Start.Position) ||
 								   PointInRect(lt, rb, l.End.Position))
 								{
-									// Thing stucked in line!
-									stucked = true;
+									// Thing stuck in line!
+									stuck = true;
 								}
 								// Test if the line intersects the square
 								else if(Line2D.GetIntersection(l.Start.Position, l.End.Position, lt.x, lt.y, rb.x, lt.y) ||
@@ -108,22 +121,59 @@ namespace CodeImp.DoomBuilder.BuilderModes
 										Line2D.GetIntersection(l.Start.Position, l.End.Position, rb.x, rb.y, lt.x, rb.y) ||
 										Line2D.GetIntersection(l.Start.Position, l.End.Position, lt.x, rb.y, lt.x, lt.y))
 								{
-									// Thing stucked in line!
-									stucked = true;
+									// Thing stuck in line!
+									stuck = true;
+									stucktype = StuckType.Line;
 								}
 								
 								// Checked
 								doneblocklines.Add(l, l);
 							}
 						}
+
+						// Check if thing is stuck in other things
+						foreach (Thing ot in b.Things)
+						{
+							// Don't compare the thing with itself
+							if (t.Index == ot.Index) continue;
+
+							// Don't check things that have already been found to be stuck in
+							// other things
+							if (checkedthings.Contains(t)) continue;
+
+							// need to compare the flags
+							Dictionary<string, bool> flags1 = t.GetFlags();
+							Dictionary<string, bool> flags2 = ot.GetFlags();
+
+							// Make square coordinates from the other thing
+							float bsot = ot.Size /* - ALLOWED_STUCK_DISTANCE */;
+							Vector2D ltot = new Vector2D(ot.Position.x - bsot, ot.Position.y + bsot);
+							Vector2D rbot = new Vector2D(ot.Position.x + bsot, ot.Position.y - bsot);
+
+							if (ThingsOverlap(t, ot))
+							{
+								stuck = true;
+								stucktype = StuckType.Thing;
+								checkedthings.Add(ot);
+							}
+						}
 					}
 				}
 				
-				// Stucked?
-				if(stucked)
+				// Stuck?
+				if(stuck)
 				{
 					// Make result
-					SubmitResult(new ResultStuckedThing(t));
+					switch (stucktype)
+					{
+						case StuckType.Line:
+							SubmitResult(new ResultStuckThingInLine(t));
+							break;
+
+						case StuckType.Thing:
+							SubmitResult(new ResultStuckThingInThing(t));
+							break;
+					}
 				}
 				else
 				{
@@ -168,6 +218,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool PointInRect(Vector2D lt, Vector2D rb, Vector2D p)
 		{
 			return (p.x >= lt.x) && (p.x <= rb.x) && (p.y >= lt.y) && (p.y <= rb.y);
+		}
+
+		// Checks if two things overlap
+		private bool ThingsOverlap(Thing t1, Thing t2)
+		{
+			Vector3D p1 = t1.Position;
+			Vector3D p2 = t2.Position;
+
+			// simple bounding box collision detection
+			if (	p1.x + t1.Size < p2.x - t2.Size ||
+					p1.x - t1.Size > p2.x + t2.Size	||
+					p1.y - t1.Size > p2.y + t2.Size ||
+					p1.y + t1.Size < p2.y - t2.Size)
+				return false;
+
+			return true;
 		}
 		
 		#endregion

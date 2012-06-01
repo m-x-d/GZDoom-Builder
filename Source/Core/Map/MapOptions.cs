@@ -249,6 +249,14 @@ namespace CodeImp.DoomBuilder.Map
 			return resources.Count - 1;
 		}
 
+		/// <summary>
+		/// This returns the resource locations as configured.
+		/// </summary>
+		public DataLocationList GetResources()
+		{
+			return new DataLocationList(resources);
+		}
+
 		// This clears all reasource
 		internal void ClearResources()
 		{

@@ -232,7 +232,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if(geobuffer != null) geobuffer.Dispose();
 			geobuffer = null;
 			updategeo = true;
-            //checkedIfModel = false;
 		}
 		
 		// This is called resets when the device is reset
@@ -292,7 +291,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This sets the vertices for the thing sprite
 		protected void SetVertices(ICollection<WorldVertex> verts)
 		{
-			// Copy vertices
+            // Copy vertices
 			vertices = new WorldVertex[verts.Count];
 			verts.CopyTo(vertices, 0);
 			triangles = vertices.Length / 3;
@@ -306,15 +305,7 @@ namespace CodeImp.DoomBuilder.VisualModes
             if (updategeo)
 			{
                 //mxd. check if thing is model
-                if (General.Map.Data.ModeldefEntries.ContainsKey(thing.Type)) {
-                    ModeldefEntry mde = General.Map.Data.ModeldefEntries[thing.Type];
-                    if (mde.Model == null)
-                        thing.IsModel = General.Map.Data.LoadModelForThing(thing);
-                    else
-                        thing.IsModel = true;
-                } else {
-                    thing.IsModel = false;
-                }
+                checkModelState();
 
                 // Trash geometry buffer
                 if (geobuffer != null) geobuffer.Dispose();
@@ -334,37 +325,55 @@ namespace CodeImp.DoomBuilder.VisualModes
                 }
 
                 //mxd. Check if thing is light
-                int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
-                if (light_id != -1) {
-                    isGldefsLight = false;
-                    lightInterval = -1;
-                    updateLight(light_id);
-                    UpdateBoundingBox(lightRadius, lightRadius * 2);
-
-                //check if we have light from GLDEFS
-                } else if (General.Map.Data.GldefsEntries.ContainsKey(thing.Type)) {
-                    isGldefsLight = true;
-                    updateGldefsLight();
-                    UpdateBoundingBox(lightRadius, lightRadius * 2);
-                } else {
-                    if (thing.IsModel) {
-                        updateBoundingBoxForModel();
-                    } else {
-                        UpdateBoundingBox((int)thing.Size, thingHeight);
-                    }
-                    lightType = -1;
-                    lightRadius = -1;
-                    lightPrimaryRadius = -1;
-                    lightSecondaryRadius = -1;
-                    lightRenderStyle = -1;
-                    lightInterval = -1;
-                    isGldefsLight = false;
-                }
+                checkLightState();
 
 				// Done
 				updategeo = false;
 			}
 		}
+
+        //mxd
+        protected void checkModelState() {
+            if (General.Map.Data.ModeldefEntries.ContainsKey(thing.Type)) {
+                if (General.Map.Data.ModeldefEntries[thing.Type].Model == null)
+                    thing.IsModel = General.Map.Data.LoadModelForThing(thing);
+                else
+                    thing.IsModel = true;
+            } else {
+                thing.IsModel = false;
+            }
+        }
+
+        //mxd
+        protected void checkLightState() {
+            //mxd. Check if thing is light
+            int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
+            if (light_id != -1) {
+                isGldefsLight = false;
+                lightInterval = -1;
+                updateLight(light_id);
+                UpdateBoundingBox(lightRadius, lightRadius * 2);
+
+                //check if we have light from GLDEFS
+            } else if (General.Map.Data.GldefsEntries.ContainsKey(thing.Type)) {
+                isGldefsLight = true;
+                updateGldefsLight();
+                UpdateBoundingBox(lightRadius, lightRadius * 2);
+            } else {
+                if (thing.IsModel) {
+                    updateBoundingBoxForModel();
+                } else {
+                    UpdateBoundingBox((int)thing.Size, thingHeight);
+                }
+                lightType = -1;
+                lightRadius = -1;
+                lightPrimaryRadius = -1;
+                lightSecondaryRadius = -1;
+                lightRenderStyle = -1;
+                lightInterval = -1;
+                isGldefsLight = false;
+            }
+        }
 
         //used in ColorPicker to update light 
         public void UpdateLight() {

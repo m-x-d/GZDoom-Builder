@@ -76,6 +76,9 @@ namespace CodeImp.DoomBuilder.GZBuilder
         public static void OnMapOpenEnd() {
             UDMF = (General.Map.Config.FormatInterface == "UniversalMapSetIO");
             General.MainWindow.UpdateGZDoomPannel();
+
+            //dbg
+            //GZBuilder.GZGeneral.Trace("GameConfiguration: loaded gametype " + General.Map.Config.GameType);
         }
 
         public static void OnReloadResources() {

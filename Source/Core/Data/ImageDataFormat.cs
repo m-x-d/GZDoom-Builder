@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.Data
 		private static readonly int[] PNG_SIGNATURE = new int[] { 137, 80, 78, 71, 13, 10, 26, 10 };
 		private static readonly int[] GIF_SIGNATURE = new int[] { 71, 73, 70 };
 		private static readonly int[] BMP_SIGNATURE = new int[] { 66, 77 };
+		private static readonly int[] DDS_SIGNATURE = new int[] { 68, 68, 83, 32 };
 
 		// This check image data and returns the appropriate image reader
 		public static IImageReader GetImageReader(Stream data, int guessformat, Playpal palette)
@@ -59,7 +60,11 @@ namespace CodeImp.DoomBuilder.Data
 				// Check for PNG signature
 				data.Seek(0, SeekOrigin.Begin);
 				if(CheckSignature(data, PNG_SIGNATURE)) return new FileImageReader();
-				
+
+				// Check for DDS signature
+				data.Seek(0, SeekOrigin.Begin);
+				if(CheckSignature(data, DDS_SIGNATURE)) return new FileImageReader();
+
 				// Check for GIF signature
 				data.Seek(0, SeekOrigin.Begin);
 				if(CheckSignature(data, GIF_SIGNATURE)) return new FileImageReader();
