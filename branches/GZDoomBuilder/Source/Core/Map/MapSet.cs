@@ -654,7 +654,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new thing and returns it.</summary>
 		public Thing CreateThing()
 		{
-			if(numthings == General.Map.FormatInterface.MaxThings)
+            if(numthings == General.Map.FormatInterface.MaxThings)
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of things reached.");
 				return null;
@@ -669,7 +669,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new thing and returns it.</summary>
 		public Thing CreateThing(int index)
 		{
-			if(numthings == General.Map.FormatInterface.MaxThings)
+            if(numthings == General.Map.FormatInterface.MaxThings)
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of things reached.");
 				return null;

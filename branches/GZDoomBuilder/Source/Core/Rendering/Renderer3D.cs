@@ -685,6 +685,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This performs a single render pass
 		private void RenderSinglePass(int pass)
 		{
+            Color4 fogColor;
             int currentshaderpass = shaderpass;
 			int highshaderpass = shaderpass + 2;
 			
@@ -779,14 +780,8 @@ namespace CodeImp.DoomBuilder.Rendering
                             if (wantedshaderpass > 7) {
                                 graphics.Shaders.World3D.World = world;
 
-                                bool sectorHasFogColor = true;
-                                if(GZBuilder.GZGeneral.UDMF && sector.Sector.Fields.ContainsKey("fadecolor")){
-                                    graphics.Shaders.World3D.LightColor = new Color4( (int)sector.Sector.Fields["fadecolor"].Value );
-                                }else{
-                                    graphics.Shaders.World3D.LightColor = new Color4(); //black
-                                    sectorHasFogColor = false;
-                                }
-
+                                bool sectorHasFogColor = getFogColor(sector.Sector, out fogColor);
+                                graphics.Shaders.World3D.LightColor = fogColor;
                                 graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(sector.Sector, sectorHasFogColor));
                             }
                             
@@ -850,12 +845,12 @@ namespace CodeImp.DoomBuilder.Rendering
                                         wantedshaderpass += 8;
 
                                     //mxd. if current thing is light - set it's color to light color
-                                    if (t.LightType != -1 && !fullbrightness) {
+                                    if (Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness) {
                                         wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
                                         graphics.Shaders.World3D.VertexColor = t.LightColor;
                                     //mxd. check if Thing is affected by dynamic lights and set color accordingly
                                     }else if (General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0) {
-                                        Color4 litColor = getLitColor(t.PositionV3);
+                                        Color4 litColor = getLitColorForThing(t);
                                         if (litColor.ToArgb() != 0) {
                                             wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
                                             graphics.Shaders.World3D.VertexColor = new Color4(t.VertexColor) + litColor;
@@ -885,17 +880,11 @@ namespace CodeImp.DoomBuilder.Rendering
 
                                     //mxd. set variables for fog rendering
                                     if (wantedshaderpass > 7) {
-                                        Sector sector = t.Thing.Sector;
                                         graphics.Shaders.World3D.World = world;
 
-                                        bool sectorHasFogColor = true;
-                                        if (GZBuilder.GZGeneral.UDMF && sector.Fields.ContainsKey("fadecolor")) {
-                                            graphics.Shaders.World3D.LightColor = new Color4((int)sector.Fields["fadecolor"].Value);
-                                        } else {
-                                            graphics.Shaders.World3D.LightColor = new Color4(); //black
-                                            sectorHasFogColor = false;
-                                        }
-                                        graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(sector, sectorHasFogColor));
+                                        bool sectorHasFogColor = getFogColor(t.Thing.Sector, out fogColor);
+                                        graphics.Shaders.World3D.LightColor = fogColor;
+                                        graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(t.Thing.Sector, sectorHasFogColor));
                                     }
 
                                     graphics.Shaders.World3D.ApplySettings();
@@ -947,11 +936,12 @@ namespace CodeImp.DoomBuilder.Rendering
 
                         for (i = 0; i < count; i++) {
                             if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
-                                lpr = lights[i].LightPositionAndRadius;
+                                lpr = new Vector4(lights[i].Center,lights[i].LightRadius) ;
                                 if (lpr.W == 0)
                                     continue;
                                 graphics.Shaders.World3D.LightColor = lights[i].LightColor;
-                                graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
+                                //graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
+                                graphics.Shaders.World3D.LightPositionAndRadius = lpr;
                                 graphics.Shaders.World3D.ApplySettings();
                                 graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
                             }
@@ -965,11 +955,13 @@ namespace CodeImp.DoomBuilder.Rendering
 
                         for (i = lightOffsets[0]; i < count; i++) {
                             if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
-                                lpr = lights[i].LightPositionAndRadius;
+                                //lpr = lights[i].LightPositionAndRadius;
+                                lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
                                 if (lpr.W == 0)
                                     continue;
                                 graphics.Shaders.World3D.LightColor = lights[i].LightColor;
-                                graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
+                                //graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
+                                graphics.Shaders.World3D.LightPositionAndRadius = lpr;
                                 graphics.Shaders.World3D.ApplySettings();
                                 graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
                            }
@@ -983,12 +975,14 @@ namespace CodeImp.DoomBuilder.Rendering
 
                         for (i = lightOffsets[0] + lightOffsets[1]; i < count; i++) {
                             if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
-                                lpr = lights[i].LightPositionAndRadius;
+                                //lpr = lights[i].LightPositionAndRadius;
+                                lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
                                 if (lpr.W == 0)
                                     continue;
                                 Color4 lc = lights[i].LightColor;
                                 graphics.Shaders.World3D.LightColor = new Color4(lc.Alpha, (lc.Green + lc.Blue) / 2, (lc.Red + lc.Blue) / 2, (lc.Green + lc.Red) / 2);
-                                graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
+                                //graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
+                                graphics.Shaders.World3D.LightPositionAndRadius = lpr;
                                 graphics.Shaders.World3D.ApplySettings();
                                 graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
                             }
@@ -1006,6 +1000,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
         //mxd. render models
         private void RenderModels() {
+            Color4 fogColor;
             int shaderpass = fullbrightness ? 1 : 4;
             int currentshaderpass = shaderpass;
             int highshaderpass = shaderpass + 2;
@@ -1019,7 +1014,7 @@ namespace CodeImp.DoomBuilder.Rendering
                     vertexColor.Alpha = 1.0f;
                     //check if model is affected by dynamic lights and set color accordingly
                     if (General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0) {
-                        Color4 litColor = getLitColor(t.PositionV3);
+                        Color4 litColor = getLitColorForThing(t);
                         graphics.Shaders.World3D.VertexColor = vertexColor + litColor;
                     } else {
                         graphics.Shaders.World3D.VertexColor = vertexColor;
@@ -1054,21 +1049,12 @@ namespace CodeImp.DoomBuilder.Rendering
 
                     //mxd. set variables for fog rendering
                     if (wantedshaderpass > 7) {
-                        Sector sector = t.Thing.Sector;
                         graphics.Shaders.World3D.World = world;
 
-                        bool sectorHasFogColor = true;
-                        if (GZBuilder.GZGeneral.UDMF && sector.Fields.ContainsKey("fadecolor")) {
-                            graphics.Shaders.World3D.LightColor = new Color4((int)sector.Fields["fadecolor"].Value);
-                        } else {
-                            graphics.Shaders.World3D.LightColor = new Color4(); //black
-                            sectorHasFogColor = false;
-                        }
-                        graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(sector, sectorHasFogColor));
+                        bool sectorHasFogColor = getFogColor(t.Thing.Sector, out fogColor);
+                        graphics.Shaders.World3D.LightColor = fogColor;
+                        graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(t.Thing.Sector, sectorHasFogColor));
                     }
-
-                    //dbg
-                    //GZBuilder.GZGeneral.TraceInHeader("Using shader #"+wantedshaderpass);
 
                     for (int i = 0; i < group.Key.Model.NUM_MESHES; i++) {
                         if (!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, group.Key.Model.Textures[i]);
@@ -1084,16 +1070,20 @@ namespace CodeImp.DoomBuilder.Rendering
         }
 
         //mxd. This gets color from dynamic lights based on distance to thing. 
-        //WARNING: thing position must be in absolute cordinates 
+        //thing position must be in absolute cordinates 
         //(thing.Position.Z value is relative to floor of the sector the thing is in)
-        //so use visualThing.PositionV3 instead
-        private Color4 getLitColor(Vector3 thingPosition) {
+        private Color4 getLitColorForThing(VisualThing t) {
             Color4 litColor = new Color4();
             float radius, radiusSquared, distSquared, scaler;
             int sign;
 
             for (int i = 0; i < thingsWithLight.Count; i++ ) {
-                distSquared = Vector3.DistanceSquared(thingsWithLight[i].Center, thingPosition);
+                //don't light self
+                if (General.Map.Data.GldefsEntries.ContainsKey(t.Thing.Type) && General.Map.Data.GldefsEntries[t.Thing.Type].DontLightSelf && t.Thing.Index == thingsWithLight[i].Thing.Index) {
+                    continue;
+                }
+
+                distSquared = Vector3.DistanceSquared(thingsWithLight[i].Center, t.PositionV3);
                 radius = thingsWithLight[i].LightRadius;
                 radiusSquared = radius * radius;
                 if (distSquared < radiusSquared) {
@@ -1109,12 +1099,27 @@ namespace CodeImp.DoomBuilder.Rendering
 
         //mxd. This returns distance, at which fog color completely replaces texture color for given sector
         private float getFogEnd(Sector s, bool sectorHasFogColor) {
-            //TODO: check if MapInfo has fog settings and apply them 
             float brightness = (float)Math.Max(30, s.Brightness);
             if (sectorHasFogColor) {
                 return brightness * 11.0f;
             }
-            return (float)Math.Pow(2.0f, brightness / 10.0f);
+            return (float)Math.Pow(2.0f, brightness / 11.0f);
+        }
+
+        //mxd. returns true if sector has fog color
+        private bool getFogColor(Sector sector, out Color4 color) {
+            if (GZBuilder.GZGeneral.UDMF && sector.Fields.ContainsKey("fadecolor")) {
+                color = new Color4((int)sector.Fields["fadecolor"].Value);
+                return true;
+            } else if (General.Map.Data.MapInfo.HasOutsideFogColor && sector.CeilTexture == General.Map.Config.SkyFlatName) {
+                color = General.Map.Data.MapInfo.OutsideFogColor;
+                return true;
+            } else if (General.Map.Data.MapInfo.HasFadeColor) {
+                color = General.Map.Data.MapInfo.FadeColor;
+                return true;
+            }
+            color = new Color4(); //black
+            return false;
         }
 
 		// This calculates the highlight/selection color

@@ -73,6 +73,9 @@ namespace CodeImp.DoomBuilder
 				erroradded = false;
 				warningadded = false;
 				errors.Clear();
+
+                //mxd
+                General.MainWindow.SetWarningsCount(0);
 			}
 		}
 		
@@ -98,6 +101,9 @@ namespace CodeImp.DoomBuilder
 				}
 				changed = true;
 				General.WriteLogLine(prefix + message);
+                
+                //mxd
+                General.MainWindow.SetWarningsCount(errors.Count);
 			}
 		}
 		

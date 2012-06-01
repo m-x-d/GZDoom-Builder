@@ -1,0 +1,444 @@
+// -----------------------
+// -- Hexen Decorations --
+// -----------------------
+
+// Candles
+flickerlight2 HCANDLES
+{
+    color 1.0 1.0 0.0
+    size 16
+    secondarySize 20
+    interval 0.1
+}
+
+object ZCandle
+{
+    frame CNDL { light HCANDLES }
+}
+
+// Twined torch
+flickerlight2 TWINETORCH
+{
+    color 1.0 0.7 0.0
+    size 46
+    secondarySize 52
+    interval 0.1
+    offset 0 64 0
+}
+
+object ZTwinedTorch
+{
+    frame TWTRA { light TWINETORCH }
+    frame TWTRB { light TWINETORCH }
+    frame TWTRC { light TWINETORCH }
+    frame TWTRD { light TWINETORCH }
+    frame TWTRE { light TWINETORCH }
+    frame TWTRF { light TWINETORCH }
+    frame TWTRG { light TWINETORCH }
+    frame TWTRH { light TWINETORCH }
+}
+
+object ZTwinedTorchUnlit
+{
+    frame TWTRA { light TWINETORCH }
+    frame TWTRB { light TWINETORCH }
+    frame TWTRC { light TWINETORCH }
+    frame TWTRD { light TWINETORCH }
+    frame TWTRE { light TWINETORCH }
+    frame TWTRF { light TWINETORCH }
+    frame TWTRG { light TWINETORCH }
+    frame TWTRH { light TWINETORCH }
+}
+
+
+// Wall torch
+flickerlight2 WALLTORCH2
+{
+    color 1.0 0.7 0.0
+    size 24
+    secondarySize 28
+    interval 0.1
+    offset 0 24 0
+}
+
+object ZWallTorch
+{
+    frame WLTRA { light WALLTORCH2 }
+    frame WLTRB { light WALLTORCH2 }
+    frame WLTRC { light WALLTORCH2 }
+    frame WLTRD { light WALLTORCH2 }
+    frame WLTRE { light WALLTORCH2 }
+    frame WLTRF { light WALLTORCH2 }
+    frame WLTRG { light WALLTORCH2 }
+    frame WLTRH { light WALLTORCH2 }
+}
+
+
+object ZWallTorchUnlit
+{
+    frame WLTRA { light WALLTORCH2 }
+    frame WLTRB { light WALLTORCH2 }
+    frame WLTRC { light WALLTORCH2 }
+    frame WLTRD { light WALLTORCH2 }
+    frame WLTRE { light WALLTORCH2 }
+    frame WLTRF { light WALLTORCH2 }
+    frame WLTRG { light WALLTORCH2 }
+    frame WLTRH { light WALLTORCH2 }
+}
+
+
+// Fire bull
+flickerlight2 FIREBULL
+{
+    color 1.0 0.7 0.0
+    size 64
+    secondarySize 70
+    interval 0.1
+    offset 0 40 0
+}
+
+object ZFireBull
+{
+    frame FBULA { light FIREBULL }
+    frame FBULB { light FIREBULL }
+    frame FBULC { light FIREBULL }
+    frame FBULD { light FIREBULL }
+    frame FBULE { light FIREBULL }
+    frame FBULF { light FIREBULL }
+    frame FBULG { light FIREBULL }
+    frame FBULH { light FIREBULL }
+}
+
+object ZFireBullUnlit
+{
+    frame FBULA { light FIREBULL }
+    frame FBULB { light FIREBULL }
+    frame FBULC { light FIREBULL }
+    frame FBULD { light FIREBULL }
+    frame FBULE { light FIREBULL }
+    frame FBULF { light FIREBULL }
+    frame FBULG { light FIREBULL }
+    frame FBULH { light FIREBULL }
+}
+
+
+// Cauldron
+flickerlight2 CAULFLAME
+{
+    color 1.0 0.9 0.0
+    size 24
+    secondarySize 26
+    interval 0.1
+}
+
+object ZCauldron
+{
+    frame CDRNB { light CAULFLAME }
+    frame CDRNC { light CAULFLAME }
+    frame CDRND { light CAULFLAME }
+    frame CDRNE { light CAULFLAME }
+    frame CDRNF { light CAULFLAME }
+    frame CDRNG { light CAULFLAME }
+    frame CDRNH { light CAULFLAME }
+}
+
+object ZCauldronUnlit
+{
+    frame CDRNB { light CAULFLAME }
+    frame CDRNC { light CAULFLAME }
+    frame CDRND { light CAULFLAME }
+    frame CDRNE { light CAULFLAME }
+    frame CDRNF { light CAULFLAME }
+    frame CDRNG { light CAULFLAME }
+    frame CDRNH { light CAULFLAME }
+}
+
+// Blue candle
+flickerlight2 BCANDLE
+{
+    color 0.3 0.3 1.0
+    size 14
+    secondarySize 16
+    interval 0.1
+}
+
+object ZBlueCandle
+{
+    frame CAND { light BCANDLE }
+}
+
+// Small flame
+object FlameSmall
+{
+    frame FFSM { light HCANDLES }
+}
+
+object FlameSmallTemp
+{
+    frame FFSM { light HCANDLES }
+}
+
+// Large flame
+flickerlight2 LARGEFLAME
+{
+    color 1.0 0.7 0.0
+    size 40
+    secondarySize 48
+    interval 0.1
+}
+
+object FlameLarge
+{
+    frame FFLG { light LARGEFLAME }
+}
+
+object FlameLargeTemp
+{
+    frame FFLG { light LARGEFLAME }
+}
+
+// Chandelier
+flickerlight2 CHANDELIER
+{
+    color 1.0 1.0 0.0
+    size 64
+    secondarySize 68
+    interval 0.1
+}
+
+object ZChandelier
+{
+    frame CDLR { light CHANDELIER }
+}
+
+// Brass torch
+flickerlight2 BRASSTORCH
+{
+    color 1.0 0.7 0.0
+    size 40
+    secondarySize 48
+    interval 0.1
+    offset 0 32 0
+}
+
+object BrassTorch
+{
+    frame BRTR { light BRASSTORCH }
+}
+
+// Skull flame
+object FireThing
+{
+    frame FSKL { light BRASSTORCH }
+}
+
+// Teleport smoke
+flickerlight2 TELESMOKE
+{
+    color 1.0 0.0 0.0
+    size 64
+    secondarySize 72
+    interval 0.1
+    offset 0 44 0
+}
+
+object TeleSmoke
+{
+    frame TSMK { light TELESMOKE }
+}
+
+// Fireball
+pointlight HFIREBALL
+{
+    color 1.0 0.4 0.0
+    size 48
+}
+
+object FireBall
+{
+    frame FBL1A { light HFIREBALL }
+    frame FBL1B { light HFIREBALL }
+}
+
+// -----------------
+// -- Hexen Items --
+// -----------------
+
+// Blue mana
+pointlight MANA1
+{
+    color 0.0 0.0 0.7
+    size 24
+    offset 0 36 0
+}
+
+object Mana1
+{
+    frame MAN1 { light MANA1 }
+}
+
+// Green mana
+pointlight MANA2
+{
+    color 0.0 0.6 0.0
+    size 24
+    offset 0 36 0
+}
+
+object Mana2
+{
+    frame MAN2 { light MANA2 }
+}
+
+// Combined mana
+pointlight MANA3
+{
+    color 0.7 0.0 0.0
+    size 24
+    offset 0 36 0
+}
+
+object Mana3
+{
+    frame MAN3 { light MANA3 }
+}
+
+// ZXmasTree
+flickerlight2 XMASFIRE1
+{
+    color 1.0 0.7 0.0
+    size 16
+    secondarySize 24
+    interval 0.1
+    offset 0 48 0
+}
+
+
+flickerlight2 XMASFIRE2
+{
+    color 1.0 0.8 0.0
+    size 32
+    secondarySize 48
+    interval 0.1
+    offset 0 48 0
+}
+
+
+flickerlight2 XMASFIRE3
+{
+    color 1.0 0.9 0.0
+    size 48
+    secondarySize 64
+    interval 0.1
+    offset 0 32 0
+}
+
+
+flickerlight2 XMASFIRE4
+{
+    color 1.0 0.8 0.0
+    size 32
+    secondarySize 40
+    interval 0.1
+    offset 0 120 0
+}
+
+
+flickerlight2 XMASFIRE5
+{
+    color 1.0 0.7 0.0
+    size 12
+    secondarySize 20
+    interval 0.1
+    offset 0 140 0
+}
+
+
+flickerlight2 XMASFIRE6
+{
+    color 1.0 0.8 0.0
+    size 10
+    secondarySize 14
+    interval 0.1
+    offset 0 148 0
+}
+
+
+object ZXmasTree
+{
+    frame XMASB { light XMASFIRE1 }
+    frame XMASC { light XMASFIRE2 }
+    frame XMASD { light XMASFIRE3 }
+    frame XMASE { light XMASFIRE3 }
+    frame XMASF { light XMASFIRE4 }
+    frame XMASG { light XMASFIRE5 }
+    frame XMASH { light XMASFIRE6 }
+}
+
+
+
+
+// TreeDestructible
+flickerlight2 TDESTRUCT1
+{
+    color 1.0 0.8 0.0
+    size 48
+    secondarySize 56
+    interval 0.1
+    offset 0 32 0
+}
+
+
+flickerlight2 TDESTRUCT2
+{
+    color 1.0 0.9 0.0
+    size 56
+    secondarySize 72
+    interval 0.1
+    offset 0 32 0
+}
+
+
+flickerlight2 TDESTRUCT3
+{
+    color 1.0 0.8 0.0
+    size 40
+    secondarySize 48
+    interval 0.1
+    offset 0 20 0
+}
+
+
+flickerlight2 TDESTRUCT4
+{
+    color 1.0 0.7 0.0
+    size 16
+    secondarySize 24
+    interval 0.1
+    offset 0 12 0
+}
+
+flickerlight2 TDESTRUCT5
+{
+    color 1.0 0.7 0.0
+    size 8
+    secondarySize 12
+    interval 0.1
+    offset 0 4 0
+}
+
+
+
+
+object TreeDestructible
+{
+    frame TRDTH { light TDESTRUCT1 }
+    frame TRDTI { light TDESTRUCT2 }
+    frame TRDTJ { light TDESTRUCT2 }
+    frame TRDTK { light TDESTRUCT2 }
+    frame TRDTL { light TDESTRUCT2 }
+    frame TRDTM { light TDESTRUCT3 }
+    frame TRDTN { light TDESTRUCT4 }
+    frame TRDTO { light TDESTRUCT4 }
+    frame TRDTP { light TDESTRUCT5 }
+}

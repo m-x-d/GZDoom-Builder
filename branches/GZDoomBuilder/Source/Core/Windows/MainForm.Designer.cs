@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.Windows
             System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
             System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+            System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.seperatorfileopen = new System.Windows.Forms.ToolStripSeparator();
             this.seperatorfilerecent = new System.Windows.Forms.ToolStripSeparator();
@@ -99,6 +100,9 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemcreateprefab = new System.Windows.Forms.ToolStripMenuItem();
             this.menutools = new System.Windows.Forms.ToolStripMenuItem();
             this.itemreloadresources = new System.Windows.Forms.ToolStripMenuItem();
+            this.itemReloadModedef = new System.Windows.Forms.ToolStripMenuItem();
+            this.itemReloadGldefs = new System.Windows.Forms.ToolStripMenuItem();
+            this.itemReloadMapinfo = new System.Windows.Forms.ToolStripMenuItem();
             this.itemshowerrors = new System.Windows.Forms.ToolStripMenuItem();
             this.seperatortoolsresources = new System.Windows.Forms.ToolStripSeparator();
             this.configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -167,6 +171,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemzoomfittoscreen = new System.Windows.Forms.ToolStripMenuItem();
             this.xposlabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.yposlabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.warnsLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.panelinfo = new System.Windows.Forms.Panel();
             this.heightpanel1 = new System.Windows.Forms.Panel();
             this.vertexinfo = new CodeImp.DoomBuilder.Controls.VertexInfoPanel();
@@ -184,11 +189,13 @@ namespace CodeImp.DoomBuilder.Windows
             this.dockersspace = new System.Windows.Forms.Panel();
             this.dockerspanel = new CodeImp.DoomBuilder.Controls.DockersControl();
             this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
+            this.warntimer = new System.Windows.Forms.Timer(this.components);
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.menumain.SuspendLayout();
             this.toolbar.SuspendLayout();
             this.statusbar.SuspendLayout();
@@ -222,6 +229,12 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             toolStripSeparator2.Name = "toolStripSeparator2";
             toolStripSeparator2.Size = new System.Drawing.Size(153, 6);
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new System.Drawing.Size(6, 23);
             // 
             // seperatorfileopen
             // 
@@ -760,6 +773,9 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             this.menutools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.itemreloadresources,
+            this.itemReloadModedef,
+            this.itemReloadGldefs,
+            this.itemReloadMapinfo,
             this.itemshowerrors,
             this.seperatortoolsresources,
             this.configurationToolStripMenuItem,
@@ -777,6 +793,30 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemreloadresources.Tag = "builder_reloadresources";
             this.itemreloadresources.Text = "&Reload Resources";
             this.itemreloadresources.Click += new System.EventHandler(this.InvokeTaggedAction);
+            // 
+            // itemReloadModedef
+            // 
+            this.itemReloadModedef.Name = "itemReloadModedef";
+            this.itemReloadModedef.Size = new System.Drawing.Size(196, 22);
+            this.itemReloadModedef.Tag = "builder_gzreloadmodeldef";
+            this.itemReloadModedef.Text = "Reload MODELDEF";
+            this.itemReloadModedef.Click += new System.EventHandler(this.InvokeTaggedAction);
+            // 
+            // itemReloadGldefs
+            // 
+            this.itemReloadGldefs.Name = "itemReloadGldefs";
+            this.itemReloadGldefs.Size = new System.Drawing.Size(196, 22);
+            this.itemReloadGldefs.Tag = "builder_gzreloadgldefs";
+            this.itemReloadGldefs.Text = "Reload GLDEFS";
+            this.itemReloadGldefs.Click += new System.EventHandler(this.InvokeTaggedAction);
+            // 
+            // itemReloadMapinfo
+            // 
+            this.itemReloadMapinfo.Name = "itemReloadMapinfo";
+            this.itemReloadMapinfo.Size = new System.Drawing.Size(196, 22);
+            this.itemReloadMapinfo.Tag = "builder_gzreloadmapinfo";
+            this.itemReloadMapinfo.Text = "Reload (Z)MAPINFO";
+            this.itemReloadMapinfo.Click += new System.EventHandler(this.InvokeTaggedAction);
             // 
             // itemshowerrors
             // 
@@ -1259,10 +1299,12 @@ namespace CodeImp.DoomBuilder.Windows
             toolStripSeparator1,
             this.zoomlabel,
             this.buttonzoom,
-            toolStripSeparator9,
+            toolStripSeparator3,
             this.xposlabel,
             this.poscommalabel,
-            this.yposlabel});
+            this.yposlabel,
+            toolStripSeparator9,
+            this.warnsLabel});
             this.statusbar.Location = new System.Drawing.Point(0, 670);
             this.statusbar.Name = "statusbar";
             this.statusbar.ShowItemToolTips = true;
@@ -1275,7 +1317,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.statuslabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.statuslabel.Name = "statuslabel";
-            this.statuslabel.Size = new System.Drawing.Size(396, 18);
+            this.statuslabel.Size = new System.Drawing.Size(309, 18);
             this.statuslabel.Spring = true;
             this.statuslabel.Text = "Initializing user interface...";
             this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1507,6 +1549,20 @@ namespace CodeImp.DoomBuilder.Windows
             this.yposlabel.Text = "0";
             this.yposlabel.ToolTipText = "Current X, Y coordinates on map";
             // 
+            // warnsLabel
+            // 
+            this.warnsLabel.AutoSize = false;
+            this.warnsLabel.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
+            this.warnsLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.warnsLabel.Name = "warnsLabel";
+            this.warnsLabel.Size = new System.Drawing.Size(44, 18);
+            this.warnsLabel.Text = "0";
+            this.warnsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.warnsLabel.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.warnsLabel.ToolTipText = "Click to open Errors and Warnings window";
+            this.warnsLabel.Click += new System.EventHandler(this.warnsLabel_Click);
+            // 
             // panelinfo
             // 
             this.panelinfo.Controls.Add(this.heightpanel1);
@@ -1681,6 +1737,11 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             this.dockerscollapser.Interval = 200;
             this.dockerscollapser.Tick += new System.EventHandler(this.dockerscollapser_Tick);
+            // 
+            // warntimer
+            // 
+            this.warntimer.Interval = 500;
+            this.warntimer.Tick += new System.EventHandler(this.warntimer_Tick);
             // 
             // MainForm
             // 
@@ -1875,5 +1936,10 @@ namespace CodeImp.DoomBuilder.Windows
         private System.Windows.Forms.ToolStripButton buttontoggleanimatedlight;
         private System.Windows.Forms.ToolStripButton buttontogglefx;
         private System.Windows.Forms.ToolStripButton buttontogglefog;
+        private System.Windows.Forms.ToolStripStatusLabel warnsLabel;
+        private System.Windows.Forms.Timer warntimer;
+        private System.Windows.Forms.ToolStripMenuItem itemReloadModedef;
+        private System.Windows.Forms.ToolStripMenuItem itemReloadGldefs;
+        private System.Windows.Forms.ToolStripMenuItem itemReloadMapinfo;
 	}
 }

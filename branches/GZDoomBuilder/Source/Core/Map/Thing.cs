@@ -28,6 +28,8 @@ using System.Drawing;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.VisualModes;
 
+using CodeImp.DoomBuilder.GZBuilder.Data;
+
 #endregion
 
 namespace CodeImp.DoomBuilder.Map
@@ -72,7 +74,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Properties
 
 		public MapSet Map { get { return map; } }
-		public int Type { get { return type; } set { BeforePropsChange(); type = value; } }
+        public int Type { get { return type; } set { BeforePropsChange(); type = value; } }
 		public Vector3D Position { get { return pos; } }
 		public float Angle { get { return anglerad; } }
 		public int AngleDoom { get { return angledoom; } }

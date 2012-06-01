@@ -29,6 +29,8 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Editing;
 
+using CodeImp.DoomBuilder.GZBuilder.Data;
+
 #endregion
 
 namespace CodeImp.DoomBuilder.Config
@@ -131,6 +133,9 @@ namespace CodeImp.DoomBuilder.Config
 		// Defaults
 		private List<DefinedTextureSet> texturesets;
 		private List<ThingsFilter> thingfilters;
+
+        //mxd. Holds base game type (doom, heretic, hexen or strife)
+        private GameType gameType;
 		
 		#endregion
 
@@ -221,6 +226,9 @@ namespace CodeImp.DoomBuilder.Config
 		// Defaults
 		internal List<DefinedTextureSet> TextureSets { get { return texturesets; } }
 		public List<ThingsFilter> ThingsFilters { get { return thingfilters; } }
+
+        //mxd
+        public GameType GameType { get { return gameType; } }
 		
 		#endregion
 
@@ -260,6 +268,10 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
+
+            //mxd
+            gameType = (GameType)(cfg.ReadSetting("basegame", (int)GameType.UNKNOWN));
+
 			enginename = cfg.ReadSetting("engine", "");
 			defaultsavecompiler = cfg.ReadSetting("defaultsavecompiler", "");
 			defaulttestcompiler = cfg.ReadSetting("defaulttestcompiler", "");

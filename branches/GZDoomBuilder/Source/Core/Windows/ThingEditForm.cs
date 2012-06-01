@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
 
@@ -243,20 +244,31 @@ namespace CodeImp.DoomBuilder.Windows
 			if(arg2label.Enabled) arg2.ForeColor = SystemColors.WindowText; else arg2.ForeColor = SystemColors.GrayText;
 			if(arg3label.Enabled) arg3.ForeColor = SystemColors.WindowText; else arg3.ForeColor = SystemColors.GrayText;
 			if(arg4label.Enabled) arg4.ForeColor = SystemColors.WindowText; else arg4.ForeColor = SystemColors.GrayText;
-			arg0.Setup(arginfo[0]);
-			arg1.Setup(arginfo[1]);
-			arg2.Setup(arginfo[2]);
-			arg3.Setup(arginfo[3]);
-			arg4.Setup(arginfo[4]);
+
+            arg0.Setup(arginfo[0]);
+            arg1.Setup(arginfo[1]);
+            arg2.Setup(arginfo[2]);
+            arg3.Setup(arginfo[3]);
+            arg4.Setup(arginfo[4]);
 
 			// Zero all arguments when linedef action 0 (normal) is chosen
 			if(!preventchanges && (showaction == 0))
 			{
-				arg0.SetValue(0);
-				arg1.SetValue(0);
-				arg2.SetValue(0);
-				arg3.SetValue(0);
-				arg4.SetValue(0);
+                //mxd. If thing is light, set default light settings
+                int[] args = GZDoomLight.GetDefaultLightSettings(thingtype.GetResult(1));
+                if (args != null) {
+                    arg0.SetValue(args[0]);
+                    arg1.SetValue(args[1]);
+                    arg2.SetValue(args[2]);
+                    arg3.SetValue(args[3]);
+                    arg4.SetValue(args[4]);
+                } else {
+                    arg0.SetValue(0);
+                    arg1.SetValue(0);
+                    arg2.SetValue(0);
+                    arg3.SetValue(0);
+                    arg4.SetValue(0);
+                }
 			}
 		}
 

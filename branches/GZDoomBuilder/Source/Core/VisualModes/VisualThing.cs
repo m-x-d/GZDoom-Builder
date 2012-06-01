@@ -38,6 +38,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 //mxd
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 
 #endregion
 
@@ -93,6 +94,10 @@ namespace CodeImp.DoomBuilder.VisualModes
         private Vector3 position_v3;
         private float lightDelta; //used in light animation
         private Vector3[] boundingBox;
+        //gldefs light
+        private Vector3 lightOffset;
+        private int lightInterval;
+        private bool isGldefsLight;
 		
 		#endregion
 		
@@ -110,7 +115,14 @@ namespace CodeImp.DoomBuilder.VisualModes
         //mxd
         internal int VertexColor { get { return vertices.Length > 0 ? vertices[0].c : 0;} }
         public int CameraDistance3D { get { return cameraDistance3D; } }
-        public Vector3 Center { get { return new Vector3(position_v3.X, position_v3.Y, position_v3.Z + thingHeight / 2); } }
+        public Vector3 Center { 
+            get 
+            {
+                if (isGldefsLight)
+                    return position_v3 + lightOffset;
+                return new Vector3(position_v3.X, position_v3.Y, position_v3.Z + thingHeight / 2); 
+            } 
+        }
         public Vector3 PositionV3 { get { return position_v3; } }
         public Vector3[] BoundingBox { get { return boundingBox; } }
         //mxd. light properties
@@ -118,7 +130,7 @@ namespace CodeImp.DoomBuilder.VisualModes
         public float LightRadius { get { return lightRadius; } }
         public int LightRenderStyle { get { return lightRenderStyle; } }
         public Color4 LightColor { get { return lightColor; } }
-        public Vector4 LightPositionAndRadius { get { return new Vector4(Center, lightRadius);} }
+        //public Vector4 LightPositionAndRadius { get { return new Vector4(Center, lightRadius);} }
 
 		/// <summary>
 		/// Set to True to use billboarding for this thing. When using billboarding,
@@ -171,6 +183,7 @@ namespace CodeImp.DoomBuilder.VisualModes
             lightRenderStyle = -1;
             lightPrimaryRadius = -1;
             lightSecondaryRadius = -1;
+            lightInterval = -1;
             lightColor = new Color4();
             boundingBox = new Vector3[9];
 			
@@ -323,7 +336,15 @@ namespace CodeImp.DoomBuilder.VisualModes
                 //mxd. Check if thing is light
                 int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
                 if (light_id != -1) {
+                    isGldefsLight = false;
+                    lightInterval = -1;
                     updateLight(light_id);
+                    UpdateBoundingBox(lightRadius, lightRadius * 2);
+
+                //check if we have light from GLDEFS
+                } else if (General.Map.Data.GldefsEntries.ContainsKey(thing.Type)) {
+                    isGldefsLight = true;
+                    updateGldefsLight();
                     UpdateBoundingBox(lightRadius, lightRadius * 2);
                 } else {
                     if (thing.IsModel) {
@@ -336,6 +357,8 @@ namespace CodeImp.DoomBuilder.VisualModes
                     lightPrimaryRadius = -1;
                     lightSecondaryRadius = -1;
                     lightRenderStyle = -1;
+                    lightInterval = -1;
+                    isGldefsLight = false;
                 }
 
 				// Done
@@ -348,8 +371,6 @@ namespace CodeImp.DoomBuilder.VisualModes
             int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
             if (light_id != -1) {
                 updateLight(light_id);
-
-                //if (Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, lightType) != -1)
                 UpdateBoundingBox(lightRadius, lightRadius * 2);
             }
         }
@@ -399,7 +420,36 @@ namespace CodeImp.DoomBuilder.VisualModes
         }
 
         //mxd
+        private void updateGldefsLight() {
+            GZDoomLight light = General.Map.Data.GldefsEntries[thing.Type];
+            float intensity_mod = General.Settings.GZDynamicLightIntensity;
+            float scale_mod = General.Settings.GZDynamicLightRadius;
+
+            //apply settings
+            lightRenderStyle = light.Subtractive ? (int)GZDoomLightRenderStyle.NEGATIVE : (int)GZDoomLightRenderStyle.NORMAL;
+            lightColor = new Color4((float)lightRenderStyle / 100.0f, light.Color.Red * intensity_mod, light.Color.Green * intensity_mod, light.Color.Blue * intensity_mod);
+            lightOffset = light.Offset;
+            lightType = light.Type;
+
+            if (lightType == (int)GZDoomLightType.SECTOR) {
+                lightPrimaryRadius = light.Interval * thing.Sector.Brightness / 5;
+            } else {
+                lightPrimaryRadius = light.PrimaryRadius * scale_mod;
+                lightSecondaryRadius = light.SecondaryRadius * scale_mod;
+            }
+
+            lightInterval = light.Interval;
+
+            updateLightRadius(lightInterval);
+        }
+
+        //mxd
         public void UpdateLightRadius() {
+            updateLightRadius( (lightInterval != -1 ? lightInterval : thing.AngleDoom) );
+        }
+
+        //mxd
+        private void updateLightRadius(int interval) {
             if (lightType == -1) {
                 General.ErrorLogger.Add(ErrorType.Error, "Please check that thing is light before accessing it's PositionAndRadius! You can use lightType, which is -1 if thing isn't light");
                 return;
@@ -425,7 +475,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
             //pulse
             if (lightType == (int)GZDoomLightType.PULSE) {
-                lightDelta = ((float)Math.Sin(time / (thing.AngleDoom * 4.0f)) + 1.0f) / 2.0f; //just playing by the eye here... in [0.0 ... 1.0] interval
+                lightDelta = ((float)Math.Sin(time / (interval * 4.0f)) + 1.0f) / 2.0f; //just playing by the eye here... in [0.0 ... 1.0] interval
                 lightRadius = rMin + diff * lightDelta;
             //flicker
             } else if (lightType == (int)GZDoomLightType.FLICKER) {
@@ -433,7 +483,7 @@ namespace CodeImp.DoomBuilder.VisualModes
                 float delta = (float)Math.Sin(time / 0.1f); //just playing by the eye here...
                 if (Math.Sign(delta) != Math.Sign(lightDelta)) {
                     lightDelta = delta;
-                    if (new Random().Next(0, 359) < thing.AngleDoom) 
+                    if (new Random().Next(0, 359) < interval) 
                         lightRadius = rMax;
                     else
                         lightRadius = rMin;
@@ -441,7 +491,7 @@ namespace CodeImp.DoomBuilder.VisualModes
             //random
             } else if (lightType == (int)GZDoomLightType.RANDOM) {
                 //float delta = (float)Math.Sin(time / (thing.AngleDoom));
-                float delta = (float)Math.Sin(time / (thing.AngleDoom * 9.0f)); //just playing by the eye here...
+                float delta = (float)Math.Sin(time / (interval * 9.0f)); //just playing by the eye here...
                 if (Math.Sign(delta) != Math.Sign(lightDelta))
                     lightRadius = rMin + (float)(new Random().Next(0, (int)(diff * 10))) / 10.0f;
                 lightDelta = delta;

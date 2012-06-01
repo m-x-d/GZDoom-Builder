@@ -84,7 +84,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 
         //mxd
         private Vector3[] boundingBox;
-        //private Vector3D normal;
 		
 		#endregion
 
@@ -167,14 +166,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 			triangles = vertices.Length / 3;
             
             //mxd
-            CalculateNormalsAndShading();
+            CalculateNormals();
 
 			if(sector != null) sector.NeedsUpdateGeo = true;
 		}
 
-        //mxd. Taken from OpenGl wiki 
-        protected void CalculateNormalsAndShading() {
-            if (vertices.Length > 0) {
+        //mxd. Normals calculation algorithm taken from OpenGl wiki 
+        protected void CalculateNormals() {
+            if (triangles > 0) {
                 int startIndex;
                 Vector3 U, V;
 
@@ -193,21 +192,6 @@ namespace CodeImp.DoomBuilder.VisualModes
                     p1.ny = p2.ny = p3.ny = -(U.Z * V.X - U.X * V.Z);
                     p1.nz = p2.nz = p3.nz = -(U.X * V.Y - U.Y * V.X);
 
-                    //doom-style walls shading
-                    //not very apropriate place to put this, but most convinient :)
-                    if (sidedef != null) {
-                        float valMod = 1.0f - Math.Abs((float)Math.Sin(sidedef.Angle)) * 0.07f; //0.07
-                        PixelColor pc = PixelColor.FromInt(p1.c);
-
-                        pc.r = (byte)((float)pc.r * valMod);
-                        pc.g = (byte)((float)pc.g * valMod);
-                        pc.b = (byte)((float)pc.b * valMod);
-
-                        int c = pc.ToInt();
-                        p1.c = c;
-                        p2.c = c;
-                        p3.c = c;
-                    }
                     vertices[startIndex] = p1;
                     vertices[startIndex + 1] = p2;
                     vertices[startIndex + 2] = p3;

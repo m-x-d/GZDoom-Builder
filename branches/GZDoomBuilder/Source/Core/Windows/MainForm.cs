@@ -156,6 +156,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 		// Updating
 		private int lockupdatecount;
+
+        //mxd
+        private bool warnStatus; //status of warnings panel icon
 		
 		#endregion
 
@@ -2281,7 +2284,13 @@ namespace CodeImp.DoomBuilder.Windows
 		private void UpdateToolsMenu()
 		{
 			// Enable/disable items
-			itemreloadresources.Enabled = (General.Map != null);
+            bool enabled = (General.Map != null);
+			itemreloadresources.Enabled = enabled;
+            
+            //mxd
+            itemReloadGldefs.Enabled = enabled;
+            itemReloadMapinfo.Enabled = enabled;
+            itemReloadModedef.Enabled = enabled;
 		}
 		
 		// Errors and Warnings
@@ -2291,6 +2300,8 @@ namespace CodeImp.DoomBuilder.Windows
 			ErrorsForm errform = new ErrorsForm();
 			errform.ShowDialog(this);
 			errform.Dispose();
+            //mxd
+            SetWarningsCount(0);
 		}
 		
 		// Game Configuration action
@@ -2670,6 +2681,39 @@ namespace CodeImp.DoomBuilder.Windows
 					break;
 			}
 		}
+
+        //mxd. Warnings panel
+        internal void SetWarningsCount(int count) {
+            if (count == 0) {
+                if (warnsLabel.Font.Bold) {
+                    warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);
+                    warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
+                }
+                warntimer.Stop();
+                warnStatus = false;
+            } else if (!warnsLabel.Font.Bold) {
+                warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Bold);
+                warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+                warnStatus = true;
+                warntimer.Start();
+            }
+            warnsLabel.Text = count.ToString();
+        }
+
+        //mxd
+        private void warnsLabel_Click(object sender, EventArgs e) {
+            ShowErrors();
+        }
+
+        //mxd
+        private void warntimer_Tick(object sender, EventArgs e) {
+            if (warnStatus) {
+                warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
+            } else {
+                warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+            }
+            warnStatus = !warnStatus;
+        }
 		
 		#endregion
 		

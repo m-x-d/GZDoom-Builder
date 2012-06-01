@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
 
@@ -434,6 +435,74 @@ namespace CodeImp.DoomBuilder.Data
                     streams.Add(s, LoadFile(s));
                 }
             }
+
+            return streams;
+        }
+
+        #endregion
+
+        #region ================== (Z)MAPINFO
+        
+        //mxd
+        public override Dictionary<string, Stream> GetMapinfoData() {
+            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+            // Error when suspended
+            if (issuspended) throw new Exception("Data reader is suspended");
+
+            //mapinfo should be in root folder
+            string[] allFiles = GetAllFiles("", false);
+            string fileName;
+
+            //try to find (z)mapinfo
+            foreach (string s in allFiles) {
+                fileName = s.ToLowerInvariant();
+                if (fileName.IndexOf("zmapinfo") != -1 || fileName.IndexOf("mapinfo") != -1)
+                    streams.Add(s, LoadFile(s));
+            }
+
+            return streams;
+        }
+
+        #endregion
+
+        #region ================== GLDEFS
+
+        //mxd
+        public override Dictionary<string, Stream> GetGldefsData(GameType gameType) {
+            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+            // Error when suspended
+            if (issuspended) throw new Exception("Data reader is suspended");
+
+            //at least one of gldefs should be in root folder
+            string[] allFiles = GetAllFiles("", false);
+
+            //try to load game specific GLDEFS first
+            string lumpName = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gameType].ToLowerInvariant();
+            foreach (string s in allFiles) {
+                if (s.ToLowerInvariant().IndexOf(lumpName) != -1)
+                    streams.Add(s, LoadFile(s));
+            }
+
+            //can be several entries
+            lumpName = "gldefs";
+            foreach (string s in allFiles) {
+                if (s.ToLowerInvariant().IndexOf(lumpName) != -1)
+                    streams.Add(s, LoadFile(s));
+            }
+
+            return streams;
+        }
+
+        //mxd
+        public override Dictionary<string, Stream> GetGldefsData(string location) {
+            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+            // Error when suspended
+            if (issuspended) throw new Exception("Data reader is suspended");
+
+            Stream s = LoadFile(location);
+
+            if (s != null)
+                streams.Add(location, s);
 
             return streams;
         }

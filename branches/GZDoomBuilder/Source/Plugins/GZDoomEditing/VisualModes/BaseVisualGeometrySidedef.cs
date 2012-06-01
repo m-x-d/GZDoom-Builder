@@ -162,14 +162,15 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			List<WallPolygon> polygons = new List<WallPolygon>(poly);
 			List<WorldVertex> verts = new List<WorldVertex>();
-			
+
 			// Go for all levels to build geometry
 			for(int i = sd.LightLevels.Count - 1; i >= 0; i--)
 			{
 				SectorLevel l = sd.LightLevels[i];
+
 				if((l != sd.Floor) && (l != sd.Ceiling) && (l.type != SectorLevelType.Floor))
 				{
-					// Go for all polygons
+                    // Go for all polygons
 					int num = polygons.Count;
 					for(int pi = 0; pi < num; pi++)
 					{
@@ -180,7 +181,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						{
 							// Determine color
 							int lightlevel = lightabsolute ? lightvalue : l.brightnessbelow + lightvalue;
-							PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel));
+                            //mxd
+                            //PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel));
+							PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
 							PixelColor wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
 							np.color = wallcolor.WithAlpha(255).ToInt();
 							
@@ -225,7 +228,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			
 			return verts;
 		}
-		
 		
 		// This splits a polygon with a plane and returns the other part as a new polygon
 		// The polygon is expected to be convex and clockwise

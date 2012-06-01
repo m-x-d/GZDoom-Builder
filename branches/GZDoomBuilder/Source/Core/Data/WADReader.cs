@@ -27,6 +27,7 @@ using System.IO;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
 
@@ -793,7 +794,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#endregion
 
-		#region ================== Things
+		#region ================== Decorate, Gldefs, Mapinfo
 
 		// This finds and returns a sprite stream
 		public override List<Stream> GetDecorateData(string pname)
@@ -816,6 +817,71 @@ namespace CodeImp.DoomBuilder.Data
 			
 			return streams;
 		}
+
+        //mxd
+        public override Dictionary<string, Stream> GetMapinfoData() {
+            if (issuspended) throw new Exception("Data reader is suspended");
+
+            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+            int lumpindex;
+            string src = "ZMAPINFO";
+
+            //should be only one entry per wad
+            //first look for ZMAPINFO
+            lumpindex = file.FindLumpIndex(src);
+
+            //then for MAPINFO
+            if (lumpindex == -1) {
+                src = "MAPINFO";
+                lumpindex = file.FindLumpIndex(src);
+            }
+
+            if(lumpindex != -1)
+                streams.Add(src, file.Lumps[lumpindex].Stream);
+
+            return streams;
+        }
+
+        //mxd
+        public override Dictionary<string, Stream> GetGldefsData(GameType gameType) {
+            if (issuspended) throw new Exception("Data reader is suspended");
+
+            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+            int lumpindex;
+
+            //try to load game specific GLDEFS first
+            if (gameType != GameType.UNKNOWN) {
+                string lumpName = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gameType];
+                lumpindex = file.FindLumpIndex(lumpName);
+
+                if (lumpindex != -1)
+                    streams.Add(lumpName, file.Lumps[lumpindex].Stream);
+            }
+
+            //should be only one entry per wad
+            lumpindex = file.FindLumpIndex("GLDEFS");
+            
+            if (lumpindex != -1)
+                streams.Add("GLDEFS", file.Lumps[lumpindex].Stream);
+
+            return streams;
+        }
+
+        //mxd
+        public override Dictionary<string, Stream> GetGldefsData(string location) {
+            if (issuspended) throw new Exception("Data reader is suspended");
+
+            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+            int lumpindex;
+
+            lumpindex = file.FindLumpIndex(location);
+            
+            if (lumpindex != -1)
+                streams.Add(location, file.Lumps[lumpindex].Stream);
+
+            return streams;
+        }
+
 		#endregion
 	}
 }

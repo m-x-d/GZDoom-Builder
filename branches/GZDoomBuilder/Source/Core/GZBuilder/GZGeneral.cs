@@ -21,7 +21,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
         //gzdoom light types
         private static int[] gzLights = { /* normal lights */ 9800, 9801, 9802, 9803, 9804, /* additive lights */ 9810, 9811, 9812, 9813, 9814, /* negative lights */ 9820, 9821, 9822, 9823, 9824, /* vavoom lights */ 1502, 1503};
         public static int[] GZ_LIGHTS { get { return gzLights; } }
-        private static int[] gzLightTypes = { 5, 10, 15 }; //this is actually offsets in gz_lights
+        private static int[] gzLightTypes = { 5, 10, 15 }; //these are actually offsets in gz_lights
         public static int[] GZ_LIGHT_TYPES { get { return gzLightTypes; } }
         private static int[] gzAnimatedLightTypes = { (int)GZDoomLightType.FLICKER, (int)GZDoomLightType.RANDOM, (int)GZDoomLightType.PULSE };
         public static int[] GZ_ANIMATED_LIGHT_TYPES {  get { return gzAnimatedLightTypes; } }
@@ -31,7 +31,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
         //public static float[] FogTable; // light to fog conversion table for black fog
 
         //version
-        public const float Version = 1.06f;
+        public const float Version = 1.07f;
 
         //debug console
 #if DEBUG
@@ -87,7 +87,6 @@ namespace CodeImp.DoomBuilder.GZBuilder
 //debug
         public static void LogAndTraceWarning(string message) {
             General.ErrorLogger.Add(ErrorType.Warning, message);
-            General.WriteLogLine(message);
 #if DEBUG
             Trace(message);
 #endif
@@ -172,6 +171,25 @@ namespace CodeImp.DoomBuilder.GZBuilder
 
             General.MainWindow.RedrawDisplay();
             General.MainWindow.UpdateGZDoomPannel();
+        }
+
+        //main menu actions
+        [BeginAction("gzreloadmodeldef")]
+        private static void reloadModeldef() {
+            if(General.Map != null)
+                General.Map.Data.ReloadModeldef();
+        }
+
+        [BeginAction("gzreloadgldefs")]
+        private static void reloadGldefs() {
+            if (General.Map != null)
+                General.Map.Data.ReloadGldefs();
+        }
+
+        [BeginAction("gzreloadmapinfo")]
+        private static void reloadMapInfo() {
+            if (General.Map != null)
+                General.Map.Data.ReloadMapInfo();
         }
     }
 }
