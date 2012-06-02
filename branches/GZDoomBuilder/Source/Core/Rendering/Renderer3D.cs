@@ -996,6 +996,8 @@ namespace CodeImp.DoomBuilder.Rendering
 
             foreach (KeyValuePair<ModeldefEntry, List<VisualThing>> group in thingsWithModel) {
                 foreach (VisualThing t in group.Value) {
+                    t.Update();
+                    
                     Color4 vertexColor = new Color4(t.VertexColor);
                     vertexColor.Alpha = 1.0f;
                     //check if model is affected by dynamic lights and set color accordingly
@@ -1173,18 +1175,20 @@ namespace CodeImp.DoomBuilder.Rendering
                 }
             }
 
+            if (!isThingOnScreen(t.BoundingBox)) {
+                return;
+            }
+
             //mxd. gather models
             if (General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected) && t.Thing.IsModel) {
                 ModeldefEntry mde = General.Map.Data.ModeldefEntries[t.Thing.Type];
 
-                if (!isThingOnScreen(t.BoundingBox))
-                    return;
+                //if (!isThingOnScreen(t.BoundingBox))
+                    //return;
 
                 if (!thingsWithModel.ContainsKey(mde)) 
                     thingsWithModel.Add(mde, new List<VisualThing>());
                 thingsWithModel[mde].Add(t);
-            }else if (!isThingOnScreen(t.BoundingBox)) {
-                return;
             }
             
             // Make sure the distance to camera is calculated

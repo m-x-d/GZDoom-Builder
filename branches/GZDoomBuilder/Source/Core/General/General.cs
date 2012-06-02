@@ -575,7 +575,7 @@ namespace CodeImp.DoomBuilder
 			// Remove the previous log file and start logging
 			if(File.Exists(logfile)) File.Delete(logfile);
             //mxd
-            General.WriteLogLine("GZDoomBuilder " + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Version + " startup");
+            General.WriteLogLine("GZDoom Builder " + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Version + " startup");
 			//General.WriteLogLine("Doom Builder " + thisversion.Major + "." + thisversion.Minor + " startup");
 			General.WriteLogLine("Application path:        " + apppath);
 			General.WriteLogLine("Temporary path:          " + temppath);

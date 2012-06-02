@@ -202,9 +202,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					pos.z = Thing.Sector.CeilHeight - info.Height;
 				}
 			}
-
-            checkModelState(); //mxd. check model state
-            checkLightState(); //mxd. check gldefs light state
 			
 			// Apply settings
 			SetPosition(pos);

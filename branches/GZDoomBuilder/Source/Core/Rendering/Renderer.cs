@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
         //mxd. This calculates wall brightness level with doom-style shading
         public int CalculateBrightness(int level, Sidedef sd) {
-            if (!General.Map.Data.MapInfo.EvenLighting && sd != null) {
+            if (level < 253 && !General.Map.Data.MapInfo.EvenLighting && sd != null) {
                 //all walls are shaded by their angle
                 if (General.Map.Data.MapInfo.SmoothLighting) {
                     float ammount = Math.Abs((float)Math.Sin(sd.Angle));
