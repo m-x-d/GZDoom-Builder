@@ -65,7 +65,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This builds the geometry. Returns false when no geometry created.
 		public override bool Setup()
 		{
-			int brightness = mode.CalculateBrightness(Sidedef.Sector.Brightness);
+			//mxd
+            //int brightness = mode.CalculateBrightness(Sidedef.Sector.Brightness);
+            int brightness = mode.CalculateBrightness(Sidedef.Sector.Brightness, Sidedef);
 
 			// Calculate size of this wall part
 			float geotop = (float)Sidedef.Sector.CeilHeight;

@@ -238,9 +238,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
 				}
 			}
-
-            checkModelState(); //mxd. check model state
-            checkLightState(); //mxd. check gldefs light state
 			
 			// Apply settings
 			SetPosition(pos);
