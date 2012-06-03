@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Text;
 using System.Collections.Generic;
 
 using CodeImp.DoomBuilder;
+using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.GZBuilder.Data;
@@ -25,12 +27,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
             mde.ModelNames.CopyTo(modelNames);
             mde.TextureNames.CopyTo(textureNames);
 
-            //should never happen
-            /*if (modelNames.Length != textureNames.Length || textureNames.Length == 0 || modelNames.Length == 0) {
-                General.ErrorLogger.Add(ErrorType.Warning, "MD3Reader: wrong parse params! (modelPaths=" + modelNames.ToString() + "; texturePaths=" + textureNames.ToString() + ")");
-                return;
-            }*/
-
             mde.Model = new GZModel();
             mde.Model.NUM_MESHES = (byte)modelNames.Length;
 
@@ -41,7 +37,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
                 if (reader.FileExists(modelPath)) {
                     MemoryStream stream = reader.LoadFile(modelPath);
-                    General.WriteLogLine("MD3Reader: loading '" + modelPath + "'");
+                    General.WriteLogLine("ModelLoader: loading '" + modelPath + "'");
 
                     //mesh
                     string ext = modelNames[i].Substring(modelNames[i].Length - 4);
@@ -56,20 +52,41 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                         string texturePath = Path.Combine(mde.Path, textureNames[i]);
                         
                         if (textureNames[i] != TextureData.INVALID_TEXTURE && reader.FileExists(texturePath)) {
-                            mde.Model.Textures.Add(Texture.FromStream(D3DDevice, reader.LoadFile(texturePath)));
+                            if (Path.GetExtension(texturePath) == ".pcx") { //pcx format requires special handling...
+                                FileImageReader fir = new FileImageReader();
+                                Bitmap bitmap = fir.ReadAsBitmap(reader.LoadFile(texturePath));
+
+                                if (bitmap != null) {
+                                    BitmapData bmlock = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
+                                    Texture texture = new Texture(D3DDevice, bitmap.Width, bitmap.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+
+                                    DataRectangle textureLock = texture.LockRectangle(0, LockFlags.None);
+                                    textureLock.Data.WriteRange(bmlock.Scan0, bmlock.Height * bmlock.Stride);
+
+                                    bitmap.UnlockBits(bmlock);
+                                    texture.UnlockRectangle(0);
+
+                                    mde.Model.Textures.Add(texture);
+                                } else {
+                                    mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
+                                    GZBuilder.GZGeneral.LogAndTraceWarning("ModelLoader: unable to load texture '" + texturePath + "'");
+                                }
+                            } else {
+                                mde.Model.Textures.Add(Texture.FromStream(D3DDevice, reader.LoadFile(texturePath)));
+                            }
                         } else {
                             mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
                             if (textureNames[i] != TextureData.INVALID_TEXTURE)
-                                GZBuilder.GZGeneral.LogAndTraceWarning("MD3Reader: unable to load texture '" + texturePath + "' - no such file");
+                                GZBuilder.GZGeneral.LogAndTraceWarning("ModelLoader: unable to load texture '" + texturePath + "' - no such file");
                         }
                     } else {
-                        GZBuilder.GZGeneral.LogAndTraceWarning("MD3Reader: error while loading " + modelPath + ": " + error);
+                        GZBuilder.GZGeneral.LogAndTraceWarning("ModelLoader: error while loading " + modelPath + ": " + error);
                         mde.Model.NUM_MESHES--;
                     }
                     stream.Dispose();
 
                 } else {
-                    GZBuilder.GZGeneral.LogAndTraceWarning("MD3Reader: unable to load model '" + modelPath + "' - no such file");
+                    GZBuilder.GZGeneral.LogAndTraceWarning("ModelLoader: unable to load model '" + modelPath + "' - no such file");
                     mde.Model.NUM_MESHES--;
                 }
             }

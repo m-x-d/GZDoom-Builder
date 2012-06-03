@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("GZDoom Builder")]
-[assembly: AssemblyDescription("Doom, Heretic and Hexen map editor")]
+[assembly: AssemblyDescription("GZDoom map editor")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CodeImp, MaxED")]
 [assembly: AssemblyProduct("GZDoom Builder")]
@@ -29,4 +29,4 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.1.2.1556")]
+[assembly: AssemblyVersion("2.1.2.1557")]
