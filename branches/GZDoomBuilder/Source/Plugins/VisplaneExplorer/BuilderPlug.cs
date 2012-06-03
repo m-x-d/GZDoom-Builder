@@ -91,7 +91,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		{
 			base.OnMapOpenBegin();
 
-			if(palettes == null)
+            if (palettes == null)
 			{
 				// Load palettes
 				palettes = new Palette[(int)ViewStats.NumStats];
@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// This applies user-defined appearance colors to the palettes
 		private void ApplyUserColors()
 		{
-			if(palettes != null)
+            if(palettes != null)
 			{
 				// Override special palette indices with user-defined colors
 				for(int i = 0; i < palettes.Length; i++)
