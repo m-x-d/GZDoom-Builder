@@ -28,6 +28,7 @@
 #define TEXFLAG_TOP				1
 #define TEXFLAG_MIDDLE			2
 #define TEXFLAG_BOTTOM			4
+#define TEXFLAG_ADDOFFSET		8
 
 #define GAME_SINGLE_PLAYER      0
 #define GAME_NET_COOPERATIVE    1
@@ -251,6 +252,15 @@
 #define APROP_Notrigger		23
 #define APROP_DamageFactor	24
 #define APROP_MasterTID 	25
+#define APROP_TargetTID 	26
+#define APROP_TracerTID 	27
+#define APROP_Waterlevel	28
+#define APROP_ScaleX        29
+#define APROP_ScaleY        30
+#define APROP_Dormant		31
+#define APROP_Mass			32
+#define APROP_Accuracy      33
+#define APROP_Stamina       34
 
 // Render Styles ------------------------------------------------------------
 
@@ -501,9 +511,6 @@
 #define T_SNAKEPROJECTILEBIG    139
 #define T_WIZARDSHOT            140
 
-// All D'Sparil teleport destinations must be spawned before D'Sparil alone.
-// D'Sparil can be spawned alone manually, and he is also spawned automatically
-// when he "dies" on his serpent.
 #define T_DSPARILTELEPORTDEST   141
 #define T_DSPARILONSERPENT      142
 #define T_DSPARILALONE          143
@@ -637,6 +644,34 @@
 #define SECSEQ_CEILING			2
 #define SECSEQ_FULLHEIGHT		3
 #define SECSEQ_INTERIOR			4
+
+// Actor pointer selectors
+
+#DEFINE	AAPTR_DEFAULT 0
+#DEFINE	AAPTR_NULL 0x1
+#DEFINE	AAPTR_TARGET 0x2
+#DEFINE	AAPTR_MASTER 0x4
+#DEFINE	AAPTR_TRACER 0x8
+
+#DEFINE	AAPTR_PLAYER_GETTARGET 0x10
+#DEFINE	AAPTR_PLAYER_GETCONVERSATION 0x20
+
+#DEFINE	AAPTR_PLAYER1 0x40
+#DEFINE	AAPTR_PLAYER2 0x80
+#DEFINE	AAPTR_PLAYER3 0x100
+#DEFINE	AAPTR_PLAYER4 0x200
+#DEFINE	AAPTR_PLAYER5 0x400
+#DEFINE	AAPTR_PLAYER6 0x800
+#DEFINE	AAPTR_PLAYER7 0x1000
+#DEFINE	AAPTR_PLAYER8 0x2000
+
+#DEFINE AAPTR_FRIENDPLAYER 0x4000
+
+// Actor pointer operation flags
+
+#DEFINE PTROP_UNSAFETARGET 1
+#DEFINE PTROP_UNSAFEMASTER 2
+#DEFINE PTROP_NOSAFEGUARDS PTROP_UNSAFETARGET |PTROP_UNSAFEMASTER 
 
 // ==========================================================================
 // Skulltag Definitions
@@ -789,6 +824,8 @@
 
 #define SECF_SILENT 1
 #define SECF_NOFALLINGDAMAGE 2
+#define SECF_FLOORDROP 4
+#define SECF_NORESPAWN 8
 
 #define BLOCKF_CREATURES 1
 #define BLOCKF_MONSTERS 2
@@ -798,6 +835,7 @@
 #define BLOCKF_EVERYTHING 32
 #define BLOCKF_RAILING 64
 #define BLOCKF_USE 128
+#define BLOCKF_SIGHT 256
 
 #define FOGP_DENSITY 0
 #define FOGP_OUTSIDEDENSITY 1
@@ -807,4 +845,5 @@
 #define PRINTNAME_LEVEL -2
 #define PRINTNAME_SKILL -3
 
-
+#define CSF_NOFAKEFLOORS 1
+#define CSF_NOBLOCKALL 2
