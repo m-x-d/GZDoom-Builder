@@ -83,12 +83,12 @@ special
 	 76:TeleportOther(3),
 	 77:TeleportGroup(5),
 	 78:TeleportInSector(4,5),
-	 
+	 79:Thing_SetConversation(2),
 	 80:ACS_Execute(2,5),
 	 81:ACS_Suspend(2),
 	 82:ACS_Terminate(2),
 	 83:ACS_LockedExecute(5),
-	 84:ACS_ExecuteWithResult(1,4),
+	 84:ACS_ExecuteWithResult(1,5),
 	 85:ACS_LockedExecuteDoor(5),
 	 86:Polyobj_MoveToSpot(3),
 	 87:Polyobj_Stop(1),
@@ -101,6 +101,8 @@ special
 	 94:Pillar_BuildAndCrush(4,5),
 	 95:FloorAndCeiling_LowerByValue(3),
 	 96:FloorAndCeiling_RaiseByValue(3),
+	 97:Ceiling_LowerAndCrushDist(3,5),
+	 98:Sector_SetTranslucent(3,4),
 
 //	100:Scroll_Texture_Left
 //	101:Scroll_Texture_Right
@@ -129,7 +131,7 @@ special
 	130:Thing_Activate(1),
 	131:Thing_Deactivate(1),
 	132:Thing_Remove(1),
-	133:Thing_Destroy(1,2),
+	133:Thing_Destroy(1,3),
 	134:Thing_Projectile(5),
 	135:Thing_Spawn(3,4),
 	136:Thing_ProjectileGravity(5),
@@ -151,6 +153,7 @@ special
 //	160:Sector_Set3DFloor				// GZDoom/Vavoom
 //	161:Sector_SetContents				// Vavoom
 	
+	168:Ceiling_CrushAndRaiseDist(3,5),
 	169:Generic_Crusher2(5),
 	170:Sector_SetCeilingScale2(3),
 	171:Sector_SetFloorScale2(3),
@@ -223,7 +226,7 @@ special
 	239:Floor_RaiseByValueTxTy(3),
 	240:Floor_RaiseByTexture(2),
 	241:Floor_LowerToLowestTxTy(2),
-	242:Floor_LowerToHighest(3),
+	242:Floor_LowerToHighest(3,4),
 	243:Exit_Normal(1),
 	244:Exit_Secret(1),
 	245:Elevator_RaiseToNearest(2),
@@ -250,7 +253,7 @@ special
 	-9:GetActorVelX(1),
 	-10:GetActorVelY(1),
 	-11:GetActorVelZ(1),
-	-12:SetActivator(1),
+	-12:SetActivator(1,2),
 	-13:SetActivatorToTarget(1),
 	-14:GetActorViewHeight(1),
 	-15:GetChar(2),
@@ -273,6 +276,17 @@ special
 	-32:SoundSequenceOnPolyobj(2),
 	-33:GetPolyobjX(1),
 	-34:GetPolyobjY(1),
+	-35:CheckSight(3),
+	-36:SpawnForced(6),
+	-37:AnnouncerSound(2),
+	-38:SetPointer(2,4),
+	-39:ACS_NamedExecute(2,5),
+	-40:ACS_NamedSuspend(2),
+	-41:ACS_NamedTerminate(2),
+	-42:ACS_NamedLockedExecute(5),
+	-43:ACS_NamedLockedExecuteDoor(5),
+	-44:ACS_NamedExecuteWithResult(1,4),
+	-45:ACS_NamedExecuteAlways(2,5),
 
 	-1000:__EndOfList__(10);
 	
