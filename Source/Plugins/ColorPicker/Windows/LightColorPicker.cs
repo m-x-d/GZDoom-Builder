@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 
             int selCount = selection.Count;
             if (selCount == 0) {
-                Plug.DisplayStatus(StatusType.Warning, "No lights found in selection!");
+                General.Interface.DisplayStatus(StatusType.Warning, "No lights found in selection!");
                 return false;
             }
 

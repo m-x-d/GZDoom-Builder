@@ -115,13 +115,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			return Color.FromArgb(a, r, g, b);
 		}
-		
-		// To ColorRef (alpha-less)
-		public int ToColorRef()
+
+        //To ColorRef (alpha-less). mxd. Changed function name to more descriptive one...
+		public int ToInversedColorRef()
 		{
-			//mxd
-            //return ((int)r + ((int)b << 16) + ((int)g << 8));
-            return (((int)r << 16) + ((int)g << 8) + (int)b);
+            return ((int)r + ((int)b << 16) + ((int)g << 8));
+            //return (((int)r << 16) + ((int)g << 8) + (int)b);
 		}
 		
 		// To ColorValue

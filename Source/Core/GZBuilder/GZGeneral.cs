@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.Actions;

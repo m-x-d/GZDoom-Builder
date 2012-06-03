@@ -714,7 +714,8 @@ namespace CodeImp.DoomBuilder.Rendering
 						if(g.Sector.NeedsUpdateGeo) g.Sector.Update();
 
 						// Only do this sector when a vertexbuffer is created
-						if(g.Sector.GeometryBuffer != null)
+                        //mxd. no Map means that sector was deleted recently, I suppose
+                        if (g.Sector.GeometryBuffer != null && g.Sector.Sector.Map != null) 
 						{
 							// Change current sector
 							sector = g.Sector;
@@ -726,9 +727,9 @@ namespace CodeImp.DoomBuilder.Rendering
 						{
 							sector = null;
 						}
-					}	
-					
-					if(sector != null)
+					}
+
+                    if (sector != null) 
 					{
 						// Determine the shader pass we want to use for this object
 						int wantedshaderpass = (((g == highlighted) && showhighlight) || (g.Selected && showselection)) ? highshaderpass : shaderpass;
@@ -744,7 +745,7 @@ namespace CodeImp.DoomBuilder.Rendering
                                     litGeometry[curtexture.Texture] = new List<VisualGeometry>();
                                 litGeometry[curtexture.Texture].Add(g);
                             }
-                        }
+                        }    
 
 						// Switch shader pass?
 						if(currentshaderpass != wantedshaderpass)
@@ -1096,7 +1097,10 @@ namespace CodeImp.DoomBuilder.Rendering
 
         //mxd. returns true if sector has fog color
         private bool getFogColor(Sector sector, out Color4 color) {
-            if (GZBuilder.GZGeneral.UDMF && sector.Fields.ContainsKey("fadecolor")) {
+            /*if(sector.Fields == null){
+                color = new Color4(); //black
+                return false;
+            } else*/ if (GZBuilder.GZGeneral.UDMF && sector.Fields.ContainsKey("fadecolor")) {
                 color = new Color4((int)sector.Fields["fadecolor"].Value);
                 return true;
             } else if (General.Map.Data.MapInfo.HasOutsideFogColor && sector.CeilTexture == General.Map.Config.SkyFlatName) {

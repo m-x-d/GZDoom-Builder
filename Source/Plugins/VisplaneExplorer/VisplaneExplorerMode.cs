@@ -263,80 +263,83 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// Mode starts
 		public override void OnEngage()
 		{
-			Cursor.Current = Cursors.WaitCursor;
-			base.OnEngage();
-			General.Interface.DisplayStatus(StatusType.Busy, "Setting up test environment...");
-			
-			CleanUp();
+            //mxd. I think it only applies to maps in Doom format
+            if (General.Map.Config.FormatInterface == "DoomMapSetIO") {
+                Cursor.Current = Cursors.WaitCursor;
+                base.OnEngage();
+                General.Interface.DisplayStatus(StatusType.Busy, "Setting up test environment...");
 
-			BuilderPlug.InterfaceForm.AddToInterface();
-			lastviewstats = BuilderPlug.InterfaceForm.ViewStats;
-			
-			// Export the current map to a temporary WAD file
-			tempfile = BuilderPlug.MakeTempFilename(".wad");
-			General.Map.ExportToFile(tempfile);
-			
-			// Load the map in VPO_DLL
-			BuilderPlug.VPO.Start(tempfile, General.Map.Options.LevelName);
+                CleanUp();
 
-			// Determine map boundary
-			mapbounds = Rectangle.Round(MapSet.CreateArea(General.Map.Map.Vertices));
+                BuilderPlug.InterfaceForm.AddToInterface();
+                lastviewstats = BuilderPlug.InterfaceForm.ViewStats;
 
-			// Create tiles for all points inside the map
-			Point lt = TileForPoint(mapbounds.Left - Tile.TILE_SIZE, mapbounds.Top - Tile.TILE_SIZE);
-			Point rb = TileForPoint(mapbounds.Right + Tile.TILE_SIZE, mapbounds.Bottom + Tile.TILE_SIZE);
-			Rectangle tilesrect = new Rectangle(lt.X, lt.Y, rb.X - lt.X, rb.Y - lt.Y);
-			NearestLineBlockmap blockmap = new NearestLineBlockmap(tilesrect);
-			for(int x = tilesrect.X; x <= tilesrect.Right; x += Tile.TILE_SIZE)
-			{
-				for(int y = tilesrect.Y; y <= tilesrect.Bottom; y += Tile.TILE_SIZE)
-				{
-					// If the tile is obviously outside the map, don't create it
-					Vector2D pc = new Vector2D(x + (Tile.TILE_SIZE >> 1), y + (Tile.TILE_SIZE >> 1));
-					Linedef ld = MapSet.NearestLinedef(blockmap.GetBlockAt(pc).Lines, pc);
-					float distancesq = ld.DistanceToSq(pc, true);
-					if(distancesq > (Tile.TILE_SIZE * Tile.TILE_SIZE))
-					{
-						float side = ld.SideOfLine(pc);
-						if((side > 0.0f) && (ld.Back == null)) continue;
-					}
+                // Export the current map to a temporary WAD file
+                tempfile = BuilderPlug.MakeTempFilename(".wad");
+                General.Map.ExportToFile(tempfile);
 
-					Point tp = new Point(x, y);
-					tiles.Add(tp, new Tile(tp));
-				}
-			}
+                // Load the map in VPO_DLL
+                BuilderPlug.VPO.Start(tempfile, General.Map.Options.LevelName);
 
-			QueuePoints(0);
+                // Determine map boundary
+                mapbounds = Rectangle.Round(MapSet.CreateArea(General.Map.Map.Vertices));
 
-			// Make an image to draw on.
-			// The BitmapImage for Doom Builder's resources must be Format32bppArgb and NOT using color correction,
-			// otherwise DB will make a copy of the bitmap when LoadImage() is called! This is normally not a problem,
-			// but we want to keep drawing to the same bitmap.
-			int width = General.NextPowerOf2(General.Interface.Display.ClientSize.Width);
-			int height = General.NextPowerOf2(General.Interface.Display.ClientSize.Height);
-			canvas = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-			image = new DynamicBitmapImage(canvas, "_CANVAS_");
-			image.UseColorCorrection = false;
-			image.MipMapLevels = 1;
-			image.LoadImage();
-			image.CreateTexture();
+                // Create tiles for all points inside the map
+                Point lt = TileForPoint(mapbounds.Left - Tile.TILE_SIZE, mapbounds.Top - Tile.TILE_SIZE);
+                Point rb = TileForPoint(mapbounds.Right + Tile.TILE_SIZE, mapbounds.Bottom + Tile.TILE_SIZE);
+                Rectangle tilesrect = new Rectangle(lt.X, lt.Y, rb.X - lt.X, rb.Y - lt.Y);
+                NearestLineBlockmap blockmap = new NearestLineBlockmap(tilesrect);
+                for (int x = tilesrect.X; x <= tilesrect.Right; x += Tile.TILE_SIZE) {
+                    for (int y = tilesrect.Y; y <= tilesrect.Bottom; y += Tile.TILE_SIZE) {
+                        // If the tile is obviously outside the map, don't create it
+                        Vector2D pc = new Vector2D(x + (Tile.TILE_SIZE >> 1), y + (Tile.TILE_SIZE >> 1));
+                        Linedef ld = MapSet.NearestLinedef(blockmap.GetBlockAt(pc).Lines, pc);
+                        float distancesq = ld.DistanceToSq(pc, true);
+                        if (distancesq > (Tile.TILE_SIZE * Tile.TILE_SIZE)) {
+                            float side = ld.SideOfLine(pc);
+                            if ((side > 0.0f) && (ld.Back == null)) continue;
+                        }
 
-			// Make custom presentation
-			CustomPresentation p = new CustomPresentation();
-			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Mask, 1f, false));
-			p.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
-			p.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
-			renderer.SetPresentation(p);
+                        Point tp = new Point(x, y);
+                        tiles.Add(tp, new Tile(tp));
+                    }
+                }
 
-			// Setup processing
-			nextupdate = DateTime.Now + new TimeSpan(0, 0, 0, 0, 100);
-			General.Interface.EnableProcessing();
-			processingenabled = true;
+                QueuePoints(0);
 
-			RedrawAllTiles();
-			Cursor.Current = Cursors.Default;
-			General.Interface.SetCursor(Cursors.Cross);
-			General.Interface.DisplayReady();
+                // Make an image to draw on.
+                // The BitmapImage for Doom Builder's resources must be Format32bppArgb and NOT using color correction,
+                // otherwise DB will make a copy of the bitmap when LoadImage() is called! This is normally not a problem,
+                // but we want to keep drawing to the same bitmap.
+                int width = General.NextPowerOf2(General.Interface.Display.ClientSize.Width);
+                int height = General.NextPowerOf2(General.Interface.Display.ClientSize.Height);
+                canvas = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+                image = new DynamicBitmapImage(canvas, "_CANVAS_");
+                image.UseColorCorrection = false;
+                image.MipMapLevels = 1;
+                image.LoadImage();
+                image.CreateTexture();
+
+                // Make custom presentation
+                CustomPresentation p = new CustomPresentation();
+                p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Mask, 1f, false));
+                p.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
+                p.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
+                renderer.SetPresentation(p);
+
+                // Setup processing
+                nextupdate = DateTime.Now + new TimeSpan(0, 0, 0, 0, 100);
+                General.Interface.EnableProcessing();
+                processingenabled = true;
+
+                RedrawAllTiles();
+                Cursor.Current = Cursors.Default;
+                General.Interface.SetCursor(Cursors.Cross);
+                General.Interface.DisplayReady();
+            } else {
+                General.Interface.DisplayStatus(StatusType.Warning, "Vsiplane Explorer requires map in Doom format!");
+                OnCancel(); //return to previous mode
+            }
 		}
 
 		// Mode ends

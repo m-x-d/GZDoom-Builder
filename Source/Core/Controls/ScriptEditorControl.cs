@@ -290,10 +290,10 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.StyleSetItalic(DEFAULT_STYLE, false);
 			scriptedit.StyleSetUnderline(DEFAULT_STYLE, false);
 			scriptedit.StyleSetCase(DEFAULT_STYLE, ScriptCaseVisible.Mixed);
-			scriptedit.StyleSetFore(DEFAULT_STYLE, General.Colors.PlainText.ToColorRef());
-			scriptedit.StyleSetBack(DEFAULT_STYLE, General.Colors.ScriptBackground.ToColorRef());
+            scriptedit.StyleSetFore(DEFAULT_STYLE, General.Colors.PlainText.ToInversedColorRef());
+            scriptedit.StyleSetBack(DEFAULT_STYLE, General.Colors.ScriptBackground.ToInversedColorRef());
 			scriptedit.CaretPeriod = SystemInformation.CaretBlinkTime;
-			scriptedit.CaretFore = General.Colors.ScriptBackground.Inverse().ToColorRef();
+            scriptedit.CaretFore = General.Colors.ScriptBackground.Inverse().ToInversedColorRef();
 			scriptedit.StyleBits = 7;
 			
 			// These don't work?
@@ -317,8 +317,8 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.StyleSetSize(DEFAULT_STYLE, (int)Math.Round(this.Font.SizeInPoints));
 			
 			// Set style for linenumbers and margins
-			scriptedit.StyleSetBack((int)ScriptStylesCommon.LineNumber, General.Colors.ScriptBackground.ToColorRef());
-			
+            scriptedit.StyleSetBack((int)ScriptStylesCommon.LineNumber, General.Colors.ScriptBackground.ToInversedColorRef());
+ 
 			// Clear all keywords
 			for(int i = 0; i < 9; i++) scriptedit.KeyWords(i, null);
 			
@@ -347,7 +347,7 @@ namespace CodeImp.DoomBuilder.Controls
 						case ScriptStyleType.Literal: colorindex = ColorCollection.LITERALS; break;
 						default: colorindex = ColorCollection.PLAINTEXT; break;
 					}
-					scriptedit.StyleSetFore(stylenum, General.Colors.Colors[colorindex].ToColorRef());
+                    scriptedit.StyleSetFore(stylenum, General.Colors.Colors[colorindex].ToInversedColorRef());
 				}
 			}
 			

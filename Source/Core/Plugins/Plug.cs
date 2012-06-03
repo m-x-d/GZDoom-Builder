@@ -128,15 +128,6 @@ namespace CodeImp.DoomBuilder.Plugins
 			return plugin.GetResourceStream(resourcename);
 		}
 
-        //mxd. It's nice to have these avaliable to plugins...
-        public static bool DisplayStatus(StatusType type, string message) {
-            if (General.MainWindow != null) {
-                General.MainWindow.DisplayStatus(type, message);
-                return true;
-            }
-            return false;
-        }
-
 		#endregion
 
 		#region ================== Events
