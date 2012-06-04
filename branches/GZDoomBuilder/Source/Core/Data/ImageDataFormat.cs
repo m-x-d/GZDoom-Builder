@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.Data
 		// File format signatures
 		private static readonly int[] PNG_SIGNATURE = new int[] { 137, 80, 78, 71, 13, 10, 26, 10 };
 		private static readonly int[] GIF_SIGNATURE = new int[] { 71, 73, 70 };
-		private static readonly int[] BMP_SIGNATURE = new int[] { 66, 77 };
+        //private static readonly int[] BMP_SIGNATURE = new int[] { 66, 77 }; //mxd. Not supported in (G)ZDoom
 		private static readonly int[] DDS_SIGNATURE = new int[] { 68, 68, 83, 32 };
         //mxd
         private static readonly int[] PCX_SIGNATURE = new int[] { 10, 5, 1, 8 };
@@ -83,12 +83,12 @@ namespace CodeImp.DoomBuilder.Data
                 if (CheckSignature(data, PCX_SIGNATURE)) return new FileImageReader();
 
 				// Check for BMP signature
-				data.Seek(0, SeekOrigin.Begin);
+				/*data.Seek(0, SeekOrigin.Begin);
 				if(CheckSignature(data, BMP_SIGNATURE))
 				{
 					// Check if data size matches the size specified in the data
 					if(bindata.ReadUInt32() <= data.Length) return new FileImageReader();
-				}
+				}*/
 			}
 			
 			// Could it be a doom picture?
