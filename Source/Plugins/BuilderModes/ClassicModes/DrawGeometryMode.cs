@@ -48,24 +48,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
-		private const float LINE_THICKNESS = 0.8f;
+		protected const float LINE_THICKNESS = 0.8f;
 
 		#endregion
 
 		#region ================== Variables
 
 		// Drawing points
-		private List<DrawnVertex> points;
-		private List<LineLengthLabel> labels;
+        protected List<DrawnVertex> points;
+        protected List<LineLengthLabel> labels;
 
 		// Keep track of view changes
-		private float lastoffsetx;
-		private float lastoffsety;
-		private float lastscale;
+        protected float lastoffsetx;
+        protected float lastoffsety;
+        protected float lastscale;
 
 		// Options
-		private bool snaptogrid;		// SHIFT to toggle
-		private bool snaptonearest;		// CTRL to enable
+		protected bool snaptogrid;		// SHIFT to toggle
+		protected bool snaptonearest;		// CTRL to enable
 		
 		#endregion
 
@@ -132,9 +132,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This updates the dragging
-		private void Update()
+		protected virtual void Update()
 		{
-			PixelColor stitchcolor = General.Colors.Highlight;
+            PixelColor stitchcolor = General.Colors.Highlight;
 			PixelColor losecolor = General.Colors.Selection;
 			PixelColor color;
 
@@ -360,19 +360,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This gets the aligned and snapped draw position
-		private DrawnVertex GetCurrentPosition()
+		protected DrawnVertex GetCurrentPosition()
 		{
 			return GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, renderer, points);
 		}
 		
 		// This draws a point at a specific location
-		public bool DrawPointAt(DrawnVertex p)
+        public bool DrawPointAt(DrawnVertex p)
 		{
 			return DrawPointAt(p.pos, p.stitch, p.stitchline);
 		}
 		
 		// This draws a point at a specific location
-		public bool DrawPointAt(Vector2D pos, bool stitch, bool stitchline)
+        public virtual bool DrawPointAt(Vector2D pos, bool stitch, bool stitchline)
 		{
 			if (pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
 				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary)
@@ -396,7 +396,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Vector2D delta = p1 - p2;
 				if((Math.Abs(delta.x) <= 0.001f) && (Math.Abs(delta.y) <= 0.001f))
 				{
-					// Finish drawing
+                    //mxd. Seems... logical?
+                    if (points.Count == 2) {
+                        OnCancel();
+                        return true;
+                    }
+                    
+                    // Finish drawing
 					FinishDraw();
 				}
 			}
@@ -556,7 +562,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Drawing a point
 		[BeginAction("drawpoint")]
-		public void DrawPoint()
+        public void DrawPoint()
 		{
 			// Mouse inside window?
 			if(General.Interface.MouseInDisplay)
@@ -569,7 +575,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Remove a point
 		[BeginAction("removepoint")]
-		public void RemovePoint()
+        public virtual void RemovePoint()
 		{
 			if(points.Count > 0) points.RemoveAt(points.Count - 1);
 			if(labels.Count > 0)
