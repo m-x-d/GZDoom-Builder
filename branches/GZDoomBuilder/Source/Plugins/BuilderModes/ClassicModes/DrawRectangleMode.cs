@@ -22,15 +22,19 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
     public class DrawRectangleMode : DrawGeometryMode
     {
         //private LineLengthLabel hintLabel;
-        private int bevelWidth;
-        private int subdivisions;
+        protected int bevelWidth;
+        protected int subdivisions;
 
-        private const int MAX_SUBDIVISIONS = 16;
+        protected int maxSubdivisions = 16;
+        protected int minSubdivisions = 0;
 
-        private Vector2D start;
-        private Vector2D end;
-        private int width;
-        private int height;
+        protected string undoName = "Rectangle draw";
+        protected string shapeName = "rectangle";
+
+        protected Vector2D start;
+        protected Vector2D end;
+        protected int width;
+        protected int height;
 
         public DrawRectangleMode() : base() {
             snaptogrid = true;
@@ -49,7 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
             // Render drawing lines
             if (renderer.StartOverlay(true)) {
-                color = snaptogrid ? stitchcolor : losecolor;
+                color = snaptonearest ? stitchcolor : losecolor;
                 
                 if (points.Count == 1) {
                     updateReferencePoints(points[0], curp);
@@ -91,29 +95,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
             renderer.Present();
         }
 
-        //update top-left and bottom-right points, which define drawing shape
-        private void updateReferencePoints(DrawnVertex p1, DrawnVertex p2) {
-            if (p1.pos.x < p2.pos.x) {
-                start.x = p1.pos.x;
-                end.x = p2.pos.x;
-            } else {
-                start.x = p2.pos.x;
-                end.x = p1.pos.x;
-            }
-
-            if (p1.pos.y < p2.pos.y) {
-                start.y = p1.pos.y;
-                end.y = p2.pos.y;
-            } else {
-                start.y = p2.pos.y;
-                end.y = p1.pos.y;
-            }
-
-            width = (int)(end.x - start.x);
-            height = (int)(end.y - start.y);
-        }
-
-        private Vector2D[] getShape(Vector2D pStart, Vector2D pEnd) {
+        protected virtual Vector2D[] getShape(Vector2D pStart, Vector2D pEnd) {
             //no shape
             if (pEnd.x == pStart.x && pEnd.y == pStart.y)
                 return new Vector2D[0];
@@ -125,10 +107,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
             //got corners
             bool reverse = false;
             int bevel = Math.Min(Math.Abs(bevelWidth), Math.Min(width, height) / 2);
+            
             if (subdivisions > 0 && bevelWidth < 0) {
                 bevel *= -1;
                 reverse = true;
             }
+
+            if (bevel != bevelWidth) bevelWidth = bevel;
 
             List<Vector2D> l_points = new List<Vector2D>();
 
@@ -179,6 +164,28 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
             return points;
         }
 
+        //update top-left and bottom-right points, which define drawing shape
+        private void updateReferencePoints(DrawnVertex p1, DrawnVertex p2) {
+            if (p1.pos.x < p2.pos.x) {
+                start.x = p1.pos.x;
+                end.x = p2.pos.x;
+            } else {
+                start.x = p2.pos.x;
+                end.x = p1.pos.x;
+            }
+
+            if (p1.pos.y < p2.pos.y) {
+                start.y = p1.pos.y;
+                end.y = p2.pos.y;
+            } else {
+                start.y = p2.pos.y;
+                end.y = p1.pos.y;
+            }
+
+            width = (int)(end.x - start.x);
+            height = (int)(end.y - start.y);
+        }
+
         // This draws a point at a specific location
         override public bool DrawPointAt(Vector2D pos, bool stitch, bool stitchline) {
             if (pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
@@ -226,14 +233,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
             // When we have a rectangle
             if (points.Count > 4) {
                 // Make undo for the draw
-                General.Map.UndoRedo.CreateUndo("Rectangle draw");
+                General.Map.UndoRedo.CreateUndo(undoName);
 
                 // Make an analysis and show info
                 string[] adjectives = new string[] { "gloomy", "sad", "unhappy", "lonely", "troubled", "depressed", "heartsick", "glum", "pessimistic", "bitter", "downcast" }; // aaand my english vocabulary ends here :)
                 string word = adjectives[new Random().Next(adjectives.Length - 1)];
                 string a = ((word[0] == 'a') || (word[0] == 'e') || (word[0] == 'o')) ? "an " : "a ";
 
-                General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " rectangle.");
+                General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " " + shapeName+".");
 
                 // Make the drawing
                 if (!Tools.DrawLines(points)) {
@@ -274,29 +281,29 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
 //ACTIONS
         [BeginAction("increasesubdivlevel")]
-        private void increaseSubdivLevel() {
-            if (subdivisions < MAX_SUBDIVISIONS) {
+        protected virtual void increaseSubdivLevel() {
+            if (subdivisions < maxSubdivisions) {
                 subdivisions++;
                 Update();
             }
         }
 
         [BeginAction("decreasesubdivlevel")]
-        private void decreaseSubdivLevel() {
-            if (subdivisions > 0) {
+        protected virtual void decreaseSubdivLevel() {
+            if (subdivisions > minSubdivisions) {
                 subdivisions--;
                 Update();
             }
         }
 
         [BeginAction("increasebevel")]
-        private void increaseBevel() {
+        protected virtual void increaseBevel() {
             bevelWidth += General.Map.Grid.GridSize;
             Update();
         }
 
         [BeginAction("decreasebevel")]
-        private void decreaseBevel() {
+        protected virtual void decreaseBevel() {
             bevelWidth -= General.Map.Grid.GridSize;
             Update();
         }
