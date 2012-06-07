@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.VisualModes;
 using System.Drawing;
 
 #endregion
@@ -79,6 +80,10 @@ namespace CodeImp.DoomBuilder.Editing
         // View panning
         protected bool panning;
 		private bool autopanenabled;
+
+        //mxd. used in "Play From Here" Action
+        private Thing playerStart;
+        private Vector3D playerStartPosition;
 		
 		#endregion
 
@@ -131,7 +136,12 @@ namespace CodeImp.DoomBuilder.Editing
 				mousebuttons = oldmode.mousebuttons;
 				mouseinside = oldmode.mouseinside;
 				mousedragging = oldmode.mousedragging;
-			}
+
+            } else if (General.Settings.GZSynchCameras && General.Editing.Mode is VisualMode) { //mxd 
+                //center 2d view on camera position in 3d view
+                Vector2D campos = new Vector2D(General.Map.VisualCamera.Position.x, General.Map.VisualCamera.Position.y);
+                renderer2d.PositionView(campos.x, campos.y);
+            }
 		}
 
 		// Disposer
@@ -600,6 +610,63 @@ namespace CodeImp.DoomBuilder.Editing
 			cancelled = true;
 			base.OnCancel();
 		}
+
+        //mxd
+        public override bool OnMapTestBegin() {
+            if (General.Settings.GZTestFromCurrentPosition) {
+                if(!mouseinside){
+                    General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: mouse is outside editing vindow!");
+                    return false;
+                }
+                
+                //find Single Player Start. Should have Type 1 in all games
+                Thing start = null;
+                
+                foreach (Thing t in General.Map.Map.Things) {
+                    if (t.Type == 1) {
+                        //store thing and position
+                        start = t;
+                        break;
+                    }
+                }
+
+                if (start == null) {
+                    General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: no Player 1 start found!");
+                    return false;
+                }
+
+                //now check if cursor is located inside a sector
+                Sector s = General.Map.Map.GetSectorByCoordinates(mousemappos);
+
+                if(s == null){
+                    General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: cursor is not inside sector!");
+                    return false;
+                }
+
+                //41 = player's height in Doom. Is that so in all other games as well?
+                if (s.CeilHeight - s.FloorHeight < 41) {
+                    General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: sector is too low!");
+                    return false;
+                }
+                
+                //store initial position
+                playerStart = start;
+                playerStartPosition = start.Position;
+
+                //everything should be valid, let's move player start here
+                start.Move(new Vector3D(mousemappos.x, mousemappos.y, s.FloorHeight));
+            }
+
+            return true;
+        }
+
+        public override void OnMapTestEnd() {
+            if (General.Settings.GZTestFromCurrentPosition) {
+                //restore position
+                playerStart.Move(playerStartPosition);
+                playerStart = null;
+            }
+        }
 
 		/// <summary>
 		/// This is called automatically when the Edit button is pressed.

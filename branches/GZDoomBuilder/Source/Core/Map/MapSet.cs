@@ -2733,6 +2733,26 @@ namespace CodeImp.DoomBuilder.Map
 			return new List<Linedef>(lines.Values);
 		}
 
+        //mxd
+        /// <summary>This returns a sector if given coordinates lie inide one.</summary>
+        public Sector GetSectorByCoordinates(Vector2D pos) {
+            Linedef nl;
+            Sector sector = null;
+
+            nl = NearestLinedef(pos);
+            if (nl != null) {
+                // Check what side of line we are at
+                if (nl.SideOfLine(pos) < 0f) {
+                    // Front side
+                    if (nl.Front != null) sector = nl.Front.Sector; else sector = null;
+                } else {
+                    // Back side
+                    if (nl.Back != null) sector = nl.Back.Sector; else sector = null;
+                }
+            }
+            return sector;
+        }
+
 		/// <summary>This finds the line closest to the specified position.</summary>
 		public Linedef NearestLinedef(Vector2D pos) { return MapSet.NearestLinedef(linedefs, pos); }
 

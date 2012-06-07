@@ -93,9 +93,10 @@ namespace CodeImp.DoomBuilder.Windows
 			toolbar_viewmodes.Checked = General.Settings.ToolbarViewModes;
 			toolbar_geometry.Checked = General.Settings.ToolbarGeometry;
 			toolbar_testing.Checked = General.Settings.ToolbarTesting;
+            showtexturesizes.Checked = General.Settings.ShowTextureSizes;
             //mxd
             toolbar_gzdoom.Checked = General.Settings.GZToolbarGZDoom;
-			showtexturesizes.Checked = General.Settings.ShowTextureSizes;
+            cbSynchCameras.Checked = General.Settings.GZSynchCameras;
             tbDynLightCount.Value = General.Settings.GZMaxDynamicLights;
             labelDynLightCount.Text = General.Settings.GZMaxDynamicLights.ToString();
             tbDynLightSize.Value = (int)(General.Settings.GZDynamicLightRadius * 10);
@@ -268,6 +269,8 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.QualityDisplay = qualitydisplay.Checked;
 
             //mxd
+            General.Settings.GZSynchCameras = cbSynchCameras.Checked;
+            General.Settings.GZToolbarGZDoom = toolbar_gzdoom.Checked;
             General.Settings.GZMaxDynamicLights = tbDynLightCount.Value;
             General.Settings.GZDynamicLightRadius = ((float)tbDynLightSize.Value / 10.0f);
             General.Settings.GZDynamicLightIntensity = ((float)tbDynLightIntensity.Value / 10.0f);

@@ -48,9 +48,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
-		private TextLabel label;
-		private Vector2D start;
-		private Vector2D end;
+		protected TextLabel label;
+        protected Vector2D start;
+        protected Vector2D end;
 		
 		#endregion
 
@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Initialization
-		private void Initialize()
+		protected virtual void Initialize()
 		{
 			label = new TextLabel(TEXT_CAPACITY);
 			label.AlignX = TextAlignmentX.Center;
@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This updates the text
-		private void Update()
+        protected virtual void Update()
 		{
 			Vector2D delta = end - start;
 			float length = delta.GetLength();

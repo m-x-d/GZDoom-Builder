@@ -301,6 +301,17 @@ namespace CodeImp.DoomBuilder.Plugins
 		public void OnEditRedrawDisplayBegin() { foreach(Plugin p in plugins) p.Plug.OnEditRedrawDisplayBegin(); }
 		public void OnEditRedrawDisplayEnd() { foreach(Plugin p in plugins) p.Plug.OnEditRedrawDisplayEnd(); }
 		public void OnPresentDisplayBegin() { foreach(Plugin p in plugins) p.Plug.OnPresentDisplayBegin(); }
+
+        //mxd. test map events
+        public bool OnMapTestBegin() {
+            bool canLaunch;
+            foreach (Plugin p in plugins) {
+                canLaunch = p.Plug.OnMapTestBegin();
+                if (!canLaunch) return false;
+            }
+            return true;
+        }
+        public void OnMapTestEnd() { foreach (Plugin p in plugins) p.Plug.OnMapTestEnd(); }
 		
 		#endregion
 	}
