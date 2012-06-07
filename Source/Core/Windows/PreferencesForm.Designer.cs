@@ -115,6 +115,8 @@ namespace CodeImp.DoomBuilder.Windows
             this.actiondescription = new System.Windows.Forms.Label();
             this.tabcolors = new System.Windows.Forms.TabPage();
             this.appearancegroup1 = new System.Windows.Forms.GroupBox();
+            this.labelDynLightIntensity = new System.Windows.Forms.Label();
+            this.tbDynLightIntensity = new Dotnetrix.Controls.TrackBar();
             this.labelDynLightSize = new System.Windows.Forms.Label();
             this.tbDynLightSize = new Dotnetrix.Controls.TrackBar();
             this.labelDynLightCount = new System.Windows.Forms.Label();
@@ -146,8 +148,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabpasting = new System.Windows.Forms.TabPage();
             this.label16 = new System.Windows.Forms.Label();
             this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
-            this.labelDynLightIntensity = new System.Windows.Forms.Label();
-            this.tbDynLightIntensity = new Dotnetrix.Controls.TrackBar();
+            this.cbSynchCameras = new System.Windows.Forms.CheckBox();
             label7 = new System.Windows.Forms.Label();
             label6 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
@@ -175,13 +176,13 @@ namespace CodeImp.DoomBuilder.Windows
             this.actioncontrolpanel.SuspendLayout();
             this.tabcolors.SuspendLayout();
             this.appearancegroup1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbDynLightIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbDynLightSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbDynLightCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
             this.colorsgroup3.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabpasting.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbDynLightIntensity)).BeginInit();
             this.SuspendLayout();
             // 
             // label7
@@ -213,6 +214,7 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(this.cbSynchCameras);
             groupBox1.Controls.Add(this.showtexturesizes);
             groupBox1.Controls.Add(this.scriptontop);
             groupBox1.Controls.Add(this.zoomfactor);
@@ -236,7 +238,7 @@ namespace CodeImp.DoomBuilder.Windows
             // showtexturesizes
             // 
             this.showtexturesizes.AutoSize = true;
-            this.showtexturesizes.Location = new System.Drawing.Point(32, 276);
+            this.showtexturesizes.Location = new System.Drawing.Point(32, 258);
             this.showtexturesizes.Name = "showtexturesizes";
             this.showtexturesizes.Size = new System.Drawing.Size(222, 18);
             this.showtexturesizes.TabIndex = 41;
@@ -246,7 +248,7 @@ namespace CodeImp.DoomBuilder.Windows
             // scriptontop
             // 
             this.scriptontop.AutoSize = true;
-            this.scriptontop.Location = new System.Drawing.Point(32, 248);
+            this.scriptontop.Location = new System.Drawing.Point(32, 234);
             this.scriptontop.Name = "scriptontop";
             this.scriptontop.Size = new System.Drawing.Size(237, 18);
             this.scriptontop.TabIndex = 40;
@@ -256,7 +258,7 @@ namespace CodeImp.DoomBuilder.Windows
             // zoomfactor
             // 
             this.zoomfactor.LargeChange = 1;
-            this.zoomfactor.Location = new System.Drawing.Point(127, 187);
+            this.zoomfactor.Location = new System.Drawing.Point(127, 181);
             this.zoomfactor.Minimum = 1;
             this.zoomfactor.Name = "zoomfactor";
             this.zoomfactor.Size = new System.Drawing.Size(116, 45);
@@ -268,7 +270,7 @@ namespace CodeImp.DoomBuilder.Windows
             // zoomfactorlabel
             // 
             this.zoomfactorlabel.AutoSize = true;
-            this.zoomfactorlabel.Location = new System.Drawing.Point(249, 199);
+            this.zoomfactorlabel.Location = new System.Drawing.Point(249, 193);
             this.zoomfactorlabel.Name = "zoomfactorlabel";
             this.zoomfactorlabel.Size = new System.Drawing.Size(29, 14);
             this.zoomfactorlabel.TabIndex = 39;
@@ -277,7 +279,7 @@ namespace CodeImp.DoomBuilder.Windows
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(52, 199);
+            this.label19.Location = new System.Drawing.Point(52, 193);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(69, 14);
             this.label19.TabIndex = 38;
@@ -286,7 +288,7 @@ namespace CodeImp.DoomBuilder.Windows
             // autoscrollspeed
             // 
             this.autoscrollspeed.LargeChange = 1;
-            this.autoscrollspeed.Location = new System.Drawing.Point(127, 135);
+            this.autoscrollspeed.Location = new System.Drawing.Point(127, 129);
             this.autoscrollspeed.Maximum = 5;
             this.autoscrollspeed.Name = "autoscrollspeed";
             this.autoscrollspeed.Size = new System.Drawing.Size(116, 45);
@@ -297,7 +299,7 @@ namespace CodeImp.DoomBuilder.Windows
             // autoscrollspeedlabel
             // 
             this.autoscrollspeedlabel.AutoSize = true;
-            this.autoscrollspeedlabel.Location = new System.Drawing.Point(249, 147);
+            this.autoscrollspeedlabel.Location = new System.Drawing.Point(249, 141);
             this.autoscrollspeedlabel.Name = "autoscrollspeedlabel";
             this.autoscrollspeedlabel.Size = new System.Drawing.Size(23, 14);
             this.autoscrollspeedlabel.TabIndex = 36;
@@ -306,7 +308,7 @@ namespace CodeImp.DoomBuilder.Windows
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(29, 147);
+            this.label15.Location = new System.Drawing.Point(29, 141);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(92, 14);
             this.label15.TabIndex = 35;
@@ -315,7 +317,7 @@ namespace CodeImp.DoomBuilder.Windows
             // previewsize
             // 
             this.previewsize.LargeChange = 1;
-            this.previewsize.Location = new System.Drawing.Point(127, 81);
+            this.previewsize.Location = new System.Drawing.Point(127, 75);
             this.previewsize.Maximum = 5;
             this.previewsize.Name = "previewsize";
             this.previewsize.Size = new System.Drawing.Size(116, 45);
@@ -327,7 +329,7 @@ namespace CodeImp.DoomBuilder.Windows
             // previewsizelabel
             // 
             this.previewsizelabel.AutoSize = true;
-            this.previewsizelabel.Location = new System.Drawing.Point(249, 93);
+            this.previewsizelabel.Location = new System.Drawing.Point(249, 87);
             this.previewsizelabel.Name = "previewsizelabel";
             this.previewsizelabel.Size = new System.Drawing.Size(55, 14);
             this.previewsizelabel.TabIndex = 33;
@@ -336,7 +338,7 @@ namespace CodeImp.DoomBuilder.Windows
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(17, 93);
+            this.label12.Location = new System.Drawing.Point(17, 87);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(104, 14);
             this.label12.TabIndex = 32;
@@ -345,7 +347,7 @@ namespace CodeImp.DoomBuilder.Windows
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(50, 41);
+            this.label14.Location = new System.Drawing.Point(50, 35);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(71, 14);
             this.label14.TabIndex = 14;
@@ -360,7 +362,7 @@ namespace CodeImp.DoomBuilder.Windows
             "Brightness Levels",
             "Floor Textures",
             "Ceiling Textures"});
-            this.defaultviewmode.Location = new System.Drawing.Point(135, 38);
+            this.defaultviewmode.Location = new System.Drawing.Point(135, 32);
             this.defaultviewmode.Name = "defaultviewmode";
             this.defaultviewmode.Size = new System.Drawing.Size(145, 22);
             this.defaultviewmode.TabIndex = 0;
@@ -394,6 +396,16 @@ namespace CodeImp.DoomBuilder.Windows
             label20.TabIndex = 28;
             label20.Text = "Dynamic light size:";
             label20.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label21
+            // 
+            label21.AutoSize = true;
+            label21.Location = new System.Drawing.Point(55, 174);
+            label21.Name = "label21";
+            label21.Size = new System.Drawing.Size(116, 14);
+            label21.TabIndex = 31;
+            label21.Text = "Dynamic light intensity:";
+            label21.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // keyusedlabel
             // 
@@ -1183,6 +1195,27 @@ namespace CodeImp.DoomBuilder.Windows
             this.appearancegroup1.TabStop = false;
             this.appearancegroup1.Text = " Additional Options ";
             // 
+            // labelDynLightIntensity
+            // 
+            this.labelDynLightIntensity.AutoSize = true;
+            this.labelDynLightIntensity.Location = new System.Drawing.Point(337, 174);
+            this.labelDynLightIntensity.Name = "labelDynLightIntensity";
+            this.labelDynLightIntensity.Size = new System.Drawing.Size(22, 14);
+            this.labelDynLightIntensity.TabIndex = 32;
+            this.labelDynLightIntensity.Text = "1.0";
+            // 
+            // tbDynLightIntensity
+            // 
+            this.tbDynLightIntensity.LargeChange = 1;
+            this.tbDynLightIntensity.Location = new System.Drawing.Point(176, 161);
+            this.tbDynLightIntensity.Minimum = 1;
+            this.tbDynLightIntensity.Name = "tbDynLightIntensity";
+            this.tbDynLightIntensity.Size = new System.Drawing.Size(154, 45);
+            this.tbDynLightIntensity.TabIndex = 30;
+            this.tbDynLightIntensity.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.tbDynLightIntensity.Value = 10;
+            this.tbDynLightIntensity.ValueChanged += new System.EventHandler(this.tbDynLightIntensity_ValueChanged);
+            // 
             // labelDynLightSize
             // 
             this.labelDynLightSize.AutoSize = true;
@@ -1551,36 +1584,15 @@ namespace CodeImp.DoomBuilder.Windows
             this.pasteoptions.Size = new System.Drawing.Size(666, 427);
             this.pasteoptions.TabIndex = 0;
             // 
-            // label21
+            // cbSynchCameras
             // 
-            label21.AutoSize = true;
-            label21.Location = new System.Drawing.Point(55, 174);
-            label21.Name = "label21";
-            label21.Size = new System.Drawing.Size(116, 14);
-            label21.TabIndex = 31;
-            label21.Text = "Dynamic light intensity:";
-            label21.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // labelDynLightIntensity
-            // 
-            this.labelDynLightIntensity.AutoSize = true;
-            this.labelDynLightIntensity.Location = new System.Drawing.Point(337, 174);
-            this.labelDynLightIntensity.Name = "labelDynLightIntensity";
-            this.labelDynLightIntensity.Size = new System.Drawing.Size(22, 14);
-            this.labelDynLightIntensity.TabIndex = 32;
-            this.labelDynLightIntensity.Text = "1.0";
-            // 
-            // tbDynLightIntensity
-            // 
-            this.tbDynLightIntensity.LargeChange = 1;
-            this.tbDynLightIntensity.Location = new System.Drawing.Point(176, 161);
-            this.tbDynLightIntensity.Minimum = 1;
-            this.tbDynLightIntensity.Name = "tbDynLightIntensity";
-            this.tbDynLightIntensity.Size = new System.Drawing.Size(154, 45);
-            this.tbDynLightIntensity.TabIndex = 30;
-            this.tbDynLightIntensity.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.tbDynLightIntensity.Value = 10;
-            this.tbDynLightIntensity.ValueChanged += new System.EventHandler(this.tbDynLightIntensity_ValueChanged);
+            this.cbSynchCameras.AutoSize = true;
+            this.cbSynchCameras.Location = new System.Drawing.Point(32, 282);
+            this.cbSynchCameras.Name = "cbSynchCameras";
+            this.cbSynchCameras.Size = new System.Drawing.Size(270, 18);
+            this.cbSynchCameras.TabIndex = 42;
+            this.cbSynchCameras.Text = "Synch camera position between 2D and 3D modes";
+            this.cbSynchCameras.UseVisualStyleBackColor = true;
             // 
             // PreferencesForm
             // 
@@ -1630,6 +1642,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabcolors.ResumeLayout(false);
             this.appearancegroup1.ResumeLayout(false);
             this.appearancegroup1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbDynLightIntensity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbDynLightSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbDynLightCount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).EndInit();
@@ -1637,7 +1650,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.colorsgroup3.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.tabpasting.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.tbDynLightIntensity)).EndInit();
             this.ResumeLayout(false);
 
 		}
@@ -1755,5 +1767,6 @@ namespace CodeImp.DoomBuilder.Windows
         private Dotnetrix.Controls.TrackBar tbDynLightSize;
         private System.Windows.Forms.Label labelDynLightIntensity;
         private Dotnetrix.Controls.TrackBar tbDynLightIntensity;
+        private System.Windows.Forms.CheckBox cbSynchCameras;
 	}
 }

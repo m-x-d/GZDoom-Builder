@@ -35,15 +35,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 
             //got shape
             int bevelSign = (bevelWidth > 0 ? 1 : -1);
-            int bevel = Math.Min(Math.Abs(bevelWidth), Math.Min(width, height) / 2) * bevelSign;
+            currentBevelWidth = Math.Min(Math.Abs(bevelWidth), Math.Min(width, height) / 2) * bevelSign;
 
             Vector2D[] shape = new Vector2D[subdivisions + 1];
 
             bool doBevel = false;
             int hw = width / 2;
             int hh = height / 2;
-
-            if (bevel != bevelWidth) bevelWidth = bevel;
 
             Vector2D center = new Vector2D(pStart.x + hw, pStart.y + hh);
             float curAngle = 0;
@@ -52,8 +50,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 
             for (int i = 0; i < subdivisions; i++) {
                 if (doBevel) {
-                    px = (int)(center.x - (float)Math.Sin(curAngle) * (hw + bevel));
-                    py = (int)(center.y - (float)Math.Cos(curAngle) * (hh + bevel));
+                    px = (int)(center.x - (float)Math.Sin(curAngle) * (hw + currentBevelWidth));
+                    py = (int)(center.y - (float)Math.Cos(curAngle) * (hh + currentBevelWidth));
                 } else {
                     px = (int)(center.x - (float)Math.Sin(curAngle) * hw);
                     py = (int)(center.y - (float)Math.Cos(curAngle) * hh);
@@ -65,6 +63,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
             //add final point
             shape[subdivisions] = shape[0];
             return shape;
+        }
+
+        protected override string getHintText() {
+            return "BVL: "+bevelWidth+"; VERTS: "+subdivisions;
         }
 
 //ACTIONS

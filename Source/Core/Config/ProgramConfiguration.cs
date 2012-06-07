@@ -102,9 +102,11 @@ namespace CodeImp.DoomBuilder.Config
         private bool gzAnimateLights;
         private bool gzDrawFog;
         private bool gzToolbarGZDoom;
+        private bool gzSynchCameras;
         private int gzMaxDynamicLights;
         private float gzDynamicLightRadius;
         private float gzDynamicLightIntensity;
+        private bool gzTestFromCurrentPosition;
 		
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -176,6 +178,8 @@ namespace CodeImp.DoomBuilder.Config
         public bool GZAnimateLights { get { return gzAnimateLights; } internal set { gzAnimateLights = value; } }
         public bool GZDrawFog { get { return gzDrawFog; } internal set { gzDrawFog = value; } }
         public bool GZToolbarGZDoom { get { return gzToolbarGZDoom; } internal set { gzToolbarGZDoom = value; } }
+        public bool GZSynchCameras { get { return gzSynchCameras; } internal set { gzSynchCameras = value; } }
+        public bool GZTestFromCurrentPosition { get { return gzTestFromCurrentPosition; } internal set { gzTestFromCurrentPosition = value; } }
         public int GZMaxDynamicLights { get { return gzMaxDynamicLights; } internal set { gzMaxDynamicLights = value; } }
         public float GZDynamicLightRadius { get { return gzDynamicLightRadius; } internal set { gzDynamicLightRadius = value; } }
         public float GZDynamicLightIntensity { get { return gzDynamicLightIntensity; } internal set { gzDynamicLightIntensity = value; } }
@@ -267,6 +271,7 @@ namespace CodeImp.DoomBuilder.Config
                 gzAnimateLights = cfg.ReadSetting("gzanimatelights", false);
                 gzDrawFog = cfg.ReadSetting("gzdrawfog", false);
                 gzToolbarGZDoom = cfg.ReadSetting("gztoolbargzdoom", true);
+                gzSynchCameras = cfg.ReadSetting("gzsynchcameras", true);
                 gzMaxDynamicLights = cfg.ReadSetting("gzmaxdynamiclights", 16);
                 gzDynamicLightRadius = cfg.ReadSetting("gzdynamiclightradius", 1.0f);
                 gzDynamicLightIntensity = cfg.ReadSetting("gzdynamiclightintensity", 1.0f);
@@ -339,6 +344,8 @@ namespace CodeImp.DoomBuilder.Config
             cfg.WriteSetting("gzdrawlights", gzDrawLights);
             cfg.WriteSetting("gzanimatelights", gzAnimateLights);
             cfg.WriteSetting("gzdrawfog", gzDrawFog);
+            cfg.WriteSetting("gzsynchcameras", gzSynchCameras);
+            cfg.WriteSetting("gztoolbargzdoom", gzToolbarGZDoom);
             cfg.WriteSetting("gzmaxdynamiclights", gzMaxDynamicLights);
             cfg.WriteSetting("gzdynamiclightradius", gzDynamicLightRadius);
             cfg.WriteSetting("gzdynamiclightintensity", gzDynamicLightIntensity);

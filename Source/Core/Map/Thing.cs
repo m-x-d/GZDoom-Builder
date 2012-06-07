@@ -214,7 +214,10 @@ namespace CodeImp.DoomBuilder.Map
 		// This determines which sector the thing is in and links it
 		public void DetermineSector()
 		{
-			Linedef nl;
+			//mxd
+            sector = map.GetSectorByCoordinates(pos);
+            
+            /*Linedef nl;
 
 			// Find the nearest linedef on the map
 			nl = map.NearestLinedef(pos);
@@ -235,7 +238,7 @@ namespace CodeImp.DoomBuilder.Map
 			else
 			{
 				sector = null;
-			}
+			}*/
 		}
 
 		// This determines which sector the thing is in and links it

@@ -73,6 +73,10 @@ namespace CodeImp.DoomBuilder.VisualModes
         //mxd
         private List<VisualThing> selectedVisualThings;
         private List<VisualSector> selectedVisualSectors;
+        //used in "Play From Here" Action
+        private Thing playerStart;
+        private Vector3D playerStartPosition;
+        private float playerStartAngle;
 
 		// Map
 		protected VisualBlockMap blockmap;
@@ -115,6 +119,34 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.visiblethings = new List<VisualThing>(100);
 			this.processgeometry = true;
 			this.processthings = true;
+
+            //mxd. Synch camera position to cursor position or center of the screen in 2d-mode
+            if (General.Settings.GZSynchCameras && General.Editing.Mode is ClassicMode) {
+                ClassicMode oldmode = General.Editing.Mode as ClassicMode;
+                Vector2D pos2d;
+
+                if (oldmode.IsMouseInside)
+                    pos2d = new Vector2D(oldmode.MouseMapPos.x, oldmode.MouseMapPos.y);
+                 else
+                    pos2d = new Vector2D(General.Map.CRenderer2D.Viewport.Left + General.Map.CRenderer2D.Viewport.Width / 2.0f, General.Map.CRenderer2D.Viewport.Top + General.Map.CRenderer2D.Viewport.Height / 2.0f);
+
+                //if position is inside sector - adjust camera.z accordingly
+                Sector sector = General.Map.Map.GetSectorByCoordinates(pos2d);
+
+                float posz = 0;
+                if (sector != null) {
+                    int sectorHeight = sector.CeilHeight - sector.FloorHeight;
+                    if (sectorHeight < 41) {
+                        posz = sector.FloorHeight + sectorHeight / 2;
+                    } else {
+                        posz = sector.FloorHeight + 41; // same as in doom
+                    }
+                }else{
+                    posz = General.Map.VisualCamera.Position.z;
+                }
+
+                General.Map.VisualCamera.Position = new Vector3D(pos2d.x, pos2d.y, posz);
+            }
 		}
 		
 		// Disposer
@@ -226,6 +258,62 @@ namespace CodeImp.DoomBuilder.VisualModes
 			base.OnReloadResources();
 			ResourcesReloaded();
 		}
+
+        //mxd
+        public override bool OnMapTestBegin() {
+            if (General.Settings.GZTestFromCurrentPosition) {
+                //find Single Player Start. Should have Type 1 in all games
+                Thing start = null;
+
+                foreach (Thing t in General.Map.Map.Things) {
+                    if (t.Type == 1) {
+                        //store thing and position
+                        start = t;
+                        break;
+                    }
+                }
+
+                if (start == null) {
+                    General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: no Player 1 start found!");
+                    return false;
+                }
+
+                //now check if camera is located inside a sector
+                Vector3D camPos = General.Map.VisualCamera.Position;
+                Sector s = General.Map.Map.GetSectorByCoordinates(new Vector2D(camPos.x, camPos.y));
+
+                if (s == null) {
+                    General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: cursor is not inside sector!");
+                    return false;
+                }
+
+                //41 = player's height in Doom. Is that so in all other games as well?
+                if (s.CeilHeight - s.FloorHeight < 41) {
+                    General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: sector is too low!");
+                    return false;
+                }
+
+                //store initial position
+                playerStart = start;
+                playerStartPosition = start.Position;
+                playerStartAngle = start.Angle;
+
+                //everything should be valid, let's move player start here
+                start.Move(new Vector3D(camPos.x, camPos.y, s.FloorHeight));
+                start.Rotate(General.Map.VisualCamera.AngleXY - (float)Math.PI);
+            }
+            return true;
+        }
+
+        //mxd
+        public override void OnMapTestEnd() {
+            if (General.Settings.GZTestFromCurrentPosition) {
+                //restore position
+                playerStart.Move(playerStartPosition);
+                playerStart.Rotate(playerStartAngle);
+                playerStart = null;
+            }
+        }
 		
 		#endregion
 		
