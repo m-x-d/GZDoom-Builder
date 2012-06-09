@@ -226,12 +226,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			Vector3D p1 = t1.Position;
 			Vector3D p2 = t2.Position;
+			ThingTypeInfo t1info = General.Map.Data.GetThingInfo(t1.Type);
+			ThingTypeInfo t2info = General.Map.Data.GetThingInfo(t2.Type);
 	
 			// simple bounding box collision detection
 			if (	p1.x + t1.Size - ALLOWED_STUCK_DISTANCE < p2.x - t2.Size + ALLOWED_STUCK_DISTANCE ||
 					p1.x - t1.Size + ALLOWED_STUCK_DISTANCE > p2.x + t2.Size - ALLOWED_STUCK_DISTANCE ||
 					p1.y - t1.Size + ALLOWED_STUCK_DISTANCE > p2.y + t2.Size - ALLOWED_STUCK_DISTANCE ||
 					p1.y + t1.Size - ALLOWED_STUCK_DISTANCE < p2.y - t2.Size + ALLOWED_STUCK_DISTANCE)
+				return false;
+
+			// if either thing blocks full height there's no need to check the z-axis
+			if (t1info.Blocking == ThingTypeInfo.THING_BLOCKING_FULL || t2info.Blocking == ThingTypeInfo.THING_BLOCKING_FULL)
+				return true;
+
+			// check z-axis
+			if (p1.z > p2.z + t2info.Height || p1.z + t1info.Height < p2.z)
 				return false;
 
 			return true;
