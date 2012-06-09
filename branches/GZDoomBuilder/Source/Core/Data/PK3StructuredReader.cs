@@ -477,10 +477,13 @@ namespace CodeImp.DoomBuilder.Data
             string[] allFiles = GetAllFiles("", false);
 
             //try to load game specific GLDEFS first
-            string lumpName = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gameType].ToLowerInvariant();
-            foreach (string s in allFiles) {
-                if (s.ToLowerInvariant().IndexOf(lumpName) != -1)
-                    streams.Add(s, LoadFile(s));
+            string lumpName;
+            if (gameType != GameType.UNKNOWN) {
+                lumpName = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gameType].ToLowerInvariant();
+                foreach (string s in allFiles) {
+                    if (s.ToLowerInvariant().IndexOf(lumpName) != -1)
+                        streams.Add(s, LoadFile(s));
+                }
             }
 
             //can be several entries

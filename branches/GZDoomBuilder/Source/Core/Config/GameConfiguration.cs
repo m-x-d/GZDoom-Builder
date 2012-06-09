@@ -270,7 +270,8 @@ namespace CodeImp.DoomBuilder.Config
 			configname = cfg.ReadSetting("game", "<unnamed game>");
 
             //mxd
-            gameType = (GameType)(cfg.ReadSetting("basegame", (int)GameType.UNKNOWN));
+            int gt = (cfg.ReadSetting("basegame", (int)GameType.UNKNOWN));
+            gameType = ( (gt > 0 && gt < Gldefs.GLDEFS_LUMPS_PER_GAME.Length) ? (GameType)gt : GameType.UNKNOWN);
 
 			enginename = cfg.ReadSetting("engine", "");
 			defaultsavecompiler = cfg.ReadSetting("defaultsavecompiler", "");
