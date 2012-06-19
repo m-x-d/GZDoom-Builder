@@ -138,7 +138,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public LinedefProperties CopiedLinedefProps { get { return copiedlinedefprops; } set { copiedlinedefprops = value; } }
 		public ThingProperties CopiedThingProps { get { return copiedthingprops; } set { copiedthingprops = value; } }
 		public bool ViewSelectionNumbers { get { return viewselectionnumbers; } set { viewselectionnumbers = value; } }
-		public float StitchRange { get { return stitchrange; } }
+        public float StitchRange { get { return stitchrange; } internal set { stitchrange = value; } }
 		public float HighlightRange { get { return highlightrange; } }
 		public float HighlightThingsRange { get { return highlightthingsrange; } }
 		public float SplitLinedefsRange { get { return splitlinedefsrange; } }

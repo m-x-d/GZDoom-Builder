@@ -29,10 +29,8 @@ namespace CodeImp.DoomBuilder.GZBuilder
 
         public static bool UDMF;
 
-        //public static float[] FogTable; // light to fog conversion table for black fog
-
         //version
-        public const float Version = 1.07f;
+        public const float Version = 1.08f;
 
         //debug console
 #if DEBUG
@@ -44,27 +42,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
             //bind actions
             General.Actions.BindMethods(typeof(GZGeneral));
             General.MainWindow.UpdateGZDoomPannel();
-
-            //create fog table
-            /*FogTable = new float[256];
-            byte gl_distfog = 255;
-
-            for (int i = 0; i < 256; i++) {
-                if (i < 164) {
-                    FogTable[i] = (gl_distfog >> 1) + (gl_distfog) * (164 - i) / 164;
-                } else if (i < 230) {
-                    FogTable[i] = (gl_distfog >> 1) - (gl_distfog >> 1) * (i - 164) / (230 - 164);
-                } else FogTable[i] = 0;
-
-                //if (i < 128) {
-                    //distfogtable[1][i] = 6.f + (gl_distfog >> 1) + (gl_distfog) * (128 - i) / 48;
-                //} else if (i < 216) {
-                    //distfogtable[1][i] = (216.f - i) / ((216.f - 128.f)) * gl_distfog / 10;
-                //} else distfogtable[1][i] = 0;
-            }*/
-
-            //float[] ft = FogTable;
-
+            
             //create console
 #if DEBUG
             ConsoleDocker cd = new ConsoleDocker();

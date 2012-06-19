@@ -43,6 +43,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
             snaptogrid = true;
             cornersColor = General.Colors.BrightColors[new Random().Next(General.Colors.BrightColors.Length - 1)];
         }
+
+        public override void Dispose() {
+            if (!isdisposed && hintLabel != null)
+                hintLabel.Dispose();
+
+            base.Dispose();
+        }
         
         override protected void Update() {
             PixelColor stitchcolor = General.Colors.Highlight;

@@ -1173,7 +1173,7 @@ namespace CodeImp.DoomBuilder.Rendering
                     //t.CameraDistance3D is actually squared distance, hence (t.LightRadius * t.LightRadius)
                     if (t.CameraDistance3D < (t.LightRadius * t.LightRadius) || isThingOnScreen(t.BoundingBox)) { //always render light if camera is within it's radius 
                         if (Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, t.LightType) != -1)
-                            t.UpdateBoundingBox(t.LightRadius, t.LightRadius * 2);
+                            t.UpdateBoundingBox();//t.UpdateBoundingBox(t.LightRadius, t.LightRadius * 2);
                         thingsWithLight.Add(t);
                     }
                 }
