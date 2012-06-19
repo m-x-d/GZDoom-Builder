@@ -19,6 +19,7 @@ default="Doom Builder Reference Manual","Contents.hhc","Index.hhk","introduction
 [FILES]
 introduction.html
 header.gif
+gz_header.gif
 editingmodes.html
 userinterface.html
 configurations.html

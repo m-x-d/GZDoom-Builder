@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	
+	<title>Template</title>
+	
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" type="text/css" href="default.css" media="screen" title="Default" />
+</head>
+<body>
+	
+	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="keyword" value="Template">
+	</object>
+	
+	<div id="gz_title"><h1>Bridge Mode</h1></div>
+	
+	<div id="contents">
+	<p>
+This mode lets you connect parts of existing geometry using Bezier curves.<br>
+<b>Found in:</b> Preferences -> Controls -> Drawing.<br>
+<b>Default key:</b> Ctrl-B.<br>
+<b>Additional actions:</b> Increase Sudivision Level, Decrease Sudivision Level. You  can hold <strong>Shift</strong> while dragging a handle to turn grid snapping off.<br>
+<table width="100%" border="0" cellspacing="3" cellpadding="3">
+  <tr>
+    <td width="33%"><b>Usage:</b> Select two linedefs or two groups of linedefs: </td>
+    <td width="33%">Then activate Bridge mode using keyboard shortcut or tool button (<img align="texttop" src="gz_BridgeMode.png" />):</td>
+    <td>Make some changes, then press OK button or Enter to accept, or Cancel/Esc to cancel:</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="gz_bridge1.jpg" /></td>
+    <td align="center"><img src="gz_bridge2.jpg" /></td>
+    <td align="center"><img src="gz_bridge3.jpg" /></td>
+  </tr>
+</table>
+
+<h2>Options window</h2>
+<table width="100%" border="0" cellspacing="3" cellpadding="3">
+  <tr>
+    <td valign="top"><img src="gz_bridge_settings.jpg" /></td>
+    <td><b>Align floor / Align ceiling dropdowns</b> let you choose how the heights of created sectors are <a href="#interp_modes">interpolated</a>.<br>
+<b>Brightness dropdown</b> let you choose how the brightness of created sectors is interpolated.<br>
+<b>Subdivisions</b> control how many subdivisions bridge has. You can also use "Increase Subdivisions" and "Decrease Subdivisions" actions to control this using keyboard shortcuts.<br>
+<br>
+Activate <b>Mirror mode</b> to mirror paired handle movement:<br>
+<img style="display:block" src="gz_bridge_mirror.jpg" /><br>
+Activate <b>Copy mode</b> to copy paired handle movement:<br>
+<img style="display:block" src="gz_bridge_copy.jpg" /><br>
+If a shape crosses itself, you can press <b>"Flip Lines"</b> button to fix this:
+<img style="display:block" src="gz_bridge_flip.jpg" /><br>
+<br></td>
+  </tr>
+</table>
+<h2>Interpolation modes:<a id="interp_modes"></a></h2>
+<table width="100%" border="0" cellspacing="3" cellpadding="3">
+  <tr>
+    <td width="200px">&nbsp;</td>
+    <td><strong>Highest ceiling</strong></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><strong>Lowest floor</strong></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><strong>Linear interpolation</strong></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="gz_bridge_easeInSine.jpg" /></td>
+    <td><b>EaseInSine interpolation</b> - interpolates heights using sinusoidal (sin(t)) easing in.</td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="gz_bridge_easeOutSine.jpg" /></td>
+    <td><b>EaseOutSine interpolation</b> - interpolates heights using sinusoidal (sin(t)) easing out.</td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="gz_bridge_easeInOutSine.jpg" /></td>
+    <td><b>EaseInOutSine interpolation</b> - interpolates heights using sinusoidal (sin(t)) easing in/out.</td>
+  </tr>
+</table>
+<h2>Setting lower/upper textures:</h2>
+If you are going to connect sectors with different ceiling and/or floor heights, you'll generally want to set upper and/or lower textures. To do this, set upper or lower textures to linedefs, which will be used to define bridge shape. <br>Let's say we want to make a stairway out of these lines:
+<table border="0" cellspacing="3" cellpadding="3">
+  <tr>
+    <td><b>2D-view:</b></td>
+    <td><b>3D-view:</b></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="gz_bridge_tex1.jpg" /></td>
+    <td><img src="gz_bridge_tex1_3d.jpg" /></td>
+  </tr>
+</table>
+<br>
+If you bridge these linedefs right now, you'll have lots of unset textures:
+<br>
+<img src="gz_bridge_tex2_3d.jpg" /> 
+<br><br>
+Instead of setting them all by hand, set upper and lower textures of lines, which will be used to create this shape (you need to set them only to one linedef out of pair):
+<br>
+<img src="gz_bridge_tex3.jpg" /> 
+<br><br>
+If you bridge linedefs now, all upper/lower textures will be set:
+<br>
+<img src="gz_bridge_tex4_3d.jpg" /> 
+</p>
+</div>
+</body>

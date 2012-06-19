@@ -7,7 +7,7 @@ body
 	padding: 0 0 0 0;
 }
 
-#title
+#title, #gz_title
 {
 	background: #f4f4f4 url(header.gif) bottom right no-repeat;
 	color: #515151;
@@ -18,6 +18,12 @@ body
 	border-bottom-style: solid;
 	border-bottom-color: #ffffff;
 	border-bottom-width: 2px;
+}
+
+#gz_title
+{
+	background: #f4f4f4 url(gz_header.gif) bottom right no-repeat;
+	height: 52px;
 }
 
 #contents

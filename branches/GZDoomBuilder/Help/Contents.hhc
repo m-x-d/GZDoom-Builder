@@ -220,5 +220,69 @@
 				</OBJECT>
 		</UL>
 	</UL>
+	
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="GZDoom Builder manual">
+		<param name="Local" value="gz_introduction.html">
+		</OBJECT>
+		<UL>
+			  <LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Features">
+				<param name="Local" value="gz_features.html">
+				</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="New settings">
+				<param name="Local" value="gz_settings.html">
+				</OBJECT>
+				      <UL>
+              </UL>
+				<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="New editing modes">
+				<param name="Local" value="gz_editmodes.html">
+				</OBJECT>
+              <UL>
+			        <LI> <OBJECT type="text/sitemap">
+				      <param name="Name" value="Draw Rectangle mode">
+				      <param name="Local" value="gz_drawrect.html">
+				      </OBJECT>
+				      <LI> <OBJECT type="text/sitemap">
+				      <param name="Name" value="Draw Ellipse mode">
+				      <param name="Local" value="gz_drawellipse.html">
+				      </OBJECT>
+				      <LI> <OBJECT type="text/sitemap">
+				      <param name="Name" value="Bridge mode">
+				      <param name="Local" value="gz_drawbridge.html">
+				      </OBJECT>
+				      </UL>
+				<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="New actions">
+				<param name="Local" value="gz_actions.html">
+				</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="GLDEFS and (Z)MAPINFO support">
+				<param name="Local" value="gz_gldefs.html">
+				</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="New settings in game configurations">
+				<param name="Local" value="gz_cfg_settings.html">
+				</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Plugins">
+				<param name="Local" value="gz_plugins.html">
+				</OBJECT>
+				      <UL>
+			        <LI> <OBJECT type="text/sitemap">
+				      <param name="Name" value="Color Picker plugin">
+				      <param name="Local" value="gz_plug_colorpicker.html">
+				      </OBJECT>
+				      </UL>
+				<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Frequently asked questions">
+				<param name="Local" value="gz_faq.html">
+				</OBJECT>
+				</UL>
+
+		</UL>
+
 </UL>
 </BODY></HTML>

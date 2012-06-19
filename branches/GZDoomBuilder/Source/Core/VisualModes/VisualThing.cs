@@ -274,9 +274,9 @@ namespace CodeImp.DoomBuilder.VisualModes
             if (thing.IsModel) {
                 updateBoundingBoxForModel();
             } else if (lightType != -1 && lightRadius > thing.Size) {
-                UpdateBoundingBox(lightRadius, lightRadius * 2);
+                updateBoundingBox(lightRadius, lightRadius * 2);
             } else {
-                UpdateBoundingBox((int)thing.Size, thingHeight);
+                updateBoundingBox((int)thing.Size, thingHeight);
             }
 		}
 
@@ -352,18 +352,18 @@ namespace CodeImp.DoomBuilder.VisualModes
                 isGldefsLight = false;
                 lightInterval = -1;
                 updateLight(light_id);
-                UpdateBoundingBox(lightRadius, lightRadius * 2);
+                updateBoundingBox(lightRadius, lightRadius * 2);
 
                 //check if we have light from GLDEFS
             } else if (General.Map.Data.GldefsEntries.ContainsKey(thing.Type)) {
                 isGldefsLight = true;
                 updateGldefsLight();
-                UpdateBoundingBox(lightRadius, lightRadius * 2);
+                updateBoundingBox(lightRadius, lightRadius * 2);
             } else {
                 if (thing.IsModel) {
                     updateBoundingBoxForModel();
                 } else {
-                    UpdateBoundingBox((int)thing.Size, thingHeight);
+                    updateBoundingBox((int)thing.Size, thingHeight);
                 }
                 lightType = -1;
                 lightRadius = -1;
@@ -380,7 +380,7 @@ namespace CodeImp.DoomBuilder.VisualModes
             int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
             if (light_id != -1) {
                 updateLight(light_id);
-                UpdateBoundingBox(lightRadius, lightRadius * 2);
+                updateBoundingBox(lightRadius, lightRadius * 2);
             }
         }
 
@@ -471,15 +471,16 @@ namespace CodeImp.DoomBuilder.VisualModes
 
             double time = General.Clock.GetCurrentTime();
             
-            float rMin, rMax;
+            /*float rMin, rMax;
             if (lightPrimaryRadius > lightSecondaryRadius) {
                 rMax = lightPrimaryRadius;
                 rMin = lightSecondaryRadius;
             } else {
                 rMin = lightPrimaryRadius;
                 rMax = lightSecondaryRadius;
-            }
-
+            }*/
+            float rMin = Math.Min(lightPrimaryRadius, lightSecondaryRadius);
+            float rMax = Math.Max(lightPrimaryRadius, lightSecondaryRadius);
             float diff = rMax - rMin;
 
             //pulse
@@ -508,7 +509,11 @@ namespace CodeImp.DoomBuilder.VisualModes
         }
 
         //mxd. update bounding box
-        public void UpdateBoundingBox(float width, float height) {
+        public void UpdateBoundingBox() {
+            updateBoundingBox(lightRadius, lightRadius * 2f);
+        }
+
+        private void updateBoundingBox(float width, float height) {
             boundingBox = new Vector3[9];
             boundingBox[0] = Center;
             float h2 = height / 2.0f;
