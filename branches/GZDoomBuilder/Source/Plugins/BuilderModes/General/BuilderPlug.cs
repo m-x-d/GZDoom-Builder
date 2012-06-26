@@ -74,6 +74,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Dockers
 		private UndoRedoPanel undoredopanel;
 		private Docker undoredodocker;
+
+        //mxd
+        private ToolStripMenuItem snapModeMenuItem;
 		
 		// Settings
 		private int showvisualthings;			// 0 = none, 1 = sprite only, 2 = sprite caged
@@ -178,6 +181,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel = new UndoRedoPanel();
 			undoredodocker = new Docker("undoredo", "Undo / Redo", undoredopanel);
 			General.Interface.AddDocker(undoredodocker);
+
+            //mxd. add "Snap Vertices" menu button
+            snapModeMenuItem = new ToolStripMenuItem("Snap selected vertices to grid");
+            snapModeMenuItem.Tag = "snapvertstogrid";
+            snapModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+            snapModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.SnapVerts;
+            snapModeMenuItem.Enabled = false;
+            General.Interface.AddMenu(snapModeMenuItem, MenuSection.EditGeometry);
 		}
 		
 		// Disposer
@@ -307,6 +318,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnMapNewEnd();
 			undoredopanel.SetBeginDescription("New Map");
 			undoredopanel.UpdateList();
+
+            //mxd
+            snapModeMenuItem.Enabled = true;
 		}
 		
 		// Map opened
@@ -315,6 +329,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnMapOpenEnd();
 			undoredopanel.SetBeginDescription("Opened Map");
 			undoredopanel.UpdateList();
+
+            //mxd
+            snapModeMenuItem.Enabled = true;
 		}
 		
 		// Map closed
@@ -322,6 +339,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnMapCloseEnd();
 			undoredopanel.UpdateList();
+
+            //mxd
+            snapModeMenuItem.Enabled = false;
 		}
 		
 		// Redo performed
@@ -351,6 +371,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnUndoWithdrawn();
 			undoredopanel.UpdateList();
 		}
+
+        //mxd
+        private void InvokeTaggedAction(object sender, EventArgs e) {
+            General.Interface.InvokeTaggedAction(sender, e);
+        }
 		
 		#endregion
 		

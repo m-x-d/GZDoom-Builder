@@ -241,6 +241,7 @@
     <Compile Include="ClassicModes\BridgeMode.cs" />
     <Compile Include="ClassicModes\DrawEllipseMode.cs" />
     <Compile Include="ClassicModes\DrawRectangleMode.cs" />
+    <Compile Include="ClassicModes\SnapVerticesMode.cs" />
     <Compile Include="ErrorChecks\CheckMissingTextures.cs" />
     <Compile Include="ErrorChecks\CheckUnknownFlats.cs" />
     <Compile Include="ErrorChecks\CheckUnknownTextures.cs" />
@@ -331,6 +332,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\BridgeMode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\SnapVerts.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

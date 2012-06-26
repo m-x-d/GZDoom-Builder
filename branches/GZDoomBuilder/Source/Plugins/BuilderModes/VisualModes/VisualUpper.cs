@@ -58,7 +58,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public VisualUpper(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
-			// We have no destructor
+            //mxd
+            geoType = VisualGeometryType.WALL_UPPER;
+            
+            // We have no destructor
 			GC.SuppressFinalize(this);
 		}
 

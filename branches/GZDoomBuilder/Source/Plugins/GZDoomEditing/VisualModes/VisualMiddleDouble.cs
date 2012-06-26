@@ -63,7 +63,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Constructor
 		public VisualMiddleDouble(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
-			// Set render pass
+            //mxd
+            geoType = VisualGeometryType.WALL_MIDDLE;
+            
+            // Set render pass
 			this.RenderPass = RenderPass.Mask;
 			
 			// We have no destructor

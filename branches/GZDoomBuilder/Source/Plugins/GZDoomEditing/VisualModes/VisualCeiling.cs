@@ -61,7 +61,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Constructor
 		public VisualCeiling(BaseVisualMode mode, VisualSector vs) : base(mode, vs)
 		{
-			// We have no destructor
+            //mxd
+            geoType = VisualGeometryType.CEILING;
+            
+            // We have no destructor
 			GC.SuppressFinalize(this);
 		}
 

@@ -61,7 +61,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Constructor
 		public VisualMiddle3D(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
-			// We have no destructor
+            //mxd
+            geoType = VisualGeometryType.WALL_MIDDLE;
+            
+            // We have no destructor
 			GC.SuppressFinalize(this);
 		}
 		

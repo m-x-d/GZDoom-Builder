@@ -54,6 +54,7 @@
             this.colorPickerSlider1.ShowLimits = true;
             this.colorPickerSlider1.Size = new System.Drawing.Size(311, 45);
             this.colorPickerSlider1.TabIndex = 6;
+            this.colorPickerSlider1.Value = 0;
             // 
             // colorPickerSlider2
             // 
@@ -62,6 +63,7 @@
             this.colorPickerSlider2.ShowLimits = false;
             this.colorPickerSlider2.Size = new System.Drawing.Size(311, 48);
             this.colorPickerSlider2.TabIndex = 7;
+            this.colorPickerSlider2.Value = 0;
             // 
             // colorPickerSlider3
             // 
@@ -70,6 +72,7 @@
             this.colorPickerSlider3.ShowLimits = true;
             this.colorPickerSlider3.Size = new System.Drawing.Size(311, 48);
             this.colorPickerSlider3.TabIndex = 8;
+            this.colorPickerSlider3.Value = 0;
             // 
             // LightColorPicker
             // 

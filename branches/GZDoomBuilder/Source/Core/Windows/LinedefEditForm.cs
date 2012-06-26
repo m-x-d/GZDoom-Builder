@@ -91,7 +91,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Arrange panels
 			if(General.Map.FormatInterface.HasPresetActivations)
 			{
-				actiongroup.Height = hexenpanel.Bottom + action.Top + (actiongroup.Width - actiongroup.ClientRectangle.Width);
+				//mxd
+                //actiongroup.Height = hexenpanel.Bottom + action.Top + (actiongroup.Width - actiongroup.ClientRectangle.Width);
+                actiongroup.Height = hexenpanel.Location.Y + hexenpanel.Height;
 				this.Height = heightpanel1.Height;
 			}
 			else if(!General.Map.FormatInterface.HasMixedActivations &&

@@ -26,9 +26,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
         private IColorPicker form;
         private ToolsForm toolsform;
 
-        private string currentModeName = "";
-
-        private Point formLocation; //used to keep forms location constant
+        private Point formLocation; //used to keep form's location constant
 
         public override void OnInitialize() {
             if (GZBuilder.GZGeneral.Version < 1.06f) {
@@ -67,7 +65,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
             if (General.Editing.Mode == null)
                 return;
 
-            currentModeName = General.Editing.Mode.GetType().Name;
+            string currentModeName = General.Editing.Mode.GetType().Name;
 
             //display one of colorPickers or tell the user why we can't do that
             if (currentModeName == "ThingsMode") {
@@ -97,7 +95,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
                     if (GZBuilder.GZGeneral.UDMF && (selectedSectorsCount > 0 || General.Map.Map.SelectedSectorsCount > 0)) {
                         form = new SectorColorPicker();
                     } else {
-                        General.Interface.DisplayStatus(StatusType.Warning, "Select some lights " + (GZBuilder.GZGeneral.UDMF ? "or sectors " : "") + "first!");
+                        General.Interface.DisplayStatus(StatusType.Warning, "Select some lights " + (GZBuilder.GZGeneral.UDMF ? ", sectors or surfaces " : "") + "first!");
                         return;
                     }
                 } else {

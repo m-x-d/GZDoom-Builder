@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
         public static bool UDMF;
 
         //version
-        public const float Version = 1.08f;
+        public const float Version = 1.09f;
 
         //debug console
 #if DEBUG
@@ -100,7 +100,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
         [BeginAction("gztogglemodels")]
         private static void toggleModels() {
             General.Settings.GZDrawModels = !General.Settings.GZDrawModels;
-            General.MainWindow.DisplayStatus(StatusType.Action, "MD3 models rendering is " + (General.Settings.GZDrawModels ? "ENABLED" : "DISABLED"));
+            General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering is " + (General.Settings.GZDrawModels ? "ENABLED" : "DISABLED"));
             General.MainWindow.RedrawDisplay();
             General.MainWindow.UpdateGZDoomPannel();
         }

@@ -84,6 +84,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
         //mxd
         private Vector3[] boundingBox;
+        protected VisualGeometryType geoType;
 		
 		#endregion
 
@@ -98,6 +99,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
         //mxd
         internal Vector3[] BoundingBox { get { return boundingBox; } }
+        public VisualGeometryType GeometryType { get { return geoType; } }
 
 		/// <summary>
 		/// Render pass in which this geometry must be rendered. Default is Solid.
@@ -140,6 +142,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			this.sector = vs;
 			this.ModulateColor = new PixelColor(255, 255, 255, 255);
+            //mxd
+            geoType = VisualGeometryType.UNKNOWN;
 		}
 
 		/// <summary>
@@ -151,6 +155,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.sector = vs;
 			this.sidedef = sd;
 			this.ModulateColor = new PixelColor(255, 255, 255, 255);
+            //mxd
+            geoType = VisualGeometryType.UNKNOWN;
 		}
 
 		#endregion
@@ -239,4 +245,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		#endregion
 	}
+
+    public enum VisualGeometryType:int{
+        FLOOR = 0,
+        CEILING = 1,
+        WALL_UPPER = 2,
+        WALL_MIDDLE = 3,
+        WALL_BOTTOM = 4,
+        UNKNOWN = 5,
+    }
 }
