@@ -183,15 +183,23 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
                 // Make undo for the draw
                 General.Map.UndoRedo.CreateUndo("Bridge ("+form.Subdivisions+" subdivisions)");
 
-                string lowTexture = "-";
-                string highTexture = "-";
+                List<List<SectorProperties>> sectorProps = new List<List<SectorProperties>>();
+                List<List<List<Sector>>> newSectors = new List<List<List<Sector>>>();
+                
+                //create sector properties collection
+                //sector row
+                for (int i = 0; i < drawShapes.Count; i++) {
+                    sectorProps.Add(new List<SectorProperties>());
+                    
+                    //sector in row
+                    for (int c = 0; c < drawShapes[i].Count; c++)
+                        sectorProps[i].Add(getSectorProperties(i, c));
+                }
 
                 // Make the drawing
                 //sector row
                 for (int i = 0; i < drawShapes.Count; i++) {
-                    //textures
-                    lowTexture = sectorProps1[i].LowTexture != "-" ? sectorProps1[i].LowTexture : sectorProps2[i].LowTexture;
-                    highTexture = sectorProps1[i].HighTexture != "-" ? sectorProps1[i].HighTexture : sectorProps2[i].HighTexture;
+                    newSectors.Add(new List<List<Sector>>());
 
                     //sector in row
                     for (int c = 0; c < drawShapes[i].Count; c++) {
@@ -205,21 +213,47 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
                         }
 
                         List<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
+                        newSectors[i].Add(newsectors);
 
-                        //set floor/ceiling heights, lower/upper textures and brightness
+                        //set floor/ceiling heights and brightness
                         foreach (Sector s in newsectors) {
-                            SectorProperties sp = getSectorProperties(i, c);
+                            SectorProperties sp = sectorProps[i][c];
                             s.Brightness = sp.Brightness;
                             s.FloorHeight = sp.FloorHeight;
                             s.CeilHeight = (sp.CeilingHeight < sp.FloorHeight ? sp.FloorHeight + 8 : sp.CeilingHeight);
+                        }
+                    }
+                }
 
+                //apply textures
+                //sector row
+                for (int i = 0; i < newSectors.Count; i++) {
+                    //sector in row
+                    for (int c = 0; c < newSectors[i].Count; c++) {
+                        foreach (Sector s in newSectors[i][c]) {
                             foreach(Sidedef sd in s.Sidedefs){
-                                if (sd.Line.Back != null && sd.Line.Front != null) {
-                                    sd.Line.Back.SetTextureLow(lowTexture);
-                                    sd.Line.Back.SetTextureHigh(highTexture);
-                                    sd.Line.Front.SetTextureLow(lowTexture);
-                                    sd.Line.Front.SetTextureHigh(highTexture);
-                                }    
+                                if (sd.LowRequired())
+                                    sd.SetTextureLow(sectorProps[i][c].LowTexture);
+                                if (sd.HighRequired())
+                                    sd.SetTextureHigh(sectorProps[i][c].HighTexture);    
+                            }
+                        }
+                    }
+                }
+
+                //apply textures to front/back sides of shape
+                //sector row
+                for (int i = 0; i < newSectors.Count; i++) {
+                    //first/last sector in row
+                    for (int c = 0; c < newSectors[i].Count; c += newSectors[i].Count-1) {
+                        foreach (Sector s in newSectors[i][c]) {
+                            foreach (Sidedef sd in s.Sidedefs) {
+                                if (sd.Other != null) {
+                                    if (sd.Other.LowRequired() && sd.Other.LowTexture == "-")
+                                        sd.Other.SetTextureLow(sectorProps[i][c].LowTexture);
+                                    if (sd.Other.HighRequired() && sd.Other.HighTexture == "-")
+                                        sd.Other.SetTextureHigh(sectorProps[i][c].HighTexture);
+                                }
                             }
                         }
                     }
@@ -406,6 +440,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
             sp.Brightness = intepolateValue(sectorProps1[lineIndex].Brightness, sectorProps2[lineIndex].Brightness, delta, form.BrightnessMode);
             sp.FloorHeight = intepolateValue(sectorProps1[lineIndex].FloorHeight, sectorProps2[lineIndex].FloorHeight, delta, form.FloorAlignMode);
             sp.CeilingHeight = intepolateValue(sectorProps1[lineIndex].CeilingHeight, sectorProps2[lineIndex].CeilingHeight, delta, form.CeilingAlignMode);
+
+            //textures
+            sp.LowTexture = sectorProps1[lineIndex].LowTexture != "-" ? sectorProps1[lineIndex].LowTexture : sectorProps2[lineIndex].LowTexture;
+            sp.HighTexture = sectorProps1[lineIndex].HighTexture != "-" ? sectorProps1[lineIndex].HighTexture : sectorProps2[lineIndex].HighTexture;
 
             return sp;
         }
