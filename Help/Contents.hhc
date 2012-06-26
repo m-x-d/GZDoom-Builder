@@ -243,15 +243,19 @@
               <UL>
 			        <LI> <OBJECT type="text/sitemap">
 				      <param name="Name" value="Draw Rectangle mode">
-				      <param name="Local" value="gz_drawrect.html">
+				      <param name="Local" value="gz_mode_drawrect.html">
 				      </OBJECT>
 				      <LI> <OBJECT type="text/sitemap">
 				      <param name="Name" value="Draw Ellipse mode">
-				      <param name="Local" value="gz_drawellipse.html">
+				      <param name="Local" value="gz_mode_drawellipse.html">
 				      </OBJECT>
 				      <LI> <OBJECT type="text/sitemap">
 				      <param name="Name" value="Bridge mode">
-				      <param name="Local" value="gz_drawbridge.html">
+				      <param name="Local" value="gz_mode_drawbridge.html">
+				      </OBJECT>
+				      <LI> <OBJECT type="text/sitemap">
+				      <param name="Name" value="Snap selected vertices to grid mode">
+				      <param name="Local" value="gz_mode_snapverts.html">
 				      </OBJECT>
 				      </UL>
 				<LI> <OBJECT type="text/sitemap">
@@ -274,6 +278,10 @@
 			        <LI> <OBJECT type="text/sitemap">
 				      <param name="Name" value="Color Picker plugin">
 				      <param name="Local" value="gz_plug_colorpicker.html">
+				      </OBJECT>
+				      <LI> <OBJECT type="text/sitemap">
+				      <param name="Name" value="UDMF Controls plugin">
+				      <param name="Local" value="gz_plug_udmfcontrols.html">
 				      </OBJECT>
 				      </UL>
 				<LI> <OBJECT type="text/sitemap">

@@ -67,22 +67,22 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface {
 //events
         private void BezierPathForm_FormClosed(object sender, FormClosedEventArgs e) {
             if (OnCancelClick != null)
-                OnCancelClick(this, new EventArgs());
+                OnCancelClick(this, EventArgs.Empty);
         }
 
         private void buttonCancel_Click(object sender, EventArgs e) {
             if (OnCancelClick != null)
-                OnCancelClick(this, new EventArgs());
+                OnCancelClick(this, EventArgs.Empty);
         }
 
         private void buttonOK_Click(object sender, EventArgs e) {
             if (OnOkClick != null)
-                OnOkClick(this, new EventArgs());
+                OnOkClick(this, EventArgs.Empty);
         }
 
         private void nudSubdivisions_ValueChanged(object sender, EventArgs e) {
             if (OnSubdivisionChanged != null)
-                OnSubdivisionChanged(this, new EventArgs());
+                OnSubdivisionChanged(this, EventArgs.Empty);
         }
 
         private void BezierPathForm_MouseEnter(object sender, EventArgs e) {
@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface {
 
         private void buttonFlip_Click(object sender, EventArgs e) {
             if (OnFlipClick != null)
-                OnFlipClick(this, new EventArgs());
+                OnFlipClick(this, EventArgs.Empty);
         }
 
         private void cbCopy_CheckedChanged(object sender, EventArgs e) {

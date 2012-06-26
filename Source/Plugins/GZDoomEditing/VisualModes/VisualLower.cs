@@ -59,7 +59,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Constructor
 		public VisualLower(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
-			// We have no destructor
+            //mxd
+            geoType = VisualGeometryType.WALL_BOTTOM;
+            
+            // We have no destructor
 			GC.SuppressFinalize(this);
 		}
 		

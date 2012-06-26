@@ -1539,10 +1539,12 @@ namespace CodeImp.DoomBuilder
 
         //mxd. This clamps angle between 0 and 359
         public static int ClampAngle(int angle) {
-            if (angle > -1 && angle < 360) return angle;
-            int n = angle / 360;
-            if (angle > 0) return angle - n * 360;
-            return 360 - Math.Abs(angle) + Math.Abs(n) * 360;
+            return (angle + 360) % 360;
+        }
+
+        //mxd. This clamps angle between 0 and 359
+        public static float ClampAngle(float angle) {
+            return (angle + 360) % 360;
         }
 		
 		// This returns an element from a collection by index

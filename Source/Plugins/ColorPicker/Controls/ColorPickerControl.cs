@@ -21,13 +21,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
         private ColorWheel colorWheel;
         private ColorHandler.RGB RGB;
 
-        public ColorHandler.RGB CurrentColor { 
-            get 
-            {
-                //GZBuilder.GZGeneral.Trace("get CurrentColor: " + RGB.Red + "," + RGB.Green + "," + RGB.Blue);
-                return RGB; 
-            } 
-        }
+        public ColorHandler.RGB CurrentColor { get { return RGB; } }
 
         private bool isInUpdate = false;
         private Color startColor;
@@ -146,8 +140,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
         }
 
         private void onPaint(object sender, System.Windows.Forms.PaintEventArgs e) {
-            // Depending on the circumstances, force a repaint
-            // of the color wheel passing different information.
+            // Depending on the circumstances, force a repaint of the color wheel passing different information.
             switch (changeType) {
                 case ChangeStyle.MouseMove:
                 case ChangeStyle.None:

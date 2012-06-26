@@ -59,7 +59,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public VisualFloor(BaseVisualMode mode, VisualSector vs) : base(mode, vs)
 		{
-			// We have no destructor
+			//mxd
+            geoType = VisualGeometryType.FLOOR;
+            
+            // We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
