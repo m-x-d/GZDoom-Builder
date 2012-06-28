@@ -835,6 +835,15 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Render 64 grid
 				if(General.Map.Grid.GridSize <= 64) RenderGrid(64f, General.Colors.Grid64, gridplotter);
 
+                //mxd. Render center of map
+                int size = 16;
+                Vector2D center = new Vector2D().GetTransformed(translatex, translatey, scale, -scale);
+                int cx = (int)center.x;
+                int cy = (int)center.y;
+                PixelColor c = General.Colors.Highlight;
+                gridplotter.DrawLineSolid(cx, cy + size, cx, cy - size, ref c);
+                gridplotter.DrawLineSolid(cx - size, cy, cx + size, cy, ref c);
+
 				// Done
 				backtex.UnlockRectangle(0);
 				lockedrect.Data.Dispose();
