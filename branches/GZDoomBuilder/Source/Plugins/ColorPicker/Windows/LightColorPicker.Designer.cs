@@ -92,6 +92,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "LightColorPicker";
+            this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.LightColorPicker_HelpRequested);
             this.ResumeLayout(false);
             this.PerformLayout();
 

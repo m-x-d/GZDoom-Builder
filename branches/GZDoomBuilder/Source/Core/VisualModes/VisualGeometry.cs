@@ -210,6 +210,16 @@ namespace CodeImp.DoomBuilder.VisualModes
                 boundingBox = BoundingBoxTools.CalculateBoundingPlane(bbs);
             }
         }
+
+        //mxd. Used to get proper sector from 3d-floors
+        public virtual Sector GetControlSector() {
+            return sector.Sector;
+        }
+
+        //mxd. Used to get proper linedef from 3d-floors
+        public virtual Linedef GetControlLinedef() {
+            return sidedef.Line;
+        }
 		
 		// This compares for sorting by sector
 		public int CompareTo(VisualGeometry other)
@@ -246,12 +256,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#endregion
 	}
 
-    public enum VisualGeometryType:int{
-        FLOOR = 0,
-        CEILING = 1,
-        WALL_UPPER = 2,
-        WALL_MIDDLE = 3,
-        WALL_BOTTOM = 4,
-        UNKNOWN = 5,
+    //mxd
+    public enum VisualGeometryType{
+        FLOOR,
+        CEILING,
+        WALL_UPPER,
+        WALL_MIDDLE,
+        WALL_MIDDLE_3D,
+        WALL_BOTTOM,
+        UNKNOWN,
     }
 }

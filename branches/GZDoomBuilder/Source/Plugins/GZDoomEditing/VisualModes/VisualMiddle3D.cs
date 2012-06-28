@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public VisualMiddle3D(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
             //mxd
-            geoType = VisualGeometryType.WALL_MIDDLE;
+            geoType = VisualGeometryType.WALL_MIDDLE_3D;
             
             // We have no destructor
 			GC.SuppressFinalize(this);
@@ -318,6 +318,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
 			return new Point((int)oldx, (int)oldy);
 		}
+
+        //mxd
+        public override Linedef GetControlLinedef() {
+            return extrafloor.Linedef;
+        }
 		
 		#endregion
 	}

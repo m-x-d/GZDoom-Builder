@@ -23,7 +23,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
         //events
         public event EventHandler OnAngleChanged;
 
-        private float angle;
+        private float angle; //it's actually 359 minus angle, displayed in control
         public float Value {
             get {
                 return (float)nudAngle.Value;
@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
         private void nudAngle_ValueChanged(object sender, EventArgs e) {
             if (!blockEvents) {
                 prevAngle = angle;
-                angle = (int)((NumericUpDown)sender).Value;
+                angle = General.ClampAngle(359 - (int)((NumericUpDown)sender).Value);
                 update();
             }
         }

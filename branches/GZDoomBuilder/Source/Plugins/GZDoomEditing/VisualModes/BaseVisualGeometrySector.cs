@@ -137,6 +137,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 			mode.ShowTargetInfo();
 		}
+
+        //mxd
+        public override Sector GetControlSector() {
+            return level.sector;
+        }
 		
 		#endregion
 

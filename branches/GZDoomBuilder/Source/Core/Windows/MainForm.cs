@@ -1838,6 +1838,9 @@ namespace CodeImp.DoomBuilder.Windows
 				case MenuSection.ViewViews: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(seperatorviewviews), menu); break;
 				case MenuSection.ViewZoom: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(seperatorviewzoom), menu); break;
 				case MenuSection.ViewScriptEdit: menuview.DropDownItems.Add(menu); break;
+                //mxd
+                case MenuSection.ModeDrawModes: menumode.DropDownItems.Insert(menumode.DropDownItems.IndexOf(separatorDrawodes) + 1, menu); break;
+
 				case MenuSection.PrefabsInsert: menuprefabs.DropDownItems.Insert(menuprefabs.DropDownItems.IndexOf(seperatorprefabsinsert), menu); break;
 				case MenuSection.PrefabsCreate: menuprefabs.DropDownItems.Add(menu); break;
 				case MenuSection.ToolsResources: menutools.DropDownItems.Insert(menutools.DropDownItems.IndexOf(seperatortoolsresources), menu); break;
@@ -2688,6 +2691,7 @@ namespace CodeImp.DoomBuilder.Windows
                 if (warnsLabel.Font.Bold) {
                     warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);
                     warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
+                    warnsLabel.BackColor = SystemColors.Control;
                 }
                 warntimer.Stop();
                 warnStatus = false;
@@ -2709,8 +2713,10 @@ namespace CodeImp.DoomBuilder.Windows
         private void warntimer_Tick(object sender, EventArgs e) {
             if (warnStatus) {
                 warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
+                warnsLabel.BackColor = Color.Red;
             } else {
                 warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+                warnsLabel.BackColor = SystemColors.Control;
             }
             warnStatus = !warnStatus;
         }

@@ -77,6 +77,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
         //mxd
         private ToolStripMenuItem snapModeMenuItem;
+        private ToolStripMenuItem drawLinesModeMenuItem;
+        private ToolStripMenuItem drawRectModeMenuItem;
+        private ToolStripMenuItem drawEllipseModeMenuItem;
 		
 		// Settings
 		private int showvisualthings;			// 0 = none, 1 = sprite only, 2 = sprite caged
@@ -189,6 +192,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
             snapModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.SnapVerts;
             snapModeMenuItem.Enabled = false;
             General.Interface.AddMenu(snapModeMenuItem, MenuSection.EditGeometry);
+
+            //mxd. add draw modes buttons
+            //draw ellipse
+            drawEllipseModeMenuItem = new ToolStripMenuItem("Draw Ellipse");
+            drawEllipseModeMenuItem.Tag = "drawellipsemode";
+            drawEllipseModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+            drawEllipseModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.DrawEllipseMode;
+            drawEllipseModeMenuItem.Enabled = false;
+            General.Interface.AddMenu(drawEllipseModeMenuItem, MenuSection.ModeDrawModes);
+
+            //draw rectangle
+            drawRectModeMenuItem = new ToolStripMenuItem("Draw Rectangle");
+            drawRectModeMenuItem.Tag = "drawrectanglemode";
+            drawRectModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+            drawRectModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.DrawRectMode;
+            drawRectModeMenuItem.Enabled = false;
+            General.Interface.AddMenu(drawRectModeMenuItem, MenuSection.ModeDrawModes);
+
+            //draw lines 
+            drawLinesModeMenuItem = new ToolStripMenuItem("Draw Lines");
+            drawLinesModeMenuItem.Tag = "drawlinesmode";
+            drawLinesModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+            drawLinesModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.DrawLinesMode;
+            drawLinesModeMenuItem.Enabled = false;
+            General.Interface.AddMenu(drawLinesModeMenuItem, MenuSection.ModeDrawModes);
 		}
 		
 		// Disposer
@@ -199,6 +227,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Clean up
 				General.Interface.RemoveDocker(undoredodocker);
+
+                //mxd
+                General.Interface.RemoveMenu(snapModeMenuItem);
+                General.Interface.RemoveMenu(drawLinesModeMenuItem);
+                General.Interface.RemoveMenu(drawRectModeMenuItem);
+                General.Interface.RemoveMenu(drawEllipseModeMenuItem);
+
 				undoredopanel.Dispose();
 				menusform.Unregister();
 				menusform.Dispose();
@@ -321,6 +356,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
             //mxd
             snapModeMenuItem.Enabled = true;
+            drawLinesModeMenuItem.Enabled = true;
+            drawRectModeMenuItem.Enabled = true;
+            drawEllipseModeMenuItem.Enabled = true;
 		}
 		
 		// Map opened
@@ -332,6 +370,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
             //mxd
             snapModeMenuItem.Enabled = true;
+            drawLinesModeMenuItem.Enabled = true;
+            drawRectModeMenuItem.Enabled = true;
+            drawEllipseModeMenuItem.Enabled = true;
 		}
 		
 		// Map closed
@@ -342,6 +383,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
             //mxd
             snapModeMenuItem.Enabled = false;
+            drawLinesModeMenuItem.Enabled = false;
+            drawRectModeMenuItem.Enabled = false;
+            drawEllipseModeMenuItem.Enabled = false;
 		}
 		
 		// Redo performed

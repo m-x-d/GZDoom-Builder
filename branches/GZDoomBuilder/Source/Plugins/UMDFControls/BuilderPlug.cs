@@ -70,8 +70,11 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 return;
             }
 
+            List<VisualGeometry> selectedSurfaces;
+
             if (General.Editing.Mode.GetType().Name == "BaseVisualMode") {
-                if (((VisualMode)General.Editing.Mode).GetSelectedSurfaces(true).Count == 0) {
+                selectedSurfaces = ((VisualMode)General.Editing.Mode).GetSelectedSurfaces();
+                if (selectedSurfaces.Count == 0) {
                     General.Interface.DisplayStatus(StatusType.Warning, "Select some surfaces first!");
                     return;
                 }
@@ -89,6 +92,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
             }
             form.Location = formLocation;
             form.FormClosed += new FormClosedEventHandler(form_FormClosed);
+            form.Setup(selectedSurfaces);
             form.ShowDialog(Form.ActiveForm);
         }
 
