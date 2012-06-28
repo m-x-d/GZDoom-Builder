@@ -88,6 +88,7 @@
             this.Opacity = 0;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "SectorColorPicker";
+            this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.SectorColorPicker_HelpRequested);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

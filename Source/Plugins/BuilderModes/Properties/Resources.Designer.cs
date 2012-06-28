@@ -102,6 +102,27 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap DrawEllipseMode {
+            get {
+                object obj = ResourceManager.GetObject("DrawEllipseMode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap DrawLinesMode {
+            get {
+                object obj = ResourceManager.GetObject("DrawLinesMode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap DrawRectMode {
+            get {
+                object obj = ResourceManager.GetObject("DrawRectMode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap FlipSelectionH {
             get {
                 object obj = ResourceManager.GetObject("FlipSelectionH", resourceCulture);

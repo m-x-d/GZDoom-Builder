@@ -190,6 +190,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.dockerspanel = new CodeImp.DoomBuilder.Controls.DockersControl();
             this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
             this.warntimer = new System.Windows.Forms.Timer(this.components);
+            this.separatorDrawodes = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -724,6 +725,8 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // menumode
             // 
+            this.menumode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.separatorDrawodes});
             this.menumode.Name = "menumode";
             this.menumode.Size = new System.Drawing.Size(50, 20);
             this.menumode.Text = "&Mode";
@@ -1317,7 +1320,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.statuslabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.statuslabel.Name = "statuslabel";
-            this.statuslabel.Size = new System.Drawing.Size(309, 18);
+            this.statuslabel.Size = new System.Drawing.Size(340, 18);
             this.statuslabel.Spring = true;
             this.statuslabel.Text = "Initializing user interface...";
             this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1743,6 +1746,11 @@ namespace CodeImp.DoomBuilder.Windows
             this.warntimer.Interval = 500;
             this.warntimer.Tick += new System.EventHandler(this.warntimer_Tick);
             // 
+            // separatorDrawodes
+            // 
+            this.separatorDrawodes.Name = "separatorDrawodes";
+            this.separatorDrawodes.Size = new System.Drawing.Size(149, 6);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1941,5 +1949,6 @@ namespace CodeImp.DoomBuilder.Windows
         private System.Windows.Forms.ToolStripMenuItem itemReloadModedef;
         private System.Windows.Forms.ToolStripMenuItem itemReloadGldefs;
         private System.Windows.Forms.ToolStripMenuItem itemReloadMapinfo;
+        private System.Windows.Forms.ToolStripSeparator separatorDrawodes;
 	}
 }

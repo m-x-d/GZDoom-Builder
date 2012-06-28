@@ -73,7 +73,6 @@ namespace CodeImp.DoomBuilder.VisualModes
         //mxd
         private List<VisualThing> selectedVisualThings;
         private List<VisualSector> selectedVisualSectors;
-        private List<VisualGeometry> selectedSurfaces;
         //used in "Play From Here" Action
         private Thing playerStart;
         private Vector3D playerStartPosition;
@@ -170,7 +169,6 @@ namespace CodeImp.DoomBuilder.VisualModes
                 //mxd
                 selectedVisualSectors = null;
                 selectedVisualThings = null;
-                selectedSurfaces = null;
 				
 				// Done
 				base.Dispose();
@@ -927,23 +925,21 @@ namespace CodeImp.DoomBuilder.VisualModes
         }
 
         /// <summary>
-        /// mxd. This returns list of selected sectors based on surfaces selected in visual mode
+        /// mxd. This returns list of surfaces selected in visual mode
         /// </summary>
-        public List<VisualGeometry> GetSelectedSurfaces(bool refreshSelection) {
-            if (refreshSelection || selectedSurfaces == null) {
-                selectedSurfaces = new List<VisualGeometry>();
-                foreach (KeyValuePair<Sector, VisualSector> group in allsectors) {
-                    foreach (VisualGeometry vg in group.Value.AllGeometry) {
-                        if (vg.Selected)
-                            selectedSurfaces.Add(vg);
-                    }
+        public List<VisualGeometry> GetSelectedSurfaces() {
+            List<VisualGeometry> selectedSurfaces = new List<VisualGeometry>();
+            foreach (KeyValuePair<Sector, VisualSector> group in allsectors) {
+                foreach (VisualGeometry vg in group.Value.AllGeometry) {
+                    if (vg.Selected)
+                        selectedSurfaces.Add(vg);
                 }
+            }
 
-                //if nothing is selected - try to get hilighted surface
-                if (selectedSurfaces.Count == 0) {
-                    VisualGeometry vg = getHilightedSurface();
-                    if(vg != null) selectedSurfaces.Add(vg);
-                }
+            //if nothing is selected - try to get hilighted surface
+            if (selectedSurfaces.Count == 0) {
+                VisualGeometry vg = getHilightedSurface();
+                if (vg != null) selectedSurfaces.Add(vg);
             }
             return selectedSurfaces;
         }

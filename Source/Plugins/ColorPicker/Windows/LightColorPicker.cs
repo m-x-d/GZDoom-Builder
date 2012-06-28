@@ -350,6 +350,11 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
         private void onSliderValueChanged(object sender, ColorPickerSliderEventArgs e) {
             updateLightPropsFromSliders();
         }
+
+        private void LightColorPicker_HelpRequested(object sender, HelpEventArgs hlpevent) {
+            General.ShowHelp("gz_plug_colorpicker.html");
+            hlpevent.Handled = true;
+        }
     }
 
     struct LightProps {

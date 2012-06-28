@@ -25,7 +25,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
             undoName = "Ellipse draw";
             shapeName = "ellipse";
 
-            subdivisions = minSubdivisions;
+            subdivisions = minSubdivisions + 2;
         }
 
         override protected Vector2D[] getShape(Vector2D pStart, Vector2D pEnd) {

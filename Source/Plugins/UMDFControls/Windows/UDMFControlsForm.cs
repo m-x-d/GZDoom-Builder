@@ -16,24 +16,24 @@ using CodeImp.DoomBuilder.Types;
 namespace CodeImp.DoomBuilder.UDMFControls
 {
     public partial class UDMFControlsForm : DelayedForm {
-        private List<VisualGeometry> floors;
-        private List<VisualGeometry> ceilings;
+        private List<SurfaceProperties> floors;
+        private List<SurfaceProperties> ceilings;
 
-        private List<VisualGeometry> wallsTop;
-        private List<VisualGeometry> wallsMid;
-        private List<VisualGeometry> wallsBottom;
+        private List<SurfaceProperties> wallsTop;
+        private List<SurfaceProperties> wallsMid;
+        private List<SurfaceProperties> wallsBottom;
 
-        private List<List<VisualGeometry>> walls;
-        private List<List<VisualGeometry>> ceilingsAndFloors;
+        private List<List<SurfaceProperties>> walls;
+        private List<List<SurfaceProperties>> ceilingsAndFloors;
 
-        private List<VisualSector> updateList; //list of sectors to update
+        private List<SurfaceProperties> updateList; //list of sectors to update
 
         private CheckBox[] wallFlags;
         private CheckBox[] sectorFlags;
 
         private List<string> renderStyles;
 
-        private static bool relativeMode;
+        private static bool relativeMode = true;
 
         public UDMFControlsForm() {
             //capture keys
@@ -43,16 +43,16 @@ namespace CodeImp.DoomBuilder.UDMFControls
             InitializeComponent();
             
             //create collections
-            floors = new List<VisualGeometry>();
-            ceilings = new List<VisualGeometry>();
-            wallsTop = new List<VisualGeometry>();
-            wallsMid = new List<VisualGeometry>();
-            wallsBottom = new List<VisualGeometry>();
+            floors = new List<SurfaceProperties>();
+            ceilings = new List<SurfaceProperties>();
+            wallsTop = new List<SurfaceProperties>();
+            wallsMid = new List<SurfaceProperties>();
+            wallsBottom = new List<SurfaceProperties>();
 
-            walls = new List<List<VisualGeometry>>() { wallsTop, wallsMid, wallsBottom };
-            ceilingsAndFloors = new List<List<VisualGeometry>>() { ceilings, floors };
-            
-            updateList = new List<VisualSector>();
+            walls = new List<List<SurfaceProperties>>() { wallsTop, wallsMid, wallsBottom };
+            ceilingsAndFloors = new List<List<SurfaceProperties>>() { ceilings, floors };
+
+            updateList = new List<SurfaceProperties>();
 
             wallFlags = new CheckBox[] { cbnodecals, cbnofakecontrast, cbclipmidtex, cbsmoothlighting };
             sectorFlags = new CheckBox[] { cbsilent, cbnofallingdamage, cbdropactors, cbnorespawn };
@@ -63,17 +63,10 @@ namespace CodeImp.DoomBuilder.UDMFControls
             KeyUp += new KeyEventHandler(UDMFControlsForm_KeyUp);
 
             cbRelativeMode.Checked = relativeMode;
-
-            setup();
         }
 
         //we should be in Visual mode and should have some surfaces selected at this point
-        private void setup() {
-            VisualMode vm = (VisualMode)General.Editing.Mode;
-
-            //should contain something, otherwise we wouldn't be here
-            List<VisualGeometry> surfaces = vm.GetSelectedSurfaces(false);
-
+        public void Setup(List<VisualGeometry> surfaces) {
             //create undo
             string rest = surfaces.Count + " surface" + (surfaces.Count > 1 ? "s" : "");
             General.Map.UndoRedo.CreateUndo("Edit texture properties of " + rest);
@@ -83,58 +76,57 @@ namespace CodeImp.DoomBuilder.UDMFControls
             List<UniversalFieldInfo> defaultLinedefFields = General.Map.Config.LinedefFields;
             List<UniversalFieldInfo> defaultSectorFields = General.Map.Config.SectorFields;
 
-            VisualGeometry firstWall = null;
-            VisualGeometry firstFloor = null; //or ceiling!
+            SurfaceProperties firstWall = null;
+            SurfaceProperties firstFloor = null; //or ceiling!
 
-            List<int> sectorIndeces = new List<int>();
+            List<int> wall3DIndeces = new List<int>();
+            SurfaceProperties sp;
+            int walls3dCount = 0;
 
             //sort things
             foreach (VisualGeometry vg in surfaces) {
-                if (sectorIndeces.IndexOf(vg.Sector.Sector.FixedIndex) == -1) {
-                    updateList.Add(vg.Sector);
-                    sectorIndeces.Add(vg.Sector.Sector.FixedIndex);
-                }
-                
+                sp = new SurfaceProperties(vg);
+                updateList.Add(sp);
+
                 switch (vg.GeometryType) {
                     case VisualGeometryType.CEILING:
-                        if (firstFloor == null) firstFloor = vg;
-                        ceilings.Add(vg);
-                        vg.Sector.Sector.Fields.BeforeFieldsChange();
-                        setDefaultUniversalProperties(vg.Sector.Sector.Fields, defaultSectorFields);
+                        if (firstFloor == null) firstFloor = sp;
+                        ceilings.Add(sp);
+                        setDefaultUniversalProperties(sp.Sector.Fields, defaultSectorFields);
                         break;
 
                     case VisualGeometryType.FLOOR:
-                        if (firstFloor == null) firstFloor = vg;
-                        floors.Add(vg);
-                        vg.Sector.Sector.Fields.BeforeFieldsChange();
-                        setDefaultUniversalProperties(vg.Sector.Sector.Fields, defaultSectorFields);
+                        if (firstFloor == null) firstFloor = sp;
+                        floors.Add(sp);
+                        setDefaultUniversalProperties(sp.Sector.Fields, defaultSectorFields);
                         break;
 
                     case VisualGeometryType.WALL_BOTTOM:
-                        if (firstWall == null) firstWall = vg;
-                        wallsBottom.Add(vg);
-                        vg.Sidedef.Fields.BeforeFieldsChange();
-                        vg.Sidedef.Line.Fields.BeforeFieldsChange();
-                        setDefaultUniversalProperties(vg.Sidedef.Fields, defaultSidedefFields);
-                        setDefaultUniversalProperties(vg.Sidedef.Line.Fields, defaultLinedefFields);
+                        if (firstWall == null) firstWall = sp;
+                        wallsBottom.Add(sp);
+                        setDefaultUniversalProperties(sp.Sidedef.Fields, defaultSidedefFields);
+                        setDefaultUniversalProperties(sp.Linedef.Fields, defaultLinedefFields);
                         break;
 
+                    case VisualGeometryType.WALL_MIDDLE_3D: //all 3D-walls in a sector are linked to the same sidedef of control sector, so if many are selected, we need only one.
+                        walls3dCount++;
+                        if (wall3DIndeces.IndexOf(vg.Sector.Sector.FixedIndex) != -1)
+                            break;
+                        wall3DIndeces.Add(vg.Sector.Sector.FixedIndex);
+                        goto case VisualGeometryType.WALL_MIDDLE;
+
                     case VisualGeometryType.WALL_MIDDLE:
-                        if (firstWall == null) firstWall = vg;
-                        wallsMid.Add(vg);
-                        vg.Sidedef.Fields.BeforeFieldsChange();
-                        vg.Sidedef.Line.Fields.BeforeFieldsChange();
-                        setDefaultUniversalProperties(vg.Sidedef.Fields, defaultSidedefFields);
-                        setDefaultUniversalProperties(vg.Sidedef.Line.Fields, defaultLinedefFields);
+                        if (firstWall == null) firstWall = sp;
+                        wallsMid.Add(sp);
+                        setDefaultUniversalProperties(sp.Sidedef.Fields, defaultSidedefFields);
+                        setDefaultUniversalProperties(sp.Linedef.Fields, defaultLinedefFields);
                         break;
 
                     case VisualGeometryType.WALL_UPPER:
-                        if (firstWall == null) firstWall = vg;
-                        wallsTop.Add(vg);
-                        vg.Sidedef.Fields.BeforeFieldsChange();
-                        vg.Sidedef.Line.Fields.BeforeFieldsChange();
-                        setDefaultUniversalProperties(vg.Sidedef.Fields, defaultSidedefFields);
-                        setDefaultUniversalProperties(vg.Sidedef.Line.Fields, defaultLinedefFields);
+                        if (firstWall == null) firstWall = sp;
+                        wallsTop.Add(sp);
+                        setDefaultUniversalProperties(sp.Sidedef.Fields, defaultSidedefFields);
+                        setDefaultUniversalProperties(sp.Linedef.Fields, defaultLinedefFields);
                         break;
 
                     default: //dbg
@@ -154,24 +146,24 @@ namespace CodeImp.DoomBuilder.UDMFControls
             //set initial values to controls
             if (firstFloor != null) {
                 //get values
-                float scaleX = (float)firstFloor.Sector.Sector.Fields[KeyNames.GetScaleX(firstFloor.GeometryType)].Value;
-                float scaleY = (float)firstFloor.Sector.Sector.Fields[KeyNames.GetScaleY(firstFloor.GeometryType)].Value;
-                float translateX = (float)firstFloor.Sector.Sector.Fields[KeyNames.GetTranslationX(firstFloor.GeometryType)].Value;
-                float translateY = (float)firstFloor.Sector.Sector.Fields[KeyNames.GetTranslationY(firstFloor.GeometryType)].Value;
+                float scaleX = (float)firstFloor.Sector.Fields[KeyNames.GetScaleX(firstFloor.GeometryType)].Value;
+                float scaleY = (float)firstFloor.Sector.Fields[KeyNames.GetScaleY(firstFloor.GeometryType)].Value;
+                float translateX = (float)firstFloor.Sector.Fields[KeyNames.GetTranslationX(firstFloor.GeometryType)].Value;
+                float translateY = (float)firstFloor.Sector.Fields[KeyNames.GetTranslationY(firstFloor.GeometryType)].Value;
 
                 //set shared and sector flags
-                cblightabsolute.Checked = (bool)firstFloor.Sector.Sector.Fields[KeyNames.GetLightAbsolute(firstFloor.GeometryType)].Value;
+                cblightabsolute.Checked = (bool)firstFloor.Sector.Fields[KeyNames.GetLightAbsolute(firstFloor.GeometryType)].Value;
                 
                 foreach(CheckBox cb in sectorFlags)
-                    cb.Checked = (bool)firstFloor.Sector.Sector.Fields[(string)cb.Tag].Value;
+                    cb.Checked = (bool)firstFloor.Sector.Fields[(string)cb.Tag].Value;
 
                 //set values to controls
                 scaleControl.Value = new Vector2D(scaleX, scaleY);
                 positionControl1.Value = new Vector2D(translateX, translateY);
-                angleControl1.Value = (int)((float)firstFloor.Sector.Sector.Fields[KeyNames.GetRotation(firstFloor.GeometryType)].Value);
-                sliderBrightness.Value = (int)firstFloor.Sector.Sector.Fields[KeyNames.GetLight(firstFloor.GeometryType)].Value;
-                nudGravity.Value = (decimal)((float)firstFloor.Sector.Sector.Fields[(string)nudGravity.Tag].Value);
-                sliderDesaturation.Value = (float)firstFloor.Sector.Sector.Fields[(string)sliderDesaturation.Tag].Value;
+                angleControl1.Value = (int)((float)firstFloor.Sector.Fields[KeyNames.GetRotation(firstFloor.GeometryType)].Value);
+                sliderBrightness.Value = (int)firstFloor.Sector.Fields[KeyNames.GetLight(firstFloor.GeometryType)].Value;
+                nudGravity.Value = (decimal)((float)firstFloor.Sector.Fields[(string)nudGravity.Tag].Value);
+                sliderDesaturation.Value = (float)firstFloor.Sector.Fields[(string)sliderDesaturation.Tag].Value;
 
             } else {//disable floor/ceiling related controls
                 gbRotation.Enabled = false;
@@ -196,9 +188,15 @@ namespace CodeImp.DoomBuilder.UDMFControls
                     cblightabsolute.Checked = (bool)firstWall.Sidedef.Fields[KeyNames.GetLightAbsolute(firstWall.GeometryType)].Value;
 
                     //set linedef values
-                    sliderAlpha.Value = (float)firstWall.Sidedef.Line.Fields[(string)sliderAlpha.Tag].Value;
-                    string renderStyle = (string)firstWall.Sidedef.Line.Fields[(string)cbRenderStyle.Tag].Value;
+                    sliderAlpha.Value = (float)firstWall.Linedef.Fields[(string)sliderAlpha.Tag].Value;
+                    string renderStyle = (string)firstWall.Linedef.Fields[(string)cbRenderStyle.Tag].Value;
                     cbRenderStyle.SelectedIndex = renderStyles.IndexOf(renderStyle);
+
+                    //if we got only 3d-walls selected, disable controls, which don't affect those
+                    if (walls3dCount == wallsMid.Count && wallsTop.Count == 0 && wallsBottom.Count == 0) {
+                        gbAlpha.Enabled = false;
+                        bgBrightness.Enabled = false;
+                    }
                 }
 
                 //set wall flags
@@ -240,24 +238,24 @@ namespace CodeImp.DoomBuilder.UDMFControls
             List<UniversalFieldInfo> defaultSectorFields = General.Map.Config.SectorFields;
 
             //...from floors/ceilings...
-            foreach (List<VisualGeometry> list in ceilingsAndFloors) {
-                foreach (VisualGeometry floor in list)
-                    removeDefaultUniversalProperties(floor.Sector.Sector.Fields, defaultSectorFields);
+            foreach (List<SurfaceProperties> list in ceilingsAndFloors) {
+                foreach (SurfaceProperties floor in list)
+                    removeDefaultUniversalProperties(floor.Sector.Fields, defaultSectorFields);
             }
 
             //...and walls
-            foreach (List<VisualGeometry> list in walls) {
-                foreach (VisualGeometry wall in list) {
+            foreach (List<SurfaceProperties> list in walls) {
+                foreach (SurfaceProperties wall in list) {
                     removeDefaultUniversalProperties(wall.Sidedef.Fields, defaultSidedefFields);
-                    removeDefaultUniversalProperties(wall.Sidedef.Line.Fields, defaultLinedefFields);
+                    removeDefaultUniversalProperties(wall.Linedef.Fields, defaultLinedefFields);
                 }
             }
         }
 
 //update view
         private void update() {
-            foreach (VisualSector vs in updateList)
-                vs.UpdateSectorData();
+            foreach (SurfaceProperties sp in updateList)
+                sp.Update();
         }
 
 //shared props
@@ -273,9 +271,9 @@ namespace CodeImp.DoomBuilder.UDMFControls
 
 //linedef props
         private void setLinedefProperty(string propName, object value) {
-            foreach (List<VisualGeometry> list in walls) {
-                foreach (VisualGeometry vg in list)
-                    vg.Sidedef.Line.Fields[propName].Value = value;
+            foreach (List<SurfaceProperties> list in walls) {
+                foreach (SurfaceProperties vg in list)
+                    vg.Linedef.Fields[propName].Value = value;
             }
         }
 
@@ -288,8 +286,8 @@ namespace CodeImp.DoomBuilder.UDMFControls
             }
 
             //apply value
-            foreach (List<VisualGeometry> list in walls) {
-                foreach (VisualGeometry vg in list)
+            foreach (List<SurfaceProperties> list in walls) {
+                foreach (SurfaceProperties vg in list)
                     vg.Sidedef.Fields[propName].Value = value;
             }
         }
@@ -311,12 +309,12 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 props[i] = propName + props[i];
 
             int index = 0;
+            
             //apply values
-
             if (relativeMode) {
                 float val;
-                foreach (List<VisualGeometry> list in walls) { //top -> middle -> bottom
-                    foreach (VisualGeometry vg in list) {
+                foreach (List<SurfaceProperties> list in walls) { //top -> middle -> bottom
+                    foreach (SurfaceProperties vg in list) {
                         val = (float)vg.Sidedef.Fields[props[index]].Value + value.x;
                         vg.Sidedef.Fields[props[index]].Value = val;
 
@@ -326,8 +324,8 @@ namespace CodeImp.DoomBuilder.UDMFControls
                     index += 2;
                 }
             } else {
-                foreach (List<VisualGeometry> list in walls) { //top -> middle -> bottom
-                    foreach (VisualGeometry vg in list) {
+                foreach (List<SurfaceProperties> list in walls) { //top -> middle -> bottom
+                    foreach (SurfaceProperties vg in list) {
                         vg.Sidedef.Fields[props[index]].Value = value.x;
                         vg.Sidedef.Fields[props[index + 1]].Value = value.y;
                     }
@@ -360,28 +358,28 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 if (propName == "rotation" && relativeMode) {
                     float val;
 
-                    foreach (VisualGeometry vg in floors) {
-                        val = (float)vg.Sector.Sector.Fields[propFloor].Value + (float)value;
-                        vg.Sector.Sector.Fields[propFloor].Value = (object)val;
+                    foreach (SurfaceProperties vg in floors) {
+                        val = (float)vg.Sector.Fields[propFloor].Value + (float)value;
+                        vg.Sector.Fields[propFloor].Value = (object)val;
                     }
 
-                    foreach (VisualGeometry vg in ceilings) {
-                        val = (float)vg.Sector.Sector.Fields[propCeiling].Value + (float)value;
-                        vg.Sector.Sector.Fields[propCeiling].Value = (object)val;
+                    foreach (SurfaceProperties vg in ceilings) {
+                        val = (float)vg.Sector.Fields[propCeiling].Value + (float)value;
+                        vg.Sector.Fields[propCeiling].Value = (object)val;
                     }
                 } else {
-                    foreach (VisualGeometry vg in floors)
-                        vg.Sector.Sector.Fields[propFloor].Value = value;
+                    foreach (SurfaceProperties vg in floors)
+                        vg.Sector.Fields[propFloor].Value = value;
 
-                    foreach (VisualGeometry vg in ceilings)
-                        vg.Sector.Sector.Fields[propCeiling].Value = value;
+                    foreach (SurfaceProperties vg in ceilings)
+                        vg.Sector.Fields[propCeiling].Value = value;
                 }
                 return;
             }
-
-            foreach (List<VisualGeometry> list in ceilingsAndFloors) {
-                foreach (VisualGeometry vg in list)
-                    vg.Sector.Sector.Fields[propName].Value = value;
+            //apply values
+            foreach (List<SurfaceProperties> list in ceilingsAndFloors) {
+                foreach (SurfaceProperties vg in list)
+                    vg.Sector.Fields[propName].Value = value;
             }
         }
 
@@ -404,26 +402,26 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 floorNameY = "ypanningfloor";
             }
             props = new string[] { ceilingNameX, ceilingNameY, floorNameX, floorNameY };
-
             int index = 0;
 
+            //apply values
             if (relativeMode) {
                 float val;
-                foreach (List<VisualGeometry> list in ceilingsAndFloors) { //ceilings -> floors
-                    foreach (VisualGeometry vg in list) {
-                        val = (float)vg.Sector.Sector.Fields[props[index]].Value + value.x;
-                        vg.Sector.Sector.Fields[props[index]].Value = (object)val;
+                foreach (List<SurfaceProperties> list in ceilingsAndFloors) { //ceilings -> floors
+                    foreach (SurfaceProperties vg in list) {
+                        val = (float)vg.Sector.Fields[props[index]].Value + value.x;
+                        vg.Sector.Fields[props[index]].Value = (object)val;
 
-                        val = (float)vg.Sector.Sector.Fields[props[index + 1]].Value + value.y;
-                        vg.Sector.Sector.Fields[props[index + 1]].Value = (object)val;
+                        val = (float)vg.Sector.Fields[props[index + 1]].Value + value.y;
+                        vg.Sector.Fields[props[index + 1]].Value = (object)val;
                     }
                     index += 2;
                 }
             } else {
-                foreach (List<VisualGeometry> list in ceilingsAndFloors) { //ceilings -> floors
-                    foreach (VisualGeometry vg in list) {
-                        vg.Sector.Sector.Fields[props[index]].Value = value.x;
-                        vg.Sector.Sector.Fields[props[index + 1]].Value = value.y;
+                foreach (List<SurfaceProperties> list in ceilingsAndFloors) { //ceilings -> floors
+                    foreach (SurfaceProperties vg in list) {
+                        vg.Sector.Fields[props[index]].Value = value.x;
+                        vg.Sector.Fields[props[index + 1]].Value = value.y;
                     }
                     index += 2;
                 }
@@ -447,9 +445,11 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 setSectorProperty((string)cb.Tag, (object)cb.Checked);
 
             //update sectors
-            foreach (VisualSector vs in updateList) {
-                vs.Sector.UpdateNeeded = true;
-                vs.Sector.UpdateCache();
+            foreach (SurfaceProperties vs in updateList) {
+                if (vs.Sector != null) {
+                    vs.Sector.UpdateNeeded = true;
+                    vs.Sector.UpdateCache();
+                }
             }
 
             removeDefaultValues();
@@ -536,9 +536,46 @@ namespace CodeImp.DoomBuilder.UDMFControls
         private void cbRelativeMode_CheckedChanged(object sender, EventArgs e) {
             relativeMode = cbRelativeMode.Checked;
         }
+
+        private void UDMFControlsForm_HelpRequested(object sender, HelpEventArgs hlpevent) {
+            General.ShowHelp("gz_plug_udmfcontrols.html");
+            hlpevent.Handled = true;
+        }
     }
 
-    public class KeyNames {
+    internal class SurfaceProperties {
+        private Sector sector;
+        public Sector Sector { get { return sector; } }
+
+        private Sidedef sidedef;
+        public Sidedef Sidedef { get { return sidedef; } }
+
+        private Linedef linedef;
+        public Linedef Linedef { get { return linedef; } }
+
+        public VisualGeometryType GeometryType { get { return vg.GeometryType; } }
+        private VisualGeometry vg;
+        
+        public SurfaceProperties(VisualGeometry visualGeometry) {
+            vg = visualGeometry;
+            if (vg.GeometryType == VisualGeometryType.CEILING || vg.GeometryType == VisualGeometryType.FLOOR) {
+                sector = vg.GetControlSector();
+                sector.Fields.BeforeFieldsChange();
+            } else {
+                linedef = vg.GetControlLinedef();
+                sidedef = linedef.Front;
+                linedef.Fields.BeforeFieldsChange();
+                sidedef.Fields.BeforeFieldsChange();
+            }
+        }
+
+        public void Update() {
+            vg.Sector.UpdateSectorData();
+        }
+
+    }
+
+    internal class KeyNames {
 //SCALE        
         public static string GetScaleX(VisualGeometryType type) {
             return getScale(type).Replace("$", "x");
@@ -562,6 +599,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
                     return "scale$_top";
                     break;
 
+                case VisualGeometryType.WALL_MIDDLE_3D:
                 case VisualGeometryType.WALL_MIDDLE:
                     return "scale$_mid";
                     break;
@@ -596,6 +634,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
                     return "offset$_top";
                     break;
 
+                case VisualGeometryType.WALL_MIDDLE_3D:
                 case VisualGeometryType.WALL_MIDDLE:
                     return "offset$_mid";
                     break;
@@ -634,6 +673,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
 
                 case VisualGeometryType.WALL_BOTTOM:
                 case VisualGeometryType.WALL_MIDDLE:
+                case VisualGeometryType.WALL_MIDDLE_3D:
                 case VisualGeometryType.WALL_UPPER:
                     return "light";
                     break;
@@ -653,6 +693,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
 
                 case VisualGeometryType.WALL_BOTTOM:
                 case VisualGeometryType.WALL_MIDDLE:
+                case VisualGeometryType.WALL_MIDDLE_3D:
                 case VisualGeometryType.WALL_UPPER:
                     return "lightabsolute";
                     break;

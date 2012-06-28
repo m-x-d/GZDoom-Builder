@@ -20,7 +20,9 @@ namespace CodeImp.DoomBuilder.UDMFControls
             }
             set {
                 blockEvents = true;
-                numericUpDown1.Value = (decimal)General.Clamp(value, (float)numericUpDown1.Minimum, (float)numericUpDown1.Maximum);
+                float val = General.Clamp(value, (float)numericUpDown1.Minimum, (float)numericUpDown1.Maximum);
+                previousValue = (int)(val * 10f);
+                numericUpDown1.Value = (decimal)val;
                 blockEvents = false;
             }
         }
@@ -60,8 +62,8 @@ namespace CodeImp.DoomBuilder.UDMFControls
             numericUpDown1.Value = (decimal)General.Clamp((float)numericUpDown1.Value, min, max);
 
             if (doubledLimits) {
-                numericUpDown1.Minimum = (decimal)(min * 2);
-                numericUpDown1.Maximum = (decimal)(max * 2);
+                numericUpDown1.Minimum = (decimal)(min * 10);
+                numericUpDown1.Maximum = (decimal)(max * 10);
             } else {
                 numericUpDown1.Minimum = (decimal)min;
                 numericUpDown1.Maximum = (decimal)max;

@@ -47,11 +47,6 @@
             // nudAngle
             // 
             this.nudAngle.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.nudAngle.Increment = new decimal(new int[] {
-            15,
-            0,
-            0,
-            0});
             this.nudAngle.Location = new System.Drawing.Point(45, 102);
             this.nudAngle.Maximum = new decimal(new int[] {
             9000,

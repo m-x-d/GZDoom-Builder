@@ -473,8 +473,11 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "UDMFControlsForm";
             this.Opacity = 0;
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "UDMF Controls";
+            this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.UDMFControlsForm_HelpRequested);
             this.gbRotation.ResumeLayout(false);
             this.gbPosition.ResumeLayout(false);
             this.gbScale.ResumeLayout(false);

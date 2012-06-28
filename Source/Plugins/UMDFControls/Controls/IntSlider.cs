@@ -23,7 +23,9 @@ namespace CodeImp.DoomBuilder.UDMFControls
             set
             {
                 blockEvents = true;
-                numericUpDown1.Value = General.Clamp(value, (int)numericUpDown1.Minimum, (int)numericUpDown1.Maximum);
+
+                previousValue = General.Clamp(value, (int)numericUpDown1.Minimum, (int)numericUpDown1.Maximum);
+                numericUpDown1.Value = previousValue;
                 blockEvents = false;
             }
         }

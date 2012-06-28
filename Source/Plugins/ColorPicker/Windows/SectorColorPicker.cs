@@ -163,5 +163,10 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
                 colorPickerControl1.SetCurrentColor(Color.FromArgb((int)selection[0].Fields[currentColorTag].Value));
             }
         }
+
+        private void SectorColorPicker_HelpRequested(object sender, HelpEventArgs hlpevent) {
+            General.ShowHelp("gz_plug_colorpicker.html");
+            hlpevent.Handled = true;
+        }
     }
 }
