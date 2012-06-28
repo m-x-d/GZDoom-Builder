@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Builder", "Builder.csproj",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuilderModes", "..\Plugins\BuilderModes\BuilderModes.csproj", "{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorPicker", "..\Plugins\ColorPicker\ColorPicker.csproj", "{A4761900-0EA3-4FE4-A919-847FD5080EFC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GZDoomEditing", "..\Plugins\GZDoomEditing\GZDoomEditing.csproj", "{760A9BC7-CB73-4C36-858B-994C14996FCD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UDMFControls", "..\Plugins\UMDFControls\UDMFControls.csproj", "{2D11C828-295C-463A-8545-CA1AD6D51518}"
@@ -41,16 +39,6 @@ Global
 		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Release|Mixed Platforms.Build.0 = Release|x86
 		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Release|x86.ActiveCfg = Release|x86
 		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Release|x86.Build.0 = Release|x86
-		{A4761900-0EA3-4FE4-A919-847FD5080EFC}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{A4761900-0EA3-4FE4-A919-847FD5080EFC}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{A4761900-0EA3-4FE4-A919-847FD5080EFC}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{A4761900-0EA3-4FE4-A919-847FD5080EFC}.Debug|x86.ActiveCfg = Debug|x86
-		{A4761900-0EA3-4FE4-A919-847FD5080EFC}.Debug|x86.Build.0 = Debug|x86
-		{A4761900-0EA3-4FE4-A919-847FD5080EFC}.Release|Any CPU.ActiveCfg = Release|x86
-		{A4761900-0EA3-4FE4-A919-847FD5080EFC}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{A4761900-0EA3-4FE4-A919-847FD5080EFC}.Release|Mixed Platforms.Build.0 = Release|x86
-		{A4761900-0EA3-4FE4-A919-847FD5080EFC}.Release|x86.ActiveCfg = Release|x86
-		{A4761900-0EA3-4FE4-A919-847FD5080EFC}.Release|x86.Build.0 = Release|x86
 		{760A9BC7-CB73-4C36-858B-994C14996FCD}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{760A9BC7-CB73-4C36-858B-994C14996FCD}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{760A9BC7-CB73-4C36-858B-994C14996FCD}.Debug|Mixed Platforms.Build.0 = Debug|x86
