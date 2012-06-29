@@ -47,6 +47,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private List<TreeNode> nodes;
 		private ThingTypeInfo thinginfo;
 		private bool preventchanges = false;
+
+        //mxd
+        private Vector2D initialPosition; //initial position of a thing used to fill posX and posY fields
 		
 		#endregion
 
@@ -119,6 +122,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// Coordination
 			angle.Text = ft.AngleDoom.ToString();
 			height.Text = ((int)ft.Position.z).ToString();
+
+            //mxd
+            initialPosition = ft.Position;
+            posX.Text = ((int)ft.Position.x).ToString();
+            posY.Text = ((int)ft.Position.y).ToString();
+            posX.ButtonStep = General.Map.Grid.GridSize;
+            posY.ButtonStep = General.Map.Grid.GridSize;
 			
 			// Action/tags
 			action.Value = ft.Action;
@@ -320,6 +330,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Make undo
 			if(things.Count > 1) undodesc = things.Count + " things";
 			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
+
+            //mxd
+            Vector2D delta = new Vector2D((float)posX.GetResult((int)initialPosition.x) - initialPosition.x, (float)posY.GetResult((int)initialPosition.y) - initialPosition.y);
 			
 			// Go for all the things
 			foreach(Thing t in things)
@@ -329,7 +342,9 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Coordination
 				t.Rotate(angle.GetResult(t.AngleDoom));
-				t.Move(t.Position.x, t.Position.y, (float)height.GetResult((int)t.Position.z));
+                //mxd
+				//t.Move(t.Position.x, t.Position.y, (float)height.GetResult((int)t.Position.z));
+                t.Move(t.Position.x + delta.x, t.Position.y + delta.y, (float)height.GetResult((int)t.Position.z));
 				
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes)

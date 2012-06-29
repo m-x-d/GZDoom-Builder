@@ -426,7 +426,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
         //mxd
-        protected override void moveSelectedThings(Vector2D direction) {
+        protected override void moveSelectedThings(Vector2D direction, bool absolutePosition) {
             List<VisualThing> things = GetSelectedVisualThings(true);
 
             if (things.Count == 0) {
@@ -434,14 +434,49 @@ namespace CodeImp.DoomBuilder.BuilderModes
                 return;
             }
 
-            //move things
-            int camAngle = (int)Math.Round(General.Map.VisualCamera.AngleXY * 180 / Math.PI);
-            int sector = (int)(General.ClampAngle(camAngle - 45f) / 90f);
-            direction = direction.GetRotated((float)(sector * Math.PI / 2f));
+            //move things...
+            if (!absolutePosition) { //...relatively (that's easy)
+                int camAngle = (int)Math.Round(General.Map.VisualCamera.AngleXY * 180 / Math.PI);
+                int sector = (int)(General.ClampAngle(camAngle - 45f) / 90f);
+                direction = direction.GetRotated((float)(sector * Math.PI / 2f));
 
-            for (int i = 0; i < things.Count; i++) {
-                BaseVisualThing t = things[i] as BaseVisualThing;
-                t.OnMove(t.Thing.Position + new Vector3D(direction));
+                for (int i = 0; i < things.Count; i++) {
+                    BaseVisualThing t = things[i] as BaseVisualThing;
+                    t.OnMove(t.Thing.Position + new Vector3D(direction));
+                }
+            } else { //...to specified location preserving relative positioning (that's harder)
+                if (things.Count == 1) {//just move it there
+                    BaseVisualThing t = things[0] as BaseVisualThing;
+                    t.OnMove(new Vector3D(direction.x, direction.y, t.Thing.Position.z));
+                    return;
+                }
+
+                //we need some reference
+                float minX = things[0].Thing.Position.x;
+                float maxX = minX;
+                float minY = things[0].Thing.Position.y;
+                float maxY = minY;
+
+                //get bounding coordinates for selected things
+                for (int i = 1; i < things.Count; i++) {
+                    if (things[i].Thing.Position.x < minX)
+                        minX = things[i].Thing.Position.x;
+                    else if (things[i].Thing.Position.x > maxX)
+                        maxX = things[i].Thing.Position.x;
+
+                    if (things[i].Thing.Position.y < minY)
+                        minY = things[i].Thing.Position.y;
+                    else if (things[i].Thing.Position.y > maxY)
+                        maxY = things[i].Thing.Position.y;
+                }
+
+                Vector2D selectionCenter = new Vector2D(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
+
+                //move them
+                for (int i = 0; i < things.Count; i++) {
+                    BaseVisualThing t = things[i] as BaseVisualThing;
+                    t.OnMove(new Vector3D(direction.x - (selectionCenter.x - t.Thing.Position.x), direction.y - (selectionCenter.y - t.Thing.Position.y), t.Thing.Position.z));
+                }
             }
         }
 		
