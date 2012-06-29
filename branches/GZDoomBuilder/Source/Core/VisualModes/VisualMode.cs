@@ -405,26 +405,41 @@ namespace CodeImp.DoomBuilder.VisualModes
         //mxd
         [BeginAction("movethingleft", BaseAction = true)]
         protected void moveSelectedThingsLeft() {
-            moveSelectedThings(new Vector2D(0f, -General.Map.Grid.GridSize));
+            moveSelectedThings(new Vector2D(0f, -General.Map.Grid.GridSize), false);
         }
 
         [BeginAction("movethingright", BaseAction = true)]
         protected void moveSelectedThingsRight() {
-            moveSelectedThings(new Vector2D(0f, General.Map.Grid.GridSize));
+            moveSelectedThings(new Vector2D(0f, General.Map.Grid.GridSize), false);
         }
 
         [BeginAction("movethingfwd", BaseAction = true)]
         protected void moveSelectedThingsForward() {
-            moveSelectedThings(new Vector2D(-General.Map.Grid.GridSize, 0f));
+            moveSelectedThings(new Vector2D(-General.Map.Grid.GridSize, 0f), false);
         }
 
         [BeginAction("movethingback", BaseAction = true)]
         protected void moveSelectedThingsBackward() {
-            moveSelectedThings(new Vector2D(General.Map.Grid.GridSize, 0f));
+            moveSelectedThings(new Vector2D(General.Map.Grid.GridSize, 0f), false);
+        }
+
+        [BeginAction("placethingatcursor", BaseAction = true)]
+        protected void placeThingAtCursor() {
+            Vector3D start = General.Map.VisualCamera.Position;
+            Vector3D delta = General.Map.VisualCamera.Target - General.Map.VisualCamera.Position;
+            delta = delta.GetFixedLength(General.Settings.ViewDistance * 0.98f);
+            VisualPickResult target = PickObject(start, start + delta);
+
+            if (target.picked == null) {
+                General.Interface.DisplayStatus(StatusType.Warning, "Cannot place Thing here");
+                return;
+            }
+
+            moveSelectedThings(new Vector2D((float)Math.Round(target.hitpos.x), (float)Math.Round(target.hitpos.y)), true);
         }
 
         //should move selected things in specified direction
-        protected abstract void moveSelectedThings(Vector2D direction);
+        protected abstract void moveSelectedThings(Vector2D direction, bool absolutePosition);
         //end of mxd :)
 		
 		#endregion
