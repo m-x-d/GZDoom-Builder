@@ -2,14 +2,14 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [Setup]
-AppName=Doom Builder 2
-AppVerName=Doom Builder 2.1
+AppName=GZDoom Builder
+AppVerName=GZDoom Builder 1.XX
 AppPublisher=CodeImp
 AppPublisherURL=http://www.codeimp.com/
 AppSupportURL=http://www.doombuilder.com/
 AppUpdatesURL=http://www.doombuilder.com/
-DefaultDirName={pf}\Doom Builder 2
-DefaultGroupName=Doom Builder
+DefaultDirName={pf}\GZDoom Builder
+DefaultGroupName=GZDoom Builder
 AllowNoIcons=true
 InfoBeforeFile=..\Setup\disclaimer.txt
 OutputDir=..\Release
@@ -18,7 +18,7 @@ Compression=lzma/ultra64
 SolidCompression=true
 SourceDir=..\Build
 SetupLogging=false
-AppMutex=doombuilder2
+AppMutex=gzdoombuilder
 PrivilegesRequired=admin
 ShowLanguageDialog=no
 LanguageDetectionMethod=none
@@ -37,7 +37,7 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 Source: Setup\dotnetfx35setup.exe; DestDir: {tmp}; Flags: dontcopy
 Source: Setup\slimdx.msi; DestDir: {tmp}; Flags: dontcopy
 Source: Builder.exe; DestDir: {app}; Flags: ignoreversion
-Source: Builder.cfg; DestDir: {app}; Flags: ignoreversion
+Source: GZBuilder.cfg; DestDir: {app}; Flags: ignoreversion
 Source: Refmanual.chm; DestDir: {app}; Flags: ignoreversion
 Source: DevIL.dll; DestDir: {app}; Flags: ignoreversion
 Source: Sharpzip.dll; DestDir: {app}; Flags: ignoreversion

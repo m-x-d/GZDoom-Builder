@@ -130,7 +130,6 @@ namespace CodeImp.DoomBuilder.VisualModes
         public float LightRadius { get { return lightRadius; } }
         public int LightRenderStyle { get { return lightRenderStyle; } }
         public Color4 LightColor { get { return lightColor; } }
-        //public Vector4 LightPositionAndRadius { get { return new Vector4(Center, lightRadius);} }
 
 		/// <summary>
 		/// Set to True to use billboarding for this thing. When using billboarding,
@@ -471,14 +470,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 
             double time = General.Clock.GetCurrentTime();
             
-            /*float rMin, rMax;
-            if (lightPrimaryRadius > lightSecondaryRadius) {
-                rMax = lightPrimaryRadius;
-                rMin = lightSecondaryRadius;
-            } else {
-                rMin = lightPrimaryRadius;
-                rMax = lightSecondaryRadius;
-            }*/
             float rMin = Math.Min(lightPrimaryRadius, lightSecondaryRadius);
             float rMax = Math.Max(lightPrimaryRadius, lightSecondaryRadius);
             float diff = rMax - rMin;
@@ -489,7 +480,6 @@ namespace CodeImp.DoomBuilder.VisualModes
                 lightRadius = rMin + diff * lightDelta;
             //flicker
             } else if (lightType == (int)GZDoomLightType.FLICKER) {
-                //float delta = (float)Math.Sin(time / thing.AngleDoom);
                 float delta = (float)Math.Sin(time / 0.1f); //just playing by the eye here...
                 if (Math.Sign(delta) != Math.Sign(lightDelta)) {
                     lightDelta = delta;
@@ -500,7 +490,6 @@ namespace CodeImp.DoomBuilder.VisualModes
                 }
             //random
             } else if (lightType == (int)GZDoomLightType.RANDOM) {
-                //float delta = (float)Math.Sin(time / (thing.AngleDoom));
                 float delta = (float)Math.Sin(time / (interval * 9.0f)); //just playing by the eye here...
                 if (Math.Sign(delta) != Math.Sign(lightDelta))
                     lightRadius = rMin + (float)(new Random().Next(0, (int)(diff * 10))) / 10.0f;

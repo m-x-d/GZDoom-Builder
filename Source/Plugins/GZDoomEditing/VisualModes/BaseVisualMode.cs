@@ -440,6 +440,26 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				}
 			}
 		}
+
+        //mxd
+        protected override void moveSelectedThings(Vector2D direction) {
+            List<VisualThing> things = GetSelectedVisualThings(true);
+
+            if (things.Count == 0) {
+                General.Interface.DisplayStatus(StatusType.Warning, "Select some Things first!");
+                return;
+            }
+
+            //move things
+            int camAngle = (int)Math.Round(General.Map.VisualCamera.AngleXY * 180 / Math.PI);
+            int sector = (int)(General.ClampAngle(camAngle - 45f) / 90f);
+            direction = direction.GetRotated((float)(sector * Math.PI / 2f));
+
+            for (int i = 0; i < things.Count; i++) {
+                BaseVisualThing t = things[i] as BaseVisualThing;
+                t.OnMove(t.Thing.Position + new Vector3D(direction));
+            }
+        }
 		
 		#endregion
 
