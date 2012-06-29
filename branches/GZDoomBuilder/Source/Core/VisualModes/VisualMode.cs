@@ -401,6 +401,31 @@ namespace CodeImp.DoomBuilder.VisualModes
         {
             keydown = false;
         }
+
+        //mxd
+        [BeginAction("movethingleft", BaseAction = true)]
+        protected void moveSelectedThingsLeft() {
+            moveSelectedThings(new Vector2D(0f, -General.Map.Grid.GridSize));
+        }
+
+        [BeginAction("movethingright", BaseAction = true)]
+        protected void moveSelectedThingsRight() {
+            moveSelectedThings(new Vector2D(0f, General.Map.Grid.GridSize));
+        }
+
+        [BeginAction("movethingfwd", BaseAction = true)]
+        protected void moveSelectedThingsForward() {
+            moveSelectedThings(new Vector2D(-General.Map.Grid.GridSize, 0f));
+        }
+
+        [BeginAction("movethingback", BaseAction = true)]
+        protected void moveSelectedThingsBackward() {
+            moveSelectedThings(new Vector2D(General.Map.Grid.GridSize, 0f));
+        }
+
+        //should move selected things in specified direction
+        protected abstract void moveSelectedThings(Vector2D direction);
+        //end of mxd :)
 		
 		#endregion
 

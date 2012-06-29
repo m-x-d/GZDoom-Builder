@@ -513,6 +513,26 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				this.Changed = true;
 			}
 		}
+
+        //mxd
+        public virtual void OnMove(Vector3D newPosition) {
+            if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+                undoticket = mode.CreateUndo("Move thing");
+            Thing.Move(newPosition);
+            mode.SetActionResult("Changed thing position to " + Thing.Position.ToString() + ".");
+
+            // Update what must be updated
+            ThingData td = mode.GetThingData(this.Thing);
+            foreach (KeyValuePair<Sector, bool> s in td.UpdateAlso) {
+                if (mode.VisualSectorExists(s.Key)) {
+                    BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
+                    vs.UpdateSectorGeometry(s.Value);
+                }
+            }
+
+            this.Changed = true;
+            Rebuild();
+        }
 		
 		#endregion
 	}
