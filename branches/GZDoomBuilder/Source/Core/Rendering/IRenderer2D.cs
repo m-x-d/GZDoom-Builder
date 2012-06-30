@@ -85,5 +85,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		void RenderText(TextLabel text);
 		void RenderGeometry(FlatVertex[] vertices, ImageData texture, bool transformcoords);
 		void RedrawSurface();
+        
+        //mxd. Center camera on given coordinates
+        void PositionView(float x, float y);
 	}
 }

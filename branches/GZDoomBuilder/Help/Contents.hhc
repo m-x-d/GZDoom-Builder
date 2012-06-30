@@ -283,6 +283,10 @@
 				      <param name="Name" value="UDMF Controls plugin">
 				      <param name="Local" value="gz_plug_udmfcontrols.html">
 				      </OBJECT>
+				      <LI> <OBJECT type="text/sitemap">
+				      <param name="Name" value="Tag Explorer plugin">
+				      <param name="Local" value="gz_plug_tagexplorer.html">
+				      </OBJECT>
 				      </UL>
 				<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Frequently asked questions">
