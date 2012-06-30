@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
         public static bool UDMF;
 
         //version
-        public const float Version = 1.09f;
+        public const float Version = 1.10f;
 
         //debug console
 #if DEBUG
