@@ -106,13 +106,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                 if (gotComma) {
                                     float scrollSpeed = 0;
 
-                                    /*if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out scrollSpeed)) {
-                                        // Not numeric!
-                                        GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " scroll speed value, but got '" + token + "'");
-                                        datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
-                                        continue;
-                                    }*/
-
                                     if (!ReadSignedFloat(token, ref scrollSpeed)) {
                                         // Not numeric!
                                         GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " scroll speed value, but got '" + token + "'");
@@ -145,12 +138,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                 token = StripTokenQuotes(ReadToken());
 
                                 float scrollSpeed = 0;
-                                /*if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out scrollSpeed)) {
-                                    // Not numeric!
-                                    GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " scroll speed value, but got '" + token + "'");
-                                    datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
-                                    continue;
-                                }*/
                                 if (!ReadSignedFloat(token, ref scrollSpeed)) {
                                     // Not numeric!
                                     GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " scroll speed value, but got '" + token + "'");
