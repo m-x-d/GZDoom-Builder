@@ -1,52 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
 
 namespace CodeImp.DoomBuilder.TagExplorer
 {
-    public partial class TagExplorer : UserControl
+    public sealed partial class TagExplorer : UserControl
     {
-        private const string DISPLAY_TAGS_AND_ACTIONS = "Tags and Actions";
+        private const string DISPLAY_TAGS_AND_ACTIONS = "Tags and Action specials";
         private const string DISPLAY_TAGS = "Tags";
-        private const string DISPLAY_ACTIONS = "Actions";
+        private const string DISPLAY_ACTIONS = "Action specials";
         private object[] DISPLAY_MODES = new object[] { DISPLAY_TAGS_AND_ACTIONS, DISPLAY_TAGS, DISPLAY_ACTIONS };
-
-        private const string SORT_BY_INDEX = "By Index";
-        private const string SORT_BY_TAG = "By Tag";
-        private const string SORT_BY_ACTION = "By Action";
-        private object[] SORT_MODES = new object[] { SORT_BY_INDEX, SORT_BY_TAG, SORT_BY_ACTION };
+        
+        private string currentDisplayMode;
+        private string currentSortMode;
 
         private const string CAT_THINGS = "Things:";
         private const string CAT_SECTORS = "Sectors:";
         private const string CAT_LINEDEFS = "Linedefs:";
-        private object[] CATEGORIES = new object[] { CAT_THINGS, CAT_SECTORS, CAT_LINEDEFS };
-
-        private const string defaultThingName = "Thing";
-        private const string defaultSectorName = "Sector";
-        private const string defaultLinedefName = "Linedef";
 
         private Color commentColor = Color.DarkMagenta;
+        private SelectedNode selection;
 
         public TagExplorer() {
             InitializeComponent();
 
-            treeView.LabelEdit = true;
+            selection = new SelectedNode();
 
             cbDisplayMode.Items.AddRange(DISPLAY_MODES);
             cbDisplayMode.SelectedIndex = General.Settings.ReadPluginSetting("displaymode", 0);
             cbDisplayMode.SelectedIndexChanged += new EventHandler(cbDisplayMode_SelectedIndexChanged);
+            currentDisplayMode = cbDisplayMode.SelectedItem.ToString();
 
-            cbSortMode.Items.AddRange(SORT_MODES);
+            cbSortMode.Items.AddRange(SortMode.SORT_MODES);
             cbSortMode.SelectedIndex = General.Settings.ReadPluginSetting("sortmode", 0);
             cbSortMode.SelectedIndexChanged += new EventHandler(cbSortMode_SelectedIndexChanged);
+            currentSortMode = cbSortMode.SelectedItem.ToString();
 
             cbCenterOnSelected.Checked = General.Settings.ReadPluginSetting("centeronselected", false);
+            cbSelectOnClick.Checked = General.Settings.ReadPluginSetting("doselect", false);
+
+            if (GZBuilder.GZGeneral.UDMF) {
+                cbCommentsOnly.Checked = General.Settings.ReadPluginSetting("commentsonly", false);
+                treeView.LabelEdit = true;
+                toolTip1.SetToolTip(tbSearch, "Enter text to find comment\r\nEnter # + tag number to show only specified tag. Example: #667\r\nEnter $ + effect number to show only specified effect. Example: $80");
+                toolTip1.SetToolTip(treeView, "Double-click item to edit item's comment\r\nRight-click item to open item's Properties");
+            } else {
+                cbCommentsOnly.Enabled = false;
+                toolTip1.SetToolTip(tbSearch, "Enter # + tag number to show only specified tag. Example: #667\r\nEnter $ + effect number to show only specified effect. Example: $80");
+                toolTip1.SetToolTip(treeView, "Right-click item to open item's Properties");
+            }
         }
 
         // Disposer
@@ -54,6 +65,10 @@ namespace CodeImp.DoomBuilder.TagExplorer
             General.Settings.WritePluginSetting("sortmode", cbSortMode.SelectedIndex);
             General.Settings.WritePluginSetting("displaymode", cbDisplayMode.SelectedIndex);
             General.Settings.WritePluginSetting("centeronselected", cbCenterOnSelected.Checked);
+            General.Settings.WritePluginSetting("doselect", cbSelectOnClick.Checked);
+            
+            if (GZBuilder.GZGeneral.UDMF)
+                General.Settings.WritePluginSetting("commentsonly", cbCommentsOnly.Checked);
 
             if (disposing && (components != null))
                 components.Dispose();
@@ -71,122 +86,310 @@ namespace CodeImp.DoomBuilder.TagExplorer
         public void UpdateTree() {
             treeView.Nodes.Clear();
 
-            bool showTags = (cbDisplayMode.SelectedItem.ToString() == DISPLAY_TAGS || cbDisplayMode.SelectedItem.ToString() == DISPLAY_TAGS_AND_ACTIONS);
-            bool showActions = (cbDisplayMode.SelectedItem.ToString() == DISPLAY_ACTIONS || cbDisplayMode.SelectedItem.ToString() == DISPLAY_TAGS_AND_ACTIONS);
+            bool showTags = (currentDisplayMode == DISPLAY_TAGS || currentDisplayMode == DISPLAY_TAGS_AND_ACTIONS);
+            bool showActions = (currentDisplayMode == DISPLAY_ACTIONS || currentDisplayMode == DISPLAY_TAGS_AND_ACTIONS);
             bool hasComment = false;
             string comment = "";
-            string serachStr = tbSearch.Text.ToLowerInvariant();
+            string serachStr = serachStr = tbSearch.Text.ToLowerInvariant();
+
+            int filteredTag = -1;
+            int filteredAction = -1;
+            getSpecialValues(serachStr, ref filteredTag, ref filteredAction);
+
+            if (filteredTag != -1 || filteredAction != -1) serachStr = "";
+
+            TreeNode selectedNode = null;
 
 //add things
             List<TreeNode> nodes = new List<TreeNode>();
 
             ICollection<Thing> things = General.Map.Map.Things;
             foreach (Thing t in things) {
-                if ((t.Tag > 0 && showTags) || (t.Action > 0 && showActions)) {
-                    TreeNode node = new TreeNode(getThingName(t, ref hasComment, ref comment), 1, 1);
+                if ((showTags && t.Tag > 0) || (showActions && t.Action > 0)) {
+                    if (filteredTag != -1 && t.Tag != filteredTag)
+                        continue;
+                    if (filteredAction != -1 && t.Action != filteredAction)
+                        continue;
+                    
+                    NodeInfo info = new NodeInfo(t);
+                    string name = info.GetName(ref comment, currentSortMode);
+                    hasComment = comment.Length > 0;
 
-                    if (serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
-                        node.Tag = new NodeInfo(t.Index, t.Action, t.Tag);
+                    if (!hasComment && cbCommentsOnly.Checked)
+                        continue;
+
+                    if (!GZBuilder.GZGeneral.UDMF || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
+                        TreeNode node = new TreeNode(name, 1, 1);
+                        node.Tag = info;
                         if (hasComment) node.ForeColor = commentColor;
                         nodes.Add(node);
+
+                        if (info.Index == selection.Index && info.Type == selection.Type)
+                            selectedNode = node;
                     }
                 } 
             }
 
             //sort nodes
-            sort(ref nodes, cbSortMode.SelectedItem.ToString());
+            sort(ref nodes, currentSortMode);
 
-            //add category
+            //add "things" category
             if (nodes.Count > 0) {
-                treeView.Nodes.Add(new TreeNode(CAT_THINGS, 0, 0, nodes.ToArray()));
+                if (currentSortMode == SortMode.SORT_BY_ACTION) { //create action categories
+                    Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+                    TreeNode noAction = new TreeNode("No Action", 0, 0);
+
+                    foreach (TreeNode node in nodes) {
+                        NodeInfo nodeInfo = node.Tag as NodeInfo;
+
+                        if (nodeInfo.Action == 0) {
+                            noAction.Nodes.Add(node);
+                            continue;
+                        }
+
+                        LinedefActionInfo lai = General.Map.Config.GetLinedefActionInfo(nodeInfo.Action);
+
+                        if (!categories.ContainsKey(lai.Index))
+                            categories.Add(lai.Index, new TreeNode(lai.Index + " - " + lai.Name, 0, 0, new TreeNode[] { node }));
+                        else
+                            categories[lai.Index].Nodes.Add(node);
+                    }
+
+                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                    categories.Values.CopyTo(catNodes, 0);
+
+                    TreeNode category = new TreeNode(CAT_THINGS, 0, 0, catNodes);
+                    if (noAction.Nodes.Count > 0)
+                        category.Nodes.Add(noAction);
+
+                    treeView.Nodes.Add(category);
+
+                } else if (currentSortMode == SortMode.SORT_BY_INDEX) { //create thing categories
+                    Dictionary<string, TreeNode> categories = new Dictionary<string, TreeNode>();
+                    foreach (TreeNode node in nodes) {
+                        NodeInfo nodeInfo = node.Tag as NodeInfo;
+                        ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(General.Map.Map.GetThingByIndex(nodeInfo.Index).Type);
+                        
+                        if (!categories.ContainsKey(tti.Category.Title))
+                            categories.Add(tti.Category.Title, new TreeNode(tti.Category.Title, 0, 0, new TreeNode[] { node }));
+                        else
+                            categories[tti.Category.Title].Nodes.Add(node);
+                    }
+                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                    categories.Values.CopyTo(catNodes, 0);
+
+                    treeView.Nodes.Add(new TreeNode(CAT_THINGS, 0, 0, catNodes));
+
+                } else { //sort by tag. just add them as they are
+                    treeView.Nodes.Add(new TreeNode(CAT_THINGS, 0, 0, nodes.ToArray()));
+                }
             }
 
 //add sectors
             nodes = new List<TreeNode>();
             ICollection<Sector> sectors = General.Map.Map.Sectors;
             foreach (Sector s in sectors) {
-                if ((s.Tag > 0 && showTags) || (s.Effect > 0 && showActions)) {
-                    TreeNode node = new TreeNode(getSectorName(s, ref hasComment, ref comment), 3, 3);
+                if ((showTags && s.Tag > 0) || (showActions && s.Effect > 0)) {
+                    if (filteredTag != -1 && s.Tag != filteredTag)
+                        continue;
+                    if (filteredAction != -1 && s.Effect != filteredAction)
+                        continue;
+                    
+                    NodeInfo info = new NodeInfo(s);
+                    string name = info.GetName(ref comment, currentSortMode);
+                    hasComment = comment.Length > 0;
 
-                    if (serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
-                        node.Tag = new NodeInfo(s.FixedIndex, s.Effect, s.Tag);
+                    if (!hasComment && cbCommentsOnly.Checked)
+                        continue;
+
+                    if (!GZBuilder.GZGeneral.UDMF || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
+                        TreeNode node = new TreeNode(name, 3, 3);
+                        node.Tag = info;
                         if (hasComment) node.ForeColor = commentColor;
                         nodes.Add(node);
+
+                        if (info.Index == selection.Index && info.Type == selection.Type)
+                            selectedNode = node;
                     }
                 }
             }
 
             //sort nodes
-            sort(ref nodes, cbSortMode.SelectedItem.ToString());
+            sort(ref nodes, currentSortMode);
 
             //add category
-            if (nodes.Count > 0)
-                treeView.Nodes.Add(new TreeNode(CAT_SECTORS, 2, 2, nodes.ToArray()));
+            if (nodes.Count > 0) {
+                if (currentSortMode == SortMode.SORT_BY_ACTION) {
+                    Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+                    TreeNode noAction = new TreeNode("No Effect", 2, 2);
+
+                    foreach (TreeNode node in nodes) {
+                        NodeInfo nodeInfo = node.Tag as NodeInfo;
+
+                        if (nodeInfo.Action == 0) {
+                            noAction.Nodes.Add(node);
+                            continue;
+                        }
+
+                        SectorEffectInfo sei = General.Map.Config.GetSectorEffectInfo(nodeInfo.Action);
+
+                        if (!categories.ContainsKey(sei.Index))
+                            categories.Add(sei.Index, new TreeNode(sei.Index + " - " + sei.Title, 2, 2, new TreeNode[] { node }));
+                        else
+                            categories[sei.Index].Nodes.Add(node);
+                    }
+                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                    categories.Values.CopyTo(catNodes, 0);
+
+                    TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catNodes);
+                    if (noAction.Nodes.Count > 0)
+                        category.Nodes.Add(noAction);
+
+                    treeView.Nodes.Add(category);
+                } else { //just add them as they are
+                    treeView.Nodes.Add(new TreeNode(CAT_SECTORS, 2, 2, nodes.ToArray()));
+                }
+            }
 
 //add linedefs
             nodes = new List<TreeNode>();
             ICollection<Linedef> linedefs = General.Map.Map.Linedefs;
             foreach (Linedef l in linedefs) {
-                if ((l.Tag > 0 && showTags) || (l.Action > 0 && showActions)) {
-                    TreeNode node = new TreeNode(getLinedefName(l, ref hasComment, ref comment), 5, 5);
+                if ((showTags && l.Tag > 0) || (showActions && l.Action > 0)) {
+                    if (filteredTag != -1 && l.Tag != filteredTag)
+                        continue;
+                    if (filteredAction != -1 && l.Action != filteredAction)
+                        continue;
+                    
+                    NodeInfo info = new NodeInfo(l);
+                    string name = info.GetName(ref comment, currentSortMode);
+                    hasComment = comment.Length > 0;
 
-                    if (serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
-                        node.Tag = new NodeInfo(l.Index, l.Action, l.Tag);
+                    if (!hasComment && cbCommentsOnly.Checked)
+                        continue;
+
+                    if (!GZBuilder.GZGeneral.UDMF || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
+                        TreeNode node = new TreeNode(name, 5, 5);
+                        node.Tag = info;
                         if (hasComment) node.ForeColor = commentColor;
                         nodes.Add(node);
+
+                        if (info.Index == selection.Index && info.Type == selection.Type)
+                            selectedNode = node;
                     }
                 }
             }
 
             //sort nodes
-            sort(ref nodes, cbSortMode.SelectedItem.ToString());
+            sort(ref nodes, currentSortMode);
 
             //add category
-            if (nodes.Count > 0)
-                treeView.Nodes.Add(new TreeNode(CAT_LINEDEFS, 4, 4, nodes.ToArray()));
+            if (nodes.Count > 0) {
+                if (currentSortMode == SortMode.SORT_BY_ACTION) {
+                    Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+                    TreeNode noAction = new TreeNode("No Action", 4, 4);
 
-            treeView.ExpandAll();
+                    foreach (TreeNode node in nodes) {
+                        NodeInfo nodeInfo = node.Tag as NodeInfo;
+
+                        if (nodeInfo.Action == 0) {
+                            noAction.Nodes.Add(node);
+                            continue;
+                        }
+
+                        LinedefActionInfo lai = General.Map.Config.GetLinedefActionInfo(nodeInfo.Action);
+
+                        if (!categories.ContainsKey(lai.Index))
+                            categories.Add(lai.Index, new TreeNode(lai.Index + " - " + lai.Name, 4, 4, new TreeNode[] { node }));
+                        else
+                            categories[lai.Index].Nodes.Add(node);
+                    }
+                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                    categories.Values.CopyTo(catNodes, 0);
+
+                    TreeNode category = new TreeNode(CAT_LINEDEFS, 4, 4, catNodes);
+                    if (noAction.Nodes.Count > 0)
+                        category.Nodes.Add(noAction);
+
+                    treeView.Nodes.Add(category);
+
+                } else { //just add them as they are
+                    treeView.Nodes.Add(new TreeNode(CAT_LINEDEFS, 4, 4, nodes.ToArray()));
+                }
+            }
+
+            //expand top level nodes
+            foreach (TreeNode t in treeView.Nodes)
+                t.Expand();
+
+            if (selectedNode != null)
+                treeView.SelectedNode = selectedNode;
+
+            //loose focus
+            General.Interface.FocusDisplay();
+        }
+
+//tag/action search
+        private void getSpecialValues(string serachStr, ref int filteredTag, ref int filteredAction) {
+            if (serachStr.Length == 0) return;
+
+            int pos = serachStr.IndexOf("#");
+            if (pos != -1)
+                filteredTag = readNumber(serachStr, pos+1);
+
+            pos = serachStr.IndexOf("$");
+            if (pos != -1)
+                filteredAction = readNumber(serachStr, pos+1);
+        }
+
+        private int readNumber(string serachStr, int startPoition) {
+            string token = "";
+            int pos = startPoition;
+
+            while (pos < serachStr.Length && "1234567890".IndexOf(serachStr[pos]) != -1) {
+                token += serachStr[pos];
+                pos++;
+            }
+
+            if (token != "") {
+                int result = -1;
+                int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
+                return result;
+            }
+
+            return -1;
         }
 
 //sorting
         private void sort(ref List<TreeNode> nodes, string sortMode) {
-            switch (sortMode) {
-                case SORT_BY_ACTION:
-                    nodes.Sort(sortByAction);
-                    break;
-
-                case SORT_BY_INDEX:
-                    nodes.Sort(sortByIndex);
-                    break;
-
-                case SORT_BY_TAG:
-                    nodes.Sort(sortByTag);
-                    break;
-
-                default://dbg
-                    GZBuilder.GZGeneral.Trace("Got unknown sort mode: " + cbSortMode.SelectedItem.ToString());
-                    break;
-            }
+            if(sortMode == SortMode.SORT_BY_ACTION)
+                nodes.Sort(sortByAction);
+            else if (sortMode == SortMode.SORT_BY_TAG)
+                nodes.Sort(sortByTag);
+            else
+                nodes.Sort(sortByIndex);
         }
 
         private int sortByAction(TreeNode t1, TreeNode t2) {
             NodeInfo i1 = t1.Tag as NodeInfo;
             NodeInfo i2 = t2.Tag as NodeInfo;
 
+            if (i1.Action == i2.Action) return 0;
+            if (i1.Action == 0) return 1; //push items with no action to the end of the list
+            if (i2.Action == 0) return -1; //push items with no action to the end of the list
             if (i1.Action > i2.Action) return 1;
-            else if (i1.Action == i2.Action) return 0;
-            else if (i1.Action == 0) return 1; //push items with no action to the end of the list
-            else return -1;
+            return -1; //should be i1 < i2
         }
 
         private int sortByTag(TreeNode t1, TreeNode t2) {
             NodeInfo i1 = t1.Tag as NodeInfo;
             NodeInfo i2 = t2.Tag as NodeInfo;
 
+            if (i1.Tag == i2.Tag) return 0;
+            if (i1.Tag == 0) return 1; //push items with no tag to the end of the list
+            if (i2.Tag == 0) return -1; //push items with no tag to the end of the list
             if (i1.Tag > i2.Tag) return 1;
-            else if (i1.Tag == i2.Tag) return 0;
-            else if (i1.Tag == 0) return 1; //push items with no tag to the end of the list
-            else return -1;
+            return -1; //should be i1 < i2
         }
 
         private int sortByIndex(TreeNode t1, TreeNode t2) {
@@ -194,181 +397,107 @@ namespace CodeImp.DoomBuilder.TagExplorer
             NodeInfo i2 = t2.Tag as NodeInfo;
 
             if (i1.Index > i2.Index) return 1;
-            else if (i1.Index == i2.Index) return 0;
+            if (i1.Index == i2.Index) return 0;
             return -1;
-        }
-
-//naming
-        private string getThingName(Thing t, ref bool hasComment, ref string comment) {
-            if(GZBuilder.GZGeneral.UDMF && t.Fields.ContainsKey("comment")){
-                comment = t.Fields["comment"].Value.ToString();
-                hasComment = true;
-            }else{
-                comment = defaultThingName;
-                hasComment = false;
-            }
-
-            return combineName(comment, t.Tag, t.Action, t.Index, cbSortMode.SelectedItem.ToString(), false, !hasComment);
-        }
-
-        private string getSectorName(Sector s, ref bool hasComment, ref string comment) {
-            if(GZBuilder.GZGeneral.UDMF && s.Fields.ContainsKey("comment")){
-                comment = s.Fields["comment"].Value.ToString();
-                hasComment = true;
-            }else{
-                comment = defaultSectorName;
-                hasComment = false;
-            }
-            return combineName(comment, s.Tag, s.Effect, s.FixedIndex, cbSortMode.SelectedItem.ToString(), true, !hasComment);
-        }
-
-        private string getLinedefName(Linedef l, ref bool hasComment, ref string comment) {
-            if(GZBuilder.GZGeneral.UDMF && l.Fields.ContainsKey("comment")){
-               comment = l.Fields["comment"].Value.ToString();
-               hasComment = true;
-            }else{
-               comment = defaultLinedefName;
-               hasComment = false;
-            }
-            return combineName(comment, l.Tag, l.Action, l.Index, cbSortMode.SelectedItem.ToString(), false, !hasComment);
-        }
-
-        private string combineName(string name, int tag, int action, int index, string sortMode, bool isSector, bool isDefaultName) {
-            string combinedName = "";
-            switch(sortMode){
-                case SORT_BY_ACTION:
-                    combinedName = (action > 0 ? (isSector ? "Effect:" : "Action:") + action + "; " : "") + (tag > 0 ? "Tag:" + tag + "; " : "") + name + (isDefaultName ? " " + index : ""); 
-                break;
-
-                case SORT_BY_INDEX:
-                    combinedName = index + (tag > 0 ? ": Tag:" + tag + "; " : ": ") + (action > 0 ? (isSector ? "Effect:" : "Action:") + action + "; " : "") + name;
-                break;
-
-                case SORT_BY_TAG:
-                    combinedName = (tag > 0 ? "Tag:" + tag + "; " : "") + (action > 0 ? (isSector ? "Effect:" : "Action:") + action + "; " : "") + name + (isDefaultName ? " " + index : "");
-                break;
-
-                default:
-                    combinedName = name;
-                break;
-            }
-            return combinedName;
-        }
-
-        private void setComment(UniFields fields, string comment) {
-            if (!fields.ContainsKey("comment"))
-                fields.Add("comment", new UniValue((int)UniversalType.String, comment));
-            else
-                fields["comment"].Value = comment;
-        }
-
-        private string getComment(UniFields fields) {
-            if (!fields.ContainsKey("comment"))
-                return "";
-            else
-                return fields["comment"].Value.ToString();
         }
 
 //EVENTS
         private void cbDisplayMode_SelectedIndexChanged(object sender, EventArgs e) {
+            currentDisplayMode = cbDisplayMode.SelectedItem.ToString();
             UpdateTree();
         }
 
         private void cbSortMode_SelectedIndexChanged(object sender, EventArgs e) {
+            currentSortMode = cbSortMode.SelectedItem.ToString();
             UpdateTree();
         }
 
         private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
-            if (e.Node.Parent == null) return;
-
             NodeInfo info = e.Node.Tag as NodeInfo;
+            if (info == null) return;
+
+            //store selection
+            selection.Type = info.Type;
+            selection.Index = info.Index;
 
             if (e.Button == MouseButtons.Right) { //open element properties
-                switch (e.Node.Parent.Text) {
-                    case CAT_THINGS:
+                switch (info.Type) {
+                    case NodeInfoType.THING:
                         Thing t = General.Map.Map.GetThingByIndex(info.Index);
                         if (t != null) General.Interface.ShowEditThings(new List<Thing>() { t });
                         break;
 
-                    case CAT_SECTORS:
+                    case NodeInfoType.SECTOR:
                         Sector s = General.Map.Map.GetSectorByIndex(info.Index);
                         if (s != null) General.Interface.ShowEditSectors(new List<Sector>() { s });
                         break;
 
-                    case CAT_LINEDEFS:
+                    case NodeInfoType.LINEDEF:
                         Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
                         if (l != null) General.Interface.ShowEditLinedefs(new List<Linedef>() { l });
                         break;
 
                     default:
-                        GZBuilder.GZGeneral.Trace("Got unknown category: " + e.Node.Parent.Text);
+                        GZBuilder.GZGeneral.Trace("Got unknown category: " + info.Type);
                         break;
                 }
 
                 General.Map.Map.Update();
                 UpdateTree();
 
-            } else { //focus on element
-                if (!cbCenterOnSelected.Checked) return;
+            } else {
+                //select element?
+                if (cbSelectOnClick.Checked) {
+                    // Leave any volatile mode
+                    General.Editing.CancelVolatileMode();
+                    General.Map.Map.ClearAllSelected();
 
-                switch (e.Node.Parent.Text) {
-                    case CAT_THINGS:
+                    //make selection
+                    if (info.Type == NodeInfoType.THING) {
+                        General.Editing.ChangeMode("ThingsMode");
                         Thing t = General.Map.Map.GetThingByIndex(info.Index);
-                        if (t != null) General.Map.Renderer2D.PositionView(t.Position.x, t.Position.y);
-                        break;
-
-                    case CAT_SECTORS:
-                        Sector s = General.Map.Map.GetSectorByIndex(info.Index);
-                        if (s != null) General.Map.Renderer2D.PositionView(s.BBox.Location.X + s.BBox.Width / 2, s.BBox.Location.Y + s.BBox.Height / 2);
-                        break;
-
-                    case CAT_LINEDEFS:
+                        if (t != null) t.Selected = true;
+                    } else if (info.Type == NodeInfoType.LINEDEF) {
+                        General.Editing.ChangeMode("LinedefsMode");
                         Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
-                        if (l != null) General.Map.Renderer2D.PositionView(l.Rect.Location.X + l.Rect.Width / 2, l.Rect.Location.Y + l.Rect.Height / 2);
-                        break;
-
-                    default:
-                        GZBuilder.GZGeneral.Trace("Got unknown category: " + e.Node.Parent.Text);
-                        break;
+                        if (l != null) l.Selected = true;
+                    } else {
+                        General.Editing.ChangeMode("SectorsMode");
+                        Sector s = General.Map.Map.GetSectorByIndex(info.Index);
+                        if (s != null) {
+                            foreach (Sidedef sd in s.Sidedefs)
+                                sd.Line.Selected = true;
+                        }
+                    }
                 }
+
+                //focus on element?
+                if (cbCenterOnSelected.Checked) {
+                    Vector2D pos = info.GetPosition();
+                    General.Map.Renderer2D.PositionView(pos.x, pos.y);
+                }
+
                 //update view
                 General.Interface.RedrawDisplay();
             }
         }
 
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
-            if (e.Node.Parent == null) return;
-            
             //edit comment
             if (GZBuilder.GZGeneral.UDMF) {
-                //store current label...
                 NodeInfo info = e.Node.Tag as NodeInfo;
-                info.Label = e.Node.Text;
+                if (info == null) return;
 
-                //if we don't have comment - clear text
-                switch (e.Node.Parent.Text) {
-                    case CAT_THINGS:
-                        Thing t = General.Map.Map.GetThingByIndex(info.Index);
-                        if (t != null) e.Node.Text = getComment(t.Fields);
-                        break;
+                e.Node.Text = info.Comment; //set node text to comment
+                e.Node.BeginEdit(); //begin editing
+            }
+        }
 
-                    case CAT_SECTORS:
-                        Sector s = General.Map.Map.GetSectorByIndex(info.Index);
-                        if (s != null) e.Node.Text = getComment(s.Fields);
-                        break;
-
-                    case CAT_LINEDEFS:
-                        Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
-                        if (l != null) e.Node.Text = getComment(l.Fields);
-                        break;
-
-                    default:
-                        GZBuilder.GZGeneral.Trace("Got unknown category: " + e.Node.Parent.Text);
-                        break;
-                }
-
-                //begin editing
-                e.Node.BeginEdit();
+        //we don't want to edit categories if we are in UDMF
+        private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
+            if (!GZBuilder.GZGeneral.UDMF || e.Node.Tag == null) {
+                e.CancelEdit = true;
+                return;
             }
         }
 
@@ -377,76 +506,25 @@ namespace CodeImp.DoomBuilder.TagExplorer
             NodeInfo info = e.Node.Tag as NodeInfo;
             string comment = "";
 
+            //to set comment manually we actually have to cancel edit...
             e.CancelEdit = true;
             e.Node.EndEdit(true);
 
-            //to set comment manually we actually have to cancel edit...
             if (e.Label != null && e.Label.Length > 1) {
-                bool hasComment = false;
-
                 //apply comment
-                switch (e.Node.Parent.Text) {
-                    case CAT_THINGS:
-                        Thing t = General.Map.Map.GetThingByIndex(info.Index);
-                        if (t != null) {
-                            setComment(t.Fields, e.Label);
-                            e.Node.Text = getThingName(t, ref hasComment, ref comment);
-                            e.Node.ForeColor = hasComment ? commentColor : Color.Black;
-                        }
-                        break;
-
-                    case CAT_SECTORS:
-                        Sector s = General.Map.Map.GetSectorByIndex(info.Index);
-                        if (s != null) {
-                            setComment(s.Fields, e.Label);
-                            e.Node.Text = getSectorName(s, ref hasComment, ref comment);
-                            e.Node.ForeColor = hasComment ? commentColor : Color.Black;
-                        }
-                        break;
-
-                    case CAT_LINEDEFS:
-                        Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
-                        if (l != null) {
-                            setComment(l.Fields, e.Label);
-                            e.Node.Text = getLinedefName(l, ref hasComment, ref comment);
-                            e.Node.ForeColor = hasComment ? commentColor : Color.Black;
-                        }
-                        break;
-
-                    default://dbg
-                        GZBuilder.GZGeneral.Trace("Got unknown category: " + e.Node.Parent.Text);
-                        break;
-                }
-            } else { //Edit cancelled. Remove comment
-                switch (e.Node.Parent.Text) {
-                    case CAT_THINGS:
-                        Thing t = General.Map.Map.GetThingByIndex(info.Index);
-                        if (t != null) {
-                            e.Node.Text = defaultThingName;
-                            e.Node.ForeColor = Color.Black;
-                            if (t.Fields.ContainsKey("comment")) t.Fields.Remove("comment");
-                        }
-                        break;
-
-                    case CAT_SECTORS:
-                        Sector s = General.Map.Map.GetSectorByIndex(info.Index);
-                        if (s != null) {
-                            e.Node.Text = defaultSectorName;
-                            e.Node.ForeColor = Color.Black;
-                            if (s.Fields.ContainsKey("comment")) s.Fields.Remove("comment");
-                        }
-                        break;
-
-                    case CAT_LINEDEFS:
-                        Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
-                        if (l != null) {
-                            e.Node.Text = defaultLinedefName;
-                            e.Node.ForeColor = Color.Black;
-                            if (l.Fields.ContainsKey("comment")) l.Fields.Remove("comment");
-                        }
-                        break;
-                }
+                info.Comment = e.Label;
+                e.Node.Text = info.GetName(ref comment, currentSortMode);
+                //e.Node.ForeColor = (comment == "" ? Color.Black : commentColor);
+                e.Node.ForeColor = commentColor;
+            } else { //Edit cancelled.
+                info.Comment = ""; //Remove comment
+                e.Node.Text = info.GetName(ref comment, currentSortMode);
+                e.Node.ForeColor = Color.Black;
             }
+        }
+
+        private void treeView_MouseLeave(object sender, EventArgs e) {
+            General.Interface.FocusDisplay();
         }
 
         //it is called every time a dialog window closes.
@@ -455,32 +533,30 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		}
 
         private void btnClearSearch_Click(object sender, EventArgs e) {
-            if (tbSearch.Text != "") {
-                tbSearch.Clear();
-                UpdateTree();
-            }
+            tbSearch.Clear();
+            General.Interface.FocusDisplay();
         }
 
         private void tbSearch_TextChanged(object sender, EventArgs e) {
-            if(tbSearch.Text.Length > 2) UpdateTree();
+            if (tbSearch.Text.Length > 1 || tbSearch.Text.Length == 0) UpdateTree();
+        }
+
+        private void cbCommentsOnly_CheckedChanged(object sender, EventArgs e) {
+            UpdateTree();
         }
     }
 
-    internal class NodeInfo
+    internal struct SortMode
     {
-        private int index;
-        private int action;
-        private int tag;
+        public const string SORT_BY_INDEX = "By Index";
+        public const string SORT_BY_TAG = "By Tag";
+        public const string SORT_BY_ACTION = "By Action special";
+        public static object[] SORT_MODES = new object[] { SORT_BY_INDEX, SORT_BY_TAG, SORT_BY_ACTION };
+    }
 
-        public int Index { get { return index; } }
-        public int Tag { get { return tag; } }
-        public int Action { get { return action; } }
-        public string Label; //holds TreeNode text while it's edited
-
-        public NodeInfo(int index, int action, int tag) {
-            this.index = index;
-            this.action = action;
-            this.tag = tag;
-        }
+    internal struct SelectedNode
+    {
+        public NodeInfoType Type;
+        public int Index;
     }
 }
