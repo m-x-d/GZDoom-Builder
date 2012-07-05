@@ -425,17 +425,43 @@ namespace CodeImp.DoomBuilder.VisualModes
 
         [BeginAction("placethingatcursor", BaseAction = true)]
         protected void placeThingAtCursor() {
+            Vector2D hitCoords = getHitPosition();
+            if (!hitCoords.IsFinite()) {
+                General.Interface.DisplayStatus(StatusType.Warning, "Cannot place Thing here");
+                return;
+            }
+
+            moveSelectedThings(new Vector2D((float)Math.Round(hitCoords.x), (float)Math.Round(hitCoords.y)), true);
+        }
+
+        //mxd. 
+        protected Vector2D getHitPosition() {
             Vector3D start = General.Map.VisualCamera.Position;
             Vector3D delta = General.Map.VisualCamera.Target - General.Map.VisualCamera.Position;
             delta = delta.GetFixedLength(General.Settings.ViewDistance * 0.98f);
             VisualPickResult target = PickObject(start, start + delta);
 
-            if (target.picked == null) {
-                General.Interface.DisplayStatus(StatusType.Warning, "Cannot place Thing here");
-                return;
+            if (target.picked == null) return new Vector2D(float.NaN, float.NaN);
+
+            //now find where exactly did we hit
+            Vector2D hitCoords = new Vector2D();
+            if (target.picked is VisualGeometry) {
+                VisualGeometry vg = target.picked as VisualGeometry;
+                hitCoords = getIntersection(start, start + delta, new Vector3D(vg.BoundingBox[0].X, vg.BoundingBox[0].Y, vg.BoundingBox[0].Z), new Vector3D(vg.Vertices[0].nx, vg.Vertices[0].ny, vg.Vertices[0].nz));
+            } else if (target.picked is VisualThing) {
+                VisualThing vt = target.picked as VisualThing;
+                hitCoords = getIntersection(start, start + delta, new Vector3D(vt.BoundingBox[0].X, vt.BoundingBox[0].Y, vt.BoundingBox[0].Z), D3DDevice.V3D(vt.Center - vt.PositionV3));
+            } else {
+                return new Vector2D(float.NaN, float.NaN);
             }
 
-            moveSelectedThings(new Vector2D((float)Math.Round(target.hitpos.x), (float)Math.Round(target.hitpos.y)), true);
+            return hitCoords;
+        }
+
+        //mxd. this checks intersection between line and plane 
+        protected Vector2D getIntersection(Vector3D start, Vector3D end, Vector3D planeCenter, Vector3D planeNormal) {
+            Vector3D delta = new Vector3D(planeCenter.x - start.x, planeCenter.y - start.y, planeCenter.z - start.z);
+            return start + Vector3D.DotProduct(planeNormal, delta) / Vector3D.DotProduct(planeNormal, end - start) * (end - start);
         }
 
         //should move selected things in specified direction

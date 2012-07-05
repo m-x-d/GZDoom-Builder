@@ -91,14 +91,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#region ================== Properties
 		
 		// Internal properties
-		internal WorldVertex[] Vertices { get { return vertices; } }
+		public WorldVertex[] Vertices { get { return vertices; } } //mxd
 		internal int VertexOffset { get { return vertexoffset; } set { vertexoffset = value; } }
 		internal int Triangles { get { return triangles; } }
 		internal int RenderPassInt { get { return renderpass; } }
 		internal Color4 ModColor4 { get { return modcolor4; } }
 
         //mxd
-        internal Vector3[] BoundingBox { get { return boundingBox; } }
+        public Vector3[] BoundingBox { get { return boundingBox; } }
         public VisualGeometryType GeometryType { get { return geoType; } }
 
 		/// <summary>

@@ -428,13 +428,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public virtual void ApplyTexture(string texture) { }
 		public virtual void ApplyUpperUnpegged(bool set) { }
 		public virtual void ApplyLowerUnpegged(bool set) { }
-
-        //mxd. Delete thing
-        public virtual void OnDelete() {
-            this.Thing.Dispose();
-            this.Dispose();
-        }
-
 		
 		// Return texture name
 		public virtual string GetTextureName() { return ""; }
@@ -453,6 +446,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				mode.AddSelectedObject(this);
 			}
 		}
+
+        //mxd. Delete thing
+        public virtual void OnDelete() {
+            this.Thing.Dispose();
+            this.Dispose();
+        }
 		
 		// Copy properties
 		public virtual void OnCopyProperties()
