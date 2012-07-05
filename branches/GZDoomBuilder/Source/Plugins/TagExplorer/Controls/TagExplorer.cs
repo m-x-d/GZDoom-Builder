@@ -68,6 +68,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
         // Disposer
         protected override void Dispose(bool disposing) {
+            if (this.ParentForm != null) this.ParentForm.Activated -= ParentForm_Activated;
             General.Settings.WritePluginSetting("sortmode", cbSortMode.SelectedIndex);
             General.Settings.WritePluginSetting("displaymode", cbDisplayMode.SelectedIndex);
             General.Settings.WritePluginSetting("centeronselected", cbCenterOnSelected.Checked);
@@ -79,9 +80,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
         }
 
         public void Setup() {
-            if (this.ParentForm != null)
-                this.ParentForm.Activated += ParentForm_Activated;
-
+            if (this.ParentForm != null) this.ParentForm.Activated += ParentForm_Activated;
             UpdateTree();
         }
 
