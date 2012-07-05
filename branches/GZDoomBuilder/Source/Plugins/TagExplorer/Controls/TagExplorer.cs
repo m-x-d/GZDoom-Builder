@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Types;
 
 namespace CodeImp.DoomBuilder.TagExplorer
@@ -30,6 +31,9 @@ namespace CodeImp.DoomBuilder.TagExplorer
         private Color commentColor = Color.DarkMagenta;
         private SelectedNode selection;
 
+        private static bool udmf;
+        internal static bool UDMF { get { return udmf; } } 
+
         public TagExplorer() {
             InitializeComponent();
 
@@ -48,7 +52,9 @@ namespace CodeImp.DoomBuilder.TagExplorer
             cbCenterOnSelected.Checked = General.Settings.ReadPluginSetting("centeronselected", false);
             cbSelectOnClick.Checked = General.Settings.ReadPluginSetting("doselect", false);
 
-            if (GZBuilder.GZGeneral.UDMF) {
+            udmf = (General.Map.Config.FormatInterface == "UniversalMapSetIO");
+
+            if (udmf) {
                 cbCommentsOnly.Checked = General.Settings.ReadPluginSetting("commentsonly", false);
                 treeView.LabelEdit = true;
                 toolTip1.SetToolTip(tbSearch, "Enter text to find comment\r\nEnter # + tag number to show only specified tag. Example: #667\r\nEnter $ + effect number to show only specified effect. Example: $80");
@@ -66,13 +72,9 @@ namespace CodeImp.DoomBuilder.TagExplorer
             General.Settings.WritePluginSetting("displaymode", cbDisplayMode.SelectedIndex);
             General.Settings.WritePluginSetting("centeronselected", cbCenterOnSelected.Checked);
             General.Settings.WritePluginSetting("doselect", cbSelectOnClick.Checked);
-            
-            if (GZBuilder.GZGeneral.UDMF)
-                General.Settings.WritePluginSetting("commentsonly", cbCommentsOnly.Checked);
 
-            if (disposing && (components != null))
-                components.Dispose();
-
+            if (udmf) General.Settings.WritePluginSetting("commentsonly", cbCommentsOnly.Checked);
+            if (disposing && (components != null)) components.Dispose();
             base.Dispose(disposing);
         }
 
@@ -96,7 +98,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
             int filteredAction = -1;
             getSpecialValues(serachStr, ref filteredTag, ref filteredAction);
 
-            if (filteredTag != -1 || filteredAction != -1) serachStr = "";
+            if (!udmf || filteredTag != -1 || filteredAction != -1) serachStr = "";
 
             TreeNode selectedNode = null;
 
@@ -118,7 +120,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
                     if (!hasComment && cbCommentsOnly.Checked)
                         continue;
 
-                    if (!GZBuilder.GZGeneral.UDMF || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
+                    if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
                         TreeNode node = new TreeNode(name, 1, 1);
                         node.Tag = info;
                         if (hasComment) node.ForeColor = commentColor;
@@ -180,8 +182,32 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
                     treeView.Nodes.Add(new TreeNode(CAT_THINGS, 0, 0, catNodes));
 
-                } else { //sort by tag. just add them as they are
-                    treeView.Nodes.Add(new TreeNode(CAT_THINGS, 0, 0, nodes.ToArray()));
+                } else { //sort by tag
+                    Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+                    TreeNode noTag = new TreeNode("No Tag", 0, 0);
+
+                    foreach (TreeNode node in nodes) {
+                        NodeInfo nodeInfo = node.Tag as NodeInfo;
+
+                        if (nodeInfo.Tag == 0) {
+                            noTag.Nodes.Add(node);
+                            continue;
+                        }
+
+                        if (!categories.ContainsKey(nodeInfo.Tag))
+                            categories.Add(nodeInfo.Tag, new TreeNode("Tag " + nodeInfo.Tag, 0, 0, new TreeNode[] { node }));
+                        else
+                            categories[nodeInfo.Tag].Nodes.Add(node);
+                    }
+
+                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                    categories.Values.CopyTo(catNodes, 0);
+
+                    TreeNode category = new TreeNode(CAT_THINGS, 0, 0, catNodes);
+                    if (noTag.Nodes.Count > 0)
+                        category.Nodes.Add(noTag);
+
+                    treeView.Nodes.Add(category);
                 }
             }
 
@@ -202,7 +228,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
                     if (!hasComment && cbCommentsOnly.Checked)
                         continue;
 
-                    if (!GZBuilder.GZGeneral.UDMF || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
+                    if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
                         TreeNode node = new TreeNode(name, 3, 3);
                         node.Tag = info;
                         if (hasComment) node.ForeColor = commentColor;
@@ -246,7 +272,32 @@ namespace CodeImp.DoomBuilder.TagExplorer
                         category.Nodes.Add(noAction);
 
                     treeView.Nodes.Add(category);
-                } else { //just add them as they are
+                } else if (currentSortMode == SortMode.SORT_BY_TAG) { 
+                    Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+                    TreeNode noTag = new TreeNode("No Tag", 2, 2);
+
+                    foreach (TreeNode node in nodes) {
+                        NodeInfo nodeInfo = node.Tag as NodeInfo;
+
+                        if (nodeInfo.Tag == 0) {
+                            noTag.Nodes.Add(node);
+                            continue;
+                        }
+
+                        if (!categories.ContainsKey(nodeInfo.Tag))
+                            categories.Add(nodeInfo.Tag, new TreeNode("Tag " + nodeInfo.Tag, 2, 2, new TreeNode[] { node }));
+                        else
+                            categories[nodeInfo.Tag].Nodes.Add(node);
+                    }
+                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                    categories.Values.CopyTo(catNodes, 0);
+
+                    TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catNodes);
+                    if (noTag.Nodes.Count > 0)
+                        category.Nodes.Add(noTag);
+
+                    treeView.Nodes.Add(category);
+                } else {//just add them as they are
                     treeView.Nodes.Add(new TreeNode(CAT_SECTORS, 2, 2, nodes.ToArray()));
                 }
             }
@@ -268,7 +319,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
                     if (!hasComment && cbCommentsOnly.Checked)
                         continue;
 
-                    if (!GZBuilder.GZGeneral.UDMF || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
+                    if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
                         TreeNode node = new TreeNode(name, 5, 5);
                         node.Tag = info;
                         if (hasComment) node.ForeColor = commentColor;
@@ -313,6 +364,31 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
                     treeView.Nodes.Add(category);
 
+                } else if (currentSortMode == SortMode.SORT_BY_TAG) {
+                    Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+                    TreeNode noTag = new TreeNode("No Tag", 4, 4);
+
+                    foreach (TreeNode node in nodes) {
+                        NodeInfo nodeInfo = node.Tag as NodeInfo;
+
+                        if (nodeInfo.Tag == 0) {
+                            noTag.Nodes.Add(node);
+                            continue;
+                        }
+
+                        if (!categories.ContainsKey(nodeInfo.Tag))
+                            categories.Add(nodeInfo.Tag, new TreeNode("Tag " + nodeInfo.Tag, 4, 4, new TreeNode[] { node }));
+                        else
+                            categories[nodeInfo.Tag].Nodes.Add(node);
+                    }
+                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                    categories.Values.CopyTo(catNodes, 0);
+
+                    TreeNode category = new TreeNode(CAT_LINEDEFS, 4, 4, catNodes);
+                    if (noTag.Nodes.Count > 0)
+                        category.Nodes.Add(noTag);
+
+                    treeView.Nodes.Add(category);
                 } else { //just add them as they are
                     treeView.Nodes.Add(new TreeNode(CAT_LINEDEFS, 4, 4, nodes.ToArray()));
                 }
@@ -438,7 +514,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
                         break;
 
                     default:
-                        GZBuilder.GZGeneral.Trace("Got unknown category: " + info.Type);
+                        General.ErrorLogger.Add(ErrorType.Warning, "Tag Explorer: got unknown category: " + info.Type);
                         break;
                 }
 
@@ -465,6 +541,8 @@ namespace CodeImp.DoomBuilder.TagExplorer
                         General.Editing.ChangeMode("SectorsMode");
                         Sector s = General.Map.Map.GetSectorByIndex(info.Index);
                         if (s != null) {
+                            s.Selected = true;
+
                             foreach (Sidedef sd in s.Sidedefs)
                                 sd.Line.Selected = true;
                         }
@@ -473,8 +551,51 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
                 //focus on element?
                 if (cbCenterOnSelected.Checked) {
-                    Vector2D pos = info.GetPosition();
-                    General.Map.Renderer2D.PositionView(pos.x, pos.y);
+                    List<Vector2D> points = new List<Vector2D>();
+                    RectangleF area = MapSet.CreateEmptyArea();
+
+                    if (info.Type == NodeInfoType.LINEDEF) {
+                        Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
+                        points.Add(l.Start.Position);
+                        points.Add(l.End.Position);
+                    } else if (info.Type == NodeInfoType.SECTOR) {
+                        Sector s = General.Map.Map.GetSectorByIndex(info.Index);
+                        foreach (Sidedef sd in s.Sidedefs) {
+                            points.Add(sd.Line.Start.Position);
+                            points.Add(sd.Line.End.Position);
+                        }
+                    } else if (info.Type == NodeInfoType.THING) {
+                        Thing t = General.Map.Map.GetThingByIndex(info.Index);
+                        Vector2D p = (Vector2D)t.Position;
+                        points.Add(p);
+                        points.Add(p + new Vector2D(t.Size * 2.0f, t.Size * 2.0f));
+                        points.Add(p + new Vector2D(t.Size * 2.0f, -t.Size * 2.0f));
+                        points.Add(p + new Vector2D(-t.Size * 2.0f, t.Size * 2.0f));
+                        points.Add(p + new Vector2D(-t.Size * 2.0f, -t.Size * 2.0f));
+                    } else {
+                        General.Fail("Tag Explorer: unknown object type given to zoom in on!");
+                    }
+
+                    // Make a view area from the points
+                    foreach (Vector2D p in points) area = MapSet.IncreaseArea(area, p);
+
+                    // Make the area square, using the largest side
+                    if (area.Width > area.Height) {
+                        float delta = area.Width - area.Height;
+                        area.Y -= delta * 0.5f;
+                        area.Height += delta;
+                    } else {
+                        float delta = area.Height - area.Width;
+                        area.X -= delta * 0.5f;
+                        area.Width += delta;
+                    }
+
+                    // Add padding
+                    area.Inflate(100f, 100f);
+
+                    // Zoom to area
+                    ClassicMode editmode = (General.Editing.Mode as ClassicMode);
+                    editmode.CenterOnArea(area, 0.6f);
                 }
 
                 //update view
@@ -484,7 +605,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
             //edit comment
-            if (GZBuilder.GZGeneral.UDMF) {
+            if (udmf) {
                 NodeInfo info = e.Node.Tag as NodeInfo;
                 if (info == null) return;
 
@@ -495,7 +616,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
         //we don't want to edit categories if we are in UDMF
         private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
-            if (!GZBuilder.GZGeneral.UDMF || e.Node.Tag == null) {
+            if (!udmf || e.Node.Tag == null) {
                 e.CancelEdit = true;
                 return;
             }
@@ -514,7 +635,6 @@ namespace CodeImp.DoomBuilder.TagExplorer
                 //apply comment
                 info.Comment = e.Label;
                 e.Node.Text = info.GetName(ref comment, currentSortMode);
-                //e.Node.ForeColor = (comment == "" ? Color.Black : commentColor);
                 e.Node.ForeColor = commentColor;
             } else { //Edit cancelled.
                 info.Comment = ""; //Remove comment

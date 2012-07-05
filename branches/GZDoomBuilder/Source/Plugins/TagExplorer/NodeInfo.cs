@@ -108,9 +108,17 @@ namespace CodeImp.DoomBuilder.TagExplorer
             UniFields fields = getFields();
 
             if (comment == "") {
-                if (fields.ContainsKey("comment")) fields.Remove("comment");
+                if (fields.ContainsKey("comment")) {
+                    General.Map.UndoRedo.CreateUndo("Remove comment");
+                    fields.BeforeFieldsChange();
+                    fields.Remove("comment");
+                }
                 return;
             }
+
+            //create undo stuff
+            General.Map.UndoRedo.CreateUndo("Set comment");
+            fields.BeforeFieldsChange();
 
             if (!fields.ContainsKey("comment"))
                 fields.Add("comment", new UniValue((int)UniversalType.String, comment));
@@ -147,7 +155,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
         private string getThingName(Thing t, ref string comment, string sortMode) {
             bool isDefaultName = true;
             comment = "";
-            if (GZBuilder.GZGeneral.UDMF && t.Fields.ContainsKey("comment")) {
+            if (TagExplorer.UDMF && t.Fields.ContainsKey("comment")) {
                 comment = t.Fields["comment"].Value.ToString();
                 isDefaultName = false;
             }
@@ -157,7 +165,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
         private string getSectorName(Sector s, ref string comment, string sortMode) {
             bool isDefaultName = true;
             comment = "";
-            if (GZBuilder.GZGeneral.UDMF && s.Fields.ContainsKey("comment")) {
+            if (TagExplorer.UDMF && s.Fields.ContainsKey("comment")) {
                 comment = s.Fields["comment"].Value.ToString();
                 isDefaultName = false;
             }
@@ -167,7 +175,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
         private string getLinedefName(Linedef l, ref string comment, string sortMode) {
             bool isDefaultName = true;
             comment = "";
-            if (GZBuilder.GZGeneral.UDMF && l.Fields.ContainsKey("comment")) {
+            if (TagExplorer.UDMF && l.Fields.ContainsKey("comment")) {
                 comment = l.Fields["comment"].Value.ToString();
                 isDefaultName = false;
             }

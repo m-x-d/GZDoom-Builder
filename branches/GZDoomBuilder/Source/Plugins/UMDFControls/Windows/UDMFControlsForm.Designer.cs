@@ -59,6 +59,7 @@
             this.cbnofakecontrast = new System.Windows.Forms.CheckBox();
             this.cbwrapmidtex = new System.Windows.Forms.CheckBox();
             this.cbclipmidtex = new System.Windows.Forms.CheckBox();
+            this.cbhidden = new System.Windows.Forms.CheckBox();
             this.gbRotation.SuspendLayout();
             this.gbPosition.SuspendLayout();
             this.gbScale.SuspendLayout();
@@ -336,13 +337,14 @@
             // 
             // gbFlagsFloor
             // 
+            this.gbFlagsFloor.Controls.Add(this.cbhidden);
             this.gbFlagsFloor.Controls.Add(this.cbsilent);
             this.gbFlagsFloor.Controls.Add(this.cbnorespawn);
             this.gbFlagsFloor.Controls.Add(this.cbnofallingdamage);
             this.gbFlagsFloor.Controls.Add(this.cbdropactors);
             this.gbFlagsFloor.Location = new System.Drawing.Point(6, 150);
             this.gbFlagsFloor.Name = "gbFlagsFloor";
-            this.gbFlagsFloor.Size = new System.Drawing.Size(235, 112);
+            this.gbFlagsFloor.Size = new System.Drawing.Size(235, 139);
             this.gbFlagsFloor.TabIndex = 3;
             this.gbFlagsFloor.TabStop = false;
             this.gbFlagsFloor.Text = "Floor and Ceiling flags:";
@@ -350,7 +352,7 @@
             // cbsilent
             // 
             this.cbsilent.AutoSize = true;
-            this.cbsilent.Location = new System.Drawing.Point(6, 91);
+            this.cbsilent.Location = new System.Drawing.Point(6, 115);
             this.cbsilent.Name = "cbsilent";
             this.cbsilent.Size = new System.Drawing.Size(52, 18);
             this.cbsilent.TabIndex = 3;
@@ -361,7 +363,7 @@
             // cbnorespawn
             // 
             this.cbnorespawn.AutoSize = true;
-            this.cbnorespawn.Location = new System.Drawing.Point(6, 67);
+            this.cbnorespawn.Location = new System.Drawing.Point(6, 91);
             this.cbnorespawn.Name = "cbnorespawn";
             this.cbnorespawn.Size = new System.Drawing.Size(89, 18);
             this.cbnorespawn.TabIndex = 2;
@@ -372,7 +374,7 @@
             // cbnofallingdamage
             // 
             this.cbnofallingdamage.AutoSize = true;
-            this.cbnofallingdamage.Location = new System.Drawing.Point(6, 43);
+            this.cbnofallingdamage.Location = new System.Drawing.Point(6, 67);
             this.cbnofallingdamage.Name = "cbnofallingdamage";
             this.cbnofallingdamage.Size = new System.Drawing.Size(114, 18);
             this.cbnofallingdamage.TabIndex = 1;
@@ -461,6 +463,17 @@
             this.cbclipmidtex.Text = "Clip Middle Texture";
             this.cbclipmidtex.UseVisualStyleBackColor = true;
             // 
+            // cbhidden
+            // 
+            this.cbhidden.AutoSize = true;
+            this.cbhidden.Location = new System.Drawing.Point(6, 43);
+            this.cbhidden.Name = "cbhidden";
+            this.cbhidden.Size = new System.Drawing.Size(59, 18);
+            this.cbhidden.TabIndex = 4;
+            this.cbhidden.Tag = "hidden";
+            this.cbhidden.Text = "Hidden";
+            this.cbhidden.UseVisualStyleBackColor = true;
+            // 
             // UDMFControlsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -538,5 +551,6 @@
         private System.Windows.Forms.CheckBox cblightabsolute;
         private System.Windows.Forms.CheckBox cbRelativeMode;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.CheckBox cbhidden;
     }
 }

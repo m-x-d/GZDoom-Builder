@@ -167,12 +167,20 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Move texture coordinates
 		protected override void MoveTextureOffset(Point xy)
 		{
-			Sector.Sector.Fields.BeforeFieldsChange();
+            //mxd
+            Sector s = GetControlSector();
+            float oldx = s.Fields.GetValue("xpanningceiling", 0.0f);
+            float oldy = s.Fields.GetValue("ypanningceiling", 0.0f);
+            s.Fields["xpanningceiling"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
+            s.Fields["ypanningceiling"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
+            s.UpdateNeeded = true;
+
+            /*Sector.Sector.Fields.BeforeFieldsChange();
 			float oldx = Sector.Sector.Fields.GetValue("xpanningceiling", 0.0f);
 			float oldy = Sector.Sector.Fields.GetValue("ypanningceiling", 0.0f);
 			Sector.Sector.Fields["xpanningceiling"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
 			Sector.Sector.Fields["ypanningceiling"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
-			Sector.Sector.UpdateNeeded = true;
+			Sector.Sector.UpdateNeeded = true;*/
 		}
 
 		// Paste texture

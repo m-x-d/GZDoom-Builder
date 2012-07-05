@@ -203,7 +203,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					if(Thing.Position.z > 0)
 						pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
 					else
-						pos.z = Thing.Sector.CeilHeight;
+                        pos.z = Thing.Sector.CeilHeight - info.Height; //mxd. was [pos.z = Thing.Sector.CeilHeight;]
 				}
 
 				pos.z -= Thing.Position.z;
@@ -424,10 +424,17 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public virtual void OnProcess(double deltatime) { }
 		public virtual void OnTextureFloodfill() { }
 		public virtual void OnInsert() { }
-		public virtual void OnDelete() { }
+		//public virtual void OnDelete() { }
 		public virtual void ApplyTexture(string texture) { }
 		public virtual void ApplyUpperUnpegged(bool set) { }
 		public virtual void ApplyLowerUnpegged(bool set) { }
+
+        //mxd. Delete thing
+        public virtual void OnDelete() {
+            this.Thing.Dispose();
+            this.Dispose();
+        }
+
 		
 		// Return texture name
 		public virtual string GetTextureName() { return ""; }

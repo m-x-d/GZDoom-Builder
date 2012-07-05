@@ -34,6 +34,10 @@ namespace CodeImp.DoomBuilder.Windows
             System.Windows.Forms.Label taglabel;
             System.Windows.Forms.Label label7;
             this.thingtype = new CodeImp.DoomBuilder.Controls.ThingBrowserControl();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.posX = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+            this.posY = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
             this.height = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
             this.angle = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
             this.heightlabel = new System.Windows.Forms.Label();
@@ -66,10 +70,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
             this.cancel = new System.Windows.Forms.Button();
             this.apply = new System.Windows.Forms.Button();
-            this.posY = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-            this.posX = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             groupBox1 = new System.Windows.Forms.GroupBox();
             groupBox2 = new System.Windows.Forms.GroupBox();
             label5 = new System.Windows.Forms.Label();
@@ -127,6 +127,51 @@ namespace CodeImp.DoomBuilder.Windows
             groupBox2.TabIndex = 2;
             groupBox2.TabStop = false;
             groupBox2.Text = " Coordination ";
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(45, 44);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(17, 14);
+            this.label2.TabIndex = 15;
+            this.label2.Text = "X:";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(45, 69);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(17, 14);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Y:";
+            // 
+            // posX
+            // 
+            this.posX.AllowDecimal = false;
+            this.posX.AllowNegative = true;
+            this.posX.AllowRelative = true;
+            this.posX.ButtonStep = 8;
+            this.posX.Location = new System.Drawing.Point(68, 39);
+            this.posX.Name = "posX";
+            this.posX.Size = new System.Drawing.Size(72, 24);
+            this.posX.StepValues = null;
+            this.posX.TabIndex = 13;
+            // 
+            // posY
+            // 
+            this.posY.AllowDecimal = false;
+            this.posY.AllowNegative = true;
+            this.posY.AllowRelative = true;
+            this.posY.ButtonStep = 8;
+            this.posY.Location = new System.Drawing.Point(68, 64);
+            this.posY.Name = "posY";
+            this.posY.Size = new System.Drawing.Size(72, 24);
+            this.posY.StepValues = null;
+            this.posY.TabIndex = 12;
             // 
             // height
             // 
@@ -265,10 +310,10 @@ namespace CodeImp.DoomBuilder.Windows
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.flags.AutoScroll = true;
-            this.flags.Columns = 2;
-            this.flags.Location = new System.Drawing.Point(18, 26);
+            this.flags.Columns = 3;
+            this.flags.Location = new System.Drawing.Point(19, 19);
             this.flags.Name = "flags";
-            this.flags.Size = new System.Drawing.Size(338, 195);
+            this.flags.Size = new System.Drawing.Size(337, 202);
             this.flags.TabIndex = 0;
             // 
             // tabeffects
@@ -279,7 +324,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabeffects.Location = new System.Drawing.Point(4, 23);
             this.tabeffects.Name = "tabeffects";
             this.tabeffects.Padding = new System.Windows.Forms.Padding(3);
-            this.tabeffects.Size = new System.Drawing.Size(652, 352);
+            this.tabeffects.Size = new System.Drawing.Size(652, 365);
             this.tabeffects.TabIndex = 1;
             this.tabeffects.Text = "Action";
             this.tabeffects.UseVisualStyleBackColor = true;
@@ -296,7 +341,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.actiongroup.Controls.Add(this.doompanel);
             this.actiongroup.Location = new System.Drawing.Point(6, 78);
             this.actiongroup.Name = "actiongroup";
-            this.actiongroup.Size = new System.Drawing.Size(640, 268);
+            this.actiongroup.Size = new System.Drawing.Size(640, 281);
             this.actiongroup.TabIndex = 22;
             this.actiongroup.TabStop = false;
             this.actiongroup.Text = " Action ";
@@ -318,7 +363,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.hexenpanel.Controls.Add(this.arg4label);
             this.hexenpanel.Location = new System.Drawing.Point(6, 53);
             this.hexenpanel.Name = "hexenpanel";
-            this.hexenpanel.Size = new System.Drawing.Size(628, 208);
+            this.hexenpanel.Size = new System.Drawing.Size(628, 221);
             this.hexenpanel.TabIndex = 13;
             // 
             // arg2
@@ -444,7 +489,7 @@ namespace CodeImp.DoomBuilder.Windows
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.doompanel.Location = new System.Drawing.Point(6, 54);
             this.doompanel.Name = "doompanel";
-            this.doompanel.Size = new System.Drawing.Size(628, 208);
+            this.doompanel.Size = new System.Drawing.Size(628, 221);
             this.doompanel.TabIndex = 12;
             // 
             // groupBox3
@@ -487,7 +532,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabcustom.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabcustom.Location = new System.Drawing.Point(4, 23);
             this.tabcustom.Name = "tabcustom";
-            this.tabcustom.Size = new System.Drawing.Size(652, 352);
+            this.tabcustom.Size = new System.Drawing.Size(652, 365);
             this.tabcustom.TabIndex = 2;
             this.tabcustom.Text = "Custom";
             this.tabcustom.UseVisualStyleBackColor = true;
@@ -506,7 +551,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.fieldslist.Name = "fieldslist";
             this.fieldslist.PropertyColumnVisible = true;
             this.fieldslist.PropertyColumnWidth = 150;
-            this.fieldslist.Size = new System.Drawing.Size(636, 334);
+            this.fieldslist.Size = new System.Drawing.Size(636, 347);
             this.fieldslist.TabIndex = 1;
             this.fieldslist.TypeColumnVisible = true;
             this.fieldslist.TypeColumnWidth = 100;
@@ -534,51 +579,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.apply.Text = "OK";
             this.apply.UseVisualStyleBackColor = true;
             this.apply.Click += new System.EventHandler(this.apply_Click);
-            // 
-            // posY
-            // 
-            this.posY.AllowDecimal = false;
-            this.posY.AllowNegative = true;
-            this.posY.AllowRelative = true;
-            this.posY.ButtonStep = 8;
-            this.posY.Location = new System.Drawing.Point(68, 64);
-            this.posY.Name = "posY";
-            this.posY.Size = new System.Drawing.Size(72, 24);
-            this.posY.StepValues = null;
-            this.posY.TabIndex = 12;
-            // 
-            // posX
-            // 
-            this.posX.AllowDecimal = false;
-            this.posX.AllowNegative = true;
-            this.posX.AllowRelative = true;
-            this.posX.ButtonStep = 8;
-            this.posX.Location = new System.Drawing.Point(68, 39);
-            this.posX.Name = "posX";
-            this.posX.Size = new System.Drawing.Size(72, 24);
-            this.posX.StepValues = null;
-            this.posX.TabIndex = 13;
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(45, 69);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(17, 14);
-            this.label1.TabIndex = 14;
-            this.label1.Text = "Y:";
-            // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(45, 44);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(17, 14);
-            this.label2.TabIndex = 15;
-            this.label2.Text = "X:";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // ThingEditForm
             // 

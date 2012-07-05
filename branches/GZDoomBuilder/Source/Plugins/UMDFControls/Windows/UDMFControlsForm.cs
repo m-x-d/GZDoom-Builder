@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
             updateList = new List<SurfaceProperties>();
 
             wallFlags = new CheckBox[] { cbnodecals, cbnofakecontrast, cbclipmidtex, cbsmoothlighting };
-            sectorFlags = new CheckBox[] { cbsilent, cbnofallingdamage, cbdropactors, cbnorespawn };
+            sectorFlags = new CheckBox[] { cbsilent, cbnofallingdamage, cbdropactors, cbnorespawn, cbhidden };
 
             renderStyles = new List<string>() { "translucent", "add" };
 
@@ -108,10 +108,10 @@ namespace CodeImp.DoomBuilder.UDMFControls
                         setDefaultUniversalProperties(sp.Linedef.Fields, defaultLinedefFields);
                         break;
 
-                    case VisualGeometryType.WALL_MIDDLE_3D: //all 3D-walls in a sector are linked to the same sidedef of control sector, so if many are selected, we need only one.
+                    case VisualGeometryType.WALL_MIDDLE_3D:
                         walls3dCount++;
-                        if (wall3DIndeces.IndexOf(vg.Sector.Sector.FixedIndex) != -1)
-                            break;
+                        //if (wall3DIndeces.IndexOf(vg.Sector.Sector.FixedIndex) != -1)
+                            //break;
                         wall3DIndeces.Add(vg.Sector.Sector.FixedIndex);
                         goto case VisualGeometryType.WALL_MIDDLE;
 
@@ -120,6 +120,9 @@ namespace CodeImp.DoomBuilder.UDMFControls
                         wallsMid.Add(sp);
                         setDefaultUniversalProperties(sp.Sidedef.Fields, defaultSidedefFields);
                         setDefaultUniversalProperties(sp.Linedef.Fields, defaultLinedefFields);
+
+                        if (sp.HasControlLinedef)
+                            setDefaultUniversalProperties(sp.ControlSidedef.Fields, defaultSidedefFields);
                         break;
 
                     case VisualGeometryType.WALL_UPPER:
@@ -176,8 +179,8 @@ namespace CodeImp.DoomBuilder.UDMFControls
             if (firstWall != null) {
                 if(firstFloor == null){ //get shared values from wall
                     //get values
-                    float scaleX = (float)firstWall.Sidedef.Fields[KeyNames.GetScaleX(firstWall.GeometryType)].Value;
-                    float scaleY = (float)firstWall.Sidedef.Fields[KeyNames.GetScaleY(firstWall.GeometryType)].Value;
+                    float scaleX = (float)firstWall.ControlSidedef.Fields[KeyNames.GetScaleX(firstWall.GeometryType)].Value;
+                    float scaleY = (float)firstWall.ControlSidedef.Fields[KeyNames.GetScaleY(firstWall.GeometryType)].Value;
                     float translateX = (float)firstWall.Sidedef.Fields[KeyNames.GetTranslationX(firstWall.GeometryType)].Value;
                     float translateY = (float)firstWall.Sidedef.Fields[KeyNames.GetTranslationY(firstWall.GeometryType)].Value;
 
@@ -196,6 +199,8 @@ namespace CodeImp.DoomBuilder.UDMFControls
                     if (walls3dCount == wallsMid.Count && wallsTop.Count == 0 && wallsBottom.Count == 0) {
                         gbAlpha.Enabled = false;
                         bgBrightness.Enabled = false;
+                        //cblightabsolute.Checked = true;
+                        //cblightabsolute.Enabled = false;
                     }
                 }
 
@@ -248,6 +253,9 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 foreach (SurfaceProperties wall in list) {
                     removeDefaultUniversalProperties(wall.Sidedef.Fields, defaultSidedefFields);
                     removeDefaultUniversalProperties(wall.Linedef.Fields, defaultLinedefFields);
+
+                    if(wall.HasControlLinedef)
+                        removeDefaultUniversalProperties(wall.ControlSidedef.Fields, defaultSidedefFields);
                 }
             }
         }
@@ -280,21 +288,41 @@ namespace CodeImp.DoomBuilder.UDMFControls
 //sidedef props
         private void setSidedefProperty(string propName, object value) {
             //special cases
-            if (propName == "scale" || propName == "offset") {
+            if (propName == "scale") {
+                General.Fail("use SetSidedefScale instead!");
+                return;
+            }else if(propName == "offset"){
                 setPairedSidedefProperty(propName, (Vector2D)value);
                 return;
             }
 
             //apply value
-            foreach (List<SurfaceProperties> list in walls) {
-                foreach (SurfaceProperties vg in list)
-                    vg.Sidedef.Fields[propName].Value = value;
-            }
+            /*if (propName == "light" && !cblightabsolute.Checked) {
+                int light = (int)value > 0 ? (int)value : 0;
+                
+                //3d walls are lit as if "absolutelighting" flag is always set
+                foreach (List<SurfaceProperties> list in walls) {
+                    foreach (SurfaceProperties vg in list) {
+                        if (vg.GeometryType == VisualGeometryType.WALL_MIDDLE_3D)
+                            vg.Sidedef.Fields[propName].Value = light;
+                        else
+                            vg.Sidedef.Fields[propName].Value = value;
+                    }
+                }
+            } else {*/
+                foreach (List<SurfaceProperties> list in walls) {
+                    foreach (SurfaceProperties vg in list) {
+                        if ((propName == "light" || propName == "lightabsolute") && vg.GeometryType == VisualGeometryType.WALL_MIDDLE_3D) //just... skip it for now
+                            continue;
+                        vg.Sidedef.Fields[propName].Value = value;
+                    }
+                }
+            //}
         }
 
         private void setPairedSidedefProperty(string propName, Vector2D value) {
-            if (propName != "scale" && propName != "offset")
-                return;
+            if (propName == "scale") General.Fail("use SetScale instead!"); //dbg
+            if (propName != "offset") return;
 
             string upperNameX  = "x_top";
             string upperNameY  = "y_top";
@@ -318,7 +346,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
                         val = (float)vg.Sidedef.Fields[props[index]].Value + value.x;
                         vg.Sidedef.Fields[props[index]].Value = val;
 
-                        val = (float)vg.Sidedef.Fields[props[index+1]].Value + value.y;
+                        val = (float)vg.Sidedef.Fields[props[index + 1]].Value + value.y;
                         vg.Sidedef.Fields[props[index + 1]].Value = val;
                     }
                     index += 2;
@@ -427,6 +455,58 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 }
             }
         }
+
+        private void setSidedefScale(Vector2D value) {
+            string[] props = new string[] { "scalex_top", "scaley_top", "scalex_mid", "scaley_mid", "scalex_bottom", "scaley_bottom" };
+            List<int> controlSectors = new List<int>();
+            int index = 0;
+
+            //apply values
+            if (relativeMode) {
+                float val;
+                foreach (List<SurfaceProperties> list in walls) { //top -> middle -> bottom
+                    foreach (SurfaceProperties vg in list) {
+                        if (vg.HasControlLinedef) {
+                            if (controlSectors.Contains(vg.ControlSidedef.Sector.FixedIndex))
+                                continue;
+
+                            val = (float)vg.ControlSidedef.Fields[props[index]].Value + value.x;
+                            vg.ControlSidedef.Fields[props[index]].Value = val;
+
+                            val = (float)vg.ControlSidedef.Fields[props[index + 1]].Value + value.y;
+                            vg.ControlSidedef.Fields[props[index + 1]].Value = val;
+
+                            controlSectors.Add(vg.ControlSidedef.Sector.FixedIndex);
+                        } else {
+                            val = (float)vg.Sidedef.Fields[props[index]].Value + value.x;
+                            vg.Sidedef.Fields[props[index]].Value = val;
+
+                            val = (float)vg.Sidedef.Fields[props[index + 1]].Value + value.y;
+                            vg.Sidedef.Fields[props[index + 1]].Value = val;
+                        }
+                    }
+                    index += 2;
+                }
+            } else {
+                foreach (List<SurfaceProperties> list in walls) { //top -> middle -> bottom
+                    foreach (SurfaceProperties vg in list) {
+                        if (vg.HasControlLinedef) {
+                            if (controlSectors.Contains(vg.ControlSidedef.Sector.FixedIndex))
+                                continue;
+
+                            vg.ControlSidedef.Fields[props[index]].Value = value.x;
+                            vg.ControlSidedef.Fields[props[index + 1]].Value = value.y;
+
+                            controlSectors.Add(vg.ControlSidedef.Sector.FixedIndex);
+                        } else {
+                            vg.Sidedef.Fields[props[index]].Value = value.x;
+                            vg.Sidedef.Fields[props[index + 1]].Value = value.y;
+                        }
+                    }
+                    index += 2;
+                }
+            }
+        }
         
 //EVENTS
         private void btnOK_Click(object sender, EventArgs e) {
@@ -495,7 +575,8 @@ namespace CodeImp.DoomBuilder.UDMFControls
 
 //scale
         private void scaleControl_OnValueChanged(object sender, EventArgs e) {
-            setSharedPairedProperty((string)scaleControl.Tag, relativeMode ? scaleControl.Delta : scaleControl.Value);
+            setPairedSectorProperty((string)scaleControl.Tag, relativeMode ? scaleControl.Delta : scaleControl.Value);
+            setSidedefScale(relativeMode ? scaleControl.Delta : scaleControl.Value);
             update();
         }
 
@@ -543,9 +624,12 @@ namespace CodeImp.DoomBuilder.UDMFControls
         }
     }
 
-    internal class SurfaceProperties {
+    internal sealed class SurfaceProperties {
         private Sector sector;
         public Sector Sector { get { return sector; } }
+
+        private Sidedef controlSidedef;
+        public Sidedef ControlSidedef { get { return controlSidedef; } }
 
         private Sidedef sidedef;
         public Sidedef Sidedef { get { return sidedef; } }
@@ -555,6 +639,9 @@ namespace CodeImp.DoomBuilder.UDMFControls
 
         public VisualGeometryType GeometryType { get { return vg.GeometryType; } }
         private VisualGeometry vg;
+
+        private bool hasControlLinedef;
+        public bool HasControlLinedef { get { return hasControlLinedef; } }
         
         public SurfaceProperties(VisualGeometry visualGeometry) {
             vg = visualGeometry;
@@ -563,8 +650,14 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 sector.Fields.BeforeFieldsChange();
             } else {
                 linedef = vg.GetControlLinedef();
-                sidedef = linedef.Front;
+                
+                controlSidedef = linedef.Front;
+                sidedef = vg.Sidedef;
+
+                hasControlLinedef = (controlSidedef.Sector.FixedIndex != sidedef.Sector.FixedIndex);
+
                 linedef.Fields.BeforeFieldsChange();
+                controlSidedef.Fields.BeforeFieldsChange();
                 sidedef.Fields.BeforeFieldsChange();
             }
         }
@@ -575,7 +668,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
 
     }
 
-    internal class KeyNames {
+    internal sealed class KeyNames {
 //SCALE        
         public static string GetScaleX(VisualGeometryType type) {
             return getScale(type).Replace("$", "x");

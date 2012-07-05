@@ -43,7 +43,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			  SwitchAction = "gzdoomvisualmode", // Action name used to switch to this mode
 			  ButtonImage = "VisualModeZ.png",	// Image resource name for the button
 			  ButtonOrder = 1,					// Position of the button (lower is more to the left)
-			  ButtonGroup = "001_visual")]
+			  ButtonGroup = "001_visual",
+              UseByDefault = true)]
 
 	public class BaseVisualMode : VisualMode
 	{
@@ -1202,6 +1203,39 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				return new NullVisualEventReceiver();
 			}
 		}
+
+        //mxd. Copied from BuilderModes.ThingsMode
+        // This creates a new thing
+        private Thing InsertThing(Vector2D pos) {
+            if (pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
+                pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary) {
+                General.Interface.DisplayStatus(StatusType.Warning, "Failed to insert thing: outside of map boundaries.");
+                return null;
+            }
+
+            // Create thing
+            Thing t = General.Map.Map.CreateThing();
+            if (t != null) {
+                General.Settings.ApplyDefaultThingSettings(t);
+                t.Move(pos);
+                t.UpdateConfiguration();
+                General.Map.IsChanged = true;
+                
+                // Update things filter so that it includes this thing
+                General.Map.ThingsFilter.Update();
+
+                // Snap to grid enabled?
+                if (General.Interface.SnapToGrid) {
+                    // Snap to grid
+                    t.SnapToGrid();
+                } else {
+                    // Snap to map format accuracy
+                    t.SnapToAccuracy();
+                }
+            }
+
+            return t;
+        }
 		
 		#endregion
 
@@ -1553,22 +1587,60 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			foreach(IVisualEventReceiver i in objs) i.OnPasteProperties();
 			PostAction();
 		}
-		
-		[BeginAction("insertitem", BaseAction = true)]
+
+        [BeginAction("insertitem", BaseAction = true)] //mxd. now we can actually insert things in Visual modes
 		public void Insert()
 		{
-			PreAction(UndoGroup.None);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
-			foreach(IVisualEventReceiver i in objs) i.OnInsert();
-			PostAction();
+            PickTarget();
+
+            if (target.picked == null) {
+                General.Interface.DisplayStatus(StatusType.Warning, "Cannot insert item here!");
+                return;
+            }
+            
+            ClearSelection();
+            PreActionNoChange();
+
+            General.Map.UndoRedo.CreateUndo("Insert thing");
+            Thing t = InsertThing(new Vector2D(target.hitpos.x, target.hitpos.y));
+
+            if (t == null) {
+                General.Map.UndoRedo.WithdrawUndo();
+                return;
+            }
+
+            // Edit the thing?
+            if (BuilderPlug.Me.EditNewThing)
+                General.Interface.ShowEditThings(new List<Thing> { t });
+
+            //add thing to blockmap
+            blockmap.AddThing(t);
+
+            General.Interface.DisplayStatus(StatusType.Action, "Inserted a new thing.");
+            General.Map.IsChanged = true;
+            General.Map.ThingsFilter.Update();
+            PostAction();
 		}
 
-		[BeginAction("deleteitem", BaseAction = true)]
+		[BeginAction("deleteitem", BaseAction = true)] //mxd. now we can actually delete things in Visual modes
 		public void Delete()
 		{
-			PreAction(UndoGroup.None);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
-			foreach(IVisualEventReceiver i in objs) i.OnDelete();
+            List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true);
+            if(objs.Count == 0) return;
+
+            string rest = objs.Count + " thing" + (objs.Count > 1 ? "s." : ".");
+            
+            //make undo
+            General.Map.UndoRedo.CreateUndo("Delete " + rest);
+            General.Interface.DisplayStatus(StatusType.Info, "Deleted " + rest);
+            
+            PreActionNoChange();
+			foreach(IVisualEventReceiver i in objs) i.OnDelete(); //are they deleted from BlockMap automatically?..
+
+            // Update cache values
+            General.Map.IsChanged = true;
+            General.Map.ThingsFilter.Update();
+
 			PostAction();
 		}
 		
