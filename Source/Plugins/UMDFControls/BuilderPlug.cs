@@ -11,7 +11,7 @@ using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.UDMFControls
 {
-    public class BuilderPlug: Plug {
+    public sealed class BuilderPlug: Plug {
         private static BuilderPlug me;
         public static BuilderPlug Me { get { return me; } }
 

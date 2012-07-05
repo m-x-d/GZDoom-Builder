@@ -227,7 +227,8 @@ namespace CodeImp.DoomBuilder.Editing
 		/// </summary>
 		public bool IsThingVisible(Thing t)
 		{
-			return thingsvisiblestate[t];
+            if (t.IsDisposed) return false; //mxd
+            return thingsvisiblestate[t];
 		}
 
 		// This writes the filter to configuration

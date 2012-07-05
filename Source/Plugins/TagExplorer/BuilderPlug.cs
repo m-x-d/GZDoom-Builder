@@ -22,11 +22,6 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
         // This event is called when the plugin is initialized
         public override void OnInitialize() {
-            if (GZBuilder.GZGeneral.Version < 1.10f) {
-                General.ErrorLogger.Add(ErrorType.Error, "Tag Explorer plugin: GZDoom Builder 1.10 or later required!");
-                return;
-            }
-            
             base.OnInitialize();
 
             // Keep a static reference
@@ -74,6 +69,11 @@ namespace CodeImp.DoomBuilder.TagExplorer
         // Redo performed
         public override void OnRedoEnd() {
             if (tagExplorer != null)
+                tagExplorer.UpdateTree();
+        }
+
+        public override void OnActionEnd(CodeImp.DoomBuilder.Actions.Action action) {
+            if (tagExplorer != null && action.Name == "builder_deleteitem")
                 tagExplorer.UpdateTree();
         }
     }
