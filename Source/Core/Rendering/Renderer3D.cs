@@ -1186,10 +1186,6 @@ namespace CodeImp.DoomBuilder.Rendering
             //mxd. gather models
             if (General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected) && t.Thing.IsModel) {
                 ModeldefEntry mde = General.Map.Data.ModeldefEntries[t.Thing.Type];
-
-                //if (!isThingOnScreen(t.BoundingBox))
-                    //return;
-
                 if (!thingsWithModel.ContainsKey(mde)) 
                     thingsWithModel.Add(mde, new List<VisualThing>());
                 thingsWithModel[mde].Add(t);
@@ -1220,13 +1216,13 @@ namespace CodeImp.DoomBuilder.Rendering
             Vector3D thingNormal = D3DDevice.V3D(bbox[0]) - cameraposition; //bbox[0] is always thing center
 
             if (Vector3D.DotProduct(camNormal, thingNormal) < 0) { //behind camera plane
-                //GZBuilder.GZGeneral.TraceLine("Skipped geo. Vector3D.DotProduct(camNormal, thingNormal) < 0");
+                //GZBuilder.GZGeneral.Trace("Skipped geo. Vector3D.DotProduct(camNormal, thingNormal) < 0");
                 return false;
             }
 
             int len = bbox.Length;
             Vector3 screenPos;
-            int behingCount = 0;
+            int behindCount = 0;
             int leftCount = 0;
             int rightCount = 0;
             int topCount = 0;
@@ -1240,7 +1236,7 @@ namespace CodeImp.DoomBuilder.Rendering
                     return true;
 
                 if (screenPos.Z < 0)
-                    behingCount++;
+                    behindCount++;
 
                 if (screenPos.X < 0)
                     leftCount++;
@@ -1252,8 +1248,11 @@ namespace CodeImp.DoomBuilder.Rendering
                     bottomCount++;
             }
 
-            if (behingCount == len || leftCount == len || rightCount == len || topCount == len || bottomCount == len)
+            if (behindCount == len || leftCount == len || rightCount == len || topCount == len || bottomCount == len) {
+                //dbg
+                //GZBuilder.GZGeneral.Trace("Skipped geo. Not on screen");
                 return false; //Not on screen
+            }
             return true;
         }
 

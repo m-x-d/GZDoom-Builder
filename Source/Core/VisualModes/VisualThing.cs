@@ -499,7 +499,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 
         //mxd. update bounding box
         public void UpdateBoundingBox() {
-            updateBoundingBox(lightRadius, lightRadius * 2f);
+            //updateBoundingBox(lightRadius, lightRadius * 2f);
+            if (thing.IsModel) {
+                updateBoundingBoxForModel();
+            } else if (lightType != -1 && lightRadius > thing.Size) {
+                updateBoundingBox(lightRadius, lightRadius * 2);
+            } else {
+                updateBoundingBox((int)thing.Size, thingHeight);
+            }
         }
 
         private void updateBoundingBox(float width, float height) {

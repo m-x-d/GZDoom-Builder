@@ -1591,9 +1591,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
         [BeginAction("insertitem", BaseAction = true)] //mxd. now we can actually insert things in Visual modes
 		public void Insert()
 		{
-            PickTarget();
+            Vector2D hitpos = getHitPosition();
 
-            if (target.picked == null) {
+            if (!hitpos.IsFinite()) {
                 General.Interface.DisplayStatus(StatusType.Warning, "Cannot insert item here!");
                 return;
             }
@@ -1602,7 +1602,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
             PreActionNoChange();
 
             General.Map.UndoRedo.CreateUndo("Insert thing");
-            Thing t = InsertThing(new Vector2D(target.hitpos.x, target.hitpos.y));
+
+            Thing t = InsertThing(new Vector2D(hitpos.x, hitpos.y));
 
             if (t == null) {
                 General.Map.UndoRedo.WithdrawUndo();
