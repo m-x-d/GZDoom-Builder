@@ -201,7 +201,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					if(Thing.Position.z > 0)
 						pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
 					else
-						pos.z = Thing.Sector.CeilHeight;
+						pos.z = Thing.Sector.CeilHeight - info.Height;
 				}
 
 				pos.z -= Thing.Position.z;
