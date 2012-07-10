@@ -2765,7 +2765,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(!processor.Enabled)
 			{
 				processor.Enabled = true;
-				lastupdatetime = General.Clock.GetCurrentTime();
+				lastupdatetime = General.Clock.CurrentTime;
 			}
 		}
 
@@ -2791,7 +2791,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void processor_Tick(object sender, EventArgs e)
 		{
 			Vector2D deltamouse;
-			double curtime = General.Clock.GetCurrentTime();
+			double curtime = General.Clock.CurrentTime;
 			double deltatime = curtime - lastupdatetime;
 			lastupdatetime = curtime;
 			

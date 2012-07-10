@@ -450,10 +450,10 @@ namespace CodeImp.DoomBuilder.TagExplorer
                 pos++;
             }
 
-            if (token != "") {
+            if (token.Length > 0) {
                 int result = -1;
-                int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
-                return result;
+                if(int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out result))
+                    return result;
             }
 
             return -1;
@@ -643,6 +643,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
                 e.CancelEdit = true;
                 return;
             }
+            treeView.MouseLeave -= treeView_MouseLeave;
         }
 
         //map should be in UDMF format, or we wouldn't be here
@@ -664,6 +665,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
                 e.Node.Text = info.GetName(ref comment, currentSortMode);
                 e.Node.ForeColor = Color.Black;
             }
+            treeView.MouseLeave += new EventHandler(treeView_MouseLeave);
         }
 
         private void treeView_MouseLeave(object sender, EventArgs e) {

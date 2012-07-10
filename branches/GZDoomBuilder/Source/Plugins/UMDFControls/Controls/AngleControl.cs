@@ -49,7 +49,6 @@ namespace CodeImp.DoomBuilder.UDMFControls
             penRed = new Pen(Color.Red, 2.0f);
             center = new Point(panelAngleControl.Width / 2, panelAngleControl.Height / 2);
             needleLength = center.X - 4;
-            angle = 0;
 
             //events
             panelAngleControl.MouseDown += new MouseEventHandler(panelAngleControl_MouseDown);

@@ -23,7 +23,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 
         public ColorHandler.RGB CurrentColor { get { return RGB; } }
 
-        private bool isInUpdate = false;
+        private bool isInUpdate;
         private Color startColor;
 
         //events

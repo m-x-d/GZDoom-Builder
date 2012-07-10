@@ -7,12 +7,13 @@ using System.Text;
 using System.Windows.Forms;
 
 using CodeImp.DoomBuilder.Geometry;
+using System.Globalization;
 
 namespace CodeImp.DoomBuilder.UDMFControls
 {
     public partial class PositionControl : UserControl
     {
-        private static int stepSize = 0;
+        private static int stepSize;
         private bool blockEvents;
         public event EventHandler OnValueChanged;
 
@@ -43,7 +44,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
             delta = new Vector2D();
             InitializeComponent();
             trackBar1.Value = stepSize;
-            labelStepSize.Text = stepSize == 0 ? "1" : stepSize.ToString();
+            labelStepSize.Text = stepSize == 0 ? "1" : stepSize.ToString(CultureInfo.InvariantCulture);
         }
 //events
         private void nudX_ValueChanged(object sender, EventArgs e) {

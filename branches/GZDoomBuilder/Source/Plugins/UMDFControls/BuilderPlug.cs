@@ -9,6 +9,7 @@ using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.VisualModes;
 
+[assembly: CLSCompliant(true)]
 namespace CodeImp.DoomBuilder.UDMFControls
 {
     public sealed class BuilderPlug: Plug {

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.ColorPicker {
     public enum ColorPickerType : int {
+        CP_NONE = 0,
         CP_LIGHT = 1,
         CP_SECTOR = 2
     }

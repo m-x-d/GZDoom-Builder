@@ -14,6 +14,7 @@ using CodeImp.DoomBuilder.VisualModes;
 
 using CodeImp.DoomBuilder.ColorPicker.Windows;
 
+[assembly: CLSCompliant(true)]
 namespace CodeImp.DoomBuilder.ColorPicker
 {
     public class BuilderPlug : Plug

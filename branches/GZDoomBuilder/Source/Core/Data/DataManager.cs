@@ -531,7 +531,7 @@ namespace CodeImp.DoomBuilder.Data
 		private void StartBackgroundLoader()
 		{
 			// Timing
-			loadstarttime = General.Clock.GetCurrentTime();
+			loadstarttime = General.Clock.CurrentTime;
 			loadfinishtime = 0;
 			
 			// If a loader is already running, stop it first
@@ -664,7 +664,7 @@ namespace CodeImp.DoomBuilder.Data
 							// Timing
 							if(loadfinishtime == 0)
 							{
-								loadfinishtime = General.Clock.GetCurrentTime();
+								loadfinishtime = General.Clock.CurrentTime;
 								double deltatimesec = (loadfinishtime - loadstarttime) / 1000.0d;
 								General.WriteLogLine("Resources loading took " + deltatimesec.ToString("########0.00") + " seconds");
 							}

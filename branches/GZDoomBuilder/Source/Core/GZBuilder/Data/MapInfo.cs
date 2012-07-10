@@ -3,7 +3,7 @@ using SlimDX;
 using SlimDX.Direct3D9;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data {
-    public class MapInfo {
+    public sealed class MapInfo {
         public string Sky1;
         public float Sky1ScrollSpeed;
         public string Sky2;

@@ -18,7 +18,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
     public partial class LightColorPicker : DelayedForm, IColorPicker {
         public ColorPickerType Type { get { return ColorPickerType.CP_LIGHT; } }
 
-        private static bool RELATIVE_MODE = false;
+        private static bool RELATIVE_MODE;
         
         private static int[] LIGHT_USES_ANGLE_VALUE = { 9801, 9802, 9804, 9811, 9812, 9814, 9821, 9822, 9824 };
         

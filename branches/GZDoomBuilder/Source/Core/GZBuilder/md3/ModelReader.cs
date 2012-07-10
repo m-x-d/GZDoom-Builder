@@ -18,7 +18,7 @@ using SlimDX.Direct3D9;
 //mxd. Original version taken from here: http://colladadotnet.codeplex.com/SourceControl/changeset/view/40680
 namespace CodeImp.DoomBuilder.GZBuilder.MD3
 {
-    internal class ModelReader
+    internal static class ModelReader
     {
         public static void Parse(ref ModeldefEntry mde, PK3StructuredReader reader, Device D3DDevice) {
             string[] modelNames = new string[mde.ModelNames.Count];

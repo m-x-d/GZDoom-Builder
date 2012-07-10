@@ -936,7 +936,7 @@ namespace CodeImp.DoomBuilder
 				if(editing != null) editing.Dispose(); editing = null;
 				if(mainwindow != null) mainwindow.Dispose();
 				if(actions != null) actions.Dispose();
-				if(clock != null) clock.Dispose();
+                //if (clock != null) clock.Dispose(); //mxd
 				if(plugins != null) plugins.Dispose();
 				if(types != null) types.Dispose();
 				try { D3DDevice.Terminate(); } catch(Exception) { }
