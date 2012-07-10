@@ -39,8 +39,9 @@ namespace CodeImp.DoomBuilder.Controls
 	internal abstract class ScriptDocumentTab : TabPage
 	{
 		#region ================== Constants
-		
-		private const int EDITOR_BORDER_TOP = 8;
+
+        private const int NAVIGATOR_BORDER_TOP = 8; //mxd
+		private const int EDITOR_BORDER_TOP = 33;
 		private const int EDITOR_BORDER_BOTTOM = 4;
 		private const int EDITOR_BORDER_LEFT = 4;
 		private const int EDITOR_BORDER_RIGHT = 4;
@@ -51,6 +52,8 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// The script edit control
 		protected ScriptEditorControl editor;
+        //mxd
+        protected ComboBox navigator;
 
 		// Derived classes must set this!
 		protected ScriptConfiguration config;
@@ -82,6 +85,17 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Keep panel
 			this.panel = panel;
+
+            //mxd
+            navigator = new ComboBox();
+            navigator.Location = new Point(EDITOR_BORDER_LEFT, NAVIGATOR_BORDER_TOP);
+            navigator.Width = this.ClientSize.Width - EDITOR_BORDER_LEFT - EDITOR_BORDER_RIGHT;
+            navigator.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            navigator.DropDownStyle = ComboBoxStyle.DropDownList;
+            navigator.Name = "navigator";
+            navigator.TabStop = true;
+            navigator.TabIndex = 0;
+            this.Controls.Add(navigator);
 			
 			// Make the script control
 			editor = new ScriptEditorControl();
@@ -91,7 +105,7 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 			editor.Name = "editor";
 			editor.TabStop = true;
-			editor.TabIndex = 0;
+			editor.TabIndex = 1;
 			this.Controls.Add(editor);
 
 			// Bind events

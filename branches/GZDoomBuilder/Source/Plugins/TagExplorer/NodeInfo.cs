@@ -186,7 +186,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
             string combinedName = "";
             switch (sortMode) {
                 case SortMode.SORT_BY_ACTION:
-                    combinedName = (action > 0 ? "Action:" + action + "; " : "") + (tag > 0 ? "Tag:" + tag + "; " : "") + name + (isDefaultName ? " " + index : "");
+                    combinedName = (tag > 0 ? "Tag:" + tag + "; " : "") + name + (isDefaultName ? " " + index : "");
                     break;
 
                 case SortMode.SORT_BY_INDEX:
@@ -194,7 +194,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
                     break;
 
                 case SortMode.SORT_BY_TAG:
-                    combinedName = (tag > 0 ? "Tag:" + tag + "; " : "") + (action > 0 ? "Action:" + action + "; " : "") + name + (isDefaultName ? " " + index : "");
+                    combinedName = (action > 0 ? "Action:" + action + "; " : "") + name + (isDefaultName ? " " + index : "");
                     break;
 
                 default:

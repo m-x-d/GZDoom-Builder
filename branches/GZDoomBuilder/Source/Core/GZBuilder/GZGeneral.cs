@@ -27,10 +27,12 @@ namespace CodeImp.DoomBuilder.GZBuilder
         private static int[] gzAnimatedLightTypes = { (int)GZDoomLightType.FLICKER, (int)GZDoomLightType.RANDOM, (int)GZDoomLightType.PULSE };
         public static int[] GZ_ANIMATED_LIGHT_TYPES {  get { return gzAnimatedLightTypes; } }
 
-        public static bool UDMF;
+        //asc script action specials
+        private static int[] acsSpecials = { 80, 81, 82, 83, 84, 85, 226 };
+        public static int[] ACS_SPECIALS { get { return acsSpecials; } }
 
         //version
-        public const float Version = 1.10f;
+        public const float Version = 1.11f;
 
         //debug console
 #if DEBUG
@@ -50,14 +52,6 @@ namespace CodeImp.DoomBuilder.GZBuilder
             ((MainForm)General.Interface).addDocker(console);
             ((MainForm)General.Interface).selectDocker(console);
 #endif
-        }
-
-        public static void OnMapOpenEnd() {
-            UDMF = (General.Map.Config.FormatInterface == "UniversalMapSetIO");
-            General.MainWindow.UpdateGZDoomPannel();
-
-            //dbg
-            //GZBuilder.GZGeneral.Trace("GameConfiguration: loaded gametype " + General.Map.Config.GameType);
         }
 
         public static void OnReloadResources() {

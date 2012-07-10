@@ -68,7 +68,6 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
         // Disposer
         protected override void Dispose(bool disposing) {
-            if (this.ParentForm != null) this.ParentForm.Activated -= ParentForm_Activated;
             General.Settings.WritePluginSetting("sortmode", cbSortMode.SelectedIndex);
             General.Settings.WritePluginSetting("displaymode", cbDisplayMode.SelectedIndex);
             General.Settings.WritePluginSetting("centeronselected", cbCenterOnSelected.Checked);
@@ -81,12 +80,14 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
         public void Setup() {
             if (this.ParentForm != null) this.ParentForm.Activated += ParentForm_Activated;
-            UpdateTree();
+            UpdateTree(true);
         }
 
-        public void UpdateTree() {
-            treeView.Nodes.Clear();
+        public void Terminate() {
+            if (this.ParentForm != null) this.ParentForm.Activated -= ParentForm_Activated;
+        }
 
+        public void UpdateTree(bool focusDisplay) {
             bool showTags = (currentDisplayMode == DISPLAY_TAGS || currentDisplayMode == DISPLAY_TAGS_AND_ACTIONS);
             bool showActions = (currentDisplayMode == DISPLAY_ACTIONS || currentDisplayMode == DISPLAY_TAGS_AND_ACTIONS);
             bool hasComment = false;
@@ -101,295 +102,314 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
             TreeNode selectedNode = null;
 
+            this.SuspendLayout();
+            treeView.Nodes.Clear();
+
 //add things
             List<TreeNode> nodes = new List<TreeNode>();
-
             ICollection<Thing> things = General.Map.Map.Things;
-            foreach (Thing t in things) {
-                if ((showTags && t.Tag > 0) || (showActions && t.Action > 0)) {
-                    if (filteredTag != -1 && t.Tag != filteredTag)
-                        continue;
-                    if (filteredAction != -1 && t.Action != filteredAction)
-                        continue;
-                    
-                    NodeInfo info = new NodeInfo(t);
-                    string name = info.GetName(ref comment, currentSortMode);
-                    hasComment = comment.Length > 0;
 
-                    if (!hasComment && cbCommentsOnly.Checked)
-                        continue;
-
-                    if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
-                        TreeNode node = new TreeNode(name, 1, 1);
-                        node.Tag = info;
-                        if (hasComment) node.ForeColor = commentColor;
-                        nodes.Add(node);
-
-                        if (info.Index == selection.Index && info.Type == selection.Type)
-                            selectedNode = node;
-                    }
-                } 
-            }
-
-            //sort nodes
-            sort(ref nodes, currentSortMode);
-
-            //add "things" category
-            if (nodes.Count > 0) {
-                if (currentSortMode == SortMode.SORT_BY_ACTION) { //create action categories
-                    Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
-                    TreeNode noAction = new TreeNode("No Action", 0, 0);
-
-                    foreach (TreeNode node in nodes) {
-                        NodeInfo nodeInfo = node.Tag as NodeInfo;
-
-                        if (nodeInfo.Action == 0) {
-                            noAction.Nodes.Add(node);
+            if (!(things is MapElementCollection<Linedef>)) { //don't want to enumerate when array is locked
+                foreach (Thing t in things) {
+                    if ((showTags && t.Tag > 0) || (showActions && t.Action > 0)) {
+                        if (filteredTag != -1 && t.Tag != filteredTag)
                             continue;
+                        if (filteredAction != -1 && t.Action != filteredAction)
+                            continue;
+
+                        NodeInfo info = new NodeInfo(t);
+                        string name = info.GetName(ref comment, currentSortMode);
+                        hasComment = comment.Length > 0;
+
+                        if (!hasComment && cbCommentsOnly.Checked)
+                            continue;
+
+                        if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
+                            TreeNode node = new TreeNode(name, 1, 1);
+                            node.Tag = info;
+                            if (hasComment) node.ForeColor = commentColor;
+                            nodes.Add(node);
+
+                            if (info.Index == selection.Index && info.Type == selection.Type)
+                                selectedNode = node;
+                        }
+                    }
+                }
+
+                //sort nodes
+                sort(ref nodes, currentSortMode);
+
+                //add "things" category
+                if (nodes.Count > 0) {
+                    if (currentSortMode == SortMode.SORT_BY_ACTION) { //create action categories
+                        Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+                        TreeNode noAction = new TreeNode("No Action", 0, 0);
+
+                        foreach (TreeNode node in nodes) {
+                            NodeInfo nodeInfo = node.Tag as NodeInfo;
+
+                            if (nodeInfo.Action == 0) {
+                                noAction.Nodes.Add(node);
+                                continue;
+                            }
+
+                            LinedefActionInfo lai = General.Map.Config.GetLinedefActionInfo(nodeInfo.Action);
+
+                            if (!categories.ContainsKey(lai.Index))
+                                categories.Add(lai.Index, new TreeNode(lai.Index + " - " + lai.Name, 0, 0, new TreeNode[] { node }));
+                            else
+                                categories[lai.Index].Nodes.Add(node);
                         }
 
-                        LinedefActionInfo lai = General.Map.Config.GetLinedefActionInfo(nodeInfo.Action);
+                        TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                        categories.Values.CopyTo(catNodes, 0);
 
-                        if (!categories.ContainsKey(lai.Index))
-                            categories.Add(lai.Index, new TreeNode(lai.Index + " - " + lai.Name, 0, 0, new TreeNode[] { node }));
-                        else
-                            categories[lai.Index].Nodes.Add(node);
+                        TreeNode category = new TreeNode(CAT_THINGS, 0, 0, catNodes);
+                        if (noAction.Nodes.Count > 0)
+                            category.Nodes.Add(noAction);
+
+                        treeView.Nodes.Add(category);
+
+                    } else if (currentSortMode == SortMode.SORT_BY_INDEX) { //create thing categories
+                        Dictionary<string, TreeNode> categories = new Dictionary<string, TreeNode>();
+                        foreach (TreeNode node in nodes) {
+                            NodeInfo nodeInfo = node.Tag as NodeInfo;
+                            ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(General.Map.Map.GetThingByIndex(nodeInfo.Index).Type);
+
+                            if (tti != null) {
+                                if (!categories.ContainsKey(tti.Category.Title))
+                                    categories.Add(tti.Category.Title, new TreeNode(tti.Category.Title, 0, 0, new TreeNode[] { node }));
+                                else
+                                    categories[tti.Category.Title].Nodes.Add(node);
+                            } else {
+                                if (!categories.ContainsKey("UNKNOWN"))
+                                    categories.Add("UNKNOWN", new TreeNode("UNKNOWN", 0, 0, new TreeNode[] { node }));
+                                else
+                                    categories["UNKNOWN"].Nodes.Add(node);
+                            }
+                        }
+                        TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                        categories.Values.CopyTo(catNodes, 0);
+
+                        treeView.Nodes.Add(new TreeNode(CAT_THINGS, 0, 0, catNodes));
+
                     }
+                    else { //sort by tag
+                        Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+                        TreeNode noTag = new TreeNode("No Tag", 0, 0);
 
-                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-                    categories.Values.CopyTo(catNodes, 0);
+                        foreach (TreeNode node in nodes) {
+                            NodeInfo nodeInfo = node.Tag as NodeInfo;
 
-                    TreeNode category = new TreeNode(CAT_THINGS, 0, 0, catNodes);
-                    if (noAction.Nodes.Count > 0)
-                        category.Nodes.Add(noAction);
+                            if (nodeInfo.Tag == 0) {
+                                noTag.Nodes.Add(node);
+                                continue;
+                            }
 
-                    treeView.Nodes.Add(category);
-
-                } else if (currentSortMode == SortMode.SORT_BY_INDEX) { //create thing categories
-                    Dictionary<string, TreeNode> categories = new Dictionary<string, TreeNode>();
-                    foreach (TreeNode node in nodes) {
-                        NodeInfo nodeInfo = node.Tag as NodeInfo;
-                        ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(General.Map.Map.GetThingByIndex(nodeInfo.Index).Type);
-                        
-                        if (!categories.ContainsKey(tti.Category.Title))
-                            categories.Add(tti.Category.Title, new TreeNode(tti.Category.Title, 0, 0, new TreeNode[] { node }));
-                        else
-                            categories[tti.Category.Title].Nodes.Add(node);
-                    }
-                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-                    categories.Values.CopyTo(catNodes, 0);
-
-                    treeView.Nodes.Add(new TreeNode(CAT_THINGS, 0, 0, catNodes));
-
-                } else { //sort by tag
-                    Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
-                    TreeNode noTag = new TreeNode("No Tag", 0, 0);
-
-                    foreach (TreeNode node in nodes) {
-                        NodeInfo nodeInfo = node.Tag as NodeInfo;
-
-                        if (nodeInfo.Tag == 0) {
-                            noTag.Nodes.Add(node);
-                            continue;
+                            if (!categories.ContainsKey(nodeInfo.Tag))
+                                categories.Add(nodeInfo.Tag, new TreeNode("Tag " + nodeInfo.Tag, 0, 0, new TreeNode[] { node }));
+                            else
+                                categories[nodeInfo.Tag].Nodes.Add(node);
                         }
 
-                        if (!categories.ContainsKey(nodeInfo.Tag))
-                            categories.Add(nodeInfo.Tag, new TreeNode("Tag " + nodeInfo.Tag, 0, 0, new TreeNode[] { node }));
-                        else
-                            categories[nodeInfo.Tag].Nodes.Add(node);
+                        TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                        categories.Values.CopyTo(catNodes, 0);
+
+                        TreeNode category = new TreeNode(CAT_THINGS, 0, 0, catNodes);
+                        if (noTag.Nodes.Count > 0)
+                            category.Nodes.Add(noTag);
+
+                        treeView.Nodes.Add(category);
                     }
-
-                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-                    categories.Values.CopyTo(catNodes, 0);
-
-                    TreeNode category = new TreeNode(CAT_THINGS, 0, 0, catNodes);
-                    if (noTag.Nodes.Count > 0)
-                        category.Nodes.Add(noTag);
-
-                    treeView.Nodes.Add(category);
                 }
             }
 
 //add sectors
             nodes = new List<TreeNode>();
             ICollection<Sector> sectors = General.Map.Map.Sectors;
-            foreach (Sector s in sectors) {
-                if ((showTags && s.Tag > 0) || (showActions && s.Effect > 0)) {
-                    if (filteredTag != -1 && s.Tag != filteredTag)
-                        continue;
-                    if (filteredAction != -1 && s.Effect != filteredAction)
-                        continue;
-                    
-                    NodeInfo info = new NodeInfo(s);
-                    string name = info.GetName(ref comment, currentSortMode);
-                    hasComment = comment.Length > 0;
 
-                    if (!hasComment && cbCommentsOnly.Checked)
-                        continue;
+            if (!(sectors is MapElementCollection<Linedef>)) { //don't want to enumerate when array is locked
+                foreach (Sector s in sectors) {
+                    if ((showTags && s.Tag > 0) || (showActions && s.Effect > 0)) {
+                        if (filteredTag != -1 && s.Tag != filteredTag)
+                            continue;
+                        if (filteredAction != -1 && s.Effect != filteredAction)
+                            continue;
 
-                    if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
-                        TreeNode node = new TreeNode(name, 3, 3);
-                        node.Tag = info;
-                        if (hasComment) node.ForeColor = commentColor;
-                        nodes.Add(node);
+                        NodeInfo info = new NodeInfo(s);
+                        string name = info.GetName(ref comment, currentSortMode);
+                        hasComment = comment.Length > 0;
 
-                        if (info.Index == selection.Index && info.Type == selection.Type)
-                            selectedNode = node;
+                        if (!hasComment && cbCommentsOnly.Checked)
+                            continue;
+
+                        if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
+                            TreeNode node = new TreeNode(name, 3, 3);
+                            node.Tag = info;
+                            if (hasComment) node.ForeColor = commentColor;
+                            nodes.Add(node);
+
+                            if (info.Index == selection.Index && info.Type == selection.Type)
+                                selectedNode = node;
+                        }
                     }
                 }
-            }
 
-            //sort nodes
-            sort(ref nodes, currentSortMode);
+                //sort nodes
+                sort(ref nodes, currentSortMode);
 
-            //add category
-            if (nodes.Count > 0) {
-                if (currentSortMode == SortMode.SORT_BY_ACTION) {
-                    Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
-                    TreeNode noAction = new TreeNode("No Effect", 2, 2);
+                //add category
+                if (nodes.Count > 0) {
+                    if (currentSortMode == SortMode.SORT_BY_ACTION) {
+                        Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+                        TreeNode noAction = new TreeNode("No Effect", 2, 2);
 
-                    foreach (TreeNode node in nodes) {
-                        NodeInfo nodeInfo = node.Tag as NodeInfo;
+                        foreach (TreeNode node in nodes) {
+                            NodeInfo nodeInfo = node.Tag as NodeInfo;
 
-                        if (nodeInfo.Action == 0) {
-                            noAction.Nodes.Add(node);
-                            continue;
+                            if (nodeInfo.Action == 0) {
+                                noAction.Nodes.Add(node);
+                                continue;
+                            }
+
+                            SectorEffectInfo sei = General.Map.Config.GetSectorEffectInfo(nodeInfo.Action);
+
+                            if (!categories.ContainsKey(sei.Index))
+                                categories.Add(sei.Index, new TreeNode(sei.Index + " - " + sei.Title, 2, 2, new TreeNode[] { node }));
+                            else
+                                categories[sei.Index].Nodes.Add(node);
                         }
+                        TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                        categories.Values.CopyTo(catNodes, 0);
 
-                        SectorEffectInfo sei = General.Map.Config.GetSectorEffectInfo(nodeInfo.Action);
+                        TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catNodes);
+                        if (noAction.Nodes.Count > 0)
+                            category.Nodes.Add(noAction);
 
-                        if (!categories.ContainsKey(sei.Index))
-                            categories.Add(sei.Index, new TreeNode(sei.Index + " - " + sei.Title, 2, 2, new TreeNode[] { node }));
-                        else
-                            categories[sei.Index].Nodes.Add(node);
-                    }
-                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-                    categories.Values.CopyTo(catNodes, 0);
+                        treeView.Nodes.Add(category);
+                    } else if (currentSortMode == SortMode.SORT_BY_TAG) {
+                        Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+                        TreeNode noTag = new TreeNode("No Tag", 2, 2);
 
-                    TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catNodes);
-                    if (noAction.Nodes.Count > 0)
-                        category.Nodes.Add(noAction);
+                        foreach (TreeNode node in nodes) {
+                            NodeInfo nodeInfo = node.Tag as NodeInfo;
 
-                    treeView.Nodes.Add(category);
-                } else if (currentSortMode == SortMode.SORT_BY_TAG) { 
-                    Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
-                    TreeNode noTag = new TreeNode("No Tag", 2, 2);
+                            if (nodeInfo.Tag == 0) {
+                                noTag.Nodes.Add(node);
+                                continue;
+                            }
 
-                    foreach (TreeNode node in nodes) {
-                        NodeInfo nodeInfo = node.Tag as NodeInfo;
-
-                        if (nodeInfo.Tag == 0) {
-                            noTag.Nodes.Add(node);
-                            continue;
+                            if (!categories.ContainsKey(nodeInfo.Tag))
+                                categories.Add(nodeInfo.Tag, new TreeNode("Tag " + nodeInfo.Tag, 2, 2, new TreeNode[] { node }));
+                            else
+                                categories[nodeInfo.Tag].Nodes.Add(node);
                         }
+                        TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                        categories.Values.CopyTo(catNodes, 0);
 
-                        if (!categories.ContainsKey(nodeInfo.Tag))
-                            categories.Add(nodeInfo.Tag, new TreeNode("Tag " + nodeInfo.Tag, 2, 2, new TreeNode[] { node }));
-                        else
-                            categories[nodeInfo.Tag].Nodes.Add(node);
+                        TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catNodes);
+                        if (noTag.Nodes.Count > 0)
+                            category.Nodes.Add(noTag);
+
+                        treeView.Nodes.Add(category);
+                    } else {//just add them as they are
+                        treeView.Nodes.Add(new TreeNode(CAT_SECTORS, 2, 2, nodes.ToArray()));
                     }
-                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-                    categories.Values.CopyTo(catNodes, 0);
-
-                    TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catNodes);
-                    if (noTag.Nodes.Count > 0)
-                        category.Nodes.Add(noTag);
-
-                    treeView.Nodes.Add(category);
-                } else {//just add them as they are
-                    treeView.Nodes.Add(new TreeNode(CAT_SECTORS, 2, 2, nodes.ToArray()));
                 }
             }
 
 //add linedefs
             nodes = new List<TreeNode>();
             ICollection<Linedef> linedefs = General.Map.Map.Linedefs;
-            foreach (Linedef l in linedefs) {
-                if ((showTags && l.Tag > 0) || (showActions && l.Action > 0)) {
-                    if (filteredTag != -1 && l.Tag != filteredTag)
-                        continue;
-                    if (filteredAction != -1 && l.Action != filteredAction)
-                        continue;
-                    
-                    NodeInfo info = new NodeInfo(l);
-                    string name = info.GetName(ref comment, currentSortMode);
-                    hasComment = comment.Length > 0;
 
-                    if (!hasComment && cbCommentsOnly.Checked)
-                        continue;
+            if (!(linedefs is MapElementCollection<Linedef>)) { //don't want to enumerate when array is locked
+                foreach (Linedef l in linedefs) {
+                    if ((showTags && l.Tag > 0) || (showActions && l.Action > 0)) {
+                        if (filteredTag != -1 && l.Tag != filteredTag)
+                            continue;
+                        if (filteredAction != -1 && l.Action != filteredAction)
+                            continue;
 
-                    if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
-                        TreeNode node = new TreeNode(name, 5, 5);
-                        node.Tag = info;
-                        if (hasComment) node.ForeColor = commentColor;
-                        nodes.Add(node);
+                        NodeInfo info = new NodeInfo(l);
+                        string name = info.GetName(ref comment, currentSortMode);
+                        hasComment = comment.Length > 0;
 
-                        if (info.Index == selection.Index && info.Type == selection.Type)
-                            selectedNode = node;
+                        if (!hasComment && cbCommentsOnly.Checked)
+                            continue;
+
+                        if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
+                            TreeNode node = new TreeNode(name, 5, 5);
+                            node.Tag = info;
+                            if (hasComment) node.ForeColor = commentColor;
+                            nodes.Add(node);
+
+                            if (info.Index == selection.Index && info.Type == selection.Type)
+                                selectedNode = node;
+                        }
                     }
                 }
-            }
 
-            //sort nodes
-            sort(ref nodes, currentSortMode);
+                //sort nodes
+                sort(ref nodes, currentSortMode);
 
-            //add category
-            if (nodes.Count > 0) {
-                if (currentSortMode == SortMode.SORT_BY_ACTION) {
-                    Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
-                    TreeNode noAction = new TreeNode("No Action", 4, 4);
+                //add category
+                if (nodes.Count > 0) {
+                    if (currentSortMode == SortMode.SORT_BY_ACTION) {
+                        Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+                        TreeNode noAction = new TreeNode("No Action", 4, 4);
 
-                    foreach (TreeNode node in nodes) {
-                        NodeInfo nodeInfo = node.Tag as NodeInfo;
+                        foreach (TreeNode node in nodes) {
+                            NodeInfo nodeInfo = node.Tag as NodeInfo;
 
-                        if (nodeInfo.Action == 0) {
-                            noAction.Nodes.Add(node);
-                            continue;
+                            if (nodeInfo.Action == 0) {
+                                noAction.Nodes.Add(node);
+                                continue;
+                            }
+
+                            LinedefActionInfo lai = General.Map.Config.GetLinedefActionInfo(nodeInfo.Action);
+
+                            if (!categories.ContainsKey(lai.Index))
+                                categories.Add(lai.Index, new TreeNode(lai.Index + " - " + lai.Name, 4, 4, new TreeNode[] { node }));
+                            else
+                                categories[lai.Index].Nodes.Add(node);
                         }
+                        TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                        categories.Values.CopyTo(catNodes, 0);
 
-                        LinedefActionInfo lai = General.Map.Config.GetLinedefActionInfo(nodeInfo.Action);
+                        TreeNode category = new TreeNode(CAT_LINEDEFS, 4, 4, catNodes);
+                        if (noAction.Nodes.Count > 0)
+                            category.Nodes.Add(noAction);
 
-                        if (!categories.ContainsKey(lai.Index))
-                            categories.Add(lai.Index, new TreeNode(lai.Index + " - " + lai.Name, 4, 4, new TreeNode[] { node }));
-                        else
-                            categories[lai.Index].Nodes.Add(node);
-                    }
-                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-                    categories.Values.CopyTo(catNodes, 0);
+                        treeView.Nodes.Add(category);
 
-                    TreeNode category = new TreeNode(CAT_LINEDEFS, 4, 4, catNodes);
-                    if (noAction.Nodes.Count > 0)
-                        category.Nodes.Add(noAction);
+                    } else if (currentSortMode == SortMode.SORT_BY_TAG) {
+                        Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+                        TreeNode noTag = new TreeNode("No Tag", 4, 4);
 
-                    treeView.Nodes.Add(category);
+                        foreach (TreeNode node in nodes) {
+                            NodeInfo nodeInfo = node.Tag as NodeInfo;
 
-                } else if (currentSortMode == SortMode.SORT_BY_TAG) {
-                    Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
-                    TreeNode noTag = new TreeNode("No Tag", 4, 4);
+                            if (nodeInfo.Tag == 0) {
+                                noTag.Nodes.Add(node);
+                                continue;
+                            }
 
-                    foreach (TreeNode node in nodes) {
-                        NodeInfo nodeInfo = node.Tag as NodeInfo;
-
-                        if (nodeInfo.Tag == 0) {
-                            noTag.Nodes.Add(node);
-                            continue;
+                            if (!categories.ContainsKey(nodeInfo.Tag))
+                                categories.Add(nodeInfo.Tag, new TreeNode("Tag " + nodeInfo.Tag, 4, 4, new TreeNode[] { node }));
+                            else
+                                categories[nodeInfo.Tag].Nodes.Add(node);
                         }
+                        TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+                        categories.Values.CopyTo(catNodes, 0);
 
-                        if (!categories.ContainsKey(nodeInfo.Tag))
-                            categories.Add(nodeInfo.Tag, new TreeNode("Tag " + nodeInfo.Tag, 4, 4, new TreeNode[] { node }));
-                        else
-                            categories[nodeInfo.Tag].Nodes.Add(node);
+                        TreeNode category = new TreeNode(CAT_LINEDEFS, 4, 4, catNodes);
+                        if (noTag.Nodes.Count > 0)
+                            category.Nodes.Add(noTag);
+
+                        treeView.Nodes.Add(category);
+                    } else { //just add them as they are
+                        treeView.Nodes.Add(new TreeNode(CAT_LINEDEFS, 4, 4, nodes.ToArray()));
                     }
-                    TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-                    categories.Values.CopyTo(catNodes, 0);
-
-                    TreeNode category = new TreeNode(CAT_LINEDEFS, 4, 4, catNodes);
-                    if (noTag.Nodes.Count > 0)
-                        category.Nodes.Add(noTag);
-
-                    treeView.Nodes.Add(category);
-                } else { //just add them as they are
-                    treeView.Nodes.Add(new TreeNode(CAT_LINEDEFS, 4, 4, nodes.ToArray()));
                 }
             }
 
@@ -399,9 +419,13 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
             if (selectedNode != null)
                 treeView.SelectedNode = selectedNode;
+            else if (treeView.Nodes.Count > 0)
+                treeView.SelectedNode = treeView.Nodes[0];
+
+            this.ResumeLayout();
 
             //loose focus
-            General.Interface.FocusDisplay();
+            if(focusDisplay) General.Interface.FocusDisplay();
         }
 
 //tag/action search
@@ -479,12 +503,12 @@ namespace CodeImp.DoomBuilder.TagExplorer
 //EVENTS
         private void cbDisplayMode_SelectedIndexChanged(object sender, EventArgs e) {
             currentDisplayMode = cbDisplayMode.SelectedItem.ToString();
-            UpdateTree();
+            UpdateTree(true);
         }
 
         private void cbSortMode_SelectedIndexChanged(object sender, EventArgs e) {
             currentSortMode = cbSortMode.SelectedItem.ToString();
-            UpdateTree();
+            UpdateTree(true);
         }
 
         private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
@@ -518,7 +542,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
                 }
 
                 General.Map.Map.Update();
-                UpdateTree();
+                UpdateTree(true);
 
             } else {
                 //select element?
@@ -646,9 +670,9 @@ namespace CodeImp.DoomBuilder.TagExplorer
             General.Interface.FocusDisplay();
         }
 
-        //it is called every time a dialog window closes.
+        //It is called every time a dialog window closes.
 		private void ParentForm_Activated(object sender, EventArgs e){
-            UpdateTree();
+            UpdateTree(true);
 		}
 
         private void btnClearSearch_Click(object sender, EventArgs e) {
@@ -657,11 +681,11 @@ namespace CodeImp.DoomBuilder.TagExplorer
         }
 
         private void tbSearch_TextChanged(object sender, EventArgs e) {
-            if (tbSearch.Text.Length > 1 || tbSearch.Text.Length == 0) UpdateTree();
+            if (tbSearch.Text.Length > 1 || tbSearch.Text.Length == 0) UpdateTree(false);
         }
 
         private void cbCommentsOnly_CheckedChanged(object sender, EventArgs e) {
-            UpdateTree();
+            UpdateTree(true);
         }
     }
 

@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Types
 		public override void SetValue(object value)
 		{
 			if(value != null)
-				this.value = value.ToString();
+				this.value = value.ToString().Replace("\"", ""); //mxd
 			else
 				this.value = "";
 		}

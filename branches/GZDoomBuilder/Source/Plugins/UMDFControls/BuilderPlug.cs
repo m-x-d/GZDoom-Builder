@@ -22,8 +22,8 @@ namespace CodeImp.DoomBuilder.UDMFControls
         private Point formLocation; //used to keep form's location constant
 
         public override void OnInitialize() {
-            if (GZBuilder.GZGeneral.Version < 1.09f) {
-                General.ErrorLogger.Add(ErrorType.Error, "UDMFControls plugin: GZDoomBuilder 1.09 or later required!");
+            if (GZBuilder.GZGeneral.Version < 1.11f) {
+                General.ErrorLogger.Add(ErrorType.Error, "UDMFControls plugin: GZDoomBuilder 1.11 or later required!");
                 return;
             }
 
@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
             if (General.Editing.Mode == null)
                 return;
 
-            if (!GZBuilder.GZGeneral.UDMF) {
+            if (!General.Map.UDMF) {
                 General.Interface.DisplayStatus(StatusType.Warning, "Map in UDMF format required!");
                 return;
             }

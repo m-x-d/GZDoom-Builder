@@ -137,7 +137,18 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Select the first tab
-			if(tabs.TabPages.Count > 0) tabs.SelectedIndex = 0;
+			//if(tabs.TabPages.Count > 0) tabs.SelectedIndex = 0;
+
+            //mxd. Select "Scripts" tab, because that's what user will want 99% of time
+            if (tabs.TabPages.Count > 0) {
+                foreach (TabPage p in tabs.TabPages) {
+                    if (p.Text == "SCRIPTS") {
+                        tabs.SelectedTab = p;
+                        break;
+                    }
+                }
+                if (tabs.SelectedIndex == -1) tabs.SelectedIndex = 0;
+            }
 			
 			// If the map has remembered any compile errors, then show them
 			ShowErrors(General.Map.Errors);

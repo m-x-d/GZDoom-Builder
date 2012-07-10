@@ -234,8 +234,12 @@
 				<param name="Name" value="New settings">
 				<param name="Local" value="gz_settings.html">
 				</OBJECT>
+                                <LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Enhanced scripting workflow">
+				<param name="Local" value="gz_acsex.html">
+				</OBJECT>
 				      <UL>
-              </UL>
+                 </UL>
 				<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="New editing modes">
 				<param name="Local" value="gz_editmodes.html">

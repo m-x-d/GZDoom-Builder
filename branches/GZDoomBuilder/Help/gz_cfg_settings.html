@@ -18,8 +18,18 @@
 	</div>
 	
 	<div id="contents">
-	<p><b>basegame</b> - indicates on which game current configuration is based. Used to load game-specific GLDEFS lumps (DOOMDEFS, HTICDEFS, HEXNDEFS or STRFDEFS)</br>
+
+	<p><h3>General settings:</h3></br><b>basegame</b> - indicates on which game current configuration is based. Used to load game-specific GLDEFS lumps (DOOMDEFS, HTICDEFS, HEXNDEFS or STRFDEFS)</br>
 <b>Possile values:</b> 0 (DOOM), 1 (HERETIC), 2 (HEXEN) or 3 (STRIFE).</br>
 <b>Example:</b> <code>basegame = 0;</code></p>
+
+<h3>Thing and linedef definition:</h3>
+Default values can be set in Thing and Linedef argument definitions.</br>
+<b>Example:</b> </br>
+<code>arg1</br>
+{</br>
+title = "Speed";</br>
+default = 100;</br>
+}</br></code></p>
 	</div>
 </body>

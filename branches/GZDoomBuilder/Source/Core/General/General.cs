@@ -671,7 +671,7 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Creating types manager...");
 				types = new TypesManager();
 
-                //mxd. init gzdoombuilder
+                //mxd. init gzdoom builder
                 GZBuilder.GZGeneral.Init();
 				
 				// Do auto map loading when window is delayed
@@ -1019,6 +1019,8 @@ namespace CodeImp.DoomBuilder
 					mainwindow.RedrawDisplay();
 					mainwindow.UpdateThingsFilters();
 					mainwindow.UpdateInterface();
+                    //mxd
+                    mainwindow.UpdateGZDoomPannel();
 					mainwindow.HideInfo();
 
 					if(errorlogger.IsErrorAdded)
@@ -1068,6 +1070,8 @@ namespace CodeImp.DoomBuilder
 				mainwindow.RedrawDisplay();
 				mainwindow.HideInfo();
 				mainwindow.UpdateThingsFilters();
+                //mxd
+                mainwindow.UpdateGZDoomPannel();
 				mainwindow.UpdateInterface();
 				mainwindow.DisplayReady();
 				General.WriteLogLine("Map unload done");
@@ -1104,6 +1108,9 @@ namespace CodeImp.DoomBuilder
 
 				// Open map file
 				OpenMapFile(openfile.FileName, null);
+
+                //mxd
+                mainwindow.UpdateGZDoomPannel();
 			}
 
 			openfile.Dispose();

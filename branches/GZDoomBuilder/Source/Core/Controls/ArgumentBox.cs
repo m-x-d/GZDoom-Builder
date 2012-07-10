@@ -41,6 +41,8 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		private TypeHandler typehandler;
 		private bool ignorebuttonchange = false;
+        //mxd
+        private ArgumentInfo arginfo;
 		
 		#endregion
 
@@ -171,7 +173,9 @@ namespace CodeImp.DoomBuilder.Controls
 		// This sets up the control for a specific argument
 		public void Setup(ArgumentInfo arginfo)
 		{
-			int oldvalue = 0;
+            this.arginfo = arginfo; //mxd
+            
+            int oldvalue = 0;
 			
 			// Get the original value
 			if(typehandler != null) oldvalue = typehandler.GetIntValue();
@@ -224,6 +228,14 @@ namespace CodeImp.DoomBuilder.Controls
 			combobox.Text = typehandler.GetStringValue();
 			combobox_Validating(this, new CancelEventArgs());
 		}
+
+        //mxd. this sets default value
+        public void SetDefaultValue() {
+            typehandler.SetDefaultValue();
+            combobox.SelectedItem = null;
+            combobox.Text = typehandler.GetStringValue();
+            combobox_Validating(this, new CancelEventArgs());
+        }
 
 		// This clears the value
 		public void ClearValue()
