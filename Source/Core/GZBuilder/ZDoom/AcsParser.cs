@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.ZDoom
                                     }
                                 }
 
-                                name = (name != "" ? "[" + n + "] " + name : "Script " + n);
+                                name = (name.Length > 0 ? "[" + n + "] " + name : "Script " + n);
                                 ScriptItem i = new ScriptItem(n, name, startPos, endPos);
                                 numberedScripts.Add(i);
                             }

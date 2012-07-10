@@ -4,7 +4,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.ColorPicker {
-    public class ColorWheel : IDisposable {
+    public sealed class ColorWheel : IDisposable {
 
         // These resources should be disposed
         // of when you're done with them.

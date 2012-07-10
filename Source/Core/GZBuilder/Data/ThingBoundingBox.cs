@@ -1,10 +1,11 @@
-﻿using SlimDX;
+﻿using System;
+using SlimDX;
 using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
-    class ThingBoundingBox
+    sealed class ThingBoundingBox : IDisposable
     {
         public VertexBuffer cage;
         public VertexBuffer arrow;

@@ -20,7 +20,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
         }
     }
 
-    public class BoundingBoxTools
+    public static class BoundingBoxTools
     {
         //this creates array of vectors resembling bounding box
         public static Vector3[] CalculateBoundingBox(BoundingBoxSizes bbs) {
@@ -47,35 +47,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
             Vector3 v1 = new Vector3(bbs.MinX, bbs.MinY, bbs.MinZ);
             return new Vector3[] { v0, v1 };
         }
-
-        /*public static Vector3[] CalculateBoundingPlane(BoundingBoxSizes bbs) {
-            if(bbs.MinX != bbs.MaxX && bbs.MinY != bbs.MaxY && bbs.MinZ != bbs.MaxZ)
-                return CalculateBoundingBox(bbs);
-
-            //center
-            Vector3 v0 = new Vector3(bbs.MinX + (bbs.MaxX - bbs.MinX) / 2, bbs.MinY + (bbs.MaxY - bbs.MinY) / 2, bbs.MinZ + (bbs.MaxZ - bbs.MinZ) / 2);
-            Vector3 v1, v2, v3, v4;
-
-            //corners
-            if (bbs.MinX == bbs.MaxX) {
-                v1 = new Vector3(bbs.MinX, bbs.MinY, bbs.MinZ);
-                v2 = new Vector3(bbs.MinX, bbs.MaxY, bbs.MinZ);
-                v3 = new Vector3(bbs.MinX, bbs.MinY, bbs.MaxZ);
-                v4 = new Vector3(bbs.MinX, bbs.MaxY, bbs.MaxZ);
-            } else if (bbs.MinY == bbs.MaxY) {
-                v1 = new Vector3(bbs.MinX, bbs.MinY, bbs.MinZ);
-                v2 = new Vector3(bbs.MaxX, bbs.MinY, bbs.MinZ);
-                v3 = new Vector3(bbs.MinX, bbs.MinY, bbs.MaxZ);
-                v4 = new Vector3(bbs.MaxX, bbs.MinY, bbs.MaxZ);
-            } else {
-                v1 = new Vector3(bbs.MinX, bbs.MinY, bbs.MinZ);
-                v2 = new Vector3(bbs.MaxX, bbs.MinY, bbs.MinZ);
-                v3 = new Vector3(bbs.MinX, bbs.MaxY, bbs.MinZ);
-                v4 = new Vector3(bbs.MaxX, bbs.MaxY, bbs.MinZ);
-            }
-
-            return new Vector3[] { v0, v1, v2, v3, v4 };
-        }*/
 
         public static void UpdateBoundingBoxSizes(ref BoundingBoxSizes bbs, WorldVertex v) {
             if (v.x < bbs.MinX)

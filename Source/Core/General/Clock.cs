@@ -21,29 +21,7 @@ namespace CodeImp.DoomBuilder
 {
 	public class Clock
 	{
-		// Disposing
-		private bool isdisposed = false;
-
-		// Disposing
-		public bool IsDisposed { get { return isdisposed; } }
-
-		// Constructor
-		public Clock(){
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-		
-		// Disposer
-		public void Dispose(){
-			// Not already disposed?
-			if(!isdisposed) {
-				isdisposed = true;
-			}
-		}
-
 		// This queries the system for the current time
-		public double GetCurrentTime(){
-            return SlimDX.Configuration.Timer.ElapsedMilliseconds;
-		}
+        public double CurrentTime { get { return Configuration.Timer.ElapsedMilliseconds; } }
 	}
 }

@@ -12,6 +12,7 @@ using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Types;
+using System.Globalization;
 
 namespace CodeImp.DoomBuilder.UDMFControls
 {
@@ -225,13 +226,13 @@ namespace CodeImp.DoomBuilder.UDMFControls
         private void setDefaultUniversalProperties(UniFields fields, List<UniversalFieldInfo> defaultFields) {
             foreach (UniversalFieldInfo info in defaultFields) {
                 if (!fields.ContainsKey(info.Name))
-                    fields.Add(info.Name, new UniValue(info.Type, (UniversalType)info.Type == UniversalType.Integer ? (object)Convert.ToInt32(info.Default) : info.Default));
+                    fields.Add(info.Name, new UniValue(info.Type, (UniversalType)info.Type == UniversalType.Integer ? (object)Convert.ToInt32(info.Default, CultureInfo.InvariantCulture) : info.Default));
             }
         }
 
         private void removeDefaultUniversalProperties(UniFields fields, List<UniversalFieldInfo> defaultFields) {
             foreach (UniversalFieldInfo info in defaultFields) {
-                if (fields.ContainsKey(info.Name) && fields[info.Name].Value.Equals((UniversalType)info.Type == UniversalType.Integer ? (object)Convert.ToInt32(info.Default) : info.Default))
+                if (fields.ContainsKey(info.Name) && fields[info.Name].Value.Equals((UniversalType)info.Type == UniversalType.Integer ? (object)Convert.ToInt32(info.Default, CultureInfo.InvariantCulture) : info.Default))
                     fields.Remove(info.Name);
             }
         }

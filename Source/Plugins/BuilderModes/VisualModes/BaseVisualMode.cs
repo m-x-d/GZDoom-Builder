@@ -561,10 +561,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Time to pick a new target?
-			if(General.Clock.GetCurrentTime() > (lastpicktime + PICK_INTERVAL))
+			if(General.Clock.CurrentTime > (lastpicktime + PICK_INTERVAL))
 			{
 				PickTargetUnlocked();
-				lastpicktime = General.Clock.GetCurrentTime();
+				lastpicktime = General.Clock.CurrentTime;
 			}
 			
 			// The mouse is always in motion

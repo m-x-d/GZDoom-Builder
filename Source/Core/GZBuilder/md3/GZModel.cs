@@ -9,7 +9,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
     public class GZModel {
         public List<Mesh> Meshes;
         public List<Texture> Textures;
-        public byte NUM_MESHES = 0; //can't be greater than 255, can it?
+        public byte NUM_MESHES; //can't be greater than 255, can it?
         public Vector3[] BoundingBox;
         public List<IndexBuffer> Indeces2D;
         public List<short> NumIndeces2D;

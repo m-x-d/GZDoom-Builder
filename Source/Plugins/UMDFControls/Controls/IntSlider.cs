@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace CodeImp.DoomBuilder.UDMFControls
 {
@@ -56,8 +57,8 @@ namespace CodeImp.DoomBuilder.UDMFControls
             trackBar1.Minimum = min;
             trackBar1.Maximum = max;
 
-            labelMin.Text = min.ToString();
-            labelMax.Text = max.ToString();
+            labelMin.Text = min.ToString(CultureInfo.InvariantCulture);
+            labelMax.Text = max.ToString(CultureInfo.InvariantCulture);
 
             numericUpDown1.Value = General.Clamp((int)numericUpDown1.Value, min, max);
             numericUpDown1.Minimum = min;

@@ -3,7 +3,7 @@ using SlimDX;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
-    public class GZDoomLight {
+    public sealed class GZDoomLight {
         public int Type; //holds GZDoomLightType
         public Color3 Color;
         public int PrimaryRadius;
@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
     //divide these by 100 to get light color alpha
     public enum GZDoomLightRenderStyle : int
     {
+        NONE = 0,
         NORMAL = 99,
         VAVOOM = 50,
         ADDITIVE = 25,

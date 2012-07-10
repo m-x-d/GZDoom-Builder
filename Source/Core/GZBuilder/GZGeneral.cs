@@ -17,7 +17,7 @@ using CodeImp.DoomBuilder.GZBuilder.Controls;
 namespace CodeImp.DoomBuilder.GZBuilder
 {
     //mxd. should get rid of this class one day...
-    public class GZGeneral
+    public static class GZGeneral
     {
         //gzdoom light types
         private static int[] gzLights = { /* normal lights */ 9800, 9801, 9802, 9803, 9804, /* additive lights */ 9810, 9811, 9812, 9813, 9814, /* negative lights */ 9820, 9821, 9822, 9823, 9824, /* vavoom lights */ 1502, 1503};
@@ -38,7 +38,6 @@ namespace CodeImp.DoomBuilder.GZBuilder
 #if DEBUG
         private static Docker console;
 #endif
-
 
         public static void Init() {
             //bind actions
