@@ -25,6 +25,7 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -40,6 +41,7 @@ namespace CodeImp.DoomBuilder.Types
 		#region ================== Variables
 
 		private int value;
+        private int defaultValue; //mxd
 		
 		#endregion
 
@@ -48,6 +50,12 @@ namespace CodeImp.DoomBuilder.Types
 		#endregion
 
 		#region ================== Methods
+
+        //mxd
+        public override void SetupArgument(TypeHandlerAttribute attr, ArgumentInfo arginfo) {
+            defaultValue = (int)arginfo.DefaultValue;
+            base.SetupArgument(attr, arginfo);
+        }
 
 		public override void SetValue(object value)
 		{
@@ -83,6 +91,10 @@ namespace CodeImp.DoomBuilder.Types
 			}
 		}
 
+        public override void SetDefaultValue() {
+            value = defaultValue;
+        }
+
 		public override object GetValue()
 		{
 			return this.value;
@@ -90,7 +102,7 @@ namespace CodeImp.DoomBuilder.Types
 		
 		public override int GetIntValue()
 		{
-			return this.value;
+            return this.value;
 		}
 
 		public override string GetStringValue()

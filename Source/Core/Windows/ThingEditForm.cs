@@ -44,10 +44,8 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Variables
 
 		private ICollection<Thing> things;
-		private List<TreeNode> nodes;
 		private ThingTypeInfo thinginfo;
 		private bool preventchanges = false;
-
         //mxd
         private Vector2D initialPosition; //initial position of a thing used to fill posX and posY fields
 		
@@ -129,7 +127,13 @@ namespace CodeImp.DoomBuilder.Windows
             posY.Text = ((int)ft.Position.y).ToString();
             posX.ButtonStep = General.Map.Grid.GridSize;
             posY.ButtonStep = General.Map.Grid.GridSize;
-			
+
+            //mxd. setup arg0str
+            arg0str.Location = arg0.Location;
+
+            // Custom fields
+            fieldslist.SetValues(ft.Fields, true);
+
 			// Action/tags
 			action.Value = ft.Action;
 			tag.Text = ft.Tag.ToString();
@@ -138,9 +142,6 @@ namespace CodeImp.DoomBuilder.Windows
 			arg2.SetValue(ft.Args[2]);
 			arg3.SetValue(ft.Args[3]);
 			arg4.SetValue(ft.Args[4]);
-
-			// Custom fields
-			fieldslist.SetValues(ft.Fields, true);
 
 			////////////////////////////////////////////////////////////////////////
 			// Now go for all lines and change the options when a setting is different
@@ -186,6 +187,55 @@ namespace CodeImp.DoomBuilder.Windows
 
 			preventchanges = false;
 		}
+
+        //mxd
+        private void setNumberedScripts(Thing t) {
+            arg0str.Items.Clear();
+
+            if (General.Map.NumberedScripts.Count > 0) {
+                foreach (ScriptItem si in General.Map.NumberedScripts) {
+                    arg0str.Items.Add(si);
+                    if (si.Index == t.Args[0])
+                        arg0str.SelectedIndex = arg0str.Items.Count - 1;
+                }
+
+                //script number is not among known scripts...
+                if (arg0str.SelectedIndex == -1 && t.Args[0] > 0) {
+                    arg0str.Items.Add(new ScriptItem(t.Args[0], "Script " + t.Args[0]));
+                    arg0str.SelectedIndex = arg0str.Items.Count - 1;
+                }
+
+            } else if (t.Args[0] > 0) {
+                arg0str.Items.Add(new ScriptItem(t.Args[0], "Script " + t.Args[0]));
+                arg0str.SelectedIndex = 0;
+            }
+        }
+        //mxd
+        private void setNamedScripts(string selectedValue) {
+            arg0str.Items.Clear();
+
+            //update arg0str items
+            if (General.Map.NamedScripts.Count > 0) {
+                //dbg
+                GZBuilder.GZGeneral.Trace("Got " + General.Map.NamedScripts.Count + " script names");
+
+                ScriptItem[] sn = new ScriptItem[General.Map.NamedScripts.Count];
+                General.Map.NamedScripts.CopyTo(sn, 0);
+                arg0str.Items.AddRange(sn);
+                
+                for(int i = 0; i < sn.Length; i++){
+                    if (sn[i].Name == selectedValue) {
+                        arg0str.SelectedIndex = i;
+                        break;
+                    }
+                }
+                //int index = General.Map.NamedScripts.IndexOf(selectedValue);
+                //if (index != -1)
+                    //arg0str.SelectedIndex = index;
+            } else {
+                arg0str.Text = selectedValue;
+            }
+        }
 		
 		#endregion
 
@@ -264,22 +314,33 @@ namespace CodeImp.DoomBuilder.Windows
 			// Zero all arguments when linedef action 0 (normal) is chosen
 			if(!preventchanges && (showaction == 0))
 			{
-                //mxd. If thing is light, set default light settings
-                int[] args = GZDoomLight.GetDefaultLightSettings(thingtype.GetResult(1));
-                if (args != null) {
-                    arg0.SetValue(args[0]);
-                    arg1.SetValue(args[1]);
-                    arg2.SetValue(args[2]);
-                    arg3.SetValue(args[3]);
-                    arg4.SetValue(args[4]);
-                } else {
-                    arg0.SetValue(0);
-                    arg1.SetValue(0);
-                    arg2.SetValue(0);
-                    arg3.SetValue(0);
-                    arg4.SetValue(0);
-                }
+                //mxd
+                arg0.SetDefaultValue();
+                arg1.SetDefaultValue();
+                arg2.SetDefaultValue();
+                arg3.SetDefaultValue();
+                arg4.SetDefaultValue();
 			}
+
+            //update arg0str
+            if (Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, showaction) != -1) {
+                arg0str.Visible = true;
+
+                if (General.Map.UDMF && fieldslist.GetValue("arg0str") != null) {
+                    cbArgStr.Visible = true;
+                    cbArgStr.Checked = true;
+                    setNamedScripts((string)fieldslist.GetValue("arg0str"));
+                } else { //use script numbers
+                    cbArgStr.Visible = General.Map.UDMF;
+                    cbArgStr.Checked = false;
+                    Thing t = General.GetByIndex(things, 0);
+                    setNumberedScripts(t);
+                }
+            } else {
+                cbArgStr.Checked = false;
+                cbArgStr.Visible = false;
+                arg0str.Visible = false;
+            }
 		}
 
 		// Browse Action clicked
@@ -333,7 +394,9 @@ namespace CodeImp.DoomBuilder.Windows
 
             //mxd
             Vector2D delta = new Vector2D((float)posX.GetResult((int)initialPosition.x) - initialPosition.x, (float)posY.GetResult((int)initialPosition.y) - initialPosition.y);
-			
+            bool hasAcs = Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
+            bool hasArg0str = General.Map.UDMF && !action.Empty && hasAcs && arg0str.Text.Length > 0;
+
 			// Go for all the things
 			foreach(Thing t in things)
 			{
@@ -356,7 +419,16 @@ namespace CodeImp.DoomBuilder.Windows
 				// Action/tags
 				t.Tag = tag.GetResult(t.Tag);
 				if(!action.Empty) t.Action = action.Value;
-				t.Args[0] = arg0.GetResult(t.Args[0]);
+
+                //mxd
+                if (hasAcs && !cbArgStr.Checked) {
+                    if(arg0str.SelectedItem != null)
+                        t.Args[0] = ((ScriptItem)arg0str.SelectedItem).Index;
+                    else if(!int.TryParse(arg0str.Text.Trim(), out t.Args[0]))
+                        t.Args[0] = 0;
+                } else {
+                    t.Args[0] = arg0.GetResult(t.Args[0]);
+                }
 				t.Args[1] = arg1.GetResult(t.Args[1]);
 				t.Args[2] = arg2.GetResult(t.Args[2]);
 				t.Args[3] = arg3.GetResult(t.Args[3]);
@@ -364,6 +436,16 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Custom fields
 				fieldslist.Apply(t.Fields);
+
+                //mxd. apply arg0str
+                if (hasArg0str && cbArgStr.Checked) {
+                    if (t.Fields.ContainsKey("arg0str"))
+                        t.Fields["arg0str"].Value = arg0str.Text;
+                    else
+                        t.Fields.Add("arg0str", new UniValue(2, arg0str.Text));
+                } else if (t.Fields.ContainsKey("arg0str")) {
+                    t.Fields.Remove("arg0str");
+                }
 				
 				// Update settings
 				t.UpdateConfiguration();
@@ -389,6 +471,30 @@ namespace CodeImp.DoomBuilder.Windows
 			this.DialogResult = DialogResult.Cancel;
 			this.Close();
 		}
+
+        //mxd
+        private void cbArgStr_CheckedChanged(object sender, EventArgs e) {
+            arg0str.Text = "";
+
+            if (cbArgStr.Checked){
+                setNamedScripts((string)fieldslist.GetValue("arg0str"));
+            } else if (!cbArgStr.Checked) {
+                setNumberedScripts(General.GetByIndex(things, 0));
+            }
+
+            arg0label.Text = cbArgStr.Checked ? "Script name:" : "Script number:";
+        }
+
+        //mxd
+        private void arg0str_Leave(object sender, EventArgs e) {
+            if(cbArgStr.Checked) fieldslist.SetValue("arg0str", arg0str.Text, CodeImp.DoomBuilder.Types.UniversalType.String);
+        }
+
+        //mxd
+        private void fieldslist_OnFieldValueChanged(string fieldname) {
+            if (cbArgStr.Checked && fieldname == "arg0str")
+                arg0str.Text = (string)fieldslist.GetValue(fieldname);
+        }
 
 		// Help
 		private void ThingEditForm_HelpRequested(object sender, HelpEventArgs hlpevent)

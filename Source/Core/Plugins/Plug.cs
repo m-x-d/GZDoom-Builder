@@ -188,13 +188,13 @@ namespace CodeImp.DoomBuilder.Plugins
         /// <summary>
         /// Occurs before test map is launched. Return false if map launch is not desired.
         /// </summary>
-        public virtual bool OnMapTestBegin() { return true; }
+        //public virtual bool OnMapTestBegin() { return true; }
 
         //mxd
         /// <summary>
         /// Occurs after game engine is closed.
         /// </summary>
-        public virtual void OnMapTestEnd() { }
+        //public virtual void OnMapTestEnd() { }
 
 		/// <summary>
 		/// Occurs before the MapSet is changed. This means that the active MapSet will be disposed and changed to a new one.

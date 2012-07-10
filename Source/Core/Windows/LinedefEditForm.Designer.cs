@@ -45,6 +45,8 @@ namespace CodeImp.DoomBuilder.Windows
             this.apply = new System.Windows.Forms.Button();
             this.actiongroup = new System.Windows.Forms.GroupBox();
             this.argspanel = new System.Windows.Forms.Panel();
+            this.arg0str = new System.Windows.Forms.ComboBox();
+            this.cbArgStr = new System.Windows.Forms.CheckBox();
             this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
             this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
             this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
@@ -282,26 +284,47 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // argspanel
             // 
+            this.argspanel.Controls.Add(this.arg0str);
             this.argspanel.Controls.Add(this.arg2);
             this.argspanel.Controls.Add(this.arg1);
             this.argspanel.Controls.Add(this.arg0);
             this.argspanel.Controls.Add(this.arg3);
             this.argspanel.Controls.Add(this.arg4);
             this.argspanel.Controls.Add(this.arg1label);
-            this.argspanel.Controls.Add(this.arg0label);
             this.argspanel.Controls.Add(this.arg3label);
             this.argspanel.Controls.Add(this.arg2label);
             this.argspanel.Controls.Add(this.arg4label);
+            this.argspanel.Controls.Add(this.cbArgStr);
+            this.argspanel.Controls.Add(this.arg0label);
             this.argspanel.Location = new System.Drawing.Point(6, 54);
             this.argspanel.Name = "argspanel";
             this.argspanel.Size = new System.Drawing.Size(521, 83);
             this.argspanel.TabIndex = 2;
             this.argspanel.Visible = false;
             // 
+            // arg0str
+            // 
+            this.arg0str.FormattingEnabled = true;
+            this.arg0str.Location = new System.Drawing.Point(272, 55);
+            this.arg0str.Name = "arg0str";
+            this.arg0str.Size = new System.Drawing.Size(125, 22);
+            this.arg0str.TabIndex = 38;
+            this.arg0str.Leave += new System.EventHandler(this.arg0str_Leave);
+            // 
+            // cbArgStr
+            // 
+            this.cbArgStr.Location = new System.Drawing.Point(8, -4);
+            this.cbArgStr.Name = "cbArgStr";
+            this.cbArgStr.Size = new System.Drawing.Size(63, 40);
+            this.cbArgStr.TabIndex = 37;
+            this.cbArgStr.Text = "Named script";
+            this.cbArgStr.UseVisualStyleBackColor = true;
+            this.cbArgStr.CheckedChanged += new System.EventHandler(this.cbArgStr_CheckedChanged);
+            // 
             // arg2
             // 
             this.arg2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.arg2.Location = new System.Drawing.Point(123, 55);
+            this.arg2.Location = new System.Drawing.Point(157, 55);
             this.arg2.Name = "arg2";
             this.arg2.Size = new System.Drawing.Size(93, 24);
             this.arg2.TabIndex = 2;
@@ -309,7 +332,7 @@ namespace CodeImp.DoomBuilder.Windows
             // arg1
             // 
             this.arg1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.arg1.Location = new System.Drawing.Point(123, 29);
+            this.arg1.Location = new System.Drawing.Point(157, 29);
             this.arg1.Name = "arg1";
             this.arg1.Size = new System.Drawing.Size(93, 24);
             this.arg1.TabIndex = 1;
@@ -317,7 +340,7 @@ namespace CodeImp.DoomBuilder.Windows
             // arg0
             // 
             this.arg0.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.arg0.Location = new System.Drawing.Point(123, 3);
+            this.arg0.Location = new System.Drawing.Point(157, 3);
             this.arg0.Name = "arg0";
             this.arg0.Size = new System.Drawing.Size(93, 24);
             this.arg0.TabIndex = 0;
@@ -325,7 +348,7 @@ namespace CodeImp.DoomBuilder.Windows
             // arg3
             // 
             this.arg3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.arg3.Location = new System.Drawing.Point(364, 3);
+            this.arg3.Location = new System.Drawing.Point(398, 3);
             this.arg3.Name = "arg3";
             this.arg3.Size = new System.Drawing.Size(93, 24);
             this.arg3.TabIndex = 3;
@@ -333,14 +356,14 @@ namespace CodeImp.DoomBuilder.Windows
             // arg4
             // 
             this.arg4.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.arg4.Location = new System.Drawing.Point(364, 29);
+            this.arg4.Location = new System.Drawing.Point(398, 29);
             this.arg4.Name = "arg4";
             this.arg4.Size = new System.Drawing.Size(93, 24);
             this.arg4.TabIndex = 4;
             // 
             // arg1label
             // 
-            this.arg1label.Location = new System.Drawing.Point(-62, 34);
+            this.arg1label.Location = new System.Drawing.Point(-28, 34);
             this.arg1label.Name = "arg1label";
             this.arg1label.Size = new System.Drawing.Size(179, 14);
             this.arg1label.TabIndex = 33;
@@ -350,7 +373,7 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // arg0label
             // 
-            this.arg0label.Location = new System.Drawing.Point(-62, 8);
+            this.arg0label.Location = new System.Drawing.Point(-28, 8);
             this.arg0label.Name = "arg0label";
             this.arg0label.Size = new System.Drawing.Size(179, 14);
             this.arg0label.TabIndex = 32;
@@ -360,7 +383,7 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // arg3label
             // 
-            this.arg3label.Location = new System.Drawing.Point(179, 8);
+            this.arg3label.Location = new System.Drawing.Point(213, 8);
             this.arg3label.Name = "arg3label";
             this.arg3label.Size = new System.Drawing.Size(179, 14);
             this.arg3label.TabIndex = 36;
@@ -370,7 +393,7 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // arg2label
             // 
-            this.arg2label.Location = new System.Drawing.Point(-62, 60);
+            this.arg2label.Location = new System.Drawing.Point(-28, 60);
             this.arg2label.Name = "arg2label";
             this.arg2label.Size = new System.Drawing.Size(179, 14);
             this.arg2label.TabIndex = 35;
@@ -380,7 +403,7 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // arg4label
             // 
-            this.arg4label.Location = new System.Drawing.Point(179, 34);
+            this.arg4label.Location = new System.Drawing.Point(213, 34);
             this.arg4label.Name = "arg4label";
             this.arg4label.Size = new System.Drawing.Size(179, 14);
             this.arg4label.TabIndex = 34;
@@ -838,6 +861,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.fieldslist.TypeColumnVisible = true;
             this.fieldslist.TypeColumnWidth = 100;
             this.fieldslist.ValueColumnVisible = true;
+            this.fieldslist.OnFieldValueChanged += new CodeImp.DoomBuilder.Controls.FieldsEditorControl.SingleFieldNameEvent(this.fieldslist_OnFieldValueChanged);
             // 
             // heightpanel1
             // 
@@ -960,5 +984,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backoffsety;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backoffsetx;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backsector;
+        private System.Windows.Forms.CheckBox cbArgStr;
+        private System.Windows.Forms.ComboBox arg0str;
 	}
 }

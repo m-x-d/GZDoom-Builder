@@ -28,39 +28,39 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptEditorForm));
-			this.editor = new CodeImp.DoomBuilder.Controls.ScriptEditorPanel();
-			this.SuspendLayout();
-			// 
-			// editor
-			// 
-			this.editor.BackColor = System.Drawing.SystemColors.Control;
-			this.editor.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.editor.Location = new System.Drawing.Point(0, 0);
-			this.editor.Name = "editor";
-			this.editor.Size = new System.Drawing.Size(729, 578);
-			this.editor.TabIndex = 0;
-			this.editor.TabStop = false;
-			// 
-			// ScriptEditorForm
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.ClientSize = new System.Drawing.Size(729, 578);
-			this.Controls.Add(this.editor);
-			this.DoubleBuffered = true;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.KeyPreview = true;
-			this.Name = "ScriptEditorForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-			this.Text = "Doom Builder Script Editor";
-			this.Load += new System.EventHandler(this.ScriptEditorForm_Load);
-			this.Shown += new System.EventHandler(this.ScriptEditorForm_Shown);
-			this.Move += new System.EventHandler(this.ScriptEditorForm_Move);
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScriptEditorForm_FormClosing);
-			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ScriptEditorForm_HelpRequested);
-			this.ResizeEnd += new System.EventHandler(this.ScriptEditorForm_ResizeEnd);
-			this.ResumeLayout(false);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptEditorForm));
+            this.editor = new CodeImp.DoomBuilder.Controls.ScriptEditorPanel();
+            this.SuspendLayout();
+            // 
+            // editor
+            // 
+            this.editor.BackColor = System.Drawing.SystemColors.Control;
+            this.editor.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.editor.Location = new System.Drawing.Point(0, 0);
+            this.editor.Name = "editor";
+            this.editor.Size = new System.Drawing.Size(729, 578);
+            this.editor.TabIndex = 0;
+            this.editor.TabStop = false;
+            // 
+            // ScriptEditorForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(729, 578);
+            this.Controls.Add(this.editor);
+            this.DoubleBuffered = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
+            this.Name = "ScriptEditorForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.Text = "GZDoom Builder Script Editor";
+            this.Load += new System.EventHandler(this.ScriptEditorForm_Load);
+            this.Shown += new System.EventHandler(this.ScriptEditorForm_Shown);
+            this.Move += new System.EventHandler(this.ScriptEditorForm_Move);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScriptEditorForm_FormClosing);
+            this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ScriptEditorForm_HelpRequested);
+            this.ResizeEnd += new System.EventHandler(this.ScriptEditorForm_ResizeEnd);
+            this.ResumeLayout(false);
 
 		}
 

@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
@@ -31,6 +32,8 @@ using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
 using CodeImp.DoomBuilder.Compilers;
+//mxd
+using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
 
@@ -91,6 +94,14 @@ namespace CodeImp.DoomBuilder.Controls
 				SetTitle(General.Map.Options.CurrentName);
 			else
 				SetTitle(this.lumpname.ToUpper());
+
+            //mxd
+            if (this.Text == "SCRIPTS") {
+                updateNavigator();
+                navigator.SelectedIndexChanged += new EventHandler(navigator_SelectedIndexChanged);
+            }else{
+                navigator.Enabled = false;
+            }
 		}
 		
 		// Disposer
@@ -102,6 +113,37 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Methods
+
+        //mxd
+        private void updateNavigator() {
+            string selectedItem = "";
+            int selectedIndex = 0;
+            if (navigator.SelectedIndex != -1) selectedItem = navigator.Text;
+            
+            navigator.Items.Clear();
+            
+            //add named scripts
+            int i = 0;
+            if (General.Map.UDMF) {
+                ScriptItem[] namedScripts = new ScriptItem[General.Map.NamedScripts.Count];
+                foreach (ScriptItem si in General.Map.NamedScripts) {
+                    namedScripts[i++] = si;
+                    if (si.Name == selectedItem) selectedIndex = i - 1;
+                }
+                navigator.Items.AddRange(namedScripts);
+            }
+
+            //add numbered scripts
+            ScriptItem[] numberedScripts = new ScriptItem[General.Map.NumberedScripts.Count];
+            int c = 0;
+            foreach (ScriptItem si in General.Map.NumberedScripts) {
+                numberedScripts[c++] = si;
+                if (si.Name == selectedItem) selectedIndex = i - 1 + c;
+            }
+            navigator.Items.AddRange(numberedScripts);
+
+            if (navigator.Items.Count > 0) navigator.SelectedIndex = selectedIndex;
+        }
 		
 		// Compile script
 		public override void Compile()
@@ -114,6 +156,14 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Feed errors to panel
 			panel.ShowErrors(General.Map.Errors);
+
+            //mxd
+            if (General.Map.Errors.Count == 0) {
+                General.Map.UpdateScriptNames();
+                navigator.SelectedIndexChanged -= navigator_SelectedIndexChanged;
+                updateNavigator();
+                navigator.SelectedIndexChanged += new EventHandler(navigator_SelectedIndexChanged);
+            }
 		}
 		
 		// Implicit save
@@ -135,7 +185,17 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Events
-		
+
+        //mxd
+        private void navigator_SelectedIndexChanged(object sender, EventArgs e) {
+            if (navigator.SelectedItem is ScriptItem) {
+                ScriptItem si = navigator.SelectedItem as ScriptItem;
+                editor.EnsureLineVisible(editor.LineFromPosition(si.SelectionStart));
+                editor.SelectionStart = si.SelectionStart;
+                editor.SelectionEnd = si.SelectionEnd;
+            }
+        }
+
 		#endregion
 	}
 }

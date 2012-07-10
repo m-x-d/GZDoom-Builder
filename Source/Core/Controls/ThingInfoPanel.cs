@@ -30,6 +30,9 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.IO;
+//mxd
+using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.GZBuilder;
 
 #endregion
 
@@ -166,7 +169,10 @@ namespace CodeImp.DoomBuilder.Controls
 			// Arguments
 			if(act != null)
 			{
-				arglbl1.Text = act.Args[0].Title + ":";
+				//mxd
+                bool hasArg0Str = General.Map.UDMF && Array.IndexOf(GZGeneral.ACS_SPECIALS, t.Action) != -1 && t.Fields.ContainsKey("arg0str");
+
+                arglbl1.Text = hasArg0Str ? "Script name:" : act.Args[0].Title + ":"; //mxd
 				arglbl2.Text = act.Args[1].Title + ":";
 				arglbl3.Text = act.Args[2].Title + ":";
 				arglbl4.Text = act.Args[3].Title + ":";
@@ -181,8 +187,14 @@ namespace CodeImp.DoomBuilder.Controls
 				arg3.Enabled = act.Args[2].Used;
 				arg4.Enabled = act.Args[3].Used;
 				arg5.Enabled = act.Args[4].Used;
-				th = General.Types.GetArgumentHandler(act.Args[0]);
-				th.SetValue(t.Args[0]); arg1.Text = th.GetStringValue();
+
+                //mxd
+                if (hasArg0Str) {
+                    arg1.Text = '"' + t.Fields["arg0str"].Value.ToString() + '"';
+                } else {
+                    th = General.Types.GetArgumentHandler(act.Args[0]);
+                    th.SetValue(t.Args[0]); arg1.Text = th.GetStringValue();
+                }
 				th = General.Types.GetArgumentHandler(act.Args[1]);
 				th.SetValue(t.Args[1]); arg2.Text = th.GetStringValue();
 				th = General.Types.GetArgumentHandler(act.Args[2]);

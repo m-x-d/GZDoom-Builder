@@ -133,6 +133,11 @@ namespace CodeImp.DoomBuilder.Types
 		// How the value is actually validated and stored is up to the implementation
 		public abstract void SetValue(object value);
 
+        //mxd. this should replace current value with default one
+        public virtual void SetDefaultValue() {
+            throw new NotSupportedException("Override this method to support default value for this type");
+        }
+
 		// This must return the value as one of the primitive data types
 		// supported by UDMF: int, string, float or bool
 		public abstract object GetValue();

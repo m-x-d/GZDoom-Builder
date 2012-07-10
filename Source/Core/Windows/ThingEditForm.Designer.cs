@@ -50,6 +50,8 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabeffects = new System.Windows.Forms.TabPage();
             this.actiongroup = new System.Windows.Forms.GroupBox();
             this.hexenpanel = new System.Windows.Forms.Panel();
+            this.arg0str = new System.Windows.Forms.ComboBox();
+            this.cbArgStr = new System.Windows.Forms.CheckBox();
             this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
             this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
             this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
@@ -351,6 +353,8 @@ namespace CodeImp.DoomBuilder.Windows
             this.hexenpanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.hexenpanel.Controls.Add(this.arg0str);
+            this.hexenpanel.Controls.Add(this.cbArgStr);
             this.hexenpanel.Controls.Add(this.arg2);
             this.hexenpanel.Controls.Add(this.arg1);
             this.hexenpanel.Controls.Add(this.arg0);
@@ -365,6 +369,25 @@ namespace CodeImp.DoomBuilder.Windows
             this.hexenpanel.Name = "hexenpanel";
             this.hexenpanel.Size = new System.Drawing.Size(628, 221);
             this.hexenpanel.TabIndex = 13;
+            // 
+            // arg0str
+            // 
+            this.arg0str.FormattingEnabled = true;
+            this.arg0str.Location = new System.Drawing.Point(179, 93);
+            this.arg0str.Name = "arg0str";
+            this.arg0str.Size = new System.Drawing.Size(125, 22);
+            this.arg0str.TabIndex = 22;
+            this.arg0str.Leave += new System.EventHandler(this.arg0str_Leave);
+            // 
+            // cbArgStr
+            // 
+            this.cbArgStr.Location = new System.Drawing.Point(14, 3);
+            this.cbArgStr.Name = "cbArgStr";
+            this.cbArgStr.Size = new System.Drawing.Size(63, 40);
+            this.cbArgStr.TabIndex = 21;
+            this.cbArgStr.Text = "Named script";
+            this.cbArgStr.UseVisualStyleBackColor = true;
+            this.cbArgStr.CheckedChanged += new System.EventHandler(this.cbArgStr_CheckedChanged);
             // 
             // arg2
             // 
@@ -556,6 +579,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.fieldslist.TypeColumnVisible = true;
             this.fieldslist.TypeColumnWidth = 100;
             this.fieldslist.ValueColumnVisible = true;
+            this.fieldslist.OnFieldValueChanged += new CodeImp.DoomBuilder.Controls.FieldsEditorControl.SingleFieldNameEvent(this.fieldslist_OnFieldValueChanged);
             // 
             // cancel
             // 
@@ -657,5 +681,7 @@ namespace CodeImp.DoomBuilder.Windows
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox posX;
+        private System.Windows.Forms.CheckBox cbArgStr;
+        private System.Windows.Forms.ComboBox arg0str;
 	}
 }

@@ -29,8 +29,8 @@ namespace CodeImp.DoomBuilder.ColorPicker
         private Point formLocation; //used to keep form's location constant
 
         public override void OnInitialize() {
-            if (GZBuilder.GZGeneral.Version < 1.06f) {
-                General.ErrorLogger.Add(ErrorType.Error, "ColorPicker plugin: GZDoomBuilder 1.06 or later required!");
+            if (GZBuilder.GZGeneral.Version < 1.11f) {
+                General.ErrorLogger.Add(ErrorType.Error, "ColorPicker plugin: GZDoomBuilder 1.11 or later required!");
                 return;
             }
             
@@ -76,7 +76,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
                 form = new LightColorPicker();
 
             } else if (currentModeName == "SectorsMode") {
-                if (GZBuilder.GZGeneral.UDMF) {
+                if (General.Map.UDMF) {
                     if (General.Map.Map.SelectedSectorsCount == 0) {
                         General.Interface.DisplayStatus(StatusType.Warning, "Select some sectors first!");
                         return;
@@ -92,17 +92,17 @@ namespace CodeImp.DoomBuilder.ColorPicker
                 if ( ((VisualMode)General.Editing.Mode).GetSelectedVisualThings(true).Count == 0 ) {
                     //check sectors
                     int selectedSectorsCount = ((VisualMode)General.Editing.Mode).GetSelectedVisualSectors(true).Count;
-                    if (GZBuilder.GZGeneral.UDMF && (selectedSectorsCount > 0 || General.Map.Map.SelectedSectorsCount > 0)) {
+                    if (General.Map.UDMF && (selectedSectorsCount > 0 || General.Map.Map.SelectedSectorsCount > 0)) {
                         form = new SectorColorPicker();
                     } else {
-                        General.Interface.DisplayStatus(StatusType.Warning, "Select some lights " + (GZBuilder.GZGeneral.UDMF ? ", sectors or surfaces " : "") + "first!");
+                        General.Interface.DisplayStatus(StatusType.Warning, "Select some lights " + (General.Map.UDMF ? ", sectors or surfaces " : "") + "first!");
                         return;
                     }
                 } else {
                     form = new LightColorPicker();
                 }
             } else { //wrong mode
-                General.Interface.DisplayStatus(StatusType.Warning, "Switch to" + (GZBuilder.GZGeneral.UDMF ? " Sectors," : "") + " Things or GZDoom Visual Mode first!");
+                General.Interface.DisplayStatus(StatusType.Warning, "Switch to" + (General.Map.UDMF ? " Sectors," : "") + " Things or GZDoom Visual Mode first!");
                 return;
             }
 

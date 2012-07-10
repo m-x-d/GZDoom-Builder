@@ -303,7 +303,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		public void OnPresentDisplayBegin() { foreach(Plugin p in plugins) p.Plug.OnPresentDisplayBegin(); }
 
         //mxd. test map events
-        public bool OnMapTestBegin() {
+        /*public bool OnMapTestBegin() {
             bool canLaunch;
             foreach (Plugin p in plugins) {
                 canLaunch = p.Plug.OnMapTestBegin();
@@ -311,7 +311,7 @@ namespace CodeImp.DoomBuilder.Plugins
             }
             return true;
         }
-        public void OnMapTestEnd() { foreach (Plugin p in plugins) p.Plug.OnMapTestEnd(); }
+        public void OnMapTestEnd() { foreach (Plugin p in plugins) p.Plug.OnMapTestEnd(); }*/
 		
 		#endregion
 	}
