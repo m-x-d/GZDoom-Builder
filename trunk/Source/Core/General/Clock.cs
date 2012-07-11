@@ -1,20 +1,9 @@
 
+#if WINDOWS
+#define USE_GETTIME
+#endif
+
 #region ================== Copyright (c) 2007 Pascal vd Heiden
-
-/*
- * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
- * This program is released under GNU General Public License
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- */
-
-#endregion
-
-#region ================== Namespaces
 
 using System;
 using System.Collections;
@@ -32,15 +21,12 @@ namespace CodeImp.DoomBuilder
 	{
 		#region ================== Declarations
 		
-		//#if !LINUX
+		#if USE_GETTIME
+
+		[DllImport("winmm.dll")]
+		private static extern uint timeGetTime();
 		
-		[DllImport("kernel32.dll")]
-		private static extern short QueryPerformanceCounter(out long x);
-		
-		[DllImport("kernel32.dll")]
-		private static extern short QueryPerformanceFrequency(out long x);
-		
-		//#endif
+		#endif
 
 		#endregion
 		
@@ -51,7 +37,8 @@ namespace CodeImp.DoomBuilder
 		#region ================== Variables
 
 		// Settings
-		private double currenttime;
+		private uint lasttime;
+		private uint currenttime;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -63,9 +50,6 @@ namespace CodeImp.DoomBuilder
 		// Settings
 		public double CurrentTime { get { return currenttime; } }
 
-		// Disposing
-		public bool IsDisposed { get { return isdisposed; } }
-
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -73,6 +57,8 @@ namespace CodeImp.DoomBuilder
 		// Constructor
 		public Clock()
 		{
+			GetCurrentTime();
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -94,43 +80,41 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Methods
 
+		// This returns the current time in milliseconds as a uint
+		private static uint GetTime()
+		{
+			#if USE_GETTIME
+
+			// Use Windows' timeGetTime
+			return timeGetTime();
+			
+			#else
+			
+			// Use standard clock
+			return unchecked((uint)Environment.TickCount);
+			
+			#endif
+		}
+		
 		// This queries the system for the current time
 		public double GetCurrentTime()
 		{
-			// Only windows has QPC
-			//#if !LINUX
+			// Get the current system time
+			uint nexttime = GetTime();
 
-			long timefrequency;
-
-			// Get the high resolution clock frequency
-			if(QueryPerformanceFrequency(out timefrequency) == 0)
-			{
-				// No high resolution clock available
-				currenttime = (double)Environment.TickCount;
-			}
+			// Determine delta time since previous update
+			// (this takes care of time wrapping around to 0)
+			uint deltatime;
+			if(nexttime < lasttime)
+				deltatime = (uint.MaxValue - lasttime) + nexttime;
 			else
-			{
-				long timecount;
+				deltatime = nexttime - lasttime;
 
-				// Get the high resolution count
-				QueryPerformanceCounter(out timecount);
+			// Add the elapsed time to our internal time
+			currenttime += deltatime;
 
-				// Calculate high resolution time in milliseconds
-				// TODO: It seems there is a loss of precision here when the
-				// result of this math is assigned to currenttime, WHY?!
-				currenttime = (double)timecount / (double)timefrequency * (double)1000.0;
-			}
-			
-			/*
-			#else
-			
-			// In LINUX always use standard clock
-			currenttime = (double)Environment.TickCount;
-			
-			#endif
-			*/
+			lasttime = nexttime;
 
-			// Return the current time
 			return currenttime;
 		}
 		
