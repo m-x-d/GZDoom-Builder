@@ -11,7 +11,7 @@ using SlimDX;
 using SlimDX.Direct3D9;
 
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
-    public class GldefsParser : ZDTextParser {
+    public sealed class GldefsParser : ZDTextParser {
 
         public delegate void IncludeDelegate(GldefsParser parser, string includefile);
         public IncludeDelegate OnInclude;

@@ -40,7 +40,7 @@ using CodeImp.DoomBuilder.VisualModes;
 //mxd
 using CodeImp.DoomBuilder.GZBuilder;
 using CodeImp.DoomBuilder.GZBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.ZDoom;
+using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 
 #endregion
 
@@ -125,13 +125,13 @@ namespace CodeImp.DoomBuilder {
 
         //mxd
         public bool UDMF { get { return config.FormatInterface == "UniversalMapSetIO"; } }
-        public List<ScriptItem> NamedScripts { 
+        internal List<ScriptItem> NamedScripts { 
             get {
                 if (!UDMF) throw new Exception("ScriptNames cannot be used in '" + config.FormatInterface + "' format!"); 
                 return namedScripts; 
             } 
         }
-        public List<ScriptItem> NumberedScripts { get { return numberedScripts; } }
+        internal List<ScriptItem> NumberedScripts { get { return numberedScripts; } }
 
         #endregion
 
@@ -1394,7 +1394,7 @@ namespace CodeImp.DoomBuilder {
                     // Load the lump data
                     MemoryStream stream = GetLumpData(maplumpinfo.name);
                     if (stream != null) {
-                        AcsParser parser = new AcsParser();
+                        AcsParserSE parser = new AcsParserSE();
                         parser.Parse(stream, "SCRIPTS");
                         namedScripts.AddRange(parser.NamedScripts);
                         numberedScripts.AddRange(parser.NumberedScripts);

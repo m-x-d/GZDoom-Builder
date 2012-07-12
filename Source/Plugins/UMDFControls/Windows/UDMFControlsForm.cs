@@ -16,7 +16,7 @@ using System.Globalization;
 
 namespace CodeImp.DoomBuilder.UDMFControls
 {
-    public partial class UDMFControlsForm : DelayedForm {
+    public sealed partial class UDMFControlsForm : DelayedForm {
         private List<SurfaceProperties> floors;
         private List<SurfaceProperties> ceilings;
 

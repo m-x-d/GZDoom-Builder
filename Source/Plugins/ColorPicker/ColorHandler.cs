@@ -64,19 +64,19 @@ namespace CodeImp.DoomBuilder.ColorPicker
             // point within the circle). HSV.Saturation and HSV.value must be 
             // scaled to be between 0 and 1.
 
-            double h;
-            double s;
-            double v;
+            float h;
+            float s;
+            float v;
 
-            double r = 0;
-            double g = 0;
-            double b = 0;
+            float r = 0;
+            float g = 0;
+            float b = 0;
 
             // Scale Hue to be between 0 and 360. Saturation
             // and value scale to be between 0 and 1.
-            h = ((double)HSV.Hue / 255 * 360) % 360;
-            s = (double)HSV.Saturation / 255;
-            v = (double)HSV.value / 255;
+            h = ((float)HSV.Hue / 255 * 360) % 360;
+            s = (float)HSV.Saturation / 255;
+            v = (float)HSV.value / 255;
 
             if (s == 0) {
                 // If s is 0, all colors are the same.
@@ -85,13 +85,13 @@ namespace CodeImp.DoomBuilder.ColorPicker
                 g = v;
                 b = v;
             } else {
-                double p;
-                double q;
-                double t;
+                float p;
+                float q;
+                float t;
 
-                double fractionalSector;
+                float fractionalSector;
                 int sectorNumber;
-                double sectorPos;
+                float sectorPos;
 
                 // The color wheel consists of 6 sectors.
                 // Figure out which sector you//re in.
@@ -162,17 +162,17 @@ namespace CodeImp.DoomBuilder.ColorPicker
             // The code must scale these to be between 0 and 255 for
             // the purposes of this application.
 
-            double min;
-            double max;
-            double delta;
+            float min;
+            float max;
+            float delta;
 
-            double r = (double)RGB.Red / 255;
-            double g = (double)RGB.Green / 255;
-            double b = (double)RGB.Blue / 255;
+            float r = (float)RGB.Red / 255;
+            float g = (float)RGB.Green / 255;
+            float b = (float)RGB.Blue / 255;
 
-            double h;
-            double s;
-            double v;
+            float h;
+            float s;
+            float v;
 
             min = Math.Min(Math.Min(r, g), b);
             max = Math.Max(Math.Max(r, g), b);

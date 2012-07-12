@@ -209,7 +209,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void OnPresentDisplay() { }
 
 		// Processing events
-		public virtual void OnProcess(double deltatime) { }
+		public virtual void OnProcess(float deltatime) { }
 		
 		// Generic events
 		public virtual void OnReloadResources() { }

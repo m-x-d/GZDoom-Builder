@@ -10,10 +10,10 @@ using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
-    public sealed class ModeldefStructure {
+    internal sealed class ModeldefStructure {
         private const int MAX_MODELS = 4; //maximum models per modeldef entry, zero-based
 
-        public ModeldefEntry Parse(ModeldefParser parser) {
+        internal ModeldefEntry Parse(ModeldefParser parser) {
             string[] textureNames = new string[4];
             string[] modelNames = new string[4];
             string path = "";

@@ -45,7 +45,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 	{
 		#region ================== Constants
 
-		private const double MOVE_SPEED_MULTIPLIER = 0.001d;
+		private const float MOVE_SPEED_MULTIPLIER = 0.001f;
 		
 		#endregion
 
@@ -1054,9 +1054,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// While this mode is active, this is called continuously to process whatever needs processing.
 		/// </summary>
-		public override void OnProcess(double deltatime)
+		public override void OnProcess(float deltatime)
 		{
-			double multiplier;
+			float multiplier;
 			
 			base.OnProcess(deltatime);
 			
@@ -1069,12 +1069,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 			// Move the camera
 			if(General.Interface.ShiftState) multiplier = MOVE_SPEED_MULTIPLIER * 2.0f; else multiplier = MOVE_SPEED_MULTIPLIER;
-			if(keyforward) camdeltapos += camvec * cammovemul * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
-			if(keybackward) camdeltapos -= camvec * cammovemul * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
-			if(keyleft) camdeltapos -= camvecstrafe * cammovemul * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
-			if(keyright) camdeltapos += camvecstrafe * cammovemul * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
-            if(keyup) camdeltapos += upvec * cammovemul * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
-            if(keydown) camdeltapos += -upvec * cammovemul * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
+			if(keyforward) camdeltapos += camvec * cammovemul * (float)General.Settings.MoveSpeed * multiplier * deltatime;
+			if(keybackward) camdeltapos -= camvec * cammovemul * (float)General.Settings.MoveSpeed * multiplier * deltatime;
+			if(keyleft) camdeltapos -= camvecstrafe * cammovemul * (float)General.Settings.MoveSpeed * multiplier * deltatime;
+			if(keyright) camdeltapos += camvecstrafe * cammovemul * (float)General.Settings.MoveSpeed * multiplier * deltatime;
+            if(keyup) camdeltapos += upvec * cammovemul * (float)General.Settings.MoveSpeed * multiplier * deltatime;
+            if(keydown) camdeltapos += -upvec * cammovemul * (float)General.Settings.MoveSpeed * multiplier * deltatime;
 			
 			// Move the camera
 			General.Map.VisualCamera.ProcessMovement(camdeltapos);

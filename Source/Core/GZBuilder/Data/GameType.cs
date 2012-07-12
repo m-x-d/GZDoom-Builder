@@ -5,14 +5,14 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data {
     public enum GameType : int {
-        DOOM = 0,
-        HERETIC = 1,
-        HEXEN = 2,
-        STRIFE = 3,
-        UNKNOWN = 4,
+        UNKNOWN = 0,
+        DOOM = 1,
+        HERETIC = 2,
+        HEXEN = 3,
+        STRIFE = 4,
     }
 
     public struct Gldefs {
-        public static string[] GLDEFS_LUMPS_PER_GAME = { "DOOMDEFS", "HTICDEFS", "HEXNDEFS", "STRFDEFS" };
+        public static string[] GLDEFS_LUMPS_PER_GAME = { "UNKNOWN_GAME", "DOOMDEFS", "HTICDEFS", "HEXNDEFS", "STRFDEFS" };
     }
 }

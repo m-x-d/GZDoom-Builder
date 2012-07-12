@@ -76,7 +76,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 // This value needs to be multiplied by -1 because the y-coordinate is opposite from the normal direction here.
                 // That is, a y-coordinate that's "higher" on the form has a lower y-value, in this coordinate
                 // system. So everything's off by a factor of -1 when performing the ratio calculations.
-                degrees = (int)(-Math.Atan((double)pt.Y / pt.X) * DEGREES_PER_RADIAN);
+                degrees = (int)(-Math.Atan((float)pt.Y / pt.X) * DEGREES_PER_RADIAN);
 
                 // If the x-coordinate of the selected point is to the left of the center of the circle, you 
                 // need to add 180 degrees to the angle. ArcTan only gives you a value on the right-hand side 

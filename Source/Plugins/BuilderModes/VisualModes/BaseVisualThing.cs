@@ -385,7 +385,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnToggleUpperUnpegged() { }
 		public virtual void OnToggleLowerUnpegged() { }
 		public virtual void OnResetTextureOffset() { }
-		public virtual void OnProcess(double deltatime) { }
+		public virtual void OnProcess(float deltatime) { }
 		public virtual void OnTextureFloodfill() { }
 		public virtual void OnInsert() { }
 		//public virtual void OnDelete() { }

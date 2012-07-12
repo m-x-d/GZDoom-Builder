@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constants
 		
 		// Object picking
-		private const double PICK_INTERVAL = 80.0d;
+		private const float PICK_INTERVAL = 80.0f;
 		private const float PICK_RANGE = 0.98f;
 
 		// Gravity
@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Object picking
 		private VisualPickResult target;
-		private double lastpicktime;
+		private float lastpicktime;
 		private bool locktarget;
 		
 		// This is true when a selection was made because the action is performed
@@ -508,7 +508,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Processing
-		public override void OnProcess(double deltatime)
+		public override void OnProcess(float deltatime)
 		{
 			// Process things?
 			base.ProcessThings = (BuilderPlug.Me.ShowVisualThings != 0);

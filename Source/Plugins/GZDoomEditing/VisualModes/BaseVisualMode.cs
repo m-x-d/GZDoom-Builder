@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#region ================== Constants
 		
 		// Object picking
-		private const double PICK_INTERVAL = 80.0d;
+		private const float PICK_INTERVAL = 80.0f;
 		private const float PICK_RANGE = 0.98f;
 
 		// Gravity
@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		
 		// Object picking
 		private VisualPickResult target;
-		private double lastpicktime;
+		private float lastpicktime;
 		private bool locktarget;
 
 		// This keeps extra element info
@@ -690,7 +690,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		}
 		
 		// Processing
-		public override void OnProcess(double deltatime)
+		public override void OnProcess(float deltatime)
 		{
 			// Process things?
 			base.ProcessThings = (BuilderPlug.Me.ShowVisualThings != 0);
@@ -721,7 +721,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				else
 				{
 					// Fall down
-					gravity.z += (float)(GRAVITY * deltatime);
+					gravity.z += GRAVITY * deltatime;
 					if(gravity.z > 3.0f) gravity.z = 3.0f;
 
 					// Test if we don't go through a floor

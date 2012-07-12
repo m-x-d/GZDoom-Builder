@@ -9,15 +9,15 @@ using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
    
-    public class ModeldefParser : ZDTextParser {
+    internal class ModeldefParser : ZDTextParser {
         private Dictionary<string, ModeldefEntry> modelDefEntries; //classname, entry
-        public Dictionary<string, ModeldefEntry> ModelDefEntries { get { return modelDefEntries; } }
+        internal Dictionary<string, ModeldefEntry> ModelDefEntries { get { return modelDefEntries; } }
 
         private List<string> classNames;
 
-        public string Source { get { return sourcename; } }
+        internal string Source { get { return sourcename; } }
 
-        public ModeldefParser() {
+        internal ModeldefParser() {
             modelDefEntries = new Dictionary<string, ModeldefEntry>();
             classNames = new List<string>();
         }
