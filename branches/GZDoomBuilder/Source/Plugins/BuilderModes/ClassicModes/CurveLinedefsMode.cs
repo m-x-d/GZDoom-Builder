@@ -113,18 +113,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//and lastly they are rotated and moved to fit with the original line
 
 			//calculate some identities of a circle segment (refer to the graph in the url above)
-			double c = line.Length;
-			double theta = angle;
+			float c = line.Length;
+			float theta = angle;
 
-			double d = (c / Math.Tan(theta / 2)) / 2;
-			double R = d / Math.Cos(theta / 2);
-			double h = R - d;
+			float d = (c / (float)Math.Tan(theta / 2)) / 2;
+            float R = d / (float)Math.Cos(theta / 2);
+			float h = R - d;
 
-			double yDeform = fixedcurve ? 1 : distance / h;
+			float yDeform = fixedcurve ? 1 : distance / h;
 			if(backwards)
 				yDeform = -yDeform;
 
-			double a, x, y;
+			float a, x, y;
 			Vector2D vertex;
 
 			for(int v = 1; v <= vertices; v++)
@@ -133,12 +133,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//the curve starts at PI/2 - theta/2 and is segmented into vertices+1 segments
 				//this assumes the line is horisontal and on y = 0, the point is rotated and moved later
 
-				a = (Math.PI - theta) / 2 + v * (theta / (vertices + 1));
+                a = ((float)Math.PI - theta) / 2 + v * (theta / (vertices + 1));
 
 				//calculate the coordinates of the point, and distort the y coordinate
 				//using the deform factor calculated above
-				x = Math.Cos(a) * R;
-				y = (Math.Sin(a) * R - d) * yDeform;
+                x = (float)Math.Cos(a) * R;
+                y = ((float)Math.Sin(a) * R - d) * yDeform;
 
 				//rotate and transform to fit original line
 				vertex = new Vector2D((float)x, (float)y).GetRotated(line.Angle + Angle2D.PIHALF);

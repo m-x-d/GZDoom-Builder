@@ -152,7 +152,7 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// Processing
 		private int processingcount;
-		private double lastupdatetime;
+		private float lastupdatetime;
 
 		// Updating
 		private int lockupdatecount;
@@ -2791,8 +2791,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private void processor_Tick(object sender, EventArgs e)
 		{
 			Vector2D deltamouse;
-			double curtime = General.Clock.CurrentTime;
-			double deltatime = curtime - lastupdatetime;
+			float curtime = General.Clock.CurrentTime;
+			float deltatime = curtime - lastupdatetime;
 			lastupdatetime = curtime;
 			
 			// In exclusive mouse mode?

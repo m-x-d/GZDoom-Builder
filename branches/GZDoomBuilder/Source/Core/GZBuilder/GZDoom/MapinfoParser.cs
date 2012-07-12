@@ -12,7 +12,7 @@ using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
-    public class MapinfoParser : ZDTextParser {
+    public sealed class MapinfoParser : ZDTextParser {
 
         private MapInfo mapInfo;
         public MapInfo MapInfo { get { return mapInfo; } }

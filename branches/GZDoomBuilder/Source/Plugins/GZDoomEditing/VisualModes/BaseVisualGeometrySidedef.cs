@@ -419,7 +419,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		}
 		
 		// Processing
-		public virtual void OnProcess(double deltatime)
+		public virtual void OnProcess(float deltatime)
 		{
 			// If the texture was not loaded, but is loaded now, then re-setup geometry
 			if(setuponloadedtexture != 0)

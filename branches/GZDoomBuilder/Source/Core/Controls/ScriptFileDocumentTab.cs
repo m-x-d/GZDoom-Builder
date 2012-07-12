@@ -69,6 +69,8 @@ namespace CodeImp.DoomBuilder.Controls
 			if(config.Extensions.Length > 0) ext = "." + config.Extensions[0];
 			SetTitle("Untitled" + ext);
 			editor.ClearUndoRedo();
+            //mxd
+            navigator.Enabled = Array.IndexOf(KNOWN_SCRIPT_TYPES, config.Description) != -1;
 		}
 		
 		// Disposer
@@ -222,6 +224,9 @@ namespace CodeImp.DoomBuilder.Controls
 				if(config.Extensions.Length > 0) ext = "." + config.Extensions[0];
 				SetTitle("Untitled" + ext);
 			}
+
+            //mxd
+            base.ChangeScriptConfig(newconfig);
 		}
 		
 		#endregion

@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 		}
 
-		public void OnProcess(double deltatime)
+		public void OnProcess(float deltatime)
 		{
 		}
 

@@ -7,17 +7,18 @@ using System.Text;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
-namespace CodeImp.DoomBuilder.GZBuilder.ZDoom
+//mxd. ACS parser used to create ScriptItems for use in script editor's navigator
+namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 {
-    public class AcsParser : ZDTextParser
+    internal sealed class AcsParserSE : ZDTextParser
     {
         private List<ScriptItem> namedScripts;
         private List<ScriptItem> numberedScripts;
 
-        public List<ScriptItem> NamedScripts { get { return namedScripts; } }
-        public List<ScriptItem> NumberedScripts { get { return numberedScripts; } }
+        internal List<ScriptItem> NamedScripts { get { return namedScripts; } }
+        internal List<ScriptItem> NumberedScripts { get { return numberedScripts; } }
 
-        public AcsParser() {
+        internal AcsParserSE() {
             namedScripts = new List<ScriptItem>();
             numberedScripts = new List<ScriptItem>();
         }

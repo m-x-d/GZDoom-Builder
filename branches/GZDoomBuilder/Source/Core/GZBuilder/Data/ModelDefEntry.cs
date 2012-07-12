@@ -9,25 +9,25 @@ using CodeImp.DoomBuilder.GZBuilder.MD3;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
-    public class ModeldefEntry
+    internal sealed class ModeldefEntry
     {
-        public string ClassName;
-        public string Path; //this holds Path parameter of MODELDEF entry
-        public List<string> ModelNames;
-        public List<string> TextureNames;
-        public string Location; //this holds location of resource, from which modeldef was loaded
+        internal string ClassName;
+        internal string Path; //this holds Path parameter of MODELDEF entry
+        internal List<string> ModelNames;
+        internal List<string> TextureNames;
+        internal string Location; //this holds location of resource, from which modeldef was loaded
 
-        public GZModel Model;
+        internal GZModel Model;
 
-        public Vector3 Scale;
-        public float zOffset;
+        internal Vector3 Scale;
+        internal float zOffset;
 
-        public ModeldefEntry() {
+        internal ModeldefEntry() {
             ModelNames = new List<string>();
             TextureNames = new List<string>();
         }
 
-        public void Dispose() {
+        internal void Dispose() {
             if (Model != null) {
                 foreach (IndexBuffer ib in Model.Indeces2D)
                     ib.Dispose();

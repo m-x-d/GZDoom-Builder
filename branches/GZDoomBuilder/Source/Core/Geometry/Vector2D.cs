@@ -338,11 +338,11 @@ namespace CodeImp.DoomBuilder.Geometry
         // Rotate (Added by Anders Åstrand 2008-05-18)
         public unsafe Vector2D GetRotated(float theta)
         {
-			double cos = Math.Cos(theta);
-			double sin = Math.Sin(theta);
-            double rx = cos * x - sin * y;
-            double ry = sin * x + cos * y;
-            return new Vector2D((float)rx, (float)ry);
+            float cos = (float)Math.Cos(theta);
+            float sin = (float)Math.Sin(theta);
+            float rx = cos * x - sin * y;
+            float ry = sin * x + cos * y;
+            return new Vector2D(rx, ry);
         }
 
 		// Checks if the Vector has valid values for x and y

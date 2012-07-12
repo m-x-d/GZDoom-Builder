@@ -79,8 +79,8 @@ namespace CodeImp.DoomBuilder.IO
 		public override int MinBrightness { get { return short.MinValue; } }
 		public override int MaxThingType { get { return ushort.MaxValue; } }
 		public override int MinThingType { get { return ushort.MinValue; } }
-		public override double MaxCoordinate { get { return (double)short.MaxValue; } }
-		public override double MinCoordinate { get { return (double)short.MinValue; } }
+		public override float MaxCoordinate { get { return (float)short.MaxValue; } }
+		public override float MinCoordinate { get { return (float)short.MinValue; } }
 		public override int MaxThingAngle { get { return short.MaxValue; } }
 		public override int MinThingAngle { get { return short.MinValue; } }
 		

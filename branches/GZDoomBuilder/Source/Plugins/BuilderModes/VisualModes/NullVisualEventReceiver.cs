@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 		}
 
-		public void OnProcess(double deltatime)
+		public void OnProcess(float deltatime)
 		{
 		}
 

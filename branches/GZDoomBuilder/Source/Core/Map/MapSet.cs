@@ -2805,7 +2805,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			Dictionary<uint, List<Sidedef>> storedsides = new Dictionary<uint, List<Sidedef>>(numsidedefs);
 			int originalsidescount = numsidedefs;
-			double starttime = General.Clock.CurrentTime;
+			float starttime = General.Clock.CurrentTime;
 
 			BeginAddRemove();
 			
@@ -2893,8 +2893,8 @@ namespace CodeImp.DoomBuilder.Map
 			EndAddRemove();
 
 			// Output info
-            double endtime = General.Clock.CurrentTime;
-			double deltatimesec = (endtime - starttime) / 1000.0d;
+            float endtime = General.Clock.CurrentTime;
+			float deltatimesec = (endtime - starttime) / 1000.0f;
 			float ratio = 100.0f - (((float)numsidedefs / (float)originalsidescount) * 100.0f);
 			General.WriteLogLine("Sidedefs compressed: " + numsidedefs + " remaining out of " + originalsidescount + " (" + ratio.ToString("########0.00") + "%) in " + deltatimesec.ToString("########0.00") + " seconds");
 		}

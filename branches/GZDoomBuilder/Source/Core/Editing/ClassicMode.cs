@@ -429,7 +429,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Processing
 
 		// Processing
-		public override void OnProcess(double deltatime)
+		public override void OnProcess(float deltatime)
 		{
 			base.OnProcess(deltatime);
 
@@ -457,8 +457,8 @@ namespace CodeImp.DoomBuilder.Editing
 					panamount = (panamount * panamount) * pansign * 0.0001f * (float)General.Settings.AutoScrollSpeed / renderer.Scale;
 					
 					// Multiply by delta time
-					panamount.x = (float)((double)panamount.x * deltatime);
-					panamount.y = (float)((double)panamount.y * deltatime);
+					panamount.x *= deltatime;
+					panamount.y *= deltatime;
 
 					// Pan the view
 					ScrollBy(panamount.x, panamount.y);

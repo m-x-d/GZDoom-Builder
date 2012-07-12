@@ -65,8 +65,8 @@ namespace CodeImp.DoomBuilder.IO
 		int MinBrightness { get; }
 		int MaxThingType { get; }
 		int MinThingType { get; }
-		double MaxCoordinate { get; }
-		double MinCoordinate { get; }
+		float MaxCoordinate { get; }
+		float MinCoordinate { get; }
 		int MaxThingAngle { get; }
 		int MinThingAngle { get; }
 	}

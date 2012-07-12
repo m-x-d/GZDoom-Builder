@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
-		private const double FLASH_DURATION = 300.0f;
+		private const float FLASH_DURATION = 300.0f;
 
 		#endregion
 
@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Flash polygon
 		private FlatVertex[] flashpolygon;
 		private float flashintensity;
-		private double flashstarttime;
+		private float flashstarttime;
 		
 		// Interface
 		protected bool selectpressed;
@@ -392,7 +392,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						flashpolygon = new FlatVertex[s.FlatVertices.Length];
 						s.FlatVertices.CopyTo(flashpolygon, 0);
 						flashintensity = 1.0f;
-						flashstarttime = (double)General.Clock.CurrentTime;
+						flashstarttime = General.Clock.CurrentTime;
 						General.Interface.EnableProcessing();
 					}
 					
@@ -441,7 +441,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							flashpolygon = new FlatVertex[s.FlatVertices.Length];
 							s.FlatVertices.CopyTo(flashpolygon, 0);
 							flashintensity = 1.0f;
-							flashstarttime = (double)General.Clock.CurrentTime;
+							flashstarttime = General.Clock.CurrentTime;
 							General.Interface.EnableProcessing();
 						}
 						else
@@ -507,7 +507,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Processing
-		public override void OnProcess(double deltatime)
+		public override void OnProcess(float deltatime)
 		{
 			base.OnProcess(deltatime);
 
@@ -515,7 +515,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(flashpolygon != null)
 			{
 				// Determine the intensity of the flash by time elapsed
-				double curtime = (double)General.Clock.CurrentTime;;
+				float curtime = General.Clock.CurrentTime;
 				flashintensity = 1f - (float)((curtime - flashstarttime) / FLASH_DURATION);
 				if(flashintensity > 0.0f)
 				{

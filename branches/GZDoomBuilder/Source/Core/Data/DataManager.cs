@@ -103,8 +103,8 @@ namespace CodeImp.DoomBuilder.Data
 		private Dictionary<int, ThingTypeInfo> thingtypes;
 		
 		// Timing
-		private double loadstarttime;
-		private double loadfinishtime;
+		private float loadstarttime;
+		private float loadfinishtime;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -114,9 +114,9 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Properties
 
         //mxd
-        public Dictionary<int, ModeldefEntry> ModeldefEntries { get { return modeldefEntries; } }
-        public Dictionary<int, GZDoomLight> GldefsEntries { get { return gldefsEntries; } }
-        public MapInfo MapInfo { get { return mapInfo; } }
+        internal Dictionary<int, ModeldefEntry> ModeldefEntries { get { return modeldefEntries; } }
+        internal Dictionary<int, GZDoomLight> GldefsEntries { get { return gldefsEntries; } }
+        internal MapInfo MapInfo { get { return mapInfo; } }
 
 		public Playpal Palette { get { return palette; } }
 		public PreviewManager Previews { get { return previews; } }
@@ -130,8 +130,6 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData Hourglass3D { get { return hourglass3d; } }
 		public ImageData Crosshair3D { get { return crosshair; } }
 		public ImageData CrosshairBusy3D { get { return crosshairbusy; } }
-        //mxd
-		//public ImageData ThingBox { get { return thingbox; } }
 		public ImageData WhiteTexture { get { return whitetexture; } }
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		public ICollection<ThingTypeInfo> ThingTypes { get { return thingtypes.Values; } }
@@ -665,7 +663,7 @@ namespace CodeImp.DoomBuilder.Data
 							if(loadfinishtime == 0)
 							{
 								loadfinishtime = General.Clock.CurrentTime;
-								double deltatimesec = (loadfinishtime - loadstarttime) / 1000.0d;
+								float deltatimesec = (loadfinishtime - loadstarttime) / 1000.0f;
 								General.WriteLogLine("Resources loading took " + deltatimesec.ToString("########0.00") + " seconds");
 							}
 							

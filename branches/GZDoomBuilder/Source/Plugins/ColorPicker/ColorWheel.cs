@@ -32,7 +32,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
         // degrees and radians. There are 2*PI radians in a 
         // full circle, and 360 degrees. This constant allows
         // you to convert back and forth.
-        private const double DEGREES_PER_RADIAN = 180.0 / Math.PI;
+        private const float DEGREES_PER_RADIAN = 180.0f / (float)Math.PI;
 
         // COLOR_COUNT represents the number of distinct colors
         // used to create the circular gradient. Its value 
@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
         private Rectangle colorRectangle;
         private Rectangle brightnessRectangle;
         private int brightnessX;
-        private double brightnessScaling;
+        private float brightnessScaling;
 
         // selectedColor is the actual value selected by the user. fullColor is the same color, 
         // with its brightness set to 255.
@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
                 // Also calculate the scaling factor, scaling the height
                 // to be between 0 and 255. 
                 brightnessX = brightnessRectangle.Left + brightnessRectangle.Width;
-                brightnessScaling = (double)255 / (brightnessMax - brightnessMin);
+                brightnessScaling = 255.0f / (brightnessMax - brightnessMin);
 
                 // Calculate the location of the brightness
                 // pointer. Assume it's at the highest position.
@@ -166,7 +166,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
         public void Draw(Graphics g, Point mousePoint) {
             // You've moved the mouse. 
             // Now update the screen to match.
-            double distance;
+            float distance;
             int degrees;
             Point delta;
             Point newColorPoint;
@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
                     // Calculate distance from the center to the new point 
                     // as a fraction of the radius. Use your old friend, 
                     // the Pythagorean theorem, to calculate this value.
-                    distance = Math.Sqrt(delta.X * delta.X + delta.Y * delta.Y) / radius;
+                    distance = (float)Math.Sqrt(delta.X * delta.X + delta.Y * delta.Y) / radius;
 
                     if (currentState == MouseState.DragInColor) {
                         if (distance > 1) {
@@ -326,8 +326,8 @@ namespace CodeImp.DoomBuilder.ColorPicker {
             // the center (HSV.Saturation), and the center, 
             // calculate the point corresponding to 
             // the selected color, on the color wheel.
-            colorPoint = GetPoint((double)HSV.Hue / 255 * 360,
-                (double)HSV.Saturation / 255 * radius,
+            colorPoint = GetPoint((float)HSV.Hue / 255 * 360,
+                (float)HSV.Saturation / 255 * radius,
                 centerPoint);
 
             // Given the brightness (HSV.value), calculate the 
@@ -373,7 +373,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
                 // is opposite from the normal direction here.
                 // That is, a y-coordinate that's "higher" on the form has a lower y-value, in this coordinate
                 // system. So everything's off by a factor of -1 when performing the ratio calculations.
-                degrees = (int)(-Math.Atan((double)pt.Y / pt.X) * DEGREES_PER_RADIAN);
+                degrees = (int)(-Math.Atan((float)pt.Y / pt.X) * DEGREES_PER_RADIAN);
 
                 // If the x-coordinate of the selected point is to the left of the center of the circle, you 
                 // need to add 180 degrees to the angle. ArcTan only gives you a value on the right-hand side 
@@ -421,25 +421,25 @@ namespace CodeImp.DoomBuilder.ColorPicker {
             Color[] Colors = new Color[COLOR_COUNT];
 
             for (int i = 0; i < COLOR_COUNT; i++)
-                Colors[i] = ColorHandler.HSVtoColor((int)((double)(i * 255) / COLOR_COUNT), 255, HSV.value);
+                Colors[i] = ColorHandler.HSVtoColor((int)((float)(i * 255) / COLOR_COUNT), 255, HSV.value);
             return Colors;
         }
 
-        private Point[] GetPoints(double radius, Point centerPoint) {
+        private Point[] GetPoints(float radius, Point centerPoint) {
             // Generate the array of points that describe the locations of the COLOR_COUNT colors to be 
             // displayed on the color wheel.
             Point[] Points = new Point[COLOR_COUNT];
 
             for (int i = 0; i < COLOR_COUNT; i++)
-                Points[i] = GetPoint((double)(i * 360) / COLOR_COUNT, radius, centerPoint);
+                Points[i] = GetPoint((float)(i * 360) / COLOR_COUNT, radius, centerPoint);
             return Points;
         }
 
-        private Point GetPoint(double degrees, double radius, Point centerPoint) {
+        private Point GetPoint(float degrees, float radius, Point centerPoint) {
             // Given the center of a circle and its radius, along
             // with the angle corresponding to the point, find the coordinates. 
             // In other words, conver  t from polar to rectangular coordinates.
-            double radians = degrees / DEGREES_PER_RADIAN;
+            float radians = degrees / DEGREES_PER_RADIAN;
 
             return new Point((int)(centerPoint.X + Math.Floor(radius * Math.Cos(radians))),
                 (int)(centerPoint.Y - Math.Floor(radius * Math.Sin(radians))));
