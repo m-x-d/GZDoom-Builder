@@ -107,6 +107,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.title = "Argument " + (argindex + 1);
 			this.type = 0;
 			this.enumlist = new EnumList();
+            //mxd
+            this.defaultValue = 0;
 		}
 
 		#endregion

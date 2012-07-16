@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// Inheriting
 		private ActorStructure baseclass;
 		private bool skipsuper;
+        private bool haveBaseClass;//mxd
 		
 		// Flags
 		private Dictionary<string, bool> flags;
@@ -110,7 +111,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 					token = token.ToLowerInvariant();
 					if(token == ":")
 					{
-						// The next token must be the class to inherit from
+                        haveBaseClass = true; //mxd
+                        // The next token must be the class to inherit from
 						parser.SkipWhitespace(true);
 						inheritclass = parser.StripTokenQuotes(parser.ReadToken());
 						if(string.IsNullOrEmpty(inheritclass) || parser.IsSpecialToken(inheritclass))
@@ -122,8 +124,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 						{
 							// Find the actor to inherit from
 							baseclass = parser.GetArchivedActorByName(inheritclass);
-							if(baseclass == null)
-								General.ErrorLogger.Add(ErrorType.Warning, "Unable to find the DECORATE class '" + inheritclass + "' to inherit from, while parsing '" + classname + "'");
+
+                            //mxd. Fat chances are that this actor is not ment to be placed in the map, so we'll better check baseclass AFTER we parsed doomednum
+                            //if(baseclass == null)
+								//General.ErrorLogger.Add(ErrorType.Warning, "Unable to find the DECORATE class '" + inheritclass + "' to inherit from, while parsing '" + classname + "'");
 						}
 					}
 					else if(token == "replaces")
@@ -170,6 +174,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 					return;
 				}
 			}
+
+            //mxd. Check if baseclass is valid
+            if (haveBaseClass && doomednum > -1 && baseclass == null)
+                General.ErrorLogger.Add(ErrorType.Warning, "Unable to find the DECORATE class '" + inheritclass + "' to inherit from, while parsing '" + classname + ":" + doomednum +"'");
 			
 			// Now parse the contents of actor structure
 			string previoustoken = "";

@@ -33,6 +33,7 @@ using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
 
@@ -84,6 +85,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// List of selected objects when an action is performed
 		private List<IVisualEventReceiver> selectedobjects;
+        //mxd. Used in Cut/PasteSelection actions
+        private List<ThingCopyData> copyBuffer;
 		
 		#endregion
 		
@@ -133,6 +136,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Initialize
 			this.gravity = new Vector3D(0.0f, 0.0f, 0.0f);
 			this.selectedobjects = new List<IVisualEventReceiver>();
+            //mxd
+            this.copyBuffer = new List<ThingCopyData>();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -427,12 +432,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
         //mxd
         protected override void moveSelectedThings(Vector2D direction, bool absolutePosition) {
-            List<VisualThing> things = GetSelectedVisualThings(true);
+            List<VisualThing> visualThings = GetSelectedVisualThings(true);
 
-            if (things.Count == 0) {
+            if (visualThings.Count == 0) {
                 General.Interface.DisplayStatus(StatusType.Warning, "Select some Things first!");
                 return;
             }
+
+            PreAction(UndoGroup.SectorHeightChange);
+
+            Vector3D[] coords = new Vector3D[visualThings.Count];
+            for (int i = 0; i < visualThings.Count; i++)
+                coords[i] = visualThings[i].Thing.Position;
+
+            //move things...
+            Vector3D[] translatedCoords = translateCoordinates(coords, direction, absolutePosition);
+            for (int i = 0; i < visualThings.Count; i++) {
+                BaseVisualThing t = visualThings[i] as BaseVisualThing;
+                t.OnMove(translatedCoords[i]);
+            }
+
+            PostAction();
+        }
+
+        //mxd
+        private Vector3D[] translateCoordinates(Vector3D[] coordinates, Vector2D direction, bool absolutePosition) {
+            if (coordinates.Length == 0) return null;
+
+            direction.x = (float)Math.Round(direction.x);
+            direction.y = (float)Math.Round(direction.y);
+
+            Vector3D[] translatedCoords = new Vector3D[coordinates.Length];
 
             //move things...
             if (!absolutePosition) { //...relatively (that's easy)
@@ -440,44 +470,44 @@ namespace CodeImp.DoomBuilder.BuilderModes
                 int sector = (int)(General.ClampAngle(camAngle - 45f) / 90f);
                 direction = direction.GetRotated((float)(sector * Math.PI / 2f));
 
-                for (int i = 0; i < things.Count; i++) {
-                    BaseVisualThing t = things[i] as BaseVisualThing;
-                    t.OnMove(t.Thing.Position + new Vector3D(direction));
-                }
-            } else { //...to specified location preserving relative positioning (that's harder)
-                if (things.Count == 1) {//just move it there
-                    BaseVisualThing t = things[0] as BaseVisualThing;
-                    t.OnMove(new Vector3D(direction.x, direction.y, t.Thing.Position.z));
-                    return;
-                }
+                for (int i = 0; i < coordinates.Length; i++)
+                    translatedCoords[i] = coordinates[i] + new Vector3D(direction);
 
-                //we need some reference
-                float minX = things[0].Thing.Position.x;
-                float maxX = minX;
-                float minY = things[0].Thing.Position.y;
-                float maxY = minY;
-
-                //get bounding coordinates for selected things
-                for (int i = 1; i < things.Count; i++) {
-                    if (things[i].Thing.Position.x < minX)
-                        minX = things[i].Thing.Position.x;
-                    else if (things[i].Thing.Position.x > maxX)
-                        maxX = things[i].Thing.Position.x;
-
-                    if (things[i].Thing.Position.y < minY)
-                        minY = things[i].Thing.Position.y;
-                    else if (things[i].Thing.Position.y > maxY)
-                        maxY = things[i].Thing.Position.y;
-                }
-
-                Vector2D selectionCenter = new Vector2D(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
-
-                //move them
-                for (int i = 0; i < things.Count; i++) {
-                    BaseVisualThing t = things[i] as BaseVisualThing;
-                    t.OnMove(new Vector3D(direction.x - (selectionCenter.x - t.Thing.Position.x), direction.y - (selectionCenter.y - t.Thing.Position.y), t.Thing.Position.z));
-                }
+                return translatedCoords;
             }
+
+            //...to specified location preserving relative positioning (that's harder)
+            if (coordinates.Length == 1) {//just move it there
+                translatedCoords[0] = new Vector3D(direction.x, direction.y, coordinates[0].z);
+                return translatedCoords;
+            }
+
+            //we need some reference
+            float minX = coordinates[0].x;
+            float maxX = minX;
+            float minY = coordinates[0].y;
+            float maxY = minY;
+
+            //get bounding coordinates for selected things
+            for (int i = 1; i < coordinates.Length; i++) {
+                if (coordinates[i].x < minX)
+                    minX = coordinates[i].x;
+                else if (coordinates[i].x > maxX)
+                    maxX = coordinates[i].x;
+
+                if (coordinates[i].y < minY)
+                    minY = coordinates[i].y;
+                else if (coordinates[i].y > maxY)
+                    maxY = coordinates[i].y;
+            }
+
+            Vector2D selectionCenter = new Vector2D(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
+
+            //move them
+            for (int i = 0; i < coordinates.Length; i++)
+                translatedCoords[i] = new Vector3D((float)Math.Round(direction.x - (selectionCenter.x - coordinates[i].x)), (float)Math.Round(direction.y - (selectionCenter.y - coordinates[i].y)), (float)Math.Round(coordinates[i].z));
+
+            return translatedCoords;
         }
 		
 		#endregion
@@ -504,6 +534,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnDisengage()
 		{
 			base.OnDisengage();
+            copyBuffer.Clear(); //mxd
 			General.Map.Map.Update();
 		}
 		
@@ -962,7 +993,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
         //mxd. Copied from BuilderModes.ThingsMode
         // This creates a new thing
-        private Thing InsertThing(Vector2D pos) {
+        private Thing CreateThing(Vector2D pos) {
             if (pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
                 pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary) {
                 General.Interface.DisplayStatus(StatusType.Warning, "Failed to insert thing: outside of map boundaries.");
@@ -1345,7 +1376,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
         //mxd. now we can actually insert things in Visual modes
         [BeginAction("insertitem", BaseAction = true)] 
-        public void Insert() {
+        public void InsertThing() {
             Vector2D hitpos = getHitPosition();
 
             if (!hitpos.IsFinite()) {
@@ -1358,7 +1389,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
             General.Map.UndoRedo.CreateUndo("Insert thing");
 
-            Thing t = InsertThing(new Vector2D(hitpos.x, hitpos.y));
+            Thing t = CreateThing(new Vector2D(hitpos.x, hitpos.y));
 
             if (t == null) {
                 General.Map.UndoRedo.WithdrawUndo();
@@ -1379,7 +1410,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
         }
 
         [BeginAction("deleteitem", BaseAction = true)] //mxd. now we can actually delete things in Visual modes
-        public void Delete() {
+        public void DeleteSelectedThings() {
             List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true);
             if (objs.Count == 0) return;
 
@@ -1396,6 +1427,73 @@ namespace CodeImp.DoomBuilder.BuilderModes
             General.Map.IsChanged = true;
             General.Map.ThingsFilter.Update();
 
+            PostAction();
+        }
+
+        //mxd
+        [BeginAction("copyselection", BaseAction = true)]
+        public void CopySelection() {
+            List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true);
+            if (objs.Count == 0) {
+                General.Interface.DisplayStatus(StatusType.Warning, "Nothing to copy, select some Things first!");
+                return;
+            }
+
+            copyBuffer.Clear();
+            foreach (IVisualEventReceiver i in objs) {
+                VisualThing vt = i as VisualThing;
+                if (vt != null) copyBuffer.Add(new ThingCopyData(vt.Thing));
+            }
+            General.Interface.DisplayStatus(StatusType.Info, "Copied " + copyBuffer.Count + " Things");
+        }
+
+        //mxd
+        [BeginAction("cutselection", BaseAction = true)]
+        public void CutSelection() {
+            CopySelection();
+            DeleteSelectedThings();
+        }
+
+        //mxd. We'll just use currently selected objects 
+        [BeginAction("pasteselection", BaseAction = true)]
+        public void PasteSelection() {
+            if (copyBuffer.Count == 0) {
+                General.Interface.DisplayStatus(StatusType.Warning, "Nothing to paste, cut or copy some Things first!");
+                return;
+            }
+
+            Vector2D hitpos = getHitPosition();
+
+            if (!hitpos.IsFinite()) {
+                General.Interface.DisplayStatus(StatusType.Warning, "Cannot paste here!");
+                return;
+            }
+
+            General.Map.UndoRedo.ClearAllRedos();
+            string rest = copyBuffer.Count + " thing" + (copyBuffer.Count > 1 ? "s." : ".");
+            General.Map.UndoRedo.CreateUndo("Paste " + rest);
+            General.Interface.DisplayStatus(StatusType.Info, "Pasted " + rest);
+
+            PreActionNoChange();
+            ClearSelection();
+
+            //get translated positions
+            Vector3D[] coords = new Vector3D[copyBuffer.Count];
+            for (int i = 0; i < copyBuffer.Count; i++)
+                coords[i] = copyBuffer[i].Position;
+
+            Vector3D[] translatedCoords = translateCoordinates(coords, hitpos, true);
+
+            //create things from copyBuffer
+            for (int i = 0; i < copyBuffer.Count; i++) {
+                Thing t = CreateThing(new Vector2D());
+                if (t != null) {
+                    copyBuffer[i].ApplyTo(t);
+                    t.Move(translatedCoords[i]);
+                    //add thing to blockmap
+                    blockmap.AddThing(t);
+                }
+            }
             PostAction();
         }
 		

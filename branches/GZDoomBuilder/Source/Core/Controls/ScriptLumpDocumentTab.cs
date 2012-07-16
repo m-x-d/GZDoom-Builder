@@ -87,6 +87,8 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				editor.SetText(stream.ToArray());
 				editor.ClearUndoRedo();
+                //mxd
+                updateNavigator();
 			}
 			
 			// Done
@@ -117,10 +119,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Feed errors to panel
 			panel.ShowErrors(General.Map.Errors);
-
-            //mxd
-            if (config.Description == KNOWN_SCRIPT_TYPES[(int)ScriptTypes.ACS] && General.Map.Errors.Count == 0)
-                General.Map.UpdateScriptNames();
 		}
 		
 		// Implicit save

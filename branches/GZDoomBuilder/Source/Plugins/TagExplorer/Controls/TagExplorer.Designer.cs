@@ -31,6 +31,7 @@
             this.tbSearch = new System.Windows.Forms.TextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.updatetimer = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -204,6 +205,11 @@
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
             // 
+            // updatetimer
+            // 
+            this.updatetimer.Interval = 500;
+            this.updatetimer.Tick += new System.EventHandler(this.updatetimer_Tick);
+            // 
             // TagExplorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -237,5 +243,6 @@
         private System.Windows.Forms.CheckBox cbSelectOnClick;
         private System.Windows.Forms.CheckBox cbCommentsOnly;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Timer updatetimer;
     }
 }

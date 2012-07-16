@@ -31,6 +31,9 @@ using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
 using CodeImp.DoomBuilder.Compilers;
+//mxd
+using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 
 #endregion
 
@@ -70,7 +73,7 @@ namespace CodeImp.DoomBuilder.Controls
 			SetTitle("Untitled" + ext);
 			editor.ClearUndoRedo();
             //mxd
-            navigator.Enabled = Array.IndexOf(KNOWN_SCRIPT_TYPES, config.Description) != -1;
+            navigator.Enabled = Array.IndexOf(ScriptTypes.TYPES, config.Description) != -1;
 		}
 		
 		// Disposer
@@ -190,10 +193,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// This opens a file and returns true when successful
 		public bool Open(string filepathname)
 		{
-			try
+            try
 			{
 				// Read the file
-				editor.SetText(File.ReadAllBytes(filepathname));
+                editor.SetText(File.ReadAllBytes(filepathname));
 			}
 			catch(Exception e)
 			{
@@ -208,6 +211,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filepathname = filepathname;
 			SetTitle(Path.GetFileName(filepathname));
 			editor.ClearUndoRedo();
+
 			return true;
 		}
 

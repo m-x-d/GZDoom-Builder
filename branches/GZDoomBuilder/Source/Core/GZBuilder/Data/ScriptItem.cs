@@ -34,8 +34,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
         }
 
         internal static int SortByName(ScriptItem i1, ScriptItem i2) {
+            if (i1.Name == i2.Name) return 0;
+            
             if (i1.Name.ToUpper()[0] > i2.Name.ToUpper()[0]) return 1;
-            if (i1.Name.ToUpper()[0] == i2.Name.ToUpper()[0]) return 0;
+            if (i1.Name.ToUpper()[0] == i2.Name.ToUpper()[0]) {
+                int len = Math.Min(i1.Name.Length, i2.Name.Length);
+                for (int i = 0; i < len; i++) {
+                    if (i1.Name.ToUpper()[i] > i2.Name.ToUpper()[i]) return 1;
+                    if (i1.Name.ToUpper()[i] < i2.Name.ToUpper()[i]) return -1;
+                }
+
+                if (i1.Name.Length > i2.Name.Length) return 1;
+                return -1;
+            } 
             return -1;
         }
 

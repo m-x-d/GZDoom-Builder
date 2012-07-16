@@ -1587,7 +1587,7 @@ namespace CodeImp.DoomBuilder.Data
                         gldefsEntries.Add(thingType, parser.LightsByName[e.Value]);
                     }
                 } else {
-                    GZBuilder.GZGeneral.LogAndTraceWarning("Got GLDEFS for class '" + e.Key + "', but haven't found such class in Decorate");
+                    GZBuilder.GZGeneral.LogAndTraceWarning("Got GLDEFS light for class '" + e.Key + "', but haven't found such class in Decorate");
                 }
             }
 

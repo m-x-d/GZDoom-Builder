@@ -80,14 +80,20 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
         public void Setup() {
             if (this.ParentForm != null) this.ParentForm.Activated += ParentForm_Activated;
-            UpdateTree(true);
+            updateTree(true);
         }
 
         public void Terminate() {
             if (this.ParentForm != null) this.ParentForm.Activated -= ParentForm_Activated;
         }
 
-        public void UpdateTree(bool focusDisplay) {
+        // This sets the timer to update the list very soon (because we'll have problems if we just call updateTree now)
+        public void UpdateTreeSoon() {
+            updatetimer.Stop();
+            updatetimer.Start();
+        }
+
+        private void updateTree(bool focusDisplay) {
             bool showTags = (currentDisplayMode == DISPLAY_TAGS || currentDisplayMode == DISPLAY_TAGS_AND_ACTIONS);
             bool showActions = (currentDisplayMode == DISPLAY_ACTIONS || currentDisplayMode == DISPLAY_TAGS_AND_ACTIONS);
             bool hasComment = false;
@@ -503,12 +509,12 @@ namespace CodeImp.DoomBuilder.TagExplorer
 //EVENTS
         private void cbDisplayMode_SelectedIndexChanged(object sender, EventArgs e) {
             currentDisplayMode = cbDisplayMode.SelectedItem.ToString();
-            UpdateTree(true);
+            updateTree(true);
         }
 
         private void cbSortMode_SelectedIndexChanged(object sender, EventArgs e) {
             currentSortMode = cbSortMode.SelectedItem.ToString();
-            UpdateTree(true);
+            updateTree(true);
         }
 
         private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
@@ -542,7 +548,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
                 }
 
                 General.Map.Map.Update();
-                UpdateTree(true);
+                updateTree(true);
 
             } else {
                 //select element?
@@ -674,7 +680,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
         //It is called every time a dialog window closes.
 		private void ParentForm_Activated(object sender, EventArgs e){
-            UpdateTree(true);
+            UpdateTreeSoon();
 		}
 
         private void btnClearSearch_Click(object sender, EventArgs e) {
@@ -683,11 +689,16 @@ namespace CodeImp.DoomBuilder.TagExplorer
         }
 
         private void tbSearch_TextChanged(object sender, EventArgs e) {
-            if (tbSearch.Text.Length > 1 || tbSearch.Text.Length == 0) UpdateTree(false);
+            if (tbSearch.Text.Length > 1 || tbSearch.Text.Length == 0) updateTree(false);
         }
 
         private void cbCommentsOnly_CheckedChanged(object sender, EventArgs e) {
-            UpdateTree(true);
+            updateTree(true);
+        }
+
+        private void updatetimer_Tick(object sender, EventArgs e) {
+            updatetimer.Stop();
+			updateTree(true);
         }
     }
 

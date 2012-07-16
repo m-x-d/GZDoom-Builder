@@ -407,31 +407,31 @@ namespace CodeImp.DoomBuilder.VisualModes
         protected void moveSelectedThingsLeft() {
             moveSelectedThings(new Vector2D(0f, -General.Map.Grid.GridSize), false);
         }
-
+        //mxd
         [BeginAction("movethingright", BaseAction = true)]
         protected void moveSelectedThingsRight() {
             moveSelectedThings(new Vector2D(0f, General.Map.Grid.GridSize), false);
         }
-
+        //mxd
         [BeginAction("movethingfwd", BaseAction = true)]
         protected void moveSelectedThingsForward() {
             moveSelectedThings(new Vector2D(-General.Map.Grid.GridSize, 0f), false);
         }
-
+        //mxd
         [BeginAction("movethingback", BaseAction = true)]
         protected void moveSelectedThingsBackward() {
             moveSelectedThings(new Vector2D(General.Map.Grid.GridSize, 0f), false);
         }
-
+        //mxd
         [BeginAction("placethingatcursor", BaseAction = true)]
         protected void placeThingAtCursor() {
-            Vector2D hitCoords = getHitPosition();
-            if (!hitCoords.IsFinite()) {
+            Vector2D hitpos = getHitPosition();
+            if (!hitpos.IsFinite()) {
                 General.Interface.DisplayStatus(StatusType.Warning, "Cannot place Thing here");
                 return;
             }
 
-            moveSelectedThings(new Vector2D((float)Math.Round(hitCoords.x), (float)Math.Round(hitCoords.y)), true);
+            moveSelectedThings(new Vector2D((float)Math.Round(hitpos.x), (float)Math.Round(hitpos.y)), true);
         }
 
         //mxd. 
@@ -458,15 +458,14 @@ namespace CodeImp.DoomBuilder.VisualModes
             return hitCoords;
         }
 
-        //mxd. this checks intersection between line and plane 
+        //mxd. This checks intersection between line and plane 
         protected Vector2D getIntersection(Vector3D start, Vector3D end, Vector3D planeCenter, Vector3D planeNormal) {
             Vector3D delta = new Vector3D(planeCenter.x - start.x, planeCenter.y - start.y, planeCenter.z - start.z);
             return start + Vector3D.DotProduct(planeNormal, delta) / Vector3D.DotProduct(planeNormal, end - start) * (end - start);
         }
 
-        //should move selected things in specified direction
+        //mxd. Should move selected things in specified direction
         protected abstract void moveSelectedThings(Vector2D direction, bool absolutePosition);
-        //end of mxd :)
 		
 		#endregion
 
