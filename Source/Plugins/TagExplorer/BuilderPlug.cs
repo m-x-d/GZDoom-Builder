@@ -59,24 +59,24 @@ namespace CodeImp.DoomBuilder.TagExplorer
         // Geometry pasted
         public override void OnPasteEnd(PasteOptions options) {
             if (tagExplorer != null)
-                tagExplorer.UpdateTree(true);
+                tagExplorer.UpdateTreeSoon();
         }
 
         // Undo performed
         public override void OnUndoEnd() {
             if (tagExplorer != null)
-                tagExplorer.UpdateTree(true);
+                tagExplorer.UpdateTreeSoon();
         }
 
         // Redo performed
         public override void OnRedoEnd() {
             if (tagExplorer != null)
-                tagExplorer.UpdateTree(true);
+                tagExplorer.UpdateTreeSoon();
         }
 
         public override void OnActionEnd(CodeImp.DoomBuilder.Actions.Action action) {
             if (tagExplorer != null && action.Name == "builder_deleteitem")
-                tagExplorer.UpdateTree(true);
+                tagExplorer.UpdateTreeSoon();
         }
     }
 }

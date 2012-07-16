@@ -537,7 +537,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
             }
 
             this.Changed = true;
-            Rebuild();
         }
 		
 		#endregion

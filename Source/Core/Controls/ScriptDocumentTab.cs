@@ -58,14 +58,6 @@ namespace CodeImp.DoomBuilder.Controls
 		protected ScriptEditorControl editor;
         //mxd
         protected ComboBox navigator;
-        protected enum ScriptTypes : int
-        {
-            ACS = 0,
-            MODELDEF = 1,
-            DECORATE = 2,
-        }
-        private string[] knownScriptTypes = { "ZDoom ACS script", "GZDoom MODELDEF", "ZDoom DECORATE" };
-        protected string[] KNOWN_SCRIPT_TYPES { get { return knownScriptTypes; } } 
 
 		// Derived classes must set this!
 		protected ScriptConfiguration config;
@@ -325,110 +317,82 @@ namespace CodeImp.DoomBuilder.Controls
         //mxd
         protected void updateNavigator() {
             //mxd. known script type?
-            if (Array.IndexOf(KNOWN_SCRIPT_TYPES, config.Description) != -1)
-                navigator.Enabled = updateNavigator(new MemoryStream(editor.GetText()), config.Description);
-            if(navigator.Enabled)
+            if (Array.IndexOf(ScriptTypes.TYPES, config.Description) != -1) {
+                updateNavigator(new MemoryStream(editor.GetText()), config.Description);
+                navigator.Enabled = true;
                 navigator.SelectedIndexChanged += new EventHandler(navigator_SelectedIndexChanged);
+            }else{
+                navigator.Items.Clear();
+                navigator.Enabled = false;
+            }
         }
 
         //mxd
-        private bool updateNavigator(MemoryStream stream, string scriptType) {
-            if (scriptType == KNOWN_SCRIPT_TYPES[(int)ScriptTypes.ACS])      //ZDoom ACS script
-                return updateNavigatorAcs();
-            if (scriptType == KNOWN_SCRIPT_TYPES[(int)ScriptTypes.MODELDEF]) //GZDoom MODELDEF
-                return updateNavigatorModeldef(stream);
-            if (scriptType == KNOWN_SCRIPT_TYPES[(int)ScriptTypes.DECORATE])
-                return updateNavigatorDecorate(stream);
-            return false;
+        private void updateNavigator(MemoryStream stream, string scriptType) {
+            if (scriptType == ScriptTypes.TYPES[(int)ScriptType.ACS]) {
+                updateNavigatorAcs(stream);
+            } else if (scriptType == ScriptTypes.TYPES[(int)ScriptType.MODELDEF]) {
+                updateNavigatorModeldef(stream);
+            } else if (scriptType == ScriptTypes.TYPES[(int)ScriptType.DECORATE]) {
+                updateNavigatorDecorate(stream);
+            }
         }
 
         //mxd
-        private bool updateNavigatorDecorate(MemoryStream stream) {
-            if (stream == null) return false;
-
-            string selectedItem = "";
-            int selectedIndex = 0;
-            if (navigator.SelectedIndex != -1) selectedItem = navigator.Text;
+        private void updateNavigatorDecorate(MemoryStream stream) {
+            if (stream == null) return;
 
             navigator.Items.Clear();
 
             DecorateParserSE parser = new DecorateParserSE();
             parser.Parse(stream, "DECORATE");
 
-            if (parser.Actors.Count == 0)
-                return false;
+            if (parser.Actors.Count == 0) return; 
 
-            ScriptItem[] models = new ScriptItem[parser.Actors.Count];
-            int i = 0;
-            foreach (ScriptItem si in parser.Actors) {
-                models[i++] = si;
-                if (si.Name == selectedItem) selectedIndex = i - 1;
-            }
-            navigator.Items.AddRange(models);
-            return true;
+            navigator.Items.AddRange(parser.Actors.ToArray());
         }
 
         //mxd
-        private bool updateNavigatorModeldef(MemoryStream stream) {
-            if (stream == null) return false;
-
-            string selectedItem = "";
-            int selectedIndex = 0;
-            if (navigator.SelectedIndex != -1) selectedItem = navigator.Text;
+        private void updateNavigatorModeldef(MemoryStream stream) {
+            if (stream == null) return;
 
             navigator.Items.Clear();
 
             ModeldefParserSE parser = new ModeldefParserSE();
             parser.Parse(stream, "MODELDEF");
 
-            if (parser.Models.Count == 0)
-                return false;
+            if (parser.Models.Count == 0) return;
 
-            ScriptItem[] models = new ScriptItem[parser.Models.Count];
-            int i = 0;
-            foreach (ScriptItem si in parser.Models) {
-                models[i++] = si;
-                if (si.Name == selectedItem) selectedIndex = i - 1;
-            }
-            navigator.Items.AddRange(models);
-            return true;
+            navigator.Items.AddRange(parser.Models.ToArray());
         }
 
         //mxd
-        private bool updateNavigatorAcs() {
-            string selectedItem = "";
-            int selectedIndex = 0;
-            if (navigator.SelectedIndex != -1) selectedItem = navigator.Text;
-
+        private void updateNavigatorAcs(MemoryStream stream) {
+            if (stream == null) return;
+            
             navigator.Items.Clear();
 
-            //add named scripts
-            int i = 0;
-            if (General.Map.UDMF) {
-                ScriptItem[] namedScripts = new ScriptItem[General.Map.NamedScripts.Count];
-                foreach (ScriptItem si in General.Map.NamedScripts) {
-                    namedScripts[i++] = si;
-                    if (si.Name == selectedItem) selectedIndex = i - 1;
-                }
-                navigator.Items.AddRange(namedScripts);
-            }
+            AcsParserSE parser = new AcsParserSE();
+            parser.Parse(stream, "ACS");
 
-            //add numbered scripts
-            ScriptItem[] numberedScripts = new ScriptItem[General.Map.NumberedScripts.Count];
-            int c = 0;
-            foreach (ScriptItem si in General.Map.NumberedScripts) {
-                numberedScripts[c++] = si;
-                if (si.Name == selectedItem) selectedIndex = i - 1 + c;
-            }
-            navigator.Items.AddRange(numberedScripts);
+            if (parser.NamedScripts.Count == 0 && parser.NumberedScripts.Count == 0) return;
 
-            if (navigator.Items.Count > 0) {
-                navigator.SelectedIndex = selectedIndex;
-                return true;
-            }
-            return false;
+            if(General.Map.UDMF)
+                navigator.Items.AddRange(parser.NamedScripts.ToArray());
+
+            navigator.Items.AddRange(parser.NumberedScripts.ToArray());
         }
 		
+        //mxd
+        internal ScriptType VerifyScriptType() {
+            ScriptTypeParserSE parser = new ScriptTypeParserSE();
+            if (parser.Parse(new MemoryStream(editor.GetText()), config.Description)) {
+                if (parser.ScriptType != (int)ScriptType.UNKNOWN && config.Description != ScriptTypes.TYPES[(int)parser.ScriptType])
+                    return parser.ScriptType;
+            }
+            return ScriptType.UNKNOWN;
+        }
+
 		#endregion
 		
 		#region ================== Events

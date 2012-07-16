@@ -480,7 +480,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
             Thing.Move(newPosition);
             mode.SetActionResult("Changed thing position to " + Thing.Position.ToString() + ".");
             this.Changed = true;
-            Rebuild();
         }
 		
 		#endregion

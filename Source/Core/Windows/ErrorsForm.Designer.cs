@@ -162,6 +162,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(680, 300);
             this.Name = "ErrorsForm";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Errors and Warnings";
             this.Shown += new System.EventHandler(this.ErrorsForm_Shown);

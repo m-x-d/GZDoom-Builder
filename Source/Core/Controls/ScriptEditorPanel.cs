@@ -33,6 +33,7 @@ using CodeImp.DoomBuilder.IO;
 using System.Globalization;
 using System.IO;
 using CodeImp.DoomBuilder.Compilers;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
 
@@ -521,7 +522,19 @@ namespace CodeImp.DoomBuilder.Controls
 			ScriptFileDocumentTab t = new ScriptFileDocumentTab(this, foundconfig);
 			if(t.Open(filename))
 			{
-				// Mark any errors this script may have
+                //mxd
+                ScriptType st = t.VerifyScriptType();
+                if (st != ScriptType.UNKNOWN) {
+                    string cfgType = ScriptTypes.TYPES[(int)st];
+                    foreach (ScriptConfiguration cfg in scriptconfigs) {
+                        if (cfg.Description == cfgType) {
+                            t.ChangeScriptConfig(cfg);
+                            break;
+                        }
+                    }
+                }
+                
+                // Mark any errors this script may have
 				if(compilererrors != null)
 					t.MarkScriptErrors(compilererrors);
 

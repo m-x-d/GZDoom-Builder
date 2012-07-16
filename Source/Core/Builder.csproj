@@ -719,14 +719,17 @@
     <Compile Include="GZBuilder\Data\MapInfo.cs" />
     <Compile Include="GZBuilder\Data\ModeldefEntry.cs" />
     <Compile Include="GZBuilder\Data\ScriptItem.cs" />
+    <Compile Include="GZBuilder\Data\ScriptType.cs" />
     <Compile Include="GZBuilder\Data\TextureData.cs" />
     <Compile Include="GZBuilder\Data\ThingBoundingBox.cs" />
+    <Compile Include="GZBuilder\Data\ThingCopyData.cs" />
     <Compile Include="GZBuilder\GZDoom\DecorateParserSE.cs" />
     <Compile Include="GZBuilder\GZDoom\GldefsParser.cs" />
     <Compile Include="GZBuilder\GZDoom\MapinfoParser.cs" />
     <Compile Include="GZBuilder\GZDoom\ModeldefParser.cs" />
     <Compile Include="GZBuilder\GZDoom\ModeldefParserSE.cs" />
     <Compile Include="GZBuilder\GZDoom\ModeldefStructure.cs" />
+    <Compile Include="GZBuilder\GZDoom\ScriptTypeParserSE.cs" />
     <Compile Include="GZBuilder\GZGeneral.cs" />
     <Compile Include="GZBuilder\md3\GZModel.cs" />
     <Compile Include="GZBuilder\md3\ModelReader.cs" />
