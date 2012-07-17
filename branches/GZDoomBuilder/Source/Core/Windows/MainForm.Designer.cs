@@ -190,7 +190,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.dockerspanel = new CodeImp.DoomBuilder.Controls.DockersControl();
             this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
             this.warntimer = new System.Windows.Forms.Timer(this.components);
-            this.separatorDrawodes = new System.Windows.Forms.ToolStripSeparator();
+            this.separatorDrawModes = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -726,7 +726,7 @@ namespace CodeImp.DoomBuilder.Windows
             // menumode
             // 
             this.menumode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.separatorDrawodes});
+            this.separatorDrawModes});
             this.menumode.Name = "menumode";
             this.menumode.Size = new System.Drawing.Size(50, 20);
             this.menumode.Text = "&Mode";
@@ -1748,8 +1748,8 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // separatorDrawodes
             // 
-            this.separatorDrawodes.Name = "separatorDrawodes";
-            this.separatorDrawodes.Size = new System.Drawing.Size(149, 6);
+            this.separatorDrawModes.Name = "separatorDrawModes";
+            this.separatorDrawModes.Size = new System.Drawing.Size(149, 6);
             // 
             // MainForm
             // 
@@ -1949,6 +1949,6 @@ namespace CodeImp.DoomBuilder.Windows
         private System.Windows.Forms.ToolStripMenuItem itemReloadModedef;
         private System.Windows.Forms.ToolStripMenuItem itemReloadGldefs;
         private System.Windows.Forms.ToolStripMenuItem itemReloadMapinfo;
-        private System.Windows.Forms.ToolStripSeparator separatorDrawodes;
+        private System.Windows.Forms.ToolStripSeparator separatorDrawModes;
 	}
 }
