@@ -1839,7 +1839,7 @@ namespace CodeImp.DoomBuilder.Windows
 				case MenuSection.ViewZoom: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(seperatorviewzoom), menu); break;
 				case MenuSection.ViewScriptEdit: menuview.DropDownItems.Add(menu); break;
                 //mxd
-                case MenuSection.ModeDrawModes: menumode.DropDownItems.Insert(menumode.DropDownItems.IndexOf(separatorDrawodes) + 1, menu); break;
+                case MenuSection.ModeDrawModes: menumode.DropDownItems.Insert(menumode.DropDownItems.IndexOf(separatorDrawModes) + 1, menu); break;
 
 				case MenuSection.PrefabsInsert: menuprefabs.DropDownItems.Insert(menuprefabs.DropDownItems.IndexOf(seperatorprefabsinsert), menu); break;
 				case MenuSection.PrefabsCreate: menuprefabs.DropDownItems.Add(menu); break;

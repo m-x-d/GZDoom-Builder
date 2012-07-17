@@ -349,6 +349,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 								return;
 							}
 							if(v == "\n") break;
+                            if (v == "}") return; //mxd
 							if(v != ",")
 								values.Add(v);
 						}
