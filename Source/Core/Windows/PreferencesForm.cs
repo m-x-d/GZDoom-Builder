@@ -67,20 +67,20 @@ namespace CodeImp.DoomBuilder.Windows
 			// Interface
 			imagebrightness.Value = General.Settings.ImageBrightness;
 			squarethings.Checked = General.Settings.SquareThings;
-			doublesidedalpha.Value = (int)((1.0f - General.Settings.DoubleSidedAlpha) * 10.0f);
+            doublesidedalpha.Value = General.Clamp((int)((1.0f - General.Settings.DoubleSidedAlpha) * 10.0f), doublesidedalpha.Minimum, doublesidedalpha.Maximum);
 			defaultviewmode.SelectedIndex = General.Settings.DefaultViewMode;
-			fieldofview.Value = General.Settings.VisualFOV / 10;
-			mousespeed.Value = General.Settings.MouseSpeed / 100;
-			movespeed.Value = General.Settings.MoveSpeed / 100;
+            fieldofview.Value = General.Clamp(General.Settings.VisualFOV / 10, fieldofview.Minimum, fieldofview.Maximum);
+			mousespeed.Value = General.Clamp(General.Settings.MouseSpeed / 100, mousespeed.Minimum, mousespeed.Maximum);
+			movespeed.Value = General.Clamp(General.Settings.MoveSpeed / 100, movespeed.Minimum, movespeed.Maximum);
 			viewdistance.Value = General.Clamp((int)(General.Settings.ViewDistance / 200.0f), viewdistance.Minimum, viewdistance.Maximum);
 			invertyaxis.Checked = General.Settings.InvertYAxis;
 			scriptfontbold.Checked = General.Settings.ScriptFontBold;
 			scriptontop.Checked = General.Settings.ScriptOnTop;
 			scripttabwidth.Text = General.Settings.ScriptTabWidth.ToString();
 			scriptautoindent.Checked = General.Settings.ScriptAutoIndent;
-			previewsize.Value = General.Settings.PreviewImageSize;
-			autoscrollspeed.Value = General.Settings.AutoScrollSpeed;
-			zoomfactor.Value = General.Settings.ZoomFactor;
+			previewsize.Value = General.Clamp(General.Settings.PreviewImageSize, previewsize.Minimum, previewsize.Maximum);
+			autoscrollspeed.Value = General.Clamp(General.Settings.AutoScrollSpeed, autoscrollspeed.Minimum, autoscrollspeed.Maximum);
+			zoomfactor.Value = General.Clamp(General.Settings.ZoomFactor, zoomfactor.Minimum, zoomfactor.Maximum);
 			animatevisualselection.Checked = General.Settings.AnimateVisualSelection;
 			dockersposition.SelectedIndex = General.Settings.DockersPosition;
 			collapsedockers.Checked = General.Settings.CollapseDockers;
@@ -97,11 +97,11 @@ namespace CodeImp.DoomBuilder.Windows
             //mxd
             toolbar_gzdoom.Checked = General.Settings.GZToolbarGZDoom;
             cbSynchCameras.Checked = General.Settings.GZSynchCameras;
-            tbDynLightCount.Value = General.Settings.GZMaxDynamicLights;
+            tbDynLightCount.Value = General.Clamp(General.Settings.GZMaxDynamicLights, tbDynLightCount.Minimum, tbDynLightCount.Maximum);
             labelDynLightCount.Text = General.Settings.GZMaxDynamicLights.ToString();
-            tbDynLightSize.Value = (int)(General.Settings.GZDynamicLightRadius * 10);
+            tbDynLightSize.Value = General.Clamp((int)(General.Settings.GZDynamicLightRadius * 10), tbDynLightSize.Minimum, tbDynLightSize.Maximum);
             labelDynLightSize.Text = General.Settings.GZDynamicLightRadius.ToString();
-            tbDynLightIntensity.Value = (int)(General.Settings.GZDynamicLightIntensity * 10);
+            tbDynLightIntensity.Value = General.Clamp((int)(General.Settings.GZDynamicLightIntensity * 10), tbDynLightIntensity.Minimum, tbDynLightIntensity.Maximum);
             labelDynLightIntensity.Text = General.Settings.GZDynamicLightIntensity.ToString();
 			
 			// Fill fonts list

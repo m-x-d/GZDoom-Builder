@@ -317,6 +317,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							return;
 						}
 						if(v == "\n") break;
+                        if (v == "}") return; //mxd
 						if(v != ",")
 							games.Add(v.ToLowerInvariant());
 					}

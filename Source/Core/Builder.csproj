@@ -816,8 +816,10 @@
     <Content Include="Resources\DrawEllipseMode.png" />
     <Content Include="Resources\DrawLinesMode.png" />
     <Content Include="Resources\DrawRectMode.png" />
+    <None Include="Resources\GZDB_Logo_small.png" />
     <Content Include="Resources\Light.png" />
     <Content Include="Resources\Light_animate.png" />
+    <None Include="Resources\MLogo.png" />
     <Content Include="Resources\Model.png" />
     <Content Include="Resources\Model_selected.png" />
     <None Include="Resources\Text.png" />
