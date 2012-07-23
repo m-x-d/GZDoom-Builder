@@ -540,7 +540,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			// MASK PASS
             world = Matrix.Identity;
             ApplyMatrices3D();
-            //graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
             RenderSinglePass((int)RenderPass.Mask);
 
             // ALPHA PASS

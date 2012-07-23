@@ -308,7 +308,7 @@ namespace CodeImp.DoomBuilder.Data
 		public override ICollection<ImageData> LoadTextures(PatchNames pnames)
 		{
 			List<ImageData> images = new List<ImageData>();
-			string rangestart, rangeend;
+			//string rangestart, rangeend;
 			int lumpindex;
 			Lump lump;
 
@@ -794,7 +794,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#endregion
 
-		#region ================== Decorate, Gldefs, Mapinfo
+		#region ================== Decorate, Gldefs, Mapinfo, etc...
 
 		// This finds and returns a sprite stream
 		public override List<Stream> GetDecorateData(string pname)
@@ -880,6 +880,23 @@ namespace CodeImp.DoomBuilder.Data
                 streams.Add(location, file.Lumps[lumpindex].Stream);
 
             return streams;
+        }
+
+        //mxd
+        internal override MemoryStream LoadFile(string name) {
+            Lump l = file.FindLump(name);
+            if (l != null) {
+                l.Stream.Seek(0, SeekOrigin.Begin);
+                return new MemoryStream(l.Stream.ReadAllBytes());
+            } else {
+                return null;
+            }
+        }
+
+        //mxd
+        internal override bool FileExists(string filename) {
+            Lump l = file.FindLump(filename);
+            return l != null;
         }
 
 		#endregion

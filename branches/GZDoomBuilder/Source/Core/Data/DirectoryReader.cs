@@ -268,7 +268,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This returns true if the specified file exists
-		public override bool FileExists(string filename)
+		internal override bool FileExists(string filename)
 		{
 			return files.FileExists(filename);
 		}
@@ -314,7 +314,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		// This loads an entire file in memory and returns the stream
 		// NOTE: Callers are responsible for disposing the stream!
-		public override MemoryStream LoadFile(string filename)
+        internal override MemoryStream LoadFile(string filename)
 		{
 			return new MemoryStream(File.ReadAllBytes(Path.Combine(location.location, filename)));
 		}

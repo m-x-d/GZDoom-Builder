@@ -121,6 +121,9 @@ namespace CodeImp.DoomBuilder.Data
 		// When implemented, this returns the patch lump
 		public virtual Stream GetPatchData(string pname) { return null; }
 
+        //mxd. When implemented, this returns a path to... path (like /patches/walls/WALL001.png)
+        public virtual string GetPatchLocation(string pname) { return pname; }
+
 		// When implemented, this returns the texture lump
 		public virtual Stream GetTextureData(string pname) { return null; }
 
@@ -152,7 +155,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#endregion
 
-		#region ================== Decorate, Modeldef, Mapinfo, Gldefs
+		#region ================== Decorate, Modeldef, Mapinfo, Gldefs, etc...
 
 		// When implemented, this returns the decorate lump
 		public virtual List<Stream> GetDecorateData(string pname) { return new List<Stream>(); }
@@ -166,6 +169,11 @@ namespace CodeImp.DoomBuilder.Data
         //mxd. When implemented, this returns the Gldefs lump
         public virtual Dictionary<string, Stream> GetGldefsData(GameType gameType) { return new Dictionary<string, Stream>(); }
         public virtual Dictionary<string, Stream> GetGldefsData(string location) { return new Dictionary<string, Stream>(); }
+
+        //mxd
+        internal virtual MemoryStream LoadFile(string name) { return null; }
+        //mxd
+        internal virtual bool FileExists(string filename) { return false; }
 
 		#endregion
 	}

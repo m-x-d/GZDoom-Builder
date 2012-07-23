@@ -1363,15 +1363,13 @@ namespace CodeImp.DoomBuilder {
 
                     // Done
                     return true;
-                }
-                else {
+                } else {
                     // Fail
                     compiler.Dispose();
                     errors = null;
                     return false;
                 }
-            }
-            else {
+            } else {
                 // No compiler to run for this script type
                 return true;
             }
@@ -1395,12 +1393,23 @@ namespace CodeImp.DoomBuilder {
                     MemoryStream stream = GetLumpData(maplumpinfo.name);
                     if (stream != null) {
                         AcsParserSE parser = new AcsParserSE();
-                        parser.Parse(stream, "SCRIPTS");
+                        parser.OnInclude = updateScriptsFromLocation;
+                        parser.Parse(stream, "SCRIPTS", true);
                         namedScripts.AddRange(parser.NamedScripts);
                         numberedScripts.AddRange(parser.NumberedScripts);
                     }
                 }
             }
+
+            //sort
+            namedScripts.Sort(ScriptItem.SortByName);
+            numberedScripts.Sort(ScriptItem.SortByIndex);
+        }
+
+        //mxd
+        private void updateScriptsFromLocation(AcsParserSE parser, string path) {
+            MemoryStream s = General.Map.Data.LoadFile(path);
+            if(s != null && s.Length > 0) parser.Parse(s, path, true);
         }
 
         #endregion
@@ -1538,6 +1547,7 @@ namespace CodeImp.DoomBuilder {
             Cursor.Current = oldcursor;
 
             //mxd
+            UpdateScriptNames();
             GZBuilder.GZGeneral.OnReloadResources();
         }
 

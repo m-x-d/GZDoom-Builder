@@ -7,7 +7,6 @@ using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Plugins;
 
-[assembly: CLSCompliant(true)]
 namespace CodeImp.DoomBuilder.TagExplorer
 {
     public sealed class BuilderPlug : Plug

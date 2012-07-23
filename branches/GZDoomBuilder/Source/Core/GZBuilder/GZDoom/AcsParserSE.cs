@@ -12,6 +12,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 {
     internal sealed class AcsParserSE : ZDTextParser
     {
+        internal delegate void IncludeDelegate(AcsParserSE parser, string includefile);
+        internal IncludeDelegate OnInclude;
+
+        private List<string> parsedLumps;
+        
         private List<ScriptItem> namedScripts;
         private List<ScriptItem> numberedScripts;
 
@@ -21,10 +26,24 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
         internal AcsParserSE() {
             namedScripts = new List<ScriptItem>();
             numberedScripts = new List<ScriptItem>();
+            parsedLumps = new List<string>();
         }
 
         public override bool Parse(Stream stream, string sourcefilename) {
+            return Parse(stream, sourcefilename, false);
+        }
+
+        public bool Parse(Stream stream, string sourcefilename, bool processIncludes) {
             base.Parse(stream, sourcefilename);
+
+            //already parsed this?
+            if (parsedLumps.IndexOf(sourcefilename) != -1) return false;
+            parsedLumps.Add(sourcefilename);
+
+            // Keep local data
+            Stream localstream = datastream;
+            string localsourcename = sourcename;
+            BinaryReader localreader = datareader;
 
             // Continue until at the end of the stream
             while (SkipWhitespace(true)) {
@@ -71,6 +90,24 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
                             }
                         }
 
+                    } else if ((token == "#include" || token == "#import") && processIncludes) {
+                        SkipWhitespace(true);
+                        string includeLump = StripTokenQuotes(ReadToken()).ToLowerInvariant();
+
+                        if (!string.IsNullOrEmpty(includeLump)) {
+                            if (includeLump == "zcommon.acs" || includeLump == "common.acs")
+                                continue;
+                            
+                            // Callback to parse this file
+                            if (OnInclude != null) OnInclude(this, includeLump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
+
+                            // Set our buffers back to continue parsing
+                            datastream = localstream;
+                            datareader = localreader;
+                            sourcename = localsourcename;
+                        } else {
+                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": got #include directive with missing or incorrect path: '" + includeLump + "'");
+                        }
                     }
                 }
             }

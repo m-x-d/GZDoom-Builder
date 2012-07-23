@@ -134,6 +134,11 @@ namespace CodeImp.DoomBuilder.Controls
 
 					errors.Add(newerr);
 				}
+
+                //mxd. Should be called only if script is compiled successfully
+                if (compiler.Errors.Length == 0 && config.Description == ScriptTypes.TYPES[(int)ScriptType.ACS]) {
+                    General.Map.UpdateScriptNames();
+                }
 			}
 			
 			// Dispose compiler

@@ -256,6 +256,20 @@ namespace CodeImp.DoomBuilder.Data
 			
 			return null;
 		}
+
+        //mxd
+        public override string GetPatchLocation(string pname) {
+            // Error when suspended
+            if (issuspended) throw new Exception("Data reader is suspended");
+
+            //no need to search in wads...
+            // Find in patches directory
+            string filename = FindFirstFile(PATCHES_DIR, pname, true);
+            if ((filename != null) && FileExists(filename))
+                return filename;
+
+            return pname;
+        }
 		
 		#endregion
 
@@ -559,10 +573,6 @@ namespace CodeImp.DoomBuilder.Data
 		// This must create an image
 		protected abstract ImageData CreateImage(string name, string filename, int imagetype);
 
-		// This must return true if the specified file exists
-        //mxd
-		public abstract bool FileExists(string filename);
-
 		// This must return all files in a given directory
 		protected abstract string[] GetAllFiles(string path, bool subfolders);
 
@@ -580,12 +590,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		// This must find the first file that has the specific name
 		protected abstract string FindFirstFileWithExt(string path, string beginswith, bool subfolders);
-		
-		// This must load an entire file in memory and returns the stream
-		// NOTE: Callers are responsible for disposing the stream!
-        //mxd
-		public abstract MemoryStream LoadFile(string filename);
-
+	
 		// This must create a temp file for the speciied file and return the absolute path to the temp file
 		// NOTE: Callers are responsible for removing the temp file when done!
 		protected abstract string CreateTempFile(string filename);

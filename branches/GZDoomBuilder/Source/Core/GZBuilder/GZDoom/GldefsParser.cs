@@ -390,7 +390,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         if (!string.IsNullOrEmpty(includeLump)) {
                             // Callback to parse this file
                             if (OnInclude != null)
-                                OnInclude(this, includeLump.Replace("/", "\\"));
+                                OnInclude(this, includeLump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
 
                             // Set our buffers back to continue parsing
                             datastream = localstream;

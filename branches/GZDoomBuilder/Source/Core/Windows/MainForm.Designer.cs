@@ -93,6 +93,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.seperatorviewzoom = new System.Windows.Forms.ToolStripSeparator();
             this.itemscripteditor = new System.Windows.Forms.ToolStripMenuItem();
             this.menumode = new System.Windows.Forms.ToolStripMenuItem();
+            this.separatorDrawModes = new System.Windows.Forms.ToolStripSeparator();
             this.menuprefabs = new System.Windows.Forms.ToolStripMenuItem();
             this.iteminsertprefabfile = new System.Windows.Forms.ToolStripMenuItem();
             this.iteminsertpreviousprefab = new System.Windows.Forms.ToolStripMenuItem();
@@ -190,7 +191,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.dockerspanel = new CodeImp.DoomBuilder.Controls.DockersControl();
             this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
             this.warntimer = new System.Windows.Forms.Timer(this.components);
-            this.separatorDrawModes = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -730,6 +730,11 @@ namespace CodeImp.DoomBuilder.Windows
             this.menumode.Name = "menumode";
             this.menumode.Size = new System.Drawing.Size(50, 20);
             this.menumode.Text = "&Mode";
+            // 
+            // separatorDrawModes
+            // 
+            this.separatorDrawModes.Name = "separatorDrawModes";
+            this.separatorDrawModes.Size = new System.Drawing.Size(57, 6);
             // 
             // menuprefabs
             // 
@@ -1563,7 +1568,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.warnsLabel.Text = "0";
             this.warnsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.warnsLabel.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            this.warnsLabel.ToolTipText = "Click to open Errors and Warnings window";
             this.warnsLabel.Click += new System.EventHandler(this.warnsLabel_Click);
             // 
             // panelinfo
@@ -1745,11 +1749,6 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             this.warntimer.Interval = 500;
             this.warntimer.Tick += new System.EventHandler(this.warntimer_Tick);
-            // 
-            // separatorDrawodes
-            // 
-            this.separatorDrawModes.Name = "separatorDrawModes";
-            this.separatorDrawModes.Size = new System.Drawing.Size(149, 6);
             // 
             // MainForm
             // 

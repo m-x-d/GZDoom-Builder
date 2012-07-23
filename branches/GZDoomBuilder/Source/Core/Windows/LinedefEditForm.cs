@@ -685,8 +685,7 @@ namespace CodeImp.DoomBuilder.Windows
 
             if (cbArgStr.Checked) {
                 setNamedScripts((string)fieldslist.GetValue("arg0str"));
-            }
-            else if (!cbArgStr.Checked) {
+            } else if (!cbArgStr.Checked) {
                 setNumberedScripts(General.GetByIndex(lines, 0));
             }
 

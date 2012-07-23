@@ -54,6 +54,8 @@ namespace CodeImp.DoomBuilder.Data
 		protected Vector2D scale;
 		protected bool worldpanning;
 		protected bool usecolorcorrection;
+        //mxd
+        protected string fullName; //name with path;
 		
 		// Loading
 		private volatile ImageLoadState previewstate;
@@ -83,6 +85,8 @@ namespace CodeImp.DoomBuilder.Data
 		
 		public string Name { get { return name; } }
 		public long LongName { get { return longname; } }
+        //mxd
+        public string FullName { get { return fullName; } }
 		public bool UseColorCorrection { get { return usecolorcorrection; } set { usecolorcorrection = value; } }
 		public Texture Texture { get { lock(this) { return texture; } } }
 		public bool IsPreviewLoaded { get { return (previewstate == ImageLoadState.Ready); } }
@@ -178,6 +182,9 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			this.name = name;
 			this.longname = Lump.MakeLongName(name);
+            //mxd
+            if (this.fullName == null)
+                this.fullName = name;
 		}
 		
 		// This unloads the image
