@@ -433,7 +433,7 @@ namespace CodeImp.DoomBuilder.Data
 			StartBackgroundLoader();
 			
 			// Output info
-			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + colormapcount + " colormaps, " + spritecount + " sprites, " + thingcount + " decorate things");
+			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + colormapcount + " colormaps, " + spritecount + " sprites, " + thingcount + " decorate things, " + modeldefEntries.Count + " model deinitions, " + gldefsEntries.Count + " gl definitions");
 		}
 		
 		// This unloads all data
@@ -868,6 +868,19 @@ namespace CodeImp.DoomBuilder.Data
 			// No such patch found
 			return null;
 		}
+
+        //mxd
+        internal string GetPatchLocation(string pname) {
+            string fullName = pname;
+            // Go for all opened containers
+            for (int i = containers.Count - 1; i >= 0; i--) {
+                // This contain provides this patch?
+                fullName = containers[i].GetPatchLocation(pname);
+                if (fullName != pname) return fullName;
+            }
+
+            return pname;
+        }
 
 		// This returns a specific texture stream
 		internal Stream GetTextureData(string pname)
@@ -1399,7 +1412,6 @@ namespace CodeImp.DoomBuilder.Data
                     currentreader = null;
 
                     if (mde.Model != null) {
-                        //GZBuilder.GZGeneral.Trace("Loaded model for Thing ¹" + t.Type);
                         return true;
                     } else {
                         modeldefEntries.Remove(t.Type);
@@ -1517,22 +1529,6 @@ namespace CodeImp.DoomBuilder.Data
                 else
                     GZBuilder.GZGeneral.LogAndTraceWarning("Got MODELDEF override for class '" + e.Key + "', but haven't found such class in Decorate");
             }
-
-            //dbg
-            /*foreach (KeyValuePair<int, ModeldefEntry> group in modeldefEntries) {
-                GZBuilder.GZGeneral.Trace("MDE for thing " + group.Key + ":");
-                GZBuilder.GZGeneral.Trace("Name: " + group.Value.ClassName);
-                GZBuilder.GZGeneral.Trace("Path: " + group.Value.Path);
-
-                foreach (string d in group.Value.ModelNames)
-                    GZBuilder.GZGeneral.Trace("ModelName: " + d);
-
-                foreach (string d in group.Value.TextureNames)
-                    GZBuilder.GZGeneral.Trace("TextureName: " + d);
-
-                GZBuilder.GZGeneral.Trace("Scale: " + group.Value.Scale.X + "," + group.Value.Scale.Y + "," + group.Value.Scale.Z);
-                GZBuilder.GZGeneral.Trace("zOffset: " + group.Value.zOffset);
-            }*/
         }
 
         //mxd. This parses gldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
@@ -1547,9 +1543,6 @@ namespace CodeImp.DoomBuilder.Data
 
             GldefsParser parser = new GldefsParser();
             parser.OnInclude = loadGldefsFromLocation;
-
-            //dbg
-            //GZBuilder.GZGeneral.Trace("Base game is " + General.Map.Config.GameType);
 
             //load default GZDoom gldefs for current game
             if (loadDefaultDefinitions && General.Map.Config.GameType != GameType.UNKNOWN) {
@@ -1590,31 +1583,10 @@ namespace CodeImp.DoomBuilder.Data
                     GZBuilder.GZGeneral.LogAndTraceWarning("Got GLDEFS light for class '" + e.Key + "', but haven't found such class in Decorate");
                 }
             }
-
-            //dbg
-            /*GZBuilder.GZGeneral.Trace("******************************************");
-            foreach (KeyValuePair<int, GZDoomLight> group in gldefsEntries) {
-                    GZBuilder.GZGeneral.Trace("----------------------------------------");
-                    GZBuilder.GZGeneral.Trace("gldefsEntry for id " + group.Key + ":");
-                    GZBuilder.GZGeneral.Trace("Color: " + group.Value.Color.Red + "," + group.Value.Color.Green + "," + group.Value.Color.Blue);
-                    GZBuilder.GZGeneral.Trace("PrimaryRadius: " + group.Value.PrimaryRadius);
-                    GZBuilder.GZGeneral.Trace("SecondaryRadius: " + group.Value.SecondaryRadius);
-                    GZBuilder.GZGeneral.Trace("Interval: " + group.Value.Interval);
-                    GZBuilder.GZGeneral.Trace("Offset: " + group.Value.Offset.X + "," + group.Value.Offset.Y + "," + group.Value.Offset.Z);
-                    //GZBuilder.GZGeneral.Trace("Scale: " + group.Value.Scale);
-                    GZBuilder.GZGeneral.Trace("Type: " + group.Value.Type);
-                    //GZBuilder.GZGeneral.Trace("Chance: " + group.Value.Chance);
-
-                    GZBuilder.GZGeneral.Trace("Subtractive: " + group.Value.Subtractive);
-                    GZBuilder.GZGeneral.Trace("DontLightSelf: " + group.Value.DontLightSelf);
-            }*/
         }
 
         //mxd. This loads (Z)MAPINFO
         private void loadMapInfo() {
-            //dbg
-            //GZBuilder.GZGeneral.Trace("Loading MAPINFO for map " + General.Map.Options.LevelName);
-
             MapinfoParser parser = new MapinfoParser();
 
             foreach (DataReader dr in containers) {
@@ -1623,7 +1595,6 @@ namespace CodeImp.DoomBuilder.Data
                 Dictionary<string, Stream> streams = dr.GetMapinfoData();
                 foreach (KeyValuePair<string, Stream> group in streams) {
                     // Parse the data
-                    //group.Value.Seek(0, SeekOrigin.Begin);
                     parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), General.Map.Options.LevelName); 
                 }
             }
@@ -1633,24 +1604,6 @@ namespace CodeImp.DoomBuilder.Data
                 mapInfo = parser.MapInfo;
             else
                 mapInfo = new MapInfo();
-
-            //dbg
-            /*GZBuilder.GZGeneral.Trace("********************************");
-            GZBuilder.GZGeneral.Trace("MAPINFO for map " + General.Map.Options.LevelName + ":");
-            GZBuilder.GZGeneral.Trace("EvenLighting: " + mapInfo.EvenLighting);
-            GZBuilder.GZGeneral.Trace("HasFadeColor: " + mapInfo.HasFadeColor);
-            GZBuilder.GZGeneral.Trace("FadeColor: " + mapInfo.FadeColor.Red + "," + mapInfo.FadeColor.Green + "," + mapInfo.FadeColor.Blue);
-            GZBuilder.GZGeneral.Trace("HasOutsideFogColor: " + mapInfo.HasOutsideFogColor);
-            GZBuilder.GZGeneral.Trace("OutsideFogColor: " + mapInfo.OutsideFogColor.Red + "," + mapInfo.OutsideFogColor.Green + "," + mapInfo.OutsideFogColor.Blue);
-            GZBuilder.GZGeneral.Trace("Sky1: " + mapInfo.Sky1);
-            GZBuilder.GZGeneral.Trace("Sky1ScrollSpeed: " + mapInfo.Sky1ScrollSpeed);
-            GZBuilder.GZGeneral.Trace("Sky2: " + mapInfo.Sky2);
-            GZBuilder.GZGeneral.Trace("Sky2ScrollSpeed: " + mapInfo.Sky2ScrollSpeed);
-            GZBuilder.GZGeneral.Trace("DoubleSky: " + mapInfo.DoubleSky);
-            //GZBuilder.GZGeneral.Trace("SmoothLighting: " + mapInfo.SmoothLighting);
-            GZBuilder.GZGeneral.Trace("HorizWallShade: " + mapInfo.HorizWallShade);
-            GZBuilder.GZGeneral.Trace("VertWallShade: " + mapInfo.VertWallShade);
-            GZBuilder.GZGeneral.Trace("********************************");*/
         }
 
         private void loadGldefsFromLocation(GldefsParser parser, string location) {
@@ -1658,6 +1611,15 @@ namespace CodeImp.DoomBuilder.Data
 
             foreach (KeyValuePair<string, Stream> group in streams)
                 parser.Parse(group.Value, group.Key);
+        }
+
+        //mxd
+        internal MemoryStream LoadFile(string name) {
+            foreach (DataReader dr in containers) {
+                if (dr.FileExists(name))
+                    return dr.LoadFile(name);
+            }
+            return null;
         }
 
         #endregion

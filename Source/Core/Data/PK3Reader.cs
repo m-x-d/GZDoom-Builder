@@ -25,7 +25,11 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
-using ICSharpCode.SharpZipLib.Zip;
+//using ICSharpCode.SharpZipLib.Zip;
+//mxd
+using SharpCompress.Archive;
+using SharpCompress.Common;
+using SharpCompress.Reader;
 
 #endregion
 
@@ -36,6 +40,9 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private DirectoryFilesList files;
+        private IArchive archive;//mxd
+        private ArchiveType archiveType; //mxd
+        private static Dictionary<string, byte[]> sevenZipEntries; //mxd
 
 		#endregion
 
@@ -44,31 +51,42 @@ namespace CodeImp.DoomBuilder.Data
 		// Constructor
 		public PK3Reader(DataLocation dl) : base(dl)
 		{
-			General.WriteLogLine("Opening PK3 resource '" + location.location + "'");
+            General.WriteLogLine("Opening " + Path.GetExtension(location.location).ToUpper().Replace(".", "") + " resource '" + location.location + "'");
 
 			if(!File.Exists(location.location))
 				throw new FileNotFoundException("Could not find the file \"" + location.location + "\"", location.location);
-			
-			// Open the zip file
-			ZipInputStream zipstream = OpenPK3File();
-			
-			// Make list of all files
-			List<DirectoryFileEntry> fileentries = new List<DirectoryFileEntry>();
-			ZipEntry entry = zipstream.GetNextEntry();
-			while(entry != null)
-			{
-				if(entry.IsFile) fileentries.Add(new DirectoryFileEntry(entry.Name));
-				
-				// Next
-				entry = zipstream.GetNextEntry();
-			}
 
-			// Make files list
-			files = new DirectoryFilesList(fileentries);
+            // Make list of all files
+            List<DirectoryFileEntry> fileentries = new List<DirectoryFileEntry>();
 
-			// Done with the zip file
-			zipstream.Close();
-			zipstream.Dispose();
+            //mxd
+            archive = ArchiveFactory.Open(location.location);
+            archiveType = archive.Type;
+
+            if (archive.Type == ArchiveType.SevenZip) { //random access of 7z archives works TERRIBLY slow in SharpCompress
+                sevenZipEntries = new Dictionary<string, byte[]>();
+
+                IReader reader = archive.ExtractAllEntries();
+                while (reader.MoveToNextEntry()) {
+                    if (!reader.Entry.IsDirectory) {
+                        MemoryStream s = new MemoryStream();
+                        reader.WriteEntryTo(s);
+                        sevenZipEntries.Add(reader.Entry.FilePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar), s.ToArray());
+                        fileentries.Add(new DirectoryFileEntry(reader.Entry.FilePath));
+                    }
+                }
+                archive.Dispose();
+                archive = null;
+
+            } else {
+                foreach (IEntry entry in archive.Entries) {
+                    if (!entry.IsDirectory)
+                        fileentries.Add(new DirectoryFileEntry(entry.FilePath));
+                }
+            }
+
+            // Make files list
+            files = new DirectoryFilesList(fileentries);
 			
 			// Initialize without path (because we use paths relative to the PK3 file)
 			Initialize();
@@ -83,23 +101,12 @@ namespace CodeImp.DoomBuilder.Data
 			// Not already disposed?
 			if(!isdisposed)
 			{
-				General.WriteLogLine("Closing PK3 resource '" + location.location + "'");
-				
+                General.WriteLogLine("Closing " + Path.GetExtension(location.location).ToUpper().Replace(".", "") + " resource '" + location.location + "'");
+                if(archive != null) archive.Dispose(); //mxd
+
 				// Done
 				base.Dispose();
 			}
-		}
-
-		#endregion
-
-		#region ================== Management
-
-		// This opens the zip file for reading
-		private ZipInputStream OpenPK3File()
-		{
-			FileStream filestream = File.Open(location.location, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-			filestream.Seek(0, SeekOrigin.Begin);
-			return new ZipInputStream(filestream);
 		}
 
 		#endregion
@@ -267,7 +274,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This returns true if the specified file exists
-		public override bool FileExists(string filename)
+		internal override bool FileExists(string filename)
 		{
 			return files.FileExists(filename);
 		}
@@ -313,55 +320,33 @@ namespace CodeImp.DoomBuilder.Data
 
 		// This loads an entire file in memory and returns the stream
 		// NOTE: Callers are responsible for disposing the stream!
-		public override MemoryStream LoadFile(string filename)
+        internal override MemoryStream LoadFile(string filename)
 		{
-			MemoryStream filedata = null;
-			byte[] copybuffer = new byte[4096];
-
-			// Open the zip file
-			ZipInputStream zipstream = OpenPK3File();
-
-			ZipEntry entry = zipstream.GetNextEntry();
-			while(entry != null)
-			{
-				if(entry.IsFile)
-				{
-					string entryname = entry.Name.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-					
-					// Is this the entry we are looking for?
-					if(string.Compare(entryname, filename, true) == 0)
-					{
-						int expectedsize = (int)entry.Size;
-						if(expectedsize < 1) expectedsize = 1024;
-						filedata = new MemoryStream(expectedsize);
-						int readsize = zipstream.Read(copybuffer, 0, copybuffer.Length);
-						while(readsize > 0)
-						{
-							filedata.Write(copybuffer, 0, readsize);
-							readsize = zipstream.Read(copybuffer, 0, copybuffer.Length);
-						}
-						break;
-					}
-				}
-				
-				// Next
-				entry = zipstream.GetNextEntry();
-			}
-
-			// Done with the zip file
-			zipstream.Close();
-			zipstream.Dispose();
+            MemoryStream filedata = null;
+           
+            //mxd
+            if (archiveType == ArchiveType.SevenZip) { //this works waaaaaay faster with 7z archive
+                if (sevenZipEntries.ContainsKey(filename))
+                    filedata = new MemoryStream(sevenZipEntries[filename]);
+            } else {
+                foreach (var entry in archive.Entries) {
+                    if (!entry.IsDirectory) {
+                        // Is this the entry we are looking for?
+                        string entryname = entry.FilePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                        if (string.Compare(entryname, filename, true) == 0) {
+                            filedata = new MemoryStream();
+                            entry.WriteTo(filedata);
+                            break;
+                        }
+                    }
+                }
+            }
 			
 			// Nothing found?
-			if(filedata == null)
-			{
-				throw new FileNotFoundException("Cannot find the file " + filename + " in PK3 file " + location.location + ".");
-			}
-			else
-			{
-				//mxd. rewind before use
-                filedata.Position = 0;
-
+            if (filedata == null){
+				throw new FileNotFoundException("Cannot find the file " + filename + " in archive " + location.location + ".");
+			}else{
+                filedata.Position = 0; //mxd. rewind before use
                 return filedata;
 			}
 		}

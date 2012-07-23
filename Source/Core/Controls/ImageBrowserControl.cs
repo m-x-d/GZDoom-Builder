@@ -236,6 +236,16 @@ namespace CodeImp.DoomBuilder.Controls
 			texturesize.Visible = false;
 			texturesizelabel.Visible = false;
 		}
+
+        //mxd
+        private void list_MouseEnter(object sender, EventArgs e) {
+            FocusList();
+        }
+
+        //mxd
+        private void objectname_MouseEnter(object sender, EventArgs e) {
+            objectname.Focus();
+        }
 		
 		#endregion
 
@@ -506,6 +516,11 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			objectname.Focus();
 		}
+
+        //mxd. This sends the focus to the list
+        public void FocusList() {
+            list.Focus();
+        }
 		
 		// This updates the texture size label
 		private void UpdateTextureSizeLabel()

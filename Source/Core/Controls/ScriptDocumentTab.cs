@@ -184,9 +184,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This compiles the script
-		public virtual void Compile()
-		{
-		}
+		public virtual void Compile() { }
 
 		// This saves the document (used for both explicit and implicit)
 		// Return true when successfully saved

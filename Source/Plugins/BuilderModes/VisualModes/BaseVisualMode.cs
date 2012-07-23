@@ -1419,6 +1419,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
             //make undo
             General.Map.UndoRedo.CreateUndo("Delete " + rest);
             General.Interface.DisplayStatus(StatusType.Info, "Deleted " + rest);
+            //clear selection
+            ClearSelection();
 
             PreActionNoChange();
             foreach (IVisualEventReceiver i in objs) i.OnDelete(); //are they deleted from BlockMap automatically?..

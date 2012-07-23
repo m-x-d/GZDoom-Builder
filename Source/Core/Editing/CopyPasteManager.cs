@@ -30,9 +30,11 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
-using ICSharpCode.SharpZipLib.BZip2;
+//using ICSharpCode.SharpZipLib.BZip2;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
+//mxd
+using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
 
@@ -120,9 +122,8 @@ namespace CodeImp.DoomBuilder.Editing
 					writer.Write(copyset, memstream, null);
 
 					// Compress the stream
-					MemoryStream compressed = new MemoryStream((int)memstream.Length);
 					memstream.Seek(0, SeekOrigin.Begin);
-					BZip2.Compress(memstream, compressed, 900000);
+                    MemoryStream compressed = SharpCompressHelper.CompressStream(memstream);//mxd
 
 					// Done
 					memstream.Dispose();
@@ -169,11 +170,18 @@ namespace CodeImp.DoomBuilder.Editing
 			General.Map.UndoRedo.CreateUndo("Insert prefab");
 			
 			// Decompress stream
-			MemoryStream decompressed = new MemoryStream((int)filedata.Length * 3);
+            MemoryStream memstream = null; //mxd
 			filedata.Seek(0, SeekOrigin.Begin);
-			BZip2.Decompress(filedata, decompressed);
-			MemoryStream memstream = new MemoryStream(decompressed.ToArray());
-			decompressed.Dispose();
+            
+            try {
+                memstream = SharpCompressHelper.DecompressStream(filedata); //mxd
+                memstream.Seek(0, SeekOrigin.Begin);
+            }catch(Exception e){
+                General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while reading prefab from file: " + e.Message);
+                General.WriteLogLine(e.StackTrace);
+                General.ShowErrorMessage("Unable to load prefab. See log file for error details.", MessageBoxButtons.OK);
+                return;
+            }
 			
 			// Mark all current geometry
 			General.Map.Map.ClearAllMarks(true);

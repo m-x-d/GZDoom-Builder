@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private PK3Reader datareader;
-		private string filepathname;
+		//private string filepathname;
 		private int probableformat;
 		
 		#endregion
@@ -47,7 +47,8 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Initialize
 			this.datareader = datareader;
-			this.filepathname = filepathname;
+			//this.filepathname = filepathname;
+            this.fullName = filepathname;
 			SetName(name);
 
 			if(asflat)
@@ -81,7 +82,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Load file data
 				if(bitmap != null) bitmap.Dispose(); bitmap = null;
-				MemoryStream filedata = datareader.ExtractFile(filepathname);
+				MemoryStream filedata = datareader.ExtractFile(fullName); //mxd
 
 				// Get a reader for the data
 				IImageReader reader = ImageDataFormat.GetImageReader(filedata, probableformat, General.Map.Data.Palette);
@@ -100,7 +101,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Not loaded?
 				if(bitmap == null)
 				{
-					General.ErrorLogger.Add(ErrorType.Error, "Image file '" + filepathname + "' data format could not be read, while loading texture '" + this.Name + "'");
+                    General.ErrorLogger.Add(ErrorType.Error, "Image file '" + fullName + "' data format could not be read, while loading texture '" + this.Name + "'");
 					loadfailed = true;
 				}
 				else

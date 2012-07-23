@@ -495,7 +495,7 @@ namespace CodeImp.DoomBuilder.Editing
 		/// <returns>Ticket ID that identifies the created undo level. Returns -1 when no undo level was created.</returns>
 		public int CreateUndo(string description, object groupsource, int groupid, int grouptag)
 		{
-			UndoSnapshot u;
+			//UndoSnapshot u;
 			Plugin p = null;
 			string groupsourcename = "Null";
 			

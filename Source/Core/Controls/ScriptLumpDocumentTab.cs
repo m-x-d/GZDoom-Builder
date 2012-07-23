@@ -111,11 +111,17 @@ namespace CodeImp.DoomBuilder.Controls
 		// Compile script
 		public override void Compile()
 		{
-			// Compile
+            bool success = false; //mxd
+
+            // Compile
 			if(ismapheader)
-				General.Map.CompileLump(MapManager.CONFIG_MAP_HEADER, true);
+                success = General.Map.CompileLump(MapManager.CONFIG_MAP_HEADER, true);
 			else
-				General.Map.CompileLump(lumpname, true);
+                success = General.Map.CompileLump(lumpname, true);
+
+            //mxd
+            if (success && config.Description == ScriptTypes.TYPES[(int)ScriptType.ACS])
+                General.Map.UpdateScriptNames();
 
 			// Feed errors to panel
 			panel.ShowErrors(General.Map.Errors);
