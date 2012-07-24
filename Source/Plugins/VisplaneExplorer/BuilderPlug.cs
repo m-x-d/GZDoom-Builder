@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		{
 			base.OnInitialize();
 			
-			General.Actions.BindMethods(this);
+			//General.Actions.BindMethods(this); //mxd. But... we have no methods to bind!
 			
 			// Load interface controls
 			interfaceform = new InterfaceForm();
@@ -85,6 +85,11 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			// Keep a static reference
 			me = this;
 		}
+
+        //mxd. This, actually, can also happen
+        public override void OnMapNewBegin() {
+            OnMapOpenBegin();
+        }
 
 		// Some things cannot be initialized at plugin start, so we do them here
 		public override void OnMapOpenBegin()
@@ -118,7 +123,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			interfaceform = null;
 			vpo.Dispose();
 			vpo = null;
-			General.Actions.UnbindMethods(this);
+            //General.Actions.UnbindMethods(this); //mxd. But... we have no methods to unbind!
 			base.Dispose();
 		}
 

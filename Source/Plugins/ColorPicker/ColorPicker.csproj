@@ -20,6 +20,7 @@
     <OutputPath>..\..\..\Build\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
+    <PlatformTarget>x86</PlatformTarget>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>
     </DocumentationFile>
@@ -30,6 +31,7 @@
     <OutputPath>..\..\..\Build\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
+    <PlatformTarget>x86</PlatformTarget>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
