@@ -6,16 +6,15 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.GZBuilder.MD3
 {
-    public class GZModel {
-        public List<Mesh> Meshes;
-        public List<Texture> Textures;
-        public byte NUM_MESHES; //can't be greater than 255, can it?
-        public Vector3[] BoundingBox;
-        public List<IndexBuffer> Indeces2D;
-        public List<short> NumIndeces2D;
-        public float Angle = 0; //crappy way to set rotation to md2 models...
+    internal class GZModel {
+        internal List<Mesh> Meshes;
+        internal List<Texture> Textures;
+        internal byte NUM_MESHES; //can't be greater than 255, can it?
+        internal Vector3[] BoundingBox;
+        internal List<IndexBuffer> Indeces2D;
+        internal List<short> NumIndeces2D;
 
-        public GZModel() {
+        internal GZModel() {
             Meshes = new List<Mesh>();
             Textures = new List<Texture>();
             Indeces2D = new List<IndexBuffer>();

@@ -146,5 +146,9 @@ namespace CodeImp.DoomBuilder.Windows
 				grid.Rows[0].Selected = false;
 
 		}
+
+        private void grid_CellContentClick(object sender, DataGridViewCellEventArgs e) {
+            copyselected.Enabled = true;
+        }
 	}
 }

@@ -108,8 +108,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public event MarginClickHandler MarginClick;
 		public event NeedShownHandler NeedShown;
 		public event PaintedHandler Painted;
-		public event UserListSelectionHandler UserListSelection;
-		public event URIDroppedHandler URIDropped;
+		//public event UserListSelectionHandler UserListSelection;
+		//public event URIDroppedHandler URIDropped;
 		public event DwellStartHandler DwellStart;
 		public event DwellEndHandler DwellEnd;
 		public event ZoomHandler Zoom;

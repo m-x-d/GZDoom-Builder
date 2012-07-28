@@ -62,9 +62,10 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 floatSlider2.Value = val;
             }
 
-            if (OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
             delta.x = (float)Math.Round(val - prevValues.x, 1);
             prevValues.x = val;
+
+            if (OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
         }
 
         private void floatSlider2_OnValueChanged(object sender, EventArgs e) {
@@ -76,9 +77,10 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 floatSlider1.Value = val;
             }
 
-            if (OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
             delta.y = (float)Math.Round(val - prevValues.y, 1);
             prevValues.y = val;
+
+            if (OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
         }
 
         private void button1_Click(object sender, EventArgs e) {

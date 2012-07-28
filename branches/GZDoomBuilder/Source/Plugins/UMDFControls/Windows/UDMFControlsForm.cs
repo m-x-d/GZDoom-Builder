@@ -142,7 +142,8 @@ namespace CodeImp.DoomBuilder.UDMFControls
             //set sliders limits
             sliderDesaturation.SetLimits(0f, 1f, false);
             sliderAlpha.SetLimits(0f, 1f, false);
-            scaleControl.SetLimits(-2f, 2f);
+            float scaleRange = BuilderPlug.Me.ScaleReange;
+            scaleControl.SetLimits(-scaleRange, scaleRange);
 
             cbRenderStyle.Items.AddRange(new object[] { "Translucent", "Add" });
             cbRenderStyle.SelectedIndex = 0;

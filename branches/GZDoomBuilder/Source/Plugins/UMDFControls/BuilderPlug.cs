@@ -17,8 +17,11 @@ namespace CodeImp.DoomBuilder.UDMFControls
 
         public override string Name { get { return "UDMF Controls"; } }
 
-        private UDMFControlsForm form;
+        //settings
+        private int scaleReange;
+        public int ScaleReange { get { return scaleReange; } }
 
+        private UDMFControlsForm form;
         private Point formLocation; //used to keep form's location constant
 
         public override void OnInitialize() {
@@ -31,26 +34,11 @@ namespace CodeImp.DoomBuilder.UDMFControls
             me = this;
 
             General.Actions.BindMethods(this);
-        }
 
-        /*public override void OnEditKeyDown(KeyEventArgs e) {
-            //dbg
-            GZBuilder.GZGeneral.Trace("OnEditKeyDown");
-            
-            base.OnEditKeyDown(e);
-            if(form != null){
-                form.FineMovement = General.Interface.ShiftState;
-                form.FastMovement = General.Interface.CtrlState;
-            }
+            scaleReange = General.Settings.ReadPluginSetting("scalerange", 2);
+            if (scaleReange < 1) scaleReange = 2;
+            General.Settings.WritePluginSetting("scalerange", scaleReange); //not working when called from Dispose()...
         }
-
-        public override void OnEditKeyUp(KeyEventArgs e) {
-            base.OnEditKeyUp(e);
-            if (form != null) {
-                form.FineMovement = General.Interface.ShiftState;
-                form.FastMovement = General.Interface.CtrlState;
-            }
-        }*/
 
         public override void Dispose() {
             base.Dispose();

@@ -1031,7 +1031,7 @@ namespace CodeImp.DoomBuilder.Rendering
                     }
 
                     // Create the matrix for positioning / rotation
-                    world = Matrix.Multiply(t.Orientation, Matrix.RotationZ(t.Thing.Angle + group.Key.Model.Angle));
+                    world = Matrix.Multiply(t.Orientation, Matrix.RotationZ(t.Thing.Angle));
                     world = Matrix.Multiply(world, t.Position);
                     ApplyMatrices3D();
 

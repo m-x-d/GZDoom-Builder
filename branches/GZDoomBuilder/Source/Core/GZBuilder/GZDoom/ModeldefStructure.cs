@@ -19,6 +19,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
             string path = "";
             Vector3 scale = new Vector3(1, 1, 1);
             float zOffset = 0;
+            float angleOffset = 0;
+            float pitchOffset = 0;
+            float rollOffset = 0;
+
             string token;
             bool gotErrors = false;
 
@@ -28,7 +32,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
                 if (!string.IsNullOrEmpty(token)) {
                     token = parser.StripTokenQuotes(token).ToLowerInvariant(); //ANYTHING can be quoted...
-                    //path
+//path
                     if (token == "path") {
                         parser.SkipWhitespace(true);
                         path = parser.StripTokenQuotes(parser.ReadToken()).Replace("/", "\\");
@@ -38,7 +42,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             gotErrors = true;
                             break;
                         }
-                        //model
+//model
                     } else if (token == "model") {
                         parser.SkipWhitespace(true);
 
@@ -57,7 +61,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             break;
                         }
 
-                        //model path
+//model path
                         token = parser.StripTokenQuotes(parser.ReadToken()).ToLowerInvariant();
                         if (string.IsNullOrEmpty(token)) {
                             GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model name, but got '" + token + "'");
@@ -76,7 +80,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             //GZDoom allows models with identical modelIndex, it uses the last one encountered
                             modelNames[modelIndex] = token;
                         }
-                        //skin
+//skin
                     } else if (token == "skin") {
                         parser.SkipWhitespace(true);
 
@@ -95,7 +99,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             break;
                         }
 
-                        //skin path
+//skin path
                         token = parser.StripTokenQuotes(parser.ReadToken()).ToLowerInvariant();
                         if (string.IsNullOrEmpty(token)) {
                             GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected skin name, but got '" + token + "'");
@@ -111,7 +115,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             //GZDoom allows skins with identical modelIndex, it uses the last one encountered
                             textureNames[skinIndex] = token;
                         }
-                        //scale
+//scale
                     } else if (token == "scale") {
                         parser.SkipWhitespace(true);
 
@@ -142,7 +146,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             gotErrors = true;
                             break;
                         }
-                        //zoffset
+//zoffset
                     } else if (token == "zoffset") {
                         parser.SkipWhitespace(true);
 
@@ -153,7 +157,40 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             gotErrors = true;
                             break;
                         }
-                        //frameindex
+//angleoffset
+                    } else if (token == "angleoffset") {
+                        parser.SkipWhitespace(true);
+
+                        token = parser.StripTokenQuotes(parser.ReadToken());
+                        if (!parser.ReadSignedFloat(token, ref angleOffset)) {
+                            // Not numeric!
+                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected AngleOffset value, but got '" + token + "'");
+                            gotErrors = true;
+                            break;
+                        }
+//pitchoffset
+                    } else if (token == "pitchoffset") {
+                        parser.SkipWhitespace(true);
+
+                        token = parser.StripTokenQuotes(parser.ReadToken());
+                        if (!parser.ReadSignedFloat(token, ref pitchOffset)) {
+                            // Not numeric!
+                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected PitchOffset value, but got '" + token + "'");
+                            gotErrors = true;
+                            break;
+                        }
+//rolloffset
+                    } else if (token == "rolloffset") {
+                        parser.SkipWhitespace(true);
+
+                        token = parser.StripTokenQuotes(parser.ReadToken());
+                        if (!parser.ReadSignedFloat(token, ref rollOffset)) {
+                            // Not numeric!
+                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected RollOffset value, but got '" + token + "'");
+                            gotErrors = true;
+                            break;
+                        }
+//frameindex
                     } else if (token == "frameindex") {
                         //parsed all required fields. if got more than one model - find which one(s) should be displayed 
                         int len = modelNames.GetLength(0);
@@ -262,14 +299,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                     break;
             }
 
-            if (gotErrors)
-                return null;
+            if (gotErrors) return null;
 
             //classname is set in ModeldefParser
             ModeldefEntry mde = new ModeldefEntry();
             mde.Path = path;
             mde.Scale = scale;
             mde.zOffset = zOffset;
+            mde.AngleOffset = angleOffset * (float)Math.PI / 180.0f;
+            mde.RollOffset = rollOffset * (float)Math.PI / 180.0f;
+            mde.PitchOffset = pitchOffset * (float)Math.PI / 180.0f;
 
             for (int i = 0; i < textureNames.Length; i++) {
                 if (textureNames[i] != null && modelNames[i] != null) {
