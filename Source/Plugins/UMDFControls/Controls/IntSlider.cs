@@ -10,19 +10,18 @@ using System.Globalization;
 
 namespace CodeImp.DoomBuilder.UDMFControls
 {
-    public partial class IntSlider : UserControl {
+    public partial class IntSlider : UserControl
+    {
 
         private bool blockEvents;
         public event EventHandler OnValueChanged;
 
         private int previousValue;
-        public int Value { 
-            get
-            { 
-                return (int)numericUpDown1.Value; 
+        public int Value {
+            get {
+                return (int)numericUpDown1.Value;
             }
-            set
-            {
+            set {
                 blockEvents = true;
 
                 previousValue = General.Clamp(value, (int)numericUpDown1.Minimum, (int)numericUpDown1.Maximum);
@@ -31,7 +30,8 @@ namespace CodeImp.DoomBuilder.UDMFControls
             }
         }
 
-        public int Delta { get { return trackBar1.Value - previousValue; }}
+        private int delta;
+        public int Delta { get { return delta; } }
 
         private bool showLabels;
         public bool ShowLabels {
@@ -44,13 +44,12 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 labelMax.Visible = showLabels;
             }
         }
-        
+
         public IntSlider() {
             InitializeComponent();
         }
 
         public void SetLimits(int min, int max) {
-            //bool blockEventsStatus = blockEvents;
             blockEvents = true;
 
             trackBar1.Value = General.Clamp(trackBar1.Value, min, max);
@@ -64,24 +63,24 @@ namespace CodeImp.DoomBuilder.UDMFControls
             numericUpDown1.Minimum = min;
             numericUpDown1.Maximum = max;
 
-            //blockEvents = blockEventsStatus;
             blockEvents = false;
         }
 
-//events
+        //events
         private void trackBar1_ValueChanged(object sender, EventArgs e) {
-            numericUpDown1.Value = ((TrackBar)sender).Value;
+            if (!blockEvents) numericUpDown1.Value = ((TrackBar)sender).Value;
         }
 
         private void numericUpDown1_ValueChanged(object sender, EventArgs e) {
-            int val = (int)((NumericUpDown)sender).Value;
+            int value = (int)((NumericUpDown)sender).Value;
+            delta = value - previousValue;
+            previousValue = value;
 
             if (!blockEvents && OnValueChanged != null)
                 OnValueChanged(this, EventArgs.Empty);
 
-            previousValue = trackBar1.Value;
             blockEvents = true;
-            trackBar1.Value = General.Clamp(val, trackBar1.Minimum, trackBar1.Maximum); //clamp it!
+            trackBar1.Value = General.Clamp(value, trackBar1.Minimum, trackBar1.Maximum);
             blockEvents = false;
         }
     }

@@ -1132,10 +1132,23 @@ namespace CodeImp.DoomBuilder.Rendering
                     foreach(KeyValuePair<Vector2D, Thing> group in thingsWithModel){
                         ModeldefEntry mde = General.Map.Data.ModeldefEntries[group.Value.Type];
 
-                        if (mde.Model != null)
-                            RenderModel(mde.Model, group.Key, group.Value.Angle + mde.Model.Angle, group.Value.Selected);
-                        else
+                        if (mde.Model != null) {//render model
+                            //wire color
+                            graphics.Shaders.Things2D.FillColor = group.Value.Selected ? General.Colors.Selection.ToColorValue() : General.Colors.ModelWireframe.ToColorValue();
+
+                            for (int i = 0; i < mde.Model.NUM_MESHES; i++) {
+                                graphics.Shaders.Things2D.SetTransformSettings(group.Key, group.Value.Angle, scale);
+                                graphics.Shaders.Things2D.ApplySettings();
+
+                                // Draw
+                                graphics.Device.SetStreamSource(0, mde.Model.Meshes[i].VertexBuffer, 0, WorldVertex.Stride);
+                                graphics.Device.Indices = mde.Model.Indeces2D[i];
+                                graphics.Device.DrawIndexedPrimitives(PrimitiveType.LineList, 0, 0, mde.Model.Meshes[i].VertexCount, 0, mde.Model.NumIndeces2D[i]);
+                            }
+
+                        } else {
                             group.Value.IsModel = General.Map.Data.LoadModelForThing(group.Value);
+                        }
                     }
                     graphics.Shaders.Things2D.EndPass();
                 }
@@ -1157,22 +1170,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			RenderThingsBatch(things, alpha, false, new PixelColor());
 		}
-
-        //mxd 
-        public void RenderModel(GZModel model, Vector2D modelPos, float modelAngle, bool selected) {
-            //wire color
-            graphics.Shaders.Things2D.FillColor = selected ? General.Colors.Selection.ToColorValue() : General.Colors.ModelWireframe.ToColorValue();
-
-            for (int i = 0; i < model.NUM_MESHES; i++) {
-                graphics.Shaders.Things2D.SetTransformSettings(modelPos, modelAngle, scale);
-                graphics.Shaders.Things2D.ApplySettings();
-
-                // Draw
-                graphics.Device.SetStreamSource(0, model.Meshes[i].VertexBuffer, 0, WorldVertex.Stride);
-                graphics.Device.Indices = model.Indeces2D[i];
-                graphics.Device.DrawIndexedPrimitives(PrimitiveType.LineList, 0, 0, model.Meshes[i].VertexCount, 0, model.NumIndeces2D[i]);
-            }
-        }
 		
 		#endregion
 

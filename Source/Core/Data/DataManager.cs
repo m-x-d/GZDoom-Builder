@@ -1458,6 +1458,7 @@ namespace CodeImp.DoomBuilder.Data
             }
             General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading model definitions...");
             loadModeldefs(createActorsByClassList());
+            LoadModels();
 
             //rebuild geometry if in Visual mode
             if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {

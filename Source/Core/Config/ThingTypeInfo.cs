@@ -284,7 +284,11 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Set sprite
 			string suitablesprite = actor.FindSuitableSprite();
-			if(!string.IsNullOrEmpty(suitablesprite)) sprite = suitablesprite;
+			if(!string.IsNullOrEmpty(suitablesprite)) 
+                sprite = suitablesprite;
+            else//mxd
+                sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
+
 			
 			if(this.sprite.Length <= 8)
 				this.spritelongname = Lump.MakeLongName(this.sprite);

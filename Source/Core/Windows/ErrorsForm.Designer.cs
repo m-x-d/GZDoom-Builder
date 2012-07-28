@@ -29,7 +29,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.copyselected = new System.Windows.Forms.Button();
             this.clearlist = new System.Windows.Forms.Button();
             this.close = new System.Windows.Forms.Button();
@@ -44,6 +44,7 @@ namespace CodeImp.DoomBuilder.Windows
             // copyselected
             // 
             this.copyselected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.copyselected.Enabled = false;
             this.copyselected.Location = new System.Drawing.Point(12, 416);
             this.copyselected.Name = "copyselected";
             this.copyselected.Size = new System.Drawing.Size(122, 25);
@@ -116,9 +117,9 @@ namespace CodeImp.DoomBuilder.Windows
             this.grid.Name = "grid";
             this.grid.ReadOnly = true;
             this.grid.RowHeadersVisible = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
-            dataGridViewCellStyle1.Padding = new System.Windows.Forms.Padding(2, 4, 2, 5);
-            this.grid.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
+            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(2, 4, 2, 5);
+            this.grid.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.grid.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.grid.ShowCellErrors = false;
@@ -128,6 +129,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.grid.Size = new System.Drawing.Size(732, 395);
             this.grid.StandardTab = true;
             this.grid.TabIndex = 5;
+            this.grid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grid_CellContentClick);
             // 
             // iconcolumn
             // 

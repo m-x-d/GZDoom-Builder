@@ -45,7 +45,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Variables
 
 		private Bitmap bmp;
-		private bool ispressed;
+		//private bool ispressed;
 		private bool ismouseinside;
 		private MouseButtons button;
 		protected bool allowclear;
@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// Image clicked
 		private void preview_Click(object sender, EventArgs e)
 		{
-			ispressed = false;
+			//ispressed = false;
 			preview.BackColor = SystemColors.Highlight;
 			ShowPreview(FindImage(name.Text));
 			if(button == MouseButtons.Right)
@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.Controls
 			button = e.Button;
 			if((button == MouseButtons.Left) || ((button == MouseButtons.Right) && allowclear))
 			{
-				ispressed = true;
+				//ispressed = true;
 				preview.BackColor = AdjustedColor(SystemColors.Highlight, 0.2f);
 				ShowPreview(FindImage(name.Text));
 			}
@@ -132,14 +132,14 @@ namespace CodeImp.DoomBuilder.Controls
 		// Mouse released
 		private void preview_MouseUp(object sender, MouseEventArgs e)
 		{
-			ispressed = false;
+			//ispressed = false;
 			ShowPreview(FindImage(name.Text));
 		}
 
 		// Mouse leaves
 		private void preview_MouseLeave(object sender, EventArgs e)
 		{
-			ispressed = false;
+			//ispressed = false;
 			ismouseinside = false;
 			preview.BackColor = SystemColors.AppWorkspace;
 		}

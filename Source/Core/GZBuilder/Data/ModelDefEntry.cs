@@ -22,6 +22,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
         internal Vector3 Scale;
         internal float zOffset;
 
+        internal float AngleOffset; //in radians
+        internal float PitchOffset; //in radians
+        internal float RollOffset; //in radians
+
         internal ModeldefEntry() {
             ModelNames = new List<string>();
             TextureNames = new List<string>();

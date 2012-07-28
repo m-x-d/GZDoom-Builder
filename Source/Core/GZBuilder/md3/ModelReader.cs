@@ -195,12 +195,49 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
             if (start + ofsNormal != br.BaseStream.Position)
                 br.BaseStream.Position = start + ofsNormal;
 
+            //rotation angles
+            float angleOfsetCos = (float)Math.Cos(mde.AngleOffset);
+            float angleOfsetSin = (float)Math.Sin(mde.AngleOffset);
+            float pitchOfsetCos = (float)Math.Cos(-mde.PitchOffset);
+            float pitchOfsetSin = (float)Math.Sin(-mde.PitchOffset);
+            float rollOfsetCos = (float)Math.Cos(mde.RollOffset);
+            float rollOfsetSin = (float)Math.Sin(mde.RollOffset);
+
             for (int i = vertexOffset; i < vertexOffset + numVerts; i++) {
                 WorldVertex v = vertList[i];
 
-                v.y = -(float)br.ReadInt16() / 64 * mde.Scale.X;
-                v.x = (float)br.ReadInt16() / 64 * mde.Scale.Y;
-                v.z = (float)br.ReadInt16() / 64 * mde.Scale.Z + mde.zOffset;
+                //read vertex
+                v.y = -(float)br.ReadInt16() / 64;
+                v.x = (float)br.ReadInt16() / 64;
+                v.z = (float)br.ReadInt16() / 64;
+
+                //rotate it
+                if (mde.AngleOffset != 0) {
+                    float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
+                    float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
+                    v.y = ry;
+                    v.x = rx;
+                }
+                if (mde.PitchOffset != 0) {
+                    float ry = pitchOfsetCos * v.y - pitchOfsetSin * v.z;
+                    float rz = pitchOfsetSin * v.y + pitchOfsetCos * v.z;
+                    v.z = rz;
+                    v.y = ry;
+                }
+                if (mde.RollOffset != 0) {
+                    float rx = rollOfsetCos * v.x - rollOfsetSin * v.z;
+                    float rz = rollOfsetSin * v.x + rollOfsetCos * v.z;
+                    v.z = rz;
+                    v.x = rx;
+                }
+
+                //scale it
+                v.y *= mde.Scale.X;
+                v.x *= mde.Scale.Y;
+                v.z *= mde.Scale.Z;
+
+                //add zOffset
+                v.z += mde.zOffset;
 
                 //bounding box
                 BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, v);
@@ -286,14 +323,49 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
                 s.Position += 16; //frame name
 
+                //rotation angles
+                float angle = mde.AngleOffset - 0.5f * (float)Math.PI; //subtract 90 degrees to get correct rotation
+                float angleOfsetCos = (float)Math.Cos(angle);
+                float angleOfsetSin = (float)Math.Sin(angle);
+                float pitchOfsetCos = (float)Math.Cos(-mde.PitchOffset);
+                float pitchOfsetSin = (float)Math.Sin(-mde.PitchOffset);
+                float rollOfsetCos = (float)Math.Cos(mde.RollOffset);
+                float rollOfsetSin = (float)Math.Sin(mde.RollOffset);
+
                 //verts
                 for (int i = 0; i < num_verts; i++) {
-                    //pos
                     WorldVertex v = new WorldVertex();
 
-                    v.x = ((float)br.ReadByte() * scale.X + translate.X) * mde.Scale.X;
-                    v.y = ((float)br.ReadByte() * scale.Y + translate.Y) * mde.Scale.Y;
-                    v.z = ((float)br.ReadByte() * scale.Z + translate.Z) * mde.Scale.Z + mde.zOffset;
+                    v.x = ((float)br.ReadByte() * scale.X + translate.X);
+                    v.y = ((float)br.ReadByte() * scale.Y + translate.Y);
+                    v.z = ((float)br.ReadByte() * scale.Z + translate.Z);
+
+                    //rotate it
+                    float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
+                    float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
+                    v.y = ry;
+                    v.x = rx;
+
+                    if (mde.PitchOffset != 0) {
+                        ry = pitchOfsetCos * v.y - pitchOfsetSin * v.z;
+                        float rz = pitchOfsetSin * v.y + pitchOfsetCos * v.z;
+                        v.z = rz;
+                        v.y = ry;
+                    }
+                    if (mde.RollOffset != 0) {
+                        rx = rollOfsetCos * v.x - rollOfsetSin * v.z;
+                        float rz = rollOfsetSin * v.x + rollOfsetCos * v.z;
+                        v.z = rz;
+                        v.x = rx;
+                    }
+
+                    //scale it
+                    v.x *= mde.Scale.X;
+                    v.y *= mde.Scale.Y;
+                    v.z *= mde.Scale.Z;
+
+                    //add zOffset
+                    v.z += mde.zOffset;
 
                     vertList.Add(v);
 
@@ -340,7 +412,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
                 mde.Model.Indeces2D.Add(indeces2d);
                 mde.Model.NumIndeces2D.Add((short)polyIndecesList.Count);
-                mde.Model.Angle = -90.0f * (float)Math.PI / 180.0f;
             }
             return "";
         }
