@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This check image data and returns the appropriate image reader
 		public static IImageReader GetImageReader(Stream data, int guessformat, Playpal palette)
 		{
-			BinaryReader bindata = new BinaryReader(data);
+			//BinaryReader bindata = new BinaryReader(data);
 			DoomPictureReader picreader;
 			DoomFlatReader flatreader;
 			DoomColormapReader colormapreader;

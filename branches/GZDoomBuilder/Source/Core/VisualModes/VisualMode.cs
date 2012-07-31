@@ -46,6 +46,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#region ================== Constants
 
 		private const float MOVE_SPEED_MULTIPLIER = 0.001f;
+        private const float SCALE_OFFSET = 1f / 1.2f;  //mxd GZDoom vertical scale hack
 		
 		#endregion
 
@@ -647,7 +648,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This picks an object from the scene
 		public VisualPickResult PickObject(Vector3D from, Vector3D to)
 		{
-			VisualPickResult result = new VisualPickResult();
+			//mxd GZDoom vertical scale hack 
+            to.z *= SCALE_OFFSET;
+            from.z *= SCALE_OFFSET;
+            
+            VisualPickResult result = new VisualPickResult();
 			Line2D ray2d = new Line2D(from, to);
 			Vector3D delta = to - from;
 			
