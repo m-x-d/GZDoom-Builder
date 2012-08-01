@@ -655,6 +655,7 @@
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />
     <None Include="Resources\Close.png" />
+    <Compile Include="Compilers\MacroCompiler.cs" />
     <Compile Include="Config\AllTexturesSet.cs" />
     <Compile Include="Config\TextureIndexInfo.cs" />
     <Compile Include="Config\FlagTranslation.cs" />

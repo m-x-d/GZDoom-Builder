@@ -173,7 +173,7 @@ namespace CodeImp.DoomBuilder.IO
 			ReadThings(map, firstindex);
 
             // Read macros
-            ReadMacros(map, firstindex);
+            //ReadMacros(map, firstindex);
 			
 			// Remove unused vertices
 			map.RemoveUnusedVertices();
@@ -753,7 +753,7 @@ namespace CodeImp.DoomBuilder.IO
 			
 			// Write lumps to wad (note the backwards order because they
 			// are all inserted at position+1 when not found)
-            WriteMacros(map, position, manager.Config.MapLumpNames);
+            //WriteMacros(map, position, manager.Config.MapLumpNames);
             WriteLights(map, position, manager.Config.MapLumpNames);
 			WriteSectors(map, position, manager.Config.MapLumpNames);
 			WriteVertices(map, position, manager.Config.MapLumpNames);
