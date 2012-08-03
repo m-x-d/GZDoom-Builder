@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.Windows
 				tabs.TabPages.Remove(tabcustom);
 
             // villsa
-            if (!General.Map.FormatInterface.InDoom64Mode)
+            //if (!General.Map.FormatInterface.InDoom64Mode)
                 tabs.TabPages.Remove(tabmacros);
 
 			customfrontbutton.Visible = General.Map.FormatInterface.HasCustomFields;
@@ -369,6 +369,7 @@ namespace CodeImp.DoomBuilder.Windows
                     if (l.Activate > 0)
                     {
                         // 20120219 villsa
+                        PreSetActivationFlag(activationtypemacro, l.Activate, 256);
                         PreSetActivationFlag(activationtypered, l.Activate, 512);
                         PreSetActivationFlag(activationtypeblue, l.Activate, 1024);
                         PreSetActivationFlag(activationtypeyellow, l.Activate, 2048);
@@ -466,6 +467,7 @@ namespace CodeImp.DoomBuilder.Windows
             foreach (Linedef l in lines)
             {
                 // 20120219 villsa
+                CheckActivationState(activationtypemacro, l.Activate, 256);
                 CheckActivationState(activationtypered, l.Activate, 512);
                 CheckActivationState(activationtypeblue, l.Activate, 1024);
                 CheckActivationState(activationtypeyellow, l.Activate, 2048);
@@ -473,6 +475,11 @@ namespace CodeImp.DoomBuilder.Windows
                 CheckActivationState(activationtypeshoot, l.Activate, 8192);
                 CheckActivationState(activationtypeuse, l.Activate, 16384);
                 CheckActivationState(activationtyperepeat, l.Activate, 32768);
+
+                if ((l.Activate & 256) == 256)
+                {
+                    action.Macro = true;
+                }
             }
 			
 			// Refresh controls so that they show their image
@@ -556,7 +563,13 @@ namespace CodeImp.DoomBuilder.Windows
 				if(activation.SelectedIndex > -1)
 					l.Activate = (activation.SelectedItem as LinedefActivateInfo).Index;
 
-                // 20120219 villsa
+                // 20120802 villsa
+                if (action.Value == 0 && activationtypemacro.Checked == true)
+                {
+                    activationtypemacro.Checked = false;
+                }
+
+                SetActivationFlag(l, activationtypemacro, 256);
                 SetActivationFlag(l, activationtypered, 512);
                 SetActivationFlag(l, activationtypeblue, 1024);
                 SetActivationFlag(l, activationtypeyellow, 2048);
@@ -662,12 +675,12 @@ namespace CodeImp.DoomBuilder.Windows
             if (General.Map.FormatInterface.InDoom64Mode)
             {
                 // 20120219 villsa - very ugly hack but it'll do for now...
-                if (action.Value >= 256 && tabs.SelectedTab.Text == "Macros")
+                /*if (action.Value >= 256 && tabs.SelectedTab.Text == "Macros")
                 {
                     int id = action.Value - 256;
 
                     General.Map.Map.Macros[id].SetDataFromTreeNode(mtree);
-                }
+                }*/
             }
 
 			// Update the used textures
@@ -829,7 +842,7 @@ namespace CodeImp.DoomBuilder.Windows
             if (!General.Map.FormatInterface.InDoom64Mode)
                 return;
 
-            if (e.TabPage.Text != "Macros")  // eek! hack
+            /*if (e.TabPage.Text != "Macros")  // eek! hack
             {
                 if (action.Value >= 256)
                 {
@@ -840,12 +853,12 @@ namespace CodeImp.DoomBuilder.Windows
                 }
 
                 return;
-            }
+            }*/
 
             // fill in macros
             mtree.Nodes.Clear();
 
-            if (action.Value >= 256)
+            /*if (action.Value >= 256)
             {
                 int id = action.Value - 256;
 
@@ -869,7 +882,7 @@ namespace CodeImp.DoomBuilder.Windows
                 mtagbutton.Enabled = false;
                 mapplytag.Enabled = false;
                 mtag.Enabled = false;
-            }
+            }*/
         }
 
         private void mdelete_Click(object sender, EventArgs e)
@@ -959,6 +972,12 @@ namespace CodeImp.DoomBuilder.Windows
                 this.chkSwitchTextureUpper.Checked = false;
                 this.chkSwitchTextureMiddle.Checked = false;
             }
+        }
+
+        private void activationtypemacro_CheckedChanged(object sender, EventArgs e)
+        {
+            action.Macro = this.activationtypemacro.Checked;
+            action.Refresh();
         }
 	}
 }

@@ -980,7 +980,7 @@ namespace CodeImp.DoomBuilder.Config
                 if (General.Map.FormatInterface.InDoom64Mode &&
                     (action >= 256 && action <= 511))
                 {
-                    return new LinedefActionInfo(action, "Macro", false, false);
+                    return new LinedefActionInfo(action - 255, "Macro", false, false);
                 }
                 
                 return new LinedefActionInfo(action, "Unknown", false, false);

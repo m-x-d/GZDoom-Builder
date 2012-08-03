@@ -38,11 +38,13 @@ namespace CodeImp.DoomBuilder.Controls
 		// Variables
 		private List<GeneralizedCategory> generalizedcategories;
 		private bool controlpressed = false;
+        private bool isamacro = false;  // villsa
 		
 		// Constants
 		private const string NUMBER_SEPERATOR = "\t";
 		
 		// Properties
+        public bool Macro { get { return isamacro; } set { isamacro = value; } } // villsa
 		public bool Empty { get { return (number.Text.Length == 0); } set { if(value) number.Text = ""; } }
 		public int Value { get { return GetValue(); } set { number.Text = value.ToString(); } }
 		public List<GeneralizedCategory> GeneralizedCategories { get { return generalizedcategories; } set { generalizedcategories = value; } }
@@ -124,16 +126,16 @@ namespace CodeImp.DoomBuilder.Controls
 						displayname = "";
 					else if(intnumber == 0)
 						displayname = "None";
+                    else if (isamacro == true)  // villsa
+                    {
+                        displayname = "Macro";
+                        number.Text = (intnumber - 255).ToString();
+                    }
                     else if ((generalizedcategories != null) && GameConfiguration.IsGeneralized(intnumber, generalizedcategories))
                         displayname = "Generalized (" + General.Map.Config.GetGeneralizedActionCategory(intnumber) + ")";
                     else
                     {
-                        // villsa
-                        if (General.Map.FormatInterface.InDoom64Mode &&
-                            (intnumber >= 256 && intnumber <= 511))
-                            displayname = "Macro";
-                        else
-                            displayname = "Unknown";
+                        displayname = "Unknown";
                     }
 				}
 				// In the display part of the combobox?
@@ -141,7 +143,11 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Show without number
 					item = (INumberedTitle)list.Items[e.Index];
-					displayname = item.Title.Trim();
+
+                    if (isamacro == true)   // villsa
+                        displayname = "Macro";
+                    else
+                        displayname = item.Title.Trim();
 
 					// Determine colors to use
 					if(item.Index == 0)
@@ -161,7 +167,11 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Use number and description
 					item = (INumberedTitle)list.Items[e.Index];
-					displayname = item.Index + NUMBER_SEPERATOR + item.Title;
+
+                    if (isamacro == true)   // villsa
+                        displayname = "Macro";
+                    else
+                        displayname = item.Index + NUMBER_SEPERATOR + item.Title;
 
 					// Determine colors to use
 					if((e.State & DrawItemState.Focus) != 0)

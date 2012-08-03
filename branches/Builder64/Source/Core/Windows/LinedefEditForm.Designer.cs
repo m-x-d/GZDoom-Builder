@@ -86,6 +86,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.chkSwitchTextureUpper = new System.Windows.Forms.CheckBox();
             this.chkSwitchDisplayUpper = new System.Windows.Forms.CheckBox();
             this.activationtype = new System.Windows.Forms.GroupBox();
+            this.activationtypemacro = new System.Windows.Forms.CheckBox();
             this.activationtyperepeat = new System.Windows.Forms.CheckBox();
             this.activationtypeyellow = new System.Windows.Forms.CheckBox();
             this.activationtypered = new System.Windows.Forms.CheckBox();
@@ -570,6 +571,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.action.Empty = false;
             this.action.GeneralizedCategories = null;
             this.action.Location = new System.Drawing.Point(62, 27);
+            this.action.Macro = false;
             this.action.Name = "action";
             this.action.Size = new System.Drawing.Size(401, 21);
             this.action.TabIndex = 0;
@@ -774,6 +776,7 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // activationtype
             // 
+            this.activationtype.Controls.Add(this.activationtypemacro);
             this.activationtype.Controls.Add(this.activationtyperepeat);
             this.activationtype.Controls.Add(this.activationtypeyellow);
             this.activationtype.Controls.Add(this.activationtypered);
@@ -788,6 +791,17 @@ namespace CodeImp.DoomBuilder.Windows
             this.activationtype.TabStop = false;
             this.activationtype.Text = "Activation Type";
             this.activationtype.Visible = false;
+            // 
+            // activationtypemacro
+            // 
+            this.activationtypemacro.AutoSize = true;
+            this.activationtypemacro.Location = new System.Drawing.Point(284, 43);
+            this.activationtypemacro.Name = "activationtypemacro";
+            this.activationtypemacro.Size = new System.Drawing.Size(56, 18);
+            this.activationtypemacro.TabIndex = 7;
+            this.activationtypemacro.Text = "Macro";
+            this.activationtypemacro.UseVisualStyleBackColor = true;
+            this.activationtypemacro.CheckedChanged += new System.EventHandler(this.activationtypemacro_CheckedChanged);
             // 
             // activationtyperepeat
             // 
@@ -1339,5 +1353,6 @@ namespace CodeImp.DoomBuilder.Windows
         private System.Windows.Forms.CheckBox chkSwitchDisplayMiddle;
         private System.Windows.Forms.CheckBox chkSwitchTextureUpper;
         private System.Windows.Forms.CheckBox chkSwitchDisplayUpper;
+        private System.Windows.Forms.CheckBox activationtypemacro;
 	}
 }
