@@ -7,10 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuilderModes", "..\Plugins\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GZDoomEditing", "..\Plugins\GZDoomEditing\GZDoomEditing.csproj", "{760A9BC7-CB73-4C36-858B-994C14996FCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UDMFControls", "..\Plugins\UMDFControls\UDMFControls.csproj", "{2D11C828-295C-463A-8545-CA1AD6D51518}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagExplorer", "..\Plugins\TagExplorer\TagExplorer.csproj", "{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,28 +47,6 @@ Global
 		{760A9BC7-CB73-4C36-858B-994C14996FCD}.Release|Mixed Platforms.Build.0 = Release|x86
 		{760A9BC7-CB73-4C36-858B-994C14996FCD}.Release|x86.ActiveCfg = Release|x86
 		{760A9BC7-CB73-4C36-858B-994C14996FCD}.Release|x86.Build.0 = Release|x86
-		{2D11C828-295C-463A-8545-CA1AD6D51518}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D11C828-295C-463A-8545-CA1AD6D51518}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2D11C828-295C-463A-8545-CA1AD6D51518}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{2D11C828-295C-463A-8545-CA1AD6D51518}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{2D11C828-295C-463A-8545-CA1AD6D51518}.Debug|x86.ActiveCfg = Debug|x86
-		{2D11C828-295C-463A-8545-CA1AD6D51518}.Debug|x86.Build.0 = Debug|x86
-		{2D11C828-295C-463A-8545-CA1AD6D51518}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2D11C828-295C-463A-8545-CA1AD6D51518}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2D11C828-295C-463A-8545-CA1AD6D51518}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{2D11C828-295C-463A-8545-CA1AD6D51518}.Release|Mixed Platforms.Build.0 = Release|x86
-		{2D11C828-295C-463A-8545-CA1AD6D51518}.Release|x86.ActiveCfg = Release|x86
-		{2D11C828-295C-463A-8545-CA1AD6D51518}.Release|x86.Build.0 = Release|x86
-		{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}.Debug|x86.ActiveCfg = Debug|x86
-		{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}.Debug|x86.Build.0 = Debug|x86
-		{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}.Release|Any CPU.ActiveCfg = Release|x86
-		{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}.Release|Mixed Platforms.Build.0 = Release|x86
-		{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}.Release|x86.ActiveCfg = Release|x86
-		{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

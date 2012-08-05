@@ -645,12 +645,22 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		#region ================== Object Picking
 
+		//mxd
+		public VisualPickResult PickObject(Vector3D from, Vector3D to) {
+			return PickObject(from, to, true);
+		}
+
 		// This picks an object from the scene
-		public VisualPickResult PickObject(Vector3D from, Vector3D to)
+		public VisualPickResult PickObject(Vector3D from, Vector3D to, bool scaleHack)
 		{
 			//mxd GZDoom vertical scale hack 
-            to.z *= SCALE_OFFSET;
-            from.z *= SCALE_OFFSET;
+			Vector3D from_orig = from;
+			Vector3D to_orig = to;
+
+			if(scaleHack) {
+				to.z *= SCALE_OFFSET;
+				from.z *= SCALE_OFFSET;
+			}
             
             VisualPickResult result = new VisualPickResult();
 			Line2D ray2d = new Line2D(from, to);
@@ -812,7 +822,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 			
 			// Setup final result
 			result.hitpos = from + to * result.u_ray;
-			
+
+			//mxd. Hackish way to select Things correctly
+			if(scaleHack && result.picked is VisualThing)
+				return PickObject(from_orig, to_orig, false);
+
 			// Done
 			return result;
 		}

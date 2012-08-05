@@ -527,7 +527,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.World3D.Begin();
 
 			// SOLID PASS
-			world = Matrix.Identity;
+			//world = Matrix.Identity;
+            world = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.2f)); //mxd. GZDoom vertical scale hack
 			ApplyMatrices3D();
 			RenderSinglePass((int)RenderPass.Solid);
 
@@ -538,12 +539,14 @@ namespace CodeImp.DoomBuilder.Rendering
             graphics.Device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
 
 			// MASK PASS
-            world = Matrix.Identity;
+            //world = Matrix.Identity;
+            world = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.2f)); //mxd. GZDoom vertical scale hack
             ApplyMatrices3D();
             RenderSinglePass((int)RenderPass.Mask);
 
             // ALPHA PASS
-            world = Matrix.Identity;
+            //world = Matrix.Identity;
+            world = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.2f)); //mxd. GZDoom vertical scale hack
             ApplyMatrices3D();
             graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
             graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
@@ -556,14 +559,17 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(renderthingcages) RenderThingCages();
 
 			// ADDITIVE PASS
-			world = Matrix.Identity;
+			//world = Matrix.Identity;
+            world = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.2f)); //mxd. GZDoom vertical scale hack
 			ApplyMatrices3D();
 			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
 			RenderSinglePass((int)RenderPass.Additive);
 
             //mxd. LIGHT PASS
-            if (General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0 && litGeometry.Count > 0)
+            if (General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0 && litGeometry.Count > 0) {
+                world = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.2f)); //mxd. GZDoom vertical scale hack
                 RenderLights(litGeometry, thingsWithLight);
+            }
 			
 			// Remove references
 			graphics.Shaders.World3D.Texture1 = null;
@@ -571,10 +577,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Done
 			graphics.Shaders.World3D.End();
 			geometry = null;
-
-            //dbg
-            //GZBuilder.GZGeneral.TraceLine("Affected by lights: "+totalGeo+"; skipped: "+geoSkipped+"; total things:"+totalThings);
-            //GZBuilder.GZGeneral.TraceInHeader("FPS:" + calculateFrameRate());
 		}
 
         //mxd
@@ -742,10 +744,6 @@ namespace CodeImp.DoomBuilder.Rendering
                                 litGeometry[curtexture.Texture].Add(g);
                             }
                         }
-    
-                        //mxd. Scale everything to match GZDoom's wicked way of rendering
-                        world = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.2f));
-                        ApplyMatrices3D();
 
 						// Switch shader pass?
 						if(currentshaderpass != wantedshaderpass)
@@ -818,70 +816,70 @@ namespace CodeImp.DoomBuilder.Rendering
                             //mxd
                             if (General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected) && t.Thing.IsModel)
                                 continue;
-                            
+
                             // Update buffer if needed
-                                t.Update();
+                            t.Update();
 
-                                // Only do this sector when a vertexbuffer is created
-                                if (t.GeometryBuffer != null) {
-                                    // Determine the shader pass we want to use for this object
-                                    int wantedshaderpass = (((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass;
+                            // Only do this sector when a vertexbuffer is created
+                            if (t.GeometryBuffer != null) {
+                                // Determine the shader pass we want to use for this object
+                                int wantedshaderpass = (((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass;
 
-                                    //mxd. if fog is enagled, switch to shader, which calculates it
-                                    if (General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && t.Thing.Sector.Brightness < 248)
-                                        wantedshaderpass += 8;
+                                //mxd. if fog is enagled, switch to shader, which calculates it
+                                if (General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && t.Thing.Sector.Brightness < 248)
+                                    wantedshaderpass += 8;
 
-                                    //mxd. if current thing is light - set it's color to light color
-                                    if (Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness) {
-                                        wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
-                                        graphics.Shaders.World3D.VertexColor = t.LightColor;
+                                //mxd. if current thing is light - set it's color to light color
+                                if (Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness) {
+                                    wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
+                                    graphics.Shaders.World3D.VertexColor = t.LightColor;
                                     //mxd. check if Thing is affected by dynamic lights and set color accordingly
-                                    }else if (General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0) {
-                                        Color4 litColor = getLitColorForThing(t);
-                                        if (litColor.ToArgb() != 0) {
-                                            wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
-                                            graphics.Shaders.World3D.VertexColor = new Color4(t.VertexColor) + litColor;
-                                        }
+                                } else if (General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0) {
+                                    Color4 litColor = getLitColorForThing(t);
+                                    if (litColor.ToArgb() != 0) {
+                                        wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
+                                        graphics.Shaders.World3D.VertexColor = new Color4(t.VertexColor) + litColor;
                                     }
-
-                                    // Switch shader pass?
-                                    if (currentshaderpass != wantedshaderpass) {
-                                        graphics.Shaders.World3D.EndPass();
-                                        graphics.Shaders.World3D.BeginPass(wantedshaderpass);
-                                        currentshaderpass = wantedshaderpass;
-                                    }
-
-                                    // Set the colors to use
-                                    if (!graphics.Shaders.Enabled) {
-                                        graphics.Device.SetTexture(2, (t.Selected && showselection) ? selectionimage.Texture : null);
-                                        graphics.Device.SetTexture(3, ((t == highlighted) && showhighlight) ? highlightimage.Texture : null);
-                                    } else {
-                                        graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection)).ToArgb());
-                                    }
-
-                                    // Create the matrix for positioning / rotation
-                                    world = t.Orientation;
-                                    if (t.Billboard) world = Matrix.Multiply(world, billboard);
-                                    world = Matrix.Multiply(world, t.ScaledPosition); //mxd. GZDoom vertical scale hack
-                                    ApplyMatrices3D();
-
-                                    //mxd. set variables for fog rendering
-                                    if (wantedshaderpass > 7) {
-                                        graphics.Shaders.World3D.World = world;
-
-                                        bool sectorHasFogColor = getFogColor(t.Thing.Sector, out fogColor);
-                                        graphics.Shaders.World3D.LightColor = fogColor;
-                                        graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(t.Thing.Sector, sectorHasFogColor));
-                                    }
-
-                                    graphics.Shaders.World3D.ApplySettings();
-
-                                    // Apply buffer
-                                    graphics.Device.SetStreamSource(0, t.GeometryBuffer, 0, WorldVertex.Stride);
-
-                                    // Render!
-                                    graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, t.Triangles);
                                 }
+
+                                // Switch shader pass?
+                                if (currentshaderpass != wantedshaderpass) {
+                                    graphics.Shaders.World3D.EndPass();
+                                    graphics.Shaders.World3D.BeginPass(wantedshaderpass);
+                                    currentshaderpass = wantedshaderpass;
+                                }
+
+                                // Set the colors to use
+                                if (!graphics.Shaders.Enabled) {
+                                    graphics.Device.SetTexture(2, (t.Selected && showselection) ? selectionimage.Texture : null);
+                                    graphics.Device.SetTexture(3, ((t == highlighted) && showhighlight) ? highlightimage.Texture : null);
+                                } else {
+                                    graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection)).ToArgb());
+                                }
+
+                                // Create the matrix for positioning / rotation
+                                world = t.Orientation;
+                                if (t.Billboard) world = Matrix.Multiply(world, billboard);
+                                world = Matrix.Multiply(world, t.ScaledPosition); //mxd. GZDoom vertical scale hack
+                                ApplyMatrices3D();
+
+                                //mxd. set variables for fog rendering
+                                if (wantedshaderpass > 7) {
+                                    graphics.Shaders.World3D.World = world;
+
+                                    bool sectorHasFogColor = getFogColor(t.Thing.Sector, out fogColor);
+                                    graphics.Shaders.World3D.LightColor = fogColor;
+                                    graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(t.Thing.Sector, sectorHasFogColor));
+                                }
+
+                                graphics.Shaders.World3D.ApplySettings();
+
+                                // Apply buffer
+                                graphics.Device.SetStreamSource(0, t.GeometryBuffer, 0, WorldVertex.Stride);
+
+                                // Render!
+                                graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, t.Triangles);
+                            }
 						}
 					}
 				}
@@ -927,7 +925,6 @@ namespace CodeImp.DoomBuilder.Rendering
                                 if (lpr.W == 0)
                                     continue;
                                 graphics.Shaders.World3D.LightColor = lights[i].LightColor;
-                                //graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
                                 graphics.Shaders.World3D.LightPositionAndRadius = lpr;
                                 graphics.Shaders.World3D.ApplySettings();
                                 graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
@@ -942,12 +939,10 @@ namespace CodeImp.DoomBuilder.Rendering
 
                         for (i = lightOffsets[0]; i < count; i++) {
                             if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
-                                //lpr = lights[i].LightPositionAndRadius;
                                 lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
                                 if (lpr.W == 0)
                                     continue;
                                 graphics.Shaders.World3D.LightColor = lights[i].LightColor;
-                                //graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
                                 graphics.Shaders.World3D.LightPositionAndRadius = lpr;
                                 graphics.Shaders.World3D.ApplySettings();
                                 graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
@@ -962,13 +957,11 @@ namespace CodeImp.DoomBuilder.Rendering
 
                         for (i = lightOffsets[0] + lightOffsets[1]; i < count; i++) {
                             if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
-                                //lpr = lights[i].LightPositionAndRadius;
                                 lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
                                 if (lpr.W == 0)
                                     continue;
                                 Color4 lc = lights[i].LightColor;
                                 graphics.Shaders.World3D.LightColor = new Color4(lc.Alpha, (lc.Green + lc.Blue) / 2, (lc.Red + lc.Blue) / 2, (lc.Green + lc.Red) / 2);
-                                //graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
                                 graphics.Shaders.World3D.LightPositionAndRadius = lpr;
                                 graphics.Shaders.World3D.ApplySettings();
                                 graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
@@ -980,9 +973,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
             graphics.Shaders.World3D.EndPass();
             graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
-
-            //dbg
-            //GZBuilder.GZGeneral.TraceLine("Lit " + gcount + " geometries; Lights: [" + lightOffsets[0] + ";" + lightOffsets[1] + ";" + lightOffsets[2] + "]" + Environment.NewLine + "Models count: " + thingsWithModel.Count);
         }
 
         //mxd. render models
@@ -1033,7 +1023,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
                     // Create the matrix for positioning / rotation
                     world = Matrix.Multiply(t.Orientation, Matrix.RotationZ(t.Thing.Angle));
-                    world = Matrix.Multiply(world, t.Position);
+                    world = Matrix.Multiply(world, t.ScaledPosition); //mxd. GZDoom vertical scale hack
                     ApplyMatrices3D();
 
                     //mxd. set variables for fog rendering
@@ -1212,10 +1202,7 @@ namespace CodeImp.DoomBuilder.Rendering
             Vector3D camNormal = Vector3D.FromAngleXYZ(General.Map.VisualCamera.AngleXY, General.Map.VisualCamera.AngleZ);
             Vector3D thingNormal = D3DDevice.V3D(bbox[0]) - cameraposition; //bbox[0] is always thing center
 
-            if (Vector3D.DotProduct(camNormal, thingNormal) < 0) { //behind camera plane
-                //GZBuilder.GZGeneral.Trace("Skipped geo. Vector3D.DotProduct(camNormal, thingNormal) < 0");
-                return false;
-            }
+            if (Vector3D.DotProduct(camNormal, thingNormal) < 0) return false; //behind camera plane
 
             int len = bbox.Length;
             Vector3 screenPos;
@@ -1245,12 +1232,8 @@ namespace CodeImp.DoomBuilder.Rendering
                     bottomCount++;
             }
 
-            if (behindCount == len || leftCount == len || rightCount == len || topCount == len || bottomCount == len) {
-                //dbg
-                //GZBuilder.GZGeneral.Trace("Skipped geo. Not on screen");
-                return false; //Not on screen
-            }
-            return true;
+            bool notOnScreen = (behindCount == len || leftCount == len || rightCount == len || topCount == len || bottomCount == len);
+            return !notOnScreen;
         }
 
         //mxd

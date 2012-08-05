@@ -551,7 +551,9 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Find the lump anywhere
 				lump = file.FindLump(pname);
-				if(lump != null) return lump.Stream;
+                if (lump != null) {
+                    return lump.Stream;
+                }
 			}
 			
 			return null;

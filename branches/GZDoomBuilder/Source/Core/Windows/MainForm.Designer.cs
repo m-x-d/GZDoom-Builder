@@ -190,7 +190,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.dockersspace = new System.Windows.Forms.Panel();
             this.dockerspanel = new CodeImp.DoomBuilder.Controls.DockersControl();
             this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
-            this.warntimer = new System.Windows.Forms.Timer(this.components);
+            this.warnsTimer = new System.Windows.Forms.Timer(this.components);
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -1745,10 +1745,10 @@ namespace CodeImp.DoomBuilder.Windows
             this.dockerscollapser.Interval = 200;
             this.dockerscollapser.Tick += new System.EventHandler(this.dockerscollapser_Tick);
             // 
-            // warntimer
+            // warnsTimer
             // 
-            this.warntimer.Interval = 500;
-            this.warntimer.Tick += new System.EventHandler(this.warntimer_Tick);
+            this.warnsTimer.Interval = 500;
+            this.warnsTimer.Tick += new System.EventHandler(this.warnsTimer_Tick);
             // 
             // MainForm
             // 
@@ -1944,10 +1944,10 @@ namespace CodeImp.DoomBuilder.Windows
         private System.Windows.Forms.ToolStripButton buttontogglefx;
         private System.Windows.Forms.ToolStripButton buttontogglefog;
         private System.Windows.Forms.ToolStripStatusLabel warnsLabel;
-        private System.Windows.Forms.Timer warntimer;
         private System.Windows.Forms.ToolStripMenuItem itemReloadModedef;
         private System.Windows.Forms.ToolStripMenuItem itemReloadGldefs;
         private System.Windows.Forms.ToolStripMenuItem itemReloadMapinfo;
         private System.Windows.Forms.ToolStripSeparator separatorDrawModes;
+        private System.Windows.Forms.Timer warnsTimer;
 	}
 }

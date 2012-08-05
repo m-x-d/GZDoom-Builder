@@ -1456,6 +1456,9 @@ namespace CodeImp.DoomBuilder.Data
                 foreach (KeyValuePair<int, ModeldefEntry> group in modeldefEntries)
                     group.Value.Dispose();
             }
+
+            foreach (Thing t in General.Map.Map.Things) t.IsModel = false; //drop model flag
+
             General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading model definitions...");
             loadModeldefs(createActorsByClassList());
             LoadModels();
@@ -1503,6 +1506,8 @@ namespace CodeImp.DoomBuilder.Data
                 GZBuilder.GZGeneral.Trace("Warning: current game has no Actors!");
                 return;
             }
+
+			foreach(Thing t in General.Map.Map.Things) t.IsModel = false; //drop model flag
 
             Dictionary<string, ModeldefEntry> modelDefEntriesByName = new Dictionary<string, ModeldefEntry>();
             ModeldefParser mdeParser = new ModeldefParser();

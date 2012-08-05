@@ -521,7 +521,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		}
 
         //mxd
-        public virtual void OnMove(Vector3D newPosition) {
+        public void OnMove(Vector3D newPosition) {
             if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
                 undoticket = mode.CreateUndo("Move thing");
             Thing.Move(newPosition);
@@ -536,6 +536,15 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
                 }
             }
 
+            this.Changed = true;
+        }
+
+        //mxd
+        public void OnRotate(int ammount) {
+            if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+                undoticket = mode.CreateUndo("Rotate thing");
+            Thing.Rotate(ammount);
+            mode.SetActionResult("Changed thing rotation to " + Thing.AngleDoom.ToString() + ".");
             this.Changed = true;
         }
 		

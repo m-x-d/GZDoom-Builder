@@ -35,12 +35,15 @@ namespace CodeImp.DoomBuilder.IO
 {
 	internal unsafe class UnknownImageReader : IImageReader
 	{
-		#region ================== Constructor / Disposer
+        public uint ImageType { get; private set; } //mxd
+        
+        #region ================== Constructor / Disposer
 
 		// Constructor
 		public UnknownImageReader()
 		{
-			// We have no destructor
+            ImageType = DevilImageType.IL_TYPE_UNKNOWN;//mxd
+            // We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
