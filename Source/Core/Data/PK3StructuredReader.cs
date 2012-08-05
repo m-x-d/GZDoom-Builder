@@ -181,9 +181,10 @@ namespace CodeImp.DoomBuilder.Data
 				AddImagesToList(images, collection);
 			}
 			
+			//mxd
 			// Add images from texture directory
-			collection = LoadDirectoryImages(TEXTURES_DIR, ImageDataFormat.DOOMPICTURE, true);
-			AddImagesToList(images, collection);
+			//collection = LoadDirectoryImages(TEXTURES_DIR, ImageDataFormat.DOOMPICTURE, true);
+			//AddImagesToList(images, collection);
 			
 			// Load TEXTURE1 lump file
 			imgset.Clear();
@@ -207,9 +208,10 @@ namespace CodeImp.DoomBuilder.Data
 			// Add images from TEXTURE1 and TEXTURE2 lump files
 			AddImagesToList(images, imgset);
 			
-			// Load TEXTURES lump file
+			// Load TEXTURES lump files
 			imgset.Clear();
-			string[] alltexturefiles = GetAllFilesWithTitle("", "TEXTURES", false);
+			//string[] alltexturefiles = GetAllFilesWithTitle("", "TEXTURES", false);
+            string[] alltexturefiles = GetAllFilesWhichTitleStartsWith("", "TEXTURES"); //mxd
 			foreach(string texturesfile in alltexturefiles)
 			{
 				MemoryStream filedata = LoadFile(texturesfile);
@@ -219,6 +221,10 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Add images from TEXTURES lump file
 			AddImagesToList(images, imgset);
+
+			//mxd. Add images from texture directory. Textures defined in TEXTURES override ones in "textures" folder
+			collection = LoadDirectoryImages(TEXTURES_DIR, ImageDataFormat.DOOMPICTURE, true);
+			AddImagesToList(images, collection);
 			
 			// Add images to the container-specific texture set
 			foreach(ImageData img in images.Values)
@@ -578,6 +584,9 @@ namespace CodeImp.DoomBuilder.Data
 
 		// This must return all files in a given directory that have the given file title
 		protected abstract string[] GetAllFilesWithTitle(string path, string title, bool subfolders);
+
+        //mxd. This must return all files in a given directory which title starts with given title
+        protected abstract string[] GetAllFilesWhichTitleStartsWith(string path, string title);
 
 		// This must return all files in a given directory that match the given extension
 		protected abstract string[] GetFilesWithExt(string path, string extension, bool subfolders);

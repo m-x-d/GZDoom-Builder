@@ -158,7 +158,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private int lockupdatecount;
 
         //mxd
-        private bool warnStatus; //status of warnings panel icon
+        private int warningsCount;
 		
 		#endregion
 
@@ -2687,21 +2687,16 @@ namespace CodeImp.DoomBuilder.Windows
 
         //mxd. Warnings panel
         internal void SetWarningsCount(int count) {
-            if (count == 0) {
-                if (warnsLabel.Font.Bold) {
-                    warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);
-                    warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
-                    warnsLabel.BackColor = SystemColors.Control;
-                }
-                warntimer.Stop();
-                warnStatus = false;
-            } else if (!warnsLabel.Font.Bold) {
+            warningsCount = count;
+
+            if (warningsCount > 0 && !warnsLabel.Font.Bold)
                 warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Bold);
-                warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
-                warnStatus = true;
-                warntimer.Start();
+
+            warnsLabel.Text = warningsCount.ToString();
+            if (!warnsTimer.Enabled) {
+                warnsTimer.Enabled = true;
+                Console.WriteLine("warntimer Enabled");
             }
-            warnsLabel.Text = count.ToString();
         }
 
         //mxd
@@ -2710,15 +2705,25 @@ namespace CodeImp.DoomBuilder.Windows
         }
 
         //mxd
-        private void warntimer_Tick(object sender, EventArgs e) {
-            if (warnStatus) {
-                warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
-                warnsLabel.BackColor = Color.Red;
+        private void warnsTimer_Tick(object sender, EventArgs e) {
+            Console.WriteLine("warntimer_Tick");
+
+            if (warningsCount > 0) {
+                if (warnsLabel.BackColor == Color.Red) {
+                    warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);
+                    warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
+                    warnsLabel.BackColor = SystemColors.Control;
+                } else {
+                    warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Bold);
+                    warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+                    warnsLabel.BackColor = Color.Red;
+                }
             } else {
-                warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+                warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);
+                warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
                 warnsLabel.BackColor = SystemColors.Control;
+                warnsTimer.Stop();
             }
-            warnStatus = !warnStatus;
         }
 		
 		#endregion

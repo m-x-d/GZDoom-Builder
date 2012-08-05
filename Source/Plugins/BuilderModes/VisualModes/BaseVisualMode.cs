@@ -439,7 +439,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
                 return;
             }
 
-            PreAction(UndoGroup.SectorHeightChange);
+            PreAction(UndoGroup.ThingMove);
 
             Vector3D[] coords = new Vector3D[visualThings.Count];
             for (int i = 0; i < visualThings.Count; i++)
@@ -1496,6 +1496,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
                     blockmap.AddThing(t);
                 }
             }
+            PostAction();
+        }
+
+        //mxd. rotate clockwise
+        [BeginAction("rotatethingscw")]
+        public void RotateThingsCW() {
+            List<VisualThing> things = GetSelectedVisualThings(true);
+
+            PreAction(UndoGroup.ThingRotate);
+
+            if (things.Count == 0) {
+                General.Interface.DisplayStatus(StatusType.Warning, "Select some Things first!");
+                return;
+            }
+
+            foreach (VisualThing t in things)
+                ((BaseVisualThing)t).OnRotate(General.ClampAngle(t.Thing.AngleDoom + 5));
+
+            PostAction();
+        }
+
+        //mxd. rotate counterclockwise
+        [BeginAction("rotatethingsccw")]
+        public void RotateThingsCCW() {
+            List<VisualThing> things = GetSelectedVisualThings(true);
+
+            PreAction(UndoGroup.ThingRotate);
+
+            if (things.Count == 0) {
+                General.Interface.DisplayStatus(StatusType.Warning, "Select some Things first!");
+                return;
+            }
+
+            foreach (VisualThing t in things)
+                ((BaseVisualThing)t).OnRotate(General.ClampAngle(t.Thing.AngleDoom - 5));
+
             PostAction();
         }
 		

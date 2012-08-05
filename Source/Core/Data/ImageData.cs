@@ -54,8 +54,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected Vector2D scale;
 		protected bool worldpanning;
 		protected bool usecolorcorrection;
-        //mxd
-        protected string fullName; //name with path;
+        protected string fullName; //mxd. name with path;
 		
 		// Loading
 		private volatile ImageLoadState previewstate;

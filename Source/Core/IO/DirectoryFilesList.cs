@@ -167,6 +167,17 @@ namespace CodeImp.DoomBuilder.IO
 			}
 		}
 
+        //mxd. This returns a list of all files that are in the given path and which names starts with title
+        public List<string> GetAllFilesWhichTitleStartsWith(string path, string title) {
+            path = CorrectPath(path).ToLowerInvariant();
+            title = title.ToLowerInvariant();
+            List<string> files = new List<string>(entries.Length);
+            for (int i = 0; i < entries.Length; i++)
+                if ((entries[i].path == path) && (entries[i].filetitle.StartsWith(title)))
+                    files.Add(entries[i].filepathname);
+            return files;
+        }
+
 		// This returns a list of all files that are in the given path and subdirectories and have the given extension
 		public List<string> GetAllFiles(string path, string extension)
 		{

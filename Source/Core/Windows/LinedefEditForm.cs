@@ -340,9 +340,6 @@ namespace CodeImp.DoomBuilder.Windows
 
             //update arg0str items
             if (General.Map.NamedScripts.Count > 0) {
-                //dbg
-                GZBuilder.GZGeneral.Trace("Got " + General.Map.NamedScripts.Count + " script names");
-
                 ScriptItem[] sn = new ScriptItem[General.Map.NamedScripts.Count];
                 General.Map.NamedScripts.CopyTo(sn, 0);
                 arg0str.Items.AddRange(sn);
@@ -354,11 +351,7 @@ namespace CodeImp.DoomBuilder.Windows
                     }
                 }
 
-                //int index = General.Map.NamedScripts.IndexOf(selectedValue);
-                //if (index != -1)
-                   // arg0str.SelectedIndex = index;
-            }
-            else {
+            } else {
                 arg0str.Text = selectedValue;
             }
         }
