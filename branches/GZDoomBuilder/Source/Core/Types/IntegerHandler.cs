@@ -91,6 +91,7 @@ namespace CodeImp.DoomBuilder.Types
 			}
 		}
 
+		//mxd
         public override void SetDefaultValue() {
             value = defaultValue;
         }

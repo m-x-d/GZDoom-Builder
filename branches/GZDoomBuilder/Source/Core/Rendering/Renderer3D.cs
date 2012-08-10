@@ -513,7 +513,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This ends rendering world geometry
 		public void FinishGeometry()
 		{
-            //mxd. sort lights
+			//mxd. sort lights
             if (General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0)
                 updateLights();
             
@@ -527,8 +527,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.World3D.Begin();
 
 			// SOLID PASS
-			//world = Matrix.Identity;
-            world = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.2f)); //mxd. GZDoom vertical scale hack
+			world = Matrix.Identity;
 			ApplyMatrices3D();
 			RenderSinglePass((int)RenderPass.Solid);
 
@@ -539,14 +538,12 @@ namespace CodeImp.DoomBuilder.Rendering
             graphics.Device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
 
 			// MASK PASS
-            //world = Matrix.Identity;
-            world = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.2f)); //mxd. GZDoom vertical scale hack
+            world = Matrix.Identity;
             ApplyMatrices3D();
             RenderSinglePass((int)RenderPass.Mask);
 
             // ALPHA PASS
-            //world = Matrix.Identity;
-            world = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.2f)); //mxd. GZDoom vertical scale hack
+            world = Matrix.Identity;
             ApplyMatrices3D();
             graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
             graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
@@ -559,15 +556,13 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(renderthingcages) RenderThingCages();
 
 			// ADDITIVE PASS
-			//world = Matrix.Identity;
-            world = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.2f)); //mxd. GZDoom vertical scale hack
+			world = Matrix.Identity;
 			ApplyMatrices3D();
 			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
 			RenderSinglePass((int)RenderPass.Additive);
 
             //mxd. LIGHT PASS
             if (General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0 && litGeometry.Count > 0) {
-                world = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.2f)); //mxd. GZDoom vertical scale hack
                 RenderLights(litGeometry, thingsWithLight);
             }
 			
@@ -629,7 +624,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
             foreach (VisualThing t in thingsbydistance) {
                 // Setup matrix
-                world = Matrix.Multiply(t.CageScales, t.ScaledPosition); //mxd. GZDoom vertical scale hack
+                world = Matrix.Multiply(t.CageScales, t.Position);
                 ApplyMatrices3D();
 
                 // Setup color
@@ -650,7 +645,7 @@ namespace CodeImp.DoomBuilder.Rendering
                 //and arrow
                 float sx = t.CageScales.M11;
                 Matrix arrowScaler = Matrix.Scaling(sx, sx, sx); //scale arrow evenly based on thing width\depth
-                world = Matrix.Multiply(arrowScaler, t.ScaledPosition * Matrix.Translation(0.0f, 0.0f, t.CageScales.M33 / 2));  //mxd. GZDoom vertical scale hack
+                world = Matrix.Multiply(arrowScaler, t.Position * Matrix.Translation(0.0f, 0.0f, t.CageScales.M33 / 2));
                 Matrix rot = Matrix.RotationZ(t.Thing.Angle - Angle2D.PI / 2);
                 world = Matrix.Multiply(rot, world);
                 ApplyMatrices3D();
@@ -860,7 +855,7 @@ namespace CodeImp.DoomBuilder.Rendering
                                 // Create the matrix for positioning / rotation
                                 world = t.Orientation;
                                 if (t.Billboard) world = Matrix.Multiply(world, billboard);
-                                world = Matrix.Multiply(world, t.ScaledPosition); //mxd. GZDoom vertical scale hack
+                                world = Matrix.Multiply(world, t.Position);
                                 ApplyMatrices3D();
 
                                 //mxd. set variables for fog rendering
@@ -896,7 +891,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
         //mxd. Dynamic lights pass!
         private void RenderLights(Dictionary<Texture, List<VisualGeometry>> geometry_to_lit, List<VisualThing> lights) {
-            graphics.Shaders.World3D.World = world;
+			graphics.Shaders.World3D.World = Matrix.Identity;
             graphics.Shaders.World3D.BeginPass(17);
 
             int i, count;
@@ -921,7 +916,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
                         for (i = 0; i < count; i++) {
                             if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
-                                lpr = new Vector4(lights[i].Center,lights[i].LightRadius) ;
+								lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
                                 if (lpr.W == 0)
                                     continue;
                                 graphics.Shaders.World3D.LightColor = lights[i].LightColor;
@@ -1023,7 +1018,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
                     // Create the matrix for positioning / rotation
                     world = Matrix.Multiply(t.Orientation, Matrix.RotationZ(t.Thing.Angle));
-                    world = Matrix.Multiply(world, t.ScaledPosition); //mxd. GZDoom vertical scale hack
+                    world = Matrix.Multiply(world, t.Position);
                     ApplyMatrices3D();
 
                     //mxd. set variables for fog rendering
@@ -1160,7 +1155,7 @@ namespace CodeImp.DoomBuilder.Rendering
                     //t.CameraDistance3D is actually squared distance, hence (t.LightRadius * t.LightRadius)
                     if (t.CameraDistance3D < (t.LightRadius * t.LightRadius) || isThingOnScreen(t.BoundingBox)) { //always render light if camera is within it's radius 
                         if (Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, t.LightType) != -1)
-                            t.UpdateBoundingBox();//t.UpdateBoundingBox(t.LightRadius, t.LightRadius * 2);
+                            t.UpdateBoundingBox();
                         thingsWithLight.Add(t);
                     }
                 }

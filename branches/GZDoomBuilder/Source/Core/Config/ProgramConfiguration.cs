@@ -107,6 +107,7 @@ namespace CodeImp.DoomBuilder.Config
         private float gzDynamicLightRadius;
         private float gzDynamicLightIntensity;
         private bool gzTestFromCurrentPosition;
+		private bool gzStretchModels;
 		
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -183,6 +184,7 @@ namespace CodeImp.DoomBuilder.Config
         public int GZMaxDynamicLights { get { return gzMaxDynamicLights; } internal set { gzMaxDynamicLights = value; } }
         public float GZDynamicLightRadius { get { return gzDynamicLightRadius; } internal set { gzDynamicLightRadius = value; } }
         public float GZDynamicLightIntensity { get { return gzDynamicLightIntensity; } internal set { gzDynamicLightIntensity = value; } }
+		public bool GZStretchModels { get { return gzStretchModels; } internal set { gzStretchModels = value; } }
 		
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -275,6 +277,7 @@ namespace CodeImp.DoomBuilder.Config
                 gzMaxDynamicLights = cfg.ReadSetting("gzmaxdynamiclights", 16);
                 gzDynamicLightRadius = cfg.ReadSetting("gzdynamiclightradius", 1.0f);
                 gzDynamicLightIntensity = cfg.ReadSetting("gzdynamiclightintensity", 1.0f);
+				gzStretchModels = cfg.ReadSetting("gzstretchmodels", true);
 				
 				// Success
 				return true;
@@ -349,6 +352,7 @@ namespace CodeImp.DoomBuilder.Config
             cfg.WriteSetting("gzmaxdynamiclights", gzMaxDynamicLights);
             cfg.WriteSetting("gzdynamiclightradius", gzDynamicLightRadius);
             cfg.WriteSetting("gzdynamiclightintensity", gzDynamicLightIntensity);
+			cfg.WriteSetting("gzstretchmodels", gzStretchModels);
 			
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");

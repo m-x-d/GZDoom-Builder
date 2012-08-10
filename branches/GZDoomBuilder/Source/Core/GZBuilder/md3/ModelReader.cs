@@ -20,7 +20,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 {
     internal static class ModelReader
     {
-        public static void Parse(ref ModeldefEntry mde, PK3StructuredReader reader, Device D3DDevice) {
+		private const float VERTICAL_STRETCH = 1 / 1.2f;
+		
+		public static void Parse(ref ModeldefEntry mde, PK3StructuredReader reader, Device D3DDevice) {
             string[] modelNames = new string[mde.ModelNames.Count];
             string[] textureNames = new string[mde.TextureNames.Count];
 
@@ -234,7 +236,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                 //scale it
                 v.y *= mde.Scale.X;
                 v.x *= mde.Scale.Y;
-                v.z *= mde.Scale.Z;
+				v.z *= mde.Scale.Z;
+				if(General.Settings.GZStretchModels) v.z *= VERTICAL_STRETCH; //GZDoom vertical stretch hack
 
                 //add zOffset
                 v.z += mde.zOffset;
@@ -362,7 +365,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                     //scale it
                     v.x *= mde.Scale.X;
                     v.y *= mde.Scale.Y;
-                    v.z *= mde.Scale.Z;
+					v.z *= mde.Scale.Z;
+					if(General.Settings.GZStretchModels) v.z *= VERTICAL_STRETCH; //GZDoom vertical stretch hack
 
                     //add zOffset
                     v.z += mde.zOffset;

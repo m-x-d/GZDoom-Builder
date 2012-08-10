@@ -128,7 +128,8 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Find in patches directory
-			string filename = FindFirstFile(PATCHES_DIR, pname, true);
+			//string filename = FindFirstFile(PATCHES_DIR, pname, true);
+			string filename = FindFirstFile("", pname, true); //mxd. ZDoom can load them from anywhere, so shall we
 			if((filename != null) && FileExists(filename))
 			{
 				return LoadFile(filename);

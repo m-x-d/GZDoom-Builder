@@ -88,8 +88,11 @@ namespace CodeImp.DoomBuilder.Data
 			try
 			{
 				// Find in patches directory
-				string path = Path.Combine(PATCHES_DIR, Path.GetDirectoryName(pname));
-				string filename = FindFirstFile(path, Path.GetFileName(pname), true);
+				//string path = Path.Combine(PATCHES_DIR, Path.GetDirectoryName(pname));
+				//string filename = FindFirstFile(path, Path.GetFileName(pname), true);
+
+				//mxd. ZDoom can load them from anywhere, so shall we
+				string filename = FindFirstFile(Path.GetDirectoryName(pname), Path.GetFileName(pname), true);
 				if((filename != null) && FileExists(filename))
 				{
 					return LoadFile(filename);

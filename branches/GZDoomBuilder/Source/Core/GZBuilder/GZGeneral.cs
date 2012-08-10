@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
 
         //version
         public const float Version = 1.12f;
-        public const char Revision = 'b';
+        public const char Revision = 'd';
 
         //debug console
 #if DEBUG
