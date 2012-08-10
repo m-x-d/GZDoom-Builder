@@ -46,7 +46,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#region ================== Constants
 
 		private const float MOVE_SPEED_MULTIPLIER = 0.001f;
-        private const float SCALE_OFFSET = 1f / 1.2f;  //mxd GZDoom vertical scale hack
 		
 		#endregion
 
@@ -645,23 +644,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		#region ================== Object Picking
 
-		//mxd
-		public VisualPickResult PickObject(Vector3D from, Vector3D to) {
-			return PickObject(from, to, true);
-		}
-
 		// This picks an object from the scene
-		public VisualPickResult PickObject(Vector3D from, Vector3D to, bool scaleHack)
+		public VisualPickResult PickObject(Vector3D from, Vector3D to)
 		{
-			//mxd GZDoom vertical scale hack 
-			Vector3D from_orig = from;
-			Vector3D to_orig = to;
-
-			if(scaleHack) {
-				to.z *= SCALE_OFFSET;
-				from.z *= SCALE_OFFSET;
-			}
-            
             VisualPickResult result = new VisualPickResult();
 			Line2D ray2d = new Line2D(from, to);
 			Vector3D delta = to - from;
@@ -822,10 +807,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 			
 			// Setup final result
 			result.hitpos = from + to * result.u_ray;
-
-			//mxd. Hackish way to select Things correctly
-			if(scaleHack && result.picked is VisualThing)
-				return PickObject(from_orig, to_orig, false);
 
 			// Done
 			return result;
@@ -1035,8 +1016,7 @@ namespace CodeImp.DoomBuilder.VisualModes
             delta = delta.GetFixedLength(General.Settings.ViewDistance * 0.98f);
             VisualPickResult target = PickObject(start, start + delta);
 
-            //not appropriate way to do this, but...
-            if (target.picked != null && target.picked.GetType().Name.IndexOf("Thing") == -1) {
+			if(target.picked != null && target.picked is VisualGeometry) {
                 VisualGeometry vg = (VisualGeometry)target.picked;
                 if (vg.Sector != null)
                     return vg;

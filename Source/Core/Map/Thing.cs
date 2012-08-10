@@ -216,29 +216,6 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			//mxd
             sector = map.GetSectorByCoordinates(pos);
-            
-            /*Linedef nl;
-
-			// Find the nearest linedef on the map
-			nl = map.NearestLinedef(pos);
-			if(nl != null)
-			{
-				// Check what side of line we are at
-				if(nl.SideOfLine(pos) < 0f)
-				{
-					// Front side
-					if(nl.Front != null) sector = nl.Front.Sector; else sector = null;
-				}
-				else
-				{
-					// Back side
-					if(nl.Back != null) sector = nl.Back.Sector; else sector = null;
-				}
-			}
-			else
-			{
-				sector = null;
-			}*/
 		}
 
 		// This determines which sector the thing is in and links it

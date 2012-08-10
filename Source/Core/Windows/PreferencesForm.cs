@@ -103,6 +103,7 @@ namespace CodeImp.DoomBuilder.Windows
             labelDynLightSize.Text = General.Settings.GZDynamicLightRadius.ToString();
             tbDynLightIntensity.Value = General.Clamp((int)(General.Settings.GZDynamicLightIntensity * 10), tbDynLightIntensity.Minimum, tbDynLightIntensity.Maximum);
             labelDynLightIntensity.Text = General.Settings.GZDynamicLightIntensity.ToString();
+			cbStretchModels.Checked = General.Settings.GZStretchModels;
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
@@ -274,6 +275,7 @@ namespace CodeImp.DoomBuilder.Windows
             General.Settings.GZMaxDynamicLights = tbDynLightCount.Value;
             General.Settings.GZDynamicLightRadius = ((float)tbDynLightSize.Value / 10.0f);
             General.Settings.GZDynamicLightIntensity = ((float)tbDynLightIntensity.Value / 10.0f);
+			General.Settings.GZStretchModels = cbStretchModels.Checked;
 			
 			// Paste options
 			General.Settings.PasteOptions = pasteoptions.GetOptions();

@@ -270,7 +270,8 @@ namespace CodeImp.DoomBuilder.Data
 
             //no need to search in wads...
             // Find in patches directory
-            string filename = FindFirstFile(PATCHES_DIR, pname, true);
+            //string filename = FindFirstFile(PATCHES_DIR, pname, true);
+			string filename = FindFirstFile("", pname, true); //mxd. ZDoom can load them from anywhere, so shall we
             if ((filename != null) && FileExists(filename))
                 return filename;
 
@@ -419,8 +420,14 @@ namespace CodeImp.DoomBuilder.Data
 			
 			if(filename.IndexOf('.') > -1)
 			{
-				allfilenames = new string[1];
-				allfilenames[0] = Path.Combine(pathname, filename);
+				string fullName = Path.Combine(pathname, filename);
+				if(FileExists(fullName)) {
+					allfilenames = new string[1];
+					allfilenames[0] = Path.Combine(pathname, filename);
+				} else {
+					allfilenames = new string[0];
+					General.ErrorLogger.Add(ErrorType.Warning, "Unable to load DECORATE file '" + fullName + "'");
+				}
 			}
 			else
 				allfilenames = GetAllFilesWithTitle(pathname, filename, false);

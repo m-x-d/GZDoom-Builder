@@ -83,7 +83,6 @@ namespace CodeImp.DoomBuilder.VisualModes
         //mxd
         private int cameraDistance3D;
         private int thingHeight;
-        private Matrix scaledPosition; //mxd GZDoom vertical scale hack
 
         //mxd. light properties
         private int lightType;
@@ -125,7 +124,6 @@ namespace CodeImp.DoomBuilder.VisualModes
             } 
         }
         public Vector3 PositionV3 { get { return position_v3; } }
-        public Matrix ScaledPosition { get { return scaledPosition; } } //mxd GZDoom vertical scale hack
         public Vector3[] BoundingBox { get { return boundingBox; } }
         //mxd. light properties
         public int LightType { get { return lightType; } }
@@ -187,7 +185,6 @@ namespace CodeImp.DoomBuilder.VisualModes
             lightInterval = -1;
             lightColor = new Color4();
             boundingBox = new Vector3[9];
-            scaledPosition = position; //mxd GZDoom vertical scale hack
 			
 			// Register as resource
 			General.Map.Graphics.RegisterResource(this);
@@ -223,7 +220,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
         //mxd
         internal void CalculateCameraDistance3D(Vector3 campos) {
-            cameraDistance3D = (int)Vector3.DistanceSquared(D3DDevice.V3(thing.Position), campos);
+            cameraDistance3D = (int)Vector3.DistanceSquared(PositionV3, campos);
         }
 		
 		// This is called before a device is reset
@@ -271,7 +268,6 @@ namespace CodeImp.DoomBuilder.VisualModes
             //mxd
             position_v3 = D3DDevice.V3(pos);
             position = Matrix.Translation(position_v3);
-            scaledPosition = Matrix.Translation(position_v3.X, position_v3.Y, position_v3.Z * 1.2f); //mxd GZDoom vertical scale hack
 
             //mxd. update bounding box
             if (thing.IsModel) {
