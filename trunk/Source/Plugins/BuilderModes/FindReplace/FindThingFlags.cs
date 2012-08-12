@@ -37,8 +37,8 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Linedef Flags", BrowseButton = true, Replacable = false)]
-	internal class FindLinedefFlags : FindReplaceType
+	[FindReplace("Thing Flags", BrowseButton = true, Replacable = false)]
+	internal class FindThingFlag : FindReplaceType
 	{
 		#region ================== Constants
 
@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
+		public override Presentation RenderPresentation { get { return Presentation.Things; } }
 		public override Image BrowseImage { get { return Properties.Resources.List; } }
 
 		#endregion
@@ -57,14 +58,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public FindLinedefFlags()
+		public FindThingFlag()
 		{
 			// Initialize
 
 		}
 
 		// Destructor
-		~FindLinedefFlags()
+		~FindThingFlag()
 		{
 		}
 
@@ -75,7 +76,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{
-			return FlagsForm.ShowDialog(Form.ActiveForm, initialvalue, General.Map.Config.LinedefFlags);
+			return FlagsForm.ShowDialog(Form.ActiveForm, initialvalue, General.Map.Config.ThingFlags);
 		}
 
 
@@ -87,10 +88,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
 			// Where to search?
-			ICollection<Linedef> list = withinselection ? General.Map.Map.GetSelectedLinedefs(true) : General.Map.Map.Linedefs;
+			ICollection<Thing> list = withinselection ? General.Map.Map.GetSelectedThings(true) : General.Map.Map.Things;
 
-			// Go for all linedefs
-			foreach (Linedef l in list)
+			// Go for all things
+			foreach (Thing t in list)
 			{
 				bool match = true;
 
@@ -100,22 +101,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					string str = s.Trim();
 
 					// ... and check if the flags don't match
-					if (General.Map.Config.LinedefFlags.ContainsKey(str) && !l.IsFlagSet(str))
+					if (General.Map.Config.ThingFlags.ContainsKey(str) && !t.IsFlagSet(str))
 					{
 						match = false;
 						break;
 					}
 				}
 
-				// Flags matches?
+				// Match?
 				if (match)
 				{
 					// Add to list
-					LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
-					if (!info.IsNull)
-						objs.Add(new FindReplaceObject(l, "Linedef " + l.Index + " (" + info.Title + ")"));
-					else
-						objs.Add(new FindReplaceObject(l, "Linedef " + l.Index));
+					ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
+					objs.Add(new FindReplaceObject(t, "Thing " + t.Index + " (" + ti.Title + ")"));
 				}
 			}
 
@@ -128,30 +126,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if (selection.Length == 1)
 			{
 				ZoomToSelection(selection);
-				General.Interface.ShowLinedefInfo(selection[0].Linedef);
+				General.Interface.ShowThingInfo(selection[0].Thing);
 			}
 			else
 				General.Interface.HideInfo();
 
 			General.Map.Map.ClearAllSelected();
-			foreach (FindReplaceObject obj in selection) obj.Linedef.Selected = true;
+			foreach (FindReplaceObject obj in selection) obj.Thing.Selected = true;
 		}
 
 		// Render selection
-		public override void PlotSelection(IRenderer2D renderer, FindReplaceObject[] selection)
+		public override void RenderThingsSelection(IRenderer2D renderer, FindReplaceObject[] selection)
 		{
 			foreach (FindReplaceObject o in selection)
 			{
-				renderer.PlotLinedef(o.Linedef, General.Colors.Selection);
+				renderer.RenderThing(o.Thing, General.Colors.Selection, 1.0f);
 			}
 		}
 
 		// Edit objects
 		public override void EditObjects(FindReplaceObject[] selection)
 		{
-			List<Linedef> lines = new List<Linedef>(selection.Length);
-			foreach (FindReplaceObject o in selection) lines.Add(o.Linedef);
-			General.Interface.ShowEditLinedefs(lines);
+			List<Thing> things = new List<Thing>(selection.Length);
+			foreach (FindReplaceObject o in selection) things.Add(o.Thing);
+			General.Interface.ShowEditThings(things);
 		}
 
 		#endregion

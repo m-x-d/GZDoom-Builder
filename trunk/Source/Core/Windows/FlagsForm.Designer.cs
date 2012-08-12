@@ -1,6 +1,6 @@
 ﻿namespace CodeImp.DoomBuilder.Windows
 {
-	partial class LinedefFlagsForm
+	partial class FlagsForm
 	{
 		/// <summary>
 		/// Erforderliche Designervariable.
@@ -65,7 +65,7 @@
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
-			// LinedefFlagsForm
+			// FlagsForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -78,11 +78,11 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "LinedefFlagsForm";
+			this.Name = "FlagsForm";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Linedef Flags";
+			this.Text = "Flags";
 			this.Load += new System.EventHandler(this.LinedefFlagsForm_Load);
 			this.ResumeLayout(false);
 

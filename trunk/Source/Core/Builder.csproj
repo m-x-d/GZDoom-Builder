@@ -743,11 +743,11 @@
     <Compile Include="Windows\ThingBrowserForm.Designer.cs">
       <DependentUpon>ThingBrowserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\LinedefFlagsForm.cs">
+    <Compile Include="Windows\FlagsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\LinedefFlagsForm.Designer.cs">
-      <DependentUpon>LinedefFlagsForm.cs</DependentUpon>
+    <Compile Include="Windows\FlagsForm.Designer.cs">
+      <DependentUpon>FlagsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\ToolbarSection.cs" />
     <Compile Include="Windows\VertexEditForm.cs">
@@ -923,8 +923,8 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThingEditForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\LinedefFlagsForm.resx">
-      <DependentUpon>LinedefFlagsForm.cs</DependentUpon>
+    <EmbeddedResource Include="Windows\FlagsForm.resx">
+      <DependentUpon>FlagsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ThingsFiltersForm.resx">
       <SubType>Designer</SubType>

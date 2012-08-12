@@ -10,12 +10,13 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	public partial class LinedefFlagsForm : DelayedForm
+	public partial class FlagsForm : DelayedForm
 	{
 		#region ================== Variables
 
 		private bool setup;
 		private string value;
+		private IDictionary<string, string> flagdefs;
 
 		#endregion
 
@@ -27,20 +28,21 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Methods
 
-		public LinedefFlagsForm()
+		public FlagsForm()
 		{
 			InitializeComponent();
-
-			// Fill flags list
-			foreach (KeyValuePair<string, string> tf in General.Map.Config.LinedefFlags)
-				flags.Add(tf.Value, tf.Key);
 		}
 
 		// Setup from EnumList
-		public void Setup(string value)
+		public void Setup(string value, IDictionary<string, string> inflags)
 		{
 			setup = true;
 			this.value = value;
+			flagdefs = inflags;
+
+			// Fill flags list
+			foreach (KeyValuePair<string, string> tf in flagdefs)
+				flags.Add(tf.Value, tf.Key);
 
 			// Parse the value string and check the boxes if necessary
 			if (value.Trim() != "")
@@ -50,12 +52,12 @@ namespace CodeImp.DoomBuilder.Windows
 					string str = s.Trim();
 
 					// Make sure the given flag actually exists
-					if(!General.Map.Config.LinedefFlags.ContainsKey(str))
+					if(!flagdefs.ContainsKey(str))
 						continue;
 
 					foreach (CheckBox c in flags.Checkboxes)
 					{
-						if (c.Text == General.Map.Config.LinedefFlags[str])
+						if (c.Text == flagdefs[str])
 							c.Checked = true;
 					}
 				}
@@ -66,11 +68,11 @@ namespace CodeImp.DoomBuilder.Windows
 
 		// This shows the dialog
 		// Returns the flags or the same flags when cancelled
-		public static string ShowDialog(IWin32Window owner, string value)
+		public static string ShowDialog(IWin32Window owner, string value, IDictionary<string, string> inflags)
 		{
 			string result = value;
-			LinedefFlagsForm f = new LinedefFlagsForm();
-			f.Setup(value);
+			FlagsForm f = new FlagsForm();
+			f.Setup(value, inflags);
 			if (f.ShowDialog(owner) == DialogResult.OK) result = f.Value;
 			f.Dispose();
 			return result;
@@ -91,7 +93,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(c.Checked == false) continue;
 
-				foreach (KeyValuePair<string, string> lf in General.Map.Config.LinedefFlags)
+				foreach (KeyValuePair<string, string> lf in flagdefs)
 				{
 					if (lf.Value == c.Text)
 					{

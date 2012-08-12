@@ -246,6 +246,7 @@
     <Compile Include="FindReplace\FindLinedefFlags.cs" />
     <Compile Include="FindReplace\FindThingAngle.cs" />
     <Compile Include="FindReplace\FindAnyTextureFlat.cs" />
+    <Compile Include="FindReplace\FindThingFlags.cs" />
     <Compile Include="FindReplace\FindThingSectorRef.cs" />
     <Compile Include="FindReplace\FindThingTag.cs" />
     <Compile Include="FindReplace\FindLinedefNumber.cs" />
