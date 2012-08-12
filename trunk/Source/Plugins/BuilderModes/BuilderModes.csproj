@@ -243,6 +243,7 @@
     <Compile Include="ErrorChecks\ResultTextureMissing.cs" />
     <Compile Include="ErrorChecks\ResultUnknownFlat.cs" />
     <Compile Include="ErrorChecks\ResultUnknownTexture.cs" />
+    <Compile Include="FindReplace\FindLinedefFlags.cs" />
     <Compile Include="FindReplace\FindThingAngle.cs" />
     <Compile Include="FindReplace\FindAnyTextureFlat.cs" />
     <Compile Include="FindReplace\FindThingSectorRef.cs" />

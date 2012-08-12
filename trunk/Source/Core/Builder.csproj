@@ -506,9 +506,11 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
     <Reference Include="Trackbar, Version=1.0.2486.37933, Culture=neutral, PublicKeyToken=503bf28f63ad27b4" />
   </ItemGroup>
   <ItemGroup>
@@ -741,6 +743,12 @@
     <Compile Include="Windows\ThingBrowserForm.Designer.cs">
       <DependentUpon>ThingBrowserForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\LinedefFlagsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\LinedefFlagsForm.Designer.cs">
+      <DependentUpon>LinedefFlagsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ToolbarSection.cs" />
     <Compile Include="Windows\VertexEditForm.cs">
       <SubType>Form</SubType>
@@ -914,6 +922,9 @@
     <EmbeddedResource Include="Windows\ThingEditForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ThingEditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\LinedefFlagsForm.resx">
+      <DependentUpon>LinedefFlagsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ThingsFiltersForm.resx">
       <SubType>Designer</SubType>
