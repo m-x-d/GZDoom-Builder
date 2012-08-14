@@ -740,6 +740,12 @@
       <DependentUpon>ErrorsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\FindReplaceOptions.cs" />
+    <Compile Include="Windows\FlagsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\FlagsForm.Designer.cs">
+      <DependentUpon>FlagsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\MenuSection.cs" />
     <Compile Include="Windows\PasteOptionsForm.cs">
       <SubType>Form</SubType>
@@ -923,6 +929,9 @@
     <EmbeddedResource Include="Windows\ErrorsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ErrorsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\FlagsForm.resx">
+      <DependentUpon>FlagsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\PasteOptionsForm.resx">
       <DependentUpon>PasteOptionsForm.cs</DependentUpon>
