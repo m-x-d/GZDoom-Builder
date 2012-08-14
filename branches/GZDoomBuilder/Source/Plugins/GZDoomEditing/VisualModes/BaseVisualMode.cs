@@ -333,6 +333,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			}
 		}
 
+		//mxd. Need this to apply changes to 3d-floor even if control sector doesn't exist as BaseVisualSector
+		internal BaseVisualSector CreateBaseVisualSector(Sector s) {
+			BaseVisualSector vs = new BaseVisualSector(this, s);
+			if(vs != null) allsectors.Add(s, vs);
+			return vs;
+		}
+
 		// This creates a visual sector
 		protected override VisualSector CreateVisualSector(Sector s)
 		{

@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private DirectoryFilesList files;
-        private IArchive archive;//mxd
+        //private IArchive archive;//mxd
         private ArchiveType archiveType; //mxd
         private static Dictionary<string, byte[]> sevenZipEntries; //mxd
 
@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.Data
             List<DirectoryFileEntry> fileentries = new List<DirectoryFileEntry>();
 
             //mxd
-            archive = ArchiveFactory.Open(location.location);
+            IArchive archive = ArchiveFactory.Open(location.location);
             archiveType = archive.Type;
 
             if (archive.Type == ArchiveType.SevenZip) { //random access of 7z archives works TERRIBLY slow in SharpCompress
@@ -75,8 +75,8 @@ namespace CodeImp.DoomBuilder.Data
                         fileentries.Add(new DirectoryFileEntry(reader.Entry.FilePath));
                     }
                 }
-                archive.Dispose();
-                archive = null;
+                //archive.Dispose();
+                //archive = null;
 
             } else {
                 foreach (IEntry entry in archive.Entries) {
@@ -84,6 +84,9 @@ namespace CodeImp.DoomBuilder.Data
                         fileentries.Add(new DirectoryFileEntry(entry.FilePath));
                 }
             }
+
+			archive.Dispose();
+			archive = null;
 
             // Make files list
             files = new DirectoryFilesList(fileentries);
@@ -102,7 +105,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(!isdisposed)
 			{
                 General.WriteLogLine("Closing " + Path.GetExtension(location.location).ToUpper().Replace(".", "") + " resource '" + location.location + "'");
-                if(archive != null) archive.Dispose(); //mxd
+                //if(archive != null) archive.Dispose(); //mxd
 
 				// Done
 				base.Dispose();
@@ -335,6 +338,8 @@ namespace CodeImp.DoomBuilder.Data
                 if (sevenZipEntries.ContainsKey(filename))
                     filedata = new MemoryStream(sevenZipEntries[filename]);
             } else {
+				IArchive archive = ArchiveFactory.Open(location.location);
+
                 foreach (var entry in archive.Entries) {
                     if (!entry.IsDirectory) {
                         // Is this the entry we are looking for?

@@ -191,7 +191,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             break;
                         }
 //frameindex
-                    } else if (token == "frameindex") {
+					} else if(token == "frameindex" || token == "frame") {
                         //parsed all required fields. if got more than one model - find which one(s) should be displayed 
                         int len = modelNames.GetLength(0);
                         if (!gotErrors && len > 1) {
@@ -206,8 +206,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             while (parser.SkipWhitespace(true)) {
                                 token = parser.StripTokenQuotes(parser.ReadToken()).ToLowerInvariant();
 
-                                if (token == "frameindex") {
-                                    parser.SkipWhitespace(true);
+								if(token == "frameindex" || token == "frame") {
+									bool frameIndex = (token == "frameindex");
+									parser.SkipWhitespace(true);
 
                                     //should be sprite lump
                                     token = parser.StripTokenQuotes(parser.ReadToken()).ToLowerInvariant();
@@ -270,15 +271,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
                                     parser.SkipWhitespace(true);
 
-                                    //should be frame index. Currently I have no use for it
+                                    //should be frame name or index. Currently I have no use for it
                                     token = parser.StripTokenQuotes(parser.ReadToken());
-                                    int frame;
-                                    if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out frame)) {
-                                        // Not numeric!
-                                        GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model frame, but got '" + token + "'");
-                                        gotErrors = true;
-                                        break;
-                                    }
+
+									if(frameIndex) {
+										int frame;
+										if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out frame)) {
+											// Not numeric!
+											GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model frame, but got '" + token + "'");
+											gotErrors = true;
+											break;
+										}
+									}
 
                                 } else {
                                     //must be "}", step back

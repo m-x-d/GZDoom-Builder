@@ -957,7 +957,7 @@ namespace CodeImp.DoomBuilder.VisualModes
                     VisualPickResult target = PickObject(start, start + delta);
 
                     //not appropriate way to do this, but...
-                    if (target.picked != null && target.picked.GetType().Name.IndexOf("Thing") != -1)
+                    if (target.picked != null && target.picked is VisualThing)
                         selectedVisualThings.Add((VisualThing)target.picked);
                 }
             }
