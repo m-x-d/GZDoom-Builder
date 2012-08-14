@@ -432,11 +432,15 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			ChangeHeight(amount);
 
 			// Rebuild sector
-			if(mode.VisualSectorExists(level.sector))
-			{
-				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
-				vs.UpdateSectorGeometry(true);
+			BaseVisualSector vs;
+			if(mode.VisualSectorExists(level.sector)) {
+				vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+				//vs.UpdateSectorGeometry(true);
+			} else {//mxd. Need this to apply changes to 3d-floor even if control sector doesn't exist as BaseVisualSector
+				vs = mode.CreateBaseVisualSector(level.sector);
 			}
+
+			if(vs != null) vs.UpdateSectorGeometry(true);
 		}
 		
 		// Sector brightness change
