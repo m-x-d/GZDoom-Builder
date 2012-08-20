@@ -19,7 +19,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
         private const string DISPLAY_TAGS_AND_ACTIONS = "Tags and Action specials";
         private const string DISPLAY_TAGS = "Tags";
         private const string DISPLAY_ACTIONS = "Action specials";
-        private object[] DISPLAY_MODES = new object[] { DISPLAY_TAGS_AND_ACTIONS, DISPLAY_TAGS, DISPLAY_ACTIONS };
+        private readonly object[] DISPLAY_MODES = new object[] { DISPLAY_TAGS_AND_ACTIONS, DISPLAY_TAGS, DISPLAY_ACTIONS };
         
         private string currentDisplayMode;
         private string currentSortMode;

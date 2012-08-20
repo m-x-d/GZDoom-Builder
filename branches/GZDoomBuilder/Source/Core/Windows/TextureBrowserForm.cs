@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
 
-            tvTextureSets.SuspendLayout();//mxd
+            tvTextureSets.BeginUpdate();//mxd
 
             //mxd. Set title
             this.Text = "Browse " + (browseFlats ? "flats" : "textures");
@@ -90,8 +90,17 @@ namespace CodeImp.DoomBuilder.Windows
                 item.ImageIndex = 2 + ts.Location.type;
                 item.SelectedImageIndex = item.ImageIndex;
 
-                if (ts.Location.type != DataLocation.RESOURCE_WAD)
+                if (ts.Location.type != DataLocation.RESOURCE_WAD) {
                     createNodes(item);
+
+                    /*if (item.Nodes.Count > 1) { //sort them
+                        TreeNode[] children = new TreeNode[item.Nodes.Count];
+                        item.Nodes.CopyTo(children, 0);
+                        Array.Sort(children, sortTreeNodes);
+                        item.Nodes.Clear();
+                        item.Nodes.AddRange(children);
+                    }*/
+                }
 			}
 
             //mxd. Add All textures set
@@ -129,6 +138,7 @@ namespace CodeImp.DoomBuilder.Windows
                 selectedset = match;
 
             tvTextureSets.ExpandAll();//mxd
+            tvTextureSets.EndUpdate();//mxd
 
             if (selectedset != null) {//mxd
                 tvTextureSets.SelectedNode = selectedset;
@@ -153,6 +163,11 @@ namespace CodeImp.DoomBuilder.Windows
 			if(this.WindowState == FormWindowState.Normal) this.StartPosition = FormStartPosition.CenterParent;
 			this.ResumeLayout(true);
 		}
+
+        //mxd
+        private int sortImageData(ImageData img1, ImageData img2) {
+            return img1.FullName.CompareTo(img2.FullName);
+        }
 
         //mxd
         private TreeNode findTextureByLongName(TreeNode node, long longname) {
@@ -202,8 +217,12 @@ namespace CodeImp.DoomBuilder.Windows
 
             int imageIndex = set.Location.type + 4;
             string[] separator = new string[]{ Path.DirectorySeparatorChar.ToString() };
+            
+            ImageData[] textures = new ImageData[set.Textures.Count];
+            set.Textures.CopyTo(textures, 0);
+            Array.Sort(textures, sortImageData);
 
-            foreach (ImageData image in set.Textures) {
+            foreach (ImageData image in textures) {
                 string localName = image.FullName.Replace(set.Location.location, "");
                 string[] parts = localName.Split(separator, StringSplitOptions.RemoveEmptyEntries);
                 TreeNode curNode = root;

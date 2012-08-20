@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace CodeImp.DoomBuilder.ColorPicker.Controls {
     public partial class ColorPickerControl : UserControl {
@@ -14,6 +15,13 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
             RGB,
             None
         }
+
+        private const string COLOR_INFO_RGB = "RGB";
+        private const string COLOR_INFO_HEX = "Hex";
+        private const string COLOR_INFO_FLOAT = "Float";
+        private readonly object[] COLOR_INFO = new object[] { COLOR_INFO_RGB, COLOR_INFO_HEX, COLOR_INFO_FLOAT };
+
+        private static int colorInfoMode;
         
         private ChangeStyle changeType = ChangeStyle.None;
         private Point selectedPoint;
@@ -40,6 +48,9 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
             isInUpdate = true;
             InitializeComponent();
             isInUpdate = false;
+
+            cbColorInfo.Items.AddRange(COLOR_INFO);
+            cbColorInfo.SelectedIndex = colorInfoMode;
         }
 
         private void nudValueChanged(object sender, System.EventArgs e) {
@@ -49,7 +60,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
             if (!isInUpdate) {
                 changeType = ChangeStyle.RGB;
                 RGB = new ColorHandler.RGB((int)nudRed.Value, (int)nudGreen.Value, (int)nudBlue.Value);
-                updateOKButton(RGB);
+                updateColorInfo(RGB);
                 this.Invalidate();
             }
         }
@@ -58,20 +69,49 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
             // Update the RGB values on the form, but don't trigger the ValueChanged event of the form. The isInUpdate
             // variable ensures that the event procedures exit without doing anything.
             isInUpdate = true;
-            refreshNudValue(nudRed, RGB.Red);
-            refreshNudValue(nudBlue, RGB.Blue);
-            refreshNudValue(nudGreen, RGB.Green);
-            updateOKButton(RGB);
+            updateColorInfo(RGB);
             isInUpdate = false;
         }
 
-        private void updateOKButton(ColorHandler.RGB RGB) {
+        private void updateColorInfo(ColorHandler.RGB RGB) {
             this.RGB = RGB;
             btnOK.BackColor = ColorHandler.RGBtoColor(RGB);
             btnOK.ForeColor = (RGB.Red < 180 && RGB.Green < 180) ? Color.White : Color.Black;
 
-			//update float vals
-			tbFloatVals.Text = (float)Math.Round((float)RGB.Red / 255f, 2) + " " + (float)Math.Round((float)RGB.Green / 255f, 2) + " " + (float)Math.Round((float)RGB.Blue / 255f, 2);
+			//update color info
+            switch (cbColorInfo.SelectedItem.ToString()) {
+                case COLOR_INFO_RGB:
+                    refreshNudValue(nudRed, RGB.Red);
+                    refreshNudValue(nudBlue, RGB.Blue);
+                    refreshNudValue(nudGreen, RGB.Green);
+                    break;
+
+                case COLOR_INFO_HEX:
+                    string r = RGB.Red.ToString("X");
+                    if (r.Length == 1) r = "0" + r;
+                    string g = RGB.Green.ToString("X");
+                    if (g.Length == 1) r = "0" + g;
+                    string b = RGB.Blue.ToString("X");
+                    if (b.Length == 1) r = "0" + b;
+
+                    isInUpdate = true;
+                    tbFloatVals.Text = r + g + b;
+                    isInUpdate = false;
+                    break;
+
+                case COLOR_INFO_FLOAT:
+                    string r2 = ((float)Math.Round((float)RGB.Red / 255f, 2)).ToString();
+                    if (r2.Length == 1) r2 += ".0";
+                    string g2 = ((float)Math.Round((float)RGB.Green / 255f, 2)).ToString();
+                    if (g2.Length == 1) g2 += ".0";
+                    string b2 = ((float)Math.Round((float)RGB.Blue / 255f, 2)).ToString();
+                    if (b2.Length == 1) b2 += ".0";
+
+                    isInUpdate = true;
+                    tbFloatVals.Text = r2 + " " + g2 + " " + b2;
+                    isInUpdate = false;
+                    break;
+            }
 
             //dispatch event further
             EventHandler<ColorChangedEventArgs> handler = ColorChanged;
@@ -98,10 +138,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
             changeType = ChangeStyle.RGB;
             RGB = new ColorHandler.RGB(c.R, c.G, c.B);
 
-            refreshNudValue(nudRed, RGB.Red);
-            refreshNudValue(nudBlue, RGB.Blue);
-            refreshNudValue(nudGreen, RGB.Green);
-            updateOKButton(RGB);
+            updateColorInfo(RGB);
             isInUpdate = false;
             this.Invalidate();
         }
@@ -187,8 +224,63 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
                 handler(this, e);
         }
 
-		private void tbFloatVals_Click(object sender, EventArgs e) {
-			tbFloatVals.Select(0, tbFloatVals.Text.Length);
-		}
+        private void cbColorInfo_SelectedIndexChanged(object sender, EventArgs e) {
+            if (cbColorInfo.SelectedItem.ToString() == COLOR_INFO_RGB) {
+                pRGB.Visible = true;
+                tbFloatVals.Visible = false;
+            } else {
+                pRGB.Visible = false;
+                tbFloatVals.Visible = true;
+            }
+            colorInfoMode = cbColorInfo.SelectedIndex;
+            updateColorInfo(RGB);
+        }
+
+        private void tbFloatVals_TextChanged(object sender, EventArgs e) {
+            if (isInUpdate) return;
+            
+            if (COLOR_INFO[colorInfoMode].ToString() == COLOR_INFO_FLOAT) {
+                string[] parts = tbFloatVals.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length != 3) return;
+
+                ColorHandler.RGB rgb = new ColorHandler.RGB();
+
+                float c;
+                if (!float.TryParse(parts[0].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out c)) return;
+                rgb.Red = (int)(c * 255);
+
+                if (!float.TryParse(parts[1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out c)) return;
+                rgb.Green = (int)(c * 255);
+
+                if (!float.TryParse(parts[2].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out c)) return;
+                rgb.Blue = (int)(c * 255);
+
+                changeType = ChangeStyle.RGB;
+                updateColorInfo(rgb);
+                this.Invalidate();
+            } else if (COLOR_INFO[colorInfoMode].ToString() == COLOR_INFO_HEX) {
+                string hexColor = tbFloatVals.Text;
+                if (hexColor.Length != 6) return;
+
+                ColorHandler.RGB rgb = new ColorHandler.RGB();
+                int color;
+
+                string colorStr = hexColor.Substring(0, 2);
+                if (!int.TryParse(colorStr, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out color)) return;
+                rgb.Red = color;
+
+                colorStr = hexColor.Substring(2, 2);
+                if (!int.TryParse(colorStr, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out color)) return;
+                rgb.Green = color;
+
+                colorStr = hexColor.Substring(4, 2);
+                if (!int.TryParse(colorStr, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out color)) return;
+                rgb.Blue = color;
+
+                changeType = ChangeStyle.RGB;
+                updateColorInfo(rgb);
+                this.Invalidate();
+            }
+        }
     }
 }
