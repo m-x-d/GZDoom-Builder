@@ -70,6 +70,9 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
             btnOK.BackColor = ColorHandler.RGBtoColor(RGB);
             btnOK.ForeColor = (RGB.Red < 180 && RGB.Green < 180) ? Color.White : Color.Black;
 
+			//update float vals
+			tbFloatVals.Text = (float)Math.Round((float)RGB.Red / 255f, 2) + " " + (float)Math.Round((float)RGB.Green / 255f, 2) + " " + (float)Math.Round((float)RGB.Blue / 255f, 2);
+
             //dispatch event further
             EventHandler<ColorChangedEventArgs> handler = ColorChanged;
             if (handler != null)
@@ -183,5 +186,9 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
             if (handler != null)
                 handler(this, e);
         }
+
+		private void tbFloatVals_Click(object sender, EventArgs e) {
+			tbFloatVals.Select(0, tbFloatVals.Text.Length);
+		}
     }
 }

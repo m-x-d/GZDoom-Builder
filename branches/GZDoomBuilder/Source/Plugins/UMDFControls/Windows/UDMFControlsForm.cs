@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
 
         private List<string> renderStyles;
 
-        private static bool relativeMode = true;
+        private static bool relativeMode = false;
 
         public UDMFControlsForm() {
             //capture keys
@@ -111,8 +111,6 @@ namespace CodeImp.DoomBuilder.UDMFControls
 
                     case VisualGeometryType.WALL_MIDDLE_3D:
                         walls3dCount++;
-                        //if (wall3DIndeces.IndexOf(vg.Sector.Sector.FixedIndex) != -1)
-                            //break;
                         wall3DIndeces.Add(vg.Sector.Sector.FixedIndex);
                         goto case VisualGeometryType.WALL_MIDDLE;
 
@@ -166,7 +164,8 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 scaleControl.Value = new Vector2D(scaleX, scaleY);
                 positionControl1.Value = new Vector2D(translateX, translateY);
                 angleControl1.Value = (int)((float)firstFloor.Sector.Fields[KeyNames.GetRotation(firstFloor.GeometryType)].Value);
-                sliderBrightness.Value = (int)firstFloor.Sector.Fields[KeyNames.GetLight(firstFloor.GeometryType)].Value;
+				sliderBrightness.SetLimits(cblightabsolute.Checked ? 0 : -255, 255);
+				sliderBrightness.Value = (int)firstFloor.Sector.Fields[KeyNames.GetLight(firstFloor.GeometryType)].Value;
                 nudGravity.Value = (decimal)((float)firstFloor.Sector.Fields[(string)nudGravity.Tag].Value);
                 sliderDesaturation.Value = (float)firstFloor.Sector.Fields[(string)sliderDesaturation.Tag].Value;
 
@@ -189,8 +188,9 @@ namespace CodeImp.DoomBuilder.UDMFControls
                     //set values to controls
                     scaleControl.Value = new Vector2D(scaleX, scaleY);
                     positionControl1.Value = new Vector2D(translateX, translateY);
-                    sliderBrightness.Value = (int)firstWall.Sidedef.Fields[KeyNames.GetLight(firstWall.GeometryType)].Value;
                     cblightabsolute.Checked = (bool)firstWall.Sidedef.Fields[KeyNames.GetLightAbsolute(firstWall.GeometryType)].Value;
+					sliderBrightness.SetLimits(cblightabsolute.Checked ? 0 : -255, 255);
+					sliderBrightness.Value = (int)firstWall.Sidedef.Fields[KeyNames.GetLight(firstWall.GeometryType)].Value;
 
                     //set linedef values
                     sliderAlpha.Value = (float)firstWall.Linedef.Fields[(string)sliderAlpha.Tag].Value;
@@ -201,8 +201,6 @@ namespace CodeImp.DoomBuilder.UDMFControls
                     if (walls3dCount == wallsMid.Count && wallsTop.Count == 0 && wallsBottom.Count == 0) {
                         gbAlpha.Enabled = false;
                         bgBrightness.Enabled = false;
-                        //cblightabsolute.Checked = true;
-                        //cblightabsolute.Enabled = false;
                     }
                 }
 
@@ -214,12 +212,6 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 gbFlagsWall.Enabled = false;
                 gbAlpha.Enabled = false;
             }
-
-            //brightness slider
-            if(cblightabsolute.Checked)
-                sliderBrightness.SetLimits(0, 255);
-            else
-                sliderBrightness.SetLimits(-255, 255);
 
             Text = "Editing " + rest;
         }
@@ -650,18 +642,25 @@ namespace CodeImp.DoomBuilder.UDMFControls
             if (vg.GeometryType == VisualGeometryType.CEILING || vg.GeometryType == VisualGeometryType.FLOOR) {
                 sector = vg.GetControlSector();
                 sector.Fields.BeforeFieldsChange();
-            } else {
-                linedef = vg.GetControlLinedef();
-                
-                controlSidedef = linedef.Front;
-                sidedef = vg.Sidedef;
+			} else if(vg.GeometryType == VisualGeometryType.WALL_MIDDLE_3D) {
+				linedef = vg.GetControlLinedef();
 
-                hasControlLinedef = (controlSidedef.Sector.FixedIndex != sidedef.Sector.FixedIndex);
+				controlSidedef = linedef.Front;
+				sidedef = vg.Sidedef;
 
-                linedef.Fields.BeforeFieldsChange();
-                controlSidedef.Fields.BeforeFieldsChange();
-                sidedef.Fields.BeforeFieldsChange();
-            }
+				hasControlLinedef = (controlSidedef.Sector.FixedIndex != sidedef.Sector.FixedIndex);
+
+				linedef.Fields.BeforeFieldsChange();
+				controlSidedef.Fields.BeforeFieldsChange();
+				sidedef.Fields.BeforeFieldsChange();
+			} else {
+				hasControlLinedef = false;
+				sidedef = vg.Sidedef;
+				controlSidedef = sidedef;
+				linedef = sidedef.Line;
+				linedef.Fields.BeforeFieldsChange();
+				sidedef.Fields.BeforeFieldsChange();
+			}
         }
 
         public void Update() {
