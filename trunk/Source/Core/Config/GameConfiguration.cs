@@ -101,6 +101,7 @@ namespace CodeImp.DoomBuilder.Config
 		private List<ThingCategory> thingcategories;
 		private Dictionary<int, ThingTypeInfo> things;
 		private List<FlagTranslation> thingflagstranslation;
+		private List<ThingFlagsCompare> thingflagscompare;
 		
 		// Linedefs
 		private Dictionary<string, string> linedefflags;
@@ -191,6 +192,7 @@ namespace CodeImp.DoomBuilder.Config
 		public ICollection<string> DefaultThingFlags { get { return defaultthingflags; } }
 		public IDictionary<string, string> ThingFlags { get { return thingflags; } }
 		public List<FlagTranslation> ThingFlagsTranslation { get { return thingflagstranslation; } }
+		public List<ThingFlagsCompare> ThingFlagsCompare { get { return thingflagscompare; } }
 		
 		// Linedefs
 		public IDictionary<string, string> LinedefFlags { get { return linedefflags; } }
@@ -255,6 +257,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.thingflagstranslation = new List<FlagTranslation>();
 			this.linedefflagstranslation = new List<FlagTranslation>();
 			this.thingfilters = new List<ThingsFilter>();
+			this.thingflagscompare = new List<ThingFlagsCompare>();
 			this.brightnesslevels = new StepsList();
 			this.makedoorflags = new Dictionary<string, bool>();
 			
@@ -358,6 +361,7 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			foreach(ThingCategory tc in thingcategories) tc.Dispose();
 			foreach(LinedefActionCategory ac in actioncategories) ac.Dispose();
+			foreach (ThingFlagsCompare tfc in thingflagscompare) tfc.Dispose();
 		}
 		
 		#endregion
@@ -692,13 +696,25 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Get linedef flags
 			dic = cfg.ReadSetting("thingflags", new Hashtable());
-			foreach(DictionaryEntry de in dic)
+			foreach (DictionaryEntry de in dic)
 				thingflags.Add(de.Key.ToString(), de.Value.ToString());
 			
 			// Get translations
 			dic = cfg.ReadSetting("thingflagstranslation", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 				thingflagstranslation.Add(new FlagTranslation(de));
+
+			// Get thing compare flag info (for the stuck thing error checker
+			dic = cfg.ReadSetting("thingflagscompare", new Hashtable());
+			foreach (DictionaryEntry de in dic)
+			{
+				IDictionary gdic = cfg.ReadSetting("thingflagscompare." + de.Key, new Hashtable());
+
+				foreach (DictionaryEntry gde in gdic)
+				{
+					thingflagscompare.Add(new ThingFlagsCompare(cfg, de.Key.ToString(), gde.Key.ToString()));
+				}
+			}
 
 			// Sort the translation flags, because they must be compared highest first!
 			thingflagstranslation.Sort();
