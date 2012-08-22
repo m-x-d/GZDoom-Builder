@@ -895,6 +895,8 @@ namespace CodeImp.DoomBuilder.IO
 			// Go for all lines
 			foreach(Linedef l in map.Linedefs)
 			{
+                int special;
+
 				// Convert flags
 				flags = 0;
 				foreach(KeyValuePair<string, bool> f in l.Flags)
@@ -902,12 +904,26 @@ namespace CodeImp.DoomBuilder.IO
 					uint fnum;
                     if (f.Value && uint.TryParse(f.Key, out fnum)) flags |= fnum;
 				}
+
+                // 20120822 villsa - horrible, HORRIBLE hack
+                // macros can range from 0 to 255 but to avoid confusion
+                // with the user, we need to display the action from 1 to 256
+                // but we must bump it down by 1 when saving
+                // confused?
+                if ((l.Activate & 256) == 256)
+                {
+                    special = (l.Action | l.Activate) - 1;
+                }
+                else
+                {
+                    special = (l.Action | l.Activate);
+                }
 				
 				// Write properties to stream
 				writer.Write((UInt16)vertexids[l.Start]);
 				writer.Write((UInt16)vertexids[l.End]);
 				writer.Write((UInt32)(flags | l.SwitchMask));
-				writer.Write((UInt16)(l.Action | l.Activate));
+                writer.Write((UInt16)special);
                 writer.Write((UInt16)l.Tag);
 
 				// Front sidedef
