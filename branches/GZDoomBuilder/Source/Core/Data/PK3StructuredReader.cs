@@ -145,7 +145,12 @@ namespace CodeImp.DoomBuilder.Data
 			if((foundfile != null) && FileExists(foundfile))
 			{
 				MemoryStream stream = LoadFile(foundfile);
-				palette = new Playpal(stream);
+
+				if(stream.Length > 767) {//mxd
+					palette = new Playpal(stream);
+				} else {
+					General.ErrorLogger.Add(ErrorType.Warning, "Warning: invalid palette '"+foundfile+"'");
+				}
 				stream.Dispose();
 			}
 			
