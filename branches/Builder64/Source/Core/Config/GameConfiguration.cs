@@ -977,11 +977,11 @@ namespace CodeImp.DoomBuilder.Config
 			else
 			{
                 // villsa
-                if (General.Map.FormatInterface.InDoom64Mode &&
+                /*if (General.Map.FormatInterface.InDoom64Mode &&
                     (action >= 256 && action <= 511))
                 {
                     return new LinedefActionInfo(action - 255, "Macro", false, false);
-                }
+                }*/
                 
                 return new LinedefActionInfo(action, "Unknown", false, false);
 			}

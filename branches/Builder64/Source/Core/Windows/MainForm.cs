@@ -2260,13 +2260,13 @@ namespace CodeImp.DoomBuilder.Windows
             else
             {
                 // villsa
-                if (General.Map.FormatInterface.InDoom64Mode &&
+                /*if (General.Map.FormatInterface.InDoom64Mode &&
                     (l.Action >= 256 && l.Action <= 511))
                 {
                     labelcollapsedinfo.Text = (l.Action - 255).ToString() + " - Macro";
                 }
                 else
-                    labelcollapsedinfo.Text = l.Action.ToString() + " - Unknown";
+                    */labelcollapsedinfo.Text = l.Action.ToString() + " - Unknown";
             }
 			
 			labelcollapsedinfo.Refresh();

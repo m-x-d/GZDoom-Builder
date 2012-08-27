@@ -684,7 +684,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
         // This reads the MACROS from WAD file
-        private void ReadMacros(MapSet map, int firstindex)
+        /*private void ReadMacros(MapSet map, int firstindex)
         {
             MemoryStream mem;
             BinaryReader reader;
@@ -731,7 +731,7 @@ namespace CodeImp.DoomBuilder.IO
 
             // Done
             mem.Dispose();
-        }
+        }*/
 		
 		#endregion
 
@@ -895,8 +895,6 @@ namespace CodeImp.DoomBuilder.IO
 			// Go for all lines
 			foreach(Linedef l in map.Linedefs)
 			{
-                int special;
-
 				// Convert flags
 				flags = 0;
 				foreach(KeyValuePair<string, bool> f in l.Flags)
@@ -904,26 +902,12 @@ namespace CodeImp.DoomBuilder.IO
 					uint fnum;
                     if (f.Value && uint.TryParse(f.Key, out fnum)) flags |= fnum;
 				}
-
-                // 20120822 villsa - horrible, HORRIBLE hack
-                // macros can range from 0 to 255 but to avoid confusion
-                // with the user, we need to display the action from 1 to 256
-                // but we must bump it down by 1 when saving
-                // confused?
-                if ((l.Activate & 256) == 256)
-                {
-                    special = (l.Action | l.Activate) - 1;
-                }
-                else
-                {
-                    special = (l.Action | l.Activate);
-                }
 				
 				// Write properties to stream
 				writer.Write((UInt16)vertexids[l.Start]);
 				writer.Write((UInt16)vertexids[l.End]);
 				writer.Write((UInt32)(flags | l.SwitchMask));
-                writer.Write((UInt16)special);
+                writer.Write((UInt16)(l.Action | l.Activate));
                 writer.Write((UInt16)l.Tag);
 
 				// Front sidedef
@@ -1187,7 +1171,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
         // This writes the MACROS to WAD file
-        private void WriteMacros(MapSet map, int position, IDictionary maplumps)
+        /*private void WriteMacros(MapSet map, int position, IDictionary maplumps)
         {
             MemoryStream mem;
             BinaryWriter writer;
@@ -1260,7 +1244,7 @@ namespace CodeImp.DoomBuilder.IO
             lump = wad.Insert("MACROS", insertpos, (int)mem.Length);
             lump.Stream.Seek(0, SeekOrigin.Begin);
             mem.WriteTo(lump.Stream);
-        }
+        }*/
 		
 		#endregion
 	}
