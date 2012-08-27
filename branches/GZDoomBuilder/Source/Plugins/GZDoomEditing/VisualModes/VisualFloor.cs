@@ -216,6 +216,21 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			mode.SetActionResult("Changed floor height to " + level.sector.FloorHeight + ".");
 		}
 
+        //mxd. Sector brightness change
+        public override void OnChangeTargetBrightness(bool up) {
+            if (level != null) {
+                if (level.sector != Sector.Sector) {
+                    ((BaseVisualSector)mode.GetVisualSector(level.sector)).Ceiling.OnChangeTargetBrightness(up);
+                } else if (Sector.ExtraFloors.Count > 0) {
+                    Sector.ExtraFloors[0].OnChangeTargetBrightness(up);
+                } else {
+                    base.OnChangeTargetBrightness(up);
+                }
+            } else {
+                base.OnChangeTargetBrightness(up);
+            }
+        }
+
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{
