@@ -215,6 +215,32 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			level.sector.CeilHeight += amount;
 			mode.SetActionResult("Changed ceiling height to " + level.sector.CeilHeight + ".");
 		}
+
+        //mxd. Sector brightness change
+        public override void OnChangeTargetBrightness(bool up) {
+            if (level != null && level.sector != Sector.Sector) {
+                int index = -1;
+                for (int i = 0; i < Sector.ExtraCeilings.Count; i++) {
+                    if (Sector.ExtraCeilings[i] == this) {
+                        index = i + 1;
+                        break;
+                    }
+                }
+
+                if (index > -1 && index < Sector.ExtraCeilings.Count) {
+                    Sector.ExtraCeilings[index].changeControlSectorBrightness(up);
+                } else {
+                    base.OnChangeTargetBrightness(up);
+                }
+            } else {
+                base.OnChangeTargetBrightness(up);
+            }
+        }
+
+        //mxd
+        private void changeControlSectorBrightness(bool up) {
+            ((BaseVisualSector)mode.GetVisualSector(level.sector)).Ceiling.OnChangeTargetBrightness(up);
+        }
 		
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)

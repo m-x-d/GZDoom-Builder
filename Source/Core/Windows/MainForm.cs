@@ -361,7 +361,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Generic event that invokes the tagged action
 		public void InvokeTaggedAction(object sender, EventArgs e)
 		{
-			string asmname;
+			//string asmname;
 			
 			this.Update();
 			

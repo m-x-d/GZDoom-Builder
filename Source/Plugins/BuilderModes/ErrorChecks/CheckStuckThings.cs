@@ -151,7 +151,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								Dictionary<string, bool> flags2 = ot.GetFlags();
 								*/
 
-								if (ThingsOverlap(t, ot))
+								if (FlagsOverlap(t, ot) && ThingsOverlap(t, ot))
 								{
 									stuck = true;
 									stucktype = StuckType.Thing;
@@ -246,6 +246,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			return true;
 		}
+		
+		// Checks if the flags of two things overlap (i.e. if they show up at the same time)
+        private bool FlagsOverlap(Thing t1, Thing t2) {
+            Dictionary<string, List<ThingFlagsCompare>> groups = new Dictionary<string, List<ThingFlagsCompare>>();
+            int overlappinggroups = 0;
+
+            // Create a summary which flags belong to which groups
+            foreach (ThingFlagsCompare tfc in General.Map.Config.ThingFlagsCompare) {
+                if (!groups.ContainsKey(tfc.Group))
+                    groups[tfc.Group] = new List<ThingFlagsCompare>();
+
+                groups[tfc.Group].Add(tfc);
+            }
+
+            // Go through all flags in all groups and check if they overlap
+            foreach (string g in groups.Keys) {
+                foreach (ThingFlagsCompare tfc in groups[g]) {
+                    if (tfc.Compare(t1, t2) > 0) {
+                        overlappinggroups++;
+                        break;
+                    }
+                }
+            }
+
+            // All groups have to overlap for the things to show up
+            // at the same time
+            if (overlappinggroups == groups.Count)
+                return true;
+
+            return false;
+        }
 		
 		#endregion
 	}
