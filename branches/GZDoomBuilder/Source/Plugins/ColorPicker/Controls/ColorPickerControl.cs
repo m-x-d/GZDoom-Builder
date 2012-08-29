@@ -90,9 +90,9 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
                     string r = RGB.Red.ToString("X");
                     if (r.Length == 1) r = "0" + r;
                     string g = RGB.Green.ToString("X");
-                    if (g.Length == 1) r = "0" + g;
+                    if (g.Length == 1) g = "0" + g;
                     string b = RGB.Blue.ToString("X");
-                    if (b.Length == 1) r = "0" + b;
+                    if (b.Length == 1) b = "0" + b;
 
                     isInUpdate = true;
                     tbFloatVals.Text = r + g + b;
