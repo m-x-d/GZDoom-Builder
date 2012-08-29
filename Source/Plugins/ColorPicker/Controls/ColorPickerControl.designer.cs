@@ -159,9 +159,9 @@
             // 
             // tbFloatVals
             // 
-            this.tbFloatVals.Location = new System.Drawing.Point(218, 115);
+            this.tbFloatVals.Location = new System.Drawing.Point(214, 115);
             this.tbFloatVals.Name = "tbFloatVals";
-            this.tbFloatVals.Size = new System.Drawing.Size(91, 20);
+            this.tbFloatVals.Size = new System.Drawing.Size(95, 20);
             this.tbFloatVals.TabIndex = 63;
             this.tbFloatVals.Text = "1.01 0.55 0.33";
             this.tbFloatVals.TextChanged += new System.EventHandler(this.tbFloatVals_TextChanged);
