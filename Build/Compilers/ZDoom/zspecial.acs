@@ -287,6 +287,8 @@ special
 	-43:ACS_NamedLockedExecuteDoor(5),
 	-44:ACS_NamedExecuteWithResult(1,4),
 	-45:ACS_NamedExecuteAlways(2,5),
+	-46:UniqueTID(0,2),
+	-47:IsTIDUsed(1),
 
 	-1000:__EndOfList__(10);
 	

@@ -193,6 +193,7 @@
 #define CR_PURPLE				19
 #define CR_DARKGRAY				20
 #define CR_DARKGREY				20
+#define CR_CYAN					21
 
 // HUD message types --------------------------------------------------------
 
@@ -203,11 +204,26 @@
 
 // OR this with one of the above to log the hudmessage to the console.
 // i.e. instead of HUDMSG_PLAIN, you can use HUDMSG_PLAIN | HUDMSG_LOG
-#define HUDMSG_LOG	0x80000000
+#define HUDMSG_LOG					0x80000000
 
 // OR this with one of the above if the color you passed is a string
 // instead of one of the CR_ constants.
-#define HUDMSG_COLORSTRING	0x40000000
+#define HUDMSG_COLORSTRING			0x40000000
+
+// OR this with one of the above to use additive blending when drawing the
+// HUD message.
+#define HUDMSG_ADDBLEND				0x20000000
+
+// HUD message layers; these are not flags
+#define HUDMSG_LAYER_OVERHUD		0x00000000
+#define HUDMSG_LAYER_UNDERHUD		0x00001000
+#define HUDMSG_LAYER_OVERMAP		0x00002000
+
+// HUD message visibility flags
+#define HUDMSG_NOTWITH3DVIEW		0x00010000
+#define HUDMSG_NOTWITHFULLMAP		0x00020000
+#define HUDMSG_NOTWITHOVERLAYMAP	0x00040000
+
 
 // "Scripted" Marine weapon types -------------------------------------------
 
@@ -264,13 +280,16 @@
 
 // Render Styles ------------------------------------------------------------
 
-#define STYLE_None		0	// Do not draw
+#define STYLE_None			0	// Do not draw
 #define STYLE_Normal		1	// Normal; just copy the image to the screen
-#define STYLE_Fuzzy		2	// Draw silhouette using "fuzz" effect
+#define STYLE_Fuzzy			2	// Draw silhouette using "fuzz" effect
 #define STYLE_SoulTrans		3	// Draw translucent with amount in r_transsouls
 #define STYLE_OptFuzzy		4	// Draw as fuzzy or translucent, based on user preference
+#define STYLE_Stencil		5	// Draw as solid color
 #define STYLE_Translucent	64	// Draw translucent
-#define STYLE_Add		65	// Draw additive
+#define STYLE_Add			65	// Draw additive
+#define STYLE_Shaded		66	// 
+#define STYLE_TranslucentStencil 67
 
 // Properties you can use with GetLevelInfo() -------------------------------
 
@@ -295,6 +314,8 @@
 #define PLAYERINFO_MOVEBOB		5
 #define PLAYERINFO_STILLBOB		6
 #define PLAYERINFO_PLAYERCLASS	7
+#define PLAYERINFO_FOV			8
+#define PLAYERINFO_DESIREDFOV	9
 
 
 // Flags for ReplaceTextures ------------------------------------------------
@@ -715,7 +736,7 @@
 
 // Skulltag Armor/Health Items ----------------------------------------------
 #define T_MAXHEALTHBONUS		166
-#define T_MASARMORBONUS			167
+#define T_MAXARMORBONUS			167
 #define T_REDARMOR				168
 
 // Skulltag Powerups --------------------------------------------------------
