@@ -165,6 +165,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						// Render line
 						renderer.RenderLine(lastp.pos, points[i].pos, LINE_THICKNESS, color, true);
+						RenderLinedefDirectionIndicator(lastp.pos, points[i].pos, color); //mxd
 						lastp = points[i];
 					}
 
@@ -174,6 +175,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Render line to cursor
 					renderer.RenderLine(lastp.pos, curp.pos, LINE_THICKNESS, color, true);
+					RenderLinedefDirectionIndicator(lastp.pos, curp.pos, color); //mxd
 
 					// Render vertices
 					for(int i = 0; i < points.Count; i++)
@@ -203,6 +205,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Done
 			renderer.Present();
+		}
+
+		//mxd
+		protected void RenderLinedefDirectionIndicator(Vector2D start, Vector2D end, PixelColor color) {
+			Vector2D delta = end - start;
+			Vector2D middlePoint = new Vector2D(start.x + delta.x / 2, start.y + delta.y / 2);
+			Vector2D scaledPerpendicular = delta.GetPerpendicular().GetNormal().GetScaled(18f / renderer.Scale);
+			renderer.RenderLine(middlePoint, new Vector2D(middlePoint.x - scaledPerpendicular.x, middlePoint.y - scaledPerpendicular.y), LINE_THICKNESS, color, true);
 		}
 		
 		// This returns the aligned and snapped draw position
