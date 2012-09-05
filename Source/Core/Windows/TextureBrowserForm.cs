@@ -62,6 +62,11 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Initialize
 			InitializeComponent();
+
+            //mxd. Set title
+            string imgType = (browseFlats ? "flats" : "textures");
+            this.Text = "Browse " + imgType;
+
 			browser.ApplySettings();
 			
 			// Update the used textures
@@ -69,8 +74,12 @@ namespace CodeImp.DoomBuilder.Windows
 
             tvTextureSets.BeginUpdate();//mxd
 
-            //mxd. Set title
-            this.Text = "Browse " + (browseFlats ? "flats" : "textures");
+            // Texture to select when list is filled
+            selecttextureonfill = selecttexture;
+
+            // Make groups
+            usedgroup = browser.AddGroup("Used " + imgType + ":");
+            availgroup = browser.AddGroup("Available " + imgType + ":");
 
             //mxd. Fill texture sets list with normal texture sets
 			foreach(IFilledTextureSet ts in General.Map.Data.TextureSets)
@@ -90,17 +99,8 @@ namespace CodeImp.DoomBuilder.Windows
                 item.ImageIndex = 2 + ts.Location.type;
                 item.SelectedImageIndex = item.ImageIndex;
 
-                if (ts.Location.type != DataLocation.RESOURCE_WAD) {
+                if (ts.Location.type != DataLocation.RESOURCE_WAD)
                     createNodes(item);
-
-                    /*if (item.Nodes.Count > 1) { //sort them
-                        TreeNode[] children = new TreeNode[item.Nodes.Count];
-                        item.Nodes.CopyTo(children, 0);
-                        Array.Sort(children, sortTreeNodes);
-                        item.Nodes.Clear();
-                        item.Nodes.AddRange(children);
-                    }*/
-                }
 			}
 
             //mxd. Add All textures set
@@ -116,6 +116,7 @@ namespace CodeImp.DoomBuilder.Windows
             TreeNode match = findNodeByName(tvTextureSets.Nodes, selectname);
             if (match != null) {
                 IFilledTextureSet set = (match.Tag as IFilledTextureSet);
+                
                 foreach (ImageData img in set.Textures) {
                     if (img.LongName == longname) {
                         selectedset = match;
@@ -142,20 +143,22 @@ namespace CodeImp.DoomBuilder.Windows
 
             if (selectedset != null) {//mxd
                 tvTextureSets.SelectedNode = selectedset;
-                FillImagesList();
+                //FillImagesList();
             }
 
 			// Texture to select when list is filled
-			selecttextureonfill = selecttexture;
+			//selecttextureonfill = selecttexture;
 			
 			// Make groups
-			usedgroup = browser.AddGroup("Used Textures");
-			availgroup = browser.AddGroup("Available Textures");
-			
+			//usedgroup = browser.AddGroup("Used Textures");
+			//availgroup = browser.AddGroup("Available Textures");
+
 			// Keep last position and size
 			lastposition = this.Location;
 			lastsize = this.Size;
-			
+
+            this.SuspendLayout();
+
 			// Position window from configuration settings
 			this.Size = new Size(General.Settings.ReadSetting("browserwindow.sizewidth", this.Size.Width),
 								 General.Settings.ReadSetting("browserwindow.sizeheight", this.Size.Height));
@@ -184,6 +187,7 @@ namespace CodeImp.DoomBuilder.Windows
 
             //then - in current node
             IFilledTextureSet set = (node.Tag as IFilledTextureSet);
+
             foreach (ImageData img in set.Textures) {
                 if (img.LongName == longname)
                     return node;
@@ -453,7 +457,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void TextureBrowserForm_Shown(object sender, EventArgs e)
 		{
-			// Select texture
+            if (selectedset != null) //mxd. Calling FillImagesList() from constructor leads to TERRIBLE load times. Why? I have no sodding idea...
+                FillImagesList();
+            
+            // Select texture
 			if(!string.IsNullOrEmpty(selecttextureonfill))
 			{
 				browser.SelectItem(selecttextureonfill, usedgroup);
