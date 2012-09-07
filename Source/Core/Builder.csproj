@@ -818,6 +818,7 @@
     <None Include="Resources\MLogo.png" />
     <Content Include="Resources\Model.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\SearchClear.png" />
     <None Include="Resources\Text.png" />
     <None Include="Resources\List_Images.png" />
     <None Include="Resources\List.png" />

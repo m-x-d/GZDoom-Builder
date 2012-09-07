@@ -44,6 +44,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private int selectedaction;
 		private ComboBox[] options;
 		private Label[] optionlbls;
+        private TreeNode[] allNodes; //mxd
 		
 		// Properties
 		public int SelectedAction { get { return selectedaction; } }
@@ -51,7 +52,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Constructor
 		public ActionBrowserForm(int action)
 		{
-			TreeNode cn, n;
 			GeneralizedCategory sc;
 			int actionbits;
 			
@@ -64,49 +64,16 @@ namespace CodeImp.DoomBuilder.Windows
 									   option5label, option6label, option7label };
 			
 			// Show prefixes panel only for doom type maps
-			if(General.Map.FormatInterface.HasBuiltInActivations)
+			if(!General.Map.FormatInterface.HasBuiltInActivations)
 			{
 				prefixespanel.Visible = false;
-				actions.Height += actions.Top - prefixespanel.Top;
-				actions.Top = prefixespanel.Top;
+                actions.Height += prefixespanel.Height + 3; //mxd
 			}
 			
 			// Go for all predefined categories
-			foreach(LinedefActionCategory ac in General.Map.Config.ActionCategories)
-			{
-				// Empty category names will not be created
-				// (those actions will go in the root of the tree)
-				if(ac.Title.Length > 0)
-				{
-					// Create category
-					cn = actions.Nodes.Add(ac.Title);
-					foreach(LinedefActionInfo ai in ac.Actions)
-					{
-						// Create action
-						n = cn.Nodes.Add(ai.Title);
-						n.Tag = ai;
-
-						// This is the given action?
-						if(ai.Index == action)
-						{
-							// Select this and expand the category
-							cn.Expand();
-							actions.SelectedNode = n;
-							n.EnsureVisible();
-						}
-					}
-				}
-				else
-				{
-					// Put actions in the tree root
-					foreach(LinedefActionInfo ai in ac.Actions)
-					{
-						// Create action
-						n = actions.Nodes.Add(ai.Title);
-						n.Tag = ai;
-					}
-				}
-			}
+            createActionCategories(action);
+            allNodes = new TreeNode[actions.Nodes.Count];
+            actions.Nodes.CopyTo(allNodes, 0);
 
 			// Using generalized actions?
 			if(General.Map.Config.GeneralizedActions)
@@ -162,6 +129,63 @@ namespace CodeImp.DoomBuilder.Windows
 			f.Dispose();
 			return action;
 		}
+
+        //mxd
+        private void createActionCategories(int action) {
+            TreeNode cn, n;
+
+            actions.BeginUpdate();
+            actions.ShowLines = true;
+            foreach (LinedefActionCategory ac in General.Map.Config.ActionCategories) {
+                // Empty category names will not be created
+                // (those actions will go in the root of the tree)
+                if (ac.Title.Length > 0) {
+                    // Create category
+                    cn = actions.Nodes.Add(ac.Title);
+                    foreach (LinedefActionInfo ai in ac.Actions) {
+                        // Create action
+                        n = cn.Nodes.Add(ai.Title);
+                        n.Tag = ai;
+
+                        // This is the given action?
+                        if (ai.Index == action) {
+                            // Select this and expand the category
+                            cn.Expand();
+                            actions.SelectedNode = n;
+                            n.EnsureVisible();
+                        }
+                    }
+                } else {
+                    // Put actions in the tree root
+                    foreach (LinedefActionInfo ai in ac.Actions) {
+                        // Create action
+                        n = actions.Nodes.Add(ai.Title);
+                        n.Tag = ai;
+                    }
+                }
+            }
+            actions.EndUpdate();
+        }
+
+        //mxd
+        private void filterActions(string p) {
+            List<TreeNode> filteredNodes = new List<TreeNode>();
+
+            foreach (TreeNode n in allNodes) {
+                foreach (TreeNode cn in n.Nodes) {
+                    LinedefActionInfo ai = cn.Tag as LinedefActionInfo;
+
+                    if (ai.Title.ToLowerInvariant().IndexOf(p) != -1)
+                        filteredNodes.Add(cn);
+                }
+            }
+
+            actions.BeginUpdate();
+            actions.Nodes.Clear();
+            actions.ShowLines = false;
+            actions.Nodes.AddRange(filteredNodes.ToArray());
+            actions.EndUpdate();
+        }
 		
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
@@ -270,5 +294,20 @@ namespace CodeImp.DoomBuilder.Windows
 				if(apply.Enabled) apply_Click(this, EventArgs.Empty);
 			}
 		}
+
+        //mxd
+        private void tbFilter_TextChanged(object sender, EventArgs e) {
+            if (tbFilter.Text.Length > 1) {
+                filterActions(tbFilter.Text);
+            } else if (String.IsNullOrEmpty(tbFilter.Text.ToLowerInvariant())) {
+                actions.Nodes.Clear();
+                createActionCategories(actions.SelectedNode != null ? ((LinedefActionInfo)actions.SelectedNode.Tag).Index : 0);
+            }
+        }
+
+        //mxd
+        private void btnClearFilter_Click(object sender, EventArgs e) {
+            tbFilter.Clear();
+        }
 	}
 }
