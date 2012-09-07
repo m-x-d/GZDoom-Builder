@@ -532,9 +532,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			translatex = -offsetx + (windowsize.Width * 0.5f) * scaleinv;
 			translatey = -offsety - (windowsize.Height * 0.5f) * scaleinv;
 			linenormalsize = 10f * scaleinv;
-			vertexsize = (int)(1.7f * scale + 0.5f);
+
+            vertexsize = (int)(1.7f * General.Settings.GZVertexScale2D * scale + 0.5f); //mxd. added GZVertexScale2D
 			if(vertexsize < 0) vertexsize = 0;
 			if(vertexsize > 4) vertexsize = 4;
+
 			Matrix scaling = Matrix.Scaling((1f / (float)windowsize.Width) * 2f, (1f / (float)windowsize.Height) * -2f, 1f);
 			Matrix translate = Matrix.Translation(-(float)windowsize.Width * 0.5f, -(float)windowsize.Height * 0.5f, 0f);
 			graphics.Device.SetTransform(TransformState.View, Matrix.Multiply(translate, scaling));

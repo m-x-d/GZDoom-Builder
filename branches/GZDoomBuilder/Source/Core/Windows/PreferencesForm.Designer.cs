@@ -38,6 +38,9 @@ namespace CodeImp.DoomBuilder.Windows
             System.Windows.Forms.Label label18;
             System.Windows.Forms.Label label20;
             System.Windows.Forms.Label label21;
+            this.vertexScaleLabel = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.vertexScale = new Dotnetrix.Controls.TrackBar();
             this.cbSynchCameras = new System.Windows.Forms.CheckBox();
             this.showtexturesizes = new System.Windows.Forms.CheckBox();
             this.scriptontop = new System.Windows.Forms.CheckBox();
@@ -161,6 +164,7 @@ namespace CodeImp.DoomBuilder.Windows
             label20 = new System.Windows.Forms.Label();
             label21 = new System.Windows.Forms.Label();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.vertexScale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.zoomfactor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.previewsize)).BeginInit();
@@ -217,6 +221,9 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(this.vertexScaleLabel);
+            groupBox1.Controls.Add(this.label22);
+            groupBox1.Controls.Add(this.vertexScale);
             groupBox1.Controls.Add(this.cbSynchCameras);
             groupBox1.Controls.Add(this.showtexturesizes);
             groupBox1.Controls.Add(this.scriptontop);
@@ -237,6 +244,37 @@ namespace CodeImp.DoomBuilder.Windows
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
             groupBox1.Text = " Options ";
+            // 
+            // vertexScaleLabel
+            // 
+            this.vertexScaleLabel.AutoSize = true;
+            this.vertexScaleLabel.Location = new System.Drawing.Point(249, 199);
+            this.vertexScaleLabel.Name = "vertexScaleLabel";
+            this.vertexScaleLabel.Size = new System.Drawing.Size(79, 14);
+            this.vertexScaleLabel.TabIndex = 45;
+            this.vertexScaleLabel.Text = "100% (default)";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(17, 199);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(103, 14);
+            this.label22.TabIndex = 44;
+            this.label22.Text = "Vertex scale factor:";
+            this.toolTip1.SetToolTip(this.label22, "Controls the size of \r\nvertex handles in 2D Modes");
+            // 
+            // vertexScale
+            // 
+            this.vertexScale.LargeChange = 1;
+            this.vertexScale.Location = new System.Drawing.Point(127, 187);
+            this.vertexScale.Minimum = 1;
+            this.vertexScale.Name = "vertexScale";
+            this.vertexScale.Size = new System.Drawing.Size(116, 45);
+            this.vertexScale.TabIndex = 43;
+            this.vertexScale.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.vertexScale.Value = 1;
+            this.vertexScale.ValueChanged += new System.EventHandler(this.vertexScale_ValueChanged);
             // 
             // cbSynchCameras
             // 
@@ -271,7 +309,7 @@ namespace CodeImp.DoomBuilder.Windows
             // zoomfactor
             // 
             this.zoomfactor.LargeChange = 1;
-            this.zoomfactor.Location = new System.Drawing.Point(127, 181);
+            this.zoomfactor.Location = new System.Drawing.Point(127, 139);
             this.zoomfactor.Minimum = 1;
             this.zoomfactor.Name = "zoomfactor";
             this.zoomfactor.Size = new System.Drawing.Size(116, 45);
@@ -283,7 +321,7 @@ namespace CodeImp.DoomBuilder.Windows
             // zoomfactorlabel
             // 
             this.zoomfactorlabel.AutoSize = true;
-            this.zoomfactorlabel.Location = new System.Drawing.Point(249, 193);
+            this.zoomfactorlabel.Location = new System.Drawing.Point(249, 151);
             this.zoomfactorlabel.Name = "zoomfactorlabel";
             this.zoomfactorlabel.Size = new System.Drawing.Size(29, 14);
             this.zoomfactorlabel.TabIndex = 39;
@@ -292,7 +330,7 @@ namespace CodeImp.DoomBuilder.Windows
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(52, 193);
+            this.label19.Location = new System.Drawing.Point(52, 151);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(69, 14);
             this.label19.TabIndex = 38;
@@ -301,7 +339,7 @@ namespace CodeImp.DoomBuilder.Windows
             // autoscrollspeed
             // 
             this.autoscrollspeed.LargeChange = 1;
-            this.autoscrollspeed.Location = new System.Drawing.Point(127, 129);
+            this.autoscrollspeed.Location = new System.Drawing.Point(127, 92);
             this.autoscrollspeed.Maximum = 5;
             this.autoscrollspeed.Name = "autoscrollspeed";
             this.autoscrollspeed.Size = new System.Drawing.Size(116, 45);
@@ -312,7 +350,7 @@ namespace CodeImp.DoomBuilder.Windows
             // autoscrollspeedlabel
             // 
             this.autoscrollspeedlabel.AutoSize = true;
-            this.autoscrollspeedlabel.Location = new System.Drawing.Point(249, 141);
+            this.autoscrollspeedlabel.Location = new System.Drawing.Point(249, 104);
             this.autoscrollspeedlabel.Name = "autoscrollspeedlabel";
             this.autoscrollspeedlabel.Size = new System.Drawing.Size(23, 14);
             this.autoscrollspeedlabel.TabIndex = 36;
@@ -321,7 +359,7 @@ namespace CodeImp.DoomBuilder.Windows
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(29, 141);
+            this.label15.Location = new System.Drawing.Point(29, 104);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(92, 14);
             this.label15.TabIndex = 35;
@@ -330,7 +368,7 @@ namespace CodeImp.DoomBuilder.Windows
             // previewsize
             // 
             this.previewsize.LargeChange = 1;
-            this.previewsize.Location = new System.Drawing.Point(127, 75);
+            this.previewsize.Location = new System.Drawing.Point(127, 45);
             this.previewsize.Maximum = 5;
             this.previewsize.Name = "previewsize";
             this.previewsize.Size = new System.Drawing.Size(116, 45);
@@ -342,7 +380,7 @@ namespace CodeImp.DoomBuilder.Windows
             // previewsizelabel
             // 
             this.previewsizelabel.AutoSize = true;
-            this.previewsizelabel.Location = new System.Drawing.Point(249, 87);
+            this.previewsizelabel.Location = new System.Drawing.Point(249, 57);
             this.previewsizelabel.Name = "previewsizelabel";
             this.previewsizelabel.Size = new System.Drawing.Size(55, 14);
             this.previewsizelabel.TabIndex = 33;
@@ -351,7 +389,7 @@ namespace CodeImp.DoomBuilder.Windows
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(17, 87);
+            this.label12.Location = new System.Drawing.Point(17, 57);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(104, 14);
             this.label12.TabIndex = 32;
@@ -360,7 +398,7 @@ namespace CodeImp.DoomBuilder.Windows
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(50, 35);
+            this.label14.Location = new System.Drawing.Point(50, 20);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(71, 14);
             this.label14.TabIndex = 14;
@@ -375,7 +413,7 @@ namespace CodeImp.DoomBuilder.Windows
             "Brightness Levels",
             "Floor Textures",
             "Ceiling Textures"});
-            this.defaultviewmode.Location = new System.Drawing.Point(135, 32);
+            this.defaultviewmode.Location = new System.Drawing.Point(135, 17);
             this.defaultviewmode.Name = "defaultviewmode";
             this.defaultviewmode.Size = new System.Drawing.Size(145, 22);
             this.defaultviewmode.TabIndex = 0;
@@ -1632,6 +1670,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.PreferencesForm_HelpRequested);
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.vertexScale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.zoomfactor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.previewsize)).EndInit();
@@ -1784,5 +1823,8 @@ namespace CodeImp.DoomBuilder.Windows
         private System.Windows.Forms.CheckBox cbSynchCameras;
 		private System.Windows.Forms.CheckBox cbStretchModels;
 		private System.Windows.Forms.ToolTip toolTip1;
+        private Dotnetrix.Controls.TrackBar vertexScale;
+        private System.Windows.Forms.Label vertexScaleLabel;
+        private System.Windows.Forms.Label label22;
 	}
 }
