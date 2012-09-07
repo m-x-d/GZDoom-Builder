@@ -104,6 +104,8 @@ namespace CodeImp.DoomBuilder.Windows
             tbDynLightIntensity.Value = General.Clamp((int)(General.Settings.GZDynamicLightIntensity * 10), tbDynLightIntensity.Minimum, tbDynLightIntensity.Maximum);
             labelDynLightIntensity.Text = General.Settings.GZDynamicLightIntensity.ToString();
 			cbStretchModels.Checked = General.Settings.GZStretchModels;
+            vertexScale.Value = General.Clamp((int)(General.Settings.GZVertexScale2D), vertexScale.Minimum, vertexScale.Maximum);
+            vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
@@ -276,6 +278,7 @@ namespace CodeImp.DoomBuilder.Windows
             General.Settings.GZDynamicLightRadius = ((float)tbDynLightSize.Value / 10.0f);
             General.Settings.GZDynamicLightIntensity = ((float)tbDynLightIntensity.Value / 10.0f);
 			General.Settings.GZStretchModels = cbStretchModels.Checked;
+            General.Settings.GZVertexScale2D = (float)vertexScale.Value;
 			
 			// Paste options
 			General.Settings.PasteOptions = pasteoptions.GetOptions();
@@ -399,6 +402,11 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			zoomfactorlabel.Text = (zoomfactor.Value * 10).ToString() + "%";
 		}
+
+        //mxd
+        private void vertexScale_ValueChanged(object sender, EventArgs e) {
+            vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
+        }
 
 		// This updates the script font preview label
 		private void UpdateScriptFontPreview()
