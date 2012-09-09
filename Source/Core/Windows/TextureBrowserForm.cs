@@ -138,20 +138,13 @@ namespace CodeImp.DoomBuilder.Windows
             if (selectedset == null && match != null)
                 selectedset = match;
 
-            tvTextureSets.ExpandAll();//mxd
+			if(tvTextureSets.Nodes.Count > 0)
+				tvTextureSets.Nodes[0].Expand();//mxd
             tvTextureSets.EndUpdate();//mxd
 
             if (selectedset != null) {//mxd
                 tvTextureSets.SelectedNode = selectedset;
-                //FillImagesList();
             }
-
-			// Texture to select when list is filled
-			//selecttextureonfill = selecttexture;
-			
-			// Make groups
-			//usedgroup = browser.AddGroup("Used Textures");
-			//availgroup = browser.AddGroup("Available Textures");
 
 			// Keep last position and size
 			lastposition = this.Location;
