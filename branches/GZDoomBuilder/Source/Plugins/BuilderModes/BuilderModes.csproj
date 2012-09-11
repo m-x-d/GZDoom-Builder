@@ -241,6 +241,7 @@
     <Compile Include="ClassicModes\BridgeMode.cs" />
     <Compile Include="ClassicModes\DrawEllipseMode.cs" />
     <Compile Include="ClassicModes\DrawRectangleMode.cs" />
+    <Compile Include="ClassicModes\RedrawSectorMode.cs" />
     <Compile Include="ClassicModes\SnapVerticesMode.cs" />
     <Compile Include="ErrorChecks\CheckMissingTextures.cs" />
     <Compile Include="ErrorChecks\CheckUnknownFlats.cs" />
