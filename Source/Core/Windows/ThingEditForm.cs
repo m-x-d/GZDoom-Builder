@@ -47,8 +47,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private ThingTypeInfo thinginfo;
 		private bool preventchanges = false;
         //mxd
-        private Vector2D initialPosition; //initial position of a thing used to fill posX and posY fields
-		
+        private Vector3D initialPosition; //initial position of a thing used to fill posX, posY and posZ fields
+		private int initialFloorHeight; //floor height of the sector first thing is in
+		private static bool ABSOLUTE_HEIGHT;
+
 		#endregion
 
 		#region ================== Properties
@@ -86,8 +88,9 @@ namespace CodeImp.DoomBuilder.Windows
 				tabs.TabPages.Remove(tabeffects);
 			
 			// Thing height?
-			height.Visible = General.Map.FormatInterface.HasThingHeight;
-			heightlabel.Visible = General.Map.FormatInterface.HasThingHeight;
+			posZ.Visible = General.Map.FormatInterface.HasThingHeight;
+			zlabel.Visible = General.Map.FormatInterface.HasThingHeight;
+			cbAbsoluteHeight.Visible = General.Map.FormatInterface.HasThingHeight; //mxd
 			
 			// Setup types list
 			thingtype.Setup();
@@ -119,14 +122,18 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Coordination
 			angle.Text = ft.AngleDoom.ToString();
-			height.Text = ((int)ft.Position.z).ToString();
+			zlabel.Text = ABSOLUTE_HEIGHT ? "Z:" : "Height:"; //mxd
+			cbAbsoluteHeight.Checked = ABSOLUTE_HEIGHT; //mxd
 
             //mxd
             initialPosition = ft.Position;
+			initialFloorHeight = ft.Sector.FloorHeight;
             posX.Text = ((int)ft.Position.x).ToString();
             posY.Text = ((int)ft.Position.y).ToString();
+			posZ.Text = ABSOLUTE_HEIGHT ? ((int)ft.Position.z + ft.Sector.FloorHeight).ToString() : ((int)ft.Position.z).ToString();
             posX.ButtonStep = General.Map.Grid.GridSize;
             posY.ButtonStep = General.Map.Grid.GridSize;
+			posZ.ButtonStep = General.Map.Grid.GridSize;
 
             //mxd. setup arg0str
             arg0str.Location = arg0.Location;
@@ -170,7 +177,13 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Coordination
 				if(t.AngleDoom.ToString() != angle.Text) angle.Text = "";
-				if(((int)t.Position.z).ToString() != height.Text) height.Text = "";
+				
+				//mxd
+				if(ABSOLUTE_HEIGHT) {
+					if(((int)t.Position.z + t.Sector.FloorHeight).ToString() != posZ.Text) posZ.Text = "";
+				} else {
+					if(((int)t.Position.z).ToString() != posZ.Text) posZ.Text = "";
+				}
 
 				// Action/tags
 				if(t.Action != action.Value) action.Empty = true;
@@ -210,6 +223,7 @@ namespace CodeImp.DoomBuilder.Windows
                 arg0str.SelectedIndex = 0;
             }
         }
+
         //mxd
         private void setNamedScripts(string selectedValue) {
             arg0str.Items.Clear();
@@ -402,7 +416,8 @@ namespace CodeImp.DoomBuilder.Windows
 				t.Rotate(angle.GetResult(t.AngleDoom));
                 //mxd
 				//t.Move(t.Position.x, t.Position.y, (float)height.GetResult((int)t.Position.z));
-                t.Move(t.Position.x + delta.x, t.Position.y + delta.y, (float)height.GetResult((int)t.Position.z));
+				float z = (float)posZ.GetResult((int)t.Position.z);
+				t.Move(t.Position.x + delta.x, t.Position.y + delta.y, ABSOLUTE_HEIGHT ? z - t.Sector.FloorHeight : z);
 				
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes)
@@ -490,6 +505,13 @@ namespace CodeImp.DoomBuilder.Windows
             if (cbArgStr.Checked && fieldname == "arg0str")
                 arg0str.Text = (string)fieldslist.GetValue(fieldname);
         }
+
+		//mxd
+		private void cbAbsoluteHeight_CheckedChanged(object sender, EventArgs e) {
+			ABSOLUTE_HEIGHT = cbAbsoluteHeight.Checked;
+			zlabel.Text = ABSOLUTE_HEIGHT ? "Z:" : "Height:";
+			posZ.Text = (ABSOLUTE_HEIGHT ? initialFloorHeight + initialPosition.z : initialPosition.z).ToString();
+		}
 
 		// Help
 		private void ThingEditForm_HelpRequested(object sender, HelpEventArgs hlpevent)
