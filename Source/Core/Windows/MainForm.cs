@@ -1790,6 +1790,7 @@ namespace CodeImp.DoomBuilder.Windows
                 buttontoggleanimatedlight.Enabled = true;
                 buttontogglefog.Enabled = true;
                 buttontogglefx.Enabled = true;
+				buttontoggleeventlines.Enabled = true;
 
                 if (General.Settings.GZToolbarGZDoom) {
                     buttontogglemodels.Checked = General.Settings.GZDrawModels;
@@ -1797,6 +1798,7 @@ namespace CodeImp.DoomBuilder.Windows
                     buttontoggledynlight.Checked = General.Settings.GZDrawLights;
                     buttontoggleanimatedlight.Checked = General.Settings.GZAnimateLights;
                     buttontogglefog.Checked = General.Settings.GZDrawFog;
+					buttontoggleeventlines.Checked = General.Settings.GZShowEventLines;
                 }
             } else {
                 buttontogglemodels.Enabled = false;
@@ -1805,6 +1807,7 @@ namespace CodeImp.DoomBuilder.Windows
                 buttontoggleanimatedlight.Enabled = false;
                 buttontogglefog.Enabled = false;
                 buttontogglefx.Enabled = false;
+				buttontoggleeventlines.Enabled = false;
             }
         }
 

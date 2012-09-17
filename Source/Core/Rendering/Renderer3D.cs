@@ -674,15 +674,18 @@ namespace CodeImp.DoomBuilder.Rendering
         private void renderLinks(List<Line3D> lines) {
             //create vertices
             WorldVertex[] verts = new WorldVertex[lines.Count * 6];
+			float scaler = 20f;
+			
             for (int i = 0; i < lines.Count; i++) {
                 WorldVertex endPoint = new WorldVertex(lines[i].v2);
+				float nz = lines[i].GetDelta().GetNormal().z * scaler;
                 float angle = lines[i].GetAngle();
                 verts[i * 6] = new WorldVertex(lines[i].v1);
                 verts[i * 6 + 1] = endPoint;
                 verts[i * 6 + 2] = endPoint;
-                verts[i * 6 + 3] = new WorldVertex(new Vector3D(lines[i].v2.x - 20f * (float)Math.Sin(angle - 0.52f), lines[i].v2.y + 20f * (float)Math.Cos(angle - 0.52f), lines[i].v2.z));
+				verts[i * 6 + 3] = new WorldVertex(new Vector3D(lines[i].v2.x - scaler * (float)Math.Sin(angle - 0.46f), lines[i].v2.y + scaler * (float)Math.Cos(angle - 0.46f), lines[i].v2.z - nz));
                 verts[i * 6 + 4] = endPoint;
-                verts[i * 6 + 5] = new WorldVertex(new Vector3D(lines[i].v2.x - 20f * (float)Math.Sin(angle + 0.52f), lines[i].v2.y + 20f * (float)Math.Cos(angle + 0.52f), lines[i].v2.z));
+				verts[i * 6 + 5] = new WorldVertex(new Vector3D(lines[i].v2.x - scaler * (float)Math.Sin(angle + 0.46f), lines[i].v2.y + scaler * (float)Math.Cos(angle + 0.46f), lines[i].v2.z - nz));
             }
 
             VertexBuffer vb = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * verts.Length, Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
@@ -715,6 +718,7 @@ namespace CodeImp.DoomBuilder.Rendering
             graphics.Shaders.World3D.EndPass();
             graphics.Shaders.World3D.SetModulateColor(-1);
             graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			vb.Dispose();
         }
 
 		// This performs a single render pass
