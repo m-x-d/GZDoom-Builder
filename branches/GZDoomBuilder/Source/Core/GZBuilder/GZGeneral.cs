@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
 
         //version
         public const float Version = 1.12f;
-        public const char Revision = 'h';
+        public const char Revision = 'i';
 
         //debug console
 #if DEBUG
@@ -147,6 +147,12 @@ namespace CodeImp.DoomBuilder.GZBuilder
 
             General.MainWindow.RedrawDisplay();
             General.MainWindow.UpdateGZDoomPannel();
+        }
+
+        [BeginAction("gztoggleeventlines")]
+        private static void toggleEventLines() {
+            General.Settings.GZShowEventLines = !General.Settings.GZShowEventLines;
+            General.MainWindow.DisplayStatus(StatusType.Action, "Event lines are " + (General.Settings.GZShowEventLines ? "ENABLED" : "DISABLED"));
         }
 
         //main menu actions

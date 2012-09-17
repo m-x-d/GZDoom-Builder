@@ -127,10 +127,11 @@ namespace CodeImp.DoomBuilder.Windows
 
             //mxd
             initialPosition = ft.Position;
-			initialFloorHeight = ft.Sector.FloorHeight;
+            if (ft.Sector != null)
+			    initialFloorHeight = ft.Sector.FloorHeight;
             posX.Text = ((int)ft.Position.x).ToString();
             posY.Text = ((int)ft.Position.y).ToString();
-			posZ.Text = ABSOLUTE_HEIGHT ? ((int)ft.Position.z + ft.Sector.FloorHeight).ToString() : ((int)ft.Position.z).ToString();
+            posZ.Text = ABSOLUTE_HEIGHT ? ((int)ft.Position.z + initialFloorHeight).ToString() : ((int)ft.Position.z).ToString();
             posX.ButtonStep = General.Map.Grid.GridSize;
             posY.ButtonStep = General.Map.Grid.GridSize;
 			posZ.ButtonStep = General.Map.Grid.GridSize;
@@ -179,7 +180,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(t.AngleDoom.ToString() != angle.Text) angle.Text = "";
 				
 				//mxd
-				if(ABSOLUTE_HEIGHT) {
+                if (ABSOLUTE_HEIGHT && t.Sector != null) {
 					if(((int)t.Position.z + t.Sector.FloorHeight).ToString() != posZ.Text) posZ.Text = "";
 				} else {
 					if(((int)t.Position.z).ToString() != posZ.Text) posZ.Text = "";
@@ -417,7 +418,9 @@ namespace CodeImp.DoomBuilder.Windows
                 //mxd
 				//t.Move(t.Position.x, t.Position.y, (float)height.GetResult((int)t.Position.z));
 				float z = (float)posZ.GetResult((int)t.Position.z);
-				t.Move(t.Position.x + delta.x, t.Position.y + delta.y, ABSOLUTE_HEIGHT ? z - t.Sector.FloorHeight : z);
+                if (ABSOLUTE_HEIGHT && t.Sector != null)
+                    z -= t.Sector.FloorHeight;
+				t.Move(t.Position.x + delta.x, t.Position.y + delta.y, z);
 				
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes)

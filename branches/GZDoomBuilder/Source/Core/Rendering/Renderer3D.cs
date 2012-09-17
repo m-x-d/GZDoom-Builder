@@ -36,6 +36,7 @@ using CodeImp.DoomBuilder.Map;
 //mxd
 using CodeImp.DoomBuilder.GZBuilder.MD3;
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.GZBuilder.Geometry;
 
 #endregion
 
@@ -555,6 +556,14 @@ namespace CodeImp.DoomBuilder.Rendering
             // THINGS
 			if(renderthingcages) RenderThingCages();
 
+            //mxd. LINKS
+            if (General.Settings.GZShowEventLines) {
+                //mxd. gather links
+                List<Line3D> lines = GZBuilder.Data.LinksCollector.GetThingLinks(thingsbydistance);
+                if (lines.Count > 0)
+                    renderLinks(lines);
+            }
+
 			// ADDITIVE PASS
 			world = Matrix.Identity;
 			ApplyMatrices3D();
@@ -654,6 +663,53 @@ namespace CodeImp.DoomBuilder.Rendering
                 graphics.Device.SetStreamSource(0, bbox.arrow, 0, WorldVertex.Stride);
                 graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 5);
             }
+
+            // Done
+            graphics.Shaders.World3D.EndPass();
+            graphics.Shaders.World3D.SetModulateColor(-1);
+            graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+        }
+
+        //mxd
+        private void renderLinks(List<Line3D> lines) {
+            //create vertices
+            WorldVertex[] verts = new WorldVertex[lines.Count * 6];
+            for (int i = 0; i < lines.Count; i++) {
+                WorldVertex endPoint = new WorldVertex(lines[i].v2);
+                float angle = lines[i].GetAngle();
+                verts[i * 6] = new WorldVertex(lines[i].v1);
+                verts[i * 6 + 1] = endPoint;
+                verts[i * 6 + 2] = endPoint;
+                verts[i * 6 + 3] = new WorldVertex(new Vector3D(lines[i].v2.x - 20f * (float)Math.Sin(angle - 0.52f), lines[i].v2.y + 20f * (float)Math.Cos(angle - 0.52f), lines[i].v2.z));
+                verts[i * 6 + 4] = endPoint;
+                verts[i * 6 + 5] = new WorldVertex(new Vector3D(lines[i].v2.x - 20f * (float)Math.Sin(angle + 0.52f), lines[i].v2.y + 20f * (float)Math.Cos(angle + 0.52f), lines[i].v2.z));
+            }
+
+            VertexBuffer vb = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * verts.Length, Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+            DataStream s = vb.Lock(0, WorldVertex.Stride * verts.Length, LockFlags.Discard);
+            s.WriteRange<WorldVertex>(verts);
+            vb.Unlock();
+            s.Dispose();
+            
+            //begin rendering
+            graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+            graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+            graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
+            graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+            graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.SourceAlpha);
+
+            graphics.Shaders.World3D.BeginPass(16);
+
+            world = Matrix.Identity;
+            ApplyMatrices3D();
+
+            // Setup color
+            graphics.Shaders.World3D.VertexColor = General.Colors.InfoLine.ToColorValue();
+
+            //render
+            graphics.Shaders.World3D.ApplySettings();
+            graphics.Device.SetStreamSource(0, vb, 0, WorldVertex.Stride);
+            graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, lines.Count * 3);
 
             // Done
             graphics.Shaders.World3D.EndPass();

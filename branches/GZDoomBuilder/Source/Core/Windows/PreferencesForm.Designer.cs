@@ -155,6 +155,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.label16 = new System.Windows.Forms.Label();
             this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.colorInfo = new CodeImp.DoomBuilder.Controls.ColorControl();
             label7 = new System.Windows.Forms.Label();
             label6 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
@@ -472,6 +473,7 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             this.colorsgroup1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
+            this.colorsgroup1.Controls.Add(this.colorInfo);
             this.colorsgroup1.Controls.Add(this.cbStretchModels);
             this.colorsgroup1.Controls.Add(this.colorMD3);
             this.colorsgroup1.Controls.Add(this.label2);
@@ -500,7 +502,7 @@ namespace CodeImp.DoomBuilder.Windows
             // cbStretchModels
             // 
             this.cbStretchModels.AutoSize = true;
-            this.cbStretchModels.Location = new System.Drawing.Point(21, 463);
+            this.cbStretchModels.Location = new System.Drawing.Point(21, 466);
             this.cbStretchModels.Name = "cbStretchModels";
             this.cbStretchModels.Size = new System.Drawing.Size(169, 18);
             this.cbStretchModels.TabIndex = 18;
@@ -523,7 +525,7 @@ namespace CodeImp.DoomBuilder.Windows
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 333);
+            this.label2.Location = new System.Drawing.Point(18, 358);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(147, 14);
             this.label2.TabIndex = 14;
@@ -545,7 +547,7 @@ namespace CodeImp.DoomBuilder.Windows
             // squarethings
             // 
             this.squarethings.AutoSize = true;
-            this.squarethings.Location = new System.Drawing.Point(21, 438);
+            this.squarethings.Location = new System.Drawing.Point(21, 445);
             this.squarethings.Name = "squarethings";
             this.squarethings.Size = new System.Drawing.Size(93, 18);
             this.squarethings.TabIndex = 8;
@@ -567,7 +569,7 @@ namespace CodeImp.DoomBuilder.Windows
             // doublesidedalphalabel
             // 
             this.doublesidedalphalabel.AutoSize = true;
-            this.doublesidedalphalabel.Location = new System.Drawing.Point(148, 365);
+            this.doublesidedalphalabel.Location = new System.Drawing.Point(148, 390);
             this.doublesidedalphalabel.Name = "doublesidedalphalabel";
             this.doublesidedalphalabel.Size = new System.Drawing.Size(23, 14);
             this.doublesidedalphalabel.TabIndex = 16;
@@ -612,7 +614,7 @@ namespace CodeImp.DoomBuilder.Windows
             // qualitydisplay
             // 
             this.qualitydisplay.AutoSize = true;
-            this.qualitydisplay.Location = new System.Drawing.Point(21, 413);
+            this.qualitydisplay.Location = new System.Drawing.Point(21, 424);
             this.qualitydisplay.Name = "qualitydisplay";
             this.qualitydisplay.Size = new System.Drawing.Size(130, 18);
             this.qualitydisplay.TabIndex = 7;
@@ -658,7 +660,7 @@ namespace CodeImp.DoomBuilder.Windows
             // doublesidedalpha
             // 
             this.doublesidedalpha.LargeChange = 3;
-            this.doublesidedalpha.Location = new System.Drawing.Point(11, 352);
+            this.doublesidedalpha.Location = new System.Drawing.Point(11, 377);
             this.doublesidedalpha.Name = "doublesidedalpha";
             this.doublesidedalpha.Size = new System.Drawing.Size(130, 45);
             this.doublesidedalpha.TabIndex = 2;
@@ -1647,6 +1649,18 @@ namespace CodeImp.DoomBuilder.Windows
             this.pasteoptions.Size = new System.Drawing.Size(666, 427);
             this.pasteoptions.TabIndex = 0;
             // 
+            // colorInfo
+            // 
+            this.colorInfo.BackColor = System.Drawing.Color.Transparent;
+            this.colorInfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.colorInfo.Label = "Event lines:";
+            this.colorInfo.Location = new System.Drawing.Point(15, 324);
+            this.colorInfo.MaximumSize = new System.Drawing.Size(10000, 23);
+            this.colorInfo.MinimumSize = new System.Drawing.Size(100, 23);
+            this.colorInfo.Name = "colorInfo";
+            this.colorInfo.Size = new System.Drawing.Size(168, 23);
+            this.colorInfo.TabIndex = 19;
+            // 
             // PreferencesForm
             // 
             this.AcceptButton = this.apply;
@@ -1826,5 +1840,6 @@ namespace CodeImp.DoomBuilder.Windows
         private Dotnetrix.Controls.TrackBar vertexScale;
         private System.Windows.Forms.Label vertexScaleLabel;
         private System.Windows.Forms.Label label22;
+        private CodeImp.DoomBuilder.Controls.ColorControl colorInfo;
 	}
 }
