@@ -705,6 +705,7 @@
     <Compile Include="GZBuilder\Data\BoundingBox.cs" />
     <Compile Include="GZBuilder\Data\GameType.cs" />
     <Compile Include="GZBuilder\Data\GZDoomLight.cs" />
+    <Compile Include="GZBuilder\Data\LinkHelper.cs" />
     <Compile Include="GZBuilder\Data\MapInfo.cs" />
     <Compile Include="GZBuilder\Data\ModeldefEntry.cs" />
     <Compile Include="GZBuilder\Data\ScriptItem.cs" />
@@ -713,6 +714,7 @@
     <Compile Include="GZBuilder\Data\TextureData.cs" />
     <Compile Include="GZBuilder\Data\ThingBoundingBox.cs" />
     <Compile Include="GZBuilder\Data\ThingCopyData.cs" />
+    <Compile Include="GZBuilder\Geometry\Line3D.cs" />
     <Compile Include="GZBuilder\GZDoom\DecorateParserSE.cs" />
     <Compile Include="GZBuilder\GZDoom\GldefsParser.cs" />
     <Compile Include="GZBuilder\GZDoom\MapinfoParser.cs" />

@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float DARK_ADDITION = -0.2f;
 
 		// Palette size
-		private const int NUM_COLORS = 41;
+		private const int NUM_COLORS = 42;
 		public const int NUM_THING_COLORS = 20;
 		public const int THING_COLORS_OFFSET = 20;
 
@@ -91,6 +91,7 @@ namespace CodeImp.DoomBuilder.Rendering
         public const int THINGCOLOR19 = 39;
         //mxd
         public const int MODELWIRECOLOR = 40;
+        public const int INFOLINECOLOR = 41;
 		
 		#endregion
 
@@ -125,6 +126,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
         //mxd
         public PixelColor ModelWireframe { get { return colors[MODELWIRECOLOR]; } internal set { colors[MODELWIRECOLOR] = value; } }
+        public PixelColor InfoLine { get { return colors[INFOLINECOLOR]; } internal set { colors[INFOLINECOLOR] = value; } }
 		
 		public PixelColor Crosshair3D { get { return colors[CROSSHAIR3D]; } internal set { colors[CROSSHAIR3D] = value; } }
 		public PixelColor Highlight3D { get { return colors[HIGHLIGHT3D]; } internal set { colors[HIGHLIGHT3D] = value; } }
@@ -154,7 +156,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			for(int i = 0; i < NUM_COLORS; i++)
 			{
 				// Read color
-				colors[i] = PixelColor.FromInt(cfg.ReadSetting("colors.color" + i.ToString(CultureInfo.InvariantCulture), 0));
+                colors[i] = PixelColor.FromInt(cfg.ReadSetting("colors.color" + i.ToString(CultureInfo.InvariantCulture), -16711872)); //mxd. changed default color from transparent to light-green
 			}
 
 			// Set new colors

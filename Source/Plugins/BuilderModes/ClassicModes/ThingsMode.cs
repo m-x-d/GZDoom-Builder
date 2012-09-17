@@ -33,6 +33,7 @@ using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.GZBuilder.Geometry;
 
 #endregion
 
@@ -161,6 +162,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso);
 					renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
 				}
+
+                //mxd
+                if(General.Settings.GZShowEventLines)
+                    renderArrows(GZBuilder.Data.LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings));
+ 
 				renderer.Finish();
 			}
 
@@ -177,6 +183,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			renderer.Present();
 		}
+
+        //mxd
+        private void renderArrows(List<Line3D> lines) {
+            foreach (Line3D l in lines) {
+                renderer.RenderLine(l.v1, l.v2, 0.6f, General.Colors.InfoLine, true);
+                float angle = l.GetAngle();
+                //arrowhead
+                float scaler = 20f / renderer.Scale;
+                renderer.RenderLine(l.v2, new Vector2D(l.v2.x - scaler * (float)Math.Sin(angle - 0.52f), l.v2.y + scaler * (float)Math.Cos(angle - 0.52f)), 0.6f, General.Colors.InfoLine, true);
+                renderer.RenderLine(l.v2, new Vector2D(l.v2.x - scaler * (float)Math.Sin(angle + 0.52f), l.v2.y + scaler * (float)Math.Cos(angle + 0.52f)), 0.6f, General.Colors.InfoLine, true);
+            }
+        }
 		
 		// This highlights a new item
 		protected void Highlight(Thing t)
