@@ -43,33 +43,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		public int tag;
 		public UniversalType type;
+		public Vector2D Center { get { return center; } }
+		private Vector2D center;
 
 		// This sets up the association
-		public Association(int tag, int type)
+		public Association(Vector2D center, int tag, int type)
 		{
 			this.tag = tag;
 			this.type = (UniversalType)type;
+			this.center = center;
 		}
 
 		// This sets up the association
-		public Association(int tag, UniversalType type)
+		public Association(Vector2D center, int tag, UniversalType type)
 		{
 			this.tag = tag;
 			this.type = type;
+			this.center = center;
 		}
 
 		// This sets up the association
-		public void Set(int tag, int type)
+		public void Set(Vector2D center, int tag, int type)
 		{
 			this.tag = tag;
 			this.type = (UniversalType)type;
+			this.center = center;
 		}
 
 		// This sets up the association
-		public void Set(int tag, UniversalType type)
+		public void Set(Vector2D center, int tag, UniversalType type)
 		{
 			this.tag = tag;
 			this.type = type;
+			this.center = center;
 		}
 
 		// This compares an association

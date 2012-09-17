@@ -91,9 +91,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Set highlight association
 			if(l != null)
-				highlightasso.Set(l.Tag, UniversalType.LinedefTag);
+				highlightasso.Set(new Vector2D((l.Start.Position  + l.End.Position)/2), l.Tag, UniversalType.LinedefTag);
 			else
-				highlightasso.Set(0, 0);
+				highlightasso.Set(new Vector2D(), 0, 0);
 
 			// New association highlights something?
 			if((l != null) && (l.Tag > 0)) completeredraw = true;
@@ -102,9 +102,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.Config.LineTagIndicatesSectors)
 			{
 				if(l != null)
-					association[0].Set(l.Tag, UniversalType.SectorTag);
+					association[0].Set(new Vector2D((l.Start.Position  + l.End.Position)/2), l.Tag, UniversalType.SectorTag);
 				else
-					association[0].Set(0, 0);
+					association[0].Set(new Vector2D(), 0, 0);
 			}
 			else
 			{
@@ -125,9 +125,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Make new association
 					if(action != null)
-						association[i].Set(l.Args[i], action.Args[i].Type);
+						association[i].Set(new Vector2D((l.Start.Position  + l.End.Position)/2), l.Args[i], action.Args[i].Type);
 					else
-						association[i].Set(0, 0);
+						association[i].Set(new Vector2D(), 0, 0);
 
 					// New association highlights something?
 					if((association[i].type == UniversalType.SectorTag) ||

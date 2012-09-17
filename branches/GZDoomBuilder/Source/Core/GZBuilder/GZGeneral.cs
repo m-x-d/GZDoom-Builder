@@ -153,6 +153,8 @@ namespace CodeImp.DoomBuilder.GZBuilder
         private static void toggleEventLines() {
             General.Settings.GZShowEventLines = !General.Settings.GZShowEventLines;
             General.MainWindow.DisplayStatus(StatusType.Action, "Event lines are " + (General.Settings.GZShowEventLines ? "ENABLED" : "DISABLED"));
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPannel();
         }
 
         //main menu actions

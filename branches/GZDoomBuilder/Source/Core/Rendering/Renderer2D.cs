@@ -38,6 +38,7 @@ using CodeImp.DoomBuilder.Editing;
 //mxd
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.MD3;
+using CodeImp.DoomBuilder.GZBuilder.Geometry;
 
 #endregion
 
@@ -1442,6 +1443,30 @@ namespace CodeImp.DoomBuilder.Rendering
 			quad.Render(graphics);
 			graphics.Shaders.Display2D.EndPass();
 			graphics.Shaders.Display2D.End();
+		}
+
+		//mxd
+		public void RenderArrows(List<Line3D> lines, PixelColor c) {
+			float scaler = 20f / scale;
+			foreach(Line3D l in lines) {
+				RenderLine(l.v1, l.v2, 0.8f, c, true);
+				float angle = l.GetAngle();
+				//arrowhead
+				RenderLine(l.v2, new Vector2D(l.v2.x - scaler * (float)Math.Sin(angle - 0.46f), l.v2.y + scaler * (float)Math.Cos(angle - 0.46f)), 0.8f, c, true);
+				RenderLine(l.v2, new Vector2D(l.v2.x - scaler * (float)Math.Sin(angle + 0.46f), l.v2.y + scaler * (float)Math.Cos(angle + 0.46f)), 0.8f, c, true);
+			}
+		}
+
+		//mxd
+		public void PlotArrows(List<Line3D> lines, PixelColor c) {
+			float scaler = 16f / scale;
+			foreach(Line3D l in lines) {
+				PlotLine(l.v1, l.v2, c);
+				float angle = l.GetAngle();
+				//arrowhead
+				PlotLine(l.v2, new Vector2D(l.v2.x - scaler * (float)Math.Sin(angle - 0.46f), l.v2.y + scaler * (float)Math.Cos(angle - 0.46f)), c);
+				PlotLine(l.v2, new Vector2D(l.v2.x - scaler * (float)Math.Sin(angle + 0.46f), l.v2.y + scaler * (float)Math.Cos(angle + 0.46f)), c);
+			}
 		}
 
 		// This renders a line with given color

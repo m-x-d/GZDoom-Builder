@@ -232,9 +232,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Set highlight association
 			if(s != null)
-				highlightasso.Set(s.Tag, UniversalType.SectorTag);
+				highlightasso.Set(new Vector2D(s.BBox.X + s.BBox.Width/2, s.BBox.Y + s.BBox.Height/2), s.Tag, UniversalType.SectorTag);
 			else
-				highlightasso.Set(0, 0);
+				highlightasso.Set(new Vector2D(), 0, 0);
 
 			// New association highlights something?
 			if((s != null) && (s.Tag > 0)) completeredraw = true;
