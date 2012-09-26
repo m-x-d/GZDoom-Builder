@@ -69,8 +69,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		void Present();
 
 		// Drawing methods
-		void RenderArrows(List<Line3D> lines, PixelColor c); //mxd
-		void PlotArrows(List<Line3D> lines, PixelColor c); //mxd
+		void RenderArrow(Line3D line, PixelColor c); //mxd
+		void PlotArrow(Line3D line, PixelColor c); //mxd
 		void PlotLine(Vector2D start, Vector2D end, PixelColor c);
 		void PlotLinedef(Linedef l, PixelColor c);
 		void PlotLinedefSet(ICollection<Linedef> linedefs);

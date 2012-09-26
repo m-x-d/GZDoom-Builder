@@ -164,8 +164,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
                 //mxd
-                if(General.Settings.GZShowEventLines)
-                    renderer.RenderArrows(GZBuilder.Data.LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings), General.Colors.InfoLine);
+				if(General.Settings.GZShowEventLines) {
+					List<Line3D> lines = GZBuilder.Data.LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+
+					foreach(Line3D l in lines) {
+						renderer.RenderArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
+					}
+				}
  
 				renderer.Finish();
 			}

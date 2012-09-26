@@ -609,7 +609,7 @@ namespace CodeImp.DoomBuilder.IO
 							default:
 								
 								// Unknown keyword
-								RaiseError(line, ERROR_KEYWORDUNKNOWN);
+								RaiseError(line, ERROR_KEYWORDUNKNOWN + "\nUnrecognized token: '" + val.Trim().ToLowerInvariant() + "'");
 								break;
 						}
 						

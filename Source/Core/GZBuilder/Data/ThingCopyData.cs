@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
             t.Tag = tag;
             t.Action = action;
 
-            foreach(int i in args) 
+            for(int i = 0; i < args.Length; i++) 
                 t.Args[i] = args[i];
 
             foreach (KeyValuePair<string, UniValue> group in fields) {

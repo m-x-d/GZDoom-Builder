@@ -801,7 +801,7 @@ namespace CodeImp.DoomBuilder.IO
 							case "true": return (bool)true;
 							case "false": return (bool)false;
 							case "null": return null;
-							default: RaiseError(file, line, ERROR_KEYWORDUNKNOWN); return null;
+							default: RaiseError(file, line, ERROR_KEYWORDUNKNOWN + "\nUnrecognized token: '" + val.Trim().ToLowerInvariant() + "'"); return null;
 						}
 					}
 				}
