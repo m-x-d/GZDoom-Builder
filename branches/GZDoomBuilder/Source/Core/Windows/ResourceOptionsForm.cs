@@ -77,6 +77,10 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Checkbox
 			notfortesting.Checked = res.notfortesting;
+
+			//mxd
+			if(General.Map != null && General.Map.FilePathName != "")
+				dirdialog.SelectedPath = Path.GetDirectoryName(General.Map.FilePathName);
 		}
 		
 		// OK clicked

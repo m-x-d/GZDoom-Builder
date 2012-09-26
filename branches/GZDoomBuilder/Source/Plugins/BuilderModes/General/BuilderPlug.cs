@@ -497,8 +497,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
-				if(General.Settings.GZShowEventLines)
-					renderer.PlotArrows(lines, General.Colors.InfoLine);//mxd
+				if(General.Settings.GZShowEventLines) { //mxd
+					//renderer.PlotArrows(lines, General.Colors.InfoLine);//mxd
+					foreach(Line3D l in lines){
+						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
+					}
+				}
 			}
 			// Linedefs?
 			else if(asso.type == UniversalType.LinedefTag)
@@ -512,8 +516,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
-				if(General.Settings.GZShowEventLines)
-					renderer.PlotArrows(lines, General.Colors.InfoLine);//mxd
+				if(General.Settings.GZShowEventLines) { //mxd
+					//renderer.PlotArrows(lines, General.Colors.InfoLine);//mxd
+					foreach(Line3D l in lines) {
+						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
+					}
+				}
 			}
 		}
 		
@@ -535,8 +543,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							lines.Add(new Line3D(asso.Center, t.Position));//mxd
 					}
 				}
-				if(General.Settings.GZShowEventLines)
-					renderer.RenderArrows(lines, General.Colors.InfoLine);//mxd
+				if(General.Settings.GZShowEventLines) { //mxd
+					//renderer.RenderArrows(lines, General.Colors.InfoLine);//mxd
+					foreach(Line3D l in lines) {
+						renderer.RenderArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
+					}
+				}
 			}
 		}
 		
@@ -566,8 +578,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 				}
-				if(General.Settings.GZShowEventLines)
-					renderer.PlotArrows(lines, General.Colors.InfoLine); //mxd
+				if(General.Settings.GZShowEventLines) { //mxd
+					//renderer.PlotArrows(lines, General.Colors.InfoLine); //mxd
+					foreach(Line3D l in lines) {
+						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
+					}
+				}
 			}
 			else
 			{
@@ -592,8 +608,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
-				if(General.Settings.GZShowEventLines) //mxd
-					renderer.PlotArrows(lines, General.Colors.InfoLine);
+				if(General.Settings.GZShowEventLines) { //mxd
+					//renderer.PlotArrows(lines, General.Colors.InfoLine);
+					foreach(Line3D l in lines) {
+						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
+					}
+				}
 			}
 		}
 		
@@ -625,8 +645,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			if(General.Settings.GZShowEventLines)//mxd
-				renderer.RenderArrows(lines, General.Colors.InfoLine); 
+			if(General.Settings.GZShowEventLines) {//mxd
+				//renderer.RenderArrows(lines, General.Colors.InfoLine);
+				foreach(Line3D l in lines) {
+					renderer.RenderArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
+				}
+			}
 		}
 
 		#endregion

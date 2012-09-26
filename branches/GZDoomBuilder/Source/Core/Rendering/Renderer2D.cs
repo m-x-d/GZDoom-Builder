@@ -1446,27 +1446,27 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		public void RenderArrows(List<Line3D> lines, PixelColor c) {
+		public void RenderArrow(Line3D line, PixelColor c) {
 			float scaler = 20f / scale;
-			foreach(Line3D l in lines) {
-				RenderLine(l.v1, l.v2, 0.8f, c, true);
-				float angle = l.GetAngle();
-				//arrowhead
-				RenderLine(l.v2, new Vector2D(l.v2.x - scaler * (float)Math.Sin(angle - 0.46f), l.v2.y + scaler * (float)Math.Cos(angle - 0.46f)), 0.8f, c, true);
-				RenderLine(l.v2, new Vector2D(l.v2.x - scaler * (float)Math.Sin(angle + 0.46f), l.v2.y + scaler * (float)Math.Cos(angle + 0.46f)), 0.8f, c, true);
-			}
+			//foreach(Line3D l in lines) {
+			RenderLine(line.v1, line.v2, 0.8f, c, true);
+			float angle = line.GetAngle();
+			//arrowhead
+			RenderLine(line.v2, new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle - 0.46f), line.v2.y + scaler * (float)Math.Cos(angle - 0.46f)), 0.8f, c, true);
+			RenderLine(line.v2, new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle + 0.46f), line.v2.y + scaler * (float)Math.Cos(angle + 0.46f)), 0.8f, c, true);
+			//}
 		}
 
 		//mxd
-		public void PlotArrows(List<Line3D> lines, PixelColor c) {
+		public void PlotArrow(Line3D line, PixelColor c) {
 			float scaler = 16f / scale;
-			foreach(Line3D l in lines) {
-				PlotLine(l.v1, l.v2, c);
-				float angle = l.GetAngle();
-				//arrowhead
-				PlotLine(l.v2, new Vector2D(l.v2.x - scaler * (float)Math.Sin(angle - 0.46f), l.v2.y + scaler * (float)Math.Cos(angle - 0.46f)), c);
-				PlotLine(l.v2, new Vector2D(l.v2.x - scaler * (float)Math.Sin(angle + 0.46f), l.v2.y + scaler * (float)Math.Cos(angle + 0.46f)), c);
-			}
+			//foreach(Line3D l in lines) {
+			PlotLine(line.v1, line.v2, c);
+			float angle = line.GetAngle();
+			//arrowhead
+			PlotLine(line.v2, new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle - 0.46f), line.v2.y + scaler * (float)Math.Cos(angle - 0.46f)), c);
+			PlotLine(line.v2, new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle + 0.46f), line.v2.y + scaler * (float)Math.Cos(angle + 0.46f)), c);
+			//}
 		}
 
 		// This renders a line with given color
