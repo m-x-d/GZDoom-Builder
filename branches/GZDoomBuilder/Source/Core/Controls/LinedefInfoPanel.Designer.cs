@@ -55,27 +55,79 @@ namespace CodeImp.DoomBuilder.Controls
 			this.action = new System.Windows.Forms.Label();
 			this.frontpanel = new System.Windows.Forms.GroupBox();
 			this.frontsector = new System.Windows.Forms.Label();
-			this.frontlowname = new System.Windows.Forms.Label();
-			this.frontlowtex = new System.Windows.Forms.Panel();
-			this.frontmidtex = new System.Windows.Forms.Panel();
-			this.fronthighname = new System.Windows.Forms.Label();
+			this.flowLayoutPanelFront = new System.Windows.Forms.FlowLayoutPanel();
+			this.panel4 = new System.Windows.Forms.Panel();
 			this.fronthightex = new System.Windows.Forms.Panel();
+			this.fronthighname = new System.Windows.Forms.Label();
+			this.panelUDMFFrontTop = new System.Windows.Forms.Panel();
+			this.frontTopUDMFScale = new System.Windows.Forms.Label();
+			this.frontTopUDMFOffset = new System.Windows.Forms.Label();
+			this.frontTopUDMFScaleLabel = new System.Windows.Forms.Label();
+			this.frontTopUDMFOffsetLabel = new System.Windows.Forms.Label();
+			this.panel7 = new System.Windows.Forms.Panel();
+			this.frontmidtex = new System.Windows.Forms.Panel();
 			this.frontmidname = new System.Windows.Forms.Label();
+			this.panelUDMFFrontMid = new System.Windows.Forms.Panel();
+			this.frontMidUDMFScale = new System.Windows.Forms.Label();
+			this.frontMidUDMFOffset = new System.Windows.Forms.Label();
+			this.frontMidUDMFScaleLabel = new System.Windows.Forms.Label();
+			this.frontMidUDMFOffsetLabel = new System.Windows.Forms.Label();
+			this.panelFrontLowTex = new System.Windows.Forms.Panel();
+			this.frontlowtex = new System.Windows.Forms.Panel();
+			this.frontlowname = new System.Windows.Forms.Label();
+			this.panelUDMFFrontBottom = new System.Windows.Forms.Panel();
+			this.frontBottomUDMFScale = new System.Windows.Forms.Label();
+			this.frontBottomUDMFOffset = new System.Windows.Forms.Label();
+			this.frontBottomUDMFScaleLabel = new System.Windows.Forms.Label();
+			this.frontBottomUDMFOffsetLabel = new System.Windows.Forms.Label();
 			this.backpanel = new System.Windows.Forms.GroupBox();
 			this.backsector = new System.Windows.Forms.Label();
-			this.backlowname = new System.Windows.Forms.Label();
-			this.backlowtex = new System.Windows.Forms.Panel();
-			this.backmidname = new System.Windows.Forms.Label();
-			this.backmidtex = new System.Windows.Forms.Panel();
-			this.backhighname = new System.Windows.Forms.Label();
+			this.flowLayoutPanelBack = new System.Windows.Forms.FlowLayoutPanel();
+			this.panel1 = new System.Windows.Forms.Panel();
 			this.backhightex = new System.Windows.Forms.Panel();
+			this.backhighname = new System.Windows.Forms.Label();
+			this.panelUDMFBackTop = new System.Windows.Forms.Panel();
+			this.backTopUDMFScale = new System.Windows.Forms.Label();
+			this.backTopUDMFOffset = new System.Windows.Forms.Label();
+			this.backTopUDMFScaleLabel = new System.Windows.Forms.Label();
+			this.backTopUDMFOffsetLabel = new System.Windows.Forms.Label();
+			this.panel2 = new System.Windows.Forms.Panel();
+			this.backmidtex = new System.Windows.Forms.Panel();
+			this.backmidname = new System.Windows.Forms.Label();
+			this.panelUDMFBackMid = new System.Windows.Forms.Panel();
+			this.backMidUDMFScale = new System.Windows.Forms.Label();
+			this.backMidUDMFOffset = new System.Windows.Forms.Label();
+			this.backMidUDMFScaleLabel = new System.Windows.Forms.Label();
+			this.backMidUDMFOffsetLabel = new System.Windows.Forms.Label();
+			this.panelBackLowTex = new System.Windows.Forms.Panel();
+			this.backlowtex = new System.Windows.Forms.Panel();
+			this.backlowname = new System.Windows.Forms.Label();
+			this.panelUDMFBackBottom = new System.Windows.Forms.Panel();
+			this.backBottomUDMFScale = new System.Windows.Forms.Label();
+			this.backBottomUDMFOffset = new System.Windows.Forms.Label();
+			this.backBottomUDMFScaleLabel = new System.Windows.Forms.Label();
+			this.backBottomUDMFOffsetLabel = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			this.infopanel.SuspendLayout();
 			this.frontpanel.SuspendLayout();
+			this.flowLayoutPanelFront.SuspendLayout();
+			this.panel4.SuspendLayout();
+			this.panelUDMFFrontTop.SuspendLayout();
+			this.panel7.SuspendLayout();
+			this.panelUDMFFrontMid.SuspendLayout();
+			this.panelFrontLowTex.SuspendLayout();
+			this.panelUDMFFrontBottom.SuspendLayout();
 			this.backpanel.SuspendLayout();
+			this.flowLayoutPanelBack.SuspendLayout();
+			this.panel1.SuspendLayout();
+			this.panelUDMFBackTop.SuspendLayout();
+			this.panel2.SuspendLayout();
+			this.panelUDMFBackMid.SuspendLayout();
+			this.panelBackLowTex.SuspendLayout();
+			this.panelUDMFBackBottom.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -92,7 +144,7 @@ namespace CodeImp.DoomBuilder.Controls
 			label4.AutoSize = true;
 			label4.Location = new System.Drawing.Point(24, 77);
 			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(28, 14);
+			label4.Size = new System.Drawing.Size(27, 14);
 			label4.TabIndex = 4;
 			label4.Text = "Tag:";
 			// 
@@ -287,12 +339,12 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// backoffsetlabel
 			// 
-			this.backoffsetlabel.AutoSize = true;
-			this.backoffsetlabel.Location = new System.Drawing.Point(111, 77);
+			this.backoffsetlabel.Location = new System.Drawing.Point(107, 77);
 			this.backoffsetlabel.Name = "backoffsetlabel";
-			this.backoffsetlabel.Size = new System.Drawing.Size(66, 14);
+			this.backoffsetlabel.Size = new System.Drawing.Size(70, 14);
 			this.backoffsetlabel.TabIndex = 14;
 			this.backoffsetlabel.Text = "Back offset:";
+			this.backoffsetlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// frontoffset
 			// 
@@ -305,12 +357,12 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// frontoffsetlabel
 			// 
-			this.frontoffsetlabel.AutoSize = true;
-			this.frontoffsetlabel.Location = new System.Drawing.Point(110, 58);
+			this.frontoffsetlabel.Location = new System.Drawing.Point(107, 58);
 			this.frontoffsetlabel.Name = "frontoffsetlabel";
-			this.frontoffsetlabel.Size = new System.Drawing.Size(67, 14);
+			this.frontoffsetlabel.Size = new System.Drawing.Size(70, 14);
 			this.frontoffsetlabel.TabIndex = 8;
 			this.frontoffsetlabel.Text = "Front offset:";
+			this.frontoffsetlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// tag
 			// 
@@ -353,15 +405,10 @@ namespace CodeImp.DoomBuilder.Controls
 			// frontpanel
 			// 
 			this.frontpanel.Controls.Add(this.frontsector);
-			this.frontpanel.Controls.Add(this.frontlowname);
-			this.frontpanel.Controls.Add(this.frontlowtex);
-			this.frontpanel.Controls.Add(this.frontmidtex);
-			this.frontpanel.Controls.Add(this.fronthighname);
-			this.frontpanel.Controls.Add(this.fronthightex);
-			this.frontpanel.Controls.Add(this.frontmidname);
+			this.frontpanel.Controls.Add(this.flowLayoutPanelFront);
 			this.frontpanel.Location = new System.Drawing.Point(467, 0);
 			this.frontpanel.Name = "frontpanel";
-			this.frontpanel.Size = new System.Drawing.Size(257, 100);
+			this.frontpanel.Size = new System.Drawing.Size(515, 100);
 			this.frontpanel.TabIndex = 2;
 			this.frontpanel.TabStop = false;
 			this.frontpanel.Text = " Front ";
@@ -376,41 +423,45 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontsector.TabIndex = 6;
 			this.frontsector.Text = "Sector 666";
 			// 
-			// frontlowname
+			// flowLayoutPanelFront
 			// 
-			this.frontlowname.BackColor = System.Drawing.SystemColors.Control;
-			this.frontlowname.Location = new System.Drawing.Point(170, 80);
-			this.frontlowname.Name = "frontlowname";
-			this.frontlowname.Size = new System.Drawing.Size(82, 13);
-			this.frontlowname.TabIndex = 5;
-			this.frontlowname.Text = "BROWNHUG";
-			this.frontlowname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.frontlowname.UseMnemonic = false;
+			this.flowLayoutPanelFront.Controls.Add(this.panel4);
+			this.flowLayoutPanelFront.Controls.Add(this.panelUDMFFrontTop);
+			this.flowLayoutPanelFront.Controls.Add(this.panel7);
+			this.flowLayoutPanelFront.Controls.Add(this.panelUDMFFrontMid);
+			this.flowLayoutPanelFront.Controls.Add(this.panelFrontLowTex);
+			this.flowLayoutPanelFront.Controls.Add(this.panelUDMFFrontBottom);
+			this.flowLayoutPanelFront.Location = new System.Drawing.Point(6, 14);
+			this.flowLayoutPanelFront.Margin = new System.Windows.Forms.Padding(0);
+			this.flowLayoutPanelFront.Name = "flowLayoutPanelFront";
+			this.flowLayoutPanelFront.Size = new System.Drawing.Size(503, 80);
+			this.flowLayoutPanelFront.TabIndex = 13;
+			this.flowLayoutPanelFront.WrapContents = false;
 			// 
-			// frontlowtex
+			// panel4
 			// 
-			this.frontlowtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.frontlowtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-			this.frontlowtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.frontlowtex.Location = new System.Drawing.Point(177, 19);
-			this.frontlowtex.Name = "frontlowtex";
-			this.frontlowtex.Size = new System.Drawing.Size(68, 60);
-			this.frontlowtex.TabIndex = 4;
+			this.panel4.Controls.Add(this.fronthightex);
+			this.panel4.Controls.Add(this.fronthighname);
+			this.panel4.Location = new System.Drawing.Point(0, 3);
+			this.panel4.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+			this.panel4.Name = "panel4";
+			this.panel4.Size = new System.Drawing.Size(90, 76);
+			this.panel4.TabIndex = 5;
 			// 
-			// frontmidtex
+			// fronthightex
 			// 
-			this.frontmidtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.frontmidtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-			this.frontmidtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.frontmidtex.Location = new System.Drawing.Point(95, 19);
-			this.frontmidtex.Name = "frontmidtex";
-			this.frontmidtex.Size = new System.Drawing.Size(68, 60);
-			this.frontmidtex.TabIndex = 2;
+			this.fronthightex.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.fronthightex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+			this.fronthightex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.fronthightex.Location = new System.Drawing.Point(11, 2);
+			this.fronthightex.Name = "fronthightex";
+			this.fronthightex.Size = new System.Drawing.Size(68, 60);
+			this.fronthightex.TabIndex = 0;
 			// 
 			// fronthighname
 			// 
 			this.fronthighname.BackColor = System.Drawing.SystemColors.Control;
-			this.fronthighname.Location = new System.Drawing.Point(6, 80);
+			this.fronthighname.Location = new System.Drawing.Point(4, 63);
 			this.fronthighname.Name = "fronthighname";
 			this.fronthighname.Size = new System.Drawing.Size(82, 13);
 			this.fronthighname.TabIndex = 1;
@@ -418,20 +469,74 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fronthighname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			this.fronthighname.UseMnemonic = false;
 			// 
-			// fronthightex
+			// panelUDMFFrontTop
 			// 
-			this.fronthightex.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.fronthightex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-			this.fronthightex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.fronthightex.Location = new System.Drawing.Point(13, 19);
-			this.fronthightex.Name = "fronthightex";
-			this.fronthightex.Size = new System.Drawing.Size(68, 60);
-			this.fronthightex.TabIndex = 0;
+			this.panelUDMFFrontTop.Controls.Add(this.frontTopUDMFScale);
+			this.panelUDMFFrontTop.Controls.Add(this.frontTopUDMFOffset);
+			this.panelUDMFFrontTop.Controls.Add(this.frontTopUDMFScaleLabel);
+			this.panelUDMFFrontTop.Controls.Add(this.frontTopUDMFOffsetLabel);
+			this.panelUDMFFrontTop.Location = new System.Drawing.Point(90, 0);
+			this.panelUDMFFrontTop.Margin = new System.Windows.Forms.Padding(0);
+			this.panelUDMFFrontTop.Name = "panelUDMFFrontTop";
+			this.panelUDMFFrontTop.Size = new System.Drawing.Size(64, 76);
+			this.panelUDMFFrontTop.TabIndex = 6;
+			// 
+			// frontTopUDMFScale
+			// 
+			this.frontTopUDMFScale.Location = new System.Drawing.Point(0, 61);
+			this.frontTopUDMFScale.Name = "frontTopUDMFScale";
+			this.frontTopUDMFScale.Size = new System.Drawing.Size(64, 13);
+			this.frontTopUDMFScale.TabIndex = 10;
+			this.frontTopUDMFScale.Text = "-1.6, -1.6";
+			// 
+			// frontTopUDMFOffset
+			// 
+			this.frontTopUDMFOffset.Location = new System.Drawing.Point(0, 20);
+			this.frontTopUDMFOffset.Name = "frontTopUDMFOffset";
+			this.frontTopUDMFOffset.Size = new System.Drawing.Size(64, 13);
+			this.frontTopUDMFOffset.TabIndex = 9;
+			this.frontTopUDMFOffset.Text = "-100, -100";
+			// 
+			// frontTopUDMFScaleLabel
+			// 
+			this.frontTopUDMFScaleLabel.Location = new System.Drawing.Point(0, 47);
+			this.frontTopUDMFScaleLabel.Name = "frontTopUDMFScaleLabel";
+			this.frontTopUDMFScaleLabel.Size = new System.Drawing.Size(64, 14);
+			this.frontTopUDMFScaleLabel.TabIndex = 8;
+			this.frontTopUDMFScaleLabel.Text = "Scale:";
+			// 
+			// frontTopUDMFOffsetLabel
+			// 
+			this.frontTopUDMFOffsetLabel.Location = new System.Drawing.Point(0, 6);
+			this.frontTopUDMFOffsetLabel.Name = "frontTopUDMFOffsetLabel";
+			this.frontTopUDMFOffsetLabel.Size = new System.Drawing.Size(64, 13);
+			this.frontTopUDMFOffsetLabel.TabIndex = 7;
+			this.frontTopUDMFOffsetLabel.Text = "Offset:";
+			// 
+			// panel7
+			// 
+			this.panel7.Controls.Add(this.frontmidtex);
+			this.panel7.Controls.Add(this.frontmidname);
+			this.panel7.Location = new System.Drawing.Point(154, 3);
+			this.panel7.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+			this.panel7.Name = "panel7";
+			this.panel7.Size = new System.Drawing.Size(90, 76);
+			this.panel7.TabIndex = 7;
+			// 
+			// frontmidtex
+			// 
+			this.frontmidtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.frontmidtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+			this.frontmidtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.frontmidtex.Location = new System.Drawing.Point(11, 2);
+			this.frontmidtex.Name = "frontmidtex";
+			this.frontmidtex.Size = new System.Drawing.Size(68, 60);
+			this.frontmidtex.TabIndex = 2;
 			// 
 			// frontmidname
 			// 
 			this.frontmidname.BackColor = System.Drawing.SystemColors.Control;
-			this.frontmidname.Location = new System.Drawing.Point(88, 80);
+			this.frontmidname.Location = new System.Drawing.Point(4, 63);
 			this.frontmidname.Name = "frontmidname";
 			this.frontmidname.Size = new System.Drawing.Size(82, 13);
 			this.frontmidname.TabIndex = 3;
@@ -439,18 +544,132 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontmidname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			this.frontmidname.UseMnemonic = false;
 			// 
+			// panelUDMFFrontMid
+			// 
+			this.panelUDMFFrontMid.Controls.Add(this.frontMidUDMFScale);
+			this.panelUDMFFrontMid.Controls.Add(this.frontMidUDMFOffset);
+			this.panelUDMFFrontMid.Controls.Add(this.frontMidUDMFScaleLabel);
+			this.panelUDMFFrontMid.Controls.Add(this.frontMidUDMFOffsetLabel);
+			this.panelUDMFFrontMid.Location = new System.Drawing.Point(244, 0);
+			this.panelUDMFFrontMid.Margin = new System.Windows.Forms.Padding(0);
+			this.panelUDMFFrontMid.Name = "panelUDMFFrontMid";
+			this.panelUDMFFrontMid.Size = new System.Drawing.Size(64, 76);
+			this.panelUDMFFrontMid.TabIndex = 11;
+			// 
+			// frontMidUDMFScale
+			// 
+			this.frontMidUDMFScale.Location = new System.Drawing.Point(0, 61);
+			this.frontMidUDMFScale.Name = "frontMidUDMFScale";
+			this.frontMidUDMFScale.Size = new System.Drawing.Size(64, 13);
+			this.frontMidUDMFScale.TabIndex = 10;
+			this.frontMidUDMFScale.Text = "-1.6, -1.6";
+			// 
+			// frontMidUDMFOffset
+			// 
+			this.frontMidUDMFOffset.Location = new System.Drawing.Point(0, 20);
+			this.frontMidUDMFOffset.Name = "frontMidUDMFOffset";
+			this.frontMidUDMFOffset.Size = new System.Drawing.Size(64, 13);
+			this.frontMidUDMFOffset.TabIndex = 9;
+			this.frontMidUDMFOffset.Text = "-100, -100";
+			// 
+			// frontMidUDMFScaleLabel
+			// 
+			this.frontMidUDMFScaleLabel.Location = new System.Drawing.Point(0, 47);
+			this.frontMidUDMFScaleLabel.Name = "frontMidUDMFScaleLabel";
+			this.frontMidUDMFScaleLabel.Size = new System.Drawing.Size(64, 14);
+			this.frontMidUDMFScaleLabel.TabIndex = 8;
+			this.frontMidUDMFScaleLabel.Text = "Scale:";
+			// 
+			// frontMidUDMFOffsetLabel
+			// 
+			this.frontMidUDMFOffsetLabel.Location = new System.Drawing.Point(0, 6);
+			this.frontMidUDMFOffsetLabel.Name = "frontMidUDMFOffsetLabel";
+			this.frontMidUDMFOffsetLabel.Size = new System.Drawing.Size(64, 13);
+			this.frontMidUDMFOffsetLabel.TabIndex = 7;
+			this.frontMidUDMFOffsetLabel.Text = "Offset:";
+			// 
+			// panelFrontLowTex
+			// 
+			this.panelFrontLowTex.Controls.Add(this.frontlowtex);
+			this.panelFrontLowTex.Controls.Add(this.frontlowname);
+			this.panelFrontLowTex.Location = new System.Drawing.Point(308, 3);
+			this.panelFrontLowTex.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+			this.panelFrontLowTex.Name = "panelFrontLowTex";
+			this.panelFrontLowTex.Size = new System.Drawing.Size(90, 76);
+			this.panelFrontLowTex.TabIndex = 12;
+			// 
+			// frontlowtex
+			// 
+			this.frontlowtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.frontlowtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+			this.frontlowtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.frontlowtex.Location = new System.Drawing.Point(11, 2);
+			this.frontlowtex.Name = "frontlowtex";
+			this.frontlowtex.Size = new System.Drawing.Size(68, 60);
+			this.frontlowtex.TabIndex = 4;
+			// 
+			// frontlowname
+			// 
+			this.frontlowname.BackColor = System.Drawing.SystemColors.Control;
+			this.frontlowname.Location = new System.Drawing.Point(4, 63);
+			this.frontlowname.Name = "frontlowname";
+			this.frontlowname.Size = new System.Drawing.Size(82, 13);
+			this.frontlowname.TabIndex = 5;
+			this.frontlowname.Text = "BROWNHUG";
+			this.frontlowname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.frontlowname.UseMnemonic = false;
+			// 
+			// panelUDMFFrontBottom
+			// 
+			this.panelUDMFFrontBottom.Controls.Add(this.frontBottomUDMFScale);
+			this.panelUDMFFrontBottom.Controls.Add(this.frontBottomUDMFOffset);
+			this.panelUDMFFrontBottom.Controls.Add(this.frontBottomUDMFScaleLabel);
+			this.panelUDMFFrontBottom.Controls.Add(this.frontBottomUDMFOffsetLabel);
+			this.panelUDMFFrontBottom.Location = new System.Drawing.Point(398, 0);
+			this.panelUDMFFrontBottom.Margin = new System.Windows.Forms.Padding(0);
+			this.panelUDMFFrontBottom.Name = "panelUDMFFrontBottom";
+			this.panelUDMFFrontBottom.Size = new System.Drawing.Size(64, 76);
+			this.panelUDMFFrontBottom.TabIndex = 12;
+			// 
+			// frontBottomUDMFScale
+			// 
+			this.frontBottomUDMFScale.Location = new System.Drawing.Point(0, 61);
+			this.frontBottomUDMFScale.Name = "frontBottomUDMFScale";
+			this.frontBottomUDMFScale.Size = new System.Drawing.Size(64, 13);
+			this.frontBottomUDMFScale.TabIndex = 10;
+			this.frontBottomUDMFScale.Text = "-1.6, -1.6";
+			// 
+			// frontBottomUDMFOffset
+			// 
+			this.frontBottomUDMFOffset.Location = new System.Drawing.Point(0, 20);
+			this.frontBottomUDMFOffset.Name = "frontBottomUDMFOffset";
+			this.frontBottomUDMFOffset.Size = new System.Drawing.Size(64, 13);
+			this.frontBottomUDMFOffset.TabIndex = 9;
+			this.frontBottomUDMFOffset.Text = "-100, -100";
+			// 
+			// frontBottomUDMFScaleLabel
+			// 
+			this.frontBottomUDMFScaleLabel.Location = new System.Drawing.Point(0, 47);
+			this.frontBottomUDMFScaleLabel.Name = "frontBottomUDMFScaleLabel";
+			this.frontBottomUDMFScaleLabel.Size = new System.Drawing.Size(64, 14);
+			this.frontBottomUDMFScaleLabel.TabIndex = 8;
+			this.frontBottomUDMFScaleLabel.Text = "Scale:";
+			// 
+			// frontBottomUDMFOffsetLabel
+			// 
+			this.frontBottomUDMFOffsetLabel.Location = new System.Drawing.Point(0, 6);
+			this.frontBottomUDMFOffsetLabel.Name = "frontBottomUDMFOffsetLabel";
+			this.frontBottomUDMFOffsetLabel.Size = new System.Drawing.Size(64, 13);
+			this.frontBottomUDMFOffsetLabel.TabIndex = 7;
+			this.frontBottomUDMFOffsetLabel.Text = "Offset:";
+			// 
 			// backpanel
 			// 
 			this.backpanel.Controls.Add(this.backsector);
-			this.backpanel.Controls.Add(this.backlowname);
-			this.backpanel.Controls.Add(this.backlowtex);
-			this.backpanel.Controls.Add(this.backmidname);
-			this.backpanel.Controls.Add(this.backmidtex);
-			this.backpanel.Controls.Add(this.backhighname);
-			this.backpanel.Controls.Add(this.backhightex);
-			this.backpanel.Location = new System.Drawing.Point(730, 0);
+			this.backpanel.Controls.Add(this.flowLayoutPanelBack);
+			this.backpanel.Location = new System.Drawing.Point(988, 0);
 			this.backpanel.Name = "backpanel";
-			this.backpanel.Size = new System.Drawing.Size(257, 100);
+			this.backpanel.Size = new System.Drawing.Size(540, 100);
 			this.backpanel.TabIndex = 3;
 			this.backpanel.TabStop = false;
 			this.backpanel.Text = " Back ";
@@ -465,52 +684,45 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backsector.TabIndex = 7;
 			this.backsector.Text = "Sector 666";
 			// 
-			// backlowname
+			// flowLayoutPanelBack
 			// 
-			this.backlowname.BackColor = System.Drawing.SystemColors.Control;
-			this.backlowname.Location = new System.Drawing.Point(170, 80);
-			this.backlowname.Name = "backlowname";
-			this.backlowname.Size = new System.Drawing.Size(82, 13);
-			this.backlowname.TabIndex = 5;
-			this.backlowname.Text = "BROWNHUG";
-			this.backlowname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.backlowname.UseMnemonic = false;
+			this.flowLayoutPanelBack.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.flowLayoutPanelBack.Controls.Add(this.panel1);
+			this.flowLayoutPanelBack.Controls.Add(this.panelUDMFBackTop);
+			this.flowLayoutPanelBack.Controls.Add(this.panel2);
+			this.flowLayoutPanelBack.Controls.Add(this.panelUDMFBackMid);
+			this.flowLayoutPanelBack.Controls.Add(this.panelBackLowTex);
+			this.flowLayoutPanelBack.Controls.Add(this.panelUDMFBackBottom);
+			this.flowLayoutPanelBack.Location = new System.Drawing.Point(6, 14);
+			this.flowLayoutPanelBack.Name = "flowLayoutPanelBack";
+			this.flowLayoutPanelBack.Size = new System.Drawing.Size(530, 80);
+			this.flowLayoutPanelBack.TabIndex = 4;
+			this.flowLayoutPanelBack.WrapContents = false;
 			// 
-			// backlowtex
+			// panel1
 			// 
-			this.backlowtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.backlowtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-			this.backlowtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.backlowtex.Location = new System.Drawing.Point(177, 19);
-			this.backlowtex.Name = "backlowtex";
-			this.backlowtex.Size = new System.Drawing.Size(68, 60);
-			this.backlowtex.TabIndex = 4;
+			this.panel1.Controls.Add(this.backhightex);
+			this.panel1.Controls.Add(this.backhighname);
+			this.panel1.Location = new System.Drawing.Point(0, 3);
+			this.panel1.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(90, 76);
+			this.panel1.TabIndex = 5;
 			// 
-			// backmidname
+			// backhightex
 			// 
-			this.backmidname.BackColor = System.Drawing.SystemColors.Control;
-			this.backmidname.Location = new System.Drawing.Point(88, 80);
-			this.backmidname.Name = "backmidname";
-			this.backmidname.Size = new System.Drawing.Size(82, 13);
-			this.backmidname.TabIndex = 3;
-			this.backmidname.Text = "BROWNHUG";
-			this.backmidname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.backmidname.UseMnemonic = false;
-			// 
-			// backmidtex
-			// 
-			this.backmidtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.backmidtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-			this.backmidtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.backmidtex.Location = new System.Drawing.Point(95, 19);
-			this.backmidtex.Name = "backmidtex";
-			this.backmidtex.Size = new System.Drawing.Size(68, 60);
-			this.backmidtex.TabIndex = 2;
+			this.backhightex.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.backhightex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+			this.backhightex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.backhightex.Location = new System.Drawing.Point(11, 2);
+			this.backhightex.Name = "backhightex";
+			this.backhightex.Size = new System.Drawing.Size(68, 60);
+			this.backhightex.TabIndex = 0;
 			// 
 			// backhighname
 			// 
 			this.backhighname.BackColor = System.Drawing.SystemColors.Control;
-			this.backhighname.Location = new System.Drawing.Point(6, 80);
+			this.backhighname.Location = new System.Drawing.Point(4, 63);
 			this.backhighname.Name = "backhighname";
 			this.backhighname.Size = new System.Drawing.Size(82, 13);
 			this.backhighname.TabIndex = 1;
@@ -518,15 +730,199 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backhighname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			this.backhighname.UseMnemonic = false;
 			// 
-			// backhightex
+			// panelUDMFBackTop
 			// 
-			this.backhightex.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.backhightex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-			this.backhightex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.backhightex.Location = new System.Drawing.Point(13, 19);
-			this.backhightex.Name = "backhightex";
-			this.backhightex.Size = new System.Drawing.Size(68, 60);
-			this.backhightex.TabIndex = 0;
+			this.panelUDMFBackTop.Controls.Add(this.backTopUDMFScale);
+			this.panelUDMFBackTop.Controls.Add(this.backTopUDMFOffset);
+			this.panelUDMFBackTop.Controls.Add(this.backTopUDMFScaleLabel);
+			this.panelUDMFBackTop.Controls.Add(this.backTopUDMFOffsetLabel);
+			this.panelUDMFBackTop.Location = new System.Drawing.Point(90, 0);
+			this.panelUDMFBackTop.Margin = new System.Windows.Forms.Padding(0);
+			this.panelUDMFBackTop.Name = "panelUDMFBackTop";
+			this.panelUDMFBackTop.Size = new System.Drawing.Size(64, 76);
+			this.panelUDMFBackTop.TabIndex = 6;
+			// 
+			// backTopUDMFScale
+			// 
+			this.backTopUDMFScale.Location = new System.Drawing.Point(0, 61);
+			this.backTopUDMFScale.Name = "backTopUDMFScale";
+			this.backTopUDMFScale.Size = new System.Drawing.Size(64, 13);
+			this.backTopUDMFScale.TabIndex = 10;
+			this.backTopUDMFScale.Text = "-1.6, -1.6";
+			// 
+			// backTopUDMFOffset
+			// 
+			this.backTopUDMFOffset.Location = new System.Drawing.Point(0, 20);
+			this.backTopUDMFOffset.Name = "backTopUDMFOffset";
+			this.backTopUDMFOffset.Size = new System.Drawing.Size(64, 13);
+			this.backTopUDMFOffset.TabIndex = 9;
+			this.backTopUDMFOffset.Text = "-100, -100";
+			// 
+			// backTopUDMFScaleLabel
+			// 
+			this.backTopUDMFScaleLabel.Location = new System.Drawing.Point(0, 47);
+			this.backTopUDMFScaleLabel.Name = "backTopUDMFScaleLabel";
+			this.backTopUDMFScaleLabel.Size = new System.Drawing.Size(64, 14);
+			this.backTopUDMFScaleLabel.TabIndex = 8;
+			this.backTopUDMFScaleLabel.Text = "Scale:";
+			// 
+			// backTopUDMFOffsetLabel
+			// 
+			this.backTopUDMFOffsetLabel.Location = new System.Drawing.Point(0, 6);
+			this.backTopUDMFOffsetLabel.Name = "backTopUDMFOffsetLabel";
+			this.backTopUDMFOffsetLabel.Size = new System.Drawing.Size(64, 13);
+			this.backTopUDMFOffsetLabel.TabIndex = 7;
+			this.backTopUDMFOffsetLabel.Text = "Offset:";
+			// 
+			// panel2
+			// 
+			this.panel2.Controls.Add(this.backmidtex);
+			this.panel2.Controls.Add(this.backmidname);
+			this.panel2.Location = new System.Drawing.Point(154, 3);
+			this.panel2.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+			this.panel2.Name = "panel2";
+			this.panel2.Size = new System.Drawing.Size(90, 76);
+			this.panel2.TabIndex = 7;
+			// 
+			// backmidtex
+			// 
+			this.backmidtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.backmidtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+			this.backmidtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.backmidtex.Location = new System.Drawing.Point(11, 2);
+			this.backmidtex.Name = "backmidtex";
+			this.backmidtex.Size = new System.Drawing.Size(68, 60);
+			this.backmidtex.TabIndex = 2;
+			// 
+			// backmidname
+			// 
+			this.backmidname.BackColor = System.Drawing.SystemColors.Control;
+			this.backmidname.Location = new System.Drawing.Point(4, 63);
+			this.backmidname.Name = "backmidname";
+			this.backmidname.Size = new System.Drawing.Size(82, 13);
+			this.backmidname.TabIndex = 3;
+			this.backmidname.Text = "BROWNHUG";
+			this.backmidname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.backmidname.UseMnemonic = false;
+			// 
+			// panelUDMFBackMid
+			// 
+			this.panelUDMFBackMid.Controls.Add(this.backMidUDMFScale);
+			this.panelUDMFBackMid.Controls.Add(this.backMidUDMFOffset);
+			this.panelUDMFBackMid.Controls.Add(this.backMidUDMFScaleLabel);
+			this.panelUDMFBackMid.Controls.Add(this.backMidUDMFOffsetLabel);
+			this.panelUDMFBackMid.Location = new System.Drawing.Point(244, 0);
+			this.panelUDMFBackMid.Margin = new System.Windows.Forms.Padding(0);
+			this.panelUDMFBackMid.Name = "panelUDMFBackMid";
+			this.panelUDMFBackMid.Size = new System.Drawing.Size(64, 76);
+			this.panelUDMFBackMid.TabIndex = 11;
+			// 
+			// backMidUDMFScale
+			// 
+			this.backMidUDMFScale.Location = new System.Drawing.Point(0, 61);
+			this.backMidUDMFScale.Name = "backMidUDMFScale";
+			this.backMidUDMFScale.Size = new System.Drawing.Size(64, 13);
+			this.backMidUDMFScale.TabIndex = 10;
+			this.backMidUDMFScale.Text = "-1.6, -1.6";
+			// 
+			// backMidUDMFOffset
+			// 
+			this.backMidUDMFOffset.Location = new System.Drawing.Point(0, 20);
+			this.backMidUDMFOffset.Name = "backMidUDMFOffset";
+			this.backMidUDMFOffset.Size = new System.Drawing.Size(64, 13);
+			this.backMidUDMFOffset.TabIndex = 9;
+			this.backMidUDMFOffset.Text = "-100, -100";
+			// 
+			// backMidUDMFScaleLabel
+			// 
+			this.backMidUDMFScaleLabel.Location = new System.Drawing.Point(0, 47);
+			this.backMidUDMFScaleLabel.Name = "backMidUDMFScaleLabel";
+			this.backMidUDMFScaleLabel.Size = new System.Drawing.Size(64, 14);
+			this.backMidUDMFScaleLabel.TabIndex = 8;
+			this.backMidUDMFScaleLabel.Text = "Scale:";
+			// 
+			// backMidUDMFOffsetLabel
+			// 
+			this.backMidUDMFOffsetLabel.Location = new System.Drawing.Point(0, 6);
+			this.backMidUDMFOffsetLabel.Name = "backMidUDMFOffsetLabel";
+			this.backMidUDMFOffsetLabel.Size = new System.Drawing.Size(64, 13);
+			this.backMidUDMFOffsetLabel.TabIndex = 7;
+			this.backMidUDMFOffsetLabel.Text = "Offset:";
+			// 
+			// panelBackLowTex
+			// 
+			this.panelBackLowTex.Controls.Add(this.backlowtex);
+			this.panelBackLowTex.Controls.Add(this.backlowname);
+			this.panelBackLowTex.Location = new System.Drawing.Point(308, 3);
+			this.panelBackLowTex.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+			this.panelBackLowTex.Name = "panelBackLowTex";
+			this.panelBackLowTex.Size = new System.Drawing.Size(90, 76);
+			this.panelBackLowTex.TabIndex = 12;
+			// 
+			// backlowtex
+			// 
+			this.backlowtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.backlowtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+			this.backlowtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.backlowtex.Location = new System.Drawing.Point(11, 2);
+			this.backlowtex.Name = "backlowtex";
+			this.backlowtex.Size = new System.Drawing.Size(68, 60);
+			this.backlowtex.TabIndex = 4;
+			// 
+			// backlowname
+			// 
+			this.backlowname.BackColor = System.Drawing.SystemColors.Control;
+			this.backlowname.Location = new System.Drawing.Point(4, 63);
+			this.backlowname.Name = "backlowname";
+			this.backlowname.Size = new System.Drawing.Size(82, 13);
+			this.backlowname.TabIndex = 5;
+			this.backlowname.Text = "BROWNHUG";
+			this.backlowname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.backlowname.UseMnemonic = false;
+			// 
+			// panelUDMFBackBottom
+			// 
+			this.panelUDMFBackBottom.Controls.Add(this.backBottomUDMFScale);
+			this.panelUDMFBackBottom.Controls.Add(this.backBottomUDMFOffset);
+			this.panelUDMFBackBottom.Controls.Add(this.backBottomUDMFScaleLabel);
+			this.panelUDMFBackBottom.Controls.Add(this.backBottomUDMFOffsetLabel);
+			this.panelUDMFBackBottom.Location = new System.Drawing.Point(398, 0);
+			this.panelUDMFBackBottom.Margin = new System.Windows.Forms.Padding(0);
+			this.panelUDMFBackBottom.Name = "panelUDMFBackBottom";
+			this.panelUDMFBackBottom.Size = new System.Drawing.Size(64, 76);
+			this.panelUDMFBackBottom.TabIndex = 12;
+			// 
+			// backBottomUDMFScale
+			// 
+			this.backBottomUDMFScale.Location = new System.Drawing.Point(0, 61);
+			this.backBottomUDMFScale.Name = "backBottomUDMFScale";
+			this.backBottomUDMFScale.Size = new System.Drawing.Size(64, 13);
+			this.backBottomUDMFScale.TabIndex = 10;
+			this.backBottomUDMFScale.Text = "-1.6, -1.6";
+			// 
+			// backBottomUDMFOffset
+			// 
+			this.backBottomUDMFOffset.Location = new System.Drawing.Point(0, 20);
+			this.backBottomUDMFOffset.Name = "backBottomUDMFOffset";
+			this.backBottomUDMFOffset.Size = new System.Drawing.Size(64, 13);
+			this.backBottomUDMFOffset.TabIndex = 9;
+			this.backBottomUDMFOffset.Text = "-100, -100";
+			// 
+			// backBottomUDMFScaleLabel
+			// 
+			this.backBottomUDMFScaleLabel.Location = new System.Drawing.Point(0, 47);
+			this.backBottomUDMFScaleLabel.Name = "backBottomUDMFScaleLabel";
+			this.backBottomUDMFScaleLabel.Size = new System.Drawing.Size(64, 14);
+			this.backBottomUDMFScaleLabel.TabIndex = 8;
+			this.backBottomUDMFScaleLabel.Text = "Scale:";
+			// 
+			// backBottomUDMFOffsetLabel
+			// 
+			this.backBottomUDMFOffsetLabel.Location = new System.Drawing.Point(0, 6);
+			this.backBottomUDMFOffsetLabel.Name = "backBottomUDMFOffsetLabel";
+			this.backBottomUDMFOffsetLabel.Size = new System.Drawing.Size(64, 13);
+			this.backBottomUDMFOffsetLabel.TabIndex = 7;
+			this.backBottomUDMFOffsetLabel.Text = "Offset:";
 			// 
 			// LinedefInfoPanel
 			// 
@@ -540,13 +936,27 @@ namespace CodeImp.DoomBuilder.Controls
 			this.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "LinedefInfoPanel";
-			this.Size = new System.Drawing.Size(1047, 100);
+			this.Size = new System.Drawing.Size(1558, 100);
 			this.infopanel.ResumeLayout(false);
 			this.infopanel.PerformLayout();
 			this.frontpanel.ResumeLayout(false);
 			this.frontpanel.PerformLayout();
+			this.flowLayoutPanelFront.ResumeLayout(false);
+			this.panel4.ResumeLayout(false);
+			this.panelUDMFFrontTop.ResumeLayout(false);
+			this.panel7.ResumeLayout(false);
+			this.panelUDMFFrontMid.ResumeLayout(false);
+			this.panelFrontLowTex.ResumeLayout(false);
+			this.panelUDMFFrontBottom.ResumeLayout(false);
 			this.backpanel.ResumeLayout(false);
 			this.backpanel.PerformLayout();
+			this.flowLayoutPanelBack.ResumeLayout(false);
+			this.panel1.ResumeLayout(false);
+			this.panelUDMFBackTop.ResumeLayout(false);
+			this.panel2.ResumeLayout(false);
+			this.panelUDMFBackMid.ResumeLayout(false);
+			this.panelBackLowTex.ResumeLayout(false);
+			this.panelUDMFBackBottom.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -590,6 +1000,44 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label frontsector;
 		private System.Windows.Forms.Label backsector;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelBack;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.Panel panelUDMFBackTop;
+		private System.Windows.Forms.Label backTopUDMFScale;
+		private System.Windows.Forms.Label backTopUDMFOffset;
+		private System.Windows.Forms.Label backTopUDMFScaleLabel;
+		private System.Windows.Forms.Label backTopUDMFOffsetLabel;
+		private System.Windows.Forms.Panel panel2;
+		private System.Windows.Forms.Panel panelUDMFBackMid;
+		private System.Windows.Forms.Label backMidUDMFScale;
+		private System.Windows.Forms.Label backMidUDMFOffset;
+		private System.Windows.Forms.Label backMidUDMFScaleLabel;
+		private System.Windows.Forms.Label backMidUDMFOffsetLabel;
+		private System.Windows.Forms.Panel panelBackLowTex;
+		private System.Windows.Forms.Panel panelUDMFBackBottom;
+		private System.Windows.Forms.Label backBottomUDMFScale;
+		private System.Windows.Forms.Label backBottomUDMFOffset;
+		private System.Windows.Forms.Label backBottomUDMFScaleLabel;
+		private System.Windows.Forms.Label backBottomUDMFOffsetLabel;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelFront;
+		private System.Windows.Forms.Panel panel4;
+		private System.Windows.Forms.Panel panelUDMFFrontTop;
+		private System.Windows.Forms.Label frontTopUDMFScale;
+		private System.Windows.Forms.Label frontTopUDMFOffset;
+		private System.Windows.Forms.Label frontTopUDMFScaleLabel;
+		private System.Windows.Forms.Label frontTopUDMFOffsetLabel;
+		private System.Windows.Forms.Panel panel7;
+		private System.Windows.Forms.Panel panelUDMFFrontMid;
+		private System.Windows.Forms.Label frontMidUDMFScale;
+		private System.Windows.Forms.Label frontMidUDMFOffset;
+		private System.Windows.Forms.Label frontMidUDMFScaleLabel;
+		private System.Windows.Forms.Label frontMidUDMFOffsetLabel;
+		private System.Windows.Forms.Panel panelFrontLowTex;
+		private System.Windows.Forms.Panel panelUDMFFrontBottom;
+		private System.Windows.Forms.Label frontBottomUDMFScale;
+		private System.Windows.Forms.Label frontBottomUDMFOffset;
+		private System.Windows.Forms.Label frontBottomUDMFScaleLabel;
+		private System.Windows.Forms.Label frontBottomUDMFOffsetLabel;
 
 	}
 }

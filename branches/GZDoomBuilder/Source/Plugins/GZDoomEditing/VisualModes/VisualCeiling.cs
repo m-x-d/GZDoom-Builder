@@ -169,18 +169,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
             //mxd
             Sector s = GetControlSector();
+			s.Fields.BeforeFieldsChange();
             float oldx = s.Fields.GetValue("xpanningceiling", 0.0f);
             float oldy = s.Fields.GetValue("ypanningceiling", 0.0f);
             s.Fields["xpanningceiling"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
             s.Fields["ypanningceiling"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
             s.UpdateNeeded = true;
-
-            /*Sector.Sector.Fields.BeforeFieldsChange();
-			float oldx = Sector.Sector.Fields.GetValue("xpanningceiling", 0.0f);
-			float oldy = Sector.Sector.Fields.GetValue("ypanningceiling", 0.0f);
-			Sector.Sector.Fields["xpanningceiling"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
-			Sector.Sector.Fields["ypanningceiling"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
-			Sector.Sector.UpdateNeeded = true;*/
 		}
 
 		// Paste texture
@@ -233,7 +227,33 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
                     base.OnChangeTargetBrightness(up);
                 }
             } else {
-                base.OnChangeTargetBrightness(up);
+				if(!General.Map.UDMF) {
+					base.OnChangeTargetBrightness(up);
+					return;
+				}
+
+				int light = Sector.Sector.Fields.GetValue("lightceiling", 0);
+				bool absolute = Sector.Sector.Fields.GetValue("lightceilingabsolute", false);
+				int newLight = 0;
+
+				if(up)
+					newLight = General.Map.Config.BrightnessLevels.GetNextHigher(light, absolute);
+				else
+					newLight = General.Map.Config.BrightnessLevels.GetNextLower(light, absolute);
+
+				if(newLight == light) return;
+
+				//create undo
+				mode.CreateUndo("Change ceiling brightness", UndoGroup.SurfaceBrightnessChange, Sector.Sector.FixedIndex);
+				Sector.Sector.Fields.BeforeFieldsChange();
+
+				//apply changes
+				Sector.Sector.Fields["lightceiling"] = new UniValue(UniversalType.Integer, newLight);
+				mode.SetActionResult("Changed ceiling brightness to " + newLight + ".");
+				Sector.Sector.UpdateCache();
+
+				//rebuild sector
+				Sector.UpdateSectorGeometry(false);
             }
         }
 

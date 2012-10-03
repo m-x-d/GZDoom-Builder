@@ -32,8 +32,8 @@ namespace CodeImp.DoomBuilder.GZBuilder
         public static int[] ACS_SPECIALS { get { return acsSpecials; } }
 
         //version
-        public const float Version = 1.12f;
-        public const char Revision = 'i';
+        public const float Version = 1.13f;
+        public const char Revision = ' ';
 
         //debug console
 #if DEBUG

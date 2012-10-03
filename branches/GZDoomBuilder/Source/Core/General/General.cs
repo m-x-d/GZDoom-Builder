@@ -1163,6 +1163,9 @@ namespace CodeImp.DoomBuilder
 			{
 				// Add recent file
 				mainwindow.AddRecentFile(filename);
+
+				//mxd
+				mainwindow.UpdateGZDoomPannel();
 			}
 			else
 			{

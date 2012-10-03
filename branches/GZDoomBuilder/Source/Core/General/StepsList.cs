@@ -72,6 +72,18 @@ namespace CodeImp.DoomBuilder
 			return base[low];
 		}
 
+		//mxd. This returns a step higher for UDMF relative light range (-255..255)
+		public int GetNextHigher(int level, bool absolute) {
+			if(absolute || level >= 0) return GetNextHigher(level);
+			return -GetNextLower(Math.Abs(level));
+		}
+
+		//mxd. This returns a step lower for UDMF relative light range (-255..255)
+		public int GetNextLower(int level, bool absolute) {
+			if(absolute || level > 0) return GetNextLower(level);
+			return -GetNextHigher(Math.Abs(level));
+		}
+
 		// This returns the nearest step
 		public int GetNearest(int level)
 		{
