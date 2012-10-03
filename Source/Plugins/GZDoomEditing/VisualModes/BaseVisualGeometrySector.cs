@@ -244,14 +244,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					float deltaz = General.Map.VisualCamera.AngleZ - dragstartanglez;
 					if((Math.Abs(deltaxy) + Math.Abs(deltaz)) > DRAG_ANGLE_TOLERANCE)
 					{
-						mode.PreAction(UndoGroup.TextureOffsetChange);
-						mode.CreateUndo("Change texture offsets");
+						if(General.Map.UDMF) { //mxd
+							mode.PreAction(UndoGroup.TextureOffsetChange);
+							mode.CreateUndo("Change texture offsets");
 
-						// Start drag now
-						uvdragging = true;
-						mode.Renderer.ShowSelection = false;
-						mode.Renderer.ShowHighlight = false;
-						UpdateDragUV();
+							// Start drag now
+							uvdragging = true;
+							mode.Renderer.ShowSelection = false;
+							mode.Renderer.ShowHighlight = false;
+							UpdateDragUV();
+						} else {
+							General.ShowErrorMessage(BaseVisualMode.TEXTURE_OFFSET_CHANGE_ERROR, MessageBoxButtons.OK);
+						}
 					}
 				}
 			}

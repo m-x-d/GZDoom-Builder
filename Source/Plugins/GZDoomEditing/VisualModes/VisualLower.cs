@@ -246,6 +246,37 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			float oldy = Sidedef.Fields.GetValue("offsety_bottom", 0.0f);
 			return new Point((int)oldx, (int)oldy);
 		}
+
+		//mxd
+		public override void OnChangeTargetBrightness(bool up) {
+			if(!General.Map.UDMF) {
+				base.OnChangeTargetBrightness(up);
+				return;
+			}
+
+			int light = Sidedef.Fields.GetValue("light", 0);
+			bool absolute = Sidedef.Fields.GetValue("lightabsolute", false);
+			int newLight = 0;
+
+			if(up)
+				newLight = General.Map.Config.BrightnessLevels.GetNextHigher(light, absolute);
+			else
+				newLight = General.Map.Config.BrightnessLevels.GetNextLower(light, absolute);
+
+			if(newLight == light) return;
+
+			//create undo
+			mode.CreateUndo("Change lower wall brightness", UndoGroup.SurfaceBrightnessChange, Sector.Sector.FixedIndex);
+			Sidedef.Fields.BeforeFieldsChange();
+
+			//apply changes
+			Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, newLight);
+			mode.SetActionResult("Changed lower wall brightness to " + newLight + ".");
+			Sector.Sector.UpdateCache();
+
+			//rebuild sector
+			Sector.UpdateSectorGeometry(false);
+		}
 		
 		#endregion
 	}

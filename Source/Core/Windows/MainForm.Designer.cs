@@ -1669,7 +1669,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.linedefinfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.linedefinfo.MinimumSize = new System.Drawing.Size(100, 100);
 			this.linedefinfo.Name = "linedefinfo";
-			this.linedefinfo.Size = new System.Drawing.Size(1039, 100);
+			this.linedefinfo.Size = new System.Drawing.Size(1560, 100);
 			this.linedefinfo.TabIndex = 0;
 			this.linedefinfo.Visible = false;
 			// 
@@ -1691,7 +1691,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.sectorinfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.sectorinfo.MinimumSize = new System.Drawing.Size(100, 100);
 			this.sectorinfo.Name = "sectorinfo";
-			this.sectorinfo.Size = new System.Drawing.Size(522, 100);
+			this.sectorinfo.Size = new System.Drawing.Size(642, 100);
 			this.sectorinfo.TabIndex = 2;
 			this.sectorinfo.Visible = false;
 			// 

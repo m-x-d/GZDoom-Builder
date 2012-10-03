@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.Controls
 			TypeHandler th;
 			bool upperunpegged, lowerunpegged;
 			string peggedness;
+			int defaultPanelWidth = 270; //mxd
 			
 			// Show/hide stuff depending on format
 			if(!General.Map.FormatInterface.HasActionArgs)
@@ -87,10 +88,6 @@ namespace CodeImp.DoomBuilder.Controls
 				arg5.Visible = true;
 				infopanel.Width = hexenformatwidth;
 			}
-
-			// Move panels
-			frontpanel.Left = infopanel.Left + infopanel.Width + infopanel.Margin.Right + frontpanel.Margin.Left;
-			backpanel.Left = frontpanel.Left + frontpanel.Width + frontpanel.Margin.Right + backpanel.Margin.Left;
 			
 			// Get line action information
 			LinedefActionInfo act = General.Map.Config.GetLinedefActionInfo(l.Action);
@@ -154,82 +151,243 @@ namespace CodeImp.DoomBuilder.Controls
 			// Front side available?
 			if(l.Front != null)
 			{
+				int addedWidth = 0; //mxd
+				
 				// Show sidedef info
+				frontpanel.Visible = true; //mxd
+
 				frontpanel.Text = " Front Sidedef " + l.Front.Index + " ";
 				frontsector.Text = " Sector " + l.Front.Sector.Index;
 				frontsector.Visible = true;
-				frontoffset.Text = l.Front.OffsetX + ", " + l.Front.OffsetY;
+				
+				//mxd
+				if(General.Map.UDMF) {
+					//light
+					frontoffsetlabel.Text = "Front light:";
+					setUDMFLight(l.Front.Fields, frontoffsetlabel, frontoffset);
+
+					bool hasTopFields = false;
+					bool hasMiddleFields = false;
+					bool hasBottomFields = false;
+					
+					//sidedef top
+					if(checkPairedUDMFFields(l.Front.Fields, "offsetx_top", "offsety_top", frontTopUDMFOffsetLabel, frontTopUDMFOffset))
+						hasTopFields = true;
+					if(checkPairedUDMFFields(l.Front.Fields, "scalex_top", "scaley_top", frontTopUDMFScaleLabel, frontTopUDMFScale))
+						hasTopFields = true;
+
+					//sidedef middle
+					if(checkPairedUDMFFields(l.Front.Fields, "offsetx_mid", "offsety_mid", frontMidUDMFOffsetLabel, frontMidUDMFOffset))
+						hasMiddleFields = true;
+					if(checkPairedUDMFFields(l.Front.Fields, "scalex_mid", "scaley_mid", frontMidUDMFScaleLabel, frontMidUDMFScale))
+						hasMiddleFields = true;
+
+					//sidedef bottom
+					if(checkPairedUDMFFields(l.Front.Fields, "offsetx_bottom", "offsety_bottom", frontBottomUDMFOffsetLabel, frontBottomUDMFOffset))
+						hasBottomFields = true;
+					if(checkPairedUDMFFields(l.Front.Fields, "scalex_bottom", "scaley_bottom", frontBottomUDMFScaleLabel, frontBottomUDMFScale))
+						hasBottomFields = true;
+
+					//visibility
+					panelUDMFFrontTop.Visible = hasTopFields;
+					panelUDMFFrontMid.Visible = hasMiddleFields;
+					panelUDMFFrontBottom.Visible = hasBottomFields;
+
+					//size
+					if(hasTopFields) addedWidth = 64;
+					if(hasMiddleFields) addedWidth += 64;
+					if(hasBottomFields) addedWidth += 64;
+				} else {
+					frontoffsetlabel.Text = "Front offset:";
+					frontoffset.Text = l.Front.OffsetX + ", " + l.Front.OffsetY;
+					frontoffsetlabel.Enabled = true;
+					frontoffset.Enabled = true;
+
+					panelUDMFFrontTop.Visible = false;
+					panelUDMFFrontMid.Visible = false;
+					panelUDMFFrontBottom.Visible = false;
+				}
+
+				//mxd. Resize panel
+				frontpanel.Width = defaultPanelWidth + addedWidth + 12;
+				flowLayoutPanelFront.Width = defaultPanelWidth + addedWidth;
+
 				fronthighname.Text = l.Front.HighTexture;
 				frontmidname.Text = l.Front.MiddleTexture;
 				frontlowname.Text = l.Front.LowTexture;
 				DisplaySidedefTexture(fronthightex, l.Front.HighTexture, l.Front.HighRequired());
 				DisplaySidedefTexture(frontmidtex, l.Front.MiddleTexture, l.Front.MiddleRequired());
 				DisplaySidedefTexture(frontlowtex, l.Front.LowTexture, l.Front.LowRequired());
-				frontoffsetlabel.Enabled = true;
-				frontoffset.Enabled = true;
-				frontpanel.Enabled = true;
+
+				//mxd. Position panel
+				frontpanel.Left = infopanel.Left + infopanel.Width + infopanel.Margin.Right + frontpanel.Margin.Left;
+
+				//mxd. Position label
+				frontsector.Left = frontpanel.Width - frontsector.Width - 12;
 			}
 			else
 			{
 				// Show no info
-				frontpanel.Text = " Front Sidedef ";
-				frontsector.Text = "";
-				frontsector.Visible = false;
+				//mxd
+				if(General.Map.UDMF) {
+					frontoffsetlabel.Text = "Front light:";
+					frontoffset.Text = "--";
+				} else {
+					frontoffsetlabel.Text = "Front offset:";
+					frontoffset.Text = "--, --";
+				}
+
 				frontoffsetlabel.Enabled = false;
 				frontoffset.Enabled = false;
-				frontpanel.Enabled = false;
-				frontoffset.Text = "--, --";
-				fronthighname.Text = "";
-				frontmidname.Text = "";
-				frontlowname.Text = "";
+
 				fronthightex.BackgroundImage = null;
 				frontmidtex.BackgroundImage = null;
 				frontlowtex.BackgroundImage = null;
+
+				frontpanel.Visible = false; //mxd
 			}
 
 			// Back size available?
 			if(l.Back != null)
 			{
+				int addedWidth = 0; //mxd
+				
 				// Show sidedef info
+				backpanel.Visible = true; //mxd
 				backpanel.Text = " Back Sidedef " + l.Back.Index + " ";
 				backsector.Text = " Sector " + l.Back.Sector.Index;
 				backsector.Visible = true;
-				backoffset.Text = l.Back.OffsetX + ", " + l.Back.OffsetY;
+
+				//mxd
+				if(General.Map.UDMF) {
+					//light
+					backoffsetlabel.Text = "Back light:";
+					setUDMFLight(l.Back.Fields, backoffsetlabel, backoffset);
+
+					bool hasTopFields = false;
+					bool hasMiddleFields = false;
+					bool hasBottomFields = false;
+
+					//sidedef top
+					if(checkPairedUDMFFields(l.Back.Fields, "offsetx_top", "offsety_top", backTopUDMFOffsetLabel, backTopUDMFOffset))
+						hasTopFields = true;
+					if(checkPairedUDMFFields(l.Back.Fields, "scalex_top", "scaley_top", backTopUDMFScaleLabel, backTopUDMFScale))
+						hasTopFields = true;
+
+					//sidedef middle
+					if(checkPairedUDMFFields(l.Back.Fields, "offsetx_mid", "offsety_mid", backMidUDMFOffsetLabel, backMidUDMFOffset))
+						hasMiddleFields = true;
+					if(checkPairedUDMFFields(l.Back.Fields, "scalex_mid", "scaley_mid", backMidUDMFScaleLabel, backMidUDMFScale))
+						hasMiddleFields = true;
+
+					//sidedef bottom
+					if(checkPairedUDMFFields(l.Back.Fields, "offsetx_bottom", "offsety_bottom", backBottomUDMFOffsetLabel, backBottomUDMFOffset))
+						hasBottomFields = true;
+					if(checkPairedUDMFFields(l.Back.Fields, "scalex_bottom", "scaley_bottom", backBottomUDMFScaleLabel, backBottomUDMFScale))
+						hasBottomFields = true;
+
+					//visibility
+					panelUDMFBackTop.Visible = hasTopFields;
+					panelUDMFBackMid.Visible = hasMiddleFields;
+					panelUDMFBackBottom.Visible = hasBottomFields;
+
+					//size
+					if(hasTopFields) addedWidth = 64;
+					if(hasMiddleFields) addedWidth += 64;
+					if(hasBottomFields) addedWidth += 64;
+				} else {
+					backoffsetlabel.Text = "Back offset:";
+					backoffset.Text = l.Back.OffsetX + ", " + l.Back.OffsetY;
+					backoffsetlabel.Enabled = true;
+					backoffset.Enabled = true;
+
+					panelUDMFBackTop.Visible = false;
+					panelUDMFBackMid.Visible = false;
+					panelUDMFBackBottom.Visible = false;
+				}
+
+				//mxd. Resize panel
+				backpanel.Width = defaultPanelWidth + addedWidth + 12;
+				flowLayoutPanelBack.Width = defaultPanelWidth + addedWidth;
+
 				backhighname.Text = l.Back.HighTexture;
 				backmidname.Text = l.Back.MiddleTexture;
 				backlowname.Text = l.Back.LowTexture;
 				DisplaySidedefTexture(backhightex, l.Back.HighTexture, l.Back.HighRequired());
 				DisplaySidedefTexture(backmidtex, l.Back.MiddleTexture, l.Back.MiddleRequired());
 				DisplaySidedefTexture(backlowtex, l.Back.LowTexture, l.Back.LowRequired());
-				backoffsetlabel.Enabled = true;
-				backoffset.Enabled = true;
-				backpanel.Enabled = true;
+
+				//mxd. Position panel
+				backpanel.Left = (l.Front != null ? frontpanel.Right : infopanel.Right) + 3;
+
+				//mxd. Position label
+				backsector.Left = backpanel.Width - backsector.Width - 12;
 			}
 			else
 			{
 				// Show no info
-				backpanel.Text = " Back Sidedef ";
-				backsector.Text = "";
-				backsector.Visible = false;
+				//mxd
+				if(General.Map.UDMF) {
+					backoffsetlabel.Text = "Back light:";
+					backoffset.Text = "--";
+				} else {
+					backoffsetlabel.Text = "Back offset:";
+					backoffset.Text = "--, --";
+				}
+
 				backoffsetlabel.Enabled = false;
 				backoffset.Enabled = false;
-				backpanel.Enabled = false;
-				backoffset.Text = "--, --";
-				backhighname.Text = "";
-				backmidname.Text = "";
-				backlowname.Text = "";
+
 				backhightex.BackgroundImage = null;
 				backmidtex.BackgroundImage = null;
 				backlowtex.BackgroundImage = null;
+
+				backpanel.Visible = false; //mxd
 			}
-			
-			// Position labels
-			frontsector.Left = frontlowtex.Right - frontsector.Width;
-			backsector.Left = backlowtex.Right - backsector.Width;
 
 			// Show the whole thing
 			this.Show();
 			this.Update();
+		}
+
+		//mxd
+		private bool checkPairedUDMFFields(UniFields fields, string paramX, string paramY, Label label, Label value) {
+			float x = 0;
+			float y = 0;
+
+			if(fields.ContainsKey(paramX))
+				x = (float)fields[paramX].Value;
+			if(fields.ContainsKey(paramY))
+				y = (float)fields[paramY].Value;
+
+			if(x != 0.0f || y != 0.0f) {
+				value.Text = x + ", " + y;
+				value.Enabled = true;
+				label.Enabled = true;
+				return true;
+			}
+
+			value.Text = "--, --";
+			value.Enabled = false;
+			label.Enabled = false;
+			return false;
+		}
+
+		//mxd
+		private void setUDMFLight(UniFields fields, Label label, Label value) {
+			if(fields.ContainsKey("light")) {
+				value.Text = fields["light"].Value.ToString();
+
+				if(fields.ContainsKey("lightabsolute") && Boolean.Parse(fields["lightabsolute"].Value.ToString()))
+					value.Text += " (abs)";
+
+				value.Enabled = true;
+				label.Enabled = true;
+			} else {
+				value.Text = "--";
+				label.Enabled = false;
+				value.Enabled = false;
+			}
 		}
 
 		// When visible changed
