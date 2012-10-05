@@ -227,7 +227,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
                     base.OnChangeTargetBrightness(up);
                 }
             } else {
-				if(!General.Map.UDMF) {
+                //if a map is not in UDMF format, or this ceiling is part of 3D-floor...
+                if(!General.Map.UDMF || Sector.Sector != level.sector) {
 					base.OnChangeTargetBrightness(up);
 					return;
 				}

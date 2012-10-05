@@ -17,7 +17,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
 
         public float Value {
             get {
-                return (float)Math.Round(numericUpDown1.Value, 1);
+                return (float)Math.Round(numericUpDown1.Value, 2);
             }
             set {
                 blockEvents = true;
@@ -47,7 +47,6 @@ namespace CodeImp.DoomBuilder.UDMFControls
         public FloatSlider() {
             InitializeComponent();
             ShowLabels = showLabels;
-            numericUpDown1.DecimalPlaces = 1;
         }
 
         public void SetLimits(float min, float max, bool extendedLimits) {
@@ -75,12 +74,12 @@ namespace CodeImp.DoomBuilder.UDMFControls
 
         //events
         private void trackBar1_ValueChanged(object sender, EventArgs e) {
-            if (!blockEvents) numericUpDown1.Value = Math.Round((decimal)(trackBar1.Value / 10.0), 1);
+            if (!blockEvents) numericUpDown1.Value = Math.Round((decimal)(trackBar1.Value / 10.0), 2);
         }
 
         private void numericUpDown1_ValueChanged(object sender, EventArgs e) {
-            float value = (float)Math.Round(numericUpDown1.Value, 1);
-            delta = (float)Math.Round(value - previousValue, 1);
+            float value = (float)Math.Round(numericUpDown1.Value, 2);
+            delta = (float)Math.Round(value - previousValue, 2);
             previousValue = value;
 
             if (!blockEvents && OnValueChanged != null)
