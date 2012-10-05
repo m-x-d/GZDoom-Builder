@@ -34,9 +34,9 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(167, 16);
+            this.numericUpDown1.Location = new System.Drawing.Point(162, 16);
             this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(44, 20);
+            this.numericUpDown1.Size = new System.Drawing.Size(52, 20);
             this.numericUpDown1.TabIndex = 5;
             this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
             // 
@@ -70,7 +70,7 @@
             this.labelMax.Text = "512";
             this.labelMax.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // ColorPickerSlider
+            // IntSlider
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -78,7 +78,7 @@
             this.Controls.Add(this.labelMin);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.trackBar1);
-            this.Name = "ColorPickerSlider";
+            this.Name = "IntSlider";
             this.Size = new System.Drawing.Size(220, 45);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();

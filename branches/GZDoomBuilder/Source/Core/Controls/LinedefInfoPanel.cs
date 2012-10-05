@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		private int hexenformatwidth;
 		private int doomformatwidth;
+        private List<UniversalFieldInfo> fieldInfos;
 		
 		// Constructor
 		public LinedefInfoPanel()
@@ -58,6 +59,11 @@ namespace CodeImp.DoomBuilder.Controls
 			bool upperunpegged, lowerunpegged;
 			string peggedness;
 			int defaultPanelWidth = 270; //mxd
+
+            //mxd
+            if (General.Map.UDMF && fieldInfos == null) {
+                fieldInfos = General.Map.Config.SidedefFields;
+            }
 			
 			// Show/hide stuff depending on format
 			if(!General.Map.FormatInterface.HasActionArgs)
@@ -173,19 +179,19 @@ namespace CodeImp.DoomBuilder.Controls
 					//sidedef top
 					if(checkPairedUDMFFields(l.Front.Fields, "offsetx_top", "offsety_top", frontTopUDMFOffsetLabel, frontTopUDMFOffset))
 						hasTopFields = true;
-					if(checkPairedUDMFFields(l.Front.Fields, "scalex_top", "scaley_top", frontTopUDMFScaleLabel, frontTopUDMFScale))
+                    if (checkPairedUDMFFields(l.Front.Fields, "scalex_top", "scaley_top", frontTopUDMFScaleLabel, frontTopUDMFScale))
 						hasTopFields = true;
 
 					//sidedef middle
-					if(checkPairedUDMFFields(l.Front.Fields, "offsetx_mid", "offsety_mid", frontMidUDMFOffsetLabel, frontMidUDMFOffset))
+                    if (checkPairedUDMFFields(l.Front.Fields, "offsetx_mid", "offsety_mid", frontMidUDMFOffsetLabel, frontMidUDMFOffset))
 						hasMiddleFields = true;
-					if(checkPairedUDMFFields(l.Front.Fields, "scalex_mid", "scaley_mid", frontMidUDMFScaleLabel, frontMidUDMFScale))
+                    if (checkPairedUDMFFields(l.Front.Fields, "scalex_mid", "scaley_mid", frontMidUDMFScaleLabel, frontMidUDMFScale))
 						hasMiddleFields = true;
 
 					//sidedef bottom
-					if(checkPairedUDMFFields(l.Front.Fields, "offsetx_bottom", "offsety_bottom", frontBottomUDMFOffsetLabel, frontBottomUDMFOffset))
+                    if (checkPairedUDMFFields(l.Front.Fields, "offsetx_bottom", "offsety_bottom", frontBottomUDMFOffsetLabel, frontBottomUDMFOffset))
 						hasBottomFields = true;
-					if(checkPairedUDMFFields(l.Front.Fields, "scalex_bottom", "scaley_bottom", frontBottomUDMFScaleLabel, frontBottomUDMFScale))
+                    if (checkPairedUDMFFields(l.Front.Fields, "scalex_bottom", "scaley_bottom", frontBottomUDMFScaleLabel, frontBottomUDMFScale))
 						hasBottomFields = true;
 
 					//visibility
@@ -269,21 +275,21 @@ namespace CodeImp.DoomBuilder.Controls
 					bool hasBottomFields = false;
 
 					//sidedef top
-					if(checkPairedUDMFFields(l.Back.Fields, "offsetx_top", "offsety_top", backTopUDMFOffsetLabel, backTopUDMFOffset))
+                    if (checkPairedUDMFFields(l.Back.Fields, "offsetx_top", "offsety_top", backTopUDMFOffsetLabel, backTopUDMFOffset))
 						hasTopFields = true;
-					if(checkPairedUDMFFields(l.Back.Fields, "scalex_top", "scaley_top", backTopUDMFScaleLabel, backTopUDMFScale))
+                    if (checkPairedUDMFFields(l.Back.Fields, "scalex_top", "scaley_top", backTopUDMFScaleLabel, backTopUDMFScale))
 						hasTopFields = true;
 
 					//sidedef middle
-					if(checkPairedUDMFFields(l.Back.Fields, "offsetx_mid", "offsety_mid", backMidUDMFOffsetLabel, backMidUDMFOffset))
+                    if (checkPairedUDMFFields(l.Back.Fields, "offsetx_mid", "offsety_mid", backMidUDMFOffsetLabel, backMidUDMFOffset))
 						hasMiddleFields = true;
-					if(checkPairedUDMFFields(l.Back.Fields, "scalex_mid", "scaley_mid", backMidUDMFScaleLabel, backMidUDMFScale))
+                    if (checkPairedUDMFFields(l.Back.Fields, "scalex_mid", "scaley_mid", backMidUDMFScaleLabel, backMidUDMFScale))
 						hasMiddleFields = true;
 
 					//sidedef bottom
-					if(checkPairedUDMFFields(l.Back.Fields, "offsetx_bottom", "offsety_bottom", backBottomUDMFOffsetLabel, backBottomUDMFOffset))
+                    if (checkPairedUDMFFields(l.Back.Fields, "offsetx_bottom", "offsety_bottom", backBottomUDMFOffsetLabel, backBottomUDMFOffset))
 						hasBottomFields = true;
-					if(checkPairedUDMFFields(l.Back.Fields, "scalex_bottom", "scaley_bottom", backBottomUDMFScaleLabel, backBottomUDMFScale))
+                    if (checkPairedUDMFFields(l.Back.Fields, "scalex_bottom", "scaley_bottom", backBottomUDMFScaleLabel, backBottomUDMFScale))
 						hasBottomFields = true;
 
 					//visibility
@@ -352,16 +358,18 @@ namespace CodeImp.DoomBuilder.Controls
 
 		//mxd
 		private bool checkPairedUDMFFields(UniFields fields, string paramX, string paramY, Label label, Label value) {
-			float x = 0;
-			float y = 0;
+            float dx = getDefaultUDMFValue(paramX);
+            float dy = getDefaultUDMFValue(paramY);
+            float x = dx;
+            float y = dy;
 
 			if(fields.ContainsKey(paramX))
 				x = (float)fields[paramX].Value;
 			if(fields.ContainsKey(paramY))
 				y = (float)fields[paramY].Value;
 
-			if(x != 0.0f || y != 0.0f) {
-				value.Text = x + ", " + y;
+			if(x != dx || y != dy) {
+                value.Text = String.Format("{0:0.##}", x) + ", " + String.Format("{0:0.##}", y);
 				value.Enabled = true;
 				label.Enabled = true;
 				return true;
@@ -389,6 +397,15 @@ namespace CodeImp.DoomBuilder.Controls
 				value.Enabled = false;
 			}
 		}
+
+        //mxd
+        private float getDefaultUDMFValue(string valueName) {
+            foreach (UniversalFieldInfo fi in fieldInfos) {
+                if (fi.Name == valueName)
+                    return (float)fi.Default;
+            }
+            return 0;
+        }
 
 		// When visible changed
 		protected override void OnVisibleChanged(EventArgs e)

@@ -27,14 +27,10 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.gbRotation = new System.Windows.Forms.GroupBox();
-            this.angleControl1 = new CodeImp.DoomBuilder.UDMFControls.AngleControl();
             this.gbPosition = new System.Windows.Forms.GroupBox();
-            this.positionControl1 = new CodeImp.DoomBuilder.UDMFControls.PositionControl();
             this.gbScale = new System.Windows.Forms.GroupBox();
-            this.scaleControl = new CodeImp.DoomBuilder.UDMFControls.ScaleControl();
             this.bgBrightness = new System.Windows.Forms.GroupBox();
             this.cblightabsolute = new System.Windows.Forms.CheckBox();
-            this.sliderBrightness = new CodeImp.DoomBuilder.UDMFControls.IntSlider();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -42,13 +38,12 @@
             this.gbAlpha = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.cbRenderStyle = new System.Windows.Forms.ComboBox();
-            this.sliderAlpha = new CodeImp.DoomBuilder.UDMFControls.FloatSlider();
             this.labelGravity = new System.Windows.Forms.Label();
             this.nudGravity = new System.Windows.Forms.NumericUpDown();
             this.gbDesaturation = new System.Windows.Forms.GroupBox();
-            this.sliderDesaturation = new CodeImp.DoomBuilder.UDMFControls.FloatSlider();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.gbFlagsFloor = new System.Windows.Forms.GroupBox();
+            this.cbhidden = new System.Windows.Forms.CheckBox();
             this.cbsilent = new System.Windows.Forms.CheckBox();
             this.cbnorespawn = new System.Windows.Forms.CheckBox();
             this.cbnofallingdamage = new System.Windows.Forms.CheckBox();
@@ -59,7 +54,12 @@
             this.cbnofakecontrast = new System.Windows.Forms.CheckBox();
             this.cbwrapmidtex = new System.Windows.Forms.CheckBox();
             this.cbclipmidtex = new System.Windows.Forms.CheckBox();
-            this.cbhidden = new System.Windows.Forms.CheckBox();
+            this.positionControl1 = new CodeImp.DoomBuilder.UDMFControls.PositionControl();
+            this.angleControl1 = new CodeImp.DoomBuilder.UDMFControls.AngleControl();
+            this.scaleControl = new CodeImp.DoomBuilder.UDMFControls.ScaleControl();
+            this.sliderAlpha = new CodeImp.DoomBuilder.UDMFControls.FloatSlider();
+            this.sliderDesaturation = new CodeImp.DoomBuilder.UDMFControls.FloatSlider();
+            this.sliderBrightness = new CodeImp.DoomBuilder.UDMFControls.IntSlider();
             this.gbRotation.SuspendLayout();
             this.gbPosition.SuspendLayout();
             this.gbScale.SuspendLayout();
@@ -105,17 +105,6 @@
             this.gbRotation.TabStop = false;
             this.gbRotation.Text = "Rotation:";
             // 
-            // angleControl1
-            // 
-            this.angleControl1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.angleControl1.Location = new System.Drawing.Point(6, 19);
-            this.angleControl1.Name = "angleControl1";
-            this.angleControl1.Size = new System.Drawing.Size(102, 125);
-            this.angleControl1.TabIndex = 2;
-            this.angleControl1.Tag = "rotation";
-            this.angleControl1.Value = 0F;
-            this.angleControl1.OnAngleChanged += new System.EventHandler(this.angleControl1_OnAngleChanged);
-            // 
             // gbPosition
             // 
             this.gbPosition.Controls.Add(this.positionControl1);
@@ -126,15 +115,6 @@
             this.gbPosition.TabStop = false;
             this.gbPosition.Text = "Position:";
             // 
-            // positionControl1
-            // 
-            this.positionControl1.Location = new System.Drawing.Point(-2, 20);
-            this.positionControl1.Name = "positionControl1";
-            this.positionControl1.Size = new System.Drawing.Size(106, 127);
-            this.positionControl1.TabIndex = 0;
-            this.positionControl1.Tag = "offset";
-            this.positionControl1.OnValueChanged += new System.EventHandler(this.positionControl1_OnValueChanged);
-            // 
             // gbScale
             // 
             this.gbScale.Controls.Add(this.scaleControl);
@@ -144,15 +124,6 @@
             this.gbScale.TabIndex = 5;
             this.gbScale.TabStop = false;
             this.gbScale.Text = "Scale:";
-            // 
-            // scaleControl
-            // 
-            this.scaleControl.Location = new System.Drawing.Point(8, 19);
-            this.scaleControl.Name = "scaleControl";
-            this.scaleControl.Size = new System.Drawing.Size(220, 94);
-            this.scaleControl.TabIndex = 0;
-            this.scaleControl.Tag = "scale";
-            this.scaleControl.OnValueChanged += new System.EventHandler(this.scaleControl_OnValueChanged);
             // 
             // bgBrightness
             // 
@@ -176,17 +147,6 @@
             this.cblightabsolute.Text = "Absolute Lighting";
             this.cblightabsolute.UseVisualStyleBackColor = true;
             this.cblightabsolute.CheckedChanged += new System.EventHandler(this.cblightabsolute_CheckedChanged);
-            // 
-            // sliderBrightness
-            // 
-            this.sliderBrightness.Location = new System.Drawing.Point(6, 19);
-            this.sliderBrightness.Name = "sliderBrightness";
-            this.sliderBrightness.ShowLabels = true;
-            this.sliderBrightness.Size = new System.Drawing.Size(220, 45);
-            this.sliderBrightness.TabIndex = 0;
-            this.sliderBrightness.Tag = "light";
-            this.sliderBrightness.Value = 0;
-            this.sliderBrightness.OnValueChanged += new System.EventHandler(this.sliderBrightness_OnValueChanged);
             // 
             // tabControl1
             // 
@@ -269,17 +229,6 @@
             this.cbRenderStyle.Tag = "renderstyle";
             this.cbRenderStyle.SelectedIndexChanged += new System.EventHandler(this.cbRenderStyle_SelectedIndexChanged);
             // 
-            // sliderAlpha
-            // 
-            this.sliderAlpha.Location = new System.Drawing.Point(6, 19);
-            this.sliderAlpha.Name = "sliderAlpha";
-            this.sliderAlpha.ShowLabels = true;
-            this.sliderAlpha.Size = new System.Drawing.Size(220, 45);
-            this.sliderAlpha.TabIndex = 0;
-            this.sliderAlpha.Tag = "alpha";
-            this.sliderAlpha.Value = 0F;
-            this.sliderAlpha.OnValueChanged += new System.EventHandler(this.sliderAlpha_OnValueChanged);
-            // 
             // labelGravity
             // 
             this.labelGravity.AutoSize = true;
@@ -313,16 +262,6 @@
             this.gbDesaturation.TabStop = false;
             this.gbDesaturation.Text = "Desaturation:";
             // 
-            // sliderDesaturation
-            // 
-            this.sliderDesaturation.Location = new System.Drawing.Point(6, 19);
-            this.sliderDesaturation.Name = "sliderDesaturation";
-            this.sliderDesaturation.ShowLabels = true;
-            this.sliderDesaturation.Size = new System.Drawing.Size(220, 45);
-            this.sliderDesaturation.TabIndex = 0;
-            this.sliderDesaturation.Tag = "desaturation";
-            this.sliderDesaturation.Value = 0F;
-            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.gbFlagsFloor);
@@ -348,6 +287,17 @@
             this.gbFlagsFloor.TabIndex = 3;
             this.gbFlagsFloor.TabStop = false;
             this.gbFlagsFloor.Text = "Floor and Ceiling flags:";
+            // 
+            // cbhidden
+            // 
+            this.cbhidden.AutoSize = true;
+            this.cbhidden.Location = new System.Drawing.Point(6, 43);
+            this.cbhidden.Name = "cbhidden";
+            this.cbhidden.Size = new System.Drawing.Size(59, 18);
+            this.cbhidden.TabIndex = 4;
+            this.cbhidden.Tag = "hidden";
+            this.cbhidden.Text = "Hidden";
+            this.cbhidden.UseVisualStyleBackColor = true;
             // 
             // cbsilent
             // 
@@ -463,16 +413,66 @@
             this.cbclipmidtex.Text = "Clip Middle Texture";
             this.cbclipmidtex.UseVisualStyleBackColor = true;
             // 
-            // cbhidden
+            // positionControl1
             // 
-            this.cbhidden.AutoSize = true;
-            this.cbhidden.Location = new System.Drawing.Point(6, 43);
-            this.cbhidden.Name = "cbhidden";
-            this.cbhidden.Size = new System.Drawing.Size(59, 18);
-            this.cbhidden.TabIndex = 4;
-            this.cbhidden.Tag = "hidden";
-            this.cbhidden.Text = "Hidden";
-            this.cbhidden.UseVisualStyleBackColor = true;
+            this.positionControl1.Location = new System.Drawing.Point(-2, 20);
+            this.positionControl1.Name = "positionControl1";
+            this.positionControl1.Size = new System.Drawing.Size(106, 127);
+            this.positionControl1.TabIndex = 0;
+            this.positionControl1.Tag = "offset";
+            this.positionControl1.OnValueChanged += new System.EventHandler(this.positionControl1_OnValueChanged);
+            // 
+            // angleControl1
+            // 
+            this.angleControl1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.angleControl1.Location = new System.Drawing.Point(6, 19);
+            this.angleControl1.Name = "angleControl1";
+            this.angleControl1.Size = new System.Drawing.Size(102, 125);
+            this.angleControl1.TabIndex = 2;
+            this.angleControl1.Tag = "rotation";
+            this.angleControl1.Value = 0F;
+            this.angleControl1.OnAngleChanged += new System.EventHandler(this.angleControl1_OnAngleChanged);
+            // 
+            // scaleControl
+            // 
+            this.scaleControl.Location = new System.Drawing.Point(3, 19);
+            this.scaleControl.Name = "scaleControl";
+            this.scaleControl.Size = new System.Drawing.Size(220, 94);
+            this.scaleControl.TabIndex = 0;
+            this.scaleControl.Tag = "scale";
+            this.scaleControl.OnValueChanged += new System.EventHandler(this.scaleControl_OnValueChanged);
+            // 
+            // sliderAlpha
+            // 
+            this.sliderAlpha.Location = new System.Drawing.Point(6, 19);
+            this.sliderAlpha.Name = "sliderAlpha";
+            this.sliderAlpha.ShowLabels = true;
+            this.sliderAlpha.Size = new System.Drawing.Size(220, 45);
+            this.sliderAlpha.TabIndex = 0;
+            this.sliderAlpha.Tag = "alpha";
+            this.sliderAlpha.Value = 0F;
+            this.sliderAlpha.OnValueChanged += new System.EventHandler(this.sliderAlpha_OnValueChanged);
+            // 
+            // sliderDesaturation
+            // 
+            this.sliderDesaturation.Location = new System.Drawing.Point(6, 19);
+            this.sliderDesaturation.Name = "sliderDesaturation";
+            this.sliderDesaturation.ShowLabels = true;
+            this.sliderDesaturation.Size = new System.Drawing.Size(220, 45);
+            this.sliderDesaturation.TabIndex = 0;
+            this.sliderDesaturation.Tag = "desaturation";
+            this.sliderDesaturation.Value = 0F;
+            // 
+            // sliderBrightness
+            // 
+            this.sliderBrightness.Location = new System.Drawing.Point(6, 19);
+            this.sliderBrightness.Name = "sliderBrightness";
+            this.sliderBrightness.ShowLabels = true;
+            this.sliderBrightness.Size = new System.Drawing.Size(220, 45);
+            this.sliderBrightness.TabIndex = 0;
+            this.sliderBrightness.Tag = "light";
+            this.sliderBrightness.Value = 0;
+            this.sliderBrightness.OnValueChanged += new System.EventHandler(this.sliderBrightness_OnValueChanged);
             // 
             // UDMFControlsForm
             // 

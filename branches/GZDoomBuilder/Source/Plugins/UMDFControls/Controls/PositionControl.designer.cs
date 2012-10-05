@@ -39,7 +39,7 @@
             // 
             // nudY
             // 
-            this.nudY.DecimalPlaces = 1;
+            this.nudY.DecimalPlaces = 2;
             this.nudY.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.nudY.Location = new System.Drawing.Point(29, 29);
             this.nudY.Maximum = new decimal(new int[] {
@@ -59,7 +59,7 @@
             // 
             // nudX
             // 
-            this.nudX.DecimalPlaces = 1;
+            this.nudX.DecimalPlaces = 2;
             this.nudX.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.nudX.Location = new System.Drawing.Point(29, 3);
             this.nudX.Maximum = new decimal(new int[] {
