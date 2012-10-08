@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			return "Linedef is missing front side";
+            return "Linedef " + line.Index + " is missing front side";
 		}
 		
 		// Rendering

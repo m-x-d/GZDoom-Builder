@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			return "Linedefs are overlapping and references different sectors";
+            return "Linedefs " + line1.Index + " and " + line2.Index + " are overlapping and references different sectors";
 		}
 		
 		// Rendering

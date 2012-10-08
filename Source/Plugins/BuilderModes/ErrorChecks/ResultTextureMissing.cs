@@ -78,13 +78,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
             switch (part)
             {
                 case SidedefPart.Upper:
-					return "Sidedef has missing upper texture (" + sidestr + " side)";
+					return "Sidedef " + side.Index + " has missing upper texture (" + sidestr + " side)";
 
                 case SidedefPart.Middle:
-					return "Sidedef has missing middle texture (" + sidestr + " side)";
+                    return "Sidedef " + side.Index + " has missing middle texture (" + sidestr + " side)";
 
                 case SidedefPart.Lower:
-					return "Sidedef has missing lower texture (" + sidestr + " side)";
+                    return "Sidedef " + side.Index + " has missing lower texture (" + sidestr + " side)";
 
                 default:
                     return "ERROR";

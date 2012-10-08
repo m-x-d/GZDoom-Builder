@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			return "Linedef is marked double-sided but has no back side";
+            return "Linedef " + line.Index + " is marked double-sided but has no back side";
 		}
 		
 		// Rendering

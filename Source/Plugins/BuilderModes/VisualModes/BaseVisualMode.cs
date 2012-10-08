@@ -613,8 +613,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.SetFogMode(true);
 
 				// Set target for highlighting
-				if(BuilderPlug.Me.UseHighlight)
-					renderer.SetHighlightedObject(target.picked);
+                renderer.ShowSelection = BuilderPlug.Me.UseHighlight; //mxd
+
+                if (BuilderPlug.Me.UseHighlight)
+                    renderer.SetHighlightedObject(target.picked);
+                
 				
 				// Begin with geometry
 				renderer.StartGeometry();
