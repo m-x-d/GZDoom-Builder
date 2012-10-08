@@ -365,6 +365,14 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			
 			poly = newp;
 		}
+
+        //mxd
+        protected float getRoundedTextureOffset(float offset, float scale) {
+            if (offset == 0f) return 0f;
+            float result = (float)Math.Round(offset * scale);
+            if (result == 0) result = 1f * (offset < 0 ? -1 : 1);
+            return result;
+        }
 		
 		#endregion
 

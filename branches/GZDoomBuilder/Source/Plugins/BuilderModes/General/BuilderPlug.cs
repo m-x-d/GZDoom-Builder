@@ -149,7 +149,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public float HighlightRange { get { return highlightrange; } }
 		public float HighlightThingsRange { get { return highlightthingsrange; } }
 		public float SplitLinedefsRange { get { return splitlinedefsrange; } }
-		public bool UseHighlight { get { return usehighlight; } set { usehighlight = value; } }
+		public bool UseHighlight { 
+            get { 
+                return usehighlight; 
+            } 
+            set { 
+                usehighlight = value;
+                General.Map.Renderer3D.ShowSelection = usehighlight;
+                General.Map.Renderer3D.ShowHighlight = usehighlight;
+            } 
+        }
 		public bool AutoDragOnPaste { get { return autodragonpaste; } set { autodragonpaste = value; } }
 		
 		#endregion
