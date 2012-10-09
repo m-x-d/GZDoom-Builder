@@ -291,27 +291,13 @@ namespace CodeImp.DoomBuilder.UDMFControls
             }
 
             //apply value
-            /*if (propName == "light" && !cblightabsolute.Checked) {
-                int light = (int)value > 0 ? (int)value : 0;
-                
-                //3d walls are lit as if "absolutelighting" flag is always set
-                foreach (List<SurfaceProperties> list in walls) {
-                    foreach (SurfaceProperties vg in list) {
-                        if (vg.GeometryType == VisualGeometryType.WALL_MIDDLE_3D)
-                            vg.Sidedef.Fields[propName].Value = light;
-                        else
-                            vg.Sidedef.Fields[propName].Value = value;
-                    }
+            foreach (List<SurfaceProperties> list in walls) {
+                foreach (SurfaceProperties vg in list) {
+                    if ((propName == "light" || propName == "lightabsolute") && vg.GeometryType == VisualGeometryType.WALL_MIDDLE_3D) //just... skip it for now
+                        continue;
+                    vg.Sidedef.Fields[propName].Value = value;
                 }
-            } else {*/
-                foreach (List<SurfaceProperties> list in walls) {
-                    foreach (SurfaceProperties vg in list) {
-                        if ((propName == "light" || propName == "lightabsolute") && vg.GeometryType == VisualGeometryType.WALL_MIDDLE_3D) //just... skip it for now
-                            continue;
-                        vg.Sidedef.Fields[propName].Value = value;
-                    }
-                }
-            //}
+            }    
         }
 
         private void setPairedSidedefProperty(string propName, Vector2D value) {

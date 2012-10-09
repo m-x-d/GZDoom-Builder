@@ -2448,6 +2448,9 @@ namespace CodeImp.DoomBuilder.Windows
 			labelcollapsedinfo.Refresh();
 			modename.Visible = ((General.Map != null) && IsInfoPanelExpanded);
 			modename.Refresh();
+
+            //mxd. let the plugins know
+            General.Plugins.OnHighlightLost();
 		}
 		
 		// This refreshes info
@@ -2457,6 +2460,9 @@ namespace CodeImp.DoomBuilder.Windows
 			else if(lastinfoobject is Linedef) ShowLinedefInfo(lastinfoobject as Linedef);
 			else if(lastinfoobject is Sector) ShowSectorInfo(lastinfoobject as Sector);
 			else if(lastinfoobject is Thing) ShowThingInfo(lastinfoobject as Thing);
+
+            //mxd. let the plugins know
+            General.Plugins.OnHighlightRefreshed(lastinfoobject);
 		}
 		
 		// Show linedef info
@@ -2487,6 +2493,9 @@ namespace CodeImp.DoomBuilder.Windows
 				labelcollapsedinfo.Text = l.Action.ToString() + " - Unknown";
 			
 			labelcollapsedinfo.Refresh();
+
+            //mxd. let the plugins know
+            General.Plugins.OnHighlightLinedef(l);
 		}
 
 		// Show vertex info
@@ -2508,6 +2517,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show info on collapsed label
 			labelcollapsedinfo.Text = v.Position.x.ToString("0.##") + ", " + v.Position.y.ToString("0.##");
 			labelcollapsedinfo.Refresh();
+
+            //mxd. let the plugins know
+            General.Plugins.OnHighlightVertex(v);
 		}
 
 		// Show sector info
@@ -2535,6 +2547,9 @@ namespace CodeImp.DoomBuilder.Windows
 				labelcollapsedinfo.Text = s.Effect.ToString() + " - Unknown";
 
 			labelcollapsedinfo.Refresh();
+
+            //mxd. let the plugins know
+            General.Plugins.OnHighlightSector(s);
 		}
 
 		// Show thing info
@@ -2557,6 +2572,9 @@ namespace CodeImp.DoomBuilder.Windows
 			ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
 			labelcollapsedinfo.Text = t.Type + " - " + ti.Title;
 			labelcollapsedinfo.Refresh();
+
+            //mxd. let the plugins know
+            General.Plugins.OnHighlightThing(t);
 		}
 
 		#endregion
@@ -2703,7 +2721,6 @@ namespace CodeImp.DoomBuilder.Windows
             warnsLabel.Text = warningsCount.ToString();
             if (!warnsTimer.Enabled) {
                 warnsTimer.Enabled = true;
-                Console.WriteLine("warntimer Enabled");
             }
         }
 
@@ -2714,8 +2731,6 @@ namespace CodeImp.DoomBuilder.Windows
 
         //mxd
         private void warnsTimer_Tick(object sender, EventArgs e) {
-            Console.WriteLine("warntimer_Tick");
-
             if (warningsCount > 0) {
                 if (warnsLabel.BackColor == Color.Red) {
                     warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);

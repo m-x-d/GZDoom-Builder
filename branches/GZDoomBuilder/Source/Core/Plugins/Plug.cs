@@ -184,18 +184,6 @@ namespace CodeImp.DoomBuilder.Plugins
 		/// </summary>
 		public virtual void OnMapSaveEnd(SavePurpose purpose) { }
 
-        //mxd
-        /// <summary>
-        /// Occurs before test map is launched. Return false if map launch is not desired.
-        /// </summary>
-        //public virtual bool OnMapTestBegin() { return true; }
-
-        //mxd
-        /// <summary>
-        /// Occurs after game engine is closed.
-        /// </summary>
-        //public virtual void OnMapTestEnd() { }
-
 		/// <summary>
 		/// Occurs before the MapSet is changed. This means that the active MapSet will be disposed and changed to a new one.
 		/// </summary>
@@ -348,6 +336,14 @@ namespace CodeImp.DoomBuilder.Plugins
 		public virtual void OnEditRedrawDisplayBegin() { }
 		public virtual void OnEditRedrawDisplayEnd() { }
 		public virtual void OnPresentDisplayBegin() { }
+
+        //mxd. Highlight events
+        public virtual void OnHighlightSector(Sector s) { }
+        public virtual void OnHighlightLinedef(Linedef l) { }
+        public virtual void OnHighlightThing(Thing t) { }
+        public virtual void OnHighlightVertex(Vertex v) { }
+        public virtual void OnHighlightRefreshed(object o) { }
+        public virtual void OnHighlightLost() { }
 		
 		#endregion
 	}
