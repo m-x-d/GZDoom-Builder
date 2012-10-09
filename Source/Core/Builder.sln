@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UDMFControls", "..\Plugins\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagExplorer", "..\Plugins\TagExplorer\TagExplorer.csproj", "{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PropertiesDock", "..\Plugins\PropertiesDock\PropertiesDock.csproj", "{507E4F00-9929-436F-8E29-70C3C43DC7A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,16 @@ Global
 		{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}.Release|Mixed Platforms.Build.0 = Release|x86
 		{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}.Release|x86.ActiveCfg = Release|x86
 		{BE7917F3-E6FE-4D5B-8FA9-B8E7668AC731}.Release|x86.Build.0 = Release|x86
+		{507E4F00-9929-436F-8E29-70C3C43DC7A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{507E4F00-9929-436F-8E29-70C3C43DC7A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{507E4F00-9929-436F-8E29-70C3C43DC7A3}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{507E4F00-9929-436F-8E29-70C3C43DC7A3}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{507E4F00-9929-436F-8E29-70C3C43DC7A3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{507E4F00-9929-436F-8E29-70C3C43DC7A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{507E4F00-9929-436F-8E29-70C3C43DC7A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{507E4F00-9929-436F-8E29-70C3C43DC7A3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{507E4F00-9929-436F-8E29-70C3C43DC7A3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{507E4F00-9929-436F-8E29-70C3C43DC7A3}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

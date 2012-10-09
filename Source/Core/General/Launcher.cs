@@ -236,10 +236,6 @@ namespace CodeImp.DoomBuilder
             bool canTest = true; //mxd
             canTest = General.Editing.Mode.OnMapTestBegin(); //mxd
             if (!canTest) return; //mxd
-
-            //mxd. will that be EVER needed by someone other than me?..
-            //canTest = General.Plugins.OnMapTestBegin(); //mxd
-            //if (!canTest) return; //mxd
             
             TestAtSkill(General.Map.ConfigSettings.TestSkill);
 
@@ -256,13 +252,11 @@ namespace CodeImp.DoomBuilder
             canTest =  General.Editing.Mode.OnMapTestBegin();
             if (!canTest) return;
 
-            //canTest = General.Plugins.OnMapTestBegin();
-            //if (!canTest) return;
-
+            General.MainWindow.StopProcessing();
             TestAtSkill(General.Map.ConfigSettings.TestSkill);
+            General.MainWindow.EnableProcessing();
 
             General.Editing.Mode.OnMapTestEnd();
-            //General.Plugins.OnMapTestEnd();
             General.MainWindow.RedrawDisplay();
         }
 		
