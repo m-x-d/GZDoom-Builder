@@ -16,12 +16,24 @@ namespace CodeImp.DoomBuilder.PropertiesDock
         private TabPage page3;
 
         private string currentMode;
+        private static PropertiesDocker me;
         
         public PropertiesDocker() {
 			InitializeComponent();
 
+            me = this;
             page2 = tabControl.TabPages[1];
             page3 = tabControl.TabPages[2];
+
+            if (!General.Map.UDMF) {
+                gbCustomFields.Visible = false;
+                tabControl.Top = 3;
+            } else {
+                //todo: add "Delete field" button
+
+                //todo: sort this out...
+                //cbFieldType.Items.AddRange(General.Types.GetCustomUseAttributes());
+            }
 		}
 
 //SHOW HIGHLIGHT INFO
@@ -34,12 +46,13 @@ namespace CodeImp.DoomBuilder.PropertiesDock
         }
 
         public void ShowThingInfo(Thing t) {
-
+            propertyGrid1.SelectedObject = new ThingInfo(t);
+            viewThings(1, t.Index, true);
         }
 
         public void ShowVertexInfo(Vertex v) {
             propertyGrid1.SelectedObject = new VertexInfo(v);
-            viewVertices(true);
+            viewVertices(1, v.Index, true);
         }
 
         public void OnHighlightLost() {
@@ -47,9 +60,28 @@ namespace CodeImp.DoomBuilder.PropertiesDock
         }
 
 //SHOW SELECTION INFO
+        private void showSelectedThingsInfo() {
+            //anything selected?
+            List<Thing> things = (List<Thing>)General.Map.Map.GetSelectedThings(true);
+
+            if (things.Count > 0) {
+                ThingInfo[] infos = new ThingInfo[things.Count];
+                int i = 0;
+
+                foreach (Thing t in things) {
+                    infos[i++] = new ThingInfo(t);
+                }
+
+                propertyGrid1.SelectedObjects = infos;
+                viewThings(things.Count, things.Count == 1 ? things[0].Index : -1, true);
+            } else {
+                viewThings(-1, -1, false);
+            }
+        }
+        
         private void showSelectedVerticesInfo() {
             //anything selected?
-            ICollection<Vertex> verts = General.Map.Map.GetSelectedVertices(true);
+            List<Vertex> verts = (List<Vertex>)General.Map.Map.GetSelectedVertices(true);
 
             if (verts.Count > 0) {
                 VertexInfo[] infos = new VertexInfo[verts.Count];
@@ -60,30 +92,52 @@ namespace CodeImp.DoomBuilder.PropertiesDock
                 }
 
                 propertyGrid1.SelectedObjects = infos;
-                viewVertices(true);
+                viewVertices(verts.Count, verts.Count == 1 ? verts[0].Index : -1, true);
             } else {
-                //propertyGrid1.SelectedObjects = null;
-                viewVertices(false);
+                viewVertices(-1, -1, false);
             }
         }
 
 //PANELS UPDATE
-        private void viewVertices(bool enabled) {
-            propertyGrid1.Enabled = enabled;
-            tabControl.TabPages[0].Text = "Vertex:";
+        private void viewVertices(int count, int index, bool enabled) {
+            updateTabs(enabled, false);
 
-            if (tabControl.TabPages.Count > 1) {
-                tabControl.TabPages.Remove(page2);
-                tabControl.TabPages.Remove(page3);
+            if(count != -1)
+                tabControl.TabPages[0].Text = count > 1 ? count + " vertices:" : "Vertex "+index+":";
+        }
+
+        private void viewThings(int count, int index, bool enabled) {
+            updateTabs(enabled, false);
+
+            if (count != -1)
+                tabControl.TabPages[0].Text = count > 1 ? count + " things:" : "Thing " + index + ":";
+        }
+
+        private void updateTabs(bool enabled, bool showAllTabs) {
+            if (showAllTabs) {
+                if (tabControl.TabPages.Count == 1) {
+                    tabControl.TabPages.Add(page2);
+                    tabControl.TabPages.Add(page3);
+                }
+                propertyGrid2.Enabled = enabled;
+                propertyGrid3.Enabled = enabled;
+
+            } else {
+                if (tabControl.TabPages.Count == 3) {
+                    tabControl.TabPages.Remove(page2);
+                    tabControl.TabPages.Remove(page3);
+                }
             }
+            propertyGrid1.Enabled = enabled;
         }
 
 //util
         public void ChangeEditMode(string name) {
-            textBox1.AppendText("Mode Changed to " + name + Environment.NewLine);
+            //textBox1.AppendText("Mode Changed to " + name + Environment.NewLine);
             
             if (name == "ThingsMode") {
                 currentMode = name;
+                showSelectedThingsInfo();
 
             } else if (name == "SectorsMode") {
                 currentMode = name;
@@ -105,6 +159,12 @@ namespace CodeImp.DoomBuilder.PropertiesDock
             ChangeEditMode(currentMode);
         }
 
+        public static void Refresh() {
+            me.propertyGrid1.Refresh();
+            me.propertyGrid2.Refresh();
+            me.propertyGrid3.Refresh();
+        }
+
         private void saveChanges() {
             if (currentMode == "ThingsMode" && propertyGrid1.Enabled) {
                 applyThingChanges();
@@ -120,7 +180,7 @@ namespace CodeImp.DoomBuilder.PropertiesDock
         }
 
         private void applyThingChanges() {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         private void applySectorChanges() {
@@ -167,6 +227,27 @@ namespace CodeImp.DoomBuilder.PropertiesDock
 
         private void propertyGrid3_PropertyValueChanged(object s, PropertyValueChangedEventArgs e) {
             saveChanges();
+        }
+
+        private void bAddField_Click(object sender, EventArgs e) {
+            PropertyGrid g = null;
+            
+            if (tbFieldName.Text.Length > 0) {
+                if (tabControl.SelectedIndex == 0) {
+                    g = propertyGrid1;
+                } else if (tabControl.SelectedIndex == 1) {
+                    g = propertyGrid2;
+                } else if (tabControl.SelectedIndex == 2) {
+                    g = propertyGrid3;
+                }
+            }
+
+            if (g != null && g.Enabled && g.SelectedObjects.Length > 0) {
+                foreach (object o in g.SelectedObjects) {
+                    //todo: set correct type
+                    ((IMapElementInfo)o).AddCustomProperty(tbFieldName.Text, typeof(string));
+                }
+            }
         }
 	}
 }

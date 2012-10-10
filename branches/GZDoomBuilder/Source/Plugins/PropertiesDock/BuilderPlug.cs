@@ -38,7 +38,9 @@ namespace CodeImp.DoomBuilder.PropertiesDock
 
 		// This is called after a map has been successfully opened
 		public override void OnMapOpenEnd() {
-			if(propertiesDocker == null) {
+            MapElementsData.Init();
+            
+            if(propertiesDocker == null) {
 				propertiesDocker = new PropertiesDocker();
 				docker = new Docker("propertiesdockerpanel", "Properties", propertiesDocker);
 				General.Interface.AddDocker(docker);
