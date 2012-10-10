@@ -50,10 +50,18 @@
     <Compile Include="Controls\PropertiesDocker.Designer.cs">
       <DependentUpon>PropertiesDocker.cs</DependentUpon>
     </Compile>
+    <Compile Include="Data\MapElementsData.cs" />
+    <Compile Include="Data\PropertyBag.cs" />
     <Compile Include="Data\VertexPosition.cs" />
     <Compile Include="Info\IMapElementInfo.cs" />
+    <Compile Include="Info\ThingInfo.cs" />
     <Compile Include="Info\VertexInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Builder.csproj">
@@ -66,6 +74,16 @@
     <EmbeddedResource Include="Controls\PropertiesDocker.resx">
       <DependentUpon>PropertiesDocker.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Remove.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
