@@ -50,9 +50,10 @@
     <Compile Include="Controls\PropertiesDocker.Designer.cs">
       <DependentUpon>PropertiesDocker.cs</DependentUpon>
     </Compile>
+    <Compile Include="Data\CustomPropertiesCollection.cs" />
+    <Compile Include="Data\CustomProperty.cs" />
+    <Compile Include="Data\CustomPropertyDescriptor.cs" />
     <Compile Include="Data\MapElementsData.cs" />
-    <Compile Include="Data\PropertyBag.cs" />
-    <Compile Include="Data\VertexPosition.cs" />
     <Compile Include="Info\IMapElementInfo.cs" />
     <Compile Include="Info\ThingInfo.cs" />
     <Compile Include="Info\VertexInfo.cs" />

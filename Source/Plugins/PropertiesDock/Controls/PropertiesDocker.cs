@@ -74,8 +74,10 @@ namespace CodeImp.DoomBuilder.PropertiesDock
 
                 propertyGrid1.SelectedObjects = infos;
                 viewThings(things.Count, things.Count == 1 ? things[0].Index : -1, true);
+                if (gbCustomFields.Visible) gbCustomFields.Enabled = true;
             } else {
                 viewThings(-1, -1, false);
+                gbCustomFields.Enabled = false;
             }
         }
         
@@ -93,8 +95,10 @@ namespace CodeImp.DoomBuilder.PropertiesDock
 
                 propertyGrid1.SelectedObjects = infos;
                 viewVertices(verts.Count, verts.Count == 1 ? verts[0].Index : -1, true);
+                if (gbCustomFields.Visible) gbCustomFields.Enabled = true;
             } else {
                 viewVertices(-1, -1, false);
+                gbCustomFields.Enabled = false;
             }
         }
 

@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	internal class TypeHandlerAttribute : Attribute
+	public class TypeHandlerAttribute : Attribute
 	{
 		#region ================== Constants
 

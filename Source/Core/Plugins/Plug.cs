@@ -15,6 +15,7 @@ using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -49,6 +50,13 @@ namespace CodeImp.DoomBuilder.Plugins
 
         //mxd. It's nice to have these avaliable to plugins...
         protected static Size DisplaySize { get { return (General.MainWindow == null || General.MainWindow.Display == null) ? new Size() : General.MainWindow.Display.Size; } }
+
+
+        //mxd
+        public static TypeHandlerAttribute[] GetCustomUseAttributes() {
+            //TypeHandlerAttribute[] attrs = General.Types.GetCustomUseAttributes();
+            return General.Types.GetCustomUseAttributes();
+        }
 
 		#endregion
 		

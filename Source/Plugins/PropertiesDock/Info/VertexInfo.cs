@@ -6,48 +6,41 @@ using System.Text;
 using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.PropertiesDock {
-    
-    public class VertexInfo : PropertyBag, IMapElementInfo {
-        /*[CategoryAttribute("Position"), DefaultValueAttribute(0f)]
-        public float X { get { return x; } set { x = value; } }*/
-        //private float x;
 
-        /*[CategoryAttribute("Position"), DefaultValueAttribute(0f)]
-        public float Y { get { return y; } set { y = value; } }*/
-        //private float y;
-
-        //public PropertyBag Properties { get { return properties; } }
-        //private PropertyBag properties;
-
+    public class VertexInfo : CustomPropertiesCollection, IMapElementInfo {
         private Vertex vertex;
 
         public VertexInfo(Vertex v) : base() {
             vertex = v;
-            //x = v.Position.x;
-            //y = v.Position.y;
-            //properties = new PropertyBag();
-            properties.Add(new PropertySpec("X:", typeof(float), "Position:", null, v.Position.x));
-            properties.Add(new PropertySpec("Y:", typeof(float), "Position:", null, v.Position.y));
+            Add(new CustomProperty("X:", v.Position.x, "Position:", false, true));
+            Add(new CustomProperty("Y:", v.Position.y, "Position:", false, true));
+
+            //todo: add custom fields
+            if (v.Fields != null && v.Fields.Count > 0) {
+                foreach (KeyValuePair<string, UniValue> group in v.Fields) {
+                    Add(new CustomProperty(group.Key, group.Value.Value, "Custom properties:", false, true));
+                }
+            }
         }
 
         public void ApplyChanges() {
             float min = (float)General.Map.FormatInterface.MinCoordinate;
             float max = (float)General.Map.FormatInterface.MaxCoordinate;
-            vertex.Move(new CodeImp.DoomBuilder.Geometry.Vector2D(General.Clamp((float)properties[0].Value, min, max), General.Clamp((float)properties[1].Value, min, max)));
+            vertex.Move(new CodeImp.DoomBuilder.Geometry.Vector2D(General.Clamp((float)this[0].Value, min, max), General.Clamp((float)this[1].Value, min, max)));
             
             //todo: add custom fields support
         }
 
         public void AddCustomProperty(string name, Type type) {
-            properties.Add(new PropertySpec(name + ":", type, "Custom properties:"));
+            Add(new CustomProperty(name, Activator.CreateInstance(type), "Custom properties:", false, true));
         }
 
         public void RemoveCustomProperty(string name){
             string n = name.ToUpperInvariant().Trim();
-            foreach (PropertySpec ps in properties) {
+            foreach (CustomProperty ps in this) {
                 string cn = ps.Name.ToUpperInvariant();
                 if (cn.IndexOf(n) == 0 && cn.Length == n.Length + 1) {
-                    properties.Remove(name);
+                    Remove(name);
                     return;
                 }
             }

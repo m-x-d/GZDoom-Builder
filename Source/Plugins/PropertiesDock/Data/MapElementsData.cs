@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Text;
 
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Types;
 
 namespace CodeImp.DoomBuilder.PropertiesDock {
-    public static class MapElementsData {
+    internal static class MapElementsData {
 
-        public static Dictionary<int, string> ThingTypeDescriptions { get { return thingTypeDescriptions;}}
+        internal static Dictionary<int, string> ThingTypeDescriptions { get { return thingTypeDescriptions; } }
         private static Dictionary<int, string> thingTypeDescriptions;
-        
-        public static void Init() {
+
+        internal static void Init() {
             //thing types
             thingTypeDescriptions = new Dictionary<int, string>();
 
@@ -19,6 +20,10 @@ namespace CodeImp.DoomBuilder.PropertiesDock {
                     thingTypeDescriptions.Add(ti.Index, ti.Title);
                 }
             }
+        }
+
+        internal static void InitTypes(TypeHandlerAttribute[] types) {
+
         }
     }
 }
