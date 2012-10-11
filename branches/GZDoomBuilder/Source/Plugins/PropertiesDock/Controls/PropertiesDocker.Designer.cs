@@ -33,9 +33,9 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.propertyGrid3 = new System.Windows.Forms.PropertyGrid();
             this.gbCustomFields = new System.Windows.Forms.GroupBox();
-            this.cbFieldType = new System.Windows.Forms.ComboBox();
-            this.bAddField = new System.Windows.Forms.Button();
             this.tbFieldName = new System.Windows.Forms.TextBox();
+            this.bAddField = new System.Windows.Forms.Button();
+            this.cbFieldType = new System.Windows.Forms.ComboBox();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -87,7 +87,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 23);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(258, 308);
+            this.tabPage2.Size = new System.Drawing.Size(258, 314);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -109,7 +109,7 @@
             this.tabPage3.Controls.Add(this.propertyGrid3);
             this.tabPage3.Location = new System.Drawing.Point(4, 23);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(258, 308);
+            this.tabPage3.Size = new System.Drawing.Size(258, 314);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -141,16 +141,14 @@
             this.gbCustomFields.TabStop = false;
             this.gbCustomFields.Text = "Add custom field:";
             // 
-            // cbFieldType
+            // tbFieldName
             // 
-            this.cbFieldType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.tbFieldName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbFieldType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbFieldType.FormattingEnabled = true;
-            this.cbFieldType.Location = new System.Drawing.Point(148, 19);
-            this.cbFieldType.Name = "cbFieldType";
-            this.cbFieldType.Size = new System.Drawing.Size(80, 22);
-            this.cbFieldType.TabIndex = 0;
+            this.tbFieldName.Location = new System.Drawing.Point(10, 20);
+            this.tbFieldName.Name = "tbFieldName";
+            this.tbFieldName.Size = new System.Drawing.Size(134, 20);
+            this.tbFieldName.TabIndex = 3;
             // 
             // bAddField
             // 
@@ -163,14 +161,15 @@
             this.bAddField.UseVisualStyleBackColor = true;
             this.bAddField.Click += new System.EventHandler(this.bAddField_Click);
             // 
-            // tbFieldName
+            // cbFieldType
             // 
-            this.tbFieldName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbFieldName.Location = new System.Drawing.Point(10, 20);
-            this.tbFieldName.Name = "tbFieldName";
-            this.tbFieldName.Size = new System.Drawing.Size(134, 20);
-            this.tbFieldName.TabIndex = 3;
+            this.cbFieldType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbFieldType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbFieldType.FormattingEnabled = true;
+            this.cbFieldType.Location = new System.Drawing.Point(148, 19);
+            this.cbFieldType.Name = "cbFieldType";
+            this.cbFieldType.Size = new System.Drawing.Size(80, 22);
+            this.cbFieldType.TabIndex = 0;
             // 
             // PropertiesDocker
             // 

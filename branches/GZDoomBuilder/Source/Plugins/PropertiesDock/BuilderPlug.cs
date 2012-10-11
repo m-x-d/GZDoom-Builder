@@ -39,7 +39,13 @@ namespace CodeImp.DoomBuilder.PropertiesDock
 		// This is called after a map has been successfully opened
 		public override void OnMapOpenEnd() {
             MapElementsData.Init();
-            
+
+            if (General.Map.UDMF) {
+                MapElementsData.InitTypes(GetCustomUseAttributes());
+
+            }
+
+
             if(propertiesDocker == null) {
 				propertiesDocker = new PropertiesDocker();
 				docker = new Docker("propertiesdockerpanel", "Properties", propertiesDocker);
@@ -50,7 +56,6 @@ namespace CodeImp.DoomBuilder.PropertiesDock
 
 		// This is called after a map has been closed
 		public override void OnMapCloseBegin() {
-			// If we have a Tag Explorer panel, remove it
 			if(propertiesDocker != null) {
 				General.Interface.RemoveDocker(docker);
 				docker = null;
@@ -122,7 +127,7 @@ namespace CodeImp.DoomBuilder.PropertiesDock
         }
 
         public override void OnActionEnd(CodeImp.DoomBuilder.Actions.Action action) {
-            Console.WriteLine("OnActionEnd: " + action.Name);
+            //Console.WriteLine("OnActionEnd: " + action.Name);
             
             if (propertiesDocker != null && Array.IndexOf(actions, action.Name) != -1)
                 propertiesDocker.Update();
