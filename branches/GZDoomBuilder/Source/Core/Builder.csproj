@@ -703,6 +703,7 @@
       <DependentUpon>ConsoleDocker.cs</DependentUpon>
     </Compile>
     <Compile Include="GZBuilder\Data\BoundingBox.cs" />
+    <Compile Include="GZBuilder\Data\EngineInfo.cs" />
     <Compile Include="GZBuilder\Data\GameType.cs" />
     <Compile Include="GZBuilder\Data\GZDoomLight.cs" />
     <Compile Include="GZBuilder\Data\LinksCollector.cs" />
@@ -807,6 +808,7 @@
     <None Include="Resources\Builder16.png" />
     <None Include="Resources\CLogo.png" />
     <None Include="Resources\Angle.png" />
+    <None Include="Resources\Add.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\GZDB2.ico" />
     <None Include="Resources\fog.png" />
@@ -819,6 +821,7 @@
     <Content Include="Resources\Light.png" />
     <Content Include="Resources\Light_animate.png" />
     <None Include="Resources\MLogo.png" />
+    <None Include="Resources\Marine.png" />
     <Content Include="Resources\Model.png" />
     <Content Include="Resources\Model_selected.png" />
     <None Include="Resources\SearchClear.png" />

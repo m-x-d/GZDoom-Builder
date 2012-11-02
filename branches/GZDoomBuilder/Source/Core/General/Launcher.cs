@@ -240,7 +240,6 @@ namespace CodeImp.DoomBuilder
             TestAtSkill(General.Map.ConfigSettings.TestSkill);
 
             General.Editing.Mode.OnMapTestEnd(); //mxd
-            //General.Plugins.OnMapTestEnd(); //mxd
 		}
 
         //mxd
@@ -254,10 +253,10 @@ namespace CodeImp.DoomBuilder
 
             General.MainWindow.StopProcessing();
             TestAtSkill(General.Map.ConfigSettings.TestSkill);
-            General.MainWindow.EnableProcessing();
-
+            
             General.Editing.Mode.OnMapTestEnd();
-            General.MainWindow.RedrawDisplay();
+            General.MainWindow.EnableProcessing();
+            General.MainWindow.FocusDisplay();
         }
 		
 		// This saves the map to a temporary file and launches a test wit hthe given skill

@@ -247,7 +247,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(typeindex != fieldtype.Index)
 			{
 				// Change field type!
-				TypeHandlerAttribute attrib = General.Types.GetAttribute(typeindex);
+				//TypeHandlerAttribute attrib = General.Types.GetAttribute(typeindex); //mxd
 				fieldtype = General.Types.GetFieldHandler(typeindex, this.Cells[2].Value);
 				this.Cells[1].Value = fieldtype.GetDisplayType();
 			}

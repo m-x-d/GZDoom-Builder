@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Config;
 using System.IO;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
 
@@ -112,6 +113,10 @@ namespace CodeImp.DoomBuilder.Windows
 				tabs.Enabled = true;
 
 				preventchanges = true;
+
+				//mxd. Store current engine name
+				if(configinfo != null && !String.IsNullOrEmpty(cbEngineSelector.Text) && cbEngineSelector.Text != configinfo.TestProgramName)
+					configinfo.TestProgramName = cbEngineSelector.Text;
 				
 				// Get config info of selected item
 				configinfo = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
@@ -160,9 +165,17 @@ namespace CodeImp.DoomBuilder.Windows
 				// Fill skills list
 				skill.ClearInfo();
 				skill.AddInfo(gameconfig.Skills.ToArray());
+
+                //mxd
+                cbEngineSelector.Items.Clear();
+				foreach(EngineInfo info in configinfo.TestEngines)
+					cbEngineSelector.Items.Add(info.TestProgramName);
+
+                cbEngineSelector.SelectedIndex = configinfo.CurrentEngineIndex;
+				btnRemoveEngine.Enabled = configinfo.TestEngines.Count > 1;
 				
 				// Set test application and parameters
-				if(!configinfo.CustomParameters)
+				/*if(!configinfo.CustomParameters)
 				{
 					configinfo.TestParameters = gameconfig.TestParameters;
 					configinfo.TestShortPaths = gameconfig.TestShortPaths;
@@ -173,7 +186,7 @@ namespace CodeImp.DoomBuilder.Windows
 				int skilllevel = configinfo.TestSkill;
 				skill.Value = skilllevel - 1;
 				skill.Value = skilllevel;
-				customparameters.Checked = configinfo.CustomParameters;
+				customparameters.Checked = configinfo.CustomParameters;*/
 				
 				// Fill texture sets list
 				listtextures.Items.Clear();
@@ -263,6 +276,14 @@ namespace CodeImp.DoomBuilder.Windows
 			if(nodebuildertest.SelectedItem != null)
 				configinfo.NodebuilderTest = (nodebuildertest.SelectedItem as NodebuilderInfo).Name;
 		}
+
+        //mxd. Engine name changed
+        /*private void tbEngineName_TextChanged(object sender, EventArgs e) {
+            if (configinfo == null) return;
+
+            configinfo.TestProgramName = tbEngineName.Text;
+            cbEngineSelector.SelectedItem = configinfo.TestEngines[configinfo.CurrentEngineIndex];
+        }*/
 		
 		// Test application changed
 		private void testapplication_TextChanged(object sender, EventArgs e)
@@ -271,7 +292,11 @@ namespace CodeImp.DoomBuilder.Windows
 			if(configinfo == null) return;
 
 			// Apply to selected configuration
-			configinfo.TestProgram = testapplication.Text;
+            configinfo.TestProgram = testapplication.Text;
+            
+            //mxd. Update engine name if needed
+            configinfo.TestEngines[configinfo.CurrentEngineIndex].CheckProgramName(false);
+            cbEngineSelector.Text = configinfo.TestProgramName;
 		}
 
 		// Test parameters changed
@@ -282,7 +307,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Apply to selected configuration
 			configinfo = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
-			configinfo.TestParameters = testparameters.Text;
+            configinfo.TestParameters = testparameters.Text;
 
 			// Show example result
 			CreateParametersExample();
@@ -346,6 +371,10 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Apply
 				testapplication.Text = testprogramdialog.FileName;
+
+                //mxd. Update engine name
+                configinfo.TestEngines[configinfo.CurrentEngineIndex].CheckProgramName(true);
+				cbEngineSelector.Text = configinfo.TestProgramName;
 			}
 		}
 
@@ -590,6 +619,79 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				EditModeInfo emi = (startmode.SelectedItem as EditModeInfo);
 				configinfo.StartMode = emi.Type.Name;
+			}
+		}
+
+        //mxd
+        private void btnNewEngine_Click(object sender, EventArgs e) {
+            EngineInfo newInfo = new EngineInfo();
+            newInfo.TestSkill = (int)Math.Ceiling(gameconfig.Skills.Count / 2f); //set Medium skill level
+            configinfo.TestEngines.Add(newInfo);
+            
+            //store current engine name
+			if(!String.IsNullOrEmpty(cbEngineSelector.Text))
+				configinfo.TestProgramName = cbEngineSelector.Text;
+
+			//refresh engines list
+            cbEngineSelector.Items.Clear();
+			foreach(EngineInfo info in configinfo.TestEngines)
+				cbEngineSelector.Items.Add(info.TestProgramName);
+
+            cbEngineSelector.SelectedIndex = configinfo.TestEngines.Count - 1;
+            
+            btnRemoveEngine.Enabled = true;
+        }
+
+        //mxd
+        private void btnRemoveEngine_Click(object sender, EventArgs e) {
+            //remove params
+            int index = cbEngineSelector.SelectedIndex;
+            configinfo.TestEngines.RemoveAt(index);
+            
+            //refresh engines list
+            cbEngineSelector.Items.Clear();
+			foreach(EngineInfo info in configinfo.TestEngines)
+				cbEngineSelector.Items.Add(info.TestProgramName);
+            
+			if (index >= configinfo.TestEngines.Count)
+                index = configinfo.TestEngines.Count - 1;
+
+            cbEngineSelector.SelectedIndex = index;
+
+            if (configinfo.TestEngines.Count < 2)
+                btnRemoveEngine.Enabled = false;
+        }
+
+        //mxd
+        private void cbEngineSelector_SelectedIndexChanged(object sender, EventArgs e) {
+            //set new values
+            configinfo.CurrentEngineIndex = cbEngineSelector.SelectedIndex;
+			cbEngineSelector.Tag = cbEngineSelector.SelectedIndex; //store for later use
+
+            // Set test application and parameters
+            if (!configinfo.CustomParameters)
+            {
+                configinfo.TestParameters = gameconfig.TestParameters;
+                configinfo.TestShortPaths = gameconfig.TestShortPaths;
+            }
+
+			configinfo.TestProgramName = cbEngineSelector.Text;
+            testapplication.Text = configinfo.TestProgram;
+            testparameters.Text = configinfo.TestParameters;
+            shortpaths.Checked = configinfo.TestShortPaths;
+            int skilllevel = configinfo.TestSkill;
+            skill.Value = skilllevel - 1; //mxd. WHY???
+            skill.Value = skilllevel;
+            customparameters.Checked = configinfo.CustomParameters;
+        }
+
+		//mxd
+		private void cbEngineSelector_DropDown(object sender, EventArgs e) {
+			int index = (int)cbEngineSelector.Tag;
+
+			if(index != -1 && cbEngineSelector.Text != cbEngineSelector.Items[index].ToString()) {
+				cbEngineSelector.Items[index] = cbEngineSelector.Text;
+				configinfo.TestProgramName = cbEngineSelector.Text;
 			}
 		}
 	}

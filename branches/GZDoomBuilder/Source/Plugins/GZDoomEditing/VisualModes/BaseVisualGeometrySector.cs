@@ -157,6 +157,27 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
         public override Sector GetControlSector() {
             return level.sector;
         }
+
+        //mxd. Modify texture offsets based on camera angle (so "movetextureleft" action always moves texture more or less "left" etc.)
+        protected Point getTranslatedTextureOffset(Point p) {
+            Point tp = new Point();
+            int camAngle = (int)(General.Map.VisualCamera.AngleXY * 180f / (float)Math.PI);
+
+            if (camAngle > 315 || camAngle < 46) {
+                tp = p;
+            } else if (camAngle > 225) {
+                tp.Y = p.X;
+                tp.X = -p.Y;
+            } else if (camAngle > 135) {
+                tp.X = -p.X;
+                tp.Y = -p.Y;
+            }else{
+                tp.Y = -p.X;
+                tp.X = p.Y;
+            }
+
+            return tp;
+        }
 		
 		#endregion
 

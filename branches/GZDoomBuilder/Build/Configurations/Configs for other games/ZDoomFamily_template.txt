@@ -15,7 +15,7 @@ engine = "zdoom";
 // *                                                     *
 // *   Note: all the elements that could be factorized   *
 // *   because they were common to ZDoom, GZDoom and     *
-// *   Skulltag have been moved to ZDoom_common.cfg.     *
+// *   Zandronum have been moved to ZDoom_common.cfg.     *
 // *                                                     *
 // *******************************************************
 
@@ -103,11 +103,11 @@ thingtypes
 	include("Includes\\ZDoom_things.cfg", "zdoom");
 	// Additional actors from the engine
 	include("Includes\\GZDoom_things.cfg", "gzdoom");
-	include("Includes\\Skulltag_things.cfg", "doom");
-	include("Includes\\Skulltag_things.cfg", "heretic");
-	include("Includes\\Skulltag_things.cfg", "hexen");
-	include("Includes\\Skulltag_things.cfg", "strife");
-	include("Includes\\Skulltag_things.cfg", "default");
+	include("Includes\\Zandronum_things.cfg", "doom");
+	include("Includes\\Zandronum_things.cfg", "heretic");
+	include("Includes\\Zandronum_things.cfg", "hexen");
+	include("Includes\\Zandronum_things.cfg", "strife");
+	include("Includes\\Zandronum_things.cfg", "default");
 }
 
 // ENUMERATIONS
@@ -128,6 +128,6 @@ enums
 	include("Includes\\ZDoom_misc.cfg", "enums_chex3");
 	include("Includes\\ZDoom_misc.cfg", "enums_harmony");
 	// Additional enums from the engine
-	include("Includes\\Skulltag_misc.cfg", "enums_doom");
-	include("Includes\\Skulltag_misc.cfg", "enums_notdoom");
+	include("Includes\\Zandronum_misc.cfg", "enums_doom");
+	include("Includes\\Zandronum_misc.cfg", "enums_notdoom");
 }

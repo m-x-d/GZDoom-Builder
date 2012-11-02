@@ -1364,13 +1364,29 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map != null)
 			{
 				// Make the new skills list
-				skills = new ToolStripItem[(General.Map.Config.Skills.Count * 2) + 1];
-				int addindex = 0;
+                //mxd
+                skills = new ToolStripItem[(General.Map.Config.Skills.Count * 2) + 3];
+
+                //mxd. Add engine selector
+                ToolStripMenuItem menuitem = new ToolStripMenuItem("Engine:", Properties.Resources.Marine);
+                for (int i = 0; i < General.Map.ConfigSettings.TestEngines.Count; i++) {
+                    ToolStripMenuItem engineItem = new ToolStripMenuItem(General.Map.ConfigSettings.TestEngines[i].TestProgramName);
+                    engineItem.Tag = i;
+                    engineItem.Checked = (i == General.Map.ConfigSettings.CurrentEngineIndex);
+                    engineItem.Click += new EventHandler(engineItem_Click);
+                    menuitem.DropDownItems.Add(engineItem);
+                }
+                skills[0] = menuitem;
+                
+                //mxd. Add seperator
+                skills[1] = new ToolStripSeparator();
+                skills[1].Padding = new Padding(0, 3, 0, 3);
+                int addindex = 2;
 				
 				// Positive skills are with monsters
 				for(int i = 0; i < General.Map.Config.Skills.Count; i++)
 				{
-					ToolStripMenuItem menuitem = new ToolStripMenuItem(General.Map.Config.Skills[i].ToString());
+					menuitem = new ToolStripMenuItem(General.Map.Config.Skills[i].ToString());
 					menuitem.Image = Properties.Resources.Monster2;
 					menuitem.Click += new EventHandler(TestSkill_Click);
 					menuitem.Tag = General.Map.Config.Skills[i].Index;
@@ -1386,7 +1402,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Negative skills are without monsters
 				for(int i = 0; i < General.Map.Config.Skills.Count; i++)
 				{
-					ToolStripMenuItem menuitem = new ToolStripMenuItem(General.Map.Config.Skills[i].ToString());
+					menuitem = new ToolStripMenuItem(General.Map.Config.Skills[i].ToString());
 					menuitem.Image = Properties.Resources.Monster3;
 					menuitem.Click += new EventHandler(TestSkill_Click);
 					menuitem.Tag = -General.Map.Config.Skills[i].Index;
@@ -1398,6 +1414,11 @@ namespace CodeImp.DoomBuilder.Windows
 				buttontest.DropDownItems.AddRange(skills);
 			}
 		}
+
+        //mxd
+        private void engineItem_Click(object sender, EventArgs e) {
+            General.Map.ConfigSettings.CurrentEngineIndex = (int)(((ToolStripMenuItem)sender).Tag);
+        }
 		
 		// Event handler for testing at a specific skill
 		private void TestSkill_Click(object sender, EventArgs e)

@@ -297,13 +297,19 @@ namespace CodeImp.DoomBuilder.VisualModes
                     return false;
                 }
 
+                //check camera Z
+				float pz = camPos.z - s.FloorHeight;
+				int ceilRel = s.CeilHeight - s.FloorHeight - 41; //relative ceiling height
+				if(pz > ceilRel) pz = ceilRel; //above ceiling?
+				else if(pz < 0) pz = 0; //below floor?
+
                 //store initial position
                 playerStart = start;
                 playerStartPosition = start.Position;
                 playerStartAngle = start.Angle;
 
                 //everything should be valid, let's move player start here
-                start.Move(new Vector3D(camPos.x, camPos.y, s.FloorHeight));
+                start.Move(new Vector3D(camPos.x, camPos.y, pz));
                 start.Rotate(General.Map.VisualCamera.AngleXY - (float)Math.PI);
             }
             return true;

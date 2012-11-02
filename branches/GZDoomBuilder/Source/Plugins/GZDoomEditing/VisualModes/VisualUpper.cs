@@ -236,8 +236,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			float oldy = Sidedef.Fields.GetValue("offsety_top", 0.0f);
 			float scalex = Sidedef.Fields.GetValue("scalex_top", 1.0f);
 			float scaley = Sidedef.Fields.GetValue("scaley_top", 1.0f);
-            Sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, oldx + getRoundedTextureOffset((float)xy.X, scalex)); //mxd
-            Sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, oldy + getRoundedTextureOffset((float)xy.Y, scaley)); //mxd
+            Sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldx, (float)xy.X, scalex)); //mxd
+            Sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldy, (float)xy.Y, scaley)); //mxd
+            //Sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, oldx + getRoundedTextureOffset((float)xy.X, scalex)); //mxd
+            //Sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, oldy + getRoundedTextureOffset((float)xy.Y, scaley)); //mxd
 			//Sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, oldx + (float)xy.X * scalex);
 			//Sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y * scaley);
 		}

@@ -15,7 +15,7 @@ using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Types;
+//using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -53,10 +53,10 @@ namespace CodeImp.DoomBuilder.Plugins
 
 
         //mxd
-        public static TypeHandlerAttribute[] GetCustomUseAttributes() {
+        /*public static TypeHandlerAttribute[] GetCustomUseAttributes() {
             //TypeHandlerAttribute[] attrs = General.Types.GetCustomUseAttributes();
             return General.Types.GetCustomUseAttributes();
-        }
+        }*/
 
 		#endregion
 		

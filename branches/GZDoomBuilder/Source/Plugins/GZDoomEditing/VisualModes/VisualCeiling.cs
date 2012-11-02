@@ -172,6 +172,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			s.Fields.BeforeFieldsChange();
             float oldx = s.Fields.GetValue("xpanningceiling", 0.0f);
             float oldy = s.Fields.GetValue("ypanningceiling", 0.0f);
+            xy = getTranslatedTextureOffset(xy);
             s.Fields["xpanningceiling"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
             s.Fields["ypanningceiling"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
             s.UpdateNeeded = true;
