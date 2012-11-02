@@ -157,6 +157,9 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 			}
+
+            //mxd. Still better than nothing :)
+            if (config.SelectedIndex == -1 && General.Configs.Count > 0) config.SelectedIndex = 0;
 			
 			// Done
 			Cursor.Current = Cursors.Default;

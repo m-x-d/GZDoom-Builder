@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Data;
 using System.IO;
 using CodeImp.DoomBuilder.Editing;
 using System.Collections.Specialized;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
 
@@ -52,11 +53,14 @@ namespace CodeImp.DoomBuilder.Config
 		private string nodebuildersave;
 		private string nodebuildertest;
 		private DataLocationList resources;
-		private string testprogram;
-		private string testparameters;
-		private bool testshortpaths;
-		private bool customparameters;
-		private int testskill;
+		//private string testprogram; //mxd
+		//private string testparameters;
+		//private bool testshortpaths;
+		//private bool customparameters;
+		//private int testskill;
+        private List<EngineInfo> testEngines;
+        private int currentEngineIndex;
+
 		private List<ThingsFilter> thingsfilters;
 		private List<DefinedTextureSet> texturesets;
 		private Dictionary<string, bool> editmodes;
@@ -72,11 +76,23 @@ namespace CodeImp.DoomBuilder.Config
 		public string NodebuilderSave { get { return nodebuildersave; } internal set { nodebuildersave = value; } }
 		public string NodebuilderTest { get { return nodebuildertest; } internal set { nodebuildertest = value; } }
 		internal DataLocationList Resources { get { return resources; } }
-		public string TestProgram { get { return testprogram; } internal set { testprogram = value; } }
-		public string TestParameters { get { return testparameters; } internal set { testparameters = value; } }
-		public bool TestShortPaths { get { return testshortpaths; } internal set { testshortpaths = value; } }
-		public int TestSkill { get { return testskill; } internal set { testskill = value; } }
-		public bool CustomParameters { get { return customparameters; } internal set { customparameters = value; } }
+        
+        //mxd
+        public string TestProgramName { get { return testEngines[currentEngineIndex].TestProgramName; } internal set { testEngines[currentEngineIndex].TestProgramName = value; } }
+        public string TestProgram { get { return testEngines[currentEngineIndex].TestProgram; } internal set { testEngines[currentEngineIndex].TestProgram = value; } }
+        public string TestParameters { get { return testEngines[currentEngineIndex].TestParameters; } internal set { testEngines[currentEngineIndex].TestParameters = value; } }
+        public bool TestShortPaths { get { return testEngines[currentEngineIndex].TestShortPaths; } internal set { testEngines[currentEngineIndex].TestShortPaths = value; } }
+        public int TestSkill { get { return testEngines[currentEngineIndex].TestSkill; } internal set { testEngines[currentEngineIndex].TestSkill = value; } }
+        public bool CustomParameters { get { return testEngines[currentEngineIndex].CustomParameters; } internal set { testEngines[currentEngineIndex].CustomParameters = value; } }
+        //public string TestProgram { get { return testprogram; } internal set { testprogram = value; } }
+        //public string TestParameters { get { return testparameters; } internal set { testparameters = value; } }
+		//public bool TestShortPaths { get { return testshortpaths; } internal set { testshortpaths = value; } }
+		//public int TestSkill { get { return testskill; } internal set { testskill = value; } }
+		//public bool CustomParameters { get { return customparameters; } internal set { customparameters = value; } }
+        public List<EngineInfo> TestEngines { get { return testEngines; } internal set { testEngines = value; } }
+        //public EngineInfo CurrentTestEngine { get { return testEngines[currentEngineIndex]; } }
+        public int CurrentEngineIndex { get { return currentEngineIndex; } internal set { currentEngineIndex = value; } }
+
 		internal ICollection<ThingsFilter> ThingsFilters { get { return thingsfilters; } }
 		internal List<DefinedTextureSet> TextureSets { get { return texturesets; } }
 		internal Dictionary<string, bool> EditModes { get { return editmodes; } }
@@ -100,14 +116,48 @@ namespace CodeImp.DoomBuilder.Config
 			// Load settings from program configuration
 			this.nodebuildersave = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildersave", MISSING_NODEBUILDER);
 			this.nodebuildertest = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildertest", MISSING_NODEBUILDER);
-			this.testprogram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
-			this.testparameters = General.Settings.ReadSetting("configurations." + settingskey + ".testparameters", "");
-			this.testshortpaths = General.Settings.ReadSetting("configurations." + settingskey + ".testshortpaths", false);
-			this.customparameters = General.Settings.ReadSetting("configurations." + settingskey + ".customparameters", false);
-			this.testskill = General.Settings.ReadSetting("configurations." + settingskey + ".testskill", 3);
+            //mxd
+            //this.testprogram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", ""); 
+			//this.testparameters = General.Settings.ReadSetting("configurations." + settingskey + ".testparameters", "");
+			//this.testshortpaths = General.Settings.ReadSetting("configurations." + settingskey + ".testshortpaths", false);
+			//this.customparameters = General.Settings.ReadSetting("configurations." + settingskey + ".customparameters", false);
+			//this.testskill = General.Settings.ReadSetting("configurations." + settingskey + ".testskill", 3);
 			this.resources = new DataLocationList(General.Settings.Config, "configurations." + settingskey + ".resources");
 			this.startmode = General.Settings.ReadSetting("configurations." + settingskey + ".startmode", "VerticesMode");
 			
+            //mxd. read test engines
+            testEngines = new List<EngineInfo>();
+            IDictionary list = General.Settings.ReadSetting("configurations." + settingskey + ".engines", new ListDictionary());
+            currentEngineIndex = General.Settings.ReadSetting("configurations." + settingskey + ".currentengineindex", 0);
+            
+            //no engine list found? use old engine properties
+            if (list.Count == 0) {
+                EngineInfo info = new EngineInfo();
+                info.TestProgram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
+                info.TestProgramName = General.Settings.ReadSetting("configurations." + settingskey + ".testprogramname", EngineInfo.DEFAULT_ENGINE_NAME);
+                info.CheckProgramName(false);
+                info.TestParameters = General.Settings.ReadSetting("configurations." + settingskey + ".testparameters", "");
+                info.TestShortPaths = General.Settings.ReadSetting("configurations." + settingskey + ".testshortpaths", false);
+                info.CustomParameters = General.Settings.ReadSetting("configurations." + settingskey + ".customparameters", false);
+                info.TestSkill = General.Settings.ReadSetting("configurations." + settingskey + ".testskill", 3);
+                testEngines.Add(info);
+                currentEngineIndex = 0;
+            } else {
+                //read engines settings from config
+                foreach (DictionaryEntry de in list) {
+                    string path = "configurations." + settingskey + ".engines." + de.Key;
+                    EngineInfo info = new EngineInfo();
+                    info.TestProgram = General.Settings.ReadSetting(path + ".testprogram", "");
+                    info.TestProgramName = General.Settings.ReadSetting(path + ".testprogramname", EngineInfo.DEFAULT_ENGINE_NAME);
+                    info.CheckProgramName(false);
+                    info.TestParameters = General.Settings.ReadSetting(path + ".testparameters", "");
+                    info.TestShortPaths = General.Settings.ReadSetting(path + ".testshortpaths", false);
+                    info.CustomParameters = General.Settings.ReadSetting(path + ".customparameters", false);
+                    info.TestSkill = General.Settings.ReadSetting(path + ".testskill", 3);
+                    testEngines.Add(info);
+                }
+            }
+
 			// Make list of things filters
 			thingsfilters = new List<ThingsFilter>();
 			IDictionary cfgfilters = General.Settings.ReadSetting("configurations." + settingskey + ".thingsfilters", new Hashtable());
@@ -166,11 +216,23 @@ namespace CodeImp.DoomBuilder.Config
 			// Write to configuration
 			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuildersave", nodebuildersave);
 			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuildertest", nodebuildertest);
-			General.Settings.WriteSetting("configurations." + settingskey + ".testprogram", testprogram);
-			General.Settings.WriteSetting("configurations." + settingskey + ".testparameters", testparameters);
-			General.Settings.WriteSetting("configurations." + settingskey + ".testshortpaths", testshortpaths);
-			General.Settings.WriteSetting("configurations." + settingskey + ".customparameters", customparameters);
-			General.Settings.WriteSetting("configurations." + settingskey + ".testskill", testskill);
+			//General.Settings.WriteSetting("configurations." + settingskey + ".testprogram", testprogram);
+			//General.Settings.WriteSetting("configurations." + settingskey + ".testparameters", testparameters);
+			//General.Settings.WriteSetting("configurations." + settingskey + ".testshortpaths", testshortpaths);
+			//General.Settings.WriteSetting("configurations." + settingskey + ".customparameters", customparameters);
+			//General.Settings.WriteSetting("configurations." + settingskey + ".testskill", testskill);
+            //mxd
+            General.Settings.WriteSetting("configurations." + settingskey + ".currentengineindex", currentEngineIndex);
+            for (int i = 0; i < testEngines.Count; i++ ) {
+                string path = "configurations." + settingskey + ".engines.engine" + i.ToString(CultureInfo.InvariantCulture);
+                General.Settings.WriteSetting(path + ".testprogramname", testEngines[i].TestProgramName);
+                General.Settings.WriteSetting(path + ".testprogram", testEngines[i].TestProgram);
+                General.Settings.WriteSetting(path + ".testparameters", testEngines[i].TestParameters);
+                General.Settings.WriteSetting(path + ".testshortpaths", testEngines[i].TestShortPaths);
+                General.Settings.WriteSetting(path + ".customparameters", testEngines[i].CustomParameters);
+                General.Settings.WriteSetting(path + ".testskill", testEngines[i].TestSkill);
+            }
+
 			General.Settings.WriteSetting("configurations." + settingskey + ".startmode", startmode);
 			resources.WriteToConfig(General.Settings.Config, "configurations." + settingskey + ".resources");
 			
@@ -221,11 +283,15 @@ namespace CodeImp.DoomBuilder.Config
 			ci.nodebuildertest = this.nodebuildertest;
 			ci.resources = new DataLocationList();
 			ci.resources.AddRange(this.resources);
-			ci.testprogram = this.testprogram;
+			//mxd
+            /*ci.testprogram = this.testprogram;
 			ci.testparameters = this.testparameters;
 			ci.testshortpaths = this.testshortpaths;
 			ci.customparameters = this.customparameters;
-			ci.testskill = this.testskill;
+			ci.testskill = this.testskill;*/
+            ci.TestEngines = new List<EngineInfo>();
+            foreach (EngineInfo info in testEngines) ci.TestEngines.Add(new EngineInfo(info));
+
 			ci.startmode = this.startmode;
 			ci.texturesets = new List<DefinedTextureSet>();
 			foreach(DefinedTextureSet s in this.texturesets) ci.texturesets.Add(s.Copy());
@@ -245,11 +311,15 @@ namespace CodeImp.DoomBuilder.Config
 			this.nodebuildertest = ci.nodebuildertest;
 			this.resources = new DataLocationList();
 			this.resources.AddRange(ci.resources);
-			this.testprogram = ci.testprogram;
+			//mxd
+            /*this.testprogram = ci.testprogram;
 			this.testparameters = ci.testparameters;
 			this.testshortpaths = ci.testshortpaths;
 			this.customparameters = ci.customparameters;
-			this.testskill = ci.testskill;
+			this.testskill = ci.testskill;*/
+            this.testEngines = new List<EngineInfo>();
+            foreach (EngineInfo info in ci.TestEngines) testEngines.Add(new EngineInfo(info));
+
 			this.startmode = ci.startmode;
 			this.texturesets = new List<DefinedTextureSet>();
 			foreach(DefinedTextureSet s in ci.texturesets) this.texturesets.Add(s.Copy());

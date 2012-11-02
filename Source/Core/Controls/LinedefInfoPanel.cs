@@ -170,7 +170,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(General.Map.UDMF) {
 					//light
 					frontoffsetlabel.Text = "Front light:";
-					setUDMFLight(l.Front.Fields, frontoffsetlabel, frontoffset);
+					setUDMFLight(l.Front, frontoffsetlabel, frontoffset);
 
 					bool hasTopFields = false;
 					bool hasMiddleFields = false;
@@ -268,7 +268,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(General.Map.UDMF) {
 					//light
 					backoffsetlabel.Text = "Back light:";
-					setUDMFLight(l.Back.Fields, backoffsetlabel, backoffset);
+					setUDMFLight(l.Back, backoffsetlabel, backoffset);
 
 					bool hasTopFields = false;
 					bool hasMiddleFields = false;
@@ -382,12 +382,14 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void setUDMFLight(UniFields fields, Label label, Label value) {
-			if(fields.ContainsKey("light")) {
-				value.Text = fields["light"].Value.ToString();
-
-				if(fields.ContainsKey("lightabsolute") && Boolean.Parse(fields["lightabsolute"].Value.ToString()))
-					value.Text += " (abs)";
+		private void setUDMFLight(Sidedef sd, Label label, Label value) {
+			if(sd.Fields.ContainsKey("light")) {
+                int light = (int)sd.Fields["light"].Value;
+                
+                if (sd.Fields.ContainsKey("lightabsolute") && Boolean.Parse(sd.Fields["lightabsolute"].Value.ToString()))
+					value.Text = light + " (abs.)";
+                else
+                    value.Text = light + " (" + Math.Min(255, Math.Max(0, (light + sd.Sector.Brightness))) + ")";
 
 				value.Enabled = true;
 				label.Enabled = true;

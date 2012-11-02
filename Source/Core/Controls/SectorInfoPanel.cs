@@ -81,10 +81,13 @@ namespace CodeImp.DoomBuilder.Controls
 					ceilingLight.Enabled = true;
 					ceilingLightLabel.Enabled = true;
 
-					ceilingLight.Text = s.Fields["lightceiling"].Value.ToString();
+                    int cl = (int)s.Fields["lightceiling"].Value;
 
 					if(s.Fields.ContainsKey("lightceilingabsolute") && Boolean.Parse(s.Fields["lightceilingabsolute"].Value.ToString()))
-						ceilingLight.Text += " (abs.)";
+                        ceilingLight.Text = cl + " (abs.)";
+                    else
+                        ceilingLight.Text = cl + " (" + Math.Min(255, Math.Max(0, (cl + s.Brightness))) + ")";
+
 				} else {
 					ceilingLight.Text = "--";
 					ceilingLight.Enabled = false;
@@ -96,10 +99,13 @@ namespace CodeImp.DoomBuilder.Controls
 					floorLight.Enabled = true;
 					floorLightLabel.Enabled = true;
 
-					floorLight.Text = s.Fields["lightfloor"].Value.ToString();
+                    int fl = (int)s.Fields["lightfloor"].Value;
 
 					if(s.Fields.ContainsKey("lightfloorabsolute") && Boolean.Parse(s.Fields["lightfloorabsolute"].Value.ToString()))
-						floorLight.Text += " (abs.)";
+						floorLight.Text = fl + " (abs.)";
+                    else
+                        floorLight.Text = fl + " (" + Math.Min(255, Math.Max(0, (fl + s.Brightness))) + ")";
+
 				} else {
 					floorLight.Text = "--";
 					floorLight.Enabled = false;
