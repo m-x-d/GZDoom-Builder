@@ -256,9 +256,9 @@ namespace CodeImp.DoomBuilder.Windows
             lTexOffsetFrontBottom.AutoSize = true;
             lTexOffsetFrontBottom.Location = new System.Drawing.Point(4, 35);
             lTexOffsetFrontBottom.Name = "lTexOffsetFrontBottom";
-            lTexOffsetFrontBottom.Size = new System.Drawing.Size(77, 14);
+            lTexOffsetFrontBottom.Size = new System.Drawing.Size(76, 14);
             lTexOffsetFrontBottom.TabIndex = 20;
-            lTexOffsetFrontBottom.Text = "Bottom Offset:";
+            lTexOffsetFrontBottom.Text = "Lower Offset:";
             // 
             // label1
             // 
@@ -274,9 +274,9 @@ namespace CodeImp.DoomBuilder.Windows
             label6.AutoSize = true;
             label6.Location = new System.Drawing.Point(4, 35);
             label6.Name = "label6";
-            label6.Size = new System.Drawing.Size(77, 14);
+            label6.Size = new System.Drawing.Size(76, 14);
             label6.TabIndex = 20;
-            label6.Text = "Bottom Offset:";
+            label6.Text = "Lower Offset:";
             // 
             // lTexOffsetBackUpper
             // 
