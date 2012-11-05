@@ -162,7 +162,7 @@ namespace CodeImp.DoomBuilder.Controls
 				// Show sidedef info
 				frontpanel.Visible = true; //mxd
 
-				frontpanel.Text = " Front Sidedef " + l.Front.Index + " ";
+				frontpanel.Text = " Front Sidedef " + l.Front.Index;
 				frontsector.Text = " Sector " + l.Front.Sector.Index;
 				frontsector.Visible = true;
 				
@@ -171,6 +171,9 @@ namespace CodeImp.DoomBuilder.Controls
 					//light
 					frontoffsetlabel.Text = "Front light:";
 					setUDMFLight(l.Front, frontoffsetlabel, frontoffset);
+
+					//global offset
+					frontpanel.Text += ". Offset: " + l.Front.OffsetX + ", " + l.Front.OffsetY;
 
 					bool hasTopFields = false;
 					bool hasMiddleFields = false;
@@ -260,7 +263,7 @@ namespace CodeImp.DoomBuilder.Controls
 				
 				// Show sidedef info
 				backpanel.Visible = true; //mxd
-				backpanel.Text = " Back Sidedef " + l.Back.Index + " ";
+				backpanel.Text = " Back Sidedef " + l.Back.Index;
 				backsector.Text = " Sector " + l.Back.Sector.Index;
 				backsector.Visible = true;
 
@@ -269,6 +272,9 @@ namespace CodeImp.DoomBuilder.Controls
 					//light
 					backoffsetlabel.Text = "Back light:";
 					setUDMFLight(l.Back, backoffsetlabel, backoffset);
+
+					//global offset
+					backpanel.Text += ". Offset: " + l.Back.OffsetX + ", " + l.Back.OffsetY;
 
 					bool hasTopFields = false;
 					bool hasMiddleFields = false;
