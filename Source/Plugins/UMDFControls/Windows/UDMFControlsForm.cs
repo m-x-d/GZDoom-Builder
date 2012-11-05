@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
 
             updateList = new List<SurfaceProperties>();
 
-            wallFlags = new CheckBox[] { cbnodecals, cbnofakecontrast, cbclipmidtex, cbsmoothlighting };
+            wallFlags = new CheckBox[] { cbnodecals, cbnofakecontrast, cbclipmidtex, cbsmoothlighting, cblightfog };
             sectorFlags = new CheckBox[] { cbsilent, cbnofallingdamage, cbdropactors, cbnorespawn, cbhidden };
 
             renderStyles = new List<string>() { "translucent", "add" };
@@ -581,6 +581,11 @@ namespace CodeImp.DoomBuilder.UDMFControls
 //flags
         private void cbwrapmidtex_CheckedChanged(object sender, EventArgs e) {
             setSidedefProperty((string)cbwrapmidtex.Tag, (object)cbwrapmidtex.Checked);
+            update();
+        }
+
+        private void cblightfog_CheckedChanged(object sender, EventArgs e) {
+            setSidedefProperty((string)cblightfog.Tag, (object)cblightfog.Checked);
             update();
         }
 

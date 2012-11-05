@@ -76,8 +76,14 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			Sidedef sourceside = extrafloor.Linedef.Front;
 			this.extrafloor = extrafloor;
 
-			int lightvalue = Sidedef.Fields.GetValue("light", 0);
-			bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
+			//int lightvalue = Sidedef.Fields.GetValue("light", 0);
+			//bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
+
+            //mxd. lightfog flag support
+            bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
+            bool ignoreUDMFLight = (!Sidedef.Fields.GetValue("lightfog", false) || !lightabsolute) && Sector.Sector.Fields.ContainsKey("fadecolor");
+            int lightvalue = ignoreUDMFLight ? 0 : Sidedef.Fields.GetValue("light", 0); //mxd
+            if (ignoreUDMFLight) lightabsolute = false;
 
 			Vector2D tscale = new Vector2D(sourceside.Fields.GetValue("scalex_mid", 1.0f),
 										   sourceside.Fields.GetValue("scaley_mid", 1.0f));

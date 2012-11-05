@@ -844,7 +844,6 @@ namespace CodeImp.DoomBuilder.Controls
 						browsebutton.Image = frow.TypeHandler.BrowseImage;
 						browsebutton.Location = new Point(cellrect.Right - browsebutton.Width, cellrect.Top);
 						browsebutton.Height = cellrect.Height;
-						Console.WriteLine(cellrect.Height.ToString());
 						browsebutton.Visible = true;
 					}
 					else
