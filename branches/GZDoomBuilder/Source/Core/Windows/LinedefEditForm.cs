@@ -31,6 +31,7 @@ using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Controls;
 //mxd
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -116,6 +117,19 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				idgroup.Visible = false;
 			}
+
+            //mxd. Setup texture offset controls
+            if (General.Map.UDMF) {
+                lTexOffsetFrontUpper.Text = "Upper Offset:";
+                lTexOffsetBackUpper.Text = "Upper Offset:";
+            } else {
+                pFrontUDMFOffsets.Visible = false;
+                pBackUDMFOffsets.Visible = false;
+                customfrontbutton.Top = 126;
+                custombackbutton.Top = 126;
+                lTexOffsetFrontUpper.Text = "Texture Offset:";
+                lTexOffsetBackUpper.Text = "Texture Offset:";
+            }
 		}
 		
 		// This sets up the form to edit the given lines
@@ -181,8 +195,19 @@ namespace CodeImp.DoomBuilder.Windows
 				frontmid.Required = fl.Front.MiddleRequired();
 				frontlow.Required = fl.Front.LowRequired();
 				frontsector.Text = fl.Front.Sector.Index.ToString();
-				frontoffsetx.Text = fl.Front.OffsetX.ToString();
-				frontoffsety.Text = fl.Front.OffsetY.ToString();
+
+                //mxd
+                if (General.Map.UDMF) {
+                    frontoffsetx.Text = getUDMFTextureOffset(fl.Front.Fields, "offsetx_top").ToString();
+                    frontoffsety.Text = getUDMFTextureOffset(fl.Front.Fields, "offsety_top").ToString();
+                    frontOffsetMidX.Text = getUDMFTextureOffset(fl.Front.Fields, "offsetx_mid").ToString();
+                    frontOffsetMidY.Text = getUDMFTextureOffset(fl.Front.Fields, "offsety_mid").ToString();
+                    frontOffsetLowX.Text = getUDMFTextureOffset(fl.Front.Fields, "offsetx_bottom").ToString();
+                    frontOffsetLowY.Text = getUDMFTextureOffset(fl.Front.Fields, "offsety_bottom").ToString();
+                } else {
+                    frontoffsetx.Text = fl.Front.OffsetX.ToString();
+                    frontoffsety.Text = fl.Front.OffsetY.ToString();
+                }
 			}
 
 			// Back settings
@@ -195,8 +220,19 @@ namespace CodeImp.DoomBuilder.Windows
 				backmid.Required = fl.Back.MiddleRequired();
 				backlow.Required = fl.Back.LowRequired();
 				backsector.Text = fl.Back.Sector.Index.ToString();
-				backoffsetx.Text = fl.Back.OffsetX.ToString();
-				backoffsety.Text = fl.Back.OffsetY.ToString();
+
+                //mxd
+                if (General.Map.UDMF) {
+                    backoffsetx.Text = getUDMFTextureOffset(fl.Back.Fields, "offsetx_top").ToString();
+                    backoffsety.Text = getUDMFTextureOffset(fl.Back.Fields, "offsety_top").ToString();
+                    backOffsetMidX.Text = getUDMFTextureOffset(fl.Back.Fields, "offsetx_mid").ToString();
+                    backOffsetMidY.Text = getUDMFTextureOffset(fl.Back.Fields, "offsety_mid").ToString();
+                    backOffsetLowX.Text = getUDMFTextureOffset(fl.Back.Fields, "offsetx_bottom").ToString();
+                    backOffsetLowY.Text = getUDMFTextureOffset(fl.Back.Fields, "offsety_bottom").ToString();
+                } else {
+                    backoffsetx.Text = fl.Back.OffsetX.ToString();
+                    backoffsety.Text = fl.Back.OffsetY.ToString();
+                }
 			}
 
 			////////////////////////////////////////////////////////////////////////
@@ -277,8 +313,18 @@ namespace CodeImp.DoomBuilder.Windows
 					if(frontmid.Required != l.Front.MiddleRequired()) frontmid.Required = false;
 					if(frontlow.Required != l.Front.LowRequired()) frontlow.Required = false;
 					if(frontsector.Text != l.Front.Sector.Index.ToString()) frontsector.Text = "";
-					if(frontoffsetx.Text != l.Front.OffsetX.ToString()) frontoffsetx.Text = "";
-					if(frontoffsety.Text != l.Front.OffsetY.ToString()) frontoffsety.Text = "";
+
+                    if (General.Map.UDMF) {
+                        if (frontoffsetx.Text != getUDMFTextureOffset(l.Front.Fields, "offsetx_top").ToString()) frontoffsetx.Text = "";
+                        if (frontoffsety.Text != getUDMFTextureOffset(l.Front.Fields, "offsety_top").ToString()) frontoffsety.Text = "";
+                        if (frontOffsetMidX.Text != getUDMFTextureOffset(l.Front.Fields, "offsetx_mid").ToString()) frontOffsetMidX.Text = "";
+                        if (frontOffsetMidY.Text != getUDMFTextureOffset(l.Front.Fields, "offsety_mid").ToString()) frontOffsetMidY.Text = "";
+                        if (frontOffsetLowX.Text != getUDMFTextureOffset(l.Front.Fields, "offsetx_bottom ").ToString()) frontOffsetLowX.Text = "";
+                        if (frontOffsetLowY.Text != getUDMFTextureOffset(l.Front.Fields, "offsety_bottom ").ToString()) frontOffsetLowY.Text = "";
+                    } else {
+                        if (frontoffsetx.Text != l.Front.OffsetX.ToString()) frontoffsetx.Text = "";
+                        if (frontoffsety.Text != l.Front.OffsetY.ToString()) frontoffsety.Text = "";
+                    }
 				}
 
 				// Back settings
@@ -291,8 +337,20 @@ namespace CodeImp.DoomBuilder.Windows
 					if(backmid.Required != l.Back.MiddleRequired()) backmid.Required = false;
 					if(backlow.Required != l.Back.LowRequired()) backlow.Required = false;
 					if(backsector.Text != l.Back.Sector.Index.ToString()) backsector.Text = "";
-					if(backoffsetx.Text != l.Back.OffsetX.ToString()) backoffsetx.Text = "";
-					if(backoffsety.Text != l.Back.OffsetY.ToString()) backoffsety.Text = "";
+
+                    //mxd
+                    if (General.Map.UDMF) {
+                        if (backoffsetx.Text != getUDMFTextureOffset(l.Back.Fields, "offsetx_top").ToString()) backoffsetx.Text = "";
+                        if (backoffsety.Text != getUDMFTextureOffset(l.Back.Fields, "offsety_top").ToString()) backoffsety.Text = "";
+                        if (backOffsetMidX.Text != getUDMFTextureOffset(l.Back.Fields, "offsetx_mid").ToString()) backOffsetMidX.Text = "";
+                        if (backOffsetMidY.Text != getUDMFTextureOffset(l.Back.Fields, "offsety_mid").ToString()) backOffsetMidY.Text = "";
+                        if (backOffsetLowX.Text != getUDMFTextureOffset(l.Back.Fields, "offsetx_bottom ").ToString()) backOffsetLowX.Text = "";
+                        if (backOffsetLowY.Text != getUDMFTextureOffset(l.Back.Fields, "offsety_bottom ").ToString()) backOffsetLowY.Text = "";
+                    } else {
+                        if (backoffsetx.Text != l.Back.OffsetX.ToString()) backoffsetx.Text = "";
+                        if (backoffsety.Text != l.Back.OffsetY.ToString()) backoffsety.Text = "";
+                    }
+
 					if(General.Map.FormatInterface.HasCustomFields) custombackbutton.Visible = true;
 				}
 				
@@ -355,6 +413,25 @@ namespace CodeImp.DoomBuilder.Windows
                 arg0str.Text = selectedValue;
             }
         }
+
+        //mxd
+        private float getUDMFTextureOffset(UniFields fields, string key) {
+            if (fields != null && fields.ContainsKey(key))
+                return (float)fields[key].Value;
+            return 0;
+        }
+
+        //mxd
+        private void setUDMFTextureOffset(UniFields fields, string key, float value) {
+            if (fields == null) return;
+
+            fields.BeforeFieldsChange();
+
+            if (!fields.ContainsKey(key))
+                fields.Add(key, new UniValue(UniversalType.Float, value));
+            else
+                fields[key].Value = value;
+        }
 		
 		// Front side (un)checked
 		private void frontside_CheckStateChanged(object sender, EventArgs e)
@@ -399,21 +476,11 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 			
-			// Verify texture offsets
-			if((backoffsetx.GetResult(0) < General.Map.FormatInterface.MinTextureOffset) || (backoffsetx.GetResult(0) > General.Map.FormatInterface.MaxTextureOffset) ||
-			   (backoffsety.GetResult(0) < General.Map.FormatInterface.MinTextureOffset) || (backoffsety.GetResult(0) > General.Map.FormatInterface.MaxTextureOffset) ||
-			   (frontoffsetx.GetResult(0) < General.Map.FormatInterface.MinTextureOffset) || (frontoffsetx.GetResult(0) > General.Map.FormatInterface.MaxTextureOffset) ||
-			   (frontoffsety.GetResult(0) < General.Map.FormatInterface.MinTextureOffset) || (frontoffsety.GetResult(0) > General.Map.FormatInterface.MaxTextureOffset))
-			{
-				General.ShowWarningMessage("Texture offset must be between " + General.Map.FormatInterface.MinTextureOffset + " and " + General.Map.FormatInterface.MaxTextureOffset + ".", MessageBoxButtons.OK);
-				return;
-			}
-			
 			// Make undo
 			if(lines.Count > 1) undodesc = lines.Count + " linedefs";
 			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 
-            //nxd
+            //mxd
             bool hasAcs = Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
             bool hasArg0str = General.Map.UDMF && !action.Empty && hasAcs && arg0str.Text.Length > 0;
 			
@@ -482,8 +549,24 @@ namespace CodeImp.DoomBuilder.Windows
 								if(l.Front.Sector != s) l.Front.SetSector(s);
 
 								// Apply settings
-								l.Front.OffsetX = General.Clamp(frontoffsetx.GetResult(l.Front.OffsetX), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
-								l.Front.OffsetY = General.Clamp(frontoffsety.GetResult(l.Front.OffsetY), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
+                                //mxd
+                                int min = General.Map.FormatInterface.MinTextureOffset;
+                                int max = General.Map.FormatInterface.MaxTextureOffset;
+                                if (General.Map.UDMF) {
+                                    if (frontoffsetx.Text != "") setUDMFTextureOffset(l.Front.Fields, "offsetx_top", General.Clamp(frontoffsetx.GetResult((int)getUDMFTextureOffset(l.Front.Fields, "offsetx_top")), min, max));
+                                    if (frontoffsety.Text != "") setUDMFTextureOffset(l.Front.Fields, "offsety_top", General.Clamp(frontoffsety.GetResult((int)getUDMFTextureOffset(l.Front.Fields, "offsety_top")), min, max));
+
+                                    if (frontOffsetMidX.Text != "") setUDMFTextureOffset(l.Front.Fields, "offsetx_mid", General.Clamp(frontOffsetMidX.GetResult((int)getUDMFTextureOffset(l.Front.Fields, "offsetx_mid")), min, max));
+                                    if (frontOffsetMidY.Text != "") setUDMFTextureOffset(l.Front.Fields, "offsety_mid", General.Clamp(frontOffsetMidY.GetResult((int)getUDMFTextureOffset(l.Front.Fields, "offsety_mid")), min, max));
+
+                                    if (frontOffsetLowX.Text != "") setUDMFTextureOffset(l.Front.Fields, "offsetx_bottom", General.Clamp(frontOffsetLowX.GetResult((int)getUDMFTextureOffset(l.Front.Fields, "offsetx_bottom")), min, max));
+                                    if (frontOffsetLowY.Text != "") setUDMFTextureOffset(l.Front.Fields, "offsety_bottom", General.Clamp(frontOffsetLowY.GetResult((int)getUDMFTextureOffset(l.Front.Fields, "offsety_bottom")), min, max));
+
+                                } else {
+                                    l.Front.OffsetX = General.Clamp(frontoffsetx.GetResult(l.Front.OffsetX), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
+                                    l.Front.OffsetY = General.Clamp(frontoffsety.GetResult(l.Front.OffsetY), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
+                                }
+
 								l.Front.SetTextureHigh(fronthigh.GetResult(l.Front.HighTexture));
 								l.Front.SetTextureMid(frontmid.GetResult(l.Front.MiddleTexture));
 								l.Front.SetTextureLow(frontlow.GetResult(l.Front.LowTexture));
@@ -517,8 +600,24 @@ namespace CodeImp.DoomBuilder.Windows
 								if(l.Back.Sector != s) l.Back.SetSector(s);
 
 								// Apply settings
-								l.Back.OffsetX = General.Clamp(backoffsetx.GetResult(l.Back.OffsetX), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
-								l.Back.OffsetY = General.Clamp(backoffsety.GetResult(l.Back.OffsetY), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
+                                //mxd
+                                int min = General.Map.FormatInterface.MinTextureOffset;
+                                int max = General.Map.FormatInterface.MaxTextureOffset;
+                                if (General.Map.UDMF) {
+                                    if (backoffsetx.Text != "") setUDMFTextureOffset(l.Back.Fields, "offsetx_top", General.Clamp(backoffsetx.GetResult((int)getUDMFTextureOffset(l.Back.Fields, "offsetx_top")), min, max));
+                                    if (backoffsety.Text != "") setUDMFTextureOffset(l.Back.Fields, "offsety_top", General.Clamp(backoffsety.GetResult((int)getUDMFTextureOffset(l.Back.Fields, "offsety_top")), min, max));
+
+                                    if (backOffsetMidX.Text != "") setUDMFTextureOffset(l.Back.Fields, "offsetx_mid", General.Clamp(backOffsetMidX.GetResult((int)getUDMFTextureOffset(l.Back.Fields, "offsetx_mid")), min, max));
+                                    if (backOffsetMidY.Text != "") setUDMFTextureOffset(l.Back.Fields, "offsety_mid", General.Clamp(backOffsetMidY.GetResult((int)getUDMFTextureOffset(l.Back.Fields, "offsety_mid")), min, max));
+
+                                    if (backOffsetLowX.Text != "") setUDMFTextureOffset(l.Back.Fields, "offsetx_bottom", General.Clamp(backOffsetLowX.GetResult((int)getUDMFTextureOffset(l.Back.Fields, "offsetx_bottom")), min, max));
+                                    if (backOffsetLowY.Text != "") setUDMFTextureOffset(l.Back.Fields, "offsety_bottom", General.Clamp(backOffsetLowY.GetResult((int)getUDMFTextureOffset(l.Back.Fields, "offsety_bottom")), min, max));
+
+                                } else {
+                                    l.Back.OffsetX = General.Clamp(backoffsetx.GetResult(l.Back.OffsetX), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
+                                    l.Back.OffsetY = General.Clamp(backoffsety.GetResult(l.Back.OffsetY), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
+                                }
+
 								l.Back.SetTextureHigh(backhigh.GetResult(l.Back.HighTexture));
 								l.Back.SetTextureMid(backmid.GetResult(l.Back.MiddleTexture));
 								l.Back.SetTextureLow(backlow.GetResult(l.Back.LowTexture));
@@ -604,11 +703,6 @@ namespace CodeImp.DoomBuilder.Windows
                 arg2.SetDefaultValue();
                 arg3.SetDefaultValue();
                 arg4.SetDefaultValue();
-                /*arg0.SetValue(0);
-				arg1.SetValue(0);
-				arg2.SetValue(0);
-				arg3.SetValue(0);
-				arg4.SetValue(0);*/
 			}
 
             //mxd. update arg0str

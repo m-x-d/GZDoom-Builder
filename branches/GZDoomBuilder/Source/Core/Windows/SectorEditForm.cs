@@ -29,6 +29,7 @@ using System.IO;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -61,6 +62,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Custom fields?
 			if(!General.Map.FormatInterface.HasCustomFields)
 				tabs.TabPages.Remove(tabcustom);
+
+            //mxd. Texture offsets panel setup
+            if (!General.Map.UDMF) {
+                panelTextureOffsets.Visible = false;
+                panelHeights.Top = floortex.Top;
+            }
 			
 			// Initialize custom fields editor
 			fieldslist.Setup("sector");
@@ -92,6 +99,14 @@ namespace CodeImp.DoomBuilder.Windows
 			floortex.TextureName = sc.FloorTexture;
 			ceilingtex.TextureName = sc.CeilTexture;
 
+            //mxd. Texture offsets
+            if (General.Map.UDMF) {
+                ceilOffsetX.Text = getUDMFTextureOffset(sc.Fields, "xpanningceiling").ToString();
+                ceilOffsetY.Text = getUDMFTextureOffset(sc.Fields, "ypanningceiling").ToString();
+                floorOffsetX.Text = getUDMFTextureOffset(sc.Fields, "xpanningfloor").ToString();
+                floorOffsetY.Text = getUDMFTextureOffset(sc.Fields, "ypanningfloor").ToString();
+            }
+
 			// Action
 			tag.Text = sc.Tag.ToString();
 
@@ -114,6 +129,14 @@ namespace CodeImp.DoomBuilder.Windows
 				if(s.CeilHeight.ToString() != ceilingheight.Text) ceilingheight.Text = "";
 				if(s.FloorTexture != floortex.TextureName) floortex.TextureName = "";
 				if(s.CeilTexture != ceilingtex.TextureName) ceilingtex.TextureName = "";
+
+                //mxd. Texture offsets
+                if (General.Map.UDMF) {
+                    if (ceilOffsetX.Text != getUDMFTextureOffset(s.Fields, "xpanningceiling").ToString()) ceilOffsetX.Text = "";
+                    if (ceilOffsetY.Text != getUDMFTextureOffset(s.Fields, "ypanningceiling").ToString()) ceilOffsetY.Text = "";
+                    if (floorOffsetX.Text != getUDMFTextureOffset(s.Fields, "xpanningfloor").ToString()) floorOffsetX.Text = "";
+                    if (floorOffsetY.Text != getUDMFTextureOffset(s.Fields, "ypanningfloor").ToString()) floorOffsetY.Text = "";
+                }
 
 				// Action
 				if(s.Tag.ToString() != tag.Text) tag.Text = "";
@@ -171,6 +194,25 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
+        //mxd
+        private float getUDMFTextureOffset(UniFields fields, string key) {
+            if (fields != null && fields.ContainsKey(key))
+                return (float)fields[key].Value;
+            return 0;
+        }
+
+        //mxd
+        private void setUDMFTextureOffset(UniFields fields, string key, float value) {
+            if (fields == null) return;
+
+            fields.BeforeFieldsChange();
+
+            if (!fields.ContainsKey(key))
+                fields.Add(key, new UniValue(UniversalType.Float, value));
+            else
+                fields[key].Value = value;
+        }
+
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
@@ -191,11 +233,12 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Verify the brightness
-			if((brightness.GetResult(0) < General.Map.FormatInterface.MinBrightness) || (brightness.GetResult(0) > General.Map.FormatInterface.MaxBrightness))
+            //mxd. We clamp it anyway, so...
+			/*if((brightness.GetResult(0) < General.Map.FormatInterface.MinBrightness) || (brightness.GetResult(0) > General.Map.FormatInterface.MaxBrightness))
 			{
 				General.ShowWarningMessage("Sector brightness must be between " + General.Map.FormatInterface.MinBrightness + " and " + General.Map.FormatInterface.MaxBrightness + ".", MessageBoxButtons.OK);
 				return;
-			}
+			}*/
 			
 			// Make undo
 			if(sectors.Count > 1) undodesc = sectors.Count + " sectors";
@@ -219,6 +262,17 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Custom fields
 				fieldslist.Apply(s.Fields);
+
+                //mxd. Texture offsets
+                int min = General.Map.FormatInterface.MinTextureOffset;
+                int max = General.Map.FormatInterface.MaxTextureOffset;
+
+                if (General.Map.UDMF) {
+                    if (ceilOffsetX.Text != "") setUDMFTextureOffset(s.Fields, "xpanningceiling", General.Clamp(ceilOffsetX.GetResult((int)getUDMFTextureOffset(s.Fields, "xpanningceiling")), min, max));
+                    if (ceilOffsetY.Text != "") setUDMFTextureOffset(s.Fields, "ypanningceiling", General.Clamp(ceilOffsetY.GetResult((int)getUDMFTextureOffset(s.Fields, "ypanningceiling")), min, max));
+                    if (floorOffsetX.Text != "") setUDMFTextureOffset(s.Fields, "xpanningfloor", General.Clamp(floorOffsetX.GetResult((int)getUDMFTextureOffset(s.Fields, "xpanningfloor")), min, max));
+                    if (floorOffsetY.Text != "") setUDMFTextureOffset(s.Fields, "ypanningfloor", General.Clamp(floorOffsetY.GetResult((int)getUDMFTextureOffset(s.Fields, "ypanningfloor")), min, max));
+                }
 			}
 			
 			// Update the used textures

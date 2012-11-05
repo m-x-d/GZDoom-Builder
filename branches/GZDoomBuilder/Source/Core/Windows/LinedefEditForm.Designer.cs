@@ -33,30 +33,34 @@ namespace CodeImp.DoomBuilder.Windows
             System.Windows.Forms.Label label3;
             System.Windows.Forms.Label label4;
             System.Windows.Forms.Label label5;
-            System.Windows.Forms.Label label6;
-            System.Windows.Forms.Label label7;
             System.Windows.Forms.Label label8;
             System.Windows.Forms.Label label9;
             System.Windows.Forms.Label label10;
             System.Windows.Forms.Label label11;
             System.Windows.Forms.Label label12;
             System.Windows.Forms.Label activationlabel;
+            System.Windows.Forms.Label lTexOffsetFrontMid;
+            System.Windows.Forms.Label lTexOffsetFrontBottom;
+            System.Windows.Forms.Label label1;
+            System.Windows.Forms.Label label6;
+            this.lTexOffsetBackUpper = new System.Windows.Forms.Label();
+            this.lTexOffsetFrontUpper = new System.Windows.Forms.Label();
             this.cancel = new System.Windows.Forms.Button();
             this.apply = new System.Windows.Forms.Button();
             this.actiongroup = new System.Windows.Forms.GroupBox();
             this.argspanel = new System.Windows.Forms.Panel();
             this.arg0str = new System.Windows.Forms.ComboBox();
-            this.cbArgStr = new System.Windows.Forms.CheckBox();
             this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
             this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
             this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
             this.arg3 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
             this.arg4 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
             this.arg1label = new System.Windows.Forms.Label();
-            this.arg0label = new System.Windows.Forms.Label();
             this.arg3label = new System.Windows.Forms.Label();
             this.arg2label = new System.Windows.Forms.Label();
             this.arg4label = new System.Windows.Forms.Label();
+            this.cbArgStr = new System.Windows.Forms.CheckBox();
+            this.arg0label = new System.Windows.Forms.Label();
             this.hexenpanel = new System.Windows.Forms.Panel();
             this.activation = new System.Windows.Forms.ComboBox();
             this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
@@ -75,6 +79,11 @@ namespace CodeImp.DoomBuilder.Windows
             this.splitter = new System.Windows.Forms.SplitContainer();
             this.frontside = new System.Windows.Forms.CheckBox();
             this.frontgroup = new System.Windows.Forms.GroupBox();
+            this.pFrontUDMFOffsets = new System.Windows.Forms.Panel();
+            this.frontOffsetMidY = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+            this.frontOffsetLowY = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+            this.frontOffsetLowX = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+            this.frontOffsetMidX = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
             this.frontoffsety = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
             this.frontoffsetx = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
             this.frontsector = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -84,6 +93,11 @@ namespace CodeImp.DoomBuilder.Windows
             this.fronthigh = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
             this.backside = new System.Windows.Forms.CheckBox();
             this.backgroup = new System.Windows.Forms.GroupBox();
+            this.pBackUDMFOffsets = new System.Windows.Forms.Panel();
+            this.backOffsetMidY = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+            this.backOffsetLowY = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+            this.backOffsetLowX = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+            this.backOffsetMidX = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
             this.backoffsety = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
             this.backoffsetx = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
             this.backsector = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -100,14 +114,16 @@ namespace CodeImp.DoomBuilder.Windows
             label3 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
-            label6 = new System.Windows.Forms.Label();
-            label7 = new System.Windows.Forms.Label();
             label8 = new System.Windows.Forms.Label();
             label9 = new System.Windows.Forms.Label();
             label10 = new System.Windows.Forms.Label();
             label11 = new System.Windows.Forms.Label();
             label12 = new System.Windows.Forms.Label();
             activationlabel = new System.Windows.Forms.Label();
+            lTexOffsetFrontMid = new System.Windows.Forms.Label();
+            lTexOffsetFrontBottom = new System.Windows.Forms.Label();
+            label1 = new System.Windows.Forms.Label();
+            label6 = new System.Windows.Forms.Label();
             this.actiongroup.SuspendLayout();
             this.argspanel.SuspendLayout();
             this.hexenpanel.SuspendLayout();
@@ -121,7 +137,9 @@ namespace CodeImp.DoomBuilder.Windows
             this.splitter.Panel2.SuspendLayout();
             this.splitter.SuspendLayout();
             this.frontgroup.SuspendLayout();
+            this.pFrontUDMFOffsets.SuspendLayout();
             this.backgroup.SuspendLayout();
+            this.pBackUDMFOffsets.SuspendLayout();
             this.tabcustom.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -139,7 +157,7 @@ namespace CodeImp.DoomBuilder.Windows
             taglabel.AutoSize = true;
             taglabel.Location = new System.Drawing.Point(28, 31);
             taglabel.Name = "taglabel";
-            taglabel.Size = new System.Drawing.Size(28, 14);
+            taglabel.Size = new System.Drawing.Size(27, 14);
             taglabel.TabIndex = 6;
             taglabel.Text = "Tag:";
             // 
@@ -169,24 +187,6 @@ namespace CodeImp.DoomBuilder.Windows
             label5.TabIndex = 5;
             label5.Text = "Lower";
             label5.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(16, 79);
-            label6.Name = "label6";
-            label6.Size = new System.Drawing.Size(81, 14);
-            label6.TabIndex = 7;
-            label6.Text = "Texture Offset:";
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Location = new System.Drawing.Point(16, 79);
-            label7.Name = "label7";
-            label7.Size = new System.Drawing.Size(81, 14);
-            label7.TabIndex = 7;
-            label7.Text = "Texture Offset:";
             // 
             // label8
             // 
@@ -241,6 +241,60 @@ namespace CodeImp.DoomBuilder.Windows
             activationlabel.Size = new System.Drawing.Size(44, 14);
             activationlabel.TabIndex = 10;
             activationlabel.Text = "Trigger:";
+            // 
+            // lTexOffsetFrontMid
+            // 
+            lTexOffsetFrontMid.AutoSize = true;
+            lTexOffsetFrontMid.Location = new System.Drawing.Point(7, 5);
+            lTexOffsetFrontMid.Name = "lTexOffsetFrontMid";
+            lTexOffsetFrontMid.Size = new System.Drawing.Size(74, 14);
+            lTexOffsetFrontMid.TabIndex = 17;
+            lTexOffsetFrontMid.Text = "Middle Offset:";
+            // 
+            // lTexOffsetFrontBottom
+            // 
+            lTexOffsetFrontBottom.AutoSize = true;
+            lTexOffsetFrontBottom.Location = new System.Drawing.Point(4, 35);
+            lTexOffsetFrontBottom.Name = "lTexOffsetFrontBottom";
+            lTexOffsetFrontBottom.Size = new System.Drawing.Size(77, 14);
+            lTexOffsetFrontBottom.TabIndex = 20;
+            lTexOffsetFrontBottom.Text = "Bottom Offset:";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(7, 5);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(74, 14);
+            label1.TabIndex = 17;
+            label1.Text = "Middle Offset:";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(4, 35);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(77, 14);
+            label6.TabIndex = 20;
+            label6.Text = "Bottom Offset:";
+            // 
+            // lTexOffsetBackUpper
+            // 
+            this.lTexOffsetBackUpper.AutoSize = true;
+            this.lTexOffsetBackUpper.Location = new System.Drawing.Point(16, 70);
+            this.lTexOffsetBackUpper.Name = "lTexOffsetBackUpper";
+            this.lTexOffsetBackUpper.Size = new System.Drawing.Size(80, 14);
+            this.lTexOffsetBackUpper.TabIndex = 7;
+            this.lTexOffsetBackUpper.Text = "Texture Offset:";
+            // 
+            // lTexOffsetFrontUpper
+            // 
+            this.lTexOffsetFrontUpper.AutoSize = true;
+            this.lTexOffsetFrontUpper.Location = new System.Drawing.Point(16, 70);
+            this.lTexOffsetFrontUpper.Name = "lTexOffsetFrontUpper";
+            this.lTexOffsetFrontUpper.Size = new System.Drawing.Size(80, 14);
+            this.lTexOffsetFrontUpper.TabIndex = 7;
+            this.lTexOffsetFrontUpper.Text = "Texture Offset:";
             // 
             // cancel
             // 
@@ -311,16 +365,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.arg0str.TabIndex = 38;
             this.arg0str.Leave += new System.EventHandler(this.arg0str_Leave);
             // 
-            // cbArgStr
-            // 
-            this.cbArgStr.Location = new System.Drawing.Point(8, -4);
-            this.cbArgStr.Name = "cbArgStr";
-            this.cbArgStr.Size = new System.Drawing.Size(63, 40);
-            this.cbArgStr.TabIndex = 37;
-            this.cbArgStr.Text = "Named script";
-            this.cbArgStr.UseVisualStyleBackColor = true;
-            this.cbArgStr.CheckedChanged += new System.EventHandler(this.cbArgStr_CheckedChanged);
-            // 
             // arg2
             // 
             this.arg2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -371,16 +415,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.arg1label.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.arg1label.UseMnemonic = false;
             // 
-            // arg0label
-            // 
-            this.arg0label.Location = new System.Drawing.Point(-28, 8);
-            this.arg0label.Name = "arg0label";
-            this.arg0label.Size = new System.Drawing.Size(179, 14);
-            this.arg0label.TabIndex = 32;
-            this.arg0label.Text = "Argument 1:";
-            this.arg0label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.arg0label.UseMnemonic = false;
-            // 
             // arg3label
             // 
             this.arg3label.Location = new System.Drawing.Point(213, 8);
@@ -410,6 +444,26 @@ namespace CodeImp.DoomBuilder.Windows
             this.arg4label.Text = "Argument 5:";
             this.arg4label.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.arg4label.UseMnemonic = false;
+            // 
+            // cbArgStr
+            // 
+            this.cbArgStr.Location = new System.Drawing.Point(8, -4);
+            this.cbArgStr.Name = "cbArgStr";
+            this.cbArgStr.Size = new System.Drawing.Size(63, 40);
+            this.cbArgStr.TabIndex = 37;
+            this.cbArgStr.Text = "Named script";
+            this.cbArgStr.UseVisualStyleBackColor = true;
+            this.cbArgStr.CheckedChanged += new System.EventHandler(this.cbArgStr_CheckedChanged);
+            // 
+            // arg0label
+            // 
+            this.arg0label.Location = new System.Drawing.Point(-28, 8);
+            this.arg0label.Name = "arg0label";
+            this.arg0label.Size = new System.Drawing.Size(179, 14);
+            this.arg0label.TabIndex = 32;
+            this.arg0label.Text = "Argument 1:";
+            this.arg0label.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.arg0label.UseMnemonic = false;
             // 
             // hexenpanel
             // 
@@ -494,7 +548,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.settingsgroup.Controls.Add(this.flags);
             this.settingsgroup.Location = new System.Drawing.Point(8, 3);
             this.settingsgroup.Name = "settingsgroup";
-            this.settingsgroup.Size = new System.Drawing.Size(533, 172);
+            this.settingsgroup.Size = new System.Drawing.Size(533, 174);
             this.settingsgroup.TabIndex = 0;
             this.settingsgroup.TabStop = false;
             this.settingsgroup.Text = " Settings ";
@@ -508,7 +562,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.flags.Columns = 3;
             this.flags.Location = new System.Drawing.Point(18, 19);
             this.flags.Name = "flags";
-            this.flags.Size = new System.Drawing.Size(509, 147);
+            this.flags.Size = new System.Drawing.Size(509, 149);
             this.flags.TabIndex = 0;
             // 
             // checkBox1
@@ -626,6 +680,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.frontgroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.frontgroup.Controls.Add(this.pFrontUDMFOffsets);
             this.frontgroup.Controls.Add(this.frontoffsety);
             this.frontgroup.Controls.Add(this.frontoffsetx);
             this.frontgroup.Controls.Add(this.frontsector);
@@ -634,7 +689,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.frontgroup.Controls.Add(this.frontlow);
             this.frontgroup.Controls.Add(this.frontmid);
             this.frontgroup.Controls.Add(this.fronthigh);
-            this.frontgroup.Controls.Add(label6);
+            this.frontgroup.Controls.Add(this.lTexOffsetFrontUpper);
             this.frontgroup.Controls.Add(label5);
             this.frontgroup.Controls.Add(label4);
             this.frontgroup.Controls.Add(label3);
@@ -646,13 +701,75 @@ namespace CodeImp.DoomBuilder.Windows
             this.frontgroup.TabStop = false;
             this.frontgroup.Text = "     ";
             // 
+            // pFrontUDMFOffsets
+            // 
+            this.pFrontUDMFOffsets.Controls.Add(this.frontOffsetMidY);
+            this.pFrontUDMFOffsets.Controls.Add(this.frontOffsetLowY);
+            this.pFrontUDMFOffsets.Controls.Add(lTexOffsetFrontMid);
+            this.pFrontUDMFOffsets.Controls.Add(this.frontOffsetLowX);
+            this.pFrontUDMFOffsets.Controls.Add(this.frontOffsetMidX);
+            this.pFrontUDMFOffsets.Controls.Add(lTexOffsetFrontBottom);
+            this.pFrontUDMFOffsets.Location = new System.Drawing.Point(15, 95);
+            this.pFrontUDMFOffsets.Margin = new System.Windows.Forms.Padding(0);
+            this.pFrontUDMFOffsets.Name = "pFrontUDMFOffsets";
+            this.pFrontUDMFOffsets.Size = new System.Drawing.Size(222, 58);
+            this.pFrontUDMFOffsets.TabIndex = 23;
+            // 
+            // frontOffsetMidY
+            // 
+            this.frontOffsetMidY.AllowDecimal = false;
+            this.frontOffsetMidY.AllowNegative = true;
+            this.frontOffsetMidY.AllowRelative = true;
+            this.frontOffsetMidY.ButtonStep = 1;
+            this.frontOffsetMidY.Location = new System.Drawing.Point(156, 0);
+            this.frontOffsetMidY.Name = "frontOffsetMidY";
+            this.frontOffsetMidY.Size = new System.Drawing.Size(62, 24);
+            this.frontOffsetMidY.StepValues = null;
+            this.frontOffsetMidY.TabIndex = 19;
+            // 
+            // frontOffsetLowY
+            // 
+            this.frontOffsetLowY.AllowDecimal = false;
+            this.frontOffsetLowY.AllowNegative = true;
+            this.frontOffsetLowY.AllowRelative = true;
+            this.frontOffsetLowY.ButtonStep = 1;
+            this.frontOffsetLowY.Location = new System.Drawing.Point(156, 30);
+            this.frontOffsetLowY.Name = "frontOffsetLowY";
+            this.frontOffsetLowY.Size = new System.Drawing.Size(62, 24);
+            this.frontOffsetLowY.StepValues = null;
+            this.frontOffsetLowY.TabIndex = 22;
+            // 
+            // frontOffsetLowX
+            // 
+            this.frontOffsetLowX.AllowDecimal = false;
+            this.frontOffsetLowX.AllowNegative = true;
+            this.frontOffsetLowX.AllowRelative = true;
+            this.frontOffsetLowX.ButtonStep = 1;
+            this.frontOffsetLowX.Location = new System.Drawing.Point(88, 30);
+            this.frontOffsetLowX.Name = "frontOffsetLowX";
+            this.frontOffsetLowX.Size = new System.Drawing.Size(62, 24);
+            this.frontOffsetLowX.StepValues = null;
+            this.frontOffsetLowX.TabIndex = 21;
+            // 
+            // frontOffsetMidX
+            // 
+            this.frontOffsetMidX.AllowDecimal = false;
+            this.frontOffsetMidX.AllowNegative = true;
+            this.frontOffsetMidX.AllowRelative = true;
+            this.frontOffsetMidX.ButtonStep = 1;
+            this.frontOffsetMidX.Location = new System.Drawing.Point(88, 0);
+            this.frontOffsetMidX.Name = "frontOffsetMidX";
+            this.frontOffsetMidX.Size = new System.Drawing.Size(62, 24);
+            this.frontOffsetMidX.StepValues = null;
+            this.frontOffsetMidX.TabIndex = 18;
+            // 
             // frontoffsety
             // 
             this.frontoffsety.AllowDecimal = false;
             this.frontoffsety.AllowNegative = true;
             this.frontoffsety.AllowRelative = true;
             this.frontoffsety.ButtonStep = 1;
-            this.frontoffsety.Location = new System.Drawing.Point(171, 74);
+            this.frontoffsety.Location = new System.Drawing.Point(171, 65);
             this.frontoffsety.Name = "frontoffsety";
             this.frontoffsety.Size = new System.Drawing.Size(62, 24);
             this.frontoffsety.StepValues = null;
@@ -664,7 +781,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.frontoffsetx.AllowNegative = true;
             this.frontoffsetx.AllowRelative = true;
             this.frontoffsetx.ButtonStep = 1;
-            this.frontoffsetx.Location = new System.Drawing.Point(103, 74);
+            this.frontoffsetx.Location = new System.Drawing.Point(103, 65);
             this.frontoffsetx.Name = "frontoffsetx";
             this.frontoffsetx.Size = new System.Drawing.Size(62, 24);
             this.frontoffsetx.StepValues = null;
@@ -684,9 +801,9 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // customfrontbutton
             // 
-            this.customfrontbutton.Location = new System.Drawing.Point(103, 124);
+            this.customfrontbutton.Location = new System.Drawing.Point(103, 156);
             this.customfrontbutton.Name = "customfrontbutton";
-            this.customfrontbutton.Size = new System.Drawing.Size(115, 25);
+            this.customfrontbutton.Size = new System.Drawing.Size(130, 25);
             this.customfrontbutton.TabIndex = 3;
             this.customfrontbutton.Text = "Custom fields...";
             this.customfrontbutton.UseVisualStyleBackColor = true;
@@ -736,6 +853,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.backgroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.backgroup.Controls.Add(this.pBackUDMFOffsets);
             this.backgroup.Controls.Add(this.backoffsety);
             this.backgroup.Controls.Add(this.backoffsetx);
             this.backgroup.Controls.Add(this.backsector);
@@ -744,7 +862,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.backgroup.Controls.Add(this.backlow);
             this.backgroup.Controls.Add(this.backmid);
             this.backgroup.Controls.Add(this.backhigh);
-            this.backgroup.Controls.Add(label7);
+            this.backgroup.Controls.Add(this.lTexOffsetBackUpper);
             this.backgroup.Controls.Add(label8);
             this.backgroup.Controls.Add(label9);
             this.backgroup.Controls.Add(label10);
@@ -756,13 +874,75 @@ namespace CodeImp.DoomBuilder.Windows
             this.backgroup.TabStop = false;
             this.backgroup.Text = "     ";
             // 
+            // pBackUDMFOffsets
+            // 
+            this.pBackUDMFOffsets.Controls.Add(this.backOffsetMidY);
+            this.pBackUDMFOffsets.Controls.Add(this.backOffsetLowY);
+            this.pBackUDMFOffsets.Controls.Add(label1);
+            this.pBackUDMFOffsets.Controls.Add(this.backOffsetLowX);
+            this.pBackUDMFOffsets.Controls.Add(this.backOffsetMidX);
+            this.pBackUDMFOffsets.Controls.Add(label6);
+            this.pBackUDMFOffsets.Location = new System.Drawing.Point(15, 95);
+            this.pBackUDMFOffsets.Margin = new System.Windows.Forms.Padding(0);
+            this.pBackUDMFOffsets.Name = "pBackUDMFOffsets";
+            this.pBackUDMFOffsets.Size = new System.Drawing.Size(222, 58);
+            this.pBackUDMFOffsets.TabIndex = 24;
+            // 
+            // backOffsetMidY
+            // 
+            this.backOffsetMidY.AllowDecimal = false;
+            this.backOffsetMidY.AllowNegative = true;
+            this.backOffsetMidY.AllowRelative = true;
+            this.backOffsetMidY.ButtonStep = 1;
+            this.backOffsetMidY.Location = new System.Drawing.Point(156, 0);
+            this.backOffsetMidY.Name = "backOffsetMidY";
+            this.backOffsetMidY.Size = new System.Drawing.Size(62, 24);
+            this.backOffsetMidY.StepValues = null;
+            this.backOffsetMidY.TabIndex = 19;
+            // 
+            // backOffsetLowY
+            // 
+            this.backOffsetLowY.AllowDecimal = false;
+            this.backOffsetLowY.AllowNegative = true;
+            this.backOffsetLowY.AllowRelative = true;
+            this.backOffsetLowY.ButtonStep = 1;
+            this.backOffsetLowY.Location = new System.Drawing.Point(156, 30);
+            this.backOffsetLowY.Name = "backOffsetLowY";
+            this.backOffsetLowY.Size = new System.Drawing.Size(62, 24);
+            this.backOffsetLowY.StepValues = null;
+            this.backOffsetLowY.TabIndex = 22;
+            // 
+            // backOffsetLowX
+            // 
+            this.backOffsetLowX.AllowDecimal = false;
+            this.backOffsetLowX.AllowNegative = true;
+            this.backOffsetLowX.AllowRelative = true;
+            this.backOffsetLowX.ButtonStep = 1;
+            this.backOffsetLowX.Location = new System.Drawing.Point(88, 30);
+            this.backOffsetLowX.Name = "backOffsetLowX";
+            this.backOffsetLowX.Size = new System.Drawing.Size(62, 24);
+            this.backOffsetLowX.StepValues = null;
+            this.backOffsetLowX.TabIndex = 21;
+            // 
+            // backOffsetMidX
+            // 
+            this.backOffsetMidX.AllowDecimal = false;
+            this.backOffsetMidX.AllowNegative = true;
+            this.backOffsetMidX.AllowRelative = true;
+            this.backOffsetMidX.ButtonStep = 1;
+            this.backOffsetMidX.Location = new System.Drawing.Point(88, 0);
+            this.backOffsetMidX.Name = "backOffsetMidX";
+            this.backOffsetMidX.Size = new System.Drawing.Size(62, 24);
+            this.backOffsetMidX.StepValues = null;
+            this.backOffsetMidX.TabIndex = 18;
+            // 
             // backoffsety
             // 
             this.backoffsety.AllowDecimal = false;
             this.backoffsety.AllowNegative = true;
             this.backoffsety.AllowRelative = true;
             this.backoffsety.ButtonStep = 1;
-            this.backoffsety.Location = new System.Drawing.Point(171, 74);
+            this.backoffsety.Location = new System.Drawing.Point(171, 65);
             this.backoffsety.Name = "backoffsety";
             this.backoffsety.Size = new System.Drawing.Size(62, 24);
             this.backoffsety.StepValues = null;
@@ -774,7 +954,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.backoffsetx.AllowNegative = true;
             this.backoffsetx.AllowRelative = true;
             this.backoffsetx.ButtonStep = 1;
-            this.backoffsetx.Location = new System.Drawing.Point(103, 74);
+            this.backoffsetx.Location = new System.Drawing.Point(103, 65);
             this.backoffsetx.Name = "backoffsetx";
             this.backoffsetx.Size = new System.Drawing.Size(62, 24);
             this.backoffsetx.StepValues = null;
@@ -794,9 +974,9 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // custombackbutton
             // 
-            this.custombackbutton.Location = new System.Drawing.Point(103, 124);
+            this.custombackbutton.Location = new System.Drawing.Point(103, 156);
             this.custombackbutton.Name = "custombackbutton";
-            this.custombackbutton.Size = new System.Drawing.Size(115, 25);
+            this.custombackbutton.Size = new System.Drawing.Size(130, 25);
             this.custombackbutton.TabIndex = 3;
             this.custombackbutton.Text = "Custom fields...";
             this.custombackbutton.UseVisualStyleBackColor = true;
@@ -923,8 +1103,12 @@ namespace CodeImp.DoomBuilder.Windows
             this.splitter.ResumeLayout(false);
             this.frontgroup.ResumeLayout(false);
             this.frontgroup.PerformLayout();
+            this.pFrontUDMFOffsets.ResumeLayout(false);
+            this.pFrontUDMFOffsets.PerformLayout();
             this.backgroup.ResumeLayout(false);
             this.backgroup.PerformLayout();
+            this.pBackUDMFOffsets.ResumeLayout(false);
+            this.pBackUDMFOffsets.PerformLayout();
             this.tabcustom.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -986,5 +1170,17 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backsector;
         private System.Windows.Forms.CheckBox cbArgStr;
         private System.Windows.Forms.ComboBox arg0str;
+        private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox frontOffsetLowY;
+        private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox frontOffsetLowX;
+        private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox frontOffsetMidY;
+        private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox frontOffsetMidX;
+        private System.Windows.Forms.Label lTexOffsetFrontUpper;
+        private System.Windows.Forms.Panel pFrontUDMFOffsets;
+        private System.Windows.Forms.Panel pBackUDMFOffsets;
+        private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backOffsetMidY;
+        private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backOffsetLowY;
+        private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backOffsetLowX;
+        private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backOffsetMidX;
+        private System.Windows.Forms.Label lTexOffsetBackUpper;
 	}
 }

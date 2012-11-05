@@ -70,9 +70,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public override bool Setup()
 		{
 			Vector2D vl, vr;
-			
-			int lightvalue = Sidedef.Fields.GetValue("light", 0);
-			bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
+
+            //mxd. lightfog flag support
+            bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
+            bool ignoreUDMFLight = (!Sidedef.Fields.GetValue("lightfog", false) || !lightabsolute) && Sector.Sector.Fields.ContainsKey("fadecolor");
+            int lightvalue = ignoreUDMFLight ? 0 : Sidedef.Fields.GetValue("light", 0); //mxd
+            if (ignoreUDMFLight) lightabsolute = false;
 			
 			Vector2D tscale = new Vector2D(Sidedef.Fields.GetValue("scalex_bottom", 1.0f),
 										   Sidedef.Fields.GetValue("scaley_bottom", 1.0f));
@@ -172,7 +175,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Determine initial color
 			int lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
 			//mxd
-            //PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel));
             PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
 			PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
 			poly.color = wallcolor.WithAlpha(255).ToInt();

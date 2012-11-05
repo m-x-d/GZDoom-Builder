@@ -128,19 +128,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			float offsetx = dragdelta.x;
 			float offsety = dragdelta.y;
 
-            //mxd
+            //mxd. Modify offsets based on surface and camera angles
             if (General.Map.UDMF) {
-                if (GeometryType == VisualGeometryType.CEILING && level.sector.Fields.ContainsKey("rotationceiling")) {
-                    float angle = (float)level.sector.Fields["rotationceiling"].Value * (float)Math.PI / 180f;
-                    Vector2D v = new Vector2D(offsetx, offsety).GetRotated(angle);
-                    offsetx = v.x;
-                    offsety = v.y;
-                } else if (GeometryType == VisualGeometryType.FLOOR && level.sector.Fields.ContainsKey("rotationfloor")) {
-                    float angle = (float)level.sector.Fields["rotationfloor"].Value * (float)Math.PI / 180f;
-                    Vector2D v = new Vector2D(offsetx, offsety).GetRotated(angle);
-                    offsetx = v.x;
-                    offsety = v.y;
-                }
+                float angle = 0;
+                if (GeometryType == VisualGeometryType.CEILING && level.sector.Fields.ContainsKey("rotationceiling"))
+                    angle = (float)level.sector.Fields["rotationceiling"].Value * (float)Math.PI / 180f;
+                else if (GeometryType == VisualGeometryType.FLOOR && level.sector.Fields.ContainsKey("rotationfloor"))
+                    angle = (float)level.sector.Fields["rotationfloor"].Value * (float)Math.PI / 180f;
+
+                Vector2D v = new Vector2D(offsetx, offsety).GetRotated(angle);
+                Point p = getTranslatedTextureOffset(new Point((int)Math.Round(v.x), (int)Math.Round(v.y)));
+                offsetx = p.X;
+                offsety = p.Y;
             }
 
 			// Apply offsets
