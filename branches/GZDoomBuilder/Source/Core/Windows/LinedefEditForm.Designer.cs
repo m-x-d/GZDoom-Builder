@@ -280,21 +280,21 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // lTexOffsetBackUpper
             // 
-            this.lTexOffsetBackUpper.AutoSize = true;
             this.lTexOffsetBackUpper.Location = new System.Drawing.Point(16, 70);
             this.lTexOffsetBackUpper.Name = "lTexOffsetBackUpper";
             this.lTexOffsetBackUpper.Size = new System.Drawing.Size(80, 14);
             this.lTexOffsetBackUpper.TabIndex = 7;
             this.lTexOffsetBackUpper.Text = "Texture Offset:";
+            this.lTexOffsetBackUpper.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // lTexOffsetFrontUpper
             // 
-            this.lTexOffsetFrontUpper.AutoSize = true;
             this.lTexOffsetFrontUpper.Location = new System.Drawing.Point(16, 70);
             this.lTexOffsetFrontUpper.Name = "lTexOffsetFrontUpper";
             this.lTexOffsetFrontUpper.Size = new System.Drawing.Size(80, 14);
             this.lTexOffsetFrontUpper.TabIndex = 7;
             this.lTexOffsetFrontUpper.Text = "Texture Offset:";
+            this.lTexOffsetFrontUpper.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // cancel
             // 
