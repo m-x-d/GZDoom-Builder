@@ -26,7 +26,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
 
         public override void OnInitialize() {
             if (GZBuilder.GZGeneral.Version < 1.11f) {
-                General.ErrorLogger.Add(ErrorType.Error, "UDMFControls plugin: GZDoomBuilder 1.11 or later required!");
+                General.ErrorLogger.Add(ErrorType.Error, "UDMFControls plugin: GZDoom Builder 1.11 or later required!");
                 return;
             }
 
