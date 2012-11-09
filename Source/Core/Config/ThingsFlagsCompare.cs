@@ -117,16 +117,23 @@ namespace CodeImp.DoomBuilder.Config
 		//	1 if the flag overlaps
 		public int Compare(Thing t1, Thing t2)
 		{
-			bool t1flag;
-			bool t2flag;
+			bool t1flag = false;
+			bool t2flag = false;
 
 			// Check if the flags exist
-			if (!t1.Flags.ContainsKey(flag) || !t2.Flags.ContainsKey(flag))
-				return 0;
+			if(!t1.Flags.ContainsKey(flag) || !t2.Flags.ContainsKey(flag)) {
+				//mxd. If a map is in UDMF format - check Fields
+				if(!General.Map.UDMF || !t1.Fields.ContainsKey(flag) || !t2.Fields.ContainsKey(flag)) 
+					return 0;
 
-			// tag flag inversion into account
-			t1flag = invert ? !t1.Flags[flag] : t1.Flags[flag];
-			t2flag = invert ? !t2.Flags[flag] : t2.Flags[flag];
+				// tag flag inversion into account
+				t1flag = invert ? !(bool)t1.Fields[flag].Value : (bool)t1.Fields[flag].Value;
+				t2flag = invert ? !(bool)t2.Fields[flag].Value : (bool)t2.Fields[flag].Value;
+			} else {
+				// tag flag inversion into account
+				t1flag = invert ? !t1.Flags[flag] : t1.Flags[flag];
+				t2flag = invert ? !t2.Flags[flag] : t2.Flags[flag];
+			}
 
 			if (comparemethod == CompareMethod.And && (t1flag && t2flag))
 				return 1;
