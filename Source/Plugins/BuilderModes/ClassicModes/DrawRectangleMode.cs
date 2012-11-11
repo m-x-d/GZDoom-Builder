@@ -215,7 +215,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
             points.Add(newpoint);
 
             if (points.Count == 1) { //add point and labels
-                labels.AddRange(new LineLengthLabel[] { new LineLengthLabel(), new LineLengthLabel(), new LineLengthLabel(), new LineLengthLabel() });
+				labels.AddRange(new LineLengthLabel[] { new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false) });
                 hintLabel = new HintLabel();
                 Update();
             } else if (points[0].pos == points[1].pos) { //nothing is drawn

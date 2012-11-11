@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
-		private const int TEXT_CAPACITY = 10;
+		private const int TEXT_CAPACITY = 15;
 		private const float TEXT_SCALE = 14f;
 		private const string VALUE_FORMAT = "0";
 
@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected TextLabel label;
         protected Vector2D start;
         protected Vector2D end;
+		private bool showAngle; //mxd
 		
 		#endregion
 
@@ -65,8 +66,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public LineLengthLabel()
+		public LineLengthLabel(bool showAngle)
 		{
+			this.showAngle = showAngle; //mxd
 			// Initialize
 			Initialize();
 		}
@@ -106,7 +108,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			Vector2D delta = end - start;
 			float length = delta.GetLength();
-			label.Text = length.ToString(VALUE_FORMAT);
+
+			//mxd
+			if(showAngle) {
+				int angle = (int)Math.Round(delta.GetAngle() * 180 / Math.PI);
+				label.Text = "l:" + length.ToString(VALUE_FORMAT) + "; a:" + angle;
+			} else {
+				label.Text = length.ToString(VALUE_FORMAT);
+			}
+
 			label.Rectangle = new RectangleF(start.x + delta.x * 0.5f, start.y + delta.y * 0.5f, 0f, 0f);
 		}
 
