@@ -65,6 +65,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			Clipboard.Clear();
             Clipboard.SetText(CodeImp.DoomBuilder.GZBuilder.GZGeneral.Version.ToString() + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Revision);
-        }
+		}
 	}
 }

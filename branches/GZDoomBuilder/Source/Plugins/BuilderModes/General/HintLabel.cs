@@ -24,7 +24,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             }
         }
 
-        public HintLabel() : base() {
+        public HintLabel() : base(false) {
             label.Color = General.Colors.BrightColors[new Random().Next(General.Colors.BrightColors.Length - 1)];
         }
 

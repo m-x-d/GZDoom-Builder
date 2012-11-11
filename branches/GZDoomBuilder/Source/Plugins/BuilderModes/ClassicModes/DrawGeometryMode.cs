@@ -393,7 +393,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			newpoint.stitch = stitch;
 			newpoint.stitchline = stitchline;
 			points.Add(newpoint);
-			labels.Add(new LineLengthLabel());
+			labels.Add(new LineLengthLabel(true));
 			labels[labels.Count - 1].Start = newpoint.pos;
 			if(labels.Count > 1) labels[labels.Count - 2].End = newpoint.pos;
 			Update();
