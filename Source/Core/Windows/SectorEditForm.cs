@@ -207,10 +207,14 @@ namespace CodeImp.DoomBuilder.Windows
 
             fields.BeforeFieldsChange();
 
-            if (!fields.ContainsKey(key))
-                fields.Add(key, new UniValue(UniversalType.Float, value));
-            else
-                fields[key].Value = value;
+			if(value != 0) {
+				if(!fields.ContainsKey(key))
+					fields.Add(key, new UniValue(UniversalType.Float, value));
+				else
+					fields[key].Value = value;
+			} else if(fields.ContainsKey(key)) { //don't save default value
+				fields.Remove(key);
+			}
         }
 
 		// OK clicked

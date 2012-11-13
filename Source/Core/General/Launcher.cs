@@ -269,12 +269,18 @@ namespace CodeImp.DoomBuilder
 			string args;
 
 			// Check if configuration is OK
-			if((General.Map.ConfigSettings.TestProgram == "") ||
-			   !File.Exists(General.Map.ConfigSettings.TestProgram))
+			if(General.Map.ConfigSettings.TestProgram == "" || !File.Exists(General.Map.ConfigSettings.TestProgram))
 			{
+				//mxd. Let's be more precise
+				string message;
+				if(General.Map.ConfigSettings.TestProgram == "")
+					message = "Your test program is not set for the current game configuration";
+				else
+					message = "Current test program has invalid path";
+				
 				// Show message
 				Cursor.Current = Cursors.Default;
-				DialogResult result = General.ShowWarningMessage("Your test program is not set for the current game configuration. Would you like to set up your test program now?", MessageBoxButtons.YesNo);
+				DialogResult result = General.ShowWarningMessage(message + ". Would you like to set up your test program now?", MessageBoxButtons.YesNo);
 				if(result == DialogResult.Yes)
 				{
 					// Show game configuration on the right page

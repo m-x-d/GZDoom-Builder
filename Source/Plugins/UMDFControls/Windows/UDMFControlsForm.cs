@@ -513,17 +513,21 @@ namespace CodeImp.DoomBuilder.UDMFControls
             }
 
             removeDefaultValues();
+			this.DialogResult = DialogResult.OK;
             Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e) {
-            //remove default values...
-            removeDefaultValues();
-
-            //restore initial values
-            General.Map.UndoRedo.PerformUndo();
             Close();
         }
+
+		//so proper actions are executed when user closes the window using "x" button
+		private void UDMFControlsForm_FormClosing(object sender, FormClosingEventArgs e) {
+			if(this.DialogResult == DialogResult.Cancel) {
+				//restore initial values
+				General.Map.UndoRedo.PerformUndo();
+			}
+		}
 
 //KEYBOARD EVENTS
         private void UDMFControlsForm_KeyDown(object sender, KeyEventArgs e) {
