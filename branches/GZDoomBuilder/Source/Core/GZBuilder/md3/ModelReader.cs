@@ -313,9 +313,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                 if (s.Position != ofs_uv + start)
                     s.Position = ofs_uv + start;
 
-                for (int i = 0; i < num_uv; i++) {
+                for (int i = 0; i < num_uv; i++) 
                     uvCoordsList.Add(new Vector2((float)br.ReadInt16() / texWidth, (float)br.ReadInt16() / texHeight));
-                }
 
                 //first frame
                 //header
@@ -384,12 +383,22 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                     BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, new WorldVertex(v.y, v.x, v.z));
 
                     //uv
-                    v.u = uvCoordsList[uvIndecesList[i]].X;
-                    v.v = uvCoordsList[uvIndecesList[i]].Y;
-                    //color
-                    v.c = -1; //white
+					float tu = uvCoordsList[uvIndecesList[i]].X;
+                    float tv = uvCoordsList[uvIndecesList[i]].Y;
 
-                    vertList[polyIndecesList[i]] = v;
+					//uv-coordinates already set?
+					if(v.c == -1 && (v.u != tu || v.v != tv)) { 
+						//add a new vertex
+						vertList.Add(new WorldVertex(v.x, v.y, v.z, -1, tu, tv));
+						polyIndecesList[i] = vertList.Count - 1;
+					} else {
+						v.u = tu;
+						v.v = tv;
+						v.c = -1; //set color to white
+
+						//return to proper place
+						vertList[polyIndecesList[i]] = v;
+					}
                 }
 
                 //indeces for rendering current mesh in 2d
