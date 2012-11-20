@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                 if (s.Position != ofsSurfaces + start)
                     s.Position = ofsSurfaces + start;
 
-                List<short> polyIndecesList = new List<short>();
+                List<int> polyIndecesList = new List<int>();
                 List<WorldVertex> vertList = new List<WorldVertex>();
 
                 string error = "";
@@ -128,35 +128,36 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                 }
 
                 //indeces for rendering current mesh in 2d
-                short[] indeces2d_arr = CreateLineListIndeces(polyIndecesList);
+                int[] indeces2d_arr = CreateLineListIndeces(polyIndecesList);
 
                 //mesh
-                Mesh mesh = new Mesh(D3DDevice, polyIndecesList.Count / 3, vertList.Count, MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, General.Map.Graphics.Shaders.World3D.VertexElements);
+                Mesh mesh = new Mesh(D3DDevice, polyIndecesList.Count / 3, vertList.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, General.Map.Graphics.Shaders.World3D.VertexElements);
 
-                DataStream stream = mesh.VertexBuffer.Lock(0, 0, LockFlags.None);
-                stream.WriteRange(vertList.ToArray());
-                mesh.VertexBuffer.Unlock();
+                using (DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) {
+                    stream.WriteRange(vertList.ToArray());
+                }
+                mesh.UnlockVertexBuffer();
 
-                stream = mesh.IndexBuffer.Lock(0, 0, LockFlags.None);
-                stream.WriteRange(polyIndecesList.ToArray());
-                mesh.IndexBuffer.Unlock();
+                using (DataStream stream = mesh.LockIndexBuffer(LockFlags.None)) {
+                    stream.WriteRange(polyIndecesList.ToArray());
+                }
 
                 mesh.OptimizeInPlace(MeshOptimizeFlags.AttributeSort);
                 mde.Model.Meshes.Add(mesh);
 
                 //2d data
-                IndexBuffer indeces2d = new IndexBuffer(D3DDevice, 2 * indeces2d_arr.Length, Usage.WriteOnly, Pool.Managed, true);
-                stream = indeces2d.Lock(0, 0, LockFlags.None);
-                stream.WriteRange(indeces2d_arr);
+                IndexBuffer indeces2d = new IndexBuffer(D3DDevice, 4 * indeces2d_arr.Length, Usage.WriteOnly, Pool.Managed, false);
+                DataStream stream2d = indeces2d.Lock(0, 0, LockFlags.None);
+                stream2d.WriteRange(indeces2d_arr);
                 indeces2d.Unlock();
 
                 mde.Model.Indeces2D.Add(indeces2d);
-                mde.Model.NumIndeces2D.Add((short)polyIndecesList.Count);
+                mde.Model.NumIndeces2D.Add(polyIndecesList.Count);
             }
             return "";
         }
 
-        private static string ReadSurface(ref BoundingBoxSizes bbs, BinaryReader br, List<short> polyIndecesList, List<WorldVertex> vertList, ModeldefEntry mde) {
+        private static string ReadSurface(ref BoundingBoxSizes bbs, BinaryReader br, List<int> polyIndecesList, List<WorldVertex> vertList, ModeldefEntry mde) {
             int vertexOffset = vertList.Count;
             long start = br.BaseStream.Position;
             string magic = ReadString(br, 4);
@@ -177,7 +178,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                 br.BaseStream.Position = start + ofsTriangles;
 
             for (int i = 0; i < numTriangles * 3; i++)
-                polyIndecesList.Add( (short)(vertexOffset + br.ReadInt32()) );
+                polyIndecesList.Add( vertexOffset + br.ReadInt32() );
 
 
             //Vertices
@@ -289,8 +290,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                 int ofs_tris = br.ReadInt32(); //Offset to triangles
                 int ofs_animFrame = br.ReadInt32(); //An offset to the first animation frame
 
-                List<short> polyIndecesList = new List<short>();
-                List<short> uvIndecesList = new List<short>();
+                List<int> polyIndecesList = new List<int>();
+                List<int> uvIndecesList = new List<int>();
                 List<Vector2> uvCoordsList = new List<Vector2>();
                 List<WorldVertex> vertList = new List<WorldVertex>();
 
@@ -299,13 +300,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                     s.Position = ofs_tris + start;
 
                 for (int i = 0; i < num_tris; i++) {
-                    polyIndecesList.Add((short)br.ReadInt16());
-                    polyIndecesList.Add((short)br.ReadInt16());
-                    polyIndecesList.Add((short)br.ReadInt16());
+                    polyIndecesList.Add((int)br.ReadInt16());
+                    polyIndecesList.Add((int)br.ReadInt16());
+                    polyIndecesList.Add((int)br.ReadInt16());
 
-                    uvIndecesList.Add((short)br.ReadInt16());
-                    uvIndecesList.Add((short)br.ReadInt16());
-                    uvIndecesList.Add((short)br.ReadInt16());
+                    uvIndecesList.Add((int)br.ReadInt16());
+                    uvIndecesList.Add((int)br.ReadInt16());
+                    uvIndecesList.Add((int)br.ReadInt16());
                 }
 
                 //UV coords
@@ -392,39 +393,41 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                 }
 
                 //indeces for rendering current mesh in 2d
-                short[] indeces2d_arr = CreateLineListIndeces(polyIndecesList);
+                int[] indeces2d_arr = CreateLineListIndeces(polyIndecesList);
 
                 //mesh
-                Mesh mesh = new Mesh(D3DDevice, polyIndecesList.Count / 3, vertList.Count, MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, General.Map.Graphics.Shaders.World3D.VertexElements);
+                Mesh mesh = new Mesh(D3DDevice, polyIndecesList.Count / 3, vertList.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, General.Map.Graphics.Shaders.World3D.VertexElements);
 
-                DataStream stream = mesh.VertexBuffer.Lock(0, 0, LockFlags.None);
-                stream.WriteRange(vertList.ToArray());
-                mesh.VertexBuffer.Unlock();
+                using (DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) {
+                    stream.WriteRange(vertList.ToArray());
+                }
+                mesh.UnlockVertexBuffer();
 
-                stream = mesh.IndexBuffer.Lock(0, 0, LockFlags.None);
-                stream.WriteRange(polyIndecesList.ToArray());
-                mesh.IndexBuffer.Unlock();
+                using (DataStream stream = mesh.LockIndexBuffer(LockFlags.None)) {
+                    stream.WriteRange(polyIndecesList.ToArray());
+                }
+                mesh.UnlockIndexBuffer();
 
                 mesh.OptimizeInPlace(MeshOptimizeFlags.AttributeSort);
                 mde.Model.Meshes.Add(mesh);
 
                 //2d data
-                IndexBuffer indeces2d = new IndexBuffer(D3DDevice, 2 * indeces2d_arr.Length, Usage.WriteOnly, Pool.Managed, true);
-                stream = indeces2d.Lock(0, 0, LockFlags.None);
-                stream.WriteRange(indeces2d_arr);
+                IndexBuffer indeces2d = new IndexBuffer(D3DDevice, 4 * indeces2d_arr.Length, Usage.WriteOnly, Pool.Managed, false);
+                DataStream stream2d = indeces2d.Lock(0, 0, LockFlags.None);
+                stream2d.WriteRange(indeces2d_arr);
                 indeces2d.Unlock();
 
                 mde.Model.Indeces2D.Add(indeces2d);
-                mde.Model.NumIndeces2D.Add((short)polyIndecesList.Count);
+                mde.Model.NumIndeces2D.Add((int)polyIndecesList.Count);
             }
             return "";
         }
 
         //this creates list of vertex indeces for rendering using LineList method
-        private static short[] CreateLineListIndeces(List<short> polyIndecesList) {
-            short[] indeces2d_arr = new short[polyIndecesList.Count * 2];
-            short ind1, ind2, ind3;
-            for (short i = 0; i < polyIndecesList.Count; i += 3) {
+        private static int[] CreateLineListIndeces(List<int> polyIndecesList) {
+            int[] indeces2d_arr = new int[polyIndecesList.Count * 2];
+            int ind1, ind2, ind3;
+            for (int i = 0; i < polyIndecesList.Count; i += 3) {
                 ind1 = polyIndecesList[i];
                 ind2 = polyIndecesList[i + 1];
                 ind3 = polyIndecesList[i + 2];
