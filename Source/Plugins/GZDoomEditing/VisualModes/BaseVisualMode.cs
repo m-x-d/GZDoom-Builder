@@ -50,9 +50,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 	public class BaseVisualMode : VisualMode
 	{
 		#region ================== Constants
-		//mxd
-		public const string TEXTURE_OFFSET_CHANGE_ERROR = "Texture offsets cannot be changed in this mode if the map is not in UDMF format.\nPlease use Visual mode to change them.";
-
 		// Object picking
 		private const float PICK_INTERVAL = 80.0f;
 		private const float PICK_RANGE = 0.98f;
@@ -1431,105 +1428,73 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		[BeginAction("movetextureleft", Library = "BuilderModes")]
 		public void MoveTextureLeft1()
 		{
-			if(General.Map.UDMF) {
-				PreAction(UndoGroup.TextureOffsetChange);
-				List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
-				foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-1, 0);
-				PostAction();
-			} else {
-				General.ShowErrorMessage(TEXTURE_OFFSET_CHANGE_ERROR, MessageBoxButtons.OK);
-			}
+            PreAction(UndoGroup.TextureOffsetChange);
+            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-1, 0);
+            PostAction();
 		}
 
 		[BeginAction("movetextureright", Library = "BuilderModes")]
 		public void MoveTextureRight1()
 		{
-			if(General.Map.UDMF) {
-				PreAction(UndoGroup.TextureOffsetChange);
-				List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
-				foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(1, 0);
-				PostAction();
-			} else {
-				General.ShowErrorMessage(TEXTURE_OFFSET_CHANGE_ERROR, MessageBoxButtons.OK);
-			}
+            PreAction(UndoGroup.TextureOffsetChange);
+            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(1, 0);
+            PostAction();
 		}
 
 		[BeginAction("movetextureup", Library = "BuilderModes")]
 		public void MoveTextureUp1()
 		{
-			if(General.Map.UDMF) {
-				PreAction(UndoGroup.TextureOffsetChange);
-				List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
-				foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -1);
-				PostAction();
-			} else {
-				General.ShowErrorMessage(TEXTURE_OFFSET_CHANGE_ERROR, MessageBoxButtons.OK);
-			}
+            PreAction(UndoGroup.TextureOffsetChange);
+            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -1);
+            PostAction();
 		}
 
 		[BeginAction("movetexturedown", Library = "BuilderModes")]
 		public void MoveTextureDown1()
 		{
-			if(General.Map.UDMF) {
-				PreAction(UndoGroup.TextureOffsetChange);
-				List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
-				foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 1);
-				PostAction();
-			} else {
-				General.ShowErrorMessage(TEXTURE_OFFSET_CHANGE_ERROR, MessageBoxButtons.OK);
-			}
+            PreAction(UndoGroup.TextureOffsetChange);
+            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 1);
+            PostAction();
 		}
 
 		[BeginAction("movetextureleft8", Library = "BuilderModes")]
 		public void MoveTextureLeft8()
 		{
-			if(General.Map.UDMF) {
-				PreAction(UndoGroup.TextureOffsetChange);
-				List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
-				foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-8, 0);
-				PostAction();
-			} else {
-				General.ShowErrorMessage(TEXTURE_OFFSET_CHANGE_ERROR, MessageBoxButtons.OK);
-			}
+            PreAction(UndoGroup.TextureOffsetChange);
+            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-8, 0);
+            PostAction();
 		}
 
 		[BeginAction("movetextureright8", Library = "BuilderModes")]
 		public void MoveTextureRight8()
 		{
-			if(General.Map.UDMF) {
-				PreAction(UndoGroup.TextureOffsetChange);
-				List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
-				foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(8, 0);
-				PostAction();
-			} else {
-				General.ShowErrorMessage(TEXTURE_OFFSET_CHANGE_ERROR, MessageBoxButtons.OK);
-			}
+            PreAction(UndoGroup.TextureOffsetChange);
+            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(8, 0);
+            PostAction();
 		}
 
 		[BeginAction("movetextureup8", Library = "BuilderModes")]
 		public void MoveTextureUp8()
 		{
-			if(General.Map.UDMF) {
-				PreAction(UndoGroup.TextureOffsetChange);
-				List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
-				foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -8);
-				PostAction();
-			} else {
-				General.ShowErrorMessage(TEXTURE_OFFSET_CHANGE_ERROR, MessageBoxButtons.OK);
-			}
+            PreAction(UndoGroup.TextureOffsetChange);
+            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -8);
+            PostAction();
 		}
 
 		[BeginAction("movetexturedown8", Library = "BuilderModes")]
 		public void MoveTextureDown8()
 		{
-			if(General.Map.UDMF) {
-				PreAction(UndoGroup.TextureOffsetChange);
-				List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
-				foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 8);
-				PostAction();
-			} else {
-				General.ShowErrorMessage(TEXTURE_OFFSET_CHANGE_ERROR, MessageBoxButtons.OK);
-			}
+            PreAction(UndoGroup.TextureOffsetChange);
+            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 8);
+            PostAction();
 		}
 
 		[BeginAction("textureselect", Library = "BuilderModes")]

@@ -70,9 +70,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public override bool Setup()
 		{
 			Vector2D vl, vr;
-			
-			//int lightvalue = Sidedef.Fields.GetValue("light", 0);
-			//bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
 
             //mxd. lightfog flag support
             bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
@@ -189,7 +186,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				// Determine initial color
 				int lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
                 //mxd
-				//PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel));
                 PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
 				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
 				poly.color = wallcolor.WithAlpha(255).ToInt();
@@ -245,10 +241,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			float scaley = Sidedef.Fields.GetValue("scaley_mid", 1.0f);
             Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldx, (float)xy.X, scalex)); //mxd
             Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldy, (float)xy.Y, scaley)); //mxd
-            //Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, oldx + getRoundedTextureOffset((float)xy.X, scalex)); //mxd
-            //Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, oldy + getRoundedTextureOffset((float)xy.Y, scaley)); //mxd
-			//Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, oldx + (float)xy.X * scalex);
-			//Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y * scaley);
 		}
 
 		protected override Point GetTextureOffset()

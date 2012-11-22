@@ -76,9 +76,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			Sidedef sourceside = extrafloor.Linedef.Front;
 			this.extrafloor = extrafloor;
 
-			//int lightvalue = Sidedef.Fields.GetValue("light", 0);
-			//bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
-
             //mxd. lightfog flag support
             bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
             bool ignoreUDMFLight = (!Sidedef.Fields.GetValue("lightfog", false) || !lightabsolute) && Sector.Sector.Fields.ContainsKey("fadecolor");
@@ -197,7 +194,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				// Determine initial color
 				int lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
 				//mxd. This calculates light with doom-style wall shading
-                //PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel));
                 PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
 				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
 				poly.color = wallcolor.WithAlpha(255).ToInt();

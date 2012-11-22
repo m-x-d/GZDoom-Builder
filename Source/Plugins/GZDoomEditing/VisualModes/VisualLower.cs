@@ -240,10 +240,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			float scaley = Sidedef.Fields.GetValue("scaley_bottom", 1.0f);
             Sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldx, (float)xy.X, scalex)); //mxd
             Sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldy, (float)xy.Y, scaley)); //mxd
-            //Sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, oldx + getRoundedTextureOffset((float)xy.X, scalex)); //mxd
-            //Sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, oldy + getRoundedTextureOffset((float)xy.Y, scaley)); //mxd
-            //Sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, oldx + (float)xy.X * scalex);
-            //Sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y * scaley);
 		}
 
 		protected override Point GetTextureOffset()
