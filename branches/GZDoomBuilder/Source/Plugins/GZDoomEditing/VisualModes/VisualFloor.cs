@@ -175,13 +175,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
             s.Fields["xpanningfloor"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
             s.Fields["ypanningfloor"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
             s.UpdateNeeded = true;
-            
-            /*Sector.Sector.Fields.BeforeFieldsChange();
-			float oldx = Sector.Sector.Fields.GetValue("xpanningfloor", 0.0f);
-			float oldy = Sector.Sector.Fields.GetValue("ypanningfloor", 0.0f);
-			Sector.Sector.Fields["xpanningfloor"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
-			Sector.Sector.Fields["ypanningfloor"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
-			Sector.Sector.UpdateNeeded = true;*/
 		}
 		
 		// Paste texture

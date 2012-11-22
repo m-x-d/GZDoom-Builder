@@ -273,8 +273,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 							mode.Renderer.ShowSelection = false;
 							mode.Renderer.ShowHighlight = false;
 							UpdateDragUV();
-						} else {
-							General.ShowErrorMessage(BaseVisualMode.TEXTURE_OFFSET_CHANGE_ERROR, MessageBoxButtons.OK);
 						}
 					}
 				}
@@ -488,17 +486,22 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Texture offset change
 		public virtual void OnChangeTextureOffset(int horizontal, int vertical)
 		{
-			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
-				undoticket = mode.CreateUndo("Change texture offsets");
+			//mxd
+            if (General.Map.UDMF) {
+                if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+                    undoticket = mode.CreateUndo("Change texture offsets");
 
-			// Apply offsets
-			MoveTextureOffset(new Point(-horizontal, -vertical));
+                // Apply offsets
+                MoveTextureOffset(new Point(-horizontal, -vertical));
 
-			mode.SetActionResult("Changed texture offsets by " + -horizontal + ", " + -vertical + ".");
+                mode.SetActionResult("Changed texture offsets by " + -horizontal + ", " + -vertical + ".");
 
-			// Update sector geometry
-			Sector.UpdateSectorGeometry(false);
-			Sector.Rebuild();
+                // Update sector geometry
+                Sector.UpdateSectorGeometry(false);
+                Sector.Rebuild();
+            } else {
+                General.ShowErrorMessage("Floor/ceiling texture offsets cannot be changed in this map format!", MessageBoxButtons.OK);
+            }
 		}
 		
 		#endregion

@@ -869,18 +869,14 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					float deltaz = General.Map.VisualCamera.AngleZ - dragstartanglez;
 					if((Math.Abs(deltaxy) + Math.Abs(deltaz)) > DRAG_ANGLE_TOLERANCE)
 					{
-						if(General.Map.UDMF) { //mxd
-							mode.PreAction(UndoGroup.TextureOffsetChange);
-							mode.CreateUndo("Change texture offsets");
+                        mode.PreAction(UndoGroup.TextureOffsetChange);
+                        mode.CreateUndo("Change texture offsets");
 
-							// Start drag now
-							uvdragging = true;
-							mode.Renderer.ShowSelection = false;
-							mode.Renderer.ShowHighlight = false;
-							UpdateDragUV();
-						} else {
-							General.ShowErrorMessage(BaseVisualMode.TEXTURE_OFFSET_CHANGE_ERROR, MessageBoxButtons.OK);
-						}
+                        // Start drag now
+                        uvdragging = true;
+                        mode.Renderer.ShowSelection = false;
+                        mode.Renderer.ShowHighlight = false;
+                        UpdateDragUV();
 					}
 				}
 			}
@@ -957,10 +953,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Change texture offsets");
 			
-			// Apply offsets
-			MoveTextureOffset(new Point(-horizontal, -vertical));
-
-			mode.SetActionResult("Changed texture offsets by " + -horizontal + ", " + -vertical + ".");
+            //mxd
+            if (General.Map.UDMF) {
+                // Apply UDMF offsets
+                MoveTextureOffset(new Point(-horizontal, -vertical));
+                Point p = GetTextureOffset();
+                mode.SetActionResult("Changed texture offsets to " + p.X + ", " + p.Y + ".");
+            } else {
+                // Apply classic offsets
+                Sidedef.OffsetX -= horizontal;
+                Sidedef.OffsetY -= vertical;
+                mode.SetActionResult("Changed texture offsets to " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
+            }
 			
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
