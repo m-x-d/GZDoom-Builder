@@ -138,6 +138,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			EffectThingVertexSlope e = new EffectThingVertexSlope(this, sourcethings, slopefloor);
 			alleffects.Add(e);
 		}
+
+        //mxd. Add UDMF vertex offset effect
+        public void AddEffectVertexOffset(Vertex[] vertices) {
+            EffectUDMFVertexOffset e = new EffectUDMFVertexOffset(this, vertices);
+            alleffects.Add(e);
+        }
 		
 		// This adds a sector for updating
 		public void AddUpdateSector(Sector s, bool includeneighbours)

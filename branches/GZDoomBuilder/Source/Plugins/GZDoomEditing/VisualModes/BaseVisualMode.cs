@@ -581,43 +581,73 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				// ========== Thing vertex slope ==========
 				if(s.Sidedefs.Count == 3)
 				{
-					List<Thing> slopeceilingthings = new List<Thing>(3);
-					List<Thing> slopefloorthings = new List<Thing>(3);
-					foreach(Sidedef sd in s.Sidedefs)
-					{
-						Vertex v;
-						if(sd.IsFront)
-							v = sd.Line.End;
-						else
-							v = sd.Line.Start;
+					//mxd. first check if we have vertices with zoffset
+                    bool haveVertexOffset = false;
 
-						// Check if a thing is at this vertex
-						VisualBlockEntry b = blockmap.GetBlock(blockmap.GetBlockCoordinates(v.Position));
-						foreach(Thing t in b.Things)
-						{
-							if((Vector2D)t.Position == v.Position)
-							{
-								if(t.Type == 1504)
-									slopefloorthings.Add(t);
-								else if(t.Type == 1505)
-									slopeceilingthings.Add(t);
-							}
-						}
-					}
+                    if (General.Map.UDMF) {
+                        Vertex[] offsets = new Vertex[3];
+                        int counter = 0;
 
-					// Slope any floor vertices?
-					if(slopefloorthings.Count > 0)
-					{
-						SectorData sd = GetSectorData(s);
-						sd.AddEffectThingVertexSlope(slopefloorthings, true);
-					}
+                        foreach (Sidedef sd in s.Sidedefs) {
+                            Vertex v;
+                            if (sd.IsFront)
+                                v = sd.Line.End;
+                            else
+                                v = sd.Line.Start;
 
-					// Slope any ceiling vertices?
-					if(slopeceilingthings.Count > 0)
-					{
-						SectorData sd = GetSectorData(s);
-						sd.AddEffectThingVertexSlope(slopeceilingthings, false);
-					}
+                            if (v.Fields.ContainsKey("zfloor") && (float)v.Fields["zfloor"].Value != 0) {
+                                offsets[counter] = v;
+                                haveVertexOffset = true;
+                            }
+                            if (offsets[counter] == null && v.Fields.ContainsKey("zceiling") && (float)v.Fields["zceiling"].Value != 0) {
+                                offsets[counter] = v;
+                                haveVertexOffset = true;
+                            }
+
+                            counter++;
+                        }
+
+                        //add the effect
+                        if (haveVertexOffset) {
+                            SectorData sd = GetSectorData(s);
+                            sd.AddEffectVertexOffset(offsets);
+                        }
+                    }
+
+                    if (!haveVertexOffset) {
+                        List<Thing> slopeceilingthings = new List<Thing>(3);
+                        List<Thing> slopefloorthings = new List<Thing>(3);
+                        foreach (Sidedef sd in s.Sidedefs) {
+                            Vertex v;
+                            if (sd.IsFront)
+                                v = sd.Line.End;
+                            else
+                                v = sd.Line.Start;
+
+                            // Check if a thing is at this vertex
+                            VisualBlockEntry b = blockmap.GetBlock(blockmap.GetBlockCoordinates(v.Position));
+                            foreach (Thing t in b.Things) {
+                                if ((Vector2D)t.Position == v.Position) {
+                                    if (t.Type == 1504)
+                                        slopefloorthings.Add(t);
+                                    else if (t.Type == 1505)
+                                        slopeceilingthings.Add(t);
+                                }
+                            }
+                        }
+
+                        // Slope any floor vertices?
+                        if (slopefloorthings.Count > 0) {
+                            SectorData sd = GetSectorData(s);
+                            sd.AddEffectThingVertexSlope(slopefloorthings, true);
+                        }
+
+                        // Slope any ceiling vertices?
+                        if (slopeceilingthings.Count > 0) {
+                            SectorData sd = GetSectorData(s);
+                            sd.AddEffectThingVertexSlope(slopeceilingthings, false);
+                        }
+                    }
 				}
 			}
 			
