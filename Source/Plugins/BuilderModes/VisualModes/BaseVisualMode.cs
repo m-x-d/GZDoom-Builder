@@ -613,7 +613,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.SetFogMode(true);
 
 				// Set target for highlighting
-                renderer.ShowSelection = BuilderPlug.Me.UseHighlight; //mxd
+                renderer.ShowSelection = General.Settings.GZOldHighlightMode || BuilderPlug.Me.UseHighlight; //mxd
 
                 if (BuilderPlug.Me.UseHighlight)
                     renderer.SetHighlightedObject(target.picked);
