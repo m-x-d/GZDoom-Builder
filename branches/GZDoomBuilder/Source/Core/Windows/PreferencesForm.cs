@@ -104,6 +104,7 @@ namespace CodeImp.DoomBuilder.Windows
             tbDynLightIntensity.Value = General.Clamp((int)(General.Settings.GZDynamicLightIntensity * 10), tbDynLightIntensity.Minimum, tbDynLightIntensity.Maximum);
             labelDynLightIntensity.Text = General.Settings.GZDynamicLightIntensity.ToString();
 			cbStretchModels.Checked = General.Settings.GZStretchModels;
+            cbOldHighlightMode.Checked = General.Settings.GZOldHighlightMode;
             vertexScale.Value = General.Clamp((int)(General.Settings.GZVertexScale2D), vertexScale.Minimum, vertexScale.Maximum);
             vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
 			
@@ -281,7 +282,8 @@ namespace CodeImp.DoomBuilder.Windows
             General.Settings.GZDynamicLightIntensity = ((float)tbDynLightIntensity.Value / 10.0f);
 			General.Settings.GZStretchModels = cbStretchModels.Checked;
             General.Settings.GZVertexScale2D = (float)vertexScale.Value;
-			
+            General.Settings.GZOldHighlightMode = cbOldHighlightMode.Checked;
+
 			// Paste options
 			General.Settings.PasteOptions = pasteoptions.GetOptions();
 			

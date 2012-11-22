@@ -104,6 +104,7 @@ namespace CodeImp.DoomBuilder.Config
         private bool gzToolbarGZDoom;
         private bool gzSynchCameras;
         private bool gzShowEventLines;
+        private bool gzOldHighlightMode;
         private int gzMaxDynamicLights;
         private float gzDynamicLightRadius;
         private float gzDynamicLightIntensity;
@@ -184,6 +185,7 @@ namespace CodeImp.DoomBuilder.Config
         public bool GZSynchCameras { get { return gzSynchCameras; } internal set { gzSynchCameras = value; } }
         public bool GZShowEventLines { get { return gzShowEventLines; } internal set { gzShowEventLines = value; } }
         public bool GZTestFromCurrentPosition { get { return gzTestFromCurrentPosition; } internal set { gzTestFromCurrentPosition = value; } }
+        public bool GZOldHighlightMode { get { return gzOldHighlightMode; } internal set { gzOldHighlightMode = value; } }
         public int GZMaxDynamicLights { get { return gzMaxDynamicLights; } internal set { gzMaxDynamicLights = value; } }
         public float GZDynamicLightRadius { get { return gzDynamicLightRadius; } internal set { gzDynamicLightRadius = value; } }
         public float GZDynamicLightIntensity { get { return gzDynamicLightIntensity; } internal set { gzDynamicLightIntensity = value; } }
@@ -279,6 +281,7 @@ namespace CodeImp.DoomBuilder.Config
                 gzToolbarGZDoom = cfg.ReadSetting("gztoolbargzdoom", true);
                 gzSynchCameras = cfg.ReadSetting("gzsynchcameras", true);
                 gzShowEventLines = cfg.ReadSetting("gzshoweventlines", true);
+                gzOldHighlightMode = cfg.ReadSetting("gzoldhighlightmode", false);
                 gzMaxDynamicLights = cfg.ReadSetting("gzmaxdynamiclights", 16);
                 gzDynamicLightRadius = cfg.ReadSetting("gzdynamiclightradius", 1.0f);
                 gzDynamicLightIntensity = cfg.ReadSetting("gzdynamiclightintensity", 1.0f);
@@ -355,6 +358,7 @@ namespace CodeImp.DoomBuilder.Config
             cfg.WriteSetting("gzdrawfog", gzDrawFog);
             cfg.WriteSetting("gzsynchcameras", gzSynchCameras);
             cfg.WriteSetting("gzshoweventlines", gzShowEventLines);
+            cfg.WriteSetting("gzoldhighlightmode", gzOldHighlightMode);
             cfg.WriteSetting("gztoolbargzdoom", gzToolbarGZDoom);
             cfg.WriteSetting("gzmaxdynamiclights", gzMaxDynamicLights);
             cfg.WriteSetting("gzdynamiclightradius", gzDynamicLightRadius);
