@@ -951,11 +951,12 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             this.viewdistance.LargeChange = 2;
             this.viewdistance.Location = new System.Drawing.Point(108, 187);
-            this.viewdistance.Maximum = 15;
+            this.viewdistance.Maximum = 45;
             this.viewdistance.Minimum = 1;
             this.viewdistance.Name = "viewdistance";
             this.viewdistance.Size = new System.Drawing.Size(150, 45);
             this.viewdistance.TabIndex = 3;
+            this.viewdistance.TickFrequency = 2;
             this.viewdistance.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.viewdistance.Value = 1;
             this.viewdistance.ValueChanged += new System.EventHandler(this.viewdistance_ValueChanged);
