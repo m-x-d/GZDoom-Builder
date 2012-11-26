@@ -91,6 +91,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private List<IVisualEventReceiver> selectedobjects;
         //mxd. Used in Cut/PasteSelection actions
         private List<ThingCopyData> copyBuffer;
+        private static bool gzdoomRenderingEffects = true; //mxd
 		
 		#endregion
 		
@@ -561,9 +562,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This requires that the blockmap is up-to-date!
 		internal void RebuildElementData()
 		{
-			Dictionary<int, List<Sector>> sectortags = new Dictionary<int, List<Sector>>();
-			sectordata = new Dictionary<Sector, SectorData>(General.Map.Map.Sectors.Count);
-			thingdata = new Dictionary<Thing,ThingData>(General.Map.Map.Things.Count);
+            //mxd
+            if (!gzdoomRenderingEffects && sectordata != null && sectordata.Count > 0) {
+                //rebuild sectors with effects
+                foreach (KeyValuePair<Sector, SectorData> group in sectordata)
+                    group.Value.Reset();
+            }
+
+            Dictionary<int, List<Sector>> sectortags = new Dictionary<int, List<Sector>>();
+            sectordata = new Dictionary<Sector, SectorData>(General.Map.Map.Sectors.Count);
+            thingdata = new Dictionary<Thing, ThingData>(General.Map.Map.Things.Count);
+
+            if (!gzdoomRenderingEffects) return; //mxd
 			
 			// Find all sector who's tag is not 0 and hash them so that we can find them quicly
 			foreach(Sector s in General.Map.Map.Sectors)
@@ -1831,6 +1841,15 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
                 ((BaseVisualThing)t).OnRotate(General.ClampAngle(t.Thing.AngleDoom - 5));
 
             PostAction();
+        }
+
+        //mxd
+        [BeginAction("togglegzdoomrenderingeffects")]
+        public void ToggleGZDoomRenderingEffects() {
+            gzdoomRenderingEffects = !gzdoomRenderingEffects;
+            RebuildElementData();
+            UpdateChangedObjects();
+            General.Interface.DisplayStatus(StatusType.Info, "(G)ZDoom rendering effects are " + (gzdoomRenderingEffects ? "ENABLED" : "DISABLED"));
         }
 		
 		#endregion
