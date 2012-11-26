@@ -45,13 +45,14 @@ namespace CodeImp.DoomBuilder.GZDoomEditing {
                 //check ceiling
                 if (vertices[index].Fields.ContainsKey("zceiling")) {
                     //yes, some things work in strange and mysterious ways in zdoom...
-                    ceilingVerts[index].z = floorVerts[index].z + (float)vertices[index].Fields["zceiling"].Value;
+                    ceilingVerts[index].z = (float)vertices[index].Fields["zceiling"].Value;
                     ceilingChanged = true;
                 }
 
                 //and floor ceiling
                 if (vertices[index].Fields.ContainsKey("zfloor")) {
-                    floorVerts[index].z += (float)vertices[index].Fields["zfloor"].Value;
+                    //yes, some things work in strange and mysterious ways in zdoom...
+                    floorVerts[index].z = (float)vertices[index].Fields["zfloor"].Value;
                     floorChanged = true;
                 }
 
