@@ -50,8 +50,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		protected BaseVisualMode mode;
 
-		protected float top;
-		protected float bottom;
+		protected Plane top;
+		protected Plane bottom;
 		protected long setuponloadedtexture;
 		
 		// UV dragging
@@ -93,13 +93,52 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
+		// This sets the renderstyle from linedef information and returns the alpha value or the vertices
+		protected byte SetLinedefRenderstyle(bool solidasmask)
+		{
+			byte alpha = 255;
+
+			// From TranslucentLine action
+			if(Sidedef.Line.Action == 208)
+			{
+				alpha = (byte)General.Clamp(Sidedef.Line.Args[1], 0, 255);
+				
+				if(Sidedef.Line.Args[2] == 1)
+					this.RenderPass = RenderPass.Additive;
+				else if(alpha < 255)
+					this.RenderPass = RenderPass.Alpha;
+				else if(solidasmask)
+					this.RenderPass = RenderPass.Mask;
+				else
+					this.RenderPass = RenderPass.Solid;
+			}
+			else
+			{
+				// From UDMF field
+				string field = Sidedef.Line.Fields.GetValue("renderstyle", "translucent");
+				alpha = (byte)(Sidedef.Line.Fields.GetValue("alpha", 1.0f) * 255.0f);
+				
+				if(field == "add")
+					this.RenderPass = RenderPass.Additive;
+				else if(alpha < 255)
+					this.RenderPass = RenderPass.Alpha;
+				else if(solidasmask)
+					this.RenderPass = RenderPass.Mask;
+				else
+					this.RenderPass = RenderPass.Solid;
+			}
+			
+			return alpha;
+		}
+
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{
 			// Check if intersection point is between top and bottom
-			return (pickintersect.z >= bottom) && (pickintersect.z <= top);
+			return (pickintersect.z >= bottom.GetZ(pickintersect)) && (pickintersect.z <= top.GetZ(pickintersect));
 		}
-
+		
+		
 		// This performs an accurate test for object picking
 		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
 		{
@@ -109,6 +148,232 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return true;
 		}
 		
+		
+		// This creates vertices from a wall polygon and applies lighting
+		protected List<WorldVertex> CreatePolygonVertices(WallPolygon poly, TexturePlane tp, SectorData sd, int lightvalue, bool lightabsolute)
+		{
+			List<WallPolygon> polylist = new List<WallPolygon>(1);
+			polylist.Add(poly);
+			return CreatePolygonVertices(polylist, tp, sd, lightvalue, lightabsolute);
+		}
+
+		// This creates vertices from a wall polygon and applies lighting
+		protected List<WorldVertex> CreatePolygonVertices(List<WallPolygon> poly, TexturePlane tp, SectorData sd, int lightvalue, bool lightabsolute)
+		{
+			List<WallPolygon> polygons = new List<WallPolygon>(poly);
+			List<WorldVertex> verts = new List<WorldVertex>();
+
+			// Go for all levels to build geometry
+			for(int i = sd.LightLevels.Count - 1; i >= 0; i--)
+			{
+				SectorLevel l = sd.LightLevels[i];
+
+				if((l != sd.Floor) && (l != sd.Ceiling) && (l.type != SectorLevelType.Floor))
+				{
+                    // Go for all polygons
+					int num = polygons.Count;
+					for(int pi = 0; pi < num; pi++)
+					{
+						// Split by plane
+						WallPolygon p = polygons[pi];
+						WallPolygon np = SplitPoly(ref p, l.plane, false);
+						if(np.Count > 0)
+						{
+							// Determine color
+							int lightlevel = lightabsolute ? lightvalue : l.brightnessbelow + lightvalue;
+                            //mxd
+                            //PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel));
+							PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
+							PixelColor wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
+							np.color = wallcolor.WithAlpha(255).ToInt();
+							
+							if(p.Count == 0)
+							{
+								polygons[pi] = np;
+							}
+							else
+							{
+								polygons[pi] = p;
+								polygons.Add(np);
+							}
+						}
+						else
+						{
+							polygons[pi] = p;
+						}
+					}
+				}
+			}
+			
+			// Go for all polygons to make geometry
+			foreach(WallPolygon p in polygons)
+			{
+				// Find texture coordinates for each vertex in the polygon
+				List<Vector2D> texc = new List<Vector2D>(p.Count);
+				foreach(Vector3D v in p)
+					texc.Add(tp.GetTextureCoordsAt(v));
+				
+				// Now we create triangles from the polygon.
+				// The polygon is convex and clockwise, so this is a piece of cake.
+				if(p.Count >= 3)
+				{
+					for(int k = 1; k < (p.Count - 1); k++)
+					{
+						verts.Add(new WorldVertex(p[0], p.color, texc[0]));
+						verts.Add(new WorldVertex(p[k], p.color, texc[k]));
+						verts.Add(new WorldVertex(p[k + 1], p.color, texc[k + 1]));
+					}
+				}
+			}
+			
+			return verts;
+		}
+		
+		// This splits a polygon with a plane and returns the other part as a new polygon
+		// The polygon is expected to be convex and clockwise
+		protected WallPolygon SplitPoly(ref WallPolygon poly, Plane p, bool keepfront)
+		{
+			const float NEAR_ZERO = 0.01f;
+			WallPolygon front = new WallPolygon(poly.Count);
+			WallPolygon back = new WallPolygon(poly.Count);
+			poly.CopyProperties(front);
+			poly.CopyProperties(back);
+			
+			if(poly.Count > 0)
+			{
+				// Go for all vertices to see which side they have to be on
+				Vector3D v1 = poly[poly.Count - 1];
+				float side1 = p.Distance(v1);
+				for(int i = 0; i < poly.Count; i++)
+				{
+					// Fetch vertex and determine side
+					Vector3D v2 = poly[i];
+					float side2 = p.Distance(v2);
+					
+					// Front?
+					if(side2 > NEAR_ZERO)
+					{
+						if(side1 < -NEAR_ZERO)
+						{
+							// Split line with plane and insert the vertex
+							float u = 0.0f;
+							p.GetIntersection(v1, v2, ref u);
+							Vector3D v3 = v1 + (v2 - v1) * u;
+							front.Add(v3);
+							back.Add(v3);
+						}
+						
+						front.Add(v2);
+					}
+					// Back?
+					else if(side2 < -NEAR_ZERO)
+					{
+						if(side1 > NEAR_ZERO)
+						{
+							// Split line with plane and insert the vertex
+							float u = 0.0f;
+							p.GetIntersection(v1, v2, ref u);
+							Vector3D v3 = v1 + (v2 - v1) * u;
+							front.Add(v3);
+							back.Add(v3);
+						}
+						
+						back.Add(v2);
+					}
+					else
+					{
+						// On the plane, add to both polygons
+						front.Add(v2);
+						back.Add(v2);
+					}
+					
+					// Next
+					v1 = v2;
+					side1 = side2;
+				}
+			}
+			
+			if(keepfront)
+			{
+				poly = front;
+				return back;
+			}
+			else
+			{
+				poly = back;
+				return front;
+			}
+		}
+		
+		
+		// This crops a polygon with a plane and keeps only a certain part of the polygon
+		protected void CropPoly(ref WallPolygon poly, Plane p, bool keepfront)
+		{
+			const float NEAR_ZERO = 0.01f;
+			float sideswitch = keepfront ? 1 : -1;
+			WallPolygon newp = new WallPolygon(poly.Count);
+			poly.CopyProperties(newp);
+			
+			if(poly.Count > 0)
+			{
+				// First split lines that cross the plane so that we have vertices on the plane where the lines cross
+				Vector3D v1 = poly[poly.Count - 1];
+				float side1 = p.Distance(v1) * sideswitch;
+				for(int i = 0; i < poly.Count; i++)
+				{
+					// Fetch vertex and determine side
+					Vector3D v2 = poly[i];
+					float side2 = p.Distance(v2) * sideswitch;
+					
+					// Front?
+					if(side2 > NEAR_ZERO)
+					{
+						if(side1 < -NEAR_ZERO)
+						{
+							// Split line with plane and insert the vertex
+							float u = 0.0f;
+							p.GetIntersection(v1, v2, ref u);
+							Vector3D v3 = v1 + (v2 - v1) * u;
+							newp.Add(v3);
+						}
+						
+						newp.Add(v2);
+					}
+					// Back?
+					else if(side2 < -NEAR_ZERO)
+					{
+						if(side1 > NEAR_ZERO)
+						{
+							// Split line with plane and insert the vertex
+							float u = 0.0f;
+							p.GetIntersection(v1, v2, ref u);
+							Vector3D v3 = v1 + (v2 - v1) * u;
+							newp.Add(v3);
+						}
+					}
+					else
+					{
+						// On the plane
+						newp.Add(v2);
+					}
+					
+					// Next
+					v1 = v2;
+					side1 = side2;
+				}
+			}
+			
+			poly = newp;
+		}
+
+        //mxd
+        protected float getRoundedTextureOffset(float oldValue, float offset, float scale) {
+			if(offset == 0f) return oldValue;
+            float result = (float)Math.Round(oldValue + (offset * scale));
+            if (result == oldValue) result += 1f * (offset < 0 ? -1 : 1);
+            return result;
+        }
+		
 		#endregion
 
 		#region ================== Events
@@ -117,6 +382,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnEditBegin() { }
 		protected virtual void SetTexture(string texturename) { }
 		public abstract bool Setup();
+		protected abstract void SetTextureOffsetX(int x);
+		protected abstract void SetTextureOffsetY(int y);
+		protected abstract void MoveTextureOffset(Point xy);
+		protected abstract Point GetTextureOffset();
 		
 		// Insert middle texture
 		public virtual void OnInsert()
@@ -209,9 +478,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode.SetActionResult("Texture offsets reset.");
 
 			// Apply offsets
-			Sidedef.OffsetX = 0;
-			Sidedef.OffsetY = 0;
-
+			SetTextureOffsetX(0);
+			SetTextureOffsetY(0);
+			
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
 			parts.SetupAllParts();
@@ -390,9 +659,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				List<Sidedef> sides = mode.GetSelectedSidedefs();
 				foreach(Sidedef sd in sides) sd.Marked = false;
 			}
+
+			SidedefPart part;
+			if(this is VisualLower)
+				part = SidedefPart.Lower;
+			else if(this is VisualUpper)
+				part = SidedefPart.Upper;
+			else
+				part = SidedefPart.Middle;
 			
 			// Do the alignment
-			Tools.AutoAlignTextures(this.Sidedef, base.Texture, alignx, aligny, false);
+			Tools.AutoAlignTextures(this.Sidedef, part, base.Texture, alignx, aligny, false);
 
 			// Get the changed sidedefs
 			List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);
@@ -444,9 +721,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnPasteTextureOffsets()
 		{
 			mode.CreateUndo("Paste texture offsets");
-			Sidedef.OffsetX = BuilderPlug.Me.CopiedOffsets.X;
-			Sidedef.OffsetY = BuilderPlug.Me.CopiedOffsets.Y;
-			mode.SetActionResult("Pasted texture offsets " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
+			SetTextureOffsetX(BuilderPlug.Me.CopiedOffsets.X);
+			SetTextureOffsetY(BuilderPlug.Me.CopiedOffsets.Y);
+			mode.SetActionResult("Pasted texture offsets " + BuilderPlug.Me.CopiedOffsets.X + ", " + BuilderPlug.Me.CopiedOffsets.Y + ".");
 			
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
@@ -464,8 +741,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Copy texture offsets
 		public virtual void OnCopyTextureOffsets()
 		{
-			BuilderPlug.Me.CopiedOffsets = new Point(Sidedef.OffsetX, Sidedef.OffsetY);
-			mode.SetActionResult("Copied texture offsets " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
+			BuilderPlug.Me.CopiedOffsets = GetTextureOffset();
+			mode.SetActionResult("Copied texture offsets " + BuilderPlug.Me.CopiedOffsets.X + ", " + BuilderPlug.Me.CopiedOffsets.Y + ".");
 		}
 
 		// Copy properties
@@ -506,10 +783,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			dragstartanglexy = General.Map.VisualCamera.AngleXY;
 			dragstartanglez = General.Map.VisualCamera.AngleZ;
 			dragorigin = pickintersect;
-			startoffsetx = Sidedef.OffsetX;
-			startoffsety = Sidedef.OffsetY;
-			prevoffsetx = Sidedef.OffsetX;
-			prevoffsety = Sidedef.OffsetY;
+			startoffsetx = GetTextureOffset().X;
+			startoffsety = GetTextureOffset().Y;
+			prevoffsetx = GetTextureOffset().X;
+			prevoffsety = GetTextureOffset().Y;
 		}
 		
 		// Select button released
@@ -552,18 +829,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						if(l.Front != null)
 						{
-							VisualSector vs = mode.GetVisualSector(l.Front.Sector);
-							if(vs != null)
-								(vs as BaseVisualSector).Changed = true;
+							if(mode.VisualSectorExists(l.Front.Sector))
+							{
+								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(l.Front.Sector);
+								vs.UpdateSectorGeometry(false);
+							}
 						}
 						
 						if(l.Back != null)
 						{
-							VisualSector vs = mode.GetVisualSector(l.Back.Sector);
-							if(vs != null)
-								(vs as BaseVisualSector).Changed = true;
+							if(mode.VisualSectorExists(l.Back.Sector))
+							{
+								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(l.Back.Sector);
+								vs.UpdateSectorGeometry(false);
+							}
 						}
 					}
+					
+					mode.RebuildElementData();
 				}
 			}
 		}
@@ -586,14 +869,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float deltaz = General.Map.VisualCamera.AngleZ - dragstartanglez;
 					if((Math.Abs(deltaxy) + Math.Abs(deltaz)) > DRAG_ANGLE_TOLERANCE)
 					{
-						mode.PreAction(UndoGroup.TextureOffsetChange);
-						mode.CreateUndo("Change texture offsets");
+                        mode.PreAction(UndoGroup.TextureOffsetChange);
+                        mode.CreateUndo("Change texture offsets");
 
-						// Start drag now
-						uvdragging = true;
-						mode.Renderer.ShowSelection = false;
-						mode.Renderer.ShowHighlight = false;
-						UpdateDragUV();
+                        // Start drag now
+                        uvdragging = true;
+                        mode.Renderer.ShowSelection = false;
+                        mode.Renderer.ShowHighlight = false;
+                        UpdateDragUV();
 					}
 				}
 			}
@@ -646,7 +929,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Sector.Sector.UpdateCache();
 				
 				// Rebuild sector
-				Sector.Changed = true;
+				Sector.UpdateSectorGeometry(false);
 
 				// Go for all things in this sector
 				foreach(Thing t in General.Map.Map.Things)
@@ -670,11 +953,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Change texture offsets");
 			
-			// Apply offsets
-			Sidedef.OffsetX -= horizontal;
-			Sidedef.OffsetY -= vertical;
-
-			mode.SetActionResult("Changed texture offsets to " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
+            //mxd
+            if (General.Map.UDMF) {
+                // Apply UDMF offsets
+                MoveTextureOffset(new Point(-horizontal, -vertical));
+                Point p = GetTextureOffset();
+                mode.SetActionResult("Changed texture offsets to " + p.X + ", " + p.Y + ".");
+            } else {
+                // Apply classic offsets
+                Sidedef.OffsetX -= horizontal;
+                Sidedef.OffsetY -= vertical;
+                mode.SetActionResult("Changed texture offsets to " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
+            }
 			
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
