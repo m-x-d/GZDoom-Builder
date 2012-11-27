@@ -293,15 +293,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ImageData img = General.Map.Data.GetFlatImage(s.LongFloorTexture);
 			if((img != null) && img.IsImageLoaded)
 			{
-				// Make scalars
-				float sw = 1.0f / img.ScaledWidth;
-				float sh = 1.0f / img.ScaledHeight;
-				
-				// Make proper texture coordinates
-				for(int i = 0; i < vertices.Length; i++)
-				{
-					vertices[i].u = vertices[i].u * sw;
-					vertices[i].v = -vertices[i].v * sh;
+				//mxd. Merged from GZDoomEditing plugin
+				if(General.Map.UDMF) {
+					// Fetch ZDoom fields
+					Vector2D offset = new Vector2D(s.Fields.GetValue("xpanningfloor", 0.0f),
+												   s.Fields.GetValue("ypanningfloor", 0.0f));
+					Vector2D scale = new Vector2D(s.Fields.GetValue("xscalefloor", 1.0f),
+												  s.Fields.GetValue("yscalefloor", 1.0f));
+					float rotate = s.Fields.GetValue("rotationfloor", 0.0f);
+					int color = s.Fields.GetValue("lightcolor", -1);
+					int light = s.Fields.GetValue("lightfloor", 0);
+					bool absolute = s.Fields.GetValue("lightfloorabsolute", false);
+
+					// Setup the vertices with the given settings
+					SetupSurfaceVertices(vertices, s, img, offset, scale, rotate, color, light, absolute);
+				} else {
+					// Make scalars
+					float sw = 1.0f / img.ScaledWidth;
+					float sh = 1.0f / img.ScaledHeight;
+
+					// Make proper texture coordinates
+					for(int i = 0; i < vertices.Length; i++) {
+						vertices[i].u = vertices[i].u * sw;
+						vertices[i].v = -vertices[i].v * sh;
+					}
 				}
 			}
 		}
@@ -312,15 +327,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ImageData img = General.Map.Data.GetFlatImage(s.LongCeilTexture);
 			if((img != null) && img.IsImageLoaded)
 			{
-				// Make scalars
-				float sw = 1.0f / img.ScaledWidth;
-				float sh = 1.0f / img.ScaledHeight;
+				//mxd. Merged from GZDoomEditing plugin
+				if(General.Map.UDMF) {
+					// Fetch ZDoom fields
+					Vector2D offset = new Vector2D(s.Fields.GetValue("xpanningceiling", 0.0f),
+												   s.Fields.GetValue("ypanningceiling", 0.0f));
+					Vector2D scale = new Vector2D(s.Fields.GetValue("xscaleceiling", 1.0f),
+												  s.Fields.GetValue("yscaleceiling", 1.0f));
+					float rotate = s.Fields.GetValue("rotationceiling", 0.0f);
+					int color = s.Fields.GetValue("lightcolor", -1);
+					int light = s.Fields.GetValue("lightceiling", 0);
+					bool absolute = s.Fields.GetValue("lightceilingabsolute", false);
 
-				// Make proper texture coordinates
-				for(int i = 0; i < vertices.Length; i++)
-				{
-					vertices[i].u = vertices[i].u * sw;
-					vertices[i].v = -vertices[i].v * sh;
+					// Setup the vertices with the given settings
+					SetupSurfaceVertices(vertices, s, img, offset, scale, rotate, color, light, absolute);
+				} else {
+					// Make scalars
+					float sw = 1.0f / img.ScaledWidth;
+					float sh = 1.0f / img.ScaledHeight;
+
+					// Make proper texture coordinates
+					for(int i = 0; i < vertices.Length; i++) {
+						vertices[i].u = vertices[i].u * sw;
+						vertices[i].v = -vertices[i].v * sh;
+					}
 				}
 			}
 		}
@@ -434,6 +464,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Tools
+
+		//mxd. merged from GZDoomEditing plugin
+		// This applies the given values on the vertices
+		private void SetupSurfaceVertices(FlatVertex[] vertices, Sector s, ImageData img, Vector2D offset,
+										  Vector2D scale, float rotate, int color, int light, bool absolute) {
+			// Prepare for math!
+			rotate = Angle2D.DegToRad(rotate);
+			Vector2D texscale = new Vector2D(1.0f / img.ScaledWidth, 1.0f / img.ScaledHeight);
+			if(!absolute) light = s.Brightness + light;
+			PixelColor lightcolor = PixelColor.FromInt(color);
+			PixelColor brightness = PixelColor.FromInt(General.Map.Renderer2D.CalculateBrightness(light));
+			PixelColor finalcolor = PixelColor.Modulate(lightcolor, brightness);
+			color = finalcolor.WithAlpha(255).ToInt();
+
+			// Do the math for all vertices
+			for(int i = 0; i < vertices.Length; i++) {
+				Vector2D pos = new Vector2D(vertices[i].x, vertices[i].y);
+				pos = pos.GetRotated(rotate);
+				pos.y = -pos.y;
+				pos = (pos + offset) * scale * texscale;
+				vertices[i].u = pos.x;
+				vertices[i].v = pos.y;
+				vertices[i].c = color;
+			}
+		}
 
 		// This adjusts texture coordinates for splitted lines according to the user preferences
 		public void AdjustSplitCoordinates(Linedef oldline, Linedef newline)

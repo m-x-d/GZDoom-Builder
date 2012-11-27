@@ -108,9 +108,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(Thing.Sector != null)
 				{
-					// Use sector brightness for color shading
-					byte brightness = (byte)General.Clamp(Thing.Sector.Brightness, 0, 255);
-					sectorcolor = new PixelColor(255, brightness, brightness, brightness);
+					SectorData sd = mode.GetSectorData(Thing.Sector);
+					SectorLevel level = sd.GetLevelAbove(new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + Thing.Sector.FloorHeight));
+					if(level != null)
+					{
+						// Use sector brightness for color shading
+						PixelColor areabrightness = PixelColor.FromInt(mode.CalculateBrightness(level.brightnessbelow));
+						PixelColor areacolor = PixelColor.Modulate(level.colorbelow, areabrightness);
+						sectorcolor = areacolor.WithAlpha(255);
+					}
 				}
 				
 				// Check if the texture is loaded
@@ -171,7 +177,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Determine position
 			Vector3D pos = Thing.Position;
-			if(info.AbsoluteZ)
+			if(Thing.Type == 9501)
+			{
+				// This is a special thing that needs special positioning
+				SectorData sd = mode.GetSectorData(Thing.Sector);
+				pos.z = sd.Ceiling.sector.CeilHeight + Thing.Position.z;
+			}
+			else if(Thing.Type == 9500)
+			{
+				// This is a special thing that needs special positioning
+				SectorData sd = mode.GetSectorData(Thing.Sector);
+				pos.z = sd.Floor.sector.FloorHeight + Thing.Position.z;
+			}
+			else if(info.AbsoluteZ)
 			{
 				// Absolute Z position
 				pos.z = Thing.Position.z;
@@ -179,27 +197,45 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else if(info.Hangs)
 			{
 				// Hang from ceiling
-				if(Thing.Sector != null) pos.z = Thing.Sector.CeilHeight - info.Height;
-				if(Thing.Position.z > 0) pos.z -= Thing.Position.z;
-				
+				if(Thing.Sector != null)
+				{
+					SectorData sd = mode.GetSectorData(Thing.Sector);
+					if(Thing.Position.z > 0)
+						pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
+					else
+                        pos.z = Thing.Sector.CeilHeight - info.Height; //mxd. was [pos.z = Thing.Sector.CeilHeight;]
+				}
+
+				pos.z -= Thing.Position.z;
+
 				// Check if below floor
 				if((Thing.Sector != null) && (pos.z < Thing.Sector.FloorHeight))
 				{
 					// Put thing on the floor
-					pos.z = Thing.Sector.FloorHeight;
+					SectorData sd = mode.GetSectorData(Thing.Sector);
+					pos.z = sd.Floor.plane.GetZ(Thing.Position);
 				}
 			}
 			else
 			{
 				// Stand on floor
-				if(Thing.Sector != null) pos.z = Thing.Sector.FloorHeight;
-				if(Thing.Position.z > 0) pos.z += Thing.Position.z;
-				
+				if(Thing.Sector != null)
+				{
+					SectorData sd = mode.GetSectorData(Thing.Sector);
+					if(Thing.Position.z == 0)
+						pos.z = sd.Floor.plane.GetZ(Thing.Position);
+					else
+						pos.z = Thing.Sector.FloorHeight;
+				}
+
+				pos.z += Thing.Position.z;
+
 				// Check if above ceiling
 				if((Thing.Sector != null) && ((pos.z + info.Height) > Thing.Sector.CeilHeight))
 				{
 					// Put thing against ceiling
-					pos.z = Thing.Sector.CeilHeight - info.Height;
+					SectorData sd = mode.GetSectorData(Thing.Sector);
+					pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
 				}
 			}
 			
@@ -468,7 +504,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Thing.Move(Thing.Position + new Vector3D(0.0f, 0.0f, (float)amount));
 
 				mode.SetActionResult("Changed thing height to " + Thing.Position.z + ".");
-
+				
+				// Update what must be updated
+				ThingData td = mode.GetThingData(this.Thing);
+				foreach(KeyValuePair<Sector, bool> s in td.UpdateAlso)
+				{
+					if(mode.VisualSectorExists(s.Key))
+					{
+						BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
+						vs.UpdateSectorGeometry(s.Value);
+					}
+				}
+				
 				this.Changed = true;
 			}
 		}
@@ -479,6 +526,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
                 undoticket = mode.CreateUndo("Move thing");
             Thing.Move(newPosition);
             mode.SetActionResult("Changed thing position to " + Thing.Position.ToString() + ".");
+
+            // Update what must be updated
+            ThingData td = mode.GetThingData(this.Thing);
+            foreach (KeyValuePair<Sector, bool> s in td.UpdateAlso) {
+                if (mode.VisualSectorExists(s.Key)) {
+                    BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
+                    vs.UpdateSectorGeometry(s.Value);
+                }
+            }
+
             this.Changed = true;
         }
 

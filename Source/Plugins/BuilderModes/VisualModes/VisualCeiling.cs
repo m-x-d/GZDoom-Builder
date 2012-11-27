@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
@@ -33,6 +34,7 @@ using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Windows;
 
@@ -67,12 +69,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This builds the geometry. Returns false when no geometry created.
-		public override bool Setup()
+		public override bool Setup(SectorLevel level, Effect3DFloor extrafloor)
 		{
 			WorldVertex[] verts;
 			WorldVertex v;
-			Sector s = base.Sector.Sector;
-			int brightness = mode.CalculateBrightness(s.Brightness);
+			Sector s = level.sector;
+			Vector2D texscale;
+			
+			base.Setup(level, extrafloor);
+			
+			// Fetch ZDoom fields
+			float rotate = Angle2D.DegToRad(s.Fields.GetValue("rotationceiling", 0.0f));
+			Vector2D offset = new Vector2D(s.Fields.GetValue("xpanningceiling", 0.0f),
+			                               s.Fields.GetValue("ypanningceiling", 0.0f));
+			Vector2D scale = new Vector2D(s.Fields.GetValue("xscaleceiling", 1.0f),
+			                              s.Fields.GetValue("yscaleceiling", 1.0f));
 			
 			// Load floor texture
 			base.Texture = General.Map.Data.GetFlatImage(s.LongCeilTexture);
@@ -86,42 +97,53 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(!base.Texture.IsImageLoaded)
 					setuponloadedtexture = s.LongCeilTexture;
 			}
-			
-			// Make vertices
-			verts = new WorldVertex[s.Triangles.Vertices.Count];
-			for(int i = 0; i < s.Triangles.Vertices.Count; i++)
-			{
-				// Use sector brightness for color shading
-				verts[i].c = brightness;
 
-				// Grid aligned texture coordinates
-				if(base.Texture.IsImageLoaded)
-				{
-					verts[i].u = s.Triangles.Vertices[i].x / base.Texture.ScaledWidth;
-					verts[i].v = -s.Triangles.Vertices[i].y / base.Texture.ScaledHeight;
-				}
-				else
-				{
-					verts[i].u = s.Triangles.Vertices[i].x / 64;
-					verts[i].v = -s.Triangles.Vertices[i].y / 64;
-				}
+			// Determine texture scale
+			if(base.Texture.IsImageLoaded)
+				texscale = new Vector2D(1.0f / base.Texture.ScaledWidth, 1.0f / base.Texture.ScaledHeight);
+			else
+				texscale = new Vector2D(1.0f / 64.0f, 1.0f / 64.0f);
+
+			// Make vertices
+			ReadOnlyCollection<Vector2D> triverts = base.Sector.Sector.Triangles.Vertices;
+			verts = new WorldVertex[triverts.Count];
+			for(int i = 0; i < triverts.Count; i++)
+			{
+				// Color shading
+				PixelColor c = PixelColor.FromInt(level.color);
+				verts[i].c = c.WithAlpha((byte)General.Clamp(level.alpha, 0, 255)).ToInt();
 				
 				// Vertex coordinates
-				verts[i].x = s.Triangles.Vertices[i].x;
-				verts[i].y = s.Triangles.Vertices[i].y;
-				verts[i].z = (float)s.CeilHeight;
-			}
+				verts[i].x = triverts[i].x;
+				verts[i].y = triverts[i].y;
+				verts[i].z = level.plane.GetZ(triverts[i]); //(float)s.CeilHeight;
 
+				// Texture coordinates
+				Vector2D pos = triverts[i];
+				pos = pos.GetRotated(rotate);
+				pos.y = -pos.y;
+				pos = (pos + offset) * scale * texscale;
+				verts[i].u = pos.x;
+				verts[i].v = pos.y;
+			}
+			
 			// The sector triangulation created clockwise triangles that
 			// are right up for the floor. For the ceiling we must flip
 			// the triangles upside down.
-			// Swap some vertices to flip all triangles
-			for(int i = 0; i < verts.Length; i += 3)
+			if((extrafloor == null) || extrafloor.VavoomType)
+				SwapTriangleVertices(verts);
+
+			// Determine render pass
+			if(extrafloor != null)
 			{
-				// Swap
-				v = verts[i];
-				verts[i] = verts[i + 1];
-				verts[i + 1] = v;
+				if(level.alpha < 255)
+					this.RenderPass = RenderPass.Alpha;
+				else
+					this.RenderPass = RenderPass.Mask;
+			}
+			else
+			{
+				this.RenderPass = RenderPass.Solid;
 			}
 			
 			// Apply vertices
@@ -132,6 +154,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Methods
+
+		// Return texture coordinates
+		protected override Point GetTextureOffset()
+		{
+			Point p = new Point();
+			p.X = (int)Sector.Sector.Fields.GetValue("xpanningceiling", 0.0f);
+			p.Y = (int)Sector.Sector.Fields.GetValue("ypanningceiling", 0.0f);
+			return p;
+		}
+
+		// Move texture coordinates
+		protected override void MoveTextureOffset(Point xy)
+		{
+            //mxd
+            Sector s = GetControlSector();
+			s.Fields.BeforeFieldsChange();
+            float oldx = s.Fields.GetValue("xpanningceiling", 0.0f);
+            float oldy = s.Fields.GetValue("ypanningceiling", 0.0f);
+            xy = getTranslatedTextureOffset(xy);
+            s.Fields["xpanningceiling"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
+            s.Fields["ypanningceiling"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
+            s.UpdateNeeded = true;
+		}
 
 		// Paste texture
 		public override void OnPasteTexture()
@@ -144,37 +189,103 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				this.Setup();
 			}
 		}
-		
+
+		// Call to change the height
+		public override void OnChangeTargetHeight(int amount)
+		{
+			// Only do this when not done yet in this call
+			// Because we may be able to select the same 3D floor multiple times through multiple sectors
+			SectorData sd = mode.GetSectorData(level.sector);
+			if(!sd.CeilingChanged)
+			{
+				sd.CeilingChanged = true;
+				base.OnChangeTargetHeight(amount);
+			}
+		}
+
 		// This changes the height
 		protected override void ChangeHeight(int amount)
 		{
-			mode.CreateUndo("Change ceiling height", UndoGroup.CeilingHeightChange, this.Sector.Sector.FixedIndex);
-			this.Sector.Sector.CeilHeight += amount;
-			mode.SetActionResult("Changed ceiling height to " + Sector.Sector.CeilHeight + ".");
+			mode.CreateUndo("Change ceiling height", UndoGroup.CeilingHeightChange, level.sector.FixedIndex);
+			level.sector.CeilHeight += amount;
+			mode.SetActionResult("Changed ceiling height to " + level.sector.CeilHeight + ".");
 		}
+
+        //mxd. Sector brightness change
+        public override void OnChangeTargetBrightness(bool up) {
+            if (level != null && level.sector != Sector.Sector) {
+                int index = -1;
+                for (int i = 0; i < Sector.ExtraCeilings.Count; i++) {
+                    if (Sector.ExtraCeilings[i] == this) {
+                        index = i + 1;
+                        break;
+                    }
+                }
+
+                if (index > -1 && index < Sector.ExtraCeilings.Count) {
+                    Sector.ExtraCeilings[index].changeControlSectorBrightness(up);
+                } else {
+                    base.OnChangeTargetBrightness(up);
+                }
+            } else {
+                //if a map is not in UDMF format, or this ceiling is part of 3D-floor...
+                if(!General.Map.UDMF || Sector.Sector != level.sector) {
+					base.OnChangeTargetBrightness(up);
+					return;
+				}
+
+				int light = Sector.Sector.Fields.GetValue("lightceiling", 0);
+				bool absolute = Sector.Sector.Fields.GetValue("lightceilingabsolute", false);
+				int newLight = 0;
+
+				if(up)
+					newLight = General.Map.Config.BrightnessLevels.GetNextHigher(light, absolute);
+				else
+					newLight = General.Map.Config.BrightnessLevels.GetNextLower(light, absolute);
+
+				if(newLight == light) return;
+
+				//create undo
+				mode.CreateUndo("Change ceiling brightness", UndoGroup.SurfaceBrightnessChange, Sector.Sector.FixedIndex);
+				Sector.Sector.Fields.BeforeFieldsChange();
+
+				//apply changes
+				Sector.Sector.Fields["lightceiling"] = new UniValue(UniversalType.Integer, newLight);
+				mode.SetActionResult("Changed ceiling brightness to " + newLight + ".");
+				Sector.Sector.UpdateCache();
+
+				//rebuild sector
+				Sector.UpdateSectorGeometry(false);
+            }
+        }
+
+        //mxd
+        private void changeControlSectorBrightness(bool up) {
+            ((BaseVisualSector)mode.GetVisualSector(level.sector)).Ceiling.OnChangeTargetBrightness(up);
+        }
 		
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{
-			float planez = (float)Sector.Sector.CeilHeight;
+			// Check if our ray starts at the correct side of the plane
+			if(level.plane.Distance(from) > 0.0f)
+			{
+				// Calculate the intersection
+				if(level.plane.GetIntersection(from, to, ref pickrayu))
+				{
+					if(pickrayu > 0.0f)
+					{
+						pickintersect = from + (to - from) * pickrayu;
 
-			// Check if line crosses the z height
-			if((from.z < planez) && (to.z > planez))
-			{
-				// Calculate intersection point using the z height
-				pickrayu = (planez - from.z) / (to.z - from.z);
-				pickintersect = from + (to - from) * pickrayu;
-				
-				// Intersection point within bbox?
-				RectangleF bbox = Sector.Sector.BBox;
-				return ((pickintersect.x >= bbox.Left) && (pickintersect.x <= bbox.Right) &&
-						(pickintersect.y >= bbox.Top) && (pickintersect.y <= bbox.Bottom));
+						// Intersection point within bbox?
+						RectangleF bbox = Sector.Sector.BBox;
+						return ((pickintersect.x >= bbox.Left) && (pickintersect.x <= bbox.Right) &&
+								(pickintersect.y >= bbox.Top) && (pickintersect.y <= bbox.Bottom));
+					}
+				}
 			}
-			else
-			{
-				// Not even crossing the z height (or not in the right direction)
-				return false;
-			}
+
+			return false;
 		}
 		
 		// This performs an accurate test for object picking
@@ -191,15 +302,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Return texture name
 		public override string GetTextureName()
 		{
-			return this.Sector.Sector.CeilTexture;
+			return level.sector.CeilTexture;
 		}
 
 		// This changes the texture
 		protected override void SetTexture(string texturename)
 		{
-			this.Sector.Sector.SetCeilTexture(texturename);
+			level.sector.SetCeilTexture(texturename);
 			General.Map.Data.UpdateUsedTextures();
-			this.Setup();
+			if(level.sector == this.Sector.Sector)
+			{
+				this.Setup();
+			}
+			else if(mode.VisualSectorExists(level.sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+				vs.UpdateSectorGeometry(false);
+			}
 		}
 		
 		#endregion

@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
@@ -41,6 +42,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
+		private const float DRAG_ANGLE_TOLERANCE = 0.06f;
+
 		#endregion
 
 		#region ================== Variables
@@ -52,6 +55,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// in a multiselection. The Changed property on the BaseVisualSector is
 		// used to indicate a rebuild is needed.
 		protected bool changed;
+
+		protected SectorLevel level;
+		protected Effect3DFloor extrafloor;
+		
+		// Undo/redo
+		private int undoticket;
+		
+		// UV dragging
+		private float dragstartanglexy;
+		private float dragstartanglez;
+		private Vector3D dragorigin;
+		private Vector3D deltaxy;
+		private Vector3D deltaz;
+		private int startoffsetx;
+		private int startoffsety;
+		protected bool uvdragging;
+		private int prevoffsetx;		// We have to provide delta offsets, but I don't
+		private int prevoffsety;		// want to calculate with delta offsets to prevent
+										// inaccuracy in the dragging.
 		
 		#endregion
 
@@ -59,13 +81,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		new public BaseVisualSector Sector { get { return (BaseVisualSector)base.Sector; } }
 		public bool Changed { get { return changed; } set { changed = value; } }
+		public SectorLevel Level { get { return level; } }
+		public Effect3DFloor ExtraFloor { get { return extrafloor; } }
 
 		#endregion
 
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public BaseVisualGeometrySector(BaseVisualMode mode, VisualSector vs) : base(vs)
+		protected BaseVisualGeometrySector(BaseVisualMode mode, VisualSector vs) : base(vs)
 		{
 			this.mode = mode;
 		}
@@ -76,17 +100,90 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// This changes the height
 		protected abstract void ChangeHeight(int amount);
+
+		// This swaps triangles so that the plane faces the other way
+		protected void SwapTriangleVertices(WorldVertex[] verts)
+		{
+			// Swap some vertices to flip all triangles
+			for(int i = 0; i < verts.Length; i += 3)
+			{
+				// Swap
+				WorldVertex v = verts[i];
+				verts[i] = verts[i + 1];
+				verts[i + 1] = v;
+			}
+		}
+
+		// This is called to update UV dragging
+		protected virtual void UpdateDragUV()
+		{
+			float u_ray = 1.0f;
+
+			// Calculate intersection position
+			this.Level.plane.GetIntersection(General.Map.VisualCamera.Position, General.Map.VisualCamera.Target, ref u_ray);
+			Vector3D intersect = General.Map.VisualCamera.Position + (General.Map.VisualCamera.Target - General.Map.VisualCamera.Position) * u_ray;
+
+			// Calculate offsets
+			Vector3D dragdelta = intersect - dragorigin;
+			float offsetx = dragdelta.x;
+			float offsety = dragdelta.y;
+
+            //mxd. Modify offsets based on surface and camera angles
+            if (General.Map.UDMF) {
+                float angle = 0;
+                if (GeometryType == VisualGeometryType.CEILING && level.sector.Fields.ContainsKey("rotationceiling"))
+                    angle = (float)level.sector.Fields["rotationceiling"].Value * (float)Math.PI / 180f;
+                else if (GeometryType == VisualGeometryType.FLOOR && level.sector.Fields.ContainsKey("rotationfloor"))
+                    angle = (float)level.sector.Fields["rotationfloor"].Value * (float)Math.PI / 180f;
+
+                Vector2D v = new Vector2D(offsetx, offsety).GetRotated(angle);
+                Point p = getTranslatedTextureOffset(new Point((int)Math.Round(v.x), (int)Math.Round(v.y)));
+                offsetx = p.X;
+                offsety = p.Y;
+            }
+
+			// Apply offsets
+			int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
+			int newoffsety = startoffsety + (int)Math.Round(offsety);
+			mode.ApplyFlatOffsetChange(prevoffsetx - newoffsetx, prevoffsety - newoffsety);
+			prevoffsetx = newoffsetx;
+			prevoffsety = newoffsety;
+
+			mode.ShowTargetInfo();
+		}
+
+        //mxd
+        public override Sector GetControlSector() {
+            return level.sector;
+        }
+
+        //mxd. Modify texture offsets based on camera angle (so "movetextureleft" action always moves texture more or less "left" etc.)
+        protected Point getTranslatedTextureOffset(Point p) {
+            Point tp = new Point();
+            int camAngle = (int)(General.Map.VisualCamera.AngleXY * 180f / (float)Math.PI);
+
+            if (camAngle > 315 || camAngle < 46) {
+                tp = p;
+            } else if (camAngle > 225) {
+                tp.Y = p.X;
+                tp.X = -p.Y;
+            } else if (camAngle > 135) {
+                tp.X = -p.X;
+                tp.Y = -p.Y;
+            }else{
+                tp.Y = -p.X;
+                tp.X = p.Y;
+            }
+
+            return tp;
+        }
 		
 		#endregion
 
 		#region ================== Events
 
 		// Unused
-		public abstract bool Setup();
-		public virtual void OnSelectBegin(){ }
 		public virtual void OnEditBegin() { }
-		public virtual void OnMouseMove(MouseEventArgs e) { }
-		public virtual void OnChangeTextureOffset(int horizontal, int vertical) { }
 		public virtual void OnTextureAlign(bool alignx, bool aligny) { }
 		public virtual void OnToggleUpperUnpegged() { }
 		public virtual void OnToggleLowerUnpegged() { }
@@ -98,19 +195,87 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected virtual void SetTexture(string texturename) { }
 		public virtual void ApplyUpperUnpegged(bool set) { }
 		public virtual void ApplyLowerUnpegged(bool set) { }
+		protected abstract void MoveTextureOffset(Point xy);
+		protected abstract Point GetTextureOffset();
 
+		// Setup this plane
+		public bool Setup() { return this.Setup(this.level, this.extrafloor); }
+		public virtual bool Setup(SectorLevel level, Effect3DFloor extrafloor)
+		{
+			this.level = level;
+			this.extrafloor = extrafloor;
+			return false;
+		}
+
+		// Begin select
+		public virtual void OnSelectBegin()
+		{
+			mode.LockTarget();
+			dragstartanglexy = General.Map.VisualCamera.AngleXY;
+			dragstartanglez = General.Map.VisualCamera.AngleZ;
+			dragorigin = pickintersect;
+			startoffsetx = GetTextureOffset().X;
+			startoffsety = GetTextureOffset().Y;
+			prevoffsetx = GetTextureOffset().X;
+			prevoffsety = GetTextureOffset().Y;
+		}
+		
 		// Select or deselect
 		public virtual void OnSelectEnd()
 		{
-			if(this.selected)
+			mode.UnlockTarget();
+			
+			// Was dragging?
+			if(uvdragging)
 			{
-				this.selected = false;
-				mode.RemoveSelectedObject(this);
+				// Dragging stops now
+				uvdragging = false;
 			}
 			else
 			{
-				this.selected = true;
-				mode.AddSelectedObject(this);
+				if(this.selected)
+				{
+					this.selected = false;
+					mode.RemoveSelectedObject(this);
+				}
+				else
+				{
+					this.selected = true;
+					mode.AddSelectedObject(this);
+				}
+			}
+		}
+
+		// Moving the mouse
+		public virtual void OnMouseMove(MouseEventArgs e)
+		{
+			// Dragging UV?
+			if(uvdragging)
+			{
+				UpdateDragUV();
+			}
+			else
+			{
+				// Select button pressed?
+				if(General.Actions.CheckActionActive(General.ThisAssembly, "visualselect"))
+				{
+					// Check if tolerance is exceeded to start UV dragging
+					float deltaxy = General.Map.VisualCamera.AngleXY - dragstartanglexy;
+					float deltaz = General.Map.VisualCamera.AngleZ - dragstartanglez;
+					if((Math.Abs(deltaxy) + Math.Abs(deltaz)) > DRAG_ANGLE_TOLERANCE)
+					{
+						if(General.Map.UDMF) { //mxd
+							mode.PreAction(UndoGroup.TextureOffsetChange);
+							mode.CreateUndo("Change texture offsets");
+
+							// Start drag now
+							uvdragging = true;
+							mode.Renderer.ShowSelection = false;
+							mode.Renderer.ShowHighlight = false;
+							UpdateDragUV();
+						}
+					}
+				}
 			}
 		}
 		
@@ -204,7 +369,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Copy properties
 		public virtual void OnCopyProperties()
 		{
-			BuilderPlug.Me.CopiedSectorProps = new SectorProperties(Sector.Sector);
+			BuilderPlug.Me.CopiedSectorProps = new SectorProperties(level.sector);
 			mode.SetActionResult("Copied sector properties.");
 		}
 		
@@ -215,8 +380,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				mode.CreateUndo("Paste sector properties");
 				mode.SetActionResult("Pasted sector properties.");
-				BuilderPlug.Me.CopiedSectorProps.Apply(Sector.Sector);
-				Sector.UpdateSectorGeometry(true);
+				BuilderPlug.Me.CopiedSectorProps.Apply(level.sector);
+				if(mode.VisualSectorExists(level.sector))
+				{
+					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+					vs.UpdateSectorGeometry(true);
+				}
 				mode.ShowTargetInfo();
 			}
 		}
@@ -267,9 +436,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Rebuild sector
 					foreach(Sector s in sectors)
 					{
-						VisualSector vs = mode.GetVisualSector(s);
-						if(vs != null)
-							(vs as BaseVisualSector).UpdateSectorGeometry(true);
+						if(mode.VisualSectorExists(s))
+						{
+							BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s);
+							vs.UpdateSectorGeometry(true);
+						}
 					}
 				}
 			}
@@ -279,11 +450,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnChangeTargetHeight(int amount)
 		{
 			changed = true;
-			
+
 			ChangeHeight(amount);
 
 			// Rebuild sector
-			Sector.UpdateSectorGeometry(true);
+			BaseVisualSector vs;
+			if(mode.VisualSectorExists(level.sector)) {
+				vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+				//vs.UpdateSectorGeometry(true);
+			} else {//mxd. Need this to apply changes to 3d-floor even if control sector doesn't exist as BaseVisualSector
+				vs = mode.CreateBaseVisualSector(level.sector);
+			}
+
+			if(vs != null) vs.UpdateSectorGeometry(true);
 		}
 		
 		// Sector brightness change
@@ -302,6 +481,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Rebuild sector
 			Sector.UpdateSectorGeometry(false);
+		}
+
+		// Texture offset change
+		public virtual void OnChangeTextureOffset(int horizontal, int vertical)
+		{
+			//mxd
+            if (General.Map.UDMF) {
+                if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+                    undoticket = mode.CreateUndo("Change texture offsets");
+
+                // Apply offsets
+                MoveTextureOffset(new Point(-horizontal, -vertical));
+
+                mode.SetActionResult("Changed texture offsets by " + -horizontal + ", " + -vertical + ".");
+
+                // Update sector geometry
+                Sector.UpdateSectorGeometry(false);
+                Sector.Rebuild();
+            } else {
+                General.ShowErrorMessage("Floor/ceiling texture offsets cannot be changed in this map format!", MessageBoxButtons.OK);
+            }
 		}
 		
 		#endregion
