@@ -233,7 +233,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
                         foreach (Sector s in newSectors[i][c]) {
                             foreach(Sidedef sd in s.Sidedefs){
                                 if (sd.LowRequired())
-                                    sd.SetTextureLow(sectorProps[i][c].LowTexture);
+									sd.SetTextureLow(sectorProps[i][c].LowTexture);
                                 if (sd.HighRequired())
                                     sd.SetTextureHigh(sectorProps[i][c].HighTexture);    
                             }
@@ -823,14 +823,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
                 SectorProperties.CeilingHeight = ld.Back.Sector.CeilHeight;
                 SectorProperties.FloorHeight = ld.Back.Sector.FloorHeight;
                 SectorProperties.Brightness = ld.Back.Sector.Brightness;
-                SectorProperties.HighTexture = ld.Back.HighTexture;
-                SectorProperties.LowTexture = ld.Back.LowTexture;
+				SectorProperties.HighTexture = ld.Back.HighTexture != "-" ? ld.Back.HighTexture : ld.Back.MiddleTexture;
+				SectorProperties.LowTexture = ld.Back.LowTexture != "-" ? ld.Back.LowTexture : ld.Back.MiddleTexture;
             }else if(ld.Front != null){
                 SectorProperties.CeilingHeight = ld.Front.Sector.CeilHeight;
                 SectorProperties.FloorHeight = ld.Front.Sector.FloorHeight;
                 SectorProperties.Brightness = ld.Front.Sector.Brightness;
-                SectorProperties.HighTexture = ld.Front.HighTexture;
-                SectorProperties.LowTexture = ld.Front.LowTexture;
+				SectorProperties.HighTexture = ld.Front.HighTexture != "-" ? ld.Front.HighTexture : ld.Front.MiddleTexture;
+				SectorProperties.LowTexture = ld.Front.LowTexture != "-" ? ld.Front.LowTexture : ld.Front.MiddleTexture;
             }else{
                 SectorProperties.CeilingHeight = 128;
                 SectorProperties.FloorHeight = 0;

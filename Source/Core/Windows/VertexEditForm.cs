@@ -30,6 +30,7 @@ using System.IO;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -70,7 +71,13 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				positionx.AllowDecimal = true;
 				positiony.AllowDecimal = true;
+
+				//mxd
+				zceiling.AllowDecimal = true;
+				zfloor.AllowDecimal = true;
 			}
+
+			if(!General.Map.UDMF) panelHeightControls.Visible = false;
 
 			// Initialize custom fields editor
 			fieldslist.Setup("vertex");
@@ -115,6 +122,19 @@ namespace CodeImp.DoomBuilder.Windows
 				// Custom fields
 				fieldslist.SetValues(v.Fields, false);
 			}
+
+			//mxd. Height offsets
+			if(General.Map.UDMF) {
+				zceiling.Text = UDMFTools.GetFloat(vc.Fields, "zceiling", 0).ToString();
+				zfloor.Text = UDMFTools.GetFloat(vc.Fields, "zfloor", 0).ToString();
+
+				foreach(Vertex v in vertices) {
+					if(zceiling.Text != UDMFTools.GetFloat(v.Fields, "zceiling", 0).ToString())
+						zceiling.Text = "";
+					if(zfloor.Text != UDMFTools.GetFloat(v.Fields, "zfloor", 0).ToString())
+						zfloor.Text = "";
+				}
+			}
 		}
 		
 		#endregion
@@ -146,9 +166,19 @@ namespace CodeImp.DoomBuilder.Windows
 				p.x = General.Clamp(positionx.GetResultFloat(v.Position.x), (float)General.Map.FormatInterface.MinCoordinate, (float)General.Map.FormatInterface.MaxCoordinate);
 				p.y = General.Clamp(positiony.GetResultFloat(v.Position.y), (float)General.Map.FormatInterface.MinCoordinate, (float)General.Map.FormatInterface.MaxCoordinate);
 				v.Move(p);
-				
+
 				// Custom fields
 				fieldslist.Apply(v.Fields);
+			}
+
+			//mxd. Height offsets
+			if(General.Map.UDMF) {
+				foreach(Vertex v in vertices) {
+					float oldCeil = UDMFTools.GetFloat(v.Fields, "zceiling", 0);
+					UDMFTools.SetFloat(v.Fields, "zceiling", zceiling.GetResultFloat(oldCeil), 0, false);
+					float oldFloor = UDMFTools.GetFloat(v.Fields, "zfloor", 0);
+					UDMFTools.SetFloat(v.Fields, "zfloor", zfloor.GetResultFloat(oldFloor), 0, false);
+				}
 			}
 			
 			// Done
