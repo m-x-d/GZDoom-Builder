@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private volatile bool running = false;
 		private Thread checksthread;
 		private BlockMap<BlockEntry> blockmap;
+		private static bool applyToAll; //mxd
 		
 		#endregion
 
@@ -97,13 +98,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			checks.PerformLayout();
 			buttoncheck.Top = checks.Bottom + 14;
 			resultspanel.Top = buttoncheck.Bottom + 14;
-			
-			// First time showing?
-			//if((this.Location.X == 0) && (this.Location.Y == 0))
-			{
-				// Position at left-top of owner
-				this.Location = new Point(owner.Location.X + 20, owner.Location.Y + 90);
-			}
+
+			//mxd
+			cbApplyToAll.Checked = applyToAll;
+
+			// Position at left-top of owner
+			this.Location = new Point(owner.Location.X + 20, owner.Location.Y + 90);
 			
 			// Close results part
 			resultspanel.Visible = false;
@@ -236,6 +236,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			ClearSelectedResult();
+
+			//mxd
+			applyToAll = cbApplyToAll.Checked;
+
 			this.Hide();
 		}
 
@@ -248,6 +252,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			fix1.Visible = false;
 			fix2.Visible = false;
 			fix3.Visible = false;
+			cbApplyToAll.Visible = false;//mxd
 		}
 		
 		// This runs in a seperate thread to manage the checking threads
@@ -405,6 +410,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				fix1.Visible = (r.Buttons >= 1);
 				fix2.Visible = (r.Buttons >= 2);
 				fix3.Visible = (r.Buttons >= 3);
+				cbApplyToAll.Visible = true;//mxd
 				r.ZoomToObject();
 			}
 			else
@@ -428,7 +434,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-					if(r.Button1Click()) StartChecking(); else General.Interface.RedrawDisplay();
+                    if (r.Button1Click()) {
+                        if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 1); //mxd
+                        StartChecking();
+                    } else {
+                        General.Interface.RedrawDisplay();
+                    }
 				}
 			}
 		}
@@ -446,7 +457,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-					if(r.Button2Click()) StartChecking(); else General.Interface.RedrawDisplay();
+                    if (r.Button2Click()) {
+                        if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 2); //mxd
+                        StartChecking();
+                    } else {
+                        General.Interface.RedrawDisplay();
+                    }
 				}
 			}
 		}
@@ -464,10 +480,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-					if(r.Button3Click()) StartChecking(); else General.Interface.RedrawDisplay();
+                    if (r.Button3Click()) {
+                        if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 3); //mxd
+                        StartChecking();
+                    } else {
+                        General.Interface.RedrawDisplay();
+                    }
 				}
 			}
 		}
+
+        //mxd
+        private void fixSimilarErrors(Type type, int fixIndex) {
+            foreach (Object item in results.Items) {
+                if (item == results.SelectedItem) continue;
+                if (item.GetType() != type) continue;
+
+                ErrorResult r = item as ErrorResult;
+
+                if (fixIndex == 1)
+                    r.Button1Click();
+                else if (fixIndex == 2)
+                    r.Button2Click();
+                else if (fixIndex == 3)
+                    r.Button3Click();
+            }
+        }
 
 		private void ErrorCheckForm_HelpRequested(object sender, HelpEventArgs hlpevent)
 		{

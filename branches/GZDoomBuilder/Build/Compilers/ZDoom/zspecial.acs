@@ -289,6 +289,9 @@ special
 	-45:ACS_NamedExecuteAlways(2,5),
 	-46:UniqueTID(0,2),
 	-47:IsTIDUsed(1),
+	-48:Sqrt(1),
+	-49:FixedSqrt(1),
+	-50:VectorLength(2),
 
 	-1000:__EndOfList__(10);
 	
