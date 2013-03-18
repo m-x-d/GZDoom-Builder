@@ -111,6 +111,11 @@ namespace CodeImp.DoomBuilder.Config
         private bool gzTestFromCurrentPosition;
 		private bool gzStretchModels;
         private float gzVertexScale2D;
+		private bool gzShowVisualVertices;
+		private int gzVisualVertexSize;
+		private bool gzLoadDefaultLightDefinitions;
+		private int gzNewSectorsCount;
+		private bool gzForceDefaultTextures;
 		
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -191,6 +196,11 @@ namespace CodeImp.DoomBuilder.Config
         public float GZDynamicLightIntensity { get { return gzDynamicLightIntensity; } internal set { gzDynamicLightIntensity = value; } }
 		public bool GZStretchModels { get { return gzStretchModels; } internal set { gzStretchModels = value; } }
         public float GZVertexScale2D { get { return gzVertexScale2D; } internal set { gzVertexScale2D = value; } }
+		public bool GZShowVisualVertices { get { return gzShowVisualVertices; } internal set { gzShowVisualVertices = value; } }
+		public int GZVisualVertexSize { get { return gzVisualVertexSize; } internal set { gzVisualVertexSize = value; } }
+		public bool GZLoadDefaultLightDefinitions { get { return gzLoadDefaultLightDefinitions; } internal set { gzLoadDefaultLightDefinitions = value; } }
+		public int GZNewSectorsCount { get { return gzNewSectorsCount; } internal set { gzNewSectorsCount = value; } }
+		public bool GZForceDefaultTextures { get { return gzForceDefaultTextures; } internal set { gzForceDefaultTextures = value; } }
 		
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -287,6 +297,10 @@ namespace CodeImp.DoomBuilder.Config
                 gzDynamicLightIntensity = cfg.ReadSetting("gzdynamiclightintensity", 1.0f);
 				gzStretchModels = cfg.ReadSetting("gzstretchmodels", true);
                 gzVertexScale2D = cfg.ReadSetting("gzvertexscale2d", 1.0f);
+				gzShowVisualVertices = cfg.ReadSetting("gzshowvisualvertices", true);
+				gzVisualVertexSize = cfg.ReadSetting("gzvisualvertexsize", 6);
+				gzLoadDefaultLightDefinitions = cfg.ReadSetting("gzloaddefaultlightdefinitions", true);
+				gzNewSectorsCount = cfg.ReadSetting("gznewsectorscount", 3);
 				
 				// Success
 				return true;
@@ -365,6 +379,10 @@ namespace CodeImp.DoomBuilder.Config
             cfg.WriteSetting("gzdynamiclightintensity", gzDynamicLightIntensity);
 			cfg.WriteSetting("gzstretchmodels", gzStretchModels);
             cfg.WriteSetting("gzvertexscale2d", gzVertexScale2D);
+			cfg.WriteSetting("gzshowvisualvertices", gzShowVisualVertices);
+			cfg.WriteSetting("gzvisualvertexsize", gzVisualVertexSize);
+			cfg.WriteSetting("gzloaddefaultlightdefinitions", gzLoadDefaultLightDefinitions);
+			cfg.WriteSetting("gznewsectorscount", gzNewSectorsCount);
 			
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");
@@ -607,8 +625,8 @@ namespace CodeImp.DoomBuilder.Config
 				// Otherwise just pick the first
 				if(!foundone)
 				{
-					if(General.Map.Data.FlatNames.Count > 0)
-						defaultfloortexture = General.Map.Data.FlatNames[0];
+					if(General.Map.Data.FlatNames.Count > 1)
+						defaultfloortexture = General.Map.Data.FlatNames[1];
 				}
 			}
 			

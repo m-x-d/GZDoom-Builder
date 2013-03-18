@@ -140,8 +140,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
         //mxd. Add UDMF vertex offset effect
-        public void AddEffectVertexOffset(Vertex[] vertices) {
-            EffectUDMFVertexOffset e = new EffectUDMFVertexOffset(this, vertices);
+        public void AddEffectVertexOffset() {
+            EffectUDMFVertexOffset e = new EffectUDMFVertexOffset(this);
             alleffects.Add(e);
         }
 		
@@ -218,8 +218,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
         //mxd
-        public void Update(bool forced) {
-            updated = !forced;
+        public void UpdateForced() {
+            updated = false;
             Update();
         }
 

@@ -1040,11 +1040,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.IgnorePropChanges = false;
 				
 				// Remove the geometry
-				int index = 0;
+				//int index = 0;
 				foreach(Vertex v in selectedvertices)
 					v.Dispose();
 
-				index = 0;
+				//index = 0;
 				foreach(Thing t in selectedthings)
 					t.Dispose();
 				

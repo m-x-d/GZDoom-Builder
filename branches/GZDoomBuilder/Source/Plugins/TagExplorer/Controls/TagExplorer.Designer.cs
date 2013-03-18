@@ -30,8 +30,8 @@
             this.btnClearSearch = new System.Windows.Forms.Button();
             this.tbSearch = new System.Windows.Forms.TextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.updatetimer = new System.Windows.Forms.Timer(this.components);
+            this.bExportToFile = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,7 +47,7 @@
             this.treeView.Location = new System.Drawing.Point(3, 172);
             this.treeView.Name = "treeView";
             this.treeView.SelectedImageIndex = 0;
-            this.treeView.Size = new System.Drawing.Size(266, 172);
+            this.treeView.Size = new System.Drawing.Size(266, 226);
             this.treeView.TabIndex = 0;
             this.treeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseDoubleClick);
             this.treeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView_AfterLabelEdit);
@@ -195,31 +195,35 @@
             this.tbSearch.TabIndex = 7;
             this.tbSearch.TextChanged += new System.EventHandler(this.tbSearch_TextChanged);
             // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Location = new System.Drawing.Point(3, 344);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(266, 12);
-            this.groupBox2.TabIndex = 8;
-            this.groupBox2.TabStop = false;
-            // 
             // updatetimer
             // 
-            this.updatetimer.Interval = 500;
+            this.updatetimer.Interval = 750;
             this.updatetimer.Tick += new System.EventHandler(this.updatetimer_Tick);
+            // 
+            // bExportToFile
+            // 
+            this.bExportToFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.bExportToFile.Location = new System.Drawing.Point(3, 402);
+            this.bExportToFile.Name = "bExportToFile";
+            this.bExportToFile.Size = new System.Drawing.Size(266, 23);
+            this.bExportToFile.TabIndex = 0;
+            this.bExportToFile.Text = "Export to file";
+            this.toolTip1.SetToolTip(this.bExportToFile, "Saves current infromation to [wadname].txt\r\nIf [wadname].txt already exists, it w" +
+                    "ill be overwritten.\r\n");
+            this.bExportToFile.UseVisualStyleBackColor = true;
+            this.bExportToFile.Click += new System.EventHandler(this.bExportToFile_Click);
             // 
             // TagExplorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.bExportToFile);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.treeView);
             this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "TagExplorer";
-            this.Size = new System.Drawing.Size(272, 359);
+            this.Size = new System.Drawing.Size(272, 430);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -242,7 +246,7 @@
         private System.Windows.Forms.TextBox tbSearch;
         private System.Windows.Forms.CheckBox cbSelectOnClick;
         private System.Windows.Forms.CheckBox cbCommentsOnly;
-        private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Timer updatetimer;
+        private System.Windows.Forms.Button bExportToFile;
     }
 }

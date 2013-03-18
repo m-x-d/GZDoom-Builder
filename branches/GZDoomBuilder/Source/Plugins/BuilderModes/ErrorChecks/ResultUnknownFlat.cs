@@ -76,9 +76,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override string ToString()
 		{
 			if(ceiling)
-				return "Sector has unknown ceiling flat \"" + sector.CeilTexture + "\"";
+				return "Sector " + sector.Index + " has unknown ceiling flat \"" + sector.CeilTexture + "\"";
 			else
-				return "Sector has unknown floor flat \"" + sector.FloorTexture + "\"";
+                return "Sector " + sector.Index + " has unknown floor flat \"" + sector.FloorTexture + "\"";
 		}
 		
 		// Rendering

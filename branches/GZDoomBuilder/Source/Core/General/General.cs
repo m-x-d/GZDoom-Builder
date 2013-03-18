@@ -296,7 +296,7 @@ namespace CodeImp.DoomBuilder
 		{
 			Configuration cfg;
 			string[] filenames;
-			string name, fullfilename;
+			string fullfilename;
 			
 			// Display status
 			mainwindow.DisplayStatus(StatusType.Busy, "Loading game configurations...");
@@ -969,6 +969,8 @@ namespace CodeImp.DoomBuilder
 			
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
+
+			General.Settings.GZForceDefaultTextures = false;//mxd
 			
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
@@ -992,7 +994,8 @@ namespace CodeImp.DoomBuilder
 					plugins.OnMapNewBegin();
 
 					// Set this to false so we can see if errors are added
-					General.ErrorLogger.IsErrorAdded = false;
+					//General.ErrorLogger.IsErrorAdded = false;
+					General.ErrorLogger.Clear(); //mxd
 					
 					// Create map manager with given options
 					map = new MapManager();
@@ -1044,6 +1047,8 @@ namespace CodeImp.DoomBuilder
 		{
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
+
+			General.Settings.GZForceDefaultTextures = false;//mxd
 
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
@@ -1111,6 +1116,7 @@ namespace CodeImp.DoomBuilder
 
                 //mxd
                 mainwindow.UpdateGZDoomPannel();
+				General.Settings.GZForceDefaultTextures = false;
 			}
 
 			openfile.Dispose();
@@ -1155,7 +1161,8 @@ namespace CodeImp.DoomBuilder
 			plugins.OnMapOpenBegin();
 
 			// Set this to false so we can see if errors are added
-			General.ErrorLogger.IsErrorAdded = false;
+			//General.ErrorLogger.IsErrorAdded = false;
+			General.ErrorLogger.Clear();//mxd
 
 			// Create map manager with given options
 			map = new MapManager();

@@ -7,19 +7,13 @@ using CodeImp.DoomBuilder.Geometry;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
     internal class EffectUDMFVertexOffset : SectorEffect {
-
-        private Vertex[] vertices;
-
-        public EffectUDMFVertexOffset(SectorData data, Vertex[] vertices)
-            : base(data) {
-
-            this.vertices = vertices;
-
-            // New effect added: This sector needs an update!
-            if (data.Mode.VisualSectorExists(data.Sector)) {
-                BaseVisualSector vs = (BaseVisualSector)data.Mode.GetVisualSector(data.Sector);
-                vs.UpdateSectorGeometry(true);
-            }
+        
+		public EffectUDMFVertexOffset(SectorData data) : base(data) {
+			// New effect added: This sector needs an update!
+			if(data.Mode.VisualSectorExists(data.Sector)) {
+				BaseVisualSector vs = (BaseVisualSector)data.Mode.GetVisualSector(data.Sector);
+				vs.UpdateSectorGeometry(true);
+			}
         }
 
         public override void Update() {
@@ -35,27 +29,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Vertex v = sd.IsFront ? sd.Line.End : sd.Line.Start;
                 
                 //create "normal" vertices
-                floorVerts[index] = new Vector3D(v.Position.x, v.Position.y, data.Floor.plane.GetZ(v.Position));
-                ceilingVerts[index] = new Vector3D(v.Position.x, v.Position.y, data.Ceiling.plane.GetZ(v.Position));
-
-                if (vertices[index] == null){
-                    index++;
-                    continue;
-                }
+                floorVerts[index] = new Vector3D(v.Position);
+                ceilingVerts[index] = new Vector3D(v.Position);
 
                 //check ceiling
-                if (vertices[index].Fields.ContainsKey("zceiling")) {
-                    //yes, some things work in strange and mysterious ways in zdoom...
-                    ceilingVerts[index].z = (float)vertices[index].Fields["zceiling"].Value;
-                    ceilingChanged = true;
-                }
+				if(v.Fields.ContainsKey("zceiling")) {
+					//vertex offset is absolute
+					ceilingVerts[index].z = (float)v.Fields["zceiling"].Value;
+					ceilingChanged = true;
+				} else {
+					ceilingVerts[index].z = data.Ceiling.plane.GetZ(v.Position);
+				}
 
-                //and floor ceiling
-                if (vertices[index].Fields.ContainsKey("zfloor")) {
-                    //yes, some things work in strange and mysterious ways in zdoom...
-                    floorVerts[index].z = (float)vertices[index].Fields["zfloor"].Value;
-                    floorChanged = true;
-                }
+                //and floor
+				if(v.Fields.ContainsKey("zfloor")) {
+					//vertex offset is absolute
+					floorVerts[index].z = (float)v.Fields["zfloor"].Value;
+					floorChanged = true;
+				} else {
+					floorVerts[index].z = data.Floor.plane.GetZ(v.Position);
+				}
+
+				VertexData vd = data.Mode.GetVertexData(v);
+				vd.AddUpdateSector(data.Sector, true);
+				data.Mode.UpdateVertexHandle(v);
 
                 index++;
             }

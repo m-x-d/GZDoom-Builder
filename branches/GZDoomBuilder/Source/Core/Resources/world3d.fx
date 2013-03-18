@@ -144,7 +144,7 @@ float4 ps_main_highlight(PixelData pd) : COLOR
 	float4 hcolor = float4(highlightcolor.rgb, ncolor.a);
 	
     //return lerp(ncolor, hcolor, highlightcolor.a);
-    return float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), tcolor.a);
+    return float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f); //tcolor.a
 }
 
 // Full-bright pixel shader with highlight
@@ -157,7 +157,7 @@ float4 ps_fullbright_highlight(PixelData pd) : COLOR
 	float4 hcolor = float4(highlightcolor.rgb, ncolor.a);
 	
     //return lerp(ncolor, hcolor, highlightcolor.a);
-    return float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), tcolor.a);
+    return float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f); //tcolor.a
 }
 
 //mxd. This adds fog color to current pixel color
@@ -184,7 +184,7 @@ float4 ps_main_highlight_fog(LitPixelData pd) : COLOR {
 	// Blend texture color, vertex color and modulation color
 	float4 ncolor = tcolor * pd.color * modulatecolor;
 	float4 hcolor = float4(highlightcolor.rgb, ncolor.a);
-  return getFogColor(pd, float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), tcolor.a));
+  return getFogColor(pd, float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f)); //tcolor.a
 }
 
 //mxd: used to draw bounding boxes

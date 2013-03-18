@@ -38,6 +38,9 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.GZBuilder.Geometry;
+using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.BuilderModes.IO;
+using CodeImp.DoomBuilder.BuilderModes.Interface;
 
 #endregion
 
@@ -77,6 +80,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Docker undoredodocker;
 
         //mxd
+		private ToolStripMenuItem exportToObjMenuItem;
         private ToolStripMenuItem snapModeMenuItem;
         private ToolStripMenuItem drawLinesModeMenuItem;
         private ToolStripMenuItem drawRectModeMenuItem;
@@ -107,6 +111,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float splitlinedefsrange;
 		private bool usehighlight;
 		private bool autodragonpaste;
+		private bool autoAlignTextureOffsetsOnCreate;//mxd
+		private bool autoAlignTextureOffsetsOnDrag;//mxd
+		private bool dontMoveGeometryOutsideMapBoundary;//mxd
+		private int marqueSelectionMode; //mxd
+		private bool marqueSelectTouching; //mxd. Select elements partially/fully inside of marque selection?
+		private bool syncSelection; //mxd. Sync selection between Visual and Classic modes.
+		private bool objExportTextures; //mxd
+		private bool objGZDoomScale; //mxd
+		private float objScale;
 		
 		#endregion
 
@@ -160,6 +173,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
             } 
         }
 		public bool AutoDragOnPaste { get { return autodragonpaste; } set { autodragonpaste = value; } }
+		public bool AutoAlignTextureOffsetsOnCreate { get { return autoAlignTextureOffsetsOnCreate; } set { autoAlignTextureOffsetsOnCreate = value; } } //mxd
+		public bool AutoAlignTextureOffsetsOnDrag { get { return autoAlignTextureOffsetsOnDrag; } set { autoAlignTextureOffsetsOnDrag = value; } } //mxd
+		public bool DontMoveGeometryOutsideMapBoundary { get { return dontMoveGeometryOutsideMapBoundary; } set { DontMoveGeometryOutsideMapBoundary = value; } } //mxd
+		public int MarqueSelectionMode { get { return marqueSelectionMode; } set { marqueSelectionMode = value; } } //mxd
+		public bool MarqueSelectTouching { get { return marqueSelectTouching; } set { marqueSelectTouching = value; } } //mxd
+		public bool SyncSelection { get { return syncSelection; } set { syncSelection = value; } } //mxd
+		public bool ObjExportTextures { get { return objExportTextures; } internal set { objExportTextures = value; } } //mxd
+		public bool ObjGZDoomScale { get { return objGZDoomScale; } internal set { objGZDoomScale = value; } } //mxd
+		public float ObjScale { get { return objScale; } internal set { objScale = value; } } //mxd
 		
 		#endregion
 
@@ -195,6 +217,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredodocker = new Docker("undoredo", "Undo / Redo", undoredopanel);
 			General.Interface.AddDocker(undoredodocker);
 
+			//mxd. Export to .obj
+			exportToObjMenuItem = new ToolStripMenuItem("Export to .obj...");
+			exportToObjMenuItem.Tag = "exporttoobj";
+			exportToObjMenuItem.Click += new EventHandler(InvokeTaggedAction);
+			exportToObjMenuItem.Enabled = false;
+			General.Interface.AddMenu(exportToObjMenuItem, MenuSection.FileNewOpenClose);
+
             //mxd. add "Snap Vertices" menu button
             snapModeMenuItem = new ToolStripMenuItem("Snap selected vertices to grid");
             snapModeMenuItem.Tag = "snapvertstogrid";
@@ -227,6 +256,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
             drawLinesModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.DrawLinesMode;
             drawLinesModeMenuItem.Enabled = false;
             General.Interface.AddMenu(drawLinesModeMenuItem, MenuSection.ModeDrawModes);
+
+			//mxd
+			General.Actions.BindMethods(this);
 		}
 		
 		// Disposer
@@ -239,6 +271,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.RemoveDocker(undoredodocker);
 
                 //mxd
+				General.Interface.RemoveMenu(exportToObjMenuItem);
                 General.Interface.RemoveMenu(snapModeMenuItem);
                 General.Interface.RemoveMenu(drawLinesModeMenuItem);
                 General.Interface.RemoveMenu(drawRectModeMenuItem);
@@ -281,6 +314,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			highlightthingsrange = (float)General.Settings.ReadPluginSetting("highlightthingsrange", 10);
 			splitlinedefsrange = (float)General.Settings.ReadPluginSetting("splitlinedefsrange", 10);
 			autodragonpaste = General.Settings.ReadPluginSetting("autodragonpaste", false);
+			autoAlignTextureOffsetsOnCreate = General.Settings.ReadPluginSetting("autoaligntextureoffsetsoncreate", true); //mxd
+			autoAlignTextureOffsetsOnDrag = General.Settings.ReadPluginSetting("autoaligntextureoffsetsondrag", true); //mxd
+			dontMoveGeometryOutsideMapBoundary = General.Settings.ReadPluginSetting("dontmovegeometryoutsidemapboundary", false); //mxd
+			marqueSelectionMode = General.Settings.ReadPluginSetting("marqueselectionmode", 1); //mxd
+			syncSelection = General.Settings.ReadPluginSetting("syncselection", false); //mxd
+			objExportTextures = General.Settings.ReadPluginSetting("objexporttextures", false); //mxd
+			objGZDoomScale = General.Settings.ReadPluginSetting("objgzdoomscale", false); //mxd
+			objScale = General.Settings.ReadPluginSetting("objscale", 1.0f); //mxd
 		}
 
 		#endregion
@@ -395,6 +436,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel.UpdateList();
 
             //mxd
+			exportToObjMenuItem.Enabled = true;
             snapModeMenuItem.Enabled = true;
             drawLinesModeMenuItem.Enabled = true;
             drawRectModeMenuItem.Enabled = true;
@@ -409,6 +451,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel.UpdateList();
 
             //mxd
+			exportToObjMenuItem.Enabled = true;
             snapModeMenuItem.Enabled = true;
             drawLinesModeMenuItem.Enabled = true;
             drawRectModeMenuItem.Enabled = true;
@@ -422,6 +465,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel.UpdateList();
 
             //mxd
+			exportToObjMenuItem.Enabled = false;
             snapModeMenuItem.Enabled = false;
             drawLinesModeMenuItem.Enabled = false;
             drawRectModeMenuItem.Enabled = false;
@@ -493,6 +537,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This adjusts texture coordinates for splitted lines according to the user preferences
 		public void AdjustSplitCoordinates(Linedef oldline, Linedef newline)
 		{
+			//mxd. Clamp texture coordinates (they are already adjusted, we just need to clamp OffsetX by texture width)
+			if(splitlinebehavior == 0) {
+				if((oldline.Front != null) && (newline.Front != null)) {
+					//get texture
+					ImageData texture = null;
+
+					if(newline.Front.MiddleRequired() && newline.Front.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(newline.Front.MiddleTexture)) {
+						texture = General.Map.Data.GetFlatImage(newline.Front.MiddleTexture);
+					} else if(newline.Front.HighRequired() && newline.Front.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(newline.Front.HighTexture)) {
+						texture = General.Map.Data.GetFlatImage(newline.Front.HighTexture);
+					} else if(newline.Front.LowRequired() && newline.Front.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(newline.Front.LowTexture)) {
+						texture = General.Map.Data.GetFlatImage(newline.Front.LowTexture);
+					}
+
+					//clamp offsetX
+					if(texture != null)
+						newline.Front.OffsetX %= texture.Width;
+				}
+
+				if((oldline.Back != null) && (newline.Back != null)) {
+					//get texture
+					ImageData texture = null;
+
+					if(newline.Back.MiddleRequired() && newline.Back.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(newline.Back.MiddleTexture)) {
+						texture = General.Map.Data.GetFlatImage(newline.Back.MiddleTexture);
+					} else if(newline.Back.HighRequired() && newline.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(newline.Back.HighTexture)) {
+						texture = General.Map.Data.GetFlatImage(newline.Back.HighTexture);
+					} else if(newline.Back.LowRequired() && newline.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(newline.Back.LowTexture)) {
+						texture = General.Map.Data.GetFlatImage(newline.Back.LowTexture);
+					}
+
+					//clamp offsetX
+					if(texture != null)
+						newline.Back.OffsetX %= texture.Width;
+				}
+			}
 			// Copy X and Y coordinates
 			if(splitlinebehavior == 1)
 			{
@@ -562,10 +642,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				if(General.Settings.GZShowEventLines) { //mxd
-					//renderer.PlotArrows(lines, General.Colors.InfoLine);//mxd
-					foreach(Line3D l in lines){
+					foreach(Line3D l in lines)
 						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
-					}
 				}
 			}
 			// Linedefs?
@@ -581,10 +659,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				if(General.Settings.GZShowEventLines) { //mxd
-					//renderer.PlotArrows(lines, General.Colors.InfoLine);//mxd
-					foreach(Line3D l in lines) {
+					foreach(Line3D l in lines)
 						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
-					}
 				}
 			}
 		}
@@ -608,10 +684,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 				if(General.Settings.GZShowEventLines) { //mxd
-					//renderer.RenderArrows(lines, General.Colors.InfoLine);//mxd
-					foreach(Line3D l in lines) {
+					foreach(Line3D l in lines)
 						renderer.RenderArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
-					}
 				}
 			}
 		}
@@ -643,10 +717,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 				if(General.Settings.GZShowEventLines) { //mxd
-					//renderer.PlotArrows(lines, General.Colors.InfoLine); //mxd
-					foreach(Line3D l in lines) {
+					foreach(Line3D l in lines)
 						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
-					}
 				}
 			}
 			else
@@ -714,6 +786,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Line3D l in lines) {
 					renderer.RenderArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
 				}
+			}
+		}
+
+		#endregion
+
+		//mxd
+		#region Actions
+
+		[BeginAction("exporttoobj")]
+		private void exportToObj() {
+			//get sectors
+			ICollection<Sector> sectors = General.Map.Map.SelectedSectorsCount == 0 ? General.Map.Map.Sectors : General.Map.Map.GetSelectedSectors(true);
+			if(sectors.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "OBJ export failed. Map has no sectors!");
+				return;
+			}
+
+			//show settings form
+			WavefrontSettingsForm form = new WavefrontSettingsForm(General.Map.Map.SelectedSectorsCount == 0 ? -1 : sectors.Count);
+			if(form.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+				WavefrontExportSettings data = new WavefrontExportSettings(Path.GetFileNameWithoutExtension(form.FilePath), Path.GetDirectoryName(form.FilePath), BuilderPlug.Me.ObjScale, BuilderPlug.Me.ObjGZDoomScale, BuilderPlug.Me.ObjExportTextures);
+				WavefrontExporter e = new WavefrontExporter();
+				e.Export(sectors, data);
 			}
 		}
 

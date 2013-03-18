@@ -37,6 +37,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.GZBuilder.MD3;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.Geometry;
+using CodeImp.DoomBuilder.GZBuilder.Rendering;
 
 #endregion
 
@@ -75,10 +76,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		private ProjectedFrustum2D frustum;
 		
 		// Thing cage
-		//private VertexBuffer thingcage;
         private bool renderthingcages;
         //mxd
         private ThingBoundingBox bbox;
+		private VisualVertexHandle vertexHandle;
+		private SizelessVisualThingCage sizelessThingHandle;
         private List<VisualThing> thingsWithLight;
         private int[] lightOffsets;
         private Dictionary<Texture, List<VisualGeometry>> litGeometry;
@@ -111,6 +113,9 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Things to be rendered, sorted by distance from camera
 		private BinaryHeap<VisualThing> thingsbydistance;
+
+		//mxd. Visual vertices
+		private VisualVertex[] visualvertices;
         
 		#endregion
 
@@ -132,7 +137,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Initialize
 			CreateProjection();
 			CreateMatrices2D();
-			SetupThingCage();
+			SetupHelperObjects();
 			SetupTextures();
 			renderthingcages = true;
 			showselection = true;
@@ -154,15 +159,17 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Clean up
                 //mxd
-				//if(thingcage != null) thingcage.Dispose();
-                if (bbox != null) bbox.Dispose();
+                if(bbox != null) bbox.Dispose();
+				if(vertexHandle != null) vertexHandle.Dispose();
+				if(sizelessThingHandle != null)	sizelessThingHandle.Dispose();
 
 				if(selectionimage != null) selectionimage.Dispose();
 				if(highlightimage != null) highlightimage.Dispose();
                 
                 //mxd
-                //thingcage = null;
                 bbox = null;
+				vertexHandle = null;
+				sizelessThingHandle = null;
 
 				selectionimage = null;
 				highlightimage = null;
@@ -182,15 +189,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			crosshairverts = null;
             //mxd
-			//if(thingcage != null) thingcage.Dispose();
-            if (bbox != null) bbox.Dispose();
+            if(bbox != null) bbox.Dispose();
+			if(vertexHandle != null) vertexHandle.Dispose();
+			if(sizelessThingHandle != null)	sizelessThingHandle.Dispose();
 
 			if(selectionimage != null) selectionimage.Dispose();
 			if(highlightimage != null) highlightimage.Dispose();
 			
             //mxd
-            //thingcage = null;
+			vertexHandle = null;
             bbox = null;
+			sizelessThingHandle = null;
 
 			selectionimage = null;
 			highlightimage = null;
@@ -201,7 +210,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public override void ReloadResource()
 		{
 			CreateMatrices2D();
-			SetupThingCage();
+			SetupHelperObjects();
 			SetupTextures();
 		}
 
@@ -256,84 +265,12 @@ namespace CodeImp.DoomBuilder.Rendering
 				selectionimage.CreateTexture();
 			}
 		}
-		
-		// This sets up the thing cage
-		/*private void SetupThingCage()
-		{
-			const int totalvertices = 36;
-			WorldVertex[] tv = new WorldVertex[totalvertices];
-			float x0 = -1.0f;
-			float x1 = 1.0f;
-			float y0 = -1.0f;
-			float y1 = 1.0f;
-			float z0 = 0.0f;
-			float z1 = 1.0f;
-			float u0 = 0.0f;
-			float u1 = 1.0f;
-			float v0 = 0.0f;
-			float v1 = 1.0f;
-			int c = -1;
-			
-			// Front
-			tv[0] = new WorldVertex(x0, y0, z0, c, u0, v0);
-			tv[1] = new WorldVertex(x0, y0, z1, c, u0, v1);
-			tv[2] = new WorldVertex(x1, y0, z0, c, u1, v0);
-			tv[3] = new WorldVertex(x1, y0, z0, c, u1, v0);
-			tv[4] = new WorldVertex(x0, y0, z1, c, u0, v1);
-			tv[5] = new WorldVertex(x1, y0, z1, c, u1, v1);
-
-			// Right
-			tv[6] = new WorldVertex(x1, y0, z0, c, u0, v0);
-			tv[7] = new WorldVertex(x1, y0, z1, c, u0, v1);
-			tv[8] = new WorldVertex(x1, y1, z0, c, u1, v0);
-			tv[9] = new WorldVertex(x1, y1, z0, c, u1, v0);
-			tv[10] = new WorldVertex(x1, y0, z1, c, u0, v1);
-			tv[11] = new WorldVertex(x1, y1, z1, c, u1, v1);
-
-			// Back
-			tv[12] = new WorldVertex(x1, y1, z0, c, u0, v0);
-			tv[13] = new WorldVertex(x1, y1, z1, c, u0, v1);
-			tv[14] = new WorldVertex(x0, y1, z0, c, u1, v0);
-			tv[15] = new WorldVertex(x0, y1, z0, c, u1, v0);
-			tv[16] = new WorldVertex(x1, y1, z1, c, u0, v1);
-			tv[17] = new WorldVertex(x0, y1, z1, c, u1, v1);
-
-			// Left
-			tv[18] = new WorldVertex(x0, y1, z0, c, u0, v1);
-			tv[19] = new WorldVertex(x0, y1, z1, c, u0, v0);
-			tv[20] = new WorldVertex(x0, y0, z1, c, u1, v0);
-			tv[21] = new WorldVertex(x0, y1, z0, c, u1, v0);
-			tv[22] = new WorldVertex(x0, y0, z1, c, u0, v1);
-			tv[23] = new WorldVertex(x0, y0, z0, c, u1, v1);
-
-			// Top
-			tv[24] = new WorldVertex(x0, y0, z1, c, u0, v0);
-			tv[25] = new WorldVertex(x0, y1, z1, c, u0, v1);
-			tv[26] = new WorldVertex(x1, y0, z1, c, u1, v0);
-			tv[27] = new WorldVertex(x1, y0, z1, c, u1, v0);
-			tv[28] = new WorldVertex(x0, y1, z1, c, u0, v1);
-			tv[29] = new WorldVertex(x1, y1, z1, c, u1, v1);
-
-			// Bottom
-			tv[30] = new WorldVertex(x1, y0, z0, c, u1, v0);
-			tv[31] = new WorldVertex(x0, y1, z0, c, u0, v1);
-			tv[32] = new WorldVertex(x0, y0, z0, c, u0, v0);
-			tv[33] = new WorldVertex(x1, y0, z0, c, u1, v0);
-			tv[34] = new WorldVertex(x1, y1, z0, c, u1, v1);
-			tv[35] = new WorldVertex(x0, y1, z0, c, u0, v1);
-
-			// Create vertexbuffer
-			thingcage = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * totalvertices,
-										 Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
-			DataStream bufferstream = thingcage.Lock(0, WorldVertex.Stride * totalvertices, LockFlags.Discard);
-			bufferstream.WriteRange<WorldVertex>(tv);
-			thingcage.Unlock();
-			bufferstream.Dispose();
-		}*/
 
         //mxd
-        private void SetupThingCage() {
-            bbox = new ThingBoundingBox(General.Map.Graphics.Device);
+        private void SetupHelperObjects() {
+			bbox = new ThingBoundingBox(graphics.Device);
+			vertexHandle = new VisualVertexHandle(graphics.Device);
+			sizelessThingHandle = new SizelessVisualThingCage(graphics.Device);
         }
 
 		#endregion
@@ -421,11 +358,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This starts rendering
 		public bool Start()
 		{
-			// Create texture
-            //mxd
-			//if(General.Map.Data.ThingBox.Texture == null)
-				//General.Map.Data.ThingBox.CreateTexture();
-			
 			// Start drawing
 			if(graphics.StartRendering(true, General.Colors.Background.ToColorValue(), graphics.BackBuffer, graphics.DepthBuffer))
 			{
@@ -533,10 +465,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			RenderSinglePass((int)RenderPass.Solid);
 
             //mxd. Render models, without culling. The way it's done in GZDoom... Fixes Rendering of things like grass and models with negative Scale
-            graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
             graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
             RenderModels();
-            graphics.Device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
 
 			// MASK PASS
             world = Matrix.Identity;
@@ -555,6 +487,9 @@ namespace CodeImp.DoomBuilder.Rendering
 
             // THINGS
 			if(renderthingcages) RenderThingCages();
+
+			//mxd. Visual vertices
+			RenderVertices();
 
             //mxd. LINKS
             if (General.Settings.GZShowEventLines) {
@@ -595,6 +530,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Done
 			graphics.Shaders.World3D.End();
 			geometry = null;
+			visualvertices = null;//mxd
 		}
 
         //mxd
@@ -662,19 +598,29 @@ namespace CodeImp.DoomBuilder.Rendering
 
                 //Render cage
                 graphics.Shaders.World3D.ApplySettings();
-                graphics.Device.SetStreamSource(0, bbox.cage, 0, WorldVertex.Stride);
-                graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 12);
+
+				if(t.Sizeless) {
+					graphics.Device.SetStreamSource(0, sizelessThingHandle.Shape, 0, WorldVertex.Stride);
+					graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 3);
+				} else {
+					graphics.Device.SetStreamSource(0, bbox.Cage, 0, WorldVertex.Stride);
+					graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 12);
+				}
 
                 //and arrow
                 float sx = t.CageScales.M11;
                 Matrix arrowScaler = Matrix.Scaling(sx, sx, sx); //scale arrow evenly based on thing width\depth
-                world = Matrix.Multiply(arrowScaler, t.Position * Matrix.Translation(0.0f, 0.0f, t.CageScales.M33 / 2));
+				if(t.Sizeless) {
+					world = Matrix.Multiply(arrowScaler, t.Position);
+				} else {
+					world = Matrix.Multiply(arrowScaler, t.Position * Matrix.Translation(0.0f, 0.0f, t.CageScales.M33 / 2));
+				}
                 Matrix rot = Matrix.RotationZ(t.Thing.Angle - Angle2D.PI / 2);
                 world = Matrix.Multiply(rot, world);
                 ApplyMatrices3D();
 
                 graphics.Shaders.World3D.ApplySettings();
-                graphics.Device.SetStreamSource(0, bbox.arrow, 0, WorldVertex.Stride);
+                graphics.Device.SetStreamSource(0, bbox.Arrow, 0, WorldVertex.Stride);
                 graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 5);
             }
 
@@ -683,6 +629,36 @@ namespace CodeImp.DoomBuilder.Rendering
             graphics.Shaders.World3D.SetModulateColor(-1);
             graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
         }
+
+		//mxd
+		private void RenderVertices() {
+			if(visualvertices == null) return;
+
+			graphics.Shaders.World3D.BeginPass(16);
+
+			foreach(VisualVertex v in visualvertices) {
+				world = v.Position;
+				ApplyMatrices3D();
+
+				// Setup color
+				Color4 color = new Color4();
+				if(v.Selected && showselection) {
+					color = General.Colors.Selection3D.ToColorValue();
+				} else {
+					color = General.Colors.InfoLine.ToColorValue();
+					if(v != highlighted) color.Alpha = 0.6f;
+				}
+				graphics.Shaders.World3D.VertexColor = color;
+
+				//Commence drawing!!11
+				graphics.Shaders.World3D.ApplySettings();
+				graphics.Device.SetStreamSource(0, v.CeilingVertex ? vertexHandle.Upper : vertexHandle.Lower, 0, WorldVertex.Stride);
+				graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 16);
+			}
+
+			// Done
+			graphics.Shaders.World3D.EndPass();
+		}
 
         //mxd
         private void renderArrows(List<Line3D> lines, Color4 color) {
@@ -1104,7 +1080,7 @@ namespace CodeImp.DoomBuilder.Rendering
                         graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(t.Thing.Sector, sectorHasFogColor));
                     }
 
-                    for (int i = 0; i < group.Key.Model.NUM_MESHES; i++) {
+					for(int i = 0; i < group.Key.Model.Meshes.Count; i++) {
                         if (!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, group.Key.Model.Textures[i]);
                         graphics.Shaders.World3D.Texture1 = group.Key.Model.Textures[i];
                         graphics.Shaders.World3D.ApplySettings();
@@ -1264,6 +1240,11 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Add geometry to texture group
 				things[t.RenderPassInt][t.Texture].Add(t);
 			}
+		}
+
+		//mxd
+		public void AddVisualVertices(VisualVertex[] verts) {
+			visualvertices = verts;
 		}
 
         //mxd

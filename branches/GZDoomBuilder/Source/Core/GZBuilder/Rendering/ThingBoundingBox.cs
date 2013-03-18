@@ -3,12 +3,15 @@ using SlimDX;
 using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Rendering;
 
-namespace CodeImp.DoomBuilder.GZBuilder.Data
+namespace CodeImp.DoomBuilder.GZBuilder.Rendering
 {
     sealed class ThingBoundingBox : IDisposable
     {
-        public VertexBuffer cage;
-        public VertexBuffer arrow;
+        public VertexBuffer Cage { get { return cage; }}
+		public VertexBuffer Arrow { get { return arrow; } }
+
+		private VertexBuffer cage;
+		private VertexBuffer arrow;
         
         public ThingBoundingBox(Device device) {
             WorldVertex v0 = new WorldVertex(-1.0f, -1.0f, 0.0f);

@@ -50,6 +50,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
+		public bool innerSide; //mxd
+
 		#endregion
 
 		#region ================== Properties
@@ -63,18 +65,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
             //mxd
             geoType = VisualGeometryType.CEILING;
+
+			//mxd
+			if(mode.UseSelectionFromClassicMode && vs != null && vs.Sector.Selected && (General.Map.ViewMode == ViewMode.CeilingTextures || General.Map.ViewMode == ViewMode.Normal)) {
+				this.selected = true;
+				mode.AddSelectedObject(this);
+			}
             
             // We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
 		// This builds the geometry. Returns false when no geometry created.
-		public override bool Setup(SectorLevel level, Effect3DFloor extrafloor)
+		public override bool Setup(SectorLevel level, Effect3DFloor extrafloor) {
+			return Setup(level, extrafloor, innerSide);
+		}
+
+		//mxd
+		public bool Setup(SectorLevel level, Effect3DFloor extrafloor, bool innerSide)
 		{
 			WorldVertex[] verts;
-			WorldVertex v;
 			Sector s = level.sector;
 			Vector2D texscale;
+			this.innerSide = innerSide; //mxd
 			
 			base.Setup(level, extrafloor);
 			
@@ -85,17 +98,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector2D scale = new Vector2D(s.Fields.GetValue("xscaleceiling", 1.0f),
 			                              s.Fields.GetValue("yscaleceiling", 1.0f));
 			
-			// Load floor texture
-			base.Texture = General.Map.Data.GetFlatImage(s.LongCeilTexture);
-			if(base.Texture == null)
-			{
-				base.Texture = General.Map.Data.MissingTexture3D;
-				setuponloadedtexture = s.LongCeilTexture;
-			}
-			else
-			{
-				if(!base.Texture.IsImageLoaded)
+			//Load ceiling texture
+			if((s.CeilTexture.Length > 0) && (s.CeilTexture[0] != '-')) {
+				base.Texture = General.Map.Data.GetFlatImage(s.LongCeilTexture);
+				if(base.Texture == null) {
+					base.Texture = General.Map.Data.MissingTexture3D;
 					setuponloadedtexture = s.LongCeilTexture;
+				} else {
+					if(!base.Texture.IsImageLoaded) {
+						setuponloadedtexture = s.LongCeilTexture;
+					}
+				}
+			} else {
+				// Use missing texture
+				base.Texture = General.Map.Data.MissingTexture3D;
+				setuponloadedtexture = 0;
 			}
 
 			// Determine texture scale
@@ -116,7 +133,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Vertex coordinates
 				verts[i].x = triverts[i].x;
 				verts[i].y = triverts[i].y;
-				verts[i].z = level.plane.GetZ(triverts[i]); //(float)s.CeilHeight;
+				verts[i].z = level.plane.GetZ(triverts[i]);
 
 				// Texture coordinates
 				Vector2D pos = triverts[i];
@@ -130,13 +147,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// The sector triangulation created clockwise triangles that
 			// are right up for the floor. For the ceiling we must flip
 			// the triangles upside down.
-			if((extrafloor == null) || extrafloor.VavoomType)
+			if(extrafloor == null || extrafloor.VavoomType || innerSide)
 				SwapTriangleVertices(verts);
 
 			// Determine render pass
 			if(extrafloor != null)
 			{
-				if(level.alpha < 255)
+				if ((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.RenderAdditive) != 0) //mxd
+					this.RenderPass = RenderPass.Additive;
+				else if (level.alpha < 255)
 					this.RenderPass = RenderPass.Alpha;
 				else
 					this.RenderPass = RenderPass.Mask;
@@ -187,6 +206,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode.SetActionResult("Pasted flat " + BuilderPlug.Me.CopiedFlat + " on ceiling.");
 				SetTexture(BuilderPlug.Me.CopiedFlat);
 				this.Setup();
+
+				//mxd. 3D floors may need updating...
+				onTextureChanged();
 			}
 		}
 
@@ -223,7 +245,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
                 }
 
                 if (index > -1 && index < Sector.ExtraCeilings.Count) {
-                    Sector.ExtraCeilings[index].changeControlSectorBrightness(up);
+					((BaseVisualSector)mode.GetVisualSector(Sector.ExtraCeilings[index].level.sector)).Floor.OnChangeTargetBrightness(up);
                 } else {
                     base.OnChangeTargetBrightness(up);
                 }
@@ -258,17 +280,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Sector.UpdateSectorGeometry(false);
             }
         }
-
-        //mxd
-        private void changeControlSectorBrightness(bool up) {
-            ((BaseVisualSector)mode.GetVisualSector(level.sector)).Ceiling.OnChangeTargetBrightness(up);
-        }
 		
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{
 			// Check if our ray starts at the correct side of the plane
-			if(level.plane.Distance(from) > 0.0f)
+			if((innerSide && level.plane.Distance(from) < 0.0f) || (!innerSide && level.plane.Distance(from) > 0.0f)) //mxd
+			//if(level.plane.Distance(from) > 0.0f)
 			{
 				// Calculate the intersection
 				if(level.plane.GetIntersection(from, to, ref pickrayu))
@@ -310,15 +328,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			level.sector.SetCeilTexture(texturename);
 			General.Map.Data.UpdateUsedTextures();
-			if(level.sector == this.Sector.Sector)
-			{
-				this.Setup();
-			}
-			else if(mode.VisualSectorExists(level.sector))
-			{
-				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
-				vs.UpdateSectorGeometry(false);
-			}
 		}
 		
 		#endregion

@@ -482,7 +482,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " drawing.");
 				
 				// Make the drawing
-				if(!Tools.DrawLines(points))
+				if(!Tools.DrawLines(points, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) //mxd
 				{
 					// Drawing failed
 					// NOTE: I have to call this twice, because the first time only cancels this volatile mode

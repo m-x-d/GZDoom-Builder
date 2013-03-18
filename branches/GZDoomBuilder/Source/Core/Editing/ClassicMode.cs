@@ -74,8 +74,10 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		// Selection
 		protected bool selecting;
+		protected bool selectpressed; //mxd
 		private Vector2D selectstart;
 		protected RectangleF selectionrect;
+		protected bool subtractiveSelection; //mxd. When set to true, objects will be removed from selection instead of adding
 
         // View panning
         protected bool panning;
@@ -693,6 +695,7 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("classicselect", BaseAction = true)]
 		protected virtual void OnSelectBegin()
 		{
+			selectpressed = true;//mxd
 		}
 
 		/// <summary>
@@ -702,6 +705,7 @@ namespace CodeImp.DoomBuilder.Editing
 		[EndAction("classicselect", BaseAction = true)]
 		protected virtual void OnSelectEnd()
 		{
+			selectpressed = false;//mxd
 			if(selecting) OnEndMultiSelection();
 		}
 
@@ -711,6 +715,7 @@ namespace CodeImp.DoomBuilder.Editing
 		protected virtual void OnEndMultiSelection()
 		{
 			selecting = false;
+			subtractiveSelection = false; //mxd
 		}
 
 		/// <summary>
@@ -719,6 +724,7 @@ namespace CodeImp.DoomBuilder.Editing
 		protected virtual void StartMultiSelection()
 		{
 			selecting = true;
+			subtractiveSelection = false; //mxd
 			selectstart = mousemappos;
 			selectionrect = new RectangleF(selectstart.x, selectstart.y, 0, 0);
 		}
@@ -753,7 +759,7 @@ namespace CodeImp.DoomBuilder.Editing
 		protected virtual void RenderMultiSelection()
 		{
 			renderer.RenderRectangle(selectionrect, SELECTION_BORDER_SIZE,
-				General.Colors.Highlight.WithAlpha(SELECTION_ALPHA), true);
+				subtractiveSelection ? General.Colors.Highlight.WithAlpha(SELECTION_ALPHA).InverseKeepAlpha() : General.Colors.Highlight.WithAlpha(SELECTION_ALPHA), true); //mxd. Added subtractive selection
 		}
 
         /// <summary>

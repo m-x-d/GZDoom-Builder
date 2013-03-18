@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
             base.Parse(stream, sourcefilename);
 
             if (parsedLumps.IndexOf(sourcefilename) != -1) {
-                GZBuilder.GZGeneral.LogAndTraceWarning("Error: already parsed '" + sourcefilename + "'. Check your #include directives!");
+                General.ErrorLogger.Add(ErrorType.Error, "Error: already parsed '" + sourcefilename + "'. Check your #include directives!");
                 return false;
             }
             parsedLumps.Add(sourcefilename);
@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             SkipWhitespace(true);
                             token = ReadToken();
                             if (token != "{") {
-                                GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected '{', but got " + token);
+                                General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected '{', but got " + token);
                                 continue; //something wrong with gldefs declaration, continue to next one
                             }
 
@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                         token = StripTokenQuotes(ReadToken());
                                         if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Red)) {
                                             // Not numeric!
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Red Color value, but got '" + token + "'");
+                                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Red Color value, but got '" + token + "'");
                                             gotErrors = true;
                                             break;
                                         }
@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                         token = StripTokenQuotes(ReadToken());
                                         if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Green)) {
                                             // Not numeric!
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Green Color value, but got '" + token + "'");
+                                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Green Color value, but got '" + token + "'");
                                             gotErrors = true;
                                             break;
                                         }
@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                         token = StripTokenQuotes(ReadToken());
                                         if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Blue)) {
                                             // Not numeric!
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Blue Color value, but got '" + token + "'");
+                                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Blue Color value, but got '" + token + "'");
                                             gotErrors = true;
                                             break;
                                         }
@@ -126,14 +126,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                             token = StripTokenQuotes(ReadToken());
                                             if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out light.PrimaryRadius)) {
                                                 // Not numeric!
-                                                GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Size value, but got '" + token + "'");
+                                                General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Size value, but got '" + token + "'");
                                                 gotErrors = true;
                                                 break;
                                             }
                                             light.PrimaryRadius *= 2;
 
                                         } else {
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '" + token + "' is not valid property for " + lightType);
+                                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '" + token + "' is not valid property for " + lightType);
                                             gotErrors = true;
                                             break;
                                         }
@@ -144,7 +144,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                         token = StripTokenQuotes(ReadToken());
                                         if (!ReadSignedFloat(token, ref light.Offset.X)) {
                                             // Not numeric!
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Offset X value, but got '" + token + "'");
+                                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Offset X value, but got '" + token + "'");
                                             gotErrors = true;
                                             break;
                                         }
@@ -154,7 +154,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                         token = StripTokenQuotes(ReadToken());
                                         if (!ReadSignedFloat(token, ref light.Offset.Z)) {
                                             // Not numeric!
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Offset Y value, but got '" + token + "'");
+                                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Offset Y value, but got '" + token + "'");
                                             gotErrors = true;
                                             break;
                                         }
@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                         token = StripTokenQuotes(ReadToken());
                                         if (!ReadSignedFloat(token, ref light.Offset.Y)) {
                                             // Not numeric!
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Offset Z value, but got '" + token + "'");
+                                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Offset Z value, but got '" + token + "'");
                                             gotErrors = true;
                                             break;
                                         }
@@ -176,7 +176,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                         int i;
                                         if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out i)) {
                                             // Not numeric!
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Subtractive value, but got '" + token + "'");
+                                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Subtractive value, but got '" + token + "'");
                                             gotErrors = true;
                                             break;
                                         }
@@ -190,7 +190,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                         int i;
                                         if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out i)) {
                                             // Not numeric!
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Dontlightself value, but got '" + token + "'");
+                                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Dontlightself value, but got '" + token + "'");
                                             gotErrors = true;
                                             break;
                                         }
@@ -205,7 +205,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                             float interval;
                                             if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out interval)) {
                                                 // Not numeric!
-                                                GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Interval value, but got '" + token + "'");
+                                                General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Interval value, but got '" + token + "'");
                                                 gotErrors = true;
                                                 break;
                                             }
@@ -217,7 +217,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                                 light.Interval = (int)(interval * 350); //0.1 is one second for FlickerLight2
                                             }
                                         } else {
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '"+token+"' is not valid property for " + lightType);
+                                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '"+token+"' is not valid property for " + lightType);
                                             gotErrors = true;
                                             break;
                                         }
@@ -229,14 +229,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                             token = StripTokenQuotes(ReadToken());
                                             if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out light.SecondaryRadius)) {
                                                 // Not numeric!
-                                                GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected SecondarySize value, but got '" + token + "'");
+                                                General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected SecondarySize value, but got '" + token + "'");
                                                 gotErrors = true;
                                                 break;
                                             }
                                             light.SecondaryRadius *= 2;
 
                                         } else {
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '" + token + "' is not valid property for " + lightType);
+                                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '" + token + "' is not valid property for " + lightType);
                                             gotErrors = true;
                                             break;
                                         }
@@ -249,7 +249,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                             float chance;
                                             if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out chance)) {
                                                 // Not numeric!
-                                                GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Chance value, but got '" + token + "'");
+                                                General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Chance value, but got '" + token + "'");
                                                 gotErrors = true;
                                                 break;
                                             }
@@ -257,7 +257,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                             //transforming from 0.0 .. 1.0 to 0 .. 359 to fit in existing logic
                                             light.Interval = (int)(chance * 359.0f);
                                         } else {
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '" + token + "' is not valid property for " + lightType);
+                                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '" + token + "' is not valid property for " + lightType);
                                             gotErrors = true;
                                             break;
                                         }
@@ -270,13 +270,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                             float scale;
                                             if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out scale)) {
                                                 // Not numeric!
-                                                GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Scale value, but got '" + token + "'");
+                                                General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Scale value, but got '" + token + "'");
                                                 gotErrors = true;
                                                 break;
                                             }
 
                                             if (scale > 1.0f) {
-                                                GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": scale must be in 0.0 - 1.0 range, but is " + scale);
+                                                General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": scale must be in 0.0 - 1.0 range, but is " + scale);
                                                 gotErrors = true;
                                                 break;
                                             }
@@ -285,7 +285,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                             //transforming from 0.0 .. 1.0 to 0 .. 10 to preserve value.
                                             light.Interval = (int)(scale * 10.0f);
                                         } else {
-                                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '" + token + "' is not valid property for " + lightType);
+                                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '" + token + "' is not valid property for " + lightType);
                                             gotErrors = true;
                                             break;
                                         }
@@ -295,21 +295,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                         if (!gotErrors) {
                                             //general checks
                                             if (light.Color.Red == 0.0f && light.Color.Green == 0.0f && light.Color.Blue == 0.0f) {
-                                                GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": light Color is " + light.Color.Red + "," + light.Color.Green + "," + light.Color.Blue + ". It won't be shown in GZDoom!");
+                                                General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": light Color is " + light.Color.Red + "," + light.Color.Green + "," + light.Color.Blue + ". It won't be shown in GZDoom!");
                                                 gotErrors = true;
                                             }
 
                                             //light-type specific checks
                                             if (light.Type == (int)GZDoomLightType.NORMAL) {
                                                 if (light.PrimaryRadius == 0) {
-                                                    GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": light Size is 0. It won't be shown in GZDoom!");
+                                                    General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": light Size is 0. It won't be shown in GZDoom!");
                                                     gotErrors = true;
                                                 }
                                             }
 
                                             if (light.Type == (int)GZDoomLightType.FLICKER || light.Type == (int)GZDoomLightType.PULSE || light.Type == (int)GZDoomLightType.RANDOM) {
                                                 if (light.PrimaryRadius == 0 && light.SecondaryRadius == 0) {
-                                                    GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": 'Size' and 'SecondarySize' are 0. This light won't be shown in GZDoom!");
+                                                    General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": 'Size' and 'SecondarySize' are 0. This light won't be shown in GZDoom!");
                                                     gotErrors = true;
                                                 }
                                             }
@@ -344,7 +344,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             token = ReadToken();
 
                             if (token != "{") {
-                                GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected '{', but got " + token);
+                                General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected '{', but got " + token);
                                 continue;
                             }
 
@@ -370,7 +370,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                                     objects.Add(objectClass, token);
                                                 foundLight = true;
                                             } else {
-                                                GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": light declaration not found for light '" + token + "'");
+                                                General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": light declaration not found for light '" + token + "'");
                                             }
                                         }
                                     } else if (token == "{") { //continue in this loop until object structure ends
@@ -397,7 +397,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             datareader = localreader;
                             sourcename = localsourcename;
                         } else {
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": got #include directive with missing or incorrect path: '" + includeLump + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": got #include directive with missing or incorrect path: '" + includeLump + "'");
                         }
 
                     } else {

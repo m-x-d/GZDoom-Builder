@@ -32,6 +32,7 @@ using CodeImp.DoomBuilder.Windows;
 using System.Reflection;
 using System.Globalization;
 using System.Threading;
+using System.IO;
 
 #endregion
 
@@ -97,10 +98,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Move controls according to the height of the checkers box
 			checks.PerformLayout();
 			buttoncheck.Top = checks.Bottom + 14;
+            bExport.Top = checks.Bottom + 14; //mxd
 			resultspanel.Top = buttoncheck.Bottom + 14;
-
-			//mxd
-			cbApplyToAll.Checked = applyToAll;
+            cbApplyToAll.Checked = applyToAll; //mxd
+            
 
 			// Position at left-top of owner
 			this.Location = new Point(owner.Location.X + 20, owner.Location.Y + 90);
@@ -178,11 +179,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				blockmap = null;
 				
 				// When no results found, show "no results" and disable the list
-				if(results.Items.Count == 0)
-				{
-					results.Items.Add(new ResultNoErrors());
-					results.Enabled = false;
-				}
+                if(results.Items.Count == 0) {
+                    results.Items.Add(new ResultNoErrors());
+                    results.Enabled = false;
+                    //mxd
+                    bExport.Enabled = false;
+                } else { //mxd
+                    bExport.Enabled = true;
+                }
 			}
 		}
 		
@@ -192,6 +196,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(running) return;
 			
 			Cursor.Current = Cursors.WaitCursor;
+
+            //mxd
+            bExport.Enabled = false;
 			
 			// Make blockmap
 			RectangleF area = MapSet.CreateArea(General.Map.Map.Vertices);
@@ -384,7 +391,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 			{
-				StartChecking();
+                StartChecking();
 			}
 		}
 
@@ -505,6 +512,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
                 else if (fixIndex == 3)
                     r.Button3Click();
             }
+        }
+
+        //mxd
+        private void bExport_Click(object sender, EventArgs e) {
+            StringBuilder sb = new StringBuilder();
+
+            foreach(ErrorResult result in results.Items) {
+                sb.AppendLine(result.ToString());
+            }
+
+            string path = Path.GetDirectoryName(General.Map.FilePathName) + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(General.Map.FileTitle) + "_errors.txt";
+
+            using(StreamWriter sw = File.CreateText(path))
+                sw.Write(sb.ToString());
+
+            General.Interface.DisplayStatus(StatusType.Info, "Errors list saved to '" + path + "'");
         }
 
 		private void ErrorCheckForm_HelpRequested(object sender, HelpEventArgs hlpevent)

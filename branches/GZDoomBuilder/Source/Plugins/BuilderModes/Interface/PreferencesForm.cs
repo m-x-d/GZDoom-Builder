@@ -68,6 +68,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			autoclearselection.Checked = BuilderPlug.Me.AutoClearSelection;
 			visualmodeclearselection.Checked = BuilderPlug.Me.VisualModeClearSelection;
 			autodragonpaste.Checked = BuilderPlug.Me.AutoDragOnPaste;
+			autoaligntexturesoncreate.Checked = BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate; //mxd
+			autoalignDraggedSidedefsOffsetX.Checked = BuilderPlug.Me.AutoAlignTextureOffsetsOnDrag; //mxd
+			dontMoveGeometryOutsideBounds.Checked = BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary; //mxd
+			marqueBehaviour.SelectedIndex = BuilderPlug.Me.MarqueSelectionMode; //mxd
+			syncSelection.Checked = BuilderPlug.Me.SyncSelection; //mxd
 		}
 
 		#endregion
@@ -90,6 +95,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("autoclearselection", autoclearselection.Checked);
 			General.Settings.WritePluginSetting("visualmodeclearselection", visualmodeclearselection.Checked);
 			General.Settings.WritePluginSetting("autodragonpaste", autodragonpaste.Checked);
+			General.Settings.WritePluginSetting("autoaligntextureoffsetsoncreate", autoaligntexturesoncreate.Checked);//mxd
+			General.Settings.WritePluginSetting("autoaligntextureoffsetsondrag", autoalignDraggedSidedefsOffsetX.Checked);//mxd
+			General.Settings.WritePluginSetting("dontmovegeometryoutsidemapboundary", dontMoveGeometryOutsideBounds.Checked);//mxd
+			General.Settings.WritePluginSetting("marqueselectionmode", marqueBehaviour.SelectedIndex);//mxd
+			General.Settings.WritePluginSetting("syncselection", syncSelection.Checked);//mxd
 		}
 		
 		// When Cancel is pressed on the preferences dialog

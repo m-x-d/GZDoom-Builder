@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Serialize / deserialize
-		internal void ReadWrite(IReadWriteStream s)
+		new internal void ReadWrite(IReadWriteStream s)
 		{
 			if(!s.IsWriting) BeforePropsChange();
 			

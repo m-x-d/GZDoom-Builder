@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected Sector editsector;
 		protected IList<SectorInfo> sectorinfo;
 		private ImageData texture;
-		private Vector2D selectionoffset;
+		//private Vector2D selectionoffset;
 		private ModifyMode mode;
 		private bool autopanning;
 		private bool modealreadyswitching;
@@ -489,10 +489,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PixelColor rectcolor = General.Colors.Highlight.WithAlpha(RECTANGLE_ALPHA);
 
 			// Corners in world space
-			corners[0] = TexToWorld(selectionoffset + new Vector2D(0f, 0f));
-			corners[1] = TexToWorld(selectionoffset + new Vector2D(texture.ScaledWidth, 0f));
-			corners[2] = TexToWorld(selectionoffset + new Vector2D(texture.ScaledWidth, -texture.ScaledHeight));
-			corners[3] = TexToWorld(selectionoffset + new Vector2D(0f, -texture.ScaledHeight));
+			corners[0] = TexToWorld(new Vector2D(0f, 0f));
+			corners[1] = TexToWorld(new Vector2D(texture.ScaledWidth, 0f));
+			corners[2] = TexToWorld(new Vector2D(texture.ScaledWidth, -texture.ScaledHeight));
+			corners[3] = TexToWorld(new Vector2D(0f, -texture.ScaledHeight));
 
 			// Vertices
 			cornerverts = new FlatVertex[6];
@@ -516,8 +516,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			cornerverts[5].y = corners[3].y;
 
 			// Extended points for rotation corners
-			extends[0] = TexToWorld(selectionoffset + new Vector2D(texture.ScaledWidth + (20f * Math.Sign(scale.x * sectorinfo[0].scale.x)) / renderer.Scale * (scale.x * sectorinfo[0].scale.x), 0f));
-			extends[1] = TexToWorld(selectionoffset + new Vector2D(0f, -texture.ScaledHeight + (-20f * Math.Sign(scale.y * sectorinfo[0].scale.y))  / renderer.Scale * (scale.y * sectorinfo[0].scale.y)));
+			extends[0] = TexToWorld(new Vector2D(texture.ScaledWidth + (20f * Math.Sign(scale.x * sectorinfo[0].scale.x)) / renderer.Scale * (scale.x * sectorinfo[0].scale.x), 0f));
+			extends[1] = TexToWorld(new Vector2D(0f, -texture.ScaledHeight + (-20f * Math.Sign(scale.y * sectorinfo[0].scale.y))  / renderer.Scale * (scale.y * sectorinfo[0].scale.y)));
 
 			// Middle points between corners
 			Vector2D middle12 = corners[1] + (corners[2] - corners[1]) * 0.5f;
@@ -541,7 +541,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(showalignoffset)
 			{
-				Vector2D worldalignoffset = TexToWorld(selectionoffset + alignoffset);
+				Vector2D worldalignoffset = TexToWorld(alignoffset);
 				alignrect = new RectangleF(worldalignoffset.x - gripsize * 0.5f,
 										   worldalignoffset.y - gripsize * 0.5f,
 										   gripsize, gripsize);
@@ -778,7 +778,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(mode != ModifyMode.None) return;
 
 			// Used in many cases
-			Vector2D delta;
+			//Vector2D delta;
 
 			// Check what grip the mouse is over
 			switch(CheckMouseGrip())

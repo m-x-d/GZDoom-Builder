@@ -76,6 +76,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This builds the geometry. Returns false when no geometry created.
 		public override bool Setup()
 		{
+			//mxd
+			if(Sidedef.MiddleTexture.Length == 0 || Sidedef.MiddleTexture[0] == '-') return false;
+			
 			Vector2D vl, vr;
 
             //mxd. lightfog flag support
@@ -89,171 +92,145 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector2D toffset = new Vector2D(Sidedef.Fields.GetValue("offsetx_mid", 0.0f),
 											Sidedef.Fields.GetValue("offsety_mid", 0.0f));
 			
-			// Texture given?
-			if((Sidedef.MiddleTexture.Length > 0) && (Sidedef.MiddleTexture[0] != '-'))
-			{
-				// Left and right vertices for this sidedef
-				if(Sidedef.IsFront)
-				{
-					vl = new Vector2D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y);
-					vr = new Vector2D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y);
-				}
-				else
-				{
-					vl = new Vector2D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y);
-					vr = new Vector2D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y);
-				}
-				
-				// Load sector data
-				SectorData sd = mode.GetSectorData(Sidedef.Sector);
-				SectorData osd = mode.GetSectorData(Sidedef.Other.Sector);
-				if(!osd.Updated) osd.Update();
-				
-				// Texture given?
-				if((Sidedef.MiddleTexture.Length > 0) && (Sidedef.MiddleTexture[0] != '-'))
-				{
-					// Load texture
-					base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongMiddleTexture);
-					if(base.Texture == null)
-					{
-						base.Texture = General.Map.Data.MissingTexture3D;
-						setuponloadedtexture = Sidedef.LongMiddleTexture;
-					}
-					else
-					{
-						if(!base.Texture.IsImageLoaded)
-							setuponloadedtexture = Sidedef.LongMiddleTexture;
-					}
-				}
-				else
-				{
-					// Use missing texture
-					base.Texture = General.Map.Data.MissingTexture3D;
-					setuponloadedtexture = 0;
-				}
+			// Left and right vertices for this sidedef
+			if(Sidedef.IsFront) {
+				vl = new Vector2D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y);
+				vr = new Vector2D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y);
+			} else {
+				vl = new Vector2D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y);
+				vr = new Vector2D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y);
+			}
 
-				// Get texture scaled size
-				Vector2D tsz = new Vector2D(base.Texture.ScaledWidth, base.Texture.ScaledHeight);
-				tsz = tsz / tscale;
+			// Load sector data
+			SectorData sd = mode.GetSectorData(Sidedef.Sector);
+			SectorData osd = mode.GetSectorData(Sidedef.Other.Sector);
+			if(!osd.Updated) osd.Update();
 
-				// Get texture offsets
-				Vector2D tof = new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
-				tof = tof + toffset;
-				tof = tof / tscale;
-				if(General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
-					tof = tof * base.Texture.Scale;
-				
-				// Determine texture coordinates plane as they would be in normal circumstances.
-				// We can then use this plane to find any texture coordinate we need.
-				// The logic here is the same as in the original VisualMiddleSingle (except that
-				// the values are stored in a TexturePlane)
-				// NOTE: I use a small bias for the floor height, because if the difference in
-				// height is 0 then the TexturePlane doesn't work!
-				TexturePlane tp = new TexturePlane();
-				float floorbias = (Sidedef.Sector.CeilHeight == Sidedef.Sector.FloorHeight) ? 1.0f : 0.0f;
-				float geotop = (float)Math.Min(Sidedef.Sector.CeilHeight, Sidedef.Other.Sector.CeilHeight);
-				float geobottom = (float)Math.Max(Sidedef.Sector.FloorHeight, Sidedef.Other.Sector.FloorHeight);
+			// Load texture
+			base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongMiddleTexture);
+			if(base.Texture == null) {
+				base.Texture = General.Map.Data.MissingTexture3D;
+				setuponloadedtexture = Sidedef.LongMiddleTexture;
+			} else {
+				if(!base.Texture.IsImageLoaded)
+					setuponloadedtexture = Sidedef.LongMiddleTexture;
+			}
+
+			// Get texture scaled size
+			Vector2D tsz = new Vector2D(base.Texture.ScaledWidth, base.Texture.ScaledHeight);
+			tsz = tsz / tscale;
+
+			// Get texture offsets
+			Vector2D tof = new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
+			tof = tof + toffset;
+			tof = tof / tscale;
+			if(General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
+				tof = tof * base.Texture.Scale;
+
+			// Determine texture coordinates plane as they would be in normal circumstances.
+			// We can then use this plane to find any texture coordinate we need.
+			// The logic here is the same as in the original VisualMiddleSingle (except that
+			// the values are stored in a TexturePlane)
+			// NOTE: I use a small bias for the floor height, because if the difference in
+			// height is 0 then the TexturePlane doesn't work!
+			TexturePlane tp = new TexturePlane();
+			float floorbias = (Sidedef.Sector.CeilHeight == Sidedef.Sector.FloorHeight) ? 1.0f : 0.0f;
+			float geotop = (float)Math.Min(Sidedef.Sector.CeilHeight, Sidedef.Other.Sector.CeilHeight);
+			float geobottom = (float)Math.Max(Sidedef.Sector.FloorHeight, Sidedef.Other.Sector.FloorHeight);
+			if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag)) {
+				// When lower unpegged is set, the middle texture is bound to the bottom
+				tp.tlt.y = tsz.y - (float)(geotop - geobottom);
+			}
+			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
+			tp.trb.y = tp.tlt.y + ((float)Sidedef.Sector.CeilHeight - ((float)Sidedef.Sector.FloorHeight + floorbias));
+
+			// Apply texture offset
+			tp.tlt += tof;
+			tp.trb += tof;
+
+			// Transform pixel coordinates to texture coordinates
+			tp.tlt /= tsz;
+			tp.trb /= tsz;
+
+			// Left top and right bottom of the geometry that
+			tp.vlt = new Vector3D(vl.x, vl.y, (float)Sidedef.Sector.CeilHeight);
+			tp.vrb = new Vector3D(vr.x, vr.y, (float)Sidedef.Sector.FloorHeight + floorbias);
+
+			// Make the right-top coordinates
+			tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
+			tp.vrt = new Vector3D(tp.vrb.x, tp.vrb.y, tp.vlt.z);
+
+			// Keep top and bottom planes for intersection testing
+			top = sd.Ceiling.plane;
+			bottom = sd.Floor.plane;
+
+			// Create initial polygon, which is just a quad between floor and ceiling
+			WallPolygon poly = new WallPolygon();
+			poly.Add(new Vector3D(vl.x, vl.y, sd.Floor.plane.GetZ(vl)));
+			poly.Add(new Vector3D(vl.x, vl.y, sd.Ceiling.plane.GetZ(vl)));
+			poly.Add(new Vector3D(vr.x, vr.y, sd.Ceiling.plane.GetZ(vr)));
+			poly.Add(new Vector3D(vr.x, vr.y, sd.Floor.plane.GetZ(vr)));
+
+			// Determine initial color
+			int lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
+			//mxd
+			PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
+			PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
+			poly.color = wallcolor.WithAlpha(255).ToInt();
+
+			// Cut off the part below the other floor and above the other ceiling
+			CropPoly(ref poly, osd.Ceiling.plane, true);
+			CropPoly(ref poly, osd.Floor.plane, true);
+
+			// Determine if we should repeat the middle texture
+			if(Sidedef.Fields.ContainsKey("wrapmidtex"))
+				repeatmidtex = Sidedef.Fields.GetValue("wrapmidtex", false);
+			else
+				repeatmidtex = Sidedef.Line.IsFlagSet("wrapmidtex");
+
+			if(!repeatmidtex) {
+				// First determine the visible portion of the texture
+				float textop, texbottom;
+
+				// Determine top portion height
 				if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
-				{
-					// When lower unpegged is set, the middle texture is bound to the bottom
-					tp.tlt.y = tsz.y - (float)(geotop - geobottom);
-				}
-				tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
-				tp.trb.y = tp.tlt.y + ((float)Sidedef.Sector.CeilHeight - ((float)Sidedef.Sector.FloorHeight + floorbias));
-				
-				// Apply texture offset
-				tp.tlt += tof;
-				tp.trb += tof;
-				
-				// Transform pixel coordinates to texture coordinates
-				tp.tlt /= tsz;
-				tp.trb /= tsz;
-				
-				// Left top and right bottom of the geometry that
-				tp.vlt = new Vector3D(vl.x, vl.y, (float)Sidedef.Sector.CeilHeight);
-				tp.vrb = new Vector3D(vr.x, vr.y, (float)Sidedef.Sector.FloorHeight + floorbias);
-				
-				// Make the right-top coordinates
-				tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
-				tp.vrt = new Vector3D(tp.vrb.x, tp.vrb.y, tp.vlt.z);
-			
-				// Keep top and bottom planes for intersection testing
-				top = sd.Ceiling.plane;
-				bottom = sd.Floor.plane;
-				
-				// Create initial polygon, which is just a quad between floor and ceiling
-				WallPolygon poly = new WallPolygon();
-				poly.Add(new Vector3D(vl.x, vl.y, sd.Floor.plane.GetZ(vl)));
-				poly.Add(new Vector3D(vl.x, vl.y, sd.Ceiling.plane.GetZ(vl)));
-				poly.Add(new Vector3D(vr.x, vr.y, sd.Ceiling.plane.GetZ(vr)));
-				poly.Add(new Vector3D(vr.x, vr.y, sd.Floor.plane.GetZ(vr)));
-				
-				// Determine initial color
-				int lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
-				//mxd
-                PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
-				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
-				poly.color = wallcolor.WithAlpha(255).ToInt();
-				
-				// Cut off the part below the other floor and above the other ceiling
-				CropPoly(ref poly, osd.Ceiling.plane, true);
-				CropPoly(ref poly, osd.Floor.plane, true);
-				
-				// Determine if we should repeat the middle texture
-				if(Sidedef.Fields.ContainsKey("wrapmidtex"))
-					repeatmidtex = Sidedef.Fields.GetValue("wrapmidtex", false);
+					textop = geobottom + tof.y + tsz.y;
 				else
-					repeatmidtex = Sidedef.Line.IsFlagSet("wrapmidtex");
-				
-				if(!repeatmidtex)
-				{
-					// First determine the visible portion of the texture
-					float textop, texbottom;
-					
-					// Determine top portion height
-					if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
-						textop = geobottom + tof.y + tsz.y;
-					else
-						textop = geotop + tof.y;
-					
-					// Calculate bottom portion height
-					texbottom = textop - tsz.y;
-					
-					// Create crop planes (we also need these for intersection testing)
-					topclipplane = new Plane(new Vector3D(0, 0, -1), textop);
-					bottomclipplane = new Plane(new Vector3D(0, 0, 1), -texbottom);
-					
-					// Crop polygon by these heights
-					CropPoly(ref poly, topclipplane, true);
-					CropPoly(ref poly, bottomclipplane, true);
-				}
-				
-				if(poly.Count > 2)
-				{
-					// Keep top and bottom planes for intersection testing
-					top = osd.Ceiling.plane;
-					bottom = osd.Floor.plane;
+					textop = geotop + tof.y;
 
-					// Process the polygon and create vertices
-					List<WorldVertex> verts = CreatePolygonVertices(poly, tp, sd, lightvalue, lightabsolute);
-					if(verts.Count > 0)
-					{
-						// Apply alpha to vertices
-						byte alpha = SetLinedefRenderstyle(true);
-						if(alpha < 255)
-						{
-							for(int i = 0; i < verts.Count; i++)
-							{
-								WorldVertex v = verts[i];
-								PixelColor c = PixelColor.FromInt(v.c);
-								v.c = c.WithAlpha(alpha).ToInt();
-								verts[i] = v;
-							}
+				// Calculate bottom portion height
+				texbottom = textop - tsz.y;
+
+				// Create crop planes (we also need these for intersection testing)
+				topclipplane = new Plane(new Vector3D(0, 0, -1), textop);
+				bottomclipplane = new Plane(new Vector3D(0, 0, 1), -texbottom);
+
+				// Crop polygon by these heights
+				CropPoly(ref poly, topclipplane, true);
+				CropPoly(ref poly, bottomclipplane, true);
+			}
+
+			if(poly.Count > 2) {
+				// Keep top and bottom planes for intersection testing
+				top = osd.Ceiling.plane;
+				bottom = osd.Floor.plane;
+
+				// Process the polygon and create vertices
+				List<WorldVertex> verts = CreatePolygonVertices(poly, tp, sd, lightvalue, lightabsolute);
+				if(verts.Count > 0) {
+					// Apply alpha to vertices
+					byte alpha = SetLinedefRenderstyle(true);
+					if(alpha < 255) {
+						for(int i = 0; i < verts.Count; i++) {
+							WorldVertex v = verts[i];
+							PixelColor c = PixelColor.FromInt(v.c);
+							v.c = c.WithAlpha(alpha).ToInt();
+							verts[i] = v;
 						}
-						
-						base.SetVertices(verts);
-						return true;
 					}
+
+					base.SetVertices(verts);
+					return true;
 				}
 			}
 			

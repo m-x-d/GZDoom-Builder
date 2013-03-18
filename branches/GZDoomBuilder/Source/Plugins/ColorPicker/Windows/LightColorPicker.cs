@@ -333,14 +333,19 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
         }
 
         private void colorPickerControl1_OnCancelPressed(object sender, EventArgs e) {
-            //undo changes
-            General.Map.UndoRedo.PerformUndo();
+			this.DialogResult = DialogResult.Cancel;
             Close();
         }
 
         private void colorPickerControl1_OnOkPressed(object sender, EventArgs e) {
-            Close();
+			this.DialogResult = DialogResult.OK;
+			Close();
         }
+
+		private void LightColorPicker_FormClosing(object sender, FormClosingEventArgs e) {
+			if(this.DialogResult == DialogResult.Cancel)
+				General.Map.UndoRedo.WithdrawUndo();
+		}
 
         private void cbRelativeMode_CheckStateChanged(object sender, EventArgs e) {
             RELATIVE_MODE = ((CheckBox)sender).Checked;

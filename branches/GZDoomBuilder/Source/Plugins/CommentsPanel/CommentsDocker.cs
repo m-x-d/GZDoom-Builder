@@ -307,7 +307,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		// This selects the elements in a comment
 		private void SelectComment(CommentInfo c, bool clear)
 		{
-			string editmode = "";
+			//string editmode = "";
 
 			// Leave any volatile mode
 			General.Editing.CancelVolatileMode();
@@ -619,6 +619,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		// Check if the add comment box should be enabled
 		private void enabledtimer_Tick(object sender, EventArgs e)
 		{
+			if(General.Editing.Mode == null) return; //mxd
 			if(General.Editing.Mode.GetType().Name == "VerticesMode")
 				addcommentgroup.Enabled = (General.Map.Map.SelectedVerticessCount > 0);
 			else if(General.Editing.Mode.GetType().Name == "LinedefsMode")

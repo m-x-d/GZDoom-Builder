@@ -81,6 +81,9 @@ namespace CodeImp.DoomBuilder.Map
 		private int numsidedefs;
 		private int numsectors;
 		private int numthings;
+
+		//mxd
+		private Sector[] newSectors;
 		
 		// Behavior
 		private int freezearrays;
@@ -162,6 +165,8 @@ namespace CodeImp.DoomBuilder.Map
 
 		internal bool AutoRemove { get { return autoremove; } set { autoremove = value; } }
 
+		public Sector[] NewSectors { get { return newSectors; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -182,6 +187,7 @@ namespace CodeImp.DoomBuilder.Map
 			indexholes = new List<int>();
 			lastsectorindex = 0;
 			autoremove = true;
+			newSectors = new Sector[0]; //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -203,6 +209,7 @@ namespace CodeImp.DoomBuilder.Map
 			indexholes = new List<int>();
 			lastsectorindex = 0;
 			autoremove = true;
+			newSectors = new Sector[0]; //mxd
 
 			// Deserialize
 			Deserialize(stream);
@@ -214,8 +221,6 @@ namespace CodeImp.DoomBuilder.Map
 		// Disposer
 		internal void Dispose()
 		{
-			ArrayList list;
-			
 			// Not already disposed?
 			if(!isdisposed)
 			{
@@ -254,6 +259,7 @@ namespace CodeImp.DoomBuilder.Map
 				sel_sectors = null;
 				sel_things = null;
 				indexholes = null;
+				newSectors = null; //mxd
 				
 				// Done
 				isdisposed = true;
@@ -1036,6 +1042,8 @@ namespace CodeImp.DoomBuilder.Map
 				foreach(Sector s in sectors) s.CreateSurfaces();
 				
 				General.Map.CRenderer2D.Surfaces.UnlockBuffers();
+
+				updateNewSectors(); //mxd
 			}
 		}
 		
@@ -1158,7 +1166,6 @@ namespace CodeImp.DoomBuilder.Map
 					
 				default:
 					throw new ArgumentException("Unsupported selection target conversion");
-					break;
 			}
 			
 			// New selection type
@@ -1912,7 +1919,6 @@ namespace CodeImp.DoomBuilder.Map
 			ICollection<Vertex> movingverts;
 			ICollection<Vertex> fixedverts;
 			RectangleF editarea;
-			int stitchundo;
 
 			// Find vertices
 			movingverts = General.Map.Map.GetMarkedVertices(true);
@@ -2390,6 +2396,27 @@ namespace CodeImp.DoomBuilder.Map
 			return closest;
 		}
 
+		/// <summary>mxd. This finds the line closest to the specified position excluding given list of linedefs.</summary>
+		public Linedef NearestLinedef(Vector2D pos, List<Linedef> linesToExclude) {
+			Linedef closest = null;
+			float distance = float.MaxValue;
+
+			// Go for all linedefs in selection
+			foreach(Linedef l in linedefs) {
+				if(linesToExclude.Contains(l))	continue;
+				// Calculate distance and check if closer than previous find
+				float d = l.SafeDistanceToSq(pos, true);
+				if(d < distance) {
+					// This one is closer
+					closest = l;
+					distance = d;
+				}
+			}
+
+			// Return result
+			return closest;
+		}
+
 		/// <summary>This finds the vertex closest to the specified position.</summary>
 		public static Vertex NearestVertex(ICollection<Vertex> selection, Vector2D pos)
 		{
@@ -2428,6 +2455,29 @@ namespace CodeImp.DoomBuilder.Map
 				d = t.DistanceToSq(pos);
 				if(d < distance)
 				{
+					// This one is closer
+					closest = t;
+					distance = d;
+				}
+			}
+
+			// Return result
+			return closest;
+		}
+
+		/// <summary>mxd. This finds the thing closest to the specified thing.</summary>
+		public static Thing NearestThing(ICollection<Thing> selection, Thing thing) {
+			Thing closest = null;
+			float distance = float.MaxValue;
+			float d;
+
+			// Go for all things in selection
+			foreach(Thing t in selection) {
+				if(t == thing) continue;
+
+				// Calculate distance and check if closer than previous find
+				d = t.DistanceToSq(thing.Position);
+				if(d < distance) {
 					// This one is closer
 					closest = t;
 					distance = d;
@@ -2926,6 +2976,19 @@ namespace CodeImp.DoomBuilder.Map
 				else
 					index--;
 			}
+		}
+
+        //mxd
+        public void UpdateCustomLinedefColors() {
+            foreach(Linedef l in linedefs)
+                l.UpdateColorPreset();
+        }
+
+		//mxd
+		private void updateNewSectors() {
+			int n = sectors.Length < General.Settings.GZNewSectorsCount ? sectors.Length : General.Settings.GZNewSectorsCount;
+			newSectors = new Sector[n];
+			Array.Copy(sectors, sectors.Length - n, newSectors, 0, n);
 		}
 		
 		#endregion

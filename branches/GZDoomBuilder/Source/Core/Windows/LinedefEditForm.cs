@@ -95,11 +95,9 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.FormatInterface.HasPresetActivations)
 			{
 				//mxd
-                //actiongroup.Height = hexenpanel.Bottom + action.Top + (actiongroup.Width - actiongroup.ClientRectangle.Width);
                 actiongroup.Height = hexenpanel.Location.Y + hexenpanel.Height;
 				this.Height = heightpanel1.Height;
-			}
-			else if(!General.Map.FormatInterface.HasMixedActivations &&
+			} else if(!General.Map.FormatInterface.HasMixedActivations &&
 				    !General.Map.FormatInterface.HasActionArgs &&
 				    !General.Map.FormatInterface.HasPresetActivations)
 			{
@@ -169,7 +167,11 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Action/tags
 			action.Value = fl.Action;
-			tag.Text = fl.Tag.ToString();
+			//tag.Text = fl.Tag.ToString();
+			if(General.Map.FormatInterface.HasLinedefTag) {//mxd
+				tagSelector.Setup();
+				tagSelector.SetTag(fl.Tag);
+			}
 			arg0.SetValue(fl.Args[0]);
 			arg1.SetValue(fl.Args[1]);
 			arg2.SetValue(fl.Args[2]);
@@ -275,12 +277,19 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Action/tags
 				if(l.Action != action.Value) action.Empty = true;
-				if(l.Tag.ToString() != tag.Text) tag.Text = "";
+				//if(l.Tag.ToString() != tag.Text) tag.Text = "";
+				if(General.Map.FormatInterface.HasLinedefTag && l.Tag != fl.Tag) tagSelector.ClearTag(); //mxd
 				if(l.Args[0] != arg0.GetResult(-1)) arg0.ClearValue();
 				if(l.Args[1] != arg1.GetResult(-1)) arg1.ClearValue();
 				if(l.Args[2] != arg2.GetResult(-1)) arg2.ClearValue();
 				if(l.Args[3] != arg3.GetResult(-1)) arg3.ClearValue();
 				if(l.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
+
+				//mxd. Check if we have different arg0str values
+				if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1 && cbArgStr.Checked && !string.IsNullOrEmpty(arg0str.Text) && l.Fields.ContainsKey("arg0str") && l.Fields["arg0str"].Value.ToString() != arg0str.Text) {
+					arg0str.SelectedIndex = -1;
+					arg0str.Text = string.Empty;
+				}
 				
 				// Front side checkbox
 				if((l.Front != null) != frontside.Checked)
@@ -463,10 +472,13 @@ namespace CodeImp.DoomBuilder.Windows
 			int index;
 			
 			// Verify the tag
-			if(General.Map.FormatInterface.HasLinedefTag && ((tag.GetResult(0) < General.Map.FormatInterface.MinTag) || (tag.GetResult(0) > General.Map.FormatInterface.MaxTag)))
+			if(General.Map.FormatInterface.HasLinedefTag)
 			{
-				General.ShowWarningMessage("Linedef tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
-				return;
+				tagSelector.ValidateTag(); //mxd
+				if(((tagSelector.GetTag(0) < General.Map.FormatInterface.MinTag) || (tagSelector.GetTag(0) > General.Map.FormatInterface.MaxTag))) {
+					General.ShowWarningMessage("Linedef tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
+					return;
+				}
 			}
 			
 			// Verify the action
@@ -481,8 +493,8 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 
             //mxd
-            bool hasAcs = Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
-            bool hasArg0str = General.Map.UDMF && !action.Empty && hasAcs && arg0str.Text.Length > 0;
+            bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
+            bool hasArg0str = General.Map.UDMF && hasAcs && !string.IsNullOrEmpty(arg0str.Text);
 			
 			// Go for all the lines
 			foreach(Linedef l in lines)
@@ -507,7 +519,8 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				
 				// Action/tags
-				l.Tag = General.Clamp(tag.GetResult(l.Tag), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag);
+				//l.Tag = General.Clamp(tag.GetResult(l.Tag), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag);
+				l.Tag = tagSelector.GetTag(l.Tag); //mxd
 				if(!action.Empty) l.Action = action.Value;
                 
                 //mxd
@@ -628,15 +641,14 @@ namespace CodeImp.DoomBuilder.Windows
 				fieldslist.Apply(l.Fields);
 
                 //mxd. apply arg0str
-                if (hasArg0str && cbArgStr.Checked) {
-                    if (l.Fields.ContainsKey("arg0str"))
-                        l.Fields["arg0str"].Value = arg0str.Text;
-                    else
-                        l.Fields.Add("arg0str", new UniValue(2, arg0str.Text));
-                }
-                else if (l.Fields.ContainsKey("arg0str")) {
-                    l.Fields.Remove("arg0str");
-                }
+				if(cbArgStr.Visible && cbArgStr.Checked && hasArg0str) {
+					if(l.Fields.ContainsKey("arg0str"))
+						l.Fields["arg0str"].Value = arg0str.Text;
+					else
+						l.Fields.Add("arg0str", new UniValue(2, arg0str.Text));
+				} else if(l.Fields.ContainsKey("arg0str") && (string.IsNullOrEmpty(l.Fields["arg0str"].Value.ToString()) || !hasAcs || (hasAcs && !cbArgStr.Checked))) {
+					l.Fields.Remove("arg0str");
+				}
 			}
 
 			// Update the used textures
@@ -654,12 +666,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// Be gone
 			this.DialogResult = DialogResult.Cancel;
 			this.Close();
-		}
-
-		// This finds a new (unused) tag
-		private void newtag_Click(object sender, EventArgs e)
-		{
-			tag.Text = General.Map.Map.GetNewTag().ToString();
 		}
 
 		// Action changes
@@ -692,15 +698,19 @@ namespace CodeImp.DoomBuilder.Windows
 			arg3.Setup(General.Map.Config.LinedefActions[showaction].Args[3]);
 			arg4.Setup(General.Map.Config.LinedefActions[showaction].Args[4]);
 
-			// Zero all arguments when linedef action 0 (normal) is chosen
-			if(!preventchanges && (showaction == 0))
-			{
-                //mxd
-                arg0.SetDefaultValue();
-                arg1.SetDefaultValue();
-                arg2.SetDefaultValue();
-                arg3.SetDefaultValue();
-                arg4.SetDefaultValue();
+			// mxd. Apply action's default arguments 
+			if(!preventchanges && showaction != 0 && General.Map.Config.LinedefActions.ContainsKey(showaction)) {
+				arg0.SetDefaultValue();
+				arg1.SetDefaultValue();
+				arg2.SetDefaultValue();
+				arg3.SetDefaultValue();
+				arg4.SetDefaultValue();
+			} else { //or set them to 0
+				arg0.SetValue(0);
+				arg1.SetValue(0);
+				arg2.SetValue(0);
+				arg3.SetValue(0);
+				arg4.SetValue(0);
 			}
 
             //mxd. update arg0str
@@ -718,8 +728,9 @@ namespace CodeImp.DoomBuilder.Windows
                     setNumberedScripts(l);
                 }
             } else {
-                cbArgStr.Checked = false;
+				if(cbArgStr.Checked) cbArgStr.Checked = false;
                 cbArgStr.Visible = false;
+				arg0label.Text = General.Map.Config.LinedefActions[showaction].Args[0].Title + ":";
                 arg0str.Visible = false;
             }
 		}

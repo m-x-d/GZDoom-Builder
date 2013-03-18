@@ -27,6 +27,7 @@ using System.IO;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Plugins;
+using System.Collections.Specialized;
 
 #endregion
 
@@ -84,6 +85,8 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		public string LevelName { get { return currentname; } }
+		public Dictionary<int, string> TagLabels { get { return tagLabels; } internal set { tagLabels = value; } } //mxd 
+		private Dictionary<int, string> tagLabels;
 		
 		#endregion
 
@@ -100,12 +103,13 @@ namespace CodeImp.DoomBuilder.Map
 			this.resources = new DataLocationList();
 			this.mapconfig = new Configuration(true);
 			this.scriptfiles = new List<string>();
+			this.tagLabels = new Dictionary<int, string>(); //mxd
 		}
 
 		// Constructor to load from Doom Builder Map Settings Configuration
 		internal MapOptions(Configuration cfg, string mapname)
 		{
-			IDictionary mapinfo, resinfo;
+			IDictionary resinfo;
 			DataLocation res;
 			
 			// Initialize
@@ -119,6 +123,23 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Read map configuration
 			this.mapconfig.Root = cfg.ReadSetting("maps." + mapname, new Hashtable());
+
+			//mxd. Tag Labels
+			this.tagLabels = new Dictionary<int, string>();
+			ListDictionary tagLabelsData = (ListDictionary)this.mapconfig.ReadSetting("taglabels", new ListDictionary());
+
+			foreach(DictionaryEntry tagLabelsEntry in tagLabelsData) {
+				int tag = 0;
+				string label = string.Empty;
+
+				foreach(DictionaryEntry entry in (ListDictionary)tagLabelsEntry.Value) {
+					if((string)entry.Key == "tag") tag = (int)entry.Value;
+					else if((string)entry.Key == "label") label = (string)entry.Value;
+				}
+
+				if(tag != 0 && !string.IsNullOrEmpty(label))
+					tagLabels.Add(tag, label);
+			}
 
 			// Resources
 			IDictionary reslist = this.mapconfig.ReadSetting("resources", new Hashtable());
@@ -199,6 +220,22 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Write resources to config
 			resources.WriteToConfig(mapconfig, "resources");
+
+			//mxd. Save Tag Labels
+			if(tagLabels.Count > 0) {
+				ListDictionary tagLabelsData = new ListDictionary();
+				int counter = 1;
+
+				foreach(KeyValuePair<int, string> group in tagLabels){
+					ListDictionary data = new ListDictionary();
+					data.Add("tag", group.Key);
+					data.Add("label", group.Value);
+					tagLabelsData.Add("taglabel"+counter, data);
+					counter++;
+				}
+
+				mapconfig.WriteSetting("taglabels", tagLabelsData);
+			}
 
 			// Write grid settings
 			General.Map.Grid.WriteToConfig(mapconfig, "grid");

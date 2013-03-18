@@ -19,19 +19,32 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
               Optional = false)]
     
     public class DrawEllipseMode : DrawRectangleMode {
+		private static int storedSubdivisions;
+
         public DrawEllipseMode() : base() {
             maxSubdivisions = 32;
             minSubdivisions = 6;
             undoName = "Ellipse draw";
             shapeName = "ellipse";
 
-            subdivisions = minSubdivisions + 2;
+			if(storedSubdivisions == 0)
+				storedSubdivisions = minSubdivisions + 2;
+			subdivisions = storedSubdivisions;
         }
+
+		public override void OnDisengage() {
+			base.OnDisengage();
+			storedSubdivisions = subdivisions;
+		}
 
         override protected Vector2D[] getShape(Vector2D pStart, Vector2D pEnd) {
             //no shape
             if (pEnd.x == pStart.x && pEnd.y == pStart.y)
                 return new Vector2D[0];
+
+			//line
+			if(pEnd.x == pStart.x || pEnd.y == pStart.y)
+				return new Vector2D[] { pStart, pEnd };
 
             //got shape
             int bevelSign = (bevelWidth > 0 ? 1 : -1);

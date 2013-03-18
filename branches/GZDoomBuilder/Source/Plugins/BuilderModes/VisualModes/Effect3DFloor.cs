@@ -29,12 +29,47 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Vavoom type?
 		private bool vavoomtype;
 
+		//mxd. Translucent 3d-floor?
+		private bool renderInside;
+
+		//mxd. Ignore Bottom Height?
+		private bool ignoreBottomHeight;
+
 		// Properties
 		public int Alpha { get { return alpha; } }
 		public SectorLevel Floor { get { return floor; } }
 		public SectorLevel Ceiling { get { return ceiling; } }
 		public Linedef Linedef { get { return linedef; } }
 		public bool VavoomType { get { return vavoomtype; } }
+		public bool RenderInside { get { return renderInside; } } //mxd
+		public bool IgnoreBottomHeight { get { return ignoreBottomHeight; } } //mxd
+
+		//mxd. 3D-Floor Flags
+		[Flags]
+		public enum Flags : int
+		{
+			None = 0,
+			DisableLighting = 1,
+			RestrictLighting = 2,
+			Fog = 4,
+			IgnoreBottomHeight = 8,
+			UseUpperTexture = 16,
+			UseLowerTexture = 32,
+			RenderAdditive = 64
+		}
+
+		//mxd. 3D-Floor Types
+		[Flags]
+		public enum FloorTypes : int
+		{
+			VavoomStyle = 0,
+			Solid = 1,
+			Swimmable = 2,
+			NonSolid = 3,
+			RenderInside = 4,
+			InvertVisibilityRules = 16,
+			InvertShootabilityRules = 32
+		}
 		
 		// Constructor
 		public Effect3DFloor(SectorData data, Linedef sourcelinedef) : base(data)
@@ -56,14 +91,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!sd.Updated) sd.Update();
 			sd.AddUpdateSector(data.Sector, true);
 
-			// Check if this effect still exists
-			int sectortag = linedef.Args[0] + (linedef.Args[4] << 8);
-			if(linedef.IsDisposed || (linedef.Action != 160) || (sectortag != data.Sector.Tag))
-			{
-				// When the effect is no longer exists, we must remove it and update sectors
-
-			}
-
 			if(floor == null)
 			{
 				floor = new SectorLevel(sd.Floor);
@@ -77,8 +104,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// For non-vavoom types, we must switch the level types
-			int argtype = (linedef.Args[1] & 0x03);
-			if(argtype != 0)
+			if((linedef.Args[1] & 0x03) != 0)
 			{
 				vavoomtype = false;
 				alpha = linedef.Args[3];
@@ -89,16 +115,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ceiling.type = SectorLevelType.Ceiling;
 				ceiling.plane = sd.Floor.plane.GetInverted();
 
+				//mxd. check for Swimmable/RenderInside setting
+				renderInside = ((linedef.Args[1] & (int)FloorTypes.Swimmable) != 0) || ((linedef.Args[1] & (int)FloorTypes.RenderInside) != 0);
+				ignoreBottomHeight = ((linedef.Args[2] & (int)Flags.IgnoreBottomHeight) != 0);
+
 				// A 3D floor's color is always that of the sector it is placed in
 				floor.color = 0;
 			}
 			else
 			{
 				vavoomtype = true;
-				/*
-				sd.Ceiling.CopyProperties(floor);
-				sd.Floor.CopyProperties(ceiling);
-				 */
 				floor.type = SectorLevelType.Ceiling;
 				floor.plane = sd.Ceiling.plane;
 				ceiling.type = SectorLevelType.Floor;

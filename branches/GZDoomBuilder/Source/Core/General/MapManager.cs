@@ -132,6 +132,7 @@ namespace CodeImp.DoomBuilder {
             } 
         }
         internal List<ScriptItem> NumberedScripts { get { return numberedScripts; } }
+		public ViewMode ViewMode { get { return renderer2d.ViewMode; } }
 
         #endregion
 
@@ -1548,7 +1549,6 @@ namespace CodeImp.DoomBuilder {
 
             //mxd
             UpdateScriptNames();
-            GZBuilder.GZGeneral.OnReloadResources();
         }
 
         // Game Configuration action

@@ -32,6 +32,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <DocumentationFile>..\..\Build\Builder.xml</DocumentationFile>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>..\..\Build\</OutputPath>
@@ -44,6 +45,7 @@
     <DocumentationFile>..\..\Build\Builder.xml</DocumentationFile>
     <DefineConstants>
     </DefineConstants>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -491,9 +493,7 @@
     <Compile Include="Rendering\WorldVertex.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="SharpCompress.3.5, Version=0.8.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="SharpCompress.3.5, Version=0.8.1.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="SlimDX, Version=2.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -696,16 +696,32 @@
     <Compile Include="General\ErrorItem.cs" />
     <Compile Include="General\ErrorLogger.cs" />
     <Compile Include="General\SavePurpose.cs" />
-    <Compile Include="GZBuilder\Controls\ConsoleDocker.cs">
+    <Compile Include="GZBuilder\Controls\CustomLinedefColorProperties.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GZBuilder\Controls\ConsoleDocker.Designer.cs">
-      <DependentUpon>ConsoleDocker.cs</DependentUpon>
+    <Compile Include="GZBuilder\Controls\CustomLinedefColorProperties.designer.cs">
+      <DependentUpon>CustomLinedefColorProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\CustomLinedefColorsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\CustomLinedefColorsControl.designer.cs">
+      <DependentUpon>CustomLinedefColorsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\IconListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\TagSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\TagSelector.Designer.cs">
+      <DependentUpon>TagSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="GZBuilder\Data\BoundingBox.cs" />
     <Compile Include="GZBuilder\Data\EngineInfo.cs" />
     <Compile Include="GZBuilder\Data\GameType.cs" />
     <Compile Include="GZBuilder\Data\GZDoomLight.cs" />
+    <Compile Include="GZBuilder\Data\LinedefColorPreset.cs" />
     <Compile Include="GZBuilder\Data\LinksCollector.cs" />
     <Compile Include="GZBuilder\Data\MapInfo.cs" />
     <Compile Include="GZBuilder\Data\ModeldefEntry.cs" />
@@ -713,8 +729,10 @@
     <Compile Include="GZBuilder\Data\ScriptType.cs" />
     <Compile Include="GZBuilder\Data\SharpCompressHelper.cs" />
     <Compile Include="GZBuilder\Data\TextureData.cs" />
-    <Compile Include="GZBuilder\Data\ThingBoundingBox.cs" />
+    <Compile Include="GZBuilder\Rendering\SizelessVisualThingCage.cs" />
+    <Compile Include="GZBuilder\Rendering\ThingBoundingBox.cs" />
     <Compile Include="GZBuilder\Data\ThingCopyData.cs" />
+    <Compile Include="GZBuilder\Rendering\VisualVertexHandle.cs" />
     <Compile Include="GZBuilder\Geometry\Line3D.cs" />
     <Compile Include="GZBuilder\GZDoom\DecorateParserSE.cs" />
     <Compile Include="GZBuilder\GZDoom\GldefsParser.cs" />
@@ -728,6 +746,12 @@
     <Compile Include="GZBuilder\md3\ModelReader.cs" />
     <Compile Include="GZBuilder\GZDoom\AcsParserSE.cs" />
     <Compile Include="GZBuilder\Tools\UDMFTools.cs" />
+    <Compile Include="GZBuilder\Windows\TagStatisticsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Windows\TagStatisticsForm.Designer.cs">
+      <DependentUpon>TagStatisticsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="IO\DoomColormapReader.cs" />
     <Compile Include="Map\SelectionType.cs" />
     <Compile Include="Map\MapElementCollection.cs" />
@@ -738,6 +762,7 @@
     <Compile Include="Rendering\SurfaceUpdate.cs" />
     <Compile Include="Types\ThingClassHandler.cs" />
     <Compile Include="Types\ThingTypeHandler.cs" />
+    <Compile Include="VisualModes\VisualVertex.cs" />
     <Compile Include="Windows\ErrorsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -764,6 +789,12 @@
     </Compile>
     <Compile Include="Windows\ScriptFindReplaceForm.Designer.cs">
       <DependentUpon>ScriptFindReplaceForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SetDefaultTexturesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\SetDefaultTexturesForm.Designer.cs">
+      <DependentUpon>SetDefaultTexturesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\StatusInfo.cs" />
     <Compile Include="Windows\TanColorTable.cs" />
@@ -800,8 +831,17 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThingBrowserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Controls\ConsoleDocker.resx">
-      <DependentUpon>ConsoleDocker.cs</DependentUpon>
+    <EmbeddedResource Include="GZBuilder\Controls\CustomLinedefColorProperties.resx">
+      <DependentUpon>CustomLinedefColorProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GZBuilder\Controls\CustomLinedefColorsControl.resx">
+      <DependentUpon>CustomLinedefColorsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GZBuilder\Controls\TagSelector.resx">
+      <DependentUpon>TagSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GZBuilder\Windows\TagStatisticsForm.resx">
+      <DependentUpon>TagStatisticsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Crosshair.png" />
     <EmbeddedResource Include="Resources\CrosshairBusy.png" />
@@ -810,6 +850,8 @@
     <None Include="Resources\CLogo.png" />
     <None Include="Resources\Angle.png" />
     <None Include="Resources\Add.png" />
+    <None Include="Resources\ArrowDown.png" />
+    <None Include="Resources\ArrowUp.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\GZDB2.ico" />
     <None Include="Resources\fog.png" />
@@ -825,6 +867,8 @@
     <None Include="Resources\Marine.png" />
     <Content Include="Resources\Model.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\TagStatistics.png" />
+    <None Include="Resources\VisualVertices.png" />
     <None Include="Resources\SearchClear.png" />
     <None Include="Resources\Text.png" />
     <None Include="Resources\List_Images.png" />
@@ -952,6 +996,9 @@
     <EmbeddedResource Include="Windows\ScriptFindReplaceForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ScriptFindReplaceForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\SetDefaultTexturesForm.resx">
+      <DependentUpon>SetDefaultTexturesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\TextEditForm.resx">
       <SubType>Designer</SubType>

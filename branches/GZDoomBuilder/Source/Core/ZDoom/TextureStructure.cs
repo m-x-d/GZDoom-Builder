@@ -275,7 +275,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Add patches
 			foreach(PatchStructure p in patches)
 			{
-				tex.AddPatch(new TexturePatch(p.Name.ToUpperInvariant(), p.OffsetX, p.OffsetY, p.FlipX, p.FlipY, 0, new PixelColor(0, 0, 0, 0), p.Alpha, 0));
+				tex.AddPatch(new TexturePatch(p));//mxd
 			}
 			
 			return tex;

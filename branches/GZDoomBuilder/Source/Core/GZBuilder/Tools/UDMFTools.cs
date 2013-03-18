@@ -7,11 +7,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.Tools
 	public static class UDMFTools
 	{
 		//float
-		public static float GetFloat(UniFields fields, string key, float defaultValue) {
-			if(fields != null && fields.ContainsKey(key))
-				return (float)fields[key].Value;
-			return defaultValue;
-		}
 
 		public static void SetFloat(UniFields fields, string key, float value, float defaultValue, bool prepareUndo) {
 			if(fields == null) return;
@@ -29,11 +24,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.Tools
 		}
 
 		//int
-		public static int GetInteger(UniFields fields, string key, int defaultValue) {
-			if(fields != null && fields.ContainsKey(key))
-				return (int)fields[key].Value;
-			return defaultValue;
-		}
 
 		public static void SetInteger(UniFields fields, string key, int value, int defaultValue, bool prepareUndo) {
 			if(fields == null) return;

@@ -42,9 +42,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
+		protected const int MULTISELECT_START_MOVE_PIXELS = 2; //mxd
+
 		#endregion
 
 		#region ================== Variables
+
+		protected bool paintselectpressed; //mxd
 
 		#endregion
 
@@ -131,6 +135,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(a != null) a.Invoke();
 			}
 		}
+
+		//mxd
+		protected override void OnUpdateMultiSelection() {
+			base.OnUpdateMultiSelection();
+
+			//check for subtractive selection
+			if(BuilderPlug.Me.MarqueSelectionMode == 0) {
+				return;
+			} else if(BuilderPlug.Me.MarqueSelectionMode == 1) { //Left to right adds, right to left removes from selection.
+				subtractiveSelection = SelectionStart.x > selectionrect.X;
+			} else if(BuilderPlug.Me.MarqueSelectionMode == 2) { //Left to right removes, right to left adds to selection.
+				subtractiveSelection = SelectionStart.x == selectionrect.X;
+			} else if(BuilderPlug.Me.MarqueSelectionMode == 3) { //Top to bottom adds, bottom to top removes from selection.
+				subtractiveSelection = SelectionStart.y == selectionrect.Y;
+			} else if(BuilderPlug.Me.MarqueSelectionMode == 4) { //Top to bottom removes, bottom to top adds to selection.
+				subtractiveSelection = SelectionStart.y > selectionrect.Y;
+			}
+		}
 		
 		#endregion
 
@@ -202,6 +224,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Redraw display to show changes
 			General.Interface.RedrawDisplay();
+		}
+
+		//mxd
+		[BeginAction("classicpaintselect")]
+		protected virtual void OnPaintSelectBegin() {
+			paintselectpressed = true;
+		}
+
+		//mxd
+		[EndAction("classicpaintselect")]
+		protected virtual void OnPaintSelectEnd() {
+			paintselectpressed = false;
 		}
 
 		#endregion

@@ -234,7 +234,23 @@
 				<param name="Name" value="New settings">
 				<param name="Local" value="gz_settings.html">
 				</OBJECT>
-        <LI> <OBJECT type="text/sitemap">
+                                <LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="GZDB Visual mode">
+				<param name="Local" value="gz_gzdb_vm.html">
+				</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Event lines">
+				<param name="Local" value="gz_event_lines.html">
+				</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Custom linedef colors">
+				<param name="Local" value="gz_linedef_color_presets.html">
+				</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Visual vertices">
+				<param name="Local" value="gz_visual_verts.html">
+				</OBJECT>
+			        <LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Enhanced scripting workflow">
 				<param name="Local" value="gz_acsex.html">
 				</OBJECT>
@@ -242,13 +258,17 @@
 				<param name="Name" value="Enhanced textures browser">
 				<param name="Local" value="gz_texbrowser.html">
 				</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="TEXTURES support">
+				<param name="Local" value="gz_textures.html">
+				</OBJECT>
 				<UL>
         </UL>
 				<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="New editing modes">
 				<param name="Local" value="gz_editmodes.html">
 				</OBJECT>
-              <UL>
+			        <UL>
 			        <LI> <OBJECT type="text/sitemap">
 				      <param name="Name" value="Draw Rectangle mode">
 				      <param name="Local" value="gz_mode_drawrect.html">
@@ -277,6 +297,10 @@
 				<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="New settings in game configurations">
 				<param name="Local" value="gz_cfg_settings.html">
+				</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="GZDoom toolbar">
+				<param name="Local" value="gz_toolbar.html">
 				</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Plugins">

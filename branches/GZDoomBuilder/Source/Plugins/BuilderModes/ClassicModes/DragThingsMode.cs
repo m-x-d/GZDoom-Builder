@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	// In that case, just specifying the attribute like this is enough:
 	// [EditMode]
 
-	[EditMode(DisplayName = "Things",
+	[EditMode(DisplayName = "Drag Things",
 			  AllowCopyPaste = false,
 			  Volatile = true)]
 
@@ -66,6 +66,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// List of old thing positions
 		private List<Vector2D> oldpositions;
+
+		//mxd
+		private class AlignData
+		{
+			public int InitialAngle;
+			public int CurrentAngle;
+			public float InitialHeight;
+			public float CurrentHeight;
+			public PointF Position = PointF.Empty;
+			public bool Active;
+
+			public AlignData(Thing t){
+				InitialAngle = t.AngleDoom;
+				InitialHeight = t.Position.z;
+			}
+		}
+
+		private AlignData alignData;
 
 		// List of selected items
 		private ICollection<Thing> selectedthings;
@@ -319,11 +337,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Move geometry back to original position
 				MoveThingsRelative(new Vector2D(0f, 0f), false, false);
 
+				if(alignData != null && alignData.Active){
+					alignData.CurrentAngle = dragitem.AngleDoom; //mxd
+					dragitem.Rotate(alignData.InitialAngle);
+					alignData.CurrentHeight = dragitem.Position.z; //mxd
+					dragitem.Move(dragitem.Position.x, dragitem.Position.y, alignData.InitialHeight);
+				}
+
 				// Make undo for the dragging
 				General.Map.UndoRedo.CreateUndo("Drag things");
 
 				// Move selected geometry to final position
-				MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest);
+				if(alignData != null && alignData.Active){//mxd
+					if(!alignData.Position.IsEmpty) 
+						dragitem.Move(alignData.Position.X, alignData.Position.Y, alignData.CurrentHeight);
+					else
+						dragitem.Move(dragitem.Position.x, dragitem.Position.y, alignData.CurrentHeight);
+					dragitem.Rotate(alignData.CurrentAngle);
+				} else {
+					MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest);
+				}
 
 				// Snap to map format accuracy
 				General.Map.Map.SnapAllToAccuracy();
@@ -366,18 +399,50 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 			snaptonearest = General.Interface.CtrlState;
+
+			//mxd. Snap to nearest linedef
+			if(selectedthings.Count == 1 && dragitem.IsModel && snaptonearest && MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, false)) {
+				Linedef l = General.Map.Map.NearestLinedefRange(oldpositions[0] + mousemappos - dragstartmappos, BuilderPlug.Me.StitchRange / renderer.Scale);
+				bool restoreSettings = false;
+
+				if(alignData == null)
+					alignData = new AlignData(dragitem);
+
+				if(l != null) {
+					if(Tools.TryAlignThingToLine(dragitem, l)) {
+						dragitem.SnapToAccuracy();
+						alignData.Position = new PointF(dragitem.Position.x, dragitem.Position.y);
+						alignData.Active = true;
+					} else if(dragitem.AngleDoom != alignData.InitialAngle) { //restore initial angle?
+						restoreSettings = true;
+					}
+
+				} else if(dragitem.AngleDoom != alignData.InitialAngle) { //restore initial angle?
+					restoreSettings = true;
+				}
+
+				if(restoreSettings) {
+					alignData.Position = PointF.Empty;
+					alignData.Active = false;
+					dragitem.Rotate(alignData.InitialAngle);
+				}
+
+				General.Map.Map.Update(); // Update cached values
+				UpdateRedraw();// Redraw
+				renderer.Present();
+
+				return;
+			}
 			
 			// Move selected geometry
 			if(MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest))
 			{
 				// Update cached values
-				//General.Map.Map.Update(true, false);
 				General.Map.Map.Update();
 
 				// Redraw
 				UpdateRedraw();
 				renderer.Present();
-				//General.Interface.RedrawDisplay();
 			}
 		}
 

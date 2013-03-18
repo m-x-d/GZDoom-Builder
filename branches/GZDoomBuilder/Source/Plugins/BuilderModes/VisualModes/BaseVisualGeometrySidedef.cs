@@ -87,6 +87,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.deltaz = new Vector3D(0.0f, 0.0f, 1.0f);
 			this.deltaxy = (sd.Line.End.Position - sd.Line.Start.Position) * sd.Line.LengthInv;
 			if(!sd.IsFront) this.deltaxy = -this.deltaxy;
+
+			//mxd
+			if(mode.UseSelectionFromClassicMode && sd.Line.Selected) {
+				this.selected = true;
+				mode.AddSelectedObject(this);
+			}
 		}
 		
 		#endregion
@@ -373,6 +379,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
             if (result == oldValue) result += 1f * (offset < 0 ? -1 : 1);
             return result;
         }
+
+		//mxd
+		protected void onTextureChanged() {
+			//check for 3d floors
+			if(Sidedef.Line.Action == 160) {
+				int sectortag = Sidedef.Line.Args[0] + (Sidedef.Line.Args[4] << 8);
+				if(sectortag == 0) return;
+
+				foreach(Sector sector in General.Map.Map.Sectors) {
+					if(sector.Tag == sectortag) {
+						BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sector);
+						vs.UpdateSectorGeometry(true);
+					}
+				}
+			}
+				
+		}
 		
 		#endregion
 
@@ -478,8 +501,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode.SetActionResult("Texture offsets reset.");
 
 			// Apply offsets
-			SetTextureOffsetX(0);
-			SetTextureOffsetY(0);
+			if(General.Map.UDMF) {
+				SetTextureOffsetX(0);
+				SetTextureOffsetY(0);
+			} else {
+				Sidedef.OffsetX = 0;
+				Sidedef.OffsetY = 0;
+			}
 			
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
@@ -669,7 +697,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				part = SidedefPart.Middle;
 			
 			// Do the alignment
-			Tools.AutoAlignTextures(this.Sidedef, part, base.Texture, alignx, aligny, false);
+			mode.AutoAlignTextures(this.Sidedef, part, base.Texture, alignx, aligny, false);
 
 			// Get the changed sidedefs
 			List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);
@@ -704,6 +732,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			mode.CreateUndo("Change texture " + texture);
 			SetTexture(texture);
+			onTextureChanged();//mxd
 		}
 		
 		// Paste texture
@@ -714,6 +743,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode.CreateUndo("Paste texture " + BuilderPlug.Me.CopiedTexture);
 				mode.SetActionResult("Pasted texture " + BuilderPlug.Me.CopiedTexture + ".");
 				SetTexture(BuilderPlug.Me.CopiedTexture);
+				onTextureChanged();//mxd
 			}
 		}
 		

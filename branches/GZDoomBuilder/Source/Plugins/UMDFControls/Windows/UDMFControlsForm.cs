@@ -132,7 +132,6 @@ namespace CodeImp.DoomBuilder.UDMFControls
                         break;
 
                     default: //dbg
-                        GZBuilder.GZGeneral.Trace("WARNING: got unknown visual geometry type!");
                         break;
                 }
             }
@@ -518,6 +517,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
         }
 
         private void btnCancel_Click(object sender, EventArgs e) {
+			this.DialogResult = DialogResult.Cancel;
             Close();
         }
 
@@ -525,7 +525,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
 		private void UDMFControlsForm_FormClosing(object sender, FormClosingEventArgs e) {
 			if(this.DialogResult == DialogResult.Cancel) {
 				//restore initial values
-				General.Map.UndoRedo.PerformUndo();
+				General.Map.UndoRedo.WithdrawUndo();
 			}
 		}
 
@@ -678,24 +678,19 @@ namespace CodeImp.DoomBuilder.UDMFControls
             switch(type){
                 case VisualGeometryType.CEILING:
                     return "$scaleceiling";
-                    break;
 
                 case VisualGeometryType.FLOOR:
                     return "$scalefloor";
-                    break;
 
                 case VisualGeometryType.WALL_UPPER:
                     return "scale$_top";
-                    break;
 
                 case VisualGeometryType.WALL_MIDDLE_3D:
                 case VisualGeometryType.WALL_MIDDLE:
                     return "scale$_mid";
-                    break;
 
                 case VisualGeometryType.WALL_BOTTOM:
                     return "scale$_bottom";
-                    break;
             }
             return "";
         }
@@ -713,24 +708,19 @@ namespace CodeImp.DoomBuilder.UDMFControls
             switch (type) {
                 case VisualGeometryType.CEILING:
                     return "$panningceiling";
-                    break;
 
                 case VisualGeometryType.FLOOR:
                     return "$panningfloor";
-                    break;
 
                 case VisualGeometryType.WALL_UPPER:
                     return "offset$_top";
-                    break;
 
                 case VisualGeometryType.WALL_MIDDLE_3D:
                 case VisualGeometryType.WALL_MIDDLE:
                     return "offset$_mid";
-                    break;
 
                 case VisualGeometryType.WALL_BOTTOM:
                     return "offset$_bottom";
-                    break;
             }
             return "";
         }
@@ -740,11 +730,9 @@ namespace CodeImp.DoomBuilder.UDMFControls
             switch (type) {
                 case VisualGeometryType.FLOOR:
                     return "rotationfloor";
-                    break;
 
                 case VisualGeometryType.CEILING:
                     return "rotationceiling";
-                    break;
             }
             return "";
         }
@@ -754,18 +742,15 @@ namespace CodeImp.DoomBuilder.UDMFControls
             switch (type) {
                 case VisualGeometryType.FLOOR:
                     return "lightfloor";
-                    break;
 
                 case VisualGeometryType.CEILING:
                     return "lightceiling";
-                    break;
 
                 case VisualGeometryType.WALL_BOTTOM:
                 case VisualGeometryType.WALL_MIDDLE:
                 case VisualGeometryType.WALL_MIDDLE_3D:
                 case VisualGeometryType.WALL_UPPER:
                     return "light";
-                    break;
             }
             return "";
         }
@@ -774,18 +759,15 @@ namespace CodeImp.DoomBuilder.UDMFControls
             switch (type) {
                 case VisualGeometryType.FLOOR:
                     return "lightfloorabsolute";
-                    break;
 
                 case VisualGeometryType.CEILING:
                     return "lightceilingabsolute";
-                    break;
 
                 case VisualGeometryType.WALL_BOTTOM:
                 case VisualGeometryType.WALL_MIDDLE:
                 case VisualGeometryType.WALL_MIDDLE_3D:
                 case VisualGeometryType.WALL_UPPER:
                     return "lightabsolute";
-                    break;
             }
             return "";
         }

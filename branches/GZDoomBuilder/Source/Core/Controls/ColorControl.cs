@@ -32,7 +32,9 @@ namespace CodeImp.DoomBuilder.Controls
 {
 	internal partial class ColorControl : UserControl
 	{
-		// Constructor
+        public event EventHandler ColorChanged;
+        
+        // Constructor
 		public ColorControl()
 		{
 			// Initialize
@@ -55,6 +57,8 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Apply new color
 				panel.BackColor = dialog.Color;
+                //mxd. Dispatch Event
+                if(ColorChanged != null) ColorChanged(this, EventArgs.Empty); 
 			}
 		}
 

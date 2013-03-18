@@ -209,6 +209,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste);
+			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);//mxd
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CurveLinedefs);
 			
 			// Convert geometry selection to linedefs selection
@@ -224,6 +226,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste);
+			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);//mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CurveLinedefs);
 
 			// Going to EditSelectionMode?
@@ -291,9 +295,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				// Flip selection
-				highlighted.Selected = !highlighted.Selected;
-
 				// Update display
 				if(renderer.StartPlotter(false))
 				{
@@ -304,11 +305,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Finish();
 					renderer.Present();
 				}
-			}
-			else
-			{
-				// Start rectangular selection
-				StartMultiSelection();
 			}
 
 			base.OnSelectBegin();
@@ -323,6 +319,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Item highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
+					//mxd. Flip selection
+					highlighted.Selected = !highlighted.Selected;
+					
 					// Update display
 					if(renderer.StartPlotter(false))
 					{
@@ -368,7 +367,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Present();
 				}
 			}
-			else
+			else if(!selecting) //mxd. We don't want to draw while multiselecting
 			{
 				// Start drawing mode
 				DrawGeometryMode drawmode = new DrawGeometryMode();
@@ -419,15 +418,51 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnMouseMove(e);
 
-			// Not holding any buttons?
-			if(e.Button == MouseButtons.None)
+			//mxd
+			if(selectpressed && !editpressed && !selecting) {
+				// Check if moved enough pixels for multiselect
+				Vector2D delta = mousedownpos - mousepos;
+				if((Math.Abs(delta.x) > MULTISELECT_START_MOVE_PIXELS) ||
+				   (Math.Abs(delta.y) > MULTISELECT_START_MOVE_PIXELS)) {
+					// Start multiselecting
+					StartMultiSelection();
+				}
+			}
+			if(paintselectpressed && !editpressed && !selecting)  //mxd. Drag-select
+			{
+				// Find the nearest thing within highlight range
+				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
+
+				if(l != null) {
+					if(l != highlighted) {
+						//toggle selected state
+						if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
+							l.Selected = true;
+						else if(General.Interface.CtrlState)
+							l.Selected = false;
+						else
+							l.Selected = !l.Selected;
+						highlighted = l;
+
+						// Update entire display
+						General.Interface.RedrawDisplay();
+					}
+				} else if(highlighted != null) {
+					highlighted = null;
+					Highlight(null);
+
+					// Update entire display
+					General.Interface.RedrawDisplay();
+				}
+			}
+			else if(e.Button == MouseButtons.None) // Not holding any buttons?
 			{
 				// Find the nearest linedef within highlight range
 				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
 
 				// Highlight if not the same
 				if(l != highlighted) Highlight(l);
-			}
+			} 
 		}
 
 		// Mouse leaves
@@ -437,6 +472,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Highlight nothing
 			Highlight(null);
+		}
+
+		//mxd
+		protected override void OnPaintSelectBegin() {
+			highlighted = null;
+			base.OnPaintSelectBegin();
 		}
 
 		// Mouse wants to drag
@@ -459,9 +500,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Start dragging the selection
-					General.Editing.ChangeMode(new DragLinedefsMode(mousedownmappos));
+					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || canDrag()) //mxd
+						General.Editing.ChangeMode(new DragLinedefsMode(mousedownmappos));
 				}
 			}
+		}
+
+		//mxd. Check if any selected linedef is outside of map boundary
+		private bool canDrag() {
+			ICollection<Linedef> selectedlines = General.Map.Map.GetSelectedLinedefs(true);
+			int unaffectedCount = 0;
+
+			foreach(Linedef l in selectedlines) {
+				// Make sure the linedef is inside the map boundary
+				if(l.Start.Position.x < General.Map.Config.LeftBoundary || l.Start.Position.x > General.Map.Config.RightBoundary
+					|| l.Start.Position.y > General.Map.Config.TopBoundary || l.Start.Position.y < General.Map.Config.BottomBoundary
+					|| l.End.Position.x < General.Map.Config.LeftBoundary || l.End.Position.x > General.Map.Config.RightBoundary
+					|| l.End.Position.y > General.Map.Config.TopBoundary || l.End.Position.y < General.Map.Config.BottomBoundary) {
+
+					l.Selected = false;
+					unaffectedCount++;
+				}
+			}
+
+			if(unaffectedCount == selectedlines.Count) {
+				General.Interface.DisplayStatus(StatusType.Warning, "Unable to drag selection: " + (selectedlines.Count == 1 ? "selected linedef is" : "all of selected linedefs are") + " outside of map boundary!");
+				General.Interface.RedrawDisplay();
+				return false;
+			}
+
+			if(unaffectedCount > 0)
+				General.Interface.DisplayStatus(StatusType.Warning, unaffectedCount + " of selected linedefs " + (unaffectedCount == 1 ? "is" : "are") + " outside of map boundary!");
+
+			return true;
 		}
 
 		// This is called wheh selection ends
@@ -474,34 +545,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			   
 			if(selectionvolume)
 			{
-				if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
-				{
+				//mxd
+				if(subtractiveSelection) {
 					// Go for all lines
-					foreach(Linedef l in General.Map.Map.Linedefs)
-					{
-						l.Selected |= ((l.Start.Position.x >= selectionrect.Left) &&
-									   (l.Start.Position.y >= selectionrect.Top) &&
-									   (l.Start.Position.x <= selectionrect.Right) &&
-									   (l.Start.Position.y <= selectionrect.Bottom) &&
-									   (l.End.Position.x >= selectionrect.Left) &&
-									   (l.End.Position.y >= selectionrect.Top) &&
-									   (l.End.Position.x <= selectionrect.Right) &&
-									   (l.End.Position.y <= selectionrect.Bottom));
+					if(BuilderPlug.Me.MarqueSelectTouching) {
+						foreach(Linedef l in General.Map.Map.Linedefs) {
+							if(selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) || selectionrect.Contains(l.End.Position.x, l.End.Position.y))
+								l.Selected = false;
+						}
+					} else {
+						foreach(Linedef l in General.Map.Map.Linedefs) {
+							if(selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) && selectionrect.Contains(l.End.Position.x, l.End.Position.y))
+								l.Selected = false;
+						}
 					}
-				}
-				else
-				{
-					// Go for all lines
-					foreach(Linedef l in General.Map.Map.Linedefs)
-					{
-						l.Selected = ((l.Start.Position.x >= selectionrect.Left) &&
-									  (l.Start.Position.y >= selectionrect.Top) &&
-									  (l.Start.Position.x <= selectionrect.Right) &&
-									  (l.Start.Position.y <= selectionrect.Bottom) &&
-									  (l.End.Position.x >= selectionrect.Left) &&
-									  (l.End.Position.y >= selectionrect.Top) &&
-									  (l.End.Position.x <= selectionrect.Right) &&
-									  (l.End.Position.y <= selectionrect.Bottom));
+				} else {
+					if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect) {
+						// Go for all lines
+						if(BuilderPlug.Me.MarqueSelectTouching) {
+							foreach(Linedef l in General.Map.Map.Linedefs)
+								l.Selected |= selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) || selectionrect.Contains(l.End.Position.x, l.End.Position.y);
+						} else {
+							foreach(Linedef l in General.Map.Map.Linedefs)
+								l.Selected |= selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) && selectionrect.Contains(l.End.Position.x, l.End.Position.y);
+						}
+					} else {
+						// Go for all lines
+						if(BuilderPlug.Me.MarqueSelectTouching) {
+							foreach(Linedef l in General.Map.Map.Linedefs)
+								l.Selected = selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) || selectionrect.Contains(l.End.Position.x, l.End.Position.y);
+						} else {
+							foreach(Linedef l in General.Map.Map.Linedefs)
+								l.Selected = selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) && selectionrect.Contains(l.End.Position.x, l.End.Position.y);
+						}
 					}
 				}
 			}
@@ -901,6 +977,123 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.RefreshInfo();
 				General.Interface.RedrawDisplay();
 			}
+		}
+
+		//mxd. Make gradient brightness
+		[BeginAction("gradientbrightness")]
+		public void MakeGradientBrightness() {
+			if(!General.Map.UDMF) return;
+
+			// Need at least 3 selected linedefs
+			// The first and last are not modified
+			ICollection<Linedef> orderedselection = General.Map.Map.GetSelectedLinedefs(true);
+			if(orderedselection.Count > 2) {
+				General.Interface.DisplayStatus(StatusType.Action, "Created gradient brightness over selected linedefs.");
+				General.Map.UndoRedo.CreateUndo("Linedefs gradient brightness");
+
+				Linedef start = General.GetByIndex(orderedselection, 0);
+				Linedef end = General.GetByIndex(orderedselection, orderedselection.Count - 1);
+
+				string lightKey = "light";
+				string lightAbsKey = "lightabsolute";
+				float startbrightness = float.NaN;
+				float endbrightness = float.NaN;
+
+				//get total brightness of start sidedef(s)
+				if(start.Front != null) {
+					if(start.Front.Fields.GetValue(lightAbsKey, false)) {
+						startbrightness = (float)start.Front.Fields.GetValue(lightKey, 0);
+					} else {
+						startbrightness = Math.Min(255, Math.Max(0, (float)start.Front.Sector.Brightness + start.Front.Fields.GetValue(lightKey, 0)));
+					}
+				}
+
+				if(start.Back != null) {
+					float b = 0;
+
+					if(start.Back.Fields.GetValue(lightAbsKey, false)) {
+						b = (float)start.Back.Fields.GetValue(lightKey, 0);
+					} else {
+						b = Math.Min(255, Math.Max(0, (float)start.Back.Sector.Brightness + start.Back.Fields.GetValue(lightKey, 0)));
+					}
+
+					startbrightness = (startbrightness == float.NaN ? b : (startbrightness + b) / 2);
+				}
+
+				//get total brightness of end sidedef(s)
+				if(end.Front != null) {
+					if(end.Front.Fields.GetValue(lightAbsKey, false)) {
+						endbrightness = (float)end.Front.Fields.GetValue(lightKey, 0);
+					} else {
+						endbrightness = Math.Min(255, Math.Max(0, (float)end.Front.Sector.Brightness + end.Front.Fields.GetValue(lightKey, 0)));
+					}
+				}
+
+				if(end.Back != null) {
+					float b = 0;
+
+					if(end.Back.Fields.GetValue(lightAbsKey, false)) {
+						b = (float)end.Back.Fields.GetValue(lightKey, 0);
+					} else {
+						b = Math.Min(255, Math.Max(0, (float)end.Back.Sector.Brightness + end.Back.Fields.GetValue(lightKey, 0)));
+					}
+
+					endbrightness = (endbrightness == float.NaN ? b : (endbrightness + b) / 2);
+				}
+
+				float delta = endbrightness - startbrightness;
+
+				// Go for all sectors in between first and last
+				int index = 0;
+				foreach(Linedef l in orderedselection) {
+					float u = (float)index / (float)(orderedselection.Count - 1);
+					float b = startbrightness + delta * u;
+
+					if(l.Front != null) {
+						l.Front.Fields.BeforeFieldsChange();
+
+						//absolute flag set?
+						if(l.Front.Fields.GetValue(lightAbsKey, false)) {
+							if(l.Front.Fields.ContainsKey(lightKey))
+								l.Front.Fields[lightKey].Value = (int)b;
+							else
+								l.Front.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b));
+						} else {
+							if(l.Front.Fields.ContainsKey(lightKey))
+								l.Front.Fields[lightKey].Value = (int)b - l.Front.Sector.Brightness;
+							else
+								l.Front.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b - l.Front.Sector.Brightness));
+						}
+					}
+
+					if(l.Back != null) {
+						l.Back.Fields.BeforeFieldsChange();
+
+						//absolute flag set?
+						if(l.Back.Fields.GetValue(lightAbsKey, false)) {
+							if(l.Back.Fields.ContainsKey(lightKey))
+								l.Back.Fields[lightKey].Value = (int)b;
+							else
+								l.Back.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b));
+						} else {
+							if(l.Back.Fields.ContainsKey(lightKey))
+								l.Back.Fields[lightKey].Value = (int)b - l.Back.Sector.Brightness;
+							else
+								l.Back.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b - l.Back.Sector.Brightness));
+						}
+					}
+
+					index++;
+				}
+			} else {
+				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 linedefs first!");
+			}
+
+			// Update
+			General.Map.Map.Update();
+			General.Interface.RedrawDisplay();
+			General.Interface.RefreshInfo();
+			General.Map.IsChanged = true;
 		}
 
 		#endregion

@@ -33,6 +33,7 @@ using CodeImp.DoomBuilder.Editing;
 using System.Drawing;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -191,7 +192,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This highlights a new item
-		protected void Highlight(Sector s)
+		private void Highlight(Sector s)
 		{
 			// Highlight actually changes?
 			if(s != highlighted)
@@ -237,7 +238,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This selectes or deselects a sector
-		protected void SelectSector(Sector s, bool selectstate, bool update)
+		private void SelectSector(Sector s, bool selectstate, bool update)
 		{
 			bool selectionchanged = false;
 
@@ -352,6 +353,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
+			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.BrightnessGradientMode); //mxd
 
 			// Make custom presentation
 			CustomPresentation p = new CustomPresentation();
@@ -384,6 +386,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
+			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.BrightnessGradientMode); //mxd
 
 			// Keep only sectors selected
 			General.Map.Map.ClearSelectedLinedefs();
@@ -797,34 +800,92 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("gradientbrightness")]
 		public void MakeGradientBrightness()
 		{
-			General.Interface.DisplayStatus(StatusType.Action, "Created gradient brightness over selected sectors.");
-			General.Map.UndoRedo.CreateUndo("Gradient brightness");
-			
 			// Need at least 3 selected sectors
 			// The first and last are not modified
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
-			if(orderedselection.Count > 2)
-			{
-				float startbrightness = (float)General.GetByIndex(orderedselection, 0).Brightness;
-				float endbrightness = (float)General.GetByIndex(orderedselection, orderedselection.Count - 1).Brightness;
-				float delta = endbrightness - startbrightness;
-				
-				// Go for all sectors in between first and last
-				int index = 0;
-				foreach(Sector s in orderedselection)
-				{
-					float u = (float)index / (float)(orderedselection.Count - 1);
-					float b = startbrightness + delta * u;
-					s.Brightness = (int)b;
-					index++;
+			if(orderedselection.Count > 2) {
+				General.Interface.DisplayStatus(StatusType.Action, "Created gradient brightness over selected sectors.");
+				General.Map.UndoRedo.CreateUndo("Gradient brightness");
+
+				//mxd
+				Sector start = General.GetByIndex(orderedselection, 0);
+				Sector end = General.GetByIndex(orderedselection, orderedselection.Count - 1);
+
+				//mxd. Use UDMF light?
+				if(General.Map.UDMF && (string)BuilderPlug.Me.MenusForm.BrightnessGradientMode.SelectedItem != MenusForm.BrightnessGradientModes.Sectors) {
+					string lightKey = string.Empty;
+					string lightAbsKey = string.Empty;
+					float startbrightness, endbrightness;
+
+					if((string)BuilderPlug.Me.MenusForm.BrightnessGradientMode.SelectedItem == MenusForm.BrightnessGradientModes.Ceilings) {
+						lightKey = "lightceiling";
+						lightAbsKey = "lightceilingabsolute";
+					} else { //should be floors...
+						lightKey = "lightfloor";
+						lightAbsKey = "lightfloorabsolute";
+					}
+
+					//get total brightness of start sector
+					if(start.Fields.GetValue(lightAbsKey, false))
+						startbrightness = (float)start.Fields.GetValue(lightKey, 0);
+					else
+						startbrightness = Math.Min(255, Math.Max(0, (float)start.Brightness + start.Fields.GetValue(lightKey, 0)));
+
+					//get total brightness of end sector
+					if(end.Fields.GetValue(lightAbsKey, false))
+						endbrightness = (float)end.Fields.GetValue(lightKey, 0);
+					else
+						endbrightness = Math.Min(255, Math.Max(0, (float)end.Brightness + end.Fields.GetValue(lightKey, 0)));
+
+					float delta = endbrightness - startbrightness;
+
+					// Go for all sectors in between first and last
+					int index = 0;
+					foreach(Sector s in orderedselection) {
+						s.Fields.BeforeFieldsChange();
+						float u = (float)index / (float)(orderedselection.Count - 1);
+						float b = startbrightness + delta * u;
+
+						//absolute flag set?
+						if(s.Fields.GetValue(lightAbsKey, false)) {
+							if(s.Fields.ContainsKey(lightKey))
+								s.Fields[lightKey].Value = (int)b;
+							else
+								s.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b));
+						} else {
+							if(s.Fields.ContainsKey(lightKey))
+								s.Fields[lightKey].Value = (int)b - s.Brightness;
+							else
+								s.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b - s.Brightness));
+						}
+
+						index++;
+					}
+
+				} else {
+					float startbrightness = (float)start.Brightness;
+					float endbrightness = (float)end.Brightness;
+					float delta = endbrightness - startbrightness;
+
+					// Go for all sectors in between first and last
+					int index = 0;
+					foreach(Sector s in orderedselection) {
+						float u = (float)index / (float)(orderedselection.Count - 1);
+						float b = startbrightness + delta * u;
+						s.Brightness = (int)b;
+						index++;
+					}
 				}
+			} else {
+				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 sectors first!");
 			}
-			
+
 			// Update
 			General.Map.Map.Update();
 			UpdateOverlay();
 			renderer.Present();
 			General.Interface.RedrawDisplay();
+			General.Interface.RefreshInfo();
 			General.Map.IsChanged = true;
 		}
 		

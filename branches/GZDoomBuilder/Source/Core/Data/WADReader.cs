@@ -712,7 +712,7 @@ namespace CodeImp.DoomBuilder.Data
 		public override ICollection<ImageData> LoadSprites()
 		{
 			List<ImageData> images = new List<ImageData>();
-			string rangestart, rangeend;
+			//string rangestart, rangeend;
 			int lumpindex;
 			
 			// Error when suspended
@@ -885,19 +885,25 @@ namespace CodeImp.DoomBuilder.Data
         }
 
         //mxd
-        internal override MemoryStream LoadFile(string name) {
-            Lump l = file.FindLump(name);
-            if (l != null) {
-                l.Stream.Seek(0, SeekOrigin.Begin);
-                return new MemoryStream(l.Stream.ReadAllBytes());
-            } else {
-                return null;
-            }
+        public override Dictionary<string, Stream> GetModeldefData() {
+            return GetGldefsData("MODELDEF");
         }
 
         //mxd
-        internal override bool FileExists(string filename) {
-            Lump l = file.FindLump(filename);
+        internal override MemoryStream LoadFile(string name) {
+            Lump l = file.FindLump(name);
+
+            if (l != null) {
+                l.Stream.Seek(0, SeekOrigin.Begin);
+                return new MemoryStream(l.Stream.ReadAllBytes());
+            }
+
+            return null;
+        }
+
+        //mxd
+        internal override bool FileExists(string name) {
+            Lump l = file.FindLump(name);
             return l != null;
         }
 

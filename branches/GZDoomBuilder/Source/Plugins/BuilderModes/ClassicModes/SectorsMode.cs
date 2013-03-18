@@ -414,8 +414,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
+			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.BrightnessGradientMode); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientFloors);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientCeilings);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			
 			// Convert geometry selection to sectors only
 			General.Map.Map.ConvertSelection(SelectionType.Sectors);
@@ -440,8 +442,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
+			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.BrightnessGradientMode); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientFloors);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientCeilings);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			
 			// Keep only sectors selected
 			General.Map.Map.ClearSelectedLinedefs();
@@ -512,9 +516,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				// Flip selection
-				SelectSector(highlighted, !highlighted.Selected, true);
-
 				// Update display
 				if(renderer.StartPlotter(false))
 				{
@@ -523,11 +524,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Finish();
 					renderer.Present();
 				}
-			}
-			else
-			{
-				// Start making a selection
-				StartMultiSelection();
 			}
 
 			base.OnSelectBegin();
@@ -542,6 +538,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Item highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
+					//mxd. Flip selection
+					SelectSector(highlighted, !highlighted.Selected, true);
+					
 					// Update display
 					if(renderer.StartPlotter(false))
 					{
@@ -590,7 +589,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Present();
 				}
 			}
-			else
+			else if(!selecting) //mxd. We don't want to draw while multiselecting
 			{
 				// Start drawing mode
 				DrawGeometryMode drawmode = new DrawGeometryMode();
@@ -645,8 +644,59 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnMouseMove(e);
 
-			// Not holding any buttons?
-			if(e.Button == MouseButtons.None)
+			//mxd
+			if(selectpressed && !editpressed && !selecting) {
+				// Check if moved enough pixels for multiselect
+				Vector2D delta = mousedownpos - mousepos;
+				if((Math.Abs(delta.x) > MULTISELECT_START_MOVE_PIXELS) ||
+				   (Math.Abs(delta.y) > MULTISELECT_START_MOVE_PIXELS)) {
+					// Start multiselecting
+					StartMultiSelection();
+				}
+			}
+			if(paintselectpressed && !editpressed && !selecting) //mxd. Drag-select
+			{
+				// Find the nearest linedef within highlight range
+				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
+				Sector s = null;
+
+				if(l != null) {
+					// Check on which side of the linedef the mouse is
+					float side = l.SideOfLine(mousemappos);
+					if(side > 0) {
+						// Is there a sidedef here?
+						if(l.Back != null)
+							s = l.Back.Sector;
+					} else {
+						// Is there a sidedef here?
+						if(l.Front != null)
+							s = l.Front.Sector;
+					}
+
+					if(s != null) {
+						if(s != highlighted) {
+							//toggle selected state
+							highlighted = s;
+							if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
+								SelectSector(highlighted, true, true);
+							else if(General.Interface.CtrlState)
+								SelectSector(highlighted, false, true);
+							else
+								SelectSector(highlighted, !highlighted.Selected, true);
+
+							// Update entire display
+							General.Interface.RedrawDisplay();
+						}
+					} else if(highlighted != null) {
+						highlighted = null;
+						Highlight(null);
+
+						// Update entire display
+						General.Interface.RedrawDisplay();
+					}
+				}
+			} 
+			else if(e.Button == MouseButtons.None) // Not holding any buttons?
 			{
 				// Find the nearest linedef within highlight range
 				Linedef l = General.Map.Map.NearestLinedef(mousemappos);
@@ -688,7 +738,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Highlight nothing
 					if(highlighted != null) Highlight(null);
 				}
-			}
+			} 
 		}
 
 		// Mouse leaves
@@ -698,6 +748,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Highlight nothing
 			Highlight(null);
+		}
+
+		//mxd
+		protected override void OnPaintSelectBegin() {
+			highlighted = null;
+			base.OnPaintSelectBegin();
 		}
 
 		// Mouse wants to drag
@@ -720,9 +776,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Start dragging the selection
-					General.Editing.ChangeMode(new DragSectorsMode(mousedownmappos));
+					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || canDrag()) //mxd
+						General.Editing.ChangeMode(new DragSectorsMode(mousedownmappos));
 				}
 			}
+		}
+
+		//mxd. Check if any selected sector is outside of map boundary
+		private bool canDrag() {
+			ICollection<Sector> selectedsectors = General.Map.Map.GetSelectedSectors(true);
+			int unaffectedCount = 0;
+
+			foreach(Sector s in selectedsectors) {
+				// Make sure the sector is inside the map boundary
+				foreach(Sidedef sd in s.Sidedefs) {
+					if(sd.Line.Start.Position.x < General.Map.Config.LeftBoundary || sd.Line.Start.Position.x > General.Map.Config.RightBoundary
+						|| sd.Line.Start.Position.y > General.Map.Config.TopBoundary || sd.Line.Start.Position.y < General.Map.Config.BottomBoundary
+						|| sd.Line.End.Position.x < General.Map.Config.LeftBoundary || sd.Line.End.Position.x > General.Map.Config.RightBoundary
+						|| sd.Line.End.Position.y > General.Map.Config.TopBoundary || sd.Line.End.Position.y < General.Map.Config.BottomBoundary) {
+
+						SelectSector(s, false, true);
+						unaffectedCount++;
+						break;
+					}
+				}
+			}
+
+			if(unaffectedCount == selectedsectors.Count) {
+				General.Interface.DisplayStatus(StatusType.Warning, "Unable to drag selection: " + (selectedsectors.Count == 1 ? "selected sector is" : "all of selected sectors are") + " outside of map boundary!");
+				General.Interface.RedrawDisplay();
+				return false;
+			}
+
+			if(unaffectedCount > 0)
+				General.Interface.DisplayStatus(StatusType.Warning, unaffectedCount + " of selected sectors " + (unaffectedCount == 1 ? "is" : "are") + " outside of map boundary!");
+
+			return true;
 		}
 
 		// This is called wheh selection ends
@@ -738,59 +827,115 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(selectionvolume)
 			{
-				if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
-				{
-					// Go for all lines
-					foreach(Linedef l in General.Map.Map.Linedefs)
-					{
-						l.Selected |= ((l.Start.Position.x >= selectionrect.Left) &&
-									   (l.Start.Position.y >= selectionrect.Top) &&
-									   (l.Start.Position.x <= selectionrect.Right) &&
-									   (l.Start.Position.y <= selectionrect.Bottom) &&
-									   (l.End.Position.x >= selectionrect.Left) &&
-									   (l.End.Position.y >= selectionrect.Top) &&
-									   (l.End.Position.x <= selectionrect.Right) &&
-									   (l.End.Position.y <= selectionrect.Bottom));
-					}
-				}
-				else
-				{
-					// Go for all lines
-					foreach(Linedef l in General.Map.Map.Linedefs)
-					{
-						l.Selected = ((l.Start.Position.x >= selectionrect.Left) &&
-									  (l.Start.Position.y >= selectionrect.Top) &&
-									  (l.Start.Position.x <= selectionrect.Right) &&
-									  (l.Start.Position.y <= selectionrect.Bottom) &&
-									  (l.End.Position.x >= selectionrect.Left) &&
-									  (l.End.Position.y >= selectionrect.Top) &&
-									  (l.End.Position.x <= selectionrect.Right) &&
-									  (l.End.Position.y <= selectionrect.Bottom));
-					}
-				}
+				List<Sector> toSelect = new List<Sector>();
+				List<Sector> toDeselect = new List<Sector>();
 				
-				// Go for all sectors
-				foreach(Sector s in General.Map.Map.Sectors)
-				{
-					// Go for all sidedefs
-					bool allselected = true;
-					foreach(Sidedef sd in s.Sidedefs)
-					{
-						if(!sd.Line.Selected)
-						{
-							allselected = false;
-							break;
+				//mxd. collect changed sectors
+				if(subtractiveSelection) {
+					//deselect sectors fully and partially inside selection, leave others untouched 
+					if(BuilderPlug.Me.MarqueSelectTouching) {
+						foreach(Sector s in General.Map.Map.Sectors) {
+							if(!s.Selected)	continue;
+							bool deselect = false;
+
+							foreach(Sidedef sd in s.Sidedefs) {
+								if(selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
+									deselect = true;
+									break;
+								}
+							}
+
+							if(deselect) SelectSector(s, false, false);
+						}
+					} else {
+						//deselect sectors fully inside selection, leave others untouched 
+						foreach(Sector s in General.Map.Map.Sectors) {
+							if(!s.Selected)	continue;
+							bool deselect = true;
+
+							foreach(Sidedef sd in s.Sidedefs) {
+								if(!selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || !selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
+									deselect = false;
+									break;
+								}
+							}
+
+							if(deselect) SelectSector(s, false, false);
 						}
 					}
-					
-					// Sector completely selected?
-					SelectSector(s, allselected, false);
+				} else { //additive selection
+					if(BuilderPlug.Me.MarqueSelectTouching) {
+						//select sectors fully and partially inside selection, leave others untouched 
+						if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect) {
+							foreach(Sector s in General.Map.Map.Sectors) {
+								if(s.Selected) continue;
+								bool select = false;
+
+								foreach(Sidedef sd in s.Sidedefs) {
+									if(selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
+										select = true;
+										break;
+									}
+								}
+
+								if(select) SelectSector(s, true, false);
+							}
+						} else {//select sectors fully and partially inside selection, deselect all other sectors
+							foreach(Sector s in General.Map.Map.Sectors) {
+								bool select = false;
+
+								foreach(Sidedef sd in s.Sidedefs) {
+									if(selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
+										select = true;
+										break;
+									}
+								}
+
+								if(select && !s.Selected)
+									SelectSector(s, true, false);
+								else if(!select && s.Selected)
+									SelectSector(s, false, false);
+							}
+						}
+					} else {
+						//select sectors fully inside selection, leave others untouched 
+						if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect) {
+							foreach(Sector s in General.Map.Map.Sectors) {
+								if(s.Selected) continue;
+								bool select = true;
+
+								foreach(Sidedef sd in s.Sidedefs) {
+									if(!selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || !selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
+										select = false;
+										break;
+									}
+								}
+
+								if(select) SelectSector(s, true, false);
+							}
+						} else {//select sectors fully inside selection, deselect all other sectors
+							foreach(Sector s in General.Map.Map.Sectors) {
+								bool select = true;
+
+								foreach(Sidedef sd in s.Sidedefs) {
+									if(!selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || !selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
+										select = false;
+										break;
+									}
+								}
+
+								if(select && !s.Selected)
+									SelectSector(s, true, false);
+								else if(!select && s.Selected)
+									SelectSector(s, false, false);
+							}
+						}
+					}
 				}
-				
+
 				// Make sure all linedefs reflect selected sectors
 				foreach(Sidedef sd in General.Map.Map.Sidedefs)
-					if(!sd.Sector.Selected && ((sd.Other == null) || !sd.Other.Sector.Selected))
-						sd.Line.Selected = false;
+					sd.Line.Selected = sd.Sector.Selected || (sd.Other != null && sd.Other.Sector.Selected);
 			}
 			
 			base.OnEndMultiSelection();
@@ -1129,6 +1274,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								lines[i].FlipVertices();
 								lines[i].FlipSidedefs();
 							}
+
+							//mxd. Check textures.
+							if(lines[i].Front.MiddleRequired() && (lines[i].Front.MiddleTexture.Length == 0 || lines[i].Front.MiddleTexture == "-")) {
+								if(lines[i].Front.HighTexture.Length > 0 && lines[i].Front.HighTexture != "-") {
+									lines[i].Front.SetTextureMid(lines[i].Front.HighTexture);
+								} else if(lines[i].Front.LowTexture.Length > 0 && lines[i].Front.LowTexture != "-") {
+									lines[i].Front.SetTextureMid(lines[i].Front.LowTexture);
+								}
+							}
+
+							//mxd. Do we still need high/low textures?
+							if(!lines[i].Front.HighRequired() && lines[i].Front.HighTexture.Length > 0 && lines[i].Front.HighTexture != "-")
+								lines[i].Front.SetTextureHigh("-");
+
+							if(!lines[i].Front.LowRequired() && lines[i].Front.LowTexture.Length > 0 && lines[i].Front.LowTexture != "-")
+								lines[i].Front.SetTextureLow("-");
 							
 							// Update sided flags
 							lines[i].ApplySidedFlags();
@@ -1203,27 +1364,84 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("gradientbrightness")]
 		public void MakeGradientBrightness()
 		{
-			General.Interface.DisplayStatus(StatusType.Action, "Created gradient brightness over selected sectors.");
-			General.Map.UndoRedo.CreateUndo("Gradient brightness");
-
 			// Need at least 3 selected sectors
 			// The first and last are not modified
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
-			if(orderedselection.Count > 2)
-			{
-				float startbrightness = (float)General.GetByIndex(orderedselection, 0).Brightness;
-				float endbrightness = (float)General.GetByIndex(orderedselection, orderedselection.Count - 1).Brightness;
-				float delta = endbrightness - startbrightness;
+			if(orderedselection.Count > 2) {
+				General.Interface.DisplayStatus(StatusType.Action, "Created gradient brightness over selected sectors.");
+				General.Map.UndoRedo.CreateUndo("Gradient brightness");
 
-				// Go for all sectors in between first and last
-				int index = 0;
-				foreach(Sector s in orderedselection)
-				{
-					float u = (float)index / (float)(orderedselection.Count - 1);
-					float b = startbrightness + delta * u;
-					s.Brightness = (int)b;
-					index++;
+				//mxd
+				Sector start = General.GetByIndex(orderedselection, 0);
+				Sector end = General.GetByIndex(orderedselection, orderedselection.Count - 1);
+
+				//mxd. Use UDMF light?
+				if(General.Map.UDMF && (string)BuilderPlug.Me.MenusForm.BrightnessGradientMode.SelectedItem != MenusForm.BrightnessGradientModes.Sectors) {
+					string lightKey = string.Empty;
+					string lightAbsKey = string.Empty;
+					float startbrightness, endbrightness;
+
+					if((string)BuilderPlug.Me.MenusForm.BrightnessGradientMode.SelectedItem == MenusForm.BrightnessGradientModes.Ceilings) {
+						lightKey = "lightceiling";
+						lightAbsKey = "lightceilingabsolute";
+					} else { //should be floors...
+						lightKey = "lightfloor";
+						lightAbsKey = "lightfloorabsolute";
+					}
+
+					//get total brightness of start sector
+					if(start.Fields.GetValue(lightAbsKey, false)) 
+						startbrightness = (float)start.Fields.GetValue(lightKey, 0);
+					else 
+						startbrightness = Math.Min(255, Math.Max(0, (float)start.Brightness + start.Fields.GetValue(lightKey, 0)));
+
+					//get total brightness of end sector
+					if(end.Fields.GetValue(lightAbsKey, false)) 
+						endbrightness = (float)end.Fields.GetValue(lightKey, 0);
+					else
+						endbrightness = Math.Min(255, Math.Max(0, (float)end.Brightness + end.Fields.GetValue(lightKey, 0)));
+
+					float delta = endbrightness - startbrightness;
+
+					// Go for all sectors in between first and last
+					int index = 0;
+					foreach(Sector s in orderedselection) {
+						s.Fields.BeforeFieldsChange();
+						float u = (float)index / (float)(orderedselection.Count - 1);
+						float b = startbrightness + delta * u;
+
+						//absolute flag set?
+						if(s.Fields.GetValue(lightAbsKey, false)) {
+							if(s.Fields.ContainsKey(lightKey))
+								s.Fields[lightKey].Value = (int)b;
+							else
+								s.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b));
+						} else {
+							if(s.Fields.ContainsKey(lightKey))
+								s.Fields[lightKey].Value = (int)b - s.Brightness;
+							else
+								s.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b - s.Brightness));
+						}
+
+						index++;
+					}
+
+				} else {
+					float startbrightness = (float)start.Brightness;
+					float endbrightness = (float)end.Brightness;
+					float delta = endbrightness - startbrightness;
+
+					// Go for all sectors in between first and last
+					int index = 0;
+					foreach(Sector s in orderedselection) {
+						float u = (float)index / (float)(orderedselection.Count - 1);
+						float b = startbrightness + delta * u;
+						s.Brightness = (int)b;
+						index++;
+					}
 				}
+			} else {
+				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 sectors first!");
 			}
 
 			// Update
@@ -1239,27 +1457,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("gradientfloors")]
 		public void MakeGradientFloors()
 		{
-			General.Interface.DisplayStatus(StatusType.Action, "Created gradient floor heights over selected sectors.");
-			General.Map.UndoRedo.CreateUndo("Gradient floor heights");
-
 			// Need at least 3 selected sectors
 			// The first and last are not modified
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
-			if(orderedselection.Count > 2)
-			{
+			if(orderedselection.Count > 2) {
+				General.Interface.DisplayStatus(StatusType.Action, "Created gradient floor heights over selected sectors.");
+				General.Map.UndoRedo.CreateUndo("Gradient floor heights");
+
 				float startlevel = (float)General.GetByIndex(orderedselection, 0).FloorHeight;
 				float endlevel = (float)General.GetByIndex(orderedselection, orderedselection.Count - 1).FloorHeight;
 				float delta = endlevel - startlevel;
 
 				// Go for all sectors in between first and last
 				int index = 0;
-				foreach(Sector s in orderedselection)
-				{
+				foreach(Sector s in orderedselection) {
 					float u = (float)index / (float)(orderedselection.Count - 1);
 					float b = startlevel + delta * u;
 					s.FloorHeight = (int)b;
 					index++;
 				}
+			} else {
+				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 sectors first!");
 			}
 
 			// Update
@@ -1271,27 +1489,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("gradientceilings")]
 		public void MakeGradientCeilings()
 		{
-			General.Interface.DisplayStatus(StatusType.Action, "Created gradient ceiling heights over selected sectors.");
-			General.Map.UndoRedo.CreateUndo("Gradient ceiling heights");
-
 			// Need at least 3 selected sectors
 			// The first and last are not modified
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
-			if(orderedselection.Count > 2)
-			{
+			if(orderedselection.Count > 2) {
+				General.Interface.DisplayStatus(StatusType.Action, "Created gradient ceiling heights over selected sectors.");
+				General.Map.UndoRedo.CreateUndo("Gradient ceiling heights");
+
 				float startlevel = (float)General.GetByIndex(orderedselection, 0).CeilHeight;
 				float endlevel = (float)General.GetByIndex(orderedselection, orderedselection.Count - 1).CeilHeight;
 				float delta = endlevel - startlevel;
 
 				// Go for all sectors in between first and last
 				int index = 0;
-				foreach(Sector s in orderedselection)
-				{
+				foreach(Sector s in orderedselection) {
 					float u = (float)index / (float)(orderedselection.Count - 1);
 					float b = startlevel + delta * u;
 					s.CeilHeight = (int)b;
 					index++;
 				}
+			} else {
+				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 sectors first!");
 			}
 
 			// Update

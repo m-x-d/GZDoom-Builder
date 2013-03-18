@@ -101,6 +101,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Add toolbar buttons
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste); //mxd
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.AlignThingsToWall); //mxd
 			
 			// Convert geometry selection to linedefs selection
 			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
@@ -115,6 +117,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Remove toolbar buttons
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.AlignThingsToWall); //mxd
 			
 			// Going to EditSelectionMode?
 			if(General.Editing.NewMode is EditSelectionMode)
@@ -281,9 +285,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				// Flip selection
-				highlighted.Selected = !highlighted.Selected;
-
 				// Update display
 				if(renderer.StartThings(false))
 				{
@@ -292,11 +293,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Finish();
 					renderer.Present();
 				}
-			}
-			else
-			{
-				// Start making a selection
-				StartMultiSelection();
 			}
 
 			base.OnSelectBegin();
@@ -311,6 +307,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Item highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
+					//mxd. Flip selection
+					highlighted.Selected = !highlighted.Selected;
+					
 					// Update display
 					if(renderer.StartThings(false))
 					{
@@ -357,7 +356,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				// Mouse in window?
-				if(mouseinside)
+				if(mouseinside && !selecting) //mxd. We don't want to insert a thing when multiselecting
 				{
 					// Edit pressed in this mode
 					editpressed = true;
@@ -424,15 +423,52 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnMouseMove(e);
 
-			// Not holding any buttons?
-			if(e.Button == MouseButtons.None)
+			//mxd
+			if(selectpressed && !editpressed && !selecting) {
+				// Check if moved enough pixels for multiselect
+				Vector2D delta = mousedownpos - mousepos;
+				if((Math.Abs(delta.x) > MULTISELECT_START_MOVE_PIXELS) ||
+				   (Math.Abs(delta.y) > MULTISELECT_START_MOVE_PIXELS)) {
+					// Start multiselecting
+					StartMultiSelection();
+				}
+			}
+			else if(paintselectpressed && !editpressed && !selecting)  //mxd. Drag-select
 			{
 				// Find the nearest thing within highlight range
 				Thing t = MapSet.NearestThingSquareRange(General.Map.ThingsFilter.VisibleThings, mousemappos, BuilderPlug.Me.HighlightThingsRange / renderer.Scale);
-				
-				// Highlight if not the same
-				if(t != highlighted) Highlight(t);
+
+				if(t != null) {
+					if(t != highlighted) {
+						//toggle selected state
+						if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
+							t.Selected = true;
+						else if (General.Interface.CtrlState)
+							t.Selected = false;
+						else
+							t.Selected = !t.Selected;
+						highlighted = t;
+
+						// Update entire display
+						General.Interface.RedrawDisplay();
+					}
+				} else if(highlighted != null) {
+					highlighted = null;
+					Highlight(null);
+					
+					// Update entire display
+					General.Interface.RedrawDisplay();
+				}
 			}
+			else if(e.Button == MouseButtons.None) // Not holding any buttons?
+			{
+				// Find the nearest thing within highlight range
+				Thing t = MapSet.NearestThingSquareRange(General.Map.ThingsFilter.VisibleThings, mousemappos, BuilderPlug.Me.HighlightThingsRange / renderer.Scale);
+
+				// Highlight if not the same
+				if(t != highlighted)
+					Highlight(t);
+			} 
 		}
 
 		// Mouse leaves
@@ -442,6 +478,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Highlight nothing
 			Highlight(null);
+		}
+
+		//mxd
+		protected override void OnPaintSelectBegin() {
+			highlighted = null;
+			base.OnPaintSelectBegin();
 		}
 
 		// Mouse wants to drag
@@ -464,9 +506,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Start dragging the selection
-					General.Editing.ChangeMode(new DragThingsMode(new ThingsMode(), mousedownmappos));
+					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || canDrag()) //mxd
+						General.Editing.ChangeMode(new DragThingsMode(new ThingsMode(), mousedownmappos));
 				}
 			}
+		}
+
+		//mxd. Check if any selected thing is outside of map boundary
+		private bool canDrag() {
+			ICollection<Thing> selectedthings = General.Map.Map.GetSelectedThings(true);
+			int unaffectedCount = 0;
+
+			foreach(Thing t in selectedthings) {
+				// Make sure the vertex is inside the map boundary
+				if(t.Position.x < General.Map.Config.LeftBoundary || t.Position.x > General.Map.Config.RightBoundary
+					|| t.Position.y > General.Map.Config.TopBoundary || t.Position.y < General.Map.Config.BottomBoundary) {
+
+					t.Selected = false;
+					unaffectedCount++;
+				}
+			}
+
+			if(unaffectedCount == selectedthings.Count) {
+				General.Interface.DisplayStatus(StatusType.Warning, "Unable to drag selection: " + (selectedthings.Count == 1 ? "selected thing is" : "all of selected things are") + " outside of map boundary!");
+				General.Interface.RedrawDisplay();
+				return false;
+			}
+
+			if(unaffectedCount > 0)
+				General.Interface.DisplayStatus(StatusType.Warning, unaffectedCount + " of selected vertices " + (unaffectedCount == 1 ? "is" : "are") + " outside of map boundary!");
+
+			return true;
 		}
 
 		// This is called wheh selection ends
@@ -479,26 +549,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(selectionvolume)
 			{
-				if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
-				{
+				//mxd
+				if(subtractiveSelection) {
 					// Go for all things
 					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
-					{
-						t.Selected |= ((t.Position.x >= selectionrect.Left) &&
-									   (t.Position.y >= selectionrect.Top) &&
-									   (t.Position.x <= selectionrect.Right) &&
-									   (t.Position.y <= selectionrect.Bottom));
-					}
-				}
-				else
-				{
-					// Go for all things
-					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
-					{
-						t.Selected = ((t.Position.x >= selectionrect.Left) &&
-									  (t.Position.y >= selectionrect.Top) &&
-									  (t.Position.x <= selectionrect.Right) &&
-									  (t.Position.y <= selectionrect.Bottom));
+						if(selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
+				} else {
+					if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect) {
+						// Go for all things
+						foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+							t.Selected |= selectionrect.Contains(t.Position.x, t.Position.y);
+					} else {
+						// Go for all things
+						foreach(Thing t in General.Map.ThingsFilter.VisibleThings) 
+							t.Selected = selectionrect.Contains(t.Position.x, t.Position.y);
 					}
 				}
 			}
@@ -725,6 +789,64 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Redraw screen
 				General.Interface.RedrawDisplay();
 			}
+		}
+
+		//mxd
+		[BeginAction("thingaligntowall")]
+		public void AlignThingsToWall() {
+			// Make list of selected things
+			List<Thing> selected = new List<Thing>(General.Map.Map.GetSelectedThings(true));
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+
+			if(selected.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			List<Thing> toAlign = new List<Thing>();
+
+			foreach(Thing t in selected){
+				if(t.IsModel)
+					toAlign.Add(t);
+			}
+ 
+			// Make undo
+			if(toAlign.Count > 1) {
+				General.Map.UndoRedo.CreateUndo("Align " + toAlign.Count + " things");
+				General.Interface.DisplayStatus(StatusType.Action, "Aligned " + toAlign.Count + " things.");
+			} else {
+				General.Map.UndoRedo.CreateUndo("Align thing");
+				General.Interface.DisplayStatus(StatusType.Action, "Aligned a thing.");
+			}
+
+			//align things
+			int thingsCount = General.Map.Map.Things.Count;
+
+			foreach(Thing t in toAlign) {
+				List<Linedef> excludedLines = new List<Linedef>();
+				bool aligned = false;
+
+				do{
+					Linedef l = General.Map.Map.NearestLinedef(t.Position, excludedLines);
+					aligned = Tools.TryAlignThingToLine(t, l);
+					
+					if(!aligned) {
+						excludedLines.Add(l);
+
+						if(excludedLines.Count == thingsCount) {
+							ThingTypeInfo tti = General.Map.Data.GetThingInfo(t.Type);
+							General.ErrorLogger.Add(ErrorType.Warning, "Unable to align Thing ¹" + t.Index + " (" + tti.Title + ") to any linedef in a map!");
+							aligned = true;
+						}
+					}
+				} while(!aligned);
+			}
+
+			// Update cache values
+			General.Map.IsChanged = true;
+
+			// Redraw screen
+			General.Interface.RedrawDisplay();
 		}
 		
 		#endregion

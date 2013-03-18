@@ -31,6 +31,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -62,6 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// List of unstable lines
 		protected ICollection<Linedef> unstablelines;
+		protected List<float> unstableLinesInitialLengths; //mxd
 		
 		// List of unselected lines
 		protected ICollection<Linedef> snaptolines;
@@ -149,6 +151,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Make list of unstable lines only
 			// These will have their length displayed during the drag
 			unstablelines = MapSet.UnstableLinedefsFromVertices(selectedverts);
+
+			//mxd. Keep original lenghs for further reference
+			unstableLinesInitialLengths = new List<float>(unstablelines.Count);
+
+			foreach (Linedef l in unstablelines)
+				unstableLinesInitialLengths.Add(l.Length);
 
 			// Make text labels
 			labels = new LineLengthLabel[unstablelines.Count];
@@ -291,6 +299,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return false;
 			}
 		}
+
+		//mxd. This updates OffsetX of unstable lines
+		private void updateTextureOffsetX() {
+			int c = 0;
+			foreach(Linedef l in unstablelines) {
+				if(l.Length > 0 && l.Length != unstableLinesInitialLengths[c]/* && l.Angle == unstableLinesInitialAngles[c]*/) {
+					if (l.Front != null && ((l.Front.MiddleRequired() || l.Front.MiddleTexture.Length > 1) || l.Front.HighRequired() || l.Front.LowRequired()) && selectedverts.Contains(l.Start)) {
+						l.Front.OffsetX += (int)Math.Round(unstableLinesInitialLengths[c] - l.Length);
+						clampTextureOffsetX(l.Front);
+					} else if (l.Back != null && ((l.Back.MiddleRequired() || l.Back.MiddleTexture.Length > 1) || l.Back.HighRequired() || l.Back.LowRequired()) && selectedverts.Contains(l.End)) {
+						l.Back.OffsetX += (int)Math.Round(unstableLinesInitialLengths[c] - l.Length);
+						clampTextureOffsetX(l.Back);
+					}
+				}
+				c++;
+			}
+		}
+
+		//mxd
+		private void clampTextureOffsetX(Sidedef target) {
+			ImageData texture = null;
+
+			if (target.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(target.MiddleTexture)) {
+				texture = General.Map.Data.GetFlatImage(target.MiddleTexture);
+			} else if (target.HighRequired() && target.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(target.HighTexture)) {
+				texture = General.Map.Data.GetFlatImage(target.HighTexture);
+			} else if (target.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(target.LowTexture)) {
+				texture = General.Map.Data.GetFlatImage(target.LowTexture);
+			}
+
+			if (texture != null && texture.IsImageLoaded)
+				target.OffsetX %= texture.Width;
+		}
 		
 		// Cancelled
 		public override void OnCancel()
@@ -356,6 +397,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				// Update cached values
 				General.Map.Map.Update();
+
+				//mxd
+				if (BuilderPlug.Me.AutoAlignTextureOffsetsOnDrag)
+					updateTextureOffsetX();
 
 				// Done
 				Cursor.Current = Cursors.Default;

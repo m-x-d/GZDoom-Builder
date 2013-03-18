@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Methods
 
 		// This sets up the form to edit the given vertices
-		public void Setup(ICollection<Vertex> vertices)
+		public void Setup(ICollection<Vertex> vertices, bool allowPositionChange)
 		{
 			// Keep this list
 			this.vertices = vertices;
@@ -104,6 +104,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Position
 			positionx.Text = vc.Position.x.ToString();
 			positiony.Text = vc.Position.y.ToString();
+
+			//mxd
+			positionx.Enabled = allowPositionChange;
+			positiony.Enabled = allowPositionChange;
 			
 			// Custom fields
 			fieldslist.SetValues(vc.Fields, true);
@@ -125,13 +129,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Height offsets
 			if(General.Map.UDMF) {
-				zceiling.Text = UDMFTools.GetFloat(vc.Fields, "zceiling", 0).ToString();
-				zfloor.Text = UDMFTools.GetFloat(vc.Fields, "zfloor", 0).ToString();
+				zceiling.Text = vc.Fields.GetValue("zceiling", 0f).ToString();
+				zfloor.Text = vc.Fields.GetValue("zfloor", 0f).ToString();
 
 				foreach(Vertex v in vertices) {
-					if(zceiling.Text != UDMFTools.GetFloat(v.Fields, "zceiling", 0).ToString())
+					if(zceiling.Text != v.Fields.GetValue("zceiling", 0f).ToString())
 						zceiling.Text = "";
-					if(zfloor.Text != UDMFTools.GetFloat(v.Fields, "zfloor", 0).ToString())
+					if(zfloor.Text != v.Fields.GetValue("zfloor", 0f).ToString())
 						zfloor.Text = "";
 				}
 			}
@@ -174,10 +178,21 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. Height offsets
 			if(General.Map.UDMF) {
 				foreach(Vertex v in vertices) {
-					float oldCeil = UDMFTools.GetFloat(v.Fields, "zceiling", 0);
-					UDMFTools.SetFloat(v.Fields, "zceiling", zceiling.GetResultFloat(oldCeil), 0, false);
-					float oldFloor = UDMFTools.GetFloat(v.Fields, "zfloor", 0);
-					UDMFTools.SetFloat(v.Fields, "zfloor", zfloor.GetResultFloat(oldFloor), 0, false);
+					if(string.IsNullOrEmpty(zceiling.Text)) {
+						if(v.Fields.ContainsKey("zceiling"))
+							v.Fields.Remove("zceiling");
+					} else {
+						float oldCeil = v.Fields.GetValue("zceiling", 0f);
+						UDMFTools.SetFloat(v.Fields, "zceiling", zceiling.GetResultFloat(oldCeil), 0, false);
+					}
+
+					if(string.IsNullOrEmpty(zfloor.Text)) {
+						if(v.Fields.ContainsKey("zfloor"))
+							v.Fields.Remove("zfloor");
+					} else {
+						float oldFloor = v.Fields.GetValue("zfloor", 0f);
+						UDMFTools.SetFloat(v.Fields, "zfloor", zfloor.GetResultFloat(oldFloor), 0, false);
+					}
 				}
 			}
 			

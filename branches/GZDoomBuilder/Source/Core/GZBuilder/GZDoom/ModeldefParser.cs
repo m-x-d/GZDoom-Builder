@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             SkipWhitespace(true);
                             token = ReadToken();
                             if (token != "{") {
-                                GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in "+sourcefilename+" at line "+GetCurrentLineNumber()+": expected '{', but got " + token);
+                                General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in "+sourcefilename+" at line "+GetCurrentLineNumber()+": expected '{', but got " + token);
                                 continue; //something wrong with modeldef declaration, continue to next one
                             }
 

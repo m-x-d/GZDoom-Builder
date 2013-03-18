@@ -89,5 +89,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			return (a.tag != b.tag) || (a.type != b.type);
 		}
+
+		//mxd 
+		public override int GetHashCode() 
+		{
+			return base.GetHashCode();
+		}
+
+		//mxd
+		public override bool Equals(object obj) 
+		{
+			if(!(obj is Association)) return false;
+
+			Association b = (Association)obj;
+			return (tag == b.tag) && (type == b.type);
+		}
 	}
 }

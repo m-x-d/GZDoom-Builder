@@ -216,6 +216,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Sidedef.SetTextureHigh(texturename);
 			General.Map.Data.UpdateUsedTextures();
 			this.Setup();
+
+			//mxd. Other sector also may require updating
+			SectorData sd = mode.GetSectorData(Sidedef.Sector);
+			if(sd.ExtraFloors.Count > 0)
+				((BaseVisualSector)mode.GetVisualSector(Sidedef.Sector)).Rebuild();
 		}
 
 		protected override void SetTextureOffsetX(int x)

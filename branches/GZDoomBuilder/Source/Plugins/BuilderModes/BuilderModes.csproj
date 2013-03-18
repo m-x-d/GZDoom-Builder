@@ -230,7 +230,6 @@
     <Compile Include="ClassicModes\DrawRectangleMode.cs" />
     <Compile Include="ClassicModes\FlatAlignMode.cs" />
     <Compile Include="ClassicModes\FloorAlignMode.cs" />
-    <Compile Include="ClassicModes\RedrawSectorMode.cs" />
     <Compile Include="ClassicModes\SnapVerticesMode.cs" />
     <Compile Include="ErrorChecks\CheckMissingTextures.cs" />
     <Compile Include="ErrorChecks\CheckUnknownFlats.cs" />
@@ -243,6 +242,7 @@
     <Compile Include="ErrorChecks\ResultUnknownTexture.cs" />
     <Compile Include="ErrorChecks\ResultUnknownThing.cs" />
     <Compile Include="FindReplace\FindLinedefFlags.cs" />
+    <Compile Include="FindReplace\FindSectorBrightness.cs" />
     <Compile Include="FindReplace\FindThingAngle.cs" />
     <Compile Include="FindReplace\FindAnyTextureFlat.cs" />
     <Compile Include="FindReplace\FindThingFlags.cs" />
@@ -276,17 +276,25 @@
     <Compile Include="Interface\EditSelectionPanel.Designer.cs">
       <DependentUpon>EditSelectionPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\WavefrontSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\WavefrontSettingsForm.Designer.cs">
+      <DependentUpon>WavefrontSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\UndoRedoPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Interface\UndoRedoPanel.Designer.cs">
       <DependentUpon>UndoRedoPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="IO\WavefrontExporter.cs" />
     <Compile Include="VisualModes\BaseVisualGeometrySector.cs" />
     <Compile Include="VisualModes\BaseVisualGeometrySidedef.cs" />
     <Compile Include="VisualModes\BaseVisualMode.cs" />
     <Compile Include="VisualModes\BaseVisualSector.cs" />
     <Compile Include="VisualModes\BaseVisualThing.cs" />
+    <Compile Include="VisualModes\BaseVisualVertex.cs" />
     <Compile Include="VisualModes\Effect3DFloor.cs" />
     <Compile Include="VisualModes\EffectBrightnessLevel.cs" />
     <Compile Include="VisualModes\EffectCopySlope.cs" />
@@ -303,11 +311,13 @@
     <Compile Include="VisualModes\SectorLevelType.cs" />
     <Compile Include="VisualModes\TexturePlane.cs" />
     <Compile Include="VisualModes\ThingData.cs" />
+    <Compile Include="VisualModes\VertexData.cs" />
     <Compile Include="VisualModes\VisualActionResult.cs" />
     <Compile Include="VisualModes\VisualCeiling.cs" />
     <Compile Include="VisualModes\VisualFloor.cs" />
     <Compile Include="VisualModes\VisualLower.cs" />
     <Compile Include="VisualModes\VisualMiddle3D.cs" />
+    <Compile Include="VisualModes\VisualMiddleBack.cs" />
     <Compile Include="VisualModes\VisualMiddleDouble.cs" />
     <Compile Include="VisualModes\VisualMiddleSingle.cs" />
     <Compile Include="VisualModes\VisualSidedefParts.cs" />
@@ -375,7 +385,16 @@
     <EmbeddedResource Include="Resources\FloorAlign.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\WavefrontSettingsForm.resx">
+      <DependentUpon>WavefrontSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\VisualModeGZ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SelectTouching.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AlignThings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

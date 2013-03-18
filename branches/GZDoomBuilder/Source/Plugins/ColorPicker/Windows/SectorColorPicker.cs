@@ -116,8 +116,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
         }
 
         private void colorPickerControl1_OnCancelPressed(object sender, EventArgs e) {
-            //restore initial values
-            General.Map.UndoRedo.PerformUndo();
+			this.DialogResult = DialogResult.Cancel;
             Close();
         }
 
@@ -130,9 +129,15 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
                 if ((int)s.Fields["fadecolor"].Value == defaultFadeColor)
                     s.Fields.Remove("fadecolor");
             }
-            
+
+			this.DialogResult = DialogResult.OK;
             Close();
         }
+
+		private void SectorColorPicker_FormClosing(object sender, FormClosingEventArgs e) {
+			if(this.DialogResult == DialogResult.Cancel)
+				General.Map.UndoRedo.WithdrawUndo();
+		}
 
         private void colorPickerControl1_ColorChanged(object sender, ColorChangedEventArgs e) {
             foreach (Sector s in selection) {

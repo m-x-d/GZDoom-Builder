@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
                                     }
                                 }
 
-                                name = (name.Length > 0 ? "[" + n + "] " + name : "Script " + n);
+                                name = (name.Length > 0 ? name + " [" + n + "]" : "Script " + n);
                                 ScriptItem i = new ScriptItem(n, name, startPos, endPos);
                                 numberedScripts.Add(i);
                             }
@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
                             datareader = localreader;
                             sourcename = localsourcename;
                         } else {
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": got #include directive with missing or incorrect path: '" + includeLump + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": got #include directive without include path!");
                         }
                     }
                 }

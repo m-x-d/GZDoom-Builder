@@ -27,6 +27,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
             base.OnEngage();
 
             //get selection
+			General.Map.Map.ClearAllMarks(false);
             General.Map.Map.MarkAllSelectedGeometry(true, false, true, false, false);
             List<Vertex> verts = General.Map.Map.GetMarkedVertices(true);
 

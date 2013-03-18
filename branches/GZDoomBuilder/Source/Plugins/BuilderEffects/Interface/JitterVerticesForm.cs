@@ -1,0 +1,255 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.VisualModes;
+using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.Geometry;
+
+namespace CodeImp.DoomBuilder.BuilderEffects
+{
+	public partial class JitterVerticesForm : Form
+	{
+		private string editingModeName;
+		private List<Vertex> selection;
+		private List<VisualSector> visualSectors;
+		private VertexData[] vertexData;
+		private int MaxSafeDistance;
+
+		private static bool relativePosition;
+
+		private struct VertexData
+		{
+			public Vector2D Position;
+			public int SafeDistance;
+			public float JitterAngle;
+		}
+		
+		public JitterVerticesForm(string editingModeName) {
+			this.editingModeName = editingModeName;
+			this.HelpRequested += new HelpEventHandler(JitterVerticesForm_HelpRequested);
+
+			InitializeComponent();
+
+			//get selection
+			selection = new List<Vertex>();
+
+			if(editingModeName == "BaseVisualMode") {
+				VisualMode vm = (VisualMode)General.Editing.Mode;
+				List<VisualGeometry> visualSelection = vm.GetSelectedSurfaces();
+				visualSectors = new List<VisualSector>();
+				int linesCount = 0;
+
+				foreach(VisualGeometry vg in visualSelection) {
+					if(vg.Sidedef != null && vm.VisualSectorExists(vg.Sidedef.Sector)) {
+						if(!selection.Contains(vg.Sidedef.Line.Start))
+							selection.Add(vg.Sidedef.Line.Start);
+						if(!selection.Contains(vg.Sidedef.Line.End))
+							selection.Add(vg.Sidedef.Line.End);
+						linesCount++;
+
+						visualSectors.Add(vm.GetVisualSector(vg.Sidedef.Sector));
+
+						if(vg.Sidedef.Other != null && vg.Sidedef.Other.Sector != null && vm.VisualSectorExists(vg.Sidedef.Other.Sector))
+							visualSectors.Add(vm.GetVisualSector(vg.Sidedef.Other.Sector));
+					}
+				}
+
+				//update window header
+				this.Text = "Jitter Transform (" + linesCount + (linesCount > 1 ? " linedefs" : " linedef") + ")";
+			} else if(editingModeName == "LinedefsMode") {
+				ICollection<Linedef> list = General.Map.Map.GetSelectedLinedefs(true);
+				int linesCount = 0;
+
+				foreach(Linedef l in list) {
+					if(!selection.Contains(l.Start))
+						selection.Add(l.Start);
+					if(!selection.Contains(l.End))
+						selection.Add(l.End);
+					linesCount++;
+				}
+
+				//update window header
+				this.Text = "Jitter Transform (" + linesCount + (linesCount > 1 ? " linedefs" : " linedef") + ")";
+			} else { 
+				ICollection<Vertex> list = General.Map.Map.GetSelectedVertices(true);
+
+				foreach(Vertex v in list)
+					selection.Add(v);
+
+				//update window header
+				this.Text = "Jitter Transform (" + selection.Count + (selection.Count > 1 ? " vertices" : " vertex") + ")";
+			}
+
+			if(selection.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "Unable to get vertices from selection!");
+				return;
+			}
+
+			Dictionary<Vertex, VertexData> data = new Dictionary<Vertex, VertexData>();
+
+			foreach(Vertex v in selection) {
+				VertexData vd = new VertexData();
+				vd.Position = v.Position;
+				data.Add(v, vd);
+			}
+
+			foreach(Vertex v in selection){
+				if(v.Linedefs == null) continue;
+
+				//get nearest linedef
+				Linedef closestLine = null;
+				float distance = float.MaxValue;
+
+				// Go for all linedefs in selection
+				foreach(Linedef l in General.Map.Map.Linedefs) {
+					if(v.Linedefs.Contains(l)) continue;
+
+					// Calculate distance and check if closer than previous find
+					float d = l.SafeDistanceToSq(v.Position, true);
+					if(d < distance) {
+						// This one is closer
+						closestLine = l;
+						distance = d;
+					}
+				}
+
+				if(closestLine == null) continue;
+
+				float closestLineDistance = Vector2D.Distance(v.Position, closestLine.NearestOnLine(v.Position));
+
+				//check SafeDistance of closest line
+				if(data.ContainsKey(closestLine.Start) && data[closestLine.Start].SafeDistance > closestLineDistance) {
+					VertexData vd = data[closestLine.Start];
+					vd.SafeDistance = (int)Math.Floor(closestLineDistance);
+					data[closestLine.Start] = vd;
+				}
+				if(data.ContainsKey(closestLine.End) && data[closestLine.End].SafeDistance > closestLineDistance) {
+					VertexData vd = data[closestLine.End];
+					vd.SafeDistance = (int)Math.Floor(closestLineDistance);
+					data[closestLine.End] = vd;
+				}
+
+				//save SafeDistance
+				int dist = (int)Math.Floor(closestLineDistance);
+				if(data[v].SafeDistance == 0 || data[v].SafeDistance > dist) {
+					VertexData vd = data[v];
+					vd.SafeDistance = dist;
+					data[v] = vd;
+				}
+			}
+
+			//store properties
+			vertexData = new VertexData[data.Values.Count];
+			data.Values.CopyTo(vertexData, 0);
+
+			for(int i = 0; i < vertexData.Length; i++) {
+				if(vertexData[i].SafeDistance > 0) 
+					vertexData[i].SafeDistance /= 2;
+				if(MaxSafeDistance < vertexData[i].SafeDistance) 
+					MaxSafeDistance = vertexData[i].SafeDistance;
+			}
+
+			updateAngles();
+
+			//set editing mode
+			cbRelativePos.Checked = relativePosition;
+			cbRelativePos_CheckedChanged(this, EventArgs.Empty);
+
+			//create undo
+			General.Map.UndoRedo.ClearAllRedos();
+			General.Map.UndoRedo.CreateUndo("Jitter Transform (" + selection.Count + (selection.Count > 1 ? " vertices)" : " vertex)"));
+		}
+
+//utility
+		private void applyTranslationJitter(int ammount) {
+			Random rndX = new Random();
+			Random rndY = new Random();
+			int curAmmount;
+
+			if(relativePosition) {
+				for(int i = 0; i < selection.Count; i++) {
+					curAmmount = (int)Math.Round(ammount * (vertexData[i].SafeDistance / 100f));
+					selection[i].Move(new Vector2D(vertexData[i].Position.x + (int)(Math.Sin(vertexData[i].JitterAngle) * curAmmount), vertexData[i].Position.y + (int)(Math.Cos(vertexData[i].JitterAngle) * curAmmount)));
+				}
+			} else {
+				for(int i = 0; i < selection.Count; i++) {
+					curAmmount = ammount > vertexData[i].SafeDistance ? vertexData[i].SafeDistance : ammount;
+					selection[i].Move(new Vector2D(vertexData[i].Position.x + (int)(Math.Sin(vertexData[i].JitterAngle) * curAmmount), vertexData[i].Position.y + (int)(Math.Cos(vertexData[i].JitterAngle) * curAmmount)));
+				}
+			}
+
+			//update view
+			if(editingModeName == "BaseVisualMode") {
+				General.Map.Map.Update();
+				General.Map.IsChanged = true;
+
+				foreach(VisualSector vs in visualSectors)
+					vs.UpdateSectorGeometry(true);
+
+				foreach(VisualSector vs in visualSectors)
+					vs.UpdateSectorData();
+			} else {
+				General.Interface.RedrawDisplay();
+			}
+		}
+
+		private void updateAngles() {
+			Random rnd = new Random();
+
+			for(int i = 0; i < vertexData.Length; i++) {
+				VertexData vd = vertexData[i];
+				vd.JitterAngle = (float)(rnd.Next(359) * Math.PI / 180f);
+				vertexData[i] = vd;
+			}
+		}
+
+//EVENTS
+		private void bApply_Click(object sender, EventArgs e) {
+			// Update cached values
+			General.Map.Map.Update();
+			General.Map.IsChanged = true;
+
+			if(editingModeName != "BaseVisualMode")
+				General.Interface.RedrawDisplay();
+
+			this.DialogResult = DialogResult.OK;
+			Close();
+		}
+
+		private void bCancel_Click(object sender, EventArgs e) {
+			this.DialogResult = DialogResult.Cancel;
+			Close();
+		}
+
+		private void JitterVerticesForm_FormClosing(object sender, FormClosingEventArgs e) {
+			if(this.DialogResult == DialogResult.Cancel)
+				General.Map.UndoRedo.WithdrawUndo(); //undo changes
+		}
+
+		private void positionJitterAmmount_OnValueChanging(object sender, EventArgs e) {
+			applyTranslationJitter(positionJitterAmmount.Value);
+		}
+
+		private void bUpdateTranslation_Click(object sender, EventArgs e) {
+			updateAngles();
+			applyTranslationJitter(positionJitterAmmount.Value);
+		}
+
+		private void cbRelativePos_CheckedChanged(object sender, EventArgs e) {
+			positionJitterAmmount.Label = "Position" + (cbRelativePos.Checked ? " (%):" : ":");
+			relativePosition = cbRelativePos.Checked;
+
+			positionJitterAmmount.Maximum = relativePosition ? 100 : MaxSafeDistance;
+		}
+
+		private void JitterVerticesForm_HelpRequested(object sender, HelpEventArgs hlpevent) {
+			General.ShowHelp("gz_plug_jitter.html");
+			hlpevent.Handled = true;
+		}
+	}
+}

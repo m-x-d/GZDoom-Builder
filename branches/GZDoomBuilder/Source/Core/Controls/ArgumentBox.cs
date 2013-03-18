@@ -27,6 +27,8 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
 using System.Globalization;
+using CodeImp.DoomBuilder.GZBuilder.Controls;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 
@@ -43,6 +45,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool ignorebuttonchange = false;
         //mxd
         private ArgumentInfo arginfo;
+		private bool gotTagArgument;
 		
 		#endregion
 
@@ -89,6 +92,12 @@ namespace CodeImp.DoomBuilder.Controls
 		// When the entered value needs to be validated
 		private void combobox_Validating(object sender, CancelEventArgs e)
 		{
+			//mxd
+			if(gotTagArgument && combobox.SelectedItem != null) {
+				typehandler.SetValue(((TagInfo)combobox.SelectedItem).Tag);
+				return;
+			}
+			
 			string str = combobox.Text.Trim().ToLowerInvariant();
 			str = str.TrimStart('+', '-');
 			int num;
@@ -187,10 +196,107 @@ namespace CodeImp.DoomBuilder.Controls
 			combobox.SelectedItem = null;
 			combobox.Items.Clear();
 
-			// Check if this supports enumerated options
-			if(typehandler.IsEnumerable)
+			//mxd. Special cases, special cases...
+			if(typehandler is ThingTagHandler) 
 			{
+				gotTagArgument = true;
+
+				//collect thing tags
+				List<int> tags = new List<int>();
+				List<TagInfo> infos = new List<TagInfo>();
+
+				foreach(Thing t in General.Map.Map.Things) {
+					if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
+					tags.Add(t.Tag);
+				}
+
+				//now sort them
+				tags.Sort();
+
+				//create tag infos
+				foreach(int tag in tags) {
+					if(General.Map.Options.TagLabels.ContainsKey(tag)) //tag labels
+						infos.Add(new TagInfo(tag, General.Map.Options.TagLabels[tag]));
+					else
+						infos.Add(new TagInfo(tag, string.Empty));
+				}
+
 				// Show the combobox
+				button.Visible = false;
+				scrollbuttons.Visible = false;
+				combobox.DropDownStyle = ComboBoxStyle.DropDown;
+
+				foreach(TagInfo info in infos)
+					combobox.Items.Add(info);
+			} 
+			else if(typehandler is LinedefTagHandler) 
+			{
+				gotTagArgument = true;
+
+				//collect linedef tags
+				List<int> tags = new List<int>();
+				List<TagInfo> infos = new List<TagInfo>();
+
+				foreach(Linedef t in General.Map.Map.Linedefs) {
+					if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
+					tags.Add(t.Tag);
+				}
+
+				//now sort them
+				tags.Sort();
+
+				//create tag infos
+				foreach(int tag in tags) {
+					if(General.Map.Options.TagLabels.ContainsKey(tag)) //tag labels
+						infos.Add(new TagInfo(tag, General.Map.Options.TagLabels[tag]));
+					else
+						infos.Add(new TagInfo(tag, string.Empty));
+				}
+
+				// Show the combobox
+				button.Visible = false;
+				scrollbuttons.Visible = false;
+				combobox.DropDownStyle = ComboBoxStyle.DropDown;
+
+				foreach(TagInfo info in infos)
+					combobox.Items.Add(info);
+			} 
+			else if(typehandler is SectorTagHandler)
+			{
+				gotTagArgument = true;
+
+				//collect sector tags
+				List<int> tags = new List<int>();
+				List<TagInfo> infos = new List<TagInfo>();
+
+				foreach(Sector t in General.Map.Map.Sectors) {
+					if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
+					tags.Add(t.Tag);
+				}
+
+				//now sort them
+				tags.Sort();
+
+				//create tag infos
+				foreach(int tag in tags) {
+					if(General.Map.Options.TagLabels.ContainsKey(tag)) //tag labels
+						infos.Add(new TagInfo(tag, General.Map.Options.TagLabels[tag]));
+					else
+						infos.Add(new TagInfo(tag, string.Empty));
+				}
+
+				// Show the combobox
+				button.Visible = false;
+				scrollbuttons.Visible = false;
+				combobox.DropDownStyle = ComboBoxStyle.DropDown;
+
+				foreach(TagInfo info in infos)
+					combobox.Items.Add(info);
+			}
+			// Check if this supports enumerated options
+			else if(typehandler.IsEnumerable) {
+				// Show the combobox
+				gotTagArgument = false; //mxd
 				button.Visible = false;
 				scrollbuttons.Visible = false;
 				combobox.DropDownStyle = ComboBoxStyle.DropDown;
@@ -200,6 +306,7 @@ namespace CodeImp.DoomBuilder.Controls
 			else if(typehandler.IsBrowseable)
 			{
 				// Show the button
+				gotTagArgument = false; //mxd
 				button.Visible = true;
 				button.Image = typehandler.BrowseImage;
 				scrollbuttons.Visible = false;
@@ -208,9 +315,19 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				// Show textbox with scroll buttons
+				gotTagArgument = false; //mxd
 				button.Visible = false;
 				scrollbuttons.Visible = true;
 				combobox.DropDownStyle = ComboBoxStyle.Simple;
+			}
+
+			//mxd
+			if(gotTagArgument) {
+				combobox.AutoCompleteMode = AutoCompleteMode.Suggest;
+				combobox.AutoCompleteSource = AutoCompleteSource.ListItems;
+			} else {
+				combobox.AutoCompleteMode = AutoCompleteMode.None;
+				combobox.AutoCompleteSource = AutoCompleteSource.None;
 			}
 			
 			// Setup layout
@@ -224,6 +341,18 @@ namespace CodeImp.DoomBuilder.Controls
 		public void SetValue(int value)
 		{
 			typehandler.SetValue(value);
+
+			if(gotTagArgument) { //mxd
+				foreach(object item in combobox.Items) {
+					TagInfo info = (TagInfo)item;
+
+					if(info.Tag == value) {
+						combobox.SelectedItem = item;
+						return;
+					}
+				}
+			}
+
 			combobox.SelectedItem = null;
 			combobox.Text = typehandler.GetStringValue();
 			combobox_Validating(this, new CancelEventArgs());
@@ -231,6 +360,8 @@ namespace CodeImp.DoomBuilder.Controls
 
         //mxd. this sets default value
         public void SetDefaultValue() {
+			if(gotTagArgument) return; //default tag sounds a bit silly
+
             typehandler.SetDefaultValue();
             combobox.SelectedItem = null;
             combobox.Text = typehandler.GetStringValue();
@@ -255,6 +386,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// This returns the selected value
 		public int GetResult(int original)
 		{
+			//mxd
+			if(gotTagArgument && combobox.SelectedItem != null)
+				return ((TagInfo)combobox.SelectedItem).Tag;
+			
 			int result = 0;
 			
 			// Strip prefixes
@@ -292,6 +427,16 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			return General.Clamp(result, General.Map.FormatInterface.MinArgument, General.Map.FormatInterface.MaxArgument);
+		}
+
+		//mxd. Very tricky way to close parent control by pressing ENTER or ESCAPE key when combobox.DropDownStyle == ComboBoxStyle.Simple
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+			if(this.ActiveControl == combobox && combobox.DropDownStyle == ComboBoxStyle.Simple && (keyData == Keys.Return || keyData == Keys.Escape)) {
+				combobox.DropDownStyle = ComboBoxStyle.DropDown;
+				return false;
+			}
+
+			return base.ProcessCmdKey(ref msg, keyData);
 		}
 		
 		#endregion
