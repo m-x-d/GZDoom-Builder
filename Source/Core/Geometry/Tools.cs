@@ -52,19 +52,6 @@ namespace CodeImp.DoomBuilder.Geometry
 			public string newtexlow;
 		}
 
-		private struct SidedefAlignJob
-		{
-			public Sidedef sidedef;
-			
-			public float offsetx;
-
-			// When this is true, the previous sidedef was on the left of
-			// this one and the texture X offset of this sidedef can be set
-			// directly. When this is false, the length of this sidedef
-			// must be subtracted from the X offset first.
-			public bool forward;
-		}
-
 		private struct SidedefFillJob
 		{
 			public Sidedef sidedef;
@@ -354,16 +341,6 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		/// <summary>
-		/// This finds the closest path from one vertex to another.
-		/// When turnatends is true, the algorithm will continue at the other side of the
-		/// line when a dead end has been reached. Returns null when no path could be found.
-		/// </summary>
-		//public static List<LinedefSide> FindClosestPath(Vertex start, float startangle, Vertex end, bool turnatends)
-		//{
-
-		//}
-
-		/// <summary>
 		/// This finds the closest path from the beginning of a line to the end of the line.
 		/// When turnatends is true, the algorithm will continue at the other side of the
 		/// line when a dead end has been reached. Returns null when no path could be found.
@@ -554,6 +531,12 @@ namespace CodeImp.DoomBuilder.Geometry
 			{
 				// Copy properties from source to new sector
 				sourcesector.CopyPropertiesTo(newsector);
+
+				//mxd
+				if(General.Settings.GZForceDefaultTextures) {
+					newsector.SetCeilTexture(General.Settings.DefaultCeilingTexture);
+					newsector.SetFloorTexture(General.Settings.DefaultFloorTexture);
+				}
 			}
 			else
 			{
@@ -664,9 +647,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		private static void TakeSidedefDefaults(ref SidedefSettings settings)
 		{
 			// Use defaults where no settings could be found
-			if(settings.newtexhigh == null) settings.newtexhigh = General.Settings.DefaultTexture;
-			if(settings.newtexmid == null) settings.newtexmid = General.Settings.DefaultTexture;
-			if(settings.newtexlow == null) settings.newtexlow = General.Settings.DefaultTexture;
+			if(settings.newtexhigh == null || General.Settings.GZForceDefaultTextures) settings.newtexhigh = General.Settings.DefaultTexture;
+			if(settings.newtexmid == null || General.Settings.GZForceDefaultTextures) settings.newtexmid = General.Settings.DefaultTexture;
+			if(settings.newtexlow == null || General.Settings.GZForceDefaultTextures) settings.newtexlow = General.Settings.DefaultTexture;
 		}
 
 		// This takes sidedef settings if not taken yet
@@ -828,13 +811,18 @@ namespace CodeImp.DoomBuilder.Geometry
 		#endregion
 
 		#region ================== Drawing
+
+		//mxd
+		public static bool DrawLines(IList<DrawnVertex> points) {
+			return DrawLines(points, false);
+		}
 		
 		/// <summary>
 		/// This draws lines with the given points. Note that this tool removes any existing geometry
 		/// marks and marks the new lines and vertices when done. Also marks the sectors that were added.
 		/// Returns false when the drawing failed.
 		/// </summary>
-		public static bool DrawLines(IList<DrawnVertex> points)
+		public static bool DrawLines(IList<DrawnVertex> points, bool autoAlignTextureOffsets)
 		{
 			List<Vertex> newverts = new List<Vertex>();
 			List<Vertex> intersectverts = new List<Vertex>();
@@ -1402,6 +1390,99 @@ namespace CodeImp.DoomBuilder.Geometry
 					}
 				}
 
+				//mxd
+				if(autoAlignTextureOffsets) {
+					//Auto-align new lines
+					if(newlines.Count > 1) {
+						float curLength = 0f;
+						float totalLength = 0f;
+
+						foreach(Linedef l in newlines)
+							totalLength += l.Length;
+
+						bool reversed = newlines[0].End != newlines[1].Start;
+
+						foreach(Linedef l in newlines) {
+							if(l.Front != null) {
+								ImageData texture = null;
+
+								if(l.Front.MiddleRequired() && l.Front.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.MiddleTexture)) {
+									texture = General.Map.Data.GetFlatImage(l.Front.MiddleTexture);
+								} else if(l.Front.HighRequired() && l.Front.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.HighTexture)) {
+									texture = General.Map.Data.GetFlatImage(l.Front.HighTexture);
+								} else if(l.Front.LowRequired() && l.Front.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.LowTexture)) {
+									texture = General.Map.Data.GetFlatImage(l.Front.LowTexture);
+								}
+
+								if(texture != null)
+									l.Front.OffsetX = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength));// % texture.Width);
+							}
+
+							if(l.Back != null) {
+								ImageData texture = null;
+
+								if(l.Back.MiddleRequired() && l.Back.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.MiddleTexture)) {
+									texture = General.Map.Data.GetFlatImage(l.Back.MiddleTexture);
+								} else if(l.Back.HighRequired() && l.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.HighTexture)) {
+									texture = General.Map.Data.GetFlatImage(l.Back.HighTexture);
+								} else if(l.Back.LowRequired() && l.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.LowTexture)) {
+									texture = General.Map.Data.GetFlatImage(l.Back.LowTexture);
+								}
+
+								if(texture != null)
+									l.Back.OffsetX = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength));// % texture.Width);
+							}
+
+							curLength += l.Length;
+						}
+					}
+				}
+
+				//mxd. Clamp texture offsets of changed lines
+				List<Linedef> changedLines = new List<Linedef>();
+
+				foreach(Vertex v in newverts) {
+					if(v.Linedefs == null)
+						continue;
+
+					foreach(Linedef l in v.Linedefs) {
+						if(!changedLines.Contains(l))
+							changedLines.Add(l);
+					}
+				}
+
+				foreach(Linedef l in changedLines) {
+					if(l.Front != null) {
+						ImageData texture = null;
+
+						if(l.Front.MiddleRequired() && l.Front.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.MiddleTexture)) {
+							texture = General.Map.Data.GetFlatImage(l.Front.MiddleTexture);
+						} else if(l.Front.HighRequired() && l.Front.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.HighTexture)) {
+							texture = General.Map.Data.GetFlatImage(l.Front.HighTexture);
+						} else if(l.Front.LowRequired() && l.Front.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.LowTexture)) {
+							texture = General.Map.Data.GetFlatImage(l.Front.LowTexture);
+						}
+
+						if (texture != null)
+							l.Front.OffsetX %= texture.Width;
+					}
+
+					if(l.Back != null) {
+						ImageData texture = null;
+
+						if(l.Back.MiddleRequired() && l.Back.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.MiddleTexture)) {
+							texture = General.Map.Data.GetFlatImage(l.Back.MiddleTexture);
+						} else if(l.Back.HighRequired() && l.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.HighTexture)) {
+							texture = General.Map.Data.GetFlatImage(l.Back.HighTexture);
+						} else if(l.Back.LowRequired() && l.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.LowTexture)) {
+							texture = General.Map.Data.GetFlatImage(l.Back.LowTexture);
+						}
+
+						if (texture != null)
+							l.Back.OffsetX %= texture.Width;
+					}
+				}
+
 				// Mark new geometry only
 				General.Map.Map.ClearMarkedLinedefs(false);
 				General.Map.Map.ClearMarkedVertices(false);
@@ -1499,10 +1580,10 @@ namespace CodeImp.DoomBuilder.Geometry
 				SidedefFillJob j = todo.Pop();
 
 				// Apply texturing
-				if(j.sidedef.LongHighTexture == originaltexture) j.sidedef.SetTextureHigh(filltexture.Name);
+				if(j.sidedef.HighRequired() && j.sidedef.LongHighTexture == originaltexture) j.sidedef.SetTextureHigh(filltexture.Name);
 				if((((j.sidedef.MiddleTexture.Length > 0) && (j.sidedef.MiddleTexture[0] != '-')) || j.sidedef.MiddleRequired()) &&
 				   (j.sidedef.LongMiddleTexture == originaltexture)) j.sidedef.SetTextureMid(filltexture.Name);
-				if(j.sidedef.LongLowTexture == originaltexture) j.sidedef.SetTextureLow(filltexture.Name);
+				if(j.sidedef.LowRequired() && j.sidedef.LongLowTexture == originaltexture) j.sidedef.SetTextureLow(filltexture.Name);
 				j.sidedef.Marked = true;
 				
 				if(j.forward)
@@ -1565,272 +1646,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		#endregion
 
 		#region ================== Texture Alignment
-
-		//mxd
-		public static void AutoAlignTextures(Sidedef start, SidedefPart part, ImageData texture, bool alignx, bool aligny, bool resetsidemarks) {
-			if(General.Map.UDMF)
-				autoAlignTextures(start, part, texture, alignx, aligny, resetsidemarks);
-			else
-				autoAlignTextures(start, texture, alignx, aligny, resetsidemarks);
-		}
-
-		// This performs texture alignment along all walls that match with the same texture
-		// NOTE: This method uses the sidedefs marking to indicate which sides have been aligned
-		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
-		// Setting resetsidemarks to false is usefull to align only within a specific selection
-		// (set the marked property to true for the sidedefs outside the selection)
-		private static void autoAlignTextures(Sidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks)
-		{
-			Stack<SidedefAlignJob> todo = new Stack<SidedefAlignJob>(50);
-			float scalex = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.x : 1.0f;
-			float scaley = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.y : 1.0f;
-			
-			// Mark all sidedefs false (they will be marked true when the texture is aligned)
-			if(resetsidemarks) General.Map.Map.ClearMarkedSidedefs(false);
-			
-			// Begin with first sidedef
-			SidedefAlignJob first = new SidedefAlignJob();
-			first.sidedef = start;
-			first.offsetx = start.OffsetX;
-
-			first.forward = true;
-			todo.Push(first);
-			
-			// Continue until nothing more to align
-			while(todo.Count > 0)
-			{
-				// Get the align job to do
-				SidedefAlignJob j = todo.Pop();
-				
-				if(j.forward)
-				{
-					Vertex v;
-					int forwardoffset;
-					int backwardoffset;
-					
-					// Apply alignment
-					if (alignx) j.sidedef.OffsetX = (int)j.offsetx;
-					if (aligny) j.sidedef.OffsetY = (int)Math.Round((start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + start.OffsetY;
-					forwardoffset = (int)j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex);
-					backwardoffset = (int)j.offsetx;
-					
-					j.sidedef.Marked = true;
-					
-					// Wrap the value within the width of the texture (to prevent ridiculous values)
-					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
-					if (texture.IsImageLoaded)
-					{
-						if (alignx) j.sidedef.OffsetX %= texture.Width;
-						if (aligny) j.sidedef.OffsetY %= texture.Height;
-					}
-					
-					// Add sidedefs forward (connected to the right vertex)
-					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName);
-
-					// Add sidedefs backward (connected to the left vertex)
-					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName);
-				}
-				else
-				{
-					Vertex v;
-					int forwardoffset;
-					int backwardoffset;
-
-					// Apply alignment
-					if(alignx) j.sidedef.OffsetX = (int)j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
-					if (aligny) j.sidedef.OffsetY = (int)Math.Round((start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + start.OffsetY;
-					forwardoffset = (int)j.offsetx;
-					backwardoffset = (int)j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
-					
-					j.sidedef.Marked = true;
-
-					// Wrap the value within the width of the texture (to prevent ridiculous values)
-					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
-					if(texture.IsImageLoaded)
-					{
-						if(alignx) j.sidedef.OffsetX %= texture.Width;
-						if(aligny) j.sidedef.OffsetY %= texture.Height;
-					}
-
-					// Add sidedefs backward (connected to the left vertex)
-					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName);
-
-					// Add sidedefs forward (connected to the right vertex)
-					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName);
-				}
-			}
-		}
-
-		//mxd. Moved here from GZDoomEditing plugin
-		// This performs UDMF texture alignment along all walls that match with the same texture
-		// NOTE: This method uses the sidedefs marking to indicate which sides have been aligned
-		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
-		// Setting resetsidemarks to false is usefull to align only within a specific selection
-		// (set the marked property to true for the sidedefs outside the selection)
-		private static void autoAlignTextures(Sidedef start, SidedefPart part, ImageData texture, bool alignx, bool aligny, bool resetsidemarks) {
-			Stack<SidedefAlignJob> todo = new Stack<SidedefAlignJob>(50);
-			float scalex = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.x : 1.0f;
-			float scaley = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.y : 1.0f;
-
-			// Mark all sidedefs false (they will be marked true when the texture is aligned)
-			if(resetsidemarks) General.Map.Map.ClearMarkedSidedefs(false);
-
-			if(!texture.IsImageLoaded) return;
-
-			// Determine the Y alignment
-			float ystartalign = start.OffsetY;
-			switch(part) {
-				case SidedefPart.Upper: ystartalign += start.Fields.GetValue("offsety_top", 0.0f); break;
-				case SidedefPart.Middle: ystartalign += start.Fields.GetValue("offsety_mid", 0.0f); break;
-				case SidedefPart.Lower: ystartalign += start.Fields.GetValue("offsety_bottom", 0.0f); break;
-			}
-
-			// Begin with first sidedef
-			SidedefAlignJob first = new SidedefAlignJob();
-			first.sidedef = start;
-			first.offsetx = start.OffsetX;
-			switch(part) {
-				case SidedefPart.Upper: first.offsetx += start.Fields.GetValue("offsetx_top", 0.0f); break;
-				case SidedefPart.Middle: first.offsetx += start.Fields.GetValue("offsetx_mid", 0.0f); break;
-				case SidedefPart.Lower: first.offsetx += start.Fields.GetValue("offsetx_bottom", 0.0f); break;
-			}
-			first.forward = true;
-			todo.Push(first);
-
-			// Continue until nothing more to align
-			while(todo.Count > 0) {
-				Vertex v;
-				float forwardoffset;
-				float backwardoffset;
-				float offsetscalex = 1.0f;
-
-				// Get the align job to do
-				SidedefAlignJob j = todo.Pop();
-
-				bool matchtop = ((j.sidedef.LongHighTexture == texture.LongName) && j.sidedef.HighRequired());
-				bool matchbottom = ((j.sidedef.LongLowTexture == texture.LongName) && j.sidedef.LowRequired());
-				bool matchmid = ((j.sidedef.LongMiddleTexture == texture.LongName) && (j.sidedef.MiddleRequired() || ((j.sidedef.MiddleTexture.Length > 0) && (j.sidedef.MiddleTexture[0] != '-'))));
-
-				if(matchtop) offsetscalex = j.sidedef.Fields.GetValue("scalex_top", 1.0f);
-				else if(matchbottom) offsetscalex = j.sidedef.Fields.GetValue("scalex_bottom", 1.0f);
-				else if(matchmid) offsetscalex = j.sidedef.Fields.GetValue("scalex_mid", 1.0f);
-
-				if(j.forward) {
-					// Apply alignment
-					if(alignx) {
-						//j.sidedef.OffsetX = j.offsetx;
-						float offset = j.offsetx;
-						offset %= (float)texture.Height;
-						offset -= j.sidedef.OffsetX;
-
-						j.sidedef.Fields.BeforeFieldsChange();
-						if(matchtop) j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset);
-						if(matchbottom) j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset);
-						if(matchmid) j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset);
-					}
-					if(aligny) {
-						//j.sidedef.OffsetY = (int)Math.Round((start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + start.OffsetY;
-						float offset = ((float)(start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + ystartalign;
-						offset %= (float)texture.Height;
-						offset -= j.sidedef.OffsetY;
-
-						j.sidedef.Fields.BeforeFieldsChange();
-						if(matchtop) j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, offset);
-						if(matchbottom) j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, offset);
-						if(matchmid) j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset);
-					}
-					forwardoffset = j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex * offsetscalex);
-					backwardoffset = j.offsetx;
-
-					// Done this sidedef
-					j.sidedef.Marked = true;
-
-					// Add sidedefs backward (connected to the left vertex)
-					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName);
-
-					// Add sidedefs forward (connected to the right vertex)
-					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName);
-				} else {
-					// Apply alignment
-					if(alignx) {
-						//j.sidedef.OffsetX = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
-						float offset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
-						offset %= (float)texture.Height;
-						offset -= j.sidedef.OffsetX;
-
-						j.sidedef.Fields.BeforeFieldsChange();
-						if(matchtop) j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset);
-						if(matchbottom) j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset);
-						if(matchmid) j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset);
-					}
-					if(aligny) {
-						//j.sidedef.OffsetY = (int)Math.Round((start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + start.OffsetY;
-						float offset = ((float)(start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + ystartalign;
-						offset %= (float)texture.Height;
-						offset -= j.sidedef.OffsetY;
-
-						j.sidedef.Fields.BeforeFieldsChange();
-						if(matchtop) j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, offset);
-						if(matchbottom) j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, offset);
-						if(matchmid) j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset);
-					}
-					forwardoffset = j.offsetx;
-					backwardoffset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex * offsetscalex);
-
-					// Done this sidedef
-					j.sidedef.Marked = true;
-
-					// Add sidedefs forward (connected to the right vertex)
-					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName);
-
-					// Add sidedefs backward (connected to the left vertex)
-					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName);
-				}
-			}
-		}
-
-		// This adds the matching, unmarked sidedefs from a vertex for texture alignment
-		private static void AddSidedefsForAlignment(Stack<SidedefAlignJob> stack, Vertex v, bool forward, float offsetx, long texturelongname)
-		{
-			foreach(Linedef ld in v.Linedefs)
-			{
-				Sidedef side1 = forward ? ld.Front : ld.Back;
-				Sidedef side2 = forward ? ld.Back : ld.Front;
-				if((ld.Start == v) && (side1 != null) && !side1.Marked)
-				{
-					if(SidedefTextureMatch(side1, texturelongname))
-					{
-						SidedefAlignJob nj = new SidedefAlignJob();
-						nj.forward = forward;
-						nj.offsetx = offsetx;
-						nj.sidedef = side1;
-						stack.Push(nj);
-					}
-				}
-				else if((ld.End == v) && (side2 != null) && !side2.Marked)
-				{
-					if(SidedefTextureMatch(side2, texturelongname))
-					{
-						SidedefAlignJob nj = new SidedefAlignJob();
-						nj.forward = forward;
-						nj.offsetx = offsetx;
-						nj.sidedef = side2;
-						stack.Push(nj);
-					}
-				}
-			}
-		}
 		
 		// This checks if any of the sidedef texture match the given texture
-		private static bool SidedefTextureMatch(Sidedef sd, long texturelongname)
+		public static bool SidedefTextureMatch(Sidedef sd, long texturelongname)
 		{
 			return ((sd.LongHighTexture == texturelongname) && sd.HighRequired()) ||
 				   ((sd.LongLowTexture == texturelongname) && sd.LowRequired()) ||
@@ -1918,7 +1736,140 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		#endregion
-		
+
+		#region Thing Alignment (mxd)
+
+		public static bool TryAlignThingToLine(Thing t, Linedef l) {
+			if(l.Back == null) {
+				if(canAlignThingTo(t, l.Front.Sector)){
+					alignThingToLine(t, l, true);
+					return true;
+				}
+				return false;
+			}
+
+			if(l.Front == null ) {
+				if(canAlignThingTo(t, l.Back.Sector)) {
+					alignThingToLine(t, l, false);
+					return true;
+				}
+				return false;
+			}
+
+			float side = l.SideOfLine(t.Position);
+
+			if(side == 0) { //already on line
+				t.Rotate(General.ClampAngle(180 + l.AngleDeg));
+				return true;
+			}
+
+			if(side < 0) { //thing is on front side of the line
+				//got any walls to align to?
+				if(canAlignThingTo(t, l.Front.Sector, l.Back.Sector)) {
+					alignThingToLine(t, l, true);
+					return true;
+				}
+
+				return false;
+			}
+
+			//thing is on back side of the line
+			//got any walls to align to?
+			if(canAlignThingTo(t, l.Back.Sector, l.Front.Sector)) {
+				alignThingToLine(t, l, false);
+				return true;
+			}
+
+			return false;
+		}
+
+		//checks if there's a wall at appropriate height to align thing to
+		private static bool canAlignThingTo(Thing t, Sector front, Sector back) {
+			ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
+			int absz = GetThingAbsoluteZ(t, ti);
+			int height = ti.Height == 0 ? 1 : (int)ti.Height;
+			Rectangle thing =  new Rectangle(0, ti.Hangs ? absz - height : absz, 1, height);
+
+			if(front.FloorHeight < back.FloorHeight) {
+				Rectangle lower = new Rectangle(0, front.FloorHeight, 1, back.FloorHeight - front.FloorHeight);
+				if(thing.IntersectsWith(lower))
+					return true;
+			}
+
+			if(front.CeilHeight > back.CeilHeight) {
+				Rectangle upper = new Rectangle(0, back.CeilHeight, 1, front.CeilHeight - back.CeilHeight);
+				if(thing.IntersectsWith(upper))
+					return true;
+			}
+
+			return false;
+		}
+
+		//checks if there's a wall at appropriate height to align thing to
+		private static bool canAlignThingTo(Thing t, Sector sector) {
+			ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
+			int absz = GetThingAbsoluteZ(t, ti);
+			Rectangle thing = new Rectangle(0, absz, 1, ti.Height == 0 ? 1 : (int)ti.Height);
+
+			Rectangle middle = new Rectangle(0, sector.FloorHeight, 1, sector.CeilHeight - sector.FloorHeight);
+			return thing.IntersectsWith(middle);
+		}
+
+		//performs thing alignment
+		private static void alignThingToLine(Thing t, Linedef l, bool front) {
+			//get aligned position
+			Vector2D pos = l.NearestOnLine(t.Position);
+			Sector initialSector = t.Sector;
+
+			//add a small offset so we don't end up moving thing into void
+			if(front)
+				t.Move(new Vector2D(pos.x - (float)Math.Cos(l.Angle), pos.y - (float)Math.Sin(l.Angle)));
+			else
+				t.Move(new Vector2D(pos.x + (float)Math.Cos(l.Angle), pos.y + (float)Math.Sin(l.Angle)));
+
+			//apply new settings
+			t.SnapToAccuracy();
+			t.DetermineSector();
+			t.Rotate(General.ClampAngle(front ? 180 + l.AngleDeg : l.AngleDeg));
+
+			//keep thing height constant
+			if(initialSector != t.Sector && General.Map.FormatInterface.HasThingHeight) {
+				ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
+				if(ti.AbsoluteZ) return;
+
+				if(ti.Hangs && initialSector.CeilHeight != t.Sector.CeilHeight) {
+					t.Move(t.Position.x, t.Position.y, t.Position.z - (initialSector.CeilHeight - t.Sector.CeilHeight));
+					return;
+				}
+
+				if(initialSector.FloorHeight != t.Sector.FloorHeight)
+					t.Move(t.Position.x, t.Position.y, t.Position.z + (initialSector.FloorHeight - t.Sector.FloorHeight));
+			}
+		}
+
+		public static int GetThingAbsoluteZ(Thing t, ThingTypeInfo ti) {
+			int absz = 0;
+
+			// Determine z info
+			if(ti.AbsoluteZ) {
+				absz = (int)t.Position.z;
+			} else {
+				if(t.Sector != null) {
+					// Hangs from ceiling?
+					if(ti.Hangs)
+						absz = (int)(t.Sector.CeilHeight - t.Position.z - ti.Height);
+					else
+						absz = (int)(t.Sector.FloorHeight + t.Position.z);
+				} else {
+					absz = (int)t.Position.z;
+				}
+			}
+
+			return absz;
+		}
+
+		#endregion
+
 		#region ================== Misc Exported Functions
 
 		/// <summary>

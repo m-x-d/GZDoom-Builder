@@ -320,8 +320,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void TextureBrowserForm_Activated(object sender, EventArgs e)
 		{
 			// Focus the textbox
-			//browser.FocusTextbox();
-            browser.FocusList(); //mxd
+			browser.FocusTextbox();
 			Cursor.Current = Cursors.Default;
 		}
 
@@ -465,11 +464,6 @@ namespace CodeImp.DoomBuilder.Windows
         private void tvTextureSets_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
             selectedset = e.Node;
             FillImagesList();
-        }
-
-        //mxd
-        private void tvTextureSets_MouseEnter(object sender, EventArgs e) {
-            tvTextureSets.Focus();
         }
 	}
 }

@@ -125,7 +125,8 @@ namespace CodeImp.DoomBuilder.Controls
 					// Hangs from ceiling?
 					if(ti.Hangs)
 					{
-						zvalue = (float)t.Sector.CeilHeight + t.Position.z;
+						//zvalue = (float)t.Sector.CeilHeight + t.Position.z;
+						zvalue = (float)t.Sector.CeilHeight - t.Position.z - ti.Height; //mxd
 						zinfo = zvalue.ToString();
 					}
 					else

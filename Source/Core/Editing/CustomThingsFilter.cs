@@ -40,11 +40,11 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Properties
 
-		public string Name { get { return name; } set { name = value; } }
-		public string CategoryName { get { return categoryname; } set { categoryname = value; } }
-		public int ThingType { get { return thingtype; } set { thingtype = value; } }
-		public ICollection<string> RequiredFields { get { return requiredfields; } }
-		public ICollection<string> ForbiddenFields { get { return forbiddenfields; } }
+		new public string Name { get { return name; } set { name = value; } }
+		new public string CategoryName { get { return categoryname; } set { categoryname = value; } }
+		new public int ThingType { get { return thingtype; } set { thingtype = value; } }
+		new public ICollection<string> RequiredFields { get { return requiredfields; } }
+		new public ICollection<string> ForbiddenFields { get { return forbiddenfields; } }
 
 		#endregion
 
@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// Disposer
-		public virtual void Dispose()
+		new public virtual void Dispose()
 		{
 			base.Dispose();
 		}

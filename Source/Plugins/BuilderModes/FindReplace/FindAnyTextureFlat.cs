@@ -159,7 +159,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// When replacing, make sure we keep track of used textures
-			if(replacewith != null) General.Map.Data.UpdateUsedTextures();
+			if(replacewith != null) {
+				General.Map.Data.UpdateUsedTextures();
+				General.Map.Map.Update(); //mxd. And don't forget to update the view itself
+				General.Map.IsChanged = true;
+			}
 
 			return objs.ToArray();
 		}

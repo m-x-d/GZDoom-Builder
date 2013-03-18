@@ -101,6 +101,7 @@ namespace CodeImp.DoomBuilder.Data
 		private DecorateParser decorate;
 		private List<ThingCategory> thingcategories;
 		private Dictionary<int, ThingTypeInfo> thingtypes;
+		private List<string> invalidDecorateActors;//mxd. List of actors without DoomEdNum
 		
 		// Timing
 		private float loadstarttime;
@@ -338,7 +339,7 @@ namespace CodeImp.DoomBuilder.Data
             General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing model definitions...");
             loadModeldefs(actorsByClass);
             General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing GLDEFS...");
-            loadGldefs(actorsByClass, true);
+			loadGldefs(actorsByClass, General.Settings.GZLoadDefaultLightDefinitions);
             General.MainWindow.DisplayReady();
             //don't need them any more
             actorsByClass = null;
@@ -1246,6 +1247,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Create new parser
 			decorate = new DecorateParser();
 			decorate.OnInclude = LoadDecorateFromLocation;
+
+			invalidDecorateActors = new List<string>(); //mxd
 			
 			// Only load these when the game configuration supports the use of decorate
 			if(!string.IsNullOrEmpty(General.Map.Config.DecorateGames))
@@ -1327,6 +1330,11 @@ namespace CodeImp.DoomBuilder.Data
 							
 							// Count
 							counter++;
+						} 
+						else //mxd
+						{ 
+							if(!invalidDecorateActors.Contains(actor.ClassName))
+								invalidDecorateActors.Add(actor.ClassName);
 						}
 					}
 				}
@@ -1399,23 +1407,16 @@ namespace CodeImp.DoomBuilder.Data
         public bool LoadModelForThing(Thing t) {
             if (modeldefEntries.ContainsKey(t.Type)) {
                 if (modeldefEntries[t.Type].Model == null) {
-                    //load model and texture
+                    //load models and textures
                     ModeldefEntry mde = modeldefEntries[t.Type];
 
-                    foreach (DataReader dr in containers) {
-                        currentreader = dr;
-                        if (currentreader.Location.location == mde.Location) {
-                            ModelReader.Parse(ref mde, (PK3StructuredReader)currentreader, General.Map.Graphics.Device);
-                            break;
-                        }
-                    }
-                    currentreader = null;
+                    //create models
+					ModelReader.Load(ref mde, containers, General.Map.Graphics.Device);
 
                     if (mde.Model != null) {
                         return true;
                     } else {
                         modeldefEntries.Remove(t.Type);
-                        GZBuilder.GZGeneral.LogAndTraceWarning("Failed to load model" + (mde.ModelNames.Count > 1 ? "s" : "") + " for Thing ¹" + t.Type + " from '"+mde.Location+ "\\" + mde.Path +"'");
                         return false;
                     }
                 }
@@ -1439,9 +1440,6 @@ namespace CodeImp.DoomBuilder.Data
             //and for actors defined in DECORATE
             ICollection<ActorStructure> ac = decorate.Actors;
             foreach (ActorStructure actor in ac) {
-                if (actor.DoomEdNum == -1) //we don't need actors without DoomEdNum
-                    continue;
-
                 string className = actor.ClassName.ToLower();
                 if (!actors.ContainsKey(className)) 
                     actors.Add(className, actor.DoomEdNum);
@@ -1456,8 +1454,6 @@ namespace CodeImp.DoomBuilder.Data
                 foreach (KeyValuePair<int, ModeldefEntry> group in modeldefEntries)
                     group.Value.Dispose();
             }
-
-            foreach (Thing t in General.Map.Map.Things) t.IsModel = false; //drop model flag
 
             General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading model definitions...");
             loadModeldefs(createActorsByClassList());
@@ -1503,7 +1499,7 @@ namespace CodeImp.DoomBuilder.Data
             
             //if no actors defined in DECORATE or game config...
             if (actorsByClass == null || actorsByClass.Count == 0) {
-                GZBuilder.GZGeneral.Trace("Warning: current game has no Actors!");
+                General.ErrorLogger.Add(ErrorType.Warning, "Warning: current game has no Actors!");
                 return;
             }
 
@@ -1520,7 +1516,6 @@ namespace CodeImp.DoomBuilder.Data
                     // Parse the data
                     if (mdeParser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key)) {
                         foreach (KeyValuePair<string, ModeldefEntry> g in mdeParser.ModelDefEntries) {
-                            g.Value.Location = currentreader.Location.location;
                             modelDefEntriesByName.Add(g.Key, g.Value);
                         }
                     }
@@ -1532,8 +1527,8 @@ namespace CodeImp.DoomBuilder.Data
             foreach (KeyValuePair<string, ModeldefEntry> e in modelDefEntriesByName) {
                 if (actorsByClass.ContainsKey(e.Key))
                     modeldefEntries[actorsByClass[e.Key]] = modelDefEntriesByName[e.Key];
-                else
-                    GZBuilder.GZGeneral.LogAndTraceWarning("Got MODELDEF override for class '" + e.Key + "', but haven't found such class in Decorate");
+				else if(!invalidDecorateActors.Contains(e.Key))
+                    General.ErrorLogger.Add(ErrorType.Warning, "Got MODELDEF override for class '" + e.Key + "', but haven't found such class in Decorate");
             }
         }
 
@@ -1543,7 +1538,7 @@ namespace CodeImp.DoomBuilder.Data
 
             //if no actors defined in DECORATE or game config...
             if (actorsByClass == null || actorsByClass.Count == 0) {
-                GZBuilder.GZGeneral.Trace("Warning: current game has no Actors!");
+				General.ErrorLogger.Add(ErrorType.Warning, "Warning: current game has no Actors!");
                 return;
             }
 
@@ -1551,19 +1546,21 @@ namespace CodeImp.DoomBuilder.Data
             parser.OnInclude = loadGldefsFromLocation;
 
             //load default GZDoom gldefs for current game
-            if (loadDefaultDefinitions && General.Map.Config.GameType != GameType.UNKNOWN) {
-                string defaultGldefsPath = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)General.Map.Config.GameType].ToLowerInvariant() + ".txt";
-                defaultGldefsPath = Path.Combine(Path.Combine(General.AppPath, "Gldefs"), defaultGldefsPath);
+			if(loadDefaultDefinitions) {
+				if(General.Map.Config.GameType != GameType.UNKNOWN) {
+					string defaultGldefsPath = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)General.Map.Config.GameType].ToLowerInvariant() + ".txt";
+					defaultGldefsPath = Path.Combine(Path.Combine(General.AppPath, "Gldefs"), defaultGldefsPath);
 
-                if (File.Exists(defaultGldefsPath)) {
-                    StreamReader s = File.OpenText(defaultGldefsPath);
-                    parser.Parse(s.BaseStream, defaultGldefsPath);
-                } else {
-                    GZBuilder.GZGeneral.LogAndTraceWarning("Unable to load default GLDEFS for current game: unable to load file '" + defaultGldefsPath + "'");
-                }
-            } else {
-                GZBuilder.GZGeneral.LogAndTraceWarning("Default GLDEFS for current game not found.");
-            }
+					if(File.Exists(defaultGldefsPath)) {
+						StreamReader s = File.OpenText(defaultGldefsPath);
+						parser.Parse(s.BaseStream, defaultGldefsPath);
+					} else {
+						General.ErrorLogger.Add(ErrorType.Warning, "Unable to load default GLDEFS for current game: unable to load file '" + defaultGldefsPath + "'");
+					}
+				} else {
+					General.ErrorLogger.Add(ErrorType.Warning, "Default GLDEFS for current game not loaded: game type is unknown.");
+				}
+			}
 
             //load gldefs from resources
             foreach (DataReader dr in containers) {
@@ -1585,8 +1582,8 @@ namespace CodeImp.DoomBuilder.Data
                     }else{
                         gldefsEntries.Add(thingType, parser.LightsByName[e.Value]);
                     }
-                } else {
-                    GZBuilder.GZGeneral.LogAndTraceWarning("Got GLDEFS light for class '" + e.Key + "', but haven't found such class in Decorate");
+				} else if(!invalidDecorateActors.Contains(e.Key)) {
+                    General.ErrorLogger.Add(ErrorType.Warning, "Got GLDEFS light for class '" + e.Key + "', but haven't found such class in Decorate");
                 }
             }
         }

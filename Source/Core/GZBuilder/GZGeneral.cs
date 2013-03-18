@@ -32,62 +32,13 @@ namespace CodeImp.DoomBuilder.GZBuilder
         public static int[] ACS_SPECIALS { get { return acsSpecials; } }
 
         //version
-        public const float Version = 1.13f;
-        public const char Revision = 'a';
-
-        //debug console
-#if DEBUG
-        private static Docker console;
-#endif
+        public const float Version = 1.14f;
+        public const char Revision = ' ';
 
         public static void Init() {
             //bind actions
             General.Actions.BindMethods(typeof(GZGeneral));
             General.MainWindow.UpdateGZDoomPannel();
-            
-            //create console
-#if DEBUG
-            ConsoleDocker cd = new ConsoleDocker();
-            console = new Docker("consoledockerpannel", "Console", cd);
-            ((MainForm)General.Interface).addDocker(console);
-            ((MainForm)General.Interface).selectDocker(console);
-#endif
-        }
-
-        public static void OnReloadResources() {
-#if DEBUG
-            ((ConsoleDocker)console.Control).Clear();
-#endif
-        }
-
-//debug
-        public static void LogAndTraceWarning(string message) {
-            General.ErrorLogger.Add(ErrorType.Warning, message);
-#if DEBUG
-            Trace(message);
-#endif
-        }
-
-        public static void Trace(string message) {
-#if DEBUG
-            ((ConsoleDocker)console.Control).Trace(message);
-#endif
-        }
-        public static void Trace(string message, bool addLineBreak) {
-#if DEBUG
-            ((ConsoleDocker)console.Control).Trace(message, addLineBreak);
-#endif
-        }
-        public static void ClearTrace() {
-#if DEBUG
-            ((ConsoleDocker)console.Control).Clear();
-#endif
-        }
-
-        public static void TraceInHeader(string message) {
-#if DEBUG
-            ((ConsoleDocker)console.Control).TraceInHeader(message);
-#endif
         }
 
 //actions
@@ -157,11 +108,21 @@ namespace CodeImp.DoomBuilder.GZBuilder
 			General.MainWindow.UpdateGZDoomPannel();
         }
 
+		[BeginAction("gztogglevisualvertices")]
+		private static void toggleVisualVertices() {
+			General.Settings.GZShowVisualVertices = !General.Settings.GZShowVisualVertices;
+			General.MainWindow.DisplayStatus(StatusType.Action, "Visual vertices are " + (General.Settings.GZShowVisualVertices ? "ENABLED" : "DISABLED"));
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPannel();
+		}
+
         //main menu actions
         [BeginAction("gzreloadmodeldef")]
         private static void reloadModeldef() {
-            if(General.Map != null)
-                General.Map.Data.ReloadModeldef();
+			if(General.Map != null) {
+				General.Map.Data.ReloadModeldef();
+				General.MainWindow.RedrawDisplay(); //dbg?
+			}
         }
 
         [BeginAction("gzreloadgldefs")]
@@ -175,5 +136,16 @@ namespace CodeImp.DoomBuilder.GZBuilder
             if (General.Map != null)
                 General.Map.Data.ReloadMapInfo();
         }
+
+		[BeginAction("setcurrenttextures")]
+		private static void setCurrentTextures() {
+			//dbg
+			Console.WriteLine("setcurrenttextures called");
+
+			if(General.Map != null) {
+				SetCurrentTexturesForm form = new SetCurrentTexturesForm();
+				form.ShowDialog(Form.ActiveForm);
+			}
+		}
     }
 }

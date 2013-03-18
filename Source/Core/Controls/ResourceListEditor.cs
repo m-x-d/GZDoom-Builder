@@ -38,6 +38,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public event ContentChanged OnContentChanged;
 
+		public string StartPath; //mxd
+
 		#endregion
 
 		#region ================== Variables
@@ -210,7 +212,7 @@ namespace CodeImp.DoomBuilder.Controls
 			Rectangle startposition;
 			
 			// Open resource options dialog
-			resoptions = new ResourceOptionsForm(new DataLocation(), "Add Resource");
+			resoptions = new ResourceOptionsForm(new DataLocation(), "Add Resource", StartPath);
 			resoptions.StartPosition = FormStartPosition.Manual;
 			startposition = new Rectangle(dialogoffset.X, dialogoffset.Y, 1, 1);
 			startposition = this.RectangleToScreen(startposition);
@@ -245,7 +247,7 @@ namespace CodeImp.DoomBuilder.Controls
 				selecteditem = resourceitems.SelectedItems[0];
 
 				// Open resource options dialog
-				resoptions = new ResourceOptionsForm((DataLocation)selecteditem.Tag, "Resource Options");
+				resoptions = new ResourceOptionsForm((DataLocation)selecteditem.Tag, "Resource Options", StartPath);
 				resoptions.StartPosition = FormStartPosition.Manual;
 				startposition = new Rectangle(dialogoffset.X, dialogoffset.Y, 1, 1);
 				startposition = this.RectangleToScreen(startposition);

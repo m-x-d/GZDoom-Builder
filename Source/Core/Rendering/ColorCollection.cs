@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float DARK_ADDITION = -0.2f;
 
 		// Palette size
-		private const int NUM_COLORS = 42;
+		private const int NUM_COLORS = 41;
 		public const int NUM_THING_COLORS = 20;
 		public const int THING_COLORS_OFFSET = 20;
 
@@ -52,8 +52,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		public const int BACKGROUND = 0;
 		public const int VERTICES = 1;
 		public const int LINEDEFS = 2;
-		public const int ACTIONS = 3;
-		public const int SOUNDS = 4;
+		//mxd
+		//public const int ACTIONS = 3;
+		//public const int SOUNDS = 4;
+		public const int MODELWIRECOLOR = 3;
+		public const int INFOLINECOLOR = 4;
+
 		public const int HIGHLIGHT = 5;
 		public const int SELECTION = 6;
 		public const int INDICATION = 7;
@@ -89,9 +93,8 @@ namespace CodeImp.DoomBuilder.Rendering
         public const int THINGCOLOR17 = 37;
         public const int THINGCOLOR18 = 38;
         public const int THINGCOLOR19 = 39;
-        //mxd
-        public const int MODELWIRECOLOR = 40;
-        public const int INFOLINECOLOR = 41;
+		public const int NEWSECTORCOLOR = 40;//mxd
+
 		
 		#endregion
 
@@ -116,8 +119,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor Background { get { return colors[BACKGROUND]; } internal set { colors[BACKGROUND] = value; } }
 		public PixelColor Vertices { get { return colors[VERTICES]; } internal set { colors[VERTICES] = value; } }
 		public PixelColor Linedefs { get { return colors[LINEDEFS]; } internal set { colors[LINEDEFS] = value; } }
-		public PixelColor Actions { get { return colors[ACTIONS]; } internal set { colors[ACTIONS] = value; } }
-		public PixelColor Sounds { get { return colors[SOUNDS]; } internal set { colors[SOUNDS] = value; } }
 		public PixelColor Highlight { get { return colors[HIGHLIGHT]; } internal set { colors[HIGHLIGHT] = value; } }
 		public PixelColor Selection { get { return colors[SELECTION]; } internal set { colors[SELECTION] = value; } }
 		public PixelColor Indication { get { return colors[INDICATION]; } internal set { colors[INDICATION] = value; } }
@@ -127,6 +128,7 @@ namespace CodeImp.DoomBuilder.Rendering
         //mxd
         public PixelColor ModelWireframe { get { return colors[MODELWIRECOLOR]; } internal set { colors[MODELWIRECOLOR] = value; } }
         public PixelColor InfoLine { get { return colors[INFOLINECOLOR]; } internal set { colors[INFOLINECOLOR] = value; } }
+		public PixelColor NewSector { get { return colors[NEWSECTORCOLOR]; } internal set { colors[NEWSECTORCOLOR] = value; } }
 		
 		public PixelColor Crosshair3D { get { return colors[CROSSHAIR3D]; } internal set { colors[CROSSHAIR3D] = value; } }
 		public PixelColor Highlight3D { get { return colors[HIGHLIGHT3D]; } internal set { colors[HIGHLIGHT3D] = value; } }

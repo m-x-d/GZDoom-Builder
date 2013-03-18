@@ -175,7 +175,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Load from wad files (NOTE: backward order, because the last wad's images have priority)
 			for(int i = wads.Count - 1; i >= 0; i--)
 			{
-				collection = wads[i].LoadTextures(pnames);
+				PatchNames wadpnames = wads[i].LoadPatchNames(); //mxd
+				collection = wads[i].LoadTextures((wadpnames != null && wadpnames.Length > 0) ? wadpnames : pnames); //mxd
 				AddImagesToList(images, collection);
 			}
 			
@@ -185,11 +186,6 @@ namespace CodeImp.DoomBuilder.Data
 				collection = LoadDirectoryImages("", ImageDataFormat.DOOMPICTURE, false);
 				AddImagesToList(images, collection);
 			}
-			
-			//mxd
-			// Add images from texture directory
-			//collection = LoadDirectoryImages(TEXTURES_DIR, ImageDataFormat.DOOMPICTURE, true);
-			//AddImagesToList(images, collection);
 			
 			// Load TEXTURE1 lump file
 			imgset.Clear();

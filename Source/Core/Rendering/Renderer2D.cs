@@ -605,7 +605,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Determine color
 			if(v.Selected) return ColorCollection.SELECTION;
-			else return ColorCollection.VERTICES;
+			return ColorCollection.VERTICES;
 		}
 
 		// This returns the color for a linedef
@@ -613,19 +613,19 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			if(l.Selected)
 				return General.Colors.Selection;
-			else if(l.ImpassableFlag)
+			
+            if(l.ImpassableFlag)
 			{
-				// Impassable lines
-				if(l.Action != 0) return General.Colors.Actions;
-				else return General.Colors.Linedefs;
+                //mxd. Impassable lines
+                if(l.ColorPresetIndex != -1)
+                    return General.Map.ConfigSettings.LinedefColorPresets[l.ColorPresetIndex].Color;
+                return General.Colors.Linedefs;
 			}
-			else
-			{
-				// Passable lines
-				if(l.Action != 0) return General.Colors.Actions.WithAlpha(General.Settings.DoubleSidedAlphaByte);
-				else if(l.BlockSoundFlag) return General.Colors.Sounds.WithAlpha(General.Settings.DoubleSidedAlphaByte);
-				else return General.Colors.Linedefs.WithAlpha(General.Settings.DoubleSidedAlphaByte);
-			}
+
+            //mxd. Passable lines
+            if(l.ColorPresetIndex != -1)
+                return General.Map.ConfigSettings.LinedefColorPresets[l.ColorPresetIndex].Color.WithAlpha(General.Settings.DoubleSidedAlphaByte);
+            return General.Colors.Linedefs.WithAlpha(General.Settings.DoubleSidedAlphaByte);
 		}
 
 		#endregion
@@ -635,7 +635,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public unsafe bool StartPlotter(bool clear)
 		{
-			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
+			if(renderlayer != RenderLayers.None) {
+				//throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
+				return false; //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
+			}
+
 			renderlayer = RenderLayers.Plotter;
 			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
 			
@@ -671,7 +675,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public unsafe bool StartThings(bool clear)
 		{
-			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
+			if(renderlayer != RenderLayers.None) {
+				//throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
+				return false; //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
+			}
+
 			renderlayer = RenderLayers.Things;
 			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
 			
@@ -704,7 +712,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public unsafe bool StartOverlay(bool clear)
 		{
-			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
+			if(renderlayer != RenderLayers.None) {
+				//throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
+				return false; //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
+			}
+
 			renderlayer = RenderLayers.Overlay;
 			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
 			
@@ -1129,6 +1141,7 @@ namespace CodeImp.DoomBuilder.Rendering
                     // Set renderstates for rendering
                     graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
                     graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+					graphics.Device.SetRenderState(RenderState.FillMode, FillMode.Wireframe);
 
                     graphics.Shaders.Things2D.BeginPass(1);
                     foreach(KeyValuePair<Vector2D, Thing> group in thingsWithModel){
@@ -1138,14 +1151,12 @@ namespace CodeImp.DoomBuilder.Rendering
                             //wire color
                             graphics.Shaders.Things2D.FillColor = group.Value.Selected ? General.Colors.Selection.ToColorValue() : General.Colors.ModelWireframe.ToColorValue();
 
-                            for (int i = 0; i < mde.Model.NUM_MESHES; i++) {
+                            for (int i = 0; i < mde.Model.Meshes.Count; i++) {
                                 graphics.Shaders.Things2D.SetTransformSettings(group.Key, group.Value.Angle, scale);
                                 graphics.Shaders.Things2D.ApplySettings();
 
                                 // Draw
-                                graphics.Device.SetStreamSource(0, mde.Model.Meshes[i].VertexBuffer, 0, WorldVertex.Stride);
-                                graphics.Device.Indices = mde.Model.Indeces2D[i];
-                                graphics.Device.DrawIndexedPrimitives(PrimitiveType.LineList, 0, 0, mde.Model.Meshes[i].VertexCount, 0, mde.Model.NumIndeces2D[i]);
+								mde.Model.Meshes[i].DrawSubset(0);
                             }
 
                         } else {
@@ -1153,6 +1164,8 @@ namespace CodeImp.DoomBuilder.Rendering
                         }
                     }
                     graphics.Shaders.Things2D.EndPass();
+
+					graphics.Device.SetRenderState(RenderState.FillMode, FillMode.Solid);
                 }
 
                 graphics.Shaders.Things2D.End();
@@ -1180,7 +1193,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This redraws the surface
 		public void RedrawSurface()
 		{
-			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
+			//mxd...
+			//if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
+			if(renderlayer != RenderLayers.None) return;
 			renderlayer = RenderLayers.Surface;
 
 			// Rendertargets available?
@@ -1574,6 +1589,31 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Transform vertex coordinates
 			Vector2D v1 = l.Start.Position.GetTransformed(translatex, translatey, scale, -scale);
 			Vector2D v2 = l.End.Position.GetTransformed(translatex, translatey, scale, -scale);
+
+			//mxd. Newly created sectors colouring
+			if(General.Settings.GZNewSectorsCount > 0 && c.r == 255 && c.g == 255 && c.b == 255){
+				int frontIndex = -1;
+				int backIndex = -1;
+
+				if(l.Front != null)
+					frontIndex = Array.IndexOf(General.Map.Map.NewSectors, l.Front.Sector);
+				if(l.Back != null)
+					backIndex = Array.IndexOf(General.Map.Map.NewSectors, l.Back.Sector);
+				
+				if(frontIndex != -1 || backIndex != -1){
+					PixelColor highlight = General.Colors.NewSector;
+
+					if(frontIndex > backIndex)
+						highlight.a = (byte)(255 * (1.0f - (float)(frontIndex + 1) / General.Map.Map.NewSectors.Length));
+					else
+						highlight.a = (byte)(255 * (1.0f - (float)(backIndex + 1) / General.Map.Map.NewSectors.Length));
+
+					float ba = (float)highlight.a * PixelColor.BYTE_TO_FLOAT;
+					c.r = (byte)Math.Min(255, ((float)highlight.r * (1f - ba) + (float)c.r * ba));
+					c.g = (byte)Math.Min(255, ((float)highlight.g * (1f - ba) + (float)c.g * ba));
+					c.b = (byte)Math.Min(255, ((float)highlight.b * (1f - ba) + (float)c.b * ba));
+				}
+			}
 
 			// Draw line
 			plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, ref c);

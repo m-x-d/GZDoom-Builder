@@ -130,8 +130,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 			//Update();
 		}
 
-        //mxd
+        //mxd. Added to allow to properly update visual geometry from plugins
         public virtual void UpdateSectorData() { }
+		public virtual void UpdateSectorGeometry(bool includeneighbours) { }
 		
 		// This updates the visual sector
 		public void Update()
@@ -207,9 +208,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This gets the geometry list for the specified sidedef
 		public List<VisualGeometry> GetSidedefGeometry(Sidedef sd)
 		{
-			if(sidedefgeometry.ContainsKey(sd))
+			if(sidedefgeometry.ContainsKey(sd)) {
 				return sidedefgeometry[sd];
-			else
+			} else
 				return new List<VisualGeometry>();
 		}
 		

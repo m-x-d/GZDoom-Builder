@@ -26,12 +26,13 @@ using System.Drawing.Imaging;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.ZDoom;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal enum TexturePathRenderStyle
+	public enum TexturePathRenderStyle
 	{
 		Copy,
 		Blend,
@@ -39,7 +40,16 @@ namespace CodeImp.DoomBuilder.Data
 		Subtract,
 		ReverseSubtract,
 		Modulate,
-		CopyAlpha
+		CopyAlpha,
+		CopyNewAlpha, //mxd
+		Overlay, //mxd
+	}
+
+	public enum TexturePathBlendStyle //mxd
+	{
+		None,
+		Blend,
+		Tint
 	}
 	
 	internal struct TexturePatch
@@ -53,6 +63,8 @@ namespace CodeImp.DoomBuilder.Data
 		public PixelColor blend;
 		public float alpha;
 		public TexturePathRenderStyle style;
+		public TexturePathBlendStyle blendstyle; //mxd
+		public float tintammount;//mxd
 		
 		// Constructor for simple patches
 		public TexturePatch(string lumpname, int x, int y)
@@ -67,21 +79,34 @@ namespace CodeImp.DoomBuilder.Data
 			this.blend = new PixelColor(0, 0, 0, 0);
 			this.alpha = 1.0f;
 			this.style = TexturePathRenderStyle.Copy;
+			this.blendstyle = TexturePathBlendStyle.None;//mxd
+			this.tintammount = 0; //mxd
 		}
 
-		// Constructor for hires patches
-		public TexturePatch(string lumpname, int x, int y, bool flipx, bool flipy, int rotate, PixelColor blend, float alpha, int style)
-		{
+		//mxd. Constructor for hires patches
+		public TexturePatch(PatchStructure patch) {
 			// Initialize
-			this.lumpname = lumpname;
-			this.x = x;
-			this.y = y;
-			this.flipx = flipx;
-			this.flipy = flipy;
-			this.rotate = rotate;
-			this.blend = blend;
-			this.alpha = alpha;
-			this.style = (TexturePathRenderStyle)style;
+			this.lumpname = patch.Name.ToUpperInvariant();
+			this.x = patch.OffsetX;
+			this.y = patch.OffsetY;
+			this.flipx = patch.FlipX;
+			this.flipy = patch.FlipY;
+			this.rotate = patch.Rotation;
+			this.blend = patch.BlendColor;
+			this.alpha = patch.Alpha;
+			this.style = patch.RenderStyle;
+			this.blendstyle = patch.BlendStyle;
+			this.tintammount = patch.TintAmmount;
+
+			//mxd. Check data so we don't perform unneeded operations later on
+			if(this.alpha == 1.0f) {
+				if(this.style == TexturePathRenderStyle.Blend || this.style == TexturePathRenderStyle.CopyAlpha || this.style == TexturePathRenderStyle.CopyNewAlpha || this.style == TexturePathRenderStyle.Overlay)
+					this.style = TexturePathRenderStyle.Copy;
+			}
+
+			//mxd. and get rid of render styles we don't support
+			if(this.style == TexturePathRenderStyle.Overlay)
+				this.style = TexturePathRenderStyle.Copy;
 		}
 	}
 }

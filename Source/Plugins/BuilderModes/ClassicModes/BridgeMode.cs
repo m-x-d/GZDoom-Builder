@@ -698,35 +698,26 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
                 case BridgeInterpolationMode.HIGHEST:
                 case BridgeInterpolationMode.BRIGHTNESS_HIGHEST:
                     return Math.Max(val1, val2);
-                    break;
 
                 case BridgeInterpolationMode.LOWEST:
                 case BridgeInterpolationMode.BRIGHTNESS_LOWEST:
                     return Math.Min(val1, val2);
-                    break;
                 
                 case BridgeInterpolationMode.LINEAR:
                     return (int)(delta * (float)val2 + (1.0f - delta) * (float)val1);
-                    break;
 
                 case BridgeInterpolationMode.IN_SINE:
                     return easeInSine(val1, val2, delta);
-                    break;
 
                 case BridgeInterpolationMode.OUT_SINE:
                     return easeOutSine(val1, val2, delta);
-                    break;
 
                 case BridgeInterpolationMode.IN_OUT_SINE:
                     return easeInOutSine(val1, val2, delta);
-                    break;
 
                 default:
                     throw new Exception("DrawBezierPathMode.intepolateValue: got unknown mode: '" + mode + "'");
-                    break;
             }
-
-            return -1;
         }
 
 //EVENTS

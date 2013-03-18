@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		
 		// Properties
 		private Dictionary<string, List<string>> props;
+		private List<string> userVars; //mxd
 		
 		// States
 		private Dictionary<string, StateStructure> states;
@@ -72,6 +73,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public string ReplacesClass { get { return replaceclass; } }
 		public ActorStructure BaseClass { get { return baseclass; } }
 		public int DoomEdNum { get { return doomednum; } }
+		public List<string> UserVars { get { return userVars; } } //mxd
 		
 		#endregion
 		
@@ -84,6 +86,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			flags = new Dictionary<string, bool>();
 			props = new Dictionary<string, List<string>>();
 			states = new Dictionary<string, StateStructure>();
+			userVars = new List<string>();//mxd
 			
 			// Always define a game property, but default to 0 values
 			props["game"] = new List<string>();
@@ -124,10 +127,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 						{
 							// Find the actor to inherit from
 							baseclass = parser.GetArchivedActorByName(inheritclass);
-
-                            //mxd. Fat chances are that this actor is not ment to be placed in the map, so we'll better check baseclass AFTER we parsed doomednum
-                            //if(baseclass == null)
-								//General.ErrorLogger.Add(ErrorType.Warning, "Unable to find the DECORATE class '" + inheritclass + "' to inherit from, while parsing '" + classname + "'");
 						}
 					}
 					else if(token == "replaces")
@@ -163,7 +162,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out doomednum))
 						{
 							// Not numeric!
-							parser.ReportError("Expected numeric editor thing number or start of actor scope");
+							parser.ReportError("Expected numeric editor thing number or start of actor scope while parsing '" + classname + "'");
 							return;
 						}
 					}
@@ -264,6 +263,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 							parser.ReportError("Unexpected end of structure");
 							return;
 						}
+					}
+				} 
+				else if(token == "var") //mxd 
+				{
+					while(parser.SkipWhitespace(true)) {
+						string t = parser.ReadToken();
+						if((t == ";") || (t == null)) break;
+						if(t.StartsWith("user_") && !userVars.Contains(t)) userVars.Add(t);
 					}
 				}
 				else if(token == "}")

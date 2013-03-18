@@ -236,16 +236,6 @@ namespace CodeImp.DoomBuilder.Controls
 			texturesize.Visible = false;
 			texturesizelabel.Visible = false;
 		}
-
-        //mxd
-        private void list_MouseEnter(object sender, EventArgs e) {
-            FocusList();
-        }
-
-        //mxd
-        private void objectname_MouseEnter(object sender, EventArgs e) {
-            objectname.Focus();
-        }
 		
 		#endregion
 

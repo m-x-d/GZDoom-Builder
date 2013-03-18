@@ -132,7 +132,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
             }
         }
 
-        protected void OnColorChanged(ColorHandler.RGB RGB, ColorHandler.HSV HSV) {
+        private void OnColorChanged(ColorHandler.RGB RGB, ColorHandler.HSV HSV) {
             ColorChangedEventArgs e = new ColorChangedEventArgs(RGB, HSV);
             ColorChanged(this, e);
         }

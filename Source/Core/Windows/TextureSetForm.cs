@@ -102,7 +102,17 @@ namespace CodeImp.DoomBuilder.Windows
 		// Remove selected items
 		private void removefilter_Click(object sender, EventArgs e)
 		{
+			int index = filters.SelectedIndices[0]; //mxd
 			foreach(ListViewItem i in filters.SelectedItems) i.Remove();
+
+			//mxd
+			if(filters.Items.Count > 0){
+				if(index >= filters.Items.Count)
+					index = filters.Items.Count - 1;
+				filters.Items[index].Selected = true;
+			}
+
+			filters.Focus(); //mxd
 			
 			// Run the timer
 			filterstimer.Start();

@@ -144,7 +144,11 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Action/tags
 			action.Value = ft.Action;
-			tag.Text = ft.Tag.ToString();
+			//tag.Text = ft.Tag.ToString(); //mxd
+			if(General.Map.FormatInterface.HasThingTag) {//mxd
+				tagSelector.Setup(); 
+				tagSelector.SetTag(ft.Tag);
+			}
 			arg0.SetValue(ft.Args[0]);
 			arg1.SetValue(ft.Args[1]);
 			arg2.SetValue(ft.Args[2]);
@@ -159,8 +163,9 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(Thing t in things)
 			{
 				// Type does not match?
-				if((thingtype.GetSelectedInfo() != null) &&
-				   (thingtype.GetSelectedInfo().Index != t.Type))
+				ThingTypeInfo info = thingtype.GetSelectedInfo(); //mxd
+
+				if(info != null && info.Index != t.Type)
 					thingtype.ClearSelectedType();
 				
 				// Flags
@@ -188,7 +193,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Action/tags
 				if(t.Action != action.Value) action.Empty = true;
-				if(t.Tag.ToString() != tag.Text) tag.Text = "";
+				//if(t.Tag.ToString() != tag.Text) tag.Text = ""; //mxd
+				if(General.Map.FormatInterface.HasThingTag && t.Tag != ft.Tag) tagSelector.ClearTag(); //mxd
 				if(t.Args[0] != arg0.GetResult(-1)) arg0.ClearValue();
 				if(t.Args[1] != arg1.GetResult(-1)) arg1.ClearValue();
 				if(t.Args[2] != arg2.GetResult(-1)) arg2.ClearValue();
@@ -197,6 +203,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Custom fields
 				fieldslist.SetValues(t.Fields, false);
+
+				//mxd. add user vars
+				/*if(info != null && info.Actor != null && info.Actor.UserVars.Count > 0) {
+					foreach(string s in info.Actor.UserVars) {
+						if(!t.Fields.ContainsKey(s))
+							fieldslist.SetValue(s, 0, CodeImp.DoomBuilder.Types.UniversalType.Integer);
+					}
+				}*/
 			}
 
 			preventchanges = false;
@@ -250,12 +264,6 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 
 		#region ================== Interface
-
-		// This finds a new (unused) tag
-		private void newtag_Click(object sender, EventArgs e)
-		{
-			tag.Text = General.Map.Map.GetNewTag().ToString();
-		}
 
 		// Selected type changes
 		private void thingtype_OnTypeChanged(ThingTypeInfo value)
@@ -377,11 +385,15 @@ namespace CodeImp.DoomBuilder.Windows
 			List<string> defaultflags = new List<string>();
 			string undodesc = "thing";
 
+			//mxd
 			// Verify the tag
-			if(General.Map.FormatInterface.HasThingTag && ((tag.GetResult(0) < General.Map.FormatInterface.MinTag) || (tag.GetResult(0) > General.Map.FormatInterface.MaxTag)))
+			if(General.Map.FormatInterface.HasThingTag) //mxd
 			{
-				General.ShowWarningMessage("Thing tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
-				return;
+				tagSelector.ValidateTag();//mxd
+				if(((tagSelector.GetTag(0) < General.Map.FormatInterface.MinTag) || (tagSelector.GetTag(0) > General.Map.FormatInterface.MaxTag))) {
+					General.ShowWarningMessage("Thing tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
+					return;
+				}
 			}
 
 			// Verify the type
@@ -406,6 +418,7 @@ namespace CodeImp.DoomBuilder.Windows
             Vector2D delta = new Vector2D((float)posX.GetResult((int)initialPosition.x) - initialPosition.x, (float)posY.GetResult((int)initialPosition.y) - initialPosition.y);
             bool hasAcs = Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
             bool hasArg0str = General.Map.UDMF && !action.Empty && hasAcs && arg0str.Text.Length > 0;
+			Random rnd = new Random();
 
 			// Go for all the things
 			foreach(Thing t in things)
@@ -414,9 +427,14 @@ namespace CodeImp.DoomBuilder.Windows
 				t.Type = General.Clamp(thingtype.GetResult(t.Type), General.Map.FormatInterface.MinThingType, General.Map.FormatInterface.MaxThingType);
 				
 				// Coordination
-				t.Rotate(angle.GetResult(t.AngleDoom));
-                //mxd
-				//t.Move(t.Position.x, t.Position.y, (float)height.GetResult((int)t.Position.z));
+				//mxd
+				if(cbRandomAngle.Checked) {
+					t.Rotate(rnd.Next(0, 359));
+				} else {
+					t.Rotate(angle.GetResult(t.AngleDoom));
+				}
+                
+				//mxd
 				float z = (float)posZ.GetResult((int)t.Position.z);
                 if (ABSOLUTE_HEIGHT && t.Sector != null)
                     z -= t.Sector.FloorHeight;
@@ -430,7 +448,8 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				// Action/tags
-				t.Tag = tag.GetResult(t.Tag);
+				//t.Tag = tag.GetResult(t.Tag);
+				t.Tag = tagSelector.GetTag(t.Tag); //mxd
 				if(!action.Empty) t.Action = action.Value;
 
                 //mxd
@@ -516,12 +535,21 @@ namespace CodeImp.DoomBuilder.Windows
 			posZ.Text = (ABSOLUTE_HEIGHT ? initialFloorHeight + initialPosition.z : initialPosition.z).ToString();
 		}
 
+		//mxd
+		private void cbRandomAngle_CheckedChanged(object sender, EventArgs e) {
+			angle.Enabled = !cbRandomAngle.Checked;
+			anglecontrol.Enabled = !cbRandomAngle.Checked;
+			labelAngle.Enabled = !cbRandomAngle.Checked;
+		}
+
 		// Help
 		private void ThingEditForm_HelpRequested(object sender, HelpEventArgs hlpevent)
 		{
 			General.ShowHelp("w_thingeditor.html");
 			hlpevent.Handled = true;
 		}
+
+		
 		
 		#endregion
 	}

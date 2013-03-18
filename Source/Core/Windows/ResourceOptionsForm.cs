@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public DataLocation ResourceLocation { get { return res; } }
 		
 		// Constructor
-		public ResourceOptionsForm(DataLocation settings, string caption)
+		public ResourceOptionsForm(DataLocation settings, string caption, string startPath) //mxd. added startPath
 		{
 			// Initialize
 			InitializeComponent();
@@ -79,8 +79,10 @@ namespace CodeImp.DoomBuilder.Windows
 			notfortesting.Checked = res.notfortesting;
 
 			//mxd
-			if(General.Map != null && General.Map.FilePathName != "")
-				dirdialog.SelectedPath = Path.GetDirectoryName(General.Map.FilePathName);
+			if(!string.IsNullOrEmpty(startPath)) {
+				string startDir = Path.GetDirectoryName(startPath);
+				if(Directory.Exists(startDir)) dirdialog.SelectedPath = startDir;
+			}
 		}
 		
 		// OK clicked

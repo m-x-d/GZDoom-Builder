@@ -1,0 +1,36 @@
+D:\Projects\Sharp\GZDoomBuilder_SVN\Build\Plugins\BuilderEffects.dll
+D:\Projects\Sharp\GZDoomBuilder_SVN\Build\Plugins\BuilderEffects.pdb
+D:\Projects\Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Projects\Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.MenusForm.resources
+D:\Projects\Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.IntControl.resources
+D:\Projects\Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.JitterThingsForm.resources
+D:\Projects\Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.resources
+D:\Projects\Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\BuilderEffects.csproj.GenerateResource.Cache
+D:\Projects\Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\BuilderEffects.dll
+D:\Projects\Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\BuilderEffects.pdb
+D:\CD\C Sharp\GZDoomBuilder_SVN\Build\Plugins\BuilderEffects.dll
+D:\CD\C Sharp\GZDoomBuilder_SVN\Build\Plugins\BuilderEffects.pdb
+D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.MenusForm.resources
+D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.IntControl.resources
+D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.JitterThingsForm.resources
+D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.resources
+D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\BuilderEffects.csproj.GenerateResource.Cache
+D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\BuilderEffects.dll
+D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\BuilderEffects.pdb
+D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.JitterVerticesForm.resources
+D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.JitterSectorsForm.resources
+D:\Projects\Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.JitterSectorsForm.resources
+D:\Projects\Sharp\GZDoomBuilder_SVN\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.JitterVerticesForm.resources
+D:\Projects\Sharp\GZDoomBuilder_SVN_current\Build\Plugins\BuilderEffects.dll
+D:\Projects\Sharp\GZDoomBuilder_SVN_current\Build\Plugins\BuilderEffects.pdb
+D:\Projects\Sharp\GZDoomBuilder_SVN_current\Source\Plugins\BuilderEffects\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Projects\Sharp\GZDoomBuilder_SVN_current\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.MenusForm.resources
+D:\Projects\Sharp\GZDoomBuilder_SVN_current\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.IntControl.resources
+D:\Projects\Sharp\GZDoomBuilder_SVN_current\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.JitterSectorsForm.resources
+D:\Projects\Sharp\GZDoomBuilder_SVN_current\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.JitterThingsForm.resources
+D:\Projects\Sharp\GZDoomBuilder_SVN_current\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.JitterVerticesForm.resources
+D:\Projects\Sharp\GZDoomBuilder_SVN_current\Source\Plugins\BuilderEffects\obj\x86\Debug\CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.resources
+D:\Projects\Sharp\GZDoomBuilder_SVN_current\Source\Plugins\BuilderEffects\obj\x86\Debug\BuilderEffects.csproj.GenerateResource.Cache
+D:\Projects\Sharp\GZDoomBuilder_SVN_current\Source\Plugins\BuilderEffects\obj\x86\Debug\BuilderEffects.dll
+D:\Projects\Sharp\GZDoomBuilder_SVN_current\Source\Plugins\BuilderEffects\obj\x86\Debug\BuilderEffects.pdb

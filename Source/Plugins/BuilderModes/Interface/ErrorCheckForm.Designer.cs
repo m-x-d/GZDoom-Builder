@@ -32,13 +32,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.buttoncheck = new System.Windows.Forms.Button();
             this.results = new System.Windows.Forms.ListBox();
             this.resultspanel = new System.Windows.Forms.Panel();
+            this.cbApplyToAll = new System.Windows.Forms.CheckBox();
             this.fix3 = new System.Windows.Forms.Button();
             this.fix2 = new System.Windows.Forms.Button();
             this.resultinfo = new System.Windows.Forms.Label();
             this.fix1 = new System.Windows.Forms.Button();
             this.progress = new System.Windows.Forms.ProgressBar();
             this.closebutton = new System.Windows.Forms.Button();
-            this.cbApplyToAll = new System.Windows.Forms.CheckBox();
+            this.bExport = new System.Windows.Forms.Button();
             this.resultspanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -95,6 +96,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.resultspanel.Name = "resultspanel";
             this.resultspanel.Size = new System.Drawing.Size(383, 343);
             this.resultspanel.TabIndex = 2;
+            // 
+            // cbApplyToAll
+            // 
+            this.cbApplyToAll.AutoSize = true;
+            this.cbApplyToAll.Location = new System.Drawing.Point(12, 317);
+            this.cbApplyToAll.Name = "cbApplyToAll";
+            this.cbApplyToAll.Size = new System.Drawing.Size(169, 18);
+            this.cbApplyToAll.TabIndex = 6;
+            this.cbApplyToAll.Text = "Apply to all errors of this type";
+            this.cbApplyToAll.UseVisualStyleBackColor = true;
             // 
             // fix3
             // 
@@ -165,15 +176,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.closebutton.UseVisualStyleBackColor = true;
             this.closebutton.Click += new System.EventHandler(this.closebutton_Click);
             // 
-            // cbApplyToAll
+            // bExport
             // 
-            this.cbApplyToAll.AutoSize = true;
-            this.cbApplyToAll.Location = new System.Drawing.Point(12, 317);
-            this.cbApplyToAll.Name = "cbApplyToAll";
-            this.cbApplyToAll.Size = new System.Drawing.Size(169, 18);
-            this.cbApplyToAll.TabIndex = 6;
-            this.cbApplyToAll.Text = "Apply to all errors of this type";
-            this.cbApplyToAll.UseVisualStyleBackColor = true;
+            this.bExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bExport.Enabled = false;
+            this.bExport.Location = new System.Drawing.Point(10, 89);
+            this.bExport.Margin = new System.Windows.Forms.Padding(1);
+            this.bExport.Name = "bExport";
+            this.bExport.Size = new System.Drawing.Size(116, 25);
+            this.bExport.TabIndex = 5;
+            this.bExport.Text = "Export results to file";
+            this.bExport.UseVisualStyleBackColor = true;
+            this.bExport.Click += new System.EventHandler(this.bExport_Click);
             // 
             // ErrorCheckForm
             // 
@@ -182,6 +196,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.closebutton;
             this.ClientSize = new System.Drawing.Size(380, 468);
+            this.Controls.Add(this.bExport);
             this.Controls.Add(this.closebutton);
             this.Controls.Add(this.resultspanel);
             this.Controls.Add(this.buttoncheck);
@@ -218,5 +233,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.Button fix1;
 		private System.Windows.Forms.Button closebutton;
         private System.Windows.Forms.CheckBox cbApplyToAll;
+        private System.Windows.Forms.Button bExport;
 	}
 }

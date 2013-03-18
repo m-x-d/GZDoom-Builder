@@ -65,6 +65,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		void SetHighlightedObject(IVisualPickable obj);
 		void AddSectorGeometry(VisualGeometry g);
 		void AddThingGeometry(VisualThing t);
+		void AddVisualVertices(VisualVertex[] verts);
 		void RenderCrosshair();
 		void SetFogMode(bool usefog);
 		void SetCrosshairBusy(bool busy);

@@ -73,7 +73,6 @@ namespace CodeImp.DoomBuilder.Config
             this.defaultValue = cfg.ReadSetting(argspath + ".arg" + istr + ".default", 0);
 
 			// Determine enum type
-			EnumList enumlist = null;
 			IDictionary argdic = cfg.ReadSetting(argspath + ".arg" + istr, new Hashtable());
 			if(argdic.Contains("enum"))
 			{

@@ -266,7 +266,6 @@ namespace CodeImp.DoomBuilder.Data
 
 				default:
 					throw new ArgumentException("Invalid image format specified!");
-					return null;
 			}
 		}
 
@@ -324,7 +323,14 @@ namespace CodeImp.DoomBuilder.Data
 		// NOTE: Callers are responsible for disposing the stream!
         internal override MemoryStream LoadFile(string filename)
 		{
-			return new MemoryStream(File.ReadAllBytes(Path.Combine(location.location, filename)));
+			MemoryStream s = null;
+
+			try {
+				s = new MemoryStream(File.ReadAllBytes(Path.Combine(location.location, filename)));
+			} catch(Exception e) {
+				General.ErrorLogger.Add(ErrorType.Error, "Unable to load file: "+e.Message);
+			}
+			return s;
 		}
 
 		// This creates a temp file for the speciied file and return the absolute path to the temp file

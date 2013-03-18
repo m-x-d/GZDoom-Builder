@@ -365,7 +365,8 @@ namespace CodeImp.DoomBuilder.IO
 		// This finds a lump by name, returns -1 when not found
 		public int FindLumpIndex(string name, int start, int end)
 		{
-			//byte[] fixedname;
+			if(name.Length > 8)	return -1;//mxd. Can't be here. Go away!
+			
 			long longname = Lump.MakeLongName(name);
 			
 			// Fix end when it exceeds length

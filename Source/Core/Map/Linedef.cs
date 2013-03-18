@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.Map
 		private float lengthinv;
 		private float angle;
 		private RectangleF rect;
-		private bool blocksoundflag;
+		//private bool blocksoundflag;
 		private bool impassableflag;
 		
 		// Properties
@@ -77,6 +77,7 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private int[] args;
 		private bool frontinterior;		// for drawing only
+		private int colorPresetIndex;//mxd
 
 		// Clone
 		private int serializedindex;
@@ -92,8 +93,9 @@ namespace CodeImp.DoomBuilder.Map
 		public Sidedef Back { get { return back; } }
 		public Line2D Line { get { return new Line2D(start.Position, end.Position); } }
 		internal Dictionary<string, bool> Flags { get { return flags; } }
-		public int Action { get { return action; } set { BeforePropsChange(); action = value; } }
-		public int Activate { get { return activate; } set { BeforePropsChange(); activate = value; } }
+		public int Action { get { return action; } set { BeforePropsChange(); action = value; UpdateColorPreset(); } }
+		public int Activate { get { return activate; } set { BeforePropsChange(); activate = value; UpdateColorPreset(); } }
+
 		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public float LengthSq { get { return lengthsq; } }
 		public float Length { get { return length; } }
@@ -105,7 +107,9 @@ namespace CodeImp.DoomBuilder.Map
 		internal int SerializedIndex { get { return serializedindex; } set { serializedindex = value; } }
 		internal bool FrontInterior { get { return frontinterior; } set { frontinterior = value; } }
 		internal bool ImpassableFlag { get { return impassableflag; } }
-		internal bool BlockSoundFlag { get { return blocksoundflag; } }
+		//internal bool BlockSoundFlag { get { return blocksoundflag; } }
+		//mxd
+		internal int ColorPresetIndex { get { return colorPresetIndex; } }
 		
 		#endregion
 
@@ -120,6 +124,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.updateneeded = true;
 			this.args = new int[NUM_ARGS];
 			this.flags = new Dictionary<string, bool>();
+			this.colorPresetIndex = -1;//mxd
 			
 			// Attach to vertices
 			this.start = start;
@@ -185,7 +190,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// Serialize / deserialize (passive: doesn't record)
-		internal void ReadWrite(IReadWriteStream s)
+		new internal void ReadWrite(IReadWriteStream s)
 		{
 			if(!s.IsWriting)
 			{
@@ -222,6 +227,10 @@ namespace CodeImp.DoomBuilder.Map
 			s.rwInt(ref activate);
 			s.rwInt(ref tag);
 			for(int i = 0; i < NUM_ARGS; i++) s.rwInt(ref args[i]);
+
+			//mxd
+			if(!s.IsWriting)
+				UpdateColorPreset();
 		}
 
 		// This sets new start vertex
@@ -284,7 +293,8 @@ namespace CodeImp.DoomBuilder.Map
 			l.updateneeded = true;
 			l.activate = activate;
 			l.impassableflag = impassableflag;
-			l.blocksoundflag = blocksoundflag;
+			//l.blocksoundflag = blocksoundflag;
+			l.UpdateColorPreset();//mxd
 			base.CopyPropertiesTo(l);
 		}
 		
@@ -370,8 +380,11 @@ namespace CodeImp.DoomBuilder.Map
 				rect = new RectangleF(l, t, r - l, b - t);
 				
 				// Cached flags
-				blocksoundflag = IsFlagSet(General.Map.Config.SoundLinedefFlag);
+				//blocksoundflag = IsFlagSet(General.Map.Config.SoundLinedefFlag); //mxd
 				impassableflag = IsFlagSet(General.Map.Config.ImpassableFlag);
+
+				//mxd. Color preset
+				UpdateColorPreset();
 				
 				// Updated
 				updateneeded = false;
@@ -529,8 +542,11 @@ namespace CodeImp.DoomBuilder.Map
 				flags[flagname] = value;
 
 				// Cached flags
-				if(flagname == General.Map.Config.SoundLinedefFlag) blocksoundflag = value;
+				//if(flagname == General.Map.Config.SoundLinedefFlag) blocksoundflag = value; //mxd
 				if(flagname == General.Map.Config.ImpassableFlag) impassableflag = value;
+
+				//mxd
+				UpdateColorPreset();
 			}
 		}
 
@@ -545,8 +561,11 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			BeforePropsChange();
 			flags.Clear();
-			blocksoundflag = false;
+			//blocksoundflag = false;
 			impassableflag = false;
+
+			//mxd
+			UpdateColorPreset();
 		}
 		
 		// This flips the linedef's vertex attachments
@@ -1024,6 +1043,17 @@ namespace CodeImp.DoomBuilder.Map
 
 			return true;
 		}
+
+        //mxd
+        internal void UpdateColorPreset() {
+            for(int i = 0; i < General.Map.ConfigSettings.LinedefColorPresets.Length; i++) {
+                if(General.Map.ConfigSettings.LinedefColorPresets[i].Matches(this)) {
+                    colorPresetIndex = i;
+                    return;
+                }
+            }
+            colorPresetIndex = -1;
+        }
 
 		// String representation
 		public override string ToString()

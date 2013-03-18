@@ -107,6 +107,9 @@ namespace CodeImp.DoomBuilder.Windows
             cbOldHighlightMode.Checked = General.Settings.GZOldHighlightMode;
             vertexScale.Value = General.Clamp((int)(General.Settings.GZVertexScale2D), vertexScale.Minimum, vertexScale.Maximum);
             vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
+			cbLoadGameGldefs.Checked = General.Settings.GZLoadDefaultLightDefinitions;
+			tbNumSectors.Value = General.Clamp(General.Settings.GZNewSectorsCount, tbNumSectors.Minimum, tbNumSectors.Maximum);
+			numSectorsLabel.Text = tbNumSectors.Value.ToString();
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
@@ -151,8 +154,6 @@ namespace CodeImp.DoomBuilder.Windows
 			colorbackcolor.Color = General.Colors.Background;
 			colorvertices.Color = General.Colors.Vertices;
 			colorlinedefs.Color = General.Colors.Linedefs;
-			colorspeciallinedefs.Color = General.Colors.Actions;
-			colorsoundlinedefs.Color = General.Colors.Sounds;
 			colorhighlight.Color = General.Colors.Highlight;
 			colorselection.Color = General.Colors.Selection;
 			colorindication.Color = General.Colors.Indication;
@@ -162,6 +163,7 @@ namespace CodeImp.DoomBuilder.Windows
             //mxd
             colorMD3.Color = General.Colors.ModelWireframe;
             colorInfo.Color = General.Colors.InfoLine;
+			colorNewSectors.Color = General.Colors.NewSector;
 
 			colorscriptbackground.Color = General.Colors.ScriptBackground;
 			colorlinenumbers.Color = General.Colors.LineNumbers;
@@ -250,8 +252,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Colors.Background = colorbackcolor.Color;
 			General.Colors.Vertices = colorvertices.Color;
 			General.Colors.Linedefs = colorlinedefs.Color;
-			General.Colors.Actions = colorspeciallinedefs.Color;
-			General.Colors.Sounds = colorsoundlinedefs.Color;
+
 			General.Colors.Highlight = colorhighlight.Color;
 			General.Colors.Selection = colorselection.Color;
 			General.Colors.Indication = colorindication.Color;
@@ -267,6 +268,7 @@ namespace CodeImp.DoomBuilder.Windows
             //mxd
             General.Colors.ModelWireframe = colorMD3.Color;
             General.Colors.InfoLine = colorInfo.Color;
+			General.Colors.NewSector = colorNewSectors.Color;
 
 			General.Colors.CreateAssistColors();
 			General.Settings.BlackBrowsers = blackbrowsers.Checked;
@@ -283,6 +285,8 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.GZStretchModels = cbStretchModels.Checked;
             General.Settings.GZVertexScale2D = (float)vertexScale.Value;
             General.Settings.GZOldHighlightMode = cbOldHighlightMode.Checked;
+			General.Settings.GZLoadDefaultLightDefinitions = cbLoadGameGldefs.Checked;
+			General.Settings.GZNewSectorsCount = tbNumSectors.Value;
 
 			// Paste options
 			General.Settings.PasteOptions = pasteoptions.GetOptions();
@@ -789,6 +793,11 @@ namespace CodeImp.DoomBuilder.Windows
         private void tbDynLightIntensity_ValueChanged(object sender, EventArgs e) {
             labelDynLightIntensity.Text = ((float)tbDynLightIntensity.Value / 10).ToString();
         }
+
+		//mxd
+		private void tbNumSectors_ValueChanged(object sender, EventArgs e) {
+			numSectorsLabel.Text = tbNumSectors.Value.ToString();
+		}
 
 		#endregion
 

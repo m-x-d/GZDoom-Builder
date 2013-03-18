@@ -50,6 +50,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected VisualCeiling ceiling;
 		protected List<VisualFloor> extrafloors;
 		protected List<VisualCeiling> extraceilings;
+		protected List<VisualFloor> extrabackfloors; //mxd
+		protected List<VisualCeiling> extrabackceilings; //mxd
 		protected Dictionary<Sidedef, VisualSidedefParts> sides;
 		
 		// If this is set to true, the sector will be rebuilt after the action is performed.
@@ -66,6 +68,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public VisualCeiling Ceiling { get { return ceiling; } }
 		public List<VisualFloor> ExtraFloors { get { return extrafloors; } }
 		public List<VisualCeiling> ExtraCeilings { get { return extraceilings; } }
+		public List<VisualFloor> ExtraBackFloors { get { return extrabackfloors; } } //mxd
+		public List<VisualCeiling> ExtraBackCeilings { get { return extrabackceilings; } } //mxd
+		public Dictionary<Sidedef, VisualSidedefParts> Sides { get { return sides; } } //mxd
 		public bool Changed { get { return changed; } set { changed |= value; } }
 		
 		#endregion
@@ -78,6 +83,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.mode = mode;
 			this.extrafloors = new List<VisualFloor>(2);
 			this.extraceilings = new List<VisualCeiling>(2);
+			//mxd
+			this.extrabackfloors = new List<VisualFloor>(2);
+			this.extrabackceilings = new List<VisualCeiling>(2);
 			
 			// Initialize
 			Rebuild();
@@ -115,7 +123,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This updates this virtual the sector and neightbours if needed
-		public void UpdateSectorGeometry(bool includeneighbours)
+		override public void UpdateSectorGeometry(bool includeneighbours)
 		{
             if(isupdating)
 				return;
@@ -174,7 +182,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
         override public void UpdateSectorData() {
             //update sector data
             SectorData data = GetSectorData();
-            data.Update(true);
+            data.UpdateForced();
 
             //update sector
             Rebuild();
@@ -215,20 +223,74 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			for(int i = 0; i < data.ExtraFloors.Count; i++)
 			{
 				Effect3DFloor ef = data.ExtraFloors[i];
-				
-				// Create a floor
-				VisualFloor vf = (i < extrafloors.Count) ? extrafloors[i] : new VisualFloor(mode, this);
-				if(vf.Setup(ef.Ceiling, ef))
-					base.AddGeometry(vf);
-				if(i >= extrafloors.Count)
-					extrafloors.Add(vf);
+				bool floorRequired = false; //mxd
+				bool ceilingRequired = false; //mxd
 
-				// Create a ceiling
-				VisualCeiling vc = (i < extraceilings.Count) ? extraceilings[i] : new VisualCeiling(mode, this);
-				if(vc.Setup(ef.Floor, ef))
-					base.AddGeometry(vc);
-				if(i >= extraceilings.Count)
-					extraceilings.Add(vc);
+				if(!ef.IgnoreBottomHeight) {
+					//mxd. if normals match - check the offsets
+					if(ef.Ceiling.plane.Normal == floor.Level.plane.Normal) {
+						if(-floor.Level.plane.Offset < ef.Ceiling.plane.Offset) {
+							floorRequired = true;
+						} else if(-floor.Level.plane.Offset == ef.Ceiling.plane.Offset) {
+							//mxd. check if 3d floor is higher than real one at any vertex
+							floorRequired = checkFloorVertices(floor.Vertices, ef.Ceiling.plane);
+						}
+					} else {
+						//mxd. check if 3d floor is higher than real one at any vertex
+						floorRequired = checkFloorVertices(floor.Vertices, ef.Ceiling.plane);
+					}
+
+					//mxd. Create a floor
+					if(floorRequired) {
+						VisualFloor vf = (i < extrafloors.Count) ? extrafloors[i] : new VisualFloor(mode, this);
+						if(vf.Setup(ef.Ceiling, ef)) {
+							base.AddGeometry(vf);
+
+							//mxd. add backside as well
+							if(ef.RenderInside) {
+								VisualFloor vfb = (i < extrabackfloors.Count) ? extrabackfloors[i] : new VisualFloor(mode, this);
+								if(vfb.Setup(ef.Ceiling, ef, true))
+									base.AddGeometry(vfb);
+								if(i >= extrabackfloors.Count)
+									extrabackfloors.Add(vfb);
+							}
+						}
+						if(i >= extrafloors.Count)
+							extrafloors.Add(vf);
+					}
+				}
+
+				//mxd. check if 3d ceiling is lower than real one at any vertex
+				if(ef.Floor.plane.Normal == ceiling.Level.plane.Normal) {
+					if(-ceiling.Level.plane.Offset > ef.Floor.plane.Offset) {
+						floorRequired = true;
+					} else if(-ceiling.Level.plane.Offset == ef.Floor.plane.Offset) {
+						//mxd. check if 3d floor is higher than real one at any vertex
+						ceilingRequired = checkCeilingVertices(ceiling.Vertices, ef.Floor.plane);
+					}
+				} else {
+					//mxd. check if 3d floor is higher than real one at any vertex
+					ceilingRequired = checkCeilingVertices(ceiling.Vertices, ef.Floor.plane);
+				}
+
+				//mxd. Create a ceiling
+				if(ceilingRequired) {
+					VisualCeiling vc = (i < extraceilings.Count) ? extraceilings[i] : new VisualCeiling(mode, this);
+					if(vc.Setup(ef.Floor, ef)) {
+						base.AddGeometry(vc);
+
+						//mxd. add backside as well
+						if(ef.RenderInside || ef.IgnoreBottomHeight) {
+							VisualCeiling vcb = (i < extrabackceilings.Count) ? extrabackceilings[i] : new VisualCeiling(mode, this);
+							if(vcb.Setup(ef.Floor, ef, true))
+								base.AddGeometry(vcb);
+							if(i >= extrabackceilings.Count)
+								extrabackceilings.Add(vcb);
+						}
+					}
+					if(i >= extraceilings.Count)
+						extraceilings.Add(vc);
+				}
 			}
 			
 			// Go for all sidedefs
@@ -264,6 +326,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					for(int i = 0; i < osd.ExtraFloors.Count; i++)
 					{
 						Effect3DFloor ef = osd.ExtraFloors[i];
+						if(ef.IgnoreBottomHeight) continue;
 
 						VisualMiddle3D vm3 = (i < middles.Count) ? middles[i] : new VisualMiddle3D(mode, this, sd);
 						if(vm3.Setup(ef))
@@ -271,9 +334,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(i >= middles.Count)
 							middles.Add(vm3);
 					}
+
+					//mxd. Create backsides
+					List<VisualMiddleBack> middlebacks = new List<VisualMiddleBack>();
+					for (int i = 0; i < data.ExtraFloors.Count; i++) {
+						Effect3DFloor ef = data.ExtraFloors[i];
+
+						if (ef.RenderInside && !ef.IgnoreBottomHeight) {
+							VisualMiddleBack vms = new VisualMiddleBack(mode, this, sd);
+							if (vms.Setup(ef))
+								base.AddGeometry(vms);
+							middlebacks.Add(vms);
+						}
+					}
 					
 					// Store
-					sides.Add(sd, new VisualSidedefParts(vu, vl, vm, middles));
+					sides.Add(sd, new VisualSidedefParts(vu, vl, vm, middles, middlebacks));
 				}
 				else
 				{
@@ -298,6 +374,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return sides[sd];
 			else
 				return new VisualSidedefParts();
+		}
+
+		//mxd
+		private bool checkFloorVertices(WorldVertex[] verts, Plane plane) {
+			for(int c = 0; c < verts.Length; c++) {
+				if(plane.GetZ(new Vector2D(verts[c].x, verts[c].y)) > verts[c].z)
+					return true;
+			}
+			return false;
+		}
+		//mxd
+		private bool checkCeilingVertices(WorldVertex[] verts, Plane plane) {
+			for(int c = 0; c < verts.Length; c++) {
+				if(plane.GetZ(new Vector2D(verts[c].x, verts[c].y)) < verts[c].z)
+					return true;
+			}
+			return false;
 		}
 		
 		#endregion

@@ -46,7 +46,6 @@ namespace CodeImp.DoomBuilder.IO
 		private Configuration config;
 		private bool setknowncustomtypes;
 		private bool strictchecking = true;
-        private Dictionary<string, UniversalFieldInfo> defaultFields; //mxd. Type checks
 		
 		#endregion
 

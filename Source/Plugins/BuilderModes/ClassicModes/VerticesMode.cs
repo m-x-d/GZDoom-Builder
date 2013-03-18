@@ -201,9 +201,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				// Flip selection
-				highlighted.Selected = !highlighted.Selected;
-
 				// Redraw highlight to show selection
 				if(renderer.StartPlotter(false))
 				{
@@ -211,11 +208,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Finish();
 					renderer.Present();
 				}
-			}
-			else
-			{
-				// Start making a selection
-				StartMultiSelection();
 			}
 
 			base.OnSelectBegin();
@@ -230,6 +222,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Item highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
+					//mxd. Flip selection
+					highlighted.Selected = !highlighted.Selected;
+					
 					// Render highlighted item
 					if(renderer.StartPlotter(false))
 					{
@@ -273,7 +268,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Present();
 				}
 			}
-			else
+			else if(!selecting) //mxd. We don't want to do this stuff while multiselecting
 			{
 				// Find the nearest linedef within highlight range
 				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.SplitLinedefsRange / renderer.Scale);
@@ -386,15 +381,51 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnMouseMove(e);
 
-			// Not holding any buttons?
-			if(e.Button == MouseButtons.None)
+			//mxd
+			if(selectpressed && !editpressed && !selecting) {
+				// Check if moved enough pixels for multiselect
+				Vector2D delta = mousedownpos - mousepos;
+				if((Math.Abs(delta.x) > MULTISELECT_START_MOVE_PIXELS) ||
+				   (Math.Abs(delta.y) > MULTISELECT_START_MOVE_PIXELS)) {
+					// Start multiselecting
+					StartMultiSelection();
+				}
+			}
+			if(paintselectpressed && !editpressed && !selecting)  //mxd. Drag-select
+			{
+				// Find the nearest thing within highlight range
+				Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
+
+				if(v != null) {
+					if(v != highlighted) {
+						//toggle selected state
+						if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
+							v.Selected = true;
+						else if(General.Interface.CtrlState)
+							v.Selected = false;
+						else
+							v.Selected = !v.Selected;
+						highlighted = v;
+
+						// Update entire display
+						General.Interface.RedrawDisplay();
+					}
+				} else if(highlighted != null) {
+					highlighted = null;
+					Highlight(null);
+
+					// Update entire display
+					General.Interface.RedrawDisplay();
+				}
+			}
+			else if(e.Button == MouseButtons.None) // Not holding any buttons?
 			{
 				// Find the nearest vertex within highlight range
 				Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
 
 				// Highlight if not the same
 				if(v != highlighted) Highlight(v);
-			}
+			} 
 		}
 
 		// Mouse leaves
@@ -404,6 +435,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Highlight nothing
 			Highlight(null);
+		}
+
+		//mxd
+		protected override void OnPaintSelectBegin() {
+			highlighted = null;
+			base.OnPaintSelectBegin();
 		}
 
 		// Mouse wants to drag
@@ -426,9 +463,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Start dragging the selection
-					General.Editing.ChangeMode(new DragVerticesMode(highlighted, mousedownmappos));
+					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || canDrag()) //mxd
+						General.Editing.ChangeMode(new DragVerticesMode(highlighted, mousedownmappos));
 				}
 			}
+		}
+
+		//mxd. Check if any selected vertex is outside of map boundary
+		private bool canDrag() {
+			ICollection<Vertex> selectedverts = General.Map.Map.GetSelectedVertices(true);
+			int unaffectedCount = 0;
+
+			foreach(Vertex v in selectedverts) {
+				// Make sure the vertex is inside the map boundary
+				if(v.Position.x < General.Map.Config.LeftBoundary || v.Position.x > General.Map.Config.RightBoundary
+					|| v.Position.y > General.Map.Config.TopBoundary || v.Position.y < General.Map.Config.BottomBoundary) {
+
+					v.Selected = false;
+					unaffectedCount++;
+				}
+			}
+
+			if(unaffectedCount == selectedverts.Count) {
+				General.Interface.DisplayStatus(StatusType.Warning, "Unable to drag selection: " + (selectedverts.Count == 1 ? "selected vertex is" : "all of selected vertices are") + " outside of map boundary!");
+				General.Interface.RedrawDisplay();
+				return false;
+			}
+			
+			if(unaffectedCount > 0)
+				General.Interface.DisplayStatus(StatusType.Warning, unaffectedCount + " of selected vertices " + (unaffectedCount == 1 ? "is" : "are") + " outside of map boundary!");
+
+			return true;
 		}
 
 		// This is called wheh selection ends
@@ -441,26 +506,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(selectionvolume)
 			{
-				if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
-				{
+				//mxd
+				if(subtractiveSelection) {
 					// Go for all vertices
 					foreach(Vertex v in General.Map.Map.Vertices)
-					{
-						v.Selected |= ((v.Position.x >= selectionrect.Left) &&
-									   (v.Position.y >= selectionrect.Top) &&
-									   (v.Position.x <= selectionrect.Right) &&
-									   (v.Position.y <= selectionrect.Bottom));
-					}
-				}
-				else
-				{
-					// Go for all vertices
-					foreach(Vertex v in General.Map.Map.Vertices)
-					{
-						v.Selected = ((v.Position.x >= selectionrect.Left) &&
-									  (v.Position.y >= selectionrect.Top) &&
-									  (v.Position.x <= selectionrect.Right) &&
-									  (v.Position.y <= selectionrect.Bottom));
+						if(selectionrect.Contains(v.Position.x, v.Position.y)) v.Selected = false;
+				} else {
+					if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect) {
+						// Go for all vertices
+						foreach(Vertex v in General.Map.Map.Vertices)
+							v.Selected |= selectionrect.Contains(v.Position.x, v.Position.y);
+					} else {
+						// Go for all vertices
+						foreach(Vertex v in General.Map.Map.Vertices)
+							v.Selected = selectionrect.Contains(v.Position.x, v.Position.y);
 					}
 				}
 			}
@@ -640,16 +699,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				v.SnapToAccuracy();
 
 				// Split the line with this vertex
-				if(snaptonearest && (l != null))
+				if(snaptonearest)
 				{
-					General.Interface.DisplayStatus(StatusType.Action, "Split a linedef.");
-					Linedef sld = l.Split(v);
-					if(sld == null)
-					{
-						General.Map.UndoRedo.WithdrawUndo();
-						return;
+					//mxd. Check if snapped vertex is on top of a linedef
+					l = General.Map.Map.NearestLinedefRange(insertpos, 1 / rendererscale);
+					if(l != null && l.SideOfLine(insertpos) != 0)
+						l = null;
+					
+					if(l != null) {
+						General.Interface.DisplayStatus(StatusType.Action, "Split a linedef.");
+						Linedef sld = l.Split(v);
+						if(sld == null) {
+							General.Map.UndoRedo.WithdrawUndo();
+							return;
+						}
+						BuilderPlug.Me.AdjustSplitCoordinates(l, sld);
 					}
-					BuilderPlug.Me.AdjustSplitCoordinates(l, sld);
 				}
 				else
 				{

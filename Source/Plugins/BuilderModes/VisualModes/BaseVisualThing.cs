@@ -89,6 +89,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(sprite != null) sprite.AddReference();
 			}
 
+			//mxd
+			if(mode.UseSelectionFromClassicMode && t.Selected){
+				this.selected = true;
+				mode.AddSelectedObject(this);
+			}
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -98,8 +104,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PixelColor sectorcolor = new PixelColor(255, 255, 255, 255);
 			
-			// Must have a width and height!
-			if((info.Radius < 0.1f) || (info.Height < 0.1f)) return false;
+			//mxd. Check thing size 
+			float infoRadius, infoHeight;
+			if((info.Radius < 0.1f) || (info.Height < 0.1f)) {
+				infoRadius = FIXED_RADIUS;
+				infoHeight = FIXED_RADIUS;
+				sizeless = true;
+			} else {
+				infoRadius = info.Radius;
+				infoHeight = info.Height;
+				sizeless = false;
+			}
 
 			// Find the sector in which the thing resides
 			Thing.DetermineSector(mode.BlockMap);
@@ -147,12 +162,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
-					verts[0] = new WorldVertex(-radius + offsetx, 0.0f, 0.0f + offsety, sectorcolor.ToInt(), 0.0f, 1.0f);
-					verts[1] = new WorldVertex(-radius + offsetx, 0.0f, height + offsety, sectorcolor.ToInt(), 0.0f, 0.0f);
-					verts[2] = new WorldVertex(+radius + offsetx, 0.0f, height + offsety, sectorcolor.ToInt(), 1.0f, 0.0f);
-					verts[3] = verts[0];
-					verts[4] = verts[2];
-					verts[5] = new WorldVertex(+radius + offsetx, 0.0f, 0.0f + offsety, sectorcolor.ToInt(), 1.0f, 1.0f);
+
+					if(sizeless) { //mxd
+						float hh = height / 2;
+						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety - hh, sectorcolor.ToInt(), 0.0f, 1.0f);
+						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, hh + offsety, sectorcolor.ToInt(), 0.0f, 0.0f);
+						verts[2] = new WorldVertex(+radius + offsetx, 0.0f, hh + offsety, sectorcolor.ToInt(), 1.0f, 0.0f);
+						verts[3] = verts[0];
+						verts[4] = verts[2];
+						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety - hh, sectorcolor.ToInt(), 1.0f, 1.0f);
+					} else {
+						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety, sectorcolor.ToInt(), 0.0f, 1.0f);
+						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, height + offsety, sectorcolor.ToInt(), 0.0f, 0.0f);
+						verts[2] = new WorldVertex(+radius + offsetx, 0.0f, height + offsety, sectorcolor.ToInt(), 1.0f, 0.0f);
+						verts[3] = verts[0];
+						verts[4] = verts[2];
+						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety, sectorcolor.ToInt(), 1.0f, 1.0f);
+					}
 					SetVertices(verts);
 				}
 				else
@@ -160,8 +186,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					base.Texture = General.Map.Data.Hourglass3D;
 
 					// Determine sprite size
-					float radius = Math.Min(info.Radius, info.Height / 2f);
-					float height = Math.Min(info.Radius * 2f, info.Height);
+					float radius = Math.Min(infoRadius, infoHeight / 2f);
+					float height = Math.Min(infoRadius * 2f, infoHeight);
 
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
@@ -241,15 +267,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Apply settings
 			SetPosition(pos);
-			SetCageSize(info.Radius, info.Height);
+			SetCageSize(infoRadius, infoHeight);
 			SetCageColor(Thing.Color);
 
 			// Keep info for object picking
-			cageradius2 = info.Radius * Angle2D.SQRT2;
+			cageradius2 = infoRadius * Angle2D.SQRT2;
 			cageradius2 = cageradius2 * cageradius2;
 			pos2d = pos;
-			boxp1 = new Vector3D(pos.x - info.Radius, pos.y - info.Radius, pos.z);
-			boxp2 = new Vector3D(pos.x + info.Radius, pos.y + info.Radius, pos.z + info.Height);
+
+			if(sizeless) { //mxd
+				boxp1 = new Vector3D(pos.x - infoRadius, pos.y - infoRadius, pos.z - infoRadius/2);
+				boxp2 = new Vector3D(pos.x + infoRadius, pos.y + infoRadius, pos.z + infoRadius/2);
+			} else {
+				boxp1 = new Vector3D(pos.x - infoRadius, pos.y - infoRadius, pos.z);
+				boxp2 = new Vector3D(pos.x + infoRadius, pos.y + infoRadius, pos.z + infoHeight);
+			}
 			
 			// Done
 			changed = false;

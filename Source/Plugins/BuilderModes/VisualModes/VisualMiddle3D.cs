@@ -104,20 +104,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Load sector data
 			SectorData sd = mode.GetSectorData(Sidedef.Sector);
 			
+			//mxd. which texture we must use?
+			long textureLong = 0;
+			if((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0) {
+				if(Sidedef.HighTexture.Length > 0 && Sidedef.HighTexture[0] != '-')
+					textureLong = Sidedef.LongHighTexture;
+			} else if((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0) {
+				if(Sidedef.LowTexture.Length > 0 && Sidedef.LowTexture[0] != '-')
+					textureLong = Sidedef.LongLowTexture;
+			} else if((sourceside.MiddleTexture.Length > 0) && (sourceside.MiddleTexture[0] != '-')) {
+				textureLong = sourceside.LongMiddleTexture;
+			}
+
 			// Texture given?
-			if((sourceside.MiddleTexture.Length > 0) && (sourceside.MiddleTexture[0] != '-'))
+			//if((sourceside.MiddleTexture.Length > 0) && (sourceside.MiddleTexture[0] != '-'))
+			if(textureLong != 0)
 			{
 				// Load texture
-				base.Texture = General.Map.Data.GetTextureImage(sourceside.LongMiddleTexture);
+				base.Texture = General.Map.Data.GetTextureImage(textureLong);
 				if(base.Texture == null)
 				{
 					base.Texture = General.Map.Data.MissingTexture3D;
-					setuponloadedtexture = sourceside.LongMiddleTexture;
+					setuponloadedtexture = textureLong;
 				}
 				else
 				{
 					if(!base.Texture.IsImageLoaded)
-						setuponloadedtexture = sourceside.LongMiddleTexture;
+						setuponloadedtexture = textureLong;
 				}
 			}
 			else
@@ -171,11 +184,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
 			tp.vrt = new Vector3D(tp.vrb.x, tp.vrb.y, tp.vlt.z);
 			
-			// Get ceiling and floor heights
-			float fl = sd.Floor.plane.GetZ(vl);
-			float fr = sd.Floor.plane.GetZ(vr);
-			float cl = sd.Ceiling.plane.GetZ(vl);
-			float cr = sd.Ceiling.plane.GetZ(vr);
+			//mxd. Get ceiling and floor heights. Use our and neighbour sector's data
+			SectorData sdo = mode.GetSectorData(Sidedef.Other.Sector); 
+
+			float flo = sdo.Floor.plane.GetZ(vl);
+			float fro = sdo.Floor.plane.GetZ(vr);
+			float clo = sdo.Ceiling.plane.GetZ(vl);
+			float cro = sdo.Ceiling.plane.GetZ(vr);
+
+			float fle = sd.Floor.plane.GetZ(vl);
+			float fre = sd.Floor.plane.GetZ(vr);
+			float cle = sd.Ceiling.plane.GetZ(vl);
+			float cre = sd.Ceiling.plane.GetZ(vr);
+
+			float fl = flo > fle ? flo : fle;
+			float fr = fro > fre ? fro : fre;
+			float cl = clo < cle ? clo : cle;
+			float cr = cro < cre ? cro : cre;
 			
 			// Anything to see?
 			if(((cl - fl) > 0.01f) || ((cr - fr) > 0.01f))
@@ -207,9 +232,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				polygons.Add(poly);
 				foreach(Effect3DFloor ef in sd.ExtraFloors)
 				{
-					// Same 3D floor and other floors that are not translucent will clip my walls
-					if((ef.Alpha == 255) || (ef.Linedef.Front.Sector == extrafloor.Linedef.Front.Sector))
-					{
+					//mxd. Walls of solid 3D floors shouldn't be clipped by translucent 3D floors
+					if(extrafloor.RenderInside || (!extrafloor.RenderInside && !ef.RenderInside)){
 						int num = polygons.Count;
 						for(int pi = 0; pi < num; pi++)
 						{
@@ -245,6 +269,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				List<WorldVertex> verts = CreatePolygonVertices(polygons, tp, sd, lightvalue, lightabsolute);
 				if(verts.Count > 0)
 				{
+					if ((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.RenderAdditive) != 0)//mxd
+						this.RenderPass = RenderPass.Additive;
+					else if (extrafloor.Alpha < 255)
+						this.RenderPass = RenderPass.Alpha;
+					else
+						this.RenderPass = RenderPass.Mask;
+					
 					if(extrafloor.Alpha < 255)
 					{
 						// Apply alpha to vertices
@@ -259,12 +290,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								verts[i] = v;
 							}
 						}
-						
-						this.RenderPass = RenderPass.Alpha;
-					}
-					else
-					{
-						this.RenderPass = RenderPass.Mask;
 					}
 					
 					base.SetVertices(verts);
@@ -282,15 +307,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Return texture name
 		public override string GetTextureName()
 		{
+			//mxd
+			if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0)
+				return Sidedef.HighTexture;
+			if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0)
+				return Sidedef.LowTexture;
 			return extrafloor.Linedef.Front.MiddleTexture;
 		}
 
 		// This changes the texture
 		protected override void SetTexture(string texturename)
 		{
-			extrafloor.Linedef.Front.SetTextureMid(texturename);
+			//mxd
+			if ((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0)
+				Sidedef.SetTextureHigh(texturename);
+			if ((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0)
+				Sidedef.SetTextureLow(texturename);
+			else
+				extrafloor.Linedef.Front.SetTextureMid(texturename);
+
 			General.Map.Data.UpdateUsedTextures();
 			this.Sector.Rebuild();
+
+			//mxd. Other sector also may require updating
+			SectorData sd = mode.GetSectorData(Sidedef.Other.Sector);
+			if(sd.ExtraFloors.Count > 0)
+				((BaseVisualSector)mode.GetVisualSector(Sidedef.Other.Sector)).Rebuild();
+
+			//mxd. As well as model sector
+			((BaseVisualSector)mode.GetVisualSector(extrafloor.Linedef.Front.Sector)).UpdateSectorGeometry(false);
 		}
 
 		protected override void SetTextureOffsetX(int x)

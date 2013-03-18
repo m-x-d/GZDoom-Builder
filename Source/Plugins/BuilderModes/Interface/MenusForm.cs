@@ -46,6 +46,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Buttons list
 		private ToolStripItem[] buttons;
 
+		//mxd
+		public struct BrightnessGradientModes
+		{
+			public static string Sectors = "Sectors";
+			public static string Floors = "Floors";
+			public static string Ceilings = "Ceilings";
+		}
+
 		#endregion
 
 		#region ================== Properties
@@ -63,6 +71,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ToolStripButton CopyProperties { get { return buttoncopyproperties; } }
 		public ToolStripButton PasteProperties { get { return buttonpasteproperties; } }
 		public ToolStripSeparator SeparatorCopyPaste { get { return seperatorcopypaste; } }
+		public ToolStripComboBox BrightnessGradientMode { get { return brightnessGradientMode; } } //mxd
+		public ToolStripButton MarqueSelectTouching { get { return buttonMarqueSelectTouching; } } //mxd
+		public ToolStripButton AlignThingsToWall { get { return buttonAlignThingsToWall; } } //mxd
 
 		#endregion
 
@@ -76,6 +87,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Apply settings
 			buttonselectionnumbers.Checked = BuilderPlug.Me.ViewSelectionNumbers;
+
+			//mxd
+			brightnessGradientMode.Items.AddRange(new string[] { BrightnessGradientModes.Sectors, BrightnessGradientModes.Ceilings, BrightnessGradientModes.Floors });
+			brightnessGradientMode.SelectedIndex = 0;
 			
 			// List all menus
 			menus = new ToolStripItem[menustrip.Items.Count];
@@ -142,6 +157,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Final decision
 			if(sourcemode == typeof(LinedefsMode)) HideAllMenusExcept(linedefsmenu);
 			else if(sourcemode == typeof(SectorsMode)) HideAllMenusExcept(sectorsmenu);
+			else if(sourcemode == typeof(ThingsMode)) HideAllMenusExcept(thingsmenu); //mxd
 			else HideAllMenus();
 		}
 
@@ -156,6 +172,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			BuilderPlug.Me.ViewSelectionNumbers = buttonselectionnumbers.Checked;
 			General.Interface.RedrawDisplay();
+		}
+
+		//mxd
+		private void buttonMarqueSelectTouching_Click(object sender, EventArgs e) {
+			BuilderPlug.Me.MarqueSelectTouching = buttonMarqueSelectTouching.Checked;
 		}
 		
 		#endregion

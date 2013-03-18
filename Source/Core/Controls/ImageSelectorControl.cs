@@ -44,6 +44,8 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		#region ================== Variables
 
+		public event EventHandler OnValueChanged; //mxd
+		
 		private Bitmap bmp;
 		//private bool ispressed;
 		private bool ismouseinside;
@@ -190,6 +192,10 @@ namespace CodeImp.DoomBuilder.Controls
 				// Show it centered
 				General.DisplayZoomedImage(preview, image);
 				preview.Refresh();
+
+				//mxd. Dispatch event
+				if(OnValueChanged != null)
+					OnValueChanged(this, EventArgs.Empty);
 			}
 		}
 		

@@ -50,17 +50,23 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			//mxd. Height offsets
 			if(General.Map.UDMF) {
-				float zc = UDMFTools.GetFloat(v.Fields, "zceiling", 0);
-				float zf = UDMFTools.GetFloat(v.Fields, "zfloor", 0);
+				if(v.Fields.ContainsKey("zceiling")) {
+					float zc = v.Fields.GetValue("zceiling", 0f);
+					zceiling.Text = zc.ToString("0.##");
+					zceiling.Enabled = true;
+					labelCeilingOffset.Enabled = true;
+				} else {
+					zceiling.Text = "--";
+				}
 
-				zceiling.Enabled = (zc != 0);
-				labelCeilingOffset.Enabled = zceiling.Enabled;
-
-				zfloor.Enabled = (zf != 0);
-				labelFloorOffset.Enabled = zfloor.Enabled;
-
-				zceiling.Text = zc.ToString("0.##");
-				zfloor.Text = zf.ToString("0.##");
+				if(v.Fields.ContainsKey("zfloor")) {
+					float zf = v.Fields.GetValue("zfloor", 0f);
+					zfloor.Text = zf.ToString("0.##");
+					zfloor.Enabled = true;
+					labelFloorOffset.Enabled = true;
+				} else {
+					zfloor.Text = "--";
+				}
 
 				panelOffsets.Visible = true;
 			} else {

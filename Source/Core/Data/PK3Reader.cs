@@ -273,7 +273,6 @@ namespace CodeImp.DoomBuilder.Data
 					
 				default:
 					throw new ArgumentException("Invalid image format specified!");
-					return null;
 			}
 		}
 
@@ -355,11 +354,14 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Nothing found?
             if (filedata == null){
-				throw new FileNotFoundException("Cannot find the file " + filename + " in archive " + location.location + ".");
-			}else{
-                filedata.Position = 0; //mxd. rewind before use
-                return filedata;
+				//mxd
+				//throw new FileNotFoundException("Cannot find the file " + filename + " in archive " + location.location + ".");
+				General.ErrorLogger.Add(ErrorType.Error, "Cannot find the file " + filename + " in archive " + location.location + ".");
+				return null;
 			}
+
+            filedata.Position = 0; //mxd. rewind before use
+            return filedata;
 		}
 
 		// This creates a temp file for the speciied file and return the absolute path to the temp file

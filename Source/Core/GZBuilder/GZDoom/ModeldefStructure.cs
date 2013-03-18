@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         path = parser.StripTokenQuotes(parser.ReadToken()).Replace("/", "\\");
 
                         if (string.IsNullOrEmpty(path)) {
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected path to model, but got '" + token + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected path to model, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -51,20 +51,22 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         token = parser.StripTokenQuotes(parser.ReadToken());
                         if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out modelIndex)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model index, but got '" + token + "'");
+							General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model index, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
 
                         if (modelIndex >= MAX_MODELS) {
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " per MODELDEF entry!");
+							General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " per MODELDEF entry!");
                             break;
                         }
 
-//model path
+						parser.SkipWhitespace(true);
+
+						//model path
                         token = parser.StripTokenQuotes(parser.ReadToken()).ToLowerInvariant();
                         if (string.IsNullOrEmpty(token)) {
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model name, but got '" + token + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model name, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         } else {
@@ -72,13 +74,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             int dotPos = token.LastIndexOf(".");
                             string fileExt = token.Substring(token.LastIndexOf("."), token.Length - dotPos);
                             if (fileExt != ".md3" && fileExt != ".md2") {
-                                GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": model '" + token + "' not parsed. Only MD3 and MD2 models are supported.");
+                                General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": model '" + token + "' not parsed. Only MD3 and MD2 models are supported.");
                                 gotErrors = true;
                                 break;
                             }
 
                             //GZDoom allows models with identical modelIndex, it uses the last one encountered
-                            modelNames[modelIndex] = token;
+                            modelNames[modelIndex] = Path.Combine(path, token);
                         }
 //skin
                     } else if (token == "skin") {
@@ -89,31 +91,34 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         token = parser.StripTokenQuotes(parser.ReadToken());
                         if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out skinIndex)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected skin index, but got '" + token + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected skin index, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
 
                         if (skinIndex >= MAX_MODELS) {
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " per MODELDEF entry!");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " per MODELDEF entry!");
                             break;
                         }
 
-//skin path
+						parser.SkipWhitespace(true);
+
+						//skin path
                         token = parser.StripTokenQuotes(parser.ReadToken()).ToLowerInvariant();
                         if (string.IsNullOrEmpty(token)) {
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected skin name, but got '" + token + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected skin name, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         } else {
                             //check extension
-                            int dotPos = token.LastIndexOf(".");
-                            string fileExt = token.Substring(token.LastIndexOf("."), token.Length - dotPos);
-                            if (Array.IndexOf(TextureData.SUPPORTED_TEXTURE_EXTENSIONS, fileExt) == -1)
-                                token = TextureData.INVALID_TEXTURE;
-
-                            //GZDoom allows skins with identical modelIndex, it uses the last one encountered
-                            textureNames[skinIndex] = token;
+							string ext = Path.GetExtension(token);
+							if(Array.IndexOf(TextureData.SUPPORTED_TEXTURE_EXTENSIONS, ext) == -1) {
+								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": image format '" + ext + "' is not supported!");
+								textureNames[skinIndex] = TextureData.INVALID_TEXTURE;
+							} else {
+								//GZDoom allows skins with identical modelIndex, it uses the last one encountered
+								textureNames[skinIndex] = Path.Combine(path, token);
+							}
                         }
 //scale
                     } else if (token == "scale") {
@@ -122,7 +127,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         token = parser.StripTokenQuotes(parser.ReadToken());
                         if (!parser.ReadSignedFloat(token, ref scale.X)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected scale X value, but got '" + token + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected scale X value, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -132,7 +137,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         token = parser.StripTokenQuotes(parser.ReadToken());
                         if (!parser.ReadSignedFloat(token, ref scale.Y)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected scale Y value, but got '" + token + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected scale Y value, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -142,7 +147,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         token = parser.StripTokenQuotes(parser.ReadToken());
                         if (!parser.ReadSignedFloat(token, ref scale.Z)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected scale Z value, but got '" + token + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected scale Z value, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -153,7 +158,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         token = parser.StripTokenQuotes(parser.ReadToken());
                         if (!parser.ReadSignedFloat(token, ref zOffset)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected ZOffset value, but got '" + token + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected ZOffset value, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -164,7 +169,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         token = parser.StripTokenQuotes(parser.ReadToken());
                         if (!parser.ReadSignedFloat(token, ref angleOffset)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected AngleOffset value, but got '" + token + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected AngleOffset value, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -175,7 +180,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         token = parser.StripTokenQuotes(parser.ReadToken());
                         if (!parser.ReadSignedFloat(token, ref pitchOffset)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected PitchOffset value, but got '" + token + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected PitchOffset value, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -186,7 +191,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         token = parser.StripTokenQuotes(parser.ReadToken());
                         if (!parser.ReadSignedFloat(token, ref rollOffset)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected RollOffset value, but got '" + token + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected RollOffset value, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -250,19 +255,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                     int modelIndex;
                                     if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out modelIndex)) {
                                         // Not numeric!
-                                        GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model index, but got '" + token + "'");
+                                        General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model index, but got '" + token + "'");
                                         gotErrors = true;
                                         break;
                                     }
 
                                     if (modelIndex >= MAX_MODELS) {
-                                        GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " per MODELDEF entry!");
+                                        General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " per MODELDEF entry!");
                                         gotErrors = true;
                                         break;
                                     }
 
                                     if (modelNames[modelIndex] == null) {
-                                        GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": got model index, which doesn't correspond to any defined model!");
+                                        General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": got model index, which doesn't correspond to any defined model!");
                                         gotErrors = true;
                                         break;
                                     }
@@ -278,7 +283,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 										int frame;
 										if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out frame)) {
 											// Not numeric!
-											GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model frame, but got '" + token + "'");
+											General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model frame, but got '" + token + "'");
 											gotErrors = true;
 											break;
 										}
@@ -307,17 +312,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
             //classname is set in ModeldefParser
             ModeldefEntry mde = new ModeldefEntry();
-            mde.Path = path;
             mde.Scale = scale;
             mde.zOffset = zOffset;
             mde.AngleOffset = angleOffset * (float)Math.PI / 180.0f;
             mde.RollOffset = rollOffset * (float)Math.PI / 180.0f;
             mde.PitchOffset = pitchOffset * (float)Math.PI / 180.0f;
 
-            for (int i = 0; i < textureNames.Length; i++) {
-                if (textureNames[i] != null && modelNames[i] != null) {
-                    mde.TextureNames.Add(textureNames[i]);
-                    mde.ModelNames.Add(modelNames[i]);
+			for(int i = 0; i < modelNames.Length; i++) {
+                if (!string.IsNullOrEmpty(modelNames[i])) {
+					mde.TextureNames.Add(string.IsNullOrEmpty(textureNames[i]) ? textureNames[i] : textureNames[i].ToLowerInvariant());
+                    mde.ModelNames.Add(modelNames[i].ToLowerInvariant());
                 }
             }
 

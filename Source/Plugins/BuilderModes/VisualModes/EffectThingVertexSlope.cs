@@ -52,6 +52,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					verts[index] = new Vector3D(v.Position.x, v.Position.y, data.Floor.plane.GetZ(v.Position));
 				else
 					verts[index] = new Vector3D(v.Position.x, v.Position.y, data.Ceiling.plane.GetZ(v.Position));
+
+				//mxd. UDMF vertex offset overrides this effect
+				if(General.Map.UDMF) {
+					if((slopefloor && v.Fields.ContainsKey("zfloor")) || v.Fields.ContainsKey("zceiling")) {
+						index++;
+						continue;
+					}
+				}
 				
 				// Find the thing at this position
 				foreach(Thing t in things)

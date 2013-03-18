@@ -66,7 +66,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float flashstarttime;
 		
 		// Interface
-		protected bool selectpressed;
 		protected bool editpressed;
 
 		#endregion
@@ -403,7 +402,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			selectpressed = false;
 			base.OnSelectEnd();
 		}
 		

@@ -47,7 +47,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 	public abstract class VisualThing : IVisualPickable, ID3DResource, IComparable<VisualThing>
 	{
 		#region ================== Constants
-		
+
+		protected const int FIXED_RADIUS = 8; //mxd. Used to render things with zero width and radius
+
 		#endregion
 		
 		#region ================== Variables
@@ -73,6 +75,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private Vector2D pos2d;
 		private float cameradistance;
 		private int cagecolor;
+		protected bool sizeless; //mxd. Used to render visual things with 0 width and height
 
 		// Selected?
 		protected bool selected;
@@ -115,6 +118,7 @@ namespace CodeImp.DoomBuilder.VisualModes
         //mxd
         internal int VertexColor { get { return vertices.Length > 0 ? vertices[0].c : 0;} }
         public int CameraDistance3D { get { return cameraDistance3D; } }
+		public bool Sizeless { get { return sizeless; } }
         public Vector3 Center { 
             get 
             {

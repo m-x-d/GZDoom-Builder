@@ -108,7 +108,9 @@ namespace CodeImp.DoomBuilder.Windows
             }
 
 			// Action
-			tag.Text = sc.Tag.ToString();
+			//tag.Text = sc.Tag.ToString();
+			tagSelector.Setup(); //mxd
+			tagSelector.SetTag(sc.Tag);//mxd
 
 			// Custom fields
 			fieldslist.SetValues(sc.Fields, true);
@@ -139,7 +141,8 @@ namespace CodeImp.DoomBuilder.Windows
                 }
 
 				// Action
-				if(s.Tag.ToString() != tag.Text) tag.Text = "";
+				//if(s.Tag.ToString() != tag.Text) tag.Text = "";
+				if(s.Tag != sc.Tag)	tagSelector.ClearTag(); //mxd
 
 				// Custom fields
 				fieldslist.SetValues(s.Fields, false);
@@ -223,7 +226,8 @@ namespace CodeImp.DoomBuilder.Windows
 			string undodesc = "sector";
 			
 			// Verify the tag
-			if((tag.GetResult(0) < General.Map.FormatInterface.MinTag) || (tag.GetResult(0) > General.Map.FormatInterface.MaxTag))
+			tagSelector.ValidateTag(); //mxd
+			if((tagSelector.GetTag(0) < General.Map.FormatInterface.MinTag) || (tagSelector.GetTag(0) > General.Map.FormatInterface.MaxTag))
 			{
 				General.ShowWarningMessage("Sector tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
 				return;
@@ -262,7 +266,8 @@ namespace CodeImp.DoomBuilder.Windows
 				s.SetCeilTexture(ceilingtex.GetResult(s.CeilTexture));
 
 				// Action
-				s.Tag = General.Clamp(tag.GetResult(s.Tag), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag);
+				//s.Tag = General.Clamp(tag.GetResult(s.Tag), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag);
+				s.Tag = tagSelector.GetTag(s.Tag); //mxd
 
 				// Custom fields
 				fieldslist.Apply(s.Fields);
@@ -296,11 +301,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Close();
 		}
 
-		// This finds a new (unused) tag
-		private void newtag_Click(object sender, EventArgs e)
-		{
-			tag.Text = General.Map.Map.GetNewTag().ToString();
-		}
 
 		// Browse Effect clicked
 		private void browseeffect_Click(object sender, EventArgs e)

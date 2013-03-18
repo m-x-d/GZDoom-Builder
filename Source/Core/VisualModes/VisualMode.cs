@@ -73,6 +73,8 @@ namespace CodeImp.DoomBuilder.VisualModes
         //mxd
         private List<VisualThing> selectedVisualThings;
         private List<VisualSector> selectedVisualSectors;
+		//protected List<VisualVertexPair> vertices;
+		protected Dictionary<Vertex, VisualVertexPair> vertices;
         //used in "Play From Here" Action
         private Thing playerStart;
         private Vector3D playerStartPosition;
@@ -119,6 +121,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.visiblethings = new List<VisualThing>(100);
 			this.processgeometry = true;
 			this.processthings = true;
+
+			//mxd
+			if(General.Map.UDMF) this.vertices = new Dictionary<Vertex,VisualVertexPair>();
 
             //mxd. Synch camera position to cursor position or center of the screen in 2d-mode
             if (General.Settings.GZSynchCameras && General.Editing.Mode is ClassicMode) {
@@ -783,6 +788,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Add all the visible things
 			foreach(VisualThing vt in visiblethings)
 				pickables.Add(vt);
+
+			//mxd. And all visual vertices
+			if(General.Map.UDMF && General.Settings.GZShowVisualVertices) {
+				foreach(KeyValuePair<Vertex, VisualVertexPair> pair in vertices)
+					pickables.AddRange(pair.Value.Vertices);
+			}
 			
 			// Now we have a list of potential geometry that lies along the trace line.
 			// We still don't know what geometry actually hits, but we ruled out that which doesn't get even close.
@@ -841,6 +852,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			visibleblocks.Clear();
 			visiblegeometry.Clear();
 			visiblethings.Clear();
+
+			if(General.Map.UDMF) vertices.Clear(); //mxd
 			
 			// Make new blockmap
 			FillBlockMap();

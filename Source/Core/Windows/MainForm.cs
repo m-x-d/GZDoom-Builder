@@ -39,6 +39,7 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 using System.Threading;
 using System.Runtime.InteropServices;
+using CodeImp.DoomBuilder.GZBuilder.Windows;
 
 #endregion
 
@@ -98,6 +99,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private delegate void CallUpdateStatusIcon();
 		private delegate void CallImageDataLoaded(ImageData img);
+		private delegate void CallBlink(); //mxd
 
 		#endregion
 
@@ -159,6 +161,7 @@ namespace CodeImp.DoomBuilder.Windows
 
         //mxd
         private int warningsCount;
+		private System.Timers.Timer blinkTimer; 
 		
 		#endregion
 
@@ -167,7 +170,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public bool ShiftState { get { return shift; } }
 		public bool CtrlState { get { return ctrl; } }
 		public bool AltState { get { return alt; } }
-		public MouseButtons MouseButtons { get { return mousebuttons; } }
+		new public MouseButtons MouseButtons { get { return mousebuttons; } }
 		public bool MouseInDisplay { get { return mouseinside; } }
 		public RenderTargetControl Display { get { return display; } }
 		public bool SnapToGrid { get { return buttonsnaptogrid.Checked; } }
@@ -215,6 +218,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Event handlers
 			buttonvisiblechangedhandler = new EventHandler(ToolbarButtonVisibleChanged);
+			//mxd
+			display.OnKeyReleased += new KeyEventHandler(display_OnKeyReleased);
 			
 			// Bind any methods
 			General.Actions.BindMethods(this);
@@ -1331,6 +1336,11 @@ namespace CodeImp.DoomBuilder.Windows
 					e.SuppressKeyPress = true;
 			}
 		}
+
+        //mxd. Sometimes it's handeled by RenderTargetControl, not by MainForm leading to keys being "stuck"
+        private void display_OnKeyReleased(object sender, KeyEventArgs e) {
+            MainForm_KeyUp(sender, e);
+        }
 		
 		// These prevent focus changes by way of TAB or Arrow keys
 		protected override bool IsInputChar(char charCode) { return false; }
@@ -1812,6 +1822,7 @@ namespace CodeImp.DoomBuilder.Windows
                 buttontogglefog.Enabled = true;
                 buttontogglefx.Enabled = true;
 				buttontoggleeventlines.Enabled = true;
+				buttontogglevisualvertices.Enabled = General.Map.UDMF;
 
                 if (General.Settings.GZToolbarGZDoom) {
                     buttontogglemodels.Checked = General.Settings.GZDrawModels;
@@ -1820,6 +1831,7 @@ namespace CodeImp.DoomBuilder.Windows
                     buttontoggleanimatedlight.Checked = General.Settings.GZAnimateLights;
                     buttontogglefog.Checked = General.Settings.GZDrawFog;
 					buttontoggleeventlines.Checked = General.Settings.GZShowEventLines;
+					buttontogglevisualvertices.Checked = General.Settings.GZShowVisualVertices;
                 }
             } else {
                 buttontogglemodels.Enabled = false;
@@ -1829,6 +1841,7 @@ namespace CodeImp.DoomBuilder.Windows
                 buttontogglefog.Enabled = false;
                 buttontogglefx.Enabled = false;
 				buttontoggleeventlines.Enabled = false;
+				buttontogglevisualvertices.Enabled = false;
             }
         }
 
@@ -2158,6 +2171,8 @@ namespace CodeImp.DoomBuilder.Windows
 			itemgridsetup.Enabled = (General.Map != null);
 			itemgridinc.Enabled = (General.Map != null);
 			itemgriddec.Enabled = (General.Map != null);
+			itemSetCurrentTextures.Enabled = (General.Map != null); //mxd
+			itemviewusedtags.Enabled = (General.Map != null); //mxd
 
 			// Determine undo description
 			if(itemundo.Enabled)
@@ -2201,6 +2216,14 @@ namespace CodeImp.DoomBuilder.Windows
 			itemautomerge.Checked = buttonautomerge.Checked;
 			string onoff = buttonautomerge.Checked ? "ON" : "OFF";
 			DisplayStatus(StatusType.Action, "Snap to geometry is now " + onoff + " by default.");
+		}
+
+		//mxd
+		[BeginAction("viewusedtags")]
+		internal void ViewUsedTags() {
+			//ShowTagStatistics();
+			TagStatisticsForm f = new TagStatisticsForm();
+			f.ShowDialog(this);
 		}
 		
 		#endregion
@@ -2328,7 +2351,7 @@ namespace CodeImp.DoomBuilder.Windows
 			errform.ShowDialog(this);
 			errform.Dispose();
             //mxd
-            SetWarningsCount(0);
+            SetWarningsCount(0, false);
 		}
 		
 		// Game Configuration action
@@ -2637,14 +2660,19 @@ namespace CodeImp.DoomBuilder.Windows
 			return ThingBrowserForm.BrowseThing(owner, initialvalue);
 		}
 
-		// This shows the dialog to edit vertices
-		public DialogResult ShowEditVertices(ICollection<Vertex> vertices)
+		//mxd
+		public DialogResult ShowEditVertices(ICollection<Vertex> vertices) {
+			return ShowEditVertices(vertices, true);
+		}
+
+		//mxd. This shows the dialog to edit vertices
+		public DialogResult ShowEditVertices(ICollection<Vertex> vertices, bool allowPositionChange)
 		{
 			DialogResult result;
 
 			// Show sector edit dialog
 			VertexEditForm f = new VertexEditForm();
-			f.Setup(vertices);
+			f.Setup(vertices, allowPositionChange);
 			result = f.ShowDialog(this);
 			f.Dispose();
 
@@ -2733,42 +2761,62 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
         //mxd. Warnings panel
-        internal void SetWarningsCount(int count) {
+        internal void SetWarningsCount(int count, bool blink) {
             warningsCount = count;
 
-            if (warningsCount > 0 && !warnsLabel.Font.Bold)
-                warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Bold);
+			if(warningsCount > 0) {
+				if(!warnsLabel.Font.Bold){
+					warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Bold);
+					warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+				}
+			} else {
+				warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);
+				warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
+				warnsLabel.BackColor = SystemColors.Control;
+			}
 
             warnsLabel.Text = warningsCount.ToString();
-            if (!warnsTimer.Enabled) {
-                warnsTimer.Enabled = true;
-            }
+            
+			//start annoying blinking!
+			if(blink && blinkTimer == null) {
+				blinkTimer = new System.Timers.Timer();
+				blinkTimer.Interval = 500;
+				blinkTimer.Elapsed += new System.Timers.ElapsedEventHandler(blinkTimer_Elapsed);
+				blinkTimer.Enabled = true;
+			}
         }
+
+		//mxd. Bliks warnings indicator
+		private void blink() {
+			if(warnsLabel.BackColor == Color.Red) {
+				warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);
+				warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
+				warnsLabel.BackColor = SystemColors.Control;
+			} else {
+				warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Bold);
+				warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+				warnsLabel.BackColor = Color.Red;
+			}
+		}
 
         //mxd
         private void warnsLabel_Click(object sender, EventArgs e) {
             ShowErrors();
         }
 
-        //mxd
-        private void warnsTimer_Tick(object sender, EventArgs e) {
-            if (warningsCount > 0) {
-                if (warnsLabel.BackColor == Color.Red) {
-                    warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);
-                    warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
-                    warnsLabel.BackColor = SystemColors.Control;
-                } else {
-                    warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Bold);
-                    warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
-                    warnsLabel.BackColor = Color.Red;
-                }
-            } else {
-                warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);
-                warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
-                warnsLabel.BackColor = SystemColors.Control;
-                warnsTimer.Stop();
-            }
-        }
+		//mxd
+		private void blinkTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+			if(warningsCount > 0) {
+				if(!this.Disposing && blinkTimer != null)
+					this.Invoke(new CallBlink(blink));
+			} else {
+				//get rid of timer
+				blinkTimer.Stop();
+				blinkTimer.Elapsed -= blinkTimer_Elapsed;
+				blinkTimer.Dispose();
+				blinkTimer = null;
+			}
+		}
 		
 		#endregion
 		
@@ -2864,12 +2912,6 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 
 		#region ================== Dockers
-        //mxd. used to add a docker from DoomBuilder's core code. 
-        internal void addDocker(Docker d) {
-            d.MakeFullName("gzdoombuilder");
-            dockerspanel.Add(d);
-        }
-		
 		// This adds a docker
 		public void AddDocker(Docker d)
 		{
@@ -2893,13 +2935,6 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			return dockerspanel.Remove(d);
 		}
-
-        //mxd
-        internal bool selectDocker(Docker d) {
-            d.MakeFullName("gzdoombuilder");
-            ReleaseAllKeys();
-            return dockerspanel.SelectDocker(d);
-        }
 		
 		// This selects a docker
 		public bool SelectDocker(Docker d)

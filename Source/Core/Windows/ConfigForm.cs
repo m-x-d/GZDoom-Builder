@@ -166,27 +166,13 @@ namespace CodeImp.DoomBuilder.Windows
 				skill.ClearInfo();
 				skill.AddInfo(gameconfig.Skills.ToArray());
 
-                //mxd
-                cbEngineSelector.Items.Clear();
+				//mxd. Fill engines list
+				cbEngineSelector.Items.Clear();
 				foreach(EngineInfo info in configinfo.TestEngines)
 					cbEngineSelector.Items.Add(info.TestProgramName);
 
-                cbEngineSelector.SelectedIndex = configinfo.CurrentEngineIndex;
+				cbEngineSelector.SelectedIndex = configinfo.CurrentEngineIndex;
 				btnRemoveEngine.Enabled = configinfo.TestEngines.Count > 1;
-				
-				// Set test application and parameters
-				/*if(!configinfo.CustomParameters)
-				{
-					configinfo.TestParameters = gameconfig.TestParameters;
-					configinfo.TestShortPaths = gameconfig.TestShortPaths;
-				}
-				testapplication.Text = configinfo.TestProgram;
-				testparameters.Text = configinfo.TestParameters;
-				shortpaths.Checked = configinfo.TestShortPaths;
-				int skilllevel = configinfo.TestSkill;
-				skill.Value = skilllevel - 1;
-				skill.Value = skilllevel;
-				customparameters.Checked = configinfo.CustomParameters;*/
 				
 				// Fill texture sets list
 				listtextures.Items.Clear();
@@ -207,6 +193,9 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Fill start modes
 				RefillStartModes();
+
+				//mxd. Initialise custom linedef colors panel
+				colorsControl.Setup(gameconfig, configinfo);
 
 				// Done
 				preventchanges = false;
@@ -276,14 +265,6 @@ namespace CodeImp.DoomBuilder.Windows
 			if(nodebuildertest.SelectedItem != null)
 				configinfo.NodebuilderTest = (nodebuildertest.SelectedItem as NodebuilderInfo).Name;
 		}
-
-        //mxd. Engine name changed
-        /*private void tbEngineName_TextChanged(object sender, EventArgs e) {
-            if (configinfo == null) return;
-
-            configinfo.TestProgramName = tbEngineName.Text;
-            cbEngineSelector.SelectedItem = configinfo.TestEngines[configinfo.CurrentEngineIndex];
-        }*/
 		
 		// Test application changed
 		private void testapplication_TextChanged(object sender, EventArgs e)
@@ -342,6 +323,10 @@ namespace CodeImp.DoomBuilder.Windows
 					if(string.Compare(ci.Filename, oci.Filename) == 0) oci.Apply(ci);
 				}
 			}
+
+			//mxd. Update linedef color presets
+			if(General.Map != null && General.Map.Map != null)
+				General.Map.Map.UpdateCustomLinedefColors();
 			
 			// Close
 			this.DialogResult = DialogResult.OK;
@@ -679,6 +664,7 @@ namespace CodeImp.DoomBuilder.Windows
             testapplication.Text = configinfo.TestProgram;
             testparameters.Text = configinfo.TestParameters;
             shortpaths.Checked = configinfo.TestShortPaths;
+            
             int skilllevel = configinfo.TestSkill;
             skill.Value = skilllevel - 1; //mxd. WHY???
             skill.Value = skilllevel;
@@ -693,6 +679,12 @@ namespace CodeImp.DoomBuilder.Windows
 				cbEngineSelector.Items[index] = cbEngineSelector.Text;
 				configinfo.TestProgramName = cbEngineSelector.Text;
 			}
+		}
+
+		//mxd
+		private void colorsControl_PresetsChanged(object sender, EventArgs e) {
+			if(configinfo == null) return;
+			configinfo.LinedefColorPresets = colorsControl.GetPresets();
 		}
 	}
 }

@@ -35,6 +35,8 @@ using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -71,9 +73,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float lastpicktime;
 		private bool locktarget;
 
+		private bool useSelectionFromClassicMode;//mxd
+		public bool UseSelectionFromClassicMode { get { return useSelectionFromClassicMode; } }
+
 		// This keeps extra element info
 		private Dictionary<Sector, SectorData> sectordata;
-		private Dictionary<Thing , ThingData> thingdata;
+		private Dictionary<Thing, ThingData> thingdata;
+		private Dictionary<Vertex, VertexData> vertexdata; //mxd
 		
 		// This is true when a selection was made because the action is performed
 		// on an object that was not selected. In this case the previous selection
@@ -91,7 +97,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private List<IVisualEventReceiver> selectedobjects;
         //mxd. Used in Cut/PasteSelection actions
         private List<ThingCopyData> copyBuffer;
+
+		public static bool GZDoomRenderingEffects { get { return gzdoomRenderingEffects; } } //mxd
         private static bool gzdoomRenderingEffects = true; //mxd
+
+		//mxd. Moved here from Tools
+		private struct SidedefAlignJob
+		{
+			public Sidedef sidedef;
+			public Sidedef controlSide; //mxd
+
+			public float offsetx;
+
+			// When this is true, the previous sidedef was on the left of
+			// this one and the texture X offset of this sidedef can be set
+			// directly. When this is false, the length of this sidedef
+			// must be subtracted from the X offset first.
+			public bool forward;
+		}
 		
 		#endregion
 		
@@ -126,7 +149,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
-		public IRenderer3D Renderer { get { return renderer; } }
+		new public IRenderer3D Renderer { get { return renderer; } }
 		
 		public bool IsSingleSelection { get { return singleselection; } }
 		public bool SelectionChanged { get { return selectionchanged; } set { selectionchanged |= value; } }
@@ -248,6 +271,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				BaseVisualSector bvs = (vs.Value as BaseVisualSector);
 				foreach(VisualFloor vf in bvs.ExtraFloors) vf.Changed = false;
 				foreach(VisualCeiling vc in bvs.ExtraCeilings) vc.Changed = false;
+				foreach(VisualFloor vf in bvs.ExtraBackFloors) vf.Changed = false; //mxd
+				foreach(VisualCeiling vc in bvs.ExtraBackCeilings) vc.Changed = false; //mxd
 				bvs.Floor.Changed = false;
 				bvs.Ceiling.Changed = false;
 			}
@@ -331,6 +356,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(bvt.Selected) selectedobjects.Add(bvt);
 				}
 			}
+
+			//mxd
+			if(General.Map.UDMF && General.Settings.GZShowVisualVertices) {
+				foreach(KeyValuePair<Vertex, VisualVertexPair> pair in vertices) {
+					if(pair.Value.Vertex1.Selected)
+						selectedobjects.Add((BaseVisualVertex)pair.Value.Vertex1);
+					if(pair.Value.Vertex2.Selected)
+						selectedobjects.Add((BaseVisualVertex)pair.Value.Vertex2);
+				}
+			}
 		}
 
 		//mxd. Need this to apply changes to 3d-floor even if control sector doesn't exist as BaseVisualSector
@@ -406,7 +441,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(pickedgeo is BaseVisualGeometrySidedef)
 					{
 						BaseVisualGeometrySidedef pickedsidedef = (pickedgeo as BaseVisualGeometrySidedef);
-						General.Interface.ShowLinedefInfo(pickedsidedef.Sidedef.Line);
+						//General.Interface.ShowLinedefInfo(pickedsidedef.Sidedef.Line);
+						General.Interface.ShowLinedefInfo(pickedsidedef.GetControlLinedef()); //mxd
 					}
 					// Sector?
 					else if(pickedgeo is BaseVisualGeometrySector)
@@ -418,12 +454,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						General.Interface.HideInfo();
 					}
-				}
-				// Thing picked?
-				if(target.picked is VisualThing)
-				{
+				} 
+				else if(target.picked is VisualThing) 
+				{ // Thing picked?
 					VisualThing pickedthing = (target.picked as VisualThing);
 					General.Interface.ShowThingInfo(pickedthing.Thing);
+				} 
+				else if(target.picked is VisualVertex) //mxd
+				{
+					VisualVertex pickedvert = (target.picked as VisualVertex);
+					General.Interface.ShowVertexInfo(pickedvert.Vertex);
 				}
 			}
 			else
@@ -451,6 +491,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					BaseVisualThing bvt = (BaseVisualThing)vt.Value;
 					if(bvt.Changed) bvt.Rebuild();
 				}
+			}
+
+			//mxd
+			if(General.Map.UDMF) {
+				foreach(KeyValuePair<Vertex, VisualVertexPair> pair in vertices)
+					pair.Value.Update();
 			}
 		}
 
@@ -557,21 +603,50 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			return thingdata[t];
 		}
+
+		//mxd
+		internal VertexData GetVertexData(Vertex v) {
+			if(!vertexdata.ContainsKey(v))
+				vertexdata[v] = new VertexData(this, v);
+			return vertexdata[v];
+		}
+
+		//mxd
+		internal void UpdateVertexHandle(Vertex v) {
+			if(!vertices.ContainsKey(v))
+				vertices.Add(v, new VisualVertexPair(new BaseVisualVertex(this, v, true), new BaseVisualVertex(this, v, false)));
+			else
+				vertices[v].Update();
+		}
 		
 		// This rebuilds the sector data
 		// This requires that the blockmap is up-to-date!
 		internal void RebuildElementData()
 		{
-            //mxd
-            if (!gzdoomRenderingEffects && sectordata != null && sectordata.Count > 0) {
-                //rebuild sectors with effects
-                foreach (KeyValuePair<Sector, SectorData> group in sectordata)
-                    group.Value.Reset();
+			//mxd
+            if (!gzdoomRenderingEffects) {
+				if(sectordata != null && sectordata.Count > 0) {
+					//rebuild sectors with effects
+					foreach(KeyValuePair<Sector, SectorData> group in sectordata)
+						group.Value.Reset();
+				}
+
+				//remove all vertex handles from selection
+				if(vertices != null && vertices.Count > 0) {
+					foreach(IVisualEventReceiver i in selectedobjects){
+						if(i is BaseVisualVertex) RemoveSelectedObject(i);
+					}
+				}
             }
 
             Dictionary<int, List<Sector>> sectortags = new Dictionary<int, List<Sector>>();
             sectordata = new Dictionary<Sector, SectorData>(General.Map.Map.Sectors.Count);
             thingdata = new Dictionary<Thing, ThingData>(General.Map.Map.Things.Count);
+
+			if(General.Map.UDMF) {
+				vertexdata = new Dictionary<Vertex, VertexData>(General.Map.Map.Vertices.Count); //mxd
+				vertices.Clear();
+			}
 
             if (!gzdoomRenderingEffects) return; //mxd
 			
@@ -588,76 +663,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Find sectors with 3 vertices, because they can be sloped
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
-				// ========== Thing vertex slope ==========
+				// ========== Thing vertex slope, vertices with UDMF vertex offsets ==========
 				if(s.Sidedefs.Count == 3)
 				{
-					//mxd. first check if we have vertices with zoffset
-                    bool haveVertexOffset = false;
+					if(General.Map.UDMF) //mxd
+						GetSectorData(s).AddEffectVertexOffset();
 
-                    if (General.Map.UDMF) {
-                        Vertex[] offsets = new Vertex[3];
-                        int counter = 0;
+					List<Thing> slopeceilingthings = new List<Thing>(3);
+					List<Thing> slopefloorthings = new List<Thing>(3);
+					foreach(Sidedef sd in s.Sidedefs) {
+						Vertex v = sd.IsFront ? sd.Line.End : sd.Line.Start;
 
-                        foreach (Sidedef sd in s.Sidedefs) {
-                            Vertex v;
-                            if (sd.IsFront)
-                                v = sd.Line.End;
-                            else
-                                v = sd.Line.Start;
+						// Check if a thing is at this vertex
+						VisualBlockEntry b = blockmap.GetBlock(blockmap.GetBlockCoordinates(v.Position));
+						foreach(Thing t in b.Things) {
+							if((Vector2D)t.Position == v.Position) {
+								if(t.Type == 1504)
+									slopefloorthings.Add(t);
+								else if(t.Type == 1505)
+									slopeceilingthings.Add(t);
+							}
+						}
+					}
 
-                            if (v.Fields.ContainsKey("zfloor") && (float)v.Fields["zfloor"].Value != 0) {
-                                offsets[counter] = v;
-                                haveVertexOffset = true;
-                            }
-                            if (offsets[counter] == null && v.Fields.ContainsKey("zceiling") && (float)v.Fields["zceiling"].Value != 0) {
-                                offsets[counter] = v;
-                                haveVertexOffset = true;
-                            }
+					// Slope any floor vertices?
+					if(slopefloorthings.Count > 0) {
+						SectorData sd = GetSectorData(s);
+						sd.AddEffectThingVertexSlope(slopefloorthings, true);
+					}
 
-                            counter++;
-                        }
-
-                        //add the effect
-                        if (haveVertexOffset) {
-                            SectorData sd = GetSectorData(s);
-                            sd.AddEffectVertexOffset(offsets);
-                        }
-                    }
-
-                    if (!haveVertexOffset) {
-                        List<Thing> slopeceilingthings = new List<Thing>(3);
-                        List<Thing> slopefloorthings = new List<Thing>(3);
-                        foreach (Sidedef sd in s.Sidedefs) {
-                            Vertex v;
-                            if (sd.IsFront)
-                                v = sd.Line.End;
-                            else
-                                v = sd.Line.Start;
-
-                            // Check if a thing is at this vertex
-                            VisualBlockEntry b = blockmap.GetBlock(blockmap.GetBlockCoordinates(v.Position));
-                            foreach (Thing t in b.Things) {
-                                if ((Vector2D)t.Position == v.Position) {
-                                    if (t.Type == 1504)
-                                        slopefloorthings.Add(t);
-                                    else if (t.Type == 1505)
-                                        slopeceilingthings.Add(t);
-                                }
-                            }
-                        }
-
-                        // Slope any floor vertices?
-                        if (slopefloorthings.Count > 0) {
-                            SectorData sd = GetSectorData(s);
-                            sd.AddEffectThingVertexSlope(slopefloorthings, true);
-                        }
-
-                        // Slope any ceiling vertices?
-                        if (slopeceilingthings.Count > 0) {
-                            SectorData sd = GetSectorData(s);
-                            sd.AddEffectThingVertexSlope(slopeceilingthings, false);
-                        }
-                    }
+					// Slope any ceiling vertices?
+					if(slopeceilingthings.Count > 0) {
+						SectorData sd = GetSectorData(s);
+						sd.AddEffectThingVertexSlope(slopeceilingthings, false);
+					}
 				}
 			}
 			
@@ -750,6 +789,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
+
+			//mxd
+			useSelectionFromClassicMode = BuilderPlug.Me.SyncSelection ? !General.Interface.ShiftState : General.Interface.ShiftState;
 			
 			// Read settings
 			cameraflooroffset = General.Map.Config.ReadSetting("cameraflooroffset", cameraflooroffset);
@@ -762,6 +804,55 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnDisengage()
 		{
 			base.OnDisengage();
+
+			//mxd
+			if(BuilderPlug.Me.SyncSelection ? !General.Interface.ShiftState : General.Interface.ShiftState) {
+				//clear previously selected stuff
+				General.Map.Map.ClearAllSelected();
+				
+				//refill selection
+				List<Sector> selectedSectors = new List<Sector>();
+				List<Linedef> selectedLines = new List<Linedef>();
+				List<Vertex> selectedVertices = new List<Vertex>();
+
+				foreach(IVisualEventReceiver obj in selectedobjects) {
+					if(obj is BaseVisualThing) {
+						((BaseVisualThing)obj).Thing.Selected = true;
+					} else if(obj is VisualFloor || obj is VisualCeiling) {
+						VisualGeometry vg = (VisualGeometry)obj;
+
+						if(vg.Sector != null && vg.Sector.Sector != null && !selectedSectors.Contains(vg.Sector.Sector)) {
+							selectedSectors.Add(vg.Sector.Sector);
+
+							foreach(Sidedef s in vg.Sector.Sector.Sidedefs){
+								if(!selectedLines.Contains(s.Line))
+									selectedLines.Add(s.Line);
+							}
+						}
+					} else if(obj is VisualLower || obj is VisualUpper || obj is VisualMiddleDouble || obj is VisualMiddleSingle || obj is VisualMiddle3D) {
+						VisualGeometry vg = (VisualGeometry)obj;
+
+						if(vg.Sidedef != null && !selectedLines.Contains(vg.Sidedef.Line))
+							selectedLines.Add(vg.Sidedef.Line);
+					}
+				}
+
+				foreach(Sector s in selectedSectors) 
+					s.Selected = true;
+
+				foreach(Linedef l in selectedLines) {
+					l.Selected = true;
+
+					if(!selectedVertices.Contains(l.Start))
+						selectedVertices.Add(l.Start);
+					if(!selectedVertices.Contains(l.End))
+						selectedVertices.Add(l.End);
+				}
+
+				foreach(Vertex v in selectedVertices)
+					v.Selected = true;
+			}
+
             copyBuffer.Clear(); //mxd
 			General.Map.Map.Update();
 		}
@@ -885,6 +976,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Render all visible things
 					foreach(VisualThing t in visiblethings)
 						renderer.AddThingGeometry(t);
+				}
+
+				//mxd
+				if(General.Map.UDMF && General.Settings.GZShowVisualVertices && vertices.Count > 0) {
+					List<VisualVertex> verts = new List<VisualVertex>();
+
+					foreach(KeyValuePair<Vertex, VisualVertexPair> pair in vertices)
+						verts.AddRange(pair.Value.Vertices);
+
+					renderer.AddVisualVertices(verts.ToArray());
 				}
 				
 				// Done rendering geometry
@@ -1022,7 +1123,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
             base.OnUndoEnd();
 
-            //mxd
+            //mxd. Effects may've become invalid
+			if(gzdoomRenderingEffects && sectordata != null && sectordata.Count > 0)
+				RebuildElementData();
+
+			//mxd. As well as geometry...
             foreach(KeyValuePair<Sector, VisualSector> group in visiblesectors){
                 if (group.Value is BaseVisualSector)
                     ((BaseVisualSector)group.Value).Rebuild();
@@ -1039,7 +1144,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnRedoEnd();
 
-            //mxd
+			//mxd. Effects may've become invalid
+			if(sectordata != null && sectordata.Count > 0)
+				RebuildElementData();
+
+			//mxd. As well as geometry...
             foreach (KeyValuePair<Sector, VisualSector> group in visiblesectors) {
                 if (group.Value is BaseVisualSector)
                     ((BaseVisualSector)group.Value).Rebuild();
@@ -1060,7 +1169,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ApplyTextureOffsetChange(int dx, int dy)
 		{
 			Dictionary<Sidedef, int> donesides = new Dictionary<Sidedef, int>(selectedobjects.Count);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(false, true, false);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(false, true, false, false);
 			foreach(IVisualEventReceiver i in objs)
 			{
 				if(i is BaseVisualGeometrySidedef)
@@ -1078,7 +1187,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ApplyFlatOffsetChange(int dx, int dy)
 		{
 			Dictionary<Sector, int> donesectors = new Dictionary<Sector, int>(selectedobjects.Count);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, false, false);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, false, false, false);
 			foreach(IVisualEventReceiver i in objs)
 			{
 				if(i is BaseVisualGeometrySector)
@@ -1095,7 +1204,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Apply upper unpegged flag
 		public void ApplyUpperUnpegged(bool set)
 		{
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(false, true, false, false);
 			foreach(IVisualEventReceiver i in objs)
 			{
 				i.ApplyUpperUnpegged(set);
@@ -1105,7 +1214,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Apply lower unpegged flag
 		public void ApplyLowerUnpegged(bool set)
 		{
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(false, true, false, false);
 			foreach(IVisualEventReceiver i in objs)
 			{
 				i.ApplyLowerUnpegged(set);
@@ -1120,12 +1229,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.Config.MixTexturesFlats)
 			{
 				// Apply on all compatible types
-				objs = GetSelectedObjects(true, true, false);
+				objs = GetSelectedObjects(true, true, false, false);
 			}
 			else
 			{
 				// We don't want to mix textures and flats, so apply only on the appropriate type
-				objs = GetSelectedObjects(flat, !flat, false);
+				objs = GetSelectedObjects(flat, !flat, false, false);
 			}
 			
 			foreach(IVisualEventReceiver i in objs)
@@ -1135,7 +1244,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This returns all selected objects
-		internal List<IVisualEventReceiver> GetSelectedObjects(bool includesectors, bool includesidedefs, bool includethings)
+		internal List<IVisualEventReceiver> GetSelectedObjects(bool includesectors, bool includesidedefs, bool includethings, bool includevertices)
 		{
 			List<IVisualEventReceiver> objs = new List<IVisualEventReceiver>();
 			foreach(IVisualEventReceiver i in selectedobjects)
@@ -1143,6 +1252,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if((i is BaseVisualGeometrySector) && includesectors) objs.Add(i);
 				else if((i is BaseVisualGeometrySidedef) && includesidedefs) objs.Add(i);
 				else if((i is BaseVisualThing) && includethings) objs.Add(i);
+				else if(i is BaseVisualVertex && includevertices) objs.Add(i);//mxd
 			}
 
 			// Add highlight?
@@ -1152,6 +1262,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if((i is BaseVisualGeometrySector) && includesectors) objs.Add(i);
 				else if((i is BaseVisualGeometrySidedef) && includesidedefs) objs.Add(i);
 				else if((i is BaseVisualThing) && includethings) objs.Add(i);
+				else if(i is BaseVisualVertex && includevertices) objs.Add(i);//mxd
 			}
 
 			return objs;
@@ -1195,7 +1306,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(i is BaseVisualGeometrySidedef)
 				{
-					Linedef l = (i as BaseVisualGeometrySidedef).Sidedef.Line;
+					//Linedef l = (i as BaseVisualGeometrySidedef).Sidedef.Line;
+					Linedef l = (i as BaseVisualGeometrySidedef).GetControlLinedef(); //mxd
 					if(!added.ContainsKey(l))
 					{
 						linedefs.Add(l);
@@ -1207,7 +1319,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Add highlight?
 			if((selectedobjects.Count == 0) && (target.picked is BaseVisualGeometrySidedef))
 			{
-				Linedef l = (target.picked as BaseVisualGeometrySidedef).Sidedef.Line;
+				//Linedef l = (target.picked as BaseVisualGeometrySidedef).Sidedef.Line;
+				Linedef l = (target.picked as BaseVisualGeometrySidedef).GetControlLinedef(); //mxd
 				if(!added.ContainsKey(l))
 					linedefs.Add(l);
 			}
@@ -1271,6 +1384,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return things;
+		}
+
+		//mxd. This returns all selected vertices, no doubles
+		public List<Vertex> GetSelectedVertices() {
+			Dictionary<Vertex, int> added = new Dictionary<Vertex, int>();
+			List<Vertex> verts = new List<Vertex>();
+
+			foreach(IVisualEventReceiver i in selectedobjects) {
+				if(i is BaseVisualVertex) {
+					Vertex v = (i as BaseVisualVertex).Vertex;
+					
+					if(!added.ContainsKey(v)) {
+						verts.Add(v);
+						added.Add(v, 0);
+					}
+				}
+			}
+
+			// Add highlight?
+			if((selectedobjects.Count == 0) && (target.picked is BaseVisualVertex)) {
+				Vertex v = (target.picked as BaseVisualVertex).Vertex;
+				if(!added.ContainsKey(v))
+					verts.Add(v);
+			}
+
+			return verts;
 		}
 		
 		// This returns the IVisualEventReceiver on which the action must be performed
@@ -1348,6 +1487,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(bvs.Ceiling != null) bvs.Ceiling.Selected = false;
 					foreach(VisualFloor vf in bvs.ExtraFloors) vf.Selected = false;
 					foreach(VisualCeiling vc in bvs.ExtraCeilings) vc.Selected = false;
+					foreach(VisualFloor vf in bvs.ExtraBackFloors) vf.Selected = false; //mxd
+					foreach(VisualCeiling vc in bvs.ExtraBackCeilings) vc.Selected = false; //mxd
+
 					foreach(Sidedef sd in vs.Key.Sidedefs)
 					{
 						List<VisualGeometry> sidedefgeos = bvs.GetSidedefGeometry(sd);
@@ -1365,6 +1507,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					BaseVisualThing bvt = (BaseVisualThing)vt.Value;
 					bvt.Selected = false;
+				}
+			}
+
+			//mxd
+			if(General.Map.UDMF) {
+				foreach(KeyValuePair<Vertex, VisualVertexPair> pair in vertices) {
+					pair.Value.Deselect();
 				}
 			}
 		}
@@ -1408,7 +1557,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void RaiseSector8()
 		{
 			PreAction(UndoGroup.SectorHeightChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, true);
 			foreach(IVisualEventReceiver i in objs) i.OnChangeTargetHeight(8);
 			PostAction();
 		}
@@ -1417,7 +1566,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void LowerSector8()
 		{
 			PreAction(UndoGroup.SectorHeightChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, true);
 			foreach(IVisualEventReceiver i in objs) i.OnChangeTargetHeight(-8);
 			PostAction();
 		}
@@ -1426,7 +1575,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void RaiseSector1()
 		{
 			PreAction(UndoGroup.SectorHeightChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, true);
 			foreach(IVisualEventReceiver i in objs) i.OnChangeTargetHeight(1);
 			PostAction();
 		}
@@ -1435,7 +1584,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void LowerSector1()
 		{
 			PreAction(UndoGroup.SectorHeightChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, true);
 			foreach(IVisualEventReceiver i in objs) i.OnChangeTargetHeight(-1);
 			PostAction();
 		}
@@ -1451,7 +1600,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void RaiseBrightness8()
 		{
 			PreAction(UndoGroup.SectorBrightnessChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
 			foreach(IVisualEventReceiver i in objs) i.OnChangeTargetBrightness(true);
 			PostAction();
 		}
@@ -1460,7 +1609,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void LowerBrightness8()
 		{
 			PreAction(UndoGroup.SectorBrightnessChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
 			foreach(IVisualEventReceiver i in objs) i.OnChangeTargetBrightness(false);
 			PostAction();
 		}
@@ -1469,7 +1618,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureLeft1()
 		{
             PreAction(UndoGroup.TextureOffsetChange);
-            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
             foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-1, 0);
             PostAction();
 		}
@@ -1478,7 +1627,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureRight1()
 		{
             PreAction(UndoGroup.TextureOffsetChange);
-            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
             foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(1, 0);
             PostAction();
 		}
@@ -1487,7 +1636,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureUp1()
 		{
             PreAction(UndoGroup.TextureOffsetChange);
-            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
             foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -1);
             PostAction();
 		}
@@ -1496,7 +1645,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureDown1()
 		{
             PreAction(UndoGroup.TextureOffsetChange);
-            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
             foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 1);
             PostAction();
 		}
@@ -1505,7 +1654,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureLeft8()
 		{
             PreAction(UndoGroup.TextureOffsetChange);
-            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
             foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-8, 0);
             PostAction();
 		}
@@ -1514,7 +1663,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureRight8()
 		{
             PreAction(UndoGroup.TextureOffsetChange);
-            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
             foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(8, 0);
             PostAction();
 		}
@@ -1523,7 +1672,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureUp8()
 		{
             PreAction(UndoGroup.TextureOffsetChange);
-            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
             foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -8);
             PostAction();
 		}
@@ -1532,7 +1681,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureDown8()
 		{
             PreAction(UndoGroup.TextureOffsetChange);
-            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
             foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 8);
             PostAction();
 		}
@@ -1561,7 +1710,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void TexturePaste()
 		{
 			PreAction(UndoGroup.None);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
 			foreach(IVisualEventReceiver i in objs) i.OnPasteTexture();
 			PostAction();
 		}
@@ -1634,7 +1783,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ResetTexture()
 		{
 			PreAction(UndoGroup.None);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
 			foreach(IVisualEventReceiver i in objs) i.OnResetTextureOffset();
 			PostAction();
 		}
@@ -1659,7 +1808,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void TexturePasteOffsets()
 		{
 			PreAction(UndoGroup.None);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
 			foreach(IVisualEventReceiver i in objs) i.OnPasteTextureOffsets();
 			PostAction();
 		}
@@ -1676,12 +1825,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void PasteProperties()
 		{
 			PreAction(UndoGroup.None);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, true);
 			foreach(IVisualEventReceiver i in objs) i.OnPasteProperties();
 			PostAction();
 		}
 
-        //mxd. now we can actually insert things in Visual modes
+        //mxd. now we can insert things in Visual modes
         [BeginAction("insertitem", BaseAction = true)] 
 		public void InsertThing()
 		{
@@ -1715,11 +1864,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
             PostAction();
 		}
 
-        //mxd. now we can actually delete things in Visual modes
+        //mxd. now we can delete things in Visual modes
 		[BeginAction("deleteitem", BaseAction = true)]
         public void DeleteSelectedThings()
 		{
-            List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true);
+            List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true, false);
             if (objs.Count == 0) return;
 
             General.Map.UndoRedo.ClearAllRedos();
@@ -1743,7 +1892,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
         //mxd
         [BeginAction("copyselection", BaseAction = true)]
         public void CopySelection() {
-            List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true);
+            List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true, false);
             if (objs.Count == 0) {
                 General.Interface.DisplayStatus(StatusType.Warning, "Nothing to copy, select some Things first!");
                 return;
@@ -1815,7 +1964,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             PreAction(UndoGroup.ThingRotate);
 
             if (things.Count == 0) {
-                General.Interface.DisplayStatus(StatusType.Warning, "Select some Things first!");
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selected Things!");
                 return;
             }
 
@@ -1833,7 +1982,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             PreAction(UndoGroup.ThingRotate);
 
             if (things.Count == 0) {
-                General.Interface.DisplayStatus(StatusType.Warning, "Select some Things first!");
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selected Things!");
                 return;
             }
 
@@ -1851,7 +2000,435 @@ namespace CodeImp.DoomBuilder.BuilderModes
             UpdateChangedObjects();
             General.Interface.DisplayStatus(StatusType.Info, "(G)ZDoom rendering effects are " + (gzdoomRenderingEffects ? "ENABLED" : "DISABLED"));
         }
+
+		//mxd
+		[BeginAction("thingaligntowall")]
+		public void AlignThingsToWall() {
+			List<VisualThing> visualThings = GetSelectedVisualThings(true);
+
+			if(visualThings.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selected Things!");
+				return;
+			}
+
+			List<Thing> things = new List<Thing>();
+
+			foreach(VisualThing vt in visualThings)
+				things.Add(vt.Thing);
+
+			// Make undo
+			if(things.Count > 1) {
+				General.Map.UndoRedo.CreateUndo("Align " + things.Count + " things");
+				General.Interface.DisplayStatus(StatusType.Action, "Aligned " + things.Count + " things.");
+			} else {
+				General.Map.UndoRedo.CreateUndo("Align thing");
+				General.Interface.DisplayStatus(StatusType.Action, "Aligned a thing.");
+			}
+
+			//align things
+			int thingsCount = General.Map.Map.Things.Count;
+
+			foreach(Thing t in things) {
+				List<Linedef> excludedLines = new List<Linedef>();
+				bool aligned = false;
+
+				do {
+					Linedef l = General.Map.Map.NearestLinedef(t.Position, excludedLines);
+					aligned = Tools.TryAlignThingToLine(t, l);
+
+					if(!aligned) {
+						excludedLines.Add(l);
+
+						if(excludedLines.Count == thingsCount) {
+							ThingTypeInfo tti = General.Map.Data.GetThingInfo(t.Type);
+							General.ErrorLogger.Add(ErrorType.Warning, "Unable to align Thing ¹" + t.Index + " (" + tti.Title + ") to any linedef in a map!");
+							aligned = true;
+						}
+					}
+				} while(!aligned);
+			}
+
+			//apply changes to Visual Things
+			for(int i = 0; i < visualThings.Count; i++) {
+				BaseVisualThing t = visualThings[i] as BaseVisualThing;
+				t.Changed = true;
+
+				// Update what must be updated
+				ThingData td = GetThingData(t.Thing);
+				foreach(KeyValuePair<Sector, bool> s in td.UpdateAlso) {
+					if(VisualSectorExists(s.Key)) {
+						BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s.Key);
+						vs.UpdateSectorGeometry(s.Value);
+					}
+				}
+			}
+
+			UpdateChangedObjects();
+			ShowTargetInfo();
+		}
 		
+		#endregion
+
+		#region ================== Texture Alignment
+
+		//mxd
+		public void AutoAlignTextures(Sidedef start, SidedefPart part, ImageData texture, bool alignx, bool aligny, bool resetsidemarks) {
+			if(General.Map.UDMF)
+				autoAlignTextures(start, part, texture, alignx, aligny, resetsidemarks);
+			else
+				autoAlignTextures(start, texture, alignx, aligny, resetsidemarks);
+		}
+
+		//mxd. Moved here from Tools
+		// This performs texture alignment along all walls that match with the same texture
+		// NOTE: This method uses the sidedefs marking to indicate which sides have been aligned
+		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
+		// Setting resetsidemarks to false is usefull to align only within a specific selection
+		// (set the marked property to true for the sidedefs outside the selection)
+		private void autoAlignTextures(Sidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks) {
+			Stack<SidedefAlignJob> todo = new Stack<SidedefAlignJob>(50);
+			float scalex = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.x : 1.0f;
+			float scaley = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.y : 1.0f;
+
+			// Mark all sidedefs false (they will be marked true when the texture is aligned)
+			if(resetsidemarks)
+				General.Map.Map.ClearMarkedSidedefs(false);
+
+			// Begin with first sidedef
+			SidedefAlignJob first = new SidedefAlignJob();
+			first.sidedef = start;
+			first.offsetx = start.OffsetX;
+
+			//mxd. 3D floors alignment
+			if(!start.LowRequired() && !start.HighRequired()) {
+				List<Sidedef> controlSides = getControlSides(start, false);
+				foreach(Sidedef s in controlSides) {
+					if((s.LongMiddleTexture == texture.LongName) && (s.MiddleRequired() || ((s.MiddleTexture.Length > 0) && (s.MiddleTexture[0] != '-')))) {
+						first.controlSide = s;
+						break;
+					}
+				}
+			}
+
+			if(first.controlSide == null) first.controlSide = start;
+
+			first.forward = true;
+			todo.Push(first);
+
+			// Continue until nothing more to align
+			while(todo.Count > 0) {
+				// Get the align job to do
+				SidedefAlignJob j = todo.Pop();
+
+				if(j.forward) {
+					Vertex v;
+					int forwardoffset;
+					int backwardoffset;
+
+					// Apply alignment
+					if(alignx)
+						j.sidedef.OffsetX = (int)j.offsetx;
+					if(aligny)
+						j.sidedef.OffsetY = (int)Math.Round((start.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + start.OffsetY;
+					forwardoffset = (int)j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex);
+					backwardoffset = (int)j.offsetx;
+
+					j.sidedef.Marked = true;
+
+					// Wrap the value within the width of the texture (to prevent ridiculous values)
+					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
+					if(texture.IsImageLoaded) {
+						if(alignx)
+							j.sidedef.OffsetX %= texture.Width;
+						if(aligny)
+							j.sidedef.OffsetY %= texture.Height;
+					}
+
+					// Add sidedefs forward (connected to the right vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName, false);
+
+					// Add sidedefs backward (connected to the left vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName, false);
+				} else {
+					Vertex v;
+					int forwardoffset;
+					int backwardoffset;
+
+					// Apply alignment
+					if(alignx)
+						j.sidedef.OffsetX = (int)j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
+					if(aligny)
+						j.sidedef.OffsetY = (int)Math.Round((start.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + start.OffsetY;
+					forwardoffset = (int)j.offsetx;
+					backwardoffset = (int)j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
+
+					j.sidedef.Marked = true;
+
+					// Wrap the value within the width of the texture (to prevent ridiculous values)
+					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
+					if(texture.IsImageLoaded) {
+						if(alignx)
+							j.sidedef.OffsetX %= texture.Width;
+						if(aligny)
+							j.sidedef.OffsetY %= texture.Height;
+					}
+
+					// Add sidedefs backward (connected to the left vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName, false);
+
+					// Add sidedefs forward (connected to the right vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName, false);
+				}
+			}
+		}
+
+		//mxd. Moved here from GZDoomEditing plugin
+		// This performs UDMF texture alignment along all walls that match with the same texture
+		// NOTE: This method uses the sidedefs marking to indicate which sides have been aligned
+		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
+		// Setting resetsidemarks to false is usefull to align only within a specific selection
+		// (set the marked property to true for the sidedefs outside the selection)
+		private void autoAlignTextures(Sidedef start, SidedefPart part, ImageData texture, bool alignx, bool aligny, bool resetsidemarks) {
+			Stack<SidedefAlignJob> todo = new Stack<SidedefAlignJob>(50);
+			float scalex = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.x : 1.0f;
+			float scaley = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.y : 1.0f;
+
+			// Mark all sidedefs false (they will be marked true when the texture is aligned)
+			if(resetsidemarks)
+				General.Map.Map.ClearMarkedSidedefs(false);
+
+			if(!texture.IsImageLoaded)
+				return;
+
+			// Determine the Y alignment
+			float ystartalign = start.OffsetY;
+			switch(part) {
+				case SidedefPart.Upper:
+					ystartalign += start.Fields.GetValue("offsety_top", 0.0f);
+					break;
+				case SidedefPart.Middle:
+					ystartalign += start.Fields.GetValue("offsety_mid", 0.0f);
+					break; //mxd
+				case SidedefPart.Lower:
+					ystartalign += start.Fields.GetValue("offsety_bottom", 0.0f);
+					break;
+			}
+
+			// Begin with first sidedef
+			SidedefAlignJob first = new SidedefAlignJob();
+			first.sidedef = start;
+			first.offsetx = start.OffsetX;
+			switch(part) {
+				case SidedefPart.Upper:
+					first.offsetx += start.Fields.GetValue("offsetx_top", 0.0f);
+					break;
+				case SidedefPart.Middle:
+					first.offsetx += start.Fields.GetValue("offsetx_mid", 0.0f);
+					break; //mxd
+				case SidedefPart.Lower:
+					first.offsetx += start.Fields.GetValue("offsetx_bottom", 0.0f);
+					break;
+			}
+			first.forward = true;
+
+			//mxd. 3D floors alignment
+			if(part == SidedefPart.Middle) {
+				List<Sidedef> controlSides = getControlSides(start, true); //mxd
+				
+				foreach(Sidedef s in controlSides) {
+					if((s.LongMiddleTexture == texture.LongName) && (s.MiddleRequired() || ((s.MiddleTexture.Length > 0) && (s.MiddleTexture[0] != '-')))) {
+						first.controlSide = s;
+						break;
+					}
+				}
+			} else {
+				first.controlSide = start;
+			}
+
+			todo.Push(first);
+
+			// Continue until nothing more to align
+			while(todo.Count > 0) {
+				Vertex v;
+				float forwardoffset;
+				float backwardoffset;
+				float offsetscalex = 1.0f;
+
+				// Get the align job to do
+				SidedefAlignJob j = todo.Pop();
+
+				bool matchtop = ((j.sidedef.LongHighTexture == texture.LongName) && j.sidedef.HighRequired());
+				bool matchbottom = ((j.sidedef.LongLowTexture == texture.LongName) && j.sidedef.LowRequired());
+				bool matchmid = ((j.controlSide.LongMiddleTexture == texture.LongName) && (j.controlSide.MiddleRequired() || ((j.controlSide.MiddleTexture.Length > 0) && (j.controlSide.MiddleTexture[0] != '-')))); //mxd
+
+				if(matchtop)
+					offsetscalex = j.sidedef.Fields.GetValue("scalex_top", 1.0f);
+				else if(matchbottom)
+					offsetscalex = j.sidedef.Fields.GetValue("scalex_bottom", 1.0f);
+				else if(matchmid)
+					offsetscalex = j.sidedef.Fields.GetValue("scalex_mid", 1.0f);
+
+				if(j.forward) {
+					// Apply alignment
+					if(alignx) {
+						float offset = j.offsetx;
+						offset %= (float)texture.Width;//mxd
+						offset -= j.sidedef.OffsetX;
+
+						j.sidedef.Fields.BeforeFieldsChange();
+						if(matchtop)
+							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset);
+						if(matchbottom)
+							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset);
+						if(matchmid)
+							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset);
+					}
+					if(aligny) {
+						float offset = ((float)(start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + ystartalign;
+						offset %= (float)texture.Height;
+						offset -= j.sidedef.OffsetY;
+
+						j.sidedef.Fields.BeforeFieldsChange();
+						if(matchtop)
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, offset);
+						if(matchbottom)
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, offset);
+						if(matchmid) {
+							//mxd. Side is part of a 3D floor?
+							if(j.sidedef.Index != j.controlSide.Index) {
+								offset = ((float)(start.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + ystartalign;
+								offset %= (float)texture.Height;
+								offset -= j.sidedef.OffsetY;
+							}
+							j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset);
+						}
+					}
+					forwardoffset = j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex * offsetscalex);
+					backwardoffset = j.offsetx;
+
+					// Done this sidedef
+					j.sidedef.Marked = true;
+
+					// Add sidedefs backward (connected to the left vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName, true);
+
+					// Add sidedefs forward (connected to the right vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName, true);
+				} else {
+					// Apply alignment
+					if(alignx) {
+						float offset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
+						offset %= (float)texture.Width; //mxd
+						offset -= j.sidedef.OffsetX;
+
+						j.sidedef.Fields.BeforeFieldsChange();
+						if(matchtop)
+							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset);
+						if(matchbottom)
+							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset);
+						if(matchmid)
+							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset);
+					}
+					if(aligny) {
+						float offset = ((float)(start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + ystartalign;
+						offset %= (float)texture.Height;
+						offset -= j.sidedef.OffsetY;
+
+						j.sidedef.Fields.BeforeFieldsChange();
+						if(matchtop)
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, offset);
+						if(matchbottom)
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, offset);
+						if(matchmid) {
+							//mxd. Side is part of a 3D floor?
+							if(j.sidedef.Index != j.controlSide.Index) {
+								offset = ((float)(start.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + ystartalign;
+								offset %= (float)texture.Height;
+								offset -= j.sidedef.OffsetY;
+							}
+							j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset);
+						}
+					}
+					forwardoffset = j.offsetx;
+					backwardoffset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex * offsetscalex);
+
+					// Done this sidedef
+					j.sidedef.Marked = true;
+
+					// Add sidedefs forward (connected to the right vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName, true);
+
+					// Add sidedefs backward (connected to the left vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName, true);
+				}
+			}
+		}
+
+		// This adds the matching, unmarked sidedefs from a vertex for texture alignment
+		private void AddSidedefsForAlignment(Stack<SidedefAlignJob> stack, Vertex v, bool forward, float offsetx, long texturelongname, bool udmf) {
+			foreach(Linedef ld in v.Linedefs) {
+				Sidedef side1 = forward ? ld.Front : ld.Back;
+				Sidedef side2 = forward ? ld.Back : ld.Front;
+				if((ld.Start == v) && (side1 != null) && !side1.Marked) {
+					List<Sidedef> controlSides = getControlSides(side1, udmf);//mxd
+
+					foreach(Sidedef s in controlSides) {
+						if(Tools.SidedefTextureMatch(s, texturelongname)) {
+							SidedefAlignJob nj = new SidedefAlignJob();
+							nj.forward = forward;
+							nj.offsetx = offsetx;
+							nj.sidedef = side1;
+							nj.controlSide = s;
+							stack.Push(nj);
+							break;
+						}
+					}
+				} else if((ld.End == v) && (side2 != null) && !side2.Marked) {
+					List<Sidedef> controlSides = getControlSides(side2, udmf);//mxd
+
+					foreach(Sidedef s in controlSides) {
+						if(Tools.SidedefTextureMatch(s, texturelongname)) {
+							SidedefAlignJob nj = new SidedefAlignJob();
+							nj.forward = forward;
+							nj.offsetx = offsetx;
+							nj.sidedef = side2;
+							nj.controlSide = s;
+							stack.Push(nj);
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		//mxd
+		private List<Sidedef> getControlSides(Sidedef side, bool udmf) {
+			if(side.Other == null) return new List<Sidedef>() { side };
+			if(side.Other.Sector.Tag == 0) return new List<Sidedef>() { side };
+
+			SectorData data = GetSectorData(side.Other.Sector);
+			if(data.ExtraFloors.Count == 0)	return new List<Sidedef>() { side };
+
+			List<Sidedef> sides = new List<Sidedef>();
+			foreach(Effect3DFloor ef in data.ExtraFloors)
+				sides.Add(ef.Linedef.Front);
+
+			if(udmf)
+				sides.Add(side); //UDMF map format
+			else
+				sides.Insert(0, side); //Doom/Hexen map format: if a sidedef has lower/upper parts, they take predecence in alignment
+
+			return sides;
+		}
+
 		#endregion
 	}
 }

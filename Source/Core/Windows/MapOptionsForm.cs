@@ -71,6 +71,10 @@ namespace CodeImp.DoomBuilder.Windows
             //mxd. Still better than nothing :)
             if (config.SelectedIndex == -1 && General.Configs.Count > 0) config.SelectedIndex = 0;
 
+			//mxd
+			if(General.Map != null)
+				datalocations.StartPath = General.Map.FilePathName;
+
 			// Set the level name
             if (options.CurrentName.Length > 0) //mxd
 			    levelname.Text = options.CurrentName;

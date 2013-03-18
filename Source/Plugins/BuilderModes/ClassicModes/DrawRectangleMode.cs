@@ -121,6 +121,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
                 return new Vector2D[0];
             }
 
+			//line
+			if(pEnd.x == pStart.x || pEnd.y == pStart.y) {
+				currentBevelWidth = 0;
+				return new Vector2D[] { pStart, pEnd };
+			}
+
             //no corners
             if (bevelWidth == 0) {
                 currentBevelWidth = 0;
@@ -246,8 +252,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
             Cursor.Current = Cursors.AppStarting;
             General.Settings.FindDefaultDrawSettings();
 
-            // When we have a rectangle
-            if (points.Count > 4) {
+            // When we have a rectangle or a line
+			if(points.Count > 4 || points.Count == 2) {
                 // Make undo for the draw
                 General.Map.UndoRedo.CreateUndo(undoName);
 
@@ -259,7 +265,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
                 General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " " + shapeName+".");
 
                 // Make the drawing
-                if (!Tools.DrawLines(points)) {
+                if (!Tools.DrawLines(points, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) {
                     // Drawing failed
                     // NOTE: I have to call this twice, because the first time only cancels this volatile mode
                     General.Map.UndoRedo.WithdrawUndo();

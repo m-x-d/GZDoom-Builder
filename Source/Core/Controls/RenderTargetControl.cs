@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 
 		#region ================== Properties
-
+		public event KeyEventHandler OnKeyReleased; //mxd. Sometimes it's handeled here, not by MainForm
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -74,6 +74,11 @@ namespace CodeImp.DoomBuilder.Controls
 			// Do we really want this?
 			base.RaisePaintEvent(this, pe);
 		}
+
+        //mxd
+        protected override void OnKeyUp(KeyEventArgs e) {
+            if(OnKeyReleased != null) OnKeyReleased(this, e);
+        }
 		
 		#endregion
 

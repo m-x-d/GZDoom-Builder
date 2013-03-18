@@ -55,6 +55,7 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 			this.Text = "Open Map from " + Path.GetFileName(filepathname);
 			this.filepathname = filepathname;
+			datalocations.StartPath = filepathname; //mxd
 			this.options = null;
 		}
 
@@ -66,6 +67,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Text = "Open Map from " + Path.GetFileName(filepathname);
 			this.filepathname = filepathname;
 			this.options = options;
+			datalocations.StartPath = filepathname; //mxd
 			datalocations.EditResourceLocationList(options.Resources);
 		}
 
@@ -157,9 +159,6 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 			}
-
-            //mxd. Still better than nothing :)
-            if (config.SelectedIndex == -1 && General.Configs.Count > 0) config.SelectedIndex = 0;
 			
 			// Done
 			Cursor.Current = Cursors.Default;

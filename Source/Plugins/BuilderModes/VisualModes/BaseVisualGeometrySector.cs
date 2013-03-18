@@ -66,8 +66,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float dragstartanglexy;
 		private float dragstartanglez;
 		private Vector3D dragorigin;
-		private Vector3D deltaxy;
-		private Vector3D deltaz;
+		//private Vector3D deltaxy;
+		//private Vector3D deltaz;
 		private int startoffsetx;
 		private int startoffsety;
 		protected bool uvdragging;
@@ -177,6 +177,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
             return tp;
         }
+
+		//mxd
+		protected void onTextureChanged() {
+			if(level.sector == this.Sector.Sector) {
+				this.Setup();
+
+				//check for 3d floors
+				foreach(Sidedef s in level.sector.Sidedefs) {
+					if(s.Line.Action == 160 && s.Line.Front != null) {
+						int sectortag = s.Line.Args[0] + (s.Line.Args[4] << 8);
+						foreach(Sector sector in General.Map.Map.Sectors) {
+							if(sector.Tag == sectortag) {
+								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sector);
+								vs.UpdateSectorGeometry(false);
+							}
+						}
+					}
+				}
+			} else if(mode.VisualSectorExists(level.sector)) {
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+				vs.UpdateSectorGeometry(false);
+			}
+		}
 		
 		#endregion
 
@@ -409,6 +432,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			mode.CreateUndo("Change flat " + texture);
 			SetTexture(texture);
+			onTextureChanged(); //mxd
 		}
 		
 		// Copy texture
@@ -457,7 +481,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			BaseVisualSector vs;
 			if(mode.VisualSectorExists(level.sector)) {
 				vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
-				//vs.UpdateSectorGeometry(true);
 			} else {//mxd. Need this to apply changes to 3d-floor even if control sector doesn't exist as BaseVisualSector
 				vs = mode.CreateBaseVisualSector(level.sector);
 			}

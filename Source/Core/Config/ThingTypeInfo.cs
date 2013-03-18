@@ -286,7 +286,7 @@ namespace CodeImp.DoomBuilder.Config
 			string suitablesprite = actor.FindSuitableSprite();
 			if(!string.IsNullOrEmpty(suitablesprite)) 
                 sprite = suitablesprite;
-            else//mxd
+            else if(string.IsNullOrEmpty(sprite))//mxd
                 sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
 
 			

@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
                                     if (!ReadSignedFloat(token, ref scrollSpeed)) {
                                         // Not numeric!
-                                        GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " scroll speed value, but got '" + token + "'");
+                                        General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " scroll speed value, but got '" + token + "'");
                                         datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                                         continue;
                                     }
@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                 }
                             } else {
                                 datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
-                                GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " texture name.");
+                                General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " texture name.");
                             }
                             //old format
                         } else {
@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                 float scrollSpeed = 0;
                                 if (!ReadSignedFloat(token, ref scrollSpeed)) {
                                     // Not numeric!
-                                    GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " scroll speed value, but got '" + token + "'");
+                                    General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " scroll speed value, but got '" + token + "'");
                                     datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                                     continue;
                                 }
@@ -152,7 +152,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
                             } else {
                                 datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
-                                GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " texture name.");
+                                General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " texture name.");
                             }
                         }
                         //fade or outsidefog
@@ -184,23 +184,23 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                     string[] parts = colorVal.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
                                     if (parts.Length != 3) {
-                                        GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " color values, but got '" + token + "'");
+                                        General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " color values, but got '" + token + "'");
                                         datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                                         continue;
                                     }
 
                                     if (!int.TryParse(parts[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out r)) {
-                                        GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " red value, but got '" + parts[0] + "'");
+                                        General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " red value, but got '" + parts[0] + "'");
                                         datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                                         continue;
                                     }
                                     if (!int.TryParse(parts[1], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out g)) {
-                                        GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " green value, but got '" + parts[1] + "'");
+                                        General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " green value, but got '" + parts[1] + "'");
                                         datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                                         continue;
                                     }
                                     if (!int.TryParse(parts[2], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out b)) {
-                                        GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " blue value, but got '" + parts[2] + "'");
+                                        General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " blue value, but got '" + parts[2] + "'");
                                         datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                                         continue;
                                     }
@@ -215,7 +215,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                         mapInfo.OutsideFogColor = color;
                                 }
                             } else {
-                                GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " color value.");
+                                General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " color value.");
                                 datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                             }
 
@@ -245,7 +245,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                 //should be color, let's continue parsing it.
                                 if (!int.TryParse(token, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out g)) {
                                     // Not numeric!
-                                    GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " green value, but got '" + token + "'");
+                                    General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " green value, but got '" + token + "'");
                                     datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                                     continue;
                                 }
@@ -255,7 +255,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
                                 if (!int.TryParse(token, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out b)) {
                                     // Not numeric!
-                                    GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " blue value, but got '" + token + "'");
+                                    General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " blue value, but got '" + token + "'");
                                     datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                                     continue;
                                 }
@@ -270,7 +270,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                     mapInfo.OutsideFogColor = color;
 
                             } else {
-                                GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " color value.");
+                                General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " color value.");
                                 datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                             }
                         }
@@ -289,7 +289,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         int val = 0;
                         if (!ReadSignedInt(token, ref val)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + shadeType + " value, but got '" + token + "'");
+                            General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + shadeType + " value, but got '" + token + "'");
                             datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                             continue;
                         }
