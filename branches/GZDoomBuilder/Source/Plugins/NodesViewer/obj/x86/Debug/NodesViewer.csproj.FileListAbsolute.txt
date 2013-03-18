@@ -1,8 +1,0 @@
-D:\CD\C Sharp\GZDoomBuilder_SVN\Build\Plugins\NodesViewer.dll
-D:\CD\C Sharp\GZDoomBuilder_SVN\Build\Plugins\NodesViewer.pdb
-D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\NodesViewer\obj\x86\Debug\ResolveAssemblyReference.cache
-D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\NodesViewer\obj\x86\Debug\CodeImp.DoomBuilder.Plugins.NodesViewer.NodesForm.resources
-D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\NodesViewer\obj\x86\Debug\CodeImp.DoomBuilder.Plugins.NodesViewer.Properties.Resources.resources
-D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\NodesViewer\obj\x86\Debug\NodesViewer.csproj.GenerateResource.Cache
-D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\NodesViewer\obj\x86\Debug\NodesViewer.dll
-D:\CD\C Sharp\GZDoomBuilder_SVN\Source\Plugins\NodesViewer\obj\x86\Debug\NodesViewer.pdb
