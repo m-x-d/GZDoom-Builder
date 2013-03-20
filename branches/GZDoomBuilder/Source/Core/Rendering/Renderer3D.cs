@@ -634,6 +634,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		private void RenderVertices() {
 			if(visualvertices == null) return;
 
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
+			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.SourceAlpha);
+
 			graphics.Shaders.World3D.BeginPass(16);
 
 			foreach(VisualVertex v in visualvertices) {
@@ -658,6 +664,8 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Done
 			graphics.Shaders.World3D.EndPass();
+			graphics.Shaders.World3D.SetModulateColor(-1);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 		}
 
         //mxd
