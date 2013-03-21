@@ -116,6 +116,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool gzLoadDefaultLightDefinitions;
 		private int gzNewSectorsCount;
 		private bool gzForceDefaultTextures;
+		private string lastUsedConfigName;
 		
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -201,6 +202,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool GZLoadDefaultLightDefinitions { get { return gzLoadDefaultLightDefinitions; } internal set { gzLoadDefaultLightDefinitions = value; } }
 		public int GZNewSectorsCount { get { return gzNewSectorsCount; } internal set { gzNewSectorsCount = value; } }
 		public bool GZForceDefaultTextures { get { return gzForceDefaultTextures; } internal set { gzForceDefaultTextures = value; } }
+		public string LastUsedConfigName { get { return lastUsedConfigName; } internal set { lastUsedConfigName = value; } }
 		
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -301,6 +303,7 @@ namespace CodeImp.DoomBuilder.Config
 				gzVisualVertexSize = cfg.ReadSetting("gzvisualvertexsize", 6);
 				gzLoadDefaultLightDefinitions = cfg.ReadSetting("gzloaddefaultlightdefinitions", true);
 				gzNewSectorsCount = cfg.ReadSetting("gznewsectorscount", 3);
+				lastUsedConfigName = cfg.ReadSetting("lastusedconfigname", "");
 				
 				// Success
 				return true;
@@ -383,6 +386,8 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("gzvisualvertexsize", gzVisualVertexSize);
 			cfg.WriteSetting("gzloaddefaultlightdefinitions", gzLoadDefaultLightDefinitions);
 			cfg.WriteSetting("gznewsectorscount", gzNewSectorsCount);
+			if(!string.IsNullOrEmpty(lastUsedConfigName))
+				cfg.WriteSetting("lastusedconfigname", lastUsedConfigName);
 			
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");
