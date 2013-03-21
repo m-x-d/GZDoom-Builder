@@ -1558,7 +1558,7 @@ namespace CodeImp.DoomBuilder {
             General.Editing.DisengageVolatileMode();
 
             // Show map options dialog
-            MapOptionsForm optionsform = new MapOptionsForm(options);
+            MapOptionsForm optionsform = new MapOptionsForm(options, false);
             if (optionsform.ShowDialog(General.MainWindow) == DialogResult.OK) {
                 // Update interface
                 General.MainWindow.UpdateInterface();

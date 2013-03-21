@@ -659,7 +659,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				//Commence drawing!!11
 				graphics.Shaders.World3D.ApplySettings();
 				graphics.Device.SetStreamSource(0, v.CeilingVertex ? vertexHandle.Upper : vertexHandle.Lower, 0, WorldVertex.Stride);
-				graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 16);
+				graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 8);
 			}
 
 			// Done

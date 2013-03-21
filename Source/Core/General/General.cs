@@ -969,15 +969,13 @@ namespace CodeImp.DoomBuilder
 			
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
-
 			General.Settings.GZForceDefaultTextures = false;//mxd
 			
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
 			{
 				// Open map options dialog
-				optionswindow = new MapOptionsForm(newoptions);
-				optionswindow.IsForNewMap = true;
+				optionswindow = new MapOptionsForm(newoptions, true);
 				if(optionswindow.ShowDialog(mainwindow) == DialogResult.OK)
 				{
 					// Display status

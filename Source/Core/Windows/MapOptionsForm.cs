@@ -41,11 +41,11 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// Properties
 		public MapOptions Options { get { return options; } }
-		public bool IsForNewMap { get { return newmap; } set { newmap = value; } }
 		
 		// Constructor
-		public MapOptionsForm(MapOptions options)
+		public MapOptionsForm(MapOptions options, bool newmap)
 		{
+			this.newmap = newmap;
 			int index;
 			
 			// Initialize
@@ -60,8 +60,14 @@ namespace CodeImp.DoomBuilder.Windows
 				// Add config name to list
 				index = config.Items.Add(General.Configs[i]);
 
-				// Is this configuration currently selected?
-				if(string.Compare(General.Configs[i].Filename, options.ConfigFile, true) == 0)
+				//mxd. 
+				if(newmap && !string.IsNullOrEmpty(General.Settings.LastUsedConfigName) && General.Configs[i].Name == General.Settings.LastUsedConfigName) 
+				{
+					// Select this item
+					config.SelectedIndex = index;
+
+				} // Is this configuration currently selected?
+				else if(string.Compare(General.Configs[i].Filename, options.ConfigFile, true) == 0) // Is this configuration currently selected?
 				{
 					// Select this item
 					config.SelectedIndex = index;
@@ -114,6 +120,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Collect information
 			ConfigurationInfo configinfo = General.Configs[config.SelectedIndex];
 			DataLocationList locations = datalocations.GetResources();
+			General.Settings.LastUsedConfigName = configinfo.Name;
 			
 			// When making a new map, check if we should warn the user for missing resources
 			if(newmap && (locations.Count == 0) && (configinfo.Resources.Count == 0))
