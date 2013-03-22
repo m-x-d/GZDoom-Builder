@@ -643,6 +643,46 @@ namespace CodeImp.DoomBuilder.Geometry
 			return original.Sector;
 		}
 
+		//mxd. This merges sectors, which have less than 3 sides, with surrounding sectors.
+		//Most of the logic is taken from MakeSectorsMode.
+		//Vector2D is sector's center BEFORE sides were removed.
+		//See VerticesMode.DeleteItem() for usage example
+		public static void MergeInvalidSectors(Dictionary<Sector, Vector2D> toMerge) {
+			foreach(KeyValuePair<Sector, Vector2D> group in toMerge) {
+				if(!group.Key.IsDisposed && group.Key.Sidedefs.Count > 0 && group.Key.Sidedefs.Count < 3) {
+					group.Key.Dispose();
+
+					List<LinedefSide> sides = Tools.FindPotentialSectorAt(group.Value);
+
+					if(sides != null) {
+						// Mark the lines we are going to use for this sector
+						General.Map.Map.ClearAllMarks(true);
+						foreach(LinedefSide ls in sides)
+							ls.Line.Marked = false;
+						List<Linedef> oldlines = General.Map.Map.GetMarkedLinedefs(true);
+
+						// Make the sector
+						Sector s = Tools.MakeSector(sides, oldlines);
+
+						if(s != null) {
+							// Now we go for all the lines along the sector to
+							// see if they only have a back side. In that case we want
+							// to flip the linedef to that it only has a front side.
+							foreach(Sidedef sd in s.Sidedefs) {
+								if((sd.Line.Front == null) && (sd.Line.Back != null)) {
+									// Flip linedef
+									sd.Line.FlipVertices();
+									sd.Line.FlipSidedefs();
+								}
+							}
+
+							General.Map.Data.UpdateUsedTextures();
+						}
+					}
+				}
+			}
+		}
+
 		// This takes default settings if not taken yet
 		private static void TakeSidedefDefaults(ref SidedefSettings settings)
 		{
