@@ -763,9 +763,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.UndoRedo.CreateUndo("Delete linedef");
 					General.Interface.DisplayStatus(StatusType.Action, "Deleted a linedef.");
 				}
+
+				//mxd. Find sectors, which will become invalid after linedefs removal.
+				Dictionary<Sector, Vector2D> toMerge = new Dictionary<Sector, Vector2D>();
+
+				foreach(Linedef l in selected) {
+					if(l.Front != null && l.Front.Sector.Sidedefs.Count < 4 && !toMerge.ContainsKey(l.Front.Sector))
+						toMerge.Add(l.Front.Sector, new Vector2D(l.Front.Sector.BBox.Location.X + l.Front.Sector.BBox.Width / 2, l.Front.Sector.BBox.Location.Y + l.Front.Sector.BBox.Height / 2));
+
+					if(l.Back != null && l.Back.Sector.Sidedefs.Count < 4 && !toMerge.ContainsKey(l.Back.Sector))
+						toMerge.Add(l.Back.Sector, new Vector2D(l.Back.Sector.BBox.Location.X + l.Back.Sector.BBox.Width / 2, l.Back.Sector.BBox.Location.Y + l.Back.Sector.BBox.Height / 2));
+				}
 				
 				// Dispose selected linedefs
 				foreach(Linedef ld in selected) ld.Dispose();
+
+				//mxd
+				Tools.MergeInvalidSectors(toMerge);
 				
 				// Update cache values
 				General.Map.IsChanged = true;

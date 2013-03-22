@@ -751,6 +751,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Interface.DisplayStatus(StatusType.Action, "Deleted a vertex.");
 				}
 
+				//mxd. Find sectors, which will become invalid after vertex removal.
+				Dictionary<Sector, Vector2D> toMerge = new Dictionary<Sector, Vector2D>();
+
+				foreach(Vertex v in selected) {
+					foreach(Linedef l in v.Linedefs) {
+						if(l.Front != null && l.Front.Sector.Sidedefs.Count < 4 && !toMerge.ContainsKey(l.Front.Sector))
+							toMerge.Add(l.Front.Sector, new Vector2D(l.Front.Sector.BBox.Location.X + l.Front.Sector.BBox.Width/2, l.Front.Sector.BBox.Location.Y + l.Front.Sector.BBox.Height/2));
+
+						if(l.Back != null && l.Back.Sector.Sidedefs.Count < 4 && !toMerge.ContainsKey(l.Back.Sector))
+							toMerge.Add(l.Back.Sector, new Vector2D(l.Back.Sector.BBox.Location.X + l.Back.Sector.BBox.Width / 2, l.Back.Sector.BBox.Location.Y + l.Back.Sector.BBox.Height / 2));
+					}
+				}
+
 				// Go for all vertices that need to be removed
 				foreach(Vertex v in selected)
 				{
@@ -762,18 +775,44 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
 							Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
-							Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
-							Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
-							if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
-							//if(ld2.Start == v) ld2.SetStartVertex(v1); else ld2.SetEndVertex(v1);
-							//ld1.Join(ld2);
-							ld2.Dispose();
+
+							//mxd. We don't want to do this if it will result in sector with 2 sidedefs
+							if(ld1.Front.Sector.Sidedefs.Count > 3 || ld1.Back.Sector.Sidedefs.Count > 3 ||
+								ld2.Front.Sector.Sidedefs.Count > 3 ||ld2.Back.Sector.Sidedefs.Count > 3) {
+
+								Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
+								Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
+
+								//mxd
+								DrawnVertex dv1 = new DrawnVertex();
+								DrawnVertex dv2 = new DrawnVertex();
+								dv1.stitchline = true;
+								dv2.stitchline = true;
+
+								if(ld1.Start == v) {
+									ld1.SetStartVertex(v2);
+									dv1.pos = v2.Position;
+									dv2.pos = v1.Position;
+								} else {
+									ld1.SetEndVertex(v2);
+									dv1.pos = v1.Position;
+									dv2.pos = v2.Position;
+								}
+
+								ld2.Dispose();
+
+								//mxd
+								Tools.DrawLines(new List<DrawnVertex>() { dv1, dv2 });
+							}
 						}
 
 						// Trash vertex
 						v.Dispose();
 					}
 				}
+
+				//mxd
+				Tools.MergeInvalidSectors(toMerge);
 
 				// Update cache values
 				General.Map.IsChanged = true;

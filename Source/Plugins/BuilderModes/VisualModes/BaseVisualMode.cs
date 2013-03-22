@@ -441,7 +441,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(pickedgeo is BaseVisualGeometrySidedef)
 					{
 						BaseVisualGeometrySidedef pickedsidedef = (pickedgeo as BaseVisualGeometrySidedef);
-						//General.Interface.ShowLinedefInfo(pickedsidedef.Sidedef.Line);
 						General.Interface.ShowLinedefInfo(pickedsidedef.GetControlLinedef()); //mxd
 					}
 					// Sector?
@@ -616,7 +615,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!vertices.ContainsKey(v))
 				vertices.Add(v, new VisualVertexPair(new BaseVisualVertex(this, v, true), new BaseVisualVertex(this, v, false)));
 			else
-				vertices[v].Update();
+				vertices[v].Changed = true;
 		}
 		
 		// This rebuilds the sector data
