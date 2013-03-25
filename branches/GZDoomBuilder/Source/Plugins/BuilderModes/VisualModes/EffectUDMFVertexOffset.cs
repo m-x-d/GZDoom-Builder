@@ -51,7 +51,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				VertexData vd = data.Mode.GetVertexData(v);
-				vd.AddUpdateSector(data.Sector, true);
+
+				foreach(Linedef line in v.Linedefs) {
+					if(line.Front != null && line.Front.Sector != null)
+						vd.AddUpdateSector(line.Front.Sector, false);
+					if(line.Back != null && line.Back.Sector != null)
+						vd.AddUpdateSector(line.Back.Sector, false);
+				}
+
 				data.Mode.UpdateVertexHandle(v);
 
                 index++;

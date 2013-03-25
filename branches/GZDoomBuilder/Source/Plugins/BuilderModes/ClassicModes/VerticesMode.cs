@@ -730,7 +730,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("deleteitem", BaseAction = true)]
-		public void DeleteItem()
+		public void DeleteItem() {
+			deleteItem(true); //mxd
+		}
+
+		private void deleteItem(bool createUndo)
 		{
 			// Make list of selected vertices
 			ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
@@ -740,27 +744,49 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selected.Count > 0)
 			{
 				// Make undo
-				if(selected.Count > 1)
-				{
-					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " vertices");
-					General.Interface.DisplayStatus(StatusType.Action, "Deleted " + selected.Count + " vertices.");
-				}
-				else
-				{
-					General.Map.UndoRedo.CreateUndo("Delete vertex");
-					General.Interface.DisplayStatus(StatusType.Action, "Deleted a vertex.");
+				if(createUndo) { //mxd
+					if(selected.Count > 1) {
+						General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " vertices");
+						General.Interface.DisplayStatus(StatusType.Action, "Deleted " + selected.Count + " vertices.");
+					} else {
+						General.Map.UndoRedo.CreateUndo("Delete vertex");
+						General.Interface.DisplayStatus(StatusType.Action, "Deleted a vertex.");
+					}
 				}
 
-				//mxd. Find sectors, which will become invalid after vertex removal.
+				//mxd. Find sectors, affected by vertex removal.
 				Dictionary<Sector, Vector2D> toMerge = new Dictionary<Sector, Vector2D>();
+				List<Sector> possiblyInvalidSectors = new List<Sector>();
+				List<Sector> affectedSectors = new List<Sector>();
 
+				//mxd
 				foreach(Vertex v in selected) {
 					foreach(Linedef l in v.Linedefs) {
-						if(l.Front != null && l.Front.Sector.Sidedefs.Count < 4 && !toMerge.ContainsKey(l.Front.Sector))
-							toMerge.Add(l.Front.Sector, new Vector2D(l.Front.Sector.BBox.Location.X + l.Front.Sector.BBox.Width/2, l.Front.Sector.BBox.Location.Y + l.Front.Sector.BBox.Height/2));
+						if(l.Front != null && l.Front.Sector != null){
+							if(!affectedSectors.Contains(l.Front.Sector))
+								affectedSectors.Add(l.Front.Sector);
 
-						if(l.Back != null && l.Back.Sector.Sidedefs.Count < 4 && !toMerge.ContainsKey(l.Back.Sector))
-							toMerge.Add(l.Back.Sector, new Vector2D(l.Back.Sector.BBox.Location.X + l.Back.Sector.BBox.Width / 2, l.Back.Sector.BBox.Location.Y + l.Back.Sector.BBox.Height / 2));
+							foreach(Sidedef side in l.Front.Sector.Sidedefs) {
+								if(side.Other != null && side.Other.Sector != null && !affectedSectors.Contains(side.Other.Sector))
+									affectedSectors.Add(side.Other.Sector);
+							}
+
+							if(l.Front.Sector.Sidedefs.Count < 4 && !toMerge.ContainsKey(l.Front.Sector))
+								toMerge.Add(l.Front.Sector, new Vector2D(l.Front.Sector.BBox.Location.X + l.Front.Sector.BBox.Width/2, l.Front.Sector.BBox.Location.Y + l.Front.Sector.BBox.Height/2));
+						}
+
+						if(l.Back != null && l.Back.Sector != null) {
+							if(!affectedSectors.Contains(l.Back.Sector))
+								affectedSectors.Add(l.Back.Sector);
+
+							foreach(Sidedef side in l.Back.Sector.Sidedefs) {
+								if(side.Other != null && side.Other.Sector != null && !affectedSectors.Contains(side.Other.Sector))
+									affectedSectors.Add(side.Other.Sector);
+							}
+
+							if(l.Back.Sector.Sidedefs.Count < 4 && !toMerge.ContainsKey(l.Back.Sector))
+								toMerge.Add(l.Back.Sector, new Vector2D(l.Back.Sector.BBox.Location.X + l.Back.Sector.BBox.Width / 2, l.Back.Sector.BBox.Location.Y + l.Back.Sector.BBox.Height / 2));
+						}
 					}
 				}
 
@@ -783,26 +809,85 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
 								Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
 
-								//mxd
-								DrawnVertex dv1 = new DrawnVertex();
-								DrawnVertex dv2 = new DrawnVertex();
-								dv1.stitchline = true;
-								dv2.stitchline = true;
+								//mxd. Check if removing a vertex will collapse a sector with 3 "outer" sides
+								bool skip = false;
 
-								if(ld1.Start == v) {
-									ld1.SetStartVertex(v2);
-									dv1.pos = v2.Position;
-									dv2.pos = v1.Position;
-								} else {
-									ld1.SetEndVertex(v2);
-									dv1.pos = v1.Position;
-									dv2.pos = v2.Position;
+								if(ld1.Front != null) {
+									foreach(Sidedef side in ld1.Front.Sector.Sidedefs) {
+										if(!possiblyInvalidSectors.Contains(ld1.Front.Sector) && (side.Line.Start == v1 && side.Line.End == v2) || side.Line.Start == v2 && side.Line.End == v1) {
+											possiblyInvalidSectors.Add(ld1.Front.Sector);
+											skip = true;
+										}
+									}
 								}
 
-								ld2.Dispose();
+								if(ld2.Front != null) {
+									foreach(Sidedef side in ld2.Front.Sector.Sidedefs) {
+										if(!possiblyInvalidSectors.Contains(ld2.Front.Sector) && (side.Line.Start == v1 && side.Line.End == v2) || side.Line.Start == v2 && side.Line.End == v1) {
+											possiblyInvalidSectors.Add(ld2.Front.Sector);
+											skip = true;
+										}
+									}
+								}
+
+								if(ld1.Back != null) {
+									foreach(Sidedef side in ld1.Back.Sector.Sidedefs) {
+										if(!possiblyInvalidSectors.Contains(ld1.Back.Sector) && (side.Line.Start == v1 && side.Line.End == v2) || side.Line.Start == v2 && side.Line.End == v1) {
+											possiblyInvalidSectors.Add(ld1.Back.Sector);
+											skip = true;
+										}
+									}
+								}
+
+								if(ld2.Back != null) {
+									foreach(Sidedef side in ld2.Back.Sector.Sidedefs) {
+										if(!possiblyInvalidSectors.Contains(ld2.Back.Sector) && (side.Line.Start == v1 && side.Line.End == v2) || side.Line.Start == v2 && side.Line.End == v1) {
+											possiblyInvalidSectors.Add(ld2.Back.Sector);
+											skip = true;
+										}
+									}
+								}
 
 								//mxd
-								Tools.DrawLines(new List<DrawnVertex>() { dv1, dv2 });
+								if(!skip) {
+									DrawnVertex dv1 = new DrawnVertex();
+									DrawnVertex dv2 = new DrawnVertex();
+									dv1.stitchline = true;
+									dv2.stitchline = true;
+									dv1.stitch = true;
+									dv2.stitch = true;
+
+									if(ld1.Start == v) {
+										dv1.pos = v2.Position;
+										dv2.pos = v1.Position;
+									} else {
+										dv1.pos = v1.Position;
+										dv2.pos = v2.Position;
+									}
+
+									Tools.DrawLines(new List<DrawnVertex>() { dv1, dv2 });
+
+									General.Map.IsChanged = true;
+									General.Map.Map.Update();
+
+									//if both of the lines are single sided, remove newly created sector
+									if((ld1.Front == null || ld1.Back == null) && (ld2.Front == null || ld2.Back == null)) {
+										List<Linedef> newLines = General.Map.Map.GetMarkedLinedefs(true);
+										
+										int index = ld1.Front != null ? ld1.Front.Sector.Index : ld1.Back.Sector.Index;
+										General.Map.Map.GetSectorByIndex(index).Dispose();
+
+										foreach(Linedef l in newLines) {
+											if(l.Front != null && l.Front.Sector != null && !affectedSectors.Contains(l.Front.Sector))
+												affectedSectors.Add(l.Front.Sector);
+											if(l.Back != null && l.Back.Sector != null && !affectedSectors.Contains(l.Back.Sector))
+												affectedSectors.Add(l.Back.Sector);
+										}
+									} else {
+										ld1.Dispose();
+										ld2.Dispose();
+									}
+								}
 							}
 						}
 
@@ -814,9 +899,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd
 				Tools.MergeInvalidSectors(toMerge);
 
+				foreach(Sector s in possiblyInvalidSectors) {
+					//still invalid?
+					if(!s.IsDisposed && s.Sidedefs.Count < 3) s.Dispose();
+				}
+
+				foreach(Sector s in affectedSectors) {
+					if(s.IsDisposed) continue;
+
+					foreach(Sidedef side in s.Sidedefs){
+						if((side.Line.Front == null && side.Line.Back != null) || (side.Line.Front != null && side.Line.Back == null)){
+							side.Line.ApplySidedFlags();
+						}else if(side.Line.Front == null && side.Line.Back != null && side.Line.Back.Sector != null) {
+							// Flip linedef
+							side.Line.FlipVertices();
+							side.Line.FlipSidedefs();
+							side.Line.ApplySidedFlags();
+						}
+					}
+				}
+
 				// Update cache values
 				General.Map.IsChanged = true;
 				General.Map.Map.Update();
+
+				//mxd. Because... well... some new vertices might have been created during vertex removal process...
+				if(General.Map.Map.GetSelectedVertices(true).Count > 0) {
+					deleteItem(false);
+					return;
+				}
 
 				// Invoke a new mousemove so that the highlighted item updates
 				MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);
