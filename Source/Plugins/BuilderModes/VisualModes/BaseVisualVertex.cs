@@ -17,6 +17,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float cageradius2;
 		private Vector3D boxp1;
 		private Vector3D boxp2;
+		private int storedHeight = int.MinValue;
 
 		// Undo/redo
 		private int undoticket;
@@ -46,8 +47,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(vertex.Fields.ContainsKey(key)) {
 				z = vertex.Fields.GetValue(key, 0f);
 
-				if(z == height) //don't create garbage data!
+				if(z == height) { //don't create garbage data!
 					vertex.Fields.Remove(key);
+					storedHeight = height;
+				}
+			} else if(storedHeight != int.MinValue) {
+				z = storedHeight;
+				vertex.Fields.Add(key, new UniValue(UniversalType.Float, z));
+				storedHeight = int.MinValue;
 			} else {
 				z = height;
 			}
@@ -83,13 +90,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(ceilingVertex) {
 				height = sectors[0].CeilHeight;
 				for(int i = 1; i < sectors.Length; i++) {
-					if(sectors[i].CeilHeight < height)
+					if(sectors[i].Sidedefs.Count == 3 && sectors[i].CeilHeight < height)
 						height = sectors[i].CeilHeight;
 				}
 			} else {
 				height = sectors[0].FloorHeight;
 				for(int i = 1; i < sectors.Length; i++) {
-					if(sectors[i].FloorHeight > height)
+					if(sectors[i].Sidedefs.Count == 3 && sectors[i].FloorHeight > height)
 						height = sectors[i].FloorHeight;
 				}
 			}

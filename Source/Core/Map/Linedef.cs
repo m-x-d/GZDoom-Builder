@@ -148,6 +148,14 @@ namespace CodeImp.DoomBuilder.Map
 				// Already set isdisposed so that changes can be prohibited
 				isdisposed = true;
 
+				//mxd. If there are sectors on both sides, join them
+				if(front != null && front.Sector != null && back != null && back.Sector != null && front.Sector.Index != back.Sector.Index) {
+					if(front.Sector.BBox.Width * front.Sector.BBox.Height > back.Sector.BBox.Width * back.Sector.BBox.Height)
+						back.Sector.Join(front.Sector);
+					else
+						front.Sector.Join(back.Sector);
+				} 
+
 				// Dispose sidedefs
 				if((front != null) && map.AutoRemove) front.Dispose(); else AttachFrontP(null);
 				if((back != null) && map.AutoRemove) back.Dispose(); else AttachBackP(null);
