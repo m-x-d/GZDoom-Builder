@@ -66,6 +66,9 @@ namespace CodeImp.DoomBuilder.Controls
 
 		// Items visible in the list
 		private List<ImageBrowserItem> visibleitems;
+
+		//mxd
+		private static int mixMode;
 		
 		#endregion
 
@@ -73,7 +76,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public bool PreventSelection { get { return preventselection; } set { preventselection = value; } }
 		public bool HideInputBox { get { return splitter.Panel2Collapsed; } set { splitter.Panel2Collapsed = value; } }
-		public string LabelText { get { return label.Text; } set { label.Text = value; objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left; } }
+		//public string LabelText { get { return label.Text; } set { label.Text = value; objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left; } } //mxd
 		public ListViewItem SelectedItem { get { if(list.SelectedItems.Count > 0) return list.SelectedItems[0]; else return null; } }
 		
 		#endregion
@@ -86,9 +89,19 @@ namespace CodeImp.DoomBuilder.Controls
 			// Initialize
 			InitializeComponent();
 			items = new List<ImageBrowserItem>();
-			
-			// Move textbox with label
-			objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left;
+
+			//mxd
+			if(General.Map.Config.MixTexturesFlats) {
+				cbMixMode.SelectedIndex = mixMode;
+			} else {
+				labelMixMode.Visible = false;
+				cbMixMode.Visible = false;
+				label.Left = labelMixMode.Left;
+				objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left;
+				texturesizelabel.Left = objectname.Right + objectname.Margin.Right;
+				texturesize.Left = texturesizelabel.Right + texturesizelabel.Margin.Right;
+				mixMode = 0;
+			}
 		}
 		
 		// This applies the application settings
@@ -235,6 +248,12 @@ namespace CodeImp.DoomBuilder.Controls
 			texturesizetimer.Stop();
 			texturesize.Visible = false;
 			texturesizelabel.Visible = false;
+		}
+
+		//mxd
+		private void cbMixMode_SelectedIndexChanged(object sender, EventArgs e) {
+			mixMode = cbMixMode.SelectedIndex;
+			RefillList(false);
 		}
 		
 		#endregion
@@ -498,6 +517,12 @@ namespace CodeImp.DoomBuilder.Controls
 		// This validates an item
 		private bool ValidateItem(ImageBrowserItem i)
 		{
+			//mxd. mixMode: 0 = All, 1 = Textures, 2 = Flats
+			if(!splitter.Panel2Collapsed) {
+				if(mixMode == 1 && i.icon.IsFlat) return false;
+				if(mixMode == 2 && !i.icon.IsFlat) return false;
+			}
+
 			return i.Text.Contains(objectname.Text);
 		}
 		

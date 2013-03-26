@@ -964,6 +964,7 @@ namespace CodeImp.DoomBuilder.Data
 
 						// Add to preview manager
 						previews.AddImage(img);
+						img.IsFlat = true; //mxd
 					}
 				}
 			}

@@ -776,7 +776,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				
 				// Dispose selected linedefs
-				foreach(Linedef ld in selected) ld.Dispose();
+				foreach(Linedef ld in selected) {
+					//mxd. If there are different sectors on both sides, join them
+					if(ld.Front != null && ld.Front.Sector != null && ld.Back != null && ld.Back.Sector != null && ld.Front.Sector.Index != ld.Back.Sector.Index) {
+						if(ld.Front.Sector.BBox.Width * ld.Front.Sector.BBox.Height > ld.Back.Sector.BBox.Width * ld.Back.Sector.BBox.Height)
+							ld.Back.Sector.Join(ld.Front.Sector);
+						else
+							ld.Front.Sector.Join(ld.Back.Sector);
+					}
+
+					ld.Dispose();
+				}
 
 				//mxd
 				Tools.MergeInvalidSectors(toMerge);
