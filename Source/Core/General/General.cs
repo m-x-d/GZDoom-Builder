@@ -1286,6 +1286,7 @@ namespace CodeImp.DoomBuilder
 			savefile.CheckPathExists = true;
 			savefile.OverwritePrompt = true;
 			savefile.ValidateNames = true;
+			savefile.FileName = map.FileTitle; //mxd
 			if(savefile.ShowDialog(mainwindow) == DialogResult.OK)
 			{
 				// Check if we're saving to the same file as the original.
