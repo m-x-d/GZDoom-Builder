@@ -659,7 +659,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					StartMultiSelection();
 				}
 			}
-			if(paintselectpressed && !editpressed && !selecting) //mxd. Drag-select
+			else if(paintselectpressed && !editpressed && !selecting) //mxd. Drag-select
 			{
 				// Find the nearest linedef within highlight range
 				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
@@ -832,9 +832,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(selectionvolume)
 			{
-				List<Sector> toSelect = new List<Sector>();
-				List<Sector> toDeselect = new List<Sector>();
-				
 				//mxd. collect changed sectors
 				if(subtractiveSelection) {
 					//deselect sectors fully and partially inside selection, leave others untouched 

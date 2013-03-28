@@ -432,7 +432,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					StartMultiSelection();
 				}
 			}
-			if(paintselectpressed && !editpressed && !selecting)  //mxd. Drag-select
+			else if(paintselectpressed && !editpressed && !selecting)  //mxd. Drag-select
 			{
 				// Find the nearest thing within highlight range
 				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
