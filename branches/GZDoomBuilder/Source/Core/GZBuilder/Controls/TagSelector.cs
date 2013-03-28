@@ -90,6 +90,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			if(tags.Contains(newTag)) {
 				cbTagPicker.SelectedIndex = tags.IndexOf(newTag);
 			} else {
+				cbTagPicker.SelectedIndex = -1;
 				cbTagPicker.Text = newTag.ToString();
 			}
 			tag = newTag;
@@ -150,6 +151,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void newTag_Click(object sender, EventArgs e) {
 			//todo: check tag labels?
 			tag = General.Map.Map.GetNewTag();
+			cbTagPicker.SelectedIndex = -1;
 			cbTagPicker.Text = tag.ToString();
 			valid = true;
 		}

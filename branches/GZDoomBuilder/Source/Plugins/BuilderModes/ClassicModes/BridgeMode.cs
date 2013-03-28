@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
                 ControlHandle handle = controlHandles[curControlHandle];
                 
                 if (snaptogrid) {
-                    handle.Position = DrawGeometryMode.GetCurrentPosition(mousemappos, false, true, renderer, new List<DrawnVertex>()).pos;
+					handle.Position = General.Map.Grid.SnappedToGrid(mousemappos);// DrawGeometryMode.GetCurrentPosition(mousemappos, false, true, renderer, new List<DrawnVertex>()).pos;
                 } else {
                     handle.Position = mousemappos;
                 }
@@ -475,7 +475,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
             relLenGroup[0] = 0.0f;
 
             //get length and angle of line, which defines the shape
-            float length = getLineLength(pointGroup[0], pointGroup[segmentsCount - 1]);
+			float length = Vector2D.Distance(pointGroup[0], pointGroup[segmentsCount - 1]);// getLineLength(pointGroup[0], pointGroup[segmentsCount - 1]);
             float angle = (float)Math.Atan2(pointGroup[0].y - pointGroup[segmentsCount - 1].y, pointGroup[0].x - pointGroup[segmentsCount - 1].x);
 
             float curAngle, diff, segLen;
@@ -487,19 +487,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
                 p1 = pointGroup[i];
                 curAngle = (float)Math.Atan2(p0.y - p1.y, p0.x - p1.x);
                 diff = (angle + (float)Math.PI) - (curAngle + (float)Math.PI);
-                segLen = (int)(getLineLength(p0, p1) * Math.Cos(diff));
+				segLen = (int)(Vector2D.Distance(p0, p1) * Math.Cos(diff));
                 relLenGroup[i] = relLenGroup[i - 1] + segLen / length;
             }
 
             relLenGroup[pointGroup.Length - 1] = 1.0f;
 
             return relLenGroup;
-        }
-
-        private float getLineLength(Vector2D p0, Vector2D p1) {
-            float vx = Math.Abs(p0.x - p1.x);
-            float vy = Math.Abs(p0.y - p1.y);
-            return (float)Math.Sqrt(vx * vx + vy * vy);
         }
 
         //this returns relative handle location

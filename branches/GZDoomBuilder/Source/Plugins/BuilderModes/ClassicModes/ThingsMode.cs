@@ -318,6 +318,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						renderer.Finish();
 						renderer.Present();
 					}
+				//mxd
+				} else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedThingsCount > 0) {
+					General.Map.Map.ClearSelectedThings();
+					General.Interface.RedrawDisplay();
 				}
 			}
 
@@ -544,8 +548,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			bool selectionvolume = ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f));
 
-			if(BuilderPlug.Me.AutoClearSelection && !selectionvolume)
-				General.Map.Map.ClearSelectedThings();
+			//if(BuilderPlug.Me.AutoClearSelection && !selectionvolume)
+				//General.Map.Map.ClearSelectedThings();
 
 			if(selectionvolume)
 			{
