@@ -531,15 +531,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									Highlight(l.Front.Sector);
 							} else {
 								// Highlight nothing
-								if(highlighted != null)
-									Highlight(null);
+								if(highlighted != null)	Highlight(null);
 							}
 						}
-						else
-						{
-							// Highlight nothing
-							if(highlighted != null) Highlight(null);
-						}
+					} 
+					else 
+					{
+						// Highlight nothing
+						if(highlighted != null)	Highlight(null);
 					}
 				}
 			}
