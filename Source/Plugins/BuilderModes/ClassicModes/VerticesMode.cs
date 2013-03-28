@@ -395,7 +395,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					StartMultiSelection();
 				}
 			}
-			if(paintselectpressed && !editpressed && !selecting)  //mxd. Drag-select
+			else if(paintselectpressed && !editpressed && !selecting)  //mxd. Drag-select
 			{
 				// Find the nearest thing within highlight range
 				Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);

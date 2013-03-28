@@ -70,6 +70,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Labels
 		private Dictionary<Sector, TextLabel[]> labels;
+
+		// Interface
+		private bool editpressed; //mxd
 		
 		// Modifying
 		private ModifyMode mode;
@@ -354,6 +357,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
 			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.BrightnessGradientMode); //mxd
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 
 			// Make custom presentation
 			CustomPresentation p = new CustomPresentation();
@@ -387,6 +391,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
 			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.BrightnessGradientMode); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 
 			// Keep only sectors selected
 			General.Map.Map.ClearSelectedLinedefs();
@@ -446,21 +451,89 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnMouseMove(e);
 			
 			// Not in any editing mode?
-			if((mode == ModifyMode.None) && (e.Button == MouseButtons.None))
-			{
-				// Find the nearest linedef within highlight range
-				Linedef l = General.Map.Map.NearestLinedef(mousemappos);
-				if(l != null)
+			if(mode == ModifyMode.None) {
+
+				//mxd
+				if(selectpressed && !editpressed && !selecting) {
+					// Check if moved enough pixels for multiselect
+					Vector2D delta = mousedownpos - mousepos;
+					if((Math.Abs(delta.x) > MULTISELECT_START_MOVE_PIXELS) ||
+					   (Math.Abs(delta.y) > MULTISELECT_START_MOVE_PIXELS)) {
+						// Start multiselecting
+						StartMultiSelection();
+					}
+				} 
+				else if(paintselectpressed && !editpressed && !selecting) //mxd. Drag-select
 				{
-					// Check on which side of the linedef the mouse is
-					float side = l.SideOfLine(mousemappos);
-					if(side > 0)
-					{
-						// Is there a sidedef here?
-						if(l.Back != null)
-						{
-							// Highlight if not the same
-							if(l.Back.Sector != highlighted) Highlight(l.Back.Sector);
+					// Find the nearest linedef within highlight range
+					Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
+					Sector s = null;
+
+					if(l != null) {
+						// Check on which side of the linedef the mouse is
+						float side = l.SideOfLine(mousemappos);
+						if(side > 0) {
+							// Is there a sidedef here?
+							if(l.Back != null)
+								s = l.Back.Sector;
+						} else {
+							// Is there a sidedef here?
+							if(l.Front != null)
+								s = l.Front.Sector;
+						}
+
+						if(s != null) {
+							if(s != highlighted) {
+								//toggle selected state
+								highlighted = s;
+								if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
+									SelectSector(highlighted, true, true);
+								else if(General.Interface.CtrlState)
+									SelectSector(highlighted, false, true);
+								else
+									SelectSector(highlighted, !highlighted.Selected, true);
+
+								// Update entire display
+								General.Interface.RedrawDisplay();
+							}
+						} else if(highlighted != null) {
+							highlighted = null;
+							Highlight(null);
+
+							// Update entire display
+							General.Interface.RedrawDisplay();
+						}
+					}
+				} 
+				else if(e.Button == MouseButtons.None) 
+				{
+					// Find the nearest linedef within highlight range
+					Linedef l = General.Map.Map.NearestLinedef(mousemappos);
+					if(l != null) {
+						// Check on which side of the linedef the mouse is
+						float side = l.SideOfLine(mousemappos);
+						if(side > 0) {
+							// Is there a sidedef here?
+							if(l.Back != null) {
+								// Highlight if not the same
+								if(l.Back.Sector != highlighted)
+									Highlight(l.Back.Sector);
+							} else {
+								// Highlight nothing
+								if(highlighted != null)
+									Highlight(null);
+							}
+						} else {
+							// Is there a sidedef here?
+							if(l.Front != null) {
+								// Highlight if not the same
+								if(l.Front.Sector != highlighted)
+									Highlight(l.Front.Sector);
+							} else {
+								// Highlight nothing
+								if(highlighted != null)
+									Highlight(null);
+							}
 						}
 						else
 						{
@@ -468,25 +541,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							if(highlighted != null) Highlight(null);
 						}
 					}
-					else
-					{
-						// Is there a sidedef here?
-						if(l.Front != null)
-						{
-							// Highlight if not the same
-							if(l.Front.Sector != highlighted) Highlight(l.Front.Sector);
-						}
-						else
-						{
-							// Highlight nothing
-							if(highlighted != null) Highlight(null);
-						}
-					}
-				}
-				else
-				{
-					// Highlight nothing
-					if(highlighted != null) Highlight(null);
 				}
 			}
 			// Adjusting mode?
@@ -533,6 +587,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.Present();
 			}
 		}
+
+		//mxd
+		protected override void OnPaintSelectBegin() {
+			highlighted = null;
+			base.OnPaintSelectBegin();
+		}
 		
 		// Selecting with mouse
 		protected override void OnSelectBegin()
@@ -543,9 +603,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Item highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					// Flip selection
-					SelectSector(highlighted, !highlighted.Selected, true);
-
 					// Update display
 					if(renderer.StartPlotter(false))
 					{
@@ -554,11 +611,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						renderer.Finish();
 						renderer.Present();
 					}
-				}
-				else
-				{
-					// Start making a selection
-					StartMultiSelection();
 				}
 			}
 			
@@ -574,6 +626,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Item highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
+					//mxd. Flip selection
+					SelectSector(highlighted, !highlighted.Selected, true);
+					
 					// Update display
 					if(renderer.StartPlotter(false))
 					{
@@ -587,6 +642,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(TextLabel l in labelarray) l.Color = General.Colors.Highlight;
 					UpdateOverlay();
 					renderer.Present();
+				//mxd
+				} else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedSectorsCount > 0) {
+					General.Map.Map.ClearSelectedLinedefs();
+					General.Map.Map.ClearSelectedSectors();
+					General.Interface.RedrawDisplay();
 				}
 			}
 
@@ -598,61 +658,120 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			bool selectionvolume = ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f));
 
-			if(BuilderPlug.Me.AutoClearSelection && !selectionvolume)
+			/*if(BuilderPlug.Me.AutoClearSelection && !selectionvolume)
 			{
 				General.Map.Map.ClearSelectedLinedefs();
 				General.Map.Map.ClearSelectedSectors();
-			}
+			}*/
 
 			if(selectionvolume)
 			{
-				if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
-				{
-					// Go for all lines
-					foreach(Linedef l in General.Map.Map.Linedefs)
-					{
-						l.Selected |= ((l.Start.Position.x >= selectionrect.Left) &&
-									   (l.Start.Position.y >= selectionrect.Top) &&
-									   (l.Start.Position.x <= selectionrect.Right) &&
-									   (l.Start.Position.y <= selectionrect.Bottom) &&
-									   (l.End.Position.x >= selectionrect.Left) &&
-									   (l.End.Position.y >= selectionrect.Top) &&
-									   (l.End.Position.x <= selectionrect.Right) &&
-									   (l.End.Position.y <= selectionrect.Bottom));
-					}
-				}
-				else
-				{
-					// Go for all lines
-					foreach(Linedef l in General.Map.Map.Linedefs)
-					{
-						l.Selected = ((l.Start.Position.x >= selectionrect.Left) &&
-									  (l.Start.Position.y >= selectionrect.Top) &&
-									  (l.Start.Position.x <= selectionrect.Right) &&
-									  (l.Start.Position.y <= selectionrect.Bottom) &&
-									  (l.End.Position.x >= selectionrect.Left) &&
-									  (l.End.Position.y >= selectionrect.Top) &&
-									  (l.End.Position.x <= selectionrect.Right) &&
-									  (l.End.Position.y <= selectionrect.Bottom));
-					}
-				}
-				
-				// Go for all sectors
-				foreach(Sector s in General.Map.Map.Sectors)
-				{
-					// Go for all sidedefs
-					bool allselected = true;
-					foreach(Sidedef sd in s.Sidedefs)
-					{
-						if(!sd.Line.Selected)
-						{
-							allselected = false;
-							break;
+				//mxd. collect changed sectors
+				if(subtractiveSelection) {
+					//deselect sectors fully and partially inside selection, leave others untouched 
+					if(BuilderPlug.Me.MarqueSelectTouching) {
+						foreach(Sector s in General.Map.Map.Sectors) {
+							if(!s.Selected)
+								continue;
+							bool deselect = false;
+
+							foreach(Sidedef sd in s.Sidedefs) {
+								if(selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
+									deselect = true;
+									break;
+								}
+							}
+
+							if(deselect)
+								SelectSector(s, false, false);
+						}
+					} else {
+						//deselect sectors fully inside selection, leave others untouched 
+						foreach(Sector s in General.Map.Map.Sectors) {
+							if(!s.Selected)	continue;
+							bool deselect = true;
+
+							foreach(Sidedef sd in s.Sidedefs) {
+								if(!selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || !selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
+									deselect = false;
+									break;
+								}
+							}
+
+							if(deselect)
+								SelectSector(s, false, false);
 						}
 					}
-					
-					// Sector completely selected?
-					SelectSector(s, allselected, false);
+				} else { //additive selection
+					if(BuilderPlug.Me.MarqueSelectTouching) {
+						//select sectors fully and partially inside selection, leave others untouched 
+						if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect) {
+							foreach(Sector s in General.Map.Map.Sectors) {
+								if(s.Selected)	continue;
+								bool select = false;
+
+								foreach(Sidedef sd in s.Sidedefs) {
+									if(selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
+										select = true;
+										break;
+									}
+								}
+
+								if(select)
+									SelectSector(s, true, false);
+							}
+						} else {//select sectors fully and partially inside selection, deselect all other sectors
+							foreach(Sector s in General.Map.Map.Sectors) {
+								bool select = false;
+
+								foreach(Sidedef sd in s.Sidedefs) {
+									if(selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
+										select = true;
+										break;
+									}
+								}
+
+								if(select && !s.Selected)
+									SelectSector(s, true, false);
+								else if(!select && s.Selected)
+									SelectSector(s, false, false);
+							}
+						}
+					} else {
+						//select sectors fully inside selection, leave others untouched 
+						if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect) {
+							foreach(Sector s in General.Map.Map.Sectors) {
+								if(s.Selected)	continue;
+								bool select = true;
+
+								foreach(Sidedef sd in s.Sidedefs) {
+									if(!selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || !selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
+										select = false;
+										break;
+									}
+								}
+
+								if(select)
+									SelectSector(s, true, false);
+							}
+						} else {//select sectors fully inside selection, deselect all other sectors
+							foreach(Sector s in General.Map.Map.Sectors) {
+								bool select = true;
+
+								foreach(Sidedef sd in s.Sidedefs) {
+									if(!selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || !selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
+										select = false;
+										break;
+									}
+								}
+
+								if(select && !s.Selected)
+									SelectSector(s, true, false);
+								else if(!select && s.Selected)
+									SelectSector(s, false, false);
+							}
+						}
+					}
 				}
 				
 				// Make sure all linedefs reflect selected sectors
@@ -686,6 +805,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnEditBegin()
 		{
 			base.OnEditBegin();
+
+			// Edit pressed in this mode
+			editpressed = true; //mxd
 			
 			// No selection?
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
@@ -736,6 +858,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnEditEnd()
 		{
 			base.OnEditEnd();
+			editpressed = false; //mxd
 			
 			// Stop editing
 			mode = ModifyMode.None;
