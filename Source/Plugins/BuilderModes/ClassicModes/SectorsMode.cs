@@ -555,6 +555,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(TextLabel l in labelarray) l.Color = General.Colors.Highlight;
 					UpdateOverlay();
 					renderer.Present();
+				//mxd
+				} else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedSectorsCount > 0) {
+					General.Map.Map.ClearSelectedLinedefs();
+					General.Map.Map.ClearSelectedSectors();
+					General.Interface.RedrawDisplay();
 				}
 			}
 
@@ -819,11 +824,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			bool selectionvolume = ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f));
 
-			if(BuilderPlug.Me.AutoClearSelection && !selectionvolume)
+			/*if(BuilderPlug.Me.AutoClearSelection && !selectionvolume)
 			{
 				General.Map.Map.ClearSelectedLinedefs();
 				General.Map.Map.ClearSelectedSectors();
-			}
+			}*/
 
 			if(selectionvolume)
 			{
