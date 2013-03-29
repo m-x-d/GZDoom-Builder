@@ -105,8 +105,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Interpret the number given
 			int action = 0;
-			if(int.TryParse(value, out action))
+			int[] args = null;
+			string[] parts = value.Split(';');
+			bool match;
+			string argtext;
+
+			//For the search, the user may make the following query:
+			//	action;arg0,arg1,arg2,arg3,arg4
+			//
+			//this allows users to search for lines that contain actions with specific arguments.
+			//useful for locating script lines
+			//
+			//Since the Linedef object does not contain a reference to arg0str, this search cannot match named scripts
+
+			if(int.TryParse(parts[0], out action))
 			{
+				//parse the arg value out
+				if (parts.Length > 1) {
+					args = new int[] {0, 0, 0, 0, 0};
+					string[] argparts = parts[1].Split(',');
+					int argout;
+					for(int i = 0; i < argparts.Length && i < args.Length; i++) {
+						if (int.TryParse(argparts[i], out argout)) {
+							args[i] = argout;
+						}
+					}
+				}
+
 				// Where to search?
 				ICollection<Linedef> list = withinselection ? General.Map.Map.GetSelectedLinedefs(true) : General.Map.Map.Linedefs;
 
@@ -116,15 +141,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Action matches?
 					if(l.Action == action)
 					{
-						// Replace
-						if(replacewith != null) l.Action = replaceaction;
+						match = true;
+						argtext = "";
 
-						// Add to list
-						LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
-						if(!info.IsNull)
-							objs.Add(new FindReplaceObject(l, "Linedef " + l.Index + " (" + info.Title + ")"));
-						else
-							objs.Add(new FindReplaceObject(l, "Linedef " + l.Index));
+						//if args were specified, then process them
+						if (args != null) {
+							argtext = " args: (";
+							for (int x = 0; x < args.Length; x++)
+							{
+								if (args[x] != 0 && args[x] != l.Args[x]) {
+									match = false;
+									break;
+								}
+								argtext += (x == 0 ? "" : ",") + l.Args[x].ToString();
+							}
+							argtext += ")";
+						}
+
+						if (match) {
+							// Replace
+							if (replacewith != null) l.Action = replaceaction;
+
+							// Add to list
+							LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
+							if (!info.IsNull)
+								objs.Add(new FindReplaceObject(l, "Linedef " + l.Index + " (" + info.Title + ")" + argtext));
+							else
+								objs.Add(new FindReplaceObject(l, "Linedef " + l.Index + argtext));
+						}
 					}
 				}
 			}

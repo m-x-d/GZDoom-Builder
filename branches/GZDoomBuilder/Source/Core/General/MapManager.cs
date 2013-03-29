@@ -89,6 +89,7 @@ namespace CodeImp.DoomBuilder {
         //mxd
         private List<ScriptItem> namedScripts;
         private List<ScriptItem> numberedScripts;
+        private List<string> scriptincludes;
 
         // Disposing
         private bool isdisposed = false;
@@ -132,6 +133,8 @@ namespace CodeImp.DoomBuilder {
             } 
         }
         internal List<ScriptItem> NumberedScripts { get { return numberedScripts; } }
+        internal List<string> ScriptIncludes { get { return scriptincludes; } }
+       
 		public ViewMode ViewMode { get { return renderer2d.ViewMode; } }
 
         #endregion
@@ -159,6 +162,7 @@ namespace CodeImp.DoomBuilder {
             //mxd
             numberedScripts = new List<ScriptItem>();
             namedScripts = new List<ScriptItem>();
+            scriptincludes = new List<string>();
         }
 
         // Disposer
@@ -1398,6 +1402,7 @@ namespace CodeImp.DoomBuilder {
                         parser.Parse(stream, "SCRIPTS", true);
                         namedScripts.AddRange(parser.NamedScripts);
                         numberedScripts.AddRange(parser.NumberedScripts);
+                        scriptincludes.AddRange(parser.Includes);
                     }
                 }
             }
@@ -1410,7 +1415,7 @@ namespace CodeImp.DoomBuilder {
         //mxd
         private void updateScriptsFromLocation(AcsParserSE parser, string path) {
             MemoryStream s = General.Map.Data.LoadFile(path);
-            if(s != null && s.Length > 0) parser.Parse(s, path, true);
+            if(s != null && s.Length > 0) parser.Parse(s, path, true, true);
         }
 
         #endregion

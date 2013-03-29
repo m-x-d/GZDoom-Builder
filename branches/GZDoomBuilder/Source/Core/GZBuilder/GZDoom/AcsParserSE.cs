@@ -16,6 +16,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
         internal IncludeDelegate OnInclude;
 
         private List<string> parsedLumps;
+        private List<string> includes;
         
         private List<ScriptItem> namedScripts;
         private List<ScriptItem> numberedScripts;
@@ -27,18 +28,29 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
             namedScripts = new List<ScriptItem>();
             numberedScripts = new List<ScriptItem>();
             parsedLumps = new List<string>();
+            includes = new List<string>();
+        }
+
+        internal List<string> Includes {
+           get { return includes; }
         }
 
         public override bool Parse(Stream stream, string sourcefilename) {
-            return Parse(stream, sourcefilename, false);
+            return Parse(stream, sourcefilename, false, false);
         }
 
         public bool Parse(Stream stream, string sourcefilename, bool processIncludes) {
+            return Parse(stream, sourcefilename, processIncludes, false);
+        }
+
+        public bool Parse(Stream stream, string sourcefilename, bool processIncludes, bool isinclude) {
             base.Parse(stream, sourcefilename);
 
             //already parsed this?
             if (parsedLumps.IndexOf(sourcefilename) != -1) return false;
             parsedLumps.Add(sourcefilename);
+            if (isinclude)
+               includes.Add(sourcefilename);
 
             // Keep local data
             Stream localstream = datastream;
