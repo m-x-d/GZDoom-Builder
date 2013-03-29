@@ -114,8 +114,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Interpret the number given
 			int findaction = 0;
-			if(int.TryParse(value, out findaction))
+			int[] args = null;
+			string[] parts = value.Split(';');
+			bool match;
+			string argtext;
+			
+			//For the search, the user may make the following query:
+			//	action;arg0,arg1,arg2,arg3,arg4
+			//
+			//this allows users to search for things that contain actions with specific arguments.
+			//useful for locating enemies that trigger a certain script
+			//
+			//Since the Thing object does not contain a reference to arg0str, this search cannot match named scripts
+			
+
+			if (int.TryParse(parts[0], out findaction))
 			{
+				//parse the arg value out
+				if (parts.Length > 1)
+				{
+					args = new int[] { 0, 0, 0, 0, 0 };
+					string[] argparts = parts[1].Split(',');
+					int argout;
+					for (int i = 0; i < argparts.Length && i < args.Length; i++)
+					{
+						if (int.TryParse(argparts[i], out argout))
+						{
+							args[i] = argout;
+						}
+					}
+				}
+
 				// Where to search?
 				ICollection<Thing> list = withinselection ? General.Map.Map.GetSelectedThings(true) : General.Map.Map.Things;
 
@@ -125,12 +154,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Match?
 					if(t.Action == findaction)
 					{
-						// Replace
-						if(replacewith != null) t.Action = replaceaction;
+						match = true;
+						argtext = "";
 
-						// Add to list
-						ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
-						objs.Add(new FindReplaceObject(t, "Thing " + t.Index + " (" + ti.Title + ")"));
+						//if args were specified, then process them
+						if (args != null) {
+							argtext = " args: (";
+							for (int x = 0; x < args.Length; x++)
+							{
+								if (args[x] != 0 && args[x] != t.Args[x]) {
+									match = false;
+									break;
+								}
+								argtext += (x == 0 ? "" : ",") + t.Args[x].ToString();
+							}
+							argtext += ")";
+						}
+
+						if (match)
+						{
+							// Replace
+							if (replacewith != null) t.Action = replaceaction;
+
+							// Add to list
+							ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
+							objs.Add(new FindReplaceObject(t, "Thing " + t.Index + " (" + ti.Title + ")" + argtext));
+						}
 					}
 				}
 			}
