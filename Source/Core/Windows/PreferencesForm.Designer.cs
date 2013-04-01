@@ -812,9 +812,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolbar_gzdoom.AutoSize = true;
 			this.toolbar_gzdoom.Location = new System.Drawing.Point(188, 137);
 			this.toolbar_gzdoom.Name = "toolbar_gzdoom";
-			this.toolbar_gzdoom.Size = new System.Drawing.Size(104, 18);
+			this.toolbar_gzdoom.Size = new System.Drawing.Size(75, 18);
 			this.toolbar_gzdoom.TabIndex = 50;
-			this.toolbar_gzdoom.Text = "GZDoom toolbar";
+			this.toolbar_gzdoom.Text = "Rendering";
 			this.toolbar_gzdoom.UseVisualStyleBackColor = true;
 			// 
 			// toolbar_file

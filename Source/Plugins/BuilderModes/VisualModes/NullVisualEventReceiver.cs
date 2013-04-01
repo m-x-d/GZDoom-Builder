@@ -151,5 +151,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			return "";
 		}
+
+		public void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
+		public bool IsSelected() { return false; } //mxd
 	}
 }

@@ -104,6 +104,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return height;
 		}
 
+		//mxd
+		public virtual bool IsSelected() {
+			return selected;
+		}
+
 		#region ================== Object picking
 
 		// This performs a fast test in object picking
@@ -219,6 +224,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void ApplyUpperUnpegged(bool set) { }
 		public virtual void ApplyLowerUnpegged(bool set) { }
 		public virtual string GetTextureName() { return ""; }
+		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
 
 		#endregion
 

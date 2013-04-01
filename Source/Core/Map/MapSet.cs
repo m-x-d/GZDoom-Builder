@@ -84,6 +84,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		//mxd
 		private Sector[] newSectors;
+		private GroupInfo[] groupInfos;
 		
 		// Behavior
 		private int freezearrays;
@@ -165,7 +166,9 @@ namespace CodeImp.DoomBuilder.Map
 
 		internal bool AutoRemove { get { return autoremove; } set { autoremove = value; } }
 
-		public Sector[] NewSectors { get { return newSectors; } }
+		public Sector[] NewSectors { get { return newSectors; } } //mxd
+
+		public GroupInfo[] GroupInfos { get { return groupInfos; } } //mxd
 
 		#endregion
 
@@ -188,6 +191,7 @@ namespace CodeImp.DoomBuilder.Map
 			lastsectorindex = 0;
 			autoremove = true;
 			newSectors = new Sector[0]; //mxd
+			groupInfos = new GroupInfo[10]; //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -210,6 +214,7 @@ namespace CodeImp.DoomBuilder.Map
 			lastsectorindex = 0;
 			autoremove = true;
 			newSectors = new Sector[0]; //mxd
+			groupInfos = new GroupInfo[10]; //mxd
 
 			// Deserialize
 			Deserialize(stream);
@@ -260,6 +265,7 @@ namespace CodeImp.DoomBuilder.Map
 				sel_things = null;
 				indexholes = null;
 				newSectors = null; //mxd
+				groupInfos = null; //mxd
 				
 				// Done
 				isdisposed = true;
@@ -1352,19 +1358,75 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>This adds the current selection to the specified selection group.</summary>
-		public void AddSelectionToGroup(int groupmask)
+		//mxd. switched groupmask to groupindex
+		public void AddSelectionToGroup(int groupindex)
 		{
+			//mxd
+			int numSectors = 0;
+			int numLines = 0;
+			int numVerts = 0;
+			int numThings = 0;
+			int groupmask = 0x01 << groupindex;
+
+			foreach(SelectableElement e in vertices) {
+				if(e.Selected) {
+					numVerts++;//mxd
+					e.AddToGroup(groupmask);
+				}
+			}
+
+			foreach(SelectableElement e in linedefs) {
+				if(e.Selected) {
+					numLines++;//mxd
+					e.AddToGroup(groupmask);
+				}
+			}
+
+			foreach(SelectableElement e in sectors) {
+				if(e.Selected) {
+					numSectors++;//mxd
+					e.AddToGroup(groupmask); 
+				}
+			}
+
+			foreach(SelectableElement e in things) {
+				if(e.Selected) {
+					numThings++;//mxd
+					e.AddToGroup(groupmask);
+				}
+			}
+
+			//mxd
+			if(numSectors > 0 || numLines > 0 || numThings > 0 || numVerts > 0) {
+				if(groupInfos[groupindex] != null)
+					groupInfos[groupindex].Append(numSectors, numLines, numVerts, numThings);
+				else
+					groupInfos[groupindex] = new GroupInfo(numSectors, numLines, numVerts, numThings);
+			}
+		}
+
+		//mxd
+		public void ClearGroup(int groupmask, int groupindex) {
 			foreach(SelectableElement e in vertices)
-				if(e.Selected) e.AddToGroup(groupmask);
-			
+				e.RemoveFromGroup(groupmask);
+
 			foreach(SelectableElement e in linedefs)
-				if(e.Selected) e.AddToGroup(groupmask);
-			
+				e.RemoveFromGroup(groupmask);
+
 			foreach(SelectableElement e in sectors)
-				if(e.Selected) e.AddToGroup(groupmask);
-			
+				e.RemoveFromGroup(groupmask);
+
 			foreach(SelectableElement e in things)
-				if(e.Selected) e.AddToGroup(groupmask);
+				e.RemoveFromGroup(groupmask);
+
+			groupInfos[groupindex] = null;
+		}
+
+		//mxd
+		public bool HaveSelectionGroups() {
+			foreach(GroupInfo info in groupInfos)
+				if(info != null) return true;
+			return false;
 		}
 		
 		#endregion

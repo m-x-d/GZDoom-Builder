@@ -1103,13 +1103,13 @@ namespace CodeImp.DoomBuilder {
         private void AddSelectionToGroup(int groupindex) {
             General.Interface.SetCursor(Cursors.WaitCursor);
 
-            // Make undo
-            undoredo.CreateUndo("Assign to group " + groupindex);
+            // Make undo. mxd: group assignment is not recorded
+            //undoredo.CreateUndo("Assign to group " + (groupindex + 1));
 
             // Make selection
-            map.AddSelectionToGroup(0x01 << groupindex);
+			map.AddSelectionToGroup(groupindex); //mxd. switched groupmask to groupindex
 
-            General.Interface.DisplayStatus(StatusType.Action, "Assigned selection to group " + groupindex);
+			General.Interface.DisplayStatus(StatusType.Action, "Assigned selection to group " + (groupindex + 1));
             General.Interface.SetCursor(Cursors.Default);
         }
 
@@ -1123,9 +1123,20 @@ namespace CodeImp.DoomBuilder {
             map.SelectThingsByGroup(groupmask);
 
             // Redraw to show selection
-            General.Interface.DisplayStatus(StatusType.Action, "Selected group " + groupindex);
+			General.Interface.DisplayStatus(StatusType.Action, "Selected group " + (groupindex + 1));
             General.Interface.RedrawDisplay();
         }
+
+		//mxd. This clears a group
+		private void ClearGroup(int groupindex) {
+			General.Interface.SetCursor(Cursors.WaitCursor);
+
+			// Clear group
+			map.ClearGroup(0x01 << groupindex, groupindex);
+
+			General.Interface.DisplayStatus(StatusType.Action, "Cleared group " + (groupindex + 1));
+			General.Interface.SetCursor(Cursors.Default);
+		}
 
         // Select actions
         [BeginAction("selectgroup1")]
@@ -1170,6 +1181,28 @@ namespace CodeImp.DoomBuilder {
         internal void AssignGroup9() { AddSelectionToGroup(8); }
         [BeginAction("assigngroup10")]
         internal void AssignGroup10() { AddSelectionToGroup(9); }
+
+		//mxd. Clear actions
+		[BeginAction("cleargroup1")]
+		internal void ClearGroup1() { ClearGroup(0); }
+		[BeginAction("cleargroup2")]
+		internal void ClearGroup2() { ClearGroup(1); }
+		[BeginAction("cleargroup3")]
+		internal void ClearGroup3() { ClearGroup(2); }
+		[BeginAction("cleargroup4")]
+		internal void ClearGroup4() { ClearGroup(3); }
+		[BeginAction("cleargroup5")]
+		internal void ClearGroup5() { ClearGroup(4); }
+		[BeginAction("cleargroup6")]
+		internal void ClearGroup6() { ClearGroup(5); }
+		[BeginAction("cleargroup7")]
+		internal void ClearGroup7() { ClearGroup(6); }
+		[BeginAction("cleargroup8")]
+		internal void ClearGroup8() { ClearGroup(7); }
+		[BeginAction("cleargroup9")]
+		internal void ClearGroup9() { ClearGroup(8); }
+		[BeginAction("cleargroup10")]
+		internal void ClearGroup10() { ClearGroup(9); }
 
         #endregion
 
