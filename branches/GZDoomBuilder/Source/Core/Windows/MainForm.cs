@@ -143,6 +143,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private EventHandler buttonvisiblechangedhandler;
 		private bool preventupdateseperators;
 		private bool updatingfilters;
+		private bool toolbarContextMenuShiftPressed; //mxd
 		
 		// Statusbar
 		private StatusInfo status;
@@ -220,6 +221,8 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonvisiblechangedhandler = new EventHandler(ToolbarButtonVisibleChanged);
 			//mxd
 			display.OnKeyReleased += new KeyEventHandler(display_OnKeyReleased);
+			toolbarContextMenu.KeyDown += new KeyEventHandler(toolbarContextMenu_KeyDown);
+			toolbarContextMenu.KeyUp += new KeyEventHandler(toolbarContextMenu_KeyUp);
 			
 			// Bind any methods
 			General.Actions.BindMethods(this);
@@ -1685,6 +1688,8 @@ namespace CodeImp.DoomBuilder.Windows
             buttontoggleanimatedlight.Visible = General.Settings.GZToolbarGZDoom;
             buttontogglefx.Visible = General.Settings.GZToolbarGZDoom;
             buttontogglefog.Visible = General.Settings.GZToolbarGZDoom;
+			buttontoggleeventlines.Visible = General.Settings.GZToolbarGZDoom;
+			buttontogglevisualvertices.Visible = General.Settings.GZToolbarGZDoom;
             separatorgzmodes.Visible = General.Settings.GZToolbarGZDoom;
 
 
@@ -1844,6 +1849,115 @@ namespace CodeImp.DoomBuilder.Windows
 				buttontogglevisualvertices.Enabled = false;
             }
         }
+
+		#endregion
+
+		#region Toolbar context menu (mxd)
+
+		private void toolbarContextMenu_Opening(object sender, CancelEventArgs e) {
+			toggleFile.Image = General.Settings.ToolbarFile ? Resources.Check : null;
+			toggleScript.Image = General.Settings.ToolbarScript ? Resources.Check : null;
+			toggleUndo.Image = General.Settings.ToolbarUndo ? Resources.Check : null;
+			toggleCopy.Image = General.Settings.ToolbarCopy ? Resources.Check : null;
+			togglePrefabs.Image = General.Settings.ToolbarPrefabs ? Resources.Check : null;
+			toggleFilter.Image = General.Settings.ToolbarFilter ? Resources.Check : null;
+			toggleViewModes.Image = General.Settings.ToolbarViewModes ? Resources.Check : null;
+			toggleGeometry.Image = General.Settings.ToolbarGeometry ? Resources.Check : null;
+			toggleTesting.Image = General.Settings.ToolbarTesting ? Resources.Check : null;
+			toggleRendering.Image = General.Settings.GZToolbarGZDoom ? Resources.Check : null;
+		}
+
+		private void toolbarContextMenu_Closing(object sender, ToolStripDropDownClosingEventArgs e) {
+			e.Cancel = toolbarContextMenuShiftPressed;
+		}
+
+		private void toolbarContextMenu_KeyDown(object sender, KeyEventArgs e) {
+			toolbarContextMenuShiftPressed = e.KeyCode == Keys.ShiftKey;
+		}
+
+		private void toolbarContextMenu_KeyUp(object sender, KeyEventArgs e) {
+			toolbarContextMenuShiftPressed = !(e.KeyCode == Keys.ShiftKey);
+		}
+
+		private void toggleFile_Click(object sender, EventArgs e) {
+			General.Settings.ToolbarFile = !General.Settings.ToolbarFile;
+			UpdateToolbar();
+
+			if(toolbarContextMenuShiftPressed) 
+				toggleFile.Image = General.Settings.ToolbarFile ? Resources.Check : null;
+		}
+
+		private void toggleScript_Click(object sender, EventArgs e) {
+			General.Settings.ToolbarScript = !General.Settings.ToolbarScript;
+			UpdateToolbar();
+
+			if(toolbarContextMenuShiftPressed) 
+				toggleScript.Image = General.Settings.ToolbarScript ? Resources.Check : null;
+		}
+
+		private void toggleUndo_Click(object sender, EventArgs e) {
+			General.Settings.ToolbarUndo = !General.Settings.ToolbarUndo;
+			UpdateToolbar();
+
+			if(toolbarContextMenuShiftPressed) 
+				toggleUndo.Image = General.Settings.ToolbarUndo ? Resources.Check : null;
+		}
+
+		private void toggleCopy_Click(object sender, EventArgs e) {
+			General.Settings.ToolbarCopy = !General.Settings.ToolbarCopy;
+			UpdateToolbar();
+
+			if(toolbarContextMenuShiftPressed) 
+				toggleCopy.Image = General.Settings.ToolbarCopy ? Resources.Check : null;
+		}
+
+		private void togglePrefabs_Click(object sender, EventArgs e) {
+			General.Settings.ToolbarPrefabs = !General.Settings.ToolbarPrefabs;
+			UpdateToolbar();
+
+			if(toolbarContextMenuShiftPressed) 
+				togglePrefabs.Image = General.Settings.ToolbarPrefabs ? Resources.Check : null;
+		}
+
+		private void toggleFilter_Click(object sender, EventArgs e) {
+			General.Settings.ToolbarFilter = !General.Settings.ToolbarFilter;
+			UpdateToolbar();
+
+			if(toolbarContextMenuShiftPressed) 
+				toggleFilter.Image = General.Settings.ToolbarFilter ? Resources.Check : null;
+		}
+
+		private void toggleViewModes_Click(object sender, EventArgs e) {
+			General.Settings.ToolbarViewModes = !General.Settings.ToolbarViewModes;
+			UpdateToolbar();
+
+			if(toolbarContextMenuShiftPressed) 
+				toggleViewModes.Image = General.Settings.ToolbarViewModes ? Resources.Check : null;
+		}
+
+		private void toggleGeometry_Click(object sender, EventArgs e) {
+			General.Settings.ToolbarGeometry = !General.Settings.ToolbarGeometry;
+			UpdateToolbar();
+
+			if(toolbarContextMenuShiftPressed) 
+				toggleGeometry.Image = General.Settings.ToolbarGeometry ? Resources.Check : null;
+		}
+
+		private void toggleTesting_Click(object sender, EventArgs e) {
+			General.Settings.ToolbarTesting = !General.Settings.ToolbarTesting;
+			UpdateToolbar();
+
+			if(toolbarContextMenuShiftPressed) 
+				toggleTesting.Image = General.Settings.ToolbarTesting ? Resources.Check : null;
+		}
+
+		private void toggleRendering_Click(object sender, EventArgs e) {
+			General.Settings.GZToolbarGZDoom = !General.Settings.GZToolbarGZDoom;
+			UpdateToolbar();
+
+			if(toolbarContextMenuShiftPressed) 
+				toggleRendering.Image = General.Settings.GZToolbarGZDoom ? Resources.Check : null;
+		}
 
 		#endregion
 
@@ -2173,6 +2287,9 @@ namespace CodeImp.DoomBuilder.Windows
 			itemgriddec.Enabled = (General.Map != null);
 			itemSetCurrentTextures.Enabled = (General.Map != null); //mxd
 			itemviewusedtags.Enabled = (General.Map != null); //mxd
+			addToGroup.Enabled = (General.Map != null); //mxd
+			selectGroup.Enabled = (General.Map != null); //mxd
+			clearGroup.Enabled = (General.Map != null); //mxd
 
 			// Determine undo description
 			if(itemundo.Enabled)
@@ -2196,6 +2313,34 @@ namespace CodeImp.DoomBuilder.Windows
 			buttoncut.Enabled = itemcut.Enabled;
 			buttoncopy.Enabled = itemcopy.Enabled;
 			buttonpaste.Enabled = itempaste.Enabled;
+		}
+
+		//mxd
+		private void addToGroup_DropDownOpening(object sender, EventArgs e) {
+			for(int i = 0; i < addToGroup.DropDown.Items.Count; i++)
+				addToGroup.DropDown.Items[i].Text = (i + 1) + ": " + (General.Map.Map.GroupInfos[i] == null ? " Empty" : General.Map.Map.GroupInfos[i].ToString());
+		}
+
+		//mxd
+		private void selectGroup_DropDownOpening(object sender, EventArgs e) {
+			ToolStripMenuItem menu = sender as ToolStripMenuItem;
+
+			for(int i = 0; i < menu.DropDown.Items.Count; i++) {
+				if(General.Map.Map.GroupInfos[i] == null) {
+					menu.DropDown.Items[i].Visible = false;
+				} else {
+					menu.DropDown.Items[i].Visible = true;
+					menu.DropDown.Items[i].Text = (i + 1) + ": " + General.Map.Map.GroupInfos[i].ToString();
+				}
+			}
+		}
+
+		//mxd
+		private void menuedit_DropDownOpening(object sender, EventArgs e) {
+			if(General.Map == null) return;
+			bool haveGroups = General.Map.Map.HaveSelectionGroups();
+			selectGroup.Enabled = haveGroups;
+			clearGroup.Enabled = haveGroups;
 		}
 
 		// Action to toggle snap to grid

@@ -100,6 +100,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// This changes the height
 		protected abstract void ChangeHeight(int amount);
+		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
 
 		// This swaps triangles so that the plane faces the other way
 		protected void SwapTriangleVertices(WorldVertex[] verts)
@@ -199,6 +200,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
 				vs.UpdateSectorGeometry(false);
 			}
+		}
+
+		//mxd
+		public virtual bool IsSelected() {
+			return selected;
 		}
 		
 		#endregion

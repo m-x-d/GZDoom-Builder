@@ -329,6 +329,45 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			level.sector.SetCeilTexture(texturename);
 			General.Map.Data.UpdateUsedTextures();
 		}
+
+		//mxd
+		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) {
+			if(!withSameTexture && !withSameHeight)	return;
+
+			if(select && !selected) {
+				selected = true;
+				mode.AddSelectedObject(this);
+			} else if(!select && selected) {
+				selected = false;
+				mode.RemoveSelectedObject(this);
+			}
+
+			List<Sector> neighbours = new List<Sector>();
+
+			//collect neighbour sectors
+			foreach(Sidedef side in level.sector.Sidedefs) {
+				if(side.Other != null && side.Other.Sector != level.sector && !neighbours.Contains(side.Other.Sector)) {
+					bool add = false;
+
+					if(withSameTexture && side.Other.Sector.CeilTexture == level.sector.CeilTexture) {
+						add = true;
+					}
+
+					if(withSameHeight) {
+						add = ((withSameTexture && add) || !withSameTexture) && side.Other.Sector.CeilHeight == level.sector.CeilHeight;
+					}
+
+					if(add) neighbours.Add(side.Other.Sector);
+				}
+			}
+
+			//(de)select neighbour sectors
+			foreach(Sector s in neighbours) {
+				BaseVisualSector vs = mode.GetVisualSector(s) as BaseVisualSector;
+				if((select && !vs.Ceiling.Selected) || (!select && vs.Ceiling.Selected))
+					vs.Ceiling.SelectNeighbours(select, withSameTexture, withSameHeight);
+			}
+		}
 		
 		#endregion
 	}

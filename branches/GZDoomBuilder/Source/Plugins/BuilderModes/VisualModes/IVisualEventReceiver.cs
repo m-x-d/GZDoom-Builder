@@ -70,5 +70,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Other methods
 		string GetTextureName();
+		void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight); //mxd
+		bool IsSelected(); //mxd
 	}
 }

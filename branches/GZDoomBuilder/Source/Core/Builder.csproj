@@ -753,6 +753,7 @@
       <DependentUpon>TagStatisticsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="IO\DoomColormapReader.cs" />
+    <Compile Include="Map\GroupInfo.cs" />
     <Compile Include="Map\SelectionType.cs" />
     <Compile Include="Map\MapElementCollection.cs" />
     <Compile Include="Rendering\SurfaceBufferSet.cs" />
@@ -852,6 +853,7 @@
     <None Include="Resources\Add.png" />
     <None Include="Resources\ArrowDown.png" />
     <None Include="Resources\ArrowUp.png" />
+    <None Include="Resources\Check.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\GZDB2.ico" />
     <None Include="Resources\fog.png" />

@@ -433,6 +433,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			u_ray = (tnear > 0.0f) ? tnear : tfar;
 			return true;
 		}
+
+		//mxd
+		public virtual bool IsSelected() {
+			return selected;
+		}
 		
 		#endregion
 
@@ -460,6 +465,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void ApplyTexture(string texture) { }
 		public virtual void ApplyUpperUnpegged(bool set) { }
 		public virtual void ApplyLowerUnpegged(bool set) { }
+		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
 		
 		// Return texture name
 		public virtual string GetTextureName() { return ""; }

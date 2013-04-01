@@ -396,6 +396,102 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 				
 		}
+
+		protected void selectNeighbours(string texture, bool select, bool withSameTexture, bool withSameHeight) {
+			if(!withSameTexture && !withSameHeight)
+				return;
+
+			if(select && !selected) {
+				selected = true;
+				mode.AddSelectedObject(this);
+			} else if(!select && selected) {
+				selected = false;
+				mode.RemoveSelectedObject(this);
+			}
+
+			//select
+			List<Linedef> connectedLines = new List<Linedef>();
+
+			foreach(Linedef line in Sidedef.Line.Start.Linedefs) {
+				if(line.Index == Sidedef.Line.Index)
+					continue;
+				connectedLines.Add(line);
+			}
+			foreach(Linedef line in Sidedef.Line.End.Linedefs) {
+				if(line.Index == Sidedef.Line.Index)
+					continue;
+				if(!connectedLines.Contains(line))
+					connectedLines.Add(line);
+			}
+
+			foreach(Linedef line in connectedLines) {
+				bool addFrontTop = false;
+				bool addFrontMiddle = false;
+				bool addFrontBottom = false;
+				bool addBackTop = false;
+				bool addBackMiddle = false;
+				bool addBackBottom = false;
+
+				if(withSameTexture) {
+					if(line.Front != null) {
+						if(line.Front.HighTexture == texture)
+							addFrontTop = true;
+
+						if(line.Front.MiddleTexture == texture)
+							addFrontMiddle = true;
+
+						if(line.Front.LowTexture == texture)
+							addFrontBottom = true;
+					}
+
+					if(line.Back != null) {
+						if(line.Back.HighTexture == texture)
+							addBackTop = true;
+
+						if(line.Back.MiddleTexture == texture)
+							addBackMiddle = true;
+
+						if(line.Back.LowTexture == texture)
+							addBackBottom = true;
+					}
+				}
+
+				if(withSameHeight) {
+					if(line.Front != null && line.Front.Sector.FloorHeight == Sidedef.Sector.FloorHeight && line.Front.Sector.CeilHeight == Sidedef.Sector.CeilHeight) {
+						addFrontTop = withSameTexture ? addFrontTop : true;
+						addFrontMiddle = withSameTexture ? addFrontMiddle : true;
+						addFrontBottom = withSameTexture ? addFrontBottom : true;
+					} else {
+						addFrontTop = false;
+						addFrontMiddle = false;
+						addFrontBottom = false;
+					}
+
+					if(line.Back != null && line.Back.Sector.FloorHeight == Sidedef.Sector.FloorHeight && line.Back.Sector.CeilHeight == Sidedef.Sector.CeilHeight) {
+						addBackTop = withSameTexture ? addBackTop : true;
+						addBackMiddle = withSameTexture ? addBackMiddle : true;
+						addBackBottom = withSameTexture ? addBackBottom : true;
+					} else {
+						addBackTop = false;
+						addBackMiddle = false;
+						addBackBottom = false;
+					}
+				}
+
+				//select front?
+				if(addFrontTop || addFrontMiddle || addFrontBottom)
+					mode.SelectSideParts(line.Front, addFrontTop, addFrontMiddle, addFrontBottom, select, withSameTexture, withSameHeight);
+
+				//select back?
+				if(addBackTop || addBackMiddle || addBackBottom)
+					mode.SelectSideParts(line.Back, addBackTop, addBackMiddle, addBackBottom, select, withSameTexture, withSameHeight);
+			}
+		}
+
+		//mxd
+		public virtual bool IsSelected() {
+			return selected;
+		}
 		
 		#endregion
 
@@ -409,6 +505,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected abstract void SetTextureOffsetY(int y);
 		protected abstract void MoveTextureOffset(Point xy);
 		protected abstract Point GetTextureOffset();
+		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
 		
 		// Insert middle texture
 		public virtual void OnInsert()
@@ -1000,7 +1097,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
 			parts.SetupAllParts();
 		}
-		
+
 		#endregion
 	}
 }

@@ -284,6 +284,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//rebuild sector
 			Sector.UpdateSectorGeometry(false);
 		}
+
+		//mxd
+		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) {
+			selectNeighbours(Sidedef.LowTexture, select, withSameTexture, withSameHeight);
+		}
 		
 		#endregion
 	}

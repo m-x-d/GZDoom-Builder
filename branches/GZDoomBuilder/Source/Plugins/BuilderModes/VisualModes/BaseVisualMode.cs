@@ -578,6 +578,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
             return translatedCoords;
         }
+
+		//mxd
+		internal void SelectSideParts(Sidedef side, bool toggleTop, bool toggleMid, bool toggleBottom, bool select, bool withSameTexture, bool withSameHeight) {
+			BaseVisualSector vs = GetVisualSector(side.Sector) as BaseVisualSector;
+			
+			if(toggleTop && vs.Sides[side].upper != null &&
+				((select && !vs.Sides[side].upper.Selected) || (!select && vs.Sides[side].upper.Selected))) {
+				vs.Sides[side].upper.SelectNeighbours(select, withSameTexture, withSameHeight);
+			}
+
+			if(toggleMid && vs.Sides[side].middlesingle != null &&
+				((select && !vs.Sides[side].middlesingle.Selected) || (!select && vs.Sides[side].middlesingle.Selected))) {
+				vs.Sides[side].middlesingle.SelectNeighbours(select, withSameTexture, withSameHeight);
+			}
+
+			if(toggleMid && vs.Sides[side].middledouble != null &&
+				((select && !vs.Sides[side].middledouble.Selected) || (!select && vs.Sides[side].middledouble.Selected))) {
+				vs.Sides[side].middledouble.SelectNeighbours(select, withSameTexture, withSameHeight);
+			}
+
+			if(toggleBottom && vs.Sides[side].lower != null &&
+				((select && !vs.Sides[side].lower.Selected) || (!select && vs.Sides[side].lower.Selected))) {
+				vs.Sides[side].lower.SelectNeighbours(select, withSameTexture, withSameHeight);
+			}
+		}
 		
 		#endregion
 
@@ -1530,7 +1555,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void EndSelect()
 		{
 			//PreActionNoChange();
-			GetTargetEventReceiver(true).OnSelectEnd();
+			IVisualEventReceiver target = GetTargetEventReceiver(true);
+			target.OnSelectEnd();
+
+			//mxd
+			if((General.Interface.ShiftState || General.Interface.CtrlState) && selectedobjects.Count > 0) {
+				IVisualEventReceiver[] selection = new IVisualEventReceiver[selectedobjects.Count];
+				selectedobjects.CopyTo(selection);
+
+				foreach(IVisualEventReceiver obj in selection)
+					obj.SelectNeighbours(target.IsSelected(), General.Interface.ShiftState, General.Interface.CtrlState);
+			}
+
 			Renderer.ShowSelection = true;
 			Renderer.ShowHighlight = true;
 			PostAction();

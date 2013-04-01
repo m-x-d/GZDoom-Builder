@@ -236,6 +236,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ToolbarViewModes = toolbar_viewmodes.Checked;
 			General.Settings.ToolbarGeometry = toolbar_geometry.Checked;
 			General.Settings.ToolbarTesting = toolbar_testing.Checked;
+			General.Settings.GZToolbarGZDoom = toolbar_gzdoom.Checked; //mxd
 			General.Settings.ShowTextureSizes = showtexturesizes.Checked;
 			
 			// Script font size
@@ -278,7 +279,6 @@ namespace CodeImp.DoomBuilder.Windows
 
             //mxd
             General.Settings.GZSynchCameras = cbSynchCameras.Checked;
-            General.Settings.GZToolbarGZDoom = toolbar_gzdoom.Checked;
             General.Settings.GZMaxDynamicLights = tbDynLightCount.Value;
             General.Settings.GZDynamicLightRadius = ((float)tbDynLightSize.Value / 10.0f);
             General.Settings.GZDynamicLightIntensity = ((float)tbDynLightIntensity.Value / 10.0f);
