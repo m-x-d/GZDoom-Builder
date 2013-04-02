@@ -1431,50 +1431,15 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 
 				//mxd
-				if(autoAlignTextureOffsets) {
+				if(autoAlignTextureOffsets && !General.Map.UDMF) {
 					//Auto-align new lines
 					if(newlines.Count > 1) {
-						float curLength = 0f;
 						float totalLength = 0f;
 
 						foreach(Linedef l in newlines)
 							totalLength += l.Length;
 
-						bool reversed = newlines[0].End != newlines[1].Start;
-
-						foreach(Linedef l in newlines) {
-							if(l.Front != null) {
-								ImageData texture = null;
-
-								if(l.Front.MiddleRequired() && l.Front.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.MiddleTexture)) {
-									texture = General.Map.Data.GetFlatImage(l.Front.MiddleTexture);
-								} else if(l.Front.HighRequired() && l.Front.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.HighTexture)) {
-									texture = General.Map.Data.GetFlatImage(l.Front.HighTexture);
-								} else if(l.Front.LowRequired() && l.Front.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.LowTexture)) {
-									texture = General.Map.Data.GetFlatImage(l.Front.LowTexture);
-								}
-
-								if(texture != null)
-									l.Front.OffsetX = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength));// % texture.Width);
-							}
-
-							if(l.Back != null) {
-								ImageData texture = null;
-
-								if(l.Back.MiddleRequired() && l.Back.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.MiddleTexture)) {
-									texture = General.Map.Data.GetFlatImage(l.Back.MiddleTexture);
-								} else if(l.Back.HighRequired() && l.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.HighTexture)) {
-									texture = General.Map.Data.GetFlatImage(l.Back.HighTexture);
-								} else if(l.Back.LowRequired() && l.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.LowTexture)) {
-									texture = General.Map.Data.GetFlatImage(l.Back.LowTexture);
-								}
-
-								if(texture != null)
-									l.Back.OffsetX = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength));// % texture.Width);
-							}
-
-							curLength += l.Length;
-						}
+						autoAlignTexturesOnSides(newlines, totalLength, (newlines[0].End != newlines[1].Start));
 					}
 				}
 
@@ -1491,38 +1456,6 @@ namespace CodeImp.DoomBuilder.Geometry
 					}
 				}
 
-				foreach(Linedef l in changedLines) {
-					if(l.Front != null) {
-						ImageData texture = null;
-
-						if(l.Front.MiddleRequired() && l.Front.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.MiddleTexture)) {
-							texture = General.Map.Data.GetFlatImage(l.Front.MiddleTexture);
-						} else if(l.Front.HighRequired() && l.Front.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.HighTexture)) {
-							texture = General.Map.Data.GetFlatImage(l.Front.HighTexture);
-						} else if(l.Front.LowRequired() && l.Front.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.LowTexture)) {
-							texture = General.Map.Data.GetFlatImage(l.Front.LowTexture);
-						}
-
-						if (texture != null)
-							l.Front.OffsetX %= texture.Width;
-					}
-
-					if(l.Back != null) {
-						ImageData texture = null;
-
-						if(l.Back.MiddleRequired() && l.Back.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.MiddleTexture)) {
-							texture = General.Map.Data.GetFlatImage(l.Back.MiddleTexture);
-						} else if(l.Back.HighRequired() && l.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.HighTexture)) {
-							texture = General.Map.Data.GetFlatImage(l.Back.HighTexture);
-						} else if(l.Back.LowRequired() && l.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.LowTexture)) {
-							texture = General.Map.Data.GetFlatImage(l.Back.LowTexture);
-						}
-
-						if (texture != null)
-							l.Back.OffsetX %= texture.Width;
-					}
-				}
-
 				// Mark new geometry only
 				General.Map.Map.ClearMarkedLinedefs(false);
 				General.Map.Map.ClearMarkedVertices(false);
@@ -1531,6 +1464,45 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 
 			return true;
+		}
+
+		//mxd
+		private static void autoAlignTexturesOnSides(List<Linedef> lines, float totalLength, bool reversed) {
+			float curLength = 0f;
+			
+			foreach(Linedef l in lines) {
+				if(l.Front != null) {
+					ImageData texture = null;
+
+					if(l.Front.MiddleRequired() && l.Front.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.MiddleTexture)) {
+						texture = General.Map.Data.GetFlatImage(l.Front.MiddleTexture);
+					} else if(l.Front.HighRequired() && l.Front.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.HighTexture)) {
+						texture = General.Map.Data.GetFlatImage(l.Front.HighTexture);
+					} else if(l.Front.LowRequired() && l.Front.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.LowTexture)) {
+						texture = General.Map.Data.GetFlatImage(l.Front.LowTexture);
+					}
+
+					if(texture != null)
+						l.Front.OffsetX = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
+				}
+
+				if(l.Back != null) {
+					ImageData texture = null;
+
+					if(l.Back.MiddleRequired() && l.Back.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.MiddleTexture)) {
+						texture = General.Map.Data.GetFlatImage(l.Back.MiddleTexture);
+					} else if(l.Back.HighRequired() && l.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.HighTexture)) {
+						texture = General.Map.Data.GetFlatImage(l.Back.HighTexture);
+					} else if(l.Back.LowRequired() && l.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.LowTexture)) {
+						texture = General.Map.Data.GetFlatImage(l.Back.LowTexture);
+					}
+
+					if(texture != null)
+						l.Back.OffsetX = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
+				}
+
+				curLength += l.Length;
+			}
 		}
 		
 		#endregion
@@ -1777,7 +1749,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		
 		#endregion
 
-		#region Thing Alignment (mxd)
+		#region ================== Thing Alignment (mxd)
 
 		public static bool TryAlignThingToLine(Thing t, Linedef l) {
 			if(l.Back == null) {

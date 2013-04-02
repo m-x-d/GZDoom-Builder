@@ -1624,6 +1624,273 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PostAction();
 		}
 
+		//mxd
+		[BeginAction("raisesectortonearest")]
+		public void RaiseSectorToNearest() {
+			Dictionary<Sector, VisualFloor> floors = new Dictionary<Sector, VisualFloor>();
+			Dictionary<Sector, VisualCeiling> ceilings = new Dictionary<Sector, VisualCeiling>();
+			List<BaseVisualThing> things = new List<BaseVisualThing>();
+			bool undoGroupCreated = false;
+			string alignFailDescription = string.Empty;
+
+			//get selection
+			if(selectedobjects.Count == 0) {
+				IVisualEventReceiver i = (target.picked as IVisualEventReceiver);
+				if(i is VisualFloor) {
+					VisualFloor vf = i as VisualFloor;
+					floors.Add(vf.Level.sector, vf);
+				} else if(i is VisualCeiling) {
+					VisualCeiling vc = i as VisualCeiling;
+					ceilings.Add(vc.Level.sector, vc);
+				} else if(i is BaseVisualThing) {
+					things.Add(i as BaseVisualThing);
+				}
+			} else {
+				foreach(IVisualEventReceiver i in selectedobjects) {
+					if(i is VisualFloor) {
+						VisualFloor vf = i as VisualFloor;
+						floors.Add(vf.Level.sector, vf);
+					} else if(i is VisualCeiling) {
+						VisualCeiling vc = i as VisualCeiling;
+						ceilings.Add(vc.Level.sector, vc);
+					} else if(i is BaseVisualThing) {
+						things.Add(i as BaseVisualThing);
+					}
+				}
+			}
+
+			//process floors...
+			int maxSelectedHeight = int.MinValue;
+			int minSelectedCeilingHeight = int.MaxValue;
+			int targetHeight = int.MaxValue;
+
+			//get maximum floor height from selection
+			foreach(KeyValuePair<Sector, VisualFloor> group in floors) {
+				if(group.Key.FloorHeight > maxSelectedHeight)
+					maxSelectedHeight = group.Key.FloorHeight;
+
+				if(group.Key.CeilHeight < minSelectedCeilingHeight)
+					minSelectedCeilingHeight = group.Key.CeilHeight;
+			}
+
+			//get next higher floor from surrounding unselected sectors
+			foreach(KeyValuePair<Sector, VisualFloor> group in floors) {
+				foreach(Sidedef side in group.Key.Sidedefs) {
+					if(side.Other == null || ceilings.ContainsKey(side.Other.Sector) || floors.ContainsKey(side.Other.Sector))
+						continue;
+					if(side.Other.Sector.FloorHeight > maxSelectedHeight && side.Other.Sector.FloorHeight < targetHeight && side.Other.Sector.FloorHeight <= minSelectedCeilingHeight)
+						targetHeight = side.Other.Sector.FloorHeight;
+				}
+			}
+
+			//change floor height
+			if(targetHeight != int.MaxValue) {
+				PreAction(UndoGroup.SectorHeightChange);
+				undoGroupCreated = true;
+
+				foreach(KeyValuePair<Sector, VisualFloor> group in floors) {
+					if(targetHeight != group.Key.FloorHeight)
+						group.Value.OnChangeTargetHeight(targetHeight - group.Key.FloorHeight);
+				}
+			} else if(floors.Count > 0) {
+				alignFailDescription = floors.Count > 1 ? "floors" : "floor";
+			}
+
+			//ceilings...
+			maxSelectedHeight = int.MinValue;
+			targetHeight = int.MaxValue;
+
+			//get highest ceiling height from selection
+			foreach(KeyValuePair<Sector, VisualCeiling> group in ceilings) {
+				if(group.Key.CeilHeight > maxSelectedHeight)
+					maxSelectedHeight = group.Key.CeilHeight;
+			}
+
+			//get next higher ceiling from surrounding unselected sectors
+			foreach(KeyValuePair<Sector, VisualCeiling> group in ceilings) {
+				foreach(Sidedef side in group.Key.Sidedefs) {
+					if(side.Other == null || ceilings.ContainsKey(side.Other.Sector) || floors.ContainsKey(side.Other.Sector))
+						continue;
+					if(side.Other.Sector.CeilHeight < targetHeight && side.Other.Sector.CeilHeight > maxSelectedHeight)
+						targetHeight = side.Other.Sector.CeilHeight;
+				}
+			}
+
+			//change ceiling height
+			if(targetHeight != int.MaxValue) {
+				if(!undoGroupCreated) {
+					PreAction(UndoGroup.SectorHeightChange);
+					undoGroupCreated = true;
+				}
+
+				foreach(KeyValuePair<Sector, VisualCeiling> group in ceilings) {
+					if(targetHeight != group.Key.CeilHeight)
+						group.Value.OnChangeTargetHeight(targetHeight - group.Key.CeilHeight);
+				}
+			} else if(ceilings.Count > 0) {
+				if(!string.IsNullOrEmpty(alignFailDescription))
+					alignFailDescription += " and ";
+
+				alignFailDescription += ceilings.Count > 1 ? "ceilings" : "ceiling";
+			}
+
+			//and things. Just align them to ceiling
+			if(General.Map.FormatInterface.HasThingHeight) {
+				foreach(BaseVisualThing vt in things) {
+					if(vt.Thing.Sector == null) continue;
+					ThingTypeInfo ti = General.Map.Data.GetThingInfo(vt.Thing.Type);
+					int zvalue = (int)(vt.Thing.Sector.FloorHeight + vt.Thing.Position.z);
+
+					if(zvalue != vt.Thing.Sector.CeilHeight - ti.Height) {
+						if(!undoGroupCreated) {
+							PreAction(UndoGroup.SectorHeightChange);
+							undoGroupCreated = true;
+						}
+
+						vt.OnChangeTargetHeight((int)(vt.Thing.Sector.CeilHeight - ti.Height) - zvalue);
+					}
+				}
+			}
+
+			if(!string.IsNullOrEmpty(alignFailDescription))
+				General.Interface.DisplayStatus(StatusType.Warning, "Unable to align selected " + alignFailDescription + "!");
+
+			PostAction();
+		}
+
+		//mxd
+		[BeginAction("lowersectortonearest")]
+		public void LowerSectorToNearest() {
+			Dictionary<Sector, VisualFloor> floors = new Dictionary<Sector, VisualFloor>();
+			Dictionary<Sector, VisualCeiling> ceilings = new Dictionary<Sector, VisualCeiling>();
+			List<BaseVisualThing> things = new List<BaseVisualThing>();
+			bool undoGroupCreated = false;
+			string alignFailDescription = string.Empty;
+
+			//get selection
+			if(selectedobjects.Count == 0) {
+				IVisualEventReceiver i = (target.picked as IVisualEventReceiver);
+				if(i is VisualFloor) {
+					VisualFloor vf = i as VisualFloor;
+					floors.Add(vf.Level.sector, vf);
+				} else if(i is VisualCeiling) {
+					VisualCeiling vc = i as VisualCeiling;
+					ceilings.Add(vc.Level.sector, vc);
+				} else if(i is BaseVisualThing) {
+					things.Add(i as BaseVisualThing);
+				}
+			}else{
+				foreach(IVisualEventReceiver i in selectedobjects) {
+					if(i is VisualFloor) {
+						VisualFloor vf = i as VisualFloor;
+						floors.Add(vf.Level.sector, vf);
+					} else if(i is VisualCeiling) {
+						VisualCeiling vc = i as VisualCeiling;
+						ceilings.Add(vc.Level.sector, vc);
+					} else if(i is BaseVisualThing) {
+						things.Add(i as BaseVisualThing);
+					}
+				}
+			}
+
+			//process floors...
+			int minSelectedHeight = int.MaxValue;
+			int targetHeight = int.MinValue;
+
+			//get minimum floor height from selection
+			foreach(KeyValuePair<Sector, VisualFloor> group in floors) {
+				if(group.Key.FloorHeight < minSelectedHeight)
+					minSelectedHeight = group.Key.FloorHeight;
+			}
+
+			//get next floor lower height from surrounding unselected sectors
+			foreach(KeyValuePair<Sector, VisualFloor> group in floors){
+				foreach(Sidedef side in group.Key.Sidedefs) {
+					if(side.Other == null || ceilings.ContainsKey(side.Other.Sector) || floors.ContainsKey(side.Other.Sector))
+						continue;
+					if(side.Other.Sector.FloorHeight > targetHeight && side.Other.Sector.FloorHeight < minSelectedHeight)
+						targetHeight = side.Other.Sector.FloorHeight;
+				}
+			}
+
+			//change floor height
+			if(targetHeight != int.MinValue) {
+				PreAction(UndoGroup.SectorHeightChange);
+				undoGroupCreated = true;
+
+				foreach(KeyValuePair<Sector, VisualFloor> group in floors) {
+					if(targetHeight != group.Key.FloorHeight)
+						group.Value.OnChangeTargetHeight(targetHeight - group.Key.FloorHeight);
+				}
+			} else if(floors.Count > 0) {
+				alignFailDescription = floors.Count > 1 ? "floors" : "floor";
+			}
+
+			//ceilings...
+			minSelectedHeight = int.MaxValue;
+			int maxSelectedFloorHeight = int.MinValue;
+			targetHeight = int.MinValue;
+
+			//get minimum ceiling and maximum floor heights from selection
+			foreach(KeyValuePair<Sector, VisualCeiling> group in ceilings) {
+				if(group.Key.CeilHeight < minSelectedHeight)
+					minSelectedHeight = group.Key.CeilHeight;
+
+				if(group.Key.FloorHeight > maxSelectedFloorHeight)
+					maxSelectedFloorHeight = group.Key.FloorHeight;
+			}
+
+			//get next lower ceiling height from surrounding unselected sectors
+			foreach(KeyValuePair<Sector, VisualCeiling> group in ceilings) {
+				foreach(Sidedef side in group.Key.Sidedefs) {
+					if(side.Other == null || ceilings.ContainsKey(side.Other.Sector) || floors.ContainsKey(side.Other.Sector))
+						continue;
+					if(side.Other.Sector.CeilHeight > targetHeight && side.Other.Sector.CeilHeight < minSelectedHeight && side.Other.Sector.CeilHeight >= maxSelectedFloorHeight)
+						targetHeight = side.Other.Sector.CeilHeight;
+				}
+			}
+
+			//change ceiling height
+			if(targetHeight != int.MinValue) {
+				if(!undoGroupCreated) {
+					PreAction(UndoGroup.SectorHeightChange);
+					undoGroupCreated = true;
+				}
+
+				foreach(KeyValuePair<Sector, VisualCeiling> group in ceilings) {
+					if(targetHeight != group.Key.CeilHeight)
+						group.Value.OnChangeTargetHeight(targetHeight - group.Key.CeilHeight);
+				}
+			} else if(ceilings.Count > 0) {
+				if(!string.IsNullOrEmpty(alignFailDescription))
+					alignFailDescription += " and ";
+
+				alignFailDescription += ceilings.Count > 1 ? "ceilings" : "ceiling";
+			}
+
+			//and things. Just drop them to ground
+			if(General.Map.FormatInterface.HasThingHeight){
+				foreach(BaseVisualThing vt in things) {
+					if(vt.Thing.Sector == null) continue;
+					ThingTypeInfo ti = General.Map.Data.GetThingInfo(vt.Thing.Type);
+					
+					if(vt.Thing.Position.z != 0){
+						if(!undoGroupCreated) {
+							PreAction(UndoGroup.SectorHeightChange);
+							undoGroupCreated = true;
+						}
+
+						vt.OnChangeTargetHeight((int)-vt.Thing.Position.z);
+					}
+				}
+			}
+
+			if(!string.IsNullOrEmpty(alignFailDescription))
+				General.Interface.DisplayStatus(StatusType.Warning, "Unable to align selected " + alignFailDescription + "!");
+
+			PostAction();
+		}
+
 		[BeginAction("showvisualthings")]
 		public void ShowVisualThings()
 		{
