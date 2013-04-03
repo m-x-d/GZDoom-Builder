@@ -324,8 +324,8 @@ namespace CodeImp.DoomBuilder.Windows
 						if(frontOffsetTopY.Text != getUDMFTextureOffset(l.Front.Fields, "offsety_top").ToString()) frontOffsetTopY.Text = "";
 						if(frontOffsetMidX.Text != getUDMFTextureOffset(l.Front.Fields, "offsetx_mid").ToString()) frontOffsetMidX.Text = "";
 						if(frontOffsetMidY.Text != getUDMFTextureOffset(l.Front.Fields, "offsety_mid").ToString()) frontOffsetMidY.Text = "";
-						if(frontOffsetLowX.Text != getUDMFTextureOffset(l.Front.Fields, "offsetx_bottom ").ToString()) frontOffsetLowX.Text = "";
-						if(frontOffsetLowY.Text != getUDMFTextureOffset(l.Front.Fields, "offsety_bottom ").ToString()) frontOffsetLowY.Text = "";
+						if(frontOffsetLowX.Text != getUDMFTextureOffset(l.Front.Fields, "offsetx_bottom").ToString()) frontOffsetLowX.Text = "";
+						if(frontOffsetLowY.Text != getUDMFTextureOffset(l.Front.Fields, "offsety_bottom").ToString()) frontOffsetLowY.Text = "";
                     }
  
                     if (frontoffsetx.Text != l.Front.OffsetX.ToString()) frontoffsetx.Text = "";
@@ -349,8 +349,8 @@ namespace CodeImp.DoomBuilder.Windows
 						if(backOffsetTopY.Text != getUDMFTextureOffset(l.Back.Fields, "offsety_top").ToString()) backOffsetTopY.Text = "";
 						if(backOffsetMidX.Text != getUDMFTextureOffset(l.Back.Fields, "offsetx_mid").ToString()) backOffsetMidX.Text = "";
 						if(backOffsetMidY.Text != getUDMFTextureOffset(l.Back.Fields, "offsety_mid").ToString()) backOffsetMidY.Text = "";
-						if(backOffsetLowX.Text != getUDMFTextureOffset(l.Back.Fields, "offsetx_bottom ").ToString()) backOffsetLowX.Text = "";
-						if(backOffsetLowY.Text != getUDMFTextureOffset(l.Back.Fields, "offsety_bottom ").ToString()) backOffsetLowY.Text = "";
+						if(backOffsetLowX.Text != getUDMFTextureOffset(l.Back.Fields, "offsetx_bottom").ToString()) backOffsetLowX.Text = "";
+						if(backOffsetLowY.Text != getUDMFTextureOffset(l.Back.Fields, "offsety_bottom").ToString()) backOffsetLowY.Text = "";
                     }
  
                     if (backoffsetx.Text != l.Back.OffsetX.ToString()) backoffsetx.Text = "";
@@ -421,8 +421,7 @@ namespace CodeImp.DoomBuilder.Windows
 
         //mxd
         private float getUDMFTextureOffset(UniFields fields, string key) {
-            if (fields != null && fields.ContainsKey(key))
-                return (float)fields[key].Value;
+			if(fields != null) return fields.GetValue(key, 0f);
             return 0;
         }
 

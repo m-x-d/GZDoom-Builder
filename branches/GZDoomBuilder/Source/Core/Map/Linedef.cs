@@ -818,7 +818,7 @@ namespace CodeImp.DoomBuilder.Map
 				nsd.Marked = front.Marked;
 
 				// Make texture offset adjustments
-				if(nsd.OffsetX != 0 || !General.Map.UDMF) //mxd
+				if(!General.Map.UDMF) //mxd
 					nsd.OffsetX += (int)Vector2D.Distance(this.start.Position, this.end.Position);
 			}
 
@@ -833,7 +833,7 @@ namespace CodeImp.DoomBuilder.Map
 				// Make texture offset adjustments
 				//mxd
 				int distance = (int)Vector2D.Distance(nl.start.Position, nl.end.Position);
-				if(back.OffsetX != 0 || General.Map.UDMF) 
+				if(General.Map.UDMF) 
 					if(distance != 0) applyTextureOffsetUDMF(back, distance);
 				else
 					back.OffsetX += distance;

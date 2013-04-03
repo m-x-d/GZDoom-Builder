@@ -55,7 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuilderPlug.cs" />
-    <Compile Include="ClassicModes\ArrayDuplicateMode.cs" />
     <Compile Include="Controls\NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>

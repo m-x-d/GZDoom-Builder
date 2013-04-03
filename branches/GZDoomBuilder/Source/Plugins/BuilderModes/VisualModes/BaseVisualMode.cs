@@ -108,6 +108,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			public Sidedef controlSide; //mxd
 
 			public float offsetx;
+			public float scaleY; //mxd
 
 			// When this is true, the previous sidedef was on the left of
 			// this one and the texture X offset of this sidedef can be set
@@ -2448,11 +2449,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName, false);
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, 1.0f, texture.LongName, false);
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName, false);
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, 1.0f, texture.LongName, false);
 				} else {
 					Vertex v;
 					int forwardoffset;
@@ -2479,11 +2480,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName, false);
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, 1.0f, texture.LongName, false);
 
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName, false);
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, 1.0f, texture.LongName, false);
 				}
 			}
 		}
@@ -2510,13 +2511,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float ystartalign = start.OffsetY;
 			switch(part) {
 				case SidedefPart.Upper:
-					ystartalign += start.Fields.GetValue("offsety_top", 0.0f);
+					ystartalign += getTopOffsetY(start, start.Fields.GetValue("offsety_top", 0.0f), false);//mxd
 					break;
 				case SidedefPart.Middle:
-					ystartalign += start.Fields.GetValue("offsety_mid", 0.0f);
-					break; //mxd
+					ystartalign += getMiddleOffsetY(start, start.Fields.GetValue("offsety_mid", 0.0f), false);//mxd
+					break; 
 				case SidedefPart.Lower:
-					ystartalign += start.Fields.GetValue("offsety_bottom", 0.0f);
+					ystartalign += getBottomOffsetY(start, start.Fields.GetValue("offsety_bottom", 0.0f), false);//mxd
 					break;
 			}
 
@@ -2530,7 +2531,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					break;
 				case SidedefPart.Middle:
 					first.offsetx += start.Fields.GetValue("offsetx_mid", 0.0f);
-					break; //mxd
+					break;
 				case SidedefPart.Lower:
 					first.offsetx += start.Fields.GetValue("offsetx_bottom", 0.0f);
 					break;
@@ -2549,6 +2550,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			} else {
 				first.controlSide = start;
+			}
+
+			//mxd. scaleY
+			switch(part) {
+				case SidedefPart.Upper:
+					first.scaleY = start.Fields.GetValue("scaley_top", 1.0f);
+					break;
+				case SidedefPart.Middle:
+					first.scaleY = start.Fields.GetValue("scaley_mid", 1.0f);
+					break;
+				case SidedefPart.Lower:
+					first.scaleY = start.Fields.GetValue("scaley_bottom", 1.0f);
+					break;
 			}
 
 			todo.Push(first);
@@ -2574,6 +2588,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else if(matchmid)
 					offsetscalex = j.sidedef.Fields.GetValue("scalex_mid", 1.0f);
 
+				//mxd. Apply scaleY
+				j.sidedef.Fields.BeforeFieldsChange();
+				if(j.scaleY == 1.0f) {
+					if(matchtop && j.sidedef.Fields.GetValue("scaley_top", 1.0f) != 1.0f)
+						j.sidedef.Fields.Remove("scaley_top");
+					else if(matchmid && j.sidedef.Fields.GetValue("scaley_mid", 1.0f) != 1.0f)
+						j.sidedef.Fields.Remove("scaley_mid");
+					else if(matchbottom && j.sidedef.Fields.GetValue("scaley_bottom", 1.0f) != 1.0f)
+						j.sidedef.Fields.Remove("scaley_bottom");
+				} else {
+					if(matchtop && j.sidedef.Fields.GetValue("scaley_top", 1.0f) != j.scaleY)
+						j.sidedef.Fields["scaley_top"] = new UniValue(UniversalType.Float, j.scaleY);
+					if(matchmid && j.sidedef.Fields.GetValue("scaley_mid", 1.0f) != j.scaleY)
+						j.sidedef.Fields["scaley_mid"] = new UniValue(UniversalType.Float, j.scaleY);
+					if(matchbottom && j.sidedef.Fields.GetValue("scaley_bottom", 1.0f) != j.scaleY)
+						j.sidedef.Fields["scaley_bottom"] = new UniValue(UniversalType.Float, j.scaleY);
+				}
+
 				if(j.forward) {
 					// Apply alignment
 					if(alignx) {
@@ -2591,22 +2623,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 					if(aligny) {
 						float offset = ((float)(start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + ystartalign;
-						offset %= (float)texture.Height;
 						offset -= j.sidedef.OffsetY;
 
 						j.sidedef.Fields.BeforeFieldsChange();
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, offset);
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, getTopOffsetY(j.sidedef, offset, true) % (float)texture.Height); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, offset);
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, getBottomOffsetY(j.sidedef, offset, true) % (float)texture.Height); //mxd
 						if(matchmid) {
 							//mxd. Side is part of a 3D floor?
 							if(j.sidedef.Index != j.controlSide.Index) {
 								offset = ((float)(start.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + ystartalign;
-								offset %= (float)texture.Height;
 								offset -= j.sidedef.OffsetY;
 							}
-							j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset);
+							j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, getMiddleOffsetY(j.sidedef, offset, true) % (float)texture.Height);//mxd
 						}
 					}
 					forwardoffset = j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex * offsetscalex);
@@ -2617,11 +2647,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName, true);
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.scaleY, texture.LongName, true);
 
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName, true);
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.scaleY, texture.LongName, true);
 				} else {
 					// Apply alignment
 					if(alignx) {
@@ -2639,22 +2669,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 					if(aligny) {
 						float offset = ((float)(start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + ystartalign;
-						offset %= (float)texture.Height;
 						offset -= j.sidedef.OffsetY;
 
 						j.sidedef.Fields.BeforeFieldsChange();
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, offset);
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, getTopOffsetY(j.sidedef, offset, true) % (float)texture.Height); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, offset);
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, getBottomOffsetY(j.sidedef, offset, true) % (float)texture.Height); //mxd
 						if(matchmid) {
 							//mxd. Side is part of a 3D floor?
 							if(j.sidedef.Index != j.controlSide.Index) {
 								offset = ((float)(start.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + ystartalign;
-								offset %= (float)texture.Height;
 								offset -= j.sidedef.OffsetY;
 							}
-							j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset);
+							j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, getMiddleOffsetY(j.sidedef, offset, true) % (float)texture.Height); //mxd
 						}
 					}
 					forwardoffset = j.offsetx;
@@ -2665,17 +2693,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName, true);
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.scaleY, texture.LongName, true);
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName, true);
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.scaleY, texture.LongName, true);
 				}
 			}
 		}
 
 		// This adds the matching, unmarked sidedefs from a vertex for texture alignment
-		private void AddSidedefsForAlignment(Stack<SidedefAlignJob> stack, Vertex v, bool forward, float offsetx, long texturelongname, bool udmf) {
+		private void AddSidedefsForAlignment(Stack<SidedefAlignJob> stack, Vertex v, bool forward, float offsetx, float scaleY, long texturelongname, bool udmf) {
 			foreach(Linedef ld in v.Linedefs) {
 				Sidedef side1 = forward ? ld.Front : ld.Back;
 				Sidedef side2 = forward ? ld.Back : ld.Front;
@@ -2687,8 +2715,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							SidedefAlignJob nj = new SidedefAlignJob();
 							nj.forward = forward;
 							nj.offsetx = offsetx;
+							nj.scaleY = scaleY; //mxd
 							nj.sidedef = side1;
-							nj.controlSide = s;
+							nj.controlSide = s; //mxd
 							stack.Push(nj);
 							break;
 						}
@@ -2701,14 +2730,54 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							SidedefAlignJob nj = new SidedefAlignJob();
 							nj.forward = forward;
 							nj.offsetx = offsetx;
+							nj.scaleY = scaleY; //mxd
 							nj.sidedef = side2;
-							nj.controlSide = s;
+							nj.controlSide = s; //mxd
 							stack.Push(nj);
 							break;
 						}
 					}
 				}
 			}
+		}
+
+		//mxd. This converts offsetY from/to "normalized" offset for given upper wall
+		private float getTopOffsetY(Sidedef side, float offset, bool fromNormalized) {
+			if(side.Line.IsFlagSet(General.Map.Config.UpperUnpeggedFlag) || side.Other == null || side.Other.Sector == null)
+				return offset;
+
+			//if we don't have UpperUnpegged flag, normalize offset
+			float scale = side.Fields.GetValue("scaley_top", 1.0f);
+			float surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.CeilHeight) * scale;
+
+			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
+			return (float)Math.Round(offset - surfaceHeight);
+		}
+
+		//mxd. This converts offsetY from/to "normalized" offset for given middle wall
+		private float getMiddleOffsetY(Sidedef side, float offset, bool fromNormalized) {
+			if(!side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag) || side.Sector == null)
+				return offset;
+
+			//if we have LowerUnpegged flag, normalize offset
+			float scale = side.Fields.GetValue("scaley_mid", 1.0f);
+			float surfaceHeight = (side.Sector.CeilHeight - side.Sector.FloorHeight) * scale;
+			
+			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
+			return (float)Math.Round(offset - surfaceHeight);
+		}
+
+		//mxd. This converts offsetY from/to "normalized" offset for given lower wall
+		private float getBottomOffsetY(Sidedef side, float offset, bool fromNormalized) {
+			if(side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag) || side.Other == null || side.Other.Sector == null)
+				return offset;
+
+			//if we don't have LowerUnpegged flag, normalize offset
+			float scale = side.Fields.GetValue("scaley_bottom", 1.0f);
+			float surfaceHeight = (side.Sector.CeilHeight - (side.Other.Sector.FloorHeight - side.Sector.FloorHeight)) * scale;
+			
+			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
+			return (float)Math.Round(offset - surfaceHeight);
 		}
 
 		//mxd
