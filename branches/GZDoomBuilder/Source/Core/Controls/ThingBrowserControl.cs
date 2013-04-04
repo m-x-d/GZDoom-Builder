@@ -222,9 +222,11 @@ namespace CodeImp.DoomBuilder.Controls
 						if((n.Tag as ThingTypeInfo).Index == typeindex)
 						{
 							// Select this
-							n.Parent.Expand();
-							typelist.SelectedNode = n;
-							n.EnsureVisible();
+							if(typelist.Nodes.Contains(n.Parent)) { //mxd. Tree node may've been removed during filtering
+								n.Parent.Expand();
+								typelist.SelectedNode = n;
+								n.EnsureVisible();
+							}
 						}
 					}
 					doupdatetextbox = true;
@@ -261,15 +263,45 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private void ThingBrowserControl_SizeChanged(object sender, EventArgs e)
 		{
-			infopanel.Top = this.ClientSize.Height - infopanel.Height;
-			infopanel.Width = this.ClientSize.Width;
-			typelist.Width = this.ClientSize.Width;
-			typelist.Height = infopanel.Top;
+			//infopanel.Top = this.ClientSize.Height - infopanel.Height;
+			//infopanel.Width = this.ClientSize.Width;
+			//typelist.Width = this.ClientSize.Width;
+			//typelist.Height = infopanel.Top;
 
 			blockingcaption.Left = infopanel.Width / 2;
 			blockinglabel.Left = blockingcaption.Right + blockingcaption.Margin.Right;
 			sizecaption.Left = blockingcaption.Right - sizecaption.Width;
 			sizelabel.Left = sizecaption.Right + sizecaption.Margin.Right;
+		}
+
+		//mxd
+		private void bClear_Click(object sender, EventArgs e) {
+			tbFilter.Clear();
+		}
+
+		//mxd
+		private void tbFilter_TextChanged(object sender, EventArgs e) {
+			typelist.SuspendLayout();
+
+			if(string.IsNullOrEmpty(tbFilter.Text)) {
+				Setup();
+				typeid_TextChanged(this, EventArgs.Empty);
+			} else {
+				// Go for all predefined categories
+				typelist.Nodes.Clear();
+
+				string match = tbFilter.Text.ToUpperInvariant();
+				foreach(TreeNode node in nodes){
+					if(node.Text.ToUpperInvariant().Contains(match)) {
+						typelist.Nodes.Add(node);
+					}
+				}
+
+				doupdatenode = true;
+				doupdatetextbox = true;
+			}
+
+			typelist.ResumeLayout();
 		}
 		
 		#endregion
