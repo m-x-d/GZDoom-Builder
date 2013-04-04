@@ -103,10 +103,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.thingtype.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
-			this.thingtype.Location = new System.Drawing.Point(9, 22);
+			this.thingtype.Location = new System.Drawing.Point(9, 13);
 			this.thingtype.Margin = new System.Windows.Forms.Padding(6);
 			this.thingtype.Name = "thingtype";
-			this.thingtype.Size = new System.Drawing.Size(251, 345);
+			this.thingtype.Size = new System.Drawing.Size(251, 357);
 			this.thingtype.TabIndex = 0;
 			this.thingtype.OnTypeChanged += new CodeImp.DoomBuilder.Controls.ThingBrowserControl.TypeChangedDeletegate(this.thingtype_OnTypeChanged);
 			// 

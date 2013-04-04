@@ -490,7 +490,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(thiskey != 0)
 				{
 					// Find actions with same key
-					foreach(ListViewItem item in listactions.Items)
+					foreach(ListViewItem item in actionListItems)
 					{
 						// Don't count the selected action
 						if(item != listactions.SelectedItems[0])
