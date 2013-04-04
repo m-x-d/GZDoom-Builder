@@ -42,6 +42,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool allowapplycontrol = false;
 		private bool disregardshift = false;
 		private bool disregardcontrol = false;
+		private List<ListViewItem> actionListItems; //mxd
+		private List<int> actionListItemsGroupIndices; //mxd
 
 		private bool reloadresources = false;
 		
@@ -137,6 +139,8 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Fill list of actions
 			actions = General.Actions.GetAllActions();
+			actionListItems = new List<ListViewItem>(); //mxd
+			actionListItemsGroupIndices = new List<int>(); //mxd
 			foreach(Actions.Action a in actions)
 			{
 				// Create item
@@ -145,8 +149,14 @@ namespace CodeImp.DoomBuilder.Windows
 				item.SubItems[1].Tag = a.ShortcutKey;
 
 				// Put in category, if the category exists
-				if(General.Actions.Categories.ContainsKey(a.Category))
+				if(General.Actions.Categories.ContainsKey(a.Category)) {
 					item.Group = listactions.Groups[a.Category];
+					actionListItemsGroupIndices.Add(listactions.Groups.IndexOf(item.Group));
+				}else{ //mxd
+					actionListItemsGroupIndices.Add(-1);
+				}
+
+				actionListItems.Add(item); //mxd
 			}
 
 			// Set the colors
@@ -245,7 +255,8 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ScriptFontSize = fontsize;
 			
 			// Apply control keys to actions
-			foreach(ListViewItem item in listactions.Items)
+			//foreach(ListViewItem item in listactions.Items)
+			foreach(ListViewItem item in actionListItems) //mxd
 				General.Actions[item.Name].SetShortcutKey((int)item.SubItems[1].Tag);
 
 			// Apply the colors
@@ -762,6 +773,50 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Done
 			allowapplycontrol = true;
+		}
+
+		//mxd
+		private void bClearActionFilter_Click(object sender, EventArgs e) {
+			tbFilterActions.Clear();
+		}
+
+		//mxd
+		private void tbFilterActions_TextChanged(object sender, EventArgs e) {
+			listactions.BeginUpdate();
+			
+			//restore everything
+			if(string.IsNullOrEmpty(tbFilterActions.Text)) {
+				//restore items
+				listactions.Items.Clear();
+				listactions.Items.AddRange(actionListItems.ToArray());
+
+				//restore groups
+				for(int i = 0; i < actionListItems.Count; i++) {
+					if(actionListItemsGroupIndices[i] != -1)
+						actionListItems[i].Group = listactions.Groups[actionListItemsGroupIndices[i]];
+				}
+			} else { //apply filtering
+				string match = tbFilterActions.Text.ToUpperInvariant();
+
+				for(int i = 0; i < actionListItems.Count; i++) {
+					if(actionListItems[i].Text.ToUpperInvariant().Contains(match)) {
+						//ensure visible
+						if(!listactions.Items.Contains(actionListItems[i])) {
+							listactions.Items.Add(actionListItems[i]);
+
+							//restore group
+							if(actionListItemsGroupIndices[i] != -1)
+								actionListItems[i].Group = listactions.Groups[actionListItemsGroupIndices[i]];
+						}
+					} else if(listactions.Items.Contains(actionListItems[i])) {
+						//ensure invisible
+						listactions.Items.Remove(actionListItems[i]);
+					}
+				}
+			}
+
+			listactions.Sort();
+			listactions.EndUpdate();
 		}
 
 		#endregion
