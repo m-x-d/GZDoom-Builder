@@ -111,6 +111,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldofviewlabel = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.tabkeys = new System.Windows.Forms.TabPage();
+			this.bClearActionFilter = new System.Windows.Forms.Button();
+			this.tbFilterActions = new System.Windows.Forms.TextBox();
+			this.label24 = new System.Windows.Forms.Label();
 			this.listactions = new System.Windows.Forms.ListView();
 			this.columncontrolaction = new System.Windows.Forms.ColumnHeader();
 			this.columncontrolkey = new System.Windows.Forms.ColumnHeader();
@@ -1108,6 +1111,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tabkeys
 			// 
+			this.tabkeys.Controls.Add(this.bClearActionFilter);
+			this.tabkeys.Controls.Add(this.tbFilterActions);
+			this.tabkeys.Controls.Add(this.label24);
 			this.tabkeys.Controls.Add(this.listactions);
 			this.tabkeys.Controls.Add(this.actioncontrolpanel);
 			this.tabkeys.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1118,6 +1124,36 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabkeys.TabIndex = 1;
 			this.tabkeys.Text = "Controls";
 			this.tabkeys.UseVisualStyleBackColor = true;
+			// 
+			// bClearActionFilter
+			// 
+			this.bClearActionFilter.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchClear;
+			this.bClearActionFilter.Location = new System.Drawing.Point(227, 10);
+			this.bClearActionFilter.Name = "bClearActionFilter";
+			this.bClearActionFilter.Size = new System.Drawing.Size(26, 25);
+			this.bClearActionFilter.TabIndex = 12;
+			this.bClearActionFilter.TabStop = false;
+			this.bClearActionFilter.UseVisualStyleBackColor = true;
+			this.bClearActionFilter.Click += new System.EventHandler(this.bClearActionFilter_Click);
+			// 
+			// tbFilterActions
+			// 
+			this.tbFilterActions.Location = new System.Drawing.Point(55, 13);
+			this.tbFilterActions.Name = "tbFilterActions";
+			this.tbFilterActions.Size = new System.Drawing.Size(166, 20);
+			this.tbFilterActions.TabIndex = 11;
+			this.tbFilterActions.TabStop = false;
+			this.tbFilterActions.TextChanged += new System.EventHandler(this.tbFilterActions_TextChanged);
+			// 
+			// label24
+			// 
+			this.label24.AutoSize = true;
+			this.label24.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label24.Location = new System.Drawing.Point(11, 16);
+			this.label24.Name = "label24";
+			this.label24.Size = new System.Drawing.Size(38, 14);
+			this.label24.TabIndex = 10;
+			this.label24.Text = "Filter:";
 			// 
 			// listactions
 			// 
@@ -1130,11 +1166,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listactions.FullRowSelect = true;
 			this.listactions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listactions.HideSelection = false;
-			this.listactions.Location = new System.Drawing.Point(11, 12);
+			this.listactions.Location = new System.Drawing.Point(11, 42);
 			this.listactions.Margin = new System.Windows.Forms.Padding(8, 9, 8, 9);
 			this.listactions.MultiSelect = false;
 			this.listactions.Name = "listactions";
-			this.listactions.Size = new System.Drawing.Size(352, 462);
+			this.listactions.Size = new System.Drawing.Size(352, 458);
 			this.listactions.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listactions.TabIndex = 0;
 			this.listactions.TabStop = false;
@@ -1147,7 +1183,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// columncontrolaction
 			// 
 			this.columncontrolaction.Text = "Action";
-			this.columncontrolaction.Width = 179;
+			this.columncontrolaction.Width = 200;
 			// 
 			// columncontrolkey
 			// 
@@ -1173,7 +1209,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actioncontrolpanel.Location = new System.Drawing.Point(377, 12);
 			this.actioncontrolpanel.Margin = new System.Windows.Forms.Padding(6);
 			this.actioncontrolpanel.Name = "actioncontrolpanel";
-			this.actioncontrolpanel.Size = new System.Drawing.Size(282, 462);
+			this.actioncontrolpanel.Size = new System.Drawing.Size(282, 488);
 			this.actioncontrolpanel.TabIndex = 9;
 			this.actioncontrolpanel.TabStop = false;
 			this.actioncontrolpanel.Text = " Action control ";
@@ -1185,10 +1221,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.keyusedlist.FormattingEnabled = true;
 			this.keyusedlist.IntegralHeight = false;
 			this.keyusedlist.ItemHeight = 14;
-			this.keyusedlist.Location = new System.Drawing.Point(33, 307);
+			this.keyusedlist.Location = new System.Drawing.Point(23, 307);
 			this.keyusedlist.Name = "keyusedlist";
 			this.keyusedlist.SelectionMode = System.Windows.Forms.SelectionMode.None;
-			this.keyusedlist.Size = new System.Drawing.Size(232, 115);
+			this.keyusedlist.Size = new System.Drawing.Size(233, 115);
 			this.keyusedlist.Sorted = true;
 			this.keyusedlist.TabIndex = 11;
 			this.keyusedlist.Visible = false;
@@ -1212,7 +1248,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actioncontrol.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.actioncontrol.Location = new System.Drawing.Point(23, 190);
 			this.actioncontrol.Name = "actioncontrol";
-			this.actioncontrol.Size = new System.Drawing.Size(197, 22);
+			this.actioncontrol.Size = new System.Drawing.Size(233, 22);
 			this.actioncontrol.TabIndex = 8;
 			this.actioncontrol.TabStop = false;
 			this.actioncontrol.SelectedIndexChanged += new System.EventHandler(this.actioncontrol_SelectedIndexChanged);
@@ -1230,12 +1266,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// actioncontrolclear
 			// 
-			this.actioncontrolclear.Location = new System.Drawing.Point(193, 138);
+			this.actioncontrolclear.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchClear;
+			this.actioncontrolclear.Location = new System.Drawing.Point(193, 137);
 			this.actioncontrolclear.Name = "actioncontrolclear";
-			this.actioncontrolclear.Size = new System.Drawing.Size(63, 25);
+			this.actioncontrolclear.Size = new System.Drawing.Size(26, 25);
 			this.actioncontrolclear.TabIndex = 6;
 			this.actioncontrolclear.TabStop = false;
-			this.actioncontrolclear.Text = "Clear";
 			this.actioncontrolclear.UseVisualStyleBackColor = true;
 			this.actioncontrolclear.Click += new System.EventHandler(this.actioncontrolclear_Click);
 			// 
@@ -1760,6 +1796,7 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.mousespeed)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.fieldofview)).EndInit();
 			this.tabkeys.ResumeLayout(false);
+			this.tabkeys.PerformLayout();
 			this.actioncontrolpanel.ResumeLayout(false);
 			this.actioncontrolpanel.PerformLayout();
 			this.tabcolors.ResumeLayout(false);
@@ -1901,5 +1938,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label label23;
 		private System.Windows.Forms.Label numSectorsLabel;
 		private Dotnetrix.Controls.TrackBar tbNumSectors;
+		private System.Windows.Forms.Button bClearActionFilter;
+		private System.Windows.Forms.TextBox tbFilterActions;
+		private System.Windows.Forms.Label label24;
 	}
 }
