@@ -1631,7 +1631,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Dictionary<Sector, VisualFloor> floors = new Dictionary<Sector, VisualFloor>();
 			Dictionary<Sector, VisualCeiling> ceilings = new Dictionary<Sector, VisualCeiling>();
 			List<BaseVisualThing> things = new List<BaseVisualThing>();
-			bool undoGroupCreated = false;
 			bool withinSelection = General.Interface.CtrlState;
 
 			//get selection
@@ -1661,9 +1660,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//check what we have
-			if(floors.Count + ceilings.Count + things.Count == 0) {
+			if(floors.Count + ceilings.Count == 0 && (things.Count == 0 || !General.Map.FormatInterface.HasThingHeight)) {
 				General.Interface.DisplayStatus(StatusType.Warning, "No suitable objects found!");
-				PostAction();
 				return;
 			} 
 			
@@ -1679,7 +1677,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(!string.IsNullOrEmpty(s)){
 					General.Interface.DisplayStatus(StatusType.Warning, "Can't do: at least 2 selected " + s + " are required!");
-					PostAction();
 					return;
 				}
 			}
@@ -1702,7 +1699,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//check heights
 				if(minSelectedCeilingHeight < maxSelectedHeight) {
 					General.Interface.DisplayStatus(StatusType.Warning, "Can't do: lowest ceiling is lower than highest floor!");
-					PostAction();
 					return;
 				} else {
 					targetFloorHeight = maxSelectedHeight;
@@ -1759,16 +1755,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(!string.IsNullOrEmpty(alignFailDescription)) {
 				General.Interface.DisplayStatus(StatusType.Warning, "Unable to align selected " + alignFailDescription + "!");
-				PostAction();
 				return;
 			}
 
 			//APPLY VALUES
+			PreAction(UndoGroup.SectorHeightChange);
+
 			//change floors heights
 			if(floors.Count > 0) {
-				PreAction(UndoGroup.SectorHeightChange);
-				undoGroupCreated = true;
-
 				foreach(KeyValuePair<Sector, VisualFloor> group in floors) {
 					if(targetFloorHeight != group.Key.FloorHeight)
 						group.Value.OnChangeTargetHeight(targetFloorHeight - group.Key.FloorHeight);
@@ -1777,11 +1771,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//change ceilings heights
 			if(ceilings.Count > 0) {
-				if(!undoGroupCreated) {
-					PreAction(UndoGroup.SectorHeightChange);
-					undoGroupCreated = true;
-				}
-
 				foreach(KeyValuePair<Sector, VisualCeiling> group in ceilings) {
 					if(targetCeilingHeight != group.Key.CeilHeight)
 						group.Value.OnChangeTargetHeight(targetCeilingHeight - group.Key.CeilHeight);
@@ -1795,14 +1784,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ThingTypeInfo ti = General.Map.Data.GetThingInfo(vt.Thing.Type);
 					int zvalue = (int)(vt.Thing.Sector.FloorHeight + vt.Thing.Position.z);
 
-					if(zvalue != vt.Thing.Sector.CeilHeight - ti.Height) {
-						if(!undoGroupCreated) {
-							PreAction(UndoGroup.SectorHeightChange);
-							undoGroupCreated = true;
-						}
-
+					if(zvalue != vt.Thing.Sector.CeilHeight - ti.Height)
 						vt.OnChangeTargetHeight((int)(vt.Thing.Sector.CeilHeight - ti.Height) - zvalue);
-					}
 				}
 			}
 
@@ -1815,7 +1798,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Dictionary<Sector, VisualFloor> floors = new Dictionary<Sector, VisualFloor>();
 			Dictionary<Sector, VisualCeiling> ceilings = new Dictionary<Sector, VisualCeiling>();
 			List<BaseVisualThing> things = new List<BaseVisualThing>();
-			bool undoGroupCreated = false;
 			bool withinSelection = General.Interface.CtrlState;
 
 			//get selection
@@ -1845,9 +1827,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//check what we have
-			if(floors.Count + ceilings.Count + things.Count == 0) {
+			if(floors.Count + ceilings.Count == 0 && (things.Count == 0 || !General.Map.FormatInterface.HasThingHeight)) {
 				General.Interface.DisplayStatus(StatusType.Warning, "No suitable objects found!");
-				PostAction();
 				return;
 			}
 
@@ -1863,7 +1844,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(!string.IsNullOrEmpty(s)) {
 					General.Interface.DisplayStatus(StatusType.Warning, "Can't do: at least 2 selected " + s + " are required!");
-					PostAction();
 					return;
 				}
 			}
@@ -1910,7 +1890,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(withinSelection) {
 				if(minSelectedHeight < maxSelectedFloorHeight) {
 					General.Interface.DisplayStatus(StatusType.Warning, "Can't do: lowest ceiling is lower than highest floor!");
-					PostAction();
 					return;
 				} else {
 					targetCeilingHeight = minSelectedHeight;
@@ -1942,16 +1921,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(!string.IsNullOrEmpty(alignFailDescription)) {
 				General.Interface.DisplayStatus(StatusType.Warning, "Unable to align selected " + alignFailDescription + "!");
-				PostAction();
 				return;
 			}
 
 			//APPLY VALUES:
+			PreAction(UndoGroup.SectorHeightChange);
+
 			//change floor height
 			if(floors.Count > 0) {
-				PreAction(UndoGroup.SectorHeightChange);
-				undoGroupCreated = true;
-
 				foreach(KeyValuePair<Sector, VisualFloor> group in floors) {
 					if(targetFloorHeight != group.Key.FloorHeight)
 						group.Value.OnChangeTargetHeight(targetFloorHeight - group.Key.FloorHeight);
@@ -1960,11 +1937,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//change ceiling height
 			if(ceilings.Count > 0) {
-				if(!undoGroupCreated) {
-					PreAction(UndoGroup.SectorHeightChange);
-					undoGroupCreated = true;
-				}
-
 				foreach(KeyValuePair<Sector, VisualCeiling> group in ceilings) {
 					if(targetCeilingHeight != group.Key.CeilHeight)
 						group.Value.OnChangeTargetHeight(targetCeilingHeight - group.Key.CeilHeight);
@@ -1977,14 +1949,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(vt.Thing.Sector == null) continue;
 					ThingTypeInfo ti = General.Map.Data.GetThingInfo(vt.Thing.Type);
 					
-					if(vt.Thing.Position.z != 0){
-						if(!undoGroupCreated) {
-							PreAction(UndoGroup.SectorHeightChange);
-							undoGroupCreated = true;
-						}
-
+					if(vt.Thing.Position.z != 0)
 						vt.OnChangeTargetHeight((int)-vt.Thing.Position.z);
-					}
 				}
 			}
 

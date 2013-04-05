@@ -757,7 +757,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		protected override void OnPaintSelectBegin() {
-			highlighted = null;
+			if(highlighted != null) {
+				if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
+					SelectSector(highlighted, true, true);
+				else if(General.Interface.CtrlState)
+					SelectSector(highlighted, false, true);
+				else
+					SelectSector(highlighted, !highlighted.Selected, true);
+
+				// Update entire display
+				General.Interface.RedrawDisplay();
+			}
+
 			base.OnPaintSelectBegin();
 		}
 
