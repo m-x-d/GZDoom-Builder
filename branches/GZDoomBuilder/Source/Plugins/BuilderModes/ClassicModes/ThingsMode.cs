@@ -809,9 +809,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			List<Thing> toAlign = new List<Thing>();
 
-			foreach(Thing t in selected){
-				if(t.IsModel)
-					toAlign.Add(t);
+			foreach(Thing t in selected)
+				if(t.IsModel) toAlign.Add(t);
+
+			if(toAlign.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action only works for things with models!");
+				return;
 			}
  
 			// Make undo
