@@ -85,6 +85,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
         private ToolStripMenuItem drawLinesModeMenuItem;
         private ToolStripMenuItem drawRectModeMenuItem;
         private ToolStripMenuItem drawEllipseModeMenuItem;
+		private ToolStripMenuItem drawCurveModeMenuItem;
 		
 		// Settings
 		private int showvisualthings;			// 0 = none, 1 = sprite only, 2 = sprite caged
@@ -249,6 +250,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
             drawRectModeMenuItem.Enabled = false;
             General.Interface.AddMenu(drawRectModeMenuItem, MenuSection.ModeDrawModes);
 
+			//draw curve 
+			drawCurveModeMenuItem = new ToolStripMenuItem("Draw Curve");
+			drawCurveModeMenuItem.Tag = "drawcurvemode";
+			drawCurveModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+			drawCurveModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.DrawCurveMode;
+			drawCurveModeMenuItem.Enabled = false;
+			General.Interface.AddMenu(drawCurveModeMenuItem, MenuSection.ModeDrawModes);
+
             //draw lines 
             drawLinesModeMenuItem = new ToolStripMenuItem("Draw Lines");
             drawLinesModeMenuItem.Tag = "drawlinesmode";
@@ -274,6 +283,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.RemoveMenu(exportToObjMenuItem);
                 General.Interface.RemoveMenu(snapModeMenuItem);
                 General.Interface.RemoveMenu(drawLinesModeMenuItem);
+				General.Interface.RemoveMenu(drawCurveModeMenuItem);
                 General.Interface.RemoveMenu(drawRectModeMenuItem);
                 General.Interface.RemoveMenu(drawEllipseModeMenuItem);
 
@@ -439,6 +449,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			exportToObjMenuItem.Enabled = true;
             snapModeMenuItem.Enabled = true;
             drawLinesModeMenuItem.Enabled = true;
+			drawCurveModeMenuItem.Enabled = true;
             drawRectModeMenuItem.Enabled = true;
             drawEllipseModeMenuItem.Enabled = true;
 		}
@@ -454,6 +465,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			exportToObjMenuItem.Enabled = true;
             snapModeMenuItem.Enabled = true;
             drawLinesModeMenuItem.Enabled = true;
+			drawCurveModeMenuItem.Enabled = true;
             drawRectModeMenuItem.Enabled = true;
             drawEllipseModeMenuItem.Enabled = true;
 		}
@@ -468,6 +480,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			exportToObjMenuItem.Enabled = false;
             snapModeMenuItem.Enabled = false;
             drawLinesModeMenuItem.Enabled = false;
+			drawCurveModeMenuItem.Enabled = false;
             drawRectModeMenuItem.Enabled = false;
             drawEllipseModeMenuItem.Enabled = false;
 		}

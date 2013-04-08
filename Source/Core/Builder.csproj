@@ -696,6 +696,7 @@
     <Compile Include="General\ErrorItem.cs" />
     <Compile Include="General\ErrorLogger.cs" />
     <Compile Include="General\SavePurpose.cs" />
+    <Compile Include="Geometry\CurveTools.cs" />
     <Compile Include="GZBuilder\Controls\CustomLinedefColorProperties.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -226,6 +226,7 @@
   <ItemGroup>
     <Compile Include="ClassicModes\BridgeMode.cs" />
     <Compile Include="ClassicModes\CeilingAlignMode.cs" />
+    <Compile Include="ClassicModes\DrawCurveMode.cs" />
     <Compile Include="ClassicModes\DrawEllipseMode.cs" />
     <Compile Include="ClassicModes\DrawRectangleMode.cs" />
     <Compile Include="ClassicModes\FlatAlignMode.cs" />
@@ -395,6 +396,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AlignThings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DrawCurveMode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
