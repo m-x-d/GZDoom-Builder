@@ -683,16 +683,11 @@ namespace CodeImp.DoomBuilder.TagExplorer
             e.CancelEdit = true;
             e.Node.EndEdit(true);
 
-            if (e.Label != null && e.Label.Length > 1) {
-                //apply comment
-                info.Comment = e.Label;
-                e.Node.Text = info.GetName(ref comment, currentSortMode);
-                e.Node.ForeColor = commentColor;
-            } else { //Edit cancelled.
-                info.Comment = ""; //Remove comment
-                e.Node.Text = info.GetName(ref comment, currentSortMode);
-                e.Node.ForeColor = Color.Black;
-            }
+			//apply comment
+			info.Comment = e.Label;
+			e.Node.Text = info.GetName(ref comment, currentSortMode);
+			e.Node.ForeColor = string.IsNullOrEmpty(info.Comment) ? Color.Black : commentColor;
+
             treeView.MouseLeave += new EventHandler(treeView_MouseLeave);
         }
 
