@@ -340,8 +340,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
                 return false;
 
             //setup control handles
-            Vector2D center1 = getPointOnLine(pointGroup1[0], pointGroup1[segmentsCount - 1], 0.5f);
-            Vector2D center2 = getPointOnLine(pointGroup2[0], pointGroup2[segmentsCount - 1], 0.5f);
+            Vector2D center1 = CurveTools.GetPointOnLine(pointGroup1[0], pointGroup1[segmentsCount - 1], 0.5f);
+			Vector2D center2 = CurveTools.GetPointOnLine(pointGroup2[0], pointGroup2[segmentsCount - 1], 0.5f);
 
             Vector2D loc1 = getHandleLocation(pointGroup1[0], pointGroup1[segmentsCount - 1], center2);
             Vector2D loc2 = getHandleLocation(pointGroup2[0], pointGroup2[segmentsCount - 1], center1);
@@ -387,9 +387,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
                 curves = new List<Vector2D[]>();
 
                 for (int i = 0; i < segmentsCount; i++) {
-                    cp1 = getPointOnLine(controlHandles[0].Position, controlHandles[2].Position, relLenGroup1[i]);
-                    cp2 = getPointOnLine(controlHandles[1].Position, controlHandles[3].Position, relLenGroup2[i]);
-                    curves.Add(getBezierCurve(pointGroup1[i], pointGroup2[i], cp1, cp2, form.Subdivisions));
+					cp1 = CurveTools.GetPointOnLine(controlHandles[0].Position, controlHandles[2].Position, relLenGroup1[i]);
+					cp2 = CurveTools.GetPointOnLine(controlHandles[1].Position, controlHandles[3].Position, relLenGroup2[i]);
+					curves.Add(CurveTools.GetCubicCurve(pointGroup1[i], pointGroup2[i], cp1, cp2, form.Subdivisions));
 
                     for (int c = 1; c < curves[i].Length; c++ )
                         renderer.RenderLine(curves[i][c - 1], curves[i][c], LINE_THICKNESS, linesColor, true);
@@ -510,34 +510,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
         }
 
 //LINE DRAWING
-        //this returns array of Vector2D to draw 4-point bezier curve
-        private Vector2D[] getBezierCurve(Vector2D p1, Vector2D p2, Vector2D cp1, Vector2D cp2, int steps) {
-            if (steps < 0) return null;
-
-            int totalSteps = steps + 1;
-            Vector2D[] points = new Vector2D[totalSteps];
-            float step = 1f / (float)steps;
-            float curStep = 0f;
-            float curStepInv, m1, m2, m3, m4;
-
-            for (int i = 0; i < totalSteps; i++) {
-                curStepInv = 1f - curStep;
-
-                m1 = curStepInv * curStepInv * curStepInv;
-                m2 = 3 * curStep * curStepInv * curStepInv;
-                m3 = 3 * curStep * curStep * curStepInv;
-                m4 = curStep * curStep * curStep;
-
-                int px = (int)(m1 * p1.x + m2 * cp1.x + m3 * cp2.x + m4 * p2.x);
-                int py = (int)(m1 * p1.y + m2 * cp1.y + m3 * cp2.y + m4 * p2.y);
-
-                points[i] = new Vector2D(px, py);
-
-                curStep += step;
-            }
-            return points;
-        }
-
         //returns true if 2 lines intersect
         private bool linesIntersect(Line line1, Line line2) {
             float zn = (line2.End.y - line2.Start.y) * (line1.End.x - line1.Start.x) - (line2.End.x - line2.Start.x) * (line1.End.y - line1.Start.y);
@@ -549,11 +521,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
             if ((ch1 / zn <= 1 && ch1 / zn >= 0) && (ch2 / zn <= 1 && ch2 / zn >= 0))
                 return true;
             return false;
-        }
-
-        //it's basically 2-point bezier curve
-        private Vector2D getPointOnLine(Vector2D p1, Vector2D p2, float delta) {
-            return new Vector2D((int)((1f - delta) * p1.x + delta * p2.x), (int)((1f - delta) * p1.y + delta * p2.y));
         }
 
 //LINE SORTING
