@@ -855,6 +855,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Redraw screen
 			General.Interface.RedrawDisplay();
 		}
+
+		[BeginAction("thinglookatcursor")]
+		public void ThingPointAtCursor() {
+			// Make list of selected things
+			List<Thing> selected = new List<Thing>(General.Map.Map.GetSelectedThings(true));
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed)
+				selected.Add(highlighted);
+
+			if(!mousemappos.IsFinite()) {
+				General.Interface.DisplayStatus(StatusType.Warning, "Invalid mouse position!");
+				return;
+			}
+
+			if(selected.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			// Make undo
+			if(selected.Count > 1) {
+				General.Map.UndoRedo.CreateUndo("Rotate " + selected.Count + " things");
+				General.Interface.DisplayStatus(StatusType.Action, "Rotated " + selected.Count + " things.");
+			} else {
+				General.Map.UndoRedo.CreateUndo("Rotate thing");
+				General.Interface.DisplayStatus(StatusType.Action, "Rotated a thing.");
+			}
+
+			//change angle
+			foreach(Thing t in selected){
+				ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
+				if(info == null || info.Category == null || info.Category.Arrow == 0) continue;
+				t.Rotate(Vector2D.GetAngle(mousemappos, t.Position));
+			}
+
+			// Update cache values
+			General.Map.IsChanged = true;
+
+			// Redraw screen
+			General.Interface.RedrawDisplay();
+		}
 		
 		#endregion
 	}

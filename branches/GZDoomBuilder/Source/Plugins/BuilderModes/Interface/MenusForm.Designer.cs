@@ -43,24 +43,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.joinsectorsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mergesectorsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+			this.thingsmenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignToWallItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.globalstrip = new System.Windows.Forms.ToolStrip();
 			this.manualstrip = new System.Windows.Forms.ToolStrip();
-			this.seperatorcopypaste = new System.Windows.Forms.ToolStripSeparator();
-			this.separatorsectors1 = new System.Windows.Forms.ToolStripSeparator();
-			this.brightnessGradientMode = new System.Windows.Forms.ToolStripComboBox();
-			this.thingsmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.buttoncopyproperties = new System.Windows.Forms.ToolStripButton();
 			this.buttonpasteproperties = new System.Windows.Forms.ToolStripButton();
+			this.seperatorcopypaste = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonselectionnumbers = new System.Windows.Forms.ToolStripButton();
+			this.separatorsectors1 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonbrightnessgradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonfloorgradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonceilinggradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonflipselectionh = new System.Windows.Forms.ToolStripButton();
 			this.buttonflipselectionv = new System.Windows.Forms.ToolStripButton();
 			this.buttoncurvelinedefs = new System.Windows.Forms.ToolStripButton();
+			this.brightnessGradientMode = new System.Windows.Forms.ToolStripComboBox();
 			this.buttonMarqueSelectTouching = new System.Windows.Forms.ToolStripButton();
-			this.alignToWallItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buttonAlignThingsToWall = new System.Windows.Forms.ToolStripButton();
+			this.pointAtCursorItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.SuspendLayout();
@@ -189,6 +190,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
 			this.toolStripMenuItem2.Size = new System.Drawing.Size(146, 6);
 			// 
+			// thingsmenu
+			// 
+			this.thingsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.alignToWallItem,
+            this.pointAtCursorItem});
+			this.thingsmenu.Name = "thingsmenu";
+			this.thingsmenu.Size = new System.Drawing.Size(55, 20);
+			this.thingsmenu.Text = "Things";
+			this.thingsmenu.Visible = false;
+			// 
+			// alignToWallItem
+			// 
+			this.alignToWallItem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.AlignThings;
+			this.alignToWallItem.Name = "alignToWallItem";
+			this.alignToWallItem.Size = new System.Drawing.Size(202, 22);
+			this.alignToWallItem.Tag = "thingaligntowall";
+			this.alignToWallItem.Text = "&Align To Closest Linedef";
+			this.alignToWallItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// globalstrip
 			// 
 			this.globalstrip.Location = new System.Drawing.Point(0, 24);
@@ -220,34 +240,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.manualstrip.TabIndex = 2;
 			this.manualstrip.Text = "toolStrip1";
 			// 
-			// seperatorcopypaste
-			// 
-			this.seperatorcopypaste.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.seperatorcopypaste.Name = "seperatorcopypaste";
-			this.seperatorcopypaste.Size = new System.Drawing.Size(6, 25);
-			// 
-			// separatorsectors1
-			// 
-			this.separatorsectors1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.separatorsectors1.Name = "separatorsectors1";
-			this.separatorsectors1.Size = new System.Drawing.Size(6, 25);
-			// 
-			// brightnessGradientMode
-			// 
-			this.brightnessGradientMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.brightnessGradientMode.Name = "brightnessGradientMode";
-			this.brightnessGradientMode.Size = new System.Drawing.Size(75, 25);
-			this.brightnessGradientMode.ToolTipText = "Brightness Gradient affects:";
-			// 
-			// thingsmenu
-			// 
-			this.thingsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.alignToWallItem});
-			this.thingsmenu.Name = "thingsmenu";
-			this.thingsmenu.Size = new System.Drawing.Size(55, 20);
-			this.thingsmenu.Text = "Things";
-			this.thingsmenu.Visible = false;
-			// 
 			// buttoncopyproperties
 			// 
 			this.buttoncopyproperties.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -270,6 +262,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonpasteproperties.Text = "Paste Properties";
 			this.buttonpasteproperties.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// seperatorcopypaste
+			// 
+			this.seperatorcopypaste.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.seperatorcopypaste.Name = "seperatorcopypaste";
+			this.seperatorcopypaste.Size = new System.Drawing.Size(6, 25);
+			// 
 			// buttonselectionnumbers
 			// 
 			this.buttonselectionnumbers.CheckOnClick = true;
@@ -280,6 +278,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonselectionnumbers.Size = new System.Drawing.Size(23, 22);
 			this.buttonselectionnumbers.Text = "View Selection Numbering";
 			this.buttonselectionnumbers.Click += new System.EventHandler(this.buttonselectionnumbers_Click);
+			// 
+			// separatorsectors1
+			// 
+			this.separatorsectors1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.separatorsectors1.Name = "separatorsectors1";
+			this.separatorsectors1.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttonbrightnessgradient
 			// 
@@ -348,6 +352,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttoncurvelinedefs.Text = "Curve Linedefs";
 			this.buttoncurvelinedefs.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// brightnessGradientMode
+			// 
+			this.brightnessGradientMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.brightnessGradientMode.Name = "brightnessGradientMode";
+			this.brightnessGradientMode.Size = new System.Drawing.Size(75, 25);
+			this.brightnessGradientMode.ToolTipText = "Brightness Gradient affects:";
+			// 
 			// buttonMarqueSelectTouching
 			// 
 			this.buttonMarqueSelectTouching.CheckOnClick = true;
@@ -361,15 +372,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				"";
 			this.buttonMarqueSelectTouching.Click += new System.EventHandler(this.buttonMarqueSelectTouching_Click);
 			// 
-			// alignToWallItem
-			// 
-			this.alignToWallItem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.AlignThings;
-			this.alignToWallItem.Name = "alignToWallItem";
-			this.alignToWallItem.Size = new System.Drawing.Size(202, 22);
-			this.alignToWallItem.Tag = "thingaligntowall";
-			this.alignToWallItem.Text = "&Align To Closest Linedef";
-			this.alignToWallItem.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
 			// buttonAlignThingsToWall
 			// 
 			this.buttonAlignThingsToWall.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -380,6 +382,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonAlignThingsToWall.Tag = "thingaligntowall";
 			this.buttonAlignThingsToWall.ToolTipText = "Align selected things to closest linedef";
 			this.buttonAlignThingsToWall.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// pointAtCursorItem
+			// 
+			this.pointAtCursorItem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.ThingPointAtCursor;
+			this.pointAtCursorItem.Name = "pointAtCursorItem";
+			this.pointAtCursorItem.Size = new System.Drawing.Size(202, 22);
+			this.pointAtCursorItem.Tag = "thinglookatcursor";
+			this.pointAtCursorItem.Text = "&Point at Cursor";
+			this.pointAtCursorItem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// MenusForm
 			// 
@@ -442,5 +453,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripMenuItem thingsmenu;
 		private System.Windows.Forms.ToolStripMenuItem alignToWallItem;
 		private System.Windows.Forms.ToolStripButton buttonAlignThingsToWall;
+		private System.Windows.Forms.ToolStripMenuItem pointAtCursorItem;
 	}
 }
