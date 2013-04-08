@@ -1508,29 +1508,29 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 		}
 
-		//mxd. This is used only on new lines, so we don't bother with scales or checking existing values
+		//mxd
 		private static void autoAlignTexturesOnSidesUDMF(List<Linedef> lines, float totalLength, bool reversed) {
 			float curLength = 0f;
 
 			foreach(Linedef l in lines) {
 				if(l.Front != null) {
-					if(l.Front.MiddleRequired() && l.Front.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.MiddleTexture)) {
+					if(!l.Front.Fields.ContainsKey("offsetx_mid") && l.Front.MiddleRequired() && l.Front.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.MiddleTexture)) {
 						ImageData texture = General.Map.Data.GetFlatImage(l.Front.MiddleTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0) 
 							l.Front.Fields.Add("offsetx_mid", new UniValue(UniversalType.Float, offset));
 					}
-					
-					if(l.Front.HighRequired() && l.Front.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.HighTexture)) {
+
+					if(!l.Front.Fields.ContainsKey("offsetx_top") && l.Front.HighRequired() && l.Front.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.HighTexture)) {
 						ImageData texture = General.Map.Data.GetFlatImage(l.Front.HighTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0)
 							l.Front.Fields.Add("offsetx_top", new UniValue(UniversalType.Float, offset));
-					} 
-					
-					if(l.Front.LowRequired() && l.Front.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.LowTexture)) {
+					}
+
+					if(!l.Front.Fields.ContainsKey("offsetx_bottom") && l.Front.LowRequired() && l.Front.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.LowTexture)) {
 						ImageData texture = General.Map.Data.GetFlatImage(l.Front.LowTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
@@ -1540,23 +1540,23 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 
 				if(l.Back != null) {
-					if(l.Back.MiddleRequired() && l.Back.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.MiddleTexture)) {
+					if(!l.Back.Fields.ContainsKey("offsetx_mid") && l.Back.MiddleRequired() && l.Back.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.MiddleTexture)) {
 						ImageData texture = General.Map.Data.GetFlatImage(l.Back.MiddleTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0)
 							l.Front.Fields.Add("offsetx_mid", new UniValue(UniversalType.Float, offset));
-					} 
-					
-					if(l.Back.HighRequired() && l.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.HighTexture)) {
+					}
+
+					if(!l.Back.Fields.ContainsKey("offsetx_top") && l.Back.HighRequired() && l.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.HighTexture)) {
 						ImageData texture = General.Map.Data.GetFlatImage(l.Back.HighTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0)
 							l.Front.Fields.Add("offsetx_top", new UniValue(UniversalType.Float, offset));
-					} 
-					
-					if(l.Back.LowRequired() && l.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.LowTexture)) {
+					}
+
+					if(!l.Back.Fields.ContainsKey("offsetx_bottom") && l.Back.LowRequired() && l.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.LowTexture)) {
 						ImageData texture = General.Map.Data.GetFlatImage(l.Back.LowTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
