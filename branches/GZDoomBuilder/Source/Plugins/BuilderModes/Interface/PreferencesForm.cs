@@ -71,7 +71,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			autoaligntexturesoncreate.Checked = BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate; //mxd
 			autoalignDraggedSidedefsOffsetX.Checked = BuilderPlug.Me.AutoAlignTextureOffsetsOnDrag; //mxd
 			dontMoveGeometryOutsideBounds.Checked = BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary; //mxd
-			marqueBehaviour.SelectedIndex = BuilderPlug.Me.MarqueSelectionMode; //mxd
 			syncSelection.Checked = BuilderPlug.Me.SyncSelection; //mxd
 		}
 
@@ -98,7 +97,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("autoaligntextureoffsetsoncreate", autoaligntexturesoncreate.Checked);//mxd
 			General.Settings.WritePluginSetting("autoaligntextureoffsetsondrag", autoalignDraggedSidedefsOffsetX.Checked);//mxd
 			General.Settings.WritePluginSetting("dontmovegeometryoutsidemapboundary", dontMoveGeometryOutsideBounds.Checked);//mxd
-			General.Settings.WritePluginSetting("marqueselectionmode", marqueBehaviour.SelectedIndex);//mxd
 			General.Settings.WritePluginSetting("syncselection", syncSelection.Checked);//mxd
 		}
 		

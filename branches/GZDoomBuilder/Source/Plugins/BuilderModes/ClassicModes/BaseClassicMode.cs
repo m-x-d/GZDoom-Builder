@@ -140,18 +140,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnUpdateMultiSelection() {
 			base.OnUpdateMultiSelection();
 
-			//check for subtractive selection
-			if(BuilderPlug.Me.MarqueSelectionMode == 0) {
-				return;
-			} else if(BuilderPlug.Me.MarqueSelectionMode == 1) { //Left to right adds, right to left removes from selection.
-				subtractiveSelection = SelectionStart.x > selectionrect.X;
-			} else if(BuilderPlug.Me.MarqueSelectionMode == 2) { //Left to right removes, right to left adds to selection.
-				subtractiveSelection = SelectionStart.x == selectionrect.X;
-			} else if(BuilderPlug.Me.MarqueSelectionMode == 3) { //Top to bottom adds, bottom to top removes from selection.
-				subtractiveSelection = SelectionStart.y == selectionrect.Y;
-			} else if(BuilderPlug.Me.MarqueSelectionMode == 4) { //Top to bottom removes, bottom to top adds to selection.
-				subtractiveSelection = SelectionStart.y > selectionrect.Y;
-			}
+			if(General.Interface.CtrlState && General.Interface.ShiftState)
+				marqueSelectionMode = MarqueSelectionMode.INTERSECT;
+			else if(General.Interface.CtrlState)
+				marqueSelectionMode = MarqueSelectionMode.SUBTRACT;
+			else if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
+				marqueSelectionMode = MarqueSelectionMode.ADD;
+			else
+				marqueSelectionMode = MarqueSelectionMode.SELECT;
 		}
 		
 		#endregion

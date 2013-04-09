@@ -543,14 +543,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnEndMultiSelection()
 		{
 			bool selectionvolume = ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f));
-
-			//if(BuilderPlug.Me.AutoClearSelection && !selectionvolume)
-			   //General.Map.Map.ClearSelectedLinedefs();
 			   
 			if(selectionvolume)
 			{
 				//mxd
-				if(subtractiveSelection) {
+				if(marqueSelectionMode == MarqueSelectionMode.SELECT) {
+					// Go for all lines
+					if(BuilderPlug.Me.MarqueSelectTouching) {
+						foreach(Linedef l in General.Map.Map.Linedefs)
+							l.Selected = selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) || selectionrect.Contains(l.End.Position.x, l.End.Position.y);
+					} else {
+						foreach(Linedef l in General.Map.Map.Linedefs)
+							l.Selected = selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) && selectionrect.Contains(l.End.Position.x, l.End.Position.y);
+					}
+				} else if(marqueSelectionMode == MarqueSelectionMode.ADD) {
+					// Go for all lines
+					if(BuilderPlug.Me.MarqueSelectTouching) {
+						foreach(Linedef l in General.Map.Map.Linedefs)
+							l.Selected |= selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) || selectionrect.Contains(l.End.Position.x, l.End.Position.y);
+					} else {
+						foreach(Linedef l in General.Map.Map.Linedefs)
+							l.Selected |= selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) && selectionrect.Contains(l.End.Position.x, l.End.Position.y);
+					}
+				} else if(marqueSelectionMode == MarqueSelectionMode.SUBTRACT) {
 					// Go for all lines
 					if(BuilderPlug.Me.MarqueSelectTouching) {
 						foreach(Linedef l in General.Map.Map.Linedefs) {
@@ -563,24 +578,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								l.Selected = false;
 						}
 					}
-				} else {
-					if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect) {
-						// Go for all lines
-						if(BuilderPlug.Me.MarqueSelectTouching) {
-							foreach(Linedef l in General.Map.Map.Linedefs)
-								l.Selected |= selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) || selectionrect.Contains(l.End.Position.x, l.End.Position.y);
-						} else {
-							foreach(Linedef l in General.Map.Map.Linedefs)
-								l.Selected |= selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) && selectionrect.Contains(l.End.Position.x, l.End.Position.y);
+				} else { //should be Intersect
+					// Go for all lines
+					if(BuilderPlug.Me.MarqueSelectTouching) {
+						foreach(Linedef l in General.Map.Map.Linedefs) {
+							if(!selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) && !selectionrect.Contains(l.End.Position.x, l.End.Position.y))
+								l.Selected = false;
 						}
 					} else {
-						// Go for all lines
-						if(BuilderPlug.Me.MarqueSelectTouching) {
-							foreach(Linedef l in General.Map.Map.Linedefs)
-								l.Selected = selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) || selectionrect.Contains(l.End.Position.x, l.End.Position.y);
-						} else {
-							foreach(Linedef l in General.Map.Map.Linedefs)
-								l.Selected = selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) && selectionrect.Contains(l.End.Position.x, l.End.Position.y);
+						foreach(Linedef l in General.Map.Map.Linedefs) {
+							if(!selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) || !selectionrect.Contains(l.End.Position.x, l.End.Position.y))
+								l.Selected = false;
 						}
 					}
 				}

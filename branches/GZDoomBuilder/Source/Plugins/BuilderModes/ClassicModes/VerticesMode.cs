@@ -505,26 +505,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			bool selectionvolume = ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f));
 
-			//if(BuilderPlug.Me.AutoClearSelection && !selectionvolume)
-				//General.Map.Map.ClearSelectedVertices();
-
 			if(selectionvolume)
 			{
 				//mxd
-				if(subtractiveSelection) {
+				if(marqueSelectionMode == MarqueSelectionMode.SELECT) {
+					// Go for all vertices
+					foreach(Vertex v in General.Map.Map.Vertices)
+						v.Selected = selectionrect.Contains(v.Position.x, v.Position.y);
+				} else if(marqueSelectionMode == MarqueSelectionMode.ADD) {
+					// Go for all vertices
+					foreach(Vertex v in General.Map.Map.Vertices)
+						v.Selected |= selectionrect.Contains(v.Position.x, v.Position.y);
+				} else if(marqueSelectionMode == MarqueSelectionMode.SUBTRACT) {
 					// Go for all vertices
 					foreach(Vertex v in General.Map.Map.Vertices)
 						if(selectionrect.Contains(v.Position.x, v.Position.y)) v.Selected = false;
-				} else {
-					if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect) {
-						// Go for all vertices
-						foreach(Vertex v in General.Map.Map.Vertices)
-							v.Selected |= selectionrect.Contains(v.Position.x, v.Position.y);
-					} else {
-						// Go for all vertices
-						foreach(Vertex v in General.Map.Map.Vertices)
-							v.Selected = selectionrect.Contains(v.Position.x, v.Position.y);
-					}
+				} else { //should be Intersect
+					// Go for all vertices
+					foreach(Vertex v in General.Map.Map.Vertices)
+						if(!selectionrect.Contains(v.Position.x, v.Position.y)) v.Selected = false;
 				}
 			}
 			
