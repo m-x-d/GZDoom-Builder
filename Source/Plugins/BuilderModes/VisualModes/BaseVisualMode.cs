@@ -537,7 +537,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             //move things...
             if (!absolutePosition) { //...relatively (that's easy)
                 int camAngle = (int)Math.Round(General.Map.VisualCamera.AngleXY * 180 / Math.PI);
-                int sector = (int)(General.ClampAngle(camAngle - 45f) / 90f);
+                int sector = General.ClampAngle(camAngle - 45) / 90;
                 direction = direction.GetRotated((float)(sector * Math.PI / 2f));
 
                 for (int i = 0; i < coordinates.Length; i++)

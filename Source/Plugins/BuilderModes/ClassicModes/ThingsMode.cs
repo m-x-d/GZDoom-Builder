@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Interface
 		private bool editpressed;
 		private bool thinginserted;
+		private bool awaitingMouseClick; //mxd
 		
 		#endregion
 
@@ -282,6 +283,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Selection
 		protected override void OnSelectBegin()
 		{
+			//mxd. Yep, it's kinda hackish...
+			if(awaitingMouseClick) {
+				awaitingMouseClick = false;
+				ThingPointAtCursor();
+				return;
+			}
+			
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
@@ -548,26 +556,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			bool selectionvolume = ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f));
 
-			//if(BuilderPlug.Me.AutoClearSelection && !selectionvolume)
-				//General.Map.Map.ClearSelectedThings();
-
 			if(selectionvolume)
 			{
 				//mxd
-				if(subtractiveSelection) {
-					// Go for all things
+				if(marqueSelectionMode == MarqueSelectionMode.SELECT) {
+					// Go for all vertices
+					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+						t.Selected = selectionrect.Contains(t.Position.x, t.Position.y);
+				} else if(marqueSelectionMode == MarqueSelectionMode.ADD) {
+					// Go for all vertices
+					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+						t.Selected |= selectionrect.Contains(t.Position.x, t.Position.y);
+				} else if(marqueSelectionMode == MarqueSelectionMode.SUBTRACT) {
+					// Go for all vertices
 					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
 						if(selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
-				} else {
-					if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect) {
-						// Go for all things
-						foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
-							t.Selected |= selectionrect.Contains(t.Position.x, t.Position.y);
-					} else {
-						// Go for all things
-						foreach(Thing t in General.Map.ThingsFilter.VisibleThings) 
-							t.Selected = selectionrect.Contains(t.Position.x, t.Position.y);
-					}
+				} else { //should be Intersect
+					// Go for all vertices
+					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+						if(!selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
 				}
 			}
 			
@@ -863,15 +870,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed)
 				selected.Add(highlighted);
 
-			if(!mousemappos.IsFinite()) {
-				General.Interface.DisplayStatus(StatusType.Warning, "Invalid mouse position!");
-				return;
-			}
-
 			if(selected.Count == 0) {
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
 			}
+
+			//check mouse position
+			if(!mousemappos.IsFinite()) {
+				awaitingMouseClick = true;
+				General.Interface.DisplayStatus(StatusType.Warning, "Now click in the editing area!");
+				return;
+			}
+
+			awaitingMouseClick = false;
 
 			// Make undo
 			if(selected.Count > 1) {
@@ -883,10 +894,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//change angle
-			foreach(Thing t in selected){
-				ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
-				if(info == null || info.Category == null || info.Category.Arrow == 0) continue;
-				t.Rotate(Vector2D.GetAngle(mousemappos, t.Position));
+			if(General.Interface.CtrlState) { //point away
+				foreach(Thing t in selected) {
+					ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
+					if(info == null || info.Category == null || info.Category.Arrow == 0)
+						continue;
+					t.Rotate(Vector2D.GetAngle(mousemappos, t.Position) + (float)Math.PI);
+				}
+			} else { //point at
+				foreach(Thing t in selected) {
+					ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
+					if(info == null || info.Category == null || info.Category.Arrow == 0)
+						continue;
+					t.Rotate(Vector2D.GetAngle(mousemappos, t.Position));
+				}
 			}
 
 			// Update cache values

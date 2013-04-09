@@ -115,7 +115,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool autoAlignTextureOffsetsOnCreate;//mxd
 		private bool autoAlignTextureOffsetsOnDrag;//mxd
 		private bool dontMoveGeometryOutsideMapBoundary;//mxd
-		private int marqueSelectionMode; //mxd
 		private bool marqueSelectTouching; //mxd. Select elements partially/fully inside of marque selection?
 		private bool syncSelection; //mxd. Sync selection between Visual and Classic modes.
 		private bool objExportTextures; //mxd
@@ -177,7 +176,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool AutoAlignTextureOffsetsOnCreate { get { return autoAlignTextureOffsetsOnCreate; } set { autoAlignTextureOffsetsOnCreate = value; } } //mxd
 		public bool AutoAlignTextureOffsetsOnDrag { get { return autoAlignTextureOffsetsOnDrag; } set { autoAlignTextureOffsetsOnDrag = value; } } //mxd
 		public bool DontMoveGeometryOutsideMapBoundary { get { return dontMoveGeometryOutsideMapBoundary; } set { DontMoveGeometryOutsideMapBoundary = value; } } //mxd
-		public int MarqueSelectionMode { get { return marqueSelectionMode; } set { marqueSelectionMode = value; } } //mxd
 		public bool MarqueSelectTouching { get { return marqueSelectTouching; } set { marqueSelectTouching = value; } } //mxd
 		public bool SyncSelection { get { return syncSelection; } set { syncSelection = value; } } //mxd
 		public bool ObjExportTextures { get { return objExportTextures; } internal set { objExportTextures = value; } } //mxd
@@ -327,7 +325,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			autoAlignTextureOffsetsOnCreate = General.Settings.ReadPluginSetting("autoaligntextureoffsetsoncreate", true); //mxd
 			autoAlignTextureOffsetsOnDrag = General.Settings.ReadPluginSetting("autoaligntextureoffsetsondrag", true); //mxd
 			dontMoveGeometryOutsideMapBoundary = General.Settings.ReadPluginSetting("dontmovegeometryoutsidemapboundary", false); //mxd
-			marqueSelectionMode = General.Settings.ReadPluginSetting("marqueselectionmode", 1); //mxd
 			syncSelection = General.Settings.ReadPluginSetting("syncselection", false); //mxd
 			objExportTextures = General.Settings.ReadPluginSetting("objexporttextures", false); //mxd
 			objGZDoomScale = General.Settings.ReadPluginSetting("objgzdoomscale", false); //mxd
