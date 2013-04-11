@@ -19,12 +19,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
-using System.Reflection;
-using System.Diagnostics;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
@@ -33,14 +29,10 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.VisualModes;
-
-//mxd
-using CodeImp.DoomBuilder.GZBuilder;
-using CodeImp.DoomBuilder.GZBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.GZDoom;
+using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
+using CodeImp.DoomBuilder.GZBuilder.GZDoom; //mxd
 
 #endregion
 

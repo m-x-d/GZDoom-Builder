@@ -1,6 +1,4 @@
-﻿using System;
-using SlimDX;
-using SlimDX.Direct3D9;
+﻿using SlimDX;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data {
     public sealed class MapInfo {

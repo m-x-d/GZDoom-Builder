@@ -4,14 +4,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
 using System.Collections.Generic;
-
-using CodeImp.DoomBuilder;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.GZBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.GZDoom;
-
 using SlimDX;
 using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Geometry;

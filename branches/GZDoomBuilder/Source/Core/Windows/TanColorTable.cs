@@ -17,25 +17,14 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-using System.Reflection;
 using System.Drawing;
-using System.ComponentModel;
 using System.Windows.Forms.VisualStyles;
-using CodeImp.DoomBuilder.Map;
 using Microsoft.Win32;
-using SlimDX.Direct3D9;
-using SlimDX;
-using CodeImp.DoomBuilder.Geometry;
-using System.Drawing.Imaging;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Editing;
 
 #endregion
 

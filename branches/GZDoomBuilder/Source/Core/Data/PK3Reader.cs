@@ -17,19 +17,12 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
-//using ICSharpCode.SharpZipLib.Zip;
-//mxd
-using SharpCompress.Archive;
-using SharpCompress.Common;
-using SharpCompress.Reader;
+using SharpCompress.Archive; //mxd
+using SharpCompress.Common; //mxd
+using SharpCompress.Reader; //mxd
 
 #endregion
 

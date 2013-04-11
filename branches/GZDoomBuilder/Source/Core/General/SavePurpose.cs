@@ -16,27 +16,6 @@
 
 #region ================== Namespaces
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using System.Windows.Forms;
-using System.IO;
-using System.Reflection;
-using System.Diagnostics;
-using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Editing;
-using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Actions;
-using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Plugins;
-using CodeImp.DoomBuilder.Compilers;
-using CodeImp.DoomBuilder.VisualModes;
-
 #endregion
 
 namespace CodeImp.DoomBuilder

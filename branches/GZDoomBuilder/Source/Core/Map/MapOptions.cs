@@ -16,16 +16,13 @@
 
 #region ================== Namespaces
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
-using System.Text;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Plugins;
 using System.Collections.Specialized;
 

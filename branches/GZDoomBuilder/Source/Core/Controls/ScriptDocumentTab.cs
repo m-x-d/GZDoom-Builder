@@ -19,18 +19,11 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
-using Microsoft.Win32;
-using System.Diagnostics;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Types;
-using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Compilers;
 //mxd
 using CodeImp.DoomBuilder.GZBuilder.Data;

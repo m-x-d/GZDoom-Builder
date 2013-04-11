@@ -1,5 +1,4 @@
-﻿using System;
-using CodeImp.DoomBuilder.Map;
+﻿using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Tools

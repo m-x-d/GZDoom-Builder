@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace CodeImp.DoomBuilder.GZBuilder.Data {
     internal enum ScriptType : int {
         UNKNOWN = 0,

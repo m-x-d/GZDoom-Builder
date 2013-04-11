@@ -19,21 +19,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
-using System.Windows.Forms;
-using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Config;
 using System.Threading;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.ZDoom;
-using CodeImp.DoomBuilder.VisualModes;
-
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 using CodeImp.DoomBuilder.GZBuilder.MD3;

@@ -1,12 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
-
 using SlimDX;
-using SlimDX.Direct3D9;
-
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Geometry;
 
