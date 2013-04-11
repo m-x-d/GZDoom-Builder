@@ -74,6 +74,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ToolStripComboBox BrightnessGradientMode { get { return brightnessGradientMode; } } //mxd
 		public ToolStripButton MarqueSelectTouching { get { return buttonMarqueSelectTouching; } } //mxd
 		public ToolStripButton AlignThingsToWall { get { return buttonAlignThingsToWall; } } //mxd
+		public ToolStripButton TextureOffsetLock { get { return buttonTextureOffsetLock; } }
 
 		#endregion
 
@@ -177,6 +178,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void buttonMarqueSelectTouching_Click(object sender, EventArgs e) {
 			BuilderPlug.Me.MarqueSelectTouching = buttonMarqueSelectTouching.Checked;
+		}
+
+		//mxd
+		private void buttonTextureOffsetLock_Click(object sender, EventArgs e) {
+			BuilderPlug.Me.LockSectorTextureOffsetsWhileDragging = buttonTextureOffsetLock.Checked;
 		}
 		
 		#endregion

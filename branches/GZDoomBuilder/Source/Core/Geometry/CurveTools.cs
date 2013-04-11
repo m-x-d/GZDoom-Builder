@@ -120,14 +120,14 @@ namespace CodeImp.DoomBuilder.Geometry
 					float theta = (float)Math.Atan2(ry, rx);	// angle of the new vector
 
 					float controlDist = Math.Min(a, b) * z;	// Distance of curve control points from current point: a fraction the length of the shorter adjacent triangle side
-					float controlScaleFactor = C / (float)Math.PI;	// Scale the distance based on the acuteness of the angle. Prevents big loops around long, sharp-angled triangles.
+					float controlScaleFactor = C / Angle2D.PI;	// Scale the distance based on the acuteness of the angle. Prevents big loops around long, sharp-angled triangles.
 					controlDist *= ((1 - angleFactor) + angleFactor * controlScaleFactor);	// Mess with this for some fine-tuning
-					float controlAngle = theta + (float)Math.PI / 2;	// The angle from the current point to control points: the new vector angle plus 90 degrees (tangent to the curve).
+					float controlAngle = theta + Angle2D.PIHALF;	// The angle from the current point to control points: the new vector angle plus 90 degrees (tangent to the curve).
 
 					Vector2D controlPoint2 = new Vector2D(controlDist, 0);
 					Vector2D controlPoint1 = new Vector2D(controlDist, 0);
 					controlPoint2 = controlPoint2.GetRotated(controlAngle);
-					controlPoint1 = controlPoint1.GetRotated(controlAngle + (float)Math.PI);
+					controlPoint1 = controlPoint1.GetRotated(controlAngle + Angle2D.PI);
 
 					// Offset control points to put them in the correct absolute position
 					controlPoint1 += p1;

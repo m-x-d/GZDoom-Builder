@@ -44,23 +44,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.mergesectorsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.thingsmenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.alignToWallItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.globalstrip = new System.Windows.Forms.ToolStrip();
 			this.manualstrip = new System.Windows.Forms.ToolStrip();
+			this.seperatorcopypaste = new System.Windows.Forms.ToolStripSeparator();
+			this.separatorsectors1 = new System.Windows.Forms.ToolStripSeparator();
+			this.brightnessGradientMode = new System.Windows.Forms.ToolStripComboBox();
 			this.buttoncopyproperties = new System.Windows.Forms.ToolStripButton();
 			this.buttonpasteproperties = new System.Windows.Forms.ToolStripButton();
-			this.seperatorcopypaste = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonselectionnumbers = new System.Windows.Forms.ToolStripButton();
-			this.separatorsectors1 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonbrightnessgradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonfloorgradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonceilinggradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonflipselectionh = new System.Windows.Forms.ToolStripButton();
 			this.buttonflipselectionv = new System.Windows.Forms.ToolStripButton();
 			this.buttoncurvelinedefs = new System.Windows.Forms.ToolStripButton();
-			this.brightnessGradientMode = new System.Windows.Forms.ToolStripComboBox();
 			this.buttonMarqueSelectTouching = new System.Windows.Forms.ToolStripButton();
 			this.buttonAlignThingsToWall = new System.Windows.Forms.ToolStripButton();
+			this.buttonTextureOffsetLock = new System.Windows.Forms.ToolStripButton();
+			this.alignToWallItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pointAtCursorItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
@@ -200,15 +201,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.thingsmenu.Text = "Things";
 			this.thingsmenu.Visible = false;
 			// 
-			// alignToWallItem
-			// 
-			this.alignToWallItem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.AlignThings;
-			this.alignToWallItem.Name = "alignToWallItem";
-			this.alignToWallItem.Size = new System.Drawing.Size(202, 22);
-			this.alignToWallItem.Tag = "thingaligntowall";
-			this.alignToWallItem.Text = "&Align To Closest Linedef";
-			this.alignToWallItem.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
 			// globalstrip
 			// 
 			this.globalstrip.Location = new System.Drawing.Point(0, 24);
@@ -233,12 +225,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.buttoncurvelinedefs,
             this.brightnessGradientMode,
             this.buttonMarqueSelectTouching,
-            this.buttonAlignThingsToWall});
+            this.buttonAlignThingsToWall,
+            this.buttonTextureOffsetLock});
 			this.manualstrip.Location = new System.Drawing.Point(0, 49);
 			this.manualstrip.Name = "manualstrip";
 			this.manualstrip.Size = new System.Drawing.Size(423, 25);
 			this.manualstrip.TabIndex = 2;
 			this.manualstrip.Text = "toolStrip1";
+			// 
+			// seperatorcopypaste
+			// 
+			this.seperatorcopypaste.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.seperatorcopypaste.Name = "seperatorcopypaste";
+			this.seperatorcopypaste.Size = new System.Drawing.Size(6, 25);
+			// 
+			// separatorsectors1
+			// 
+			this.separatorsectors1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.separatorsectors1.Name = "separatorsectors1";
+			this.separatorsectors1.Size = new System.Drawing.Size(6, 25);
+			// 
+			// brightnessGradientMode
+			// 
+			this.brightnessGradientMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.brightnessGradientMode.Name = "brightnessGradientMode";
+			this.brightnessGradientMode.Size = new System.Drawing.Size(75, 25);
+			this.brightnessGradientMode.ToolTipText = "Brightness Gradient affects:";
 			// 
 			// buttoncopyproperties
 			// 
@@ -262,12 +274,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonpasteproperties.Text = "Paste Properties";
 			this.buttonpasteproperties.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// seperatorcopypaste
-			// 
-			this.seperatorcopypaste.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.seperatorcopypaste.Name = "seperatorcopypaste";
-			this.seperatorcopypaste.Size = new System.Drawing.Size(6, 25);
-			// 
 			// buttonselectionnumbers
 			// 
 			this.buttonselectionnumbers.CheckOnClick = true;
@@ -278,12 +284,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonselectionnumbers.Size = new System.Drawing.Size(23, 22);
 			this.buttonselectionnumbers.Text = "View Selection Numbering";
 			this.buttonselectionnumbers.Click += new System.EventHandler(this.buttonselectionnumbers_Click);
-			// 
-			// separatorsectors1
-			// 
-			this.separatorsectors1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.separatorsectors1.Name = "separatorsectors1";
-			this.separatorsectors1.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttonbrightnessgradient
 			// 
@@ -352,13 +352,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttoncurvelinedefs.Text = "Curve Linedefs";
 			this.buttoncurvelinedefs.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// brightnessGradientMode
-			// 
-			this.brightnessGradientMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.brightnessGradientMode.Name = "brightnessGradientMode";
-			this.brightnessGradientMode.Size = new System.Drawing.Size(75, 25);
-			this.brightnessGradientMode.ToolTipText = "Brightness Gradient affects:";
-			// 
 			// buttonMarqueSelectTouching
 			// 
 			this.buttonMarqueSelectTouching.CheckOnClick = true;
@@ -382,6 +375,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonAlignThingsToWall.Tag = "thingaligntowall";
 			this.buttonAlignThingsToWall.ToolTipText = "Align selected things to closest linedef";
 			this.buttonAlignThingsToWall.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttonTextureOffsetLock
+			// 
+			this.buttonTextureOffsetLock.CheckOnClick = true;
+			this.buttonTextureOffsetLock.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonTextureOffsetLock.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.TextureLock;
+			this.buttonTextureOffsetLock.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonTextureOffsetLock.Name = "buttonTextureOffsetLock";
+			this.buttonTextureOffsetLock.Size = new System.Drawing.Size(23, 22);
+			this.buttonTextureOffsetLock.ToolTipText = "When enabled, keeps floor and ceiling texture offsets\r\nconstant while sector is d" +
+				"ragged\r\n";
+			this.buttonTextureOffsetLock.Click += new System.EventHandler(this.buttonTextureOffsetLock_Click);
+			// 
+			// alignToWallItem
+			// 
+			this.alignToWallItem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.AlignThings;
+			this.alignToWallItem.Name = "alignToWallItem";
+			this.alignToWallItem.Size = new System.Drawing.Size(202, 22);
+			this.alignToWallItem.Tag = "thingaligntowall";
+			this.alignToWallItem.Text = "&Align To Closest Linedef";
+			this.alignToWallItem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// pointAtCursorItem
 			// 
@@ -454,5 +468,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripMenuItem alignToWallItem;
 		private System.Windows.Forms.ToolStripButton buttonAlignThingsToWall;
 		private System.Windows.Forms.ToolStripMenuItem pointAtCursorItem;
+		private System.Windows.Forms.ToolStripButton buttonTextureOffsetLock;
 	}
 }

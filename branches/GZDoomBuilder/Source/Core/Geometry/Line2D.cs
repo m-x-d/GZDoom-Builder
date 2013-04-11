@@ -207,7 +207,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			// Calculate and return the angle
 			Vector2D d = GetDelta();
-			return -(float)Math.Atan2(-d.y, d.x) + (float)Math.PI * 0.5f;
+			return -(float)Math.Atan2(-d.y, d.x) + Angle2D.PIHALF;//mxd // (float)Math.PI * 0.5f;
 		}
 		
 		public Vector2D GetDelta() { return v2 - v1; }

@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 
             Vector2D center = new Vector2D(pStart.x + hw, pStart.y + hh);
             float curAngle = 0;
-            float angleStep = -(float)Math.PI / subdivisions * 2;
+            float angleStep = -Angle2D.PI / subdivisions * 2;
             int px, py;
 
             for (int i = 0; i < subdivisions; i++) {

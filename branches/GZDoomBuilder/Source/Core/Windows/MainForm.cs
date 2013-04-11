@@ -1818,7 +1818,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
         //mxd
-        public void UpdateGZDoomPannel() {
+        public void UpdateGZDoomPanel() {
             if (General.Map != null) {
                 buttontogglemodels.Enabled = true;
                 buttonselectedmodelsonly.Enabled = true;

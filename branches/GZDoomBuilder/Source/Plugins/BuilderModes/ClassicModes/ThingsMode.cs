@@ -899,7 +899,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
 					if(info == null || info.Category == null || info.Category.Arrow == 0)
 						continue;
-					t.Rotate(Vector2D.GetAngle(mousemappos, t.Position) + (float)Math.PI);
+					t.Rotate(Vector2D.GetAngle(mousemappos, t.Position) + Angle2D.PI);
 				}
 			} else { //point at
 				foreach(Thing t in selected) {

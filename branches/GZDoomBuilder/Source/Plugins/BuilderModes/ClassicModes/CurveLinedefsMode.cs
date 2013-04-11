@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//the curve starts at PI/2 - theta/2 and is segmented into vertices+1 segments
 				//this assumes the line is horisontal and on y = 0, the point is rotated and moved later
 
-                a = ((float)Math.PI - theta) / 2 + v * (theta / (vertices + 1));
+                a = (Angle2D.PI - theta) / 2 + v * (theta / (vertices + 1));
 
 				//calculate the coordinates of the point, and distort the y coordinate
 				//using the deform factor calculated above

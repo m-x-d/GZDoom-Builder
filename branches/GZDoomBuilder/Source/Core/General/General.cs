@@ -1021,7 +1021,7 @@ namespace CodeImp.DoomBuilder
 					mainwindow.UpdateThingsFilters();
 					mainwindow.UpdateInterface();
                     //mxd
-                    mainwindow.UpdateGZDoomPannel();
+                    mainwindow.UpdateGZDoomPanel();
 					mainwindow.HideInfo();
 
 					if(errorlogger.IsErrorAdded)
@@ -1074,7 +1074,7 @@ namespace CodeImp.DoomBuilder
 				mainwindow.HideInfo();
 				mainwindow.UpdateThingsFilters();
                 //mxd
-                mainwindow.UpdateGZDoomPannel();
+                mainwindow.UpdateGZDoomPanel();
 				mainwindow.UpdateInterface();
 				mainwindow.DisplayReady();
 				General.WriteLogLine("Map unload done");
@@ -1113,7 +1113,7 @@ namespace CodeImp.DoomBuilder
 				OpenMapFile(openfile.FileName, null);
 
                 //mxd
-                mainwindow.UpdateGZDoomPannel();
+                mainwindow.UpdateGZDoomPanel();
 				General.Settings.GZForceDefaultTextures = false;
 			}
 
@@ -1170,7 +1170,7 @@ namespace CodeImp.DoomBuilder
 				mainwindow.AddRecentFile(filename);
 
 				//mxd
-				mainwindow.UpdateGZDoomPannel();
+				mainwindow.UpdateGZDoomPanel();
 			}
 			else
 			{

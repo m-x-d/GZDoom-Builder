@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.Controls
 
                     int cl = (int)s.Fields["lightceiling"].Value;
 
-					if(s.Fields.ContainsKey("lightceilingabsolute") && Boolean.Parse(s.Fields["lightceilingabsolute"].Value.ToString()))
+					if(s.Fields.GetValue("lightceilingabsolute", false))
                         ceilingLight.Text = cl + " (abs.)";
                     else
                         ceilingLight.Text = cl + " (" + Math.Min(255, Math.Max(0, (cl + s.Brightness))) + ")";
@@ -101,7 +101,7 @@ namespace CodeImp.DoomBuilder.Controls
 
                     int fl = (int)s.Fields["lightfloor"].Value;
 
-					if(s.Fields.ContainsKey("lightfloorabsolute") && Boolean.Parse(s.Fields["lightfloorabsolute"].Value.ToString()))
+					if(s.Fields.GetValue("lightfloorabsolute", false))
 						floorLight.Text = fl + " (abs.)";
                     else
                         floorLight.Text = fl + " (" + Math.Min(255, Math.Max(0, (fl + s.Brightness))) + ")";
@@ -112,14 +112,9 @@ namespace CodeImp.DoomBuilder.Controls
 					floorLightLabel.Enabled = false;
 				}
 
-				//offsets
-				float panX = 0f;
-				float panY = 0f;
-
-				if(s.Fields.ContainsKey("xpanningceiling"))
-					panX = (float)s.Fields["xpanningceiling"].Value;
-				if(s.Fields.ContainsKey("ypanningceiling"))
-					panY = (float)s.Fields["ypanningceiling"].Value;
+				//ceiling offsets
+				float panX = s.Fields.GetValue("xpanningceiling", 0f);
+				float panY = s.Fields.GetValue("ypanningceiling", 0f);
 
 				if(panX != 0 || panY != 0) {
 					showExtededCeilingInfo = true;
@@ -132,13 +127,9 @@ namespace CodeImp.DoomBuilder.Controls
 					ceilingOffsetLabel.Enabled = false;
 				}
 
-				panX = 0f;
-				panY = 0f;
-
-				if(s.Fields.ContainsKey("xpanningfloor"))
-					panX = (float)s.Fields["xpanningfloor"].Value;
-				if(s.Fields.ContainsKey("ypanningfloor"))
-					panY = (float)s.Fields["ypanningfloor"].Value;
+				//floor offsets
+				panX = s.Fields.GetValue("xpanningfloor", 0f);
+				panY = s.Fields.GetValue("ypanningfloor", 0f);
 
 				if(panX != 0 || panY != 0) {
 					showExtededFloorInfo = true;
@@ -151,15 +142,9 @@ namespace CodeImp.DoomBuilder.Controls
 					floorOffsetLabel.Enabled = false;
 				}
 
-				//scale
-				float scaleX = 1.0f;
-				float scaleY = 1.0f;
-
-				if(s.Fields.ContainsKey("xscaleceiling"))
-					scaleX = (float)s.Fields["xscaleceiling"].Value;
-				if(s.Fields.ContainsKey("yscaleceiling"))
-					scaleY = (float)s.Fields["yscaleceiling"].Value;
-
+				//ceiling scale
+				float scaleX = s.Fields.GetValue("xscaleceiling", 1.0f);//1.0f;
+				float scaleY = s.Fields.GetValue("yscaleceiling", 1.0f);
 
 				if(scaleX != 1.0f || scaleY != 1.0f) {
 					showExtededCeilingInfo = true;
@@ -172,14 +157,9 @@ namespace CodeImp.DoomBuilder.Controls
 					ceilingScaleLabel.Enabled = false;
 				}
 
-				scaleX = 1.0f;
-				scaleY = 1.0f;
-
-				if(s.Fields.ContainsKey("xscalefloor"))
-					scaleX = (float)s.Fields["xscalefloor"].Value;
-				if(s.Fields.ContainsKey("yscalefloor"))
-					scaleY = (float)s.Fields["yscalefloor"].Value;
-
+				//floor scale
+				scaleX = s.Fields.GetValue("xscalefloor", 1.0f);
+				scaleY = s.Fields.GetValue("yscalefloor", 1.0f);
 
 				if(scaleX != 1.0f || scaleY != 1.0f) {
 					showExtededFloorInfo = true;

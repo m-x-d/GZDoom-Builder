@@ -119,7 +119,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool syncSelection; //mxd. Sync selection between Visual and Classic modes.
 		private bool objExportTextures; //mxd
 		private bool objGZDoomScale; //mxd
-		private float objScale;
+		private float objScale; //mxd
+		private bool lockSectorTextureOffsetsWhileDragging; //mxd
 		
 		#endregion
 
@@ -181,6 +182,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool ObjExportTextures { get { return objExportTextures; } internal set { objExportTextures = value; } } //mxd
 		public bool ObjGZDoomScale { get { return objGZDoomScale; } internal set { objGZDoomScale = value; } } //mxd
 		public float ObjScale { get { return objScale; } internal set { objScale = value; } } //mxd
+		public bool LockSectorTextureOffsetsWhileDragging { get { return lockSectorTextureOffsetsWhileDragging; } internal set { lockSectorTextureOffsetsWhileDragging = value; } } //mxd
 		
 		#endregion
 
@@ -201,6 +203,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Load menus form and register it
 			menusform = new MenusForm();
 			menusform.Register();
+			menusform.TextureOffsetLock.Checked = lockSectorTextureOffsetsWhileDragging; //mxd
 			
 			// Load curve linedefs form
 			curvelinedefsform = new CurveLinedefsForm();
@@ -329,6 +332,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			objExportTextures = General.Settings.ReadPluginSetting("objexporttextures", false); //mxd
 			objGZDoomScale = General.Settings.ReadPluginSetting("objgzdoomscale", false); //mxd
 			objScale = General.Settings.ReadPluginSetting("objscale", 1.0f); //mxd
+			lockSectorTextureOffsetsWhileDragging = General.Settings.ReadPluginSetting("locktextureoffsets", false); //mxd
 		}
 
 		#endregion
@@ -480,6 +484,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			drawCurveModeMenuItem.Enabled = false;
             drawRectModeMenuItem.Enabled = false;
             drawEllipseModeMenuItem.Enabled = false;
+
+			General.Settings.WritePluginSetting("locktextureoffsets", lockSectorTextureOffsetsWhileDragging);
 		}
 		
 		// Redo performed

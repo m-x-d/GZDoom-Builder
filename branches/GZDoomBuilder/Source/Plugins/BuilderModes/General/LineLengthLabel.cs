@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd
 			if(showAngle) {
-				int angle = (int)Math.Round(delta.GetAngle() * 180 / Math.PI);
+				int angle = (int)Math.Round(Angle2D.RadToDeg(delta.GetAngle()));// * 180 / Math.PI);
 				label.Text = "l:" + length.ToString(VALUE_FORMAT) + "; a:" + angle;
 			} else {
 				label.Text = length.ToString(VALUE_FORMAT);

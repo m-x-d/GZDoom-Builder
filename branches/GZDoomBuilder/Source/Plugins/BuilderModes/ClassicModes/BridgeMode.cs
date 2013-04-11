@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
                 if (form.MirrorMode) {
                     Vector2D pos = handle.RelativePosition;
                     //handle angle
-                    float angle = (float)Math.Atan2(-pos.y, -pos.x) + (float)Math.PI / 2f;
+					float angle = (float)Math.Atan2(-pos.y, -pos.x) + Angle2D.PIHALF;// (float)Math.PI / 2f;
                     //angle of line, connecting handles ControlledPoints
                     float dirAngle = -(float)Math.Atan2(handle.Pair.ControlledPoint.y - handle.ControlledPoint.y, handle.Pair.ControlledPoint.x - handle.ControlledPoint.x); 
                     float length = (float)Math.Sqrt(Math.Pow(Math.Abs(pos.x), 2.0) + Math.Pow(Math.Abs(pos.y), 2.0));
@@ -486,7 +486,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
                 p0 = pointGroup[i - 1];
                 p1 = pointGroup[i];
                 curAngle = (float)Math.Atan2(p0.y - p1.y, p0.x - p1.x);
-                diff = (angle + (float)Math.PI) - (curAngle + (float)Math.PI);
+				diff = (angle + Angle2D.PI) - (curAngle + Angle2D.PI);
 				segLen = (int)(Vector2D.Distance(p0, p1) * Math.Cos(diff));
                 relLenGroup[i] = relLenGroup[i - 1] + segLen / length;
             }
@@ -501,10 +501,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
             float angle = -(float)Math.Atan2(start.y - end.y, start.x - end.x);
             float dirAngle = -(float)Math.Atan2(direction.y - start.y, direction.x - start.x);
             float length = (float)Math.Sqrt(Math.Pow(Math.Abs(start.x - end.x), 2.0) + Math.Pow(Math.Abs(start.y - end.y), 2.0)) * 0.3f;
-            float diff = (angle + (float)Math.PI) - (dirAngle + (float)Math.PI);
+			float diff = (angle + Angle2D.PI) - (dirAngle + Angle2D.PI);
 
-            if (diff > Math.PI || (diff < 0 && diff > -Math.PI))
-                angle += (float)Math.PI;
+			if(diff > Angle2D.PI || (diff < 0 && diff > -Angle2D.PI))
+				angle += Angle2D.PI;
 
             return new Vector2D((float)(Math.Sin(angle) * length), (float)(Math.Cos(angle) * length));
         }
@@ -633,7 +633,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
         private int easeInSine(int val1, int val2, float delta) {
             float f_val1 = (float)val1;
             float f_val2 = (float)val2 - f_val1;
-            return (int)(-f_val2 * Math.Cos(delta * (Math.PI / 2.0f)) + f_val2 + f_val1);
+            return (int)(-f_val2 * Math.Cos(delta * Angle2D.PIHALF) + f_val2 + f_val1);
         }
 
         /**
@@ -642,7 +642,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
         private int easeOutSine(int val1, int val2, float delta) {
             float f_val1 = (float)val1;
             float f_val2 = (float)val2;
-            return (int)((f_val2 - f_val1) * Math.Sin(delta * ((float)Math.PI / 2.0f)) + f_val1);
+			return (int)((f_val2 - f_val1) * Math.Sin(delta * Angle2D.PIHALF) + f_val1);
         }
 
         /**
@@ -651,7 +651,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
         private int easeInOutSine(int val1, int val2, float delta) {
             float f_val1 = (float)val1;
             float f_val2 = (float)val2;
-            return (int)(-f_val2 / 2.0f * (Math.Cos(Math.PI * delta) - 1.0f) + f_val1);
+			return (int)(-f_val2 / 2.0f * (Math.Cos(Angle2D.PI * delta) - 1.0f) + f_val1);
         }
 
         private int intepolateValue(int val1, int val2, float delta, string mode) {
