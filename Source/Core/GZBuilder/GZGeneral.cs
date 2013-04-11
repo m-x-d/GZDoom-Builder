@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
-
-using CodeImp.DoomBuilder.Controls;
-using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.Config;
-
 using CodeImp.DoomBuilder.GZBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.GZBuilder
 {

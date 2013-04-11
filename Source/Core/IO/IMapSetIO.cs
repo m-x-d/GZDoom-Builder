@@ -16,16 +16,6 @@
 
 #region ================== Namespaces
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using System.IO;
-using CodeImp.DoomBuilder.Map;
-using System.Reflection;
-using System.Diagnostics;
-
 #endregion
 
 namespace CodeImp.DoomBuilder.IO

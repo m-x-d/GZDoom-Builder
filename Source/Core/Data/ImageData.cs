@@ -17,11 +17,7 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Drawing.Drawing2D;
-using System.Globalization;
-using System.Text;
 using System.Drawing;
 using CodeImp.DoomBuilder.Geometry;
 using SlimDX;
@@ -30,7 +26,6 @@ using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using CodeImp.DoomBuilder.Windows;
 

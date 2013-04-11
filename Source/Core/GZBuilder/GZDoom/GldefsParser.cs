@@ -1,14 +1,9 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
-
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
-using SlimDX;
-using SlimDX.Direct3D9;
 
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
     public sealed class GldefsParser : ZDTextParser {

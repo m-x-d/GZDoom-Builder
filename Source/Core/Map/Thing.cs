@@ -17,18 +17,12 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Config;
-using System.Drawing;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.VisualModes;
-
-using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
 

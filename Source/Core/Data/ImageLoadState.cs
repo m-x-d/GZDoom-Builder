@@ -16,19 +16,6 @@
 
 #region ================== Namespaces
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using System.Drawing;
-using SlimDX.Direct3D9;
-using System.Drawing.Imaging;
-using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.IO;
-using System.IO;
-using System.Windows.Forms;
-
 #endregion
 
 namespace CodeImp.DoomBuilder.Data

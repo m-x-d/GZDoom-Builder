@@ -17,14 +17,9 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
-using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.IO;
 using System.IO;
 using System.Drawing.Drawing2D;
 

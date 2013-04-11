@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Map;
-using SlimDX.Direct3D9;
 using SlimDX;
 using CodeImp.DoomBuilder.Geometry;
 

@@ -19,12 +19,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using Microsoft.Win32;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
 using System.Globalization;
 using CodeImp.DoomBuilder.GZBuilder.Controls;

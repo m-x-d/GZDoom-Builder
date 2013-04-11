@@ -16,14 +16,7 @@
 
 #region ================== Namespaces
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using System.Reflection;
 using System.Drawing;
-using SlimDX.Direct3D9;
 using SlimDX;
 
 #endregion

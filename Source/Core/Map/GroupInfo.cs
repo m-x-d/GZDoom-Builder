@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CodeImp.DoomBuilder.Map
+﻿namespace CodeImp.DoomBuilder.Map
 {
 	public class GroupInfo
 	{

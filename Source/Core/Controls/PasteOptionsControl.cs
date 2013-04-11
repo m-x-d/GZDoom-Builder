@@ -16,15 +16,7 @@
 
 #region ================== Namespaces
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
-using System.Globalization;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Config;
 
 #endregion

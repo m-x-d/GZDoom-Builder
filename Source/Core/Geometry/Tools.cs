@@ -19,18 +19,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Windows;
 using SlimDX;
-using SlimDX.Direct3D9;
 using System.Drawing;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
-using System.Threading;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 

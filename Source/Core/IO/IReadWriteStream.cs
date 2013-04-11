@@ -16,16 +16,7 @@
 
 #region ================== Namespaces
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Rendering;
-using SlimDX.Direct3D9;
-using System.Drawing;
-using System.IO;
 
 #endregion
 

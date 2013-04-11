@@ -18,17 +18,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using Microsoft.Win32;
-using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
-using CodeImp.DoomBuilder.Controls;
 using System.Globalization;
 using CodeImp.DoomBuilder.Data;
-using System.IO;
 
 #endregion
 

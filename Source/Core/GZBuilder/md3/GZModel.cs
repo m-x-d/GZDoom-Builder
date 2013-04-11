@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using SlimDX;
 using SlimDX.Direct3D9;
-using CodeImp.DoomBuilder.Geometry;
-
 
 namespace CodeImp.DoomBuilder.GZBuilder.MD3
 {

@@ -19,7 +19,6 @@
 using System;
 using System.Drawing;
 using SlimDX.Direct3D9;
-using SlimDX;
 
 #endregion
 

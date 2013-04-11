@@ -1,6 +1,4 @@
-﻿using System;
-using SlimDX;
-using SlimDX.Direct3D9;
+﻿using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Rendering

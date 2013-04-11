@@ -14,7 +14,6 @@
 
 #endregion
 
-using System;
 using SlimDX;
 
 namespace CodeImp.DoomBuilder

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-//using CodeImp.DoomBuilder.Geometry;
+﻿using System.Collections.Generic;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.GZBuilder.Geometry;
 using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data {

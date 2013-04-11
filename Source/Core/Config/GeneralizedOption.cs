@@ -20,13 +20,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
-using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Data;
-using System.IO;
-using System.Diagnostics;
-using System.Windows.Forms;
-using CodeImp.DoomBuilder.Map;
 
 #endregion
 

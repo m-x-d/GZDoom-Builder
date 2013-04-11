@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
-
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
    

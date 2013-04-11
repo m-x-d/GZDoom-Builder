@@ -1,5 +1,4 @@
-﻿using System;
-using SlimDX;
+﻿using SlimDX;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
