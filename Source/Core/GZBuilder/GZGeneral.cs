@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
         public static void Init() {
             //bind actions
             General.Actions.BindMethods(typeof(GZGeneral));
-            General.MainWindow.UpdateGZDoomPannel();
+            General.MainWindow.UpdateGZDoomPanel();
         }
 
 //actions
@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
             General.Settings.GZDrawModels = !General.Settings.GZDrawModels;
             General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering is " + (General.Settings.GZDrawModels ? "ENABLED" : "DISABLED"));
             General.MainWindow.RedrawDisplay();
-            General.MainWindow.UpdateGZDoomPannel();
+            General.MainWindow.UpdateGZDoomPanel();
         }
 
         [BeginAction("gztogglelights")]
@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
             General.Settings.GZDrawLights = !General.Settings.GZDrawLights;
             General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering is " + (General.Settings.GZDrawLights ? "ENABLED" : "DISABLED"));
             General.MainWindow.RedrawDisplay();
-            General.MainWindow.UpdateGZDoomPannel();
+            General.MainWindow.UpdateGZDoomPanel();
         }
 
         [BeginAction("gztogglelightsanimation")]
@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
             General.Settings.GZAnimateLights = !General.Settings.GZAnimateLights;
             General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights animation is " + (General.Settings.GZAnimateLights ? "ENABLED" : "DISABLED"));
             General.MainWindow.RedrawDisplay();
-            General.MainWindow.UpdateGZDoomPannel();
+            General.MainWindow.UpdateGZDoomPanel();
         }
 
         [BeginAction("gztogglefog")]
@@ -71,7 +71,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
             General.Settings.GZDrawFog = !General.Settings.GZDrawFog;
             General.MainWindow.DisplayStatus(StatusType.Action, "Fog rendering is " + (General.Settings.GZDrawFog ? "ENABLED" : "DISABLED"));
             General.MainWindow.RedrawDisplay();
-            General.MainWindow.UpdateGZDoomPannel();
+            General.MainWindow.UpdateGZDoomPanel();
         }
 
         [BeginAction("gzdrawselectedmodelsonly")]
@@ -79,7 +79,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
             General.Settings.GZDrawSelectedModelsOnly = !General.Settings.GZDrawSelectedModelsOnly;
             General.MainWindow.DisplayStatus(StatusType.Action, "Rendering " + (General.Settings.GZDrawSelectedModelsOnly ? "only selected" : "all") + " models.");
             General.MainWindow.RedrawDisplay();
-            General.MainWindow.UpdateGZDoomPannel();
+            General.MainWindow.UpdateGZDoomPanel();
         }
 
         [BeginAction("gztogglefx")]
@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
             General.MainWindow.DisplayStatus(StatusType.Action, "Advanced effects are " + (enable ? "ENABLED" : "DISABLED") );
 
             General.MainWindow.RedrawDisplay();
-            General.MainWindow.UpdateGZDoomPannel();
+            General.MainWindow.UpdateGZDoomPanel();
         }
 
         [BeginAction("gztoggleeventlines")]
@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
             General.Settings.GZShowEventLines = !General.Settings.GZShowEventLines;
             General.MainWindow.DisplayStatus(StatusType.Action, "Event lines are " + (General.Settings.GZShowEventLines ? "ENABLED" : "DISABLED"));
 			General.MainWindow.RedrawDisplay();
-			General.MainWindow.UpdateGZDoomPannel();
+			General.MainWindow.UpdateGZDoomPanel();
         }
 
 		[BeginAction("gztogglevisualvertices")]
@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
 			General.Settings.GZShowVisualVertices = !General.Settings.GZShowVisualVertices;
 			General.MainWindow.DisplayStatus(StatusType.Action, "Visual vertices are " + (General.Settings.GZShowVisualVertices ? "ENABLED" : "DISABLED"));
 			General.MainWindow.RedrawDisplay();
-			General.MainWindow.UpdateGZDoomPannel();
+			General.MainWindow.UpdateGZDoomPanel();
 		}
 
         //main menu actions

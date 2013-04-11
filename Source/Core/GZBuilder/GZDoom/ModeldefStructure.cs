@@ -8,6 +8,7 @@ using SlimDX;
 using SlimDX.Direct3D9;
 
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
     internal sealed class ModeldefStructure {
@@ -314,9 +315,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
             ModeldefEntry mde = new ModeldefEntry();
             mde.Scale = scale;
             mde.zOffset = zOffset;
-            mde.AngleOffset = angleOffset * (float)Math.PI / 180.0f;
-            mde.RollOffset = rollOffset * (float)Math.PI / 180.0f;
-            mde.PitchOffset = pitchOffset * (float)Math.PI / 180.0f;
+			mde.AngleOffset = Angle2D.DegToRad(angleOffset);// *(float)Math.PI / 180.0f;
+			mde.RollOffset = Angle2D.DegToRad(rollOffset);// *(float)Math.PI / 180.0f;
+			mde.PitchOffset = Angle2D.DegToRad(pitchOffset);// *(float)Math.PI / 180.0f;
 
 			for(int i = 0; i < modelNames.Length; i++) {
                 if (!string.IsNullOrEmpty(modelNames[i])) {

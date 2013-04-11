@@ -19,19 +19,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 using System.Windows.Forms;
-using System.IO;
-using System.Reflection;
-using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
-using System.Drawing;
-using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -60,6 +53,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// List of non-selected items
 		protected ICollection<Vertex> unselectedverts;
+
+		//mxd. List of sectors
+		private List<Sector> selectedSectors;
 
 		// List of unstable lines
 		protected ICollection<Linedef> unstablelines;
@@ -157,6 +153,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			foreach (Linedef l in unstablelines)
 				unstableLinesInitialLengths.Add(l.Length);
+
+			//mxd. Collect selected sectors
+			if(General.Map.UDMF) {
+				ICollection<Linedef> selectedLines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
+
+				List<Sector> affectedSectors = new List<Sector>();
+				foreach(Linedef l in selectedLines) {
+					if(l.Front != null && l.Front.Sector != null && !affectedSectors.Contains(l.Front.Sector))
+						affectedSectors.Add(l.Front.Sector);
+					if(l.Back != null && l.Back.Sector != null && !affectedSectors.Contains(l.Back.Sector))
+						affectedSectors.Add(l.Back.Sector);
+				}
+
+				selectedSectors = new List<Sector>();
+				foreach(Sector s in affectedSectors) {
+					bool selected = true;
+
+					foreach(Sidedef side in s.Sidedefs) {
+						if(!selectedLines.Contains(side.Line)) {
+							selected = false;
+							break;
+						}
+					}
+
+					if(selected)
+						selectedSectors.Add(s);
+				}
+			}
 
 			// Make text labels
 			labels = new LineLengthLabel[unstablelines.Count];
@@ -394,12 +418,79 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				// Snap to map format accuracy
 				General.Map.Map.SnapAllToAccuracy();
+
+				//mxd. Update floor/ceiling texture offsets
+				if(General.Map.UDMF && BuilderPlug.Me.LockSectorTextureOffsetsWhileDragging && selectedSectors.Count > 0) {
+					Vector2D offset = dragitemposition - dragitem.Position;
+
+					foreach(Sector s in selectedSectors) {
+						s.Fields.BeforeFieldsChange();
+
+						//update ceiling offset
+						if(s.CeilTexture.Length > 1) {
+							ImageData texture = General.Map.Data.GetFlatImage(s.CeilTexture);
+
+							if(texture != null) {
+								float scaleX = s.Fields.GetValue("xscaleceiling", 1.0f);
+								float scaleY = s.Fields.GetValue("yscaleceiling", 1.0f);
+
+								if(scaleX != 0 && scaleY != 0) {
+									Vector2D ceilOffset = new Vector2D(offset.x, -offset.y).GetRotated(-Angle2D.DegToRad((int)s.Fields.GetValue("rotationceiling", 0f)));
+									ceilOffset.x += s.Fields.GetValue("xpanningceiling", 0f);
+									ceilOffset.y += s.Fields.GetValue("ypanningceiling", 0f);
+
+									int textureWidth = (int)Math.Round(texture.Width / scaleX);
+									int textureHeight = (int)Math.Round(texture.Height / scaleY);
+
+									if(!s.Fields.ContainsKey("xpanningceiling"))
+										s.Fields.Add("xpanningceiling", new UniValue(UniversalType.Float, (float)Math.Round(ceilOffset.x % textureWidth)));
+									else
+										s.Fields["xpanningceiling"].Value = (float)Math.Round(ceilOffset.x % textureWidth);
+
+									if(!s.Fields.ContainsKey("ypanningceiling"))
+										s.Fields.Add("ypanningceiling", new UniValue(UniversalType.Float, (float)Math.Round(ceilOffset.y % textureHeight)));
+									else
+										s.Fields["ypanningceiling"].Value = (float)Math.Round(ceilOffset.y % textureHeight);
+								}
+							}
+						}
+
+						//update floor offset
+						if(s.FloorTexture.Length > 1) {
+							ImageData texture = General.Map.Data.GetFlatImage(s.FloorTexture);
+
+							if(texture != null) {
+								float scaleX = s.Fields.GetValue("xscalefloor", 1.0f);
+								float scaleY = s.Fields.GetValue("yscalefloor", 1.0f);
+
+								if(scaleX != 0 && scaleY != 0) {
+									Vector2D floorOffset = new Vector2D(offset.x, -offset.y).GetRotated(-Angle2D.DegToRad((int)s.Fields.GetValue("rotationfloor", 0f)));
+									floorOffset.x += s.Fields.GetValue("xpanningfloor", 0f);
+									floorOffset.y += s.Fields.GetValue("ypanningfloor", 0f);
+
+									int textureWidth = (int)Math.Round(texture.Width / scaleX);
+									int textureHeight = (int)Math.Round(texture.Height / scaleY);
+
+									if(!s.Fields.ContainsKey("xpanningfloor"))
+										s.Fields.Add("xpanningfloor", new UniValue(UniversalType.Float, (float)Math.Round(floorOffset.x % textureWidth)));
+									else
+										s.Fields["xpanningfloor"].Value = (float)Math.Round(floorOffset.x % textureWidth);
+
+									if(!s.Fields.ContainsKey("ypanningfloor"))
+										s.Fields.Add("ypanningfloor", new UniValue(UniversalType.Float, (float)Math.Round(floorOffset.y % textureHeight)));
+									else
+										s.Fields["ypanningfloor"].Value = (float)Math.Round(floorOffset.y % textureHeight);
+								}
+							}
+						}
+					}
+				}
 				
 				// Update cached values
 				General.Map.Map.Update();
 
 				//mxd
-				if (BuilderPlug.Me.AutoAlignTextureOffsetsOnDrag)
+				if(BuilderPlug.Me.AutoAlignTextureOffsetsOnDrag)
 					updateTextureOffsetX();
 
 				// Done

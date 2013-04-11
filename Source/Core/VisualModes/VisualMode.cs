@@ -315,7 +315,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
                 //everything should be valid, let's move player start here
                 start.Move(new Vector3D(camPos.x, camPos.y, pz));
-                start.Rotate(General.Map.VisualCamera.AngleXY - (float)Math.PI);
+                start.Rotate(General.Map.VisualCamera.AngleXY - Angle2D.PI);// (float)Math.PI);
             }
             return true;
         }

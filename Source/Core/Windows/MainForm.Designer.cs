@@ -153,6 +153,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.seperatorhelpmanual = new System.Windows.Forms.ToolStripSeparator();
 			this.itemhelpabout = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolbar = new System.Windows.Forms.ToolStrip();
+			this.toolbarContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.toggleFile = new System.Windows.Forms.ToolStripMenuItem();
+			this.toggleScript = new System.Windows.Forms.ToolStripMenuItem();
+			this.toggleUndo = new System.Windows.Forms.ToolStripMenuItem();
+			this.toggleCopy = new System.Windows.Forms.ToolStripMenuItem();
+			this.togglePrefabs = new System.Windows.Forms.ToolStripMenuItem();
+			this.toggleFilter = new System.Windows.Forms.ToolStripMenuItem();
+			this.toggleViewModes = new System.Windows.Forms.ToolStripMenuItem();
+			this.toggleGeometry = new System.Windows.Forms.ToolStripMenuItem();
+			this.toggleTesting = new System.Windows.Forms.ToolStripMenuItem();
+			this.toggleRendering = new System.Windows.Forms.ToolStripMenuItem();
 			this.buttonnewmap = new System.Windows.Forms.ToolStripButton();
 			this.buttonopenmap = new System.Windows.Forms.ToolStripButton();
 			this.buttonsavemap = new System.Windows.Forms.ToolStripButton();
@@ -173,7 +184,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.seperatorviews = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonsnaptogrid = new System.Windows.Forms.ToolStripButton();
 			this.buttonautomerge = new System.Windows.Forms.ToolStripButton();
-			this.separatorgzmodes = new System.Windows.Forms.ToolStripSeparator();
+			this.seperatorgeometry = new System.Windows.Forms.ToolStripSeparator();
 			this.buttontogglefx = new System.Windows.Forms.ToolStripButton();
 			this.buttontoggledynlight = new System.Windows.Forms.ToolStripButton();
 			this.buttontoggleanimatedlight = new System.Windows.Forms.ToolStripButton();
@@ -182,7 +193,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontogglefog = new System.Windows.Forms.ToolStripButton();
 			this.buttontoggleeventlines = new System.Windows.Forms.ToolStripButton();
 			this.buttontogglevisualvertices = new System.Windows.Forms.ToolStripButton();
-			this.seperatorgeometry = new System.Windows.Forms.ToolStripSeparator();
+			this.separatorgzmodes = new System.Windows.Forms.ToolStripSeparator();
 			this.buttontest = new System.Windows.Forms.ToolStripSplitButton();
 			this.seperatortesting = new System.Windows.Forms.ToolStripSeparator();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
@@ -229,17 +240,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockersspace = new System.Windows.Forms.Panel();
 			this.dockerspanel = new CodeImp.DoomBuilder.Controls.DockersControl();
 			this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
-			this.toolbarContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.toggleFile = new System.Windows.Forms.ToolStripMenuItem();
-			this.toggleScript = new System.Windows.Forms.ToolStripMenuItem();
-			this.toggleUndo = new System.Windows.Forms.ToolStripMenuItem();
-			this.toggleCopy = new System.Windows.Forms.ToolStripMenuItem();
-			this.togglePrefabs = new System.Windows.Forms.ToolStripMenuItem();
-			this.toggleFilter = new System.Windows.Forms.ToolStripMenuItem();
-			this.toggleViewModes = new System.Windows.Forms.ToolStripMenuItem();
-			this.toggleGeometry = new System.Windows.Forms.ToolStripMenuItem();
-			this.toggleTesting = new System.Windows.Forms.ToolStripMenuItem();
-			this.toggleRendering = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -248,9 +248,9 @@ namespace CodeImp.DoomBuilder.Windows
 			toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.menumain.SuspendLayout();
 			this.toolbar.SuspendLayout();
+			this.toolbarContextMenu.SuspendLayout();
 			this.statusbar.SuspendLayout();
 			this.panelinfo.SuspendLayout();
-			this.toolbarContextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStripSeparator1
@@ -1323,7 +1323,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.seperatorviews,
             this.buttonsnaptogrid,
             this.buttonautomerge,
-            this.separatorgzmodes,
+            this.seperatorgeometry,
             this.buttontogglefx,
             this.buttontoggledynlight,
             this.buttontoggleanimatedlight,
@@ -1332,13 +1332,101 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttontogglefog,
             this.buttontoggleeventlines,
             this.buttontogglevisualvertices,
-            this.seperatorgeometry,
+            this.separatorgzmodes,
             this.buttontest,
             this.seperatortesting});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(1012, 25);
 			this.toolbar.TabIndex = 1;
+			// 
+			// toolbarContextMenu
+			// 
+			this.toolbarContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toggleFile,
+            this.toggleScript,
+            this.toggleUndo,
+            this.toggleCopy,
+            this.togglePrefabs,
+            this.toggleFilter,
+            this.toggleViewModes,
+            this.toggleGeometry,
+            this.toggleTesting,
+            this.toggleRendering});
+			this.toolbarContextMenu.Name = "toolbarContextMenu";
+			this.toolbarContextMenu.Size = new System.Drawing.Size(174, 224);
+			this.toolbarContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.toolbarContextMenu_Opening);
+			this.toolbarContextMenu.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.toolbarContextMenu_Closing);
+			// 
+			// toggleFile
+			// 
+			this.toggleFile.Name = "toggleFile";
+			this.toggleFile.Size = new System.Drawing.Size(173, 22);
+			this.toggleFile.Text = "New / Open / Save";
+			this.toggleFile.Click += new System.EventHandler(this.toggleFile_Click);
+			// 
+			// toggleScript
+			// 
+			this.toggleScript.Name = "toggleScript";
+			this.toggleScript.Size = new System.Drawing.Size(173, 22);
+			this.toggleScript.Text = "Script Editor";
+			this.toggleScript.Click += new System.EventHandler(this.toggleScript_Click);
+			// 
+			// toggleUndo
+			// 
+			this.toggleUndo.Name = "toggleUndo";
+			this.toggleUndo.Size = new System.Drawing.Size(173, 22);
+			this.toggleUndo.Text = "Undo / Redo";
+			this.toggleUndo.Click += new System.EventHandler(this.toggleUndo_Click);
+			// 
+			// toggleCopy
+			// 
+			this.toggleCopy.Name = "toggleCopy";
+			this.toggleCopy.Size = new System.Drawing.Size(173, 22);
+			this.toggleCopy.Text = "Cut / Copy / Paste";
+			this.toggleCopy.Click += new System.EventHandler(this.toggleCopy_Click);
+			// 
+			// togglePrefabs
+			// 
+			this.togglePrefabs.Name = "togglePrefabs";
+			this.togglePrefabs.Size = new System.Drawing.Size(173, 22);
+			this.togglePrefabs.Text = "Prefabs";
+			this.togglePrefabs.Click += new System.EventHandler(this.togglePrefabs_Click);
+			// 
+			// toggleFilter
+			// 
+			this.toggleFilter.Name = "toggleFilter";
+			this.toggleFilter.Size = new System.Drawing.Size(173, 22);
+			this.toggleFilter.Text = "Things Filter";
+			this.toggleFilter.Click += new System.EventHandler(this.toggleFilter_Click);
+			// 
+			// toggleViewModes
+			// 
+			this.toggleViewModes.Name = "toggleViewModes";
+			this.toggleViewModes.Size = new System.Drawing.Size(173, 22);
+			this.toggleViewModes.Text = "View Modes";
+			this.toggleViewModes.Click += new System.EventHandler(this.toggleViewModes_Click);
+			// 
+			// toggleGeometry
+			// 
+			this.toggleGeometry.Name = "toggleGeometry";
+			this.toggleGeometry.Size = new System.Drawing.Size(173, 22);
+			this.toggleGeometry.Text = "Snap / Merge";
+			this.toggleGeometry.Click += new System.EventHandler(this.toggleGeometry_Click);
+			// 
+			// toggleTesting
+			// 
+			this.toggleTesting.Name = "toggleTesting";
+			this.toggleTesting.Size = new System.Drawing.Size(173, 22);
+			this.toggleTesting.Text = "Testing";
+			this.toggleTesting.Click += new System.EventHandler(this.toggleTesting_Click);
+			// 
+			// toggleRendering
+			// 
+			this.toggleRendering.Name = "toggleRendering";
+			this.toggleRendering.Size = new System.Drawing.Size(173, 22);
+			this.toggleRendering.Text = "Rendering";
+			this.toggleRendering.Click += new System.EventHandler(this.toggleRendering_Click);
 			// 
 			// buttonnewmap
 			// 
@@ -1571,10 +1659,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonautomerge.Text = "Merge Geometry";
 			this.buttonautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// separatorgzmodes
+			// seperatorgeometry
 			// 
-			this.separatorgzmodes.Name = "separatorgzmodes";
-			this.separatorgzmodes.Size = new System.Drawing.Size(6, 25);
+			this.seperatorgeometry.Name = "seperatorgeometry";
+			this.seperatorgeometry.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttontogglefx
 			// 
@@ -1677,11 +1765,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontogglevisualvertices.Text = "Show Editable Vertices in Visual Mode";
 			this.buttontogglevisualvertices.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// seperatorgeometry
+			// separatorgzmodes
 			// 
-			this.seperatorgeometry.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.seperatorgeometry.Name = "seperatorgeometry";
-			this.seperatorgeometry.Size = new System.Drawing.Size(6, 25);
+			this.separatorgzmodes.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.separatorgzmodes.Name = "separatorgzmodes";
+			this.separatorgzmodes.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttontest
 			// 
@@ -2151,94 +2239,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockerscollapser.Interval = 200;
 			this.dockerscollapser.Tick += new System.EventHandler(this.dockerscollapser_Tick);
 			// 
-			// toolbarContextMenu
-			// 
-			this.toolbarContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toggleFile,
-            this.toggleScript,
-            this.toggleUndo,
-            this.toggleCopy,
-            this.togglePrefabs,
-            this.toggleFilter,
-            this.toggleViewModes,
-            this.toggleGeometry,
-            this.toggleTesting,
-            this.toggleRendering});
-			this.toolbarContextMenu.Name = "toolbarContextMenu";
-			this.toolbarContextMenu.Size = new System.Drawing.Size(174, 246);
-			this.toolbarContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.toolbarContextMenu_Opening);
-			this.toolbarContextMenu.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.toolbarContextMenu_Closing);
-			// 
-			// toggleNew
-			// 
-			this.toggleFile.Name = "toggleNew";
-			this.toggleFile.Size = new System.Drawing.Size(173, 22);
-			this.toggleFile.Text = "New / Open / Save";
-			this.toggleFile.Click += new System.EventHandler(this.toggleFile_Click);
-			// 
-			// toggleScript
-			// 
-			this.toggleScript.Name = "toggleScript";
-			this.toggleScript.Size = new System.Drawing.Size(173, 22);
-			this.toggleScript.Text = "Script Editor";
-			this.toggleScript.Click += new System.EventHandler(this.toggleScript_Click);
-			// 
-			// toggleUndo
-			// 
-			this.toggleUndo.Name = "toggleUndo";
-			this.toggleUndo.Size = new System.Drawing.Size(173, 22);
-			this.toggleUndo.Text = "Undo / Redo";
-			this.toggleUndo.Click += new System.EventHandler(this.toggleUndo_Click);
-			// 
-			// togglePaste
-			// 
-			this.toggleCopy.Name = "togglePaste";
-			this.toggleCopy.Size = new System.Drawing.Size(173, 22);
-			this.toggleCopy.Text = "Cut / Copy / Paste";
-			this.toggleCopy.Click += new System.EventHandler(this.toggleCopy_Click);
-			// 
-			// togglePrefabs
-			// 
-			this.togglePrefabs.Name = "togglePrefabs";
-			this.togglePrefabs.Size = new System.Drawing.Size(173, 22);
-			this.togglePrefabs.Text = "Prefabs";
-			this.togglePrefabs.Click += new System.EventHandler(this.togglePrefabs_Click);
-			// 
-			// toggleFilters
-			// 
-			this.toggleFilter.Name = "toggleFilters";
-			this.toggleFilter.Size = new System.Drawing.Size(173, 22);
-			this.toggleFilter.Text = "Things Filter";
-			this.toggleFilter.Click += new System.EventHandler(this.toggleFilter_Click);
-			// 
-			// toggleViewModes
-			// 
-			this.toggleViewModes.Name = "toggleViewModes";
-			this.toggleViewModes.Size = new System.Drawing.Size(173, 22);
-			this.toggleViewModes.Text = "View Modes";
-			this.toggleViewModes.Click += new System.EventHandler(this.toggleViewModes_Click);
-			// 
-			// toggleSnap
-			// 
-			this.toggleGeometry.Name = "toggleSnap";
-			this.toggleGeometry.Size = new System.Drawing.Size(173, 22);
-			this.toggleGeometry.Text = "Snap / Merge";
-			this.toggleGeometry.Click += new System.EventHandler(this.toggleGeometry_Click);
-			// 
-			// toggleTesting
-			// 
-			this.toggleTesting.Name = "toggleTesting";
-			this.toggleTesting.Size = new System.Drawing.Size(173, 22);
-			this.toggleTesting.Text = "Testing";
-			this.toggleTesting.Click += new System.EventHandler(this.toggleTesting_Click);
-			// 
-			// toggleRendering
-			// 
-			this.toggleRendering.Name = "toggleRendering";
-			this.toggleRendering.Size = new System.Drawing.Size(173, 22);
-			this.toggleRendering.Text = "Rendering";
-			this.toggleRendering.Click += new System.EventHandler(this.toggleRendering_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -2272,11 +2272,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.menumain.PerformLayout();
 			this.toolbar.ResumeLayout(false);
 			this.toolbar.PerformLayout();
+			this.toolbarContextMenu.ResumeLayout(false);
 			this.statusbar.ResumeLayout(false);
 			this.statusbar.PerformLayout();
 			this.panelinfo.ResumeLayout(false);
 			this.panelinfo.PerformLayout();
-			this.toolbarContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -2352,7 +2352,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemautomerge;
 		private System.Windows.Forms.ToolStripSeparator seperatormodes;
 		private System.Windows.Forms.Timer processor;
-		private System.Windows.Forms.ToolStripSeparator seperatorgeometry;
+		private System.Windows.Forms.ToolStripSeparator separatorgzmodes;
 		private System.Windows.Forms.ToolStripSeparator seperatorfilesave;
 		private System.Windows.Forms.ToolStripSeparator seperatortesting;
 		private System.Windows.Forms.ToolStripSeparator seperatoreditgeometry;
@@ -2426,7 +2426,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripSeparator seperatorfilerecent;
 		private System.Windows.Forms.ToolStripSeparator seperatoreditgrid;
 		private System.Windows.Forms.ToolStripSeparator seperatoreditcopypaste;
-        private System.Windows.Forms.ToolStripSeparator separatorgzmodes;
+        private System.Windows.Forms.ToolStripSeparator seperatorgeometry;
         private System.Windows.Forms.ToolStripButton buttontoggledynlight;
         private System.Windows.Forms.ToolStripButton buttontogglemodels;
         private System.Windows.Forms.ToolStripButton buttonselectedmodelsonly;

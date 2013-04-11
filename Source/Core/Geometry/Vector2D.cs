@@ -218,7 +218,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		public static float GetAngle(Vector2D a, Vector2D b)
 		{
 			// Calculate and return the angle
-			return -(float)Math.Atan2(-(a.y - b.y), (a.x - b.x)) + (float)Math.PI * 0.5f;
+			return -(float)Math.Atan2(-(a.y - b.y), (a.x - b.x)) + Angle2D.PIHALF;//mxd //(float)Math.PI * 0.5f;
 		}
 
 		// This returns the square distance between two points
@@ -262,7 +262,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		public float GetAngle()
 		{
 			// Calculate and return the angle
-			return -(float)Math.Atan2(-y, x) + (float)Math.PI * 0.5f;
+			return -(float)Math.Atan2(-y, x) + Angle2D.PIHALF; //mxd // (float)Math.PI * 0.5f;
 		}
 
 		// This calculates the length

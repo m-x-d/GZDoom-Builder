@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Text;
 
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
@@ -113,7 +114,7 @@ namespace CodeImp.DoomBuilder.Rendering
                     level = General.Clamp(level - hAmmount - vAmmount, 0, 255);
 
                 } else { //only horizontal/verticel walls are shaded
-                    int angle = (int)(sd.Angle * 180.0f / Math.PI);
+                    int angle = (int)Angle2D.RadToDeg(sd.Angle);// * 180.0f / Math.PI);
                     //horizontal wall
                     if (angle == 270 || angle == 90) {
                         level = General.Clamp(level + General.Map.Data.MapInfo.HorizWallShade, 0, 255);

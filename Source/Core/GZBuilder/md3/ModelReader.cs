@@ -14,6 +14,7 @@ using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 
 using SlimDX;
 using SlimDX.Direct3D9;
+using CodeImp.DoomBuilder.Geometry;
 
 //mxd. Original version taken from here: http://colladadotnet.codeplex.com/SourceControl/changeset/view/40680
 namespace CodeImp.DoomBuilder.GZBuilder.MD3
@@ -427,7 +428,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                 s.Position += 16; //frame name
 
                 //rotation angles
-                float angle = mde.AngleOffset - 0.5f * (float)Math.PI; //subtract 90 degrees to get correct rotation
+				float angle = mde.AngleOffset - Angle2D.PIHALF;// 0.5f * (float)Math.PI; //subtract 90 degrees to get correct rotation
                 float angleOfsetCos = (float)Math.Cos(angle);
                 float angleOfsetSin = (float)Math.Sin(angle);
                 float pitchOfsetCos = (float)Math.Cos(-mde.PitchOffset);

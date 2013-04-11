@@ -167,11 +167,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
         private Vector2D[] getCornerPoints(Vector2D startPoint, int bevel_width, int bevel_height, bool reverse) {
             Vector2D[] points;
             Vector2D center = (bevelWidth > 0 ? new Vector2D(startPoint.x + bevel_width, startPoint.y + bevel_height) : startPoint);
-            float curAngle = (float)Math.PI;
+            float curAngle = Angle2D.PI;
 
             int steps = subdivisions + 2;
             points = new Vector2D[steps];
-            float stepAngle = (float)Math.PI / 2.0f / (subdivisions + 1);
+			float stepAngle = Angle2D.PIHALF / (subdivisions + 1);
 
             for (int i = 0; i < steps; i++) {
                 points[i] = new Vector2D(center.x + (float)Math.Sin(curAngle) * bevel_width, center.y + (float)Math.Cos(curAngle) * bevel_height);

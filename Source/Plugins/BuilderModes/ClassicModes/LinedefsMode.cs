@@ -212,6 +212,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);//mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CurveLinedefs);
+			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.TextureOffsetLock, ToolbarSection.Geometry); //mxd
 			
 			// Convert geometry selection to linedefs selection
 			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
@@ -229,6 +230,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);//mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CurveLinedefs);
+			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
 
 			// Going to EditSelectionMode?
 			if(General.Editing.NewMode is EditSelectionMode)

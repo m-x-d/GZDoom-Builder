@@ -132,10 +132,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
             //mxd. Modify offsets based on surface and camera angles
             if (General.Map.UDMF) {
                 float angle = 0;
-                if (GeometryType == VisualGeometryType.CEILING && level.sector.Fields.ContainsKey("rotationceiling"))
-                    angle = (float)level.sector.Fields["rotationceiling"].Value * (float)Math.PI / 180f;
-                else if (GeometryType == VisualGeometryType.FLOOR && level.sector.Fields.ContainsKey("rotationfloor"))
-                    angle = (float)level.sector.Fields["rotationfloor"].Value * (float)Math.PI / 180f;
+				if(GeometryType == VisualGeometryType.CEILING && level.sector.Fields.ContainsKey("rotationceiling"))
+					angle = Angle2D.DegToRad((float)level.sector.Fields["rotationceiling"].Value);// * (float)Math.PI / 180f;
+				else if(GeometryType == VisualGeometryType.FLOOR && level.sector.Fields.ContainsKey("rotationfloor"))
+					angle = Angle2D.DegToRad((float)level.sector.Fields["rotationfloor"].Value);// *(float)Math.PI / 180f;
 
                 Vector2D v = new Vector2D(offsetx, offsety).GetRotated(angle);
                 Point p = getTranslatedTextureOffset(new Point((int)Math.Round(v.x), (int)Math.Round(v.y)));
@@ -161,7 +161,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
         //mxd. Modify texture offsets based on camera angle (so "movetextureleft" action always moves texture more or less "left" etc.)
         protected Point getTranslatedTextureOffset(Point p) {
             Point tp = new Point();
-            int camAngle = (int)(General.Map.VisualCamera.AngleXY * 180f / (float)Math.PI);
+            int camAngle = (int)Angle2D.RadToDeg(General.Map.VisualCamera.AngleXY);// * 180f / (float)Math.PI);
 
             if (camAngle > 315 || camAngle < 46) {
                 tp = p;

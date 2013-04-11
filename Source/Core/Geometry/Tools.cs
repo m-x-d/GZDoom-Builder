@@ -1545,7 +1545,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0)
-							l.Front.Fields.Add("offsetx_mid", new UniValue(UniversalType.Float, offset));
+							l.Back.Fields.Add("offsetx_mid", new UniValue(UniversalType.Float, offset));
 					}
 
 					if(!l.Back.Fields.ContainsKey("offsetx_top") && l.Back.HighRequired() && l.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.HighTexture)) {
@@ -1553,7 +1553,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0)
-							l.Front.Fields.Add("offsetx_top", new UniValue(UniversalType.Float, offset));
+							l.Back.Fields.Add("offsetx_top", new UniValue(UniversalType.Float, offset));
 					}
 
 					if(!l.Back.Fields.ContainsKey("offsetx_bottom") && l.Back.LowRequired() && l.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.LowTexture)) {
@@ -1561,7 +1561,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0)
-							l.Front.Fields.Add("offsetx_bottom", new UniValue(UniversalType.Float, offset));
+							l.Back.Fields.Add("offsetx_bottom", new UniValue(UniversalType.Float, offset));
 					}
 				}
 
