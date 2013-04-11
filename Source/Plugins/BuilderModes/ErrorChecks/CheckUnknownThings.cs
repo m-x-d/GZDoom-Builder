@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
+﻿using System.Threading;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks {
 

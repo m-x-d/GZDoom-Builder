@@ -19,20 +19,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 using System.Windows.Forms;
-using System.IO;
-using System.Reflection;
 using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
 using System.Drawing;
 using CodeImp.DoomBuilder.Actions;
-using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Types;
 
 #endregion

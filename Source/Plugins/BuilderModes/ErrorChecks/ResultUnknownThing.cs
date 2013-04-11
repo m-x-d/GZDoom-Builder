@@ -1,5 +1,4 @@
-﻿using System;
-using CodeImp.DoomBuilder.Map;
+﻿using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks {
