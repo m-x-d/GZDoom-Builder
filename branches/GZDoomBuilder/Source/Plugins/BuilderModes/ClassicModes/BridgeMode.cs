@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Plugins;
-
 using CodeImp.DoomBuilder.BuilderModes.Interface;
 
 namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {

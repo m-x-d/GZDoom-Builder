@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
-
-using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.BuilderModes

@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
-using System.Windows.Forms;
-
 using CodeImp.DoomBuilder.Editing;
-using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Actions;
-using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
     [EditMode(DisplayName = "Draw Ellipse Mode",

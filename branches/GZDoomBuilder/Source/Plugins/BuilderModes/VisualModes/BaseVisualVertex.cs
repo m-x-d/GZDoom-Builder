@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
