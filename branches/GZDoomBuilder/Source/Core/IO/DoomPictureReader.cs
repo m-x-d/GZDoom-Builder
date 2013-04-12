@@ -252,7 +252,7 @@ namespace CodeImp.DoomBuilder.IO
 
 					// Read next post start
 					read_y = reader.ReadByte();
-					if(read_y < y) y += read_y; else y = read_y;
+					if(read_y < y || (height > 255 && read_y == y)) y += read_y; else y = read_y; //mxd. Fix for tall patches higher than 508 pixels
 				}
 			}
 
