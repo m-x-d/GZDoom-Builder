@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.Data
 		private static readonly int[] GIF_SIGNATURE = new int[] { 71, 73, 70 };
         private static readonly int[] BMP_SIGNATURE = new int[] { 66, 77 }; 
 		private static readonly int[] DDS_SIGNATURE = new int[] { 68, 68, 83, 32 };
-        private static readonly int[] JPG_SIGNATURE = new int[] { 255, 216, 255, 224 }; //mxd
+        private static readonly int[] JPG_SIGNATURE = new int[] { 255, 216, 255 }; //mxd
         private static readonly int[] TGA_SIGNATURE = new int[] { 0, 0, 2, 0 }; //mxd
         private static readonly int[] PCX_SIGNATURE = new int[] { 10, 5, 1, 8 }; //mxd
 

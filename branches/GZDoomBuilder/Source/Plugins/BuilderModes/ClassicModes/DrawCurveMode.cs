@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 				string word = adjectives[points.Count % adjectives.Length];
 				word = (points.Count > adjectives.Length) ? "very " + word : word;
 				string a = ((word[0] == 'a') || (word[0] == 'e') || (word[0] == 'o')) ? "an " : "a ";
-				General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " drawing.");
+				General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " curve.");
 
 				List<DrawnVertex> verts = new List<DrawnVertex>();
 				
