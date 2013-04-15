@@ -258,7 +258,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
                 // Make an analysis and show info
                 string[] adjectives = new string[] { "gloomy", "sad", "unhappy", "lonely", "troubled", "depressed", "heartsick", "glum", "pessimistic", "bitter", "downcast" }; // aaand my english vocabulary ends here :)
                 string word = adjectives[new Random().Next(adjectives.Length - 1)];
-                string a = ((word[0] == 'a') || (word[0] == 'e') || (word[0] == 'o')) ? "an " : "a ";
+                string a = (word[0] == 'u' ? "an " : "a ");
 
                 General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " " + shapeName+".");
 

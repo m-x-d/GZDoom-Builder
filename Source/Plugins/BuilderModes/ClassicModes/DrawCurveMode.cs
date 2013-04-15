@@ -139,7 +139,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 				  "outstanding", "mysterious", "amusing", "charming", "fantastic", "jolly" };
 				string word = adjectives[points.Count % adjectives.Length];
 				word = (points.Count > adjectives.Length) ? "very " + word : word;
-				string a = ((word[0] == 'a') || (word[0] == 'e') || (word[0] == 'o')) ? "an " : "a ";
+				string a = ((word[0] == 'a') || (word[0] == 'e') || (word[0] == 'o') || (word[0] == 'u')) ? "an " : "a ";
 				General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " curve.");
 
 				List<DrawnVertex> verts = new List<DrawnVertex>();
