@@ -68,6 +68,14 @@ namespace CodeImp.DoomBuilder.Controls
 			return c;
 		}
 
+		//mxd
+		public int GetHeight() {
+			if(columns < 1)	return 0;
+			if(checkboxes.Count < 1) return 0;
+			int col = (int)Math.Ceiling((float)checkboxes.Count / (float)columns);
+			return col * checkboxes[0].Height + (col * SPACING_Y + SPACING_Y);
+		}
+
 		// This positions the checkboxes
 		public void PositionCheckboxes()
 		{
