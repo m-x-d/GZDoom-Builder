@@ -30,6 +30,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private bool setup;
 		private int value;
+		private int initialFlagsHeight; //mxd
 		
 		#endregion
 
@@ -46,6 +47,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Initialize
 			InitializeComponent();
+
+			//mxd
+			initialFlagsHeight = options.Height;
 		}
 
 		#endregion
@@ -149,6 +153,9 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 			}
+
+			//mxd
+			this.Height -= initialFlagsHeight - options.GetHeight();
 
 			setup = false;
 		}
