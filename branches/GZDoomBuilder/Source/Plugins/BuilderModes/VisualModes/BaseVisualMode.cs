@@ -739,6 +739,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						sd.AddEffectLineSlope(l);
 					}
 				}
+				// ========== Plane Copy (mxd) (see http://zdoom.org/wiki/Plane_Copy) ==========
+				else if(l.Action == 118)
+				{
+					//check sodding flags...
+					bool floorCopyToBack = false;
+					bool floorCopyToFront = false;
+					bool ceilingCopyToBack = false;
+					bool ceilingCopyToFront = false;
+
+					if(l.Args[4] > 0 && l.Args[4] != 3 && l.Args[4] != 12) {
+						floorCopyToBack = (l.Args[4] & 1) == 1;
+						floorCopyToFront = (l.Args[4] & 2) == 2;
+						ceilingCopyToBack = (l.Args[4] & 4) == 4;
+						ceilingCopyToFront = (l.Args[4] & 8) == 8;
+					}
+					
+					// Copy slope to front sector
+					//Flags: Back floor to front sector or Back ceiling to front sector
+					if(l.Front != null) {
+						if((l.Args[0] > 0 || l.Args[1] > 0) || (floorCopyToFront && l.Args[2] > 0) || (ceilingCopyToFront && l.Args[3] > 0)) {
+							SectorData sd = GetSectorData(l.Front.Sector);
+							sd.AddEffectPlaneClopySlope(l, true);
+						}
+					}
+
+					// Copy slope to back sector
+					//Flags: Copy front floor to back sector or Front ceiling to back sector
+					if(l.Back != null) {
+						if((l.Args[2] > 0 || l.Args[3] > 0) || (floorCopyToBack && l.Args[0] > 0) || (ceilingCopyToBack && l.Args[1] > 0)) {
+							SectorData sd = GetSectorData(l.Back.Sector);
+							sd.AddEffectPlaneClopySlope(l, false);
+						}
+					}
+				}
 				// ========== Sector 3D floor (see http://zdoom.org/wiki/Sector_Set3dFloor) ==========
 				else if((l.Action == 160) && (l.Front != null))
 				{

@@ -49,6 +49,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Highlighted item
 		protected Vertex highlighted;
+		private Linedef highlightedLine;
 
 		// Interface
 		private bool editpressed;
@@ -190,6 +191,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.ShowVertexInfo(highlighted);
 			else
 				General.Interface.HideInfo();
+		}
+
+		//mxd
+		private void HighlightLine(Linedef l) {
+			// Update display
+			if(renderer.StartPlotter(false)) {
+				// Undraw previous highlight
+				if((highlightedLine != null) && !highlightedLine.IsDisposed)
+					renderer.PlotLinedef(highlightedLine, renderer.DetermineLinedefColor(highlightedLine));
+
+				// Set new highlight
+				highlightedLine = l;
+
+				// Render highlighted item
+				if((highlightedLine != null) && !highlightedLine.IsDisposed)
+					renderer.PlotLinedef(highlightedLine, General.Colors.InfoLine);
+
+				// Done
+				renderer.Finish();
+				renderer.Present();
+			}
 		}
 		
 		// Selection
@@ -426,6 +448,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Highlight if not the same
 				if(v != highlighted) Highlight(v);
+
+				//mxd
+				// Find the nearest linedef within split linedefs range
+				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.SplitLinedefsRange / renderer.Scale);
+
+				// Highlight if not the same
+				if(l != highlightedLine) HighlightLine(l);
 			} 
 		}
 

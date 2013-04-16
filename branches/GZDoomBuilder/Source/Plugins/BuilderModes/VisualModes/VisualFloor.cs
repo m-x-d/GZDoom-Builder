@@ -183,6 +183,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
             s.Fields["ypanningfloor"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
             s.UpdateNeeded = true;
 		}
+
+		//mxd
+		public override void OnResetTextureOffset() {
+			if(!General.Map.UDMF) return;
+
+			mode.CreateUndo("Reset texture offsets");
+			mode.SetActionResult("Texture offsets reset.");
+			Sector.Sector.Fields.BeforeFieldsChange();
+
+			if(Sector.Sector.Fields.ContainsKey("xpanningfloor")) {
+				Sector.Sector.Fields.Remove("xpanningfloor");
+				Sector.Sector.UpdateNeeded = true;
+			}
+			if(Sector.Sector.Fields.ContainsKey("ypanningfloor")) {
+				Sector.Sector.Fields.Remove("ypanningfloor");
+				Sector.Sector.UpdateNeeded = true;
+			}
+
+			if(Sector.Sector.UpdateNeeded)
+				Sector.UpdateSectorGeometry(false);
+		}
 		
 		// Paste texture
 		public override void OnPasteTexture()
