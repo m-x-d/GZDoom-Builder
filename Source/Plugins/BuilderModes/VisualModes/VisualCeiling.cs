@@ -185,6 +185,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
             s.UpdateNeeded = true;
 		}
 
+		//mxd
+		public override void OnResetTextureOffset() {
+			if(!General.Map.UDMF) return;
+
+			mode.CreateUndo("Reset texture offsets");
+			mode.SetActionResult("Texture offsets reset.");
+
+			if(Sector.Sector.Fields.ContainsKey("xpanningceiling")) {
+				Sector.Sector.Fields.Remove("xpanningceiling");
+				Sector.Sector.UpdateNeeded = true;
+			}
+			if(Sector.Sector.Fields.ContainsKey("ypanningceiling")) {
+				Sector.Sector.Fields.Remove("ypanningceiling");
+				Sector.Sector.UpdateNeeded = true;
+			}
+
+			if(Sector.Sector.UpdateNeeded)
+				Sector.UpdateSectorGeometry(false);
+		}
+
 		// Paste texture
 		public override void OnPasteTexture()
 		{
