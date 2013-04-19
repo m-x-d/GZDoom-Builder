@@ -155,6 +155,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 		}
 
+		//mxd
+		internal StateStructure(string spriteName) {
+			this.gotostate = null;
+			this.sprites = new List<string>() { spriteName };
+		}
+
 		#endregion
 
 		#region ================== Methods

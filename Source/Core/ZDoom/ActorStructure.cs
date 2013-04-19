@@ -18,6 +18,7 @@
 
 using System.Collections.Generic;
 using System.Globalization;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -42,7 +43,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// Inheriting
 		private ActorStructure baseclass;
 		private bool skipsuper;
-        private bool haveBaseClass;//mxd
 		
 		// Flags
 		private Dictionary<string, bool> flags;
@@ -79,6 +79,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			props = new Dictionary<string, List<string>>();
 			states = new Dictionary<string, StateStructure>();
 			userVars = new List<string>();//mxd
+			bool haveBaseClass = false;//mxd
 			
 			// Always define a game property, but default to 0 values
 			props["game"] = new List<string>();
@@ -165,10 +166,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 					return;
 				}
 			}
-
-            //mxd. Check if baseclass is valid
-            if (haveBaseClass && doomednum > -1 && baseclass == null)
-                General.ErrorLogger.Add(ErrorType.Warning, "Unable to find the DECORATE class '" + inheritclass + "' to inherit from, while parsing '" + classname + ":" + doomednum +"'");
 			
 			// Now parse the contents of actor structure
 			string previoustoken = "";
@@ -359,6 +356,39 @@ namespace CodeImp.DoomBuilder.ZDoom
 				
 				// Keep token
 				previoustoken = token;
+			}
+
+			//mxd. Check if baseclass is valid
+			if(haveBaseClass && doomednum > -1 && baseclass == null) {
+				//check if this class inherits from a class defined in game configuration
+				Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
+				inheritclass = inheritclass.ToLowerInvariant();
+
+				foreach(KeyValuePair<int, ThingTypeInfo> ti in things) {
+					if(ti.Value.ClassName == inheritclass) {
+						//states
+						if(states.Count == 0 && !string.IsNullOrEmpty(ti.Value.Sprite))
+							states.Add("spawn", new StateStructure(ti.Value.Sprite.Substring(0, 4)));
+
+						//flags
+						if(ti.Value.Hangs && !flags.ContainsKey("spawnceiling"))
+							flags["spawnceiling"] = true;
+
+						if(ti.Value.Blocking > 0 && !flags.ContainsKey("solid"))
+							flags["solid"] = true;
+						
+						//properties
+						if(!props.ContainsKey("height"))
+							props["height"] = new List<string>() { ti.Value.Height.ToString() };
+
+						if(!props.ContainsKey("radius"))
+							props["radius"] = new List<string>() { ti.Value.Radius.ToString() };
+
+						return;
+					}
+				}
+
+				General.ErrorLogger.Add(ErrorType.Warning, "Unable to find the DECORATE class '" + inheritclass + "' to inherit from, while parsing '" + classname + ":" + doomednum + "'");
 			}
 		}
 		

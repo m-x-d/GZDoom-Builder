@@ -216,6 +216,8 @@ namespace CodeImp.DoomBuilder.UDMFControls
         }
 
         private void setDefaultUniversalProperties(UniFields fields, List<UniversalFieldInfo> defaultFields) {
+			fields.BeforeFieldsChange();
+
             foreach (UniversalFieldInfo info in defaultFields) {
                 if (!fields.ContainsKey(info.Name))
                     fields.Add(info.Name, new UniValue(info.Type, (UniversalType)info.Type == UniversalType.Integer ? (object)Convert.ToInt32(info.Default, CultureInfo.InvariantCulture) : info.Default));
