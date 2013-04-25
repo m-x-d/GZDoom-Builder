@@ -911,6 +911,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Redraw screen
 			General.Interface.RedrawDisplay();
 		}
+
+		//mxd
+		[BeginAction("thingsselectinsectors")]
+		public void SelectThingsInSelectedSectors() {
+			General.Map.Map.ConvertSelection(SelectionType.Sectors);
+
+			if(General.Map.Map.SelectedSectorsCount == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "No Sectors are Selected!");
+				General.Map.Map.ConvertSelection(SelectionType.Linedefs);
+				return;
+			}
+
+			int selectedCount = 0;
+			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
+
+			foreach(Thing t in General.Map.Map.Things) {
+				t.DetermineSector();
+
+				if(!t.Selected && t.Sector != null && sectors.Contains(t.Sector)) {
+					t.Selected = true;
+					selectedCount++;
+				}
+			}
+
+			General.Interface.DisplayStatus(StatusType.Info, "Selected " + selectedCount + (selectedCount == 1 ? " Thing" : " Things"));
+			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
+
+			// Redraw screen
+			General.Interface.RedrawDisplay();
+		}
 		
 		#endregion
 	}

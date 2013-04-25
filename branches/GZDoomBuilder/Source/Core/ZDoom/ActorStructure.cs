@@ -79,7 +79,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 			props = new Dictionary<string, List<string>>();
 			states = new Dictionary<string, StateStructure>();
 			userVars = new List<string>();//mxd
-			bool haveBaseClass = false;//mxd
 			
 			// Always define a game property, but default to 0 values
 			props["game"] = new List<string>();
@@ -107,7 +106,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 					token = token.ToLowerInvariant();
 					if(token == ":")
 					{
-                        haveBaseClass = true; //mxd
                         // The next token must be the class to inherit from
 						parser.SkipWhitespace(true);
 						inheritclass = parser.StripTokenQuotes(parser.ReadToken());
@@ -359,7 +357,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			//mxd. Check if baseclass is valid
-			if(haveBaseClass && doomednum > -1 && baseclass == null) {
+			if(inheritclass != "actor" && doomednum > -1 && baseclass == null) {
 				//check if this class inherits from a class defined in game configuration
 				Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
 				inheritclass = inheritclass.ToLowerInvariant();

@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonMarqueSelectTouching = new System.Windows.Forms.ToolStripButton();
 			this.buttonAlignThingsToWall = new System.Windows.Forms.ToolStripButton();
 			this.buttonTextureOffsetLock = new System.Windows.Forms.ToolStripButton();
+			this.selectInSectorsItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.SuspendLayout();
@@ -195,7 +196,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.thingsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.alignToWallItem,
-            this.pointAtCursorItem});
+            this.pointAtCursorItem,
+            this.selectInSectorsItem});
 			this.thingsmenu.Name = "thingsmenu";
 			this.thingsmenu.Size = new System.Drawing.Size(55, 20);
 			this.thingsmenu.Text = "Things";
@@ -205,7 +207,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.alignToWallItem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.AlignThings;
 			this.alignToWallItem.Name = "alignToWallItem";
-			this.alignToWallItem.Size = new System.Drawing.Size(202, 22);
+			this.alignToWallItem.Size = new System.Drawing.Size(245, 22);
 			this.alignToWallItem.Tag = "thingaligntowall";
 			this.alignToWallItem.Text = "&Align To Closest Linedef";
 			this.alignToWallItem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -214,7 +216,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.pointAtCursorItem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.ThingPointAtCursor;
 			this.pointAtCursorItem.Name = "pointAtCursorItem";
-			this.pointAtCursorItem.Size = new System.Drawing.Size(202, 22);
+			this.pointAtCursorItem.Size = new System.Drawing.Size(245, 22);
 			this.pointAtCursorItem.Tag = "thinglookatcursor";
 			this.pointAtCursorItem.Text = "&Point at Cursor";
 			this.pointAtCursorItem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -406,6 +408,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				"tant while sector is dragged\r\n";
 			this.buttonTextureOffsetLock.Click += new System.EventHandler(this.buttonTextureOffsetLock_Click);
 			// 
+			// selectInSectorsItem
+			// 
+			this.selectInSectorsItem.Name = "selectInSectorsItem";
+			this.selectInSectorsItem.Size = new System.Drawing.Size(245, 22);
+			this.selectInSectorsItem.Tag = "thingsselectinsectors";
+			this.selectInSectorsItem.Text = "&Select Things in Selected Sectors";
+			this.selectInSectorsItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// MenusForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -469,5 +479,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripButton buttonAlignThingsToWall;
 		private System.Windows.Forms.ToolStripMenuItem pointAtCursorItem;
 		private System.Windows.Forms.ToolStripButton buttonTextureOffsetLock;
+		private System.Windows.Forms.ToolStripMenuItem selectInSectorsItem;
 	}
 }
