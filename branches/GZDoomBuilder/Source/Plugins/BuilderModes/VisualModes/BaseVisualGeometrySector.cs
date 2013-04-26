@@ -124,16 +124,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
             //mxd. Modify offsets based on surface and camera angles
             if (General.Map.UDMF) {
-                float angle = 0;
-				if(GeometryType == VisualGeometryType.CEILING && level.sector.Fields.ContainsKey("rotationceiling"))
-					angle = Angle2D.DegToRad((float)level.sector.Fields["rotationceiling"].Value);// * (float)Math.PI / 180f;
-				else if(GeometryType == VisualGeometryType.FLOOR && level.sector.Fields.ContainsKey("rotationfloor"))
-					angle = Angle2D.DegToRad((float)level.sector.Fields["rotationfloor"].Value);// *(float)Math.PI / 180f;
+				float angle = 0;
 
-                Vector2D v = new Vector2D(offsetx, offsety).GetRotated(angle);
-                Point p = getTranslatedTextureOffset(new Point((int)Math.Round(v.x), (int)Math.Round(v.y)));
-                offsetx = p.X;
-                offsety = p.Y;
+				if(GeometryType == VisualGeometryType.CEILING)
+					angle = Angle2D.DegToRad(level.sector.Fields.GetValue("rotationceiling", 0f));
+				else
+					angle = Angle2D.DegToRad(level.sector.Fields.GetValue("rotationfloor", 0f));
+
+				Vector2D v = new Vector2D(offsetx, offsety).GetRotated(angle);
+
+				offsetx = (int)Math.Round(v.x);
+				offsety = (int)Math.Round(v.y);
             }
 
 			// Apply offsets
@@ -149,27 +150,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
         //mxd
         public override Sector GetControlSector() {
             return level.sector;
-        }
-
-        //mxd. Modify texture offsets based on camera angle (so "movetextureleft" action always moves texture more or less "left" etc.)
-        protected Point getTranslatedTextureOffset(Point p) {
-            Point tp = new Point();
-            int camAngle = (int)Angle2D.RadToDeg(General.Map.VisualCamera.AngleXY);// * 180f / (float)Math.PI);
-
-            if (camAngle > 315 || camAngle < 46) {
-                tp = p;
-            } else if (camAngle > 225) {
-                tp.Y = p.X;
-                tp.X = -p.Y;
-            } else if (camAngle > 135) {
-                tp.X = -p.X;
-                tp.Y = -p.Y;
-            }else{
-                tp.Y = -p.X;
-                tp.X = p.Y;
-            }
-
-            return tp;
         }
 
 		//mxd
@@ -206,7 +186,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Unused
 		public virtual void OnEditBegin() { }
-		public virtual void OnTextureAlign(bool alignx, bool aligny) { }
+		//public virtual void OnTextureAlign(bool alignx, bool aligny) { }
 		public virtual void OnToggleUpperUnpegged() { }
 		public virtual void OnToggleLowerUnpegged() { }
 		public virtual void OnResetTextureOffset() { }
@@ -387,6 +367,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 		}
+
+		//mxd. Auto-align texture offsets
+		public virtual void OnTextureAlign(bool alignx, bool aligny) {
+			if(!General.Map.UDMF) return;
+
+			//create undo
+			string rest = string.Empty;
+			if(alignx && aligny) rest = "(X and Y)";
+			else if(alignx)	rest = "(X)";
+			else rest = "(Y)";
+
+			mode.CreateUndo("Auto-align textures " + rest);
+			mode.SetActionResult("Auto-aligned textures " + rest + ".");
+
+			//get selection
+			List<VisualGeometry> selection = mode.GetSelectedSurfaces();
+
+			//align textures on slopes
+			foreach(VisualGeometry vg in selection) {
+				if(vg.GeometryType == VisualGeometryType.FLOOR || vg.GeometryType == VisualGeometryType.CEILING) {
+					if(vg.GeometryType == VisualGeometryType.FLOOR)
+						((VisualFloor)vg).AlignTexture(alignx, aligny);
+					else
+						((VisualCeiling)vg).AlignTexture(alignx, aligny);
+
+					vg.Sector.Sector.UpdateNeeded = true;
+					vg.Sector.Sector.UpdateCache();
+				}
+			}
+
+			// Map is changed
+			General.Map.Map.Update();
+			General.Map.IsChanged = true;
+			General.Interface.RefreshInfo();
+		}
 		
 		// Copy properties
 		public virtual void OnCopyProperties()
@@ -506,24 +521,49 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Texture offset change
-		public virtual void OnChangeTextureOffset(int horizontal, int vertical)
+		public virtual void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection)
 		{
 			//mxd
-            if (General.Map.UDMF) {
-                if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
-                    undoticket = mode.CreateUndo("Change texture offsets");
+            if (!General.Map.UDMF) {
+				General.ShowErrorMessage("Floor/ceiling texture offsets cannot be changed in this map format!", MessageBoxButtons.OK);
+				return;
+			}
 
-                // Apply offsets
-                MoveTextureOffset(new Point(-horizontal, -vertical));
+			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+				undoticket = mode.CreateUndo("Change texture offsets");
 
-                mode.SetActionResult("Changed texture offsets by " + -horizontal + ", " + -vertical + ".");
+			//mxd
+			if(doSurfaceAngleCorrection) {
+				Point p = new Point(horizontal, vertical);
+				float angle = Angle2D.RadToDeg(General.Map.VisualCamera.AngleXY);
+				if(GeometryType == VisualGeometryType.CEILING) {
+					angle += level.sector.Fields.GetValue("rotationceiling", 0f);
+				} else
+					angle += level.sector.Fields.GetValue("rotationfloor", 0f);
 
-                // Update sector geometry
-                Sector.UpdateSectorGeometry(false);
-                Sector.Rebuild();
-            } else {
-                General.ShowErrorMessage("Floor/ceiling texture offsets cannot be changed in this map format!", MessageBoxButtons.OK);
-            }
+				angle = General.ClampAngle(angle);
+
+				if(angle > 315 || angle < 46) {
+
+				} else if(angle > 225) {
+					vertical = p.X;
+					horizontal = -p.Y;
+				} else if(angle > 135) {
+					horizontal = -p.X;
+					vertical = -p.Y;
+				} else {
+					vertical = -p.X;
+					horizontal = p.Y;
+				}
+			}
+
+			// Apply offsets
+			MoveTextureOffset(new Point(-horizontal, -vertical));
+			mode.SetActionResult("Changed texture offsets by " + (-horizontal) + ", " + (-vertical) + ".");
+
+			// Update sector geometry
+			Sector.UpdateSectorGeometry(false);
+			Sector.Rebuild();
 		}
 		
 		#endregion

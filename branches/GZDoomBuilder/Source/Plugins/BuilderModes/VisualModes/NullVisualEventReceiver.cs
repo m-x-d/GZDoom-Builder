@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 		}
 
-		public void OnChangeTextureOffset(int horizontal, int vertical)
+		public void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection)
 		{
 		}
 

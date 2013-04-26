@@ -514,6 +514,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
             }
 
             removeDefaultValues();
+			General.Interface.RefreshInfo();
 			this.DialogResult = DialogResult.OK;
             Close();
         }

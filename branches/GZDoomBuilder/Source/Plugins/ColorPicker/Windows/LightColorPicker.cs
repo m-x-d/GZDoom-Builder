@@ -339,6 +339,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 
         private void colorPickerControl1_OnOkPressed(object sender, EventArgs e) {
 			this.DialogResult = DialogResult.OK;
+			General.Interface.RefreshInfo();
 			Close();
         }
 

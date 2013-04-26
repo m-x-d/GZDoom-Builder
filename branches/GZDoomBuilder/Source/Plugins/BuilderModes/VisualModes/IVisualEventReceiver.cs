@@ -32,7 +32,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		void OnMouseMove(MouseEventArgs e);
 		void OnChangeTargetHeight(int amount);
 		void OnChangeTargetBrightness(bool up);
-		void OnChangeTextureOffset(int horizontal, int vertical);
+		void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection);
 		void OnResetTextureOffset();
 		void OnSelectTexture();
 		void OnCopyTexture();
