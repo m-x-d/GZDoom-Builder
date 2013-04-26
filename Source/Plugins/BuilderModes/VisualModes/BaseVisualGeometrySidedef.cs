@@ -756,11 +756,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
-		// Auto-align texture X offsets
+		// Auto-align texture offsets
 		public virtual void OnTextureAlign(bool alignx, bool aligny)
 		{
-			mode.CreateUndo("Auto-align textures");
-			mode.SetActionResult("Auto-aligned textures.");
+			//mxd
+			string rest = string.Empty;
+			if(alignx && aligny) rest = "(X and Y)";
+			else if(alignx)	rest = "(X)";
+			else rest = "(Y)";
+
+			mode.CreateUndo("Auto-align textures " + rest);
+			mode.SetActionResult("Auto-aligned textures " + rest + ".");
 			
 			// Make sure the texture is loaded (we need the texture size)
 			if(!base.Texture.IsImageLoaded) base.Texture.LoadImage();
@@ -1068,7 +1074,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Texture offset change
-		public virtual void OnChangeTextureOffset(int horizontal, int vertical)
+		public virtual void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection)
 		{
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Change texture offsets");

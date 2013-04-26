@@ -1229,7 +1229,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(!donesides.ContainsKey((i as BaseVisualGeometrySidedef).Sidedef))
 					{
-						i.OnChangeTextureOffset(dx, dy);
+						i.OnChangeTextureOffset(dx, dy, false);
 						donesides.Add((i as BaseVisualGeometrySidedef).Sidedef, 0);
 					}
 				}
@@ -1247,7 +1247,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(!donesectors.ContainsKey((i as BaseVisualGeometrySector).Sector.Sector))
 					{
-						i.OnChangeTextureOffset(dx, dy);
+						i.OnChangeTextureOffset(dx, dy, false);
 						donesectors.Add((i as BaseVisualGeometrySector).Sector.Sector, 0);
 					}
 				}
@@ -2015,7 +2015,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
             PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-1, 0);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-1, 0, true);
             PostAction();
 		}
 
@@ -2024,7 +2024,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
             PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(1, 0);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(1, 0, true);
             PostAction();
 		}
 
@@ -2033,7 +2033,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
             PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -1);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -1, true);
             PostAction();
 		}
 
@@ -2042,7 +2042,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
             PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 1);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 1, true);
             PostAction();
 		}
 
@@ -2051,7 +2051,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
             PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-8, 0);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-8, 0, true);
             PostAction();
 		}
 
@@ -2060,7 +2060,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
             PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(8, 0);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(8, 0, true);
             PostAction();
 		}
 
@@ -2069,7 +2069,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
             PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -8);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -8, true);
             PostAction();
 		}
 
@@ -2078,7 +2078,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
             PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 8);
+            foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 8, true);
             PostAction();
 		}
 
@@ -2473,6 +2473,129 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			UpdateChangedObjects();
 			ShowTargetInfo();
+		}
+
+		//mxd
+		[BeginAction("toggleslope")]
+		public void ToggleSlope() {
+			List<VisualGeometry> selection = GetSelectedSurfaces();
+
+			if(selection.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "Toggle Slope action requires selected surfaces!");
+				return;
+			}
+
+			bool update = false;
+			List<BaseVisualSector> toUpdate = new List<BaseVisualSector>();
+			General.Map.UndoRedo.CreateUndo("Toggle Slope");
+
+			//check selection
+			foreach(VisualGeometry vg in selection) {
+				update = false;
+
+				//assign/remove action
+				if(vg.GeometryType == VisualGeometryType.WALL_BOTTOM) {
+					if(vg.Sidedef.Line.Action == 0 || (vg.Sidedef.Line.Action == 181 && vg.Sidedef.Line.Args[0] == 0)) {
+						//check if the sector already has floor slopes
+						foreach(Sidedef side in vg.Sidedef.Sector.Sidedefs) {
+							if(side == vg.Sidedef || side.Line.Action != 181)
+								continue;
+
+							int arg = (side == side.Line.Front ? 1 : 2);
+
+							if(side.Line.Args[0] == arg) {
+								//if only floor is affected, remove action
+								if(side.Line.Args[1] == 0)
+									side.Line.Action = 0;
+								else //clear floor alignment
+									side.Line.Args[0] = 0;
+							}
+						}
+
+						//set action
+						vg.Sidedef.Line.Action = 181;
+						vg.Sidedef.Line.Args[0] = (vg.Sidedef == vg.Sidedef.Line.Front ? 1 : 2);
+						update = true;
+					}
+				} else if(vg.GeometryType == VisualGeometryType.WALL_UPPER) {
+					if(vg.Sidedef.Line.Action == 0 || (vg.Sidedef.Line.Action == 181 && vg.Sidedef.Line.Args[1] == 0)) {
+						//check if the sector already has ceiling slopes
+						foreach(Sidedef side in vg.Sidedef.Sector.Sidedefs) {
+							if(side == vg.Sidedef || side.Line.Action != 181)
+								continue;
+
+							int arg = (side == side.Line.Front ? 1 : 2);
+
+							if(side.Line.Args[1] == arg) {
+								//if only ceiling is affected, remove action
+								if(side.Line.Args[0] == 0)
+									side.Line.Action = 0;
+								else //clear ceiling alignment
+									side.Line.Args[1] = 0;
+							}
+						}
+
+						//set action
+						vg.Sidedef.Line.Action = 181;
+						vg.Sidedef.Line.Args[1] = (vg.Sidedef == vg.Sidedef.Line.Front ? 1 : 2);
+						update = true;
+					}
+				} else if(vg.GeometryType == VisualGeometryType.CEILING) {
+					//check if the sector has ceiling slopes
+					foreach(Sidedef side in vg.Sector.Sector.Sidedefs) {
+						if(side.Line.Action != 181)
+							continue;
+
+						int arg = (side == side.Line.Front ? 1 : 2);
+
+						if(side.Line.Args[1] == arg) {
+							//if only ceiling is affected, remove action
+							if(side.Line.Args[0] == 0)
+								side.Line.Action = 0;
+							else //clear ceiling alignment
+								side.Line.Args[1] = 0;
+
+							update = true;
+						}
+					}
+				} else if(vg.GeometryType == VisualGeometryType.FLOOR) {
+					//check if the sector has floor slopes
+					foreach(Sidedef side in vg.Sector.Sector.Sidedefs) {
+						if(side.Line.Action != 181)
+							continue;
+
+						int arg = (side == side.Line.Front ? 1 : 2);
+
+						if(side.Line.Args[0] == arg) {
+							//if only floor is affected, remove action
+							if(side.Line.Args[1] == 0)
+								side.Line.Action = 0;
+							else //clear floor alignment
+								side.Line.Args[0] = 0;
+
+							update = true;
+						}
+					}
+				}
+
+				//add to update list
+				if(update)
+					toUpdate.Add(vg.Sector as BaseVisualSector);
+			}
+
+			//update changed geometry
+			if(toUpdate.Count > 0) {
+				RebuildElementData();
+
+				foreach(BaseVisualSector vs in toUpdate)
+					vs.UpdateSectorGeometry(true);
+
+				UpdateChangedObjects();
+				ClearSelection();
+				ShowTargetInfo();
+			}
+
+			General.Interface.DisplayStatus(StatusType.Action, "Toggled Slope for " + toUpdate.Count + (toUpdate.Count == 1 ? " surface." : " surfaces."));
 		}
 		
 		#endregion
