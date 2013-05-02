@@ -451,7 +451,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnProcess(float deltatime) { }
 		public virtual void OnTextureFloodfill() { }
 		public virtual void OnInsert() { }
-		//public virtual void OnDelete() { }
+		public virtual void OnTextureFit(bool fitWidth, bool fitHeight) { } //mxd
 		public virtual void ApplyTexture(string texture) { }
 		public virtual void ApplyUpperUnpegged(bool set) { }
 		public virtual void ApplyLowerUnpegged(bool set) { }

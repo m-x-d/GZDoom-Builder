@@ -499,6 +499,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected abstract void MoveTextureOffset(Point xy);
 		protected abstract Point GetTextureOffset();
 		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
+		public virtual void OnTextureFit(bool fitWidth, bool fitHeight) { } //mxd
 		
 		// Insert middle texture
 		public virtual void OnInsert()
