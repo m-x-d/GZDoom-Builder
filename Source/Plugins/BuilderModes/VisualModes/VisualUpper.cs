@@ -274,6 +274,55 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
+		public override void OnTextureFit(bool fitWidth, bool fitHeight) {
+			if(!General.Map.UDMF) return;
+			if(!Sidedef.HighRequired() || string.IsNullOrEmpty(Sidedef.HighTexture) || Sidedef.HighTexture == "-" || !Texture.IsImageLoaded) return;
+
+			string s;
+			if(fitWidth && fitHeight) s = "width and height";
+			else if(fitWidth) s = "width";
+			else s = "height";
+
+			//create undo
+			mode.CreateUndo("Fit texture (" + s + ")", UndoGroup.TextureOffsetChange, Sector.Sector.FixedIndex);
+			Sidedef.Fields.BeforeFieldsChange();
+
+			if(fitWidth) {
+				float scaleX = Texture.Width / Sidedef.Line.Length;
+
+				if(scaleX == 1.0f) {
+					if(Sidedef.Fields.GetValue("scalex_top", 1.0f) != 1.0f)
+						Sidedef.Fields.Remove("scalex_top");
+				} else {
+					Sidedef.Fields["scalex_top"] = new UniValue(UniversalType.Float, scaleX);
+				}
+
+				if(Sidedef.Fields.ContainsKey("offsetx_top"))
+					Sidedef.Fields.Remove("offsetx_top");
+			}
+
+			if(fitHeight && Sidedef.Sector != null && Sidedef.Other.Sector != null) {
+				float scaleY = (float)Texture.Height / (Sidedef.Sector.CeilHeight - Sidedef.Other.Sector.CeilHeight);
+
+				if(scaleY == 1.0f) {
+					if(Sidedef.Fields.GetValue("scaley_top", 1.0f) != 1.0f)
+						Sidedef.Fields.Remove("scaley_top");
+				} else {
+					Sidedef.Fields["scaley_top"] = new UniValue(UniversalType.Float, scaleY);
+				}
+
+				float offsetY = mode.GetTopOffsetY(Sidedef, 0f, true) % Texture.Height;
+
+				if(offsetY == 0f && Sidedef.Fields.ContainsKey("offsety_top"))
+					Sidedef.Fields.Remove("offsety_top");
+				else
+					Sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, offsetY);
+			}
+
+			Setup();
+		}
+
+		//mxd
 		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) {
 			selectNeighbours(Sidedef.HighTexture, select, withSameTexture, withSameHeight);
 		}

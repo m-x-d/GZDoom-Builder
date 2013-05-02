@@ -15,7 +15,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float cageradius2;
 		private Vector3D boxp1;
 		private Vector3D boxp2;
-		private int storedHeight = int.MinValue;
 
 		// Undo/redo
 		private int undoticket;
@@ -45,14 +44,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(vertex.Fields.ContainsKey(key)) {
 				z = vertex.Fields.GetValue(key, 0f);
 
-				if(z == height) { //don't create garbage data!
+				if(z == height && neighboursHaveSameHeight(height))  //don't create garbage data!
 					vertex.Fields.Remove(key);
-					storedHeight = height;
-				}
-			} else if(storedHeight != int.MinValue) {
-				z = storedHeight;
-				vertex.Fields.Add(key, new UniValue(UniversalType.Float, z));
-				storedHeight = int.MinValue;
 			} else {
 				z = height;
 			}
@@ -65,6 +58,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			boxp2 = new Vector3D(pos.x + radius, pos.y + radius, pos.z + radius);
 
 			changed = false;
+		}
+
+		private bool neighboursHaveSameHeight(int height) {
+			if(ceilingVertex) {
+				foreach(Linedef line in vertex.Linedefs) {
+					if(line.Front != null && line.Front.Sector != null && line.Front.Sector.Sidedefs.Count == 3 && line.Front.Sector.CeilHeight != height) return false;
+					if(line.Back != null && line.Back.Sector != null && line.Back.Sector.Sidedefs.Count == 3 && line.Back.Sector.CeilHeight != height) return false;
+				}
+			} else {
+				foreach(Linedef line in vertex.Linedefs) {
+					if(line.Front != null && line.Front.Sector != null && line.Front.Sector.Sidedefs.Count == 3 && line.Front.Sector.FloorHeight != height) return false;
+					if(line.Back != null && line.Back.Sector != null && line.Back.Sector.Sidedefs.Count == 3 && line.Back.Sector.FloorHeight != height) return false;
+				}
+			}
+			return true;
 		}
 
 		private void updateGeometry(Vertex v) {
@@ -211,13 +219,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnCopyTextureOffsets() { }
 		public virtual void OnPasteTextureOffsets() { }
 		public virtual void OnTextureAlign(bool alignx, bool aligny) { }
+		public virtual void OnTextureFit(bool fitWidth, bool fitHeight) { } //mxd
 		public virtual void OnToggleUpperUnpegged() { }
 		public virtual void OnToggleLowerUnpegged() { }
 		public virtual void OnResetTextureOffset() { }
 		public virtual void OnProcess(float deltatime) { }
 		public virtual void OnTextureFloodfill() { }
 		public virtual void OnInsert() { }
-		public virtual void OnDelete() { }
 		public virtual void ApplyTexture(string texture) { }
 		public virtual void ApplyUpperUnpegged(bool set) { }
 		public virtual void ApplyLowerUnpegged(bool set) { }
@@ -251,6 +259,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode.CreateUndo("Paste vertex properties");
 				mode.SetActionResult("Pasted vertex properties.");
 				BuilderPlug.Me.CopiedVertexProps.Apply(vertex);
+				
+				//update affected sectors
+				updateGeometry(vertex);
+				changed = true;
+				mode.ShowTargetInfo();
+			}
+		}
+
+		//Delete key pressed - remove zoffset field
+		public virtual void OnDelete() {
+			string key = ceilingVertex ? "zceiling" : "zfloor";
+
+			if(vertex.Fields.ContainsKey(key)) {
+				vertex.Fields.Remove(key);
 				
 				//update affected sectors
 				updateGeometry(vertex);
@@ -304,7 +326,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Update what must be updated
 			updateGeometry(vertex);
-			this.Changed = true;
+			changed = true;
 		}
 
 		#endregion

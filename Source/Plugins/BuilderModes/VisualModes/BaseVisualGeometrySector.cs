@@ -186,7 +186,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Unused
 		public virtual void OnEditBegin() { }
-		//public virtual void OnTextureAlign(bool alignx, bool aligny) { }
+		public virtual void OnTextureFit(bool fitWidth, bool fitHeight) { } //mxd
 		public virtual void OnToggleUpperUnpegged() { }
 		public virtual void OnToggleLowerUnpegged() { }
 		public virtual void OnResetTextureOffset() { }

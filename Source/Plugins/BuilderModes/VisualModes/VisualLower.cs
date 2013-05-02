@@ -275,6 +275,57 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
+		public override void OnTextureFit(bool fitWidth, bool fitHeight) {
+			if(!General.Map.UDMF) return;
+			if(!Sidedef.LowRequired() || string.IsNullOrEmpty(Sidedef.LowTexture) || Sidedef.LowTexture == "-" || !Texture.IsImageLoaded) return;
+
+			string s;
+			if(fitWidth && fitHeight) s = "width and height";
+			else if(fitWidth) s = "width";
+			else s = "height";
+
+			//create undo
+			mode.CreateUndo("Fit texture (" + s + ")", UndoGroup.TextureOffsetChange, Sector.Sector.FixedIndex);
+			Sidedef.Fields.BeforeFieldsChange();
+
+			if(fitWidth) {
+				float scaleX = Texture.Width / Sidedef.Line.Length;
+
+				if(scaleX == 1.0f) {
+					if(Sidedef.Fields.GetValue("scalex_bottom", 1.0f) != 1.0f)
+						Sidedef.Fields.Remove("scalex_bottom");
+				} else {
+					Sidedef.Fields["scalex_bottom"] = new UniValue(UniversalType.Float, scaleX);
+				}
+
+				if(Sidedef.Fields.ContainsKey("offsetx_bottom"))
+					Sidedef.Fields.Remove("offsetx_bottom");
+			}
+
+			if(fitHeight && Sidedef.Sector != null && Sidedef.Other.Sector != null) {
+				float scaleY = (float)Texture.Height / (Sidedef.Other.Sector.FloorHeight - Sidedef.Sector.FloorHeight);
+
+				if(scaleY == 1.0f) {
+					if(Sidedef.Fields.GetValue("scaley_bottom", 1.0f) != 1.0f)
+						Sidedef.Fields.Remove("scaley_bottom");
+				} else {
+					Sidedef.Fields["scaley_bottom"] = new UniValue(UniversalType.Float, scaleY);
+				}
+
+				float offsetY = 0f;
+				if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag)) 
+					offsetY = -(float)Math.Round((Sidedef.Sector.CeilHeight - Sidedef.Other.Sector.FloorHeight) * scaleY) % Texture.Height;
+
+				if(offsetY == 0f && Sidedef.Fields.ContainsKey("offsety_bottom"))
+					Sidedef.Fields.Remove("offsety_bottom");
+				else
+					Sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, offsetY);
+			}
+
+			Setup();
+		}
+
+		//mxd
 		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) {
 			selectNeighbours(Sidedef.LowTexture, select, withSameTexture, withSameHeight);
 		}
