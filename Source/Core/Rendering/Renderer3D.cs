@@ -641,7 +641,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(v.Selected && showselection) {
 					color = General.Colors.Selection3D.ToColorValue();
 				} else {
-					color = General.Colors.InfoLine.ToColorValue();
+					color = v.HaveHeightOffset ? General.Colors.InfoLine.ToColorValue() : General.Colors.Vertices.ToColorValue();
 					if(v != highlighted) color.Alpha = 0.6f;
 				}
 				graphics.Shaders.World3D.VertexColor = color;

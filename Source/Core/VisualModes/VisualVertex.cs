@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		protected bool selected;
 		protected bool changed;
 		protected bool ceilingVertex;
+		protected bool haveOffset;
 
 		//Properties
 		internal Matrix Position { get { return position; } }
@@ -50,6 +51,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public bool Selected { get { return selected; } set { selected = value; } }
 		public bool Changed { get { return changed; } set { changed |= value; } }
 		public bool CeilingVertex { get { return ceilingVertex; } }
+		public bool HaveHeightOffset { get { return haveOffset; } }
 
 		public VisualVertex(Vertex v, bool ceilingVertex) {
 			vertex = v;

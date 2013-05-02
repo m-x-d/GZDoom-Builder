@@ -562,9 +562,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				i.OnDelete();
 			}
 
-			// Update cache values
-			//General.Map.IsChanged = true;
-
 			PostAction();
 		}
 
