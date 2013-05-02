@@ -44,10 +44,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(vertex.Fields.ContainsKey(key)) {
 				z = vertex.Fields.GetValue(key, 0f);
 
-				if(z == height && neighboursHaveSameHeight(height))  //don't create garbage data!
+				if(z == height && neighboursHaveSameHeight(height)) {  //don't create garbage data!
 					vertex.Fields.Remove(key);
+					haveOffset = false;
+				} else {
+					haveOffset = true;
+				}
 			} else {
 				z = height;
+				haveOffset = false;
 			}
 
 			Vector3D pos = new Vector3D(vertex.Position.x, vertex.Position.y, z);
@@ -96,13 +101,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(ceilingVertex) {
 				height = sectors[0].CeilHeight;
 				for(int i = 1; i < sectors.Length; i++) {
-					if(sectors[i].Sidedefs.Count == 3 && sectors[i].CeilHeight < height)
+					if(sectors[i].CeilHeight < height)
 						height = sectors[i].CeilHeight;
 				}
 			} else {
 				height = sectors[0].FloorHeight;
 				for(int i = 1; i < sectors.Length; i++) {
-					if(sectors[i].Sidedefs.Count == 3 && sectors[i].FloorHeight > height)
+					if(sectors[i].FloorHeight > height)
 						height = sectors[i].FloorHeight;
 				}
 			}
