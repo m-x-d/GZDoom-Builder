@@ -198,15 +198,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Update display
 			if(renderer.StartPlotter(false)) {
 				// Undraw previous highlight
-				if((highlightedLine != null) && !highlightedLine.IsDisposed)
+				if((highlightedLine != null) && !highlightedLine.IsDisposed) {
 					renderer.PlotLinedef(highlightedLine, renderer.DetermineLinedefColor(highlightedLine));
+					renderer.PlotVertex(highlightedLine.Start, renderer.DetermineVertexColor(highlightedLine.Start));
+					renderer.PlotVertex(highlightedLine.End, renderer.DetermineVertexColor(highlightedLine.End));
+				}
 
 				// Set new highlight
 				highlightedLine = l;
 
 				// Render highlighted item
-				if((highlightedLine != null) && !highlightedLine.IsDisposed)
+				if((highlightedLine != null) && !highlightedLine.IsDisposed) {
 					renderer.PlotLinedef(highlightedLine, General.Colors.InfoLine);
+					renderer.PlotVertex(highlightedLine.Start, renderer.DetermineVertexColor(highlightedLine.Start));
+					renderer.PlotVertex(highlightedLine.End, renderer.DetermineVertexColor(highlightedLine.End));
+				}
 
 				// Done
 				renderer.Finish();
@@ -390,6 +396,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(selected.Count == 1) General.Map.Map.ClearSelectedVertices();
 
 						// Update entire display
+						General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
 						General.Interface.RedrawDisplay();
 					}
 				}
@@ -1019,6 +1026,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				OnMouseMove(e);
 
 				// Redraw screen
+				General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
 				General.Interface.RedrawDisplay();
 			}
 		}

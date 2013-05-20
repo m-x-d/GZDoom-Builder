@@ -466,6 +466,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			drawCurveModeMenuItem.Enabled = true;
             drawRectModeMenuItem.Enabled = true;
             drawEllipseModeMenuItem.Enabled = true;
+
+			General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
 		}
 		
 		// Map closed

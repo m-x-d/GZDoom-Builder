@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
@@ -25,6 +26,8 @@ namespace CodeImp.DoomBuilder.Rendering
 	internal unsafe sealed class Plotter
 	{
 		#region ================== Constants
+
+		private const int DASH_INTERVAL = 16; //mxd
 
 		#endregion
 
@@ -327,6 +330,26 @@ namespace CodeImp.DoomBuilder.Rendering
 							pixels[py * width + px] = c;
 					}
 				}
+			}
+		}
+
+		//mxd
+		public void DrawLine3DFloor(Vector2D start, Vector2D end, ref PixelColor c, PixelColor c2) {
+			Vector2D delta = end - start;
+			float length = delta.GetLength();
+
+			if(length < DASH_INTERVAL * 2) {
+				DrawLineSolid((int)start.x, (int)start.y, (int)end.x, (int)end.y, ref c2);
+			} else {
+				float d1 = DASH_INTERVAL / length;
+				float d2 = 1.0f - d1;
+
+				Vector2D p1 = CurveTools.GetPointOnLine(start, end, d1);
+				Vector2D p2 = CurveTools.GetPointOnLine(start, end, d2);
+
+				DrawLineSolid((int)start.x, (int)start.y, (int)p1.x, (int)p1.y, ref c2);
+				DrawLineSolid((int)p1.x, (int)p1.y, (int)p2.x, (int)p2.y, ref c);
+				DrawLineSolid((int)p2.x, (int)p2.y, (int)end.x, (int)end.y, ref c2);
 			}
 		}
 

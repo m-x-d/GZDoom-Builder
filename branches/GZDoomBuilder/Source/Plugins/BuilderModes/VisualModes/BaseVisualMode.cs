@@ -822,7 +822,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// ========== Sector 3D floor (see http://zdoom.org/wiki/Sector_Set3dFloor) ==========
 				else if((l.Action == 160) && (l.Front != null))
 				{
-					int sectortag = l.Args[0] + (l.Args[4] << 8);
+					//mxd. Added hi-tag/line ID check 
+					int sectortag = (l.Args[1] & (int)Effect3DFloor.FloorTypes.HiTagIsLineID) != 0 ? l.Args[0] : l.Args[0] + (l.Args[4] << 8);
 					if(sectortags.ContainsKey(sectortag))
 					{
 						List<Sector> sectors = sectortags[sectortag];

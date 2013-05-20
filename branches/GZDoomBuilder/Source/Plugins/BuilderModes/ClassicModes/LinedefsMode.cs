@@ -405,6 +405,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
 
 						// Update entire display
+						General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
 						General.Interface.RedrawDisplay();
 					}
 				}
@@ -809,6 +810,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				OnMouseMove(e);
 				
 				// Redraw screen
+				General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
 				General.Interface.RedrawDisplay();
 			}
 		}

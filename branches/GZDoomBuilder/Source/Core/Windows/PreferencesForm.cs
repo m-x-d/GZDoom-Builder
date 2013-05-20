@@ -168,6 +168,7 @@ namespace CodeImp.DoomBuilder.Windows
             colorMD3.Color = General.Colors.ModelWireframe;
             colorInfo.Color = General.Colors.InfoLine;
 			colorNewSectors.Color = General.Colors.NewSector;
+			color3dFloors.Color = General.Colors.ThreeDFloor;
 
 			colorscriptbackground.Color = General.Colors.ScriptBackground;
 			colorlinenumbers.Color = General.Colors.LineNumbers;
@@ -275,6 +276,7 @@ namespace CodeImp.DoomBuilder.Windows
             General.Colors.ModelWireframe = colorMD3.Color;
             General.Colors.InfoLine = colorInfo.Color;
 			General.Colors.NewSector = colorNewSectors.Color;
+			General.Colors.ThreeDFloor = color3dFloors.Color;
 
 			General.Colors.CreateAssistColors();
 			General.Settings.BlackBrowsers = blackbrowsers.Checked;
