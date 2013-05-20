@@ -99,6 +99,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			General.Map.Map.ClearAllSelected();
 			General.Map.Map.SelectMarkedGeometry(true, true);
+			General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
 			
 			// Switch to EditSelectionMode
 			EditSelectionMode editmode = new EditSelectionMode();

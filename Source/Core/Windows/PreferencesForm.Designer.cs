@@ -163,6 +163,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label16 = new System.Windows.Forms.Label();
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.color3dFloors = new CodeImp.DoomBuilder.Controls.ColorControl();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -430,7 +431,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(28, 30);
+			label1.Location = new System.Drawing.Point(28, 22);
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(147, 14);
 			label1.TabIndex = 20;
@@ -440,7 +441,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label18
 			// 
 			label18.AutoSize = true;
-			label18.Location = new System.Drawing.Point(22, 78);
+			label18.Location = new System.Drawing.Point(22, 54);
 			label18.Name = "label18";
 			label18.Size = new System.Drawing.Size(151, 14);
 			label18.TabIndex = 25;
@@ -450,7 +451,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label20
 			// 
 			label20.AutoSize = true;
-			label20.Location = new System.Drawing.Point(76, 126);
+			label20.Location = new System.Drawing.Point(76, 86);
 			label20.Name = "label20";
 			label20.Size = new System.Drawing.Size(96, 14);
 			label20.TabIndex = 28;
@@ -460,7 +461,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label21
 			// 
 			label21.AutoSize = true;
-			label21.Location = new System.Drawing.Point(55, 174);
+			label21.Location = new System.Drawing.Point(55, 118);
 			label21.Name = "label21";
 			label21.Size = new System.Drawing.Size(116, 14);
 			label21.TabIndex = 31;
@@ -481,23 +482,21 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colorsgroup1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
+			this.colorsgroup1.Controls.Add(this.color3dFloors);
 			this.colorsgroup1.Controls.Add(this.label23);
 			this.colorsgroup1.Controls.Add(this.numSectorsLabel);
 			this.colorsgroup1.Controls.Add(this.colorNewSectors);
 			this.colorsgroup1.Controls.Add(this.colorInfo);
-			this.colorsgroup1.Controls.Add(this.cbStretchModels);
 			this.colorsgroup1.Controls.Add(this.colorMD3);
-			this.colorsgroup1.Controls.Add(this.label2);
+			this.colorsgroup1.Controls.Add(this.doublesidedalpha);
 			this.colorsgroup1.Controls.Add(this.colorgrid64);
-			this.colorsgroup1.Controls.Add(this.squarethings);
 			this.colorsgroup1.Controls.Add(this.colorgrid);
-			this.colorsgroup1.Controls.Add(this.doublesidedalphalabel);
 			this.colorsgroup1.Controls.Add(this.colorindication);
-			this.colorsgroup1.Controls.Add(this.qualitydisplay);
 			this.colorsgroup1.Controls.Add(this.colorbackcolor);
+			this.colorsgroup1.Controls.Add(this.label2);
+			this.colorsgroup1.Controls.Add(this.doublesidedalphalabel);
 			this.colorsgroup1.Controls.Add(this.colorselection);
 			this.colorsgroup1.Controls.Add(this.colorvertices);
-			this.colorsgroup1.Controls.Add(this.doublesidedalpha);
 			this.colorsgroup1.Controls.Add(this.colorhighlight);
 			this.colorsgroup1.Controls.Add(this.colorlinedefs);
 			this.colorsgroup1.Controls.Add(this.tbNumSectors);
@@ -512,7 +511,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label23
 			// 
 			this.label23.AutoSize = true;
-			this.label23.Location = new System.Drawing.Point(14, 319);
+			this.label23.Location = new System.Drawing.Point(14, 344);
 			this.label23.Name = "label23";
 			this.label23.Size = new System.Drawing.Size(182, 14);
 			this.label23.TabIndex = 22;
@@ -522,7 +521,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// numSectorsLabel
 			// 
 			this.numSectorsLabel.AutoSize = true;
-			this.numSectorsLabel.Location = new System.Drawing.Point(148, 347);
+			this.numSectorsLabel.Location = new System.Drawing.Point(148, 371);
 			this.numSectorsLabel.Name = "numSectorsLabel";
 			this.numSectorsLabel.Size = new System.Drawing.Size(13, 14);
 			this.numSectorsLabel.TabIndex = 23;
@@ -533,7 +532,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorNewSectors.BackColor = System.Drawing.Color.Transparent;
 			this.colorNewSectors.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorNewSectors.Label = "New sectors:";
-			this.colorNewSectors.Location = new System.Drawing.Point(15, 287);
+			this.colorNewSectors.Location = new System.Drawing.Point(15, 312);
 			this.colorNewSectors.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorNewSectors.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorNewSectors.Name = "colorNewSectors";
@@ -555,7 +554,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbStretchModels
 			// 
 			this.cbStretchModels.AutoSize = true;
-			this.cbStretchModels.Location = new System.Drawing.Point(21, 466);
+			this.cbStretchModels.Location = new System.Drawing.Point(236, 170);
 			this.cbStretchModels.Name = "cbStretchModels";
 			this.cbStretchModels.Size = new System.Drawing.Size(167, 18);
 			this.cbStretchModels.TabIndex = 18;
@@ -579,7 +578,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(14, 373);
+			this.label2.Location = new System.Drawing.Point(14, 405);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(147, 14);
 			this.label2.TabIndex = 14;
@@ -601,7 +600,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// squarethings
 			// 
 			this.squarethings.AutoSize = true;
-			this.squarethings.Location = new System.Drawing.Point(21, 445);
+			this.squarethings.Location = new System.Drawing.Point(25, 170);
 			this.squarethings.Name = "squarethings";
 			this.squarethings.Size = new System.Drawing.Size(93, 18);
 			this.squarethings.TabIndex = 8;
@@ -623,7 +622,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// doublesidedalphalabel
 			// 
 			this.doublesidedalphalabel.AutoSize = true;
-			this.doublesidedalphalabel.Location = new System.Drawing.Point(148, 401);
+			this.doublesidedalphalabel.Location = new System.Drawing.Point(147, 438);
 			this.doublesidedalphalabel.Name = "doublesidedalphalabel";
 			this.doublesidedalphalabel.Size = new System.Drawing.Size(23, 14);
 			this.doublesidedalphalabel.TabIndex = 16;
@@ -644,7 +643,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// qualitydisplay
 			// 
 			this.qualitydisplay.AutoSize = true;
-			this.qualitydisplay.Location = new System.Drawing.Point(21, 424);
+			this.qualitydisplay.Location = new System.Drawing.Point(25, 191);
 			this.qualitydisplay.Name = "qualitydisplay";
 			this.qualitydisplay.Size = new System.Drawing.Size(130, 18);
 			this.qualitydisplay.TabIndex = 7;
@@ -690,7 +689,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// doublesidedalpha
 			// 
 			this.doublesidedalpha.LargeChange = 3;
-			this.doublesidedalpha.Location = new System.Drawing.Point(11, 388);
+			this.doublesidedalpha.Location = new System.Drawing.Point(11, 426);
 			this.doublesidedalpha.Name = "doublesidedalpha";
 			this.doublesidedalpha.Size = new System.Drawing.Size(130, 45);
 			this.doublesidedalpha.TabIndex = 2;
@@ -724,7 +723,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// tbNumSectors
 			// 
 			this.tbNumSectors.LargeChange = 3;
-			this.tbNumSectors.Location = new System.Drawing.Point(11, 334);
+			this.tbNumSectors.Location = new System.Drawing.Point(11, 359);
 			this.tbNumSectors.Maximum = 8;
 			this.tbNumSectors.Name = "tbNumSectors";
 			this.tbNumSectors.Size = new System.Drawing.Size(130, 45);
@@ -1317,8 +1316,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.appearancegroup1.Controls.Add(this.cbOldHighlightMode);
 			this.appearancegroup1.Controls.Add(label21);
 			this.appearancegroup1.Controls.Add(this.labelDynLightIntensity);
+			this.appearancegroup1.Controls.Add(this.cbStretchModels);
+			this.appearancegroup1.Controls.Add(this.squarethings);
 			this.appearancegroup1.Controls.Add(this.tbDynLightIntensity);
 			this.appearancegroup1.Controls.Add(label20);
+			this.appearancegroup1.Controls.Add(this.qualitydisplay);
 			this.appearancegroup1.Controls.Add(this.labelDynLightSize);
 			this.appearancegroup1.Controls.Add(this.tbDynLightSize);
 			this.appearancegroup1.Controls.Add(label18);
@@ -1354,7 +1356,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbOldHighlightMode
 			// 
 			this.cbOldHighlightMode.AutoSize = true;
-			this.cbOldHighlightMode.Location = new System.Drawing.Point(236, 254);
+			this.cbOldHighlightMode.Location = new System.Drawing.Point(236, 233);
 			this.cbOldHighlightMode.Name = "cbOldHighlightMode";
 			this.cbOldHighlightMode.Size = new System.Drawing.Size(218, 18);
 			this.cbOldHighlightMode.TabIndex = 33;
@@ -1366,7 +1368,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelDynLightIntensity
 			// 
 			this.labelDynLightIntensity.AutoSize = true;
-			this.labelDynLightIntensity.Location = new System.Drawing.Point(337, 174);
+			this.labelDynLightIntensity.Location = new System.Drawing.Point(337, 116);
 			this.labelDynLightIntensity.Name = "labelDynLightIntensity";
 			this.labelDynLightIntensity.Size = new System.Drawing.Size(22, 14);
 			this.labelDynLightIntensity.TabIndex = 32;
@@ -1375,19 +1377,19 @@ namespace CodeImp.DoomBuilder.Windows
 			// tbDynLightIntensity
 			// 
 			this.tbDynLightIntensity.LargeChange = 1;
-			this.tbDynLightIntensity.Location = new System.Drawing.Point(176, 161);
+			this.tbDynLightIntensity.Location = new System.Drawing.Point(176, 106);
 			this.tbDynLightIntensity.Minimum = 1;
 			this.tbDynLightIntensity.Name = "tbDynLightIntensity";
 			this.tbDynLightIntensity.Size = new System.Drawing.Size(154, 45);
 			this.tbDynLightIntensity.TabIndex = 30;
-			this.tbDynLightIntensity.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.tbDynLightIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.tbDynLightIntensity.Value = 10;
 			this.tbDynLightIntensity.ValueChanged += new System.EventHandler(this.tbDynLightIntensity_ValueChanged);
 			// 
 			// labelDynLightSize
 			// 
 			this.labelDynLightSize.AutoSize = true;
-			this.labelDynLightSize.Location = new System.Drawing.Point(337, 126);
+			this.labelDynLightSize.Location = new System.Drawing.Point(337, 85);
 			this.labelDynLightSize.Name = "labelDynLightSize";
 			this.labelDynLightSize.Size = new System.Drawing.Size(22, 14);
 			this.labelDynLightSize.TabIndex = 29;
@@ -1396,20 +1398,20 @@ namespace CodeImp.DoomBuilder.Windows
 			// tbDynLightSize
 			// 
 			this.tbDynLightSize.LargeChange = 1;
-			this.tbDynLightSize.Location = new System.Drawing.Point(176, 113);
+			this.tbDynLightSize.Location = new System.Drawing.Point(176, 74);
 			this.tbDynLightSize.Maximum = 20;
 			this.tbDynLightSize.Minimum = 1;
 			this.tbDynLightSize.Name = "tbDynLightSize";
 			this.tbDynLightSize.Size = new System.Drawing.Size(154, 45);
 			this.tbDynLightSize.TabIndex = 27;
-			this.tbDynLightSize.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.tbDynLightSize.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.tbDynLightSize.Value = 10;
 			this.tbDynLightSize.ValueChanged += new System.EventHandler(this.tbDynLightSize_ValueChanged);
 			// 
 			// labelDynLightCount
 			// 
 			this.labelDynLightCount.AutoSize = true;
-			this.labelDynLightCount.Location = new System.Drawing.Point(337, 78);
+			this.labelDynLightCount.Location = new System.Drawing.Point(337, 53);
 			this.labelDynLightCount.Name = "labelDynLightCount";
 			this.labelDynLightCount.Size = new System.Drawing.Size(19, 14);
 			this.labelDynLightCount.TabIndex = 26;
@@ -1418,21 +1420,21 @@ namespace CodeImp.DoomBuilder.Windows
 			// tbDynLightCount
 			// 
 			this.tbDynLightCount.LargeChange = 3;
-			this.tbDynLightCount.Location = new System.Drawing.Point(176, 65);
+			this.tbDynLightCount.Location = new System.Drawing.Point(176, 42);
 			this.tbDynLightCount.Maximum = 32;
 			this.tbDynLightCount.Minimum = 1;
 			this.tbDynLightCount.Name = "tbDynLightCount";
 			this.tbDynLightCount.Size = new System.Drawing.Size(154, 45);
 			this.tbDynLightCount.TabIndex = 24;
 			this.tbDynLightCount.TickFrequency = 4;
-			this.tbDynLightCount.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.tbDynLightCount.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.tbDynLightCount.Value = 1;
 			this.tbDynLightCount.ValueChanged += new System.EventHandler(this.tbDynLightCount_ValueChanged);
 			// 
 			// animatevisualselection
 			// 
 			this.animatevisualselection.AutoSize = true;
-			this.animatevisualselection.Location = new System.Drawing.Point(236, 233);
+			this.animatevisualselection.Location = new System.Drawing.Point(236, 212);
 			this.animatevisualselection.Name = "animatevisualselection";
 			this.animatevisualselection.Size = new System.Drawing.Size(188, 18);
 			this.animatevisualselection.TabIndex = 23;
@@ -1442,7 +1444,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// blackbrowsers
 			// 
 			this.blackbrowsers.AutoSize = true;
-			this.blackbrowsers.Location = new System.Drawing.Point(236, 212);
+			this.blackbrowsers.Location = new System.Drawing.Point(236, 191);
 			this.blackbrowsers.Name = "blackbrowsers";
 			this.blackbrowsers.Size = new System.Drawing.Size(199, 18);
 			this.blackbrowsers.TabIndex = 4;
@@ -1472,7 +1474,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// imagebrightnesslabel
 			// 
 			this.imagebrightnesslabel.AutoSize = true;
-			this.imagebrightnesslabel.Location = new System.Drawing.Point(337, 30);
+			this.imagebrightnesslabel.Location = new System.Drawing.Point(337, 22);
 			this.imagebrightnesslabel.Name = "imagebrightnesslabel";
 			this.imagebrightnesslabel.Size = new System.Drawing.Size(31, 14);
 			this.imagebrightnesslabel.TabIndex = 22;
@@ -1481,11 +1483,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// imagebrightness
 			// 
 			this.imagebrightness.LargeChange = 3;
-			this.imagebrightness.Location = new System.Drawing.Point(176, 17);
+			this.imagebrightness.Location = new System.Drawing.Point(176, 11);
 			this.imagebrightness.Name = "imagebrightness";
 			this.imagebrightness.Size = new System.Drawing.Size(154, 45);
 			this.imagebrightness.TabIndex = 3;
-			this.imagebrightness.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.imagebrightness.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.imagebrightness.ValueChanged += new System.EventHandler(this.imagebrightness_ValueChanged);
 			// 
 			// colorsgroup3
@@ -1752,6 +1754,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pasteoptions.Size = new System.Drawing.Size(666, 427);
 			this.pasteoptions.TabIndex = 0;
 			// 
+			// color3dFloors
+			// 
+			this.color3dFloors.BackColor = System.Drawing.Color.Transparent;
+			this.color3dFloors.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.color3dFloors.Label = "3D Floors:";
+			this.color3dFloors.Location = new System.Drawing.Point(15, 286);
+			this.color3dFloors.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.color3dFloors.MinimumSize = new System.Drawing.Size(100, 23);
+			this.color3dFloors.Name = "color3dFloors";
+			this.color3dFloors.Size = new System.Drawing.Size(168, 23);
+			this.color3dFloors.TabIndex = 24;
+			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -1941,5 +1955,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button bClearActionFilter;
 		private System.Windows.Forms.TextBox tbFilterActions;
 		private System.Windows.Forms.Label label24;
+		private CodeImp.DoomBuilder.Controls.ColorControl color3dFloors;
 	}
 }

@@ -632,6 +632,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 
 						// Update entire display
+						General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
 						General.Interface.RedrawDisplay();
 					}
 				}
@@ -1344,6 +1345,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UpdateSelectedLabels();
 				
 				// Redraw screen
+				General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
 				General.Interface.RedrawDisplay();
 			}
 		}

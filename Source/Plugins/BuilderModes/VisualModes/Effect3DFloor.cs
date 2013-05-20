@@ -62,6 +62,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Swimmable = 2,
 			NonSolid = 3,
 			RenderInside = 4,
+			HiTagIsLineID = 8,
 			InvertVisibilityRules = 16,
 			InvertShootabilityRules = 32
 		}

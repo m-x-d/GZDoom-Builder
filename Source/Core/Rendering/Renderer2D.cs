@@ -96,7 +96,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		private VertexBuffer thingsvertices;
 		
 		// Render settings
-		//private bool thingsfront;
 		private int vertexsize;
 		private RenderLayers renderlayer = RenderLayers.None;
 		
@@ -127,6 +126,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
         //mxd
         private Dictionary<Vector2D, Thing> thingsWithModel;
+		private List<int> tagsOf3DFloors;
 		
 		#endregion
 
@@ -161,6 +161,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Create surface manager
 			surfaces = new SurfaceManager();
+			tagsOf3DFloors = new List<int>(); //mxd
 
 			// Create rendertargets
 			CreateRendertargets();
@@ -617,6 +618,20 @@ namespace CodeImp.DoomBuilder.Rendering
             return General.Colors.Linedefs.WithAlpha(General.Settings.DoubleSidedAlphaByte);
 		}
 
+		//mxd
+		public void Update3dFloorTagsList() {
+			//mxd. Collect 3d-floors tags
+			tagsOf3DFloors = new List<int>();
+			foreach(Linedef l in General.Map.Map.Linedefs){
+				if(l.Action == 160) {
+					int sectortag = (l.Args[1] & 8) != 0 ? l.Args[0] : l.Args[0] + (l.Args[4] << 8);
+
+					if(sectortag != 0 && !tagsOf3DFloors.Contains(sectortag))
+						tagsOf3DFloors.Add(sectortag);
+				}
+			}
+		}
+
 		#endregion
 
 		#region ================== Start / Finish
@@ -640,11 +655,11 @@ namespace CodeImp.DoomBuilder.Rendering
 
 				// Create structures plotter
 				plotter = new Plotter((PixelColor*)plotlocked.Data.DataPointer.ToPointer(), plotlocked.Pitch / sizeof(PixelColor), structsize.Height, structsize.Width, structsize.Height);
-				if(clear) plotter.Clear();
 
 				// Redraw grid when structures image was cleared
 				if(clear)
 				{
+					plotter.Clear();
 					RenderBackgroundGrid();
 					SetupBackground();
 				}
@@ -1604,8 +1619,13 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 			}
 
-			// Draw line
-			plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, ref c);
+			// Draw line. mxd: added 3d-floor indication
+			if((l.Front != null && l.Front.Sector != null && tagsOf3DFloors.Contains(l.Front.Sector.Tag)) ||
+				(l.Back != null && l.Back.Sector != null && tagsOf3DFloors.Contains(l.Back.Sector.Tag))) {
+				plotter.DrawLine3DFloor(v1, v2, ref c, General.Colors.ThreeDFloor);
+			} else {
+				plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, ref c);
+			}
 
 			// Calculate normal indicator
 			float mx = (v2.x - v1.x) * 0.5f;
