@@ -64,7 +64,6 @@ namespace CodeImp.DoomBuilder.Map
 		private float lengthinv;
 		private float angle;
 		private RectangleF rect;
-		//private bool blocksoundflag;
 		private bool impassableflag;
 		
 		// Properties
@@ -104,9 +103,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal int SerializedIndex { get { return serializedindex; } set { serializedindex = value; } }
 		internal bool FrontInterior { get { return frontinterior; } set { frontinterior = value; } }
 		internal bool ImpassableFlag { get { return impassableflag; } }
-		//internal bool BlockSoundFlag { get { return blocksoundflag; } }
-		//mxd
-		internal int ColorPresetIndex { get { return colorPresetIndex; } }
+		internal int ColorPresetIndex { get { return colorPresetIndex; } } //mxd
 		
 		#endregion
 
@@ -377,7 +374,6 @@ namespace CodeImp.DoomBuilder.Map
 				rect = new RectangleF(l, t, r - l, b - t);
 				
 				// Cached flags
-				//blocksoundflag = IsFlagSet(General.Map.Config.SoundLinedefFlag); //mxd
 				impassableflag = IsFlagSet(General.Map.Config.ImpassableFlag);
 
 				//mxd. Color preset
@@ -427,6 +423,9 @@ namespace CodeImp.DoomBuilder.Map
 						flags[f.Fields[i]] = !f.FieldValues[i];
 				}
 			}
+
+			//mxd. Update cached flags
+			impassableflag = IsFlagSet(General.Map.Config.ImpassableFlag);
 		}
 		
 		// This translates UDMF fields back into the normal flags and activations
@@ -499,6 +498,9 @@ namespace CodeImp.DoomBuilder.Map
 				}
 				if(foundactivation) break;
 			}
+
+			//mxd. Update cached flags
+			impassableflag = IsFlagSet(General.Map.Config.ImpassableFlag);
 		}
 
 		// Selected

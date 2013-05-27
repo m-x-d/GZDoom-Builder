@@ -1602,6 +1602,7 @@ namespace CodeImp.DoomBuilder {
                 // Load new game configuration
                 General.WriteLogLine("Loading game configuration...");
                 configinfo = General.GetConfigurationInfo(options.ConfigFile);
+				string oldFormatInterface = config.FormatInterface; //mxd
                 config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
                 configinfo.ApplyDefaults(config);
                 General.Editing.UpdateCurrentEditModes();
@@ -1615,6 +1616,19 @@ namespace CodeImp.DoomBuilder {
 
                 // Let the plugins know
                 General.Plugins.MapReconfigure();
+
+				//mxd. Update linedef color presets and flags if required
+				if(General.Map != null && General.Map.Map != null) {
+					if(oldFormatInterface == "UniversalMapSetIO" && config.FormatInterface != "UniversalMapSetIO") {
+						foreach(Linedef l in General.Map.Map.Linedefs) l.TranslateFromUDMF();
+						foreach(Thing t in General.Map.Map.Things) t.TranslateFromUDMF();
+					} else if(oldFormatInterface != "UniversalMapSetIO" && config.FormatInterface == "UniversalMapSetIO") {
+						foreach(Linedef l in General.Map.Map.Linedefs) l.TranslateToUDMF();
+						foreach(Thing t in General.Map.Map.Things) t.TranslateToUDMF();
+					}
+
+					General.Map.Map.UpdateCustomLinedefColors();
+				}
 
                 // Update interface
                 General.MainWindow.SetupInterface();
