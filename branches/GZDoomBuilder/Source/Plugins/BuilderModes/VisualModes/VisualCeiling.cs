@@ -380,90 +380,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void AlignTexture(bool alignx, bool aligny) {
 			if(!General.Map.UDMF) return;
 
+			//is is a surface with line slope?
 			float slopeAngle = level.plane.Normal.GetAngleZ() - Angle2D.PIHALF;
 
-			if(slopeAngle == 0)	return; //it's a horizontal plane
+			if(slopeAngle == 0) {//it's a horizontal plane
+				alignTextureToClosestLine(alignx, aligny);
+			} else { //it can be a surface with line slope
+				Linedef slopeSource = null;
+				bool isFront = false;
 
-			//find slope source linedef
-			Linedef slopeSource = null;
-			bool isFront = false;
-
-			foreach(Sidedef side in Sector.Sector.Sidedefs) {
-				if(side.Line.Action == 181) {
-					if(side.Line.Args[1] == 1 && side.Line.Front != null && side.Line.Front == side) {
-						slopeSource = side.Line;
-						isFront = true;
-						break;
-					} else if(side.Line.Args[1] == 2 && side.Line.Back != null && side.Line.Back == side) {
-						slopeSource = side.Line;
-						break;
+				foreach(Sidedef side in Sector.Sector.Sidedefs) {
+					if(side.Line.Action == 181) {
+						if(side.Line.Args[1] == 1 && side.Line.Front != null && side.Line.Front == side) {
+							slopeSource = side.Line;
+							isFront = true;
+							break;
+						} else if(side.Line.Args[1] == 2 && side.Line.Back != null && side.Line.Back == side) {
+							slopeSource = side.Line;
+							break;
+						}
 					}
 				}
-			}
 
-			if(slopeSource == null)	return;
-
-			Sector.Sector.Fields.BeforeFieldsChange();
-
-			//match rotation
-			float sourceAngle = (float)Math.Round(General.ClampAngle(isFront ? -Angle2D.RadToDeg(slopeSource.Angle) + 90 : -Angle2D.RadToDeg(slopeSource.Angle) - 90), 1);
-
-			if((isFront && slopeSource.Front.Sector.CeilHeight < slopeSource.Back.Sector.CeilHeight) ||
-				(!isFront && slopeSource.Front.Sector.CeilHeight > slopeSource.Back.Sector.CeilHeight)) {
-				sourceAngle = General.ClampAngle(sourceAngle + 180);
-			}
-
-			if(sourceAngle != 0) {
-				if(!Sector.Sector.Fields.ContainsKey("rotationceiling"))
-					Sector.Sector.Fields.Add("rotationceiling", new UniValue(UniversalType.Float, sourceAngle));
+				if(slopeSource != null && slopeSource.Front != null && slopeSource.Front.Sector != null && slopeSource.Back != null && slopeSource.Back.Sector != null)
+					alignTextureToSlopeLine(slopeSource, slopeAngle, isFront, alignx, aligny);
 				else
-					Sector.Sector.Fields["rotationceiling"].Value = sourceAngle;
-			} else if(Sector.Sector.Fields.ContainsKey("rotationceiling")) {
-				Sector.Sector.Fields.Remove("rotationceiling");
+					alignTextureToClosestLine(alignx, aligny);
 			}
-
-			//update scaleY
-			float scaleX = Sector.Sector.Fields.GetValue("xscaleceiling", 1.0f);
-			float scaleY = (float)Math.Round(scaleX * (1 / (float)Math.Cos(slopeAngle)), 2);
-
-			if(aligny) {
-				if(Sector.Sector.Fields.ContainsKey("yscaleceiling"))
-					Sector.Sector.Fields["yscaleceiling"].Value = scaleY;
-				else
-					Sector.Sector.Fields.Add("yscaleceiling", new UniValue(UniversalType.Float, scaleY));
-			}
-
-			//update texture offsets
-			Vector2D offset;
-			if((isFront && slopeSource.Front.Sector.CeilHeight > slopeSource.Back.Sector.CeilHeight) ||
-			  (!isFront && slopeSource.Front.Sector.CeilHeight < slopeSource.Back.Sector.CeilHeight)) {
-				offset = slopeSource.End.Position;
-			} else {
-				offset = slopeSource.Start.Position;
-			}
-
-			offset = offset.GetRotated(Angle2D.DegToRad(sourceAngle));
-
-			if(alignx) {
-				if(Texture != null)	offset.x %= Texture.Width / scaleX;
-
-				if(Sector.Sector.Fields.ContainsKey("xpanningceiling"))
-					Sector.Sector.Fields["xpanningceiling"].Value = (float)Math.Round(-offset.x);
-				else
-					Sector.Sector.Fields.Add("xpanningceiling", new UniValue(UniversalType.Float, (float)Math.Round(-offset.x)));
-			}
-
-			if(aligny) {
-				if(Texture != null)	offset.y %= Texture.Height / scaleY;
-
-				if(Sector.Sector.Fields.ContainsKey("ypanningceiling"))
-					Sector.Sector.Fields["ypanningceiling"].Value = (float)Math.Round(offset.y);
-				else
-					Sector.Sector.Fields.Add("ypanningceiling", new UniValue(UniversalType.Float, (float)Math.Round(offset.y)));
-			}
-
-			//update geometry
-			Sector.UpdateSectorGeometry(false);
 		}
 		
 		#endregion

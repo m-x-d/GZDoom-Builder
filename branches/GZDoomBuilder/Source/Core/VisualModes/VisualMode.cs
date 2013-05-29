@@ -427,7 +427,7 @@ namespace CodeImp.DoomBuilder.VisualModes
         //mxd
         [BeginAction("placethingatcursor", BaseAction = true)]
         protected void placeThingAtCursor() {
-            Vector2D hitpos = getHitPosition();
+            Vector2D hitpos = GetHitPosition();
             if (!hitpos.IsFinite()) {
                 General.Interface.DisplayStatus(StatusType.Warning, "Cannot place Thing here");
                 return;
@@ -437,7 +437,7 @@ namespace CodeImp.DoomBuilder.VisualModes
         }
 
         //mxd. 
-        protected Vector2D getHitPosition() {
+        public Vector2D GetHitPosition() {
             Vector3D start = General.Map.VisualCamera.Position;
             Vector3D delta = General.Map.VisualCamera.Target - General.Map.VisualCamera.Position;
             delta = delta.GetFixedLength(General.Settings.ViewDistance * 0.98f);
