@@ -337,89 +337,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void AlignTexture(bool alignx, bool aligny) {
 			if(!General.Map.UDMF) return;
 
+			//is is a surface with line slope?
 			float slopeAngle = level.plane.Normal.GetAngleZ() - Angle2D.PIHALF;
 
-			if(slopeAngle == 0)	return; //it's a horizontal plane
+			if(slopeAngle == 0) {//it's a horizontal plane
+				alignTextureToClosestLine(alignx, aligny);
+			} else { //it can be a surface with line slope
+				Linedef slopeSource = null;
+				bool isFront = false;
 
-			//find slope source linedef
-			Linedef slopeSource = null;
-			bool isFront = false;
-
-			foreach(Sidedef side in Sector.Sector.Sidedefs) {
-				if(side.Line.Action == 181) {
-					if(side.Line.Args[0] == 1 && side.Line.Front != null && side.Line.Front == side) {
-						slopeSource = side.Line;
-						isFront = true;
-						break;
-					} else if(side.Line.Args[0] == 2 && side.Line.Back != null && side.Line.Back == side) {
-						slopeSource = side.Line;
-						break;
+				foreach(Sidedef side in Sector.Sector.Sidedefs) {
+					if(side.Line.Action == 181) {
+						if(side.Line.Args[0] == 1 && side.Line.Front != null && side.Line.Front == side) {
+							slopeSource = side.Line;
+							isFront = true;
+							break;
+						} else if(side.Line.Args[0] == 2 && side.Line.Back != null && side.Line.Back == side) {
+							slopeSource = side.Line;
+							break;
+						}
 					}
 				}
-			}
 
-			if(slopeSource == null)	return;
-
-			Sector.Sector.Fields.BeforeFieldsChange();
-
-			float sourceAngle = (float)Math.Round(General.ClampAngle(isFront ? -Angle2D.RadToDeg(slopeSource.Angle) + 90 : -Angle2D.RadToDeg(slopeSource.Angle) - 90), 1);
-
-			if((isFront && slopeSource.Front.Sector.FloorHeight > slopeSource.Back.Sector.FloorHeight) ||
-				(!isFront && slopeSource.Front.Sector.FloorHeight < slopeSource.Back.Sector.FloorHeight)) {
-				sourceAngle = General.ClampAngle(sourceAngle + 180);
-			}
-
-			if(sourceAngle != 0) {
-				if(!Sector.Sector.Fields.ContainsKey("rotationfloor"))
-					Sector.Sector.Fields.Add("rotationfloor", new UniValue(UniversalType.Float, sourceAngle));
+				if(slopeSource != null && slopeSource.Front != null && slopeSource.Front.Sector != null && slopeSource.Back != null && slopeSource.Back.Sector != null)
+					alignTextureToSlopeLine(slopeSource, slopeAngle, isFront, alignx, aligny);
 				else
-					Sector.Sector.Fields["rotationfloor"].Value = sourceAngle;
-			} else if(Sector.Sector.Fields.ContainsKey("rotationfloor")) {
-				Sector.Sector.Fields.Remove("rotationfloor");
+					alignTextureToClosestLine(alignx, aligny);
 			}
-
-			//update scaleY
-			float scaleX = Sector.Sector.Fields.GetValue("xscalefloor", 1.0f);
-			float scaleY = (float)Math.Round(scaleX * (1 / (float)Math.Cos(slopeAngle)), 2);
-
-			if(aligny) {
-				if(Sector.Sector.Fields.ContainsKey("yscalefloor"))
-					Sector.Sector.Fields["yscalefloor"].Value = scaleY;
-				else
-					Sector.Sector.Fields.Add("yscalefloor", new UniValue(UniversalType.Float, scaleY));
-			}
-
-			//update texture offsets
-			Vector2D offset;
-			if((isFront && slopeSource.Front.Sector.FloorHeight < slopeSource.Back.Sector.FloorHeight) ||
-				(!isFront && slopeSource.Front.Sector.FloorHeight > slopeSource.Back.Sector.FloorHeight)) {
-				offset = slopeSource.End.Position;
-			} else {
-				offset = slopeSource.Start.Position;
-			}
-
-			offset = offset.GetRotated(Angle2D.DegToRad(sourceAngle));
-
-			if(alignx) {
-				if(Texture != null)	offset.x %= Texture.Width / scaleX;
-
-				if(Sector.Sector.Fields.ContainsKey("xpanningfloor"))
-					Sector.Sector.Fields["xpanningfloor"].Value = (float)Math.Round(-offset.x);
-				else
-					Sector.Sector.Fields.Add("xpanningfloor", new UniValue(UniversalType.Float, (float)Math.Round(-offset.x)));
-			}
-
-			if(aligny) {
-				if(Texture != null) offset.y %= Texture.Height / scaleY;
-
-				if(Sector.Sector.Fields.ContainsKey("ypanningfloor"))
-					Sector.Sector.Fields["ypanningfloor"].Value = (float)Math.Round(offset.y);
-				else
-					Sector.Sector.Fields.Add("ypanningfloor", new UniValue(UniversalType.Float, (float)Math.Round(offset.y)));
-			}
-
-			//update geometry
-			Sector.UpdateSectorGeometry(false);
 		}
 		
 		#endregion

@@ -26,6 +26,8 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.VisualModes;
+using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -178,6 +180,153 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public virtual bool IsSelected() {
 			return selected;
+		}
+
+		//mxd
+		protected void alignTextureToClosestLine(bool alignx, bool aligny) {
+			//find a linedef to align to
+			Vector2D hitpos = mode.GetHitPosition();
+			if(!(mode.HighlightedObject is BaseVisualSector) || !hitpos.IsFinite())	return;
+			bool isFront = false;
+
+			//align to line of highlighted sector, which is closest to hitpos
+			Sector highlightedSector = ((BaseVisualSector)mode.HighlightedObject).Sector;
+			List<Linedef> lines = new List<Linedef>();
+			foreach(Sidedef side in highlightedSector.Sidedefs)	lines.Add(side.Line);
+
+			Linedef targetLine = MapSet.NearestLinedef(lines, hitpos);
+			if(targetLine == null) return;
+
+			foreach(Sidedef side in highlightedSector.Sidedefs) {
+				if(side.Line == targetLine && side.Line.Front != null && side.Line.Front == side) {
+					isFront = true;
+					break;
+				}
+			}
+
+			Sector.Sector.Fields.BeforeFieldsChange();
+
+			//find an angle to rotate texture
+			float sourceAngle = (float)Math.Round(General.ClampAngle(isFront ? -Angle2D.RadToDeg(targetLine.Angle) + 90 : -Angle2D.RadToDeg(targetLine.Angle) - 90), 1);
+			if(!isFront) sourceAngle = General.ClampAngle(sourceAngle + 180);
+			string rotationKey = (geoType == VisualGeometryType.FLOOR ? "rotationfloor" : "rotationceiling");
+
+			//update angle
+			UDMFTools.SetFloat(Sector.Sector.Fields, rotationKey, sourceAngle, 0f, false);
+
+			//update scale. Target should be either floor or ceiling at this point
+			float scaleX = 1.0f;
+			float scaleY = 1.0f;
+
+			if(mode.HighlightedTarget is VisualFloor) {
+				VisualFloor target = mode.HighlightedTarget as VisualFloor;
+				scaleX = target.Sector.Sector.Fields.GetValue("xscalefloor", 1.0f);
+				scaleY = target.Sector.Sector.Fields.GetValue("yscalefloor", 1.0f);
+			} else {
+				VisualCeiling target = mode.HighlightedTarget as VisualCeiling;
+				scaleX = target.Sector.Sector.Fields.GetValue("xscaleceiling", 1.0f);
+				scaleY = target.Sector.Sector.Fields.GetValue("yscaleceiling", 1.0f);
+			}
+
+			string xScaleKey = (geoType == VisualGeometryType.FLOOR ? "xscalefloor" : "xscaleceiling");
+			string yScaleKey = (geoType == VisualGeometryType.FLOOR ? "yscalefloor" : "yscaleceiling");
+
+			//set scale
+			UDMFTools.SetFloat(Sector.Sector.Fields, xScaleKey, scaleX, 1.0f, false);
+			UDMFTools.SetFloat(Sector.Sector.Fields, yScaleKey, scaleY, 1.0f, false);
+
+			//update offset
+			float distToStart = Vector2D.Distance(hitpos, targetLine.Start.Position);
+			float distToEnd = Vector2D.Distance(hitpos, targetLine.End.Position);
+			Vector2D offset = (distToStart < distToEnd ? targetLine.Start.Position : targetLine.End.Position).GetRotated(Angle2D.DegToRad(sourceAngle));
+
+			if(alignx) {
+				if(Texture != null)	offset.x %= Texture.Width / scaleX;
+				UDMFTools.SetFloat(Sector.Sector.Fields, (geoType == VisualGeometryType.FLOOR ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f, false);
+			}
+
+			if(aligny) {
+				if(Texture != null)	offset.y %= Texture.Height / scaleY;
+				UDMFTools.SetFloat(Sector.Sector.Fields, (geoType == VisualGeometryType.FLOOR ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f, false);
+			}
+
+			//update geometry
+			Sector.UpdateSectorGeometry(false);
+		}
+
+		//mxd
+		protected void alignTextureToSlopeLine(Linedef slopeSource, float slopeAngle, bool isFront, bool alignx, bool aligny) {
+			Vector2D hitpos = mode.GetHitPosition();
+			bool isFloor = (geoType == VisualGeometryType.FLOOR);
+
+			Sector.Sector.Fields.BeforeFieldsChange();
+			
+			float sourceAngle = (float)Math.Round(General.ClampAngle(isFront ? -Angle2D.RadToDeg(slopeSource.Angle) + 90 : -Angle2D.RadToDeg(slopeSource.Angle) - 90), 1);
+
+			if(isFloor) {
+				if((isFront && slopeSource.Front.Sector.FloorHeight > slopeSource.Back.Sector.FloorHeight) ||
+				  (!isFront && slopeSource.Front.Sector.FloorHeight < slopeSource.Back.Sector.FloorHeight)) {
+					sourceAngle = General.ClampAngle(sourceAngle + 180);
+				}
+			} else {
+				if((isFront && slopeSource.Front.Sector.CeilHeight < slopeSource.Back.Sector.CeilHeight) ||
+				  (!isFront && slopeSource.Front.Sector.CeilHeight > slopeSource.Back.Sector.CeilHeight)) {
+					sourceAngle = General.ClampAngle(sourceAngle + 180);
+				}
+			}
+
+			//update angle
+			string rotationKey = (isFloor ? "rotationfloor" : "rotationceiling");
+			UDMFTools.SetFloat(Sector.Sector.Fields, rotationKey, sourceAngle, 0f, false);
+
+			//update scaleY
+			string xScaleKey = (isFloor ? "xscalefloor" : "xscaleceiling");
+			string yScaleKey = (isFloor ? "yscalefloor" : "yscaleceiling");
+
+			float scaleX = Sector.Sector.Fields.GetValue(xScaleKey, 1.0f);
+			float scaleY;// = (float)Math.Round(scaleX * (1 / (float)Math.Cos(slopeAngle)), 2);
+
+			//set scale
+			if(aligny) {
+				scaleY = (float)Math.Round(scaleX * (1 / (float)Math.Cos(slopeAngle)), 2);
+				UDMFTools.SetFloat(Sector.Sector.Fields, yScaleKey, scaleY, 1.0f, false);
+			} else {
+				scaleY = Sector.Sector.Fields.GetValue(yScaleKey, 1.0f);
+			}
+
+			//update texture offsets
+			Vector2D offset;
+
+			if(isFloor) {
+				if((isFront && slopeSource.Front.Sector.FloorHeight < slopeSource.Back.Sector.FloorHeight) ||
+				  (!isFront && slopeSource.Front.Sector.FloorHeight > slopeSource.Back.Sector.FloorHeight)) {
+					offset = slopeSource.End.Position;
+				} else {
+					offset = slopeSource.Start.Position;
+				}
+			} else {
+				if((isFront && slopeSource.Front.Sector.CeilHeight > slopeSource.Back.Sector.CeilHeight) ||
+				  (!isFront && slopeSource.Front.Sector.CeilHeight < slopeSource.Back.Sector.CeilHeight)) {
+					offset = slopeSource.End.Position;
+				} else {
+					offset = slopeSource.Start.Position;
+				}
+			}
+
+			offset = offset.GetRotated(Angle2D.DegToRad(sourceAngle));
+
+			if(alignx) {
+				if(Texture != null)	offset.x %= Texture.Width / scaleX;
+				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f, false);
+			}
+
+			if(aligny) {
+				if(Texture != null)	offset.y %= Texture.Height / scaleY;
+				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f, false);
+			}
+
+			//update geometry
+			Sector.UpdateSectorGeometry(false);
 		}
 		
 		#endregion

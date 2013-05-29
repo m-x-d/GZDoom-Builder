@@ -144,6 +144,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
+		//mxd
+		public object HighlightedTarget { get { return target.picked; } }
+
 		new public IRenderer3D Renderer { get { return renderer; } }
 		
 		public bool IsSingleSelection { get { return singleselection; } }
@@ -2316,7 +2319,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
         [BeginAction("insertitem", BaseAction = true)] 
 		public void InsertThing()
 		{
-            Vector2D hitpos = getHitPosition();
+            Vector2D hitpos = GetHitPosition();
 
             if (!hitpos.IsFinite()) {
                 General.Interface.DisplayStatus(StatusType.Warning, "Cannot insert thing here!");
@@ -2386,7 +2389,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
                 return;
             }
             
-            Vector2D hitpos = getHitPosition();
+            Vector2D hitpos = GetHitPosition();
 
             if (!hitpos.IsFinite()) {
                 General.Interface.DisplayStatus(StatusType.Warning, "Cannot paste here!");
