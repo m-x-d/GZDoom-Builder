@@ -46,6 +46,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.thingsmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.alignToWallItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pointAtCursorItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.selectInSectorsItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.globalstrip = new System.Windows.Forms.ToolStrip();
 			this.manualstrip = new System.Windows.Forms.ToolStrip();
 			this.buttoncopyproperties = new System.Windows.Forms.ToolStripButton();
@@ -63,7 +64,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonMarqueSelectTouching = new System.Windows.Forms.ToolStripButton();
 			this.buttonAlignThingsToWall = new System.Windows.Forms.ToolStripButton();
 			this.buttonTextureOffsetLock = new System.Windows.Forms.ToolStripButton();
-			this.selectInSectorsItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignLinedefsItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignFloorToFrontItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignFloorToBackItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignCeilingToFrontItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignCeilingToBackItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.SuspendLayout();
@@ -91,11 +96,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.toolStripMenuItem1,
             this.curvelinedefsitem,
             this.toolStripMenuItem3,
-            this.splitlinedefsitem});
+            this.splitlinedefsitem,
+            this.alignLinedefsItem});
 			this.linedefsmenu.Name = "linedefsmenu";
 			this.linedefsmenu.Size = new System.Drawing.Size(63, 20);
 			this.linedefsmenu.Text = "&Linedefs";
 			this.linedefsmenu.Visible = false;
+			this.linedefsmenu.DropDownOpening += new System.EventHandler(this.linedefsmenu_DropDownOpening);
 			// 
 			// selectsinglesideditem
 			// 
@@ -190,7 +197,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(149, 6);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(146, 6);
 			this.toolStripMenuItem2.Visible = false;
 			// 
 			// thingsmenu
@@ -221,6 +228,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.pointAtCursorItem.Tag = "thinglookatcursor";
 			this.pointAtCursorItem.Text = "&Point at Cursor";
 			this.pointAtCursorItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// selectInSectorsItem
+			// 
+			this.selectInSectorsItem.Name = "selectInSectorsItem";
+			this.selectInSectorsItem.Size = new System.Drawing.Size(245, 22);
+			this.selectInSectorsItem.Tag = "thingsselectinsectors";
+			this.selectInSectorsItem.Text = "&Select Things in Selected Sectors";
+			this.selectInSectorsItem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// globalstrip
 			// 
@@ -409,13 +424,48 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				"tant while sector is dragged\r\n";
 			this.buttonTextureOffsetLock.Click += new System.EventHandler(this.buttonTextureOffsetLock_Click);
 			// 
-			// selectInSectorsItem
+			// alignLinedefsItem
 			// 
-			this.selectInSectorsItem.Name = "selectInSectorsItem";
-			this.selectInSectorsItem.Size = new System.Drawing.Size(245, 22);
-			this.selectInSectorsItem.Tag = "thingsselectinsectors";
-			this.selectInSectorsItem.Text = "&Select Things in Selected Sectors";
-			this.selectInSectorsItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			this.alignLinedefsItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.alignFloorToFrontItem,
+            this.alignFloorToBackItem,
+            this.alignCeilingToFrontItem,
+            this.alignCeilingToBackItem});
+			this.alignLinedefsItem.Name = "alignLinedefsItem";
+			this.alignLinedefsItem.Size = new System.Drawing.Size(205, 22);
+			this.alignLinedefsItem.Text = "&Align Textures";
+			// 
+			// alignFloorToFrontItem
+			// 
+			this.alignFloorToFrontItem.Name = "alignFloorToFrontItem";
+			this.alignFloorToFrontItem.Size = new System.Drawing.Size(181, 22);
+			this.alignFloorToFrontItem.Tag = "alignfloortofront";
+			this.alignFloorToFrontItem.Text = "Floor to Front Side";
+			this.alignFloorToFrontItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// alignFloorToBackItem
+			// 
+			this.alignFloorToBackItem.Name = "alignFloorToBackItem";
+			this.alignFloorToBackItem.Size = new System.Drawing.Size(181, 22);
+			this.alignFloorToBackItem.Tag = "alignfloortoback";
+			this.alignFloorToBackItem.Text = "Floor to Back Side";
+			this.alignFloorToBackItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// alignCeilingToFrontItem
+			// 
+			this.alignCeilingToFrontItem.Name = "alignCeilingToFrontItem";
+			this.alignCeilingToFrontItem.Size = new System.Drawing.Size(181, 22);
+			this.alignCeilingToFrontItem.Tag = "alignceilingtofront";
+			this.alignCeilingToFrontItem.Text = "Ceiling to Front Side";
+			this.alignCeilingToFrontItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// alignCeilingToBackItem
+			// 
+			this.alignCeilingToBackItem.Name = "alignCeilingToBackItem";
+			this.alignCeilingToBackItem.Size = new System.Drawing.Size(181, 22);
+			this.alignCeilingToBackItem.Tag = "alignceilingtoback";
+			this.alignCeilingToBackItem.Text = "Ceiling to Back Side";
+			this.alignCeilingToBackItem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// MenusForm
 			// 
@@ -481,5 +531,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripMenuItem pointAtCursorItem;
 		private System.Windows.Forms.ToolStripButton buttonTextureOffsetLock;
 		private System.Windows.Forms.ToolStripMenuItem selectInSectorsItem;
+		private System.Windows.Forms.ToolStripMenuItem alignLinedefsItem;
+		private System.Windows.Forms.ToolStripMenuItem alignFloorToFrontItem;
+		private System.Windows.Forms.ToolStripMenuItem alignFloorToBackItem;
+		private System.Windows.Forms.ToolStripMenuItem alignCeilingToFrontItem;
+		private System.Windows.Forms.ToolStripMenuItem alignCeilingToBackItem;
 	}
 }

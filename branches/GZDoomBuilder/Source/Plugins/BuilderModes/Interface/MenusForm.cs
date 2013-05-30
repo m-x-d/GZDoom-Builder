@@ -174,5 +174,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		#endregion
+
+		#region Events
+
+		//mxd
+		private void linedefsmenu_DropDownOpening(object sender, EventArgs e) {
+			alignLinedefsItem.Enabled = General.Map.UDMF;
+		}
+
+		#endregion
 	}
 }
