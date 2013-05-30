@@ -234,18 +234,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//find an angle to rotate texture
 			float sourceAngle = (float)Math.Round(General.ClampAngle(isFront ? -Angle2D.RadToDeg(targetLine.Angle) + 90 : -Angle2D.RadToDeg(targetLine.Angle) - 90), 1);
 			if(!isFront) sourceAngle = General.ClampAngle(sourceAngle + 180);
-			string rotationKey = (isFloor ? "rotationfloor" : "rotationceiling");
 
 			//update angle
-			UDMFTools.SetFloat(Sector.Sector.Fields, rotationKey, sourceAngle, 0f, false);
-
-			//update scale. Target should be either floor or ceiling at this point
-			string xScaleKey = (isFloor ? "xscalefloor" : "xscaleceiling");
-			string yScaleKey = (isFloor ? "yscalefloor" : "yscaleceiling");
+			UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "rotationfloor" : "rotationceiling"), sourceAngle, 0f, false);
 
 			//set scale
-			UDMFTools.SetFloat(Sector.Sector.Fields, xScaleKey, scaleX, 1.0f, false);
-			UDMFTools.SetFloat(Sector.Sector.Fields, yScaleKey, scaleY, 1.0f, false);
+			UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "xscalefloor" : "xscaleceiling"), scaleX, 1.0f, false);
+			UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "yscalefloor" : "yscaleceiling"), scaleY, 1.0f, false);
 
 			//update offset
 			float distToStart = Vector2D.Distance(hitpos, targetLine.Start.Position);
@@ -288,15 +283,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//update angle
-			string rotationKey = (isFloor ? "rotationfloor" : "rotationceiling");
-			UDMFTools.SetFloat(Sector.Sector.Fields, rotationKey, sourceAngle, 0f, false);
+			UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "rotationfloor" : "rotationceiling"), sourceAngle, 0f, false);
 
 			//update scaleY
 			string xScaleKey = (isFloor ? "xscalefloor" : "xscaleceiling");
 			string yScaleKey = (isFloor ? "yscalefloor" : "yscaleceiling");
 
 			float scaleX = Sector.Sector.Fields.GetValue(xScaleKey, 1.0f);
-			float scaleY;// = (float)Math.Round(scaleX * (1 / (float)Math.Cos(slopeAngle)), 2);
+			float scaleY;
 
 			//set scale
 			if(aligny) {

@@ -28,6 +28,8 @@ using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -174,6 +176,68 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.ShowLinedefInfo(highlighted);
 			else
 				General.Interface.HideInfo();
+		}
+
+		//mxd
+		private void alignTextureToLine(bool alignFloors, bool alignToFrontSide) {
+			ICollection<Linedef> lines = General.Map.Map.GetSelectedLinedefs(true);
+
+			if(lines.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection");
+				return;
+			}
+
+			//Create Undo
+			string rest = (alignFloors ? "Floors" : "Ceilings") + " to " + (alignToFrontSide ? "Front" : "Back")+ " Side";
+			General.Map.UndoRedo.CreateUndo("Align " + rest);
+			int counter = 0;
+
+			foreach(Linedef l in lines){
+				Sector s = null;
+
+				if(alignToFrontSide) {
+					if(l.Front != null && l.Front.Sector != null) s = l.Front.Sector;
+				} else {
+					if(l.Back != null && l.Back.Sector != null)	s = l.Back.Sector;
+				}
+
+				if(s == null) continue;
+				counter++;
+
+				s.Fields.BeforeFieldsChange();
+
+				float sourceAngle = (float)Math.Round(General.ClampAngle(alignToFrontSide ? -Angle2D.RadToDeg(l.Angle) + 90 : -Angle2D.RadToDeg(l.Angle) - 90), 1);
+				if(!alignToFrontSide) sourceAngle = General.ClampAngle(sourceAngle + 180);
+
+				//update angle
+				UDMFTools.SetFloat(s.Fields, (alignFloors ? "rotationfloor" : "rotationceiling"), sourceAngle, 0f, false);
+
+				//update offset
+				Vector2D offset = (alignToFrontSide ? l.Start.Position : l.End.Position).GetRotated(Angle2D.DegToRad(sourceAngle));
+				ImageData texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
+
+				if((texture == null) || (texture == General.Map.Data.WhiteTexture) ||
+				   (texture.Width <= 0) || (texture.Height <= 0) || !texture.IsImageLoaded) {
+				}else{
+					offset.x %= texture.Width / s.Fields.GetValue((alignFloors ? "xscalefloor" : "xscaleceiling"), 1.0f);
+					offset.y %= texture.Height / s.Fields.GetValue((alignFloors ? "yscalefloor" : "yscaleceiling"), 1.0f);
+				}
+
+				UDMFTools.SetFloat(s.Fields, (alignFloors ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f, false);
+				UDMFTools.SetFloat(s.Fields, (alignFloors ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f, false);
+
+				//update
+				s.UpdateNeeded = true;
+				s.UpdateCache();
+			}
+
+			General.Interface.DisplayStatus(StatusType.Info, "Aligned " +counter + " " + rest);
+
+			//update
+			General.Map.Map.Update();
+			General.Interface.RedrawDisplay();
+			General.Interface.RefreshInfo();
+			General.Map.IsChanged = true;
 		}
 		
 		#endregion
@@ -1129,6 +1193,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RedrawDisplay();
 			General.Interface.RefreshInfo();
 			General.Map.IsChanged = true;
+		}
+
+		//mxd
+		[BeginAction("alignfloortofront")]
+		public void AlignFloorToFront() {
+			if(!General.Map.UDMF) return;
+			alignTextureToLine(true, true);
+		}
+
+		//mxd
+		[BeginAction("alignfloortoback")]
+		public void AlignFloorToBack() {
+			if(!General.Map.UDMF) return;
+			alignTextureToLine(true, false);
+		}
+
+		//mxd
+		[BeginAction("alignceilingtofront")]
+		public void AlignCeilingToFront() {
+			if(!General.Map.UDMF) return;
+			alignTextureToLine(false, true);
+		}
+
+		//mxd
+		[BeginAction("alignceilingtoback")]
+		public void AlignCeilingToBack() {
+			if(!General.Map.UDMF) return;
+			alignTextureToLine(false, false);
 		}
 
 		#endregion
