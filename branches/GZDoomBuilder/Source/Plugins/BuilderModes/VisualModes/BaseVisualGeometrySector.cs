@@ -184,9 +184,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		protected void alignTextureToClosestLine(bool alignx, bool aligny) {
+			if(!(mode.HighlightedObject is BaseVisualSector)) return;
+			
+			//do we need to align this? (and also grab texture scale while we are at it)
+			float scaleX = 1.0f;
+			float scaleY = 1.0f;
+			bool isFloor = (geoType == VisualGeometryType.FLOOR);
+
+			if(mode.HighlightedTarget is VisualFloor) {
+				VisualFloor target = mode.HighlightedTarget as VisualFloor;
+
+				//check texture
+				if(target.Sector.Sector.FloorTexture != (isFloor ? Sector.Sector.FloorTexture : Sector.Sector.CeilTexture))	return;
+
+				scaleX = target.Sector.Sector.Fields.GetValue("xscalefloor", 1.0f);
+				scaleY = target.Sector.Sector.Fields.GetValue("yscalefloor", 1.0f);
+			} else {
+				VisualCeiling target = mode.HighlightedTarget as VisualCeiling;
+
+				//check texture
+				if(target.Sector.Sector.CeilTexture != (isFloor ? Sector.Sector.FloorTexture : Sector.Sector.CeilTexture)) return;
+
+				scaleX = target.Sector.Sector.Fields.GetValue("xscaleceiling", 1.0f);
+				scaleY = target.Sector.Sector.Fields.GetValue("yscaleceiling", 1.0f);
+			}
+
 			//find a linedef to align to
 			Vector2D hitpos = mode.GetHitPosition();
-			if(!(mode.HighlightedObject is BaseVisualSector) || !hitpos.IsFinite())	return;
+			if(!hitpos.IsFinite()) return;
 			bool isFront = false;
 
 			//align to line of highlighted sector, which is closest to hitpos
@@ -209,27 +234,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//find an angle to rotate texture
 			float sourceAngle = (float)Math.Round(General.ClampAngle(isFront ? -Angle2D.RadToDeg(targetLine.Angle) + 90 : -Angle2D.RadToDeg(targetLine.Angle) - 90), 1);
 			if(!isFront) sourceAngle = General.ClampAngle(sourceAngle + 180);
-			string rotationKey = (geoType == VisualGeometryType.FLOOR ? "rotationfloor" : "rotationceiling");
+			string rotationKey = (isFloor ? "rotationfloor" : "rotationceiling");
 
 			//update angle
 			UDMFTools.SetFloat(Sector.Sector.Fields, rotationKey, sourceAngle, 0f, false);
 
 			//update scale. Target should be either floor or ceiling at this point
-			float scaleX = 1.0f;
-			float scaleY = 1.0f;
-
-			if(mode.HighlightedTarget is VisualFloor) {
-				VisualFloor target = mode.HighlightedTarget as VisualFloor;
-				scaleX = target.Sector.Sector.Fields.GetValue("xscalefloor", 1.0f);
-				scaleY = target.Sector.Sector.Fields.GetValue("yscalefloor", 1.0f);
-			} else {
-				VisualCeiling target = mode.HighlightedTarget as VisualCeiling;
-				scaleX = target.Sector.Sector.Fields.GetValue("xscaleceiling", 1.0f);
-				scaleY = target.Sector.Sector.Fields.GetValue("yscaleceiling", 1.0f);
-			}
-
-			string xScaleKey = (geoType == VisualGeometryType.FLOOR ? "xscalefloor" : "xscaleceiling");
-			string yScaleKey = (geoType == VisualGeometryType.FLOOR ? "yscalefloor" : "yscaleceiling");
+			string xScaleKey = (isFloor ? "xscalefloor" : "xscaleceiling");
+			string yScaleKey = (isFloor ? "yscalefloor" : "yscaleceiling");
 
 			//set scale
 			UDMFTools.SetFloat(Sector.Sector.Fields, xScaleKey, scaleX, 1.0f, false);
@@ -242,12 +254,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(alignx) {
 				if(Texture != null)	offset.x %= Texture.Width / scaleX;
-				UDMFTools.SetFloat(Sector.Sector.Fields, (geoType == VisualGeometryType.FLOOR ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f, false);
+				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f, false);
 			}
 
 			if(aligny) {
 				if(Texture != null)	offset.y %= Texture.Height / scaleY;
-				UDMFTools.SetFloat(Sector.Sector.Fields, (geoType == VisualGeometryType.FLOOR ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f, false);
+				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f, false);
 			}
 
 			//update geometry
