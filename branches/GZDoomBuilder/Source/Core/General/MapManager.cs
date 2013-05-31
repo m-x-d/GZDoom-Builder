@@ -1618,17 +1618,14 @@ namespace CodeImp.DoomBuilder {
                 General.Plugins.MapReconfigure();
 
 				//mxd. Update linedef color presets and flags if required
-				if(General.Map != null && General.Map.Map != null) {
-					if(oldFormatInterface == "UniversalMapSetIO" && config.FormatInterface != "UniversalMapSetIO") {
-						foreach(Linedef l in General.Map.Map.Linedefs) l.TranslateFromUDMF();
-						foreach(Thing t in General.Map.Map.Things) t.TranslateFromUDMF();
-					} else if(oldFormatInterface != "UniversalMapSetIO" && config.FormatInterface == "UniversalMapSetIO") {
-						foreach(Linedef l in General.Map.Map.Linedefs) l.TranslateToUDMF();
-						foreach(Thing t in General.Map.Map.Things) t.TranslateToUDMF();
-					}
-
-					General.Map.Map.UpdateCustomLinedefColors();
+				if(oldFormatInterface == "UniversalMapSetIO" && config.FormatInterface != "UniversalMapSetIO") {
+					foreach(Linedef l in General.Map.Map.Linedefs) l.TranslateFromUDMF();
+					foreach(Thing t in General.Map.Map.Things) t.TranslateFromUDMF();
+				} else if(oldFormatInterface != "UniversalMapSetIO" && config.FormatInterface == "UniversalMapSetIO") {
+					foreach(Linedef l in General.Map.Map.Linedefs) l.TranslateToUDMF();
+					foreach(Thing t in General.Map.Map.Things) t.TranslateToUDMF();
 				}
+				General.Map.Map.UpdateCustomLinedefColors();
 
                 // Update interface
                 General.MainWindow.SetupInterface();
