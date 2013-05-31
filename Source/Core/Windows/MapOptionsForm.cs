@@ -183,6 +183,10 @@ namespace CodeImp.DoomBuilder.Windows
 								}
 							}
 							return;
+						} 
+						else 
+						{ //mxd. Otherwise map data won't be saved if a user decides to save the map right after converting to new map format
+							General.Map.IsChanged = true;
 						}
 					}
 				}
