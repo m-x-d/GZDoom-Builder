@@ -712,16 +712,14 @@ namespace CodeImp.DoomBuilder.Config
 				thingflagstranslation.Add(new FlagTranslation(de));
 				
 			// Get thing compare flag info (for the stuck thing error checker
-	  	        dic = cfg.ReadSetting("thingflagscompare", new Hashtable());
-	  	        foreach (DictionaryEntry de in dic)
-	  	        {
-	  	                IDictionary gdic = cfg.ReadSetting("thingflagscompare." + de.Key, new Hashtable());
+			dic = cfg.ReadSetting("thingflagscompare", new Hashtable());
+			foreach(DictionaryEntry de in dic) {
+				IDictionary gdic = cfg.ReadSetting("thingflagscompare." + de.Key, new Hashtable());
 
-	  	                foreach (DictionaryEntry gde in gdic)
-	  	                {
-	  	                      thingflagscompare.Add(new ThingFlagsCompare(cfg, de.Key.ToString(), gde.Key.ToString()));
-	  	                }
-	  	        }
+				foreach(DictionaryEntry gde in gdic) {
+					thingflagscompare.Add(new ThingFlagsCompare(cfg, de.Key.ToString(), gde.Key.ToString()));
+				}
+			}
 
 			// Sort the translation flags, because they must be compared highest first!
 			thingflagstranslation.Sort();
