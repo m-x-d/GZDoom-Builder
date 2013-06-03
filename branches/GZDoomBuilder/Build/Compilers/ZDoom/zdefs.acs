@@ -217,6 +217,9 @@
 // OR this with one of the above to use the extra alpha parameter
 #define HUDMSG_ALPHA				0x10000000
 
+// Or this with one of the above to not wrap lines
+#define HUDMSG_NOWRAP				0x08000000
+
 // HUD message layers; these are not flags
 #define HUDMSG_LAYER_OVERHUD		0x00000000
 #define HUDMSG_LAYER_UNDERHUD		0x00001000
@@ -280,6 +283,10 @@
 #define APROP_Mass			32
 #define APROP_Accuracy      33
 #define APROP_Stamina       34
+#define APROP_Height		35
+#define APROP_Radius		36
+#define APROP_Reactiontime	37
+#define APROP_MeleeRange	38
 
 // Render Styles ------------------------------------------------------------
 
@@ -669,6 +676,28 @@
 #define SECSEQ_FULLHEIGHT		3
 #define SECSEQ_INTERIOR			4
 
+// Channels for PlaySound and StopSound
+
+#define CHAN_AUTO				0
+#define CHAN_WEAPON				1
+#define CHAN_VOICE				2
+#define CHAN_ITEM				3
+#define CHAN_BODY				4
+
+// Modifier flags for PlaySound
+
+#define CHAN_LISTENERZ			8
+#define CHAN_MAYBE_LOCAL		16
+#define CHAN_UI					32
+#define CHAN_NOPAUSE			64
+
+// Standard attenuation values for PlaySound
+
+#define ATTN_NONE				0		// full volume the entire level
+#define ATTN_NORM				1.0
+#define ATTN_IDLE				1.001
+#define ATTN_STATIC				3.0		// dimish very rapidly with distance
+
 // Actor pointer selectors
 
 #DEFINE	AAPTR_DEFAULT 0
@@ -705,6 +734,26 @@
 #define TEAM_BLUE				0
 #define TEAM_RED				1
 #define NO_TEAM					2
+
+// Team properties ----------------------------------------------------------
+#define TPROP_Name				0
+#define TPROP_Score				1
+#define TPROP_IsValid			2
+#define TPROP_NumPlayers		3
+#define TPROP_NumLivePlayers	4
+#define TPROP_TextColor			5
+#define TPROP_PlayerStartNum	6
+#define TPROP_Spread			7
+#define TPROP_Carrier			8
+#define TPROP_Assister			9
+#define TPROP_FragCount			10
+#define TPROP_DeathCount		11
+#define TPROP_WinCount			12
+#define TPROP_PointCount		13
+#define TPROP_ReturnTics		14
+#define TPROP_TeamItem			15
+#define TPROP_WinnerTheme		16
+#define TPROP_LoserTheme		17
 
 // Skulltag Invasion --------------------------------------------------------
 #define IS_WAITINGFORPLAYERS	0
@@ -843,6 +892,7 @@
 #define CHANGELEVEL_CHANGESKILL 8
 #define CHANGELEVEL_NOINTERMISSION 16
 #define CHANGELEVEL_RESETHEALTH	32
+#define CHANGELEVEL_PRERAISEWEAPON 64
 
 #define NO_CHANGE 32767.0
 
