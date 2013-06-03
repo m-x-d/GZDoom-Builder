@@ -397,13 +397,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                     s.Position = ofs_tris + start;
 
                 for (int i = 0; i < num_tris; i++) {
-                    polyIndecesList.Add((int)br.ReadInt16());
-                    polyIndecesList.Add((int)br.ReadInt16());
-                    polyIndecesList.Add((int)br.ReadInt16());
+                    polyIndecesList.Add((int)br.ReadUInt16());
+					polyIndecesList.Add((int)br.ReadUInt16());
+					polyIndecesList.Add((int)br.ReadUInt16());
 
-                    uvIndecesList.Add((int)br.ReadInt16());
-                    uvIndecesList.Add((int)br.ReadInt16());
-                    uvIndecesList.Add((int)br.ReadInt16());
+					uvIndecesList.Add((int)br.ReadUInt16());
+					uvIndecesList.Add((int)br.ReadUInt16());
+					uvIndecesList.Add((int)br.ReadUInt16());
                 }
 
                 //UV coords
