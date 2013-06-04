@@ -70,18 +70,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Fix by flipping linedefs
-		public override bool Button1Click()
+		public override bool Button1Click(bool batchMode)
 		{
-			General.Map.UndoRedo.CreateUndo("Linedef flags change");
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Linedef flags change");
 			line.ApplySidedFlags();
 			General.Map.Map.Update();
 			return true;
 		}
 		
 		// Fix by creating a sidedef
-		public override bool Button2Click()
+		public override bool Button2Click(bool batchMode)
 		{
-			General.Map.UndoRedo.CreateUndo("Remove back sidedef");
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Remove back sidedef");
 			line.Back.Dispose();
 			line.ApplySidedFlags();
 			General.Map.Map.Update();

@@ -60,24 +60,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Methods
+
+
 		
 		// When the first button is clicked
 		// Return true when map geometry or things have been added/removed so that the checker can restart
-		public virtual bool Button1Click()
+		public virtual bool Button1Click(bool batchMode)
 		{
 			return false;
 		}
 		
 		// When the second button is clicked
 		// Return true when map geometry or things have been added/removed so that the checker can restart
-		public virtual bool Button2Click()
+		public virtual bool Button2Click(bool batchMode)
 		{
 			return false;
 		}
 		
 		// When the third button is clicked
 		// Return true when map geometry or things have been added/removed so that the checker can restart
-		public virtual bool Button3Click()
+		public virtual bool Button3Click(bool batchMode)
 		{
 			return false;
 		}
