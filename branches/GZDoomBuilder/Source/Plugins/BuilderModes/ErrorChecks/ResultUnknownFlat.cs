@@ -73,9 +73,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Fix by setting default flat
-		public override bool Button1Click()
+		public override bool Button1Click(bool batchMode)
 		{
-			General.Map.UndoRedo.CreateUndo("Unknown flat correction");
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Unknown flat correction");
 			General.Settings.FindDefaultDrawSettings();
 			
 			if(ceiling)

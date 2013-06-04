@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Fix by flipping linedefs
-		public override bool Button1Click()
+		public override bool Button1Click(bool batchMode)
 		{
 			line.FlipSidedefs();
 			General.Map.Map.Update();
@@ -117,9 +117,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Fix by creating a sidedef
-		public override bool Button2Click()
+		public override bool Button2Click(bool batchMode)
 		{
-			General.Map.UndoRedo.CreateUndo("Create front sidedef");
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Create front sidedef");
 			Sidedef newside = General.Map.Map.CreateSidedef(line, true, copysidedef.Sector);
 			if(newside == null) return false;
 			copysidedef.CopyPropertiesTo(newside);

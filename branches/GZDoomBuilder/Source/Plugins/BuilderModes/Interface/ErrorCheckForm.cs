@@ -435,7 +435,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-                    if (r.Button1Click()) {
+                    if (r.Button1Click(false)) {
                         if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 1); //mxd
                         StartChecking();
                     } else {
@@ -458,7 +458,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-                    if (r.Button2Click()) {
+                    if (r.Button2Click(false)) {
                         if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 2); //mxd
                         StartChecking();
                     } else {
@@ -481,7 +481,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-                    if (r.Button3Click()) {
+                    if (r.Button3Click(false)) {
                         if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 3); //mxd
                         StartChecking();
                     } else {
@@ -499,12 +499,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
                 ErrorResult r = item as ErrorResult;
 
-                if (fixIndex == 1)
-                    r.Button1Click();
-                else if (fixIndex == 2)
-                    r.Button2Click();
-                else if (fixIndex == 3)
-                    r.Button3Click();
+                if (fixIndex == 1) r.Button1Click(true);
+				else if(fixIndex == 2) r.Button2Click(true);
+				else if(fixIndex == 3) r.Button3Click(true);
             }
         }
 

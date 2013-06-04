@@ -85,9 +85,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
         }
 
         // Fix by setting default texture
-        public override bool Button1Click()
+		public override bool Button1Click(bool batchMode)
         {
-			General.Map.UndoRedo.CreateUndo("Missing texture correction");
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Missing texture correction");
 			General.Settings.FindDefaultDrawSettings();
             switch (part)
             {

@@ -30,8 +30,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
 		}
 
 		// This removes the vertex
-		public override bool Button1Click() {
-			General.Map.UndoRedo.CreateUndo("Delete vertex");
+		public override bool Button1Click(bool batchMode) {
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Delete vertex");
 			vertex.Dispose();
 			General.Map.IsChanged = true;
 			General.Map.ThingsFilter.Update();

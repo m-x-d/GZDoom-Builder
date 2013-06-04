@@ -142,13 +142,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Fix a single side
-		public override bool Button1Click()
+		public override bool Button1Click(bool batchMode)
 		{
 			// On which side can we fix?
 			if(copysidedeffront != null)
 			{
 				// Front
-				General.Map.UndoRedo.CreateUndo("Create front sidedef");
+				if(!batchMode) General.Map.UndoRedo.CreateUndo("Create front sidedef");
 				Sidedef newside = General.Map.Map.CreateSidedef(line, true, copysidedeffront.Sector);
 				if(newside == null) return false;
 				copysidedeffront.CopyPropertiesTo(newside);
@@ -158,7 +158,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Back
 				// Because the line is single-sided, we make the sidedef on the front.
 				// We will then flip it to make sure to ends up in the right position.
-				General.Map.UndoRedo.CreateUndo("Create front sidedef");
+				if(!batchMode) General.Map.UndoRedo.CreateUndo("Create front sidedef");
 				Sidedef newside = General.Map.Map.CreateSidedef(line, true, copysidedefback.Sector);
 				if(newside == null) return false;
 				copysidedefback.CopyPropertiesTo(newside);
@@ -171,10 +171,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Fix both sides
-		public override bool Button2Click()
+		public override bool Button2Click(bool batchMode)
 		{
 			Sidedef newside;
-			General.Map.UndoRedo.CreateUndo("Create sidedefs");
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Create sidedefs");
 
 			// Front
 			newside = General.Map.Map.CreateSidedef(line, true, copysidedeffront.Sector);
