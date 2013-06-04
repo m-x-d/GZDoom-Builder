@@ -215,8 +215,10 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 				else
 				{
-					// Return the new value
-					return int.TryParse(this.Text, out result) ? result : original;
+					//mxd. Return the new value
+					if(!int.TryParse(this.Text, out result)) return original;
+					if(!allownegative && (result < 0)) return 0;
+					return result;
 				}
 			}
 			else
@@ -243,22 +245,24 @@ namespace CodeImp.DoomBuilder.Controls
 				if(this.Text.StartsWith("++"))
 				{
 					// Add number to original
-					if(!float.TryParse(textpart, out result)) result = 0;
+					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) result = 0;
 					return original + result;
 				}
 				// Prefixed with --?
 				else if(this.Text.StartsWith("--"))
 				{
 					// Subtract number from original
-					if(!float.TryParse(textpart, out result)) result = 0;
+					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) result = 0;
 					float newvalue = original - result;
 					if(!allownegative && (newvalue < 0)) newvalue = 0;
 					return newvalue;
 				}
 				else
 				{
-					// Return the new value
-					return float.TryParse(this.Text, out result) ? result : original;
+					//mxd. Return the new value
+					if(!float.TryParse(this.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) return original;
+					if(!allownegative && (result < 0)) return 0;
+					return result;
 				}
 			}
 			else
