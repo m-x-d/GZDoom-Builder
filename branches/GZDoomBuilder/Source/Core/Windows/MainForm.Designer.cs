@@ -240,6 +240,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockersspace = new System.Windows.Forms.Panel();
 			this.dockerspanel = new CodeImp.DoomBuilder.Controls.DockersControl();
 			this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
+			this.separatortoolsscreenshots = new System.Windows.Forms.ToolStripSeparator();
+			this.screenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.editAreaScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -1168,6 +1171,9 @@ namespace CodeImp.DoomBuilder.Windows
             this.configurationToolStripMenuItem,
             this.preferencesToolStripMenuItem,
             this.seperatortoolsconfig,
+            this.screenshotToolStripMenuItem,
+            this.editAreaScreenshotToolStripMenuItem,
+            this.separatortoolsscreenshots,
             this.itemtestmap});
 			this.menutools.Name = "menutools";
 			this.menutools.Size = new System.Drawing.Size(48, 20);
@@ -2239,6 +2245,27 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockerscollapser.Interval = 200;
 			this.dockerscollapser.Tick += new System.EventHandler(this.dockerscollapser_Tick);
 			// 
+			// separatortoolsscreenshots
+			// 
+			this.separatortoolsscreenshots.Name = "separatortoolsscreenshots";
+			this.separatortoolsscreenshots.Size = new System.Drawing.Size(193, 6);
+			// 
+			// screenshotToolStripMenuItem
+			// 
+			this.screenshotToolStripMenuItem.Name = "screenshotToolStripMenuItem";
+			this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+			this.screenshotToolStripMenuItem.Tag = "builder_savescreenshot";
+			this.screenshotToolStripMenuItem.Text = "Save Screenshot";
+			this.screenshotToolStripMenuItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// editAreaScreenshotToolStripMenuItem
+			// 
+			this.editAreaScreenshotToolStripMenuItem.Name = "editAreaScreenshotToolStripMenuItem";
+			this.editAreaScreenshotToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.editAreaScreenshotToolStripMenuItem.Tag = "builder_saveeditareascreenshot";
+			this.editAreaScreenshotToolStripMenuItem.Text = "Save Screenshot (edit area)";
+			this.editAreaScreenshotToolStripMenuItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -2488,5 +2515,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem toggleGeometry;
 		private System.Windows.Forms.ToolStripMenuItem toggleTesting;
 		private System.Windows.Forms.ToolStripMenuItem toggleRendering;
+		private System.Windows.Forms.ToolStripSeparator separatortoolsscreenshots;
+		private System.Windows.Forms.ToolStripMenuItem screenshotToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem editAreaScreenshotToolStripMenuItem;
 	}
 }
