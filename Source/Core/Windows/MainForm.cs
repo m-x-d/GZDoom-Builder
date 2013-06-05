@@ -2566,6 +2566,50 @@ namespace CodeImp.DoomBuilder.Windows
 			// Done
 			prefform.Dispose();
 		}
+
+		//mxd
+		[BeginAction("savescreenshot")]
+		internal void SaveScreenshot() {
+			saveScreenshot(false);
+		}
+
+		//mxd
+		[BeginAction("saveeditareascreenshot")]
+		internal void SaveEditAreaScreenshot() {
+			saveScreenshot(true);
+		}
+
+		//mxd
+		private void saveScreenshot(bool editAreaOnly) {
+			//check folder
+			string folder = Path.Combine(General.AppPath, "Screenshots").Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+			if(!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+			//create name
+			string name;
+			Rectangle bounds;
+			if(editAreaOnly) {
+				name = (General.Map != null ? Path.GetFileNameWithoutExtension(General.Map.FileTitle) + " (edit area) at " : "Edit area at ");
+				bounds = this.display.Bounds;
+				bounds.Offset(this.PointToScreen(new Point()));
+			} else {
+				name = (General.Map != null ? Path.GetFileNameWithoutExtension(General.Map.FileTitle) + " at " : "GZDB itself at ");
+				bounds = this.Bounds;
+			}
+
+			//create path
+			string path = Path.Combine(folder, name + DateTime.Now.ToString().Replace(":", ".") + ".jpg");
+
+			//save image
+			using(Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height)) {
+				using(Graphics g = Graphics.FromImage(bitmap))
+					g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
+
+				bitmap.Save(path, System.Drawing.Imaging.ImageFormat.Jpeg);
+			}
+
+			DisplayStatus(StatusType.Info, "Screenshot saved to '" + path + "'");
+		}
 		
 		#endregion
 		

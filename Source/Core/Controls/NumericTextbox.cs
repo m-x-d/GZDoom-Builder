@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(allownegative) allowedchars += CultureInfo.CurrentUICulture.NumberFormat.NegativeSign;
 			if(allowrelative) allowedchars += "+-";
 			if(controlpressed) allowedchars += "\u0018\u0003\u0016";
-			if(allowdecimal) allowedchars += CultureInfo.CurrentUICulture.NumberFormat.CurrencyDecimalSeparator;
+			if(allowdecimal) allowedchars += CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator;
 			
 			// Check if key is not allowed
 			if(allowedchars.IndexOf(e.KeyChar) == -1)
