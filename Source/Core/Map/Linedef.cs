@@ -406,6 +406,10 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Now make the new flags
 			flags.Clear();
+
+			//mxd. That's hackish...
+			if(action != 0 && activate == 0) flags[General.Map.Config.LinedefActivates[0].Key] = true;
+
 			foreach(FlagTranslation f in General.Map.Config.LinedefFlagsTranslation)
 			{
 				// Flag found in bits?
@@ -419,8 +423,10 @@ namespace CodeImp.DoomBuilder.Map
 				else
 				{
 					// Add fields with inverted value
-					for(int i = 0; i < f.Fields.Count; i++)
-						flags[f.Fields[i]] = !f.FieldValues[i];
+					for(int i = 0; i < f.Fields.Count; i++) {
+						if(!flags.ContainsKey(f.Fields[i])) //mxd
+							flags[f.Fields[i]] = !f.FieldValues[i];
+					}
 				}
 			}
 
