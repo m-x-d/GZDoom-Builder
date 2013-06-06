@@ -152,6 +152,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemtestmap = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuhelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemhelprefmanual = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemShortcutReference = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemhelpeditmode = new System.Windows.Forms.ToolStripMenuItem();
 			this.seperatorhelpmanual = new System.Windows.Forms.ToolStripSeparator();
 			this.itemhelpabout = new System.Windows.Forms.ToolStripMenuItem();
@@ -243,7 +244,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockersspace = new System.Windows.Forms.Panel();
 			this.dockerspanel = new CodeImp.DoomBuilder.Controls.DockersControl();
 			this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
-			this.itemShortcutReference = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -1299,6 +1299,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemhelprefmanual.Text = "Reference &Manual";
 			this.itemhelprefmanual.Click += new System.EventHandler(this.itemhelprefmanual_Click);
 			// 
+			// itemShortcutReference
+			// 
+			this.itemShortcutReference.Image = global::CodeImp.DoomBuilder.Properties.Resources.Keyboard;
+			this.itemShortcutReference.Name = "itemShortcutReference";
+			this.itemShortcutReference.Size = new System.Drawing.Size(232, 22);
+			this.itemShortcutReference.Tag = "builder_saveshortcutsreference";
+			this.itemShortcutReference.Text = "Keyboard Shortcuts Reference";
+			this.itemShortcutReference.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// itemhelpeditmode
 			// 
 			this.itemhelpeditmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.Question;
@@ -2267,14 +2276,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.dockerscollapser.Interval = 200;
 			this.dockerscollapser.Tick += new System.EventHandler(this.dockerscollapser_Tick);
-			// 
-			// itemShortcutReference
-			// 
-			this.itemShortcutReference.Name = "itemShortcutReference";
-			this.itemShortcutReference.Size = new System.Drawing.Size(232, 22);
-			this.itemShortcutReference.Tag = "builder_saveshortcutsreference";
-			this.itemShortcutReference.Text = "Keyboard Shortcuts Reference";
-			this.itemShortcutReference.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// MainForm
 			// 
