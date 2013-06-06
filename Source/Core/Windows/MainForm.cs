@@ -37,6 +37,7 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 using System.Runtime.InteropServices;
 using CodeImp.DoomBuilder.GZBuilder.Windows;
+using System.Drawing.Imaging;
 
 #endregion
 
@@ -2597,23 +2598,42 @@ namespace CodeImp.DoomBuilder.Windows
 				bounds = this.Bounds;
 			}
 
+			string date = DateTime.Now.ToString();
+
+			//because date may be returned like this: 1\1\2000
+			char[] invalidChars = Path.GetInvalidFileNameChars();
+			foreach(char c in invalidChars) date = date.Replace(c, '.');
+
 			//create path
-			string path = Path.Combine(folder, name + DateTime.Now.ToString().Replace(":", ".") + ".jpg");
+			string path = Path.Combine(folder, name + date + ".jpg");
 
 			//save image
 			using(Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height)) {
 				using(Graphics g = Graphics.FromImage(bitmap)) {
 					g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
+				}
 
-					try {
-						bitmap.Save(path, System.Drawing.Imaging.ImageFormat.Jpeg);
-						DisplayStatus(StatusType.Info, "Screenshot saved to '" + path + "'");
-					} catch(ExternalException e) {
-						DisplayStatus(StatusType.Warning, "Failed to save screenshot...");
-						General.ErrorLogger.Add(ErrorType.Error, "Failed to save screenshot:" + Environment.NewLine + e.Message);
-					}
+				try {
+					ImageCodecInfo jpegCodec = GetEncoderInfo(ImageFormat.Jpeg);
+					EncoderParameter qualityParam = new EncoderParameter(Encoder.Quality, 90L);
+					EncoderParameters encoderParams = new EncoderParameters(1);
+					encoderParams.Param[0] = qualityParam;
+
+					bitmap.Save(path, jpegCodec, encoderParams);
+					DisplayStatus(StatusType.Info, "Screenshot saved to '" + path + "'");
+				} catch(ExternalException e) {
+					DisplayStatus(StatusType.Warning, "Failed to save screenshot...");
+					General.ErrorLogger.Add(ErrorType.Error, "Failed to save screenshot: " + e.Message);
 				}
 			}
+		}
+
+		private ImageCodecInfo GetEncoderInfo(ImageFormat format) {
+			ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+			foreach(ImageCodecInfo codec in codecs) {
+				if(codec.FormatID == format.Guid) return codec;
+			}
+			return null;
 		}
 
 		//mxd
