@@ -407,8 +407,9 @@ namespace CodeImp.DoomBuilder.Map
 			// Now make the new flags
 			flags.Clear();
 
-			//mxd. That's hackish...
-			if(action != 0 && activate == 0) flags[General.Map.Config.LinedefActivates[0].Key] = true;
+			//mxd. Add default activation flag if needed
+			if(action != 0 && activate == 0 && !string.IsNullOrEmpty(General.Map.Config.DefaultLinedefActivationFlag)) 
+				flags[General.Map.Config.DefaultLinedefActivationFlag] = true;
 
 			foreach(FlagTranslation f in General.Map.Config.LinedefFlagsTranslation)
 			{

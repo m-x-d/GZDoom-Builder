@@ -2602,13 +2602,18 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//save image
 			using(Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height)) {
-				using(Graphics g = Graphics.FromImage(bitmap))
+				using(Graphics g = Graphics.FromImage(bitmap)) {
 					g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
 
-				bitmap.Save(path, System.Drawing.Imaging.ImageFormat.Jpeg);
+					try {
+						bitmap.Save(path, System.Drawing.Imaging.ImageFormat.Jpeg);
+						DisplayStatus(StatusType.Info, "Screenshot saved to '" + path + "'");
+					} catch(ExternalException e) {
+						DisplayStatus(StatusType.Warning, "Failed to save screenshot...");
+						General.ErrorLogger.Add(ErrorType.Error, "Failed to save screenshot:" + Environment.NewLine + e.Message);
+					}
+				}
 			}
-
-			DisplayStatus(StatusType.Info, "Screenshot saved to '" + path + "'");
 		}
 		
 		#endregion
