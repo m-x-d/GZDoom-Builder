@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string defaultsavecompiler;
 		private string defaulttestcompiler;
 		private string formatinterface;
-		//private string soundlinedefflag;
+		private string defaultLinedefActivation; //mxd
 		private string singlesidedflag;
 		private string doublesidedflag;
 		private string impassableflag;
@@ -146,7 +146,7 @@ namespace CodeImp.DoomBuilder.Config
 		public float DefaultFlatScale { get { return defaultflatscale; } }
 		public bool ScaledTextureOffsets { get { return scaledtextureoffsets; } }
 		public string FormatInterface { get { return formatinterface; } }
-		//public string SoundLinedefFlag { get { return soundlinedefflag; } } //mxd
+		public string DefaultLinedefActivationFlag { get { return defaultLinedefActivation; } } //mxd
 		public string SingleSidedFlag { get { return singlesidedflag; } }
 		public string DoubleSidedFlag { get { return doublesidedflag; } }
 		public string ImpassableFlag { get { return impassableflag; } }
@@ -297,12 +297,11 @@ namespace CodeImp.DoomBuilder.Config
 			topboundary = cfg.ReadSetting("topboundary", 32767);
 			bottomboundary = cfg.ReadSetting("bottomboundary", -32768);
 			doomlightlevels = cfg.ReadSetting("doomlightlevels", true);
+			defaultLinedefActivation = cfg.ReadSetting("defaultlinedefactivation", ""); //mxd
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
 
 			// Flags have special (invariant culture) conversion
 			// because they are allowed to be written as integers in the configs
-			//obj = cfg.ReadSettingObject("soundlinedefflag", 0);
-			//if(obj is int) soundlinedefflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else soundlinedefflag = obj.ToString();
 			obj = cfg.ReadSettingObject("singlesidedflag", 0);
 			if(obj is int) singlesidedflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else singlesidedflag = obj.ToString();
 			obj = cfg.ReadSettingObject("doublesidedflag", 0);
