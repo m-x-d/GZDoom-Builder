@@ -2615,6 +2615,83 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 		}
+
+		//mxd
+		[BeginAction("saveshortcutsreference")]
+		internal void SaveShortcutsReference() {
+			string columnLabels = "<tr><td width=\"240px;\"><strong>Action</strong></td><td width=\"120px;\"><div align=\"center\"><strong>Shortcut</strong></div></td><td width=\"120px;\"><div align=\"center\"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>";
+			string categoryPadding = "<tr><td colspan=\"4\"></td></tr>";
+			string categoryStart = "<tr><td colspan=\"4\" bgcolor=\"#333333\"><strong style=\"color:#FFFFFF\">";
+			string categoryEnd = "</strong></td></tr>";
+			string fileName = "GZDB Keyboard Reference.html";
+			CodeImp.DoomBuilder.Actions.Action[] actions = General.Actions.GetAllActions();
+			Dictionary<string, List<CodeImp.DoomBuilder.Actions.Action>> sortedActions = new Dictionary<string, List<CodeImp.DoomBuilder.Actions.Action>>();
+
+			foreach(CodeImp.DoomBuilder.Actions.Action action in actions) {
+				if(!sortedActions.ContainsKey(action.Category))
+					sortedActions.Add(action.Category, new List<CodeImp.DoomBuilder.Actions.Action>());
+				sortedActions[action.Category].Add(action);
+			}
+
+			System.Text.StringBuilder html = new System.Text.StringBuilder();
+			
+			//head
+			html.AppendLine("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">" +
+								"<html xmlns=\"http://www.w3.org/1999/xhtml\">" +
+								"<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /></head>" +
+								"<body bgcolor=\"#666666\">" +
+									"<div style=\"padding-left:60px; padding-right:60px; padding-top:20px; padding-bottom:20px;\">" +
+										"<table bgcolor=\"#FFFFFF\" width=\"100%\" border=\"0\" cellspacing=\"6\" cellpadding=\"6\" style=\"font-family: 'Trebuchet MS',georgia,Verdana,Sans-serif;\">" +
+											"<tr><td colspan=\"4\" bgcolor=\"#333333\"><span style=\"font-size: 24px\"><strong style=\"color:#FFFFFF\">GZDoom Builder Shortcut Reference</strong></span></td></tr>");
+
+			//add descriptions
+			foreach(KeyValuePair<string, List<CodeImp.DoomBuilder.Actions.Action>> category in sortedActions) {
+				//add category title
+				html.AppendLine(categoryPadding);
+				html.AppendLine(categoryStart + General.Actions.Categories[category.Key] + categoryEnd);
+				html.AppendLine(columnLabels);
+
+				Dictionary<string, CodeImp.DoomBuilder.Actions.Action> actionsByTitle = new Dictionary<string, CodeImp.DoomBuilder.Actions.Action>();
+				List<string> actionTitles = new List<string>();
+
+				foreach(CodeImp.DoomBuilder.Actions.Action action in category.Value) {
+					actionsByTitle.Add(action.Title, action);
+					actionTitles.Add(action.Title);
+				}
+
+				actionTitles.Sort();
+
+				CodeImp.DoomBuilder.Actions.Action a;
+				foreach(string title in actionTitles) {
+					a = actionsByTitle[title];
+					List<string> modifiers = new List<string>(); 
+
+					html.AppendLine("<tr>");
+					html.AppendLine("<td>" + title + "</td>");
+					html.AppendLine("<td><div align=\"center\">" + Actions.Action.GetShortcutKeyDesc(a.ShortcutKey) + "</div></td>");
+
+					if(a.DisregardControl)	modifiers.Add("Ctrl");
+					if(a.DisregardShift) modifiers.Add("Shift");
+
+					html.AppendLine("<td><div align=\"center\">" + string.Join(", ", modifiers.ToArray()) + "</div></td>");
+					html.AppendLine("<td>" + a.Description + "</td>");
+					html.AppendLine("</tr>");
+				}
+			}
+
+			//add bottom
+			html.AppendLine("</table></div></body></html>");
+
+			//write
+			using(StreamWriter writer = File.CreateText(fileName)) {
+				writer.Write(html.ToString());
+			}
+
+			//open file
+			string path = Path.Combine(General.AppPath, fileName);
+			DisplayStatus(StatusType.Info, "Shortcut reference saved to '" + path + "'");
+			System.Diagnostics.Process.Start(path);
+		}
 		
 		#endregion
 		
