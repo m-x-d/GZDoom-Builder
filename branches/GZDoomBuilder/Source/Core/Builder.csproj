@@ -864,6 +864,7 @@
     <Content Include="Resources\DrawRectMode.png" />
     <None Include="Resources\GZDB_Logo_small.png" />
     <None Include="Resources\InfoLine.png" />
+    <None Include="Resources\Keyboard.png" />
     <Content Include="Resources\Light.png" />
     <Content Include="Resources\Light_animate.png" />
     <None Include="Resources\MLogo.png" />
