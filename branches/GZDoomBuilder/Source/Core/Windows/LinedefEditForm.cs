@@ -23,7 +23,10 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
-using CodeImp.DoomBuilder.Types; //mxd
+using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
+using CodeImp.DoomBuilder.GZBuilder.Controls; //mxd
 
 #endregion
 
@@ -34,6 +37,11 @@ namespace CodeImp.DoomBuilder.Windows
 		// Variables
 		private ICollection<Linedef> lines;
 		private bool preventchanges = false;
+
+		private List<PairedFieldsControl> frontUdmfControls; //mxd
+		private List<CheckBox> frontUdmfFlags; //mxd
+		private List<PairedFieldsControl> backUdmfControls; //mxd
+		private List<CheckBox> backUdmfFlags; //mxd
 		
 		// Constructor
 		public LinedefEditForm()
@@ -108,13 +116,16 @@ namespace CodeImp.DoomBuilder.Windows
 				idgroup.Visible = false;
 			}
 
-            //mxd. Setup texture offset controls
-            if (!General.Map.UDMF) {
-                pFrontUDMFOffsets.Visible = false;
-                pBackUDMFOffsets.Visible = false;
-                customfrontbutton.Top = 126;
-                custombackbutton.Top = 126;
-            }
+            //mxd. Setup UDMF controls
+			if(General.Map.FormatInterface.HasCustomFields) {
+				frontUdmfControls = new List<PairedFieldsControl>() { pfcFrontOffsetTop, pfcFrontOffsetMid, pfcFrontOffsetBottom, pfcFrontScaleTop, pfcFrontScaleMid, pfcFrontScaleBottom };
+				frontUdmfFlags = new List<CheckBox>() { cbLightAbsoluteFront, cblightfogFront, cbnodecalsFront, cbnofakecontrastFront, cbWrapMidtexFront, cbsmoothlightingFront, cbClipMidtexFront };
+				backUdmfControls = new List<PairedFieldsControl>() { pfcBackOffsetTop, pfcBackOffsetMid, pfcBackOffsetBottom, pfcBackScaleTop, pfcBackScaleMid, pfcBackScaleBottom };
+				backUdmfFlags = new List<CheckBox>() { cbLightAbsoluteBack, cblightfogBack, cbnodecalsBack, cbnofakecontrastBack, cbWrapMidtexBack, cbsmoothlightingBack, cbClipMidtexBack };
+			} else {
+				udmfPropertiesFront.Visible = false;
+				udmfPropertiesBack.Visible = false;
+			}
 		}
 		
 		// This sets up the form to edit the given lines
@@ -159,11 +170,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Action/tags
 			action.Value = fl.Action;
-			//tag.Text = fl.Tag.ToString();
+
 			if(General.Map.FormatInterface.HasLinedefTag) {//mxd
 				tagSelector.Setup();
 				tagSelector.SetTag(fl.Tag);
 			}
+
 			arg0.SetValue(fl.Args[0]);
 			arg1.SetValue(fl.Args[1]);
 			arg2.SetValue(fl.Args[2]);
@@ -186,13 +198,18 @@ namespace CodeImp.DoomBuilder.Windows
 				frontsector.Text = fl.Front.Sector.Index.ToString();
 
                 //mxd
-                if (General.Map.UDMF) {
-					frontOffsetTopX.Text = getUDMFTextureOffset(fl.Front.Fields, "offsetx_top").ToString();
-					frontOffsetTopY.Text = getUDMFTextureOffset(fl.Front.Fields, "offsety_top").ToString();
-					frontOffsetMidX.Text = getUDMFTextureOffset(fl.Front.Fields, "offsetx_mid").ToString();
-					frontOffsetMidY.Text = getUDMFTextureOffset(fl.Front.Fields, "offsety_mid").ToString();
-					frontOffsetLowX.Text = getUDMFTextureOffset(fl.Front.Fields, "offsetx_bottom").ToString();
-					frontOffsetLowY.Text = getUDMFTextureOffset(fl.Front.Fields, "offsety_bottom").ToString();
+				if(General.Map.FormatInterface.HasCustomFields) {
+					//front settings
+					foreach(PairedFieldsControl pfc in frontUdmfControls)
+						pfc.SetValuesFrom(fl.Front.Fields);
+
+					lightFront.Text = UDMFTools.GetInteger(fl.Front.Fields, lightFront.Tag.ToString(), 0).ToString();
+					
+					foreach(CheckBox cb in frontUdmfFlags){
+						string key = cb.Tag.ToString();
+						if(fl.Front.Fields != null)
+							cb.CheckState = (fl.Front.Fields.GetValue(key, false) ? CheckState.Checked : CheckState.Unchecked);
+					}
                 }
 
                 frontoffsetx.Text = fl.Front.OffsetX.ToString();
@@ -211,13 +228,18 @@ namespace CodeImp.DoomBuilder.Windows
 				backsector.Text = fl.Back.Sector.Index.ToString();
 
                 //mxd
-                if (General.Map.UDMF) {
-					backOffsetTopX.Text = getUDMFTextureOffset(fl.Back.Fields, "offsetx_top").ToString();
-					backOffsetTopY.Text = getUDMFTextureOffset(fl.Back.Fields, "offsety_top").ToString();
-					backOffsetMidX.Text = getUDMFTextureOffset(fl.Back.Fields, "offsetx_mid").ToString();
-					backOffsetMidY.Text = getUDMFTextureOffset(fl.Back.Fields, "offsety_mid").ToString();
-					backOffsetLowX.Text = getUDMFTextureOffset(fl.Back.Fields, "offsetx_bottom").ToString();
-					backOffsetLowY.Text = getUDMFTextureOffset(fl.Back.Fields, "offsety_bottom").ToString();
+				if(General.Map.FormatInterface.HasCustomFields) {
+					//front settings
+					foreach(PairedFieldsControl pfc in backUdmfControls)
+						pfc.SetValuesFrom(fl.Back.Fields);
+
+					lightBack.Text = UDMFTools.GetInteger(fl.Back.Fields, lightBack.Tag.ToString(), 0).ToString();
+
+					foreach(CheckBox cb in backUdmfFlags) {
+						string key = cb.Tag.ToString();
+						if(fl.Back.Fields != null)
+							cb.CheckState = (fl.Back.Fields.GetValue(key, false) ? CheckState.Checked : CheckState.Unchecked);
+					}
                 }
  
                 backoffsetx.Text = fl.Back.OffsetX.ToString();
@@ -311,13 +333,24 @@ namespace CodeImp.DoomBuilder.Windows
 					if(frontsector.Text != l.Front.Sector.Index.ToString()) frontsector.Text = "";
 
 					//mxd
-                    if (General.Map.UDMF) {
-						if(frontOffsetTopX.Text != getUDMFTextureOffset(l.Front.Fields, "offsetx_top").ToString()) frontOffsetTopX.Text = "";
-						if(frontOffsetTopY.Text != getUDMFTextureOffset(l.Front.Fields, "offsety_top").ToString()) frontOffsetTopY.Text = "";
-						if(frontOffsetMidX.Text != getUDMFTextureOffset(l.Front.Fields, "offsetx_mid").ToString()) frontOffsetMidX.Text = "";
-						if(frontOffsetMidY.Text != getUDMFTextureOffset(l.Front.Fields, "offsety_mid").ToString()) frontOffsetMidY.Text = "";
-						if(frontOffsetLowX.Text != getUDMFTextureOffset(l.Front.Fields, "offsetx_bottom").ToString()) frontOffsetLowX.Text = "";
-						if(frontOffsetLowY.Text != getUDMFTextureOffset(l.Front.Fields, "offsety_bottom").ToString()) frontOffsetLowY.Text = "";
+					if(General.Map.FormatInterface.HasCustomFields) {
+						foreach(PairedFieldsControl pfc in frontUdmfControls)
+							pfc.SetValuesFrom(l.Front.Fields);
+
+						if(lightFront.Text != UDMFTools.GetInteger(fl.Front.Fields, lightFront.Tag.ToString(), 0).ToString()) lightFront.Text = "";
+
+						foreach(CheckBox cb in frontUdmfFlags) {
+							if(cb.CheckState == CheckState.Indeterminate) continue;
+							
+							string key = cb.Tag.ToString();
+							if(l.Front.Fields != null ) {
+								CheckState state = (l.Front.Fields.GetValue(key, false) ? CheckState.Checked : CheckState.Unchecked);
+								if(cb.CheckState != state) {
+									cb.ThreeState = true;
+									cb.CheckState = CheckState.Indeterminate;
+								}
+							}
+						}
                     }
  
                     if (frontoffsetx.Text != l.Front.OffsetX.ToString()) frontoffsetx.Text = "";
@@ -336,13 +369,25 @@ namespace CodeImp.DoomBuilder.Windows
 					if(backsector.Text != l.Back.Sector.Index.ToString()) backsector.Text = "";
 
                     //mxd
-                    if (General.Map.UDMF) {
-						if(backOffsetTopX.Text != getUDMFTextureOffset(l.Back.Fields, "offsetx_top").ToString()) backOffsetTopX.Text = "";
-						if(backOffsetTopY.Text != getUDMFTextureOffset(l.Back.Fields, "offsety_top").ToString()) backOffsetTopY.Text = "";
-						if(backOffsetMidX.Text != getUDMFTextureOffset(l.Back.Fields, "offsetx_mid").ToString()) backOffsetMidX.Text = "";
-						if(backOffsetMidY.Text != getUDMFTextureOffset(l.Back.Fields, "offsety_mid").ToString()) backOffsetMidY.Text = "";
-						if(backOffsetLowX.Text != getUDMFTextureOffset(l.Back.Fields, "offsetx_bottom").ToString()) backOffsetLowX.Text = "";
-						if(backOffsetLowY.Text != getUDMFTextureOffset(l.Back.Fields, "offsety_bottom").ToString()) backOffsetLowY.Text = "";
+					if(General.Map.FormatInterface.HasCustomFields) {
+						foreach(PairedFieldsControl pfc in backUdmfControls)
+							pfc.SetValuesFrom(l.Back.Fields);
+
+						if(lightBack.Text != UDMFTools.GetInteger(fl.Back.Fields, lightBack.Tag.ToString(), 0).ToString())
+							lightBack.Text = "";
+
+						foreach(CheckBox cb in backUdmfFlags) {
+							if(cb.CheckState == CheckState.Indeterminate) continue;
+
+							string key = cb.Tag.ToString();
+							if(l.Back.Fields != null) {
+								CheckState state = (l.Back.Fields.GetValue(key, false) ? CheckState.Checked : CheckState.Unchecked);
+								if(cb.CheckState != state) {
+									cb.ThreeState = true;
+									cb.CheckState = CheckState.Indeterminate;
+								}
+							}
+						}
                     }
  
                     if (backoffsetx.Text != l.Back.OffsetX.ToString()) backoffsetx.Text = "";
@@ -409,28 +454,6 @@ namespace CodeImp.DoomBuilder.Windows
             } else {
                 arg0str.Text = selectedValue;
             }
-        }
-
-        //mxd
-        private float getUDMFTextureOffset(UniFields fields, string key) {
-			if(fields != null) return fields.GetValue(key, 0f);
-            return 0;
-        }
-
-        //mxd
-        private void setUDMFTextureOffset(UniFields fields, string key, float value) {
-            if (fields == null) return;
-
-            fields.BeforeFieldsChange();
-
-			if(value != 0){
-				if(!fields.ContainsKey(key))
-					fields.Add(key, new UniValue(UniversalType.Float, value));
-				else
-					fields[key].Value = value;
-			}else if(fields.ContainsKey(key)){ //don't save default value
-				fields.Remove(key);
-			}
         }
 		
 		// Front side (un)checked
@@ -510,7 +533,6 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				
 				// Action/tags
-				//l.Tag = General.Clamp(tag.GetResult(l.Tag), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag);
 				l.Tag = tagSelector.GetTag(l.Tag); //mxd
 				if(!action.Empty) l.Action = action.Value;
                 
@@ -553,18 +575,32 @@ namespace CodeImp.DoomBuilder.Windows
 								if(l.Front.Sector != s) l.Front.SetSector(s);
 
 								// Apply settings
-                                //mxd
                                 int min = General.Map.FormatInterface.MinTextureOffset;
                                 int max = General.Map.FormatInterface.MaxTextureOffset;
-                                if (General.Map.UDMF) {
-									if(frontOffsetTopX.Text != "") setUDMFTextureOffset(l.Front.Fields, "offsetx_top", General.Clamp(frontOffsetTopX.GetResult((int)getUDMFTextureOffset(l.Front.Fields, "offsetx_top")), min, max));
-									if(frontOffsetTopY.Text != "") setUDMFTextureOffset(l.Front.Fields, "offsety_top", General.Clamp(frontOffsetTopY.GetResult((int)getUDMFTextureOffset(l.Front.Fields, "offsety_top")), min, max));
+								if(General.Map.FormatInterface.HasCustomFields) { //mxd
+									l.Front.Fields.BeforeFieldsChange();
 
-									if(frontOffsetMidX.Text != "") setUDMFTextureOffset(l.Front.Fields, "offsetx_mid", General.Clamp(frontOffsetMidX.GetResult((int)getUDMFTextureOffset(l.Front.Fields, "offsetx_mid")), min, max));
-									if(frontOffsetMidY.Text != "") setUDMFTextureOffset(l.Front.Fields, "offsety_mid", General.Clamp(frontOffsetMidY.GetResult((int)getUDMFTextureOffset(l.Front.Fields, "offsety_mid")), min, max));
+									foreach(PairedFieldsControl pfc in frontUdmfControls)
+										pfc.ApplyTo(l.Front.Fields, min, max);
 
-									if(frontOffsetLowX.Text != "") setUDMFTextureOffset(l.Front.Fields, "offsetx_bottom", General.Clamp(frontOffsetLowX.GetResult((int)getUDMFTextureOffset(l.Front.Fields, "offsetx_bottom")), min, max));
-									if(frontOffsetLowY.Text != "") setUDMFTextureOffset(l.Front.Fields, "offsety_bottom", General.Clamp(frontOffsetLowY.GetResult((int)getUDMFTextureOffset(l.Front.Fields, "offsety_bottom")), min, max));
+									if(!string.IsNullOrEmpty(lightFront.Text)) {
+										string key = lightFront.Tag.ToString();
+										bool absolute = (cbLightAbsoluteFront.CheckState == CheckState.Checked);
+										int value = General.Clamp(lightFront.GetResult(UDMFTools.GetInteger(l.Front.Fields, key, 0)), (absolute ? 0 : -255), 255);
+										UDMFTools.SetInteger(l.Front.Fields, key, value, 0, false);
+									}
+
+									foreach(CheckBox cb in frontUdmfFlags) {
+										if(cb.CheckState == CheckState.Indeterminate) continue;
+										string key = cb.Tag.ToString();
+										bool oldValue = l.Front.Fields.GetValue(key, false);
+										
+										if(cb.CheckState == CheckState.Checked ){
+											if(!oldValue) l.Front.Fields[key] = new UniValue(UniversalType.Boolean, true);
+										} else if(l.Front.Fields.ContainsKey(key)) {
+											l.Front.Fields.Remove(key);
+										}
+									}
                                 }
  
                                 l.Front.OffsetX = General.Clamp(frontoffsetx.GetResult(l.Front.OffsetX), min, max);
@@ -606,16 +642,31 @@ namespace CodeImp.DoomBuilder.Windows
                                 //mxd
                                 int min = General.Map.FormatInterface.MinTextureOffset;
                                 int max = General.Map.FormatInterface.MaxTextureOffset;
-                                if (General.Map.UDMF) {
-									if(backOffsetTopX.Text != "") setUDMFTextureOffset(l.Back.Fields, "offsetx_top", General.Clamp(backOffsetTopX.GetResult((int)getUDMFTextureOffset(l.Back.Fields, "offsetx_top")), min, max));
-									if(backOffsetTopY.Text != "") setUDMFTextureOffset(l.Back.Fields, "offsety_top", General.Clamp(backOffsetTopY.GetResult((int)getUDMFTextureOffset(l.Back.Fields, "offsety_top")), min, max));
+								if(General.Map.FormatInterface.HasCustomFields) { //mxd
+									l.Back.Fields.BeforeFieldsChange();
 
-									if(backOffsetMidX.Text != "") setUDMFTextureOffset(l.Back.Fields, "offsetx_mid", General.Clamp(backOffsetMidX.GetResult((int)getUDMFTextureOffset(l.Back.Fields, "offsetx_mid")), min, max));
-									if(backOffsetMidY.Text != "") setUDMFTextureOffset(l.Back.Fields, "offsety_mid", General.Clamp(backOffsetMidY.GetResult((int)getUDMFTextureOffset(l.Back.Fields, "offsety_mid")), min, max));
+									foreach(PairedFieldsControl pfc in backUdmfControls)
+										pfc.ApplyTo(l.Back.Fields, min, max);
 
-									if(backOffsetLowX.Text != "") setUDMFTextureOffset(l.Back.Fields, "offsetx_bottom", General.Clamp(backOffsetLowX.GetResult((int)getUDMFTextureOffset(l.Back.Fields, "offsetx_bottom")), min, max));
-									if(backOffsetLowY.Text != "") setUDMFTextureOffset(l.Back.Fields, "offsety_bottom", General.Clamp(backOffsetLowY.GetResult((int)getUDMFTextureOffset(l.Back.Fields, "offsety_bottom")), min, max));
-                                }
+									if(!string.IsNullOrEmpty(lightBack.Text)) {
+										string key = lightBack.Tag.ToString();
+										bool absolute = (cbLightAbsoluteBack.CheckState == CheckState.Checked);
+										int value = General.Clamp(lightBack.GetResult(UDMFTools.GetInteger(l.Back.Fields, key, 0)), (absolute ? 0 : -255), 255);
+										UDMFTools.SetInteger(l.Back.Fields, key, value, 0, false);
+									}
+
+									foreach(CheckBox cb in backUdmfFlags) {
+										if(cb.CheckState == CheckState.Indeterminate) continue;
+										string key = cb.Tag.ToString();
+										bool oldValue = l.Back.Fields.GetValue(key, false);
+
+										if(cb.CheckState == CheckState.Checked) {
+											if(!oldValue) l.Back.Fields[key] = new UniValue(UniversalType.Boolean, true);
+										} else if(l.Back.Fields.ContainsKey(key)) {
+											l.Back.Fields.Remove(key);
+										}
+									}
+								}
 
                                 l.Back.OffsetX = General.Clamp(backoffsetx.GetResult(l.Back.OffsetX), min, max);
 								l.Back.OffsetY = General.Clamp(backoffsety.GetResult(l.Back.OffsetY), min, max);

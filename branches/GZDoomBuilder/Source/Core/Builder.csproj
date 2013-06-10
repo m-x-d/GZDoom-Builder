@@ -712,6 +712,12 @@
     <Compile Include="GZBuilder\Controls\IconListBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="GZBuilder\Controls\PairedFieldsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\PairedFieldsControl.Designer.cs">
+      <DependentUpon>PairedFieldsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="GZBuilder\Controls\TagSelector.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -839,6 +845,9 @@
     <EmbeddedResource Include="GZBuilder\Controls\CustomLinedefColorsControl.resx">
       <DependentUpon>CustomLinedefColorsControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GZBuilder\Controls\PairedFieldsControl.resx">
+      <DependentUpon>PairedFieldsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GZBuilder\Controls\TagSelector.resx">
       <DependentUpon>TagSelector.cs</DependentUpon>
     </EmbeddedResource>
@@ -871,6 +880,7 @@
     <None Include="Resources\Marine.png" />
     <Content Include="Resources\Model.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\Reset.png" />
     <None Include="Resources\TagStatistics.png" />
     <None Include="Resources\VisualVertices.png" />
     <None Include="Resources\SearchClear.png" />
