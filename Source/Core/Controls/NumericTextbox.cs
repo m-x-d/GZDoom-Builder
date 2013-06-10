@@ -171,6 +171,12 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Make the textbox empty
 				this.Text = "";
+			} else if(allowdecimal) { //mxd
+				float value;
+				if(float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out value)) {
+					if(value == System.Math.Round(value))
+						this.Text = this.Text.Replace(textpart, value.ToString("0.0"));
+				}
 			}
 			
 			// Call base
