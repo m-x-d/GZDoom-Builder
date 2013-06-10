@@ -684,7 +684,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
             e.Node.EndEdit(true);
 
 			//apply comment
-			info.Comment = e.Label;
+			if(e.Label != null)	info.Comment = e.Label;
 			e.Node.Text = info.GetName(ref comment, currentSortMode);
 			e.Node.ForeColor = string.IsNullOrEmpty(info.Comment) ? Color.Black : commentColor;
 
