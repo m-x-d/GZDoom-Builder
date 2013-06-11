@@ -33,21 +33,23 @@
 			// 
 			// label
 			// 
-			this.label.Location = new System.Drawing.Point(11, 6);
+			this.label.Location = new System.Drawing.Point(0, 6);
 			this.label.Name = "label";
-			this.label.Size = new System.Drawing.Size(76, 14);
+			this.label.Size = new System.Drawing.Size(87, 14);
 			this.label.TabIndex = 36;
 			this.label.Text = "Upper Offset:";
 			this.label.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// bReset
 			// 
+			this.bReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.bReset.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
 			this.bReset.Location = new System.Drawing.Point(222, 1);
 			this.bReset.Name = "bReset";
 			this.bReset.Size = new System.Drawing.Size(23, 23);
 			this.bReset.TabIndex = 39;
 			this.bReset.UseVisualStyleBackColor = true;
+			this.bReset.Visible = false;
 			this.bReset.Click += new System.EventHandler(this.bReset_Click);
 			// 
 			// value1
@@ -55,7 +57,8 @@
 			this.value1.AllowDecimal = false;
 			this.value1.AllowNegative = true;
 			this.value1.AllowRelative = true;
-			this.value1.ButtonStep = 1;
+			this.value1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.value1.ButtonStep = 1F;
 			this.value1.Location = new System.Drawing.Point(89, 1);
 			this.value1.Name = "value1";
 			this.value1.Size = new System.Drawing.Size(62, 24);
@@ -69,7 +72,8 @@
 			this.value2.AllowDecimal = false;
 			this.value2.AllowNegative = true;
 			this.value2.AllowRelative = true;
-			this.value2.ButtonStep = 1;
+			this.value2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.value2.ButtonStep = 1F;
 			this.value2.Location = new System.Drawing.Point(157, 1);
 			this.value2.Name = "value2";
 			this.value2.Size = new System.Drawing.Size(62, 24);

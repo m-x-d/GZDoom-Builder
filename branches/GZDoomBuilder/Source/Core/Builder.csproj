@@ -709,6 +709,12 @@
     <Compile Include="GZBuilder\Controls\CustomLinedefColorsControl.designer.cs">
       <DependentUpon>CustomLinedefColorsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="GZBuilder\Controls\FloatFieldsSlider.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\FloatFieldsSlider.designer.cs">
+      <DependentUpon>FloatFieldsSlider.cs</DependentUpon>
+    </Compile>
     <Compile Include="GZBuilder\Controls\IconListBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -844,6 +850,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GZBuilder\Controls\CustomLinedefColorsControl.resx">
       <DependentUpon>CustomLinedefColorsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GZBuilder\Controls\FloatFieldsSlider.resx">
+      <DependentUpon>FloatFieldsSlider.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GZBuilder\Controls\PairedFieldsControl.resx">
       <DependentUpon>PairedFieldsControl.cs</DependentUpon>
