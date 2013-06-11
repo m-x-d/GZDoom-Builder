@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		private bool ignorebuttonchange = false;
 		private StepsList steps = null;
-		private int stepsize = 1;
+		private float stepsize = 1;
 		
 		#endregion
 
@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool AllowDecimal { get { return textbox.AllowDecimal; } set { textbox.AllowDecimal = value; } }
 		public bool AllowNegative { get { return textbox.AllowNegative; } set { textbox.AllowNegative = value; } }
 		public bool AllowRelative { get { return textbox.AllowRelative; } set { textbox.AllowRelative = value; } }
-		public int ButtonStep { get { return stepsize; } set { stepsize = value; } }
+		public float ButtonStep { get { return stepsize; } set { stepsize = value; } }
 		override public string Text { get { return textbox.Text; } set { textbox.Text = value; } }
 		internal NumericTextbox Textbox { get { return textbox; } }
 		public StepsList StepValues { get { return steps; } set { steps = value; } }
@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 					else
 					{
-						int newvalue = textbox.GetResult(0) - (buttons.Value * stepsize);
+						int newvalue = (int)(textbox.GetResult(0) - (buttons.Value * stepsize));
 						if((newvalue < 0) && !textbox.AllowNegative) newvalue = 0;
 						textbox.Text = newvalue.ToString();
 					}

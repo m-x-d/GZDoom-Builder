@@ -85,22 +85,18 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.FormatInterface.HasActionArgs)
 				argspanel.Visible = true;
 			
-			// Custom fields?
-			if(!General.Map.FormatInterface.HasCustomFields)
-				tabs.TabPages.Remove(tabcustom);
-			customfrontbutton.Visible = General.Map.FormatInterface.HasCustomFields;
-			custombackbutton.Visible = General.Map.FormatInterface.HasCustomFields;
-			
 			// Arrange panels
 			if(General.Map.FormatInterface.HasPresetActivations)
 			{
 				//mxd
+				actiongroup.Top = settingsGroup.Top;
                 actiongroup.Height = hexenpanel.Location.Y + hexenpanel.Height;
 				this.Height = heightpanel1.Height;
 			} else if(!General.Map.FormatInterface.HasMixedActivations &&
 				    !General.Map.FormatInterface.HasActionArgs &&
 				    !General.Map.FormatInterface.HasPresetActivations)
 			{
+				actiongroup.Top = settingsGroup.Top;
 				actiongroup.Height = action.Bottom + action.Top + (actiongroup.Width - actiongroup.ClientRectangle.Width);
 				this.Height = heightpanel2.Height;
 			}
@@ -122,7 +118,23 @@ namespace CodeImp.DoomBuilder.Windows
 				frontUdmfFlags = new List<CheckBox>() { cbLightAbsoluteFront, cblightfogFront, cbnodecalsFront, cbnofakecontrastFront, cbWrapMidtexFront, cbsmoothlightingFront, cbClipMidtexFront };
 				backUdmfControls = new List<PairedFieldsControl>() { pfcBackOffsetTop, pfcBackOffsetMid, pfcBackOffsetBottom, pfcBackScaleTop, pfcBackScaleMid, pfcBackScaleBottom };
 				backUdmfFlags = new List<CheckBox>() { cbLightAbsoluteBack, cblightfogBack, cbnodecalsBack, cbnofakecontrastBack, cbWrapMidtexBack, cbsmoothlightingBack, cbClipMidtexBack };
+				fsAlpha.SetLimits(0f, 1f);
 			} else {
+				tabs.TabPages.Remove(tabcustom);
+
+				settingsGroup.Visible = false;
+
+				customfrontbutton.Visible = false;
+				custombackbutton.Visible = false;
+
+				labelLightFront.Visible = false;
+				lightFront.Visible = false;
+				cbLightAbsoluteFront.Visible = false;
+
+				labelLightBack.Visible = false;
+				lightBack.Visible = false;
+				cbLightAbsoluteBack.Visible = false;
+
 				udmfPropertiesFront.Visible = false;
 				udmfPropertiesBack.Visible = false;
 			}
@@ -167,6 +179,14 @@ namespace CodeImp.DoomBuilder.Windows
 
             // Custom fields
             fieldslist.SetValues(fl.Fields, true);
+
+			//mxd. UDMF Settings
+			if(General.Map.FormatInterface.HasCustomFields) {
+				string renderStyle = fl.Fields.GetValue("renderstyle", "");
+				cbRenderStyle.SelectedIndex = (renderStyle == "add" ? 1 : 0);
+				fsAlpha.SetValueFrom(fl.Fields);
+				lockNumber.Text = fl.Fields.GetValue("locknumber", 0).ToString();
+			}
 
 			// Action/tags
 			action.Value = fl.Action;
@@ -289,9 +309,20 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 
+				//mxd. UDMF Settings
+				if(General.Map.FormatInterface.HasCustomFields) {
+					int i = (l.Fields.GetValue("renderstyle", "") == "add" ? 1 : 0);
+
+					if(cbRenderStyle.SelectedIndex != -1 && i != cbRenderStyle.SelectedIndex)
+						cbRenderStyle.SelectedIndex = -1;
+
+					fsAlpha.SetValueFrom(l.Fields);
+					if(!string.IsNullOrEmpty(lockNumber.Text) && lockNumber.GetResult(0) != fl.Fields.GetValue("locknumber", 0))
+						lockNumber.Text = "";
+				}
+
 				// Action/tags
 				if(l.Action != action.Value) action.Empty = true;
-				//if(l.Tag.ToString() != tag.Text) tag.Text = "";
 				if(General.Map.FormatInterface.HasLinedefTag && l.Tag != fl.Tag) tagSelector.ClearTag(); //mxd
 				if(l.Args[0] != arg0.GetResult(-1)) arg0.ClearValue();
 				if(l.Args[1] != arg1.GetResult(-1)) arg1.ClearValue();
@@ -337,7 +368,7 @@ namespace CodeImp.DoomBuilder.Windows
 						foreach(PairedFieldsControl pfc in frontUdmfControls)
 							pfc.SetValuesFrom(l.Front.Fields);
 
-						if(lightFront.Text != UDMFTools.GetInteger(fl.Front.Fields, lightFront.Tag.ToString(), 0).ToString()) lightFront.Text = "";
+						if(!string.IsNullOrEmpty(lightFront.Text) && lightFront.Text != UDMFTools.GetInteger(fl.Front.Fields, lightFront.Tag.ToString(), 0).ToString()) lightFront.Text = "";
 
 						foreach(CheckBox cb in frontUdmfFlags) {
 							if(cb.CheckState == CheckState.Indeterminate) continue;
@@ -373,7 +404,7 @@ namespace CodeImp.DoomBuilder.Windows
 						foreach(PairedFieldsControl pfc in backUdmfControls)
 							pfc.SetValuesFrom(l.Back.Fields);
 
-						if(lightBack.Text != UDMFTools.GetInteger(fl.Back.Fields, lightBack.Tag.ToString(), 0).ToString())
+						if(!string.IsNullOrEmpty(lightBack.Text) && lightBack.Text != UDMFTools.GetInteger(fl.Back.Fields, lightBack.Tag.ToString(), 0).ToString())
 							lightBack.Text = "";
 
 						foreach(CheckBox cb in backUdmfFlags) {
@@ -509,6 +540,7 @@ namespace CodeImp.DoomBuilder.Windows
             //mxd
             bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
             bool hasArg0str = General.Map.UDMF && hasAcs && !string.IsNullOrEmpty(arg0str.Text);
+			int lockNum = lockNumber.GetResult(0);
 			
 			// Go for all the lines
 			foreach(Linedef l in lines)
@@ -682,6 +714,23 @@ namespace CodeImp.DoomBuilder.Windows
 				// Custom fields
 				fieldslist.Apply(l.Fields);
 
+				//mxd. UDMF Settings
+				if(General.Map.FormatInterface.HasCustomFields) {
+					l.Fields.BeforeFieldsChange();
+					if(cbRenderStyle.SelectedIndex == 1) { //add
+						l.Fields["renderstyle"] = new UniValue(UniversalType.String, "add");
+					} else if(l.Fields.ContainsKey("renderstyle")) {
+						l.Fields.Remove("renderstyle");
+					}
+
+					fsAlpha.ApplyTo(l.Fields);
+
+					if(lockNum > 0)
+						l.Fields["locknumber"] = new UniValue(UniversalType.Integer, lockNum);
+					else if(l.Fields.ContainsKey("locknumber"))
+						l.Fields.Remove("locknumber");
+				}
+
                 //mxd. apply arg0str
 				if(cbArgStr.Visible && cbArgStr.Checked && hasArg0str) {
 					if(l.Fields.ContainsKey("arg0str"))
@@ -840,6 +889,11 @@ namespace CodeImp.DoomBuilder.Windows
             if (cbArgStr.Checked && fieldname == "arg0str")
                 arg0str.Text = (string)fieldslist.GetValue(fieldname);
         }
+
+		//mxd
+		private void tabcustom_MouseEnter(object sender, EventArgs e) {
+			fieldslist.Focus();
+		}
 
 		// Help!
 		private void LinedefEditForm_HelpRequested(object sender, HelpEventArgs hlpevent)

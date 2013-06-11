@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label4;
+			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
 			this.brightness = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.browseeffect = new System.Windows.Forms.Button();
 			this.effect = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
@@ -64,7 +65,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.flatSelectorControl2 = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.flatSelectorControl1 = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
-			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
 			label1 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			groupaction = new System.Windows.Forms.GroupBox();
@@ -116,6 +116,13 @@ namespace CodeImp.DoomBuilder.Windows
 			groupaction.TabStop = false;
 			groupaction.Text = " Identification ";
 			// 
+			// tagSelector
+			// 
+			this.tagSelector.Location = new System.Drawing.Point(6, 21);
+			this.tagSelector.Name = "tagSelector";
+			this.tagSelector.Size = new System.Drawing.Size(369, 35);
+			this.tagSelector.TabIndex = 0;
+			// 
 			// groupeffect
 			// 
 			groupeffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -137,7 +144,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.brightness.AllowDecimal = false;
 			this.brightness.AllowNegative = false;
 			this.brightness.AllowRelative = true;
-			this.brightness.ButtonStep = 8;
+			this.brightness.ButtonStep = 8F;
 			this.brightness.Location = new System.Drawing.Point(89, 61);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(73, 24);
@@ -222,7 +229,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilOffsetX.AllowDecimal = false;
 			this.ceilOffsetX.AllowNegative = true;
 			this.ceilOffsetX.AllowRelative = true;
-			this.ceilOffsetX.ButtonStep = 1;
+			this.ceilOffsetX.ButtonStep = 1F;
 			this.ceilOffsetX.Location = new System.Drawing.Point(108, 3);
 			this.ceilOffsetX.Name = "ceilOffsetX";
 			this.ceilOffsetX.Size = new System.Drawing.Size(56, 24);
@@ -243,7 +250,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floorOffsetY.AllowDecimal = false;
 			this.floorOffsetY.AllowNegative = true;
 			this.floorOffsetY.AllowRelative = true;
-			this.floorOffsetY.ButtonStep = 1;
+			this.floorOffsetY.ButtonStep = 1F;
 			this.floorOffsetY.Location = new System.Drawing.Point(170, 31);
 			this.floorOffsetY.Name = "floorOffsetY";
 			this.floorOffsetY.Size = new System.Drawing.Size(56, 24);
@@ -255,7 +262,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilOffsetY.AllowDecimal = false;
 			this.ceilOffsetY.AllowNegative = true;
 			this.ceilOffsetY.AllowRelative = true;
-			this.ceilOffsetY.ButtonStep = 1;
+			this.ceilOffsetY.ButtonStep = 1F;
 			this.ceilOffsetY.Location = new System.Drawing.Point(170, 3);
 			this.ceilOffsetY.Name = "ceilOffsetY";
 			this.ceilOffsetY.Size = new System.Drawing.Size(56, 24);
@@ -267,7 +274,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floorOffsetX.AllowDecimal = false;
 			this.floorOffsetX.AllowNegative = true;
 			this.floorOffsetX.AllowRelative = true;
-			this.floorOffsetX.ButtonStep = 1;
+			this.floorOffsetX.ButtonStep = 1F;
 			this.floorOffsetX.Location = new System.Drawing.Point(108, 31);
 			this.floorOffsetX.Name = "floorOffsetX";
 			this.floorOffsetX.Size = new System.Drawing.Size(56, 24);
@@ -301,7 +308,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingheight.AllowDecimal = false;
 			this.ceilingheight.AllowNegative = true;
 			this.ceilingheight.AllowRelative = true;
-			this.ceilingheight.ButtonStep = 8;
+			this.ceilingheight.ButtonStep = 8F;
 			this.ceilingheight.Location = new System.Drawing.Point(108, 4);
 			this.ceilingheight.Name = "ceilingheight";
 			this.ceilingheight.Size = new System.Drawing.Size(88, 24);
@@ -350,7 +357,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floorheight.AllowDecimal = false;
 			this.floorheight.AllowNegative = true;
 			this.floorheight.AllowRelative = true;
-			this.floorheight.ButtonStep = 8;
+			this.floorheight.ButtonStep = 8F;
 			this.floorheight.Location = new System.Drawing.Point(108, 34);
 			this.floorheight.Name = "floorheight";
 			this.floorheight.Size = new System.Drawing.Size(88, 24);
@@ -456,6 +463,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabcustom.TabIndex = 1;
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;
+			this.tabcustom.MouseEnter += new System.EventHandler(this.tabcustom_MouseEnter);
 			// 
 			// fieldslist
 			// 
@@ -492,13 +500,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flatSelectorControl1.Size = new System.Drawing.Size(83, 105);
 			this.flatSelectorControl1.TabIndex = 12;
 			this.flatSelectorControl1.TextureName = "";
-			// 
-			// tagSelector
-			// 
-			this.tagSelector.Location = new System.Drawing.Point(6, 21);
-			this.tagSelector.Name = "tagSelector";
-			this.tagSelector.Size = new System.Drawing.Size(369, 35);
-			this.tagSelector.TabIndex = 0;
 			// 
 			// SectorEditForm
 			// 

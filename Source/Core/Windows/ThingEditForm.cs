@@ -536,6 +536,11 @@ namespace CodeImp.DoomBuilder.Windows
 			labelAngle.Enabled = !cbRandomAngle.Checked;
 		}
 
+		//mxd
+		private void tabcustom_MouseEnter(object sender, EventArgs e) {
+			fieldslist.Focus();
+		}
+
 		// Help
 		private void ThingEditForm_HelpRequested(object sender, HelpEventArgs hlpevent)
 		{
@@ -543,8 +548,6 @@ namespace CodeImp.DoomBuilder.Windows
 			hlpevent.Handled = true;
 		}
 
-		
-		
 		#endregion
 	}
 }

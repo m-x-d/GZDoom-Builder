@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
@@ -47,12 +41,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		}
 
 		private void checkValues() {
-			float v1 = value1.GetResultFloat(defaultValue);
-			float v2 = value2.GetResultFloat(defaultValue);
+			bool changed = (string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text));
 
-			bool changed = (v1 != defaultValue || v2 != defaultValue);
+			if(!changed)
+				changed = (value1.GetResultFloat(defaultValue) != defaultValue || value2.GetResultFloat(defaultValue) != defaultValue);
+
 			label.Enabled = changed;
-			bReset.Enabled = changed;
+			bReset.Visible = changed;
 		}
 
 		private void bReset_Click(object sender, EventArgs e) {

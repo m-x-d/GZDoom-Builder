@@ -201,6 +201,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Close();
 		}
 
+		//mxd
+		private void tabcustom_MouseEnter(object sender, EventArgs e) {
+			fieldslist.Focus();
+		}
+
 		// Help requested
 		private void VertexEditForm_HelpRequested(object sender, HelpEventArgs hlpevent)
 		{

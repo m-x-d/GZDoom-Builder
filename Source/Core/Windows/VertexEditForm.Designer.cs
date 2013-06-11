@@ -29,13 +29,14 @@ namespace CodeImp.DoomBuilder.Windows
 		private void InitializeComponent()
 		{
 			System.Windows.Forms.TabPage tabproperties;
-			System.Windows.Forms.Label label3;
 			System.Windows.Forms.Label label2;
+			System.Windows.Forms.Label label3;
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label6;
 			this.groupposition = new System.Windows.Forms.GroupBox();
-			this.zfloor = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.panelHeightControls = new System.Windows.Forms.Panel();
 			this.zceiling = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.zfloor = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.positiony = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.positionx = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.tabs = new System.Windows.Forms.TabControl();
@@ -43,17 +44,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
-			this.panelHeightControls = new System.Windows.Forms.Panel();
 			tabproperties = new System.Windows.Forms.TabPage();
-			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
+			label3 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			tabproperties.SuspendLayout();
 			this.groupposition.SuspendLayout();
+			this.panelHeightControls.SuspendLayout();
 			this.tabs.SuspendLayout();
 			this.tabcustom.SuspendLayout();
-			this.panelHeightControls.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabproperties
@@ -85,38 +85,40 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupposition.TabStop = false;
 			this.groupposition.Text = " Position ";
 			// 
-			// zfloor
+			// panelHeightControls
 			// 
-			this.zfloor.AllowDecimal = false;
-			this.zfloor.AllowNegative = true;
-			this.zfloor.AllowRelative = true;
-			this.zfloor.ButtonStep = 1;
-			this.zfloor.Location = new System.Drawing.Point(188, 32);
-			this.zfloor.Name = "zfloor";
-			this.zfloor.Size = new System.Drawing.Size(120, 24);
-			this.zfloor.StepValues = null;
-			this.zfloor.TabIndex = 29;
+			this.panelHeightControls.Controls.Add(this.zceiling);
+			this.panelHeightControls.Controls.Add(this.zfloor);
+			this.panelHeightControls.Controls.Add(label2);
+			this.panelHeightControls.Controls.Add(label3);
+			this.panelHeightControls.Location = new System.Drawing.Point(48, 73);
+			this.panelHeightControls.Name = "panelHeightControls";
+			this.panelHeightControls.Size = new System.Drawing.Size(308, 100);
+			this.panelHeightControls.TabIndex = 30;
 			// 
 			// zceiling
 			// 
 			this.zceiling.AllowDecimal = false;
 			this.zceiling.AllowNegative = true;
 			this.zceiling.AllowRelative = true;
-			this.zceiling.ButtonStep = 1;
+			this.zceiling.ButtonStep = 1F;
 			this.zceiling.Location = new System.Drawing.Point(188, 0);
 			this.zceiling.Name = "zceiling";
 			this.zceiling.Size = new System.Drawing.Size(120, 24);
 			this.zceiling.StepValues = null;
 			this.zceiling.TabIndex = 28;
 			// 
-			// label3
+			// zfloor
 			// 
-			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(63, 5);
-			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(118, 14);
-			label3.TabIndex = 27;
-			label3.Text = "Absolute ceiling height:";
+			this.zfloor.AllowDecimal = false;
+			this.zfloor.AllowNegative = true;
+			this.zfloor.AllowRelative = true;
+			this.zfloor.ButtonStep = 1F;
+			this.zfloor.Location = new System.Drawing.Point(188, 32);
+			this.zfloor.Name = "zfloor";
+			this.zfloor.Size = new System.Drawing.Size(120, 24);
+			this.zfloor.StepValues = null;
+			this.zfloor.TabIndex = 29;
 			// 
 			// label2
 			// 
@@ -127,12 +129,21 @@ namespace CodeImp.DoomBuilder.Windows
 			label2.TabIndex = 26;
 			label2.Text = "Absolute floor height:";
 			// 
+			// label3
+			// 
+			label3.AutoSize = true;
+			label3.Location = new System.Drawing.Point(63, 5);
+			label3.Name = "label3";
+			label3.Size = new System.Drawing.Size(118, 14);
+			label3.TabIndex = 27;
+			label3.Text = "Absolute ceiling height:";
+			// 
 			// positiony
 			// 
 			this.positiony.AllowDecimal = false;
 			this.positiony.AllowNegative = true;
 			this.positiony.AllowRelative = true;
-			this.positiony.ButtonStep = 1;
+			this.positiony.ButtonStep = 1F;
 			this.positiony.Location = new System.Drawing.Point(236, 34);
 			this.positiony.Name = "positiony";
 			this.positiony.Size = new System.Drawing.Size(120, 24);
@@ -144,7 +155,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.positionx.AllowDecimal = false;
 			this.positionx.AllowNegative = true;
 			this.positionx.AllowRelative = true;
-			this.positionx.ButtonStep = 1;
+			this.positionx.ButtonStep = 1F;
 			this.positionx.Location = new System.Drawing.Point(68, 34);
 			this.positionx.Name = "positionx";
 			this.positionx.Size = new System.Drawing.Size(120, 24);
@@ -196,6 +207,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabcustom.TabIndex = 1;
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;
+			this.tabcustom.MouseEnter += new System.EventHandler(this.tabcustom_MouseEnter);
 			// 
 			// fieldslist
 			// 
@@ -240,17 +252,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
-			// panelHeightControls
-			// 
-			this.panelHeightControls.Controls.Add(this.zceiling);
-			this.panelHeightControls.Controls.Add(this.zfloor);
-			this.panelHeightControls.Controls.Add(label2);
-			this.panelHeightControls.Controls.Add(label3);
-			this.panelHeightControls.Location = new System.Drawing.Point(48, 73);
-			this.panelHeightControls.Name = "panelHeightControls";
-			this.panelHeightControls.Size = new System.Drawing.Size(308, 100);
-			this.panelHeightControls.TabIndex = 30;
-			// 
 			// VertexEditForm
 			// 
 			this.AcceptButton = this.apply;
@@ -273,10 +274,10 @@ namespace CodeImp.DoomBuilder.Windows
 			tabproperties.ResumeLayout(false);
 			this.groupposition.ResumeLayout(false);
 			this.groupposition.PerformLayout();
-			this.tabs.ResumeLayout(false);
-			this.tabcustom.ResumeLayout(false);
 			this.panelHeightControls.ResumeLayout(false);
 			this.panelHeightControls.PerformLayout();
+			this.tabs.ResumeLayout(false);
+			this.tabcustom.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}

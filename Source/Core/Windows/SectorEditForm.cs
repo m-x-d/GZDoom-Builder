@@ -311,6 +311,11 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateSectorHeight();
 		}
 
+		//mxd
+		private void tabcustom_MouseEnter(object sender, EventArgs e) {
+			fieldslist.Focus();
+		}
+
 		// Help
 		private void SectorEditForm_HelpRequested(object sender, HelpEventArgs hlpevent)
 		{
