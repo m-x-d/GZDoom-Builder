@@ -384,7 +384,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			//mxd
 			if(gotTagArgument && combobox.SelectedItem != null)
-				return ((TagInfo)combobox.SelectedItem).Tag;
+				return General.Clamp(((TagInfo)combobox.SelectedItem).Tag, General.Map.FormatInterface.MinArgument, General.Map.FormatInterface.MaxArgument);
 			
 			int result = 0;
 			

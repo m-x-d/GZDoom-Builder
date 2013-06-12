@@ -790,19 +790,21 @@ namespace CodeImp.DoomBuilder.Windows
 			arg4.Setup(General.Map.Config.LinedefActions[showaction].Args[4]);
 
 			// mxd. Apply action's default arguments 
-			if(!preventchanges && showaction != 0 && General.Map.Config.LinedefActions.ContainsKey(showaction)) {
-				arg0.SetDefaultValue();
-				arg1.SetDefaultValue();
-				arg2.SetDefaultValue();
-				arg3.SetDefaultValue();
-				arg4.SetDefaultValue();
-			} else { //or set them to 0
-				arg0.SetValue(0);
-				arg1.SetValue(0);
-				arg2.SetValue(0);
-				arg3.SetValue(0);
-				arg4.SetValue(0);
-			}
+			if(!preventchanges) {
+				if(showaction != 0 && General.Map.Config.LinedefActions.ContainsKey(showaction)) {
+					arg0.SetDefaultValue();
+					arg1.SetDefaultValue();
+					arg2.SetDefaultValue();
+					arg3.SetDefaultValue();
+					arg4.SetDefaultValue();
+				} else { //or set them to 0
+					arg0.SetValue(0);
+					arg1.SetValue(0);
+					arg2.SetValue(0);
+					arg3.SetValue(0);
+					arg4.SetValue(0);
+				}
+			} 
 
             //mxd. update arg0str
             if (Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, showaction) != -1) {
