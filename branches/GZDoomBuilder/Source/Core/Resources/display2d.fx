@@ -111,12 +111,12 @@ float4 ps_normal(PixelData pd) : COLOR
 	return float4(c.rgb, c.a * rendersettings.w) * pd.color;
 }
 
-// Pixel shader for text
-float4 ps_text(PixelData pd) : COLOR
+//mxd. Pixel shader for full bright drawing
+float4 ps_fullbright(PixelData pd) : COLOR
 {
 	// Take this pixel's color
 	float4 c = tex2D(texture1linear, pd.uv);
-	return float4(c.rgb, c.a * rendersettings.w) * pd.color;
+	return float4(c.rgb, c.a * rendersettings.w);
 }
 
 // Technique for shader model 2.0
@@ -134,9 +134,9 @@ technique SM20
 	    PixelShader = compile ps_2_0 ps_normal();
 	}
 	
-	pass p2
+	pass p2 //mxd
 	{
 	    VertexShader = compile vs_2_0 vs_transform();
-	    PixelShader = compile ps_2_0 ps_text();
+	    PixelShader = compile ps_2_0 ps_fullbright();
 	}
 }

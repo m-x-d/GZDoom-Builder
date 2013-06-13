@@ -88,6 +88,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Geometry plotter
 		private Plotter plotter;
 
+		//mxd. Options
+		private bool fullbrightness;
+
 		// Vertices to present the textures
 		private VertexBuffer screenverts;
 		private FlatVertex[] backimageverts;
@@ -140,7 +143,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		public int VertexSize { get { return vertexsize; } }
 		public ViewMode ViewMode { get { return viewmode; } }
 		public SurfaceManager Surfaces { get { return surfaces; } }
-        public RectangleF Viewport { get { return viewport; } } //mxd
+		public RectangleF Viewport { get { return viewport; } } //mxd
+		public bool FullBrightness { get { return fullbrightness; } set { fullbrightness = value; } } //mxd
 
 		#endregion
 
@@ -1319,7 +1323,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 				// Draw
 				graphics.Shaders.Display2D.Begin();
-				graphics.Shaders.Display2D.BeginPass(2);
+				graphics.Shaders.Display2D.BeginPass(1); //mxd
 				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, text.NumFaces >> 1);
 				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, text.NumFaces);
 				graphics.Shaders.Display2D.EndPass();
@@ -1467,25 +1471,23 @@ namespace CodeImp.DoomBuilder.Rendering
 		//mxd
 		public void RenderArrow(Line3D line, PixelColor c) {
 			float scaler = 20f / scale;
-			//foreach(Line3D l in lines) {
+
 			RenderLine(line.v1, line.v2, 0.8f, c, true);
 			float angle = line.GetAngle();
 			//arrowhead
 			RenderLine(line.v2, new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle - 0.46f), line.v2.y + scaler * (float)Math.Cos(angle - 0.46f)), 0.8f, c, true);
 			RenderLine(line.v2, new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle + 0.46f), line.v2.y + scaler * (float)Math.Cos(angle + 0.46f)), 0.8f, c, true);
-			//}
 		}
 
 		//mxd
 		public void PlotArrow(Line3D line, PixelColor c) {
 			float scaler = 16f / scale;
-			//foreach(Line3D l in lines) {
+
 			PlotLine(line.v1, line.v2, c);
 			float angle = line.GetAngle();
 			//arrowhead
 			PlotLine(line.v2, new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle - 0.46f), line.v2.y + scaler * (float)Math.Cos(angle - 0.46f)), c);
 			PlotLine(line.v2, new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle + 0.46f), line.v2.y + scaler * (float)Math.Cos(angle + 0.46f)), c);
-			//}
 		}
 
 		// This renders a line with given color

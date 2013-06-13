@@ -653,6 +653,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			if(!resourcesunloaded)
 			{
+				int pass = General.Map.Renderer2D.FullBrightness ? 2 : 1; //mxd
 				graphics.Shaders.Display2D.Begin();
 				foreach(KeyValuePair<ImageData, List<SurfaceEntry>> imgsurfaces in surfaces)
 				{
@@ -660,7 +661,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					graphics.Shaders.Display2D.Texture1 = imgsurfaces.Key.Texture;
 					if(!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, imgsurfaces.Key.Texture);
 
-					graphics.Shaders.Display2D.BeginPass(1);
+					graphics.Shaders.Display2D.BeginPass(pass);
 					
 					// Go for all surfaces
 					VertexBuffer lastbuffer = null;
