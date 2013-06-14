@@ -72,6 +72,7 @@ namespace CodeImp.DoomBuilder.VisualModes
         //mxd
         private int cameraDistance3D;
         private int thingHeight;
+		protected Matrix scale; //mxd. Used in model rendering
 
         //mxd. light properties
         private int lightType;
@@ -103,6 +104,7 @@ namespace CodeImp.DoomBuilder.VisualModes
         
         //mxd
         internal int VertexColor { get { return vertices.Length > 0 ? vertices[0].c : 0;} }
+		internal Matrix Scale { get { return scale; } }
         public int CameraDistance3D { get { return cameraDistance3D; } }
 		public bool Sizeless { get { return sizeless; } }
         public Vector3 Center { 
@@ -166,6 +168,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.orientation = Matrix.Identity;
 			this.position = Matrix.Identity;
 			this.cagescales = Matrix.Identity;
+			this.scale = Matrix.Identity; //mxd
 
             //mxd
             lightType = -1;
@@ -285,6 +288,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 			verts.CopyTo(vertices, 0);
 			triangles = vertices.Length / 3;
 			updategeo = true;
+		}
+
+		//mxd
+		protected void SetScale(float scaleX, float scaleY) {
+			scale = Matrix.Scaling(scaleX, scaleX, scaleY);
 		}
 		
 		// This updates the visual thing

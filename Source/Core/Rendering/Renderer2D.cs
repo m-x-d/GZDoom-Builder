@@ -1160,7 +1160,7 @@ namespace CodeImp.DoomBuilder.Rendering
                             graphics.Shaders.Things2D.FillColor = group.Value.Selected ? General.Colors.Selection.ToColorValue() : General.Colors.ModelWireframe.ToColorValue();
 
                             for (int i = 0; i < mde.Model.Meshes.Count; i++) {
-                                graphics.Shaders.Things2D.SetTransformSettings(group.Key, group.Value.Angle, scale);
+								graphics.Shaders.Things2D.SetTransformSettings(group.Key, group.Value.Angle, scale * group.Value.Scale);
                                 graphics.Shaders.Things2D.ApplySettings();
 
                                 // Draw
