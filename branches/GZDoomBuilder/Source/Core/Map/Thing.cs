@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private int action;
 		private int[] args;
+		protected float scale; //mxd. Used in model rendering
 
 		// Configuration
 		private float size;
@@ -70,6 +71,7 @@ namespace CodeImp.DoomBuilder.Map
 		public MapSet Map { get { return map; } }
         public int Type { get { return type; } set { BeforePropsChange(); type = value; } }
 		public Vector3D Position { get { return pos; } }
+		public float Scale { get { return scale; } } //mxd
 		public float Angle { get { return anglerad; } }
 		public int AngleDoom { get { return angledoom; } }
 		internal Dictionary<string, bool> Flags { get { return flags; } }
@@ -96,6 +98,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.listindex = listindex;
 			this.flags = new Dictionary<string, bool>();
 			this.args = new int[NUM_ARGS];
+			this.scale = 1.0f; //mxd
 			
 			if(map == General.Map.Map)
 				General.Map.UndoRedo.RecAddThing(this);
@@ -415,6 +418,7 @@ namespace CodeImp.DoomBuilder.Map
 			// Apply size
 			size = ti.Radius;
 			fixedsize = ti.FixedSize;
+			scale = ti.SpriteScale.Width; //mxd
 			
 			// Color valid?
 			if((ti.Color >= 0) && (ti.Color < ColorCollection.NUM_THING_COLORS))

@@ -143,6 +143,8 @@ namespace CodeImp.DoomBuilder.Config
                     info.TestSkill = General.Settings.ReadSetting(path + ".testskill", 3);
                     testEngines.Add(info);
                 }
+
+				if(currentEngineIndex >= testEngines.Count)	currentEngineIndex = 0;
             }
 
             //mxd. read custom linedef colors 

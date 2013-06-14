@@ -624,6 +624,7 @@ namespace CodeImp.DoomBuilder.Windows
         private void btnRemoveEngine_Click(object sender, EventArgs e) {
             //remove params
             int index = cbEngineSelector.SelectedIndex;
+			cbEngineSelector.SelectedIndex = -1;
             configinfo.TestEngines.RemoveAt(index);
             
             //refresh engines list
@@ -642,7 +643,9 @@ namespace CodeImp.DoomBuilder.Windows
 
         //mxd
         private void cbEngineSelector_SelectedIndexChanged(object sender, EventArgs e) {
-            //set new values
+			if(cbEngineSelector.SelectedIndex == -1) return;
+			
+			//set new values
             configinfo.CurrentEngineIndex = cbEngineSelector.SelectedIndex;
 			cbEngineSelector.Tag = cbEngineSelector.SelectedIndex; //store for later use
 
