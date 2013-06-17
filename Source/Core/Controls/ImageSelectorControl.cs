@@ -186,6 +186,17 @@ namespace CodeImp.DoomBuilder.Controls
 					OnValueChanged(this, EventArgs.Empty);
 			}
 		}
+
+		//mxd
+		protected void DisplayImageSize(int width, int height) {
+			if(width == -1 && height == -1) {
+				labelSize.Visible = false;
+				return;
+			}
+
+			labelSize.Visible = true;
+			labelSize.Text = width + "x" + height;
+		}
 		
 		// This must determine and return the image to show
 		protected abstract Image FindImage(string imagename);

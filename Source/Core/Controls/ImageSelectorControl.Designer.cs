@@ -30,7 +30,9 @@ namespace CodeImp.DoomBuilder.Controls
 		private void InitializeComponent()
 		{
 			this.preview = new System.Windows.Forms.Panel();
+			this.labelSize = new System.Windows.Forms.Label();
 			this.name = new CodeImp.DoomBuilder.Controls.AutoSelectTextbox();
+			this.preview.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// preview
@@ -38,6 +40,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.preview.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.preview.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.preview.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.preview.Controls.Add(this.labelSize);
 			this.preview.Location = new System.Drawing.Point(0, 0);
 			this.preview.Name = "preview";
 			this.preview.Size = new System.Drawing.Size(68, 60);
@@ -48,6 +51,19 @@ namespace CodeImp.DoomBuilder.Controls
 			this.preview.MouseDown += new System.Windows.Forms.MouseEventHandler(this.preview_MouseDown);
 			this.preview.MouseUp += new System.Windows.Forms.MouseEventHandler(this.preview_MouseUp);
 			this.preview.MouseEnter += new System.EventHandler(this.preview_MouseEnter);
+			// 
+			// labelSize
+			// 
+			this.labelSize.AutoSize = true;
+			this.labelSize.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.labelSize.ForeColor = System.Drawing.Color.White;
+			this.labelSize.Location = new System.Drawing.Point(1, 1);
+			this.labelSize.MaximumSize = new System.Drawing.Size(0, 13);
+			this.labelSize.Name = "labelSize";
+			this.labelSize.Size = new System.Drawing.Size(48, 13);
+			this.labelSize.TabIndex = 0;
+			this.labelSize.Text = "128x128";
 			// 
 			// name
 			// 
@@ -71,6 +87,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Size = new System.Drawing.Size(115, 136);
 			this.Layout += new System.Windows.Forms.LayoutEventHandler(this.ImageSelectorControl_Layout);
 			this.Resize += new System.EventHandler(this.ImageSelectorControl_Resize);
+			this.preview.ResumeLayout(false);
+			this.preview.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -80,6 +98,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		protected System.Windows.Forms.Panel preview;
 		protected CodeImp.DoomBuilder.Controls.AutoSelectTextbox name;
+		private System.Windows.Forms.Label labelSize;
 
 	}
 }
