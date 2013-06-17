@@ -182,6 +182,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Also reset the sectors that depend on this sector
 			foreach(KeyValuePair<Sector, bool> s in updatesectors)
 			{
+				//mxd
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
+				if(vs.Changed) continue;
+
 				SectorData sd = mode.GetSectorData(s.Key);
 				sd.Reset();
 			}
