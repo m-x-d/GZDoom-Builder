@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceilingInfo = new System.Windows.Forms.Panel();
 			this.ceilingname = new System.Windows.Forms.Label();
 			this.ceilingtex = new System.Windows.Forms.Panel();
+			this.labelCeilTextureSize = new System.Windows.Forms.Label();
 			this.floorpanel = new System.Windows.Forms.GroupBox();
 			this.floorInfo = new System.Windows.Forms.Panel();
 			this.floorLight = new System.Windows.Forms.Label();
@@ -65,6 +66,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floorAngle = new System.Windows.Forms.Label();
 			this.floorname = new System.Windows.Forms.Label();
 			this.floortex = new System.Windows.Forms.Panel();
+			this.labelFloorTextureSize = new System.Windows.Forms.Label();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			label13 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -75,8 +77,10 @@ namespace CodeImp.DoomBuilder.Controls
 			this.sectorinfo.SuspendLayout();
 			this.ceilingpanel.SuspendLayout();
 			this.ceilingInfo.SuspendLayout();
+			this.ceilingtex.SuspendLayout();
 			this.floorpanel.SuspendLayout();
 			this.floorInfo.SuspendLayout();
+			this.floortex.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -351,10 +355,24 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceilingtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.ceilingtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.ceilingtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.ceilingtex.Controls.Add(this.labelCeilTextureSize);
 			this.ceilingtex.Location = new System.Drawing.Point(8, 19);
 			this.ceilingtex.Name = "ceilingtex";
 			this.ceilingtex.Size = new System.Drawing.Size(68, 60);
 			this.ceilingtex.TabIndex = 0;
+			// 
+			// labelCeilTextureSize
+			// 
+			this.labelCeilTextureSize.AutoSize = true;
+			this.labelCeilTextureSize.BackColor = System.Drawing.Color.Black;
+			this.labelCeilTextureSize.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelCeilTextureSize.ForeColor = System.Drawing.Color.White;
+			this.labelCeilTextureSize.Location = new System.Drawing.Point(3, 1);
+			this.labelCeilTextureSize.MaximumSize = new System.Drawing.Size(0, 13);
+			this.labelCeilTextureSize.Name = "labelCeilTextureSize";
+			this.labelCeilTextureSize.Size = new System.Drawing.Size(48, 13);
+			this.labelCeilTextureSize.TabIndex = 1;
+			this.labelCeilTextureSize.Text = "128x128";
 			// 
 			// floorpanel
 			// 
@@ -430,10 +448,24 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floortex.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.floortex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.floortex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.floortex.Controls.Add(this.labelFloorTextureSize);
 			this.floortex.Location = new System.Drawing.Point(8, 19);
 			this.floortex.Name = "floortex";
 			this.floortex.Size = new System.Drawing.Size(68, 60);
 			this.floortex.TabIndex = 0;
+			// 
+			// labelFloorTextureSize
+			// 
+			this.labelFloorTextureSize.AutoSize = true;
+			this.labelFloorTextureSize.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelFloorTextureSize.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelFloorTextureSize.ForeColor = System.Drawing.Color.White;
+			this.labelFloorTextureSize.Location = new System.Drawing.Point(3, 1);
+			this.labelFloorTextureSize.MaximumSize = new System.Drawing.Size(0, 13);
+			this.labelFloorTextureSize.Name = "labelFloorTextureSize";
+			this.labelFloorTextureSize.Size = new System.Drawing.Size(48, 13);
+			this.labelFloorTextureSize.TabIndex = 0;
+			this.labelFloorTextureSize.Text = "128x128";
 			// 
 			// flowLayoutPanel1
 			// 
@@ -461,8 +493,12 @@ namespace CodeImp.DoomBuilder.Controls
 			this.sectorinfo.PerformLayout();
 			this.ceilingpanel.ResumeLayout(false);
 			this.ceilingInfo.ResumeLayout(false);
+			this.ceilingtex.ResumeLayout(false);
+			this.ceilingtex.PerformLayout();
 			this.floorpanel.ResumeLayout(false);
 			this.floorInfo.ResumeLayout(false);
+			this.floortex.ResumeLayout(false);
+			this.floortex.PerformLayout();
 			this.flowLayoutPanel1.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -502,5 +538,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label floorLightLabel;
 		private System.Windows.Forms.Label floorAngleLabel;
 		private System.Windows.Forms.Label floorScaleLabel;
+		private System.Windows.Forms.Label labelCeilTextureSize;
+		private System.Windows.Forms.Label labelFloorTextureSize;
 	}
 }

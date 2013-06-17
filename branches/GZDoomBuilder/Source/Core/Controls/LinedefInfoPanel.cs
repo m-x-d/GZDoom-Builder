@@ -23,6 +23,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.GZBuilder;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -217,9 +218,9 @@ namespace CodeImp.DoomBuilder.Controls
 				fronthighname.Text = l.Front.HighTexture;
 				frontmidname.Text = l.Front.MiddleTexture;
 				frontlowname.Text = l.Front.LowTexture;
-				DisplaySidedefTexture(fronthightex, l.Front.HighTexture, l.Front.HighRequired());
-				DisplaySidedefTexture(frontmidtex, l.Front.MiddleTexture, l.Front.MiddleRequired());
-				DisplaySidedefTexture(frontlowtex, l.Front.LowTexture, l.Front.LowRequired());
+				DisplaySidedefTexture(fronthightex, labelTextureFrontTop, l.Front.HighTexture, l.Front.HighRequired());
+				DisplaySidedefTexture(frontmidtex, labelTextureFrontMid, l.Front.MiddleTexture, l.Front.MiddleRequired());
+				DisplaySidedefTexture(frontlowtex, labelTextureFrontBottom, l.Front.LowTexture, l.Front.LowRequired());
 
 				//mxd. Position panel
 				frontpanel.Left = infopanel.Left + infopanel.Width + infopanel.Margin.Right + frontpanel.Margin.Left;
@@ -318,9 +319,9 @@ namespace CodeImp.DoomBuilder.Controls
 				backhighname.Text = l.Back.HighTexture;
 				backmidname.Text = l.Back.MiddleTexture;
 				backlowname.Text = l.Back.LowTexture;
-				DisplaySidedefTexture(backhightex, l.Back.HighTexture, l.Back.HighRequired());
-				DisplaySidedefTexture(backmidtex, l.Back.MiddleTexture, l.Back.MiddleRequired());
-				DisplaySidedefTexture(backlowtex, l.Back.LowTexture, l.Back.LowRequired());
+				DisplaySidedefTexture(backhightex, labelTextureBackTop, l.Back.HighTexture, l.Back.HighRequired());
+				DisplaySidedefTexture(backmidtex, labelTextureBackMid, l.Back.MiddleTexture, l.Back.MiddleRequired());
+				DisplaySidedefTexture(backlowtex, labelTextureBackBottom, l.Back.LowTexture, l.Back.LowRequired());
 
 				//mxd. Position panel
 				backpanel.Left = (l.Front != null ? frontpanel.Right : infopanel.Right) + 3;
@@ -427,11 +428,13 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This shows a sidedef texture in a panel
-		private void DisplaySidedefTexture(Panel panel, string name, bool required)
+		private void DisplaySidedefTexture(Panel panel, Label label, string name, bool required)
 		{
 			// Check if name is a "none" texture
 			if((name.Length < 1) || (name[0] == '-'))
 			{
+				label.Visible = false; //mxd
+				
 				// Determine image to show
 				if(required)
 					panel.BackgroundImage = CodeImp.DoomBuilder.Properties.Resources.MissingTexture;
@@ -440,8 +443,17 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			else
 			{
+				//mxd
+				ImageData texture = General.Map.Data.GetTextureImage(name);
+				if(texture.ImageState == ImageLoadState.Ready) {
+					label.Visible = true;
+					label.Text = texture.Width + "x" + texture.Height;
+				} else {
+					label.Visible = false;
+				}
+				
 				// Set the image
-				panel.BackgroundImage = General.Map.Data.GetTextureImage(name).GetPreview();
+				panel.BackgroundImage = texture.GetPreview();
 			}
 			
 			// Image not null?

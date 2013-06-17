@@ -18,6 +18,7 @@
 
 using System.Drawing;
 using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -47,6 +48,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// Check if name is a "none" texture
 			if((imagename.Length < 1) || (imagename[0] == '-'))
 			{
+				DisplayImageSize(-1, -1); //mxd
+				
 				// Determine image to show
 				if(required)
 					return CodeImp.DoomBuilder.Properties.Resources.MissingTexture;
@@ -55,8 +58,13 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			else
 			{
+				//mxd
+				ImageData texture = General.Map.Data.GetTextureImage(imagename);
+				if(texture.ImageState == ImageLoadState.Ready) DisplayImageSize(texture.Width, texture.Height);
+				else DisplayImageSize(-1, -1);
+				
 				// Set the image
-				return General.Map.Data.GetTextureImage(imagename).GetPreview();
+				return texture.GetPreview();
 			}
 		}
 

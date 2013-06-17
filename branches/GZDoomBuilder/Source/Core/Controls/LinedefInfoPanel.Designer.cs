@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flowLayoutPanelFront = new System.Windows.Forms.FlowLayoutPanel();
 			this.panel4 = new System.Windows.Forms.Panel();
 			this.fronthightex = new System.Windows.Forms.Panel();
+			this.labelTextureFrontTop = new System.Windows.Forms.Label();
 			this.fronthighname = new System.Windows.Forms.Label();
 			this.panelUDMFFrontTop = new System.Windows.Forms.Panel();
 			this.frontTopUDMFScale = new System.Windows.Forms.Label();
@@ -66,6 +67,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontTopUDMFOffsetLabel = new System.Windows.Forms.Label();
 			this.panel7 = new System.Windows.Forms.Panel();
 			this.frontmidtex = new System.Windows.Forms.Panel();
+			this.labelTextureFrontMid = new System.Windows.Forms.Label();
 			this.frontmidname = new System.Windows.Forms.Label();
 			this.panelUDMFFrontMid = new System.Windows.Forms.Panel();
 			this.frontMidUDMFScale = new System.Windows.Forms.Label();
@@ -74,6 +76,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontMidUDMFOffsetLabel = new System.Windows.Forms.Label();
 			this.panelFrontLowTex = new System.Windows.Forms.Panel();
 			this.frontlowtex = new System.Windows.Forms.Panel();
+			this.labelTextureFrontBottom = new System.Windows.Forms.Label();
 			this.frontlowname = new System.Windows.Forms.Label();
 			this.panelUDMFFrontBottom = new System.Windows.Forms.Panel();
 			this.frontBottomUDMFScale = new System.Windows.Forms.Label();
@@ -85,6 +88,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flowLayoutPanelBack = new System.Windows.Forms.FlowLayoutPanel();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.backhightex = new System.Windows.Forms.Panel();
+			this.labelTextureBackTop = new System.Windows.Forms.Label();
 			this.backhighname = new System.Windows.Forms.Label();
 			this.panelUDMFBackTop = new System.Windows.Forms.Panel();
 			this.backTopUDMFScale = new System.Windows.Forms.Label();
@@ -93,6 +97,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backTopUDMFOffsetLabel = new System.Windows.Forms.Label();
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.backmidtex = new System.Windows.Forms.Panel();
+			this.labelTextureBackMid = new System.Windows.Forms.Label();
 			this.backmidname = new System.Windows.Forms.Label();
 			this.panelUDMFBackMid = new System.Windows.Forms.Panel();
 			this.backMidUDMFScale = new System.Windows.Forms.Label();
@@ -101,6 +106,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backMidUDMFOffsetLabel = new System.Windows.Forms.Label();
 			this.panelBackLowTex = new System.Windows.Forms.Panel();
 			this.backlowtex = new System.Windows.Forms.Panel();
+			this.labelTextureBackBottom = new System.Windows.Forms.Label();
 			this.backlowname = new System.Windows.Forms.Label();
 			this.panelUDMFBackBottom = new System.Windows.Forms.Panel();
 			this.backBottomUDMFScale = new System.Windows.Forms.Label();
@@ -115,18 +121,24 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontpanel.SuspendLayout();
 			this.flowLayoutPanelFront.SuspendLayout();
 			this.panel4.SuspendLayout();
+			this.fronthightex.SuspendLayout();
 			this.panelUDMFFrontTop.SuspendLayout();
 			this.panel7.SuspendLayout();
+			this.frontmidtex.SuspendLayout();
 			this.panelUDMFFrontMid.SuspendLayout();
 			this.panelFrontLowTex.SuspendLayout();
+			this.frontlowtex.SuspendLayout();
 			this.panelUDMFFrontBottom.SuspendLayout();
 			this.backpanel.SuspendLayout();
 			this.flowLayoutPanelBack.SuspendLayout();
 			this.panel1.SuspendLayout();
+			this.backhightex.SuspendLayout();
 			this.panelUDMFBackTop.SuspendLayout();
 			this.panel2.SuspendLayout();
+			this.backmidtex.SuspendLayout();
 			this.panelUDMFBackMid.SuspendLayout();
 			this.panelBackLowTex.SuspendLayout();
+			this.backlowtex.SuspendLayout();
 			this.panelUDMFBackBottom.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -453,10 +465,24 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fronthightex.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.fronthightex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.fronthightex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.fronthightex.Controls.Add(this.labelTextureFrontTop);
 			this.fronthightex.Location = new System.Drawing.Point(11, 2);
 			this.fronthightex.Name = "fronthightex";
 			this.fronthightex.Size = new System.Drawing.Size(68, 60);
 			this.fronthightex.TabIndex = 0;
+			// 
+			// labelTextureFrontTop
+			// 
+			this.labelTextureFrontTop.AutoSize = true;
+			this.labelTextureFrontTop.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelTextureFrontTop.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelTextureFrontTop.ForeColor = System.Drawing.Color.White;
+			this.labelTextureFrontTop.Location = new System.Drawing.Point(2, 1);
+			this.labelTextureFrontTop.MaximumSize = new System.Drawing.Size(0, 13);
+			this.labelTextureFrontTop.Name = "labelTextureFrontTop";
+			this.labelTextureFrontTop.Size = new System.Drawing.Size(48, 13);
+			this.labelTextureFrontTop.TabIndex = 0;
+			this.labelTextureFrontTop.Text = "128x128";
 			// 
 			// fronthighname
 			// 
@@ -528,10 +554,24 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontmidtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.frontmidtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.frontmidtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.frontmidtex.Controls.Add(this.labelTextureFrontMid);
 			this.frontmidtex.Location = new System.Drawing.Point(11, 2);
 			this.frontmidtex.Name = "frontmidtex";
 			this.frontmidtex.Size = new System.Drawing.Size(68, 60);
 			this.frontmidtex.TabIndex = 2;
+			// 
+			// labelTextureFrontMid
+			// 
+			this.labelTextureFrontMid.AutoSize = true;
+			this.labelTextureFrontMid.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelTextureFrontMid.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelTextureFrontMid.ForeColor = System.Drawing.Color.White;
+			this.labelTextureFrontMid.Location = new System.Drawing.Point(2, 1);
+			this.labelTextureFrontMid.MaximumSize = new System.Drawing.Size(0, 13);
+			this.labelTextureFrontMid.Name = "labelTextureFrontMid";
+			this.labelTextureFrontMid.Size = new System.Drawing.Size(48, 13);
+			this.labelTextureFrontMid.TabIndex = 1;
+			this.labelTextureFrontMid.Text = "128x128";
 			// 
 			// frontmidname
 			// 
@@ -603,10 +643,24 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontlowtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.frontlowtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.frontlowtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.frontlowtex.Controls.Add(this.labelTextureFrontBottom);
 			this.frontlowtex.Location = new System.Drawing.Point(11, 2);
 			this.frontlowtex.Name = "frontlowtex";
 			this.frontlowtex.Size = new System.Drawing.Size(68, 60);
 			this.frontlowtex.TabIndex = 4;
+			// 
+			// labelTextureFrontBottom
+			// 
+			this.labelTextureFrontBottom.AutoSize = true;
+			this.labelTextureFrontBottom.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelTextureFrontBottom.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelTextureFrontBottom.ForeColor = System.Drawing.Color.White;
+			this.labelTextureFrontBottom.Location = new System.Drawing.Point(2, 1);
+			this.labelTextureFrontBottom.MaximumSize = new System.Drawing.Size(0, 13);
+			this.labelTextureFrontBottom.Name = "labelTextureFrontBottom";
+			this.labelTextureFrontBottom.Size = new System.Drawing.Size(48, 13);
+			this.labelTextureFrontBottom.TabIndex = 2;
+			this.labelTextureFrontBottom.Text = "128x128";
 			// 
 			// frontlowname
 			// 
@@ -714,10 +768,24 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backhightex.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.backhightex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.backhightex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.backhightex.Controls.Add(this.labelTextureBackTop);
 			this.backhightex.Location = new System.Drawing.Point(11, 2);
 			this.backhightex.Name = "backhightex";
 			this.backhightex.Size = new System.Drawing.Size(68, 60);
 			this.backhightex.TabIndex = 0;
+			// 
+			// labelTextureBackTop
+			// 
+			this.labelTextureBackTop.AutoSize = true;
+			this.labelTextureBackTop.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelTextureBackTop.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelTextureBackTop.ForeColor = System.Drawing.Color.White;
+			this.labelTextureBackTop.Location = new System.Drawing.Point(2, 1);
+			this.labelTextureBackTop.MaximumSize = new System.Drawing.Size(0, 13);
+			this.labelTextureBackTop.Name = "labelTextureBackTop";
+			this.labelTextureBackTop.Size = new System.Drawing.Size(48, 13);
+			this.labelTextureBackTop.TabIndex = 3;
+			this.labelTextureBackTop.Text = "128x128";
 			// 
 			// backhighname
 			// 
@@ -789,10 +857,24 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backmidtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.backmidtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.backmidtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.backmidtex.Controls.Add(this.labelTextureBackMid);
 			this.backmidtex.Location = new System.Drawing.Point(11, 2);
 			this.backmidtex.Name = "backmidtex";
 			this.backmidtex.Size = new System.Drawing.Size(68, 60);
 			this.backmidtex.TabIndex = 2;
+			// 
+			// labelTextureBackMid
+			// 
+			this.labelTextureBackMid.AutoSize = true;
+			this.labelTextureBackMid.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelTextureBackMid.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelTextureBackMid.ForeColor = System.Drawing.Color.White;
+			this.labelTextureBackMid.Location = new System.Drawing.Point(2, 1);
+			this.labelTextureBackMid.MaximumSize = new System.Drawing.Size(0, 13);
+			this.labelTextureBackMid.Name = "labelTextureBackMid";
+			this.labelTextureBackMid.Size = new System.Drawing.Size(48, 13);
+			this.labelTextureBackMid.TabIndex = 2;
+			this.labelTextureBackMid.Text = "128x128";
 			// 
 			// backmidname
 			// 
@@ -864,10 +946,24 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backlowtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.backlowtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.backlowtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.backlowtex.Controls.Add(this.labelTextureBackBottom);
 			this.backlowtex.Location = new System.Drawing.Point(11, 2);
 			this.backlowtex.Name = "backlowtex";
 			this.backlowtex.Size = new System.Drawing.Size(68, 60);
 			this.backlowtex.TabIndex = 4;
+			// 
+			// labelTextureBackBottom
+			// 
+			this.labelTextureBackBottom.AutoSize = true;
+			this.labelTextureBackBottom.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelTextureBackBottom.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelTextureBackBottom.ForeColor = System.Drawing.Color.White;
+			this.labelTextureBackBottom.Location = new System.Drawing.Point(2, 1);
+			this.labelTextureBackBottom.MaximumSize = new System.Drawing.Size(0, 13);
+			this.labelTextureBackBottom.Name = "labelTextureBackBottom";
+			this.labelTextureBackBottom.Size = new System.Drawing.Size(48, 13);
+			this.labelTextureBackBottom.TabIndex = 3;
+			this.labelTextureBackBottom.Text = "128x128";
 			// 
 			// backlowname
 			// 
@@ -943,19 +1039,31 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontpanel.PerformLayout();
 			this.flowLayoutPanelFront.ResumeLayout(false);
 			this.panel4.ResumeLayout(false);
+			this.fronthightex.ResumeLayout(false);
+			this.fronthightex.PerformLayout();
 			this.panelUDMFFrontTop.ResumeLayout(false);
 			this.panel7.ResumeLayout(false);
+			this.frontmidtex.ResumeLayout(false);
+			this.frontmidtex.PerformLayout();
 			this.panelUDMFFrontMid.ResumeLayout(false);
 			this.panelFrontLowTex.ResumeLayout(false);
+			this.frontlowtex.ResumeLayout(false);
+			this.frontlowtex.PerformLayout();
 			this.panelUDMFFrontBottom.ResumeLayout(false);
 			this.backpanel.ResumeLayout(false);
 			this.backpanel.PerformLayout();
 			this.flowLayoutPanelBack.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
+			this.backhightex.ResumeLayout(false);
+			this.backhightex.PerformLayout();
 			this.panelUDMFBackTop.ResumeLayout(false);
 			this.panel2.ResumeLayout(false);
+			this.backmidtex.ResumeLayout(false);
+			this.backmidtex.PerformLayout();
 			this.panelUDMFBackMid.ResumeLayout(false);
 			this.panelBackLowTex.ResumeLayout(false);
+			this.backlowtex.ResumeLayout(false);
+			this.backlowtex.PerformLayout();
 			this.panelUDMFBackBottom.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -1038,6 +1146,12 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label frontBottomUDMFOffset;
 		private System.Windows.Forms.Label frontBottomUDMFScaleLabel;
 		private System.Windows.Forms.Label frontBottomUDMFOffsetLabel;
+		private System.Windows.Forms.Label labelTextureFrontTop;
+		private System.Windows.Forms.Label labelTextureFrontMid;
+		private System.Windows.Forms.Label labelTextureFrontBottom;
+		private System.Windows.Forms.Label labelTextureBackTop;
+		private System.Windows.Forms.Label labelTextureBackMid;
+		private System.Windows.Forms.Label labelTextureBackBottom;
 
 	}
 }

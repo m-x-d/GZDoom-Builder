@@ -19,6 +19,7 @@
 using System;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -61,8 +62,15 @@ namespace CodeImp.DoomBuilder.Controls
 			brightness.Text = s.Brightness.ToString();
 			floorname.Text = s.FloorTexture;
 			ceilingname.Text = s.CeilTexture;
-			General.DisplayZoomedImage(floortex, General.Map.Data.GetFlatImage(s.FloorTexture).GetPreview());
-			General.DisplayZoomedImage(ceilingtex, General.Map.Data.GetFlatImage(s.CeilTexture).GetPreview());
+
+			ImageData floorImage = General.Map.Data.GetFlatImage(s.FloorTexture); //mxd
+			ImageData ceilingImage = General.Map.Data.GetFlatImage(s.CeilTexture); //mxd
+
+			DisplayTextureSize(labelFloorTextureSize, floorImage); //mxd
+			DisplayTextureSize(labelCeilTextureSize, ceilingImage); //mxd
+
+			General.DisplayZoomedImage(floortex, floorImage.GetPreview());
+			General.DisplayZoomedImage(ceilingtex, ceilingImage.GetPreview());
 
 			//mxd
 			bool showExtededFloorInfo = false;
@@ -210,6 +218,15 @@ namespace CodeImp.DoomBuilder.Controls
 			// Show the whole thing
 			this.Show();
 			this.Update();
+		}
+
+		protected void DisplayTextureSize(Label label, ImageData texture) {
+			if(texture.ImageState == ImageLoadState.Ready) {
+				label.Visible = true;
+				label.Text = texture.Width + "x" + texture.Height;
+			} else {
+				label.Visible = false;
+			}
 		}
 
 		// When visible changed
