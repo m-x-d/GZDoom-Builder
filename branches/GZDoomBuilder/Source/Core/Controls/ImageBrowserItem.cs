@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		// Display image and text
 		public ImageData icon;
-		public string displaytext;
+		private string displaytext;
 		
 		// Group
 		private ListViewGroup listgroup;
@@ -81,6 +81,10 @@ namespace CodeImp.DoomBuilder.Controls
 			Brush forecolor;
 			Brush backcolor;
 			
+			//mxd. Update texture size if needed
+			if(General.Settings.ShowTextureSizes && imageloaded != icon.IsPreviewLoaded)
+				displaytext = Text + "\n" + icon.ScaledWidth + " x " + icon.ScaledHeight;
+
 			// Remember if the preview is loaded
 			imageloaded = icon.IsPreviewLoaded;
 

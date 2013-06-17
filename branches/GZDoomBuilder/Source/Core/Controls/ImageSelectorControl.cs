@@ -188,7 +188,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		protected void DisplayImageSize(int width, int height) {
+		protected void DisplayImageSize(float width, float height) {
 			if(width == -1 && height == -1) {
 				labelSize.Visible = false;
 				return;
