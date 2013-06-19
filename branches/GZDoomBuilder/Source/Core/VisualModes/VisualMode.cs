@@ -943,7 +943,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// This returns the VisualSector for the given Sector.
 		/// </summary>
-		public VisualSector GetVisualSector(Sector s) { return allsectors[s]; }
+		public VisualSector GetVisualSector(Sector s) {
+			if(!allsectors.ContainsKey(s)) return null; //mxd
+			return allsectors[s]; 
+		}
 		
 		/// <summary>
 		/// This returns the VisualThing for the given Thing.

@@ -121,20 +121,15 @@ namespace CodeImp.DoomBuilder.Windows
 				fsAlpha.SetLimits(0f, 1f);
 			} else {
 				tabs.TabPages.Remove(tabcustom);
-
 				settingsGroup.Visible = false;
-
 				customfrontbutton.Visible = false;
 				custombackbutton.Visible = false;
-
 				labelLightFront.Visible = false;
 				lightFront.Visible = false;
 				cbLightAbsoluteFront.Visible = false;
-
 				labelLightBack.Visible = false;
 				lightBack.Visible = false;
 				cbLightAbsoluteBack.Visible = false;
-
 				udmfPropertiesFront.Visible = false;
 				udmfPropertiesBack.Visible = false;
 			}
@@ -423,8 +418,6 @@ namespace CodeImp.DoomBuilder.Windows
  
                     if (backoffsetx.Text != l.Back.OffsetX.ToString()) backoffsetx.Text = "";
                     if (backoffsety.Text != l.Back.OffsetY.ToString()) backoffsety.Text = "";
-
-					if(General.Map.FormatInterface.HasCustomFields) custombackbutton.Visible = true;
 				}
 				
 				// Custom fields

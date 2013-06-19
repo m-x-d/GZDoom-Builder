@@ -72,6 +72,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// This checks if a redraw is needed
 		public bool CheckRedrawNeeded()
 		{
+			//mxd. Update texture size if needed
+			if(General.Settings.ShowTextureSizes && imageloaded != icon.IsPreviewLoaded)
+				displaytext = Text + "\n" + icon.ScaledWidth + " x " + icon.ScaledHeight;
+			
 			return (icon.IsPreviewLoaded != imageloaded);
 		}
 		
@@ -80,10 +84,6 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			Brush forecolor;
 			Brush backcolor;
-			
-			//mxd. Update texture size if needed
-			if(General.Settings.ShowTextureSizes && imageloaded != icon.IsPreviewLoaded)
-				displaytext = Text + "\n" + icon.ScaledWidth + " x " + icon.ScaledHeight;
 
 			// Remember if the preview is loaded
 			imageloaded = icon.IsPreviewLoaded;
