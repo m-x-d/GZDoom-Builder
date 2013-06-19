@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
         public NodeInfo(Sector s) {
             type = NodeInfoType.SECTOR;
-            index = s.FixedIndex;
+            index = s.Index;
             action = s.Effect;
             tag = s.Tag;
         }
@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
                 comment = s.Fields["comment"].Value.ToString();
                 isDefaultName = false;
             }
-            return combineName(comment.Length == 0 ? NodeInfoDefaultName.SECTOR : comment, s.Tag, s.Effect, s.FixedIndex, sortMode, isDefaultName);
+            return combineName(comment.Length == 0 ? NodeInfoDefaultName.SECTOR : comment, s.Tag, s.Effect, s.Index, sortMode, isDefaultName);
         }
 
         private string getLinedefName(Linedef l, ref string comment, string sortMode) {
