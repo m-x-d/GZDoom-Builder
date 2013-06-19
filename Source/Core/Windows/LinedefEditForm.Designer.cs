@@ -863,7 +863,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.customfrontbutton.TabIndex = 3;
 			this.customfrontbutton.Text = "Custom fields...";
 			this.customfrontbutton.UseVisualStyleBackColor = true;
-			this.customfrontbutton.Visible = false;
 			this.customfrontbutton.Click += new System.EventHandler(this.customfrontbutton_Click);
 			// 
 			// frontlow
@@ -1194,7 +1193,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.custombackbutton.TabIndex = 3;
 			this.custombackbutton.Text = "Custom fields...";
 			this.custombackbutton.UseVisualStyleBackColor = true;
-			this.custombackbutton.Visible = false;
 			this.custombackbutton.Click += new System.EventHandler(this.custombackbutton_Click);
 			// 
 			// backlow

@@ -79,19 +79,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// Initialize
 			InitializeComponent();
 			items = new List<ImageBrowserItem>();
-
-			//mxd
-			if(General.Map.Config.MixTexturesFlats) {
-				cbMixMode.SelectedIndex = mixMode;
-			} else {
-				labelMixMode.Visible = false;
-				cbMixMode.Visible = false;
-				label.Left = labelMixMode.Left;
-				objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left;
-				texturesizelabel.Left = objectname.Right + objectname.Margin.Right;
-				texturesize.Left = texturesizelabel.Right + texturesizelabel.Margin.Right;
-				mixMode = 0;
-			}
 		}
 		
 		// This applies the application settings
@@ -111,6 +98,19 @@ namespace CodeImp.DoomBuilder.Controls
 				int itemheight = General.Map.Data.Previews.MaxImageHeight + 26;
 				if(General.Settings.ShowTextureSizes) itemheight += 12;
 				list.TileSize = new Size(itemwidth, itemheight);
+
+				//mxd
+				if(General.Map.Config.MixTexturesFlats) {
+					cbMixMode.SelectedIndex = mixMode;
+				} else {
+					labelMixMode.Visible = false;
+					cbMixMode.Visible = false;
+					label.Left = labelMixMode.Left;
+					objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left;
+					texturesizelabel.Left = objectname.Right + objectname.Margin.Right;
+					texturesize.Left = texturesizelabel.Right + texturesizelabel.Margin.Right;
+					mixMode = 0;
+				}
 			}
 		}
 

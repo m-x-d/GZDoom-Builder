@@ -184,7 +184,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				//mxd
 				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
-				if(vs.Changed) continue;
+				if(vs == null || vs.Changed) continue;
 
 				SectorData sd = mode.GetSectorData(s.Key);
 				sd.Reset();
