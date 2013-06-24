@@ -249,7 +249,7 @@ namespace CodeImp.DoomBuilder.VisualModes
         WALL_UPPER,
         WALL_MIDDLE,
         WALL_MIDDLE_3D,
-        WALL_BOTTOM,
+        WALL_LOWER,
         UNKNOWN,
     }
 }

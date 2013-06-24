@@ -31,5 +31,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public const int ThingMove = 6; //mxd
 		public const int ThingRotate = 7; //mxd
 		public const int SurfaceBrightnessChange = 8; //mxd
+		public const int TextureScaleChange = 9; //mxd
 	}
 }

@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// labelSize
 			// 
 			this.labelSize.AutoSize = true;
-			this.labelSize.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelSize.BackColor = System.Drawing.Color.Black;
 			this.labelSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.labelSize.ForeColor = System.Drawing.Color.White;
 			this.labelSize.Location = new System.Drawing.Point(1, 1);

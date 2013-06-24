@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.VisualModes;
 using System.Drawing;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -368,8 +369,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
         //mxd
         protected float getRoundedTextureOffset(float oldValue, float offset, float scale) {
 			if(offset == 0f) return oldValue;
-            float result = (float)Math.Round(oldValue + (offset * scale));
-            if (result == oldValue) result += 1f * (offset < 0 ? -1 : 1);
+			float scaledOffset = offset * scale;
+			float result = (float)Math.Round(oldValue + scaledOffset);
+			if(result == oldValue) result += (scaledOffset < 0 ? -1 : 1);
             return result;
         }
 
@@ -390,6 +392,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 		}
 
+		//mxd
 		protected void selectNeighbours(string texture, bool select, bool withSameTexture, bool withSameHeight) {
 			if(!withSameTexture && !withSameHeight)
 				return;
@@ -496,6 +499,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public abstract bool Setup();
 		protected abstract void SetTextureOffsetX(int x);
 		protected abstract void SetTextureOffsetY(int y);
+		protected virtual void ResetTextureScale() { } //mxd
 		protected abstract void MoveTextureOffset(Point xy);
 		protected abstract Point GetTextureOffset();
 		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
@@ -595,6 +599,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.UDMF) {
 				SetTextureOffsetX(0);
 				SetTextureOffsetY(0);
+				ResetTextureScale();
 			} else {
 				Sidedef.OffsetX = 0;
 				Sidedef.OffsetY = 0;
@@ -784,17 +789,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				List<Sidedef> sides = mode.GetSelectedSidedefs();
 				foreach(Sidedef sd in sides) sd.Marked = false;
 			}
-
-			SidedefPart part;
-			if(this is VisualLower)
-				part = SidedefPart.Lower;
-			else if(this is VisualUpper)
-				part = SidedefPart.Upper;
-			else
-				part = SidedefPart.Middle;
 			
 			// Do the alignment
-			mode.AutoAlignTextures(this.Sidedef, part, base.Texture, alignx, aligny, false);
+			mode.AutoAlignTextures(this, base.Texture, alignx, aligny, false);
 
 			// Get the changed sidedefs
 			List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);
@@ -1096,6 +1093,63 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
 			parts.SetupAllParts();
+		}
+
+		//mxd
+		public virtual void OnChangeTextureScale(float incrementX, float incrementY) {
+			if(!General.Map.UDMF) return;
+
+			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+				undoticket = mode.CreateUndo("Change wall scale");
+
+			string keyX;
+			string keyY;
+
+			switch(GeometryType) {
+				case VisualGeometryType.WALL_UPPER:
+					keyX = "scalex_top";
+					keyY = "scaley_top";
+					break;
+
+				case VisualGeometryType.WALL_MIDDLE:
+				case VisualGeometryType.WALL_MIDDLE_3D:
+					keyX = "scalex_mid";
+					keyY = "scaley_mid";
+					break;
+
+				case VisualGeometryType.WALL_LOWER:
+					keyX = "scalex_bottom";
+					keyY = "scaley_bottom";
+					break;
+
+				default:
+					throw new Exception("OnChangeTextureScale(): Got unknown GeometryType: " + GeometryType);
+			}
+
+			float scaleX = Sidedef.Fields.GetValue(keyX, 1.0f);
+			float scaleY = Sidedef.Fields.GetValue(keyY, 1.0f);
+
+			Sidedef.Fields.BeforeFieldsChange();
+
+			if(incrementX != 0) {
+				if(scaleX + incrementX == 0)
+					scaleX *= -1;
+				else
+					scaleX += incrementX;
+				UDMFTools.SetFloat(Sidedef.Fields, keyX, scaleX, 1.0f, false);
+			}
+
+			if(incrementY != 0) {
+				if(scaleY + incrementY == 0)
+					scaleY *= -1;
+				else
+					scaleY += incrementY;
+				UDMFTools.SetFloat(Sidedef.Fields, keyY, scaleY, 1.0f, false);
+			}
+
+			//update geometry
+			Setup();
+			mode.SetActionResult("Wall scale changed to " + scaleX + ", " + scaleY);
 		}
 
 		#endregion

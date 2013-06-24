@@ -382,6 +382,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Pin {
+            get {
+                object obj = ResourceManager.GetObject("Pin", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Prefab {
             get {
                 object obj = ResourceManager.GetObject("Prefab", resourceCulture);
@@ -602,6 +609,13 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap UnknownImage {
             get {
                 object obj = ResourceManager.GetObject("UnknownImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Unpin {
+            get {
+                object obj = ResourceManager.GetObject("Unpin", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

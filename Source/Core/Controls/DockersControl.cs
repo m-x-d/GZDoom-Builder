@@ -87,6 +87,8 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			InitializeComponent();
 			expandedwidth = (int)((float)this.Width * (this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width));
+			tabs.TabsOffsetTop = buttonTogglePinning.Bottom + 2; //mxd
+			buttonTogglePinning.Image = General.Settings.CollapseDockers ? CodeImp.DoomBuilder.Properties.Resources.Unpin : CodeImp.DoomBuilder.Properties.Resources.Pin; //mxd
 		}
 		
 		#endregion
@@ -119,6 +121,8 @@ namespace CodeImp.DoomBuilder.Controls
 				splitter.Dock = DockStyle.Left;
 				tabs.Alignment = TabAlignment.Right;
 				tabs.Location = new Point(0, 0);
+				buttonTogglePinning.Location = new Point(this.ClientRectangle.Width - buttonTogglePinning.Width - 2, buttonTogglePinning.Top); //mxd
+				buttonTogglePinning.Anchor = AnchorStyles.Right | AnchorStyles.Top; //mxd
 				tabs.Size = new Size(this.ClientRectangle.Width + 2, this.ClientRectangle.Height);
 			}
 			else
@@ -126,6 +130,8 @@ namespace CodeImp.DoomBuilder.Controls
 				splitter.Dock = DockStyle.Right;
 				tabs.Alignment = TabAlignment.Left;
 				tabs.Location = new Point(-2, 0);
+				buttonTogglePinning.Location = new Point(2, buttonTogglePinning.Top); //mxd
+				buttonTogglePinning.Anchor = AnchorStyles.Left | AnchorStyles.Top; //mxd
 				tabs.Size = new Size(this.ClientRectangle.Width + 2, this.ClientRectangle.Height);
 			}
 			
@@ -426,6 +432,13 @@ namespace CodeImp.DoomBuilder.Controls
 				if(UserResize != null)
 					UserResize(this, EventArgs.Empty);
 			}
+		}
+
+		//mxd
+		private void buttonTogglePinning_Click(object sender, EventArgs e) {
+			General.Settings.CollapseDockers = !General.Settings.CollapseDockers;
+			General.MainWindow.SetupInterface();
+			buttonTogglePinning.Image = General.Settings.CollapseDockers ? CodeImp.DoomBuilder.Properties.Resources.Unpin : CodeImp.DoomBuilder.Properties.Resources.Pin;
 		}
 		
 		#endregion

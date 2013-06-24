@@ -24,6 +24,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -243,6 +244,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
+		protected override void ResetTextureScale() {
+			Sidedef.Fields.BeforeFieldsChange();
+			if(Sidedef.Fields.ContainsKey("scalex_top")) Sidedef.Fields.Remove("scalex_top");
+			if(Sidedef.Fields.ContainsKey("scaley_top")) Sidedef.Fields.Remove("scaley_top");
+		}
+
+		//mxd
 		public override void OnChangeTargetBrightness(bool up) {
 			if(!General.Map.UDMF) {
 				base.OnChangeTargetBrightness(up);
@@ -288,35 +296,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sidedef.Fields.BeforeFieldsChange();
 
 			if(fitWidth) {
-				float scaleX = Texture.Width / Sidedef.Line.Length;
+				float scaleX = Texture.ScaledWidth / Sidedef.Line.Length;
+				UDMFTools.SetFloat(Sidedef.Fields, "scalex_top", scaleX, 1.0f, false);
 
-				if(scaleX == 1.0f) {
-					if(Sidedef.Fields.GetValue("scalex_top", 1.0f) != 1.0f)
-						Sidedef.Fields.Remove("scalex_top");
-				} else {
-					Sidedef.Fields["scalex_top"] = new UniValue(UniversalType.Float, scaleX);
-				}
-
-				if(Sidedef.Fields.ContainsKey("offsetx_top"))
-					Sidedef.Fields.Remove("offsetx_top");
+				float offsetX = (float)Math.Round(-(float)Sidedef.OffsetX * scaleX);
+				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_top", offsetX, 0.0f, false);
 			}
 
 			if(fitHeight && Sidedef.Sector != null && Sidedef.Other.Sector != null) {
 				float scaleY = (float)Texture.Height / (Sidedef.Sector.CeilHeight - Sidedef.Other.Sector.CeilHeight);
+				UDMFTools.SetFloat(Sidedef.Fields, "scaley_top", scaleY, 1.0f, false);
 
-				if(scaleY == 1.0f) {
-					if(Sidedef.Fields.GetValue("scaley_top", 1.0f) != 1.0f)
-						Sidedef.Fields.Remove("scaley_top");
-				} else {
-					Sidedef.Fields["scaley_top"] = new UniValue(UniversalType.Float, scaleY);
-				}
-
-				float offsetY = mode.GetTopOffsetY(Sidedef, 0f, true) % Texture.Height;
-
-				if(offsetY == 0f && Sidedef.Fields.ContainsKey("offsety_top"))
-					Sidedef.Fields.Remove("offsety_top");
-				else
-					Sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, offsetY);
+				float offsetY = mode.GetTopOffsetY(Sidedef, -Sidedef.OffsetY, scaleY, true) % Texture.Height;
+				UDMFTools.SetFloat(Sidedef.Fields, "offsety_top", offsetY, 0.0f, false);
 			}
 
 			Setup();

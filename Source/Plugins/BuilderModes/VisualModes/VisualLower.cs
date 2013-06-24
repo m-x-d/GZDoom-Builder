@@ -24,6 +24,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -49,7 +50,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public VisualLower(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
             //mxd
-            geoType = VisualGeometryType.WALL_BOTTOM;
+            geoType = VisualGeometryType.WALL_LOWER;
             
             // We have no destructor
 			GC.SuppressFinalize(this);
@@ -244,6 +245,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
+		protected override void ResetTextureScale() {
+			Sidedef.Fields.BeforeFieldsChange();
+			if(Sidedef.Fields.ContainsKey("scalex_bottom")) Sidedef.Fields.Remove("scalex_bottom");
+			if(Sidedef.Fields.ContainsKey("scaley_bottom")) Sidedef.Fields.Remove("scaley_bottom");
+		}
+
+		//mxd
 		public override void OnChangeTargetBrightness(bool up) {
 			if(!General.Map.UDMF) {
 				base.OnChangeTargetBrightness(up);
@@ -289,37 +297,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sidedef.Fields.BeforeFieldsChange();
 
 			if(fitWidth) {
-				float scaleX = Texture.Width / Sidedef.Line.Length;
+				float scaleX = Texture.ScaledWidth / Sidedef.Line.Length;
+				UDMFTools.SetFloat(Sidedef.Fields, "scalex_bottom", scaleX, 1.0f, false);
 
-				if(scaleX == 1.0f) {
-					if(Sidedef.Fields.GetValue("scalex_bottom", 1.0f) != 1.0f)
-						Sidedef.Fields.Remove("scalex_bottom");
-				} else {
-					Sidedef.Fields["scalex_bottom"] = new UniValue(UniversalType.Float, scaleX);
-				}
-
-				if(Sidedef.Fields.ContainsKey("offsetx_bottom"))
-					Sidedef.Fields.Remove("offsetx_bottom");
+				float offsetX = (float)Math.Round(-(float)Sidedef.OffsetX * scaleX);
+				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_bottom", offsetX, 0.0f, false);
 			}
 
 			if(fitHeight && Sidedef.Sector != null && Sidedef.Other.Sector != null) {
 				float scaleY = (float)Texture.Height / (Sidedef.Other.Sector.FloorHeight - Sidedef.Sector.FloorHeight);
+				UDMFTools.SetFloat(Sidedef.Fields, "scaley_bottom", scaleY, 1.0f, false);
 
-				if(scaleY == 1.0f) {
-					if(Sidedef.Fields.GetValue("scaley_bottom", 1.0f) != 1.0f)
-						Sidedef.Fields.Remove("scaley_bottom");
-				} else {
-					Sidedef.Fields["scaley_bottom"] = new UniValue(UniversalType.Float, scaleY);
-				}
-
-				float offsetY = 0f;
-				if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag)) 
-					offsetY = -(float)Math.Round((Sidedef.Sector.CeilHeight - Sidedef.Other.Sector.FloorHeight) * scaleY) % Texture.Height;
-
-				if(offsetY == 0f && Sidedef.Fields.ContainsKey("offsety_bottom"))
-					Sidedef.Fields.Remove("offsety_bottom");
-				else
-					Sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, offsetY);
+				float offsetY = mode.GetBottomOffsetY(Sidedef, -Sidedef.OffsetY, scaleY, true) % Texture.Height;
+				UDMFTools.SetFloat(Sidedef.Fields, "offsety_bottom", offsetY, 0.0f, false);
 			}
 
 			Setup();

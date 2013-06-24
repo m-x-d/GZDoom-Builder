@@ -61,8 +61,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float dragstartanglexy;
 		private float dragstartanglez;
 		private Vector3D dragorigin;
-		//private Vector3D deltaxy;
-		//private Vector3D deltaz;
 		private int startoffsetx;
 		private int startoffsety;
 		protected bool uvdragging;
@@ -95,6 +93,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// This changes the height
 		protected abstract void ChangeHeight(int amount);
+		protected abstract void ChangeTextureScale(float incrementX, float incrementY); //mxd
 		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
 
 		// This swaps triangles so that the plane faces the other way
@@ -678,6 +677,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Texture offset change
 		public virtual void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection)
 		{
+			if(horizontal == 0 && vertical == 0) return; //mxd
+			
 			//mxd
             if (!General.Map.UDMF) {
 				General.ShowErrorMessage("Floor/ceiling texture offsets cannot be changed in this map format!", MessageBoxButtons.OK);
@@ -714,11 +715,58 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Apply offsets
 			MoveTextureOffset(new Point(-horizontal, -vertical));
-			mode.SetActionResult("Changed texture offsets by " + (-horizontal) + ", " + (-vertical) + ".");
 
 			// Update sector geometry
+			Sector s = GetControlSector();
+			if(s.Index != Sector.Sector.Index) {
+				s.UpdateNeeded = true;
+				s.UpdateCache();
+				mode.GetSectorData(s).Update();
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s);
+				vs.UpdateSectorGeometry(false);
+				vs.Rebuild();
+			}
+
+			Sector.Sector.UpdateNeeded = true;
+			Sector.Sector.UpdateCache();
 			Sector.UpdateSectorGeometry(false);
 			Sector.Rebuild();
+		}
+
+		public virtual void OnChangeTextureRotation(float angle) {
+			if(!General.Map.UDMF) return;
+
+			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+				undoticket = mode.CreateUndo("Change texture rotation");
+
+			string key = (GeometryType == VisualGeometryType.FLOOR ? "rotationfloor" : "rotationceiling");
+			mode.SetActionResult( (GeometryType == VisualGeometryType.FLOOR ? "Floor" : "Ceiling") + " rotation changed to " + angle);
+
+			//set value
+			Sector s = GetControlSector();
+			UDMFTools.SetFloat(s.Fields, key, angle, 0.0f, true);
+
+			if(s.Index != Sector.Sector.Index) {
+				s.UpdateNeeded = true;
+				s.UpdateCache();
+				mode.GetSectorData(s).Update();
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s);
+				vs.UpdateSectorGeometry(false);
+			}
+
+			Sector.Sector.UpdateNeeded = true;
+			Sector.Sector.UpdateCache();
+			Sector.UpdateSectorGeometry(false);
+		}
+
+		//mxd
+		public virtual void OnChangeTextureScale(float incrementX, float incrementY) {
+			if(!General.Map.UDMF) return;
+
+			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+				undoticket = mode.CreateUndo("Change texture scale");
+
+			ChangeTextureScale(incrementX, incrementY);
 		}
 		
 		#endregion

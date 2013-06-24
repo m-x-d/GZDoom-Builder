@@ -889,6 +889,8 @@
     <None Include="Resources\Marine.png" />
     <Content Include="Resources\Model.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\Unpin.png" />
+    <None Include="Resources\Pin.png" />
     <None Include="Resources\Reset.png" />
     <None Include="Resources\TagStatistics.png" />
     <None Include="Resources\VisualVertices.png" />

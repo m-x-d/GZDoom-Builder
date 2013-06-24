@@ -397,8 +397,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonMarqueSelectTouching.Name = "buttonMarqueSelectTouching";
 			this.buttonMarqueSelectTouching.Size = new System.Drawing.Size(23, 22);
 			this.buttonMarqueSelectTouching.Text = "Select Touching";
-			this.buttonMarqueSelectTouching.ToolTipText = "Toggle between \"select touching\" and \"select inside\"\r\nrectangular selection modes" +
-				"";
+			this.buttonMarqueSelectTouching.ToolTipText = "Toggle between \"select touching\" and \"select inside\"\r\nrectangular selection modes";
 			this.buttonMarqueSelectTouching.Click += new System.EventHandler(this.buttonMarqueSelectTouching_Click);
 			// 
 			// buttonAlignThingsToWall
@@ -421,7 +420,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonTextureOffsetLock.Name = "buttonTextureOffsetLock";
 			this.buttonTextureOffsetLock.Size = new System.Drawing.Size(23, 22);
 			this.buttonTextureOffsetLock.ToolTipText = "Pin Texture Offsets.\r\nWhen enabled, keeps floor and ceiling texture offsets\r\ncons" +
-				"tant while sector is dragged\r\n";
+				"tant while sector is dragged";
 			this.buttonTextureOffsetLock.Click += new System.EventHandler(this.buttonTextureOffsetLock_Click);
 			// 
 			// alignLinedefsItem

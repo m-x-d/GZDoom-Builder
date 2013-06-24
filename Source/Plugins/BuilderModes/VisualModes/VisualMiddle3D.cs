@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			tsz = tsz / tscale;
 			
 			// Get texture offsets
-			Vector2D tof = new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
+			Vector2D tof = new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY) + new Vector2D(sourceside.OffsetX, sourceside.OffsetY);
 			tof = tof + toffset1 + toffset2;
 			tof = tof / tscale;
 			if(General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)

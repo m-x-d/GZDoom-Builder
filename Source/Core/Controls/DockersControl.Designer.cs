@@ -28,9 +28,20 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.buttonTogglePinning = new System.Windows.Forms.Button();
 			this.splitter = new CodeImp.DoomBuilder.Controls.TransparentPanel();
 			this.tabs = new CodeImp.DoomBuilder.Controls.DockersTabsControl();
 			this.SuspendLayout();
+			// 
+			// buttonTogglePinning
+			// 
+			this.buttonTogglePinning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonTogglePinning.Location = new System.Drawing.Point(282, 4);
+			this.buttonTogglePinning.Name = "buttonTogglePinning";
+			this.buttonTogglePinning.Size = new System.Drawing.Size(24, 24);
+			this.buttonTogglePinning.TabIndex = 0;
+			this.buttonTogglePinning.UseVisualStyleBackColor = true;
+			this.buttonTogglePinning.Click += new System.EventHandler(this.buttonTogglePinning_Click);
 			// 
 			// splitter
 			// 
@@ -75,6 +86,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+			this.Controls.Add(this.buttonTogglePinning);
 			this.Controls.Add(this.splitter);
 			this.Controls.Add(this.tabs);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -90,5 +102,6 @@
 
 		private DockersTabsControl tabs;
 		private TransparentPanel splitter;
+		private System.Windows.Forms.Button buttonTogglePinning;
 	}
 }

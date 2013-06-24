@@ -445,7 +445,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				//mxd
 				ImageData texture = General.Map.Data.GetTextureImage(name);
-				if(texture.ImageState == ImageLoadState.Ready) {
+				if(General.Settings.ShowTextureSizes && texture.ImageState == ImageLoadState.Ready) {
 					label.Visible = true;
 					label.Text = texture.ScaledWidth + "x" + texture.ScaledHeight;
 				} else {

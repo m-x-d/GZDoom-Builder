@@ -474,7 +474,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// labelTextureFrontTop
 			// 
 			this.labelTextureFrontTop.AutoSize = true;
-			this.labelTextureFrontTop.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelTextureFrontTop.BackColor = System.Drawing.Color.Black;
 			this.labelTextureFrontTop.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelTextureFrontTop.ForeColor = System.Drawing.Color.White;
 			this.labelTextureFrontTop.Location = new System.Drawing.Point(2, 1);
@@ -563,7 +563,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// labelTextureFrontMid
 			// 
 			this.labelTextureFrontMid.AutoSize = true;
-			this.labelTextureFrontMid.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelTextureFrontMid.BackColor = System.Drawing.Color.Black;
 			this.labelTextureFrontMid.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelTextureFrontMid.ForeColor = System.Drawing.Color.White;
 			this.labelTextureFrontMid.Location = new System.Drawing.Point(2, 1);
@@ -652,7 +652,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// labelTextureFrontBottom
 			// 
 			this.labelTextureFrontBottom.AutoSize = true;
-			this.labelTextureFrontBottom.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelTextureFrontBottom.BackColor = System.Drawing.Color.Black;
 			this.labelTextureFrontBottom.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelTextureFrontBottom.ForeColor = System.Drawing.Color.White;
 			this.labelTextureFrontBottom.Location = new System.Drawing.Point(2, 1);
@@ -777,7 +777,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// labelTextureBackTop
 			// 
 			this.labelTextureBackTop.AutoSize = true;
-			this.labelTextureBackTop.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelTextureBackTop.BackColor = System.Drawing.Color.Black;
 			this.labelTextureBackTop.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelTextureBackTop.ForeColor = System.Drawing.Color.White;
 			this.labelTextureBackTop.Location = new System.Drawing.Point(2, 1);
@@ -866,7 +866,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// labelTextureBackMid
 			// 
 			this.labelTextureBackMid.AutoSize = true;
-			this.labelTextureBackMid.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelTextureBackMid.BackColor = System.Drawing.Color.Black;
 			this.labelTextureBackMid.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelTextureBackMid.ForeColor = System.Drawing.Color.White;
 			this.labelTextureBackMid.Location = new System.Drawing.Point(2, 1);
@@ -955,7 +955,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// labelTextureBackBottom
 			// 
 			this.labelTextureBackBottom.AutoSize = true;
-			this.labelTextureBackBottom.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelTextureBackBottom.BackColor = System.Drawing.Color.Black;
 			this.labelTextureBackBottom.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelTextureBackBottom.ForeColor = System.Drawing.Color.White;
 			this.labelTextureBackBottom.Location = new System.Drawing.Point(2, 1);
