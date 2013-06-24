@@ -221,7 +221,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		protected void DisplayTextureSize(Label label, ImageData texture) {
-			if(texture.ImageState == ImageLoadState.Ready) {
+			if(General.Settings.ShowTextureSizes && texture.ImageState == ImageLoadState.Ready && !string.IsNullOrEmpty(texture.Name)) {
 				label.Visible = true;
 				label.Text = texture.ScaledWidth + "x" + texture.ScaledHeight;
 			} else {

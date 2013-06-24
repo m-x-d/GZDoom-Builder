@@ -31,6 +31,7 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -2132,6 +2133,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
             PostAction();
 		}
 
+		//mxd
+		[BeginAction("scaletextureupx")]
+		public void ScaleTextureUpX() {
+			PreAction(UndoGroup.TextureScaleChange);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(0.25f, 0);
+			PostAction();
+		}
+
+		//mxd
+		[BeginAction("scaletexturedownx")]
+		public void ScaleTextureDownX() {
+			PreAction(UndoGroup.TextureScaleChange);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(-0.25f, 0);
+			PostAction();
+		}
+
+		//mxd
+		[BeginAction("scaletextureupy")]
+		public void ScaleTextureUpY() {
+			PreAction(UndoGroup.TextureScaleChange);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(0, 0.25f);
+			PostAction();
+		}
+
+		//mxd
+		[BeginAction("scaletexturedowny")]
+		public void ScaleTextureDownY() {
+			PreAction(UndoGroup.TextureScaleChange);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(0, -0.25f);
+			PostAction();
+		}
+
 		[BeginAction("textureselect")]
 		public void TextureSelect()
 		{
@@ -2426,39 +2463,38 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
         //mxd. rotate clockwise
         [BeginAction("rotatethingscw")]
-        public void RotateThingsCW() {
-            List<VisualThing> things = GetSelectedVisualThings(true);
-
-            PreAction(UndoGroup.ThingRotate);
-
-            if (things.Count == 0) {
-				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selected Things!");
-                return;
-            }
-
-            foreach (VisualThing t in things)
-                ((BaseVisualThing)t).OnRotate(General.ClampAngle(t.Thing.AngleDoom + 5));
-
-            PostAction();
+        public void RotateCW() {
+			rotateThingsAndTextures(5);
         }
 
         //mxd. rotate counterclockwise
         [BeginAction("rotatethingsccw")]
-        public void RotateThingsCCW() {
-            List<VisualThing> things = GetSelectedVisualThings(true);
-
-            PreAction(UndoGroup.ThingRotate);
-
-            if (things.Count == 0) {
-				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selected Things!");
-                return;
-            }
-
-            foreach (VisualThing t in things)
-                ((BaseVisualThing)t).OnRotate(General.ClampAngle(t.Thing.AngleDoom - 5));
-
-            PostAction();
+        public void RotateCCW() {
+			rotateThingsAndTextures(-5);
         }
+
+		//mxd
+		private void rotateThingsAndTextures(int increment) {
+			PreAction(UndoGroup.ThingRotate);
+
+			List<IVisualEventReceiver> selection = GetSelectedObjects(true, false, true, false);
+			if(selection.Count == 0) return;
+
+			foreach(IVisualEventReceiver obj in selection) {
+				if(obj is BaseVisualThing) {
+					BaseVisualThing t = obj as BaseVisualThing;
+					t.Rotate(General.ClampAngle(t.Thing.AngleDoom + increment));
+				}else if(obj is VisualFloor) {
+					VisualFloor vf = obj as VisualFloor;
+					vf.OnChangeTextureRotation(General.ClampAngle(vf.GetControlSector().Fields.GetValue("rotationfloor", 0.0f) + increment));
+				} else if(obj is VisualCeiling) {
+					VisualCeiling vc = obj as VisualCeiling;
+					vc.OnChangeTextureRotation(General.ClampAngle(vc.GetControlSector().Fields.GetValue("rotationceiling", 0.0f) + increment));
+				}
+			}
+
+			PostAction();
+		}
 
         //mxd
         [BeginAction("togglegzdoomrenderingeffects")]
@@ -2554,7 +2590,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				update = false;
 
 				//assign/remove action
-				if(vg.GeometryType == VisualGeometryType.WALL_BOTTOM) {
+				if(vg.GeometryType == VisualGeometryType.WALL_LOWER) {
 					if(vg.Sidedef.Line.Action == 0 || (vg.Sidedef.Line.Action == 181 && vg.Sidedef.Line.Args[0] == 0)) {
 						//check if the sector already has floor slopes
 						foreach(Sidedef side in vg.Sidedef.Sector.Sidedefs) {
@@ -2658,9 +2694,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Texture Alignment
 
 		//mxd
-		public void AutoAlignTextures(Sidedef start, SidedefPart part, ImageData texture, bool alignx, bool aligny, bool resetsidemarks) {
+		internal void AutoAlignTextures(BaseVisualGeometrySidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks) {
 			if(General.Map.UDMF)
-				autoAlignTextures(start, part, texture, alignx, aligny, resetsidemarks);
+				autoAlignTexturesUDMF(start, texture, alignx, aligny, resetsidemarks);
 			else
 				autoAlignTextures(start, texture, alignx, aligny, resetsidemarks);
 		}
@@ -2671,32 +2707,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
 		// Setting resetsidemarks to false is usefull to align only within a specific selection
 		// (set the marked property to true for the sidedefs outside the selection)
-		private void autoAlignTextures(Sidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks) {
+		private void autoAlignTextures(BaseVisualGeometrySidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks) {
 			Stack<SidedefAlignJob> todo = new Stack<SidedefAlignJob>(50);
 			float scalex = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.x : 1.0f;
 			float scaley = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.y : 1.0f;
 
-			// Mark all sidedefs false (they will be marked true when the texture is aligned)
+			// Mark all sidedefs false (they will be marked true when the texture is aligned). mxd. Don't seem to be used anywhere...
 			if(resetsidemarks)
 				General.Map.Map.ClearMarkedSidedefs(false);
 
 			// Begin with first sidedef
 			SidedefAlignJob first = new SidedefAlignJob();
-			first.sidedef = start;
-			first.offsetx = start.OffsetX;
+			first.sidedef = start.Sidedef;
+			first.offsetx = start.Sidedef.OffsetX;
+			int ystartalign = start.Sidedef.OffsetY; //mxd
 
-			//mxd. 3D floors alignment
-			if(!start.LowRequired() && !start.HighRequired()) {
-				List<Sidedef> controlSides = getControlSides(start, false);
-				foreach(Sidedef s in controlSides) {
-					if((s.LongMiddleTexture == texture.LongName) && (s.MiddleRequired() || ((s.MiddleTexture.Length > 0) && (s.MiddleTexture[0] != '-')))) {
-						first.controlSide = s;
-						break;
-					}
-				}
+			//mxd
+			if(start.GeometryType == VisualGeometryType.WALL_MIDDLE_3D) {
+				first.controlSide = start.GetControlLinedef().Front;
+				first.offsetx += first.controlSide.OffsetX;
+				ystartalign += first.controlSide.OffsetY;
+			} else {
+				first.controlSide = start.Sidedef;
 			}
-
-			if(first.controlSide == null) first.controlSide = start;
 
 			first.forward = true;
 			todo.Push(first);
@@ -2713,9 +2746,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Apply alignment
 					if(alignx)
-						j.sidedef.OffsetX = (int)j.offsetx;
+						j.controlSide.OffsetX = (int)j.offsetx;
 					if(aligny)
-						j.sidedef.OffsetY = (int)Math.Round((start.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + start.OffsetY;
+						j.sidedef.OffsetY = (int)Math.Round((first.controlSide.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + ystartalign;
 					forwardoffset = (int)j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex);
 					backwardoffset = (int)j.offsetx;
 
@@ -2746,7 +2779,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(alignx)
 						j.sidedef.OffsetX = (int)j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
 					if(aligny)
-						j.sidedef.OffsetY = (int)Math.Round((start.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + start.OffsetY;
+						j.sidedef.OffsetY = (int)Math.Round((first.controlSide.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + ystartalign;
 					forwardoffset = (int)j.offsetx;
 					backwardoffset = (int)j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
 
@@ -2778,76 +2811,84 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
 		// Setting resetsidemarks to false is usefull to align only within a specific selection
 		// (set the marked property to true for the sidedefs outside the selection)
-		private void autoAlignTextures(Sidedef start, SidedefPart part, ImageData texture, bool alignx, bool aligny, bool resetsidemarks) {
+		private void autoAlignTexturesUDMF(BaseVisualGeometrySidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks) {
+			// Mark all sidedefs false (they will be marked true when the texture is aligned)
+			if(resetsidemarks) General.Map.Map.ClearMarkedSidedefs(false);
+			if(!texture.IsImageLoaded) return;
+
 			Stack<SidedefAlignJob> todo = new Stack<SidedefAlignJob>(50);
 			float scalex = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.x : 1.0f;
 			float scaley = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.y : 1.0f;
 
-			// Mark all sidedefs false (they will be marked true when the texture is aligned)
-			if(resetsidemarks)
-				General.Map.Map.ClearMarkedSidedefs(false);
+			Sidedef startControlSide = (start.GeometryType == VisualGeometryType.WALL_MIDDLE_3D ? start.GetControlLinedef().Front : start.Sidedef);
 
-			if(!texture.IsImageLoaded)
-				return;
+			//mxd
+			List<BaseVisualGeometrySidedef> selectedVisualSides = new List<BaseVisualGeometrySidedef>();
+			if(!singleselection) {
+				foreach(IVisualEventReceiver i in selectedobjects) {
+					if(i is BaseVisualGeometrySidedef) {
+						BaseVisualGeometrySidedef sd = i as BaseVisualGeometrySidedef;
+						if(!selectedVisualSides.Contains(sd)) selectedVisualSides.Add(sd);
+					}
+				}
+			}
+
+			SidedefAlignJob first = new SidedefAlignJob();
+			
+			//mxd. scaleY
+			switch(start.GeometryType) {
+				case VisualGeometryType.WALL_UPPER:
+					first.scaleY = start.Sidedef.Fields.GetValue("scaley_top", 1.0f);
+					break;
+				case VisualGeometryType.WALL_MIDDLE:
+				case VisualGeometryType.WALL_MIDDLE_3D:
+					first.scaleY = startControlSide.Fields.GetValue("scaley_mid", 1.0f);
+					break;
+				case VisualGeometryType.WALL_LOWER:
+					first.scaleY = start.Sidedef.Fields.GetValue("scaley_bottom", 1.0f);
+					break;
+			}
 
 			// Determine the Y alignment
-			float ystartalign = start.OffsetY;
-			switch(part) {
-				case SidedefPart.Upper:
-					ystartalign += GetTopOffsetY(start, start.Fields.GetValue("offsety_top", 0.0f), false);//mxd
+			float ystartalign = start.Sidedef.OffsetY;
+			switch(start.GeometryType) {
+				case VisualGeometryType.WALL_UPPER:
+					ystartalign += GetTopOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_top", 0.0f), first.scaleY, false);//mxd
 					break;
-				case SidedefPart.Middle:
-					ystartalign += GetMiddleOffsetY(start, start.Fields.GetValue("offsety_mid", 0.0f), false);//mxd
-					break; 
-				case SidedefPart.Lower:
-					ystartalign += GetBottomOffsetY(start, start.Fields.GetValue("offsety_bottom", 0.0f), false);//mxd
+				case VisualGeometryType.WALL_MIDDLE:
+					ystartalign += GetMiddleOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_mid", 0.0f), first.scaleY, false);//mxd
+					break;
+				case VisualGeometryType.WALL_MIDDLE_3D: //mxd. 3d-floors are not affected by Lower/Upper unpegged flags
+					ystartalign += startControlSide.OffsetY - (start.Sidedef.Sector.CeilHeight - startControlSide.Sector.CeilHeight);
+					ystartalign += start.Sidedef.Fields.GetValue("offsety_mid", 0.0f);
+					ystartalign += startControlSide.Fields.GetValue("offsety_mid", 0.0f);
+					break;
+				case VisualGeometryType.WALL_LOWER:
+					ystartalign += GetBottomOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_bottom", 0.0f), first.scaleY, false);//mxd
 					break;
 			}
 
 			// Begin with first sidedef
-			SidedefAlignJob first = new SidedefAlignJob();
-			first.sidedef = start;
-			first.offsetx = start.OffsetX;
-			switch(part) {
-				case SidedefPart.Upper:
-					first.offsetx += start.Fields.GetValue("offsetx_top", 0.0f);
+			first.sidedef = start.Sidedef;
+			first.offsetx = start.Sidedef.OffsetX;
+			switch(start.GeometryType) {
+				case VisualGeometryType.WALL_UPPER:
+					first.offsetx += start.Sidedef.Fields.GetValue("offsetx_top", 0.0f);
 					break;
-				case SidedefPart.Middle:
-					first.offsetx += start.Fields.GetValue("offsetx_mid", 0.0f);
+				case VisualGeometryType.WALL_MIDDLE:
+					first.offsetx += start.Sidedef.Fields.GetValue("offsetx_mid", 0.0f);
 					break;
-				case SidedefPart.Lower:
-					first.offsetx += start.Fields.GetValue("offsetx_bottom", 0.0f);
+				case VisualGeometryType.WALL_MIDDLE_3D: //mxd. Yup, 4 sets of texture offsets are used
+					first.offsetx += start.Sidedef.Fields.GetValue("offsetx_mid", 0.0f);
+					first.offsetx += startControlSide.OffsetX;
+					first.offsetx += startControlSide.Fields.GetValue("offsetx_mid", 0.0f);
+					break;
+				case VisualGeometryType.WALL_LOWER:
+					first.offsetx += start.Sidedef.Fields.GetValue("offsetx_bottom", 0.0f);
 					break;
 			}
 			first.forward = true;
-
-			//mxd. 3D floors alignment
-			if(part == SidedefPart.Middle) {
-				List<Sidedef> controlSides = getControlSides(start, true); //mxd
-				
-				foreach(Sidedef s in controlSides) {
-					if((s.LongMiddleTexture == texture.LongName) && (s.MiddleRequired() || ((s.MiddleTexture.Length > 0) && (s.MiddleTexture[0] != '-')))) {
-						first.controlSide = s;
-						break;
-					}
-				}
-			} else {
-				first.controlSide = start;
-			}
-
-			//mxd. scaleY
-			switch(part) {
-				case SidedefPart.Upper:
-					first.scaleY = start.Fields.GetValue("scaley_top", 1.0f);
-					break;
-				case SidedefPart.Middle:
-					first.scaleY = start.Fields.GetValue("scaley_mid", 1.0f);
-					break;
-				case SidedefPart.Lower:
-					first.scaleY = start.Fields.GetValue("scaley_bottom", 1.0f);
-					break;
-			}
-
+			first.controlSide = startControlSide; //mxd
 			todo.Push(first);
 
 			// Continue until nothing more to align
@@ -2860,73 +2901,82 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Get the align job to do
 				SidedefAlignJob j = todo.Pop();
 
-				bool matchtop = ((j.sidedef.LongHighTexture == texture.LongName) && j.sidedef.HighRequired());
-				bool matchbottom = ((j.sidedef.LongLowTexture == texture.LongName) && j.sidedef.LowRequired());
+				bool matchtop = (!j.sidedef.Marked && (j.sidedef.LongHighTexture == texture.LongName) && j.sidedef.HighRequired());
+				bool matchbottom = (!j.sidedef.Marked && (j.sidedef.LongLowTexture == texture.LongName) && j.sidedef.LowRequired());
 				bool matchmid = ((j.controlSide.LongMiddleTexture == texture.LongName) && (j.controlSide.MiddleRequired() || ((j.controlSide.MiddleTexture.Length > 0) && (j.controlSide.MiddleTexture[0] != '-')))); //mxd
+
+				//mxd. If there's a selection, check if matched part is actually selected
+				if(!singleselection) {
+					if(matchtop) matchtop = sidePartIsSelected(selectedVisualSides, j.sidedef, VisualGeometryType.WALL_UPPER);
+					if(matchbottom) matchbottom = sidePartIsSelected(selectedVisualSides, j.sidedef, VisualGeometryType.WALL_LOWER);
+					if(matchmid) matchmid = sidePartIsSelected(selectedVisualSides, j.sidedef, VisualGeometryType.WALL_MIDDLE) || 
+						sidePartIsSelected(selectedVisualSides, j.sidedef, VisualGeometryType.WALL_MIDDLE_3D);
+				}
+
+				if(!matchbottom && !matchtop && !matchmid) continue; //mxd
 
 				if(matchtop)
 					offsetscalex = j.sidedef.Fields.GetValue("scalex_top", 1.0f);
 				else if(matchbottom)
 					offsetscalex = j.sidedef.Fields.GetValue("scalex_bottom", 1.0f);
 				else if(matchmid)
-					offsetscalex = j.sidedef.Fields.GetValue("scalex_mid", 1.0f);
-
-				//mxd. Apply scaleY
+					offsetscalex = j.controlSide.Fields.GetValue("scalex_mid", 1.0f);
+				
 				j.sidedef.Fields.BeforeFieldsChange();
-				if(j.scaleY == 1.0f) {
-					if(matchtop && j.sidedef.Fields.GetValue("scaley_top", 1.0f) != 1.0f)
-						j.sidedef.Fields.Remove("scaley_top");
-					else if(matchmid && j.sidedef.Fields.GetValue("scaley_mid", 1.0f) != 1.0f)
-						j.sidedef.Fields.Remove("scaley_mid");
-					else if(matchbottom && j.sidedef.Fields.GetValue("scaley_bottom", 1.0f) != 1.0f)
-						j.sidedef.Fields.Remove("scaley_bottom");
-				} else {
-					if(matchtop && j.sidedef.Fields.GetValue("scaley_top", 1.0f) != j.scaleY)
-						j.sidedef.Fields["scaley_top"] = new UniValue(UniversalType.Float, j.scaleY);
-					if(matchmid && j.sidedef.Fields.GetValue("scaley_mid", 1.0f) != j.scaleY)
-						j.sidedef.Fields["scaley_mid"] = new UniValue(UniversalType.Float, j.scaleY);
-					if(matchbottom && j.sidedef.Fields.GetValue("scaley_bottom", 1.0f) != j.scaleY)
-						j.sidedef.Fields["scaley_bottom"] = new UniValue(UniversalType.Float, j.scaleY);
-				}
+				j.controlSide.Fields.BeforeFieldsChange(); //mxd
+				
+				//mxd. Apply scaleY
+				if(matchtop) UDMFTools.SetFloat(j.sidedef.Fields, "scaley_top", j.scaleY, 1.0f, false);
+				if(matchmid) UDMFTools.SetFloat(j.controlSide.Fields, "scaley_mid", j.scaleY, 1.0f, false);
+				if(matchbottom)	UDMFTools.SetFloat(j.sidedef.Fields, "scaley_bottom", j.scaleY, 1.0f, false);
 
 				if(j.forward) {
 					// Apply alignment
 					if(alignx) {
 						float offset = j.offsetx;
-						offset %= (float)texture.Width;//mxd
 						offset -= j.sidedef.OffsetX;
 
-						j.sidedef.Fields.BeforeFieldsChange();
 						if(matchtop)
-							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset);
+							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % (float)texture.Width);
 						if(matchbottom)
-							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset);
-						if(matchmid)
-							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset);
-					}
-					if(aligny) {
-						float offset = ((float)(start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + ystartalign;
-						offset -= j.sidedef.OffsetY;
+							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset % (float)texture.Width);
+						if(matchmid) {
+							if(j.sidedef.Index != j.controlSide.Index) { //mxd. if it's a part of 3d-floor 
+								offset -= j.controlSide.OffsetX;
+								offset -= j.controlSide.Fields.GetValue("offsetx_mid", 0.0f);
+							}
 
-						j.sidedef.Fields.BeforeFieldsChange();
+							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset % (float)texture.Width);
+						}
+					}
+
+					if(aligny) {
+						float offset = ((float)(start.Sidedef.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) * j.scaleY + ystartalign; //mxd
+						offset -= j.sidedef.OffsetY; //mxd
+						offset = (float)Math.Round(offset); //mxd
+						
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, GetTopOffsetY(j.sidedef, offset, true) % (float)texture.Height); //mxd
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, GetTopOffsetY(j.sidedef, offset, j.scaleY, true) % (float)texture.Height); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, GetBottomOffsetY(j.sidedef, offset, true) % (float)texture.Height); //mxd
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, GetBottomOffsetY(j.sidedef, offset, j.scaleY, true) % (float)texture.Height); //mxd
 						if(matchmid) {
 							//mxd. Side is part of a 3D floor?
 							if(j.sidedef.Index != j.controlSide.Index) {
-								offset = ((float)(start.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + ystartalign;
-								offset -= j.sidedef.OffsetY;
+								offset -= j.controlSide.OffsetY;
+								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % (float)texture.Height);
+							} else {
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % (float)texture.Height);//mxd
 							}
-							j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetMiddleOffsetY(j.sidedef, offset, true) % (float)texture.Height);//mxd
 						}
 					}
+
 					forwardoffset = j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex * offsetscalex);
 					backwardoffset = j.offsetx;
 
 					// Done this sidedef
 					j.sidedef.Marked = true;
+					j.controlSide.Marked = true;
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
@@ -2938,34 +2988,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				} else {
 					// Apply alignment
 					if(alignx) {
-						float offset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
-						offset %= (float)texture.Width; //mxd
+						float offset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex * offsetscalex);
 						offset -= j.sidedef.OffsetX;
 
-						j.sidedef.Fields.BeforeFieldsChange();
 						if(matchtop)
-							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset);
+							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % (float)texture.Width);
 						if(matchbottom)
-							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset);
-						if(matchmid)
-							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset);
+							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset % (float)texture.Width);
+						if(matchmid) {
+							if(j.sidedef.Index != j.controlSide.Index) { //mxd
+								offset -= j.controlSide.OffsetX;
+								offset -= j.controlSide.Fields.GetValue("offsetx_mid", 0.0f);
+							}
+
+							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset % (float)texture.Width);
+						}
 					}
 					if(aligny) {
-						float offset = ((float)(start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + ystartalign;
-						offset -= j.sidedef.OffsetY;
+						float offset = ((float)(start.Sidedef.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) * j.scaleY + ystartalign; //mxd
+						offset -= j.sidedef.OffsetY; //mxd
+						offset = (float)Math.Round(offset); //mxd
 
-						j.sidedef.Fields.BeforeFieldsChange();
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, GetTopOffsetY(j.sidedef, offset, true) % (float)texture.Height); //mxd
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, GetTopOffsetY(j.sidedef, offset, j.scaleY, true) % (float)texture.Height); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, GetBottomOffsetY(j.sidedef, offset, true) % (float)texture.Height); //mxd
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, GetBottomOffsetY(j.sidedef, offset, j.scaleY, true) % (float)texture.Height); //mxd
 						if(matchmid) {
 							//mxd. Side is part of a 3D floor?
 							if(j.sidedef.Index != j.controlSide.Index) {
-								offset = ((float)(start.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + ystartalign;
-								offset -= j.sidedef.OffsetY;
+								offset -= j.controlSide.OffsetY;
+								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % (float)texture.Height); //mxd
+							} else {
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % (float)texture.Height); //mxd
 							}
-							j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetMiddleOffsetY(j.sidedef, offset, true) % (float)texture.Height); //mxd
 						}
 					}
 					forwardoffset = j.offsetx;
@@ -2973,6 +3029,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Done this sidedef
 					j.sidedef.Marked = true;
+					j.controlSide.Marked = true;
 
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
@@ -2990,6 +3047,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Linedef ld in v.Linedefs) {
 				Sidedef side1 = forward ? ld.Front : ld.Back;
 				Sidedef side2 = forward ? ld.Back : ld.Front;
+
 				if((ld.Start == v) && (side1 != null) && !side1.Marked) {
 					List<Sidedef> controlSides = getControlSides(side1, udmf);//mxd
 
@@ -3002,7 +3060,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							nj.sidedef = side1;
 							nj.controlSide = s; //mxd
 							stack.Push(nj);
-							break;
 						}
 					}
 				} else if((ld.End == v) && (side2 != null) && !side2.Marked) {
@@ -3017,48 +3074,52 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							nj.sidedef = side2;
 							nj.controlSide = s; //mxd
 							stack.Push(nj);
-							break;
 						}
 					}
 				}
 			}
 		}
 
+		//mxd
+		private bool sidePartIsSelected(List<BaseVisualGeometrySidedef> selection, Sidedef side, VisualGeometryType geoType) {
+			foreach(BaseVisualGeometrySidedef vs in selection) 
+				if(vs.GeometryType == geoType && vs.Sidedef.Index == side.Index) return true;
+			return false;
+		}
+
 		//mxd. This converts offsetY from/to "normalized" offset for given upper wall
-		internal float GetTopOffsetY(Sidedef side, float offset, bool fromNormalized) {
+		internal float GetTopOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) {
 			if(side.Line.IsFlagSet(General.Map.Config.UpperUnpeggedFlag) || side.Other == null || side.Other.Sector == null)
 				return offset;
 
 			//if we don't have UpperUnpegged flag, normalize offset
-			float scale = side.Fields.GetValue("scaley_top", 1.0f);
-			float surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.CeilHeight) * scale;
+			float surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.CeilHeight) * scaleY;
 
 			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
 			return (float)Math.Round(offset - surfaceHeight);
 		}
 
 		//mxd. This converts offsetY from/to "normalized" offset for given middle wall
-		internal float GetMiddleOffsetY(Sidedef side, float offset, bool fromNormalized) {
+		internal float GetMiddleOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) {
 			if(!side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag) || side.Sector == null)
 				return offset;
 
 			//if we have LowerUnpegged flag, normalize offset
-			float scale = side.Fields.GetValue("scaley_mid", 1.0f);
-			float surfaceHeight = (side.Sector.CeilHeight - side.Sector.FloorHeight) * scale;
+			float surfaceHeight = (side.Sector.CeilHeight - side.Sector.FloorHeight) * scaleY;
 			
 			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
 			return (float)Math.Round(offset - surfaceHeight);
 		}
 
 		//mxd. This converts offsetY from/to "normalized" offset for given lower wall
-		internal float GetBottomOffsetY(Sidedef side, float offset, bool fromNormalized) {
+		internal float GetBottomOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) {
+			offset *= scaleY;
 			if(side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag) || side.Other == null || side.Other.Sector == null)
 				return offset;
 
 			//normalize offset
-			float scale = side.Fields.GetValue("scaley_bottom", 1.0f);
-			float surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.FloorHeight) * scale;
-			
+			float surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.FloorHeight) * scaleY;
+
 			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
 			return (float)Math.Round(offset - surfaceHeight);
 		}

@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
                         setDefaultUniversalProperties(sp.Sector.Fields, defaultSectorFields);
                         break;
 
-                    case VisualGeometryType.WALL_BOTTOM:
+                    case VisualGeometryType.WALL_LOWER:
                         if (firstWall == null) firstWall = sp;
                         wallsBottom.Add(sp);
                         setDefaultUniversalProperties(sp.Sidedef.Fields, defaultSidedefFields);
@@ -692,7 +692,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 case VisualGeometryType.WALL_MIDDLE:
                     return "scale$_mid";
 
-                case VisualGeometryType.WALL_BOTTOM:
+                case VisualGeometryType.WALL_LOWER:
                     return "scale$_bottom";
             }
             return "";
@@ -722,7 +722,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 case VisualGeometryType.WALL_MIDDLE:
                     return "offset$_mid";
 
-                case VisualGeometryType.WALL_BOTTOM:
+                case VisualGeometryType.WALL_LOWER:
                     return "offset$_bottom";
             }
             return "";
@@ -749,7 +749,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 case VisualGeometryType.CEILING:
                     return "lightceiling";
 
-                case VisualGeometryType.WALL_BOTTOM:
+                case VisualGeometryType.WALL_LOWER:
                 case VisualGeometryType.WALL_MIDDLE:
                 case VisualGeometryType.WALL_MIDDLE_3D:
                 case VisualGeometryType.WALL_UPPER:
@@ -766,7 +766,7 @@ namespace CodeImp.DoomBuilder.UDMFControls
                 case VisualGeometryType.CEILING:
                     return "lightceilingabsolute";
 
-                case VisualGeometryType.WALL_BOTTOM:
+                case VisualGeometryType.WALL_LOWER:
                 case VisualGeometryType.WALL_MIDDLE:
                 case VisualGeometryType.WALL_MIDDLE_3D:
                 case VisualGeometryType.WALL_UPPER:

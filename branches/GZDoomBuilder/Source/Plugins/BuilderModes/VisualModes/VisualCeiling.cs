@@ -25,6 +25,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -177,11 +178,50 @@ namespace CodeImp.DoomBuilder.BuilderModes
             //mxd
             Sector s = GetControlSector();
 			s.Fields.BeforeFieldsChange();
-            float oldx = s.Fields.GetValue("xpanningceiling", 0.0f);
-            float oldy = s.Fields.GetValue("ypanningceiling", 0.0f);
-            s.Fields["xpanningceiling"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
-            s.Fields["ypanningceiling"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
+			float nx = s.Fields.GetValue("xpanningceiling", 0.0f) + (float)xy.X;
+			float ny = s.Fields.GetValue("ypanningceiling", 0.0f) + (float)xy.Y;
+            s.Fields["xpanningceiling"] = new UniValue(UniversalType.Float, nx);
+            s.Fields["ypanningceiling"] = new UniValue(UniversalType.Float, ny);
             s.UpdateNeeded = true;
+
+			mode.SetActionResult("Changed ceiling texture offsets to " + nx + ", " + ny + ".");
+		}
+
+		//mxd. Texture scale change
+		protected override void ChangeTextureScale(float incrementX, float incrementY) {
+			Sector s = GetControlSector();
+			float scaleX = s.Fields.GetValue("xscaleceiling", 1.0f);
+			float scaleY = s.Fields.GetValue("yscaleceiling", 1.0f);
+
+			s.Fields.BeforeFieldsChange();
+
+			if(incrementX != 0) {
+				if(scaleX + incrementX == 0)
+					scaleX *= -1;
+				else
+					scaleX += incrementX;
+				UDMFTools.SetFloat(s.Fields, "xscaleceiling", scaleX, 1.0f, false);
+			}
+
+			if(incrementY != 0) {
+				if(scaleY + incrementY == 0)
+					scaleY *= -1;
+				else
+					scaleY += incrementY;
+				UDMFTools.SetFloat(s.Fields, "yscaleceiling", scaleY, 1.0f, false);
+			}
+
+			//update geometry
+			onTextureChanged();
+
+			s.UpdateNeeded = true;
+			s.UpdateCache();
+			if(s.Index != Sector.Sector.Index) {
+				Sector.Sector.UpdateNeeded = true;
+				Sector.Sector.UpdateCache();
+			}
+
+			mode.SetActionResult("Ceiling scale changed to " + scaleX + ", " + scaleY);
 		}
 
 		//mxd
@@ -190,14 +230,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			mode.CreateUndo("Reset texture offsets");
 			mode.SetActionResult("Texture offsets reset.");
+			Sector.Sector.Fields.BeforeFieldsChange();
 
-			if(Sector.Sector.Fields.ContainsKey("xpanningceiling")) {
-				Sector.Sector.Fields.Remove("xpanningceiling");
-				Sector.Sector.UpdateNeeded = true;
-			}
-			if(Sector.Sector.Fields.ContainsKey("ypanningceiling")) {
-				Sector.Sector.Fields.Remove("ypanningceiling");
-				Sector.Sector.UpdateNeeded = true;
+			string[] keys = new string[] { "xpanningceiling", "ypanningceiling", "xscaleceiling", "yscaleceiling", "rotationceiling" };
+
+			foreach(string key in keys){
+				if(Sector.Sector.Fields.ContainsKey(key)) {
+					Sector.Sector.Fields.Remove(key);
+					Sector.Sector.UpdateNeeded = true;
+				}
 			}
 
 			if(Sector.Sector.UpdateNeeded)
@@ -212,7 +253,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode.CreateUndo("Paste ceiling " + BuilderPlug.Me.CopiedFlat);
 				mode.SetActionResult("Pasted flat " + BuilderPlug.Me.CopiedFlat + " on ceiling.");
 				SetTexture(BuilderPlug.Me.CopiedFlat);
-				this.Setup();
 
 				//mxd. 3D floors may need updating...
 				onTextureChanged();

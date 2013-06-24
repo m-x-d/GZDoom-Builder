@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void OnChangeTargetHeight(int amount) { }
 		public void OnChangeTargetBrightness(bool up) { }
 		public void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection) { }
+		public virtual void OnChangeTextureScale(float incrementX, float incrementY) { } //mxd
 		public void OnResetTextureOffset() { }
 		public void OnSelectTexture() { }
 		public void OnCopyTexture() { }

@@ -236,7 +236,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.brightness.Location = new System.Drawing.Point(177, 75);
 			this.brightness.Name = "brightness";
-			this.brightness.Size = new System.Drawing.Size(56, 14);
+			this.brightness.Size = new System.Drawing.Size(38, 14);
 			this.brightness.TabIndex = 17;
 			this.brightness.Text = "0";
 			// 
@@ -244,7 +244,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.height.Location = new System.Drawing.Point(177, 55);
 			this.height.Name = "height";
-			this.height.Size = new System.Drawing.Size(56, 14);
+			this.height.Size = new System.Drawing.Size(38, 14);
 			this.height.TabIndex = 11;
 			this.height.Text = "0";
 			// 
@@ -457,7 +457,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// labelFloorTextureSize
 			// 
 			this.labelFloorTextureSize.AutoSize = true;
-			this.labelFloorTextureSize.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.labelFloorTextureSize.BackColor = System.Drawing.Color.Black;
 			this.labelFloorTextureSize.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelFloorTextureSize.ForeColor = System.Drawing.Color.White;
 			this.labelFloorTextureSize.Location = new System.Drawing.Point(3, 1);

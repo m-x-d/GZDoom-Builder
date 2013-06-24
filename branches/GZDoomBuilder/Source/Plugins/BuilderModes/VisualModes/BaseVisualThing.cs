@@ -441,6 +441,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnMouseMove(MouseEventArgs e) { }
 		public virtual void OnChangeTargetBrightness(bool up) { }
 		public virtual void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection) { }
+		public virtual void OnChangeTextureScale(float incrementX, float incrementY) { } //mxd
 		public virtual void OnSelectTexture() { }
 		public virtual void OnCopyTexture() { }
 		public virtual void OnPasteTexture() { }
@@ -570,7 +571,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
         }
 
         //mxd
-        public void OnRotate(int ammount) {
+        public void Rotate(int ammount) {
             if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
                 undoticket = mode.CreateUndo("Rotate thing");
             Thing.Rotate(ammount);
