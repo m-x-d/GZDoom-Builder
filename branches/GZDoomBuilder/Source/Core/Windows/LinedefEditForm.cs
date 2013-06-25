@@ -118,7 +118,6 @@ namespace CodeImp.DoomBuilder.Windows
 				frontUdmfFlags = new List<CheckBox>() { cbLightAbsoluteFront, cblightfogFront, cbnodecalsFront, cbnofakecontrastFront, cbWrapMidtexFront, cbsmoothlightingFront, cbClipMidtexFront };
 				backUdmfControls = new List<PairedFieldsControl>() { pfcBackOffsetTop, pfcBackOffsetMid, pfcBackOffsetBottom, pfcBackScaleTop, pfcBackScaleMid, pfcBackScaleBottom };
 				backUdmfFlags = new List<CheckBox>() { cbLightAbsoluteBack, cblightfogBack, cbnodecalsBack, cbnofakecontrastBack, cbWrapMidtexBack, cbsmoothlightingBack, cbClipMidtexBack };
-				fsAlpha.SetLimits(0f, 1f);
 			} else {
 				tabs.TabPages.Remove(tabcustom);
 				settingsGroup.Visible = false;
@@ -179,7 +178,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.FormatInterface.HasCustomFields) {
 				string renderStyle = fl.Fields.GetValue("renderstyle", "");
 				cbRenderStyle.SelectedIndex = (renderStyle == "add" ? 1 : 0);
-				fsAlpha.SetValueFrom(fl.Fields);
+				//fsAlpha.SetValueFrom(fl.Fields);
+				alpha.Text = General.Clamp(fl.Fields.GetValue("alpha", 1.0f), 0f, 1f).ToString();
 				lockNumber.Text = fl.Fields.GetValue("locknumber", 0).ToString();
 			}
 
@@ -227,8 +227,7 @@ namespace CodeImp.DoomBuilder.Windows
 					}
                 }
 
-                frontoffsetx.Text = fl.Front.OffsetX.ToString();
-                frontoffsety.Text = fl.Front.OffsetY.ToString();
+				frontTextureOffset.SetValues(fl.Front.OffsetX, fl.Front.OffsetY); //mxd
 			}
 
 			// Back settings
@@ -257,8 +256,7 @@ namespace CodeImp.DoomBuilder.Windows
 					}
                 }
  
-                backoffsetx.Text = fl.Back.OffsetX.ToString();
-                backoffsety.Text = fl.Back.OffsetY.ToString();
+				backTextureOffset.SetValues(fl.Back.OffsetX, fl.Back.OffsetY); //mxd
 			}
 
 			////////////////////////////////////////////////////////////////////////
@@ -311,8 +309,10 @@ namespace CodeImp.DoomBuilder.Windows
 					if(cbRenderStyle.SelectedIndex != -1 && i != cbRenderStyle.SelectedIndex)
 						cbRenderStyle.SelectedIndex = -1;
 
-					fsAlpha.SetValueFrom(l.Fields);
-					if(!string.IsNullOrEmpty(lockNumber.Text) && lockNumber.GetResult(0) != fl.Fields.GetValue("locknumber", 0))
+					if(!string.IsNullOrEmpty(alpha.Text) && General.Clamp(alpha.GetResultFloat(1.0f), 0f, 1f) != l.Fields.GetValue("alpha", 1.0f))
+						alpha.Text = "";
+
+					if(!string.IsNullOrEmpty(lockNumber.Text) && lockNumber.GetResult(0) != l.Fields.GetValue("locknumber", 0))
 						lockNumber.Text = "";
 				}
 
@@ -379,8 +379,7 @@ namespace CodeImp.DoomBuilder.Windows
 						}
                     }
  
-                    if (frontoffsetx.Text != l.Front.OffsetX.ToString()) frontoffsetx.Text = "";
-                    if (frontoffsety.Text != l.Front.OffsetY.ToString()) frontoffsety.Text = "";
+					frontTextureOffset.SetValues(l.Front.OffsetX, l.Front.OffsetY); //mxd
 				}
 
 				// Back settings
@@ -416,8 +415,7 @@ namespace CodeImp.DoomBuilder.Windows
 						}
                     }
  
-                    if (backoffsetx.Text != l.Back.OffsetX.ToString()) backoffsetx.Text = "";
-                    if (backoffsety.Text != l.Back.OffsetY.ToString()) backoffsety.Text = "";
+					backTextureOffset.SetValues(l.Back.OffsetX, l.Back.OffsetY); //mxd
 				}
 				
 				// Custom fields
@@ -534,6 +532,7 @@ namespace CodeImp.DoomBuilder.Windows
             bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
             bool hasArg0str = General.Map.UDMF && hasAcs && !string.IsNullOrEmpty(arg0str.Text);
 			int lockNum = lockNumber.GetResult(0);
+			float alphaVal = General.Clamp(alpha.GetResultFloat(1.0f), 0f, 1.0f);
 			
 			// Go for all the lines
 			foreach(Linedef l in lines)
@@ -628,8 +627,8 @@ namespace CodeImp.DoomBuilder.Windows
 									}
                                 }
  
-                                l.Front.OffsetX = General.Clamp(frontoffsetx.GetResult(l.Front.OffsetX), min, max);
-								l.Front.OffsetY = General.Clamp(frontoffsety.GetResult(l.Front.OffsetY), min, max);
+								l.Front.OffsetX = General.Clamp(frontTextureOffset.GetValue1(l.Front.OffsetX), min, max); //mxd
+								l.Front.OffsetY = General.Clamp(frontTextureOffset.GetValue2(l.Front.OffsetY), min, max); //mxd
 
 								l.Front.SetTextureHigh(fronthigh.GetResult(l.Front.HighTexture));
 								l.Front.SetTextureMid(frontmid.GetResult(l.Front.MiddleTexture));
@@ -693,8 +692,8 @@ namespace CodeImp.DoomBuilder.Windows
 									}
 								}
 
-                                l.Back.OffsetX = General.Clamp(backoffsetx.GetResult(l.Back.OffsetX), min, max);
-								l.Back.OffsetY = General.Clamp(backoffsety.GetResult(l.Back.OffsetY), min, max);
+								l.Back.OffsetX = General.Clamp(backTextureOffset.GetValue1(l.Back.OffsetX), min, max); //mxd
+								l.Back.OffsetY = General.Clamp(backTextureOffset.GetValue2(l.Back.OffsetY), min, max); //mxd
 
 								l.Back.SetTextureHigh(backhigh.GetResult(l.Back.HighTexture));
 								l.Back.SetTextureMid(backmid.GetResult(l.Back.MiddleTexture));
@@ -716,12 +715,8 @@ namespace CodeImp.DoomBuilder.Windows
 						l.Fields.Remove("renderstyle");
 					}
 
-					fsAlpha.ApplyTo(l.Fields);
-
-					if(lockNum > 0)
-						l.Fields["locknumber"] = new UniValue(UniversalType.Integer, lockNum);
-					else if(l.Fields.ContainsKey("locknumber"))
-						l.Fields.Remove("locknumber");
+					UDMFTools.SetFloat(l.Fields, "alpha", alphaVal, 1.0f, false);
+					UDMFTools.SetInteger(l.Fields, "locknumber", lockNum, 0, false);
 				}
 
                 //mxd. apply arg0str

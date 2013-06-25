@@ -16,20 +16,29 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public string Field1 { get { return field1; } set { field1 = value; } }
 		public string Field2 { get { return field2; } set { field2 = value; } }
 		public bool AllowDecimal { get { return value1.AllowDecimal; } set { value1.AllowDecimal = value; value2.AllowDecimal = value; } }
+		public float ButtonStep { get { return value1.ButtonStep; } set { value1.ButtonStep = value; value2.ButtonStep = value; } }
 		
 		public PairedFieldsControl() {
 			InitializeComponent();
 		}
 
 		public void SetValuesFrom(UniFields fields) {
-			float v1 = UDMFTools.GetFloat(fields, field1, defaultValue);
-			string newValue = (value1.AllowDecimal ? String.Format("{0:0.0}", v1) : v1.ToString());
-			value1.Text = ((!string.IsNullOrEmpty(value1.Text) && value1.Text != newValue) ? "" : newValue);
+			string newValue1;
+			string newValue2;
 
-			float v2 = UDMFTools.GetFloat(fields, field2, defaultValue);
-			newValue = (value2.AllowDecimal ? String.Format("{0:0.0}", v2) : v2.ToString());
-			value2.Text = ((!string.IsNullOrEmpty(value2.Text) && value2.Text != newValue) ? "" : newValue);
+			if(AllowDecimal) {
+				float val1 = UDMFTools.GetFloat(fields, field1, defaultValue);
+				newValue1 = (val1 == Math.Round(val1) ? val1.ToString("0.0") : val1.ToString());
 
+				float val2 = UDMFTools.GetFloat(fields, field2, defaultValue);
+				newValue2 = (val2 == Math.Round(val2) ? val2.ToString("0.0") : val2.ToString());
+			} else {
+				newValue1 = UDMFTools.GetFloat(fields, field1, defaultValue).ToString();
+				newValue2 = UDMFTools.GetFloat(fields, field2, defaultValue).ToString();
+			}
+
+			value1.Text = ((!string.IsNullOrEmpty(value1.Text) && value1.Text != newValue1) ? "" : newValue1);
+			value2.Text = ((!string.IsNullOrEmpty(value2.Text) && value2.Text != newValue2) ? "" : newValue2);
 			checkValues();
 		}
 

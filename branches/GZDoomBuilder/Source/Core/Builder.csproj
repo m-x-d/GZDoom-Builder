@@ -697,6 +697,18 @@
     <Compile Include="General\ErrorLogger.cs" />
     <Compile Include="General\SavePurpose.cs" />
     <Compile Include="Geometry\CurveTools.cs" />
+    <Compile Include="GZBuilder\Controls\AngleControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\AngleControl.Designer.cs">
+      <DependentUpon>AngleControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\ColorFieldsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\ColorFieldsControl.Designer.cs">
+      <DependentUpon>ColorFieldsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="GZBuilder\Controls\CustomLinedefColorProperties.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -709,12 +721,6 @@
     <Compile Include="GZBuilder\Controls\CustomLinedefColorsControl.designer.cs">
       <DependentUpon>CustomLinedefColorsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GZBuilder\Controls\FloatFieldsSlider.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GZBuilder\Controls\FloatFieldsSlider.designer.cs">
-      <DependentUpon>FloatFieldsSlider.cs</DependentUpon>
-    </Compile>
     <Compile Include="GZBuilder\Controls\IconListBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -723,6 +729,12 @@
     </Compile>
     <Compile Include="GZBuilder\Controls\PairedFieldsControl.Designer.cs">
       <DependentUpon>PairedFieldsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\PairedIntControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\PairedIntControl.Designer.cs">
+      <DependentUpon>PairedIntControl.cs</DependentUpon>
     </Compile>
     <Compile Include="GZBuilder\Controls\TagSelector.cs">
       <SubType>UserControl</SubType>
@@ -804,6 +816,12 @@
     <Compile Include="Windows\ScriptFindReplaceForm.Designer.cs">
       <DependentUpon>ScriptFindReplaceForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\SectorEditFormUDMF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\SectorEditFormUDMF.Designer.cs">
+      <DependentUpon>SectorEditFormUDMF.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\SetDefaultTexturesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -845,17 +863,23 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThingBrowserControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GZBuilder\Controls\AngleControl.resx">
+      <DependentUpon>AngleControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GZBuilder\Controls\ColorFieldsControl.resx">
+      <DependentUpon>ColorFieldsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GZBuilder\Controls\CustomLinedefColorProperties.resx">
       <DependentUpon>CustomLinedefColorProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GZBuilder\Controls\CustomLinedefColorsControl.resx">
       <DependentUpon>CustomLinedefColorsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Controls\FloatFieldsSlider.resx">
-      <DependentUpon>FloatFieldsSlider.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GZBuilder\Controls\PairedFieldsControl.resx">
       <DependentUpon>PairedFieldsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GZBuilder\Controls\PairedIntControl.resx">
+      <DependentUpon>PairedIntControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GZBuilder\Controls\TagSelector.resx">
       <DependentUpon>TagSelector.cs</DependentUpon>
@@ -1021,6 +1045,9 @@
     <EmbeddedResource Include="Windows\ScriptFindReplaceForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ScriptFindReplaceForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\SectorEditFormUDMF.resx">
+      <DependentUpon>SectorEditFormUDMF.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\SetDefaultTexturesForm.resx">
       <DependentUpon>SetDefaultTexturesForm.cs</DependentUpon>
