@@ -2986,10 +2986,17 @@ namespace CodeImp.DoomBuilder.Windows
 			DialogResult result;
 
 			// Show sector edit dialog
-			SectorEditForm f = new SectorEditForm();
-			f.Setup(sectors);
-			result = f.ShowDialog(this);
-			f.Dispose();
+			if(General.Map.UDMF){ //mxd
+				SectorEditFormUDMF f = new SectorEditFormUDMF();
+				f.Setup(sectors);
+				result = f.ShowDialog(this);
+				f.Dispose();
+			}else{
+				SectorEditForm f = new SectorEditForm();
+				f.Setup(sectors);
+				result = f.ShowDialog(this);
+				f.Dispose();
+			}
 
 			return result;
 		}

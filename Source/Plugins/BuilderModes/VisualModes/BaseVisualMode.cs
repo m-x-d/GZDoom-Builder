@@ -3113,7 +3113,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. This converts offsetY from/to "normalized" offset for given lower wall
 		internal float GetBottomOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) {
-			offset *= scaleY;
 			if(side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag) || side.Other == null || side.Other.Sector == null)
 				return offset;
 
