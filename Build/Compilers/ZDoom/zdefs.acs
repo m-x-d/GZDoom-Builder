@@ -698,6 +698,24 @@
 #define ATTN_IDLE				1.001
 #define ATTN_STATIC				3.0		// dimish very rapidly with distance
 
+// Identifiers for PlayActorSound
+
+#define SOUND_See				0
+#define SOUND_Attack			1
+#define SOUND_Pain				2
+#define SOUND_Death				3
+#define SOUND_Active			4
+#define SOUND_Use				5
+#define SOUND_Bounce			6
+#define SOUND_WallBounce		7
+#define SOUND_CrushPain			8
+#define SOUND_Howl				9
+
+// Flags for SpawnDecal
+
+#define SDF_ABSANGLE			1
+#define SDF_PERMANENT			2
+
 // Actor pointer selectors
 
 #DEFINE	AAPTR_DEFAULT 0
