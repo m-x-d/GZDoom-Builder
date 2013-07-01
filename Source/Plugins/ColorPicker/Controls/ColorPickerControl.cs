@@ -247,19 +247,19 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 
                 float c;
                 if (!float.TryParse(parts[0].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out c)) return;
-                rgb.Red = (int)(c * 255);
+                rgb.Red = (int)(General.Clamp(Math.Abs(c), 0.0f, 1.0f) * 255);
 
                 if (!float.TryParse(parts[1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out c)) return;
-                rgb.Green = (int)(c * 255);
+				rgb.Green = (int)(General.Clamp(Math.Abs(c), 0.0f, 1.0f) * 255);
 
                 if (!float.TryParse(parts[2].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out c)) return;
-                rgb.Blue = (int)(c * 255);
+				rgb.Blue = (int)(General.Clamp(Math.Abs(c), 0.0f, 1.0f) * 255);
 
                 changeType = ChangeStyle.RGB;
                 updateColorInfo(rgb);
                 this.Invalidate();
             } else if (COLOR_INFO[colorInfoMode].ToString() == COLOR_INFO_HEX) {
-                string hexColor = tbFloatVals.Text;
+                string hexColor = tbFloatVals.Text.Trim().Replace("-", "");
                 if (hexColor.Length != 6) return;
 
                 ColorHandler.RGB rgb = new ColorHandler.RGB();
