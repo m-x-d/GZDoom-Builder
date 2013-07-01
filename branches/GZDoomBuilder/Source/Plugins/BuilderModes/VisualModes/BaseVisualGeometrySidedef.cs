@@ -1026,8 +1026,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((Math.Sign(dragdeltaz.x) < 0) || (Math.Sign(dragdeltaz.y) < 0) || (Math.Sign(dragdeltaz.z) < 0)) offsety = -offsety;
 			
 			// Apply offsets
-			int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
-			int newoffsety = startoffsety + (int)Math.Round(offsety);
+			int newoffsetx = (General.Interface.CtrlState && !General.Interface.ShiftState ? startoffsetx : startoffsetx - (int)Math.Round(offsetx)); //mxd
+			int newoffsety = (!General.Interface.CtrlState && General.Interface.ShiftState ? startoffsety : startoffsety + (int)Math.Round(offsety)); //mxd
 			mode.ApplyTextureOffsetChange(prevoffsetx - newoffsetx, prevoffsety - newoffsety);
 			prevoffsetx = newoffsetx;
 			prevoffsety = newoffsety;

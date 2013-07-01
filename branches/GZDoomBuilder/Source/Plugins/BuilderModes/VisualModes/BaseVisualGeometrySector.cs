@@ -123,6 +123,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float offsetx = dragdelta.x;
 			float offsety = dragdelta.y;
 
+			bool lockX = General.Interface.CtrlState && !General.Interface.ShiftState;
+			bool lockY = !General.Interface.CtrlState && General.Interface.ShiftState;
+
+			if(lockX || lockY) {
+				float camAngle = Angle2D.RadToDeg(General.Map.VisualCamera.AngleXY);
+				
+				if(camAngle > 315 || camAngle < 46) {
+					if(lockX) offsetx = 0;
+					if(lockY) offsety = 0;
+				} else if(camAngle > 225) {
+					if(lockX) offsety = 0;
+					if(lockY) offsetx = 0;
+				} else if(camAngle > 135) {
+					if(lockX) offsetx = 0;
+					if(lockY) offsety = 0;
+				} else {
+					if(lockX) offsety = 0;
+					if(lockY) offsetx = 0;
+				}
+			}
+
             //mxd. Modify offsets based on surface and camera angles
             if (General.Map.UDMF) {
 				float angle = 0;
