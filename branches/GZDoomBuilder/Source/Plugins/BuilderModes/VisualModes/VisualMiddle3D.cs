@@ -222,7 +222,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Effect3DFloor ef in sd.ExtraFloors)
 				{
 					//mxd. Walls of solid 3D floors shouldn't be clipped by translucent 3D floors
-					if(extrafloor.RenderInside || (!extrafloor.RenderInside && !ef.RenderInside)){
+					if(extrafloor.Alpha < 255 || (!extrafloor.RenderInside && !ef.RenderInside && extrafloor.Alpha == 255 & ef.Alpha == 255)) {
 						int num = polygons.Count;
 						for(int pi = 0; pi < num; pi++)
 						{
