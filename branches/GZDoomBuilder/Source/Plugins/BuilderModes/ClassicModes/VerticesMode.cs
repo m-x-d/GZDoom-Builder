@@ -804,6 +804,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Dictionary<Sector, Vector2D> toMerge = new Dictionary<Sector, Vector2D>();
 				List<Sector> possiblyInvalidSectors = new List<Sector>();
 				List<Sector> affectedSectors = new List<Sector>();
+				List<Linedef> linesToRedraw = new List<Linedef>();
 
 				//mxd
 				foreach(Vertex v in selected) {
@@ -858,9 +859,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
 
 									//if both linedefs are on the same line
-									if(ld1.AngleDeg == ld2.AngleDeg || ld1.AngleDeg == ld2.AngleDeg - 180) {
+									if(ld1.AngleDeg == ld2.AngleDeg || ld1.AngleDeg == ld2.AngleDeg - 180 || selected.Contains(v1) || selected.Contains(v2)) {
 										if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
 										ld2.Dispose();
+										linesToRedraw.Add(ld1);
 									} else {
 										//mxd. Check if removing a vertex will collapse a sector with 3 "outer" sides
 										bool skip = false;
@@ -991,6 +993,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				//mxd
+				foreach (Linedef line in linesToRedraw) {
+					if(line.IsDisposed) continue;
+
+					DrawnVertex dv1 = new DrawnVertex();
+					DrawnVertex dv2 = new DrawnVertex();
+					dv1.stitchline = true;
+					dv2.stitchline = true;
+					dv1.stitch = true;
+					dv2.stitch = true;
+					dv1.pos = line.Start.Position;
+					dv2.pos = line.End.Position;
+
+					Tools.DrawLines(new List<DrawnVertex>() { dv1, dv2 });
+					List<Linedef> newLines = General.Map.Map.GetMarkedLinedefs(true);
+					if(newLines.Count > 0)
+						redrawnLines.AddRange(newLines);
+
+					General.Map.Map.Update();
+					General.Map.IsChanged = true;
+				}
+
+				//mxd
 				Tools.MergeInvalidSectors(toMerge);
 
 				foreach(Sector s in possiblyInvalidSectors) {
@@ -1014,8 +1038,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Update cache values
-				General.Map.IsChanged = true;
 				General.Map.Map.Update();
+				General.Map.IsChanged = true;
 
 				//mxd. Because... well... some new vertices might have been created during vertex removal process...
 				if(General.Map.Map.GetSelectedVertices(true).Count > 0) {
@@ -1026,8 +1050,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					mergeLines(redrawnLines);
 
 					// Update cache values
-					General.Map.IsChanged = true;
 					General.Map.Map.Update();
+					General.Map.IsChanged = true;
 				}
 
 				// Invoke a new mousemove so that the highlighted item updates
