@@ -77,12 +77,12 @@ namespace CodeImp.DoomBuilder.Controls
 			bool showExtededCeilingInfo = false;
 			if(General.Map.UDMF && s.Fields != null) {
 				//light
-				if(s.Fields.ContainsKey("lightceiling")) {
+				if(s.Fields.ContainsKey("lightceiling") || s.Fields.ContainsKey("lightceilingabsolute")) {
 					showExtededCeilingInfo = true;
 					ceilingLight.Enabled = true;
 					ceilingLightLabel.Enabled = true;
 
-                    int cl = (int)s.Fields["lightceiling"].Value;
+					int cl = s.Fields.GetValue("lightceiling", 0);
 
 					if(s.Fields.GetValue("lightceilingabsolute", false))
                         ceilingLight.Text = cl + " (abs.)";
@@ -95,12 +95,12 @@ namespace CodeImp.DoomBuilder.Controls
 					ceilingLightLabel.Enabled = false;
 				}
 
-				if(s.Fields.ContainsKey("lightfloor")) {
+				if(s.Fields.ContainsKey("lightfloor") || s.Fields.ContainsKey("lightfloorabsolute")) {
 					showExtededFloorInfo = true;
 					floorLight.Enabled = true;
 					floorLightLabel.Enabled = true;
 
-                    int fl = (int)s.Fields["lightfloor"].Value;
+					int fl = s.Fields.GetValue("lightfloor", 0);
 
 					if(s.Fields.GetValue("lightfloorabsolute", false))
 						floorLight.Text = fl + " (abs.)";
