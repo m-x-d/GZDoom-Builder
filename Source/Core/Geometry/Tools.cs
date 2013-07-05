@@ -604,7 +604,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(true, true);
 					}
 					// Added 23-9-08, can we do this or will it break things?
-					else
+					else if(!original.Sector.IsDisposed) //mxd
 					{
 						// Link to the new sector
 						ls.Line.Front.SetSector(original.Sector);
@@ -624,7 +624,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(true, true);
 					}
 					// Added 23-9-08, can we do this or will it break things?
-					else
+					else if(!original.Sector.IsDisposed) //mxd
 					{
 						// Link to the new sector
 						ls.Line.Back.SetSector(original.Sector);
