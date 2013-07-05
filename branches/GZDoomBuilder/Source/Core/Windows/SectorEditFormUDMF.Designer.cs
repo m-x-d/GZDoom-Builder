@@ -36,6 +36,8 @@
 			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label5;
 			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
+			this.fadeColor = new CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl();
+			this.lightColor = new CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl();
 			this.brightness = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.desaturation = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.soundSequence = new System.Windows.Forms.TextBox();
@@ -87,8 +89,6 @@
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
-			this.lightColor = new CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl();
-			this.fadeColor = new CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl();
 			groupaction = new System.Windows.Forms.GroupBox();
 			groupeffect = new System.Windows.Forms.GroupBox();
 			label14 = new System.Windows.Forms.Label();
@@ -153,6 +153,26 @@
 			groupeffect.TabIndex = 1;
 			groupeffect.TabStop = false;
 			groupeffect.Text = " Effects:";
+			// 
+			// fadeColor
+			// 
+			this.fadeColor.DefaultValue = 0;
+			this.fadeColor.Field = "fadecolor";
+			this.fadeColor.Label = "Fade:";
+			this.fadeColor.Location = new System.Drawing.Point(223, 111);
+			this.fadeColor.Name = "fadeColor";
+			this.fadeColor.Size = new System.Drawing.Size(207, 31);
+			this.fadeColor.TabIndex = 30;
+			// 
+			// lightColor
+			// 
+			this.lightColor.DefaultValue = 16777215;
+			this.lightColor.Field = "lightcolor";
+			this.lightColor.Label = "Light:";
+			this.lightColor.Location = new System.Drawing.Point(223, 82);
+			this.lightColor.Name = "lightColor";
+			this.lightColor.Size = new System.Drawing.Size(207, 29);
+			this.lightColor.TabIndex = 29;
 			// 
 			// brightness
 			// 
@@ -573,7 +593,7 @@
 			// floorBrightness
 			// 
 			this.floorBrightness.AllowDecimal = false;
-			this.floorBrightness.AllowNegative = false;
+			this.floorBrightness.AllowNegative = true;
 			this.floorBrightness.AllowRelative = true;
 			this.floorBrightness.ButtonStep = 16F;
 			this.floorBrightness.Location = new System.Drawing.Point(118, 85);
@@ -581,7 +601,7 @@
 			this.floorBrightness.Size = new System.Drawing.Size(62, 24);
 			this.floorBrightness.StepValues = null;
 			this.floorBrightness.TabIndex = 48;
-			this.floorBrightness.Tag = "lightceiling";
+			this.floorBrightness.Tag = "lightfloor";
 			// 
 			// floorRenderStyle
 			// 
@@ -743,7 +763,7 @@
 			// ceilBrightness
 			// 
 			this.ceilBrightness.AllowDecimal = false;
-			this.ceilBrightness.AllowNegative = false;
+			this.ceilBrightness.AllowNegative = true;
 			this.ceilBrightness.AllowRelative = true;
 			this.ceilBrightness.ButtonStep = 16F;
 			this.ceilBrightness.Location = new System.Drawing.Point(118, 85);
@@ -854,26 +874,6 @@
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
-			// 
-			// lightColor
-			// 
-			this.lightColor.DefaultValue = 16777215;
-			this.lightColor.Field = "lightcolor";
-			this.lightColor.Label = "Light:";
-			this.lightColor.Location = new System.Drawing.Point(223, 82);
-			this.lightColor.Name = "lightColor";
-			this.lightColor.Size = new System.Drawing.Size(207, 29);
-			this.lightColor.TabIndex = 29;
-			// 
-			// fadeColor
-			// 
-			this.fadeColor.DefaultValue = 0;
-			this.fadeColor.Field = "fadecolor";
-			this.fadeColor.Label = "Fade:";
-			this.fadeColor.Location = new System.Drawing.Point(223, 111);
-			this.fadeColor.Name = "fadeColor";
-			this.fadeColor.Size = new System.Drawing.Size(207, 31);
-			this.fadeColor.TabIndex = 30;
 			// 
 			// SectorEditFormUDMF
 			// 
