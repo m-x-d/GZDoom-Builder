@@ -774,294 +774,151 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
-		[BeginAction("deleteitem", BaseAction = true)]
+		[BeginAction("deleteitem", BaseAction = true)] //mxd
 		public void DeleteItem() {
-			deleteItem(true, new List<Linedef>()); //mxd
-		}
-
-		//mxd. MMMMMMONSTROUS solution!
-		private void deleteItem(bool createUndo, List<Linedef> redrawnLines)
-		{
 			// Make list of selected vertices
 			ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
-			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
-
-			// Anything to do?
-			if(selected.Count > 0)
-			{
-				// Make undo
-				if(createUndo) { //mxd
-					if(selected.Count > 1) {
-						General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " vertices");
-						General.Interface.DisplayStatus(StatusType.Action, "Deleted " + selected.Count + " vertices.");
-					} else {
-						General.Map.UndoRedo.CreateUndo("Delete vertex");
-						General.Interface.DisplayStatus(StatusType.Action, "Deleted a vertex.");
-					}
-				}
-
-				//mxd. Find sectors, affected by vertex removal.
-				Dictionary<Sector, Vector2D> toMerge = new Dictionary<Sector, Vector2D>();
-				List<Sector> possiblyInvalidSectors = new List<Sector>();
-				List<Sector> affectedSectors = new List<Sector>();
-				List<Linedef> linesToRedraw = new List<Linedef>();
-
-				//mxd
-				foreach(Vertex v in selected) {
-					foreach(Linedef l in v.Linedefs) {
-						if(l.Front != null && l.Front.Sector != null){
-							if(!affectedSectors.Contains(l.Front.Sector))
-								affectedSectors.Add(l.Front.Sector);
-
-							foreach(Sidedef side in l.Front.Sector.Sidedefs) {
-								if(side.Other != null && side.Other.Sector != null && !affectedSectors.Contains(side.Other.Sector))
-									affectedSectors.Add(side.Other.Sector);
-							}
-
-							if(l.Front.Sector.Sidedefs.Count < 4 && !toMerge.ContainsKey(l.Front.Sector))
-								toMerge.Add(l.Front.Sector, new Vector2D(l.Front.Sector.BBox.Location.X + l.Front.Sector.BBox.Width/2, l.Front.Sector.BBox.Location.Y + l.Front.Sector.BBox.Height/2));
-						}
-
-						if(l.Back != null && l.Back.Sector != null) {
-							if(!affectedSectors.Contains(l.Back.Sector))
-								affectedSectors.Add(l.Back.Sector);
-
-							foreach(Sidedef side in l.Back.Sector.Sidedefs) {
-								if(side.Other != null && side.Other.Sector != null && !affectedSectors.Contains(side.Other.Sector))
-									affectedSectors.Add(side.Other.Sector);
-							}
-
-							if(l.Back.Sector.Sidedefs.Count < 4 && !toMerge.ContainsKey(l.Back.Sector))
-								toMerge.Add(l.Back.Sector, new Vector2D(l.Back.Sector.BBox.Location.X + l.Back.Sector.BBox.Width / 2, l.Back.Sector.BBox.Location.Y + l.Back.Sector.BBox.Height / 2));
-						}
-					}
-				}
-
-				// Go for all vertices that need to be removed
-				foreach(Vertex v in selected)
-				{
-					// Not already removed automatically?
-					if(!v.IsDisposed)
-					{
-						// If the vertex only has 2 linedefs attached, then merge the linedefs
-						if(v.Linedefs.Count == 2) {
-							Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
-							Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
-
-							if(!ld1.IsDisposed && !ld2.IsDisposed) {
-								//mxd. We don't want to do this if it will result in sector with 2 sidedefs
-								if((ld1.Front != null && ld1.Front.Sector != null && ld1.Front.Sector.Sidedefs.Count > 3) ||
-									(ld1.Back != null && ld1.Back.Sector != null && ld1.Back.Sector.Sidedefs.Count > 3) ||
-									(ld2.Front != null && ld2.Front.Sector != null && ld2.Front.Sector.Sidedefs.Count > 3) ||
-									(ld2.Back != null && ld2.Back.Sector != null && ld2.Back.Sector.Sidedefs.Count > 3)) {
-
-									Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
-									Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
-
-									//if both linedefs are on the same line
-									if(ld1.AngleDeg == ld2.AngleDeg || ld1.AngleDeg == ld2.AngleDeg - 180 || selected.Contains(v1) || selected.Contains(v2)) {
-										if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
-										ld2.Dispose();
-										linesToRedraw.Add(ld1);
-									} else {
-										//mxd. Check if removing a vertex will collapse a sector with 3 "outer" sides
-										bool skip = false;
-
-										if(ld1.Front != null) {
-											foreach(Sidedef side in ld1.Front.Sector.Sidedefs) {
-												if(!possiblyInvalidSectors.Contains(ld1.Front.Sector) && (side.Line.Start == v1 && side.Line.End == v2) || side.Line.Start == v2 && side.Line.End == v1) {
-													possiblyInvalidSectors.Add(ld1.Front.Sector);
-													skip = true;
-												}
-											}
-										}
-
-										if(ld2.Front != null) {
-											foreach(Sidedef side in ld2.Front.Sector.Sidedefs) {
-												if(!possiblyInvalidSectors.Contains(ld2.Front.Sector) && (side.Line.Start == v1 && side.Line.End == v2) || side.Line.Start == v2 && side.Line.End == v1) {
-													possiblyInvalidSectors.Add(ld2.Front.Sector);
-													skip = true;
-												}
-											}
-										}
-
-										if(ld1.Back != null) {
-											foreach(Sidedef side in ld1.Back.Sector.Sidedefs) {
-												if(!possiblyInvalidSectors.Contains(ld1.Back.Sector) && (side.Line.Start == v1 && side.Line.End == v2) || side.Line.Start == v2 && side.Line.End == v1) {
-													possiblyInvalidSectors.Add(ld1.Back.Sector);
-													skip = true;
-												}
-											}
-										}
-
-										if(ld2.Back != null) {
-											foreach(Sidedef side in ld2.Back.Sector.Sidedefs) {
-												if(!possiblyInvalidSectors.Contains(ld2.Back.Sector) && (side.Line.Start == v1 && side.Line.End == v2) || side.Line.Start == v2 && side.Line.End == v1) {
-													possiblyInvalidSectors.Add(ld2.Back.Sector);
-													skip = true;
-												}
-											}
-										}
-
-										//mxd
-										if(!skip) {
-											DrawnVertex dv1 = new DrawnVertex();
-											DrawnVertex dv2 = new DrawnVertex();
-											dv1.stitchline = true;
-											dv2.stitchline = true;
-											dv1.stitch = true;
-											dv2.stitch = true;
-
-											if(ld1.Start == v) {
-												dv1.pos = v2.Position;
-												dv2.pos = v1.Position;
-											} else {
-												dv1.pos = v1.Position;
-												dv2.pos = v2.Position;
-											}
-
-											Tools.DrawLines(new List<DrawnVertex>() { dv1, dv2 });
-											List<Linedef> newLines = General.Map.Map.GetMarkedLinedefs(true);
-											if(newLines.Count > 0) redrawnLines.AddRange(newLines);
-
-											General.Map.IsChanged = true;
-											General.Map.Map.Update();
-
-											//if both of the lines are single sided, remove newly created sector
-											if((!ld1.IsDisposed && !ld2.IsDisposed) && (ld1.Front == null || ld1.Back == null) && (ld2.Front == null || ld2.Back == null)) {
-												int index = ld1.Front != null ? ld1.Front.Sector.Index : ld1.Back.Sector.Index;
-												General.Map.Map.GetSectorByIndex(index).Dispose();
-
-												foreach(Linedef l in newLines) {
-													if(l.Front != null && l.Front.Sector != null && !affectedSectors.Contains(l.Front.Sector))
-														affectedSectors.Add(l.Front.Sector);
-													if(l.Back != null && l.Back.Sector != null && !affectedSectors.Contains(l.Back.Sector))
-														affectedSectors.Add(l.Back.Sector);
-												}
-											} else {
-												tryJoinSectors(ld1);
-												tryJoinSectors(ld2);
-												ld1.Dispose();
-												ld2.Dispose();
-											}
-										}
-									}
-								}
-							}
-						} else { //mxd. More than 2 lines share this vertex
-							Linedef[] lines = new Linedef[v.Linedefs.Count];
-							v.Linedefs.CopyTo(lines, 0);
-
-							List<Linedef> parallel = new List<Linedef>();
-
-							foreach(Linedef ld1 in lines) {
-								foreach(Linedef ld2 in lines) {
-									if(ld1.Index == ld2.Index) continue;
-
-									if(ld1.AngleDeg == ld2.AngleDeg || ld1.AngleDeg == General.ClampAngle(ld2.AngleDeg - 180)) {
-										if(!parallel.Contains(ld1))
-											parallel.Add(ld1);
-										if(!parallel.Contains(ld2))
-											parallel.Add(ld2);
-									}
-								}
-							}
-
-							if(parallel.Count == 2) { //if there are 2 parallel lines, join them and remove the rest. 
-								for(int i = 0; i < lines.Length; i++) {
-									if(parallel.Contains(lines[i])) continue;
-									Linedef ld = lines[i];
-									tryJoinSectors(ld);
-									ld.Dispose();
-								}
-
-								Vertex v2 = (parallel[1].Start == v) ? parallel[1].End : parallel[1].Start;
-								if(parallel[0].Start == v) parallel[0].SetStartVertex(v2); else parallel[0].SetEndVertex(v2);
-								parallel[1].Dispose();
-							} else { //just trash them
-								for(int i = 0; i < lines.Length; i++) {
-									Linedef ld = lines[i];
-									tryJoinSectors(ld);
-									ld.Dispose();
-								}
-							}
-						}
-
-						// Trash vertex
-						v.Dispose();
-					}
-				}
-
-				//mxd
-				foreach (Linedef line in linesToRedraw) {
-					if(line.IsDisposed) continue;
-
-					DrawnVertex dv1 = new DrawnVertex();
-					DrawnVertex dv2 = new DrawnVertex();
-					dv1.stitchline = true;
-					dv2.stitchline = true;
-					dv1.stitch = true;
-					dv2.stitch = true;
-					dv1.pos = line.Start.Position;
-					dv2.pos = line.End.Position;
-
-					Tools.DrawLines(new List<DrawnVertex>() { dv1, dv2 });
-					List<Linedef> newLines = General.Map.Map.GetMarkedLinedefs(true);
-					if(newLines.Count > 0)
-						redrawnLines.AddRange(newLines);
-
-					General.Map.Map.Update();
-					General.Map.IsChanged = true;
-				}
-
-				//mxd
-				Tools.MergeInvalidSectors(toMerge);
-
-				foreach(Sector s in possiblyInvalidSectors) {
-					//still invalid?
-					if(!s.IsDisposed && s.Sidedefs.Count < 3) s.Dispose();
-				}
-
-				foreach(Sector s in affectedSectors) {
-					if(s.IsDisposed) continue;
-
-					foreach(Sidedef side in s.Sidedefs){
-						if((side.Line.Front == null && side.Line.Back != null) || (side.Line.Front != null && side.Line.Back == null)){
-							side.Line.ApplySidedFlags();
-						}else if(side.Line.Front == null && side.Line.Back != null && side.Line.Back.Sector != null) {
-							// Flip linedef
-							side.Line.FlipVertices();
-							side.Line.FlipSidedefs();
-							side.Line.ApplySidedFlags();
-						}
-					}
-				}
-
-				// Update cache values
-				General.Map.Map.Update();
-				General.Map.IsChanged = true;
-
-				//mxd. Because... well... some new vertices might have been created during vertex removal process...
-				if(General.Map.Map.GetSelectedVertices(true).Count > 0) {
-					deleteItem(false, redrawnLines);
+			if(selected.Count == 0) {
+				if(highlighted != null && !highlighted.IsDisposed)
+					selected.Add(highlighted);
+				else
 					return;
-				} else if(redrawnLines.Count > 0) {
-					//try to merge redrawn lines
-					mergeLines(redrawnLines);
+			}
 
-					// Update cache values
-					General.Map.Map.Update();
-					General.Map.IsChanged = true;
+			// Make undo
+			if(selected.Count > 1) {
+				General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " vertices");
+				General.Interface.DisplayStatus(StatusType.Action, "Deleted " + selected.Count + " vertices.");
+			} else {
+				General.Map.UndoRedo.CreateUndo("Delete vertex");
+				General.Interface.DisplayStatus(StatusType.Action, "Deleted a vertex.");
+			}
+
+			//collect linedefs count per vertex
+			Dictionary<Vertex, int> linesPerVertex = new Dictionary<Vertex, int>();
+			List<Sector> affectedSectors = new List<Sector>();
+			foreach(Vertex v in selected) {
+				linesPerVertex.Add(v, v.Linedefs.Count);
+
+				foreach(Linedef l in v.Linedefs) {
+					if(l.Front != null && l.Front.Sector != null && !affectedSectors.Contains(l.Front.Sector))
+						affectedSectors.Add(l.Front.Sector);
+					if(l.Back != null && l.Back.Sector != null && !affectedSectors.Contains(l.Back.Sector))
+						affectedSectors.Add(l.Back.Sector);
+				}
+			}
+
+			List<Linedef> changedLines = new List<Linedef>();
+
+			// Go for all vertices that need to be removed
+			foreach(Vertex v in selected) {
+				// Not already removed automatically?
+				if(!v.IsDisposed) {
+					// If the vertex only had 2 linedefs attached, then merge the linedefs
+					if(linesPerVertex[v] == 2) {
+						Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
+						Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
+						Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
+						Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
+
+						//don't merge if it will collapse 3-sided sector
+						bool dontMerge = false;
+						foreach(Linedef l in v1.Linedefs) {
+							if(l == ld2) continue;
+							if(l.Start == v2 || l.End == v2) {
+								tryJoinSectors(l);
+								dontMerge = true;
+								break;
+							}
+						}
+
+						if(!dontMerge) {
+							if(ld1.Start == v) ld1.SetStartVertex(v2);
+							else ld1.SetEndVertex(v2);
+							ld2.Dispose();
+
+							if(!changedLines.Contains(ld1)) changedLines.Add(ld1);
+						}
+					}
+
+					// Trash vertex
+					v.Dispose();
+				}
+			}
+
+			// Update cache values
+			General.Map.Map.Update();
+			General.Map.IsChanged = true;
+
+			//redraw changed lines
+			foreach(Linedef l in changedLines) {
+				if(l.IsDisposed) continue;
+				drawLine(l.Start.Position, l.End.Position);
+
+				if(l.IsDisposed) continue;
+				drawLine(l.Start.Position, l.End.Position);
+			}
+
+			//redraw all affected sectors
+			List<Linedef> redrawnLines = new List<Linedef>();
+			foreach(Sector sector in affectedSectors) {
+				if(sector.IsDisposed) continue;
+
+				List<Linedef> lines = new List<Linedef>();
+				foreach(Sidedef side in sector.Sidedefs) {
+					if(!lines.Contains(side.Line)) 
+						lines.Add(side.Line);
 				}
 
-				// Invoke a new mousemove so that the highlighted item updates
-				MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);
-				OnMouseMove(e);
+				if(sector.Triangles.Vertices.Count == 0) {
+					sector.Dispose();
+				}
 
-				// Redraw screen
-				General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
-				General.Interface.RedrawDisplay();
+				foreach(Linedef line in lines) {
+					if(line.IsDisposed || redrawnLines.Contains(line)) continue;
+
+					if(line.Front == null && line.Back != null) {
+						//Flip linedef
+						line.FlipVertices();
+						line.FlipSidedefs();
+						line.SetFlag(General.Map.Config.ImpassableFlag, true);
+					} else if(line.Front != null && line.Back == null) {
+						line.SetFlag(General.Map.Config.ImpassableFlag, true);
+					}
+
+					line.ApplySidedFlags();
+
+					drawLine(line.Start.Position, line.End.Position);
+					redrawnLines.Add(line);
+				}
 			}
+
+			// Update cache values
+			General.Map.Map.Update();
+			General.Map.IsChanged = true;
+
+			// Invoke a new mousemove so that the highlighted item updates
+			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);
+			OnMouseMove(e);
+
+			// Redraw screen
+			General.Interface.RedrawDisplay();
+		}
+
+		private void drawLine(Vector2D start, Vector2D end) {
+			DrawnVertex dv1 = new DrawnVertex();
+			DrawnVertex dv2 = new DrawnVertex();
+			dv1.stitchline = true;
+			dv2.stitchline = true;
+			dv1.stitch = true;
+			dv2.stitch = true;
+			dv1.pos = start;
+			dv2.pos = end;
+			Tools.DrawLines(new List<DrawnVertex>() { dv1, dv2 });
+
+			// Update cache values
+			General.Map.Map.Update();
+			General.Map.IsChanged = true;
 		}
 
 		//mxd. If there are different sectors on both sides of given linedef, join them
@@ -1073,51 +930,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ld.Back.Sector.Join(ld.Front.Sector);
 				else
 					ld.Front.Sector.Join(ld.Back.Sector);
-			}
-		}
-
-		private void mergeLines(List<Linedef> lines) {
-			if(lines.Count < 2)	return;
-
-			for(int i = 0; i < lines.Count; i++) {
-				if(lines[i].IsDisposed)	lines.RemoveAt(i);
-			}
-
-			for(int i = 0; i < lines.Count; i++) {
-				for(int c = 0; c < lines.Count; c++) {
-					if(i == c) continue;
-
-					//lines have the same angle?
-					if(lines[i].AngleDeg == lines[c].AngleDeg || lines[i].AngleDeg == General.ClampAngle(lines[c].AngleDeg - 180)) {
-						Vertex mid = null;
-
-						//lines share a vertex?
-						if(lines[i].End == lines[c].Start || lines[i].End == lines[c].End) {
-							mid = lines[i].End;
-						} else if(lines[i].Start == lines[c].Start || lines[i].Start == lines[c].End) {
-							mid = lines[i].Start;
-						}
-
-						if(mid == null || mid.Linedefs.Count > 2) continue;
-
-						Vertex end = (lines[c].Start == mid) ? lines[c].End : lines[c].Start;
-
-						//merge lines
-						if(lines[i].Start == mid)
-							lines[i].SetStartVertex(end);
-						else
-							lines[i].SetEndVertex(end);
-						lines[c].Dispose();
-
-						//trash vertex
-						mid.Dispose();
-						lines.RemoveAt(c);
-
-						//restart
-						mergeLines(lines);
-						return;
-					} 
-				}
 			}
 		}
 		

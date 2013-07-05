@@ -205,13 +205,14 @@ namespace CodeImp.DoomBuilder.Map
 		internal void SetSectorP(Sector newsector)
 		{
 			// Detach from sector
-			if(sector != null) sector.DetachSidedefP(sectorlistitem);
+			if(sector != null && !sector.IsDisposed) //mxd
+				sector.DetachSidedefP(sectorlistitem);
 
 			// Change sector
 			sector = newsector;
 
 			// Attach to sector
-			if(sector != null)
+			if(sector != null && !sector.IsDisposed) //mxd
 				sectorlistitem = sector.AttachSidedefP(this);
 
 			General.Map.IsChanged = true;
