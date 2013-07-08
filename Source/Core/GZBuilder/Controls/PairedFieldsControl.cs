@@ -16,7 +16,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public string Field1 { get { return field1; } set { field1 = value; } }
 		public string Field2 { get { return field2; } set { field2 = value; } }
 		public bool AllowDecimal { get { return value1.AllowDecimal; } set { value1.AllowDecimal = value; value2.AllowDecimal = value; } }
-		public float ButtonStep { get { return value1.ButtonStep; } set { value1.ButtonStep = value; value2.ButtonStep = value; } }
+		public int ButtonStep { get { return value1.ButtonStep; } set { value1.ButtonStep = value; value2.ButtonStep = value; } }
+		public float ButtonStepFloat { get { return value1.ButtonStepFloat; } set { value1.ButtonStepFloat = value; value2.ButtonStepFloat = value; } }
 		
 		public PairedFieldsControl() {
 			InitializeComponent();

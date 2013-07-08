@@ -179,7 +179,7 @@
 			this.brightness.AllowDecimal = false;
 			this.brightness.AllowNegative = false;
 			this.brightness.AllowRelative = true;
-			this.brightness.ButtonStep = 8F;
+			this.brightness.ButtonStep = 8;
 			this.brightness.Location = new System.Drawing.Point(125, 84);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(81, 24);
@@ -191,7 +191,7 @@
 			this.desaturation.AllowDecimal = true;
 			this.desaturation.AllowNegative = false;
 			this.desaturation.AllowRelative = false;
-			this.desaturation.ButtonStep = 0.1F;
+			this.desaturation.ButtonStepFloat = 0.1F;
 			this.desaturation.Location = new System.Drawing.Point(125, 142);
 			this.desaturation.Name = "desaturation";
 			this.desaturation.Size = new System.Drawing.Size(81, 24);
@@ -237,7 +237,7 @@
 			this.gravity.AllowDecimal = true;
 			this.gravity.AllowNegative = true;
 			this.gravity.AllowRelative = true;
-			this.gravity.ButtonStep = 0.1F;
+			this.gravity.ButtonStepFloat = 0.1F;
 			this.gravity.Location = new System.Drawing.Point(125, 112);
 			this.gravity.Name = "gravity";
 			this.gravity.Size = new System.Drawing.Size(81, 24);
@@ -309,7 +309,7 @@
 			this.ceilingheight.AllowDecimal = false;
 			this.ceilingheight.AllowNegative = true;
 			this.ceilingheight.AllowRelative = true;
-			this.ceilingheight.ButtonStep = 8F;
+			this.ceilingheight.ButtonStep = 8;
 			this.ceilingheight.Location = new System.Drawing.Point(89, 19);
 			this.ceilingheight.Name = "ceilingheight";
 			this.ceilingheight.Size = new System.Drawing.Size(88, 24);
@@ -358,7 +358,7 @@
 			this.floorheight.AllowDecimal = false;
 			this.floorheight.AllowNegative = true;
 			this.floorheight.AllowRelative = true;
-			this.floorheight.ButtonStep = 8F;
+			this.floorheight.ButtonStep = 8;
 			this.floorheight.Location = new System.Drawing.Point(89, 49);
 			this.floorheight.Name = "floorheight";
 			this.floorheight.Size = new System.Drawing.Size(88, 24);
@@ -537,7 +537,7 @@
 			this.floorAlpha.AllowDecimal = true;
 			this.floorAlpha.AllowNegative = false;
 			this.floorAlpha.AllowRelative = false;
-			this.floorAlpha.ButtonStep = 0.1F;
+			this.floorAlpha.ButtonStepFloat = 0.1F;
 			this.floorAlpha.Location = new System.Drawing.Point(118, 145);
 			this.floorAlpha.Name = "floorAlpha";
 			this.floorAlpha.Size = new System.Drawing.Size(62, 24);
@@ -560,7 +560,7 @@
 			this.floorRotation.AllowDecimal = false;
 			this.floorRotation.AllowNegative = true;
 			this.floorRotation.AllowRelative = true;
-			this.floorRotation.ButtonStep = 5F;
+			this.floorRotation.ButtonStep = 5;
 			this.floorRotation.Location = new System.Drawing.Point(118, 115);
 			this.floorRotation.Name = "floorRotation";
 			this.floorRotation.Size = new System.Drawing.Size(62, 24);
@@ -595,7 +595,7 @@
 			this.floorBrightness.AllowDecimal = false;
 			this.floorBrightness.AllowNegative = true;
 			this.floorBrightness.AllowRelative = true;
-			this.floorBrightness.ButtonStep = 16F;
+			this.floorBrightness.ButtonStep = 16;
 			this.floorBrightness.Location = new System.Drawing.Point(118, 85);
 			this.floorBrightness.Name = "floorBrightness";
 			this.floorBrightness.Size = new System.Drawing.Size(62, 24);
@@ -618,7 +618,7 @@
 			// floorScale
 			// 
 			this.floorScale.AllowDecimal = true;
-			this.floorScale.ButtonStep = 0.1F;
+			this.floorScale.ButtonStepFloat = 0.1F;
 			this.floorScale.DefaultValue = 1F;
 			this.floorScale.Field1 = "xscalefloor";
 			this.floorScale.Field2 = "yscalefloor";
@@ -631,7 +631,7 @@
 			// floorOffsets
 			// 
 			this.floorOffsets.AllowDecimal = true;
-			this.floorOffsets.ButtonStep = 16F;
+			this.floorOffsets.ButtonStepFloat = 16F;
 			this.floorOffsets.DefaultValue = 0F;
 			this.floorOffsets.Field1 = "xpanningfloor";
 			this.floorOffsets.Field2 = "ypanningfloor";
@@ -707,7 +707,7 @@
 			this.ceilAlpha.AllowDecimal = true;
 			this.ceilAlpha.AllowNegative = false;
 			this.ceilAlpha.AllowRelative = false;
-			this.ceilAlpha.ButtonStep = 0.1F;
+			this.ceilAlpha.ButtonStepFloat = 0.1F;
 			this.ceilAlpha.Location = new System.Drawing.Point(118, 145);
 			this.ceilAlpha.Name = "ceilAlpha";
 			this.ceilAlpha.Size = new System.Drawing.Size(62, 24);
@@ -730,7 +730,7 @@
 			this.ceilRotation.AllowDecimal = false;
 			this.ceilRotation.AllowNegative = true;
 			this.ceilRotation.AllowRelative = true;
-			this.ceilRotation.ButtonStep = 5F;
+			this.ceilRotation.ButtonStep = 5;
 			this.ceilRotation.Location = new System.Drawing.Point(118, 115);
 			this.ceilRotation.Name = "ceilRotation";
 			this.ceilRotation.Size = new System.Drawing.Size(62, 24);
@@ -765,7 +765,7 @@
 			this.ceilBrightness.AllowDecimal = false;
 			this.ceilBrightness.AllowNegative = true;
 			this.ceilBrightness.AllowRelative = true;
-			this.ceilBrightness.ButtonStep = 16F;
+			this.ceilBrightness.ButtonStep = 16;
 			this.ceilBrightness.Location = new System.Drawing.Point(118, 85);
 			this.ceilBrightness.Name = "ceilBrightness";
 			this.ceilBrightness.Size = new System.Drawing.Size(62, 24);
@@ -788,7 +788,7 @@
 			// ceilScale
 			// 
 			this.ceilScale.AllowDecimal = true;
-			this.ceilScale.ButtonStep = 0.1F;
+			this.ceilScale.ButtonStepFloat = 0.1F;
 			this.ceilScale.DefaultValue = 1F;
 			this.ceilScale.Field1 = "xscaleceiling";
 			this.ceilScale.Field2 = "yscaleceiling";
@@ -801,7 +801,7 @@
 			// ceilOffsets
 			// 
 			this.ceilOffsets.AllowDecimal = true;
-			this.ceilOffsets.ButtonStep = 16F;
+			this.ceilOffsets.ButtonStepFloat = 16F;
 			this.ceilOffsets.DefaultValue = 0F;
 			this.ceilOffsets.Field1 = "xpanningceiling";
 			this.ceilOffsets.Field2 = "ypanningceiling";

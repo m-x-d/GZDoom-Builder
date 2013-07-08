@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posX.AllowDecimal = false;
 			this.posX.AllowNegative = true;
 			this.posX.AllowRelative = true;
-			this.posX.ButtonStep = 8F;
+			this.posX.ButtonStep = 8;
 			this.posX.Location = new System.Drawing.Point(68, 16);
 			this.posX.Name = "posX";
 			this.posX.Size = new System.Drawing.Size(72, 24);
@@ -189,7 +189,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posY.AllowDecimal = false;
 			this.posY.AllowNegative = true;
 			this.posY.AllowRelative = true;
-			this.posY.ButtonStep = 8F;
+			this.posY.ButtonStep = 8;
 			this.posY.Location = new System.Drawing.Point(68, 41);
 			this.posY.Name = "posY";
 			this.posY.Size = new System.Drawing.Size(72, 24);
@@ -201,7 +201,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posZ.AllowDecimal = false;
 			this.posZ.AllowNegative = true;
 			this.posZ.AllowRelative = true;
-			this.posZ.ButtonStep = 8F;
+			this.posZ.ButtonStep = 8;
 			this.posZ.Location = new System.Drawing.Point(68, 66);
 			this.posZ.Name = "posZ";
 			this.posZ.Size = new System.Drawing.Size(72, 24);
@@ -213,7 +213,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.angle.AllowDecimal = false;
 			this.angle.AllowNegative = true;
 			this.angle.AllowRelative = true;
-			this.angle.ButtonStep = 1F;
+			this.angle.ButtonStep = 1;
 			this.angle.Location = new System.Drawing.Point(186, 16);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(57, 24);

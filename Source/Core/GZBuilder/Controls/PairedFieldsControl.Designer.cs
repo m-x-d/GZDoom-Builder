@@ -58,7 +58,7 @@
 			this.value1.AllowNegative = true;
 			this.value1.AllowRelative = true;
 			this.value1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.value1.ButtonStep = 1F;
+			this.value1.ButtonStep = 1;
 			this.value1.Location = new System.Drawing.Point(89, 1);
 			this.value1.Name = "value1";
 			this.value1.Size = new System.Drawing.Size(62, 24);
@@ -73,7 +73,7 @@
 			this.value2.AllowNegative = true;
 			this.value2.AllowRelative = true;
 			this.value2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.value2.ButtonStep = 1F;
+			this.value2.ButtonStep = 1;
 			this.value2.Location = new System.Drawing.Point(157, 1);
 			this.value2.Name = "value2";
 			this.value2.Size = new System.Drawing.Size(62, 24);
