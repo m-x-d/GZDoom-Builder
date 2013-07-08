@@ -397,22 +397,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(General.Interface.IsActiveWindow)
 					{
-						// Show line edit dialog
+						//mxd. Show realtime vertex edit dialog
+						General.Interface.OnEditFormValuesChanged += new EventHandler(vertexEditForm_OnValuesChanged);
 						General.Interface.ShowEditVertices(selected);
-						General.Map.Map.Update();
 
 						// When a single vertex was selected, deselect it now
 						if(selected.Count == 1) General.Map.Map.ClearSelectedVertices();
-
-						// Update entire display
-						General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
-						General.Interface.RedrawDisplay();
 					}
 				}
 			}
 
 			editpressed = false;
 			base.OnEditEnd();
+		}
+
+		//mxd
+		private void vertexEditForm_OnValuesChanged(object sender, EventArgs e) {
+			// Update entire display
+			General.Map.Map.Update();
+			General.Map.Renderer2D.Update3dFloorTagsList();
+			General.Interface.RedrawDisplay();
 		}
 		
 		// Mouse moves
@@ -808,8 +812,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			List<Linedef> changedLines = new List<Linedef>();
-
 			// Go for all vertices that need to be removed
 			foreach(Vertex v in selected) {
 				// Not already removed automatically?
@@ -832,64 +834,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							}
 						}
 
-						if(!dontMerge) {
-							if(ld1.Start == v) ld1.SetStartVertex(v2);
-							else ld1.SetEndVertex(v2);
-							ld2.Dispose();
-
-							if(!changedLines.Contains(ld1)) changedLines.Add(ld1);
-						}
+						if(!dontMerge) mergeLines(selected, ld1, ld2, v);
 					}
 
 					// Trash vertex
 					v.Dispose();
-				}
-			}
-
-			// Update cache values
-			General.Map.Map.Update();
-			General.Map.IsChanged = true;
-
-			//redraw changed lines
-			foreach(Linedef l in changedLines) {
-				if(l.IsDisposed) continue;
-				drawLine(l.Start.Position, l.End.Position);
-
-				if(l.IsDisposed) continue;
-				drawLine(l.Start.Position, l.End.Position);
-			}
-
-			//redraw all affected sectors
-			List<Linedef> redrawnLines = new List<Linedef>();
-			foreach(Sector sector in affectedSectors) {
-				if(sector.IsDisposed) continue;
-
-				List<Linedef> lines = new List<Linedef>();
-				foreach(Sidedef side in sector.Sidedefs) {
-					if(!lines.Contains(side.Line)) 
-						lines.Add(side.Line);
-				}
-
-				if(sector.Triangles.Vertices.Count == 0) {
-					sector.Dispose();
-				}
-
-				foreach(Linedef line in lines) {
-					if(line.IsDisposed || redrawnLines.Contains(line)) continue;
-
-					if(line.Front == null && line.Back != null) {
-						//Flip linedef
-						line.FlipVertices();
-						line.FlipSidedefs();
-						line.SetFlag(General.Map.Config.ImpassableFlag, true);
-					} else if(line.Front != null && line.Back == null) {
-						line.SetFlag(General.Map.Config.ImpassableFlag, true);
-					}
-
-					line.ApplySidedFlags();
-
-					drawLine(line.Start.Position, line.End.Position);
-					redrawnLines.Add(line);
 				}
 			}
 
@@ -905,6 +854,45 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RedrawDisplay();
 		}
 
+		//mxd
+		private void mergeLines(ICollection<Vertex> selected, Linedef ld1, Linedef ld2, Vertex v) {
+			Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
+			Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
+
+			if(ld1.Start == v) ld1.SetStartVertex(v2);
+			else ld1.SetEndVertex(v2);
+			ld2.Dispose();
+			bool redraw = true;
+
+			if(selected.Contains(v2) && v2.Linedefs.Count == 2) {
+				Linedef[] lines = new Linedef[2];
+				v2.Linedefs.CopyTo(lines, 0);
+				Linedef other = lines[0] == ld2 ? lines[1] :lines[0];
+
+				mergeLines(selected, ld1, other, v2);
+				v2.Dispose();
+				redraw = false;
+			}
+
+			if(selected.Contains(v1) && v1.Linedefs.Count == 2) {
+				Linedef[] lines = new Linedef[2];
+				v1.Linedefs.CopyTo(lines, 0);
+				Linedef other = lines[0] == ld1 ? lines[1] : lines[0];
+
+				mergeLines(selected, other, ld1, v1);
+				v1.Dispose();
+				redraw = false;
+			}
+
+			if(redraw) {
+				Vector2D start = ld1.Start.Position;
+				Vector2D end = ld1.End.Position;
+				ld1.Dispose();
+				drawLine(start, end);
+			}
+		}
+
+		//mxd
 		private void drawLine(Vector2D start, Vector2D end) {
 			DrawnVertex dv1 = new DrawnVertex();
 			DrawnVertex dv2 = new DrawnVertex();

@@ -158,6 +158,8 @@ namespace CodeImp.DoomBuilder.IO
 				UniversalCollection coll = new UniversalCollection();
 				coll.Add("x", v.Position.x);
 				coll.Add("y", v.Position.y);
+				if(!float.IsNaN(v.ZCeiling)) coll.Add("zceiling", v.ZCeiling); //mxd
+				if(!float.IsNaN(v.ZFloor)) coll.Add("zfloor", v.ZFloor); //mxd
 				coll.Comment = v.Index.ToString();
 
 				// Add custom fields

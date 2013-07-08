@@ -101,6 +101,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#endregion
 
+		#region ================== mxd. Events
+
+		public event EventHandler OnEditFormValuesChanged; //mxd
+
+		#endregion
+
 		#region ================== Variables
 
 		// Position/size
@@ -2960,6 +2966,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show sector edit dialog
 			VertexEditForm f = new VertexEditForm();
 			f.Setup(vertices, allowPositionChange);
+			f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
 			result = f.ShowDialog(this);
 			f.Dispose();
 
@@ -3013,6 +3020,12 @@ namespace CodeImp.DoomBuilder.Windows
 			f.Dispose();
 			
 			return result;
+		}
+
+		//mxd
+		private void EditForm_OnValuesChanged(object sender, EventArgs e) {
+			if(OnEditFormValuesChanged != null)
+				OnEditFormValuesChanged(sender, e);
 		}
 
 		#endregion

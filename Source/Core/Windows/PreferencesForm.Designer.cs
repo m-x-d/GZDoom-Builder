@@ -57,26 +57,27 @@ namespace CodeImp.DoomBuilder.Windows
 			this.defaultviewmode = new System.Windows.Forms.ComboBox();
 			this.keyusedlabel = new System.Windows.Forms.Label();
 			this.colorsgroup1 = new System.Windows.Forms.GroupBox();
+			this.color3dFloors = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.label23 = new System.Windows.Forms.Label();
 			this.numSectorsLabel = new System.Windows.Forms.Label();
 			this.colorNewSectors = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorInfo = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.cbStretchModels = new System.Windows.Forms.CheckBox();
 			this.colorMD3 = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.label2 = new System.Windows.Forms.Label();
+			this.doublesidedalpha = new Dotnetrix.Controls.TrackBar();
 			this.colorgrid64 = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.squarethings = new System.Windows.Forms.CheckBox();
 			this.colorgrid = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.doublesidedalphalabel = new System.Windows.Forms.Label();
 			this.colorindication = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.qualitydisplay = new System.Windows.Forms.CheckBox();
 			this.colorbackcolor = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.label2 = new System.Windows.Forms.Label();
+			this.doublesidedalphalabel = new System.Windows.Forms.Label();
 			this.colorselection = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorvertices = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.doublesidedalpha = new Dotnetrix.Controls.TrackBar();
 			this.colorhighlight = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorlinedefs = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.tbNumSectors = new Dotnetrix.Controls.TrackBar();
+			this.cbStretchModels = new System.Windows.Forms.CheckBox();
+			this.squarethings = new System.Windows.Forms.CheckBox();
+			this.qualitydisplay = new System.Windows.Forms.CheckBox();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.tabs = new System.Windows.Forms.TabControl();
@@ -118,13 +119,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.columncontrolaction = new System.Windows.Forms.ColumnHeader();
 			this.columncontrolkey = new System.Windows.Forms.ColumnHeader();
 			this.actioncontrolpanel = new System.Windows.Forms.GroupBox();
+			this.actiondescription = new System.Windows.Forms.TextBox();
 			this.keyusedlist = new System.Windows.Forms.ListBox();
 			this.disregardshiftlabel = new System.Windows.Forms.Label();
 			this.actioncontrol = new System.Windows.Forms.ComboBox();
 			this.actiontitle = new System.Windows.Forms.Label();
 			this.actioncontrolclear = new System.Windows.Forms.Button();
 			this.actionkey = new System.Windows.Forms.TextBox();
-			this.actiondescription = new System.Windows.Forms.Label();
 			this.tabcolors = new System.Windows.Forms.TabPage();
 			this.appearancegroup1 = new System.Windows.Forms.GroupBox();
 			this.cbLoadGameGldefs = new System.Windows.Forms.CheckBox();
@@ -163,7 +164,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label16 = new System.Windows.Forms.Label();
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.color3dFloors = new CodeImp.DoomBuilder.Controls.ColorControl();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -508,6 +508,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup1.Text = " Display ";
 			this.colorsgroup1.Visible = false;
 			// 
+			// color3dFloors
+			// 
+			this.color3dFloors.BackColor = System.Drawing.Color.Transparent;
+			this.color3dFloors.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.color3dFloors.Label = "3D Floors:";
+			this.color3dFloors.Location = new System.Drawing.Point(15, 286);
+			this.color3dFloors.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.color3dFloors.MinimumSize = new System.Drawing.Size(100, 23);
+			this.color3dFloors.Name = "color3dFloors";
+			this.color3dFloors.Size = new System.Drawing.Size(168, 23);
+			this.color3dFloors.TabIndex = 24;
+			// 
 			// label23
 			// 
 			this.label23.AutoSize = true;
@@ -551,18 +563,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorInfo.Size = new System.Drawing.Size(168, 23);
 			this.colorInfo.TabIndex = 19;
 			// 
-			// cbStretchModels
-			// 
-			this.cbStretchModels.AutoSize = true;
-			this.cbStretchModels.Location = new System.Drawing.Point(236, 170);
-			this.cbStretchModels.Name = "cbStretchModels";
-			this.cbStretchModels.Size = new System.Drawing.Size(167, 18);
-			this.cbStretchModels.TabIndex = 18;
-			this.cbStretchModels.Text = "Scale models in visual modes";
-			this.toolTip1.SetToolTip(this.cbStretchModels, "If enabled, heights of models will be scaled down by 15% in Visual mode \r\nto mimi" +
-					"ck GZDoom\'s way of rendering.");
-			this.cbStretchModels.UseVisualStyleBackColor = true;
-			// 
 			// colorMD3
 			// 
 			this.colorMD3.BackColor = System.Drawing.Color.Transparent;
@@ -575,15 +575,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorMD3.Size = new System.Drawing.Size(168, 23);
 			this.colorMD3.TabIndex = 17;
 			// 
-			// label2
+			// doublesidedalpha
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(14, 405);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(147, 14);
-			this.label2.TabIndex = 14;
-			this.label2.Text = "Passable lines transparency:";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.doublesidedalpha.LargeChange = 3;
+			this.doublesidedalpha.Location = new System.Drawing.Point(11, 426);
+			this.doublesidedalpha.Name = "doublesidedalpha";
+			this.doublesidedalpha.Size = new System.Drawing.Size(130, 45);
+			this.doublesidedalpha.TabIndex = 2;
+			this.doublesidedalpha.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.doublesidedalpha.ValueChanged += new System.EventHandler(this.doublesidedalpha_ValueChanged);
 			// 
 			// colorgrid64
 			// 
@@ -597,16 +597,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorgrid64.Size = new System.Drawing.Size(168, 23);
 			this.colorgrid64.TabIndex = 9;
 			// 
-			// squarethings
-			// 
-			this.squarethings.AutoSize = true;
-			this.squarethings.Location = new System.Drawing.Point(25, 170);
-			this.squarethings.Name = "squarethings";
-			this.squarethings.Size = new System.Drawing.Size(93, 18);
-			this.squarethings.TabIndex = 8;
-			this.squarethings.Text = "Square things";
-			this.squarethings.UseVisualStyleBackColor = true;
-			// 
 			// colorgrid
 			// 
 			this.colorgrid.BackColor = System.Drawing.Color.Transparent;
@@ -618,15 +608,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorgrid.Name = "colorgrid";
 			this.colorgrid.Size = new System.Drawing.Size(168, 23);
 			this.colorgrid.TabIndex = 8;
-			// 
-			// doublesidedalphalabel
-			// 
-			this.doublesidedalphalabel.AutoSize = true;
-			this.doublesidedalphalabel.Location = new System.Drawing.Point(147, 438);
-			this.doublesidedalphalabel.Name = "doublesidedalphalabel";
-			this.doublesidedalphalabel.Size = new System.Drawing.Size(23, 14);
-			this.doublesidedalphalabel.TabIndex = 16;
-			this.doublesidedalphalabel.Text = "0%";
 			// 
 			// colorindication
 			// 
@@ -640,16 +621,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorindication.Size = new System.Drawing.Size(168, 23);
 			this.colorindication.TabIndex = 7;
 			// 
-			// qualitydisplay
-			// 
-			this.qualitydisplay.AutoSize = true;
-			this.qualitydisplay.Location = new System.Drawing.Point(25, 191);
-			this.qualitydisplay.Name = "qualitydisplay";
-			this.qualitydisplay.Size = new System.Drawing.Size(130, 18);
-			this.qualitydisplay.TabIndex = 7;
-			this.qualitydisplay.Text = "High quality rendering";
-			this.qualitydisplay.UseVisualStyleBackColor = true;
-			// 
 			// colorbackcolor
 			// 
 			this.colorbackcolor.BackColor = System.Drawing.Color.Transparent;
@@ -661,6 +632,25 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorbackcolor.Name = "colorbackcolor";
 			this.colorbackcolor.Size = new System.Drawing.Size(168, 23);
 			this.colorbackcolor.TabIndex = 0;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(14, 405);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(147, 14);
+			this.label2.TabIndex = 14;
+			this.label2.Text = "Passable lines transparency:";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// doublesidedalphalabel
+			// 
+			this.doublesidedalphalabel.AutoSize = true;
+			this.doublesidedalphalabel.Location = new System.Drawing.Point(147, 438);
+			this.doublesidedalphalabel.Name = "doublesidedalphalabel";
+			this.doublesidedalphalabel.Size = new System.Drawing.Size(23, 14);
+			this.doublesidedalphalabel.TabIndex = 16;
+			this.doublesidedalphalabel.Text = "0%";
 			// 
 			// colorselection
 			// 
@@ -685,16 +675,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorvertices.Name = "colorvertices";
 			this.colorvertices.Size = new System.Drawing.Size(168, 23);
 			this.colorvertices.TabIndex = 1;
-			// 
-			// doublesidedalpha
-			// 
-			this.doublesidedalpha.LargeChange = 3;
-			this.doublesidedalpha.Location = new System.Drawing.Point(11, 426);
-			this.doublesidedalpha.Name = "doublesidedalpha";
-			this.doublesidedalpha.Size = new System.Drawing.Size(130, 45);
-			this.doublesidedalpha.TabIndex = 2;
-			this.doublesidedalpha.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-			this.doublesidedalpha.ValueChanged += new System.EventHandler(this.doublesidedalpha_ValueChanged);
 			// 
 			// colorhighlight
 			// 
@@ -731,6 +711,38 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tbNumSectors.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.toolTip1.SetToolTip(this.tbNumSectors, "Will draw selected number of newly created sectors using \"New sector\" color");
 			this.tbNumSectors.ValueChanged += new System.EventHandler(this.tbNumSectors_ValueChanged);
+			// 
+			// cbStretchModels
+			// 
+			this.cbStretchModels.AutoSize = true;
+			this.cbStretchModels.Location = new System.Drawing.Point(236, 170);
+			this.cbStretchModels.Name = "cbStretchModels";
+			this.cbStretchModels.Size = new System.Drawing.Size(167, 18);
+			this.cbStretchModels.TabIndex = 18;
+			this.cbStretchModels.Text = "Scale models in visual modes";
+			this.toolTip1.SetToolTip(this.cbStretchModels, "If enabled, heights of models will be scaled down by 15% in Visual mode \r\nto mimi" +
+					"ck GZDoom\'s way of rendering.");
+			this.cbStretchModels.UseVisualStyleBackColor = true;
+			// 
+			// squarethings
+			// 
+			this.squarethings.AutoSize = true;
+			this.squarethings.Location = new System.Drawing.Point(25, 170);
+			this.squarethings.Name = "squarethings";
+			this.squarethings.Size = new System.Drawing.Size(93, 18);
+			this.squarethings.TabIndex = 8;
+			this.squarethings.Text = "Square things";
+			this.squarethings.UseVisualStyleBackColor = true;
+			// 
+			// qualitydisplay
+			// 
+			this.qualitydisplay.AutoSize = true;
+			this.qualitydisplay.Location = new System.Drawing.Point(25, 191);
+			this.qualitydisplay.Name = "qualitydisplay";
+			this.qualitydisplay.Size = new System.Drawing.Size(130, 18);
+			this.qualitydisplay.TabIndex = 7;
+			this.qualitydisplay.Text = "High quality rendering";
+			this.qualitydisplay.UseVisualStyleBackColor = true;
 			// 
 			// cancel
 			// 
@@ -1193,6 +1205,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.actioncontrolpanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.actioncontrolpanel.Controls.Add(this.actiondescription);
 			this.actioncontrolpanel.Controls.Add(this.keyusedlist);
 			this.actioncontrolpanel.Controls.Add(this.keyusedlabel);
 			this.actioncontrolpanel.Controls.Add(this.disregardshiftlabel);
@@ -1202,7 +1215,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actioncontrolpanel.Controls.Add(this.actioncontrolclear);
 			this.actioncontrolpanel.Controls.Add(label6);
 			this.actioncontrolpanel.Controls.Add(this.actionkey);
-			this.actioncontrolpanel.Controls.Add(this.actiondescription);
 			this.actioncontrolpanel.Controls.Add(label5);
 			this.actioncontrolpanel.Enabled = false;
 			this.actioncontrolpanel.Location = new System.Drawing.Point(377, 12);
@@ -1212,6 +1224,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actioncontrolpanel.TabIndex = 9;
 			this.actioncontrolpanel.TabStop = false;
 			this.actioncontrolpanel.Text = " Action control ";
+			// 
+			// actiondescription
+			// 
+			this.actiondescription.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.actiondescription.Location = new System.Drawing.Point(20, 47);
+			this.actiondescription.Multiline = true;
+			this.actiondescription.Name = "actiondescription";
+			this.actiondescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.actiondescription.Size = new System.Drawing.Size(256, 72);
+			this.actiondescription.TabIndex = 12;
 			// 
 			// keyusedlist
 			// 
@@ -1223,7 +1245,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.keyusedlist.Location = new System.Drawing.Point(23, 307);
 			this.keyusedlist.Name = "keyusedlist";
 			this.keyusedlist.SelectionMode = System.Windows.Forms.SelectionMode.None;
-			this.keyusedlist.Size = new System.Drawing.Size(233, 115);
+			this.keyusedlist.Size = new System.Drawing.Size(238, 115);
 			this.keyusedlist.Sorted = true;
 			this.keyusedlist.TabIndex = 11;
 			this.keyusedlist.Visible = false;
@@ -1247,7 +1269,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actioncontrol.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.actioncontrol.Location = new System.Drawing.Point(23, 190);
 			this.actioncontrol.Name = "actioncontrol";
-			this.actioncontrol.Size = new System.Drawing.Size(233, 22);
+			this.actioncontrol.Size = new System.Drawing.Size(238, 22);
 			this.actioncontrol.TabIndex = 8;
 			this.actioncontrol.TabStop = false;
 			this.actioncontrol.SelectedIndexChanged += new System.EventHandler(this.actioncontrol_SelectedIndexChanged);
@@ -1283,15 +1305,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actionkey.TabIndex = 5;
 			this.actionkey.TabStop = false;
 			this.actionkey.KeyDown += new System.Windows.Forms.KeyEventHandler(this.actionkey_KeyDown);
-			// 
-			// actiondescription
-			// 
-			this.actiondescription.AutoEllipsis = true;
-			this.actiondescription.Location = new System.Drawing.Point(20, 50);
-			this.actiondescription.Name = "actiondescription";
-			this.actiondescription.Size = new System.Drawing.Size(245, 71);
-			this.actiondescription.TabIndex = 3;
-			this.actiondescription.UseMnemonic = false;
 			// 
 			// tabcolors
 			// 
@@ -1523,7 +1536,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scripttabwidth.AllowDecimal = false;
 			this.scripttabwidth.AllowNegative = false;
 			this.scripttabwidth.AllowRelative = false;
-			this.scripttabwidth.ButtonStep = 2;
+			this.scripttabwidth.ButtonStep = 2F;
 			this.scripttabwidth.Location = new System.Drawing.Point(259, 155);
 			this.scripttabwidth.Name = "scripttabwidth";
 			this.scripttabwidth.Size = new System.Drawing.Size(71, 24);
@@ -1754,18 +1767,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pasteoptions.Size = new System.Drawing.Size(666, 427);
 			this.pasteoptions.TabIndex = 0;
 			// 
-			// color3dFloors
-			// 
-			this.color3dFloors.BackColor = System.Drawing.Color.Transparent;
-			this.color3dFloors.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.color3dFloors.Label = "3D Floors:";
-			this.color3dFloors.Location = new System.Drawing.Point(15, 286);
-			this.color3dFloors.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.color3dFloors.MinimumSize = new System.Drawing.Size(100, 23);
-			this.color3dFloors.Name = "color3dFloors";
-			this.color3dFloors.Size = new System.Drawing.Size(168, 23);
-			this.color3dFloors.TabIndex = 24;
-			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -1843,7 +1844,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label actiontitle;
 		private System.Windows.Forms.Button actioncontrolclear;
 		private System.Windows.Forms.TextBox actionkey;
-		private System.Windows.Forms.Label actiondescription;
 		private System.Windows.Forms.TabPage tabcolors;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorselection;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorhighlight;
@@ -1956,5 +1956,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.TextBox tbFilterActions;
 		private System.Windows.Forms.Label label24;
 		private CodeImp.DoomBuilder.Controls.ColorControl color3dFloors;
+		private System.Windows.Forms.TextBox actiondescription;
 	}
 }

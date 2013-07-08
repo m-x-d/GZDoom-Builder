@@ -31,17 +31,17 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.GroupBox groupeffect;
-			System.Windows.Forms.Label label9;
 			System.Windows.Forms.Label label8;
+			System.Windows.Forms.Label label9;
 			System.Windows.Forms.GroupBox groupfloorceiling;
 			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label4;
-			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
-			this.brightness = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.browseeffect = new System.Windows.Forms.Button();
 			this.effect = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
+			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
+			this.brightness = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.ceilingheight = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.sectorheightlabel = new System.Windows.Forms.Label();
 			this.sectorheight = new System.Windows.Forms.Label();
@@ -56,8 +56,8 @@ namespace CodeImp.DoomBuilder.Windows
 			label1 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			groupeffect = new System.Windows.Forms.GroupBox();
-			label9 = new System.Windows.Forms.Label();
 			label8 = new System.Windows.Forms.Label();
+			label9 = new System.Windows.Forms.Label();
 			groupfloorceiling = new System.Windows.Forms.GroupBox();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -86,15 +86,9 @@ namespace CodeImp.DoomBuilder.Windows
 			label3.Text = "Ceiling";
 			label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
-			// tagSelector
-			// 
-			this.tagSelector.Location = new System.Drawing.Point(47, 52);
-			this.tagSelector.Name = "tagSelector";
-			this.tagSelector.Size = new System.Drawing.Size(384, 34);
-			this.tagSelector.TabIndex = 0;
-			// 
 			// groupeffect
 			// 
+			groupeffect.BackColor = System.Drawing.Color.Transparent;
 			groupeffect.Controls.Add(this.browseeffect);
 			groupeffect.Controls.Add(this.effect);
 			groupeffect.Controls.Add(label8);
@@ -105,18 +99,6 @@ namespace CodeImp.DoomBuilder.Windows
 			groupeffect.TabIndex = 1;
 			groupeffect.TabStop = false;
 			groupeffect.Text = "Effect and Identification";
-			// 
-			// brightness
-			// 
-			this.brightness.AllowDecimal = false;
-			this.brightness.AllowNegative = false;
-			this.brightness.AllowRelative = true;
-			this.brightness.ButtonStep = 8F;
-			this.brightness.Location = new System.Drawing.Point(99, 124);
-			this.brightness.Name = "brightness";
-			this.brightness.Size = new System.Drawing.Size(73, 24);
-			this.brightness.StepValues = null;
-			this.brightness.TabIndex = 24;
 			// 
 			// browseeffect
 			// 
@@ -130,15 +112,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browseeffect.Text = " ";
 			this.browseeffect.UseVisualStyleBackColor = true;
 			this.browseeffect.Click += new System.EventHandler(this.browseeffect_Click);
-			// 
-			// label9
-			// 
-			label9.AutoSize = true;
-			label9.Location = new System.Drawing.Point(31, 129);
-			label9.Name = "label9";
-			label9.Size = new System.Drawing.Size(62, 14);
-			label9.TabIndex = 2;
-			label9.Text = "Brightness:";
 			// 
 			// effect
 			// 
@@ -161,8 +134,25 @@ namespace CodeImp.DoomBuilder.Windows
 			label8.TabIndex = 0;
 			label8.Text = "Special:";
 			// 
+			// tagSelector
+			// 
+			this.tagSelector.Location = new System.Drawing.Point(47, 52);
+			this.tagSelector.Name = "tagSelector";
+			this.tagSelector.Size = new System.Drawing.Size(384, 34);
+			this.tagSelector.TabIndex = 0;
+			// 
+			// label9
+			// 
+			label9.AutoSize = true;
+			label9.Location = new System.Drawing.Point(31, 129);
+			label9.Name = "label9";
+			label9.Size = new System.Drawing.Size(62, 14);
+			label9.TabIndex = 2;
+			label9.Text = "Brightness:";
+			// 
 			// groupfloorceiling
 			// 
+			groupfloorceiling.BackColor = System.Drawing.Color.Transparent;
 			groupfloorceiling.Controls.Add(this.brightness);
 			groupfloorceiling.Controls.Add(this.ceilingheight);
 			groupfloorceiling.Controls.Add(label6);
@@ -181,6 +171,18 @@ namespace CodeImp.DoomBuilder.Windows
 			groupfloorceiling.TabIndex = 0;
 			groupfloorceiling.TabStop = false;
 			groupfloorceiling.Text = "Floor and Ceiling ";
+			// 
+			// brightness
+			// 
+			this.brightness.AllowDecimal = false;
+			this.brightness.AllowNegative = false;
+			this.brightness.AllowRelative = true;
+			this.brightness.ButtonStep = 8F;
+			this.brightness.Location = new System.Drawing.Point(99, 124);
+			this.brightness.Name = "brightness";
+			this.brightness.Size = new System.Drawing.Size(73, 24);
+			this.brightness.StepValues = null;
+			this.brightness.TabIndex = 24;
 			// 
 			// ceilingheight
 			// 
@@ -319,7 +321,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// panel1
 			// 
-			this.panel1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.panel1.BackColor = System.Drawing.SystemColors.Window;
 			this.panel1.Controls.Add(groupfloorceiling);
 			this.panel1.Controls.Add(groupeffect);
 			this.panel1.Location = new System.Drawing.Point(12, 10);

@@ -25,20 +25,21 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.dataGridView = new System.Windows.Forms.DataGridView();
-			this.apply = new System.Windows.Forms.Button();
-			this.cancel = new System.Windows.Forms.Button();
 			this.TagColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Label = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Sectors = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Linedefs = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Things = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.apply = new System.Windows.Forms.Button();
+			this.cancel = new System.Windows.Forms.Button();
+			this.label1 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -54,14 +55,14 @@
 			this.dataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.dataGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
 			this.dataGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-			dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-			dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Control;
-			dataGridViewCellStyle13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.WindowText;
-			dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-			dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-			this.dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle13;
+			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+			dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+			this.dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
 			this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.TagColumn,
@@ -75,13 +76,66 @@
 			this.dataGridView.RowHeadersVisible = false;
 			this.dataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.dataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-			this.dataGridView.Size = new System.Drawing.Size(477, 286);
+			this.dataGridView.Size = new System.Drawing.Size(477, 256);
 			this.dataGridView.TabIndex = 3;
+			this.dataGridView.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_CellMouseClick);
+			this.dataGridView.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_CellMouseDoubleClick);
+			// 
+			// TagColumn
+			// 
+			this.TagColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+			dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+			this.TagColumn.DefaultCellStyle = dataGridViewCellStyle2;
+			this.TagColumn.HeaderText = "Tag";
+			this.TagColumn.Name = "TagColumn";
+			this.TagColumn.ReadOnly = true;
+			this.TagColumn.Width = 51;
+			// 
+			// Label
+			// 
+			this.Label.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+			dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+			this.Label.DefaultCellStyle = dataGridViewCellStyle3;
+			this.Label.HeaderText = "Label";
+			this.Label.Name = "Label";
+			// 
+			// Sectors
+			// 
+			this.Sectors.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+			dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+			this.Sectors.DefaultCellStyle = dataGridViewCellStyle4;
+			this.Sectors.HeaderText = "Sectors";
+			this.Sectors.Name = "Sectors";
+			this.Sectors.ReadOnly = true;
+			this.Sectors.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+			this.Sectors.Width = 68;
+			// 
+			// Linedefs
+			// 
+			this.Linedefs.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+			dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+			this.Linedefs.DefaultCellStyle = dataGridViewCellStyle5;
+			this.Linedefs.HeaderText = "Linedefs";
+			this.Linedefs.Name = "Linedefs";
+			this.Linedefs.ReadOnly = true;
+			this.Linedefs.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+			this.Linedefs.Width = 72;
+			// 
+			// Things
+			// 
+			this.Things.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+			dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+			this.Things.DefaultCellStyle = dataGridViewCellStyle6;
+			this.Things.HeaderText = "Things";
+			this.Things.Name = "Things";
+			this.Things.ReadOnly = true;
+			this.Things.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+			this.Things.Width = 64;
 			// 
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(399, 304);
+			this.apply.Location = new System.Drawing.Point(399, 319);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(90, 23);
 			this.apply.TabIndex = 4;
@@ -93,7 +147,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(303, 304);
+			this.cancel.Location = new System.Drawing.Point(303, 319);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(90, 23);
 			this.cancel.TabIndex = 5;
@@ -101,56 +155,17 @@
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
 			// 
-			// TagColumn
+			// label1
 			// 
-			this.TagColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-			dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-			this.TagColumn.DefaultCellStyle = dataGridViewCellStyle14;
-			this.TagColumn.HeaderText = "Tag";
-			this.TagColumn.Name = "TagColumn";
-			this.TagColumn.ReadOnly = true;
-			this.TagColumn.Width = 51;
-			// 
-			// Label
-			// 
-			this.Label.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-			dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-			this.Label.DefaultCellStyle = dataGridViewCellStyle15;
-			this.Label.HeaderText = "Label";
-			this.Label.Name = "Label";
-			// 
-			// Sectors
-			// 
-			this.Sectors.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-			dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-			this.Sectors.DefaultCellStyle = dataGridViewCellStyle16;
-			this.Sectors.HeaderText = "Sectors";
-			this.Sectors.Name = "Sectors";
-			this.Sectors.ReadOnly = true;
-			this.Sectors.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-			this.Sectors.Width = 68;
-			// 
-			// Linedefs
-			// 
-			this.Linedefs.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-			dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-			this.Linedefs.DefaultCellStyle = dataGridViewCellStyle17;
-			this.Linedefs.HeaderText = "Linedefs";
-			this.Linedefs.Name = "Linedefs";
-			this.Linedefs.ReadOnly = true;
-			this.Linedefs.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-			this.Linedefs.Width = 72;
-			// 
-			// Things
-			// 
-			this.Things.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-			dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-			this.Things.DefaultCellStyle = dataGridViewCellStyle18;
-			this.Things.HeaderText = "Things";
-			this.Things.Name = "Things";
-			this.Things.ReadOnly = true;
-			this.Things.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-			this.Things.Width = 64;
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(12, 278);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(472, 26);
+			this.label1.TabIndex = 6;
+			this.label1.Text = "Double click on a cell in Sectors, Linedefs or Things column to select map elemen" +
+				"ts with given tag.\r\nRight click to open Properties form for map elements with gi" +
+				"ven tag.";
 			// 
 			// TagStatisticsForm
 			// 
@@ -158,7 +173,8 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(501, 333);
+			this.ClientSize = new System.Drawing.Size(501, 348);
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.dataGridView);
@@ -170,6 +186,7 @@
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TagStatisticsForm_FormClosing);
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -183,5 +200,6 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn Sectors;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Linedefs;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Things;
+		private System.Windows.Forms.Label label1;
 	}
 }

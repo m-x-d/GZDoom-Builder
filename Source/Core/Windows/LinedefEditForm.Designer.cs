@@ -924,7 +924,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// pfcFrontOffsetBottom
 			// 
-			this.pfcFrontOffsetBottom.AllowDecimal = false;
+			this.pfcFrontOffsetBottom.AllowDecimal = true;
 			this.pfcFrontOffsetBottom.ButtonStep = 16F;
 			this.pfcFrontOffsetBottom.DefaultValue = 0F;
 			this.pfcFrontOffsetBottom.Field1 = "offsetx_bottom";
@@ -937,7 +937,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// pfcFrontOffsetMid
 			// 
-			this.pfcFrontOffsetMid.AllowDecimal = false;
+			this.pfcFrontOffsetMid.AllowDecimal = true;
 			this.pfcFrontOffsetMid.ButtonStep = 16F;
 			this.pfcFrontOffsetMid.DefaultValue = 0F;
 			this.pfcFrontOffsetMid.Field1 = "offsetx_mid";
@@ -950,7 +950,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// pfcFrontOffsetTop
 			// 
-			this.pfcFrontOffsetTop.AllowDecimal = false;
+			this.pfcFrontOffsetTop.AllowDecimal = true;
 			this.pfcFrontOffsetTop.ButtonStep = 16F;
 			this.pfcFrontOffsetTop.DefaultValue = 0F;
 			this.pfcFrontOffsetTop.Field1 = "offsetx_top";
@@ -1244,7 +1244,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// pfcBackOffsetBottom
 			// 
-			this.pfcBackOffsetBottom.AllowDecimal = false;
+			this.pfcBackOffsetBottom.AllowDecimal = true;
 			this.pfcBackOffsetBottom.ButtonStep = 16F;
 			this.pfcBackOffsetBottom.DefaultValue = 0F;
 			this.pfcBackOffsetBottom.Field1 = "offsetx_bottom";
@@ -1257,7 +1257,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// pfcBackOffsetMid
 			// 
-			this.pfcBackOffsetMid.AllowDecimal = false;
+			this.pfcBackOffsetMid.AllowDecimal = true;
 			this.pfcBackOffsetMid.ButtonStep = 16F;
 			this.pfcBackOffsetMid.DefaultValue = 0F;
 			this.pfcBackOffsetMid.Field1 = "offsetx_mid";
@@ -1270,7 +1270,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// pfcBackOffsetTop
 			// 
-			this.pfcBackOffsetTop.AllowDecimal = false;
+			this.pfcBackOffsetTop.AllowDecimal = true;
 			this.pfcBackOffsetTop.ButtonStep = 16F;
 			this.pfcBackOffsetTop.DefaultValue = 0F;
 			this.pfcBackOffsetTop.Field1 = "offsetx_top";

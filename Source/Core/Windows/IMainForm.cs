@@ -40,6 +40,9 @@ namespace CodeImp.DoomBuilder.Windows
 		MouseButtons MouseButtons { get; }
 		bool IsActiveWindow { get; }
 		RenderTargetControl Display { get; }
+
+		//mxd. Events
+		event EventHandler OnEditFormValuesChanged;
 		
 		// Methods
 		void DisplayReady();
