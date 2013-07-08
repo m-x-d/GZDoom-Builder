@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.zceiling.AllowDecimal = false;
 			this.zceiling.AllowNegative = true;
 			this.zceiling.AllowRelative = true;
-			this.zceiling.ButtonStep = 1F;
+			this.zceiling.ButtonStep = 1;
 			this.zceiling.Location = new System.Drawing.Point(188, 0);
 			this.zceiling.Name = "zceiling";
 			this.zceiling.Size = new System.Drawing.Size(120, 24);
@@ -118,7 +118,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.zfloor.AllowDecimal = false;
 			this.zfloor.AllowNegative = true;
 			this.zfloor.AllowRelative = true;
-			this.zfloor.ButtonStep = 1F;
+			this.zfloor.ButtonStep = 1;
 			this.zfloor.Location = new System.Drawing.Point(188, 32);
 			this.zfloor.Name = "zfloor";
 			this.zfloor.Size = new System.Drawing.Size(120, 24);
@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.positiony.AllowDecimal = false;
 			this.positiony.AllowNegative = true;
 			this.positiony.AllowRelative = true;
-			this.positiony.ButtonStep = 1F;
+			this.positiony.ButtonStep = 1;
 			this.positiony.Location = new System.Drawing.Point(236, 34);
 			this.positiony.Name = "positiony";
 			this.positiony.Size = new System.Drawing.Size(120, 24);
@@ -162,7 +162,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.positionx.AllowDecimal = false;
 			this.positionx.AllowNegative = true;
 			this.positionx.AllowRelative = true;
-			this.positionx.ButtonStep = 1F;
+			this.positionx.ButtonStep = 1;
 			this.positionx.Location = new System.Drawing.Point(68, 34);
 			this.positionx.Name = "positionx";
 			this.positionx.Size = new System.Drawing.Size(120, 24);

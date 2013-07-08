@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.brightness.AllowDecimal = false;
 			this.brightness.AllowNegative = false;
 			this.brightness.AllowRelative = true;
-			this.brightness.ButtonStep = 8F;
+			this.brightness.ButtonStep = 8;
 			this.brightness.Location = new System.Drawing.Point(99, 124);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(73, 24);
@@ -189,7 +189,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingheight.AllowDecimal = false;
 			this.ceilingheight.AllowNegative = true;
 			this.ceilingheight.AllowRelative = true;
-			this.ceilingheight.ButtonStep = 8F;
+			this.ceilingheight.ButtonStep = 8;
 			this.ceilingheight.Location = new System.Drawing.Point(99, 35);
 			this.ceilingheight.Name = "ceilingheight";
 			this.ceilingheight.Size = new System.Drawing.Size(88, 24);
@@ -264,7 +264,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floorheight.AllowDecimal = false;
 			this.floorheight.AllowNegative = true;
 			this.floorheight.AllowRelative = true;
-			this.floorheight.ButtonStep = 8F;
+			this.floorheight.ButtonStep = 8;
 			this.floorheight.Location = new System.Drawing.Point(99, 65);
 			this.floorheight.Name = "floorheight";
 			this.floorheight.Size = new System.Drawing.Size(88, 24);

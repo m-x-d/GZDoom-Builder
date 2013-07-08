@@ -39,7 +39,8 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		private bool ignorebuttonchange = false;
 		private StepsList steps = null;
-		private float stepsize = 1;
+		private int stepsize = 1;
+		private float stepsizeFloat = 1.0f; //mxd
 		
 		#endregion
 
@@ -48,7 +49,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool AllowDecimal { get { return textbox.AllowDecimal; } set { textbox.AllowDecimal = value; } }
 		public bool AllowNegative { get { return textbox.AllowNegative; } set { textbox.AllowNegative = value; } }
 		public bool AllowRelative { get { return textbox.AllowRelative; } set { textbox.AllowRelative = value; } }
-		public float ButtonStep { get { return stepsize; } set { stepsize = value; } }
+		public int ButtonStep { get { return stepsize; } set { stepsize = value; } }
+		public float ButtonStepFloat { get { return stepsizeFloat; } set { stepsizeFloat = value; } } //mxd. This is used when AllowDecimal is true
 		override public string Text { get { return textbox.Text; } set { textbox.Text = value; } }
 		internal NumericTextbox Textbox { get { return textbox; } }
 		public StepsList StepValues { get { return steps; } set { steps = value; } }
@@ -115,7 +117,7 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 					else if(textbox.AllowDecimal)
 					{
-						float newvalue = textbox.GetResultFloat(0.0f) - (float)(buttons.Value * stepsize);
+						float newvalue = textbox.GetResultFloat(0.0f) - (float)(buttons.Value * stepsizeFloat);
 						if((newvalue < 0.0f) && !textbox.AllowNegative) newvalue = 0.0f;
 						textbox.Text = newvalue.ToString();
 					}
@@ -148,10 +150,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			else
 			{
-				if(e.Delta < 0)
-					buttons.Value += 1;
-				else if(e.Delta > 0)
-					buttons.Value -= 1;
+				buttons.Value += Math.Sign(e.Delta) * 1;
 			}
 		}
 

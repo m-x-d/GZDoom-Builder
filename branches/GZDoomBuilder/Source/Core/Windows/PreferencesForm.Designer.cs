@@ -1536,7 +1536,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scripttabwidth.AllowDecimal = false;
 			this.scripttabwidth.AllowNegative = false;
 			this.scripttabwidth.AllowRelative = false;
-			this.scripttabwidth.ButtonStep = 2F;
+			this.scripttabwidth.ButtonStep = 2;
 			this.scripttabwidth.Location = new System.Drawing.Point(259, 155);
 			this.scripttabwidth.Name = "scripttabwidth";
 			this.scripttabwidth.Size = new System.Drawing.Size(71, 24);
