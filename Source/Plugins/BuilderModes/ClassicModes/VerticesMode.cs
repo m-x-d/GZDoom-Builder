@@ -864,7 +864,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ld2.Dispose();
 			bool redraw = true;
 
-			if(selected.Contains(v2) && v2.Linedefs.Count == 2) {
+			if(!v2.IsDisposed && selected.Contains(v2) && v2.Linedefs.Count == 2) {
 				Linedef[] lines = new Linedef[2];
 				v2.Linedefs.CopyTo(lines, 0);
 				Linedef other = lines[0] == ld2 ? lines[1] :lines[0];
@@ -874,7 +874,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				redraw = false;
 			}
 
-			if(selected.Contains(v1) && v1.Linedefs.Count == 2) {
+			if(!v1.IsDisposed && selected.Contains(v1) && v1.Linedefs.Count == 2) {
 				Linedef[] lines = new Linedef[2];
 				v1.Linedefs.CopyTo(lines, 0);
 				Linedef other = lines[0] == ld1 ? lines[1] : lines[0];
