@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.labelSize.Size = new System.Drawing.Size(48, 13);
 			this.labelSize.TabIndex = 0;
 			this.labelSize.Text = "128x128";
+			this.labelSize.Visible = false;
 			// 
 			// name
 			// 

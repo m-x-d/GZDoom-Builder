@@ -41,17 +41,17 @@ namespace CodeImp.DoomBuilder.Controls
 			// Check if name is a "none" texture
 			if((imagename.Length < 1) || (imagename[0] == '-'))
 			{
-				DisplayImageSize(-1, -1); //mxd
+				DisplayImageSize(0, 0); //mxd
 				
 				// Flat required!
 				return CodeImp.DoomBuilder.Properties.Resources.MissingTexture;
 			}
 			else
 			{
-				//mxd
-				ImageData texture = General.Map.Data.GetFlatImage(imagename);
-				if(texture.ImageState == ImageLoadState.Ready) DisplayImageSize(texture.ScaledWidth, texture.ScaledHeight);
-				else DisplayImageSize(-1, -1);
+				ImageData texture = General.Map.Data.GetFlatImage(imagename); //mxd
+
+				if(string.IsNullOrEmpty(texture.FullName)) DisplayImageSize(0, 0); //mxd
+				else DisplayImageSize(texture.ScaledWidth, texture.ScaledHeight); //mxd
 				
 				// Set the image
 				return texture.GetPreview();

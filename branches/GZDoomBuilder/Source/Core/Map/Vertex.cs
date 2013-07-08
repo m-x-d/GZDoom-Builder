@@ -45,6 +45,10 @@ namespace CodeImp.DoomBuilder.Map
 		// Position
 		private Vector2D pos;
 
+		//mxd. Height
+		private float zfloor;
+		private float zceiling;
+
 		// References
 		private LinkedList<Linedef> linedefs;
 		
@@ -61,6 +65,24 @@ namespace CodeImp.DoomBuilder.Map
 		public Vector2D Position { get { return pos; } }
 		internal Vertex Clone { get { return clone; } set { clone = value; } }
 		internal int SerializedIndex { get { return serializedindex; } set { serializedindex = value; } }
+		public float ZCeiling {	//mxd
+			get { return zceiling; }
+			set {
+				if(zceiling != value) {
+					BeforeFieldsChange();
+					zceiling = value;
+				}
+			}
+		}
+		public float ZFloor { //mxd
+			get { return zfloor; }
+			set {
+				if(zfloor != value) {
+					BeforeFieldsChange();
+					zfloor = value;
+				}
+			}
+		}
 
 		#endregion
 
@@ -74,6 +96,8 @@ namespace CodeImp.DoomBuilder.Map
 			this.linedefs = new LinkedList<Linedef>();
 			this.listindex = listindex;
 			this.pos = pos;
+			this.zceiling = float.NaN; //mxd
+			this.zfloor = float.NaN; //mxd
 			
 			if(map == General.Map.Map)
 				General.Map.UndoRedo.RecAddVertex(this);
@@ -161,6 +185,8 @@ namespace CodeImp.DoomBuilder.Map
 			base.ReadWrite(s);
 			
 			s.rwVector2D(ref pos);
+			s.rwFloat(ref zceiling); //mxd
+			s.rwFloat(ref zfloor); //mxd
 			
 			if(s.IsWriting)
 			{
@@ -195,6 +221,8 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Copy properties
 			v.pos = pos;
+			v.zceiling = zceiling; //mxd
+			v.zfloor = zfloor; //mxd
 			base.CopyPropertiesTo(v);
 		}
 		

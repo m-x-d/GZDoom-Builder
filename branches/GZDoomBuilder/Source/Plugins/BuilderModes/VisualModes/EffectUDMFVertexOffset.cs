@@ -30,18 +30,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
                 ceilingVerts[index] = new Vector3D(v.Position);
 
                 //check ceiling
-				if(v.Fields.ContainsKey("zceiling")) {
+				if(!float.IsNaN(v.ZCeiling)) {
 					//vertex offset is absolute
-					ceilingVerts[index].z = (float)v.Fields["zceiling"].Value;
+					ceilingVerts[index].z = v.ZCeiling;
 					ceilingChanged = true;
 				} else {
 					ceilingVerts[index].z = data.Ceiling.plane.GetZ(v.Position);
 				}
 
                 //and floor
-				if(v.Fields.ContainsKey("zfloor")) {
+				if(!float.IsNaN(v.ZFloor)) {
 					//vertex offset is absolute
-					floorVerts[index].z = (float)v.Fields["zfloor"].Value;
+					floorVerts[index].z = v.ZFloor;
 					floorChanged = true;
 				} else {
 					floorVerts[index].z = data.Floor.plane.GetZ(v.Position);

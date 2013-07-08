@@ -391,6 +391,10 @@ namespace CodeImp.DoomBuilder.IO
 				Vertex v = map.CreateVertex(new Vector2D(x, y));
 				if(v != null)
 				{
+					//mxd. zoffsets
+					v.ZCeiling = GetCollectionEntry<float>(c, "zceiling", false, float.NaN, where); //mxd
+					v.ZFloor = GetCollectionEntry<float>(c, "zfloor", false, float.NaN, where); //mxd
+					
 					// Custom fields
 					ReadCustomFields(c, v, "vertex");
 

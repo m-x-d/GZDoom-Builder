@@ -630,7 +630,7 @@
 			// 
 			// floorOffsets
 			// 
-			this.floorOffsets.AllowDecimal = false;
+			this.floorOffsets.AllowDecimal = true;
 			this.floorOffsets.ButtonStep = 16F;
 			this.floorOffsets.DefaultValue = 0F;
 			this.floorOffsets.Field1 = "xpanningfloor";
@@ -800,7 +800,7 @@
 			// 
 			// ceilOffsets
 			// 
-			this.ceilOffsets.AllowDecimal = false;
+			this.ceilOffsets.AllowDecimal = true;
 			this.ceilOffsets.ButtonStep = 16F;
 			this.ceilOffsets.DefaultValue = 0F;
 			this.ceilOffsets.Field1 = "xpanningceiling";

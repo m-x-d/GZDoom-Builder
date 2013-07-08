@@ -1664,8 +1664,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void EndEdit()
 		{
 			PreActionNoChange();
+
+			//mxd
+			General.Interface.OnEditFormValuesChanged += new EventHandler(Interface_OnEditFormValuesChanged);
+
 			GetTargetEventReceiver(false).OnEditEnd();
 			PostAction();
+		}
+
+		//mxd
+		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) {
+			// Reset changed flags
+			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors) {
+				BaseVisualSector bvs = (vs.Value as BaseVisualSector);
+				foreach(VisualFloor vf in bvs.ExtraFloors)
+					vf.Changed = false;
+				foreach(VisualCeiling vc in bvs.ExtraCeilings)
+					vc.Changed = false;
+				foreach(VisualFloor vf in bvs.ExtraBackFloors)
+					vf.Changed = false; 
+				foreach(VisualCeiling vc in bvs.ExtraBackCeilings)
+					vc.Changed = false; 
+				bvs.Floor.Changed = false;
+				bvs.Ceiling.Changed = false;
+			}
+
+			UpdateChangedObjects();
+			ShowTargetInfo();
 		}
 
 		[BeginAction("raisesector8")]

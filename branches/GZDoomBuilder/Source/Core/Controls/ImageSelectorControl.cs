@@ -189,7 +189,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		//mxd
 		protected void DisplayImageSize(float width, float height) {
-			if(!General.Settings.ShowTextureSizes || (width == -1 && height == -1)) {
+			if(!General.Settings.ShowTextureSizes || width == 0 || height == 0) {
 				labelSize.Visible = false;
 				return;
 			}

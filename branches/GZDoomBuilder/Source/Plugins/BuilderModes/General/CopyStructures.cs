@@ -27,14 +27,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	public class VertexProperties
 	{
 		private UniFields fields;
+		private float zceiling; //mxd
+		private float zfloor; //mxd
 
 		public VertexProperties(Vertex v)
 		{
 			fields = new UniFields(v.Fields);
+			zceiling = v.ZCeiling; //mxd
+			zfloor = v.ZFloor; //mxd
 		}
 
 		public void Apply(Vertex v)
 		{
+			v.ZCeiling = zceiling; //mxd
+			v.ZFloor = zfloor; //mxd
+			
 			v.Fields.BeforeFieldsChange();
 			v.Fields.Clear();
 			foreach(KeyValuePair<string, UniValue> uv in fields)

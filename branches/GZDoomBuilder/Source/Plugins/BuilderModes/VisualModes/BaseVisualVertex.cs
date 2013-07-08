@@ -3,7 +3,7 @@ using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
@@ -36,20 +36,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//this updates the handle itself
 		public override void Update() {
 			if(!changed) return;
-
-			string key = ceilingVertex ? "zceiling" : "zfloor";
-			float z = 0f;
+			float z = ceilingVertex ? vertex.ZCeiling : vertex.ZFloor;
 
 			int height = getSectorHeight();
-			if(vertex.Fields.ContainsKey(key)) {
-				z = vertex.Fields.GetValue(key, 0f);
-
-				if(z == height && neighboursHaveSameHeight(height)) {  //don't create garbage data!
-					vertex.Fields.Remove(key);
-					haveOffset = false;
-				} else {
-					haveOffset = true;
-				}
+			if(!float.IsNaN(z)) {
+				haveOffset = (z != height || !neighboursHaveSameHeight(height));
 			} else {
 				z = height;
 				haveOffset = false;
@@ -90,7 +81,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
-		//get the most apropriate height from sectors
+		//get the most appropriate height from sectors
 		private int getSectorHeight() {
 			int height = 0;
 
@@ -275,11 +266,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//Delete key pressed - remove zoffset field
 		public virtual void OnDelete() {
-			string key = ceilingVertex ? "zceiling" : "zfloor";
+			if(ceilingVertex) {
+				if(float.IsNaN(vertex.ZCeiling)) return;
+				vertex.ZCeiling = float.NaN;
 
-			if(vertex.Fields.ContainsKey(key)) {
-				vertex.Fields.Remove(key);
-				
+				//update affected sectors
+				updateGeometry(vertex);
+				changed = true;
+				mode.ShowTargetInfo();
+			} else {
+				if(float.IsNaN(vertex.ZFloor)) return;
+				vertex.ZFloor = float.NaN;
+
 				//update affected sectors
 				updateGeometry(vertex);
 				changed = true;
@@ -291,19 +289,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnEditEnd() {
 			if(General.Interface.IsActiveWindow) {
 				List<Vertex> verts = mode.GetSelectedVertices();
-				DialogResult result = General.Interface.ShowEditVertices(verts, false);
-				
-				if(result == DialogResult.OK) {
-					foreach(Vertex v in verts) {
-						// Update what must be updated
-						updateGeometry(v);
-						if(v.Index == vertex.Index) {
-							changed = true;
-							Update();
-						}
-					}
-				}
+				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged);
+				General.Interface.ShowEditVertices(verts, false);
 			}
+		}
+
+		//mxd
+		private void Interface_OnEditFormValuesChanged(object sender, System.EventArgs e) {
+			VertexEditForm form = sender as VertexEditForm;
+			if(form == null) return;
+
+			// Update what must be updated
+			foreach(Vertex v in form.Selection) 
+				updateGeometry(v);
+
+			changed = true;
+			Update();
 		}
 
 		// Raise/lower thing
@@ -311,24 +312,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Change vertex height");
 
-			//change vertex zoffset
-			vertex.Fields.BeforeFieldsChange();
-
-			string key = ceilingVertex ? "zceiling" : "zfloor";
-			float val = 0f;
-
-			//get value
-			if(!vertex.Fields.ContainsKey(key)) {
-				val = getSectorHeight();
-				vertex.Fields.Add(key, new UniValue(UniversalType.Float, val));
+			if(ceilingVertex) {
+				vertex.ZCeiling = (float.IsNaN(vertex.ZCeiling) ? getSectorHeight() + amount : vertex.ZCeiling + amount);
+				
+				if(vertex.ZCeiling == getSectorHeight()) {
+					vertex.ZCeiling = float.NaN;
+					mode.SetActionResult("Cleared vertex height.");
+				} else {
+					mode.SetActionResult("Changed vertex height to " + vertex.ZCeiling + ".");
+				}
 			} else {
-				val = (float)vertex.Fields[key].Value;
+				vertex.ZFloor = (float.IsNaN(vertex.ZFloor) ? getSectorHeight() + amount : vertex.ZFloor + amount);
+				
+				if(vertex.ZFloor == getSectorHeight()) {
+					vertex.ZFloor = float.NaN;
+					mode.SetActionResult("Cleared vertex height.");
+				} else {
+					mode.SetActionResult("Changed vertex height to " + vertex.ZFloor + ".");
+				}
 			}
-
-			//update value
-			vertex.Fields[key].Value = val + amount;
-
-			mode.SetActionResult("Changed vertex height to " + (int)(val + amount) + ".");
 
 			// Update what must be updated
 			updateGeometry(vertex);
