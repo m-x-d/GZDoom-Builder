@@ -243,13 +243,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Linedef targetLine = MapSet.NearestLinedef(lines, hitpos);
 			if(targetLine == null) return;
 
-			foreach(Sidedef side in highlightedSector.Sidedefs) {
-				if(side.Line == targetLine && side.Line.Front != null && side.Line.Front == side) {
-					isFront = true;
-					break;
-				}
-			}
-
+			isFront = targetLine.SideOfLine(hitpos) > 0;
 			Sector.Sector.Fields.BeforeFieldsChange();
 
 			//find an angle to rotate texture
@@ -652,7 +646,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		private void Interface_OnEditFormValuesChanged(object sender, System.EventArgs e) {
-			SectorEditForm form = sender as SectorEditForm;
+			ISectorEditForm form = sender as ISectorEditForm;
 			if(form == null) return;
 
 			// Update what must be updated

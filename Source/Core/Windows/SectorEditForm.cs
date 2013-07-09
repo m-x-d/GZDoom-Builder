@@ -26,7 +26,7 @@ using CodeImp.DoomBuilder.Types;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	public partial class SectorEditForm : DelayedForm
+	public partial class SectorEditForm : DelayedForm, ISectorEditForm
 	{
 		#region ================== Events
 
@@ -42,8 +42,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private struct SectorProperties //mxd
 		{
-			//public int Tag;
-			//public int Effect;
 			public int Brightness;
 			public int FloorHeight;
 			public int CeilHeight;
@@ -51,8 +49,6 @@ namespace CodeImp.DoomBuilder.Windows
 			public string CeilTexture;
 
 			public SectorProperties(Sector s) {
-				//Tag = s.Tag;
-				//Effect = s.Effect;
 				Brightness = s.Brightness;
 				FloorHeight = s.FloorHeight;
 				CeilHeight = s.CeilHeight;

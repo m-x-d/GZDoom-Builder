@@ -3008,6 +3008,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.UDMF){ //mxd
 				SectorEditFormUDMF f = new SectorEditFormUDMF();
 				f.Setup(sectors);
+				f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
 				result = f.ShowDialog(this);
 				f.Dispose();
 			}else{

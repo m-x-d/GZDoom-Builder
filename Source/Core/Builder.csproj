@@ -804,6 +804,7 @@
     <Compile Include="Windows\FlagsForm.Designer.cs">
       <DependentUpon>FlagsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\ISectorEditForm.cs" />
     <Compile Include="Windows\MenuSection.cs" />
     <Compile Include="Windows\PasteOptionsForm.cs">
       <SubType>Form</SubType>
