@@ -35,10 +35,10 @@ namespace CodeImp.DoomBuilder.Controls
 		public event EventHandler OnValueChanged; //mxd
 		
 		private Bitmap bmp;
-		//private bool ispressed;
 		private bool ismouseinside;
 		private MouseButtons button;
 		protected bool allowclear;
+		private string previousImageName; //mxd
 		
 		#endregion
 
@@ -180,10 +180,12 @@ namespace CodeImp.DoomBuilder.Controls
 				// Show it centered
 				General.DisplayZoomedImage(preview, image);
 				preview.Refresh();
+			}
 
-				//mxd. Dispatch event
-				if(OnValueChanged != null)
-					OnValueChanged(this, EventArgs.Empty);
+			//mxd. Dispatch event
+			if(OnValueChanged != null && previousImageName != name.Text) {
+				previousImageName = name.Text;
+				OnValueChanged(this, EventArgs.Empty);
 			}
 		}
 

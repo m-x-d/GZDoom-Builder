@@ -648,6 +648,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				vs.Sides[side].lower.SelectNeighbours(select, withSameTexture, withSameHeight);
 			}
 		}
+
+		//mxd
+		private void updateSelectionInfo() {
+			int numWalls = 0;
+			int numFloors = 0;
+			int numCeilings = 0;
+			int numThings = 0;
+			int numVerts = 0;
+
+			foreach(IVisualEventReceiver obj in selectedobjects) {
+				if(!obj.IsSelected()) continue;
+
+				if(obj is BaseVisualThing) numThings++;
+				else if(obj is BaseVisualVertex) numVerts++;
+				else if(obj is VisualCeiling) numCeilings++;
+				else if(obj is VisualFloor)	numFloors++;
+				else if(obj is VisualMiddleSingle || obj is VisualMiddleDouble || obj is VisualLower || obj is VisualUpper || obj is VisualMiddle3D || obj is VisualMiddleBack)
+					numWalls++;
+			}
+
+			string result = "";
+
+			if(numWalls > 0)    result = numWalls + (numWalls > 1 ? " sidedefs" : " sidedef");
+			if(numFloors > 0)   result += (result.Length > 0 ? ", " : "") + numFloors + (numFloors > 1 ? " floors" : " floor");
+			if(numCeilings > 0)	result += (result.Length > 0 ? ", " : "") + numCeilings + (numCeilings > 1 ? " ceilings" : " ceiling");
+			if(numThings > 0)	result += (result.Length > 0 ? ", " : "") + numThings + (numThings > 1 ? " things" : " thing");
+			if(numVerts > 0)	result += (result.Length > 0 ? ", " : "") + numVerts + (numVerts > 1 ? " vertices" : " vertex");
+
+			if(!string.IsNullOrEmpty(result)) {
+				int pos = result.LastIndexOf(",");
+				if(pos != -1) result = result.Remove(pos, 1).Insert(pos, " and");
+				result += " selected";
+			}
+
+			General.Interface.DisplayStatus(StatusType.Selection, result);
+		}
 		
 		#endregion
 
@@ -896,7 +932,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd
 			useSelectionFromClassicMode = BuilderPlug.Me.SyncSelection ? !General.Interface.ShiftState : General.Interface.ShiftState;
-			
+			if(useSelectionFromClassicMode)	updateSelectionInfo();
+
 			// Read settings
 			cameraflooroffset = General.Map.Config.ReadSetting("cameraflooroffset", cameraflooroffset);
 			cameraceilingoffset = General.Map.Config.ReadSetting("cameraceilingoffset", cameraceilingoffset);
@@ -1241,6 +1278,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// We can't group with this undo level anymore
 			lastundogroup = UndoGroup.None;
+
+			//mxd
+			updateSelectionInfo();
 		}
 		
 		// Redo performed
@@ -1259,6 +1299,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
             }
 
 			RebuildSelectedObjectsList();
+
+			//mxd
+			updateSelectionInfo();
 		}
 		
 		#endregion
@@ -1620,6 +1663,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					pair.Value.Deselect();
 				}
 			}
+
+			//mxd
+			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 		}
 
 		[BeginAction("visualselect", BaseAction = true)]
@@ -1650,6 +1696,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Renderer.ShowSelection = true;
 			Renderer.ShowHighlight = true;
 			PostAction();
+
+			//mxd
+			updateSelectionInfo();
 		}
 
 		[BeginAction("visualedit", BaseAction = true)]
@@ -1674,6 +1723,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) {
+			if(allsectors == null) return;
+			
 			// Reset changed flags
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors) {
 				BaseVisualSector bvs = (vs.Value as BaseVisualSector);
@@ -2163,7 +2214,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ScaleTextureUpX() {
 			PreAction(UndoGroup.TextureScaleChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(0.25f, 0);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(-0.1f, 0);
 			PostAction();
 		}
 
@@ -2172,7 +2223,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ScaleTextureDownX() {
 			PreAction(UndoGroup.TextureScaleChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(-0.25f, 0);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(0.1f, 0);
 			PostAction();
 		}
 
@@ -2181,7 +2232,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ScaleTextureUpY() {
 			PreAction(UndoGroup.TextureScaleChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(0, 0.25f);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(0, 0.1f);
 			PostAction();
 		}
 
@@ -2190,7 +2241,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ScaleTextureDownY() {
 			PreAction(UndoGroup.TextureScaleChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(0, -0.25f);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(0, -0.1f);
 			PostAction();
 		}
 

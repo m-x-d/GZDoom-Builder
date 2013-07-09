@@ -178,11 +178,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.brightness.AllowNegative = false;
 			this.brightness.AllowRelative = true;
 			this.brightness.ButtonStep = 8;
+			this.brightness.ButtonStepFloat = 1F;
 			this.brightness.Location = new System.Drawing.Point(99, 124);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(73, 24);
 			this.brightness.StepValues = null;
 			this.brightness.TabIndex = 24;
+			this.brightness.WhenTextChanged += new System.EventHandler(this.brightness_WhenTextChanged);
 			// 
 			// ceilingheight
 			// 
@@ -190,6 +192,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingheight.AllowNegative = true;
 			this.ceilingheight.AllowRelative = true;
 			this.ceilingheight.ButtonStep = 8;
+			this.ceilingheight.ButtonStepFloat = 1F;
 			this.ceilingheight.Location = new System.Drawing.Point(99, 35);
 			this.ceilingheight.Name = "ceilingheight";
 			this.ceilingheight.Size = new System.Drawing.Size(88, 24);
@@ -258,6 +261,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floortex.Size = new System.Drawing.Size(83, 105);
 			this.floortex.TabIndex = 2;
 			this.floortex.TextureName = "";
+			this.floortex.OnValueChanged += new System.EventHandler(this.floortex_OnValueChanged);
 			// 
 			// floorheight
 			// 
@@ -265,6 +269,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floorheight.AllowNegative = true;
 			this.floorheight.AllowRelative = true;
 			this.floorheight.ButtonStep = 8;
+			this.floorheight.ButtonStepFloat = 1F;
 			this.floorheight.Location = new System.Drawing.Point(99, 65);
 			this.floorheight.Name = "floorheight";
 			this.floorheight.Size = new System.Drawing.Size(88, 24);
@@ -279,6 +284,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingtex.Size = new System.Drawing.Size(83, 105);
 			this.ceilingtex.TabIndex = 3;
 			this.ceilingtex.TextureName = "";
+			this.ceilingtex.OnValueChanged += new System.EventHandler(this.ceilingtex_OnValueChanged);
 			// 
 			// cancel
 			// 

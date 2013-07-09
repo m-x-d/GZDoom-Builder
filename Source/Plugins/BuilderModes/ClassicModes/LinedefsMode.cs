@@ -275,6 +275,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Convert geometry selection to linedefs selection
 			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
+			updateSelectionInfo(); //mxd
 		}
 		
 		// Mode disengages
@@ -398,6 +399,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.Map.ClearSelectedLinedefs();
 					General.Interface.RedrawDisplay();
 				}
+
+				//mxd
+				updateSelectionInfo();
 			}
 
 			base.OnSelectEnd();
@@ -473,6 +477,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Interface.RedrawDisplay();
 					}
 				}
+
+				updateSelectionInfo(); //mxd
 			}
 
 			editpressed = false;
@@ -509,6 +515,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						else
 							l.Selected = !l.Selected;
 						highlighted = l;
+
+						updateSelectionInfo(); //mxd
 
 						// Update entire display
 						General.Interface.RedrawDisplay();
@@ -654,6 +662,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 				}
+
+				//mxd
+				updateSelectionInfo();
 			}
 			
 			base.OnEndMultiSelection();
@@ -690,6 +701,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return base.OnCopyBegin();
+		}
+
+		//mxd
+		protected override void updateSelectionInfo() {
+			if(General.Map.Map.SelectedLinedefsCount > 0)
+				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedLinedefsCount + (General.Map.Map.SelectedLinedefsCount == 1 ? " linedef" : " linedefs") + " selected.");
+			else
+				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 		}
 
 		#endregion
@@ -795,6 +814,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Clear selection
 			General.Map.Map.ClearAllSelected();
+
+			//mxd
+			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 
 			// Redraw
 			General.Interface.RedrawDisplay();

@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// Status bar
 		private const string STATUS_READY_TEXT = "Ready.";
+		private const string STATUS_NO_SELECTION_TEXT = "Nothing selected."; //mxd
 		private const string STATUS_LOADING_TEXT = "Loading resources...";
 		private const int WARNING_FLASH_COUNT = 10;
 		private const int WARNING_FLASH_INTERVAL = 100;
@@ -153,6 +154,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private StatusInfo status;
 		private int statusflashcount;
 		private bool statusflashicon;
+		private string selectionInfo = STATUS_NO_SELECTION_TEXT; //mxd
 		
 		// Properties
 		private IntPtr windowptr;
@@ -681,10 +683,19 @@ namespace CodeImp.DoomBuilder.Windows
 				// When no particular information is to be displayed.
 				// The messages displayed depends on running background processes.
 				case StatusType.Ready:
-					if((General.Map != null) && (General.Map.Data != null) && General.Map.Data.IsLoading)
-						newstatus.message = STATUS_LOADING_TEXT;
+					if((General.Map != null) && (General.Map.Data != null))
+						if(General.Map.Data.IsLoading)
+							newstatus.message = STATUS_LOADING_TEXT;
+						else
+							newstatus.message = selectionInfo; //mxd
 					else
 						newstatus.message = STATUS_READY_TEXT;
+					break;
+
+				case StatusType.Selection: //mxd
+					if(string.IsNullOrEmpty(newstatus.message))
+						newstatus.message = STATUS_NO_SELECTION_TEXT;
+					selectionInfo = newstatus.message;
 					break;
 
 				// Shows information without flashing the icon.
@@ -759,6 +770,7 @@ namespace CodeImp.DoomBuilder.Windows
 				case StatusType.Ready:
 				case StatusType.Info:
 				case StatusType.Action:
+				case StatusType.Selection: //mxd
 					statuslabel.Image = STATUS_IMAGES[statusflashindex, statusicon];
 					break;
 				
@@ -3001,6 +3013,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}else{
 				SectorEditForm f = new SectorEditForm();
 				f.Setup(sectors);
+				f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
 				result = f.ShowDialog(this);
 				f.Dispose();
 			}
