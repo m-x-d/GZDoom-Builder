@@ -8,12 +8,29 @@ using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	public partial class SectorEditFormUDMF : DelayedForm
+	public partial class SectorEditFormUDMF : DelayedForm, ISectorEditForm
 	{
-		// Variables
+		#region ================== Events
+
+		public event EventHandler OnValuesChanged; //mxd
+
+		#endregion
+
+		#region ================== Variables
+
 		private ICollection<Sector> sectors;
 		private List<CheckBox> flags;
-		
+
+		#endregion
+
+		#region ================== Properties
+
+		public ICollection<Sector> Selection { get { return sectors; } } //mxd
+
+		#endregion
+
+		#region ================== Constructor
+
 		public SectorEditFormUDMF() {
 			InitializeComponent();
 
@@ -39,6 +56,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Initialize custom fields editor
 			fieldslist.Setup("sector");
 		}
+
+		#endregion
+
+		#region ================== Methods
 
 		// This sets up the form to edit the given sectors
 		public void Setup(ICollection<Sector> sectors) {
@@ -236,6 +257,10 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
+		#endregion
+
+		#region ================== Events
+
 		private void apply_Click(object sender, EventArgs e) {
 			string undodesc = "sector";
 
@@ -362,6 +387,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Done
 			General.Map.IsChanged = true;
+
+			//dbg
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
@@ -408,5 +437,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void ceilRotation_WhenTextChanged(object sender, EventArgs e) {
 			ceilAngleControl.Angle = General.ClampAngle(360 - ceilRotation.GetResult(0));
 		}
+
+		#endregion
 	}
 }
