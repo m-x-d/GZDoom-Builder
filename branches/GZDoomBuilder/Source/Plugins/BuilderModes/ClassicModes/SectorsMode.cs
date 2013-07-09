@@ -417,6 +417,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Convert geometry selection to sectors only
 			General.Map.Map.ConvertSelection(SelectionType.Sectors);
+			updateSelectionInfo(); //mxd
 
 			// Make text labels for sectors
 			SetupLabels();
@@ -558,6 +559,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.Map.ClearSelectedSectors();
 					General.Interface.RedrawDisplay();
 				}
+
+				updateSelectionInfo(); //mxd
 			}
 
 			base.OnSelectEnd();
@@ -620,9 +623,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(General.Interface.IsActiveWindow)
 					{
-						// Show sector edit dialog
+						//mxd. Show realtime vertex edit dialog
+						General.Interface.OnEditFormValuesChanged += new EventHandler(sectorEditForm_OnValuesChanged);
 						General.Interface.ShowEditSectors(selected);
-						General.Map.Map.Update();
 						
 						// When a single sector was selected, deselect it now
 						if(selected.Count == 1)
@@ -630,16 +633,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							General.Map.Map.ClearSelectedSectors();
 							General.Map.Map.ClearSelectedLinedefs();
 						}
-
-						// Update entire display
-						General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
-						General.Interface.RedrawDisplay();
 					}
 				}
+
+				updateSelectionInfo(); //mxd
 			}
 
 			editpressed = false;
 			base.OnEditEnd();
+		}
+
+		//mxd
+		private void sectorEditForm_OnValuesChanged(object sender, EventArgs e) {
+			// Update entire display
+			General.Map.Map.Update();
+			General.Map.Renderer2D.Update3dFloorTagsList();
+			General.Interface.RedrawDisplay();
 		}
 		
 		// Mouse moves
@@ -697,6 +706,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Update entire display
 						General.Interface.RedrawDisplay();
 					}
+
+					updateSelectionInfo(); //mxd
 				}
 			} 
 			else if(e.Button == MouseButtons.None) // Not holding any buttons?
@@ -975,6 +986,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Make sure all linedefs reflect selected sectors
 				foreach(Sidedef sd in General.Map.Map.Sidedefs)
 					sd.Line.Selected = sd.Sector.Selected || (sd.Other != null && sd.Other.Sector.Selected);
+
+				updateSelectionInfo(); //mxd
 			}
 			
 			base.OnEndMultiSelection();
@@ -1039,6 +1052,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Clear labels
 			SetupLabels();
+		}
+
+		//mxd
+		protected override void updateSelectionInfo() {
+			if(General.Map.Map.SelectedSectorsCount > 0)
+				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedSectorsCount + (General.Map.Map.SelectedSectorsCount == 1 ? " sector" : " sectors") + " selected.");
+			else
+				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 		}
 		
 		#endregion
@@ -1643,6 +1664,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Clear selection
 			General.Map.Map.ClearAllSelected();
+
+			General.Interface.DisplayStatus(StatusType.Selection, string.Empty); //mxd
 
 			// Clear labels
 			foreach(TextLabel[] labelarray in labels.Values)

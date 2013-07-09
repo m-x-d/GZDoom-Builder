@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			else
 			{
-				buttons.Value += Math.Sign(e.Delta) * 1;
+				buttons.Value -= Math.Sign(e.Delta);
 			}
 		}
 

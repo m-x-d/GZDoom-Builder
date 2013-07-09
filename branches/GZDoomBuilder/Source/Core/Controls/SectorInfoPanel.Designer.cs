@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// label13
 			// 
-			label13.Location = new System.Drawing.Point(103, 75);
+			label13.Location = new System.Drawing.Point(103, 77);
 			label13.Name = "label13";
 			label13.Size = new System.Drawing.Size(70, 14);
 			label13.TabIndex = 14;
@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// label5
 			// 
-			label5.Location = new System.Drawing.Point(103, 55);
+			label5.Location = new System.Drawing.Point(103, 58);
 			label5.Name = "label5";
 			label5.Size = new System.Drawing.Size(70, 14);
 			label5.TabIndex = 8;
@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// label4
 			// 
-			label4.Location = new System.Drawing.Point(8, 75);
+			label4.Location = new System.Drawing.Point(8, 77);
 			label4.Name = "label4";
 			label4.Size = new System.Drawing.Size(44, 14);
 			label4.TabIndex = 4;
@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// label3
 			// 
-			label3.Location = new System.Drawing.Point(8, 55);
+			label3.Location = new System.Drawing.Point(8, 58);
 			label3.Name = "label3";
 			label3.Size = new System.Drawing.Size(44, 14);
 			label3.TabIndex = 3;
@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// label2
 			// 
-			label2.Location = new System.Drawing.Point(8, 35);
+			label2.Location = new System.Drawing.Point(8, 39);
 			label2.Name = "label2";
 			label2.Size = new System.Drawing.Size(44, 14);
 			label2.TabIndex = 2;
@@ -131,12 +131,12 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// label1
 			// 
-			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(13, 15);
+			label1.Location = new System.Drawing.Point(8, 19);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(39, 14);
+			label1.Size = new System.Drawing.Size(44, 14);
 			label1.TabIndex = 0;
 			label1.Text = "Effect:";
+			label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// ceilingLightLabel
 			// 
@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// brightness
 			// 
-			this.brightness.Location = new System.Drawing.Point(177, 75);
+			this.brightness.Location = new System.Drawing.Point(177, 77);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(38, 14);
 			this.brightness.TabIndex = 17;
@@ -242,7 +242,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// height
 			// 
-			this.height.Location = new System.Drawing.Point(177, 55);
+			this.height.Location = new System.Drawing.Point(177, 58);
 			this.height.Name = "height";
 			this.height.Size = new System.Drawing.Size(38, 14);
 			this.height.TabIndex = 11;
@@ -250,7 +250,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// tag
 			// 
-			this.tag.Location = new System.Drawing.Point(55, 75);
+			this.tag.Location = new System.Drawing.Point(55, 77);
 			this.tag.Name = "tag";
 			this.tag.Size = new System.Drawing.Size(42, 14);
 			this.tag.TabIndex = 7;
@@ -258,7 +258,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// floor
 			// 
-			this.floor.Location = new System.Drawing.Point(55, 55);
+			this.floor.Location = new System.Drawing.Point(55, 58);
 			this.floor.Name = "floor";
 			this.floor.Size = new System.Drawing.Size(42, 14);
 			this.floor.TabIndex = 6;
@@ -266,7 +266,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// ceiling
 			// 
-			this.ceiling.Location = new System.Drawing.Point(55, 35);
+			this.ceiling.Location = new System.Drawing.Point(55, 39);
 			this.ceiling.Name = "ceiling";
 			this.ceiling.Size = new System.Drawing.Size(42, 14);
 			this.ceiling.TabIndex = 5;
@@ -275,7 +275,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// effect
 			// 
 			this.effect.AutoSize = true;
-			this.effect.Location = new System.Drawing.Point(55, 15);
+			this.effect.Location = new System.Drawing.Point(55, 19);
 			this.effect.Name = "effect";
 			this.effect.Size = new System.Drawing.Size(123, 14);
 			this.effect.TabIndex = 1;

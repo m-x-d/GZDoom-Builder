@@ -40,6 +40,11 @@ namespace CodeImp.DoomBuilder.Windows
 		/// When no particular information is to be displayed. The messages displayed depends on running background processes.
 		/// </summary>
 		Ready,
+
+		/// <summary>
+		/// mxd. Displays information about current selection.
+		/// </summary>
+		Selection,
 		
 		/// <summary>
 		/// Shows action information and flashes up the status icon once.

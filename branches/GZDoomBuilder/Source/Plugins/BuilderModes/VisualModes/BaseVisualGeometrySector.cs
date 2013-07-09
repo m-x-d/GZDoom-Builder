@@ -28,6 +28,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -642,19 +643,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(General.Interface.IsActiveWindow)
 			{
+				//mxd
 				List<Sector> sectors = mode.GetSelectedSectors();
-				DialogResult result = General.Interface.ShowEditSectors(sectors);
-				if(result == DialogResult.OK)
-				{
-					// Rebuild sector
-					foreach(Sector s in sectors)
-					{
-						if(mode.VisualSectorExists(s))
-						{
-							BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s);
-							vs.UpdateSectorGeometry(true);
-						}
-					}
+				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged);
+				General.Interface.ShowEditSectors(sectors);
+			}
+		}
+
+		//mxd
+		private void Interface_OnEditFormValuesChanged(object sender, System.EventArgs e) {
+			SectorEditForm form = sender as SectorEditForm;
+			if(form == null) return;
+
+			// Update what must be updated
+			foreach(Sector s in form.Selection) {
+				if(mode.VisualSectorExists(s)) {
+					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s);
+					vs.UpdateSectorGeometry(true);
 				}
 			}
 		}

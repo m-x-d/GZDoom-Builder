@@ -144,39 +144,39 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// label1
 			// 
-			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(11, 19);
+			label1.Location = new System.Drawing.Point(8, 19);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(41, 14);
+			label1.Size = new System.Drawing.Size(44, 14);
 			label1.TabIndex = 0;
 			label1.Text = "Action:";
+			label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label4
 			// 
-			label4.AutoSize = true;
-			label4.Location = new System.Drawing.Point(24, 77);
+			label4.Location = new System.Drawing.Point(8, 77);
 			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(27, 14);
+			label4.Size = new System.Drawing.Size(44, 14);
 			label4.TabIndex = 4;
 			label4.Text = "Tag:";
+			label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label3
 			// 
-			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(14, 58);
+			label3.Location = new System.Drawing.Point(8, 58);
 			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(38, 14);
+			label3.Size = new System.Drawing.Size(44, 14);
 			label3.TabIndex = 3;
 			label3.Text = "Angle:";
+			label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label2
 			// 
-			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(9, 39);
+			label2.Location = new System.Drawing.Point(8, 39);
 			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(43, 14);
+			label2.Size = new System.Drawing.Size(44, 14);
 			label2.TabIndex = 2;
 			label2.Text = "Length:";
+			label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// infopanel
 			// 

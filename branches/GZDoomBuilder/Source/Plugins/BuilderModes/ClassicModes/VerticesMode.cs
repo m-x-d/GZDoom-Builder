@@ -95,6 +95,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Convert geometry selection to vertices only
 			General.Map.Map.ConvertSelection(SelectionType.Vertices);
+			updateSelectionInfo(); //mxd
 		}
 
 		// Mode disengages
@@ -212,7 +213,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Render highlighted item
 				if((highlightedLine != null) && !highlightedLine.IsDisposed) {
-					renderer.PlotLinedef(highlightedLine, General.Colors.InfoLine);
+					renderer.PlotLinedef(highlightedLine, General.Colors.InfoLine.WithAlpha(128));
 
 					if(highlighted != null && !highlighted.IsDisposed) {
 						renderer.PlotVertex(highlightedLine.Start, highlightedLine.Start == highlighted ? ColorCollection.HIGHLIGHT : renderer.DetermineVertexColor(highlightedLine.Start));
@@ -271,6 +272,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.Map.ClearSelectedVertices();
 					General.Interface.RedrawDisplay();
 				}
+
+				//mxd
+				updateSelectionInfo();
 			}
 
 			base.OnSelectEnd();
@@ -295,6 +299,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.Map.ClearSelectedVertices();
 					highlighted.Selected = true;
 					General.Interface.RedrawDisplay();
+
+					//mxd
+					General.Interface.DisplayStatus(StatusType.Selection, "1 vertex selected.");
 				}
 
 				// Update display
@@ -405,6 +412,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(selected.Count == 1) General.Map.Map.ClearSelectedVertices();
 					}
 				}
+
+				updateSelectionInfo(); //mxd
 			}
 
 			editpressed = false;
@@ -449,6 +458,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						else
 							v.Selected = !v.Selected;
 						highlighted = v;
+
+						updateSelectionInfo(); //mxd
 
 						// Update entire display
 						General.Interface.RedrawDisplay();
@@ -571,6 +582,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(Vertex v in General.Map.Map.Vertices)
 						if(!selectionrect.Contains(v.Position.x, v.Position.y)) v.Selected = false;
 				}
+
+				//mxd
+				updateSelectionInfo();
 			}
 			
 			base.OnEndMultiSelection();
@@ -607,6 +621,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			return base.OnCopyBegin();
+		}
+
+		//mxd
+		protected override void updateSelectionInfo() {
+			if(General.Map.Map.SelectedVerticessCount > 0)
+				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedVerticessCount + (General.Map.Map.SelectedVerticessCount == 1 ? " vertex" : " vertices") + " selected.");
+			else
+				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 		}
 		
 		#endregion
@@ -675,6 +697,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Clear selection
 			General.Map.Map.ClearAllSelected();
+
+			//mxd
+			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 
 			// Redraw
 			General.Interface.RedrawDisplay();

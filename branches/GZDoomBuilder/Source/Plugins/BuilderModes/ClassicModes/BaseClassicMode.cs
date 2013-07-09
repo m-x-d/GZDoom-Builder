@@ -141,6 +141,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 				marqueSelectionMode = MarqueSelectionMode.SELECT;
 		}
+
+		//mxd
+		public override void OnUndoEnd() {
+			base.OnUndoEnd();
+			updateSelectionInfo();
+		}
+
+		//mxd
+		public override void OnRedoEnd() {
+			base.OnRedoEnd();
+			updateSelectionInfo();
+		}
+
+		//mxd
+		protected virtual void updateSelectionInfo() {
+			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
+		}
 		
 		#endregion
 

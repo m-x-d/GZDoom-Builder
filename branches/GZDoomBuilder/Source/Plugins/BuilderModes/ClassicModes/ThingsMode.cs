@@ -103,6 +103,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Convert geometry selection to linedefs selection
 			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
 			General.Map.Map.SelectionType = SelectionType.Things;
+			updateSelectionInfo(); //mxd
 		}
 
 		// Mode disengages
@@ -326,6 +327,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.Map.ClearSelectedThings();
 					General.Interface.RedrawDisplay();
 				}
+
+				updateSelectionInfo(); //mxd
 			}
 
 			base.OnSelectEnd();
@@ -419,6 +422,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 				}
+
+				updateSelectionInfo(); //mxd
 			}
 
 			editpressed = false;
@@ -455,6 +460,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						else
 							t.Selected = !t.Selected;
 						highlighted = t;
+
+						updateSelectionInfo(); //mxd
 
 						// Update entire display
 						General.Interface.RedrawDisplay();
@@ -571,6 +578,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
 						if(!selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
 				}
+
+				updateSelectionInfo(); //mxd
 			}
 			
 			base.OnEndMultiSelection();
@@ -607,6 +616,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return base.OnCopyBegin();
+		}
+
+		//mxd
+		protected override void updateSelectionInfo() {
+			if(General.Map.Map.SelectedThingsCount > 0)
+				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedThingsCount + (General.Map.Map.SelectedThingsCount == 1 ? " thing" : " things") + " selected.");
+			else
+				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 		}
 
 		#endregion
