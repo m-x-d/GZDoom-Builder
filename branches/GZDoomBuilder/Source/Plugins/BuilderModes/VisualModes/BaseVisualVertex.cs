@@ -19,6 +19,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Undo/redo
 		private int undoticket;
 
+		//updating
+		private static Dictionary<BaseVisualSector, bool> updateList;
+
 		#endregion
 
 		// Constructor
@@ -289,19 +292,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnEditEnd() {
 			if(General.Interface.IsActiveWindow) {
 				List<Vertex> verts = mode.GetSelectedVertices();
+				updateList = new Dictionary<BaseVisualSector, bool>();
+
+				foreach(Vertex v in verts){
+					VertexData vd = mode.GetVertexData(v);
+					foreach(KeyValuePair<Sector, bool> s in vd.UpdateAlso) {
+						if(mode.VisualSectorExists(s.Key)) {
+							BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
+							updateList.Add(vs, s.Value);
+						}
+					}
+				}
+
 				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged);
 				General.Interface.ShowEditVertices(verts, false);
+
+				updateList.Clear();
+				updateList = null;
 			}
 		}
 
 		//mxd
 		private void Interface_OnEditFormValuesChanged(object sender, System.EventArgs e) {
-			VertexEditForm form = sender as VertexEditForm;
-			if(form == null) return;
-
-			// Update what must be updated
-			foreach(Vertex v in form.Selection) 
-				updateGeometry(v);
+			foreach(KeyValuePair<BaseVisualSector, bool> group in updateList) 
+				group.Key.UpdateSectorGeometry(group.Value);
 
 			changed = true;
 			Update();

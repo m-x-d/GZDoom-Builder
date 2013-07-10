@@ -95,6 +95,10 @@ namespace CodeImp.DoomBuilder.IO
 							config.WriteSetting("managedfields.linedef." + fn, true);
 					}
 
+					//mxd. Add sector flags
+					foreach(KeyValuePair<string, string> flag in General.Map.Config.SectorFlags)
+						config.WriteSetting("managedfields.sector." + flag.Key, true);
+
 					// Add thing flags
 					foreach(KeyValuePair<string, string> flag in General.Map.Config.ThingFlags)
 						config.WriteSetting("managedfields.thing." + flag.Key, true);
@@ -348,11 +352,16 @@ namespace CodeImp.DoomBuilder.IO
 				int special = GetCollectionEntry<int>(c, "special", false, 0, where);
 				int tag = GetCollectionEntry<int>(c, "id", false, 0, where);
 
+				//mxd. Flags
+				Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
+				foreach(KeyValuePair<string, string> flag in General.Map.Config.SectorFlags)
+					stringflags[flag.Key] = GetCollectionEntry<bool>(c, flag.Key, false, false, where);
+
 				// Create new item
 				Sector s = map.CreateSector();
 				if(s != null)
 				{
-					s.Update(hfloor, hceil, tfloor, tceil, special, tag, bright);
+					s.Update(hfloor, hceil, tfloor, tceil, special, stringflags, tag, bright);
 
 					// Custom fields
 					ReadCustomFields(c, s, "sector");

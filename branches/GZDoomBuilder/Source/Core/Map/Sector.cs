@@ -57,6 +57,9 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private int brightness;
 
+		//mxd. UDMF properties
+		private Dictionary<string, bool> flags;
+
 		// Cloning
 		private Sector clone;
 		private int serializedindex;
@@ -87,6 +90,7 @@ namespace CodeImp.DoomBuilder.Map
 		public string CeilTexture { get { return ceiltexname; } }
 		public long LongFloorTexture { get { return longfloortexname; } }
 		public long LongCeilTexture { get { return longceiltexname; } }
+		internal Dictionary<string, bool> Flags { get { return flags; } } //mxd
 		public int Effect { get { return effect; } set { BeforePropsChange(); effect = value; } }
 		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public int Brightness { get { return brightness; } set { BeforePropsChange(); brightness = value; updateneeded = true; } }
@@ -114,6 +118,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.ceiltexname = "-";
 			this.longfloortexname = MapSet.EmptyLongName;
 			this.longceiltexname = MapSet.EmptyLongName;
+			this.flags = new Dictionary<string, bool>(); //mxd
 			this.updateneeded = true;
 			this.triangulationneeded = true;
 			this.surfaceentries = new SurfaceEntryCollection();
@@ -184,6 +189,25 @@ namespace CodeImp.DoomBuilder.Map
 			
 			base.ReadWrite(s);
 
+			//mxd
+			if(s.IsWriting) {
+				s.wInt(flags.Count);
+
+				foreach(KeyValuePair<string, bool> f in flags) {
+					s.wString(f.Key);
+					s.wBool(f.Value);
+				}
+			} else {
+				int c; s.rInt(out c);
+
+				flags = new Dictionary<string, bool>(c);
+				for(int i = 0; i < c; i++) {
+					string t; s.rString(out t);
+					bool b; s.rBool(out b);
+					flags.Add(t, b);
+				}
+			}
+
 			s.rwInt(ref fixedindex);
 			s.rwInt(ref floorheight);
 			s.rwInt(ref ceilheight);
@@ -218,6 +242,7 @@ namespace CodeImp.DoomBuilder.Map
 			s.longfloortexname = longfloortexname;
 			s.effect = effect;
 			s.tag = tag;
+			s.flags = new Dictionary<string, bool>(flags); //mxd
 			s.brightness = brightness;
 			s.updateneeded = true;
 			base.CopyPropertiesTo(s);
@@ -378,6 +403,35 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 		
 		#region ================== Methods
+
+		// This checks and returns a flag without creating it
+		public bool IsFlagSet(string flagname) {
+			if(flags.ContainsKey(flagname))
+				return flags[flagname];
+			else
+				return false;
+		}
+
+		// This sets a flag
+		public void SetFlag(string flagname, bool value) {
+			if(!flags.ContainsKey(flagname) || (IsFlagSet(flagname) != value)) {
+				BeforePropsChange();
+
+				flags[flagname] = value;
+			}
+		}
+
+		// This returns a copy of the flags dictionary
+		public Dictionary<string, bool> GetFlags() {
+			return new Dictionary<string, bool>(flags);
+		}
+
+		// This clears all flags
+		public void ClearFlags() {
+			BeforePropsChange();
+
+			flags.Clear();
+		}
 		
 		// This checks if the given point is inside the sector polygon
 		public bool Intersect(Vector2D p)
@@ -470,8 +524,14 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Changes
 
-		// This updates all properties
-		public void Update(int hfloor, int hceil, string tfloor, string tceil, int effect, int tag, int brightness)
+		//mxd. This updates all properties (Doom/Hexen version)
+		public void Update(int hfloor, int hceil, string tfloor, string tceil, int effect, int tag, int brightness) 
+		{
+			Update(hfloor, hceil, tfloor, tceil, effect, new Dictionary<string, bool>(), tag, brightness);
+		}
+
+		//mxd. This updates all properties (UDMF version)
+		public void Update(int hfloor, int hceil, string tfloor, string tceil, int effect, Dictionary<string, bool> flags, int tag, int brightness)
 		{
 			BeforePropsChange();
 			
@@ -482,6 +542,7 @@ namespace CodeImp.DoomBuilder.Map
 			SetCeilTexture(tceil);
 			this.effect = effect;
 			this.tag = tag;
+			this.flags = new Dictionary<string, bool>(flags); //mxd
 			this.brightness = brightness;
 			updateneeded = true;
 		}

@@ -111,6 +111,7 @@ namespace CodeImp.DoomBuilder.Config
 		private List<FlagTranslation> linedefflagstranslation;
 		
 		// Sectors
+		private Dictionary<string, string> sectorflags; //mxd
 		private Dictionary<int, SectorEffectInfo> sectoreffects;
 		private List<SectorEffectInfo> sortedsectoreffects;
 		private List<GeneralizedOption> geneffectoptions;
@@ -205,6 +206,7 @@ namespace CodeImp.DoomBuilder.Config
 		public List<FlagTranslation> LinedefFlagsTranslation { get { return linedefflagstranslation; } }
 
 		// Sectors
+		public IDictionary<string, string> SectorFlags { get { return sectorflags; } }
 		public IDictionary<int, SectorEffectInfo> SectorEffects { get { return sectoreffects; } }
 		public List<SectorEffectInfo> SortedSectorEffects { get { return sortedsectoreffects; } }
 		public List<GeneralizedOption> GenEffectOptions { get { return geneffectoptions; } }
@@ -249,6 +251,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.sortedlinedefactions = new List<LinedefActionInfo>();
 			this.linedefactivates = new List<LinedefActivateInfo>();
 			this.genactioncategories = new List<GeneralizedCategory>();
+			this.sectorflags = new Dictionary<string, string>(); //mxd
 			this.sectoreffects = new Dictionary<int, SectorEffectInfo>();
 			this.sortedsectoreffects = new List<SectorEffectInfo>();
 			this.geneffectoptions = new List<GeneralizedOption>();
@@ -344,6 +347,7 @@ namespace CodeImp.DoomBuilder.Config
 			LoadLinedefGeneralizedActions();
 
 			// Sectors
+			LoadSectorFlags(); //mxd
 			LoadBrightnessLevels();
 			LoadSectorEffects();
 			LoadSectorGeneralizedEffects();
@@ -611,6 +615,14 @@ namespace CodeImp.DoomBuilder.Config
 					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'gen_linedeftypes' contains invalid entries in game configuration '" + this.Name + "'");
 				}
 			}
+		}
+
+		//mxd. Sector flags
+		private void LoadSectorFlags() {
+			// Get linedef flags
+			IDictionary dic = cfg.ReadSetting("sectorflags", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+				sectorflags.Add(de.Key.ToString(), de.Value.ToString());
 		}
 
 		// Sector effects

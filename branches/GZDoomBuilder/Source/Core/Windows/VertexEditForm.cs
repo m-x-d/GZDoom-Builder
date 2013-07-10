@@ -27,7 +27,7 @@ using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	public partial class VertexEditForm : DelayedForm
+	internal partial class VertexEditForm : DelayedForm
 	{
 		#region ================== Constants
 
@@ -62,12 +62,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 		}
-
-		#endregion
-
-		#region ================== mxd. Properties
-
-		public ICollection<Vertex> Selection { get { return vertices; } }
 
 		#endregion
 
