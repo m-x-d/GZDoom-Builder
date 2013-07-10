@@ -407,6 +407,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						//mxd. Show realtime vertex edit dialog
 						General.Interface.OnEditFormValuesChanged += new EventHandler(vertexEditForm_OnValuesChanged);
 						General.Interface.ShowEditVertices(selected);
+						General.Interface.OnEditFormValuesChanged -= vertexEditForm_OnValuesChanged;
 
 						// When a single vertex was selected, deselect it now
 						if(selected.Count == 1) General.Map.Map.ClearSelectedVertices();

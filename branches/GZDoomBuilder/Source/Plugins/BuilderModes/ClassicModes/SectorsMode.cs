@@ -626,6 +626,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						//mxd. Show realtime vertex edit dialog
 						General.Interface.OnEditFormValuesChanged += new EventHandler(sectorEditForm_OnValuesChanged);
 						General.Interface.ShowEditSectors(selected);
+						General.Interface.OnEditFormValuesChanged -= sectorEditForm_OnValuesChanged;
 						
 						// When a single sector was selected, deselect it now
 						if(selected.Count == 1)

@@ -306,6 +306,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged);
 				General.Interface.ShowEditVertices(verts, false);
+				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged;
 
 				updateList.Clear();
 				updateList = null;
