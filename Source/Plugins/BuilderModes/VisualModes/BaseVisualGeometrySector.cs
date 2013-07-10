@@ -651,6 +651,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged);
 				General.Interface.ShowEditSectors(sectors);
+				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged;
 
 				updateList.Clear();
 				updateList = null;
