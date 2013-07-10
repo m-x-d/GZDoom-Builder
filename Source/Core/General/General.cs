@@ -187,6 +187,9 @@ namespace CodeImp.DoomBuilder
 		private static bool delaymainwindow;
 		private static bool nosettings;
 
+		//misc
+		private static Random random; //mxd
+
 		#endregion
 
 		#region ================== Properties
@@ -688,6 +691,8 @@ namespace CodeImp.DoomBuilder
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during program statup!");
 					if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
 				}
+
+				random = new Random(); //mxd
 				
 				// Run application from the main window
 				Application.Run(mainwindow);
@@ -1561,7 +1566,12 @@ namespace CodeImp.DoomBuilder
         //mxd. This clamps angle between 0 and 359
         public static float ClampAngle(float angle) {
             return (angle + 360) % 360;
-        }
+		}
+
+		//mxd
+		public static int Random(int min, int max) {
+			return random.Next(min, max);
+		}
 		
 		// This returns an element from a collection by index
 		public static T GetByIndex<T>(ICollection<T> collection, int index)
