@@ -788,6 +788,7 @@
     <Compile Include="Rendering\SurfaceEntryCollection.cs" />
     <Compile Include="Rendering\SurfaceManager.cs" />
     <Compile Include="Rendering\SurfaceUpdate.cs" />
+    <Compile Include="Types\RandomIntegerHandler.cs" />
     <Compile Include="Types\ThingClassHandler.cs" />
     <Compile Include="Types\ThingTypeHandler.cs" />
     <Compile Include="VisualModes\VisualVertex.cs" />
