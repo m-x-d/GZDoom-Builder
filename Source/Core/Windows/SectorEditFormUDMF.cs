@@ -8,7 +8,7 @@ using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	public partial class SectorEditFormUDMF : DelayedForm, ISectorEditForm
+	internal partial class SectorEditFormUDMF : DelayedForm
 	{
 		#region ================== Events
 
@@ -19,13 +19,6 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Variables
 
 		private ICollection<Sector> sectors;
-		private List<CheckBox> flags;
-
-		#endregion
-
-		#region ================== Properties
-
-		public ICollection<Sector> Selection { get { return sectors; } } //mxd
 
 		#endregion
 
@@ -33,6 +26,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 		public SectorEditFormUDMF() {
 			InitializeComponent();
+
+			// Fill flags list
+			foreach(KeyValuePair<string, string> lf in General.Map.Config.SectorFlags)
+				flags.Add(lf.Value, lf.Key);
 
 			// Fill effects list
 			effect.AddInfo(General.Map.Config.SortedSectorEffects.ToArray());
@@ -50,8 +47,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// Custom fields?
 			if(!General.Map.FormatInterface.HasCustomFields)
 				tabs.TabPages.Remove(tabcustom);
-
-			flags = new List<CheckBox>() { cbDropactors, cbHidden, cbNofallingdamage, cbNorespawn, cbSilent, ceilLightAbsolute, floorLightAbsolute };
 
 			// Initialize custom fields editor
 			fieldslist.Setup("sector");
@@ -75,6 +70,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Get first sector
 			sc = General.GetByIndex(sectors, 0);
+
+			// Flags
+			foreach(CheckBox c in flags.Checkboxes)
+				if(sc.Flags.ContainsKey(c.Tag.ToString())) c.Checked = sc.Flags[c.Tag.ToString()];
 
 			// Effects
 			effect.Value = sc.Effect;
@@ -126,13 +125,6 @@ namespace CodeImp.DoomBuilder.Windows
 			fadeColor.SetValueFrom(sc.Fields);
 			lightColor.SetValueFrom(sc.Fields);
 
-			//Sector flags
-			foreach(CheckBox cb in flags) {
-				string key = cb.Tag.ToString();
-				if(sc.Fields != null)
-					cb.CheckState = (sc.Fields.GetValue(key, false) ? CheckState.Checked : CheckState.Unchecked);
-			}
-
 			// Action
 			tagSelector.Setup(); //mxd
 			tagSelector.SetTag(sc.Tag);//mxd
@@ -146,6 +138,16 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Go for all sectors
 			foreach(Sector s in sectors) {
+				// Flags
+				foreach(CheckBox c in flags.Checkboxes) {
+					if(s.Flags.ContainsKey(c.Tag.ToString())) {
+						if(s.Flags[c.Tag.ToString()] != c.Checked) {
+							c.ThreeState = true;
+							c.CheckState = CheckState.Indeterminate;
+						}
+					}
+				}
+
 				// Effects
 				if(s.Effect != effect.Value) effect.Empty = true;
 				if(s.Brightness.ToString() != brightness.Text) brightness.Text = "";
@@ -195,20 +197,6 @@ namespace CodeImp.DoomBuilder.Windows
 				//Sector colors
 				fadeColor.SetValueFrom(s.Fields);
 				lightColor.SetValueFrom(s.Fields);
-
-				//Sector flags
-				foreach(CheckBox cb in flags) {
-					if(cb.CheckState == CheckState.Indeterminate) continue;
-
-					string key = cb.Tag.ToString();
-					if(s.Fields != null) {
-						CheckState state = (s.Fields.GetValue(key, false) ? CheckState.Checked : CheckState.Unchecked);
-						if(cb.CheckState != state) {
-							cb.ThreeState = true;
-							cb.CheckState = CheckState.Indeterminate;
-						}
-					}
-				}
 
 				// Action
 				if(s.Tag != sc.Tag) tagSelector.ClearTag(); //mxd
@@ -283,6 +271,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Go for all sectors
 			foreach(Sector s in sectors) {
+				// Apply all flags
+				foreach(CheckBox c in flags.Checkboxes) {
+					if(c.CheckState == CheckState.Checked) s.SetFlag(c.Tag.ToString(), true);
+					else if(c.CheckState == CheckState.Unchecked) s.SetFlag(c.Tag.ToString(), false);
+				}
+
 				// Effects
 				if(!effect.Empty) s.Effect = effect.Value;
 				s.Brightness = General.Clamp(brightness.GetResult(s.Brightness), General.Map.FormatInterface.MinBrightness, General.Map.FormatInterface.MaxBrightness);
@@ -366,19 +360,6 @@ namespace CodeImp.DoomBuilder.Windows
 				if(desaturation.Text != "") {
 					float val = General.Clamp(desaturation.GetResultFloat(0f), 0f, 1f);
 					UDMFTools.SetFloat(s.Fields, "desaturation", val, 0f, false);
-				}
-
-				//flags
-				foreach(CheckBox cb in flags) {
-					if(cb.CheckState == CheckState.Indeterminate) continue;
-					string key = cb.Tag.ToString();
-					bool oldValue = s.Fields.GetValue(key, false);
-
-					if(cb.CheckState == CheckState.Checked) {
-						if(!oldValue) s.Fields[key] = new UniValue(UniversalType.Boolean, true);
-					} else if(s.Fields.ContainsKey(key)) {
-						s.Fields.Remove(key);
-					}
 				}
 			}
 

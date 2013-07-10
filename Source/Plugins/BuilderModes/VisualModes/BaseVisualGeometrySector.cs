@@ -68,7 +68,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int prevoffsetx;		// We have to provide delta offsets, but I don't
 		private int prevoffsety;		// want to calculate with delta offsets to prevent
 										// inaccuracy in the dragging.
-		
+
+		private static List<BaseVisualSector> updateList; //mxd
+
 		#endregion
 
 		#region ================== Properties
@@ -639,23 +641,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				//mxd
 				List<Sector> sectors = mode.GetSelectedSectors();
+				updateList = new List<BaseVisualSector>();
+
+				foreach(Sector s in sectors) {
+					if(mode.VisualSectorExists(s)) {
+						updateList.Add((BaseVisualSector)mode.GetVisualSector(s));
+					}
+				}
+
 				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged);
 				General.Interface.ShowEditSectors(sectors);
+
+				updateList.Clear();
+				updateList = null;
 			}
 		}
 
 		//mxd
 		private void Interface_OnEditFormValuesChanged(object sender, System.EventArgs e) {
-			ISectorEditForm form = sender as ISectorEditForm;
-			if(form == null) return;
-
-			// Update what must be updated
-			foreach(Sector s in form.Selection) {
-				if(mode.VisualSectorExists(s)) {
-					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s);
-					vs.UpdateSectorGeometry(true);
-				}
-			}
+			foreach(BaseVisualSector vs in updateList)
+				vs.UpdateSectorGeometry(true);
 		}
 
 		// Sector height change

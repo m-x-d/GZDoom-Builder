@@ -29,7 +29,8 @@ namespace CodeImp.DoomBuilder.Controls
 	public partial class CheckboxArrayControl : UserControl
 	{
 		// Constants
-		private const int SPACING_Y = 1;
+		//private const int SPACING_Y = 1;
+		private int spacingY = 1; //mxd
 
 		// Variables
 		private List<CheckBox> checkboxes;
@@ -38,6 +39,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// Properties
 		public List<CheckBox> Checkboxes { get { return checkboxes; } }
 		public int Columns { get { return columns; } set { columns = value; } }
+		public int VerticalSpacing { get { return spacingY; } set { spacingY = value; } } //mxd
 		
 		// Constructor
 		public CheckboxArrayControl()
@@ -73,7 +75,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(columns < 1)	return 0;
 			if(checkboxes.Count < 1) return 0;
 			int col = (int)Math.Ceiling((float)checkboxes.Count / (float)columns);
-			return col * checkboxes[0].Height + (col * SPACING_Y + SPACING_Y);
+			return col * checkboxes[0].Height + (col * spacingY + spacingY);
 		}
 
 		// This positions the checkboxes
@@ -96,7 +98,7 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(CheckBox c in checkboxes) if(c.Height > boxheight) boxheight = c.Height;
 
 			// Check what the preferred column length is
-			columnlength = 1 + (int)Math.Floor((float)(this.ClientSize.Height - boxheight) / (float)(boxheight + SPACING_Y));
+			columnlength = 1 + (int)Math.Floor((float)(this.ClientSize.Height - boxheight) / (float)(boxheight + spacingY));
 			
 			// When not all items fit with the preferred column length
 			// we have to extend the column length to make it fit
@@ -110,7 +112,7 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(CheckBox c in checkboxes)
 			{
 				// Position checkbox
-				c.Location = new Point(col * columnwidth, row * boxheight + (row - 1) * SPACING_Y + SPACING_Y);
+				c.Location = new Point(col * columnwidth, row * boxheight + (row - 1) * spacingY + spacingY);
 
 				// Next position
 				if(++row == columnlength)

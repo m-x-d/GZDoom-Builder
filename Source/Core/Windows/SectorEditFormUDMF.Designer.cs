@@ -51,11 +51,7 @@
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabproperties = new System.Windows.Forms.TabPage();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.cbDropactors = new System.Windows.Forms.CheckBox();
-			this.cbNorespawn = new System.Windows.Forms.CheckBox();
-			this.cbNofallingdamage = new System.Windows.Forms.CheckBox();
-			this.cbHidden = new System.Windows.Forms.CheckBox();
-			this.cbSilent = new System.Windows.Forms.CheckBox();
+			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.tabSurfaces = new System.Windows.Forms.TabPage();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.floorAngleControl = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
@@ -180,6 +176,7 @@
 			this.brightness.AllowNegative = false;
 			this.brightness.AllowRelative = true;
 			this.brightness.ButtonStep = 8;
+			this.brightness.ButtonStepFloat = 1F;
 			this.brightness.Location = new System.Drawing.Point(125, 84);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(81, 24);
@@ -191,6 +188,7 @@
 			this.desaturation.AllowDecimal = true;
 			this.desaturation.AllowNegative = false;
 			this.desaturation.AllowRelative = false;
+			this.desaturation.ButtonStep = 1;
 			this.desaturation.ButtonStepFloat = 0.1F;
 			this.desaturation.Location = new System.Drawing.Point(125, 142);
 			this.desaturation.Name = "desaturation";
@@ -237,6 +235,7 @@
 			this.gravity.AllowDecimal = true;
 			this.gravity.AllowNegative = true;
 			this.gravity.AllowRelative = true;
+			this.gravity.ButtonStep = 1;
 			this.gravity.ButtonStepFloat = 0.1F;
 			this.gravity.Location = new System.Drawing.Point(125, 112);
 			this.gravity.Name = "gravity";
@@ -310,6 +309,7 @@
 			this.ceilingheight.AllowNegative = true;
 			this.ceilingheight.AllowRelative = true;
 			this.ceilingheight.ButtonStep = 8;
+			this.ceilingheight.ButtonStepFloat = 1F;
 			this.ceilingheight.Location = new System.Drawing.Point(89, 19);
 			this.ceilingheight.Name = "ceilingheight";
 			this.ceilingheight.Size = new System.Drawing.Size(88, 24);
@@ -359,6 +359,7 @@
 			this.floorheight.AllowNegative = true;
 			this.floorheight.AllowRelative = true;
 			this.floorheight.ButtonStep = 8;
+			this.floorheight.ButtonStepFloat = 1F;
 			this.floorheight.Location = new System.Drawing.Point(89, 49);
 			this.floorheight.Name = "floorheight";
 			this.floorheight.Size = new System.Drawing.Size(88, 24);
@@ -400,11 +401,7 @@
 			// 
 			// groupBox3
 			// 
-			this.groupBox3.Controls.Add(this.cbDropactors);
-			this.groupBox3.Controls.Add(this.cbNorespawn);
-			this.groupBox3.Controls.Add(this.cbNofallingdamage);
-			this.groupBox3.Controls.Add(this.cbHidden);
-			this.groupBox3.Controls.Add(this.cbSilent);
+			this.groupBox3.Controls.Add(this.flags);
 			this.groupBox3.Location = new System.Drawing.Point(201, 6);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(242, 148);
@@ -412,60 +409,15 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Flags:";
 			// 
-			// cbDropactors
+			// flags
 			// 
-			this.cbDropactors.AutoSize = true;
-			this.cbDropactors.Location = new System.Drawing.Point(14, 119);
-			this.cbDropactors.Name = "cbDropactors";
-			this.cbDropactors.Size = new System.Drawing.Size(219, 18);
-			this.cbDropactors.TabIndex = 4;
-			this.cbDropactors.Tag = "dropactors";
-			this.cbDropactors.Text = "Actors drop with instantly moving floors";
-			this.cbDropactors.UseVisualStyleBackColor = true;
-			// 
-			// cbNorespawn
-			// 
-			this.cbNorespawn.AutoSize = true;
-			this.cbNorespawn.Location = new System.Drawing.Point(14, 95);
-			this.cbNorespawn.Name = "cbNorespawn";
-			this.cbNorespawn.Size = new System.Drawing.Size(135, 18);
-			this.cbNorespawn.TabIndex = 3;
-			this.cbNorespawn.Tag = "norespawn";
-			this.cbNorespawn.Text = "Players can\'t respawn";
-			this.cbNorespawn.UseVisualStyleBackColor = true;
-			// 
-			// cbNofallingdamage
-			// 
-			this.cbNofallingdamage.AutoSize = true;
-			this.cbNofallingdamage.Location = new System.Drawing.Point(14, 71);
-			this.cbNofallingdamage.Name = "cbNofallingdamage";
-			this.cbNofallingdamage.Size = new System.Drawing.Size(111, 18);
-			this.cbNofallingdamage.TabIndex = 2;
-			this.cbNofallingdamage.Tag = "nofallingdamage";
-			this.cbNofallingdamage.Text = "No falling damage";
-			this.cbNofallingdamage.UseVisualStyleBackColor = true;
-			// 
-			// cbHidden
-			// 
-			this.cbHidden.AutoSize = true;
-			this.cbHidden.Location = new System.Drawing.Point(14, 47);
-			this.cbHidden.Name = "cbHidden";
-			this.cbHidden.Size = new System.Drawing.Size(138, 18);
-			this.cbHidden.TabIndex = 1;
-			this.cbHidden.Tag = "hidden";
-			this.cbHidden.Text = "Not shown on automap";
-			this.cbHidden.UseVisualStyleBackColor = true;
-			// 
-			// cbSilent
-			// 
-			this.cbSilent.AutoSize = true;
-			this.cbSilent.Location = new System.Drawing.Point(14, 23);
-			this.cbSilent.Name = "cbSilent";
-			this.cbSilent.Size = new System.Drawing.Size(52, 18);
-			this.cbSilent.TabIndex = 0;
-			this.cbSilent.Tag = "silent";
-			this.cbSilent.Text = "Silent";
-			this.cbSilent.UseVisualStyleBackColor = true;
+			this.flags.AutoScroll = true;
+			this.flags.Columns = 1;
+			this.flags.Location = new System.Drawing.Point(15, 21);
+			this.flags.Name = "flags";
+			this.flags.Size = new System.Drawing.Size(222, 121);
+			this.flags.TabIndex = 5;
+			this.flags.VerticalSpacing = 6;
 			// 
 			// tabSurfaces
 			// 
@@ -537,6 +489,7 @@
 			this.floorAlpha.AllowDecimal = true;
 			this.floorAlpha.AllowNegative = false;
 			this.floorAlpha.AllowRelative = false;
+			this.floorAlpha.ButtonStep = 1;
 			this.floorAlpha.ButtonStepFloat = 0.1F;
 			this.floorAlpha.Location = new System.Drawing.Point(118, 145);
 			this.floorAlpha.Name = "floorAlpha";
@@ -561,6 +514,7 @@
 			this.floorRotation.AllowNegative = true;
 			this.floorRotation.AllowRelative = true;
 			this.floorRotation.ButtonStep = 5;
+			this.floorRotation.ButtonStepFloat = 1F;
 			this.floorRotation.Location = new System.Drawing.Point(118, 115);
 			this.floorRotation.Name = "floorRotation";
 			this.floorRotation.Size = new System.Drawing.Size(62, 24);
@@ -596,6 +550,7 @@
 			this.floorBrightness.AllowNegative = true;
 			this.floorBrightness.AllowRelative = true;
 			this.floorBrightness.ButtonStep = 16;
+			this.floorBrightness.ButtonStepFloat = 1F;
 			this.floorBrightness.Location = new System.Drawing.Point(118, 85);
 			this.floorBrightness.Name = "floorBrightness";
 			this.floorBrightness.Size = new System.Drawing.Size(62, 24);
@@ -618,6 +573,7 @@
 			// floorScale
 			// 
 			this.floorScale.AllowDecimal = true;
+			this.floorScale.ButtonStep = 1;
 			this.floorScale.ButtonStepFloat = 0.1F;
 			this.floorScale.DefaultValue = 1F;
 			this.floorScale.Field1 = "xscalefloor";
@@ -631,6 +587,7 @@
 			// floorOffsets
 			// 
 			this.floorOffsets.AllowDecimal = true;
+			this.floorOffsets.ButtonStep = 1;
 			this.floorOffsets.ButtonStepFloat = 16F;
 			this.floorOffsets.DefaultValue = 0F;
 			this.floorOffsets.Field1 = "xpanningfloor";
@@ -707,6 +664,7 @@
 			this.ceilAlpha.AllowDecimal = true;
 			this.ceilAlpha.AllowNegative = false;
 			this.ceilAlpha.AllowRelative = false;
+			this.ceilAlpha.ButtonStep = 1;
 			this.ceilAlpha.ButtonStepFloat = 0.1F;
 			this.ceilAlpha.Location = new System.Drawing.Point(118, 145);
 			this.ceilAlpha.Name = "ceilAlpha";
@@ -731,6 +689,7 @@
 			this.ceilRotation.AllowNegative = true;
 			this.ceilRotation.AllowRelative = true;
 			this.ceilRotation.ButtonStep = 5;
+			this.ceilRotation.ButtonStepFloat = 1F;
 			this.ceilRotation.Location = new System.Drawing.Point(118, 115);
 			this.ceilRotation.Name = "ceilRotation";
 			this.ceilRotation.Size = new System.Drawing.Size(62, 24);
@@ -766,6 +725,7 @@
 			this.ceilBrightness.AllowNegative = true;
 			this.ceilBrightness.AllowRelative = true;
 			this.ceilBrightness.ButtonStep = 16;
+			this.ceilBrightness.ButtonStepFloat = 1F;
 			this.ceilBrightness.Location = new System.Drawing.Point(118, 85);
 			this.ceilBrightness.Name = "ceilBrightness";
 			this.ceilBrightness.Size = new System.Drawing.Size(62, 24);
@@ -788,6 +748,7 @@
 			// ceilScale
 			// 
 			this.ceilScale.AllowDecimal = true;
+			this.ceilScale.ButtonStep = 1;
 			this.ceilScale.ButtonStepFloat = 0.1F;
 			this.ceilScale.DefaultValue = 1F;
 			this.ceilScale.Field1 = "xscaleceiling";
@@ -801,6 +762,7 @@
 			// ceilOffsets
 			// 
 			this.ceilOffsets.AllowDecimal = true;
+			this.ceilOffsets.ButtonStep = 1;
 			this.ceilOffsets.ButtonStepFloat = 16F;
 			this.ceilOffsets.DefaultValue = 0F;
 			this.ceilOffsets.Field1 = "xpanningceiling";
@@ -904,7 +866,6 @@
 			this.tabs.ResumeLayout(false);
 			this.tabproperties.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
-			this.groupBox3.PerformLayout();
 			this.tabSurfaces.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
@@ -964,12 +925,8 @@
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox gravity;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox desaturation;
 		private System.Windows.Forms.TextBox soundSequence;
-		private System.Windows.Forms.CheckBox cbDropactors;
-		private System.Windows.Forms.CheckBox cbNorespawn;
-		private System.Windows.Forms.CheckBox cbNofallingdamage;
-		private System.Windows.Forms.CheckBox cbHidden;
-		private System.Windows.Forms.CheckBox cbSilent;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl fadeColor;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl lightColor;
+		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flags;
 	}
 }

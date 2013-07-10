@@ -257,6 +257,10 @@ namespace CodeImp.DoomBuilder.IO
 				if(s.Tag != 0) coll.Add("id", s.Tag);
 				coll.Comment = s.Index.ToString();
 
+				//mxd. Flags
+				foreach(KeyValuePair<string, bool> flag in s.Flags)
+					if(flag.Value) coll.Add(flag.Key, flag.Value);
+
 				// Add custom fields
 				AddCustomFields(s, "sector", coll);
 

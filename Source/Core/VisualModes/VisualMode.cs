@@ -64,7 +64,6 @@ namespace CodeImp.DoomBuilder.VisualModes
         //mxd
         private List<VisualThing> selectedVisualThings;
         private List<VisualSector> selectedVisualSectors;
-		//protected List<VisualVertexPair> vertices;
 		protected Dictionary<Vertex, VisualVertexPair> vertices;
         //used in "Play From Here" Action
         private Thing playerStart;

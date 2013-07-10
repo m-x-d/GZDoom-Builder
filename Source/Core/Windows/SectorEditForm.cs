@@ -26,7 +26,7 @@ using CodeImp.DoomBuilder.Types;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	public partial class SectorEditForm : DelayedForm, ISectorEditForm
+	internal partial class SectorEditForm : DelayedForm
 	{
 		#region ================== Events
 
@@ -56,12 +56,6 @@ namespace CodeImp.DoomBuilder.Windows
 				CeilTexture = s.CeilTexture;
 			}
 		}
-
-		#endregion
-
-		#region ================== Properties
-
-		public ICollection<Sector> Selection { get { return sectors; } } //mxd
 
 		#endregion
 
