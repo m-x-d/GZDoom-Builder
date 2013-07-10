@@ -1572,6 +1572,11 @@ namespace CodeImp.DoomBuilder
 		public static int Random(int min, int max) {
 			return random.Next(min, max);
 		}
+
+		//mxd
+		public static float Random(float min, float max) {
+			return (float)Math.Round(min + (max - min) * random.NextDouble(), 2);
+		}
 		
 		// This returns an element from a collection by index
 		public static T GetByIndex<T>(ICollection<T> collection, int index)

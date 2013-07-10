@@ -42,6 +42,7 @@ namespace CodeImp.DoomBuilder.Types
 		AngleDegreesFloat = 17,
 		ThingType = 18,
 		ThingClass = 19,
-		RandomInteger = 20 //mxd
+		RandomInteger = 20, //mxd
+		RandomFloat = 21 //mxd
 	}
 }
