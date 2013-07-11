@@ -289,6 +289,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update arguments
 			action_ValueChanges(this, EventArgs.Empty);
 		}
+
+		//mxd
+		private void thingtype_OnTypeDoubleClicked() {
+			apply_Click(this, EventArgs.Empty);
+		}
 		
 		// Action changes
 		private void action_ValueChanges(object sender, EventArgs e)

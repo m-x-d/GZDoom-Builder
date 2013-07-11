@@ -29,7 +29,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Monsters");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ThingBrowserControl));
 			this.sizecaption = new System.Windows.Forms.Label();
 			this.blockingcaption = new System.Windows.Forms.Label();
@@ -38,13 +37,13 @@ namespace CodeImp.DoomBuilder.Controls
 			this.sizelabel = new System.Windows.Forms.Label();
 			this.blockinglabel = new System.Windows.Forms.Label();
 			this.positionlabel = new System.Windows.Forms.Label();
-			this.typelist = new System.Windows.Forms.TreeView();
 			this.thingimages = new System.Windows.Forms.ImageList(this.components);
 			this.infopanel = new System.Windows.Forms.Panel();
+			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.tbFilter = new System.Windows.Forms.TextBox();
 			this.bClear = new System.Windows.Forms.Button();
-			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.typelist = new CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview();
 			this.infopanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -111,27 +110,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.positionlabel.TabIndex = 13;
 			this.positionlabel.Text = "Ceiling";
 			// 
-			// typelist
-			// 
-			this.typelist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.typelist.HideSelection = false;
-			this.typelist.ImageIndex = 0;
-			this.typelist.ImageList = this.thingimages;
-			this.typelist.Location = new System.Drawing.Point(0, 28);
-			this.typelist.Margin = new System.Windows.Forms.Padding(8, 8, 9, 8);
-			this.typelist.Name = "typelist";
-			treeNode2.Name = "Node0";
-			treeNode2.Text = "Monsters";
-			this.typelist.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode2});
-			this.typelist.SelectedImageIndex = 0;
-			this.typelist.Size = new System.Drawing.Size(304, 244);
-			this.typelist.TabIndex = 0;
-			this.typelist.DoubleClick += new System.EventHandler(this.typelist_DoubleClick);
-			this.typelist.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.typelist_AfterSelect);
-			// 
 			// thingimages
 			// 
 			this.thingimages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("thingimages.ImageStream")));
@@ -174,6 +152,18 @@ namespace CodeImp.DoomBuilder.Controls
 			this.infopanel.Size = new System.Drawing.Size(304, 48);
 			this.infopanel.TabIndex = 18;
 			// 
+			// typeid
+			// 
+			this.typeid.AllowDecimal = false;
+			this.typeid.AllowNegative = false;
+			this.typeid.AllowRelative = false;
+			this.typeid.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.typeid.Location = new System.Drawing.Point(41, 5);
+			this.typeid.Name = "typeid";
+			this.typeid.Size = new System.Drawing.Size(68, 20);
+			this.typeid.TabIndex = 1;
+			this.typeid.TextChanged += new System.EventHandler(this.typeid_TextChanged);
+			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
@@ -201,26 +191,33 @@ namespace CodeImp.DoomBuilder.Controls
 			this.bClear.UseVisualStyleBackColor = true;
 			this.bClear.Click += new System.EventHandler(this.bClear_Click);
 			// 
-			// typeid
+			// typelist
 			// 
-			this.typeid.AllowDecimal = false;
-			this.typeid.AllowNegative = false;
-			this.typeid.AllowRelative = false;
-			this.typeid.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.typeid.Location = new System.Drawing.Point(41, 5);
-			this.typeid.Name = "typeid";
-			this.typeid.Size = new System.Drawing.Size(68, 20);
-			this.typeid.TabIndex = 1;
-			this.typeid.TextChanged += new System.EventHandler(this.typeid_TextChanged);
+			this.typelist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.typelist.HideSelection = false;
+			this.typelist.ImageIndex = 0;
+			this.typelist.ImageList = this.thingimages;
+			this.typelist.Location = new System.Drawing.Point(0, 28);
+			this.typelist.Margin = new System.Windows.Forms.Padding(8, 8, 9, 8);
+			this.typelist.Name = "typelist";
+			this.typelist.SelectedImageIndex = 0;
+			this.typelist.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("typelist.SelectedNodes")));
+			this.typelist.Size = new System.Drawing.Size(304, 244);
+			this.typelist.TabIndex = 22;
+			this.typelist.UseMultiSelection = false;
+			this.typelist.DoubleClick += new System.EventHandler(this.typelist_DoubleClick);
+			this.typelist.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.typelist_AfterSelect);
 			// 
 			// ThingBrowserControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+			this.Controls.Add(this.typelist);
 			this.Controls.Add(this.bClear);
 			this.Controls.Add(this.tbFilter);
 			this.Controls.Add(this.label1);
-			this.Controls.Add(this.typelist);
 			this.Controls.Add(this.infopanel);
 			this.Name = "ThingBrowserControl";
 			this.Size = new System.Drawing.Size(304, 320);
@@ -240,7 +237,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label blockinglabel;
 		private System.Windows.Forms.Label positionlabel;
 		private NumericTextbox typeid;
-		private System.Windows.Forms.TreeView typelist;
 		private System.Windows.Forms.ImageList thingimages;
 		private System.Windows.Forms.Panel infopanel;
 		private System.Windows.Forms.Label sizecaption;
@@ -250,5 +246,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox tbFilter;
 		private System.Windows.Forms.Button bClear;
+		private CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview typelist;
 	}
 }

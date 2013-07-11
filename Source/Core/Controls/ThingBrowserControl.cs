@@ -39,7 +39,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Variables
 
-		//private ICollection<Thing> things;
 		private List<TreeNode> nodes;
 		private ThingTypeInfo thinginfo;
 		private bool doupdatenode;
@@ -50,6 +49,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Properties
 
 		public string TypeStringValue { get { return typeid.Text; } }
+		public bool UseMultiSelection { get { return typelist.UseMultiSelection; } set { typelist.UseMultiSelection = value; } }
 
 		#endregion
 
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.Controls
 			doupdatenode = false;
 
 			// Clear selection
-			typelist.SelectedNode = null;
+			typelist.ClearSelectedNodes(); //mxd
 			typeid.Text = "";
 
 			// Collapse nodes
@@ -125,7 +125,30 @@ namespace CodeImp.DoomBuilder.Controls
 		// Result
 		public int GetResult(int original)
 		{
+			//mxd
+			if(typelist.UseMultiSelection && typelist.SelectedNodes.Count > 1) {
+				List<TreeNode> validNodes = getValidNodes();
+
+				//get a random ThingTypeInfo from valid nodes
+				if(validNodes.Count > 1) {
+					ThingTypeInfo ti = validNodes[General.Random(0, validNodes.Count - 1)].Tag as ThingTypeInfo;
+					return ti.Index;
+				}
+			}
+			
 			return typeid.GetResult(original);
+		}
+
+		//mxd
+		private List<TreeNode> getValidNodes() {
+			List<TreeNode> validNodes = new List<TreeNode>();
+
+			foreach(TreeNode n in typelist.SelectedNodes) {
+				if((n.Nodes.Count == 0) && (n.Tag != null) && (n.Tag is ThingTypeInfo))
+					validNodes.Add(n);
+			}
+
+			return validNodes;
 		}
 
 		#endregion
@@ -151,8 +174,13 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(doupdatetextbox)
 			{
-				// Anything selected?
-				if(typelist.SelectedNode != null)
+				//mxd. Got a valid multiselection? Well, can't show any useful info about that...
+				if(typelist.UseMultiSelection && typelist.SelectedNodes.Count > 1 && getValidNodes().Count > 1) {
+					doupdatenode = false;
+					typeid.Text = "";
+					doupdatenode = true;
+				}
+				else if(typelist.SelectedNode != null) //Anything selected?
 				{
 					TreeNode n = typelist.SelectedNode;
 
@@ -162,7 +190,9 @@ namespace CodeImp.DoomBuilder.Controls
 						ThingTypeInfo ti = (n.Tag as ThingTypeInfo);
 
 						// Show info
+						doupdatenode = false;
 						typeid.Text = ti.Index.ToString();
+						doupdatenode = true;
 					}
 				}
 			}
@@ -177,7 +207,8 @@ namespace CodeImp.DoomBuilder.Controls
 			if(typeid.Text.Length > 0)
 			{
 				// Get the info
-				thinginfo = General.Map.Data.GetThingInfoEx(typeid.GetResult(0));
+				int typeindex = typeid.GetResult(0);
+				thinginfo = General.Map.Data.GetThingInfoEx(typeindex);
 				if(thinginfo != null)
 				{
 					knownthing = true;
@@ -201,8 +232,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(doupdatenode)
 				{
 					doupdatetextbox = false;
-					int typeindex = typeid.GetResult(0);
-					typelist.SelectedNode = null;
+					typelist.ClearSelectedNodes();
 					foreach(TreeNode n in nodes)
 					{
 						// Matching node?
@@ -222,7 +252,7 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				thinginfo = null;
-				if(doupdatenode) typelist.SelectedNode = null;
+				if(doupdatenode) typelist.ClearSelectedNodes();
 			}
 
 			// No known thing?
@@ -250,11 +280,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private void ThingBrowserControl_SizeChanged(object sender, EventArgs e)
 		{
-			//infopanel.Top = this.ClientSize.Height - infopanel.Height;
-			//infopanel.Width = this.ClientSize.Width;
-			//typelist.Width = this.ClientSize.Width;
-			//typelist.Height = infopanel.Top;
-
 			blockingcaption.Left = infopanel.Width / 2;
 			blockinglabel.Left = blockingcaption.Right + blockingcaption.Margin.Right;
 			sizecaption.Left = blockingcaption.Right - sizecaption.Width;
@@ -275,6 +300,7 @@ namespace CodeImp.DoomBuilder.Controls
 				typeid_TextChanged(this, EventArgs.Empty);
 			} else {
 				// Go for all predefined categories
+				typelist.ClearSelectedNodes();
 				typelist.Nodes.Clear();
 
 				string match = tbFilter.Text.ToUpperInvariant();
