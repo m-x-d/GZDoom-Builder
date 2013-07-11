@@ -726,6 +726,9 @@
     <Compile Include="GZBuilder\Controls\IconListBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="GZBuilder\Controls\MultiSelectTreeview.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="GZBuilder\Controls\PairedFieldsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

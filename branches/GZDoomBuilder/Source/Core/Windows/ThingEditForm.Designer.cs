@@ -108,6 +108,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.thingtype.Name = "thingtype";
 			this.thingtype.Size = new System.Drawing.Size(251, 357);
 			this.thingtype.TabIndex = 0;
+			this.thingtype.UseMultiSelection = true;
+			this.thingtype.OnTypeDoubleClicked += new CodeImp.DoomBuilder.Controls.ThingBrowserControl.TypeDoubleClickDeletegate(this.thingtype_OnTypeDoubleClicked);
 			this.thingtype.OnTypeChanged += new CodeImp.DoomBuilder.Controls.ThingBrowserControl.TypeChangedDeletegate(this.thingtype_OnTypeChanged);
 			// 
 			// groupBox2
@@ -178,6 +180,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posX.AllowNegative = true;
 			this.posX.AllowRelative = true;
 			this.posX.ButtonStep = 8;
+			this.posX.ButtonStepFloat = 1F;
 			this.posX.Location = new System.Drawing.Point(68, 16);
 			this.posX.Name = "posX";
 			this.posX.Size = new System.Drawing.Size(72, 24);
@@ -190,6 +193,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posY.AllowNegative = true;
 			this.posY.AllowRelative = true;
 			this.posY.ButtonStep = 8;
+			this.posY.ButtonStepFloat = 1F;
 			this.posY.Location = new System.Drawing.Point(68, 41);
 			this.posY.Name = "posY";
 			this.posY.Size = new System.Drawing.Size(72, 24);
@@ -202,6 +206,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posZ.AllowNegative = true;
 			this.posZ.AllowRelative = true;
 			this.posZ.ButtonStep = 8;
+			this.posZ.ButtonStepFloat = 1F;
 			this.posZ.Location = new System.Drawing.Point(68, 66);
 			this.posZ.Name = "posZ";
 			this.posZ.Size = new System.Drawing.Size(72, 24);
@@ -214,6 +219,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.angle.AllowNegative = true;
 			this.angle.AllowRelative = true;
 			this.angle.ButtonStep = 1;
+			this.angle.ButtonStepFloat = 1F;
 			this.angle.Location = new System.Drawing.Point(186, 16);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(57, 24);
@@ -327,6 +333,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flags.Name = "flags";
 			this.flags.Size = new System.Drawing.Size(337, 208);
 			this.flags.TabIndex = 0;
+			this.flags.VerticalSpacing = 1;
 			// 
 			// tabeffects
 			// 
