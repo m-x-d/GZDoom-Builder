@@ -417,7 +417,6 @@ namespace CodeImp.DoomBuilder.Windows
             Vector2D delta = new Vector2D((float)posX.GetResult((int)initialPosition.x) - initialPosition.x, (float)posY.GetResult((int)initialPosition.y) - initialPosition.y);
             bool hasAcs = Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
             bool hasArg0str = General.Map.UDMF && !action.Empty && hasAcs && arg0str.Text.Length > 0;
-			Random rnd = new Random();
 
 			// Go for all the things
 			foreach(Thing t in things)
@@ -428,7 +427,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Coordination
 				//mxd
 				if(cbRandomAngle.Checked) {
-					t.Rotate(rnd.Next(0, 359));
+					t.Rotate(General.Random(0, 359));
 				} else {
 					t.Rotate(angle.GetResult(t.AngleDoom));
 				}
@@ -447,7 +446,6 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				// Action/tags
-				//t.Tag = tag.GetResult(t.Tag);
 				t.Tag = tagSelector.GetTag(t.Tag); //mxd
 				if(!action.Empty) t.Action = action.Value;
 
