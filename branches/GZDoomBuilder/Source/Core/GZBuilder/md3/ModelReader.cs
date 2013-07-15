@@ -202,12 +202,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					//create a mesh for each surface texture
 					foreach(KeyValuePair<string, List<List<int>>> group in polyIndecesListsPerTexture) {
 						polyIndecesList = new List<int>();
+						int offset = 0;
 						
 						//collect indices, fix vertex offsets
 						for(int i = 0; i < group.Value.Count; i++) {
 							if(i > 0) {
-								for(int c = 0; c < group.Value[i].Count; c++ )
-									group.Value[i][c] += vertexOffsets[group.Key][i-1];
+								offset += vertexOffsets[group.Key][i - 1]; //Damn I need to rewrite all of this stuff from scratch...
+
+								for(int c = 0; c < group.Value[i].Count; c++)
+									group.Value[i][c] += offset;
 							}
 							polyIndecesList.AddRange(group.Value[i].ToArray());
 						}
