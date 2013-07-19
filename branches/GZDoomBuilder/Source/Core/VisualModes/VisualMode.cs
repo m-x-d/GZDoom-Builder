@@ -476,8 +476,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		protected void DoCulling()
 		{
 			Dictionary<Linedef, Linedef> visiblelines = new Dictionary<Linedef, Linedef>(200);
-			Vector2D campos2d = (Vector2D)General.Map.VisualCamera.Position;
-			float viewdist = General.Settings.ViewDistance;
+			Vector2D campos2d = General.Map.VisualCamera.Position;
 			
 			// Make collections
 			visiblesectors = new Dictionary<Sector, VisualSector>(visiblesectors.Count);

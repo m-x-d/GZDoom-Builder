@@ -860,7 +860,6 @@ namespace CodeImp.DoomBuilder.Geometry
 			List<Vertex> newverts = new List<Vertex>();
 			List<Vertex> intersectverts = new List<Vertex>();
 			List<Linedef> newlines = new List<Linedef>();
-			List<bool> newlinescw = new List<bool>();
 			List<Linedef> oldlines = new List<Linedef>(General.Map.Map.Linedefs);
 			List<Sidedef> insidesides = new List<Sidedef>();
 			List<Vertex> mergeverts = new List<Vertex>();

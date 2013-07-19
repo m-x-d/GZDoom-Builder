@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private const int MAX_RECENT_FILES_PIXELS = 250;
 
 		// Dockers
-		private const int DOCKER_TAB_WIDTH = 20;
+		//private const int DOCKER_TAB_WIDTH = 20;
 		
 		// Status bar
 		private const string STATUS_READY_TEXT = "Ready.";
@@ -96,8 +96,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Delegates
 
-		private delegate void CallUpdateStatusIcon();
-		private delegate void CallImageDataLoaded(ImageData img);
+		//private delegate void CallUpdateStatusIcon();
+		//private delegate void CallImageDataLoaded(ImageData img);
 		private delegate void CallBlink(); //mxd
 
 		#endregion
@@ -287,9 +287,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets up the interface
 		internal void SetupInterface()
 		{
-			float scalex = this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width;
-			float scaley = this.CurrentAutoScaleDimensions.Height / this.AutoScaleDimensions.Height;
-			
 			// Setup docker
 			if(General.Settings.DockersPosition != 2)
 			{
@@ -2094,9 +2091,6 @@ namespace CodeImp.DoomBuilder.Windows
 				// Tag set for this item?
 				if((item.Tag != null) && (item.Tag is string))
 				{
-					// Get the action name
-					string actionname = item.Tag.ToString();
-
 					// Check if the tag doe not already begin with the assembly name
 					if(!(item.Tag as string).StartsWith(plugin.Name + "_", StringComparison.InvariantCultureIgnoreCase))
 					{
@@ -2993,6 +2987,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show line edit dialog
 			LinedefEditForm f = new LinedefEditForm();
 			f.Setup(lines);
+			f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
 			result = f.ShowDialog(this);
 			f.Dispose();
 
@@ -3030,6 +3025,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show thing edit dialog
 			ThingEditForm f = new ThingEditForm();
 			f.Setup(things);
+			f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
 			result = f.ShowDialog(this);
 			f.Dispose();
 			
@@ -3038,8 +3034,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		private void EditForm_OnValuesChanged(object sender, EventArgs e) {
-			if(OnEditFormValuesChanged != null)
-				OnEditFormValuesChanged(sender, e);
+			if(OnEditFormValuesChanged != null)	OnEditFormValuesChanged(sender, e);
 		}
 
 		#endregion

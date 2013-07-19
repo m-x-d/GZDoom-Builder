@@ -60,6 +60,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int prevoffsetx;		// We have to provide delta offsets, but I don't
 		private int prevoffsety;		// want to calculate with delta offsets to prevent
 										// inaccuracy in the dragging.
+		private static List<BaseVisualSector> updateList; //mxd
+
 		// Undo/redo
 		private int undoticket;
 		
@@ -946,33 +948,49 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Interface.IsActiveWindow)
 			{
 				List<Linedef> linedefs = mode.GetSelectedLinedefs();
+				updateList = new List<BaseVisualSector>(); //mxd
+				foreach(Linedef l in linedefs) {
+					if(l.Front != null && mode.VisualSectorExists(l.Front.Sector)) 
+						updateList.Add((BaseVisualSector)mode.GetVisualSector(l.Front.Sector));
+					if(l.Back != null && mode.VisualSectorExists(l.Back.Sector))
+						updateList.Add((BaseVisualSector)mode.GetVisualSector(l.Back.Sector));
+				}
+
+				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged);
+				mode.StartRealtimeInterfaceUpdate(SelectionType.Linedefs);
 				DialogResult result = General.Interface.ShowEditLinedefs(linedefs);
+				mode.StopRealtimeInterfaceUpdate(SelectionType.Linedefs);
+				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged;
+
+				updateList.Clear();
+				updateList = null;
+
 				if(result == DialogResult.OK)
 				{
 					foreach(Linedef l in linedefs)
 					{
-						if(l.Front != null)
+						if(l.Front != null && mode.VisualSectorExists(l.Front.Sector))
 						{
-							if(mode.VisualSectorExists(l.Front.Sector))
-							{
-								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(l.Front.Sector);
-								vs.UpdateSectorGeometry(false);
-							}
+							BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(l.Front.Sector);
+							vs.UpdateSectorGeometry(false);
 						}
 						
-						if(l.Back != null)
+						if(l.Back != null && mode.VisualSectorExists(l.Back.Sector))
 						{
-							if(mode.VisualSectorExists(l.Back.Sector))
-							{
-								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(l.Back.Sector);
-								vs.UpdateSectorGeometry(false);
-							}
+							BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(l.Back.Sector);
+							vs.UpdateSectorGeometry(false);
 						}
 					}
 					
 					mode.RebuildElementData();
 				}
 			}
+		}
+
+		//mxd
+		private void Interface_OnEditFormValuesChanged(object sender, System.EventArgs e) {
+			foreach(BaseVisualSector vs in updateList)
+				vs.UpdateSectorGeometry(false);
 		}
 		
 		// Mouse moves

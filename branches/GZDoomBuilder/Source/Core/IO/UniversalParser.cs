@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.IO
 		// Error strings
 		private const string ERROR_KEYMISSING = "Missing key name in assignment or scope.";
 		private const string ERROR_KEYCHARACTERS = "Invalid characters in key name.";
-		private const string ERROR_ASSIGNINVALID = "Invalid assignment. Missing a previous terminator symbol?";
+		//private const string ERROR_ASSIGNINVALID = "Invalid assignment. Missing a previous terminator symbol?";
 		private const string ERROR_VALUEINVALID = "Invalid value in assignment. Missing a previous terminator symbol?";
 		private const string ERROR_VALUETOOBIG = "Value too big.";
 		private const string ERROR_KEYWITHOUTVALUE = "Key has no value assigned.";

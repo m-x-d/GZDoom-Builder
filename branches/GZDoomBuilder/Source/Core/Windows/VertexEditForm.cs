@@ -60,7 +60,6 @@ namespace CodeImp.DoomBuilder.Windows
 				ZCeiling = v.ZCeiling;
 				ZFloor = v.ZFloor;
 			}
-
 		}
 
 		#endregion
@@ -109,6 +108,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.vertices = vertices;
 			if(vertices.Count > 1) this.Text = "Edit Vertices (" + vertices.Count + ")";
 			vertexProps = new List<VertexProperties>(); //mxd
+
+			//mxd. Make undo
+			string undodesc = "vertex";
+			if(vertices.Count > 1) undodesc = vertices.Count + " vertices";
+			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first vertex properties
@@ -161,17 +165,12 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
-			//mxd. Make undo
-			string undodesc = "vertex";
-			if(vertices.Count > 1) undodesc = vertices.Count + " vertices";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
-
 			blockUpdate = false; //mxd
 		}
 		
 		#endregion
 
-		#region ================== mxd. Control Events
+		#region ================== mxd. Realtime Events
 
 		private void positionx_WhenTextChanged(object sender, EventArgs e) {
 			if(blockUpdate) return;
@@ -306,6 +305,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
+			
 			// Done
 			this.DialogResult = DialogResult.OK;
 			this.Close();
@@ -315,7 +317,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cancel_Click(object sender, EventArgs e)
 		{
 			//mxd. perform undo
-			General.Map.UndoRedo.PerformUndo();
+			General.Map.UndoRedo.WithdrawUndo();
 			
 			// And close
 			this.DialogResult = DialogResult.Cancel;

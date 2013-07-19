@@ -59,12 +59,10 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			BinaryReader reader = new BinaryReader(stream);
 			int width, height;
-			int dataoffset;
 			int datalength;
 			int columnaddr;
 			
 			// Initialize
-			dataoffset = (int)stream.Position;
 			datalength = (int)stream.Length - (int)stream.Position;
 
 			// Need at least 4 bytes

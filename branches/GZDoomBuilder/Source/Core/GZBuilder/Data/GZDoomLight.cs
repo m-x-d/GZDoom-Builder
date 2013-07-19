@@ -18,7 +18,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
         }
     }
 
-    public enum GZDoomLightType : int
+    public enum GZDoomLightType
     {
         NORMAL = 0,
         PULSE = 1,
@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
     }
 
     //divide these by 100 to get light color alpha
-    public enum GZDoomLightRenderStyle : int
+    public enum GZDoomLightRenderStyle
     {
         NONE = 0,
         NORMAL = 99,

@@ -1,6 +1,6 @@
 ﻿
 namespace CodeImp.DoomBuilder.GZBuilder.Data {
-    internal enum ScriptType : int {
+    internal enum ScriptType {
         UNKNOWN = 0,
         ACS = 1,
         MODELDEF = 2,

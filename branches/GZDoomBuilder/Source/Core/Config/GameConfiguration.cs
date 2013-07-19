@@ -109,6 +109,9 @@ namespace CodeImp.DoomBuilder.Config
 		private List<LinedefActivateInfo> linedefactivates;
 		private List<GeneralizedCategory> genactioncategories;
 		private List<FlagTranslation> linedefflagstranslation;
+
+		//mxd. Sidedefs
+		private Dictionary<string, string> sidedefflags; //mxd
 		
 		// Sectors
 		private Dictionary<string, string> sectorflags; //mxd
@@ -205,8 +208,11 @@ namespace CodeImp.DoomBuilder.Config
 		public List<GeneralizedCategory> GenActionCategories { get { return genactioncategories; } }
 		public List<FlagTranslation> LinedefFlagsTranslation { get { return linedefflagstranslation; } }
 
+		//mxd. Sidedefs
+		public IDictionary<string, string> SidedefFlags { get { return sidedefflags; } }
+
 		// Sectors
-		public IDictionary<string, string> SectorFlags { get { return sectorflags; } }
+		public IDictionary<string, string> SectorFlags { get { return sectorflags; } } //mxd
 		public IDictionary<int, SectorEffectInfo> SectorEffects { get { return sectoreffects; } }
 		public List<SectorEffectInfo> SortedSectorEffects { get { return sortedsectoreffects; } }
 		public List<GeneralizedOption> GenEffectOptions { get { return geneffectoptions; } }
@@ -250,6 +256,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.actioncategories = new List<LinedefActionCategory>();
 			this.sortedlinedefactions = new List<LinedefActionInfo>();
 			this.linedefactivates = new List<LinedefActivateInfo>();
+			this.sidedefflags = new Dictionary<string, string>(); //mxd
 			this.genactioncategories = new List<GeneralizedCategory>();
 			this.sectorflags = new Dictionary<string, string>(); //mxd
 			this.sectoreffects = new Dictionary<int, SectorEffectInfo>();
@@ -345,6 +352,9 @@ namespace CodeImp.DoomBuilder.Config
 			LoadLinedefActions();
 			LoadLinedefActivations();
 			LoadLinedefGeneralizedActions();
+
+			//mxd. Sidedefs
+			LoadSidedefFlags();
 
 			// Sectors
 			LoadSectorFlags(); //mxd
@@ -615,6 +625,14 @@ namespace CodeImp.DoomBuilder.Config
 					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'gen_linedeftypes' contains invalid entries in game configuration '" + this.Name + "'");
 				}
 			}
+		}
+
+		//mxd. SIdedef flags
+		private void LoadSidedefFlags() {
+			// Get linedef flags
+			IDictionary dic = cfg.ReadSetting("sidedefflags", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+				sidedefflags.Add(de.Key.ToString(), de.Value.ToString());
 		}
 
 		//mxd. Sector flags

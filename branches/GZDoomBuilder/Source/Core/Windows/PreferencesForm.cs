@@ -390,21 +390,6 @@ namespace CodeImp.DoomBuilder.Windows
 			viewdistancelabel.Text = value.ToString() + " mp";
 		}
 
-		private void scriptfontname_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			UpdateScriptFontPreview();
-		}
-
-		private void scriptfontsize_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			UpdateScriptFontPreview();
-		}
-
-		private void scriptfontbold_CheckedChanged(object sender, EventArgs e)
-		{
-			UpdateScriptFontPreview();
-		}
-
 		private void autoscrollspeed_ValueChanged(object sender, EventArgs e)
 		{
 			if(autoscrollspeed.Value == 0)
@@ -702,14 +687,6 @@ namespace CodeImp.DoomBuilder.Windows
 				// Done
 				allowapplycontrol = true;
 			}
-		}
-
-		// Key combination displayed
-		private void actionkey_TextChanged(object sender, EventArgs e)
-		{
-			// Cursor to the end
-			actionkey.SelectionStart = actionkey.Text.Length;
-			actionkey.SelectionLength = 0;
 		}
 
 		// Special key selected

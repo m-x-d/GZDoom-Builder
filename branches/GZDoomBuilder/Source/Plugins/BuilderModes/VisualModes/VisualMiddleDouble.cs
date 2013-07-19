@@ -173,10 +173,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			CropPoly(ref poly, osd.Floor.plane, true);
 
 			// Determine if we should repeat the middle texture
-			if(Sidedef.Fields.ContainsKey("wrapmidtex"))
-				repeatmidtex = Sidedef.Fields.GetValue("wrapmidtex", false);
-			else
-				repeatmidtex = Sidedef.Line.IsFlagSet("wrapmidtex");
+			repeatmidtex = Sidedef.IsFlagSet("wrapmidtex") || Sidedef.Line.IsFlagSet("wrapmidtex"); //mxd
 
 			if(!repeatmidtex) {
 				// First determine the visible portion of the texture

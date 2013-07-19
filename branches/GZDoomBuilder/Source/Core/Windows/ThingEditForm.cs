@@ -35,6 +35,12 @@ namespace CodeImp.DoomBuilder.Windows
 	/// </summary>
 	internal partial class ThingEditForm : DelayedForm
 	{
+		#region ================== Events
+
+		public event EventHandler OnValuesChanged; //mxd
+
+		#endregion
+		
 		#region ================== Variables
 
 		private ICollection<Thing> things;
@@ -43,11 +49,26 @@ namespace CodeImp.DoomBuilder.Windows
         //mxd
         private Vector3D initialPosition; //initial position of a thing used to fill posX, posY and posZ fields
 		private int initialFloorHeight; //floor height of the sector first thing is in
-		private static bool ABSOLUTE_HEIGHT;
+		private static bool useAbsoluteHeight;
 
-		#endregion
+		private List<ThingProperties> thingProps; //mxd
 
-		#region ================== Properties
+		private struct ThingProperties //mxd
+		{
+			public int Type;
+			public int AngleDoom;
+			public float X;
+			public float Y;
+			public float Z;
+
+			public ThingProperties(Thing t) {
+				X = t.Position.x;
+				Y = t.Position.y;
+				Z = t.Position.z;
+				Type = t.Type;
+				AngleDoom = t.AngleDoom;
+			}
+		}
 
 		#endregion
 
@@ -85,6 +106,13 @@ namespace CodeImp.DoomBuilder.Windows
 			posZ.Visible = General.Map.FormatInterface.HasThingHeight;
 			zlabel.Visible = General.Map.FormatInterface.HasThingHeight;
 			cbAbsoluteHeight.Visible = General.Map.FormatInterface.HasThingHeight; //mxd
+
+			//mxd. Decimals allowed?
+			if(General.Map.FormatInterface.VertexDecimals > 0) {
+				posX.AllowDecimal = true;
+				posY.AllowDecimal = true;
+				posZ.AllowDecimal = true;
+			}
 			
 			// Setup types list
 			thingtype.Setup();
@@ -100,6 +128,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// Keep this list
 			this.things = things;
 			if(things.Count > 1) this.Text = "Edit Things (" + things.Count + ")";
+
+			//mxd. Make undo
+			string undodesc = "thing";
+			if(things.Count > 1) undodesc = things.Count + " things";
+			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 			
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first thing properties
@@ -116,8 +149,8 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Coordination
 			angle.Text = ft.AngleDoom.ToString();
-			zlabel.Text = ABSOLUTE_HEIGHT ? "Z:" : "Height:"; //mxd
-			cbAbsoluteHeight.Checked = ABSOLUTE_HEIGHT; //mxd
+			zlabel.Text = useAbsoluteHeight ? "Z:" : "Height:"; //mxd
+			cbAbsoluteHeight.Checked = useAbsoluteHeight; //mxd
 
             //mxd
             initialPosition = ft.Position;
@@ -125,7 +158,7 @@ namespace CodeImp.DoomBuilder.Windows
 			    initialFloorHeight = ft.Sector.FloorHeight;
             posX.Text = ((int)ft.Position.x).ToString();
             posY.Text = ((int)ft.Position.y).ToString();
-            posZ.Text = ABSOLUTE_HEIGHT ? ((int)ft.Position.z + initialFloorHeight).ToString() : ((int)ft.Position.z).ToString();
+            posZ.Text = useAbsoluteHeight ? ((int)ft.Position.z + initialFloorHeight).ToString() : ((int)ft.Position.z).ToString();
             posX.ButtonStep = General.Map.Grid.GridSize;
             posY.ButtonStep = General.Map.Grid.GridSize;
 			posZ.ButtonStep = General.Map.Grid.GridSize;
@@ -152,7 +185,9 @@ namespace CodeImp.DoomBuilder.Windows
 			////////////////////////////////////////////////////////////////////////
 			// Now go for all lines and change the options when a setting is different
 			////////////////////////////////////////////////////////////////////////
-			
+
+			thingProps = new List<ThingProperties>();
+
 			// Go for all things
 			foreach(Thing t in things)
 			{
@@ -179,7 +214,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(t.AngleDoom.ToString() != angle.Text) angle.Text = "";
 				
 				//mxd
-                if (ABSOLUTE_HEIGHT && t.Sector != null) {
+                if (useAbsoluteHeight && t.Sector != null) {
 					if(((int)t.Position.z + t.Sector.FloorHeight).ToString() != posZ.Text) posZ.Text = "";
 				} else {
 					if(((int)t.Position.z).ToString() != posZ.Text) posZ.Text = "";
@@ -196,7 +231,11 @@ namespace CodeImp.DoomBuilder.Windows
 				if(t.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
 
 				// Custom fields
+				t.Fields.BeforeFieldsChange(); //mxd
 				fieldslist.SetValues(t.Fields, false);
+
+				//mxd. Store initial properties
+				thingProps.Add(new ThingProperties(t));
 
 				//mxd. add user vars
 				/*if(info != null && info.Actor != null && info.Actor.UserVars.Count > 0) {
@@ -257,38 +296,7 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		#endregion
 
-		#region ================== Interface
-
-		// Selected type changes
-		private void thingtype_OnTypeChanged(ThingTypeInfo value)
-		{
-			thinginfo = value;
-
-			// Update preview image
-			if(thinginfo != null)
-			{
-				if(thinginfo.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) &&
-				   (thinginfo.Sprite.Length > DataManager.INTERNAL_PREFIX.Length))
-				{
-					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetBitmap());
-				}
-				else if((thinginfo.Sprite.Length <= 8) && (thinginfo.Sprite.Length > 0))
-				{
-					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetPreview());
-				}
-				else
-				{
-					spritetex.BackgroundImage = null;
-				}
-			}
-			else
-			{
-				spritetex.BackgroundImage = null;
-			}
-			
-			// Update arguments
-			action_ValueChanges(this, EventArgs.Empty);
-		}
+		#region ================== Events
 
 		//mxd
 		private void thingtype_OnTypeDoubleClicked() {
@@ -370,19 +378,20 @@ namespace CodeImp.DoomBuilder.Windows
 		private void angle_TextChanged(object sender, EventArgs e)
 		{
 			anglecontrol.Value = angle.GetResult(int.MinValue);
+			updateAngle(); //mxd
 		}
 
 		// Angle control clicked
 		private void anglecontrol_ButtonClicked(object sender, EventArgs e)
 		{
 			angle.Text = anglecontrol.Value.ToString();
+			updateAngle(); //mxd
 		}
 
 		// Apply clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
 			List<string> defaultflags = new List<string>();
-			string undodesc = "thing";
 
 			//mxd
 			// Verify the tag
@@ -409,34 +418,25 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
-			// Make undo
-			if(things.Count > 1) undodesc = things.Count + " things";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
-
             //mxd
-            Vector2D delta = new Vector2D((float)posX.GetResult((int)initialPosition.x) - initialPosition.x, (float)posY.GetResult((int)initialPosition.y) - initialPosition.y);
             bool hasAcs = Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
             bool hasArg0str = General.Map.UDMF && !action.Empty && hasAcs && arg0str.Text.Length > 0;
 
 			// Go for all the things
 			foreach(Thing t in things)
 			{
-				// Thing type index
-				t.Type = General.Clamp(thingtype.GetResult(t.Type), General.Map.FormatInterface.MinThingType, General.Map.FormatInterface.MaxThingType);
-				
 				// Coordination
 				//mxd
 				if(cbRandomAngle.Checked) {
 					t.Rotate(General.Random(0, 359));
-				} else {
-					t.Rotate(angle.GetResult(t.AngleDoom));
 				}
-                
-				//mxd
-				float z = (float)posZ.GetResult((int)t.Position.z);
-                if (ABSOLUTE_HEIGHT && t.Sector != null)
-                    z -= t.Sector.FloorHeight;
-				t.Move(t.Position.x + delta.x, t.Position.y + delta.y, z);
+
+				//mxd. Check position
+				float px = General.Clamp(t.Position.x, General.Map.Config.LeftBoundary, General.Map.Config.RightBoundary);
+				float py = General.Clamp(t.Position.y, General.Map.Config.BottomBoundary, General.Map.Config.TopBoundary);
+				if(t.Position.x != px || t.Position.y != py)
+					t.Move(new Vector2D(px, py));
+
 				
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes)
@@ -489,6 +489,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Done
 			General.Map.IsChanged = true;
+			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty); //mxd
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
@@ -496,6 +497,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// Cancel clicked
 		private void cancel_Click(object sender, EventArgs e)
 		{
+			//mxd. perform undo
+			General.Map.UndoRedo.WithdrawUndo();
+			
 			// Be gone
 			this.DialogResult = DialogResult.Cancel;
 			this.Close();
@@ -527,9 +531,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		private void cbAbsoluteHeight_CheckedChanged(object sender, EventArgs e) {
-			ABSOLUTE_HEIGHT = cbAbsoluteHeight.Checked;
-			zlabel.Text = ABSOLUTE_HEIGHT ? "Z:" : "Height:";
-			posZ.Text = (ABSOLUTE_HEIGHT ? initialFloorHeight + initialPosition.z : initialPosition.z).ToString();
+			useAbsoluteHeight = cbAbsoluteHeight.Checked;
+			zlabel.Text = useAbsoluteHeight ? "Z:" : "Height:";
+			posZ.Text = (useAbsoluteHeight ? initialFloorHeight + initialPosition.z : initialPosition.z).ToString();
 		}
 
 		//mxd
@@ -549,6 +553,135 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			General.ShowHelp("w_thingeditor.html");
 			hlpevent.Handled = true;
+		}
+
+		#endregion
+
+		#region ================== mxd. Realtime events
+
+		private void posX_WhenTextChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(posX.Text)) {
+				// Apply position
+				foreach(Thing t in things)
+					t.Move(new Vector2D(thingProps[i++].X, t.Position.y));
+			} else { //update values
+				int delta = posX.GetResult((int)initialPosition.x) - (int)initialPosition.x;
+
+				// Apply position
+				foreach(Thing t in things)
+					t.Move(new Vector2D(thingProps[i++].X + delta, t.Position.y));
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void posY_WhenTextChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(posY.Text)) {
+				// Apply position
+				foreach(Thing t in things)
+					t.Move(new Vector2D(t.Position.x, thingProps[i++].Y));
+			} else { //update values
+				int delta = posY.GetResult((int)initialPosition.y) - (int)initialPosition.y;
+
+				// Apply position
+				foreach(Thing t in things)
+					t.Move(new Vector2D(t.Position.x, thingProps[i++].Y + delta));
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void posZ_WhenTextChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+
+			//restore values
+			if(string.IsNullOrEmpty(posY.Text)) {
+				int i = 0;
+
+				// Apply position
+				foreach(Thing t in things)
+					t.Move(new Vector3D(t.Position.x, t.Position.y, thingProps[i++].Z));
+			} else { //update values
+				// Apply position
+				foreach(Thing t in things) {
+					float z = (float)posZ.GetResult((int)t.Position.z);
+					if(useAbsoluteHeight && t.Sector != null)
+						z -= t.Sector.FloorHeight;
+					t.Move(new Vector3D(t.Position.x, t.Position.y, z));
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		// Selected type changes
+		private void thingtype_OnTypeChanged(ThingTypeInfo value) {
+			thinginfo = value;
+
+			// Update preview image
+			if(thinginfo != null) {
+				if(thinginfo.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) &&
+				   (thinginfo.Sprite.Length > DataManager.INTERNAL_PREFIX.Length)) {
+					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetBitmap());
+				} else if((thinginfo.Sprite.Length <= 8) && (thinginfo.Sprite.Length > 0)) {
+					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetPreview());
+				} else {
+					spritetex.BackgroundImage = null;
+				}
+			} else {
+				spritetex.BackgroundImage = null;
+			}
+
+			// Update arguments
+			action_ValueChanges(this, EventArgs.Empty);
+
+			//mxd. Update things
+			if(preventchanges) return;
+			if(((thingtype.GetResult(0) < General.Map.FormatInterface.MinThingType) || (thingtype.GetResult(0) > General.Map.FormatInterface.MaxThingType)))
+				return;
+
+			foreach(Thing t in things) {
+				//Set type
+				t.Type = thingtype.GetResult(t.Type);
+
+				// Update settings
+				t.UpdateConfiguration();
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		//mxd
+		private void updateAngle() {
+			if(preventchanges) return;
+
+			//restore values
+			if(string.IsNullOrEmpty(angle.Text)) {
+				int i = 0;
+
+				// Apply rotation
+				foreach(Thing t in things)
+					t.Rotate(thingProps[i++].AngleDoom);
+			} else { //update values
+				// Apply rotation
+				foreach(Thing t in things)
+					t.Rotate(angle.GetResult(t.AngleDoom));
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		#endregion

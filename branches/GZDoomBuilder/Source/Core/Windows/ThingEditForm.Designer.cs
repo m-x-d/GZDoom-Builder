@@ -186,6 +186,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posX.Size = new System.Drawing.Size(72, 24);
 			this.posX.StepValues = null;
 			this.posX.TabIndex = 13;
+			this.posX.WhenTextChanged += new System.EventHandler(this.posX_WhenTextChanged);
 			// 
 			// posY
 			// 
@@ -199,6 +200,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posY.Size = new System.Drawing.Size(72, 24);
 			this.posY.StepValues = null;
 			this.posY.TabIndex = 12;
+			this.posY.WhenTextChanged += new System.EventHandler(this.posY_WhenTextChanged);
 			// 
 			// posZ
 			// 
@@ -212,6 +214,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posZ.Size = new System.Drawing.Size(72, 24);
 			this.posZ.StepValues = null;
 			this.posZ.TabIndex = 11;
+			this.posZ.WhenTextChanged += new System.EventHandler(this.posZ_WhenTextChanged);
 			// 
 			// angle
 			// 

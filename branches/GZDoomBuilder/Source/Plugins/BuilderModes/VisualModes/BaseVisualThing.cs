@@ -48,6 +48,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Vector2D pos2d;
 		private Vector3D boxp1;
 		private Vector3D boxp2;
+		private static List<BaseVisualThing> updateList; //mxd
 		
 		// Undo/redo
 		private int undoticket;
@@ -510,18 +511,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(General.Interface.IsActiveWindow)
 			{
+				
 				List<Thing> things = mode.GetSelectedThings();
-				DialogResult result = General.Interface.ShowEditThings(things);
-				if(result == DialogResult.OK)
-				{
-					foreach(Thing t in things)
-					{
-						VisualThing vt = mode.GetVisualThing(t);
-						if(vt != null)
-							(vt as BaseVisualThing).Changed = true;
-					}
+				//mxd
+				updateList = new List<BaseVisualThing>();
+				foreach(Thing t in things) {
+					VisualThing vt = mode.GetVisualThing(t);
+					if(vt != null)
+						updateList.Add(vt as BaseVisualThing);
 				}
+
+				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged);
+				mode.StartRealtimeInterfaceUpdate(SelectionType.Things);
+				General.Interface.ShowEditThings(things);
+				mode.StopRealtimeInterfaceUpdate(SelectionType.Things);
+				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged;
+
+				updateList.Clear();
+				updateList = null;
 			}
+		}
+
+		//mxd
+		private void Interface_OnEditFormValuesChanged(object sender, System.EventArgs e) {
+			foreach(BaseVisualThing vt in updateList)
+				vt.Changed = true;
 		}
 		
 		// Raise/lower thing

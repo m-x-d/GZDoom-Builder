@@ -649,12 +649,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
-				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged);
+				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged); //mxd
+				mode.StartRealtimeInterfaceUpdate(SelectionType.Sectors); //mxd
 				General.Interface.ShowEditSectors(sectors);
-				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged;
+				mode.StopRealtimeInterfaceUpdate(SelectionType.Sectors); //mxd
+				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged; //mxd
 
-				updateList.Clear();
-				updateList = null;
+				updateList.Clear(); //mxd
+				updateList = null; //mxd
 			}
 		}
 

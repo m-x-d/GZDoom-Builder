@@ -177,7 +177,10 @@ namespace CodeImp.DoomBuilder.Controls
 				//mxd. Got a valid multiselection? Well, can't show any useful info about that...
 				if(typelist.UseMultiSelection && typelist.SelectedNodes.Count > 1 && getValidNodes().Count > 1) {
 					doupdatenode = false;
-					typeid.Text = "";
+					if(!string.IsNullOrEmpty(typeid.Text)) // Event will be raised in typeid_OnTextChanged
+						typeid.Text = "";
+					else if(OnTypeChanged != null) // Or raise event here
+						OnTypeChanged(thinginfo); 
 					doupdatenode = true;
 				}
 				else if(typelist.SelectedNode != null) //Anything selected?

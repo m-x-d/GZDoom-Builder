@@ -633,6 +633,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							General.Map.Map.ClearSelectedSectors();
 							General.Map.Map.ClearSelectedLinedefs();
+							General.Interface.RedrawDisplay();
 						}
 					}
 				}

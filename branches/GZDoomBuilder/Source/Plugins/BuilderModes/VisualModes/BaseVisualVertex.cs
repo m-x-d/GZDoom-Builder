@@ -305,7 +305,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged);
+				mode.StartRealtimeInterfaceUpdate(SelectionType.Vertices);
 				General.Interface.ShowEditVertices(verts, false);
+				mode.StopRealtimeInterfaceUpdate(SelectionType.Vertices);
 				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged;
 
 				updateList.Clear();

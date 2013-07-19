@@ -1,6 +1,6 @@
 ﻿
 namespace CodeImp.DoomBuilder.GZBuilder.Data {
-    public enum GameType : int {
+    public enum GameType {
         UNKNOWN = 0,
         DOOM = 1,
         HERETIC = 2,

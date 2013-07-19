@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float THING_CIRCLE_SIZE = 1f;
 		private const float THING_CIRCLE_SHRINK = 0f;
 		private const int THING_BUFFER_SIZE = 100;
-		private const float THINGS_BACK_ALPHA = 0.3f;
+		//private const float THINGS_BACK_ALPHA = 0.3f;
 
 		private const string FONT_NAME = "Verdana";
 		private const int FONT_WIDTH = 0;
