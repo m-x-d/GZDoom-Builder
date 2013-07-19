@@ -10,14 +10,27 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 {
 	public partial class ColorFieldsControl : UserControl
 	{
+		#region ================== Events
+
+		public event EventHandler OnValueChanged; //mxd
+
+		#endregion
+
+		#region ================== Variables
+
 		private int defaultValue;
 		private string field;
+		private bool blockUpdate;
+
+		#endregion
+
+		#region ================== Properties
 
 		public int DefaultValue { get { return defaultValue; } set { defaultValue = value; } }
 		public string Label { get { return cpColor.Label; } set { cpColor.Label = value; } }
 		public string Field { get { return field; } set { field = value; } }
 
-		private bool blockUpdate;
+		#endregion
 		
 		public ColorFieldsControl() {
 			InitializeComponent();
@@ -29,9 +42,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			checkColor();
 		}
 
-		public void ApplyTo(UniFields fields) {
-			if(string.IsNullOrEmpty(tbColor.Text)) return;
-			UDMFTools.SetInteger(fields, field, (cpColor.Color.ToInt() & 0x00ffffff), defaultValue, false);
+		public void ApplyTo(UniFields fields, int oldValue) {
+			if(string.IsNullOrEmpty(tbColor.Text)) {
+				UDMFTools.SetInteger(fields, field, oldValue, defaultValue, false);
+			} else {
+				UDMFTools.SetInteger(fields, field, (cpColor.Color.ToInt() & 0x00ffffff), defaultValue, false);
+			}
 		}
 
 		private void checkColor() {
@@ -39,6 +55,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			bReset.Visible = changed;
 			tbColor.ForeColor = changed ? SystemColors.WindowText : SystemColors.GrayText;
 		}
+
+		#region ================== Events
 
 		private void bReset_Click(object sender, EventArgs e) {
 			cpColor.Color = PixelColor.FromInt(defaultValue).WithAlpha(255);
@@ -53,6 +71,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			blockUpdate = false;
 
 			checkColor();
+
+			if(OnValueChanged != null)	OnValueChanged(this, EventArgs.Empty);
 		}
 
 		private void tbColor_TextChanged(object sender, EventArgs e) {
@@ -69,5 +89,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			checkColor();
 		}
+
+		#endregion
 	}
 }

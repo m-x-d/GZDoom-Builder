@@ -1,22 +1,43 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.GZBuilder.Controls
 {
 	public partial class PairedIntControl : UserControl
 	{
+		#region ================== Events
+
+		public event EventHandler OnValuesChanged;
+
+		#endregion
+
+		#region ================== Variables
+
 		private int defaultValue;
+		private bool blockUpdate;
+
+		#endregion
+
+		#region ================== Properties
 
 		public string Label { get { return label.Text; } set { label.Text = value; } }
 		public int DefaultValue { get { return defaultValue; } set { defaultValue = value; } }
 		public int ButtonStep { get { return (int)value1.ButtonStep; } set { value1.ButtonStep = value; value2.ButtonStep = value; } }
+
+		#endregion
 
 		public PairedIntControl() {
 			InitializeComponent();
 		}
 
 		public void SetValues(int val1, int val2) {
+			blockUpdate = true;
+
 			if(!string.IsNullOrEmpty(value1.Text) && value1.Text != val1.ToString())
 				value1.Text = "";
 			else
@@ -26,6 +47,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 				value2.Text = "";
 			else
 				value2.Text = val2.ToString();
+
+			blockUpdate = false;
 		}
 
 		public int GetValue1(int original) {
@@ -44,6 +67,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			label.Enabled = changed;
 			bReset.Visible = changed;
+
+			if(!blockUpdate && OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		private void bReset_Click(object sender, EventArgs e) {

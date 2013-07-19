@@ -37,7 +37,7 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Variables
 
 		private ICollection<Sector> sectors;
-		private List<SectorProperties> sectorProps;
+		private List<SectorProperties> sectorProps; //mxd
 		private bool blockUpdate; //mxd
 
 		private struct SectorProperties //mxd
@@ -85,14 +85,19 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets up the form to edit the given sectors
 		public void Setup(ICollection<Sector> sectors)
 		{
-			blockUpdate = true;
+			blockUpdate = true; //mxd
 			
 			Sector sc;
 			
 			// Keep this list
 			this.sectors = sectors;
 			if(sectors.Count > 1) this.Text = "Edit Sectors (" + sectors.Count + ")";
-			sectorProps = new List<SectorProperties>();
+			sectorProps = new List<SectorProperties>(); //mxd
+
+			//mxd. Make undo
+			string undodesc = "sector";
+			if(sectors.Count > 1) undodesc = sectors.Count + " sectors";
+			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first sector properties
@@ -142,12 +147,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show sector height
 			UpdateSectorHeight();
 
-			//mxd. Make undo
-			string undodesc = "sector";
-			if(sectors.Count > 1) undodesc = sectors.Count + " sectors";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
-
-			blockUpdate = false;
+			blockUpdate = false; //mxd
 		}
 
 		// This updates the sector height field
@@ -227,6 +227,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Done
 			General.Map.IsChanged = true;
+			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty); //mxd
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
@@ -235,7 +236,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cancel_Click(object sender, EventArgs e)
 		{
 			//mxd. perform undo
-			General.Map.UndoRedo.PerformUndo();
+			General.Map.UndoRedo.WithdrawUndo();
 			
 			// And be gone
 			this.DialogResult = DialogResult.Cancel;
@@ -257,7 +258,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#endregion
 
-		#region ================== mxd. Control Events
+		#region ================== mxd. Realtime Events
 
 		// Ceiling height changes
 		private void ceilingheight_TextChanged(object sender, EventArgs e)

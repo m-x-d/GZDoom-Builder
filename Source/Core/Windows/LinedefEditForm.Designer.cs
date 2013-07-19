@@ -38,7 +38,6 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label11;
 			System.Windows.Forms.Label label12;
 			System.Windows.Forms.Label activationlabel;
-			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label7;
 			System.Windows.Forms.Label label14;
 			System.Windows.Forms.Label label6;
@@ -67,7 +66,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.udmfactivates = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.flagsgroup = new System.Windows.Forms.GroupBox();
 			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
-			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabproperties = new System.Windows.Forms.TabPage();
 			this.settingsGroup = new System.Windows.Forms.GroupBox();
@@ -89,20 +87,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.fronthigh = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.udmfPropertiesFront = new System.Windows.Forms.TabControl();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.tabFrontOffsets = new System.Windows.Forms.TabPage();
 			this.pfcFrontScaleBottom = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.pfcFrontScaleMid = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.pfcFrontScaleTop = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.pfcFrontOffsetBottom = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.pfcFrontOffsetMid = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.pfcFrontOffsetTop = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.cblightfogFront = new System.Windows.Forms.CheckBox();
-			this.cbsmoothlightingFront = new System.Windows.Forms.CheckBox();
-			this.cbnodecalsFront = new System.Windows.Forms.CheckBox();
-			this.cbnofakecontrastFront = new System.Windows.Forms.CheckBox();
-			this.cbWrapMidtexFront = new System.Windows.Forms.CheckBox();
-			this.cbClipMidtexFront = new System.Windows.Forms.CheckBox();
+			this.tabFrontFlags = new System.Windows.Forms.TabPage();
+			this.flagsFront = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.backside = new System.Windows.Forms.CheckBox();
 			this.backgroup = new System.Windows.Forms.GroupBox();
 			this.backTextureOffset = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl();
@@ -115,40 +108,19 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.backhigh = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.udmfPropertiesBack = new System.Windows.Forms.TabControl();
-			this.tabPage5 = new System.Windows.Forms.TabPage();
-			this.pfcBackScaleBottom = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
+			this.tabBackOffsets = new System.Windows.Forms.TabPage();
 			this.pfcBackScaleMid = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.pfcBackScaleTop = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
+			this.pfcBackScaleBottom = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.pfcBackOffsetBottom = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.pfcBackOffsetMid = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.pfcBackOffsetTop = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
-			this.tabPage6 = new System.Windows.Forms.TabPage();
-			this.cblightfogBack = new System.Windows.Forms.CheckBox();
-			this.cbsmoothlightingBack = new System.Windows.Forms.CheckBox();
-			this.cbnodecalsBack = new System.Windows.Forms.CheckBox();
-			this.cbnofakecontrastBack = new System.Windows.Forms.CheckBox();
-			this.cbWrapMidtexBack = new System.Windows.Forms.CheckBox();
-			this.cbClipMidtexBack = new System.Windows.Forms.CheckBox();
+			this.tabBackFlags = new System.Windows.Forms.TabPage();
+			this.flagsBack = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.tabcustom = new System.Windows.Forms.TabPage();
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.heightpanel1 = new System.Windows.Forms.Panel();
 			this.heightpanel2 = new System.Windows.Forms.Panel();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.pairedFieldsControl1 = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
-			this.pairedFieldsControl2 = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
-			this.pairedFieldsControl3 = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
-			this.pairedFieldsControl4 = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
-			this.pairedFieldsControl5 = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
-			this.pairedFieldsControl6 = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
-			this.tabPage4 = new System.Windows.Forms.TabPage();
-			this.checkBox2 = new System.Windows.Forms.CheckBox();
-			this.buttonsNumericTextbox1 = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.checkBox3 = new System.Windows.Forms.CheckBox();
-			this.checkBox4 = new System.Windows.Forms.CheckBox();
-			this.checkBox5 = new System.Windows.Forms.CheckBox();
-			this.checkBox6 = new System.Windows.Forms.CheckBox();
-			this.checkBox7 = new System.Windows.Forms.CheckBox();
-			this.checkBox8 = new System.Windows.Forms.CheckBox();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
@@ -159,7 +131,6 @@ namespace CodeImp.DoomBuilder.Windows
 			label11 = new System.Windows.Forms.Label();
 			label12 = new System.Windows.Forms.Label();
 			activationlabel = new System.Windows.Forms.Label();
-			label1 = new System.Windows.Forms.Label();
 			label7 = new System.Windows.Forms.Label();
 			label14 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
@@ -178,15 +149,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.splitter.SuspendLayout();
 			this.frontgroup.SuspendLayout();
 			this.udmfPropertiesFront.SuspendLayout();
-			this.tabPage1.SuspendLayout();
-			this.tabPage2.SuspendLayout();
+			this.tabFrontOffsets.SuspendLayout();
+			this.tabFrontFlags.SuspendLayout();
 			this.backgroup.SuspendLayout();
 			this.udmfPropertiesBack.SuspendLayout();
-			this.tabPage5.SuspendLayout();
-			this.tabPage6.SuspendLayout();
+			this.tabBackOffsets.SuspendLayout();
+			this.tabBackFlags.SuspendLayout();
 			this.tabcustom.SuspendLayout();
-			this.tabPage3.SuspendLayout();
-			this.tabPage4.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label2
@@ -278,16 +247,6 @@ namespace CodeImp.DoomBuilder.Windows
 			activationlabel.Size = new System.Drawing.Size(44, 14);
 			activationlabel.TabIndex = 10;
 			activationlabel.Text = "Trigger:";
-			// 
-			// label1
-			// 
-			label1.Location = new System.Drawing.Point(15, 18);
-			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(40, 14);
-			label1.TabIndex = 25;
-			label1.Tag = "light";
-			label1.Text = "Light:";
-			label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label7
 			// 
@@ -562,6 +521,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.udmfactivates.Name = "udmfactivates";
 			this.udmfactivates.Size = new System.Drawing.Size(437, 133);
 			this.udmfactivates.TabIndex = 0;
+			this.udmfactivates.VerticalSpacing = 1;
 			// 
 			// flagsgroup
 			// 
@@ -586,15 +546,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flags.Name = "flags";
 			this.flags.Size = new System.Drawing.Size(509, 152);
 			this.flags.TabIndex = 0;
-			// 
-			// checkBox1
-			// 
-			this.checkBox1.Location = new System.Drawing.Point(0, 0);
-			this.checkBox1.Name = "checkBox1";
-			this.checkBox1.Size = new System.Drawing.Size(104, 24);
-			this.checkBox1.TabIndex = 0;
-			this.checkBox1.Text = "checkBox1";
-			this.checkBox1.UseVisualStyleBackColor = true;
+			this.flags.VerticalSpacing = 1;
+			this.flags.OnValueChanged += new System.EventHandler(this.flags_OnValueChanged);
 			// 
 			// tabs
 			// 
@@ -625,7 +578,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabproperties.Padding = new System.Windows.Forms.Padding(5);
 			this.tabproperties.Size = new System.Drawing.Size(549, 621);
 			this.tabproperties.TabIndex = 0;
-			this.tabproperties.Text = "Properties";
+			this.tabproperties.Text = " Properties ";
 			this.tabproperties.UseVisualStyleBackColor = true;
 			// 
 			// settingsGroup
@@ -650,12 +603,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.alpha.AllowDecimal = true;
 			this.alpha.AllowNegative = false;
 			this.alpha.AllowRelative = false;
+			this.alpha.ButtonStep = 1;
 			this.alpha.ButtonStepFloat = 0.1F;
 			this.alpha.Location = new System.Drawing.Point(243, 25);
 			this.alpha.Name = "alpha";
 			this.alpha.Size = new System.Drawing.Size(65, 24);
 			this.alpha.StepValues = null;
 			this.alpha.TabIndex = 18;
+			this.alpha.WhenTextChanged += new System.EventHandler(this.alpha_WhenTextChanged);
 			// 
 			// lockNumber
 			// 
@@ -663,6 +618,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.lockNumber.AllowNegative = false;
 			this.lockNumber.AllowRelative = false;
 			this.lockNumber.ButtonStep = 1;
+			this.lockNumber.ButtonStepFloat = 1F;
 			this.lockNumber.Location = new System.Drawing.Point(405, 25);
 			this.lockNumber.Name = "lockNumber";
 			this.lockNumber.Size = new System.Drawing.Size(65, 24);
@@ -680,6 +636,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbRenderStyle.Name = "cbRenderStyle";
 			this.cbRenderStyle.Size = new System.Drawing.Size(86, 22);
 			this.cbRenderStyle.TabIndex = 12;
+			this.cbRenderStyle.SelectedIndexChanged += new System.EventHandler(this.cbRenderStyle_SelectedIndexChanged);
 			// 
 			// idgroup
 			// 
@@ -709,7 +666,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabsidedefs.Padding = new System.Windows.Forms.Padding(5);
 			this.tabsidedefs.Size = new System.Drawing.Size(549, 621);
 			this.tabsidedefs.TabIndex = 1;
-			this.tabsidedefs.Text = "Sidedefs";
+			this.tabsidedefs.Text = " Sidedefs ";
 			this.tabsidedefs.UseVisualStyleBackColor = true;
 			// 
 			// splitter
@@ -780,6 +737,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontTextureOffset.Name = "frontTextureOffset";
 			this.frontTextureOffset.Size = new System.Drawing.Size(249, 26);
 			this.frontTextureOffset.TabIndex = 41;
+			this.frontTextureOffset.OnValuesChanged += new System.EventHandler(this.frontTextureOffset_OnValuesChanged);
 			// 
 			// cbLightAbsoluteFront
 			// 
@@ -791,6 +749,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbLightAbsoluteFront.Tag = "lightabsolute";
 			this.cbLightAbsoluteFront.Text = "Absolute";
 			this.cbLightAbsoluteFront.UseVisualStyleBackColor = true;
+			this.cbLightAbsoluteFront.CheckedChanged += new System.EventHandler(this.cbLightAbsoluteFront_CheckedChanged);
 			// 
 			// lightFront
 			// 
@@ -798,12 +757,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.lightFront.AllowNegative = true;
 			this.lightFront.AllowRelative = true;
 			this.lightFront.ButtonStep = 16;
+			this.lightFront.ButtonStepFloat = 1F;
 			this.lightFront.Location = new System.Drawing.Point(90, 96);
 			this.lightFront.Name = "lightFront";
 			this.lightFront.Size = new System.Drawing.Size(62, 24);
 			this.lightFront.StepValues = null;
 			this.lightFront.TabIndex = 26;
-			this.lightFront.Tag = "light";
+			this.lightFront.Tag = "";
+			this.lightFront.WhenTextChanged += new System.EventHandler(this.lightFront_WhenTextChanged);
 			// 
 			// frontsector
 			// 
@@ -811,6 +772,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontsector.AllowNegative = false;
 			this.frontsector.AllowRelative = false;
 			this.frontsector.ButtonStep = 1;
+			this.frontsector.ButtonStepFloat = 1F;
 			this.frontsector.Location = new System.Drawing.Point(90, 35);
 			this.frontsector.Name = "frontsector";
 			this.frontsector.Size = new System.Drawing.Size(130, 24);
@@ -835,6 +797,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontlow.Size = new System.Drawing.Size(83, 112);
 			this.frontlow.TabIndex = 6;
 			this.frontlow.TextureName = "";
+			this.frontlow.OnValueChanged += new System.EventHandler(this.frontlow_OnValueChanged);
 			// 
 			// frontmid
 			// 
@@ -844,6 +807,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontmid.Size = new System.Drawing.Size(83, 112);
 			this.frontmid.TabIndex = 5;
 			this.frontmid.TextureName = "";
+			this.frontmid.OnValueChanged += new System.EventHandler(this.frontmid_OnValueChanged);
 			// 
 			// fronthigh
 			// 
@@ -853,195 +817,165 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fronthigh.Size = new System.Drawing.Size(83, 112);
 			this.fronthigh.TabIndex = 4;
 			this.fronthigh.TextureName = "";
+			this.fronthigh.OnValueChanged += new System.EventHandler(this.fronthigh_OnValueChanged);
 			// 
 			// udmfPropertiesFront
 			// 
-			this.udmfPropertiesFront.Controls.Add(this.tabPage1);
-			this.udmfPropertiesFront.Controls.Add(this.tabPage2);
+			this.udmfPropertiesFront.Controls.Add(this.tabFrontOffsets);
+			this.udmfPropertiesFront.Controls.Add(this.tabFrontFlags);
 			this.udmfPropertiesFront.ItemSize = new System.Drawing.Size(100, 19);
 			this.udmfPropertiesFront.Location = new System.Drawing.Point(6, 169);
 			this.udmfPropertiesFront.Margin = new System.Windows.Forms.Padding(1);
 			this.udmfPropertiesFront.Name = "udmfPropertiesFront";
 			this.udmfPropertiesFront.SelectedIndex = 0;
 			this.udmfPropertiesFront.Size = new System.Drawing.Size(525, 123);
-			this.udmfPropertiesFront.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.udmfPropertiesFront.TabIndex = 24;
 			// 
-			// tabPage1
+			// tabFrontOffsets
 			// 
-			this.tabPage1.Controls.Add(this.pfcFrontScaleBottom);
-			this.tabPage1.Controls.Add(this.pfcFrontScaleMid);
-			this.tabPage1.Controls.Add(this.pfcFrontScaleTop);
-			this.tabPage1.Controls.Add(this.pfcFrontOffsetBottom);
-			this.tabPage1.Controls.Add(this.pfcFrontOffsetMid);
-			this.tabPage1.Controls.Add(this.pfcFrontOffsetTop);
-			this.tabPage1.Location = new System.Drawing.Point(4, 23);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(517, 96);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "Offsets & Scale";
-			this.tabPage1.UseVisualStyleBackColor = true;
+			this.tabFrontOffsets.Controls.Add(this.pfcFrontScaleBottom);
+			this.tabFrontOffsets.Controls.Add(this.pfcFrontScaleMid);
+			this.tabFrontOffsets.Controls.Add(this.pfcFrontScaleTop);
+			this.tabFrontOffsets.Controls.Add(this.pfcFrontOffsetBottom);
+			this.tabFrontOffsets.Controls.Add(this.pfcFrontOffsetMid);
+			this.tabFrontOffsets.Controls.Add(this.pfcFrontOffsetTop);
+			this.tabFrontOffsets.Location = new System.Drawing.Point(4, 23);
+			this.tabFrontOffsets.Name = "tabFrontOffsets";
+			this.tabFrontOffsets.Padding = new System.Windows.Forms.Padding(3);
+			this.tabFrontOffsets.Size = new System.Drawing.Size(517, 96);
+			this.tabFrontOffsets.TabIndex = 0;
+			this.tabFrontOffsets.Text = " Offsets & Scale ";
+			this.tabFrontOffsets.UseVisualStyleBackColor = true;
 			// 
 			// pfcFrontScaleBottom
 			// 
 			this.pfcFrontScaleBottom.AllowDecimal = true;
-			this.pfcFrontScaleBottom.ButtonStepFloat = 1F;
+			this.pfcFrontScaleBottom.AllowValueLinking = true;
+			this.pfcFrontScaleBottom.ButtonStep = 1;
+			this.pfcFrontScaleBottom.ButtonStepFloat = 0.1F;
 			this.pfcFrontScaleBottom.DefaultValue = 1F;
 			this.pfcFrontScaleBottom.Field1 = "scalex_bottom";
 			this.pfcFrontScaleBottom.Field2 = "scaley_bottom";
+			this.pfcFrontScaleBottom.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.pfcFrontScaleBottom.Label = "Lower Scale:";
-			this.pfcFrontScaleBottom.Location = new System.Drawing.Point(262, 64);
+			this.pfcFrontScaleBottom.LinkValues = false;
+			this.pfcFrontScaleBottom.Location = new System.Drawing.Point(245, 65);
 			this.pfcFrontScaleBottom.Name = "pfcFrontScaleBottom";
-			this.pfcFrontScaleBottom.Size = new System.Drawing.Size(253, 32);
+			this.pfcFrontScaleBottom.Size = new System.Drawing.Size(270, 32);
 			this.pfcFrontScaleBottom.TabIndex = 40;
+			this.pfcFrontScaleBottom.OnValuesChanged += new System.EventHandler(this.pfcFrontScaleBottom_OnValuesChanged);
 			// 
 			// pfcFrontScaleMid
 			// 
 			this.pfcFrontScaleMid.AllowDecimal = true;
-			this.pfcFrontScaleMid.ButtonStepFloat = 1F;
+			this.pfcFrontScaleMid.AllowValueLinking = true;
+			this.pfcFrontScaleMid.ButtonStep = 1;
+			this.pfcFrontScaleMid.ButtonStepFloat = 0.1F;
 			this.pfcFrontScaleMid.DefaultValue = 1F;
 			this.pfcFrontScaleMid.Field1 = "scalex_mid";
 			this.pfcFrontScaleMid.Field2 = "scaley_mid";
+			this.pfcFrontScaleMid.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.pfcFrontScaleMid.Label = "Middle Scale:";
-			this.pfcFrontScaleMid.Location = new System.Drawing.Point(262, 34);
+			this.pfcFrontScaleMid.LinkValues = false;
+			this.pfcFrontScaleMid.Location = new System.Drawing.Point(245, 36);
 			this.pfcFrontScaleMid.Name = "pfcFrontScaleMid";
-			this.pfcFrontScaleMid.Size = new System.Drawing.Size(253, 32);
+			this.pfcFrontScaleMid.Size = new System.Drawing.Size(270, 32);
 			this.pfcFrontScaleMid.TabIndex = 39;
+			this.pfcFrontScaleMid.OnValuesChanged += new System.EventHandler(this.pfcFrontScaleMid_OnValuesChanged);
 			// 
 			// pfcFrontScaleTop
 			// 
 			this.pfcFrontScaleTop.AllowDecimal = true;
-			this.pfcFrontScaleTop.ButtonStepFloat = 1F;
+			this.pfcFrontScaleTop.AllowValueLinking = true;
+			this.pfcFrontScaleTop.ButtonStep = 1;
+			this.pfcFrontScaleTop.ButtonStepFloat = 0.1F;
 			this.pfcFrontScaleTop.DefaultValue = 1F;
 			this.pfcFrontScaleTop.Field1 = "scalex_top";
 			this.pfcFrontScaleTop.Field2 = "scaley_top";
+			this.pfcFrontScaleTop.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.pfcFrontScaleTop.Label = "Upper Scale:";
-			this.pfcFrontScaleTop.Location = new System.Drawing.Point(262, 3);
+			this.pfcFrontScaleTop.LinkValues = false;
+			this.pfcFrontScaleTop.Location = new System.Drawing.Point(245, 6);
 			this.pfcFrontScaleTop.Name = "pfcFrontScaleTop";
-			this.pfcFrontScaleTop.Size = new System.Drawing.Size(253, 30);
+			this.pfcFrontScaleTop.Size = new System.Drawing.Size(270, 30);
 			this.pfcFrontScaleTop.TabIndex = 38;
+			this.pfcFrontScaleTop.OnValuesChanged += new System.EventHandler(this.pfcFrontScaleTop_OnValuesChanged);
 			// 
 			// pfcFrontOffsetBottom
 			// 
 			this.pfcFrontOffsetBottom.AllowDecimal = true;
+			this.pfcFrontOffsetBottom.AllowValueLinking = false;
+			this.pfcFrontOffsetBottom.ButtonStep = 1;
 			this.pfcFrontOffsetBottom.ButtonStepFloat = 16F;
 			this.pfcFrontOffsetBottom.DefaultValue = 0F;
 			this.pfcFrontOffsetBottom.Field1 = "offsetx_bottom";
 			this.pfcFrontOffsetBottom.Field2 = "offsety_bottom";
+			this.pfcFrontOffsetBottom.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.pfcFrontOffsetBottom.Label = "Lower Offset:";
-			this.pfcFrontOffsetBottom.Location = new System.Drawing.Point(3, 64);
+			this.pfcFrontOffsetBottom.LinkValues = false;
+			this.pfcFrontOffsetBottom.Location = new System.Drawing.Point(-5, 65);
 			this.pfcFrontOffsetBottom.Name = "pfcFrontOffsetBottom";
-			this.pfcFrontOffsetBottom.Size = new System.Drawing.Size(253, 30);
+			this.pfcFrontOffsetBottom.Size = new System.Drawing.Size(270, 30);
 			this.pfcFrontOffsetBottom.TabIndex = 37;
+			this.pfcFrontOffsetBottom.OnValuesChanged += new System.EventHandler(this.pfcFrontOffsetBottom_OnValuesChanged);
 			// 
 			// pfcFrontOffsetMid
 			// 
 			this.pfcFrontOffsetMid.AllowDecimal = true;
+			this.pfcFrontOffsetMid.AllowValueLinking = false;
+			this.pfcFrontOffsetMid.ButtonStep = 1;
 			this.pfcFrontOffsetMid.ButtonStepFloat = 16F;
 			this.pfcFrontOffsetMid.DefaultValue = 0F;
 			this.pfcFrontOffsetMid.Field1 = "offsetx_mid";
 			this.pfcFrontOffsetMid.Field2 = "offsety_mid";
+			this.pfcFrontOffsetMid.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.pfcFrontOffsetMid.Label = "Middle Offset:";
-			this.pfcFrontOffsetMid.Location = new System.Drawing.Point(3, 34);
+			this.pfcFrontOffsetMid.LinkValues = false;
+			this.pfcFrontOffsetMid.Location = new System.Drawing.Point(-5, 36);
 			this.pfcFrontOffsetMid.Name = "pfcFrontOffsetMid";
-			this.pfcFrontOffsetMid.Size = new System.Drawing.Size(253, 30);
+			this.pfcFrontOffsetMid.Size = new System.Drawing.Size(270, 30);
 			this.pfcFrontOffsetMid.TabIndex = 36;
+			this.pfcFrontOffsetMid.OnValuesChanged += new System.EventHandler(this.pfcFrontOffsetMid_OnValuesChanged);
 			// 
 			// pfcFrontOffsetTop
 			// 
 			this.pfcFrontOffsetTop.AllowDecimal = true;
+			this.pfcFrontOffsetTop.AllowValueLinking = false;
+			this.pfcFrontOffsetTop.ButtonStep = 1;
 			this.pfcFrontOffsetTop.ButtonStepFloat = 16F;
 			this.pfcFrontOffsetTop.DefaultValue = 0F;
 			this.pfcFrontOffsetTop.Field1 = "offsetx_top";
 			this.pfcFrontOffsetTop.Field2 = "offsety_top";
+			this.pfcFrontOffsetTop.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.pfcFrontOffsetTop.Label = "Upper Offset:";
-			this.pfcFrontOffsetTop.Location = new System.Drawing.Point(3, 6);
+			this.pfcFrontOffsetTop.LinkValues = false;
+			this.pfcFrontOffsetTop.Location = new System.Drawing.Point(-5, 6);
 			this.pfcFrontOffsetTop.Name = "pfcFrontOffsetTop";
-			this.pfcFrontOffsetTop.Size = new System.Drawing.Size(253, 28);
+			this.pfcFrontOffsetTop.Size = new System.Drawing.Size(270, 28);
 			this.pfcFrontOffsetTop.TabIndex = 35;
+			this.pfcFrontOffsetTop.OnValuesChanged += new System.EventHandler(this.pfcFrontOffsetTop_OnValuesChanged);
 			// 
-			// tabPage2
+			// tabFrontFlags
 			// 
-			this.tabPage2.Controls.Add(this.cblightfogFront);
-			this.tabPage2.Controls.Add(this.cbsmoothlightingFront);
-			this.tabPage2.Controls.Add(this.cbnodecalsFront);
-			this.tabPage2.Controls.Add(this.cbnofakecontrastFront);
-			this.tabPage2.Controls.Add(this.cbWrapMidtexFront);
-			this.tabPage2.Controls.Add(this.cbClipMidtexFront);
-			this.tabPage2.Location = new System.Drawing.Point(4, 23);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(517, 96);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "Flags";
-			this.tabPage2.UseVisualStyleBackColor = true;
+			this.tabFrontFlags.Controls.Add(this.flagsFront);
+			this.tabFrontFlags.Location = new System.Drawing.Point(4, 23);
+			this.tabFrontFlags.Name = "tabFrontFlags";
+			this.tabFrontFlags.Padding = new System.Windows.Forms.Padding(3);
+			this.tabFrontFlags.Size = new System.Drawing.Size(517, 96);
+			this.tabFrontFlags.TabIndex = 1;
+			this.tabFrontFlags.Text = " Flags ";
+			this.tabFrontFlags.UseVisualStyleBackColor = true;
 			// 
-			// cblightfogFront
+			// flagsFront
 			// 
-			this.cblightfogFront.AutoSize = true;
-			this.cblightfogFront.Location = new System.Drawing.Point(152, 65);
-			this.cblightfogFront.Name = "cblightfogFront";
-			this.cblightfogFront.Size = new System.Drawing.Size(179, 18);
-			this.cblightfogFront.TabIndex = 11;
-			this.cblightfogFront.Tag = "lightfog";
-			this.cblightfogFront.Text = "Use UDMF light on fogged walls";
-			this.cblightfogFront.UseVisualStyleBackColor = true;
-			// 
-			// cbsmoothlightingFront
-			// 
-			this.cbsmoothlightingFront.AutoSize = true;
-			this.cbsmoothlightingFront.Location = new System.Drawing.Point(152, 41);
-			this.cbsmoothlightingFront.Name = "cbsmoothlightingFront";
-			this.cbsmoothlightingFront.Size = new System.Drawing.Size(102, 18);
-			this.cbsmoothlightingFront.TabIndex = 10;
-			this.cbsmoothlightingFront.Tag = "smoothlighting";
-			this.cbsmoothlightingFront.Text = "Smooth Lighting";
-			this.cbsmoothlightingFront.UseVisualStyleBackColor = true;
-			// 
-			// cbnodecalsFront
-			// 
-			this.cbnodecalsFront.AutoSize = true;
-			this.cbnodecalsFront.Location = new System.Drawing.Point(152, 17);
-			this.cbnodecalsFront.Name = "cbnodecalsFront";
-			this.cbnodecalsFront.Size = new System.Drawing.Size(75, 18);
-			this.cbnodecalsFront.TabIndex = 9;
-			this.cbnodecalsFront.Tag = "nodecals";
-			this.cbnodecalsFront.Text = "No Decals";
-			this.cbnodecalsFront.UseVisualStyleBackColor = true;
-			// 
-			// cbnofakecontrastFront
-			// 
-			this.cbnofakecontrastFront.AutoSize = true;
-			this.cbnofakecontrastFront.Location = new System.Drawing.Point(10, 65);
-			this.cbnofakecontrastFront.Name = "cbnofakecontrastFront";
-			this.cbnofakecontrastFront.Size = new System.Drawing.Size(109, 18);
-			this.cbnofakecontrastFront.TabIndex = 8;
-			this.cbnofakecontrastFront.Tag = "nofakecontrast";
-			this.cbnofakecontrastFront.Text = "No Fake Contrast";
-			this.cbnofakecontrastFront.UseVisualStyleBackColor = true;
-			// 
-			// cbWrapMidtexFront
-			// 
-			this.cbWrapMidtexFront.AutoSize = true;
-			this.cbWrapMidtexFront.Location = new System.Drawing.Point(10, 41);
-			this.cbWrapMidtexFront.Name = "cbWrapMidtexFront";
-			this.cbWrapMidtexFront.Size = new System.Drawing.Size(124, 18);
-			this.cbWrapMidtexFront.TabIndex = 7;
-			this.cbWrapMidtexFront.Tag = "wrapmidtex";
-			this.cbWrapMidtexFront.Text = "Wrap Middle Texture";
-			this.cbWrapMidtexFront.UseVisualStyleBackColor = true;
-			// 
-			// cbClipMidtexFront
-			// 
-			this.cbClipMidtexFront.AutoSize = true;
-			this.cbClipMidtexFront.Location = new System.Drawing.Point(10, 17);
-			this.cbClipMidtexFront.Name = "cbClipMidtexFront";
-			this.cbClipMidtexFront.Size = new System.Drawing.Size(115, 18);
-			this.cbClipMidtexFront.TabIndex = 6;
-			this.cbClipMidtexFront.Tag = "clipmidtex";
-			this.cbClipMidtexFront.Text = "Clip Middle Texture";
-			this.cbClipMidtexFront.UseVisualStyleBackColor = true;
+			this.flagsFront.AutoScroll = true;
+			this.flagsFront.Columns = 2;
+			this.flagsFront.Location = new System.Drawing.Point(15, 6);
+			this.flagsFront.Name = "flagsFront";
+			this.flagsFront.Size = new System.Drawing.Size(496, 84);
+			this.flagsFront.TabIndex = 0;
+			this.flagsFront.VerticalSpacing = 3;
+			this.flagsFront.OnValueChanged += new System.EventHandler(this.flagsFront_OnValueChanged);
 			// 
 			// backside
 			// 
@@ -1090,6 +1024,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backTextureOffset.Name = "backTextureOffset";
 			this.backTextureOffset.Size = new System.Drawing.Size(249, 28);
 			this.backTextureOffset.TabIndex = 42;
+			this.backTextureOffset.OnValuesChanged += new System.EventHandler(this.backTextureOffset_OnValuesChanged);
 			// 
 			// cbLightAbsoluteBack
 			// 
@@ -1101,6 +1036,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbLightAbsoluteBack.Tag = "lightabsolute";
 			this.cbLightAbsoluteBack.Text = "Absolute";
 			this.cbLightAbsoluteBack.UseVisualStyleBackColor = true;
+			this.cbLightAbsoluteBack.CheckedChanged += new System.EventHandler(this.cbLightAbsoluteBack_CheckedChanged);
 			// 
 			// labelLightBack
 			// 
@@ -1118,12 +1054,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.lightBack.AllowNegative = true;
 			this.lightBack.AllowRelative = true;
 			this.lightBack.ButtonStep = 16;
+			this.lightBack.ButtonStepFloat = 1F;
 			this.lightBack.Location = new System.Drawing.Point(90, 96);
 			this.lightBack.Name = "lightBack";
 			this.lightBack.Size = new System.Drawing.Size(62, 24);
 			this.lightBack.StepValues = null;
 			this.lightBack.TabIndex = 29;
 			this.lightBack.Tag = "light";
+			this.lightBack.WhenTextChanged += new System.EventHandler(this.lightBack_WhenTextChanged);
 			// 
 			// backsector
 			// 
@@ -1131,6 +1069,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backsector.AllowNegative = false;
 			this.backsector.AllowRelative = false;
 			this.backsector.ButtonStep = 1;
+			this.backsector.ButtonStepFloat = 1F;
 			this.backsector.Location = new System.Drawing.Point(90, 35);
 			this.backsector.Name = "backsector";
 			this.backsector.Size = new System.Drawing.Size(130, 24);
@@ -1155,6 +1094,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backlow.Size = new System.Drawing.Size(83, 112);
 			this.backlow.TabIndex = 6;
 			this.backlow.TextureName = "";
+			this.backlow.OnValueChanged += new System.EventHandler(this.backlow_OnValueChanged);
 			// 
 			// backmid
 			// 
@@ -1164,6 +1104,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backmid.Size = new System.Drawing.Size(83, 112);
 			this.backmid.TabIndex = 5;
 			this.backmid.TextureName = "";
+			this.backmid.OnValueChanged += new System.EventHandler(this.backmid_OnValueChanged);
 			// 
 			// backhigh
 			// 
@@ -1173,195 +1114,165 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backhigh.Size = new System.Drawing.Size(83, 112);
 			this.backhigh.TabIndex = 4;
 			this.backhigh.TextureName = "";
+			this.backhigh.OnValueChanged += new System.EventHandler(this.backhigh_OnValueChanged);
 			// 
 			// udmfPropertiesBack
 			// 
-			this.udmfPropertiesBack.Controls.Add(this.tabPage5);
-			this.udmfPropertiesBack.Controls.Add(this.tabPage6);
+			this.udmfPropertiesBack.Controls.Add(this.tabBackOffsets);
+			this.udmfPropertiesBack.Controls.Add(this.tabBackFlags);
 			this.udmfPropertiesBack.ItemSize = new System.Drawing.Size(100, 19);
 			this.udmfPropertiesBack.Location = new System.Drawing.Point(10, 172);
 			this.udmfPropertiesBack.Margin = new System.Windows.Forms.Padding(1);
 			this.udmfPropertiesBack.Name = "udmfPropertiesBack";
 			this.udmfPropertiesBack.SelectedIndex = 0;
 			this.udmfPropertiesBack.Size = new System.Drawing.Size(525, 123);
-			this.udmfPropertiesBack.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.udmfPropertiesBack.TabIndex = 25;
 			// 
-			// tabPage5
+			// tabBackOffsets
 			// 
-			this.tabPage5.Controls.Add(this.pfcBackScaleBottom);
-			this.tabPage5.Controls.Add(this.pfcBackScaleMid);
-			this.tabPage5.Controls.Add(this.pfcBackScaleTop);
-			this.tabPage5.Controls.Add(this.pfcBackOffsetBottom);
-			this.tabPage5.Controls.Add(this.pfcBackOffsetMid);
-			this.tabPage5.Controls.Add(this.pfcBackOffsetTop);
-			this.tabPage5.Location = new System.Drawing.Point(4, 23);
-			this.tabPage5.Name = "tabPage5";
-			this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage5.Size = new System.Drawing.Size(517, 96);
-			this.tabPage5.TabIndex = 0;
-			this.tabPage5.Text = "Offsets & Scale";
-			this.tabPage5.UseVisualStyleBackColor = true;
-			// 
-			// pfcBackScaleBottom
-			// 
-			this.pfcBackScaleBottom.AllowDecimal = true;
-			this.pfcBackScaleBottom.ButtonStepFloat = 1F;
-			this.pfcBackScaleBottom.DefaultValue = 1F;
-			this.pfcBackScaleBottom.Field1 = "scalex_bottom";
-			this.pfcBackScaleBottom.Field2 = "scaley_bottom";
-			this.pfcBackScaleBottom.Label = "Lower Scale:";
-			this.pfcBackScaleBottom.Location = new System.Drawing.Point(262, 64);
-			this.pfcBackScaleBottom.Name = "pfcBackScaleBottom";
-			this.pfcBackScaleBottom.Size = new System.Drawing.Size(253, 32);
-			this.pfcBackScaleBottom.TabIndex = 40;
+			this.tabBackOffsets.Controls.Add(this.pfcBackScaleMid);
+			this.tabBackOffsets.Controls.Add(this.pfcBackScaleTop);
+			this.tabBackOffsets.Controls.Add(this.pfcBackScaleBottom);
+			this.tabBackOffsets.Controls.Add(this.pfcBackOffsetBottom);
+			this.tabBackOffsets.Controls.Add(this.pfcBackOffsetMid);
+			this.tabBackOffsets.Controls.Add(this.pfcBackOffsetTop);
+			this.tabBackOffsets.Location = new System.Drawing.Point(4, 23);
+			this.tabBackOffsets.Name = "tabBackOffsets";
+			this.tabBackOffsets.Padding = new System.Windows.Forms.Padding(3);
+			this.tabBackOffsets.Size = new System.Drawing.Size(517, 96);
+			this.tabBackOffsets.TabIndex = 0;
+			this.tabBackOffsets.Text = " Offsets & Scale ";
+			this.tabBackOffsets.UseVisualStyleBackColor = true;
 			// 
 			// pfcBackScaleMid
 			// 
 			this.pfcBackScaleMid.AllowDecimal = true;
-			this.pfcBackScaleMid.ButtonStepFloat = 1F;
+			this.pfcBackScaleMid.AllowValueLinking = true;
+			this.pfcBackScaleMid.ButtonStep = 1;
+			this.pfcBackScaleMid.ButtonStepFloat = 0.1F;
 			this.pfcBackScaleMid.DefaultValue = 1F;
 			this.pfcBackScaleMid.Field1 = "scalex_mid";
 			this.pfcBackScaleMid.Field2 = "scaley_mid";
+			this.pfcBackScaleMid.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.pfcBackScaleMid.Label = "Middle Scale:";
-			this.pfcBackScaleMid.Location = new System.Drawing.Point(262, 34);
+			this.pfcBackScaleMid.LinkValues = false;
+			this.pfcBackScaleMid.Location = new System.Drawing.Point(245, 36);
 			this.pfcBackScaleMid.Name = "pfcBackScaleMid";
-			this.pfcBackScaleMid.Size = new System.Drawing.Size(253, 32);
+			this.pfcBackScaleMid.Size = new System.Drawing.Size(270, 32);
 			this.pfcBackScaleMid.TabIndex = 39;
+			this.pfcBackScaleMid.OnValuesChanged += new System.EventHandler(this.pfcBackScaleMid_OnValuesChanged);
 			// 
 			// pfcBackScaleTop
 			// 
 			this.pfcBackScaleTop.AllowDecimal = true;
-			this.pfcBackScaleTop.ButtonStepFloat = 1F;
+			this.pfcBackScaleTop.AllowValueLinking = true;
+			this.pfcBackScaleTop.ButtonStep = 1;
+			this.pfcBackScaleTop.ButtonStepFloat = 0.1F;
 			this.pfcBackScaleTop.DefaultValue = 1F;
 			this.pfcBackScaleTop.Field1 = "scalex_top";
 			this.pfcBackScaleTop.Field2 = "scaley_top";
+			this.pfcBackScaleTop.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.pfcBackScaleTop.Label = "Upper Scale:";
-			this.pfcBackScaleTop.Location = new System.Drawing.Point(262, 3);
+			this.pfcBackScaleTop.LinkValues = false;
+			this.pfcBackScaleTop.Location = new System.Drawing.Point(245, 6);
 			this.pfcBackScaleTop.Name = "pfcBackScaleTop";
-			this.pfcBackScaleTop.Size = new System.Drawing.Size(253, 30);
+			this.pfcBackScaleTop.Size = new System.Drawing.Size(270, 30);
 			this.pfcBackScaleTop.TabIndex = 38;
+			this.pfcBackScaleTop.OnValuesChanged += new System.EventHandler(this.pfcBackScaleTop_OnValuesChanged);
+			// 
+			// pfcBackScaleBottom
+			// 
+			this.pfcBackScaleBottom.AllowDecimal = true;
+			this.pfcBackScaleBottom.AllowValueLinking = true;
+			this.pfcBackScaleBottom.ButtonStep = 1;
+			this.pfcBackScaleBottom.ButtonStepFloat = 0.1F;
+			this.pfcBackScaleBottom.DefaultValue = 1F;
+			this.pfcBackScaleBottom.Field1 = "scalex_bottom";
+			this.pfcBackScaleBottom.Field2 = "scaley_bottom";
+			this.pfcBackScaleBottom.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.pfcBackScaleBottom.Label = "Lower Scale:";
+			this.pfcBackScaleBottom.LinkValues = false;
+			this.pfcBackScaleBottom.Location = new System.Drawing.Point(245, 65);
+			this.pfcBackScaleBottom.Name = "pfcBackScaleBottom";
+			this.pfcBackScaleBottom.Size = new System.Drawing.Size(270, 32);
+			this.pfcBackScaleBottom.TabIndex = 40;
+			this.pfcBackScaleBottom.OnValuesChanged += new System.EventHandler(this.pfcBackScaleBottom_OnValuesChanged);
 			// 
 			// pfcBackOffsetBottom
 			// 
 			this.pfcBackOffsetBottom.AllowDecimal = true;
+			this.pfcBackOffsetBottom.AllowValueLinking = false;
+			this.pfcBackOffsetBottom.ButtonStep = 1;
 			this.pfcBackOffsetBottom.ButtonStepFloat = 16F;
 			this.pfcBackOffsetBottom.DefaultValue = 0F;
 			this.pfcBackOffsetBottom.Field1 = "offsetx_bottom";
 			this.pfcBackOffsetBottom.Field2 = "offsety_bottom";
+			this.pfcBackOffsetBottom.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.pfcBackOffsetBottom.Label = "Lower Offset:";
-			this.pfcBackOffsetBottom.Location = new System.Drawing.Point(3, 64);
+			this.pfcBackOffsetBottom.LinkValues = false;
+			this.pfcBackOffsetBottom.Location = new System.Drawing.Point(-5, 65);
 			this.pfcBackOffsetBottom.Name = "pfcBackOffsetBottom";
-			this.pfcBackOffsetBottom.Size = new System.Drawing.Size(253, 30);
+			this.pfcBackOffsetBottom.Size = new System.Drawing.Size(270, 30);
 			this.pfcBackOffsetBottom.TabIndex = 37;
+			this.pfcBackOffsetBottom.OnValuesChanged += new System.EventHandler(this.pfcBackOffsetBottom_OnValuesChanged);
 			// 
 			// pfcBackOffsetMid
 			// 
 			this.pfcBackOffsetMid.AllowDecimal = true;
+			this.pfcBackOffsetMid.AllowValueLinking = false;
+			this.pfcBackOffsetMid.ButtonStep = 1;
 			this.pfcBackOffsetMid.ButtonStepFloat = 16F;
 			this.pfcBackOffsetMid.DefaultValue = 0F;
 			this.pfcBackOffsetMid.Field1 = "offsetx_mid";
 			this.pfcBackOffsetMid.Field2 = "offsety_mid";
+			this.pfcBackOffsetMid.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.pfcBackOffsetMid.Label = "Middle Offset:";
-			this.pfcBackOffsetMid.Location = new System.Drawing.Point(3, 34);
+			this.pfcBackOffsetMid.LinkValues = false;
+			this.pfcBackOffsetMid.Location = new System.Drawing.Point(-5, 36);
 			this.pfcBackOffsetMid.Name = "pfcBackOffsetMid";
-			this.pfcBackOffsetMid.Size = new System.Drawing.Size(253, 30);
+			this.pfcBackOffsetMid.Size = new System.Drawing.Size(270, 30);
 			this.pfcBackOffsetMid.TabIndex = 36;
+			this.pfcBackOffsetMid.OnValuesChanged += new System.EventHandler(this.pfcBackOffsetMid_OnValuesChanged);
 			// 
 			// pfcBackOffsetTop
 			// 
 			this.pfcBackOffsetTop.AllowDecimal = true;
+			this.pfcBackOffsetTop.AllowValueLinking = false;
+			this.pfcBackOffsetTop.ButtonStep = 1;
 			this.pfcBackOffsetTop.ButtonStepFloat = 16F;
 			this.pfcBackOffsetTop.DefaultValue = 0F;
 			this.pfcBackOffsetTop.Field1 = "offsetx_top";
 			this.pfcBackOffsetTop.Field2 = "offsety_top";
+			this.pfcBackOffsetTop.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.pfcBackOffsetTop.Label = "Upper Offset:";
-			this.pfcBackOffsetTop.Location = new System.Drawing.Point(3, 6);
+			this.pfcBackOffsetTop.LinkValues = false;
+			this.pfcBackOffsetTop.Location = new System.Drawing.Point(-5, 6);
 			this.pfcBackOffsetTop.Name = "pfcBackOffsetTop";
-			this.pfcBackOffsetTop.Size = new System.Drawing.Size(253, 28);
+			this.pfcBackOffsetTop.Size = new System.Drawing.Size(270, 28);
 			this.pfcBackOffsetTop.TabIndex = 35;
+			this.pfcBackOffsetTop.OnValuesChanged += new System.EventHandler(this.pfcBackOffsetTop_OnValuesChanged);
 			// 
-			// tabPage6
+			// tabBackFlags
 			// 
-			this.tabPage6.Controls.Add(this.cblightfogBack);
-			this.tabPage6.Controls.Add(this.cbsmoothlightingBack);
-			this.tabPage6.Controls.Add(this.cbnodecalsBack);
-			this.tabPage6.Controls.Add(this.cbnofakecontrastBack);
-			this.tabPage6.Controls.Add(this.cbWrapMidtexBack);
-			this.tabPage6.Controls.Add(this.cbClipMidtexBack);
-			this.tabPage6.Location = new System.Drawing.Point(4, 23);
-			this.tabPage6.Name = "tabPage6";
-			this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage6.Size = new System.Drawing.Size(517, 96);
-			this.tabPage6.TabIndex = 1;
-			this.tabPage6.Text = "Flags";
-			this.tabPage6.UseVisualStyleBackColor = true;
+			this.tabBackFlags.Controls.Add(this.flagsBack);
+			this.tabBackFlags.Location = new System.Drawing.Point(4, 23);
+			this.tabBackFlags.Name = "tabBackFlags";
+			this.tabBackFlags.Padding = new System.Windows.Forms.Padding(3);
+			this.tabBackFlags.Size = new System.Drawing.Size(517, 96);
+			this.tabBackFlags.TabIndex = 1;
+			this.tabBackFlags.Text = " Flags ";
+			this.tabBackFlags.UseVisualStyleBackColor = true;
 			// 
-			// cblightfogBack
+			// flagsBack
 			// 
-			this.cblightfogBack.AutoSize = true;
-			this.cblightfogBack.Location = new System.Drawing.Point(148, 65);
-			this.cblightfogBack.Name = "cblightfogBack";
-			this.cblightfogBack.Size = new System.Drawing.Size(179, 18);
-			this.cblightfogBack.TabIndex = 11;
-			this.cblightfogBack.Tag = "lightfog";
-			this.cblightfogBack.Text = "Use UDMF light on fogged walls";
-			this.cblightfogBack.UseVisualStyleBackColor = true;
-			// 
-			// cbsmoothlightingBack
-			// 
-			this.cbsmoothlightingBack.AutoSize = true;
-			this.cbsmoothlightingBack.Location = new System.Drawing.Point(148, 41);
-			this.cbsmoothlightingBack.Name = "cbsmoothlightingBack";
-			this.cbsmoothlightingBack.Size = new System.Drawing.Size(102, 18);
-			this.cbsmoothlightingBack.TabIndex = 10;
-			this.cbsmoothlightingBack.Tag = "smoothlighting";
-			this.cbsmoothlightingBack.Text = "Smooth Lighting";
-			this.cbsmoothlightingBack.UseVisualStyleBackColor = true;
-			// 
-			// cbnodecalsBack
-			// 
-			this.cbnodecalsBack.AutoSize = true;
-			this.cbnodecalsBack.Location = new System.Drawing.Point(148, 17);
-			this.cbnodecalsBack.Name = "cbnodecalsBack";
-			this.cbnodecalsBack.Size = new System.Drawing.Size(75, 18);
-			this.cbnodecalsBack.TabIndex = 9;
-			this.cbnodecalsBack.Tag = "nodecals";
-			this.cbnodecalsBack.Text = "No Decals";
-			this.cbnodecalsBack.UseVisualStyleBackColor = true;
-			// 
-			// cbnofakecontrastBack
-			// 
-			this.cbnofakecontrastBack.AutoSize = true;
-			this.cbnofakecontrastBack.Location = new System.Drawing.Point(6, 65);
-			this.cbnofakecontrastBack.Name = "cbnofakecontrastBack";
-			this.cbnofakecontrastBack.Size = new System.Drawing.Size(109, 18);
-			this.cbnofakecontrastBack.TabIndex = 8;
-			this.cbnofakecontrastBack.Tag = "nofakecontrast";
-			this.cbnofakecontrastBack.Text = "No Fake Contrast";
-			this.cbnofakecontrastBack.UseVisualStyleBackColor = true;
-			// 
-			// cbWrapMidtexBack
-			// 
-			this.cbWrapMidtexBack.AutoSize = true;
-			this.cbWrapMidtexBack.Location = new System.Drawing.Point(6, 41);
-			this.cbWrapMidtexBack.Name = "cbWrapMidtexBack";
-			this.cbWrapMidtexBack.Size = new System.Drawing.Size(124, 18);
-			this.cbWrapMidtexBack.TabIndex = 7;
-			this.cbWrapMidtexBack.Tag = "wrapmidtex";
-			this.cbWrapMidtexBack.Text = "Wrap Middle Texture";
-			this.cbWrapMidtexBack.UseVisualStyleBackColor = true;
-			// 
-			// cbClipMidtexBack
-			// 
-			this.cbClipMidtexBack.AutoSize = true;
-			this.cbClipMidtexBack.Location = new System.Drawing.Point(6, 17);
-			this.cbClipMidtexBack.Name = "cbClipMidtexBack";
-			this.cbClipMidtexBack.Size = new System.Drawing.Size(115, 18);
-			this.cbClipMidtexBack.TabIndex = 6;
-			this.cbClipMidtexBack.Tag = "clipmidtex";
-			this.cbClipMidtexBack.Text = "Clip Middle Texture";
-			this.cbClipMidtexBack.UseVisualStyleBackColor = true;
+			this.flagsBack.AutoScroll = true;
+			this.flagsBack.Columns = 2;
+			this.flagsBack.Location = new System.Drawing.Point(15, 6);
+			this.flagsBack.Name = "flagsBack";
+			this.flagsBack.Size = new System.Drawing.Size(496, 84);
+			this.flagsBack.TabIndex = 1;
+			this.flagsBack.VerticalSpacing = 3;
+			this.flagsBack.OnValueChanged += new System.EventHandler(this.flagsBack_OnValueChanged);
 			// 
 			// tabcustom
 			// 
@@ -1415,209 +1326,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.heightpanel2.TabIndex = 4;
 			this.heightpanel2.Visible = false;
 			// 
-			// tabPage3
-			// 
-			this.tabPage3.Controls.Add(this.pairedFieldsControl1);
-			this.tabPage3.Controls.Add(this.pairedFieldsControl2);
-			this.tabPage3.Controls.Add(this.pairedFieldsControl3);
-			this.tabPage3.Controls.Add(this.pairedFieldsControl4);
-			this.tabPage3.Controls.Add(this.pairedFieldsControl5);
-			this.tabPage3.Controls.Add(this.pairedFieldsControl6);
-			this.tabPage3.Location = new System.Drawing.Point(4, 23);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage3.Size = new System.Drawing.Size(503, 96);
-			this.tabPage3.TabIndex = 0;
-			this.tabPage3.Text = "Offsets & Scale";
-			this.tabPage3.UseVisualStyleBackColor = true;
-			// 
-			// pairedFieldsControl1
-			// 
-			this.pairedFieldsControl1.AllowDecimal = true;
-			this.pairedFieldsControl1.ButtonStepFloat = 1F;
-			this.pairedFieldsControl1.DefaultValue = 1F;
-			this.pairedFieldsControl1.Field1 = "scalex_bottom";
-			this.pairedFieldsControl1.Field2 = "scaley_bottom";
-			this.pairedFieldsControl1.Label = "Lower Scale:";
-			this.pairedFieldsControl1.Location = new System.Drawing.Point(254, 64);
-			this.pairedFieldsControl1.Name = "pairedFieldsControl1";
-			this.pairedFieldsControl1.Size = new System.Drawing.Size(253, 32);
-			this.pairedFieldsControl1.TabIndex = 40;
-			// 
-			// pairedFieldsControl2
-			// 
-			this.pairedFieldsControl2.AllowDecimal = true;
-			this.pairedFieldsControl2.ButtonStepFloat = 1F;
-			this.pairedFieldsControl2.DefaultValue = 1F;
-			this.pairedFieldsControl2.Field1 = "scalex_mid";
-			this.pairedFieldsControl2.Field2 = "scaley_mid";
-			this.pairedFieldsControl2.Label = "Middle Scale:";
-			this.pairedFieldsControl2.Location = new System.Drawing.Point(254, 34);
-			this.pairedFieldsControl2.Name = "pairedFieldsControl2";
-			this.pairedFieldsControl2.Size = new System.Drawing.Size(253, 32);
-			this.pairedFieldsControl2.TabIndex = 39;
-			// 
-			// pairedFieldsControl3
-			// 
-			this.pairedFieldsControl3.AllowDecimal = true;
-			this.pairedFieldsControl3.ButtonStepFloat = 1F;
-			this.pairedFieldsControl3.DefaultValue = 1F;
-			this.pairedFieldsControl3.Field1 = "scalex_top";
-			this.pairedFieldsControl3.Field2 = "scaley_top";
-			this.pairedFieldsControl3.Label = "Upper Scale:";
-			this.pairedFieldsControl3.Location = new System.Drawing.Point(254, 3);
-			this.pairedFieldsControl3.Name = "pairedFieldsControl3";
-			this.pairedFieldsControl3.Size = new System.Drawing.Size(253, 30);
-			this.pairedFieldsControl3.TabIndex = 38;
-			// 
-			// pairedFieldsControl4
-			// 
-			this.pairedFieldsControl4.AllowDecimal = false;
-			this.pairedFieldsControl4.ButtonStep = 1;
-			this.pairedFieldsControl4.DefaultValue = 0F;
-			this.pairedFieldsControl4.Field1 = "offsetx_bottom";
-			this.pairedFieldsControl4.Field2 = "offsety_bottom";
-			this.pairedFieldsControl4.Label = "Lower Offset:";
-			this.pairedFieldsControl4.Location = new System.Drawing.Point(3, 64);
-			this.pairedFieldsControl4.Name = "pairedFieldsControl4";
-			this.pairedFieldsControl4.Size = new System.Drawing.Size(253, 30);
-			this.pairedFieldsControl4.TabIndex = 37;
-			// 
-			// pairedFieldsControl5
-			// 
-			this.pairedFieldsControl5.AllowDecimal = false;
-			this.pairedFieldsControl5.ButtonStep = 1;
-			this.pairedFieldsControl5.DefaultValue = 0F;
-			this.pairedFieldsControl5.Field1 = "offsetx_mid";
-			this.pairedFieldsControl5.Field2 = "offsety_mid";
-			this.pairedFieldsControl5.Label = "Middle Offset:";
-			this.pairedFieldsControl5.Location = new System.Drawing.Point(3, 34);
-			this.pairedFieldsControl5.Name = "pairedFieldsControl5";
-			this.pairedFieldsControl5.Size = new System.Drawing.Size(253, 30);
-			this.pairedFieldsControl5.TabIndex = 36;
-			// 
-			// pairedFieldsControl6
-			// 
-			this.pairedFieldsControl6.AllowDecimal = false;
-			this.pairedFieldsControl6.ButtonStep = 1;
-			this.pairedFieldsControl6.DefaultValue = 0F;
-			this.pairedFieldsControl6.Field1 = "offsetx_top";
-			this.pairedFieldsControl6.Field2 = "offsety_top";
-			this.pairedFieldsControl6.Label = "Upper Offset:";
-			this.pairedFieldsControl6.Location = new System.Drawing.Point(3, 6);
-			this.pairedFieldsControl6.Name = "pairedFieldsControl6";
-			this.pairedFieldsControl6.Size = new System.Drawing.Size(253, 28);
-			this.pairedFieldsControl6.TabIndex = 35;
-			// 
-			// tabPage4
-			// 
-			this.tabPage4.Controls.Add(this.checkBox2);
-			this.tabPage4.Controls.Add(label1);
-			this.tabPage4.Controls.Add(this.buttonsNumericTextbox1);
-			this.tabPage4.Controls.Add(this.checkBox3);
-			this.tabPage4.Controls.Add(this.checkBox4);
-			this.tabPage4.Controls.Add(this.checkBox5);
-			this.tabPage4.Controls.Add(this.checkBox6);
-			this.tabPage4.Controls.Add(this.checkBox7);
-			this.tabPage4.Controls.Add(this.checkBox8);
-			this.tabPage4.Location = new System.Drawing.Point(4, 23);
-			this.tabPage4.Name = "tabPage4";
-			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage4.Size = new System.Drawing.Size(503, 96);
-			this.tabPage4.TabIndex = 1;
-			this.tabPage4.Text = "Settings";
-			this.tabPage4.UseVisualStyleBackColor = true;
-			// 
-			// checkBox2
-			// 
-			this.checkBox2.AutoSize = true;
-			this.checkBox2.Location = new System.Drawing.Point(26, 41);
-			this.checkBox2.Name = "checkBox2";
-			this.checkBox2.Size = new System.Drawing.Size(107, 17);
-			this.checkBox2.TabIndex = 27;
-			this.checkBox2.Tag = "lightabsolute";
-			this.checkBox2.Text = "Absolute Lighting";
-			this.checkBox2.UseVisualStyleBackColor = true;
-			// 
-			// buttonsNumericTextbox1
-			// 
-			this.buttonsNumericTextbox1.AllowDecimal = false;
-			this.buttonsNumericTextbox1.AllowNegative = true;
-			this.buttonsNumericTextbox1.AllowRelative = true;
-			this.buttonsNumericTextbox1.ButtonStep = 1;
-			this.buttonsNumericTextbox1.Location = new System.Drawing.Point(57, 13);
-			this.buttonsNumericTextbox1.Name = "buttonsNumericTextbox1";
-			this.buttonsNumericTextbox1.Size = new System.Drawing.Size(78, 24);
-			this.buttonsNumericTextbox1.StepValues = null;
-			this.buttonsNumericTextbox1.TabIndex = 26;
-			this.buttonsNumericTextbox1.Tag = "light";
-			// 
-			// checkBox3
-			// 
-			this.checkBox3.AutoSize = true;
-			this.checkBox3.Location = new System.Drawing.Point(314, 65);
-			this.checkBox3.Name = "checkBox3";
-			this.checkBox3.Size = new System.Drawing.Size(178, 17);
-			this.checkBox3.TabIndex = 11;
-			this.checkBox3.Tag = "lightfog";
-			this.checkBox3.Text = "Use UDMF light on fogged walls";
-			this.checkBox3.UseVisualStyleBackColor = true;
-			// 
-			// checkBox4
-			// 
-			this.checkBox4.AutoSize = true;
-			this.checkBox4.Location = new System.Drawing.Point(314, 41);
-			this.checkBox4.Name = "checkBox4";
-			this.checkBox4.Size = new System.Drawing.Size(102, 17);
-			this.checkBox4.TabIndex = 10;
-			this.checkBox4.Tag = "smoothlighting";
-			this.checkBox4.Text = "Smooth Lighting";
-			this.checkBox4.UseVisualStyleBackColor = true;
-			// 
-			// checkBox5
-			// 
-			this.checkBox5.AutoSize = true;
-			this.checkBox5.Location = new System.Drawing.Point(314, 17);
-			this.checkBox5.Name = "checkBox5";
-			this.checkBox5.Size = new System.Drawing.Size(76, 17);
-			this.checkBox5.TabIndex = 9;
-			this.checkBox5.Tag = "nodecals";
-			this.checkBox5.Text = "No Decals";
-			this.checkBox5.UseVisualStyleBackColor = true;
-			// 
-			// checkBox6
-			// 
-			this.checkBox6.AutoSize = true;
-			this.checkBox6.Location = new System.Drawing.Point(172, 65);
-			this.checkBox6.Name = "checkBox6";
-			this.checkBox6.Size = new System.Drawing.Size(109, 17);
-			this.checkBox6.TabIndex = 8;
-			this.checkBox6.Tag = "nofakecontrast";
-			this.checkBox6.Text = "No Fake Contrast";
-			this.checkBox6.UseVisualStyleBackColor = true;
-			// 
-			// checkBox7
-			// 
-			this.checkBox7.AutoSize = true;
-			this.checkBox7.Location = new System.Drawing.Point(172, 41);
-			this.checkBox7.Name = "checkBox7";
-			this.checkBox7.Size = new System.Drawing.Size(125, 17);
-			this.checkBox7.TabIndex = 7;
-			this.checkBox7.Tag = "wrapmidtex";
-			this.checkBox7.Text = "Wrap Middle Texture";
-			this.checkBox7.UseVisualStyleBackColor = true;
-			// 
-			// checkBox8
-			// 
-			this.checkBox8.AutoSize = true;
-			this.checkBox8.Location = new System.Drawing.Point(172, 17);
-			this.checkBox8.Name = "checkBox8";
-			this.checkBox8.Size = new System.Drawing.Size(116, 17);
-			this.checkBox8.TabIndex = 6;
-			this.checkBox8.Tag = "clipmidtex";
-			this.checkBox8.Text = "Clip Middle Texture";
-			this.checkBox8.UseVisualStyleBackColor = true;
-			// 
 			// LinedefEditForm
 			// 
 			this.AcceptButton = this.apply;
@@ -1662,19 +1370,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.ResumeLayout(false);
 			this.frontgroup.PerformLayout();
 			this.udmfPropertiesFront.ResumeLayout(false);
-			this.tabPage1.ResumeLayout(false);
-			this.tabPage2.ResumeLayout(false);
-			this.tabPage2.PerformLayout();
+			this.tabFrontOffsets.ResumeLayout(false);
+			this.tabFrontFlags.ResumeLayout(false);
 			this.backgroup.ResumeLayout(false);
 			this.backgroup.PerformLayout();
 			this.udmfPropertiesBack.ResumeLayout(false);
-			this.tabPage5.ResumeLayout(false);
-			this.tabPage6.ResumeLayout(false);
-			this.tabPage6.PerformLayout();
+			this.tabBackOffsets.ResumeLayout(false);
+			this.tabBackFlags.ResumeLayout(false);
 			this.tabcustom.ResumeLayout(false);
-			this.tabPage3.ResumeLayout(false);
-			this.tabPage4.ResumeLayout(false);
-			this.tabPage4.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -1686,7 +1389,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.GroupBox actiongroup;
 		private System.Windows.Forms.GroupBox flagsgroup;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flags;
-		private System.Windows.Forms.CheckBox checkBox1;
 		private System.Windows.Forms.Button browseaction;
 		private CodeImp.DoomBuilder.Controls.ActionSelectorControl action;
 		private System.Windows.Forms.TabControl tabs;
@@ -1731,15 +1433,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ComboBox arg0str;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
 		private System.Windows.Forms.TabControl udmfPropertiesFront;
-		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.TabPage tabFrontOffsets;
+		private System.Windows.Forms.TabPage tabFrontFlags;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox lightFront;
-		private System.Windows.Forms.CheckBox cblightfogFront;
-		private System.Windows.Forms.CheckBox cbsmoothlightingFront;
-		private System.Windows.Forms.CheckBox cbnodecalsFront;
-		private System.Windows.Forms.CheckBox cbnofakecontrastFront;
-		private System.Windows.Forms.CheckBox cbWrapMidtexFront;
-		private System.Windows.Forms.CheckBox cbClipMidtexFront;
 		private System.Windows.Forms.CheckBox cbLightAbsoluteFront;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcFrontOffsetTop;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcFrontOffsetBottom;
@@ -1748,36 +1444,14 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcFrontScaleMid;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcFrontScaleTop;
 		private System.Windows.Forms.TabControl udmfPropertiesBack;
-		private System.Windows.Forms.TabPage tabPage5;
+		private System.Windows.Forms.TabPage tabBackOffsets;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcBackScaleBottom;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcBackScaleMid;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcBackScaleTop;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcBackOffsetBottom;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcBackOffsetMid;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcBackOffsetTop;
-		private System.Windows.Forms.TabPage tabPage6;
-		private System.Windows.Forms.CheckBox cblightfogBack;
-		private System.Windows.Forms.CheckBox cbsmoothlightingBack;
-		private System.Windows.Forms.CheckBox cbnodecalsBack;
-		private System.Windows.Forms.CheckBox cbnofakecontrastBack;
-		private System.Windows.Forms.CheckBox cbWrapMidtexBack;
-		private System.Windows.Forms.CheckBox cbClipMidtexBack;
-		private System.Windows.Forms.TabPage tabPage3;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pairedFieldsControl1;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pairedFieldsControl2;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pairedFieldsControl3;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pairedFieldsControl4;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pairedFieldsControl5;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pairedFieldsControl6;
-		private System.Windows.Forms.TabPage tabPage4;
-		private System.Windows.Forms.CheckBox checkBox2;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox buttonsNumericTextbox1;
-		private System.Windows.Forms.CheckBox checkBox3;
-		private System.Windows.Forms.CheckBox checkBox4;
-		private System.Windows.Forms.CheckBox checkBox5;
-		private System.Windows.Forms.CheckBox checkBox6;
-		private System.Windows.Forms.CheckBox checkBox7;
-		private System.Windows.Forms.CheckBox checkBox8;
+		private System.Windows.Forms.TabPage tabBackFlags;
 		private System.Windows.Forms.GroupBox settingsGroup;
 		private System.Windows.Forms.ComboBox cbRenderStyle;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox lockNumber;
@@ -1788,5 +1462,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox alpha;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl frontTextureOffset;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl backTextureOffset;
+		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flagsFront;
+		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flagsBack;
 	}
 }

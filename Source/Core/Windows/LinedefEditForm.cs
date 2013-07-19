@@ -24,7 +24,6 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
 using CodeImp.DoomBuilder.Types;
-using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.GZBuilder.Controls; //mxd
 
@@ -34,24 +33,130 @@ namespace CodeImp.DoomBuilder.Windows
 {
 	internal partial class LinedefEditForm : DelayedForm
 	{
-		// Variables
+		#region ================== Events
+
+		public event EventHandler OnValuesChanged; //mxd
+
+		#endregion
+
+		#region ================== Constants
+
+		private const string EMPTY_TEXTURE = "-";
+
+		#endregion
+
+		#region ================== Variables
+
 		private ICollection<Linedef> lines;
+		private List<LinedefProperties> linedefProps; //mxd
 		private bool preventchanges = false;
 
+		//Value linking
+		private static bool linkFrontTopScale;
+		private static bool linkFrontMidScale;
+		private static bool linkFrontBottomScale;
+		private static bool linkBackTopScale;
+		private static bool linkBackMidScale;
+		private static bool linkBackBottomScale;
+
 		private List<PairedFieldsControl> frontUdmfControls; //mxd
-		private List<CheckBox> frontUdmfFlags; //mxd
 		private List<PairedFieldsControl> backUdmfControls; //mxd
-		private List<CheckBox> backUdmfFlags; //mxd
-		
-		// Constructor
+
+		private struct LinedefProperties //mxd
+		{
+			public Dictionary<string, bool> Flags;
+			public float Alpha;
+
+			public SidedefProperties Front;
+			public SidedefProperties Back;
+
+			public LinedefProperties(Linedef line) {
+				Front = (line.Front != null ? new SidedefProperties(line.Front) : null);
+				Back = (line.Back != null ? new SidedefProperties(line.Back) : null);
+				Alpha = UDMFTools.GetFloat(line.Fields, "alpha", 1.0f);
+				Flags = line.GetFlags();
+			}
+		}
+
+		private class SidedefProperties //mxd
+		{
+			public Dictionary<string, bool> Flags;
+
+			public float ScaleTopX;
+			public float ScaleTopY;
+			public float ScaleMidX;
+			public float ScaleMidY;
+			public float ScaleBottomX;
+			public float ScaleBottomY;
+
+			public int OffsetX;
+			public int OffsetY;
+
+			public float OffsetTopX;
+			public float OffsetTopY;
+			public float OffsetMidX;
+			public float OffsetMidY;
+			public float OffsetBottomX;
+			public float OffsetBottomY;
+
+			public int Brightness;
+			public bool AbsoluteBrightness;
+
+			public string TextureTop;
+			public string TextureMid;
+			public string TextureLow;
+
+			public SidedefProperties(Sidedef side) {
+				Flags = side.GetFlags();
+
+				//offset
+				OffsetX = side.OffsetX;
+				OffsetY = side.OffsetY;
+
+				Brightness = UDMFTools.GetInteger(side.Fields, "light", 0);
+				AbsoluteBrightness = side.Fields.GetValue("lightabsolute", false);
+
+				//scales
+				ScaleTopX = UDMFTools.GetFloat(side.Fields, "scalex_top", 1.0f);
+				ScaleTopY = UDMFTools.GetFloat(side.Fields, "scaley_top", 1.0f);
+				ScaleMidX = UDMFTools.GetFloat(side.Fields, "scalex_mid", 1.0f);
+				ScaleMidY = UDMFTools.GetFloat(side.Fields, "scaley_mid", 1.0f);
+				ScaleBottomX = UDMFTools.GetFloat(side.Fields, "scalex_bottom", 1.0f);
+				ScaleBottomY = UDMFTools.GetFloat(side.Fields, "scaley_bottom", 1.0f);
+
+				//offsets
+				OffsetTopX = UDMFTools.GetFloat(side.Fields, "offsetx_top", 0f);
+				OffsetTopY = UDMFTools.GetFloat(side.Fields, "offsety_top", 0f);
+				OffsetMidX = UDMFTools.GetFloat(side.Fields, "offsetx_mid", 0f);
+				OffsetMidY = UDMFTools.GetFloat(side.Fields, "offsety_mid", 0f);
+				OffsetBottomX = UDMFTools.GetFloat(side.Fields, "offsetx_bottom", 0f);
+				OffsetBottomY = UDMFTools.GetFloat(side.Fields, "offsety_bottom", 0f);
+
+				//textures
+				TextureTop = side.HighTexture;
+				TextureMid = side.MiddleTexture;
+				TextureLow = side.LowTexture;
+			}
+		}
+
+		#endregion
+
+		#region ================== Constructor
+
 		public LinedefEditForm()
 		{
 			// Initialize
 			InitializeComponent();
 			
-			// Fill flags list
+			// Fill flags lists
 			foreach(KeyValuePair<string, string> lf in General.Map.Config.LinedefFlags)
 				flags.Add(lf.Value, lf.Key);
+
+			//mxd
+			foreach(KeyValuePair<string, string> lf in General.Map.Config.SidedefFlags) {
+				flagsFront.Add(lf.Value, lf.Key);
+				flagsBack.Add(lf.Value, lf.Key);
+			}
 
 			// Fill actions list
 			action.GeneralizedCategories = General.Map.Config.GenActionCategories;
@@ -113,12 +218,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
             //mxd. Setup UDMF controls
-			if(General.Map.FormatInterface.HasCustomFields) {
-				frontUdmfControls = new List<PairedFieldsControl>() { pfcFrontOffsetTop, pfcFrontOffsetMid, pfcFrontOffsetBottom, pfcFrontScaleTop, pfcFrontScaleMid, pfcFrontScaleBottom };
-				frontUdmfFlags = new List<CheckBox>() { cbLightAbsoluteFront, cblightfogFront, cbnodecalsFront, cbnofakecontrastFront, cbWrapMidtexFront, cbsmoothlightingFront, cbClipMidtexFront };
-				backUdmfControls = new List<PairedFieldsControl>() { pfcBackOffsetTop, pfcBackOffsetMid, pfcBackOffsetBottom, pfcBackScaleTop, pfcBackScaleMid, pfcBackScaleBottom };
-				backUdmfFlags = new List<CheckBox>() { cbLightAbsoluteBack, cblightfogBack, cbnodecalsBack, cbnofakecontrastBack, cbWrapMidtexBack, cbsmoothlightingBack, cbClipMidtexBack };
-			} else {
+			if(!General.Map.FormatInterface.HasCustomFields) {
 				tabs.TabPages.Remove(tabcustom);
 				settingsGroup.Visible = false;
 				customfrontbutton.Visible = false;
@@ -131,9 +231,24 @@ namespace CodeImp.DoomBuilder.Windows
 				cbLightAbsoluteBack.Visible = false;
 				udmfPropertiesFront.Visible = false;
 				udmfPropertiesBack.Visible = false;
+			} else {
+				frontUdmfControls = new List<PairedFieldsControl>() { pfcFrontOffsetTop, pfcFrontOffsetMid, pfcFrontOffsetBottom, pfcFrontScaleTop, pfcFrontScaleMid, pfcFrontScaleBottom };
+				backUdmfControls = new List<PairedFieldsControl>() { pfcBackOffsetTop, pfcBackOffsetMid, pfcBackOffsetBottom, pfcBackScaleTop, pfcBackScaleMid, pfcBackScaleBottom };
+
+				//Restore value linking
+				pfcFrontScaleTop.LinkValues = linkFrontTopScale;
+				pfcFrontScaleMid.LinkValues = linkFrontMidScale;
+				pfcFrontScaleBottom.LinkValues = linkFrontBottomScale;
+				pfcBackScaleTop.LinkValues = linkBackTopScale;
+				pfcBackScaleMid.LinkValues = linkBackMidScale;
+				pfcBackScaleBottom.LinkValues = linkBackBottomScale;
 			}
 		}
-		
+
+		#endregion
+
+		#region ================== Methods
+
 		// This sets up the form to edit the given lines
 		public void Setup(ICollection<Linedef> lines)
 		{
@@ -145,6 +260,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Keep this list
 			this.lines = lines;
 			if(lines.Count > 1) this.Text = "Edit Linedefs (" + lines.Count + ")";
+			linedefProps = new List<LinedefProperties>();
+
+			//mxd. Make undo
+			string undodesc = "linedef";
+			if(lines.Count > 1)	undodesc = lines.Count + " linedefs";
+			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 			
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first linedef properties
@@ -178,7 +299,6 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.FormatInterface.HasCustomFields) {
 				string renderStyle = fl.Fields.GetValue("renderstyle", "");
 				cbRenderStyle.SelectedIndex = (renderStyle == "add" ? 1 : 0);
-				//fsAlpha.SetValueFrom(fl.Fields);
 				alpha.Text = General.Clamp(fl.Fields.GetValue("alpha", 1.0f), 0f, 1f).ToString();
 				lockNumber.Text = fl.Fields.GetValue("locknumber", 0).ToString();
 			}
@@ -216,15 +336,14 @@ namespace CodeImp.DoomBuilder.Windows
 				if(General.Map.FormatInterface.HasCustomFields) {
 					//front settings
 					foreach(PairedFieldsControl pfc in frontUdmfControls)
-						pfc.SetValuesFrom(fl.Front.Fields);
+						pfc.SetValuesFrom(fl.Front.Fields, true);
 
-					lightFront.Text = UDMFTools.GetInteger(fl.Front.Fields, lightFront.Tag.ToString(), 0).ToString();
+					lightFront.Text = UDMFTools.GetInteger(fl.Front.Fields, "light", 0).ToString();
+					cbLightAbsoluteFront.Checked = fl.Front.Fields.GetValue("lightabsolute", false);
 					
-					foreach(CheckBox cb in frontUdmfFlags){
-						string key = cb.Tag.ToString();
-						if(fl.Front.Fields != null)
-							cb.CheckState = (fl.Front.Fields.GetValue(key, false) ? CheckState.Checked : CheckState.Unchecked);
-					}
+					//flags
+					foreach(CheckBox c in flagsFront.Checkboxes)
+						if(fl.Front.Flags.ContainsKey(c.Tag.ToString())) c.Checked = fl.Front.Flags[c.Tag.ToString()];
                 }
 
 				frontTextureOffset.SetValues(fl.Front.OffsetX, fl.Front.OffsetY); //mxd
@@ -245,15 +364,14 @@ namespace CodeImp.DoomBuilder.Windows
 				if(General.Map.FormatInterface.HasCustomFields) {
 					//front settings
 					foreach(PairedFieldsControl pfc in backUdmfControls)
-						pfc.SetValuesFrom(fl.Back.Fields);
+						pfc.SetValuesFrom(fl.Back.Fields, true);
 
-					lightBack.Text = UDMFTools.GetInteger(fl.Back.Fields, lightBack.Tag.ToString(), 0).ToString();
+					lightBack.Text = UDMFTools.GetInteger(fl.Back.Fields, "light", 0).ToString();
+					cbLightAbsoluteBack.Checked = fl.Back.Fields.GetValue("lightabsolute", false);
 
-					foreach(CheckBox cb in backUdmfFlags) {
-						string key = cb.Tag.ToString();
-						if(fl.Back.Fields != null)
-							cb.CheckState = (fl.Back.Fields.GetValue(key, false) ? CheckState.Checked : CheckState.Unchecked);
-					}
+					//flags
+					foreach(CheckBox c in flagsBack.Checkboxes)
+						if(fl.Back.Flags.ContainsKey(c.Tag.ToString()))	c.Checked = fl.Back.Flags[c.Tag.ToString()];
                 }
  
 				backTextureOffset.SetValues(fl.Back.OffsetX, fl.Back.OffsetY); //mxd
@@ -361,24 +479,32 @@ namespace CodeImp.DoomBuilder.Windows
 					//mxd
 					if(General.Map.FormatInterface.HasCustomFields) {
 						foreach(PairedFieldsControl pfc in frontUdmfControls)
-							pfc.SetValuesFrom(l.Front.Fields);
+							pfc.SetValuesFrom(l.Front.Fields, false);
 
-						if(!string.IsNullOrEmpty(lightFront.Text) && lightFront.Text != UDMFTools.GetInteger(fl.Front.Fields, lightFront.Tag.ToString(), 0).ToString()) lightFront.Text = "";
+						if(!string.IsNullOrEmpty(lightFront.Text)) {
+							int light = UDMFTools.GetInteger(l.Front.Fields, "light", 0);
+							if(light != lightFront.GetResult(light)) lightFront.Text = "";
+						}
+						
+						if(l.Front.Fields.GetValue("lightabsolute", false) != cbLightAbsoluteFront.Checked) {
+							cbLightAbsoluteFront.ThreeState = true;
+							cbLightAbsoluteFront.CheckState = CheckState.Indeterminate;
+						}
 
-						foreach(CheckBox cb in frontUdmfFlags) {
-							if(cb.CheckState == CheckState.Indeterminate) continue;
-							
-							string key = cb.Tag.ToString();
-							if(l.Front.Fields != null ) {
-								CheckState state = (l.Front.Fields.GetValue(key, false) ? CheckState.Checked : CheckState.Unchecked);
-								if(cb.CheckState != state) {
-									cb.ThreeState = true;
-									cb.CheckState = CheckState.Indeterminate;
+						//flags
+						foreach(CheckBox c in flagsFront.Checkboxes) {
+							if(c.CheckState == CheckState.Indeterminate) continue;
+
+							if(l.Front.Flags.ContainsKey(c.Tag.ToString())) {
+								if(l.Front.Flags[c.Tag.ToString()] != c.Checked) {
+									c.ThreeState = true;
+									c.CheckState = CheckState.Indeterminate;
 								}
 							}
 						}
                     }
- 
+
+					l.Front.Fields.BeforeFieldsChange(); //mxd
 					frontTextureOffset.SetValues(l.Front.OffsetX, l.Front.OffsetY); //mxd
 				}
 
@@ -396,29 +522,43 @@ namespace CodeImp.DoomBuilder.Windows
                     //mxd
 					if(General.Map.FormatInterface.HasCustomFields) {
 						foreach(PairedFieldsControl pfc in backUdmfControls)
-							pfc.SetValuesFrom(l.Back.Fields);
+							pfc.SetValuesFrom(l.Back.Fields, false);
 
-						if(!string.IsNullOrEmpty(lightBack.Text) && lightBack.Text != UDMFTools.GetInteger(fl.Back.Fields, lightBack.Tag.ToString(), 0).ToString())
-							lightBack.Text = "";
+						//if(!string.IsNullOrEmpty(lightBack.Text) && lightBack.Text != UDMFTools.GetInteger(fl.Back.Fields, "light", 0).ToString())
+							//lightBack.Text = "";
 
-						foreach(CheckBox cb in backUdmfFlags) {
-							if(cb.CheckState == CheckState.Indeterminate) continue;
+						if(!string.IsNullOrEmpty(lightBack.Text)) {
+							int light = UDMFTools.GetInteger(l.Back.Fields, "light", 0);
+							if(light != lightBack.GetResult(light)) lightBack.Text = "";
+						}
 
-							string key = cb.Tag.ToString();
-							if(l.Back.Fields != null) {
-								CheckState state = (l.Back.Fields.GetValue(key, false) ? CheckState.Checked : CheckState.Unchecked);
-								if(cb.CheckState != state) {
-									cb.ThreeState = true;
-									cb.CheckState = CheckState.Indeterminate;
+						if(l.Back.Fields.GetValue("lightabsolute", false) != cbLightAbsoluteBack.Checked) {
+							cbLightAbsoluteBack.ThreeState = true;
+							cbLightAbsoluteBack.CheckState = CheckState.Indeterminate;
+						}
+
+						//flags
+						foreach(CheckBox c in flagsBack.Checkboxes) {
+							if(c.CheckState == CheckState.Indeterminate) continue;
+
+							if(l.Back.Flags.ContainsKey(c.Tag.ToString())) {
+								if(l.Back.Flags[c.Tag.ToString()] != c.Checked) {
+									c.ThreeState = true;
+									c.CheckState = CheckState.Indeterminate;
 								}
 							}
 						}
                     }
- 
+
+					l.Back.Fields.BeforeFieldsChange(); //mxd
 					backTextureOffset.SetValues(l.Back.OffsetX, l.Back.OffsetY); //mxd
 				}
+
+				//mxd
+				linedefProps.Add(new LinedefProperties(l));
 				
 				// Custom fields
+				l.Fields.BeforeFieldsChange(); //mxd
 				fieldslist.SetValues(l.Fields, false);
 			}
 			
@@ -476,34 +616,21 @@ namespace CodeImp.DoomBuilder.Windows
             } else {
                 arg0str.Text = selectedValue;
             }
-        }
-		
-		// Front side (un)checked
-		private void frontside_CheckStateChanged(object sender, EventArgs e)
-		{
-			// Enable/disable panel
-			// NOTE: Also enabled when checkbox is grayed!
-			frontgroup.Enabled = (frontside.CheckState != CheckState.Unchecked);
 		}
 
-		// Back side (un)checked
-		private void backside_CheckStateChanged(object sender, EventArgs e)
-		{
-			// Enable/disable panel
-			// NOTE: Also enabled when checkbox is grayed!
-			backgroup.Enabled = (backside.CheckState != CheckState.Unchecked);
-		}
+		#endregion
 
 		// This selects all text in a textbox
-		private void SelectAllText(object sender, EventArgs e)
+		/*private void SelectAllText(object sender, EventArgs e)
 		{
 			(sender as TextBox).SelectAll();
-		}
+		}*/
+
+		#region Events
 
 		// Apply clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
-			string undodesc = "linedef";
 			Sector s;
 			int index;
 			
@@ -523,27 +650,15 @@ namespace CodeImp.DoomBuilder.Windows
 				General.ShowWarningMessage("Linedef action must be between " + General.Map.FormatInterface.MinAction + " and " + General.Map.FormatInterface.MaxAction + ".", MessageBoxButtons.OK);
 				return;
 			}
-			
-			// Make undo
-			if(lines.Count > 1) undodesc = lines.Count + " linedefs";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 
             //mxd
             bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
             bool hasArg0str = General.Map.UDMF && hasAcs && !string.IsNullOrEmpty(arg0str.Text);
 			int lockNum = lockNumber.GetResult(0);
-			float alphaVal = General.Clamp(alpha.GetResultFloat(1.0f), 0f, 1.0f);
 			
 			// Go for all the lines
 			foreach(Linedef l in lines)
 			{
-				// Apply all flags
-				foreach(CheckBox c in flags.Checkboxes)
-				{
-					if(c.CheckState == CheckState.Checked) l.SetFlag(c.Tag.ToString(), true);
-					else if(c.CheckState == CheckState.Unchecked) l.SetFlag(c.Tag.ToString(), false);
-				}
-				
 				// Apply chosen activation flag
 				if(activation.SelectedIndex > -1)
 					l.Activate = (activation.SelectedItem as LinedefActivateInfo).Index;
@@ -589,51 +704,14 @@ namespace CodeImp.DoomBuilder.Windows
 					{
 						s = General.Map.Map.GetSectorByIndex(index);
 						if(s == null) s = General.Map.Map.CreateSector();
+						
 						if(s != null)
 						{
 							// Create new sidedef?
 							if(l.Front == null) General.Map.Map.CreateSidedef(l, true, s);
-							if(l.Front != null)
-							{
-								// Change sector?
-								if(l.Front.Sector != s) l.Front.SetSector(s);
 
-								// Apply settings
-                                int min = General.Map.FormatInterface.MinTextureOffset;
-                                int max = General.Map.FormatInterface.MaxTextureOffset;
-								if(General.Map.FormatInterface.HasCustomFields) { //mxd
-									l.Front.Fields.BeforeFieldsChange();
-
-									foreach(PairedFieldsControl pfc in frontUdmfControls)
-										pfc.ApplyTo(l.Front.Fields, min, max);
-
-									if(!string.IsNullOrEmpty(lightFront.Text)) {
-										string key = lightFront.Tag.ToString();
-										bool absolute = (cbLightAbsoluteFront.CheckState == CheckState.Checked);
-										int value = General.Clamp(lightFront.GetResult(UDMFTools.GetInteger(l.Front.Fields, key, 0)), (absolute ? 0 : -255), 255);
-										UDMFTools.SetInteger(l.Front.Fields, key, value, 0, false);
-									}
-
-									foreach(CheckBox cb in frontUdmfFlags) {
-										if(cb.CheckState == CheckState.Indeterminate) continue;
-										string key = cb.Tag.ToString();
-										bool oldValue = l.Front.Fields.GetValue(key, false);
-										
-										if(cb.CheckState == CheckState.Checked ){
-											if(!oldValue) l.Front.Fields[key] = new UniValue(UniversalType.Boolean, true);
-										} else if(l.Front.Fields.ContainsKey(key)) {
-											l.Front.Fields.Remove(key);
-										}
-									}
-                                }
- 
-								l.Front.OffsetX = General.Clamp(frontTextureOffset.GetValue1(l.Front.OffsetX), min, max); //mxd
-								l.Front.OffsetY = General.Clamp(frontTextureOffset.GetValue2(l.Front.OffsetY), min, max); //mxd
-
-								l.Front.SetTextureHigh(fronthigh.GetResult(l.Front.HighTexture));
-								l.Front.SetTextureMid(frontmid.GetResult(l.Front.MiddleTexture));
-								l.Front.SetTextureLow(frontlow.GetResult(l.Front.LowTexture));
-							}
+							// Change sector?
+							if(l.Front != null && l.Front.Sector != s) l.Front.SetSector(s);
 						}
 					}
 				}
@@ -653,88 +731,44 @@ namespace CodeImp.DoomBuilder.Windows
 					{
 						s = General.Map.Map.GetSectorByIndex(index);
 						if(s == null) s = General.Map.Map.CreateSector();
+						
 						if(s != null)
 						{
 							// Create new sidedef?
 							if(l.Back == null) General.Map.Map.CreateSidedef(l, false, s);
-							if(l.Back != null)
-							{
-								// Change sector?
-								if(l.Back.Sector != s) l.Back.SetSector(s);
-
-								// Apply settings
-                                //mxd
-                                int min = General.Map.FormatInterface.MinTextureOffset;
-                                int max = General.Map.FormatInterface.MaxTextureOffset;
-								if(General.Map.FormatInterface.HasCustomFields) { //mxd
-									l.Back.Fields.BeforeFieldsChange();
-
-									foreach(PairedFieldsControl pfc in backUdmfControls)
-										pfc.ApplyTo(l.Back.Fields, min, max);
-
-									if(!string.IsNullOrEmpty(lightBack.Text)) {
-										string key = lightBack.Tag.ToString();
-										bool absolute = (cbLightAbsoluteBack.CheckState == CheckState.Checked);
-										int value = General.Clamp(lightBack.GetResult(UDMFTools.GetInteger(l.Back.Fields, key, 0)), (absolute ? 0 : -255), 255);
-										UDMFTools.SetInteger(l.Back.Fields, key, value, 0, false);
-									}
-
-									foreach(CheckBox cb in backUdmfFlags) {
-										if(cb.CheckState == CheckState.Indeterminate) continue;
-										string key = cb.Tag.ToString();
-										bool oldValue = l.Back.Fields.GetValue(key, false);
-
-										if(cb.CheckState == CheckState.Checked) {
-											if(!oldValue) l.Back.Fields[key] = new UniValue(UniversalType.Boolean, true);
-										} else if(l.Back.Fields.ContainsKey(key)) {
-											l.Back.Fields.Remove(key);
-										}
-									}
-								}
-
-								l.Back.OffsetX = General.Clamp(backTextureOffset.GetValue1(l.Back.OffsetX), min, max); //mxd
-								l.Back.OffsetY = General.Clamp(backTextureOffset.GetValue2(l.Back.OffsetY), min, max); //mxd
-
-								l.Back.SetTextureHigh(backhigh.GetResult(l.Back.HighTexture));
-								l.Back.SetTextureMid(backmid.GetResult(l.Back.MiddleTexture));
-								l.Back.SetTextureLow(backlow.GetResult(l.Back.LowTexture));
-							}
+							
+							// Change sector?
+							if(l.Back != null && l.Back.Sector != s) l.Back.SetSector(s);
 						}
 					}
 				}
 
-				// Custom fields
-				fieldslist.Apply(l.Fields);
-
 				//mxd. UDMF Settings
-				if(General.Map.FormatInterface.HasCustomFields) {
-					l.Fields.BeforeFieldsChange();
-					if(cbRenderStyle.SelectedIndex == 1) { //add
-						l.Fields["renderstyle"] = new UniValue(UniversalType.String, "add");
-					} else if(l.Fields.ContainsKey("renderstyle")) {
-						l.Fields.Remove("renderstyle");
-					}
-
-					UDMFTools.SetFloat(l.Fields, "alpha", alphaVal, 1.0f, false);
+				if(General.Map.FormatInterface.HasCustomFields) 
 					UDMFTools.SetInteger(l.Fields, "locknumber", lockNum, 0, false);
-				}
 
                 //mxd. apply arg0str
 				if(cbArgStr.Visible && cbArgStr.Checked && hasArg0str) {
-					if(l.Fields.ContainsKey("arg0str"))
-						l.Fields["arg0str"].Value = arg0str.Text;
-					else
-						l.Fields.Add("arg0str", new UniValue(2, arg0str.Text));
+					l.Fields["arg0str"] = new UniValue(UniversalType.String, arg0str.Text);
 				} else if(l.Fields.ContainsKey("arg0str") && (string.IsNullOrEmpty(l.Fields["arg0str"].Value.ToString()) || !hasAcs || (hasAcs && !cbArgStr.Checked))) {
 					l.Fields.Remove("arg0str");
 				}
 			}
+
+			//mxd. Store value linking
+			linkFrontTopScale = pfcFrontScaleTop.LinkValues;
+			linkFrontMidScale = pfcFrontScaleMid.LinkValues;
+			linkFrontBottomScale = pfcFrontScaleBottom.LinkValues;
+			linkBackTopScale = pfcBackScaleTop.LinkValues;
+			linkBackMidScale = pfcBackScaleMid.LinkValues;
+			linkBackBottomScale = pfcBackScaleBottom.LinkValues;
 
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
 			
 			// Done
 			General.Map.IsChanged = true;
+			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty); //mxd
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
@@ -742,9 +776,28 @@ namespace CodeImp.DoomBuilder.Windows
 		// Cancel clicked
 		private void cancel_Click(object sender, EventArgs e)
 		{
+			//mxd. Let's pretend nothing of this really happened...
+			General.Map.UndoRedo.WithdrawUndo();
+			
 			// Be gone
 			this.DialogResult = DialogResult.Cancel;
 			this.Close();
+		}
+
+		// Front side (un)checked
+		private void frontside_CheckStateChanged(object sender, EventArgs e) 
+		{
+			// Enable/disable panel
+			// NOTE: Also enabled when checkbox is grayed!
+			frontgroup.Enabled = (frontside.CheckState != CheckState.Unchecked);
+		}
+
+		// Back side (un)checked
+		private void backside_CheckStateChanged(object sender, EventArgs e) 
+		{
+			// Enable/disable panel
+			// NOTE: Also enabled when checkbox is grayed!
+			backgroup.Enabled = (backside.CheckState != CheckState.Unchecked);
 		}
 
 		// Action changes
@@ -822,40 +875,6 @@ namespace CodeImp.DoomBuilder.Windows
 			action.Value = ActionBrowserForm.BrowseAction(this, action.Value);
 		}
 
-		// Custom fields on front sides
-		private void customfrontbutton_Click(object sender, EventArgs e)
-		{
-			// Make collection of front sides
-			List<MapElement> sides = new List<MapElement>(lines.Count);
-			foreach(Linedef l in lines) if(l.Front != null) sides.Add(l.Front);
-
-			// Make undo
-			string undodesc = "sidedef";
-			if(sides.Count > 1) undodesc = sides.Count + " sidedefs";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
-			
-			// Edit these
-			if(!CustomFieldsForm.ShowDialog(this, "Front side custom fields", "sidedef", sides, General.Map.Config.SidedefFields))
-				General.Map.UndoRedo.WithdrawUndo();
-		}
-
-		// Custom fields on back sides
-		private void custombackbutton_Click(object sender, EventArgs e)
-		{
-			// Make collection of back sides
-			List<MapElement> sides = new List<MapElement>(lines.Count);
-			foreach(Linedef l in lines) if(l.Back != null) sides.Add(l.Back);
-
-			// Make undo
-			string undodesc = "sidedef";
-			if(sides.Count > 1) undodesc = sides.Count + " sidedefs";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
-			
-			// Edit these
-			if(!CustomFieldsForm.ShowDialog(this, "Back side custom fields", "sidedef", sides, General.Map.Config.SidedefFields))
-				General.Map.UndoRedo.WithdrawUndo();
-		}
-
         //mxd
         private void cbArgStr_CheckedChanged(object sender, EventArgs e) {
             arg0str.Text = "";
@@ -871,13 +890,7 @@ namespace CodeImp.DoomBuilder.Windows
 
         //mxd
         private void arg0str_Leave(object sender, EventArgs e) {
-            if (cbArgStr.Checked) fieldslist.SetValue("arg0str", arg0str.Text, CodeImp.DoomBuilder.Types.UniversalType.String);
-        }
-
-        //mxd
-        private void fieldslist_OnFieldValueChanged(string fieldname) {
-            if (cbArgStr.Checked && fieldname == "arg0str")
-                arg0str.Text = (string)fieldslist.GetValue(fieldname);
+            if (cbArgStr.Checked) fieldslist.SetValue("arg0str", arg0str.Text, UniversalType.String);
         }
 
 		//mxd
@@ -891,5 +904,836 @@ namespace CodeImp.DoomBuilder.Windows
 			General.ShowHelp("w_linedefedit.html");
 			hlpevent.Handled = true;
 		}
+
+		#endregion
+
+		#region ================== mxd. Realtime events (linedef)
+
+		private void cbRenderStyle_SelectedIndexChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+
+			//update values
+			if(cbRenderStyle.SelectedIndex == 1) { //add
+				foreach(Linedef l in lines)
+					l.Fields["renderstyle"] = new UniValue(UniversalType.String, "add");
+			} else { 
+				foreach(Linedef l in lines)
+					if(l.Fields.ContainsKey("renderstyle")) l.Fields.Remove("renderstyle");
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+		
+		private void alpha_WhenTextChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(alpha.Text)) {
+				foreach(Linedef l in lines) 
+					UDMFTools.SetFloat(l.Fields, "alpha", linedefProps[i++].Alpha, 1.0f, false);
+			//update values
+			} else {
+				foreach(Linedef l in lines) {
+					float value = General.Clamp(alpha.GetResultFloat(l.Fields.GetValue("alpha", 1.0f)), 0f, 1.0f);
+					UDMFTools.SetFloat(l.Fields, "alpha", value, 1.0f, false);
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void flags_OnValueChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				// Apply all flags
+				foreach(CheckBox c in flags.Checkboxes) {
+					if(c.CheckState == CheckState.Checked)
+						l.SetFlag(c.Tag.ToString(), true);
+					else if(c.CheckState == CheckState.Unchecked)
+						l.SetFlag(c.Tag.ToString(), false);
+					else
+						l.SetFlag(c.Tag.ToString(), linedefProps[i].Flags[c.Tag.ToString()]);
+
+				}
+
+				i++;
+			}
+			
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void fieldslist_OnFieldValueChanged(string fieldname) {
+			if(preventchanges) return;
+			Linedef fl = null;
+
+			foreach(Linedef l in lines) {
+				fieldslist.Apply(l.Fields);
+				if(fl == null) fl = l;
+			}
+
+			if(fl == null) return;
+
+			//update interface... yaaaay...
+			switch(fieldname) {
+				case "arg0str":
+					if(cbArgStr.Checked) arg0str.Text = (string)fieldslist.GetValue(fieldname);
+					break;
+
+				case "alpha":
+					alpha.Text = (string)fieldslist.GetValue(fieldname);
+					break;
+
+				case "locknumber":
+					lockNumber.Text = (string)fieldslist.GetValue(fieldname);
+					break;
+
+				case "renderstyle":
+					string renderstyle = (string)fieldslist.GetValue(fieldname);
+					if(renderstyle == "add") {
+						cbRenderStyle.SelectedIndex = 1;
+					} else if(renderstyle == "translucent") {
+						cbRenderStyle.SelectedIndex = 0;
+					} else {
+						cbRenderStyle.SelectedIndex = -1;
+					}
+					break;
+			}
+		}
+
+		#endregion
+
+		#region Reltime events (sides)
+
+			#region Custom fields changed
+
+		// Custom fields on front sides
+		private void customfrontbutton_Click(object sender, EventArgs e) {
+			// Make collection of front sides
+			List<MapElement> sides = new List<MapElement>(lines.Count);
+			foreach(Linedef l in lines) if(l.Front != null) sides.Add(l.Front);
+
+			if(!CustomFieldsForm.ShowDialog(this, "Front side custom fields", "sidedef", sides, General.Map.Config.SidedefFields)) return;
+
+			//Apply values
+			Sidedef fs = General.GetByIndex(sides, 0) as Sidedef;
+
+			//..to the first side
+			foreach(PairedFieldsControl pfc in frontUdmfControls)
+				pfc.SetValuesFrom(fs.Fields, true);
+
+			lightFront.Text = UDMFTools.GetInteger(fs.Fields, "light", 0).ToString();
+			cbLightAbsoluteFront.ThreeState = false;
+			cbLightAbsoluteFront.Checked = fs.Fields.GetValue("lightabsolute", false);
+					
+			//flags
+			foreach(CheckBox c in flagsFront.Checkboxes)
+				if(fs.Flags.ContainsKey(c.Tag.ToString())) c.Checked = fs.Flags[c.Tag.ToString()];
+
+			//..then to all of them
+			foreach(Sidedef s in sides){
+				foreach(PairedFieldsControl pfc in frontUdmfControls)
+					pfc.SetValuesFrom(s.Fields, false);
+
+				if(!string.IsNullOrEmpty(lightFront.Text)) {
+					int light = UDMFTools.GetInteger(s.Fields, "light", 0);
+					if(light != lightFront.GetResult(light)) lightFront.Text = "";
+				}
+
+				if(s.Fields.GetValue("lightabsolute", false) != cbLightAbsoluteFront.Checked) {
+					cbLightAbsoluteFront.ThreeState = true;
+					cbLightAbsoluteFront.CheckState = CheckState.Indeterminate;
+				}
+
+				//flags
+				foreach(CheckBox c in flagsFront.Checkboxes) {
+					if(c.CheckState == CheckState.Indeterminate) continue;
+
+					if(s.Flags.ContainsKey(c.Tag.ToString())) {
+						if(s.Flags[c.Tag.ToString()] != c.Checked) {
+							c.ThreeState = true;
+							c.CheckState = CheckState.Indeterminate;
+						}
+					}
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		// Custom fields on back sides
+		private void custombackbutton_Click(object sender, EventArgs e) {
+			// Make collection of back sides
+			List<MapElement> sides = new List<MapElement>(lines.Count);
+			foreach(Linedef l in lines) if(l.Back != null) sides.Add(l.Back);
+
+			// Edit these
+			if(!CustomFieldsForm.ShowDialog(this, "Back side custom fields", "sidedef", sides, General.Map.Config.SidedefFields)) return;
+				//General.Map.UndoRedo.WithdrawUndo();
+
+			//Apply values
+			Sidedef fs = General.GetByIndex(sides, 0) as Sidedef;
+
+			//..to the first side
+			foreach(PairedFieldsControl pfc in backUdmfControls)
+				pfc.SetValuesFrom(fs.Fields, true);
+
+			lightBack.Text = UDMFTools.GetInteger(fs.Fields, "light", 0).ToString();
+			cbLightAbsoluteBack.ThreeState = false;
+			cbLightAbsoluteBack.Checked = fs.Fields.GetValue("lightabsolute", false);
+
+			//flags
+			foreach(CheckBox c in flagsBack.Checkboxes)
+				if(fs.Flags.ContainsKey(c.Tag.ToString())) c.Checked = fs.Flags[c.Tag.ToString()];
+
+			//..then to all of them
+			foreach(Sidedef s in sides) {
+				foreach(PairedFieldsControl pfc in backUdmfControls)
+					pfc.SetValuesFrom(s.Fields, false);
+
+				if(!string.IsNullOrEmpty(lightBack.Text)) {
+					int light = UDMFTools.GetInteger(s.Fields, "light", 0);
+					if(light != lightBack.GetResult(light)) lightBack.Text = "";
+				}
+
+				if(s.Fields.GetValue("lightabsolute", false) != cbLightAbsoluteBack.Checked) {
+					cbLightAbsoluteBack.ThreeState = true;
+					cbLightAbsoluteBack.CheckState = CheckState.Indeterminate;
+				}
+
+				//flags
+				foreach(CheckBox c in flagsBack.Checkboxes) {
+					if(c.CheckState == CheckState.Indeterminate) continue;
+
+					if(s.Flags.ContainsKey(c.Tag.ToString())) {
+						if(s.Flags[c.Tag.ToString()] != c.Checked) {
+							c.ThreeState = true;
+							c.CheckState = CheckState.Indeterminate;
+						}
+					}
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+			#endregion
+
+			#region Texture changed
+
+		private void fronthigh_OnValueChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+
+			//restore values
+			if(string.IsNullOrEmpty(fronthigh.TextureName)) {
+				int i = 0;
+
+				foreach(Linedef l in lines) {
+					if(l.Front != null) l.Front.SetTextureHigh(linedefProps[i].Front != null ? linedefProps[i].Front.TextureTop : EMPTY_TEXTURE);
+					i++;
+				}
+			//update values
+			} else {
+				foreach(Linedef l in lines) 
+					if(l.Front != null)	l.Front.SetTextureHigh(fronthigh.GetResult(l.Front.HighTexture));
+			}
+
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void frontmid_OnValueChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+
+			//restore values
+			if(string.IsNullOrEmpty(frontmid.TextureName)) {
+				int i = 0;
+
+				foreach(Linedef l in lines) {
+					if(l.Front != null) l.Front.SetTextureMid(linedefProps[i].Front != null ? linedefProps[i].Front.TextureMid : EMPTY_TEXTURE);
+					i++;
+				}
+			//update values
+			} else {
+				foreach(Linedef l in lines) 
+					if(l.Front != null)	l.Front.SetTextureMid(frontmid.GetResult(l.Front.MiddleTexture));
+			}
+
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void frontlow_OnValueChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+
+			//restore values
+			if(string.IsNullOrEmpty(frontlow.TextureName)) {
+				int i = 0;
+
+				foreach(Linedef l in lines) {
+					if(l.Front != null) l.Front.SetTextureLow(linedefProps[i].Front != null ? linedefProps[i].Front.TextureLow : EMPTY_TEXTURE);
+					i++;
+				}
+			//update values
+			} else {
+				foreach(Linedef l in lines)
+					if(l.Front != null) l.Front.SetTextureLow(frontlow.GetResult(l.Front.LowTexture));
+			}
+
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void backhigh_OnValueChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+
+			//restore values
+			if(string.IsNullOrEmpty(backhigh.TextureName)) {
+				int i = 0;
+
+				foreach(Linedef l in lines) {
+					if(l.Back != null) l.Back.SetTextureHigh(linedefProps[i].Back != null ? linedefProps[i].Back.TextureTop : EMPTY_TEXTURE);
+					i++;
+				}
+			//update values
+			} else {
+				foreach(Linedef l in lines)
+					if(l.Back != null) l.Back.SetTextureHigh(backhigh.GetResult(l.Back.HighTexture));
+			}
+
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void backmid_OnValueChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+
+			//restore values
+			if(string.IsNullOrEmpty(backmid.TextureName)) {
+				int i = 0;
+
+				foreach(Linedef l in lines) {
+					if(l.Back != null) l.Back.SetTextureMid(linedefProps[i].Back != null ? linedefProps[i].Back.TextureMid : EMPTY_TEXTURE);
+					i++;
+				}
+			//update values
+			} else {
+				foreach(Linedef l in lines)
+					if(l.Back != null) l.Back.SetTextureMid(backmid.GetResult(l.Back.MiddleTexture));
+			}
+
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void backlow_OnValueChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+
+			//restore values
+			if(string.IsNullOrEmpty(backlow.TextureName)) {
+				int i = 0;
+
+				foreach(Linedef l in lines) {
+					if(l.Back != null) l.Back.SetTextureLow(linedefProps[i].Back != null ? linedefProps[i].Back.TextureLow : EMPTY_TEXTURE);
+					i++;
+				}
+			//update values
+			} else {
+				foreach(Linedef l in lines)
+					if(l.Back != null) l.Back.SetTextureLow(backlow.GetResult(l.Back.LowTexture));
+			}
+
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+			#endregion
+
+			#region Brightness changed
+
+		private void lightFront_WhenTextChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(lightFront.Text)) {
+				foreach(Linedef l in lines) {
+					if(l.Front != null)
+						UDMFTools.SetInteger(l.Front.Fields, "light", (linedefProps[i].Front != null ? linedefProps[i].Front.Brightness : 0), 0, false);
+					i++;
+				}
+			//update values
+			} else {
+				foreach(Linedef l in lines) {
+					if(l.Front != null) {
+						bool absolute = false;
+						if(cbLightAbsoluteFront.CheckState == CheckState.Indeterminate) {
+							absolute = l.Front.Fields.GetValue("lightabsolute", false);
+						} else if(cbLightAbsoluteFront.CheckState == CheckState.Checked) {
+							absolute = true;
+						}
+
+						int value = General.Clamp(lightFront.GetResult((linedefProps[i].Front != null ? linedefProps[i].Front.Brightness : 0)), (absolute ? 0 : -255), 255);
+						UDMFTools.SetInteger(l.Front.Fields, "light", value, 0, false);
+					}
+					i++;
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void lightBack_WhenTextChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(lightBack.Text)) {
+				foreach(Linedef l in lines) {
+					if(l.Back != null)
+						UDMFTools.SetInteger(l.Back.Fields, "light", (linedefProps[i].Back != null ? linedefProps[i].Back.Brightness : 0), 0, false);
+					i++;
+				}
+			//update values
+			} else {
+				foreach(Linedef l in lines) {
+					if(l.Back != null) {
+						bool absolute = false;
+						if(cbLightAbsoluteBack.CheckState == CheckState.Indeterminate) {
+							absolute = l.Back.Fields.GetValue("lightabsolute", false);
+						} else if(cbLightAbsoluteBack.CheckState == CheckState.Checked) {
+							absolute = true;
+						}
+
+						int value = General.Clamp(lightBack.GetResult((linedefProps[i].Back != null ? linedefProps[i].Back.Brightness : 0)), (absolute ? 0 : -255), 255);
+						UDMFTools.SetInteger(l.Back.Fields, "light", value, 0, false);
+					}
+					i++;
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void cbLightAbsoluteFront_CheckedChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+
+			if(cbLightAbsoluteFront.Checked) {
+				foreach(Linedef l in lines) {
+					if(l.Front == null) continue;
+					l.Front.Fields["lightabsolute"] = new UniValue(UniversalType.Boolean, true);
+				}
+			} else if(cbLightAbsoluteFront.CheckState == CheckState.Indeterminate) {
+				int i = 0;
+
+				foreach(Linedef l in lines) {
+					if(l.Front != null) {
+						if(linedefProps[i].Front != null && linedefProps[i].Front.AbsoluteBrightness) {
+							l.Front.Fields["lightabsolute"] = new UniValue(UniversalType.Boolean, true);
+						} else if(l.Front.Fields.ContainsKey("lightabsolute")) {
+							l.Front.Fields.Remove("lightabsolute");
+						}
+					}
+					i++;
+				}
+			} else {
+				foreach(Linedef l in lines) {
+					if(l.Front == null) continue;
+					if(l.Front.Fields.ContainsKey("lightabsolute")) l.Front.Fields.Remove("lightabsolute");
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void cbLightAbsoluteBack_CheckedChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+
+			if(cbLightAbsoluteBack.Checked) {
+				foreach(Linedef l in lines) {
+					if(l.Back == null) continue;
+					l.Back.Fields["lightabsolute"] = new UniValue(UniversalType.Boolean, true);
+				}
+			} else if(cbLightAbsoluteBack.CheckState == CheckState.Indeterminate) {
+				int i = 0;
+				
+				foreach(Linedef l in lines) {
+					if(l.Back != null) {
+						if(linedefProps[i].Back != null && linedefProps[i].Back.AbsoluteBrightness) {
+							l.Back.Fields["lightabsolute"] = new UniValue(UniversalType.Boolean, true);
+						} else if(l.Back.Fields.ContainsKey("lightabsolute")) {
+							l.Back.Fields.Remove("lightabsolute");
+						}
+					}
+					i++;
+				}
+			} else {
+				foreach(Linedef l in lines) {
+					if(l.Back == null) continue;
+					if(l.Back.Fields.ContainsKey("lightabsolute")) l.Back.Fields.Remove("lightabsolute");
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+			#endregion
+
+			#region Global texture offsets changed
+
+		private void frontTextureOffset_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Front != null) {
+					if(linedefProps[i].Front != null) {
+						l.Front.OffsetX = frontTextureOffset.GetValue1(linedefProps[i].Front.OffsetX);
+						l.Front.OffsetY = frontTextureOffset.GetValue2(linedefProps[i].Front.OffsetY);
+					} else {
+						l.Front.OffsetX = frontTextureOffset.GetValue1(0);
+						l.Front.OffsetY = frontTextureOffset.GetValue2(0);
+					}
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void backTextureOffset_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Back != null) {
+					if(linedefProps[i].Back != null) {
+						l.Back.OffsetX = backTextureOffset.GetValue1(linedefProps[i].Back.OffsetX);
+						l.Back.OffsetY = backTextureOffset.GetValue2(linedefProps[i].Back.OffsetY);
+					} else {
+						l.Back.OffsetX = backTextureOffset.GetValue1(0);
+						l.Back.OffsetY = backTextureOffset.GetValue2(0);
+					}
+				}
+
+				i++;
+			}
+			
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+			#endregion
+
+			#region Texture offsets changed
+
+		private void pfcFrontOffsetTop_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Front != null) {
+					float oldX = linedefProps[i].Front != null ? linedefProps[i].Front.OffsetTopX : 0f;
+					float oldY = linedefProps[i].Front != null ? linedefProps[i].Front.OffsetTopY : 0f;
+					pfcFrontOffsetTop.ApplyTo(l.Front.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
+				}
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void pfcFrontOffsetMid_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Front != null) {
+					float oldX = linedefProps[i].Front != null ? linedefProps[i].Front.OffsetMidX : 0f;
+					float oldY = linedefProps[i].Front != null ? linedefProps[i].Front.OffsetMidY : 0f;
+					pfcFrontOffsetMid.ApplyTo(l.Front.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void pfcFrontOffsetBottom_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Front != null) {
+					float oldX = linedefProps[i].Front != null ? linedefProps[i].Front.OffsetBottomX : 0f;
+					float oldY = linedefProps[i].Front != null ? linedefProps[i].Front.OffsetBottomY : 0f;
+					pfcFrontOffsetBottom.ApplyTo(l.Front.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void pfcBackOffsetTop_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Back != null) {
+					float oldX = linedefProps[i].Back != null ? linedefProps[i].Back.OffsetTopX : 0f;
+					float oldY = linedefProps[i].Back != null ? linedefProps[i].Back.OffsetTopY : 0f;
+					pfcBackOffsetTop.ApplyTo(l.Back.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void pfcBackOffsetMid_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Back != null) {
+					float oldX = linedefProps[i].Back != null ? linedefProps[i].Back.OffsetMidX : 0f;
+					float oldY = linedefProps[i].Back != null ? linedefProps[i].Back.OffsetMidY : 0f;
+					pfcBackOffsetMid.ApplyTo(l.Back.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void pfcBackOffsetBottom_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Back != null) {
+					float oldX = linedefProps[i].Back != null ? linedefProps[i].Back.OffsetBottomX : 0f;
+					float oldY = linedefProps[i].Back != null ? linedefProps[i].Back.OffsetBottomY : 0f;
+					pfcBackOffsetBottom.ApplyTo(l.Back.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+			#endregion
+
+			#region Scale changed
+
+		private void pfcFrontScaleTop_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Front != null) {
+					float oldX = linedefProps[i].Front != null ? linedefProps[i].Front.ScaleTopX : 1.0f;
+					float oldY = linedefProps[i].Front != null ? linedefProps[i].Front.ScaleTopY : 1.0f;
+					pfcFrontScaleTop.ApplyTo(l.Front.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void pfcFrontScaleMid_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Front != null) {
+					float oldX = linedefProps[i].Front != null ? linedefProps[i].Front.ScaleMidX : 1.0f;
+					float oldY = linedefProps[i].Front != null ? linedefProps[i].Front.ScaleMidY : 1.0f;
+					pfcFrontScaleMid.ApplyTo(l.Front.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void pfcFrontScaleBottom_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Front != null) {
+					float oldX = linedefProps[i].Front != null ? linedefProps[i].Front.ScaleBottomX : 1.0f;
+					float oldY = linedefProps[i].Front != null ? linedefProps[i].Front.ScaleBottomY : 1.0f;
+					pfcFrontScaleBottom.ApplyTo(l.Front.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void pfcBackScaleTop_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Back != null) {
+					float oldX = linedefProps[i].Back != null ? linedefProps[i].Back.ScaleTopX : 1.0f;
+					float oldY = linedefProps[i].Back != null ? linedefProps[i].Back.ScaleTopY : 1.0f;
+					pfcBackScaleTop.ApplyTo(l.Back.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void pfcBackScaleMid_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Back != null) {
+					float oldX = linedefProps[i].Back != null ? linedefProps[i].Back.ScaleMidX : 1.0f;
+					float oldY = linedefProps[i].Back != null ? linedefProps[i].Back.ScaleMidY : 1.0f;
+					pfcBackScaleMid.ApplyTo(l.Back.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void pfcBackScaleBottom_OnValuesChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Back != null) {
+					float oldX = linedefProps[i].Back != null ? linedefProps[i].Back.ScaleBottomX : 1.0f;
+					float oldY = linedefProps[i].Back != null ? linedefProps[i].Back.ScaleBottomY : 1.0f;
+					pfcBackScaleBottom.ApplyTo(l.Back.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+			#endregion
+
+			#region Flags cahnged
+
+		private void flagsFront_OnValueChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Front == null) continue;
+				
+				// Apply all flags
+				foreach(CheckBox c in flagsFront.Checkboxes) {
+					if(c.CheckState == CheckState.Checked)
+						l.Front.SetFlag(c.Tag.ToString(), true);
+					else if(c.CheckState == CheckState.Unchecked)
+						l.Front.SetFlag(c.Tag.ToString(), false);
+					else
+						l.Front.SetFlag(c.Tag.ToString(), linedefProps[i].Front.Flags[c.Tag.ToString()]);
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void flagsBack_OnValueChanged(object sender, EventArgs e) {
+			if(preventchanges) return;
+			int i = 0;
+
+			foreach(Linedef l in lines) {
+				if(l.Back == null) continue;
+
+				// Apply all flags
+				foreach(CheckBox c in flagsBack.Checkboxes) {
+					if(c.CheckState == CheckState.Checked)
+						l.Back.SetFlag(c.Tag.ToString(), true);
+					else if(c.CheckState == CheckState.Unchecked)
+						l.Back.SetFlag(c.Tag.ToString(), false);
+					else
+						l.Back.SetFlag(c.Tag.ToString(), linedefProps[i].Back.Flags[c.Tag.ToString()]);
+				}
+
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+			#endregion
+
+		#endregion
+
 	}
 }

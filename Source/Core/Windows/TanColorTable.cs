@@ -659,8 +659,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Fields
 		private const string blueColorScheme = "NormalColor";
 		private const string oliveColorScheme = "HomeStead";
-		private const string silverColorScheme = "Metallic";
-		private Dictionary<TanColorTable.KnownColors, Color> tanRGB;
+		//private const string silverColorScheme = "Metallic";
+		private Dictionary<KnownColors, Color> tanRGB;
 
 		// Nested Types
 		private static class DisplayInformation
@@ -668,21 +668,21 @@ namespace CodeImp.DoomBuilder.Windows
 			// Methods
 			static DisplayInformation()
 			{
-				SystemEvents.UserPreferenceChanged += TanColorTable.DisplayInformation.OnUserPreferenceChanged;
-				TanColorTable.DisplayInformation.SetScheme();
+				SystemEvents.UserPreferenceChanged += OnUserPreferenceChanged;
+				SetScheme();
 			}
 
 			private static void OnUserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
 			{
-				TanColorTable.DisplayInformation.SetScheme();
+				SetScheme();
 			}
 
 			private static void SetScheme()
 			{
-				TanColorTable.DisplayInformation.isLunaTheme = false;
+				isLunaTheme = false;
 				if(VisualStyleRenderer.IsSupported)
 				{
-					DisplayInformation.colorScheme = VisualStyleInformation.ColorScheme;
+					colorScheme = VisualStyleInformation.ColorScheme;
 
 					if(!VisualStyleInformation.IsEnabledByUser)
 					{
@@ -691,11 +691,11 @@ namespace CodeImp.DoomBuilder.Windows
 					StringBuilder builder1 = new StringBuilder(0x200);
 					GetCurrentThemeName(builder1, builder1.Capacity, null, 0, null, 0);
 					string text1 = builder1.ToString();
-					TanColorTable.DisplayInformation.isLunaTheme = string.Equals(lunaFileName, Path.GetFileName(text1), StringComparison.InvariantCultureIgnoreCase);
+					isLunaTheme = string.Equals(lunaFileName, Path.GetFileName(text1), StringComparison.InvariantCultureIgnoreCase);
 				}
 				else
 				{
-					TanColorTable.DisplayInformation.colorScheme = null;
+					colorScheme = null;
 				}
 			}
 

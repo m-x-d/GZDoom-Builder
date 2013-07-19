@@ -530,7 +530,7 @@ namespace CodeImp.DoomBuilder
 		internal static void Main(string[] args)
 		{
 			Uri localpath;
-			Version thisversion;
+			//Version thisversion;
 			
 			// Determine states
 			#if DEBUG
@@ -555,7 +555,7 @@ namespace CodeImp.DoomBuilder
 			
 			// Get a reference to this assembly
 			thisasm = Assembly.GetExecutingAssembly();
-			thisversion = thisasm.GetName().Version;
+			//thisversion = thisasm.GetName().Version;
 			
 			// Find application path
 			localpath = new Uri(Path.GetDirectoryName(thisasm.GetName().CodeBase));

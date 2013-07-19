@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.IO
 		private const string ERROR_ASSIGNINVALID = "Invalid assignment. Missing a previous terminator symbol?";
 		private const string ERROR_VALUEINVALID = "Invalid value in assignment. Missing a previous terminator symbol?";
 		private const string ERROR_VALUETOOBIG = "Value too big.";
-		private const string ERROR_KEYNOTUNQIUE = "Key is not unique within scope.";
+		//private const string ERROR_KEYNOTUNQIUE = "Key is not unique within scope.";
 		private const string ERROR_KEYWORDUNKNOWN = "Unknown keyword in assignment. Missing a previous terminator symbol?";
 		private const string ERROR_UNEXPECTED_END = "Unexpected end of data. Missing a previous terminator symbol?";
 		private const string ERROR_UNKNOWN_FUNCTION = "Unknown function call.";

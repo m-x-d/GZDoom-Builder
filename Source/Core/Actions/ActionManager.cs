@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Actions
 		private bool exclusiverequested;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 
@@ -530,7 +530,6 @@ namespace CodeImp.DoomBuilder.Actions
 		internal bool KeyReleased(int key)
 		{
 			int strippedkey = key & ~((int)Keys.Alt | (int)Keys.Shift | (int)Keys.Control);
-			List<Action> keepactions = new List<Action>();
 			
 			// Update pressed keys
 			if(pressedkeys.Contains(strippedkey)) pressedkeys.Remove(strippedkey);

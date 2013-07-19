@@ -410,7 +410,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Interface.OnEditFormValuesChanged -= vertexEditForm_OnValuesChanged;
 
 						// When a single vertex was selected, deselect it now
-						if(selected.Count == 1) General.Map.Map.ClearSelectedVertices();
+						if(selected.Count == 1) {
+							General.Map.Map.ClearSelectedVertices();
+							General.Interface.RedrawDisplay();
+						}
 					}
 				}
 

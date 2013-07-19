@@ -159,6 +159,7 @@
 			this.fadeColor.Name = "fadeColor";
 			this.fadeColor.Size = new System.Drawing.Size(207, 31);
 			this.fadeColor.TabIndex = 30;
+			this.fadeColor.OnValueChanged += new System.EventHandler(this.fadeColor_OnValueChanged);
 			// 
 			// lightColor
 			// 
@@ -169,6 +170,7 @@
 			this.lightColor.Name = "lightColor";
 			this.lightColor.Size = new System.Drawing.Size(207, 29);
 			this.lightColor.TabIndex = 29;
+			this.lightColor.OnValueChanged += new System.EventHandler(this.lightColor_OnValueChanged);
 			// 
 			// brightness
 			// 
@@ -182,6 +184,7 @@
 			this.brightness.Size = new System.Drawing.Size(81, 24);
 			this.brightness.StepValues = null;
 			this.brightness.TabIndex = 24;
+			this.brightness.WhenTextChanged += new System.EventHandler(this.brightness_WhenTextChanged);
 			// 
 			// desaturation
 			// 
@@ -458,9 +461,9 @@
 			// floorAngleControl
 			// 
 			this.floorAngleControl.Angle = 0;
-			this.floorAngleControl.Location = new System.Drawing.Point(186, 113);
+			this.floorAngleControl.Location = new System.Drawing.Point(186, 108);
 			this.floorAngleControl.Name = "floorAngleControl";
-			this.floorAngleControl.Size = new System.Drawing.Size(32, 32);
+			this.floorAngleControl.Size = new System.Drawing.Size(38, 38);
 			this.floorAngleControl.TabIndex = 56;
 			this.floorAngleControl.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.floorAngleControl_AngleChanged);
 			// 
@@ -530,9 +533,9 @@
 			this.floorLightAbsolute.Name = "floorLightAbsolute";
 			this.floorLightAbsolute.Size = new System.Drawing.Size(69, 18);
 			this.floorLightAbsolute.TabIndex = 49;
-			this.floorLightAbsolute.Tag = "lightfloorabsolute";
 			this.floorLightAbsolute.Text = "Absolute";
 			this.floorLightAbsolute.UseVisualStyleBackColor = true;
+			this.floorLightAbsolute.CheckedChanged += new System.EventHandler(this.floorLightAbsolute_CheckedChanged);
 			// 
 			// label12
 			// 
@@ -557,6 +560,7 @@
 			this.floorBrightness.StepValues = null;
 			this.floorBrightness.TabIndex = 48;
 			this.floorBrightness.Tag = "lightfloor";
+			this.floorBrightness.WhenTextChanged += new System.EventHandler(this.floorBrightness_WhenTextChanged);
 			// 
 			// floorRenderStyle
 			// 
@@ -573,30 +577,38 @@
 			// floorScale
 			// 
 			this.floorScale.AllowDecimal = true;
+			this.floorScale.AllowValueLinking = true;
 			this.floorScale.ButtonStep = 1;
 			this.floorScale.ButtonStepFloat = 0.1F;
 			this.floorScale.DefaultValue = 1F;
 			this.floorScale.Field1 = "xscalefloor";
 			this.floorScale.Field2 = "yscalefloor";
+			this.floorScale.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.floorScale.Label = "Texture Scale:";
+			this.floorScale.LinkValues = false;
 			this.floorScale.Location = new System.Drawing.Point(23, 51);
 			this.floorScale.Name = "floorScale";
-			this.floorScale.Size = new System.Drawing.Size(255, 28);
+			this.floorScale.Size = new System.Drawing.Size(276, 28);
 			this.floorScale.TabIndex = 17;
+			this.floorScale.OnValuesChanged += new System.EventHandler(this.floorScale_OnValuesChanged);
 			// 
 			// floorOffsets
 			// 
 			this.floorOffsets.AllowDecimal = true;
+			this.floorOffsets.AllowValueLinking = false;
 			this.floorOffsets.ButtonStep = 1;
 			this.floorOffsets.ButtonStepFloat = 16F;
 			this.floorOffsets.DefaultValue = 0F;
 			this.floorOffsets.Field1 = "xpanningfloor";
 			this.floorOffsets.Field2 = "ypanningfloor";
+			this.floorOffsets.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.floorOffsets.Label = "Texture Offsets:";
+			this.floorOffsets.LinkValues = false;
 			this.floorOffsets.Location = new System.Drawing.Point(23, 19);
 			this.floorOffsets.Name = "floorOffsets";
-			this.floorOffsets.Size = new System.Drawing.Size(255, 26);
+			this.floorOffsets.Size = new System.Drawing.Size(276, 26);
 			this.floorOffsets.TabIndex = 16;
+			this.floorOffsets.OnValuesChanged += new System.EventHandler(this.floorOffsets_OnValuesChanged);
 			// 
 			// floortex
 			// 
@@ -605,6 +617,7 @@
 			this.floortex.Size = new System.Drawing.Size(83, 105);
 			this.floortex.TabIndex = 15;
 			this.floortex.TextureName = "";
+			this.floortex.OnValueChanged += new System.EventHandler(this.floortex_OnValueChanged);
 			// 
 			// groupBox1
 			// 
@@ -633,9 +646,9 @@
 			// ceilAngleControl
 			// 
 			this.ceilAngleControl.Angle = 0;
-			this.ceilAngleControl.Location = new System.Drawing.Point(186, 113);
+			this.ceilAngleControl.Location = new System.Drawing.Point(186, 108);
 			this.ceilAngleControl.Name = "ceilAngleControl";
-			this.ceilAngleControl.Size = new System.Drawing.Size(32, 32);
+			this.ceilAngleControl.Size = new System.Drawing.Size(38, 38);
 			this.ceilAngleControl.TabIndex = 55;
 			this.ceilAngleControl.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.ceilAngleControl_AngleChanged);
 			// 
@@ -705,9 +718,10 @@
 			this.ceilLightAbsolute.Name = "ceilLightAbsolute";
 			this.ceilLightAbsolute.Size = new System.Drawing.Size(69, 18);
 			this.ceilLightAbsolute.TabIndex = 49;
-			this.ceilLightAbsolute.Tag = "lightceilingabsolute";
+			this.ceilLightAbsolute.Tag = "";
 			this.ceilLightAbsolute.Text = "Absolute";
 			this.ceilLightAbsolute.UseVisualStyleBackColor = true;
+			this.ceilLightAbsolute.CheckedChanged += new System.EventHandler(this.ceilLightAbsolute_CheckedChanged);
 			// 
 			// labelLightFront
 			// 
@@ -732,6 +746,7 @@
 			this.ceilBrightness.StepValues = null;
 			this.ceilBrightness.TabIndex = 48;
 			this.ceilBrightness.Tag = "lightceiling";
+			this.ceilBrightness.WhenTextChanged += new System.EventHandler(this.ceilBrightness_WhenTextChanged);
 			// 
 			// ceilRenderStyle
 			// 
@@ -748,30 +763,38 @@
 			// ceilScale
 			// 
 			this.ceilScale.AllowDecimal = true;
+			this.ceilScale.AllowValueLinking = true;
 			this.ceilScale.ButtonStep = 1;
 			this.ceilScale.ButtonStepFloat = 0.1F;
 			this.ceilScale.DefaultValue = 1F;
 			this.ceilScale.Field1 = "xscaleceiling";
 			this.ceilScale.Field2 = "yscaleceiling";
+			this.ceilScale.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.ceilScale.Label = "Texture Scale:";
+			this.ceilScale.LinkValues = false;
 			this.ceilScale.Location = new System.Drawing.Point(23, 51);
 			this.ceilScale.Name = "ceilScale";
-			this.ceilScale.Size = new System.Drawing.Size(255, 28);
+			this.ceilScale.Size = new System.Drawing.Size(276, 28);
 			this.ceilScale.TabIndex = 17;
+			this.ceilScale.OnValuesChanged += new System.EventHandler(this.ceilScale_OnValuesChanged);
 			// 
 			// ceilOffsets
 			// 
 			this.ceilOffsets.AllowDecimal = true;
+			this.ceilOffsets.AllowValueLinking = false;
 			this.ceilOffsets.ButtonStep = 1;
 			this.ceilOffsets.ButtonStepFloat = 16F;
 			this.ceilOffsets.DefaultValue = 0F;
 			this.ceilOffsets.Field1 = "xpanningceiling";
 			this.ceilOffsets.Field2 = "ypanningceiling";
+			this.ceilOffsets.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.ceilOffsets.Label = "Texture Offsets:";
+			this.ceilOffsets.LinkValues = false;
 			this.ceilOffsets.Location = new System.Drawing.Point(23, 19);
 			this.ceilOffsets.Name = "ceilOffsets";
-			this.ceilOffsets.Size = new System.Drawing.Size(255, 26);
+			this.ceilOffsets.Size = new System.Drawing.Size(276, 26);
 			this.ceilOffsets.TabIndex = 16;
+			this.ceilOffsets.OnValuesChanged += new System.EventHandler(this.ceilOffsets_OnValuesChanged);
 			// 
 			// ceilingtex
 			// 
@@ -780,6 +803,7 @@
 			this.ceilingtex.Size = new System.Drawing.Size(83, 105);
 			this.ceilingtex.TabIndex = 15;
 			this.ceilingtex.TextureName = "";
+			this.ceilingtex.OnValueChanged += new System.EventHandler(this.ceilingtex_OnValueChanged);
 			// 
 			// tabcustom
 			// 
@@ -813,6 +837,8 @@
 			this.fieldslist.TypeColumnVisible = true;
 			this.fieldslist.TypeColumnWidth = 100;
 			this.fieldslist.ValueColumnVisible = true;
+			this.fieldslist.OnFieldUndefined += new CodeImp.DoomBuilder.Controls.FieldsEditorControl.SingleFieldNameEvent(this.fieldslist_OnFieldValueChanged);
+			this.fieldslist.OnFieldValueChanged += new CodeImp.DoomBuilder.Controls.FieldsEditorControl.SingleFieldNameEvent(this.fieldslist_OnFieldValueChanged);
 			// 
 			// cancel
 			// 

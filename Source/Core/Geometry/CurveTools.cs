@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						ry = 0;
 					}
 
-					float r = (float)Math.Sqrt(rx * rx + ry * ry);	// length of the summed vector - not being used, but there it is anyway
+					//float r = (float)Math.Sqrt(rx * rx + ry * ry);	// length of the summed vector - not being used, but there it is anyway
 					float theta = (float)Math.Atan2(ry, rx);	// angle of the new vector
 
 					float controlDist = Math.Min(a, b) * z;	// Distance of curve control points from current point: a fraction the length of the shorter adjacent triangle side

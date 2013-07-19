@@ -220,8 +220,6 @@ namespace CodeImp.DoomBuilder.IO
 			// Go for all sidedefs
 			foreach(Sidedef s in sidedefs)
 			{
-				int sectorid = (s.Sector != null) ? sectorids[s.Sector] : -1;
-
 				// Make collection
 				UniversalCollection coll = new UniversalCollection();
 				if(s.OffsetX != 0) coll.Add("offsetx", s.OffsetX);
@@ -231,6 +229,10 @@ namespace CodeImp.DoomBuilder.IO
 				if(s.LongMiddleTexture != MapSet.EmptyLongName) coll.Add("texturemiddle", s.MiddleTexture);
 				coll.Add("sector", sectorids[s.Sector]);
 				coll.Comment = s.Index.ToString();
+
+				//mxd. Flags
+				foreach(KeyValuePair<string, bool> flag in s.Flags)
+					if(flag.Value) coll.Add(flag.Key, flag.Value);
 				
 				// Add custom fields
 				AddCustomFields(s, "sidedef", coll);

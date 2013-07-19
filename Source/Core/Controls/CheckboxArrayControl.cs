@@ -28,13 +28,13 @@ namespace CodeImp.DoomBuilder.Controls
 {
 	public partial class CheckboxArrayControl : UserControl
 	{
-		// Constants
-		//private const int SPACING_Y = 1;
-		private int spacingY = 1; //mxd
+		// Events
+		public event EventHandler OnValueChanged; //mxd
 
 		// Variables
 		private List<CheckBox> checkboxes;
 		private int columns;
+		private int spacingY = 1; //mxd
 		
 		// Properties
 		public List<CheckBox> Checkboxes { get { return checkboxes; } }
@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 			c.UseVisualStyleBackColor = true;
 			c.Text = text;
 			c.Tag = tag;
+			c.CheckedChanged += new EventHandler(checkbox_CheckedChanged); //mxd
 
 			// Add to list
 			this.Controls.Add(c);
@@ -137,6 +138,11 @@ namespace CodeImp.DoomBuilder.Controls
 				p.DashStyle = DashStyle.Dash;
 				e.Graphics.DrawRectangle(p, 0, 0, this.ClientRectangle.Width - 1, this.ClientRectangle.Height - 1);
 			}
+		}
+
+		//mxd
+		private void checkbox_CheckedChanged(object sender, EventArgs e) {
+			if(OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 	}
 }

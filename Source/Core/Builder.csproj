@@ -918,8 +918,10 @@
     <Content Include="Resources\Light_animate.png" />
     <None Include="Resources\MLogo.png" />
     <None Include="Resources\Marine.png" />
+    <None Include="Resources\Link.png" />
     <Content Include="Resources\Model.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\Unlink.png" />
     <None Include="Resources\Unpin.png" />
     <None Include="Resources\Pin.png" />
     <None Include="Resources\Reset.png" />

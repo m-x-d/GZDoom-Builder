@@ -95,6 +95,10 @@ namespace CodeImp.DoomBuilder.IO
 							config.WriteSetting("managedfields.linedef." + fn, true);
 					}
 
+					//mxd. Add sidedef flags
+					foreach(KeyValuePair<string, string> flag in General.Map.Config.SidedefFlags)
+						config.WriteSetting("managedfields.sidedef." + flag.Key, true);
+
 					//mxd. Add sector flags
 					foreach(KeyValuePair<string, string> flag in General.Map.Config.SectorFlags)
 						config.WriteSetting("managedfields.sector." + flag.Key, true);
@@ -308,13 +312,18 @@ namespace CodeImp.DoomBuilder.IO
 			string tmid = GetCollectionEntry<string>(sc, "texturemiddle", false, "-", where);
 			int sector = GetCollectionEntry<int>(sc, "sector", true, 0, where);
 
+			//mxd. Flags
+			Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
+			foreach(KeyValuePair<string, string> flag in General.Map.Config.SidedefFlags)
+				stringflags[flag.Key] = GetCollectionEntry<bool>(sc, flag.Key, false, false, where);
+
 			// Create sidedef
 			if(sectorlink.ContainsKey(sector))
 			{
 				Sidedef s = map.CreateSidedef(ld, front, sectorlink[sector]);
 				if(s != null)
 				{
-					s.Update(offsetx, offsety, thigh, tmid, tlow);
+					s.Update(offsetx, offsety, thigh, tmid, tlow, stringflags);
 
 					// Custom fields
 					ReadCustomFields(sc, s, "sidedef");

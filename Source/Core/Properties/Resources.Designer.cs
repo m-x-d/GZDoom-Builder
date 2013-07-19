@@ -263,6 +263,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Link {
+            get {
+                object obj = ResourceManager.GetObject("Link", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap List {
             get {
                 object obj = ResourceManager.GetObject("List", resourceCulture);
@@ -609,6 +616,13 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap UnknownImage {
             get {
                 object obj = ResourceManager.GetObject("UnknownImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Unlink {
+            get {
+                object obj = ResourceManager.GetObject("Unlink", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

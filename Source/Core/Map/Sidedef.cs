@@ -27,10 +27,6 @@ namespace CodeImp.DoomBuilder.Map
 {
 	public sealed class Sidedef : MapElement
 	{
-		#region ================== Constants
-
-		#endregion
-
 		#region ================== Variables
 
 		// Map
@@ -55,6 +51,9 @@ namespace CodeImp.DoomBuilder.Map
 		private long longtexnamemid;
 		private long longtexnamelow;
 
+		//mxd. UDMF properties
+		private Dictionary<string, bool> flags;
+
 		// Clone
 		private int serializedindex;
 		
@@ -67,6 +66,7 @@ namespace CodeImp.DoomBuilder.Map
 		public Linedef Line { get { return linedef; } }
 		public Sidedef Other { get { if(this == linedef.Front) return linedef.Back; else return linedef.Front; } }
 		public Sector Sector { get { return sector; } }
+		internal Dictionary<string, bool> Flags { get { return flags; } } //mxd
 		public float Angle { get { if(IsFront) return linedef.Angle; else return Angle2D.Normalized(linedef.Angle + Angle2D.PI); } }
 		public int OffsetX { get { return offsetx; } set { BeforePropsChange(); offsetx = value; } }
 		public int OffsetY { get { return offsety; } set { BeforePropsChange(); offsety = value; } }
@@ -94,6 +94,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.longtexnamehigh = MapSet.EmptyLongName;
 			this.longtexnamemid = MapSet.EmptyLongName;
 			this.longtexnamelow = MapSet.EmptyLongName;
+			this.flags = new Dictionary<string, bool>(); //mxd
 			
 			// Attach linedef
 			this.linedef = l;
@@ -165,6 +166,28 @@ namespace CodeImp.DoomBuilder.Map
 			
 			base.ReadWrite(s);
 
+			//mxd
+			if(s.IsWriting) {
+				s.wInt(flags.Count);
+
+				foreach(KeyValuePair<string, bool> f in flags) {
+					s.wString(f.Key);
+					s.wBool(f.Value);
+				}
+			} else {
+				int c;
+				s.rInt(out c);
+
+				flags = new Dictionary<string, bool>(c);
+				for(int i = 0; i < c; i++) {
+					string t;
+					s.rString(out t);
+					bool b;
+					s.rBool(out b);
+					flags.Add(t, b);
+				}
+			}
+
 			s.rwInt(ref offsetx);
 			s.rwInt(ref offsety);
 			s.rwString(ref texnamehigh);
@@ -189,6 +212,7 @@ namespace CodeImp.DoomBuilder.Map
 			s.longtexnamehigh = longtexnamehigh;
 			s.longtexnamemid = longtexnamemid;
 			s.longtexnamelow = longtexnamelow;
+			s.flags = new Dictionary<string, bool>(flags); //mxd
 			base.CopyPropertiesTo(s);
 		}
 
@@ -241,6 +265,35 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Methods
+
+		// This checks and returns a flag without creating it
+		public bool IsFlagSet(string flagname) {
+			if(flags.ContainsKey(flagname))
+				return flags[flagname];
+			else
+				return false;
+		}
+
+		// This sets a flag
+		public void SetFlag(string flagname, bool value) {
+			if(!flags.ContainsKey(flagname) || (IsFlagSet(flagname) != value)) {
+				BeforePropsChange();
+
+				flags[flagname] = value;
+			}
+		}
+
+		// This returns a copy of the flags dictionary
+		public Dictionary<string, bool> GetFlags() {
+			return new Dictionary<string, bool>(flags);
+		}
+
+		// This clears all flags
+		public void ClearFlags() {
+			BeforePropsChange();
+
+			flags.Clear();
+		}
 		
 		// This removes textures that are not required
 		public void RemoveUnneededTextures(bool removemiddle)
@@ -460,13 +513,19 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Changes
 
 		// This updates all properties
-		public void Update(int offsetx, int offsety, string thigh, string tmid, string tlow)
+		public void Update(int offsetx, int offsety, string thigh, string tmid, string tlow) {
+			Update(offsetx, offsety, thigh, tmid, tlow, new Dictionary<string, bool>());
+		}
+
+		//mxd. This updates all properties (UDMF version)
+		public void Update(int offsetx, int offsety, string thigh, string tmid, string tlow, Dictionary<string, bool> flags)
 		{
 			BeforePropsChange();
 			
 			// Apply changes
 			this.offsetx = offsetx;
 			this.offsety = offsety;
+			this.flags = new Dictionary<string, bool>(flags); //mxd
 			SetTextureHigh(thigh);
 			SetTextureMid(tmid);
 			SetTextureLow(tlow);

@@ -408,17 +408,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Edit only when preferred
 						if(!thinginserted || BuilderPlug.Me.EditNewThing)
 						{
-							// Show thing edit dialog
+							//mxd. Show realtime thing edit dialog
+							General.Interface.OnEditFormValuesChanged += new EventHandler(thingEditForm_OnValuesChanged);
 							General.Interface.ShowEditThings(selected);
+							General.Interface.OnEditFormValuesChanged -= thingEditForm_OnValuesChanged;
 
 							// When a single thing was selected, deselect it now
-							if(selected.Count == 1) General.Map.Map.ClearSelectedThings();
-
-							// Update things filter
-							General.Map.ThingsFilter.Update();
-
-							// Update entire display
-							General.Interface.RedrawDisplay();
+							if(selected.Count == 1) {
+								General.Map.Map.ClearSelectedThings();
+								General.Interface.RedrawDisplay();
+							}
 						}
 					}
 				}
@@ -428,6 +427,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			editpressed = false;
 			base.OnEditEnd();
+		}
+
+		//mxd
+		private void thingEditForm_OnValuesChanged(object sender, EventArgs e) {
+			// Update things filter
+			General.Map.ThingsFilter.Update();
+
+			// Update entire display
+			General.Interface.RedrawDisplay();
 		}
 
 		// Mouse moves

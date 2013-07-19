@@ -324,11 +324,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This is to disable the automatic resize reset
-		private static void CancelResize(object sender, CancelEventArgs e)
+		/*private static void CancelResize(object sender, CancelEventArgs e)
 		{
 			// Cancel resize event
 			e.Cancel = true;
-		}
+		}*/
 		
 		// This creates present parameters
 		private PresentParameters CreatePresentParameters(int adapter)
@@ -376,10 +376,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This resets the device and returns true on success
 		internal bool Reset()
 		{
-			PresentParameters displaypp;
-
 			// Test the cooperative level
-			Result coopresult = device.TestCooperativeLevel();
+			//Result coopresult = device.TestCooperativeLevel();
 			
 			// Can we reset?
 			//if(coopresult.Name != "D3DERR_DEVICENOTRESET")
@@ -394,7 +392,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				depthbuffer = null;
 
 				// Make present parameters
-				displaypp = CreatePresentParameters(adapter);
+				PresentParameters displaypp = CreatePresentParameters(adapter);
 
 				try
 				{

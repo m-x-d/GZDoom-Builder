@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 					//texture has unsupported extension?
 					if(mde.TextureNames[i] == TextureData.INVALID_TEXTURE) {
-						foreach(Mesh m in result.Meshes)
+						for (int c = 0; c < result.Meshes.Count; c++)
 							mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
 					
 					//texture not defined in MODELDEF?

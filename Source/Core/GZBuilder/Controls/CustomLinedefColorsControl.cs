@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
                 //validate
                 for(int i = 0; i < configInfo.LinedefColorPresets.Length; i++) {
                     validatePreset(configInfo.LinedefColorPresets[i]);
-                    hasDuplicates(configInfo.LinedefColorPresets[i]);
+                    checkDuplicates(configInfo.LinedefColorPresets[i]);
                 }
 
                 lbColorPresets.Items.AddRange(configInfo.LinedefColorPresets);
@@ -50,23 +50,22 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
             return presets.ToArray();
         }
 
-        private bool validatePreset(LinedefColorPreset preset) {
+        private void validatePreset(LinedefColorPreset preset) {
             bool hasAction = preset.Action != 0;
             bool hasFlags = preset.Flags.Count > 0 || preset.RestrictedFlags.Count > 0;
             bool hasActivation = preset.Activation != 0;
 
             //validate
             if(!hasAction && !hasFlags && !hasActivation) {
-                if(colorProperties.UDMF) {
+	            if(colorProperties.UDMF) {
                     preset.SetInvalid("Invalid preset: no flags, action or activation type selected!");
                 } else {
                     preset.SetInvalid("Invalid preset: no flags or action selected!");
                 }
-                return false;
+	            return;
             }
- 
-            preset.SetValid();
-            return true;
+
+	        preset.SetValid();
         }
 
         private bool validatePresetName() {
@@ -87,8 +86,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
             return true;
         }
 
-        private bool hasDuplicates(LinedefColorPreset preset) {
-            foreach(LinedefColorPreset p in lbColorPresets.Items) {
+        private void checkDuplicates(LinedefColorPreset preset)
+        {
+	        foreach(LinedefColorPreset p in lbColorPresets.Items) {
                 if(preset.Name == p.Name) continue;
                 if(p.Action != preset.Action) continue;
                 if(p.Activation != preset.Activation) continue;
@@ -114,10 +114,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
                 //we have a match
                 preset.WarningDescription = "Preset matches '" + p.Name + "'";
-                return true;
+	            return;
             }
-
-            return false;
         }
 
         private void updatePresetListControls() {
@@ -210,7 +208,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
             LinedefColorPreset preset = (LinedefColorPreset)lbColorPresets.SelectedItem;
             preset.SetValid(); //clear error/warning messages
             validatePreset(preset); //validate it
-            hasDuplicates(preset);
+            checkDuplicates(preset);
             colorProperties.UpdateMessages(); //update error/warning messages
             lbColorPresets.Invalidate(); //redraw icons
 

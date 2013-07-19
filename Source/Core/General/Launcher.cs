@@ -345,7 +345,7 @@ namespace CodeImp.DoomBuilder
 					catch(Exception e)
 					{
 						// Unable to start the program
-						General.ShowErrorMessage("Unable to start the test program, " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK); ;
+						General.ShowErrorMessage("Unable to start the test program, " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
 					}
 					
 					General.MainWindow.DisplayReady();
