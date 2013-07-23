@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Variables
 
 		// Original configuration
-		private Configuration cfg;
+		//private Configuration cfg;
 		
 		// Compiler settings
 		private CompilerInfo compiler;
@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Config
 		internal ScriptConfiguration()
 		{
 			// Initialize
-			this.cfg = new Configuration();
+			//this.cfg = new Configuration();
 			this.keywords = new Dictionary<string, string>();
 			this.constants = new List<string>();
 			this.lowerkeywords = new Dictionary<string, string>();
@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.Config
 			IDictionary dic;
 			
 			// Initialize
-			this.cfg = cfg;
+			//this.cfg = cfg;
 			this.keywords = new Dictionary<string,string>();
 			this.constants = new List<string>();
 			this.lowerkeywords = new Dictionary<string, string>();

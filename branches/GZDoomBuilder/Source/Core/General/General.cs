@@ -1124,7 +1124,27 @@ namespace CodeImp.DoomBuilder
 
 			openfile.Dispose();
 		}
-		
+
+		//mxd
+		// This loads a map from file
+		[BeginAction("openmapincurrentwad")]
+		internal static void OpenMapInCurrentWad() {
+			if (map == null || string.IsNullOrEmpty(map.FilePathName) || !File.Exists(map.FilePathName)){
+				General.Interface.DisplayStatus(StatusType.Warning, "Unable to open map form current WAD!");
+				return;
+			}
+
+			// Update main window
+			mainwindow.Update();
+
+			// Open map file
+			OpenMapFile(map.FilePathName, null);
+
+			//mxd
+			mainwindow.UpdateGZDoomPanel();
+			General.Settings.GZForceDefaultTextures = false;
+		}
+
 		// This opens the specified file
 		internal static void OpenMapFile(string filename, MapOptions options)
 		{

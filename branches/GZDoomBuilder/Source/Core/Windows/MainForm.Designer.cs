@@ -1,3 +1,5 @@
+using CodeImp.DoomBuilder.Controls;
+
 namespace CodeImp.DoomBuilder.Windows
 {
 	partial class MainForm
@@ -51,6 +53,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.menufile = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemnewmap = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemopenmap = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemopenmapincurwad = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemclosemap = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemsavemap = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemsavemapas = new System.Windows.Forms.ToolStripMenuItem();
@@ -295,13 +298,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.seperatorfileopen.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.seperatorfileopen.Name = "seperatorfileopen";
-			this.seperatorfileopen.Size = new System.Drawing.Size(199, 6);
+			this.seperatorfileopen.Size = new System.Drawing.Size(220, 6);
 			// 
 			// seperatorfilerecent
 			// 
 			this.seperatorfilerecent.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.seperatorfilerecent.Name = "seperatorfilerecent";
-			this.seperatorfilerecent.Size = new System.Drawing.Size(199, 6);
+			this.seperatorfilerecent.Size = new System.Drawing.Size(220, 6);
 			// 
 			// seperatoreditgrid
 			// 
@@ -379,6 +382,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.menufile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.itemnewmap,
             this.itemopenmap,
+            this.itemopenmapincurwad,
             this.itemclosemap,
             this.seperatorfileopen,
             this.itemsavemap,
@@ -397,7 +401,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemnewmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.File;
 			this.itemnewmap.Name = "itemnewmap";
 			this.itemnewmap.ShortcutKeyDisplayString = "";
-			this.itemnewmap.Size = new System.Drawing.Size(202, 22);
+			this.itemnewmap.Size = new System.Drawing.Size(223, 22);
 			this.itemnewmap.Tag = "builder_newmap";
 			this.itemnewmap.Text = "&New Map";
 			this.itemnewmap.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -406,15 +410,23 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.itemopenmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.OpenMap;
 			this.itemopenmap.Name = "itemopenmap";
-			this.itemopenmap.Size = new System.Drawing.Size(202, 22);
+			this.itemopenmap.Size = new System.Drawing.Size(223, 22);
 			this.itemopenmap.Tag = "builder_openmap";
 			this.itemopenmap.Text = "&Open Map...";
 			this.itemopenmap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// itemopenmapincurwad
+			// 
+			this.itemopenmapincurwad.Name = "itemopenmapincurwad";
+			this.itemopenmapincurwad.Size = new System.Drawing.Size(223, 22);
+			this.itemopenmapincurwad.Tag = "builder_openmapincurrentwad";
+			this.itemopenmapincurwad.Text = "Open Map in current &WAD...";
+			this.itemopenmapincurwad.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// itemclosemap
 			// 
 			this.itemclosemap.Name = "itemclosemap";
-			this.itemclosemap.Size = new System.Drawing.Size(202, 22);
+			this.itemclosemap.Size = new System.Drawing.Size(223, 22);
 			this.itemclosemap.Tag = "builder_closemap";
 			this.itemclosemap.Text = "&Close Map";
 			this.itemclosemap.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -423,7 +435,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.itemsavemap.Image = global::CodeImp.DoomBuilder.Properties.Resources.SaveMap;
 			this.itemsavemap.Name = "itemsavemap";
-			this.itemsavemap.Size = new System.Drawing.Size(202, 22);
+			this.itemsavemap.Size = new System.Drawing.Size(223, 22);
 			this.itemsavemap.Tag = "builder_savemap";
 			this.itemsavemap.Text = "&Save Map";
 			this.itemsavemap.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -431,7 +443,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// itemsavemapas
 			// 
 			this.itemsavemapas.Name = "itemsavemapas";
-			this.itemsavemapas.Size = new System.Drawing.Size(202, 22);
+			this.itemsavemapas.Size = new System.Drawing.Size(223, 22);
 			this.itemsavemapas.Tag = "builder_savemapas";
 			this.itemsavemapas.Text = "Save Map &As...";
 			this.itemsavemapas.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -439,7 +451,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// itemsavemapinto
 			// 
 			this.itemsavemapinto.Name = "itemsavemapinto";
-			this.itemsavemapinto.Size = new System.Drawing.Size(202, 22);
+			this.itemsavemapinto.Size = new System.Drawing.Size(223, 22);
 			this.itemsavemapinto.Tag = "builder_savemapinto";
 			this.itemsavemapinto.Text = "Save Map &Into...";
 			this.itemsavemapinto.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -448,19 +460,19 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.seperatorfilesave.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.seperatorfilesave.Name = "seperatorfilesave";
-			this.seperatorfilesave.Size = new System.Drawing.Size(199, 6);
+			this.seperatorfilesave.Size = new System.Drawing.Size(220, 6);
 			// 
 			// itemnorecent
 			// 
 			this.itemnorecent.Enabled = false;
 			this.itemnorecent.Name = "itemnorecent";
-			this.itemnorecent.Size = new System.Drawing.Size(202, 22);
+			this.itemnorecent.Size = new System.Drawing.Size(223, 22);
 			this.itemnorecent.Text = "No recently opened files";
 			// 
 			// itemexit
 			// 
 			this.itemexit.Name = "itemexit";
-			this.itemexit.Size = new System.Drawing.Size(202, 22);
+			this.itemexit.Size = new System.Drawing.Size(223, 22);
 			this.itemexit.Text = "E&xit";
 			this.itemexit.Click += new System.EventHandler(this.itemexit_Click);
 			// 
@@ -2530,5 +2542,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem screenshotToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem editAreaScreenshotToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem itemShortcutReference;
+		private System.Windows.Forms.ToolStripMenuItem itemopenmapincurwad;
 	}
 }

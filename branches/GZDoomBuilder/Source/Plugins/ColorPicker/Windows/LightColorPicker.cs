@@ -287,12 +287,11 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 
         //this is called only once
         private Color getThingColor(Thing thing) {
-            if (thing.Type == 1502) { //vavoom light
+            if (thing.Type == 1502) //vavoom light
                 return Color.White;
-            } else if (thing.Type == 1503) { //vavoom colored light
+			if (thing.Type == 1503)  //vavoom colored light
                 return Color.FromArgb((byte)thing.Args[1], (byte)thing.Args[2], (byte)thing.Args[3]);
-            }
-            return Color.FromArgb((byte)thing.Args[0], (byte)thing.Args[1], (byte)thing.Args[2]); ;
+            return Color.FromArgb((byte)thing.Args[0], (byte)thing.Args[1], (byte)thing.Args[2]);
         }
 
         //this sets data to use as a reference for relative mode

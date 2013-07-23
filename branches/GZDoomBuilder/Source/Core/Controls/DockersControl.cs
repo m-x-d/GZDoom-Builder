@@ -86,9 +86,11 @@ namespace CodeImp.DoomBuilder.Controls
 		public DockersControl()
 		{
 			InitializeComponent();
-			expandedwidth = (int)((float)this.Width * (this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width));
+			expandedwidth = (int)(this.Width * (this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width));
 			tabs.TabsOffsetTop = buttonTogglePinning.Bottom + 2; //mxd
-			buttonTogglePinning.Image = General.Settings.CollapseDockers ? CodeImp.DoomBuilder.Properties.Resources.Unpin : CodeImp.DoomBuilder.Properties.Resources.Pin; //mxd
+
+			if(General.Settings != null)
+				buttonTogglePinning.Image = General.Settings.CollapseDockers ? CodeImp.DoomBuilder.Properties.Resources.Unpin : CodeImp.DoomBuilder.Properties.Resources.Pin; //mxd
 		}
 		
 		#endregion

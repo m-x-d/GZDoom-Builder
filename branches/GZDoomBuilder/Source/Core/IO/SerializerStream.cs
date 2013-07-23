@@ -32,7 +32,7 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Variables
 
-		private Stream stream;
+		//private Stream stream;
 		private BinaryWriter writer;
 		private Dictionary<string, ushort> stringstable;
 
@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.IO
 		public SerializerStream(Stream stream)
 		{
 			// Initialize
-			this.stream = stream;
+			//this.stream = stream;
 			this.writer = new BinaryWriter(stream);
 			this.stringstable = new Dictionary<string, ushort>();
 		}

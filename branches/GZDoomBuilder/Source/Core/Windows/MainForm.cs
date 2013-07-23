@@ -2124,6 +2124,7 @@ namespace CodeImp.DoomBuilder.Windows
 			itemsavemapas.Enabled = (General.Map != null);
 			itemsavemapinto.Enabled = (General.Map != null);
 			itemtestmap.Enabled = (General.Map != null);
+			itemopenmapincurwad.Enabled = (General.Map != null); //mxd
 
 			// Toolbar icons
 			buttonnewmap.Enabled = itemnewmap.Enabled;
