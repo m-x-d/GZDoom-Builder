@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		// Graphics
 		protected IRenderer3D renderer;
-		private Renderer3D renderer3d;
+		//private Renderer3D renderer3d;
 		
 		// Options
 		private bool processgeometry;
@@ -101,7 +101,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			// Initialize
 			this.renderer = General.Map.Renderer3D;
-			this.renderer3d = (Renderer3D)General.Map.Renderer3D;
+			//this.renderer3d = (Renderer3D)General.Map.Renderer3D;
 			this.blockmap = new VisualBlockMap();
 			this.allsectors = new Dictionary<Sector, VisualSector>(General.Map.Map.Sectors.Count);
 			this.allthings = new Dictionary<Thing,VisualThing>(General.Map.Map.Things.Count);

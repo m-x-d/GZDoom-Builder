@@ -922,11 +922,9 @@ namespace CodeImp.DoomBuilder.Data
 				// Return texture
 				return textures[longname];
 			}
-			else
-			{
-				// Return null image
-				return new UnknownImage(Properties.Resources.UnknownImage);
-			}
+
+			// Return null image
+			return new UnknownImage(Properties.Resources.UnknownImage);
 		}
 		
 		#endregion

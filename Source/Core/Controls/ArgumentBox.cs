@@ -38,9 +38,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Variables
 		
 		private TypeHandler typehandler;
-		private bool ignorebuttonchange = false;
-        //mxd
-        private ArgumentInfo arginfo;
+		private bool ignorebuttonchange;
 		private bool gotTagArgument;
 		
 		#endregion
@@ -178,8 +176,6 @@ namespace CodeImp.DoomBuilder.Controls
 		// This sets up the control for a specific argument
 		public void Setup(ArgumentInfo arginfo)
 		{
-            this.arginfo = arginfo; //mxd
-            
             int oldvalue = 0;
 			
 			// Get the original value

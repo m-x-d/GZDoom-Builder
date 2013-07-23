@@ -27,7 +27,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 
-		private PreferencesController controller;
+		//private PreferencesController controller;
 
 		#endregion
 
@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This sets up the form with the preferences controller
 		public void Setup(PreferencesController controller)
 		{
-			this.controller = controller;
+			//this.controller = controller;
 
 			// Add tab pages
 			foreach(TabPage p in tabs.TabPages)

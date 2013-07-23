@@ -40,33 +40,44 @@ Source: Builder.exe; DestDir: {app}; Flags: ignoreversion
 Source: GZBuilder.cfg; DestDir: {app}; Flags: ignoreversion
 Source: Refmanual.chm; DestDir: {app}; Flags: ignoreversion
 Source: DevIL.dll; DestDir: {app}; Flags: ignoreversion
-Source: Sharpzip.dll; DestDir: {app}; Flags: ignoreversion
+Source: SharpCompress.3.5.dll; DestDir: {app}; Flags: ignoreversion
 Source: Scintilla.dll; DestDir: {app}; Flags: ignoreversion
 Source: Trackbar.dll; DestDir: {app}; Flags: ignoreversion
 Source: SlimDX.dll; DestDir: {app}; Flags: ignoreversion
 Source: GPL.txt; DestDir: {app}; Flags: ignoreversion
 Source: Compilers\*; DestDir: {app}\Compilers; Flags: ignoreversion recursesubdirs
 Source: Configurations\*; DestDir: {app}\Configurations; Flags: ignoreversion recursesubdirs
+Source: Gldefs\*; DestDir: {app}\Gldefs; Flags: ignoreversion recursesubdirs
 Source: Scripting\*; DestDir: {app}\Scripting; Flags: ignoreversion recursesubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: Plugins\BuilderModes.dll; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Plugins\BuilderEffects.dll; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Plugins\ColorPicker.dll; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Plugins\CommentsPanel.dll; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Plugins\CopyPasteSectorProps.dll; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Plugins\NodesViewer.dll; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Plugins\StairSectorBuilder.dll; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Plugins\Statistics.dll; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Plugins\TagExplorer.dll; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Plugins\TagRange.dll; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Plugins\VisplaneExplorer.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\Loadorder.cfg; DestDir: {app}\Plugins; Flags: ignoreversion onlyifdoesntexist
 Source: Sprites\*; DestDir: {app}\Sprites; Flags: ignoreversion recursesubdirs
 
 [Icons]
 Name: {group}\Doom Builder; Filename: {app}\Builder.exe
 Name: {group}\{cm:UninstallProgram,Doom Builder}; Filename: {uninstallexe}
-Name: {commondesktop}\Doom Builder; Filename: {app}\Builder.exe; Tasks: desktopicon
+Name: {commondesktop}\GZDoom Builder; Filename: {app}\Builder.exe; Tasks: desktopicon
 
 [Run]
 
 [UninstallDelete]
-Name: {localappdata}\Doom Builder; Type: filesandordirs
+//Name: {localappdata}\Doom Builder; Type: filesandordirs
 Name: {app}; Type: filesandordirs
 [InstallDelete]
 Name: {app}\Builder.pdb; Type: files
 [Registry]
-Root: HKLM; Subkey: SOFTWARE\CodeImp\Doom Builder\; ValueType: string; ValueName: Location; ValueData: {app}; Flags: uninsdeletevalue
+Root: HKLM; Subkey: SOFTWARE\CodeImp\GZDoom Builder\; ValueType: string; ValueName: Location; ValueData: {app}; Flags: uninsdeletevalue
 [Messages]
 ReadyLabel2a=Continue to begin with the installation, or click Back if you want to review or change any settings.
 [Code]

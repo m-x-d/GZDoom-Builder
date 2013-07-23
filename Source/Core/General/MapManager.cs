@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder {
         private string filetitle;
         private string filepathname;
         private string temppath;
+		private string origmapconfigfile; //mxd. Map configuration, which was used to open the map.
 
         // Main objects
         private MapSet map;
@@ -255,6 +256,7 @@ namespace CodeImp.DoomBuilder {
             General.WriteLogLine("Loading game configuration...");
             configinfo = General.GetConfigurationInfo(options.ConfigFile);
             config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
+			origmapconfigfile = options.ConfigFile;//mxd
             configinfo.ApplyDefaults(config);
             General.Editing.UpdateCurrentEditModes();
 
@@ -346,6 +348,7 @@ namespace CodeImp.DoomBuilder {
             General.WriteLogLine("Loading game configuration...");
             configinfo = General.GetConfigurationInfo(options.ConfigFile);
             config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
+			origmapconfigfile = options.ConfigFile;//mxd
             configinfo.ApplyDefaults(config);
             General.Editing.UpdateCurrentEditModes();
 
@@ -618,7 +621,8 @@ namespace CodeImp.DoomBuilder {
                     targetwad = new WAD(newfilepathname);
 
                     // Copy all lumps, except the original map
-                    CopyAllLumpsExceptMap(origwad, targetwad, origmapname);
+					GameConfiguration origcfg = (origmapconfigfile == configinfo.Filename ? config : new GameConfiguration(General.LoadGameConfiguration(origmapconfigfile))); //mxd
+                    CopyAllLumpsExceptMap(origwad, targetwad, origcfg, origmapname);
 
                     // Close original file and delete it
                     origwad.Dispose();
@@ -861,9 +865,7 @@ namespace CodeImp.DoomBuilder {
                 l.Stream.Seek(0, SeekOrigin.Begin);
                 return new MemoryStream(l.Stream.ReadAllBytes());
             }
-            else {
-                return null;
-            }
+            return null;
         }
 
         // This writes a copy of the data to a lump in the temp file
@@ -935,13 +937,31 @@ namespace CodeImp.DoomBuilder {
             }
         }
 
+		//mxd. This is called on tempwad, which should only have the current map inside it.
+		private void removeUnneededLumps(WAD target, string mapname) {
+			//Get the list of lumps required by current map format
+			List<string> requiredLumps = new List<string>();
+			foreach (DictionaryEntry ml in config.MapLumpNames){
+				string lumpname = ml.Key.ToString();
+				if(lumpname == CONFIG_MAP_HEADER) lumpname = mapname;
+				requiredLumps.Add(lumpname);
+			}
+
+			//Remove lumps, which are not required
+			List<Lump> toRemove = new List<Lump>();
+			foreach (Lump lump in target.Lumps)
+				if (!requiredLumps.Contains(lump.Name)) toRemove.Add(lump);
+
+			foreach (Lump lump in toRemove) target.Remove(lump);
+		}
+
         // This copies all lumps, except those of a specific map
-        private void CopyAllLumpsExceptMap(WAD source, WAD target, string sourcemapname) {
+        private void CopyAllLumpsExceptMap(WAD source, WAD target, GameConfiguration mapconfig, string sourcemapname) {
             // Go for all lumps
             bool skipping = false;
             foreach (Lump srclump in source.Lumps) {
                 // Check if we should stop skipping lumps here
-                if (skipping && !config.MapLumpNames.Contains(srclump.Name)) {
+				if (skipping && !mapconfig.MapLumpNames.Contains(srclump.Name)) {
                     // Stop skipping
                     skipping = false;
                 }
@@ -1236,10 +1256,9 @@ namespace CodeImp.DoomBuilder {
                 // This also saves implicitly
                 return scriptwindow.AskSaveAll();
             }
-            else {
-                // No problems
-                return true;
-            }
+
+			// No problems
+			return true;
         }
 
         // This applies the changed status for internal scripts
@@ -1272,10 +1291,8 @@ namespace CodeImp.DoomBuilder {
                 // Check if scripts are changed			
                 return scriptschanged || scriptwindow.Editor.CheckImplicitChanges();
             }
-            else {
-                // Check if scripts are changed			
-                return scriptschanged;
-            }
+	
+            return scriptschanged;
         }
 
         // This compiles all lumps that require compiling and stores the results
@@ -1304,105 +1321,100 @@ namespace CodeImp.DoomBuilder {
             byte[] filedata;
             string reallumpname = lumpname;
 
+			//mxd. Does lump require compiling?
+			ScriptConfiguration scriptconfig = config.MapLumps[lumpname].script;
+			if (scriptconfig.Compiler == null) return true;
+
             // Find the lump
             if (lumpname == CONFIG_MAP_HEADER) reallumpname = TEMP_MAP_HEADER;
             Lump lump = tempwad.FindLump(reallumpname);
             if (lump == null) throw new Exception("No such lump in temporary wad file '" + reallumpname + "'.");
 
             // Determine source file
-            if (filepathname.Length > 0)
-                sourcefile = filepathname;
-            else
-                sourcefile = tempwad.Filename;
+            sourcefile = (filepathname.Length > 0 ? filepathname : tempwad.Filename);
 
             // New list of errors
             if (clearerrors) errors.Clear();
 
             // Determine the script configuration to use
-            ScriptConfiguration scriptconfig = config.MapLumps[lumpname].script;
-            if (scriptconfig.Compiler != null) {
-                try {
-                    // Initialize compiler
-                    compiler = scriptconfig.Compiler.Create();
-                } catch (Exception e) {
-                    // Fail
-                    errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
-                    return false;
-                }
+			try {
+				// Initialize compiler
+				compiler = scriptconfig.Compiler.Create();
+			} catch(Exception e) {
+				// Fail
+				errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
+				return false;
+			}
 
-                try {
-                    // Write lump data to temp script file in compiler's temp directory
-                    inputfile = General.MakeTempFilename(compiler.Location, "tmp");
-                    lump.Stream.Seek(0, SeekOrigin.Begin);
-                    BinaryReader reader = new BinaryReader(lump.Stream);
-                    File.WriteAllBytes(inputfile, reader.ReadBytes((int)lump.Stream.Length));
-                } catch (Exception e) {
-                    // Fail
-                    compiler.Dispose();
-                    errors.Add(new CompilerError("Unable to write script to working file. " + e.GetType().Name + ": " + e.Message));
-                    return false;
-                }
+			try {
+				// Write lump data to temp script file in compiler's temp directory
+				inputfile = General.MakeTempFilename(compiler.Location, "tmp");
+				lump.Stream.Seek(0, SeekOrigin.Begin);
+				BinaryReader reader = new BinaryReader(lump.Stream);
+				File.WriteAllBytes(inputfile, reader.ReadBytes((int)lump.Stream.Length));
+			} catch(Exception e) {
+				// Fail
+				compiler.Dispose();
+				errors.Add(new CompilerError("Unable to write script to working file. " + e.GetType().Name + ": " + e.Message));
+				return false;
+			}
 
-                // Make random output filename
-                outputfile = General.MakeTempFilename(compiler.Location, "tmp");
+			// Make random output filename
+			outputfile = General.MakeTempFilename(compiler.Location, "tmp");
 
-                // Run compiler
-                compiler.Parameters = scriptconfig.Parameters;
-                compiler.InputFile = Path.GetFileName(inputfile);
-                compiler.OutputFile = Path.GetFileName(outputfile);
-                compiler.SourceFile = sourcefile;
-                compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
-                if (compiler.Run()) {
-                    // Process errors
-                    foreach (CompilerError e in compiler.Errors) {
-                        CompilerError newerror = e;
+			// Run compiler
+			compiler.Parameters = scriptconfig.Parameters;
+			compiler.InputFile = Path.GetFileName(inputfile);
+			compiler.OutputFile = Path.GetFileName(outputfile);
+			compiler.SourceFile = sourcefile;
+			compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
+			if(compiler.Run()) {
+				// Process errors
+				foreach(CompilerError e in compiler.Errors) {
+					CompilerError newerror = e;
 
-                        // If the error's filename equals our temporary file,
-                        // use the lump name instead and prefix it with ?
-                        if (string.Compare(e.filename, inputfile, true) == 0)
-                            newerror.filename = "?" + reallumpname;
+					// If the error's filename equals our temporary file,
+					// use the lump name instead and prefix it with ?
+					if(string.Compare(e.filename, inputfile, true) == 0)
+						newerror.filename = "?" + reallumpname;
 
-                        errors.Add(newerror);
-                    }
+					errors.Add(newerror);
+				}
 
-                    // No errors?
-                    if (compiler.Errors.Length == 0) {
-                        // Output file exists?
-                        if (File.Exists(outputfile)) {
-                            // Copy output file data into a lump?
-                            if (!string.IsNullOrEmpty(scriptconfig.ResultLump)) {
-                                // Do that now then
-                                try {
-                                    filedata = File.ReadAllBytes(outputfile);
-                                } catch (Exception e) {
-                                    // Fail
-                                    compiler.Dispose();
-                                    errors.Add(new CompilerError("Unable to read compiler output file. " + e.GetType().Name + ": " + e.Message));
-                                    return false;
-                                }
+				// No errors?
+				if(compiler.Errors.Length == 0) {
+					// Output file exists?
+					if(File.Exists(outputfile)) {
+						// Copy output file data into a lump?
+						if(!string.IsNullOrEmpty(scriptconfig.ResultLump)) {
+							// Do that now then
+							try {
+								filedata = File.ReadAllBytes(outputfile);
+							} catch(Exception e) {
+								// Fail
+								compiler.Dispose();
+								errors.Add(new CompilerError("Unable to read compiler output file. " + e.GetType().Name + ": " + e.Message));
+								return false;
+							}
 
-                                // Store data
-                                MemoryStream stream = new MemoryStream(filedata);
-                                SetLumpData(scriptconfig.ResultLump, stream);
-                            }
-                        }
-                    }
+							// Store data
+							MemoryStream stream = new MemoryStream(filedata);
+							SetLumpData(scriptconfig.ResultLump, stream);
+						}
+					}
+				}
 
-                    // Clean up
-                    compiler.Dispose();
+				// Clean up
+				compiler.Dispose();
 
-                    // Done
-                    return true;
-                } else {
-                    // Fail
-                    compiler.Dispose();
-                    errors = null;
-                    return false;
-                }
-            } else {
-                // No compiler to run for this script type
-                return true;
-            }
+				// Done
+				return true;
+			}
+
+			// Fail
+			compiler.Dispose();
+			errors = null;
+			return false;
         }
 
         // This clears all compiler errors
@@ -1425,7 +1437,16 @@ namespace CodeImp.DoomBuilder {
                         AcsParserSE parser = new AcsParserSE();
                         parser.OnInclude = updateScriptsFromLocation;
                         parser.Parse(stream, "SCRIPTS", true);
-                        namedScripts.AddRange(parser.NamedScripts);
+
+						if(parser.NamedScripts.Count > 0 && (FormatInterface is DoomMapSetIO || FormatInterface is HexenMapSetIO)) {
+							List<string> names = new List<string>();
+							foreach(ScriptItem item in parser.NamedScripts)
+								names.Add("'" + item.Name + "'");
+							General.ErrorLogger.Add(ErrorType.Warning, "Current map format doesn't support named scripts! Following scripts will not work:" + string.Join(", ", names.ToArray()));
+						} else {
+							namedScripts.AddRange(parser.NamedScripts);
+						}
+
                         numberedScripts.AddRange(parser.NumberedScripts);
                         scriptincludes.AddRange(parser.Includes);
                     }
@@ -1611,6 +1632,10 @@ namespace CodeImp.DoomBuilder {
                 General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
                 io = MapSetIO.Create(config.FormatInterface, tempwad, this);
 
+				//mxd. Some lumps may've become unneeded during map format conversion. 
+				if(oldFormatInterface != config.FormatInterface)
+					removeUnneededLumps(tempwad, TEMP_MAP_HEADER);
+
                 // Create required lumps if they don't exist yet
                 CreateRequiredLumps(tempwad, TEMP_MAP_HEADER);
 
@@ -1626,6 +1651,7 @@ namespace CodeImp.DoomBuilder {
 					foreach(Thing t in General.Map.Map.Things) t.TranslateToUDMF();
 				}
 				General.Map.Map.UpdateCustomLinedefColors();
+				UpdateScriptNames(); //mxd
 
                 // Update interface
                 General.MainWindow.SetupInterface();
