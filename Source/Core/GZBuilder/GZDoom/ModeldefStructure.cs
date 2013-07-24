@@ -67,10 +67,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             break;
                         } else {
                             //check extension
-                            int dotPos = token.LastIndexOf(".");
-                            string fileExt = token.Substring(token.LastIndexOf("."), token.Length - dotPos);
-                            if (fileExt != ".md3" && fileExt != ".md2") {
-                                General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": model '" + token + "' not parsed. Only MD3 and MD2 models are supported.");
+	                        string fileExt = Path.GetExtension(token);
+	                        if (string.IsNullOrEmpty(fileExt)){
+								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": model '" + token + "' won't be loaded. Models without extension are not supported by GZDoom.");
+								gotErrors = true;
+								break;
+	                        }
+							if(fileExt != ".md3" && fileExt != ".md2") {
+                                General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": model '" + token + "' won't be loaded. Only MD2 and MD3 models are supported.");
                                 gotErrors = true;
                                 break;
                             }
