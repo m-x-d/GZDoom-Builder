@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					//report errors
 					if(errors.Count > 0) {
 						foreach(string e in errors)
-							General.ErrorLogger.Add(ErrorType.Error, "ModelLoader: error while loading '" + mde.ModelNames[i] + "':" + e);
+							General.ErrorLogger.Add(ErrorType.Error, "ModelLoader: error while loading '" + mde.ModelNames[i] + "': " + e);
 					}
 				}
 			}
