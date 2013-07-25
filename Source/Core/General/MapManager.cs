@@ -221,10 +221,9 @@ namespace CodeImp.DoomBuilder {
                 isdisposed = true;
                 return true;
             }
-            else {
-                // Already closed
-                return true;
-            }
+
+            // Already closed
+            return true;
         }
 
         #endregion
@@ -446,6 +445,84 @@ namespace CodeImp.DoomBuilder {
             General.WriteLogLine("Map loading done");
             return true;
         }
+
+		//mxd. This switches to another map in the same wad 
+		internal bool InitializeSwitchMap(MapOptions options) {
+			this.changed = false;
+			this.options = options;
+
+			// Create map data
+			MapSet newmap = new MapSet();
+
+			// Create temp wadfile
+			string tempfile = General.MakeTempFilename(temppath);
+			General.WriteLogLine("Creating temporary file: " + tempfile);
+			if(tempwad != null) tempwad.Dispose();
+
+#if DEBUG
+			tempwad = new WAD(tempfile);
+#else
+				try { tempwad = new WAD(tempfile); }
+				catch(Exception e)
+				{
+					General.ShowErrorMessage("Error while creating a temporary wad file:\n" + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
+					return false;
+				}
+#endif
+
+			// Now open the map file
+			General.WriteLogLine("Opening source file: " + filepathname);
+#if DEBUG
+			WAD mapwad = new WAD(filepathname, true);
+#else
+				try { mapwad = new WAD(filepathname, true); }
+				catch(Exception e)
+				{
+					General.ShowErrorMessage("Error while opening source wad file:\n" + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
+					return false;
+				}
+#endif
+
+			// Copy the map lumps to the temp file
+			General.WriteLogLine("Copying map lumps to temporary file...");
+			CopyLumpsByType(mapwad, options.CurrentName, tempwad, TEMP_MAP_HEADER, true, true, true, true);
+
+			// Close the map file
+			mapwad.Dispose();
+
+			// Read the map from temp file
+			newmap.BeginAddRemove();
+			General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
+			io = MapSetIO.Create(config.FormatInterface, tempwad, this);
+			General.WriteLogLine("Reading map data structures from file...");
+#if DEBUG
+			newmap = io.Read(newmap, TEMP_MAP_HEADER);
+#else
+				try { newmap = io.Read(newmap, TEMP_MAP_HEADER); }
+				catch(Exception e)
+				{
+					General.ErrorLogger.Add(ErrorType.Error, "Unable to read the map data structures with the specified configuration. " + e.GetType().Name + ": " + e.Message);
+					General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
+					return false;
+				}
+#endif
+			newmap.EndAddRemove();
+
+			ChangeMapSet(newmap);
+
+			data.UpdateUsedTextures();
+
+			//mxd. check script names
+			UpdateScriptNames();
+
+			// Center map in screen
+			if(General.Editing.Mode is ClassicMode) (General.Editing.Mode as ClassicMode).CenterInScreen();
+
+			// Success
+			this.changed = false;
+			General.WriteLogLine("Map switching done");
+			return true;
+		}
 
         #endregion
 

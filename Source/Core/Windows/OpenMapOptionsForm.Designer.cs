@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.strictpatches.AutoSize = true;
 			this.strictpatches.Location = new System.Drawing.Point(14, 27);
 			this.strictpatches.Name = "strictpatches";
-			this.strictpatches.Size = new System.Drawing.Size(352, 18);
+			this.strictpatches.Size = new System.Drawing.Size(351, 18);
 			this.strictpatches.TabIndex = 19;
 			this.strictpatches.Text = "Strictly load patches between P_START and P_END only for this file";
 			this.strictpatches.UseVisualStyleBackColor = true;
@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.mapslist.MultiSelect = false;
 			this.mapslist.Name = "mapslist";
 			this.mapslist.ShowGroups = false;
-			this.mapslist.Size = new System.Drawing.Size(396, 110);
+			this.mapslist.Size = new System.Drawing.Size(396, 118);
 			this.mapslist.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.mapslist.TabIndex = 1;
 			this.mapslist.UseCompatibleStateImageBehavior = false;
