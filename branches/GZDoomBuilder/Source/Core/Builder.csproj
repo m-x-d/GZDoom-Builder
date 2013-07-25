@@ -796,6 +796,12 @@
     <Compile Include="Types\ThingClassHandler.cs" />
     <Compile Include="Types\ThingTypeHandler.cs" />
     <Compile Include="VisualModes\VisualVertex.cs" />
+    <Compile Include="Windows\ChangeMapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ChangeMapForm.Designer.cs">
+      <DependentUpon>ChangeMapForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ErrorsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1032,6 +1038,9 @@
     <EmbeddedResource Include="Windows\BitFlagsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>BitFlagsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ChangeMapForm.resx">
+      <DependentUpon>ChangeMapForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\CustomFieldsForm.resx">
       <SubType>Designer</SubType>

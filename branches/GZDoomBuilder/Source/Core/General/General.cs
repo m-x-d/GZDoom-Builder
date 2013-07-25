@@ -1126,23 +1126,67 @@ namespace CodeImp.DoomBuilder
 		}
 
 		//mxd
-		// This loads a map from file
+		// This loads a different map from same wad file
 		[BeginAction("openmapincurrentwad")]
 		internal static void OpenMapInCurrentWad() {
 			if (map == null || string.IsNullOrEmpty(map.FilePathName) || !File.Exists(map.FilePathName)){
-				General.Interface.DisplayStatus(StatusType.Warning, "Unable to open map form current WAD!");
+				Interface.DisplayStatus(StatusType.Warning, "Unable to open map form current WAD!");
 				return;
 			}
 
-			// Update main window
-			mainwindow.Update();
+			// Cancel volatile mode, if any
+			Editing.DisengageVolatileMode();
 
-			// Open map file
-			OpenMapFile(map.FilePathName, null);
+			// Ask the user to save changes (if any)
+			if(!AskSaveMap()) return;
+
+			// Open map options dialog
+			ChangeMapForm changemapwindow = new ChangeMapForm(map.FilePathName, map.Options);
+			if(changemapwindow.ShowDialog(mainwindow) != DialogResult.OK) return;
+
+			// Display status
+			mainwindow.DisplayStatus(StatusType.Busy, "Switching to map '" + changemapwindow.Options.CurrentName + "'...");
+			WriteLogLine("Switching to map '" + changemapwindow.Options.CurrentName + "'...");
+			
+			Cursor.Current = Cursors.WaitCursor;
+
+			// Clear the display
+			mainwindow.ClearDisplay();
+
+			// Let the plugins know
+			plugins.OnMapOpenBegin();
+
+			// Clear old errors
+			ErrorLogger.Clear();
+
+			if(!map.InitializeSwitchMap(changemapwindow.Options)) return;
+
+			// Let the plugins know
+			plugins.OnMapOpenEnd();
+
+			// All done
+			settings.FindDefaultDrawSettings();
+			mainwindow.SetupInterface();
+			mainwindow.RedrawDisplay();
+			mainwindow.UpdateThingsFilters();
+			mainwindow.UpdateInterface();
+			mainwindow.HideInfo();
 
 			//mxd
 			mainwindow.UpdateGZDoomPanel();
-			General.Settings.GZForceDefaultTextures = false;
+			Settings.GZForceDefaultTextures = false;
+
+			if (errorlogger.IsErrorAdded)
+			{
+				// Show any errors if preferred
+				mainwindow.DisplayStatus(StatusType.Warning, "There were errors during loading!");
+				if (!delaymainwindow && Settings.ShowErrorsWindow)
+					mainwindow.ShowErrors();
+			} else {
+				mainwindow.DisplayReady();
+			}
+
+			Cursor.Current = Cursors.Default;
 		}
 
 		// This opens the specified file
@@ -1183,9 +1227,8 @@ namespace CodeImp.DoomBuilder
 			// Let the plugins know
 			plugins.OnMapOpenBegin();
 
-			// Set this to false so we can see if errors are added
-			//General.ErrorLogger.IsErrorAdded = false;
-			General.ErrorLogger.Clear();//mxd
+			// mxd. Clear old errors
+			General.ErrorLogger.Clear();
 
 			// Create map manager with given options
 			map = new MapManager();
