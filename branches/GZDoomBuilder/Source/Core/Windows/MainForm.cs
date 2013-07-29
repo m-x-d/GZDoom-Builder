@@ -667,7 +667,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public void DisplayStatus(StatusInfo newstatus)
 		{
 			// Stop timers
-			if(!newstatus.displayed)
+			if(newstatus.type != StatusType.Selection && !newstatus.displayed) //mxd
 			{
 				statusresetter.Stop();
 				statusflasher.Stop();
@@ -680,16 +680,18 @@ namespace CodeImp.DoomBuilder.Windows
 				// When no particular information is to be displayed.
 				// The messages displayed depends on running background processes.
 				case StatusType.Ready:
-					if((General.Map != null) && (General.Map.Data != null))
-						if(General.Map.Data.IsLoading)
-							newstatus.message = STATUS_LOADING_TEXT;
-						else
-							newstatus.message = selectionInfo; //mxd
-					else
+					if ((General.Map != null) && (General.Map.Data != null)) {
+						newstatus.message = General.Map.Data.IsLoading ? STATUS_LOADING_TEXT : selectionInfo;
+					} else {
 						newstatus.message = STATUS_READY_TEXT;
+					}
 					break;
 
 				case StatusType.Selection: //mxd
+					if (statusresetter.Enabled) { //don't change the message right now if info or warning is displayed
+						selectionInfo = (string.IsNullOrEmpty(newstatus.message) ? STATUS_NO_SELECTION_TEXT : newstatus.message);
+						return;
+					}
 					if(string.IsNullOrEmpty(newstatus.message))
 						newstatus.message = STATUS_NO_SELECTION_TEXT;
 					selectionInfo = newstatus.message;

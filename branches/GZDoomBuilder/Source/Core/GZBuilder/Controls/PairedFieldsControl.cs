@@ -26,7 +26,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private bool allowValueLinking;
 		private bool linkValues;
 		private bool blockUpdate;
-		private int bResetPosX;
+		private int bResetOffsetX;
 
 		#endregion
 
@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		public PairedFieldsControl() {
 			InitializeComponent();
-			bResetPosX = bReset.Left;
+			bResetOffsetX = this.Width - bReset.Left;
 		}
 
 		#endregion
@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			if(!allowValueLinking) {
 				bReset.Left = bLink.Left;
 			} else {
-				bReset.Left = bResetPosX;
+				bReset.Left = this.Width - bResetOffsetX;
 				bLink.Image = (linkValues ? Resources.Link : Resources.Unlink);
 			}
 		}
