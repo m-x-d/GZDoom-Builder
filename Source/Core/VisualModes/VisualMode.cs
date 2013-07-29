@@ -604,7 +604,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			{
 				// Make new visualsector
 				vs = CreateVisualSector(sd.Sector);
-				if(vs != null) allsectors.Add(sd.Sector, vs);
+				//if(vs != null) allsectors.Add(sd.Sector, vs); //mxd
 			}
 			
 			if(vs != null)
@@ -942,7 +942,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// This returns the VisualSector for the given Sector.
 		/// </summary>
 		public VisualSector GetVisualSector(Sector s) {
-			if(!allsectors.ContainsKey(s)) return null; //mxd
+			if(!allsectors.ContainsKey(s)) return CreateVisualSector(s); //mxd
 			return allsectors[s]; 
 		}
 		

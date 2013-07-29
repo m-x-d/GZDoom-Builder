@@ -378,6 +378,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override VisualSector CreateVisualSector(Sector s)
 		{
 			BaseVisualSector vs = new BaseVisualSector(this, s);
+			if (vs != null) allsectors.Add(s, vs); //mxd
 			return vs;
 		}
 		
@@ -501,11 +502,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
         //mxd
         protected override void moveSelectedThings(Vector2D direction, bool absolutePosition) {
             List<VisualThing> visualThings = GetSelectedVisualThings(true);
-
-            if (visualThings.Count == 0) {
-                General.Interface.DisplayStatus(StatusType.Warning, "Select some Things first!");
-                return;
-            }
+            if (visualThings.Count == 0) return;
 
             PreAction(UndoGroup.ThingMove);
 
