@@ -3084,11 +3084,11 @@ namespace CodeImp.DoomBuilder.Windows
 			if(warningsCount > 0) {
 				if(!warnsLabel.Font.Bold){
 					warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Bold);
-					warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+					warnsLabel.Image = Resources.Warning;
 				}
 			} else {
 				warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);
-				warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
+				warnsLabel.Image = Resources.WarningOff;
 				warnsLabel.BackColor = SystemColors.Control;
 			}
 
@@ -3107,11 +3107,11 @@ namespace CodeImp.DoomBuilder.Windows
 		private void blink() {
 			if(warnsLabel.BackColor == Color.Red) {
 				warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);
-				warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
+				warnsLabel.Image = Resources.WarningOff;
 				warnsLabel.BackColor = SystemColors.Control;
 			} else {
 				warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Bold);
-				warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+				warnsLabel.Image = Resources.Warning;
 				warnsLabel.BackColor = Color.Red;
 			}
 		}

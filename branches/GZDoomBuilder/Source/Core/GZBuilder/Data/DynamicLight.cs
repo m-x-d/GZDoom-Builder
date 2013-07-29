@@ -2,8 +2,8 @@
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
-    public sealed class GZDoomLight {
-        public int Type; //holds GZDoomLightType
+    public sealed class DynamicLightData {
+		public DynamicLightType Type; //holds DynamicLightType
         public Color3 Color;
         public int PrimaryRadius;
         public int SecondaryRadius;
@@ -12,15 +12,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
         public bool Subtractive;
         public bool DontLightSelf;
 
-        public GZDoomLight() {
+        public DynamicLightData() {
             Color = new Color3();
             Offset = new Vector3();
         }
     }
 
-    public enum GZDoomLightType
+    public enum DynamicLightType
     {
-        NORMAL = 0,
+        NONE = -1,
+		NORMAL = 0,
         PULSE = 1,
         FLICKER = 2,
         SECTOR = 3,
@@ -30,7 +31,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
     }
 
     //divide these by 100 to get light color alpha
-    public enum GZDoomLightRenderStyle
+    public enum DynamicLightRenderStyle
     {
         NONE = 0,
         NORMAL = 99,

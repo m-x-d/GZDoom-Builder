@@ -321,10 +321,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartPlotter(true))
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
-				for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
+				if(!panning) //mxd
+					for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
+					if(!panning) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso); //mxd
 					renderer.PlotLinedef(highlighted, General.Colors.Highlight);
 				}
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
@@ -342,8 +343,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render selection
 			if(renderer.StartOverlay(true))
 			{
-				for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
-				if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso);
+				if(!panning) //mxd
+					for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
+				if(!panning && (highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
 				if(selecting) RenderMultiSelection();
 				renderer.Finish();
 			}
@@ -473,7 +475,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
 
 						// Update entire display
-						General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
+						General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 						General.Interface.RedrawDisplay();
 					}
 				}
@@ -489,6 +491,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+			if(panning) return; //mxd. Skip all this jass while panning
 
 			//mxd
 			if(selectpressed && !editpressed && !selecting) {
@@ -767,6 +770,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Update and redraw
 					General.Map.IsChanged = true;
 					General.Interface.RefreshInfo();
+					General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 					General.Interface.RedrawDisplay();
 				}
 			}
@@ -896,7 +900,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				OnMouseMove(e);
 				
 				// Redraw screen
-				General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
+				//General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 				General.Interface.RedrawDisplay();
 			}
 		}

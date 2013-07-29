@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						{
 							// Add the texture
 							textures[tx.Name] = tx;
-							flats[tx.Name] = tx;
+							if(!General.Map.Config.MixTexturesFlats) flats[tx.Name] = tx; //mxd. If MixTexturesFlats is set, textures and flats will be mixed in DataManager anyway
 						}
 					}
 					else if(objdeclaration == "sprite")

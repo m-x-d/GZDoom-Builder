@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Find in any of the wad files
 			// Note the backward order, because the last wad's images have priority
-			for(int i = wads.Count - 1; i >= 0; i--)
+			for(int i = wads.Count - 1; i > -1; i--)
 			{
 				Stream data = wads[i].GetPatchData(pname);
 				if(data != null) return data;
@@ -80,15 +80,13 @@ namespace CodeImp.DoomBuilder.Data
 			
 			try
 			{
-				// Find in patches directory
-				//string path = Path.Combine(PATCHES_DIR, Path.GetDirectoryName(pname));
-				//string filename = FindFirstFile(path, Path.GetFileName(pname), true);
+				//mxd. Find in directories ZDoom expects them to be
+				foreach(string location in PatchLocations){
+					string path = Path.Combine(location, Path.GetDirectoryName(pname));
+					string filename = FindFirstFile(path, Path.GetFileName(pname), true);
 
-				//mxd. ZDoom can load them from anywhere, so shall we
-				string filename = FindFirstFile(Path.GetDirectoryName(pname), Path.GetFileName(pname), true);
-				if((filename != null) && FileExists(filename))
-				{
-					return LoadFile(filename);
+					if(!string.IsNullOrEmpty(filename) && FileExists(filename))
+						return LoadFile(filename);
 				}
 			}
 			catch(Exception e)

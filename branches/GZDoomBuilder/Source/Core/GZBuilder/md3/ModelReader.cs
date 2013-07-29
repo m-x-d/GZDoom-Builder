@@ -31,7 +31,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			}
 		}
 		
-        public static void Load(ref ModeldefEntry mde, List<DataReader> containers, Device device) {
+		public static void Load(ModelData mde, List<DataReader> containers, Device device) {
             mde.Model = new GZModel();
             BoundingBoxSizes bbs = new BoundingBoxSizes();
 			MD3LoadResult result = new MD3LoadResult();
@@ -142,7 +142,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
             mde.Model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
         }
 
-		private static MD3LoadResult ReadMD3Model(ref BoundingBoxSizes bbs, ModeldefEntry mde, bool useSkins, MemoryStream s, Device device) {
+		private static MD3LoadResult ReadMD3Model(ref BoundingBoxSizes bbs, ModelData mde, bool useSkins, MemoryStream s, Device device) {
             long start = s.Position;
 			MD3LoadResult result = new MD3LoadResult();
 
@@ -224,7 +224,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
             return result;
         }
 
-        private static string ReadSurface(ref BoundingBoxSizes bbs, ref string skin, BinaryReader br, List<int> polyIndecesList, List<WorldVertex> vertList, ModeldefEntry mde) {
+        private static string ReadSurface(ref BoundingBoxSizes bbs, ref string skin, BinaryReader br, List<int> polyIndecesList, List<WorldVertex> vertList, ModelData mde) {
             int vertexOffset = vertList.Count;
             long start = br.BaseStream.Position;
             string magic = ReadString(br, 4);
@@ -352,7 +352,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			result.Meshes.Add(mesh);
 		}
 
-		private static MD3LoadResult ReadMD2Model(ref BoundingBoxSizes bbs, ModeldefEntry mde, MemoryStream s, Device D3DDevice) {
+		private static MD3LoadResult ReadMD2Model(ref BoundingBoxSizes bbs, ModelData mde, MemoryStream s, Device D3DDevice) {
             long start = s.Position;
 			MD3LoadResult result = new MD3LoadResult();
 
@@ -552,24 +552,22 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				ms.Close();
 				ms.Dispose();
 
-				if(bitmap == null) return null;
+				if(bitmap != null) {
+					BitmapData bmlock = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
+					texture = new Texture(device, bitmap.Width, bitmap.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
 
-				BitmapData bmlock = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
-				texture = new Texture(device, bitmap.Width, bitmap.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+					DataRectangle textureLock = texture.LockRectangle(0, LockFlags.None);
+					textureLock.Data.WriteRange(bmlock.Scan0, bmlock.Height * bmlock.Stride);
 
-				DataRectangle textureLock = texture.LockRectangle(0, LockFlags.None);
-				textureLock.Data.WriteRange(bmlock.Scan0, bmlock.Height * bmlock.Stride);
+					bitmap.UnlockBits(bmlock);
+					texture.UnlockRectangle(0);
+				}
+			} else {
+				texture = Texture.FromStream(device, ms);
 
-				bitmap.UnlockBits(bmlock);
-				texture.UnlockRectangle(0);
-
-				return texture;
+				ms.Close();
+				ms.Dispose();
 			}
-
-			texture = Texture.FromStream(device, ms);
-
-			ms.Close();
-			ms.Dispose();
 
 			return texture;
 		}

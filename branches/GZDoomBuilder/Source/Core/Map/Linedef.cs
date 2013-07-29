@@ -104,6 +104,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal bool FrontInterior { get { return frontinterior; } set { frontinterior = value; } }
 		internal bool ImpassableFlag { get { return impassableflag; } }
 		internal int ColorPresetIndex { get { return colorPresetIndex; } } //mxd
+		internal bool ExtraFloorFlag; //mxd
 		
 		#endregion
 
@@ -287,7 +288,6 @@ namespace CodeImp.DoomBuilder.Map
 			l.updateneeded = true;
 			l.activate = activate;
 			l.impassableflag = impassableflag;
-			//l.blocksoundflag = blocksoundflag;
 			l.UpdateColorPreset();//mxd
 			base.CopyPropertiesTo(l);
 		}
@@ -812,6 +812,7 @@ namespace CodeImp.DoomBuilder.Map
 			SetEndVertex(v);
 			nl.Selected = this.Selected;
 			nl.marked = this.marked;
+			nl.ExtraFloorFlag = this.ExtraFloorFlag; //mxd
 			
 			// Copy front sidedef if exists
 			if(front != null)

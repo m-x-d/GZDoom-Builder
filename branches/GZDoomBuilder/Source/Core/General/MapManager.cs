@@ -297,11 +297,8 @@ namespace CodeImp.DoomBuilder {
             map.Update();
             thingsfilter.Update();
 
-            //mxd. load models
-            data.LoadModels();
-            //mxd
-            namedScripts = new List<ScriptItem>();
-            numberedScripts = new List<ScriptItem>();
+			namedScripts = new List<ScriptItem>(); //mxd
+			numberedScripts = new List<ScriptItem>(); //mxd
 
             // Bind any methods
             General.Actions.BindMethods(this);
@@ -360,12 +357,11 @@ namespace CodeImp.DoomBuilder {
 #if DEBUG
             tempwad = new WAD(tempfile);
 #else
-				try { tempwad = new WAD(tempfile); }
-				catch(Exception e)
-				{
-					General.ShowErrorMessage("Error while creating a temporary wad file:\n" + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
-					return false;
-				}
+			try { tempwad = new WAD(tempfile); } catch(Exception e) 
+			{
+				General.ShowErrorMessage("Error while creating a temporary wad file:\n" + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
+				return false;
+			}
 #endif
 
             // Now open the map file
@@ -373,12 +369,11 @@ namespace CodeImp.DoomBuilder {
 #if DEBUG
             mapwad = new WAD(filepathname, true);
 #else
-				try { mapwad = new WAD(filepathname, true); }
-				catch(Exception e)
-				{
-					General.ShowErrorMessage("Error while opening source wad file:\n" + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
-					return false;
-				}
+			try { mapwad = new WAD(filepathname, true); } catch(Exception e) 
+			{
+				General.ShowErrorMessage("Error while opening source wad file:\n" + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
+				return false;
+			}
 #endif
 
             // Copy the map lumps to the temp file
@@ -397,13 +392,12 @@ namespace CodeImp.DoomBuilder {
 #if DEBUG
             map = io.Read(map, TEMP_MAP_HEADER);
 #else
-				try { map = io.Read(map, TEMP_MAP_HEADER); }
-				catch(Exception e)
-				{
-					General.ErrorLogger.Add(ErrorType.Error, "Unable to read the map data structures with the specified configuration. " + e.GetType().Name + ": " + e.Message);
-					General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
-					return false;
-				}
+			try { map = io.Read(map, TEMP_MAP_HEADER); } catch(Exception e) 
+			{
+				General.ErrorLogger.Add(ErrorType.Error, "Unable to read the map data structures with the specified configuration. " + e.GetType().Name + ": " + e.Message);
+				General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
+				return false;
+			}
 #endif
             map.EndAddRemove();
 
@@ -423,8 +417,6 @@ namespace CodeImp.DoomBuilder {
             map.Update();
             thingsfilter.Update();
 
-            //mxd. load models
-            data.LoadModels();
             //mxd. check script names
             UpdateScriptNames();
 

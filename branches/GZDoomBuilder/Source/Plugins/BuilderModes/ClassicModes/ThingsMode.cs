@@ -147,8 +147,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
-				for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
-				if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
+				if (!panning) { //mxd
+					for (int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
+					if ((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
+				}
 				renderer.Finish();
 			}
 
@@ -157,10 +159,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
 				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, 1.0f);
-				for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
+				if(!panning) //mxd
+					for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso);
+					if(!panning) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
 					renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
 				}
 
@@ -442,6 +445,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+			if(panning) return; //mxd. Skip all this jass while panning
 
 			//mxd
 			if(selectpressed && !editpressed && !selecting) {

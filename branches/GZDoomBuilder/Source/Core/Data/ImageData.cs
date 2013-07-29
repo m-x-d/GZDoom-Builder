@@ -177,9 +177,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			this.name = name;
 			this.longname = Lump.MakeLongName(name);
-            //mxd
-            if (this.fullName == null)
-                this.fullName = name;
+			fullName = name; //mxd
 		}
 		
 		// This unloads the image

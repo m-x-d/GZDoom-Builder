@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.Rendering
         private List<VisualThing> thingsWithLight;
         private int[] lightOffsets;
         private Dictionary<Texture, List<VisualGeometry>> litGeometry;
-        private Dictionary<ModeldefEntry, List<VisualThing>> thingsWithModel;
+        private Dictionary<ModelData, List<VisualThing>> thingsWithModel;
 		
 		// Crosshair
 		private FlatVertex[] crosshairverts;
@@ -418,7 +418,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			things = new Dictionary<ImageData, List<VisualThing>>[RENDER_PASSES];
 			thingsbydistance = new BinaryHeap<VisualThing>();
             //mxd 
-            thingsWithModel = new Dictionary<ModeldefEntry, List<VisualThing>>();
+            thingsWithModel = new Dictionary<ModelData, List<VisualThing>>();
             litGeometry = new Dictionary<Texture, List<VisualGeometry>>();
 
 			for(int i = 0; i < RENDER_PASSES; i++)
@@ -537,9 +537,9 @@ namespace CodeImp.DoomBuilder.Rendering
             lightOffsets = new int[3];
             foreach (VisualThing t in thingsWithLight) {
                 //add light to apropriate array.
-                if (t.LightRenderStyle == (int)GZDoomLightRenderStyle.NORMAL || t.LightRenderStyle == (int)GZDoomLightRenderStyle.VAVOOM)
+                if (t.LightRenderStyle == DynamicLightRenderStyle.NORMAL || t.LightRenderStyle == DynamicLightRenderStyle.VAVOOM)
                     lightOffsets[0]++;
-                else if (t.LightRenderStyle == (int)GZDoomLightRenderStyle.ADDITIVE)
+                else if (t.LightRenderStyle == DynamicLightRenderStyle.ADDITIVE)
                     lightOffsets[1]++;
                 else
                     lightOffsets[2]++;
@@ -857,7 +857,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						foreach(VisualThing t in group.Value)
 						{
                             //mxd
-                            if (General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected) && t.Thing.IsModel)
+                            if (t.Thing.IsModel && General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected))
                                 continue;
 
                             // Update buffer if needed
@@ -1028,7 +1028,7 @@ namespace CodeImp.DoomBuilder.Rendering
             // Begin rendering with this shader
             graphics.Shaders.World3D.BeginPass(currentshaderpass);
 
-            foreach (KeyValuePair<ModeldefEntry, List<VisualThing>> group in thingsWithModel) {
+            foreach (KeyValuePair<ModelData, List<VisualThing>> group in thingsWithModel) {
                 foreach (VisualThing t in group.Value) {
                     t.Update();
                     
@@ -1110,7 +1110,7 @@ namespace CodeImp.DoomBuilder.Rendering
                 radius = thingsWithLight[i].LightRadius;
                 radiusSquared = radius * radius;
                 if (distSquared < radiusSquared) {
-                    sign = thingsWithLight[i].LightRenderStyle == (int)GZDoomLightRenderStyle.NEGATIVE ? -1 : 1;
+                    sign = thingsWithLight[i].LightRenderStyle == DynamicLightRenderStyle.NEGATIVE ? -1 : 1;
                     scaler = 1 - distSquared / radiusSquared * thingsWithLight[i].LightColor.Alpha;
                     litColor.Red += thingsWithLight[i].LightColor.Red * scaler * sign;
                     litColor.Green += thingsWithLight[i].LightColor.Green * scaler * sign;
@@ -1196,7 +1196,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void AddThingGeometry(VisualThing t)
 		{
             //mxd. gater lights
-            if (General.Settings.GZDrawLights && !fullbrightness && t.LightType != -1) {
+            if (General.Settings.GZDrawLights && !fullbrightness && t.LightType != DynamicLightType.NONE) {
                 t.UpdateLightRadius();
 
                 if (t.LightRadius > 0) {
@@ -1210,16 +1210,15 @@ namespace CodeImp.DoomBuilder.Rendering
                 }
             }
 
-            if (!isThingOnScreen(t.BoundingBox)) {
-                return;
-            }
+            if (!isThingOnScreen(t.BoundingBox)) return;
 
             //mxd. gather models
-            if (General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected) && t.Thing.IsModel) {
-                ModeldefEntry mde = General.Map.Data.ModeldefEntries[t.Thing.Type];
-                if (!thingsWithModel.ContainsKey(mde)) 
-                    thingsWithModel.Add(mde, new List<VisualThing>());
-                thingsWithModel[mde].Add(t);
+			if(t.Thing.IsModel && General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected)) {
+                ModelData mde = General.Map.Data.ModeldefEntries[t.Thing.Type];
+                if (!thingsWithModel.ContainsKey(mde))
+					thingsWithModel.Add(mde, new List<VisualThing>() { t });
+				else
+					thingsWithModel[mde].Add(t);
             }
             
             // Make sure the distance to camera is calculated

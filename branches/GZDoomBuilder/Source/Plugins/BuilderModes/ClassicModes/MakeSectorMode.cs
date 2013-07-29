@@ -455,6 +455,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+			if(panning) return; //mxd. Skip all this jass while panning
 
 			// Highlight the region
 			Highlight((e.Button != MouseButtons.None));

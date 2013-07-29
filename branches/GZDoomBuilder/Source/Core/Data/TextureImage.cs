@@ -33,7 +33,6 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private List<TexturePatch> patches;
-        private bool gotFullName;//mxd
 		
 		#endregion
 
@@ -63,12 +62,6 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Add it
 			patches.Add(patch);
-
-            //mxd. Get full name from first patch
-            if (!gotFullName) {
-                fullName = General.Map.Data.GetPatchLocation(patch.lumpname);
-                gotFullName = true;
-            }
 		}
 		
 		// This loads the image
@@ -103,6 +96,8 @@ namespace CodeImp.DoomBuilder.Data
 					loadfailed = true;
 				}
 
+				int failCount = 0; //mxd
+
 				if(!loadfailed)
 				{
 					// Go for all patches
@@ -126,6 +121,7 @@ namespace CodeImp.DoomBuilder.Data
 								// Data is in an unknown format!
 								General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'. Does this lump contain valid picture data at all?");
 								loadfailed = true;
+								failCount++; //mxd
 							}
 							else
 							{
@@ -137,6 +133,7 @@ namespace CodeImp.DoomBuilder.Data
 									// Data cannot be read!
 									General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'. Does this lump contain valid picture data at all?");
 									loadfailed = true;
+									failCount++; //mxd
 								}
 							}
 
@@ -148,6 +145,7 @@ namespace CodeImp.DoomBuilder.Data
 							// Missing a patch lump!
 							General.ErrorLogger.Add(ErrorType.Error, "Missing patch lump '" + p.lumpname + "' while loading texture '" + this.Name + "'. Did you forget to include required resources?");
 							loadfailed = true;
+							failCount++; //mxd
 						}
 					}
 
@@ -156,10 +154,11 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				
 				// Dispose bitmap if load failed
-				if(loadfailed && (bitmap != null))
+				if((bitmap != null) && (loadfailed || failCount >= patches.Count)) //mxd. We can still display texture if at least one of the patches was loaded
 				{
 					bitmap.Dispose();
 					bitmap = null;
+					loadfailed = true;
 				}
 
 				// Pass on to base

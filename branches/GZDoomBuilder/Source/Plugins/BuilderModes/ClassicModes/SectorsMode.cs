@@ -481,7 +481,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
 					renderer.PlotSector(highlighted, General.Colors.Highlight);
-					BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
+					if(!panning) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso); //mxd
 				}
 				renderer.Finish();
 			}
@@ -497,7 +497,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render selection
 			if(renderer.StartOverlay(true))
 			{
-				if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso);
+				if(!panning && highlighted != null && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
 				if(selecting) RenderMultiSelection();
 				renderer.Finish();
 			}
@@ -627,7 +627,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Interface.OnEditFormValuesChanged += new EventHandler(sectorEditForm_OnValuesChanged);
 						General.Interface.ShowEditSectors(selected);
 						General.Interface.OnEditFormValuesChanged -= sectorEditForm_OnValuesChanged;
-						
+
+						General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
+
 						// When a single sector was selected, deselect it now
 						if(selected.Count == 1)
 						{
@@ -649,7 +651,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void sectorEditForm_OnValuesChanged(object sender, EventArgs e) {
 			// Update entire display
 			General.Map.Map.Update();
-			General.Map.Renderer2D.Update3dFloorTagsList();
+			//General.Map.Renderer2D.UpdateExtraFloorFlag();
 			General.Interface.RedrawDisplay();
 		}
 		
@@ -657,6 +659,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+			if(panning) return; //mxd. Skip all this jass while panning
 
 			//mxd
 			if(selectpressed && !editpressed && !selecting) {
@@ -1121,6 +1124,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Update and redraw
 					General.Map.IsChanged = true;
 					General.Interface.RefreshInfo();
+					General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 					General.Interface.RedrawDisplay();
 				}
 			}
@@ -1368,7 +1372,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UpdateSelectedLabels();
 				
 				// Redraw screen
-				General.Map.Renderer2D.Update3dFloorTagsList(); //mxd
+				//General.Map.Renderer2D.Update3dFloorIndicators(); //mxd
 				General.Interface.RedrawDisplay();
 			}
 		}

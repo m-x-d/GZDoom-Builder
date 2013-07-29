@@ -104,6 +104,8 @@ namespace CodeImp.DoomBuilder.Data
 					loadfailed = true;
 				}
 
+				int failCount = 0; //mxd
+
 				if(!loadfailed)
 				{
 					// Go for all patches
@@ -126,7 +128,7 @@ namespace CodeImp.DoomBuilder.Data
 							{
 								// Data is in an unknown format!
 								General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'");
-								loadfailed = true;
+								failCount++; //mxd
 							}
 							else
 							{
@@ -138,7 +140,7 @@ namespace CodeImp.DoomBuilder.Data
 								{
 									// Data cannot be read!
 									General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'");
-									loadfailed = true;
+									failCount++; //mxd
 								}
 								if(patchbmp != null)
 								{
@@ -192,9 +194,9 @@ namespace CodeImp.DoomBuilder.Data
 												float bb = p.blend.b * PixelColor.BYTE_TO_FLOAT;
 
 												for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
-													cp->r = (byte)((((float)cp->r * PixelColor.BYTE_TO_FLOAT) * br) * 255.0f);
-													cp->g = (byte)((((float)cp->g * PixelColor.BYTE_TO_FLOAT) * bg) * 255.0f);
-													cp->b = (byte)((((float)cp->b * PixelColor.BYTE_TO_FLOAT) * bb) * 255.0f);
+													cp->r = (byte)(((cp->r * PixelColor.BYTE_TO_FLOAT) * br) * 255.0f);
+													cp->g = (byte)(((cp->g * PixelColor.BYTE_TO_FLOAT) * bg) * 255.0f);
+													cp->b = (byte)(((cp->b * PixelColor.BYTE_TO_FLOAT) * bb) * 255.0f);
 												}
 											} else if(p.blendstyle == TexturePathBlendStyle.Tint) {
 												float tintammount = p.tintammount - 0.1f;
@@ -206,9 +208,9 @@ namespace CodeImp.DoomBuilder.Data
 													float invTint = 1.0f - tintammount;
 
 													for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
-														cp->r = (byte)((((float)cp->r * PixelColor.BYTE_TO_FLOAT) * invTint + br) * 255.0f);
-														cp->g = (byte)((((float)cp->g * PixelColor.BYTE_TO_FLOAT) * invTint + bg) * 255.0f);
-														cp->b = (byte)((((float)cp->b * PixelColor.BYTE_TO_FLOAT) * invTint + bb) * 255.0f);
+														cp->r = (byte)(((cp->r * PixelColor.BYTE_TO_FLOAT) * invTint + br) * 255.0f);
+														cp->g = (byte)(((cp->g * PixelColor.BYTE_TO_FLOAT) * invTint + bg) * 255.0f);
+														cp->b = (byte)(((cp->b * PixelColor.BYTE_TO_FLOAT) * invTint + bb) * 255.0f);
 													}
 												}
 											}
@@ -216,7 +218,7 @@ namespace CodeImp.DoomBuilder.Data
 											//mxd. apply RenderStyle
 											if(p.style == TexturePathRenderStyle.Blend) {
 												for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--)
-													cp->a = (byte)((((float)cp->a * PixelColor.BYTE_TO_FLOAT) * p.alpha) * 255.0f);
+													cp->a = (byte)(((cp->a * PixelColor.BYTE_TO_FLOAT) * p.alpha) * 255.0f);
 
 											//mxd. we need a copy of underlying part of texture for these styles
 											} else if(p.style != TexturePathRenderStyle.Copy) {
@@ -239,7 +241,6 @@ namespace CodeImp.DoomBuilder.Data
 
 												if(texturebmpdata != null) {
 													PixelColor* texturepixels = (PixelColor*)(texturebmpdata.Scan0.ToPointer());
-													int numtexpixels = texturebmpdata.Width * texturebmpdata.Height;
 													PixelColor* tcp = texturepixels + numpixels - 1;
 
 													if(p.style == TexturePathRenderStyle.Add) {
@@ -305,16 +306,17 @@ namespace CodeImp.DoomBuilder.Data
 						{
 							// Missing a patch lump!
 							General.ErrorLogger.Add(ErrorType.Error, "Missing patch lump '" + p.lumpname + "' while loading texture '" + this.Name + "'");
-							loadfailed = true;
+							failCount++; //mxd
 						}
 					}
 				}
 				
 				// Dispose bitmap if load failed
-				if(loadfailed && (bitmap != null))
+				if((bitmap != null) && (loadfailed || failCount >= patches.Count)) //mxd. We can still display texture if at least one of the patches was loaded
 				{
 					bitmap.Dispose();
 					bitmap = null;
+					loadfailed = true;
 				}
 
 				// Pass on to base
