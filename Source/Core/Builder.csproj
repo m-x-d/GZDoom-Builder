@@ -754,7 +754,8 @@
     <Compile Include="GZBuilder\Data\LinedefColorPreset.cs" />
     <Compile Include="GZBuilder\Data\LinksCollector.cs" />
     <Compile Include="GZBuilder\Data\MapInfo.cs" />
-    <Compile Include="GZBuilder\Data\ModeldefEntry.cs" />
+    <Compile Include="GZBuilder\Data\ModelData.cs" />
+    <Compile Include="GZBuilder\Data\ModelLoadState.cs" />
     <Compile Include="GZBuilder\Data\ScriptItem.cs" />
     <Compile Include="GZBuilder\Data\ScriptType.cs" />
     <Compile Include="GZBuilder\Data\SharpCompressHelper.cs" />

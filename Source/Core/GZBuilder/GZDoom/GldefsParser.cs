@@ -11,10 +11,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
         public delegate void IncludeDelegate(GldefsParser parser, string includefile);
         public IncludeDelegate OnInclude;
 
-        private Dictionary<string, GZDoomLight> lightsByName; //LightName, light definition
+        private Dictionary<string, DynamicLightData> lightsByName; //LightName, light definition
         private Dictionary<string, string> objects; //ClassName, LightName
 
-        public Dictionary<string, GZDoomLight> LightsByName { get { return lightsByName; } }
+        public Dictionary<string, DynamicLightData> LightsByName { get { return lightsByName; } }
         public Dictionary<string, string> Objects { get { return objects; } }
 
         private List<string> parsedLumps;
@@ -26,12 +26,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
             public const string FLICKER2 = "flickerlight2";
             public const string SECTOR = "sectorlight";
 
-            public static Dictionary<string, int> GLDEFS_TO_GZDOOM_LIGHT_TYPE = new Dictionary<string, int>() { { POINT, 0 }, { PULSE, 1 }, { FLICKER, 2 }, { FLICKER2, 4 }, { SECTOR, 3 } };
+			public static Dictionary<string, DynamicLightType> GLDEFS_TO_GZDOOM_LIGHT_TYPE = new Dictionary<string, DynamicLightType>() { { POINT, DynamicLightType.NORMAL }, { PULSE, DynamicLightType.PULSE }, { FLICKER, DynamicLightType.FLICKER }, { FLICKER2, DynamicLightType.RANDOM }, { SECTOR, DynamicLightType.SECTOR } };
         }
 
         public GldefsParser() {
             parsedLumps = new List<string>();
-            lightsByName = new Dictionary<string, GZDoomLight>(); //LightName, Light params
+            lightsByName = new Dictionary<string, DynamicLightData>(); //LightName, Light params
             objects = new Dictionary<string, string>(); //ClassName, LightName
         }
 
@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         bool gotErrors = false;
                         string lightType = token;
 
-                        GZDoomLight light = new GZDoomLight();
+                        DynamicLightData light = new DynamicLightData();
                         light.Type = GldefsLightType.GLDEFS_TO_GZDOOM_LIGHT_TYPE[lightType];
 
                         //find classname
@@ -295,14 +295,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                             }
 
                                             //light-type specific checks
-                                            if (light.Type == (int)GZDoomLightType.NORMAL) {
+                                            if (light.Type == DynamicLightType.NORMAL) {
                                                 if (light.PrimaryRadius == 0) {
                                                     General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": light Size is 0. It won't be shown in GZDoom!");
                                                     gotErrors = true;
                                                 }
                                             }
 
-                                            if (light.Type == (int)GZDoomLightType.FLICKER || light.Type == (int)GZDoomLightType.PULSE || light.Type == (int)GZDoomLightType.RANDOM) {
+                                            if (light.Type == DynamicLightType.FLICKER || light.Type == DynamicLightType.PULSE || light.Type == DynamicLightType.RANDOM) {
                                                 if (light.PrimaryRadius == 0 && light.SecondaryRadius == 0) {
                                                     General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": 'Size' and 'SecondarySize' are 0. This light won't be shown in GZDoom!");
                                                     gotErrors = true;

@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		PixelColor DetermineThingColor(Thing t);
 		int DetermineVertexColor(Vertex v);
 		int CalculateBrightness(int level);
-		void Update3dFloorTagsList(); //mxd
+		void UpdateExtraFloorFlag(); //mxd
 		
 		// Rendering management methods
 		bool StartPlotter(bool clear);

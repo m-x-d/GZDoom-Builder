@@ -197,15 +197,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector3D pos = Thing.Position;
 			if(Thing.Type == 9501)
 			{
-				// This is a special thing that needs special positioning
-				SectorData sd = mode.GetSectorData(Thing.Sector);
-				pos.z = sd.Ceiling.sector.CeilHeight + Thing.Position.z;
+				if(Thing.Sector != null) { //mxd
+					// This is a special thing that needs special positioning
+					SectorData sd = mode.GetSectorData(Thing.Sector);
+					pos.z = sd.Ceiling.sector.CeilHeight + Thing.Position.z;
+				}
 			}
 			else if(Thing.Type == 9500)
 			{
-				// This is a special thing that needs special positioning
-				SectorData sd = mode.GetSectorData(Thing.Sector);
-				pos.z = sd.Floor.sector.FloorHeight + Thing.Position.z;
+				if(Thing.Sector != null) { //mxd
+					// This is a special thing that needs special positioning
+					SectorData sd = mode.GetSectorData(Thing.Sector);
+					pos.z = sd.Floor.sector.FloorHeight + Thing.Position.z;
+				}
 			}
 			else if(info.AbsoluteZ)
 			{

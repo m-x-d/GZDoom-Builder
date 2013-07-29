@@ -52,6 +52,8 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Properties
 
+		protected string[] PatchLocations = { PATCHES_DIR, TEXTURES_DIR, FLATS_DIR }; //mxd. Because ZDoom looks for patches in these folders
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -325,6 +327,22 @@ namespace CodeImp.DoomBuilder.Data
 			AddImagesToList(images, imgset);
 			
 			return new List<ImageData>(images.Values);
+		}
+
+		//mxd.
+		public override Stream GetFlatData(string pname) {
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Find in any of the wad files
+			// Note the backward order, because the last wad's images have priority
+			for(int i = wads.Count - 1; i > -1; i--) {
+				Stream data = wads[i].GetFlatData(pname);
+				if(data != null) return data;
+			}
+
+			// Nothing found
+			return null;
 		}
 		
 		#endregion

@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Map
 		private int numthings;
 
 		//mxd
-		private Sector[] newSectors;
+		private Dictionary<int, int> newSectorLineIndices; //line index, sector order
 		private GroupInfo[] groupInfos;
 		
 		// Behavior
@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		internal bool AutoRemove { get { return autoremove; } set { autoremove = value; } }
 
-		public Sector[] NewSectors { get { return newSectors; } } //mxd
+		public Dictionary<int, int> NewSectorLineIndices { get { return newSectorLineIndices; } } //mxd
 
 		public GroupInfo[] GroupInfos { get { return groupInfos; } } //mxd
 
@@ -184,7 +184,6 @@ namespace CodeImp.DoomBuilder.Map
 			indexholes = new List<int>();
 			lastsectorindex = 0;
 			autoremove = true;
-			newSectors = new Sector[0]; //mxd
 			groupInfos = new GroupInfo[10]; //mxd
 			
 			// We have no destructor
@@ -207,7 +206,6 @@ namespace CodeImp.DoomBuilder.Map
 			indexholes = new List<int>();
 			lastsectorindex = 0;
 			autoremove = true;
-			newSectors = new Sector[0]; //mxd
 			groupInfos = new GroupInfo[10]; //mxd
 
 			// Deserialize
@@ -258,7 +256,6 @@ namespace CodeImp.DoomBuilder.Map
 				sel_sectors = null;
 				sel_things = null;
 				indexholes = null;
-				newSectors = null; //mxd
 				groupInfos = null; //mxd
 				
 				// Done
@@ -3043,8 +3040,19 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd
 		private void updateNewSectors() {
 			int n = sectors.Length < General.Settings.GZNewSectorsCount ? sectors.Length : General.Settings.GZNewSectorsCount;
-			newSectors = new Sector[n];
+			Sector[] newSectors = new Sector[n];
 			Array.Copy(sectors, sectors.Length - n, newSectors, 0, n);
+			
+			List<int> newLineIndices = new List<int>();
+			newSectorLineIndices = new Dictionary<int, int>();
+
+			for(int i = newSectors.Length-1; i > -1; i--) {
+				foreach (Sidedef side in newSectors[i].Sidedefs){
+					if(newLineIndices.Contains(side.Line.Index)) continue;
+					newLineIndices.Add(side.Line.Index);
+					newSectorLineIndices.Add(side.Line.Index, i);
+				}
+			}
 		}
 		
 		#endregion

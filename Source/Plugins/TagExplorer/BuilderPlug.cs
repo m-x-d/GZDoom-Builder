@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using CodeImp.DoomBuilder.Config;
+﻿using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Controls;
-using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Plugins;
 
 namespace CodeImp.DoomBuilder.TagExplorer

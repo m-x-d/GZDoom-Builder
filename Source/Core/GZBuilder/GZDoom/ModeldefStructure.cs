@@ -9,7 +9,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
     internal sealed class ModeldefStructure {
         private const int MAX_MODELS = 4; //maximum models per modeldef entry, zero-based
 
-        internal ModeldefEntry Parse(ModeldefParser parser) {
+        internal ModelData Parse(ModeldefParser parser) {
             string[] textureNames = new string[4];
             string[] modelNames = new string[4];
             string path = "";
@@ -311,7 +311,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
             if (gotErrors) return null;
 
             //classname is set in ModeldefParser
-            ModeldefEntry mde = new ModeldefEntry();
+            ModelData mde = new ModelData();
             mde.Scale = scale;
             mde.zOffset = zOffset;
 			mde.AngleOffset = Angle2D.DegToRad(angleOffset);// *(float)Math.PI / 180.0f;

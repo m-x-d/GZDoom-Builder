@@ -23,6 +23,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.VisualModes;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
 
@@ -56,7 +57,8 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private int action;
 		private int[] args;
-		protected float scale; //mxd. Used in model rendering
+		private float scale; //mxd. Used in model rendering
+		private bool isModel; //mxd
 
 		// Configuration
 		private float size;
@@ -69,7 +71,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Properties
 
 		public MapSet Map { get { return map; } }
-        public int Type { get { return type; } set { BeforePropsChange(); type = value; } }
+		public int Type { get { return type; } set { BeforePropsChange(); type = value; UpdateModelStatus(); } } //mxd
 		public Vector3D Position { get { return pos; } }
 		public float Scale { get { return scale; } } //mxd
 		public float Angle { get { return anglerad; } }
@@ -83,8 +85,7 @@ namespace CodeImp.DoomBuilder.Map
 		public bool FixedSize { get { return fixedsize; } }
 		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public Sector Sector { get { return sector; } }
-        //mxd
-        public bool IsModel;
+		public bool IsModel { get { return isModel; } } //mxd
 
         #endregion
 
@@ -181,9 +182,11 @@ namespace CodeImp.DoomBuilder.Map
 			s.rwInt(ref tag);
 			s.rwInt(ref action);
 			for(int i = 0; i < NUM_ARGS; i++) s.rwInt(ref args[i]);
-			
-			if(!s.IsWriting)
+
+			if(!s.IsWriting) {
 				anglerad = Angle2D.DoomToReal(angledoom);
+				UpdateModelStatus(); //mxd
+			}
 		}
 
 		// This copies all properties to another thing
@@ -193,6 +196,7 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Copy properties
 			t.type = type;
+			t.UpdateModelStatus();
 			t.anglerad = anglerad;
 			t.angledoom = angledoom;
 			t.pos = pos;
@@ -233,6 +237,20 @@ namespace CodeImp.DoomBuilder.Map
 					break;
 				}
 			}
+		}
+
+		//mxd. This checks if the thing has model override
+		internal void UpdateModelStatus() {
+			if(General.Map.Data == null) {
+				isModel = false;
+				return;
+			}
+
+			isModel = General.Map.Data.ModeldefEntries.ContainsKey(type);
+			if(!isModel) return;
+
+			if(General.Map.Data.ModeldefEntries[type].LoadState == ModelLoadState.None)
+				General.Map.Data.ProcessModel(type);
 		}
 
 		// This translates the flags into UDMF fields
@@ -405,6 +423,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.args = new int[NUM_ARGS];
 			args.CopyTo(this.args, 0);
 			this.Move(x, y, zoffset);
+			UpdateModelStatus(); //mxd
 		}
 		
 		// This updates the settings from configuration

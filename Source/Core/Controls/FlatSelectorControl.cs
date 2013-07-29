@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				ImageData texture = General.Map.Data.GetFlatImage(imagename); //mxd
 
-				if(string.IsNullOrEmpty(texture.FullName)) DisplayImageSize(0, 0); //mxd
+				if(string.IsNullOrEmpty(texture.FullName) || texture is UnknownImage) DisplayImageSize(0, 0); //mxd
 				else DisplayImageSize(texture.ScaledWidth, texture.ScaledHeight); //mxd
 				
 				// Set the image

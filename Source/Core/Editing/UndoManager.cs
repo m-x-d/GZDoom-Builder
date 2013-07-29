@@ -691,7 +691,7 @@ namespace CodeImp.DoomBuilder.Editing
 							General.Map.ThingsFilter.Update();
 							General.Map.Data.UpdateUsedTextures();
 							General.MainWindow.RefreshInfo();
-							General.MainWindow.RedrawDisplay();
+							//General.MainWindow.RedrawDisplay();
 							
 							// Map changed!
 							General.Map.IsChanged = true;
@@ -701,6 +701,7 @@ namespace CodeImp.DoomBuilder.Editing
 							General.Plugins.OnUndoEnd();
 
 							// Update interface
+							General.MainWindow.RedrawDisplay(); //mxd
 							dobackgroundwork = true;
 							General.MainWindow.UpdateInterface();
 						}
@@ -833,7 +834,7 @@ namespace CodeImp.DoomBuilder.Editing
 							General.Map.ThingsFilter.Update();
 							General.Map.Data.UpdateUsedTextures();
 							General.MainWindow.RefreshInfo();
-							General.MainWindow.RedrawDisplay();
+							//General.MainWindow.RedrawDisplay();
 							
 							// Map changed!
 							General.Map.IsChanged = true;
@@ -843,6 +844,7 @@ namespace CodeImp.DoomBuilder.Editing
 							General.Plugins.OnRedoEnd();
 
 							// Update interface
+							General.MainWindow.RedrawDisplay(); //mxd
 							dobackgroundwork = true;
 							General.MainWindow.UpdateInterface();
 						}

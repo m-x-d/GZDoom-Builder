@@ -428,7 +428,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void vertexEditForm_OnValuesChanged(object sender, EventArgs e) {
 			// Update entire display
 			General.Map.Map.Update();
-			General.Map.Renderer2D.Update3dFloorTagsList();
+			//General.Map.Renderer2D.Update3dFloorIndicators();
 			General.Interface.RedrawDisplay();
 		}
 		
@@ -436,6 +436,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+			if(panning) return; //mxd. Skip all this jass while panning
 
 			//mxd
 			if(selectpressed && !editpressed && !selecting) {
@@ -880,6 +881,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			OnMouseMove(e);
 
 			// Redraw screen
+			General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 			General.Interface.RedrawDisplay();
 		}
 

@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.Rendering
 	 * PresentationLayer(s) to specify how to present these layers.
 	 */
 
-	internal unsafe sealed class Renderer2D : Renderer, IRenderer2D
+	internal sealed class Renderer2D : Renderer, IRenderer2D
 	{
 		#region ================== Constants
 
@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float THING_CIRCLE_SIZE = 1f;
 		private const float THING_CIRCLE_SHRINK = 0f;
 		private const int THING_BUFFER_SIZE = 100;
-		//private const float THINGS_BACK_ALPHA = 0.3f;
+		private const float MINIMUM_THING_RADIUS = 1.5f; //mxd
 
 		private const string FONT_NAME = "Verdana";
 		private const int FONT_WIDTH = 0;
@@ -128,8 +128,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Presentation present;
 
         //mxd
-        private Dictionary<Vector2D, Thing> thingsWithModel;
-		private List<int> tagsOf3DFloors;
+		private Dictionary<int, Dictionary<Vector2D, Thing>> thingsWithModel; //model index, list of thing positions in screen space, thing
 		
 		#endregion
 
@@ -165,7 +164,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Create surface manager
 			surfaces = new SurfaceManager();
-			tagsOf3DFloors = new List<int>(); //mxd
 
 			// Create rendertargets
 			CreateRendertargets();
@@ -203,7 +201,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 		
 		// This draws the image on screen
-		public void Present()
+		public unsafe void Present()
 		{
 			General.Plugins.OnPresentDisplayBegin();
 			
@@ -398,7 +396,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 		
 		// Allocates new image memory to render on
-		public void CreateRendertargets()
+		public unsafe void CreateRendertargets()
 		{
 			SurfaceDescription sd;
 			DataStream stream;
@@ -581,16 +579,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor DetermineThingColor(Thing t)
 		{
 			// Determine color
-            if (t.Selected) {
-                return General.Colors.Selection;
-            //mxd. if thing is light, set it's color to light color:
-            }else if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Type) != -1){
+            if (t.Selected) return General.Colors.Selection;
+           
+			//mxd. if thing is light, set it's color to light color:
+			if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Type) != -1){
                 if (t.Type == 1502) //vavoom light
                     return new PixelColor(255, 255, 255, 255);
                 if (t.Type == 1503) //vavoom colored light
                     return new PixelColor(255, (byte)t.Args[1], (byte)t.Args[2], (byte)t.Args[3]);
                 return new PixelColor(255, (byte)t.Args[0], (byte)t.Args[1], (byte)t.Args[2]);
             }
+
             return t.Color;
 		}
 
@@ -605,34 +604,48 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This returns the color for a linedef
 		public PixelColor DetermineLinedefColor(Linedef l)
 		{
-			if(l.Selected)
-				return General.Colors.Selection;
-			
-            if(l.ImpassableFlag)
-			{
-                //mxd. Impassable lines
-                if(l.ColorPresetIndex != -1)
-                    return General.Map.ConfigSettings.LinedefColorPresets[l.ColorPresetIndex].Color;
-                return General.Colors.Linedefs;
+			if(l.Selected) return General.Colors.Selection;
+
+			//mxd. Impassable lines
+			if(l.ImpassableFlag) {
+				if(l.ColorPresetIndex != -1)
+					return General.Map.ConfigSettings.LinedefColorPresets[l.ColorPresetIndex].Color;
+				return General.Colors.Linedefs;
 			}
 
-            //mxd. Passable lines
-            if(l.ColorPresetIndex != -1)
-                return General.Map.ConfigSettings.LinedefColorPresets[l.ColorPresetIndex].Color.WithAlpha(General.Settings.DoubleSidedAlphaByte);
-            return General.Colors.Linedefs.WithAlpha(General.Settings.DoubleSidedAlphaByte);
+			//mxd. Passable lines
+			if(l.ColorPresetIndex != -1)
+				return General.Map.ConfigSettings.LinedefColorPresets[l.ColorPresetIndex].Color.WithAlpha(General.Settings.DoubleSidedAlphaByte);
+			return General.Colors.Linedefs.WithAlpha(General.Settings.DoubleSidedAlphaByte);
 		}
 
-		//mxd
-		public void Update3dFloorTagsList() {
-			//mxd. Collect 3d-floors tags
-			tagsOf3DFloors = new List<int>();
+		//mxd. This collects indices of linedefs, which are parts of sectors with 3d floors
+		public void UpdateExtraFloorFlag() {
+			List<int> tagList = new List<int>();
+			
+			//find lines with 3d floor action and collect sector tags
 			foreach(Linedef l in General.Map.Map.Linedefs){
 				if(l.Action == 160) {
 					int sectortag = (l.Args[1] & 8) != 0 ? l.Args[0] : l.Args[0] + (l.Args[4] << 8);
-
-					if(sectortag != 0 && !tagsOf3DFloors.Contains(sectortag))
-						tagsOf3DFloors.Add(sectortag);
+					if(sectortag != 0) tagList.Add(sectortag);
 				}
+			}
+
+			tagList.Sort();
+			int[] tags = tagList.ToArray();
+
+			//find lines, which are related to sectors with 3d floors, and collect their valuable indices
+			foreach(Linedef l in General.Map.Map.Linedefs) {
+				if(l.Front != null && l.Front.Sector != null && l.Front.Sector.Tag != 0 && Array.BinarySearch(tags, l.Front.Sector.Tag) > -1) {
+					l.ExtraFloorFlag = true;
+					continue;
+				}
+				if(l.Back != null && l.Back.Sector != null && l.Back.Sector.Tag != 0 && Array.BinarySearch(tags, l.Back.Sector.Tag) > -1) {
+					l.ExtraFloorFlag = true;
+					continue;
+				}
+
+				l.ExtraFloorFlag = false;
 			}
 		}
 
@@ -643,10 +656,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public unsafe bool StartPlotter(bool clear)
 		{
-			if(renderlayer != RenderLayers.None) {
-				//throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
-				return false; //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
-			}
+			if(renderlayer != RenderLayers.None) return false; //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
 
 			renderlayer = RenderLayers.Plotter;
 			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
@@ -672,21 +682,16 @@ namespace CodeImp.DoomBuilder.Rendering
 				UpdateTransformations();
 				return true;
 			}
-			else
-			{
-				// Can't render!
-				Finish();
-				return false;
-			}
+
+			// Can't render!
+			Finish();
+			return false;
 		}
 
 		// This begins a drawing session
-		public unsafe bool StartThings(bool clear)
+		public bool StartThings(bool clear)
 		{
-			if(renderlayer != RenderLayers.None) {
-				//throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
-				return false; //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
-			}
+			if(renderlayer != RenderLayers.None) return false;  //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
 
 			renderlayer = RenderLayers.Things;
 			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
@@ -702,29 +707,21 @@ namespace CodeImp.DoomBuilder.Rendering
 					UpdateTransformations();
 					return true;
 				}
-				else
-				{
-					// Can't render!
-					Finish();
-					return false;
-				}
-			}
-			else
-			{
+
 				// Can't render!
 				Finish();
 				return false;
 			}
+
+			// Can't render!
+			Finish();
+			return false;
 		}
 
 		// This begins a drawing session
-		public unsafe bool StartOverlay(bool clear)
+		public bool StartOverlay(bool clear)
 		{
-			if(renderlayer != RenderLayers.None) {
-				//throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
-				return false; //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
-			}
-
+			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
 			renderlayer = RenderLayers.Overlay;
 			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
 			
@@ -739,19 +736,15 @@ namespace CodeImp.DoomBuilder.Rendering
 					UpdateTransformations();
 					return true;
 				}
-				else
-				{
-					// Can't render!
-					Finish();
-					return false;
-				}
-			}
-			else
-			{
+
 				// Can't render!
 				Finish();
 				return false;
 			}
+
+			// Can't render!
+			Finish();
+			return false;
 		}
 
 		// This ends a drawing session
@@ -794,8 +787,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private void SetupBackground()
 		{
 			Vector2D ltpos, rbpos;
-			Vector2D backoffset = new Vector2D((float)General.Map.Grid.BackgroundX, (float)General.Map.Grid.BackgroundY);
-			Vector2D backimagesize = new Vector2D((float)General.Map.Grid.Background.ScaledWidth, (float)General.Map.Grid.Background.ScaledHeight);
+			Vector2D backoffset = new Vector2D(General.Map.Grid.BackgroundX, General.Map.Grid.BackgroundY);
+			Vector2D backimagesize = new Vector2D(General.Map.Grid.Background.ScaledWidth, General.Map.Grid.Background.ScaledHeight);
 			Vector2D backimagescale = new Vector2D(General.Map.Grid.BackgroundScaleX, General.Map.Grid.BackgroundScaleY);
 			
 			// Scale the background image size
@@ -835,7 +828,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This renders all grid
-		private void RenderBackgroundGrid()
+		private unsafe void RenderBackgroundGrid()
 		{
 			Plotter gridplotter;
 			DataRectangle lockedrect;
@@ -951,9 +944,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Returns false when not on the screen
 		private bool CreateThingVerts(Thing t, ref FlatVertex[] verts, int offset, PixelColor c)
 		{
+			if(t.Size * scale < MINIMUM_THING_RADIUS) return false; //mxd. Don't render tiny little things
+			
 			float circlesize;
 			float arrowsize;
-			int color;
 			
 			// Transform to screen coordinates
 			Vector2D screenpos = ((Vector2D)t.Position).GetTransformed(translatex, translatey, scale, -scale);
@@ -971,20 +965,24 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 			
 			// Check if the thing is actually on screen
-			if(((screenpos.x + circlesize) > 0.0f) && ((screenpos.x - circlesize) < (float)windowsize.Width) &&
-				((screenpos.y + circlesize) > 0.0f) && ((screenpos.y - circlesize) < (float)windowsize.Height))
+			if(((screenpos.x + circlesize) > 0.0f) && ((screenpos.x - circlesize) < windowsize.Width) &&
+				((screenpos.y + circlesize) > 0.0f) && ((screenpos.y - circlesize) < windowsize.Height))
 			{
                 //mxd. Collect things with models for rendering
-                if (General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected)) {
-                    Dictionary<int, ModeldefEntry> mde = General.Map.Data.ModeldefEntries;
-                    if (mde != null && mde.ContainsKey(t.Type)) {
-                        thingsWithModel[screenpos] = t;
-                    }
+				if(t.IsModel && General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected)) {
+					if(!thingsWithModel.ContainsKey(t.Type)) {
+						thingsWithModel.Add(t.Type, new Dictionary<Vector2D, Thing>());
+					}
+
+					if(thingsWithModel[t.Type].ContainsKey(screenpos)) {
+						thingsWithModel[t.Type][screenpos] = t;
+					} else {
+						thingsWithModel[t.Type].Add(screenpos, t);
+					}
                 }
                 
-                
                 // Get integral color
-				color = c.ToInt();
+				int color = c.ToInt();
 
 				// Setup fixed rect for circle
 				verts[offset].x = screenpos.x - circlesize;
@@ -1051,11 +1049,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Done
 				return true;
 			}
-			else
-			{
-				// Not on screen
-				return false;
-			}
+
+			// Not on screen
+			return false;
 		}
 		
 		// This draws a set of things
@@ -1099,7 +1095,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				FlatVertex[] verts = new FlatVertex[THING_BUFFER_SIZE * 12];
 
                 //mxd
-                thingsWithModel = new Dictionary<Vector2D, Thing>();
+				thingsWithModel = new Dictionary<int, Dictionary<Vector2D, Thing>>();
 
 				// Go for all things
 				int buffercount = 0;
@@ -1152,25 +1148,28 @@ namespace CodeImp.DoomBuilder.Rendering
 					graphics.Device.SetRenderState(RenderState.FillMode, FillMode.Wireframe);
 
                     graphics.Shaders.Things2D.BeginPass(1);
-                    foreach(KeyValuePair<Vector2D, Thing> group in thingsWithModel){
-                        ModeldefEntry mde = General.Map.Data.ModeldefEntries[group.Value.Type];
 
-                        if (mde.Model != null) {//render model
-                            //wire color
-                            graphics.Shaders.Things2D.FillColor = group.Value.Selected ? General.Colors.Selection.ToColorValue() : General.Colors.ModelWireframe.ToColorValue();
+					Color4 cSel = General.Colors.Selection.ToColorValue();
+					Color4 cWire = General.Colors.ModelWireframe.ToColorValue();
+					ModelData mde;
 
-                            for (int i = 0; i < mde.Model.Meshes.Count; i++) {
-								graphics.Shaders.Things2D.SetTransformSettings(group.Key, group.Value.Angle, scale * group.Value.Scale);
-                                graphics.Shaders.Things2D.ApplySettings();
+					foreach(KeyValuePair<int, Dictionary<Vector2D, Thing>> group in thingsWithModel) {
+						lock(General.Map.Data.ModeldefEntries[group.Key]) {
+							mde = General.Map.Data.ModeldefEntries[group.Key];
+							foreach(KeyValuePair<Vector2D, Thing> thingData in group.Value) {
+								graphics.Shaders.Things2D.FillColor = thingData.Value.Selected ? cSel : cWire;
 
-                                // Draw
-								mde.Model.Meshes[i].DrawSubset(0);
-                            }
+								for(int i = 0; i < mde.Model.Meshes.Count; i++) {
+									graphics.Shaders.Things2D.SetTransformSettings(thingData.Key, thingData.Value.Angle, scale * thingData.Value.Scale);
+									graphics.Shaders.Things2D.ApplySettings();
 
-                        } else {
-                            group.Value.IsModel = General.Map.Data.LoadModelForThing(group.Value);
-                        }
-                    }
+									// Draw
+									mde.Model.Meshes[i].DrawSubset(0);
+								}
+							}
+						}
+					}
+
                     graphics.Shaders.Things2D.EndPass();
 
 					graphics.Device.SetRenderState(RenderState.FillMode, FillMode.Solid);
@@ -1201,9 +1200,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This redraws the surface
 		public void RedrawSurface()
 		{
-			//mxd...
-			//if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
-			if(renderlayer != RenderLayers.None) return;
+			if(renderlayer != RenderLayers.None) return; //mxd
 			renderlayer = RenderLayers.Surface;
 
 			// Rendertargets available?
@@ -1597,33 +1594,20 @@ namespace CodeImp.DoomBuilder.Rendering
 			Vector2D v2 = l.End.Position.GetTransformed(translatex, translatey, scale, -scale);
 
 			//mxd. Newly created sectors colouring
-			if(General.Settings.GZNewSectorsCount > 0 && c.r == 255 && c.g == 255 && c.b == 255){
-				int frontIndex = -1;
-				int backIndex = -1;
-
-				if(l.Front != null)
-					frontIndex = Array.IndexOf(General.Map.Map.NewSectors, l.Front.Sector);
-				if(l.Back != null)
-					backIndex = Array.IndexOf(General.Map.Map.NewSectors, l.Back.Sector);
-				
-				if(frontIndex != -1 || backIndex != -1){
+			if(General.Settings.GZNewSectorsCount > 0 && l.ColorPresetIndex == -1){
+				if(General.Map.Map.NewSectorLineIndices.ContainsKey(l.Index)){
+					int index = General.Map.Map.NewSectorLineIndices[l.Index];
 					PixelColor highlight = General.Colors.NewSector;
-
-					if(frontIndex > backIndex)
-						highlight.a = (byte)(255 * (1.0f - (float)(frontIndex + 1) / General.Map.Map.NewSectors.Length));
-					else
-						highlight.a = (byte)(255 * (1.0f - (float)(backIndex + 1) / General.Map.Map.NewSectors.Length));
-
-					float ba = (float)highlight.a * PixelColor.BYTE_TO_FLOAT;
-					c.r = (byte)Math.Min(255, ((float)highlight.r * (1f - ba) + (float)c.r * ba));
-					c.g = (byte)Math.Min(255, ((float)highlight.g * (1f - ba) + (float)c.g * ba));
-					c.b = (byte)Math.Min(255, ((float)highlight.b * (1f - ba) + (float)c.b * ba));
+					highlight.a = (byte)(255 * (1.0f - (float)(index + 1) / General.Settings.GZNewSectorsCount));
+					float ha = highlight.a * PixelColor.BYTE_TO_FLOAT;
+					c.r = (byte)Math.Min(255, (highlight.r * (1f - ha) + c.r * ha));
+					c.g = (byte)Math.Min(255, (highlight.g * (1f - ha) + c.g * ha));
+					c.b = (byte)Math.Min(255, (highlight.b * (1f - ha) + c.b * ha));
 				}
 			}
 
 			// Draw line. mxd: added 3d-floor indication
-			if((l.Front != null && l.Front.Sector != null && tagsOf3DFloors.Contains(l.Front.Sector.Tag)) ||
-				(l.Back != null && l.Back.Sector != null && tagsOf3DFloors.Contains(l.Back.Sector.Tag))) {
+			if(l.ExtraFloorFlag) {
 				plotter.DrawLine3DFloor(v1, v2, ref c, General.Colors.ThreeDFloor);
 			} else {
 				plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, ref c);

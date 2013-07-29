@@ -62,8 +62,8 @@ namespace CodeImp.DoomBuilder.Data
 		private AllTextureSet alltextures;
 
         //mxd 
-        private Dictionary<int, ModeldefEntry> modeldefEntries; //Thing.Type, Model entry
-        private Dictionary<int, GZDoomLight> gldefsEntries; //Thing.Type, Light entry
+        private Dictionary<int, ModelData> modeldefEntries; //Thing.Type, Model entry
+        private Dictionary<int, DynamicLightData> gldefsEntries; //Thing.Type, Light entry
         private MapInfo mapInfo; //mapinfo
 		
 		// Background loading
@@ -82,8 +82,6 @@ namespace CodeImp.DoomBuilder.Data
 		private ImageData crosshair;
 		private ImageData crosshairbusy;
 		private Dictionary<string, ImageData> internalsprites;
-		//mxd
-        //private ImageData thingbox;
 		private ImageData whitetexture;
 		
 		// Used images
@@ -107,16 +105,16 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Properties
 
         //mxd
-        internal Dictionary<int, ModeldefEntry> ModeldefEntries { get { return modeldefEntries; } }
-        internal Dictionary<int, GZDoomLight> GldefsEntries { get { return gldefsEntries; } }
+        internal Dictionary<int, ModelData> ModeldefEntries { get { return modeldefEntries; } }
+        internal Dictionary<int, DynamicLightData> GldefsEntries { get { return gldefsEntries; } }
         internal MapInfo MapInfo { get { return mapInfo; } }
 
 		public Playpal Palette { get { return palette; } }
 		public PreviewManager Previews { get { return previews; } }
 		public ICollection<ImageData> Textures { get { return textures.Values; } }
-		public ICollection<ImageData> Flats { get { return flats.Values; } }
+		public ICollection<ImageData> Flats { get { return (General.Map.Config.MixTexturesFlats ? textures.Values : flats.Values); } } //mxd
 		public List<string> TextureNames { get { return texturenames; } }
-		public List<string> FlatNames { get { return flatnames; } }
+		public List<string> FlatNames { get { return (General.Map.Config.MixTexturesFlats ? texturenames : flatnames); } } //mxd
 		public bool IsDisposed { get { return isdisposed; } }
 		public ImageData MissingTexture3D { get { return missingtexture3d; } }
 		public ImageData UnknownTexture3D { get { return unknowntexture3d; } }
@@ -136,13 +134,8 @@ namespace CodeImp.DoomBuilder.Data
 			get
 			{
 				if(imageque != null)
-				{
 					return (backgroundloader != null) && backgroundloader.IsAlive && ((imageque.Count > 0) || previews.IsLoading);
-				}
-				else
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 		
@@ -156,6 +149,10 @@ namespace CodeImp.DoomBuilder.Data
 			// We have no destructor
 			GC.SuppressFinalize(this);
 
+			//mxd.
+			modeldefEntries = new Dictionary<int, ModelData>();
+			gldefsEntries = new Dictionary<int, DynamicLightData>();
+
 			// Load special images
 			missingtexture3d = new ResourceImage("CodeImp.DoomBuilder.Resources.MissingTexture3D.png");
 			missingtexture3d.LoadImage();
@@ -167,9 +164,6 @@ namespace CodeImp.DoomBuilder.Data
 			crosshair.LoadImage();
 			crosshairbusy = new ResourceImage("CodeImp.DoomBuilder.Resources.CrosshairBusy.png");
 			crosshairbusy.LoadImage();
-			//mxd
-            //thingbox = new ResourceImage("CodeImp.DoomBuilder.Resources.ThingBox.png");
-			//thingbox.LoadImage();
 			whitetexture = new ResourceImage("CodeImp.DoomBuilder.Resources.White.png");
 			whitetexture.UseColorCorrection = false;
 			whitetexture.LoadImage();
@@ -194,18 +188,9 @@ namespace CodeImp.DoomBuilder.Data
 				crosshair = null;
 				crosshairbusy.Dispose();
 				crosshairbusy = null;
-				//mxd
-                //thingbox.Dispose();
-				//thingbox = null;
 				whitetexture.Dispose();
 				whitetexture = null;
-
-                //mxd
-                if (modeldefEntries != null) {
-                    foreach (KeyValuePair<int, ModeldefEntry> group in modeldefEntries)
-                        group.Value.Dispose();
-                    modeldefEntries = null;
-                }
+				modeldefEntries = null;//mxd
                 mapInfo = null;
 				
 				// Done
@@ -363,16 +348,6 @@ namespace CodeImp.DoomBuilder.Data
 			// Mixed textures and flats?
 			if(General.Map.Config.MixTexturesFlats)
 			{
-				// Add textures to flats
-				foreach(KeyValuePair<long, ImageData> t in texturesonly)
-				{
-					if(!flats.ContainsKey(t.Key))
-					{
-						flats.Add(t.Key, t.Value);
-						flatnames.Add(t.Value.Name);
-					}
-				}
-
 				// Add flats to textures
 				foreach(KeyValuePair<long, ImageData> f in flatsonly)
 				{
@@ -382,6 +357,9 @@ namespace CodeImp.DoomBuilder.Data
 						texturenames.Add(f.Value.Name);
 					}
 				}
+
+				flats.Clear(); //mxd
+				flatnames.Clear(); //mxd
 
 				// Do the same on the data readers
 				foreach(DataReader dr in containers)
@@ -401,10 +379,9 @@ namespace CodeImp.DoomBuilder.Data
 			// Add texture names to texture sets
 			foreach(KeyValuePair<long, ImageData> img in textures)
 			{
-				// Add to all sets where it matches
-				bool matchfound = false;
+				// Add to all sets
 				foreach(MatchingTextureSet ms in texturesets)
-					matchfound |= ms.AddTexture(img.Value);
+					ms.AddTexture(img.Value);
 
 				// Add to all
 				alltextures.AddTexture(img.Value);
@@ -413,10 +390,9 @@ namespace CodeImp.DoomBuilder.Data
 			// Add flat names to texture sets
 			foreach(KeyValuePair<long, ImageData> img in flats)
 			{
-				// Add to all sets where it matches
-				bool matchfound = false;
+				// Add to all sets
 				foreach(MatchingTextureSet ms in texturesets)
-					matchfound |= ms.AddFlat(img.Value);
+					ms.AddFlat(img.Value);
 				
 				// Add to all
 				alltextures.AddFlat(img.Value);
@@ -426,7 +402,7 @@ namespace CodeImp.DoomBuilder.Data
 			StartBackgroundLoader();
 			
 			// Output info
-			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + colormapcount + " colormaps, " + spritecount + " sprites, " + thingcount + " decorate things, " + modeldefEntries.Count + " model deinitions, " + gldefsEntries.Count + " gl definitions");
+			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + colormapcount + " colormaps, " + spritecount + " sprites, " + thingcount + " decorate things, " + modeldefEntries.Count + " model deinitions, " + gldefsEntries.Count + " dynamic light definitions");
 		}
 		
 		// This unloads all data
@@ -450,9 +426,8 @@ namespace CodeImp.DoomBuilder.Data
 
             //mxd
             if (modeldefEntries != null) {
-                foreach (KeyValuePair<int, ModeldefEntry> group in modeldefEntries) {
+                foreach (KeyValuePair<int, ModelData> group in modeldefEntries) 
                     group.Value.Dispose();
-                }
             }
 			
 			// Dispose containers
@@ -696,6 +671,20 @@ namespace CodeImp.DoomBuilder.Data
 			General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatus, 0, 0);
 		}
 
+		//mxd. This loads a model
+		internal void ProcessModel(int type) {
+			if(modeldefEntries[type].LoadState != ModelLoadState.None) return;
+
+			//create models
+			ModelReader.Load(modeldefEntries[type], containers, General.Map.Graphics.Device);
+
+			if(modeldefEntries[type].Model != null) {
+				modeldefEntries[type].LoadState = ModelLoadState.Ready;
+			} else {
+				modeldefEntries.Remove(type);
+			}
+		}
+
 		// This updates the used-in-map status on all textures and flats
 		private void BackgroundUpdateUsedTextures()
 		{
@@ -709,10 +698,11 @@ namespace CodeImp.DoomBuilder.Data
 				}
 
 				// Set used on all flats
-				foreach(KeyValuePair<long, ImageData> i in flats)
-				{
-					i.Value.SetUsedInMap(usedimages.ContainsKey(i.Key));
-					if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
+				if(!General.Map.Config.MixTexturesFlats) {
+					foreach(KeyValuePair<long, ImageData> i in flats) {
+						i.Value.SetUsedInMap(usedimages.ContainsKey(i.Key));
+						if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
+					}
 				}
 				
 				// Done
@@ -851,7 +841,7 @@ namespace CodeImp.DoomBuilder.Data
 			Stream patch;
 
 			// Go for all opened containers
-			for(int i = containers.Count - 1; i >= 0; i--)
+			for(int i = containers.Count - 1; i > -1; i--)
 			{
 				// This contain provides this patch?
 				patch = containers[i].GetPatchData(pname);
@@ -984,13 +974,13 @@ namespace CodeImp.DoomBuilder.Data
 		public bool GetFlatExists(string name)
 		{
 			long longname = Lump.MakeLongName(name);
-			return flats.ContainsKey(longname);
+			return General.Map.Config.MixTexturesFlats ? textures.ContainsKey(longname) : flats.ContainsKey(longname);
 		}
 
 		// This checks if a flat is known
 		public bool GetFlatExists(long longname)
 		{
-			return flats.ContainsKey(longname);
+			return General.Map.Config.MixTexturesFlats ? textures.ContainsKey(longname) : flats.ContainsKey(longname);
 		}
 		
 		// This returns an image by string
@@ -1004,24 +994,26 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns an image by long
 		public ImageData GetFlatImage(long longname)
 		{
-			// Does this flat exist?
-			if(flats.ContainsKey(longname))
-			{
+			if(General.Map.Config.MixTexturesFlats) { //mxd
+				// Does this flat exist?
+				if(textures.ContainsKey(longname)) {
+					// Return flat
+					return textures[longname];
+				}
+			} else if(flats.ContainsKey(longname)) { // Does this flat exist?
 				// Return flat
 				return flats[longname];
 			}
-			else
-			{
-				// Return null image
-				return new UnknownImage(Properties.Resources.UnknownImage);
-			}
+
+			// Return null image
+			return new UnknownImage(Properties.Resources.UnknownImage);
 		}
 
 		// This returns an image by long and doesn't check if it exists
 		public ImageData GetFlatImageKnown(long longname)
 		{
 			// Return flat
-			return flats[longname];
+			return General.Map.Config.MixTexturesFlats ? textures[longname] : flats[longname]; //mxd
 		}
 		
 		#endregion
@@ -1382,39 +1374,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#endregion
 
-        #region ================== Modeldef, Gldefs, Mapinfo and models loading
-
-        //mxd
-        public void LoadModels() {
-            General.MainWindow.DisplayStatus(StatusType.Busy, "Loading models...");
-
-            foreach (Thing t in General.Map.Map.Things)
-                t.IsModel = LoadModelForThing(t);
-
-            General.MainWindow.RedrawDisplay();
-        }
-
-        //mxd
-        public bool LoadModelForThing(Thing t) {
-            if (modeldefEntries.ContainsKey(t.Type)) {
-                if (modeldefEntries[t.Type].Model == null) {
-                    //load models and textures
-                    ModeldefEntry mde = modeldefEntries[t.Type];
-
-                    //create models
-					ModelReader.Load(ref mde, containers, General.Map.Graphics.Device);
-
-                    if (mde.Model != null) {
-                        return true;
-                    } else {
-                        modeldefEntries.Remove(t.Type);
-                        return false;
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
+        #region ================== mxd. Modeldef, Gldefs, Mapinfo
 
         //mxd. This creates <Actor Class, Thing.Type> dictionary. Should be called after all DECORATE actors are parsed
         private Dictionary<string, int> createActorsByClassList() {
@@ -1442,13 +1402,14 @@ namespace CodeImp.DoomBuilder.Data
         //mxd
         public void ReloadModeldef() {
             if (modeldefEntries != null) {
-                foreach (KeyValuePair<int, ModeldefEntry> group in modeldefEntries)
+                foreach (KeyValuePair<int, ModelData> group in modeldefEntries)
                     group.Value.Dispose();
             }
 
             General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading model definitions...");
             loadModeldefs(createActorsByClassList());
-            LoadModels();
+
+			foreach(Thing t in General.Map.Map.Things) t.UpdateModelStatus();
 
             //rebuild geometry if in Visual mode
             if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
@@ -1486,17 +1447,13 @@ namespace CodeImp.DoomBuilder.Data
 
         //mxd. This parses modeldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
         private void loadModeldefs(Dictionary<string, int> actorsByClass) {
-            modeldefEntries = new Dictionary<int, ModeldefEntry>(); //create it in all cases, so we don't have to check if it's null every time we need to access it
-            
             //if no actors defined in DECORATE or game config...
             if (actorsByClass == null || actorsByClass.Count == 0) {
                 General.ErrorLogger.Add(ErrorType.Warning, "Warning: current game has no Actors!");
                 return;
             }
 
-			foreach(Thing t in General.Map.Map.Things) t.IsModel = false; //drop model flag
-
-            Dictionary<string, ModeldefEntry> modelDefEntriesByName = new Dictionary<string, ModeldefEntry>();
+            Dictionary<string, ModelData> modelDefEntriesByName = new Dictionary<string, ModelData>();
             ModeldefParser mdeParser = new ModeldefParser();
 
             foreach (DataReader dr in containers) {
@@ -1506,7 +1463,7 @@ namespace CodeImp.DoomBuilder.Data
                 foreach (KeyValuePair<string, Stream> group in streams) {
                     // Parse the data
                     if (mdeParser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key)) {
-                        foreach (KeyValuePair<string, ModeldefEntry> g in mdeParser.ModelDefEntries) {
+                        foreach (KeyValuePair<string, ModelData> g in mdeParser.ModelDefEntries) {
                             modelDefEntriesByName.Add(g.Key, g.Value);
                         }
                     }
@@ -1515,18 +1472,18 @@ namespace CodeImp.DoomBuilder.Data
 
             currentreader = null;
 
-            foreach (KeyValuePair<string, ModeldefEntry> e in modelDefEntriesByName) {
+            foreach (KeyValuePair<string, ModelData> e in modelDefEntriesByName) {
                 if (actorsByClass.ContainsKey(e.Key))
                     modeldefEntries[actorsByClass[e.Key]] = modelDefEntriesByName[e.Key];
 				else if(!invalidDecorateActors.Contains(e.Key))
                     General.ErrorLogger.Add(ErrorType.Warning, "Got MODELDEF override for class '" + e.Key + "', but haven't found such class in Decorate");
             }
+
+			foreach(Thing t in General.Map.Map.Things) t.UpdateModelStatus();
         }
 
         //mxd. This parses gldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
         private void loadGldefs(Dictionary<string, int> actorsByClass, bool loadDefaultDefinitions) {
-            gldefsEntries = new Dictionary<int, GZDoomLight>();//create it in all cases, so we don't have to check if it's null every time we need to access it
-
             //if no actors defined in DECORATE or game config...
             if (actorsByClass == null || actorsByClass.Count == 0) {
 				General.ErrorLogger.Add(ErrorType.Warning, "Warning: current game has no Actors!");

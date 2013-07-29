@@ -33,7 +33,6 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private DirectoryFilesList files;
-        //private IArchive archive;//mxd
         private ArchiveType archiveType; //mxd
         private static Dictionary<string, byte[]> sevenZipEntries; //mxd
 
@@ -123,12 +122,11 @@ namespace CodeImp.DoomBuilder.Data
 				if(data != null) return data;
 			}
 
-			// Find in patches directory
-			//string filename = FindFirstFile(PATCHES_DIR, pname, true);
-			string filename = FindFirstFile("", pname, true); //mxd. ZDoom can load them from anywhere, so shall we
-			if((filename != null) && FileExists(filename))
-			{
-				return LoadFile(filename);
+			//mxd. Find in directories ZDoom expects them to be
+			foreach(string location in PatchLocations) {
+				string filename = FindFirstFile(location, pname, true);
+				if((filename != null) && FileExists(filename))
+					return LoadFile(filename);
 			}
 
 			// Nothing found

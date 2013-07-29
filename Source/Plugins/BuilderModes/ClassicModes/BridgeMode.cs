@@ -117,6 +117,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
         // Mouse moves
         public override void OnMouseMove(MouseEventArgs e) {
             base.OnMouseMove(e);
+			if(panning) return; //mxd. Skip all this jass while panning
 
             if (curControlHandle != -1) {
                 ControlHandle handle = controlHandles[curControlHandle];
