@@ -1438,19 +1438,6 @@ namespace CodeImp.DoomBuilder.Geometry
 					}
 				}
 
-				//mxd. Clamp texture offsets of changed lines
-				List<Linedef> changedLines = new List<Linedef>();
-
-				foreach(Vertex v in newverts) {
-					if(v.Linedefs == null)
-						continue;
-
-					foreach(Linedef l in v.Linedefs) {
-						if(!changedLines.Contains(l))
-							changedLines.Add(l);
-					}
-				}
-
 				// Mark new geometry only
 				General.Map.Map.ClearMarkedLinedefs(false);
 				General.Map.Map.ClearMarkedVertices(false);

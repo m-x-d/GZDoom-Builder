@@ -43,7 +43,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			
 				//load mesh
 				MemoryStream ms = LoadFile(containers, mde.ModelNames[i], true);
-				if(ms == null) continue;
+				if (ms == null) {
+					General.ErrorLogger.Add(ErrorType.Error, "ModelLoader: error while loading '" + mde.ModelNames[i] + "': unable to find file.");
+					continue;
+				}
 
 				string ext = Path.GetExtension(mde.ModelNames[i]);
 
@@ -59,8 +62,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 				//got errors?
 				if(!String.IsNullOrEmpty(result.Errors)) {
-					General.ErrorLogger.Add(ErrorType.Error, "ModelLoader: error while loading " + mde.ModelNames[i] + ": " + result.Errors);
-					continue;
+					General.ErrorLogger.Add(ErrorType.Error, "ModelLoader: error while loading '" + mde.ModelNames[i] + "': " + result.Errors);
 				} else {
 					//add loaded data to ModeldefEntry
 					mde.Model.Meshes.AddRange(result.Meshes);
