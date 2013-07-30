@@ -672,17 +672,19 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd. This loads a model
-		internal void ProcessModel(int type) {
-			if(modeldefEntries[type].LoadState != ModelLoadState.None) return;
+		internal bool ProcessModel(int type) {
+			if(modeldefEntries[type].LoadState != ModelLoadState.None) return true;
 
 			//create models
 			ModelReader.Load(modeldefEntries[type], containers, General.Map.Graphics.Device);
 
 			if(modeldefEntries[type].Model != null) {
 				modeldefEntries[type].LoadState = ModelLoadState.Ready;
-			} else {
-				modeldefEntries.Remove(type);
+				return true;
 			}
+
+			modeldefEntries.Remove(type);
+			return false;
 		}
 
 		// This updates the used-in-map status on all textures and flats

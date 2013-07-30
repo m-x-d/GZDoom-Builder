@@ -213,6 +213,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public static DrawnVertex GetCurrentPosition(Vector2D mousemappos, bool snaptonearest, bool snaptogrid, IRenderer2D renderer, List<DrawnVertex> points)
 		{
 			DrawnVertex p = new DrawnVertex();
+			p.stitch = true; //mxd. Setting these to false seems to be a good way to create invalid geometry...
+			p.stitchline = true; //mxd
 			Vector2D vm = mousemappos;
 			float vrange = BuilderPlug.Me.StitchRange / renderer.Scale;
 
@@ -225,8 +227,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(Vector2D.DistanceSq(mousemappos, v.pos) < (vrange * vrange))
 					{
 						p.pos = v.pos;
-						p.stitch = true;
-						p.stitchline = true;
+						//p.stitch = true;
+						//p.stitchline = true;
 						return p;
 					}
 				}
@@ -236,8 +238,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(nv != null)
 				{
 					p.pos = nv.Position;
-					p.stitch = true;
-					p.stitchline = true;
+					//p.stitch = true;
+					//p.stitchline = true;
 					return p;
 				}
 
@@ -270,8 +272,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							// Align to the closest grid intersection
 							p.pos = found_coord;
-							p.stitch = true;
-							p.stitchline = true;
+							//p.stitch = true;
+							//p.stitchline = true;
 							return p;
 						}
 					}
@@ -279,8 +281,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						// Aligned to line
 						p.pos = nl.NearestOnLine(mousemappos);
-						p.stitch = true;
-						p.stitchline = true;
+						//p.stitch = true;
+						//p.stitchline = true;
 						return p;
 					}
 				}
@@ -293,8 +295,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(Vector2D.DistanceSq(mousemappos, points[0].pos) < (vrange * vrange))
 					{
 						p.pos = points[0].pos;
-						p.stitch = true;
-						p.stitchline = false;
+						//p.stitch = true;
+						//p.stitchline = false;
 						return p;
 					}
 				}
@@ -349,16 +351,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// special handling 
 				if (p.pos.x > General.Map.Config.RightBoundary) p.pos.x = General.Map.Config.RightBoundary;
 				if (p.pos.y < General.Map.Config.BottomBoundary) p.pos.y = General.Map.Config.BottomBoundary;
-				p.stitch = snaptonearest;
-				p.stitchline = snaptonearest;
+				//p.stitch = snaptonearest;
+				//p.stitchline = snaptonearest;
 				return p;
 			}
 			else
 			{
 				// Normal position
 				p.pos = vm;
-				p.stitch = snaptonearest;
-				p.stitchline = snaptonearest;
+				//p.stitch = snaptonearest;
+				//p.stitchline = snaptonearest;
 				return p;
 			}
 		}

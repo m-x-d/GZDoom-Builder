@@ -1154,18 +1154,16 @@ namespace CodeImp.DoomBuilder.Rendering
 					ModelData mde;
 
 					foreach(KeyValuePair<int, Dictionary<Vector2D, Thing>> group in thingsWithModel) {
-						lock(General.Map.Data.ModeldefEntries[group.Key]) {
-							mde = General.Map.Data.ModeldefEntries[group.Key];
-							foreach(KeyValuePair<Vector2D, Thing> thingData in group.Value) {
-								graphics.Shaders.Things2D.FillColor = thingData.Value.Selected ? cSel : cWire;
+						mde = General.Map.Data.ModeldefEntries[group.Key];
+						foreach(KeyValuePair<Vector2D, Thing> thingData in group.Value) {
+							graphics.Shaders.Things2D.FillColor = thingData.Value.Selected ? cSel : cWire;
 
-								for(int i = 0; i < mde.Model.Meshes.Count; i++) {
-									graphics.Shaders.Things2D.SetTransformSettings(thingData.Key, thingData.Value.Angle, scale * thingData.Value.Scale);
-									graphics.Shaders.Things2D.ApplySettings();
+							for(int i = 0; i < mde.Model.Meshes.Count; i++) {
+								graphics.Shaders.Things2D.SetTransformSettings(thingData.Key, thingData.Value.Angle, scale * thingData.Value.Scale);
+								graphics.Shaders.Things2D.ApplySettings();
 
-									// Draw
-									mde.Model.Meshes[i].DrawSubset(0);
-								}
+								// Draw
+								mde.Model.Meshes[i].DrawSubset(0);
 							}
 						}
 					}

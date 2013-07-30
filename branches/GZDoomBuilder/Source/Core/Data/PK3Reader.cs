@@ -346,9 +346,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Nothing found?
             if (filedata == null){
 				//mxd
-				//throw new FileNotFoundException("Cannot find the file " + filename + " in archive " + location.location + ".");
 				General.ErrorLogger.Add(ErrorType.Error, "Cannot find the file " + filename + " in archive " + location.location + ".");
-				return null;
+				return new MemoryStream();
 			}
 
             filedata.Position = 0; //mxd. rewind before use

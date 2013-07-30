@@ -250,7 +250,7 @@ namespace CodeImp.DoomBuilder.Map
 			if(!isModel) return;
 
 			if(General.Map.Data.ModeldefEntries[type].LoadState == ModelLoadState.None)
-				General.Map.Data.ProcessModel(type);
+				isModel = General.Map.Data.ProcessModel(type);
 		}
 
 		// This translates the flags into UDMF fields
