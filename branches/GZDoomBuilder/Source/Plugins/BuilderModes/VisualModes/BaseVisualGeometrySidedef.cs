@@ -511,7 +511,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnInsert()
 		{
 			// No middle texture yet?
-			if(!Sidedef.MiddleRequired() && (string.IsNullOrEmpty(Sidedef.MiddleTexture) || (Sidedef.MiddleTexture[0] == '-')))
+			if(!Sidedef.MiddleRequired() && (string.IsNullOrEmpty(Sidedef.MiddleTexture) || (Sidedef.MiddleTexture == "-")))
 			{
 				// Make it now
 				mode.CreateUndo("Create middle texture");
@@ -523,7 +523,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Sector.Changed = true;
 				
 				// Other side as well
-				if(string.IsNullOrEmpty(Sidedef.Other.MiddleTexture) || (Sidedef.Other.MiddleTexture[0] == '-'))
+				if(string.IsNullOrEmpty(Sidedef.Other.MiddleTexture) || (Sidedef.Other.MiddleTexture == "-"))
 				{
 					Sidedef.Other.SetTextureMid(General.Settings.DefaultTexture);
 

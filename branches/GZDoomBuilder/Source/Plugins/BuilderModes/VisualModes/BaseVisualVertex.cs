@@ -269,6 +269,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//Delete key pressed - remove zoffset field
 		public virtual void OnDelete() {
+			mode.CreateUndo("Clear vertex height offset");
+			mode.SetActionResult("Cleared vertex height offset.");
+			
 			if(ceilingVertex) {
 				if(float.IsNaN(vertex.ZCeiling)) return;
 				vertex.ZCeiling = float.NaN;

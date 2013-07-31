@@ -485,8 +485,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
         //mxd. Delete thing
         public virtual void OnDelete() {
-            this.Thing.Dispose();
+			mode.CreateUndo("Delete thing");
+			mode.SetActionResult("Deleted a thing.");
+
+			this.Thing.Fields.BeforeFieldsChange();
+			this.Thing.Dispose();
             this.Dispose();
+
+			General.Map.IsChanged = true;
+			General.Map.ThingsFilter.Update();
         }
 		
 		// Copy properties
@@ -550,7 +557,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 					undoticket = mode.CreateUndo("Change thing height");
 
-				Thing.Move(Thing.Position + new Vector3D(0.0f, 0.0f, (float)amount));
+				Thing.Move(Thing.Position + new Vector3D(0.0f, 0.0f, amount));
 
 				mode.SetActionResult("Changed thing height to " + Thing.Position.z + ".");
 				

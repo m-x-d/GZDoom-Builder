@@ -63,14 +63,22 @@ namespace CodeImp.DoomBuilder.Controls
 			floorname.Text = s.FloorTexture;
 			ceilingname.Text = s.CeilTexture;
 
-			ImageData floorImage = General.Map.Data.GetFlatImage(s.FloorTexture); //mxd
-			ImageData ceilingImage = General.Map.Data.GetFlatImage(s.CeilTexture); //mxd
+			//mxd. Texture info
+			if ((s.FloorTexture.Length < 1) || (s.FloorTexture == "-")){
+				General.DisplayZoomedImage(floortex, Properties.Resources.MissingTexture);
+			} else {
+				ImageData floorImage = General.Map.Data.GetFlatImage(s.FloorTexture);
+				DisplayTextureSize(labelFloorTextureSize, floorImage); 
+				General.DisplayZoomedImage(floortex, floorImage.GetPreview());
+			}
 
-			DisplayTextureSize(labelFloorTextureSize, floorImage); //mxd
-			DisplayTextureSize(labelCeilTextureSize, ceilingImage); //mxd
-
-			General.DisplayZoomedImage(floortex, floorImage.GetPreview());
-			General.DisplayZoomedImage(ceilingtex, ceilingImage.GetPreview());
+			if((s.CeilTexture.Length < 1) || (s.CeilTexture == "-")) {
+				General.DisplayZoomedImage(ceilingtex, Properties.Resources.MissingTexture);
+			} else {
+				ImageData ceilingImage = General.Map.Data.GetFlatImage(s.CeilTexture);
+				DisplayTextureSize(labelCeilTextureSize, ceilingImage); //mxd
+				General.DisplayZoomedImage(ceilingtex, ceilingImage.GetPreview());
+			}
 
 			//mxd
 			bool showExtededFloorInfo = false;

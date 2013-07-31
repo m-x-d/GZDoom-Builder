@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override bool Setup()
 		{
 			//mxd
-			if(Sidedef.MiddleTexture.Length == 0 || Sidedef.MiddleTexture[0] == '-') return false;
+			if(Sidedef.MiddleTexture.Length == 0 || Sidedef.MiddleTexture == "-") return false;
 			
 			Vector2D vl, vr;
 
@@ -97,13 +97,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!osd.Updated) osd.Update();
 
 			// Load texture
-			base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongMiddleTexture);
-			if(base.Texture == null) {
-				base.Texture = General.Map.Data.MissingTexture3D;
-				setuponloadedtexture = Sidedef.LongMiddleTexture;
-			} else {
-				if(!base.Texture.IsImageLoaded)
+			if ((Sidedef.MiddleTexture.Length > 0) && (Sidedef.MiddleTexture != "-")){
+				base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongMiddleTexture);
+				if (base.Texture == null){
+					base.Texture = General.Map.Data.UnknownTexture3D;
 					setuponloadedtexture = Sidedef.LongMiddleTexture;
+				} else {
+					if (!base.Texture.IsImageLoaded)
+						setuponloadedtexture = Sidedef.LongMiddleTexture;
+				}
+			} else {
+				// Use missing texture
+				base.Texture = General.Map.Data.MissingTexture3D;
+				setuponloadedtexture = 0;
 			}
 
 			// Get texture scaled size

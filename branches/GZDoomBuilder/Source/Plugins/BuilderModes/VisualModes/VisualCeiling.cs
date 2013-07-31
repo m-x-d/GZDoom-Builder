@@ -88,10 +88,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			                              s.Fields.GetValue("yscaleceiling", 1.0f));
 			
 			//Load ceiling texture
-			if((s.CeilTexture.Length > 0) && (s.CeilTexture[0] != '-')) {
+			if((s.CeilTexture.Length > 0) && (s.CeilTexture != "-")) {
 				base.Texture = General.Map.Data.GetFlatImage(s.LongCeilTexture);
 				if(base.Texture == null) {
-					base.Texture = General.Map.Data.MissingTexture3D;
+					base.Texture = General.Map.Data.UnknownTexture3D;
 					setuponloadedtexture = s.LongCeilTexture;
 				} else {
 					if(!base.Texture.IsImageLoaded) {

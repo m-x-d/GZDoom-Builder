@@ -1636,7 +1636,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 				// Apply texturing
 				if(j.sidedef.HighRequired() && j.sidedef.LongHighTexture == originaltexture) j.sidedef.SetTextureHigh(filltexture.Name);
-				if((((j.sidedef.MiddleTexture.Length > 0) && (j.sidedef.MiddleTexture[0] != '-')) || j.sidedef.MiddleRequired()) &&
+				if((((j.sidedef.MiddleTexture.Length > 0) && (j.sidedef.MiddleTexture != "-")) || j.sidedef.MiddleRequired()) &&
 				   (j.sidedef.LongMiddleTexture == originaltexture)) j.sidedef.SetTextureMid(filltexture.Name);
 				if(j.sidedef.LowRequired() && j.sidedef.LongLowTexture == originaltexture) j.sidedef.SetTextureLow(filltexture.Name);
 				j.sidedef.Marked = true;
@@ -1707,7 +1707,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			return ((sd.LongHighTexture == texturelongname) && sd.HighRequired()) ||
 				   ((sd.LongLowTexture == texturelongname) && sd.LowRequired()) ||
-				   ((sd.LongMiddleTexture == texturelongname) && (sd.MiddleRequired() || ((sd.MiddleTexture.Length > 0) && (sd.MiddleTexture[0] != '-')))) ;
+				   ((sd.LongMiddleTexture == texturelongname) && (sd.MiddleRequired() || ((sd.MiddleTexture.Length > 0) && (sd.MiddleTexture != "-")))) ;
 		}
 		
 		#endregion

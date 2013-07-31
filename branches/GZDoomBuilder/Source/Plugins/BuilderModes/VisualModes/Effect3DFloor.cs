@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ceiling.alpha = alpha;
 			
 			// Do not adjust light? (works only for non-vavoom types)
-			if(((linedef.Args[2] & 1) != 0) && !vavoomtype)
+			if(!vavoomtype && ( ((linedef.Args[2] & (int)Flags.DisableLighting) != 0) || (((linedef.Args[2] & (int)Flags.RestrictLighting) != 0)) )) //mxd
 			{
 				floor.brightnessbelow = -1;
 				floor.colorbelow = PixelColor.FromInt(0);
