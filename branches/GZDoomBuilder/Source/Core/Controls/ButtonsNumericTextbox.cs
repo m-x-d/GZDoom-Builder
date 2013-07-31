@@ -117,9 +117,9 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 					else if(textbox.AllowDecimal)
 					{
-						float newvalue = textbox.GetResultFloat(0.0f) - (buttons.Value * stepsizeFloat);
+						float newvalue = (float)Math.Round(textbox.GetResultFloat(0.0f) - (buttons.Value * stepsizeFloat), General.Map.FormatInterface.VertexDecimals);
 						if((newvalue < 0.0f) && !textbox.AllowNegative) newvalue = 0.0f;
-						textbox.Text = newvalue.ToString(General.Map.FormatInterface.DecimalsFormat);
+						textbox.Text = newvalue.ToString("0.0");
 					}
 					else
 					{
