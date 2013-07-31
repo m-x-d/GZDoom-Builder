@@ -1869,7 +1869,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.statuslabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(340, 18);
+			this.statuslabel.Size = new System.Drawing.Size(309, 18);
 			this.statuslabel.Spring = true;
 			this.statuslabel.Text = "Initializing user interface...";
 			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -2107,6 +2107,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.warnsLabel.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.warnsLabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.WarningOff;
 			this.warnsLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.warnsLabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.warnsLabel.Name = "warnsLabel";
 			this.warnsLabel.Size = new System.Drawing.Size(44, 18);
 			this.warnsLabel.Text = "0";
