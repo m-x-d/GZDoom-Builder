@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.Controls
 		protected override Image FindImage(string imagename)
 		{
 			// Check if name is a "none" texture
-			if((imagename.Length < 1) || (imagename[0] == '-'))
+			if((imagename.Length < 1) || (imagename == "-"))
 			{
 				DisplayImageSize(0, 0); //mxd
 				

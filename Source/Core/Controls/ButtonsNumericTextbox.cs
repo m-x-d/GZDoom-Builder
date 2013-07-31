@@ -117,13 +117,13 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 					else if(textbox.AllowDecimal)
 					{
-						float newvalue = textbox.GetResultFloat(0.0f) - (float)(buttons.Value * stepsizeFloat);
+						float newvalue = textbox.GetResultFloat(0.0f) - (buttons.Value * stepsizeFloat);
 						if((newvalue < 0.0f) && !textbox.AllowNegative) newvalue = 0.0f;
-						textbox.Text = newvalue.ToString();
+						textbox.Text = newvalue.ToString(General.Map.FormatInterface.DecimalsFormat);
 					}
 					else
 					{
-						int newvalue = (int)(textbox.GetResult(0) - (buttons.Value * stepsize));
+						int newvalue = textbox.GetResult(0) - (buttons.Value * stepsize);
 						if((newvalue < 0) && !textbox.AllowNegative) newvalue = 0;
 						textbox.Text = newvalue.ToString();
 					}

@@ -55,21 +55,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Sidedef sd in General.Map.Map.Sidedefs)
 			{
 				// Check upper texture
-				if(sd.HighRequired() && ((sd.HighTexture.Length < 1) || (sd.HighTexture[0] != '-')))
+				if(sd.HighRequired() && ((sd.HighTexture.Length < 1) || (sd.HighTexture != "-")))
 				{
 					if(!General.Map.Data.GetTextureExists(sd.LongHighTexture))
 						SubmitResult(new ResultUnknownTexture(sd, SidedefPart.Upper));
 				}
 
 				// Check middle texture
-				if(sd.MiddleRequired() && ((sd.MiddleTexture.Length < 1) || (sd.MiddleTexture[0] != '-')))
+				if(sd.MiddleRequired() && ((sd.MiddleTexture.Length < 1) || (sd.MiddleTexture != "-")))
 				{
 					if(!General.Map.Data.GetTextureExists(sd.LongMiddleTexture))
 						SubmitResult(new ResultUnknownTexture(sd, SidedefPart.Middle));
 				}
 
 				// Check lower texture
-				if(sd.LowRequired() && ((sd.LowTexture.Length < 1) || (sd.LowTexture[0] != '-')))
+				if(sd.LowRequired() && ((sd.LowTexture.Length < 1) || (sd.LowTexture != "-")))
 				{
 					if(!General.Map.Data.GetTextureExists(sd.LongLowTexture))
 						SubmitResult(new ResultUnknownTexture(sd, SidedefPart.Lower));

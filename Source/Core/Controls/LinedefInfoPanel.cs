@@ -431,15 +431,13 @@ namespace CodeImp.DoomBuilder.Controls
 		private void DisplaySidedefTexture(Panel panel, Label label, string name, bool required)
 		{
 			// Check if name is a "none" texture
-			if((name.Length < 1) || (name[0] == '-'))
+			if((name.Length < 1) || (name == "-"))
 			{
 				label.Visible = false; //mxd
 				
 				// Determine image to show
-				if(required)
-					panel.BackgroundImage = CodeImp.DoomBuilder.Properties.Resources.MissingTexture;
-				else
-					panel.BackgroundImage = null;
+				if(required) 
+					General.DisplayZoomedImage(panel, Properties.Resources.MissingTexture);
 			}
 			else
 			{
@@ -453,24 +451,7 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 				
 				// Set the image
-				panel.BackgroundImage = texture.GetPreview();
-			}
-			
-			// Image not null?
-			if(panel.BackgroundImage != null)
-			{
-				// Small enough to fit in panel?
-				if((panel.BackgroundImage.Size.Width < panel.ClientRectangle.Width) &&
-				   (panel.BackgroundImage.Size.Height < panel.ClientRectangle.Height))
-				{
-					// Display centered
-					panel.BackgroundImageLayout = ImageLayout.Center;
-				}
-				else
-				{
-					// Display zoomed
-					panel.BackgroundImageLayout = ImageLayout.Zoom;
-				}
+				General.DisplayZoomedImage(panel, texture.GetPreview());
 			}
 		}
 	}

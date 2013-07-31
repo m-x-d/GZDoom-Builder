@@ -88,13 +88,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 										  s.Fields.GetValue("yscalefloor", 1.0f));
 			
 			//Load floor texture
-			base.Texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
-			if(base.Texture == null) {
-				base.Texture = General.Map.Data.MissingTexture3D;
-				setuponloadedtexture = s.LongFloorTexture;
-			} else {
-				if(!base.Texture.IsImageLoaded)
+			if ((s.FloorTexture.Length > 0) && (s.FloorTexture != "-"))
+			{
+				base.Texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
+				if (base.Texture == null)
+				{
+					base.Texture = General.Map.Data.UnknownTexture3D;
 					setuponloadedtexture = s.LongFloorTexture;
+				}
+				else
+				{
+					if (!base.Texture.IsImageLoaded)
+						setuponloadedtexture = s.LongFloorTexture;
+				}
+			} else {
+				// Use missing texture
+				base.Texture = General.Map.Data.MissingTexture3D;
+				setuponloadedtexture = 0;
 			}
 
 			// Determine texture scale

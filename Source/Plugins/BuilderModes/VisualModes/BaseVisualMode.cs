@@ -75,6 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Dictionary<Sector, SectorData> sectordata;
 		private Dictionary<Thing, ThingData> thingdata;
 		private Dictionary<Vertex, VertexData> vertexdata; //mxd
+		//private Dictionary<Thing, EffectDynamicLight> lightdata; //mxd
 		
 		// This is true when a selection was made because the action is performed
 		// on an object that was not selected. In this case the previous selection
@@ -520,52 +521,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
             PostAction();
         }
 
-		//mxd
-		private void deleteSelectedThings() {
-			List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true, false);
-			if(objs.Count == 0) return;
-
-			General.Map.UndoRedo.ClearAllRedos();
-			string rest = objs.Count + " thing" + (objs.Count > 1 ? "s." : ".");
-			//make undo
-			General.Map.UndoRedo.CreateUndo("Delete " + rest);
-			General.Interface.DisplayStatus(StatusType.Info, "Deleted " + rest);
-			//clear selection
-			ClearSelection();
-
-			PreActionNoChange();
-			foreach(IVisualEventReceiver i in objs) i.OnDelete(); //are they deleted from BlockMap automatically?..
-
-			// Update cache values
-			General.Map.IsChanged = true;
-			General.Map.ThingsFilter.Update();
-
-			PostAction();
-		}
-
-		//mxd
-		private void deleteSelectedVertices() {
-			if(!General.Map.UDMF) return;
-			List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, false, true);
-			if(objs.Count == 0) return;
-
-			General.Map.UndoRedo.ClearAllRedos();
-			string description = "Reset height of " + objs.Count + (objs.Count > 1 ? " vertices." : " vertex.");
-			//make undo
-			General.Map.UndoRedo.CreateUndo(description);
-			General.Interface.DisplayStatus(StatusType.Info, description);
-			//clear selection
-			ClearSelection();
-
-			PreActionNoChange();
-			foreach(IVisualEventReceiver i in objs) {
-				((BaseVisualVertex)i).Vertex.Fields.BeforeFieldsChange();
-				i.OnDelete();
-			}
-
-			PostAction();
-		}
-
         //mxd
         private Vector3D[] translateCoordinates(Vector3D[] coordinates, Vector2D direction, bool absolutePosition) {
             if (coordinates.Length == 0) return null;
@@ -732,6 +687,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
+		/*internal EffectDynamicLight GetDynamicLightData(Thing t) {
+			if(!lightdata.ContainsKey(t))
+				lightdata[t] = new EffectDynamicLight(this, t);
+			return lightdata[t];
+		}*/
+
+		//mxd
 		internal void UpdateVertexHandle(Vertex v) {
 			if(!vertices.ContainsKey(v))
 				vertices.Add(v, new VisualVertexPair(new BaseVisualVertex(this, v, true), new BaseVisualVertex(this, v, false)));
@@ -762,6 +724,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             Dictionary<int, List<Sector>> sectortags = new Dictionary<int, List<Sector>>();
             sectordata = new Dictionary<Sector, SectorData>(General.Map.Map.Sectors.Count);
             thingdata = new Dictionary<Thing, ThingData>(General.Map.Map.Things.Count);
+			//lightdata = new Dictionary<Thing, EffectDynamicLight>(General.Map.Map.Things.Count); //mxd
 
 			if(General.Map.UDMF) {
 				vertexdata = new Dictionary<Vertex, VertexData>(General.Map.Map.Vertices.Count); //mxd
@@ -2481,10 +2444,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
         //mxd
 		[BeginAction("deleteitem", BaseAction = true)]
-        public void DeleteSelectedObjects()
+		public void Delete()
 		{
-			deleteSelectedThings();
-			deleteSelectedVertices();
+			PreAction(UndoGroup.None);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnDelete();
+			PostAction();
+
+			ClearSelection();
 		}
 
         //mxd
@@ -2508,7 +2475,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
         [BeginAction("cutselection", BaseAction = true)]
         public void CutSelection() {
             CopySelection();
-            deleteSelectedThings();
+
+			//Create undo
+			string rest = copyBuffer.Count + " thing" + (copyBuffer.Count > 1 ? "s." : ".");
+			CreateUndo("Cut " + rest);
+			General.Interface.DisplayStatus(StatusType.Info, "Cut " + rest);
+
+			List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true, false);
+			foreach (IVisualEventReceiver i in objs) {
+				BaseVisualThing thing = i as BaseVisualThing;
+				thing.Thing.Fields.BeforeFieldsChange();
+				thing.Thing.Dispose();
+				thing.Dispose();
+			}
+
+			General.Map.IsChanged = true;
+			General.Map.ThingsFilter.Update();
         }
 
         //mxd. We'll just use currently selected objects 
@@ -2526,9 +2508,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
                 return;
             }
 
-            General.Map.UndoRedo.ClearAllRedos();
             string rest = copyBuffer.Count + " thing" + (copyBuffer.Count > 1 ? "s." : ".");
-            General.Map.UndoRedo.CreateUndo("Paste " + rest);
+			General.Map.UndoRedo.CreateUndo("Paste " + rest);
             General.Interface.DisplayStatus(StatusType.Info, "Pasted " + rest);
             
             PreActionNoChange();
@@ -2996,7 +2977,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				bool matchtop = (!j.sidedef.Marked && (j.sidedef.LongHighTexture == texture.LongName) && j.sidedef.HighRequired());
 				bool matchbottom = (!j.sidedef.Marked && (j.sidedef.LongLowTexture == texture.LongName) && j.sidedef.LowRequired());
-				bool matchmid = ((j.controlSide.LongMiddleTexture == texture.LongName) && (j.controlSide.MiddleRequired() || ((j.controlSide.MiddleTexture.Length > 0) && (j.controlSide.MiddleTexture[0] != '-')))); //mxd
+				bool matchmid = ((j.controlSide.LongMiddleTexture == texture.LongName) && (j.controlSide.MiddleRequired() || ((j.controlSide.MiddleTexture.Length > 0) && (j.controlSide.MiddleTexture != "-")))); //mxd
 
 				//mxd. If there's a selection, check if matched part is actually selected
 				if(!singleselection) {

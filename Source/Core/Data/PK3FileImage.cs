@@ -29,7 +29,6 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private PK3Reader datareader;
-		//private string filepathname;
 		private int probableformat;
 		
 		#endregion
@@ -41,9 +40,8 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Initialize
 			this.datareader = datareader;
-			//this.filepathname = filepathname;
-            this.fullName = filepathname;
 			SetName(name);
+			this.fullName = filepathname;
 
 			if(asflat)
 			{

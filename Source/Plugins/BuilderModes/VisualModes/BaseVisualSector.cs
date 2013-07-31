@@ -214,21 +214,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			for(int i = 0; i < data.ExtraFloors.Count; i++)
 			{
 				Effect3DFloor ef = data.ExtraFloors[i];
-				bool floorRequired = false; //mxd
-				bool ceilingRequired = false; //mxd
+				bool floorRequired = ef.VavoomType; //mxd
+				bool ceilingRequired = ef.VavoomType; //mxd
 
-				if(!ef.IgnoreBottomHeight) {
+				if(ef.VavoomType || !ef.IgnoreBottomHeight) {
 					//mxd. if normals match - check the offsets
-					if(ef.Ceiling.plane.Normal == floor.Level.plane.Normal) {
-						if(-floor.Level.plane.Offset < ef.Ceiling.plane.Offset) {
-							floorRequired = true;
-						} else if(-floor.Level.plane.Offset == ef.Ceiling.plane.Offset) {
+					if(!ef.VavoomType) {
+						if(ef.Ceiling.plane.Normal == floor.Level.plane.Normal) {
+							if(-floor.Level.plane.Offset < ef.Ceiling.plane.Offset) {
+								floorRequired = true;
+							} else if(-floor.Level.plane.Offset == ef.Ceiling.plane.Offset) {
+								//mxd. check if 3d floor is higher than real one at any vertex
+								floorRequired = checkFloorVertices(floor.Vertices, ef.Ceiling.plane);
+							}
+						} else {
 							//mxd. check if 3d floor is higher than real one at any vertex
 							floorRequired = checkFloorVertices(floor.Vertices, ef.Ceiling.plane);
 						}
-					} else {
-						//mxd. check if 3d floor is higher than real one at any vertex
-						floorRequired = checkFloorVertices(floor.Vertices, ef.Ceiling.plane);
 					}
 
 					//mxd. Create a floor
@@ -238,7 +240,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							base.AddGeometry(vf);
 
 							//mxd. add backside as well
-							if(ef.RenderInside) {
+							if(!ef.VavoomType && ef.RenderInside) {
 								VisualFloor vfb = (i < extrabackfloors.Count) ? extrabackfloors[i] : new VisualFloor(mode, this);
 								if(vfb.Setup(ef.Ceiling, ef, true))
 									base.AddGeometry(vfb);
@@ -252,16 +254,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				//mxd. check if 3d ceiling is lower than real one at any vertex
-				if(ef.Floor.plane.Normal == ceiling.Level.plane.Normal) {
-					if(-ceiling.Level.plane.Offset > ef.Floor.plane.Offset) {
-						floorRequired = true;
-					} else if(-ceiling.Level.plane.Offset == ef.Floor.plane.Offset) {
+				if(!ef.VavoomType) {
+					if(ef.Floor.plane.Normal == ceiling.Level.plane.Normal) {
+						if(-ceiling.Level.plane.Offset > ef.Floor.plane.Offset) {
+							floorRequired = true;
+						} else if(-ceiling.Level.plane.Offset == ef.Floor.plane.Offset) {
+							//mxd. check if 3d floor is higher than real one at any vertex
+							ceilingRequired = checkCeilingVertices(ceiling.Vertices, ef.Floor.plane);
+						}
+					} else {
 						//mxd. check if 3d floor is higher than real one at any vertex
 						ceilingRequired = checkCeilingVertices(ceiling.Vertices, ef.Floor.plane);
 					}
-				} else {
-					//mxd. check if 3d floor is higher than real one at any vertex
-					ceilingRequired = checkCeilingVertices(ceiling.Vertices, ef.Floor.plane);
 				}
 
 				//mxd. Create a ceiling
@@ -271,7 +275,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						base.AddGeometry(vc);
 
 						//mxd. add backside as well
-						if(ef.RenderInside || ef.IgnoreBottomHeight) {
+						if(!ef.VavoomType && (ef.RenderInside || ef.IgnoreBottomHeight)) {
 							VisualCeiling vcb = (i < extrabackceilings.Count) ? extrabackceilings[i] : new VisualCeiling(mode, this);
 							if(vcb.Setup(ef.Floor, ef, true))
 								base.AddGeometry(vcb);
@@ -317,7 +321,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					for(int i = 0; i < osd.ExtraFloors.Count; i++)
 					{
 						Effect3DFloor ef = osd.ExtraFloors[i];
-						if(ef.IgnoreBottomHeight) continue;
+						if(!ef.VavoomType && ef.IgnoreBottomHeight) continue; //mxd
 
 						VisualMiddle3D vm3 = (i < middles.Count) ? middles[i] : new VisualMiddle3D(mode, this, sd);
 						if(vm3.Setup(ef))
@@ -331,7 +335,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					for (int i = 0; i < data.ExtraFloors.Count; i++) {
 						Effect3DFloor ef = data.ExtraFloors[i];
 
-						if (ef.RenderInside && !ef.IgnoreBottomHeight) {
+						if (!ef.VavoomType && ef.RenderInside && !ef.IgnoreBottomHeight) {
 							VisualMiddleBack vms = new VisualMiddleBack(mode, this, sd);
 							if (vms.Setup(ef))
 								base.AddGeometry(vms);

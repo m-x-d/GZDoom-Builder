@@ -465,7 +465,7 @@ namespace CodeImp.DoomBuilder.Map
 			s.BeforePropsChange();
 
 			// Upper texture set?
-			if((texnamehigh.Length > 0) && (texnamehigh[0] != '-'))
+			if((texnamehigh.Length > 0) && (texnamehigh != "-"))
 			{
 				// Copy upper texture
 				s.texnamehigh = texnamehigh;
@@ -476,7 +476,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			// Middle texture set?
-			if((texnamemid.Length > 0) && (texnamemid[0] != '-'))
+			if((texnamemid.Length > 0) && (texnamemid != "-"))
 			{
 				// Copy middle texture
 				s.texnamemid = texnamemid;
@@ -487,7 +487,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			// Lower texture set?
-			if((texnamelow.Length > 0) && (texnamelow[0] != '-'))
+			if((texnamelow.Length > 0) && (texnamelow != "-"))
 			{
 				// Copy middle texture
 				s.texnamelow = texnamelow;

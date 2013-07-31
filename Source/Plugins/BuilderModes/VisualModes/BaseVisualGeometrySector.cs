@@ -365,7 +365,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnCopyTextureOffsets() { }
 		public virtual void OnPasteTextureOffsets() { }
 		public virtual void OnInsert() { }
-		public virtual void OnDelete() { }
 		protected virtual void SetTexture(string texturename) { }
 		public virtual void ApplyUpperUnpegged(bool set) { }
 		public virtual void ApplyLowerUnpegged(bool set) { }
@@ -451,6 +450,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 			}
+		}
+
+		// Delete texture
+		public virtual void OnDelete() {
+			// Remove texture
+			mode.CreateUndo("Delete texture");
+			mode.SetActionResult("Deleted a texture.");
+			SetTexture("-");
+
+			// Update
+			Sector.Changed = true;
 		}
 		
 		// Processing

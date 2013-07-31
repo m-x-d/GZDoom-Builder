@@ -74,12 +74,12 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 			//mxd. which texture we must use?
 			long textureLong = 0;
 			if ((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0) {
-				if (Sidedef.Other.HighTexture.Length > 0 && Sidedef.Other.HighTexture[0] != '-')
+				if (Sidedef.Other.HighTexture.Length > 0 && Sidedef.Other.HighTexture != "-")
 					textureLong = Sidedef.Other.LongHighTexture;
 			} else if ((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0) {
-				if(Sidedef.Other.LowTexture.Length > 0 && Sidedef.Other.LowTexture[0] != '-')
+				if(Sidedef.Other.LowTexture.Length > 0 && Sidedef.Other.LowTexture != "-")
 					textureLong = Sidedef.Other.LongLowTexture;
-			} else if ((sourceside.MiddleTexture.Length > 0) && (sourceside.MiddleTexture[0] != '-')) {
+			} else if ((sourceside.MiddleTexture.Length > 0) && (sourceside.MiddleTexture != "-")) {
 				textureLong = sourceside.LongMiddleTexture;
 			}
 
@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 				// Load texture
 				base.Texture = General.Map.Data.GetTextureImage(textureLong);
 				if (base.Texture == null) {
-					base.Texture = General.Map.Data.MissingTexture3D;
+					base.Texture = General.Map.Data.UnknownTexture3D;
 					setuponloadedtexture = textureLong;
 				} else if (!base.Texture.IsImageLoaded) {
 					setuponloadedtexture = textureLong;
@@ -174,7 +174,12 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 				poly.Add(new Vector3D(vr.x, vr.y, fr));
 				
 				// Determine initial color
-				int lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
+				int lightlevel = 0;
+				if(((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.DisableLighting) != 0)) {
+					lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
+				}else{
+					lightlevel = lightabsolute ? lightvalue : sourceside.Sector.Brightness + lightvalue;
+				}
                 //mxd
                 PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
 				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
