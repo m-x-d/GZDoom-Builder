@@ -369,10 +369,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
         //mxd
-        protected float getRoundedTextureOffset(float oldValue, float offset, float scale) {
+        protected float getRoundedTextureOffset(float oldValue, float offset, float scale, float textureSize) {
 			if(offset == 0f) return oldValue;
 			float scaledOffset = offset * scale;
-			float result = (float)Math.Round(oldValue + scaledOffset);
+			float result = (float)Math.Round((oldValue + scaledOffset) % textureSize);
 			if(result == oldValue) result += (scaledOffset < 0 ? -1 : 1);
             return result;
         }
@@ -1102,9 +1102,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
                 Point p = GetTextureOffset();
                 mode.SetActionResult("Changed texture offsets to " + p.X + ", " + p.Y + ".");
             } else {
-                // Apply classic offsets
-                Sidedef.OffsetX -= horizontal;
-                Sidedef.OffsetY -= vertical;
+				//mxd. Apply classic offsets
+				Sidedef.OffsetX = (Sidedef.OffsetX - horizontal) % Texture.Width;
+				Sidedef.OffsetY = (Sidedef.OffsetY - vertical) % Texture.Height;
+
                 mode.SetActionResult("Changed texture offsets to " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
             }
 			

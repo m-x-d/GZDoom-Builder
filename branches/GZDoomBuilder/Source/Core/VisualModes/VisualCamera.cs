@@ -29,6 +29,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private Vector3D movemultiplier;
 		private float anglexy, anglez;
 		private Sector sector;
+		private float gravity = 1.0f; //mxd
+		private bool udmf; //mxd
 		
 		#endregion
 
@@ -38,8 +40,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public Vector3D Target { get { return target; } }
 		public float AngleXY { get { return anglexy; } set { anglexy = value; } }
 		public float AngleZ { get { return anglez; } set { anglez = value; } }
-		public Sector Sector { get { return sector; } internal set { sector = value; } }
+		public Sector Sector { get { return sector; } internal set { sector = value; updateGravity(); } } //mxd
 		public Vector3D MoveMultiplier { get { return movemultiplier; } set { movemultiplier = value; } }
+		public float Gravity { get { return gravity; } } //mxd
 		
 		#endregion
 
@@ -49,11 +52,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public VisualCamera()
 		{
 			// Initialize
-			this.movemultiplier = new Vector3D(1.0f, 1.0f, 1.0f);
-			//this.position = position;
-			this.anglexy = 0.0f;
-			this.anglez = Angle2D.PI;
-			this.sector = null;
+			movemultiplier = new Vector3D(1.0f, 1.0f, 1.0f);
+			anglexy = 0.0f;
+			anglez = Angle2D.PI;
+			sector = null;
+			udmf = General.Map.UDMF; //mxd
 			
 			PositionAtThing();
 		}
@@ -159,6 +162,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 			{
 				return false;
 			}
+		}
+
+		//mxd
+		private void updateGravity() {
+			if(!udmf || sector == null) return;
+			gravity = sector.Fields.GetValue("gravity", 1.0f);
 		}
 		
 		#endregion

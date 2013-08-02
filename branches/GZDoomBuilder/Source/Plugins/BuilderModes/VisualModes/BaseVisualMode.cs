@@ -1008,7 +1008,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					// Fall down
-					gravity.z += GRAVITY * deltatime;
+					gravity.z += GRAVITY * General.Map.VisualCamera.Gravity * deltatime;
 					if(gravity.z > 3.0f) gravity.z = 3.0f;
 
 					// Test if we don't go through a floor
@@ -1324,13 +1324,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			Dictionary<Sidedef, int> donesides = new Dictionary<Sidedef, int>(selectedobjects.Count);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(false, true, false, false);
-			foreach(IVisualEventReceiver i in objs)
-			{
-				if(i is BaseVisualGeometrySidedef)
-				{
-					if(!donesides.ContainsKey((i as BaseVisualGeometrySidedef).Sidedef))
+			foreach(IVisualEventReceiver i in objs) {
+				BaseVisualGeometrySidedef vs = i as BaseVisualGeometrySidedef; //mxd
+
+				if(i is BaseVisualGeometrySidedef) {
+					if(!donesides.ContainsKey(vs.Sidedef))
 					{
-						i.OnChangeTextureOffset(dx, dy, false);
+						//mxd. added scaling by texture scale
+						if(vs.Texture.UsedInMap) //mxd. Otherwise it's MissingTexture3D and we probably don't want to drag that
+							vs.OnChangeTextureOffset((int)(dx / vs.Texture.Scale.x), (int)(dy / vs.Texture.Scale.y), false);
 						donesides.Add((i as BaseVisualGeometrySidedef).Sidedef, 0);
 					}
 				}

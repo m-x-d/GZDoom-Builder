@@ -178,8 +178,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
             //mxd
             Sector s = GetControlSector();
 			s.Fields.BeforeFieldsChange();
-			float nx = s.Fields.GetValue("xpanningceiling", 0.0f) + (float)xy.X;
-			float ny = s.Fields.GetValue("ypanningceiling", 0.0f) + (float)xy.Y;
+			float nx = (s.Fields.GetValue("xpanningceiling", 0.0f) + xy.X) % (Texture.ScaledWidth / s.Fields.GetValue("xscaleceiling", 1.0f));
+			float ny = (s.Fields.GetValue("ypanningceiling", 0.0f) + xy.Y) % (Texture.ScaledHeight / s.Fields.GetValue("yscaleceiling", 1.0f));
             s.Fields["xpanningceiling"] = new UniValue(UniversalType.Float, nx);
             s.Fields["ypanningceiling"] = new UniValue(UniversalType.Float, ny);
             s.UpdateNeeded = true;
