@@ -438,6 +438,8 @@ namespace CodeImp.DoomBuilder.Controls
 				// Determine image to show
 				if(required) 
 					General.DisplayZoomedImage(panel, Properties.Resources.MissingTexture);
+				else
+					panel.BackgroundImage = null;
 			}
 			else
 			{
