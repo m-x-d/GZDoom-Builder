@@ -38,14 +38,16 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Variables
 
-		private Configuration config;
+		//private Configuration config;
 		
 		#endregion
 		
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public UniversalMapSetIO(WAD wad, MapManager manager) : base(wad, manager)
+		public UniversalMapSetIO(WAD wad, MapManager manager) : base(wad, manager) { }
+
+		/*public UniversalMapSetIO(WAD wad, MapManager manager) : base(wad, manager)
 		{
 			if((manager != null) && (manager.Config != null))
 			{
@@ -81,6 +83,14 @@ namespace CodeImp.DoomBuilder.IO
 						// Add thing flags
 						foreach(KeyValuePair<string, string> flag in manager.Config.ThingFlags)
 							config.WriteSetting("managedfields.thing." + flag.Key, true);
+
+						//mxd. Add sector flags
+						foreach(KeyValuePair<string, string> flag in manager.Config.SectorFlags)
+							config.WriteSetting("managedfields.sector." + flag.Key, true);
+
+						//mxd. Add sidedef flags
+						foreach(KeyValuePair<string, string> flag in manager.Config.SidedefFlags)
+							config.WriteSetting("managedfields.sidedef." + flag.Key, true);
 						
 						// Done
 						udmfcfgreader.Dispose();
@@ -89,7 +99,7 @@ namespace CodeImp.DoomBuilder.IO
 					}
 				}
 			}
-		}
+		}*/
 
 		#endregion
 

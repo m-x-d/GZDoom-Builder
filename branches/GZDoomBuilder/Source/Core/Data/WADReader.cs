@@ -898,8 +898,7 @@ namespace CodeImp.DoomBuilder.Data
 
         //mxd
         internal override bool FileExists(string name) {
-            Lump l = file.FindLump(name);
-            return l != null;
+			return file.FindLumpIndex(name) != -1;
         }
 
 		#endregion

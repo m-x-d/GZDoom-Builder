@@ -104,15 +104,22 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			// Initialize world vertex declaration
-            vertexElements = new VertexElement[]
-			{
-				new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
-				new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
-				new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
-				//mxd
-                new VertexElement(0, 24, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0),
-                VertexElement.VertexDeclarationEnd
-			};
+			if (manager.Enabled){ //mxd
+				vertexElements = new VertexElement[] {
+					new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
+					new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
+					new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
+					new VertexElement(0, 24, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0), //mxd
+					VertexElement.VertexDeclarationEnd
+				};
+			} else {
+				vertexElements = new VertexElement[] {
+					new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
+					new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
+					new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
+					VertexElement.VertexDeclarationEnd
+				};
+			}
             vertexdecl = new VertexDeclaration(General.Map.Graphics.Device, vertexElements);
 
 			// We have no destructor
