@@ -1446,6 +1446,7 @@ namespace CodeImp.DoomBuilder.Windows
         //mxd
         private void engineItem_Click(object sender, EventArgs e) {
             General.Map.ConfigSettings.CurrentEngineIndex = (int)(((ToolStripMenuItem)sender).Tag);
+			UpdateSkills();
         }
 		
 		// Event handler for testing at a specific skill
@@ -3126,8 +3127,11 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void blinkTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
 			if(warningsCount > 0) {
-				if(!this.Disposing && blinkTimer != null)
-					this.Invoke(new CallBlink(blink));
+				if (!this.Disposing && blinkTimer != null) {
+					try {
+						this.Invoke(new CallBlink(blink));
+					} catch(ObjectDisposedException oe) { } //la-la-la. We don't care.
+				}
 			} else {
 				//get rid of timer
 				blinkTimer.Stop();

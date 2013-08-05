@@ -1052,9 +1052,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// </summary>
 		protected virtual void FillBlockMap()
 		{
-			if(blockmap != null) blockmap.Dispose();
-			blockmap = new VisualBlockMap();
-			
+			blockmap.Clear();//mxd
 			blockmap.AddLinedefsSet(General.Map.Map.Linedefs);
 			blockmap.AddThingsSet(General.Map.Map.Things);
 			blockmap.AddSectorsSet(General.Map.Map.Sectors);

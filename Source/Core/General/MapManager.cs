@@ -1719,7 +1719,6 @@ namespace CodeImp.DoomBuilder {
 					foreach(Thing t in General.Map.Map.Things) t.TranslateToUDMF();
 				}
 				General.Map.Map.UpdateCustomLinedefColors();
-				UpdateScriptNames(); //mxd
 
                 // Update interface
                 General.MainWindow.SetupInterface();
@@ -1728,6 +1727,7 @@ namespace CodeImp.DoomBuilder {
 
                 // Reload resources
                 ReloadResources();
+				UpdateScriptNames(); //mxd
 
                 // Done
                 General.MainWindow.DisplayReady();

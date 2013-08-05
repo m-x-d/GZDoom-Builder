@@ -44,10 +44,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
             base.Parse(stream, sourcefilename);
 
             //already parsed this?
-            if (parsedLumps.IndexOf(sourcefilename) != -1) return false;
+            if (parsedLumps.Contains(sourcefilename)) return false;
             parsedLumps.Add(sourcefilename);
-            if (isinclude)
-               includes.Add(sourcefilename);
+			if (isinclude) includes.Add(sourcefilename);
 
             // Keep local data
             Stream localstream = datastream;
@@ -104,7 +103,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
                         string includeLump = StripTokenQuotes(ReadToken()).ToLowerInvariant();
 
                         if (!string.IsNullOrEmpty(includeLump)) {
-                            if (includeLump == "zcommon.acs" || includeLump == "common.acs")
+                            string includeName = Path.GetFileName(includeLump);
+
+                            if (includeName == "zcommon.acs" || includeName == "common.acs" || includes.Contains(includeName))
                                 continue;
                             
                             // Callback to parse this file
