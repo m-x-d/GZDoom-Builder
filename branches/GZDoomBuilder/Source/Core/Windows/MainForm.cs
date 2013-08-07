@@ -3130,7 +3130,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if (!this.Disposing && blinkTimer != null) {
 					try {
 						this.Invoke(new CallBlink(blink));
-					} catch(ObjectDisposedException oe) { } //la-la-la. We don't care.
+					} catch(ObjectDisposedException) { } //la-la-la. We don't care.
 				}
 			} else {
 				//get rid of timer

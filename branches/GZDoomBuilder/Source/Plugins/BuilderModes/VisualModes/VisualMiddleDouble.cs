@@ -102,9 +102,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if (base.Texture == null){
 					base.Texture = General.Map.Data.UnknownTexture3D;
 					setuponloadedtexture = Sidedef.LongMiddleTexture;
-				} else {
-					if (!base.Texture.IsImageLoaded)
-						setuponloadedtexture = Sidedef.LongMiddleTexture;
+				} else if (!base.Texture.IsImageLoaded) {
+					setuponloadedtexture = Sidedef.LongMiddleTexture;
 				}
 			} else {
 				// Use missing texture
@@ -133,10 +132,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float floorbias = (Sidedef.Sector.CeilHeight == Sidedef.Sector.FloorHeight) ? 1.0f : 0.0f;
 			float geotop = (float)Math.Min(Sidedef.Sector.CeilHeight, Sidedef.Other.Sector.CeilHeight);
 			float geobottom = (float)Math.Max(Sidedef.Sector.FloorHeight, Sidedef.Other.Sector.FloorHeight);
-			if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag)) {
-				// When lower unpegged is set, the middle texture is bound to the bottom
+			float zoffset = Sidedef.Sector.CeilHeight - Sidedef.Other.Sector.CeilHeight; //mxd
+
+			// When lower unpegged is set, the middle texture is bound to the bottom
+			if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag)) 
 				tp.tlt.y = tsz.y - (float)(geotop - geobottom);
-			}
+			
+			if (zoffset > 0) tp.tlt.y -= zoffset; //mxd
 			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
 			tp.trb.y = tp.tlt.y + ((float)Sidedef.Sector.CeilHeight - ((float)Sidedef.Sector.FloorHeight + floorbias));
 
