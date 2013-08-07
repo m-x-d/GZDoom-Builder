@@ -67,10 +67,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
                         //is it named script?
                         if (token.IndexOf('"') != -1) {
+							//check if we have something like '"mycoolscript"(void)' as a token
+							if(token.LastIndexOf('"') != token.Length - 1)
+								token = token.Substring(0, token.LastIndexOf('"'));
+
                             token = StripTokenQuotes(token);
                             ScriptItem i = new ScriptItem(0, token, startPos, (int)stream.Position-1);
                             namedScripts.Add(i);
                         } else { //should be numbered script
+							//check if we have something like "999(void)" as a token
+							if (token.Contains("(")) token = token.Substring(0, token.IndexOf("("));
+
                             int n = 0;
                             if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) {
                                 int endPos = (int)stream.Position - 1;
@@ -88,7 +95,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
                                     int commentStart = token.IndexOf("//");
                                     if (commentStart != -1) { //found comment
                                         commentStart += 2;
-                                        name = token.Substring(commentStart, token.Length - commentStart);
+                                        name = token.Substring(commentStart, token.Length - commentStart).Trim();
                                     }
                                 }
 

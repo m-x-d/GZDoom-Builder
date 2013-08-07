@@ -183,9 +183,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							// Determine color
 							int lightlevel = lightabsolute ? lightvalue : l.brightnessbelow + lightvalue;
-                            //mxd
-                            //PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel));
-							PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
+							PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef)); //mxd
 							PixelColor wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
 							np.color = wallcolor.WithAlpha(255).ToInt();
 							
