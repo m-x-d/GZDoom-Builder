@@ -305,7 +305,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Create frustum
 			frustum = new ProjectedFrustum2D(pos, anglexy, anglez, PROJ_NEAR_PLANE,
-				General.Settings.ViewDistance, Angle2D.DegToRad((float)General.Settings.VisualFOV));
+				General.Settings.ViewDistance, Angle2D.DegToRad(General.Settings.VisualFOV));
 			
 			// Make the view matrix
 			view3d = Matrix.LookAtRH(D3DDevice.V3(pos), D3DDevice.V3(lookat), new Vector3(0f, 0f, 1f));

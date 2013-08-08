@@ -179,7 +179,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Help
 		private void ScriptEditorForm_HelpRequested(object sender, HelpEventArgs hlpevent)
 		{
-			General.ShowHelp("w_scripteditor.html");
+			if(!editor.LaunchKeywordHelp())	General.ShowHelp("w_scripteditor.html"); //mxd
 			hlpevent.Handled = true;
 		}
 		

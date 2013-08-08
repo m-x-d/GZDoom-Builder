@@ -119,12 +119,7 @@ namespace CodeImp.DoomBuilder {
 
         //mxd
         public bool UDMF { get { return config.FormatInterface == "UniversalMapSetIO"; } }
-        internal List<ScriptItem> NamedScripts { 
-            get {
-                if (!UDMF) throw new Exception("ScriptNames cannot be used in '" + config.FormatInterface + "' format!"); 
-                return namedScripts; 
-            } 
-        }
+		internal List<ScriptItem> NamedScripts { get { return namedScripts; } }
         internal List<ScriptItem> NumberedScripts { get { return numberedScripts; } }
         internal List<string> ScriptIncludes { get { return scriptincludes; } }
        

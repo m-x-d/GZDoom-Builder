@@ -130,9 +130,9 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Methods
 
 		// This launches keyword help website
-		public void LaunchKeywordHelp()
+		public bool LaunchKeywordHelp()
 		{
-			editor.LaunchKeywordHelp();
+			return editor.LaunchKeywordHelp();
 		}
 		
 		// This refreshes the style settings

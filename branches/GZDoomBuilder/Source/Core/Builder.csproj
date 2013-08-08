@@ -928,6 +928,7 @@
     <None Include="Resources\Link.png" />
     <Content Include="Resources\Model.png" />
     <Content Include="Resources\Model_selected.png" />
+    <EmbeddedResource Include="Resources\UDMF_UI.cfg" />
     <None Include="Resources\Unlink.png" />
     <None Include="Resources\Unpin.png" />
     <None Include="Resources\Pin.png" />

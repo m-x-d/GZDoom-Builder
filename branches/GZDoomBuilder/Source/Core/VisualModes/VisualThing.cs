@@ -108,13 +108,12 @@ namespace CodeImp.DoomBuilder.VisualModes
         public int CameraDistance3D { get { return cameraDistance3D; } }
 		public bool Sizeless { get { return sizeless; } }
         public Vector3 Center { 
-            get 
-            {
-                if (isGldefsLight)
-                    return position_v3 + lightOffset;
+            get {
+                if (isGldefsLight) return position_v3 + lightOffset;
                 return new Vector3(position_v3.X, position_v3.Y, position_v3.Z + thingHeight / 2); 
             } 
         }
+		public Vector3D CenterV3D { get { return D3DDevice.V3D(Center); } }
         public Vector3 PositionV3 { get { return position_v3; } }
         public Vector3[] BoundingBox { get { return boundingBox; } }
         //mxd. light properties

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -12,11 +14,15 @@ using SlimDX;
 using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Geometry;
 
+#endregion
+
 //mxd. Original version taken from here: http://colladadotnet.codeplex.com/SourceControl/changeset/view/40680
 namespace CodeImp.DoomBuilder.GZBuilder.MD3
 {
 	internal static class ModelReader
-    {
+	{
+		#region ================== Variables
+
 		private const float VERTICAL_STRETCH = 1 / 1.2f;
 
 		private class MD3LoadResult
@@ -30,11 +36,27 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				Meshes = new List<Mesh>();
 			}
 		}
-		
+
+		private static VertexElement[] vertexElements;
+
+		#endregion
+
+		#region ================== Load
+
 		public static void Load(ModelData mde, List<DataReader> containers, Device device) {
             mde.Model = new GZModel();
             BoundingBoxSizes bbs = new BoundingBoxSizes();
 			MD3LoadResult result = new MD3LoadResult();
+
+			if(vertexElements == null) {
+				vertexElements = new[] {
+					new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
+					new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
+					new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
+					new VertexElement(0, 24, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0),
+					VertexElement.VertexDeclarationEnd
+				};
+			}
 
             //load models and textures
 			for(int i = 0; i < mde.ModelNames.Count; i++) {
@@ -142,7 +164,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
             }
 
             mde.Model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
-        }
+		}
+
+		#endregion
+
+		#region ================== MD3
 
 		private static MD3LoadResult ReadMD3Model(ref BoundingBoxSizes bbs, ModelData mde, bool useSkins, MemoryStream s, Device device) {
             long start = s.Position;
@@ -337,7 +363,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		private static void CreateMesh(Device device, ref MD3LoadResult result, List<WorldVertex> vertList, List<int> polyIndecesList) {
 			//create mesh
-			Mesh mesh = new Mesh(device, polyIndecesList.Count / 3, vertList.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, General.Map.Graphics.Shaders.World3D.VertexElements);
+			Mesh mesh = new Mesh(device, polyIndecesList.Count / 3, vertList.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
 
 			using(DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) {
 				stream.WriteRange(vertList.ToArray());
@@ -353,6 +379,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			//store in result
 			result.Meshes.Add(mesh);
 		}
+
+		#endregion
+
+		#region ================== MD2
 
 		private static MD3LoadResult ReadMD2Model(ref BoundingBoxSizes bbs, ModelData mde, MemoryStream s, Device D3DDevice) {
             long start = s.Position;
@@ -504,7 +534,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                 }
 
                 //mesh
-                Mesh mesh = new Mesh(D3DDevice, polyIndecesList.Count / 3, vertList.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, General.Map.Graphics.Shaders.World3D.VertexElements);
+                Mesh mesh = new Mesh(D3DDevice, polyIndecesList.Count / 3, vertList.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
 
                 using (DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) {
                     stream.WriteRange(vertList.ToArray());
@@ -524,7 +554,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
             }
 
             return result;
-        }
+		}
+
+		#endregion
+
+		#region ================== Utility
 
 		//util
 		private static MemoryStream LoadFile(List<DataReader> containers, string path, bool isModel) {
@@ -589,6 +623,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                 br.ReadChar();
             }
             return NAME;
-        }
-    }
+		}
+
+		#endregion
+	}
 }

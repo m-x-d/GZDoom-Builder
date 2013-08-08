@@ -46,7 +46,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply = new System.Windows.Forms.Button();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
 			this.argspanel = new System.Windows.Forms.Panel();
-			this.arg0str = new System.Windows.Forms.ComboBox();
+			this.scriptNumbers = new System.Windows.Forms.ComboBox();
+			this.scriptNames = new System.Windows.Forms.ComboBox();
 			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
@@ -327,7 +328,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// argspanel
 			// 
-			this.argspanel.Controls.Add(this.arg0str);
+			this.argspanel.Controls.Add(this.scriptNumbers);
+			this.argspanel.Controls.Add(this.scriptNames);
 			this.argspanel.Controls.Add(this.arg2);
 			this.argspanel.Controls.Add(this.arg1);
 			this.argspanel.Controls.Add(this.arg0);
@@ -345,16 +347,27 @@ namespace CodeImp.DoomBuilder.Windows
 			this.argspanel.TabIndex = 2;
 			this.argspanel.Visible = false;
 			// 
-			// arg0str
+			// scriptNumbers
 			// 
-			this.arg0str.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-			this.arg0str.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-			this.arg0str.FormattingEnabled = true;
-			this.arg0str.Location = new System.Drawing.Point(272, 55);
-			this.arg0str.Name = "arg0str";
-			this.arg0str.Size = new System.Drawing.Size(125, 22);
-			this.arg0str.TabIndex = 38;
-			this.arg0str.Leave += new System.EventHandler(this.arg0str_Leave);
+			this.scriptNumbers.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.scriptNumbers.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+			this.scriptNumbers.BackColor = System.Drawing.Color.LemonChiffon;
+			this.scriptNumbers.FormattingEnabled = true;
+			this.scriptNumbers.Location = new System.Drawing.Point(407, 55);
+			this.scriptNumbers.Name = "scriptNumbers";
+			this.scriptNumbers.Size = new System.Drawing.Size(120, 22);
+			this.scriptNumbers.TabIndex = 39;
+			// 
+			// scriptNames
+			// 
+			this.scriptNames.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.scriptNames.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+			this.scriptNames.BackColor = System.Drawing.Color.Honeydew;
+			this.scriptNames.FormattingEnabled = true;
+			this.scriptNames.Location = new System.Drawing.Point(283, 55);
+			this.scriptNames.Name = "scriptNames";
+			this.scriptNames.Size = new System.Drawing.Size(120, 22);
+			this.scriptNames.TabIndex = 38;
 			// 
 			// arg2
 			// 
@@ -1306,7 +1319,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.TypeColumnVisible = true;
 			this.fieldslist.TypeColumnWidth = 100;
 			this.fieldslist.ValueColumnVisible = true;
-			this.fieldslist.OnFieldValueChanged += new CodeImp.DoomBuilder.Controls.FieldsEditorControl.SingleFieldNameEvent(this.fieldslist_OnFieldValueChanged);
 			// 
 			// heightpanel1
 			// 
@@ -1430,7 +1442,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox frontsector;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backsector;
         private System.Windows.Forms.CheckBox cbArgStr;
-		private System.Windows.Forms.ComboBox arg0str;
+		private System.Windows.Forms.ComboBox scriptNames;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
 		private System.Windows.Forms.TabControl udmfPropertiesFront;
 		private System.Windows.Forms.TabPage tabFrontOffsets;
@@ -1464,5 +1476,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl backTextureOffset;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flagsFront;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flagsBack;
+		private System.Windows.Forms.ComboBox scriptNumbers;
 	}
 }

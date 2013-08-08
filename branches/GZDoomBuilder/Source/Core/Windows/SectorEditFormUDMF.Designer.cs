@@ -837,8 +837,6 @@
 			this.fieldslist.TypeColumnVisible = true;
 			this.fieldslist.TypeColumnWidth = 100;
 			this.fieldslist.ValueColumnVisible = true;
-			this.fieldslist.OnFieldUndefined += new CodeImp.DoomBuilder.Controls.FieldsEditorControl.SingleFieldNameEvent(this.fieldslist_OnFieldValueChanged);
-			this.fieldslist.OnFieldValueChanged += new CodeImp.DoomBuilder.Controls.FieldsEditorControl.SingleFieldNameEvent(this.fieldslist_OnFieldValueChanged);
 			// 
 			// cancel
 			// 

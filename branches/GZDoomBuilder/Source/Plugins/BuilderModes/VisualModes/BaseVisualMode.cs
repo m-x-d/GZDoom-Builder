@@ -2648,6 +2648,102 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
+		[BeginAction("lookthroughthing")]
+		public void LookThroughThing() {
+			List<VisualThing> visualThings = GetSelectedVisualThings(true);
+
+			if(visualThings.Count != 1) {
+				General.Interface.DisplayStatus(StatusType.Warning, "Look Through Selection action requires 1 selected Thing!");
+				return;
+			}
+
+			//set position and angles
+			Thing t = visualThings[0].Thing;
+			if((t.Type == 9072 || t.Type == 9073) && t.Args[3] > 0) { //AimingCamera or MovingCamera with target?
+				//position
+				if(t.Type == 9072 && (t.Args[0] > 0 || t.Args[1] > 0)) { //positon MovingCamera at targeted interpolation point
+					int ipTag = t.Args[0] + (t.Args[1] << 8);
+
+					Thing ip = null;
+
+					//find interpolation point
+					foreach(Thing tgt in General.Map.Map.Things) {
+						if(tgt.Tag == ipTag && tgt.Type == 9070) {
+							ip = tgt;
+							break;
+						}
+					}
+
+					if(ip != null) {
+						VisualThing vTarget = null;
+						if(!VisualThingExists(ip))
+							vTarget = CreateVisualThing(ip);
+						else
+							vTarget = GetVisualThing(ip);
+
+						Vector3D targetPos = new Vector3D();
+						if(vTarget == null) {
+							targetPos = ip.Position;
+							if(ip.Sector != null) targetPos.z += ip.Sector.FloorHeight;
+						} else {
+							targetPos = vTarget.CenterV3D;
+						}
+
+						General.Map.VisualCamera.Position = targetPos; //position at interpolation point
+					} else {
+						General.Map.VisualCamera.Position = visualThings[0].CenterV3D; //position at camera
+					}
+
+				}else{
+					General.Map.VisualCamera.Position = visualThings[0].CenterV3D; //position at camera
+				}
+
+				//angle
+				Thing target = null;
+
+				foreach(Thing tgt in General.Map.Map.Things) {
+					if(tgt.Tag == t.Args[3]) {
+						target = tgt;
+						break;
+					}
+				}
+
+				if (target == null) {
+					General.Interface.DisplayStatus(StatusType.Warning, "Camera target with Tag " + t.Args[3] + " does not exist!");
+					General.Map.VisualCamera.AngleXY = t.Angle - Angle2D.PI;
+					General.Map.VisualCamera.AngleZ = Angle2D.PI;
+				} else {
+					VisualThing vTarget = null;
+					if (!VisualThingExists(target)) 
+						vTarget = CreateVisualThing(target);
+					else
+						vTarget = GetVisualThing(target);
+
+					Vector3D targetPos = new Vector3D();
+					if(vTarget == null) {
+						targetPos = target.Position;
+						if(target.Sector != null) targetPos.z += target.Sector.FloorHeight;
+					} else {
+						targetPos = vTarget.CenterV3D;
+					}
+
+					bool pitch = (t.Args[2] & 4) != 0;
+					Vector3D delta = General.Map.VisualCamera.Position - targetPos;
+					General.Map.VisualCamera.AngleXY = delta.GetAngleXY();
+					General.Map.VisualCamera.AngleZ = pitch ? -delta.GetAngleZ() : Angle2D.PI;
+				}
+			} else if((t.Type == 9025 || t.Type == 9073) && t.Args[0] != 0) { //SecurityCamera or AimingCamera with pitch?
+				General.Map.VisualCamera.Position = visualThings[0].CenterV3D; //position at camera
+				General.Map.VisualCamera.AngleXY = t.Angle - Angle2D.PI;
+				General.Map.VisualCamera.AngleZ = Angle2D.PI + Angle2D.DegToRad(t.Args[0]);
+			} else { //nope, just a generic thing
+				General.Map.VisualCamera.Position = visualThings[0].CenterV3D; //position at thing
+				General.Map.VisualCamera.AngleXY = t.Angle - Angle2D.PI;
+				General.Map.VisualCamera.AngleZ = Angle2D.PI;
+			}
+		}
+
+		//mxd
 		[BeginAction("toggleslope")]
 		public void ToggleSlope() {
 			List<VisualGeometry> selection = GetSelectedSurfaces();

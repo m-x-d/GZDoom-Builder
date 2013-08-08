@@ -25,6 +25,8 @@ using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -45,11 +47,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private ICollection<Thing> things;
 		private ThingTypeInfo thinginfo;
-		private bool preventchanges = false;
+		private bool preventchanges;
         //mxd
         private Vector3D initialPosition; //initial position of a thing used to fill posX, posY and posZ fields
 		private int initialFloorHeight; //floor height of the sector first thing is in
 		private static bool useAbsoluteHeight;
+		private string arg0str;
+		private bool haveArg0Str;
 
 		private List<ThingProperties> thingProps; //mxd
 
@@ -88,19 +92,33 @@ namespace CodeImp.DoomBuilder.Windows
 			action.GeneralizedCategories = General.Map.Config.GenActionCategories;
 			action.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
 
-			// Fill universal fields list
-			fieldslist.ListFixedFields(General.Map.Config.ThingFields);
-			
-			// Initialize custom fields editor
-			fieldslist.Setup("thing");
+			if(General.Map.FormatInterface.HasCustomFields) { //mxd
+				// Initialize custom fields editor
+				fieldslist.Setup("thing");
 
-			// Custom fields?
-			if(!General.Map.FormatInterface.HasCustomFields)
+				// Fill universal fields list
+				fieldslist.ListFixedFields(General.Map.Config.ThingFields);
+			} else {
 				tabs.TabPages.Remove(tabcustom);
-			
+
+				// Hide unused controls
+				labelID.Visible = false; //mxd
+				conversationID.Visible = false; //mxd
+			}
+
 			// Tag/Effects?
-			if(!General.Map.FormatInterface.HasThingAction && !General.Map.FormatInterface.HasThingTag)
+			if(!General.Map.FormatInterface.HasThingAction && !General.Map.FormatInterface.HasThingTag){
 				tabs.TabPages.Remove(tabeffects);
+			} else { //mxd. Setup script names and numbers
+				scriptNames.Location = arg0.Location;
+				scriptNumbers.Location = arg0.Location;
+
+				foreach(ScriptItem nsi in General.Map.NamedScripts)
+					scriptNames.Items.Add(nsi);
+
+				foreach(ScriptItem si in General.Map.NumberedScripts)
+					scriptNumbers.Items.Add(si);
+			}
 			
 			// Thing height?
 			posZ.Visible = General.Map.FormatInterface.HasThingHeight;
@@ -163,15 +181,16 @@ namespace CodeImp.DoomBuilder.Windows
             posY.ButtonStep = General.Map.Grid.GridSize;
 			posZ.ButtonStep = General.Map.Grid.GridSize;
 
-            //mxd. setup arg0str
-            arg0str.Location = arg0.Location;
-
-            // Custom fields
-            fieldslist.SetValues(ft.Fields, true);
+			//mxd. Custom fields
+			if(General.Map.FormatInterface.HasCustomFields) {
+				fieldslist.SetValues(ft.Fields, true);
+				conversationID.Text = ft.Fields.GetValue("conversation", 0).ToString();
+				arg0str = ft.Fields.GetValue("arg0str", string.Empty);
+				haveArg0Str = !string.IsNullOrEmpty(arg0str);
+			}
 
 			// Action/tags
 			action.Value = ft.Action;
-			//tag.Text = ft.Tag.ToString(); //mxd
 			if(General.Map.FormatInterface.HasThingTag) {//mxd
 				tagSelector.Setup(); 
 				tagSelector.SetTag(ft.Tag);
@@ -216,13 +235,12 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd
                 if (useAbsoluteHeight && t.Sector != null) {
 					if(((int)t.Position.z + t.Sector.FloorHeight).ToString() != posZ.Text) posZ.Text = "";
-				} else {
-					if(((int)t.Position.z).ToString() != posZ.Text) posZ.Text = "";
+				} else if(((int)t.Position.z).ToString() != posZ.Text){
+					posZ.Text = "";
 				}
 
 				// Action/tags
 				if(t.Action != action.Value) action.Empty = true;
-				//if(t.Tag.ToString() != tag.Text) tag.Text = ""; //mxd
 				if(General.Map.FormatInterface.HasThingTag && t.Tag != ft.Tag) tagSelector.ClearTag(); //mxd
 				if(t.Args[0] != arg0.GetResult(-1)) arg0.ClearValue();
 				if(t.Args[1] != arg1.GetResult(-1)) arg1.ClearValue();
@@ -230,9 +248,19 @@ namespace CodeImp.DoomBuilder.Windows
 				if(t.Args[3] != arg3.GetResult(-1)) arg3.ClearValue();
 				if(t.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
 
-				// Custom fields
-				t.Fields.BeforeFieldsChange(); //mxd
-				fieldslist.SetValues(t.Fields, false);
+				//mxd. Custom fields
+				if(General.Map.FormatInterface.HasCustomFields){
+					t.Fields.BeforeFieldsChange(); //mxd
+					fieldslist.SetValues(t.Fields, false);
+
+					if(t.Fields.GetValue("conversation", 0).ToString() != conversationID.Text)
+						conversationID.Text = "";
+
+					if (arg0str != t.Fields.GetValue("arg0str", string.Empty)) {
+						haveArg0Str = true;
+						arg0str = string.Empty;
+					}
+				}
 
 				//mxd. Store initial properties
 				thingProps.Add(new ThingProperties(t));
@@ -247,52 +275,52 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			preventchanges = false;
+
+			updateScriptControls(); //mxd
+
+			//mxd. Set intial script-related values, if required
+			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) {
+				if(haveArg0Str) {
+					scriptNames.Text = arg0str;
+					arg0label.Text = "Script Name:";
+				} else {
+					int a0 = arg0.GetResult(0);
+					if(a0 > 0) {
+						for(int i = 0; i < General.Map.NumberedScripts.Count; i++) {
+							if(General.Map.NumberedScripts[i].Index == a0) {
+								scriptNumbers.SelectedIndex = i;
+								break;
+							}
+						}
+
+						if(scriptNumbers.SelectedIndex == -1) {
+							scriptNumbers.Items.Add(new ScriptItem(a0, "Script " + a0));
+							scriptNumbers.SelectedIndex = scriptNumbers.Items.Count - 1;
+						}
+					} else {
+						scriptNumbers.Text = arg0.Text;
+					}
+				}
+			} else {
+				scriptNumbers.Text = "0";
+			}
 		}
 
-        //mxd
-        private void setNumberedScripts(Thing t) {
-            arg0str.Items.Clear();
-
-            if (General.Map.NumberedScripts.Count > 0) {
-                foreach (ScriptItem si in General.Map.NumberedScripts) {
-                    arg0str.Items.Add(si);
-                    if (si.Index == t.Args[0])
-                        arg0str.SelectedIndex = arg0str.Items.Count - 1;
-                }
-
-                //script number is not among known scripts...
-                if (arg0str.SelectedIndex == -1 && t.Args[0] > 0) {
-                    arg0str.Items.Add(new ScriptItem(t.Args[0], "Script " + t.Args[0]));
-                    arg0str.SelectedIndex = arg0str.Items.Count - 1;
-                }
-
-            } else if (t.Args[0] > 0) {
-                arg0str.Items.Add(new ScriptItem(t.Args[0], "Script " + t.Args[0]));
-                arg0str.SelectedIndex = 0;
-            }
-        }
-
-        //mxd
-        private void setNamedScripts(string selectedValue) {
-            arg0str.Items.Clear();
-
-            //update arg0str items
-            if (General.Map.NamedScripts.Count > 0) {
-                ScriptItem[] sn = new ScriptItem[General.Map.NamedScripts.Count];
-                General.Map.NamedScripts.CopyTo(sn, 0);
-                arg0str.Items.AddRange(sn);
-                
-                for(int i = 0; i < sn.Length; i++){
-                    if (sn[i].Name == selectedValue) {
-                        arg0str.SelectedIndex = i;
-                        break;
-                    }
-                }
-
-            } else {
-                arg0str.Text = selectedValue;
-            }
-        }
+		//mxd
+		private void updateScriptControls() {
+			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) {
+				bool showNamedScripts = General.Map.UDMF && haveArg0Str;
+				cbArgStr.Visible = General.Map.UDMF;
+				cbArgStr.Checked = showNamedScripts;
+				scriptNames.Visible = showNamedScripts;
+				scriptNumbers.Visible = !showNamedScripts;
+			} else {
+				cbArgStr.Visible = false;
+				scriptNames.Visible = false;
+				scriptNumbers.Visible = false;
+				cbArgStr.Checked = false;
+			}
+		}
 		
 		#endregion
 
@@ -347,25 +375,7 @@ namespace CodeImp.DoomBuilder.Windows
                 arg4.SetDefaultValue();
 			}
 
-            //update arg0str
-            if (Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, showaction) != -1) {
-                arg0str.Visible = true;
-
-                if (General.Map.UDMF && fieldslist.GetValue("arg0str") != null) {
-                    cbArgStr.Visible = true;
-                    cbArgStr.Checked = true;
-                    setNamedScripts((string)fieldslist.GetValue("arg0str"));
-                } else { //use script numbers
-                    cbArgStr.Visible = General.Map.UDMF;
-                    cbArgStr.Checked = false;
-                    Thing t = General.GetByIndex(things, 0);
-                    setNumberedScripts(t);
-                }
-            } else {
-                cbArgStr.Checked = false;
-                cbArgStr.Visible = false;
-                arg0str.Visible = false;
-            }
+			if(!preventchanges) updateScriptControls(); //mxd
 		}
 
 		// Browse Action clicked
@@ -393,7 +403,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			List<string> defaultflags = new List<string>();
 
-			//mxd
 			// Verify the tag
 			if(General.Map.FormatInterface.HasThingTag) //mxd
 			{
@@ -418,25 +427,19 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
-            //mxd
-            bool hasAcs = Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
-            bool hasArg0str = General.Map.UDMF && !action.Empty && hasAcs && arg0str.Text.Length > 0;
+			bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1; //mxd
 
 			// Go for all the things
 			foreach(Thing t in things)
 			{
 				// Coordination
-				//mxd
-				if(cbRandomAngle.Checked) {
-					t.Rotate(General.Random(0, 359));
-				}
+				if(cbRandomAngle.Checked) t.Rotate(General.Random(0, 359)); //mxd
 
 				//mxd. Check position
 				float px = General.Clamp(t.Position.x, General.Map.Config.LeftBoundary, General.Map.Config.RightBoundary);
 				float py = General.Clamp(t.Position.y, General.Map.Config.BottomBoundary, General.Map.Config.TopBoundary);
 				if(t.Position.x != px || t.Position.y != py)
 					t.Move(new Vector2D(px, py));
-
 				
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes)
@@ -447,34 +450,44 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Action/tags
 				t.Tag = tagSelector.GetTag(t.Tag); //mxd
-				if(!action.Empty) t.Action = action.Value;
+				if (!action.Empty) {
+					t.Action = action.Value;
 
-                //mxd
-                if (hasAcs && !cbArgStr.Checked) {
-                    if(arg0str.SelectedItem != null)
-                        t.Args[0] = ((ScriptItem)arg0str.SelectedItem).Index;
-                    else if(!int.TryParse(arg0str.Text.Trim(), out t.Args[0]))
-                        t.Args[0] = 0;
-                } else {
-                    t.Args[0] = arg0.GetResult(t.Args[0]);
-                }
+					//mxd. Script name/number handling
+					if(hasAcs) {
+						if(!cbArgStr.Checked) { //apply script number
+							if(!string.IsNullOrEmpty(scriptNumbers.Text)) {
+								if(scriptNumbers.SelectedItem != null)
+									t.Args[0] = ((ScriptItem)scriptNumbers.SelectedItem).Index;
+								else if(!int.TryParse(scriptNumbers.Text.Trim(), out t.Args[0]))
+									t.Args[0] = 0;
+
+								if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
+							}
+						} else { //apply arg0str
+							if(!string.IsNullOrEmpty(scriptNames.Text)) 
+								t.Fields["arg0str"] = new UniValue(UniversalType.String, scriptNames.Text);
+						}
+					} else {
+						t.Args[0] = arg0.GetResult(t.Args[0]);
+						if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
+					}
+				}else{
+					t.Args[0] = arg0.GetResult(t.Args[0]);
+				}
+
 				t.Args[1] = arg1.GetResult(t.Args[1]);
 				t.Args[2] = arg2.GetResult(t.Args[2]);
 				t.Args[3] = arg3.GetResult(t.Args[3]);
 				t.Args[4] = arg4.GetResult(t.Args[4]);
-				
-				// Custom fields
-				fieldslist.Apply(t.Fields);
 
-                //mxd. apply arg0str
-                if (hasArg0str && cbArgStr.Checked) {
-                    if (t.Fields.ContainsKey("arg0str"))
-                        t.Fields["arg0str"].Value = arg0str.Text;
-                    else
-                        t.Fields.Add("arg0str", new UniValue(2, arg0str.Text));
-                } else if (t.Fields.ContainsKey("arg0str")) {
-                    t.Fields.Remove("arg0str");
-                }
+				//mxd. Custom fields
+				if(General.Map.FormatInterface.HasCustomFields){
+					fieldslist.Apply(t.Fields);
+
+					if(!string.IsNullOrEmpty(conversationID.Text))
+						UDMFTools.SetInteger(t.Fields, "conversation", conversationID.GetResult(t.Fields.GetValue("conversation", 0)), 0, false);
+				}
 				
 				// Update settings
 				t.UpdateConfiguration();
@@ -507,26 +520,10 @@ namespace CodeImp.DoomBuilder.Windows
 
         //mxd
         private void cbArgStr_CheckedChanged(object sender, EventArgs e) {
-            arg0str.Text = "";
-
-            if (cbArgStr.Checked){
-                setNamedScripts((string)fieldslist.GetValue("arg0str"));
-            } else if (!cbArgStr.Checked) {
-                setNumberedScripts(General.GetByIndex(things, 0));
-            }
-
-            arg0label.Text = cbArgStr.Checked ? "Script name:" : "Script number:";
-        }
-
-        //mxd
-        private void arg0str_Leave(object sender, EventArgs e) {
-            if(cbArgStr.Checked) fieldslist.SetValue("arg0str", arg0str.Text, CodeImp.DoomBuilder.Types.UniversalType.String);
-        }
-
-        //mxd
-        private void fieldslist_OnFieldValueChanged(string fieldname) {
-            if (cbArgStr.Checked && fieldname == "arg0str")
-                arg0str.Text = (string)fieldslist.GetValue(fieldname);
+			if(!cbArgStr.Visible) return;
+	        scriptNames.Visible = cbArgStr.Checked;
+			scriptNumbers.Visible = !cbArgStr.Checked;
+            arg0label.Text = cbArgStr.Checked ? "Script Name:" : "Script Number:";
         }
 
 		//mxd

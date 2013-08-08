@@ -105,6 +105,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill effects list
 			effect.AddInfo(General.Map.Config.SortedSectorEffects.ToArray());
 
+			// Initialize custom fields editor
+			fieldslist.Setup("sector");
+
 			// Fill universal fields list
 			fieldslist.ListFixedFields(General.Map.Config.SectorFields);
 
@@ -114,13 +117,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Set steps for brightness field
 			brightness.StepValues = General.Map.Config.BrightnessLevels;
-
-			// Custom fields?
-			if(!General.Map.FormatInterface.HasCustomFields)
-				tabs.TabPages.Remove(tabcustom);
-
-			// Initialize custom fields editor
-			fieldslist.Setup("sector");
 
 			// Value linking
 			ceilScale.LinkValues = linkCeilingScale;
@@ -262,8 +258,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//Texture brightness
 				if(s.Fields.GetValue("lightceiling", 0).ToString() != ceilBrightness.Text) ceilBrightness.Text = "";
-				if(s.Fields.GetValue("lightfloor", 0).ToString() != floorBrightness.Text)
-					floorBrightness.Text = "";
+				if(s.Fields.GetValue("lightfloor", 0).ToString() != floorBrightness.Text) floorBrightness.Text = "";
 
 				if(s.Fields.GetValue("lightceilingabsolute", false) != ceilLightAbsolute.Checked) {
 					ceilLightAbsolute.ThreeState = true;
@@ -376,6 +371,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Action
 				s.Tag = tagSelector.GetTag(s.Tag); //mxd
+
+				//Fields
+				fieldslist.Apply(s.Fields);
 
 				//alpha
 				if(!string.IsNullOrEmpty(ceilAlpha.Text)) {
@@ -618,114 +616,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
-		}
-
-		private void fieldslist_OnFieldValueChanged(string fieldname) {
-			if(blockUpdate)	return;
-			Sector sc = null;
-
-			foreach(Sector s in sectors) {
-				fieldslist.Apply(s.Fields);
-				s.UpdateNeeded = true;
-				if(sc == null) sc = s;
-			}
-
-			if(sc == null) return;
-
-			//update interface... yaaaay...
-			switch(fieldname) {
-				case "xpanningfloor":
-				case "ypanningfloor":
-					floorOffsets.SetValuesFrom(sc.Fields, true);
-					break;
-
-				case "xpanningceiling":
-				case "ypanningceiling":
-					ceilOffsets.SetValuesFrom(sc.Fields, true);
-					break;
-
-				case "xscalefloor":
-				case "yscalefloor":
-					floorScale.SetValuesFrom(sc.Fields, true);
-					break;
-
-				case "xscaleceiling":
-				case "yscaleceiling":
-					ceilScale.SetValuesFrom(sc.Fields, true);
-					break;
-
-				case "rotationceiling":
-					ceilRotation.Text = sc.Fields.GetValue("rotationceiling", 0f).ToString();
-					break;
-
-				case "rotationfloor":
-					floorRotation.Text = sc.Fields.GetValue("rotationfloor", 0f).ToString();
-					break;
-
-				case "lightfloor":
-					floorBrightness.Text = sc.Fields.GetValue("lightfloor", 0).ToString();
-					break;
-
-				case "lightceiling":
-					ceilBrightness.Text = sc.Fields.GetValue("lightceiling", 0).ToString();
-					break;
-
-				case "lightfloorabsolute":
-					floorLightAbsolute.Checked = sc.Fields.GetValue("lightfloorabsolute", false);
-					break;
-
-				case "lightceilingabsolute":
-					ceilLightAbsolute.Checked = sc.Fields.GetValue("lightceilingabsolute", false);
-					break;
-
-				case "alphafloor":
-					floorAlpha.Text = sc.Fields.GetValue("alphafloor", 1.0f).ToString();
-					break;
-
-				case "alphaceiling":
-					floorAlpha.Text = sc.Fields.GetValue("alphaceiling", 1.0f).ToString();
-					break;
-
-				case "gravity":
-					gravity.Text = sc.Fields.GetValue("gravity", 1.0f).ToString();
-					break;
-
-				case "desaturation":
-					desaturation.Text = sc.Fields.GetValue("desaturation", 0f).ToString();
-					break;
-
-				case "lightcolor":
-					lightColor.SetValueFrom(sc.Fields);
-					break;
-
-				case "fadecolor":
-					fadeColor.SetValueFrom(sc.Fields);
-					break;
-
-				case "renderstylefloor":
-					string rsf = sc.Fields.GetValue("renderstylefloor", string.Empty);
-
-					if(string.IsNullOrEmpty(rsf) || rsf.ToLower() == "translucent") {
-						floorRenderStyle.SelectedIndex = 0;
-					} else {
-						floorRenderStyle.SelectedIndex = 1;
-					}
-					break;
-
-				case "renderstyleceiling":
-					string rsc = sc.Fields.GetValue("renderstyleceiling", string.Empty);
-
-					if(string.IsNullOrEmpty(rsc) || rsc.ToLower() == "translucent") {
-						ceilRenderStyle.SelectedIndex = 0;
-					} else {
-						ceilRenderStyle.SelectedIndex = 1;
-					}
-					break;
-
-				case "soundsequence":
-					soundSequence.Text = sc.Fields.GetValue("soundsequence", string.Empty);
-					break;
-			}
 		}
 
 		private void lightColor_OnValueChanged(object sender, EventArgs e) {

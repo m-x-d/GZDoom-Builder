@@ -58,12 +58,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Initialize
 			this.elements = elements;
 			this.Text = title;
-			
-			// Fill universal fields list
-			fieldslist.ListFixedFields(fixedfields);
 
 			// Initialize custom fields editor
 			fieldslist.Setup(elementname);
+
+			// Fill universal fields list
+			fieldslist.ListFixedFields(fixedfields);
 
 			// Setup from first element
 			MapElement fe = General.GetByIndex(elements, 0);
