@@ -2732,7 +2732,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.VisualCamera.AngleXY = delta.GetAngleXY();
 					General.Map.VisualCamera.AngleZ = pitch ? -delta.GetAngleZ() : Angle2D.PI;
 				}
-			} else if((t.Type == 9025 || t.Type == 9073) && t.Args[0] != 0) { //SecurityCamera or AimingCamera with pitch?
+			} else if((t.Type == 9025 || t.Type == 9073 || t.Type == 9070) && t.Args[0] != 0) { //InterpolationPoint, SecurityCamera or AimingCamera with pitch?
 				General.Map.VisualCamera.Position = visualThings[0].CenterV3D; //position at camera
 				General.Map.VisualCamera.AngleXY = t.Angle - Angle2D.PI;
 				General.Map.VisualCamera.AngleZ = Angle2D.PI + Angle2D.DegToRad(t.Args[0]);
