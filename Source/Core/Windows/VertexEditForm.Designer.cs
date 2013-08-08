@@ -35,6 +35,8 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label6;
 			this.groupposition = new System.Windows.Forms.GroupBox();
 			this.panelHeightControls = new System.Windows.Forms.Panel();
+			this.clearZFloor = new System.Windows.Forms.Button();
+			this.clearZCeiling = new System.Windows.Forms.Button();
 			this.zceiling = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.zfloor = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.positiony = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -44,8 +46,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
-			this.clearZCeiling = new System.Windows.Forms.Button();
-			this.clearZFloor = new System.Windows.Forms.Button();
 			tabproperties = new System.Windows.Forms.TabPage();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -100,12 +100,33 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelHeightControls.Size = new System.Drawing.Size(361, 100);
 			this.panelHeightControls.TabIndex = 30;
 			// 
+			// clearZFloor
+			// 
+			this.clearZFloor.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchClear;
+			this.clearZFloor.Location = new System.Drawing.Point(314, 32);
+			this.clearZFloor.Name = "clearZFloor";
+			this.clearZFloor.Size = new System.Drawing.Size(26, 24);
+			this.clearZFloor.TabIndex = 31;
+			this.clearZFloor.UseVisualStyleBackColor = true;
+			this.clearZFloor.Click += new System.EventHandler(this.clearZFloor_Click);
+			// 
+			// clearZCeiling
+			// 
+			this.clearZCeiling.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchClear;
+			this.clearZCeiling.Location = new System.Drawing.Point(314, 0);
+			this.clearZCeiling.Name = "clearZCeiling";
+			this.clearZCeiling.Size = new System.Drawing.Size(26, 24);
+			this.clearZCeiling.TabIndex = 30;
+			this.clearZCeiling.UseVisualStyleBackColor = true;
+			this.clearZCeiling.Click += new System.EventHandler(this.clearZCeiling_Click);
+			// 
 			// zceiling
 			// 
 			this.zceiling.AllowDecimal = false;
 			this.zceiling.AllowNegative = true;
 			this.zceiling.AllowRelative = true;
 			this.zceiling.ButtonStep = 1;
+			this.zceiling.ButtonStepFloat = 1F;
 			this.zceiling.Location = new System.Drawing.Point(188, 0);
 			this.zceiling.Name = "zceiling";
 			this.zceiling.Size = new System.Drawing.Size(120, 24);
@@ -119,6 +140,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.zfloor.AllowNegative = true;
 			this.zfloor.AllowRelative = true;
 			this.zfloor.ButtonStep = 1;
+			this.zfloor.ButtonStepFloat = 1F;
 			this.zfloor.Location = new System.Drawing.Point(188, 32);
 			this.zfloor.Name = "zfloor";
 			this.zfloor.Size = new System.Drawing.Size(120, 24);
@@ -150,6 +172,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.positiony.AllowNegative = true;
 			this.positiony.AllowRelative = true;
 			this.positiony.ButtonStep = 1;
+			this.positiony.ButtonStepFloat = 1F;
 			this.positiony.Location = new System.Drawing.Point(236, 34);
 			this.positiony.Name = "positiony";
 			this.positiony.Size = new System.Drawing.Size(120, 24);
@@ -163,6 +186,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.positionx.AllowNegative = true;
 			this.positionx.AllowRelative = true;
 			this.positionx.ButtonStep = 1;
+			this.positionx.ButtonStepFloat = 1F;
 			this.positionx.Location = new System.Drawing.Point(68, 34);
 			this.positionx.Name = "positionx";
 			this.positionx.Size = new System.Drawing.Size(120, 24);
@@ -236,7 +260,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.TypeColumnVisible = true;
 			this.fieldslist.TypeColumnWidth = 100;
 			this.fieldslist.ValueColumnVisible = true;
-			this.fieldslist.OnFieldValueChanged += new CodeImp.DoomBuilder.Controls.FieldsEditorControl.SingleFieldNameEvent(this.fieldslist_OnFieldValueChanged);
 			// 
 			// cancel
 			// 
@@ -260,26 +283,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
-			// 
-			// clearZCeiling
-			// 
-			this.clearZCeiling.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchClear;
-			this.clearZCeiling.Location = new System.Drawing.Point(314, 0);
-			this.clearZCeiling.Name = "clearZCeiling";
-			this.clearZCeiling.Size = new System.Drawing.Size(26, 24);
-			this.clearZCeiling.TabIndex = 30;
-			this.clearZCeiling.UseVisualStyleBackColor = true;
-			this.clearZCeiling.Click += new System.EventHandler(this.clearZCeiling_Click);
-			// 
-			// clearZFloor
-			// 
-			this.clearZFloor.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchClear;
-			this.clearZFloor.Location = new System.Drawing.Point(314, 32);
-			this.clearZFloor.Name = "clearZFloor";
-			this.clearZFloor.Size = new System.Drawing.Size(26, 24);
-			this.clearZFloor.TabIndex = 31;
-			this.clearZFloor.UseVisualStyleBackColor = true;
-			this.clearZFloor.Click += new System.EventHandler(this.clearZFloor_Click);
 			// 
 			// VertexEditForm
 			// 

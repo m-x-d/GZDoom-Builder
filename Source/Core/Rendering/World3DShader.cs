@@ -68,7 +68,6 @@ namespace CodeImp.DoomBuilder.Rendering
         public Vector4 CameraPosition { set { if (manager.Enabled) effect.SetValue(camPosHandle, value); } }
 
         public Matrix World { set { if (manager.Enabled) effect.SetValue<Matrix>(worldHandle, value); } }
-        public VertexElement[] VertexElements { get { return vertexElements; } }
 
 		#endregion
 

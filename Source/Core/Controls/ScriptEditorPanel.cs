@@ -563,6 +563,13 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			buttonopen_Click(this, EventArgs.Empty);
 		}
+
+		//mxd. This launches keyword help website
+		public bool LaunchKeywordHelp() {
+			// Get script
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			return t.LaunchKeywordHelp();
+		}
 		
 		#endregion
 		
@@ -578,9 +585,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// Keyword help requested
 		private void buttonkeywordhelp_Click(object sender, EventArgs e)
 		{
-			// Get script
-			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
-			t.LaunchKeywordHelp();
+			LaunchKeywordHelp();
 		}
 
 		// When the user changes the script configuration

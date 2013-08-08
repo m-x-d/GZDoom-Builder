@@ -16,6 +16,8 @@
 
 #region ================== Namespaces
 
+using System.Collections.Generic;
+
 #endregion
 
 namespace CodeImp.DoomBuilder.IO
@@ -59,5 +61,6 @@ namespace CodeImp.DoomBuilder.IO
 		float MinCoordinate { get; }
 		int MaxThingAngle { get; }
 		int MinThingAngle { get; }
+		Dictionary<string, List<string>> UIFields { get; } //mxd. Element type (like "sector"), list of uifields.
 	}
 }

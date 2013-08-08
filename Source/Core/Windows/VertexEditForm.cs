@@ -71,12 +71,16 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			InitializeComponent();
 
-			// Fill universal fields list
-			fieldslist.ListFixedFields(General.Map.Config.VertexFields);
+			if(General.Map.FormatInterface.HasCustomFields) { //mxd
+				// Initialize custom fields editor
+				fieldslist.Setup("vertex");
 
-			// Custom fields?
-			if(!General.Map.FormatInterface.HasCustomFields)
+				// Fill universal fields list
+				fieldslist.ListFixedFields(General.Map.Config.VertexFields);
+			} else {
 				tabs.TabPages.Remove(tabcustom);
+				panelHeightControls.Visible = false;
+			}
 			
 			// Decimals allowed?
 			if(General.Map.FormatInterface.VertexDecimals > 0)
@@ -88,11 +92,6 @@ namespace CodeImp.DoomBuilder.Windows
 				zceiling.AllowDecimal = true;
 				zfloor.AllowDecimal = true;
 			}
-
-			if(!General.Map.UDMF) panelHeightControls.Visible = false;
-
-			// Initialize custom fields editor
-			fieldslist.Setup("vertex");
 		}
 
 		#endregion
@@ -130,7 +129,8 @@ namespace CodeImp.DoomBuilder.Windows
 			positiony.Enabled = allowPositionChange;
 			
 			// Custom fields
-			fieldslist.SetValues(vc.Fields, true);
+			if(General.Map.FormatInterface.HasCustomFields) //mxd
+				fieldslist.SetValues(vc.Fields, true);
 			
 			////////////////////////////////////////////////////////////////////////
 			// Now go for all sectors and change the options when a setting is different
@@ -144,8 +144,10 @@ namespace CodeImp.DoomBuilder.Windows
 				if(positiony.Text != v.Position.y.ToString()) positiony.Text = "";
 
 				// Custom fields
-				v.Fields.BeforeFieldsChange();//mxd
-				fieldslist.SetValues(v.Fields, false);
+				if(General.Map.FormatInterface.HasCustomFields) { //mxd
+					v.Fields.BeforeFieldsChange();//mxd
+					fieldslist.SetValues(v.Fields, false);
+				}
 
 				//mxd. Store initial properties
 				vertexProps.Add(new VertexProperties(v));
@@ -278,16 +280,6 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void fieldslist_OnFieldValueChanged(string fieldname) {
-			if(blockUpdate) return;
-
-			foreach(Vertex v in vertices)
-				fieldslist.Apply(v.Fields);
-
-			General.Map.IsChanged = true;
-			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
-		}
-
 		//mxd
 		private void clearZFloor_Click(object sender, EventArgs e) {
 			zfloor.Text = CLEAR_VALUE;
@@ -305,6 +297,11 @@ namespace CodeImp.DoomBuilder.Windows
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
+			//apply custom fields
+			if(General.Map.FormatInterface.HasCustomFields) { //mxd
+				foreach(Vertex v in vertices) fieldslist.Apply(v.Fields);
+			}
+			
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 			

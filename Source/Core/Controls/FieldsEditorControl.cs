@@ -60,6 +60,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private string elementname;
 		private string lasteditfieldname;
 		private bool autoinsertuserprefix;
+		private List<string> uifields;//mxd
 		
 		#endregion
 
@@ -94,6 +95,9 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Keep element name
 			this.elementname = elementname;
+
+			//mxd. get proper UIFields
+			uifields = General.Map.FormatInterface.UIFields[elementname];
 			
 			// Make types list
 			fieldtype.Items.Clear();
@@ -117,8 +121,10 @@ namespace CodeImp.DoomBuilder.Controls
 		public void ListFixedFields(List<UniversalFieldInfo> list)
 		{
 			// Add all fields
-			foreach(UniversalFieldInfo uf in list)
+			foreach(UniversalFieldInfo uf in list) {
+				if(uifields.Contains(uf.Name)) continue; //mxd
 				fieldslist.Rows.Add(new FieldsEditorRow(fieldslist, uf));
+			}
 
 			// Sort fields
 			Sort();
@@ -153,6 +159,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// Go for all the fields
 			foreach(KeyValuePair<string, UniValue> f in fromfields)
 			{
+				if(uifields.Contains(f.Key)) continue; //mxd
+				
 				// Go for all rows
 				bool foundrow = false;
 				foreach(DataGridViewRow row in fieldslist.Rows)
@@ -231,7 +239,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
         //mxd
-        public object GetValue(string name) {
+        /*public object GetValue(string name) {
             //have required row?
             foreach (DataGridViewRow row in fieldslist.Rows) {
                 // Row is a field?
@@ -248,10 +256,10 @@ namespace CodeImp.DoomBuilder.Controls
             }
 
             return null;
-        }
+        }*/
 
         //mxd
-        public void SetValue(string name, object value, UniversalType type) {
+        /*public void SetValue(string name, object value, UniversalType type) {
             //have required row?
             foreach (DataGridViewRow row in fieldslist.Rows) {
                 // Row is a field?
@@ -269,7 +277,7 @@ namespace CodeImp.DoomBuilder.Controls
             //no such row... let's add it
             FieldsEditorRow newfrow = new FieldsEditorRow(fieldslist, name, (int)type, value);
             fieldslist.Rows.Insert(fieldslist.Rows.Count - 1, newfrow);
-        }
+        }*/
 
 		
 		// This applies the current fields to a UniFields object
@@ -279,8 +287,9 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Go for all the fields
 			UniFields tempfields = new UniFields(tofields);
-			foreach(KeyValuePair<string, UniValue> f in tempfields)
-			{
+			foreach(KeyValuePair<string, UniValue> f in tempfields) {
+				if (uifields.Contains(f.Key)) continue; //mxd
+				
 				// Go for all rows
 				bool foundrow = false;
 				foreach(DataGridViewRow row in fieldslist.Rows)
@@ -534,7 +543,7 @@ namespace CodeImp.DoomBuilder.Controls
 					{
 						// Make a valid UDMF field name
 						string validname = UniValue.ValidateName(row.Cells[0].Value.ToString());
-						if(validname.Length > 0)
+						if(validname.Length > 0 && !uifields.Contains(validname)) //mxd
 						{
 							// Check if no other row already has this name
 							foreach(DataGridViewRow r in fieldslist.Rows)
@@ -578,7 +587,7 @@ namespace CodeImp.DoomBuilder.Controls
 					{
 						// Make a valid UDMF field name
 						string validname = UniValue.ValidateName(row.Cells[0].Value.ToString());
-						if(validname.Length > 0)
+						if(validname.Length > 0 && !uifields.Contains(validname)) //mxd
 						{
 							// Check if no other row already has this name
 							foreach(DataGridViewRow r in fieldslist.Rows)

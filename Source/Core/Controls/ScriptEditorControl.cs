@@ -166,7 +166,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Methods
 		
 		// This launches keyword help website
-		public void LaunchKeywordHelp()
+		public bool LaunchKeywordHelp()
 		{
 			string helpsite = scriptconfig.KeywordHelp;
 			string currentword = GetCurrentWord();
@@ -175,7 +175,9 @@ namespace CodeImp.DoomBuilder.Controls
 				currentword = scriptconfig.GetKeywordCase(currentword);
 				helpsite = helpsite.Replace("%K", currentword);
 				General.OpenWebsite(helpsite);
+				return true;
 			}
+			return !string.IsNullOrEmpty(helpsite); //mxd
 		}
 		
 		// This replaces the selection with the given text

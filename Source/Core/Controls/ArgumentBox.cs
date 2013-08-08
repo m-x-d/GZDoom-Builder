@@ -45,6 +45,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Properties
 
+		public override string Text { get { return combobox.Text; }	} //mxd
+
 		#endregion
 
 		#region ================== Constructor

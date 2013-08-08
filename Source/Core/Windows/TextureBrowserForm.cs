@@ -411,13 +411,13 @@ namespace CodeImp.DoomBuilder.Windows
             browser.BeginAdding(false);
 
             if (browseFlats) {
-                // Add all used flats
-                foreach (ImageData img in set.Flats)
-                    if (img.UsedInMap) browser.Add(img.Name, img, img, usedgroup);
+				// Add all available flats
+				foreach(ImageData img in set.Flats)
+					browser.Add(img.Name, img, img, availgroup);
 
-                // Add all available flats
-                foreach (ImageData img in set.Flats)
-                    browser.Add(img.Name, img, img, availgroup);
+				// Add all used flats
+				foreach(ImageData img in set.Flats)
+					if(img.UsedInMap) browser.Add(img.Name, img, img, usedgroup);
             }else{
                 // Add all available textures and mark the images for temporary loading
                 foreach (ImageData img in set.Textures)

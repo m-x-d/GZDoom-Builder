@@ -83,6 +83,14 @@ namespace CodeImp.DoomBuilder.IO
 					foreach(LinedefActivateInfo activate in General.Map.Config.LinedefActivates)
 						config.WriteSetting("managedfields.linedef." + activate.Key, true);
 
+					//mxd. Add sidedef flags
+					foreach(KeyValuePair<string, string> flag in General.Map.Config.SidedefFlags)
+						config.WriteSetting("managedfields.sidedef." + flag.Key, true);
+
+					//mxd. Add sector flags
+					foreach(KeyValuePair<string, string> flag in General.Map.Config.SectorFlags)
+						config.WriteSetting("managedfields.sector." + flag.Key, true);
+
 					// Add thing flags
 					foreach(KeyValuePair<string, string> flag in General.Map.Config.ThingFlags)
 						config.WriteSetting("managedfields.thing." + flag.Key, true);

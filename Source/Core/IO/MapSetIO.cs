@@ -21,6 +21,7 @@ using System.Globalization;
 using CodeImp.DoomBuilder.Map;
 using System.Reflection;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 #endregion
 
@@ -81,6 +82,7 @@ namespace CodeImp.DoomBuilder.IO
 		public abstract float MinCoordinate { get; }
 		public abstract int MaxThingAngle { get; }
 		public abstract int MinThingAngle { get; }
+		public abstract Dictionary<string, List<string>> UIFields { get; } //mxd
 		
 		#endregion
 

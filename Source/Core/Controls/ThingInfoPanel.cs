@@ -115,7 +115,6 @@ namespace CodeImp.DoomBuilder.Controls
 					// Hangs from ceiling?
 					if(ti.Hangs)
 					{
-						//zvalue = (float)t.Sector.CeilHeight + t.Position.z;
 						zvalue = (float)t.Sector.CeilHeight - t.Position.z - ti.Height; //mxd
 						zinfo = zvalue.ToString();
 					}
@@ -157,67 +156,49 @@ namespace CodeImp.DoomBuilder.Controls
 				spritetex.BackgroundImage = null;
 			}
 			
+
 			// Arguments
-			if(act != null)
-			{
-				//mxd
-                bool hasArg0Str = General.Map.UDMF && Array.IndexOf(GZGeneral.ACS_SPECIALS, t.Action) != -1 && t.Fields.ContainsKey("arg0str");
+			ArgumentInfo[] arginfo = (((t.Action == 0 || act == null) && ti.Args[0] != null) ? ti.Args : act.Args); //mxd
 
-                arglbl1.Text = hasArg0Str ? "Script name:" : act.Args[0].Title + ":"; //mxd
-				arglbl2.Text = act.Args[1].Title + ":";
-				arglbl3.Text = act.Args[2].Title + ":";
-				arglbl4.Text = act.Args[3].Title + ":";
-				arglbl5.Text = act.Args[4].Title + ":";
-				arglbl1.Enabled = act.Args[0].Used;
-				arglbl2.Enabled = act.Args[1].Used;
-				arglbl3.Enabled = act.Args[2].Used;
-				arglbl4.Enabled = act.Args[3].Used;
-				arglbl5.Enabled = act.Args[4].Used;
-				arg1.Enabled = act.Args[0].Used;
-				arg2.Enabled = act.Args[1].Used;
-				arg3.Enabled = act.Args[2].Used;
-				arg4.Enabled = act.Args[3].Used;
-				arg5.Enabled = act.Args[4].Used;
+			//mxd
+			bool hasArg0Str = General.Map.UDMF && Array.IndexOf(GZGeneral.ACS_SPECIALS, t.Action) != -1 && t.Fields.ContainsKey("arg0str");
 
-                //mxd
-                if (hasArg0Str) {
-                    arg1.Text = '"' + t.Fields["arg0str"].Value.ToString() + '"';
-                } else {
-                    th = General.Types.GetArgumentHandler(act.Args[0]);
-                    th.SetValue(t.Args[0]); arg1.Text = th.GetStringValue();
-                }
-				th = General.Types.GetArgumentHandler(act.Args[1]);
-				th.SetValue(t.Args[1]); arg2.Text = th.GetStringValue();
-				th = General.Types.GetArgumentHandler(act.Args[2]);
-				th.SetValue(t.Args[2]); arg3.Text = th.GetStringValue();
-				th = General.Types.GetArgumentHandler(act.Args[3]);
-				th.SetValue(t.Args[3]); arg4.Text = th.GetStringValue();
-				th = General.Types.GetArgumentHandler(act.Args[4]);
-				th.SetValue(t.Args[4]); arg5.Text = th.GetStringValue();
+			arglbl1.Text = hasArg0Str ? "Script name:" : arginfo[0].Title + ":"; //mxd
+			arglbl2.Text = arginfo[1].Title + ":";
+			arglbl3.Text = arginfo[2].Title + ":";
+			arglbl4.Text = arginfo[3].Title + ":";
+			arglbl5.Text = arginfo[4].Title + ":";
+			arglbl1.Enabled = arginfo[0].Used;
+			arglbl2.Enabled = arginfo[1].Used;
+			arglbl3.Enabled = arginfo[2].Used;
+			arglbl4.Enabled = arginfo[3].Used;
+			arglbl5.Enabled = arginfo[4].Used;
+			arg1.Enabled = arginfo[0].Used;
+			arg2.Enabled = arginfo[1].Used;
+			arg3.Enabled = arginfo[2].Used;
+			arg4.Enabled = arginfo[3].Used;
+			arg5.Enabled = arginfo[4].Used;
+
+			//mxd
+			if(hasArg0Str) {
+				arg1.Text = '"' + t.Fields["arg0str"].Value.ToString() + '"';
+			} else {
+				th = General.Types.GetArgumentHandler(arginfo[0]);
+				th.SetValue(t.Args[0]);
+				arg1.Text = th.GetStringValue();
 			}
-			else
-			{
-				arglbl1.Text = "Argument 1:";
-				arglbl2.Text = "Argument 2:";
-				arglbl3.Text = "Argument 3:";
-				arglbl4.Text = "Argument 4:";
-				arglbl5.Text = "Argument 5:";
-				arglbl1.Enabled = false;
-				arglbl2.Enabled = false;
-				arglbl3.Enabled = false;
-				arglbl4.Enabled = false;
-				arglbl5.Enabled = false;
-				arg1.Enabled = false;
-				arg2.Enabled = false;
-				arg3.Enabled = false;
-				arg4.Enabled = false;
-				arg5.Enabled = false;
-				arg1.Text = "-";
-				arg2.Text = "-";
-				arg3.Text = "-";
-				arg4.Text = "-";
-				arg5.Text = "-";
-			}
+			th = General.Types.GetArgumentHandler(arginfo[1]);
+			th.SetValue(t.Args[1]);
+			arg2.Text = th.GetStringValue();
+			th = General.Types.GetArgumentHandler(arginfo[2]);
+			th.SetValue(t.Args[2]);
+			arg3.Text = th.GetStringValue();
+			th = General.Types.GetArgumentHandler(arginfo[3]);
+			th.SetValue(t.Args[3]);
+			arg4.Text = th.GetStringValue();
+			th = General.Types.GetArgumentHandler(arginfo[4]);
+			th.SetValue(t.Args[4]);
+			arg5.Text = th.GetStringValue();
 
 			// Show the whole thing
 			this.Show();

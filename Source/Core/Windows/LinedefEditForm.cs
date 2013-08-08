@@ -41,7 +41,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Constants
 
-		private const string EMPTY_TEXTURE = "-";
 
 		#endregion
 
@@ -50,6 +49,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private ICollection<Linedef> lines;
 		private List<LinedefProperties> linedefProps; //mxd
 		private bool preventchanges = false;
+		private string arg0str; //mxd
+		private bool haveArg0Str; //mxd
 
 		//Value linking
 		private static bool linkFrontTopScale;
@@ -166,9 +167,6 @@ namespace CodeImp.DoomBuilder.Windows
 			activation.Items.AddRange(General.Map.Config.LinedefActivates.ToArray());
 			foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) udmfactivates.Add(ai.Title, ai);
 			
-			// Fill universal fields list
-			fieldslist.ListFixedFields(General.Map.Config.LinedefFields);
-			
 			// Initialize image selectors
 			fronthigh.Initialize();
 			frontmid.Initialize();
@@ -177,8 +175,52 @@ namespace CodeImp.DoomBuilder.Windows
 			backmid.Initialize();
 			backlow.Initialize();
 
-			// Initialize custom fields editor
-			fieldslist.Setup("linedef");
+			//mxd. Setup script numbers
+			scriptNumbers.Location = arg0.Location;
+
+			foreach(ScriptItem si in General.Map.NumberedScripts)
+				scriptNumbers.Items.Add(si);
+
+			if(General.Map.FormatInterface.HasCustomFields) { //mxd
+				//mxd. Setup script names
+				scriptNames.Location = arg0.Location;
+
+				foreach(ScriptItem nsi in General.Map.NamedScripts)
+					scriptNames.Items.Add(nsi);
+				
+				// Initialize custom fields editor
+				fieldslist.Setup("linedef");
+
+				// Fill universal fields list
+				fieldslist.ListFixedFields(General.Map.Config.LinedefFields);
+
+				//initialize controls
+				frontUdmfControls = new List<PairedFieldsControl>() { pfcFrontOffsetTop, pfcFrontOffsetMid, pfcFrontOffsetBottom, pfcFrontScaleTop, pfcFrontScaleMid, pfcFrontScaleBottom };
+				backUdmfControls = new List<PairedFieldsControl>() { pfcBackOffsetTop, pfcBackOffsetMid, pfcBackOffsetBottom, pfcBackScaleTop, pfcBackScaleMid, pfcBackScaleBottom };
+
+				//Restore value linking
+				pfcFrontScaleTop.LinkValues = linkFrontTopScale;
+				pfcFrontScaleMid.LinkValues = linkFrontMidScale;
+				pfcFrontScaleBottom.LinkValues = linkFrontBottomScale;
+				pfcBackScaleTop.LinkValues = linkBackTopScale;
+				pfcBackScaleMid.LinkValues = linkBackMidScale;
+				pfcBackScaleBottom.LinkValues = linkBackBottomScale;
+			} else {
+				//Hide unused controls
+				tabs.TabPages.Remove(tabcustom);
+
+				settingsGroup.Visible = false;
+				customfrontbutton.Visible = false;
+				custombackbutton.Visible = false;
+				labelLightFront.Visible = false;
+				lightFront.Visible = false;
+				cbLightAbsoluteFront.Visible = false;
+				labelLightBack.Visible = false;
+				lightBack.Visible = false;
+				cbLightAbsoluteBack.Visible = false;
+				udmfPropertiesFront.Visible = false;
+				udmfPropertiesBack.Visible = false;
+			}
 			
 			// Mixed activations? (UDMF)
 			if(General.Map.FormatInterface.HasMixedActivations)
@@ -215,33 +257,6 @@ namespace CodeImp.DoomBuilder.Windows
 			else
 			{
 				idgroup.Visible = false;
-			}
-
-            //mxd. Setup UDMF controls
-			if(!General.Map.FormatInterface.HasCustomFields) {
-				tabs.TabPages.Remove(tabcustom);
-				settingsGroup.Visible = false;
-				customfrontbutton.Visible = false;
-				custombackbutton.Visible = false;
-				labelLightFront.Visible = false;
-				lightFront.Visible = false;
-				cbLightAbsoluteFront.Visible = false;
-				labelLightBack.Visible = false;
-				lightBack.Visible = false;
-				cbLightAbsoluteBack.Visible = false;
-				udmfPropertiesFront.Visible = false;
-				udmfPropertiesBack.Visible = false;
-			} else {
-				frontUdmfControls = new List<PairedFieldsControl>() { pfcFrontOffsetTop, pfcFrontOffsetMid, pfcFrontOffsetBottom, pfcFrontScaleTop, pfcFrontScaleMid, pfcFrontScaleBottom };
-				backUdmfControls = new List<PairedFieldsControl>() { pfcBackOffsetTop, pfcBackOffsetMid, pfcBackOffsetBottom, pfcBackScaleTop, pfcBackScaleMid, pfcBackScaleBottom };
-
-				//Restore value linking
-				pfcFrontScaleTop.LinkValues = linkFrontTopScale;
-				pfcFrontScaleMid.LinkValues = linkFrontMidScale;
-				pfcFrontScaleBottom.LinkValues = linkFrontBottomScale;
-				pfcBackScaleTop.LinkValues = linkBackTopScale;
-				pfcBackScaleMid.LinkValues = linkBackMidScale;
-				pfcBackScaleBottom.LinkValues = linkBackBottomScale;
 			}
 		}
 
@@ -289,18 +304,16 @@ namespace CodeImp.DoomBuilder.Windows
 				if(fl.Flags.ContainsKey(ai.Key)) c.Checked = fl.Flags[ai.Key];
 			}
 
-            //mxd. setup arg0str
-            arg0str.Location = arg0.Location;
-
-            // Custom fields
-            fieldslist.SetValues(fl.Fields, true);
-
 			//mxd. UDMF Settings
 			if(General.Map.FormatInterface.HasCustomFields) {
+				fieldslist.SetValues(fl.Fields, true); // Custom fields
+
 				string renderStyle = fl.Fields.GetValue("renderstyle", "");
 				cbRenderStyle.SelectedIndex = (renderStyle == "add" ? 1 : 0);
 				alpha.Text = General.Clamp(fl.Fields.GetValue("alpha", 1.0f), 0f, 1f).ToString();
 				lockNumber.Text = fl.Fields.GetValue("locknumber", 0).ToString();
+				arg0str = fl.Fields.GetValue("arg0str", string.Empty);
+				haveArg0Str = !string.IsNullOrEmpty(arg0str);
 			}
 
 			// Action/tags
@@ -432,6 +445,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 					if(!string.IsNullOrEmpty(lockNumber.Text) && lockNumber.GetResult(0) != l.Fields.GetValue("locknumber", 0))
 						lockNumber.Text = "";
+
+					if(arg0str != l.Fields.GetValue("arg0str", string.Empty)) {
+						haveArg0Str = true;
+						arg0str = string.Empty;
+					}
+
+					l.Fields.BeforeFieldsChange();
+					fieldslist.SetValues(l.Fields, false);
 				}
 
 				// Action/tags
@@ -442,12 +463,6 @@ namespace CodeImp.DoomBuilder.Windows
 				if(l.Args[2] != arg2.GetResult(-1)) arg2.ClearValue();
 				if(l.Args[3] != arg3.GetResult(-1)) arg3.ClearValue();
 				if(l.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
-
-				//mxd. Check if we have different arg0str values
-				if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1 && cbArgStr.Checked && !string.IsNullOrEmpty(arg0str.Text) && l.Fields.ContainsKey("arg0str") && l.Fields["arg0str"].Value.ToString() != arg0str.Text) {
-					arg0str.SelectedIndex = -1;
-					arg0str.Text = string.Empty;
-				}
 				
 				// Front side checkbox
 				if((l.Front != null) != frontside.Checked)
@@ -524,9 +539,6 @@ namespace CodeImp.DoomBuilder.Windows
 						foreach(PairedFieldsControl pfc in backUdmfControls)
 							pfc.SetValuesFrom(l.Back.Fields, false);
 
-						//if(!string.IsNullOrEmpty(lightBack.Text) && lightBack.Text != UDMFTools.GetInteger(fl.Back.Fields, "light", 0).ToString())
-							//lightBack.Text = "";
-
 						if(!string.IsNullOrEmpty(lightBack.Text)) {
 							int light = UDMFTools.GetInteger(l.Back.Fields, "light", 0);
 							if(light != lightBack.GetResult(light)) lightBack.Text = "";
@@ -556,10 +568,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//mxd
 				linedefProps.Add(new LinedefProperties(l));
-				
-				// Custom fields
-				l.Fields.BeforeFieldsChange(); //mxd
-				fieldslist.SetValues(l.Fields, false);
 			}
 			
 			// Refresh controls so that they show their image
@@ -571,62 +579,56 @@ namespace CodeImp.DoomBuilder.Windows
 			frontlow.Refresh();
 
 			preventchanges = false;
+
+			updateScriptControls(); //mxd
+
+			//mxd. Set intial script-related values, if required
+			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) {
+				if(haveArg0Str) {
+					scriptNames.Text = arg0str;
+					arg0label.Text = "Script Name:";
+				} else {
+					int a0 = arg0.GetResult(0);
+					if(a0 > 0) {
+						for(int i = 0; i < General.Map.NumberedScripts.Count; i++) {
+							if(General.Map.NumberedScripts[i].Index == a0) {
+								scriptNumbers.SelectedIndex = i;
+								break;
+							}
+						}
+
+						if(scriptNumbers.SelectedIndex == -1) {
+							scriptNumbers.Items.Add(new ScriptItem(a0, "Script " + a0));
+							scriptNumbers.SelectedIndex = scriptNumbers.Items.Count - 1;
+						}
+					} else {
+						scriptNumbers.Text = arg0.Text;
+					}
+				}
+			} else {
+				scriptNumbers.Text = "0";
+			}
 		}
 
-        //mxd
-        private void setNumberedScripts(Linedef l) {
-            arg0str.Items.Clear();
-
-            if (General.Map.NumberedScripts.Count > 0) {
-                foreach (ScriptItem si in General.Map.NumberedScripts) {
-                    arg0str.Items.Add(si);
-                    if (si.Index == l.Args[0])
-                        arg0str.SelectedIndex = arg0str.Items.Count - 1;
-                }
-
-                //script number is not among known scripts...
-                if (arg0str.SelectedIndex == -1 && l.Args[0] > 0) {
-                    arg0str.Items.Add(new ScriptItem(l.Args[0], "Script " + l.Args[0]));
-                    arg0str.SelectedIndex = arg0str.Items.Count - 1;
-                }
-
-            } else if (l.Args[0] > 0) {
-                arg0str.Items.Add(new ScriptItem(l.Args[0], "Script " + l.Args[0]));
-                arg0str.SelectedIndex = 0;
-            }
-        }
-
-        //mxd
-        private void setNamedScripts(string selectedValue) {
-            arg0str.Items.Clear();
-
-            //update arg0str items
-            if (General.Map.NamedScripts.Count > 0) {
-                ScriptItem[] sn = new ScriptItem[General.Map.NamedScripts.Count];
-                General.Map.NamedScripts.CopyTo(sn, 0);
-                arg0str.Items.AddRange(sn);
-
-                for (int i = 0; i < sn.Length; i++) {
-                    if (sn[i].Name == selectedValue) {
-                        arg0str.SelectedIndex = i;
-                        break;
-                    }
-                }
-
-            } else {
-                arg0str.Text = selectedValue;
-            }
+		//mxd
+		private void updateScriptControls() {
+			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) {
+				bool showNamedScripts = General.Map.UDMF && haveArg0Str;
+				cbArgStr.Visible = General.Map.UDMF;
+				cbArgStr.Checked = showNamedScripts;
+				scriptNames.Visible = showNamedScripts;
+				scriptNumbers.Visible = !showNamedScripts;
+			} else {
+				cbArgStr.Visible = false;
+				scriptNames.Visible = false;
+				scriptNumbers.Visible = false;
+				cbArgStr.Checked = false;
+			}
 		}
 
 		#endregion
 
-		// This selects all text in a textbox
-		/*private void SelectAllText(object sender, EventArgs e)
-		{
-			(sender as TextBox).SelectAll();
-		}*/
-
-		#region Events
+		#region ================== Events
 
 		// Apply clicked
 		private void apply_Click(object sender, EventArgs e)
@@ -653,7 +655,6 @@ namespace CodeImp.DoomBuilder.Windows
 
             //mxd
             bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
-            bool hasArg0str = General.Map.UDMF && hasAcs && !string.IsNullOrEmpty(arg0str.Text);
 			int lockNum = lockNumber.GetResult(0);
 			
 			// Go for all the lines
@@ -673,17 +674,32 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Action/tags
 				l.Tag = tagSelector.GetTag(l.Tag); //mxd
-				if(!action.Empty) l.Action = action.Value;
-                
-                //mxd
-                if (hasAcs && !cbArgStr.Checked) {
-                    if (arg0str.SelectedItem != null)
-                        l.Args[0] = ((ScriptItem)arg0str.SelectedItem).Index;
-                    else if (!int.TryParse(arg0str.Text.Trim(), out l.Args[0])) 
-                        l.Args[0] = 0;
-                } else {
-                    l.Args[0] = arg0.GetResult(l.Args[0]);
-                }
+				if(!action.Empty) {
+					l.Action = action.Value;
+
+					//mxd. Script name/number handling
+					if(hasAcs) {
+						if(!cbArgStr.Checked) { //apply script number
+							if(!string.IsNullOrEmpty(scriptNumbers.Text)) {
+								if(scriptNumbers.SelectedItem != null)
+									l.Args[0] = ((ScriptItem)scriptNumbers.SelectedItem).Index;
+								else if(!int.TryParse(scriptNumbers.Text.Trim(), out l.Args[0]))
+									l.Args[0] = 0;
+
+								if(l.Fields.ContainsKey("arg0str")) l.Fields.Remove("arg0str");
+							}
+						} else { //apply arg0str
+							if(!string.IsNullOrEmpty(scriptNames.Text)) 
+								l.Fields["arg0str"] = new UniValue(UniversalType.String, scriptNames.Text);
+						}
+					} else {
+						l.Args[0] = arg0.GetResult(l.Args[0]);
+						if(l.Fields.ContainsKey("arg0str")) l.Fields.Remove("arg0str");
+					}
+				}else{
+					l.Args[0] = arg0.GetResult(l.Args[0]);
+				}
+
 				l.Args[1] = arg1.GetResult(l.Args[1]);
 				l.Args[2] = arg2.GetResult(l.Args[2]);
 				l.Args[3] = arg3.GetResult(l.Args[3]);
@@ -744,14 +760,9 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				//mxd. UDMF Settings
-				if(General.Map.FormatInterface.HasCustomFields) 
+				if(General.Map.FormatInterface.HasCustomFields) {
+					fieldslist.Apply(l.Fields);
 					UDMFTools.SetInteger(l.Fields, "locknumber", lockNum, 0, false);
-
-                //mxd. apply arg0str
-				if(cbArgStr.Visible && cbArgStr.Checked && hasArg0str) {
-					l.Fields["arg0str"] = new UniValue(UniversalType.String, arg0str.Text);
-				} else if(l.Fields.ContainsKey("arg0str") && (string.IsNullOrEmpty(l.Fields["arg0str"].Value.ToString()) || !hasAcs || (hasAcs && !cbArgStr.Checked))) {
-					l.Fields.Remove("arg0str");
 				}
 			}
 
@@ -847,26 +858,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			} 
 
-            //mxd. update arg0str
-            if (Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, showaction) != -1) {
-                arg0str.Visible = true;
-
-                if (General.Map.UDMF && fieldslist.GetValue("arg0str") != null) {
-                    cbArgStr.Visible = true;
-                    cbArgStr.Checked = true;
-                    setNamedScripts((string)fieldslist.GetValue("arg0str"));
-                } else { //use script numbers
-                    cbArgStr.Visible = General.Map.UDMF;
-                    cbArgStr.Checked = false;
-                    Linedef l = General.GetByIndex(lines, 0);
-                    setNumberedScripts(l);
-                }
-            } else {
-				if(cbArgStr.Checked) cbArgStr.Checked = false;
-                cbArgStr.Visible = false;
-				arg0label.Text = General.Map.Config.LinedefActions[showaction].Args[0].Title + ":";
-                arg0str.Visible = false;
-            }
+			if(!preventchanges) updateScriptControls(); //mxd
 		}
 
 		// Browse Action clicked
@@ -877,20 +869,10 @@ namespace CodeImp.DoomBuilder.Windows
 
         //mxd
         private void cbArgStr_CheckedChanged(object sender, EventArgs e) {
-            arg0str.Text = "";
-
-            if (cbArgStr.Checked) {
-                setNamedScripts((string)fieldslist.GetValue("arg0str"));
-            } else if (!cbArgStr.Checked) {
-                setNumberedScripts(General.GetByIndex(lines, 0));
-            }
-
-            arg0label.Text = cbArgStr.Checked ? "Script name:" : "Script number:";
-        }
-
-        //mxd
-        private void arg0str_Leave(object sender, EventArgs e) {
-            if (cbArgStr.Checked) fieldslist.SetValue("arg0str", arg0str.Text, UniversalType.String);
+			if(!cbArgStr.Visible) return;
+			scriptNames.Visible = cbArgStr.Checked;
+			scriptNumbers.Visible = !cbArgStr.Checked;
+			arg0label.Text = cbArgStr.Checked ? "Script Name:" : "Script Number:";
         }
 
 		//mxd
@@ -968,44 +950,6 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void fieldslist_OnFieldValueChanged(string fieldname) {
-			if(preventchanges) return;
-			Linedef fl = null;
-
-			foreach(Linedef l in lines) {
-				fieldslist.Apply(l.Fields);
-				if(fl == null) fl = l;
-			}
-
-			if(fl == null) return;
-
-			//update interface... yaaaay...
-			switch(fieldname) {
-				case "arg0str":
-					if(cbArgStr.Checked) arg0str.Text = (string)fieldslist.GetValue(fieldname);
-					break;
-
-				case "alpha":
-					alpha.Text = (string)fieldslist.GetValue(fieldname);
-					break;
-
-				case "locknumber":
-					lockNumber.Text = (string)fieldslist.GetValue(fieldname);
-					break;
-
-				case "renderstyle":
-					string renderstyle = (string)fieldslist.GetValue(fieldname);
-					if(renderstyle == "add") {
-						cbRenderStyle.SelectedIndex = 1;
-					} else if(renderstyle == "translucent") {
-						cbRenderStyle.SelectedIndex = 0;
-					} else {
-						cbRenderStyle.SelectedIndex = -1;
-					}
-					break;
-			}
-		}
-
 		#endregion
 
 		#region Reltime events (sides)
@@ -1075,7 +1019,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Edit these
 			if(!CustomFieldsForm.ShowDialog(this, "Back side custom fields", "sidedef", sides, General.Map.Config.SidedefFields)) return;
-				//General.Map.UndoRedo.WithdrawUndo();
 
 			//Apply values
 			Sidedef fs = General.GetByIndex(sides, 0) as Sidedef;
@@ -1136,7 +1079,7 @@ namespace CodeImp.DoomBuilder.Windows
 				int i = 0;
 
 				foreach(Linedef l in lines) {
-					if(l.Front != null) l.Front.SetTextureHigh(linedefProps[i].Front != null ? linedefProps[i].Front.TextureTop : EMPTY_TEXTURE);
+					if(l.Front != null) l.Front.SetTextureHigh(linedefProps[i].Front != null ? linedefProps[i].Front.TextureTop : "-");
 					i++;
 				}
 			//update values
@@ -1160,7 +1103,7 @@ namespace CodeImp.DoomBuilder.Windows
 				int i = 0;
 
 				foreach(Linedef l in lines) {
-					if(l.Front != null) l.Front.SetTextureMid(linedefProps[i].Front != null ? linedefProps[i].Front.TextureMid : EMPTY_TEXTURE);
+					if(l.Front != null) l.Front.SetTextureMid(linedefProps[i].Front != null ? linedefProps[i].Front.TextureMid : "-");
 					i++;
 				}
 			//update values
@@ -1184,7 +1127,7 @@ namespace CodeImp.DoomBuilder.Windows
 				int i = 0;
 
 				foreach(Linedef l in lines) {
-					if(l.Front != null) l.Front.SetTextureLow(linedefProps[i].Front != null ? linedefProps[i].Front.TextureLow : EMPTY_TEXTURE);
+					if(l.Front != null) l.Front.SetTextureLow(linedefProps[i].Front != null ? linedefProps[i].Front.TextureLow : "-");
 					i++;
 				}
 			//update values
@@ -1208,7 +1151,7 @@ namespace CodeImp.DoomBuilder.Windows
 				int i = 0;
 
 				foreach(Linedef l in lines) {
-					if(l.Back != null) l.Back.SetTextureHigh(linedefProps[i].Back != null ? linedefProps[i].Back.TextureTop : EMPTY_TEXTURE);
+					if(l.Back != null) l.Back.SetTextureHigh(linedefProps[i].Back != null ? linedefProps[i].Back.TextureTop : "-");
 					i++;
 				}
 			//update values
@@ -1232,7 +1175,7 @@ namespace CodeImp.DoomBuilder.Windows
 				int i = 0;
 
 				foreach(Linedef l in lines) {
-					if(l.Back != null) l.Back.SetTextureMid(linedefProps[i].Back != null ? linedefProps[i].Back.TextureMid : EMPTY_TEXTURE);
+					if(l.Back != null) l.Back.SetTextureMid(linedefProps[i].Back != null ? linedefProps[i].Back.TextureMid : "-");
 					i++;
 				}
 			//update values
@@ -1256,7 +1199,7 @@ namespace CodeImp.DoomBuilder.Windows
 				int i = 0;
 
 				foreach(Linedef l in lines) {
-					if(l.Back != null) l.Back.SetTextureLow(linedefProps[i].Back != null ? linedefProps[i].Back.TextureLow : EMPTY_TEXTURE);
+					if(l.Back != null) l.Back.SetTextureLow(linedefProps[i].Back != null ? linedefProps[i].Back.TextureLow : "-");
 					i++;
 				}
 			//update values

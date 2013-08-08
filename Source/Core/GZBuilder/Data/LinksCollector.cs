@@ -152,7 +152,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
             if (result.ProcessInterpolationPoints) {
                 foreach (KeyValuePair<int, List<Thing>> group in interpolationPoints) {
 					foreach(Thing t in group.Value) {
-						int targetTag = t.Args[3] + t.Args[4] * 256;
+						int targetTag = t.Args[3] + (t.Args[4] << 8);
 						if(targetTag == 0) continue; //no goal
 
 						if(interpolationPoints.ContainsKey(targetTag)) {
@@ -172,7 +172,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
             //process cameras
             if (result.ProcessCameras) {
                 foreach (Thing t in cameras) {
-                    int targetTag = t.Args[0] + t.Args[1] * 256;
+					int targetTag = t.Args[0] + (t.Args[1] << 8);
                     if (targetTag == 0) continue; //no goal
 
 					if(interpolationPoints.ContainsKey(targetTag)) {
@@ -191,7 +191,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			//process actor movers
 			if(result.ProcessActorMovers) {
 				foreach(Thing t in actorMovers) {
-					int targetTag = t.Args[0] + t.Args[1] * 256;
+					int targetTag = t.Args[0] + (t.Args[1] << 8);
 					if(targetTag == 0) continue; //no goal
 
 					//add interpolation point target

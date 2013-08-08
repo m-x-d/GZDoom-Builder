@@ -22,6 +22,7 @@ using System.Text;
 using System.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
+using System.Collections;
 
 #endregion
 
@@ -32,34 +33,32 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Constants
 
 		// Name of the UDMF configuration file
-		private const string UDMF_CONFIG_NAME = "UDMF.cfg";
+		private const string UDMF_UI_CONFIG_NAME = "UDMF_UI.cfg";
 		
 		#endregion
 
 		#region ================== Variables
 
-		//private Configuration config;
+		private Dictionary<string, List<string>> uifields;
 		
 		#endregion
 		
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public UniversalMapSetIO(WAD wad, MapManager manager) : base(wad, manager) { }
-
-		/*public UniversalMapSetIO(WAD wad, MapManager manager) : base(wad, manager)
+		public UniversalMapSetIO(WAD wad, MapManager manager) : base(wad, manager)
 		{
 			if((manager != null) && (manager.Config != null))
 			{
 				// Make configuration
-				config = new Configuration();
+				Configuration config = new Configuration();
 				
-				// Find a resource named UDMF.cfg
+				// Find a resource named UDMF_UI.cfg
 				string[] resnames = General.ThisAssembly.GetManifestResourceNames();
 				foreach(string rn in resnames)
 				{
 					// Found it?
-					if(rn.EndsWith(UDMF_CONFIG_NAME, StringComparison.InvariantCultureIgnoreCase))
+					if(rn.EndsWith(UDMF_UI_CONFIG_NAME, StringComparison.InvariantCultureIgnoreCase))
 					{
 						// Get a stream from the resource
 						Stream udmfcfg = General.ThisAssembly.GetManifestResourceStream(rn);
@@ -67,30 +66,19 @@ namespace CodeImp.DoomBuilder.IO
 						
 						// Load configuration from stream
 						config.InputConfiguration(udmfcfgreader.ReadToEnd());
-						
-						// Now we add the linedef flags, activations and thing flags
-						// to this list, so that these don't show up in the custom
-						// fields list either. We use true as dummy value (it has no meaning)
-						
-						// Add linedef flags
-						foreach(KeyValuePair<string, string> flag in manager.Config.LinedefFlags)
-							config.WriteSetting("managedfields.linedef." + flag.Key, true);
-						
-						// Add linedef activations
-						foreach(LinedefActivateInfo activate in manager.Config.LinedefActivates)
-							config.WriteSetting("managedfields.linedef." + activate.Key, true);
-						
-						// Add thing flags
-						foreach(KeyValuePair<string, string> flag in manager.Config.ThingFlags)
-							config.WriteSetting("managedfields.thing." + flag.Key, true);
+						string[] elements = new string[] { "vertex", "linedef", "sidedef", "sector", "thing" };
+						uifields = new Dictionary<string, List<string>>();
 
-						//mxd. Add sector flags
-						foreach(KeyValuePair<string, string> flag in manager.Config.SectorFlags)
-							config.WriteSetting("managedfields.sector." + flag.Key, true);
+						foreach(string elementname in elements) {
+							IDictionary dic = config.ReadSetting("uifields." + elementname, new Hashtable());
 
-						//mxd. Add sidedef flags
-						foreach(KeyValuePair<string, string> flag in manager.Config.SidedefFlags)
-							config.WriteSetting("managedfields.sidedef." + flag.Key, true);
+							List<string> values = new List<string>();
+							foreach(DictionaryEntry de in dic) {
+								values.Add(de.Key.ToString());
+							}
+
+							uifields.Add(elementname, values);
+						}
 						
 						// Done
 						udmfcfgreader.Dispose();
@@ -99,7 +87,7 @@ namespace CodeImp.DoomBuilder.IO
 					}
 				}
 			}
-		}*/
+		}
 
 		#endregion
 
@@ -142,6 +130,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override float MinCoordinate { get { return float.MinValue; } }
 		public override int MaxThingAngle { get { return int.MaxValue; } }
 		public override int MinThingAngle { get { return int.MinValue; } }
+		public override Dictionary<string, List<string>> UIFields { get { return uifields; } } //mxd
 		
 		#endregion
 

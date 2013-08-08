@@ -81,6 +81,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override float MinCoordinate { get { return (float)short.MinValue; } }
 		public override int MaxThingAngle { get { return short.MaxValue; } }
 		public override int MinThingAngle { get { return short.MinValue; } }
+		public override Dictionary<string, List<string>> UIFields { get { return null; } } //mxd
 		
 		#endregion
 
