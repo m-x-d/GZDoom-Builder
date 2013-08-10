@@ -32,6 +32,8 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.GroupBox groupBox2;
 			System.Windows.Forms.Label label7;
 			this.thingtype = new CodeImp.DoomBuilder.Controls.ThingBrowserControl();
+			this.gravity = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.labelGravity = new System.Windows.Forms.Label();
 			this.cbRandomAngle = new System.Windows.Forms.CheckBox();
 			this.cbAbsoluteHeight = new System.Windows.Forms.CheckBox();
 			this.label2 = new System.Windows.Forms.Label();
@@ -119,6 +121,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			groupBox2.Controls.Add(this.gravity);
+			groupBox2.Controls.Add(this.labelGravity);
 			groupBox2.Controls.Add(this.cbRandomAngle);
 			groupBox2.Controls.Add(this.cbAbsoluteHeight);
 			groupBox2.Controls.Add(this.label2);
@@ -130,17 +134,39 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox2.Controls.Add(this.zlabel);
 			groupBox2.Controls.Add(this.anglecontrol);
 			groupBox2.Controls.Add(this.labelAngle);
-			groupBox2.Location = new System.Drawing.Point(397, 246);
+			groupBox2.Location = new System.Drawing.Point(394, 216);
 			groupBox2.Name = "groupBox2";
-			groupBox2.Size = new System.Drawing.Size(249, 134);
+			groupBox2.Size = new System.Drawing.Size(252, 164);
 			groupBox2.TabIndex = 2;
 			groupBox2.TabStop = false;
 			groupBox2.Text = " Coordination ";
 			// 
+			// gravity
+			// 
+			this.gravity.AllowDecimal = true;
+			this.gravity.AllowNegative = true;
+			this.gravity.AllowRelative = false;
+			this.gravity.ButtonStep = 8;
+			this.gravity.ButtonStepFloat = 0.1F;
+			this.gravity.Location = new System.Drawing.Point(61, 118);
+			this.gravity.Name = "gravity";
+			this.gravity.Size = new System.Drawing.Size(72, 24);
+			this.gravity.StepValues = null;
+			this.gravity.TabIndex = 19;
+			// 
+			// labelGravity
+			// 
+			this.labelGravity.Location = new System.Drawing.Point(5, 123);
+			this.labelGravity.Name = "labelGravity";
+			this.labelGravity.Size = new System.Drawing.Size(50, 14);
+			this.labelGravity.TabIndex = 18;
+			this.labelGravity.Text = "Gravity:";
+			this.labelGravity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
 			// cbRandomAngle
 			// 
 			this.cbRandomAngle.AutoSize = true;
-			this.cbRandomAngle.Location = new System.Drawing.Point(38, 114);
+			this.cbRandomAngle.Location = new System.Drawing.Point(151, 19);
 			this.cbRandomAngle.Name = "cbRandomAngle";
 			this.cbRandomAngle.Size = new System.Drawing.Size(94, 18);
 			this.cbRandomAngle.TabIndex = 17;
@@ -151,7 +177,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbAbsoluteHeight
 			// 
 			this.cbAbsoluteHeight.AutoSize = true;
-			this.cbAbsoluteHeight.Location = new System.Drawing.Point(38, 93);
+			this.cbAbsoluteHeight.Location = new System.Drawing.Point(37, 94);
 			this.cbAbsoluteHeight.Name = "cbAbsoluteHeight";
 			this.cbAbsoluteHeight.Size = new System.Drawing.Size(102, 18);
 			this.cbAbsoluteHeight.TabIndex = 16;
@@ -161,7 +187,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(12, 21);
+			this.label2.Location = new System.Drawing.Point(5, 21);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(50, 14);
 			this.label2.TabIndex = 15;
@@ -170,9 +196,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(9, 46);
+			this.label1.Location = new System.Drawing.Point(5, 46);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(53, 14);
+			this.label1.Size = new System.Drawing.Size(50, 14);
 			this.label1.TabIndex = 14;
 			this.label1.Text = "Y:";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -184,7 +210,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posX.AllowRelative = true;
 			this.posX.ButtonStep = 8;
 			this.posX.ButtonStepFloat = 1F;
-			this.posX.Location = new System.Drawing.Point(68, 16);
+			this.posX.Location = new System.Drawing.Point(61, 16);
 			this.posX.Name = "posX";
 			this.posX.Size = new System.Drawing.Size(72, 24);
 			this.posX.StepValues = null;
@@ -198,7 +224,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posY.AllowRelative = true;
 			this.posY.ButtonStep = 8;
 			this.posY.ButtonStepFloat = 1F;
-			this.posY.Location = new System.Drawing.Point(68, 41);
+			this.posY.Location = new System.Drawing.Point(61, 41);
 			this.posY.Name = "posY";
 			this.posY.Size = new System.Drawing.Size(72, 24);
 			this.posY.StepValues = null;
@@ -212,7 +238,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posZ.AllowRelative = true;
 			this.posZ.ButtonStep = 8;
 			this.posZ.ButtonStepFloat = 1F;
-			this.posZ.Location = new System.Drawing.Point(68, 66);
+			this.posZ.Location = new System.Drawing.Point(61, 66);
 			this.posZ.Name = "posZ";
 			this.posZ.Size = new System.Drawing.Size(72, 24);
 			this.posZ.StepValues = null;
@@ -226,7 +252,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.angle.AllowRelative = true;
 			this.angle.ButtonStep = 1;
 			this.angle.ButtonStepFloat = 1F;
-			this.angle.Location = new System.Drawing.Point(186, 16);
+			this.angle.Location = new System.Drawing.Point(186, 41);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(57, 24);
 			this.angle.StepValues = null;
@@ -235,9 +261,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// zlabel
 			// 
-			this.zlabel.Location = new System.Drawing.Point(6, 71);
+			this.zlabel.Location = new System.Drawing.Point(5, 71);
 			this.zlabel.Name = "zlabel";
-			this.zlabel.Size = new System.Drawing.Size(56, 14);
+			this.zlabel.Size = new System.Drawing.Size(50, 14);
 			this.zlabel.TabIndex = 9;
 			this.zlabel.Text = "Height:";
 			this.zlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -247,7 +273,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.anglecontrol.BackColor = System.Drawing.SystemColors.Control;
 			this.anglecontrol.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.anglecontrol.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.anglecontrol.Location = new System.Drawing.Point(153, 46);
+			this.anglecontrol.Location = new System.Drawing.Point(152, 71);
 			this.anglecontrol.Name = "anglecontrol";
 			this.anglecontrol.Size = new System.Drawing.Size(84, 84);
 			this.anglecontrol.TabIndex = 2;
@@ -257,7 +283,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelAngle
 			// 
 			this.labelAngle.AutoSize = true;
-			this.labelAngle.Location = new System.Drawing.Point(149, 21);
+			this.labelAngle.Location = new System.Drawing.Point(149, 46);
 			this.labelAngle.Name = "labelAngle";
 			this.labelAngle.Size = new System.Drawing.Size(38, 14);
 			this.labelAngle.TabIndex = 8;
@@ -310,7 +336,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.spritetex.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.spritetex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.spritetex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.spritetex.Location = new System.Drawing.Point(284, 252);
+			this.spritetex.Location = new System.Drawing.Point(284, 222);
 			this.spritetex.Name = "spritetex";
 			this.spritetex.Size = new System.Drawing.Size(104, 100);
 			this.spritetex.TabIndex = 22;
@@ -323,7 +349,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.settingsgroup.Controls.Add(this.flags);
 			this.settingsgroup.Location = new System.Drawing.Point(284, 6);
 			this.settingsgroup.Name = "settingsgroup";
-			this.settingsgroup.Size = new System.Drawing.Size(362, 234);
+			this.settingsgroup.Size = new System.Drawing.Size(362, 204);
 			this.settingsgroup.TabIndex = 1;
 			this.settingsgroup.TabStop = false;
 			this.settingsgroup.Text = " Settings ";
@@ -337,7 +363,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flags.Columns = 3;
 			this.flags.Location = new System.Drawing.Point(19, 19);
 			this.flags.Name = "flags";
-			this.flags.Size = new System.Drawing.Size(337, 208);
+			this.flags.Size = new System.Drawing.Size(337, 178);
 			this.flags.TabIndex = 0;
 			this.flags.VerticalSpacing = 1;
 			// 
@@ -732,5 +758,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox conversationID;
 		private System.Windows.Forms.Label labelID;
 		private System.Windows.Forms.ComboBox scriptNumbers;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox gravity;
+		private System.Windows.Forms.Label labelGravity;
 	}
 }

@@ -65,8 +65,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
                     //sky1 or sky2
                     if (token == "sky1" || token == "sky2") {
-                        //Form1.Trace("Got sky " + token);
-
                         string skyType = token;
                         SkipWhitespace(true);
                         token = StripTokenQuotes(ReadToken()).ToLowerInvariant();
@@ -135,7 +133,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                 float scrollSpeed = 0;
                                 if (!ReadSignedFloat(token, ref scrollSpeed)) {
                                     // Not numeric!
-                                    General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " scroll speed value, but got '" + token + "'");
                                     datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                                     continue;
                                 }
