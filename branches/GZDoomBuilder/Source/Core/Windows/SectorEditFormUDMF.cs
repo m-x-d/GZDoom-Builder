@@ -378,12 +378,12 @@ namespace CodeImp.DoomBuilder.Windows
 				//alpha
 				if(!string.IsNullOrEmpty(ceilAlpha.Text)) {
 					float ceilAlphaVal = General.Clamp(ceilAlpha.GetResultFloat(s.Fields.GetValue("alphaceiling", 1.0f)), 0f, 1f);
-					UDMFTools.SetFloat(s.Fields, "alphaceiling", ceilAlphaVal, 1.0f, false);
+					UDMFTools.SetFloat(s.Fields, "alphaceiling", ceilAlphaVal, 1.0f);
 				}
 				
 				if(!string.IsNullOrEmpty(floorAlpha.Text)){
 					float floorAlphaVal = General.Clamp(floorAlpha.GetResultFloat(s.Fields.GetValue("alphafloor", 1.0f)), 0f, 1f);
-					UDMFTools.SetFloat(s.Fields, "alphafloor", floorAlphaVal, 1.0f, false);
+					UDMFTools.SetFloat(s.Fields, "alphafloor", floorAlphaVal, 1.0f);
 				}
 
 				//renderstyle
@@ -402,10 +402,10 @@ namespace CodeImp.DoomBuilder.Windows
 				//misc
 				if(soundSequence.Text != "") s.Fields["soundsequence"] = new UniValue(UniversalType.String, soundSequence.Text);
 				if(gravity.Text != "")
-					UDMFTools.SetFloat(s.Fields, "gravity", gravity.GetResultFloat(s.Fields.GetValue("gravity", 1.0f)), 1.0f, false);
+					UDMFTools.SetFloat(s.Fields, "gravity", gravity.GetResultFloat(s.Fields.GetValue("gravity", 1.0f)), 1.0f);
 				if(desaturation.Text != "") {
 					float val = General.Clamp(desaturation.GetResultFloat(s.Fields.GetValue("desaturation", 0f)), 0f, 1f);
-					UDMFTools.SetFloat(s.Fields, "desaturation", val, 0f, false);
+					UDMFTools.SetFloat(s.Fields, "desaturation", val, 0f);
 				}
 			}
 
@@ -579,13 +579,13 @@ namespace CodeImp.DoomBuilder.Windows
 			//restore values
 			if(string.IsNullOrEmpty(floorRotation.Text)) {
 				foreach(Sector s in sectors) {
-					UDMFTools.SetFloat(s.Fields, "rotationfloor", sectorProps[i++].FloorRotation, 0f, false);
+					UDMFTools.SetFloat(s.Fields, "rotationfloor", sectorProps[i++].FloorRotation, 0f);
 					s.UpdateNeeded = true;
 				}
 			//update values
 			} else {
 				foreach(Sector s in sectors) {
-					UDMFTools.SetFloat(s.Fields, "rotationfloor", floorRotation.GetResult((int)sectorProps[i++].FloorRotation), 0f, false);
+					UDMFTools.SetFloat(s.Fields, "rotationfloor", floorRotation.GetResult((int)sectorProps[i++].FloorRotation), 0f);
 					s.UpdateNeeded = true;
 				}
 			}
@@ -603,13 +603,13 @@ namespace CodeImp.DoomBuilder.Windows
 			//restore values
 			if(string.IsNullOrEmpty(ceilRotation.Text)) {
 				foreach(Sector s in sectors) {
-					UDMFTools.SetFloat(s.Fields, "rotationceiling", sectorProps[i++].CeilRotation, 0f, false);
+					UDMFTools.SetFloat(s.Fields, "rotationceiling", sectorProps[i++].CeilRotation, 0f);
 					s.UpdateNeeded = true;
 				}
 			//update values
 			} else {
 				foreach(Sector s in sectors) {
-					UDMFTools.SetFloat(s.Fields, "rotationceiling", ceilRotation.GetResult((int)sectorProps[i++].CeilRotation), 0f, false);
+					UDMFTools.SetFloat(s.Fields, "rotationceiling", ceilRotation.GetResult((int)sectorProps[i++].CeilRotation), 0f);
 					s.UpdateNeeded = true;
 				}
 			}
@@ -708,7 +708,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//restore values
 			if(string.IsNullOrEmpty(ceilBrightness.Text)) {
 				foreach(Sector s in sectors) {
-					UDMFTools.SetInteger(s.Fields, "lightceiling", sectorProps[i++].CeilBrightness, 0, false);
+					UDMFTools.SetInteger(s.Fields, "lightceiling", sectorProps[i++].CeilBrightness, 0);
 					s.UpdateNeeded = true;
 				}
 			//update values
@@ -722,7 +722,7 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 
 					int value = General.Clamp(ceilBrightness.GetResult(sectorProps[i++].CeilBrightness), (absolute ? 0 : -255), 255);
-					UDMFTools.SetInteger(s.Fields, "lightceiling", value, 0, false);
+					UDMFTools.SetInteger(s.Fields, "lightceiling", value, 0);
 					s.UpdateNeeded = true;
 				}
 			}
@@ -738,7 +738,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//restore values
 			if(string.IsNullOrEmpty(floorBrightness.Text)) {
 				foreach(Sector s in sectors) {
-					UDMFTools.SetInteger(s.Fields, "lightfloor", sectorProps[i++].FloorBrightness, 0, false);
+					UDMFTools.SetInteger(s.Fields, "lightfloor", sectorProps[i++].FloorBrightness, 0);
 					s.UpdateNeeded = true;
 				}
 			//update values
@@ -752,7 +752,7 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 
 					int value = General.Clamp(floorBrightness.GetResult(sectorProps[i++].FloorBrightness), (absolute ? 0 : -255), 255);
-					UDMFTools.SetInteger(s.Fields, "lightfloor", value, 0, false);
+					UDMFTools.SetInteger(s.Fields, "lightfloor", value, 0);
 					s.UpdateNeeded = true;
 				}
 			}

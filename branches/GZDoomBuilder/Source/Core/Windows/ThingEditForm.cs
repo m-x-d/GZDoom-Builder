@@ -492,10 +492,10 @@ namespace CodeImp.DoomBuilder.Windows
 					fieldslist.Apply(t.Fields);
 
 					if(!string.IsNullOrEmpty(conversationID.Text))
-						UDMFTools.SetInteger(t.Fields, "conversation", conversationID.GetResult(t.Fields.GetValue("conversation", 0)), 0, false);
+						UDMFTools.SetInteger(t.Fields, "conversation", conversationID.GetResult(t.Fields.GetValue("conversation", 0)), 0);
 
 					if(!string.IsNullOrEmpty(gravity.Text))
-						UDMFTools.SetFloat(t.Fields, "gravity", gravity.GetResultFloat(t.Fields.GetValue("gravity", 1.0f)), 1.0f, false);
+						UDMFTools.SetFloat(t.Fields, "gravity", gravity.GetResultFloat(t.Fields.GetValue("gravity", 1.0f)), 1.0f);
 				}
 				
 				// Update settings

@@ -23,6 +23,7 @@ using System.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
 using System.Collections;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -39,7 +40,7 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Variables
 
-		private Dictionary<string, List<string>> uifields;
+		private Dictionary<string, Dictionary<string, UniversalType>> uifields;
 		
 		#endregion
 		
@@ -67,14 +68,14 @@ namespace CodeImp.DoomBuilder.IO
 						// Load configuration from stream
 						config.InputConfiguration(udmfcfgreader.ReadToEnd());
 						string[] elements = new string[] { "vertex", "linedef", "sidedef", "sector", "thing" };
-						uifields = new Dictionary<string, List<string>>();
+						uifields = new Dictionary<string, Dictionary<string, UniversalType>>();
 
 						foreach(string elementname in elements) {
 							IDictionary dic = config.ReadSetting("uifields." + elementname, new Hashtable());
 
-							List<string> values = new List<string>();
+							Dictionary<string, UniversalType> values = new Dictionary<string, UniversalType>();
 							foreach(DictionaryEntry de in dic) {
-								values.Add(de.Key.ToString());
+								values.Add(de.Key.ToString(), (UniversalType)de.Value);
 							}
 
 							uifields.Add(elementname, values);
@@ -130,7 +131,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override float MinCoordinate { get { return float.MinValue; } }
 		public override int MaxThingAngle { get { return int.MaxValue; } }
 		public override int MinThingAngle { get { return int.MinValue; } }
-		public override Dictionary<string, List<string>> UIFields { get { return uifields; } } //mxd
+		public override Dictionary<string, Dictionary<string, UniversalType>> UIFields { get { return uifields; } } //mxd
 		
 		#endregion
 

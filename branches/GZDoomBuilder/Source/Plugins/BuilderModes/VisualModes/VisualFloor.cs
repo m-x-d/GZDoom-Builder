@@ -203,7 +203,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					scaleX *= -1;
 				else
 					scaleX += incrementX;
-				UDMFTools.SetFloat(s.Fields, "xscalefloor", scaleX, 1.0f, false);
+				UDMFTools.SetFloat(s.Fields, "xscalefloor", scaleX, 1.0f);
 			}
 
 			if(incrementY != 0) {
@@ -211,7 +211,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					scaleY *= -1;
 				else
 					scaleY += incrementY;
-				UDMFTools.SetFloat(s.Fields, "yscalefloor", scaleY, 1.0f, false);
+				UDMFTools.SetFloat(s.Fields, "yscalefloor", scaleY, 1.0f);
 			}
 
 			//update geometry

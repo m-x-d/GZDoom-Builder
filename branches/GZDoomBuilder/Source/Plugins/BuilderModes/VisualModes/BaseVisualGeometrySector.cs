@@ -253,11 +253,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!isFront) sourceAngle = General.ClampAngle(sourceAngle + 180);
 
 			//update angle
-			UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "rotationfloor" : "rotationceiling"), sourceAngle, 0f, false);
+			UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "rotationfloor" : "rotationceiling"), sourceAngle, 0f);
 
 			//set scale
-			UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "xscalefloor" : "xscaleceiling"), scaleX, 1.0f, false);
-			UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "yscalefloor" : "yscaleceiling"), scaleY, 1.0f, false);
+			UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "xscalefloor" : "xscaleceiling"), scaleX, 1.0f);
+			UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "yscalefloor" : "yscaleceiling"), scaleY, 1.0f);
 
 			//update offset
 			float distToStart = Vector2D.Distance(hitpos, targetLine.Start.Position);
@@ -266,12 +266,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(alignx) {
 				if(Texture != null)	offset.x %= Texture.Width / scaleX;
-				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f, false);
+				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f);
 			}
 
 			if(aligny) {
 				if(Texture != null)	offset.y %= Texture.Height / scaleY;
-				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f, false);
+				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f);
 			}
 
 			//update geometry
@@ -300,7 +300,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//update angle
-			UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "rotationfloor" : "rotationceiling"), sourceAngle, 0f, false);
+			UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "rotationfloor" : "rotationceiling"), sourceAngle, 0f);
 
 			//update scaleY
 			string xScaleKey = (isFloor ? "xscalefloor" : "xscaleceiling");
@@ -312,7 +312,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//set scale
 			if(aligny) {
 				scaleY = (float)Math.Round(scaleX * (1 / (float)Math.Cos(slopeAngle)), 2);
-				UDMFTools.SetFloat(Sector.Sector.Fields, yScaleKey, scaleY, 1.0f, false);
+				UDMFTools.SetFloat(Sector.Sector.Fields, yScaleKey, scaleY, 1.0f);
 			} else {
 				scaleY = Sector.Sector.Fields.GetValue(yScaleKey, 1.0f);
 			}
@@ -340,12 +340,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(alignx) {
 				if(Texture != null)	offset.x %= Texture.Width / scaleX;
-				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f, false);
+				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f);
 			}
 
 			if(aligny) {
 				if(Texture != null)	offset.y %= Texture.Height / scaleY;
-				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f, false);
+				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f);
 			}
 
 			//update geometry
@@ -782,7 +782,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//set value
 			Sector s = GetControlSector();
-			UDMFTools.SetFloat(s.Fields, key, angle, 0.0f, true);
+			s.Fields.BeforeFieldsChange();
+			UDMFTools.SetFloat(s.Fields, key, angle, 0.0f);
 
 			if(s.Index != Sector.Sector.Index) {
 				s.UpdateNeeded = true;

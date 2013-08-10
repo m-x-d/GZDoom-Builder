@@ -29,10 +29,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
             }
 
             //check values
-            if (mapInfo.FadeColor != null && (mapInfo.FadeColor.Red > 0 || mapInfo.FadeColor.Green > 0 || mapInfo.FadeColor.Blue > 0))
+            if (mapInfo.FadeColor.Red > 0 || mapInfo.FadeColor.Green > 0 || mapInfo.FadeColor.Blue > 0)
                 mapInfo.HasFadeColor = true;
 
-            if (mapInfo.OutsideFogColor != null && (mapInfo.OutsideFogColor.Red > 0 || mapInfo.OutsideFogColor.Green > 0 || mapInfo.OutsideFogColor.Blue > 0))
+            if (mapInfo.OutsideFogColor.Red > 0 || mapInfo.OutsideFogColor.Green > 0 || mapInfo.OutsideFogColor.Blue > 0)
                 mapInfo.HasOutsideFogColor = true;
 
             //Cannot fail here
@@ -301,11 +301,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         mapInfo.SmoothLighting = true;
                         //block end
                     } else if (token == "}") {
-                        if (curBlockName == "map") {
-                            return true; //we are done here
-                        } else {
-                            return parseBlock(token, mapName);
-                        }
+	                    return (curBlockName == "map" || parseBlock(token, mapName));
                     }
                 }
             }

@@ -86,14 +86,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		public void ApplyTo(UniFields fields, int min, int max, float oldValue1, float oldValue2) {
 			if(value1.Text != "")
-				UDMFTools.SetFloat(fields, field1, General.Clamp(value1.GetResultFloat(defaultValue), min, max), defaultValue, false);
+				UDMFTools.SetFloat(fields, field1, General.Clamp(value1.GetResultFloat(defaultValue), min, max), defaultValue);
 			else
-				UDMFTools.SetFloat(fields, field1, oldValue1, defaultValue, false);
+				UDMFTools.SetFloat(fields, field1, oldValue1, defaultValue);
 
 			if(value2.Text != "")
-				UDMFTools.SetFloat(fields, field2, General.Clamp(value2.GetResultFloat(defaultValue), min, max), defaultValue, false);
+				UDMFTools.SetFloat(fields, field2, General.Clamp(value2.GetResultFloat(defaultValue), min, max), defaultValue);
 			else
-				UDMFTools.SetFloat(fields, field2, oldValue2, defaultValue, false);
+				UDMFTools.SetFloat(fields, field2, oldValue2, defaultValue);
 		}
 
 		private void checkValues() {
