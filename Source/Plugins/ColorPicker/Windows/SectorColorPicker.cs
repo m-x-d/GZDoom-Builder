@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
-
-using CodeImp.DoomBuilder.Plugins;
 
 namespace CodeImp.DoomBuilder.ColorPicker.Windows
 {
@@ -20,15 +13,16 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
     {
         public ColorPickerType Type { get { return ColorPickerType.CP_SECTOR; } }
 
-        private List<Sector> selection;
+		private const int DEFAULT_LIGHT_COLOR = 0xFFFFFF; //ffffff
+		private const int DEFAULT_FADE_COLOR = 0;
+		
+		private List<Sector> selection;
         private List<VisualSector> visualSelection;
         
         private int curSectorColor;
         private int curFadeColor;
         private int initialSectorColor;
         private int initialFadeColor;
-        private int defaultSectorColor;
-        private int defaultFadeColor;
 
         private static string currentColorTag = "lightcolor"; //lightcolor or fadecolor
         private string mode;
@@ -64,23 +58,9 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
             foreach (Sector s in selection)
                 s.Fields.BeforeFieldsChange();
 
-            //get default values
-            List<UniversalFieldInfo> sectorFields = General.Map.Config.SectorFields;
-            foreach (UniversalFieldInfo i in sectorFields) {
-                if (i.Name == "lightcolor")
-                    defaultSectorColor = (int)i.Default;
-                else if (i.Name == "fadecolor")
-                    defaultFadeColor = (int)i.Default;
-            }
-
             //set colors
-            curSectorColor = selection[0].Fields.GetValue<int>("lightcolor", -1);
-            if (curSectorColor == -1)
-                curSectorColor = defaultSectorColor;
-            
-            curFadeColor = selection[0].Fields.GetValue<int>("fadecolor", -1);
-            if (curFadeColor == -1)
-                curFadeColor = defaultFadeColor;
+			curSectorColor = selection[0].Fields.GetValue("lightcolor", DEFAULT_LIGHT_COLOR);
+            curFadeColor = selection[0].Fields.GetValue("fadecolor", DEFAULT_FADE_COLOR);
 
             //check that all sectors in selection have "lightcolor" and "fadecolor" fields
             for (int i = 0; i < selection.Count; i++) {
@@ -123,10 +103,10 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
         private void colorPickerControl1_OnOkPressed(object sender, EventArgs e) {
             //check if values are default
             foreach (Sector s in selection) {
-                if ((int)s.Fields["lightcolor"].Value == defaultSectorColor)
+				if((int)s.Fields["lightcolor"].Value == DEFAULT_LIGHT_COLOR)
                     s.Fields.Remove("lightcolor");
 
-                if ((int)s.Fields["fadecolor"].Value == defaultFadeColor)
+                if ((int)s.Fields["fadecolor"].Value == DEFAULT_FADE_COLOR)
                     s.Fields.Remove("fadecolor");
             }
 

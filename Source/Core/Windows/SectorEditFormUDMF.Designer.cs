@@ -420,7 +420,7 @@
 			this.flags.Name = "flags";
 			this.flags.Size = new System.Drawing.Size(222, 121);
 			this.flags.TabIndex = 5;
-			this.flags.VerticalSpacing = 6;
+			this.flags.VerticalSpacing = 2;
 			// 
 			// tabSurfaces
 			// 
