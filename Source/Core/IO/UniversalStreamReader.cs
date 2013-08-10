@@ -34,14 +34,16 @@ namespace CodeImp.DoomBuilder.IO
 	{
 		#region ================== Constants
 
-		// Name of the UDMF configuration file
+		// Name of the UDMF configuration files
 		private const string UDMF_CONFIG_NAME = "UDMF.cfg";
+		private const string UDMF_UI_CONFIG_NAME = "UDMF_UI.cfg"; //mxd
 
 		#endregion
 
 		#region ================== Variables
 
 		private Configuration config;
+		private Configuration uiconfig; //mxd
 		private bool setknowncustomtypes;
 		private bool strictchecking = true;
 		
@@ -113,6 +115,26 @@ namespace CodeImp.DoomBuilder.IO
 						foreach(string fn in f.Fields)
 							config.WriteSetting("managedfields.thing." + fn, true);
 					}
+
+					// Done
+					udmfcfgreader.Dispose();
+					udmfcfg.Dispose();
+					break;
+				}
+			}
+
+			//mxd. Load UI fields configuration
+			uiconfig = new Configuration();
+
+			foreach (string rn in resnames) {
+				// Found it?
+				if (rn.EndsWith(UDMF_UI_CONFIG_NAME, StringComparison.InvariantCultureIgnoreCase)) {
+					// Get a stream from the resource
+					Stream udmfcfg = General.ThisAssembly.GetManifestResourceStream(rn);
+					StreamReader udmfcfgreader = new StreamReader(udmfcfg, Encoding.ASCII);
+
+					// Load configuration from stream
+					uiconfig.InputConfiguration(udmfcfgreader.ReadToEnd());
 
 					// Done
 					udmfcfgreader.Dispose();
@@ -438,8 +460,24 @@ namespace CodeImp.DoomBuilder.IO
 				{
 					int type = (int)UniversalType.Integer;
 
-					// Try to find the type from configuration
-                    if (setknowncustomtypes) {
+					//mxd
+					if (uiconfig.SettingExists("uifields." + elementname + "." + e.Key)) {
+						type = uiconfig.ReadSetting("uifields." + elementname + "." + e.Key, type);
+
+						//mxd. Check type
+						object value = e.Value;
+
+						// Let's be kind and cast any int to a float if needed
+						if(type == (int)UniversalType.Float && e.Value is int) {
+							value = (float)(int)e.Value;
+						} else if(!e.IsValidType(e.Value.GetType())) {
+							General.ErrorLogger.Add(ErrorType.Warning, element + ": the value of entry '" + e.Key + "' is of incompatible type (expected " + e.GetType().Name + ", but got " + e.Value.GetType().Name + "). If you save the map, this value will be ignored.");
+							continue;
+						}
+
+						// Make custom field
+						element.Fields[e.Key] = new UniValue(type, value);
+					} else if(setknowncustomtypes) { // Try to find the type from configuration
                         type = General.Map.Options.GetUniversalFieldType(elementname, e.Key, type);
 
                         //mxd. Check type
@@ -449,7 +487,7 @@ namespace CodeImp.DoomBuilder.IO
                         if (type == (int)UniversalType.Float && e.Value.GetType() == typeof(int)) {
                             value = (float)(int)e.Value;
                         } else if (!e.IsValidType(e.Value.GetType())) {
-                            General.ErrorLogger.Add(ErrorType.Warning, element.ToString() + ": the value of entry '" + e.Key + "' is of incompatible type (expected " + e.GetType().Name + ", but got " + e.Value.GetType().Name + "). If you save the map, this value will be ignored.");
+                            General.ErrorLogger.Add(ErrorType.Warning, element + ": the value of entry '" + e.Key + "' is of incompatible type (expected " + e.GetType().Name + ", but got " + e.Value.GetType().Name + "). If you save the map, this value will be ignored.");
                             continue;
                         }
 

@@ -762,7 +762,7 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd. UDMF Settings
 				if(General.Map.FormatInterface.HasCustomFields) {
 					fieldslist.Apply(l.Fields);
-					UDMFTools.SetInteger(l.Fields, "locknumber", lockNum, 0, false);
+					UDMFTools.SetInteger(l.Fields, "locknumber", lockNum, 0);
 				}
 			}
 
@@ -914,12 +914,12 @@ namespace CodeImp.DoomBuilder.Windows
 			//restore values
 			if(string.IsNullOrEmpty(alpha.Text)) {
 				foreach(Linedef l in lines) 
-					UDMFTools.SetFloat(l.Fields, "alpha", linedefProps[i++].Alpha, 1.0f, false);
+					UDMFTools.SetFloat(l.Fields, "alpha", linedefProps[i++].Alpha, 1.0f);
 			//update values
 			} else {
 				foreach(Linedef l in lines) {
 					float value = General.Clamp(alpha.GetResultFloat(l.Fields.GetValue("alpha", 1.0f)), 0f, 1.0f);
-					UDMFTools.SetFloat(l.Fields, "alpha", value, 1.0f, false);
+					UDMFTools.SetFloat(l.Fields, "alpha", value, 1.0f);
 				}
 			}
 
@@ -1227,7 +1227,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(string.IsNullOrEmpty(lightFront.Text)) {
 				foreach(Linedef l in lines) {
 					if(l.Front != null)
-						UDMFTools.SetInteger(l.Front.Fields, "light", (linedefProps[i].Front != null ? linedefProps[i].Front.Brightness : 0), 0, false);
+						UDMFTools.SetInteger(l.Front.Fields, "light", (linedefProps[i].Front != null ? linedefProps[i].Front.Brightness : 0), 0);
 					i++;
 				}
 			//update values
@@ -1242,7 +1242,7 @@ namespace CodeImp.DoomBuilder.Windows
 						}
 
 						int value = General.Clamp(lightFront.GetResult((linedefProps[i].Front != null ? linedefProps[i].Front.Brightness : 0)), (absolute ? 0 : -255), 255);
-						UDMFTools.SetInteger(l.Front.Fields, "light", value, 0, false);
+						UDMFTools.SetInteger(l.Front.Fields, "light", value, 0);
 					}
 					i++;
 				}
@@ -1260,7 +1260,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(string.IsNullOrEmpty(lightBack.Text)) {
 				foreach(Linedef l in lines) {
 					if(l.Back != null)
-						UDMFTools.SetInteger(l.Back.Fields, "light", (linedefProps[i].Back != null ? linedefProps[i].Back.Brightness : 0), 0, false);
+						UDMFTools.SetInteger(l.Back.Fields, "light", (linedefProps[i].Back != null ? linedefProps[i].Back.Brightness : 0), 0);
 					i++;
 				}
 			//update values
@@ -1275,7 +1275,7 @@ namespace CodeImp.DoomBuilder.Windows
 						}
 
 						int value = General.Clamp(lightBack.GetResult((linedefProps[i].Back != null ? linedefProps[i].Back.Brightness : 0)), (absolute ? 0 : -255), 255);
-						UDMFTools.SetInteger(l.Back.Fields, "light", value, 0, false);
+						UDMFTools.SetInteger(l.Back.Fields, "light", value, 0);
 					}
 					i++;
 				}

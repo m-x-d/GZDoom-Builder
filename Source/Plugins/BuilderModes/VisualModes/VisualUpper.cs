@@ -297,16 +297,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(fitWidth) {
 				float scaleX = Texture.ScaledWidth / Sidedef.Line.Length;
-				UDMFTools.SetFloat(Sidedef.Fields, "scalex_top", scaleX, 1.0f, false);
-				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_top", -Sidedef.OffsetX, 0.0f, false);
+				UDMFTools.SetFloat(Sidedef.Fields, "scalex_top", scaleX, 1.0f);
+				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_top", -Sidedef.OffsetX, 0.0f);
 			}
 
 			if(fitHeight && Sidedef.Sector != null && Sidedef.Other.Sector != null) {
 				float scaleY = (float)Texture.Height / (Sidedef.Sector.CeilHeight - Sidedef.Other.Sector.CeilHeight);
-				UDMFTools.SetFloat(Sidedef.Fields, "scaley_top", scaleY, 1.0f, false);
+				UDMFTools.SetFloat(Sidedef.Fields, "scaley_top", scaleY, 1.0f);
 
 				float offsetY = mode.GetTopOffsetY(Sidedef, -Sidedef.OffsetY, scaleY, true) % Texture.Height;
-				UDMFTools.SetFloat(Sidedef.Fields, "offsety_top", offsetY, 0.0f, false);
+				UDMFTools.SetFloat(Sidedef.Fields, "offsety_top", offsetY, 0.0f);
 			}
 
 			Setup();

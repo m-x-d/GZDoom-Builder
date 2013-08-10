@@ -44,9 +44,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		public void ApplyTo(UniFields fields, int oldValue) {
 			if(string.IsNullOrEmpty(tbColor.Text)) {
-				UDMFTools.SetInteger(fields, field, oldValue, defaultValue, false);
+				UDMFTools.SetInteger(fields, field, oldValue, defaultValue);
 			} else {
-				UDMFTools.SetInteger(fields, field, (cpColor.Color.ToInt() & 0x00ffffff), defaultValue, false);
+				UDMFTools.SetInteger(fields, field, (cpColor.Color.ToInt() & 0x00ffffff), defaultValue);
 			}
 		}
 

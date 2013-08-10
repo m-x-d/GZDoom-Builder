@@ -2675,12 +2675,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					if(ip != null) {
-						VisualThing vTarget = null;
-						if(!VisualThingExists(ip))
-							vTarget = CreateVisualThing(ip);
-						else
-							vTarget = GetVisualThing(ip);
-
+						VisualThing vTarget = !VisualThingExists(ip) ? CreateVisualThing(ip) : GetVisualThing(ip);
 						Vector3D targetPos = new Vector3D();
 						if(vTarget == null) {
 							targetPos = ip.Position;
@@ -2713,12 +2708,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.VisualCamera.AngleXY = t.Angle - Angle2D.PI;
 					General.Map.VisualCamera.AngleZ = Angle2D.PI;
 				} else {
-					VisualThing vTarget = null;
-					if (!VisualThingExists(target)) 
-						vTarget = CreateVisualThing(target);
-					else
-						vTarget = GetVisualThing(target);
-
+					VisualThing vTarget = !VisualThingExists(target) ? CreateVisualThing(target) : GetVisualThing(target);
 					Vector3D targetPos = new Vector3D();
 					if(vTarget == null) {
 						targetPos = target.Position;
@@ -3098,9 +3088,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				j.controlSide.Fields.BeforeFieldsChange(); //mxd
 				
 				//mxd. Apply scaleY
-				if(matchtop) UDMFTools.SetFloat(j.sidedef.Fields, "scaley_top", j.scaleY, 1.0f, false);
-				if(matchmid) UDMFTools.SetFloat(j.controlSide.Fields, "scaley_mid", j.scaleY, 1.0f, false);
-				if(matchbottom)	UDMFTools.SetFloat(j.sidedef.Fields, "scaley_bottom", j.scaleY, 1.0f, false);
+				if(matchtop) UDMFTools.SetFloat(j.sidedef.Fields, "scaley_top", j.scaleY, 1.0f);
+				if(matchmid) UDMFTools.SetFloat(j.controlSide.Fields, "scaley_mid", j.scaleY, 1.0f);
+				if(matchbottom)	UDMFTools.SetFloat(j.sidedef.Fields, "scaley_bottom", j.scaleY, 1.0f);
 
 				if(j.forward) {
 					// Apply alignment
@@ -3109,36 +3099,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset -= j.sidedef.OffsetX;
 
 						if(matchtop)
-							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % (float)texture.Width);
+							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % texture.Width);
 						if(matchbottom)
-							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset % (float)texture.Width);
+							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset % texture.Width);
 						if(matchmid) {
 							if(j.sidedef.Index != j.controlSide.Index) { //mxd. if it's a part of 3d-floor 
 								offset -= j.controlSide.OffsetX;
 								offset -= j.controlSide.Fields.GetValue("offsetx_mid", 0.0f);
 							}
 
-							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset % (float)texture.Width);
+							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset % texture.Width);
 						}
 					}
 
 					if(aligny) {
-						float offset = ((float)(start.Sidedef.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) * j.scaleY + ystartalign; //mxd
+						float offset = ((start.Sidedef.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) * j.scaleY + ystartalign; //mxd
 						offset -= j.sidedef.OffsetY; //mxd
 						offset = (float)Math.Round(offset); //mxd
 						
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, GetTopOffsetY(j.sidedef, offset, j.scaleY, true) % (float)texture.Height); //mxd
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, GetTopOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, GetBottomOffsetY(j.sidedef, offset, j.scaleY, true) % (float)texture.Height); //mxd
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, GetBottomOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
 						if(matchmid) {
 							//mxd. Side is part of a 3D floor?
 							if(j.sidedef.Index != j.controlSide.Index) {
 								offset -= j.controlSide.OffsetY;
 								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % (float)texture.Height);
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % texture.Height);
 							} else {
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % (float)texture.Height);//mxd
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height);//mxd
 							}
 						}
 					}
@@ -3164,20 +3154,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset -= j.sidedef.OffsetX;
 
 						if(matchtop)
-							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % (float)texture.Width);
+							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % texture.Width);
 						if(matchbottom)
-							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset % (float)texture.Width);
+							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset % texture.Width);
 						if(matchmid) {
 							if(j.sidedef.Index != j.controlSide.Index) { //mxd
 								offset -= j.controlSide.OffsetX;
 								offset -= j.controlSide.Fields.GetValue("offsetx_mid", 0.0f);
 							}
 
-							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset % (float)texture.Width);
+							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset % texture.Width);
 						}
 					}
 					if(aligny) {
-						float offset = ((float)(start.Sidedef.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) * j.scaleY + ystartalign; //mxd
+						float offset = ((start.Sidedef.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) * j.scaleY + ystartalign; //mxd
 						offset -= j.sidedef.OffsetY; //mxd
 						offset = (float)Math.Round(offset); //mxd
 
@@ -3190,7 +3180,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							if(j.sidedef.Index != j.controlSide.Index) {
 								offset -= j.controlSide.OffsetY;
 								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % (float)texture.Height); //mxd
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % texture.Height); //mxd
 							} else {
 								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % (float)texture.Height); //mxd
 							}

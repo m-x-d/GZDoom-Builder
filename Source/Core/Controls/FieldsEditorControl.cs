@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private string elementname;
 		private string lasteditfieldname;
 		private bool autoinsertuserprefix;
-		private List<string> uifields;//mxd
+		private Dictionary<string, UniversalType> uifields;//mxd
 		
 		#endregion
 
@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Add all fields
 			foreach(UniversalFieldInfo uf in list) {
-				if(uifields.Contains(uf.Name)) continue; //mxd
+				if(uifields.ContainsKey(uf.Name)) continue; //mxd
 				fieldslist.Rows.Add(new FieldsEditorRow(fieldslist, uf));
 			}
 
@@ -159,7 +159,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Go for all the fields
 			foreach(KeyValuePair<string, UniValue> f in fromfields)
 			{
-				if(uifields.Contains(f.Key)) continue; //mxd
+				if(uifields.ContainsKey(f.Key)) continue; //mxd
 				
 				// Go for all rows
 				bool foundrow = false;
@@ -288,7 +288,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Go for all the fields
 			UniFields tempfields = new UniFields(tofields);
 			foreach(KeyValuePair<string, UniValue> f in tempfields) {
-				if (uifields.Contains(f.Key)) continue; //mxd
+				if (uifields.ContainsKey(f.Key)) continue; //mxd
 				
 				// Go for all rows
 				bool foundrow = false;
@@ -543,7 +543,7 @@ namespace CodeImp.DoomBuilder.Controls
 					{
 						// Make a valid UDMF field name
 						string validname = UniValue.ValidateName(row.Cells[0].Value.ToString());
-						if(validname.Length > 0 && !uifields.Contains(validname)) //mxd
+						if(validname.Length > 0 && !uifields.ContainsKey(validname)) //mxd
 						{
 							// Check if no other row already has this name
 							foreach(DataGridViewRow r in fieldslist.Rows)
@@ -587,7 +587,7 @@ namespace CodeImp.DoomBuilder.Controls
 					{
 						// Make a valid UDMF field name
 						string validname = UniValue.ValidateName(row.Cells[0].Value.ToString());
-						if(validname.Length > 0 && !uifields.Contains(validname)) //mxd
+						if(validname.Length > 0 && !uifields.ContainsKey(validname)) //mxd
 						{
 							// Check if no other row already has this name
 							foreach(DataGridViewRow r in fieldslist.Rows)

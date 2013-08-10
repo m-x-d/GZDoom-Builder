@@ -210,7 +210,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(!alignToFrontSide) sourceAngle = General.ClampAngle(sourceAngle + 180);
 
 				//update angle
-				UDMFTools.SetFloat(s.Fields, (alignFloors ? "rotationfloor" : "rotationceiling"), sourceAngle, 0f, false);
+				UDMFTools.SetFloat(s.Fields, (alignFloors ? "rotationfloor" : "rotationceiling"), sourceAngle, 0f);
 
 				//update offset
 				Vector2D offset = (alignToFrontSide ? l.Start.Position : l.End.Position).GetRotated(Angle2D.DegToRad(sourceAngle));
@@ -223,8 +223,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					offset.y %= texture.Height / s.Fields.GetValue((alignFloors ? "yscalefloor" : "yscaleceiling"), 1.0f);
 				}
 
-				UDMFTools.SetFloat(s.Fields, (alignFloors ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f, false);
-				UDMFTools.SetFloat(s.Fields, (alignFloors ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f, false);
+				UDMFTools.SetFloat(s.Fields, (alignFloors ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f);
+				UDMFTools.SetFloat(s.Fields, (alignFloors ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f);
 
 				//update
 				s.UpdateNeeded = true;
