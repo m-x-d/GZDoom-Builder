@@ -104,6 +104,8 @@ namespace CodeImp.DoomBuilder.Windows
 				// Hide unused controls
 				labelID.Visible = false; //mxd
 				conversationID.Visible = false; //mxd
+				labelGravity.Visible = false; //mxd
+				gravity.Visible = false; //mxd
 			}
 
 			// Tag/Effects?
@@ -185,6 +187,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.FormatInterface.HasCustomFields) {
 				fieldslist.SetValues(ft.Fields, true);
 				conversationID.Text = ft.Fields.GetValue("conversation", 0).ToString();
+				gravity.Text = ft.Fields.GetValue("gravity", 1.0f).ToString();
 				arg0str = ft.Fields.GetValue("arg0str", string.Empty);
 				haveArg0Str = !string.IsNullOrEmpty(arg0str);
 			}
@@ -255,6 +258,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 					if(t.Fields.GetValue("conversation", 0).ToString() != conversationID.Text)
 						conversationID.Text = "";
+
+					if(t.Fields.GetValue("gravity", 1.0f).ToString() != gravity.Text)
+						gravity.Text = "";
 
 					if (arg0str != t.Fields.GetValue("arg0str", string.Empty)) {
 						haveArg0Str = true;
@@ -487,6 +493,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 					if(!string.IsNullOrEmpty(conversationID.Text))
 						UDMFTools.SetInteger(t.Fields, "conversation", conversationID.GetResult(t.Fields.GetValue("conversation", 0)), 0, false);
+
+					if(!string.IsNullOrEmpty(gravity.Text))
+						UDMFTools.SetFloat(t.Fields, "gravity", gravity.GetResultFloat(t.Fields.GetValue("gravity", 1.0f)), 1.0f, false);
 				}
 				
 				// Update settings
