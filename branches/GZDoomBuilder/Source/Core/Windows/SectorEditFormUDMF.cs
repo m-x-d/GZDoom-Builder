@@ -20,10 +20,13 @@ namespace CodeImp.DoomBuilder.Windows
 		private ICollection<Sector> sectors;
 		private List<SectorProperties> sectorProps; //mxd
 		private bool blockUpdate; //mxd
+		private StepsList angleSteps; //mxd
 
-		//Value linking
+		//Persistent settings
 		private static bool linkCeilingScale;
 		private static bool linkFloorScale;
+		private static bool useFloorLineAngles;
+		private static bool useCeilLineAngles;
 
 		private struct SectorProperties //mxd
 		{
@@ -121,6 +124,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Value linking
 			ceilScale.LinkValues = linkCeilingScale;
 			floorScale.LinkValues = linkFloorScale;
+
+			cbUseCeilLineAngles.Checked = useCeilLineAngles;
+			cbUseFloorLineAngles.Checked = useFloorLineAngles;
 		}
 
 		#endregion
@@ -211,6 +217,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Custom fields
 			fieldslist.SetValues(sc.Fields, true);
 
+			angleSteps = new StepsList();
+
 			////////////////////////////////////////////////////////////////////////
 			// Now go for all sectors and change the options when a setting is different
 			////////////////////////////////////////////////////////////////////////
@@ -295,10 +303,26 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//mxd. Store initial properties
 				sectorProps.Add(new SectorProperties(s));
+
+				//mxd. Angle steps
+				int angle;
+				foreach(Sidedef side in s.Sidedefs){
+					if (side.Line.Front != null && side.Index == side.Line.Front.Index)
+						angle = General.ClampAngle(270 - side.Line.AngleDeg);
+					else
+						angle = General.ClampAngle(90 - side.Line.AngleDeg);
+
+					if(!angleSteps.Contains(angle)) angleSteps.Add(angle);
+				}
 			}
 
 			// Show sector height
 			UpdateSectorHeight();
+
+			//mxd. Angle steps
+			angleSteps.Sort();
+			if(useCeilLineAngles) ceilRotation.StepValues = angleSteps;
+			if(useFloorLineAngles) floorRotation.StepValues = angleSteps;
 
 			blockUpdate = false; //mxd
 		}
@@ -316,13 +340,11 @@ namespace CodeImp.DoomBuilder.Windows
 					delta = s.CeilHeight - s.FloorHeight;
 					showheight = true;
 					first = s;
-				} else {
-					if(delta != (s.CeilHeight - s.FloorHeight)) {
-						// We can't show heights because the delta
-						// heights for the sectors is different
-						showheight = false;
-						break;
-					}
+				} else if(delta != (s.CeilHeight - s.FloorHeight)) {
+					// We can't show heights because the delta
+					// heights for the sectors is different
+					showheight = false;
+					break;
 				}
 			}
 
@@ -415,6 +437,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Store value linking
 			linkCeilingScale = ceilScale.LinkValues;
 			linkFloorScale = floorScale.LinkValues;
+			useCeilLineAngles = cbUseCeilLineAngles.Checked;
+			useFloorLineAngles = cbUseFloorLineAngles.Checked;
 
 			// Done
 			General.Map.IsChanged = true;
@@ -451,6 +475,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void floorAngleControl_AngleChanged() {
 			floorRotation.Text = (General.ClampAngle(360 - floorAngleControl.Angle)).ToString();
+		}
+
+		private void cbUseCeilLineAngles_CheckedChanged(object sender, EventArgs e) {
+			ceilRotation.StepValues = (cbUseCeilLineAngles.Checked ? angleSteps : null);
+		}
+
+		private void cbUseFloorLineAngles_CheckedChanged(object sender, EventArgs e) {
+			floorRotation.StepValues = (cbUseFloorLineAngles.Checked ? angleSteps : null);
 		}
 
 		#endregion

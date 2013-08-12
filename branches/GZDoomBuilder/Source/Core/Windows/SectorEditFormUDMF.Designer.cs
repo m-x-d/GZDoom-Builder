@@ -85,6 +85,8 @@
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
+			this.cbUseCeilLineAngles = new System.Windows.Forms.CheckBox();
+			this.cbUseFloorLineAngles = new System.Windows.Forms.CheckBox();
 			groupaction = new System.Windows.Forms.GroupBox();
 			groupeffect = new System.Windows.Forms.GroupBox();
 			label14 = new System.Windows.Forms.Label();
@@ -438,6 +440,7 @@
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.cbUseFloorLineAngles);
 			this.groupBox2.Controls.Add(this.floorAngleControl);
 			this.groupBox2.Controls.Add(this.label7);
 			this.groupBox2.Controls.Add(this.label10);
@@ -623,6 +626,7 @@
 			// 
 			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.cbUseCeilLineAngles);
 			this.groupBox1.Controls.Add(this.ceilAngleControl);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.label4);
@@ -861,6 +865,30 @@
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
+			// cbUseCeilLineAngles
+			// 
+			this.cbUseCeilLineAngles.AutoSize = true;
+			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(230, 119);
+			this.cbUseCeilLineAngles.Name = "cbUseCeilLineAngles";
+			this.cbUseCeilLineAngles.Size = new System.Drawing.Size(99, 18);
+			this.cbUseCeilLineAngles.TabIndex = 56;
+			this.cbUseCeilLineAngles.Tag = "";
+			this.cbUseCeilLineAngles.Text = "Use line angles";
+			this.cbUseCeilLineAngles.UseVisualStyleBackColor = true;
+			this.cbUseCeilLineAngles.CheckedChanged += new System.EventHandler(this.cbUseCeilLineAngles_CheckedChanged);
+			// 
+			// cbUseFloorLineAngles
+			// 
+			this.cbUseFloorLineAngles.AutoSize = true;
+			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(230, 119);
+			this.cbUseFloorLineAngles.Name = "cbUseFloorLineAngles";
+			this.cbUseFloorLineAngles.Size = new System.Drawing.Size(99, 18);
+			this.cbUseFloorLineAngles.TabIndex = 57;
+			this.cbUseFloorLineAngles.Tag = "";
+			this.cbUseFloorLineAngles.Text = "Use line angles";
+			this.cbUseFloorLineAngles.UseVisualStyleBackColor = true;
+			this.cbUseFloorLineAngles.CheckedChanged += new System.EventHandler(this.cbUseFloorLineAngles_CheckedChanged);
+			// 
 			// SectorEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
@@ -952,5 +980,7 @@
 		private CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl fadeColor;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl lightColor;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flags;
+		private System.Windows.Forms.CheckBox cbUseFloorLineAngles;
+		private System.Windows.Forms.CheckBox cbUseCeilLineAngles;
 	}
 }

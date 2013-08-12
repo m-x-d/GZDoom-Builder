@@ -34,18 +34,17 @@ namespace CodeImp.DoomBuilder.IO
 	{
 		#region ================== Constants
 
-		// Name of the UDMF configuration files
+		// Name of the UDMF configuration file
 		private const string UDMF_CONFIG_NAME = "UDMF.cfg";
-		private const string UDMF_UI_CONFIG_NAME = "UDMF_UI.cfg"; //mxd
 
 		#endregion
 
 		#region ================== Variables
 
 		private Configuration config;
-		private Configuration uiconfig; //mxd
 		private bool setknowncustomtypes;
 		private bool strictchecking = true;
+		private Dictionary<string, Dictionary<string, UniversalType>> uifields; //mxd
 		
 		#endregion
 
@@ -59,8 +58,10 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public UniversalStreamReader()
+		public UniversalStreamReader(Dictionary<string, Dictionary<string, UniversalType>> uifields)
 		{
+			this.uifields = uifields;
+			
 			// Make configuration
 			config = new Configuration();
 			
@@ -115,26 +116,6 @@ namespace CodeImp.DoomBuilder.IO
 						foreach(string fn in f.Fields)
 							config.WriteSetting("managedfields.thing." + fn, true);
 					}
-
-					// Done
-					udmfcfgreader.Dispose();
-					udmfcfg.Dispose();
-					break;
-				}
-			}
-
-			//mxd. Load UI fields configuration
-			uiconfig = new Configuration();
-
-			foreach (string rn in resnames) {
-				// Found it?
-				if (rn.EndsWith(UDMF_UI_CONFIG_NAME, StringComparison.InvariantCultureIgnoreCase)) {
-					// Get a stream from the resource
-					Stream udmfcfg = General.ThisAssembly.GetManifestResourceStream(rn);
-					StreamReader udmfcfgreader = new StreamReader(udmfcfg, Encoding.ASCII);
-
-					// Load configuration from stream
-					uiconfig.InputConfiguration(udmfcfgreader.ReadToEnd());
 
 					// Done
 					udmfcfgreader.Dispose();
@@ -455,29 +436,31 @@ namespace CodeImp.DoomBuilder.IO
 			// Go for all the elements in the collection
 			foreach(UniversalEntry e in collection)
 			{
-				// Check if not a managed field
-				if(!config.SettingExists("managedfields." + elementname + "." + e.Key))
+				// mxd. Check if uifield
+				if(uifields.ContainsKey(elementname) && uifields[elementname].ContainsKey(e.Key)) {
+					int type = (int)uifields[elementname][e.Key];
+
+					//mxd. Check type
+					object value = e.Value;
+
+					// Let's be kind and cast any int to a float if needed
+					if(type == (int)UniversalType.Float && e.Value is int) {
+						value = (float)(int)e.Value;
+					} else if(!e.IsValidType(e.Value.GetType())) {
+						General.ErrorLogger.Add(ErrorType.Warning, element + ": the value of entry '" + e.Key + "' is of incompatible type (expected " + e.GetType().Name + ", but got " + e.Value.GetType().Name + "). If you save the map, this value will be ignored.");
+						continue;
+					}
+
+					// Make custom field
+					element.Fields[e.Key] = new UniValue(type, value);
+
+
+				} // Check if not a managed field
+				else if(!config.SettingExists("managedfields." + elementname + "." + e.Key))
 				{
 					int type = (int)UniversalType.Integer;
 
-					//mxd
-					if (uiconfig.SettingExists("uifields." + elementname + "." + e.Key)) {
-						type = uiconfig.ReadSetting("uifields." + elementname + "." + e.Key, type);
-
-						//mxd. Check type
-						object value = e.Value;
-
-						// Let's be kind and cast any int to a float if needed
-						if(type == (int)UniversalType.Float && e.Value is int) {
-							value = (float)(int)e.Value;
-						} else if(!e.IsValidType(e.Value.GetType())) {
-							General.ErrorLogger.Add(ErrorType.Warning, element + ": the value of entry '" + e.Key + "' is of incompatible type (expected " + e.GetType().Name + ", but got " + e.Value.GetType().Name + "). If you save the map, this value will be ignored.");
-							continue;
-						}
-
-						// Make custom field
-						element.Fields[e.Key] = new UniValue(type, value);
-					} else if(setknowncustomtypes) { // Try to find the type from configuration
+					if(setknowncustomtypes) { // Try to find the type from configuration
                         type = General.Map.Options.GetUniversalFieldType(elementname, e.Key, type);
 
                         //mxd. Check type
