@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.IO
 		// This reads a map from the file and returns a MapSet
 		public override MapSet Read(MapSet map, string mapname)
 		{
-			UniversalStreamReader udmfreader = new UniversalStreamReader();
+			UniversalStreamReader udmfreader = new UniversalStreamReader(uifields); //mxd
 			
 			// Find the index where first map lump begins
 			int firstindex = wad.FindLumpIndex(mapname) + 1;

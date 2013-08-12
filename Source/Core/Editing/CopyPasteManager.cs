@@ -178,7 +178,7 @@ namespace CodeImp.DoomBuilder.Editing
 			General.Map.Map.ClearAllMarks(true);
 			
 			// Read data stream
-			UniversalStreamReader reader = new UniversalStreamReader();
+			UniversalStreamReader reader = new UniversalStreamReader(General.Map.FormatInterface.UIFields); //mxd
 			reader.StrictChecking = false;
 			General.Map.Map.BeginAddRemove();
 			reader.Read(General.Map.Map, memstream);
@@ -283,7 +283,7 @@ namespace CodeImp.DoomBuilder.Editing
 							General.Map.Map.ClearAllMarks(true);
 
 							// Read data stream
-							UniversalStreamReader reader = new UniversalStreamReader();
+							UniversalStreamReader reader = new UniversalStreamReader(General.Map.FormatInterface.UIFields); //mxd
 							reader.StrictChecking = false;
 							General.Map.Map.BeginAddRemove();
 							reader.Read(General.Map.Map, memstream);
