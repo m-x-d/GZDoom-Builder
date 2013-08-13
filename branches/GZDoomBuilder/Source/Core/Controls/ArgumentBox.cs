@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Types;
 using System.Globalization;
 using CodeImp.DoomBuilder.GZBuilder.Controls;
@@ -222,6 +223,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 				foreach(TagInfo info in infos)
 					combobox.Items.Add(info);
+
+				combobox.DropDownWidth = Tools.GetDropDownWidth(combobox);
 			} 
 			else if(typehandler is LinedefTagHandler) 
 			{
@@ -254,6 +257,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 				foreach(TagInfo info in infos)
 					combobox.Items.Add(info);
+
+				combobox.DropDownWidth = Tools.GetDropDownWidth(combobox);
 			} 
 			else if(typehandler is SectorTagHandler)
 			{
@@ -286,6 +291,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 				foreach(TagInfo info in infos)
 					combobox.Items.Add(info);
+
+				combobox.DropDownWidth = Tools.GetDropDownWidth(combobox);
 			}
 			// Check if this supports enumerated options
 			else if(typehandler.IsEnumerable) {
@@ -295,6 +302,7 @@ namespace CodeImp.DoomBuilder.Controls
 				scrollbuttons.Visible = false;
 				combobox.DropDownStyle = ComboBoxStyle.DropDown;
 				combobox.Items.AddRange(typehandler.GetEnumList().ToArray());
+				combobox.DropDownWidth = Tools.GetDropDownWidth(combobox); //mxd
 			}
 			// Check if browsable
 			else if(typehandler.IsBrowseable)

@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
+using System.Windows.Forms;
 
 #endregion
 
@@ -1943,6 +1944,16 @@ namespace CodeImp.DoomBuilder.Geometry
 		public static Vector3D HermiteSpline(Vector3D p1, Vector3D t1, Vector3D p2, Vector3D t2, float u)
 		{
 			return D3DDevice.V3D(Vector3.Hermite(D3DDevice.V3(p1), D3DDevice.V3(t1), D3DDevice.V3(p2), D3DDevice.V3(t2), u));
+		}
+
+		//mxd
+		public static int GetDropDownWidth(ComboBox cb) {
+			int maxWidth = 0, temp = 0;
+			foreach(var obj in cb.Items) {
+				temp = TextRenderer.MeasureText(obj.ToString(), cb.Font).Width;
+				if(temp > maxWidth) maxWidth = temp;
+			}
+			return maxWidth > 0 ? maxWidth : 1;
 		}
 
 		#endregion

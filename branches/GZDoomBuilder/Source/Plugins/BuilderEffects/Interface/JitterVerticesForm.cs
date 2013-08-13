@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.VisualModes;
@@ -167,8 +163,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 //utility
 		private void applyTranslationJitter(int ammount) {
-			Random rndX = new Random();
-			Random rndY = new Random();
 			int curAmmount;
 
 			if(relativePosition) {
@@ -245,10 +239,11 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			relativePosition = cbRelativePos.Checked;
 
 			positionJitterAmmount.Maximum = relativePosition ? 100 : MaxSafeDistance;
+			applyTranslationJitter(positionJitterAmmount.Value);
 		}
 
 		private void JitterVerticesForm_HelpRequested(object sender, HelpEventArgs hlpevent) {
-			General.ShowHelp("gz_plug_jitter.html");
+			General.ShowHelp("gzdb\\features\\general\\jitter.html");
 			hlpevent.Handled = true;
 		}
 	}
