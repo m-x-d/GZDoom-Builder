@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
@@ -21,7 +17,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		private List<SidedefData> sidedefData;
 		private int MaxSafeDistance;
 		private int MaxSafeHeightDistance;
-		//private bool settingsApplied;
 
 		//settings
 		private static bool keepExistingSideTextures = true;
@@ -272,8 +267,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 //utility
 		private void applyTranslationJitter(int ammount) {
-			Random rndX = new Random();
-			Random rndY = new Random();
 			int curAmmount;
 
 			if(relativePosition) {
@@ -565,6 +558,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			relativePosition = cbRelativePos.Checked;
 
 			positionJitterAmmount.Maximum = cbRelativePos.Checked ? 100 : MaxSafeDistance;
+			applyTranslationJitter(positionJitterAmmount.Value);
 		}
 
 		private void cbRelativeCeilHeight_CheckedChanged(object sender, EventArgs e) {
@@ -572,6 +566,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			relativeCeilingHeight = cbRelativeCeilHeight.Checked;
 
 			ceilingHeightAmmount.Maximum = cbRelativeCeilHeight.Checked ? 100 : MaxSafeHeightDistance;
+			applyCeilingHeightJitter(ceilingHeightAmmount.Value);
 		}
 
 		private void cbRelativeFloorHeight_CheckedChanged(object sender, EventArgs e) {
@@ -579,6 +574,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			relativeFloorHeight = cbRelativeFloorHeight.Checked;
 
 			floorHeightAmmount.Maximum = cbRelativeFloorHeight.Checked ? 100 : MaxSafeHeightDistance;
+			applyFloorHeightJitter(floorHeightAmmount.Value);
 		}
 
 //texture pegging
@@ -634,7 +630,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 //HALP!
 		private void JitterSectorsForm_HelpRequested(object sender, HelpEventArgs hlpevent) {
-			General.ShowHelp("gz_plug_jitter.html");
+			General.ShowHelp("gzdb\\features\\general\\jitter.html");
 			hlpevent.Handled = true;
 		}
 	}

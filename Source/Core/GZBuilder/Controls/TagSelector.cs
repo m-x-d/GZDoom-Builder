@@ -80,6 +80,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			foreach(TagInfo info in infos)
 				cbTagPicker.Items.Add(info);
+
+			cbTagPicker.DropDownWidth = DoomBuilder.Geometry.Tools.GetDropDownWidth(cbTagPicker);
 		}
 
 		public void SetTag(int newTag) {

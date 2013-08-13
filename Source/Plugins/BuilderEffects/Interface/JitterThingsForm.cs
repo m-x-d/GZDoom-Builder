@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.VisualModes;
@@ -144,7 +140,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		}
 
 		private void applyHeightJitter(int ammount) {
-			Random rnd = new Random();
 			int curAmmount;
 			float a = ammount / 100f;
 
@@ -195,7 +190,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 			for(int i = 0; i < thingData.Count; i++) {
 				ThingData td = thingData[i];
-				td.JitterHeight = (float)(rnd.Next(100) / 100f);
+				td.JitterHeight = (rnd.Next(100) / 100f);
 				thingData[i] = td;
 			}
 		}
@@ -205,7 +200,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 			for(int i = 0; i < thingData.Count; i++) {
 				ThingData td = thingData[i];
-				td.JitterRotation = (float)(rnd.Next(-100, 100) / 100f);
+				td.JitterRotation = (rnd.Next(-100, 100) / 100f);
 				thingData[i] = td;
 			}
 		}
@@ -262,6 +257,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			relativeHeight = cbRelativeHeight.Checked;
 
 			heightJitterAmmount.Maximum = relativeHeight ? 100 : MaxSafeHeightDistance;
+			applyHeightJitter(heightJitterAmmount.Value);
 		}
 
 		private void cbRelativePos_CheckedChanged(object sender, EventArgs e) {
@@ -269,11 +265,12 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			relativePosition = cbRelativePos.Checked;
 
 			positionJitterAmmount.Maximum = relativePosition ? 100 : MaxSafeDistance;
+			applyTranslationJitter(positionJitterAmmount.Value);
 		}
 
 //HALP!
 		private void JitterThingsForm_HelpRequested(object sender, HelpEventArgs hlpevent) {
-			General.ShowHelp("gz_plug_jitter.html");
+			General.ShowHelp("gzdb\\features\\general\\jitter.html");
 			hlpevent.Handled = true;
 		}
 	}

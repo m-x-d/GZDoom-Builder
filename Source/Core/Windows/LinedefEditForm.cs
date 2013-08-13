@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
@@ -181,12 +182,16 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(ScriptItem si in General.Map.NumberedScripts)
 				scriptNumbers.Items.Add(si);
 
+			scriptNumbers.DropDownWidth = Tools.GetDropDownWidth(scriptNumbers);
+
 			if(General.Map.FormatInterface.HasCustomFields) { //mxd
 				//mxd. Setup script names
 				scriptNames.Location = arg0.Location;
 
 				foreach(ScriptItem nsi in General.Map.NamedScripts)
 					scriptNames.Items.Add(nsi);
+
+				scriptNames.DropDownWidth = Tools.GetDropDownWidth(scriptNames);
 				
 				// Initialize custom fields editor
 				fieldslist.Setup("linedef");

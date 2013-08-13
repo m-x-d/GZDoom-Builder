@@ -120,6 +120,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 				foreach(ScriptItem si in General.Map.NumberedScripts)
 					scriptNumbers.Items.Add(si);
+
+				scriptNames.DropDownWidth = Tools.GetDropDownWidth(scriptNames);
+				scriptNumbers.DropDownWidth = Tools.GetDropDownWidth(scriptNumbers);
 			}
 			
 			// Thing height?
