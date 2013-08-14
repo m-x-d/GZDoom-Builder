@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float DARK_ADDITION = -0.2f;
 
 		// Palette size
-		private const int NUM_COLORS = 42;
+		private const int NUM_COLORS = 41;
 		public const int NUM_THING_COLORS = 20;
 		public const int THING_COLORS_OFFSET = 20;
 
@@ -83,8 +83,7 @@ namespace CodeImp.DoomBuilder.Rendering
         public const int THINGCOLOR17 = 37;
         public const int THINGCOLOR18 = 38;
         public const int THINGCOLOR19 = 39;
-		public const int NEWSECTORCOLOR = 40;//mxd
-		public const int THREEDFLOORCOLOR = 41; //mxd
+		public const int THREEDFLOORCOLOR = 40; //mxd
 
 		
 		#endregion
@@ -119,7 +118,6 @@ namespace CodeImp.DoomBuilder.Rendering
         //mxd
         public PixelColor ModelWireframe { get { return colors[MODELWIRECOLOR]; } internal set { colors[MODELWIRECOLOR] = value; } }
         public PixelColor InfoLine { get { return colors[INFOLINECOLOR]; } internal set { colors[INFOLINECOLOR] = value; } }
-		public PixelColor NewSector { get { return colors[NEWSECTORCOLOR]; } internal set { colors[NEWSECTORCOLOR] = value; } }
 		public PixelColor ThreeDFloor { get { return colors[THREEDFLOORCOLOR]; } internal set { colors[THREEDFLOORCOLOR] = value;} }
 		
 		public PixelColor Crosshair3D { get { return colors[CROSSHAIR3D]; } internal set { colors[CROSSHAIR3D] = value; } }

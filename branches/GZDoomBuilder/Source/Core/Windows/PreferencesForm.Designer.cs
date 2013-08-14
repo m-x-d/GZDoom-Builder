@@ -58,9 +58,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.keyusedlabel = new System.Windows.Forms.Label();
 			this.colorsgroup1 = new System.Windows.Forms.GroupBox();
 			this.color3dFloors = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.label23 = new System.Windows.Forms.Label();
-			this.numSectorsLabel = new System.Windows.Forms.Label();
-			this.colorNewSectors = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorInfo = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorMD3 = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.doublesidedalpha = new Dotnetrix.Controls.TrackBar();
@@ -74,7 +71,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorvertices = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorhighlight = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorlinedefs = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.tbNumSectors = new Dotnetrix.Controls.TrackBar();
 			this.cbStretchModels = new System.Windows.Forms.CheckBox();
 			this.squarethings = new System.Windows.Forms.CheckBox();
 			this.qualitydisplay = new System.Windows.Forms.CheckBox();
@@ -179,7 +175,6 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.previewsize)).BeginInit();
 			this.colorsgroup1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.tbNumSectors)).BeginInit();
 			this.tabs.SuspendLayout();
 			this.tabinterface.SuspendLayout();
 			this.groupBox5.SuspendLayout();
@@ -431,7 +426,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(28, 22);
+			label1.Location = new System.Drawing.Point(28, 29);
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(147, 14);
 			label1.TabIndex = 20;
@@ -441,7 +436,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label18
 			// 
 			label18.AutoSize = true;
-			label18.Location = new System.Drawing.Point(22, 54);
+			label18.Location = new System.Drawing.Point(22, 61);
 			label18.Name = "label18";
 			label18.Size = new System.Drawing.Size(151, 14);
 			label18.TabIndex = 25;
@@ -451,7 +446,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label20
 			// 
 			label20.AutoSize = true;
-			label20.Location = new System.Drawing.Point(76, 86);
+			label20.Location = new System.Drawing.Point(76, 93);
 			label20.Name = "label20";
 			label20.Size = new System.Drawing.Size(96, 14);
 			label20.TabIndex = 28;
@@ -461,7 +456,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label21
 			// 
 			label21.AutoSize = true;
-			label21.Location = new System.Drawing.Point(55, 118);
+			label21.Location = new System.Drawing.Point(55, 125);
 			label21.Name = "label21";
 			label21.Size = new System.Drawing.Size(116, 14);
 			label21.TabIndex = 31;
@@ -483,9 +478,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
 			this.colorsgroup1.Controls.Add(this.color3dFloors);
-			this.colorsgroup1.Controls.Add(this.label23);
-			this.colorsgroup1.Controls.Add(this.numSectorsLabel);
-			this.colorsgroup1.Controls.Add(this.colorNewSectors);
 			this.colorsgroup1.Controls.Add(this.colorInfo);
 			this.colorsgroup1.Controls.Add(this.colorMD3);
 			this.colorsgroup1.Controls.Add(this.doublesidedalpha);
@@ -499,7 +491,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup1.Controls.Add(this.colorvertices);
 			this.colorsgroup1.Controls.Add(this.colorhighlight);
 			this.colorsgroup1.Controls.Add(this.colorlinedefs);
-			this.colorsgroup1.Controls.Add(this.tbNumSectors);
 			this.colorsgroup1.Location = new System.Drawing.Point(8, 8);
 			this.colorsgroup1.Name = "colorsgroup1";
 			this.colorsgroup1.Size = new System.Drawing.Size(203, 493);
@@ -519,37 +510,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.color3dFloors.Name = "color3dFloors";
 			this.color3dFloors.Size = new System.Drawing.Size(168, 23);
 			this.color3dFloors.TabIndex = 24;
-			// 
-			// label23
-			// 
-			this.label23.AutoSize = true;
-			this.label23.Location = new System.Drawing.Point(14, 344);
-			this.label23.Name = "label23";
-			this.label23.Size = new System.Drawing.Size(182, 14);
-			this.label23.TabIndex = 22;
-			this.label23.Text = "Number of new sectors to highlight: ";
-			this.label23.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// numSectorsLabel
-			// 
-			this.numSectorsLabel.AutoSize = true;
-			this.numSectorsLabel.Location = new System.Drawing.Point(148, 371);
-			this.numSectorsLabel.Name = "numSectorsLabel";
-			this.numSectorsLabel.Size = new System.Drawing.Size(13, 14);
-			this.numSectorsLabel.TabIndex = 23;
-			this.numSectorsLabel.Text = "3";
-			// 
-			// colorNewSectors
-			// 
-			this.colorNewSectors.BackColor = System.Drawing.Color.Transparent;
-			this.colorNewSectors.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.colorNewSectors.Label = "New sectors:";
-			this.colorNewSectors.Location = new System.Drawing.Point(15, 312);
-			this.colorNewSectors.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.colorNewSectors.MinimumSize = new System.Drawing.Size(100, 23);
-			this.colorNewSectors.Name = "colorNewSectors";
-			this.colorNewSectors.Size = new System.Drawing.Size(168, 23);
-			this.colorNewSectors.TabIndex = 20;
 			// 
 			// colorInfo
 			// 
@@ -578,7 +538,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// doublesidedalpha
 			// 
 			this.doublesidedalpha.LargeChange = 3;
-			this.doublesidedalpha.Location = new System.Drawing.Point(11, 426);
+			this.doublesidedalpha.Location = new System.Drawing.Point(11, 349);
 			this.doublesidedalpha.Name = "doublesidedalpha";
 			this.doublesidedalpha.Size = new System.Drawing.Size(130, 45);
 			this.doublesidedalpha.TabIndex = 2;
@@ -636,7 +596,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(14, 405);
+			this.label2.Location = new System.Drawing.Point(14, 328);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(147, 14);
 			this.label2.TabIndex = 14;
@@ -646,7 +606,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// doublesidedalphalabel
 			// 
 			this.doublesidedalphalabel.AutoSize = true;
-			this.doublesidedalphalabel.Location = new System.Drawing.Point(147, 438);
+			this.doublesidedalphalabel.Location = new System.Drawing.Point(147, 361);
 			this.doublesidedalphalabel.Name = "doublesidedalphalabel";
 			this.doublesidedalphalabel.Size = new System.Drawing.Size(23, 14);
 			this.doublesidedalphalabel.TabIndex = 16;
@@ -699,18 +659,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorlinedefs.Name = "colorlinedefs";
 			this.colorlinedefs.Size = new System.Drawing.Size(168, 23);
 			this.colorlinedefs.TabIndex = 2;
-			// 
-			// tbNumSectors
-			// 
-			this.tbNumSectors.LargeChange = 3;
-			this.tbNumSectors.Location = new System.Drawing.Point(11, 359);
-			this.tbNumSectors.Maximum = 8;
-			this.tbNumSectors.Name = "tbNumSectors";
-			this.tbNumSectors.Size = new System.Drawing.Size(130, 45);
-			this.tbNumSectors.TabIndex = 21;
-			this.tbNumSectors.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-			this.toolTip1.SetToolTip(this.tbNumSectors, "Will draw selected number of newly created sectors using \"New sector\" color");
-			this.tbNumSectors.ValueChanged += new System.EventHandler(this.tbNumSectors_ValueChanged);
 			// 
 			// cbStretchModels
 			// 
@@ -1381,7 +1329,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelDynLightIntensity
 			// 
 			this.labelDynLightIntensity.AutoSize = true;
-			this.labelDynLightIntensity.Location = new System.Drawing.Point(337, 116);
+			this.labelDynLightIntensity.Location = new System.Drawing.Point(337, 123);
 			this.labelDynLightIntensity.Name = "labelDynLightIntensity";
 			this.labelDynLightIntensity.Size = new System.Drawing.Size(22, 14);
 			this.labelDynLightIntensity.TabIndex = 32;
@@ -1390,7 +1338,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// tbDynLightIntensity
 			// 
 			this.tbDynLightIntensity.LargeChange = 1;
-			this.tbDynLightIntensity.Location = new System.Drawing.Point(176, 106);
+			this.tbDynLightIntensity.Location = new System.Drawing.Point(176, 113);
 			this.tbDynLightIntensity.Minimum = 1;
 			this.tbDynLightIntensity.Name = "tbDynLightIntensity";
 			this.tbDynLightIntensity.Size = new System.Drawing.Size(154, 45);
@@ -1402,7 +1350,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelDynLightSize
 			// 
 			this.labelDynLightSize.AutoSize = true;
-			this.labelDynLightSize.Location = new System.Drawing.Point(337, 85);
+			this.labelDynLightSize.Location = new System.Drawing.Point(337, 92);
 			this.labelDynLightSize.Name = "labelDynLightSize";
 			this.labelDynLightSize.Size = new System.Drawing.Size(22, 14);
 			this.labelDynLightSize.TabIndex = 29;
@@ -1411,7 +1359,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// tbDynLightSize
 			// 
 			this.tbDynLightSize.LargeChange = 1;
-			this.tbDynLightSize.Location = new System.Drawing.Point(176, 74);
+			this.tbDynLightSize.Location = new System.Drawing.Point(176, 81);
 			this.tbDynLightSize.Maximum = 20;
 			this.tbDynLightSize.Minimum = 1;
 			this.tbDynLightSize.Name = "tbDynLightSize";
@@ -1424,7 +1372,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelDynLightCount
 			// 
 			this.labelDynLightCount.AutoSize = true;
-			this.labelDynLightCount.Location = new System.Drawing.Point(337, 53);
+			this.labelDynLightCount.Location = new System.Drawing.Point(337, 60);
 			this.labelDynLightCount.Name = "labelDynLightCount";
 			this.labelDynLightCount.Size = new System.Drawing.Size(19, 14);
 			this.labelDynLightCount.TabIndex = 26;
@@ -1433,7 +1381,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// tbDynLightCount
 			// 
 			this.tbDynLightCount.LargeChange = 3;
-			this.tbDynLightCount.Location = new System.Drawing.Point(176, 42);
+			this.tbDynLightCount.Location = new System.Drawing.Point(176, 49);
 			this.tbDynLightCount.Maximum = 32;
 			this.tbDynLightCount.Minimum = 1;
 			this.tbDynLightCount.Name = "tbDynLightCount";
@@ -1487,7 +1435,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// imagebrightnesslabel
 			// 
 			this.imagebrightnesslabel.AutoSize = true;
-			this.imagebrightnesslabel.Location = new System.Drawing.Point(337, 22);
+			this.imagebrightnesslabel.Location = new System.Drawing.Point(337, 29);
 			this.imagebrightnesslabel.Name = "imagebrightnesslabel";
 			this.imagebrightnesslabel.Size = new System.Drawing.Size(31, 14);
 			this.imagebrightnesslabel.TabIndex = 22;
@@ -1496,7 +1444,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// imagebrightness
 			// 
 			this.imagebrightness.LargeChange = 3;
-			this.imagebrightness.Location = new System.Drawing.Point(176, 11);
+			this.imagebrightness.Location = new System.Drawing.Point(176, 18);
 			this.imagebrightness.Name = "imagebrightness";
 			this.imagebrightness.Size = new System.Drawing.Size(154, 45);
 			this.imagebrightness.TabIndex = 3;
@@ -1537,6 +1485,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scripttabwidth.AllowNegative = false;
 			this.scripttabwidth.AllowRelative = false;
 			this.scripttabwidth.ButtonStep = 2;
+			this.scripttabwidth.ButtonStepFloat = 1F;
 			this.scripttabwidth.Location = new System.Drawing.Point(259, 155);
 			this.scripttabwidth.Name = "scripttabwidth";
 			this.scripttabwidth.Size = new System.Drawing.Size(71, 24);
@@ -1797,7 +1746,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup1.ResumeLayout(false);
 			this.colorsgroup1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.tbNumSectors)).EndInit();
 			this.tabs.ResumeLayout(false);
 			this.tabinterface.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
@@ -1948,10 +1896,6 @@ namespace CodeImp.DoomBuilder.Windows
         private CodeImp.DoomBuilder.Controls.ColorControl colorInfo;
         private System.Windows.Forms.CheckBox cbOldHighlightMode;
 		private System.Windows.Forms.CheckBox cbLoadGameGldefs;
-		private CodeImp.DoomBuilder.Controls.ColorControl colorNewSectors;
-		private System.Windows.Forms.Label label23;
-		private System.Windows.Forms.Label numSectorsLabel;
-		private Dotnetrix.Controls.TrackBar tbNumSectors;
 		private System.Windows.Forms.Button bClearActionFilter;
 		private System.Windows.Forms.TextBox tbFilterActions;
 		private System.Windows.Forms.Label label24;

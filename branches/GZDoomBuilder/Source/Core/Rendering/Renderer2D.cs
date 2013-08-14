@@ -1591,19 +1591,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			Vector2D v1 = l.Start.Position.GetTransformed(translatex, translatey, scale, -scale);
 			Vector2D v2 = l.End.Position.GetTransformed(translatex, translatey, scale, -scale);
 
-			//mxd. Newly created sectors colouring
-			if(General.Settings.GZNewSectorsCount > 0 && l.ColorPresetIndex == -1){
-				if(General.Map.Map.NewSectorLineIndices.ContainsKey(l.Index)){
-					int index = General.Map.Map.NewSectorLineIndices[l.Index];
-					PixelColor highlight = General.Colors.NewSector;
-					highlight.a = (byte)(255 * (1.0f - (float)(index + 1) / General.Settings.GZNewSectorsCount));
-					float ha = highlight.a * PixelColor.BYTE_TO_FLOAT;
-					c.r = (byte)Math.Min(255, (highlight.r * (1f - ha) + c.r * ha));
-					c.g = (byte)Math.Min(255, (highlight.g * (1f - ha) + c.g * ha));
-					c.b = (byte)Math.Min(255, (highlight.b * (1f - ha) + c.b * ha));
-				}
-			}
-
 			// Draw line. mxd: added 3d-floor indication
 			if(l.ExtraFloorFlag) {
 				plotter.DrawLine3DFloor(v1, v2, ref c, General.Colors.ThreeDFloor);

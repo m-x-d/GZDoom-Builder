@@ -109,19 +109,18 @@ namespace CodeImp.DoomBuilder.Config
 		private bool gzShowVisualVertices;
 		private int gzVisualVertexSize;
 		private bool gzLoadDefaultLightDefinitions;
-		private int gzNewSectorsCount;
 		private bool gzForceDefaultTextures;
 		private string lastUsedConfigName;
 		
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
 		private int defaultbrightness = 192;
-		private int defaultfloorheight = 0;
+		private int defaultfloorheight;
 		private int defaultceilheight = 128;
 		private string defaultfloortexture;
 		private string defaultceiltexture;
 		private int defaultthingtype = 1;
-		private float defaultthingangle = 0.0f;
+		private float defaultthingangle;
 		private List<string> defaultthingflags;
 		
 		#endregion
@@ -195,7 +194,6 @@ namespace CodeImp.DoomBuilder.Config
 		public bool GZShowVisualVertices { get { return gzShowVisualVertices; } internal set { gzShowVisualVertices = value; } }
 		public int GZVisualVertexSize { get { return gzVisualVertexSize; } internal set { gzVisualVertexSize = value; } }
 		public bool GZLoadDefaultLightDefinitions { get { return gzLoadDefaultLightDefinitions; } internal set { gzLoadDefaultLightDefinitions = value; } }
-		public int GZNewSectorsCount { get { return gzNewSectorsCount; } internal set { gzNewSectorsCount = value; } }
 		public bool GZForceDefaultTextures { get { return gzForceDefaultTextures; } internal set { gzForceDefaultTextures = value; } }
 		public string LastUsedConfigName { get { return lastUsedConfigName; } internal set { lastUsedConfigName = value; } }
 		
@@ -297,17 +295,13 @@ namespace CodeImp.DoomBuilder.Config
 				gzShowVisualVertices = cfg.ReadSetting("gzshowvisualvertices", true);
 				gzVisualVertexSize = cfg.ReadSetting("gzvisualvertexsize", 6);
 				gzLoadDefaultLightDefinitions = cfg.ReadSetting("gzloaddefaultlightdefinitions", true);
-				gzNewSectorsCount = cfg.ReadSetting("gznewsectorscount", 3);
 				lastUsedConfigName = cfg.ReadSetting("lastusedconfigname", "");
 				
 				// Success
 				return true;
 			}
-			else
-			{
-				// Failed
-				return false;
-			}
+			// Failed
+			return false;
 		}
 
 		// This saves the program configuration
@@ -380,7 +374,6 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("gzshowvisualvertices", gzShowVisualVertices);
 			cfg.WriteSetting("gzvisualvertexsize", gzVisualVertexSize);
 			cfg.WriteSetting("gzloaddefaultlightdefinitions", gzLoadDefaultLightDefinitions);
-			cfg.WriteSetting("gznewsectorscount", gzNewSectorsCount);
 			if(!string.IsNullOrEmpty(lastUsedConfigName))
 				cfg.WriteSetting("lastusedconfigname", lastUsedConfigName);
 			
@@ -590,7 +583,7 @@ namespace CodeImp.DoomBuilder.Config
 			}
 
 			// Default floor missing?
-			if((defaultfloortexture == null) || (defaultfloortexture.Length == 0))
+			if(string.IsNullOrEmpty(defaultfloortexture))
 			{
 				// Find default texture from map
 				foundone = false;
@@ -631,7 +624,7 @@ namespace CodeImp.DoomBuilder.Config
 			}
 			
 			// Default ceiling missing?
-			if((defaultceiltexture == null) || (defaultceiltexture.Length == 0))
+			if(string.IsNullOrEmpty(defaultceiltexture))
 			{
 				// Find default texture from map
 				foundone = false;
@@ -672,9 +665,9 @@ namespace CodeImp.DoomBuilder.Config
 			}
 
 			// Texture names may not be null
-			if((defaulttexture == null) || (defaulttexture == "")) defaulttexture = "-";
-			if((defaultfloortexture == null) || (defaultfloortexture == "")) defaultfloortexture = "-";
-			if((defaultceiltexture == null) || (defaultceiltexture == "")) defaultceiltexture = "-";
+			if(string.IsNullOrEmpty(defaulttexture)) defaulttexture = "-";
+			if(string.IsNullOrEmpty(defaultfloortexture)) defaultfloortexture = "-";
+			if(string.IsNullOrEmpty(defaultceiltexture)) defaultceiltexture = "-";
 		}
 		
 		#endregion

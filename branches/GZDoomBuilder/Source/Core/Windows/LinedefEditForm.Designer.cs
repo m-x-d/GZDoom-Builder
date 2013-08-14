@@ -746,9 +746,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontTextureOffset.ButtonStep = 16;
 			this.frontTextureOffset.DefaultValue = 0;
 			this.frontTextureOffset.Label = "Texture Offset:";
-			this.frontTextureOffset.Location = new System.Drawing.Point(1, 65);
+			this.frontTextureOffset.Location = new System.Drawing.Point(3, 65);
 			this.frontTextureOffset.Name = "frontTextureOffset";
-			this.frontTextureOffset.Size = new System.Drawing.Size(249, 26);
+			this.frontTextureOffset.Size = new System.Drawing.Size(247, 26);
 			this.frontTextureOffset.TabIndex = 41;
 			this.frontTextureOffset.OnValuesChanged += new System.EventHandler(this.frontTextureOffset_OnValuesChanged);
 			// 
@@ -1033,9 +1033,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backTextureOffset.ButtonStep = 16;
 			this.backTextureOffset.DefaultValue = 0;
 			this.backTextureOffset.Label = "Texture Offset:";
-			this.backTextureOffset.Location = new System.Drawing.Point(1, 65);
+			this.backTextureOffset.Location = new System.Drawing.Point(3, 65);
 			this.backTextureOffset.Name = "backTextureOffset";
-			this.backTextureOffset.Size = new System.Drawing.Size(249, 28);
+			this.backTextureOffset.Size = new System.Drawing.Size(247, 28);
 			this.backTextureOffset.TabIndex = 42;
 			this.backTextureOffset.OnValuesChanged += new System.EventHandler(this.backTextureOffset_OnValuesChanged);
 			// 
@@ -1134,7 +1134,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.udmfPropertiesBack.Controls.Add(this.tabBackOffsets);
 			this.udmfPropertiesBack.Controls.Add(this.tabBackFlags);
 			this.udmfPropertiesBack.ItemSize = new System.Drawing.Size(100, 19);
-			this.udmfPropertiesBack.Location = new System.Drawing.Point(10, 172);
+			this.udmfPropertiesBack.Location = new System.Drawing.Point(6, 172);
 			this.udmfPropertiesBack.Margin = new System.Windows.Forms.Padding(1);
 			this.udmfPropertiesBack.Name = "udmfPropertiesBack";
 			this.udmfPropertiesBack.SelectedIndex = 0;
