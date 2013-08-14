@@ -267,7 +267,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal static void Initialize()
 		{
 			emptylongname = Lump.MakeLongName("-");
-			virtualsectorvalue = new UniValue((int)UniversalType.Integer, (int)0);
+			virtualsectorvalue = new UniValue((int)UniversalType.Integer, 0);
 		}
 
 		#endregion
@@ -1039,8 +1039,6 @@ namespace CodeImp.DoomBuilder.Map
 				foreach(Sector s in sectors) s.CreateSurfaces();
 				
 				General.Map.CRenderer2D.Surfaces.UnlockBuffers();
-
-				updateNewSectors(); //mxd
 			}
 		}
 		
@@ -2983,8 +2981,7 @@ namespace CodeImp.DoomBuilder.Map
 					}
 					else
 					{
-						List<Sidedef> newlist = new List<Sidedef>(4);
-						newlist.Add(snsd);
+						List<Sidedef> newlist = new List<Sidedef>(4) {snsd};
 						storedsides.Add(checksum, newlist);
 					}
 					
@@ -2998,7 +2995,7 @@ namespace CodeImp.DoomBuilder.Map
 			// Output info
             float endtime = General.Clock.CurrentTime;
 			float deltatimesec = (endtime - starttime) / 1000.0f;
-			float ratio = 100.0f - (((float)numsidedefs / (float)originalsidescount) * 100.0f);
+			float ratio = 100.0f - ((numsidedefs / (float)originalsidescount) * 100.0f);
 			General.WriteLogLine("Sidedefs compressed: " + numsidedefs + " remaining out of " + originalsidescount + " (" + ratio.ToString("########0.00") + "%) in " + deltatimesec.ToString("########0.00") + " seconds");
 		}
 
@@ -3036,24 +3033,6 @@ namespace CodeImp.DoomBuilder.Map
             foreach(Linedef l in linedefs)
                 l.UpdateColorPreset();
         }
-
-		//mxd
-		private void updateNewSectors() {
-			int n = sectors.Length < General.Settings.GZNewSectorsCount ? sectors.Length : General.Settings.GZNewSectorsCount;
-			Sector[] newSectors = new Sector[n];
-			Array.Copy(sectors, sectors.Length - n, newSectors, 0, n);
-			
-			List<int> newLineIndices = new List<int>();
-			newSectorLineIndices = new Dictionary<int, int>();
-
-			for(int i = newSectors.Length-1; i > -1; i--) {
-				foreach (Sidedef side in newSectors[i].Sidedefs){
-					if(newLineIndices.Contains(side.Line.Index)) continue;
-					newLineIndices.Add(side.Line.Index);
-					newSectorLineIndices.Add(side.Line.Index, i);
-				}
-			}
-		}
 		
 		#endregion
 	}

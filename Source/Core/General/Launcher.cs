@@ -228,13 +228,8 @@ namespace CodeImp.DoomBuilder
 		public void Test()
 		{
             General.Settings.GZTestFromCurrentPosition = false; //mxd
-
-            bool canTest = true; //mxd
-            canTest = General.Editing.Mode.OnMapTestBegin(); //mxd
-            if (!canTest) return; //mxd
-            
+			if(!General.Editing.Mode.OnMapTestBegin()) return; //mxd
             TestAtSkill(General.Map.ConfigSettings.TestSkill);
-
             General.Editing.Mode.OnMapTestEnd(); //mxd
 		}
 
@@ -242,15 +237,12 @@ namespace CodeImp.DoomBuilder
         [BeginAction("testmapfromview")]
         public void TestFromView() {
             General.Settings.GZTestFromCurrentPosition = true;
-
-            bool canTest = true;
-            canTest =  General.Editing.Mode.OnMapTestBegin();
-            if (!canTest) return;
+			if(!General.Editing.Mode.OnMapTestBegin()) return; //mxd
 
             General.MainWindow.StopProcessing();
             TestAtSkill(General.Map.ConfigSettings.TestSkill);
             
-            General.Editing.Mode.OnMapTestEnd();
+            General.Editing.Mode.OnMapTestEnd(); //mxd
             General.MainWindow.EnableProcessing();
             General.MainWindow.FocusDisplay();
         }

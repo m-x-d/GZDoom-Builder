@@ -104,12 +104,10 @@ namespace CodeImp.DoomBuilder.Windows
             vertexScale.Value = General.Clamp((int)(General.Settings.GZVertexScale2D), vertexScale.Minimum, vertexScale.Maximum);
             vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
 			cbLoadGameGldefs.Checked = General.Settings.GZLoadDefaultLightDefinitions;
-			tbNumSectors.Value = General.Clamp(General.Settings.GZNewSectorsCount, tbNumSectors.Minimum, tbNumSectors.Maximum);
-			numSectorsLabel.Text = tbNumSectors.Value.ToString();
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
-			foreach(FontFamily ff in System.Drawing.FontFamily.Families)
+			foreach(FontFamily ff in FontFamily.Families)
 				scriptfontname.Items.Add(ff.Name);
 			scriptfontname.EndUpdate();
 			
@@ -167,7 +165,6 @@ namespace CodeImp.DoomBuilder.Windows
             //mxd
             colorMD3.Color = General.Colors.ModelWireframe;
             colorInfo.Color = General.Colors.InfoLine;
-			colorNewSectors.Color = General.Colors.NewSector;
 			color3dFloors.Color = General.Colors.ThreeDFloor;
 
 			colorscriptbackground.Color = General.Colors.ScriptBackground;
@@ -214,12 +211,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Apply interface
 			General.Settings.ImageBrightness = imagebrightness.Value;
 			General.Settings.SquareThings = squarethings.Checked;
-			General.Settings.DoubleSidedAlpha = 1.0f - (float)(doublesidedalpha.Value * 0.1f);
+			General.Settings.DoubleSidedAlpha = 1.0f - (doublesidedalpha.Value * 0.1f);
 			General.Settings.DefaultViewMode = defaultviewmode.SelectedIndex;
 			General.Settings.VisualFOV = fieldofview.Value * 10;
 			General.Settings.MouseSpeed = mousespeed.Value * 100;
 			General.Settings.MoveSpeed = movespeed.Value * 100;
-			General.Settings.ViewDistance = (float)viewdistance.Value * 200.0f;
+			General.Settings.ViewDistance = viewdistance.Value * 200.0f;
 			General.Settings.InvertYAxis = invertyaxis.Checked;
 			General.Settings.ScriptFontBold = scriptfontbold.Checked;
 			General.Settings.ScriptFontName = scriptfontname.Text;
@@ -250,7 +247,6 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ScriptFontSize = fontsize;
 			
 			// Apply control keys to actions
-			//foreach(ListViewItem item in listactions.Items)
 			foreach(ListViewItem item in actionListItems) //mxd
 				General.Actions[item.Name].SetShortcutKey((int)item.SubItems[1].Tag);
 
@@ -275,7 +271,6 @@ namespace CodeImp.DoomBuilder.Windows
             //mxd
             General.Colors.ModelWireframe = colorMD3.Color;
             General.Colors.InfoLine = colorInfo.Color;
-			General.Colors.NewSector = colorNewSectors.Color;
 			General.Colors.ThreeDFloor = color3dFloors.Color;
 
 			General.Colors.CreateAssistColors();
@@ -287,13 +282,12 @@ namespace CodeImp.DoomBuilder.Windows
             //mxd
             General.Settings.GZSynchCameras = cbSynchCameras.Checked;
             General.Settings.GZMaxDynamicLights = tbDynLightCount.Value;
-            General.Settings.GZDynamicLightRadius = ((float)tbDynLightSize.Value / 10.0f);
-            General.Settings.GZDynamicLightIntensity = ((float)tbDynLightIntensity.Value / 10.0f);
+            General.Settings.GZDynamicLightRadius = (tbDynLightSize.Value / 10.0f);
+            General.Settings.GZDynamicLightIntensity = (tbDynLightIntensity.Value / 10.0f);
 			General.Settings.GZStretchModels = cbStretchModels.Checked;
-            General.Settings.GZVertexScale2D = (float)vertexScale.Value;
+            General.Settings.GZVertexScale2D = vertexScale.Value;
             General.Settings.GZOldHighlightMode = cbOldHighlightMode.Checked;
 			General.Settings.GZLoadDefaultLightDefinitions = cbLoadGameGldefs.Checked;
-			General.Settings.GZNewSectorsCount = tbNumSectors.Value;
 
 			// Paste options
 			General.Settings.PasteOptions = pasteoptions.GetOptions();
@@ -352,7 +346,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			
 			colorsgroup1.Visible = (tabs.SelectedTab == tabcolors);
-			//colorsgroup2.Visible = (tabs.SelectedTab == tabcolors);
 			colorsgroup3.Visible = (tabs.SelectedTab == tabcolors);
 		}
 
@@ -409,7 +402,7 @@ namespace CodeImp.DoomBuilder.Windows
         }
 
 		// This updates the script font preview label
-		private void UpdateScriptFontPreview()
+		/*private void UpdateScriptFontPreview()
 		{
 			if((scriptfontname.SelectedIndex > -1) &&
 			   (scriptfontsize.SelectedIndex > -1))
@@ -452,7 +445,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(ff.IsStyleAvailable(style))
 					scriptfontlabel.Font = new Font(scriptfontname.Text, (float)fontsize, style);
 			}
-		}
+		}*/
 
 		#endregion
 		
@@ -566,10 +559,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Item selected
 		private void listactions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
-			Actions.Action action;
 			KeyControl keycontrol;
 			string disregardkeys = "";
-			int key;
 
 			// Anything selected?
 			if(listactions.SelectedItems.Count > 0)
@@ -578,8 +569,8 @@ namespace CodeImp.DoomBuilder.Windows
 				allowapplycontrol = false;
 
 				// Get the selected action
-				action = General.Actions[listactions.SelectedItems[0].Name];
-				key = (int)listactions.SelectedItems[0].SubItems[1].Tag;
+				Actions.Action action = General.Actions[listactions.SelectedItems[0].Name];
+				int key = (int)listactions.SelectedItems[0].SubItems[1].Tag;
 				disregardshift = action.DisregardShift;
 				disregardcontrol = action.DisregardControl;
 				
@@ -692,8 +683,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Special key selected
 		private void actioncontrol_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			KeyControl key;
-
 			// Leave when not allowed to update
 			if(!allowapplycontrol) return;
 
@@ -707,7 +696,7 @@ namespace CodeImp.DoomBuilder.Windows
 				actionkey.Text = "";
 
 				// Get the key control
-				key = (KeyControl)actioncontrol.SelectedItem;
+				KeyControl key = (KeyControl)actioncontrol.SelectedItem;
 
 				// Apply the key combination
 				listactions.SelectedItems[0].SubItems[1].Text = Actions.Action.GetShortcutKeyDesc(key.key);
@@ -736,7 +725,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Apply the key combination
 			listactions.SelectedItems[0].SubItems[1].Text = "";
-			listactions.SelectedItems[0].SubItems[1].Tag = (int)0;
+			listactions.SelectedItems[0].SubItems[1].Tag = 0;
 			
 			// Show actions with same key
 			UpdateKeyUsedActions();
@@ -821,11 +810,6 @@ namespace CodeImp.DoomBuilder.Windows
         private void tbDynLightIntensity_ValueChanged(object sender, EventArgs e) {
             labelDynLightIntensity.Text = ((float)tbDynLightIntensity.Value / 10).ToString();
         }
-
-		//mxd
-		private void tbNumSectors_ValueChanged(object sender, EventArgs e) {
-			numSectorsLabel.Text = tbNumSectors.Value.ToString();
-		}
 
 		#endregion
 
