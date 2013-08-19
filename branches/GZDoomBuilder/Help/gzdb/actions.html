@@ -1,0 +1,1379 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	
+	<title>GZDoom Builder introduction</title>
+	
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" type="text/css" href="../default.css" media="screen" title="Default" />
+</head>
+<body>
+	
+	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="keyword" value="Introduction">
+	</object>
+	
+	<div id="gz_title"><h1>GZDoom Builder Actions Reference</h1>
+</div>
+	
+	<div id="contents"><table bgcolor="#FFFFFF" width="100%" border="1" cellspacing="0" cellpadding="6" style="font-family: 'Trebuchet MS',georgia,Verdana,Sans-serif;">
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">Classic Modes</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td>Accept Action</td>
+<td><div align="center">Enter</div></td>
+<td><div align="center"></div></td>
+<td>Accepts the changes in the current action and switches back to normal editing mode.</td>
+</tr>
+<tr>
+<td>Cancel Action</td>
+<td><div align="center">Escape</div></td>
+<td><div align="center"></div></td>
+<td>Cancels the current action and switches back to normal editing mode.</td>
+</tr>
+<tr>
+<td>Copy Properties</td>
+<td><div align="center">Ctrl+Shift+C</div></td>
+<td><div align="center"></div></td>
+<td>Copies the properties of the highlighted or selected object for pasting.</td>
+</tr>
+<tr>
+<td>Edit</td>
+<td><div align="center">RButton</div></td>
+<td><div align="center">Ctrl, Shift</div></td>
+<td>Edits the properties of the selected items or drags the selected items. Also initiates drawing or inserts new things when no selection is made. Can be used in combination with Control and Shift for the first drawn vertex.</td>
+</tr>
+<tr>
+<td>Fit To Screen</td>
+<td><div align="center">Home</div></td>
+<td><div align="center"></div></td>
+<td>Zooms out the map and centers it to make it completely fit in the screen, giving a high overview of the map.</td>
+</tr>
+<tr>
+<td>Grid Setup</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Shows the Custom Grid Setup dialog which allows you to set custom grid sizes and a background image.</td>
+</tr>
+<tr>
+<td><a name="paintselection" id="paintselection"></a>Paint Selection</td>
+<td><div align="center">MButton</div></td>
+<td><div align="center">Ctrl, Shift</div></td>
+<td>Selects or deselects items by dragging the mouse. Hold shift while dragging to toggle additive selection. Hold Ctrl while dragging to enable subtractive selection</td>
+</tr>
+<tr>
+<td>Pan View</td>
+<td><div align="center">Space</div></td>
+<td><div align="center"></div></td>
+<td>Pans the map in the direction of the mouse while held down.</td>
+</tr>
+<tr>
+<td>Paste Properties</td>
+<td><div align="center">Ctrl+Shift+V</div></td>
+<td><div align="center"></div></td>
+<td>Pastes the copied properties onto the highlighted or selected objects.</td>
+</tr>
+<tr>
+<td>Place Visual Mode Camera</td>
+<td><div align="center">Ctrl+W</div></td>
+<td><div align="center"></div></td>
+<td>Places a new, or moves the existing, Visual Mode start thing to the mouse position. This thing will keep track where you left Visual Mode so that you return to Visual Mode in the same location.</td>
+</tr>
+<tr>
+<td>Scroll East</td>
+<td><div align="center">Right</div></td>
+<td><div align="center"></div></td>
+<td>Scrolls the 2D map view to the right.</td>
+</tr>
+<tr>
+<td>Scroll North</td>
+<td><div align="center">Up</div></td>
+<td><div align="center"></div></td>
+<td>Scrolls the 2D map view up.</td>
+</tr>
+<tr>
+<td>Scroll South</td>
+<td><div align="center">Down</div></td>
+<td><div align="center"></div></td>
+<td>Scrolls the 2D map view down.</td>
+</tr>
+<tr>
+<td>Scroll West</td>
+<td><div align="center">Left</div></td>
+<td><div align="center"></div></td>
+<td>Scrolls the 2D map view to the left.</td>
+</tr>
+<tr>
+<td>Select</td>
+<td><div align="center">LButton</div></td>
+<td><div align="center">Ctrl, Shift</div></td>
+<td>Selects the highlighted item. Also allows selection by dragging a rectangle. Hold shift while dragging a rectangle to toggle additive or normal selection. Hold Ctrl to enable subtractive selection. Hold Ctrl-Shift to intersect with current selection.</td>
+</tr>
+<tr>
+<td>Tag Range</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Allows giving a range of tags to a selection of sectors, linedefs or things.</td>
+</tr>
+<tr>
+<td>Zoom In</td>
+<td><div align="center">ScrollUp</div></td>
+<td><div align="center"></div></td>
+<td>Zooms in on the map at the current mouse location.</td>
+</tr>
+<tr>
+<td>Zoom Out</td>
+<td><div align="center">ScrollDown</div></td>
+<td><div align="center"></div></td>
+<td>Zooms out on the map from the current mouse location.</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">Selecting</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td>Assign Group  1</td>
+<td><div align="center">Ctrl+1</div></td>
+<td><div align="center"></div></td>
+<td>Assigns the selected geometry to group 1</td>
+</tr>
+<tr>
+<td>Assign Group  2</td>
+<td><div align="center">Ctrl+2</div></td>
+<td><div align="center"></div></td>
+<td>Assigns the selected geometry to group 2</td>
+</tr>
+<tr>
+<td>Assign Group  3</td>
+<td><div align="center">Ctrl+3</div></td>
+<td><div align="center"></div></td>
+<td>Assigns the selected geometry to group 3</td>
+</tr>
+<tr>
+<td>Assign Group  4</td>
+<td><div align="center">Ctrl+4</div></td>
+<td><div align="center"></div></td>
+<td>Assigns the selected geometry to group 4</td>
+</tr>
+<tr>
+<td>Assign Group  5</td>
+<td><div align="center">Ctrl+5</div></td>
+<td><div align="center"></div></td>
+<td>Assigns the selected geometry to group 5</td>
+</tr>
+<tr>
+<td>Assign Group  6</td>
+<td><div align="center">Ctrl+6</div></td>
+<td><div align="center"></div></td>
+<td>Assigns the selected geometry to group 6</td>
+</tr>
+<tr>
+<td>Assign Group  7</td>
+<td><div align="center">Ctrl+7</div></td>
+<td><div align="center"></div></td>
+<td>Assigns the selected geometry to group 7</td>
+</tr>
+<tr>
+<td>Assign Group  8</td>
+<td><div align="center">Ctrl+8</div></td>
+<td><div align="center"></div></td>
+<td>Assigns the selected geometry to group 8</td>
+</tr>
+<tr>
+<td>Assign Group  9</td>
+<td><div align="center">Ctrl+9</div></td>
+<td><div align="center"></div></td>
+<td>Assigns the selected geometry to group 9</td>
+</tr>
+<tr>
+<td>Assign Group 10</td>
+<td><div align="center">Ctrl+0</div></td>
+<td><div align="center"></div></td>
+<td>Assigns the selected geometry to group 10</td>
+</tr>
+<tr>
+<td>Clear Group 1</td>
+<td><div align="center">Ctrl+Shift+1</div></td>
+<td><div align="center"></div></td>
+<td>Clears group 1</td>
+</tr>
+<tr>
+<td>Clear Group 10</td>
+<td><div align="center">Ctrl+Shift+0</div></td>
+<td><div align="center"></div></td>
+<td>Clears group 10</td>
+</tr>
+<tr>
+<td>Clear Group 2</td>
+<td><div align="center">Ctrl+Shift+2</div></td>
+<td><div align="center"></div></td>
+<td>Clears group 2</td>
+</tr>
+<tr>
+<td>Clear Group 3</td>
+<td><div align="center">Ctrl+Shift+3</div></td>
+<td><div align="center"></div></td>
+<td>Clears group 3</td>
+</tr>
+<tr>
+<td>Clear Group 4</td>
+<td><div align="center">Ctrl+Shift+4</div></td>
+<td><div align="center"></div></td>
+<td>Clears group 4</td>
+</tr>
+<tr>
+<td>Clear Group 5</td>
+<td><div align="center">Ctrl+Shift+5</div></td>
+<td><div align="center"></div></td>
+<td>Clears group 5</td>
+</tr>
+<tr>
+<td>Clear Group 6</td>
+<td><div align="center">Ctrl+Shift+6</div></td>
+<td><div align="center"></div></td>
+<td>Clears group 6</td>
+</tr>
+<tr>
+<td>Clear Group 7</td>
+<td><div align="center">Ctrl+Shift+7</div></td>
+<td><div align="center"></div></td>
+<td>Clears group 7</td>
+</tr>
+<tr>
+<td>Clear Group 8</td>
+<td><div align="center">Ctrl+Shift+8</div></td>
+<td><div align="center"></div></td>
+<td>Clears group 8</td>
+</tr>
+<tr>
+<td>Clear Group 9</td>
+<td><div align="center">Ctrl+Shift+9</div></td>
+<td><div align="center"></div></td>
+<td>Clears group 9</td>
+</tr>
+<tr>
+<td>Select Group  1</td>
+<td><div align="center">1</div></td>
+<td><div align="center"></div></td>
+<td>Selects all geometry that was assigned to group 1</td>
+</tr>
+<tr>
+<td>Select Group  2</td>
+<td><div align="center">2</div></td>
+<td><div align="center"></div></td>
+<td>Selects all geometry that was assigned to group 2</td>
+</tr>
+<tr>
+<td>Select Group  3</td>
+<td><div align="center">3</div></td>
+<td><div align="center"></div></td>
+<td>Selects all geometry that was assigned to group 3</td>
+</tr>
+<tr>
+<td>Select Group  4</td>
+<td><div align="center">4</div></td>
+<td><div align="center"></div></td>
+<td>Selects all geometry that was assigned to group 4</td>
+</tr>
+<tr>
+<td>Select Group  5</td>
+<td><div align="center">5</div></td>
+<td><div align="center"></div></td>
+<td>Selects all geometry that was assigned to group 5</td>
+</tr>
+<tr>
+<td>Select Group  6</td>
+<td><div align="center">6</div></td>
+<td><div align="center"></div></td>
+<td>Selects all geometry that was assigned to group 6</td>
+</tr>
+<tr>
+<td>Select Group  7</td>
+<td><div align="center">7</div></td>
+<td><div align="center"></div></td>
+<td>Selects all geometry that was assigned to group 7</td>
+</tr>
+<tr>
+<td>Select Group  8</td>
+<td><div align="center">8</div></td>
+<td><div align="center"></div></td>
+<td>Selects all geometry that was assigned to group 8</td>
+</tr>
+<tr>
+<td>Select Group  9</td>
+<td><div align="center">9</div></td>
+<td><div align="center"></div></td>
+<td>Selects all geometry that was assigned to group 9</td>
+</tr>
+<tr>
+<td>Select Group 10</td>
+<td><div align="center">0</div></td>
+<td><div align="center"></div></td>
+<td>Selects all geometry that was assigned to group 10</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">Tools</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td>Configure Things Filters</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Shows the Things Filters setup dialog which allows you to add, remove and change the things filters.</td>
+</tr>
+<tr>
+<td>Export to Wavefront .obj</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Exports selected sectors (or the whole map if no sectors selected) to Wavefront .obj</td>
+</tr>
+<tr>
+<td>Game Configurations</td>
+<td><div align="center">F6</div></td>
+<td><div align="center"></div></td>
+<td>Shows the Game Configurations dialog which allows you to configure settings such as nodebuilder, testing program and resources.</td>
+</tr>
+<tr>
+<td>Open Color Picker</td>
+<td><div align="center">K</div></td>
+<td><div align="center"></div></td>
+<td>Select dynamic light thing(s) or sector(s), then use this panel to set light properties quickly.</td>
+</tr>
+<tr>
+<td>Preferences</td>
+<td><div align="center">F5</div></td>
+<td><div align="center"></div></td>
+<td>Shows this Preferences dialog.</td>
+</tr>
+<tr>
+<td><a name="reloadmapinfo" id="reloadmapinfo"></a>Reload (Z)MAPINFO</td>
+<td><div align="center">Ctrl+F7</div></td>
+<td><div align="center"></div></td>
+<td>Reloads (Z)MAPINFO. Useful when resource files have been changed outside of Doom Builder.</td>
+</tr>
+<tr>
+<td><a name="reloadmapinfo" id="reloadgldefs"></a>Reload GLDEFS</td>
+<td><div align="center">Ctrl+F6</div></td>
+<td><div align="center"></div></td>
+<td>Reloads GLDEFS. Useful when resource files have been changed outside of Doom Builder.</td>
+</tr>
+<tr>
+<td><a name="reloadmodeldef" id="reloadmodeldef"></a>Reload MODELDEF</td>
+<td><div align="center">Ctrl+F5</div></td>
+<td><div align="center"></div></td>
+<td>Reloads MODELDEF. Useful when resource files have been changed outside of Doom Builder.</td>
+</tr>
+<tr>
+<td>Reload Resources</td>
+<td><div align="center">F8</div></td>
+<td><div align="center"></div></td>
+<td>Reloads all data resources such as game configuration, textures and flats. Useful when resource files have been changed outside of Doom Builder.</td>
+</tr>
+<tr>
+<td>Save Screenshot</td>
+<td><div align="center">F12</div></td>
+<td><div align="center"></div></td>
+<td>Saves a screenshot of editor's window into 'Screenshots' folder.</td>
+</tr>
+<tr>
+<td>Save Screenshot (editing area only)</td>
+<td><div align="center">Ctrl+F12</div></td>
+<td><div align="center"></div></td>
+<td>Saves a screenshot of editing area into 'Screenshots' folder.</td>
+</tr>
+<tr>
+<td>Show Errors and Warnings</td>
+<td><div align="center">F11</div></td>
+<td><div align="center"></div></td>
+<td>Shows the errors and warnings that may have occurred during loading or editing operations.</td>
+</tr>
+<tr>
+<td>Statistics</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Switches to the map statistics display.</td>
+</tr>
+<tr>
+<td>Test Map</td>
+<td><div align="center">F9</div></td>
+<td><div align="center"></div></td>
+<td>Starts the game and loads this map for playing.</td>
+</tr>
+<tr>
+<td><a name="testmap2" id="testmap2"></a>Test map from current position</td>
+<td><div align="center">Ctrl+F9</div></td>
+<td><div align="center"></div></td>
+<td>Starts the game and loads this map for playing. Player start is placed either at cursor position (in Classic modes) or at camera position (in Visual Mode).</td>
+</tr>
+<tr>
+<td><a name="togglefullbrightness" id="togglefullbrightness"></a>Toggle Full Brightness</td>
+<td><div align="center">B</div></td>
+<td><div align="center"></div></td>
+<td>Toggles the use of sector brightness on and off. When sector brightness is off, the world is displayed fully bright, without lighting effects.</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF"><a name="rendering" id="rendering"></a>Rendering</strong></td>
+</tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td>Render selected/all models</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Render all models / render only models for selected things.</td>
+</tr>
+<tr>
+<td>Toggle dynamic lights animation</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Toggles dynamic lights animation.</td>
+</tr>
+<tr>
+<td>Toggle dynamic lights rendering</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Toggles dynamic lights rendering.</td>
+</tr>
+<tr>
+<td>Toggle fog rendering</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Toggles fog rendering.</td>
+</tr>
+<tr>
+<td><a name="togglegzdoomeffects" id="togglegzdoomeffects"></a>Toggle GZDoom effects</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Toggles models, dynamic lights and fog rendering.</td>
+</tr>
+<tr>
+<td>Toggle models rendering</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Toggles models rendering.</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">Visual Modes</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td>Auto-align Textures X</td>
+<td><div align="center">A</div></td>
+<td><div align="center"></div></td>
+<td>Automatically aligns the neighbouring textures X offsets until another texture is encountered.</td>
+</tr>
+<tr>
+<td>Auto-align Textures X and Y</td>
+<td><div align="center">Ctrl+A</div></td>
+<td><div align="center"></div></td>
+<td>Automatically aligns the neighbouring textures X and Y offsets until another texture is encountered.</td>
+</tr>
+<tr>
+<td>Auto-align Textures Y</td>
+<td><div align="center">Shift+A</div></td>
+<td><div align="center"></div></td>
+<td>Automatically aligns the neighbouring textures Y offsets until another texture is encountered. The Y alignment only takes the ceiling height for each sidedef into account.</td>
+</tr>
+<tr>
+<td>Copy Offsets</td>
+<td><div align="center">Shift+C</div></td>
+<td><div align="center"></div></td>
+<td>Copies the targeted texture offsets for pasting.</td>
+</tr>
+<tr>
+<td>Copy Properties</td>
+<td><div align="center">Ctrl+Shift+C</div></td>
+<td><div align="center"></div></td>
+<td>Copies the targeted object properties for pasting.</td>
+</tr>
+<tr>
+<td>Copy Texture</td>
+<td><div align="center">Ctrl+C</div></td>
+<td><div align="center"></div></td>
+<td>Copies the targeted texture or flat for pasting.</td>
+</tr>
+<tr>
+<td>Decrease Brightness by 8</td>
+<td><div align="center">Ctrl+ScrollDown</div></td>
+<td><div align="center"></div></td>
+<td>Decreases the targeted or selected sector brightness level by 8.</td>
+</tr>
+<tr>
+<td>Edit</td>
+<td><div align="center">RButton</div></td>
+<td><div align="center"></div></td>
+<td>Edits the properties of the selected items or drags the selected items.</td>
+</tr>
+<tr>
+<td>Fit Texture</td>
+<td><div align="center">Ctrl+Alt+A</div></td>
+<td><div align="center"></div></td>
+<td>Scales texture to match size of selected surface.</td>
+</tr>
+<tr>
+<td>Fit Texture's Height</td>
+<td><div align="center">Alt+Shift+A</div></td>
+<td><div align="center"></div></td>
+<td>Scales height of a texture to match height of selected surface.</td>
+</tr>
+<tr>
+<td>Fit Texture's Width</td>
+<td><div align="center">Alt+A</div></td>
+<td><div align="center"></div></td>
+<td>Scales width of a texture to match width of selected surface.</td>
+</tr>
+<tr>
+<td>Increase Brightness by 8</td>
+<td><div align="center">Ctrl+ScrollUp</div></td>
+<td><div align="center"></div></td>
+<td>Increases the targeted or selected sector brightness level by 8.</td>
+</tr>
+<tr>
+<td><a name="lookthroughthing" id="lookthroughthing"></a>Look Through Selection</td>
+<td><div align="center">Y</div></td>
+<td><div align="center"></div></td>
+<td>Places visual camera at the same position as selected thing and rotates it to match thing's angle.</td>
+</tr>
+<tr>
+<td>Lower Floor/Ceiling by 1 mp</td>
+<td><div align="center">Shift+ScrollDown</div></td>
+<td><div align="center"></div></td>
+<td>Lowers the targeted or selected floors/ceilings by 1 mp. This also lowers selected or targeted things.</td>
+</tr>
+<tr>
+<td>Lower Floor/Ceiling by 8 mp</td>
+<td><div align="center">ScrollDown</div></td>
+<td><div align="center"></div></td>
+<td>Lowers the targeted or selected floors/ceilings by 8 mp. This also lowers selected or targeted things.</td>
+</tr>
+<tr>
+<td>Lower Floor/Ceiling to adjacent sector</td>
+<td><div align="center">PgDn</div></td>
+<td><div align="center">Ctrl</div></td>
+<td>Lowers the targeted or selected floors/ceilings to match the height of adjacent sector. Hold Ctrl to lower to lowest surface in selection. Also drops selected things to floor.</td>
+</tr>
+<tr>
+<td>Move Backward</td>
+<td><div align="center">D</div></td>
+<td><div align="center">Shift</div></td>
+<td>Moves the camera backward in 3D Visual Mode. Use in combination with Shift for double the speed.</td>
+</tr>
+<tr>
+<td>Move Down</td>
+<td><div align="center"></div></td>
+<td><div align="center">Shift</div></td>
+<td>Moves the camera down in 3D Visual Mode. Use in combination with Shift for double the speed.</td>
+</tr>
+<tr>
+<td>Move Forward</td>
+<td><div align="center">E</div></td>
+<td><div align="center">Shift</div></td>
+<td>Moves the camera forward in 3D Visual Mode. Use in combination with Shift for double the speed.</td>
+</tr>
+<tr>
+<td>Move Left (strafe)</td>
+<td><div align="center">S</div></td>
+<td><div align="center">Shift</div></td>
+<td>Strafes the camera left in 3D Visual Mode. Use in combination with Shift for double the speed.</td>
+</tr>
+<tr>
+<td>Move Right (strafe)</td>
+<td><div align="center">F</div></td>
+<td><div align="center">Shift</div></td>
+<td>Strafes the camera right in 3D Visual Mode. Use in combination with Shift for double the speed.</td>
+</tr>
+<tr>
+<td>Move Texture Down by 1</td>
+<td><div align="center">Down</div></td>
+<td><div align="center"></div></td>
+<td>Moves the offset of the targeted or selected textures down by 1 pixel.</td>
+</tr>
+<tr>
+<td>Move Texture Down by 8</td>
+<td><div align="center">Shift+Down</div></td>
+<td><div align="center"></div></td>
+<td>Moves the offset of the targeted or selected textures down by 8 pixels.</td>
+</tr>
+<tr>
+<td>Move Texture Left by 1</td>
+<td><div align="center">Left</div></td>
+<td><div align="center"></div></td>
+<td>Moves the offset of the targeted or selected textures to the left by 1 pixel.</td>
+</tr>
+<tr>
+<td>Move Texture Left by 8</td>
+<td><div align="center">Shift+Left</div></td>
+<td><div align="center"></div></td>
+<td>Moves the offset of the targeted or selected textures to the left by 8 pixels.</td>
+</tr>
+<tr>
+<td>Move Texture Right by 1</td>
+<td><div align="center">Right</div></td>
+<td><div align="center"></div></td>
+<td>Moves the offset of the targeted or selected textures to the right by 1 pixel.</td>
+</tr>
+<tr>
+<td>Move Texture Right by 8</td>
+<td><div align="center">Shift+Right</div></td>
+<td><div align="center"></div></td>
+<td>Moves the offset of the targeted or selected textures to the right by 8 pixels.</td>
+</tr>
+<tr>
+<td>Move Texture Up by 1</td>
+<td><div align="center">Up</div></td>
+<td><div align="center"></div></td>
+<td>Moves the offset of the targeted or selected textures up by 1 pixel.</td>
+</tr>
+<tr>
+<td>Move Texture Up by 8</td>
+<td><div align="center">Shift+Up</div></td>
+<td><div align="center"></div></td>
+<td>Moves the offset of the targeted or selected textures up by 8 pixels.</td>
+</tr>
+<tr>
+<td><a name="movething" id="movething"></a>Move Thing Backward</td>
+<td><div align="center">Down</div></td>
+<td><div align="center"></div></td>
+<td>Moves selected Things closer to camera in Visual Modes.</td>
+</tr>
+<tr>
+<td>Move Thing Forward</td>
+<td><div align="center">Up</div></td>
+<td><div align="center"></div></td>
+<td>Moves selected Things away from camera in Visual Modes.</td>
+</tr>
+<tr>
+<td>Move Thing Left</td>
+<td><div align="center">Left</div></td>
+<td><div align="center"></div></td>
+<td>Moves selected Things left in Visual Modes.</td>
+</tr>
+<tr>
+<td>Move Thing Right</td>
+<td><div align="center">Right</div></td>
+<td><div align="center"></div></td>
+<td>Moves selected Things right in Visual Modes.</td>
+</tr>
+<tr>
+<td>Move Thing To Cursor Location</td>
+<td><div align="center">Ctrl+MButton</div></td>
+<td><div align="center"></div></td>
+<td>Moves selected Things to cursor location preserving relative offsets in Visual Modes.</td>
+</tr>
+<tr>
+<td>Move Up</td>
+<td><div align="center"></div></td>
+<td><div align="center">Shift</div></td>
+<td>Moves the camera up in 3D Visual Mode. Use in combination with Shift for double the speed.</td>
+</tr>
+<tr>
+<td>Paste Offsets</td>
+<td><div align="center">Shift+V</div></td>
+<td><div align="center"></div></td>
+<td>Pastes the copied texture offsets onto the targeted or selected walls.</td>
+</tr>
+<tr>
+<td>Paste Properties</td>
+<td><div align="center">Ctrl+Shift+V</div></td>
+<td><div align="center"></div></td>
+<td>Pastes the copied properties onto the targeted or selected object.</td>
+</tr>
+<tr>
+<td>Paste Texture</td>
+<td><div align="center">MButton</div></td>
+<td><div align="center"></div></td>
+<td>Pastes the copied texture onto the targeted or selected walls, floors or ceilings.</td>
+</tr>
+<tr>
+<td>Paste Texture Flood-Fill</td>
+<td><div align="center">Shift+MButton</div></td>
+<td><div align="center"></div></td>
+<td>This allows you to flood-fill all adjacent textures or flats that are identical to the original with the copied texture.</td>
+</tr>
+<tr>
+<td>Raise Floor/Ceiling by 1 mp</td>
+<td><div align="center">Shift+ScrollUp</div></td>
+<td><div align="center"></div></td>
+<td>Raises the targeted or selected floors/ceilings by 1 mp. This also raises selected or targeted things.</td>
+</tr>
+<tr>
+<td>Raise Floor/Ceiling by 8 mp</td>
+<td><div align="center">ScrollUp</div></td>
+<td><div align="center"></div></td>
+<td>Raises the targeted or selected floors/ceilings by 8 mp. This also raises selected or targeted things.</td>
+</tr>
+<tr>
+<td>Raise Floor/Ceiling to adjacent sector</td>
+<td><div align="center">PgUp</div></td>
+<td><div align="center">Ctrl</div></td>
+<td>Raises the targeted or selected floors/ceilings to match the height of adjacent sector. Hold Ctrl to raise to highest surface in selection. Also aligns selected things to ceiling.</td>
+</tr>
+<tr>
+<td><a name="resetoffsets" id="resetoffsets"></a>Reset Texture Offsets</td>
+<td><div align="center">Shift+R</div></td>
+<td><div align="center"></div></td>
+<td>Resets the texture offsets on the targeted or selected sidedef to 0, 0. Also resets sidedef's scale and floor/ceiling's scale and rotation in UDMF map format.</td>
+</tr>
+<tr>
+<td><a name="rotater" id="rotater"></a>Rotate Clockwise</td>
+<td><div align="center">Ctrl+Shift+ScrollUp</div></td>
+<td><div align="center"></div></td>
+<td>Rotates selected things clockwise. Also rotates floor/ceiling textures in UDMF map format.</td>
+</tr>
+<tr>
+<td><a name="rotatel" id="rotatel"></a>Rotate Counterclockwise</td>
+<td><div align="center">Ctrl+Shift+ScrollDown</div></td>
+<td><div align="center"></div></td>
+<td>Rotates selected things counterclockwise. Also rotates floor/ceiling textures in UDMF map format.</td>
+</tr>
+<tr>
+<td><a name="scaledownx" id="scaledownx"></a>Scale Texture Down (X)</td>
+<td><div align="center">NumPad4</div></td>
+<td><div align="center"></div></td>
+<td>Decreases horizontal scale of targeted or selected textures by 0.25 (UDMF only).</td>
+</tr>
+<tr>
+<td><a name="scaledowny" id="scaledowny"></a>Scale Texture Down (Y)</td>
+<td><div align="center">NumPad5</div></td>
+<td><div align="center"></div></td>
+<td>Decreases vertical scale of targeted or selected textures by 0.25 (UDMF only).</td>
+</tr>
+<tr>
+<td><a name="scaleupx" id="scaleupx"></a>Scale Texture Up (X)</td>
+<td><div align="center">NumPad6</div></td>
+<td><div align="center"></div></td>
+<td>Increases horizontal scale of targeted or selected textures by 0.25 (UDMF only).</td>
+</tr>
+<tr>
+<td><a name="scaleupy" id="scaleupy"></a>Scale Texture Up (Y)</td>
+<td><div align="center">NumPad8</div></td>
+<td><div align="center"></div></td>
+<td>Increases vertical scale of targeted or selected textures by 0.25 (UDMF only).</td>
+</tr>
+<tr>
+<td>Select</td>
+<td><div align="center">LButton</div></td>
+<td><div align="center">Ctrl, Shift</div></td>
+<td>Selects the highlighted item. Hold Shift to select adjacent surfaces with the same texture. Hold Ctrl to adjacent surfaces with the same height</td>
+</tr>
+<tr>
+<td>Select Texture</td>
+<td><div align="center">Ctrl+RButton</div></td>
+<td><div align="center"></div></td>
+<td>Opens the texture browser to select a texture for the targeted or selected walls, floors or ceilings.</td>
+</tr>
+<tr>
+<td>Show Things</td>
+<td><div align="center">T</div></td>
+<td><div align="center"></div></td>
+<td>Cycles through the different ways the things are shown in Visual Mode.</td>
+</tr>
+<tr>
+<td>Toggle Gravity</td>
+<td><div align="center">G</div></td>
+<td><div align="center"></div></td>
+<td>Toggles the use of gravity while moving around in visual mode. Turn gravity off to fly around, turn gravity on to walk on the sector floors.</td>
+</tr>
+<tr>
+<td>Toggle Geometry Effects</td>
+<td><div align="center">Tab</div></td>
+<td><div align="center"></div></td>
+<td>Toggles rendering of (G)ZDoom geometry effects (slopes, 3D-floors etc.) in Visual mode.</td>
+</tr>
+<tr>
+<td>Toggle Highlight</td>
+<td><div align="center">H</div></td>
+<td><div align="center"></div></td>
+<td>Toggles the highlight of the targeted object in visual mode.</td>
+</tr>
+<tr>
+<td>Toggle Lower Unpegged</td>
+<td><div align="center">L</div></td>
+<td><div align="center"></div></td>
+<td>Toggles the Lower Unpegged setting on the selected or targeted linedef.</td>
+</tr>
+<tr>
+<td><a name="toggleslope" id="toggleslope"></a>Toggle Slope</td>
+<td><div align="center">Alt+S</div></td>
+<td><div align="center"></div></td>
+<td>Toggles Slope for selected surfaces. Select or highlight upper/lower walls to add a slope. Select or highlight floors or ceilings to remove slope.</td>
+</tr>
+<tr>
+<td>Toggle Upper Unpegged</td>
+<td><div align="center">U</div></td>
+<td><div align="center"></div></td>
+<td>Toggles the Upper Unpegged setting on the selected or targeted linedef.</td>
+</tr>
+<tr>
+<td><a name="visualverts" id="visualverts"></a>Toggle Visual Vertices</td>
+<td><div align="center">Alt+V</div></td>
+<td><div align="center"></div></td>
+<td>When enabled, shows vertices, which heights can be changed, in Visual mode (UDMF only).</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">Edit</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td>Clear Selection</td>
+<td><div align="center">C</div></td>
+<td><div align="center"></div></td>
+<td>Deselects all selected elements.</td>
+</tr>
+<tr>
+<td>Copy Selection</td>
+<td><div align="center">Ctrl+C</div></td>
+<td><div align="center"></div></td>
+<td>Copies the current selection to the clipboard.</td>
+</tr>
+<tr>
+<td>Cut Selection</td>
+<td><div align="center">Ctrl+X</div></td>
+<td><div align="center"></div></td>
+<td>Copies the current selection to the clipboard and removes it from the map.</td>
+</tr>
+<tr>
+<td>Delete Item</td>
+<td><div align="center">Del</div></td>
+<td><div align="center"></div></td>
+<td>Deletes the highlighted or selected items, depending on the editing mode you are in.</td>
+</tr>
+<tr>
+<td>Flip Selection Horizontally</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Flips the selection in Edit Selection mode horizontally.</td>
+</tr>
+<tr>
+<td>Flip Selection Vertically</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Flips the selection in Edit Selection mode vertically.</td>
+</tr>
+<tr>
+<td>Grid Decrease</td>
+<td><div align="center">]</div></td>
+<td><div align="center"></div></td>
+<td>Decreases the grid size, increasing the grid density.</td>
+</tr>
+<tr>
+<td>Grid Increase</td>
+<td><div align="center">[</div></td>
+<td><div align="center"></div></td>
+<td>Increases the grid size, decreasing the grid density.</td>
+</tr>
+<tr>
+<td>Insert Item</td>
+<td><div align="center">Ins</div></td>
+<td><div align="center"></div></td>
+<td>Creates a new item depending on the editing mode you are in.</td>
+</tr>
+<tr>
+<td>Map Options</td>
+<td><div align="center">F2</div></td>
+<td><div align="center"></div></td>
+<td>Shows the Map Options dialog which allows changing the map lump name, game configuration and custom resources.</td>
+</tr>
+<tr>
+<td>Merge Geometry</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Toggles automatic merging of geometry for vertices and structures that are being dragged.</td>
+</tr>
+<tr>
+<td>Paste Selection</td>
+<td><div align="center">Ctrl+V</div></td>
+<td><div align="center"></div></td>
+<td>Pastes the current contents of the clipboard into the map as a new selection.</td>
+</tr>
+<tr>
+<td>Paste Selection Special</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Allows you to choose options or pasting and then pastes the current contents of the clipboard into the map as a new selection.</td>
+</tr>
+<tr>
+<td>Redo</td>
+<td><div align="center">Ctrl+Y</div></td>
+<td><div align="center"></div></td>
+<td>Repeats the action(s) performed before Undo was used.</td>
+</tr>
+<tr>
+<td>Set Current Textures</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Opens the window, which lets user to change textures, which will be used in next drawing operations.</td>
+</tr>
+<tr>
+<td>Snap Selected Vertices to Grid</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Snaps selected vertices to grid.</td>
+</tr>
+<tr>
+<td>Snap to Grid</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Toggles snapping to the grid for things and vertices that are being dragged.</td>
+</tr>
+<tr>
+<td>Undo</td>
+<td><div align="center">Ctrl+Z</div></td>
+<td><div align="center"></div></td>
+<td>Restores the current map as it was before last action(s) performed.</td>
+</tr>
+<tr>
+<td>View Used Tags</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Opens Tag Statistics form, which shows all tags, which are used in current map, and allows to create and edit tag labels.</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">File</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td>Close Map</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Closes the current map and the WAD file in which it exists.</td>
+</tr>
+<tr>
+<td>New Map</td>
+<td><div align="center">Ctrl+N</div></td>
+<td><div align="center"></div></td>
+<td>Starts with a new, empty workspace to begin drawing a map from scratch.</td>
+</tr>
+<tr>
+<td>Open Map</td>
+<td><div align="center">Ctrl+O</div></td>
+<td><div align="center"></div></td>
+<td>Opens an existing map from WAD file for viewing or modifying.</td>
+</tr>
+<tr>
+<td>Open Map in current WAD</td>
+<td><div align="center">Ctrl+Shift+O</div></td>
+<td><div align="center"></div></td>
+<td>Opens an existing map from already loaded WAD file for viewing or modifying.</td>
+</tr>
+<tr>
+<td>Save Map</td>
+<td><div align="center">Ctrl+S</div></td>
+<td><div align="center"></div></td>
+<td>Saves the current map to the opened source WAD file.</td>
+</tr>
+<tr>
+<td>Save Map As</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Saves the current map and all resources from the source WAD file to a new WAD file.</td>
+</tr>
+<tr>
+<td>Save Map Into</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Saves the current map without any other resources into an existing or new WAD file.</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">View</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td>Script Editor</td>
+<td><div align="center">F10</div></td>
+<td><div align="center"></div></td>
+<td>This opens the script editor that allows you to edit any scripts in your map or any script files.</td>
+</tr>
+<tr>
+<td><a name="eventlines" id="eventlines"></a>Toggle <a href="features/all_modes/event_lines.html">Event lines</a></td>
+<td><div align="center">I</div></td>
+<td><div align="center"></div></td>
+<td>When enabled, shows order, in which patrol points and interpolation points are connected. Also shows action target for currently highlighted item in 2D modes.</td>
+</tr>
+<tr>
+<td>Toggle Info Panel</td>
+<td><div align="center">~</div></td>
+<td><div align="center"></div></td>
+<td>Toggles the info panel between expanded and collapsed.</td>
+</tr>
+<tr>
+<td>View Brightness Levels</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>This sets the view mode to Brightness Levels. This fills all sectors with their brightness levels.</td>
+</tr>
+<tr>
+<td>View Ceiling Textures</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>This sets the view mode to Ceiling Textures. In this view mode the sectors are filled with their ceiling texture and with their brightness level applied.</td>
+</tr>
+<tr>
+<td>View Floor Textures</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>This sets the view mode to Floor Textures. In this view mode the sectors are filled with their floor texture and with their brightness level applied.</td>
+</tr>
+<tr>
+<td>View Wireframe</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>This sets the view mode to Wireframe. This shows only the map elements without any sector filling.</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">Prefabs</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td>Create Prefab</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Creates a prefab from the selected geometry and saves it to a prefab file.</td>
+</tr>
+<tr>
+<td>Insert Prefab File</td>
+<td><div align="center">Ctrl+P</div></td>
+<td><div align="center"></div></td>
+<td>Browses for a Prefab file and inserts the prefab geometry into the map.</td>
+</tr>
+<tr>
+<td>Insert Previous Prefab</td>
+<td><div align="center">P</div></td>
+<td><div align="center"></div></td>
+<td>Inserts the previously opened Prefab file again.</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">Sectors</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td>Copy sector properties</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Copies sector properties.</td>
+</tr>
+<tr>
+<td>Join Sectors</td>
+<td><div align="center">J</div></td>
+<td><div align="center"></div></td>
+<td>Joins two or more selected sectors together and keeps all linedefs.</td>
+</tr>
+<tr>
+<td>Lower Ceiling by 8 mp</td>
+<td><div align="center">Shift+ScrollDown</div></td>
+<td><div align="center"></div></td>
+<td>Lowers the highlighted or selected ceiling heights by 8 mp.</td>
+</tr>
+<tr>
+<td>Lower Floor by 8 mp</td>
+<td><div align="center">Ctrl+ScrollDown</div></td>
+<td><div align="center"></div></td>
+<td>Lowers the highlighted or selected floor heights by 8 mp.</td>
+</tr>
+<tr>
+<td>Make Brightness Gradient</td>
+<td><div align="center">G</div></td>
+<td><div align="center"></div></td>
+<td>Creates a brightness gradient over all selected sectors from the first to the last selected sector.</td>
+</tr>
+<tr>
+<td>Make Ceilings Gradient</td>
+<td><div align="center">Shift+G</div></td>
+<td><div align="center"></div></td>
+<td>Creates a ceiling heights gradient over all selected sectors from the first to the last selected sector.</td>
+</tr>
+<tr>
+<td>Make Door</td>
+<td><div align="center">Shift+D</div></td>
+<td><div align="center"></div></td>
+<td>Creates doors from the highlighted or selected sectors.</td>
+</tr>
+<tr>
+<td>Make Floors Gradient</td>
+<td><div align="center">Ctrl+G</div></td>
+<td><div align="center"></div></td>
+<td>Creates a floor heights gradient over all selected sectors from the first to the last selected sector.</td>
+</tr>
+<tr>
+<td>Merge Sectors</td>
+<td><div align="center">Shift+J</div></td>
+<td><div align="center"></div></td>
+<td>Joins two or more selected sectors together and removes the shared linedefs.</td>
+</tr>
+<tr>
+<td>Paste sector properties</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Pastes sector properties.</td>
+</tr>
+<tr>
+<td>Raise Ceiling by 8 mp</td>
+<td><div align="center">Shift+ScrollUp</div></td>
+<td><div align="center"></div></td>
+<td>Raises the highlighted or selected ceiling heights by 8 mp.</td>
+</tr>
+<tr>
+<td>Raise Floor by 8 mp</td>
+<td><div align="center">Ctrl+ScrollUp</div></td>
+<td><div align="center"></div></td>
+<td>Raises the highlighted or selected floor heights by 8 mp.</td>
+</tr>
+<tr>
+<td>Select Sectors Outline</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Selects the outline of all marked sectors, deselecting lines that are shared.</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">Drawing</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td><a href="features/classic_modes/mode_drawbridge.html">Bridge Mode</a></td>
+<td><div align="center">Ctrl+B</div></td>
+<td><div align="center"></div></td>
+<td>Select two lines or two series of lines, then activate this tool to draw a bezier path between them.</td>
+</tr>
+<tr>
+<td>Decrease Corners Bevel</td>
+<td><div align="center">Ctrl+ScrollDown</div></td>
+<td><div align="center"></div></td>
+<td>Decreases corners bevel in Rectangle Drawing Modes. Bevel can be negative.</td>
+</tr>
+<tr>
+<td>Decrease Sudivision Level</td>
+<td><div align="center">Shift+ScrollDown</div></td>
+<td><div align="center"></div></td>
+<td>Decreases subdivision level in Rectangle and Ellipse Drawing Modes.</td>
+</tr>
+<tr>
+<td>Draw Vertex</td>
+<td><div align="center">LButton</div></td>
+<td><div align="center">Ctrl, Shift</div></td>
+<td>Draws a vertex at the mousecursor position.</td>
+</tr>
+<tr>
+<td>Finish Drawing</td>
+<td><div align="center">RButton</div></td>
+<td><div align="center"></div></td>
+<td>Finishes the drawing and creates the geometry.</td>
+</tr>
+<tr>
+<td>Increase Corners Bevel</td>
+<td><div align="center">Ctrl+ScrollUp</div></td>
+<td><div align="center"></div></td>
+<td>Increase corners bevel in Rectangle Drawing Modes. Bevel can be negative.</td>
+</tr>
+<tr>
+<td>Increase Sudivision Level</td>
+<td><div align="center">Shift+ScrollUp</div></td>
+<td><div align="center"></div></td>
+<td>Increases subdivision level in Rectangle and Ellipse Drawing Modes.</td>
+</tr>
+<tr>
+<td>Remove Previous Vertex</td>
+<td><div align="center">Backspace</div></td>
+<td><div align="center"></div></td>
+<td>Removes the previously drawn vertex from the drawing session.</td>
+</tr>
+<tr>
+<td><a href="features/classic_modes/mode_drawcurve.html">Start Curve Drawing</a></td>
+<td><div align="center">Ctrl+Alt+D</div></td>
+<td><div align="center"></div></td>
+<td>Starts drawing a curve. Increase/Decrease Subdivision Level actions are avaliable in this mode.</td>
+</tr>
+<tr>
+<td>Start Drawing</td>
+<td><div align="center">Ctrl+D</div></td>
+<td><div align="center"></div></td>
+<td>Starts drawing lines. See the Drawing category for actions available during drawing mode.</td>
+</tr>
+<tr>
+<td><a href="features/classic_modes/mode_drawellipse.html">Start Ellipse Drawing</a></td>
+<td><div align="center">Alt+Shift+D</div></td>
+<td><div align="center"></div></td>
+<td>Starts drawing ellipse. Increase/Decrease Subdivision Level and Increase/Decrease Corners Bevel actions are avaliable in this mode.</td>
+</tr>
+<tr>
+<td><a href="features/classic_modes/mode_drawrect.html">Start Rectangle Drawing</a></td>
+<td><div align="center">Ctrl+Shift+D</div></td>
+<td><div align="center"></div></td>
+<td>Starts drawing rectangle. Increase/Decrease Subdivision Level and Increase/Decrease Corners Bevel actions are avaliable in this mode.</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">Things</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td><a name="aligntingtoline" id="aligntingtoline"></a>Align Things To Linedef</td>
+<td><div align="center">Ctrl+Shift+A</div></td>
+<td><div align="center"></div></td>
+<td>Aligns selected things to closest linedef.</td>
+</tr>
+<tr>
+<td><a name="pointthing" id="pointthing"></a><a href="features/things_mode/pointthing.html">Point Thing to cursor</a></td>
+<td><div align="center">Shift+L</div></td>
+<td><div align="center">Ctrl</div></td>
+<td>Points selected things to cursor position. Hold Ctrl to point away from cursor.</td>
+</tr>
+<tr>
+<td>Select Things in Selected Sectors</td>
+<td><div align="center">Shift+T</div></td>
+<td><div align="center"></div></td>
+<td>Selects Things in Selected Sectors.</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">Modes</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td>Ceiling Align Mode</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Switches to the (G)ZDoom Ceiling Align mode.</td>
+</tr>
+<tr>
+<td>Edit Selection Mode</td>
+<td><div align="center">E</div></td>
+<td><div align="center"></div></td>
+<td>Allows rotating, resizing and moving a selection.</td>
+</tr>
+<tr>
+<td>Find and Replace Mode</td>
+<td><div align="center">F3</div></td>
+<td><div align="center"></div></td>
+<td>Finds vertices, linedefs, sectors or things with a specific property, selects them and optionally replaces them with a given setting.</td>
+</tr>
+<tr>
+<td>Floor Align Mode</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Switches to the (G)ZDoom Floor Align mode.</td>
+</tr>
+<tr>
+<td>GZDB Visual Mode</td>
+<td><div align="center">Q</div></td>
+<td><div align="center">Shift</div></td>
+<td>Switches to the (G)ZDoom visual editing mode. Hold Shift key to invert 'Synhcronise selection between Visual and Classic modes' setting.</td>
+</tr>
+<tr>
+<td>Linedefs Mode</td>
+<td><div align="center">L</div></td>
+<td><div align="center"></div></td>
+<td>Switches to linedefs editing mode.</td>
+</tr>
+<tr>
+<td>Make Sector Mode</td>
+<td><div align="center">M</div></td>
+<td><div align="center"></div></td>
+<td>Switches to the Make Sector editing mode. This mode allows creating and/or fixing split sectors by clicking within a closed region.</td>
+</tr>
+<tr>
+<td>Map Analysis Mode</td>
+<td><div align="center">F4</div></td>
+<td><div align="center"></div></td>
+<td>Checks your map for errors and mistakes and reports the results.</td>
+</tr>
+<tr>
+<td>Nodes Viewer Mode</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Switches to the Nodes Viewer mode.</td>
+</tr>
+<tr>
+<td>Sectors Brightness Mode</td>
+<td><div align="center">Shift+B</div></td>
+<td><div align="center"></div></td>
+<td>Switches to sectors brightness editing mode.</td>
+</tr>
+<tr>
+<td>Sectors Mode</td>
+<td><div align="center">S</div></td>
+<td><div align="center"></div></td>
+<td>Switches to sectors editing mode.</td>
+</tr>
+<tr>
+<td>Stair Sector Builder Mode</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Switches to the stair sector builder mode.</td>
+</tr>
+<tr>
+<td>Things Mode</td>
+<td><div align="center">T</div></td>
+<td><div align="center"></div></td>
+<td>Switches to things editing mode.</td>
+</tr>
+<tr>
+<td>Vertices Mode</td>
+<td><div align="center">V</div></td>
+<td><div align="center"></div></td>
+<td>Switches to vertices editing mode.</td>
+</tr>
+<tr>
+<td>Visplane Explorer Mode</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Switches to the Visplane Explorer viewing mode.</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">Lines</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td>Align Ceiling Texture to Back Side</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Aligns ceiling textures to back sides of selected linedefs.</td>
+</tr>
+<tr>
+<td>Align Ceiling Texture to Front Side</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Aligns ceiling textures to front sides of selected linedefs.</td>
+</tr>
+<tr>
+<td>Align Floor Texture to Back Side</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Aligns floor textures to back sides of selected linedefs.</td>
+</tr>
+<tr>
+<td>Align Floor Texture to Front Side</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Aligns floor textures to front sides of selected linedefs.</td>
+</tr>
+<tr>
+<td>Curve Linedefs</td>
+<td><div align="center">Shift+C</div></td>
+<td><div align="center"></div></td>
+<td>Curves the selected linedefs with a given number of vertices and distance from the line.</td>
+</tr>
+<tr>
+<td>Flip Linedefs</td>
+<td><div align="center">F</div></td>
+<td><div align="center"></div></td>
+<td>This flips the selected linedefs around and keeps sidedefs on the correct side.</td>
+</tr>
+<tr>
+<td>Flip Sidedefs</td>
+<td><div align="center">Shift+F</div></td>
+<td><div align="center"></div></td>
+<td>This flips the sidedefs on the selected linedefs around, keeping the line in the same direction.</td>
+</tr>
+<tr>
+<td>Select Double-sided</td>
+<td><div align="center">Shift+2</div></td>
+<td><div align="center"></div></td>
+<td>This keeps only the double-sided lines in your selection selected.</td>
+</tr>
+<tr>
+<td>Select Single-sided</td>
+<td><div align="center">Shift+1</div></td>
+<td><div align="center"></div></td>
+<td>This keeps only the single-sided lines in your selection selected.</td>
+</tr>
+<tr>
+<td>Split Linedefs</td>
+<td><div align="center"></div></td>
+<td><div align="center"></div></td>
+<td>Splits the selected linedefs in the middle, or splits the highlighted linedef at the mouse position.</td>
+</tr>
+<tr><td colspan="4"></td></tr>
+<tr><td colspan="4" bgcolor="#333333"><strong style="color:#FFFFFF">Transform</strong></td></tr>
+<tr><td width="240px;"><strong>Action</strong></td><td width="120px;"><div align="center"><strong>Shortcut</strong></div></td><td width="120px;"><div align="center"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>
+<tr>
+<td>Jitter</td>
+<td><div align="center">Ctrl+J</div></td>
+<td><div align="center"></div></td>
+<td>Applies jitter effect to selection.</td>
+</tr>
+</table></div></body></html>

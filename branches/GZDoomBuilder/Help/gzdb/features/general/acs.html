@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	
+	<title>GZDoom Builder features</title>
+	
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" type="text/css" href="../../../default.css" media="screen" title="Default" />
+    <style type="text/css">
+<!--
+.style1 {color: #0066FF}
+.style2 {color: #006600}
+-->
+    </style>
+</head>
+<body>
+	
+	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="keyword" value="Template">
+	</object>
+	
+	<div id="gz_title"><h1>Enhanced scripting workflow</h1></div>
+	
+	<div id="contents">
+    <table width="100%" border="0" cellspacing="3" cellpadding="3">
+      <tr>
+        <td valign="top"><p><b>GZDoom Builder</b> includes several features to help you edit and assign scripts easier.</br>
+              </br>
+          Script editor now has &quot;Script names&quot; drop down, which allows you to view and select individual scripts faster.</br>
+        </p>
+          <h3>Pseudo-named scripts</h3>
+          If you add a comment after script's opening brace like so:</br>...
+          <p><span class="style1">script 1 (void) {</span> <span class="style2">//My Pseudo-named script</span></br>
+            ...</br>
+          </p>
+          <p class="style1">}</p>
+          ...it will be used as script name in &quot;Script names&quot; drop down and in Thing and Linedef Edit forms drop downs (example script will be named as &quot;<strong>[1] My Pseudo-named script</strong>&quot;).</br>
+          </br>
+          <p><b>Notice:</b> &quot;Script names&quot; drop down items are updated when the script is compiled successfully.</p></td>
+        <td><img src="acs_scripteditor.jpg"/></td>
+      </tr>
+      <tr>
+        <td valign="top"><p>Thing and Linedef scripts can now be set much easier.</br>
+              </br>
+        <b>Notice:</b> to remove named or regular script, clear script selector text box</p>
+        </td>
+        <td><img src="acs_thing2.jpg"/><br /><img src="acs_thing1.jpg"/></td>
+      </tr>
+      <tr>
+        <td valign="top">If a Thing or Linedef has named script, it will be shown in info panel.</td>
+        <td><img src="acs_infoex.jpg"/></td>
+      </tr>
+    </table>
+</div>
+</body>
+

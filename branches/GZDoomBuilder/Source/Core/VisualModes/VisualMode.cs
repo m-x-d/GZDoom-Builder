@@ -128,17 +128,23 @@ namespace CodeImp.DoomBuilder.VisualModes
                 //if position is inside sector - adjust camera.z accordingly
                 Sector sector = General.Map.Map.GetSectorByCoordinates(pos2d);
 
-                float posz = 0;
-                if (sector != null) {
-                    int sectorHeight = sector.CeilHeight - sector.FloorHeight;
-                    if (sectorHeight < 41) {
-                        posz = sector.FloorHeight + sectorHeight / 2;
-                    } else {
-                        posz = sector.FloorHeight + 41; // same as in doom
-                    }
-                }else{
-                    posz = General.Map.VisualCamera.Position.z;
-                }
+				float posz = General.Map.VisualCamera.Position.z;
+				if(sector != null) {
+					int sectorHeight = sector.CeilHeight - sector.FloorHeight;
+					if (General.Map.VisualCamera.Position.z < sector.FloorHeight + 41) {
+						if (sectorHeight < 41) {
+							posz = sector.FloorHeight + sectorHeight / 2;
+						} else {
+							posz = sector.FloorHeight + 41; // same as in doom
+						}
+					} else if(General.Map.VisualCamera.Position.z > sector.CeilHeight) {
+						if(sectorHeight < 41) {
+							posz = sector.FloorHeight + sectorHeight / 2;
+						} else {
+							posz = sector.CeilHeight - 4;
+						}
+					}
+				}
 
                 General.Map.VisualCamera.Position = new Vector3D(pos2d.x, pos2d.y, posz);
             }

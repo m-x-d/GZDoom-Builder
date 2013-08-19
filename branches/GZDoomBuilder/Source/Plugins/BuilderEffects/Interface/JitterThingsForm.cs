@@ -270,7 +270,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 //HALP!
 		private void JitterThingsForm_HelpRequested(object sender, HelpEventArgs hlpevent) {
-			General.ShowHelp("gzdb\\features\\general\\jitter.html");
+			General.ShowHelp("gzdb/features/all_modes/jitter.html");
 			hlpevent.Handled = true;
 		}
 	}

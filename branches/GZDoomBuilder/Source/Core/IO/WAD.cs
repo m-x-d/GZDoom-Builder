@@ -369,28 +369,9 @@ namespace CodeImp.DoomBuilder.IO
 			// Fix end when it exceeds length
 			if(end > (lumps.Count - 1)) end = lumps.Count - 1;
 
-			// Make sure name is in uppercase
-			name = name.ToUpperInvariant();
-
-			// Make fixed name
-			//fixedname = Lump.MakeFixedName(name, ENCODING);
-
 			// Loop through the lumps
 			for(int i = start; i <= end; i++)
 			{
-				/*
-				// Check if first byte matches
-				if(lumps[i].FixedName[0] == fixedname[0])
-				{
-					// Check if the lump name matches
-					if(lumps[i].Name.StartsWith(name, false, CultureInfo.InvariantCulture))
-					{
-						// Found the lump!
-						return i;
-					}
-				}
-				*/
-				
 				// Check if the lump name matches
 				if(lumps[i].LongName == longname)
 				{

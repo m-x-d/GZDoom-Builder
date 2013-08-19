@@ -220,113 +220,205 @@
 				</OBJECT>
 		</UL>
 	</UL>
-	
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="GZDoom Builder manual">
 		<param name="Local" value="gz_introduction.html">
 		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Features">
+			<param name="Local" value="gzdb\features\features.html">
+			</OBJECT>
 		<UL>
-			  <LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Features">
-				<param name="Local" value="gz_features.html">
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="General Interface">
+				<param name="Local" value="gzdb\features\features.html#general">
 				</OBJECT>
+			<UL>
 				<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="New settings">
-				<param name="Local" value="gz_settings.html">
+					<param name="Name" value="Enhanced scripting workflow">
+					<param name="Local" value="gzdb\features\general\acs.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Rendering toolbar">
+					<param name="Local" value="gzdb\features\general\rendering_toolbar.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Multiple engines per game configuration">
+					<param name="Local" value="gzdb\features\general\multi_engines.html">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Classic and Visual modes">
+				<param name="Local" value="gzdb\features\features.html#allmodes">
 				</OBJECT>
-                                <LI> <OBJECT type="text/sitemap">
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Enhanced Tag support">
+					<param name="Local" value="gzdb\features\all_modes\tag_support.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Testing map from view">
+					<param name="Local" value="gzdb\features\all_modes\test_from_view.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Event lines">
+					<param name="Local" value="gzdb\features\all_modes\event_lines.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Synchronizing selection">
+					<param name="Local" value="gzdb\features\all_modes\synch_selection.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Synchronizing camera position">
+					<param name="Local" value="gzdb\features\all_modes\synch_camera.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Color Picker plugin">
+					<param name="Local" value="gzdb\features\all_modes\colorpicker.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Tag Explorer plugin">
+					<param name="Local" value="gzdb\features\all_modes\tagexplorer.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Jitter command">
+					<param name="Local" value="gzdb\features\all_modes\jitter.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Image Browser">
+					<param name="Local" value="gzdb\features\all_modes\texture_browser.html">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Classic modes">
+				<param name="Local" value="gzdb\features\features.html#classic">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Custom linedef colors">
+					<param name="Local" value="gzdb\features\classic_modes\linedef_color_presets.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Enhanced rectangular selection">
+					<param name="Local" value="gzdb\features\classic_modes\selection.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Draw Rectangle mode">
+					<param name="Local" value="gzdb\features\classic_modes\mode_drawrect.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Draw Ellipse mode">
+					<param name="Local" value="gzdb\features\classic_modes\mode_drawellipse.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Draw Curve mode">
+					<param name="Local" value="gzdb\features\classic_modes\mode_drawcurve.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Bridge mode">
+					<param name="Local" value="gzdb\features\classic_modes\mode_drawbridge.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Snap vertices mode">
+					<param name="Local" value="gzdb\features\classic_modes\mode_snapverts.html">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Sectors mode">
+				<param name="Local" value="gzdb\features\features.html#sectors">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Linedefs mode">
+				<param name="Local" value="gzdb\features\features.html#linedefs">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Things mode">
+				<param name="Local" value="gzdb\features\features.html#things">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Assigning multiple thing types at once">
+					<param name="Local" value="gzdb\features\things_mode\multiple_thing_types.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="&quot;Point Thing to cursor&quot; action">
+					<param name="Local" value="gzdb\features\things_mode\pointthing.html">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Vertices mode">
+				<param name="Local" value="gzdb\features\features.html#vertices">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="GZDB Visual mode">
-				<param name="Local" value="gz_gzdb_vm.html">
+				<param name="Local" value="gzdb\features\features.html#visual">
 				</OBJECT>
+			<UL>
 				<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Event lines">
-				<param name="Local" value="gz_event_lines.html">
-				</OBJECT>
+					<param name="Name" value="Visual vertices (UDMF)">
+					<param name="Local" value="gzdb\features\visual_mode\visual_verts.html">
+					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Custom linedef colors">
-				<param name="Local" value="gz_linedef_color_presets.html">
-				</OBJECT>
+					<param name="Name" value="Using Auto Align Textures actions on floors and ceilings (UDMF)">
+					<param name="Local" value="gzdb\features\visual_mode\autoalignfloors.html">
+					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Visual vertices">
-				<param name="Local" value="gz_visual_verts.html">
+					<param name="Name" value="&quot;Fit Texture&quot; actions">
+					<param name="Local" value="gzdb\features\visual_mode\texturefit.html">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Custom Fields">
+				<param name="Local" value="gzdb\features\features.html#fields">
 				</OBJECT>
-			        <LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Enhanced scripting workflow">
-				<param name="Local" value="gz_acsex.html">
-				</OBJECT>
+			<UL>
 				<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Enhanced textures browser">
-				<param name="Local" value="gz_texbrowser.html">
+					<param name="Name" value="New custom filed types">
+					<param name="Local" value="gzdb\features\custom_fields\newfieldtypes.html">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Map Analysis mode">
+				<param name="Local" value="gzdb\features\features.html#mapanalysis">
 				</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="TEXTURES support">
-				<param name="Local" value="gz_textures.html">
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Find and Replace mode">
+				<param name="Local" value="gzdb\features\features.html#findreplace">
 				</OBJECT>
-				<UL>
-        </UL>
-				<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="New editing modes">
-				<param name="Local" value="gz_editmodes.html">
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="(G)ZDoom features support">
+				<param name="Local" value="gzdb\features\features.html#formats">
 				</OBJECT>
-			        <UL>
-			        <LI> <OBJECT type="text/sitemap">
-				      <param name="Name" value="Draw Rectangle mode">
-				      <param name="Local" value="gz_mode_drawrect.html">
-				      </OBJECT>
-				      <LI> <OBJECT type="text/sitemap">
-				      <param name="Name" value="Draw Ellipse mode">
-				      <param name="Local" value="gz_mode_drawellipse.html">
-				      </OBJECT>
-				      <LI> <OBJECT type="text/sitemap">
-				      <param name="Name" value="Bridge mode">
-				      <param name="Local" value="gz_mode_drawbridge.html">
-				      </OBJECT>
-				      <LI> <OBJECT type="text/sitemap">
-				      <param name="Name" value="Snap selected vertices to grid mode">
-				      <param name="Local" value="gz_mode_snapverts.html">
-				      </OBJECT>
-				      </UL>
-				<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="New actions">
-				<param name="Local" value="gz_actions.html">
-				</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="GLDEFS and (Z)MAPINFO support">
-				<param name="Local" value="gz_gldefs.html">
-				</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="New settings in game configurations">
-				<param name="Local" value="gz_cfg_settings.html">
-				</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="GZDoom toolbar">
-				<param name="Local" value="gz_toolbar.html">
-				</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Plugins">
-				<param name="Local" value="gz_plugins.html">
-				</OBJECT>
-				      <UL>
-			        <LI> <OBJECT type="text/sitemap">
-				      <param name="Name" value="Color Picker plugin">
-				      <param name="Local" value="gz_plug_colorpicker.html">
-				      </OBJECT>
-				      <LI> <OBJECT type="text/sitemap">
-				      <param name="Name" value="UDMF Controls plugin">
-				      <param name="Local" value="gz_plug_udmfcontrols.html">
-				      </OBJECT>
-				      <LI> <OBJECT type="text/sitemap">
-				      <param name="Name" value="Tag Explorer plugin">
-				      <param name="Local" value="gz_plug_tagexplorer.html">
-				      </OBJECT>
-				      </UL>
-				<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Frequently asked questions">
-				<param name="Local" value="gz_faq.html">
-				</OBJECT>
-				</UL>
-
 		</UL>
-
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Actions Reference">
+			<param name="Local" value="gzdb\actions.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="MAPINFO support">
+			<param name="Local" value="gzdb\mapinfo.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="MODELDEF and GLDEFS support">
+			<param name="Local" value="gzdb\gldefs.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="TEXTURES support">
+			<param name="Local" value="gzdb\textures.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="New settings in program's Preferences">
+			<param name="Local" value="gzdb\preferences.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="New settings in game configurations">
+			<param name="Local" value="gzdb\gamecfg_settings.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Frequently asked questions">
+			<param name="Local" value="gzdb\faq.html">
+			</OBJECT>
+	</UL>
 </UL>
 </BODY></HTML>
