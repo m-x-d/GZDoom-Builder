@@ -22,7 +22,7 @@ body
 
 #gz_title
 {
-	background: #f4f4f4 url(gz_header.gif) bottom right no-repeat;
+	background: #f4f4f4 url(gzdb/gz_header.gif) bottom right no-repeat;
 	height: 52px;
 }
 
@@ -42,6 +42,12 @@ body
 	padding: 0 0 0 0;
 	line-height: 1.6em;
 	border-top-style: none;
+}
+
+input.spoilerbutton 
+{
+	border: 1px solid #81776D;
+	height: 20px;
 }
 
 pre

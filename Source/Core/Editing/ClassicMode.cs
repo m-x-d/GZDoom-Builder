@@ -37,7 +37,7 @@ namespace CodeImp.DoomBuilder.Editing
 	{
 		#region ================== Constants
 
-		private const float SCALE_MAX = 20f;
+		private const float SCALE_MAX = 30f;
 		private const float SCALE_MIN = 0.01f;
 		private const float SELECTION_BORDER_SIZE = 2f;
 		private const int SELECTION_ALPHA = 200;
@@ -614,14 +614,17 @@ namespace CodeImp.DoomBuilder.Editing
                     return false;
                 }
                 
-                //find Single Player Start. Should have Type 1 in all games
+                //find Single Player Start. Should be type 1 in all games
                 Thing start = null;
                 
                 foreach (Thing t in General.Map.Map.Things) {
                     if (t.Type == 1) {
                         //store thing and position
-                        start = t;
-                        break;
+	                    if (start == null) {
+		                    start = t;
+	                    } else if(t.Index > start.Index) {
+							start = t; //if there are several Player Start 1 things, GZDoom uses one with the biggest index.
+	                    }
                     }
                 }
 

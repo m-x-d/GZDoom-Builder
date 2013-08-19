@@ -5,21 +5,22 @@ Compiled file=..\Build\Refmanual.chm
 Contents file=Contents.hhc
 Default Font=Verdana,10,0
 Default Window=default
-Default topic=introduction.html
+Default topic=gz_introduction.html
 Display compile progress=Yes
 Full-text search=Yes
 Index file=Index.hhk
-Language=0x409 English (United States)
-Title=Doom Builder Reference Manual
+Language=0x409 Английский (США)
+Title=GZDoom Builder Reference Manual
 
 [WINDOWS]
-default="Doom Builder Reference Manual","Contents.hhc","Index.hhk","introduction.html","introduction.html",,,,,0x2520,300,0x3806,[150,110,1100,800],0x108b0000,,,,,,0
+default="GZDoom Builder Reference Manual","Contents.hhc","Index.hhk","gz_introduction.html","gz_introduction.html",,,,,0x42520,300,0x384e,[150,110,1100,800],0x108b0000,,,,,,0
 
 
 [FILES]
 introduction.html
+gz_introduction.html
 header.gif
-gz_header.gif
+gzdb\gz_header.gif
 editingmodes.html
 userinterface.html
 configurations.html

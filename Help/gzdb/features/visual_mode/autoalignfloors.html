@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>GZDoom Builder features</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="../../../default.css" media="screen" title="Default" />
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="keyword" value="Template">
+</object>
+<div id="gz_title">
+  <h1> Auto aligning textures on floors and ceilings (UDMF)</h1>
+</div>
+<div id="contents">
+  <h2>Floors and ceilings</h2>
+  <p>&quot;<strong>Auto Align Textures</strong>&quot; actions  work on floors and ceilings. It works like so:<br />
+    - a linedef closest to 3d-cursor position is picked from highlighted sector.<br />
+    - linedef's start or end vertex is chosen based on distance to 3d-cursor as a start point for texture offsets.<br />
+    - all selected floors/ceilings are aligned to that linedef if their texture match one of hilighted floor/ceiling.<br />
+  - vertical and horizontal texture scale is copied from highlighted floor/ceiling to selected floors/ceilings.</p>
+  <table border="0" cellspacing="3" cellpadding="3">
+    <tr>
+      <td>Before:</td>
+      <td>After (1):</td>
+    </tr>
+    <tr>
+      <td><img src="floor_align_00.jpg"/></td>
+      <td><img src="floor_align_01.jpg"/></td>
+    </tr>
+    <tr>
+      <td>After (2):</td>
+      <td>After (3):</td>
+    </tr>
+    <tr>
+      <td><img src="floor_align_02.jpg" alt=""/></td>
+      <td><img src="floor_align_03.jpg" alt=""/></td>
+    </tr>
+  </table>
+  <p>You can also align floors and ceilings to selected linedefs in Linedefs mode using &quot;<strong>Align Ceiling Texture to Back Side</strong>&quot;, &quot;<strong>Align Ceiling Texture to Front Side</strong>&quot;, &quot;<strong>Align Floor Texture to Back Side</strong>&quot; and &quot;<strong>Align Floor Texture to Front Side</strong>&quot; actions, available in <strong>Linedefs -&gt; Align Textures</strong> menu.</p>
+  <br />
+  <h2>Slopes</h2>
+  <p>&quot;<strong>Auto Align Textures</strong>&quot; actions  work on slopes. Textures are aligned to the line with &quot;Plane align (slope)&quot; action (181).<br />
+  <table border="0" cellspacing="3" cellpadding="3">
+    <tr>
+      <td>Before:</td>
+      <td>After:</td>
+    </tr>
+    <tr>
+      <td><img src="slopealign1.jpg" alt="" width="274" height="400" /></td>
+      <td><img src="slopealign2.jpg" alt="" width="284" height="400" /></td>
+    </tr>
+  </table></p>
+</div>
+</body>

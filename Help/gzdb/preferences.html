@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	
+	<title>Template</title>
+	
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" type="text/css" href="../default.css" media="screen" title="Default" />
+    <style type="text/css">
+<!--
+.style1 {
+	color: #990000;
+	font-weight: bold;
+}
+-->
+    </style>
+</head>
+<body>
+	
+	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="keyword" value="Template">
+	</object>
+	
+	<div id="gz_title">
+	  <h1>Preferences Window</h1>
+	</div>
+	
+	<div id="contents">
+	<p>This page lists new options added in GZDoom Builder. Preferences window overview is avaliable <a href="../w_preferences.html">here</a>.</p>
+	<p>There are several new options avaliable in GZDoom Builder's <strong>Preferences window</strong> (F5):</p>
+	<table valign="top" width="100%" border="0" cellspacing="3" cellpadding="3">
+  <tr valign="top">
+    <td width="550px"><img src="preferences1.jpg" /></td>
+    <td><p><strong>1. Vertex scale factor:</strong> controls the size of vertex handles.</p>
+      <p><strong><a name="synch_camera" id="synch_camera"></a>2.<a href="features/all_modes/synch_camera.html"> Sync camera position between 2D and 3D modes</a>:</strong> when enabled, GZDoom Builder will center 2D-mode on Visual Camera position when you leave Visual mode, and will  place Visual Camera at cursor position when you toggle from 2D-mode to Visual   Mode (unless you have Visual Mode camera thing in your map).</p>
+      <p><strong>3. Rendering toolbar:</strong> if enabled, <a href="features/general/rendering_toolbar.html">Rendering toolbar</a> will be shown in the main editing window.</p>
+      </td>
+  </tr>
+  <tr valign="top">
+    <td><img src="preferences2.jpg" /></td>
+    <td><p><strong>1. Model wireframe color:</strong> lets you choose a color, which is used to render model wireframe in 2D-mode.</p>
+      <p><strong>2. Color of <a href="features/all_modes/event_lines.html">event lines</a>.</strong></p>
+      <p><strong>3. Color, used in Classic modes to indicate that sector has 3D floors.</strong></p>
+      <p><strong>4. Number of newly created sectors</strong> to colourise using different color.  Possible values are [0..8].</p>
+      <p><strong>5. Maximum dynamic lights to render:</strong> lets you choose how many dynamic lights to render in Visual mode. Decrease this to improve performance when Dynamic Lights Rendering is on. Possible values are [1..32].</p>
+      <p><strong>6. Dynamic light size:</strong> this option mimics GZDoom's &quot;light size&quot; option.</p>
+      <p><strong>7. Dynamic light intensity:</strong> this option mimics GZDoom's &quot;light intensity&quot; option.</p>
+      <p><strong>8. Load GZDoom light definitions:</strong> if enabled, GZDoom's built-in GLDEFS dynamic light definitions will be loaded. <span class="style1">Warning:</span> if a map is loaded, you'll need to reload resources after changing this option to apply the changes.</p>
+      <p><strong>9. Scale models in visual modes:</strong> if enabled, height of models will be scaled down by 15%  in Visual mode to mimick GZDoom's way of rendering.</p>
+      <p><strong>10. Always show selection in visual modes:</strong> if enabled, selected surfaces will be highlighted in Visual mode
+      even if &quot;Show highlight&quot; mode is disabled Doom Builder 2 behaviour).</p></td>
+  </tr>
+  <tr valign="top">
+    <td><img src="preferences3.jpg" /></td>
+    <td><p><strong>1. Auto-align textures on newly created linedefs.</strong> When enabled, auto texture alignment will be applied to sidedefs created after drawing deometry.</p>
+      <p><strong>2. Try to align horizontal texture offset of dragged geometry.</strong> When enabled, texture offsets of sidedefs, adjacent to dragged geometry, will be aligned to dragged geometry.</p>
+      <p><strong>3. Don't move selection if any part of it is outside of map boundary.</strong> When enabled, geometry outisde of map boundaries can not be dragged. When disabled, geometry will be moved inside of map boundary, most likely destroying sector shapes in process (DB2 behaviour).</p>
+      <p><strong><a name="synch_selection" id="synch_selection"></a>4. <a href="features/all_modes/synch_selection.html">Synchronise selection between Visual and Classic modes</a>.</strong></p>
+      </td>
+</table>
+
+    
+</div>
+</body>

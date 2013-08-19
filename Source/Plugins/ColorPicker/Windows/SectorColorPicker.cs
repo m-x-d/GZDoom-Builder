@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
         }
 
         private void SectorColorPicker_HelpRequested(object sender, HelpEventArgs hlpevent) {
-            General.ShowHelp("gz_plug_colorpicker.html");
+			General.ShowHelp("gzdb/features/all_modes/colorpicker.html");
             hlpevent.Handled = true;
         }
     }

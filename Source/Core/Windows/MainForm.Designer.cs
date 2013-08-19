@@ -247,6 +247,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockersspace = new System.Windows.Forms.Panel();
 			this.dockerspanel = new CodeImp.DoomBuilder.Controls.DockersControl();
 			this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
+			this.itemgrid1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemzoom400 = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -1909,6 +1911,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemgrid16,
             this.itemgrid8,
             this.itemgrid4,
+            this.itemgrid1,
             toolStripMenuItem4,
             this.itemgridcustom});
 			this.buttongrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.Grid2_arrowup;
@@ -2014,6 +2017,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonzoom.AutoToolTip = false;
 			this.buttonzoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buttonzoom.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemzoom400,
             this.itemzoom200,
             this.itemzoom100,
             this.itemzoom50,
@@ -2290,6 +2294,22 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockerscollapser.Interval = 200;
 			this.dockerscollapser.Tick += new System.EventHandler(this.dockerscollapser_Tick);
 			// 
+			// itemgrid1
+			// 
+			this.itemgrid1.Name = "itemgrid1";
+			this.itemgrid1.Size = new System.Drawing.Size(153, 22);
+			this.itemgrid1.Tag = "1";
+			this.itemgrid1.Text = "1 mp";
+			this.itemgrid1.Click += new System.EventHandler(this.itemgridsize_Click);
+			// 
+			// itemzoom400
+			// 
+			this.itemzoom400.Name = "itemzoom400";
+			this.itemzoom400.Size = new System.Drawing.Size(156, 22);
+			this.itemzoom400.Tag = "400";
+			this.itemzoom400.Text = "400%";
+			this.itemzoom400.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -2544,5 +2564,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem editAreaScreenshotToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem itemShortcutReference;
 		private System.Windows.Forms.ToolStripMenuItem itemopenmapincurwad;
+		private System.Windows.Forms.ToolStripMenuItem itemgrid1;
+		private System.Windows.Forms.ToolStripMenuItem itemzoom400;
 	}
 }
