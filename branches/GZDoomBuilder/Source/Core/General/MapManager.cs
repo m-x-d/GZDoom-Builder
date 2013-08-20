@@ -1712,6 +1712,11 @@ namespace CodeImp.DoomBuilder {
 				} else if(oldFormatInterface != "UniversalMapSetIO" && config.FormatInterface == "UniversalMapSetIO") {
 					foreach(Linedef l in General.Map.Map.Linedefs) l.TranslateToUDMF();
 					foreach(Thing t in General.Map.Map.Things) t.TranslateToUDMF();
+				} else if(oldFormatInterface != "DoomMapSetIO" && config.FormatInterface == "DoomMapSetIO") { //drop all arguments
+					foreach (Linedef l in General.Map.Map.Linedefs) 
+						for(int i = 0; i < l.Args.Length; i++) l.Args[i] = 0;
+					foreach (Thing t in General.Map.Map.Things) 
+						for(int i = 0; i < t.Args.Length; i++) t.Args[i] = 0;
 				}
 				General.Map.Map.UpdateCustomLinedefColors();
 

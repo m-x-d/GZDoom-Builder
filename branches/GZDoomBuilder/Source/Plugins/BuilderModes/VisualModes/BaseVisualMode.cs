@@ -709,8 +709,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
             if (!gzdoomRenderingEffects) {
 				if(sectordata != null && sectordata.Count > 0) {
 					//rebuild sectors with effects
-					foreach(KeyValuePair<Sector, SectorData> group in sectordata)
-						group.Value.Reset();
+					foreach (KeyValuePair<Sector, SectorData> group in sectordata) {
+						SectorData sd = group.Value;
+						sd.Reset();
+					}
 				}
 
 				//remove all vertex handles from selection
