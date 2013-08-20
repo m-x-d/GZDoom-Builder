@@ -139,11 +139,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.imagebrightnesslabel = new System.Windows.Forms.Label();
 			this.imagebrightness = new Dotnetrix.Controls.TrackBar();
 			this.colorsgroup3 = new System.Windows.Forms.GroupBox();
+			this.fontpreview = new System.Windows.Forms.RichTextBox();
 			this.scripttabwidth = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.scriptautoindent = new System.Windows.Forms.CheckBox();
 			this.label10 = new System.Windows.Forms.Label();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.scriptfontlabel = new System.Windows.Forms.Label();
 			this.scriptfontsize = new System.Windows.Forms.ComboBox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.scriptfontbold = new System.Windows.Forms.CheckBox();
@@ -193,7 +192,6 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightCount)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
 			this.colorsgroup3.SuspendLayout();
-			this.panel1.SuspendLayout();
 			this.tabpasting.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -1455,10 +1453,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colorsgroup3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.colorsgroup3.Controls.Add(this.fontpreview);
 			this.colorsgroup3.Controls.Add(this.scripttabwidth);
 			this.colorsgroup3.Controls.Add(this.scriptautoindent);
 			this.colorsgroup3.Controls.Add(this.label10);
-			this.colorsgroup3.Controls.Add(this.panel1);
 			this.colorsgroup3.Controls.Add(this.scriptfontsize);
 			this.colorsgroup3.Controls.Add(this.label8);
 			this.colorsgroup3.Controls.Add(this.scriptfontbold);
@@ -1479,6 +1477,20 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup3.Text = " Script editor ";
 			this.colorsgroup3.Visible = false;
 			// 
+			// fontpreview
+			// 
+			this.fontpreview.Cursor = System.Windows.Forms.Cursors.Arrow;
+			this.fontpreview.DetectUrls = false;
+			this.fontpreview.Location = new System.Drawing.Point(202, 73);
+			this.fontpreview.Name = "fontpreview";
+			this.fontpreview.ReadOnly = true;
+			this.fontpreview.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+			this.fontpreview.Size = new System.Drawing.Size(233, 100);
+			this.fontpreview.TabIndex = 33;
+			this.fontpreview.Text = "1 #include \"zcommon.acs\"\n2 script 0 (void) { //a comment\n3       CONSTANT_VALUE;\n" +
+				"4 }";
+			this.fontpreview.WordWrap = false;
+			// 
 			// scripttabwidth
 			// 
 			this.scripttabwidth.AllowDecimal = false;
@@ -1486,7 +1498,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scripttabwidth.AllowRelative = false;
 			this.scripttabwidth.ButtonStep = 2;
 			this.scripttabwidth.ButtonStepFloat = 1F;
-			this.scripttabwidth.Location = new System.Drawing.Point(259, 155);
+			this.scripttabwidth.Location = new System.Drawing.Point(259, 179);
 			this.scripttabwidth.Name = "scripttabwidth";
 			this.scripttabwidth.Size = new System.Drawing.Size(71, 24);
 			this.scripttabwidth.StepValues = null;
@@ -1495,7 +1507,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// scriptautoindent
 			// 
 			this.scriptautoindent.AutoSize = true;
-			this.scriptautoindent.Location = new System.Drawing.Point(354, 159);
+			this.scriptautoindent.Location = new System.Drawing.Point(354, 183);
 			this.scriptautoindent.Name = "scriptautoindent";
 			this.scriptautoindent.Size = new System.Drawing.Size(81, 18);
 			this.scriptautoindent.TabIndex = 31;
@@ -1505,32 +1517,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(199, 160);
+			this.label10.Location = new System.Drawing.Point(199, 184);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(57, 14);
 			this.label10.TabIndex = 30;
 			this.label10.Text = "Tab width:";
-			// 
-			// panel1
-			// 
-			this.panel1.BackColor = System.Drawing.SystemColors.Window;
-			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.panel1.Controls.Add(this.scriptfontlabel);
-			this.panel1.Location = new System.Drawing.Point(236, 109);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(199, 38);
-			this.panel1.TabIndex = 29;
-			// 
-			// scriptfontlabel
-			// 
-			this.scriptfontlabel.BackColor = System.Drawing.SystemColors.Window;
-			this.scriptfontlabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.scriptfontlabel.Location = new System.Drawing.Point(0, 0);
-			this.scriptfontlabel.Name = "scriptfontlabel";
-			this.scriptfontlabel.Size = new System.Drawing.Size(195, 34);
-			this.scriptfontlabel.TabIndex = 0;
-			this.scriptfontlabel.Text = "Font";
-			this.scriptfontlabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// scriptfontsize
 			// 
@@ -1554,15 +1545,16 @@ namespace CodeImp.DoomBuilder.Windows
             "36",
             "48",
             "72"});
-			this.scriptfontsize.Location = new System.Drawing.Point(236, 57);
+			this.scriptfontsize.Location = new System.Drawing.Point(236, 45);
 			this.scriptfontsize.Name = "scriptfontsize";
 			this.scriptfontsize.Size = new System.Drawing.Size(94, 22);
 			this.scriptfontsize.TabIndex = 25;
+			this.scriptfontsize.SelectedIndexChanged += new System.EventHandler(this.scriptfontsize_SelectedIndexChanged);
 			// 
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(199, 60);
+			this.label8.Location = new System.Drawing.Point(199, 48);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(31, 14);
 			this.label8.TabIndex = 28;
@@ -1571,12 +1563,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// scriptfontbold
 			// 
 			this.scriptfontbold.AutoSize = true;
-			this.scriptfontbold.Location = new System.Drawing.Point(354, 59);
+			this.scriptfontbold.Location = new System.Drawing.Point(354, 47);
 			this.scriptfontbold.Name = "scriptfontbold";
 			this.scriptfontbold.Size = new System.Drawing.Size(47, 18);
 			this.scriptfontbold.TabIndex = 26;
 			this.scriptfontbold.Text = "Bold";
 			this.scriptfontbold.UseVisualStyleBackColor = true;
+			this.scriptfontbold.CheckedChanged += new System.EventHandler(this.scriptfontbold_CheckedChanged);
 			// 
 			// scriptfontname
 			// 
@@ -1587,6 +1580,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptfontname.Size = new System.Drawing.Size(199, 22);
 			this.scriptfontname.Sorted = true;
 			this.scriptfontname.TabIndex = 23;
+			this.scriptfontname.SelectedIndexChanged += new System.EventHandler(this.scriptfontname_SelectedIndexChanged);
 			// 
 			// label3
 			// 
@@ -1608,6 +1602,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorconstants.Name = "colorconstants";
 			this.colorconstants.Size = new System.Drawing.Size(150, 23);
 			this.colorconstants.TabIndex = 6;
+			this.colorconstants.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
 			// 
 			// colorliterals
 			// 
@@ -1620,6 +1615,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorliterals.Name = "colorliterals";
 			this.colorliterals.Size = new System.Drawing.Size(150, 23);
 			this.colorliterals.TabIndex = 5;
+			this.colorliterals.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
 			// 
 			// colorscriptbackground
 			// 
@@ -1632,6 +1628,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorscriptbackground.Name = "colorscriptbackground";
 			this.colorscriptbackground.Size = new System.Drawing.Size(150, 23);
 			this.colorscriptbackground.TabIndex = 0;
+			this.colorscriptbackground.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
 			// 
 			// colorkeywords
 			// 
@@ -1644,6 +1641,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorkeywords.Name = "colorkeywords";
 			this.colorkeywords.Size = new System.Drawing.Size(150, 23);
 			this.colorkeywords.TabIndex = 4;
+			this.colorkeywords.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
 			// 
 			// colorlinenumbers
 			// 
@@ -1656,6 +1654,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorlinenumbers.Name = "colorlinenumbers";
 			this.colorlinenumbers.Size = new System.Drawing.Size(150, 23);
 			this.colorlinenumbers.TabIndex = 1;
+			this.colorlinenumbers.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
 			// 
 			// colorcomments
 			// 
@@ -1668,6 +1667,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorcomments.Name = "colorcomments";
 			this.colorcomments.Size = new System.Drawing.Size(150, 23);
 			this.colorcomments.TabIndex = 3;
+			this.colorcomments.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
 			// 
 			// colorplaintext
 			// 
@@ -1680,6 +1680,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorplaintext.Name = "colorplaintext";
 			this.colorplaintext.Size = new System.Drawing.Size(150, 23);
 			this.colorplaintext.TabIndex = 2;
+			this.colorplaintext.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
 			// 
 			// tabpasting
 			// 
@@ -1771,7 +1772,6 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).EndInit();
 			this.colorsgroup3.ResumeLayout(false);
 			this.colorsgroup3.PerformLayout();
-			this.panel1.ResumeLayout(false);
 			this.tabpasting.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -1861,8 +1861,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox scripttabwidth;
 		private System.Windows.Forms.CheckBox scriptautoindent;
 		private System.Windows.Forms.Label label10;
-		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.Label scriptfontlabel;
 		private System.Windows.Forms.ComboBox scriptfontsize;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.CheckBox scriptfontbold;
@@ -1901,5 +1899,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label label24;
 		private CodeImp.DoomBuilder.Controls.ColorControl color3dFloors;
 		private System.Windows.Forms.TextBox actiondescription;
+		private System.Windows.Forms.RichTextBox fontpreview;
 	}
 }

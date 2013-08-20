@@ -181,6 +181,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Paste options
 			pasteoptions.Setup(General.Settings.PasteOptions.Copy());
+			updateScriptFontPreview(); //mxd
 
 			// Allow plugins to add tabs
 			this.SuspendLayout();
@@ -402,14 +403,11 @@ namespace CodeImp.DoomBuilder.Windows
         }
 
 		// This updates the script font preview label
-		/*private void UpdateScriptFontPreview()
+		private void updateScriptFontPreview()
 		{
 			if((scriptfontname.SelectedIndex > -1) &&
 			   (scriptfontsize.SelectedIndex > -1))
 			{
-				scriptfontlabel.Text = scriptfontname.Text;
-				scriptfontlabel.BackColor = General.Colors.ScriptBackground.ToColor();
-				scriptfontlabel.ForeColor = General.Colors.PlainText.ToColor();
 				FontFamily ff = new FontFamily(scriptfontname.Text);
 				FontStyle style = FontStyle.Regular;
 				if(scriptfontbold.Checked)
@@ -443,9 +441,49 @@ namespace CodeImp.DoomBuilder.Windows
 				int fontsize = 8;
 				int.TryParse(scriptfontsize.Text, out fontsize);
 				if(ff.IsStyleAvailable(style))
-					scriptfontlabel.Font = new Font(scriptfontname.Text, (float)fontsize, style);
+					fontpreview.Font = new Font(scriptfontname.Text, fontsize, style); //mxd
+
+				//mxd. Update preview colors
+				fontpreview.BackColor = colorscriptbackground.Color.ToColor();
+				fontpreview.ForeColor = colorplaintext.Color.ToColor();
+
+				//1
+				fontpreview.Select(0, 1);
+				fontpreview.SelectionColor = colorlinenumbers.Color.ToColor();
+
+				//2
+				fontpreview.Select(25, 1);
+				fontpreview.SelectionColor = colorlinenumbers.Color.ToColor();
+
+				//script
+				fontpreview.Select(27, 6);
+				fontpreview.SelectionColor = colorkeywords.Color.ToColor();
+
+				//0
+				fontpreview.Select(34, 1);
+				fontpreview.SelectionColor = colorliterals.Color.ToColor();
+
+				//void
+				fontpreview.Select(37, 4);
+				fontpreview.SelectionColor = colorkeywords.Color.ToColor();
+
+				//a comment
+				fontpreview.Select(45, 11);
+				fontpreview.SelectionColor = colorcomments.Color.ToColor();
+
+				//3
+				fontpreview.Select(57, 1);
+				fontpreview.SelectionColor = colorlinenumbers.Color.ToColor();
+
+				//CONSTANT_VALUE
+				fontpreview.Select(65, 14);
+				fontpreview.SelectionColor = colorconstants.Color.ToColor();
+
+				//4
+				fontpreview.Select(81, 1);
+				fontpreview.SelectionColor = colorlinenumbers.Color.ToColor();
 			}
-		}*/
+		}
 
 		#endregion
 		
@@ -810,6 +848,26 @@ namespace CodeImp.DoomBuilder.Windows
         private void tbDynLightIntensity_ValueChanged(object sender, EventArgs e) {
             labelDynLightIntensity.Text = ((float)tbDynLightIntensity.Value / 10).ToString();
         }
+
+		//mxd
+		private void scriptfontbold_CheckedChanged(object sender, EventArgs e) {
+			updateScriptFontPreview();
+		}
+
+		//mxd
+		private void scriptfontsize_SelectedIndexChanged(object sender, EventArgs e) {
+			updateScriptFontPreview();
+		}
+
+		//mxd
+		private void scriptfontname_SelectedIndexChanged(object sender, EventArgs e) {
+			updateScriptFontPreview();
+		}
+
+		//mxd
+		private void scriptcolor_ColorChanged(object sender, EventArgs e) {
+			updateScriptFontPreview();
+		}
 
 		#endregion
 
