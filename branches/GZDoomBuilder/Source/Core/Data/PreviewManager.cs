@@ -134,11 +134,11 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				
 				// Determine preview size
-				float scalex = (img.Width > maxpreviewwidth) ? ((float)maxpreviewwidth / (float)imagewidth) : 1.0f;
-				float scaley = (img.Height > maxpreviewheight) ? ((float)maxpreviewheight / (float)imageheight) : 1.0f;
+				float scalex = (img.Width > maxpreviewwidth) ? (maxpreviewwidth / (float)imagewidth) : 1.0f;
+				float scaley = (img.Height > maxpreviewheight) ? (maxpreviewheight / (float)imageheight) : 1.0f;
 				float scale = Math.Min(scalex, scaley);
-				previewwidth = (int)((float)imagewidth * scale);
-				previewheight = (int)((float)imageheight * scale);
+				previewwidth = (int)(imagewidth * scale);
+				previewheight = (int)(imageheight * scale);
 				if(previewwidth < 1) previewwidth = 1;
 				if(previewheight < 1) previewheight = 1;
 

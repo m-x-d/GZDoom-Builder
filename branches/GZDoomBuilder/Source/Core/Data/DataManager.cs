@@ -1060,7 +1060,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(ThingTypeInfo ti in General.Map.Data.ThingTypes)
 			{
 				// Valid sprite name?
-				if((ti.Sprite.Length > 0) && (ti.Sprite.Length <= 8))
+				if((ti.Sprite.Length > 0) && (ti.Sprite.Length < 9))
 				{
 					ImageData image = null;
 					
@@ -1076,6 +1076,10 @@ namespace CodeImp.DoomBuilder.Data
 							
 							// Add to collection
 							sprites.Add(ti.SpriteLongName, image);
+						}
+						else 
+						{ //mxd
+							General.ErrorLogger.Add(ErrorType.Error, "Missing sprite lump '" + ti.Sprite + "'. Forgot to include required resources?");
 						}
 					}
 					else
@@ -1160,10 +1164,20 @@ namespace CodeImp.DoomBuilder.Data
 				img.LoadImage();
 				img.AllowUnload = false;
 				internalsprites.Add("unknownthing", img);
+				previews.AddImage(img); //mxd
+			}
+
+			//mxd
+			if(!internalsprites.ContainsKey("missingthing")) {
+				ImageData img = new ResourceImage("CodeImp.DoomBuilder.Resources.MissingThing.png");
+				img.LoadImage();
+				img.AllowUnload = false;
+				internalsprites.Add("missingthing", img);
+				previews.AddImage(img);
 			}
 		}
 		
-		// This returns an image by long
+		// This returns an image by name
 		public ImageData GetSpriteImage(string name)
 		{
 			// Is this referring to an internal sprite image?
@@ -1172,13 +1186,9 @@ namespace CodeImp.DoomBuilder.Data
 				// Get the internal sprite
 				string internalname = name.Substring(INTERNAL_PREFIX.Length).ToLowerInvariant();
 				if(internalsprites.ContainsKey(internalname))
-				{
 					return internalsprites[internalname];
-				}
-				else
-				{
-					return unknownImage; //mxd
-				}
+
+				return internalsprites["unknownthing"]; //mxd
 			}
 			else
 			{
@@ -1198,7 +1208,7 @@ namespace CodeImp.DoomBuilder.Data
 					// Go for all opened containers
 					for(int i = containers.Count - 1; i >= 0; i--)
 					{
-						// This contain provides this sprite?
+						// This container provides this sprite?
 						spritedata = containers[i].GetSpriteData(name);
 						if(spritedata != null) break;
 					}
@@ -1215,10 +1225,15 @@ namespace CodeImp.DoomBuilder.Data
 						// Return result
 						return image;
 					}
-					else
+					else //mxd
 					{
+						ImageData img = string.IsNullOrEmpty(name) ? internalsprites["unknownthing"] : internalsprites["missingthing"];
+						
+						// Add to collection
+						sprites.Add(longname, img);
+					
 						// Return null image
-						return unknownImage; //mxd
+						return img; 
 					}
 				}
 			}

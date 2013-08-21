@@ -926,6 +926,7 @@
     <None Include="Resources\MLogo.png" />
     <None Include="Resources\Marine.png" />
     <None Include="Resources\Link.png" />
+    <EmbeddedResource Include="Resources\MissingThing.png" />
     <Content Include="Resources\Model.png" />
     <Content Include="Resources\Model_selected.png" />
     <EmbeddedResource Include="Resources\UDMF_UI.cfg" />
