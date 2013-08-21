@@ -1592,7 +1592,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			Vector2D v2 = l.End.Position.GetTransformed(translatex, translatey, scale, -scale);
 
 			// Draw line. mxd: added 3d-floor indication
-			if(l.ExtraFloorFlag) {
+			if(l.ExtraFloorFlag && General.Settings.GZMarkExtraFloors) {
 				plotter.DrawLine3DFloor(v1, v2, ref c, General.Colors.ThreeDFloor);
 			} else {
 				plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, ref c);

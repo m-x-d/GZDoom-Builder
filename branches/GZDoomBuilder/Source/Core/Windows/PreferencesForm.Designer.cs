@@ -159,6 +159,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label16 = new System.Windows.Forms.Label();
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.cbMarkExtraFloors = new System.Windows.Forms.CheckBox();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -1271,6 +1272,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.appearancegroup1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.appearancegroup1.Controls.Add(this.cbMarkExtraFloors);
 			this.appearancegroup1.Controls.Add(this.cbLoadGameGldefs);
 			this.appearancegroup1.Controls.Add(this.cbOldHighlightMode);
 			this.appearancegroup1.Controls.Add(label21);
@@ -1717,6 +1719,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pasteoptions.Size = new System.Drawing.Size(666, 427);
 			this.pasteoptions.TabIndex = 0;
 			// 
+			// cbMarkExtraFloors
+			// 
+			this.cbMarkExtraFloors.AutoSize = true;
+			this.cbMarkExtraFloors.Location = new System.Drawing.Point(236, 254);
+			this.cbMarkExtraFloors.Name = "cbMarkExtraFloors";
+			this.cbMarkExtraFloors.Size = new System.Drawing.Size(179, 18);
+			this.cbMarkExtraFloors.TabIndex = 35;
+			this.cbMarkExtraFloors.Text = "Mark 3D floors in classic modes";
+			this.toolTip1.SetToolTip(this.cbMarkExtraFloors, "When enabled, linedefs of sectors with 3d floors will be marked using \"3D Floors\"" +
+					" color.");
+			this.cbMarkExtraFloors.UseVisualStyleBackColor = true;
+			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -1900,5 +1914,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ColorControl color3dFloors;
 		private System.Windows.Forms.TextBox actiondescription;
 		private System.Windows.Forms.RichTextBox fontpreview;
+		private System.Windows.Forms.CheckBox cbMarkExtraFloors;
 	}
 }
