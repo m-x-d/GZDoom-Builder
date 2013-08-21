@@ -111,6 +111,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool gzLoadDefaultLightDefinitions;
 		private bool gzForceDefaultTextures;
 		private string lastUsedConfigName;
+		private bool gzMarkExtraFloors;
 		
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -196,7 +197,8 @@ namespace CodeImp.DoomBuilder.Config
 		public bool GZLoadDefaultLightDefinitions { get { return gzLoadDefaultLightDefinitions; } internal set { gzLoadDefaultLightDefinitions = value; } }
 		public bool GZForceDefaultTextures { get { return gzForceDefaultTextures; } internal set { gzForceDefaultTextures = value; } }
 		public string LastUsedConfigName { get { return lastUsedConfigName; } internal set { lastUsedConfigName = value; } }
-		
+		public bool GZMarkExtraFloors { get { return gzMarkExtraFloors; } internal set { gzMarkExtraFloors = value; } }
+
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
 		public string DefaultCeilingTexture { get { return defaultceiltexture; } set { defaultceiltexture = value; } }
@@ -296,6 +298,7 @@ namespace CodeImp.DoomBuilder.Config
 				gzVisualVertexSize = cfg.ReadSetting("gzvisualvertexsize", 6);
 				gzLoadDefaultLightDefinitions = cfg.ReadSetting("gzloaddefaultlightdefinitions", true);
 				lastUsedConfigName = cfg.ReadSetting("lastusedconfigname", "");
+				gzMarkExtraFloors = cfg.ReadSetting("gzmarkextrafloors", true);
 				
 				// Success
 				return true;
@@ -374,6 +377,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("gzshowvisualvertices", gzShowVisualVertices);
 			cfg.WriteSetting("gzvisualvertexsize", gzVisualVertexSize);
 			cfg.WriteSetting("gzloaddefaultlightdefinitions", gzLoadDefaultLightDefinitions);
+			cfg.WriteSetting("gzmarkextrafloors", gzMarkExtraFloors);
 			if(!string.IsNullOrEmpty(lastUsedConfigName))
 				cfg.WriteSetting("lastusedconfigname", lastUsedConfigName);
 			
