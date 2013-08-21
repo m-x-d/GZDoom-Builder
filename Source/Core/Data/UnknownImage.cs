@@ -55,6 +55,9 @@ namespace CodeImp.DoomBuilder.Data
 		// This 'loads' the image
 		protected override void LocalLoadImage()
 		{
+			//mxd. Leave when already loaded
+			if(this.IsImageLoaded) return;
+			
 			bitmap = loadbitmap;
 			base.LocalLoadImage();
 		}
