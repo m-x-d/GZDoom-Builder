@@ -1,59 +1,59 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	
-	<title>Template</title>
-	
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-	<link rel="stylesheet" type="text/css" href="../default.css" media="screen" title="Default" />
-    <style type="text/css">
+<title>Template</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="../default.css" media="screen" title="Default" />
+<style type="text/css">
 <!--
-.style2 {color: #006600}
-.style3 {color: #0000FF}
+.style2 {
+	color: #006600
+}
+.style3 {
+	color: #0000FF
+}
 -->
-    </style>
+</style>
 </head>
 <body>
-	
-	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-	<param name="keyword" value="Template">
-	</object>
-	
-	<div id="gz_title">
-	  <h1>GZDoom Builder-specific settings in game configurations</h1>
-	</div>
-	
-	<div id="contents">
-
-	<p><h3>General settings:</h3></br><b>basegame</b> - indicates on which game current configuration is based. Used to load game-specific GLDEFS lumps (DOOMDEFS, HTICDEFS, HEXNDEFS or STRFDEFS)</br>
-<b>Possile values:</b> 1 (DOOM), 2 (HERETIC), 3 (HEXEN) or 4 (STRIFE).<br>
-<b>Example:</b> <span class="style2">basegame = 0;</span>
-<p>
-<h3>Thing and linedef definitions:</h3>
-<p>Default values can be set in Thing and Linedef argument definitions.<br>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="keyword" value="Template">
+</object>
+<div id="gz_title">
+  <h1>GZDoom Builder-specific settings in game configurations</h1>
+</div>
+<div id="contents">
+  <p>
+  <h2>General settings:</h2>
+  <p><b>basegame</b> - indicates which game the current configuration is based on. Used to load game-specific GLDEFS lumps (DOOMDEFS, HTICDEFS, HEXNDEFS or STRFDEFS)</br>
+    <b>Possible values:</b> 1 (DOOM), 2 (HERETIC), 3 (HEXEN) or 4 (STRIFE).<br>
+    <b>Example:</b> <span class="style2">basegame = 2; </p>
+  </p>
+  <h2>Thing and linedef definitions:</h2>
+  <p>Default values can be set in Thing and Linedef argument definitions.<br>
     <b>Example:</b> <br>
     <span class="style2">9038<br />
-{<br />
-&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;ColorSetter&quot;;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;arg0<br />
-&nbsp;&nbsp;&nbsp;&nbsp;{<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Red&quot;;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style3">default = 255;</span><br />
-&nbsp;&nbsp;&nbsp;&nbsp;}<br />
-&nbsp;&nbsp;&nbsp;&nbsp;arg1<br />
-&nbsp;&nbsp;&nbsp;&nbsp;{<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Green&quot;;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style3">default = 255;</span><br />
-&nbsp;&nbsp;&nbsp;&nbsp;}<br />
-&nbsp;&nbsp;&nbsp;&nbsp;arg2<br />
-&nbsp;&nbsp;&nbsp;&nbsp;{<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Blue&quot;;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style3">default = 255;</span><br />
-&nbsp;&nbsp;&nbsp;&nbsp;}<br />
-&nbsp;&nbsp;&nbsp;&nbsp;arg3<br />
-&nbsp;&nbsp;&nbsp;&nbsp;{<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Desaturation&quot;;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;}</span><br />
-}</p>
+    {<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;title = &quot;ColorSetter&quot;;<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;arg0<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;{<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Red&quot;;<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style3">default = 255;</span><br />
+    &nbsp;&nbsp;&nbsp;&nbsp;}<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;arg1<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;{<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Green&quot;;<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style3">default = 255;</span><br />
+    &nbsp;&nbsp;&nbsp;&nbsp;}<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;arg2<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;{<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Blue&quot;;<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style3">default = 255;</span><br />
+    &nbsp;&nbsp;&nbsp;&nbsp;}<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;arg3<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;{<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Desaturation&quot;;<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;}</span><br />
+    }</p>
 </div>
 </body>
