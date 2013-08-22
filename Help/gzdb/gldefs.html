@@ -31,10 +31,10 @@
     <p><b>If you are creating maps for Doom or Doom 2, you probably don't need to read this, since required information is already added for those games.</b><br />
       <br />
 	  <b>To load models or dynamic lights defined in GLDEFS for things defined in configuration files:</b><br />
-	  To display a model instead of thing sprite, or to attach a light defined in GLDEFS, GZDB needs to know a thing's class name (because that's how overrides are defined in MODELDEF and GLDEFS). Things defined in Doom Builder configuration files don't have this value. So, if you aren't using configs, which came with GZDoom Builder, or you are creating maps for games other than Doom and Doom 2, you'll need to add a new value named "class" to thing definition in game configuration:<br />
+	  To display a model instead of a thing sprite, or to attach a light defined in GLDEFS, GZDB needs to know a thing's class name (because that's how overrides are defined in MODELDEF and GLDEFS). Things defined in Doom Builder configuration files don't have this value. So, if you aren't using configs, which came with GZDoom Builder, or you are creating maps for games other than Doom and Doom 2, you'll need to add a new value named "class" to thing definition in game configuration:<br />
     <p style="color:#006600">3001<br />{<br />&nbsp; &nbsp;title = &quot;Imp&quot;;<br />&nbsp; &nbsp;sprite = &quot;TROOA2A8&quot;;<br />
       &nbsp; &nbsp;<span class="style1">class = &quot;DoomImp&quot;; </span>// &lt;- you'll need to add this value<br />
 }</p>
- You can find class names for things at http://www.zdoom.org/wiki/Classes.</p>
+ You can find all class names for things at <a href="http://www.zdoom.org/wiki/Classes">http://www.zdoom.org/wiki/Classes</a>.</p>
 </div>
 </body>
