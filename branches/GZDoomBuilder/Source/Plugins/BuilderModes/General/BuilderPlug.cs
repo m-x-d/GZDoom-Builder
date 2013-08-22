@@ -224,7 +224,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddMenu(exportToObjMenuItem, MenuSection.FileNewOpenClose);
 
             //mxd. add "Snap Vertices" menu button
-            snapModeMenuItem = new ToolStripMenuItem("Snap selected vertices to grid");
+            snapModeMenuItem = new ToolStripMenuItem("Snap selected map elements to grid");
             snapModeMenuItem.Tag = "snapvertstogrid";
             snapModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
             snapModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.SnapVerts;
