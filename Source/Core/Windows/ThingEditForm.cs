@@ -675,18 +675,17 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void updateAngle() {
 			if(preventchanges) return;
+			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(angle.Text)) {
-				int i = 0;
-
 				// Apply rotation
 				foreach(Thing t in things)
 					t.Rotate(thingProps[i++].AngleDoom);
 			} else { //update values
 				// Apply rotation
 				foreach(Thing t in things)
-					t.Rotate(angle.GetResult(t.AngleDoom));
+					t.Rotate(angle.GetResult(thingProps[i++].AngleDoom));
 			}
 
 			General.Map.IsChanged = true;

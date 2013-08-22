@@ -176,17 +176,16 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void positionx_WhenTextChanged(object sender, EventArgs e) {
 			if(blockUpdate) return;
+			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(positionx.Text)) {
-				int i = 0;
-
 				// Apply position
 				foreach(Vertex v in vertices)
 					v.Move(new Vector2D(vertexProps[i++].X, v.Position.y));
 			} else { //update values
 				// Verify the coordinates
-				float px = positionx.GetResultFloat(0.0f);
+				float px = positionx.GetResultFloat(vertexProps[i++].X);
 				if(px < General.Map.FormatInterface.MinCoordinate) {
 					positionx.Text = General.Map.FormatInterface.MinCoordinate.ToString();
 					return;
@@ -206,17 +205,16 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void positiony_WhenTextChanged(object sender, EventArgs e) {
 			if(blockUpdate) return;
+			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(positiony.Text)) {
-				int i = 0;
-
 				// Apply position
 				foreach(Vertex v in vertices)
 					v.Move(new Vector2D(v.Position.x, vertexProps[i++].Y));
 			} else { //update values
 				// Verify the coordinates
-				float py = positiony.GetResultFloat(0.0f);
+				float py = positiony.GetResultFloat(vertexProps[i++].Y);
 				if(py < General.Map.FormatInterface.MinCoordinate) {
 					positiony.Text = General.Map.FormatInterface.MinCoordinate.ToString();
 					return;
@@ -236,11 +234,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void zceiling_WhenTextChanged(object sender, EventArgs e) {
 			if(blockUpdate) return;
+			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(zceiling.Text)) {
-				int i = 0;
-
 				foreach(Vertex v in vertices)
 					v.ZCeiling = vertexProps[i++].ZCeiling;
 			//clear values
@@ -250,7 +247,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//update values
 			} else { 
 				foreach(Vertex v in vertices)
-					v.ZCeiling = zceiling.GetResultFloat(v.ZCeiling);
+					v.ZCeiling = zceiling.GetResultFloat(vertexProps[i++].ZCeiling);
 			}
 
 			General.Map.IsChanged = true;
@@ -259,11 +256,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void zfloor_WhenTextChanged(object sender, EventArgs e) {
 			if(blockUpdate) return;
+			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(zfloor.Text)) {
-				int i = 0;
-
 				foreach(Vertex v in vertices)
 					v.ZFloor = vertexProps[i++].ZFloor;
 			//clear values
@@ -272,8 +268,8 @@ namespace CodeImp.DoomBuilder.Windows
 					v.ZFloor = float.NaN;
 			//update values
 			} else { 
-				foreach(Vertex v in vertices) 
-					v.ZFloor = zfloor.GetResultFloat(v.ZFloor);
+				foreach(Vertex v in vertices)
+					v.ZFloor = zfloor.GetResultFloat(vertexProps[i++].ZFloor);
 			}
 
 			General.Map.IsChanged = true;

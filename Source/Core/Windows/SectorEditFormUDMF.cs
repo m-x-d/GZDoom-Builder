@@ -493,17 +493,16 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateSectorHeight();
 
 			if(blockUpdate)	return;
+			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(ceilingheight.Text)) {
-				int i = 0;
-
 				foreach(Sector s in sectors)
 					s.CeilHeight = sectorProps[i++].CeilHeight;
 			//update values
 			} else {
 				foreach(Sector s in sectors)
-					s.CeilHeight = ceilingheight.GetResult(s.CeilHeight);
+					s.CeilHeight = ceilingheight.GetResult(sectorProps[i++].CeilHeight);
 			}
 
 			General.Map.IsChanged = true;
@@ -514,17 +513,16 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateSectorHeight();
 
 			if(blockUpdate)	return;
+			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(floorheight.Text)) {
-				int i = 0;
-
 				foreach(Sector s in sectors)
 					s.FloorHeight = sectorProps[i++].FloorHeight;
-				//update values
+			//update values
 			} else {
 				foreach(Sector s in sectors)
-					s.FloorHeight = floorheight.GetResult(s.FloorHeight);
+					s.FloorHeight = floorheight.GetResult(sectorProps[i++].FloorHeight);
 			}
 
 			General.Map.IsChanged = true;
@@ -533,11 +531,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void brightness_WhenTextChanged(object sender, EventArgs e) {
 			if(blockUpdate)	return;
+			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(brightness.Text)) {
-				int i = 0;
-
 				foreach(Sector s in sectors)
 					s.Brightness = sectorProps[i++].Brightness;
 			//update values
@@ -551,7 +548,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				foreach(Sector s in sectors)
-					s.Brightness = General.Clamp(brightness.GetResult(s.Brightness), General.Map.FormatInterface.MinBrightness, General.Map.FormatInterface.MaxBrightness);
+					s.Brightness = General.Clamp(brightness.GetResult(sectorProps[i++].Brightness), General.Map.FormatInterface.MinBrightness, General.Map.FormatInterface.MaxBrightness);
 			}
 
 			General.Map.IsChanged = true;

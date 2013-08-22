@@ -194,7 +194,6 @@ namespace CodeImp.DoomBuilder.Controls
 		public int GetResult(int original)
 		{
 			string textpart = this.Text;
-			int result;
 			
 			// Strip prefixes
 			textpart = textpart.Replace("+", "");
@@ -203,35 +202,33 @@ namespace CodeImp.DoomBuilder.Controls
 			// Any numbers left?
 			if(textpart.Length > 0)
 			{
+				int result;
+				
 				// Prefixed with ++?
 				if(this.Text.StartsWith("++"))
 				{
 					// Add number to original
-					if(!int.TryParse(textpart, out result)) result = 0;
+					int.TryParse(textpart, out result);
 					return original + result;
 				}
 				// Prefixed with --?
-				else if(this.Text.StartsWith("--"))
+				if(this.Text.StartsWith("--"))
 				{
 					// Subtract number from original
-					if(!int.TryParse(textpart, out result)) result = 0;
+					int.TryParse(textpart, out result);
 					int newvalue = original - result;
 					if(!allownegative && (newvalue < 0)) newvalue = 0;
 					return newvalue;
 				}
-				else
-				{
-					//mxd. Return the new value
-					if(!int.TryParse(this.Text, out result)) return original;
-					if(!allownegative && (result < 0)) return 0;
-					return result;
-				}
+
+				//mxd. Return the new value
+				if(!int.TryParse(this.Text, out result)) return original;
+				if(!allownegative && (result < 0)) return 0;
+				return result;
 			}
-			else
-			{
-				// Nothing given, keep original value
-				return original;
-			}
+
+			// Nothing given, keep original value
+			return original;
 		}
 
 		// This determines the result value
