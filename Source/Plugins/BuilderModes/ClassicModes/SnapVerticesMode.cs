@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 	            //check things
 	            List<Thing> things = General.Map.Map.GetMarkedThings(true);
 	            if (things.Count == 0) {
-		            General.Interface.DisplayStatus(StatusType.Warning, "Select some map elements first!");
+		            General.Interface.DisplayStatus(StatusType.Warning, "Select any map element first!");
 		            base.OnCancel();
 		            General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
 	            } else {

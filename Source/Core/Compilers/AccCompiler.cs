@@ -104,6 +104,7 @@ namespace CodeImp.DoomBuilder.Compilers
 			args = args.Replace("%FS", sourcefile);
 			args = args.Replace("%PT", this.tempdir.FullName);
 			args = args.Replace("%PS", sourcedir);
+			args = args.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar); //mxd. This fixes include path when the map is in a root directory
 			
 			// Setup process info
 			processinfo = new ProcessStartInfo();
