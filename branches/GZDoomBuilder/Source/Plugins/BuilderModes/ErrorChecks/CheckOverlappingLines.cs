@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Map;
 using System.Threading;
@@ -74,8 +75,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								
 								// Check if the lines touch. Note that I don't include 0.0 and 1.0 here because
 								// the lines may be touching at the ends when sharing the same vertex.
-								if(l.Line.GetIntersection(d.Line, out du, out lu))
-								{
+								if(l.Line.GetIntersection(d.Line, out du, out lu)) {
+									lu = (float)Math.Round(lu, General.Map.FormatInterface.VertexDecimals); //mxd
+									du = (float)Math.Round(du, General.Map.FormatInterface.VertexDecimals); //mxd
+									
 									if((lu > 0.0f) && (lu < 1.0f) && (du > 0.0f) && (du < 1.0f))
 									{
 										// Check if not the same sector on all sides
