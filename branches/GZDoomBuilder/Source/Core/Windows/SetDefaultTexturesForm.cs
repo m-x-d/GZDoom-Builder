@@ -27,15 +27,9 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		private void bApply_Click(object sender, EventArgs e) {
-			if(General.Map.Data.GetTextureExists(ceiling.TextureName))
-				General.Settings.DefaultCeilingTexture = ceiling.TextureName;
-
-			if(General.Map.Data.GetTextureExists(floor.TextureName))
-				General.Settings.DefaultFloorTexture = floor.TextureName;
-
-			if(General.Map.Data.GetTextureExists(walls.TextureName))
-				General.Settings.DefaultTexture = walls.TextureName;
-
+			General.Settings.DefaultCeilingTexture = string.IsNullOrEmpty(ceiling.TextureName) ? "-" : ceiling.TextureName;
+			General.Settings.DefaultFloorTexture = string.IsNullOrEmpty(floor.TextureName) ? "-" : floor.TextureName;
+			General.Settings.DefaultTexture = string.IsNullOrEmpty(walls.TextureName) ? "-" : walls.TextureName;
 			General.Settings.GZForceDefaultTextures = cbForceDefault.Checked;
 			Close();
 		}

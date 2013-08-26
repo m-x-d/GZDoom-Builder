@@ -37,7 +37,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private Bitmap bmp;
 		private bool ismouseinside;
 		private MouseButtons button;
-		protected bool allowclear;
 		private string previousImageName; //mxd
 		
 		#endregion
@@ -92,7 +91,7 @@ namespace CodeImp.DoomBuilder.Controls
 			ShowPreview(FindImage(name.Text));
 			if(button == MouseButtons.Right)
 			{
-				if(allowclear) name.Text = "-";
+				name.Text = "-";
 			}
 			else if(button == MouseButtons.Left)
 			{
@@ -111,7 +110,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private void preview_MouseDown(object sender, MouseEventArgs e)
 		{
 			button = e.Button;
-			if((button == MouseButtons.Left) || ((button == MouseButtons.Right) && allowclear))
+			if((button == MouseButtons.Left) || ((button == MouseButtons.Right)))
 			{
 				//ispressed = true;
 				preview.BackColor = AdjustedColor(SystemColors.Highlight, 0.2f);
