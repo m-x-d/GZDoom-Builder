@@ -65,6 +65,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			//mxd. Texture info
 			if ((s.FloorTexture.Length < 1) || (s.FloorTexture == "-")){
+				labelFloorTextureSize.Visible = false;
 				General.DisplayZoomedImage(floortex, Properties.Resources.MissingTexture);
 			} else {
 				ImageData floorImage = General.Map.Data.GetFlatImage(s.FloorTexture);
@@ -73,6 +74,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			if((s.CeilTexture.Length < 1) || (s.CeilTexture == "-")) {
+				labelCeilTextureSize.Visible = false;
 				General.DisplayZoomedImage(ceilingtex, Properties.Resources.MissingTexture);
 			} else {
 				ImageData ceilingImage = General.Map.Data.GetFlatImage(s.CeilTexture);

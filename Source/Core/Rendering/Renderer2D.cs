@@ -1210,6 +1210,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					// Make sure anything we need is loaded
 					General.Map.Data.UnknownTexture3D.CreateTexture();
+					General.Map.Data.MissingTexture3D.CreateTexture(); //mxd
 
 					// Set transformations
 					UpdateTransformations();
