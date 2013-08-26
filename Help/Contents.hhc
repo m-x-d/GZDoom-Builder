@@ -320,8 +320,8 @@
 					<param name="Local" value="gzdb\features\classic_modes\mode_drawbridge.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="Snap vertices mode">
-					<param name="Local" value="gzdb\features\classic_modes\mode_snapverts.html">
+					<param name="Name" value="Snap geometry mode">
+					<param name="Local" value="gzdb\features\classic_modes\mode_snapelements.html">
 					</OBJECT>
 			</UL>
 			<LI> <OBJECT type="text/sitemap">
