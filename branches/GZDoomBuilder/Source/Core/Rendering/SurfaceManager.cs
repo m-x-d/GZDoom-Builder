@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Drawing;
+using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using SlimDX.Direct3D9;
 using SlimDX;
@@ -635,6 +636,10 @@ namespace CodeImp.DoomBuilder.Rendering
 					{
 						img = General.Map.Data.WhiteTexture;
 					}
+				} 
+				else if(longimagename == Lump.MakeLongName("-")) //mxd
+				{
+					img = General.Map.Data.MissingTexture3D;
 				}
 				else
 				{
