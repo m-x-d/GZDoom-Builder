@@ -931,7 +931,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemSetCurrentTextures.Name = "itemSetCurrentTextures";
 			this.itemSetCurrentTextures.Size = new System.Drawing.Size(197, 22);
 			this.itemSetCurrentTextures.Tag = "builder_setcurrenttextures";
-			this.itemSetCurrentTextures.Text = "Set Current &Textures...";
+			this.itemSetCurrentTextures.Text = "Set Default &Textures...";
 			this.itemSetCurrentTextures.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemmapoptions

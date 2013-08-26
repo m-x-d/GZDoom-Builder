@@ -66,7 +66,6 @@
         <li>Added errors and warnings indicator to main window (bottom-right   corner). You can click on it to open <strong>Errors and warnings</strong> window.</li>
       </ul>
     </li>
-    <li></li>
     <li>
       <h3><a name="allmodes" id="allmodes"></a>Classic and Visual modes:</h3>
     </li>
@@ -101,7 +100,11 @@
         <li><a href="classic_modes/mode_drawcurve.html"><span class="style1"><strong>[new]</strong></span> Draw Curve mode</a>.</li>
         <li><a href="classic_modes/mode_drawbridge.html">Bridge mode</a>.</li>
         <li><a href="classic_modes/mode_snapelements.html">Snap map elements mode</a>.</li>
-        <li><span class="style5">[new]</span> 3D floor indication (color can be changed in <strong>Preferences -&gt; Appearance -&gt; 3D Floors</strong>, the setting can be disabled in <a href="../preferences.html#markextrafloors">Preferences</a>) 
+        <li><span class="style5">[new]</span> You can set, which textures to use when drawing new geometry using &quot;<strong><a href="../actions.html#setdefaulttextures">Set Default Textures</a></strong>&quot; action, available in <strong>Edit</strong> menu (by default, the editor uses textures from closest sector when drawing a new one). 
+          <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
+          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"> <img src="classic_modes/setdefaulttextures.jpg" alt="" /></div>
+        </li>
+        <li><span class="style5">[new]</span> 3D floor indication (color can be changed in <strong>Preferences -&gt; Appearance -&gt; 3D Floors</strong>, the setting can be disabled in <a href="../preferences.html#markextrafloors">Preferences</a>). 
           <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
           <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"> <img src="classic_modes/3dfloor_marks.jpg" alt="" /></div>
         </li>
@@ -211,9 +214,6 @@
         </li>        
       </ul>
     </li>
-    
-    <li>    </li>
-    
     <li>
       <h3><a name="fields" id="fields"></a>Custom Fields:</h3>
     </li>

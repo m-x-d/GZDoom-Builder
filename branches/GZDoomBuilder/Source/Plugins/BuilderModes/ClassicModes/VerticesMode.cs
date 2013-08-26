@@ -915,7 +915,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				redraw = false;
 			}
 
-			if(redraw) {
+			if(ld1.Start == null || ld1.End == null) {
+				ld1.Dispose();
+			} else if (redraw) {
 				Vector2D start = ld1.Start.Position;
 				Vector2D end = ld1.End.Position;
 				ld1.Dispose();
