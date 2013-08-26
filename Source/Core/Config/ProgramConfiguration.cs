@@ -545,13 +545,13 @@ namespace CodeImp.DoomBuilder.Config
 			if(General.Map == null) return;
 			
 			// Default texture missing?
-			if((defaulttexture == null) || defaulttexture.StartsWith("-"))
+			if(defaulttexture == null || (!gzForceDefaultTextures && defaulttexture == "-")) //mxd
 			{
 				// Find default texture from map
 				foundone = false;
 				foreach(Sidedef sd in General.Map.Map.Sidedefs)
 				{
-					if(!sd.MiddleTexture.StartsWith("-"))
+					if(sd.MiddleTexture != "-")
 					{
 						defaulttexture = sd.MiddleTexture;
 						if(General.Map.Data.GetTextureExists(defaulttexture))
