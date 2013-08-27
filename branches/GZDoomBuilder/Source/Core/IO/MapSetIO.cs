@@ -42,6 +42,9 @@ namespace CodeImp.DoomBuilder.IO
 		// Map manager
 		protected MapManager manager;
 
+		//mxd
+		protected Dictionary<string, Dictionary<string, UniversalType>> uifields;
+
 		#endregion
 
 		#region ================== Properties
@@ -95,6 +98,7 @@ namespace CodeImp.DoomBuilder.IO
 			// Initialize
 			this.wad = wad;
 			this.manager = manager;
+			this.uifields = new Dictionary<string, Dictionary<string, UniversalType>>(); //mxd
 		}
 		
 		#endregion

@@ -37,12 +37,6 @@ namespace CodeImp.DoomBuilder.IO
 		private const string UDMF_UI_CONFIG_NAME = "UDMF_UI.cfg";
 		
 		#endregion
-
-		#region ================== Variables
-
-		private Dictionary<string, Dictionary<string, UniversalType>> uifields;
-		
-		#endregion
 		
 		#region ================== Constructor / Disposer
 
@@ -54,7 +48,7 @@ namespace CodeImp.DoomBuilder.IO
 				// Make configuration
 				Configuration config = new Configuration();
 				
-				// Find a resource named UDMF_UI.cfg
+				//mxd. Find a resource named UDMF_UI.cfg
 				string[] resnames = General.ThisAssembly.GetManifestResourceNames();
 				foreach(string rn in resnames)
 				{
@@ -68,7 +62,6 @@ namespace CodeImp.DoomBuilder.IO
 						// Load configuration from stream
 						config.InputConfiguration(udmfcfgreader.ReadToEnd());
 						string[] elements = new string[] { "vertex", "linedef", "sidedef", "sector", "thing" };
-						uifields = new Dictionary<string, Dictionary<string, UniversalType>>();
 
 						foreach(string elementname in elements) {
 							IDictionary dic = config.ReadSetting("uifields." + elementname, new Hashtable());
