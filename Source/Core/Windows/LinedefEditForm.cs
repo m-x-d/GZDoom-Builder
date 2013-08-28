@@ -325,7 +325,7 @@ namespace CodeImp.DoomBuilder.Windows
 			action.Value = fl.Action;
 
 			if(General.Map.FormatInterface.HasLinedefTag) {//mxd
-				tagSelector.Setup();
+				tagSelector.Setup(UniversalType.LinedefTag);
 				tagSelector.SetTag(fl.Tag);
 			}
 

@@ -597,7 +597,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.conversationID.AllowRelative = false;
 			this.conversationID.ButtonStep = 1;
 			this.conversationID.ButtonStepFloat = 1F;
-			this.conversationID.Location = new System.Drawing.Point(493, 26);
+			this.conversationID.Location = new System.Drawing.Point(548, 26);
 			this.conversationID.Name = "conversationID";
 			this.conversationID.Size = new System.Drawing.Size(72, 24);
 			this.conversationID.StepValues = null;
@@ -606,7 +606,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelID
 			// 
 			this.labelID.AutoSize = true;
-			this.labelID.Location = new System.Drawing.Point(401, 31);
+			this.labelID.Location = new System.Drawing.Point(456, 31);
 			this.labelID.Name = "labelID";
 			this.labelID.Size = new System.Drawing.Size(86, 14);
 			this.labelID.TabIndex = 10;
@@ -616,7 +616,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tagSelector.Location = new System.Drawing.Point(6, 19);
 			this.tagSelector.Name = "tagSelector";
-			this.tagSelector.Size = new System.Drawing.Size(369, 35);
+			this.tagSelector.Size = new System.Drawing.Size(430, 35);
 			this.tagSelector.TabIndex = 8;
 			// 
 			// tabcustom

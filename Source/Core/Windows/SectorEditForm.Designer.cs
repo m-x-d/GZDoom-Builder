@@ -119,16 +119,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.effect.Cursor = System.Windows.Forms.Cursors.Default;
 			this.effect.Empty = false;
 			this.effect.GeneralizedCategories = null;
-			this.effect.Location = new System.Drawing.Point(89, 28);
+			this.effect.Location = new System.Drawing.Point(61, 28);
 			this.effect.Name = "effect";
-			this.effect.Size = new System.Drawing.Size(307, 21);
+			this.effect.Size = new System.Drawing.Size(335, 21);
 			this.effect.TabIndex = 0;
 			this.effect.Value = 402;
 			// 
 			// label8
 			// 
 			label8.AutoSize = true;
-			label8.Location = new System.Drawing.Point(38, 31);
+			label8.Location = new System.Drawing.Point(12, 31);
 			label8.Name = "label8";
 			label8.Size = new System.Drawing.Size(45, 14);
 			label8.TabIndex = 0;
@@ -136,9 +136,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tagSelector
 			// 
-			this.tagSelector.Location = new System.Drawing.Point(47, 52);
+			this.tagSelector.Location = new System.Drawing.Point(19, 52);
 			this.tagSelector.Name = "tagSelector";
-			this.tagSelector.Size = new System.Drawing.Size(384, 34);
+			this.tagSelector.Size = new System.Drawing.Size(414, 34);
 			this.tagSelector.TabIndex = 0;
 			// 
 			// label9
