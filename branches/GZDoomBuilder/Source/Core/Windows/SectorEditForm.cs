@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.Windows
 			ceilingtex.TextureName = sc.CeilTexture;
 
 			// Action
-			tagSelector.Setup(); //mxd
+			tagSelector.Setup(UniversalType.SectorTag); //mxd
 			tagSelector.SetTag(sc.Tag);//mxd
 			
 			////////////////////////////////////////////////////////////////////////

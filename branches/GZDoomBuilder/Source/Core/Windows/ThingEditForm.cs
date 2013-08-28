@@ -198,7 +198,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Action/tags
 			action.Value = ft.Action;
 			if(General.Map.FormatInterface.HasThingTag) {//mxd
-				tagSelector.Setup(); 
+				tagSelector.Setup(UniversalType.ThingTag); 
 				tagSelector.SetTag(ft.Tag);
 			}
 			arg0.SetValue(ft.Args[0]);

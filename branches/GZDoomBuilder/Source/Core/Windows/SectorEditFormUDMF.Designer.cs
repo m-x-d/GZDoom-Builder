@@ -54,6 +54,7 @@
 			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.tabSurfaces = new System.Windows.Forms.TabPage();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.cbUseFloorLineAngles = new System.Windows.Forms.CheckBox();
 			this.floorAngleControl = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
@@ -68,6 +69,7 @@
 			this.floorOffsets = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.floortex = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.cbUseCeilLineAngles = new System.Windows.Forms.CheckBox();
 			this.ceilAngleControl = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
@@ -85,8 +87,6 @@
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
-			this.cbUseCeilLineAngles = new System.Windows.Forms.CheckBox();
-			this.cbUseFloorLineAngles = new System.Windows.Forms.CheckBox();
 			groupaction = new System.Windows.Forms.GroupBox();
 			groupeffect = new System.Windows.Forms.GroupBox();
 			label14 = new System.Windows.Forms.Label();
@@ -125,7 +125,7 @@
 			// 
 			this.tagSelector.Location = new System.Drawing.Point(6, 21);
 			this.tagSelector.Name = "tagSelector";
-			this.tagSelector.Size = new System.Drawing.Size(369, 35);
+			this.tagSelector.Size = new System.Drawing.Size(424, 35);
 			this.tagSelector.TabIndex = 0;
 			// 
 			// groupeffect
@@ -461,6 +461,18 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Floor:";
 			// 
+			// cbUseFloorLineAngles
+			// 
+			this.cbUseFloorLineAngles.AutoSize = true;
+			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(230, 119);
+			this.cbUseFloorLineAngles.Name = "cbUseFloorLineAngles";
+			this.cbUseFloorLineAngles.Size = new System.Drawing.Size(99, 18);
+			this.cbUseFloorLineAngles.TabIndex = 57;
+			this.cbUseFloorLineAngles.Tag = "";
+			this.cbUseFloorLineAngles.Text = "Use line angles";
+			this.cbUseFloorLineAngles.UseVisualStyleBackColor = true;
+			this.cbUseFloorLineAngles.CheckedChanged += new System.EventHandler(this.cbUseFloorLineAngles_CheckedChanged);
+			// 
 			// floorAngleControl
 			// 
 			this.floorAngleControl.Angle = 0;
@@ -646,6 +658,18 @@
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Ceiling:";
+			// 
+			// cbUseCeilLineAngles
+			// 
+			this.cbUseCeilLineAngles.AutoSize = true;
+			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(230, 119);
+			this.cbUseCeilLineAngles.Name = "cbUseCeilLineAngles";
+			this.cbUseCeilLineAngles.Size = new System.Drawing.Size(99, 18);
+			this.cbUseCeilLineAngles.TabIndex = 56;
+			this.cbUseCeilLineAngles.Tag = "";
+			this.cbUseCeilLineAngles.Text = "Use line angles";
+			this.cbUseCeilLineAngles.UseVisualStyleBackColor = true;
+			this.cbUseCeilLineAngles.CheckedChanged += new System.EventHandler(this.cbUseCeilLineAngles_CheckedChanged);
 			// 
 			// ceilAngleControl
 			// 
@@ -864,30 +888,6 @@
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
-			// 
-			// cbUseCeilLineAngles
-			// 
-			this.cbUseCeilLineAngles.AutoSize = true;
-			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(230, 119);
-			this.cbUseCeilLineAngles.Name = "cbUseCeilLineAngles";
-			this.cbUseCeilLineAngles.Size = new System.Drawing.Size(99, 18);
-			this.cbUseCeilLineAngles.TabIndex = 56;
-			this.cbUseCeilLineAngles.Tag = "";
-			this.cbUseCeilLineAngles.Text = "Use line angles";
-			this.cbUseCeilLineAngles.UseVisualStyleBackColor = true;
-			this.cbUseCeilLineAngles.CheckedChanged += new System.EventHandler(this.cbUseCeilLineAngles_CheckedChanged);
-			// 
-			// cbUseFloorLineAngles
-			// 
-			this.cbUseFloorLineAngles.AutoSize = true;
-			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(230, 119);
-			this.cbUseFloorLineAngles.Name = "cbUseFloorLineAngles";
-			this.cbUseFloorLineAngles.Size = new System.Drawing.Size(99, 18);
-			this.cbUseFloorLineAngles.TabIndex = 57;
-			this.cbUseFloorLineAngles.Tag = "";
-			this.cbUseFloorLineAngles.Text = "Use line angles";
-			this.cbUseFloorLineAngles.UseVisualStyleBackColor = true;
-			this.cbUseFloorLineAngles.CheckedChanged += new System.EventHandler(this.cbUseFloorLineAngles_CheckedChanged);
 			// 
 			// SectorEditFormUDMF
 			// 

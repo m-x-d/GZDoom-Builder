@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using System.Globalization;
+using CodeImp.DoomBuilder.Types;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Controls
 {
@@ -36,14 +37,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private List<TagInfo> infos;
 		private bool valid;
 		private int tag;
+		private UniversalType elementType;
 		
 		public TagSelector() {
 			InitializeComponent();
 		}
 
-		public void Setup() {
+		public void Setup(UniversalType elementType) {
 			tags = new List<int>();
 			infos = new List<TagInfo>();
+			this.elementType = elementType;
 
 			//collect used tags from sectors...
 			foreach(Sector s in General.Map.Map.Sectors) {
@@ -149,6 +152,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void newTag_Click(object sender, EventArgs e) {
 			//todo: check tag labels?
 			tag = General.Map.Map.GetNewTag();
+			cbTagPicker.SelectedIndex = -1;
+			cbTagPicker.Text = tag.ToString();
+			valid = true;
+		}
+
+		private void unusedTag_Click(object sender, EventArgs e) {
+			tag = General.Map.Map.GetNewTag(elementType);
 			cbTagPicker.SelectedIndex = -1;
 			cbTagPicker.Text = tag.ToString();
 			valid = true;

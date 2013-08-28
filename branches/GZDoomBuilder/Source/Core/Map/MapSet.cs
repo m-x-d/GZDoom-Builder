@@ -2629,6 +2629,43 @@ namespace CodeImp.DoomBuilder.Map
 			return 0;
 		}
 
+		//mxd
+		/// <summary>This returns the tag number, which is not used by any map element of given type. This method doesn't check action arguments!</summary>
+		public int GetNewTag(UniversalType elementType) 
+		{
+			Dictionary<int, bool> usedtags = new Dictionary<int, bool>();
+
+			switch(elementType) {
+				case UniversalType.ThingTag:
+					for(int i = 0; i < things.Length; i++) {
+						if(things[i].Tag > 0 && !usedtags.ContainsKey(things[i].Tag))
+							usedtags.Add(things[i].Tag, false);
+					}
+					break;
+
+				case UniversalType.LinedefTag:
+					for(int i = 0; i < linedefs.Length; i++) {
+						if(linedefs[i].Tag > 0 && !usedtags.ContainsKey(linedefs[i].Tag))
+							usedtags.Add(linedefs[i].Tag, false);
+					}
+					break;
+
+				case UniversalType.SectorTag:
+					for(int i = 0; i < sectors.Length; i++) {
+						if(sectors[i].Tag > 0 && !usedtags.ContainsKey(sectors[i].Tag))
+							usedtags.Add(sectors[i].Tag, false);
+					}
+					break;
+			}
+
+			// Now find the first unused index
+			for(int i = 1; i <= General.Map.FormatInterface.MaxTag; i++)
+				if(!usedtags.ContainsKey(i)) return i;
+			
+			// All tags used!
+			return 0;
+		}
+
 		/// <summary>This returns the next unused tag number within the marked geometry.</summary>
 		public int GetNewTag(bool marked)
 		{
