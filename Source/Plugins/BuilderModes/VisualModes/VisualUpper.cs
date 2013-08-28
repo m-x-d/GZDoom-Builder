@@ -232,8 +232,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float oldy = Sidedef.Fields.GetValue("offsety_top", 0.0f);
 			float scalex = Sidedef.Fields.GetValue("scalex_top", 1.0f);
 			float scaley = Sidedef.Fields.GetValue("scaley_top", 1.0f);
-			Sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldx, xy.X, scalex, Texture.Width)); //mxd
-			Sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldy, xy.Y, scaley, Texture.Height)); //mxd
+			Sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldx, xy.X, scalex, Texture != null ? Texture.Width : -1)); //mxd
+			Sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldy, xy.Y, scaley, Texture != null ? Texture.Height : -1)); //mxd
 		}
 
 		protected override Point GetTextureOffset()

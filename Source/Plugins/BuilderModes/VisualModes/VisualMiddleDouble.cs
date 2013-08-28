@@ -130,17 +130,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// height is 0 then the TexturePlane doesn't work!
 			TexturePlane tp = new TexturePlane();
 			float floorbias = (Sidedef.Sector.CeilHeight == Sidedef.Sector.FloorHeight) ? 1.0f : 0.0f;
-			float geotop = (float)Math.Min(Sidedef.Sector.CeilHeight, Sidedef.Other.Sector.CeilHeight);
-			float geobottom = (float)Math.Max(Sidedef.Sector.FloorHeight, Sidedef.Other.Sector.FloorHeight);
+			float geotop = Math.Min(Sidedef.Sector.CeilHeight, Sidedef.Other.Sector.CeilHeight);
+			float geobottom = Math.Max(Sidedef.Sector.FloorHeight, Sidedef.Other.Sector.FloorHeight);
 			float zoffset = Sidedef.Sector.CeilHeight - Sidedef.Other.Sector.CeilHeight; //mxd
 
 			// When lower unpegged is set, the middle texture is bound to the bottom
 			if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag)) 
-				tp.tlt.y = tsz.y - (float)(geotop - geobottom);
+				tp.tlt.y = tsz.y - (geotop - geobottom);
 			
 			if (zoffset > 0) tp.tlt.y -= zoffset; //mxd
 			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
-			tp.trb.y = tp.tlt.y + ((float)Sidedef.Sector.CeilHeight - ((float)Sidedef.Sector.FloorHeight + floorbias));
+			tp.trb.y = tp.tlt.y + (Sidedef.Sector.CeilHeight - (Sidedef.Sector.FloorHeight + floorbias));
 
 			// Apply texture offset
 			tp.tlt += tof;
@@ -151,8 +151,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			tp.trb /= tsz;
 
 			// Left top and right bottom of the geometry that
-			tp.vlt = new Vector3D(vl.x, vl.y, (float)Sidedef.Sector.CeilHeight);
-			tp.vrb = new Vector3D(vr.x, vr.y, (float)Sidedef.Sector.FloorHeight + floorbias);
+			tp.vlt = new Vector3D(vl.x, vl.y, Sidedef.Sector.CeilHeight);
+			tp.vrb = new Vector3D(vr.x, vr.y, Sidedef.Sector.FloorHeight + floorbias);
 
 			// Make the right-top coordinates
 			tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
@@ -283,8 +283,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
 			float scalex = Sidedef.Fields.GetValue("scalex_mid", 1.0f);
 			float scaley = Sidedef.Fields.GetValue("scaley_mid", 1.0f);
-            Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldx, xy.X, scalex, Texture.Width)); //mxd
-			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldy, xy.Y, scaley, Texture.Height)); //mxd
+			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldx, xy.X, scalex, Texture != null ? Texture.Width : -1)); //mxd
+
+			//mxd. Don't clamp offsetY of clipped mid textures
+			bool dontClamp = (Texture == null || Sidedef.IsFlagSet("clipmidtex") || Sidedef.Line.IsFlagSet("clipmidtex"));
+			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldy, xy.Y, scaley, dontClamp ? -1 : Texture.Height));
 		}
 
 		protected override Point GetTextureOffset()
