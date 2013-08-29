@@ -472,20 +472,33 @@ namespace CodeImp.DoomBuilder.Map
 		// This requires the sector triangulation to be up-to-date!
 		private RectangleF CreateBBox()
 		{
+			if(sidedefs.Count == 0) return  new RectangleF(); //mxd
+			
 			// Setup
 			float left = float.MaxValue;
 			float top = float.MaxValue;
 			float right = float.MinValue;
 			float bottom = float.MinValue;
-			
-			// Go for vertices
-			foreach(Vector2D v in triangles.Vertices)
-			{
-				// Update rect
-				if(v.x < left) left = v.x;
-				if(v.y < top) top = v.y;
-				if(v.x > right) right = v.x;
-				if(v.y > bottom) bottom = v.y;
+
+			List<Vertex> processed = new List<Vertex>(); //mxd
+
+			//mxd. This way bbox will be created even if triangulation failed (sector with 2 or less sidedefs and 2 vertices)
+			foreach (Sidedef s in sidedefs) {
+				//start...
+				if (!processed.Contains(s.Line.Start)) {
+					if (s.Line.Start.Position.x < left) left = s.Line.Start.Position.x;
+					else if (s.Line.Start.Position.x > right) right = s.Line.Start.Position.x;
+					if (s.Line.Start.Position.y < top) top = s.Line.Start.Position.y;
+					else if (s.Line.Start.Position.y > bottom) bottom = s.Line.Start.Position.y;
+				}
+
+				//end...
+				if(!processed.Contains(s.Line.Start)) {
+					if(s.Line.End.Position.x < left) left = s.Line.End.Position.x;
+					else if(s.Line.End.Position.x > right) right = s.Line.End.Position.x;
+					if(s.Line.End.Position.y < top) top = s.Line.End.Position.y;
+					else if(s.Line.End.Position.y > bottom) bottom = s.Line.End.Position.y;
+				}
 			}
 			
 			// Return rectangle
