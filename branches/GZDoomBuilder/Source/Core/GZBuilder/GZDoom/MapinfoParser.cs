@@ -101,7 +101,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
                                     if (!ReadSignedFloat(token, ref scrollSpeed)) {
                                         // Not numeric!
-                                        General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " scroll speed value, but got '" + token + "'");
+                                        General.ErrorLogger.Add(ErrorType.Warning, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " scroll speed value, but got '" + token + "'");
                                         datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                                         continue;
                                     }

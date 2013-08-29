@@ -86,11 +86,11 @@ namespace CodeImp.DoomBuilder
 		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		private static extern uint GetShortPathName([MarshalAs(UnmanagedType.LPTStr)] string longpath, [MarshalAs(UnmanagedType.LPTStr)]StringBuilder shortpath, uint buffersize);
 
-		[DllImport("user32.dll")]
-		internal static extern int SetScrollInfo(IntPtr windowptr, int bar, IntPtr scrollinfo, bool redraw);
+		//[DllImport("user32.dll")]
+		//internal static extern int SetScrollInfo(IntPtr windowptr, int bar, IntPtr scrollinfo, bool redraw);
 
-		[DllImport("user32.dll")]
-		internal static extern int GetScrollInfo(IntPtr windowptr, int bar, IntPtr scrollinfo);
+		//[DllImport("user32.dll")]
+		//internal static extern int GetScrollInfo(IntPtr windowptr, int bar, IntPtr scrollinfo);
 
 		#endregion
 
@@ -101,18 +101,18 @@ namespace CodeImp.DoomBuilder
 		internal const int WM_SYSCOMMAND = 0x112;
 		internal const int SC_KEYMENU = 0xF100;
 		internal const int CB_SETITEMHEIGHT = 0x153;
-		internal const int CB_SHOWDROPDOWN = 0x14F;
-		internal const int EM_GETSCROLLPOS = WM_USER + 221;
-		internal const int EM_SETSCROLLPOS = WM_USER + 222;
-		internal const int SB_HORZ = 0;
-		internal const int SB_VERT = 1;
-		internal const int SB_CTL = 2;
-		internal const int SIF_RANGE = 0x1;
-		internal const int SIF_PAGE = 0x2;
-		internal const int SIF_POS = 0x4;
-		internal const int SIF_DISABLENOSCROLL = 0x8;
-		internal const int SIF_TRACKPOS = 0x16;
-		internal const int SIF_ALL = SIF_RANGE + SIF_PAGE + SIF_POS + SIF_TRACKPOS;
+		//internal const int CB_SHOWDROPDOWN = 0x14F;
+		//internal const int EM_GETSCROLLPOS = WM_USER + 221;
+		//internal const int EM_SETSCROLLPOS = WM_USER + 222;
+		//internal const int SB_HORZ = 0;
+		//internal const int SB_VERT = 1;
+		//internal const int SB_CTL = 2;
+		//internal const int SIF_RANGE = 0x1;
+		//internal const int SIF_PAGE = 0x2;
+		//internal const int SIF_POS = 0x4;
+		//internal const int SIF_DISABLENOSCROLL = 0x8;
+		//internal const int SIF_TRACKPOS = 0x16;
+		//internal const int SIF_ALL = SIF_RANGE + SIF_PAGE + SIF_POS + SIF_TRACKPOS;
 		
 		// Files and Folders
 		private const string SETTINGS_FILE = "GZBuilder.cfg";
@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder
 		private const string HELP_FILE = "Refmanual.chm";
 
 		// SCROLLINFO structure
-		internal struct ScrollInfo
+		/*internal struct ScrollInfo
 		{
 			public int size;		// size of this structure
 			public uint mask;		// combination of SIF_ constants
@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder
 			public uint page;		// page size (scroll bar uses this value to determine the appropriate size of the proportional scroll box)
 			public int pos;			// position of the scroll box
 			public int trackpos;	// immediate position of a scroll box that the user is dragging
-		}
+		}*/
 
 		#endregion
 
@@ -198,6 +198,7 @@ namespace CodeImp.DoomBuilder
 		public static string AppPath { get { return apppath; } }
 		public static string TempPath { get { return temppath; } }
 		public static string ConfigsPath { get { return configspath; } }
+		internal static string SettingsPath { get { return settingspath; } } //mxd
 		public static string CompilersPath { get { return compilerspath; } }
 		public static string PluginsPath { get { return pluginspath; } }
 		public static string SpritesPath { get { return spritespath; } }
@@ -538,6 +539,10 @@ namespace CodeImp.DoomBuilder
 			#else
 				debugbuild = false;
 			#endif
+
+			//mxd. Custom exception dialog.
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+			Application.ThreadException += Application_ThreadException;
 			
 			// Enable OS visual styles
 			Application.EnableVisualStyles();
@@ -578,7 +583,7 @@ namespace CodeImp.DoomBuilder
 			// Remove the previous log file and start logging
 			if(File.Exists(logfile)) File.Delete(logfile);
             //mxd
-            General.WriteLogLine("GZDoom Builder " + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Version + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Revision + " startup");
+			General.WriteLogLine("GZDoom Builder " + GZBuilder.GZGeneral.Version + GZBuilder.GZGeneral.Revision + " startup");
 			//General.WriteLogLine("Doom Builder " + thisversion.Major + "." + thisversion.Minor + " startup");
 			General.WriteLogLine("Application path:        " + apppath);
 			General.WriteLogLine("Temporary path:          " + temppath);
@@ -705,7 +710,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This handles DLL linking errors
-		private static System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
 			// Check if SlimDX failed loading
 			if(args.Name.Contains("SlimDX")) AskDownloadDirectX();
@@ -725,11 +730,11 @@ namespace CodeImp.DoomBuilder
 			// Ask the user to download DirectX
 			if(MessageBox.Show("This application requires the latest version of Microsoft DirectX installed on your computer." + Environment.NewLine +
 				"Do you want to install and/or update Microsoft DirectX now?", "DirectX Error", System.Windows.Forms.MessageBoxButtons.YesNo,
-				System.Windows.Forms.MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.Yes)
+				MessageBoxIcon.Exclamation) == DialogResult.Yes)
 			{
 				// Open DX web setup
 				//System.Diagnostics.Process.Start("http://www.microsoft.com/downloads/details.aspx?FamilyId=2DA43D38-DB71-4C1B-BC6A-9B6652CD92A3").WaitForExit(1000);
-				System.Diagnostics.Process.Start(Path.Combine(setuppath, "dxwebsetup.exe")).WaitForExit(1000);
+				Process.Start(Path.Combine(setuppath, "dxwebsetup.exe")).WaitForExit(1000);
 			}
 
 			// End program here
@@ -1925,7 +1930,56 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		#endregion
-		
+
+		#region ==================  mxd. Uncaught exceptions handling
+
+		private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e) {
+			try {
+				GZBuilder.Windows.ExceptionDialog dlg = new GZBuilder.Windows.ExceptionDialog(e);
+				dlg.Setup();
+				//dbg
+				DialogResult r = dlg.ShowDialog();
+
+				if(r == DialogResult.Cancel)
+					Application.Exit();
+			} catch {
+				try {
+					MessageBox.Show("Fatal Windows Forms Error", "Fatal Windows Forms Error", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Stop);
+				} finally {
+					Application.Exit();
+				}
+			}
+		}
+
+		private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e) {
+			try {
+				// Since we can't prevent the app from terminating, log this to the event log. 
+				if(!EventLog.SourceExists("ThreadException"))
+					EventLog.CreateEventSource("ThreadException", "Application");
+
+				Exception ex = (Exception)e.ExceptionObject;
+
+				// Create an EventLog instance and assign its source.
+				using (EventLog myLog = new EventLog()) {
+					myLog.Source = "ThreadException";
+					myLog.WriteEntry("An application error occurred: " + ex.Message + "\n\nStack Trace:\n" + ex.StackTrace);
+				}
+
+				GZBuilder.Windows.ExceptionDialog dlg = new GZBuilder.Windows.ExceptionDialog(e);
+				dlg.Setup();
+				dlg.ShowDialog();
+			} catch(Exception exc) {
+				try {
+					MessageBox.Show("Fatal Non-UI Error", "Fatal Non-UI Error. Could not write the error to the event log. Reason: "
+						+ exc.Message, MessageBoxButtons.OK, MessageBoxIcon.Stop);
+				} finally {
+					Application.Exit();
+				}
+			}
+		}
+
+		#endregion
+
 		/*
 		[BeginAction("testaction")]
 		internal static void TestAction()
