@@ -291,6 +291,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap MCrash {
+            get {
+                object obj = ResourceManager.GetObject("MCrash", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap mergegeometry {
             get {
                 object obj = ResourceManager.GetObject("mergegeometry", resourceCulture);

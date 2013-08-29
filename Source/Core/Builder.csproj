@@ -777,6 +777,12 @@
     <Compile Include="GZBuilder\md3\ModelReader.cs" />
     <Compile Include="GZBuilder\GZDoom\AcsParserSE.cs" />
     <Compile Include="GZBuilder\Tools\UDMFTools.cs" />
+    <Compile Include="GZBuilder\Windows\ExceptionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Windows\ExceptionDialog.designer.cs">
+      <DependentUpon>ExceptionDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="GZBuilder\Windows\TagStatisticsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -898,6 +904,9 @@
     <EmbeddedResource Include="GZBuilder\Controls\TagSelector.resx">
       <DependentUpon>TagSelector.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GZBuilder\Windows\ExceptionDialog.resx">
+      <DependentUpon>ExceptionDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GZBuilder\Windows\TagStatisticsForm.resx">
       <DependentUpon>TagStatisticsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -927,6 +936,7 @@
     <None Include="Resources\Marine.png" />
     <None Include="Resources\Link.png" />
     <EmbeddedResource Include="Resources\MissingThing.png" />
+    <None Include="Resources\MCrash.png" />
     <Content Include="Resources\Model.png" />
     <Content Include="Resources\Model_selected.png" />
     <EmbeddedResource Include="Resources\UDMF_UI.cfg" />
