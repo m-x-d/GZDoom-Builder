@@ -490,14 +490,16 @@ namespace CodeImp.DoomBuilder.Map
 					else if (s.Line.Start.Position.x > right) right = s.Line.Start.Position.x;
 					if (s.Line.Start.Position.y < top) top = s.Line.Start.Position.y;
 					else if (s.Line.Start.Position.y > bottom) bottom = s.Line.Start.Position.y;
+					processed.Add(s.Line.Start);
 				}
 
 				//end...
-				if(!processed.Contains(s.Line.Start)) {
+				if(!processed.Contains(s.Line.End)) {
 					if(s.Line.End.Position.x < left) left = s.Line.End.Position.x;
 					else if(s.Line.End.Position.x > right) right = s.Line.End.Position.x;
 					if(s.Line.End.Position.y < top) top = s.Line.End.Position.y;
 					else if(s.Line.End.Position.y > bottom) bottom = s.Line.End.Position.y;
+					processed.Add(s.Line.End);
 				}
 			}
 			

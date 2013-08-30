@@ -238,6 +238,7 @@
     <Compile Include="ErrorChecks\CheckUnknownTextures.cs" />
     <Compile Include="ErrorChecks\CheckUnknownThings.cs" />
     <Compile Include="ErrorChecks\ResultNoErrors.cs" />
+    <Compile Include="ErrorChecks\ResultSectorInvalid.cs" />
     <Compile Include="ErrorChecks\ResultStrayVertex.cs" />
     <Compile Include="ErrorChecks\ResultStuckThingInThing.cs" />
     <Compile Include="ErrorChecks\ResultTextureMissing.cs" />

@@ -24,7 +24,7 @@ using System.Threading;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[ErrorChecker("Check closed sectors", true, 300)]
+	[ErrorChecker("Check invalid sectors", true, 300)]
 	public class CheckClosedSectors : ErrorChecker
 	{
 		#region ================== Constants
@@ -149,6 +149,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Add report when holes have been found
 				if(foundholes.Count > 0)
 					SubmitResult(new ResultSectorUnclosed(s, foundholes));
+				else if(s.Sidedefs.Count < 3 || s.BBox.IsEmpty) //mxd
+					SubmitResult(new ResultSectorInvalid(s));
 
 				// Handle thread interruption
 				try { Thread.Sleep(0); }
