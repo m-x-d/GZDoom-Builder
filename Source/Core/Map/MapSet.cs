@@ -77,7 +77,6 @@ namespace CodeImp.DoomBuilder.Map
 		private int numthings;
 
 		//mxd
-		private Dictionary<int, int> newSectorLineIndices; //line index, sector order
 		private GroupInfo[] groupInfos;
 		
 		// Behavior
@@ -159,8 +158,6 @@ namespace CodeImp.DoomBuilder.Map
 		internal Sidedef[] SidedefIndices { get { return sidedefindices; } }
 
 		internal bool AutoRemove { get { return autoremove; } set { autoremove = value; } }
-
-		public Dictionary<int, int> NewSectorLineIndices { get { return newSectorLineIndices; } } //mxd
 
 		public GroupInfo[] GroupInfos { get { return groupInfos; } } //mxd
 
@@ -1646,8 +1643,8 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				foreach(Linedef l in v.Linedefs)
 				{
-					if(((l.Front != null) && (l.Front.Sector.Marked == mark)) ||
-						((l.Back != null) && (l.Back.Sector.Marked == mark)))
+					if(((l.Front != null) && (l.Front.Sector != null) && (l.Front.Sector.Marked == mark)) ||
+						((l.Back != null) && (l.Back.Sector != null) && (l.Back.Sector.Marked == mark)))
 					{
 						list.Add(v);
 						break;
@@ -2087,40 +2084,39 @@ namespace CodeImp.DoomBuilder.Map
 					// Check if these vertices have lines that overlap
 					foreach(Linedef l2 in l1.Start.Linedefs)
 					{
+						//mxd. The same line?
+						if(l1.Index == l2.Index) continue;
+						
 						// Sharing vertices?
 						if((l1.End == l2.End) ||
 						   (l1.End == l2.Start))
 						{
-							// Not the same line?
-							if(l1 != l2)
+							bool oppositedirection = (l1.End == l2.Start);
+							bool l2marked = l2.Marked;
+
+							// Merge these two linedefs
+							while(lines.Remove(l2));
+							if(!l2.Join(l1)) return false;
+
+							// If l2 was marked as new geometry, we have to make sure
+							// that l1's FrontInterior is correct for the drawing procedure
+							if(l2marked) 
 							{
-								bool oppositedirection = (l1.End == l2.Start);
-								bool l2marked = l2.Marked;
-								
-								// Merge these two linedefs
-								while(lines.Remove(l2)) ;
-								if(!l2.Join(l1)) return false;
-								
-								// If l2 was marked as new geometry, we have to make sure
-								// that l1's FrontInterior is correct for the drawing procedure
-								if(l2marked)
-								{
-									l1.FrontInterior = l2.FrontInterior ^ oppositedirection;
-								}
+								l1.FrontInterior = l2.FrontInterior ^ oppositedirection;
+							}
 								// If l1 is marked as new geometry, we may need to flip it to preserve
 								// orientation of the original geometry, and update its FrontInterior
-								else if(l1.Marked)
+							else if(l1.Marked) 
+							{
+								if(oppositedirection) 
 								{
-									if(oppositedirection)
-									{
-										l1.FlipVertices();		// This also flips FrontInterior
-										l1.FlipSidedefs();
-									}
+									l1.FlipVertices();		// This also flips FrontInterior
+									l1.FlipSidedefs();
 								}
-								
-								joined = true;
-								break;
 							}
+
+							joined = true;
+							break;
 						}
 					}
 					
@@ -2130,40 +2126,39 @@ namespace CodeImp.DoomBuilder.Map
 					// Check if these vertices have lines that overlap
 					foreach(Linedef l2 in l1.End.Linedefs)
 					{
+						//mxd. The same line?
+						if(l1.Index == l2.Index) continue;
+						
 						// Sharing vertices?
 						if((l1.Start == l2.End) ||
 						   (l1.Start == l2.Start))
 						{
-							// Not the same line?
-							if(l1 != l2)
-							{
-								bool oppositedirection = (l1.Start == l2.End);
-								bool l2marked = l2.Marked;
-								
-								// Merge these two linedefs
-								while(lines.Remove(l2)) ;
-								if(!l2.Join(l1)) return false;
+							bool oppositedirection = (l1.Start == l2.End);
+							bool l2marked = l2.Marked;
 
-								// If l2 was marked as new geometry, we have to make sure
-								// that l1's FrontInterior is correct for the drawing procedure
-								if(l2marked)
-								{
-									l1.FrontInterior = l2.FrontInterior ^ oppositedirection;
-								}
+							// Merge these two linedefs
+							while(lines.Remove(l2));
+							if(!l2.Join(l1)) return false;
+
+							// If l2 was marked as new geometry, we have to make sure
+							// that l1's FrontInterior is correct for the drawing procedure
+							if(l2marked) 
+							{
+								l1.FrontInterior = l2.FrontInterior ^ oppositedirection;
+							}
 								// If l1 is marked as new geometry, we may need to flip it to preserve
 								// orientation of the original geometry, and update its FrontInterior
-								else if(l1.Marked)
+							else if(l1.Marked) 
+							{
+								if(oppositedirection) 
 								{
-									if(oppositedirection)
-									{
-										l1.FlipVertices();		// This also flips FrontInterior
-										l1.FlipSidedefs();
-									}
+									l1.FlipVertices();		// This also flips FrontInterior
+									l1.FlipSidedefs();
 								}
-
-								joined = true;
-								break;
 							}
+
+							joined = true;
+							break;
 						}
 					}
 					

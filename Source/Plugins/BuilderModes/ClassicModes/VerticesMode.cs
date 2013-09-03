@@ -915,13 +915,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				redraw = false;
 			}
 
-			if(ld1.Start == null || ld1.End == null) {
-				ld1.Dispose();
-			} else if (redraw) {
+			if(redraw && ld1.Start != null && ld1.End != null) {
 				Vector2D start = ld1.Start.Position;
 				Vector2D end = ld1.End.Position;
 				ld1.Dispose();
 				drawLine(start, end);
+			} else {
+				ld1.Dispose();
 			}
 		}
 

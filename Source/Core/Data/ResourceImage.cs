@@ -88,6 +88,11 @@ namespace CodeImp.DoomBuilder.Data
 				base.LocalLoadImage();
 			}
 		}
+
+		//mxd
+		public override Image GetPreview() {
+			return base.GetBitmap();
+		}
 		
 		#endregion
 	}

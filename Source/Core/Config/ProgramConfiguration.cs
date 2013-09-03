@@ -108,7 +108,6 @@ namespace CodeImp.DoomBuilder.Config
         private float gzVertexScale2D;
 		private bool gzShowVisualVertices;
 		private int gzVisualVertexSize;
-		private bool gzLoadDefaultLightDefinitions;
 		private bool gzForceDefaultTextures;
 		private string lastUsedConfigName;
 		private bool gzMarkExtraFloors;
@@ -194,7 +193,6 @@ namespace CodeImp.DoomBuilder.Config
         public float GZVertexScale2D { get { return gzVertexScale2D; } internal set { gzVertexScale2D = value; } }
 		public bool GZShowVisualVertices { get { return gzShowVisualVertices; } internal set { gzShowVisualVertices = value; } }
 		public int GZVisualVertexSize { get { return gzVisualVertexSize; } internal set { gzVisualVertexSize = value; } }
-		public bool GZLoadDefaultLightDefinitions { get { return gzLoadDefaultLightDefinitions; } internal set { gzLoadDefaultLightDefinitions = value; } }
 		public bool GZForceDefaultTextures { get { return gzForceDefaultTextures; } internal set { gzForceDefaultTextures = value; } }
 		public string LastUsedConfigName { get { return lastUsedConfigName; } internal set { lastUsedConfigName = value; } }
 		public bool GZMarkExtraFloors { get { return gzMarkExtraFloors; } internal set { gzMarkExtraFloors = value; } }
@@ -296,7 +294,6 @@ namespace CodeImp.DoomBuilder.Config
                 gzVertexScale2D = cfg.ReadSetting("gzvertexscale2d", 1.0f);
 				gzShowVisualVertices = cfg.ReadSetting("gzshowvisualvertices", true);
 				gzVisualVertexSize = cfg.ReadSetting("gzvisualvertexsize", 6);
-				gzLoadDefaultLightDefinitions = cfg.ReadSetting("gzloaddefaultlightdefinitions", true);
 				lastUsedConfigName = cfg.ReadSetting("lastusedconfigname", "");
 				gzMarkExtraFloors = cfg.ReadSetting("gzmarkextrafloors", true);
 				
@@ -376,7 +373,6 @@ namespace CodeImp.DoomBuilder.Config
             cfg.WriteSetting("gzvertexscale2d", gzVertexScale2D);
 			cfg.WriteSetting("gzshowvisualvertices", gzShowVisualVertices);
 			cfg.WriteSetting("gzvisualvertexsize", gzVisualVertexSize);
-			cfg.WriteSetting("gzloaddefaultlightdefinitions", gzLoadDefaultLightDefinitions);
 			cfg.WriteSetting("gzmarkextrafloors", gzMarkExtraFloors);
 			if(!string.IsNullOrEmpty(lastUsedConfigName))
 				cfg.WriteSetting("lastusedconfigname", lastUsedConfigName);

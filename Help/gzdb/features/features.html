@@ -201,6 +201,7 @@
             <li><span class="style1"><strong>[new]</strong></span> <strong>[UDMF]</strong> New actions: &quot;<strong><a href="visual_mode/texturefit.html">Fit Texture</a></strong>&quot; (default key is Ctrl-Alt-A), &quot;<strong><a href="visual_mode/texturefit.html">Fit Texture's Width</a></strong>&quot;  (Alt-A) and &quot;<strong><a href="visual_mode/texturefit.html">Fit Texture's Height</a></strong>&quot; (Alt-Shift-A).</li>
             <li><span class="style1"><strong>[new]</strong></span> New action: &quot;<strong><a href="../actions.html#toggleslope">Toggle slope</a></strong>&quot; (default key is Alt-S). Select or highlight upper/lower walls then call this action to add   slopes. Select or highlight floors or ceilings then call this action to   remove slopes.</li>
             <li><span class="style1"><strong>[new]</strong></span> New action: &quot;<strong><a href="../actions.html#lookthroughthing">Look Through Selection</a></strong>&quot;  (default key is &quot;Y&quot;). This action places   visual camera at the same position as selected/highlighted thing and   rotates it to match thing's angle. Special handling is available if   targeted thing is AimingCamera, MovingCamera, SecurityCamera or   InterpolationPoint.</li>
+            <li><span class="style1"><strong>[new]</strong></span> New actions: &quot;<strong><a href="visual_mode/autoalign_to_selection.html">Auto-align Textures to Selection</a> (X)</strong>&quot;, &quot;<strong>Auto-align Textures to Selection (Y)</strong>&quot; and &quot;<strong>Auto-align Textures to Selection (X and Y)</strong>&quot;.</li>
             <li>New actions: &quot;<a href="../actions.html#rotater"><strong>Rotate Clockwise</strong></a>&quot; and &quot;<a href="../actions.html#rotatel"><strong>Rotate Counterclockwise</strong></a>&quot;, which can be used to rotate things and <span class="style1"><strong>[new]</strong></span><strong>[UDMF]</strong>  floor/ceiling textures.</li>
             <li>Things can be moved horizontally using &quot;<strong><a href="../actions.html#movething">Move Thing Forward/Backward/Left/Right</a></strong>&quot; actions.</li>
             <li>Things can be moved to cursor position using &quot;<strong>Move Thing To Cursor Location</strong>&quot; (default key is Ctrl + Middle mouse) action.</li>
@@ -225,6 +226,7 @@
       <h3><a name="mapanalysis" id="mapanalysis"></a>Map Analysis mode:</h3>
       <ul>
         <li><span class="style1"><strong>[new]</strong></span> Map Analysis mode can  check the map for unconnected vertices.</li>
+        <li><span class="style1"><strong>[new]</strong></span> Map Analysis mode can  check the map for invalid sectors (sectors with less than 3 sidedefs or sectors without area).</li>
         <li>Map Analysis mode can  check the map for unknown things (things, which type is not defined in DECORATE or current game configuration).</li>
         <li>Map Analysis window now have &quot;<strong>Apply to all errors of this type</strong>&quot; checkbox.</li>
         <li>Analysis results can be saved to a text file.</li>

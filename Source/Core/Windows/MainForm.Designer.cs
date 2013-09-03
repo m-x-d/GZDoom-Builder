@@ -619,7 +619,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemgridsetup.Name = "itemgridsetup";
 			this.itemgridsetup.Size = new System.Drawing.Size(197, 22);
 			this.itemgridsetup.Tag = "builder_gridsetup";
-			this.itemgridsetup.Text = "&Grid Setup...";
+			this.itemgridsetup.Text = "&Grid and Backdrop Setup...";
 			this.itemgridsetup.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStripSeparator5
@@ -1340,7 +1340,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.itemhelpabout.Name = "itemhelpabout";
 			this.itemhelpabout.Size = new System.Drawing.Size(232, 22);
-			this.itemhelpabout.Text = "&About Doom Builder...";
+			this.itemhelpabout.Text = "&About GZDoom Builder...";
 			this.itemhelpabout.Click += new System.EventHandler(this.itemhelpabout_Click);
 			// 
 			// toolbar

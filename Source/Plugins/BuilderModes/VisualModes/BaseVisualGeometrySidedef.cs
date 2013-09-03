@@ -792,7 +792,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Do the alignment
-			mode.AutoAlignTextures(this, base.Texture, alignx, aligny, false);
+			mode.AutoAlignTextures(this, base.Texture, alignx, aligny, false, true);
 
 			// Get the changed sidedefs
 			List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);

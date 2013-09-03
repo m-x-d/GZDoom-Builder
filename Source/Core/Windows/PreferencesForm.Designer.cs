@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actionkey = new System.Windows.Forms.TextBox();
 			this.tabcolors = new System.Windows.Forms.TabPage();
 			this.appearancegroup1 = new System.Windows.Forms.GroupBox();
-			this.cbLoadGameGldefs = new System.Windows.Forms.CheckBox();
+			this.cbMarkExtraFloors = new System.Windows.Forms.CheckBox();
 			this.cbOldHighlightMode = new System.Windows.Forms.CheckBox();
 			this.labelDynLightIntensity = new System.Windows.Forms.Label();
 			this.tbDynLightIntensity = new Dotnetrix.Controls.TrackBar();
@@ -159,7 +159,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label16 = new System.Windows.Forms.Label();
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.cbMarkExtraFloors = new System.Windows.Forms.CheckBox();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -1273,7 +1272,6 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.appearancegroup1.Controls.Add(this.cbMarkExtraFloors);
-			this.appearancegroup1.Controls.Add(this.cbLoadGameGldefs);
 			this.appearancegroup1.Controls.Add(this.cbOldHighlightMode);
 			this.appearancegroup1.Controls.Add(label21);
 			this.appearancegroup1.Controls.Add(this.labelDynLightIntensity);
@@ -1301,18 +1299,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.appearancegroup1.TabStop = false;
 			this.appearancegroup1.Text = " Additional Options ";
 			// 
-			// cbLoadGameGldefs
+			// cbMarkExtraFloors
 			// 
-			this.cbLoadGameGldefs.AutoSize = true;
-			this.cbLoadGameGldefs.Location = new System.Drawing.Point(25, 254);
-			this.cbLoadGameGldefs.Name = "cbLoadGameGldefs";
-			this.cbLoadGameGldefs.Size = new System.Drawing.Size(169, 18);
-			this.cbLoadGameGldefs.TabIndex = 34;
-			this.cbLoadGameGldefs.Text = "Load GZDoom light definitions";
-			this.toolTip1.SetToolTip(this.cbLoadGameGldefs, "If enabled, GZDoom\'s built-in GLDEFS light definitions will be loaded.\r\nIf a map " +
-					"is loaded, you\'ll need to reload resources after changing this option to apply t" +
-					"he changes.");
-			this.cbLoadGameGldefs.UseVisualStyleBackColor = true;
+			this.cbMarkExtraFloors.AutoSize = true;
+			this.cbMarkExtraFloors.Location = new System.Drawing.Point(25, 254);
+			this.cbMarkExtraFloors.Name = "cbMarkExtraFloors";
+			this.cbMarkExtraFloors.Size = new System.Drawing.Size(179, 18);
+			this.cbMarkExtraFloors.TabIndex = 35;
+			this.cbMarkExtraFloors.Text = "Mark 3D floors in classic modes";
+			this.toolTip1.SetToolTip(this.cbMarkExtraFloors, "When enabled, linedefs of sectors with 3d floors will be marked using \"3D Floors\"" +
+					" color.");
+			this.cbMarkExtraFloors.UseVisualStyleBackColor = true;
 			// 
 			// cbOldHighlightMode
 			// 
@@ -1719,18 +1716,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pasteoptions.Size = new System.Drawing.Size(666, 427);
 			this.pasteoptions.TabIndex = 0;
 			// 
-			// cbMarkExtraFloors
-			// 
-			this.cbMarkExtraFloors.AutoSize = true;
-			this.cbMarkExtraFloors.Location = new System.Drawing.Point(236, 254);
-			this.cbMarkExtraFloors.Name = "cbMarkExtraFloors";
-			this.cbMarkExtraFloors.Size = new System.Drawing.Size(179, 18);
-			this.cbMarkExtraFloors.TabIndex = 35;
-			this.cbMarkExtraFloors.Text = "Mark 3D floors in classic modes";
-			this.toolTip1.SetToolTip(this.cbMarkExtraFloors, "When enabled, linedefs of sectors with 3d floors will be marked using \"3D Floors\"" +
-					" color.");
-			this.cbMarkExtraFloors.UseVisualStyleBackColor = true;
-			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -1906,8 +1891,7 @@ namespace CodeImp.DoomBuilder.Windows
         private System.Windows.Forms.Label vertexScaleLabel;
         private System.Windows.Forms.Label label22;
         private CodeImp.DoomBuilder.Controls.ColorControl colorInfo;
-        private System.Windows.Forms.CheckBox cbOldHighlightMode;
-		private System.Windows.Forms.CheckBox cbLoadGameGldefs;
+		private System.Windows.Forms.CheckBox cbOldHighlightMode;
 		private System.Windows.Forms.Button bClearActionFilter;
 		private System.Windows.Forms.TextBox tbFilterActions;
 		private System.Windows.Forms.Label label24;

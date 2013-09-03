@@ -367,6 +367,10 @@
 					<param name="Name" value="&quot;Fit Texture&quot; actions">
 					<param name="Local" value="gzdb\features\visual_mode\texturefit.html">
 					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="&quot;Auto-align Textures to Selection&quot; actions">
+					<param name="Local" value="gzdb\features\visual_mode\autoalign_to_selection.html">
+					</OBJECT>
 			</UL>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Custom Fields">

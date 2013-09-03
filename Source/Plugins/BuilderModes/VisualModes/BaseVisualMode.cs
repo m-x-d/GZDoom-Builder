@@ -687,13 +687,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		/*internal EffectDynamicLight GetDynamicLightData(Thing t) {
-			if(!lightdata.ContainsKey(t))
-				lightdata[t] = new EffectDynamicLight(this, t);
-			return lightdata[t];
-		}*/
-
-		//mxd
 		internal void UpdateVertexHandle(Vertex v) {
 			if(!vertices.ContainsKey(v))
 				vertices.Add(v, new VisualVertexPair(new BaseVisualVertex(this, v, true), new BaseVisualVertex(this, v, false)));
@@ -706,13 +699,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		internal void RebuildElementData()
 		{
 			//mxd
+			Sector[] sectorsWithEffects = null;
+
             if (!gzdoomRenderingEffects) {
+
+				//store all sectors with effects
 				if(sectordata != null && sectordata.Count > 0) {
-					//rebuild sectors with effects
-					foreach (KeyValuePair<Sector, SectorData> group in sectordata) {
-						SectorData sd = group.Value;
-						sd.Reset();
-					}
+					sectorsWithEffects = new Sector[sectordata.Count];
+					sectordata.Keys.CopyTo(sectorsWithEffects, 0);
 				}
 
 				//remove all vertex handles from selection
@@ -726,7 +720,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
             Dictionary<int, List<Sector>> sectortags = new Dictionary<int, List<Sector>>();
             sectordata = new Dictionary<Sector, SectorData>(General.Map.Map.Sectors.Count);
             thingdata = new Dictionary<Thing, ThingData>(General.Map.Map.Things.Count);
-			//lightdata = new Dictionary<Thing, EffectDynamicLight>(General.Map.Map.Things.Count); //mxd
+
+			//mxd. rebuild all sectors with effects
+			if(sectorsWithEffects != null) {
+				for(int i = 0; i < sectorsWithEffects.Length; i++) {
+					// The visual sector associated is now outdated
+					if(VisualSectorExists(sectorsWithEffects[i])) {
+						BaseVisualSector vs = (BaseVisualSector)GetVisualSector(sectorsWithEffects[i]);
+						vs.UpdateSectorGeometry(true);
+					}
+				}
+			}
 
 			if(General.Map.UDMF) {
 				vertexdata = new Dictionary<Vertex, VertexData>(General.Map.Map.Vertices.Count); //mxd
@@ -2295,6 +2299,88 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
+		[BeginAction("visualautoaligntoselection")]
+		public void TextureAlignToSelected() {
+			PreAction(UndoGroup.None);
+			renderer.SetCrosshairBusy(true);
+			General.Interface.RedrawDisplay();
+
+			autoAlignTexturesToSelected(true, true);
+
+			UpdateChangedObjects();
+			renderer.SetCrosshairBusy(false);
+			PostAction();
+		}
+
+		//mxd
+		[BeginAction("visualautoaligntoselectionx")]
+		public void TextureAlignToSelectedX() {
+			PreAction(UndoGroup.None);
+			renderer.SetCrosshairBusy(true);
+			General.Interface.RedrawDisplay();
+
+			autoAlignTexturesToSelected(true, false);
+
+			UpdateChangedObjects();
+			renderer.SetCrosshairBusy(false);
+			PostAction();
+		}
+
+		//mxd
+		[BeginAction("visualautoaligntoselectiony")]
+		public void TextureAlignToSelectedY() {
+			PreAction(UndoGroup.None);
+			renderer.SetCrosshairBusy(true);
+			General.Interface.RedrawDisplay();
+
+			autoAlignTexturesToSelected(false, true);
+
+			UpdateChangedObjects();
+			renderer.SetCrosshairBusy(false);
+			PostAction();
+		}
+
+		//mxd
+		private void autoAlignTexturesToSelected(bool alignX, bool alignY) {
+			string rest = string.Empty;
+			if(alignX && alignY) rest = "(X and Y)";
+			else if(alignX) rest = "(X)";
+			else rest = "(Y)";
+
+			CreateUndo("Auto-align textures to selected sidedefs " + rest);
+			SetActionResult("Auto-aligned textures to selected sidedefs " + rest + ".");
+
+			// Clear all marks, this will align everything it can
+			General.Map.Map.ClearMarkedSidedefs(false);
+			
+			//get selection
+			List<IVisualEventReceiver> objs = GetSelectedObjects(false, true, false, false);
+
+			//align
+			foreach(IVisualEventReceiver i in objs) {
+				BaseVisualGeometrySidedef side = i as BaseVisualGeometrySidedef;
+				
+				// Make sure the texture is loaded (we need the texture size)
+				if(!side.Texture.IsImageLoaded) side.Texture.LoadImage();
+
+				//Align textures
+				AutoAlignTextures(side, side.Texture, alignX, alignY, false, false);
+
+				// Get the changed sidedefs
+				List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);
+
+				foreach(Sidedef sd in changes) {
+					// Update the parts for this sidedef!
+					if(VisualSectorExists(sd.Sector)) {
+						BaseVisualSector vs = (GetVisualSector(sd.Sector) as BaseVisualSector);
+						VisualSidedefParts parts = vs.GetSidedefParts(sd);
+						parts.SetupAllParts();
+					}
+				}
+			}
+		}
+
+		//mxd
 		[BeginAction("visualfittextures")]
 		public void TextureFit() {
 			PreAction(UndoGroup.None);
@@ -2857,10 +2943,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Texture Alignment
 
-		//mxd
-		internal void AutoAlignTextures(BaseVisualGeometrySidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks) {
+		//mxd. If checkSelectedSidedefParts is set to true, only selected linedef parts will be aligned (when a sidedef has both top and bottom parts, but only bottom is selected, top texture won't be aligned)
+		internal void AutoAlignTextures(BaseVisualGeometrySidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks, bool checkSelectedSidedefParts) {
 			if(General.Map.UDMF)
-				autoAlignTexturesUDMF(start, texture, alignx, aligny, resetsidemarks);
+				autoAlignTexturesUDMF(start, texture, alignx, aligny, resetsidemarks, checkSelectedSidedefParts);
 			else
 				autoAlignTextures(start, texture, alignx, aligny, resetsidemarks);
 		}
@@ -2876,9 +2962,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float scalex = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.x : 1.0f;
 			float scaley = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.y : 1.0f;
 
-			// Mark all sidedefs false (they will be marked true when the texture is aligned). mxd. Don't seem to be used anywhere...
-			if(resetsidemarks)
-				General.Map.Map.ClearMarkedSidedefs(false);
+			// Mark all sidedefs false (they will be marked true when the texture is aligned).
+			if(resetsidemarks) General.Map.Map.ClearMarkedSidedefs(false);
 
 			// Begin with first sidedef
 			SidedefAlignJob first = new SidedefAlignJob();
@@ -2975,7 +3060,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
 		// Setting resetsidemarks to false is usefull to align only within a specific selection
 		// (set the marked property to true for the sidedefs outside the selection)
-		private void autoAlignTexturesUDMF(BaseVisualGeometrySidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks) {
+		private void autoAlignTexturesUDMF(BaseVisualGeometrySidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks, bool checkSelectedSidedefParts) {
 			// Mark all sidedefs false (they will be marked true when the texture is aligned)
 			if(resetsidemarks) General.Map.Map.ClearMarkedSidedefs(false);
 			if(!texture.IsImageLoaded) return;
@@ -2988,7 +3073,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd
 			List<BaseVisualGeometrySidedef> selectedVisualSides = new List<BaseVisualGeometrySidedef>();
-			if(!singleselection) {
+			if(checkSelectedSidedefParts && !singleselection) {
 				foreach(IVisualEventReceiver i in selectedobjects) {
 					if(i is BaseVisualGeometrySidedef) {
 						BaseVisualGeometrySidedef sd = i as BaseVisualGeometrySidedef;
@@ -3070,7 +3155,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				bool matchmid = ((j.controlSide.LongMiddleTexture == texture.LongName) && (j.controlSide.MiddleRequired() || ((j.controlSide.MiddleTexture.Length > 0) && (j.controlSide.MiddleTexture != "-")))); //mxd
 
 				//mxd. If there's a selection, check if matched part is actually selected
-				if(!singleselection) {
+				if(checkSelectedSidedefParts && !singleselection) {
 					if(matchtop) matchtop = sidePartIsSelected(selectedVisualSides, j.sidedef, VisualGeometryType.WALL_UPPER);
 					if(matchbottom) matchbottom = sidePartIsSelected(selectedVisualSides, j.sidedef, VisualGeometryType.WALL_LOWER);
 					if(matchmid) matchmid = sidePartIsSelected(selectedVisualSides, j.sidedef, VisualGeometryType.WALL_MIDDLE) || 
