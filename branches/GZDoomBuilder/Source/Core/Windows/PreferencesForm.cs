@@ -103,7 +103,6 @@ namespace CodeImp.DoomBuilder.Windows
             cbOldHighlightMode.Checked = General.Settings.GZOldHighlightMode;
             vertexScale.Value = General.Clamp((int)(General.Settings.GZVertexScale2D), vertexScale.Minimum, vertexScale.Maximum);
             vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
-			cbLoadGameGldefs.Checked = General.Settings.GZLoadDefaultLightDefinitions;
 			cbMarkExtraFloors.Checked = General.Settings.GZMarkExtraFloors;
 			
 			// Fill fonts list
@@ -289,7 +288,6 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.GZStretchModels = cbStretchModels.Checked;
             General.Settings.GZVertexScale2D = vertexScale.Value;
             General.Settings.GZOldHighlightMode = cbOldHighlightMode.Checked;
-			General.Settings.GZLoadDefaultLightDefinitions = cbLoadGameGldefs.Checked;
 			General.Settings.GZMarkExtraFloors = cbMarkExtraFloors.Checked;
 
 			// Paste options

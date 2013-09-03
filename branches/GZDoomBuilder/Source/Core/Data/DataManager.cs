@@ -320,7 +320,7 @@ namespace CodeImp.DoomBuilder.Data
             General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing model definitions...");
             loadModeldefs(actorsByClass);
             General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing GLDEFS...");
-			loadGldefs(actorsByClass, General.Settings.GZLoadDefaultLightDefinitions);
+			loadGldefs(actorsByClass);
             General.MainWindow.DisplayReady();
             //don't need them any more
             actorsByClass = null;
@@ -1164,7 +1164,6 @@ namespace CodeImp.DoomBuilder.Data
 				img.LoadImage();
 				img.AllowUnload = false;
 				internalsprites.Add("unknownthing", img);
-				previews.AddImage(img); //mxd
 			}
 
 			//mxd
@@ -1173,7 +1172,6 @@ namespace CodeImp.DoomBuilder.Data
 				img.LoadImage();
 				img.AllowUnload = false;
 				internalsprites.Add("missingthing", img);
-				previews.AddImage(img);
 			}
 		}
 		
@@ -1232,7 +1230,7 @@ namespace CodeImp.DoomBuilder.Data
 						// Add to collection
 						sprites.Add(longname, img);
 					
-						// Return null image
+						// Return image
 						return img; 
 					}
 				}
@@ -1443,7 +1441,7 @@ namespace CodeImp.DoomBuilder.Data
         //mxd
         public void ReloadGldefs() {
             General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading GLDEFS...");
-            loadGldefs(createActorsByClassList(), false);
+            loadGldefs(createActorsByClassList());
 
             //rebuild geometry if in Visual mode
             if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
@@ -1504,32 +1502,15 @@ namespace CodeImp.DoomBuilder.Data
         }
 
         //mxd. This parses gldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
-        private void loadGldefs(Dictionary<string, int> actorsByClass, bool loadDefaultDefinitions) {
+        private void loadGldefs(Dictionary<string, int> actorsByClass) {
             //if no actors defined in DECORATE or game config...
             if (actorsByClass == null || actorsByClass.Count == 0) {
-				General.ErrorLogger.Add(ErrorType.Warning, "Warning: current game has no Actors!");
+				General.ErrorLogger.Add(ErrorType.Warning, "Warning: unable to find any DECORATE actors definition!");
                 return;
             }
 
             GldefsParser parser = new GldefsParser();
             parser.OnInclude = loadGldefsFromLocation;
-
-            //load default GZDoom gldefs for current game
-			if(loadDefaultDefinitions) {
-				if(General.Map.Config.GameType != GameType.UNKNOWN) {
-					string defaultGldefsPath = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)General.Map.Config.GameType].ToLowerInvariant() + ".txt";
-					defaultGldefsPath = Path.Combine(Path.Combine(General.AppPath, "Gldefs"), defaultGldefsPath);
-
-					if(File.Exists(defaultGldefsPath)) {
-						StreamReader s = File.OpenText(defaultGldefsPath);
-						parser.Parse(s.BaseStream, defaultGldefsPath);
-					} else {
-						General.ErrorLogger.Add(ErrorType.Warning, "Unable to load default GLDEFS for current game: unable to load file '" + defaultGldefsPath + "'");
-					}
-				} else {
-					General.ErrorLogger.Add(ErrorType.Warning, "Default GLDEFS for current game not loaded: game type is unknown.");
-				}
-			}
 
             //load gldefs from resources
             foreach (DataReader dr in containers) {
@@ -1552,7 +1533,7 @@ namespace CodeImp.DoomBuilder.Data
                         gldefsEntries.Add(thingType, parser.LightsByName[e.Value]);
                     }
 				} else if(!invalidDecorateActors.Contains(e.Key)) {
-                    General.ErrorLogger.Add(ErrorType.Warning, "Got GLDEFS light for class '" + e.Key + "', but haven't found such class in Decorate");
+                    General.ErrorLogger.Add(ErrorType.Warning, "Got GLDEFS light for class '" + e.Key + "', but haven't found such class in DECORATE");
                 }
             }
         }

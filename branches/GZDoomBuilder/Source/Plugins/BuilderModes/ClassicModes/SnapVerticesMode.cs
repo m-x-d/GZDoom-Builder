@@ -50,14 +50,47 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			General.Map.UndoRedo.CreateUndo("Snap vertices");
 
 			int snappedCount = 0;
+			List<Vertex> movedVerts = new List<Vertex>();
+			List<Linedef> movedLines = new List<Linedef>();
 
 			//snap them all!
 			foreach(Vertex v in verts) {
 				Vector2D pos = v.Position;
 				v.SnapToGrid();
 
-				if(v.Position.x != pos.x || v.Position.y != pos.y)
+				if(v.Position.x != pos.x || v.Position.y != pos.y) {
 					snappedCount++;
+					movedVerts.Add(v);
+					foreach(Linedef l in v.Linedefs){
+						if(!movedLines.Contains(l)) movedLines.Add(l);
+					}
+				}
+			}
+
+			//merge overlapping vertices
+			Dictionary<Vector2D, Vertex> vertsByPosition = new Dictionary<Vector2D, Vertex>();
+			foreach(Vertex v in General.Map.Map.Vertices){
+				if(v == null || v.IsDisposed) continue;
+				if(!vertsByPosition.ContainsKey(v.Position))
+					vertsByPosition.Add(v.Position, v);
+				else
+					v.Join(vertsByPosition[v.Position]);
+			}
+
+			// Update cached values of lines because we may need their length/angle
+			General.Map.Map.Update(true, false);
+
+			General.Map.Map.BeginAddRemove();
+			MapSet.RemoveLoopedLinedefs(movedLines);
+			MapSet.JoinOverlappingLines(movedLines);
+			General.Map.Map.EndAddRemove();
+
+			// Redraw changed lines
+			foreach(Linedef line in movedLines) {
+				if(line == null || line.IsDisposed) continue;
+				DrawnVertex start = new DrawnVertex { pos = line.Start.Position, stitch = true, stitchline = true };
+				DrawnVertex end = new DrawnVertex { pos = line.End.Position, stitch = true, stitchline = true };
+				Tools.DrawLines(new List<DrawnVertex> { start, end });
 			}
 
 			//done
