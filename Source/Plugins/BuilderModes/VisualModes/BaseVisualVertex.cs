@@ -3,7 +3,6 @@ using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
@@ -41,11 +40,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!changed) return;
 			float z = ceilingVertex ? vertex.ZCeiling : vertex.ZFloor;
 
-			int height = getSectorHeight();
 			if(!float.IsNaN(z)) {
-				haveOffset = (z != height || !neighboursHaveSameHeight(height));
+				haveOffset = true;
 			} else {
-				z = height;
+				z = getSectorHeight();
 				haveOffset = false;
 			}
 
@@ -57,21 +55,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			boxp2 = new Vector3D(pos.x + radius, pos.y + radius, pos.z + radius);
 
 			changed = false;
-		}
-
-		private bool neighboursHaveSameHeight(int height) {
-			if(ceilingVertex) {
-				foreach(Linedef line in vertex.Linedefs) {
-					if(line.Front != null && line.Front.Sector != null && line.Front.Sector.Sidedefs.Count == 3 && line.Front.Sector.CeilHeight != height) return false;
-					if(line.Back != null && line.Back.Sector != null && line.Back.Sector.Sidedefs.Count == 3 && line.Back.Sector.CeilHeight != height) return false;
-				}
-			} else {
-				foreach(Linedef line in vertex.Linedefs) {
-					if(line.Front != null && line.Front.Sector != null && line.Front.Sector.Sidedefs.Count == 3 && line.Front.Sector.FloorHeight != height) return false;
-					if(line.Back != null && line.Back.Sector != null && line.Back.Sector.Sidedefs.Count == 3 && line.Back.Sector.FloorHeight != height) return false;
-				}
-			}
-			return true;
 		}
 
 		private void updateGeometry(Vertex v) {
@@ -86,7 +69,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//get the most appropriate height from sectors
 		private int getSectorHeight() {
-			int height = 0;
+			int height;
 
 			VertexData vd = mode.GetVertexData(vertex);
 			Sector[] sectors = new Sector[vd.UpdateAlso.Keys.Count];
@@ -334,22 +317,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(ceilingVertex) {
 				vertex.ZCeiling = (float.IsNaN(vertex.ZCeiling) ? getSectorHeight() + amount : vertex.ZCeiling + amount);
-				
-				if(vertex.ZCeiling == getSectorHeight()) {
-					vertex.ZCeiling = float.NaN;
-					mode.SetActionResult("Cleared vertex height.");
-				} else {
-					mode.SetActionResult("Changed vertex height to " + vertex.ZCeiling + ".");
-				}
+				mode.SetActionResult("Changed vertex height to " + vertex.ZCeiling + ".");
 			} else {
 				vertex.ZFloor = (float.IsNaN(vertex.ZFloor) ? getSectorHeight() + amount : vertex.ZFloor + amount);
-				
-				if(vertex.ZFloor == getSectorHeight()) {
-					vertex.ZFloor = float.NaN;
-					mode.SetActionResult("Cleared vertex height.");
-				} else {
-					mode.SetActionResult("Changed vertex height to " + vertex.ZFloor + ".");
-				}
+				mode.SetActionResult("Changed vertex height to " + vertex.ZFloor + ".");
 			}
 
 			// Update what must be updated
