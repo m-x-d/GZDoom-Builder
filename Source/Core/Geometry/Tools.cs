@@ -27,6 +27,7 @@ using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -1494,54 +1495,48 @@ namespace CodeImp.DoomBuilder.Geometry
 
 			foreach(Linedef l in lines) {
 				if(l.Front != null) {
-					if(!l.Front.Fields.ContainsKey("offsetx_mid") && l.Front.MiddleRequired() && l.Front.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.MiddleTexture)) {
+					if(l.Front.MiddleRequired() && l.Front.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.MiddleTexture)) {
 						ImageData texture = General.Map.Data.GetFlatImage(l.Front.MiddleTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
-						if(offset > 0) 
-							l.Front.Fields.Add("offsetx_mid", new UniValue(UniversalType.Float, offset));
+						if(offset > 0) UDMFTools.SetFloat(l.Front.Fields, "offsetx_mid", offset);
 					}
 
-					if(!l.Front.Fields.ContainsKey("offsetx_top") && l.Front.HighRequired() && l.Front.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.HighTexture)) {
+					if(l.Front.HighRequired() && l.Front.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.HighTexture)) {
 						ImageData texture = General.Map.Data.GetFlatImage(l.Front.HighTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
-						if(offset > 0)
-							l.Front.Fields.Add("offsetx_top", new UniValue(UniversalType.Float, offset));
+						if(offset > 0) UDMFTools.SetFloat(l.Front.Fields, "offsetx_top", offset);
 					}
 
-					if(!l.Front.Fields.ContainsKey("offsetx_bottom") && l.Front.LowRequired() && l.Front.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.LowTexture)) {
+					if(l.Front.LowRequired() && l.Front.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.LowTexture)) {
 						ImageData texture = General.Map.Data.GetFlatImage(l.Front.LowTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
-						if(offset > 0)
-							l.Front.Fields.Add("offsetx_bottom", new UniValue(UniversalType.Float, offset));
+						if(offset > 0) UDMFTools.SetFloat(l.Front.Fields, "offsetx_bottom", offset);
 					}
 				}
 
 				if(l.Back != null) {
-					if(!l.Back.Fields.ContainsKey("offsetx_mid") && l.Back.MiddleRequired() && l.Back.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.MiddleTexture)) {
+					if(l.Back.MiddleRequired() && l.Back.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.MiddleTexture)) {
 						ImageData texture = General.Map.Data.GetFlatImage(l.Back.MiddleTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
-						if(offset > 0)
-							l.Back.Fields.Add("offsetx_mid", new UniValue(UniversalType.Float, offset));
+						if(offset > 0) UDMFTools.SetFloat(l.Back.Fields, "offsetx_mid", offset);
 					}
 
-					if(!l.Back.Fields.ContainsKey("offsetx_top") && l.Back.HighRequired() && l.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.HighTexture)) {
+					if(l.Back.HighRequired() && l.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.HighTexture)) {
 						ImageData texture = General.Map.Data.GetFlatImage(l.Back.HighTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
-						if(offset > 0)
-							l.Back.Fields.Add("offsetx_top", new UniValue(UniversalType.Float, offset));
+						if(offset > 0) UDMFTools.SetFloat(l.Back.Fields, "offsetx_top", offset);
 					}
 
-					if(!l.Back.Fields.ContainsKey("offsetx_bottom") && l.Back.LowRequired() && l.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.LowTexture)) {
+					if(l.Back.LowRequired() && l.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.LowTexture)) {
 						ImageData texture = General.Map.Data.GetFlatImage(l.Back.LowTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
-						if(offset > 0)
-							l.Back.Fields.Add("offsetx_bottom", new UniValue(UniversalType.Float, offset));
+						if(offset > 0) UDMFTools.SetFloat(l.Back.Fields, "offsetx_bottom", offset);
 					}
 				}
 

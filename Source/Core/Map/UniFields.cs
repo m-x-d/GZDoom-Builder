@@ -52,9 +52,12 @@ namespace CodeImp.DoomBuilder.Map
 
 		// Copy constructor
 		///<summary></summary>
-		public UniFields(MapElement owner, UniFields copyfrom) : base(copyfrom)
+		public UniFields(MapElement owner, UniFields copyfrom) : base(copyfrom.Count)
 		{
 			this.owner = owner;
+
+			foreach(KeyValuePair<string, UniValue> v in copyfrom) //mxd. No-no-no, David Blaine, I don't want to copy these by reference!
+				this.Add(v.Key, new UniValue(v.Value));
 		}
 		
 		/// <summary>Call this before making changes to the fields, or they may not be updated correctly with undo/redo!</summary>
