@@ -109,12 +109,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This checks if the view offset/zoom changed and updates the check
 		protected bool CheckViewChanged()
 		{
-			bool viewchanged = false;
-
 			// View changed?
-			if(renderer.OffsetX != lastoffsetx) viewchanged = true;
-			if(renderer.OffsetY != lastoffsety) viewchanged = true;
-			if(renderer.Scale != lastscale) viewchanged = true;
+			bool viewchanged = (renderer.OffsetX != lastoffsetx || renderer.OffsetY != lastoffsety || renderer.Scale != lastscale);
 
 			// Keep view information
 			lastoffsetx = renderer.OffsetX;
@@ -137,8 +133,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			DrawnVertex lastp = new DrawnVertex();
 			DrawnVertex curp = GetCurrentPosition();
-			float vsize = ((float)renderer.VertexSize + 1.0f) / renderer.Scale;
-			float vsizeborder = ((float)renderer.VertexSize + 3.0f) / renderer.Scale;
+			float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
 
 			// The last label's end must go to the mouse cursor
 			if(labels.Count > 0) labels[labels.Count - 1].End = curp.pos;
@@ -175,8 +170,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					for(int i = 0; i < points.Count; i++)
 					{
 						// Determine vertex color
-						if(points[i].stitch) color = stitchcolor;
-						else color = losecolor;
+						color = points[i].stitch ? stitchcolor : losecolor;
 
 						// Render vertex
 						renderer.RenderRectangleFilled(new RectangleF(points[i].pos.x - vsize, points[i].pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
@@ -184,8 +178,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Determine point color
-				if(snaptonearest) color = stitchcolor;
-				else color = losecolor;
+				color = snaptonearest ? stitchcolor : losecolor;
 
 				// Render vertex at cursor
 				renderer.RenderRectangleFilled(new RectangleF(curp.pos.x - vsize, curp.pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);

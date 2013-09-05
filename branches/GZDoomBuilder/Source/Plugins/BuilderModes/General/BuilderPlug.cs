@@ -38,6 +38,7 @@ using CodeImp.DoomBuilder.GZBuilder.Geometry;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.BuilderModes.IO;
 using CodeImp.DoomBuilder.BuilderModes.Interface;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -567,8 +568,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					//clamp offsetX
-					if(texture != null)
-						newline.Front.OffsetX %= texture.Width;
+					if(texture != null)	newline.Front.OffsetX %= texture.Width;
 				}
 
 				if((oldline.Back != null) && (newline.Back != null)) {
@@ -584,8 +584,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					//clamp offsetX
-					if(texture != null)
-						newline.Back.OffsetX %= texture.Width;
+					if(texture != null)	newline.Back.OffsetX %= texture.Width;
 				}
 			}
 			// Copy X and Y coordinates
@@ -595,12 +594,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					newline.Front.OffsetX = oldline.Front.OffsetX;
 					newline.Front.OffsetY = oldline.Front.OffsetY;
+
+					//mxd. Copy UDMF offsets as well
+					if(General.Map.UDMF) {
+						UDMFTools.SetFloat(newline.Front.Fields, "offsetx_top", oldline.Front.Fields.GetValue("offsetx_top", 0f));
+						UDMFTools.SetFloat(newline.Front.Fields, "offsetx_mid", oldline.Front.Fields.GetValue("offsetx_mid", 0f));
+						UDMFTools.SetFloat(newline.Front.Fields, "offsetx_bottom", oldline.Front.Fields.GetValue("offsetx_bottom", 0f));
+						
+						UDMFTools.SetFloat(newline.Front.Fields, "offsety_top", oldline.Front.Fields.GetValue("offsety_top", 0f));
+						UDMFTools.SetFloat(newline.Front.Fields, "offsety_mid", oldline.Front.Fields.GetValue("offsety_mid", 0f));
+						UDMFTools.SetFloat(newline.Front.Fields, "offsety_bottom", oldline.Front.Fields.GetValue("offsety_bottom", 0f));
+					}
 				}
 				
 				if((oldline.Back != null) && (newline.Back != null))
 				{
 					newline.Back.OffsetX = oldline.Back.OffsetX;
 					newline.Back.OffsetY = oldline.Back.OffsetY;
+
+					//mxd. Copy UDMF offsets as well
+					if(General.Map.UDMF) {
+						UDMFTools.SetFloat(newline.Back.Fields, "offsetx_top", oldline.Back.Fields.GetValue("offsetx_top", 0f));
+						UDMFTools.SetFloat(newline.Back.Fields, "offsetx_mid", oldline.Back.Fields.GetValue("offsetx_mid", 0f));
+						UDMFTools.SetFloat(newline.Back.Fields, "offsetx_bottom", oldline.Back.Fields.GetValue("offsetx_bottom", 0f));
+
+						UDMFTools.SetFloat(newline.Back.Fields, "offsety_top", oldline.Back.Fields.GetValue("offsety_top", 0f));
+						UDMFTools.SetFloat(newline.Back.Fields, "offsety_mid", oldline.Back.Fields.GetValue("offsety_mid", 0f));
+						UDMFTools.SetFloat(newline.Back.Fields, "offsety_bottom", oldline.Back.Fields.GetValue("offsety_bottom", 0f));
+					}
 				}
 			}
 			// Reset X coordinate, copy Y coordinate
@@ -610,12 +631,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					newline.Front.OffsetX = 0;
 					newline.Front.OffsetY = oldline.Front.OffsetY;
+
+					//mxd. Reset UDMF X offset as well
+					if(General.Map.UDMF) {
+						UDMFTools.SetFloat(newline.Front.Fields, "offsetx_top", 0f);
+						UDMFTools.SetFloat(newline.Front.Fields, "offsetx_mid", 0f);
+						UDMFTools.SetFloat(newline.Front.Fields, "offsetx_bottom", 0f);
+					}
 				}
 				
 				if((oldline.Back != null) && (newline.Back != null))
 				{
 					newline.Back.OffsetX = 0;
 					newline.Back.OffsetY = oldline.Back.OffsetY;
+
+					//mxd. Reset UDMF X offset and copy Y offset as well
+					if(General.Map.UDMF) {
+						UDMFTools.SetFloat(newline.Back.Fields, "offsetx_top", 0f);
+						UDMFTools.SetFloat(newline.Back.Fields, "offsetx_mid", 0f);
+						UDMFTools.SetFloat(newline.Back.Fields, "offsetx_bottom", 0f);
+
+						UDMFTools.SetFloat(newline.Back.Fields, "offsety_top", oldline.Back.Fields.GetValue("offsety_top", 0f));
+						UDMFTools.SetFloat(newline.Back.Fields, "offsety_mid", oldline.Back.Fields.GetValue("offsety_mid", 0f));
+						UDMFTools.SetFloat(newline.Back.Fields, "offsety_bottom", oldline.Back.Fields.GetValue("offsety_bottom", 0f));
+					}
 				}
 			}
 		}

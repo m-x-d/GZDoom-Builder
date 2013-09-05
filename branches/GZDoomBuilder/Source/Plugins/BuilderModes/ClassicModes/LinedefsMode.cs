@@ -900,7 +900,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				OnMouseMove(e);
 				
 				// Redraw screen
-				//General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 				General.Interface.RedrawDisplay();
 			}
 		}
@@ -1119,51 +1118,51 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Linedef start = General.GetByIndex(orderedselection, 0);
 				Linedef end = General.GetByIndex(orderedselection, orderedselection.Count - 1);
 
-				string lightKey = "light";
-				string lightAbsKey = "lightabsolute";
+				const string lightKey = "light";
+				const string lightAbsKey = "lightabsolute";
 				float startbrightness = float.NaN;
 				float endbrightness = float.NaN;
 
 				//get total brightness of start sidedef(s)
 				if(start.Front != null) {
 					if(start.Front.Fields.GetValue(lightAbsKey, false)) {
-						startbrightness = (float)start.Front.Fields.GetValue(lightKey, 0);
+						startbrightness = start.Front.Fields.GetValue(lightKey, 0);
 					} else {
 						startbrightness = Math.Min(255, Math.Max(0, (float)start.Front.Sector.Brightness + start.Front.Fields.GetValue(lightKey, 0)));
 					}
 				}
 
 				if(start.Back != null) {
-					float b = 0;
+					float b;
 
 					if(start.Back.Fields.GetValue(lightAbsKey, false)) {
-						b = (float)start.Back.Fields.GetValue(lightKey, 0);
+						b = start.Back.Fields.GetValue(lightKey, 0);
 					} else {
 						b = Math.Min(255, Math.Max(0, (float)start.Back.Sector.Brightness + start.Back.Fields.GetValue(lightKey, 0)));
 					}
 
-					startbrightness = (startbrightness == float.NaN ? b : (startbrightness + b) / 2);
+					startbrightness = (float.IsNaN(startbrightness) ? b : (startbrightness + b) / 2);
 				}
 
 				//get total brightness of end sidedef(s)
 				if(end.Front != null) {
 					if(end.Front.Fields.GetValue(lightAbsKey, false)) {
-						endbrightness = (float)end.Front.Fields.GetValue(lightKey, 0);
+						endbrightness = end.Front.Fields.GetValue(lightKey, 0);
 					} else {
 						endbrightness = Math.Min(255, Math.Max(0, (float)end.Front.Sector.Brightness + end.Front.Fields.GetValue(lightKey, 0)));
 					}
 				}
 
 				if(end.Back != null) {
-					float b = 0;
+					float b;
 
 					if(end.Back.Fields.GetValue(lightAbsKey, false)) {
-						b = (float)end.Back.Fields.GetValue(lightKey, 0);
+						b = end.Back.Fields.GetValue(lightKey, 0);
 					} else {
 						b = Math.Min(255, Math.Max(0, (float)end.Back.Sector.Brightness + end.Back.Fields.GetValue(lightKey, 0)));
 					}
 
-					endbrightness = (endbrightness == float.NaN ? b : (endbrightness + b) / 2);
+					endbrightness = (float.IsNaN(endbrightness) ? b : (endbrightness + b) / 2);
 				}
 
 				float delta = endbrightness - startbrightness;
@@ -1171,7 +1170,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Go for all sectors in between first and last
 				int index = 0;
 				foreach(Linedef l in orderedselection) {
-					float u = (float)index / (float)(orderedselection.Count - 1);
+					float u = index / (float)(orderedselection.Count - 1);
 					float b = startbrightness + delta * u;
 
 					if(l.Front != null) {

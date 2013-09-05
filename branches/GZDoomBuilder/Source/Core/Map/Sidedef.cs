@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -559,6 +561,41 @@ namespace CodeImp.DoomBuilder.Map
 			texnamelow = name;
 			longtexnamelow = Lump.MakeLongName(name);
 			General.Map.IsChanged = true;
+		}
+
+		// This sets udmf texture offset
+		public void SetUdmfTextureOffsetX(int offset) {
+			this.Fields.BeforeFieldsChange();
+
+			//top
+			if(HighTexture.Length > 1 && General.Map.Data.GetFlatExists(HighTexture)) {
+				ImageData texture = General.Map.Data.GetFlatImage(HighTexture);
+				float scaleTop = Fields.GetValue("scalex_top", 1.0f);
+
+				float value = Fields.GetValue("offsetx_top", 0f);
+				float result = (float)(Math.Round(value + offset * scaleTop) % texture.Width);
+				UDMFTools.SetFloat(Fields, "offsetx_top", result);
+			}
+
+			//middle
+			if(MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(MiddleTexture)) {
+				ImageData texture = General.Map.Data.GetFlatImage(MiddleTexture);
+				float scaleMid = Fields.GetValue("scalex_mid", 1.0f);
+
+				float value = Fields.GetValue("offsetx_mid", 0f);
+				float result = (float)(Math.Round(value + offset * scaleMid) % texture.Width);
+				UDMFTools.SetFloat(Fields, "offsetx_mid", result);
+			}
+
+			//bottom
+			if(LowTexture.Length > 1 && General.Map.Data.GetFlatExists(LowTexture)) {
+				ImageData texture = General.Map.Data.GetFlatImage(LowTexture);
+				float scaleLow = Fields.GetValue("scalex_bottom", 1.0f);
+
+				float value = Fields.GetValue("offsetx_bottom", 0f);
+				float result = (float)(Math.Round(value + offset * scaleLow) % texture.Width);
+				UDMFTools.SetFloat(Fields, "offsetx_bottom", result);
+			}
 		}
 		
 		#endregion

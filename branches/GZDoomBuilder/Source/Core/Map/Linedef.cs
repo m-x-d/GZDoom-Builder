@@ -24,6 +24,7 @@ using System.Drawing;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -835,19 +836,20 @@ namespace CodeImp.DoomBuilder.Map
 				back.CopyPropertiesTo(nsd);
 				nsd.Marked = back.Marked;
 				
-				// Make texture offset adjustments
-				//mxd
+				//mxd. Make texture offset adjustments
 				int distance = (int)Vector2D.Distance(nl.start.Position, nl.end.Position);
-				if(General.Map.UDMF) 
-					if(distance != 0) applyTextureOffsetUDMF(back, distance);
-				else
+				if(General.Map.UDMF) {
+					if (distance != 0)
+						back.SetUdmfTextureOffsetX(distance);
+				} else {
 					back.OffsetX += distance;
+				}
 			}
 
 			//mxd. Both sides of line are required, so we do it here...
 			if(nl.Front != null && General.Map.UDMF) {
 				int distance = (int)Vector2D.Distance(this.start.Position, this.end.Position);
-				if(distance != 0) applyTextureOffsetUDMF(nl.Front, distance);
+				if(distance != 0) nl.Front.SetUdmfTextureOffsetX(distance);
 			}
 
 			// Return result
@@ -1073,73 +1075,6 @@ namespace CodeImp.DoomBuilder.Map
             }
             colorPresetIndex = -1;
         }
-
-		//mxd
-		private void applyTextureOffsetUDMF(Sidedef side, int distance) {
-			float scaleTop = side.Fields.GetValue("scalex_top", 1.0f);
-			float scaleMid = side.Fields.GetValue("scalex_mid", 1.0f);
-			float scaleLow = side.Fields.GetValue("scalex_bottom", 1.0f);
-
-			//top
-			if(side.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(side.HighTexture)) {
-				ImageData texture = General.Map.Data.GetFlatImage(side.HighTexture);
-				
-				if(side.Fields.ContainsKey("offsetx_top")) {
-					float value = side.Fields.GetValue("offsetx_top", 0f);
-					float offset = (float)(Math.Round((value + distance) * scaleTop) % texture.Width);
-
-					if(offset != 0)
-						side.Fields["offsetx_top"].Value = offset;
-					else
-						side.Fields.Remove("offsetx_top");
-				} else if(side.HighRequired()) {
-					float offset = (float)(Math.Round(distance * scaleTop) % texture.Width);
-
-					if(offset != 0)
-						side.Fields.Add("offsetx_top", new UniValue(UniversalType.Float, offset));
-				}
-			}
-
-			//middle
-			if(side.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(side.MiddleTexture)){
-				ImageData texture = General.Map.Data.GetFlatImage(side.MiddleTexture);
-				
-				if(side.Fields.ContainsKey("offsetx_mid")) {
-					float value = side.Fields.GetValue("offsetx_mid", 0f);
-					float offset = (float)(Math.Round((value + distance) * scaleMid) % texture.Width);
-					
-					if(offset != 0)
-						side.Fields["offsetx_mid"].Value = offset;
-					else
-						side.Fields.Remove("offsetx_mid");
-				} else if(side.MiddleRequired()) {
-					float offset = (float)(Math.Round(distance * scaleMid) % texture.Width);
-
-					if(offset != 0)
-						side.Fields.Add("offsetx_mid", new UniValue(UniversalType.Float, offset));
-				}
-			}
-
-			//bottom
-			if(side.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(side.LowTexture)){
-				ImageData texture = General.Map.Data.GetFlatImage(side.LowTexture);
-				
-				if(side.Fields.ContainsKey("offsetx_bottom")) {
-					float value = side.Fields.GetValue("offsetx_bottom", 0f);
-					float offset = (float)(Math.Round((value + distance) * scaleLow) % texture.Width);
-
-					if(offset != 0)
-						side.Fields["offsetx_bottom"].Value = offset;
-					else
-						side.Fields.Remove("offsetx_bottom");
-				} else if(side.LowRequired()) {
-					float offset = (float)(Math.Round(distance * scaleLow) % texture.Width);
-
-					if(offset != 0)
-						side.Fields.Add("offsetx_bottom", new UniValue(UniversalType.Float, offset));
-				}
-			}
-		}
 
 		// String representation
 		public override string ToString()
