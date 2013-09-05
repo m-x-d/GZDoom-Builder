@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				//mxd. UDMF vertex offset overrides this effect
 				if(General.Map.UDMF) {
-					if((slopefloor && v.Fields.ContainsKey("zfloor")) || v.Fields.ContainsKey("zceiling")) {
+					if((slopefloor && !float.IsNaN(v.ZFloor)) || !float.IsNaN(v.ZCeiling)) {
 						index++;
 						continue;
 					}
