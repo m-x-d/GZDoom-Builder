@@ -846,8 +846,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnPasteTextureOffsets()
 		{
 			mode.CreateUndo("Paste texture offsets");
-			SetTextureOffsetX(BuilderPlug.Me.CopiedOffsets.X);
-			SetTextureOffsetY(BuilderPlug.Me.CopiedOffsets.Y);
+			if (General.Map.UDMF) {
+				SetTextureOffsetX(BuilderPlug.Me.CopiedOffsets.X);
+				SetTextureOffsetY(BuilderPlug.Me.CopiedOffsets.Y);
+			} else {
+				Sidedef.OffsetX = BuilderPlug.Me.CopiedOffsets.X;
+				Sidedef.OffsetY = BuilderPlug.Me.CopiedOffsets.Y;
+			}
 			mode.SetActionResult("Pasted texture offsets " + BuilderPlug.Me.CopiedOffsets.X + ", " + BuilderPlug.Me.CopiedOffsets.Y + ".");
 			
 			// Update sidedef geometry
@@ -866,7 +871,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Copy texture offsets
 		public virtual void OnCopyTextureOffsets()
 		{
-			BuilderPlug.Me.CopiedOffsets = GetTextureOffset();
+			//mxd
+			BuilderPlug.Me.CopiedOffsets = General.Map.UDMF ? GetTextureOffset() : new Point(Sidedef.OffsetX, Sidedef.OffsetY);
 			mode.SetActionResult("Copied texture offsets " + BuilderPlug.Me.CopiedOffsets.X + ", " + BuilderPlug.Me.CopiedOffsets.Y + ".");
 		}
 
