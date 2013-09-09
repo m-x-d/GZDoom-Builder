@@ -427,7 +427,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// properties from the nearest line in this collection when the
 		// default properties can't be found in the alllines collection.
 		// Return null when no new sector could be made.
-		public static Sector MakeSector(List<LinedefSide> alllines, List<Linedef> nearbylines)
+		public static Sector MakeSector(List<LinedefSide> alllines, List<Linedef> nearbylines, bool useDefaultTextures)
 		{
 			Sector sourcesector = null;
 			SidedefSettings sourceside = new SidedefSettings();
@@ -519,7 +519,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 			
 			// Use defaults where no settings could be found
-			TakeSidedefDefaults(ref sourceside);
+			TakeSidedefDefaults(ref sourceside, useDefaultTextures);
 			
 			// Found a source sector?
 			if(sourcesector != null)
@@ -528,7 +528,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				sourcesector.CopyPropertiesTo(newsector);
 
 				//mxd
-				if(General.Settings.GZForceDefaultTextures) {
+				if(useDefaultTextures) {
 					newsector.SetCeilTexture(General.Settings.DefaultCeilingTexture);
 					newsector.SetFloorTexture(General.Settings.DefaultFloorTexture);
 				}
@@ -579,7 +579,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 
 		// This joins a sector with the given lines and sides. Returns null when operation could not be completed.
-		public static Sector JoinSector(List<LinedefSide> alllines, Sidedef original)
+		public static Sector JoinSector(List<LinedefSide> alllines, Sidedef original, bool useDefaultTextures)
 		{
 			SidedefSettings sourceside = new SidedefSettings();
 			
@@ -587,7 +587,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			TakeSidedefSettings(ref sourceside, original);
 
 			// Use defaults where no settings could be found
-			TakeSidedefDefaults(ref sourceside);
+			TakeSidedefDefaults(ref sourceside, useDefaultTextures);
 
 			// Go for all sides to make sidedefs
 			foreach(LinedefSide ls in alllines)
@@ -657,7 +657,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						List<Linedef> oldlines = General.Map.Map.GetMarkedLinedefs(true);
 
 						// Make the sector
-						Sector s = Tools.MakeSector(sides, oldlines);
+						Sector s = Tools.MakeSector(sides, oldlines, false);
 
 						if(s != null) {
 							// Now we go for all the lines along the sector to
@@ -679,12 +679,12 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// This takes default settings if not taken yet
-		private static void TakeSidedefDefaults(ref SidedefSettings settings)
+		private static void TakeSidedefDefaults(ref SidedefSettings settings, bool useDefaultTextures)
 		{
 			// Use defaults where no settings could be found
-			if(settings.newtexhigh == null || General.Settings.GZForceDefaultTextures) settings.newtexhigh = General.Settings.DefaultTexture;
-			if(settings.newtexmid == null || General.Settings.GZForceDefaultTextures) settings.newtexmid = General.Settings.DefaultTexture;
-			if(settings.newtexlow == null || General.Settings.GZForceDefaultTextures) settings.newtexlow = General.Settings.DefaultTexture;
+			if(settings.newtexhigh == null || useDefaultTextures) settings.newtexhigh = General.Settings.DefaultTexture;
+			if(settings.newtexmid == null || useDefaultTextures) settings.newtexmid = General.Settings.DefaultTexture;
+			if(settings.newtexlow == null || useDefaultTextures) settings.newtexlow = General.Settings.DefaultTexture;
 		}
 
 		// This takes sidedef settings if not taken yet
@@ -849,7 +849,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		//mxd
 		public static bool DrawLines(IList<DrawnVertex> points) {
-			return DrawLines(points, false);
+			return DrawLines(points, false, false);
 		}
 		
 		/// <summary>
@@ -857,7 +857,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		/// marks and marks the new lines and vertices when done. Also marks the sectors that were added.
 		/// Returns false when the drawing failed.
 		/// </summary>
-		public static bool DrawLines(IList<DrawnVertex> points, bool autoAlignTextureOffsets)
+		public static bool DrawLines(IList<DrawnVertex> points, bool useDefaultTextures, bool autoAlignTextureOffsets)
 		{
 			List<Vertex> newverts = new List<Vertex>();
 			List<Vertex> intersectverts = new List<Vertex>();
@@ -971,13 +971,12 @@ namespace CodeImp.DoomBuilder.Geometry
 
 				// We prefer a closed polygon, because then we can determine the interior properly
 				// Check if the two ends of the polygon are closed
-				bool drawingclosed = false;
 				bool splittingonly = false;
 				if(newlines.Count > 0)
 				{
 					Linedef firstline = newlines[0];
 					Linedef lastline = newlines[newlines.Count - 1];
-					drawingclosed = (firstline.Start == lastline.End);
+					bool drawingclosed = (firstline.Start == lastline.End);
 					if(!drawingclosed)
 					{
 						// When not closed, we will try to find a path to close it.
@@ -1324,7 +1323,7 @@ namespace CodeImp.DoomBuilder.Geometry
 							if(!istruenewsector || !splittingonly)
 							{
 								// Make the new sector
-								Sector newsector = Tools.MakeSector(sectorlines, oldlines);
+								Sector newsector = Tools.MakeSector(sectorlines, oldlines, useDefaultTextures);
 								if(newsector == null) return false;
 
 								if(istruenewsector) newsector.Marked = true;
@@ -1399,7 +1398,7 @@ namespace CodeImp.DoomBuilder.Geometry
 								}
 								
 								// Have our new lines join the existing sector
-								if(Tools.JoinSector(newsectorlines, joinsidedef) == null)
+								if(Tools.JoinSector(newsectorlines, joinsidedef, useDefaultTextures) == null)
 									return false;
 							}
 						}

@@ -231,7 +231,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<Linedef> oldlines = General.Map.Map.GetMarkedLinedefs(true);
 			
 			// Make the sector
-			Sector s = Tools.MakeSector(allsides, oldlines);
+			Sector s = Tools.MakeSector(allsides, oldlines, false);
 			if(s != null)
 			{
 				// Now we go for all the lines along the sector to

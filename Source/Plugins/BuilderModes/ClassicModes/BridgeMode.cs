@@ -200,7 +200,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 
                     //sector in row
                     for (int c = 0; c < drawShapes[i].Count; c++) {
-                        if (!Tools.DrawLines(drawShapes[i][c])) {
+						if(!Tools.DrawLines(drawShapes[i][c], false, true)) {
                             // Drawing failed
                             // NOTE: I have to call this twice, because the first time only cancels this volatile mode
                             General.Interface.DisplayStatus(StatusType.Warning, "Failed to create a Bezier Path...");

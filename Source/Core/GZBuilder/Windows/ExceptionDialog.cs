@@ -15,12 +15,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 
 			logPath = Path.Combine(General.SettingsPath, @"GZCrash.txt");
 			Exception ex = (Exception)e.ExceptionObject;
-			errorDescription.Text = "Error in " + ex.Source + ": " + ex.Message;
+			errorDescription.Text = "Error in " + ex.Source + ":";
 			using(StreamWriter sw = File.CreateText(logPath)) {
 				sw.Write(ex.Source + ": " + ex.Message + Environment.NewLine + ex.StackTrace);
 			}
 
-			errorMessage.Text = ex.StackTrace;
+			errorMessage.Text = ex.Message + Environment.NewLine + ex.StackTrace;
 			cannotContinue = true;  //cannot recover from this...
 		}
 
@@ -28,12 +28,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			InitializeComponent();
 
 			logPath = Path.Combine(General.SettingsPath, @"GZCrash.txt");
-			errorDescription.Text = "Error in " + e.Exception.Source + ": " + e.Exception.Message;
+			errorDescription.Text = "Error in " + e.Exception.Source + ":";
 			using(StreamWriter sw = File.CreateText(logPath)) {
 				sw.Write(e.Exception.Source + ": " + e.Exception.Message + Environment.NewLine + e.Exception.StackTrace);
 			}
 
-			errorMessage.Text = e.Exception.StackTrace;
+			errorMessage.Text = e.Exception.Message + Environment.NewLine + e.Exception.StackTrace;
 		}
 
 		public void Setup() {

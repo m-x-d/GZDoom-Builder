@@ -862,18 +862,15 @@ namespace CodeImp.DoomBuilder.Map
 		// Returns false when the operation could not be completed
 		public bool Join(Linedef other)
 		{
-			Sector l1fs, l1bs, l2fs, l2bs;
-			bool l1was2s, l2was2s;
-			
 			// Check which lines were 2 sided
-			l1was2s = ((other.Front != null) && (other.Back != null));
-			l2was2s = ((this.Front != null) && (this.Back != null));
+			bool l1was2s = ((other.Front != null) && (other.Back != null));
+			bool l2was2s = ((this.Front != null) && (this.Back != null));
 			
 			// Get sector references
-			if(other.front != null) l1fs = other.front.Sector; else l1fs = null;
-			if(other.back != null) l1bs = other.back.Sector; else l1bs = null;
-			if(this.front != null) l2fs = this.front.Sector; else l2fs = null;
-			if(this.back != null) l2bs = this.back.Sector; else l2bs = null;
+			Sector l1fs = other.front != null ? other.front.Sector : null;
+			Sector l1bs = other.back != null ? other.back.Sector : null;
+			Sector l2fs = this.front != null ? this.front.Sector : null;
+			Sector l2bs = this.back != null ? this.back.Sector : null;
 
 			// This line has no sidedefs?
 			if((l2fs == null) && (l2bs == null))

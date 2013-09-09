@@ -321,7 +321,7 @@ namespace CodeImp.DoomBuilder.Map
 			return entries;
 		}
 
-		// This puts a thing in the blockmap
+		// This puts things in the blockmap
 		public virtual void AddThingsSet(ICollection<Thing> things)
 		{
 			foreach(Thing t in things) AddThing(t);
@@ -334,7 +334,18 @@ namespace CodeImp.DoomBuilder.Map
 			if(IsInRange(p)) blockmap[p.X, p.Y].Things.Add(t);
 		}
 
-		// This puts a secotr in the blockmap
+		//mxd. This puts vertices in the blockmap
+		public virtual void AddVerticesSet(ICollection<Vertex> verts) {
+			foreach(Vertex v in verts) AddVertex(v);
+		}
+
+		//mxd. This puts a vertex in the blockmap
+		public virtual void AddVertex(Vertex v) {
+			Point p = GetBlockCoordinates(v.Position);
+			if(IsInRange(p)) blockmap[p.X, p.Y].Vertices.Add(v);
+		}
+
+		// This puts sectors in the blockmap
 		public virtual void AddSectorsSet(ICollection<Sector> sectors)
 		{
 			foreach(Sector s in sectors) AddSector(s);

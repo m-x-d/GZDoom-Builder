@@ -260,8 +260,8 @@ namespace CodeImp.DoomBuilder.Windows
 				// Go for all the lumps in the wad
 				for(scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++)
 				{
-					// Make sure this lump is not part of the map
-					if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name))
+					// Make sure this lump is not part of the map. Also make sure that no data is stored in that lump (mxd)
+					if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name) && wadfile.Lumps[scanindex].Length == 0)
 					{
 						// Reset check
 						lumpsfound = 0;

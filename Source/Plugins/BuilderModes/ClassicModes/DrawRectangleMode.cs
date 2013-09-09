@@ -37,7 +37,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
         protected PixelColor cornersColor;
 
-        public DrawRectangleMode() : base() {
+        public DrawRectangleMode() {
             snaptogrid = true;
             cornersColor = General.Colors.BrightColors[new Random().Next(General.Colors.BrightColors.Length - 1)];
         }
@@ -52,17 +52,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
         override protected void Update() {
             PixelColor stitchcolor = General.Colors.Highlight;
             PixelColor losecolor = General.Colors.Selection;
-            PixelColor color;
 
             snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 
             DrawnVertex curp = GetCurrentPosition();
-            float vsize = ((float)renderer.VertexSize + 1.0f) / renderer.Scale;
-            float vsizeborder = ((float)renderer.VertexSize + 3.0f) / renderer.Scale;
+            float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
 
             // Render drawing lines
             if (renderer.StartOverlay(true)) {
-                color = snaptonearest ? stitchcolor : losecolor;
+                PixelColor color = snaptonearest ? stitchcolor : losecolor;
                 
                 if (points.Count == 1) {
                     updateReferencePoints(points[0], curp);
@@ -77,7 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
                         renderer.RenderRectangleFilled(new RectangleF(shape[i].x - vsize, shape[i].y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
 
                     //and labels
-                    Vector2D[] labelCoords = new Vector2D[] { start, new Vector2D(end.x, start.y), end, new Vector2D(start.x, end.y), start };
+                    Vector2D[] labelCoords = new[] { start, new Vector2D(end.x, start.y), end, new Vector2D(start.x, end.y), start };
                     for (int i = 1; i < 5; i++) {
                         labels[i - 1].Start = labelCoords[i - 1];
                         labels[i - 1].End = labelCoords[i];
@@ -122,13 +120,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			//line
 			if(pEnd.x == pStart.x || pEnd.y == pStart.y) {
 				currentBevelWidth = 0;
-				return new Vector2D[] { pStart, pEnd };
+				return new[] { pStart, pEnd };
 			}
 
             //no corners
             if (bevelWidth == 0) {
                 currentBevelWidth = 0;
-                return new Vector2D[] { pStart, new Vector2D((int)pEnd.x, (int)pStart.y), pEnd, new Vector2D((int)pStart.x, (int)pEnd.y), pStart };
+                return new[] { pStart, new Vector2D((int)pEnd.x, (int)pStart.y), pEnd, new Vector2D((int)pStart.x, (int)pEnd.y), pStart };
             }
 
             //got corners
@@ -219,7 +217,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
             points.Add(newpoint);
 
             if (points.Count == 1) { //add point and labels
-				labels.AddRange(new LineLengthLabel[] { new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false) });
+				labels.AddRange(new[] { new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false) });
                 hintLabel = new HintLabel();
                 Update();
             } else if (points[0].pos == points[1].pos) { //nothing is drawn
@@ -256,14 +254,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
                 General.Map.UndoRedo.CreateUndo(undoName);
 
                 // Make an analysis and show info
-                string[] adjectives = new string[] { "gloomy", "sad", "unhappy", "lonely", "troubled", "depressed", "heartsick", "glum", "pessimistic", "bitter", "downcast" }; // aaand my english vocabulary ends here :)
+                string[] adjectives = new[] { "gloomy", "sad", "unhappy", "lonely", "troubled", "depressed", "heartsick", "glum", "pessimistic", "bitter", "downcast" }; // aaand my english vocabulary ends here :)
                 string word = adjectives[new Random().Next(adjectives.Length - 1)];
                 string a = (word[0] == 'u' ? "an " : "a ");
 
                 General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " " + shapeName+".");
 
                 // Make the drawing
-                if (!Tools.DrawLines(points, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) {
+                if (!Tools.DrawLines(points, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) {
                     // Drawing failed
                     // NOTE: I have to call this twice, because the first time only cancels this volatile mode
                     General.Map.UndoRedo.WithdrawUndo();

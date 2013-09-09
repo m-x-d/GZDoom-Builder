@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
@@ -67,14 +69,25 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 				}
 			}
 
-			//merge overlapping vertices
-			Dictionary<Vector2D, Vertex> vertsByPosition = new Dictionary<Vector2D, Vertex>();
-			foreach(Vertex v in General.Map.Map.Vertices){
-				if(v == null || v.IsDisposed) continue;
-				if(!vertsByPosition.ContainsKey(v.Position))
-					vertsByPosition.Add(v.Position, v);
-				else
-					v.Join(vertsByPosition[v.Position]);
+			//Create blockmap
+			RectangleF area = MapSet.CreateArea(General.Map.Map.Vertices);
+			BlockMap<BlockEntry> blockmap = new BlockMap<BlockEntry>(area);
+			blockmap.AddVerticesSet(General.Map.Map.Vertices);
+
+			//merge overlapping vertices using teh power of BLOCKMAP!!!11
+			BlockEntry block;
+			foreach (Vertex v in movedVerts) {
+				block = blockmap.GetBlockAt(v.Position);
+				if (block == null) continue;
+
+				foreach (Vertex blockVert in block.Vertices) {
+					if(!blockVert.IsDisposed && blockVert.Index != v.Index && blockVert.Position == v.Position) {
+						foreach(Linedef l in blockVert.Linedefs) 
+							if(!movedLines.Contains(l)) movedLines.Add(l);
+						v.Join(blockVert);
+						break;
+					}
+				}
 			}
 
 			// Update cached values of lines because we may need their length/angle
@@ -85,16 +98,41 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			MapSet.JoinOverlappingLines(movedLines);
 			General.Map.Map.EndAddRemove();
 
-			// Redraw changed lines
-			foreach(Linedef line in movedLines) {
-				if(line == null || line.IsDisposed) continue;
-				DrawnVertex start = new DrawnVertex { pos = line.Start.Position, stitch = true, stitchline = true };
-				DrawnVertex end = new DrawnVertex { pos = line.End.Position, stitch = true, stitchline = true };
-				Tools.DrawLines(new List<DrawnVertex> { start, end });
+			//get changed sectors
+			List<Sector> changedSectors = new List<Sector>();
+			foreach(Linedef l in movedLines) {
+				if(l == null || l.IsDisposed) continue;
+				if(l.Front != null && l.Front.Sector != null && !changedSectors.Contains(l.Front.Sector))
+					changedSectors.Add(l.Front.Sector);
+				if(l.Back != null && l.Back.Sector != null && !changedSectors.Contains(l.Back.Sector))
+					changedSectors.Add(l.Back.Sector);
+			}
+
+			// Now update area of sectors
+			General.Map.Map.Update(false, true);
+
+			//fix invalid sectors
+			foreach (Sector s in changedSectors) {
+				if(s.BBox.IsEmpty) {
+					s.Dispose();
+				}else if (s.Sidedefs.Count < 3) {
+					bool merged = false;
+					foreach(Sidedef side in s.Sidedefs) {
+						if(side.Other != null && side.Other.Sector != null) {
+							s.Join(side.Other.Sector);
+							merged = true;
+							break;
+						}
+					}
+
+					//oh well, I don't know what else I can do here...
+					if(!merged) s.Dispose();
+				}
 			}
 
 			//done
 			General.Interface.DisplayStatus(StatusType.Info, "Snapped " + snappedCount + " vertices.");
+			MessageBox.Show("Snapped " + snappedCount + " vertices." + Environment.NewLine + "It's a good idea to run Map Analysis Mode now.");
 			base.OnAccept();
 			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
 		}
