@@ -663,10 +663,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public Type[] FindClasses(Type t)
 		{
 			List<Type> found = new List<Type>();
-			Type[] types;
 
 			// Get all exported types
-			types = Assembly.GetExecutingAssembly().GetTypes();
+			Type[] types = Assembly.GetExecutingAssembly().GetTypes();
 			foreach(Type it in types)
 			{
 				// Compare types
@@ -799,7 +798,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				if(General.Settings.GZShowEventLines) { //mxd
-					//renderer.PlotArrows(lines, General.Colors.InfoLine);
 					foreach(Line3D l in lines) {
 						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
 					}
@@ -836,7 +834,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			if(General.Settings.GZShowEventLines) {//mxd
-				//renderer.RenderArrows(lines, General.Colors.InfoLine);
 				foreach(Line3D l in lines) {
 					renderer.RenderArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
 				}
@@ -859,7 +856,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//show settings form
 			WavefrontSettingsForm form = new WavefrontSettingsForm(General.Map.Map.SelectedSectorsCount == 0 ? -1 : sectors.Count);
-			if(form.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if(form.ShowDialog() == DialogResult.OK) {
 				WavefrontExportSettings data = new WavefrontExportSettings(Path.GetFileNameWithoutExtension(form.FilePath), Path.GetDirectoryName(form.FilePath), BuilderPlug.Me.ObjScale, BuilderPlug.Me.ObjGZDoomScale, BuilderPlug.Me.ObjExportTextures);
 				WavefrontExporter e = new WavefrontExporter();
 				e.Export(sectors, data);

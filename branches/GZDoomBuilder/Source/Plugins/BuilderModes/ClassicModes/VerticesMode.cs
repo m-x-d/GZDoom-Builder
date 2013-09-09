@@ -830,16 +830,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//collect linedefs count per vertex
 			Dictionary<Vertex, int> linesPerVertex = new Dictionary<Vertex, int>();
-			List<Sector> affectedSectors = new List<Sector>();
+			//List<Sector> affectedSectors = new List<Sector>();
 			foreach(Vertex v in selected) {
 				linesPerVertex.Add(v, v.Linedefs.Count);
 
-				foreach(Linedef l in v.Linedefs) {
+				/*foreach(Linedef l in v.Linedefs) {
 					if(l.Front != null && l.Front.Sector != null && !affectedSectors.Contains(l.Front.Sector))
 						affectedSectors.Add(l.Front.Sector);
 					if(l.Back != null && l.Back.Sector != null && !affectedSectors.Contains(l.Back.Sector))
 						affectedSectors.Add(l.Back.Sector);
-				}
+				}*/
 			}
 
 			// Go for all vertices that need to be removed
@@ -935,7 +935,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			dv2.stitch = true;
 			dv1.pos = start;
 			dv2.pos = end;
-			Tools.DrawLines(new List<DrawnVertex>() { dv1, dv2 });
+			Tools.DrawLines(new List<DrawnVertex>() { dv1, dv2 }, false, false);
 
 			// Update cache values
 			General.Map.Map.Update();

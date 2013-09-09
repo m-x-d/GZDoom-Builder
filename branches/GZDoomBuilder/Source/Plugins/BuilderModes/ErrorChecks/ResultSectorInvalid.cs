@@ -67,14 +67,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach (Linedef line in lines)
 				if (line.Length == 0) line.Dispose();
 
-			if(lines.Count == 0) {
+			if (lines.Count == 0) {
 				sector.Dispose();
+			} else if(lines.Count < 3) { //merge with surrounding geometry
+				bool merged = false;
+				foreach(Sidedef side in sector.Sidedefs) {
+					if(side.Other != null && side.Other.Sector != null) {
+						sector.Join(side.Other.Sector);
+						merged = true;
+						break;
+					}
+				}
+
+				//oh well, I don't know what else I can do here...
+				if(!merged) sector.Dispose();
 			} else { //redraw the lines
 				foreach(Linedef line in lines) {
 					if(line.IsDisposed) continue;
 					DrawnVertex start = new DrawnVertex { pos = line.Start.Position, stitch = true, stitchline = true };
 					DrawnVertex end = new DrawnVertex { pos = line.End.Position, stitch = true, stitchline = true };
-					Tools.DrawLines(new List<DrawnVertex> { start, end });
+					Tools.DrawLines(new List<DrawnVertex> { start, end }, false, false);
 				}
 			}
 
