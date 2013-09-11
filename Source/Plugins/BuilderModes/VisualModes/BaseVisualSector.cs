@@ -165,7 +165,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 			}
-			
+
+			Sector.UpdateFogColor(); //mxd
 			isupdating = false;
 		}
 

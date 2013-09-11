@@ -20,6 +20,7 @@ using System;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -86,6 +87,28 @@ namespace CodeImp.DoomBuilder.Controls
 			bool showExtededFloorInfo = false;
 			bool showExtededCeilingInfo = false;
 			if(General.Map.UDMF && s.Fields != null) {
+				//sector colors
+				labelLight.Visible = true;
+				labelFade.Visible = true;
+				panelLightColor.Visible = true;
+				panelFadeColor.Visible = true;
+
+				if(s.Fields.ContainsKey("lightcolor")) {
+					panelLightColor.BackColor = PixelColor.FromInt(s.Fields.GetValue("lightcolor", 0xFFFFFF)).WithAlpha(255).ToColor();
+					labelLight.Enabled = true;
+				} else {
+					panelLightColor.BackColor = System.Drawing.SystemColors.Control;
+					labelLight.Enabled = false;
+				}
+
+				if(s.Fields.ContainsKey("fadecolor")) {
+					panelFadeColor.BackColor = PixelColor.FromInt(s.Fields.GetValue("fadecolor", 0)).WithAlpha(255).ToColor();
+					labelFade.Enabled = true;
+				} else {
+					panelFadeColor.BackColor = System.Drawing.SystemColors.Control;
+					labelFade.Enabled = false;
+				}
+				
 				//light
 				if(s.Fields.ContainsKey("lightceiling") || s.Fields.ContainsKey("lightceilingabsolute")) {
 					showExtededCeilingInfo = true;
@@ -205,6 +228,11 @@ namespace CodeImp.DoomBuilder.Controls
 					floorAngle.Enabled = false;
 					floorAngleLabel.Enabled = false;
 				}
+			} else {
+				panelFadeColor.Visible = false;
+				panelLightColor.Visible = false;
+				labelFade.Visible = false;
+				labelLight.Visible = false;
 			}
 
 			//panels size

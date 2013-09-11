@@ -41,7 +41,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			v.ZCeiling = zceiling; //mxd
 			v.ZFloor = zfloor; //mxd
-			
 			v.Fields.BeforeFieldsChange();
 			v.Fields.Clear();
 			foreach(KeyValuePair<string, UniValue> uv in fields)
@@ -60,6 +59,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int brightness;
 		private int tag;
 		private UniFields fields;
+		private Dictionary<string, bool> flags; //mxd
 		
 		public SectorProperties(Sector s)
 		{
@@ -71,6 +71,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			effect = s.Effect;
 			tag = s.Tag;
 			fields = new UniFields(s.Fields);
+			flags = s.GetFlags(); //mxd
 		}
 		
 		public void Apply(Sector s)
@@ -82,6 +83,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			s.Brightness = brightness;
 			s.Tag = tag;
 			s.Effect = effect;
+			s.ClearFlags(); //mxd
+			foreach(KeyValuePair<string, bool> f in flags) //mxd
+				s.SetFlag(f.Key, f.Value);
 			s.Fields.BeforeFieldsChange();
 			s.Fields.Clear();
 			foreach(KeyValuePair<string, UniValue> v in fields)
@@ -98,6 +102,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int offsetx;
 		private int offsety;
 		private UniFields fields;
+		private Dictionary<string, bool> flags; //mxd
 
 		public SidedefProperties(Sidedef s)
 		{
@@ -107,6 +112,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			offsetx = s.OffsetX;
 			offsety = s.OffsetY;
 			fields = new UniFields(s.Fields);
+			flags = s.GetFlags(); //mxd
 		}
 		
 		public void Apply(Sidedef s)
@@ -116,6 +122,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			s.SetTextureLow(lowtexture);
 			s.OffsetX = offsetx;
 			s.OffsetY = offsety;
+			s.ClearFlags(); //mxd
+			foreach(KeyValuePair<string, bool> f in flags) //mxd
+				s.SetFlag(f.Key, f.Value);
 			s.Fields.BeforeFieldsChange();
 			s.Fields.Clear();
 			foreach(KeyValuePair<string, UniValue> v in fields)

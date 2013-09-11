@@ -261,7 +261,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
                 General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " " + shapeName+".");
 
                 // Make the drawing
-                if (!Tools.DrawLines(points, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) {
+                if (!Tools.DrawLines(points, General.Settings.GZForceDefaultTextures, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) {
                     // Drawing failed
                     // NOTE: I have to call this twice, because the first time only cancels this volatile mode
                     General.Map.UndoRedo.WithdrawUndo();

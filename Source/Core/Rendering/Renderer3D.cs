@@ -712,7 +712,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This performs a single render pass
 		private void RenderSinglePass(int pass)
 		{
-            Color4 fogColor;
             int currentshaderpass = shaderpass;
 			int highshaderpass = shaderpass + 2;
 			
@@ -776,7 +775,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						int wantedshaderpass = (((g == highlighted) && showhighlight) || (g.Selected && showselection)) ? highshaderpass : shaderpass;
 
                         //mxd
-                        if (General.Settings.GZDrawFog && !fullbrightness && sector.Sector.Brightness < 248)
+                        if (General.Settings.GZDrawFog && !fullbrightness && (sector.Sector.HasFogColor || sector.Sector.Brightness < 248))
                             wantedshaderpass += 8;
 
                         //mxd. Seems that lines rendered with RenderPass.Alpha or RenderPass.Additive aren't affected by dynamic lights in GZDoom
@@ -808,9 +807,9 @@ namespace CodeImp.DoomBuilder.Rendering
                             if (wantedshaderpass > 7) {
                                 graphics.Shaders.World3D.World = world;
 
-                                bool sectorHasFogColor = getFogColor(sector.Sector, out fogColor);
-                                graphics.Shaders.World3D.LightColor = fogColor;
-                                graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(sector.Sector, sectorHasFogColor));
+
+								graphics.Shaders.World3D.LightColor = sector.Sector.FogColor;
+								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(sector.Sector));
                             }
                             
                             graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((g == highlighted) && showhighlight, (g.Selected && showselection)).ToArgb());
@@ -869,7 +868,7 @@ namespace CodeImp.DoomBuilder.Rendering
                                 int wantedshaderpass = (((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass;
 
                                 //mxd. if fog is enagled, switch to shader, which calculates it
-                                if (General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && t.Thing.Sector.Brightness < 248)
+								if(General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && (t.Thing.Sector.HasFogColor || t.Thing.Sector.Brightness < 248))
                                     wantedshaderpass += 8;
 
                                 //mxd. if current thing is light - set it's color to light color
@@ -910,9 +909,8 @@ namespace CodeImp.DoomBuilder.Rendering
                                 if (wantedshaderpass > 7) {
                                     graphics.Shaders.World3D.World = world;
 
-                                    bool sectorHasFogColor = getFogColor(t.Thing.Sector, out fogColor);
-                                    graphics.Shaders.World3D.LightColor = fogColor;
-                                    graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(t.Thing.Sector, sectorHasFogColor));
+									graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
+									graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(t.Thing.Sector));
                                 }
 
                                 graphics.Shaders.World3D.ApplySettings();
@@ -1020,7 +1018,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
         //mxd. render models
         private void RenderModels() {
-            Color4 fogColor;
             int shaderpass = fullbrightness ? 1 : 4;
             int currentshaderpass = shaderpass;
             int highshaderpass = shaderpass + 2;
@@ -1046,7 +1043,7 @@ namespace CodeImp.DoomBuilder.Rendering
                     int wantedshaderpass = ((((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass);
 
                     //mxd. if fog is enagled, switch to shader, which calculates it
-                    if (General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && t.Thing.Sector.Brightness < 248)
+                    if (General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && (t.Thing.Sector.HasFogColor || t.Thing.Sector.Brightness < 248))
                         wantedshaderpass += 8;
 
                     // Switch shader pass?
@@ -1074,9 +1071,8 @@ namespace CodeImp.DoomBuilder.Rendering
                     if (wantedshaderpass > 7) {
                         graphics.Shaders.World3D.World = world;
 
-                        bool sectorHasFogColor = getFogColor(t.Thing.Sector, out fogColor);
-                        graphics.Shaders.World3D.LightColor = fogColor;
-                        graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(t.Thing.Sector, sectorHasFogColor));
+						graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
+						graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(t.Thing.Sector));
                     }
 
 					for(int i = 0; i < group.Key.Model.Meshes.Count; i++) {
@@ -1121,28 +1117,18 @@ namespace CodeImp.DoomBuilder.Rendering
         }
 
         //mxd. This returns distance, at which fog color completely replaces texture color for given sector
-        private float getFogEnd(Sector s, bool sectorHasFogColor) {
-            float brightness = (float)Math.Max(30, s.Brightness);
-            if (sectorHasFogColor) {
-                return brightness * 11.0f;
-            }
-            return (float)Math.Pow(2.0f, brightness / 11.0f);
-        }
+        private float getFogEnd(Sector s) {
+			float brightness = Math.Max(30, s.Brightness);
+			
+			if (s.HasFogColor) {
+				if(s.UsesOutsideFog && General.Map.Data.MapInfo.OutsideFogDensity > 0)
+			        return General.Map.Data.MapInfo.OutsideFogDensity;
+				if(!s.UsesOutsideFog && General.Map.Data.MapInfo.FogDensity > 0)
+					return General.Map.Data.MapInfo.FogDensity;
+				return brightness * 11.0f;
+	        }
 
-        //mxd. returns true if sector has fog color
-        private bool getFogColor(Sector sector, out Color4 color) {
-            if (General.Map.UDMF && sector.Fields.ContainsKey("fadecolor")) {
-                color = new Color4((int)sector.Fields["fadecolor"].Value);
-                return true;
-            } else if (General.Map.Data.MapInfo.HasOutsideFogColor && sector.CeilTexture == General.Map.Config.SkyFlatName) {
-                color = General.Map.Data.MapInfo.OutsideFogColor;
-                return true;
-            } else if (General.Map.Data.MapInfo.HasFadeColor) {
-                color = General.Map.Data.MapInfo.FadeColor;
-                return true;
-            }
-            color = new Color4(); //black
-            return false;
+			return (float)Math.Pow(2.0f, brightness / 11.0f);
         }
 
 		// This calculates the highlight/selection color

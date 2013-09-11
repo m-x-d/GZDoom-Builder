@@ -97,11 +97,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		}
 
 		private void checkValues() {
-			bool changed = (string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text));
-
-			if(!changed)
-				changed = (value1.GetResultFloat(defaultValue) != defaultValue || value2.GetResultFloat(defaultValue) != defaultValue);
-
+			bool changed = string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text)
+				|| value1.GetResultFloat(defaultValue) != defaultValue || value2.GetResultFloat(defaultValue) != defaultValue;
 			label.Enabled = changed;
 			bReset.Visible = changed;
 

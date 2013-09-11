@@ -318,12 +318,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			autoclearselection = General.Settings.ReadPluginSetting("autoclearselection", false);
 			visualmodeclearselection = General.Settings.ReadPluginSetting("visualmodeclearselection", false);
 			viewselectionnumbers = General.Settings.ReadPluginSetting("viewselectionnumbers", true);
-			stitchrange = (float)General.Settings.ReadPluginSetting("stitchrange", 20);
-			highlightrange = (float)General.Settings.ReadPluginSetting("highlightrange", 20);
-			highlightthingsrange = (float)General.Settings.ReadPluginSetting("highlightthingsrange", 10);
-			splitlinedefsrange = (float)General.Settings.ReadPluginSetting("splitlinedefsrange", 10);
+			stitchrange = General.Settings.ReadPluginSetting("stitchrange", 20);
+			highlightrange = General.Settings.ReadPluginSetting("highlightrange", 20);
+			highlightthingsrange = General.Settings.ReadPluginSetting("highlightthingsrange", 10);
+			splitlinedefsrange = General.Settings.ReadPluginSetting("splitlinedefsrange", 10);
 			autodragonpaste = General.Settings.ReadPluginSetting("autodragonpaste", false);
-			autoAlignTextureOffsetsOnCreate = General.Settings.ReadPluginSetting("autoaligntextureoffsetsoncreate", true); //mxd
+			autoAlignTextureOffsetsOnCreate = General.Settings.ReadPluginSetting("autoaligntextureoffsetsoncreate", false); //mxd
 			autoAlignTextureOffsetsOnDrag = General.Settings.ReadPluginSetting("autoaligntextureoffsetsondrag", true); //mxd
 			dontMoveGeometryOutsideMapBoundary = General.Settings.ReadPluginSetting("dontmovegeometryoutsidemapboundary", false); //mxd
 			syncSelection = General.Settings.ReadPluginSetting("syncselection", false); //mxd

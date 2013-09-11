@@ -42,7 +42,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
         //returns true if parsing is finished
         private bool parseBlock(string token, string mapName) {
             string curBlockName;
-            mapName = mapName.ToLowerInvariant();
 
             if (token == "map" || token == "defaultmap" || token == "adddefaultmap") {
                 curBlockName = token;
@@ -63,7 +62,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                 while (SkipWhitespace(true)) {
                     token = ReadToken().ToLowerInvariant();
 
-                    //sky1 or sky2
+//sky1 or sky2
                     if (token == "sky1" || token == "sky2") {
                         string skyType = token;
                         SkipWhitespace(true);
@@ -147,7 +146,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                 General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + skyType + " texture name.");
                             }
                         }
-                        //fade or outsidefog
+//fade or outsidefog
                     } else if (token == "fade" || token == "outsidefog") {
                         string fadeType = token;
                         SkipWhitespace(true);
@@ -162,10 +161,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             string colorVal = StripTokenQuotes(token).ToLowerInvariant();
                             if (!string.IsNullOrEmpty(colorVal)) {
                                 Color4 color = new Color4();
-                                //color.Alpha = 1.0f;
 
                                 //is it color name?
-                                if (getColorByName(colorVal, ref color)) {
+                                if (getColor(colorVal, ref color)) {
                                     if (fadeType == "fade")
                                         mapInfo.FadeColor = color;
                                     else
@@ -173,7 +171,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                 } else { //no, it's not
                                     //try to get color values
                                     int r, g, b;
-                                    string[] parts = colorVal.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                                    string[] parts = colorVal.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
                                     if (parts.Length != 3) {
                                         General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " color values, but got '" + token + "'");
@@ -220,7 +218,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
                                 if (!int.TryParse(token, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out r)) {
                                     //Not numeric! Maybe it's a color name?
-                                    if (getColorByName(token, ref color)) {
+                                    if (getColor(token, ref color)) {
                                         if (fadeType == "fade")
                                             mapInfo.FadeColor = color;
                                         else
@@ -266,37 +264,62 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                 datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
                             }
                         }
-                        //vertwallshade or horizwallshade
+//vertwallshade or horizwallshade
                     } else if (token == "vertwallshade" || token == "horizwallshade") {
-                        string shadeType = token;
-                        SkipWhitespace(true);
-                        token = StripTokenQuotes(ReadToken());
+						string shadeType = token;
+						SkipWhitespace(true);
+						token = StripTokenQuotes(ReadToken());
 
-                        //new format
-                        if (token == "=") {
-                            SkipWhitespace(true);
-                            token = StripTokenQuotes(ReadToken());
-                        }
+						//new format
+						if(token == "=") {
+							SkipWhitespace(true);
+							token = StripTokenQuotes(ReadToken());
+						}
 
-                        int val = 0;
-                        if (!ReadSignedInt(token, ref val)) {
-                            // Not numeric!
-                            General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + shadeType + " value, but got '" + token + "'");
-                            datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
-                            continue;
-                        }
+						int val = 0;
+						if(!ReadSignedInt(token, ref val)) {
+							// Not numeric!
+							General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + shadeType + " value, but got '" + token + "'");
+							datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
+							continue;
+						}
 
-                        if (shadeType == "vertwallshade")
-                            mapInfo.VertWallShade = General.Clamp(val, -255, 255);
-                        else
-                            mapInfo.HorizWallShade = General.Clamp(val, -255, 255);
-                        //doublesky
+						if(shadeType == "vertwallshade")
+							mapInfo.VertWallShade = General.Clamp(val, -255, 255);
+						else
+							mapInfo.HorizWallShade = General.Clamp(val, -255, 255);
+//fogdensity or outsidefogdensity
+					} else if(token == "fogdensity" || token == "outsidefogdensity") {
+						string densityType = token;
+						SkipWhitespace(true);
+						token = StripTokenQuotes(ReadToken());
+
+						//new format
+						if(token == "=") {
+							SkipWhitespace(true);
+							token = StripTokenQuotes(ReadToken());
+						}
+
+						int val;
+						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out val)) {
+							// Not numeric!
+							General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + densityType + " value, but got '" + token + "'");
+							datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
+							continue;
+						}
+
+						if (densityType == "fogdensity") {
+							mapInfo.FogDensity = (int)(1024 * (256.0f / val));
+						} else {
+							mapInfo.OutsideFogDensity = (int)(1024 * (256.0f / val));
+						}
+						//doublesky
                     } else if (token == "doublesky") {
                         mapInfo.DoubleSky = true;
-                        //evenlighting
+//evenlighting
                     } else if (token == "evenlighting") {
                         mapInfo.EvenLighting = true;
-                        //smoothlighting
+//smoothlighting
                     } else if (token == "smoothlighting") {
                         mapInfo.SmoothLighting = true;
                         //block end
@@ -308,10 +331,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
             return false;
         }
 
-        private bool getColorByName(string name, ref Color4 color) {
-            if (name == "black")
-                return true;
+        private bool getColor(string name, ref Color4 color) {
+            if (name == "black") return true;
 
+			//probably it's a hex color (like FFCC11)?
+			int ci;
+			if (int.TryParse(name, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ci)) {
+				color = new Color4(ci) {Alpha = 1.0f};
+				return true;
+			}
+
+			//probably it's a color name?
             Color c = Color.FromName(name); //should be similar to C++ color name detection, I suppose
             if (c.IsKnownColor) {
                 color = new Color4(c);
