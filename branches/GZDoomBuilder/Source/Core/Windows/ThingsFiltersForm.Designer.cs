@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listfilters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
 			this.listfilters.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnname});
+			this.columnname});
 			this.listfilters.FullRowSelect = true;
 			this.listfilters.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listfilters.HideSelection = false;

@@ -61,10 +61,10 @@ namespace CodeImp.DoomBuilder.Data
 		private List<ResourceTextureSet> resourcetextures;
 		private AllTextureSet alltextures;
 
-        //mxd 
-        private Dictionary<int, ModelData> modeldefEntries; //Thing.Type, Model entry
-        private Dictionary<int, DynamicLightData> gldefsEntries; //Thing.Type, Light entry
-        private MapInfo mapInfo; //mapinfo
+		//mxd 
+		private Dictionary<int, ModelData> modeldefEntries; //Thing.Type, Model entry
+		private Dictionary<int, DynamicLightData> gldefsEntries; //Thing.Type, Light entry
+		private MapInfo mapInfo; //mapinfo
 		
 		// Background loading
 		private Queue<ImageData> imageque;
@@ -105,10 +105,10 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Properties
 
-        //mxd
-        internal Dictionary<int, ModelData> ModeldefEntries { get { return modeldefEntries; } }
-        internal Dictionary<int, DynamicLightData> GldefsEntries { get { return gldefsEntries; } }
-        internal MapInfo MapInfo { get { return mapInfo; } }
+		//mxd
+		internal Dictionary<int, ModelData> ModeldefEntries { get { return modeldefEntries; } }
+		internal Dictionary<int, DynamicLightData> GldefsEntries { get { return gldefsEntries; } }
+		internal MapInfo MapInfo { get { return mapInfo; } }
 
 		public Playpal Palette { get { return palette; } }
 		public PreviewManager Previews { get { return previews; } }
@@ -195,7 +195,7 @@ namespace CodeImp.DoomBuilder.Data
 				unknownImage.Dispose(); //mxd
 				unknownImage = null; //mxd
 				modeldefEntries = null;//mxd
-                mapInfo = null;
+				mapInfo = null;
 				
 				// Done
 				isdisposed = true;
@@ -313,17 +313,17 @@ namespace CodeImp.DoomBuilder.Data
 			spritecount = LoadThingSprites();
 			LoadInternalSprites();
 
-            //mxd
-            General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing MAPINFO...");
-            loadMapInfo();
-            Dictionary<string, int> actorsByClass = createActorsByClassList();
-            General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing model definitions...");
-            loadModeldefs(actorsByClass);
-            General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing GLDEFS...");
+			//mxd
+			General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing MAPINFO...");
+			loadMapInfo();
+			Dictionary<string, int> actorsByClass = createActorsByClassList();
+			General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing model definitions...");
+			loadModeldefs(actorsByClass);
+			General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing GLDEFS...");
 			loadGldefs(actorsByClass);
-            General.MainWindow.DisplayReady();
-            //don't need them any more
-            actorsByClass = null;
+			General.MainWindow.DisplayReady();
+			//don't need them any more
+			actorsByClass = null;
 			
 			// Process colormaps (we just put them in as textures)
 			foreach(KeyValuePair<long, ImageData> t in colormapsonly)
@@ -428,11 +428,11 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(KeyValuePair<long, ImageData> i in sprites) i.Value.Dispose();
 			palette = null;
 
-            //mxd
-            if (modeldefEntries != null) {
-                foreach (KeyValuePair<int, ModelData> group in modeldefEntries) 
-                    group.Value.Dispose();
-            }
+			//mxd
+			if (modeldefEntries != null) {
+				foreach (KeyValuePair<int, ModelData> group in modeldefEntries) 
+					group.Value.Dispose();
+			}
 			
 			// Dispose containers
 			foreach(DataReader c in containers) c.Dispose();
@@ -858,18 +858,18 @@ namespace CodeImp.DoomBuilder.Data
 			return null;
 		}
 
-        //mxd
-        internal string GetPatchLocation(string pname) {
-            string fullName = pname;
-            // Go for all opened containers
-            for (int i = containers.Count - 1; i >= 0; i--) {
-                // This contain provides this patch?
-                fullName = containers[i].GetPatchLocation(pname);
-                if (fullName != pname) return fullName;
-            }
+		//mxd
+		internal string GetPatchLocation(string pname) {
+			string fullName = pname;
+			// Go for all opened containers
+			for (int i = containers.Count - 1; i >= 0; i--) {
+				// This contain provides this patch?
+				fullName = containers[i].GetPatchLocation(pname);
+				if (fullName != pname) return fullName;
+			}
 
-            return pname;
-        }
+			return pname;
+		}
 
 		// This returns a specific texture stream
 		internal Stream GetTextureData(string pname)
@@ -1393,189 +1393,189 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#endregion
 
-        #region ================== mxd. Modeldef, Gldefs, Mapinfo
+		#region ================== mxd. Modeldef, Gldefs, Mapinfo
 
-        //mxd. This creates <Actor Class, Thing.Type> dictionary. Should be called after all DECORATE actors are parsed
-        private Dictionary<string, int> createActorsByClassList() {
-            Dictionary<string, int> actors = new Dictionary<string, int>();
+		//mxd. This creates <Actor Class, Thing.Type> dictionary. Should be called after all DECORATE actors are parsed
+		private Dictionary<string, int> createActorsByClassList() {
+			Dictionary<string, int> actors = new Dictionary<string, int>();
 
-            Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
+			Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
 
-            //read our new shiny ClassNames for default game things
-            foreach (KeyValuePair<int, ThingTypeInfo> ti in things) {
-                if (ti.Value.ClassName != null)
-                    actors.Add(ti.Value.ClassName, ti.Key);
-            }
+			//read our new shiny ClassNames for default game things
+			foreach (KeyValuePair<int, ThingTypeInfo> ti in things) {
+				if (ti.Value.ClassName != null)
+					actors.Add(ti.Value.ClassName, ti.Key);
+			}
 
-            //and for actors defined in DECORATE
-            ICollection<ActorStructure> ac = decorate.Actors;
-            foreach (ActorStructure actor in ac) {
-                string className = actor.ClassName.ToLower();
-                if (!actors.ContainsKey(className)) 
-                    actors.Add(className, actor.DoomEdNum);
-            }
+			//and for actors defined in DECORATE
+			ICollection<ActorStructure> ac = decorate.Actors;
+			foreach (ActorStructure actor in ac) {
+				string className = actor.ClassName.ToLower();
+				if (!actors.ContainsKey(className)) 
+					actors.Add(className, actor.DoomEdNum);
+			}
 
-            return actors;
-        }
+			return actors;
+		}
 
-        //mxd
-        public void ReloadModeldef() {
-            if (modeldefEntries != null) {
-                foreach (KeyValuePair<int, ModelData> group in modeldefEntries)
-                    group.Value.Dispose();
-            }
+		//mxd
+		public void ReloadModeldef() {
+			if (modeldefEntries != null) {
+				foreach (KeyValuePair<int, ModelData> group in modeldefEntries)
+					group.Value.Dispose();
+			}
 
-            General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading model definitions...");
-            loadModeldefs(createActorsByClassList());
+			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading model definitions...");
+			loadModeldefs(createActorsByClassList());
 
 			foreach(Thing t in General.Map.Map.Things) t.UpdateModelStatus();
 
-            //rebuild geometry if in Visual mode
-            if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
-                General.Editing.Mode.OnReloadResources();
-            }
+			//rebuild geometry if in Visual mode
+			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
+				General.Editing.Mode.OnReloadResources();
+			}
 
-            General.MainWindow.DisplayReady();
-        }
+			General.MainWindow.DisplayReady();
+		}
 
-        //mxd
-        public void ReloadGldefs() {
-            General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading GLDEFS...");
-            loadGldefs(createActorsByClassList());
+		//mxd
+		public void ReloadGldefs() {
+			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading GLDEFS...");
+			loadGldefs(createActorsByClassList());
 
-            //rebuild geometry if in Visual mode
-            if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
-                General.Editing.Mode.OnReloadResources();
-            }
+			//rebuild geometry if in Visual mode
+			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
+				General.Editing.Mode.OnReloadResources();
+			}
 
-            General.MainWindow.DisplayReady();
-        }
+			General.MainWindow.DisplayReady();
+		}
 
-        //mxd
-        public void ReloadMapInfo() {
-            General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading (Z)MAPINFO...");
-            loadMapInfo();
+		//mxd
+		public void ReloadMapInfo() {
+			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading (Z)MAPINFO...");
+			loadMapInfo();
 
-            //rebuild geometry if in Visual mode
-            if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
-                General.Editing.Mode.OnReloadResources();
-            }
+			//rebuild geometry if in Visual mode
+			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
+				General.Editing.Mode.OnReloadResources();
+			}
 
-            General.MainWindow.DisplayReady();
-        }
+			General.MainWindow.DisplayReady();
+		}
 
-        //mxd. This parses modeldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
-        private void loadModeldefs(Dictionary<string, int> actorsByClass) {
-            //if no actors defined in DECORATE or game config...
-            if (actorsByClass == null || actorsByClass.Count == 0) {
-                General.ErrorLogger.Add(ErrorType.Warning, "Warning: current game has no Actors!");
-                return;
-            }
+		//mxd. This parses modeldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
+		private void loadModeldefs(Dictionary<string, int> actorsByClass) {
+			//if no actors defined in DECORATE or game config...
+			if (actorsByClass == null || actorsByClass.Count == 0) {
+				General.ErrorLogger.Add(ErrorType.Warning, "Warning: current game has no Actors!");
+				return;
+			}
 
-            Dictionary<string, ModelData> modelDefEntriesByName = new Dictionary<string, ModelData>();
-            ModeldefParser mdeParser = new ModeldefParser();
+			Dictionary<string, ModelData> modelDefEntriesByName = new Dictionary<string, ModelData>();
+			ModeldefParser mdeParser = new ModeldefParser();
 
-            foreach (DataReader dr in containers) {
-                currentreader = dr;
+			foreach (DataReader dr in containers) {
+				currentreader = dr;
 
-                Dictionary<string, Stream> streams = dr.GetModeldefData();
-                foreach (KeyValuePair<string, Stream> group in streams) {
-                    // Parse the data
-                    if (mdeParser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key)) {
-                        foreach (KeyValuePair<string, ModelData> g in mdeParser.ModelDefEntries) {
-                            modelDefEntriesByName.Add(g.Key, g.Value);
-                        }
-                    }
-                }
-            }
+				Dictionary<string, Stream> streams = dr.GetModeldefData();
+				foreach (KeyValuePair<string, Stream> group in streams) {
+					// Parse the data
+					if (mdeParser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key)) {
+						foreach (KeyValuePair<string, ModelData> g in mdeParser.ModelDefEntries) {
+							modelDefEntriesByName.Add(g.Key, g.Value);
+						}
+					}
+				}
+			}
 
-            currentreader = null;
+			currentreader = null;
 
-            foreach (KeyValuePair<string, ModelData> e in modelDefEntriesByName) {
-                if (actorsByClass.ContainsKey(e.Key))
-                    modeldefEntries[actorsByClass[e.Key]] = modelDefEntriesByName[e.Key];
+			foreach (KeyValuePair<string, ModelData> e in modelDefEntriesByName) {
+				if (actorsByClass.ContainsKey(e.Key))
+					modeldefEntries[actorsByClass[e.Key]] = modelDefEntriesByName[e.Key];
 				else if(!invalidDecorateActors.Contains(e.Key))
-                    General.ErrorLogger.Add(ErrorType.Warning, "Got MODELDEF override for class '" + e.Key + "', but haven't found such class in Decorate");
-            }
+					General.ErrorLogger.Add(ErrorType.Warning, "Got MODELDEF override for class '" + e.Key + "', but haven't found such class in Decorate");
+			}
 
 			foreach(Thing t in General.Map.Map.Things) t.UpdateModelStatus();
-        }
+		}
 
-        //mxd. This parses gldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
-        private void loadGldefs(Dictionary<string, int> actorsByClass) {
-            //if no actors defined in DECORATE or game config...
-            if (actorsByClass == null || actorsByClass.Count == 0) {
+		//mxd. This parses gldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
+		private void loadGldefs(Dictionary<string, int> actorsByClass) {
+			//if no actors defined in DECORATE or game config...
+			if (actorsByClass == null || actorsByClass.Count == 0) {
 				General.ErrorLogger.Add(ErrorType.Warning, "Warning: unable to find any DECORATE actors definition!");
-                return;
-            }
+				return;
+			}
 
-            GldefsParser parser = new GldefsParser();
-            parser.OnInclude = loadGldefsFromLocation;
+			GldefsParser parser = new GldefsParser();
+			parser.OnInclude = loadGldefsFromLocation;
 
-            //load gldefs from resources
-            foreach (DataReader dr in containers) {
-                currentreader = dr;
-                Dictionary<string, Stream> streams = dr.GetGldefsData(General.Map.Config.GameType);
+			//load gldefs from resources
+			foreach (DataReader dr in containers) {
+				currentreader = dr;
+				Dictionary<string, Stream> streams = dr.GetGldefsData(General.Map.Config.GameType);
 
-                foreach (KeyValuePair<string, Stream> group in streams)
-                    parser.Parse(group.Value, group.Key);
-            }
+				foreach (KeyValuePair<string, Stream> group in streams)
+					parser.Parse(group.Value, group.Key);
+			}
 
-            //create gldefsEntries dictionary
-            foreach (KeyValuePair<string, string> e in parser.Objects) { //ClassName, Light name
-                
-                //if we have decorate actor and light definition for given ClassName...
-                if (actorsByClass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) {
-                    int thingType = actorsByClass[e.Key];
-                    if (gldefsEntries.ContainsKey(thingType)) {
-                        gldefsEntries[thingType] = parser.LightsByName[e.Value];
-                    }else{
-                        gldefsEntries.Add(thingType, parser.LightsByName[e.Value]);
-                    }
+			//create gldefsEntries dictionary
+			foreach (KeyValuePair<string, string> e in parser.Objects) { //ClassName, Light name
+				
+				//if we have decorate actor and light definition for given ClassName...
+				if (actorsByClass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) {
+					int thingType = actorsByClass[e.Key];
+					if (gldefsEntries.ContainsKey(thingType)) {
+						gldefsEntries[thingType] = parser.LightsByName[e.Value];
+					}else{
+						gldefsEntries.Add(thingType, parser.LightsByName[e.Value]);
+					}
 				} else if(!invalidDecorateActors.Contains(e.Key)) {
-                    General.ErrorLogger.Add(ErrorType.Warning, "Got GLDEFS light for class '" + e.Key + "', but haven't found such class in DECORATE");
-                }
-            }
-        }
+					General.ErrorLogger.Add(ErrorType.Warning, "Got GLDEFS light for class '" + e.Key + "', but haven't found such class in DECORATE");
+				}
+			}
+		}
 
-        //mxd. This loads (Z)MAPINFO
-        private void loadMapInfo() {
-            MapinfoParser parser = new MapinfoParser();
+		//mxd. This loads (Z)MAPINFO
+		private void loadMapInfo() {
+			MapinfoParser parser = new MapinfoParser();
 
-            foreach (DataReader dr in containers) {
-                currentreader = dr;
+			foreach (DataReader dr in containers) {
+				currentreader = dr;
 
-                Dictionary<string, Stream> streams = dr.GetMapinfoData();
-                foreach (KeyValuePair<string, Stream> group in streams) {
-                    // Parse the data
-                    parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), General.Map.Options.LevelName); 
-                }
-            }
-            currentreader = null;
-            mapInfo = parser.MapInfo ?? new MapInfo();
-        }
+				Dictionary<string, Stream> streams = dr.GetMapinfoData();
+				foreach (KeyValuePair<string, Stream> group in streams) {
+					// Parse the data
+					parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), General.Map.Options.LevelName); 
+				}
+			}
+			currentreader = null;
+			mapInfo = parser.MapInfo ?? new MapInfo();
+		}
 
-        private void loadGldefsFromLocation(GldefsParser parser, string location) {
-            Dictionary<string, Stream> streams = currentreader.GetGldefsData(location);
+		private void loadGldefsFromLocation(GldefsParser parser, string location) {
+			Dictionary<string, Stream> streams = currentreader.GetGldefsData(location);
 
-            foreach (KeyValuePair<string, Stream> group in streams)
-                parser.Parse(group.Value, group.Key);
-        }
+			foreach (KeyValuePair<string, Stream> group in streams)
+				parser.Parse(group.Value, group.Key);
+		}
 
-        //mxd
-        internal MemoryStream LoadFile(string name) {
-            foreach (DataReader dr in containers) {
-                if (dr.FileExists(name))
-                    return dr.LoadFile(name);
-            }
-            return null;
-        }
+		//mxd
+		internal MemoryStream LoadFile(string name) {
+			foreach (DataReader dr in containers) {
+				if (dr.FileExists(name))
+					return dr.LoadFile(name);
+			}
+			return null;
+		}
 
-        #endregion
+		#endregion
 
-        #region ================== Tools
+		#region ================== Tools
 
-        // This finds the first IWAD resource
+		// This finds the first IWAD resource
 		// Returns false when not found
 		public bool FindFirstIWAD(out DataLocation result)
 		{

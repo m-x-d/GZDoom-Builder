@@ -207,9 +207,9 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void OnMapSetChangeBegin() { }
 		public virtual void OnMapSetChangeEnd() { }
 
-        //mxd. map testing events
-        public virtual bool OnMapTestBegin() { return true; } //called before test map is launched. Returns false if map launch is impossible
-        public virtual void OnMapTestEnd() { } //called after game engine is closed
+		//mxd. map testing events
+		public virtual bool OnMapTestBegin() { return true; } //called before test map is launched. Returns false if map launch is impossible
+		public virtual void OnMapTestEnd() { } //called after game engine is closed
 		
 		#endregion
 	}

@@ -61,8 +61,8 @@ namespace CodeImp.DoomBuilder.Controls
 			if(config.Extensions.Length > 0) ext = "." + config.Extensions[0];
 			SetTitle("Untitled" + ext);
 			editor.ClearUndoRedo();
-            //mxd
-            navigator.Enabled = Array.IndexOf(ScriptTypes.TYPES, config.Description) != -1;
+			//mxd
+			navigator.Enabled = Array.IndexOf(ScriptTypes.TYPES, config.Description) != -1;
 		}
 		
 		// Disposer
@@ -124,10 +124,10 @@ namespace CodeImp.DoomBuilder.Controls
 					errors.Add(newerr);
 				}
 
-                //mxd. Should be called only if script is compiled successfully
-                if (compiler.Errors.Length == 0 && config.Description == ScriptTypes.TYPES[(int)ScriptType.ACS]) {
-                    General.Map.UpdateScriptNames();
-                }
+				//mxd. Should be called only if script is compiled successfully
+				if (compiler.Errors.Length == 0 && config.Description == ScriptTypes.TYPES[(int)ScriptType.ACS]) {
+					General.Map.UpdateScriptNames();
+				}
 			}
 			
 			// Dispose compiler
@@ -187,10 +187,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// This opens a file and returns true when successful
 		public bool Open(string filepathname)
 		{
-            try
+			try
 			{
 				// Read the file
-                editor.SetText(File.ReadAllBytes(filepathname));
+				editor.SetText(File.ReadAllBytes(filepathname));
 			}
 			catch(Exception e)
 			{
@@ -223,8 +223,8 @@ namespace CodeImp.DoomBuilder.Controls
 				SetTitle("Untitled" + ext);
 			}
 
-            //mxd
-            base.ChangeScriptConfig(newconfig);
+			//mxd
+			base.ChangeScriptConfig(newconfig);
 		}
 		
 		#endregion

@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		private int hexenformatwidth;
 		private int doomformatwidth;
-        private List<UniversalFieldInfo> fieldInfos;
+		private List<UniversalFieldInfo> fieldInfos;
 		
 		// Constructor
 		public LinedefInfoPanel()
@@ -54,10 +54,10 @@ namespace CodeImp.DoomBuilder.Controls
 			string peggedness;
 			int defaultPanelWidth = 270; //mxd
 
-            //mxd
-            if (General.Map.UDMF && fieldInfos == null) {
-                fieldInfos = General.Map.Config.SidedefFields;
-            }
+			//mxd
+			if (General.Map.UDMF && fieldInfos == null) {
+				fieldInfos = General.Map.Config.SidedefFields;
+			}
 			
 			// Show/hide stuff depending on format
 			if(!General.Map.FormatInterface.HasActionArgs)
@@ -112,11 +112,11 @@ namespace CodeImp.DoomBuilder.Controls
 			tag.Text = l.Tag.ToString();
 			unpegged.Text = peggedness;
 
-            //mxd
-            bool hasArg0Str = General.Map.UDMF && Array.IndexOf(GZGeneral.ACS_SPECIALS, l.Action) != -1 && l.Fields.ContainsKey("arg0str");
+			//mxd
+			bool hasArg0Str = General.Map.UDMF && Array.IndexOf(GZGeneral.ACS_SPECIALS, l.Action) != -1 && l.Fields.ContainsKey("arg0str");
 			
 			// Arguments
-            arglbl1.Text = hasArg0Str ? "Script name:" : act.Args[0].Title + ":"; //mxd
+			arglbl1.Text = hasArg0Str ? "Script name:" : act.Args[0].Title + ":"; //mxd
 			arglbl2.Text = act.Args[1].Title + ":";
 			arglbl3.Text = act.Args[2].Title + ":";
 			arglbl4.Text = act.Args[3].Title + ":";
@@ -132,13 +132,13 @@ namespace CodeImp.DoomBuilder.Controls
 			arg4.Enabled = act.Args[3].Used;
 			arg5.Enabled = act.Args[4].Used;
 
-            //mxd
-            if (hasArg0Str) {
-                arg1.Text = '"' + l.Fields["arg0str"].Value.ToString() + '"';
-            } else {
-                th = General.Types.GetArgumentHandler(act.Args[0]);
-                th.SetValue(l.Args[0]); arg1.Text = th.GetStringValue();
-            }
+			//mxd
+			if (hasArg0Str) {
+				arg1.Text = '"' + l.Fields["arg0str"].Value.ToString() + '"';
+			} else {
+				th = General.Types.GetArgumentHandler(act.Args[0]);
+				th.SetValue(l.Args[0]); arg1.Text = th.GetStringValue();
+			}
 			th = General.Types.GetArgumentHandler(act.Args[1]);
 			th.SetValue(l.Args[1]); arg2.Text = th.GetStringValue();
 			th = General.Types.GetArgumentHandler(act.Args[2]);
@@ -176,19 +176,19 @@ namespace CodeImp.DoomBuilder.Controls
 					//sidedef top
 					if(checkPairedUDMFFields(l.Front.Fields, "offsetx_top", "offsety_top", frontTopUDMFOffsetLabel, frontTopUDMFOffset))
 						hasTopFields = true;
-                    if (checkPairedUDMFFields(l.Front.Fields, "scalex_top", "scaley_top", frontTopUDMFScaleLabel, frontTopUDMFScale))
+					if (checkPairedUDMFFields(l.Front.Fields, "scalex_top", "scaley_top", frontTopUDMFScaleLabel, frontTopUDMFScale))
 						hasTopFields = true;
 
 					//sidedef middle
-                    if (checkPairedUDMFFields(l.Front.Fields, "offsetx_mid", "offsety_mid", frontMidUDMFOffsetLabel, frontMidUDMFOffset))
+					if (checkPairedUDMFFields(l.Front.Fields, "offsetx_mid", "offsety_mid", frontMidUDMFOffsetLabel, frontMidUDMFOffset))
 						hasMiddleFields = true;
-                    if (checkPairedUDMFFields(l.Front.Fields, "scalex_mid", "scaley_mid", frontMidUDMFScaleLabel, frontMidUDMFScale))
+					if (checkPairedUDMFFields(l.Front.Fields, "scalex_mid", "scaley_mid", frontMidUDMFScaleLabel, frontMidUDMFScale))
 						hasMiddleFields = true;
 
 					//sidedef bottom
-                    if (checkPairedUDMFFields(l.Front.Fields, "offsetx_bottom", "offsety_bottom", frontBottomUDMFOffsetLabel, frontBottomUDMFOffset))
+					if (checkPairedUDMFFields(l.Front.Fields, "offsetx_bottom", "offsety_bottom", frontBottomUDMFOffsetLabel, frontBottomUDMFOffset))
 						hasBottomFields = true;
-                    if (checkPairedUDMFFields(l.Front.Fields, "scalex_bottom", "scaley_bottom", frontBottomUDMFScaleLabel, frontBottomUDMFScale))
+					if (checkPairedUDMFFields(l.Front.Fields, "scalex_bottom", "scaley_bottom", frontBottomUDMFScaleLabel, frontBottomUDMFScale))
 						hasBottomFields = true;
 
 					//visibility
@@ -275,21 +275,21 @@ namespace CodeImp.DoomBuilder.Controls
 					bool hasBottomFields = false;
 
 					//sidedef top
-                    if (checkPairedUDMFFields(l.Back.Fields, "offsetx_top", "offsety_top", backTopUDMFOffsetLabel, backTopUDMFOffset))
+					if (checkPairedUDMFFields(l.Back.Fields, "offsetx_top", "offsety_top", backTopUDMFOffsetLabel, backTopUDMFOffset))
 						hasTopFields = true;
-                    if (checkPairedUDMFFields(l.Back.Fields, "scalex_top", "scaley_top", backTopUDMFScaleLabel, backTopUDMFScale))
+					if (checkPairedUDMFFields(l.Back.Fields, "scalex_top", "scaley_top", backTopUDMFScaleLabel, backTopUDMFScale))
 						hasTopFields = true;
 
 					//sidedef middle
-                    if (checkPairedUDMFFields(l.Back.Fields, "offsetx_mid", "offsety_mid", backMidUDMFOffsetLabel, backMidUDMFOffset))
+					if (checkPairedUDMFFields(l.Back.Fields, "offsetx_mid", "offsety_mid", backMidUDMFOffsetLabel, backMidUDMFOffset))
 						hasMiddleFields = true;
-                    if (checkPairedUDMFFields(l.Back.Fields, "scalex_mid", "scaley_mid", backMidUDMFScaleLabel, backMidUDMFScale))
+					if (checkPairedUDMFFields(l.Back.Fields, "scalex_mid", "scaley_mid", backMidUDMFScaleLabel, backMidUDMFScale))
 						hasMiddleFields = true;
 
 					//sidedef bottom
-                    if (checkPairedUDMFFields(l.Back.Fields, "offsetx_bottom", "offsety_bottom", backBottomUDMFOffsetLabel, backBottomUDMFOffset))
+					if (checkPairedUDMFFields(l.Back.Fields, "offsetx_bottom", "offsety_bottom", backBottomUDMFOffsetLabel, backBottomUDMFOffset))
 						hasBottomFields = true;
-                    if (checkPairedUDMFFields(l.Back.Fields, "scalex_bottom", "scaley_bottom", backBottomUDMFScaleLabel, backBottomUDMFScale))
+					if (checkPairedUDMFFields(l.Back.Fields, "scalex_bottom", "scaley_bottom", backBottomUDMFScaleLabel, backBottomUDMFScale))
 						hasBottomFields = true;
 
 					//visibility
@@ -358,10 +358,10 @@ namespace CodeImp.DoomBuilder.Controls
 
 		//mxd
 		private bool checkPairedUDMFFields(UniFields fields, string paramX, string paramY, Label label, Label value) {
-            float dx = getDefaultUDMFValue(paramX);
-            float dy = getDefaultUDMFValue(paramY);
-            float x = dx;
-            float y = dy;
+			float dx = getDefaultUDMFValue(paramX);
+			float dy = getDefaultUDMFValue(paramY);
+			float x = dx;
+			float y = dy;
 
 			if(fields.ContainsKey(paramX))
 				x = (float)fields[paramX].Value;
@@ -369,7 +369,7 @@ namespace CodeImp.DoomBuilder.Controls
 				y = (float)fields[paramY].Value;
 
 			if(x != dx || y != dy) {
-                value.Text = String.Format("{0:0.##}", x) + ", " + String.Format("{0:0.##}", y);
+				value.Text = String.Format("{0:0.##}", x) + ", " + String.Format("{0:0.##}", y);
 				value.Enabled = true;
 				label.Enabled = true;
 				return true;
@@ -384,12 +384,12 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private void setUDMFLight(Sidedef sd, Label label, Label value) {
 			if(sd.Fields.ContainsKey("light")) {
-                int light = (int)sd.Fields["light"].Value;
-                
-                if (sd.Fields.ContainsKey("lightabsolute") && Boolean.Parse(sd.Fields["lightabsolute"].Value.ToString()))
+				int light = (int)sd.Fields["light"].Value;
+				
+				if (sd.Fields.ContainsKey("lightabsolute") && Boolean.Parse(sd.Fields["lightabsolute"].Value.ToString()))
 					value.Text = light + " (abs.)";
-                else
-                    value.Text = light + " (" + Math.Min(255, Math.Max(0, (light + sd.Sector.Brightness))) + ")";
+				else
+					value.Text = light + " (" + Math.Min(255, Math.Max(0, (light + sd.Sector.Brightness))) + ")";
 
 				value.Enabled = true;
 				label.Enabled = true;
@@ -400,14 +400,14 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
-        //mxd
-        private float getDefaultUDMFValue(string valueName) {
-            foreach (UniversalFieldInfo fi in fieldInfos) {
-                if (fi.Name == valueName)
-                    return (float)fi.Default;
-            }
-            return 0;
-        }
+		//mxd
+		private float getDefaultUDMFValue(string valueName) {
+			foreach (UniversalFieldInfo fi in fieldInfos) {
+				if (fi.Name == valueName)
+					return (float)fi.Default;
+			}
+			return 0;
+		}
 
 		// When visible changed
 		protected override void OnVisibleChanged(EventArgs e)

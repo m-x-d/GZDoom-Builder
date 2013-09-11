@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Map
 		protected Point CropToRange(Point p)
 		{
 			return new Point(Math.Min(Math.Max(p.X, 0), size.Width - 1),
-			                 Math.Min(Math.Max(p.Y, 0), size.Height - 1));
+							 Math.Min(Math.Max(p.Y, 0), size.Height - 1));
 		}
 
 		// This crops a point into the range

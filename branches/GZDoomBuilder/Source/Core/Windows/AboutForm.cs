@@ -32,7 +32,7 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
 			// Show version
-            version.Text = "GZDoom Builder " + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Version + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Revision + " " + (General.DebugBuild ? "(debug)" : "");
+			version.Text = "GZDoom Builder " + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Version + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Revision + " " + (General.DebugBuild ? "(debug)" : "");
 		}
 
 		// Launch Doom Builder website
@@ -47,16 +47,16 @@ namespace CodeImp.DoomBuilder.Windows
 			General.OpenWebsite("http://" + codeimplink.Text);
 		}
 
-        //mxd
-        private void gzdbLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            General.OpenWebsite("http://forum.zdoom.org/viewtopic.php?f=3&t=32392");
-        }
+		//mxd
+		private void gzdbLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+			General.OpenWebsite("http://forum.zdoom.org/viewtopic.php?f=3&t=32392");
+		}
 
 		// This copies the version number to clipboard
 		private void copyversion_Click(object sender, EventArgs e)
 		{
 			Clipboard.Clear();
-            Clipboard.SetText(CodeImp.DoomBuilder.GZBuilder.GZGeneral.Version.ToString() + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Revision);
+			Clipboard.SetText(CodeImp.DoomBuilder.GZBuilder.GZGeneral.Version.ToString() + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Revision);
 		}
 	}
 }

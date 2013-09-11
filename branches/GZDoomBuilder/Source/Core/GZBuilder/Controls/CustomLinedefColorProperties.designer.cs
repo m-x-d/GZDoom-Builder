@@ -1,30 +1,30 @@
 ﻿namespace CodeImp.DoomBuilder.GZBuilder.Controls
 {
-    partial class CustomLinedefColorProperties
-    {
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class CustomLinedefColorProperties
+	{
+		/// <summary> 
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing) {
-            if(disposing && (components != null)) {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary> 
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing) {
+			if(disposing && (components != null)) {
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        #region Component Designer generated code
+		#region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
+		/// <summary> 
+		/// Required method for Designer support - do not modify 
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent() {
 			this.gbLineColor = new System.Windows.Forms.GroupBox();
 			this.labelErrors = new System.Windows.Forms.Label();
 			this.tcLineSettings = new System.Windows.Forms.TabControl();
@@ -243,23 +243,23 @@
 			this.tabActivation.PerformLayout();
 			this.ResumeLayout(false);
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private System.Windows.Forms.GroupBox gbLineColor;
-        private System.Windows.Forms.Label labelErrors;
-        private CodeImp.DoomBuilder.Controls.ColorControl lineColor;
-        private System.Windows.Forms.TabControl tcLineSettings;
-        private System.Windows.Forms.TabPage tabFlags;
-        private System.Windows.Forms.CheckedListBox flags;
-        private System.Windows.Forms.CheckBox cbUseFlags;
-        private System.Windows.Forms.TabPage tabAction;
-        private System.Windows.Forms.CheckBox cbUseAction;
-        private System.Windows.Forms.TabPage tabActivation;
-        private System.Windows.Forms.ComboBox activation;
-        private System.Windows.Forms.CheckBox cbUseActivation;
-        private System.Windows.Forms.CheckedListBox udmfactivates;
-        private CodeImp.DoomBuilder.Controls.ActionSelectorControl action;
-    }
+		private System.Windows.Forms.GroupBox gbLineColor;
+		private System.Windows.Forms.Label labelErrors;
+		private CodeImp.DoomBuilder.Controls.ColorControl lineColor;
+		private System.Windows.Forms.TabControl tcLineSettings;
+		private System.Windows.Forms.TabPage tabFlags;
+		private System.Windows.Forms.CheckedListBox flags;
+		private System.Windows.Forms.CheckBox cbUseFlags;
+		private System.Windows.Forms.TabPage tabAction;
+		private System.Windows.Forms.CheckBox cbUseAction;
+		private System.Windows.Forms.TabPage tabActivation;
+		private System.Windows.Forms.ComboBox activation;
+		private System.Windows.Forms.CheckBox cbUseActivation;
+		private System.Windows.Forms.CheckedListBox udmfactivates;
+		private CodeImp.DoomBuilder.Controls.ActionSelectorControl action;
+	}
 }

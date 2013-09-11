@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.Label resultinfo;
 		private System.Windows.Forms.Button fix1;
 		private System.Windows.Forms.Button closebutton;
-        private System.Windows.Forms.CheckBox cbApplyToAll;
-        private System.Windows.Forms.Button bExport;
+		private System.Windows.Forms.CheckBox cbApplyToAll;
+		private System.Windows.Forms.Button bExport;
 	}
 }

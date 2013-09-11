@@ -238,46 +238,46 @@ namespace CodeImp.DoomBuilder.Controls
 			Sort();
 		}
 
-        //mxd
-        /*public object GetValue(string name) {
-            //have required row?
-            foreach (DataGridViewRow row in fieldslist.Rows) {
-                // Row is a field?
-                if (row is FieldsEditorRow) {
-                    FieldsEditorRow frow = row as FieldsEditorRow;
-                    // Row name matches with field
-                    if (frow.Name == name) {
-                        // Apply value of field to row
-                        if (frow.IsDefined && !frow.IsEmpty)
-                            return frow.GetResult(null);
-                        return null;
-                    }
-                }
-            }
+		//mxd
+		/*public object GetValue(string name) {
+			//have required row?
+			foreach (DataGridViewRow row in fieldslist.Rows) {
+				// Row is a field?
+				if (row is FieldsEditorRow) {
+					FieldsEditorRow frow = row as FieldsEditorRow;
+					// Row name matches with field
+					if (frow.Name == name) {
+						// Apply value of field to row
+						if (frow.IsDefined && !frow.IsEmpty)
+							return frow.GetResult(null);
+						return null;
+					}
+				}
+			}
 
-            return null;
-        }*/
+			return null;
+		}*/
 
-        //mxd
-        /*public void SetValue(string name, object value, UniversalType type) {
-            //have required row?
-            foreach (DataGridViewRow row in fieldslist.Rows) {
-                // Row is a field?
-                if (row is FieldsEditorRow) {
-                    FieldsEditorRow frow = row as FieldsEditorRow;
-                    // Row name matches with field
-                    if (frow.Name == name) {
-                        // Apply value of field to row
-                        frow.Define(value);
-                        return;
-                    }
-                }
-            }
+		//mxd
+		/*public void SetValue(string name, object value, UniversalType type) {
+			//have required row?
+			foreach (DataGridViewRow row in fieldslist.Rows) {
+				// Row is a field?
+				if (row is FieldsEditorRow) {
+					FieldsEditorRow frow = row as FieldsEditorRow;
+					// Row name matches with field
+					if (frow.Name == name) {
+						// Apply value of field to row
+						frow.Define(value);
+						return;
+					}
+				}
+			}
 
-            //no such row... let's add it
-            FieldsEditorRow newfrow = new FieldsEditorRow(fieldslist, name, (int)type, value);
-            fieldslist.Rows.Insert(fieldslist.Rows.Count - 1, newfrow);
-        }*/
+			//no such row... let's add it
+			FieldsEditorRow newfrow = new FieldsEditorRow(fieldslist, name, (int)type, value);
+			fieldslist.Rows.Insert(fieldslist.Rows.Count - 1, newfrow);
+		}*/
 
 		
 		// This applies the current fields to a UniFields object

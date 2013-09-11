@@ -51,7 +51,7 @@
 			this.mapslist.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.mapslist.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            columnHeader1});
+			columnHeader1});
 			this.mapslist.FullRowSelect = true;
 			this.mapslist.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.mapslist.HideSelection = false;

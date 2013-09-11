@@ -37,7 +37,7 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		#region ================== Constants
 
-        private const int NAVIGATOR_BORDER_TOP = 8; //mxd
+		private const int NAVIGATOR_BORDER_TOP = 8; //mxd
 		private const int EDITOR_BORDER_TOP = 33;
 		private const int EDITOR_BORDER_BOTTOM = 4;
 		private const int EDITOR_BORDER_LEFT = 4;
@@ -49,8 +49,8 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// The script edit control
 		protected ScriptEditorControl editor;
-        //mxd
-        protected ComboBox navigator;
+		//mxd
+		protected ComboBox navigator;
 
 		// Derived classes must set this!
 		protected ScriptConfiguration config;
@@ -83,17 +83,17 @@ namespace CodeImp.DoomBuilder.Controls
 			// Keep panel
 			this.panel = panel;
 
-            //mxd
-            navigator = new ComboBox();
-            navigator.Location = new Point(EDITOR_BORDER_LEFT, NAVIGATOR_BORDER_TOP);
-            navigator.Width = this.ClientSize.Width - EDITOR_BORDER_LEFT - EDITOR_BORDER_RIGHT;
-            navigator.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            navigator.DropDownStyle = ComboBoxStyle.DropDownList;
-            navigator.Name = "navigator";
-            navigator.TabStop = true;
-            navigator.TabIndex = 0;
-            navigator.DropDown += new EventHandler(navigator_DropDown);
-            this.Controls.Add(navigator);
+			//mxd
+			navigator = new ComboBox();
+			navigator.Location = new Point(EDITOR_BORDER_LEFT, NAVIGATOR_BORDER_TOP);
+			navigator.Width = this.ClientSize.Width - EDITOR_BORDER_LEFT - EDITOR_BORDER_RIGHT;
+			navigator.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			navigator.DropDownStyle = ComboBoxStyle.DropDownList;
+			navigator.Name = "navigator";
+			navigator.TabStop = true;
+			navigator.TabIndex = 0;
+			navigator.DropDown += new EventHandler(navigator_DropDown);
+			this.Controls.Add(navigator);
 			
 			// Make the script control
 			editor = new ScriptEditorControl();
@@ -196,7 +196,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// This changes the script configurations
 		public virtual void ChangeScriptConfig(ScriptConfiguration newconfig)
 		{
-            updateNavigator(); //mxd
+			updateNavigator(); //mxd
 		}
 
 		// Call this to set the tab title
@@ -305,84 +305,84 @@ namespace CodeImp.DoomBuilder.Controls
 				return "";
 		}
 
-        //mxd
-        protected void updateNavigator() {
-            //mxd. known script type?
-            if (Array.IndexOf(ScriptTypes.TYPES, config.Description) != -1) {
-                updateNavigator(new MemoryStream(editor.GetText()), config.Description);
-                navigator.Enabled = true;
-                navigator.SelectedIndexChanged += new EventHandler(navigator_SelectedIndexChanged);
-            }else{
-                navigator.Items.Clear();
-                navigator.Enabled = false;
-            }
-        }
+		//mxd
+		protected void updateNavigator() {
+			//mxd. known script type?
+			if (Array.IndexOf(ScriptTypes.TYPES, config.Description) != -1) {
+				updateNavigator(new MemoryStream(editor.GetText()), config.Description);
+				navigator.Enabled = true;
+				navigator.SelectedIndexChanged += new EventHandler(navigator_SelectedIndexChanged);
+			}else{
+				navigator.Items.Clear();
+				navigator.Enabled = false;
+			}
+		}
 
-        //mxd
-        private void updateNavigator(MemoryStream stream, string scriptType) {
-            if (scriptType == ScriptTypes.TYPES[(int)ScriptType.ACS]) {
-                updateNavigatorAcs(stream);
-            } else if (scriptType == ScriptTypes.TYPES[(int)ScriptType.MODELDEF]) {
-                updateNavigatorModeldef(stream);
-            } else if (scriptType == ScriptTypes.TYPES[(int)ScriptType.DECORATE]) {
-                updateNavigatorDecorate(stream);
-            }
-        }
+		//mxd
+		private void updateNavigator(MemoryStream stream, string scriptType) {
+			if (scriptType == ScriptTypes.TYPES[(int)ScriptType.ACS]) {
+				updateNavigatorAcs(stream);
+			} else if (scriptType == ScriptTypes.TYPES[(int)ScriptType.MODELDEF]) {
+				updateNavigatorModeldef(stream);
+			} else if (scriptType == ScriptTypes.TYPES[(int)ScriptType.DECORATE]) {
+				updateNavigatorDecorate(stream);
+			}
+		}
 
-        //mxd
-        private void updateNavigatorDecorate(MemoryStream stream) {
-            if (stream == null) return;
+		//mxd
+		private void updateNavigatorDecorate(MemoryStream stream) {
+			if (stream == null) return;
 
-            navigator.Items.Clear();
+			navigator.Items.Clear();
 
-            DecorateParserSE parser = new DecorateParserSE();
-            parser.Parse(stream, "DECORATE");
+			DecorateParserSE parser = new DecorateParserSE();
+			parser.Parse(stream, "DECORATE");
 
-            if (parser.Actors.Count == 0) return; 
+			if (parser.Actors.Count == 0) return; 
 
-            navigator.Items.AddRange(parser.Actors.ToArray());
-        }
+			navigator.Items.AddRange(parser.Actors.ToArray());
+		}
 
-        //mxd
-        private void updateNavigatorModeldef(MemoryStream stream) {
-            if (stream == null) return;
+		//mxd
+		private void updateNavigatorModeldef(MemoryStream stream) {
+			if (stream == null) return;
 
-            navigator.Items.Clear();
+			navigator.Items.Clear();
 
-            ModeldefParserSE parser = new ModeldefParserSE();
-            parser.Parse(stream, "MODELDEF");
+			ModeldefParserSE parser = new ModeldefParserSE();
+			parser.Parse(stream, "MODELDEF");
 
-            if (parser.Models.Count == 0) return;
+			if (parser.Models.Count == 0) return;
 
-            navigator.Items.AddRange(parser.Models.ToArray());
-        }
+			navigator.Items.AddRange(parser.Models.ToArray());
+		}
 
-        //mxd
-        private void updateNavigatorAcs(MemoryStream stream) {
-            if (stream == null) return;
-            
-            navigator.Items.Clear();
+		//mxd
+		private void updateNavigatorAcs(MemoryStream stream) {
+			if (stream == null) return;
+			
+			navigator.Items.Clear();
 
-            AcsParserSE parser = new AcsParserSE();
-            parser.Parse(stream, "ACS");
+			AcsParserSE parser = new AcsParserSE();
+			parser.Parse(stream, "ACS");
 
-            if (parser.NamedScripts.Count == 0 && parser.NumberedScripts.Count == 0) return;
+			if (parser.NamedScripts.Count == 0 && parser.NumberedScripts.Count == 0) return;
 
-            if(General.Map.UDMF)
-                navigator.Items.AddRange(parser.NamedScripts.ToArray());
+			if(General.Map.UDMF)
+				navigator.Items.AddRange(parser.NamedScripts.ToArray());
 
-            navigator.Items.AddRange(parser.NumberedScripts.ToArray());
-        }
+			navigator.Items.AddRange(parser.NumberedScripts.ToArray());
+		}
 		
-        //mxd
-        internal ScriptType VerifyScriptType() {
-            ScriptTypeParserSE parser = new ScriptTypeParserSE();
-            if (parser.Parse(new MemoryStream(editor.GetText()), config.Description)) {
-                if (parser.ScriptType != (int)ScriptType.UNKNOWN && config.Description != ScriptTypes.TYPES[(int)parser.ScriptType])
-                    return parser.ScriptType;
-            }
-            return ScriptType.UNKNOWN;
-        }
+		//mxd
+		internal ScriptType VerifyScriptType() {
+			ScriptTypeParserSE parser = new ScriptTypeParserSE();
+			if (parser.Parse(new MemoryStream(editor.GetText()), config.Description)) {
+				if (parser.ScriptType != (int)ScriptType.UNKNOWN && config.Description != ScriptTypes.TYPES[(int)parser.ScriptType])
+					return parser.ScriptType;
+			}
+			return ScriptType.UNKNOWN;
+		}
 
 		#endregion
 		
@@ -408,24 +408,24 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.GrabFocus();
 		}
 
-        //mxd
-        protected void navigator_SelectedIndexChanged(object sender, EventArgs e) {
-            if (navigator.SelectedItem is ScriptItem) {
-                ScriptItem si = navigator.SelectedItem as ScriptItem;
-                editor.EnsureLineVisible(editor.LineFromPosition(si.SelectionStart));
-                editor.SelectionStart = si.SelectionStart;
-                editor.SelectionEnd = si.SelectionEnd;
-                
-                // Focus to the editor!
-                editor.Focus();
-                editor.GrabFocus();
-            }
-        }
+		//mxd
+		protected void navigator_SelectedIndexChanged(object sender, EventArgs e) {
+			if (navigator.SelectedItem is ScriptItem) {
+				ScriptItem si = navigator.SelectedItem as ScriptItem;
+				editor.EnsureLineVisible(editor.LineFromPosition(si.SelectionStart));
+				editor.SelectionStart = si.SelectionStart;
+				editor.SelectionEnd = si.SelectionEnd;
+				
+				// Focus to the editor!
+				editor.Focus();
+				editor.GrabFocus();
+			}
+		}
 
-        //mxd
-        protected void navigator_DropDown(object sender, EventArgs e) {
-            if(editor.IsChanged) updateNavigator();
-        }
+		//mxd
+		protected void navigator_DropDown(object sender, EventArgs e) {
+			if(editor.IsChanged) updateNavigator();
+		}
 		
 		#endregion
 	}

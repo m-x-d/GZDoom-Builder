@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float theta = angle;
 
 			float d = (c / (float)Math.Tan(theta / 2)) / 2;
-            float R = d / (float)Math.Cos(theta / 2);
+			float R = d / (float)Math.Cos(theta / 2);
 			float h = R - d;
 
 			float yDeform = fixedcurve ? 1 : distance / h;
@@ -125,12 +125,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//the curve starts at PI/2 - theta/2 and is segmented into vertices+1 segments
 				//this assumes the line is horisontal and on y = 0, the point is rotated and moved later
 
-                a = (Angle2D.PI - theta) / 2 + v * (theta / (vertices + 1));
+				a = (Angle2D.PI - theta) / 2 + v * (theta / (vertices + 1));
 
 				//calculate the coordinates of the point, and distort the y coordinate
 				//using the deform factor calculated above
-                x = (float)Math.Cos(a) * R;
-                y = ((float)Math.Sin(a) * R - d) * yDeform;
+				x = (float)Math.Cos(a) * R;
+				y = ((float)Math.Sin(a) * R - d) * yDeform;
 
 				//rotate and transform to fit original line
 				vertex = new Vector2D((float)x, (float)y).GetRotated(line.Angle + Angle2D.PIHALF);

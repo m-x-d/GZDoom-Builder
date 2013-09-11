@@ -27,22 +27,22 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.IO
 {
-    //mxd
-    internal struct DevilImageType
-    {
-        internal const int IL_TYPE_UNKNOWN = 0x0000;
-        //internal const int IL_DOOM = 0x0422;  //!< DooM walls - no specific extension
-        //internal const int IL_DOOM_FLAT = 0x0423;  //!< DooM flats - no specific extension
+	//mxd
+	internal struct DevilImageType
+	{
+		internal const int IL_TYPE_UNKNOWN = 0x0000;
+		//internal const int IL_DOOM = 0x0422;  //!< DooM walls - no specific extension
+		//internal const int IL_DOOM_FLAT = 0x0423;  //!< DooM flats - no specific extension
 
-        internal const int IL_JPG = 0x0425;  //!< JPEG - .jpg, .jpe and .jpeg extensions
-        internal const int IL_PCX = 0x0428;  //!< ZSoft PCX - .pcx extension
-        internal const int IL_PNG = 0x042A;  //!< Portable Network Graphics - .png extension
-        internal const int IL_TGA = 0x042D;  //!< TrueVision Targa File - .tga, .vda, .icb and .vst extensions
-        internal const int IL_GIF = 0x0436;  //!< Graphics Interchange Format - .gif extension
-        internal const int IL_DDS = 0x0437;  //!< DirectDraw Surface - .dds extension
-    }
-    
-    internal unsafe class FileImageReader : IImageReader
+		internal const int IL_JPG = 0x0425;  //!< JPEG - .jpg, .jpe and .jpeg extensions
+		internal const int IL_PCX = 0x0428;  //!< ZSoft PCX - .pcx extension
+		internal const int IL_PNG = 0x042A;  //!< Portable Network Graphics - .png extension
+		internal const int IL_TGA = 0x042D;  //!< TrueVision Targa File - .tga, .vda, .icb and .vst extensions
+		internal const int IL_GIF = 0x0436;  //!< Graphics Interchange Format - .gif extension
+		internal const int IL_DDS = 0x0437;  //!< DirectDraw Surface - .dds extension
+	}
+	
+	internal unsafe class FileImageReader : IImageReader
 	{
 		#region ================== APIs
 
@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.IO
 		[DllImport("devil.dll")]
 		private static extern uint ilCopyPixels(uint xoff, uint yoff, uint zoff, uint width, uint height, uint depth, uint format, uint type, IntPtr data);
 		
-        //mxd. Look's like we don't need many of those...
+		//mxd. Look's like we don't need many of those...
 		//  Matches OpenGL's right now.
 		//! Data formats \link Formats Formats\endlink
 		//private const int IL_COLOUR_INDEX     = 0x1900;
@@ -83,68 +83,68 @@ namespace CodeImp.DoomBuilder.IO
 		//! Data types \link Types Types\endlink
 		//private const int IL_BYTE           = 0x1400;
 		private const int IL_UNSIGNED_BYTE  = 0x1401;
-        /*private const int IL_SHORT          = 0x1402;
-        private const int IL_UNSIGNED_SHORT = 0x1403;
-        private const int IL_INT            = 0x1404;
-        private const int IL_UNSIGNED_INT   = 0x1405;
-        private const int IL_FLOAT          = 0x1406;
-        private const int IL_DOUBLE         = 0x140A;
-        private const int IL_HALF           = 0x140B;*/
+		/*private const int IL_SHORT          = 0x1402;
+		private const int IL_UNSIGNED_SHORT = 0x1403;
+		private const int IL_INT            = 0x1404;
+		private const int IL_UNSIGNED_INT   = 0x1405;
+		private const int IL_FLOAT          = 0x1406;
+		private const int IL_DOUBLE         = 0x140A;
+		private const int IL_HALF           = 0x140B;*/
 
-        // Image types
-        //private const int IL_TYPE_UNKNOWN = 0x0000;
-        /*private const int IL_BMP          = 0x0420;  //!< Microsoft Windows Bitmap - .bmp extension
-        private const int IL_CUT          = 0x0421;  //!< Dr. Halo - .cut extension
-        private const int IL_DOOM         = 0x0422;  //!< DooM walls - no specific extension
-        private const int IL_DOOM_FLAT    = 0x0423;  //!< DooM flats - no specific extension
-        private const int IL_ICO          = 0x0424;  //!< Microsoft Windows Icons and Cursors - .ico and .cur extensions
-        private const int IL_JPG          = 0x0425;  //!< JPEG - .jpg, .jpe and .jpeg extensions
-        private const int IL_JFIF         = 0x0425;  //!<
-        private const int IL_ILBM         = 0x0426;  //!< Amiga IFF (FORM ILBM) - .iff, .ilbm, .lbm extensions
-        private const int IL_PCD          = 0x0427;  //!< Kodak PhotoCD - .pcd extension
-        private const int IL_PCX          = 0x0428;  //!< ZSoft PCX - .pcx extension
-        private const int IL_PIC          = 0x0429;  //!< PIC - .pic extension
-        private const int IL_PNG          = 0x042A;  //!< Portable Network Graphics - .png extension
-        private const int IL_PNM          = 0x042B;  //!< Portable Any Map - .pbm, .pgm, .ppm and .pnm extensions
-        private const int IL_SGI          = 0x042C;  //!< Silicon Graphics - .sgi, .bw, .rgb and .rgba extensions
-        private const int IL_TGA          = 0x042D;  //!< TrueVision Targa File - .tga, .vda, .icb and .vst extensions
-        private const int IL_TIF          = 0x042E;  //!< Tagged Image File Format - .tif and .tiff extensions
-        private const int IL_CHEAD        = 0x042F;  //!< C-Style Header - .h extension
-        private const int IL_RAW          = 0x0430;  //!< Raw Image Data - any extension
-        private const int IL_MDL          = 0x0431;  //!< Half-Life Model Texture - .mdl extension
-        private const int IL_WAL          = 0x0432;  //!< Quake 2 Texture - .wal extension
-        private const int IL_LIF          = 0x0434;  //!< Homeworld Texture - .lif extension
-        private const int IL_MNG          = 0x0435;  //!< Multiple-image Network Graphics - .mng extension
-        private const int IL_JNG          = 0x0435;  //!< 
-        private const int IL_GIF          = 0x0436;  //!< Graphics Interchange Format - .gif extension
-        private const int IL_DDS          = 0x0437;  //!< DirectDraw Surface - .dds extension
-        private const int IL_DCX          = 0x0438;  //!< ZSoft Multi-PCX - .dcx extension
-        private const int IL_PSD          = 0x0439;  //!< Adobe PhotoShop - .psd extension
-        private const int IL_EXIF         = 0x043A;  //!< 
-        private const int IL_PSP          = 0x043B;  //!< PaintShop Pro - .psp extension
-        private const int IL_PIX          = 0x043C;  //!< PIX - .pix extension
-        private const int IL_PXR          = 0x043D;  //!< Pixar - .pxr extension
-        private const int IL_XPM          = 0x043E;  //!< X Pixel Map - .xpm extension
-        private const int IL_HDR          = 0x043F;  //!< Radiance High Dynamic Range - .hdr extension
-        private const int IL_ICNS = 0x0440;  //!< Macintosh Icon - .icns extension
-        private const int IL_JP2 = 0x0441;  //!< Jpeg 2000 - .jp2 extension
-        private const int IL_EXR = 0x0442;  //!< OpenEXR - .exr extension
-        private const int IL_WDP = 0x0443;  //!< Microsoft HD Photo - .wdp and .hdp extension
-        private const int IL_VTF = 0x0444;  //!< Valve Texture Format - .vtf extension
-        private const int IL_WBMP = 0x0445;  //!< Wireless Bitmap - .wbmp extension
-        private const int IL_SUN = 0x0446;  //!< Sun Raster - .sun, .ras, .rs, .im1, .im8, .im24 and .im32 extensions
-        private const int IL_IFF = 0x0447;  //!< Interchange File Format - .iff extension
-        private const int IL_TPL = 0x0448;  //!< Gamecube Texture - .tpl extension
-        private const int IL_FITS = 0x0449;  //!< Flexible Image Transport System - .fit and .fits extensions
-        private const int IL_DICOM = 0x044A;  //!< Digital Imaging and Communications in Medicine (DICOM) - .dcm and .dicom extensions
-        private const int IL_IWI = 0x044B;  //!< Call of Duty Infinity Ward Image - .iwi extension
-        private const int IL_BLP = 0x044C;  //!< Blizzard Texture Format - .blp extension
-        private const int IL_FTX = 0x044D;  //!< Heavy Metal: FAKK2 Texture - .ftx extension
-        private const int IL_ROT = 0x044E;  //!< Homeworld 2 - Relic Texture - .rot extension
-        private const int IL_TEXTURE = 0x044F;  //!< Medieval II: Total War Texture - .texture extension
-        private const int IL_DPX = 0x0450;  //!< Digital Picture Exchange - .dpx extension
-        private const int IL_UTX = 0x0451;  //!< Unreal (and Unreal Tournament) Texture - .utx extension
-        private const int IL_MP3 = 0x0452;  //!< MPEG-1 Audio Layer 3 - .mp3 extension*/
+		// Image types
+		//private const int IL_TYPE_UNKNOWN = 0x0000;
+		/*private const int IL_BMP          = 0x0420;  //!< Microsoft Windows Bitmap - .bmp extension
+		private const int IL_CUT          = 0x0421;  //!< Dr. Halo - .cut extension
+		private const int IL_DOOM         = 0x0422;  //!< DooM walls - no specific extension
+		private const int IL_DOOM_FLAT    = 0x0423;  //!< DooM flats - no specific extension
+		private const int IL_ICO          = 0x0424;  //!< Microsoft Windows Icons and Cursors - .ico and .cur extensions
+		private const int IL_JPG          = 0x0425;  //!< JPEG - .jpg, .jpe and .jpeg extensions
+		private const int IL_JFIF         = 0x0425;  //!<
+		private const int IL_ILBM         = 0x0426;  //!< Amiga IFF (FORM ILBM) - .iff, .ilbm, .lbm extensions
+		private const int IL_PCD          = 0x0427;  //!< Kodak PhotoCD - .pcd extension
+		private const int IL_PCX          = 0x0428;  //!< ZSoft PCX - .pcx extension
+		private const int IL_PIC          = 0x0429;  //!< PIC - .pic extension
+		private const int IL_PNG          = 0x042A;  //!< Portable Network Graphics - .png extension
+		private const int IL_PNM          = 0x042B;  //!< Portable Any Map - .pbm, .pgm, .ppm and .pnm extensions
+		private const int IL_SGI          = 0x042C;  //!< Silicon Graphics - .sgi, .bw, .rgb and .rgba extensions
+		private const int IL_TGA          = 0x042D;  //!< TrueVision Targa File - .tga, .vda, .icb and .vst extensions
+		private const int IL_TIF          = 0x042E;  //!< Tagged Image File Format - .tif and .tiff extensions
+		private const int IL_CHEAD        = 0x042F;  //!< C-Style Header - .h extension
+		private const int IL_RAW          = 0x0430;  //!< Raw Image Data - any extension
+		private const int IL_MDL          = 0x0431;  //!< Half-Life Model Texture - .mdl extension
+		private const int IL_WAL          = 0x0432;  //!< Quake 2 Texture - .wal extension
+		private const int IL_LIF          = 0x0434;  //!< Homeworld Texture - .lif extension
+		private const int IL_MNG          = 0x0435;  //!< Multiple-image Network Graphics - .mng extension
+		private const int IL_JNG          = 0x0435;  //!< 
+		private const int IL_GIF          = 0x0436;  //!< Graphics Interchange Format - .gif extension
+		private const int IL_DDS          = 0x0437;  //!< DirectDraw Surface - .dds extension
+		private const int IL_DCX          = 0x0438;  //!< ZSoft Multi-PCX - .dcx extension
+		private const int IL_PSD          = 0x0439;  //!< Adobe PhotoShop - .psd extension
+		private const int IL_EXIF         = 0x043A;  //!< 
+		private const int IL_PSP          = 0x043B;  //!< PaintShop Pro - .psp extension
+		private const int IL_PIX          = 0x043C;  //!< PIX - .pix extension
+		private const int IL_PXR          = 0x043D;  //!< Pixar - .pxr extension
+		private const int IL_XPM          = 0x043E;  //!< X Pixel Map - .xpm extension
+		private const int IL_HDR          = 0x043F;  //!< Radiance High Dynamic Range - .hdr extension
+		private const int IL_ICNS = 0x0440;  //!< Macintosh Icon - .icns extension
+		private const int IL_JP2 = 0x0441;  //!< Jpeg 2000 - .jp2 extension
+		private const int IL_EXR = 0x0442;  //!< OpenEXR - .exr extension
+		private const int IL_WDP = 0x0443;  //!< Microsoft HD Photo - .wdp and .hdp extension
+		private const int IL_VTF = 0x0444;  //!< Valve Texture Format - .vtf extension
+		private const int IL_WBMP = 0x0445;  //!< Wireless Bitmap - .wbmp extension
+		private const int IL_SUN = 0x0446;  //!< Sun Raster - .sun, .ras, .rs, .im1, .im8, .im24 and .im32 extensions
+		private const int IL_IFF = 0x0447;  //!< Interchange File Format - .iff extension
+		private const int IL_TPL = 0x0448;  //!< Gamecube Texture - .tpl extension
+		private const int IL_FITS = 0x0449;  //!< Flexible Image Transport System - .fit and .fits extensions
+		private const int IL_DICOM = 0x044A;  //!< Digital Imaging and Communications in Medicine (DICOM) - .dcm and .dicom extensions
+		private const int IL_IWI = 0x044B;  //!< Call of Duty Infinity Ward Image - .iwi extension
+		private const int IL_BLP = 0x044C;  //!< Blizzard Texture Format - .blp extension
+		private const int IL_FTX = 0x044D;  //!< Heavy Metal: FAKK2 Texture - .ftx extension
+		private const int IL_ROT = 0x044E;  //!< Homeworld 2 - Relic Texture - .rot extension
+		private const int IL_TEXTURE = 0x044F;  //!< Medieval II: Total War Texture - .texture extension
+		private const int IL_DPX = 0x0450;  //!< Digital Picture Exchange - .dpx extension
+		private const int IL_UTX = 0x0451;  //!< Unreal (and Unreal Tournament) Texture - .utx extension
+		private const int IL_MP3 = 0x0452;  //!< MPEG-1 Audio Layer 3 - .mp3 extension*/
 
 		private const int IL_JASC_PAL     = 0x0475;  //!< PaintShop Pro Palette
 
@@ -198,7 +198,7 @@ namespace CodeImp.DoomBuilder.IO
 		// File definitions
 		/*private const int IL_FILE_OVERWRITE	= 0x0620;
 		private const int IL_FILE_MODE		= 0x0621;
-        */
+		*/
 
 		// Palette definitions
 		//private const int IL_CONV_PAL			= 0x0630;
@@ -311,38 +311,38 @@ namespace CodeImp.DoomBuilder.IO
 		//private const int IL_VERSION_NUM           = 0x0DE2;
 		private const int IL_IMAGE_WIDTH           = 0x0DE4;
 		private const int IL_IMAGE_HEIGHT          = 0x0DE5;
-        /*private const int IL_IMAGE_DEPTH           = 0x0DE6;
-        private const int IL_IMAGE_SIZE_OF_DATA    = 0x0DE7;
-        private const int IL_IMAGE_BPP             = 0x0DE8;
-        private const int IL_IMAGE_BYTES_PER_PIXEL = 0x0DE8;
-        private const int IL_IMAGE_BITS_PER_PIXEL  = 0x0DE9;
-        private const int IL_IMAGE_FORMAT          = 0x0DEA;
-        private const int IL_IMAGE_TYPE            = 0x0DEB;
-        private const int IL_PALETTE_TYPE          = 0x0DEC;
-        private const int IL_PALETTE_SIZE          = 0x0DED;
-        private const int IL_PALETTE_BPP           = 0x0DEE;
-        private const int IL_PALETTE_NUM_COLS      = 0x0DEF;
-        private const int IL_PALETTE_BASE_TYPE     = 0x0DF0;
-        private const int IL_NUM_FACES             = 0x0DE1;
-        private const int IL_NUM_IMAGES            = 0x0DF1;
-        private const int IL_NUM_MIPMAPS           = 0x0DF2;
-        private const int IL_NUM_LAYERS            = 0x0DF3;
-        private const int IL_ACTIVE_IMAGE          = 0x0DF4;
-        private const int IL_ACTIVE_MIPMAP         = 0x0DF5;
-        private const int IL_ACTIVE_LAYER          = 0x0DF6;
-        private const int IL_ACTIVE_FACE           = 0x0E00;
-        private const int IL_CUR_IMAGE             = 0x0DF7;
-        private const int IL_IMAGE_DURATION        = 0x0DF8;
-        private const int IL_IMAGE_PLANESIZE       = 0x0DF9;
-        private const int IL_IMAGE_BPC             = 0x0DFA;
-        private const int IL_IMAGE_OFFX            = 0x0DFB;
-        private const int IL_IMAGE_OFFY            = 0x0DFC;
-        private const int IL_IMAGE_CUBEFLAGS       = 0x0DFD;
-        private const int IL_IMAGE_ORIGIN          = 0x0DFE;
-        private const int IL_IMAGE_CHANNELS        = 0x0DFF;*/
+		/*private const int IL_IMAGE_DEPTH           = 0x0DE6;
+		private const int IL_IMAGE_SIZE_OF_DATA    = 0x0DE7;
+		private const int IL_IMAGE_BPP             = 0x0DE8;
+		private const int IL_IMAGE_BYTES_PER_PIXEL = 0x0DE8;
+		private const int IL_IMAGE_BITS_PER_PIXEL  = 0x0DE9;
+		private const int IL_IMAGE_FORMAT          = 0x0DEA;
+		private const int IL_IMAGE_TYPE            = 0x0DEB;
+		private const int IL_PALETTE_TYPE          = 0x0DEC;
+		private const int IL_PALETTE_SIZE          = 0x0DED;
+		private const int IL_PALETTE_BPP           = 0x0DEE;
+		private const int IL_PALETTE_NUM_COLS      = 0x0DEF;
+		private const int IL_PALETTE_BASE_TYPE     = 0x0DF0;
+		private const int IL_NUM_FACES             = 0x0DE1;
+		private const int IL_NUM_IMAGES            = 0x0DF1;
+		private const int IL_NUM_MIPMAPS           = 0x0DF2;
+		private const int IL_NUM_LAYERS            = 0x0DF3;
+		private const int IL_ACTIVE_IMAGE          = 0x0DF4;
+		private const int IL_ACTIVE_MIPMAP         = 0x0DF5;
+		private const int IL_ACTIVE_LAYER          = 0x0DF6;
+		private const int IL_ACTIVE_FACE           = 0x0E00;
+		private const int IL_CUR_IMAGE             = 0x0DF7;
+		private const int IL_IMAGE_DURATION        = 0x0DF8;
+		private const int IL_IMAGE_PLANESIZE       = 0x0DF9;
+		private const int IL_IMAGE_BPC             = 0x0DFA;
+		private const int IL_IMAGE_OFFX            = 0x0DFB;
+		private const int IL_IMAGE_OFFY            = 0x0DFC;
+		private const int IL_IMAGE_CUBEFLAGS       = 0x0DFD;
+		private const int IL_IMAGE_ORIGIN          = 0x0DFE;
+		private const int IL_IMAGE_CHANNELS        = 0x0DFF;*/
 
-        //mxd
-        public uint ImageType { get; private set; }
+		//mxd
+		public uint ImageType { get; private set; }
 		
 		#endregion
 
@@ -351,19 +351,19 @@ namespace CodeImp.DoomBuilder.IO
 		// Constructor
 		public FileImageReader()
 		{
-            ImageType = DevilImageType.IL_TYPE_UNKNOWN;//mxd
-            
-            // We have no destructor
+			ImageType = DevilImageType.IL_TYPE_UNKNOWN;//mxd
+			
+			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
-        //mxd
-        public FileImageReader(uint devilImageType) {
-            ImageType = devilImageType;//mxd
-            
-            // We have no destructor
-            GC.SuppressFinalize(this);
-        }
+		//mxd
+		public FileImageReader(uint devilImageType) {
+			ImageType = devilImageType;//mxd
+			
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
 
 		#endregion
 
@@ -394,7 +394,7 @@ namespace CodeImp.DoomBuilder.IO
 				stream.Read(bytes, 0, bytes.Length);
 				fixed(byte* bptr = bytes)
 				{
-                    if (!ilLoadL(ImageType, new IntPtr(bptr), (uint)bytes.Length))
+					if (!ilLoadL(ImageType, new IntPtr(bptr), (uint)bytes.Length))
 						throw new BadImageFormatException();
 				}
 				
@@ -416,9 +416,9 @@ namespace CodeImp.DoomBuilder.IO
 				// Clean up
 				ilDeleteImages(1, new IntPtr(&imageid));
 
-                //mxd. TGA fix
-                if (ImageType == DevilImageType.IL_TGA)
-                    bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
+				//mxd. TGA fix
+				if (ImageType == DevilImageType.IL_TGA)
+					bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
 				return bmp;
 			}

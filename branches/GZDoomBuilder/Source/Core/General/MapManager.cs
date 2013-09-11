@@ -37,231 +37,231 @@ using CodeImp.DoomBuilder.GZBuilder.GZDoom; //mxd
 #endregion
 
 namespace CodeImp.DoomBuilder {
-    public sealed class MapManager {
-        #region ================== Constants
+	public sealed class MapManager {
+		#region ================== Constants
 
-        // Map header name in temporary file
-        internal const string TEMP_MAP_HEADER = "TEMPMAP";
-        internal const string BUILD_MAP_HEADER = "MAP01";
-        public const string CONFIG_MAP_HEADER = "~MAP";
+		// Map header name in temporary file
+		internal const string TEMP_MAP_HEADER = "TEMPMAP";
+		internal const string BUILD_MAP_HEADER = "MAP01";
+		public const string CONFIG_MAP_HEADER = "~MAP";
 
-        #endregion
+		#endregion
 
-        #region ================== Variables
+		#region ================== Variables
 
-        // Status
-        private bool changed;
-        private bool scriptschanged;
+		// Status
+		private bool changed;
+		private bool scriptschanged;
 
-        // Map information
-        private string filetitle;
-        private string filepathname;
-        private string temppath;
+		// Map information
+		private string filetitle;
+		private string filepathname;
+		private string temppath;
 		private string origmapconfigfile; //mxd. Map configuration, which was used to open the map.
 
-        // Main objects
-        private MapSet map;
-        private MapSetIO io;
-        private MapOptions options;
-        private ConfigurationInfo configinfo;
-        private GameConfiguration config;
-        private DataManager data;
-        private D3DDevice graphics;
-        private Renderer2D renderer2d;
-        private Renderer3D renderer3d;
-        private WAD tempwad;
-        private GridSetup grid;
-        private UndoManager undoredo;
-        private CopyPasteManager copypaste;
-        private Launcher launcher;
-        private ThingsFilter thingsfilter;
-        private ScriptEditorForm scriptwindow;
-        private List<CompilerError> errors;
-        private VisualCamera visualcamera;
+		// Main objects
+		private MapSet map;
+		private MapSetIO io;
+		private MapOptions options;
+		private ConfigurationInfo configinfo;
+		private GameConfiguration config;
+		private DataManager data;
+		private D3DDevice graphics;
+		private Renderer2D renderer2d;
+		private Renderer3D renderer3d;
+		private WAD tempwad;
+		private GridSetup grid;
+		private UndoManager undoredo;
+		private CopyPasteManager copypaste;
+		private Launcher launcher;
+		private ThingsFilter thingsfilter;
+		private ScriptEditorForm scriptwindow;
+		private List<CompilerError> errors;
+		private VisualCamera visualcamera;
 
-        //mxd
-        private List<ScriptItem> namedScripts;
-        private List<ScriptItem> numberedScripts;
-        private List<string> scriptincludes;
+		//mxd
+		private List<ScriptItem> namedScripts;
+		private List<ScriptItem> numberedScripts;
+		private List<string> scriptincludes;
 
-        // Disposing
-        private bool isdisposed = false;
+		// Disposing
+		private bool isdisposed = false;
 
-        #endregion
+		#endregion
 
-        #region ================== Properties
+		#region ================== Properties
 
-        public string FilePathName { get { return filepathname; } }
-        public string FileTitle { get { return filetitle; } }
-        public string TempPath { get { return temppath; } }
-        public MapOptions Options { get { return options; } }
-        public MapSet Map { get { return map; } }
-        public DataManager Data { get { return data; } }
-        public bool IsChanged { get { return changed | CheckScriptChanged(); } set { changed |= value; } }
-        public bool IsDisposed { get { return isdisposed; } }
-        internal D3DDevice Graphics { get { return graphics; } }
-        public IRenderer2D Renderer2D { get { return renderer2d; } }
-        public IRenderer3D Renderer3D { get { return renderer3d; } }
-        internal Renderer2D CRenderer2D { get { return renderer2d; } }
-        internal Renderer3D CRenderer3D { get { return renderer3d; } }
-        public GameConfiguration Config { get { return config; } }
-        public ConfigurationInfo ConfigSettings { get { return configinfo; } }
-        public GridSetup Grid { get { return grid; } }
-        public UndoManager UndoRedo { get { return undoredo; } }
-        internal CopyPasteManager CopyPaste { get { return copypaste; } }
-        public IMapSetIO FormatInterface { get { return io; } }
-        internal Launcher Launcher { get { return launcher; } }
-        public ThingsFilter ThingsFilter { get { return thingsfilter; } }
-        internal List<CompilerError> Errors { get { return errors; } }
-        internal ScriptEditorForm ScriptEditor { get { return scriptwindow; } }
-        public VisualCamera VisualCamera { get { return visualcamera; } set { visualcamera = value; } }
-        public bool IsScriptsWindowOpen { get { return (scriptwindow != null) && !scriptwindow.IsDisposed; } }
+		public string FilePathName { get { return filepathname; } }
+		public string FileTitle { get { return filetitle; } }
+		public string TempPath { get { return temppath; } }
+		public MapOptions Options { get { return options; } }
+		public MapSet Map { get { return map; } }
+		public DataManager Data { get { return data; } }
+		public bool IsChanged { get { return changed | CheckScriptChanged(); } set { changed |= value; } }
+		public bool IsDisposed { get { return isdisposed; } }
+		internal D3DDevice Graphics { get { return graphics; } }
+		public IRenderer2D Renderer2D { get { return renderer2d; } }
+		public IRenderer3D Renderer3D { get { return renderer3d; } }
+		internal Renderer2D CRenderer2D { get { return renderer2d; } }
+		internal Renderer3D CRenderer3D { get { return renderer3d; } }
+		public GameConfiguration Config { get { return config; } }
+		public ConfigurationInfo ConfigSettings { get { return configinfo; } }
+		public GridSetup Grid { get { return grid; } }
+		public UndoManager UndoRedo { get { return undoredo; } }
+		internal CopyPasteManager CopyPaste { get { return copypaste; } }
+		public IMapSetIO FormatInterface { get { return io; } }
+		internal Launcher Launcher { get { return launcher; } }
+		public ThingsFilter ThingsFilter { get { return thingsfilter; } }
+		internal List<CompilerError> Errors { get { return errors; } }
+		internal ScriptEditorForm ScriptEditor { get { return scriptwindow; } }
+		public VisualCamera VisualCamera { get { return visualcamera; } set { visualcamera = value; } }
+		public bool IsScriptsWindowOpen { get { return (scriptwindow != null) && !scriptwindow.IsDisposed; } }
 
-        //mxd
-        public bool UDMF { get { return config.FormatInterface == "UniversalMapSetIO"; } }
+		//mxd
+		public bool UDMF { get { return config.FormatInterface == "UniversalMapSetIO"; } }
 		internal List<ScriptItem> NamedScripts { get { return namedScripts; } }
-        internal List<ScriptItem> NumberedScripts { get { return numberedScripts; } }
-        internal List<string> ScriptIncludes { get { return scriptincludes; } }
-       
+		internal List<ScriptItem> NumberedScripts { get { return numberedScripts; } }
+		internal List<string> ScriptIncludes { get { return scriptincludes; } }
+	   
 		public ViewMode ViewMode { get { return renderer2d.ViewMode; } }
 
-        #endregion
+		#endregion
 
-        #region ================== Constructor / Disposer
+		#region ================== Constructor / Disposer
 
-        // Constructor
-        internal MapManager() {
-            // We have no destructor
-            GC.SuppressFinalize(this);
+		// Constructor
+		internal MapManager() {
+			// We have no destructor
+			GC.SuppressFinalize(this);
 
-            // Create temporary path
-            temppath = General.MakeTempDirname();
-            Directory.CreateDirectory(temppath);
-            General.WriteLogLine("Temporary directory:  " + temppath);
+			// Create temporary path
+			temppath = General.MakeTempDirname();
+			Directory.CreateDirectory(temppath);
+			General.WriteLogLine("Temporary directory:  " + temppath);
 
-            // Basic objects
-            grid = new GridSetup();
-            undoredo = new UndoManager();
-            copypaste = new CopyPasteManager();
-            launcher = new Launcher(this);
-            thingsfilter = new NullThingsFilter();
-            errors = new List<CompilerError>();
+			// Basic objects
+			grid = new GridSetup();
+			undoredo = new UndoManager();
+			copypaste = new CopyPasteManager();
+			launcher = new Launcher(this);
+			thingsfilter = new NullThingsFilter();
+			errors = new List<CompilerError>();
 
-            //mxd
-            numberedScripts = new List<ScriptItem>();
-            namedScripts = new List<ScriptItem>();
-            scriptincludes = new List<string>();
-        }
+			//mxd
+			numberedScripts = new List<ScriptItem>();
+			namedScripts = new List<ScriptItem>();
+			scriptincludes = new List<string>();
+		}
 
-        // Disposer
-        internal bool Dispose() {
-            // Not already disposed?
-            if (!isdisposed) {
-                // Let the plugins know
-                General.Plugins.OnMapCloseBegin();
+		// Disposer
+		internal bool Dispose() {
+			// Not already disposed?
+			if (!isdisposed) {
+				// Let the plugins know
+				General.Plugins.OnMapCloseBegin();
 
-                // Stop processing
-                General.MainWindow.StopProcessing();
+				// Stop processing
+				General.MainWindow.StopProcessing();
 
-                // Close script editor
-                CloseScriptEditor(false);
+				// Close script editor
+				CloseScriptEditor(false);
 
-                // Change to no mode
-                General.Editing.ChangeMode((EditMode)null);
+				// Change to no mode
+				General.Editing.ChangeMode((EditMode)null);
 
-                // Unbind any methods
-                General.Actions.UnbindMethods(this);
+				// Unbind any methods
+				General.Actions.UnbindMethods(this);
 
-                // Dispose
-                if (grid != null) grid.Dispose();
-                if (launcher != null) launcher.Dispose();
-                if (copypaste != null) copypaste.Dispose();
-                if (undoredo != null) undoredo.Dispose();
-                General.WriteLogLine("Unloading data resources...");
-                if (data != null) data.Dispose();
-                General.WriteLogLine("Closing temporary file...");
-                if (tempwad != null) tempwad.Dispose();
-                General.WriteLogLine("Unloading map data...");
-                if (map != null) map.Dispose();
-                General.WriteLogLine("Stopping graphics device...");
-                if (renderer2d != null) renderer2d.Dispose();
-                if (renderer3d != null) renderer3d.Dispose();
-                if (graphics != null) graphics.Dispose();
-                visualcamera = null;
-                grid = null;
-                launcher = null;
-                copypaste = null;
-                undoredo = null;
-                data = null;
-                tempwad = null;
-                map = null;
-                renderer2d = null;
-                renderer3d = null;
-                graphics = null;
+				// Dispose
+				if (grid != null) grid.Dispose();
+				if (launcher != null) launcher.Dispose();
+				if (copypaste != null) copypaste.Dispose();
+				if (undoredo != null) undoredo.Dispose();
+				General.WriteLogLine("Unloading data resources...");
+				if (data != null) data.Dispose();
+				General.WriteLogLine("Closing temporary file...");
+				if (tempwad != null) tempwad.Dispose();
+				General.WriteLogLine("Unloading map data...");
+				if (map != null) map.Dispose();
+				General.WriteLogLine("Stopping graphics device...");
+				if (renderer2d != null) renderer2d.Dispose();
+				if (renderer3d != null) renderer3d.Dispose();
+				if (graphics != null) graphics.Dispose();
+				visualcamera = null;
+				grid = null;
+				launcher = null;
+				copypaste = null;
+				undoredo = null;
+				data = null;
+				tempwad = null;
+				map = null;
+				renderer2d = null;
+				renderer3d = null;
+				graphics = null;
 
-                // We may spend some time to clean things up here
-                GC.Collect();
+				// We may spend some time to clean things up here
+				GC.Collect();
 
-                // Remove temp file
-                General.WriteLogLine("Removing temporary directory...");
-                try { Directory.Delete(temppath, true); } catch (Exception e) {
-                    General.WriteLogLine(e.GetType().Name + ": " + e.Message);
-                    General.WriteLogLine("Failed to remove temporary directory!");
-                }
+				// Remove temp file
+				General.WriteLogLine("Removing temporary directory...");
+				try { Directory.Delete(temppath, true); } catch (Exception e) {
+					General.WriteLogLine(e.GetType().Name + ": " + e.Message);
+					General.WriteLogLine("Failed to remove temporary directory!");
+				}
 
-                // Let the plugins know
-                General.Plugins.OnMapCloseEnd();
+				// Let the plugins know
+				General.Plugins.OnMapCloseEnd();
 
-                // Done
-                isdisposed = true;
-                return true;
-            }
+				// Done
+				isdisposed = true;
+				return true;
+			}
 
-            // Already closed
-            return true;
-        }
+			// Already closed
+			return true;
+		}
 
-        #endregion
+		#endregion
 
-        #region ================== New / Open
+		#region ================== New / Open
 
-        // Initializes for a new map
-        internal bool InitializeNewMap(MapOptions options) {
-            string tempfile;
+		// Initializes for a new map
+		internal bool InitializeNewMap(MapOptions options) {
+			string tempfile;
 
-            // Apply settings
-            this.filetitle = "unnamed.wad";
-            this.filepathname = "";
-            this.changed = false;
-            this.options = options;
+			// Apply settings
+			this.filetitle = "unnamed.wad";
+			this.filepathname = "";
+			this.changed = false;
+			this.options = options;
 
-            General.WriteLogLine("Creating new map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
+			General.WriteLogLine("Creating new map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
 
-            // Initiate graphics
-            General.WriteLogLine("Initializing graphics device...");
-            graphics = new D3DDevice(General.MainWindow.Display);
-            if (!graphics.Initialize()) return false;
+			// Initiate graphics
+			General.WriteLogLine("Initializing graphics device...");
+			graphics = new D3DDevice(General.MainWindow.Display);
+			if (!graphics.Initialize()) return false;
 
-            // Create renderers
-            renderer2d = new Renderer2D(graphics);
-            renderer3d = new Renderer3D(graphics);
+			// Create renderers
+			renderer2d = new Renderer2D(graphics);
+			renderer3d = new Renderer3D(graphics);
 
-            // Load game configuration
-            General.WriteLogLine("Loading game configuration...");
-            configinfo = General.GetConfigurationInfo(options.ConfigFile);
-            config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
+			// Load game configuration
+			General.WriteLogLine("Loading game configuration...");
+			configinfo = General.GetConfigurationInfo(options.ConfigFile);
+			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
 			origmapconfigfile = options.ConfigFile;//mxd
-            configinfo.ApplyDefaults(config);
-            General.Editing.UpdateCurrentEditModes();
+			configinfo.ApplyDefaults(config);
+			General.Editing.UpdateCurrentEditModes();
 
-            // Create map data
-            map = new MapSet();
+			// Create map data
+			map = new MapSet();
 
-            // Create temp wadfile
-            tempfile = General.MakeTempFilename(temppath);
-            General.WriteLogLine("Creating temporary file: " + tempfile);
+			// Create temp wadfile
+			tempfile = General.MakeTempFilename(temppath);
+			General.WriteLogLine("Creating temporary file: " + tempfile);
 #if DEBUG
-            tempwad = new WAD(tempfile);
+			tempwad = new WAD(tempfile);
 #else
 				try { tempwad = new WAD(tempfile); }
 				catch(Exception e)
@@ -271,86 +271,86 @@ namespace CodeImp.DoomBuilder {
 				}
 #endif
 
-            // Read the map from temp file
-            General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
-            io = MapSetIO.Create(config.FormatInterface, tempwad, this);
+			// Read the map from temp file
+			General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
+			io = MapSetIO.Create(config.FormatInterface, tempwad, this);
 
-            // Create required lumps
-            General.WriteLogLine("Creating map data structures...");
-            tempwad.Insert(TEMP_MAP_HEADER, 0, 0);
-            io.Write(map, TEMP_MAP_HEADER, 1);
-            CreateRequiredLumps(tempwad, TEMP_MAP_HEADER);
+			// Create required lumps
+			General.WriteLogLine("Creating map data structures...");
+			tempwad.Insert(TEMP_MAP_HEADER, 0, 0);
+			io.Write(map, TEMP_MAP_HEADER, 1);
+			CreateRequiredLumps(tempwad, TEMP_MAP_HEADER);
 
-            // Load data manager
-            General.WriteLogLine("Loading data resources...");
-            data = new DataManager();
-            data.Load(configinfo.Resources, options.Resources);
+			// Load data manager
+			General.WriteLogLine("Loading data resources...");
+			data = new DataManager();
+			data.Load(configinfo.Resources, options.Resources);
 
-            // Update structures
-            options.ApplyGridSettings();
-            map.UpdateConfiguration();
-            map.Update();
-            thingsfilter.Update();
+			// Update structures
+			options.ApplyGridSettings();
+			map.UpdateConfiguration();
+			map.Update();
+			thingsfilter.Update();
 
 			namedScripts = new List<ScriptItem>(); //mxd
 			numberedScripts = new List<ScriptItem>(); //mxd
 
-            // Bind any methods
-            General.Actions.BindMethods(this);
+			// Bind any methods
+			General.Actions.BindMethods(this);
 
-            // Set defaults
-            this.visualcamera = new VisualCamera();
-            General.Editing.ChangeMode(configinfo.StartMode);
-            ClassicMode cmode = (General.Editing.Mode as ClassicMode);
-            if (cmode != null) cmode.SetZoom(0.5f);
-            renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
-            General.Settings.SetDefaultThingFlags(config.DefaultThingFlags);
+			// Set defaults
+			this.visualcamera = new VisualCamera();
+			General.Editing.ChangeMode(configinfo.StartMode);
+			ClassicMode cmode = (General.Editing.Mode as ClassicMode);
+			if (cmode != null) cmode.SetZoom(0.5f);
+			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
+			General.Settings.SetDefaultThingFlags(config.DefaultThingFlags);
 
-            // Success
-            this.changed = false;
-            General.WriteLogLine("Map creation done");
-            return true;
-        }
+			// Success
+			this.changed = false;
+			General.WriteLogLine("Map creation done");
+			return true;
+		}
 
-        // Initializes for an existing map
-        internal bool InitializeOpenMap(string filepathname, MapOptions options) {
-            WAD mapwad;
-            string tempfile;
-            DataLocation maplocation;
+		// Initializes for an existing map
+		internal bool InitializeOpenMap(string filepathname, MapOptions options) {
+			WAD mapwad;
+			string tempfile;
+			DataLocation maplocation;
 
-            // Apply settings
-            this.filetitle = Path.GetFileName(filepathname);
-            this.filepathname = filepathname;
-            this.changed = false;
-            this.options = options;
+			// Apply settings
+			this.filetitle = Path.GetFileName(filepathname);
+			this.filepathname = filepathname;
+			this.changed = false;
+			this.options = options;
 
-            General.WriteLogLine("Opening map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
+			General.WriteLogLine("Opening map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
 
-            // Initiate graphics
-            General.WriteLogLine("Initializing graphics device...");
-            graphics = new D3DDevice(General.MainWindow.Display);
-            if (!graphics.Initialize()) return false;
+			// Initiate graphics
+			General.WriteLogLine("Initializing graphics device...");
+			graphics = new D3DDevice(General.MainWindow.Display);
+			if (!graphics.Initialize()) return false;
 
-            // Create renderers
-            renderer2d = new Renderer2D(graphics);
-            renderer3d = new Renderer3D(graphics);
+			// Create renderers
+			renderer2d = new Renderer2D(graphics);
+			renderer3d = new Renderer3D(graphics);
 
-            // Load game configuration
-            General.WriteLogLine("Loading game configuration...");
-            configinfo = General.GetConfigurationInfo(options.ConfigFile);
-            config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
+			// Load game configuration
+			General.WriteLogLine("Loading game configuration...");
+			configinfo = General.GetConfigurationInfo(options.ConfigFile);
+			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
 			origmapconfigfile = options.ConfigFile;//mxd
-            configinfo.ApplyDefaults(config);
-            General.Editing.UpdateCurrentEditModes();
+			configinfo.ApplyDefaults(config);
+			General.Editing.UpdateCurrentEditModes();
 
-            // Create map data
-            map = new MapSet();
+			// Create map data
+			map = new MapSet();
 
-            // Create temp wadfile
-            tempfile = General.MakeTempFilename(temppath);
-            General.WriteLogLine("Creating temporary file: " + tempfile);
+			// Create temp wadfile
+			tempfile = General.MakeTempFilename(temppath);
+			General.WriteLogLine("Creating temporary file: " + tempfile);
 #if DEBUG
-            tempwad = new WAD(tempfile);
+			tempwad = new WAD(tempfile);
 #else
 			try { tempwad = new WAD(tempfile); } catch(Exception e) 
 			{
@@ -359,10 +359,10 @@ namespace CodeImp.DoomBuilder {
 			}
 #endif
 
-            // Now open the map file
-            General.WriteLogLine("Opening source file: " + filepathname);
+			// Now open the map file
+			General.WriteLogLine("Opening source file: " + filepathname);
 #if DEBUG
-            mapwad = new WAD(filepathname, true);
+			mapwad = new WAD(filepathname, true);
 #else
 			try { mapwad = new WAD(filepathname, true); } catch(Exception e) 
 			{
@@ -371,21 +371,21 @@ namespace CodeImp.DoomBuilder {
 			}
 #endif
 
-            // Copy the map lumps to the temp file
-            General.WriteLogLine("Copying map lumps to temporary file...");
-            CopyLumpsByType(mapwad, options.CurrentName, tempwad, TEMP_MAP_HEADER,
-                            true, true, true, true);
+			// Copy the map lumps to the temp file
+			General.WriteLogLine("Copying map lumps to temporary file...");
+			CopyLumpsByType(mapwad, options.CurrentName, tempwad, TEMP_MAP_HEADER,
+							true, true, true, true);
 
-            // Close the map file
-            mapwad.Dispose();
+			// Close the map file
+			mapwad.Dispose();
 
-            // Read the map from temp file
-            map.BeginAddRemove();
-            General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
-            io = MapSetIO.Create(config.FormatInterface, tempwad, this);
-            General.WriteLogLine("Reading map data structures from file...");
+			// Read the map from temp file
+			map.BeginAddRemove();
+			General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
+			io = MapSetIO.Create(config.FormatInterface, tempwad, this);
+			General.WriteLogLine("Reading map data structures from file...");
 #if DEBUG
-            map = io.Read(map, TEMP_MAP_HEADER);
+			map = io.Read(map, TEMP_MAP_HEADER);
 #else
 			try { map = io.Read(map, TEMP_MAP_HEADER); } catch(Exception e) 
 			{
@@ -394,44 +394,44 @@ namespace CodeImp.DoomBuilder {
 				return false;
 			}
 #endif
-            map.EndAddRemove();
+			map.EndAddRemove();
 
-            // Load data manager
-            General.WriteLogLine("Loading data resources...");
-            data = new DataManager();
-            maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, options.StrictPatches, false, false);
-            data.Load(configinfo.Resources, options.Resources, maplocation);
+			// Load data manager
+			General.WriteLogLine("Loading data resources...");
+			data = new DataManager();
+			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, options.StrictPatches, false, false);
+			data.Load(configinfo.Resources, options.Resources, maplocation);
 
-            // Remove unused sectors
-            map.RemoveUnusedSectors(true);
+			// Remove unused sectors
+			map.RemoveUnusedSectors(true);
 
-            // Update structures
-            options.ApplyGridSettings();
-            map.UpdateConfiguration();
-            map.SnapAllToAccuracy();
-            map.Update();
-            thingsfilter.Update();
+			// Update structures
+			options.ApplyGridSettings();
+			map.UpdateConfiguration();
+			map.SnapAllToAccuracy();
+			map.Update();
+			thingsfilter.Update();
 
-            //mxd. check script names
-            UpdateScriptNames();
+			//mxd. check script names
+			UpdateScriptNames();
 
-            // Bind any methods
-            General.Actions.BindMethods(this);
+			// Bind any methods
+			General.Actions.BindMethods(this);
 
-            // Set defaults
-            this.visualcamera = new VisualCamera();
-            General.Editing.ChangeMode(configinfo.StartMode);
-            renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
-            General.Settings.SetDefaultThingFlags(config.DefaultThingFlags);
+			// Set defaults
+			this.visualcamera = new VisualCamera();
+			General.Editing.ChangeMode(configinfo.StartMode);
+			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
+			General.Settings.SetDefaultThingFlags(config.DefaultThingFlags);
 
-            // Center map in screen
-            if (General.Editing.Mode is ClassicMode) (General.Editing.Mode as ClassicMode).CenterInScreen();
+			// Center map in screen
+			if (General.Editing.Mode is ClassicMode) (General.Editing.Mode as ClassicMode).CenterInScreen();
 
-            // Success
-            this.changed = false;
-            General.WriteLogLine("Map loading done");
-            return true;
-        }
+			// Success
+			this.changed = false;
+			General.WriteLogLine("Map loading done");
+			return true;
+		}
 
 		//mxd. This switches to another map in the same wad 
 		internal bool InitializeSwitchMap(MapOptions options) {
@@ -510,293 +510,293 @@ namespace CodeImp.DoomBuilder {
 			return true;
 		}
 
-        #endregion
+		#endregion
 
-        #region ================== Save
+		#region ================== Save
 
-        /// <summary>
-        /// This exports the structures from memory into a WAD file with the current map format.
-        /// </summary>
-        public bool ExportToFile(string filepathname) {
-            return SaveMap(filepathname, SavePurpose.Testing);
-        }
+		/// <summary>
+		/// This exports the structures from memory into a WAD file with the current map format.
+		/// </summary>
+		public bool ExportToFile(string filepathname) {
+			return SaveMap(filepathname, SavePurpose.Testing);
+		}
 
-        // Initializes for an existing map
-        internal bool SaveMap(string newfilepathname, SavePurpose purpose) {
-            MapSet outputset;
-            string nodebuildername, settingsfile;
-            StatusInfo oldstatus;
-            WAD targetwad;
-            int index;
-            bool includenodes = false;
-            string origmapname;
-            bool success = true;
+		// Initializes for an existing map
+		internal bool SaveMap(string newfilepathname, SavePurpose purpose) {
+			MapSet outputset;
+			string nodebuildername, settingsfile;
+			StatusInfo oldstatus;
+			WAD targetwad;
+			int index;
+			bool includenodes = false;
+			string origmapname;
+			bool success = true;
 
-            General.WriteLogLine("Saving map to file: " + newfilepathname);
+			General.WriteLogLine("Saving map to file: " + newfilepathname);
 
-            // Scripts changed?
-            bool localscriptschanged = CheckScriptChanged();
+			// Scripts changed?
+			bool localscriptschanged = CheckScriptChanged();
 
-            // If the scripts window is open, save the scripts first
-            if (IsScriptsWindowOpen) scriptwindow.Editor.ImplicitSave();
+			// If the scripts window is open, save the scripts first
+			if (IsScriptsWindowOpen) scriptwindow.Editor.ImplicitSave();
 
-            // Only recompile scripts when the scripts have changed
-            // (not when only the map changed)
-            if (localscriptschanged) {
-                if (!CompileScriptLumps()) {
-                    // Compiler failure
-                    if (errors.Count > 0)
-                        General.ShowErrorMessage("Error while compiling scripts: " + errors[0].description, MessageBoxButtons.OK);
-                    else
-                        General.ShowErrorMessage("Unknown compiler error while compiling scripts!", MessageBoxButtons.OK);
-                }
-            }
+			// Only recompile scripts when the scripts have changed
+			// (not when only the map changed)
+			if (localscriptschanged) {
+				if (!CompileScriptLumps()) {
+					// Compiler failure
+					if (errors.Count > 0)
+						General.ShowErrorMessage("Error while compiling scripts: " + errors[0].description, MessageBoxButtons.OK);
+					else
+						General.ShowErrorMessage("Unknown compiler error while compiling scripts!", MessageBoxButtons.OK);
+				}
+			}
 
-            // Show script window if there are any errors and we are going to test the map
-            // and always update the errors on the scripts window.
-            if ((errors.Count > 0) && (scriptwindow == null) && (purpose == SavePurpose.Testing)) ShowScriptEditor();
-            if (scriptwindow != null) scriptwindow.Editor.ShowErrors(errors);
+			// Show script window if there are any errors and we are going to test the map
+			// and always update the errors on the scripts window.
+			if ((errors.Count > 0) && (scriptwindow == null) && (purpose == SavePurpose.Testing)) ShowScriptEditor();
+			if (scriptwindow != null) scriptwindow.Editor.ShowErrors(errors);
 
-            // Only write the map and rebuild nodes when the actual map has changed
-            // (not when only scripts have changed)
-            if (changed) {
-                // Make a copy of the map data
-                outputset = map.Clone();
+			// Only write the map and rebuild nodes when the actual map has changed
+			// (not when only scripts have changed)
+			if (changed) {
+				// Make a copy of the map data
+				outputset = map.Clone();
 
-                // Remove all flags from all 3D Start things
-                foreach (Thing t in outputset.Things) {
-                    if (t.Type == config.Start3DModeThingType) {
-                        // We're not using SetFlag here, this doesn't have to be undone.
-                        // Please note that this is totally exceptional!
-                        List<string> flagkeys = new List<string>(t.Flags.Keys);
-                        foreach (string k in flagkeys) t.Flags[k] = false;
-                    }
-                }
+				// Remove all flags from all 3D Start things
+				foreach (Thing t in outputset.Things) {
+					if (t.Type == config.Start3DModeThingType) {
+						// We're not using SetFlag here, this doesn't have to be undone.
+						// Please note that this is totally exceptional!
+						List<string> flagkeys = new List<string>(t.Flags.Keys);
+						foreach (string k in flagkeys) t.Flags[k] = false;
+					}
+				}
 
-                // Do we need sidedefs compression?
-                if (map.Sidedefs.Count > io.MaxSidedefs) {
-                    // Compress sidedefs
-                    oldstatus = General.MainWindow.Status;
-                    General.MainWindow.DisplayStatus(StatusType.Busy, "Compressing sidedefs...");
-                    outputset.CompressSidedefs();
-                    General.MainWindow.DisplayStatus(oldstatus);
+				// Do we need sidedefs compression?
+				if (map.Sidedefs.Count > io.MaxSidedefs) {
+					// Compress sidedefs
+					oldstatus = General.MainWindow.Status;
+					General.MainWindow.DisplayStatus(StatusType.Busy, "Compressing sidedefs...");
+					outputset.CompressSidedefs();
+					General.MainWindow.DisplayStatus(oldstatus);
 
-                    // Check if it still doesnt fit
-                    if (outputset.Sidedefs.Count > io.MaxSidedefs) {
-                        // Problem! Can't save the map like this!
-                        General.ShowErrorMessage("Unable to save the map: There are too many unique sidedefs!", MessageBoxButtons.OK);
-                        return false;
-                    }
-                }
+					// Check if it still doesnt fit
+					if (outputset.Sidedefs.Count > io.MaxSidedefs) {
+						// Problem! Can't save the map like this!
+						General.ShowErrorMessage("Unable to save the map: There are too many unique sidedefs!", MessageBoxButtons.OK);
+						return false;
+					}
+				}
 
-                // Check things
-                if (map.Things.Count > io.MaxThings) {
-                    General.ShowErrorMessage("Unable to save the map: There are too many things!", MessageBoxButtons.OK);
-                    return false;
-                }
+				// Check things
+				if (map.Things.Count > io.MaxThings) {
+					General.ShowErrorMessage("Unable to save the map: There are too many things!", MessageBoxButtons.OK);
+					return false;
+				}
 
-                // Check sectors
-                if (map.Sectors.Count > io.MaxSectors) {
-                    General.ShowErrorMessage("Unable to save the map: There are too many sectors!", MessageBoxButtons.OK);
-                    return false;
-                }
+				// Check sectors
+				if (map.Sectors.Count > io.MaxSectors) {
+					General.ShowErrorMessage("Unable to save the map: There are too many sectors!", MessageBoxButtons.OK);
+					return false;
+				}
 
-                // Check linedefs
-                if (map.Linedefs.Count > io.MaxLinedefs) {
-                    General.ShowErrorMessage("Unable to save the map: There are too many linedefs!", MessageBoxButtons.OK);
-                    return false;
-                }
+				// Check linedefs
+				if (map.Linedefs.Count > io.MaxLinedefs) {
+					General.ShowErrorMessage("Unable to save the map: There are too many linedefs!", MessageBoxButtons.OK);
+					return false;
+				}
 
-                // Check vertices
-                if (map.Vertices.Count > io.MaxVertices) {
-                    General.ShowErrorMessage("Unable to save the map: There are too many vertices!", MessageBoxButtons.OK);
-                    return false;
-                }
+				// Check vertices
+				if (map.Vertices.Count > io.MaxVertices) {
+					General.ShowErrorMessage("Unable to save the map: There are too many vertices!", MessageBoxButtons.OK);
+					return false;
+				}
 
-                // TODO: Check for more limitations
+				// TODO: Check for more limitations
 
-                // Write to temporary file
-                General.WriteLogLine("Writing map data structures to file...");
-                index = tempwad.FindLumpIndex(TEMP_MAP_HEADER);
-                if (index == -1) index = 0;
-                io.Write(outputset, TEMP_MAP_HEADER, index);
-                outputset.Dispose();
+				// Write to temporary file
+				General.WriteLogLine("Writing map data structures to file...");
+				index = tempwad.FindLumpIndex(TEMP_MAP_HEADER);
+				if (index == -1) index = 0;
+				io.Write(outputset, TEMP_MAP_HEADER, index);
+				outputset.Dispose();
 
-                // Get the corresponding nodebuilder
-                nodebuildername = (purpose == SavePurpose.Testing) ? configinfo.NodebuilderTest : configinfo.NodebuilderSave;
+				// Get the corresponding nodebuilder
+				nodebuildername = (purpose == SavePurpose.Testing) ? configinfo.NodebuilderTest : configinfo.NodebuilderSave;
 
-                // Build the nodes
-                oldstatus = General.MainWindow.Status;
-                General.MainWindow.DisplayStatus(StatusType.Busy, "Building map nodes...");
-                if (!string.IsNullOrEmpty(nodebuildername))
-                    includenodes = BuildNodes(nodebuildername, true);
-                else
-                    includenodes = false;
-                General.MainWindow.DisplayStatus(oldstatus);
-            }
-            else {
-                // Check if we have nodebuilder lumps
-                includenodes = VerifyNodebuilderLumps(tempwad, TEMP_MAP_HEADER);
-            }
+				// Build the nodes
+				oldstatus = General.MainWindow.Status;
+				General.MainWindow.DisplayStatus(StatusType.Busy, "Building map nodes...");
+				if (!string.IsNullOrEmpty(nodebuildername))
+					includenodes = BuildNodes(nodebuildername, true);
+				else
+					includenodes = false;
+				General.MainWindow.DisplayStatus(oldstatus);
+			}
+			else {
+				// Check if we have nodebuilder lumps
+				includenodes = VerifyNodebuilderLumps(tempwad, TEMP_MAP_HEADER);
+			}
 
-            // Suspend data resources
-            data.Suspend();
+			// Suspend data resources
+			data.Suspend();
 
-            // Determine original map name
-            origmapname = (options.PreviousName != "") ? options.PreviousName : options.CurrentName;
+			// Determine original map name
+			origmapname = (options.PreviousName != "") ? options.PreviousName : options.CurrentName;
 
-            try {
-                // Backup existing file, if any
-                if (File.Exists(newfilepathname)) {
-                    if (File.Exists(newfilepathname + ".backup3")) File.Delete(newfilepathname + ".backup3");
-                    if (File.Exists(newfilepathname + ".backup2")) File.Move(newfilepathname + ".backup2", newfilepathname + ".backup3");
-                    if (File.Exists(newfilepathname + ".backup1")) File.Move(newfilepathname + ".backup1", newfilepathname + ".backup2");
-                    File.Copy(newfilepathname, newfilepathname + ".backup1");
-                }
+			try {
+				// Backup existing file, if any
+				if (File.Exists(newfilepathname)) {
+					if (File.Exists(newfilepathname + ".backup3")) File.Delete(newfilepathname + ".backup3");
+					if (File.Exists(newfilepathname + ".backup2")) File.Move(newfilepathname + ".backup2", newfilepathname + ".backup3");
+					if (File.Exists(newfilepathname + ".backup1")) File.Move(newfilepathname + ".backup1", newfilepathname + ".backup2");
+					File.Copy(newfilepathname, newfilepathname + ".backup1");
+				}
 
-                // Except when saving INTO another file,
-                // kill the target file if it is different from source file
-                if ((purpose != SavePurpose.IntoFile) && (newfilepathname != filepathname)) {
-                    // Kill target file
-                    if (File.Exists(newfilepathname)) File.Delete(newfilepathname);
+				// Except when saving INTO another file,
+				// kill the target file if it is different from source file
+				if ((purpose != SavePurpose.IntoFile) && (newfilepathname != filepathname)) {
+					// Kill target file
+					if (File.Exists(newfilepathname)) File.Delete(newfilepathname);
 
-                    // Kill .dbs settings file
-                    settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
-                    if (File.Exists(settingsfile)) File.Delete(settingsfile);
-                }
+					// Kill .dbs settings file
+					settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
+					if (File.Exists(settingsfile)) File.Delete(settingsfile);
+				}
 
-                // On Save AS we have to copy the previous file to the new file
-                if ((purpose == SavePurpose.AsNewFile) && (filepathname != "")) {
-                    // Copy if original file still exists
-                    if (File.Exists(filepathname)) File.Copy(filepathname, newfilepathname, true);
-                }
+				// On Save AS we have to copy the previous file to the new file
+				if ((purpose == SavePurpose.AsNewFile) && (filepathname != "")) {
+					// Copy if original file still exists
+					if (File.Exists(filepathname)) File.Copy(filepathname, newfilepathname, true);
+				}
 
-                // If the target file exists, we need to rebuild it
-                if (File.Exists(newfilepathname)) {
-                    // Move the target file aside
-                    string origwadfile = newfilepathname + ".temp";
-                    File.Move(newfilepathname, origwadfile);
+				// If the target file exists, we need to rebuild it
+				if (File.Exists(newfilepathname)) {
+					// Move the target file aside
+					string origwadfile = newfilepathname + ".temp";
+					File.Move(newfilepathname, origwadfile);
 
-                    // Open original file
-                    WAD origwad = new WAD(origwadfile, true);
+					// Open original file
+					WAD origwad = new WAD(origwadfile, true);
 
-                    // Create new target file
-                    targetwad = new WAD(newfilepathname);
+					// Create new target file
+					targetwad = new WAD(newfilepathname);
 
-                    // Copy all lumps, except the original map
+					// Copy all lumps, except the original map
 					GameConfiguration origcfg = (origmapconfigfile == configinfo.Filename ? config : new GameConfiguration(General.LoadGameConfiguration(origmapconfigfile))); //mxd
-                    CopyAllLumpsExceptMap(origwad, targetwad, origcfg, origmapname);
+					CopyAllLumpsExceptMap(origwad, targetwad, origcfg, origmapname);
 
-                    // Close original file and delete it
-                    origwad.Dispose();
-                    File.Delete(origwadfile);
-                }
-                else {
-                    // Create new target file
-                    targetwad = new WAD(newfilepathname);
-                }
-            } catch (IOException) {
-                General.ShowErrorMessage("IO Error while writing target file: " + newfilepathname + ". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
-                data.Resume();
-                General.WriteLogLine("Map saving failed");
-                return false;
-            } catch (UnauthorizedAccessException) {
-                General.ShowErrorMessage("Error while accessing target file: " + newfilepathname + ". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
-                data.Resume();
-                General.WriteLogLine("Map saving failed");
-                return false;
-            }
+					// Close original file and delete it
+					origwad.Dispose();
+					File.Delete(origwadfile);
+				}
+				else {
+					// Create new target file
+					targetwad = new WAD(newfilepathname);
+				}
+			} catch (IOException) {
+				General.ShowErrorMessage("IO Error while writing target file: " + newfilepathname + ". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
+				data.Resume();
+				General.WriteLogLine("Map saving failed");
+				return false;
+			} catch (UnauthorizedAccessException) {
+				General.ShowErrorMessage("Error while accessing target file: " + newfilepathname + ". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
+				data.Resume();
+				General.WriteLogLine("Map saving failed");
+				return false;
+			}
 
-            // Copy map lumps to target file
-            CopyLumpsByType(tempwad, TEMP_MAP_HEADER, targetwad, origmapname, true, true, includenodes, true);
+			// Copy map lumps to target file
+			CopyLumpsByType(tempwad, TEMP_MAP_HEADER, targetwad, origmapname, true, true, includenodes, true);
 
-            // Was the map lump name renamed?
-            if ((options.PreviousName != options.CurrentName) &&
-               (options.PreviousName != "")) {
-                General.WriteLogLine("Renaming map lump name from " + options.PreviousName + " to " + options.CurrentName);
+			// Was the map lump name renamed?
+			if ((options.PreviousName != options.CurrentName) &&
+			   (options.PreviousName != "")) {
+				General.WriteLogLine("Renaming map lump name from " + options.PreviousName + " to " + options.CurrentName);
 
-                // Find the map header in target
-                index = targetwad.FindLumpIndex(options.PreviousName);
-                if (index > -1) {
-                    // Rename the map lump name
-                    targetwad.Lumps[index].Rename(options.CurrentName);
-                    options.PreviousName = "";
-                }
-                else {
-                    // Houston, we've got a problem!
-                    General.ShowErrorMessage("Error renaming map lump name: the original map lump could not be found!", MessageBoxButtons.OK);
-                    options.CurrentName = options.PreviousName;
-                    options.PreviousName = "";
-                }
-            }
+				// Find the map header in target
+				index = targetwad.FindLumpIndex(options.PreviousName);
+				if (index > -1) {
+					// Rename the map lump name
+					targetwad.Lumps[index].Rename(options.CurrentName);
+					options.PreviousName = "";
+				}
+				else {
+					// Houston, we've got a problem!
+					General.ShowErrorMessage("Error renaming map lump name: the original map lump could not be found!", MessageBoxButtons.OK);
+					options.CurrentName = options.PreviousName;
+					options.PreviousName = "";
+				}
+			}
 
-            // Done with the target file
-            targetwad.Dispose();
+			// Done with the target file
+			targetwad.Dispose();
 
-            // Resume data resources
-            data.Resume();
+			// Resume data resources
+			data.Resume();
 
-            // Not saved for testing purpose?
-            if (purpose != SavePurpose.Testing) {
-                // Saved in a different file?
-                if (newfilepathname != filepathname) {
-                    // Keep new filename
-                    filepathname = newfilepathname;
-                    filetitle = Path.GetFileName(filepathname);
+			// Not saved for testing purpose?
+			if (purpose != SavePurpose.Testing) {
+				// Saved in a different file?
+				if (newfilepathname != filepathname) {
+					// Keep new filename
+					filepathname = newfilepathname;
+					filetitle = Path.GetFileName(filepathname);
 
-                    // Reload resources
-                    ReloadResources();
-                }
+					// Reload resources
+					ReloadResources();
+				}
 
-                try {
-                    // Open or create the map settings
-                    settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
-                    options.WriteConfiguration(settingsfile);
-                } catch (Exception e) {
-                    // Warning only
-                    General.ErrorLogger.Add(ErrorType.Warning, "Could not write the map settings configuration file. " + e.GetType().Name + ": " + e.Message);
-                }
+				try {
+					// Open or create the map settings
+					settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
+					options.WriteConfiguration(settingsfile);
+				} catch (Exception e) {
+					// Warning only
+					General.ErrorLogger.Add(ErrorType.Warning, "Could not write the map settings configuration file. " + e.GetType().Name + ": " + e.Message);
+				}
 
-                // Changes saved
-                changed = false;
-                scriptschanged = false;
-            }
+				// Changes saved
+				changed = false;
+				scriptschanged = false;
+			}
 
-            // Success!
-            General.WriteLogLine("Map saving done");
-            return success;
-        }
+			// Success!
+			General.WriteLogLine("Map saving done");
+			return success;
+		}
 
-        #endregion
+		#endregion
 
-        #region ================== Nodebuild
+		#region ================== Nodebuild
 
-        // This builds the nodes in the temproary file with the given configuration name
-        private bool BuildNodes(string nodebuildername, bool failaswarning) {
-            NodebuilderInfo nodebuilder;
-            string tempfile1, tempfile2, sourcefile;
-            bool lumpscomplete = false;
-            WAD buildwad;
+		// This builds the nodes in the temproary file with the given configuration name
+		private bool BuildNodes(string nodebuildername, bool failaswarning) {
+			NodebuilderInfo nodebuilder;
+			string tempfile1, tempfile2, sourcefile;
+			bool lumpscomplete = false;
+			WAD buildwad;
 
-            // Find the nodebuilder
-            nodebuilder = General.GetNodebuilderByName(nodebuildername);
-            if (nodebuilder == null) {
-                // Problem! Can't find that nodebuilder!
-                General.ShowWarningMessage("Unable to build the nodes: The configured nodebuilder cannot be found.\nPlease check your game configuration settings!", MessageBoxButtons.OK);
-                return false;
-            }
-            else {
-                // Create the compiler interface that will run the nodebuilder
-                // This automatically creates a temporary directory for us
-                Compiler compiler = nodebuilder.CreateCompiler();
+			// Find the nodebuilder
+			nodebuilder = General.GetNodebuilderByName(nodebuildername);
+			if (nodebuilder == null) {
+				// Problem! Can't find that nodebuilder!
+				General.ShowWarningMessage("Unable to build the nodes: The configured nodebuilder cannot be found.\nPlease check your game configuration settings!", MessageBoxButtons.OK);
+				return false;
+			}
+			else {
+				// Create the compiler interface that will run the nodebuilder
+				// This automatically creates a temporary directory for us
+				Compiler compiler = nodebuilder.CreateCompiler();
 
-                // Make temporary filename
-                tempfile1 = General.MakeTempFilename(compiler.Location);
+				// Make temporary filename
+				tempfile1 = General.MakeTempFilename(compiler.Location);
 
-                // Make the temporary WAD file
-                General.WriteLogLine("Creating temporary build file: " + tempfile1);
+				// Make the temporary WAD file
+				General.WriteLogLine("Creating temporary build file: " + tempfile1);
 #if DEBUG
-                buildwad = new WAD(tempfile1);
+				buildwad = new WAD(tempfile1);
 #else
 					try { buildwad = new WAD(tempfile1); }
 					catch(Exception e)
@@ -806,199 +806,199 @@ namespace CodeImp.DoomBuilder {
 					}
 #endif
 
-                // Determine source file
-                if (filepathname.Length > 0)
-                    sourcefile = filepathname;
-                else
-                    sourcefile = tempwad.Filename;
+				// Determine source file
+				if (filepathname.Length > 0)
+					sourcefile = filepathname;
+				else
+					sourcefile = tempwad.Filename;
 
-                // Copy lumps to buildwad
-                General.WriteLogLine("Copying map lumps to temporary build file...");
-                CopyLumpsByType(tempwad, TEMP_MAP_HEADER, buildwad, BUILD_MAP_HEADER, true, false, false, true);
+				// Copy lumps to buildwad
+				General.WriteLogLine("Copying map lumps to temporary build file...");
+				CopyLumpsByType(tempwad, TEMP_MAP_HEADER, buildwad, BUILD_MAP_HEADER, true, false, false, true);
 
-                // Close buildwad
-                buildwad.Dispose();
+				// Close buildwad
+				buildwad.Dispose();
 
-                // Does the nodebuilder require an output file?
-                if (nodebuilder.HasSpecialOutputFile) {
-                    // Make a temporary output file for the nodebuilder
-                    tempfile2 = General.MakeTempFilename(compiler.Location);
-                    General.WriteLogLine("Temporary output file: " + tempfile2);
-                }
-                else {
-                    // Output file is same as input file
-                    tempfile2 = tempfile1;
-                }
+				// Does the nodebuilder require an output file?
+				if (nodebuilder.HasSpecialOutputFile) {
+					// Make a temporary output file for the nodebuilder
+					tempfile2 = General.MakeTempFilename(compiler.Location);
+					General.WriteLogLine("Temporary output file: " + tempfile2);
+				}
+				else {
+					// Output file is same as input file
+					tempfile2 = tempfile1;
+				}
 
-                // Run the nodebuilder
-                compiler.Parameters = nodebuilder.Parameters;
-                compiler.InputFile = Path.GetFileName(tempfile1);
-                compiler.OutputFile = Path.GetFileName(tempfile2);
-                compiler.SourceFile = sourcefile;
-                compiler.WorkingDirectory = Path.GetDirectoryName(tempfile1);
-                if (compiler.Run()) {
-                    // Open the output file
-                    try { buildwad = new WAD(tempfile2); } catch (Exception e) {
-                        General.WriteLogLine(e.GetType().Name + " while reading build wad file: " + e.Message);
-                        buildwad = null;
-                    }
+				// Run the nodebuilder
+				compiler.Parameters = nodebuilder.Parameters;
+				compiler.InputFile = Path.GetFileName(tempfile1);
+				compiler.OutputFile = Path.GetFileName(tempfile2);
+				compiler.SourceFile = sourcefile;
+				compiler.WorkingDirectory = Path.GetDirectoryName(tempfile1);
+				if (compiler.Run()) {
+					// Open the output file
+					try { buildwad = new WAD(tempfile2); } catch (Exception e) {
+						General.WriteLogLine(e.GetType().Name + " while reading build wad file: " + e.Message);
+						buildwad = null;
+					}
 
-                    if (buildwad != null) {
-                        // Output lumps complete?
-                        lumpscomplete = VerifyNodebuilderLumps(buildwad, BUILD_MAP_HEADER);
-                    }
+					if (buildwad != null) {
+						// Output lumps complete?
+						lumpscomplete = VerifyNodebuilderLumps(buildwad, BUILD_MAP_HEADER);
+					}
 
-                    if (lumpscomplete) {
-                        // Copy nodebuilder lumps to temp file
-                        General.WriteLogLine("Copying nodebuilder lumps to temporary file...");
-                        CopyLumpsByType(buildwad, BUILD_MAP_HEADER, tempwad, TEMP_MAP_HEADER, false, false, true, false);
-                    }
-                    else {
-                        //mxd. collect errors
-                        string errors = "";
-                        foreach (CompilerError e in compiler.Errors)
-                            errors += "Error: " + Environment.NewLine + e.description;
+					if (lumpscomplete) {
+						// Copy nodebuilder lumps to temp file
+						General.WriteLogLine("Copying nodebuilder lumps to temporary file...");
+						CopyLumpsByType(buildwad, BUILD_MAP_HEADER, tempwad, TEMP_MAP_HEADER, false, false, true, false);
+					}
+					else {
+						//mxd. collect errors
+						string errors = "";
+						foreach (CompilerError e in compiler.Errors)
+							errors += "Error: " + Environment.NewLine + e.description;
 
-                        // Nodebuilder did not build the lumps!
-                        if (failaswarning)
-                            General.ShowWarningMessage("Unable to build the nodes: The nodebuilder failed to build the expected data structures.\nThe map will be saved without the nodes." + (compiler.Errors.Length > 0 ? Environment.NewLine + errors : ""), MessageBoxButtons.OK);
-                        else
-                            General.ShowErrorMessage("Unable to build the nodes: The nodebuilder failed to build the expected data structures." + (compiler.Errors.Length > 0 ? Environment.NewLine + errors : ""), MessageBoxButtons.OK);
-                    }
+						// Nodebuilder did not build the lumps!
+						if (failaswarning)
+							General.ShowWarningMessage("Unable to build the nodes: The nodebuilder failed to build the expected data structures.\nThe map will be saved without the nodes." + (compiler.Errors.Length > 0 ? Environment.NewLine + errors : ""), MessageBoxButtons.OK);
+						else
+							General.ShowErrorMessage("Unable to build the nodes: The nodebuilder failed to build the expected data structures." + (compiler.Errors.Length > 0 ? Environment.NewLine + errors : ""), MessageBoxButtons.OK);
+					}
 
-                    // Done with the build wad
-                    if (buildwad != null) buildwad.Dispose();
-                }
-                else { //mxd
-                    //collect errors
-                    string errors = "";
-                    foreach (CompilerError e in compiler.Errors)
-                        errors += "Error: " + Environment.NewLine + e.description;
+					// Done with the build wad
+					if (buildwad != null) buildwad.Dispose();
+				}
+				else { //mxd
+					//collect errors
+					string errors = "";
+					foreach (CompilerError e in compiler.Errors)
+						errors += "Error: " + Environment.NewLine + e.description;
 
-                    // Nodebuilder did not build the lumps!
-                    General.ShowErrorMessage("Unable to build the nodes: The nodebuilder failed to build the expected data structures" + (compiler.Errors.Length > 0 ? ":" + Environment.NewLine + errors : "."), MessageBoxButtons.OK);
-                }
+					// Nodebuilder did not build the lumps!
+					General.ShowErrorMessage("Unable to build the nodes: The nodebuilder failed to build the expected data structures" + (compiler.Errors.Length > 0 ? ":" + Environment.NewLine + errors : "."), MessageBoxButtons.OK);
+				}
 
-                // Clean up
-                compiler.Dispose();
+				// Clean up
+				compiler.Dispose();
 
-                // Return result
-                return lumpscomplete;
-            }
-        }
+				// Return result
+				return lumpscomplete;
+			}
+		}
 
-        // This verifies if the nodebuilder lumps exist in a WAD file
-        private bool VerifyNodebuilderLumps(WAD wad, string mapheader) {
-            bool lumpscomplete = false;
+		// This verifies if the nodebuilder lumps exist in a WAD file
+		private bool VerifyNodebuilderLumps(WAD wad, string mapheader) {
+			bool lumpscomplete = false;
 
-            // Find the map header in source
-            int srcindex = wad.FindLumpIndex(mapheader);
-            if (srcindex > -1) {
-                // Go for all the map lump names
-                lumpscomplete = true;
-                foreach (DictionaryEntry ml in config.MapLumpNames) {
-                    // Read lump settings from map config
-                    bool lumpnodebuild = config.ReadSetting("maplumpnames." + ml.Key + ".nodebuild", false);
-                    bool lumpallowempty = config.ReadSetting("maplumpnames." + ml.Key + ".allowempty", false);
+			// Find the map header in source
+			int srcindex = wad.FindLumpIndex(mapheader);
+			if (srcindex > -1) {
+				// Go for all the map lump names
+				lumpscomplete = true;
+				foreach (DictionaryEntry ml in config.MapLumpNames) {
+					// Read lump settings from map config
+					bool lumpnodebuild = config.ReadSetting("maplumpnames." + ml.Key + ".nodebuild", false);
+					bool lumpallowempty = config.ReadSetting("maplumpnames." + ml.Key + ".allowempty", false);
 
-                    // Check if this lump should exist
-                    if (lumpnodebuild && !lumpallowempty) {
-                        // Find the lump in the source
-                        if (wad.FindLump(ml.Key.ToString(), srcindex, srcindex + config.MapLumpNames.Count + 2) == null) {
-                            // Missing a lump!
-                            lumpscomplete = false;
-                            break;
-                        }
-                    }
-                }
-            }
+					// Check if this lump should exist
+					if (lumpnodebuild && !lumpallowempty) {
+						// Find the lump in the source
+						if (wad.FindLump(ml.Key.ToString(), srcindex, srcindex + config.MapLumpNames.Count + 2) == null) {
+							// Missing a lump!
+							lumpscomplete = false;
+							break;
+						}
+					}
+				}
+			}
 
-            return lumpscomplete;
-        }
+			return lumpscomplete;
+		}
 
-        #endregion
+		#endregion
 
-        #region ================== Lumps
+		#region ================== Lumps
 
-        // This returns a copy of the requested lump stream data
-        // This is copied from the temp wad file and returns null when the lump is not found
-        public MemoryStream GetLumpData(string lumpname) {
-            Lump l = tempwad.FindLump(lumpname);
-            if (l != null) {
-                l.Stream.Seek(0, SeekOrigin.Begin);
-                return new MemoryStream(l.Stream.ReadAllBytes());
-            }
-            return null;
-        }
+		// This returns a copy of the requested lump stream data
+		// This is copied from the temp wad file and returns null when the lump is not found
+		public MemoryStream GetLumpData(string lumpname) {
+			Lump l = tempwad.FindLump(lumpname);
+			if (l != null) {
+				l.Stream.Seek(0, SeekOrigin.Begin);
+				return new MemoryStream(l.Stream.ReadAllBytes());
+			}
+			return null;
+		}
 
-        // This writes a copy of the data to a lump in the temp file
-        public void SetLumpData(string lumpname, MemoryStream data) {
-            int insertindex = tempwad.Lumps.Count;
+		// This writes a copy of the data to a lump in the temp file
+		public void SetLumpData(string lumpname, MemoryStream data) {
+			int insertindex = tempwad.Lumps.Count;
 
-            // Remove the lump if it already exists
-            int li = tempwad.FindLumpIndex(lumpname);
-            if (li > -1) {
-                insertindex = li;
-                tempwad.RemoveAt(li);
-            }
+			// Remove the lump if it already exists
+			int li = tempwad.FindLumpIndex(lumpname);
+			if (li > -1) {
+				insertindex = li;
+				tempwad.RemoveAt(li);
+			}
 
-            // Insert new lump
-            Lump l = tempwad.Insert(lumpname, insertindex, (int)data.Length);
-            l.Stream.Seek(0, SeekOrigin.Begin);
-            data.WriteTo(l.Stream);
-        }
+			// Insert new lump
+			Lump l = tempwad.Insert(lumpname, insertindex, (int)data.Length);
+			l.Stream.Seek(0, SeekOrigin.Begin);
+			data.WriteTo(l.Stream);
+		}
 
-        // This checks if the specified lump exists in the temp file
-        public bool LumpExists(string lumpname) {
-            return (tempwad.FindLumpIndex(lumpname) > -1);
-        }
+		// This checks if the specified lump exists in the temp file
+		public bool LumpExists(string lumpname) {
+			return (tempwad.FindLumpIndex(lumpname) > -1);
+		}
 
-        // This creates empty lumps for those required
-        private void CreateRequiredLumps(WAD target, string mapname) {
-            int headerindex, insertindex, targetindex;
-            string lumpname;
-            bool lumprequired;
+		// This creates empty lumps for those required
+		private void CreateRequiredLumps(WAD target, string mapname) {
+			int headerindex, insertindex, targetindex;
+			string lumpname;
+			bool lumprequired;
 
-            // Find the map header in target
-            headerindex = target.FindLumpIndex(mapname);
-            if (headerindex == -1) {
-                // If this header doesnt exists in the target
-                // then insert at the end of the target
-                headerindex = target.Lumps.Count;
-            }
+			// Find the map header in target
+			headerindex = target.FindLumpIndex(mapname);
+			if (headerindex == -1) {
+				// If this header doesnt exists in the target
+				// then insert at the end of the target
+				headerindex = target.Lumps.Count;
+			}
 
-            // Begin inserting at target header index
-            insertindex = headerindex;
+			// Begin inserting at target header index
+			insertindex = headerindex;
 
-            // Go for all the map lump names
-            foreach (DictionaryEntry ml in config.MapLumpNames) {
-                // Read lump settings from map config
-                lumprequired = config.ReadSetting("maplumpnames." + ml.Key + ".required", false);
+			// Go for all the map lump names
+			foreach (DictionaryEntry ml in config.MapLumpNames) {
+				// Read lump settings from map config
+				lumprequired = config.ReadSetting("maplumpnames." + ml.Key + ".required", false);
 
-                // Check if this lump is required
-                if (lumprequired) {
-                    // Get the lump name
-                    lumpname = ml.Key.ToString();
-                    if (lumpname == CONFIG_MAP_HEADER) lumpname = mapname;
+				// Check if this lump is required
+				if (lumprequired) {
+					// Get the lump name
+					lumpname = ml.Key.ToString();
+					if (lumpname == CONFIG_MAP_HEADER) lumpname = mapname;
 
-                    // Check if the lump is missing at the target
-                    targetindex = FindSpecificLump(target, lumpname, headerindex, mapname, config.MapLumpNames);
-                    if (targetindex == -1) {
-                        // Determine target index
-                        insertindex++;
-                        if (insertindex > target.Lumps.Count) insertindex = target.Lumps.Count;
+					// Check if the lump is missing at the target
+					targetindex = FindSpecificLump(target, lumpname, headerindex, mapname, config.MapLumpNames);
+					if (targetindex == -1) {
+						// Determine target index
+						insertindex++;
+						if (insertindex > target.Lumps.Count) insertindex = target.Lumps.Count;
 
-                        // Create new, emtpy lump
-                        General.WriteLogLine(lumpname + " is required! Created empty lump.");
-                        target.Insert(lumpname, insertindex, 0);
-                    }
-                    else {
-                        // Move insert index
-                        insertindex = targetindex;
-                    }
-                }
-            }
-        }
+						// Create new, emtpy lump
+						General.WriteLogLine(lumpname + " is required! Created empty lump.");
+						target.Insert(lumpname, insertindex, 0);
+					}
+					else {
+						// Move insert index
+						insertindex = targetindex;
+					}
+				}
+			}
+		}
 
 		//mxd. This is called on tempwad, which should only have the current map inside it.
 		private void removeUnneededLumps(WAD target, string mapname) {
@@ -1018,189 +1018,189 @@ namespace CodeImp.DoomBuilder {
 			foreach (Lump lump in toRemove) target.Remove(lump);
 		}
 
-        // This copies all lumps, except those of a specific map
-        private void CopyAllLumpsExceptMap(WAD source, WAD target, GameConfiguration mapconfig, string sourcemapname) {
-            // Go for all lumps
-            bool skipping = false;
-            foreach (Lump srclump in source.Lumps) {
-                // Check if we should stop skipping lumps here
+		// This copies all lumps, except those of a specific map
+		private void CopyAllLumpsExceptMap(WAD source, WAD target, GameConfiguration mapconfig, string sourcemapname) {
+			// Go for all lumps
+			bool skipping = false;
+			foreach (Lump srclump in source.Lumps) {
+				// Check if we should stop skipping lumps here
 				if (skipping && !mapconfig.MapLumpNames.Contains(srclump.Name)) {
-                    // Stop skipping
-                    skipping = false;
-                }
+					// Stop skipping
+					skipping = false;
+				}
 
-                // Check if we should start skipping lumps here
-                if (!skipping && (srclump.Name == sourcemapname)) {
-                    // We have encountered the map header, start skipping!
-                    skipping = true;
-                }
+				// Check if we should start skipping lumps here
+				if (!skipping && (srclump.Name == sourcemapname)) {
+					// We have encountered the map header, start skipping!
+					skipping = true;
+				}
 
-                // Not skipping this lump?
-                if (!skipping) {
-                    // Copy lump over!
-                    Lump tgtlump = target.Insert(srclump.Name, target.Lumps.Count, srclump.Length);
-                    srclump.CopyTo(tgtlump);
-                }
-            }
-        }
+				// Not skipping this lump?
+				if (!skipping) {
+					// Copy lump over!
+					Lump tgtlump = target.Insert(srclump.Name, target.Lumps.Count, srclump.Length);
+					srclump.CopyTo(tgtlump);
+				}
+			}
+		}
 
-        // This copies specific map lumps from one WAD to another
-        private void CopyLumpsByType(WAD source, string sourcemapname,
-                                     WAD target, string targetmapname,
-                                     bool copyrequired, bool copyblindcopy,
-                                     bool copynodebuild, bool copyscript) {
-            bool lumprequired, lumpblindcopy, lumpnodebuild;
-            string lumpscript, srclumpname, tgtlumpname;
-            int srcheaderindex, tgtheaderindex, targetindex, sourceindex, lumpindex;
-            Lump lump, newlump;
+		// This copies specific map lumps from one WAD to another
+		private void CopyLumpsByType(WAD source, string sourcemapname,
+									 WAD target, string targetmapname,
+									 bool copyrequired, bool copyblindcopy,
+									 bool copynodebuild, bool copyscript) {
+			bool lumprequired, lumpblindcopy, lumpnodebuild;
+			string lumpscript, srclumpname, tgtlumpname;
+			int srcheaderindex, tgtheaderindex, targetindex, sourceindex, lumpindex;
+			Lump lump, newlump;
 
-            // Find the map header in target
-            tgtheaderindex = target.FindLumpIndex(targetmapname);
-            if (tgtheaderindex == -1) {
-                // If this header doesnt exists in the target
-                // then insert at the end of the target
-                tgtheaderindex = target.Lumps.Count;
-            }
+			// Find the map header in target
+			tgtheaderindex = target.FindLumpIndex(targetmapname);
+			if (tgtheaderindex == -1) {
+				// If this header doesnt exists in the target
+				// then insert at the end of the target
+				tgtheaderindex = target.Lumps.Count;
+			}
 
-            // Begin inserting at target header index
-            targetindex = tgtheaderindex;
+			// Begin inserting at target header index
+			targetindex = tgtheaderindex;
 
-            // Find the map header in source
-            srcheaderindex = source.FindLumpIndex(sourcemapname);
-            if (srcheaderindex > -1) {
-                // Copy the map header from source to target
-                //newlump = target.Insert(targetmapname, tgtindex++, source.Lumps[srcindex].Length);
-                //source.Lumps[srcindex].CopyTo(newlump);
+			// Find the map header in source
+			srcheaderindex = source.FindLumpIndex(sourcemapname);
+			if (srcheaderindex > -1) {
+				// Copy the map header from source to target
+				//newlump = target.Insert(targetmapname, tgtindex++, source.Lumps[srcindex].Length);
+				//source.Lumps[srcindex].CopyTo(newlump);
 
-                // Go for all the map lump names
-                foreach (DictionaryEntry ml in config.MapLumpNames) {
-                    // Read lump settings from map config
-                    lumprequired = config.ReadSetting("maplumpnames." + ml.Key + ".required", false);
-                    lumpblindcopy = config.ReadSetting("maplumpnames." + ml.Key + ".blindcopy", false);
-                    lumpnodebuild = config.ReadSetting("maplumpnames." + ml.Key + ".nodebuild", false);
-                    lumpscript = config.ReadSetting("maplumpnames." + ml.Key + ".script", "");
+				// Go for all the map lump names
+				foreach (DictionaryEntry ml in config.MapLumpNames) {
+					// Read lump settings from map config
+					lumprequired = config.ReadSetting("maplumpnames." + ml.Key + ".required", false);
+					lumpblindcopy = config.ReadSetting("maplumpnames." + ml.Key + ".blindcopy", false);
+					lumpnodebuild = config.ReadSetting("maplumpnames." + ml.Key + ".nodebuild", false);
+					lumpscript = config.ReadSetting("maplumpnames." + ml.Key + ".script", "");
 
-                    // Check if this lump should be copied
-                    if ((lumprequired && copyrequired) || (lumpblindcopy && copyblindcopy) ||
-                       (lumpnodebuild && copynodebuild) || ((lumpscript.Length != 0) && copyscript)) {
-                        // Get the lump name
-                        srclumpname = ml.Key.ToString();
-                        tgtlumpname = ml.Key.ToString();
-                        if (srclumpname == CONFIG_MAP_HEADER) srclumpname = sourcemapname;
-                        if (tgtlumpname == CONFIG_MAP_HEADER) tgtlumpname = targetmapname;
+					// Check if this lump should be copied
+					if ((lumprequired && copyrequired) || (lumpblindcopy && copyblindcopy) ||
+					   (lumpnodebuild && copynodebuild) || ((lumpscript.Length != 0) && copyscript)) {
+						// Get the lump name
+						srclumpname = ml.Key.ToString();
+						tgtlumpname = ml.Key.ToString();
+						if (srclumpname == CONFIG_MAP_HEADER) srclumpname = sourcemapname;
+						if (tgtlumpname == CONFIG_MAP_HEADER) tgtlumpname = targetmapname;
 
-                        // Find the lump in the source
-                        sourceindex = FindSpecificLump(source, srclumpname, srcheaderindex, sourcemapname, config.MapLumpNames);
-                        if (sourceindex > -1) {
-                            // Remove lump at target
-                            lumpindex = RemoveSpecificLump(target, tgtlumpname, tgtheaderindex, targetmapname, config.MapLumpNames);
+						// Find the lump in the source
+						sourceindex = FindSpecificLump(source, srclumpname, srcheaderindex, sourcemapname, config.MapLumpNames);
+						if (sourceindex > -1) {
+							// Remove lump at target
+							lumpindex = RemoveSpecificLump(target, tgtlumpname, tgtheaderindex, targetmapname, config.MapLumpNames);
 
-                            // Determine target index
-                            // When original lump was found and removed then insert at that position
-                            // otherwise insert after last insertion position
-                            if (lumpindex > -1) targetindex = lumpindex; else targetindex++;
-                            if (targetindex > target.Lumps.Count) targetindex = target.Lumps.Count;
+							// Determine target index
+							// When original lump was found and removed then insert at that position
+							// otherwise insert after last insertion position
+							if (lumpindex > -1) targetindex = lumpindex; else targetindex++;
+							if (targetindex > target.Lumps.Count) targetindex = target.Lumps.Count;
 
-                            // Copy the lump to the target
-                            //General.WriteLogLine(srclumpname + " copying as " + tgtlumpname);
-                            lump = source.Lumps[sourceindex];
-                            newlump = target.Insert(tgtlumpname, targetindex, lump.Length);
-                            lump.CopyTo(newlump);
-                        }
-                        else {
-                            // We don't want to bother the user with this. There are a lot of lumps in
-                            // the game configs that are trivial and don't need to be found.
-                            if (lumprequired) {
-                                General.ErrorLogger.Add(ErrorType.Warning, ml.Key.ToString() + " (required lump) should be read but was not found in the WAD file.");
-                            }
-                        }
-                    }
-                }
-            }
-        }
+							// Copy the lump to the target
+							//General.WriteLogLine(srclumpname + " copying as " + tgtlumpname);
+							lump = source.Lumps[sourceindex];
+							newlump = target.Insert(tgtlumpname, targetindex, lump.Length);
+							lump.CopyTo(newlump);
+						}
+						else {
+							// We don't want to bother the user with this. There are a lot of lumps in
+							// the game configs that are trivial and don't need to be found.
+							if (lumprequired) {
+								General.ErrorLogger.Add(ErrorType.Warning, ml.Key.ToString() + " (required lump) should be read but was not found in the WAD file.");
+							}
+						}
+					}
+				}
+			}
+		}
 
-        // This finds a lump within the range of known lump names
-        // Returns -1 when the lump cannot be found
-        internal static int FindSpecificLump(WAD source, string lumpname, int mapheaderindex, string mapheadername, IDictionary maplumps) {
-            // Use the configured map lump names to find the specific lump within range,
-            // because when an unknown lump is met, this search must stop.
+		// This finds a lump within the range of known lump names
+		// Returns -1 when the lump cannot be found
+		internal static int FindSpecificLump(WAD source, string lumpname, int mapheaderindex, string mapheadername, IDictionary maplumps) {
+			// Use the configured map lump names to find the specific lump within range,
+			// because when an unknown lump is met, this search must stop.
 
-            // Go for all lumps in order to find the specified lump
-            for (int i = 0; i < maplumps.Count + 1; i++) {
-                // Still within bounds?
-                if ((mapheaderindex + i) < source.Lumps.Count) {
-                    // Check if this is a known lump name
-                    if (maplumps.Contains(source.Lumps[mapheaderindex + i].Name) ||
-                       (maplumps.Contains(CONFIG_MAP_HEADER) && (source.Lumps[mapheaderindex + i].Name == mapheadername))) {
-                        // Is this the lump we are looking for?
-                        if (source.Lumps[mapheaderindex + i].Name == lumpname) {
-                            // Return this index
-                            return mapheaderindex + i;
-                        }
-                    }
-                    else {
-                        // Unknown lump hit, abort search
-                        break;
-                    }
-                }
-            }
+			// Go for all lumps in order to find the specified lump
+			for (int i = 0; i < maplumps.Count + 1; i++) {
+				// Still within bounds?
+				if ((mapheaderindex + i) < source.Lumps.Count) {
+					// Check if this is a known lump name
+					if (maplumps.Contains(source.Lumps[mapheaderindex + i].Name) ||
+					   (maplumps.Contains(CONFIG_MAP_HEADER) && (source.Lumps[mapheaderindex + i].Name == mapheadername))) {
+						// Is this the lump we are looking for?
+						if (source.Lumps[mapheaderindex + i].Name == lumpname) {
+							// Return this index
+							return mapheaderindex + i;
+						}
+					}
+					else {
+						// Unknown lump hit, abort search
+						break;
+					}
+				}
+			}
 
-            // Nothing found
-            return -1;
-        }
+			// Nothing found
+			return -1;
+		}
 
-        // This removes a specific lump and returns the position where the lump was removed
-        // Returns -1 when the lump could not be found
-        internal static int RemoveSpecificLump(WAD source, string lumpname, int mapheaderindex, string mapheadername, IDictionary maplumps) {
-            int lumpindex;
+		// This removes a specific lump and returns the position where the lump was removed
+		// Returns -1 when the lump could not be found
+		internal static int RemoveSpecificLump(WAD source, string lumpname, int mapheaderindex, string mapheadername, IDictionary maplumps) {
+			int lumpindex;
 
-            // Find the specific lump index
-            lumpindex = FindSpecificLump(source, lumpname, mapheaderindex, mapheadername, maplumps);
-            if (lumpindex > -1) {
-                // Remove this lump
-                //General.WriteLogLine(lumpname + " removed");
-                source.RemoveAt(lumpindex);
-            }
-            else {
-                // Lump not found
-                //General.ErrorLogger.Add(ErrorType.Warning, lumpname + " should be removed but was not found!");
-            }
+			// Find the specific lump index
+			lumpindex = FindSpecificLump(source, lumpname, mapheaderindex, mapheadername, maplumps);
+			if (lumpindex > -1) {
+				// Remove this lump
+				//General.WriteLogLine(lumpname + " removed");
+				source.RemoveAt(lumpindex);
+			}
+			else {
+				// Lump not found
+				//General.ErrorLogger.Add(ErrorType.Warning, lumpname + " should be removed but was not found!");
+			}
 
-            // Return result
-            return lumpindex;
-        }
+			// Return result
+			return lumpindex;
+		}
 
-        #endregion
+		#endregion
 
-        #region ================== Selection Groups
+		#region ================== Selection Groups
 
-        // This adds selection to a group
-        private void AddSelectionToGroup(int groupindex) {
-            General.Interface.SetCursor(Cursors.WaitCursor);
+		// This adds selection to a group
+		private void AddSelectionToGroup(int groupindex) {
+			General.Interface.SetCursor(Cursors.WaitCursor);
 
-            // Make undo. mxd: group assignment is not recorded
-            //undoredo.CreateUndo("Assign to group " + (groupindex + 1));
+			// Make undo. mxd: group assignment is not recorded
+			//undoredo.CreateUndo("Assign to group " + (groupindex + 1));
 
-            // Make selection
+			// Make selection
 			map.AddSelectionToGroup(groupindex); //mxd. switched groupmask to groupindex
 
 			General.Interface.DisplayStatus(StatusType.Action, "Assigned selection to group " + (groupindex + 1));
-            General.Interface.SetCursor(Cursors.Default);
-        }
+			General.Interface.SetCursor(Cursors.Default);
+		}
 
-        // This selects a group
-        private void SelectGroup(int groupindex) {
-            // Select
-            int groupmask = 0x01 << groupindex;
-            map.SelectVerticesByGroup(groupmask);
-            map.SelectLinedefsByGroup(groupmask);
-            map.SelectSectorsByGroup(groupmask);
-            map.SelectThingsByGroup(groupmask);
+		// This selects a group
+		private void SelectGroup(int groupindex) {
+			// Select
+			int groupmask = 0x01 << groupindex;
+			map.SelectVerticesByGroup(groupmask);
+			map.SelectLinedefsByGroup(groupmask);
+			map.SelectSectorsByGroup(groupmask);
+			map.SelectThingsByGroup(groupmask);
 
-            // Redraw to show selection
+			// Redraw to show selection
 			General.Interface.DisplayStatus(StatusType.Action, "Selected group " + (groupindex + 1));
-            General.Interface.RedrawDisplay();
-        }
+			General.Interface.RedrawDisplay();
+		}
 
 		//mxd. This clears a group
 		private void ClearGroup(int groupindex) {
@@ -1213,49 +1213,49 @@ namespace CodeImp.DoomBuilder {
 			General.Interface.SetCursor(Cursors.Default);
 		}
 
-        // Select actions
-        [BeginAction("selectgroup1")]
-        internal void SelectGroup1() { SelectGroup(0); }
-        [BeginAction("selectgroup2")]
-        internal void SelectGroup2() { SelectGroup(1); }
-        [BeginAction("selectgroup3")]
-        internal void SelectGroup3() { SelectGroup(2); }
-        [BeginAction("selectgroup4")]
-        internal void SelectGroup4() { SelectGroup(3); }
-        [BeginAction("selectgroup5")]
-        internal void SelectGroup5() { SelectGroup(4); }
-        [BeginAction("selectgroup6")]
-        internal void SelectGroup6() { SelectGroup(5); }
-        [BeginAction("selectgroup7")]
-        internal void SelectGroup7() { SelectGroup(6); }
-        [BeginAction("selectgroup8")]
-        internal void SelectGroup8() { SelectGroup(7); }
-        [BeginAction("selectgroup9")]
-        internal void SelectGroup9() { SelectGroup(8); }
-        [BeginAction("selectgroup10")]
-        internal void SelectGroup10() { SelectGroup(9); }
+		// Select actions
+		[BeginAction("selectgroup1")]
+		internal void SelectGroup1() { SelectGroup(0); }
+		[BeginAction("selectgroup2")]
+		internal void SelectGroup2() { SelectGroup(1); }
+		[BeginAction("selectgroup3")]
+		internal void SelectGroup3() { SelectGroup(2); }
+		[BeginAction("selectgroup4")]
+		internal void SelectGroup4() { SelectGroup(3); }
+		[BeginAction("selectgroup5")]
+		internal void SelectGroup5() { SelectGroup(4); }
+		[BeginAction("selectgroup6")]
+		internal void SelectGroup6() { SelectGroup(5); }
+		[BeginAction("selectgroup7")]
+		internal void SelectGroup7() { SelectGroup(6); }
+		[BeginAction("selectgroup8")]
+		internal void SelectGroup8() { SelectGroup(7); }
+		[BeginAction("selectgroup9")]
+		internal void SelectGroup9() { SelectGroup(8); }
+		[BeginAction("selectgroup10")]
+		internal void SelectGroup10() { SelectGroup(9); }
 
-        // Assign actions
-        [BeginAction("assigngroup1")]
-        internal void AssignGroup1() { AddSelectionToGroup(0); }
-        [BeginAction("assigngroup2")]
-        internal void AssignGroup2() { AddSelectionToGroup(1); }
-        [BeginAction("assigngroup3")]
-        internal void AssignGroup3() { AddSelectionToGroup(2); }
-        [BeginAction("assigngroup4")]
-        internal void AssignGroup4() { AddSelectionToGroup(3); }
-        [BeginAction("assigngroup5")]
-        internal void AssignGroup5() { AddSelectionToGroup(4); }
-        [BeginAction("assigngroup6")]
-        internal void AssignGroup6() { AddSelectionToGroup(5); }
-        [BeginAction("assigngroup7")]
-        internal void AssignGroup7() { AddSelectionToGroup(6); }
-        [BeginAction("assigngroup8")]
-        internal void AssignGroup8() { AddSelectionToGroup(7); }
-        [BeginAction("assigngroup9")]
-        internal void AssignGroup9() { AddSelectionToGroup(8); }
-        [BeginAction("assigngroup10")]
-        internal void AssignGroup10() { AddSelectionToGroup(9); }
+		// Assign actions
+		[BeginAction("assigngroup1")]
+		internal void AssignGroup1() { AddSelectionToGroup(0); }
+		[BeginAction("assigngroup2")]
+		internal void AssignGroup2() { AddSelectionToGroup(1); }
+		[BeginAction("assigngroup3")]
+		internal void AssignGroup3() { AddSelectionToGroup(2); }
+		[BeginAction("assigngroup4")]
+		internal void AssignGroup4() { AddSelectionToGroup(3); }
+		[BeginAction("assigngroup5")]
+		internal void AssignGroup5() { AddSelectionToGroup(4); }
+		[BeginAction("assigngroup6")]
+		internal void AssignGroup6() { AddSelectionToGroup(5); }
+		[BeginAction("assigngroup7")]
+		internal void AssignGroup7() { AddSelectionToGroup(6); }
+		[BeginAction("assigngroup8")]
+		internal void AssignGroup8() { AddSelectionToGroup(7); }
+		[BeginAction("assigngroup9")]
+		internal void AssignGroup9() { AddSelectionToGroup(8); }
+		[BeginAction("assigngroup10")]
+		internal void AssignGroup10() { AddSelectionToGroup(9); }
 
 		//mxd. Clear actions
 		[BeginAction("cleargroup1")]
@@ -1279,127 +1279,127 @@ namespace CodeImp.DoomBuilder {
 		[BeginAction("cleargroup10")]
 		internal void ClearGroup10() { ClearGroup(9); }
 
-        #endregion
+		#endregion
 
-        #region ================== Script Editing
+		#region ================== Script Editing
 
-        // Show the script editor
-        [BeginAction("openscripteditor")]
-        internal void ShowScriptEditor() {
-            Cursor.Current = Cursors.WaitCursor;
+		// Show the script editor
+		[BeginAction("openscripteditor")]
+		internal void ShowScriptEditor() {
+			Cursor.Current = Cursors.WaitCursor;
 
-            if (scriptwindow == null) {
-                // Load the window
-                scriptwindow = new ScriptEditorForm();
-            }
+			if (scriptwindow == null) {
+				// Load the window
+				scriptwindow = new ScriptEditorForm();
+			}
 
-            // Window not yet visible?
-            if (!scriptwindow.Visible) {
-                // Show the window
-                if (General.Settings.ScriptOnTop) {
-                    if (scriptwindow.Visible && (scriptwindow.Owner == null)) scriptwindow.Hide();
-                    scriptwindow.Show(General.MainWindow);
-                }
-                else {
-                    if (scriptwindow.Visible && (scriptwindow.Owner != null)) scriptwindow.Hide();
-                    scriptwindow.Show();
-                }
-            }
-            scriptwindow.Activate();
-            scriptwindow.Focus();
-            Cursor.Current = Cursors.Default;
-        }
+			// Window not yet visible?
+			if (!scriptwindow.Visible) {
+				// Show the window
+				if (General.Settings.ScriptOnTop) {
+					if (scriptwindow.Visible && (scriptwindow.Owner == null)) scriptwindow.Hide();
+					scriptwindow.Show(General.MainWindow);
+				}
+				else {
+					if (scriptwindow.Visible && (scriptwindow.Owner != null)) scriptwindow.Hide();
+					scriptwindow.Show();
+				}
+			}
+			scriptwindow.Activate();
+			scriptwindow.Focus();
+			Cursor.Current = Cursors.Default;
+		}
 
-        // This asks the user to save changes in script files
-        // Returns false when cancelled by the user
-        internal bool AskSaveScriptChanges() {
-            // Window open?
-            if (scriptwindow != null) {
-                // Ask to save changes
-                // This also saves implicitly
-                return scriptwindow.AskSaveAll();
-            }
+		// This asks the user to save changes in script files
+		// Returns false when cancelled by the user
+		internal bool AskSaveScriptChanges() {
+			// Window open?
+			if (scriptwindow != null) {
+				// Ask to save changes
+				// This also saves implicitly
+				return scriptwindow.AskSaveAll();
+			}
 
 			// No problems
 			return true;
-        }
+		}
 
-        // This applies the changed status for internal scripts
-        internal void ApplyScriptChanged() {
-            // Remember if lumps are changed
-            scriptschanged |= scriptwindow.Editor.CheckImplicitChanges();
-        }
+		// This applies the changed status for internal scripts
+		internal void ApplyScriptChanged() {
+			// Remember if lumps are changed
+			scriptschanged |= scriptwindow.Editor.CheckImplicitChanges();
+		}
 
-        // Close the script editor
-        // Specify true for the closing parameter when
-        // the window is already in the closing process
-        internal void CloseScriptEditor(bool closing) {
-            if (scriptwindow != null) {
-                if (!scriptwindow.IsDisposed) {
-                    // Remember what files were open
-                    scriptwindow.Editor.WriteOpenFilesToConfiguration();
+		// Close the script editor
+		// Specify true for the closing parameter when
+		// the window is already in the closing process
+		internal void CloseScriptEditor(bool closing) {
+			if (scriptwindow != null) {
+				if (!scriptwindow.IsDisposed) {
+					// Remember what files were open
+					scriptwindow.Editor.WriteOpenFilesToConfiguration();
 
-                    // Close now
-                    if (!closing) scriptwindow.Close();
-                }
+					// Close now
+					if (!closing) scriptwindow.Close();
+				}
 
-                // Done
-                scriptwindow = null;
-            }
-        }
+				// Done
+				scriptwindow = null;
+			}
+		}
 
-        // This checks if the scripts are changed
-        internal bool CheckScriptChanged() {
-            if (scriptwindow != null) {
-                // Check if scripts are changed			
-                return scriptschanged || scriptwindow.Editor.CheckImplicitChanges();
-            }
+		// This checks if the scripts are changed
+		internal bool CheckScriptChanged() {
+			if (scriptwindow != null) {
+				// Check if scripts are changed			
+				return scriptschanged || scriptwindow.Editor.CheckImplicitChanges();
+			}
 	
-            return scriptschanged;
-        }
+			return scriptschanged;
+		}
 
-        // This compiles all lumps that require compiling and stores the results
-        // Returns true when our code worked properly (even when the compiler returned errors)
-        private bool CompileScriptLumps() {
-            bool success = true;
-            errors.Clear();
+		// This compiles all lumps that require compiling and stores the results
+		// Returns true when our code worked properly (even when the compiler returned errors)
+		private bool CompileScriptLumps() {
+			bool success = true;
+			errors.Clear();
 
-            // Go for all the map lumps
-            foreach (MapLumpInfo lumpinfo in config.MapLumps.Values) {
-                // Is this a script lump?
-                if (lumpinfo.script != null) {
-                    // Compile it now
-                    success &= CompileLump(lumpinfo.name, false);
-                }
-            }
+			// Go for all the map lumps
+			foreach (MapLumpInfo lumpinfo in config.MapLumps.Values) {
+				// Is this a script lump?
+				if (lumpinfo.script != null) {
+					// Compile it now
+					success &= CompileLump(lumpinfo.name, false);
+				}
+			}
 
-            return success;
-        }
+			return success;
+		}
 
-        // This compiles a script lump and returns any errors that may have occurred
-        // Returns true when our code worked properly (even when the compiler returned errors)
-        internal bool CompileLump(string lumpname, bool clearerrors) {
-            string inputfile, outputfile, sourcefile;
-            Compiler compiler;
-            byte[] filedata;
-            string reallumpname = lumpname;
+		// This compiles a script lump and returns any errors that may have occurred
+		// Returns true when our code worked properly (even when the compiler returned errors)
+		internal bool CompileLump(string lumpname, bool clearerrors) {
+			string inputfile, outputfile, sourcefile;
+			Compiler compiler;
+			byte[] filedata;
+			string reallumpname = lumpname;
 
 			//mxd. Does lump require compiling?
 			ScriptConfiguration scriptconfig = config.MapLumps[lumpname].script;
 			if (scriptconfig.Compiler == null) return true;
 
-            // Find the lump
-            if (lumpname == CONFIG_MAP_HEADER) reallumpname = TEMP_MAP_HEADER;
-            Lump lump = tempwad.FindLump(reallumpname);
-            if (lump == null) throw new Exception("No such lump in temporary wad file '" + reallumpname + "'.");
+			// Find the lump
+			if (lumpname == CONFIG_MAP_HEADER) reallumpname = TEMP_MAP_HEADER;
+			Lump lump = tempwad.FindLump(reallumpname);
+			if (lump == null) throw new Exception("No such lump in temporary wad file '" + reallumpname + "'.");
 
-            // Determine source file
-            sourcefile = (filepathname.Length > 0 ? filepathname : tempwad.Filename);
+			// Determine source file
+			sourcefile = (filepathname.Length > 0 ? filepathname : tempwad.Filename);
 
-            // New list of errors
-            if (clearerrors) errors.Clear();
+			// New list of errors
+			if (clearerrors) errors.Clear();
 
-            // Determine the script configuration to use
+			// Determine the script configuration to use
 			try {
 				// Initialize compiler
 				compiler = scriptconfig.Compiler.Create();
@@ -1478,28 +1478,28 @@ namespace CodeImp.DoomBuilder {
 			compiler.Dispose();
 			errors = null;
 			return false;
-        }
+		}
 
-        // This clears all compiler errors
-        internal void ClearCompilerErrors() {
-            errors.Clear();
-        }
+		// This clears all compiler errors
+		internal void ClearCompilerErrors() {
+			errors.Clear();
+		}
 
-        //mxd
-        internal void UpdateScriptNames() {
-            namedScripts = new List<ScriptItem>();
-            numberedScripts = new List<ScriptItem>();
+		//mxd
+		internal void UpdateScriptNames() {
+			namedScripts = new List<ScriptItem>();
+			numberedScripts = new List<ScriptItem>();
 
-            // Load the script lumps
-            foreach (MapLumpInfo maplumpinfo in config.MapLumps.Values) {
-                // Is this a script lump?
-                if (maplumpinfo.script != null && maplumpinfo.name == "SCRIPTS") {
-                    // Load the lump data
-                    MemoryStream stream = GetLumpData(maplumpinfo.name);
-                    if (stream != null) {
-                        AcsParserSE parser = new AcsParserSE();
-                        parser.OnInclude = updateScriptsFromLocation;
-                        parser.Parse(stream, "SCRIPTS", true);
+			// Load the script lumps
+			foreach (MapLumpInfo maplumpinfo in config.MapLumps.Values) {
+				// Is this a script lump?
+				if (maplumpinfo.script != null && maplumpinfo.name == "SCRIPTS") {
+					// Load the lump data
+					MemoryStream stream = GetLumpData(maplumpinfo.name);
+					if (stream != null) {
+						AcsParserSE parser = new AcsParserSE();
+						parser.OnInclude = updateScriptsFromLocation;
+						parser.Parse(stream, "SCRIPTS", true);
 
 						if(parser.NamedScripts.Count > 0 && (FormatInterface is DoomMapSetIO || FormatInterface is HexenMapSetIO)) {
 							List<string> names = new List<string>();
@@ -1510,200 +1510,200 @@ namespace CodeImp.DoomBuilder {
 							namedScripts.AddRange(parser.NamedScripts);
 						}
 
-                        numberedScripts.AddRange(parser.NumberedScripts);
-                        scriptincludes.AddRange(parser.Includes);
-                    }
-                }
-            }
+						numberedScripts.AddRange(parser.NumberedScripts);
+						scriptincludes.AddRange(parser.Includes);
+					}
+				}
+			}
 
-            //sort
-            namedScripts.Sort(ScriptItem.SortByName);
-            numberedScripts.Sort(ScriptItem.SortByIndex);
-        }
+			//sort
+			namedScripts.Sort(ScriptItem.SortByName);
+			numberedScripts.Sort(ScriptItem.SortByIndex);
+		}
 
-        //mxd
-        private void updateScriptsFromLocation(AcsParserSE parser, string path) {
-            MemoryStream s = General.Map.Data.LoadFile(path);
-            if(s != null && s.Length > 0) parser.Parse(s, path, true, true);
-        }
+		//mxd
+		private void updateScriptsFromLocation(AcsParserSE parser, string path) {
+			MemoryStream s = General.Map.Data.LoadFile(path);
+			if(s != null && s.Length > 0) parser.Parse(s, path, true, true);
+		}
 
-        #endregion
+		#endregion
 
-        #region ================== Methods
+		#region ================== Methods
 
-        // This updates everything after the configuration or settings have been changed
-        internal void UpdateConfiguration() {
-            // Update map
-            map.UpdateConfiguration();
+		// This updates everything after the configuration or settings have been changed
+		internal void UpdateConfiguration() {
+			// Update map
+			map.UpdateConfiguration();
 
-            // Update settings
-            renderer3d.CreateProjection();
+			// Update settings
+			renderer3d.CreateProjection();
 
-            // Things filters
-            General.MainWindow.UpdateThingsFilters();
-        }
+			// Things filters
+			General.MainWindow.UpdateThingsFilters();
+		}
 
-        // This changes thing filter
-        public void ChangeThingFilter(ThingsFilter newfilter) {
-            // We have a special filter for null
-            if (newfilter == null) newfilter = new NullThingsFilter();
+		// This changes thing filter
+		public void ChangeThingFilter(ThingsFilter newfilter) {
+			// We have a special filter for null
+			if (newfilter == null) newfilter = new NullThingsFilter();
 
-            // Deactivate old filter
-            if (thingsfilter != null) thingsfilter.Deactivate();
+			// Deactivate old filter
+			if (thingsfilter != null) thingsfilter.Deactivate();
 
-            // Change
-            thingsfilter = newfilter;
+			// Change
+			thingsfilter = newfilter;
 
-            // Activate filter
-            thingsfilter.Activate();
+			// Activate filter
+			thingsfilter.Activate();
 
-            // Update interface
-            General.MainWindow.ReflectThingsFilter();
+			// Update interface
+			General.MainWindow.ReflectThingsFilter();
 
-            // Redraw
-            General.MainWindow.RedrawDisplay();
-        }
+			// Redraw
+			General.MainWindow.RedrawDisplay();
+		}
 
-        // This sets a new mapset for editing
-        internal void ChangeMapSet(MapSet newmap) {
-            // Let the plugin and editing mode know
-            General.Plugins.OnMapSetChangeBegin();
-            if (General.Editing.Mode != null) General.Editing.Mode.OnMapSetChangeBegin();
-            this.visualcamera.Sector = null;
+		// This sets a new mapset for editing
+		internal void ChangeMapSet(MapSet newmap) {
+			// Let the plugin and editing mode know
+			General.Plugins.OnMapSetChangeBegin();
+			if (General.Editing.Mode != null) General.Editing.Mode.OnMapSetChangeBegin();
+			this.visualcamera.Sector = null;
 
-            // Can't have a selection in an old map set
-            map.ClearAllSelected();
+			// Can't have a selection in an old map set
+			map.ClearAllSelected();
 
-            // Reset surfaces
-            renderer2d.Surfaces.Reset();
+			// Reset surfaces
+			renderer2d.Surfaces.Reset();
 
-            // Apply
-            map.Dispose();
-            map = newmap;
-            map.UpdateConfiguration();
-            map.SnapAllToAccuracy();
-            map.Update();
-            thingsfilter.Update();
+			// Apply
+			map.Dispose();
+			map = newmap;
+			map.UpdateConfiguration();
+			map.SnapAllToAccuracy();
+			map.Update();
+			thingsfilter.Update();
 
-            // Let the plugin and editing mode know
-            General.Plugins.OnMapSetChangeEnd();
-            if (General.Editing.Mode != null) General.Editing.Mode.OnMapSetChangeEnd();
-        }
+			// Let the plugin and editing mode know
+			General.Plugins.OnMapSetChangeEnd();
+			if (General.Editing.Mode != null) General.Editing.Mode.OnMapSetChangeEnd();
+		}
 
-        // This reloads resources
-        [BeginAction("reloadresources")]
-        internal void DoReloadResource() {
-            // Set this to false so we can see if errors are added
-            General.ErrorLogger.IsErrorAdded = false;
+		// This reloads resources
+		[BeginAction("reloadresources")]
+		internal void DoReloadResource() {
+			// Set this to false so we can see if errors are added
+			General.ErrorLogger.IsErrorAdded = false;
 
-            ReloadResources();
+			ReloadResources();
 
-            if (General.ErrorLogger.IsErrorAdded) {
-                // Show any errors if preferred
-                General.MainWindow.DisplayStatus(StatusType.Warning, "There were errors during resources loading!");
-                if (General.Settings.ShowErrorsWindow) General.MainWindow.ShowErrors();
-            }
-            else
-                General.MainWindow.DisplayReady();
+			if (General.ErrorLogger.IsErrorAdded) {
+				// Show any errors if preferred
+				General.MainWindow.DisplayStatus(StatusType.Warning, "There were errors during resources loading!");
+				if (General.Settings.ShowErrorsWindow) General.MainWindow.ShowErrors();
+			}
+			else
+				General.MainWindow.DisplayReady();
 
-        }
-        internal void ReloadResources() {
-            DataLocation maplocation;
-            StatusInfo oldstatus;
-            Cursor oldcursor;
+		}
+		internal void ReloadResources() {
+			DataLocation maplocation;
+			StatusInfo oldstatus;
+			Cursor oldcursor;
 
-            // Keep old display info
-            oldstatus = General.MainWindow.Status;
-            oldcursor = Cursor.Current;
+			// Keep old display info
+			oldstatus = General.MainWindow.Status;
+			oldcursor = Cursor.Current;
 
-            // Show status
-            General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading data resources...");
-            Cursor.Current = Cursors.WaitCursor;
+			// Show status
+			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading data resources...");
+			Cursor.Current = Cursors.WaitCursor;
 
-            // Clean up
-            data.Dispose();
-            data = null;
-            config = null;
-            configinfo = null;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+			// Clean up
+			data.Dispose();
+			data = null;
+			config = null;
+			configinfo = null;
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
 
-            // Reload game configuration
-            General.WriteLogLine("Reloading game configuration...");
-            configinfo = General.GetConfigurationInfo(options.ConfigFile);
-            config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
-            General.Editing.UpdateCurrentEditModes();
+			// Reload game configuration
+			General.WriteLogLine("Reloading game configuration...");
+			configinfo = General.GetConfigurationInfo(options.ConfigFile);
+			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
+			General.Editing.UpdateCurrentEditModes();
 
-            // Reload data resources
-            General.WriteLogLine("Reloading data resources...");
-            data = new DataManager();
-            if (!string.IsNullOrEmpty(filepathname)) {
-                maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false, false);
-                data.Load(configinfo.Resources, options.Resources, maplocation);
-            }
-            else {
-                data.Load(configinfo.Resources, options.Resources);
-            }
+			// Reload data resources
+			General.WriteLogLine("Reloading data resources...");
+			data = new DataManager();
+			if (!string.IsNullOrEmpty(filepathname)) {
+				maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false, false);
+				data.Load(configinfo.Resources, options.Resources, maplocation);
+			}
+			else {
+				data.Load(configinfo.Resources, options.Resources);
+			}
 
-            // Apply new settings to map elements
-            map.UpdateConfiguration();
+			// Apply new settings to map elements
+			map.UpdateConfiguration();
 
-            // Re-link the background image
-            grid.LinkBackground();
+			// Re-link the background image
+			grid.LinkBackground();
 
-            // Inform all plugins that the resources are reloaded
-            General.Plugins.ReloadResources();
+			// Inform all plugins that the resources are reloaded
+			General.Plugins.ReloadResources();
 
-            // Inform editing mode that the resources are reloaded
-            if (General.Editing.Mode != null) General.Editing.Mode.OnReloadResources();
+			// Inform editing mode that the resources are reloaded
+			if (General.Editing.Mode != null) General.Editing.Mode.OnReloadResources();
 
-            // Reset status
-            General.MainWindow.DisplayStatus(oldstatus);
-            Cursor.Current = oldcursor;
+			// Reset status
+			General.MainWindow.DisplayStatus(oldstatus);
+			Cursor.Current = oldcursor;
 
-            //mxd
-            UpdateScriptNames();
-        }
+			//mxd
+			UpdateScriptNames();
+		}
 
-        // Game Configuration action
-        [BeginAction("mapoptions")]
-        internal void ShowMapOptions() {
-            // Cancel volatile mode, if any
-            General.Editing.DisengageVolatileMode();
+		// Game Configuration action
+		[BeginAction("mapoptions")]
+		internal void ShowMapOptions() {
+			// Cancel volatile mode, if any
+			General.Editing.DisengageVolatileMode();
 
-            // Show map options dialog
-            MapOptionsForm optionsform = new MapOptionsForm(options, false);
-            if (optionsform.ShowDialog(General.MainWindow) == DialogResult.OK) {
-                // Update interface
-                General.MainWindow.UpdateInterface();
+			// Show map options dialog
+			MapOptionsForm optionsform = new MapOptionsForm(options, false);
+			if (optionsform.ShowDialog(General.MainWindow) == DialogResult.OK) {
+				// Update interface
+				General.MainWindow.UpdateInterface();
 
-                // Stop data manager
-                data.Dispose();
+				// Stop data manager
+				data.Dispose();
 
-                // Apply new options
-                this.options = optionsform.Options;
+				// Apply new options
+				this.options = optionsform.Options;
 
-                // Load new game configuration
-                General.WriteLogLine("Loading game configuration...");
-                configinfo = General.GetConfigurationInfo(options.ConfigFile);
+				// Load new game configuration
+				General.WriteLogLine("Loading game configuration...");
+				configinfo = General.GetConfigurationInfo(options.ConfigFile);
 				string oldFormatInterface = config.FormatInterface; //mxd
-                config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
-                configinfo.ApplyDefaults(config);
-                General.Editing.UpdateCurrentEditModes();
+				config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
+				configinfo.ApplyDefaults(config);
+				General.Editing.UpdateCurrentEditModes();
 
-                // Setup new map format IO
-                General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
-                io = MapSetIO.Create(config.FormatInterface, tempwad, this);
+				// Setup new map format IO
+				General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
+				io = MapSetIO.Create(config.FormatInterface, tempwad, this);
 
 				//mxd. Some lumps may've become unneeded during map format conversion. 
 				if(oldFormatInterface != config.FormatInterface)
 					removeUnneededLumps(tempwad, TEMP_MAP_HEADER);
 
-                // Create required lumps if they don't exist yet
-                CreateRequiredLumps(tempwad, TEMP_MAP_HEADER);
+				// Create required lumps if they don't exist yet
+				CreateRequiredLumps(tempwad, TEMP_MAP_HEADER);
 
-                // Let the plugins know
-                General.Plugins.MapReconfigure();
+				// Let the plugins know
+				General.Plugins.MapReconfigure();
 
 				//mxd. Update linedef color presets and flags if required
 				if(oldFormatInterface == "UniversalMapSetIO" && config.FormatInterface != "UniversalMapSetIO") {
@@ -1720,38 +1720,38 @@ namespace CodeImp.DoomBuilder {
 				}
 				General.Map.Map.UpdateCustomLinedefColors();
 
-                // Update interface
-                General.MainWindow.SetupInterface();
-                General.MainWindow.UpdateThingsFilters();
-                General.MainWindow.UpdateInterface();
+				// Update interface
+				General.MainWindow.SetupInterface();
+				General.MainWindow.UpdateThingsFilters();
+				General.MainWindow.UpdateInterface();
 
-                // Reload resources
-                ReloadResources();
+				// Reload resources
+				ReloadResources();
 				UpdateScriptNames(); //mxd
 
-                // Done
-                General.MainWindow.DisplayReady();
-            }
+				// Done
+				General.MainWindow.DisplayReady();
+			}
 
-            // Done
-            optionsform.Dispose();
-        }
+			// Done
+			optionsform.Dispose();
+		}
 
-        // This shows the things filters setup
-        [BeginAction("thingsfilterssetup")]
-        internal void ShowThingsFiltersSetup() {
-            // Show things filter dialog
-            ThingsFiltersForm f = new ThingsFiltersForm();
-            f.ShowDialog(General.MainWindow);
-            f.Dispose();
-            General.MainWindow.UpdateThingsFilters();
-        }
+		// This shows the things filters setup
+		[BeginAction("thingsfilterssetup")]
+		internal void ShowThingsFiltersSetup() {
+			// Show things filter dialog
+			ThingsFiltersForm f = new ThingsFiltersForm();
+			f.ShowDialog(General.MainWindow);
+			f.Dispose();
+			General.MainWindow.UpdateThingsFilters();
+		}
 
-        // This returns true is the given type matches
-        public bool IsType(Type t) {
-            return io.GetType().Equals(t);
-        }
+		// This returns true is the given type matches
+		public bool IsType(Type t) {
+			return io.GetType().Equals(t);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

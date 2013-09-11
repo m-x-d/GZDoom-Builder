@@ -68,8 +68,8 @@ namespace CodeImp.DoomBuilder
 				warningadded = false;
 				errors.Clear();
 
-                //mxd
-                General.MainWindow.SetWarningsCount(0, false);
+				//mxd
+				General.MainWindow.SetWarningsCount(0, false);
 			}
 		}
 		
@@ -95,8 +95,8 @@ namespace CodeImp.DoomBuilder
 				}
 				changed = true;
 				General.WriteLogLine(prefix + message);
-                
-                //mxd
+				
+				//mxd
 				General.MainWindow.SetWarningsCount(errors.Count, erroradded);
 			}
 		}

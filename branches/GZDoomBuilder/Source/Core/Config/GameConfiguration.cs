@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.Config
 		private Dictionary<string, bool> makedoorflags;
 		private bool linetagindicatesectors;
 		private string decorategames;
-        private string skyflatname;
+		private string skyflatname;
 		private int maxtexturenamelength;
 		private int leftboundary;
 		private int rightboundary;
@@ -134,8 +134,8 @@ namespace CodeImp.DoomBuilder.Config
 		private List<DefinedTextureSet> texturesets;
 		private List<ThingsFilter> thingfilters;
 
-        //mxd. Holds base game type (doom, heretic, hexen or strife)
-        private GameType gameType;
+		//mxd. Holds base game type (doom, heretic, hexen or strife)
+		private GameType gameType;
 		
 		#endregion
 
@@ -170,7 +170,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int[] MakeDoorArgs { get { return makedoorargs; } }
 		public bool LineTagIndicatesSectors { get { return linetagindicatesectors ; } }
 		public string DecorateGames { get { return decorategames; } }
-        public string SkyFlatName { get { return skyflatname; } }
+		public string SkyFlatName { get { return skyflatname; } }
 		public int MaxTextureNamelength { get { return maxtexturenamelength; } }
 		public int LeftBoundary { get { return leftboundary; } }
 		public int RightBoundary { get { return rightboundary; } }
@@ -232,8 +232,8 @@ namespace CodeImp.DoomBuilder.Config
 		internal List<DefinedTextureSet> TextureSets { get { return texturesets; } }
 		public List<ThingsFilter> ThingsFilters { get { return thingfilters; } }
 
-        //mxd
-        public GameType GameType { get { return gameType; } }
+		//mxd
+		public GameType GameType { get { return gameType; } }
 		
 		#endregion
 
@@ -277,9 +277,9 @@ namespace CodeImp.DoomBuilder.Config
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
 
-            //mxd
-            int gt = (cfg.ReadSetting("basegame", (int)GameType.UNKNOWN));
-            gameType = ( (gt > -1 && gt < Gldefs.GLDEFS_LUMPS_PER_GAME.Length) ? (GameType)gt : GameType.UNKNOWN);
+			//mxd
+			int gt = (cfg.ReadSetting("basegame", (int)GameType.UNKNOWN));
+			gameType = ( (gt > -1 && gt < Gldefs.GLDEFS_LUMPS_PER_GAME.Length) ? (GameType)gt : GameType.UNKNOWN);
 
 			enginename = cfg.ReadSetting("engine", "");
 			defaultsavecompiler = cfg.ReadSetting("defaultsavecompiler", "");
@@ -300,7 +300,7 @@ namespace CodeImp.DoomBuilder.Config
 			makedooractivate = cfg.ReadSetting("makedooractivate", 0);
 			linetagindicatesectors = cfg.ReadSetting("linetagindicatesectors", false);
 			decorategames = cfg.ReadSetting("decorategames", "");
-            skyflatname = cfg.ReadSetting("skyflatname", "F_SKY1");
+			skyflatname = cfg.ReadSetting("skyflatname", "F_SKY1");
 			maxtexturenamelength = cfg.ReadSetting("maxtexturenamelength", 8);
 			leftboundary = cfg.ReadSetting("leftboundary", -32768);
 			rightboundary = cfg.ReadSetting("rightboundary", 32767);

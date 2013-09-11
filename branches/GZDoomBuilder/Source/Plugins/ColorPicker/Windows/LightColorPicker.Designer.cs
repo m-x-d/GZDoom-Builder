@@ -1,28 +1,28 @@
 ﻿namespace CodeImp.DoomBuilder.ColorPicker.Windows {
-    partial class LightColorPicker {
-        /// <summary>
-        /// Требуется переменная конструктора.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class LightColorPicker {
+		/// <summary>
+		/// Требуется переменная конструктора.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Освободить все используемые ресурсы.
-        /// </summary>
-        /// <param name="disposing">истинно, если управляемый ресурс должен быть удален; иначе ложно.</param>
-        protected override void Dispose(bool disposing) {
-            if (disposing && (components != null)) {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary>
+		/// Освободить все используемые ресурсы.
+		/// </summary>
+		/// <param name="disposing">истинно, если управляемый ресурс должен быть удален; иначе ложно.</param>
+		protected override void Dispose(bool disposing) {
+			if (disposing && (components != null)) {
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        #region Код, автоматически созданный конструктором форм Windows
+		#region Код, автоматически созданный конструктором форм Windows
 
-        /// <summary>
-        /// Обязательный метод для поддержки конструктора - не изменяйте
-        /// содержимое данного метода при помощи редактора кода.
-        /// </summary>
-        private void InitializeComponent() {
+		/// <summary>
+		/// Обязательный метод для поддержки конструктора - не изменяйте
+		/// содержимое данного метода при помощи редактора кода.
+		/// </summary>
+		private void InitializeComponent() {
 			this.colorPickerControl1 = new CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerControl();
 			this.cbRelativeMode = new System.Windows.Forms.CheckBox();
 			this.colorPickerSlider1 = new CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerSlider();
@@ -97,15 +97,15 @@
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerControl colorPickerControl1;
-        private System.Windows.Forms.CheckBox cbRelativeMode;
-        private CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerSlider colorPickerSlider1;
-        private CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerSlider colorPickerSlider2;
-        private CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerSlider colorPickerSlider3;
+		private CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerControl colorPickerControl1;
+		private System.Windows.Forms.CheckBox cbRelativeMode;
+		private CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerSlider colorPickerSlider1;
+		private CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerSlider colorPickerSlider2;
+		private CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerSlider colorPickerSlider3;
 
-    }
+	}
 }

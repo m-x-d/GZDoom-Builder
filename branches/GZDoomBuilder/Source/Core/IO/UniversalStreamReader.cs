@@ -461,31 +461,31 @@ namespace CodeImp.DoomBuilder.IO
 					int type = (int)UniversalType.Integer;
 
 					if(setknowncustomtypes) { // Try to find the type from configuration
-                        type = General.Map.Options.GetUniversalFieldType(elementname, e.Key, type);
+						type = General.Map.Options.GetUniversalFieldType(elementname, e.Key, type);
 
-                        //mxd. Check type
-                        object value = e.Value;
+						//mxd. Check type
+						object value = e.Value;
 
-                        // Let's be kind and cast any int to a float if needed
-                        if (type == (int)UniversalType.Float && e.Value.GetType() == typeof(int)) {
-                            value = (float)(int)e.Value;
-                        } else if (!e.IsValidType(e.Value.GetType())) {
-                            General.ErrorLogger.Add(ErrorType.Warning, element + ": the value of entry '" + e.Key + "' is of incompatible type (expected " + e.GetType().Name + ", but got " + e.Value.GetType().Name + "). If you save the map, this value will be ignored.");
-                            continue;
-                        }
+						// Let's be kind and cast any int to a float if needed
+						if (type == (int)UniversalType.Float && e.Value.GetType() == typeof(int)) {
+							value = (float)(int)e.Value;
+						} else if (!e.IsValidType(e.Value.GetType())) {
+							General.ErrorLogger.Add(ErrorType.Warning, element + ": the value of entry '" + e.Key + "' is of incompatible type (expected " + e.GetType().Name + ", but got " + e.Value.GetType().Name + "). If you save the map, this value will be ignored.");
+							continue;
+						}
 
-                        // Make custom field
-                        element.Fields[e.Key] = new UniValue(type, value);
-                    } else {
-                        // Determine default type
-                        if (e.Value.GetType() == typeof(int)) type = (int)UniversalType.Integer;
-                        else if (e.Value.GetType() == typeof(float)) type = (int)UniversalType.Float;
-                        else if (e.Value.GetType() == typeof(bool)) type = (int)UniversalType.Boolean;
-                        else if (e.Value.GetType() == typeof(string)) type = (int)UniversalType.String;
+						// Make custom field
+						element.Fields[e.Key] = new UniValue(type, value);
+					} else {
+						// Determine default type
+						if (e.Value.GetType() == typeof(int)) type = (int)UniversalType.Integer;
+						else if (e.Value.GetType() == typeof(float)) type = (int)UniversalType.Float;
+						else if (e.Value.GetType() == typeof(bool)) type = (int)UniversalType.Boolean;
+						else if (e.Value.GetType() == typeof(string)) type = (int)UniversalType.String;
 
-                        // Make custom field
-                        element.Fields[e.Key] = new UniValue(type, e.Value);
-                    }
+						// Make custom field
+						element.Fields[e.Key] = new UniValue(type, e.Value);
+					}
 				}
 			}
 		}

@@ -40,9 +40,9 @@ namespace CodeImp.DoomBuilder.Controls
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.functionbar.FormattingEnabled = true;
 			this.functionbar.Items.AddRange(new object[] {
-            "Function1",
-            "Function2",
-            "Function3"});
+			"Function1",
+			"Function2",
+			"Function3"});
 			this.functionbar.Location = new System.Drawing.Point(0, 0);
 			this.functionbar.Name = "functionbar";
 			this.functionbar.Size = new System.Drawing.Size(474, 21);

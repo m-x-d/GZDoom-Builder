@@ -319,7 +319,7 @@ namespace CodeImp.DoomBuilder.Map
 			// Check if the line or sectors have no action or tags because
 			// if they do, any texture on this side could be needed
 			if(((linedef.Tag <= 0) && (linedef.Action == 0) && (sector.Tag <= 0) &&
-			    ((Other == null) || (Other.sector.Tag <= 0))) ||
+				((Other == null) || (Other.sector.Tag <= 0))) ||
 			   force)
 			{
 				if(!HighRequired())

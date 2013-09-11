@@ -84,15 +84,15 @@ namespace CodeImp.DoomBuilder.Compilers
 			processinfo = new ProcessStartInfo();
 			processinfo.Arguments = args;
 			processinfo.FileName = Path.Combine(this.tempdir.FullName, info.ProgramFile);
-            processinfo.CreateNoWindow = true; //mxd. was false
+			processinfo.CreateNoWindow = true; //mxd. was false
 			processinfo.ErrorDialog = false;
 			processinfo.UseShellExecute = false; //mxd. was true
 			processinfo.WindowStyle = ProcessWindowStyle.Hidden;
 			processinfo.WorkingDirectory = this.workingdir;
 
-            //mxd
-            processinfo.RedirectStandardError = true;
-            processinfo.RedirectStandardOutput = true;
+			//mxd
+			processinfo.RedirectStandardError = true;
+			processinfo.RedirectStandardOutput = true;
 			
 			// Output info
 			General.WriteLogLine("Running compiler...");
@@ -111,35 +111,35 @@ namespace CodeImp.DoomBuilder.Compilers
 				return false;
 			}
 
-            //mxd
-            string outErr = process.StandardError.ReadToEnd();
-            string outMsg = process.StandardOutput.ReadToEnd();
+			//mxd
+			string outErr = process.StandardError.ReadToEnd();
+			string outMsg = process.StandardOutput.ReadToEnd();
 			
 			// Wait for compiler to complete
 			process.WaitForExit();
 
-            //mxd
-            bool errorsInNormalOurput = (outMsg.Length > 0 && outMsg.ToLowerInvariant().IndexOf("error") != -1);
-            //zdbsp actually writes building process here, not error info
-            bool errorsInErrorOutput = (outErr.Length > 0 && outErr.ToLowerInvariant().IndexOf("error") != -1);
+			//mxd
+			bool errorsInNormalOurput = (outMsg.Length > 0 && outMsg.ToLowerInvariant().IndexOf("error") != -1);
+			//zdbsp actually writes building process here, not error info
+			bool errorsInErrorOutput = (outErr.Length > 0 && outErr.ToLowerInvariant().IndexOf("error") != -1);
 
 			deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
-            General.WriteLogLine("Compiler process has finished " + (errorsInNormalOurput || errorsInErrorOutput ? "with errors." : ".")); //mxd
+			General.WriteLogLine("Compiler process has finished " + (errorsInNormalOurput || errorsInErrorOutput ? "with errors." : ".")); //mxd
 			General.WriteLogLine("Compile time: " + deltatime.TotalSeconds.ToString("########0.00") + " seconds");
 
-            //mxd
-            if (process.ExitCode > 0 || errorsInNormalOurput || errorsInErrorOutput) {
-                if (errorsInNormalOurput) {
-                    ReportError(new CompilerError(outMsg));
-                    General.WriteLogLine("Normal output: " + outMsg);
-                }
+			//mxd
+			if (process.ExitCode > 0 || errorsInNormalOurput || errorsInErrorOutput) {
+				if (errorsInNormalOurput) {
+					ReportError(new CompilerError(outMsg));
+					General.WriteLogLine("Normal output: " + outMsg);
+				}
 
-                if (errorsInErrorOutput) {
-                    ReportError(new CompilerError(outErr));
-                    General.WriteLogLine("Error output: " + outErr);
-                }
-                return false;
-            }
+				if (errorsInErrorOutput) {
+					ReportError(new CompilerError(outErr));
+					General.WriteLogLine("Error output: " + outErr);
+				}
+				return false;
+			}
 
 			return true;
 		}

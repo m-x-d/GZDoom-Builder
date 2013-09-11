@@ -50,10 +50,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public VisualMiddle3D(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
-            //mxd
-            geoType = VisualGeometryType.WALL_MIDDLE_3D;
-            
-            // We have no destructor
+			//mxd
+			geoType = VisualGeometryType.WALL_MIDDLE_3D;
+			
+			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 		
@@ -65,11 +65,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sidedef sourceside = extrafloor.Linedef.Front;
 			this.extrafloor = extrafloor;
 
-            //mxd. lightfog flag support
-            bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
-            bool ignoreUDMFLight = (!Sidedef.Fields.GetValue("lightfog", false) || !lightabsolute) && Sector.Sector.Fields.ContainsKey("fadecolor");
-            int lightvalue = ignoreUDMFLight ? 0 : Sidedef.Fields.GetValue("light", 0); //mxd
-            if (ignoreUDMFLight) lightabsolute = false;
+			//mxd. lightfog flag support
+			bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
+			bool ignoreUDMFLight = (!Sidedef.Fields.GetValue("lightfog", false) || !lightabsolute) && Sector.Sector.Fields.ContainsKey("fadecolor");
+			int lightvalue = ignoreUDMFLight ? 0 : Sidedef.Fields.GetValue("light", 0); //mxd
+			if (ignoreUDMFLight) lightabsolute = false;
 
 			Vector2D tscale = new Vector2D(sourceside.Fields.GetValue("scalex_mid", 1.0f),
 										   sourceside.Fields.GetValue("scaley_mid", 1.0f));
@@ -207,7 +207,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Determine initial color
 				int lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
 				//mxd. This calculates light with doom-style wall shading
-                PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
+				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
 				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
 				poly.color = wallcolor.WithAlpha(255).ToInt();
 
@@ -354,10 +354,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return new Point((int)oldx, (int)oldy);
 		}
 
-        //mxd
-        public override Linedef GetControlLinedef() {
-            return extrafloor.Linedef;
-        }
+		//mxd
+		public override Linedef GetControlLinedef() {
+			return extrafloor.Linedef;
+		}
 		
 		#endregion
 	}

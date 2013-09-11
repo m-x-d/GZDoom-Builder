@@ -38,8 +38,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 
 		protected TextLabel label;
-        protected Vector2D start;
-        protected Vector2D end;
+		protected Vector2D start;
+		protected Vector2D end;
 		private bool showAngle; //mxd
 		
 		#endregion
@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This updates the text
-        protected virtual void Update()
+		protected virtual void Update()
 		{
 			Vector2D delta = end - start;
 			float length = delta.GetLength();

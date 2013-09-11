@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private int selectedeffect;
 		private ComboBox[] options;
 		private Label[] optionlbls;
-        private ListViewItem[] allItems; //mxd
+		private ListViewItem[] allItems; //mxd
 		
 		// Properties
 		public int SelectedEffect { get { return selectedeffect; } }
@@ -55,9 +55,9 @@ namespace CodeImp.DoomBuilder.Windows
 									   option5label, option6label, option7label };
 			
 			// Go for all predefined effects
-            selected = createEffects(effect); //mxd
-            allItems = new ListViewItem[effects.Items.Count]; //mxd
-            effects.Items.CopyTo(allItems, 0); //mxd
+			selected = createEffects(effect); //mxd
+			allItems = new ListViewItem[effects.Items.Count]; //mxd
+			effects.Items.CopyTo(allItems, 0); //mxd
 			
 			// Using generalized effects?
 			if(General.Map.Config.GeneralizedEffects)
@@ -117,40 +117,40 @@ namespace CodeImp.DoomBuilder.Windows
 			return effect;
 		}
 
-        //mxd
-        private bool createEffects(int effect) {
-            bool selected = false;
-            ListViewItem n;
+		//mxd
+		private bool createEffects(int effect) {
+			bool selected = false;
+			ListViewItem n;
 
-            foreach (SectorEffectInfo si in General.Map.Config.SortedSectorEffects) {
-                // Create effect
-                n = effects.Items.Add(si.Index.ToString());
-                n.SubItems.Add(si.Title);
-                n.Tag = si;
-                if (si.Index == effect) {
-                    selected = true;
-                    n.Selected = true;
-                }
-            }
-            return selected;
-        }
+			foreach (SectorEffectInfo si in General.Map.Config.SortedSectorEffects) {
+				// Create effect
+				n = effects.Items.Add(si.Index.ToString());
+				n.SubItems.Add(si.Title);
+				n.Tag = si;
+				if (si.Index == effect) {
+					selected = true;
+					n.Selected = true;
+				}
+			}
+			return selected;
+		}
 
-        //mxd
-        private void filterEffects(string p) {
-            List<ListViewItem> filteredItems = new List<ListViewItem>();
+		//mxd
+		private void filterEffects(string p) {
+			List<ListViewItem> filteredItems = new List<ListViewItem>();
 
-            foreach (ListViewItem i in allItems) {
-                SectorEffectInfo si = i.Tag as SectorEffectInfo;
+			foreach (ListViewItem i in allItems) {
+				SectorEffectInfo si = i.Tag as SectorEffectInfo;
 
-                if (si.Title.ToLowerInvariant().IndexOf(p) != -1)
-                    filteredItems.Add(i);
-            }
+				if (si.Title.ToLowerInvariant().IndexOf(p) != -1)
+					filteredItems.Add(i);
+			}
 
-            effects.BeginUpdate();
-            effects.Items.Clear();
-            effects.Items.AddRange(filteredItems.ToArray());
-            effects.EndUpdate();
-        }
+			effects.BeginUpdate();
+			effects.Items.Clear();
+			effects.Items.AddRange(filteredItems.ToArray());
+			effects.EndUpdate();
+		}
 		
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
@@ -207,19 +207,19 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
-        //mxd
-        private void tbFilter_TextChanged(object sender, EventArgs e) {
-            if (tbFilter.Text.Length > 1) {
-                filterEffects(tbFilter.Text);
-            } else if (String.IsNullOrEmpty(tbFilter.Text.ToLowerInvariant())) {
-                effects.Items.Clear();
-                createEffects(effects.SelectedItems.Count > 0 ? ((SectorEffectInfo)effects.SelectedItems[0].Tag).Index : 0);
-            }
-        }
+		//mxd
+		private void tbFilter_TextChanged(object sender, EventArgs e) {
+			if (tbFilter.Text.Length > 1) {
+				filterEffects(tbFilter.Text);
+			} else if (String.IsNullOrEmpty(tbFilter.Text.ToLowerInvariant())) {
+				effects.Items.Clear();
+				createEffects(effects.SelectedItems.Count > 0 ? ((SectorEffectInfo)effects.SelectedItems[0].Tag).Index : 0);
+			}
+		}
 
-        //mxd
-        private void btnClearFilter_Click(object sender, EventArgs e) {
-            tbFilter.Clear();
-        }
+		//mxd
+		private void btnClearFilter_Click(object sender, EventArgs e) {
+			tbFilter.Clear();
+		}
 	}
 }

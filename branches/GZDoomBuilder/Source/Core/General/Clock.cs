@@ -21,6 +21,6 @@ namespace CodeImp.DoomBuilder
 	public class Clock
 	{
 		// This queries the system for the current time
-        public float CurrentTime { get { return Configuration.Timer.ElapsedMilliseconds; } }
+		public float CurrentTime { get { return Configuration.Timer.ElapsedMilliseconds; } }
 	}
 }

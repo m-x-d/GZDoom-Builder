@@ -4,17 +4,17 @@
 // Vertex input data
 struct VertexData
 {
-    float3 pos		: POSITION;
-    float4 color	: COLOR0;
-    float2 uv		: TEXCOORD0;
+	float3 pos		: POSITION;
+	float4 color	: COLOR0;
+	float2 uv		: TEXCOORD0;
 };
 
 // Pixel input data
 struct PixelData
 {
-    float4 pos		: POSITION;
-    float4 color	: COLOR0;
-    float2 uv		: TEXCOORD0;
+	float4 pos		: POSITION;
+	float4 color	: COLOR0;
+	float2 uv		: TEXCOORD0;
 };
 
 // Render settings
@@ -33,17 +33,17 @@ dword filtersettings;
 // Texture1 input
 texture texture1
 <
-    string UIName = "Texture1";
-    string ResourceType = "2D";
+	string UIName = "Texture1";
+	string ResourceType = "2D";
 >;
 
 // Texture sampler settings
 sampler2D texture1samp = sampler_state
 {
-    Texture = <texture1>;
-    MagFilter = filtersettings;
-    MinFilter = filtersettings;
-    MipFilter = filtersettings;
+	Texture = <texture1>;
+	MagFilter = filtersettings;
+	MinFilter = filtersettings;
+	MipFilter = filtersettings;
 	AddressU = Wrap;
 	AddressV = Wrap;
 	MipMapLodBias = 0.0f;
@@ -52,10 +52,10 @@ sampler2D texture1samp = sampler_state
 // Texture sampler settings
 sampler2D texture1linear = sampler_state
 {
-    Texture = <texture1>;
-    MagFilter = Linear;
-    MinFilter = Linear;
-    MipFilter = Linear;
+	Texture = <texture1>;
+	MagFilter = Linear;
+	MinFilter = Linear;
+	MipFilter = Linear;
 	AddressU = Wrap;
 	AddressV = Wrap;
 	MipMapLodBias = 0.0f;
@@ -124,19 +124,19 @@ technique SM20
 {
 	pass p0
 	{
-	    VertexShader = compile vs_2_0 vs_transform();
-	    PixelShader = compile ps_2_0 ps_fsaa();
+		VertexShader = compile vs_2_0 vs_transform();
+		PixelShader = compile ps_2_0 ps_fsaa();
 	}
 	
 	pass p1
 	{
-	    VertexShader = compile vs_2_0 vs_transform();
-	    PixelShader = compile ps_2_0 ps_normal();
+		VertexShader = compile vs_2_0 vs_transform();
+		PixelShader = compile ps_2_0 ps_normal();
 	}
 	
 	pass p2 //mxd
 	{
-	    VertexShader = compile vs_2_0 vs_transform();
-	    PixelShader = compile ps_2_0 ps_fullbright();
+		VertexShader = compile vs_2_0 vs_transform();
+		PixelShader = compile ps_2_0 ps_fullbright();
 	}
 }

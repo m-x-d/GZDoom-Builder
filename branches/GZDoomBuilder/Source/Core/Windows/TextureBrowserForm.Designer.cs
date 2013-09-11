@@ -139,8 +139,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private CodeImp.DoomBuilder.Controls.ImageBrowserControl browser;
 		private System.Windows.Forms.Button cancel;
-        private System.Windows.Forms.Button apply;
-        private System.Windows.Forms.ImageList smallimages;
-        private System.Windows.Forms.TreeView tvTextureSets;
+		private System.Windows.Forms.Button apply;
+		private System.Windows.Forms.ImageList smallimages;
+		private System.Windows.Forms.TreeView tvTextureSets;
 	}
 }

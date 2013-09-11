@@ -270,15 +270,15 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 
 		private System.Windows.Forms.Button close;
-        private System.Windows.Forms.LinkLabel builderlink;
+		private System.Windows.Forms.LinkLabel builderlink;
 		private System.Windows.Forms.PictureBox pictureBox2;
 		private System.Windows.Forms.LinkLabel codeimplink;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.LinkLabel gzdbLink;
-        private System.Windows.Forms.Button copyversion;
-        private System.Windows.Forms.Label version;
-        private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.PictureBox pictureBox4;
+		private System.Windows.Forms.LinkLabel gzdbLink;
+		private System.Windows.Forms.Button copyversion;
+		private System.Windows.Forms.Label version;
+		private System.Windows.Forms.TabPage tabPage2;
 	}
 }

@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.Windows
 			string result;
 
 			// Browse for flat
-            result = TextureBrowserForm.Browse(this, backgroundname, true); //mxd. was FlatBrowserForm
+			result = TextureBrowserForm.Browse(this, backgroundname, true); //mxd. was FlatBrowserForm
 			if(result != null)
 			{
 				// Set this flat as background

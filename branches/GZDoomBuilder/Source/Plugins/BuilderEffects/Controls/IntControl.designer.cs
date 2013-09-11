@@ -1,29 +1,29 @@
 ﻿namespace CodeImp.DoomBuilder.BuilderEffects
 {
-    partial class IntControl {
-        /// <summary> 
-        /// Требуется переменная конструктора.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class IntControl {
+		/// <summary> 
+		/// Требуется переменная конструктора.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Освободить все используемые ресурсы.
-        /// </summary>
-        /// <param name="disposing">истинно, если управляемый ресурс должен быть удален; иначе ложно.</param>
-        protected override void Dispose(bool disposing) {
-            if (disposing && (components != null)) {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary> 
+		/// Освободить все используемые ресурсы.
+		/// </summary>
+		/// <param name="disposing">истинно, если управляемый ресурс должен быть удален; иначе ложно.</param>
+		protected override void Dispose(bool disposing) {
+			if (disposing && (components != null)) {
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        #region Код, автоматически созданный конструктором компонентов
+		#region Код, автоматически созданный конструктором компонентов
 
-        /// <summary> 
-        /// Обязательный метод для поддержки конструктора - не изменяйте 
-        /// содержимое данного метода при помощи редактора кода.
-        /// </summary>
-        private void InitializeComponent() {
+		/// <summary> 
+		/// Обязательный метод для поддержки конструктора - не изменяйте 
+		/// содержимое данного метода при помощи редактора кода.
+		/// </summary>
+		private void InitializeComponent() {
 			this.trackBar1 = new Dotnetrix.Controls.TrackBar();
 			this.label1 = new System.Windows.Forms.Label();
 			this.numericUpDown1 = new CodeImp.DoomBuilder.BuilderEffects.NumericUpDownEx();
@@ -90,13 +90,13 @@
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private Dotnetrix.Controls.TrackBar trackBar1;
+		private Dotnetrix.Controls.TrackBar trackBar1;
 		private System.Windows.Forms.Label label1;
 		private NumericUpDownEx numericUpDown1;
 		private System.Windows.Forms.Label labelMaximum;
-    }
+	}
 }

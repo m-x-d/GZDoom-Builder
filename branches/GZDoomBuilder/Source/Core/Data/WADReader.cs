@@ -546,9 +546,9 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Find the lump anywhere
 				lump = file.FindLump(pname);
-                if (lump != null) {
-                    return lump.Stream;
-                }
+				if (lump != null) {
+					return lump.Stream;
+				}
 			}
 			
 			return null;
@@ -815,91 +815,91 @@ namespace CodeImp.DoomBuilder.Data
 			return streams;
 		}
 
-        //mxd
-        public override Dictionary<string, Stream> GetMapinfoData() {
-            if (issuspended) throw new Exception("Data reader is suspended");
+		//mxd
+		public override Dictionary<string, Stream> GetMapinfoData() {
+			if (issuspended) throw new Exception("Data reader is suspended");
 
-            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
-            int lumpindex;
-            string src = "ZMAPINFO";
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+			int lumpindex;
+			string src = "ZMAPINFO";
 
-            //should be only one entry per wad
-            //first look for ZMAPINFO
-            lumpindex = file.FindLumpIndex(src);
+			//should be only one entry per wad
+			//first look for ZMAPINFO
+			lumpindex = file.FindLumpIndex(src);
 
-            //then for MAPINFO
-            if (lumpindex == -1) {
-                src = "MAPINFO";
-                lumpindex = file.FindLumpIndex(src);
-            }
+			//then for MAPINFO
+			if (lumpindex == -1) {
+				src = "MAPINFO";
+				lumpindex = file.FindLumpIndex(src);
+			}
 
-            if(lumpindex != -1)
-                streams.Add(src, file.Lumps[lumpindex].Stream);
+			if(lumpindex != -1)
+				streams.Add(src, file.Lumps[lumpindex].Stream);
 
-            return streams;
-        }
+			return streams;
+		}
 
-        //mxd
-        public override Dictionary<string, Stream> GetGldefsData(GameType gameType) {
-            if (issuspended) throw new Exception("Data reader is suspended");
+		//mxd
+		public override Dictionary<string, Stream> GetGldefsData(GameType gameType) {
+			if (issuspended) throw new Exception("Data reader is suspended");
 
-            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
-            int lumpindex;
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+			int lumpindex;
 
-            //try to load game specific GLDEFS first
-            if (gameType != GameType.UNKNOWN) {
-                string lumpName = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gameType];
-                lumpindex = file.FindLumpIndex(lumpName);
+			//try to load game specific GLDEFS first
+			if (gameType != GameType.UNKNOWN) {
+				string lumpName = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gameType];
+				lumpindex = file.FindLumpIndex(lumpName);
 
-                if (lumpindex != -1)
-                    streams.Add(lumpName, file.Lumps[lumpindex].Stream);
-            }
+				if (lumpindex != -1)
+					streams.Add(lumpName, file.Lumps[lumpindex].Stream);
+			}
 
-            //should be only one entry per wad
-            lumpindex = file.FindLumpIndex("GLDEFS");
-            
-            if (lumpindex != -1)
-                streams.Add("GLDEFS", file.Lumps[lumpindex].Stream);
+			//should be only one entry per wad
+			lumpindex = file.FindLumpIndex("GLDEFS");
+			
+			if (lumpindex != -1)
+				streams.Add("GLDEFS", file.Lumps[lumpindex].Stream);
 
-            return streams;
-        }
+			return streams;
+		}
 
-        //mxd
-        public override Dictionary<string, Stream> GetGldefsData(string location) {
-            if (issuspended) throw new Exception("Data reader is suspended");
+		//mxd
+		public override Dictionary<string, Stream> GetGldefsData(string location) {
+			if (issuspended) throw new Exception("Data reader is suspended");
 
-            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
-            int lumpindex;
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+			int lumpindex;
 
-            lumpindex = file.FindLumpIndex(location);
-            
-            if (lumpindex != -1)
-                streams.Add(location, file.Lumps[lumpindex].Stream);
+			lumpindex = file.FindLumpIndex(location);
+			
+			if (lumpindex != -1)
+				streams.Add(location, file.Lumps[lumpindex].Stream);
 
-            return streams;
-        }
+			return streams;
+		}
 
-        //mxd
-        public override Dictionary<string, Stream> GetModeldefData() {
-            return GetGldefsData("MODELDEF");
-        }
+		//mxd
+		public override Dictionary<string, Stream> GetModeldefData() {
+			return GetGldefsData("MODELDEF");
+		}
 
-        //mxd
-        internal override MemoryStream LoadFile(string name) {
-            Lump l = file.FindLump(name);
+		//mxd
+		internal override MemoryStream LoadFile(string name) {
+			Lump l = file.FindLump(name);
 
-            if (l != null) {
-                l.Stream.Seek(0, SeekOrigin.Begin);
-                return new MemoryStream(l.Stream.ReadAllBytes());
-            }
+			if (l != null) {
+				l.Stream.Seek(0, SeekOrigin.Begin);
+				return new MemoryStream(l.Stream.ReadAllBytes());
+			}
 
-            return null;
-        }
+			return null;
+		}
 
-        //mxd
-        internal override bool FileExists(string name) {
+		//mxd
+		internal override bool FileExists(string name) {
 			return file.FindLumpIndex(name) != -1;
-        }
+		}
 
 		#endregion
 	}

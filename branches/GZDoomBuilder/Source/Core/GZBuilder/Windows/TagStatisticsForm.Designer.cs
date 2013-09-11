@@ -65,11 +65,11 @@
 			this.dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
 			this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.TagColumn,
-            this.Label,
-            this.Sectors,
-            this.Linedefs,
-            this.Things});
+			this.TagColumn,
+			this.Label,
+			this.Sectors,
+			this.Linedefs,
+			this.Things});
 			this.dataGridView.Location = new System.Drawing.Point(12, 12);
 			this.dataGridView.MultiSelect = false;
 			this.dataGridView.Name = "dataGridView";

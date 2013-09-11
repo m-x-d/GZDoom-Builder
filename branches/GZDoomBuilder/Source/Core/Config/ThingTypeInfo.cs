@@ -64,8 +64,8 @@ namespace CodeImp.DoomBuilder.Config
 		private bool absolutez;
 		private SizeF spritescale;
 
-        //mxd
-        private string classname;
+		//mxd
+		private string classname;
 		
 		#endregion
 
@@ -91,13 +91,13 @@ namespace CodeImp.DoomBuilder.Config
 		public bool AbsoluteZ { get { return absolutez; } }
 		public SizeF SpriteScale { get { return spritescale; } }
 
-        //mxd. need this to add model overrides for things defined in configs.  
-        public string ClassName {
-            get {
-                if (actor != null)
-                    return actor.ClassName;
-                return classname;
-        } }
+		//mxd. need this to add model overrides for things defined in configs.  
+		public string ClassName {
+			get {
+				if (actor != null)
+					return actor.ClassName;
+				return classname;
+		} }
 		
 		#endregion
 
@@ -157,11 +157,11 @@ namespace CodeImp.DoomBuilder.Config
 			float sscale = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".spritescale", cat.SpriteScale);
 			this.spritescale = new SizeF(sscale, sscale);
 
-            //mxd
-            string s_class = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".class", String.Empty);
-            if (s_class != String.Empty) //I actually want to keep null value there if no such property exists...
-                this.classname = s_class.ToLower();
-            
+			//mxd
+			string s_class = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".class", String.Empty);
+			if (s_class != String.Empty) //I actually want to keep null value there if no such property exists...
+				this.classname = s_class.ToLower();
+			
 			
 			// Read the args
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)
@@ -280,9 +280,9 @@ namespace CodeImp.DoomBuilder.Config
 			// Set sprite
 			string suitablesprite = actor.FindSuitableSprite();
 			if(!string.IsNullOrEmpty(suitablesprite)) 
-                sprite = suitablesprite;
-            else if(string.IsNullOrEmpty(sprite))//mxd
-                sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
+				sprite = suitablesprite;
+			else if(string.IsNullOrEmpty(sprite))//mxd
+				sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
 
 			
 			if(this.sprite.Length <= 8)

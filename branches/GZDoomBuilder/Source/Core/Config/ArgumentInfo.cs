@@ -37,8 +37,8 @@ namespace CodeImp.DoomBuilder.Config
 		private bool used;
 		private int type;
 		private EnumList enumlist;
-        //mxd
-        private object defaultValue;
+		//mxd
+		private object defaultValue;
 
 		#endregion
 
@@ -48,8 +48,8 @@ namespace CodeImp.DoomBuilder.Config
 		public bool Used { get { return used; } }
 		public int Type { get { return type; } }
 		public EnumList Enum { get { return enumlist; } }
-        //mxd
-        public object DefaultValue { get { return defaultValue; } }
+		//mxd
+		public object DefaultValue { get { return defaultValue; } }
 
 		#endregion
 
@@ -64,8 +64,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.title = cfg.ReadSetting(argspath + ".arg" + istr + ".title", "Argument " + (argindex + 1));
 			this.type = cfg.ReadSetting(argspath + ".arg" + istr + ".type", 0);
 
-            //mxd
-            this.defaultValue = cfg.ReadSetting(argspath + ".arg" + istr + ".default", 0);
+			//mxd
+			this.defaultValue = cfg.ReadSetting(argspath + ".arg" + istr + ".default", 0);
 
 			// Determine enum type
 			IDictionary argdic = cfg.ReadSetting(argspath + ".arg" + istr, new Hashtable());
@@ -101,8 +101,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.title = "Argument " + (argindex + 1);
 			this.type = 0;
 			this.enumlist = new EnumList();
-            //mxd
-            this.defaultValue = 0;
+			//mxd
+			this.defaultValue = 0;
 		}
 
 		#endregion

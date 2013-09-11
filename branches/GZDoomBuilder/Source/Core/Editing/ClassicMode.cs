@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		// Mouse status
 		protected Vector2D mousepos;
-        protected Vector2D mouselastpos;
+		protected Vector2D mouselastpos;
 		protected Vector2D mousemappos;
 		protected Vector2D mousedownpos;
 		protected Vector2D mousedownmappos;
@@ -72,13 +72,13 @@ namespace CodeImp.DoomBuilder.Editing
 		protected RectangleF selectionrect;
 		protected MarqueSelectionMode marqueSelectionMode; //mxd
 
-        // View panning
-        protected bool panning;
+		// View panning
+		protected bool panning;
 		private bool autopanenabled;
 
-        //mxd. used in "Play From Here" Action
-        private Thing playerStart;
-        private Vector3D playerStartPosition;
+		//mxd. used in "Play From Here" Action
+		private Thing playerStart;
+		private Vector3D playerStartPosition;
 		
 		#endregion
 
@@ -132,11 +132,11 @@ namespace CodeImp.DoomBuilder.Editing
 				mouseinside = oldmode.mouseinside;
 				mousedragging = oldmode.mousedragging;
 
-            } else if (General.Settings.GZSynchCameras && General.Editing.Mode is VisualMode) { //mxd 
-                //center 2d view on camera position in 3d view
-                Vector2D campos = new Vector2D(General.Map.VisualCamera.Position.x, General.Map.VisualCamera.Position.y);
-                renderer2d.PositionView(campos.x, campos.y);
-            }
+			} else if (General.Settings.GZSynchCameras && General.Editing.Mode is VisualMode) { //mxd 
+				//center 2d view on camera position in 3d view
+				Vector2D campos = new Vector2D(General.Map.VisualCamera.Position.x, General.Map.VisualCamera.Position.y);
+				renderer2d.PositionView(campos.x, campos.y);
+			}
 		}
 
 		// Disposer
@@ -223,20 +223,20 @@ namespace CodeImp.DoomBuilder.Editing
 			General.MainWindow.UpdateCoordinates(mousemappos);
 		}
 
-        // This sets the view to be centered at x,y
-        private void ScrollTo(float x, float y)
-        {
-            // Scroll now
-            renderer2d.PositionView(x, y);
-            this.OnViewChanged();
+		// This sets the view to be centered at x,y
+		private void ScrollTo(float x, float y)
+		{
+			// Scroll now
+			renderer2d.PositionView(x, y);
+			this.OnViewChanged();
 
-            // Redraw
-            General.MainWindow.RedrawDisplay();
+			// Redraw
+			General.MainWindow.RedrawDisplay();
 
-            // Determine new unprojected mouse coordinates
-            mousemappos = renderer2d.DisplayToMap(mousepos);
-            General.MainWindow.UpdateCoordinates(mousemappos);
-        }
+			// Determine new unprojected mouse coordinates
+			mousemappos = renderer2d.DisplayToMap(mousepos);
+			General.MainWindow.UpdateCoordinates(mousemappos);
+		}
 
 		// This zooms
 		private void ZoomBy(float deltaz)
@@ -488,7 +488,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 			// Record last position
 			mouseinside = true;
-            mouselastpos = mousepos;
+			mouselastpos = mousepos;
 			mousepos = new Vector2D(e.X, e.Y);
 			mousemappos = renderer2d.DisplayToMap(mousepos);
 			mousebuttons = e.Button;
@@ -517,8 +517,8 @@ namespace CodeImp.DoomBuilder.Editing
 			// Selecting?
 			if(selecting) OnUpdateMultiSelection();
 
-            // Panning?
-            if (panning) OnUpdateViewPanning();
+			// Panning?
+			if (panning) OnUpdateViewPanning();
 			
 			// Let the base class know
 			base.OnMouseMove(e);
@@ -606,65 +606,65 @@ namespace CodeImp.DoomBuilder.Editing
 			base.OnCancel();
 		}
 
-        //mxd
-        public override bool OnMapTestBegin() {
-            if (General.Settings.GZTestFromCurrentPosition) {
-                if(!mouseinside){
-                    General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: mouse is outside editing vindow!");
-                    return false;
-                }
-                
-                //find Single Player Start. Should be type 1 in all games
-                Thing start = null;
-                
-                foreach (Thing t in General.Map.Map.Things) {
-                    if (t.Type == 1) {
-                        //store thing and position
-	                    if (start == null) {
-		                    start = t;
-	                    } else if(t.Index > start.Index) {
+		//mxd
+		public override bool OnMapTestBegin() {
+			if (General.Settings.GZTestFromCurrentPosition) {
+				if(!mouseinside){
+					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: mouse is outside editing vindow!");
+					return false;
+				}
+				
+				//find Single Player Start. Should be type 1 in all games
+				Thing start = null;
+				
+				foreach (Thing t in General.Map.Map.Things) {
+					if (t.Type == 1) {
+						//store thing and position
+						if (start == null) {
+							start = t;
+						} else if(t.Index > start.Index) {
 							start = t; //if there are several Player Start 1 things, GZDoom uses one with the biggest index.
-	                    }
-                    }
-                }
+						}
+					}
+				}
 
-                if (start == null) {
-                    General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: no Player 1 start found!");
-                    return false;
-                }
+				if (start == null) {
+					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: no Player 1 start found!");
+					return false;
+				}
 
-                //now check if cursor is located inside a sector
-                Sector s = General.Map.Map.GetSectorByCoordinates(mousemappos);
+				//now check if cursor is located inside a sector
+				Sector s = General.Map.Map.GetSectorByCoordinates(mousemappos);
 
-                if(s == null){
-                    General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: cursor is not inside sector!");
-                    return false;
-                }
+				if(s == null){
+					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: cursor is not inside sector!");
+					return false;
+				}
 
-                //41 = player's height in Doom. Is that so in all other games as well?
-                if (s.CeilHeight - s.FloorHeight < 41) {
-                    General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: sector is too low!");
-                    return false;
-                }
-                
-                //store initial position
-                playerStart = start;
-                playerStartPosition = start.Position;
+				//41 = player's height in Doom. Is that so in all other games as well?
+				if (s.CeilHeight - s.FloorHeight < 41) {
+					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: sector is too low!");
+					return false;
+				}
+				
+				//store initial position
+				playerStart = start;
+				playerStartPosition = start.Position;
 
-                //everything should be valid, let's move player start here
-                start.Move(new Vector3D(mousemappos.x, mousemappos.y, s.FloorHeight));
-            }
+				//everything should be valid, let's move player start here
+				start.Move(new Vector3D(mousemappos.x, mousemappos.y, s.FloorHeight));
+			}
 
-            return true;
-        }
+			return true;
+		}
 
-        public override void OnMapTestEnd() {
-            if (General.Settings.GZTestFromCurrentPosition) {
-                //restore position
-                playerStart.Move(playerStartPosition);
-                playerStart = null;
-            }
-        }
+		public override void OnMapTestEnd() {
+			if (General.Settings.GZTestFromCurrentPosition) {
+				//restore position
+				playerStart.Move(playerStartPosition);
+				playerStart = null;
+			}
+		}
 
 		/// <summary>
 		/// This is called automatically when the Edit button is pressed.
@@ -768,11 +768,11 @@ namespace CodeImp.DoomBuilder.Editing
 			renderer.RenderRectangle(selectionrect, SELECTION_BORDER_SIZE, marqueColor, true);
 		}
 
-        /// <summary>
-        /// This is called automatically when the mouse is moved while panning
-        /// </summary>
-        protected virtual void OnUpdateViewPanning()
-        {
+		/// <summary>
+		/// This is called automatically when the mouse is moved while panning
+		/// </summary>
+		protected virtual void OnUpdateViewPanning()
+		{
 			// We can only drag the map when the mouse pointer is inside
 			// otherwise we don't have coordinates where to drag the map to
 			if(mouseinside && !float.IsNaN(mouselastpos.x) && !float.IsNaN(mouselastpos.y))
@@ -783,7 +783,7 @@ namespace CodeImp.DoomBuilder.Editing
 				// Do the scroll
 				ScrollBy(lastmappos.x - mousemappos.x, lastmappos.y - mousemappos.y);
 			}
-        }
+		}
 		
 		#endregion
 		
@@ -795,17 +795,17 @@ namespace CodeImp.DoomBuilder.Editing
 			General.Map.Grid.ShowGridSetup();
 		}
 		
-        [BeginAction("pan_view", BaseAction = true)]
-        protected virtual void BeginViewPan()
-        {
-            panning = true;
-        }
+		[BeginAction("pan_view", BaseAction = true)]
+		protected virtual void BeginViewPan()
+		{
+			panning = true;
+		}
 
-        [EndAction("pan_view", BaseAction = true)]
-        protected virtual void EndViewPan()
-        {
-            panning = false;
-        }
+		[EndAction("pan_view", BaseAction = true)]
+		protected virtual void EndViewPan()
+		{
+			panning = false;
+		}
 
 		[BeginAction("viewmodenormal", BaseAction = true)]
 		protected virtual void ViewModeNormal()

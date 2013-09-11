@@ -63,10 +63,10 @@ namespace CodeImp.DoomBuilder.IO
 			if(value.GetType() != t) throw new Exception("The value of entry '" + key + "' is of incompatible type (expected " + t.Name + ")");
 		}
 
-        //mxd 
-        public bool IsValidType(Type t) {
-            return value.GetType() == t;
-        }
+		//mxd 
+		public bool IsValidType(Type t) {
+			return value.GetType() == t;
+		}
 		
 		#endregion
 	}

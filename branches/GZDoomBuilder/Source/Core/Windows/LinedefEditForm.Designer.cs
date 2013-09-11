@@ -643,8 +643,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbRenderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbRenderStyle.FormattingEnabled = true;
 			this.cbRenderStyle.Items.AddRange(new object[] {
-            "Translucent",
-            "Additive"});
+			"Translucent",
+			"Additive"});
 			this.cbRenderStyle.Location = new System.Drawing.Point(92, 26);
 			this.cbRenderStyle.Name = "cbRenderStyle";
 			this.cbRenderStyle.Size = new System.Drawing.Size(86, 22);
@@ -1441,7 +1441,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Panel heightpanel2;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox frontsector;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backsector;
-        private System.Windows.Forms.CheckBox cbArgStr;
+		private System.Windows.Forms.CheckBox cbArgStr;
 		private System.Windows.Forms.ComboBox scriptNames;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
 		private System.Windows.Forms.TabControl udmfPropertiesFront;

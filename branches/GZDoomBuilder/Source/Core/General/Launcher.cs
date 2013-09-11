@@ -227,25 +227,25 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("testmap")]
 		public void Test()
 		{
-            General.Settings.GZTestFromCurrentPosition = false; //mxd
+			General.Settings.GZTestFromCurrentPosition = false; //mxd
 			if(!General.Editing.Mode.OnMapTestBegin()) return; //mxd
-            TestAtSkill(General.Map.ConfigSettings.TestSkill);
-            General.Editing.Mode.OnMapTestEnd(); //mxd
+			TestAtSkill(General.Map.ConfigSettings.TestSkill);
+			General.Editing.Mode.OnMapTestEnd(); //mxd
 		}
 
-        //mxd
-        [BeginAction("testmapfromview")]
-        public void TestFromView() {
-            General.Settings.GZTestFromCurrentPosition = true;
+		//mxd
+		[BeginAction("testmapfromview")]
+		public void TestFromView() {
+			General.Settings.GZTestFromCurrentPosition = true;
 			if(!General.Editing.Mode.OnMapTestBegin()) return; //mxd
 
-            General.MainWindow.StopProcessing();
-            TestAtSkill(General.Map.ConfigSettings.TestSkill);
-            
-            General.Editing.Mode.OnMapTestEnd(); //mxd
-            General.MainWindow.EnableProcessing();
-            General.MainWindow.FocusDisplay();
-        }
+			General.MainWindow.StopProcessing();
+			TestAtSkill(General.Map.ConfigSettings.TestSkill);
+			
+			General.Editing.Mode.OnMapTestEnd(); //mxd
+			General.MainWindow.EnableProcessing();
+			General.MainWindow.FocusDisplay();
+		}
 		
 		// This saves the map to a temporary file and launches a test wit hthe given skill
 		public void TestAtSkill(int skill)

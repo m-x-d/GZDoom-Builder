@@ -131,16 +131,16 @@ namespace CodeImp.DoomBuilder.Controls
 			// Select the first tab
 			//if(tabs.TabPages.Count > 0) tabs.SelectedIndex = 0;
 
-            //mxd. Select "Scripts" tab, because that's what user will want 99% of time
-            if (tabs.TabPages.Count > 0) {
-                foreach (TabPage p in tabs.TabPages) {
-                    if (p.Text == "SCRIPTS") {
-                        tabs.SelectedTab = p;
-                        break;
-                    }
-                }
-                if (tabs.SelectedIndex == -1) tabs.SelectedIndex = 0;
-            }
+			//mxd. Select "Scripts" tab, because that's what user will want 99% of time
+			if (tabs.TabPages.Count > 0) {
+				foreach (TabPage p in tabs.TabPages) {
+					if (p.Text == "SCRIPTS") {
+						tabs.SelectedTab = p;
+						break;
+					}
+				}
+				if (tabs.SelectedIndex == -1) tabs.SelectedIndex = 0;
+			}
 			
 			// If the map has remembered any compile errors, then show them
 			ShowErrors(General.Map.Errors);
@@ -513,19 +513,19 @@ namespace CodeImp.DoomBuilder.Controls
 			ScriptFileDocumentTab t = new ScriptFileDocumentTab(this, foundconfig);
 			if(t.Open(filename))
 			{
-                //mxd
-                ScriptType st = t.VerifyScriptType();
-                if (st != ScriptType.UNKNOWN) {
-                    string cfgType = ScriptTypes.TYPES[(int)st];
-                    foreach (ScriptConfiguration cfg in scriptconfigs) {
-                        if (cfg.Description == cfgType) {
-                            t.ChangeScriptConfig(cfg);
-                            break;
-                        }
-                    }
-                }
-                
-                // Mark any errors this script may have
+				//mxd
+				ScriptType st = t.VerifyScriptType();
+				if (st != ScriptType.UNKNOWN) {
+					string cfgType = ScriptTypes.TYPES[(int)st];
+					foreach (ScriptConfiguration cfg in scriptconfigs) {
+						if (cfg.Description == cfgType) {
+							t.ChangeScriptConfig(cfg);
+							break;
+						}
+					}
+				}
+				
+				// Mark any errors this script may have
 				if(compilererrors != null)
 					t.MarkScriptErrors(compilererrors);
 

@@ -250,7 +250,7 @@ namespace CodeImp.DoomBuilder.Editing
 					// Include the mode when it is listed and enabled
 					// Also include the mode when it is not optional
 					if( (General.Map.ConfigSettings.EditModes.ContainsKey(emi.Type.FullName) &&
-					     General.Map.ConfigSettings.EditModes[emi.Type.FullName]) || !emi.IsOptional )
+						 General.Map.ConfigSettings.EditModes[emi.Type.FullName]) || !emi.IsOptional )
 					{
 						// Add the mode to be used and bind switch action
 						usedmodes.Add(emi);

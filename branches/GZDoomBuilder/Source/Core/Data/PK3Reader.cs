@@ -33,8 +33,8 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private DirectoryFilesList files;
-        private ArchiveType archiveType; //mxd
-        private static Dictionary<string, byte[]> sevenZipEntries; //mxd
+		private ArchiveType archiveType; //mxd
+		private static Dictionary<string, byte[]> sevenZipEntries; //mxd
 
 		#endregion
 
@@ -43,45 +43,45 @@ namespace CodeImp.DoomBuilder.Data
 		// Constructor
 		public PK3Reader(DataLocation dl) : base(dl)
 		{
-            General.WriteLogLine("Opening " + Path.GetExtension(location.location).ToUpper().Replace(".", "") + " resource '" + location.location + "'");
+			General.WriteLogLine("Opening " + Path.GetExtension(location.location).ToUpper().Replace(".", "") + " resource '" + location.location + "'");
 
 			if(!File.Exists(location.location))
 				throw new FileNotFoundException("Could not find the file \"" + location.location + "\"", location.location);
 
-            // Make list of all files
-            List<DirectoryFileEntry> fileentries = new List<DirectoryFileEntry>();
+			// Make list of all files
+			List<DirectoryFileEntry> fileentries = new List<DirectoryFileEntry>();
 
-            //mxd
-            IArchive archive = ArchiveFactory.Open(location.location);
-            archiveType = archive.Type;
+			//mxd
+			IArchive archive = ArchiveFactory.Open(location.location);
+			archiveType = archive.Type;
 
-            if (archive.Type == ArchiveType.SevenZip) { //random access of 7z archives works TERRIBLY slow in SharpCompress
-                sevenZipEntries = new Dictionary<string, byte[]>();
+			if (archive.Type == ArchiveType.SevenZip) { //random access of 7z archives works TERRIBLY slow in SharpCompress
+				sevenZipEntries = new Dictionary<string, byte[]>();
 
-                IReader reader = archive.ExtractAllEntries();
-                while (reader.MoveToNextEntry()) {
-                    if (!reader.Entry.IsDirectory) {
-                        MemoryStream s = new MemoryStream();
-                        reader.WriteEntryTo(s);
-                        sevenZipEntries.Add(reader.Entry.FilePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar), s.ToArray());
-                        fileentries.Add(new DirectoryFileEntry(reader.Entry.FilePath));
-                    }
-                }
-                //archive.Dispose();
-                //archive = null;
+				IReader reader = archive.ExtractAllEntries();
+				while (reader.MoveToNextEntry()) {
+					if (!reader.Entry.IsDirectory) {
+						MemoryStream s = new MemoryStream();
+						reader.WriteEntryTo(s);
+						sevenZipEntries.Add(reader.Entry.FilePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar), s.ToArray());
+						fileentries.Add(new DirectoryFileEntry(reader.Entry.FilePath));
+					}
+				}
+				//archive.Dispose();
+				//archive = null;
 
-            } else {
-                foreach (IEntry entry in archive.Entries) {
-                    if (!entry.IsDirectory)
-                        fileentries.Add(new DirectoryFileEntry(entry.FilePath));
-                }
-            }
+			} else {
+				foreach (IEntry entry in archive.Entries) {
+					if (!entry.IsDirectory)
+						fileentries.Add(new DirectoryFileEntry(entry.FilePath));
+				}
+			}
 
 			archive.Dispose();
 			archive = null;
 
-            // Make files list
-            files = new DirectoryFilesList(fileentries);
+			// Make files list
+			files = new DirectoryFilesList(fileentries);
 			
 			// Initialize without path (because we use paths relative to the PK3 file)
 			Initialize();
@@ -96,8 +96,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Not already disposed?
 			if(!isdisposed)
 			{
-                General.WriteLogLine("Closing " + Path.GetExtension(location.location).ToUpper().Replace(".", "") + " resource '" + location.location + "'");
-                //if(archive != null) archive.Dispose(); //mxd
+				General.WriteLogLine("Closing " + Path.GetExtension(location.location).ToUpper().Replace(".", "") + " resource '" + location.location + "'");
+				//if(archive != null) archive.Dispose(); //mxd
 
 				// Done
 				base.Dispose();
@@ -285,10 +285,10 @@ namespace CodeImp.DoomBuilder.Data
 			return files.GetAllFilesWithTitle(path, title, subfolders).ToArray();
 		}
 
-        //mxd. This returns all files in a given directory which title starts with given title
-        protected override string[] GetAllFilesWhichTitleStartsWith(string path, string title) {
-            return files.GetAllFilesWhichTitleStartsWith(path, title).ToArray();
-        }
+		//mxd. This returns all files in a given directory which title starts with given title
+		protected override string[] GetAllFilesWhichTitleStartsWith(string path, string title) {
+			return files.GetAllFilesWhichTitleStartsWith(path, title).ToArray();
+		}
 		
 		// This returns all files in a given directory that match the given extension
 		protected override string[] GetFilesWithExt(string path, string extension, bool subfolders)
@@ -319,39 +319,39 @@ namespace CodeImp.DoomBuilder.Data
 
 		// This loads an entire file in memory and returns the stream
 		// NOTE: Callers are responsible for disposing the stream!
-        internal override MemoryStream LoadFile(string filename)
+		internal override MemoryStream LoadFile(string filename)
 		{
-            MemoryStream filedata = null;
-           
-            //mxd
-            if (archiveType == ArchiveType.SevenZip) { //this works waaaaaay faster with 7z archive
-                if (sevenZipEntries.ContainsKey(filename))
-                    filedata = new MemoryStream(sevenZipEntries[filename]);
-            } else {
+			MemoryStream filedata = null;
+		   
+			//mxd
+			if (archiveType == ArchiveType.SevenZip) { //this works waaaaaay faster with 7z archive
+				if (sevenZipEntries.ContainsKey(filename))
+					filedata = new MemoryStream(sevenZipEntries[filename]);
+			} else {
 				IArchive archive = ArchiveFactory.Open(location.location);
 
-                foreach (var entry in archive.Entries) {
-                    if (!entry.IsDirectory) {
-                        // Is this the entry we are looking for?
-                        string entryname = entry.FilePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-                        if (string.Compare(entryname, filename, true) == 0) {
-                            filedata = new MemoryStream();
-                            entry.WriteTo(filedata);
-                            break;
-                        }
-                    }
-                }
-            }
+				foreach (var entry in archive.Entries) {
+					if (!entry.IsDirectory) {
+						// Is this the entry we are looking for?
+						string entryname = entry.FilePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+						if (string.Compare(entryname, filename, true) == 0) {
+							filedata = new MemoryStream();
+							entry.WriteTo(filedata);
+							break;
+						}
+					}
+				}
+			}
 			
 			// Nothing found?
-            if (filedata == null){
+			if (filedata == null){
 				//mxd
 				General.ErrorLogger.Add(ErrorType.Error, "Cannot find the file " + filename + " in archive " + location.location + ".");
 				return new MemoryStream();
 			}
 
-            filedata.Position = 0; //mxd. rewind before use
-            return filedata;
+			filedata.Position = 0; //mxd. rewind before use
+			return filedata;
 		}
 
 		// This creates a temp file for the speciied file and return the absolute path to the temp file

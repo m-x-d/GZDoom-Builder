@@ -10,42 +10,42 @@ using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 {
-    [EditMode(DisplayName = "Snap Map Elements to Grid",
-              SwitchAction = "snapvertstogrid",
-              AllowCopyPaste = false,
-              Optional = false,
-              Volatile = true)]
-    public class SnapVerticesMode : BaseClassicMode
-    {
-        public SnapVerticesMode() {
-            // We have no destructor
-            GC.SuppressFinalize(this);
-        }
-        
-        // Mode engages
-        public override void OnEngage() {
-            base.OnEngage();
+	[EditMode(DisplayName = "Snap Map Elements to Grid",
+			  SwitchAction = "snapvertstogrid",
+			  AllowCopyPaste = false,
+			  Optional = false,
+			  Volatile = true)]
+	public class SnapVerticesMode : BaseClassicMode
+	{
+		public SnapVerticesMode() {
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+		
+		// Mode engages
+		public override void OnEngage() {
+			base.OnEngage();
 
-            //get selection
+			//get selection
 			General.Map.Map.ClearAllMarks(false);
-            General.Map.Map.MarkAllSelectedGeometry(true, false, true, false, false);
-            List<Vertex> verts = General.Map.Map.GetMarkedVertices(true);
+			General.Map.Map.MarkAllSelectedGeometry(true, false, true, false, false);
+			List<Vertex> verts = General.Map.Map.GetMarkedVertices(true);
 
-            //nothing selected?
-            if (verts.Count == 0) {
-	            //check things
-	            List<Thing> things = General.Map.Map.GetMarkedThings(true);
-	            if (things.Count == 0) {
-		            General.Interface.DisplayStatus(StatusType.Warning, "Select any map element first!");
-		            base.OnCancel();
-		            General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
-	            } else {
-		            snapThings(things);
-	            }
-            } else {
+			//nothing selected?
+			if (verts.Count == 0) {
+				//check things
+				List<Thing> things = General.Map.Map.GetMarkedThings(true);
+				if (things.Count == 0) {
+					General.Interface.DisplayStatus(StatusType.Warning, "Select any map element first!");
+					base.OnCancel();
+					General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
+				} else {
+					snapThings(things);
+				}
+			} else {
 				snapVertices(verts);
-            }
-        }
+			}
+		}
 
 		private void snapVertices(List<Vertex> verts) {
 			// Make undo for the snapping
@@ -158,20 +158,20 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
 		}
 
-        // Disenagaging
-        public override void OnDisengage() {
-            base.OnDisengage();
-            Cursor.Current = Cursors.AppStarting;
+		// Disenagaging
+		public override void OnDisengage() {
+			base.OnDisengage();
+			Cursor.Current = Cursors.AppStarting;
 
-            if (!cancelled) {
-                // Update cached values
-                General.Map.Map.Update();
-                // Map is changed
-                General.Map.IsChanged = true;
-            }
+			if (!cancelled) {
+				// Update cached values
+				General.Map.Map.Update();
+				// Map is changed
+				General.Map.IsChanged = true;
+			}
 
-            // Done
-            Cursor.Current = Cursors.Default;
-        }
-    }
+			// Done
+			Cursor.Current = Cursors.Default;
+		}
+	}
 }

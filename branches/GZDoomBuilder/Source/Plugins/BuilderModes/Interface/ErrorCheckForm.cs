@@ -92,10 +92,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Move controls according to the height of the checkers box
 			checks.PerformLayout();
 			buttoncheck.Top = checks.Bottom + 14;
-            bExport.Top = checks.Bottom + 14; //mxd
+			bExport.Top = checks.Bottom + 14; //mxd
 			resultspanel.Top = buttoncheck.Bottom + 14;
-            cbApplyToAll.Checked = applyToAll; //mxd
-            
+			cbApplyToAll.Checked = applyToAll; //mxd
+			
 
 			// Position at left-top of owner
 			this.Location = new Point(owner.Location.X + 20, owner.Location.Y + 90);
@@ -173,14 +173,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				blockmap = null;
 				
 				// When no results found, show "no results" and disable the list
-                if(results.Items.Count == 0) {
-                    results.Items.Add(new ResultNoErrors());
-                    results.Enabled = false;
-                    //mxd
-                    bExport.Enabled = false;
-                } else { //mxd
-                    bExport.Enabled = true;
-                }
+				if(results.Items.Count == 0) {
+					results.Items.Add(new ResultNoErrors());
+					results.Enabled = false;
+					//mxd
+					bExport.Enabled = false;
+				} else { //mxd
+					bExport.Enabled = true;
+				}
 			}
 		}
 		
@@ -191,8 +191,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			Cursor.Current = Cursors.WaitCursor;
 
-            //mxd
-            bExport.Enabled = false;
+			//mxd
+			bExport.Enabled = false;
 			
 			// Make blockmap
 			RectangleF area = MapSet.CreateArea(General.Map.Map.Vertices);
@@ -385,7 +385,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 			{
-                StartChecking();
+				StartChecking();
 			}
 		}
 
@@ -435,12 +435,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-                    if (r.Button1Click(false)) {
-                        if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 1); //mxd
-                        StartChecking();
-                    } else {
-                        General.Interface.RedrawDisplay();
-                    }
+					if (r.Button1Click(false)) {
+						if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 1); //mxd
+						StartChecking();
+					} else {
+						General.Interface.RedrawDisplay();
+					}
 				}
 			}
 		}
@@ -458,12 +458,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-                    if (r.Button2Click(false)) {
-                        if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 2); //mxd
-                        StartChecking();
-                    } else {
-                        General.Interface.RedrawDisplay();
-                    }
+					if (r.Button2Click(false)) {
+						if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 2); //mxd
+						StartChecking();
+					} else {
+						General.Interface.RedrawDisplay();
+					}
 				}
 			}
 		}
@@ -481,45 +481,45 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-                    if (r.Button3Click(false)) {
-                        if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 3); //mxd
-                        StartChecking();
-                    } else {
-                        General.Interface.RedrawDisplay();
-                    }
+					if (r.Button3Click(false)) {
+						if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 3); //mxd
+						StartChecking();
+					} else {
+						General.Interface.RedrawDisplay();
+					}
 				}
 			}
 		}
 
-        //mxd
-        private void fixSimilarErrors(Type type, int fixIndex) {
-            foreach (Object item in results.Items) {
-                if (item == results.SelectedItem) continue;
-                if (item.GetType() != type) continue;
+		//mxd
+		private void fixSimilarErrors(Type type, int fixIndex) {
+			foreach (Object item in results.Items) {
+				if (item == results.SelectedItem) continue;
+				if (item.GetType() != type) continue;
 
-                ErrorResult r = item as ErrorResult;
+				ErrorResult r = item as ErrorResult;
 
-                if (fixIndex == 1) r.Button1Click(true);
+				if (fixIndex == 1) r.Button1Click(true);
 				else if(fixIndex == 2) r.Button2Click(true);
 				else if(fixIndex == 3) r.Button3Click(true);
-            }
-        }
+			}
+		}
 
-        //mxd
-        private void bExport_Click(object sender, EventArgs e) {
-            StringBuilder sb = new StringBuilder();
+		//mxd
+		private void bExport_Click(object sender, EventArgs e) {
+			StringBuilder sb = new StringBuilder();
 
-            foreach(ErrorResult result in results.Items) {
-                sb.AppendLine(result.ToString());
-            }
+			foreach(ErrorResult result in results.Items) {
+				sb.AppendLine(result.ToString());
+			}
 
-            string path = Path.GetDirectoryName(General.Map.FilePathName) + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(General.Map.FileTitle) + "_errors.txt";
+			string path = Path.GetDirectoryName(General.Map.FilePathName) + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(General.Map.FileTitle) + "_errors.txt";
 
-            using(StreamWriter sw = File.CreateText(path))
-                sw.Write(sb.ToString());
+			using(StreamWriter sw = File.CreateText(path))
+				sw.Write(sb.ToString());
 
-            General.Interface.DisplayStatus(StatusType.Info, "Errors list saved to '" + path + "'");
-        }
+			General.Interface.DisplayStatus(StatusType.Info, "Errors list saved to '" + path + "'");
+		}
 
 		private void ErrorCheckForm_HelpRequested(object sender, HelpEventArgs hlpevent)
 		{

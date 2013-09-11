@@ -80,13 +80,13 @@ namespace CodeImp.DoomBuilder
 
 		#endregion
 
-        //mxd. Taken from SharpZip
-        #region ================== Crc32
-        sealed class Crc32
-        {
-            const uint CrcSeed = 0xFFFFFFFF;
+		//mxd. Taken from SharpZip
+		#region ================== Crc32
+		sealed class Crc32
+		{
+			const uint CrcSeed = 0xFFFFFFFF;
 
-            readonly static uint[] CrcTable = new uint[] {
+			readonly static uint[] CrcTable = new uint[] {
 			0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419,
 			0x706AF48F, 0xE963A535, 0x9E6495A3, 0x0EDB8832, 0x79DCB8A4,
 			0xE0D5E91E, 0x97D2D988, 0x09B64C2B, 0x7EB17CBD, 0xE7B82D07,
@@ -141,94 +141,94 @@ namespace CodeImp.DoomBuilder
 			0x2D02EF8D
 		};
 
-            internal static uint ComputeCrc32(uint oldCrc, byte value) {
-                return (uint)(Crc32.CrcTable[(oldCrc ^ value) & 0xFF] ^ (oldCrc >> 8));
-            }
+			internal static uint ComputeCrc32(uint oldCrc, byte value) {
+				return (uint)(Crc32.CrcTable[(oldCrc ^ value) & 0xFF] ^ (oldCrc >> 8));
+			}
 
-            /// <summary>
-            /// The crc data checksum so far.
-            /// </summary>
-            uint crc;
+			/// <summary>
+			/// The crc data checksum so far.
+			/// </summary>
+			uint crc;
 
-            /// <summary>
-            /// Returns the CRC32 data checksum computed so far.
-            /// </summary>
-            public long Value {
-                get {
-                    return (long)crc;
-                }
-                set {
-                    crc = (uint)value;
-                }
-            }
+			/// <summary>
+			/// Returns the CRC32 data checksum computed so far.
+			/// </summary>
+			public long Value {
+				get {
+					return (long)crc;
+				}
+				set {
+					crc = (uint)value;
+				}
+			}
 
-            /// <summary>
-            /// Resets the CRC32 data checksum as if no update was ever called.
-            /// </summary>
-            public void Reset() {
-                crc = 0;
-            }
+			/// <summary>
+			/// Resets the CRC32 data checksum as if no update was ever called.
+			/// </summary>
+			public void Reset() {
+				crc = 0;
+			}
 
-            /// <summary>
-            /// Updates the checksum with the int bval.
-            /// </summary>
-            /// <param name = "value">
-            /// the byte is taken as the lower 8 bits of value
-            /// </param>
-            public void Update(int value) {
-                crc ^= CrcSeed;
-                crc = CrcTable[(crc ^ value) & 0xFF] ^ (crc >> 8);
-                crc ^= CrcSeed;
-            }
+			/// <summary>
+			/// Updates the checksum with the int bval.
+			/// </summary>
+			/// <param name = "value">
+			/// the byte is taken as the lower 8 bits of value
+			/// </param>
+			public void Update(int value) {
+				crc ^= CrcSeed;
+				crc = CrcTable[(crc ^ value) & 0xFF] ^ (crc >> 8);
+				crc ^= CrcSeed;
+			}
 
-            /// <summary>
-            /// Updates the checksum with the bytes taken from the array.
-            /// </summary>
-            /// <param name="buffer">
-            /// buffer an array of bytes
-            /// </param>
-            public void Update(byte[] buffer) {
-                if (buffer == null) {
-                    throw new ArgumentNullException("buffer");
-                }
+			/// <summary>
+			/// Updates the checksum with the bytes taken from the array.
+			/// </summary>
+			/// <param name="buffer">
+			/// buffer an array of bytes
+			/// </param>
+			public void Update(byte[] buffer) {
+				if (buffer == null) {
+					throw new ArgumentNullException("buffer");
+				}
 
-                Update(buffer, 0, buffer.Length);
-            }
+				Update(buffer, 0, buffer.Length);
+			}
 
-            /// <summary>
-            /// Adds the byte array to the data checksum.
-            /// </summary>
-            /// <param name = "buffer">
-            /// The buffer which contains the data
-            /// </param>
-            /// <param name = "offset">
-            /// The offset in the buffer where the data starts
-            /// </param>
-            /// <param name = "count">
-            /// The number of data bytes to update the CRC with.
-            /// </param>
-            public void Update(byte[] buffer, int offset, int count) {
-                if (buffer == null) {
-                    throw new ArgumentNullException("buffer");
-                }
+			/// <summary>
+			/// Adds the byte array to the data checksum.
+			/// </summary>
+			/// <param name = "buffer">
+			/// The buffer which contains the data
+			/// </param>
+			/// <param name = "offset">
+			/// The offset in the buffer where the data starts
+			/// </param>
+			/// <param name = "count">
+			/// The number of data bytes to update the CRC with.
+			/// </param>
+			public void Update(byte[] buffer, int offset, int count) {
+				if (buffer == null) {
+					throw new ArgumentNullException("buffer");
+				}
 
-                if (count < 0) {
-                    throw new ArgumentOutOfRangeException("count", "Count cannot be less than zero");
-                }
+				if (count < 0) {
+					throw new ArgumentOutOfRangeException("count", "Count cannot be less than zero");
+				}
 
-                if (offset < 0 || offset + count > buffer.Length) {
-                    throw new ArgumentOutOfRangeException("offset");
-                }
+				if (offset < 0 || offset + count > buffer.Length) {
+					throw new ArgumentOutOfRangeException("offset");
+				}
 
-                crc ^= CrcSeed;
+				crc ^= CrcSeed;
 
-                while (--count >= 0) {
-                    crc = CrcTable[(crc ^ buffer[offset++]) & 0xFF] ^ (crc >> 8);
-                }
+				while (--count >= 0) {
+					crc = CrcTable[(crc ^ buffer[offset++]) & 0xFF] ^ (crc >> 8);
+				}
 
-                crc ^= CrcSeed;
-            }
-        }
-        #endregion
-    }
+				crc ^= CrcSeed;
+			}
+		}
+		#endregion
+	}
 }

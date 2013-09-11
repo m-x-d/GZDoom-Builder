@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(ceiling)
 				return "Sector " + sector.Index + " has unknown ceiling flat \"" + sector.CeilTexture + "\"";
 			else
-                return "Sector " + sector.Index + " has unknown floor flat \"" + sector.FloorTexture + "\"";
+				return "Sector " + sector.Index + " has unknown floor flat \"" + sector.FloorTexture + "\"";
 		}
 		
 		// Rendering

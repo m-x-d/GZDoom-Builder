@@ -68,9 +68,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Sector buffer info
 		private int vertexoffset;
 
-        //mxd
-        private Vector3[] boundingBox;
-        protected VisualGeometryType geoType;
+		//mxd
+		private Vector3[] boundingBox;
+		protected VisualGeometryType geoType;
 		
 		#endregion
 
@@ -83,9 +83,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal int RenderPassInt { get { return renderpass; } }
 		internal Color4 ModColor4 { get { return modcolor4; } }
 
-        //mxd
-        public Vector3[] BoundingBox { get { return boundingBox; } }
-        public VisualGeometryType GeometryType { get { return geoType; } }
+		//mxd
+		public Vector3[] BoundingBox { get { return boundingBox; } }
+		public VisualGeometryType GeometryType { get { return geoType; } }
 
 		/// <summary>
 		/// Render pass in which this geometry must be rendered. Default is Solid.
@@ -128,8 +128,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			this.sector = vs;
 			this.ModulateColor = new PixelColor(255, 255, 255, 255);
-            //mxd
-            geoType = VisualGeometryType.UNKNOWN;
+			//mxd
+			geoType = VisualGeometryType.UNKNOWN;
 		}
 
 		/// <summary>
@@ -141,8 +141,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.sector = vs;
 			this.sidedef = sd;
 			this.ModulateColor = new PixelColor(255, 255, 255, 255);
-            //mxd
-            geoType = VisualGeometryType.UNKNOWN;
+			//mxd
+			geoType = VisualGeometryType.UNKNOWN;
 		}
 
 		#endregion
@@ -156,56 +156,56 @@ namespace CodeImp.DoomBuilder.VisualModes
 			vertices = new WorldVertex[verts.Count];
 			verts.CopyTo(vertices, 0);
 			triangles = vertices.Length / 3;
-            
-            //mxd
-            CalculateNormals();
+			
+			//mxd
+			CalculateNormals();
 
 			if(sector != null) sector.NeedsUpdateGeo = true;
 		}
 
-        //mxd. Normals calculation algorithm taken from OpenGl wiki 
-        protected void CalculateNormals() {
-            if (triangles > 0) {
-                int startIndex;
-                Vector3 U, V;
+		//mxd. Normals calculation algorithm taken from OpenGl wiki 
+		protected void CalculateNormals() {
+			if (triangles > 0) {
+				int startIndex;
+				Vector3 U, V;
 
-                BoundingBoxSizes bbs = new BoundingBoxSizes(vertices[0]);
+				BoundingBoxSizes bbs = new BoundingBoxSizes(vertices[0]);
 
-                for (int i = 0; i < triangles; i++) {
-                    startIndex = i * 3;
-                    WorldVertex p1 = vertices[startIndex];
-                    WorldVertex p2 = vertices[startIndex + 1];
-                    WorldVertex p3 = vertices[startIndex + 2];
+				for (int i = 0; i < triangles; i++) {
+					startIndex = i * 3;
+					WorldVertex p1 = vertices[startIndex];
+					WorldVertex p2 = vertices[startIndex + 1];
+					WorldVertex p3 = vertices[startIndex + 2];
 
-                    U = new Vector3(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
-                    V = new Vector3(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z);
+					U = new Vector3(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+					V = new Vector3(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z);
 
-                    p1.nx = p2.nx = p3.nx = -(U.Y * V.Z - U.Z * V.Y);
-                    p1.ny = p2.ny = p3.ny = -(U.Z * V.X - U.X * V.Z);
-                    p1.nz = p2.nz = p3.nz = -(U.X * V.Y - U.Y * V.X);
+					p1.nx = p2.nx = p3.nx = -(U.Y * V.Z - U.Z * V.Y);
+					p1.ny = p2.ny = p3.ny = -(U.Z * V.X - U.X * V.Z);
+					p1.nz = p2.nz = p3.nz = -(U.X * V.Y - U.Y * V.X);
 
-                    vertices[startIndex] = p1;
-                    vertices[startIndex + 1] = p2;
-                    vertices[startIndex + 2] = p3;
+					vertices[startIndex] = p1;
+					vertices[startIndex + 1] = p2;
+					vertices[startIndex + 2] = p3;
 
-                    BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p1);
-                    BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p2);
-                    BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p3);
-                }
+					BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p1);
+					BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p2);
+					BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p3);
+				}
 
-                boundingBox = BoundingBoxTools.CalculateBoundingPlane(bbs);
-            }
-        }
+				boundingBox = BoundingBoxTools.CalculateBoundingPlane(bbs);
+			}
+		}
 
-        //mxd. Used to get proper sector from 3d-floors
-        public virtual Sector GetControlSector() {
-            return sector.Sector;
-        }
+		//mxd. Used to get proper sector from 3d-floors
+		public virtual Sector GetControlSector() {
+			return sector.Sector;
+		}
 
-        //mxd. Used to get proper linedef from 3d-floors
-        public virtual Linedef GetControlLinedef() {
-            return sidedef.Line;
-        }
+		//mxd. Used to get proper linedef from 3d-floors
+		public virtual Linedef GetControlLinedef() {
+			return sidedef.Line;
+		}
 		
 		// This compares for sorting by sector
 		public int CompareTo(VisualGeometry other)
@@ -242,14 +242,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#endregion
 	}
 
-    //mxd
-    public enum VisualGeometryType{
-        FLOOR,
-        CEILING,
-        WALL_UPPER,
-        WALL_MIDDLE,
-        WALL_MIDDLE_3D,
-        WALL_LOWER,
-        UNKNOWN,
-    }
+	//mxd
+	public enum VisualGeometryType{
+		FLOOR,
+		CEILING,
+		WALL_UPPER,
+		WALL_MIDDLE,
+		WALL_MIDDLE_3D,
+		WALL_LOWER,
+		UNKNOWN,
+	}
 }

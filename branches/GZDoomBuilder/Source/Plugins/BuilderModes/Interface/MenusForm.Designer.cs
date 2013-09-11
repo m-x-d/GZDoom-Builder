@@ -76,9 +76,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// menustrip
 			// 
 			this.menustrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.linedefsmenu,
-            this.sectorsmenu,
-            this.thingsmenu});
+			this.linedefsmenu,
+			this.sectorsmenu,
+			this.thingsmenu});
 			this.menustrip.Location = new System.Drawing.Point(0, 0);
 			this.menustrip.Name = "menustrip";
 			this.menustrip.Size = new System.Drawing.Size(423, 24);
@@ -88,16 +88,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// linedefsmenu
 			// 
 			this.linedefsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.selectsinglesideditem,
-            this.selectdoublesideditem,
-            this.toolStripMenuItem4,
-            this.fliplinedefsitem,
-            this.flipsidedefsitem,
-            this.toolStripMenuItem1,
-            this.curvelinedefsitem,
-            this.toolStripMenuItem3,
-            this.splitlinedefsitem,
-            this.alignLinedefsItem});
+			this.selectsinglesideditem,
+			this.selectdoublesideditem,
+			this.toolStripMenuItem4,
+			this.fliplinedefsitem,
+			this.flipsidedefsitem,
+			this.toolStripMenuItem1,
+			this.curvelinedefsitem,
+			this.toolStripMenuItem3,
+			this.splitlinedefsitem,
+			this.alignLinedefsItem});
 			this.linedefsmenu.Name = "linedefsmenu";
 			this.linedefsmenu.Size = new System.Drawing.Size(63, 20);
 			this.linedefsmenu.Text = "&Linedefs";
@@ -170,10 +170,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// alignLinedefsItem
 			// 
 			this.alignLinedefsItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.alignFloorToFrontItem,
-            this.alignFloorToBackItem,
-            this.alignCeilingToFrontItem,
-            this.alignCeilingToBackItem});
+			this.alignFloorToFrontItem,
+			this.alignFloorToBackItem,
+			this.alignCeilingToFrontItem,
+			this.alignCeilingToBackItem});
 			this.alignLinedefsItem.Name = "alignLinedefsItem";
 			this.alignLinedefsItem.Size = new System.Drawing.Size(205, 22);
 			this.alignLinedefsItem.Text = "&Align Textures";
@@ -213,9 +213,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// sectorsmenu
 			// 
 			this.sectorsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.joinsectorsitem,
-            this.mergesectorsitem,
-            this.toolStripMenuItem2});
+			this.joinsectorsitem,
+			this.mergesectorsitem,
+			this.toolStripMenuItem2});
 			this.sectorsmenu.Name = "sectorsmenu";
 			this.sectorsmenu.Size = new System.Drawing.Size(57, 20);
 			this.sectorsmenu.Text = "&Sectors";
@@ -246,9 +246,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// thingsmenu
 			// 
 			this.thingsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.alignToWallItem,
-            this.pointAtCursorItem,
-            this.selectInSectorsItem});
+			this.alignToWallItem,
+			this.pointAtCursorItem,
+			this.selectInSectorsItem});
 			this.thingsmenu.Name = "thingsmenu";
 			this.thingsmenu.Size = new System.Drawing.Size(55, 20);
 			this.thingsmenu.Text = "Things";
@@ -291,21 +291,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// manualstrip
 			// 
 			this.manualstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.buttoncopyproperties,
-            this.buttonpasteproperties,
-            this.seperatorcopypaste,
-            this.buttonselectionnumbers,
-            this.separatorsectors1,
-            this.buttonbrightnessgradient,
-            this.buttonfloorgradient,
-            this.buttonceilinggradient,
-            this.buttonflipselectionh,
-            this.buttonflipselectionv,
-            this.buttoncurvelinedefs,
-            this.brightnessGradientMode,
-            this.buttonMarqueSelectTouching,
-            this.buttonAlignThingsToWall,
-            this.buttonTextureOffsetLock});
+			this.buttoncopyproperties,
+			this.buttonpasteproperties,
+			this.seperatorcopypaste,
+			this.buttonselectionnumbers,
+			this.separatorsectors1,
+			this.buttonbrightnessgradient,
+			this.buttonfloorgradient,
+			this.buttonceilinggradient,
+			this.buttonflipselectionh,
+			this.buttonflipselectionv,
+			this.buttoncurvelinedefs,
+			this.brightnessGradientMode,
+			this.buttonMarqueSelectTouching,
+			this.buttonAlignThingsToWall,
+			this.buttonTextureOffsetLock});
 			this.manualstrip.Location = new System.Drawing.Point(0, 49);
 			this.manualstrip.Name = "manualstrip";
 			this.manualstrip.Size = new System.Drawing.Size(423, 25);

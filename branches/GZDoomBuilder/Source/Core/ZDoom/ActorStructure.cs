@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					token = token.ToLowerInvariant();
 					if(token == ":")
 					{
-                        // The next token must be the class to inherit from
+						// The next token must be the class to inherit from
 						parser.SkipWhitespace(true);
 						inheritclass = parser.StripTokenQuotes(parser.ReadToken());
 						if(string.IsNullOrEmpty(inheritclass) || parser.IsSpecialToken(inheritclass))
@@ -311,7 +311,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							return;
 						}
 						if(v == "\n") break;
-                        if (v == "}") return; //mxd
+						if (v == "}") return; //mxd
 						if(v != ",")
 							games.Add(v.ToLowerInvariant());
 					}
@@ -344,7 +344,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 								return;
 							}
 							if(v == "\n") break;
-                            if (v == "}") return; //mxd
+							if (v == "}") return; //mxd
 							if(v != ",")
 								values.Add(v);
 						}

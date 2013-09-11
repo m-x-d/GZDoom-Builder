@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Things Mode",
 			  SwitchAction = "thingsmode",		// Action name used to switch to this mode
-		      ButtonImage = "ThingsMode.png",	// Image resource name for the button
+			  ButtonImage = "ThingsMode.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 300,	// Position of the button (lower is more to the left)
 			  ButtonGroup = "000_editing",
 			  UseByDefault = true,
@@ -167,7 +167,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
 				}
 
-                //mxd
+				//mxd
 				if(General.Settings.GZShowEventLines) {
 					List<Line3D> lines = GZBuilder.Data.LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
 

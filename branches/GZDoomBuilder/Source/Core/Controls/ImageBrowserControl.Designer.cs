@@ -94,9 +94,9 @@ namespace CodeImp.DoomBuilder.Controls
 			this.cbMixMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbMixMode.FormattingEnabled = true;
 			this.cbMixMode.Items.AddRange(new object[] {
-            "All",
-            "Textures",
-            "Flats"});
+			"All",
+			"Textures",
+			"Flats"});
 			this.cbMixMode.Location = new System.Drawing.Point(48, 7);
 			this.cbMixMode.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.cbMixMode.Name = "cbMixMode";

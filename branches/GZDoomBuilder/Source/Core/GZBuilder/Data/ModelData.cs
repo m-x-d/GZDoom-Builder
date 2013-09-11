@@ -14,8 +14,8 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
-    internal sealed class ModelData
-    {
+	internal sealed class ModelData
+	{
 		private const float VERTICAL_STRETCH = 1 / 1.2f;
 
 		private class MD3LoadResult
@@ -31,36 +31,36 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		}
 		
 		internal string ClassName;
-        internal List<string> ModelNames;
-        internal List<string> TextureNames;
+		internal List<string> ModelNames;
+		internal List<string> TextureNames;
 
-        internal GZModel Model;
+		internal GZModel Model;
 
 		private ModelLoadState loadstate;
 		public ModelLoadState LoadState { get { return loadstate; } internal set { loadstate = value; } }
 
-        internal Vector3 Scale;
-        internal float zOffset;
+		internal Vector3 Scale;
+		internal float zOffset;
 
-        internal float AngleOffset; //in radians
-        internal float PitchOffset; //in radians
-        internal float RollOffset; //in radians
+		internal float AngleOffset; //in radians
+		internal float PitchOffset; //in radians
+		internal float RollOffset; //in radians
 
-        internal ModelData() {
-            ModelNames = new List<string>();
-            TextureNames = new List<string>();
-        }
+		internal ModelData() {
+			ModelNames = new List<string>();
+			TextureNames = new List<string>();
+		}
 
-        internal void Dispose() {
-            if (Model != null) {
-                foreach (Mesh mesh in Model.Meshes)
-                    mesh.Dispose();
+		internal void Dispose() {
+			if (Model != null) {
+				foreach (Mesh mesh in Model.Meshes)
+					mesh.Dispose();
 
-                foreach (Texture t in Model.Textures)
-                    t.Dispose();
+				foreach (Texture t in Model.Textures)
+					t.Dispose();
 
 				loadstate = ModelLoadState.None;
-            }
+			}
 		}
 	}
 }

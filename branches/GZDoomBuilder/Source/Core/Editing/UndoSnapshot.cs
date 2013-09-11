@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Editing
 				
 				// Compress data
 				recstream.Seek(0, SeekOrigin.Begin);
-                MemoryStream outstream = SharpCompressHelper.CompressStream(recstream); //mxd
+				MemoryStream outstream = SharpCompressHelper.CompressStream(recstream); //mxd
 
 				// Make temporary file
 				filename = General.MakeTempFilename(General.Map.TempPath, "snapshot");
@@ -139,14 +139,14 @@ namespace CodeImp.DoomBuilder.Editing
 				
 				// Decompress data
 				instream.Seek(0, SeekOrigin.Begin);
-                MemoryStream outstream = SharpCompressHelper.DecompressStream(instream); //mxd
+				MemoryStream outstream = SharpCompressHelper.DecompressStream(instream); //mxd
 				recstream = new MemoryStream(outstream.ToArray());
 				
 				// Clean up
 				instream.Dispose();
 				File.Delete(filename);
 				filename = null;
-                outstream.Dispose();
+				outstream.Dispose();
 			}
 		}
 		

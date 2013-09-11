@@ -166,8 +166,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Updating
 		private int lockupdatecount;
 
-        //mxd
-        private int warningsCount;
+		//mxd
+		private int warningsCount;
 		private System.Timers.Timer blinkTimer; 
 		
 		#endregion
@@ -1355,10 +1355,10 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
-        //mxd. Sometimes it's handeled by RenderTargetControl, not by MainForm leading to keys being "stuck"
-        private void display_OnKeyReleased(object sender, KeyEventArgs e) {
-            MainForm_KeyUp(sender, e);
-        }
+		//mxd. Sometimes it's handeled by RenderTargetControl, not by MainForm leading to keys being "stuck"
+		private void display_OnKeyReleased(object sender, KeyEventArgs e) {
+			MainForm_KeyUp(sender, e);
+		}
 		
 		// These prevent focus changes by way of TAB or Arrow keys
 		protected override bool IsInputChar(char charCode) { return false; }
@@ -1392,24 +1392,24 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map != null)
 			{
 				// Make the new skills list
-                //mxd
-                skills = new ToolStripItem[(General.Map.Config.Skills.Count * 2) + 3];
+				//mxd
+				skills = new ToolStripItem[(General.Map.Config.Skills.Count * 2) + 3];
 
-                //mxd. Add engine selector
-                ToolStripMenuItem menuitem = new ToolStripMenuItem("Engine:", Properties.Resources.Marine);
-                for (int i = 0; i < General.Map.ConfigSettings.TestEngines.Count; i++) {
-                    ToolStripMenuItem engineItem = new ToolStripMenuItem(General.Map.ConfigSettings.TestEngines[i].TestProgramName);
-                    engineItem.Tag = i;
-                    engineItem.Checked = (i == General.Map.ConfigSettings.CurrentEngineIndex);
-                    engineItem.Click += new EventHandler(engineItem_Click);
-                    menuitem.DropDownItems.Add(engineItem);
-                }
-                skills[0] = menuitem;
-                
-                //mxd. Add seperator
-                skills[1] = new ToolStripSeparator();
-                skills[1].Padding = new Padding(0, 3, 0, 3);
-                int addindex = 2;
+				//mxd. Add engine selector
+				ToolStripMenuItem menuitem = new ToolStripMenuItem("Engine:", Properties.Resources.Marine);
+				for (int i = 0; i < General.Map.ConfigSettings.TestEngines.Count; i++) {
+					ToolStripMenuItem engineItem = new ToolStripMenuItem(General.Map.ConfigSettings.TestEngines[i].TestProgramName);
+					engineItem.Tag = i;
+					engineItem.Checked = (i == General.Map.ConfigSettings.CurrentEngineIndex);
+					engineItem.Click += new EventHandler(engineItem_Click);
+					menuitem.DropDownItems.Add(engineItem);
+				}
+				skills[0] = menuitem;
+				
+				//mxd. Add seperator
+				skills[1] = new ToolStripSeparator();
+				skills[1].Padding = new Padding(0, 3, 0, 3);
+				int addindex = 2;
 				
 				// Positive skills are with monsters
 				for(int i = 0; i < General.Map.Config.Skills.Count; i++)
@@ -1443,11 +1443,11 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
-        //mxd
-        private void engineItem_Click(object sender, EventArgs e) {
-            General.Map.ConfigSettings.CurrentEngineIndex = (int)(((ToolStripMenuItem)sender).Tag);
+		//mxd
+		private void engineItem_Click(object sender, EventArgs e) {
+			General.Map.ConfigSettings.CurrentEngineIndex = (int)(((ToolStripMenuItem)sender).Tag);
 			UpdateSkills();
-        }
+		}
 		
 		// Event handler for testing at a specific skill
 		private void TestSkill_Click(object sender, EventArgs e)
@@ -1697,16 +1697,16 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonautomerge.Visible = General.Settings.ToolbarGeometry;
 			buttontest.Visible = General.Settings.ToolbarTesting;
 
-            //mxd
-            buttontogglemodels.Visible = General.Settings.GZToolbarGZDoom;
-            buttonselectedmodelsonly.Visible = General.Settings.GZToolbarGZDoom;
-            buttontoggledynlight.Visible = General.Settings.GZToolbarGZDoom;
-            buttontoggleanimatedlight.Visible = General.Settings.GZToolbarGZDoom;
-            buttontogglefx.Visible = General.Settings.GZToolbarGZDoom;
-            buttontogglefog.Visible = General.Settings.GZToolbarGZDoom;
+			//mxd
+			buttontogglemodels.Visible = General.Settings.GZToolbarGZDoom;
+			buttonselectedmodelsonly.Visible = General.Settings.GZToolbarGZDoom;
+			buttontoggledynlight.Visible = General.Settings.GZToolbarGZDoom;
+			buttontoggleanimatedlight.Visible = General.Settings.GZToolbarGZDoom;
+			buttontogglefx.Visible = General.Settings.GZToolbarGZDoom;
+			buttontogglefog.Visible = General.Settings.GZToolbarGZDoom;
 			buttontoggleeventlines.Visible = General.Settings.GZToolbarGZDoom;
 			buttontogglevisualvertices.Visible = General.Settings.GZToolbarGZDoom;
-            separatorgzmodes.Visible = General.Settings.GZToolbarGZDoom;
+			separatorgzmodes.Visible = General.Settings.GZToolbarGZDoom;
 
 
 			// Enable/disable all edit mode items
@@ -1833,38 +1833,38 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Update();
 		}
 
-        //mxd
-        public void UpdateGZDoomPanel() {
-            if (General.Map != null) {
-                buttontogglemodels.Enabled = true;
-                buttonselectedmodelsonly.Enabled = true;
-                buttontoggledynlight.Enabled = true;
-                buttontoggleanimatedlight.Enabled = true;
-                buttontogglefog.Enabled = true;
-                buttontogglefx.Enabled = true;
+		//mxd
+		public void UpdateGZDoomPanel() {
+			if (General.Map != null) {
+				buttontogglemodels.Enabled = true;
+				buttonselectedmodelsonly.Enabled = true;
+				buttontoggledynlight.Enabled = true;
+				buttontoggleanimatedlight.Enabled = true;
+				buttontogglefog.Enabled = true;
+				buttontogglefx.Enabled = true;
 				buttontoggleeventlines.Enabled = true;
 				buttontogglevisualvertices.Enabled = General.Map.UDMF;
 
-                if (General.Settings.GZToolbarGZDoom) {
-                    buttontogglemodels.Checked = General.Settings.GZDrawModels;
-                    buttonselectedmodelsonly.Checked = General.Settings.GZDrawSelectedModelsOnly;
-                    buttontoggledynlight.Checked = General.Settings.GZDrawLights;
-                    buttontoggleanimatedlight.Checked = General.Settings.GZAnimateLights;
-                    buttontogglefog.Checked = General.Settings.GZDrawFog;
+				if (General.Settings.GZToolbarGZDoom) {
+					buttontogglemodels.Checked = General.Settings.GZDrawModels;
+					buttonselectedmodelsonly.Checked = General.Settings.GZDrawSelectedModelsOnly;
+					buttontoggledynlight.Checked = General.Settings.GZDrawLights;
+					buttontoggleanimatedlight.Checked = General.Settings.GZAnimateLights;
+					buttontogglefog.Checked = General.Settings.GZDrawFog;
 					buttontoggleeventlines.Checked = General.Settings.GZShowEventLines;
 					buttontogglevisualvertices.Checked = General.Settings.GZShowVisualVertices;
-                }
-            } else {
-                buttontogglemodels.Enabled = false;
-                buttonselectedmodelsonly.Enabled = false;
-                buttontoggledynlight.Enabled = false;
-                buttontoggleanimatedlight.Enabled = false;
-                buttontogglefog.Enabled = false;
-                buttontogglefx.Enabled = false;
+				}
+			} else {
+				buttontogglemodels.Enabled = false;
+				buttonselectedmodelsonly.Enabled = false;
+				buttontoggledynlight.Enabled = false;
+				buttontoggleanimatedlight.Enabled = false;
+				buttontogglefog.Enabled = false;
+				buttontogglefx.Enabled = false;
 				buttontoggleeventlines.Enabled = false;
 				buttontogglevisualvertices.Enabled = false;
-            }
-        }
+			}
+		}
 
 		#endregion
 
@@ -2005,8 +2005,8 @@ namespace CodeImp.DoomBuilder.Windows
 				case MenuSection.ViewViews: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(seperatorviewviews), menu); break;
 				case MenuSection.ViewZoom: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(seperatorviewzoom), menu); break;
 				case MenuSection.ViewScriptEdit: menuview.DropDownItems.Add(menu); break;
-                //mxd
-                case MenuSection.ModeDrawModes: menumode.DropDownItems.Insert(menumode.DropDownItems.IndexOf(separatorDrawModes) + 1, menu); break;
+				//mxd
+				case MenuSection.ModeDrawModes: menumode.DropDownItems.Insert(menumode.DropDownItems.IndexOf(separatorDrawModes) + 1, menu); break;
 
 				case MenuSection.PrefabsInsert: menuprefabs.DropDownItems.Insert(menuprefabs.DropDownItems.IndexOf(seperatorprefabsinsert), menu); break;
 				case MenuSection.PrefabsCreate: menuprefabs.DropDownItems.Add(menu); break;
@@ -2569,13 +2569,13 @@ namespace CodeImp.DoomBuilder.Windows
 		private void UpdateToolsMenu()
 		{
 			// Enable/disable items
-            bool enabled = (General.Map != null);
+			bool enabled = (General.Map != null);
 			itemreloadresources.Enabled = enabled;
-            
-            //mxd
-            itemReloadGldefs.Enabled = enabled;
-            itemReloadMapinfo.Enabled = enabled;
-            itemReloadModedef.Enabled = enabled;
+			
+			//mxd
+			itemReloadGldefs.Enabled = enabled;
+			itemReloadMapinfo.Enabled = enabled;
+			itemReloadModedef.Enabled = enabled;
 		}
 		
 		// Errors and Warnings
@@ -2585,8 +2585,8 @@ namespace CodeImp.DoomBuilder.Windows
 			ErrorsForm errform = new ErrorsForm();
 			errform.ShowDialog(this);
 			errform.Dispose();
-            //mxd
-            SetWarningsCount(0, false);
+			//mxd
+			SetWarningsCount(0, false);
 		}
 		
 		// Game Configuration action
@@ -2796,8 +2796,8 @@ namespace CodeImp.DoomBuilder.Windows
 			modename.Visible = ((General.Map != null) && IsInfoPanelExpanded);
 			modename.Refresh();
 
-            //mxd. let the plugins know
-            General.Plugins.OnHighlightLost();
+			//mxd. let the plugins know
+			General.Plugins.OnHighlightLost();
 		}
 		
 		// This refreshes info
@@ -2808,8 +2808,8 @@ namespace CodeImp.DoomBuilder.Windows
 			else if(lastinfoobject is Sector) ShowSectorInfo(lastinfoobject as Sector);
 			else if(lastinfoobject is Thing) ShowThingInfo(lastinfoobject as Thing);
 
-            //mxd. let the plugins know
-            General.Plugins.OnHighlightRefreshed(lastinfoobject);
+			//mxd. let the plugins know
+			General.Plugins.OnHighlightRefreshed(lastinfoobject);
 		}
 		
 		// Show linedef info
@@ -2841,8 +2841,8 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			labelcollapsedinfo.Refresh();
 
-            //mxd. let the plugins know
-            General.Plugins.OnHighlightLinedef(l);
+			//mxd. let the plugins know
+			General.Plugins.OnHighlightLinedef(l);
 		}
 
 		// Show vertex info
@@ -2865,8 +2865,8 @@ namespace CodeImp.DoomBuilder.Windows
 			labelcollapsedinfo.Text = v.Position.x.ToString("0.##") + ", " + v.Position.y.ToString("0.##");
 			labelcollapsedinfo.Refresh();
 
-            //mxd. let the plugins know
-            General.Plugins.OnHighlightVertex(v);
+			//mxd. let the plugins know
+			General.Plugins.OnHighlightVertex(v);
 		}
 
 		// Show sector info
@@ -2895,8 +2895,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			labelcollapsedinfo.Refresh();
 
-            //mxd. let the plugins know
-            General.Plugins.OnHighlightSector(s);
+			//mxd. let the plugins know
+			General.Plugins.OnHighlightSector(s);
 		}
 
 		// Show thing info
@@ -2920,8 +2920,8 @@ namespace CodeImp.DoomBuilder.Windows
 			labelcollapsedinfo.Text = t.Type + " - " + ti.Title;
 			labelcollapsedinfo.Refresh();
 
-            //mxd. let the plugins know
-            General.Plugins.OnHighlightThing(t);
+			//mxd. let the plugins know
+			General.Plugins.OnHighlightThing(t);
 		}
 
 		#endregion
@@ -2939,7 +2939,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Returns the new flat name or the same flat name when cancelled
 		public string BrowseFlat(IWin32Window owner, string initialvalue)
 		{
-            return TextureBrowserForm.Browse(owner, initialvalue, true); //mxd. was FlatBrowserForm
+			return TextureBrowserForm.Browse(owner, initialvalue, true); //mxd. was FlatBrowserForm
 		}
 		
 		// This browses the lindef types
@@ -3080,9 +3080,9 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
-        //mxd. Warnings panel
-        internal void SetWarningsCount(int count, bool blink) {
-            warningsCount = count;
+		//mxd. Warnings panel
+		internal void SetWarningsCount(int count, bool blink) {
+			warningsCount = count;
 
 			if(warningsCount > 0) {
 				if(!warnsLabel.Font.Bold){
@@ -3095,8 +3095,8 @@ namespace CodeImp.DoomBuilder.Windows
 				warnsLabel.BackColor = SystemColors.Control;
 			}
 
-            warnsLabel.Text = warningsCount.ToString();
-            
+			warnsLabel.Text = warningsCount.ToString();
+			
 			//start annoying blinking!
 			if(blink && blinkTimer == null) {
 				blinkTimer = new System.Timers.Timer();
@@ -3104,7 +3104,7 @@ namespace CodeImp.DoomBuilder.Windows
 				blinkTimer.Elapsed += new System.Timers.ElapsedEventHandler(blinkTimer_Elapsed);
 				blinkTimer.Enabled = true;
 			}
-        }
+		}
 
 		//mxd. Bliks warnings indicator
 		private void blink() {
@@ -3119,10 +3119,10 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
-        //mxd
-        private void warnsLabel_Click(object sender, EventArgs e) {
-            ShowErrors();
-        }
+		//mxd
+		private void warnsLabel_Click(object sender, EventArgs e) {
+			ShowErrors();
+		}
 
 		//mxd
 		private void blinkTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {

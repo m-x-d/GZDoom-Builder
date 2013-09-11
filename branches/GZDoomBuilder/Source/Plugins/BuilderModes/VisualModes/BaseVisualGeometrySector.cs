@@ -147,8 +147,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-            //mxd. Modify offsets based on surface and camera angles
-            if (General.Map.UDMF) {
+			//mxd. Modify offsets based on surface and camera angles
+			if (General.Map.UDMF) {
 				float angle = 0;
 
 				if(GeometryType == VisualGeometryType.CEILING)
@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				offsetx = (int)Math.Round(v.x);
 				offsety = (int)Math.Round(v.y);
-            }
+			}
 
 			// Apply offsets
 			int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
@@ -172,10 +172,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode.ShowTargetInfo();
 		}
 
-        //mxd
-        public override Sector GetControlSector() {
-            return level.sector;
-        }
+		//mxd
+		public override Sector GetControlSector() {
+			return level.sector;
+		}
 
 		//mxd
 		protected void onTextureChanged() {
@@ -718,7 +718,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(horizontal == 0 && vertical == 0) return; //mxd
 			
 			//mxd
-            if (!General.Map.UDMF) {
+			if (!General.Map.UDMF) {
 				General.ShowErrorMessage("Floor/ceiling texture offsets cannot be changed in this map format!", MessageBoxButtons.OK);
 				return;
 			}

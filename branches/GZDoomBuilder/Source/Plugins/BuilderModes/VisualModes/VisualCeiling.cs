@@ -52,16 +52,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public VisualCeiling(BaseVisualMode mode, VisualSector vs) : base(mode, vs)
 		{
-            //mxd
-            geoType = VisualGeometryType.CEILING;
+			//mxd
+			geoType = VisualGeometryType.CEILING;
 
 			//mxd
 			if(mode.UseSelectionFromClassicMode && vs != null && vs.Sector.Selected && (General.Map.ViewMode == ViewMode.CeilingTextures || General.Map.ViewMode == ViewMode.Normal)) {
 				this.selected = true;
 				mode.AddSelectedObject(this);
 			}
-            
-            // We have no destructor
+			
+			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
@@ -83,9 +83,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Fetch ZDoom fields
 			float rotate = Angle2D.DegToRad(s.Fields.GetValue("rotationceiling", 0.0f));
 			Vector2D offset = new Vector2D(s.Fields.GetValue("xpanningceiling", 0.0f),
-			                               s.Fields.GetValue("ypanningceiling", 0.0f));
+										   s.Fields.GetValue("ypanningceiling", 0.0f));
 			Vector2D scale = new Vector2D(s.Fields.GetValue("xscaleceiling", 1.0f),
-			                              s.Fields.GetValue("yscaleceiling", 1.0f));
+										  s.Fields.GetValue("yscaleceiling", 1.0f));
 			
 			//Load ceiling texture
 			if((s.CeilTexture.Length > 0) && (s.CeilTexture != "-")) {
@@ -175,14 +175,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Move texture coordinates
 		protected override void MoveTextureOffset(Point xy)
 		{
-            //mxd
-            Sector s = GetControlSector();
+			//mxd
+			Sector s = GetControlSector();
 			s.Fields.BeforeFieldsChange();
 			float nx = (s.Fields.GetValue("xpanningceiling", 0.0f) + xy.X) % (Texture.ScaledWidth / s.Fields.GetValue("xscaleceiling", 1.0f));
 			float ny = (s.Fields.GetValue("ypanningceiling", 0.0f) + xy.Y) % (Texture.ScaledHeight / s.Fields.GetValue("yscaleceiling", 1.0f));
-            s.Fields["xpanningceiling"] = new UniValue(UniversalType.Float, nx);
-            s.Fields["ypanningceiling"] = new UniValue(UniversalType.Float, ny);
-            s.UpdateNeeded = true;
+			s.Fields["xpanningceiling"] = new UniValue(UniversalType.Float, nx);
+			s.Fields["ypanningceiling"] = new UniValue(UniversalType.Float, ny);
+			s.UpdateNeeded = true;
 
 			mode.SetActionResult("Changed ceiling texture offsets to " + nx + ", " + ny + ".");
 		}
@@ -280,25 +280,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode.SetActionResult("Changed ceiling height to " + level.sector.CeilHeight + ".");
 		}
 
-        //mxd. Sector brightness change
-        public override void OnChangeTargetBrightness(bool up) {
-            if (level != null && level.sector != Sector.Sector) {
-                int index = -1;
-                for (int i = 0; i < Sector.ExtraCeilings.Count; i++) {
-                    if (Sector.ExtraCeilings[i] == this) {
-                        index = i + 1;
-                        break;
-                    }
-                }
+		//mxd. Sector brightness change
+		public override void OnChangeTargetBrightness(bool up) {
+			if (level != null && level.sector != Sector.Sector) {
+				int index = -1;
+				for (int i = 0; i < Sector.ExtraCeilings.Count; i++) {
+					if (Sector.ExtraCeilings[i] == this) {
+						index = i + 1;
+						break;
+					}
+				}
 
-                if (index > -1 && index < Sector.ExtraCeilings.Count) {
+				if (index > -1 && index < Sector.ExtraCeilings.Count) {
 					((BaseVisualSector)mode.GetVisualSector(Sector.ExtraCeilings[index].level.sector)).Floor.OnChangeTargetBrightness(up);
-                } else {
-                    base.OnChangeTargetBrightness(up);
-                }
-            } else {
-                //if a map is not in UDMF format, or this ceiling is part of 3D-floor...
-                if(!General.Map.UDMF || Sector.Sector != level.sector) {
+				} else {
+					base.OnChangeTargetBrightness(up);
+				}
+			} else {
+				//if a map is not in UDMF format, or this ceiling is part of 3D-floor...
+				if(!General.Map.UDMF || Sector.Sector != level.sector) {
 					base.OnChangeTargetBrightness(up);
 					return;
 				}
@@ -325,8 +325,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				//rebuild sector
 				Sector.UpdateSectorGeometry(false);
-            }
-        }
+			}
+		}
 		
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)

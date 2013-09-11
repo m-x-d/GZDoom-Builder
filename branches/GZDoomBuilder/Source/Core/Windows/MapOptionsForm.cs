@@ -69,16 +69,16 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
-            //mxd. Still better than nothing :)
-            if (config.SelectedIndex == -1 && General.Configs.Count > 0) config.SelectedIndex = 0;
+			//mxd. Still better than nothing :)
+			if (config.SelectedIndex == -1 && General.Configs.Count > 0) config.SelectedIndex = 0;
 
 			//mxd
 			if(General.Map != null)
 				datalocations.StartPath = General.Map.FilePathName;
 
 			// Set the level name
-            if (options.CurrentName.Length > 0) //mxd
-			    levelname.Text = options.CurrentName;
+			if (options.CurrentName.Length > 0) //mxd
+				levelname.Text = options.CurrentName;
 
 			// Set strict patches loading
 			strictpatches.Checked = options.StrictPatches;
@@ -229,11 +229,11 @@ namespace CodeImp.DoomBuilder.Windows
 				ci = (ConfigurationInfo)config.SelectedItem;
 
 				// No lump name in the name field?
-                if (levelname.Text.Trim().Length == 0) 
-                {
-                    // Get default lump name from configuration
-                    levelname.Text = ci.DefaultLumpName;
-                }
+				if (levelname.Text.Trim().Length == 0) 
+				{
+					// Get default lump name from configuration
+					levelname.Text = ci.DefaultLumpName;
+				}
 				
 				// Show resources
 				datalocations.FixedResourceLocationList(ci.Resources);
