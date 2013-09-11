@@ -689,8 +689,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Sector s in General.Map.Map.Sectors) {
 					if(s.Tag == asso.tag) {
 						renderer.PlotSector(s, General.Colors.Indication);
-						if(General.Settings.GZShowEventLines)
-							lines.Add(new Line3D(asso.Center, new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2)));//mxd
+						if (General.Settings.GZShowEventLines) {
+							Vector2D end = (s.Labels.Count > 0 ? s.Labels[0].position : new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2));
+							lines.Add(new Line3D(asso.Center, end)); //mxd
+						}
 					}
 				}
 
@@ -707,7 +709,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(l.Tag == asso.tag) {
 						renderer.PlotLinedef(l, General.Colors.Indication);
 						if(General.Settings.GZShowEventLines)
-							lines.Add(new Line3D(asso.Center, new Vector2D((l.Start.Position + l.End.Position) / 2)));//mxd
+							lines.Add(new Line3D(asso.Center, l.GetCenterPoint()));//mxd
 					}
 				}
 
@@ -765,7 +767,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							renderer.PlotLinedef(l, General.Colors.Indication);
 							
 							if(General.Settings.GZShowEventLines) //mxd
-								lines.Add(new Line3D(new Vector2D((l.Start.Position + l.End.Position) / 2), asso.Center)); //mxd
+								lines.Add(new Line3D(l.GetCenterPoint(), asso.Center)); //mxd
 						}
 					}
 				}
@@ -792,7 +794,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							renderer.PlotLinedef(l, General.Colors.Indication);
 
 							if(General.Settings.GZShowEventLines) //mxd
-								lines.Add(new Line3D(new Vector2D((l.Start.Position + l.End.Position) / 2), asso.Center));
+								lines.Add(new Line3D(l.GetCenterPoint(), asso.Center));
 						}
 					}
 				}
