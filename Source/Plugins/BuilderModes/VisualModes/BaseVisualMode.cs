@@ -2548,10 +2548,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("copyselection", BaseAction = true)]
 		public void CopySelection() {
 			List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true, false);
-			if (objs.Count == 0) {
-				General.Interface.DisplayStatus(StatusType.Warning, "Nothing to copy, select some Things first!");
-				return;
-			}
+			if (objs.Count == 0) return;
 
 			copyBuffer.Clear();
 			foreach (IVisualEventReceiver i in objs) {

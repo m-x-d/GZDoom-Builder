@@ -600,7 +600,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		private void floorRotation_WhenTextChanged(object sender, EventArgs e) {
-			floorAngleControl.Angle = General.ClampAngle(360 - floorRotation.GetResult(0));
+			floorAngleControl.Angle = (int)General.ClampAngle(360 - floorRotation.GetResultFloat(0));
 
 			if(blockUpdate)	return;
 			int i = 0;
@@ -614,7 +614,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//update values
 			} else {
 				foreach(Sector s in sectors) {
-					UDMFTools.SetFloat(s.Fields, "rotationfloor", floorRotation.GetResult((int)sectorProps[i++].FloorRotation), 0f);
+					UDMFTools.SetFloat(s.Fields, "rotationfloor", floorRotation.GetResultFloat(sectorProps[i++].FloorRotation), 0f);
 					s.UpdateNeeded = true;
 				}
 			}
@@ -624,7 +624,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		private void ceilRotation_WhenTextChanged(object sender, EventArgs e) {
-			ceilAngleControl.Angle = General.ClampAngle(360 - ceilRotation.GetResult(0));
+			ceilAngleControl.Angle = (int)General.ClampAngle(360 - ceilRotation.GetResultFloat(0));
 
 			if(blockUpdate)	return;
 			int i = 0;
@@ -638,7 +638,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//update values
 			} else {
 				foreach(Sector s in sectors) {
-					UDMFTools.SetFloat(s.Fields, "rotationceiling", ceilRotation.GetResult((int)sectorProps[i++].CeilRotation), 0f);
+					UDMFTools.SetFloat(s.Fields, "rotationceiling", ceilRotation.GetResultFloat(sectorProps[i++].CeilRotation), 0f);
 					s.UpdateNeeded = true;
 				}
 			}
