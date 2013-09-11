@@ -196,9 +196,9 @@
 			this.cbUpperTexStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbUpperTexStyle.FormattingEnabled = true;
 			this.cbUpperTexStyle.Items.AddRange(new object[] {
-            "Don\'t change upper texture",
-            "Use ceiling texture",
-            "Pick upper texture"});
+			"Don\'t change upper texture",
+			"Use ceiling texture",
+			"Pick upper texture"});
 			this.cbUpperTexStyle.Location = new System.Drawing.Point(12, 131);
 			this.cbUpperTexStyle.Name = "cbUpperTexStyle";
 			this.cbUpperTexStyle.Size = new System.Drawing.Size(176, 22);
@@ -210,9 +210,9 @@
 			this.cbLowerTexStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLowerTexStyle.FormattingEnabled = true;
 			this.cbLowerTexStyle.Items.AddRange(new object[] {
-            "Don\'t change lower texture",
-            "Use floor texture",
-            "Pick lower texture"});
+			"Don\'t change lower texture",
+			"Use floor texture",
+			"Pick lower texture"});
 			this.cbLowerTexStyle.Location = new System.Drawing.Point(195, 131);
 			this.cbLowerTexStyle.Name = "cbLowerTexStyle";
 			this.cbLowerTexStyle.Size = new System.Drawing.Size(175, 22);

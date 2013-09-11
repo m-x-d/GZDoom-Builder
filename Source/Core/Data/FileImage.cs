@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.Data
 		public FileImage(string name, string filepathname, bool asflat, float scalex, float scaley)
 		{
 			// Initialize
-            this.fullName = filepathname; //mxd
+			this.fullName = filepathname; //mxd
 			this.scale.x = scalex;
 			this.scale.y = scaley;
 			SetName(name);

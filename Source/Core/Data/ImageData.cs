@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected Vector2D scale;
 		protected bool worldpanning;
 		protected bool usecolorcorrection;
-        protected string fullName; //mxd. name with path;
+		protected string fullName; //mxd. name with path;
 		protected bool isFlat; //mxd. if false, it's a texture
 		
 		// Loading

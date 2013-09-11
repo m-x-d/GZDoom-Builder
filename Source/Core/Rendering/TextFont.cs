@@ -226,7 +226,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Check if the character has been set
 			return ((characters[b].width > 0.000000001f) ||
-			        (characters[b].height > 0.000000001f));
+					(characters[b].height > 0.000000001f));
 		}
 
 		// This calculates the size of a text string at a given scale

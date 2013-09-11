@@ -48,8 +48,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private ICollection<Thing> things;
 		private ThingTypeInfo thinginfo;
 		private bool preventchanges;
-        //mxd
-        private Vector3D initialPosition; //initial position of a thing used to fill posX, posY and posZ fields
+		//mxd
+		private Vector3D initialPosition; //initial position of a thing used to fill posX, posY and posZ fields
 		private int initialFloorHeight; //floor height of the sector first thing is in
 		private static bool useAbsoluteHeight;
 		private string arg0str;
@@ -175,15 +175,15 @@ namespace CodeImp.DoomBuilder.Windows
 			zlabel.Text = useAbsoluteHeight ? "Z:" : "Height:"; //mxd
 			cbAbsoluteHeight.Checked = useAbsoluteHeight; //mxd
 
-            //mxd
-            initialPosition = ft.Position;
-            if (ft.Sector != null)
-			    initialFloorHeight = ft.Sector.FloorHeight;
-            posX.Text = ((int)ft.Position.x).ToString();
-            posY.Text = ((int)ft.Position.y).ToString();
-            posZ.Text = useAbsoluteHeight ? ((int)ft.Position.z + initialFloorHeight).ToString() : ((int)ft.Position.z).ToString();
-            posX.ButtonStep = General.Map.Grid.GridSize;
-            posY.ButtonStep = General.Map.Grid.GridSize;
+			//mxd
+			initialPosition = ft.Position;
+			if (ft.Sector != null)
+				initialFloorHeight = ft.Sector.FloorHeight;
+			posX.Text = ((int)ft.Position.x).ToString();
+			posY.Text = ((int)ft.Position.y).ToString();
+			posZ.Text = useAbsoluteHeight ? ((int)ft.Position.z + initialFloorHeight).ToString() : ((int)ft.Position.z).ToString();
+			posX.ButtonStep = General.Map.Grid.GridSize;
+			posY.ButtonStep = General.Map.Grid.GridSize;
 			posZ.ButtonStep = General.Map.Grid.GridSize;
 
 			//mxd. Custom fields
@@ -239,7 +239,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(t.AngleDoom.ToString() != angle.Text) angle.Text = "";
 				
 				//mxd
-                if (useAbsoluteHeight && t.Sector != null) {
+				if (useAbsoluteHeight && t.Sector != null) {
 					if(((int)t.Position.z + t.Sector.FloorHeight).ToString() != posZ.Text) posZ.Text = "";
 				} else if(((int)t.Position.z).ToString() != posZ.Text){
 					posZ.Text = "";
@@ -367,21 +367,21 @@ namespace CodeImp.DoomBuilder.Windows
 			if(arg3label.Enabled) arg3.ForeColor = SystemColors.WindowText; else arg3.ForeColor = SystemColors.GrayText;
 			if(arg4label.Enabled) arg4.ForeColor = SystemColors.WindowText; else arg4.ForeColor = SystemColors.GrayText;
 
-            arg0.Setup(arginfo[0]);
-            arg1.Setup(arginfo[1]);
-            arg2.Setup(arginfo[2]);
-            arg3.Setup(arginfo[3]);
-            arg4.Setup(arginfo[4]);
+			arg0.Setup(arginfo[0]);
+			arg1.Setup(arginfo[1]);
+			arg2.Setup(arginfo[2]);
+			arg3.Setup(arginfo[3]);
+			arg4.Setup(arginfo[4]);
 
 			// Zero all arguments when linedef action 0 (normal) is chosen
 			if(!preventchanges && (showaction == 0))
 			{
-                //mxd
-                arg0.SetDefaultValue();
-                arg1.SetDefaultValue();
-                arg2.SetDefaultValue();
-                arg3.SetDefaultValue();
-                arg4.SetDefaultValue();
+				//mxd
+				arg0.SetDefaultValue();
+				arg1.SetDefaultValue();
+				arg2.SetDefaultValue();
+				arg3.SetDefaultValue();
+				arg4.SetDefaultValue();
 			}
 
 			if(!preventchanges) updateScriptControls(); //mxd
@@ -530,13 +530,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Close();
 		}
 
-        //mxd
-        private void cbArgStr_CheckedChanged(object sender, EventArgs e) {
+		//mxd
+		private void cbArgStr_CheckedChanged(object sender, EventArgs e) {
 			if(!cbArgStr.Visible) return;
-	        scriptNames.Visible = cbArgStr.Checked;
+			scriptNames.Visible = cbArgStr.Checked;
 			scriptNumbers.Visible = !cbArgStr.Checked;
-            arg0label.Text = cbArgStr.Checked ? "Script Name:" : "Script Number:";
-        }
+			arg0label.Text = cbArgStr.Checked ? "Script Name:" : "Script Number:";
+		}
 
 		//mxd
 		private void cbAbsoluteHeight_CheckedChanged(object sender, EventArgs e) {

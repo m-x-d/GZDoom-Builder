@@ -69,25 +69,25 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Disposing
 		private bool isdisposed = false;
 
-        //mxd
-        private int cameraDistance3D;
-        private int thingHeight;
+		//mxd
+		private int cameraDistance3D;
+		private int thingHeight;
 		protected Matrix scale; //mxd. Used in model rendering
 
-        //mxd. light properties
-        private DynamicLightType lightType;
-        private DynamicLightRenderStyle lightRenderStyle;
-        private Color4 lightColor;
-        private float lightRadius; //current radius. used in light animation
-        private float lightPrimaryRadius;
-        private float lightSecondaryRadius;
-        private Vector3 position_v3;
-        private float lightDelta; //used in light animation
-        private Vector3[] boundingBox;
-        //gldefs light
-        private Vector3 lightOffset;
-        private int lightInterval;
-        private bool isGldefsLight;
+		//mxd. light properties
+		private DynamicLightType lightType;
+		private DynamicLightRenderStyle lightRenderStyle;
+		private Color4 lightColor;
+		private float lightRadius; //current radius. used in light animation
+		private float lightPrimaryRadius;
+		private float lightSecondaryRadius;
+		private Vector3 position_v3;
+		private float lightDelta; //used in light animation
+		private Vector3[] boundingBox;
+		//gldefs light
+		private Vector3 lightOffset;
+		private int lightInterval;
+		private bool isGldefsLight;
 		
 		#endregion
 		
@@ -101,26 +101,26 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal Matrix Position { get { return position; } }
 		internal Matrix CageScales { get { return cagescales; } }
 		internal int CageColor { get { return cagecolor; } }
-        
-        //mxd
-        internal int VertexColor { get { return vertices.Length > 0 ? vertices[0].c : 0;} }
+		
+		//mxd
+		internal int VertexColor { get { return vertices.Length > 0 ? vertices[0].c : 0;} }
 		internal Matrix Scale { get { return scale; } }
-        public int CameraDistance3D { get { return cameraDistance3D; } }
+		public int CameraDistance3D { get { return cameraDistance3D; } }
 		public bool Sizeless { get { return sizeless; } }
-        public Vector3 Center { 
-            get {
-                if (isGldefsLight) return position_v3 + lightOffset;
-                return new Vector3(position_v3.X, position_v3.Y, position_v3.Z + thingHeight / 2); 
-            } 
-        }
+		public Vector3 Center { 
+			get {
+				if (isGldefsLight) return position_v3 + lightOffset;
+				return new Vector3(position_v3.X, position_v3.Y, position_v3.Z + thingHeight / 2); 
+			} 
+		}
 		public Vector3D CenterV3D { get { return D3DDevice.V3D(Center); } }
-        public Vector3 PositionV3 { get { return position_v3; } }
-        public Vector3[] BoundingBox { get { return boundingBox; } }
-        //mxd. light properties
-        public DynamicLightType LightType { get { return lightType; } }
-        public float LightRadius { get { return lightRadius; } }
-        public DynamicLightRenderStyle LightRenderStyle { get { return lightRenderStyle; } }
-        public Color4 LightColor { get { return lightColor; } }
+		public Vector3 PositionV3 { get { return position_v3; } }
+		public Vector3[] BoundingBox { get { return boundingBox; } }
+		//mxd. light properties
+		public DynamicLightType LightType { get { return lightType; } }
+		public float LightRadius { get { return lightRadius; } }
+		public DynamicLightRenderStyle LightRenderStyle { get { return lightRenderStyle; } }
+		public Color4 LightColor { get { return lightColor; } }
 
 		/// <summary>
 		/// Set to True to use billboarding for this thing. When using billboarding,
@@ -169,14 +169,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.cagescales = Matrix.Identity;
 			this.scale = Matrix.Identity; //mxd
 
-            //mxd
-            lightType = DynamicLightType.NONE;
-            lightRenderStyle = DynamicLightRenderStyle.NONE;
-            lightPrimaryRadius = -1;
-            lightSecondaryRadius = -1;
-            lightInterval = -1;
-            lightColor = new Color4();
-            boundingBox = new Vector3[9];
+			//mxd
+			lightType = DynamicLightType.NONE;
+			lightRenderStyle = DynamicLightRenderStyle.NONE;
+			lightPrimaryRadius = -1;
+			lightSecondaryRadius = -1;
+			lightInterval = -1;
+			lightColor = new Color4();
+			boundingBox = new Vector3[9];
 			
 			// Register as resource
 			General.Map.Graphics.RegisterResource(this);
@@ -210,10 +210,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 			cameradistance = Vector2D.DistanceSq(pos2d, campos);
 		}
 
-        //mxd
-        internal void CalculateCameraDistance3D(Vector3 campos) {
-            cameraDistance3D = (int)Vector3.DistanceSquared(PositionV3, campos);
-        }
+		//mxd
+		internal void CalculateCameraDistance3D(Vector3 campos) {
+			cameraDistance3D = (int)Vector3.DistanceSquared(PositionV3, campos);
+		}
 		
 		// This is called before a device is reset
 		// (when resized or display adapter was changed)
@@ -239,8 +239,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public void SetCageSize(float radius, float height)
 		{
 			cagescales = Matrix.Scaling(radius, radius, height);
-            //mxd
-            thingHeight = (int)height;
+			//mxd
+			thingHeight = (int)height;
 		}
 
 		/// <summary>
@@ -257,18 +257,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public void SetPosition(Vector3D pos)
 		{
 			pos2d = new Vector2D(pos);
-            //mxd
-            position_v3 = D3DDevice.V3(pos);
-            position = Matrix.Translation(position_v3);
+			//mxd
+			position_v3 = D3DDevice.V3(pos);
+			position = Matrix.Translation(position_v3);
 
-            //mxd. update bounding box
-            if (thing.IsModel) {
-                updateBoundingBoxForModel();
-            } else if (lightType != DynamicLightType.NONE && lightRadius > thing.Size) {
-                updateBoundingBox(lightRadius, lightRadius * 2);
-            } else {
-                updateBoundingBox((int)thing.Size, thingHeight);
-            }
+			//mxd. update bounding box
+			if (thing.IsModel) {
+				updateBoundingBoxForModel();
+			} else if (lightType != DynamicLightType.NONE && lightRadius > thing.Size) {
+				updateBoundingBox(lightRadius, lightRadius * 2);
+			} else {
+				updateBoundingBox((int)thing.Size, thingHeight);
+			}
 		}
 
 		/// <summary>
@@ -282,7 +282,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This sets the vertices for the thing sprite
 		protected void SetVertices(ICollection<WorldVertex> verts)
 		{
-            // Copy vertices
+			// Copy vertices
 			vertices = new WorldVertex[verts.Count];
 			verts.CopyTo(vertices, 0);
 			triangles = vertices.Length / 3;
@@ -297,226 +297,226 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This updates the visual thing
 		public virtual void Update()
 		{
-            // Do we need to update the geometry buffer?
-            if (updategeo)
+			// Do we need to update the geometry buffer?
+			if (updategeo)
 			{
-                // Trash geometry buffer
-                if (geobuffer != null) geobuffer.Dispose();
-                geobuffer = null;
+				// Trash geometry buffer
+				if (geobuffer != null) geobuffer.Dispose();
+				geobuffer = null;
 
-                // Any vertics?
-                if (vertices.Length > 0) {
-                    // Make a new buffer
-                    geobuffer = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * vertices.Length,
-                                                 Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+				// Any vertics?
+				if (vertices.Length > 0) {
+					// Make a new buffer
+					geobuffer = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * vertices.Length,
+												 Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
 
-                    // Fill the buffer
-                    DataStream bufferstream = geobuffer.Lock(0, WorldVertex.Stride * vertices.Length, LockFlags.Discard);
-                    bufferstream.WriteRange(vertices);
-                    geobuffer.Unlock();
-                    bufferstream.Dispose();
-                }
+					// Fill the buffer
+					DataStream bufferstream = geobuffer.Lock(0, WorldVertex.Stride * vertices.Length, LockFlags.Discard);
+					bufferstream.WriteRange(vertices);
+					geobuffer.Unlock();
+					bufferstream.Dispose();
+				}
 
-                //mxd. Check if thing is light
-                checkLightState();
+				//mxd. Check if thing is light
+				checkLightState();
 
 				// Done
 				updategeo = false;
 			}
 		}
 
-        //mxd
-        protected void checkLightState() {
-            //mxd. Check if thing is light
-            int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
-            if (light_id != -1) {
-                isGldefsLight = false;
-                lightInterval = -1;
-                updateLight(light_id);
-                updateBoundingBox(lightRadius, lightRadius * 2);
+		//mxd
+		protected void checkLightState() {
+			//mxd. Check if thing is light
+			int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
+			if (light_id != -1) {
+				isGldefsLight = false;
+				lightInterval = -1;
+				updateLight(light_id);
+				updateBoundingBox(lightRadius, lightRadius * 2);
 
-                //check if we have light from GLDEFS
-            } else if (General.Map.Data.GldefsEntries.ContainsKey(thing.Type)) {
-                isGldefsLight = true;
-                updateGldefsLight();
-                updateBoundingBox(lightRadius, lightRadius * 2);
-            } else {
-                if (thing.IsModel) {
-                    updateBoundingBoxForModel();
-                } else {
-                    updateBoundingBox((int)thing.Size, thingHeight);
-                }
-                lightType = DynamicLightType.NONE;
-                lightRadius = -1;
-                lightPrimaryRadius = -1;
-                lightSecondaryRadius = -1;
-                lightRenderStyle = DynamicLightRenderStyle.NONE;
-                lightInterval = -1;
-                isGldefsLight = false;
-            }
-        }
+				//check if we have light from GLDEFS
+			} else if (General.Map.Data.GldefsEntries.ContainsKey(thing.Type)) {
+				isGldefsLight = true;
+				updateGldefsLight();
+				updateBoundingBox(lightRadius, lightRadius * 2);
+			} else {
+				if (thing.IsModel) {
+					updateBoundingBoxForModel();
+				} else {
+					updateBoundingBox((int)thing.Size, thingHeight);
+				}
+				lightType = DynamicLightType.NONE;
+				lightRadius = -1;
+				lightPrimaryRadius = -1;
+				lightSecondaryRadius = -1;
+				lightRenderStyle = DynamicLightRenderStyle.NONE;
+				lightInterval = -1;
+				isGldefsLight = false;
+			}
+		}
 
-        //used in ColorPicker to update light 
-        public void UpdateLight() {
-            int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
-            if (light_id != -1) {
-                updateLight(light_id);
-                updateBoundingBox(lightRadius, lightRadius * 2);
-            }
-        }
+		//used in ColorPicker to update light 
+		public void UpdateLight() {
+			int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
+			if (light_id != -1) {
+				updateLight(light_id);
+				updateBoundingBox(lightRadius, lightRadius * 2);
+			}
+		}
 
-        //mxd update light info
-        private void updateLight(int light_id) {
-            float scaled_intensity = 255.0f / General.Settings.GZDynamicLightIntensity;
+		//mxd update light info
+		private void updateLight(int light_id) {
+			float scaled_intensity = 255.0f / General.Settings.GZDynamicLightIntensity;
 
-            if (light_id < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) { //if it's gzdoom light
-                int n;
-                if (light_id < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) {
-                    n = 0;
-                    lightRenderStyle = DynamicLightRenderStyle.NORMAL;
-                    //lightColor.Alpha used in shader to perform some calculations based on light type
-                    lightColor = new Color4((float)lightRenderStyle / 100.0f, (float)thing.Args[0] / scaled_intensity, (float)thing.Args[1] / scaled_intensity, (float)thing.Args[2] / scaled_intensity);
-                } else if (light_id < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) {
-                    n = 10;
-                    lightRenderStyle = DynamicLightRenderStyle.ADDITIVE;
-                    lightColor = new Color4((float)lightRenderStyle / 100.0f, (float)thing.Args[0] / scaled_intensity, (float)thing.Args[1] / scaled_intensity, (float)thing.Args[2] / scaled_intensity);
-                } else {
-                    n = 20;
-                    lightRenderStyle = DynamicLightRenderStyle.NEGATIVE;
-                    lightColor = new Color4((float)lightRenderStyle / 100.0f, (float)thing.Args[0] / scaled_intensity, (float)thing.Args[1] / scaled_intensity, (float)thing.Args[2] / scaled_intensity);
-                }
-                lightType = (DynamicLightType)(thing.Type - 9800 - n);
+			if (light_id < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) { //if it's gzdoom light
+				int n;
+				if (light_id < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) {
+					n = 0;
+					lightRenderStyle = DynamicLightRenderStyle.NORMAL;
+					//lightColor.Alpha used in shader to perform some calculations based on light type
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, (float)thing.Args[0] / scaled_intensity, (float)thing.Args[1] / scaled_intensity, (float)thing.Args[2] / scaled_intensity);
+				} else if (light_id < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) {
+					n = 10;
+					lightRenderStyle = DynamicLightRenderStyle.ADDITIVE;
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, (float)thing.Args[0] / scaled_intensity, (float)thing.Args[1] / scaled_intensity, (float)thing.Args[2] / scaled_intensity);
+				} else {
+					n = 20;
+					lightRenderStyle = DynamicLightRenderStyle.NEGATIVE;
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, (float)thing.Args[0] / scaled_intensity, (float)thing.Args[1] / scaled_intensity, (float)thing.Args[2] / scaled_intensity);
+				}
+				lightType = (DynamicLightType)(thing.Type - 9800 - n);
 
-                if (lightType == DynamicLightType.SECTOR) {
-                    int scaler = 1;
-                    if (thing.Sector != null)
-                        scaler = thing.Sector.Brightness / 4;
-                    lightPrimaryRadius = (float)(thing.Args[3] * scaler) * General.Settings.GZDynamicLightRadius;
-                } else {
-                    lightPrimaryRadius = (float)(thing.Args[3] * 2) * General.Settings.GZDynamicLightRadius; //works... that.. way in GZDoom
-                    if (lightType > 0)
-                        lightSecondaryRadius = (float)(thing.Args[4] * 2) * General.Settings.GZDynamicLightRadius;
-                }
-            } else { //it's one of vavoom lights
-                lightRenderStyle = DynamicLightRenderStyle.VAVOOM;
+				if (lightType == DynamicLightType.SECTOR) {
+					int scaler = 1;
+					if (thing.Sector != null)
+						scaler = thing.Sector.Brightness / 4;
+					lightPrimaryRadius = (float)(thing.Args[3] * scaler) * General.Settings.GZDynamicLightRadius;
+				} else {
+					lightPrimaryRadius = (float)(thing.Args[3] * 2) * General.Settings.GZDynamicLightRadius; //works... that.. way in GZDoom
+					if (lightType > 0)
+						lightSecondaryRadius = (float)(thing.Args[4] * 2) * General.Settings.GZDynamicLightRadius;
+				}
+			} else { //it's one of vavoom lights
+				lightRenderStyle = DynamicLightRenderStyle.VAVOOM;
 				lightType = (DynamicLightType)thing.Type;
-                if (lightType == DynamicLightType.VAVOOM_COLORED)
-                    lightColor = new Color4((float)lightRenderStyle / 100.0f, (float)thing.Args[1] / scaled_intensity, (float)thing.Args[2] / scaled_intensity, (float)thing.Args[3] / scaled_intensity);
-                else
-                    lightColor = new Color4((float)lightRenderStyle / 100.0f, General.Settings.GZDynamicLightIntensity, General.Settings.GZDynamicLightIntensity, General.Settings.GZDynamicLightIntensity);
-                lightPrimaryRadius = (float)(thing.Args[0] * 8) * General.Settings.GZDynamicLightRadius;
-            }
-            UpdateLightRadius();
-        }
+				if (lightType == DynamicLightType.VAVOOM_COLORED)
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, (float)thing.Args[1] / scaled_intensity, (float)thing.Args[2] / scaled_intensity, (float)thing.Args[3] / scaled_intensity);
+				else
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, General.Settings.GZDynamicLightIntensity, General.Settings.GZDynamicLightIntensity, General.Settings.GZDynamicLightIntensity);
+				lightPrimaryRadius = (float)(thing.Args[0] * 8) * General.Settings.GZDynamicLightRadius;
+			}
+			UpdateLightRadius();
+		}
 
-        //mxd
-        private void updateGldefsLight() {
-            DynamicLightData light = General.Map.Data.GldefsEntries[thing.Type];
-            float intensity_mod = General.Settings.GZDynamicLightIntensity;
-            float scale_mod = General.Settings.GZDynamicLightRadius;
+		//mxd
+		private void updateGldefsLight() {
+			DynamicLightData light = General.Map.Data.GldefsEntries[thing.Type];
+			float intensity_mod = General.Settings.GZDynamicLightIntensity;
+			float scale_mod = General.Settings.GZDynamicLightRadius;
 
-            //apply settings
-            lightRenderStyle = light.Subtractive ? DynamicLightRenderStyle.NEGATIVE : DynamicLightRenderStyle.NORMAL;
-            lightColor = new Color4((float)lightRenderStyle / 100.0f, light.Color.Red * intensity_mod, light.Color.Green * intensity_mod, light.Color.Blue * intensity_mod);
-            lightOffset = light.Offset;
-            lightType = light.Type;
+			//apply settings
+			lightRenderStyle = light.Subtractive ? DynamicLightRenderStyle.NEGATIVE : DynamicLightRenderStyle.NORMAL;
+			lightColor = new Color4((float)lightRenderStyle / 100.0f, light.Color.Red * intensity_mod, light.Color.Green * intensity_mod, light.Color.Blue * intensity_mod);
+			lightOffset = light.Offset;
+			lightType = light.Type;
 
-            if (lightType == DynamicLightType.SECTOR) {
-                lightPrimaryRadius = light.Interval * thing.Sector.Brightness / 5;
-            } else {
-                lightPrimaryRadius = light.PrimaryRadius * scale_mod;
-                lightSecondaryRadius = light.SecondaryRadius * scale_mod;
-            }
+			if (lightType == DynamicLightType.SECTOR) {
+				lightPrimaryRadius = light.Interval * thing.Sector.Brightness / 5;
+			} else {
+				lightPrimaryRadius = light.PrimaryRadius * scale_mod;
+				lightSecondaryRadius = light.SecondaryRadius * scale_mod;
+			}
 
-            lightInterval = light.Interval;
+			lightInterval = light.Interval;
 
-            updateLightRadius(lightInterval);
-        }
+			updateLightRadius(lightInterval);
+		}
 
-        //mxd
-        public void UpdateLightRadius() {
-            updateLightRadius( (lightInterval != -1 ? lightInterval : thing.AngleDoom) );
-        }
+		//mxd
+		public void UpdateLightRadius() {
+			updateLightRadius( (lightInterval != -1 ? lightInterval : thing.AngleDoom) );
+		}
 
-        //mxd
-        private void updateLightRadius(int interval) {
-            if (lightType == DynamicLightType.NONE) {
-                General.ErrorLogger.Add(ErrorType.Error, "Please check that thing is light before accessing it's PositionAndRadius! You can use lightType, which is -1 if thing isn't light");
-                return;
-            }
+		//mxd
+		private void updateLightRadius(int interval) {
+			if (lightType == DynamicLightType.NONE) {
+				General.ErrorLogger.Add(ErrorType.Error, "Please check that thing is light before accessing it's PositionAndRadius! You can use lightType, which is -1 if thing isn't light");
+				return;
+			}
 
-            if (!General.Settings.GZAnimateLights || Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, lightType) == -1) {
-                lightRadius = lightPrimaryRadius;
-                return;
-            }
+			if (!General.Settings.GZAnimateLights || Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, lightType) == -1) {
+				lightRadius = lightPrimaryRadius;
+				return;
+			}
 
-            float time = General.Clock.CurrentTime;
-            
-            float rMin = Math.Min(lightPrimaryRadius, lightSecondaryRadius);
-            float rMax = Math.Max(lightPrimaryRadius, lightSecondaryRadius);
-            float diff = rMax - rMin;
+			float time = General.Clock.CurrentTime;
+			
+			float rMin = Math.Min(lightPrimaryRadius, lightSecondaryRadius);
+			float rMax = Math.Max(lightPrimaryRadius, lightSecondaryRadius);
+			float diff = rMax - rMin;
 
-            //pulse
-            if (lightType == DynamicLightType.PULSE) {
-                lightDelta = ((float)Math.Sin(time / (interval * 4.0f)) + 1.0f) / 2.0f; //just playing by the eye here... in [0.0 ... 1.0] interval
-                lightRadius = rMin + diff * lightDelta;
-            //flicker
-            } else if (lightType == DynamicLightType.FLICKER) {
-                float delta = (float)Math.Sin(time / 0.1f); //just playing by the eye here...
-                if (Math.Sign(delta) != Math.Sign(lightDelta)) {
-                    lightDelta = delta;
-                    if (new Random().Next(0, 359) < interval) 
-                        lightRadius = rMax;
-                    else
-                        lightRadius = rMin;
-                }
-            //random
-            } else if (lightType == DynamicLightType.RANDOM) {
-                float delta = (float)Math.Sin(time / (interval * 9.0f)); //just playing by the eye here...
-                if (Math.Sign(delta) != Math.Sign(lightDelta))
-                    lightRadius = rMin + (float)(new Random().Next(0, (int)(diff * 10))) / 10.0f;
-                lightDelta = delta;
-            }
-        }
+			//pulse
+			if (lightType == DynamicLightType.PULSE) {
+				lightDelta = ((float)Math.Sin(time / (interval * 4.0f)) + 1.0f) / 2.0f; //just playing by the eye here... in [0.0 ... 1.0] interval
+				lightRadius = rMin + diff * lightDelta;
+			//flicker
+			} else if (lightType == DynamicLightType.FLICKER) {
+				float delta = (float)Math.Sin(time / 0.1f); //just playing by the eye here...
+				if (Math.Sign(delta) != Math.Sign(lightDelta)) {
+					lightDelta = delta;
+					if (new Random().Next(0, 359) < interval) 
+						lightRadius = rMax;
+					else
+						lightRadius = rMin;
+				}
+			//random
+			} else if (lightType == DynamicLightType.RANDOM) {
+				float delta = (float)Math.Sin(time / (interval * 9.0f)); //just playing by the eye here...
+				if (Math.Sign(delta) != Math.Sign(lightDelta))
+					lightRadius = rMin + (float)(new Random().Next(0, (int)(diff * 10))) / 10.0f;
+				lightDelta = delta;
+			}
+		}
 
-        //mxd. update bounding box
-        public void UpdateBoundingBox() {
-            //updateBoundingBox(lightRadius, lightRadius * 2f);
-            if (thing.IsModel) {
-                updateBoundingBoxForModel();
-            } else if (lightType != DynamicLightType.NONE && lightRadius > thing.Size) {
-                updateBoundingBox(lightRadius, lightRadius * 2);
-            } else {
-                updateBoundingBox((int)thing.Size, thingHeight);
-            }
-        }
+		//mxd. update bounding box
+		public void UpdateBoundingBox() {
+			//updateBoundingBox(lightRadius, lightRadius * 2f);
+			if (thing.IsModel) {
+				updateBoundingBoxForModel();
+			} else if (lightType != DynamicLightType.NONE && lightRadius > thing.Size) {
+				updateBoundingBox(lightRadius, lightRadius * 2);
+			} else {
+				updateBoundingBox((int)thing.Size, thingHeight);
+			}
+		}
 
-        private void updateBoundingBox(float width, float height) {
-            boundingBox = new Vector3[9];
-            boundingBox[0] = Center;
-            float h2 = height / 2.0f;
+		private void updateBoundingBox(float width, float height) {
+			boundingBox = new Vector3[9];
+			boundingBox[0] = Center;
+			float h2 = height / 2.0f;
 
-            boundingBox[1] = new Vector3(position_v3.X - width, position_v3.Y - width, Center.Z - h2);
-            boundingBox[2] = new Vector3(position_v3.X + width, position_v3.Y - width, Center.Z - h2);
-            boundingBox[3] = new Vector3(position_v3.X - width, position_v3.Y + width, Center.Z - h2);
-            boundingBox[4] = new Vector3(position_v3.X + width, position_v3.Y + width, Center.Z - h2);
+			boundingBox[1] = new Vector3(position_v3.X - width, position_v3.Y - width, Center.Z - h2);
+			boundingBox[2] = new Vector3(position_v3.X + width, position_v3.Y - width, Center.Z - h2);
+			boundingBox[3] = new Vector3(position_v3.X - width, position_v3.Y + width, Center.Z - h2);
+			boundingBox[4] = new Vector3(position_v3.X + width, position_v3.Y + width, Center.Z - h2);
 
-            boundingBox[5] = new Vector3(position_v3.X - width, position_v3.Y - width, Center.Z + h2);
-            boundingBox[6] = new Vector3(position_v3.X + width, position_v3.Y - width, Center.Z + h2);
-            boundingBox[7] = new Vector3(position_v3.X - width, position_v3.Y + width, Center.Z + h2);
-            boundingBox[8] = new Vector3(position_v3.X + width, position_v3.Y + width, Center.Z + h2);
-        }
+			boundingBox[5] = new Vector3(position_v3.X - width, position_v3.Y - width, Center.Z + h2);
+			boundingBox[6] = new Vector3(position_v3.X + width, position_v3.Y - width, Center.Z + h2);
+			boundingBox[7] = new Vector3(position_v3.X - width, position_v3.Y + width, Center.Z + h2);
+			boundingBox[8] = new Vector3(position_v3.X + width, position_v3.Y + width, Center.Z + h2);
+		}
 
-        //mxd. update bounding box from model bounding box
-        private void updateBoundingBoxForModel() {
-            ModelData mde = General.Map.Data.ModeldefEntries[thing.Type];
-            int len = mde.Model.BoundingBox.Length;
-            boundingBox = new Vector3[len];
-            for (int i = 0; i < len; i++) {
-                Vector3 v = mde.Model.BoundingBox[i];
-                boundingBox[i] = new Vector3(v.X + position_v3.X, v.Y + position_v3.Y, v.Z + position_v3.Z);
-            }    
-        }
+		//mxd. update bounding box from model bounding box
+		private void updateBoundingBoxForModel() {
+			ModelData mde = General.Map.Data.ModeldefEntries[thing.Type];
+			int len = mde.Model.BoundingBox.Length;
+			boundingBox = new Vector3[len];
+			for (int i = 0; i < len; i++) {
+				Vector3 v = mde.Model.BoundingBox[i];
+				boundingBox[i] = new Vector3(v.X + position_v3.X, v.Y + position_v3.Y, v.Z + position_v3.Z);
+			}    
+		}
 		
 		/// <summary>
 		/// This is called when the thing must be tested for line intersection. This should reject

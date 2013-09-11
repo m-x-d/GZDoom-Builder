@@ -90,22 +90,22 @@ namespace CodeImp.DoomBuilder.Config
 		private float filteranisotropy;
 		private bool showtexturesizes;
 
-        //mxd
-        private bool gzDrawModels;
-        private bool gzDrawSelectedModelsOnly;
-        private bool gzDrawLights;
-        private bool gzAnimateLights;
-        private bool gzDrawFog;
-        private bool gzToolbarGZDoom;
-        private bool gzSynchCameras;
-        private bool gzShowEventLines;
-        private bool gzOldHighlightMode;
-        private int gzMaxDynamicLights;
-        private float gzDynamicLightRadius;
-        private float gzDynamicLightIntensity;
-        private bool gzTestFromCurrentPosition;
+		//mxd
+		private bool gzDrawModels;
+		private bool gzDrawSelectedModelsOnly;
+		private bool gzDrawLights;
+		private bool gzAnimateLights;
+		private bool gzDrawFog;
+		private bool gzToolbarGZDoom;
+		private bool gzSynchCameras;
+		private bool gzShowEventLines;
+		private bool gzOldHighlightMode;
+		private int gzMaxDynamicLights;
+		private float gzDynamicLightRadius;
+		private float gzDynamicLightIntensity;
+		private bool gzTestFromCurrentPosition;
 		private bool gzStretchModels;
-        private float gzVertexScale2D;
+		private float gzVertexScale2D;
 		private bool gzShowVisualVertices;
 		private int gzVisualVertexSize;
 		private bool gzForceDefaultTextures;
@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool VisualBilinear { get { return visualbilinear; } internal set { visualbilinear = value; } }
 		public int MouseSpeed { get { return mousespeed; } internal set { mousespeed = value; } }
 		public int MoveSpeed { get { return movespeed; } internal set { movespeed = value; } }
-        public float ViewDistance { get { return viewdistance; } internal set { viewdistance = value; } }
+		public float ViewDistance { get { return viewdistance; } internal set { viewdistance = value; } }
 		public bool InvertYAxis { get { return invertyaxis; } internal set { invertyaxis = value; } }
 		public string ScriptFontName { get { return scriptfontname; } internal set { scriptfontname = value; } }
 		public int ScriptFontSize { get { return scriptfontsize; } internal set { scriptfontsize = value; } }
@@ -175,22 +175,22 @@ namespace CodeImp.DoomBuilder.Config
 		public float FilterAnisotropy { get { return filteranisotropy; } internal set { filteranisotropy = value; } }
 		public bool ShowTextureSizes { get { return showtexturesizes; } internal set { showtexturesizes = value; } }
 
-        //mxd 
-        public bool GZDrawModels { get { return gzDrawModels; } internal set { gzDrawModels = value; } }
-        public bool GZDrawSelectedModelsOnly { get { return gzDrawSelectedModelsOnly; } internal set { gzDrawSelectedModelsOnly = value; } }
-        public bool GZDrawLights { get { return gzDrawLights; } internal set { gzDrawLights = value; } }
-        public bool GZAnimateLights { get { return gzAnimateLights; } internal set { gzAnimateLights = value; } }
-        public bool GZDrawFog { get { return gzDrawFog; } internal set { gzDrawFog = value; } }
-        public bool GZToolbarGZDoom { get { return gzToolbarGZDoom; } internal set { gzToolbarGZDoom = value; } }
-        public bool GZSynchCameras { get { return gzSynchCameras; } internal set { gzSynchCameras = value; } }
-        public bool GZShowEventLines { get { return gzShowEventLines; } internal set { gzShowEventLines = value; } }
-        public bool GZTestFromCurrentPosition { get { return gzTestFromCurrentPosition; } internal set { gzTestFromCurrentPosition = value; } }
-        public bool GZOldHighlightMode { get { return gzOldHighlightMode; } internal set { gzOldHighlightMode = value; } }
-        public int GZMaxDynamicLights { get { return gzMaxDynamicLights; } internal set { gzMaxDynamicLights = value; } }
-        public float GZDynamicLightRadius { get { return gzDynamicLightRadius; } internal set { gzDynamicLightRadius = value; } }
-        public float GZDynamicLightIntensity { get { return gzDynamicLightIntensity; } internal set { gzDynamicLightIntensity = value; } }
+		//mxd 
+		public bool GZDrawModels { get { return gzDrawModels; } internal set { gzDrawModels = value; } }
+		public bool GZDrawSelectedModelsOnly { get { return gzDrawSelectedModelsOnly; } internal set { gzDrawSelectedModelsOnly = value; } }
+		public bool GZDrawLights { get { return gzDrawLights; } internal set { gzDrawLights = value; } }
+		public bool GZAnimateLights { get { return gzAnimateLights; } internal set { gzAnimateLights = value; } }
+		public bool GZDrawFog { get { return gzDrawFog; } internal set { gzDrawFog = value; } }
+		public bool GZToolbarGZDoom { get { return gzToolbarGZDoom; } internal set { gzToolbarGZDoom = value; } }
+		public bool GZSynchCameras { get { return gzSynchCameras; } internal set { gzSynchCameras = value; } }
+		public bool GZShowEventLines { get { return gzShowEventLines; } internal set { gzShowEventLines = value; } }
+		public bool GZTestFromCurrentPosition { get { return gzTestFromCurrentPosition; } internal set { gzTestFromCurrentPosition = value; } }
+		public bool GZOldHighlightMode { get { return gzOldHighlightMode; } internal set { gzOldHighlightMode = value; } }
+		public int GZMaxDynamicLights { get { return gzMaxDynamicLights; } internal set { gzMaxDynamicLights = value; } }
+		public float GZDynamicLightRadius { get { return gzDynamicLightRadius; } internal set { gzDynamicLightRadius = value; } }
+		public float GZDynamicLightIntensity { get { return gzDynamicLightIntensity; } internal set { gzDynamicLightIntensity = value; } }
 		public bool GZStretchModels { get { return gzStretchModels; } internal set { gzStretchModels = value; } }
-        public float GZVertexScale2D { get { return gzVertexScale2D; } internal set { gzVertexScale2D = value; } }
+		public float GZVertexScale2D { get { return gzVertexScale2D; } internal set { gzVertexScale2D = value; } }
 		public bool GZShowVisualVertices { get { return gzShowVisualVertices; } internal set { gzShowVisualVertices = value; } }
 		public int GZVisualVertexSize { get { return gzVisualVertexSize; } internal set { gzVisualVertexSize = value; } }
 		public bool GZForceDefaultTextures { get { return gzForceDefaultTextures; } internal set { gzForceDefaultTextures = value; } }
@@ -277,21 +277,21 @@ namespace CodeImp.DoomBuilder.Config
 				filteranisotropy = cfg.ReadSetting("filteranisotropy", 8.0f);
 				showtexturesizes = cfg.ReadSetting("showtexturesizes", true);
 
-                //mxd 
-                gzDrawModels = cfg.ReadSetting("gzdrawmodels", true);
-                gzDrawSelectedModelsOnly = cfg.ReadSetting("gzdrawselectedmodelsonly", false);
-                gzDrawLights = cfg.ReadSetting("gzdrawlights", true);
-                gzAnimateLights = cfg.ReadSetting("gzanimatelights", false);
-                gzDrawFog = cfg.ReadSetting("gzdrawfog", false);
-                gzToolbarGZDoom = cfg.ReadSetting("gztoolbargzdoom", true);
-                gzSynchCameras = cfg.ReadSetting("gzsynchcameras", true);
-                gzShowEventLines = cfg.ReadSetting("gzshoweventlines", true);
-                gzOldHighlightMode = cfg.ReadSetting("gzoldhighlightmode", false);
-                gzMaxDynamicLights = cfg.ReadSetting("gzmaxdynamiclights", 16);
-                gzDynamicLightRadius = cfg.ReadSetting("gzdynamiclightradius", 1.0f);
-                gzDynamicLightIntensity = cfg.ReadSetting("gzdynamiclightintensity", 1.0f);
+				//mxd 
+				gzDrawModels = cfg.ReadSetting("gzdrawmodels", true);
+				gzDrawSelectedModelsOnly = cfg.ReadSetting("gzdrawselectedmodelsonly", false);
+				gzDrawLights = cfg.ReadSetting("gzdrawlights", true);
+				gzAnimateLights = cfg.ReadSetting("gzanimatelights", false);
+				gzDrawFog = cfg.ReadSetting("gzdrawfog", false);
+				gzToolbarGZDoom = cfg.ReadSetting("gztoolbargzdoom", true);
+				gzSynchCameras = cfg.ReadSetting("gzsynchcameras", true);
+				gzShowEventLines = cfg.ReadSetting("gzshoweventlines", true);
+				gzOldHighlightMode = cfg.ReadSetting("gzoldhighlightmode", false);
+				gzMaxDynamicLights = cfg.ReadSetting("gzmaxdynamiclights", 16);
+				gzDynamicLightRadius = cfg.ReadSetting("gzdynamiclightradius", 1.0f);
+				gzDynamicLightIntensity = cfg.ReadSetting("gzdynamiclightintensity", 1.0f);
 				gzStretchModels = cfg.ReadSetting("gzstretchmodels", true);
-                gzVertexScale2D = cfg.ReadSetting("gzvertexscale2d", 1.0f);
+				gzVertexScale2D = cfg.ReadSetting("gzvertexscale2d", 1.0f);
 				gzShowVisualVertices = cfg.ReadSetting("gzshowvisualvertices", true);
 				gzVisualVertexSize = cfg.ReadSetting("gzvisualvertexsize", 6);
 				lastUsedConfigName = cfg.ReadSetting("lastusedconfigname", "");
@@ -356,21 +356,21 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("filteranisotropy", filteranisotropy);
 			cfg.WriteSetting("showtexturesizes", showtexturesizes);
 
-            //mxd
-            cfg.WriteSetting("gzdrawmodels", gzDrawModels);
-            cfg.WriteSetting("gzdrawselectedmodelsonly", gzDrawSelectedModelsOnly);
-            cfg.WriteSetting("gzdrawlights", gzDrawLights);
-            cfg.WriteSetting("gzanimatelights", gzAnimateLights);
-            cfg.WriteSetting("gzdrawfog", gzDrawFog);
-            cfg.WriteSetting("gzsynchcameras", gzSynchCameras);
-            cfg.WriteSetting("gzshoweventlines", gzShowEventLines);
-            cfg.WriteSetting("gzoldhighlightmode", gzOldHighlightMode);
-            cfg.WriteSetting("gztoolbargzdoom", gzToolbarGZDoom);
-            cfg.WriteSetting("gzmaxdynamiclights", gzMaxDynamicLights);
-            cfg.WriteSetting("gzdynamiclightradius", gzDynamicLightRadius);
-            cfg.WriteSetting("gzdynamiclightintensity", gzDynamicLightIntensity);
+			//mxd
+			cfg.WriteSetting("gzdrawmodels", gzDrawModels);
+			cfg.WriteSetting("gzdrawselectedmodelsonly", gzDrawSelectedModelsOnly);
+			cfg.WriteSetting("gzdrawlights", gzDrawLights);
+			cfg.WriteSetting("gzanimatelights", gzAnimateLights);
+			cfg.WriteSetting("gzdrawfog", gzDrawFog);
+			cfg.WriteSetting("gzsynchcameras", gzSynchCameras);
+			cfg.WriteSetting("gzshoweventlines", gzShowEventLines);
+			cfg.WriteSetting("gzoldhighlightmode", gzOldHighlightMode);
+			cfg.WriteSetting("gztoolbargzdoom", gzToolbarGZDoom);
+			cfg.WriteSetting("gzmaxdynamiclights", gzMaxDynamicLights);
+			cfg.WriteSetting("gzdynamiclightradius", gzDynamicLightRadius);
+			cfg.WriteSetting("gzdynamiclightintensity", gzDynamicLightIntensity);
 			cfg.WriteSetting("gzstretchmodels", gzStretchModels);
-            cfg.WriteSetting("gzvertexscale2d", gzVertexScale2D);
+			cfg.WriteSetting("gzvertexscale2d", gzVertexScale2D);
 			cfg.WriteSetting("gzshowvisualvertices", gzShowVisualVertices);
 			cfg.WriteSetting("gzvisualvertexsize", gzVisualVertexSize);
 			cfg.WriteSetting("gzmarkextrafloors", gzMarkExtraFloors);

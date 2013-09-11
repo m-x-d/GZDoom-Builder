@@ -118,9 +118,9 @@ namespace CodeImp.DoomBuilder.Controls
 					int cl = s.Fields.GetValue("lightceiling", 0);
 
 					if(s.Fields.GetValue("lightceilingabsolute", false))
-                        ceilingLight.Text = cl + " (abs.)";
-                    else
-                        ceilingLight.Text = cl + " (" + Math.Min(255, Math.Max(0, (cl + s.Brightness))) + ")";
+						ceilingLight.Text = cl + " (abs.)";
+					else
+						ceilingLight.Text = cl + " (" + Math.Min(255, Math.Max(0, (cl + s.Brightness))) + ")";
 
 				} else {
 					ceilingLight.Text = "--";
@@ -137,8 +137,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 					if(s.Fields.GetValue("lightfloorabsolute", false))
 						floorLight.Text = fl + " (abs.)";
-                    else
-                        floorLight.Text = fl + " (" + Math.Min(255, Math.Max(0, (fl + s.Brightness))) + ")";
+					else
+						floorLight.Text = fl + " (" + Math.Min(255, Math.Max(0, (fl + s.Brightness))) + ")";
 
 				} else {
 					floorLight.Text = "--";
@@ -154,7 +154,7 @@ namespace CodeImp.DoomBuilder.Controls
 					showExtededCeilingInfo = true;
 					ceilingOffset.Enabled = true;
 					ceilingOffsetLabel.Enabled = true;
-                    ceilingOffset.Text = String.Format("{0:0.##}", panX) + ", " + String.Format("{0:0.##}", panY);
+					ceilingOffset.Text = String.Format("{0:0.##}", panX) + ", " + String.Format("{0:0.##}", panY);
 				} else {
 					ceilingOffset.Text = "--, --";
 					ceilingOffset.Enabled = false;
@@ -169,7 +169,7 @@ namespace CodeImp.DoomBuilder.Controls
 					showExtededFloorInfo = true;
 					floorOffset.Enabled = true;
 					floorOffsetLabel.Enabled = true;
-                    floorOffset.Text = String.Format("{0:0.##}", panX) + ", " + String.Format("{0:0.##}", panY);
+					floorOffset.Text = String.Format("{0:0.##}", panX) + ", " + String.Format("{0:0.##}", panY);
 				} else {
 					floorOffset.Text = "--, --";
 					floorOffset.Enabled = false;
@@ -184,7 +184,7 @@ namespace CodeImp.DoomBuilder.Controls
 					showExtededCeilingInfo = true;
 					ceilingScale.Enabled = true;
 					ceilingScaleLabel.Enabled = true;
-                    ceilingScale.Text = String.Format("{0:0.##}", scaleX) + ", " + String.Format("{0:0.##}", scaleY);
+					ceilingScale.Text = String.Format("{0:0.##}", scaleX) + ", " + String.Format("{0:0.##}", scaleY);
 				} else {
 					ceilingScale.Text = "--, --";
 					ceilingScale.Enabled = false;
@@ -199,7 +199,7 @@ namespace CodeImp.DoomBuilder.Controls
 					showExtededFloorInfo = true;
 					floorScale.Enabled = true;
 					floorScaleLabel.Enabled = true;
-                    floorScale.Text = String.Format("{0:0.##}", scaleX) + ", " + String.Format("{0:0.##}", scaleY);
+					floorScale.Text = String.Format("{0:0.##}", scaleX) + ", " + String.Format("{0:0.##}", scaleY);
 				} else {
 					floorScale.Text = "--, --";
 					floorScale.Enabled = false;

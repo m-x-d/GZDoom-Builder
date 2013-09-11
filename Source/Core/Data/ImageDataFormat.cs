@@ -34,11 +34,11 @@ namespace CodeImp.DoomBuilder.Data
 		// File format signatures
 		private static readonly int[] PNG_SIGNATURE = new int[] { 137, 80, 78, 71, 13, 10, 26, 10 };
 		private static readonly int[] GIF_SIGNATURE = new int[] { 71, 73, 70 };
-        private static readonly int[] BMP_SIGNATURE = new int[] { 66, 77 }; 
+		private static readonly int[] BMP_SIGNATURE = new int[] { 66, 77 }; 
 		private static readonly int[] DDS_SIGNATURE = new int[] { 68, 68, 83, 32 };
-        private static readonly int[] JPG_SIGNATURE = new int[] { 255, 216, 255 }; //mxd
-        private static readonly int[] TGA_SIGNATURE = new int[] { 0, 0, 2, 0 }; //mxd
-        private static readonly int[] PCX_SIGNATURE = new int[] { 10, 5, 1, 8 }; //mxd
+		private static readonly int[] JPG_SIGNATURE = new int[] { 255, 216, 255 }; //mxd
+		private static readonly int[] TGA_SIGNATURE = new int[] { 0, 0, 2, 0 }; //mxd
+		private static readonly int[] PCX_SIGNATURE = new int[] { 10, 5, 1, 8 }; //mxd
 
 		// This check image data and returns the appropriate image reader
 		public static IImageReader GetImageReader(Stream data, int guessformat, Playpal palette)
@@ -59,27 +59,27 @@ namespace CodeImp.DoomBuilder.Data
 
 				// Check for DDS signature
 				data.Seek(0, SeekOrigin.Begin);
-                if (CheckSignature(data, DDS_SIGNATURE)) return new FileImageReader(DevilImageType.IL_DDS);
+				if (CheckSignature(data, DDS_SIGNATURE)) return new FileImageReader(DevilImageType.IL_DDS);
 
 				// Check for GIF signature
 				data.Seek(0, SeekOrigin.Begin);
-                if (CheckSignature(data, GIF_SIGNATURE)) return new FileImageReader(DevilImageType.IL_GIF);
+				if (CheckSignature(data, GIF_SIGNATURE)) return new FileImageReader(DevilImageType.IL_GIF);
 
-                //mxd. Check for PCX signature
-                data.Seek(0, SeekOrigin.Begin);
-                if (CheckSignature(data, PCX_SIGNATURE)) return new FileImageReader(DevilImageType.IL_PCX);
+				//mxd. Check for PCX signature
+				data.Seek(0, SeekOrigin.Begin);
+				if (CheckSignature(data, PCX_SIGNATURE)) return new FileImageReader(DevilImageType.IL_PCX);
 
-                //mxd. Check for JPG signature
-                data.Seek(0, SeekOrigin.Begin);
-                if (CheckSignature(data, JPG_SIGNATURE)) return new FileImageReader(DevilImageType.IL_JPG);
+				//mxd. Check for JPG signature
+				data.Seek(0, SeekOrigin.Begin);
+				if (CheckSignature(data, JPG_SIGNATURE)) return new FileImageReader(DevilImageType.IL_JPG);
 
-                //mxd. Check for TGA signature
-                data.Seek(0, SeekOrigin.Begin);
-                if (CheckSignature(data, TGA_SIGNATURE)) return new FileImageReader(DevilImageType.IL_TGA);
+				//mxd. Check for TGA signature
+				data.Seek(0, SeekOrigin.Begin);
+				if (CheckSignature(data, TGA_SIGNATURE)) return new FileImageReader(DevilImageType.IL_TGA);
 
 				// Check for BMP signature
 				data.Seek(0, SeekOrigin.Begin);
-                if (CheckSignature(data, BMP_SIGNATURE)) return new UnknownImageReader(); //mxd. Not supported in (G)ZDoom
+				if (CheckSignature(data, BMP_SIGNATURE)) return new UnknownImageReader(); //mxd. Not supported in (G)ZDoom
 			}
 			
 			// Could it be a doom picture?

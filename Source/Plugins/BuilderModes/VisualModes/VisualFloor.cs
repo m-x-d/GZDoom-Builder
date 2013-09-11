@@ -52,16 +52,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public VisualFloor(BaseVisualMode mode, VisualSector vs) : base(mode, vs)
 		{
-            //mxd
-            geoType = VisualGeometryType.FLOOR;
+			//mxd
+			geoType = VisualGeometryType.FLOOR;
 
 			//mxd
 			if(mode.UseSelectionFromClassicMode && vs != null && vs.Sector.Selected && (General.Map.ViewMode == ViewMode.FloorTextures || General.Map.ViewMode == ViewMode.Normal)) {
 				this.selected = true;
 				mode.AddSelectedObject(this);
 			}
-            
-            // We have no destructor
+			
+			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
@@ -178,14 +178,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Move texture coordinates
 		protected override void MoveTextureOffset(Point xy)
 		{
-            //mxd
-            Sector s = GetControlSector();
-            s.Fields.BeforeFieldsChange();
+			//mxd
+			Sector s = GetControlSector();
+			s.Fields.BeforeFieldsChange();
 			float nx = (s.Fields.GetValue("xpanningfloor", 0.0f) + xy.X) % (Texture.ScaledWidth / s.Fields.GetValue("xscalefloor", 1.0f));
 			float ny = (s.Fields.GetValue("ypanningfloor", 0.0f) + xy.Y) % (Texture.ScaledHeight / s.Fields.GetValue("yscalefloor", 1.0f));
-            s.Fields["xpanningfloor"] = new UniValue(UniversalType.Float, nx);
-            s.Fields["ypanningfloor"] = new UniValue(UniversalType.Float, ny);
-            s.UpdateNeeded = true;
+			s.Fields["xpanningfloor"] = new UniValue(UniversalType.Float, nx);
+			s.Fields["ypanningfloor"] = new UniValue(UniversalType.Float, ny);
+			s.UpdateNeeded = true;
 
 			mode.SetActionResult("Changed floor texture offsets to " + nx + ", " + ny + ".");
 		}
@@ -283,19 +283,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode.SetActionResult("Changed floor height to " + level.sector.FloorHeight + ".");
 		}
 
-        //mxd. Sector brightness change
-        public override void OnChangeTargetBrightness(bool up) {
+		//mxd. Sector brightness change
+		public override void OnChangeTargetBrightness(bool up) {
 			if (level != null) {
-                if (level.sector != Sector.Sector)  //this floor is part of 3D-floor
-                    ((BaseVisualSector)mode.GetVisualSector(level.sector)).Floor.OnChangeTargetBrightness(up);
-                else if (Sector.ExtraFloors.Count > 0)  //this is actual floor of a sector with extrafloors
-                    Sector.ExtraFloors[0].OnChangeTargetBrightness(up);
-                else
-                    base.OnChangeTargetBrightness(up);
-            } else {
-                base.OnChangeTargetBrightness(up);
-            }
-        }
+				if (level.sector != Sector.Sector)  //this floor is part of 3D-floor
+					((BaseVisualSector)mode.GetVisualSector(level.sector)).Floor.OnChangeTargetBrightness(up);
+				else if (Sector.ExtraFloors.Count > 0)  //this is actual floor of a sector with extrafloors
+					Sector.ExtraFloors[0].OnChangeTargetBrightness(up);
+				else
+					base.OnChangeTargetBrightness(up);
+			} else {
+				base.OnChangeTargetBrightness(up);
+			}
+		}
 
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)

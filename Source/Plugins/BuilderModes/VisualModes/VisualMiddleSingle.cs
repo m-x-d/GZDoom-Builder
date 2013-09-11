@@ -49,10 +49,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public VisualMiddleSingle(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
-            //mxd
-            geoType = VisualGeometryType.WALL_MIDDLE;
-            
-            // We have no destructor
+			//mxd
+			geoType = VisualGeometryType.WALL_MIDDLE;
+			
+			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 		
@@ -61,11 +61,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			Vector2D vl, vr;
 
-            //mxd. lightfog flag support
-            bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
-            bool ignoreUDMFLight = (!Sidedef.Fields.GetValue("lightfog", false) || !lightabsolute) && Sector.Sector.Fields.ContainsKey("fadecolor");
-            int lightvalue = ignoreUDMFLight ? 0 : Sidedef.Fields.GetValue("light", 0); //mxd
-            if (ignoreUDMFLight) lightabsolute = false;
+			//mxd. lightfog flag support
+			bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
+			bool ignoreUDMFLight = (!Sidedef.Fields.GetValue("lightfog", false) || !lightabsolute) && Sector.Sector.Fields.ContainsKey("fadecolor");
+			int lightvalue = ignoreUDMFLight ? 0 : Sidedef.Fields.GetValue("light", 0); //mxd
+			if (ignoreUDMFLight) lightabsolute = false;
 
 			Vector2D tscale = new Vector2D(Sidedef.Fields.GetValue("scalex_mid", 1.0f),
 										   Sidedef.Fields.GetValue("scaley_mid", 1.0f));
@@ -175,8 +175,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				// Determine initial color
 				int lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
-                //mxd
-                PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
+				//mxd
+				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
 				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
 				poly.color = wallcolor.WithAlpha(255).ToInt();
 				
@@ -229,8 +229,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
 			float scalex = Sidedef.Fields.GetValue("scalex_mid", 1.0f);
 			float scaley = Sidedef.Fields.GetValue("scaley_mid", 1.0f);
-            Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldx, xy.X, scalex, Texture.Width)); //mxd
-            Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldy, xy.Y, scaley, Texture.Height)); //mxd
+			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldx, xy.X, scalex, Texture.Width)); //mxd
+			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldy, xy.Y, scaley, Texture.Height)); //mxd
 		}
 
 		protected override Point GetTextureOffset()

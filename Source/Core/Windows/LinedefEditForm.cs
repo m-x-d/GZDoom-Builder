@@ -242,11 +242,11 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				//mxd
 				actiongroup.Top = settingsGroup.Top;
-                actiongroup.Height = hexenpanel.Location.Y + hexenpanel.Height;
+				actiongroup.Height = hexenpanel.Location.Y + hexenpanel.Height;
 				this.Height = heightpanel1.Height;
 			} else if(!General.Map.FormatInterface.HasMixedActivations &&
-				    !General.Map.FormatInterface.HasActionArgs &&
-				    !General.Map.FormatInterface.HasPresetActivations)
+					!General.Map.FormatInterface.HasActionArgs &&
+					!General.Map.FormatInterface.HasPresetActivations)
 			{
 				actiongroup.Top = settingsGroup.Top;
 				actiongroup.Height = action.Bottom + action.Top + (actiongroup.Width - actiongroup.ClientRectangle.Width);
@@ -350,7 +350,7 @@ namespace CodeImp.DoomBuilder.Windows
 				frontlow.Required = fl.Front.LowRequired();
 				frontsector.Text = fl.Front.Sector.Index.ToString();
 
-                //mxd
+				//mxd
 				if(General.Map.FormatInterface.HasCustomFields) {
 					//front settings
 					foreach(PairedFieldsControl pfc in frontUdmfControls)
@@ -362,7 +362,7 @@ namespace CodeImp.DoomBuilder.Windows
 					//flags
 					foreach(CheckBox c in flagsFront.Checkboxes)
 						if(fl.Front.Flags.ContainsKey(c.Tag.ToString())) c.Checked = fl.Front.Flags[c.Tag.ToString()];
-                }
+				}
 
 				frontTextureOffset.SetValues(fl.Front.OffsetX, fl.Front.OffsetY); //mxd
 			}
@@ -378,7 +378,7 @@ namespace CodeImp.DoomBuilder.Windows
 				backlow.Required = fl.Back.LowRequired();
 				backsector.Text = fl.Back.Sector.Index.ToString();
 
-                //mxd
+				//mxd
 				if(General.Map.FormatInterface.HasCustomFields) {
 					//front settings
 					foreach(PairedFieldsControl pfc in backUdmfControls)
@@ -390,7 +390,7 @@ namespace CodeImp.DoomBuilder.Windows
 					//flags
 					foreach(CheckBox c in flagsBack.Checkboxes)
 						if(fl.Back.Flags.ContainsKey(c.Tag.ToString()))	c.Checked = fl.Back.Flags[c.Tag.ToString()];
-                }
+				}
  
 				backTextureOffset.SetValues(fl.Back.OffsetX, fl.Back.OffsetY); //mxd
 			}
@@ -522,7 +522,7 @@ namespace CodeImp.DoomBuilder.Windows
 								}
 							}
 						}
-                    }
+					}
 
 					l.Front.Fields.BeforeFieldsChange(); //mxd
 					frontTextureOffset.SetValues(l.Front.OffsetX, l.Front.OffsetY); //mxd
@@ -539,7 +539,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(backlow.Required != l.Back.LowRequired()) backlow.Required = false;
 					if(backsector.Text != l.Back.Sector.Index.ToString()) backsector.Text = "";
 
-                    //mxd
+					//mxd
 					if(General.Map.FormatInterface.HasCustomFields) {
 						foreach(PairedFieldsControl pfc in backUdmfControls)
 							pfc.SetValuesFrom(l.Back.Fields, false);
@@ -565,7 +565,7 @@ namespace CodeImp.DoomBuilder.Windows
 								}
 							}
 						}
-                    }
+					}
 
 					l.Back.Fields.BeforeFieldsChange(); //mxd
 					backTextureOffset.SetValues(l.Back.OffsetX, l.Back.OffsetY); //mxd
@@ -658,8 +658,8 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
-            //mxd
-            bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
+			//mxd
+			bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
 			int lockNum = lockNumber.GetResult(0);
 			
 			// Go for all the lines
@@ -872,13 +872,13 @@ namespace CodeImp.DoomBuilder.Windows
 			action.Value = ActionBrowserForm.BrowseAction(this, action.Value);
 		}
 
-        //mxd
-        private void cbArgStr_CheckedChanged(object sender, EventArgs e) {
+		//mxd
+		private void cbArgStr_CheckedChanged(object sender, EventArgs e) {
 			if(!cbArgStr.Visible) return;
 			scriptNames.Visible = cbArgStr.Checked;
 			scriptNumbers.Visible = !cbArgStr.Checked;
 			arg0label.Text = cbArgStr.Checked ? "Script Name:" : "Script Number:";
-        }
+		}
 
 		//mxd
 		private void tabcustom_MouseEnter(object sender, EventArgs e) {

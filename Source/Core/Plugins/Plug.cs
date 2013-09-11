@@ -33,24 +33,24 @@ namespace CodeImp.DoomBuilder.Plugins
 		// Disposing
 		private bool isdisposed = false;
 
-        //mxd. It's nice to have these avaliable to plugins...
-        protected static Point DisplayLocationAbs {
-            get {
-                if (General.MainWindow == null || General.MainWindow.Display == null)
-                    return new Point();
-                return new Point(General.MainWindow.Location.X + General.MainWindow.ClientRectangle.X + General.MainWindow.Display.Location.X, General.MainWindow.Location.Y + General.MainWindow.ClientRectangle.Y + General.MainWindow.Display.Location.Y);
-            }
-        }
+		//mxd. It's nice to have these avaliable to plugins...
+		protected static Point DisplayLocationAbs {
+			get {
+				if (General.MainWindow == null || General.MainWindow.Display == null)
+					return new Point();
+				return new Point(General.MainWindow.Location.X + General.MainWindow.ClientRectangle.X + General.MainWindow.Display.Location.X, General.MainWindow.Location.Y + General.MainWindow.ClientRectangle.Y + General.MainWindow.Display.Location.Y);
+			}
+		}
 
-        //mxd. It's nice to have these avaliable to plugins...
-        protected static Size DisplaySize { get { return (General.MainWindow == null || General.MainWindow.Display == null) ? new Size() : General.MainWindow.Display.Size; } }
+		//mxd. It's nice to have these avaliable to plugins...
+		protected static Size DisplaySize { get { return (General.MainWindow == null || General.MainWindow.Display == null) ? new Size() : General.MainWindow.Display.Size; } }
 
 
-        //mxd
-        /*public static TypeHandlerAttribute[] GetCustomUseAttributes() {
-            //TypeHandlerAttribute[] attrs = General.Types.GetCustomUseAttributes();
-            return General.Types.GetCustomUseAttributes();
-        }*/
+		//mxd
+		/*public static TypeHandlerAttribute[] GetCustomUseAttributes() {
+			//TypeHandlerAttribute[] attrs = General.Types.GetCustomUseAttributes();
+			return General.Types.GetCustomUseAttributes();
+		}*/
 
 		#endregion
 		
@@ -339,13 +339,13 @@ namespace CodeImp.DoomBuilder.Plugins
 		public virtual void OnEditRedrawDisplayEnd() { }
 		public virtual void OnPresentDisplayBegin() { }
 
-        //mxd. Highlight events
-        public virtual void OnHighlightSector(Sector s) { }
-        public virtual void OnHighlightLinedef(Linedef l) { }
-        public virtual void OnHighlightThing(Thing t) { }
-        public virtual void OnHighlightVertex(Vertex v) { }
-        public virtual void OnHighlightRefreshed(object o) { }
-        public virtual void OnHighlightLost() { }
+		//mxd. Highlight events
+		public virtual void OnHighlightSector(Sector s) { }
+		public virtual void OnHighlightLinedef(Linedef l) { }
+		public virtual void OnHighlightThing(Thing t) { }
+		public virtual void OnHighlightVertex(Vertex v) { }
+		public virtual void OnHighlightRefreshed(object o) { }
+		public virtual void OnHighlightLost() { }
 		
 		#endregion
 	}

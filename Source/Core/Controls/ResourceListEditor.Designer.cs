@@ -32,9 +32,9 @@ namespace CodeImp.DoomBuilder.Controls
 			System.Windows.Forms.SplitContainer buttonsbar2;
 			System.Windows.Forms.SplitContainer buttonsbar1;
 			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
-            "C:\\Windows\\Doom\\Doom2.wad"}, 3, System.Drawing.SystemColors.GrayText, System.Drawing.SystemColors.Window, null);
+			"C:\\Windows\\Doom\\Doom2.wad"}, 3, System.Drawing.SystemColors.GrayText, System.Drawing.SystemColors.Window, null);
 			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
-            "C:\\My\\Little\\Textures\\"}, 2, System.Drawing.SystemColors.GrayText, System.Drawing.SystemColors.Window, null);
+			"C:\\My\\Little\\Textures\\"}, 2, System.Drawing.SystemColors.GrayText, System.Drawing.SystemColors.Window, null);
 			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("C:\\My\\Little\\Pony.wad", 1);
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ResourceListEditor));
 			this.editresource = new System.Windows.Forms.Button();
@@ -153,15 +153,15 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.resourceitems.AllowDrop = true;
 			this.resourceitems.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.column});
+			this.column});
 			this.resourceitems.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.resourceitems.FullRowSelect = true;
 			this.resourceitems.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.resourceitems.HideSelection = false;
 			this.resourceitems.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3});
+			listViewItem1,
+			listViewItem2,
+			listViewItem3});
 			this.resourceitems.Location = new System.Drawing.Point(0, 0);
 			this.resourceitems.MultiSelect = false;
 			this.resourceitems.Name = "resourceitems";

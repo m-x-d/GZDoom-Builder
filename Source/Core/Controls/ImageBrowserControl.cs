@@ -522,10 +522,10 @@ namespace CodeImp.DoomBuilder.Controls
 			objectname.Focus();
 		}
 
-        //mxd. This sends the focus to the list
-        public void FocusList() {
-            list.Focus();
-        }
+		//mxd. This sends the focus to the list
+		public void FocusList() {
+			list.Focus();
+		}
 		
 		// This updates the texture size label
 		private void UpdateTextureSizeLabel()

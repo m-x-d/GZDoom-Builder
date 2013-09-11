@@ -3,33 +3,33 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-    internal class EffectUDMFVertexOffset : SectorEffect {
-        
+	internal class EffectUDMFVertexOffset : SectorEffect {
+		
 		public EffectUDMFVertexOffset(SectorData data) : base(data) {
 			// New effect added: This sector needs an update!
 			if(data.Mode.VisualSectorExists(data.Sector)) {
 				BaseVisualSector vs = (BaseVisualSector)data.Mode.GetVisualSector(data.Sector);
 				vs.UpdateSectorGeometry(true);
 			}
-        }
+		}
 
-        public override void Update() {
-            // Create vertices in clockwise order
-            Vector3D[] floorVerts = new Vector3D[3];
-            Vector3D[] ceilingVerts = new Vector3D[3];
-            bool floorChanged = false;
-            bool ceilingChanged = false;
-            int index = 0;
+		public override void Update() {
+			// Create vertices in clockwise order
+			Vector3D[] floorVerts = new Vector3D[3];
+			Vector3D[] ceilingVerts = new Vector3D[3];
+			bool floorChanged = false;
+			bool ceilingChanged = false;
+			int index = 0;
 
-            //check vertices
-            foreach(Sidedef sd in data.Sector.Sidedefs)	{
+			//check vertices
+			foreach(Sidedef sd in data.Sector.Sidedefs)	{
 				Vertex v = sd.IsFront ? sd.Line.End : sd.Line.Start;
-                
-                //create "normal" vertices
-                floorVerts[index] = new Vector3D(v.Position);
-                ceilingVerts[index] = new Vector3D(v.Position);
+				
+				//create "normal" vertices
+				floorVerts[index] = new Vector3D(v.Position);
+				ceilingVerts[index] = new Vector3D(v.Position);
 
-                //check ceiling
+				//check ceiling
 				if(!float.IsNaN(v.ZCeiling)) {
 					//vertex offset is absolute
 					ceilingVerts[index].z = v.ZCeiling;
@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ceilingVerts[index].z = data.Ceiling.plane.GetZ(v.Position);
 				}
 
-                //and floor
+				//and floor
 				if(!float.IsNaN(v.ZFloor)) {
 					//vertex offset is absolute
 					floorVerts[index].z = v.ZFloor;
@@ -58,15 +58,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				data.Mode.UpdateVertexHandle(v);
 
-                index++;
-            }
+				index++;
+			}
 
-            //apply changes
-            if(ceilingChanged)
-                data.Ceiling.plane = new Plane(ceilingVerts[0], ceilingVerts[2], ceilingVerts[1], false);
+			//apply changes
+			if(ceilingChanged)
+				data.Ceiling.plane = new Plane(ceilingVerts[0], ceilingVerts[2], ceilingVerts[1], false);
 
-            if(floorChanged)
-                data.Floor.plane = new Plane(floorVerts[0], floorVerts[1], floorVerts[2], true);
-        }
-    }
+			if(floorChanged)
+				data.Floor.plane = new Plane(floorVerts[0], floorVerts[1], floorVerts[2], true);
+		}
+	}
 }

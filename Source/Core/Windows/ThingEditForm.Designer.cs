@@ -745,11 +745,11 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ThingBrowserControl thingtype;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox angle;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox posZ;
-        private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox posY;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox posX;
-        private System.Windows.Forms.CheckBox cbArgStr;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox posY;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label1;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox posX;
+		private System.Windows.Forms.CheckBox cbArgStr;
 		private System.Windows.Forms.ComboBox scriptNames;
 		private System.Windows.Forms.CheckBox cbAbsoluteHeight;
 		private System.Windows.Forms.CheckBox cbRandomAngle;

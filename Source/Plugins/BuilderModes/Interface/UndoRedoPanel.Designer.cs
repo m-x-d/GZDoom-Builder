@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// list
 			// 
 			this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.coldescription});
+			this.coldescription});
 			this.list.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.list.FullRowSelect = true;
 			this.list.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;

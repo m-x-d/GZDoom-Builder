@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.IO
 
 		// Palette to use
 		private Playpal palette;
-        public uint ImageType { get; private set; } //mxd
+		public uint ImageType { get; private set; } //mxd
 		
 		#endregion
 
@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			// Initialize
 			this.palette = palette;
-            ImageType = DevilImageType.IL_TYPE_UNKNOWN; //mxd
+			ImageType = DevilImageType.IL_TYPE_UNKNOWN; //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

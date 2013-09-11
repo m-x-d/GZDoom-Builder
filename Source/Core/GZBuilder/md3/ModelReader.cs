@@ -44,8 +44,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 		#region ================== Load
 
 		public static void Load(ModelData mde, List<DataReader> containers, Device device) {
-            mde.Model = new GZModel();
-            BoundingBoxSizes bbs = new BoundingBoxSizes();
+			mde.Model = new GZModel();
+			BoundingBoxSizes bbs = new BoundingBoxSizes();
 			MD3LoadResult result = new MD3LoadResult();
 
 			if(vertexElements == null) {
@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				};
 			}
 
-            //load models and textures
+			//load models and textures
 			for(int i = 0; i < mde.ModelNames.Count; i++) {
 				//need to use model skins?
 				bool useSkins = string.IsNullOrEmpty(mde.TextureNames[i]);
@@ -159,11 +159,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			mde.ModelNames = null;
 
 			if(mde.Model.Meshes == null || mde.Model.Meshes.Count == 0) {
-                mde.Model = null;
-                return;
-            }
+				mde.Model = null;
+				return;
+			}
 
-            mde.Model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
+			mde.Model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
 		}
 
 		#endregion
@@ -171,33 +171,33 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 		#region ================== MD3
 
 		private static MD3LoadResult ReadMD3Model(ref BoundingBoxSizes bbs, ModelData mde, bool useSkins, MemoryStream s, Device device) {
-            long start = s.Position;
+			long start = s.Position;
 			MD3LoadResult result = new MD3LoadResult();
 
-            using (var br = new BinaryReader(s, Encoding.ASCII)) {
-                string magic = ReadString(br, 4);
-                if (magic != "IDP3"){
+			using (var br = new BinaryReader(s, Encoding.ASCII)) {
+				string magic = ReadString(br, 4);
+				if (magic != "IDP3"){
 					result.Errors = "magic should be 'IDP3', not '" + magic + "'";
 					return result;
 				}
 
-                s.Position += 80;
-                int numSurfaces = br.ReadInt32();
-                s.Position += 12;
-                int ofsSurfaces = br.ReadInt32();
+				s.Position += 80;
+				int numSurfaces = br.ReadInt32();
+				s.Position += 12;
+				int ofsSurfaces = br.ReadInt32();
 
-                if (s.Position != ofsSurfaces + start)
-                    s.Position = ofsSurfaces + start;
+				if (s.Position != ofsSurfaces + start)
+					s.Position = ofsSurfaces + start;
 
-                List<int> polyIndecesList = new List<int>();
-                List<WorldVertex> vertList = new List<WorldVertex>();
+				List<int> polyIndecesList = new List<int>();
+				List<WorldVertex> vertList = new List<WorldVertex>();
 
 				Dictionary<string, List<List<int>>> polyIndecesListsPerTexture = new Dictionary<string, List<List<int>>>();
 				Dictionary<string, List<WorldVertex>> vertListsPerTexture = new Dictionary<string, List<WorldVertex>>();
 				Dictionary<string, List<int>> vertexOffsets = new Dictionary<string, List<int>>();
 
-                string error = "";
-                for (int c = 0; c < numSurfaces; c++) {
+				string error = "";
+				for (int c = 0; c < numSurfaces; c++) {
 					string skin = "";
 					error = ReadSurface(ref bbs, ref skin, br, polyIndecesList, vertList, mde);
 
@@ -221,7 +221,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 						polyIndecesList = new List<int>();
 						vertList = new List<WorldVertex>();
 					}
-                }
+				}
 
 				if(!useSkins) { //create mesh
 					CreateMesh(device, ref result, vertList, polyIndecesList);
@@ -247,33 +247,33 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 						result.Skins.Add(group.Key.ToLowerInvariant());
 					}
 				}
-            }
+			}
 
-            return result;
-        }
+			return result;
+		}
 
-        private static string ReadSurface(ref BoundingBoxSizes bbs, ref string skin, BinaryReader br, List<int> polyIndecesList, List<WorldVertex> vertList, ModelData mde) {
-            int vertexOffset = vertList.Count;
-            long start = br.BaseStream.Position;
-            string magic = ReadString(br, 4);
-            if (magic != "IDP3")
-                return "error while reading surface: Magic should be 'IDP3', not '" + magic + "'";
+		private static string ReadSurface(ref BoundingBoxSizes bbs, ref string skin, BinaryReader br, List<int> polyIndecesList, List<WorldVertex> vertList, ModelData mde) {
+			int vertexOffset = vertList.Count;
+			long start = br.BaseStream.Position;
+			string magic = ReadString(br, 4);
+			if (magic != "IDP3")
+				return "error while reading surface: Magic should be 'IDP3', not '" + magic + "'";
 
-            br.BaseStream.Position += 76;
-            int numVerts = br.ReadInt32(); //Number of Vertex objects defined in this Surface, up to MD3_MAX_VERTS. Current value of MD3_MAX_VERTS is 4096.
-            int numTriangles = br.ReadInt32(); //Number of Triangle objects defined in this Surface, maximum of MD3_MAX_TRIANGLES. Current value of MD3_MAX_TRIANGLES is 8192.
-            int ofsTriangles = br.ReadInt32(); //Relative offset from SURFACE_START where the list of Triangle objects starts.
+			br.BaseStream.Position += 76;
+			int numVerts = br.ReadInt32(); //Number of Vertex objects defined in this Surface, up to MD3_MAX_VERTS. Current value of MD3_MAX_VERTS is 4096.
+			int numTriangles = br.ReadInt32(); //Number of Triangle objects defined in this Surface, maximum of MD3_MAX_TRIANGLES. Current value of MD3_MAX_TRIANGLES is 8192.
+			int ofsTriangles = br.ReadInt32(); //Relative offset from SURFACE_START where the list of Triangle objects starts.
 			int ofsShaders = br.ReadInt32();
-            int ofsST = br.ReadInt32(); //Relative offset from SURFACE_START where the list of ST objects (s-t texture coordinates) starts.
-            int ofsNormal = br.ReadInt32(); //Relative offset from SURFACE_START where the list of Vertex objects (X-Y-Z-N vertices) starts.
-            int ofsEnd = br.ReadInt32(); //Relative offset from SURFACE_START to where the Surface object ends.
+			int ofsST = br.ReadInt32(); //Relative offset from SURFACE_START where the list of ST objects (s-t texture coordinates) starts.
+			int ofsNormal = br.ReadInt32(); //Relative offset from SURFACE_START where the list of Vertex objects (X-Y-Z-N vertices) starts.
+			int ofsEnd = br.ReadInt32(); //Relative offset from SURFACE_START to where the Surface object ends.
 
-            //polygons
-            if (start + ofsTriangles != br.BaseStream.Position)
-                br.BaseStream.Position = start + ofsTriangles;
+			//polygons
+			if (start + ofsTriangles != br.BaseStream.Position)
+				br.BaseStream.Position = start + ofsTriangles;
 
-            for (int i = 0; i < numTriangles * 3; i++)
-                polyIndecesList.Add( vertexOffset + br.ReadInt32() );
+			for (int i = 0; i < numTriangles * 3; i++)
+				polyIndecesList.Add( vertexOffset + br.ReadInt32() );
 
 			//shaders
 			if(start + ofsShaders != br.BaseStream.Position)
@@ -281,85 +281,85 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 			skin = ReadString(br, 64); //we are interested only in the first one
 
-            //Vertices
-            if (start + ofsST != br.BaseStream.Position)
-                br.BaseStream.Position = start + ofsST;
+			//Vertices
+			if (start + ofsST != br.BaseStream.Position)
+				br.BaseStream.Position = start + ofsST;
 
-            for (int i = 0; i < numVerts; i++) {
-                WorldVertex v = new WorldVertex();
-                v.c = -1; //white
-                v.u = br.ReadSingle();
-                v.v = br.ReadSingle();
+			for (int i = 0; i < numVerts; i++) {
+				WorldVertex v = new WorldVertex();
+				v.c = -1; //white
+				v.u = br.ReadSingle();
+				v.v = br.ReadSingle();
 
-                vertList.Add(v);
-            }
+				vertList.Add(v);
+			}
 
-            //Normals
-            if (start + ofsNormal != br.BaseStream.Position)
-                br.BaseStream.Position = start + ofsNormal;
+			//Normals
+			if (start + ofsNormal != br.BaseStream.Position)
+				br.BaseStream.Position = start + ofsNormal;
 
-            //rotation angles
-            float angleOfsetCos = (float)Math.Cos(mde.AngleOffset);
-            float angleOfsetSin = (float)Math.Sin(mde.AngleOffset);
-            float pitchOfsetCos = (float)Math.Cos(-mde.PitchOffset);
-            float pitchOfsetSin = (float)Math.Sin(-mde.PitchOffset);
-            float rollOfsetCos = (float)Math.Cos(mde.RollOffset);
-            float rollOfsetSin = (float)Math.Sin(mde.RollOffset);
+			//rotation angles
+			float angleOfsetCos = (float)Math.Cos(mde.AngleOffset);
+			float angleOfsetSin = (float)Math.Sin(mde.AngleOffset);
+			float pitchOfsetCos = (float)Math.Cos(-mde.PitchOffset);
+			float pitchOfsetSin = (float)Math.Sin(-mde.PitchOffset);
+			float rollOfsetCos = (float)Math.Cos(mde.RollOffset);
+			float rollOfsetSin = (float)Math.Sin(mde.RollOffset);
 
-            for (int i = vertexOffset; i < vertexOffset + numVerts; i++) {
-                WorldVertex v = vertList[i];
+			for (int i = vertexOffset; i < vertexOffset + numVerts; i++) {
+				WorldVertex v = vertList[i];
 
-                //read vertex
-                v.y = -(float)br.ReadInt16() / 64;
-                v.x = (float)br.ReadInt16() / 64;
-                v.z = (float)br.ReadInt16() / 64;
+				//read vertex
+				v.y = -(float)br.ReadInt16() / 64;
+				v.x = (float)br.ReadInt16() / 64;
+				v.z = (float)br.ReadInt16() / 64;
 
-                //rotate it
-                if (mde.AngleOffset != 0) {
-                    float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
-                    float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
-                    v.y = ry;
-                    v.x = rx;
-                }
-                if (mde.PitchOffset != 0) {
-                    float ry = pitchOfsetCos * v.y - pitchOfsetSin * v.z;
-                    float rz = pitchOfsetSin * v.y + pitchOfsetCos * v.z;
-                    v.z = rz;
-                    v.y = ry;
-                }
-                if (mde.RollOffset != 0) {
-                    float rx = rollOfsetCos * v.x - rollOfsetSin * v.z;
-                    float rz = rollOfsetSin * v.x + rollOfsetCos * v.z;
-                    v.z = rz;
-                    v.x = rx;
-                }
+				//rotate it
+				if (mde.AngleOffset != 0) {
+					float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
+					float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
+					v.y = ry;
+					v.x = rx;
+				}
+				if (mde.PitchOffset != 0) {
+					float ry = pitchOfsetCos * v.y - pitchOfsetSin * v.z;
+					float rz = pitchOfsetSin * v.y + pitchOfsetCos * v.z;
+					v.z = rz;
+					v.y = ry;
+				}
+				if (mde.RollOffset != 0) {
+					float rx = rollOfsetCos * v.x - rollOfsetSin * v.z;
+					float rz = rollOfsetSin * v.x + rollOfsetCos * v.z;
+					v.z = rz;
+					v.x = rx;
+				}
 
-                //scale it
-                v.y *= mde.Scale.X;
-                v.x *= mde.Scale.Y;
+				//scale it
+				v.y *= mde.Scale.X;
+				v.x *= mde.Scale.Y;
 				v.z *= mde.Scale.Z;
 				if(General.Settings.GZStretchModels) v.z *= VERTICAL_STRETCH; //GZDoom vertical stretch hack
 
-                //add zOffset
-                v.z += mde.zOffset;
+				//add zOffset
+				v.z += mde.zOffset;
 
-                //bounding box
-                BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, v);
+				//bounding box
+				BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, v);
 
-                var lat = br.ReadByte() * (2 * Math.PI) / 255.0;
-                var lng = br.ReadByte() * (2 * Math.PI) / 255.0;
+				var lat = br.ReadByte() * (2 * Math.PI) / 255.0;
+				var lng = br.ReadByte() * (2 * Math.PI) / 255.0;
 
-                v.nx = (float)(Math.Sin(lng) * Math.Sin(lat));
-                v.ny = -(float)(Math.Cos(lng) * Math.Sin(lat));
-                v.nz = (float)(Math.Cos(lat));
+				v.nx = (float)(Math.Sin(lng) * Math.Sin(lat));
+				v.ny = -(float)(Math.Cos(lng) * Math.Sin(lat));
+				v.nz = (float)(Math.Cos(lat));
 
-                vertList[i] = v;
-            }
+				vertList[i] = v;
+			}
 
-            if (start + ofsEnd != br.BaseStream.Position)
-                br.BaseStream.Position = start + ofsEnd;
-            return "";
-        }
+			if (start + ofsEnd != br.BaseStream.Position)
+				br.BaseStream.Position = start + ofsEnd;
+			return "";
+		}
 
 		private static void CreateMesh(Device device, ref MD3LoadResult result, List<WorldVertex> vertList, List<int> polyIndecesList) {
 			//create mesh
@@ -385,31 +385,31 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 		#region ================== MD2
 
 		private static MD3LoadResult ReadMD2Model(ref BoundingBoxSizes bbs, ModelData mde, MemoryStream s, Device D3DDevice) {
-            long start = s.Position;
+			long start = s.Position;
 			MD3LoadResult result = new MD3LoadResult();
 
-            using (var br = new BinaryReader(s, Encoding.ASCII)) {
-                string magic = ReadString(br, 4);
+			using (var br = new BinaryReader(s, Encoding.ASCII)) {
+				string magic = ReadString(br, 4);
 				if(magic != "IDP2") {  //magic number: "IDP2"
 					result.Errors = "magic should be 'IDP2', not '" + magic + "'";
 					return result;
 				}
 
-                int modelVersion = br.ReadInt32();
+				int modelVersion = br.ReadInt32();
 				if(modelVersion != 8) { //MD2 version. Must be equal to 8
 					//General.ErrorLogger.Add(ErrorType.Error, "Unable to load model '" + path + "': MD2 version must be 8 but is " + modelVersion);
 					result.Errors = "MD2 version must be 8 but is " + modelVersion;
 					return result;
 				}
 
-                int texWidth = br.ReadInt32();
-                int texHeight = br.ReadInt32();
-                s.Position += 8; //Size of one frame in bytes
-                //s.Position += 4; //Number of textures
-                int num_verts = br.ReadInt32(); //Number of vertices
-                int num_uv = br.ReadInt32(); //The number of UV coordinates in the model
-                int num_tris = br.ReadInt32(); //Number of triangles
-                s.Position += 4; //Number of OpenGL commands
+				int texWidth = br.ReadInt32();
+				int texHeight = br.ReadInt32();
+				s.Position += 8; //Size of one frame in bytes
+				//s.Position += 4; //Number of textures
+				int num_verts = br.ReadInt32(); //Number of vertices
+				int num_uv = br.ReadInt32(); //The number of UV coordinates in the model
+				int num_tris = br.ReadInt32(); //Number of triangles
+				s.Position += 4; //Number of OpenGL commands
 
 				if(br.ReadInt32() == 0) {  //Total number of frames
 					//General.ErrorLogger.Add(ErrorType.Error, "Unable to load model '" + path + "': model has 0 frames.");
@@ -417,106 +417,106 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					return result;
 				}
 
-                s.Position += 4; //Offset to skin names (each skin name is an unsigned char[64] and are null terminated)
-                int ofs_uv = br.ReadInt32();//Offset to s-t texture coordinates
-                int ofs_tris = br.ReadInt32(); //Offset to triangles
-                int ofs_animFrame = br.ReadInt32(); //An offset to the first animation frame
+				s.Position += 4; //Offset to skin names (each skin name is an unsigned char[64] and are null terminated)
+				int ofs_uv = br.ReadInt32();//Offset to s-t texture coordinates
+				int ofs_tris = br.ReadInt32(); //Offset to triangles
+				int ofs_animFrame = br.ReadInt32(); //An offset to the first animation frame
 
-                List<int> polyIndecesList = new List<int>();
-                List<int> uvIndecesList = new List<int>();
-                List<Vector2> uvCoordsList = new List<Vector2>();
-                List<WorldVertex> vertList = new List<WorldVertex>();
+				List<int> polyIndecesList = new List<int>();
+				List<int> uvIndecesList = new List<int>();
+				List<Vector2> uvCoordsList = new List<Vector2>();
+				List<WorldVertex> vertList = new List<WorldVertex>();
 
-                //polygons
-                if (s.Position != ofs_tris + start)
-                    s.Position = ofs_tris + start;
+				//polygons
+				if (s.Position != ofs_tris + start)
+					s.Position = ofs_tris + start;
 
-                for (int i = 0; i < num_tris; i++) {
-                    polyIndecesList.Add((int)br.ReadUInt16());
+				for (int i = 0; i < num_tris; i++) {
 					polyIndecesList.Add((int)br.ReadUInt16());
 					polyIndecesList.Add((int)br.ReadUInt16());
+					polyIndecesList.Add((int)br.ReadUInt16());
 
 					uvIndecesList.Add((int)br.ReadUInt16());
 					uvIndecesList.Add((int)br.ReadUInt16());
 					uvIndecesList.Add((int)br.ReadUInt16());
-                }
+				}
 
-                //UV coords
-                if (s.Position != ofs_uv + start)
-                    s.Position = ofs_uv + start;
+				//UV coords
+				if (s.Position != ofs_uv + start)
+					s.Position = ofs_uv + start;
 
-                for (int i = 0; i < num_uv; i++) 
-                    uvCoordsList.Add(new Vector2((float)br.ReadInt16() / texWidth, (float)br.ReadInt16() / texHeight));
+				for (int i = 0; i < num_uv; i++) 
+					uvCoordsList.Add(new Vector2((float)br.ReadInt16() / texWidth, (float)br.ReadInt16() / texHeight));
 
-                //first frame
-                //header
-                if (s.Position != ofs_animFrame + start)
-                    s.Position = ofs_animFrame + start;
+				//first frame
+				//header
+				if (s.Position != ofs_animFrame + start)
+					s.Position = ofs_animFrame + start;
 
-                Vector3 scale = new Vector3((float)br.ReadSingle(), (float)br.ReadSingle(), (float)br.ReadSingle());
-                Vector3 translate = new Vector3((float)br.ReadSingle(), (float)br.ReadSingle(), (float)br.ReadSingle());
+				Vector3 scale = new Vector3((float)br.ReadSingle(), (float)br.ReadSingle(), (float)br.ReadSingle());
+				Vector3 translate = new Vector3((float)br.ReadSingle(), (float)br.ReadSingle(), (float)br.ReadSingle());
 
-                s.Position += 16; //frame name
+				s.Position += 16; //frame name
 
-                //rotation angles
+				//rotation angles
 				float angle = mde.AngleOffset - Angle2D.PIHALF;// 0.5f * (float)Math.PI; //subtract 90 degrees to get correct rotation
-                float angleOfsetCos = (float)Math.Cos(angle);
-                float angleOfsetSin = (float)Math.Sin(angle);
-                float pitchOfsetCos = (float)Math.Cos(-mde.PitchOffset);
-                float pitchOfsetSin = (float)Math.Sin(-mde.PitchOffset);
-                float rollOfsetCos = (float)Math.Cos(mde.RollOffset);
-                float rollOfsetSin = (float)Math.Sin(mde.RollOffset);
+				float angleOfsetCos = (float)Math.Cos(angle);
+				float angleOfsetSin = (float)Math.Sin(angle);
+				float pitchOfsetCos = (float)Math.Cos(-mde.PitchOffset);
+				float pitchOfsetSin = (float)Math.Sin(-mde.PitchOffset);
+				float rollOfsetCos = (float)Math.Cos(mde.RollOffset);
+				float rollOfsetSin = (float)Math.Sin(mde.RollOffset);
 
-                //verts
-                for (int i = 0; i < num_verts; i++) {
-                    WorldVertex v = new WorldVertex();
+				//verts
+				for (int i = 0; i < num_verts; i++) {
+					WorldVertex v = new WorldVertex();
 
-                    v.x = ((float)br.ReadByte() * scale.X + translate.X);
-                    v.y = ((float)br.ReadByte() * scale.Y + translate.Y);
-                    v.z = ((float)br.ReadByte() * scale.Z + translate.Z);
+					v.x = ((float)br.ReadByte() * scale.X + translate.X);
+					v.y = ((float)br.ReadByte() * scale.Y + translate.Y);
+					v.z = ((float)br.ReadByte() * scale.Z + translate.Z);
 
-                    //rotate it
-                    float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
-                    float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
-                    v.y = ry;
-                    v.x = rx;
+					//rotate it
+					float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
+					float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
+					v.y = ry;
+					v.x = rx;
 
-                    if (mde.PitchOffset != 0) {
-                        ry = pitchOfsetCos * v.y - pitchOfsetSin * v.z;
-                        float rz = pitchOfsetSin * v.y + pitchOfsetCos * v.z;
-                        v.z = rz;
-                        v.y = ry;
-                    }
-                    if (mde.RollOffset != 0) {
-                        rx = rollOfsetCos * v.x - rollOfsetSin * v.z;
-                        float rz = rollOfsetSin * v.x + rollOfsetCos * v.z;
-                        v.z = rz;
-                        v.x = rx;
-                    }
+					if (mde.PitchOffset != 0) {
+						ry = pitchOfsetCos * v.y - pitchOfsetSin * v.z;
+						float rz = pitchOfsetSin * v.y + pitchOfsetCos * v.z;
+						v.z = rz;
+						v.y = ry;
+					}
+					if (mde.RollOffset != 0) {
+						rx = rollOfsetCos * v.x - rollOfsetSin * v.z;
+						float rz = rollOfsetSin * v.x + rollOfsetCos * v.z;
+						v.z = rz;
+						v.x = rx;
+					}
 
-                    //scale it
-                    v.x *= mde.Scale.X;
-                    v.y *= mde.Scale.Y;
+					//scale it
+					v.x *= mde.Scale.X;
+					v.y *= mde.Scale.Y;
 					v.z *= mde.Scale.Z;
 					if(General.Settings.GZStretchModels) v.z *= VERTICAL_STRETCH; //GZDoom vertical stretch hack
 
-                    //add zOffset
-                    v.z += mde.zOffset;
+					//add zOffset
+					v.z += mde.zOffset;
 
-                    vertList.Add(v);
+					vertList.Add(v);
 
-                    s.Position += 1; //vertex normal
-                }
+					s.Position += 1; //vertex normal
+				}
 
-                for (int i = 0; i < polyIndecesList.Count; i++) {
-                    WorldVertex v = vertList[polyIndecesList[i]];
-                    
-                    //bounding box
-                    BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, new WorldVertex(v.y, v.x, v.z));
+				for (int i = 0; i < polyIndecesList.Count; i++) {
+					WorldVertex v = vertList[polyIndecesList[i]];
+					
+					//bounding box
+					BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, new WorldVertex(v.y, v.x, v.z));
 
-                    //uv
+					//uv
 					float tu = uvCoordsList[uvIndecesList[i]].X;
-                    float tv = uvCoordsList[uvIndecesList[i]].Y;
+					float tv = uvCoordsList[uvIndecesList[i]].Y;
 
 					//uv-coordinates already set?
 					if(v.c == -1 && (v.u != tu || v.v != tv)) { 
@@ -531,29 +531,29 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 						//return to proper place
 						vertList[polyIndecesList[i]] = v;
 					}
-                }
+				}
 
-                //mesh
-                Mesh mesh = new Mesh(D3DDevice, polyIndecesList.Count / 3, vertList.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
+				//mesh
+				Mesh mesh = new Mesh(D3DDevice, polyIndecesList.Count / 3, vertList.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
 
-                using (DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) {
-                    stream.WriteRange(vertList.ToArray());
-                }
-                mesh.UnlockVertexBuffer();
+				using (DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) {
+					stream.WriteRange(vertList.ToArray());
+				}
+				mesh.UnlockVertexBuffer();
 
-                using (DataStream stream = mesh.LockIndexBuffer(LockFlags.None)) {
-                    stream.WriteRange(polyIndecesList.ToArray());
-                }
-                mesh.UnlockIndexBuffer();
+				using (DataStream stream = mesh.LockIndexBuffer(LockFlags.None)) {
+					stream.WriteRange(polyIndecesList.ToArray());
+				}
+				mesh.UnlockIndexBuffer();
 
-                mesh.OptimizeInPlace(MeshOptimizeFlags.AttributeSort);
+				mesh.OptimizeInPlace(MeshOptimizeFlags.AttributeSort);
 
 				//store in result
 				result.Meshes.Add(mesh);
 				result.Skins.Add(""); //no skin support for MD2
-            }
+			}
 
-            return result;
+			return result;
 		}
 
 		#endregion
@@ -608,21 +608,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			return texture;
 		}
 
-        private static string ReadString(BinaryReader br, int len) {
-            var NAME = string.Empty;
-            int i = 0;
-            for (i = 0; i < len; ++i) {
-                var c = br.ReadChar();
-                if (c == '\0') {
-                    ++i;
-                    break;
-                }
-                NAME += c;
-            }
-            for (; i < len; ++i) {
-                br.ReadChar();
-            }
-            return NAME;
+		private static string ReadString(BinaryReader br, int len) {
+			var NAME = string.Empty;
+			int i = 0;
+			for (i = 0; i < len; ++i) {
+				var c = br.ReadChar();
+				if (c == '\0') {
+					++i;
+					break;
+				}
+				NAME += c;
+			}
+			for (; i < len; ++i) {
+				br.ReadChar();
+			}
+			return NAME;
 		}
 
 		#endregion

@@ -654,7 +654,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new thing and returns it.</summary>
 		public Thing CreateThing()
 		{
-            if(numthings == General.Map.FormatInterface.MaxThings)
+			if(numthings == General.Map.FormatInterface.MaxThings)
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of things reached.");
 				return null;
@@ -669,7 +669,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new thing and returns it.</summary>
 		public Thing CreateThing(int index)
 		{
-            if(numthings == General.Map.FormatInterface.MaxThings)
+			if(numthings == General.Map.FormatInterface.MaxThings)
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of things reached.");
 				return null;
@@ -2320,9 +2320,9 @@ namespace CodeImp.DoomBuilder.Map
 							Vector2D deltastart = l.Start.Position - v.Position;
 							Vector2D deltaend = l.End.Position - v.Position;
 							if(((Math.Abs(deltastart.x) > 0.001f) ||
-							    (Math.Abs(deltastart.y) > 0.001f)) &&
+								(Math.Abs(deltastart.y) > 0.001f)) &&
 							   ((Math.Abs(deltaend.x) > 0.001f) ||
-							    (Math.Abs(deltaend.y) > 0.001f)))
+								(Math.Abs(deltaend.y) > 0.001f)))
 							{
 								// Split line l with vertex v
 								Linedef nl = l.Split(v);
@@ -2866,25 +2866,25 @@ namespace CodeImp.DoomBuilder.Map
 			return new List<Linedef>(lines.Values);
 		}
 
-        //mxd
-        /// <summary>This returns a sector if given coordinates lie inide one.</summary>
-        public Sector GetSectorByCoordinates(Vector2D pos) {
-            Linedef nl;
-            Sector sector = null;
+		//mxd
+		/// <summary>This returns a sector if given coordinates lie inide one.</summary>
+		public Sector GetSectorByCoordinates(Vector2D pos) {
+			Linedef nl;
+			Sector sector = null;
 
-            nl = NearestLinedef(pos);
-            if (nl != null) {
-                // Check what side of line we are at
-                if (nl.SideOfLine(pos) < 0f) {
-                    // Front side
-                    if (nl.Front != null) sector = nl.Front.Sector; else sector = null;
-                } else {
-                    // Back side
-                    if (nl.Back != null) sector = nl.Back.Sector; else sector = null;
-                }
-            }
-            return sector;
-        }
+			nl = NearestLinedef(pos);
+			if (nl != null) {
+				// Check what side of line we are at
+				if (nl.SideOfLine(pos) < 0f) {
+					// Front side
+					if (nl.Front != null) sector = nl.Front.Sector; else sector = null;
+				} else {
+					// Back side
+					if (nl.Back != null) sector = nl.Back.Sector; else sector = null;
+				}
+			}
+			return sector;
+		}
 
 		/// <summary>This finds the line closest to the specified position.</summary>
 		public Linedef NearestLinedef(Vector2D pos) { return MapSet.NearestLinedef(linedefs, pos); }
@@ -3025,7 +3025,7 @@ namespace CodeImp.DoomBuilder.Map
 			EndAddRemove();
 
 			// Output info
-            float endtime = General.Clock.CurrentTime;
+			float endtime = General.Clock.CurrentTime;
 			float deltatimesec = (endtime - starttime) / 1000.0f;
 			float ratio = 100.0f - ((numsidedefs / (float)originalsidescount) * 100.0f);
 			General.WriteLogLine("Sidedefs compressed: " + numsidedefs + " remaining out of " + originalsidescount + " (" + ratio.ToString("########0.00") + "%) in " + deltatimesec.ToString("########0.00") + " seconds");
@@ -3060,11 +3060,11 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
-        //mxd
-        public void UpdateCustomLinedefColors() {
-            foreach(Linedef l in linedefs)
-                l.UpdateColorPreset();
-        }
+		//mxd
+		public void UpdateCustomLinedefColors() {
+			foreach(Linedef l in linedefs)
+				l.UpdateColorPreset();
+		}
 		
 		#endregion
 	}

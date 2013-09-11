@@ -412,10 +412,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.defaultviewmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.defaultviewmode.FormattingEnabled = true;
 			this.defaultviewmode.Items.AddRange(new object[] {
-            "Wireframe",
-            "Brightness Levels",
-            "Floor Textures",
-            "Ceiling Textures"});
+			"Wireframe",
+			"Brightness Levels",
+			"Floor Textures",
+			"Ceiling Textures"});
 			this.defaultviewmode.Location = new System.Drawing.Point(135, 17);
 			this.defaultviewmode.Name = "defaultviewmode";
 			this.defaultviewmode.Size = new System.Drawing.Size(145, 22);
@@ -894,9 +894,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockersposition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.dockersposition.FormattingEnabled = true;
 			this.dockersposition.Items.AddRange(new object[] {
-            "Left",
-            "Right",
-            "None"});
+			"Left",
+			"Right",
+			"None"});
 			this.dockersposition.Location = new System.Drawing.Point(95, 34);
 			this.dockersposition.Name = "dockersposition";
 			this.dockersposition.Size = new System.Drawing.Size(85, 22);
@@ -1118,8 +1118,8 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.listactions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columncontrolaction,
-            this.columncontrolkey});
+			this.columncontrolaction,
+			this.columncontrolkey});
 			this.listactions.FullRowSelect = true;
 			this.listactions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listactions.HideSelection = false;
@@ -1527,23 +1527,23 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptfontsize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.scriptfontsize.FormattingEnabled = true;
 			this.scriptfontsize.Items.AddRange(new object[] {
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "14",
-            "16",
-            "18",
-            "20",
-            "22",
-            "24",
-            "26",
-            "28",
-            "36",
-            "48",
-            "72"});
+			"7",
+			"8",
+			"9",
+			"10",
+			"11",
+			"12",
+			"14",
+			"16",
+			"18",
+			"20",
+			"22",
+			"24",
+			"26",
+			"28",
+			"36",
+			"48",
+			"72"});
 			this.scriptfontsize.Location = new System.Drawing.Point(236, 45);
 			this.scriptfontsize.Name = "scriptfontsize";
 			this.scriptfontsize.Size = new System.Drawing.Size(94, 22);
@@ -1804,7 +1804,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ColorControl colorcomments;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorplaintext;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorliterals;
-        private CodeImp.DoomBuilder.Controls.ColorControl colorconstants;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorconstants;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorindication;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorgrid64;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorgrid;
@@ -1876,21 +1876,21 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox toolbar_testing;
 		private System.Windows.Forms.CheckBox toolbar_file;
 		private System.Windows.Forms.CheckBox showtexturesizes;
-        private CodeImp.DoomBuilder.Controls.ColorControl colorMD3;
-        private System.Windows.Forms.CheckBox toolbar_gzdoom;
-        private System.Windows.Forms.Label labelDynLightCount;
-        private Dotnetrix.Controls.TrackBar tbDynLightCount;
-        private System.Windows.Forms.Label labelDynLightSize;
-        private Dotnetrix.Controls.TrackBar tbDynLightSize;
-        private System.Windows.Forms.Label labelDynLightIntensity;
-        private Dotnetrix.Controls.TrackBar tbDynLightIntensity;
-        private System.Windows.Forms.CheckBox cbSynchCameras;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorMD3;
+		private System.Windows.Forms.CheckBox toolbar_gzdoom;
+		private System.Windows.Forms.Label labelDynLightCount;
+		private Dotnetrix.Controls.TrackBar tbDynLightCount;
+		private System.Windows.Forms.Label labelDynLightSize;
+		private Dotnetrix.Controls.TrackBar tbDynLightSize;
+		private System.Windows.Forms.Label labelDynLightIntensity;
+		private Dotnetrix.Controls.TrackBar tbDynLightIntensity;
+		private System.Windows.Forms.CheckBox cbSynchCameras;
 		private System.Windows.Forms.CheckBox cbStretchModels;
 		private System.Windows.Forms.ToolTip toolTip1;
-        private Dotnetrix.Controls.TrackBar vertexScale;
-        private System.Windows.Forms.Label vertexScaleLabel;
-        private System.Windows.Forms.Label label22;
-        private CodeImp.DoomBuilder.Controls.ColorControl colorInfo;
+		private Dotnetrix.Controls.TrackBar vertexScale;
+		private System.Windows.Forms.Label vertexScaleLabel;
+		private System.Windows.Forms.Label label22;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorInfo;
 		private System.Windows.Forms.CheckBox cbOldHighlightMode;
 		private System.Windows.Forms.Button bClearActionFilter;
 		private System.Windows.Forms.TextBox tbFilterActions;

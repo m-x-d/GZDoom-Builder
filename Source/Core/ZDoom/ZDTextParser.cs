@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Variables
 		
 		// Parsing
-        protected string whitespace = "\n \t\r\u00A0"; //mxd. non-breaking space is also space :)
+		protected string whitespace = "\n \t\r\u00A0"; //mxd. non-breaking space is also space :)
 		protected string specialtokens = ":{}+-\n;";
 		
 		// Input data stream
@@ -287,66 +287,66 @@ namespace CodeImp.DoomBuilder.ZDoom
 			return token.Trim();
 		}
 
-        //mxd
-        protected internal bool ReadSignedFloat(string token, ref float value) {
-            int sign = 1;
-            if (token == "-") {
-                sign = -1;
-                token = StripTokenQuotes(ReadToken());
-            }
+		//mxd
+		protected internal bool ReadSignedFloat(string token, ref float value) {
+			int sign = 1;
+			if (token == "-") {
+				sign = -1;
+				token = StripTokenQuotes(ReadToken());
+			}
 
-            float val;
-            bool success = float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out val);
-            if (success)
-                value = val * sign;
-            return success;
-        }
+			float val;
+			bool success = float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out val);
+			if (success)
+				value = val * sign;
+			return success;
+		}
 
-        //mxd
-        protected internal bool ReadSignedInt(string token, ref int value) {
-            int sign = 1;
-            if (token == "-") {
-                sign = -1;
-                token = StripTokenQuotes(ReadToken());
-            }
+		//mxd
+		protected internal bool ReadSignedInt(string token, ref int value) {
+			int sign = 1;
+			if (token == "-") {
+				sign = -1;
+				token = StripTokenQuotes(ReadToken());
+			}
 
-            int val;
-            bool success = int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out val);
-            if (success)
-                value = val * sign;
-            return success;
-        }
+			int val;
+			bool success = int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out val);
+			if (success)
+				value = val * sign;
+			return success;
+		}
 		
 		// This reports an error
 		protected internal void ReportError(string message)
 		{
 			// Set error information
 			errordesc = message;
-            errorline = GetCurrentLineNumber();
+			errorline = GetCurrentLineNumber();
 			errorsource = sourcename;
 		}
 
-        //mxd 
-        protected internal int GetCurrentLineNumber() {
-            long position = datastream.Position;
-            long readpos = 0;
-            int linenumber = 1;
+		//mxd 
+		protected internal int GetCurrentLineNumber() {
+			long position = datastream.Position;
+			long readpos = 0;
+			int linenumber = 1;
 
-            // Find the line on which we found this error
-            datastream.Seek(0, SeekOrigin.Begin);
-            StreamReader textreader = new StreamReader(datastream, Encoding.ASCII);
-            while (readpos < position) {
-                string line = textreader.ReadLine();
-                if (line == null) break;
-                readpos += line.Length + 2;
-                linenumber++;
-            }
+			// Find the line on which we found this error
+			datastream.Seek(0, SeekOrigin.Begin);
+			StreamReader textreader = new StreamReader(datastream, Encoding.ASCII);
+			while (readpos < position) {
+				string line = textreader.ReadLine();
+				if (line == null) break;
+				readpos += line.Length + 2;
+				linenumber++;
+			}
 
-            // Return to original position
-            datastream.Seek(position, SeekOrigin.Begin);
+			// Return to original position
+			datastream.Seek(position, SeekOrigin.Begin);
 
-            return linenumber;
-        }
+			return linenumber;
+		}
 		
 		#endregion
 	}

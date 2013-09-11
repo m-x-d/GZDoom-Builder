@@ -34,7 +34,7 @@
 			// menuStrip
 			// 
 			this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.transformToolStripMenuItem});
+			this.transformToolStripMenuItem});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
 			this.menuStrip.Size = new System.Drawing.Size(452, 24);
@@ -44,7 +44,7 @@
 			// transformToolStripMenuItem
 			// 
 			this.transformToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.jitterItem});
+			this.jitterItem});
 			this.transformToolStripMenuItem.Name = "transformToolStripMenuItem";
 			this.transformToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
 			this.transformToolStripMenuItem.Text = "Transform";

@@ -31,9 +31,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Rendering
 												  c, v3,
 
 												  v0, v1,
-                                                  v1, v2,
-                                                  v2, v3,
-                                                  v3, v0 };
+												  v1, v2,
+												  v2, v3,
+												  v3, v0 };
 
 			upper = new VertexBuffer(device, WorldVertex.Stride * vu.Length, Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
 			upper.Lock(0, WorldVertex.Stride * vu.Length, LockFlags.None).WriteRange<WorldVertex>(vu);
@@ -45,9 +45,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Rendering
 												  c, v7,
 
 												  v4, v5, 
-                                                  v5, v6,
-                                                  v6, v7,
-                                                  v7, v4, };
+												  v5, v6,
+												  v6, v7,
+												  v7, v4, };
 
 			lower = new VertexBuffer(device, WorldVertex.Stride * vl.Length, Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
 			lower.Lock(0, WorldVertex.Stride * vl.Length, LockFlags.None).WriteRange<WorldVertex>(vl);

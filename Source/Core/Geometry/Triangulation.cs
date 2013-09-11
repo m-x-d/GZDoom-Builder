@@ -522,9 +522,9 @@ namespace CodeImp.DoomBuilder.Geometry
 			{
 				// Check if the line goes between startx and endx
 				if(((v1.Value.Position.x > startx) ||
-				    (v2.Value.Position.x > startx)) &&
+					(v2.Value.Position.x > startx)) &&
 				   ((v1.Value.Position.x < endx) ||
-				    (v2.Value.Position.x < endx)))
+					(v2.Value.Position.x < endx)))
 				{
 					// Find intersection
 					Line2D pl = new Line2D(v1.Value.Position, v2.Value.Position);

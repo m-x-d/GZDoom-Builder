@@ -331,15 +331,15 @@ namespace CodeImp.DoomBuilder.Geometry
 			return new Vector2D((x * invscalex) + invoffsetx, (y * invscaley) + invoffsety);
 		}
 		
-        // Rotate (Added by Anders Åstrand 2008-05-18)
-        public unsafe Vector2D GetRotated(float theta)
-        {
-            float cos = (float)Math.Cos(theta);
-            float sin = (float)Math.Sin(theta);
-            float rx = cos * x - sin * y;
-            float ry = sin * x + cos * y;
-            return new Vector2D(rx, ry);
-        }
+		// Rotate (Added by Anders Åstrand 2008-05-18)
+		public unsafe Vector2D GetRotated(float theta)
+		{
+			float cos = (float)Math.Cos(theta);
+			float sin = (float)Math.Sin(theta);
+			float rx = cos * x - sin * y;
+			float ry = sin * x + cos * y;
+			return new Vector2D(rx, ry);
+		}
 
 		// Checks if the Vector has valid values for x and y
 		public bool IsFinite()

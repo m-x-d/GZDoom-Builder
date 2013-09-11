@@ -54,9 +54,9 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fieldslist.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
 			this.fieldslist.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.fieldslist.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.fieldname,
-            this.fieldtype,
-            this.fieldvalue});
+			this.fieldname,
+			this.fieldtype,
+			this.fieldvalue});
 			dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
 			dataGridViewCellStyle24.BackColor = System.Drawing.SystemColors.Window;
 			dataGridViewCellStyle24.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

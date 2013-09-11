@@ -41,8 +41,8 @@ namespace CodeImp.DoomBuilder.Windows
 			FillList();
 			checkerrors.Start();
 			checkshow.Checked = General.Settings.ShowErrorsWindow;
-            //mxd
-            grid.Focus();
+			//mxd
+			grid.Focus();
 		}
 
 		#endregion
@@ -139,8 +139,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		}
 
-        private void grid_CellContentClick(object sender, DataGridViewCellEventArgs e) {
-            copyselected.Enabled = true;
-        }
+		private void grid_CellContentClick(object sender, DataGridViewCellEventArgs e) {
+			copyselected.Enabled = true;
+		}
 	}
 }

@@ -66,10 +66,10 @@ namespace CodeImp.DoomBuilder.Controls
 			base.RaisePaintEvent(this, pe);
 		}
 
-        //mxd
-        protected override void OnKeyUp(KeyEventArgs e) {
-            if(OnKeyReleased != null) OnKeyReleased(this, e);
-        }
+		//mxd
+		protected override void OnKeyUp(KeyEventArgs e) {
+			if(OnKeyReleased != null) OnKeyReleased(this, e);
+		}
 		
 		#endregion
 

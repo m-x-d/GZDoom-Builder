@@ -298,7 +298,7 @@ namespace CodeImp.DoomBuilder.Geometry
 								// Line intersecting the y axis?
 								if( !((ld.Start.Position.y > foundv.Position.y) &&
 									  (ld.End.Position.y > foundv.Position.y)) &&
-								    !((ld.Start.Position.y < foundv.Position.y) &&
+									!((ld.Start.Position.y < foundv.Position.y) &&
 									  (ld.End.Position.y < foundv.Position.y)))
 								{
 									// Check if this linedef intersects our test line at a closer range

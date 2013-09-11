@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private List<TexturePatch> patches;
-        private bool gotFullName;//mxd
+		private bool gotFullName;//mxd
 		
 		#endregion
 
@@ -65,11 +65,11 @@ namespace CodeImp.DoomBuilder.Data
 			// Add it
 			patches.Add(patch);
 
-            //mxd. Get full name from first patch
-            if (!gotFullName) {
-                fullName = General.Map.Data.GetPatchLocation(patch.lumpname);
-                gotFullName = true;
-            }
+			//mxd. Get full name from first patch
+			if (!gotFullName) {
+				fullName = General.Map.Data.GetPatchLocation(patch.lumpname);
+				gotFullName = true;
+			}
 		}
 		
 		// This loads the image

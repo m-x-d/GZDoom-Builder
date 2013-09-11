@@ -38,16 +38,16 @@ namespace CodeImp.DoomBuilder.Rendering
 		private EffectHandle modulatecolor;
 		private EffectHandle highlightcolor;
 
-        //mxd
-        private EffectHandle vertexColorHadle;
-        //lights
-        private EffectHandle lightPositionAndRadiusHandle;
-        private EffectHandle lightColorHandle;
-        private EffectHandle worldHandle;
-        //fog
-        private EffectHandle camPosHandle;
-        //used in ModelReader
-        private VertexElement[] vertexElements;
+		//mxd
+		private EffectHandle vertexColorHadle;
+		//lights
+		private EffectHandle lightPositionAndRadiusHandle;
+		private EffectHandle lightColorHandle;
+		private EffectHandle worldHandle;
+		//fog
+		private EffectHandle camPosHandle;
+		//used in ModelReader
+		private VertexElement[] vertexElements;
 
 		
 		#endregion
@@ -57,17 +57,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		public Matrix WorldViewProj { set { if(manager.Enabled) effect.SetValue<Matrix>(worldviewproj, value); } }
 		public Texture Texture1 { set { if(manager.Enabled) effect.SetTexture(texture1, value); } }
 
-        //mxd
-        public Color4 VertexColor { set { if (manager.Enabled) effect.SetValue<Color4>(vertexColorHadle, value); } }
-        
-        //lights
-        public Color4 LightColor { set { if (manager.Enabled) effect.SetValue<Color4>(lightColorHandle, value); } }
-        public Vector4 LightPositionAndRadius { set { if (manager.Enabled) effect.SetValue(lightPositionAndRadiusHandle, value); } }
-        
-        //fog
-        public Vector4 CameraPosition { set { if (manager.Enabled) effect.SetValue(camPosHandle, value); } }
+		//mxd
+		public Color4 VertexColor { set { if (manager.Enabled) effect.SetValue<Color4>(vertexColorHadle, value); } }
+		
+		//lights
+		public Color4 LightColor { set { if (manager.Enabled) effect.SetValue<Color4>(lightColorHandle, value); } }
+		public Vector4 LightPositionAndRadius { set { if (manager.Enabled) effect.SetValue(lightPositionAndRadiusHandle, value); } }
+		
+		//fog
+		public Vector4 CameraPosition { set { if (manager.Enabled) effect.SetValue(camPosHandle, value); } }
 
-        public Matrix World { set { if (manager.Enabled) effect.SetValue<Matrix>(worldHandle, value); } }
+		public Matrix World { set { if (manager.Enabled) effect.SetValue<Matrix>(worldHandle, value); } }
 
 		#endregion
 
@@ -91,15 +91,15 @@ namespace CodeImp.DoomBuilder.Rendering
 				highlightcolor = effect.GetParameter(null, "highlightcolor");
 				maxanisotropysetting = effect.GetParameter(null, "maxanisotropysetting");
 
-                //mxd
-                vertexColorHadle = effect.GetParameter(null, "vertexColor");
-                //lights
-                lightPositionAndRadiusHandle = effect.GetParameter(null, "lightPosAndRadius");
-                lightColorHandle = effect.GetParameter(null, "lightColor");
-                //fog
-                camPosHandle = effect.GetParameter(null, "cameraPos");
+				//mxd
+				vertexColorHadle = effect.GetParameter(null, "vertexColor");
+				//lights
+				lightPositionAndRadiusHandle = effect.GetParameter(null, "lightPosAndRadius");
+				lightColorHandle = effect.GetParameter(null, "lightColor");
+				//fog
+				camPosHandle = effect.GetParameter(null, "cameraPos");
 
-                worldHandle = effect.GetParameter(null, "world");
+				worldHandle = effect.GetParameter(null, "world");
 			}
 
 			// Initialize world vertex declaration
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					VertexElement.VertexDeclarationEnd
 				};
 			}
-            vertexdecl = new VertexDeclaration(General.Map.Graphics.Device, vertexElements);
+			vertexdecl = new VertexDeclaration(General.Map.Graphics.Device, vertexElements);
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -141,12 +141,12 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(highlightcolor != null) highlightcolor.Dispose();
 				if(maxanisotropysetting != null) maxanisotropysetting.Dispose();
 
-                //mxd
-                if (vertexColorHadle != null) vertexColorHadle.Dispose();
-                if (lightColorHandle != null) lightColorHandle.Dispose();
-                if (lightPositionAndRadiusHandle != null) lightPositionAndRadiusHandle.Dispose();
-                if (camPosHandle != null) camPosHandle.Dispose();
-                if (worldHandle != null) worldHandle.Dispose();
+				//mxd
+				if (vertexColorHadle != null) vertexColorHadle.Dispose();
+				if (lightColorHandle != null) lightColorHandle.Dispose();
+				if (lightPositionAndRadiusHandle != null) lightPositionAndRadiusHandle.Dispose();
+				if (camPosHandle != null) camPosHandle.Dispose();
+				if (worldHandle != null) worldHandle.Dispose();
 
 
 				// Done
@@ -237,9 +237,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Wrap);
 				
 				// First texture stage
-                //mxd
+				//mxd
 				//if((index == 0) || (index == 2))
-                if ((index == 0) || (index == 2) || (index == 4) || (index == 6) || (index == 8) || (index == 10) || (index == 12) || (index == 14) || index > 15)
+				if ((index == 0) || (index == 2) || (index == 4) || (index == 6) || (index == 8) || (index == 10) || (index == 12) || (index == 14) || index > 15)
 				{
 					// Normal
 					device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.Modulate);
@@ -275,10 +275,10 @@ namespace CodeImp.DoomBuilder.Rendering
 				device.SetTextureStageState(1, TextureStage.AlphaArg2, TextureArgument.TFactor);
 
 				// Highlight?
-                //mxd
+				//mxd
 				//if(index > 1) 2 3 6 10 14
-                //if ((index > 1 && index < 4) || (index > 5 && index < 8) || (index > 9 && index < 12) || (index > 13 && index < 16))
-                if (index == 2 || index == 3 || index == 6 || index == 10 || index == 14)
+				//if ((index > 1 && index < 4) || (index > 5 && index < 8) || (index > 9 && index < 12) || (index > 13 && index < 16))
+				if (index == 2 || index == 3 || index == 6 || index == 10 || index == 14)
 				{
 					// Third texture stage
 					device.SetTextureStageState(2, TextureStage.ColorOperation, TextureOperation.AddSigned);

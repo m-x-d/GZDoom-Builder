@@ -2,23 +2,23 @@
 using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks {
-    public class ResultUnknownThing : ErrorResult {
-        public override int Buttons { get { return 1; } }
-        public override string Button1Text { get { return "Delete Thing"; } }
+	public class ResultUnknownThing : ErrorResult {
+		public override int Buttons { get { return 1; } }
+		public override string Button1Text { get { return "Delete Thing"; } }
 
-        private Thing thing;
+		private Thing thing;
 
-        // Constructor
-        public ResultUnknownThing(Thing t) {
+		// Constructor
+		public ResultUnknownThing(Thing t) {
 			// Initialize
 			this.thing = t;
 			this.viewobjects.Add(t);
 			this.description = "This thing has unknown type (eg. it's not defined in DECORATE or current game configuration).";
 		}
 
-        // This must return the string that is displayed in the listbox
+		// This must return the string that is displayed in the listbox
 		public override string ToString() {
-            return "Thing " + General.Map.Data.GetThingInfo(thing.Type).Index + " at " + thing.Position.x + ", " + thing.Position.y + " has unknown type.";
+			return "Thing " + General.Map.Data.GetThingInfo(thing.Type).Index + " at " + thing.Position.x + ", " + thing.Position.y + " has unknown type.";
 		}
 
 		// Rendering
@@ -34,5 +34,5 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks {
 			General.Map.ThingsFilter.Update();
 			return true;
 		}
-    }
+	}
 }

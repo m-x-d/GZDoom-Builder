@@ -1062,16 +1062,16 @@ namespace CodeImp.DoomBuilder.Map
 			return true;
 		}
 
-        //mxd
-        internal void UpdateColorPreset() {
-            for(int i = 0; i < General.Map.ConfigSettings.LinedefColorPresets.Length; i++) {
-                if(General.Map.ConfigSettings.LinedefColorPresets[i].Matches(this)) {
-                    colorPresetIndex = i;
-                    return;
-                }
-            }
-            colorPresetIndex = -1;
-        }
+		//mxd
+		internal void UpdateColorPreset() {
+			for(int i = 0; i < General.Map.ConfigSettings.LinedefColorPresets.Length; i++) {
+				if(General.Map.ConfigSettings.LinedefColorPresets[i].Matches(this)) {
+					colorPresetIndex = i;
+					return;
+				}
+			}
+			colorPresetIndex = -1;
+		}
 
 		// String representation
 		public override string ToString()

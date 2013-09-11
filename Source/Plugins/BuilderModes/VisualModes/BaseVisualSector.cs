@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This updates this virtual the sector and neightbours if needed
 		override public void UpdateSectorGeometry(bool includeneighbours)
 		{
-            if(isupdating)
+			if(isupdating)
 				return;
 				
 			isupdating = true;
@@ -170,26 +170,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			isupdating = false;
 		}
 
-        //mxd. call this to update sector and things in it when Sector.Fields are changed 
-        override public void UpdateSectorData() {
-            //update sector data
-            SectorData data = GetSectorData();
-            data.UpdateForced();
+		//mxd. call this to update sector and things in it when Sector.Fields are changed 
+		override public void UpdateSectorData() {
+			//update sector data
+			SectorData data = GetSectorData();
+			data.UpdateForced();
 
-            //update sector
-            Rebuild();
+			//update sector
+			Rebuild();
 
-            //update things in this sector
-            foreach (Thing t in General.Map.Map.Things) {
-                if (t.Sector == this.Sector) {
-                    if (mode.VisualThingExists(t)) {
-                        // Update thing
-                        BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
-                        vt.Rebuild();
-                    }
-                }
-            }
-        }
+			//update things in this sector
+			foreach (Thing t in General.Map.Map.Things) {
+				if (t.Sector == this.Sector) {
+					if (mode.VisualThingExists(t)) {
+						// Update thing
+						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
+						vt.Rebuild();
+					}
+				}
+			}
+		}
 		
 		// This (re)builds the visual sector, calculating all geometry from scratch
 		public void Rebuild()

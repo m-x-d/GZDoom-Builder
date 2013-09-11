@@ -655,8 +655,8 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.listmodes.CheckBoxes = true;
 			this.listmodes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colmodename,
-            this.colmodeplugin});
+			this.colmodename,
+			this.colmodeplugin});
 			this.listmodes.FullRowSelect = true;
 			this.listmodes.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listmodes.Location = new System.Drawing.Point(15, 70);
@@ -708,7 +708,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listconfigs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
 			this.listconfigs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnname});
+			this.columnname});
 			this.listconfigs.FullRowSelect = true;
 			this.listconfigs.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listconfigs.HideSelection = false;
@@ -810,11 +810,11 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox shortpaths;
 		private System.Windows.Forms.ComboBox startmode;
 		private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Button btnRemoveEngine;
-        private System.Windows.Forms.Button btnNewEngine;
-        private System.Windows.Forms.ComboBox cbEngineSelector;
+		private System.Windows.Forms.Button btnRemoveEngine;
+		private System.Windows.Forms.Button btnNewEngine;
+		private System.Windows.Forms.ComboBox cbEngineSelector;
 		private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TabPage tabcustomcolors;
-        private CodeImp.DoomBuilder.GZBuilder.Controls.CustomLinedefColorsControl colorsControl;
+		private System.Windows.Forms.TabPage tabcustomcolors;
+		private CodeImp.DoomBuilder.GZBuilder.Controls.CustomLinedefColorsControl colorsControl;
 	}
 }

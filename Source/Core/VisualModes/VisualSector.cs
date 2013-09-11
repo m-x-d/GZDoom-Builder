@@ -117,8 +117,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			//Update();
 		}
 
-        //mxd. Added to allow to properly update visual geometry from plugins
-        public virtual void UpdateSectorData() { }
+		//mxd. Added to allow to properly update visual geometry from plugins
+		public virtual void UpdateSectorData() { }
 		public virtual void UpdateSectorGeometry(bool includeneighbours) { }
 		
 		// This updates the visual sector

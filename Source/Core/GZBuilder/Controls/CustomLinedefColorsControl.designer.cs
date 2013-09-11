@@ -1,30 +1,30 @@
 ﻿namespace CodeImp.DoomBuilder.GZBuilder.Controls
 {
-    partial class CustomLinedefColorsControl
-    {
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class CustomLinedefColorsControl
+	{
+		/// <summary> 
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing) {
-            if(disposing && (components != null)) {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary> 
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing) {
+			if(disposing && (components != null)) {
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        #region Component Designer generated code
+		#region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
+		/// <summary> 
+		/// Required method for Designer support - do not modify 
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent() {
 			this.gbPresets = new System.Windows.Forms.GroupBox();
 			this.bMoveUp = new System.Windows.Forms.Button();
 			this.bMoveDown = new System.Windows.Forms.Button();
@@ -152,17 +152,17 @@
 			this.gbPresets.PerformLayout();
 			this.ResumeLayout(false);
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private System.Windows.Forms.GroupBox gbPresets;
-        private System.Windows.Forms.Button bRemovePreset;
-        private IconListBox lbColorPresets;
-        private System.Windows.Forms.TextBox tbNewPresetName;
-        private System.Windows.Forms.Button bAddPreset;
-        private System.Windows.Forms.Button bMoveDown;
-        private System.Windows.Forms.Button bMoveUp;
-        private CustomLinedefColorProperties colorProperties;
-    }
+		private System.Windows.Forms.GroupBox gbPresets;
+		private System.Windows.Forms.Button bRemovePreset;
+		private IconListBox lbColorPresets;
+		private System.Windows.Forms.TextBox tbNewPresetName;
+		private System.Windows.Forms.Button bAddPreset;
+		private System.Windows.Forms.Button bMoveDown;
+		private System.Windows.Forms.Button bMoveUp;
+		private CustomLinedefColorProperties colorProperties;
+	}
 }

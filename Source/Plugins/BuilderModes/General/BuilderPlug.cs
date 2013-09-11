@@ -77,12 +77,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private UndoRedoPanel undoredopanel;
 		private Docker undoredodocker;
 
-        //mxd
+		//mxd
 		private ToolStripMenuItem exportToObjMenuItem;
-        private ToolStripMenuItem snapModeMenuItem;
-        private ToolStripMenuItem drawLinesModeMenuItem;
-        private ToolStripMenuItem drawRectModeMenuItem;
-        private ToolStripMenuItem drawEllipseModeMenuItem;
+		private ToolStripMenuItem snapModeMenuItem;
+		private ToolStripMenuItem drawLinesModeMenuItem;
+		private ToolStripMenuItem drawRectModeMenuItem;
+		private ToolStripMenuItem drawEllipseModeMenuItem;
 		private ToolStripMenuItem drawCurveModeMenuItem;
 		
 		// Settings
@@ -157,20 +157,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public LinedefProperties CopiedLinedefProps { get { return copiedlinedefprops; } set { copiedlinedefprops = value; } }
 		public ThingProperties CopiedThingProps { get { return copiedthingprops; } set { copiedthingprops = value; } }
 		public bool ViewSelectionNumbers { get { return viewselectionnumbers; } set { viewselectionnumbers = value; } }
-        public float StitchRange { get { return stitchrange; } internal set { stitchrange = value; } }
+		public float StitchRange { get { return stitchrange; } internal set { stitchrange = value; } }
 		public float HighlightRange { get { return highlightrange; } }
 		public float HighlightThingsRange { get { return highlightthingsrange; } }
 		public float SplitLinedefsRange { get { return splitlinedefsrange; } }
 		public bool UseHighlight { 
-            get { 
-                return usehighlight; 
-            } 
-            set { 
-                usehighlight = value;
-                General.Map.Renderer3D.ShowSelection = usehighlight;
-                General.Map.Renderer3D.ShowHighlight = usehighlight;
-            } 
-        }
+			get { 
+				return usehighlight; 
+			} 
+			set { 
+				usehighlight = value;
+				General.Map.Renderer3D.ShowSelection = usehighlight;
+				General.Map.Renderer3D.ShowHighlight = usehighlight;
+			} 
+		}
 		public bool AutoDragOnPaste { get { return autodragonpaste; } set { autodragonpaste = value; } }
 		public bool AutoAlignTextureOffsetsOnCreate { get { return autoAlignTextureOffsetsOnCreate; } set { autoAlignTextureOffsetsOnCreate = value; } } //mxd
 		public bool AutoAlignTextureOffsetsOnDrag { get { return autoAlignTextureOffsetsOnDrag; } set { autoAlignTextureOffsetsOnDrag = value; } } //mxd
@@ -224,30 +224,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			exportToObjMenuItem.Enabled = false;
 			General.Interface.AddMenu(exportToObjMenuItem, MenuSection.FileNewOpenClose);
 
-            //mxd. add "Snap Vertices" menu button
-            snapModeMenuItem = new ToolStripMenuItem("Snap selected map elements to grid");
-            snapModeMenuItem.Tag = "snapvertstogrid";
-            snapModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
-            snapModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.SnapVerts;
-            snapModeMenuItem.Enabled = false;
-            General.Interface.AddMenu(snapModeMenuItem, MenuSection.EditGeometry);
+			//mxd. add "Snap Vertices" menu button
+			snapModeMenuItem = new ToolStripMenuItem("Snap selected map elements to grid");
+			snapModeMenuItem.Tag = "snapvertstogrid";
+			snapModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+			snapModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.SnapVerts;
+			snapModeMenuItem.Enabled = false;
+			General.Interface.AddMenu(snapModeMenuItem, MenuSection.EditGeometry);
 
-            //mxd. add draw modes buttons
-            //draw ellipse
-            drawEllipseModeMenuItem = new ToolStripMenuItem("Draw Ellipse");
-            drawEllipseModeMenuItem.Tag = "drawellipsemode";
-            drawEllipseModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
-            drawEllipseModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.DrawEllipseMode;
-            drawEllipseModeMenuItem.Enabled = false;
-            General.Interface.AddMenu(drawEllipseModeMenuItem, MenuSection.ModeDrawModes);
+			//mxd. add draw modes buttons
+			//draw ellipse
+			drawEllipseModeMenuItem = new ToolStripMenuItem("Draw Ellipse");
+			drawEllipseModeMenuItem.Tag = "drawellipsemode";
+			drawEllipseModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+			drawEllipseModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.DrawEllipseMode;
+			drawEllipseModeMenuItem.Enabled = false;
+			General.Interface.AddMenu(drawEllipseModeMenuItem, MenuSection.ModeDrawModes);
 
-            //draw rectangle
-            drawRectModeMenuItem = new ToolStripMenuItem("Draw Rectangle");
-            drawRectModeMenuItem.Tag = "drawrectanglemode";
-            drawRectModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
-            drawRectModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.DrawRectMode;
-            drawRectModeMenuItem.Enabled = false;
-            General.Interface.AddMenu(drawRectModeMenuItem, MenuSection.ModeDrawModes);
+			//draw rectangle
+			drawRectModeMenuItem = new ToolStripMenuItem("Draw Rectangle");
+			drawRectModeMenuItem.Tag = "drawrectanglemode";
+			drawRectModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+			drawRectModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.DrawRectMode;
+			drawRectModeMenuItem.Enabled = false;
+			General.Interface.AddMenu(drawRectModeMenuItem, MenuSection.ModeDrawModes);
 
 			//draw curve 
 			drawCurveModeMenuItem = new ToolStripMenuItem("Draw Curve");
@@ -257,13 +257,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			drawCurveModeMenuItem.Enabled = false;
 			General.Interface.AddMenu(drawCurveModeMenuItem, MenuSection.ModeDrawModes);
 
-            //draw lines 
-            drawLinesModeMenuItem = new ToolStripMenuItem("Draw Lines");
-            drawLinesModeMenuItem.Tag = "drawlinesmode";
-            drawLinesModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
-            drawLinesModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.DrawLinesMode;
-            drawLinesModeMenuItem.Enabled = false;
-            General.Interface.AddMenu(drawLinesModeMenuItem, MenuSection.ModeDrawModes);
+			//draw lines 
+			drawLinesModeMenuItem = new ToolStripMenuItem("Draw Lines");
+			drawLinesModeMenuItem.Tag = "drawlinesmode";
+			drawLinesModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+			drawLinesModeMenuItem.Image = CodeImp.DoomBuilder.BuilderModes.Properties.Resources.DrawLinesMode;
+			drawLinesModeMenuItem.Enabled = false;
+			General.Interface.AddMenu(drawLinesModeMenuItem, MenuSection.ModeDrawModes);
 
 			//mxd
 			General.Actions.BindMethods(this);
@@ -278,13 +278,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Clean up
 				General.Interface.RemoveDocker(undoredodocker);
 
-                //mxd
+				//mxd
 				General.Interface.RemoveMenu(exportToObjMenuItem);
-                General.Interface.RemoveMenu(snapModeMenuItem);
-                General.Interface.RemoveMenu(drawLinesModeMenuItem);
+				General.Interface.RemoveMenu(snapModeMenuItem);
+				General.Interface.RemoveMenu(drawLinesModeMenuItem);
 				General.Interface.RemoveMenu(drawCurveModeMenuItem);
-                General.Interface.RemoveMenu(drawRectModeMenuItem);
-                General.Interface.RemoveMenu(drawEllipseModeMenuItem);
+				General.Interface.RemoveMenu(drawRectModeMenuItem);
+				General.Interface.RemoveMenu(drawEllipseModeMenuItem);
 
 				undoredopanel.Dispose();
 				menusform.Unregister();
@@ -444,13 +444,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel.SetBeginDescription("New Map");
 			undoredopanel.UpdateList();
 
-            //mxd
+			//mxd
 			exportToObjMenuItem.Enabled = true;
-            snapModeMenuItem.Enabled = true;
-            drawLinesModeMenuItem.Enabled = true;
+			snapModeMenuItem.Enabled = true;
+			drawLinesModeMenuItem.Enabled = true;
 			drawCurveModeMenuItem.Enabled = true;
-            drawRectModeMenuItem.Enabled = true;
-            drawEllipseModeMenuItem.Enabled = true;
+			drawRectModeMenuItem.Enabled = true;
+			drawEllipseModeMenuItem.Enabled = true;
 		}
 		
 		// Map opened
@@ -460,13 +460,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel.SetBeginDescription("Opened Map");
 			undoredopanel.UpdateList();
 
-            //mxd
+			//mxd
 			exportToObjMenuItem.Enabled = true;
-            snapModeMenuItem.Enabled = true;
-            drawLinesModeMenuItem.Enabled = true;
+			snapModeMenuItem.Enabled = true;
+			drawLinesModeMenuItem.Enabled = true;
 			drawCurveModeMenuItem.Enabled = true;
-            drawRectModeMenuItem.Enabled = true;
-            drawEllipseModeMenuItem.Enabled = true;
+			drawRectModeMenuItem.Enabled = true;
+			drawEllipseModeMenuItem.Enabled = true;
 
 			General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 		}
@@ -477,13 +477,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnMapCloseEnd();
 			undoredopanel.UpdateList();
 
-            //mxd
+			//mxd
 			exportToObjMenuItem.Enabled = false;
-            snapModeMenuItem.Enabled = false;
-            drawLinesModeMenuItem.Enabled = false;
+			snapModeMenuItem.Enabled = false;
+			drawLinesModeMenuItem.Enabled = false;
 			drawCurveModeMenuItem.Enabled = false;
-            drawRectModeMenuItem.Enabled = false;
-            drawEllipseModeMenuItem.Enabled = false;
+			drawRectModeMenuItem.Enabled = false;
+			drawEllipseModeMenuItem.Enabled = false;
 
 			General.Settings.WritePluginSetting("locktextureoffsets", lockSectorTextureOffsetsWhileDragging);
 		}
@@ -516,10 +516,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel.UpdateList();
 		}
 
-        //mxd
-        private void InvokeTaggedAction(object sender, EventArgs e) {
-            General.Interface.InvokeTaggedAction(sender, e);
-        }
+		//mxd
+		private void InvokeTaggedAction(object sender, EventArgs e) {
+			General.Interface.InvokeTaggedAction(sender, e);
+		}
 		
 		#endregion
 		

@@ -141,11 +141,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			alleffects.Add(e);
 		}
 
-        //mxd. Add UDMF vertex offset effect
-        public void AddEffectVertexOffset() {
-            EffectUDMFVertexOffset e = new EffectUDMFVertexOffset(this);
-            alleffects.Add(e);
-        }
+		//mxd. Add UDMF vertex offset effect
+		public void AddEffectVertexOffset() {
+			EffectUDMFVertexOffset e = new EffectUDMFVertexOffset(this);
+			alleffects.Add(e);
+		}
 		
 		// This adds a sector for updating
 		public void AddUpdateSector(Sector s, bool includeneighbours)
@@ -219,18 +219,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ceiling.colorbelow = lightcolor.WithAlpha(255);
 		}
 
-        //mxd
-        public void UpdateForced() {
-            updated = false;
-            Update();
-        }
+		//mxd
+		public void UpdateForced() {
+			updated = false;
+			Update();
+		}
 
 		// When no geometry has been changed and no effects have been added or removed,
 		// you can call this again to update existing effects. The effects will update
 		// the existing SectorLevels to match with any changes.
 		public void Update()
 		{
-            if(isupdating || updated) return;
+			if(isupdating || updated) return;
 			isupdating = true;
 			
 			// Set floor/ceiling to their original setup

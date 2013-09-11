@@ -213,7 +213,7 @@ namespace CodeImp.DoomBuilder
 		internal static Dictionary<string, ScriptConfiguration> ScriptConfigs { get { return scriptconfigs; } }
 		public static MapManager Map { get { return map; } }
 		public static ActionManager Actions { get { return actions; } }
-        internal static PluginManager Plugins { get { return plugins; } }
+		internal static PluginManager Plugins { get { return plugins; } }
 		public static Clock Clock { get { return clock; } }
 		public static bool DebugBuild { get { return debugbuild; } }
 		internal static TypesManager Types { get { return types; } }
@@ -356,7 +356,7 @@ namespace CodeImp.DoomBuilder
 					{
 						// Error in configuration
 						errorlogger.Add(ErrorType.Error, "Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\". " +
-										                 "Error in file \"" + cfg.ErrorFile + "\" near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
+														 "Error in file \"" + cfg.ErrorFile + "\" near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
 					}
 					else
 					{
@@ -556,7 +556,7 @@ namespace CodeImp.DoomBuilder
 			Thread.CurrentThread.Name = "Main Application";
 
 			// Application is running
-            appmutex = new Mutex(false, "gzdoombuilder"); //"doombuilder2"
+			appmutex = new Mutex(false, "gzdoombuilder"); //"doombuilder2"
 			
 			// Get a reference to this assembly
 			thisasm = Assembly.GetExecutingAssembly();
@@ -582,7 +582,7 @@ namespace CodeImp.DoomBuilder
 			
 			// Remove the previous log file and start logging
 			if(File.Exists(logfile)) File.Delete(logfile);
-            //mxd
+			//mxd
 			General.WriteLogLine("GZDoom Builder " + GZBuilder.GZGeneral.Version + GZBuilder.GZGeneral.Revision + " startup");
 			//General.WriteLogLine("Doom Builder " + thisversion.Major + "." + thisversion.Minor + " startup");
 			General.WriteLogLine("Application path:        " + apppath);
@@ -679,8 +679,8 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Creating types manager...");
 				types = new TypesManager();
 
-                //mxd. init gzdoom builder
-                GZBuilder.GZGeneral.Init();
+				//mxd. init gzdoom builder
+				GZBuilder.GZGeneral.Init();
 				
 				// Do auto map loading when window is delayed
 				if(delaymainwindow)
@@ -946,7 +946,7 @@ namespace CodeImp.DoomBuilder
 				if(editing != null) editing.Dispose(); editing = null;
 				if(mainwindow != null) mainwindow.Dispose();
 				if(actions != null) actions.Dispose();
-                //if (clock != null) clock.Dispose(); //mxd
+				//if (clock != null) clock.Dispose(); //mxd
 				if(plugins != null) plugins.Dispose();
 				if(types != null) types.Dispose();
 				try { D3DDevice.Terminate(); } catch(Exception) { }
@@ -1030,8 +1030,8 @@ namespace CodeImp.DoomBuilder
 					mainwindow.RedrawDisplay();
 					mainwindow.UpdateThingsFilters();
 					mainwindow.UpdateInterface();
-                    //mxd
-                    mainwindow.UpdateGZDoomPanel();
+					//mxd
+					mainwindow.UpdateGZDoomPanel();
 					mainwindow.HideInfo();
 
 					if(errorlogger.IsErrorAdded)
@@ -1083,8 +1083,8 @@ namespace CodeImp.DoomBuilder
 				mainwindow.RedrawDisplay();
 				mainwindow.HideInfo();
 				mainwindow.UpdateThingsFilters();
-                //mxd
-                mainwindow.UpdateGZDoomPanel();
+				//mxd
+				mainwindow.UpdateGZDoomPanel();
 				mainwindow.UpdateInterface();
 				mainwindow.DisplayReady();
 				General.WriteLogLine("Map unload done");
@@ -1122,8 +1122,8 @@ namespace CodeImp.DoomBuilder
 				// Open map file
 				OpenMapFile(openfile.FileName, null);
 
-                //mxd
-                mainwindow.UpdateGZDoomPanel();
+				//mxd
+				mainwindow.UpdateGZDoomPanel();
 				General.Settings.GZForceDefaultTextures = false;
 			}
 
@@ -1533,7 +1533,7 @@ namespace CodeImp.DoomBuilder
 #if DEBUG
 			Debug.Fail(message);
 #else
-            ShowErrorMessage(message, MessageBoxButtons.OK);
+			ShowErrorMessage(message, MessageBoxButtons.OK);
 #endif
 			Terminate(false);
 		}
@@ -1626,14 +1626,14 @@ namespace CodeImp.DoomBuilder
 			return Math.Min(Math.Max(min, value), max);
 		}
 
-        //mxd. This clamps angle between 0 and 359
-        public static int ClampAngle(int angle) {
-            return (angle + 360) % 360;
-        }
+		//mxd. This clamps angle between 0 and 359
+		public static int ClampAngle(int angle) {
+			return (angle + 360) % 360;
+		}
 
-        //mxd. This clamps angle between 0 and 359
-        public static float ClampAngle(float angle) {
-            return (angle + 360) % 360;
+		//mxd. This clamps angle between 0 and 359
+		public static float ClampAngle(float angle) {
+			return (angle + 360) % 360;
 		}
 
 		//mxd

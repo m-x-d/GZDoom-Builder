@@ -582,8 +582,8 @@
 			this.floorRenderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.floorRenderStyle.FormattingEnabled = true;
 			this.floorRenderStyle.Items.AddRange(new object[] {
-            "Translucent",
-            "Additive"});
+			"Translucent",
+			"Additive"});
 			this.floorRenderStyle.Location = new System.Drawing.Point(118, 175);
 			this.floorRenderStyle.Name = "floorRenderStyle";
 			this.floorRenderStyle.Size = new System.Drawing.Size(86, 22);
@@ -781,8 +781,8 @@
 			this.ceilRenderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.ceilRenderStyle.FormattingEnabled = true;
 			this.ceilRenderStyle.Items.AddRange(new object[] {
-            "Translucent",
-            "Additive"});
+			"Translucent",
+			"Additive"});
 			this.ceilRenderStyle.Location = new System.Drawing.Point(118, 175);
 			this.ceilRenderStyle.Name = "ceilRenderStyle";
 			this.ceilRenderStyle.Size = new System.Drawing.Size(86, 22);

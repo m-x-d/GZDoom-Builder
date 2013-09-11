@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 					// Compress the stream
 					memstream.Seek(0, SeekOrigin.Begin);
-                    MemoryStream compressed = SharpCompressHelper.CompressStream(memstream);//mxd
+					MemoryStream compressed = SharpCompressHelper.CompressStream(memstream);//mxd
 
 					// Done
 					memstream.Dispose();
@@ -161,18 +161,18 @@ namespace CodeImp.DoomBuilder.Editing
 			General.Map.UndoRedo.CreateUndo("Insert prefab");
 			
 			// Decompress stream
-            MemoryStream memstream = null; //mxd
+			MemoryStream memstream = null; //mxd
 			filedata.Seek(0, SeekOrigin.Begin);
-            
-            try {
-                memstream = SharpCompressHelper.DecompressStream(filedata); //mxd
-                memstream.Seek(0, SeekOrigin.Begin);
-            }catch(Exception e){
-                General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while reading prefab from file: " + e.Message);
-                General.WriteLogLine(e.StackTrace);
-                General.ShowErrorMessage("Unable to load prefab. See log file for error details.", MessageBoxButtons.OK);
-                return;
-            }
+			
+			try {
+				memstream = SharpCompressHelper.DecompressStream(filedata); //mxd
+				memstream.Seek(0, SeekOrigin.Begin);
+			}catch(Exception e){
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while reading prefab from file: " + e.Message);
+				General.WriteLogLine(e.StackTrace);
+				General.ShowErrorMessage("Unable to load prefab. See log file for error details.", MessageBoxButtons.OK);
+				return;
+			}
 			
 			// Mark all current geometry
 			General.Map.Map.ClearAllMarks(true);

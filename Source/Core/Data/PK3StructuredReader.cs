@@ -209,7 +209,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Load TEXTURES lump files
 			imgset.Clear();
 			//string[] alltexturefiles = GetAllFilesWithTitle("", "TEXTURES", false);
-            string[] alltexturefiles = GetAllFilesWhichTitleStartsWith("", "TEXTURES"); //mxd
+			string[] alltexturefiles = GetAllFilesWhichTitleStartsWith("", "TEXTURES"); //mxd
 			foreach(string texturesfile in alltexturefiles)
 			{
 				MemoryStream filedata = LoadFile(texturesfile);
@@ -261,20 +261,20 @@ namespace CodeImp.DoomBuilder.Data
 			return null;
 		}
 
-        //mxd
-        public override string GetPatchLocation(string pname) {
-            // Error when suspended
-            if (issuspended) throw new Exception("Data reader is suspended");
+		//mxd
+		public override string GetPatchLocation(string pname) {
+			// Error when suspended
+			if (issuspended) throw new Exception("Data reader is suspended");
 
-            //no need to search in wads...
-            // Find in patches directory
-            //string filename = FindFirstFile(PATCHES_DIR, pname, true);
+			//no need to search in wads...
+			// Find in patches directory
+			//string filename = FindFirstFile(PATCHES_DIR, pname, true);
 			string filename = FindFirstFile("", pname, true); //mxd. ZDoom can load them from anywhere, so shall we
-            if ((filename != null) && FileExists(filename))
-                return filename;
+			if ((filename != null) && FileExists(filename))
+				return filename;
 
-            return pname;
-        }
+			return pname;
+		}
 		
 		#endregion
 
@@ -460,102 +460,102 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
-        #region ================== Modeldef
-        
-        //mxd
-        public override Dictionary<string, Stream> GetModeldefData() {
-            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
-            // Error when suspended
-            if (issuspended) throw new Exception("Data reader is suspended");
+		#region ================== Modeldef
+		
+		//mxd
+		public override Dictionary<string, Stream> GetModeldefData() {
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+			// Error when suspended
+			if (issuspended) throw new Exception("Data reader is suspended");
 
-            //modedef should be in root folder
-            string[] allFiles = GetAllFiles("", false);
+			//modedef should be in root folder
+			string[] allFiles = GetAllFiles("", false);
 
-            foreach (string s in allFiles) {
-                if (s.ToLowerInvariant().IndexOf("modeldef") != -1) {
-                    streams.Add(s, LoadFile(s));
-                }
-            }
+			foreach (string s in allFiles) {
+				if (s.ToLowerInvariant().IndexOf("modeldef") != -1) {
+					streams.Add(s, LoadFile(s));
+				}
+			}
 
-            return streams;
-        }
+			return streams;
+		}
 
-        #endregion
+		#endregion
 
-        #region ================== (Z)MAPINFO
-        
-        //mxd
-        public override Dictionary<string, Stream> GetMapinfoData() {
-            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
-            // Error when suspended
-            if (issuspended) throw new Exception("Data reader is suspended");
+		#region ================== (Z)MAPINFO
+		
+		//mxd
+		public override Dictionary<string, Stream> GetMapinfoData() {
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+			// Error when suspended
+			if (issuspended) throw new Exception("Data reader is suspended");
 
-            //mapinfo should be in root folder
-            string[] allFiles = GetAllFiles("", false);
-            string fileName;
+			//mapinfo should be in root folder
+			string[] allFiles = GetAllFiles("", false);
+			string fileName;
 
-            //try to find (z)mapinfo
-            foreach (string s in allFiles) {
-                fileName = s.ToLowerInvariant();
-                if (fileName.IndexOf("zmapinfo") != -1 || fileName.IndexOf("mapinfo") != -1)
-                    streams.Add(s, LoadFile(s));
-            }
+			//try to find (z)mapinfo
+			foreach (string s in allFiles) {
+				fileName = s.ToLowerInvariant();
+				if (fileName.IndexOf("zmapinfo") != -1 || fileName.IndexOf("mapinfo") != -1)
+					streams.Add(s, LoadFile(s));
+			}
 
-            return streams;
-        }
+			return streams;
+		}
 
-        #endregion
+		#endregion
 
-        #region ================== GLDEFS
+		#region ================== GLDEFS
 
-        //mxd
-        public override Dictionary<string, Stream> GetGldefsData(GameType gameType) {
-            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
-            // Error when suspended
-            if (issuspended) throw new Exception("Data reader is suspended");
+		//mxd
+		public override Dictionary<string, Stream> GetGldefsData(GameType gameType) {
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+			// Error when suspended
+			if (issuspended) throw new Exception("Data reader is suspended");
 
-            //at least one of gldefs should be in root folder
-            string[] allFiles = GetAllFiles("", false);
+			//at least one of gldefs should be in root folder
+			string[] allFiles = GetAllFiles("", false);
 
-            //try to load game specific GLDEFS first
-            string lumpName;
-            if (gameType != GameType.UNKNOWN) {
-                lumpName = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gameType].ToLowerInvariant();
-                foreach (string s in allFiles) {
-                    if (s.ToLowerInvariant().IndexOf(lumpName) != -1)
-                        streams.Add(s, LoadFile(s));
-                }
-            }
+			//try to load game specific GLDEFS first
+			string lumpName;
+			if (gameType != GameType.UNKNOWN) {
+				lumpName = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gameType].ToLowerInvariant();
+				foreach (string s in allFiles) {
+					if (s.ToLowerInvariant().IndexOf(lumpName) != -1)
+						streams.Add(s, LoadFile(s));
+				}
+			}
 
-            //can be several entries
-            lumpName = "gldefs";
-            foreach (string s in allFiles) {
-                if (s.ToLowerInvariant().IndexOf(lumpName) != -1)
-                    streams.Add(s, LoadFile(s));
-            }
+			//can be several entries
+			lumpName = "gldefs";
+			foreach (string s in allFiles) {
+				if (s.ToLowerInvariant().IndexOf(lumpName) != -1)
+					streams.Add(s, LoadFile(s));
+			}
 
-            return streams;
-        }
+			return streams;
+		}
 
-        //mxd
-        public override Dictionary<string, Stream> GetGldefsData(string location) {
-            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
-            // Error when suspended
-            if (issuspended) throw new Exception("Data reader is suspended");
+		//mxd
+		public override Dictionary<string, Stream> GetGldefsData(string location) {
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+			// Error when suspended
+			if (issuspended) throw new Exception("Data reader is suspended");
 
-            Stream s = LoadFile(location);
+			Stream s = LoadFile(location);
 
-            if (s != null)
-                streams.Add(location, s);
+			if (s != null)
+				streams.Add(location, s);
 
-            return streams;
-        }
+			return streams;
+		}
 
-        #endregion
+		#endregion
 
-        #region ================== Methods
+		#region ================== Methods
 
-        // This loads the images in this directory
+		// This loads the images in this directory
 		private ICollection<ImageData> LoadDirectoryImages(string path, int imagetype, bool includesubdirs)
 		{
 			List<ImageData> images = new List<ImageData>();
@@ -606,8 +606,8 @@ namespace CodeImp.DoomBuilder.Data
 		// This must return all files in a given directory that have the given file title
 		protected abstract string[] GetAllFilesWithTitle(string path, string title, bool subfolders);
 
-        //mxd. This must return all files in a given directory which title starts with given title
-        protected abstract string[] GetAllFilesWhichTitleStartsWith(string path, string title);
+		//mxd. This must return all files in a given directory which title starts with given title
+		protected abstract string[] GetAllFilesWhichTitleStartsWith(string path, string title);
 
 		// This must return all files in a given directory that match the given extension
 		protected abstract string[] GetFilesWithExt(string path, string extension, bool subfolders);

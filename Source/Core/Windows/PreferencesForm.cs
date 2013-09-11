@@ -63,9 +63,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Interface
 			imagebrightness.Value = General.Settings.ImageBrightness;
 			squarethings.Checked = General.Settings.SquareThings;
-            doublesidedalpha.Value = General.Clamp((int)((1.0f - General.Settings.DoubleSidedAlpha) * 10.0f), doublesidedalpha.Minimum, doublesidedalpha.Maximum);
+			doublesidedalpha.Value = General.Clamp((int)((1.0f - General.Settings.DoubleSidedAlpha) * 10.0f), doublesidedalpha.Minimum, doublesidedalpha.Maximum);
 			defaultviewmode.SelectedIndex = General.Settings.DefaultViewMode;
-            fieldofview.Value = General.Clamp(General.Settings.VisualFOV / 10, fieldofview.Minimum, fieldofview.Maximum);
+			fieldofview.Value = General.Clamp(General.Settings.VisualFOV / 10, fieldofview.Minimum, fieldofview.Maximum);
 			mousespeed.Value = General.Clamp(General.Settings.MouseSpeed / 100, mousespeed.Minimum, mousespeed.Maximum);
 			movespeed.Value = General.Clamp(General.Settings.MoveSpeed / 100, movespeed.Minimum, movespeed.Maximum);
 			viewdistance.Value = General.Clamp((int)(General.Settings.ViewDistance / 200.0f), viewdistance.Minimum, viewdistance.Maximum);
@@ -89,20 +89,20 @@ namespace CodeImp.DoomBuilder.Windows
 			toolbar_viewmodes.Checked = General.Settings.ToolbarViewModes;
 			toolbar_geometry.Checked = General.Settings.ToolbarGeometry;
 			toolbar_testing.Checked = General.Settings.ToolbarTesting;
-            showtexturesizes.Checked = General.Settings.ShowTextureSizes;
-            //mxd
-            toolbar_gzdoom.Checked = General.Settings.GZToolbarGZDoom;
-            cbSynchCameras.Checked = General.Settings.GZSynchCameras;
-            tbDynLightCount.Value = General.Clamp(General.Settings.GZMaxDynamicLights, tbDynLightCount.Minimum, tbDynLightCount.Maximum);
-            labelDynLightCount.Text = General.Settings.GZMaxDynamicLights.ToString();
-            tbDynLightSize.Value = General.Clamp((int)(General.Settings.GZDynamicLightRadius * 10), tbDynLightSize.Minimum, tbDynLightSize.Maximum);
-            labelDynLightSize.Text = General.Settings.GZDynamicLightRadius.ToString();
-            tbDynLightIntensity.Value = General.Clamp((int)(General.Settings.GZDynamicLightIntensity * 10), tbDynLightIntensity.Minimum, tbDynLightIntensity.Maximum);
-            labelDynLightIntensity.Text = General.Settings.GZDynamicLightIntensity.ToString();
+			showtexturesizes.Checked = General.Settings.ShowTextureSizes;
+			//mxd
+			toolbar_gzdoom.Checked = General.Settings.GZToolbarGZDoom;
+			cbSynchCameras.Checked = General.Settings.GZSynchCameras;
+			tbDynLightCount.Value = General.Clamp(General.Settings.GZMaxDynamicLights, tbDynLightCount.Minimum, tbDynLightCount.Maximum);
+			labelDynLightCount.Text = General.Settings.GZMaxDynamicLights.ToString();
+			tbDynLightSize.Value = General.Clamp((int)(General.Settings.GZDynamicLightRadius * 10), tbDynLightSize.Minimum, tbDynLightSize.Maximum);
+			labelDynLightSize.Text = General.Settings.GZDynamicLightRadius.ToString();
+			tbDynLightIntensity.Value = General.Clamp((int)(General.Settings.GZDynamicLightIntensity * 10), tbDynLightIntensity.Minimum, tbDynLightIntensity.Maximum);
+			labelDynLightIntensity.Text = General.Settings.GZDynamicLightIntensity.ToString();
 			cbStretchModels.Checked = General.Settings.GZStretchModels;
-            cbOldHighlightMode.Checked = General.Settings.GZOldHighlightMode;
-            vertexScale.Value = General.Clamp((int)(General.Settings.GZVertexScale2D), vertexScale.Minimum, vertexScale.Maximum);
-            vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
+			cbOldHighlightMode.Checked = General.Settings.GZOldHighlightMode;
+			vertexScale.Value = General.Clamp((int)(General.Settings.GZVertexScale2D), vertexScale.Minimum, vertexScale.Maximum);
+			vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
 			cbMarkExtraFloors.Checked = General.Settings.GZMarkExtraFloors;
 			
 			// Fill fonts list
@@ -162,9 +162,9 @@ namespace CodeImp.DoomBuilder.Windows
 			colorgrid.Color = General.Colors.Grid;
 			colorgrid64.Color = General.Colors.Grid64;
 
-            //mxd
-            colorMD3.Color = General.Colors.ModelWireframe;
-            colorInfo.Color = General.Colors.InfoLine;
+			//mxd
+			colorMD3.Color = General.Colors.ModelWireframe;
+			colorInfo.Color = General.Colors.InfoLine;
 			color3dFloors.Color = General.Colors.ThreeDFloor;
 
 			colorscriptbackground.Color = General.Colors.ScriptBackground;
@@ -269,9 +269,9 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Colors.Keywords = colorkeywords.Color;
 			General.Colors.Literals = colorliterals.Color;
 			General.Colors.Constants = colorconstants.Color;
-            //mxd
-            General.Colors.ModelWireframe = colorMD3.Color;
-            General.Colors.InfoLine = colorInfo.Color;
+			//mxd
+			General.Colors.ModelWireframe = colorMD3.Color;
+			General.Colors.InfoLine = colorInfo.Color;
 			General.Colors.ThreeDFloor = color3dFloors.Color;
 
 			General.Colors.CreateAssistColors();
@@ -280,14 +280,14 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.VisualBilinear = visualbilinear.Checked;
 			General.Settings.QualityDisplay = qualitydisplay.Checked;
 
-            //mxd
-            General.Settings.GZSynchCameras = cbSynchCameras.Checked;
-            General.Settings.GZMaxDynamicLights = tbDynLightCount.Value;
-            General.Settings.GZDynamicLightRadius = (tbDynLightSize.Value / 10.0f);
-            General.Settings.GZDynamicLightIntensity = (tbDynLightIntensity.Value / 10.0f);
+			//mxd
+			General.Settings.GZSynchCameras = cbSynchCameras.Checked;
+			General.Settings.GZMaxDynamicLights = tbDynLightCount.Value;
+			General.Settings.GZDynamicLightRadius = (tbDynLightSize.Value / 10.0f);
+			General.Settings.GZDynamicLightIntensity = (tbDynLightIntensity.Value / 10.0f);
 			General.Settings.GZStretchModels = cbStretchModels.Checked;
-            General.Settings.GZVertexScale2D = vertexScale.Value;
-            General.Settings.GZOldHighlightMode = cbOldHighlightMode.Checked;
+			General.Settings.GZVertexScale2D = vertexScale.Value;
+			General.Settings.GZOldHighlightMode = cbOldHighlightMode.Checked;
 			General.Settings.GZMarkExtraFloors = cbMarkExtraFloors.Checked;
 
 			// Paste options
@@ -397,10 +397,10 @@ namespace CodeImp.DoomBuilder.Windows
 			zoomfactorlabel.Text = (zoomfactor.Value * 10).ToString() + "%";
 		}
 
-        //mxd
-        private void vertexScale_ValueChanged(object sender, EventArgs e) {
-            vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
-        }
+		//mxd
+		private void vertexScale_ValueChanged(object sender, EventArgs e) {
+			vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
+		}
 
 		// This updates the script font preview label
 		private void updateScriptFontPreview()
@@ -834,20 +834,20 @@ namespace CodeImp.DoomBuilder.Windows
 			doublesidedalphalabel.Text = percent.ToString() + "%";
 		}
 
-        //mxd
-        private void tbDynLightCount_ValueChanged(object sender, EventArgs e) {
-            labelDynLightCount.Text = tbDynLightCount.Value.ToString();
-        }
+		//mxd
+		private void tbDynLightCount_ValueChanged(object sender, EventArgs e) {
+			labelDynLightCount.Text = tbDynLightCount.Value.ToString();
+		}
 
-        //mxd
-        private void tbDynLightSize_ValueChanged(object sender, EventArgs e) {
-            labelDynLightSize.Text = ((float)tbDynLightSize.Value / 10).ToString();
-        }
+		//mxd
+		private void tbDynLightSize_ValueChanged(object sender, EventArgs e) {
+			labelDynLightSize.Text = ((float)tbDynLightSize.Value / 10).ToString();
+		}
 
-        //mxd
-        private void tbDynLightIntensity_ValueChanged(object sender, EventArgs e) {
-            labelDynLightIntensity.Text = ((float)tbDynLightIntensity.Value / 10).ToString();
-        }
+		//mxd
+		private void tbDynLightIntensity_ValueChanged(object sender, EventArgs e) {
+			labelDynLightIntensity.Text = ((float)tbDynLightIntensity.Value / 10).ToString();
+		}
 
 		//mxd
 		private void scriptfontbold_CheckedChanged(object sender, EventArgs e) {

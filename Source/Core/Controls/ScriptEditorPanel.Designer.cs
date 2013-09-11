@@ -84,22 +84,22 @@ namespace CodeImp.DoomBuilder.Controls
 			this.toolbar.AllowMerge = false;
 			this.toolbar.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.buttonnew,
-            this.buttonopen,
-            this.buttonsave,
-            this.buttonsaveall,
-            this.toolStripSeparator1,
-            this.buttonundo,
-            this.buttonredo,
-            this.toolStripSeparator2,
-            this.buttoncut,
-            this.buttoncopy,
-            this.buttonpaste,
-            this.toolStripSeparator3,
-            this.buttonscriptconfig,
-            this.buttoncompile,
-            this.buttonclose,
-            this.buttonkeywordhelp});
+			this.buttonnew,
+			this.buttonopen,
+			this.buttonsave,
+			this.buttonsaveall,
+			this.toolStripSeparator1,
+			this.buttonundo,
+			this.buttonredo,
+			this.toolStripSeparator2,
+			this.buttoncut,
+			this.buttoncopy,
+			this.buttonpaste,
+			this.toolStripSeparator3,
+			this.buttonscriptconfig,
+			this.buttoncompile,
+			this.buttonclose,
+			this.buttonkeywordhelp});
 			this.toolbar.Location = new System.Drawing.Point(0, 0);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(726, 25);
@@ -312,9 +312,9 @@ namespace CodeImp.DoomBuilder.Controls
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.errorlist.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colIndex,
-            this.colDescription,
-            this.colFile});
+			this.colIndex,
+			this.colDescription,
+			this.colFile});
 			this.errorlist.FullRowSelect = true;
 			this.errorlist.GridLines = true;
 			this.errorlist.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;

@@ -63,26 +63,26 @@ namespace CodeImp.DoomBuilder.Rendering
 		public const int KEYWORDS = 17;
 		public const int LITERALS = 18;
 		public const int CONSTANTS = 19;
-        public const int THINGCOLOR00 = 20;
-        public const int THINGCOLOR01 = 21;
-        public const int THINGCOLOR02 = 22;
-        public const int THINGCOLOR03 = 23;
-        public const int THINGCOLOR04 = 24;
-        public const int THINGCOLOR05 = 25;
-        public const int THINGCOLOR06 = 26;
-        public const int THINGCOLOR07 = 27;
-        public const int THINGCOLOR08 = 28;
-        public const int THINGCOLOR09 = 29;
-        public const int THINGCOLOR10 = 30;
-        public const int THINGCOLOR11 = 31;
-        public const int THINGCOLOR12 = 32;
-        public const int THINGCOLOR13 = 33;
-        public const int THINGCOLOR14 = 34;
-        public const int THINGCOLOR15 = 35;
-        public const int THINGCOLOR16 = 36;
-        public const int THINGCOLOR17 = 37;
-        public const int THINGCOLOR18 = 38;
-        public const int THINGCOLOR19 = 39;
+		public const int THINGCOLOR00 = 20;
+		public const int THINGCOLOR01 = 21;
+		public const int THINGCOLOR02 = 22;
+		public const int THINGCOLOR03 = 23;
+		public const int THINGCOLOR04 = 24;
+		public const int THINGCOLOR05 = 25;
+		public const int THINGCOLOR06 = 26;
+		public const int THINGCOLOR07 = 27;
+		public const int THINGCOLOR08 = 28;
+		public const int THINGCOLOR09 = 29;
+		public const int THINGCOLOR10 = 30;
+		public const int THINGCOLOR11 = 31;
+		public const int THINGCOLOR12 = 32;
+		public const int THINGCOLOR13 = 33;
+		public const int THINGCOLOR14 = 34;
+		public const int THINGCOLOR15 = 35;
+		public const int THINGCOLOR16 = 36;
+		public const int THINGCOLOR17 = 37;
+		public const int THINGCOLOR18 = 38;
+		public const int THINGCOLOR19 = 39;
 		public const int THREEDFLOORCOLOR = 40; //mxd
 
 		
@@ -115,9 +115,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor Grid { get { return colors[GRID]; } internal set { colors[GRID] = value; } }
 		public PixelColor Grid64 { get { return colors[GRID64]; } internal set { colors[GRID64] = value; } }
 
-        //mxd
-        public PixelColor ModelWireframe { get { return colors[MODELWIRECOLOR]; } internal set { colors[MODELWIRECOLOR] = value; } }
-        public PixelColor InfoLine { get { return colors[INFOLINECOLOR]; } internal set { colors[INFOLINECOLOR] = value; } }
+		//mxd
+		public PixelColor ModelWireframe { get { return colors[MODELWIRECOLOR]; } internal set { colors[MODELWIRECOLOR] = value; } }
+		public PixelColor InfoLine { get { return colors[INFOLINECOLOR]; } internal set { colors[INFOLINECOLOR] = value; } }
 		public PixelColor ThreeDFloor { get { return colors[THREEDFLOORCOLOR]; } internal set { colors[THREEDFLOORCOLOR] = value;} }
 		
 		public PixelColor Crosshair3D { get { return colors[CROSSHAIR3D]; } internal set { colors[CROSSHAIR3D] = value; } }
@@ -148,7 +148,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			for(int i = 0; i < NUM_COLORS; i++)
 			{
 				// Read color
-                colors[i] = PixelColor.FromInt(cfg.ReadSetting("colors.color" + i.ToString(CultureInfo.InvariantCulture), -16711872)); //mxd. changed default color from transparent to light-green
+				colors[i] = PixelColor.FromInt(cfg.ReadSetting("colors.color" + i.ToString(CultureInfo.InvariantCulture), -16711872)); //mxd. changed default color from transparent to light-green
 			}
 
 			// Set new colors

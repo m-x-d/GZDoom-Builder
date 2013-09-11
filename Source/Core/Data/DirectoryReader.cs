@@ -278,10 +278,10 @@ namespace CodeImp.DoomBuilder.Data
 			return files.GetAllFilesWithTitle(path, title, subfolders).ToArray();
 		}
 
-        //mxd. This returns all files in a given directory which title starts with given title
-        protected override string[] GetAllFilesWhichTitleStartsWith(string path, string title) {
-            return files.GetAllFilesWhichTitleStartsWith(path, title).ToArray();
-        }
+		//mxd. This returns all files in a given directory which title starts with given title
+		protected override string[] GetAllFilesWhichTitleStartsWith(string path, string title) {
+			return files.GetAllFilesWhichTitleStartsWith(path, title).ToArray();
+		}
 		
 		// This returns all files in a given directory that match the given extension
 		protected override string[] GetFilesWithExt(string path, string extension, bool subfolders)
@@ -312,7 +312,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		// This loads an entire file in memory and returns the stream
 		// NOTE: Callers are responsible for disposing the stream!
-        internal override MemoryStream LoadFile(string filename)
+		internal override MemoryStream LoadFile(string filename)
 		{
 			MemoryStream s = null;
 

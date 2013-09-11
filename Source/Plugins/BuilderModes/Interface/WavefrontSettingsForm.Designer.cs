@@ -118,23 +118,23 @@
 			this.nudScale.DecimalPlaces = 4;
 			this.nudScale.Location = new System.Drawing.Point(82, 38);
 			this.nudScale.Maximum = new decimal(new int[] {
-            2048,
-            0,
-            0,
-            0});
+			2048,
+			0,
+			0,
+			0});
 			this.nudScale.Minimum = new decimal(new int[] {
-            2048,
-            0,
-            0,
-            -2147483648});
+			2048,
+			0,
+			0,
+			-2147483648});
 			this.nudScale.Name = "nudScale";
 			this.nudScale.Size = new System.Drawing.Size(94, 20);
 			this.nudScale.TabIndex = 8;
 			this.nudScale.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			// 
 			// label2
 			// 

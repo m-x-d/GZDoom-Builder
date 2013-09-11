@@ -327,9 +327,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.splitbehavior.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.splitbehavior.FormattingEnabled = true;
 			this.splitbehavior.Items.AddRange(new object[] {
-            "Interpolate texture coordinates",
-            "Duplicate texture coordinates",
-            "Reset X coordinate, duplicate Y coordinate"});
+			"Interpolate texture coordinates",
+			"Duplicate texture coordinates",
+			"Reset X coordinate, duplicate Y coordinate"});
 			this.splitbehavior.Location = new System.Drawing.Point(342, 55);
 			this.splitbehavior.Name = "splitbehavior";
 			this.splitbehavior.Size = new System.Drawing.Size(309, 22);
@@ -360,10 +360,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.heightbysidedef.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.heightbysidedef.FormattingEnabled = true;
 			this.heightbysidedef.Items.AddRange(new object[] {
-            "Do nothing",
-            "Change the ceiling height",
-            "Change the floor height",
-            "Change both floor and ceiling height"});
+			"Do nothing",
+			"Change the ceiling height",
+			"Change the floor height",
+			"Change both floor and ceiling height"});
 			this.heightbysidedef.Location = new System.Drawing.Point(342, 19);
 			this.heightbysidedef.Name = "heightbysidedef";
 			this.heightbysidedef.Size = new System.Drawing.Size(309, 22);

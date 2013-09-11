@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Map
 		public Sector Sector { get { return sector; } }
 		public bool IsModel { get { return isModel; } } //mxd
 
-        #endregion
+		#endregion
 
 		#region ================== Constructor / Disposer
 
@@ -216,7 +216,7 @@ namespace CodeImp.DoomBuilder.Map
 		public void DetermineSector()
 		{
 			//mxd
-            sector = map.GetSectorByCoordinates(pos);
+			sector = map.GetSectorByCoordinates(pos);
 		}
 
 		// This determines which sector the thing is in and links it

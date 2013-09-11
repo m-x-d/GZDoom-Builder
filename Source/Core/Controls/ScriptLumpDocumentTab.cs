@@ -73,8 +73,8 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				editor.SetText(stream.ToArray());
 				editor.ClearUndoRedo();
-                //mxd
-                updateNavigator();
+				//mxd
+				updateNavigator();
 			}
 			
 			// Done
@@ -97,17 +97,17 @@ namespace CodeImp.DoomBuilder.Controls
 		// Compile script
 		public override void Compile()
 		{
-            bool success = false; //mxd
+			bool success = false; //mxd
 
-            // Compile
+			// Compile
 			if(ismapheader)
-                success = General.Map.CompileLump(MapManager.CONFIG_MAP_HEADER, true);
+				success = General.Map.CompileLump(MapManager.CONFIG_MAP_HEADER, true);
 			else
-                success = General.Map.CompileLump(lumpname, true);
+				success = General.Map.CompileLump(lumpname, true);
 
-            //mxd
-            if (success && config.Description == ScriptTypes.TYPES[(int)ScriptType.ACS])
-                General.Map.UpdateScriptNames();
+			//mxd
+			if (success && config.Description == ScriptTypes.TYPES[(int)ScriptType.ACS])
+				General.Map.UpdateScriptNames();
 
 			// Feed errors to panel
 			panel.ShowErrors(General.Map.Errors);

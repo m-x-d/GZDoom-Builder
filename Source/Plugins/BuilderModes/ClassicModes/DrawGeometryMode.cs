@@ -49,13 +49,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 
 		// Drawing points
-        protected List<DrawnVertex> points;
-        protected List<LineLengthLabel> labels;
+		protected List<DrawnVertex> points;
+		protected List<LineLengthLabel> labels;
 
 		// Keep track of view changes
-        protected float lastoffsetx;
-        protected float lastoffsety;
-        protected float lastscale;
+		protected float lastoffsetx;
+		protected float lastoffsety;
+		protected float lastscale;
 
 		// Options
 		protected bool snaptogrid;		// SHIFT to toggle
@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This updates the dragging
 		protected virtual void Update()
 		{
-            PixelColor stitchcolor = General.Colors.Highlight;
+			PixelColor stitchcolor = General.Colors.Highlight;
 			PixelColor losecolor = General.Colors.Selection;
 			PixelColor color;
 
@@ -365,13 +365,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This draws a point at a specific location
-        public bool DrawPointAt(DrawnVertex p)
+		public bool DrawPointAt(DrawnVertex p)
 		{
 			return DrawPointAt(p.pos, p.stitch, p.stitchline);
 		}
 		
 		// This draws a point at a specific location
-        public virtual bool DrawPointAt(Vector2D pos, bool stitch, bool stitchline)
+		public virtual bool DrawPointAt(Vector2D pos, bool stitch, bool stitchline)
 		{
 			if (pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
 				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary)
@@ -395,13 +395,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Vector2D delta = p1 - p2;
 				if((Math.Abs(delta.x) <= 0.001f) && (Math.Abs(delta.y) <= 0.001f))
 				{
-                    //mxd. Seems... logical?
-                    if (points.Count == 2) {
-                        OnCancel();
-                        return true;
-                    }
-                    
-                    // Finish drawing
+					//mxd. Seems... logical?
+					if (points.Count == 2) {
+						OnCancel();
+						return true;
+					}
+					
+					// Finish drawing
 					FinishDraw();
 				}
 			}
@@ -562,7 +562,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Drawing a point
 		[BeginAction("drawpoint")]
-        public void DrawPoint()
+		public void DrawPoint()
 		{
 			// Mouse inside window?
 			if(General.Interface.MouseInDisplay)
@@ -575,7 +575,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Remove a point
 		[BeginAction("removepoint")]
-        public virtual void RemovePoint()
+		public virtual void RemovePoint()
 		{
 			if(points.Count > 0) points.RemoveAt(points.Count - 1);
 			if(labels.Count > 0)

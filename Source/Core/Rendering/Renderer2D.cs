@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Presentation
 		private Presentation present;
 
-        //mxd
+		//mxd
 		private Dictionary<int, Dictionary<Vector2D, Thing>> thingsWithModel; //model index, list of thing positions in screen space, thing
 		
 		#endregion
@@ -526,7 +526,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			translatey = -offsety - (windowsize.Height * 0.5f) * scaleinv;
 			linenormalsize = 10f * scaleinv;
 
-            vertexsize = (int)(1.7f * General.Settings.GZVertexScale2D * scale + 0.5f); //mxd. added GZVertexScale2D
+			vertexsize = (int)(1.7f * General.Settings.GZVertexScale2D * scale + 0.5f); //mxd. added GZVertexScale2D
 			if(vertexsize < 0) vertexsize = 0;
 			if(vertexsize > 4) vertexsize = 4;
 
@@ -579,18 +579,18 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor DetermineThingColor(Thing t)
 		{
 			// Determine color
-            if (t.Selected) return General.Colors.Selection;
-           
+			if (t.Selected) return General.Colors.Selection;
+		   
 			//mxd. if thing is light, set it's color to light color:
 			if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Type) != -1){
-                if (t.Type == 1502) //vavoom light
-                    return new PixelColor(255, 255, 255, 255);
-                if (t.Type == 1503) //vavoom colored light
-                    return new PixelColor(255, (byte)t.Args[1], (byte)t.Args[2], (byte)t.Args[3]);
-                return new PixelColor(255, (byte)t.Args[0], (byte)t.Args[1], (byte)t.Args[2]);
-            }
+				if (t.Type == 1502) //vavoom light
+					return new PixelColor(255, 255, 255, 255);
+				if (t.Type == 1503) //vavoom colored light
+					return new PixelColor(255, (byte)t.Args[1], (byte)t.Args[2], (byte)t.Args[3]);
+				return new PixelColor(255, (byte)t.Args[0], (byte)t.Args[1], (byte)t.Args[2]);
+			}
 
-            return t.Color;
+			return t.Color;
 		}
 
 		// This returns the color for a vertex
@@ -850,14 +850,14 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Render 64 grid
 				if(General.Map.Grid.GridSize <= 64) RenderGrid(64f, General.Colors.Grid64, gridplotter);
 
-                //mxd. Render center of map
-                int size = 16;
-                Vector2D center = new Vector2D().GetTransformed(translatex, translatey, scale, -scale);
-                int cx = (int)center.x;
-                int cy = (int)center.y;
-                PixelColor c = General.Colors.Highlight;
-                gridplotter.DrawLineSolid(cx, cy + size, cx, cy - size, ref c);
-                gridplotter.DrawLineSolid(cx - size, cy, cx + size, cy, ref c);
+				//mxd. Render center of map
+				int size = 16;
+				Vector2D center = new Vector2D().GetTransformed(translatex, translatey, scale, -scale);
+				int cx = (int)center.x;
+				int cy = (int)center.y;
+				PixelColor c = General.Colors.Highlight;
+				gridplotter.DrawLineSolid(cx, cy + size, cx, cy - size, ref c);
+				gridplotter.DrawLineSolid(cx - size, cy, cx + size, cy, ref c);
 
 				// Done
 				backtex.UnlockRectangle(0);
@@ -968,7 +968,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(((screenpos.x + circlesize) > 0.0f) && ((screenpos.x - circlesize) < windowsize.Width) &&
 				((screenpos.y + circlesize) > 0.0f) && ((screenpos.y - circlesize) < windowsize.Height))
 			{
-                //mxd. Collect things with models for rendering
+				//mxd. Collect things with models for rendering
 				if(t.IsModel && General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected)) {
 					if(!thingsWithModel.ContainsKey(t.Type)) {
 						thingsWithModel.Add(t.Type, new Dictionary<Vector2D, Thing>());
@@ -979,9 +979,9 @@ namespace CodeImp.DoomBuilder.Rendering
 					} else {
 						thingsWithModel[t.Type].Add(screenpos, t);
 					}
-                }
-                
-                // Get integral color
+				}
+				
+				// Get integral color
 				int color = c.ToInt();
 
 				// Setup fixed rect for circle
@@ -1094,7 +1094,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				int locksize = (things.Count > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : things.Count;
 				FlatVertex[] verts = new FlatVertex[THING_BUFFER_SIZE * 12];
 
-                //mxd
+				//mxd
 				thingsWithModel = new Dictionary<int, Dictionary<Vector2D, Thing>>();
 
 				// Go for all things
@@ -1102,7 +1102,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				int totalcount = 0;
 				foreach(Thing t in things)
 				{
-                    // Create vertices
+					// Create vertices
 					tc = fixedcolor ? c : DetermineThingColor(t);
 					if(CreateThingVerts(t, ref verts, buffercount * 12, tc))
 						buffercount++;
@@ -1137,17 +1137,17 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(buffercount > 0)
 					graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, buffercount * 4);
 
-                // Done
-                graphics.Shaders.Things2D.EndPass();
+				// Done
+				graphics.Shaders.Things2D.EndPass();
 
-                //mxd. Render models
-                if (thingsWithModel.Count > 0) {
-                    // Set renderstates for rendering
-                    graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
-                    graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+				//mxd. Render models
+				if (thingsWithModel.Count > 0) {
+					// Set renderstates for rendering
+					graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+					graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 					graphics.Device.SetRenderState(RenderState.FillMode, FillMode.Wireframe);
 
-                    graphics.Shaders.Things2D.BeginPass(1);
+					graphics.Shaders.Things2D.BeginPass(1);
 
 					Color4 cSel = General.Colors.Selection.ToColorValue();
 					Color4 cWire = General.Colors.ModelWireframe.ToColorValue();
@@ -1168,12 +1168,12 @@ namespace CodeImp.DoomBuilder.Rendering
 						}
 					}
 
-                    graphics.Shaders.Things2D.EndPass();
+					graphics.Shaders.Things2D.EndPass();
 
 					graphics.Device.SetRenderState(RenderState.FillMode, FillMode.Solid);
-                }
+				}
 
-                graphics.Shaders.Things2D.End();
+				graphics.Shaders.Things2D.End();
 			}
 		}
 		

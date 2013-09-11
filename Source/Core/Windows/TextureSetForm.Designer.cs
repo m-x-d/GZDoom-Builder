@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.filters.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.filtercolumn});
+			this.filtercolumn});
 			this.filters.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.filters.HideSelection = false;
 			this.filters.LabelEdit = true;

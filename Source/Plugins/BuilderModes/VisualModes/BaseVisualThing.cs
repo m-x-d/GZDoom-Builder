@@ -225,7 +225,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(Thing.Position.z > 0)
 						pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
 					else
-                        pos.z = Thing.Sector.CeilHeight - info.Height; //mxd. was [pos.z = Thing.Sector.CeilHeight;]
+						pos.z = Thing.Sector.CeilHeight - info.Height; //mxd. was [pos.z = Thing.Sector.CeilHeight;]
 				}
 
 				pos.z -= Thing.Position.z;
@@ -483,18 +483,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
-        //mxd. Delete thing
-        public virtual void OnDelete() {
+		//mxd. Delete thing
+		public virtual void OnDelete() {
 			mode.CreateUndo("Delete thing");
 			mode.SetActionResult("Deleted a thing.");
 
 			this.Thing.Fields.BeforeFieldsChange();
 			this.Thing.Dispose();
-            this.Dispose();
+			this.Dispose();
 
 			General.Map.IsChanged = true;
 			General.Map.ThingsFilter.Update();
-        }
+		}
 		
 		// Copy properties
 		public virtual void OnCopyProperties()
@@ -576,33 +576,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
-        //mxd
-        public void OnMove(Vector3D newPosition) {
-            if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
-                undoticket = mode.CreateUndo("Move thing");
-            Thing.Move(newPosition);
-            mode.SetActionResult("Changed thing position to " + Thing.Position.ToString() + ".");
+		//mxd
+		public void OnMove(Vector3D newPosition) {
+			if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+				undoticket = mode.CreateUndo("Move thing");
+			Thing.Move(newPosition);
+			mode.SetActionResult("Changed thing position to " + Thing.Position.ToString() + ".");
 
-            // Update what must be updated
-            ThingData td = mode.GetThingData(this.Thing);
-            foreach (KeyValuePair<Sector, bool> s in td.UpdateAlso) {
-                if (mode.VisualSectorExists(s.Key)) {
-                    BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
-                    vs.UpdateSectorGeometry(s.Value);
-                }
-            }
+			// Update what must be updated
+			ThingData td = mode.GetThingData(this.Thing);
+			foreach (KeyValuePair<Sector, bool> s in td.UpdateAlso) {
+				if (mode.VisualSectorExists(s.Key)) {
+					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
+					vs.UpdateSectorGeometry(s.Value);
+				}
+			}
 
-            this.Changed = true;
-        }
+			this.Changed = true;
+		}
 
-        //mxd
-        public void Rotate(int ammount) {
-            if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
-                undoticket = mode.CreateUndo("Rotate thing");
-            Thing.Rotate(ammount);
-            mode.SetActionResult("Changed thing rotation to " + Thing.AngleDoom.ToString() + ".");
-            this.Changed = true;
-        }
+		//mxd
+		public void Rotate(int ammount) {
+			if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+				undoticket = mode.CreateUndo("Rotate thing");
+			Thing.Rotate(ammount);
+			mode.SetActionResult("Changed thing rotation to " + Thing.AngleDoom.ToString() + ".");
+			this.Changed = true;
+		}
 		
 		#endregion
 	}

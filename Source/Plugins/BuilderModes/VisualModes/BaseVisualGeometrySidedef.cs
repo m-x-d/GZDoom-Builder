@@ -172,7 +172,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if((l != sd.Floor) && (l != sd.Ceiling) && (l.type != SectorLevelType.Floor))
 				{
-                    // Go for all polygons
+					// Go for all polygons
 					int num = polygons.Count;
 					for(int pi = 0; pi < num; pi++)
 					{
@@ -366,15 +366,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			poly = newp;
 		}
 
-        //mxd
-        protected float getRoundedTextureOffset(float oldValue, float offset, float scale, float textureSize) {
+		//mxd
+		protected float getRoundedTextureOffset(float oldValue, float offset, float scale, float textureSize) {
 			if(offset == 0f) return oldValue;
 			float scaledOffset = offset * scale;
 			float result = (float)Math.Round(oldValue + scaledOffset);
 			if (textureSize > 0) result %= textureSize;
 			if(result == oldValue) result += (scaledOffset < 0 ? -1 : 1);
-            return result;
-        }
+			return result;
+		}
 
 		//mxd
 		protected void onTextureChanged() {
@@ -1016,14 +1016,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float deltaz = General.Map.VisualCamera.AngleZ - dragstartanglez;
 					if((Math.Abs(deltaxy) + Math.Abs(deltaz)) > DRAG_ANGLE_TOLERANCE)
 					{
-                        mode.PreAction(UndoGroup.TextureOffsetChange);
-                        mode.CreateUndo("Change texture offsets");
+						mode.PreAction(UndoGroup.TextureOffsetChange);
+						mode.CreateUndo("Change texture offsets");
 
-                        // Start drag now
-                        uvdragging = true;
-                        mode.Renderer.ShowSelection = false;
-                        mode.Renderer.ShowHighlight = false;
-                        UpdateDragUV();
+						// Start drag now
+						uvdragging = true;
+						mode.Renderer.ShowSelection = false;
+						mode.Renderer.ShowHighlight = false;
+						UpdateDragUV();
 					}
 				}
 			}
@@ -1100,21 +1100,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Change texture offsets");
 			
-            //mxd
-            if (General.Map.UDMF) {
-                // Apply UDMF offsets
-                MoveTextureOffset(new Point(-horizontal, -vertical));
-                Point p = GetTextureOffset();
-                mode.SetActionResult("Changed texture offsets to " + p.X + ", " + p.Y + ".");
-            } else {
+			//mxd
+			if (General.Map.UDMF) {
+				// Apply UDMF offsets
+				MoveTextureOffset(new Point(-horizontal, -vertical));
+				Point p = GetTextureOffset();
+				mode.SetActionResult("Changed texture offsets to " + p.X + ", " + p.Y + ".");
+			} else {
 				//mxd. Apply classic offsets
 				Sidedef.OffsetX = (Sidedef.OffsetX - horizontal);
-	            if (Texture != null) Sidedef.OffsetX %= Texture.Width;
+				if (Texture != null) Sidedef.OffsetX %= Texture.Width;
 				Sidedef.OffsetY = (Sidedef.OffsetY - vertical);
 				if(geoType != VisualGeometryType.WALL_MIDDLE && Texture != null) Sidedef.OffsetY %= Texture.Height;
 
-                mode.SetActionResult("Changed texture offsets to " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
-            }
+				mode.SetActionResult("Changed texture offsets to " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
+			}
 			
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
