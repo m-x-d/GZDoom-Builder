@@ -224,10 +224,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			bool completeredraw = (highlighted != null) && (highlighted.Tag > 0);
 
 			// Set highlight association
-			if(s != null)
-				highlightasso.Set(new Vector2D(s.BBox.X + s.BBox.Width/2, s.BBox.Y + s.BBox.Height/2), s.Tag, UniversalType.SectorTag);
-			else
+			if (s != null) {
+				Vector2D center = (s.Labels.Count > 0 ? s.Labels[0].position : new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2));
+				highlightasso.Set(center, s.Tag, UniversalType.SectorTag);
+			} else {
 				highlightasso.Set(new Vector2D(), 0, 0);
+			}
 
 			// New association highlights something?
 			if((s != null) && (s.Tag > 0)) completeredraw = true;
@@ -1729,9 +1731,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Make list of suitable positions
 			foreach(Sector s in sectors) {
-				List<LabelPositionInfo> list = Tools.FindLabelPositions(s);
-				if(list.Count > 0 && !positions.Contains(list[0].position)) 
-					positions.Add(list[0].position);
+				Vector2D pos = (s.Labels.Count > 0 ? s.Labels[0].position : new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2));
+				if(!positions.Contains(pos)) positions.Add(pos);
 			}
 
 			if(positions.Count < 1) {
