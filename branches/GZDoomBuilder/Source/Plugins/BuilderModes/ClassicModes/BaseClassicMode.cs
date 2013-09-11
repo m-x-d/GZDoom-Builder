@@ -24,6 +24,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
@@ -166,7 +167,60 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected virtual void updateSelectionInfo() {
 			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 		}
+
+		//mxd
+		protected void placeThingsAtPositions(List<Vector2D> positions) {
+			if (positions.Count < 1) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection of some description!");
+				return;
+			}
+
+			General.Map.UndoRedo.CreateUndo("Place " + (positions.Count > 1 ? "things" : "thing"));
+			List<Thing> things = new List<Thing>();
+
+			// Create things
+			foreach (Vector2D pos in positions) {
+				Thing t = General.Map.Map.CreateThing();
+				if(t != null) {
+					General.Settings.ApplyDefaultThingSettings(t);
+					t.Move(pos);
+					t.UpdateConfiguration();
+					t.Selected = true;
+					t.SnapToAccuracy(); // Snap to map format accuracy
+					things.Add(t);
+				}
+			}
+
+			//Operation failed?..
+			if (things.Count < 1) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection of some description!");
+				General.Map.UndoRedo.WithdrawUndo();
+				return;
+			}
+
+			//Show realtime thing edit dialog
+			General.Interface.OnEditFormValuesChanged += thingEditForm_OnValuesChanged;
+			if (General.Interface.ShowEditThings(things) == DialogResult.Cancel) {
+				General.Map.UndoRedo.WithdrawUndo();
+			} else {
+				General.Interface.DisplayStatus(StatusType.Info, "Placed " + things.Count + " things.");
+			}
+			General.Interface.OnEditFormValuesChanged -= thingEditForm_OnValuesChanged;
+		}
 		
+		#endregion
+
+		#region ================== Events (mxd)
+
+		//mxd
+		private void thingEditForm_OnValuesChanged(object sender, EventArgs e) {
+			// Update things filter
+			General.Map.ThingsFilter.Update();
+
+			// Update entire display
+			General.Interface.RedrawDisplay();
+		}
+
 		#endregion
 
 		#region ================== Actions

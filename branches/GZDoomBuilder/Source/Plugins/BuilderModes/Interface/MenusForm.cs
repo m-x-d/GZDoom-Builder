@@ -149,6 +149,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(sourcemode == typeof(LinedefsMode)) HideAllMenusExcept(linedefsmenu);
 			else if(sourcemode == typeof(SectorsMode)) HideAllMenusExcept(sectorsmenu);
 			else if(sourcemode == typeof(ThingsMode)) HideAllMenusExcept(thingsmenu); //mxd
+			else if(sourcemode == typeof(VerticesMode)) HideAllMenusExcept(vertsmenu); //mxd
 			else HideAllMenus();
 		}
 
