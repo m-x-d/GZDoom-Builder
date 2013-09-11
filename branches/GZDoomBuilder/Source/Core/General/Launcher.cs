@@ -23,6 +23,7 @@ using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
+using System.Threading;
 
 #endregion
 
@@ -326,7 +327,7 @@ namespace CodeImp.DoomBuilder
 						// Wait for program to complete
 						while(!process.WaitForExit(10))
 						{
-							General.MainWindow.Update();
+							//General.MainWindow.Update(); //mxd
 						}
 
 						// Done
@@ -352,7 +353,22 @@ namespace CodeImp.DoomBuilder
 			CleanTempFile(General.Map);
 			
 			// Done
-			General.Map.Graphics.Reset();
+			int retries = 0; //mxd
+			while (!General.Map.Graphics.Reset()) {
+				Thread.Sleep(10);
+
+				if (retries++ > 5000) {
+					DialogResult result = General.ShowErrorMessage("Unable to reset D3D device. Press Abort to quit, Retry to wait some more, Ignore to proceed anyway (high chances of D3DException)", MessageBoxButtons.AbortRetryIgnore);
+					if(result == DialogResult.Abort) {
+						General.Exit(true);
+					} else if (result == DialogResult.Retry) {
+						retries = 0;
+					} else {
+						break;
+					}
+				}
+			}
+
 			General.Plugins.OnMapSaveEnd(SavePurpose.Testing);
 			General.MainWindow.RedrawDisplay();
 			General.MainWindow.FocusDisplay();
