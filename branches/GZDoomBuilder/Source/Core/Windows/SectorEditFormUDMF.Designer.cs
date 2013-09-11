@@ -528,7 +528,7 @@
 			// 
 			// floorRotation
 			// 
-			this.floorRotation.AllowDecimal = false;
+			this.floorRotation.AllowDecimal = true;
 			this.floorRotation.AllowNegative = true;
 			this.floorRotation.AllowRelative = true;
 			this.floorRotation.ButtonStep = 5;
@@ -582,8 +582,8 @@
 			this.floorRenderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.floorRenderStyle.FormattingEnabled = true;
 			this.floorRenderStyle.Items.AddRange(new object[] {
-			"Translucent",
-			"Additive"});
+            "Translucent",
+            "Additive"});
 			this.floorRenderStyle.Location = new System.Drawing.Point(118, 175);
 			this.floorRenderStyle.Name = "floorRenderStyle";
 			this.floorRenderStyle.Size = new System.Drawing.Size(86, 22);
@@ -726,7 +726,7 @@
 			// 
 			// ceilRotation
 			// 
-			this.ceilRotation.AllowDecimal = false;
+			this.ceilRotation.AllowDecimal = true;
 			this.ceilRotation.AllowNegative = true;
 			this.ceilRotation.AllowRelative = true;
 			this.ceilRotation.ButtonStep = 5;
@@ -781,8 +781,8 @@
 			this.ceilRenderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.ceilRenderStyle.FormattingEnabled = true;
 			this.ceilRenderStyle.Items.AddRange(new object[] {
-			"Translucent",
-			"Additive"});
+            "Translucent",
+            "Additive"});
 			this.ceilRenderStyle.Location = new System.Drawing.Point(118, 175);
 			this.ceilRenderStyle.Name = "ceilRenderStyle";
 			this.ceilRenderStyle.Size = new System.Drawing.Size(86, 22);
