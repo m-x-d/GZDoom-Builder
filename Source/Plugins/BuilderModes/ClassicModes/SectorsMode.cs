@@ -17,7 +17,6 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
@@ -217,14 +216,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This highlights a new item
 		protected void Highlight(Sector s)
 		{
-			bool completeredraw = false;
-
 			// Often we can get away by simply undrawing the previous
 			// highlight and drawing the new highlight. But if associations
 			// are or were drawn we need to redraw the entire display.
 
 			// Previous association highlights something?
-			if((highlighted != null) && (highlighted.Tag > 0)) completeredraw = true;
+			bool completeredraw = (highlighted != null) && (highlighted.Tag > 0);
 
 			// Set highlight association
 			if(s != null)
@@ -1713,6 +1710,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Redraw
 			General.Interface.RedrawDisplay();
+		}
+
+		[BeginAction("placethings")] //mxd
+		public void PlaceThings() {
+			// Make list of selected sectors
+			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
+			List<Vector2D> positions = new List<Vector2D>();
+			
+			if(sectors.Count == 0) {
+				if(highlighted != null && !highlighted.IsDisposed) {
+					sectors.Add(highlighted);
+				} else {
+					General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection of some description!");
+					return;
+				}
+			}
+
+			// Make list of suitable positions
+			foreach(Sector s in sectors) {
+				List<LabelPositionInfo> list = Tools.FindLabelPositions(s);
+				if(list.Count > 0 && !positions.Contains(list[0].position)) 
+					positions.Add(list[0].position);
+			}
+
+			if(positions.Count < 1) {
+				General.Interface.DisplayStatus(StatusType.Warning, "Unable to get vertex positions from selection!");
+				return;
+			}
+
+			placeThingsAtPositions(positions);
 		}
 		
 		#endregion

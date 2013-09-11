@@ -1220,6 +1220,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.IsChanged = true;
 		}
 
+		[BeginAction("placethings")] //mxd
+		public void PlaceThings() {
+			// Make list of selected linedefs
+			ICollection<Linedef> lines = General.Map.Map.GetSelectedLinedefs(true);
+			List<Vector2D> positions = new List<Vector2D>();
+
+			if(lines.Count == 0) {
+				if (highlighted != null && !highlighted.IsDisposed) {
+					lines.Add(highlighted);
+				} else {
+					General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection of some description!");
+					return;
+				}
+			}
+
+			// Make list of vertex positions
+			foreach(Linedef l in lines) {
+				if(!positions.Contains(l.Start.Position)) positions.Add(l.Start.Position);
+				if(!positions.Contains(l.End.Position)) positions.Add(l.End.Position);
+			}
+
+			if(positions.Count < 1) {
+				General.Interface.DisplayStatus(StatusType.Warning, "Unable to get vertex positions from selection!");
+				return;
+			}
+
+			placeThingsAtPositions(positions);
+		}
+
 		//mxd
 		[BeginAction("alignfloortofront")]
 		public void AlignFloorToFront() {

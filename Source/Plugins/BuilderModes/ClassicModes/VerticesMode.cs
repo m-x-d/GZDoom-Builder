@@ -885,6 +885,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RedrawDisplay();
 		}
 
+		[BeginAction("placethings")] //mxd
+		public void PlaceThings() {
+			// Make list of selected vertices
+			ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
+			if (selected.Count == 0) {
+				if (highlighted != null && !highlighted.IsDisposed){
+					selected.Add(highlighted);
+				} else {
+					General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection of some description!");
+					return;
+				}
+			}
+
+			List<Vector2D> positions = new List<Vector2D>(selected.Count);
+			foreach (Vertex v in selected)
+				if (!positions.Contains(v.Position)) positions.Add(v.Position);
+			placeThingsAtPositions(positions);
+		}
+
+		#endregion
+
+		#region ================== Action assist (mxd)
+
 		//mxd
 		private void mergeLines(ICollection<Vertex> selected, Linedef ld1, Linedef ld2, Vertex v) {
 			Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
