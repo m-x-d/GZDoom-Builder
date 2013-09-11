@@ -39,6 +39,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.curvelinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
 			this.splitlinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignLinedefsItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignFloorToFrontItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignFloorToBackItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignCeilingToFrontItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignCeilingToBackItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sectorsmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.joinsectorsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mergesectorsitem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,11 +69,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonMarqueSelectTouching = new System.Windows.Forms.ToolStripButton();
 			this.buttonAlignThingsToWall = new System.Windows.Forms.ToolStripButton();
 			this.buttonTextureOffsetLock = new System.Windows.Forms.ToolStripButton();
-			this.alignLinedefsItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.alignFloorToFrontItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.alignFloorToBackItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.alignCeilingToFrontItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.alignCeilingToBackItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.SuspendLayout();
@@ -166,6 +166,49 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.splitlinedefsitem.Tag = "splitlinedefs";
 			this.splitlinedefsitem.Text = "S&plit Linedefs";
 			this.splitlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// alignLinedefsItem
+			// 
+			this.alignLinedefsItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.alignFloorToFrontItem,
+            this.alignFloorToBackItem,
+            this.alignCeilingToFrontItem,
+            this.alignCeilingToBackItem});
+			this.alignLinedefsItem.Name = "alignLinedefsItem";
+			this.alignLinedefsItem.Size = new System.Drawing.Size(205, 22);
+			this.alignLinedefsItem.Text = "&Align Textures";
+			// 
+			// alignFloorToFrontItem
+			// 
+			this.alignFloorToFrontItem.Name = "alignFloorToFrontItem";
+			this.alignFloorToFrontItem.Size = new System.Drawing.Size(181, 22);
+			this.alignFloorToFrontItem.Tag = "alignfloortofront";
+			this.alignFloorToFrontItem.Text = "Floor to Front Side";
+			this.alignFloorToFrontItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// alignFloorToBackItem
+			// 
+			this.alignFloorToBackItem.Name = "alignFloorToBackItem";
+			this.alignFloorToBackItem.Size = new System.Drawing.Size(181, 22);
+			this.alignFloorToBackItem.Tag = "alignfloortoback";
+			this.alignFloorToBackItem.Text = "Floor to Back Side";
+			this.alignFloorToBackItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// alignCeilingToFrontItem
+			// 
+			this.alignCeilingToFrontItem.Name = "alignCeilingToFrontItem";
+			this.alignCeilingToFrontItem.Size = new System.Drawing.Size(181, 22);
+			this.alignCeilingToFrontItem.Tag = "alignceilingtofront";
+			this.alignCeilingToFrontItem.Text = "Ceiling to Front Side";
+			this.alignCeilingToFrontItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// alignCeilingToBackItem
+			// 
+			this.alignCeilingToBackItem.Name = "alignCeilingToBackItem";
+			this.alignCeilingToBackItem.Size = new System.Drawing.Size(181, 22);
+			this.alignCeilingToBackItem.Tag = "alignceilingtoback";
+			this.alignCeilingToBackItem.Text = "Ceiling to Back Side";
+			this.alignCeilingToBackItem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// sectorsmenu
 			// 
@@ -387,6 +430,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.brightnessGradientMode.Name = "brightnessGradientMode";
 			this.brightnessGradientMode.Size = new System.Drawing.Size(75, 25);
 			this.brightnessGradientMode.ToolTipText = "Brightness Gradient affects:";
+			this.brightnessGradientMode.DropDownClosed += new System.EventHandler(this.brightnessGradientMode_DropDownClosed);
 			// 
 			// buttonMarqueSelectTouching
 			// 
@@ -397,7 +441,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonMarqueSelectTouching.Name = "buttonMarqueSelectTouching";
 			this.buttonMarqueSelectTouching.Size = new System.Drawing.Size(23, 22);
 			this.buttonMarqueSelectTouching.Text = "Select Touching";
-			this.buttonMarqueSelectTouching.ToolTipText = "Toggle between \"select touching\" and \"select inside\"\r\nrectangular selection modes";
+			this.buttonMarqueSelectTouching.ToolTipText = "Toggle between \"select touching\" and \"select inside\"\r\nrectangular selection modes" +
+				"";
 			this.buttonMarqueSelectTouching.Click += new System.EventHandler(this.buttonMarqueSelectTouching_Click);
 			// 
 			// buttonAlignThingsToWall
@@ -422,49 +467,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonTextureOffsetLock.ToolTipText = "Pin Texture Offsets.\r\nWhen enabled, keeps floor and ceiling texture offsets\r\ncons" +
 				"tant while sector is dragged";
 			this.buttonTextureOffsetLock.Click += new System.EventHandler(this.buttonTextureOffsetLock_Click);
-			// 
-			// alignLinedefsItem
-			// 
-			this.alignLinedefsItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.alignFloorToFrontItem,
-            this.alignFloorToBackItem,
-            this.alignCeilingToFrontItem,
-            this.alignCeilingToBackItem});
-			this.alignLinedefsItem.Name = "alignLinedefsItem";
-			this.alignLinedefsItem.Size = new System.Drawing.Size(205, 22);
-			this.alignLinedefsItem.Text = "&Align Textures";
-			// 
-			// alignFloorToFrontItem
-			// 
-			this.alignFloorToFrontItem.Name = "alignFloorToFrontItem";
-			this.alignFloorToFrontItem.Size = new System.Drawing.Size(181, 22);
-			this.alignFloorToFrontItem.Tag = "alignfloortofront";
-			this.alignFloorToFrontItem.Text = "Floor to Front Side";
-			this.alignFloorToFrontItem.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// alignFloorToBackItem
-			// 
-			this.alignFloorToBackItem.Name = "alignFloorToBackItem";
-			this.alignFloorToBackItem.Size = new System.Drawing.Size(181, 22);
-			this.alignFloorToBackItem.Tag = "alignfloortoback";
-			this.alignFloorToBackItem.Text = "Floor to Back Side";
-			this.alignFloorToBackItem.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// alignCeilingToFrontItem
-			// 
-			this.alignCeilingToFrontItem.Name = "alignCeilingToFrontItem";
-			this.alignCeilingToFrontItem.Size = new System.Drawing.Size(181, 22);
-			this.alignCeilingToFrontItem.Tag = "alignceilingtofront";
-			this.alignCeilingToFrontItem.Text = "Ceiling to Front Side";
-			this.alignCeilingToFrontItem.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// alignCeilingToBackItem
-			// 
-			this.alignCeilingToBackItem.Name = "alignCeilingToBackItem";
-			this.alignCeilingToBackItem.Size = new System.Drawing.Size(181, 22);
-			this.alignCeilingToBackItem.Tag = "alignceilingtoback";
-			this.alignCeilingToBackItem.Text = "Ceiling to Back Side";
-			this.alignCeilingToBackItem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// MenusForm
 			// 

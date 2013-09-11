@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		public bool IsDisposed { get { return isdisposed; } }
 		public Sector Sector { get { return sector; } }
-		
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -71,6 +71,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			allgeometry = new List<VisualGeometry>();
 			fixedgeometry = new List<VisualGeometry>();
 			sidedefgeometry = new Dictionary<Sidedef, List<VisualGeometry>>();
+			this.sector.UpdateFogColor(); //mxd
 
 			// Register as resource
 			General.Map.Graphics.RegisterResource(this);
@@ -155,6 +156,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 				geobuffer.Unlock();
 				bufferstream.Dispose();
 			}
+
+			this.sector.UpdateFogColor(); //mxd
 			
 			// Done
 			updategeo = false;

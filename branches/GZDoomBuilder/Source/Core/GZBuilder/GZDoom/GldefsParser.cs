@@ -365,7 +365,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                                     objects.Add(objectClass, token);
                                                 foundLight = true;
                                             } else {
-                                                General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": light declaration not found for light '" + token + "'");
+												General.ErrorLogger.Add(ErrorType.Warning, "Light declaration not found for light '" + token + "' ('" + sourcefilename + "', line " + GetCurrentLineNumber()+")");
                                             }
                                         }
                                     } else if (token == "{") { //continue in this loop until object structure ends

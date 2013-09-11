@@ -43,6 +43,10 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floorAngleLabel = new System.Windows.Forms.Label();
 			this.floorScaleLabel = new System.Windows.Forms.Label();
 			this.sectorinfo = new System.Windows.Forms.GroupBox();
+			this.panelFadeColor = new System.Windows.Forms.Panel();
+			this.panelLightColor = new System.Windows.Forms.Panel();
+			this.labelFade = new System.Windows.Forms.Label();
+			this.labelLight = new System.Windows.Forms.Label();
 			this.brightness = new System.Windows.Forms.Label();
 			this.height = new System.Windows.Forms.Label();
 			this.tag = new System.Windows.Forms.Label();
@@ -86,7 +90,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// label13
 			// 
-			label13.Location = new System.Drawing.Point(103, 77);
+			label13.Location = new System.Drawing.Point(103, 79);
 			label13.Name = "label13";
 			label13.Size = new System.Drawing.Size(70, 14);
 			label13.TabIndex = 14;
@@ -95,16 +99,16 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// label5
 			// 
-			label5.Location = new System.Drawing.Point(103, 58);
+			label5.Location = new System.Drawing.Point(8, 64);
 			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(70, 14);
+			label5.Size = new System.Drawing.Size(44, 14);
 			label5.TabIndex = 8;
 			label5.Text = "Height:";
 			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label4
 			// 
-			label4.Location = new System.Drawing.Point(8, 77);
+			label4.Location = new System.Drawing.Point(8, 79);
 			label4.Name = "label4";
 			label4.Size = new System.Drawing.Size(44, 14);
 			label4.TabIndex = 4;
@@ -113,7 +117,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// label3
 			// 
-			label3.Location = new System.Drawing.Point(8, 58);
+			label3.Location = new System.Drawing.Point(8, 49);
 			label3.Name = "label3";
 			label3.Size = new System.Drawing.Size(44, 14);
 			label3.TabIndex = 3;
@@ -122,7 +126,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// label2
 			// 
-			label2.Location = new System.Drawing.Point(8, 39);
+			label2.Location = new System.Drawing.Point(8, 34);
 			label2.Name = "label2";
 			label2.Size = new System.Drawing.Size(44, 14);
 			label2.TabIndex = 2;
@@ -212,6 +216,10 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// sectorinfo
 			// 
+			this.sectorinfo.Controls.Add(this.panelFadeColor);
+			this.sectorinfo.Controls.Add(this.panelLightColor);
+			this.sectorinfo.Controls.Add(this.labelFade);
+			this.sectorinfo.Controls.Add(this.labelLight);
 			this.sectorinfo.Controls.Add(this.brightness);
 			this.sectorinfo.Controls.Add(label13);
 			this.sectorinfo.Controls.Add(this.height);
@@ -232,9 +240,43 @@ namespace CodeImp.DoomBuilder.Controls
 			this.sectorinfo.TabStop = false;
 			this.sectorinfo.Text = " Sector ";
 			// 
+			// panelFadeColor
+			// 
+			this.panelFadeColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panelFadeColor.Location = new System.Drawing.Point(180, 65);
+			this.panelFadeColor.Name = "panelFadeColor";
+			this.panelFadeColor.Size = new System.Drawing.Size(20, 12);
+			this.panelFadeColor.TabIndex = 21;
+			// 
+			// panelLightColor
+			// 
+			this.panelLightColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panelLightColor.Location = new System.Drawing.Point(180, 50);
+			this.panelLightColor.Name = "panelLightColor";
+			this.panelLightColor.Size = new System.Drawing.Size(20, 12);
+			this.panelLightColor.TabIndex = 20;
+			// 
+			// labelFade
+			// 
+			this.labelFade.Location = new System.Drawing.Point(103, 64);
+			this.labelFade.Name = "labelFade";
+			this.labelFade.Size = new System.Drawing.Size(70, 14);
+			this.labelFade.TabIndex = 19;
+			this.labelFade.Text = "Fade:";
+			this.labelFade.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// labelLight
+			// 
+			this.labelLight.Location = new System.Drawing.Point(103, 49);
+			this.labelLight.Name = "labelLight";
+			this.labelLight.Size = new System.Drawing.Size(70, 14);
+			this.labelLight.TabIndex = 18;
+			this.labelLight.Text = "Light:";
+			this.labelLight.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
 			// brightness
 			// 
-			this.brightness.Location = new System.Drawing.Point(177, 77);
+			this.brightness.Location = new System.Drawing.Point(177, 79);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(38, 14);
 			this.brightness.TabIndex = 17;
@@ -242,7 +284,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// height
 			// 
-			this.height.Location = new System.Drawing.Point(177, 58);
+			this.height.Location = new System.Drawing.Point(55, 64);
 			this.height.Name = "height";
 			this.height.Size = new System.Drawing.Size(38, 14);
 			this.height.TabIndex = 11;
@@ -250,7 +292,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// tag
 			// 
-			this.tag.Location = new System.Drawing.Point(55, 77);
+			this.tag.Location = new System.Drawing.Point(55, 79);
 			this.tag.Name = "tag";
 			this.tag.Size = new System.Drawing.Size(42, 14);
 			this.tag.TabIndex = 7;
@@ -258,7 +300,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// floor
 			// 
-			this.floor.Location = new System.Drawing.Point(55, 58);
+			this.floor.Location = new System.Drawing.Point(55, 49);
 			this.floor.Name = "floor";
 			this.floor.Size = new System.Drawing.Size(42, 14);
 			this.floor.TabIndex = 6;
@@ -266,7 +308,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// ceiling
 			// 
-			this.ceiling.Location = new System.Drawing.Point(55, 39);
+			this.ceiling.Location = new System.Drawing.Point(55, 34);
 			this.ceiling.Name = "ceiling";
 			this.ceiling.Size = new System.Drawing.Size(42, 14);
 			this.ceiling.TabIndex = 5;
@@ -540,5 +582,9 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label floorScaleLabel;
 		private System.Windows.Forms.Label labelCeilTextureSize;
 		private System.Windows.Forms.Label labelFloorTextureSize;
+		private System.Windows.Forms.Panel panelFadeColor;
+		private System.Windows.Forms.Panel panelLightColor;
+		private System.Windows.Forms.Label labelFade;
+		private System.Windows.Forms.Label labelLight;
 	}
 }

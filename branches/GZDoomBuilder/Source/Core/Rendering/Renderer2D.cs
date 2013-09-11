@@ -530,12 +530,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(vertexsize < 0) vertexsize = 0;
 			if(vertexsize > 4) vertexsize = 4;
 
-			Matrix scaling = Matrix.Scaling((1f / (float)windowsize.Width) * 2f, (1f / (float)windowsize.Height) * -2f, 1f);
+			Matrix scaling = Matrix.Scaling((1f / windowsize.Width) * 2f, (1f / windowsize.Height) * -2f, 1f);
 			Matrix translate = Matrix.Translation(-(float)windowsize.Width * 0.5f, -(float)windowsize.Height * 0.5f, 0f);
 			graphics.Device.SetTransform(TransformState.View, Matrix.Multiply(translate, scaling));
 			graphics.Device.SetTransform(TransformState.Projection, Matrix.Identity);
 			Vector2D lt = DisplayToMap(new Vector2D(0.0f, 0.0f));
-			Vector2D rb = DisplayToMap(new Vector2D((float)windowsize.Width, (float)windowsize.Height));
+			Vector2D rb = DisplayToMap(new Vector2D(windowsize.Width, windowsize.Height));
 			viewport = new RectangleF(lt.x, lt.y, rb.x - lt.x, rb.y - lt.y);
 			yviewport = new RectangleF(lt.x, rb.y, rb.x - lt.x, lt.y - rb.y);
 		}

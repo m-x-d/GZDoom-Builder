@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		}
 
 		private void checkColor() {
-			bool changed = (cpColor.Color.ToInt() & 0x00ffffff) != defaultValue;
+			bool changed = string.IsNullOrEmpty(tbColor.Text) || (cpColor.Color.ToInt() & 0x00ffffff) != defaultValue;
 			bReset.Visible = changed;
 			tbColor.ForeColor = changed ? SystemColors.WindowText : SystemColors.GrayText;
 		}
@@ -71,8 +71,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			blockUpdate = false;
 
 			checkColor();
-
-			if(OnValueChanged != null)	OnValueChanged(this, EventArgs.Empty);
+			if(OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 
 		private void tbColor_TextChanged(object sender, EventArgs e) {
@@ -88,6 +87,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			}
 
 			checkColor();
+			if(OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 
 		#endregion

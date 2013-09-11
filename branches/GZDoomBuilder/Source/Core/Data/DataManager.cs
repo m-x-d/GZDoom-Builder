@@ -1552,11 +1552,7 @@ namespace CodeImp.DoomBuilder.Data
                 }
             }
             currentreader = null;
-
-            if (parser.MapInfo != null)
-                mapInfo = parser.MapInfo;
-            else
-                mapInfo = new MapInfo();
+            mapInfo = parser.MapInfo ?? new MapInfo();
         }
 
         private void loadGldefsFromLocation(GldefsParser parser, string location) {

@@ -38,6 +38,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public struct BrightnessGradientModes
 		{
 			public static string Sectors = "Sectors";
+			public static string Light = "Light";
+			public static string Fade = "Fade";
 			public static string Floors = "Floors";
 			public static string Ceilings = "Ceilings";
 		}
@@ -78,7 +80,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			buttonselectionnumbers.Checked = BuilderPlug.Me.ViewSelectionNumbers;
 
 			//mxd
-			brightnessGradientMode.Items.AddRange(new string[] { BrightnessGradientModes.Sectors, BrightnessGradientModes.Ceilings, BrightnessGradientModes.Floors });
+			brightnessGradientMode.Items.AddRange(new string[] { BrightnessGradientModes.Sectors, BrightnessGradientModes.Light, BrightnessGradientModes.Fade, BrightnessGradientModes.Ceilings, BrightnessGradientModes.Floors });
 			brightnessGradientMode.SelectedIndex = 0;
 			
 			// List all menus
@@ -180,6 +182,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void linedefsmenu_DropDownOpening(object sender, EventArgs e) {
 			alignLinedefsItem.Enabled = General.Map.UDMF;
+		}
+
+		//mxd
+		private void brightnessGradientMode_DropDownClosed(object sender, EventArgs e) {
+			General.Interface.FocusDisplay();
 		}
 
 		#endregion

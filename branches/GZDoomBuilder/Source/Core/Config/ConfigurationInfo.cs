@@ -155,8 +155,6 @@ namespace CodeImp.DoomBuilder.Config
             if(list.Count == 0) {
 				LinedefColorPreset anyActionPreset = new LinedefColorPreset("Any action", PixelColor.FromColor(System.Drawing.Color.PaleGreen), -1, 0, new List<string>(), new List<string>());
                 anyActionPreset.SetValid();
-
-                //colorPresets.Add(soundBoundaryPreset);
                 colorPresets.Add(anyActionPreset);
             } else {
                 //read custom linedef colors from config

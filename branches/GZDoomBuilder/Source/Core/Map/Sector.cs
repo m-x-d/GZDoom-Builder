@@ -23,6 +23,7 @@ using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Rendering;
 using System.Collections.ObjectModel;
+using SlimDX;
 
 #endregion
 
@@ -72,6 +73,11 @@ namespace CodeImp.DoomBuilder.Map
 		private FlatVertex[] flatvertices;
 		private ReadOnlyCollection<LabelPositionInfo> labels;
 		private SurfaceEntryCollection surfaceentries;
+
+		//mxd. Rendering
+		protected Color4 fogColor; //mxd
+		protected bool hasFogColor; //mxd
+		protected bool useOutsideFog; //mxd
 		
 		#endregion
 
@@ -101,7 +107,12 @@ namespace CodeImp.DoomBuilder.Map
 		public Triangulation Triangles { get { return triangles; } }
 		public FlatVertex[] FlatVertices { get { return flatvertices; } }
 		public ReadOnlyCollection<LabelPositionInfo> Labels { get { return labels; } }
-		
+
+		//mxd. Rednering
+		public Color4 FogColor { get { return fogColor; } }
+		public bool HasFogColor { get { return hasFogColor; } }
+		public bool UsesOutsideFog { get { return useOutsideFog; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -582,6 +593,23 @@ namespace CodeImp.DoomBuilder.Map
 			longceiltexname = Lump.MakeLongName(name);
 			updateneeded = true;
 			General.Map.IsChanged = true;
+		}
+
+		//mxd
+		public void UpdateFogColor() {
+			useOutsideFog = General.Map.Data.MapInfo.HasOutsideFogColor && ceiltexname == General.Map.Config.SkyFlatName;
+
+			if(General.Map.UDMF && Fields.ContainsKey("fadecolor")) {
+				fogColor = new Color4((int)Fields["fadecolor"].Value);
+			} else if(useOutsideFog) {
+				fogColor = General.Map.Data.MapInfo.OutsideFogColor;
+			} else if(General.Map.Data.MapInfo.HasFadeColor) {
+				fogColor = General.Map.Data.MapInfo.FadeColor;
+			} else {
+				fogColor = new Color4();
+			}
+
+			hasFogColor = fogColor.Red > 0 || fogColor.Green > 0 || fogColor.Blue > 0;
 		}
 		
 		#endregion

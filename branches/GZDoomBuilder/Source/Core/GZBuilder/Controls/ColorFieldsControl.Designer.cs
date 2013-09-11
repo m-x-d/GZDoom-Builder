@@ -26,8 +26,8 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.bReset = new System.Windows.Forms.Button();
-			this.tbColor = new System.Windows.Forms.TextBox();
 			this.cpColor = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.tbColor = new CodeImp.DoomBuilder.Controls.AutoSelectTextbox();
 			this.SuspendLayout();
 			// 
 			// bReset
@@ -41,14 +41,6 @@
 			this.bReset.Visible = false;
 			this.bReset.Click += new System.EventHandler(this.bReset_Click);
 			// 
-			// tbColor
-			// 
-			this.tbColor.Location = new System.Drawing.Point(109, 5);
-			this.tbColor.Name = "tbColor";
-			this.tbColor.Size = new System.Drawing.Size(64, 20);
-			this.tbColor.TabIndex = 44;
-			this.tbColor.TextChanged += new System.EventHandler(this.tbColor_TextChanged);
-			// 
 			// cpColor
 			// 
 			this.cpColor.BackColor = System.Drawing.Color.Transparent;
@@ -61,6 +53,14 @@
 			this.cpColor.Size = new System.Drawing.Size(100, 23);
 			this.cpColor.TabIndex = 41;
 			this.cpColor.ColorChanged += new System.EventHandler(this.cpColor_ColorChanged);
+			// 
+			// tbColor
+			// 
+			this.tbColor.Location = new System.Drawing.Point(109, 5);
+			this.tbColor.Name = "tbColor";
+			this.tbColor.Size = new System.Drawing.Size(64, 20);
+			this.tbColor.TabIndex = 45;
+			this.tbColor.TextChanged += new System.EventHandler(this.tbColor_TextChanged);
 			// 
 			// ColorFieldsControl
 			// 
@@ -80,6 +80,6 @@
 
 		private System.Windows.Forms.Button bReset;
 		private CodeImp.DoomBuilder.Controls.ColorControl cpColor;
-		private System.Windows.Forms.TextBox tbColor;
+		private CodeImp.DoomBuilder.Controls.AutoSelectTextbox tbColor;
 	}
 }

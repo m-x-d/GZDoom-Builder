@@ -11,6 +11,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
         public Color4 FadeColor;
         public bool HasOutsideFogColor;
         public Color4 OutsideFogColor;
+		public int FogDensity;
+		public int OutsideFogDensity;
 
         public bool EvenLighting;
         public bool SmoothLighting;

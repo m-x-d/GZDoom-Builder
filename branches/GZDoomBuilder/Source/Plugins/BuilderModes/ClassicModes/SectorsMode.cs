@@ -29,6 +29,7 @@ using System.Drawing;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.BuilderModes.Interface;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -651,7 +652,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void sectorEditForm_OnValuesChanged(object sender, EventArgs e) {
 			// Update entire display
 			General.Map.Map.Update();
-			//General.Map.Renderer2D.UpdateExtraFloorFlag();
 			General.Interface.RedrawDisplay();
 		}
 		
@@ -1443,12 +1443,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Sector end = General.GetByIndex(orderedselection, orderedselection.Count - 1);
 
 				//mxd. Use UDMF light?
-				if(General.Map.UDMF && (string)BuilderPlug.Me.MenusForm.BrightnessGradientMode.SelectedItem != MenusForm.BrightnessGradientModes.Sectors) {
+				string mode = (string)BuilderPlug.Me.MenusForm.BrightnessGradientMode.SelectedItem;
+				if(General.Map.UDMF && (mode == MenusForm.BrightnessGradientModes.Ceilings || mode == MenusForm.BrightnessGradientModes.Floors)) {
 					string lightKey = string.Empty;
 					string lightAbsKey = string.Empty;
 					float startbrightness, endbrightness;
 
-					if((string)BuilderPlug.Me.MenusForm.BrightnessGradientMode.SelectedItem == MenusForm.BrightnessGradientModes.Ceilings) {
+					if(mode == MenusForm.BrightnessGradientModes.Ceilings) {
 						lightKey = "lightceiling";
 						lightAbsKey = "lightceilingabsolute";
 					} else { //should be floors...
@@ -1484,13 +1485,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							else
 								s.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b));
 						} else {
-							if(s.Fields.ContainsKey(lightKey))
-								s.Fields[lightKey].Value = (int)b - s.Brightness;
-							else
-								s.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b - s.Brightness));
+							UDMFTools.SetInteger(s.Fields, lightKey, (int)b - s.Brightness, 0);
 						}
 
 						index++;
+					}
+				//mxd. Use UDMF light/fade color?
+				} else if(General.Map.UDMF && (mode == MenusForm.BrightnessGradientModes.Fade || mode == MenusForm.BrightnessGradientModes.Light)) {
+					string key = string.Empty;
+					int defaultValue = 0;
+
+					if(mode == MenusForm.BrightnessGradientModes.Light) {
+						key = "lightcolor";
+						defaultValue = 0xFFFFFF;
+					} else {
+						key = "fadecolor";
+					}
+
+					if(!start.Fields.ContainsKey(key) && !end.Fields.ContainsKey(key)) {
+						General.Interface.DisplayStatus(StatusType.Warning, "First or last sector must have " + key + "!");
+					} else {
+						Color startColor = PixelColor.FromInt(start.Fields.GetValue(key, defaultValue)).ToColor();
+						Color endColor = PixelColor.FromInt(end.Fields.GetValue(key, defaultValue)).ToColor();
+						int dr = endColor.R - startColor.R;
+						int dg = endColor.G - startColor.G;
+						int db = endColor.B - startColor.B;
+
+						// Go for all sectors in between first and last
+						int index = 0;
+						foreach(Sector s in orderedselection) {
+							s.Fields.BeforeFieldsChange();
+							float u = (float)index / (float)(orderedselection.Count - 1);
+							Color c = Color.FromArgb(0, General.Clamp((int)(startColor.R + dr * u), 0, 255), General.Clamp((int)(startColor.G + dg * u), 0, 255), General.Clamp((int)(startColor.B + db * u), 0, 255));
+							
+							//dbg
+							//Console.WriteLine("Color is "+c.ToString() + "; dr=" + dr + "; dg="+dg+"; db="+db);
+							
+							UDMFTools.SetInteger(s.Fields, key, c.ToArgb(), defaultValue);
+							s.UpdateNeeded = true;
+							index++;
+						}
 					}
 
 				} else {
