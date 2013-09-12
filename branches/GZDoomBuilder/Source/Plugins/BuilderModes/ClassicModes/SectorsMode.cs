@@ -29,6 +29,7 @@ using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.BuilderModes.Interface;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -59,6 +60,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Labels
 		private Dictionary<Sector, TextLabel[]> labels;
+
+		//mxd. Effects
+		private Dictionary<int, string[]> effects;
 		
 		#endregion
 
@@ -73,6 +77,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public SectorsMode()
 		{
+			//mxd
+			effects = new Dictionary<int, string[]>();
+			foreach (SectorEffectInfo info in General.Map.Config.SortedSectorEffects) {
+				effects.Add(info.Index, new[] { info.Index + ": " + info.Title, "E"+info.Index });
+			}
 		}
 
 		// Disposer
@@ -160,6 +169,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							float requiredsize = (l.TextSize.Height / 2) / renderer.Scale;
 							if(requiredsize < s.Labels[i].radius) renderer.RenderText(l);
 						}
+					}
+
+					//mxd. Render effect labels
+					orderedselection = General.Map.Map.GetSelectedSectors(false);
+					foreach(Sector s in orderedselection) {
+						if (s.Effect != 0) {
+							TextLabel[] labelarray = labels[s];
+							for (int i = 0; i < s.Labels.Count; i++) {
+								TextLabel l = labelarray[i];
+								l.Color = General.Colors.InfoLine;
+
+								if (effects.ContainsKey(s.Effect)) {
+									float requiredsize = (General.Map.GetTextSize(effects[s.Effect][0], l.Scale).Width) / renderer.Scale;
+
+									if (requiredsize < s.Labels[i].radius) {
+										l.Text = effects[s.Effect][0];
+									} else {
+										l.Text = effects[s.Effect][1];
+									}
+								} else {
+									l.Text = "E"+s.Effect;
+								}
+
+								renderer.RenderText(l);
+							}
+						} 
 					}
 				}
 				
@@ -1056,6 +1091,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Clear labels
 			SetupLabels();
+			base.OnRedoEnd(); //mxd
 		}
 
 		//mxd
