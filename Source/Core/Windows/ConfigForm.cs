@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.Windows
 				preventchanges = true;
 
 				//mxd. Store current engine name
-				if(configinfo != null && !String.IsNullOrEmpty(cbEngineSelector.Text) && cbEngineSelector.Text != configinfo.TestProgramName)
+				if(configinfo != null && !String.IsNullOrEmpty(cbEngineSelector.Text))
 					configinfo.TestProgramName = cbEngineSelector.Text;
 				
 				// Get config info of selected item
@@ -631,7 +631,7 @@ namespace CodeImp.DoomBuilder.Windows
 			cbEngineSelector.Items.Clear();
 			foreach(EngineInfo info in configinfo.TestEngines)
 				cbEngineSelector.Items.Add(info.TestProgramName);
-			
+
 			if (index >= configinfo.TestEngines.Count)
 				index = configinfo.TestEngines.Count - 1;
 

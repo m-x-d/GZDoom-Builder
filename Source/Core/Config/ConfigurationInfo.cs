@@ -337,6 +337,7 @@ namespace CodeImp.DoomBuilder.Config
 			//mxd
 			this.testEngines = new List<EngineInfo>();
 			foreach (EngineInfo info in ci.TestEngines) testEngines.Add(new EngineInfo(info));
+			if (this.CurrentEngineIndex >= testEngines.Count) this.CurrentEngineIndex = testEngines.Count - 1;
 			this.linedefColorPresets = new LinedefColorPreset[ci.linedefColorPresets.Length];
 			for(int i = 0; i < ci.linedefColorPresets.Length; i++)
 				this.linedefColorPresets[i] = new LinedefColorPreset(ci.linedefColorPresets[i]);
