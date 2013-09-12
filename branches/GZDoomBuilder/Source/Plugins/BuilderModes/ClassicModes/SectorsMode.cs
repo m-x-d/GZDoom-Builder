@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. Effects
 		private Dictionary<int, string[]> effects;
+		private int maxEffectLabelLength;
 		
 		#endregion
 
@@ -80,7 +81,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd
 			effects = new Dictionary<int, string[]>();
 			foreach (SectorEffectInfo info in General.Map.Config.SortedSectorEffects) {
-				effects.Add(info.Index, new[] { info.Index + ": " + info.Title, "E"+info.Index });
+				string name = info.Index + ": " + info.Title;
+				if (name.Length > maxEffectLabelLength) maxEffectLabelLength = name.Length;
+				effects.Add(info.Index, new[] { name, "E" + info.Index });
 			}
 		}
 
@@ -135,7 +138,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				for(int i = 0; i < s.Labels.Count; i++)
 				{
 					Vector2D v = s.Labels[i].position;
-					labelarray[i] = new TextLabel(20);
+					labelarray[i] = new TextLabel(maxEffectLabelLength);
 					labelarray[i].TransformCoords = true;
 					labelarray[i].Rectangle = new RectangleF(v.x, v.y, 0.0f, 0.0f);
 					labelarray[i].AlignX = TextAlignmentX.Center;
@@ -153,10 +156,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(renderer.StartOverlay(true))
 			{
+				//mxd. Render highlighted sector
+				if(highlighted != null) {
+					int highlightedColor = General.Colors.Highlight.WithAlpha(42).ToInt();
+					FlatVertex[] verts = new FlatVertex[highlighted.FlatVertices.Length];
+					highlighted.FlatVertices.CopyTo(verts, 0);
+					for(int i = 0; i < verts.Length; i++) verts[i].c = highlightedColor;
+					renderer.RenderGeometry(verts, null, true);
+				}
+				
+				// Go for all selected sectors
+				ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
+				
+				//mxd. Render selected sectors
+				int selectedColor = General.Colors.Selection.WithAlpha(42).ToInt(); //mxd
+				foreach (Sector s in orderedselection) {
+					if (s != highlighted) {
+						FlatVertex[] verts = new FlatVertex[s.FlatVertices.Length];
+						s.FlatVertices.CopyTo(verts, 0);
+						for (int i = 0; i < verts.Length; i++)
+							verts[i].c = selectedColor;
+						renderer.RenderGeometry(verts, null, true);
+					}
+				}
+
 				if(BuilderPlug.Me.ViewSelectionNumbers)
 				{
-					// Go for all selected sectors
-					ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 					foreach(Sector s in orderedselection)
 					{
 						// Render labels
