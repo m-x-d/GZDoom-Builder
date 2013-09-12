@@ -502,7 +502,11 @@ namespace CodeImp.DoomBuilder {
 			UpdateScriptNames();
 
 			// Center map in screen
-			if(General.Editing.Mode is ClassicMode) (General.Editing.Mode as ClassicMode).CenterInScreen();
+			if (General.Editing.Mode is ClassicMode) {
+				ClassicMode mode = General.Editing.Mode as ClassicMode;
+				mode.OnRedoEnd();
+				mode.CenterInScreen();
+			}
 
 			// Success
 			this.changed = false;
@@ -1750,6 +1754,11 @@ namespace CodeImp.DoomBuilder {
 		// This returns true is the given type matches
 		public bool IsType(Type t) {
 			return io.GetType().Equals(t);
+		}
+
+		//mxd
+		public System.Drawing.SizeF GetTextSize(string text, float scale) {
+			return graphics.Font.GetTextSize(text, scale);
 		}
 
 		#endregion
