@@ -357,8 +357,8 @@ namespace CodeImp.DoomBuilder
 			while (!General.Map.Graphics.Reset()) {
 				Thread.Sleep(10);
 
-				if (retries++ > 5000) {
-					DialogResult result = General.ShowErrorMessage("Unable to reset D3D device. Press Abort to quit, Retry to wait some more, Ignore to proceed anyway (high chances of D3DException)", MessageBoxButtons.AbortRetryIgnore);
+				if (retries++ > 500) {
+					DialogResult result = General.ShowErrorMessage("Unable to reset D3D device." + Environment.NewLine + "Press Abort to quit, Retry to wait some more," + Environment.NewLine + "Ignore to proceed anyway (high chances of D3DException)", MessageBoxButtons.AbortRetryIgnore);
 					if(result == DialogResult.Abort) {
 						General.Exit(true);
 					} else if (result == DialogResult.Retry) {

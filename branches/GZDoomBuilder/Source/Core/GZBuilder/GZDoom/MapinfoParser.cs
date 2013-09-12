@@ -75,8 +75,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 							//should be sky texture name
 							token = StripTokenQuotes(ReadToken());
 							bool gotComma = (token.IndexOf(",") != -1);
-							if (gotComma)
-								token = token.Replace(",", "");
+							if (gotComma) token = token.Replace(",", "");
 							string skyTexture = StripTokenQuotes(token).ToLowerInvariant();
 
 							if (!string.IsNullOrEmpty(skyTexture)) {
@@ -152,117 +151,30 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 						SkipWhitespace(true);
 						token = StripTokenQuotes(ReadToken()).ToLowerInvariant();
 
-						//new format
+						//new format?
 						if (token == "=") {
 							SkipWhitespace(true);
-
-							//red color value or color name...
 							token = ReadToken();
-							string colorVal = StripTokenQuotes(token).ToLowerInvariant();
-							if (!string.IsNullOrEmpty(colorVal)) {
-								Color4 color = new Color4();
+						}
 
-								//is it color name?
-								if (getColor(colorVal, ref color)) {
-									if (fadeType == "fade")
-										mapInfo.FadeColor = color;
-									else
-										mapInfo.OutsideFogColor = color;
-								} else { //no, it's not
-									//try to get color values
-									int r, g, b;
-									string[] parts = colorVal.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+						//get the color value
+						string colorVal = StripTokenQuotes(token).ToLowerInvariant().Replace(" ", "");
+						if(!string.IsNullOrEmpty(colorVal)) {
+							Color4 color = new Color4();
 
-									if (parts.Length != 3) {
-										General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " color values, but got '" + token + "'");
-										datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
-										continue;
-									}
-
-									if (!int.TryParse(parts[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out r)) {
-										General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " red value, but got '" + parts[0] + "'");
-										datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
-										continue;
-									}
-									if (!int.TryParse(parts[1], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out g)) {
-										General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " green value, but got '" + parts[1] + "'");
-										datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
-										continue;
-									}
-									if (!int.TryParse(parts[2], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out b)) {
-										General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " blue value, but got '" + parts[2] + "'");
-										datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
-										continue;
-									}
-
-									color.Red = (float)r / 255;
-									color.Green = (float)g / 255;
-									color.Blue = (float)b / 255;
-
-									if (fadeType == "fade")
-										mapInfo.FadeColor = color;
-									else
-										mapInfo.OutsideFogColor = color;
-								}
-							} else {
-								General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " color value.");
-								datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
-							}
-
-							//old format
-						} else {
-							//token should contain red color value or color name...
-							if (!string.IsNullOrEmpty(token)) {
-								int r, g, b;
-								Color4 color = new Color4();
-
-								if (!int.TryParse(token, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out r)) {
-									//Not numeric! Maybe it's a color name?
-									if (getColor(token, ref color)) {
-										if (fadeType == "fade")
-											mapInfo.FadeColor = color;
-										else
-											mapInfo.OutsideFogColor = color;
-									} else {
-										datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
-									}
-									continue;
-								}
-
-								SkipWhitespace(true);
-								token = ReadToken();
-
-								//should be color, let's continue parsing it.
-								if (!int.TryParse(token, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out g)) {
-									// Not numeric!
-									General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " green value, but got '" + token + "'");
-									datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
-									continue;
-								}
-
-								SkipWhitespace(true);
-								token = StripTokenQuotes(ReadToken());
-
-								if (!int.TryParse(token, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out b)) {
-									// Not numeric!
-									General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " blue value, but got '" + token + "'");
-									datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
-									continue;
-								}
-
-								color.Red = (float)r / 255;
-								color.Green = (float)g / 255;
-								color.Blue = (float)b / 255;
-
-								if (fadeType == "fade")
+							//try to get the color...
+							if(getColor(colorVal, ref color)) {
+								if(fadeType == "fade")
 									mapInfo.FadeColor = color;
 								else
 									mapInfo.OutsideFogColor = color;
-
-							} else {
-								General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " color value.");
+							} else { //...or not
+								General.ErrorLogger.Add(ErrorType.Error, "Failed to parse " + fadeType + " value from string '" + colorVal + "' in " + sourcename + "' at line " + GetCurrentLineNumber());
 								datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
 							}
+						} else {
+							General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected " + fadeType + " color value.");
+							datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
 						}
 //vertwallshade or horizwallshade
 					} else if (token == "vertwallshade" || token == "horizwallshade") {
