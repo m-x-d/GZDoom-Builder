@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -10,6 +12,8 @@ using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.BuilderModes.Interface;
 
+#endregion
+
 namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 	[EditMode(DisplayName = "Bridge Mode",
 			  SwitchAction = "bridgemode",
@@ -20,12 +24,19 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 			  Volatile = true,
 			  Optional = false)]
 
-	public class BridgeMode : BaseClassicMode {
+	public class BridgeMode : BaseClassicMode
+	{
+		#region ================== Constants
+
 		private const float GRIP_SIZE = 9.0f;
 		private const float LINE_THICKNESS = 0.8f;
 		
 		internal static int MAX_SUBDIVISIONS = 32;
 		internal static int MIN_SUBDIVISIONS = 0;
+
+		#endregion
+
+		#region ================== Variables
 
 		protected string undoName = "Bridge draw";
 		protected string shapeName = "mesh";
@@ -53,10 +64,18 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 		//tools form
 		private BridgeModeForm form;
 
+		#endregion
+
+		#region ================== Constructor / Disposer
+
 		public BridgeMode() {
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
+
+		#endregion
+
+		#region ================== Methods
 
 		// Engaging
 		public override void OnEngage() {
@@ -275,8 +294,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 			}
 
 			//close form
-			if (form != null)
-				form.Close();
+			if (form != null) form.Close();
 
 			// Done
 			Cursor.Current = Cursors.Default;
@@ -291,8 +309,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 			base.OnCancel();
 
 			//close form
-			if (form != null)
-				form.Dispose();
+			if (form != null) form.Dispose();
 
 			// Return to original mode
 			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
@@ -330,6 +347,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 			// Normal update
 			update();
 		}
+
+		public override void OnHelp() {
+			General.ShowHelp("/gzdb/features/classic_modes/mode_drawbridge.html");
+		}
+
+		#endregion
+
+		#region ================== Setup/Update/Utility
 
 		//this checks if initial data is valid
 		private bool setup(List<Line> lines) {
@@ -465,7 +490,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 			return shapes;
 		}
 
-//POINT OPS
+		#endregion
+
+		#region ================== Point ops
+
 		//this returns an array of linedef lengths relative to total segment length
 		private float[] getRelativeLengths(Vector2D[] pointGroup) {
 			float[] relLenGroup = new float[pointGroup.Length];
@@ -520,7 +548,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 			return false;
 		}
 
-//LINE SORTING
+		#endregion
+
+		#region ================== Line sorting
+
 		//this gets two arrays of connected points from given lines. Returns true if all went well.
 		private bool setupPointGroups(List<Line> linesList) {
 			//find prev/next lines for each line
@@ -623,7 +654,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 			return true;
 		}
 
-//Easing functions. Based on Robert Penner's original easing equations (http://www.robertpenner.com/easing/)
+		#endregion
+
+		#region ================== Easing functions
+		//Based on Robert Penner's original easing equations (http://www.robertpenner.com/easing/)
 		/**
 		 * Easing equation function for a sinusoidal (sin(t)) easing in: accelerating from zero velocity.
 		 */
@@ -678,7 +712,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 			}
 		}
 
-//EVENTS
+		#endregion
+
+		#region ================== Events
+
 		private void form_OnSubdivisionChanged(object sender, EventArgs e) {
 			update();
 		}
@@ -703,7 +740,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 			update();
 		}
 
-//ACTIONS
+		#endregion
+
+		#region ================== Actions
+
 		// Finish drawing
 		[BeginAction("finishdraw")]
 		public void FinishDraw() {
@@ -722,7 +762,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 			if (form != null && form.Subdivisions > MIN_SUBDIVISIONS)
 				form.Subdivisions--;
 		}
+
+		#endregion
 	}
+
+	#region ================== Helper classes
 
 	internal struct SectorProperties {
 		public int FloorHeight;
@@ -801,4 +845,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 			SectorProperties.Angle *= -1;
 		}
 	}
+
+	#endregion
 }

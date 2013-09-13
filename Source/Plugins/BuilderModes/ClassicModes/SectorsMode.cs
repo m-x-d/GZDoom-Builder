@@ -63,7 +63,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. Effects
 		private Dictionary<int, string[]> effects;
-		private int maxEffectLabelLength;
 		
 		#endregion
 
@@ -82,7 +81,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			effects = new Dictionary<int, string[]>();
 			foreach (SectorEffectInfo info in General.Map.Config.SortedSectorEffects) {
 				string name = info.Index + ": " + info.Title;
-				if (name.Length > maxEffectLabelLength) maxEffectLabelLength = name.Length;
 				effects.Add(info.Index, new[] { name, "E" + info.Index });
 			}
 		}
@@ -138,7 +136,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				for(int i = 0; i < s.Labels.Count; i++)
 				{
 					Vector2D v = s.Labels[i].position;
-					labelarray[i] = new TextLabel(maxEffectLabelLength);
+					labelarray[i] = new TextLabel(20);
 					labelarray[i].TransformCoords = true;
 					labelarray[i].Rectangle = new RectangleF(v.x, v.y, 0.0f, 0.0f);
 					labelarray[i].AlignX = TextAlignmentX.Center;
@@ -158,7 +156,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				//mxd. Render highlighted sector
 				if(highlighted != null) {
-					int highlightedColor = General.Colors.Highlight.WithAlpha(42).ToInt();
+					int highlightedColor = General.Colors.Highlight.WithAlpha(64).ToInt();
 					FlatVertex[] verts = new FlatVertex[highlighted.FlatVertices.Length];
 					highlighted.FlatVertices.CopyTo(verts, 0);
 					for(int i = 0; i < verts.Length; i++) verts[i].c = highlightedColor;
@@ -169,7 +167,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 				
 				//mxd. Render selected sectors
-				int selectedColor = General.Colors.Selection.WithAlpha(42).ToInt(); //mxd
+				int selectedColor = General.Colors.Selection.WithAlpha(64).ToInt(); //mxd
 				foreach (Sector s in orderedselection) {
 					if (s != highlighted) {
 						FlatVertex[] verts = new FlatVertex[s.FlatVertices.Length];
@@ -199,22 +197,44 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//mxd. Render effect labels
 					orderedselection = General.Map.Map.GetSelectedSectors(false);
 					foreach(Sector s in orderedselection) {
+						string label = string.Empty;
+						string labelShort = string.Empty;
+
 						if (s.Effect != 0) {
+							if (effects.ContainsKey(s.Effect)) {
+								if(s.Tag != 0) {
+									label = "Tag " + s.Tag + ", " + effects[s.Effect][0];
+									labelShort = "T" + s.Tag + " " + "E" + s.Effect;
+								} else {
+									label = effects[s.Effect][0];
+									labelShort = "E" + s.Effect;
+								}
+							} else {
+								if(s.Tag != 0) {
+									label = "Tag " + s.Tag + ", Effect " + s.Effect;
+									labelShort = "T" + s.Tag + " " + "E" + s.Effect;
+								} else {
+									label = "Effect " + s.Effect;
+									labelShort = "E" + s.Effect;
+								}
+							}
+						} else if(s.Tag != 0) {
+							label = "Tag " + s.Tag;
+							labelShort = "T" + s.Tag;
+						}
+
+						if(!string.IsNullOrEmpty(label)) {
 							TextLabel[] labelarray = labels[s];
 							for (int i = 0; i < s.Labels.Count; i++) {
 								TextLabel l = labelarray[i];
 								l.Color = General.Colors.InfoLine;
+								float requiredsize = (General.Map.GetTextSize(label, l.Scale).Width) / renderer.Scale;
 
-								if (effects.ContainsKey(s.Effect)) {
-									float requiredsize = (General.Map.GetTextSize(effects[s.Effect][0], l.Scale).Width) / renderer.Scale;
-
-									if (requiredsize < s.Labels[i].radius) {
-										l.Text = effects[s.Effect][0];
-									} else {
-										l.Text = effects[s.Effect][1];
-									}
+								if (requiredsize > s.Labels[i].radius) {
+									requiredsize = (General.Map.GetTextSize(labelShort, l.Scale).Width) / renderer.Scale;
+									l.Text = (requiredsize > s.Labels[i].radius ? "+" : labelShort);
 								} else {
-									l.Text = "E"+s.Effect;
+									l.Text = label;
 								}
 
 								renderer.RenderText(l);
