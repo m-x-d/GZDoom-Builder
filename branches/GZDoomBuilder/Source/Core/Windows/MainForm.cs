@@ -1868,7 +1868,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#endregion
 
-		#region Toolbar context menu (mxd)
+		#region ================== Toolbar context menu (mxd)
 
 		private void toolbarContextMenu_Opening(object sender, CancelEventArgs e) {
 			toggleFile.Image = General.Settings.ToolbarFile ? Resources.Check : null;

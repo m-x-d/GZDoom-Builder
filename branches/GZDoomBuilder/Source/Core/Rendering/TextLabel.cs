@@ -100,7 +100,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.color = new PixelColor(255, 255, 255, 255);
 			this.backcolor = new PixelColor(0, 0, 0, 0);
 			this.scale = 10f;
-			this.alignx = TextAlignmentX.Left;
+			this.alignx = TextAlignmentX.Center;
 			this.aligny = TextAlignmentY.Top;
 			this.size = new SizeF(0f, 0f);
 			this.updateneeded = true;
