@@ -104,10 +104,6 @@
 			<param name="Local" value="editingmodes.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Brightness Mode">
-			<param name="Local" value="e_brightness.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Curve Linedefs Mode">
 			<param name="Local" value="e_curvelinedefs.html">
 			</OBJECT>

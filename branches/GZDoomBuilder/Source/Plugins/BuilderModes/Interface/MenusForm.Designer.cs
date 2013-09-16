@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonpasteproperties = new System.Windows.Forms.ToolStripButton();
 			this.seperatorcopypaste = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonselectionnumbers = new System.Windows.Forms.ToolStripButton();
+			this.buttonselectioneffects = new System.Windows.Forms.ToolStripButton();
 			this.separatorsectors1 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonbrightnessgradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonfloorgradient = new System.Windows.Forms.ToolStripButton();
@@ -329,7 +330,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// placethingsv
 			// 
 			this.placethingsv.Name = "placethingsv";
-			this.placethingsv.Size = new System.Drawing.Size(150, 22);
+			this.placethingsv.Size = new System.Drawing.Size(152, 22);
 			this.placethingsv.Tag = "placethings";
 			this.placethingsv.Text = "&Place Things...";
 			this.placethingsv.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -349,6 +350,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.buttonpasteproperties,
             this.seperatorcopypaste,
             this.buttonselectionnumbers,
+            this.buttonselectioneffects,
             this.separatorsectors1,
             this.buttonbrightnessgradient,
             this.buttonfloorgradient,
@@ -402,8 +404,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonselectionnumbers.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonselectionnumbers.Name = "buttonselectionnumbers";
 			this.buttonselectionnumbers.Size = new System.Drawing.Size(23, 22);
-			this.buttonselectionnumbers.Text = "View Effects and Selection Numbering";
+			this.buttonselectionnumbers.Text = "View Selection Numbering";
 			this.buttonselectionnumbers.Click += new System.EventHandler(this.buttonselectionnumbers_Click);
+			// 
+			// buttonselectioneffects
+			// 
+			this.buttonselectioneffects.CheckOnClick = true;
+			this.buttonselectioneffects.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonselectioneffects.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.ViewSelectionEffects;
+			this.buttonselectioneffects.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonselectioneffects.Name = "buttonselectioneffects";
+			this.buttonselectioneffects.Size = new System.Drawing.Size(23, 22);
+			this.buttonselectioneffects.Text = "View Tags and Effects";
+			this.buttonselectioneffects.Click += new System.EventHandler(this.buttonselectioneffects_Click);
 			// 
 			// separatorsectors1
 			// 
@@ -597,5 +610,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem placethingss;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripButton buttonselectioneffects;
 	}
 }

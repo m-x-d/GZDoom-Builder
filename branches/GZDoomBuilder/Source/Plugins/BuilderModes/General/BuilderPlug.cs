@@ -104,6 +104,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private LinedefProperties copiedlinedefprops;
 		private ThingProperties copiedthingprops;
 		private bool viewselectionnumbers;
+		private bool viewselectioneffects; //mxd
 		private float stitchrange;
 		private float highlightrange;
 		private float highlightthingsrange;
@@ -157,6 +158,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public LinedefProperties CopiedLinedefProps { get { return copiedlinedefprops; } set { copiedlinedefprops = value; } }
 		public ThingProperties CopiedThingProps { get { return copiedthingprops; } set { copiedthingprops = value; } }
 		public bool ViewSelectionNumbers { get { return viewselectionnumbers; } set { viewselectionnumbers = value; } }
+		public bool ViewSelectionEffects { get { return viewselectioneffects; } set { viewselectioneffects = value; } } //mxd
 		public float StitchRange { get { return stitchrange; } internal set { stitchrange = value; } }
 		public float HighlightRange { get { return highlightrange; } }
 		public float HighlightThingsRange { get { return highlightthingsrange; } }
@@ -318,6 +320,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			autoclearselection = General.Settings.ReadPluginSetting("autoclearselection", false);
 			visualmodeclearselection = General.Settings.ReadPluginSetting("visualmodeclearselection", false);
 			viewselectionnumbers = General.Settings.ReadPluginSetting("viewselectionnumbers", true);
+			viewselectioneffects = General.Settings.ReadPluginSetting("viewselectioneffects", true); //mxd
 			stitchrange = General.Settings.ReadPluginSetting("stitchrange", 20);
 			highlightrange = General.Settings.ReadPluginSetting("highlightrange", 20);
 			highlightthingsrange = General.Settings.ReadPluginSetting("highlightthingsrange", 10);
@@ -331,6 +334,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			objGZDoomScale = General.Settings.ReadPluginSetting("objgzdoomscale", false); //mxd
 			objScale = General.Settings.ReadPluginSetting("objscale", 1.0f); //mxd
 			lockSectorTextureOffsetsWhileDragging = General.Settings.ReadPluginSetting("locktextureoffsets", false); //mxd
+		}
+
+		//mxd
+		private void saveSettings() {
+			General.Settings.WritePluginSetting("locktextureoffsets", lockSectorTextureOffsetsWhileDragging);
+			General.Settings.WritePluginSetting("viewselectionnumbers", viewselectionnumbers);
+			General.Settings.WritePluginSetting("viewselectioneffects", viewselectioneffects);
 		}
 
 		#endregion
@@ -485,7 +495,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			drawRectModeMenuItem.Enabled = false;
 			drawEllipseModeMenuItem.Enabled = false;
 
-			General.Settings.WritePluginSetting("locktextureoffsets", lockSectorTextureOffsetsWhileDragging);
+			//mxd. Save settings
+			saveSettings();
 		}
 		
 		// Redo performed

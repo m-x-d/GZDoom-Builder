@@ -316,6 +316,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RedrawDisplay();
 		}
 
+		//mxd
+		[BeginAction("togglehighlight")]
+		public void ToggleHighlight() {
+			BuilderPlug.Me.UseHighlight = !BuilderPlug.Me.UseHighlight;
+			General.Interface.DisplayStatus(StatusType.Action, "Highlight is now " + (BuilderPlug.Me.UseHighlight ? "ON" : "OFF") + ".");
+
+			// Redraw display to show changes
+			General.Interface.RedrawDisplay();
+		}
+
 		#endregion
 	}
 }
