@@ -155,95 +155,105 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartOverlay(true))
 			{
 				//mxd. Render highlighted sector
-				if(highlighted != null) {
-					int highlightedColor = General.Colors.Highlight.WithAlpha(64).ToInt();
-					FlatVertex[] verts = new FlatVertex[highlighted.FlatVertices.Length];
-					highlighted.FlatVertices.CopyTo(verts, 0);
-					for(int i = 0; i < verts.Length; i++) verts[i].c = highlightedColor;
-					renderer.RenderGeometry(verts, null, true);
+				if (BuilderPlug.Me.UseHighlight) {
+					if (highlighted != null) {
+						int highlightedColor = General.Colors.Highlight.WithAlpha(64).ToInt();
+						FlatVertex[] verts = new FlatVertex[highlighted.FlatVertices.Length];
+						highlighted.FlatVertices.CopyTo(verts, 0);
+						for (int i = 0; i < verts.Length; i++)
+							verts[i].c = highlightedColor;
+						renderer.RenderGeometry(verts, null, true);
+					}
 				}
 				
 				// Go for all selected sectors
 				ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 				
 				//mxd. Render selected sectors
-				int selectedColor = General.Colors.Selection.WithAlpha(64).ToInt(); //mxd
-				foreach (Sector s in orderedselection) {
-					if (s != highlighted) {
-						FlatVertex[] verts = new FlatVertex[s.FlatVertices.Length];
-						s.FlatVertices.CopyTo(verts, 0);
-						for (int i = 0; i < verts.Length; i++)
-							verts[i].c = selectedColor;
-						renderer.RenderGeometry(verts, null, true);
+				if (BuilderPlug.Me.UseHighlight) {
+					int selectedColor = General.Colors.Selection.WithAlpha(64).ToInt(); //mxd
+					foreach (Sector s in orderedselection) {
+						if (s != highlighted) {
+							FlatVertex[] verts = new FlatVertex[s.FlatVertices.Length];
+							s.FlatVertices.CopyTo(verts, 0);
+							for (int i = 0; i < verts.Length; i++)
+								verts[i].c = selectedColor;
+							renderer.RenderGeometry(verts, null, true);
+						}
 					}
 				}
 
-				if(BuilderPlug.Me.ViewSelectionNumbers)
-				{
-					foreach(Sector s in orderedselection)
-					{
+				if (BuilderPlug.Me.ViewSelectionNumbers) {
+					foreach (Sector s in orderedselection) {
 						// Render labels
 						TextLabel[] labelarray = labels[s];
-						for(int i = 0; i < s.Labels.Count; i++)
-						{
+						for (int i = 0; i < s.Labels.Count; i++) {
 							TextLabel l = labelarray[i];
 
 							// Render only when enough space for the label to see
 							float requiredsize = (l.TextSize.Height / 2) / renderer.Scale;
-							if(requiredsize < s.Labels[i].radius) renderer.RenderText(l);
+							if (requiredsize < s.Labels[i].radius) renderer.RenderText(l);
 						}
 					}
+				}
 
+				if (BuilderPlug.Me.ViewSelectionEffects) {
 					//mxd. Render effect labels
-					orderedselection = General.Map.Map.GetSelectedSectors(false);
-					foreach(Sector s in orderedselection) {
-						string label = string.Empty;
-						string labelShort = string.Empty;
-
-						if (s.Effect != 0) {
-							if (effects.ContainsKey(s.Effect)) {
-								if(s.Tag != 0) {
-									label = "Tag " + s.Tag + ", " + effects[s.Effect][0];
-									labelShort = "T" + s.Tag + " " + "E" + s.Effect;
-								} else {
-									label = effects[s.Effect][0];
-									labelShort = "E" + s.Effect;
-								}
-							} else {
-								if(s.Tag != 0) {
-									label = "Tag " + s.Tag + ", Effect " + s.Effect;
-									labelShort = "T" + s.Tag + " " + "E" + s.Effect;
-								} else {
-									label = "Effect " + s.Effect;
-									labelShort = "E" + s.Effect;
-								}
-							}
-						} else if(s.Tag != 0) {
-							label = "Tag " + s.Tag;
-							labelShort = "T" + s.Tag;
-						}
-
-						if(!string.IsNullOrEmpty(label)) {
-							TextLabel[] labelarray = labels[s];
-							for (int i = 0; i < s.Labels.Count; i++) {
-								TextLabel l = labelarray[i];
-								l.Color = General.Colors.InfoLine;
-								float requiredsize = (General.Map.GetTextSize(label, l.Scale).Width) / renderer.Scale;
-
-								if (requiredsize > s.Labels[i].radius) {
-									requiredsize = (General.Map.GetTextSize(labelShort, l.Scale).Width) / renderer.Scale;
-									l.Text = (requiredsize > s.Labels[i].radius ? "+" : labelShort);
-								} else {
-									l.Text = label;
-								}
-
-								renderer.RenderText(l);
-							}
-						} 
-					}
+					if(!BuilderPlug.Me.ViewSelectionNumbers)
+						renderEffectLabels(orderedselection);
+					renderEffectLabels(General.Map.Map.GetSelectedSectors(false));
 				}
 				
 				renderer.Finish();
+			}
+		}
+
+		//mxd
+		private void renderEffectLabels(ICollection<Sector> selection) {
+			foreach(Sector s in selection) {
+				string label = string.Empty;
+				string labelShort = string.Empty;
+
+				if(s.Effect != 0) {
+					if(effects.ContainsKey(s.Effect)) {
+						if(s.Tag != 0) {
+							label = "Tag " + s.Tag + ", " + effects[s.Effect][0];
+							labelShort = "T" + s.Tag + " " + "E" + s.Effect;
+						} else {
+							label = effects[s.Effect][0];
+							labelShort = "E" + s.Effect;
+						}
+					} else {
+						if(s.Tag != 0) {
+							label = "Tag " + s.Tag + ", Effect " + s.Effect;
+							labelShort = "T" + s.Tag + " " + "E" + s.Effect;
+						} else {
+							label = "Effect " + s.Effect;
+							labelShort = "E" + s.Effect;
+						}
+					}
+				} else if(s.Tag != 0) {
+					label = "Tag " + s.Tag;
+					labelShort = "T" + s.Tag;
+				}
+
+				if (string.IsNullOrEmpty(label)) continue;
+
+				TextLabel[] labelarray = labels[s];
+				for(int i = 0; i < s.Labels.Count; i++) {
+					TextLabel l = labelarray[i];
+					l.Color = General.Colors.InfoLine;
+					float requiredsize = (General.Map.GetTextSize(label, l.Scale).Width) / renderer.Scale;
+
+					if(requiredsize > s.Labels[i].radius) {
+						requiredsize = (General.Map.GetTextSize(labelShort, l.Scale).Width) / renderer.Scale;
+						l.Text = (requiredsize > s.Labels[i].radius ? "+" : labelShort);
+					} else {
+						l.Text = label;
+					}
+
+					renderer.RenderText(l);
+				}
 			}
 		}
 		
@@ -487,6 +497,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ViewSelectionEffects);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
 			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.BrightnessGradientMode); //mxd
@@ -517,6 +528,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionEffects);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
 			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.BrightnessGradientMode); //mxd
@@ -1452,7 +1464,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UpdateSelectedLabels();
 				
 				// Redraw screen
-				//General.Map.Renderer2D.Update3dFloorIndicators(); //mxd
 				General.Interface.RedrawDisplay();
 			}
 		}
@@ -1539,13 +1550,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					//get total brightness of start sector
 					if(start.Fields.GetValue(lightAbsKey, false)) 
-						startbrightness = (float)start.Fields.GetValue(lightKey, 0);
+						startbrightness = start.Fields.GetValue(lightKey, 0);
 					else 
 						startbrightness = Math.Min(255, Math.Max(0, (float)start.Brightness + start.Fields.GetValue(lightKey, 0)));
 
 					//get total brightness of end sector
 					if(end.Fields.GetValue(lightAbsKey, false)) 
-						endbrightness = (float)end.Fields.GetValue(lightKey, 0);
+						endbrightness = end.Fields.GetValue(lightKey, 0);
 					else
 						endbrightness = Math.Min(255, Math.Max(0, (float)end.Brightness + end.Fields.GetValue(lightKey, 0)));
 
@@ -1555,7 +1566,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					int index = 0;
 					foreach(Sector s in orderedselection) {
 						s.Fields.BeforeFieldsChange();
-						float u = (float)index / (float)(orderedselection.Count - 1);
+						float u = index / (float)(orderedselection.Count - 1);
 						float b = startbrightness + delta * u;
 
 						//absolute flag set?
@@ -1595,11 +1606,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						int index = 0;
 						foreach(Sector s in orderedselection) {
 							s.Fields.BeforeFieldsChange();
-							float u = (float)index / (float)(orderedselection.Count - 1);
+							float u = index / (float)(orderedselection.Count - 1);
 							Color c = Color.FromArgb(0, General.Clamp((int)(startColor.R + dr * u), 0, 255), General.Clamp((int)(startColor.G + dg * u), 0, 255), General.Clamp((int)(startColor.B + db * u), 0, 255));
-							
-							//dbg
-							//Console.WriteLine("Color is "+c.ToString() + "; dr=" + dr + "; dg="+dg+"; db="+db);
 							
 							UDMFTools.SetInteger(s.Fields, key, c.ToArgb(), defaultValue);
 							s.UpdateNeeded = true;
@@ -1608,14 +1616,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 				} else {
-					float startbrightness = (float)start.Brightness;
-					float endbrightness = (float)end.Brightness;
+					float startbrightness = start.Brightness;
+					float endbrightness = end.Brightness;
 					float delta = endbrightness - startbrightness;
 
 					// Go for all sectors in between first and last
 					int index = 0;
 					foreach(Sector s in orderedselection) {
-						float u = (float)index / (float)(orderedselection.Count - 1);
+						float u = index / (float)(orderedselection.Count - 1);
 						float b = startbrightness + delta * u;
 						s.Brightness = (int)b;
 						index++;
@@ -1645,14 +1653,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Action, "Created gradient floor heights over selected sectors.");
 				General.Map.UndoRedo.CreateUndo("Gradient floor heights");
 
-				float startlevel = (float)General.GetByIndex(orderedselection, 0).FloorHeight;
-				float endlevel = (float)General.GetByIndex(orderedselection, orderedselection.Count - 1).FloorHeight;
+				float startlevel = General.GetByIndex(orderedselection, 0).FloorHeight;
+				float endlevel = General.GetByIndex(orderedselection, orderedselection.Count - 1).FloorHeight;
 				float delta = endlevel - startlevel;
 
 				// Go for all sectors in between first and last
 				int index = 0;
 				foreach(Sector s in orderedselection) {
-					float u = (float)index / (float)(orderedselection.Count - 1);
+					float u = index / (float)(orderedselection.Count - 1);
 					float b = startlevel + delta * u;
 					s.FloorHeight = (int)b;
 					index++;
@@ -1697,85 +1705,52 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RefreshInfo();
 			General.Map.IsChanged = true;
 		}
-		
-		// Change heights
-		[BeginAction("lowerfloor8")]
-		public void LowerFloors8()
-		{
-			General.Interface.DisplayStatus(StatusType.Action, "Lowered floor heights by 8mp.");
-			General.Map.UndoRedo.CreateUndo("Floor heights change", this, UndoGroup.FloorHeightChange, CreateSelectionCRC());
+
+		//mxd. Raise brightness
+		[BeginAction("raisebrightness8")]
+		public void RaiseBrightness8() {
+			General.Interface.DisplayStatus(StatusType.Action, "Raised sector brightness by 8.");
+			General.Map.UndoRedo.CreateUndo("Sector brightness change", this, UndoGroup.SectorBrightnessChange, CreateSelectionCRC());
 
 			// Change heights
 			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
 			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
-			foreach(Sector s in selected)
-			{
-				s.FloorHeight -= 8;
+			foreach(Sector s in selected) {
+				s.Brightness = General.Map.Config.BrightnessLevels.GetNextHigher(s.Brightness);
+				s.UpdateNeeded = true;
+				s.UpdateCache();
 			}
-			
+
 			// Update
 			General.Interface.RefreshInfo();
 			General.Map.IsChanged = true;
+
+			// Redraw
+			General.Interface.RedrawDisplay();
 		}
 
-		// Change heights
-		[BeginAction("raisefloor8")]
-		public void RaiseFloors8()
-		{
-			General.Interface.DisplayStatus(StatusType.Action, "Raised floor heights by 8mp.");
-			General.Map.UndoRedo.CreateUndo("Floor heights change", this, UndoGroup.FloorHeightChange, CreateSelectionCRC());
+		//mxd. Lower brightness
+		[BeginAction("lowerbrightness8")]
+		public void LowerBrightness8() {
+			General.Interface.DisplayStatus(StatusType.Action, "Lowered sector brightness by 8.");
+			General.Map.UndoRedo.CreateUndo("Sector brightness change", this, UndoGroup.SectorBrightnessChange, CreateSelectionCRC());
 
 			// Change heights
 			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
-			foreach(Sector s in selected)
-			{
-				s.FloorHeight += 8;
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed)
+				selected.Add(highlighted);
+			foreach(Sector s in selected) {
+				s.Brightness = General.Map.Config.BrightnessLevels.GetNextLower(s.Brightness);
+				s.UpdateNeeded = true;
+				s.UpdateCache();
 			}
 
 			// Update
 			General.Interface.RefreshInfo();
 			General.Map.IsChanged = true;
-		}
 
-		// Change heights
-		[BeginAction("lowerceiling8")]
-		public void LowerCeilings8()
-		{
-			General.Interface.DisplayStatus(StatusType.Action, "Lowered ceiling heights by 8mp.");
-			General.Map.UndoRedo.CreateUndo("Ceiling heights change", this, UndoGroup.CeilingHeightChange, CreateSelectionCRC());
-
-			// Change heights
-			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
-			foreach(Sector s in selected)
-			{
-				s.CeilHeight -= 8;
-			}
-
-			// Update
-			General.Interface.RefreshInfo();
-			General.Map.IsChanged = true;
-		}
-
-		// Change heights
-		[BeginAction("raiseceiling8")]
-		public void RaiseCeilings8()
-		{
-			General.Interface.DisplayStatus(StatusType.Action, "Raised ceiling heights by 8mp.");
-			General.Map.UndoRedo.CreateUndo("Ceiling heights change", this, UndoGroup.CeilingHeightChange, CreateSelectionCRC());
-
-			// Change heights
-			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
-			foreach(Sector s in selected)
-			{
-				s.CeilHeight += 8;
-			}
-
-			// Update
-			General.Interface.RefreshInfo();
-			General.Map.IsChanged = true;
+			// Redraw
+			General.Interface.RedrawDisplay();
 		}
 
 		// This clears the selection

@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ToolStripMenuItem LinedefsMenu { get { return linedefsmenu; } }
 		public ToolStripMenuItem SectorsMenu { get { return sectorsmenu; } }
 		public ToolStripButton ViewSelectionNumbers { get { return buttonselectionnumbers; } }
+		public ToolStripButton ViewSelectionEffects { get { return buttonselectioneffects; } }
 		public ToolStripSeparator SeparatorSectors1 { get { return separatorsectors1; } }
 		public ToolStripButton MakeGradientBrightness { get { return buttonbrightnessgradient; } }
 		public ToolStripButton MakeGradientFloors { get { return buttonfloorgradient; } }
@@ -78,9 +79,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Apply settings
 			buttonselectionnumbers.Checked = BuilderPlug.Me.ViewSelectionNumbers;
+			buttonselectioneffects.Checked = BuilderPlug.Me.ViewSelectionEffects; //mxd
 
 			//mxd
-			brightnessGradientMode.Items.AddRange(new string[] { BrightnessGradientModes.Sectors, BrightnessGradientModes.Light, BrightnessGradientModes.Fade, BrightnessGradientModes.Ceilings, BrightnessGradientModes.Floors });
+			brightnessGradientMode.Items.AddRange(new[] { BrightnessGradientModes.Sectors, BrightnessGradientModes.Light, BrightnessGradientModes.Fade, BrightnessGradientModes.Ceilings, BrightnessGradientModes.Floors });
 			brightnessGradientMode.SelectedIndex = 0;
 			
 			// List all menus
@@ -167,6 +169,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
+		private void buttonselectioneffects_Click(object sender, EventArgs e) {
+			BuilderPlug.Me.ViewSelectionEffects = buttonselectioneffects.Checked;
+			General.Interface.RedrawDisplay();
+		}
+
+		//mxd
 		private void buttonMarqueSelectTouching_Click(object sender, EventArgs e) {
 			BuilderPlug.Me.MarqueSelectTouching = buttonMarqueSelectTouching.Checked;
 		}
@@ -175,10 +183,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void buttonTextureOffsetLock_Click(object sender, EventArgs e) {
 			BuilderPlug.Me.LockSectorTextureOffsetsWhileDragging = buttonTextureOffsetLock.Checked;
 		}
-		
-		#endregion
-
-		#region Events
 
 		//mxd
 		private void linedefsmenu_DropDownOpening(object sender, EventArgs e) {

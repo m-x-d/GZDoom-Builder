@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassicModes\BaseClassicMode.cs" />
-    <Compile Include="ClassicModes\BrightnessMode.cs" />
     <Compile Include="ClassicModes\ErrorCheckMode.cs" />
     <Compile Include="ClassicModes\EditSelectionMode.cs" />
     <Compile Include="ClassicModes\CurveLinedefsMode.cs" />
@@ -163,9 +162,6 @@
       <Name>Builder</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\BrightnessMode.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Interface\ErrorCheckForm.resx">
@@ -409,6 +405,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\TextureLock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AnnotationsMode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

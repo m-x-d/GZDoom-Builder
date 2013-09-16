@@ -235,6 +235,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap ViewSelectionEffects {
+            get {
+                object obj = ResourceManager.GetObject("ViewSelectionEffects", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap ViewSelectionIndex {
             get {
                 object obj = ResourceManager.GetObject("ViewSelectionIndex", resourceCulture);
