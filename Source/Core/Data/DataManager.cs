@@ -1415,6 +1415,9 @@ namespace CodeImp.DoomBuilder.Data
 					actors.Add(className, actor.DoomEdNum);
 			}
 
+			if (actors.Count == 0) 
+				General.ErrorLogger.Add(ErrorType.Warning, "Warning: unable to find any DECORATE actors definition!");
+
 			return actors;
 		}
 
@@ -1467,10 +1470,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd. This parses modeldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
 		private void loadModeldefs(Dictionary<string, int> actorsByClass) {
 			//if no actors defined in DECORATE or game config...
-			if (actorsByClass == null || actorsByClass.Count == 0) {
-				General.ErrorLogger.Add(ErrorType.Warning, "Warning: current game has no Actors!");
-				return;
-			}
+			if (actorsByClass == null || actorsByClass.Count == 0) return;
 
 			Dictionary<string, ModelData> modelDefEntriesByName = new Dictionary<string, ModelData>();
 			ModeldefParser mdeParser = new ModeldefParser();
@@ -1504,10 +1504,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd. This parses gldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
 		private void loadGldefs(Dictionary<string, int> actorsByClass) {
 			//if no actors defined in DECORATE or game config...
-			if (actorsByClass == null || actorsByClass.Count == 0) {
-				General.ErrorLogger.Add(ErrorType.Warning, "Warning: unable to find any DECORATE actors definition!");
-				return;
-			}
+			if (actorsByClass == null || actorsByClass.Count == 0) return;
 
 			GldefsParser parser = new GldefsParser();
 			parser.OnInclude = loadGldefsFromLocation;
