@@ -543,35 +543,38 @@ namespace CodeImp.DoomBuilder.Controls
 					{
 						// Make a valid UDMF field name
 						string validname = UniValue.ValidateName(row.Cells[0].Value.ToString());
-						if(validname.Length > 0 && !uifields.ContainsKey(validname)) //mxd
+						if(validname.Length > 0) 
 						{
-							// Check if no other row already has this name
-							foreach(DataGridViewRow r in fieldslist.Rows)
-							{
-								// Name matches and not the same row?
-								if((r.Index != row.Index) && (r.Cells.Count > 0) && (r.Cells[0].Value != null) &&
-								   (r.Cells[0].Value.ToString().ToLowerInvariant() == validname))
+							if(uifields.ContainsKey(validname)) { //mxd
+								MessageBox.Show("Please set this field's value via user interface.");
+							} else {
+								// Check if no other row already has this name
+								foreach (DataGridViewRow r in fieldslist.Rows) 
 								{
-									// Cannot have two rows with same name
-									validname = "";
-									General.ShowWarningMessage("Fields must have unique names!", MessageBoxButtons.OK);
-									break;
+									// Name matches and not the same row?
+									if ((r.Index != row.Index) && (r.Cells.Count > 0) && (r.Cells[0].Value != null) &&
+									    (r.Cells[0].Value.ToString().ToLowerInvariant() == validname)) {
+										// Cannot have two rows with same name
+										validname = "";
+										General.ShowWarningMessage("Fields must have unique names!", MessageBoxButtons.OK);
+										break;
+									}
 								}
-							}
 
-							// Still valid?
-							if(validname.Length > 0)
-							{
-								// Try to find the type in the map options
-								int type = General.Map.Options.GetUniversalFieldType(elementname, validname, 0);
+								// Still valid?
+								if (validname.Length > 0) 
+								{
+									// Try to find the type in the map options
+									int type = General.Map.Options.GetUniversalFieldType(elementname, validname, 0);
 
-								// Make new row
-								frow = new FieldsEditorRow(fieldslist, validname, type, null);
-								frow.Visible = false;
-								fieldslist.Rows.Insert(e.RowIndex + 1, frow);
-								
-								if(OnFieldInserted != null)
-									OnFieldInserted(validname);
+									// Make new row
+									frow = new FieldsEditorRow(fieldslist, validname, type, null);
+									frow.Visible = false;
+									fieldslist.Rows.Insert(e.RowIndex + 1, frow);
+
+									if (OnFieldInserted != null)
+										OnFieldInserted(validname);
+								}
 							}
 						}
 					}

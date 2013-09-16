@@ -111,12 +111,13 @@ namespace CodeImp.DoomBuilder.Config
 		private bool gzForceDefaultTextures;
 		private string lastUsedConfigName;
 		private bool gzMarkExtraFloors;
+		private int maxRecentFiles;
 		
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
-		private int defaultbrightness = 192;
+		private int defaultbrightness;
 		private int defaultfloorheight;
-		private int defaultceilheight = 128;
+		private int defaultceilheight;
 		private string defaultfloortexture;
 		private string defaultceiltexture;
 		private int defaultthingtype = 1;
@@ -196,6 +197,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool GZForceDefaultTextures { get { return gzForceDefaultTextures; } internal set { gzForceDefaultTextures = value; } }
 		public string LastUsedConfigName { get { return lastUsedConfigName; } internal set { lastUsedConfigName = value; } }
 		public bool GZMarkExtraFloors { get { return gzMarkExtraFloors; } internal set { gzMarkExtraFloors = value; } }
+		public int MaxRecentFiles { get { return maxRecentFiles; } internal set { maxRecentFiles = General.Clamp(value, 8, 25); } }
 
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -296,6 +298,12 @@ namespace CodeImp.DoomBuilder.Config
 				gzVisualVertexSize = cfg.ReadSetting("gzvisualvertexsize", 6);
 				lastUsedConfigName = cfg.ReadSetting("lastusedconfigname", "");
 				gzMarkExtraFloors = cfg.ReadSetting("gzmarkextrafloors", true);
+				maxRecentFiles = cfg.ReadSetting("maxrecentfiles", 8);
+
+				//mxd. Sector defaults
+				defaultceilheight = cfg.ReadSetting("defaultceilheight", 128);
+				defaultfloorheight = cfg.ReadSetting("defaultfloorheight", 0);
+				defaultbrightness = cfg.ReadSetting("defaultbrightness", 192);
 				
 				// Success
 				return true;
@@ -376,6 +384,12 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("gzmarkextrafloors", gzMarkExtraFloors);
 			if(!string.IsNullOrEmpty(lastUsedConfigName))
 				cfg.WriteSetting("lastusedconfigname", lastUsedConfigName);
+			cfg.WriteSetting("maxrecentfiles", maxRecentFiles);
+
+			//mxd. Sector defaults
+			cfg.WriteSetting("defaultceilheight", defaultceilheight);
+			cfg.WriteSetting("defaultfloorheight", defaultfloorheight);
+			cfg.WriteSetting("defaultbrightness", defaultbrightness);
 			
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");
