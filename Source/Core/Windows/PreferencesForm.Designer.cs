@@ -159,6 +159,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label16 = new System.Windows.Forms.Label();
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.recentFiles = new Dotnetrix.Controls.TrackBar();
+			this.labelRecentFiles = new System.Windows.Forms.Label();
+			this.label25 = new System.Windows.Forms.Label();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -193,6 +196,7 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
 			this.colorsgroup3.SuspendLayout();
 			this.tabpasting.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.recentFiles)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label7
@@ -224,6 +228,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox1
 			// 
+			groupBox1.Controls.Add(this.recentFiles);
+			groupBox1.Controls.Add(this.labelRecentFiles);
+			groupBox1.Controls.Add(this.label25);
 			groupBox1.Controls.Add(this.vertexScaleLabel);
 			groupBox1.Controls.Add(this.label22);
 			groupBox1.Controls.Add(this.vertexScale);
@@ -243,7 +250,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1.Controls.Add(this.defaultviewmode);
 			groupBox1.Location = new System.Drawing.Point(8, 8);
 			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(331, 313);
+			groupBox1.Size = new System.Drawing.Size(331, 372);
 			groupBox1.TabIndex = 0;
 			groupBox1.TabStop = false;
 			groupBox1.Text = " Options ";
@@ -282,7 +289,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbSynchCameras
 			// 
 			this.cbSynchCameras.AutoSize = true;
-			this.cbSynchCameras.Location = new System.Drawing.Point(32, 282);
+			this.cbSynchCameras.Location = new System.Drawing.Point(32, 343);
 			this.cbSynchCameras.Name = "cbSynchCameras";
 			this.cbSynchCameras.Size = new System.Drawing.Size(264, 18);
 			this.cbSynchCameras.TabIndex = 42;
@@ -292,7 +299,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// showtexturesizes
 			// 
 			this.showtexturesizes.AutoSize = true;
-			this.showtexturesizes.Location = new System.Drawing.Point(32, 258);
+			this.showtexturesizes.Location = new System.Drawing.Point(32, 319);
 			this.showtexturesizes.Name = "showtexturesizes";
 			this.showtexturesizes.Size = new System.Drawing.Size(222, 18);
 			this.showtexturesizes.TabIndex = 41;
@@ -302,7 +309,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// scriptontop
 			// 
 			this.scriptontop.AutoSize = true;
-			this.scriptontop.Location = new System.Drawing.Point(32, 234);
+			this.scriptontop.Location = new System.Drawing.Point(32, 295);
 			this.scriptontop.Name = "scriptontop";
 			this.scriptontop.Size = new System.Drawing.Size(237, 18);
 			this.scriptontop.TabIndex = 40;
@@ -412,10 +419,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.defaultviewmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.defaultviewmode.FormattingEnabled = true;
 			this.defaultviewmode.Items.AddRange(new object[] {
-			"Wireframe",
-			"Brightness Levels",
-			"Floor Textures",
-			"Ceiling Textures"});
+            "Wireframe",
+            "Brightness Levels",
+            "Floor Textures",
+            "Ceiling Textures"});
 			this.defaultviewmode.Location = new System.Drawing.Point(135, 17);
 			this.defaultviewmode.Name = "defaultviewmode";
 			this.defaultviewmode.Size = new System.Drawing.Size(145, 22);
@@ -760,7 +767,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox5.Controls.Add(this.toolbar_copy);
 			this.groupBox5.Controls.Add(this.toolbar_undo);
 			this.groupBox5.Controls.Add(this.toolbar_script);
-			this.groupBox5.Location = new System.Drawing.Point(8, 327);
+			this.groupBox5.Location = new System.Drawing.Point(345, 327);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(331, 173);
 			this.groupBox5.TabIndex = 4;
@@ -872,9 +879,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox4.Controls.Add(this.collapsedockers);
 			this.groupBox4.Controls.Add(this.dockersposition);
 			this.groupBox4.Controls.Add(this.label17);
-			this.groupBox4.Location = new System.Drawing.Point(345, 327);
+			this.groupBox4.Location = new System.Drawing.Point(10, 386);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(329, 173);
+			this.groupBox4.Size = new System.Drawing.Size(329, 114);
 			this.groupBox4.TabIndex = 3;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Side Panels ";
@@ -894,9 +901,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockersposition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.dockersposition.FormattingEnabled = true;
 			this.dockersposition.Items.AddRange(new object[] {
-			"Left",
-			"Right",
-			"None"});
+            "Left",
+            "Right",
+            "None"});
 			this.dockersposition.Location = new System.Drawing.Point(95, 34);
 			this.dockersposition.Name = "dockersposition";
 			this.dockersposition.Size = new System.Drawing.Size(85, 22);
@@ -1118,8 +1125,8 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.listactions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.columncontrolaction,
-			this.columncontrolkey});
+            this.columncontrolaction,
+            this.columncontrolkey});
 			this.listactions.FullRowSelect = true;
 			this.listactions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listactions.HideSelection = false;
@@ -1527,23 +1534,23 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptfontsize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.scriptfontsize.FormattingEnabled = true;
 			this.scriptfontsize.Items.AddRange(new object[] {
-			"7",
-			"8",
-			"9",
-			"10",
-			"11",
-			"12",
-			"14",
-			"16",
-			"18",
-			"20",
-			"22",
-			"24",
-			"26",
-			"28",
-			"36",
-			"48",
-			"72"});
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "14",
+            "16",
+            "18",
+            "20",
+            "22",
+            "24",
+            "26",
+            "28",
+            "36",
+            "48",
+            "72"});
 			this.scriptfontsize.Location = new System.Drawing.Point(236, 45);
 			this.scriptfontsize.Name = "scriptfontsize";
 			this.scriptfontsize.Size = new System.Drawing.Size(94, 22);
@@ -1716,6 +1723,37 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pasteoptions.Size = new System.Drawing.Size(666, 427);
 			this.pasteoptions.TabIndex = 0;
 			// 
+			// recentFiles
+			// 
+			this.recentFiles.LargeChange = 1;
+			this.recentFiles.Location = new System.Drawing.Point(127, 238);
+			this.recentFiles.Maximum = 25;
+			this.recentFiles.Minimum = 8;
+			this.recentFiles.Name = "recentFiles";
+			this.recentFiles.Size = new System.Drawing.Size(116, 45);
+			this.recentFiles.TabIndex = 46;
+			this.recentFiles.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.recentFiles.Value = 8;
+			this.recentFiles.ValueChanged += new System.EventHandler(this.recentFiles_ValueChanged);
+			// 
+			// labelRecentFiles
+			// 
+			this.labelRecentFiles.AutoSize = true;
+			this.labelRecentFiles.Location = new System.Drawing.Point(249, 250);
+			this.labelRecentFiles.Name = "labelRecentFiles";
+			this.labelRecentFiles.Size = new System.Drawing.Size(13, 14);
+			this.labelRecentFiles.TabIndex = 48;
+			this.labelRecentFiles.Text = "8";
+			// 
+			// label25
+			// 
+			this.label25.AutoSize = true;
+			this.label25.Location = new System.Drawing.Point(31, 251);
+			this.label25.Name = "label25";
+			this.label25.Size = new System.Drawing.Size(90, 14);
+			this.label25.TabIndex = 47;
+			this.label25.Text = "Max. recent files:";
+			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -1772,6 +1810,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup3.ResumeLayout(false);
 			this.colorsgroup3.PerformLayout();
 			this.tabpasting.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.recentFiles)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -1899,5 +1938,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.TextBox actiondescription;
 		private System.Windows.Forms.RichTextBox fontpreview;
 		private System.Windows.Forms.CheckBox cbMarkExtraFloors;
+		private Dotnetrix.Controls.TrackBar recentFiles;
+		private System.Windows.Forms.Label labelRecentFiles;
+		private System.Windows.Forms.Label label25;
 	}
 }

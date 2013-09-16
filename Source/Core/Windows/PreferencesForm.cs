@@ -104,6 +104,7 @@ namespace CodeImp.DoomBuilder.Windows
 			vertexScale.Value = General.Clamp((int)(General.Settings.GZVertexScale2D), vertexScale.Minimum, vertexScale.Maximum);
 			vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
 			cbMarkExtraFloors.Checked = General.Settings.GZMarkExtraFloors;
+			recentFiles.Value = General.Settings.MaxRecentFiles;
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
@@ -241,6 +242,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ToolbarTesting = toolbar_testing.Checked;
 			General.Settings.GZToolbarGZDoom = toolbar_gzdoom.Checked; //mxd
 			General.Settings.ShowTextureSizes = showtexturesizes.Checked;
+			General.Settings.MaxRecentFiles = recentFiles.Value; //mxd
 			
 			// Script font size
 			int fontsize = 8;
@@ -400,6 +402,11 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void vertexScale_ValueChanged(object sender, EventArgs e) {
 			vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
+		}
+
+		//mxd
+		private void recentFiles_ValueChanged(object sender, EventArgs e) {
+			labelRecentFiles.Text = recentFiles.Value.ToString();
 		}
 
 		// This updates the script font preview label

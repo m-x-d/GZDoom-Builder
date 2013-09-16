@@ -48,7 +48,6 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Constants
 		
 		// Recent files
-		private const int MAX_RECENT_FILES = 8;
 		private const int MAX_RECENT_FILES_PIXELS = 250;
 
 		// Dockers
@@ -2139,16 +2138,15 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets the recent files from configuration
 		private void CreateRecentFiles()
 		{
-			int insertindex;
 			bool anyitems = false;
 			string filename;
 			
 			// Where to insert
-			insertindex = menufile.DropDownItems.IndexOf(itemnorecent);
+			int insertindex = menufile.DropDownItems.IndexOf(itemnorecent);
 			
 			// Create all items
-			recentitems = new ToolStripMenuItem[MAX_RECENT_FILES];
-			for(int i = 0; i < MAX_RECENT_FILES; i++)
+			recentitems = new ToolStripMenuItem[General.Settings.MaxRecentFiles];
+			for(int i = 0; i < General.Settings.MaxRecentFiles; i++)
 			{
 				// Create item
 				recentitems[i] = new ToolStripMenuItem("");
@@ -2182,7 +2180,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void SaveRecentFiles()
 		{
 			// Go for all items
-			for(int i = 0; i < MAX_RECENT_FILES; i++)
+			for(int i = 0; i < recentitems.Length; i++)
 			{
 				// Recent file set?
 				if(recentitems[i].Text != "")
@@ -2196,10 +2194,19 @@ namespace CodeImp.DoomBuilder.Windows
 		// This adds a recent file to the list
 		internal void AddRecentFile(string filename)
 		{
-			int movedownto = MAX_RECENT_FILES - 1;
+			//mxd. Recreate recent files list
+			if (recentitems.Length != General.Settings.MaxRecentFiles) {
+				foreach(ToolStripMenuItem item in recentitems)
+					menufile.DropDownItems.Remove(item);
+
+				SaveRecentFiles();
+				CreateRecentFiles();
+			}
+
+			int movedownto = General.Settings.MaxRecentFiles - 1;
 			
 			// Check if this file is already in the list
-			for(int i = 0; i < MAX_RECENT_FILES; i++)
+			for(int i = 0; i < General.Settings.MaxRecentFiles; i++)
 			{
 				// File same as this item?
 				if(string.Compare(filename, recentitems[i].Tag.ToString(), true) == 0)
