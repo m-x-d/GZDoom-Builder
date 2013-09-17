@@ -153,43 +153,34 @@ namespace CodeImp.DoomBuilder.Windows
 		// This updates the sector height field
 		private void UpdateSectorHeight()
 		{
-			bool showheight = true;
 			int delta = 0;
-			Sector first = null;
+			int index = -1; //mxd
+			int i = 0; //mxd
 			
 			// Check all selected sectors
-			foreach(Sector s in sectors)
-			{
-				if(first == null)
-				{
+			foreach(Sector s in sectors) {
+				if(index == -1) {
 					// First sector in list
 					delta = s.CeilHeight - s.FloorHeight;
-					showheight = true;
-					first = s;
+					index = i; //mxd
+				} else if(delta != (s.CeilHeight - s.FloorHeight)) {
+					// We can't show heights because the delta
+					// heights for the sectors is different
+					index = -1;
+					break;
 				}
-				else
-				{
-					if(delta != (s.CeilHeight - s.FloorHeight))
-					{
-						// We can't show heights because the delta
-						// heights for the sectors is different
-						showheight = false;
-						break;
-					}
-				}
+
+				i++;
 			}
 
-			if(showheight)
-			{
-				int fh = floorheight.GetResult(first.FloorHeight);
-				int ch = ceilingheight.GetResult(first.CeilHeight);
+			if(index > -1) {
+				int fh = floorheight.GetResult(sectorProps[index].FloorHeight); //mxd
+				int ch = ceilingheight.GetResult(sectorProps[index].CeilHeight); //mxd
 				int height = ch - fh;
 				sectorheight.Text = height.ToString();
 				sectorheight.Visible = true;
 				sectorheightlabel.Visible = true;
-			}
-			else
-			{
+			} else {
 				sectorheight.Visible = false;
 				sectorheightlabel.Visible = false;
 			}
@@ -263,8 +254,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Ceiling height changes
 		private void ceilingheight_TextChanged(object sender, EventArgs e)
 		{
-			UpdateSectorHeight();
-
 			if(blockUpdate) return;
 			int i = 0;
 
@@ -278,6 +267,8 @@ namespace CodeImp.DoomBuilder.Windows
 					s.CeilHeight = ceilingheight.GetResult(sectorProps[i++].CeilHeight);
 			}
 
+			UpdateSectorHeight();
+
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
@@ -285,8 +276,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Floor height changes
 		private void floorheight_TextChanged(object sender, EventArgs e)
 		{
-			UpdateSectorHeight();
-
 			if(blockUpdate) return;
 			int i = 0;
 
@@ -299,6 +288,8 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(Sector s in sectors)
 					s.FloorHeight = floorheight.GetResult(sectorProps[i++].FloorHeight);
 			}
+
+			UpdateSectorHeight();
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
