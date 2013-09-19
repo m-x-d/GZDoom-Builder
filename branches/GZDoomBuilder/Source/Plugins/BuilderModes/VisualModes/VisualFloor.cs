@@ -247,6 +247,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(Sector.Sector.UpdateNeeded)
 				Sector.UpdateSectorGeometry(false);
 		}
+
+		//mxd
+		public override void OnResetLocalTextureOffset() {
+			OnResetTextureOffset();
+		}
 		
 		// Paste texture
 		public override void OnPasteTexture()

@@ -362,6 +362,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnToggleUpperUnpegged() { }
 		public virtual void OnToggleLowerUnpegged() { }
 		public virtual void OnResetTextureOffset() { }
+		public virtual void OnResetLocalTextureOffset() { } //mxd
 		public virtual void OnCopyTextureOffsets() { }
 		public virtual void OnPasteTextureOffsets() { }
 		public virtual void OnInsert() { }

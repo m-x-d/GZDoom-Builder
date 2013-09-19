@@ -2456,6 +2456,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PostAction();
 		}
 
+		[BeginAction("resettextureudmf")]
+		public void ResetLocalOffsets() {
+			PreAction(UndoGroup.None);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			foreach(IVisualEventReceiver i in objs) i.OnResetLocalTextureOffset();
+			PostAction();
+		}
+
 		[BeginAction("floodfilltextures")]
 		public void FloodfillTextures()
 		{

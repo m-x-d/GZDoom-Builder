@@ -597,15 +597,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode.SetActionResult("Texture offsets reset.");
 
 			// Apply offsets
-			if(General.Map.UDMF) {
-				SetTextureOffsetX(0);
-				SetTextureOffsetY(0);
-				ResetTextureScale();
-			} else {
-				Sidedef.OffsetX = 0;
-				Sidedef.OffsetY = 0;
-			}
+			Sidedef.OffsetX = 0;
+			Sidedef.OffsetY = 0;
 			
+			// Update sidedef geometry
+			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
+			parts.SetupAllParts();
+		}
+
+		//mxd
+		public virtual void OnResetLocalTextureOffset() {
+			if (!General.Map.UDMF) {
+				OnResetTextureOffset();
+				return;
+			}
+
+			mode.CreateUndo("Reset local texture offsets");
+			mode.SetActionResult("Local texture offsets reset.");
+
+			// Apply offsets
+			SetTextureOffsetX(0);
+			SetTextureOffsetY(0);
+			ResetTextureScale();
+
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
 			parts.SetupAllParts();
