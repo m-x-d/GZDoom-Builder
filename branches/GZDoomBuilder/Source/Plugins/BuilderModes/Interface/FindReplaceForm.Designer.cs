@@ -32,11 +32,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			System.Windows.Forms.Label label2;
 			this.replacelabel = new System.Windows.Forms.Label();
 			this.searchtypes = new System.Windows.Forms.ComboBox();
-			this.findinput = new System.Windows.Forms.TextBox();
+			this.findinput = new CodeImp.DoomBuilder.Controls.AutoSelectTextbox();
 			this.browsefind = new System.Windows.Forms.Button();
 			this.withinselection = new System.Windows.Forms.CheckBox();
 			this.browsereplace = new System.Windows.Forms.Button();
-			this.replaceinput = new System.Windows.Forms.TextBox();
+			this.replaceinput = new CodeImp.DoomBuilder.Controls.AutoSelectTextbox();
 			this.findbutton = new System.Windows.Forms.Button();
 			this.closebutton = new System.Windows.Forms.Button();
 			this.resultslist = new System.Windows.Forms.ListBox();
@@ -289,11 +289,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		private System.Windows.Forms.ComboBox searchtypes;
-		private System.Windows.Forms.TextBox findinput;
+		private CodeImp.DoomBuilder.Controls.AutoSelectTextbox findinput;
 		private System.Windows.Forms.Button browsefind;
 		private System.Windows.Forms.CheckBox withinselection;
 		private System.Windows.Forms.Button browsereplace;
-		private System.Windows.Forms.TextBox replaceinput;
+		private CodeImp.DoomBuilder.Controls.AutoSelectTextbox replaceinput;
 		private System.Windows.Forms.Button findbutton;
 		private System.Windows.Forms.Button closebutton;
 		private System.Windows.Forms.ListBox resultslist;
