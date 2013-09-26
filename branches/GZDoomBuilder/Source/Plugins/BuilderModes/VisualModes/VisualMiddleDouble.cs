@@ -229,6 +229,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 			
+			base.SetVertices(null); //mxd
 			return false;
 		}
 		
@@ -286,7 +287,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldx, xy.X, scalex, Texture != null ? Texture.Width : -1)); //mxd
 
 			//mxd. Don't clamp offsetY of clipped mid textures
-			bool dontClamp = (Texture == null || Sidedef.IsFlagSet("clipmidtex") || Sidedef.Line.IsFlagSet("clipmidtex"));
+			bool dontClamp = (Texture == null || (!Sidedef.IsFlagSet("wrapmidtex") && !Sidedef.Line.IsFlagSet("wrapmidtex")));
 			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldy, xy.Y, scaley, dontClamp ? -1 : Texture.Height));
 		}
 

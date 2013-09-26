@@ -33,6 +33,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.labelMixMode = new System.Windows.Forms.Label();
 			this.label = new System.Windows.Forms.Label();
 			this.splitter = new System.Windows.Forms.SplitContainer();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
 			this.cbMixMode = new System.Windows.Forms.ComboBox();
 			this.texturesize = new System.Windows.Forms.Label();
 			this.texturesizelabel = new System.Windows.Forms.Label();
@@ -40,6 +42,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.refreshtimer = new System.Windows.Forms.Timer(this.components);
 			this.texturesizetimer = new System.Windows.Forms.Timer(this.components);
 			this.list = new CodeImp.DoomBuilder.Controls.OptimizedListView();
+			this.filterHeight = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.filterWidth = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.splitter.Panel1.SuspendLayout();
 			this.splitter.Panel2.SuspendLayout();
 			this.splitter.SuspendLayout();
@@ -48,7 +52,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// labelMixMode
 			// 
 			this.labelMixMode.AutoSize = true;
-			this.labelMixMode.Location = new System.Drawing.Point(3, 11);
+			this.labelMixMode.Location = new System.Drawing.Point(3, 9);
 			this.labelMixMode.Name = "labelMixMode";
 			this.labelMixMode.Size = new System.Drawing.Size(39, 14);
 			this.labelMixMode.TabIndex = 3;
@@ -57,7 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// label
 			// 
 			this.label.AutoSize = true;
-			this.label.Location = new System.Drawing.Point(156, 11);
+			this.label.Location = new System.Drawing.Point(154, 9);
 			this.label.Name = "label";
 			this.label.Size = new System.Drawing.Size(33, 14);
 			this.label.TabIndex = 0;
@@ -78,26 +82,48 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// splitter.Panel2
 			// 
+			this.splitter.Panel2.Controls.Add(this.label2);
+			this.splitter.Panel2.Controls.Add(this.filterHeight);
+			this.splitter.Panel2.Controls.Add(this.label1);
+			this.splitter.Panel2.Controls.Add(this.filterWidth);
 			this.splitter.Panel2.Controls.Add(this.cbMixMode);
 			this.splitter.Panel2.Controls.Add(this.labelMixMode);
 			this.splitter.Panel2.Controls.Add(this.texturesize);
 			this.splitter.Panel2.Controls.Add(this.texturesizelabel);
 			this.splitter.Panel2.Controls.Add(this.objectname);
 			this.splitter.Panel2.Controls.Add(this.label);
-			this.splitter.Size = new System.Drawing.Size(518, 346);
+			this.splitter.Size = new System.Drawing.Size(639, 346);
 			this.splitter.SplitterDistance = 312;
 			this.splitter.TabIndex = 0;
 			this.splitter.TabStop = false;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(356, 9);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(17, 14);
+			this.label2.TabIndex = 8;
+			this.label2.Text = "H:";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(276, 9);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(20, 14);
+			this.label1.TabIndex = 6;
+			this.label1.Text = "W:";
 			// 
 			// cbMixMode
 			// 
 			this.cbMixMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbMixMode.FormattingEnabled = true;
 			this.cbMixMode.Items.AddRange(new object[] {
-			"All",
-			"Textures",
-			"Flats"});
-			this.cbMixMode.Location = new System.Drawing.Point(48, 7);
+            "All",
+            "Textures",
+            "Flats"});
+			this.cbMixMode.Location = new System.Drawing.Point(48, 5);
 			this.cbMixMode.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.cbMixMode.Name = "cbMixMode";
 			this.cbMixMode.Size = new System.Drawing.Size(90, 22);
@@ -107,9 +133,9 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// texturesize
 			// 
-			this.texturesize.Location = new System.Drawing.Point(368, 11);
+			this.texturesize.Location = new System.Drawing.Point(480, 9);
 			this.texturesize.Name = "texturesize";
-			this.texturesize.Size = new System.Drawing.Size(271, 14);
+			this.texturesize.Size = new System.Drawing.Size(100, 14);
 			this.texturesize.TabIndex = 2;
 			this.texturesize.Text = "1024 x 1024";
 			this.texturesize.Visible = false;
@@ -117,7 +143,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// texturesizelabel
 			// 
 			this.texturesizelabel.AutoSize = true;
-			this.texturesizelabel.Location = new System.Drawing.Point(331, 11);
+			this.texturesizelabel.Location = new System.Drawing.Point(443, 9);
 			this.texturesizelabel.Name = "texturesizelabel";
 			this.texturesizelabel.Size = new System.Drawing.Size(31, 14);
 			this.texturesizelabel.TabIndex = 1;
@@ -127,10 +153,10 @@ namespace CodeImp.DoomBuilder.Controls
 			// objectname
 			// 
 			this.objectname.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.objectname.Location = new System.Drawing.Point(192, 8);
+			this.objectname.Location = new System.Drawing.Point(190, 6);
 			this.objectname.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.objectname.Name = "objectname";
-			this.objectname.Size = new System.Drawing.Size(122, 20);
+			this.objectname.Size = new System.Drawing.Size(69, 20);
 			this.objectname.TabIndex = 0;
 			this.objectname.TabStop = false;
 			this.objectname.TextChanged += new System.EventHandler(this.objectname_TextChanged);
@@ -154,7 +180,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.list.MultiSelect = false;
 			this.list.Name = "list";
 			this.list.OwnerDraw = true;
-			this.list.Size = new System.Drawing.Size(518, 312);
+			this.list.Size = new System.Drawing.Size(639, 312);
 			this.list.TabIndex = 1;
 			this.list.TabStop = false;
 			this.list.TileSize = new System.Drawing.Size(90, 90);
@@ -165,6 +191,34 @@ namespace CodeImp.DoomBuilder.Controls
 			this.list.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.list_ItemSelectionChanged);
 			this.list.KeyDown += new System.Windows.Forms.KeyEventHandler(this.list_KeyDown);
 			// 
+			// filterHeight
+			// 
+			this.filterHeight.AllowDecimal = false;
+			this.filterHeight.AllowNegative = false;
+			this.filterHeight.AllowRelative = false;
+			this.filterHeight.ButtonStep = 1;
+			this.filterHeight.ButtonStepFloat = 1F;
+			this.filterHeight.Location = new System.Drawing.Point(375, 4);
+			this.filterHeight.Name = "filterHeight";
+			this.filterHeight.Size = new System.Drawing.Size(54, 24);
+			this.filterHeight.StepValues = null;
+			this.filterHeight.TabIndex = 7;
+			this.filterHeight.WhenTextChanged += new System.EventHandler(this.filterSize_WhenTextChanged);
+			// 
+			// filterWidth
+			// 
+			this.filterWidth.AllowDecimal = false;
+			this.filterWidth.AllowNegative = false;
+			this.filterWidth.AllowRelative = false;
+			this.filterWidth.ButtonStep = 1;
+			this.filterWidth.ButtonStepFloat = 1F;
+			this.filterWidth.Location = new System.Drawing.Point(298, 4);
+			this.filterWidth.Name = "filterWidth";
+			this.filterWidth.Size = new System.Drawing.Size(54, 24);
+			this.filterWidth.StepValues = null;
+			this.filterWidth.TabIndex = 5;
+			this.filterWidth.WhenTextChanged += new System.EventHandler(this.filterSize_WhenTextChanged);
+			// 
 			// ImageBrowserControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -172,7 +226,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Controls.Add(this.splitter);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "ImageBrowserControl";
-			this.Size = new System.Drawing.Size(518, 346);
+			this.Size = new System.Drawing.Size(639, 346);
 			this.Resize += new System.EventHandler(this.ImageBrowserControl_Resize);
 			this.splitter.Panel1.ResumeLayout(false);
 			this.splitter.Panel2.ResumeLayout(false);
@@ -194,6 +248,10 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ComboBox cbMixMode;
 		private System.Windows.Forms.Label label;
 		private System.Windows.Forms.Label labelMixMode;
+		private ButtonsNumericTextbox filterWidth;
+		private System.Windows.Forms.Label label2;
+		private ButtonsNumericTextbox filterHeight;
+		private System.Windows.Forms.Label label1;
 
 	}
 }
