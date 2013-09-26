@@ -79,6 +79,11 @@ namespace CodeImp.DoomBuilder.Controls
 			// Initialize
 			InitializeComponent();
 			items = new List<ImageBrowserItem>();
+
+			//mxd.
+			StepsList sizes = new StepsList { 4, 8, 16, 32, 48, 64, 96, 128, 196, 256, 512, 1024 };
+			filterWidth.StepValues = sizes;
+			filterHeight.StepValues = sizes;
 		}
 		
 		// This applies the application settings
@@ -190,6 +195,11 @@ namespace CodeImp.DoomBuilder.Controls
 				// Tab
 				case Keys.Tab: GoToNextSameTexture(); e.SuppressKeyPress = true; break;
 			}
+		}
+
+		//mxd
+		private void filterSize_WhenTextChanged(object sender, EventArgs e) {
+			objectname_TextChanged(sender, e);
 		}
 
 		// Key pressed in list
@@ -458,12 +468,16 @@ namespace CodeImp.DoomBuilder.Controls
 			// Clear list first
 			// Group property of items will be set to null, we will restore it later
 			list.Items.Clear();
+
+			//mxd. Filtering by texture size?
+			int w = filterWidth.GetResult(-1);
+			int h = filterHeight.GetResult(-1);
 			
 			// Go for all items
 			foreach(ImageBrowserItem i in items)
 			{
 				// Add item if valid
-				if(ValidateItem(i))
+				if(ValidateItem(i) && ValidateItemSize(i, w, h))
 				{
 					i.Group = i.ListGroup;
 					i.Selected = false;
@@ -514,6 +528,14 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			return i.Text.Contains(objectname.Text);
+		}
+
+		//mxd. This validates an item's texture size
+		private bool ValidateItemSize(ImageBrowserItem i, int w, int h) {
+			if (!i.icon.IsPreviewLoaded) return true;
+			if (w > 0 && i.icon.Width != w) return false;
+			if (h > 0 && i.icon.Height != h) return false;
+			return true;
 		}
 		
 		// This sends the focus to the textbox

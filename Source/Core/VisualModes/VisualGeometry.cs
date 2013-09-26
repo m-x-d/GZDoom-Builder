@@ -153,12 +153,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 		protected void SetVertices(ICollection<WorldVertex> verts)
 		{
 			// Copy vertices
-			vertices = new WorldVertex[verts.Count];
-			verts.CopyTo(vertices, 0);
-			triangles = vertices.Length / 3;
-			
-			//mxd
-			CalculateNormals();
+			if (verts != null) { //mxd
+				vertices = new WorldVertex[verts.Count];
+				verts.CopyTo(vertices, 0);
+				triangles = vertices.Length / 3;
+
+				//mxd
+				CalculateNormals();
+			} else {
+				vertices = new WorldVertex[1];
+				triangles = 0;
+			}
 
 			if(sector != null) sector.NeedsUpdateGeo = true;
 		}
