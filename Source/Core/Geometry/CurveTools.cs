@@ -282,8 +282,8 @@ namespace CodeImp.DoomBuilder.Geometry
 			float m3 = 3 * delta * delta * invDelta;
 			float m4 = delta * delta * delta;
 
-			int px = (int)(m1 * p1.x + m2 * cp1.x + m3 * cp2.x + m4 * p2.x);
-			int py = (int)(m1 * p1.y + m2 * cp1.y + m3 * cp2.y + m4 * p2.y);
+			int px = (int)Math.Round(m1 * p1.x + m2 * cp1.x + m3 * cp2.x + m4 * p2.x);
+			int py = (int)Math.Round(m1 * p1.y + m2 * cp1.y + m3 * cp2.y + m4 * p2.y);
 
 			return new Vector2D(px, py);
 		}
