@@ -30,16 +30,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 
 		private const float GRIP_SIZE = 9.0f;
 		private const float LINE_THICKNESS = 0.8f;
-		
-		internal static int MAX_SUBDIVISIONS = 32;
-		internal static int MIN_SUBDIVISIONS = 0;
+
+		internal const int MAX_SUBDIVISIONS = 32;
+		internal const int MIN_SUBDIVISIONS = 0;
 
 		#endregion
 
 		#region ================== Variables
-
-		protected string undoName = "Bridge draw";
-		protected string shapeName = "mesh";
 
 		private Vector2D[] pointGroup1;
 		private Vector2D[] pointGroup2;
@@ -142,7 +139,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 				ControlHandle handle = controlHandles[curControlHandle];
 				
 				if (snaptogrid) {
-					handle.Position = General.Map.Grid.SnappedToGrid(mousemappos);// DrawGeometryMode.GetCurrentPosition(mousemappos, false, true, renderer, new List<DrawnVertex>()).pos;
+					handle.Position = General.Map.Grid.SnappedToGrid(mousemappos);
 				} else {
 					handle.Position = mousemappos;
 				}
@@ -150,7 +147,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 				if (form.MirrorMode) {
 					Vector2D pos = handle.RelativePosition;
 					//handle angle
-					float angle = (float)Math.Atan2(-pos.y, -pos.x) + Angle2D.PIHALF;// (float)Math.PI / 2f;
+					float angle = (float)Math.Atan2(-pos.y, -pos.x) + Angle2D.PIHALF;
 					//angle of line, connecting handles ControlledPoints
 					float dirAngle = -(float)Math.Atan2(handle.Pair.ControlledPoint.y - handle.ControlledPoint.y, handle.Pair.ControlledPoint.x - handle.ControlledPoint.x); 
 					float length = (float)Math.Sqrt(Math.Pow(Math.Abs(pos.x), 2.0) + Math.Pow(Math.Abs(pos.y), 2.0));
@@ -389,7 +386,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 			ch3.Pair = ch1;
 			ch4.Pair = ch2;
 
-			controlHandles = new ControlHandle[] {ch1, ch2, ch3, ch4};
+			controlHandles = new[] {ch1, ch2, ch3, ch4};
 
 			//setup relative segments lengths
 			relLenGroup1 = getRelativeLengths(pointGroup1);
@@ -427,7 +424,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 				}
 
 				//draw vertices
-				float vsize = ((float)renderer.VertexSize + 1.0f) / renderer.Scale;
+				float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
 
 				foreach(Vector2D[] points in curves){
 					for (int i = 1; i < points.Length - 1; i++ ) {
@@ -455,8 +452,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 		}
 
 		private SectorProperties getSectorProperties(int lineIndex, int sectorIndex) {
-			float delta = (float)sectorIndex / (float)form.Subdivisions;
-			delta += (1.0f - delta) / (float)form.Subdivisions;
+			float delta = sectorIndex / (float)form.Subdivisions;
+			delta += (1.0f - delta) / form.Subdivisions;
 			SectorProperties sp = new SectorProperties();
 
 			sp.Brightness = intepolateValue(sectorProps1[lineIndex].Brightness, sectorProps2[lineIndex].Brightness, delta, form.BrightnessMode);
@@ -482,7 +479,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 					Vector2D p1 = curves[i - 1][c];
 					Vector2D p2 = curves[i][c];
 					Vector2D p3 = curves[i][c - 1];
-					segShapes.Add(new Vector2D[] { p0, p1, p2, p3, p0 });
+					segShapes.Add(new[] { p0, p1, p2, p3, p0 });
 				}
 				shapes.Add(segShapes);
 			}
@@ -662,8 +659,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 		 * Easing equation function for a sinusoidal (sin(t)) easing in: accelerating from zero velocity.
 		 */
 		private int easeInSine(int val1, int val2, float delta) {
-			float f_val1 = (float)val1;
-			float f_val2 = (float)val2 - f_val1;
+			float f_val1 = val1;
+			float f_val2 = val2 - f_val1;
 			return (int)(-f_val2 * Math.Cos(delta * Angle2D.PIHALF) + f_val2 + f_val1);
 		}
 
@@ -671,8 +668,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 		 * Easing equation function for a sinusoidal (sin(t)) easing out: decelerating from zero velocity.
 		 */
 		private int easeOutSine(int val1, int val2, float delta) {
-			float f_val1 = (float)val1;
-			float f_val2 = (float)val2;
+			float f_val1 = val1;
+			float f_val2 = val2;
 			return (int)((f_val2 - f_val1) * Math.Sin(delta * Angle2D.PIHALF) + f_val1);
 		}
 
@@ -680,8 +677,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 		 * Easing equation function for a sinusoidal (sin(t)) easing in/out: acceleration until halfway, then deceleration.
 		 */
 		private int easeInOutSine(int val1, int val2, float delta) {
-			float f_val1 = (float)val1;
-			float f_val2 = (float)val2;
+			float f_val1 = val1;
+			float f_val2 = val2;
 			return (int)(-f_val2 / 2.0f * (Math.Cos(Angle2D.PI * delta) - 1.0f) + f_val1);
 		}
 
@@ -696,7 +693,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 					return Math.Min(val1, val2);
 				
 				case BridgeInterpolationMode.LINEAR:
-					return (int)(delta * (float)val2 + (1.0f - delta) * (float)val1);
+					return (int)(delta * val2 + (1.0f - delta) * val1);
 
 				case BridgeInterpolationMode.IN_SINE:
 					return easeInSine(val1, val2, delta);
@@ -772,7 +769,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 		public int FloorHeight;
 		public int CeilingHeight;
 		public int Brightness;
-		public float Angle;
 		public string HighTexture;
 		public string LowTexture;
 	}
@@ -807,10 +803,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 		public Line(Linedef ld) {
 			start = new Vector2D((int)ld.Start.Position.x, (int)ld.Start.Position.y);
 			end = new Vector2D((int)ld.End.Position.x, (int)ld.End.Position.y);
-
 			SectorProperties = new SectorProperties();
-
-			SectorProperties.Angle = ld.Angle;
 
 			if (ld.Back != null) {
 				SectorProperties.CeilingHeight = ld.Back.Sector.CeilHeight;
@@ -842,7 +835,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 			Vector2D s = start;
 			start = end;
 			end = s;
-			SectorProperties.Angle *= -1;
 		}
 	}
 
