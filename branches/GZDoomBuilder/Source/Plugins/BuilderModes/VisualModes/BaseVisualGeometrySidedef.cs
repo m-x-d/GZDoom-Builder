@@ -395,8 +395,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		protected void selectNeighbours(string texture, bool select, bool withSameTexture, bool withSameHeight) {
-			if(!withSameTexture && !withSameHeight)
-				return;
+			if(Sidedef.Sector == null || (!withSameTexture && !withSameHeight)) return;
 
 			if(select && !selected) {
 				selected = true;
@@ -410,15 +409,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<Linedef> connectedLines = new List<Linedef>();
 
 			foreach(Linedef line in Sidedef.Line.Start.Linedefs) {
-				if(line.Index == Sidedef.Line.Index)
-					continue;
+				if(line.Index == Sidedef.Line.Index) continue;
 				connectedLines.Add(line);
 			}
 			foreach(Linedef line in Sidedef.Line.End.Linedefs) {
-				if(line.Index == Sidedef.Line.Index)
-					continue;
-				if(!connectedLines.Contains(line))
-					connectedLines.Add(line);
+				if(line.Index == Sidedef.Line.Index) continue;
+				if(!connectedLines.Contains(line)) connectedLines.Add(line);
+			}
+
+			int floorHeight = 0;
+			int ceilingHeight = 0;
+
+			if (withSameHeight) {
+				bool haveBackSector = Sidedef.Other != null && Sidedef.Other.Sector != null;
+				
+				if(geoType == VisualGeometryType.WALL_LOWER) {
+					floorHeight = Sidedef.Sector.FloorHeight;
+					ceilingHeight = (haveBackSector ? Sidedef.Other.Sector.FloorHeight : Sidedef.Sector.CeilHeight);
+				} else if(geoType == VisualGeometryType.WALL_UPPER) {
+					floorHeight = (haveBackSector ? Sidedef.Other.Sector.CeilHeight : Sidedef.Sector.FloorHeight);
+					ceilingHeight = Sidedef.Sector.CeilHeight;
+				} else if(geoType == VisualGeometryType.WALL_MIDDLE) {
+					floorHeight = Sidedef.Sector.FloorHeight;
+					ceilingHeight = Sidedef.Sector.CeilHeight;
+				} else { //should be WALL_MIDDLE_3D
+					Linedef cl = GetControlLinedef();
+					if(cl.Front != null && cl.Front.Sector != null) {
+						floorHeight = cl.Front.Sector.FloorHeight;
+						ceilingHeight = cl.Front.Sector.CeilHeight;
+					} else {
+						floorHeight = Sidedef.Sector.FloorHeight;
+						ceilingHeight = Sidedef.Sector.CeilHeight;
+					}
+				}
 			}
 
 			foreach(Linedef line in connectedLines) {
@@ -454,24 +477,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				if(withSameHeight) {
-					if(line.Front != null && line.Front.Sector.FloorHeight == Sidedef.Sector.FloorHeight && line.Front.Sector.CeilHeight == Sidedef.Sector.CeilHeight) {
-						addFrontTop = withSameTexture ? addFrontTop : true;
-						addFrontMiddle = withSameTexture ? addFrontMiddle : true;
-						addFrontBottom = withSameTexture ? addFrontBottom : true;
-					} else {
-						addFrontTop = false;
-						addFrontMiddle = false;
-						addFrontBottom = false;
+					bool lineHasFrontSector = line.Front != null && line.Front.Sector != null;
+					bool lineHasBackSector = line.Back != null && line.Back.Sector != null;
+
+					//upper parts match?
+					if((!withSameTexture || addFrontTop) && lineHasFrontSector && line.Front.HighRequired()) {
+						addFrontTop = (line.Front.Sector.CeilHeight == ceilingHeight && line.Back.Sector.CeilHeight == floorHeight);
 					}
 
-					if(line.Back != null && line.Back.Sector.FloorHeight == Sidedef.Sector.FloorHeight && line.Back.Sector.CeilHeight == Sidedef.Sector.CeilHeight) {
-						addBackTop = withSameTexture ? addBackTop : true;
-						addBackMiddle = withSameTexture ? addBackMiddle : true;
-						addBackBottom = withSameTexture ? addBackBottom : true;
-					} else {
-						addBackTop = false;
-						addBackMiddle = false;
-						addBackBottom = false;
+					if((!withSameTexture || addBackTop) && lineHasBackSector && line.Back.HighRequired()) {
+						addBackTop = (line.Back.Sector.CeilHeight == ceilingHeight && line.Front.Sector.CeilHeight == floorHeight);
+					}
+
+					//middle parts match?
+					if((!withSameTexture || addFrontMiddle) && lineHasFrontSector && line.Front.MiddleRequired()) {
+						addFrontMiddle = (line.Front.Sector.CeilHeight == ceilingHeight && line.Front.Sector.FloorHeight == floorHeight);
+					}
+
+					if((!withSameTexture || addBackMiddle) && lineHasBackSector && line.Back.MiddleRequired()) {
+						addBackMiddle = (line.Back.Sector.CeilHeight == ceilingHeight && line.Back.Sector.FloorHeight == floorHeight);
+					}
+
+					//lower parts match?
+					if((!withSameTexture || addFrontBottom) && lineHasFrontSector && line.Front.LowRequired()) {
+						addFrontBottom = (line.Back.Sector.FloorHeight == ceilingHeight && line.Front.Sector.FloorHeight == floorHeight);
+					}
+
+					if((!withSameTexture || addBackBottom) && lineHasBackSector && line.Back.LowRequired()) {
+						addBackBottom = (line.Front.Sector.FloorHeight == ceilingHeight && line.Back.Sector.FloorHeight == floorHeight);
 					}
 				}
 
