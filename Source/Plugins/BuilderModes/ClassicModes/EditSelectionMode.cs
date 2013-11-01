@@ -982,13 +982,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Mouse in screen?
 					if(mouseinside)
 					{
-						offset = General.Map.Grid.SnappedToGrid(mousemappos - size / 2); //mxd
+						offset = mousemappos - size / 2;
 					}
 					else
 					{
 						Vector2D viewmappos = new Vector2D(renderer.OffsetX, renderer.OffsetY);
 						offset = viewmappos - size / 2;
 					}
+
+					if(General.Interface.SnapToGrid) //mxd
+						offset = General.Map.Grid.SnappedToGrid(offset); 
 
 					UpdateGeometry();
 					General.Map.Data.UpdateUsedTextures();
