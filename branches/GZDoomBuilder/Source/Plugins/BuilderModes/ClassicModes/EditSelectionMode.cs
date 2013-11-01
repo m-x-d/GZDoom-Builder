@@ -982,7 +982,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Mouse in screen?
 					if(mouseinside)
 					{
-						offset = mousemappos - size / 2;
+						offset = General.Map.Grid.SnappedToGrid(mousemappos - size / 2); //mxd
 					}
 					else
 					{
