@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// label
 			// 
 			this.label.AutoSize = true;
-			this.label.Location = new System.Drawing.Point(154, 9);
+			this.label.Location = new System.Drawing.Point(127, 9);
 			this.label.Name = "label";
 			this.label.Size = new System.Drawing.Size(33, 14);
 			this.label.TabIndex = 0;
@@ -100,20 +100,20 @@ namespace CodeImp.DoomBuilder.Controls
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(356, 9);
+			this.label2.Location = new System.Drawing.Point(336, 9);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(17, 14);
+			this.label2.Size = new System.Drawing.Size(40, 14);
 			this.label2.TabIndex = 8;
-			this.label2.Text = "H:";
+			this.label2.Text = "Height:";
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(276, 9);
+			this.label1.Location = new System.Drawing.Point(237, 9);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(20, 14);
+			this.label1.Size = new System.Drawing.Size(37, 14);
 			this.label1.TabIndex = 6;
-			this.label1.Text = "W:";
+			this.label1.Text = "Width:";
 			// 
 			// cbMixMode
 			// 
@@ -126,14 +126,14 @@ namespace CodeImp.DoomBuilder.Controls
 			this.cbMixMode.Location = new System.Drawing.Point(48, 5);
 			this.cbMixMode.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.cbMixMode.Name = "cbMixMode";
-			this.cbMixMode.Size = new System.Drawing.Size(90, 22);
-			this.cbMixMode.TabIndex = 4;
+			this.cbMixMode.Size = new System.Drawing.Size(70, 22);
+			this.cbMixMode.TabIndex = 0;
 			this.cbMixMode.TabStop = false;
 			this.cbMixMode.SelectedIndexChanged += new System.EventHandler(this.cbMixMode_SelectedIndexChanged);
 			// 
 			// texturesize
 			// 
-			this.texturesize.Location = new System.Drawing.Point(480, 9);
+			this.texturesize.Location = new System.Drawing.Point(479, 9);
 			this.texturesize.Name = "texturesize";
 			this.texturesize.Size = new System.Drawing.Size(100, 14);
 			this.texturesize.TabIndex = 2;
@@ -143,7 +143,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// texturesizelabel
 			// 
 			this.texturesizelabel.AutoSize = true;
-			this.texturesizelabel.Location = new System.Drawing.Point(443, 9);
+			this.texturesizelabel.Location = new System.Drawing.Point(442, 9);
 			this.texturesizelabel.Name = "texturesizelabel";
 			this.texturesizelabel.Size = new System.Drawing.Size(31, 14);
 			this.texturesizelabel.TabIndex = 1;
@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// objectname
 			// 
 			this.objectname.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.objectname.Location = new System.Drawing.Point(190, 6);
+			this.objectname.Location = new System.Drawing.Point(163, 6);
 			this.objectname.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.objectname.Name = "objectname";
 			this.objectname.Size = new System.Drawing.Size(69, 20);
@@ -198,11 +198,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filterHeight.AllowRelative = false;
 			this.filterHeight.ButtonStep = 1;
 			this.filterHeight.ButtonStepFloat = 1F;
-			this.filterHeight.Location = new System.Drawing.Point(375, 4);
+			this.filterHeight.Location = new System.Drawing.Point(380, 4);
 			this.filterHeight.Name = "filterHeight";
 			this.filterHeight.Size = new System.Drawing.Size(54, 24);
 			this.filterHeight.StepValues = null;
-			this.filterHeight.TabIndex = 7;
+			this.filterHeight.TabIndex = 0;
 			this.filterHeight.WhenTextChanged += new System.EventHandler(this.filterSize_WhenTextChanged);
 			// 
 			// filterWidth
@@ -212,11 +212,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filterWidth.AllowRelative = false;
 			this.filterWidth.ButtonStep = 1;
 			this.filterWidth.ButtonStepFloat = 1F;
-			this.filterWidth.Location = new System.Drawing.Point(298, 4);
+			this.filterWidth.Location = new System.Drawing.Point(278, 4);
 			this.filterWidth.Name = "filterWidth";
 			this.filterWidth.Size = new System.Drawing.Size(54, 24);
 			this.filterWidth.StepValues = null;
-			this.filterWidth.TabIndex = 5;
+			this.filterWidth.TabIndex = 0;
 			this.filterWidth.WhenTextChanged += new System.EventHandler(this.filterSize_WhenTextChanged);
 			// 
 			// ImageBrowserControl
