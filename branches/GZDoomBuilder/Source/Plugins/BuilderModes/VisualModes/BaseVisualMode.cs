@@ -3218,9 +3218,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							if(j.sidedef.Index != j.controlSide.Index) {
 								offset -= j.controlSide.OffsetY;
 								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % texture.Height);
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset);
 							} else {
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height);//mxd
+								offset = GetMiddleOffsetY(j.sidedef, offset, j.scaleY, true);
+
+								//mxd. Clamp offset if this part is middle single or wrapped middle double 
+								if(j.sidedef.Other == null || j.sidedef.IsFlagSet("wrapmidtex") || j.sidedef.Line.IsFlagSet("wrapmidtex")) {
+									offset %= texture.Height;
+								}
+
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset);//mxd
 							}
 						}
 					}
