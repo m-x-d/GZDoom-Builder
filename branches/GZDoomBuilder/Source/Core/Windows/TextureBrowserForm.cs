@@ -148,7 +148,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Size = new Size(General.Settings.ReadSetting("browserwindow.sizewidth", this.Size.Width),
 								 General.Settings.ReadSetting("browserwindow.sizeheight", this.Size.Height));
 			this.WindowState = (FormWindowState)General.Settings.ReadSetting("browserwindow.windowstate", (int)FormWindowState.Normal);
-			if(this.WindowState == FormWindowState.Normal) this.StartPosition = FormStartPosition.CenterParent;
+			
+			//mxd
+			if (this.WindowState == FormWindowState.Normal) {
+				Point location = new Point(General.Settings.ReadSetting("browserwindow.positionx", int.MaxValue), General.Settings.ReadSetting("browserwindow.positiony", int.MaxValue));
+
+				if (location.X < int.MaxValue && location.Y < int.MaxValue) {
+					this.Location = location;
+				} else {
+					this.StartPosition = FormStartPosition.CenterParent;
+				}
+			}
+
 			this.ResumeLayout(true);
 		}
 
@@ -160,23 +171,18 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private TreeNode findTextureByLongName(TreeNode node, long longname) {
 			//first search in child nodes
-			if (node.Nodes != null) {
-				TreeNode match = null;
+			TreeNode match = null;
 
-				foreach (TreeNode n in node.Nodes) {
-					match = findTextureByLongName(n, longname);
-					if (match != null) 
-						return match;
-				}
+			foreach(TreeNode n in node.Nodes) {
+				match = findTextureByLongName(n, longname);
+				if(match != null) return match;
 			}
 
 			//then - in current node
 			IFilledTextureSet set = (node.Tag as IFilledTextureSet);
 
-			foreach (ImageData img in set.Textures) {
-				if (img.LongName == longname)
-					return node;
-			}
+			foreach (ImageData img in set.Textures)
+				if (img.LongName == longname) return node;
 
 			return null;
 		}
@@ -184,14 +190,10 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private TreeNode findNodeByName(TreeNodeCollection nodes, string selectname) {
 			foreach (TreeNode n in nodes) {
-				if (n.Name == selectname)
-					return n;
+				if (n.Name == selectname) return n;
 
-				if (n.Nodes != null) {
-					TreeNode match = findNodeByName(n.Nodes, selectname);
-					if (match != null)
-						return match;
-				}
+				TreeNode match = findNodeByName(n.Nodes, selectname);
+				if(match != null) return match;
 			}
 			return null;
 		}
@@ -205,7 +207,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			int imageIndex = set.Location.type + 4;
-			string[] separator = new string[]{ Path.DirectorySeparatorChar.ToString() };
+			string[] separator = new[] { Path.DirectorySeparatorChar.ToString() };
 			
 			ImageData[] textures = new ImageData[set.Textures.Count];
 			set.Textures.CopyTo(textures, 0);
@@ -226,10 +228,7 @@ namespace CodeImp.DoomBuilder.Windows
 						curNode = curNode.Nodes[category];
 
 					} else { //create a new one
-						TreeNode n = new TreeNode(category);
-						n.Name = category;
-						n.ImageIndex = imageIndex;
-						n.SelectedImageIndex = imageIndex;
+						TreeNode n = new TreeNode(category) {Name = category, ImageIndex = imageIndex, SelectedImageIndex = imageIndex};
 
 						curNode.Nodes.Add(n);
 						curNode = n;
@@ -257,10 +256,7 @@ namespace CodeImp.DoomBuilder.Windows
 				root.Nodes.AddRange(children);
 			}
 
-			if (root.Nodes != null) {
-				foreach (TreeNode n in root.Nodes)
-					SetItemsCount(n);
-			}
+			foreach (TreeNode n in root.Nodes) SetItemsCount(n);
 		}
 
 		//mxd
@@ -272,7 +268,6 @@ namespace CodeImp.DoomBuilder.Windows
 			if (General.Map.Config.MixTexturesFlats)
 				ts.MixTexturesAndFlats();
 
-			if(node.Nodes == null) return;
 			foreach (TreeNode child in node.Nodes) SetItemsCount(child);
 		}
 
@@ -311,8 +306,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Activated
 		private void TextureBrowserForm_Activated(object sender, EventArgs e)
 		{
-			// Focus the textbox
-			browser.FocusTextbox();
 			Cursor.Current = Cursors.Default;
 		}
 
@@ -384,15 +377,10 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			TextureBrowserForm browser = new TextureBrowserForm(select, browseFlats);
 			if(browser.ShowDialog(parent) == DialogResult.OK)
-			{
-				// Return result
-				return browser.SelectedName;
-			}
-			else
-			{
-				// Cancelled
-				return select;
-			}
+				return browser.SelectedName; // Return result
+			
+			// Cancelled
+			return select;
 		}
 
 		// Item double clicked
@@ -450,6 +438,9 @@ namespace CodeImp.DoomBuilder.Windows
 				browser.SelectItem(selecttextureonfill, usedgroup);
 				selecttextureonfill = null;
 			}
+
+			//mxd. Focus the textbox. Calling this from TextureBrowserForm_Activated (like it's done in DB2) fails when the form is maximized. Again, I've no idea why...
+			browser.FocusTextbox();
 		}
 
 		//mxd
