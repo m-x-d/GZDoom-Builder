@@ -3218,7 +3218,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							if(j.sidedef.Index != j.controlSide.Index) {
 								offset -= j.controlSide.OffsetY;
 								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset);
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % texture.Height);
 							} else {
 								offset = GetMiddleOffsetY(j.sidedef, offset, j.scaleY, true);
 

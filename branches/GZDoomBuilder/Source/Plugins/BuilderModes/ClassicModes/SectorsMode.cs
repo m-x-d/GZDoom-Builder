@@ -573,7 +573,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
 					renderer.PlotSector(highlighted, General.Colors.Highlight);
-					if(!panning) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso); //mxd
+					BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
 				}
 				renderer.Finish();
 			}
@@ -589,7 +589,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render selection
 			if(renderer.StartOverlay(true))
 			{
-				if(!panning && highlighted != null && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
+				if(highlighted != null && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
 				if(selecting) RenderMultiSelection();
 				renderer.Finish();
 			}
@@ -750,7 +750,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			if(panning) return; //mxd. Skip all this jass while panning
+			if(panning) return; //mxd. Skip all this jazz while panning
 
 			//mxd
 			if(selectpressed && !editpressed && !selecting) {

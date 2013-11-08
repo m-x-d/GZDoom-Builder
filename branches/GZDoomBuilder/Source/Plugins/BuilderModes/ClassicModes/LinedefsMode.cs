@@ -321,11 +321,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartPlotter(true))
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
-				if(!panning) //mxd
-					for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
+				for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
+				
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					if(!panning) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso); //mxd
+					BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
 					renderer.PlotLinedef(highlighted, General.Colors.Highlight);
 				}
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
