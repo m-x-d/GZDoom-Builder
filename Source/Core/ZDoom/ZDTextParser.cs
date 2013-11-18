@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Variables
 		
 		// Parsing
-		protected string whitespace = "\n \t\r\u00A0"; //mxd. non-breaking space is also space :)
+		protected string whitespace = "\n \t\r\u00A0\0"; //mxd. non-breaking space is also space :)
 		protected string specialtokens = ":{}+-\n;";
 		
 		// Input data stream

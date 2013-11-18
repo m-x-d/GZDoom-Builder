@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							}
 						}
 
-					} else if ((token == "#include" || token == "#import") && processIncludes) {
+					} else if (processIncludes && (token == "#include" || token == "#import")) {
 						SkipWhitespace(true);
 						string includeLump = StripTokenQuotes(ReadToken()).ToLowerInvariant();
 
