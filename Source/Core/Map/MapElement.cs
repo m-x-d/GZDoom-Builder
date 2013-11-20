@@ -108,7 +108,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This copies properties to any other element
 		public void CopyPropertiesTo(MapElement element)
 		{
-			element.fields = new UniFields(this, this.fields);
+			//element.fields = new UniFields(this, this.fields);
+			element.fields = new UniFields(element, this.fields); //mxd
 		}
 		
 		// This must implement the call to the undo system to record the change of properties

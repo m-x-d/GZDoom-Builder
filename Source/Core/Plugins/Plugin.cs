@@ -70,7 +70,8 @@ namespace CodeImp.DoomBuilder.Plugins
 			try
 			{
 				// Load assembly
-				asm = Assembly.LoadFile(filename);
+				//asm = Assembly.LoadFile(filename); //mxd
+				asm = Assembly.LoadFrom(filename);
 			}
 			catch(Exception)
 			{
