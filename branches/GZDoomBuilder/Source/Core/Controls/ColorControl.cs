@@ -24,7 +24,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	internal partial class ColorControl : UserControl
+	public partial class ColorControl : UserControl
 	{
 		public event EventHandler ColorChanged;
 		

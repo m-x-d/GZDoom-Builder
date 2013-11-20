@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		private bool isdisposed = false;
 
 		//mxd. It's nice to have these avaliable to plugins...
-		protected static Point DisplayLocationAbs {
+		public static Point DisplayLocationAbs {
 			get {
 				if (General.MainWindow == null || General.MainWindow.Display == null)
 					return new Point();
@@ -43,14 +43,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		}
 
 		//mxd. It's nice to have these avaliable to plugins...
-		protected static Size DisplaySize { get { return (General.MainWindow == null || General.MainWindow.Display == null) ? new Size() : General.MainWindow.Display.Size; } }
-
-
-		//mxd
-		/*public static TypeHandlerAttribute[] GetCustomUseAttributes() {
-			//TypeHandlerAttribute[] attrs = General.Types.GetCustomUseAttributes();
-			return General.Types.GetCustomUseAttributes();
-		}*/
+		public static Size DisplaySize { get { return (General.MainWindow == null || General.MainWindow.Display == null) ? new Size() : General.MainWindow.Display.Size; } }
 
 		#endregion
 		

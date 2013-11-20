@@ -775,7 +775,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						int wantedshaderpass = (((g == highlighted) && showhighlight) || (g.Selected && showselection)) ? highshaderpass : shaderpass;
 
 						//mxd
-						if (General.Settings.GZDrawFog && !fullbrightness && (sector.Sector.HasFogColor || sector.Sector.Brightness < 248))
+						if (General.Settings.GZDrawFog && !fullbrightness && sector.Sector.Brightness < 248)
 							wantedshaderpass += 8;
 
 						//mxd. Seems that lines rendered with RenderPass.Alpha or RenderPass.Additive aren't affected by dynamic lights in GZDoom
@@ -806,8 +806,6 @@ namespace CodeImp.DoomBuilder.Rendering
 							//mxd. set variables for fog rendering
 							if (wantedshaderpass > 7) {
 								graphics.Shaders.World3D.World = world;
-
-
 								graphics.Shaders.World3D.LightColor = sector.Sector.FogColor;
 								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(sector.Sector));
 							}
