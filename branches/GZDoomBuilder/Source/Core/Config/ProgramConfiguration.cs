@@ -113,6 +113,9 @@ namespace CodeImp.DoomBuilder.Config
 		private int maxRecentFiles;
 		
 		// These are not stored in the configuration, only used at runtime
+		private int defaultbrightness;
+		private int defaultfloorheight;
+		private int defaultceilheight;
 		private int defaultthingtype = 1;
 		private float defaultthingangle;
 		private List<string> defaultthingflags;
@@ -195,9 +198,9 @@ namespace CodeImp.DoomBuilder.Config
 		public string DefaultTexture { get { return General.Map != null ? General.Map.Options.DefaultWallTexture : "-"; } set { if(General.Map != null) General.Map.Options.DefaultWallTexture = value; } }
 		public string DefaultFloorTexture { get { return General.Map != null ? General.Map.Options.DefaultFloorTexture : "-"; } set { if(General.Map != null) General.Map.Options.DefaultFloorTexture = value; } }
 		public string DefaultCeilingTexture { get { return General.Map != null ? General.Map.Options.DefaultCeilingTexture : "-"; } set { if(General.Map != null) General.Map.Options.DefaultCeilingTexture = value; } }
-		public int DefaultBrightness { get { return General.Map != null ? General.Map.Options.DefaultBrightness : 196; } set { if(General.Map != null) General.Map.Options.DefaultBrightness = value; } }
-		public int DefaultFloorHeight { get { return General.Map != null ? General.Map.Options.DefaultFloorHeight : 0; } set { if(General.Map != null) General.Map.Options.DefaultFloorHeight = value; } }
-		public int DefaultCeilingHeight { get { return General.Map != null ? General.Map.Options.DefaultCeilingHeight : 128; } set { if(General.Map != null) General.Map.Options.DefaultCeilingHeight = value; } }
+		public int DefaultBrightness { get { return defaultbrightness; } set { defaultbrightness = value; } }
+		public int DefaultFloorHeight { get { return defaultfloorheight; } set { defaultfloorheight = value; } }
+		public int DefaultCeilingHeight { get { return defaultceilheight; } set { defaultceilheight = value; } }
 
 		public int DefaultThingType { get { return defaultthingtype; } set { defaultthingtype = value; } }
 		public float DefaultThingAngle { get { return defaultthingangle; } set { defaultthingangle = value; } }
@@ -293,6 +296,11 @@ namespace CodeImp.DoomBuilder.Config
 				lastUsedConfigName = cfg.ReadSetting("lastusedconfigname", "");
 				gzMarkExtraFloors = cfg.ReadSetting("gzmarkextrafloors", true);
 				maxRecentFiles = cfg.ReadSetting("maxrecentfiles", 8);
+
+				//mxd. Sector defaults
+				defaultceilheight = cfg.ReadSetting("defaultceilheight", 128);
+				defaultfloorheight = cfg.ReadSetting("defaultfloorheight", 0);
+				defaultbrightness = cfg.ReadSetting("defaultbrightness", 192);
 				
 				// Success
 				return true;
@@ -374,6 +382,11 @@ namespace CodeImp.DoomBuilder.Config
 			if(!string.IsNullOrEmpty(lastUsedConfigName))
 				cfg.WriteSetting("lastusedconfigname", lastUsedConfigName);
 			cfg.WriteSetting("maxrecentfiles", maxRecentFiles);
+
+			//mxd. Sector defaults
+			cfg.WriteSetting("defaultceilheight", defaultceilheight);
+			cfg.WriteSetting("defaultfloorheight", defaultfloorheight);
+			cfg.WriteSetting("defaultbrightness", defaultbrightness);
 			
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");
