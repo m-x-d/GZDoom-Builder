@@ -30,8 +30,8 @@
 			this.btnClearSearch = new System.Windows.Forms.Button();
 			this.tbSearch = new System.Windows.Forms.TextBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.updatetimer = new System.Windows.Forms.Timer(this.components);
 			this.bExportToFile = new System.Windows.Forms.Button();
+			this.updatetimer = new System.Windows.Forms.Timer(this.components);
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -53,7 +53,6 @@
 			this.treeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView_AfterLabelEdit);
 			this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseClick);
 			this.treeView.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView_BeforeLabelEdit);
-			this.treeView.MouseLeave += new System.EventHandler(this.treeView_MouseLeave);
 			// 
 			// imageList1
 			// 
@@ -195,11 +194,6 @@
 			this.tbSearch.TabIndex = 7;
 			this.tbSearch.TextChanged += new System.EventHandler(this.tbSearch_TextChanged);
 			// 
-			// updatetimer
-			// 
-			this.updatetimer.Interval = 750;
-			this.updatetimer.Tick += new System.EventHandler(this.updatetimer_Tick);
-			// 
 			// bExportToFile
 			// 
 			this.bExportToFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
@@ -213,6 +207,11 @@
 					"ill be overwritten.\r\n");
 			this.bExportToFile.UseVisualStyleBackColor = true;
 			this.bExportToFile.Click += new System.EventHandler(this.bExportToFile_Click);
+			// 
+			// updatetimer
+			// 
+			this.updatetimer.Interval = 750;
+			this.updatetimer.Tick += new System.EventHandler(this.updatetimer_Tick);
 			// 
 			// TagExplorer
 			// 

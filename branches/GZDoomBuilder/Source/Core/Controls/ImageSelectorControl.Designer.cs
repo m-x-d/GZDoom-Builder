@@ -29,9 +29,11 @@ namespace CodeImp.DoomBuilder.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.preview = new System.Windows.Forms.Panel();
 			this.labelSize = new System.Windows.Forms.Label();
 			this.name = new CodeImp.DoomBuilder.Controls.AutoSelectTextbox();
+			this.timer = new System.Windows.Forms.Timer(this.components);
 			this.preview.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -78,6 +80,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.name.TabIndex = 2;
 			this.name.TextChanged += new System.EventHandler(this.name_TextChanged);
 			// 
+			// timer
+			// 
+			this.timer.Interval = 1000;
+			this.timer.Tick += new System.EventHandler(this.timer_Tick);
+			// 
 			// ImageSelectorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -100,6 +107,7 @@ namespace CodeImp.DoomBuilder.Controls
 		protected System.Windows.Forms.Panel preview;
 		protected CodeImp.DoomBuilder.Controls.AutoSelectTextbox name;
 		private System.Windows.Forms.Label labelSize;
+		protected System.Windows.Forms.Timer timer;
 
 	}
 }

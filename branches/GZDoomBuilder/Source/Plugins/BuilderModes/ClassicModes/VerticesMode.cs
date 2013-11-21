@@ -428,7 +428,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void vertexEditForm_OnValuesChanged(object sender, EventArgs e) {
 			// Update entire display
 			General.Map.Map.Update();
-			//General.Map.Renderer2D.Update3dFloorIndicators();
 			General.Interface.RedrawDisplay();
 		}
 		

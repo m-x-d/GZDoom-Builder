@@ -58,7 +58,6 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 			if (udmf) {
 				cbCommentsOnly.Checked = General.Settings.ReadPluginSetting("commentsonly", false);
-				treeView.LabelEdit = true;
 				toolTip1.SetToolTip(tbSearch, "Enter text to find comment\r\nEnter # + tag number to show only specified tag. Example: #667\r\nEnter $ + effect number to show only specified effect. Example: $80");
 				toolTip1.SetToolTip(treeView, "Double-click item to edit item's comment\r\nRight-click item to open item's Properties");
 			} else {
@@ -548,20 +547,22 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			selection.Index = info.Index;
 
 			if (e.Button == MouseButtons.Right) { //open element properties
+				bool updateDisplay = false;
+				
 				switch (info.Type) {
 					case NodeInfoType.THING:
 						Thing t = General.Map.Map.GetThingByIndex(info.Index);
-						if (t != null) General.Interface.ShowEditThings(new List<Thing>() { t });
+						updateDisplay = (t != null && General.Interface.ShowEditThings(new List<Thing>() { t }) == DialogResult.OK);
 						break;
 
 					case NodeInfoType.SECTOR:
 						Sector s = General.Map.Map.GetSectorByIndex(info.Index);
-						if (s != null) General.Interface.ShowEditSectors(new List<Sector>() { s });
+						updateDisplay = (s != null && General.Interface.ShowEditSectors(new List<Sector>() { s }) == DialogResult.OK);
 						break;
 
 					case NodeInfoType.LINEDEF:
 						Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
-						if (l != null) General.Interface.ShowEditLinedefs(new List<Linedef>() { l });
+						updateDisplay = (l != null && General.Interface.ShowEditLinedefs(new List<Linedef>() { l }) == DialogResult.OK);
 						break;
 
 					default:
@@ -569,8 +570,12 @@ namespace CodeImp.DoomBuilder.TagExplorer
 						break;
 				}
 
-				General.Map.Map.Update();
-				updateTree(true);
+				if(updateDisplay) {
+					// Update entire display
+					General.Map.Map.Update();
+					General.Interface.RedrawDisplay();
+					updateTree(true);
+				}
 
 			} else {
 				//select element?
@@ -660,6 +665,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				NodeInfo info = e.Node.Tag as NodeInfo;
 				if (info == null) return;
 
+				treeView.LabelEdit = true;
 				e.Node.Text = info.Comment; //set node text to comment
 				e.Node.BeginEdit(); //begin editing
 			}
@@ -667,11 +673,10 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 		//we don't want to edit categories if we are in UDMF
 		private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
-			if (!udmf || e.Node.Tag == null) {
+			if (!udmf || !treeView.LabelEdit || e.Node.Tag == null) {
 				e.CancelEdit = true;
 				return;
 			}
-			treeView.MouseLeave -= treeView_MouseLeave;
 		}
 
 		//map should be in UDMF format, or we wouldn't be here
@@ -682,17 +687,12 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			//to set comment manually we actually have to cancel edit...
 			e.CancelEdit = true;
 			e.Node.EndEdit(true);
+			treeView.LabelEdit = false;
 
 			//apply comment
 			if(e.Label != null)	info.Comment = e.Label;
 			e.Node.Text = info.GetName(ref comment, currentSortMode);
 			e.Node.ForeColor = string.IsNullOrEmpty(info.Comment) ? Color.Black : commentColor;
-
-			treeView.MouseLeave += new EventHandler(treeView_MouseLeave);
-		}
-
-		private void treeView_MouseLeave(object sender, EventArgs e) {
-			General.Interface.FocusDisplay();
 		}
 
 		//It is called every time a dialog window closes.
@@ -702,7 +702,6 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 		private void btnClearSearch_Click(object sender, EventArgs e) {
 			tbSearch.Clear();
-			General.Interface.FocusDisplay();
 		}
 
 		private void tbSearch_TextChanged(object sender, EventArgs e) {

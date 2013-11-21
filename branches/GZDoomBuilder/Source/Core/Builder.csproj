@@ -842,12 +842,6 @@
     <Compile Include="Windows\SectorEditFormUDMF.Designer.cs">
       <DependentUpon>SectorEditFormUDMF.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\SetDefaultTexturesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Windows\SetDefaultTexturesForm.Designer.cs">
-      <DependentUpon>SetDefaultTexturesForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Windows\StatusInfo.cs" />
     <Compile Include="Windows\TanColorTable.cs" />
     <Compile Include="Windows\ThingBrowserForm.cs">
@@ -1079,9 +1073,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\SectorEditFormUDMF.resx">
       <DependentUpon>SectorEditFormUDMF.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Windows\SetDefaultTexturesForm.resx">
-      <DependentUpon>SetDefaultTexturesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\TextEditForm.resx">
       <SubType>Designer</SubType>

@@ -643,8 +643,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbRenderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbRenderStyle.FormattingEnabled = true;
 			this.cbRenderStyle.Items.AddRange(new object[] {
-			"Translucent",
-			"Additive"});
+            "Translucent",
+            "Additive"});
 			this.cbRenderStyle.Location = new System.Drawing.Point(92, 26);
 			this.cbRenderStyle.Name = "cbRenderStyle";
 			this.cbRenderStyle.Size = new System.Drawing.Size(86, 22);
@@ -1360,6 +1360,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Linedef";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LinedefEditForm_FormClosing);
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.LinedefEditForm_HelpRequested);
 			this.actiongroup.ResumeLayout(false);
 			this.actiongroup.PerformLayout();

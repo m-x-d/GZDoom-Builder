@@ -126,13 +126,5 @@ namespace CodeImp.DoomBuilder.GZBuilder
 			if (General.Map != null)
 				General.Map.Data.ReloadMapInfo();
 		}
-
-		[BeginAction("setcurrenttextures")]
-		private static void setCurrentTextures() {
-			if(General.Map != null) {
-				SetCurrentTexturesForm form = new SetCurrentTexturesForm();
-				form.ShowDialog(Form.ActiveForm);
-			}
-		}
 	}
 }

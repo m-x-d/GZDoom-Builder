@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private string arg0str; //mxd
 		private bool haveArg0Str; //mxd
 
-		//Value linking
+		//mxd. Persistent settings
 		private static bool linkFrontTopScale;
 		private static bool linkFrontMidScale;
 		private static bool linkFrontBottomScale;
@@ -63,6 +63,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private List<PairedFieldsControl> frontUdmfControls; //mxd
 		private List<PairedFieldsControl> backUdmfControls; //mxd
+
+		//mxd. Window setup stuff
+		private static Point location = Point.Empty;
+		private static int activeTab;
+		private static int activeFrontTab;
+		private static int activeBackTab;
 
 		private struct LinedefProperties //mxd
 		{
@@ -149,6 +155,19 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Initialize
 			InitializeComponent();
+
+			//mxd. Widow setup
+			if(location != Point.Empty) {
+				this.StartPosition = FormStartPosition.Manual;
+				this.Location = location;
+				if (activeTab > 0 && activeTab < tabs.TabCount) {
+					tabs.SelectTab(activeTab);
+				} else {
+					activeTab = 0;
+				}
+				if(activeFrontTab > 0) udmfPropertiesFront.SelectTab(activeFrontTab);
+				if(activeBackTab > 0) udmfPropertiesBack.SelectTab(activeBackTab);
+			}
 			
 			// Fill flags lists
 			foreach(KeyValuePair<string, string> lf in General.Map.Config.LinedefFlags)
@@ -883,6 +902,14 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void tabcustom_MouseEnter(object sender, EventArgs e) {
 			fieldslist.Focus();
+		}
+
+		//mxd. Store window location
+		private void LinedefEditForm_FormClosing(object sender, FormClosingEventArgs e) {
+			location = this.Location;
+			activeTab = tabs.SelectedIndex;
+			activeFrontTab = udmfPropertiesFront.SelectedIndex;
+			activeBackTab = udmfPropertiesBack.SelectedIndex;
 		}
 
 		// Help!

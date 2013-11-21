@@ -276,6 +276,12 @@
     <Compile Include="Interface\EditSelectionPanel.Designer.cs">
       <DependentUpon>EditSelectionPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\SectorDrawingOptionsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\SectorDrawingOptionsPanel.Designer.cs">
+      <DependentUpon>SectorDrawingOptionsPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\WavefrontSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -386,6 +392,9 @@
     <EmbeddedResource Include="Resources\FloorAlign.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\SectorDrawingOptionsPanel.resx">
+      <DependentUpon>SectorDrawingOptionsPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\WavefrontSettingsForm.resx">
       <DependentUpon>WavefrontSettingsForm.cs</DependentUpon>
     </EmbeddedResource>

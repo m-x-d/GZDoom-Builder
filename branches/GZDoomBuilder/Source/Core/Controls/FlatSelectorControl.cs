@@ -38,6 +38,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// This finds the image we need for the given flat name
 		protected override Image FindImage(string imagename)
 		{
+			timer.Stop(); //mxd
+
 			// Check if name is a "none" texture
 			if((imagename.Length < 1) || (imagename == "-"))
 			{
@@ -52,6 +54,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 				if(string.IsNullOrEmpty(texture.FullName) || texture is UnknownImage) DisplayImageSize(0, 0); //mxd
 				else DisplayImageSize(texture.ScaledWidth, texture.ScaledHeight); //mxd
+				if(!texture.IsPreviewLoaded) timer.Start(); //mxd
 				
 				// Set the image
 				return texture.GetPreview();
@@ -64,7 +67,6 @@ namespace CodeImp.DoomBuilder.Controls
 			string result;
 
 			// Browse for texture
-			//result = FlatBrowserForm.Browse(this.ParentForm, imagename);
 			result = TextureBrowserForm.Browse(this.ParentForm, imagename, true); //mxd
 			if(result != null) return result; else return imagename;
 		}

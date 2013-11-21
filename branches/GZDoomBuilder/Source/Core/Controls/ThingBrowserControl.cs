@@ -290,6 +290,11 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
+		private void typelist_MouseEnter(object sender, EventArgs e) {
+			typelist.Focus();
+		}
+
+		//mxd
 		private void bClear_Click(object sender, EventArgs e) {
 			tbFilter.Clear();
 		}

@@ -198,11 +198,6 @@ namespace CodeImp.DoomBuilder.Windows
 			options.CurrentName = levelname.Text.Trim().ToUpper();
 			options.StrictPatches = strictpatches.Checked;
 			options.CopyResources(datalocations.GetResources());
-
-			// Reset default drawing textures
-			General.Settings.DefaultTexture = null;
-			General.Settings.DefaultFloorTexture = null;
-			General.Settings.DefaultCeilingTexture = null;
 			
 			// Hide window
 			this.DialogResult = DialogResult.OK;

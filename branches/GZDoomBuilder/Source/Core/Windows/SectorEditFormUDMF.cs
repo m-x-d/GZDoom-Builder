@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 namespace CodeImp.DoomBuilder.Windows
 {
@@ -22,11 +23,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool blockUpdate; //mxd
 		private StepsList angleSteps; //mxd
 
-		//Persistent settings
+		//mxd. Persistent settings
 		private static bool linkCeilingScale;
 		private static bool linkFloorScale;
 		private static bool useFloorLineAngles;
 		private static bool useCeilLineAngles;
+
+		//mxd. Window setup stuff
+		private static Point location = Point.Empty;
+		private static int activeTab;
 
 		private struct SectorProperties //mxd
 		{
@@ -100,6 +105,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 		public SectorEditFormUDMF() {
 			InitializeComponent();
+
+			//mxd. Widow setup
+			if(location != Point.Empty) {
+				this.StartPosition = FormStartPosition.Manual;
+				this.Location = location;
+				if(activeTab > 0) tabs.SelectTab(activeTab);
+			}
 
 			// Fill flags list
 			foreach(KeyValuePair<string, string> lf in General.Map.Config.SectorFlags)
@@ -459,6 +471,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void browseeffect_Click(object sender, EventArgs e) {
 			effect.Value = EffectBrowserForm.BrowseEffect(this, effect.Value);
+		}
+
+		//mxd
+		private void SectorEditFormUDMF_FormClosing(object sender, FormClosingEventArgs e) {
+			location = this.Location;
+			activeTab = tabs.SelectedIndex;
 		}
 
 		private void SectorEditFormUDMF_HelpRequested(object sender, HelpEventArgs hlpevent) {

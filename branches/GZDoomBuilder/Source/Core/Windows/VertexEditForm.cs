@@ -22,6 +22,7 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
+using System.Drawing;
 
 #endregion
 
@@ -47,6 +48,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool blockUpdate; //mxd
 		private List<VertexProperties> vertexProps; //mxd
 
+		//mxd. Window setup stuff
+		private static Point location = Point.Empty;
+		private static int activeTab;
+
 		private struct VertexProperties //mxd
 		{
 			public float X;
@@ -70,6 +75,17 @@ namespace CodeImp.DoomBuilder.Windows
 		public VertexEditForm()
 		{
 			InitializeComponent();
+
+			//mxd. Widow setup
+			if(location != Point.Empty) {
+				this.StartPosition = FormStartPosition.Manual;
+				this.Location = location;
+				if(activeTab > 0 && activeTab < tabs.TabCount) {
+					tabs.SelectTab(activeTab);
+				} else {
+					activeTab = 0;
+				}
+			}
 
 			if(General.Map.FormatInterface.HasCustomFields) { //mxd
 				// Initialize custom fields editor
@@ -320,6 +336,12 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void tabcustom_MouseEnter(object sender, EventArgs e) {
 			fieldslist.Focus();
+		}
+
+		//mxd
+		private void VertexEditForm_FormClosing(object sender, FormClosingEventArgs e) {
+			location = this.Location;
+			activeTab = tabs.SelectedIndex;
 		}
 
 		// Help requested

@@ -27,8 +27,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 
-		//private PreferencesController controller;
-
 		#endregion
 
 		#region ================== Properties
@@ -59,9 +57,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			autoalignDraggedSidedefsOffsetX.Checked = BuilderPlug.Me.AutoAlignTextureOffsetsOnDrag; //mxd
 			dontMoveGeometryOutsideBounds.Checked = BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary; //mxd
 			syncSelection.Checked = BuilderPlug.Me.SyncSelection; //mxd
-			defaultbrightness.Text = General.Settings.DefaultBrightness.ToString(); //mxd
-			defaultceilheight.Text = General.Settings.DefaultCeilingHeight.ToString();//mxd
-			defaultfloorheight.Text = General.Settings.DefaultFloorHeight.ToString(); //mxd
 		}
 
 		#endregion
@@ -88,16 +83,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("autoaligntextureoffsetsondrag", autoalignDraggedSidedefsOffsetX.Checked);//mxd
 			General.Settings.WritePluginSetting("dontmovegeometryoutsidemapboundary", dontMoveGeometryOutsideBounds.Checked);//mxd
 			General.Settings.WritePluginSetting("syncselection", syncSelection.Checked);//mxd
-
-			//default sector values
-			General.Settings.DefaultBrightness = General.Clamp(defaultbrightness.GetResult(192), 0, 255);
-			
-			int ceilHeight = defaultceilheight.GetResult(128);
-			int floorHeight = defaultfloorheight.GetResult(0);
-			if(ceilHeight < floorHeight) General.Swap(ref ceilHeight, ref floorHeight);
-
-			General.Settings.DefaultCeilingHeight = ceilHeight;
-			General.Settings.DefaultFloorHeight = floorHeight;
 		}
 		
 		// When Cancel is pressed on the preferences dialog
@@ -112,8 +97,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This sets up the form with the preferences controller
 		public void Setup(PreferencesController controller)
 		{
-			//this.controller = controller;
-
 			// Add tab pages
 			foreach(TabPage p in tabs.TabPages)
 			{

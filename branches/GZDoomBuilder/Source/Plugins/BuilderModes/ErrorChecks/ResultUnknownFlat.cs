@@ -79,9 +79,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.FindDefaultDrawSettings();
 			
 			if(ceiling)
-				sector.SetCeilTexture(General.Settings.DefaultCeilingTexture);
+				sector.SetCeilTexture(General.Map.Options.DefaultCeilingTexture);
 			else
-				sector.SetFloorTexture(General.Settings.DefaultFloorTexture);
+				sector.SetFloorTexture(General.Map.Options.DefaultFloorTexture);
 			
 			General.Map.Map.Update();
 			return true;
