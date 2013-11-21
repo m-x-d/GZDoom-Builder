@@ -531,9 +531,9 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(useOverrides) {
 					if (General.Map.Options.OverrideCeilingTexture) newsector.SetCeilTexture(General.Map.Options.DefaultCeilingTexture);
 					if (General.Map.Options.OverrideFloorTexture) newsector.SetFloorTexture(General.Map.Options.DefaultFloorTexture);
-					if (General.Map.Options.OverrideCeilingHeight) newsector.CeilHeight = General.Map.Options.DefaultCeilingHeight;
-					if (General.Map.Options.OverrideFloorHeight) newsector.FloorHeight = General.Map.Options.DefaultFloorHeight;
-					if (General.Map.Options.OverrideBrightness) newsector.Brightness = General.Map.Options.DefaultBrightness;
+					if (General.Map.Options.OverrideCeilingHeight) newsector.CeilHeight = General.Map.Options.CustomCeilingHeight;
+					if (General.Map.Options.OverrideFloorHeight) newsector.FloorHeight = General.Map.Options.CustomFloorHeight;
+					if (General.Map.Options.OverrideBrightness) newsector.Brightness = General.Map.Options.CustomBrightness;
 				}
 			}
 			else
@@ -717,9 +717,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			s.SetFloorTexture(General.Map.Options.DefaultFloorTexture);
 			s.SetCeilTexture(General.Map.Options.DefaultCeilingTexture);
-			s.FloorHeight = General.Map.Options.DefaultFloorHeight;
-			s.CeilHeight = General.Map.Options.DefaultCeilingHeight;
-			s.Brightness = General.Map.Options.DefaultBrightness;
+			s.FloorHeight = (General.Map.Options.OverrideFloorHeight ? General.Map.Options.CustomFloorHeight : General.Settings.DefaultFloorHeight);
+			s.CeilHeight = (General.Map.Options.OverrideCeilingHeight ? General.Map.Options.CustomCeilingHeight : General.Settings.DefaultCeilingHeight);
+			s.Brightness = (General.Map.Options.OverrideBrightness ? General.Map.Options.CustomBrightness : General.Settings.DefaultBrightness);
 		}
 		
 		#endregion
