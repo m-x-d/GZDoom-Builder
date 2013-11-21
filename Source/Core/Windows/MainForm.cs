@@ -2306,7 +2306,6 @@ namespace CodeImp.DoomBuilder.Windows
 			itemgridsetup.Enabled = (General.Map != null);
 			itemgridinc.Enabled = (General.Map != null);
 			itemgriddec.Enabled = (General.Map != null);
-			itemSetCurrentTextures.Enabled = (General.Map != null); //mxd
 			itemviewusedtags.Enabled = (General.Map != null); //mxd
 			addToGroup.Enabled = (General.Map != null); //mxd
 			selectGroup.Enabled = (General.Map != null); //mxd

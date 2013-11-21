@@ -355,6 +355,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Sector";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SectorEditForm_FormClosing);
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.SectorEditForm_HelpRequested);
 			groupeffect.ResumeLayout(false);
 			groupeffect.PerformLayout();

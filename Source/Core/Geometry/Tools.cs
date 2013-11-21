@@ -427,7 +427,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// properties from the nearest line in this collection when the
 		// default properties can't be found in the alllines collection.
 		// Return null when no new sector could be made.
-		public static Sector MakeSector(List<LinedefSide> alllines, List<Linedef> nearbylines, bool useDefaultTextures)
+		public static Sector MakeSector(List<LinedefSide> alllines, List<Linedef> nearbylines, bool useOverrides)
 		{
 			Sector sourcesector = null;
 			SidedefSettings sourceside = new SidedefSettings();
@@ -519,7 +519,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 			
 			// Use defaults where no settings could be found
-			TakeSidedefDefaults(ref sourceside, useDefaultTextures);
+			TakeSidedefDefaults(ref sourceside, useOverrides);
 			
 			// Found a source sector?
 			if(sourcesector != null)
@@ -527,10 +527,13 @@ namespace CodeImp.DoomBuilder.Geometry
 				// Copy properties from source to new sector
 				sourcesector.CopyPropertiesTo(newsector);
 
-				//mxd
-				if(useDefaultTextures) {
-					newsector.SetCeilTexture(General.Settings.DefaultCeilingTexture);
-					newsector.SetFloorTexture(General.Settings.DefaultFloorTexture);
+				//mxd. Apply overrides
+				if(useOverrides) {
+					if (General.Map.Options.OverrideCeilingTexture) newsector.SetCeilTexture(General.Map.Options.DefaultCeilingTexture);
+					if (General.Map.Options.OverrideFloorTexture) newsector.SetFloorTexture(General.Map.Options.DefaultFloorTexture);
+					if (General.Map.Options.OverrideCeilingHeight) newsector.CeilHeight = General.Map.Options.DefaultCeilingHeight;
+					if (General.Map.Options.OverrideFloorHeight) newsector.FloorHeight = General.Map.Options.DefaultFloorHeight;
+					if (General.Map.Options.OverrideBrightness) newsector.Brightness = General.Map.Options.DefaultBrightness;
 				}
 			}
 			else
@@ -579,7 +582,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 
 		// This joins a sector with the given lines and sides. Returns null when operation could not be completed.
-		public static Sector JoinSector(List<LinedefSide> alllines, Sidedef original, bool useDefaultTextures)
+		public static Sector JoinSector(List<LinedefSide> alllines, Sidedef original, bool useOverrides)
 		{
 			SidedefSettings sourceside = new SidedefSettings();
 			
@@ -587,7 +590,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			TakeSidedefSettings(ref sourceside, original);
 
 			// Use defaults where no settings could be found
-			TakeSidedefDefaults(ref sourceside, useDefaultTextures);
+			TakeSidedefDefaults(ref sourceside, useOverrides);
 
 			// Go for all sides to make sidedefs
 			foreach(LinedefSide ls in alllines)
@@ -679,12 +682,15 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// This takes default settings if not taken yet
-		private static void TakeSidedefDefaults(ref SidedefSettings settings, bool useDefaultTextures)
+		private static void TakeSidedefDefaults(ref SidedefSettings settings, bool useOverrides)
 		{
 			// Use defaults where no settings could be found
-			if(settings.newtexhigh == null || useDefaultTextures) settings.newtexhigh = General.Settings.DefaultTexture;
-			if(settings.newtexmid == null || useDefaultTextures) settings.newtexmid = General.Settings.DefaultTexture;
-			if(settings.newtexlow == null || useDefaultTextures) settings.newtexlow = General.Settings.DefaultTexture;
+			if(settings.newtexhigh == null || (useOverrides && General.Map.Options.OverrideWallTexture))
+				settings.newtexhigh = General.Map.Options.DefaultWallTexture;
+			if(settings.newtexmid == null || (useOverrides && General.Map.Options.OverrideWallTexture))
+				settings.newtexmid = General.Map.Options.DefaultWallTexture;
+			if(settings.newtexlow == null || (useOverrides && General.Map.Options.OverrideWallTexture)) 
+				settings.newtexlow = General.Map.Options.DefaultWallTexture;
 		}
 
 		// This takes sidedef settings if not taken yet
@@ -709,11 +715,11 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This applies defaults to a sector
 		private static void ApplyDefaultsToSector(Sector s)
 		{
-			s.SetFloorTexture(General.Settings.DefaultFloorTexture);
-			s.SetCeilTexture(General.Settings.DefaultCeilingTexture);
-			s.FloorHeight = General.Settings.DefaultFloorHeight;
-			s.CeilHeight = General.Settings.DefaultCeilingHeight;
-			s.Brightness = General.Settings.DefaultBrightness;
+			s.SetFloorTexture(General.Map.Options.DefaultFloorTexture);
+			s.SetCeilTexture(General.Map.Options.DefaultCeilingTexture);
+			s.FloorHeight = General.Map.Options.DefaultFloorHeight;
+			s.CeilHeight = General.Map.Options.DefaultCeilingHeight;
+			s.Brightness = General.Map.Options.DefaultBrightness;
 		}
 		
 		#endregion
@@ -857,7 +863,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		/// marks and marks the new lines and vertices when done. Also marks the sectors that were added.
 		/// Returns false when the drawing failed.
 		/// </summary>
-		public static bool DrawLines(IList<DrawnVertex> points, bool useDefaultTextures, bool autoAlignTextureOffsets)
+		public static bool DrawLines(IList<DrawnVertex> points, bool useOverrides, bool autoAlignTextureOffsets)
 		{
 			List<Vertex> newverts = new List<Vertex>();
 			List<Vertex> intersectverts = new List<Vertex>();
@@ -1323,7 +1329,7 @@ namespace CodeImp.DoomBuilder.Geometry
 							if(!istruenewsector || !splittingonly)
 							{
 								// Make the new sector
-								Sector newsector = Tools.MakeSector(sectorlines, oldlines, useDefaultTextures);
+								Sector newsector = Tools.MakeSector(sectorlines, oldlines, useOverrides);
 								if(newsector == null) return false;
 
 								if(istruenewsector) newsector.Marked = true;
@@ -1398,7 +1404,7 @@ namespace CodeImp.DoomBuilder.Geometry
 								}
 								
 								// Have our new lines join the existing sector
-								if(Tools.JoinSector(newsectorlines, joinsidedef, useDefaultTextures) == null)
+								if(Tools.JoinSector(newsectorlines, joinsidedef, useOverrides) == null)
 									return false;
 							}
 						}

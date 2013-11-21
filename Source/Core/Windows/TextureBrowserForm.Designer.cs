@@ -87,6 +87,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tvTextureSets.Size = new System.Drawing.Size(200, 576);
 			this.tvTextureSets.TabIndex = 4;
 			this.tvTextureSets.TabStop = false;
+			this.tvTextureSets.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tvTextureSets_KeyUp);
 			this.tvTextureSets.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvTextureSets_NodeMouseClick);
 			// 
 			// browser

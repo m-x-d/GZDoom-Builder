@@ -209,6 +209,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.typelist.UseMultiSelection = false;
 			this.typelist.DoubleClick += new System.EventHandler(this.typelist_DoubleClick);
 			this.typelist.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.typelist_AfterSelect);
+			this.typelist.MouseEnter += new System.EventHandler(this.typelist_MouseEnter);
 			// 
 			// ThingBrowserControl
 			// 

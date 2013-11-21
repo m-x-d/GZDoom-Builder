@@ -151,6 +151,11 @@ namespace CodeImp.DoomBuilder.Controls
 				ShowPreview(FindImage(name.Text));
 			}
 		}
+
+		//mxd
+		private void timer_Tick(object sender, EventArgs e) {
+			Refresh();
+		}
 		
 		#endregion
 
@@ -190,7 +195,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		//mxd
 		protected void DisplayImageSize(float width, float height) {
-			if(!General.Settings.ShowTextureSizes || width == 0 || height == 0) {
+			if(!General.Settings.ShowTextureSizes || !this.Enabled || width == 0 || height == 0) {
 				labelSize.Visible = false;
 				return;
 			}

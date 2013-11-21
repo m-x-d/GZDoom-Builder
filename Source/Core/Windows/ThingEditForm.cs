@@ -57,6 +57,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private List<ThingProperties> thingProps; //mxd
 
+		//mxd. Window setup stuff
+		private static Point location = Point.Empty;
+		private static int activeTab;
+
 		private struct ThingProperties //mxd
 		{
 			public int Type;
@@ -83,6 +87,17 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Initialize
 			InitializeComponent();
+
+			//mxd. Widow setup
+			if(location != Point.Empty) {
+				this.StartPosition = FormStartPosition.Manual;
+				this.Location = location;
+				if(activeTab > 0 && activeTab < tabs.TabCount) {
+					tabs.SelectTab(activeTab);
+				} else {
+					activeTab = 0;
+				}
+			}
 			
 			// Fill flags list
 			foreach(KeyValuePair<string, string> tf in General.Map.Config.ThingFlags)
@@ -557,6 +572,12 @@ namespace CodeImp.DoomBuilder.Windows
 			fieldslist.Focus();
 		}
 
+		//mxd
+		private void ThingEditForm_FormClosing(object sender, FormClosingEventArgs e) {
+			location = this.Location;
+			activeTab = tabs.SelectedIndex;
+		}
+
 		// Help
 		private void ThingEditForm_HelpRequested(object sender, HelpEventArgs hlpevent)
 		{
@@ -693,5 +714,6 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		#endregion
+
 	}
 }

@@ -108,18 +108,11 @@ namespace CodeImp.DoomBuilder.Config
 		private float gzVertexScale2D;
 		private bool gzShowVisualVertices;
 		private int gzVisualVertexSize;
-		private bool gzForceDefaultTextures;
 		private string lastUsedConfigName;
 		private bool gzMarkExtraFloors;
 		private int maxRecentFiles;
 		
 		// These are not stored in the configuration, only used at runtime
-		private string defaulttexture;
-		private int defaultbrightness;
-		private int defaultfloorheight;
-		private int defaultceilheight;
-		private string defaultfloortexture;
-		private string defaultceiltexture;
 		private int defaultthingtype = 1;
 		private float defaultthingangle;
 		private List<string> defaultthingflags;
@@ -194,17 +187,18 @@ namespace CodeImp.DoomBuilder.Config
 		public float GZVertexScale2D { get { return gzVertexScale2D; } internal set { gzVertexScale2D = value; } }
 		public bool GZShowVisualVertices { get { return gzShowVisualVertices; } internal set { gzShowVisualVertices = value; } }
 		public int GZVisualVertexSize { get { return gzVisualVertexSize; } internal set { gzVisualVertexSize = value; } }
-		public bool GZForceDefaultTextures { get { return gzForceDefaultTextures; } internal set { gzForceDefaultTextures = value; } }
 		public string LastUsedConfigName { get { return lastUsedConfigName; } internal set { lastUsedConfigName = value; } }
 		public bool GZMarkExtraFloors { get { return gzMarkExtraFloors; } internal set { gzMarkExtraFloors = value; } }
 		public int MaxRecentFiles { get { return maxRecentFiles; } internal set { maxRecentFiles = General.Clamp(value, 8, 25); } }
 
-		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
-		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
-		public string DefaultCeilingTexture { get { return defaultceiltexture; } set { defaultceiltexture = value; } }
-		public int DefaultBrightness { get { return defaultbrightness; } set { defaultbrightness = value; } }
-		public int DefaultFloorHeight { get { return defaultfloorheight; } set { defaultfloorheight = value; } }
-		public int DefaultCeilingHeight { get { return defaultceilheight; } set { defaultceilheight = value; } }
+		//mxd. Left here for compatibility reasons...
+		public string DefaultTexture { get { return General.Map != null ? General.Map.Options.DefaultWallTexture : "-"; } set { if(General.Map != null) General.Map.Options.DefaultWallTexture = value; } }
+		public string DefaultFloorTexture { get { return General.Map != null ? General.Map.Options.DefaultFloorTexture : "-"; } set { if(General.Map != null) General.Map.Options.DefaultFloorTexture = value; } }
+		public string DefaultCeilingTexture { get { return General.Map != null ? General.Map.Options.DefaultCeilingTexture : "-"; } set { if(General.Map != null) General.Map.Options.DefaultCeilingTexture = value; } }
+		public int DefaultBrightness { get { return General.Map != null ? General.Map.Options.DefaultBrightness : 196; } set { if(General.Map != null) General.Map.Options.DefaultBrightness = value; } }
+		public int DefaultFloorHeight { get { return General.Map != null ? General.Map.Options.DefaultFloorHeight : 0; } set { if(General.Map != null) General.Map.Options.DefaultFloorHeight = value; } }
+		public int DefaultCeilingHeight { get { return General.Map != null ? General.Map.Options.DefaultCeilingHeight : 128; } set { if(General.Map != null) General.Map.Options.DefaultCeilingHeight = value; } }
+
 		public int DefaultThingType { get { return defaultthingtype; } set { defaultthingtype = value; } }
 		public float DefaultThingAngle { get { return defaultthingangle; } set { defaultthingangle = value; } }
 
@@ -299,11 +293,6 @@ namespace CodeImp.DoomBuilder.Config
 				lastUsedConfigName = cfg.ReadSetting("lastusedconfigname", "");
 				gzMarkExtraFloors = cfg.ReadSetting("gzmarkextrafloors", true);
 				maxRecentFiles = cfg.ReadSetting("maxrecentfiles", 8);
-
-				//mxd. Sector defaults
-				defaultceilheight = cfg.ReadSetting("defaultceilheight", 128);
-				defaultfloorheight = cfg.ReadSetting("defaultfloorheight", 0);
-				defaultbrightness = cfg.ReadSetting("defaultbrightness", 192);
 				
 				// Success
 				return true;
@@ -385,11 +374,6 @@ namespace CodeImp.DoomBuilder.Config
 			if(!string.IsNullOrEmpty(lastUsedConfigName))
 				cfg.WriteSetting("lastusedconfigname", lastUsedConfigName);
 			cfg.WriteSetting("maxrecentfiles", maxRecentFiles);
-
-			//mxd. Sector defaults
-			cfg.WriteSetting("defaultceilheight", defaultceilheight);
-			cfg.WriteSetting("defaultfloorheight", defaultfloorheight);
-			cfg.WriteSetting("defaultbrightness", defaultbrightness);
 			
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");
@@ -552,10 +536,10 @@ namespace CodeImp.DoomBuilder.Config
 			bool foundone;
 			
 			// Only possible when a map is loaded
-			if(General.Map == null) return;
+			if(General.Map == null || General.Map.Options == null) return;
 			
 			// Default texture missing?
-			if(defaulttexture == null || (!gzForceDefaultTextures && defaulttexture == "-")) //mxd
+			if(!General.Map.Options.OverrideWallTexture || string.IsNullOrEmpty(General.Map.Options.DefaultWallTexture)) //mxd
 			{
 				// Find default texture from map
 				foundone = false;
@@ -563,8 +547,8 @@ namespace CodeImp.DoomBuilder.Config
 				{
 					if(sd.MiddleTexture != "-")
 					{
-						defaulttexture = sd.MiddleTexture;
-						if(General.Map.Data.GetTextureExists(defaulttexture))
+						General.Map.Options.DefaultWallTexture = sd.MiddleTexture;
+						if(General.Map.Data.GetTextureExists(General.Map.Options.DefaultWallTexture))
 						{
 							foundone = true;
 							break;
@@ -582,7 +566,7 @@ namespace CodeImp.DoomBuilder.Config
 						if(s.StartsWith("STARTAN"))
 						{
 							foundone = true;
-							defaulttexture = s;
+							General.Map.Options.DefaultWallTexture = s;
 							break;
 						}
 					}
@@ -591,13 +575,13 @@ namespace CodeImp.DoomBuilder.Config
 					if(!foundone)
 					{
 						if(General.Map.Data.TextureNames.Count > 1)
-							defaulttexture = General.Map.Data.TextureNames[1];
+							General.Map.Options.DefaultWallTexture = General.Map.Data.TextureNames[1];
 					}
 				}
 			}
 
 			// Default floor missing?
-			if(string.IsNullOrEmpty(defaultfloortexture))
+			if(!General.Map.Options.OverrideFloorTexture || string.IsNullOrEmpty(General.Map.Options.DefaultFloorTexture))
 			{
 				// Find default texture from map
 				foundone = false;
@@ -606,8 +590,8 @@ namespace CodeImp.DoomBuilder.Config
 					// Find one that is known
 					foreach(Sector s in General.Map.Map.Sectors)
 					{
-						defaultfloortexture = s.FloorTexture;
-						if(General.Map.Data.GetFlatExists(defaultfloortexture))
+						General.Map.Options.DefaultFloorTexture = s.FloorTexture;
+						if(General.Map.Data.GetFlatExists(General.Map.Options.DefaultFloorTexture))
 						{
 							foundone = true;
 							break;
@@ -623,7 +607,7 @@ namespace CodeImp.DoomBuilder.Config
 						if(s.StartsWith("FLOOR"))
 						{
 							foundone = true;
-							defaultfloortexture = s;
+							General.Map.Options.DefaultFloorTexture = s;
 							break;
 						}
 					}
@@ -633,12 +617,12 @@ namespace CodeImp.DoomBuilder.Config
 				if(!foundone)
 				{
 					if(General.Map.Data.FlatNames.Count > 1)
-						defaultfloortexture = General.Map.Data.FlatNames[1];
+						General.Map.Options.DefaultFloorTexture = General.Map.Data.FlatNames[1];
 				}
 			}
 			
 			// Default ceiling missing?
-			if(string.IsNullOrEmpty(defaultceiltexture))
+			if(!General.Map.Options.OverrideCeilingTexture || string.IsNullOrEmpty(General.Map.Options.DefaultCeilingTexture))
 			{
 				// Find default texture from map
 				foundone = false;
@@ -647,8 +631,8 @@ namespace CodeImp.DoomBuilder.Config
 					// Find one that is known
 					foreach(Sector s in General.Map.Map.Sectors)
 					{
-						defaultceiltexture = s.CeilTexture;
-						if(General.Map.Data.GetFlatExists(defaultceiltexture))
+						General.Map.Options.DefaultCeilingTexture = s.CeilTexture;
+						if(General.Map.Data.GetFlatExists(General.Map.Options.DefaultCeilingTexture))
 						{
 							foundone = true;
 							break;
@@ -664,7 +648,7 @@ namespace CodeImp.DoomBuilder.Config
 						if(s.StartsWith("CEIL"))
 						{
 							foundone = true;
-							defaultceiltexture = s;
+							General.Map.Options.DefaultCeilingTexture = s;
 							break;
 						}
 					}
@@ -674,14 +658,14 @@ namespace CodeImp.DoomBuilder.Config
 				if(!foundone)
 				{
 					if(General.Map.Data.FlatNames.Count > 1)
-						defaultceiltexture = General.Map.Data.FlatNames[1];
+						General.Map.Options.DefaultCeilingTexture = General.Map.Data.FlatNames[1];
 				}
 			}
 
 			// Texture names may not be null
-			if(string.IsNullOrEmpty(defaulttexture)) defaulttexture = "-";
-			if(string.IsNullOrEmpty(defaultfloortexture)) defaultfloortexture = "-";
-			if(string.IsNullOrEmpty(defaultceiltexture)) defaultceiltexture = "-";
+			if(string.IsNullOrEmpty(General.Map.Options.DefaultWallTexture)) General.Map.Options.DefaultWallTexture = "-";
+			if(string.IsNullOrEmpty(General.Map.Options.DefaultFloorTexture)) General.Map.Options.DefaultFloorTexture = "-";
+			if(string.IsNullOrEmpty(General.Map.Options.DefaultCeilingTexture)) General.Map.Options.DefaultCeilingTexture = "-";
 		}
 		
 		#endregion

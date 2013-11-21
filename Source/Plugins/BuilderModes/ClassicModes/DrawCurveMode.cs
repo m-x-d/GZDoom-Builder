@@ -180,7 +180,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 				}
 
 				// Make the drawing
-				if(!Tools.DrawLines(verts, General.Settings.GZForceDefaultTextures, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) //mxd
+				if(!Tools.DrawLines(verts, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) //mxd
 				{
 					// Drawing failed
 					// NOTE: I have to call this twice, because the first time only cancels this volatile mode

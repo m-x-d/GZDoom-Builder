@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
@@ -39,6 +40,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private ICollection<Sector> sectors;
 		private List<SectorProperties> sectorProps; //mxd
 		private bool blockUpdate; //mxd
+
+		//mxd. Window setup stuff
+		private static Point location = Point.Empty;
 
 		private struct SectorProperties //mxd
 		{
@@ -66,6 +70,12 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Initialize
 			InitializeComponent();
+
+			//mxd. Widow setup
+			if(location != Point.Empty) {
+				this.StartPosition = FormStartPosition.Manual;
+				this.Location = location;
+			}
 
 			// Fill effects list
 			effect.AddInfo(General.Map.Config.SortedSectorEffects.ToArray());
@@ -241,6 +251,11 @@ namespace CodeImp.DoomBuilder.Windows
 			effect.Value = EffectBrowserForm.BrowseEffect(this, effect.Value);
 		}
 
+		//mxd
+		private void SectorEditForm_FormClosing(object sender, FormClosingEventArgs e) {
+			location = this.Location;
+		}
+
 		// Help
 		private void SectorEditForm_HelpRequested(object sender, HelpEventArgs hlpevent) {
 			General.ShowHelp("w_sectoredit.html");
@@ -358,5 +373,6 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		#endregion
+
 	}
 }

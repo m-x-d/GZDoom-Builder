@@ -448,5 +448,13 @@ namespace CodeImp.DoomBuilder.Windows
 			selectedset = e.Node;
 			FillImagesList();
 		}
+
+		//mxd
+		private void tvTextureSets_KeyUp(object sender, KeyEventArgs e) {
+			if(tvTextureSets.SelectedNode != selectedset) {
+				selectedset = tvTextureSets.SelectedNode;
+				FillImagesList();
+			}
+		}
 	}
 }

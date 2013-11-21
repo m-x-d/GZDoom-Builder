@@ -76,6 +76,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Dockers
 		private UndoRedoPanel undoredopanel;
 		private Docker undoredodocker;
+		private SectorDrawingOptionsPanel drawingOverridesPanel; //mxd
+		private Docker drawingOverridesDocker; //mxd
 
 		//mxd
 		private ToolStripMenuItem exportToObjMenuItem;
@@ -219,6 +221,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredodocker = new Docker("undoredo", "Undo / Redo", undoredopanel);
 			General.Interface.AddDocker(undoredodocker);
 
+			//mxd. Load Sector Drawing Overrides docker
+			drawingOverridesPanel = new SectorDrawingOptionsPanel();
+			drawingOverridesDocker = new Docker("drawingoverrides", "Draw Settings", drawingOverridesPanel);
+			
 			//mxd. Export to .obj
 			exportToObjMenuItem = new ToolStripMenuItem("Export to .obj...");
 			exportToObjMenuItem.Tag = "exporttoobj";
@@ -279,6 +285,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Clean up
 				General.Interface.RemoveDocker(undoredodocker);
+				General.Interface.RemoveDocker(drawingOverridesDocker); //mxd
 
 				//mxd
 				General.Interface.RemoveMenu(exportToObjMenuItem);
@@ -455,6 +462,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel.UpdateList();
 
 			//mxd
+			General.Interface.AddDocker(drawingOverridesDocker);
+			drawingOverridesPanel.Setup();
+
+			//mxd
 			exportToObjMenuItem.Enabled = true;
 			snapModeMenuItem.Enabled = true;
 			drawLinesModeMenuItem.Enabled = true;
@@ -469,6 +480,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnMapOpenEnd();
 			undoredopanel.SetBeginDescription("Opened Map");
 			undoredopanel.UpdateList();
+
+			//mxd
+			General.Interface.AddDocker(drawingOverridesDocker);
+			drawingOverridesPanel.Setup();
 
 			//mxd
 			exportToObjMenuItem.Enabled = true;
@@ -486,6 +501,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnMapCloseEnd();
 			undoredopanel.UpdateList();
+
+			//mxd
+			General.Interface.RemoveDocker(drawingOverridesDocker);
 
 			//mxd
 			exportToObjMenuItem.Enabled = false;

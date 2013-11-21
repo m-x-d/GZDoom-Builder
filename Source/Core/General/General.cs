@@ -979,7 +979,6 @@ namespace CodeImp.DoomBuilder
 			
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
-			General.Settings.GZForceDefaultTextures = false;//mxd
 			
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
@@ -1021,11 +1020,12 @@ namespace CodeImp.DoomBuilder
 						mainwindow.ShowSplashDisplay();
 					}
 
+					settings.FindDefaultDrawSettings(); //mxd
+
 					// Let the plugins know
 					plugins.OnMapNewEnd();
 
 					// All done
-					settings.FindDefaultDrawSettings();
 					mainwindow.SetupInterface();
 					mainwindow.RedrawDisplay();
 					mainwindow.UpdateThingsFilters();
@@ -1055,8 +1055,6 @@ namespace CodeImp.DoomBuilder
 		{
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
-
-			General.Settings.GZForceDefaultTextures = false;//mxd
 
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
@@ -1124,7 +1122,6 @@ namespace CodeImp.DoomBuilder
 
 				//mxd
 				mainwindow.UpdateGZDoomPanel();
-				General.Settings.GZForceDefaultTextures = false;
 			}
 
 			openfile.Dispose();
@@ -1166,11 +1163,12 @@ namespace CodeImp.DoomBuilder
 
 			if(!map.InitializeSwitchMap(changemapwindow.Options)) return;
 
+			settings.FindDefaultDrawSettings(); //mxd
+
 			// Let the plugins know
 			plugins.OnMapOpenEnd();
 
 			// All done
-			settings.FindDefaultDrawSettings();
 			mainwindow.SetupInterface();
 			mainwindow.RedrawDisplay();
 			mainwindow.UpdateThingsFilters();
@@ -1179,7 +1177,6 @@ namespace CodeImp.DoomBuilder
 
 			//mxd
 			mainwindow.UpdateGZDoomPanel();
-			Settings.GZForceDefaultTextures = false;
 
 			if (errorlogger.IsErrorAdded)
 			{
@@ -1255,11 +1252,12 @@ namespace CodeImp.DoomBuilder
 				mainwindow.ShowSplashDisplay();
 			}
 
+			settings.FindDefaultDrawSettings(); //mxd
+
 			// Let the plugins know
 			plugins.OnMapOpenEnd();
 
 			// All done
-			settings.FindDefaultDrawSettings();
 			mainwindow.SetupInterface();
 			mainwindow.RedrawDisplay();
 			mainwindow.UpdateThingsFilters();

@@ -549,7 +549,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode.CreateUndo("Create middle texture");
 				mode.SetActionResult("Created middle texture.");
 				General.Settings.FindDefaultDrawSettings();
-				Sidedef.SetTextureMid(General.Settings.DefaultTexture);
+				Sidedef.SetTextureMid(General.Map.Options.DefaultWallTexture);
 
 				// Update
 				Sector.Changed = true;
@@ -557,7 +557,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Other side as well
 				if(string.IsNullOrEmpty(Sidedef.Other.MiddleTexture) || (Sidedef.Other.MiddleTexture == "-"))
 				{
-					Sidedef.Other.SetTextureMid(General.Settings.DefaultTexture);
+					Sidedef.Other.SetTextureMid(General.Map.Options.DefaultWallTexture);
 
 					// Update
 					VisualSector othersector = mode.GetVisualSector(Sidedef.Other.Sector);
