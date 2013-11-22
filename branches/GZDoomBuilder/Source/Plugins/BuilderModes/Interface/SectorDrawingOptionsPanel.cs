@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
+﻿#region Namespaces
+
+using System;
 using System.Windows.Forms;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes.Interface
 {
@@ -18,10 +16,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 		}
 
 		public void Setup() {
-			ceilHeight.Text = General.Map.Options.DefaultCeilingHeight.ToString();
-			floorHeight.Text = General.Map.Options.DefaultFloorHeight.ToString();
+			ceilHeight.Text = General.Map.Options.CustomCeilingHeight.ToString();
+			floorHeight.Text = General.Map.Options.CustomFloorHeight.ToString();
 			brightness.StepValues = General.Map.Config.BrightnessLevels;
-			brightness.Text = General.Map.Options.DefaultBrightness.ToString();
+			brightness.Text = General.Map.Options.CustomBrightness.ToString();
 			ceiling.TextureName = General.Map.Options.DefaultCeilingTexture;
 			floor.TextureName = General.Map.Options.DefaultFloorTexture;
 			walls.TextureName = General.Map.Options.DefaultWallTexture;
@@ -80,15 +78,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 		#region Inputs Events
 
 		private void ceilHeight_WhenTextChanged(object sender, EventArgs e) {
-			General.Map.Options.DefaultCeilingHeight = ceilHeight.GetResult(General.Map.Options.DefaultCeilingHeight);
+			General.Map.Options.CustomCeilingHeight = ceilHeight.GetResult(General.Map.Options.CustomCeilingHeight);
 		}
 
 		private void floorHeight_WhenTextChanged(object sender, EventArgs e) {
-			General.Map.Options.DefaultFloorHeight = floorHeight.GetResult(General.Map.Options.DefaultFloorHeight);
+			General.Map.Options.CustomFloorHeight = floorHeight.GetResult(General.Map.Options.CustomFloorHeight);
 		}
 
 		private void brightness_WhenTextChanged(object sender, EventArgs e) {
-			General.Map.Options.DefaultBrightness = General.Clamp(brightness.GetResult(General.Map.Options.DefaultBrightness), 0, 255);
+			General.Map.Options.CustomBrightness = General.Clamp(brightness.GetResult(General.Map.Options.CustomBrightness), 0, 255);
 		}
 
 		private void ceiling_OnValueChanged(object sender, EventArgs e) {
@@ -102,10 +100,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 		private void walls_OnValueChanged(object sender, EventArgs e) {
 			General.Map.Options.DefaultWallTexture = walls.TextureName;
 		}
-
-		/*private void SectorDrawingOptionsPanel_MouseLeave(object sender, EventArgs e) {
-			General.Interface.FocusDisplay();
-		}*/
 
 		#endregion
 

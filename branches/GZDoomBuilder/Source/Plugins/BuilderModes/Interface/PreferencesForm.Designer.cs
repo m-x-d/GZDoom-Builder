@@ -30,6 +30,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.taboptions = new System.Windows.Forms.TabPage();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.label15 = new System.Windows.Forms.Label();
+			this.label14 = new System.Windows.Forms.Label();
+			this.defaultfloorheight = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.label13 = new System.Windows.Forms.Label();
+			this.defaultceilheight = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.label12 = new System.Windows.Forms.Label();
+			this.defaultbrightness = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.label11 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.syncSelection = new System.Windows.Forms.CheckBox();
 			this.dontMoveGeometryOutsideBounds = new System.Windows.Forms.CheckBox();
@@ -61,6 +70,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.heightbysidedef = new System.Windows.Forms.ComboBox();
 			this.tabs.SuspendLayout();
 			this.taboptions.SuspendLayout();
+			this.groupBox4.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
@@ -92,6 +102,107 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.taboptions.TabIndex = 0;
 			this.taboptions.Text = "Editing";
 			this.taboptions.UseVisualStyleBackColor = true;
+			// 
+			// groupBox4
+			// 
+			this.groupBox4.Controls.Add(this.label15);
+			this.groupBox4.Controls.Add(this.label14);
+			this.groupBox4.Controls.Add(this.defaultfloorheight);
+			this.groupBox4.Controls.Add(this.label13);
+			this.groupBox4.Controls.Add(this.defaultceilheight);
+			this.groupBox4.Controls.Add(this.label12);
+			this.groupBox4.Controls.Add(this.defaultbrightness);
+			this.groupBox4.Controls.Add(this.label11);
+			this.groupBox4.Location = new System.Drawing.Point(6, 261);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Size = new System.Drawing.Size(272, 130);
+			this.groupBox4.TabIndex = 19;
+			this.groupBox4.TabStop = false;
+			this.groupBox4.Text = " Default sector values";
+			// 
+			// label15
+			// 
+			this.label15.AutoSize = true;
+			this.label15.Location = new System.Drawing.Point(221, 28);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(27, 14);
+			this.label15.TabIndex = 26;
+			this.label15.Text = "m.u.";
+			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.Location = new System.Drawing.Point(221, 58);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(27, 14);
+			this.label14.TabIndex = 20;
+			this.label14.Text = "m.u.";
+			// 
+			// defaultfloorheight
+			// 
+			this.defaultfloorheight.AllowDecimal = false;
+			this.defaultfloorheight.AllowNegative = true;
+			this.defaultfloorheight.AllowRelative = false;
+			this.defaultfloorheight.ButtonStep = 5;
+			this.defaultfloorheight.ButtonStepFloat = 1F;
+			this.defaultfloorheight.Location = new System.Drawing.Point(156, 23);
+			this.defaultfloorheight.Name = "defaultfloorheight";
+			this.defaultfloorheight.Size = new System.Drawing.Size(59, 24);
+			this.defaultfloorheight.StepValues = null;
+			this.defaultfloorheight.TabIndex = 25;
+			// 
+			// label13
+			// 
+			this.label13.Location = new System.Drawing.Point(41, 28);
+			this.label13.Name = "label13";
+			this.label13.Size = new System.Drawing.Size(110, 14);
+			this.label13.TabIndex = 24;
+			this.label13.Text = "Default floor height:";
+			this.label13.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// defaultceilheight
+			// 
+			this.defaultceilheight.AllowDecimal = false;
+			this.defaultceilheight.AllowNegative = true;
+			this.defaultceilheight.AllowRelative = false;
+			this.defaultceilheight.ButtonStep = 5;
+			this.defaultceilheight.ButtonStepFloat = 1F;
+			this.defaultceilheight.Location = new System.Drawing.Point(156, 53);
+			this.defaultceilheight.Name = "defaultceilheight";
+			this.defaultceilheight.Size = new System.Drawing.Size(59, 24);
+			this.defaultceilheight.StepValues = null;
+			this.defaultceilheight.TabIndex = 23;
+			// 
+			// label12
+			// 
+			this.label12.Location = new System.Drawing.Point(41, 58);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(110, 14);
+			this.label12.TabIndex = 22;
+			this.label12.Text = "Default ceiling height:";
+			this.label12.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// defaultbrightness
+			// 
+			this.defaultbrightness.AllowDecimal = false;
+			this.defaultbrightness.AllowNegative = false;
+			this.defaultbrightness.AllowRelative = false;
+			this.defaultbrightness.ButtonStep = 5;
+			this.defaultbrightness.ButtonStepFloat = 1F;
+			this.defaultbrightness.Location = new System.Drawing.Point(156, 83);
+			this.defaultbrightness.Name = "defaultbrightness";
+			this.defaultbrightness.Size = new System.Drawing.Size(59, 24);
+			this.defaultbrightness.StepValues = null;
+			this.defaultbrightness.TabIndex = 21;
+			// 
+			// label11
+			// 
+			this.label11.Location = new System.Drawing.Point(41, 88);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(110, 14);
+			this.label11.TabIndex = 20;
+			this.label11.Text = "Default brightness:";
+			this.label11.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// groupBox3
 			// 
@@ -435,6 +546,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Text = "PreferencesForm";
 			this.tabs.ResumeLayout(false);
 			this.taboptions.ResumeLayout(false);
+			this.groupBox4.ResumeLayout(false);
+			this.groupBox4.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
