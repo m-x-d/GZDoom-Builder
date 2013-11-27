@@ -18,11 +18,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
-using System.Drawing;
 
 #endregion
 
