@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Map
 		private float size;
 		private PixelColor color;
 		private bool fixedsize;
-		private float iconoffset;	// Arrow or dot coordinate offset on the texture
+		private bool directional; //mxd. If true, we need to render an arrow
 
 		#endregion
 
@@ -80,12 +80,12 @@ namespace CodeImp.DoomBuilder.Map
 		public int Action { get { return action; } set { BeforePropsChange(); action = value; } }
 		public int[] Args { get { return args; } }
 		public float Size { get { return size; } }
-		public float IconOffset { get { return iconoffset; } }
 		public PixelColor Color { get { return color; } }
 		public bool FixedSize { get { return fixedsize; } }
 		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public Sector Sector { get { return sector; } }
 		public bool IsModel { get { return isModel; } } //mxd
+		public bool IsDirectional { get { return directional; } } //mxd
 
 		#endregion
 
@@ -206,7 +206,7 @@ namespace CodeImp.DoomBuilder.Map
 			t.args = (int[])args.Clone();
 			t.size = size;
 			t.color = color;
-			t.iconoffset = iconoffset;
+			t.directional = directional;
 			t.fixedsize = fixedsize;
 
 			base.CopyPropertiesTo(t);
@@ -222,8 +222,6 @@ namespace CodeImp.DoomBuilder.Map
 		// This determines which sector the thing is in and links it
 		public void DetermineSector(VisualBlockMap blockmap)
 		{
-			//Linedef nl;
-
 			// Find nearest sectors using the blockmap
 			List<Sector> possiblesectors = blockmap.GetBlock(blockmap.GetBlockCoordinates(pos)).Sectors;
 
@@ -452,7 +450,8 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			
 			// Apply icon offset (arrow or dot)
-			if(ti.Arrow) iconoffset = 0f; else iconoffset = 0.25f;
+			//if(ti.Arrow) iconoffset = 0f; else iconoffset = 0.25f;
+			directional = ti.Arrow; //mxd
 		}
 		
 		#endregion

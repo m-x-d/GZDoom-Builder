@@ -46,6 +46,18 @@ sampler2D texture1samp = sampler_state
 	MipMapLodBias = -0.9f;
 };
 
+//mxd. Texture sampler settings for sprite rendering
+sampler2D texture1sprite = sampler_state
+{
+	Texture = <texture1>;
+	MagFilter = Point;
+	MinFilter = Point;
+	MipFilter = Point;
+	AddressU = Clamp;
+	AddressV = Clamp;
+	MipMapLodBias = 0.0f;
+};
+
 // Transformation
 PixelData vs_transform(VertexData vd)
 {
@@ -56,24 +68,23 @@ PixelData vs_transform(VertexData vd)
 	return pd;
 }
 
-// Pixel shader for colored circle
-float4 ps_circle(PixelData pd) : COLOR
+//mxd. Pixel shader for sprite drawing
+float4 ps_sprite(PixelData pd) : COLOR
 {
-	// Texture pixel color
-	float4 c = tex2D(texture1samp, pd.uv);
-	
-	// Use shinyness?
-	if(pd.uv.x < 0.4f)
-	{
-		float4 s = tex2D(texture1samp, pd.uv + float2(0.25f, 0.0f));
-		c = float4(lerp(c.rgb * pd.color.rgb, s.rgb, s.a), c.a);
-	}
-	
-	c.a = c.a * pd.color.a * rendersettings.w;
-	return c;
+	// Take this pixel's color
+	float4 c = tex2D(texture1sprite, pd.uv);
+	return float4(c.rgb, c.a * rendersettings.w) * pd.color;
 }
 
-//mxd: pretty darn simple pixel shader for wireframe rendering :)
+//mxd. Pixel shader for thing box and arrow drawing
+float4 ps_thing(PixelData pd) : COLOR
+{
+	// Take this pixel's color
+	float4 c = tex2D(texture1samp, pd.uv);
+	return float4(c.rgb, c.a * rendersettings.w) * pd.color;
+}
+
+//mxd. Pretty darn simple pixel shader for wireframe rendering :)
 float4 ps_fill(PixelData pd) : COLOR {
 	return fillColor;
 }
@@ -81,13 +92,20 @@ float4 ps_fill(PixelData pd) : COLOR {
 // Technique for shader model 2.0
 technique SM20
 {
-	pass p0
+	pass p0 //mxd
 	{
 		VertexShader = compile vs_2_0 vs_transform();
-		PixelShader = compile ps_2_0 ps_circle();
+		PixelShader = compile ps_2_0 ps_thing();
 	}
-	//mxd
-	pass p1
+
+	pass p1 //mxd
+	{
+		VertexShader = compile vs_2_0 vs_transform();
+		PixelShader = compile ps_2_0 ps_sprite();
+	}
+
+
+        pass p2 //mxd
 	{
 		VertexShader = compile vs_2_0 vs_transform();
 		PixelShader = compile ps_2_0 ps_fill();

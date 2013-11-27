@@ -1095,8 +1095,6 @@
       <DependentUpon>ThingsFiltersForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Font.png" />
-    <EmbeddedResource Include="Resources\Thing2D_3.png" />
-    <EmbeddedResource Include="Resources\Thing2D_2.png" />
     <EmbeddedResource Include="Resources\White.png" />
     <EmbeddedResource Include="Resources\Font.cfg" />
     <EmbeddedResource Include="Windows\VertexEditForm.resx">
