@@ -164,6 +164,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// This refreshes the control
 		new public void Refresh()
 		{
+			if(General.Map == null) return;
 			ShowPreview(FindImage(name.Text));
 			base.Refresh();
 		}
