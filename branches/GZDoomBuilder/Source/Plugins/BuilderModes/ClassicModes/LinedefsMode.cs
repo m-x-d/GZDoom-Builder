@@ -468,11 +468,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(General.Interface.IsActiveWindow)
 					{
 						// Show line edit dialog
-						General.Interface.ShowEditLinedefs(selected);
+						DialogResult result = General.Interface.ShowEditLinedefs(selected);
 						General.Map.Map.Update();
 						
 						// When a single line was selected, deselect it now
-						if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
+						if (selected.Count == 1) {
+							General.Map.Map.ClearSelectedLinedefs();
+						} else if(result == DialogResult.Cancel) { //mxd. Restore selection...
+							foreach (Linedef l in selected) l.Selected = true;
+						}
 
 						// Update entire display
 						General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd

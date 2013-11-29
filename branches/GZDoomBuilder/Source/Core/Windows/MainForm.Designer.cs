@@ -1854,7 +1854,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.statuslabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(340, 18);
+			this.statuslabel.Size = new System.Drawing.Size(309, 18);
 			this.statuslabel.Spring = true;
 			this.statuslabel.Text = "Initializing user interface...";
 			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -2094,6 +2094,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.xposlabel.Name = "xposlabel";
 			this.xposlabel.Size = new System.Drawing.Size(50, 18);
 			this.xposlabel.Text = "0";
+			this.xposlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.xposlabel.ToolTipText = "Current X, Y coordinates on map";
 			// 
 			// yposlabel
@@ -2102,6 +2103,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.yposlabel.Name = "yposlabel";
 			this.yposlabel.Size = new System.Drawing.Size(50, 18);
 			this.yposlabel.Text = "0";
+			this.yposlabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.yposlabel.ToolTipText = "Current X, Y coordinates on map";
 			// 
 			// warnsLabel

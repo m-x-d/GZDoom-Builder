@@ -406,14 +406,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						//mxd. Show realtime vertex edit dialog
 						General.Interface.OnEditFormValuesChanged += new EventHandler(vertexEditForm_OnValuesChanged);
-						General.Interface.ShowEditVertices(selected);
+						DialogResult result = General.Interface.ShowEditVertices(selected);
 						General.Interface.OnEditFormValuesChanged -= vertexEditForm_OnValuesChanged;
 
 						// When a single vertex was selected, deselect it now
-						if(selected.Count == 1) {
+						if (selected.Count == 1) {
 							General.Map.Map.ClearSelectedVertices();
-							General.Interface.RedrawDisplay();
+						} else if(result == DialogResult.Cancel) { //mxd. Restore selection...
+							foreach (Vertex v in selected) v.Selected = true;
 						}
+						General.Interface.RedrawDisplay();
 					}
 				}
 
