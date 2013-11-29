@@ -468,6 +468,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
+		//mxd
+		private bool isInSelectionRect(Sector s, List<Line2D> selectionOutline) {
+			bool selected = false;
+			
+			if(BuilderPlug.Me.MarqueSelectTouching) {
+				//check endpoints
+				foreach (Sidedef side in s.Sidedefs) {
+					selected = (selectionrect.Contains(side.Line.Start.Position.x, side.Line.Start.Position.y) 
+						|| selectionrect.Contains(side.Line.End.Position.x, side.Line.End.Position.y));
+					if (selected) return true;
+				}
+
+				//check line intersections
+				foreach (Sidedef side in s.Sidedefs) {
+					foreach (Line2D line in selectionOutline) {
+						if(Line2D.GetIntersection(side.Line.Line, line))
+							return true;
+					}
+				}
+
+				return false;
+			}
+
+			//check endpoints
+			foreach(Sidedef side in s.Sidedefs) {
+				selected = (selectionrect.Contains(side.Line.Start.Position.x, side.Line.Start.Position.y)
+					&& selectionrect.Contains(side.Line.End.Position.x, side.Line.End.Position.y));
+				if(!selected) return false;
+			}
+
+			return selected;
+		}
+
 		#endregion
 		
 		#region ================== Events
@@ -943,140 +976,38 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(selectionvolume)
 			{
+				List<Line2D> selectionOutline = new List<Line2D>() {
+					new Line2D(selectionrect.Left, selectionrect.Top, selectionrect.Right, selectionrect.Top),
+					new Line2D(selectionrect.Right, selectionrect.Top, selectionrect.Right, selectionrect.Bottom),
+					new Line2D(selectionrect.Left, selectionrect.Bottom, selectionrect.Right, selectionrect.Bottom),
+					new Line2D(selectionrect.Left, selectionrect.Bottom, selectionrect.Left, selectionrect.Top)
+				                                                   };
+				
 				//mxd. collect changed sectors
 				if(marqueSelectionMode == MarqueSelectionMode.SELECT){
-					if(BuilderPlug.Me.MarqueSelectTouching) {
-						//select sectors fully and partially inside selection, deselect all other sectors
-						foreach(Sector s in General.Map.Map.Sectors) {
-							bool select = false;
+					bool select;
+					foreach (Sector s in General.Map.Map.Sectors) {
+						select = isInSelectionRect(s, selectionOutline);
 
-							foreach(Sidedef sd in s.Sidedefs) {
-								if(selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
-									select = true;
-									break;
-								}
-							}
-
-							if(select && !s.Selected)
-								SelectSector(s, true, false);
-							else if(!select && s.Selected)
-								SelectSector(s, false, false);
-						}
-					}else{
-						//select sectors fully inside selection, deselect all other sectors
-						foreach(Sector s in General.Map.Map.Sectors) {
-							bool select = true;
-
-							foreach(Sidedef sd in s.Sidedefs) {
-								if(!selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || !selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
-									select = false;
-									break;
-								}
-							}
-
-							if(select && !s.Selected)
-								SelectSector(s, true, false);
-							else if(!select && s.Selected)
-								SelectSector(s, false, false);
-						}
+						if(select && !s.Selected) SelectSector(s, true, false);
+						else if(!select && s.Selected) SelectSector(s, false, false);
 					}
 				}else if(marqueSelectionMode == MarqueSelectionMode.ADD) { //additive selection
-					if(BuilderPlug.Me.MarqueSelectTouching) {
-						//select sectors fully and partially inside selection, leave others untouched 
-						foreach(Sector s in General.Map.Map.Sectors) {
-							if(s.Selected) continue;
-							bool select = false;
-
-							foreach(Sidedef sd in s.Sidedefs) {
-								if(selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
-									select = true;
-									break;
-								}
-							}
-
-							if(select) SelectSector(s, true, false);
-						}
-					}else{
-						//select sectors fully inside selection, leave others untouched 
-						foreach(Sector s in General.Map.Map.Sectors) {
-							if(s.Selected) continue;
-							bool select = true;
-
-							foreach(Sidedef sd in s.Sidedefs) {
-								if(!selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || !selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
-									select = false;
-									break;
-								}
-							}
-
-							if(select) SelectSector(s, true, false);
-						}
+					foreach(Sector s in General.Map.Map.Sectors) {
+						if(!s.Selected && isInSelectionRect(s, selectionOutline))
+							SelectSector(s, true, false);
 					}
-
 				} else if(marqueSelectionMode == MarqueSelectionMode.SUBTRACT) {
-					if(BuilderPlug.Me.MarqueSelectTouching) {
-						//deselect sectors fully and partially inside selection, leave others untouched 
-						foreach(Sector s in General.Map.Map.Sectors) {
-							if(!s.Selected)	continue;
-							bool deselect = false;
-
-							foreach(Sidedef sd in s.Sidedefs) {
-								if(selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
-									deselect = true;
-									break;
-								}
-							}
-
-							if(deselect) SelectSector(s, false, false);
-						}
-					} else {
-						//deselect sectors fully inside selection, leave others untouched 
-						foreach(Sector s in General.Map.Map.Sectors) {
-							if(!s.Selected)	continue;
-							bool deselect = true;
-
-							foreach(Sidedef sd in s.Sidedefs) {
-								if(!selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || !selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
-									deselect = false;
-									break;
-								}
-							}
-
-							if(deselect) SelectSector(s, false, false);
-						}
+					foreach(Sector s in General.Map.Map.Sectors) {
+						if(!s.Selected) continue;
+						if(isInSelectionRect(s, selectionOutline))
+							SelectSector(s, false, false);
 					}
-
 				} else { //should be Intersect
-					if(BuilderPlug.Me.MarqueSelectTouching) {
-						//deselect sectors which are fully outside selection
-						foreach(Sector s in General.Map.Map.Sectors) {
-							if(!s.Selected) continue;
-							bool keep = false;
-
-							foreach(Sidedef sd in s.Sidedefs) {
-								if(selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
-									keep = true;
-									break;
-								}
-							}
-
-							if(!keep) SelectSector(s, false, false);
-						}
-					} else {
-						//deselect sectors which are fully and partially outside selection
-						foreach(Sector s in General.Map.Map.Sectors) {
-							if(!s.Selected) continue;
-							bool keep = true;
-
-							foreach(Sidedef sd in s.Sidedefs) {
-								if(!selectionrect.Contains(sd.Line.Start.Position.x, sd.Line.Start.Position.y) || !selectionrect.Contains(sd.Line.End.Position.x, sd.Line.End.Position.y)) {
-									keep = false;
-									break;
-								}
-							}
-
-							if(!keep) SelectSector(s, false, false);
-						}
+					foreach(Sector s in General.Map.Map.Sectors) {
+						if(!s.Selected) continue;
+						if(!isInSelectionRect(s, selectionOutline)) 
+							SelectSector(s, false, false);
 					}
 				}
 

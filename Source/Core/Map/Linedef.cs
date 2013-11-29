@@ -22,9 +22,6 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Types;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
