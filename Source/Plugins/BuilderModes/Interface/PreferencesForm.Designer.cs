@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox4.Size = new System.Drawing.Size(272, 130);
 			this.groupBox4.TabIndex = 19;
 			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = " Default sector values";
+			this.groupBox4.Text = " Default sector settings";
 			// 
 			// label15
 			// 

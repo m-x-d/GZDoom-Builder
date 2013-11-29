@@ -717,18 +717,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						//mxd. Show realtime vertex edit dialog
 						General.Interface.OnEditFormValuesChanged += new EventHandler(sectorEditForm_OnValuesChanged);
-						General.Interface.ShowEditSectors(selected);
+						DialogResult result = General.Interface.ShowEditSectors(selected);
 						General.Interface.OnEditFormValuesChanged -= sectorEditForm_OnValuesChanged;
 
 						General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 
 						// When a single sector was selected, deselect it now
-						if(selected.Count == 1)
-						{
+						if (selected.Count == 1) {
 							General.Map.Map.ClearSelectedSectors();
 							General.Map.Map.ClearSelectedLinedefs();
-							General.Interface.RedrawDisplay();
+						} else if(result == DialogResult.Cancel) { //mxd. Restore selection...
+							foreach (Sector s in selected) SelectSector(s, true, true);
 						}
+						General.Interface.RedrawDisplay();
 					}
 				}
 

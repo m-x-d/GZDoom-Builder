@@ -411,14 +411,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							//mxd. Show realtime thing edit dialog
 							General.Interface.OnEditFormValuesChanged += new EventHandler(thingEditForm_OnValuesChanged);
-							General.Interface.ShowEditThings(selected);
+							DialogResult result = General.Interface.ShowEditThings(selected);
 							General.Interface.OnEditFormValuesChanged -= thingEditForm_OnValuesChanged;
 
 							// When a single thing was selected, deselect it now
-							if(selected.Count == 1) {
+							if (selected.Count == 1) {
 								General.Map.Map.ClearSelectedThings();
-								General.Interface.RedrawDisplay();
+							} else if(result == DialogResult.Cancel) { //mxd. Restore selection...
+								foreach (Thing t in selected) t.Selected = true;
 							}
+							General.Interface.RedrawDisplay();
 						}
 					}
 				}

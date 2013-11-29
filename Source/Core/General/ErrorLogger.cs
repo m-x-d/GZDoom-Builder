@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Properties
 		
 		public bool HasErrors { get { return (errors.Count > 0); } }
+		public int ErrorsCount { get { return errors.Count; } } //mxd
 		public bool HasChanged { get { return changed; } set { changed = value; } }
 		public bool IsErrorAdded { get { return erroradded; } set { erroradded = value; } }
 		public bool IsWarningAdded { get { return warningadded; } set { warningadded = value; } }

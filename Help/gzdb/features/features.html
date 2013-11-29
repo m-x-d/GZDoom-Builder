@@ -103,10 +103,11 @@
         <li><a href="classic_modes/mode_drawbridge.html">Bridge mode</a>.</li>
         <li><a href="classic_modes/mode_snapelements.html">Snap map elements mode</a>.</li>
         <li><span class="style5">[new]</span> You can place things on top of selected vertices in Vertices and Linedefs modes and inside of selected sectors in Sectors mode useing &quot;<a href="../actions.html#placethings">Place Things</a>&quot; action.</li>
-        <li><span class="style5">[new]</span> You can set, which textures to use when drawing new geometry using &quot;<strong><a href="../actions.html#setdefaulttextures">Set Default Textures</a></strong>&quot; action, available in <strong>Edit</strong> menu (by default, the editor uses textures from closest sector when drawing a new one). 
+        <li><span class="style5">[new]</span> You can override default sector properties, which are used  to create new geometry, using &quot;<strong>Draw Settings</strong>&quot; panel (by default, when the new sector overlaps or touches existing sector, the editor uses textures, brighntess and floor/ceiling heights from that sector when drawing the new one). 
           <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
-          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"> <img src="classic_modes/setdefaulttextures.jpg" alt="" /></div>
+          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"> <img src="classic_modes/draw_settings.jpg" alt="" /></div>
         </li>
+        <li><span class="style5">[new]</span> You can change default sector brightness and floor/ceiling height (<strong>Preferences -&gt; Editing -&gt; Default sector settings</strong>). These settings are used when the new sector doesn't touch or overlap already existing sectors.</li>
         <li><span class="style5">[new]</span> 3D floor indication (color can be changed in <strong>Preferences -&gt; Appearance -&gt; 3D Floors</strong>, the setting can be disabled in <a href="../preferences.html#markextrafloors">Preferences</a>). 
           <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
           <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"> <img src="classic_modes/3dfloor_marks.jpg" alt="" /></div>

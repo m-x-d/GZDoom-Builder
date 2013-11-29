@@ -166,7 +166,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private int lockupdatecount;
 
 		//mxd
-		private int warningsCount;
 		private System.Timers.Timer blinkTimer; 
 		
 		#endregion
@@ -244,6 +243,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// Keep last position and size
 			lastposition = this.Location;
 			lastsize = this.Size;
+
+			//mxd
+			blinkTimer = new System.Timers.Timer();
+			blinkTimer.Interval = 500;
+			blinkTimer.Elapsed += blinkTimer_Elapsed;
 		}
 		
 		#endregion
@@ -572,6 +576,7 @@ namespace CodeImp.DoomBuilder.Windows
 					// Stop timers
 					statusflasher.Stop();
 					statusresetter.Stop();
+					blinkTimer.Stop(); //mxd
 
 					// Stop exclusive mode, if any is active
 					StopExclusiveMouseInput();
@@ -2592,7 +2597,7 @@ namespace CodeImp.DoomBuilder.Windows
 			errform.ShowDialog(this);
 			errform.Dispose();
 			//mxd
-			SetWarningsCount(0, false);
+			SetWarningsCount(General.ErrorLogger.ErrorsCount, false);
 		}
 		
 		// Game Configuration action
@@ -3088,41 +3093,27 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd. Warnings panel
 		internal void SetWarningsCount(int count, bool blink) {
-			warningsCount = count;
-
-			if(warningsCount > 0) {
-				if(!warnsLabel.Font.Bold){
-					warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Bold);
-					warnsLabel.Image = Resources.Warning;
-				}
+			if(count > 0) {
+				if (warnsLabel.Image != Resources.Warning) warnsLabel.Image = Resources.Warning;
 			} else {
-				warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);
 				warnsLabel.Image = Resources.WarningOff;
 				warnsLabel.BackColor = SystemColors.Control;
 			}
 
-			warnsLabel.Text = warningsCount.ToString();
+			warnsLabel.Text = count.ToString();
 			
 			//start annoying blinking!
-			if(blink && blinkTimer == null) {
-				blinkTimer = new System.Timers.Timer();
-				blinkTimer.Interval = 500;
-				blinkTimer.Elapsed += new System.Timers.ElapsedEventHandler(blinkTimer_Elapsed);
-				blinkTimer.Enabled = true;
+			if (blink) {
+				if(!blinkTimer.Enabled) blinkTimer.Start();
+			} else {
+				blinkTimer.Stop();
+				warnsLabel.BackColor = SystemColors.Control;
 			}
 		}
 
 		//mxd. Bliks warnings indicator
 		private void blink() {
-			if(warnsLabel.BackColor == Color.Red) {
-				warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Regular);
-				warnsLabel.Image = Resources.WarningOff;
-				warnsLabel.BackColor = SystemColors.Control;
-			} else {
-				warnsLabel.Font = new Font(warnsLabel.Font, FontStyle.Bold);
-				warnsLabel.Image = Resources.Warning;
-				warnsLabel.BackColor = Color.Red;
-			}
+			warnsLabel.BackColor = (warnsLabel.BackColor == Color.Red ? SystemColors.Control : Color.Red);
 		}
 
 		//mxd
@@ -3132,19 +3123,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		private void blinkTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-			if(warningsCount > 0) {
-				if (!this.Disposing && blinkTimer != null) {
-					try {
-						this.Invoke(new CallBlink(blink));
-					} catch(ObjectDisposedException) { } //la-la-la. We don't care.
-				}
-			} else {
-				//get rid of timer
-				blinkTimer.Stop();
-				blinkTimer.Elapsed -= blinkTimer_Elapsed;
-				blinkTimer.Dispose();
-				blinkTimer = null;
-			}
+			try {
+				this.Invoke(new CallBlink(blink));
+			} catch(ObjectDisposedException) { } //la-la-la. We don't care.
 		}
 		
 		#endregion
