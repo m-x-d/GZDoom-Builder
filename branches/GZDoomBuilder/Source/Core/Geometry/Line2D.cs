@@ -90,6 +90,11 @@ namespace CodeImp.DoomBuilder.Geometry
 			return new Vector2D(dx, dy).GetNormal();
 		}
 
+		//mxd. This tests if given lines intersects
+		public static bool GetIntersection(Line2D line1, Line2D line2) {
+			return GetIntersection(line1.v1, line1.v2, line2.v1.x, line2.v1.y, line2.v2.x, line2.v2.y);
+		}
+
 		// This tests if the line intersects with the given line coordinates
 		public static bool GetIntersection(Vector2D v1, Vector2D v2, float x3, float y3, float x4, float y4)
 		{
