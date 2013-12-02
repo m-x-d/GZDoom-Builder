@@ -342,32 +342,29 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
-			// Process flats
-			foreach(KeyValuePair<long, ImageData> f in flatsonly)
-			{
-				flats.Add(f.Key, f.Value);
-				flatnames.Add(f.Value.Name);
-			}
-
 			// Mixed textures and flats?
-			if(General.Map.Config.MixTexturesFlats)
-			{
+			if (General.Map.Config.MixTexturesFlats) {
 				// Add flats to textures
-				foreach(KeyValuePair<long, ImageData> f in flatsonly)
-				{
-					if(!textures.ContainsKey(f.Key))
-					{
+				foreach (KeyValuePair<long, ImageData> f in flatsonly) {
+					if (!textures.ContainsKey(f.Key)) {
 						textures.Add(f.Key, f.Value);
 						texturenames.Add(f.Value.Name);
+					} else {
+						//mxd. If there are flats with the same name as textures - add them to flats
+						flats.Add(f.Key, f.Value);
+						flatnames.Add(f.Value.Name);
 					}
 				}
 
-				flats.Clear(); //mxd
-				flatnames.Clear(); //mxd
-
 				// Do the same on the data readers
-				foreach(DataReader dr in containers)
+				foreach (DataReader dr in containers)
 					dr.TextureSet.MixTexturesAndFlats();
+			} else {
+				// Process flats
+				foreach(KeyValuePair<long, ImageData> f in flatsonly) {
+					flats.Add(f.Key, f.Value);
+					flatnames.Add(f.Value.Name);
+				}
 			}
 			
 			// Sort names
@@ -704,11 +701,9 @@ namespace CodeImp.DoomBuilder.Data
 				}
 
 				// Set used on all flats
-				if(!General.Map.Config.MixTexturesFlats) {
-					foreach(KeyValuePair<long, ImageData> i in flats) {
-						i.Value.SetUsedInMap(usedimages.ContainsKey(i.Key));
-						if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
-					}
+				foreach(KeyValuePair<long, ImageData> i in flats) {
+					i.Value.SetUsedInMap(usedimages.ContainsKey(i.Key));
+					if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
 				}
 				
 				// Done
@@ -980,13 +975,13 @@ namespace CodeImp.DoomBuilder.Data
 		public bool GetFlatExists(string name)
 		{
 			long longname = Lump.MakeLongName(name);
-			return General.Map.Config.MixTexturesFlats ? textures.ContainsKey(longname) : flats.ContainsKey(longname);
+			return General.Map.Config.MixTexturesFlats ? flats.ContainsKey(longname) || textures.ContainsKey(longname) : flats.ContainsKey(longname);
 		}
 
 		// This checks if a flat is known
 		public bool GetFlatExists(long longname)
 		{
-			return General.Map.Config.MixTexturesFlats ? textures.ContainsKey(longname) : flats.ContainsKey(longname);
+			return General.Map.Config.MixTexturesFlats ? flats.ContainsKey(longname) || textures.ContainsKey(longname) : flats.ContainsKey(longname);
 		}
 		
 		// This returns an image by string
@@ -1000,16 +995,12 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns an image by long
 		public ImageData GetFlatImage(long longname)
 		{
-			if(General.Map.Config.MixTexturesFlats) { //mxd
-				// Does this flat exist?
-				if(textures.ContainsKey(longname)) {
-					// Return flat
-					return textures[longname];
-				}
-			} else if(flats.ContainsKey(longname)) { // Does this flat exist?
-				// Return flat
-				return flats[longname];
-			}
+			// Does this flat exist?
+			if(flats.ContainsKey(longname)) return flats[longname];
+
+			//mxd. Probably a texture will do? 
+			if(General.Map.Config.MixTexturesFlats && textures.ContainsKey(longname)) 
+				return textures[longname];
 
 			// Return null image
 			return unknownImage; //mxd
@@ -1018,8 +1009,14 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns an image by long and doesn't check if it exists
 		public ImageData GetFlatImageKnown(long longname)
 		{
+			//mxd. Err... can't it do without checks...
+			if(General.Map.Config.MixTexturesFlats) {
+				if(flats.ContainsKey(longname)) return flats[longname];
+				return textures[longname];
+			}
+			
 			// Return flat
-			return General.Map.Config.MixTexturesFlats ? textures[longname] : flats[longname]; //mxd
+			return flats[longname]; //mxd
 		}
 		
 		#endregion

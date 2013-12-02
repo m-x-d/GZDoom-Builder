@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// set to be sky
 				if (sd.HighRequired() && sd.HighTexture == "-")
 				{
+					if(sd.Line.Action == 181 && sd.Line.Args[1] > 0) continue; //mxd. Ceiling slopes doesn't require upper texture
 					if (sd.Other != null && sd.Other.Sector.CeilTexture != General.Map.Config.SkyFlatName)
 					{
 						SubmitResult(new ResultMissingTexture(sd, SidedefPart.Upper));
@@ -76,6 +77,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// set to be sky
 				if (sd.LowRequired() && sd.LowTexture == "-")
 				{
+					if(sd.Line.Action == 181 && sd.Line.Args[0] > 0) continue; //mxd. Floor slopes doesn't require lower texture
 					if (sd.Other != null && sd.Other.Sector.FloorTexture != General.Map.Config.SkyFlatName)
 					{
 						SubmitResult(new ResultMissingTexture(sd, SidedefPart.Lower));

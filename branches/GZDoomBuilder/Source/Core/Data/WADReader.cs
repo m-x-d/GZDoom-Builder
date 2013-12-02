@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		// Lump ranges
 		private List<LumpRange> flatranges;
+		private List<LumpRange> invertedflatranges; //mxd
 		private List<LumpRange> patchranges;
 		private List<LumpRange> spriteranges;
 		private List<LumpRange> textureranges;
@@ -92,6 +93,33 @@ namespace CodeImp.DoomBuilder.Data
 			FindRanges(flatranges, General.Map.Config.FlatRanges, "flats");
 			FindRanges(textureranges, General.Map.Config.TextureRanges, "textures");
 			FindRanges(colormapranges, General.Map.Config.ColormapRanges, "colormaps");
+
+			//mxd
+			invertedflatranges = new List<LumpRange>();
+
+			if(flatranges.Count > 0 && flatranges[0].start > 0) {
+				LumpRange range = new LumpRange();
+				range.start = 0;
+				range.end = flatranges[0].start - 1;
+				invertedflatranges.Add(range);
+			}
+
+			for (int i = 0; i < flatranges.Count; i++) {
+				if (flatranges[i].start == 0) continue;
+				LumpRange range = new LumpRange();
+
+				if(i == flatranges.Count - 1) {
+					if (flatranges[i].end < file.Lumps.Count - 1) {
+						range.start = flatranges[i].end + 1;
+						range.end = file.Lumps.Count - 1;
+						invertedflatranges.Add(range);
+					}
+				} else {
+					range.start = flatranges[i - 1].end + 1;
+					range.end = flatranges[i].start - 1;
+					invertedflatranges.Add(range);
+				}
+			}
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -445,8 +473,8 @@ namespace CodeImp.DoomBuilder.Data
 				}
 
 				// Determine actual scales
-				if(scalebytex == 0) scalex = defaultscale; else scalex = 1f / ((float)scalebytex / 8f);
-				if(scalebytey == 0) scaley = defaultscale; else scaley = 1f / ((float)scalebytey / 8f);
+				if(scalebytex == 0) scalex = defaultscale; else scalex = 1f / (scalebytex / 8f);
+				if(scalebytey == 0) scaley = defaultscale; else scaley = 1f / (scalebytey / 8f);
 				
 				// Validate data
 				if((width > 0) && (height > 0) && (patches > 0) &&
@@ -532,22 +560,23 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			// Strictly read patches only between P_START and P_END?
-			if(strictpatches)
-			{
-				// Find the lump in ranges
-				foreach(LumpRange range in patchranges)
-				{
+			// mxd. First strictly read patches between P_START and P_END
+			foreach(LumpRange range in patchranges) {
+				lump = file.FindLump(pname, range.start, range.end);
+				if(lump != null) return lump.Stream;
+			}
+			
+			if (!strictpatches) {
+				//mxd. Find the lump anywhere EXCEPT flat ranges (the way it's done in ZDoom)
+				foreach (LumpRange range in invertedflatranges) {
 					lump = file.FindLump(pname, range.start, range.end);
 					if(lump != null) return lump.Stream;
 				}
-			}
-			else
-			{
-				// Find the lump anywhere
-				lump = file.FindLump(pname);
-				if (lump != null) {
-					return lump.Stream;
+
+				// Find the lump anywhere IN flat ranges
+				foreach (LumpRange range in flatranges) {
+					lump = file.FindLump(pname, range.start, range.end);
+					if(lump != null) return lump.Stream;
 				}
 			}
 			
@@ -623,11 +652,7 @@ namespace CodeImp.DoomBuilder.Data
 		private void LoadFlatsRange(string startlump, string endlump, ref List<ImageData> images)
 		{
 			int startindex, endindex;
-			float defaultscale;
 			FlatImage image;
-
-			// Determine default scale
-			defaultscale = General.Map.Config.DefaultTextureScale;
 
 			// Continue until no more start can be found
 			startindex = file.FindLumpIndex(startlump);

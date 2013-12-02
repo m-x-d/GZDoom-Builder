@@ -43,68 +43,65 @@ namespace CodeImp.DoomBuilder.Data
 		// This check image data and returns the appropriate image reader
 		public static IImageReader GetImageReader(Stream data, int guessformat, Playpal palette)
 		{
-			DoomPictureReader picreader;
-			DoomFlatReader flatreader;
-			DoomColormapReader colormapreader;
-			
-			// First check the formats that provide the means to 'ensure' that
-			// it actually is that format. Then guess the Doom image format.
-
-			// Data long enough to check for signatures?
-			if(data.Length > 10)
-			{
-				// Check for PNG signature
-				data.Seek(0, SeekOrigin.Begin);
-				if(CheckSignature(data, PNG_SIGNATURE)) return new FileImageReader(DevilImageType.IL_PNG);
-
-				// Check for DDS signature
-				data.Seek(0, SeekOrigin.Begin);
-				if (CheckSignature(data, DDS_SIGNATURE)) return new FileImageReader(DevilImageType.IL_DDS);
-
-				// Check for GIF signature
-				data.Seek(0, SeekOrigin.Begin);
-				if (CheckSignature(data, GIF_SIGNATURE)) return new FileImageReader(DevilImageType.IL_GIF);
-
-				//mxd. Check for PCX signature
-				data.Seek(0, SeekOrigin.Begin);
-				if (CheckSignature(data, PCX_SIGNATURE)) return new FileImageReader(DevilImageType.IL_PCX);
-
-				//mxd. Check for JPG signature
-				data.Seek(0, SeekOrigin.Begin);
-				if (CheckSignature(data, JPG_SIGNATURE)) return new FileImageReader(DevilImageType.IL_JPG);
-
-				//mxd. Check for TGA signature
-				data.Seek(0, SeekOrigin.Begin);
-				if (CheckSignature(data, TGA_SIGNATURE)) return new FileImageReader(DevilImageType.IL_TGA);
-
-				// Check for BMP signature
-				data.Seek(0, SeekOrigin.Begin);
-				if (CheckSignature(data, BMP_SIGNATURE)) return new UnknownImageReader(); //mxd. Not supported in (G)ZDoom
-			}
-			
+			//mxd. Try to read it as "classic" image format first...
 			// Could it be a doom picture?
-			if(guessformat == DOOMPICTURE)
-			{
+			if(guessformat == DOOMPICTURE) {
 				// Check if data is valid for a doom picture
 				data.Seek(0, SeekOrigin.Begin);
-				picreader = new DoomPictureReader(palette);
+				DoomPictureReader picreader = new DoomPictureReader(palette);
 				if(picreader.Validate(data)) return picreader;
 			}
 			// Could it be a doom flat?
-			else if(guessformat == DOOMFLAT)
-			{
+			else if(guessformat == DOOMFLAT) {
 				// Check if data is valid for a doom flat
 				data.Seek(0, SeekOrigin.Begin);
-				flatreader = new DoomFlatReader(palette);
+				DoomFlatReader flatreader = new DoomFlatReader(palette);
 				if(flatreader.Validate(data)) return flatreader;
 			}
 			// Could it be a doom colormap?
-			else if(guessformat == DOOMCOLORMAP)
-			{
+			else if(guessformat == DOOMCOLORMAP) {
 				// Check if data is valid for a doom colormap
 				data.Seek(0, SeekOrigin.Begin);
-				colormapreader = new DoomColormapReader(palette);
+				DoomColormapReader colormapreader = new DoomColormapReader(palette);
 				if(colormapreader.Validate(data)) return colormapreader;
+			}
+
+			// Data long enough to check for signatures?
+			if(data.Length > 10) {
+				// Check for PNG signature
+				data.Seek(0, SeekOrigin.Begin);
+				if(CheckSignature(data, PNG_SIGNATURE))
+					return new FileImageReader(DevilImageType.IL_PNG);
+
+				// Check for DDS signature
+				data.Seek(0, SeekOrigin.Begin);
+				if(CheckSignature(data, DDS_SIGNATURE))
+					return new FileImageReader(DevilImageType.IL_DDS);
+
+				// Check for GIF signature
+				data.Seek(0, SeekOrigin.Begin);
+				if(CheckSignature(data, GIF_SIGNATURE))
+					return new FileImageReader(DevilImageType.IL_GIF);
+
+				//mxd. Check for PCX signature
+				data.Seek(0, SeekOrigin.Begin);
+				if(CheckSignature(data, PCX_SIGNATURE))
+					return new FileImageReader(DevilImageType.IL_PCX);
+
+				//mxd. Check for JPG signature
+				data.Seek(0, SeekOrigin.Begin);
+				if(CheckSignature(data, JPG_SIGNATURE))
+					return new FileImageReader(DevilImageType.IL_JPG);
+
+				//mxd. Check for TGA signature
+				data.Seek(0, SeekOrigin.Begin);
+				if(CheckSignature(data, TGA_SIGNATURE))
+					return new FileImageReader(DevilImageType.IL_TGA);
+
+				// Check for BMP signature
+				data.Seek(0, SeekOrigin.Begin);
+				if(CheckSignature(data, BMP_SIGNATURE))
+					return new UnknownImageReader(); //mxd. Not supported in (G)ZDoom
 			}
 			
 			// Format not supported
