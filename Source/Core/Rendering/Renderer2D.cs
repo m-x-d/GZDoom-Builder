@@ -1175,8 +1175,11 @@ namespace CodeImp.DoomBuilder.Rendering
 					if(info.Sprite.Length == 0) continue;
 
 					ImageData sprite = General.Map.Data.GetSpriteImage(info.Sprite);
-					if(sprite == null) continue;
-					if(!sprite.IsImageLoaded) sprite.LoadImage();
+					if (sprite == null) continue; 
+					if (!sprite.IsImageLoaded) {
+						sprite.SetUsedInMap(true);
+						continue;
+					}
 					if(sprite.Texture == null) sprite.CreateTexture();
 
 					graphics.Device.SetTexture(0, sprite.Texture);

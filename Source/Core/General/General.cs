@@ -199,6 +199,7 @@ namespace CodeImp.DoomBuilder
 		public static string TempPath { get { return temppath; } }
 		public static string ConfigsPath { get { return configspath; } }
 		internal static string SettingsPath { get { return settingspath; } } //mxd
+		internal static string LogFile { get { return logfile; } } //mxd
 		public static string CompilersPath { get { return compilerspath; } }
 		public static string PluginsPath { get { return pluginspath; } }
 		public static string SpritesPath { get { return spritespath; } }

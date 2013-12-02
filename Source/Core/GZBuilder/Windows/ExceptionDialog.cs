@@ -17,7 +17,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			Exception ex = (Exception)e.ExceptionObject;
 			errorDescription.Text = "Error in " + ex.Source + ":";
 			using(StreamWriter sw = File.CreateText(logPath)) {
-				sw.Write(ex.Source + ": " + ex.Message + Environment.NewLine + ex.StackTrace);
+				sw.Write(getExceptionDescription(ex));
 			}
 
 			errorMessage.Text = ex.Message + Environment.NewLine + ex.StackTrace;
@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			logPath = Path.Combine(General.SettingsPath, @"GZCrash.txt");
 			errorDescription.Text = "Error in " + e.Exception.Source + ":";
 			using(StreamWriter sw = File.CreateText(logPath)) {
-				sw.Write(e.Exception.Source + ": " + e.Exception.Message + Environment.NewLine + e.Exception.StackTrace);
+				sw.Write(getExceptionDescription(e.Exception));
 			}
 
 			errorMessage.Text = e.Exception.Message + Environment.NewLine + e.Exception.StackTrace;
@@ -96,6 +96,22 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 								  "Pinky says that you're the new hope. Bear that in mind.",
 							  };
 			this.Text = titles[new Random().Next(0, titles.Length - 1)];
+		}
+
+		private string getExceptionDescription(Exception ex) {
+			string message = "********EXCEPTION DETAILS********"
+							 + Environment.NewLine + ex.Source + ": " + ex.Message + Environment.NewLine + ex.StackTrace;
+
+			if(File.Exists(General.LogFile)) {
+				try {
+					string[] lines = File.ReadAllLines(General.LogFile);
+					message += Environment.NewLine + "********ACTIONS LOG********";
+					for(int i = lines.Length - 1; i > -1; i--)
+						message += Environment.NewLine + lines[i];
+				} catch(Exception) { }
+			}
+
+			return message;
 		}
 
 		private void reportLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {

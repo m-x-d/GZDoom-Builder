@@ -358,7 +358,7 @@ namespace CodeImp.DoomBuilder
 				Thread.Sleep(100);
 
 				if (retries++ > 50) { //that's 5 seconds, right?
-					DialogResult result = General.ShowErrorMessage("Unable to reset D3D device." + Environment.NewLine + "Press Abort to quit," + Environment.NewLine + " Retry to wait some more," + Environment.NewLine + "Ignore to proceed anyway (high chances of D3DException)", MessageBoxButtons.AbortRetryIgnore);
+					DialogResult result = General.ShowErrorMessage("Unable to reset D3D device." + Environment.NewLine + "Press Abort to quit," + Environment.NewLine + "Retry to wait and retry," + Environment.NewLine + "Ignore to proceed anyway (high chances of D3DException)", MessageBoxButtons.AbortRetryIgnore);
 					if(result == DialogResult.Abort) {
 						General.Exit(true);
 					} else if (result == DialogResult.Retry) {
