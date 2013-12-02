@@ -598,20 +598,22 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 
 				//and arrow
-				float sx = t.CageScales.M11;
-				Matrix arrowScaler = Matrix.Scaling(sx, sx, sx); //scale arrow evenly based on thing width\depth
-				if(t.Sizeless) {
-					world = Matrix.Multiply(arrowScaler, t.Position);
-				} else {
-					world = Matrix.Multiply(arrowScaler, t.Position * Matrix.Translation(0.0f, 0.0f, t.CageScales.M33 / 2));
-				}
-				Matrix rot = Matrix.RotationZ(t.Thing.Angle - Angle2D.PI / 2);
-				world = Matrix.Multiply(rot, world);
-				ApplyMatrices3D();
+				if (t.Thing.IsDirectional) {
+					float sx = t.CageScales.M11;
+					Matrix arrowScaler = Matrix.Scaling(sx, sx, sx); //scale arrow evenly based on thing width\depth
+					if (t.Sizeless) {
+						world = Matrix.Multiply(arrowScaler, t.Position);
+					} else {
+						world = Matrix.Multiply(arrowScaler, t.Position * Matrix.Translation(0.0f, 0.0f, t.CageScales.M33 / 2));
+					}
+					Matrix rot = Matrix.RotationZ(t.Thing.Angle - Angle2D.PI / 2);
+					world = Matrix.Multiply(rot, world);
+					ApplyMatrices3D();
 
-				graphics.Shaders.World3D.ApplySettings();
-				graphics.Device.SetStreamSource(0, bbox.Arrow, 0, WorldVertex.Stride);
-				graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 5);
+					graphics.Shaders.World3D.ApplySettings();
+					graphics.Device.SetStreamSource(0, bbox.Arrow, 0, WorldVertex.Stride);
+					graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 5);
+				}
 			}
 
 			// Done
