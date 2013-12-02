@@ -93,13 +93,17 @@ namespace CodeImp.DoomBuilder.Config
 		// Mix the textures and flats
 		internal void MixTexturesAndFlats()
 		{
+			Dictionary<long, ImageData> newflats = new Dictionary<long, ImageData>(); //mxd
+			
 			// Add flats to textures
 			foreach(KeyValuePair<long, ImageData> f in flats) {
 				if(!textures.ContainsKey(f.Key))
 					textures.Add(f.Key, f.Value);
+				else
+					newflats.Add(f.Key, f.Value); //mxd
 			}
 
-			flats.Clear(); //mxd
+			flats = newflats; //mxd
 		}
 		
 		#endregion

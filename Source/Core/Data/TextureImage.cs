@@ -118,13 +118,19 @@ namespace CodeImp.DoomBuilder.Data
 							reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMPICTURE, General.Map.Data.Palette);
 							if(reader is UnknownImageReader)
 							{
-								// Data is in an unknown format!
-								General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'. Does this lump contain valid picture data at all?");
-								loadfailed = true;
-								failCount++; //mxd
+								//mxd. Probably that's a flat?..
+								if (General.Map.Config.MixTexturesFlats) {
+									reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMFLAT, General.Map.Data.Palette);
+								}
+								if (reader is UnknownImageReader) {
+									// Data is in an unknown format!
+									General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'. Does this lump contain valid picture data at all?");
+									loadfailed = true;
+									failCount++; //mxd
+								}
 							}
-							else
-							{
+
+							if(!(reader is UnknownImageReader)) {
 								// Draw the patch
 								mem.Seek(0, SeekOrigin.Begin);
 								try { reader.DrawToPixelData(mem, pixels, width, height, p.x, p.y); }
