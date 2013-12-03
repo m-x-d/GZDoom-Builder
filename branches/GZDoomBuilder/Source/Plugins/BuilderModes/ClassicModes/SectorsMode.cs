@@ -606,7 +606,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
 					renderer.PlotSector(highlighted, General.Colors.Highlight);
-					BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
+					if(!panning) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
 				}
 				renderer.Finish();
 			}
@@ -619,16 +619,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.Finish();
 			}
 
+			// Render overlay
+			UpdateOverlay();
+
 			// Render selection
-			if(renderer.StartOverlay(true))
+			if(renderer.StartOverlay(false)) 
 			{
-				if(highlighted != null && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
+				if(!panning && highlighted != null && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
 				if(selecting) RenderMultiSelection();
 				renderer.Finish();
 			}
-
-			// Render overlay
-			UpdateOverlay();
 			
 			renderer.Present();
 		}
