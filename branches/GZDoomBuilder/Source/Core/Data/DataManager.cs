@@ -113,9 +113,9 @@ namespace CodeImp.DoomBuilder.Data
 		public Playpal Palette { get { return palette; } }
 		public PreviewManager Previews { get { return previews; } }
 		public ICollection<ImageData> Textures { get { return textures.Values; } }
-		public ICollection<ImageData> Flats { get { return (General.Map.Config.MixTexturesFlats ? textures.Values : flats.Values); } } //mxd
+		public ICollection<ImageData> Flats { get { return flats.Values; } }
 		public List<string> TextureNames { get { return texturenames; } }
-		public List<string> FlatNames { get { return (General.Map.Config.MixTexturesFlats ? texturenames : flatnames); } } //mxd
+		public List<string> FlatNames { get { return flatnames; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public ImageData MissingTexture3D { get { return missingtexture3d; } }
 		public ImageData UnknownTexture3D { get { return unknowntexture3d; } }
@@ -342,29 +342,38 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
+			// Process flats
+			foreach(KeyValuePair<long, ImageData> f in flatsonly) 
+			{
+				flats.Add(f.Key, f.Value);
+				flatnames.Add(f.Value.Name);
+			}
+
 			// Mixed textures and flats?
 			if (General.Map.Config.MixTexturesFlats) {
+				// Add textures to flats
+				foreach(KeyValuePair<long, ImageData> t in texturesonly) 
+				{
+					if(!flats.ContainsKey(t.Key)) 
+					{
+						flats.Add(t.Key, t.Value);
+						flatnames.Add(t.Value.Name);
+					}
+				}
+
 				// Add flats to textures
-				foreach (KeyValuePair<long, ImageData> f in flatsonly) {
-					if (!textures.ContainsKey(f.Key)) {
+				foreach(KeyValuePair<long, ImageData> f in flatsonly) 
+				{
+					if(!textures.ContainsKey(f.Key)) 
+					{
 						textures.Add(f.Key, f.Value);
 						texturenames.Add(f.Value.Name);
-					} else {
-						//mxd. If there are flats with the same name as textures - add them to flats
-						flats.Add(f.Key, f.Value);
-						flatnames.Add(f.Value.Name);
 					}
 				}
 
 				// Do the same on the data readers
 				foreach (DataReader dr in containers)
 					dr.TextureSet.MixTexturesAndFlats();
-			} else {
-				// Process flats
-				foreach(KeyValuePair<long, ImageData> f in flatsonly) {
-					flats.Add(f.Key, f.Value);
-					flatnames.Add(f.Value.Name);
-				}
 			}
 			
 			// Sort names
@@ -975,13 +984,13 @@ namespace CodeImp.DoomBuilder.Data
 		public bool GetFlatExists(string name)
 		{
 			long longname = Lump.MakeLongName(name);
-			return General.Map.Config.MixTexturesFlats ? flats.ContainsKey(longname) || textures.ContainsKey(longname) : flats.ContainsKey(longname);
+			return flats.ContainsKey(longname);
 		}
 
 		// This checks if a flat is known
 		public bool GetFlatExists(long longname)
 		{
-			return General.Map.Config.MixTexturesFlats ? flats.ContainsKey(longname) || textures.ContainsKey(longname) : flats.ContainsKey(longname);
+			return flats.ContainsKey(longname);
 		}
 		
 		// This returns an image by string
@@ -997,11 +1006,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Does this flat exist?
 			if(flats.ContainsKey(longname)) return flats[longname];
-
-			//mxd. Probably a texture will do? 
-			if(General.Map.Config.MixTexturesFlats && textures.ContainsKey(longname)) 
-				return textures[longname];
-
+			
 			// Return null image
 			return unknownImage; //mxd
 		}
@@ -1009,14 +1014,8 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns an image by long and doesn't check if it exists
 		public ImageData GetFlatImageKnown(long longname)
 		{
-			//mxd. Err... can't it do without checks...
-			if(General.Map.Config.MixTexturesFlats) {
-				if(flats.ContainsKey(longname)) return flats[longname];
-				return textures[longname];
-			}
-			
 			// Return flat
-			return flats[longname]; //mxd
+			return flats[longname];
 		}
 		
 		#endregion

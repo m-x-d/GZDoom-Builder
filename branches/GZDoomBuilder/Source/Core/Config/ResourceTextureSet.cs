@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Properties
 		
 		public ICollection<ImageData> Textures { get { return textures.Values; } }
-		public ICollection<ImageData> Flats { get { return General.Map.Config.MixTexturesFlats ? textures.Values : flats.Values; } }
+		public ICollection<ImageData> Flats { get { return flats.Values; } }
 		public DataLocation Location { get { return location; } }
 		
 		#endregion
@@ -86,24 +86,26 @@ namespace CodeImp.DoomBuilder.Config
 		// Check if this set has a flat
 		internal bool FlatExists(ImageData image)
 		{
-			if(General.Map.Config.MixTexturesFlats) return textures.ContainsKey(image.LongName); //mxd
 			return flats.ContainsKey(image.LongName);
 		}
 
 		// Mix the textures and flats
 		internal void MixTexturesAndFlats()
 		{
-			Dictionary<long, ImageData> newflats = new Dictionary<long, ImageData>(); //mxd
-			
-			// Add flats to textures
-			foreach(KeyValuePair<long, ImageData> f in flats) {
-				if(!textures.ContainsKey(f.Key))
-					textures.Add(f.Key, f.Value);
-				else
-					newflats.Add(f.Key, f.Value); //mxd
+			// Make a copy of the flats only
+			Dictionary<long, ImageData> flatsonly = new Dictionary<long, ImageData>(flats);
+
+			// Add textures to flats
+			foreach(KeyValuePair<long, ImageData> t in textures) 
+			{
+				if(!flats.ContainsKey(t.Key)) flats.Add(t.Key, t.Value);
 			}
 
-			flats = newflats; //mxd
+			// Add flats to textures
+			foreach(KeyValuePair<long, ImageData> f in flatsonly) 
+			{
+				if(!textures.ContainsKey(f.Key)) textures.Add(f.Key, f.Value);
+			}
 		}
 		
 		#endregion

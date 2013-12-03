@@ -1232,7 +1232,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							buffercount = 0;
 
 							// Determine next lock size
-							locksize = ((things.Count - totalcount) > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : (things.Count - totalcount);
+							locksize = ((group.Value.Count - totalcount) > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : (group.Value.Count - totalcount);
 						}
 					}
 
@@ -1254,6 +1254,10 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetTexture(0, thingtexture[thingtextureindex].Texture);
 				graphics.Shaders.Things2D.Texture1 = thingtexture[thingtextureindex].Texture;
 				graphics.Shaders.Things2D.BeginPass(0);
+
+				// Determine next lock size
+				locksize = (thingsByPosition.Count > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : thingsByPosition.Count;
+				verts = new FlatVertex[THING_BUFFER_SIZE * 6];
 
 				// Go for all things
 				buffercount = 0;
@@ -1279,7 +1283,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						buffercount = 0;
 
 						// Determine next lock size
-						locksize = ((things.Count - totalcount) > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : (things.Count - totalcount);
+						locksize = ((thingsByPosition.Count - totalcount) > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : (thingsByPosition.Count - totalcount);
 					}
 				}
 
