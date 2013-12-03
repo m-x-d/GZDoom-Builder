@@ -143,12 +143,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.RedrawSurface();
 
 			// Render lines and vertices
-			if(renderer.StartPlotter(true))
-			{
+			if (renderer.StartPlotter(true)) {
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
-				for (int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
-				if ((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
+				if(!panning) { //mxd
+					for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
+					if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
+				}
 				renderer.Finish();
 			}
 
@@ -161,12 +162,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					if(!panning) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
 					renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
+					if(!panning) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
 				}
 
 				//mxd
-				if(General.Settings.GZShowEventLines) {
+				if(!panning && General.Settings.GZShowEventLines) {
 					List<Line3D> lines = GZBuilder.Data.LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
 
 					foreach(Line3D l in lines) {

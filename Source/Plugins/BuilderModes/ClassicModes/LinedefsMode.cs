@@ -339,11 +339,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartPlotter(true))
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
-				for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
+				if(!panning) //mxd
+					for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
 				
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
+					if(!panning) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
 					renderer.PlotLinedef(highlighted, General.Colors.Highlight);
 				}
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
@@ -361,9 +362,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render selection
 			if(renderer.StartOverlay(true))
 			{
-				if(!panning) //mxd
-					for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
-				if(!panning && (highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
+				if (!panning) { //mxd
+					for (int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
+					if ((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
+				}
 				if(selecting) RenderMultiSelection();
 				renderer.Finish();
 			}
