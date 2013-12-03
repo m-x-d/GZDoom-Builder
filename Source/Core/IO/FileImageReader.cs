@@ -146,7 +146,7 @@ namespace CodeImp.DoomBuilder.IO
 		private const int IL_UTX = 0x0451;  //!< Unreal (and Unreal Tournament) Texture - .utx extension
 		private const int IL_MP3 = 0x0452;  //!< MPEG-1 Audio Layer 3 - .mp3 extension*/
 
-		private const int IL_JASC_PAL     = 0x0475;  //!< PaintShop Pro Palette
+		//private const int IL_JASC_PAL     = 0x0475;  //!< PaintShop Pro Palette
 
 
 		// Error Types
