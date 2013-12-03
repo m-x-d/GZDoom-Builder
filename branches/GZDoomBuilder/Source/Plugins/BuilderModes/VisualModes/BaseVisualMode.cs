@@ -1827,6 +1827,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//process floors...
 			int maxSelectedHeight = int.MinValue;
 			int minSelectedCeilingHeight = int.MaxValue;
+			int targetCeilingHeight = int.MaxValue;
+
+			//get highest ceiling height from selection
+			foreach(KeyValuePair<Sector, VisualCeiling> group in ceilings) {
+				if(group.Key.CeilHeight > maxSelectedHeight)
+					maxSelectedHeight = group.Key.CeilHeight;
+			}
+
+			if(withinSelection) {
+				//we are raising, so we don't need to check anything
+				targetCeilingHeight = maxSelectedHeight;
+			} else {
+				//get next higher ceiling from surrounding unselected sectors
+				foreach(KeyValuePair<Sector, VisualCeiling> group in ceilings) {
+					foreach(Sidedef side in group.Key.Sidedefs) {
+						if(side.Other == null || ceilings.ContainsKey(side.Other.Sector) || floors.ContainsKey(side.Other.Sector))
+							continue;
+						if(side.Other.Sector.CeilHeight < targetCeilingHeight && side.Other.Sector.CeilHeight > maxSelectedHeight)
+							targetCeilingHeight = side.Other.Sector.CeilHeight;
+					}
+				}
+			}
+
+			//ceilings...
+			maxSelectedHeight = int.MinValue;
 			int targetFloorHeight = int.MaxValue;
 
 			//get maximum floor and minimum ceiling heights from selection
@@ -1858,36 +1883,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			//ceilings...
-			maxSelectedHeight = int.MinValue;
-			int targetCeilingHeight = int.MaxValue;
-
-			//get highest ceiling height from selection
-			foreach(KeyValuePair<Sector, VisualCeiling> group in ceilings) {
-				if(group.Key.CeilHeight > maxSelectedHeight)
-					maxSelectedHeight = group.Key.CeilHeight;
-			}
-
-			if(withinSelection) {
-				//we are raising, so we don't need to check anything
-				targetCeilingHeight = maxSelectedHeight;
-			} else {
-				//get next higher ceiling from surrounding unselected sectors
-				foreach(KeyValuePair<Sector, VisualCeiling> group in ceilings) {
-					foreach(Sidedef side in group.Key.Sidedefs) {
-						if(side.Other == null || ceilings.ContainsKey(side.Other.Sector) || floors.ContainsKey(side.Other.Sector))
-							continue;
-						if(side.Other.Sector.CeilHeight < targetCeilingHeight && side.Other.Sector.CeilHeight > maxSelectedHeight)
-							targetCeilingHeight = side.Other.Sector.CeilHeight;
-					}
-				}
-			}
-
 			//CHECK VALUES
 			string alignFailDescription = string.Empty;
 
-			if(floors.Count > 0 && targetFloorHeight == int.MaxValue)
-				alignFailDescription = floors.Count > 1 ? "floors" : "floor";
+			if (floors.Count > 0 && targetFloorHeight == int.MaxValue) {
+				//raise to lowest ceiling?
+				if(!withinSelection && minSelectedCeilingHeight > maxSelectedHeight) {
+					targetFloorHeight = minSelectedCeilingHeight;
+				} else {
+					alignFailDescription = floors.Count > 1 ? "floors" : "floor";
+				}
+			}
 
 			if(ceilings.Count > 0 && targetCeilingHeight == int.MaxValue) {
 				if(!string.IsNullOrEmpty(alignFailDescription))
@@ -2056,10 +2062,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				alignFailDescription = floors.Count > 1 ? "floors" : "floor";
 
 			if(ceilings.Count > 0 && targetCeilingHeight == int.MinValue) {
-				if(!string.IsNullOrEmpty(alignFailDescription))
-					alignFailDescription += " and ";
-
-				alignFailDescription += ceilings.Count > 1 ? "ceilings" : "ceiling";
+				//drop to highest floor?
+				if(!withinSelection && maxSelectedFloorHeight < minSelectedHeight) {
+					targetCeilingHeight = maxSelectedFloorHeight;
+				} else {
+					if (!string.IsNullOrEmpty(alignFailDescription)) alignFailDescription += " and ";
+					alignFailDescription += ceilings.Count > 1 ? "ceilings" : "ceiling";
+				}
 			}
 
 			if(!string.IsNullOrEmpty(alignFailDescription)) {

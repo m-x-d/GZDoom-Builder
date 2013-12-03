@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.IO
 			reader.ReadInt16();
 
 			// Valid width and height?
-			if((width <= 0) || (height <= 0)) return false;
+			if(width < 1 || height < 1) return false;
 			
 			// Go for all columns
 			for(int x = 0; x < width; x++)
