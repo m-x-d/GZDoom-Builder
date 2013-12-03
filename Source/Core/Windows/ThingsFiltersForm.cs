@@ -62,9 +62,11 @@ namespace CodeImp.DoomBuilder.Windows
 			filteraction.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
 			
 			// Initialize custom fields editor
-			fieldslist.ListNoFixedFields();
-			fieldslist.Setup("thing");
-			
+			if (General.Map.FormatInterface.HasCustomFields) { //mxd
+				fieldslist.ListNoFixedFields();
+				fieldslist.Setup("thing");
+			}
+
 			// Fill checkboxes list
 			foreach(KeyValuePair<string, string> flag in General.Map.Config.ThingFlags)
 			{
@@ -239,10 +241,12 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				
 				// Custom fields
-				fieldslist.ClearFields();
-				fieldslist.Setup("thing");
-				fieldslist.SetValues(f.ThingCustomFields, true);
-				
+				if (General.Map.FormatInterface.HasCustomFields) { //mxd
+					fieldslist.ClearFields();
+					fieldslist.Setup("thing");
+					fieldslist.SetValues(f.ThingCustomFields, true);
+				}
+
 				// Done
 				settingup = false;
 			}

@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Properties
 
 		public ICollection<ImageData> Textures { get { return textures; } }
-		public ICollection<ImageData> Flats { get { if(General.Map.Config.MixTexturesFlats) return textures; return flats; } } //mxd
+		public ICollection<ImageData> Flats { get { return flats; } } //mxd
 
 		#endregion
 		

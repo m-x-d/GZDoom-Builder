@@ -261,11 +261,7 @@ namespace CodeImp.DoomBuilder.Data
 		private void LoadColormapsRange(string startlump, string endlump, ref List<ImageData> images)
 		{
 			int startindex, endindex;
-			float defaultscale;
 			ColormapImage image;
-
-			// Determine default scale
-			defaultscale = General.Map.Config.DefaultTextureScale;
 
 			// Continue until no more start can be found
 			startindex = file.FindLumpIndex(startlump);
@@ -331,7 +327,6 @@ namespace CodeImp.DoomBuilder.Data
 		public override ICollection<ImageData> LoadTextures(PatchNames pnames)
 		{
 			List<ImageData> images = new List<ImageData>();
-			//string rangestart, rangeend;
 			int lumpindex;
 			Lump lump;
 
@@ -433,8 +428,7 @@ namespace CodeImp.DoomBuilder.Data
 			TextureImage image = null;
 			bool strifedata;
 
-			if(texturedata.Length == 0)
-				return;
+			if(texturedata.Length == 0) return;
 
 			// Determine default scale
 			defaultscale = General.Map.Config.DefaultTextureScale;
