@@ -464,7 +464,7 @@
 			// cbUseFloorLineAngles
 			// 
 			this.cbUseFloorLineAngles.AutoSize = true;
-			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(230, 119);
+			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(236, 119);
 			this.cbUseFloorLineAngles.Name = "cbUseFloorLineAngles";
 			this.cbUseFloorLineAngles.Size = new System.Drawing.Size(99, 18);
 			this.cbUseFloorLineAngles.TabIndex = 57;
@@ -476,9 +476,9 @@
 			// floorAngleControl
 			// 
 			this.floorAngleControl.Angle = 0;
-			this.floorAngleControl.Location = new System.Drawing.Point(186, 108);
+			this.floorAngleControl.Location = new System.Drawing.Point(186, 104);
 			this.floorAngleControl.Name = "floorAngleControl";
-			this.floorAngleControl.Size = new System.Drawing.Size(38, 38);
+			this.floorAngleControl.Size = new System.Drawing.Size(44, 44);
 			this.floorAngleControl.TabIndex = 56;
 			this.floorAngleControl.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.floorAngleControl_AngleChanged);
 			// 
@@ -662,7 +662,7 @@
 			// cbUseCeilLineAngles
 			// 
 			this.cbUseCeilLineAngles.AutoSize = true;
-			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(230, 119);
+			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(236, 119);
 			this.cbUseCeilLineAngles.Name = "cbUseCeilLineAngles";
 			this.cbUseCeilLineAngles.Size = new System.Drawing.Size(99, 18);
 			this.cbUseCeilLineAngles.TabIndex = 56;
@@ -674,9 +674,9 @@
 			// ceilAngleControl
 			// 
 			this.ceilAngleControl.Angle = 0;
-			this.ceilAngleControl.Location = new System.Drawing.Point(186, 108);
+			this.ceilAngleControl.Location = new System.Drawing.Point(186, 104);
 			this.ceilAngleControl.Name = "ceilAngleControl";
-			this.ceilAngleControl.Size = new System.Drawing.Size(38, 38);
+			this.ceilAngleControl.Size = new System.Drawing.Size(44, 44);
 			this.ceilAngleControl.TabIndex = 55;
 			this.ceilAngleControl.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.ceilAngleControl_AngleChanged);
 			// 

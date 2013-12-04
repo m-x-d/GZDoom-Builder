@@ -43,7 +43,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posZ = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.angle = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.zlabel = new System.Windows.Forms.Label();
-			this.anglecontrol = new CodeImp.DoomBuilder.Controls.AngleControl();
 			this.labelAngle = new System.Windows.Forms.Label();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabproperties = new System.Windows.Forms.TabPage();
@@ -77,6 +76,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
+			this.anglecontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			groupBox2 = new System.Windows.Forms.GroupBox();
 			label7 = new System.Windows.Forms.Label();
@@ -121,6 +121,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			groupBox2.Controls.Add(this.anglecontrol);
 			groupBox2.Controls.Add(this.gravity);
 			groupBox2.Controls.Add(this.labelGravity);
 			groupBox2.Controls.Add(this.cbRandomAngle);
@@ -132,7 +133,6 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox2.Controls.Add(this.posZ);
 			groupBox2.Controls.Add(this.angle);
 			groupBox2.Controls.Add(this.zlabel);
-			groupBox2.Controls.Add(this.anglecontrol);
 			groupBox2.Controls.Add(this.labelAngle);
 			groupBox2.Location = new System.Drawing.Point(394, 216);
 			groupBox2.Name = "groupBox2";
@@ -267,18 +267,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.zlabel.TabIndex = 9;
 			this.zlabel.Text = "Height:";
 			this.zlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// anglecontrol
-			// 
-			this.anglecontrol.BackColor = System.Drawing.SystemColors.Control;
-			this.anglecontrol.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.anglecontrol.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.anglecontrol.Location = new System.Drawing.Point(152, 71);
-			this.anglecontrol.Name = "anglecontrol";
-			this.anglecontrol.Size = new System.Drawing.Size(84, 84);
-			this.anglecontrol.TabIndex = 2;
-			this.anglecontrol.Value = 0;
-			this.anglecontrol.ButtonClicked += new System.EventHandler(this.anglecontrol_ButtonClicked);
 			// 
 			// labelAngle
 			// 
@@ -674,6 +662,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
+			// anglecontrol
+			// 
+			this.anglecontrol.Angle = 0;
+			this.anglecontrol.Location = new System.Drawing.Point(152, 71);
+			this.anglecontrol.Name = "anglecontrol";
+			this.anglecontrol.Size = new System.Drawing.Size(88, 88);
+			this.anglecontrol.TabIndex = 20;
+			this.anglecontrol.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.anglecontrol_AngleChanged);
+			// 
 			// ThingEditForm
 			// 
 			this.AcceptButton = this.apply;
@@ -724,7 +721,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.GroupBox settingsgroup;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flags;
 		private System.Windows.Forms.Panel spritetex;
-		private CodeImp.DoomBuilder.Controls.AngleControl anglecontrol;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.GroupBox actiongroup;
 		private System.Windows.Forms.Panel hexenpanel;
@@ -761,5 +757,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ComboBox scriptNumbers;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox gravity;
 		private System.Windows.Forms.Label labelGravity;
+		private CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl anglecontrol;
 	}
 }

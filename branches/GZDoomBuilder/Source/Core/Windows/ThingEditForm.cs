@@ -411,15 +411,14 @@ namespace CodeImp.DoomBuilder.Windows
 		// Angle text changes
 		private void angle_TextChanged(object sender, EventArgs e)
 		{
-			anglecontrol.Value = angle.GetResult(int.MinValue);
+			anglecontrol.Angle = angle.GetResult(int.MinValue);
 			updateAngle(); //mxd
 		}
 
-		// Angle control clicked
-		private void anglecontrol_ButtonClicked(object sender, EventArgs e)
-		{
-			angle.Text = anglecontrol.Value.ToString();
-			updateAngle(); //mxd
+		//mxd. Angle control clicked
+		private void anglecontrol_AngleChanged() {
+			angle.Text = anglecontrol.Angle.ToString();
+			updateAngle();
 		}
 
 		// Apply clicked

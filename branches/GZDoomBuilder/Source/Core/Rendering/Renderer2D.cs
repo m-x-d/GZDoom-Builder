@@ -1005,20 +1005,20 @@ namespace CodeImp.DoomBuilder.Rendering
 			verts[offset].x = screenpos.x + sinarrowsize;
 			verts[offset].y = screenpos.y + cosarrowsize;
 			verts[offset].c = -1;
-			verts[offset].u = 0.50f;
-			verts[offset].v = 0f;
+			verts[offset].u = 0.51f;
+			verts[offset].v = 0.01f;
 			offset++;
 			verts[offset].x = screenpos.x - cosarrowsize;
 			verts[offset].y = screenpos.y + sinarrowsize;
 			verts[offset].c = -1;
-			verts[offset].u = 1f;
-			verts[offset].v = 0f;
+			verts[offset].u = 0.99f;
+			verts[offset].v = 0.01f;
 			offset++;
 			verts[offset].x = screenpos.x + cosarrowsize;
 			verts[offset].y = screenpos.y - sinarrowsize;
 			verts[offset].c = -1;
-			verts[offset].u = 0.50f;
-			verts[offset].v = 1f;
+			verts[offset].u = 0.51f;
+			verts[offset].v = 0.99f;
 			offset++;
 			verts[offset] = verts[offset - 2];
 			offset++;
@@ -1027,8 +1027,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			verts[offset].x = screenpos.x - sinarrowsize;
 			verts[offset].y = screenpos.y - cosarrowsize;
 			verts[offset].c = -1;
-			verts[offset].u = 1f;
-			verts[offset].v = 1f;
+			verts[offset].u = 0.99f;
+			verts[offset].v = 0.99f;
 		}
 
 		//mxd

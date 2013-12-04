@@ -3,12 +3,8 @@
 //The Code Project - http://www.codeproject.com
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Controls
@@ -19,6 +15,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		private Rectangle drawRegion;
 		private Point origin;
+
+		//UI colors
+		private readonly Color fillColor = Color.FromArgb(90, 255, 255, 255);
+		private readonly Color fillInactiveColor = SystemColors.InactiveCaption;
+		private readonly Color outlineColor = Color.FromArgb(86, 103, 141);
+		private readonly Color outlineInactiveColor = SystemColors.InactiveBorder;
 
 		public AngleControl()
 		{
@@ -75,51 +77,33 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			return xy;
 		}
 
-		private float XYToDegrees(Point xy, Point origin)
+		private int XYToDegrees(Point xy, Point origin)
 		{
-			double angle = 0.0;
-
-			if (xy.Y < origin.Y)
-			{
-				if (xy.X > origin.X)
-				{
-					angle = (double)(xy.X - origin.X) / (double)(origin.Y - xy.Y);
-					angle = Math.Atan(angle);
-					angle = 90.0 - angle * 180.0 / Math.PI;
-				}
-				else if (xy.X < origin.X)
-				{
-					angle = (double)(origin.X - xy.X) / (double)(origin.Y - xy.Y);
-					angle = Math.Atan(-angle);
-					angle = 90.0 - angle * 180.0 / Math.PI;
-				}
-			}
-			else if (xy.Y > origin.Y)
-			{
-				if (xy.X > origin.X)
-				{
-					angle = (double)(xy.X - origin.X) / (double)(xy.Y - origin.Y);
-					angle = Math.Atan(-angle);
-					angle = 270.0 - angle * 180.0 / Math.PI;
-				}
-				else if (xy.X < origin.X)
-				{
-					angle = (double)(origin.X - xy.X) / (double)(xy.Y - origin.Y);
-					angle = Math.Atan(angle);
-					angle = 270.0 - angle * 180.0 / Math.PI;
-				}
-			}
-
-			if (angle > 180) angle -= 360; //Optional. Keeps values between -180 and 180
-			return (float)angle;
+			float xDiff = xy.X - origin.X;
+			float yDiff = xy.Y - origin.Y;
+			return (int)Math.Round(Math.Atan2(-yDiff, xDiff) * 180.0 / Math.PI);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			Graphics g = e.Graphics;
 
-			Pen outline = new Pen(Color.FromArgb(86, 103, 141), 2.0f);
-			SolidBrush fill = new SolidBrush(Color.FromArgb(90, 255, 255, 255));
+			Pen outline;
+			Pen needle;
+			SolidBrush fill;
+			Brush center;
+
+			if (this.Enabled) {
+				outline = new Pen(outlineColor, 2.0f);
+				fill = new SolidBrush(fillColor);
+				needle = Pens.Black;
+				center = Brushes.Black;
+			} else {
+				outline = new Pen(outlineInactiveColor, 2.0f);
+				fill = new SolidBrush(fillInactiveColor);
+				needle = Pens.DarkGray;
+				center = Brushes.DarkGray;
+			}
 
 			PointF anglePoint = DegreesToXY(angle, origin.X - 2, origin);
 			Rectangle originSquare = new Rectangle(origin.X - 1, origin.Y - 1, 3, 3);
@@ -128,10 +112,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			g.SmoothingMode = SmoothingMode.AntiAlias;
 			g.DrawEllipse(outline, drawRegion);
 			g.FillEllipse(fill, drawRegion);
-			g.DrawLine(Pens.Black, origin, anglePoint);
+			g.DrawLine(needle, origin, anglePoint);
 
 			g.SmoothingMode = SmoothingMode.HighSpeed; //Make the square edges sharp
-			g.FillRectangle(Brushes.Black, originSquare);
+			g.FillRectangle(center, originSquare);
 
 			fill.Dispose();
 			outline.Dispose();
@@ -139,42 +123,34 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			base.OnPaint(e);
 		}
 
-		private void AngleSelector_MouseDown(object sender, MouseEventArgs e)
-		{
-			int thisAngle = findNearestAngle(new Point(e.X, e.Y));
+		private void AngleSelector_MouseDown(object sender, MouseEventArgs e) {
+			int thisAngle = XYToDegrees(new Point(e.X, e.Y), origin);
 
-			if (thisAngle != -1)
-			{
+			if (e.Button == MouseButtons.Left) {
+				thisAngle = (int)Math.Round(thisAngle / 45f) * 45;
+			}
+
+			if(thisAngle != this.Angle) {
 				this.Angle = thisAngle;
-				if(!this.DesignMode && AngleChanged != null)
-					AngleChanged(); //Raise event
+				if(!this.DesignMode && AngleChanged != null) AngleChanged(); //Raise event
 				this.Refresh();
 			}
 		}
 
-		private void AngleSelector_MouseMove(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
-			{
-				int thisAngle = findNearestAngle(new Point(e.X, e.Y));
+		private void AngleSelector_MouseMove(object sender, MouseEventArgs e) {
+			if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right) {
+				int thisAngle = XYToDegrees(new Point(e.X, e.Y), origin);
 
-				if (thisAngle != -1)
-				{
+				if(e.Button == MouseButtons.Left) {
+					thisAngle = (int)Math.Round(thisAngle / 45f) * 45;
+				}
+
+				if(thisAngle != this.Angle) {
 					this.Angle = thisAngle;
-					if(!this.DesignMode && AngleChanged != null)
-						AngleChanged(); //Raise event
+					if(!this.DesignMode && AngleChanged != null) AngleChanged(); //Raise event
 					this.Refresh();
 				}
 			}
-		}
-
-		private int findNearestAngle(Point mouseXY)
-		{
-			int thisAngle = (int)XYToDegrees(mouseXY, origin);
-			if (thisAngle != 0)
-				return thisAngle;
-			else
-				return -1;
 		}
 	}
 }
