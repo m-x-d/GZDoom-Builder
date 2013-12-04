@@ -204,23 +204,13 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the PLAYPAL palette
 		public override Playpal LoadPalette()
 		{
-			Lump lump;
-			
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 			
 			// Look for a lump named PLAYPAL
-			lump = file.FindLump("PLAYPAL");
-			if(lump != null)
-			{
-				// Read the PLAYPAL from stream
-				return new Playpal(lump.Stream);
-			}
-			else
-			{
-				// No palette
-				return null;
-			}
+			Lump lump = file.FindLump("PLAYPAL");
+			if(lump != null) return new Playpal(lump.Stream); // Read the PLAYPAL from stream
+			return null; // No palette
 		}
 
 		#endregion
@@ -527,23 +517,13 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns the patch names from the PNAMES lump
 		public override PatchNames LoadPatchNames()
 		{
-			Lump lump;
-
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Look for a lump named PNAMES
-			lump = file.FindLump("PNAMES");
-			if(lump != null)
-			{
-				// Read the PNAMES from stream
-				return new PatchNames(lump.Stream);
-			}
-			else
-			{
-				// No palette
-				return null;
-			}
+			Lump lump = file.FindLump("PNAMES");
+			if(lump != null) return new PatchNames(lump.Stream); // Read the PNAMES from stream
+			return null; // No patch names found
 		}
 
 		// This finds and returns a patch stream
