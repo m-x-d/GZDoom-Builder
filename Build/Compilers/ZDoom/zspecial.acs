@@ -277,7 +277,7 @@ special
 	-33:GetPolyobjX(1),
 	-34:GetPolyobjY(1),
 	-35:CheckSight(3),
-	-36:SpawnForced(6),
+	-36:SpawnForced(4,6),
 	-37:AnnouncerSound(2),
 	-38:SetPointer(2,4),
 	-39:ACS_NamedExecute(2,5),
@@ -301,7 +301,7 @@ special
 	-57:SetCVarString(2),
 	-58:GetUserCVarString(2),
 	-59:SetUserCVarString(3),
-	-60:LineAttack(3,6),
+	-60:LineAttack(4,8),
 	-61:PlaySound(2,6),
 	-62:StopSound(1,2),
 	-63:strcmp(2,3),
@@ -316,6 +316,8 @@ special
 	-71:PlayActorSound(2,6),
 	-72:SpawnDecal(2,6),
 	-73:CheckFont(1),
+	-74:DropItem(2,4),
+	-75:CheckFlag(2),
 	
 	// Zandronum's
 	-100:ResetMap(0),
