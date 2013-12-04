@@ -287,6 +287,8 @@
 #define APROP_Radius		36
 #define APROP_Reactiontime	37
 #define APROP_MeleeRange	38
+#define APROP_ViewHeight	39
+#define APROP_AttackZOffset	40
 
 // Render Styles ------------------------------------------------------------
 
@@ -928,6 +930,7 @@
 #define BLOCKF_RAILING 64
 #define BLOCKF_USE 128
 #define BLOCKF_SIGHT 256
+#define BLOCKF_HITSCAN 512
 
 #define FOGP_DENSITY 0
 #define FOGP_OUTSIDEDENSITY 1
@@ -939,3 +942,5 @@
 
 #define CSF_NOFAKEFLOORS 1
 #define CSF_NOBLOCKALL 2
+
+#define FHF_NORANDOMPUFFZ	1
