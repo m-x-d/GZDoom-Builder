@@ -40,9 +40,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.defaultbrightness = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label11 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.autodrawonedit = new System.Windows.Forms.CheckBox();
 			this.syncSelection = new System.Windows.Forms.CheckBox();
 			this.dontMoveGeometryOutsideBounds = new System.Windows.Forms.CheckBox();
-			this.autoalignDraggedSidedefsOffsetX = new System.Windows.Forms.CheckBox();
 			this.autoaligntexturesoncreate = new System.Windows.Forms.CheckBox();
 			this.autodragonpaste = new System.Windows.Forms.CheckBox();
 			this.visualmodeclearselection = new System.Windows.Forms.CheckBox();
@@ -207,9 +207,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.autodrawonedit);
 			this.groupBox3.Controls.Add(this.syncSelection);
 			this.groupBox3.Controls.Add(this.dontMoveGeometryOutsideBounds);
-			this.groupBox3.Controls.Add(this.autoalignDraggedSidedefsOffsetX);
 			this.groupBox3.Controls.Add(this.autoaligntexturesoncreate);
 			this.groupBox3.Controls.Add(this.autodragonpaste);
 			this.groupBox3.Controls.Add(this.visualmodeclearselection);
@@ -224,10 +224,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Options ";
 			// 
+			// autodrawonedit
+			// 
+			this.autodrawonedit.AutoSize = true;
+			this.autodrawonedit.Location = new System.Drawing.Point(13, 24);
+			this.autodrawonedit.Name = "autodrawonedit";
+			this.autodrawonedit.Size = new System.Drawing.Size(360, 18);
+			this.autodrawonedit.TabIndex = 11;
+			this.autodrawonedit.Text = "Start drawing when Edit pressed over empty space in Classic modes";
+			this.autodrawonedit.UseVisualStyleBackColor = true;
+			// 
 			// syncSelection
 			// 
 			this.syncSelection.AutoSize = true;
-			this.syncSelection.Location = new System.Drawing.Point(13, 250);
+			this.syncSelection.Location = new System.Drawing.Point(13, 249);
 			this.syncSelection.Name = "syncSelection";
 			this.syncSelection.Size = new System.Drawing.Size(306, 18);
 			this.syncSelection.TabIndex = 10;
@@ -237,27 +247,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// dontMoveGeometryOutsideBounds
 			// 
 			this.dontMoveGeometryOutsideBounds.AutoSize = true;
-			this.dontMoveGeometryOutsideBounds.Location = new System.Drawing.Point(13, 225);
+			this.dontMoveGeometryOutsideBounds.Location = new System.Drawing.Point(13, 224);
 			this.dontMoveGeometryOutsideBounds.Name = "dontMoveGeometryOutsideBounds";
 			this.dontMoveGeometryOutsideBounds.Size = new System.Drawing.Size(332, 18);
 			this.dontMoveGeometryOutsideBounds.TabIndex = 9;
 			this.dontMoveGeometryOutsideBounds.Text = "Don\'t move selection if any part of it is outside of map boundary";
 			this.dontMoveGeometryOutsideBounds.UseVisualStyleBackColor = true;
 			// 
-			// autoalignDraggedSidedefsOffsetX
-			// 
-			this.autoalignDraggedSidedefsOffsetX.AutoSize = true;
-			this.autoalignDraggedSidedefsOffsetX.Location = new System.Drawing.Point(13, 200);
-			this.autoalignDraggedSidedefsOffsetX.Name = "autoalignDraggedSidedefsOffsetX";
-			this.autoalignDraggedSidedefsOffsetX.Size = new System.Drawing.Size(286, 18);
-			this.autoalignDraggedSidedefsOffsetX.TabIndex = 8;
-			this.autoalignDraggedSidedefsOffsetX.Text = "Try to align horizontal tex. offset of dragged geometry";
-			this.autoalignDraggedSidedefsOffsetX.UseVisualStyleBackColor = true;
-			// 
 			// autoaligntexturesoncreate
 			// 
 			this.autoaligntexturesoncreate.AutoSize = true;
-			this.autoaligntexturesoncreate.Location = new System.Drawing.Point(13, 175);
+			this.autoaligntexturesoncreate.Location = new System.Drawing.Point(13, 199);
 			this.autoaligntexturesoncreate.Name = "autoaligntexturesoncreate";
 			this.autoaligntexturesoncreate.Size = new System.Drawing.Size(245, 18);
 			this.autoaligntexturesoncreate.TabIndex = 7;
@@ -267,7 +267,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// autodragonpaste
 			// 
 			this.autodragonpaste.AutoSize = true;
-			this.autodragonpaste.Location = new System.Drawing.Point(13, 150);
+			this.autodragonpaste.Location = new System.Drawing.Point(13, 174);
 			this.autodragonpaste.Name = "autodragonpaste";
 			this.autodragonpaste.Size = new System.Drawing.Size(205, 18);
 			this.autodragonpaste.TabIndex = 6;
@@ -277,7 +277,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// visualmodeclearselection
 			// 
 			this.visualmodeclearselection.AutoSize = true;
-			this.visualmodeclearselection.Location = new System.Drawing.Point(13, 125);
+			this.visualmodeclearselection.Location = new System.Drawing.Point(13, 149);
 			this.visualmodeclearselection.Name = "visualmodeclearselection";
 			this.visualmodeclearselection.Size = new System.Drawing.Size(220, 18);
 			this.visualmodeclearselection.TabIndex = 5;
@@ -287,7 +287,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// autoclearselection
 			// 
 			this.autoclearselection.AutoSize = true;
-			this.autoclearselection.Location = new System.Drawing.Point(13, 100);
+			this.autoclearselection.Location = new System.Drawing.Point(13, 124);
 			this.autoclearselection.Name = "autoclearselection";
 			this.autoclearselection.Size = new System.Drawing.Size(231, 18);
 			this.autoclearselection.TabIndex = 4;
@@ -297,7 +297,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// editnewthing
 			// 
 			this.editnewthing.AutoSize = true;
-			this.editnewthing.Location = new System.Drawing.Point(13, 25);
+			this.editnewthing.Location = new System.Drawing.Point(13, 49);
 			this.editnewthing.Name = "editnewthing";
 			this.editnewthing.Size = new System.Drawing.Size(256, 18);
 			this.editnewthing.TabIndex = 1;
@@ -307,7 +307,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// editnewsector
 			// 
 			this.editnewsector.AutoSize = true;
-			this.editnewsector.Location = new System.Drawing.Point(13, 50);
+			this.editnewsector.Location = new System.Drawing.Point(13, 74);
 			this.editnewsector.Name = "editnewsector";
 			this.editnewsector.Size = new System.Drawing.Size(271, 18);
 			this.editnewsector.TabIndex = 2;
@@ -317,7 +317,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// additiveselect
 			// 
 			this.additiveselect.AutoSize = true;
-			this.additiveselect.Location = new System.Drawing.Point(13, 75);
+			this.additiveselect.Location = new System.Drawing.Point(13, 99);
 			this.additiveselect.Name = "additiveselect";
 			this.additiveselect.Size = new System.Drawing.Size(211, 18);
 			this.additiveselect.TabIndex = 3;
@@ -589,7 +589,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ComboBox splitbehavior;
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.CheckBox autoaligntexturesoncreate;
-		private System.Windows.Forms.CheckBox autoalignDraggedSidedefsOffsetX;
 		private System.Windows.Forms.CheckBox dontMoveGeometryOutsideBounds;
 		private System.Windows.Forms.CheckBox syncSelection;
 		private System.Windows.Forms.GroupBox groupBox4;
@@ -601,5 +600,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.Label label14;
+		private System.Windows.Forms.CheckBox autodrawonedit;
 	}
 }

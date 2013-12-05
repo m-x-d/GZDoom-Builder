@@ -1096,11 +1096,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((Math.Sign(dragdeltaz.x) < 0) || (Math.Sign(dragdeltaz.y) < 0) || (Math.Sign(dragdeltaz.z) < 0)) offsety = -offsety;
 			
 			// Apply offsets
-			int newoffsetx = (General.Interface.CtrlState && !General.Interface.ShiftState ? startoffsetx : startoffsetx - (int)Math.Round(offsetx)); //mxd
-			int newoffsety = (!General.Interface.CtrlState && General.Interface.ShiftState ? startoffsety : startoffsety + (int)Math.Round(offsety)); //mxd
-			mode.ApplyTextureOffsetChange(prevoffsetx - newoffsetx, prevoffsety - newoffsety);
-			prevoffsetx = newoffsetx;
-			prevoffsety = newoffsety;
+			if(General.Interface.CtrlState && General.Interface.ShiftState) { //mxd. Clamp to grid size?
+				int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
+				int newoffsety = startoffsety + (int)Math.Round(offsety);
+				int dx = prevoffsetx - newoffsetx;
+				int dy = prevoffsety - newoffsety;
+
+				if(Math.Abs(dx) >= General.Map.Grid.GridSize) {
+					dx = General.Map.Grid.GridSize * Math.Sign(dx);
+					prevoffsetx = newoffsetx;
+				} else {
+					dx = 0;
+				}
+
+				if(Math.Abs(dy) >= General.Map.Grid.GridSize) {
+					dy = General.Map.Grid.GridSize * Math.Sign(dy);
+					prevoffsety = newoffsety;
+				} else {
+					dy = 0;
+				}
+
+				if(dx != 0 || dy != 0) mode.ApplyTextureOffsetChange(dx, dy);
+			} else { //mxd. Constraint to axis?
+				int newoffsetx = (General.Interface.CtrlState ? startoffsetx : startoffsetx - (int)Math.Round(offsetx)); //mxd
+				int newoffsety = (General.Interface.ShiftState ? startoffsety : startoffsety + (int)Math.Round(offsety)); //mxd
+				mode.ApplyTextureOffsetChange(prevoffsetx - newoffsetx, prevoffsety - newoffsety);
+				prevoffsetx = newoffsetx;
+				prevoffsety = newoffsety;
+			}
 			
 			mode.ShowTargetInfo();
 		}

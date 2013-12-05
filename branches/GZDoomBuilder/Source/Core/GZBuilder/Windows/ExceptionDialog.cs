@@ -99,6 +99,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 		}
 
 		private string getExceptionDescription(Exception ex) {
+			//add to error logger
+			General.ErrorLogger.Add(ErrorType.Error, "**** " + ex.Source + ": " + ex.Message + " ****");
+
 			string message = "********EXCEPTION DETAILS********"
 							 + Environment.NewLine + ex.Source + ": " + ex.Message + Environment.NewLine + ex.StackTrace;
 

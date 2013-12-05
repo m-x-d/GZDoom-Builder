@@ -148,26 +148,47 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd. Modify offsets based on surface and camera angles
-			if (General.Map.UDMF) {
-				float angle = 0;
+			float angle = 0;
 
-				if(GeometryType == VisualGeometryType.CEILING)
-					angle = Angle2D.DegToRad(level.sector.Fields.GetValue("rotationceiling", 0f));
-				else
-					angle = Angle2D.DegToRad(level.sector.Fields.GetValue("rotationfloor", 0f));
+			if(GeometryType == VisualGeometryType.CEILING)
+				angle = Angle2D.DegToRad(level.sector.Fields.GetValue("rotationceiling", 0f));
+			else
+				angle = Angle2D.DegToRad(level.sector.Fields.GetValue("rotationfloor", 0f));
 
-				Vector2D v = new Vector2D(offsetx, offsety).GetRotated(angle);
+			Vector2D v = new Vector2D(offsetx, offsety).GetRotated(angle);
 
-				offsetx = (int)Math.Round(v.x);
-				offsety = (int)Math.Round(v.y);
-			}
+			offsetx = (int)Math.Round(v.x);
+			offsety = (int)Math.Round(v.y);
 
 			// Apply offsets
-			int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
-			int newoffsety = startoffsety + (int)Math.Round(offsety);
-			mode.ApplyFlatOffsetChange(prevoffsetx - newoffsetx, prevoffsety - newoffsety);
-			prevoffsetx = newoffsetx;
-			prevoffsety = newoffsety;
+			if(General.Interface.CtrlState && General.Interface.ShiftState) { //mxd. Clamp to grid size?
+				int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
+				int newoffsety = startoffsety + (int)Math.Round(offsety);
+				int dx = prevoffsetx - newoffsetx;
+				int dy = prevoffsety - newoffsety;
+
+				if(Math.Abs(dx) >= General.Map.Grid.GridSize) {
+					dx = General.Map.Grid.GridSize * Math.Sign(dx);
+					prevoffsetx = newoffsetx;
+				} else {
+					dx = 0;
+				}
+
+				if(Math.Abs(dy) >= General.Map.Grid.GridSize) {
+					dy = General.Map.Grid.GridSize * Math.Sign(dy);
+					prevoffsety = newoffsety;
+				} else {
+					dy = 0;
+				}
+
+				if(dx != 0 || dy != 0) mode.ApplyFlatOffsetChange(dx, dy);
+			} else {
+				int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
+				int newoffsety = startoffsety + (int)Math.Round(offsety);
+				mode.ApplyFlatOffsetChange(prevoffsetx - newoffsetx, prevoffsety - newoffsety);
+				prevoffsetx = newoffsetx;
+				prevoffsety = newoffsety;
+			}
 
 			mode.ShowTargetInfo();
 		}
@@ -423,6 +444,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Moving the mouse
 		public virtual void OnMouseMove(MouseEventArgs e)
 		{
+			if(!General.Map.UDMF) return; //mxd. Cannot change texture offsets in other map formats...
+			
 			// Dragging UV?
 			if(uvdragging)
 			{
@@ -438,16 +461,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float deltaz = General.Map.VisualCamera.AngleZ - dragstartanglez;
 					if((Math.Abs(deltaxy) + Math.Abs(deltaz)) > DRAG_ANGLE_TOLERANCE)
 					{
-						if(General.Map.UDMF) { //mxd
-							mode.PreAction(UndoGroup.TextureOffsetChange);
-							mode.CreateUndo("Change texture offsets");
+						mode.PreAction(UndoGroup.TextureOffsetChange);
+						mode.CreateUndo("Change texture offsets");
 
-							// Start drag now
-							uvdragging = true;
-							mode.Renderer.ShowSelection = false;
-							mode.Renderer.ShowHighlight = false;
-							UpdateDragUV();
-						}
+						// Start drag now
+						uvdragging = true;
+						mode.Renderer.ShowSelection = false;
+						mode.Renderer.ShowHighlight = false;
+						UpdateDragUV();
 					}
 				}
 			}

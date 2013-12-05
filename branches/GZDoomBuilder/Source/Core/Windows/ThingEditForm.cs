@@ -643,7 +643,7 @@ namespace CodeImp.DoomBuilder.Windows
 			} else { //update values
 				// Apply position
 				foreach(Thing t in things) {
-					float z = (float)posZ.GetResult((int)t.Position.z);
+					float z = posZ.GetResult((int)t.Position.z);
 					if(useAbsoluteHeight && t.Sector != null)
 						z -= t.Sector.FloorHeight;
 					t.Move(new Vector3D(t.Position.x, t.Position.y, z));

@@ -23,6 +23,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.GZBuilder; //mxd
+using System.Collections.Generic;
 
 #endregion
 
@@ -86,6 +87,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Move panel
 			spritepanel.Left = infopanel.Left + infopanel.Width + infopanel.Margin.Right + spritepanel.Margin.Left;
+			flagsPanel.Left = spritepanel.Left + spritepanel.Width + spritepanel.Margin.Right + flagsPanel.Margin.Left; //mxd
 			
 			// Lookup thing info
 			ti = General.Map.Data.GetThingInfo(t.Type);
@@ -199,6 +201,25 @@ namespace CodeImp.DoomBuilder.Controls
 			th = General.Types.GetArgumentHandler(arginfo[4]);
 			th.SetValue(t.Args[4]);
 			arg5.Text = th.GetStringValue();
+
+			//mxd. Flags
+			flags.Items.Clear();
+			foreach(KeyValuePair<string, bool> group in t.Flags){
+				if(group.Value) {
+					ListViewItem item = new ListViewItem(General.Map.Config.ThingFlags[group.Key]);
+					item.Checked = true;
+					flags.Items.Add(item);
+				}
+			}
+
+			//mxd. Flags panel visibility and size
+			flagsPanel.Visible = (flags.Items.Count > 0);
+			if(flags.Items.Count > 0) {
+				int itemWidth = flags.Items[0].GetBounds(ItemBoundsPortion.Entire).Width;
+				if(itemWidth == 0) itemWidth = 96;
+				flags.Width = itemWidth * (int)Math.Ceiling(flags.Items.Count / 5.0f);
+				flagsPanel.Width = flags.Width + flags.Left * 2;
+			}
 
 			// Show the whole thing
 			this.Show();
