@@ -113,6 +113,9 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backBottomUDMFOffset = new System.Windows.Forms.Label();
 			this.backBottomUDMFScaleLabel = new System.Windows.Forms.Label();
 			this.backBottomUDMFOffsetLabel = new System.Windows.Forms.Label();
+			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+			this.flagsPanel = new System.Windows.Forms.GroupBox();
+			this.flags = new System.Windows.Forms.ListView();
 			label1 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -140,6 +143,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.panelBackLowTex.SuspendLayout();
 			this.backlowtex.SuspendLayout();
 			this.panelUDMFBackBottom.SuspendLayout();
+			this.flowLayoutPanel1.SuspendLayout();
+			this.flagsPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -205,6 +210,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.infopanel.Controls.Add(this.action);
 			this.infopanel.Controls.Add(label1);
 			this.infopanel.Location = new System.Drawing.Point(0, 0);
+			this.infopanel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.infopanel.Name = "infopanel";
 			this.infopanel.Size = new System.Drawing.Size(461, 100);
 			this.infopanel.TabIndex = 1;
@@ -418,7 +424,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.frontpanel.Controls.Add(this.frontsector);
 			this.frontpanel.Controls.Add(this.flowLayoutPanelFront);
-			this.frontpanel.Location = new System.Drawing.Point(467, 0);
+			this.frontpanel.Location = new System.Drawing.Point(464, 0);
+			this.frontpanel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.frontpanel.Name = "frontpanel";
 			this.frontpanel.Size = new System.Drawing.Size(515, 100);
 			this.frontpanel.TabIndex = 2;
@@ -721,7 +728,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.backpanel.Controls.Add(this.backsector);
 			this.backpanel.Controls.Add(this.flowLayoutPanelBack);
-			this.backpanel.Location = new System.Drawing.Point(988, 0);
+			this.backpanel.Location = new System.Drawing.Point(982, 0);
+			this.backpanel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.backpanel.Name = "backpanel";
 			this.backpanel.Size = new System.Drawing.Size(540, 100);
 			this.backpanel.TabIndex = 3;
@@ -1020,19 +1028,56 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backBottomUDMFOffsetLabel.TabIndex = 7;
 			this.backBottomUDMFOffsetLabel.Text = "Offset:";
 			// 
+			// flowLayoutPanel1
+			// 
+			this.flowLayoutPanel1.Controls.Add(this.infopanel);
+			this.flowLayoutPanel1.Controls.Add(this.frontpanel);
+			this.flowLayoutPanel1.Controls.Add(this.backpanel);
+			this.flowLayoutPanel1.Controls.Add(this.flagsPanel);
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+			this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(2000, 100);
+			this.flowLayoutPanel1.TabIndex = 4;
+			this.flowLayoutPanel1.WrapContents = false;
+			// 
+			// flagsPanel
+			// 
+			this.flagsPanel.Controls.Add(this.flags);
+			this.flagsPanel.Location = new System.Drawing.Point(1525, 0);
+			this.flagsPanel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+			this.flagsPanel.Name = "flagsPanel";
+			this.flagsPanel.Size = new System.Drawing.Size(455, 100);
+			this.flagsPanel.TabIndex = 8;
+			this.flagsPanel.TabStop = false;
+			this.flagsPanel.Text = " Flags";
+			// 
+			// flags
+			// 
+			this.flags.BackColor = System.Drawing.SystemColors.Control;
+			this.flags.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.flags.CheckBoxes = true;
+			this.flags.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.flags.Location = new System.Drawing.Point(6, 18);
+			this.flags.Name = "flags";
+			this.flags.Scrollable = false;
+			this.flags.ShowGroups = false;
+			this.flags.Size = new System.Drawing.Size(443, 100);
+			this.flags.TabIndex = 0;
+			this.flags.UseCompatibleStateImageBehavior = false;
+			this.flags.View = System.Windows.Forms.View.List;
+			// 
 			// LinedefInfoPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.Controls.Add(this.backpanel);
-			this.Controls.Add(this.frontpanel);
-			this.Controls.Add(this.infopanel);
+			this.Controls.Add(this.flowLayoutPanel1);
 			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "LinedefInfoPanel";
-			this.Size = new System.Drawing.Size(1558, 100);
+			this.Size = new System.Drawing.Size(2000, 100);
 			this.infopanel.ResumeLayout(false);
 			this.infopanel.PerformLayout();
 			this.frontpanel.ResumeLayout(false);
@@ -1065,6 +1110,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backlowtex.ResumeLayout(false);
 			this.backlowtex.PerformLayout();
 			this.panelUDMFBackBottom.ResumeLayout(false);
+			this.flowLayoutPanel1.ResumeLayout(false);
+			this.flagsPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -1152,6 +1199,9 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label labelTextureBackTop;
 		private System.Windows.Forms.Label labelTextureBackMid;
 		private System.Windows.Forms.Label labelTextureBackBottom;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+		private System.Windows.Forms.GroupBox flagsPanel;
+		private System.Windows.Forms.ListView flags;
 
 	}
 }
