@@ -222,9 +222,6 @@ namespace CodeImp.DoomBuilder.Controls
 				DisplaySidedefTexture(frontmidtex, labelTextureFrontMid, l.Front.MiddleTexture, l.Front.MiddleRequired());
 				DisplaySidedefTexture(frontlowtex, labelTextureFrontBottom, l.Front.LowTexture, l.Front.LowRequired());
 
-				//mxd. Position panel
-				frontpanel.Left = infopanel.Left + infopanel.Width + infopanel.Margin.Right + frontpanel.Margin.Left;
-
 				//mxd. Position label
 				frontsector.Left = frontpanel.Width - frontsector.Width - 12;
 			}
@@ -323,9 +320,6 @@ namespace CodeImp.DoomBuilder.Controls
 				DisplaySidedefTexture(backmidtex, labelTextureBackMid, l.Back.MiddleTexture, l.Back.MiddleRequired());
 				DisplaySidedefTexture(backlowtex, labelTextureBackBottom, l.Back.LowTexture, l.Back.LowRequired());
 
-				//mxd. Position panel
-				backpanel.Left = (l.Front != null ? frontpanel.Right : infopanel.Right) + 3;
-
 				//mxd. Position label
 				backsector.Left = backpanel.Width - backsector.Width - 12;
 			}
@@ -349,6 +343,25 @@ namespace CodeImp.DoomBuilder.Controls
 				backlowtex.BackgroundImage = null;
 
 				backpanel.Visible = false; //mxd
+			}
+
+			//mxd. Flags
+			flags.Items.Clear();
+			foreach(KeyValuePair<string, bool> group in l.Flags) {
+				if(group.Value) {
+					ListViewItem item = new ListViewItem(General.Map.Config.LinedefFlags[group.Key]);
+					item.Checked = true;
+					flags.Items.Add(item);
+				}
+			}
+
+			//mxd. Flags panel visibility and size
+			flagsPanel.Visible = (flags.Items.Count > 0);
+			if(flags.Items.Count > 0) {
+				int itemWidth = flags.Items[0].GetBounds(ItemBoundsPortion.Entire).Width;
+				if(itemWidth == 0) itemWidth = 96;
+				flags.Width = itemWidth * (int)Math.Ceiling(flags.Items.Count / 5.0f);
+				flagsPanel.Width = flags.Width + flags.Left * 2;
 			}
 
 			// Show the whole thing
