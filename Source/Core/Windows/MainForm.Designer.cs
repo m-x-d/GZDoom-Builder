@@ -2216,7 +2216,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.thinginfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.thinginfo.MinimumSize = new System.Drawing.Size(100, 100);
 			this.thinginfo.Name = "thinginfo";
-			this.thinginfo.Size = new System.Drawing.Size(639, 100);
+			this.thinginfo.Size = new System.Drawing.Size(1190, 100);
 			this.thinginfo.TabIndex = 3;
 			this.thinginfo.Visible = false;
 			// 
@@ -2227,7 +2227,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.sectorinfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.sectorinfo.MinimumSize = new System.Drawing.Size(100, 100);
 			this.sectorinfo.Name = "sectorinfo";
-			this.sectorinfo.Size = new System.Drawing.Size(642, 100);
+			this.sectorinfo.Size = new System.Drawing.Size(1090, 100);
 			this.sectorinfo.TabIndex = 2;
 			this.sectorinfo.Visible = false;
 			// 

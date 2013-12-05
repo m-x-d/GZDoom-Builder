@@ -2175,7 +2175,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-8, 0, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-General.Map.Grid.GridSize, 0, true);
 			PostAction();
 		}
 
@@ -2184,7 +2184,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(8, 0, true);
+			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(General.Map.Grid.GridSize, 0, true);
 			PostAction();
 		}
 
@@ -2193,7 +2193,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -8, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -General.Map.Grid.GridSize, true);
 			PostAction();
 		}
 
@@ -2202,7 +2202,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 8, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, General.Map.Grid.GridSize, true);
 			PostAction();
 		}
 

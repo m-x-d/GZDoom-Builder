@@ -114,8 +114,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool usehighlight;
 		private bool autodragonpaste;
 		private bool autoAlignTextureOffsetsOnCreate;//mxd
-		private bool autoAlignTextureOffsetsOnDrag;//mxd
 		private bool dontMoveGeometryOutsideMapBoundary;//mxd
+		private bool autoDrawOnEdit; //mxd
 		private bool marqueSelectTouching; //mxd. Select elements partially/fully inside of marque selection?
 		private bool syncSelection; //mxd. Sync selection between Visual and Classic modes.
 		private bool objExportTextures; //mxd
@@ -176,8 +176,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			} 
 		}
 		public bool AutoDragOnPaste { get { return autodragonpaste; } set { autodragonpaste = value; } }
+		public bool AutoDrawOnEdit { get { return autoDrawOnEdit; } set { autoDrawOnEdit = value; } } //mxd
 		public bool AutoAlignTextureOffsetsOnCreate { get { return autoAlignTextureOffsetsOnCreate; } set { autoAlignTextureOffsetsOnCreate = value; } } //mxd
-		public bool AutoAlignTextureOffsetsOnDrag { get { return autoAlignTextureOffsetsOnDrag; } set { autoAlignTextureOffsetsOnDrag = value; } } //mxd
 		public bool DontMoveGeometryOutsideMapBoundary { get { return dontMoveGeometryOutsideMapBoundary; } set { DontMoveGeometryOutsideMapBoundary = value; } } //mxd
 		public bool MarqueSelectTouching { get { return marqueSelectTouching; } set { marqueSelectTouching = value; } } //mxd
 		public bool SyncSelection { get { return syncSelection; } set { syncSelection = value; } } //mxd
@@ -333,8 +333,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			highlightthingsrange = General.Settings.ReadPluginSetting("highlightthingsrange", 10);
 			splitlinedefsrange = General.Settings.ReadPluginSetting("splitlinedefsrange", 10);
 			autodragonpaste = General.Settings.ReadPluginSetting("autodragonpaste", false);
+			autoDrawOnEdit = General.Settings.ReadPluginSetting("autodrawonedit", true); //mxd
 			autoAlignTextureOffsetsOnCreate = General.Settings.ReadPluginSetting("autoaligntextureoffsetsoncreate", false); //mxd
-			autoAlignTextureOffsetsOnDrag = General.Settings.ReadPluginSetting("autoaligntextureoffsetsondrag", true); //mxd
 			dontMoveGeometryOutsideMapBoundary = General.Settings.ReadPluginSetting("dontmovegeometryoutsidemapboundary", false); //mxd
 			syncSelection = General.Settings.ReadPluginSetting("syncselection", false); //mxd
 			objExportTextures = General.Settings.ReadPluginSetting("objexporttextures", false); //mxd
@@ -343,7 +343,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			lockSectorTextureOffsetsWhileDragging = General.Settings.ReadPluginSetting("locktextureoffsets", false); //mxd
 		}
 
-		//mxd
+		//mxd. Save settings, which can be changed via UI
 		private void saveSettings() {
 			General.Settings.WritePluginSetting("locktextureoffsets", lockSectorTextureOffsetsWhileDragging);
 			General.Settings.WritePluginSetting("viewselectionnumbers", viewselectionnumbers);
@@ -770,6 +770,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(General.Settings.GZShowEventLines) { //mxd
 					foreach(Line3D l in lines)
 						renderer.RenderArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
+				}
+			} 
+			else if(asso.type == UniversalType.SectorTag) //mxd. Render sector highlight
+			{ 
+				foreach(Sector s in General.Map.Map.Sectors) {
+					if(s.Tag == asso.tag) {
+						int highlightedColor = General.Colors.Highlight.WithAlpha(128).ToInt();
+						FlatVertex[] verts = new FlatVertex[s.FlatVertices.Length];
+						s.FlatVertices.CopyTo(verts, 0);
+						for(int i = 0; i < verts.Length; i++)
+							verts[i].c = highlightedColor;
+						renderer.RenderGeometry(verts, null, true);
+					}
 				}
 			}
 		}

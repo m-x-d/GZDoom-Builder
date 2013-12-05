@@ -365,30 +365,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Present();
 				}
 			}
-			else
+			else if(mouseinside && !selecting && BuilderPlug.Me.AutoDrawOnEdit) //mxd. We don't want to insert a thing when multiselecting
 			{
-				// Mouse in window?
-				if(mouseinside && !selecting) //mxd. We don't want to insert a thing when multiselecting
-				{
-					// Edit pressed in this mode
-					editpressed = true;
-					thinginserted = true;
-					
-					// Insert a new item and select it for dragging
-					General.Map.UndoRedo.CreateUndo("Insert thing");
-					Thing t = InsertThing(mousemappos);
+				// Edit pressed in this mode
+				editpressed = true;
+				thinginserted = true;
 
-					if (t == null)
-					{
-						General.Map.UndoRedo.WithdrawUndo();
-					}
-					else
-					{
-						General.Map.Map.ClearSelectedThings();
-						t.Selected = true;
-						Highlight(t);
-						General.Interface.RedrawDisplay();
-					}
+				// Insert a new item and select it for dragging
+				General.Map.UndoRedo.CreateUndo("Insert thing");
+				Thing t = InsertThing(mousemappos);
+
+				if(t == null) {
+					General.Map.UndoRedo.WithdrawUndo();
+				} else {
+					General.Map.Map.ClearSelectedThings();
+					t.Selected = true;
+					Highlight(t);
+					General.Interface.RedrawDisplay();
 				}
 			}
 

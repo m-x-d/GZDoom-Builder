@@ -52,6 +52,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.spritepanel = new System.Windows.Forms.GroupBox();
 			this.spritename = new System.Windows.Forms.Label();
 			this.spritetex = new System.Windows.Forms.Panel();
+			this.flagsPanel = new System.Windows.Forms.GroupBox();
+			this.flags = new System.Windows.Forms.ListView();
 			label5 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -59,6 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 			label1 = new System.Windows.Forms.Label();
 			this.infopanel.SuspendLayout();
 			this.spritepanel.SuspendLayout();
+			this.flagsPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label5
@@ -75,7 +78,7 @@ namespace CodeImp.DoomBuilder.Controls
 			label4.AutoSize = true;
 			label4.Location = new System.Drawing.Point(30, 77);
 			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(28, 14);
+			label4.Size = new System.Drawing.Size(27, 14);
 			label4.TabIndex = 4;
 			label4.Text = "Tag:";
 			// 
@@ -102,7 +105,7 @@ namespace CodeImp.DoomBuilder.Controls
 			label1.AutoSize = true;
 			label1.Location = new System.Drawing.Point(24, 19);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(34, 14);
+			label1.Size = new System.Drawing.Size(33, 14);
 			label1.TabIndex = 0;
 			label1.Text = "Type:";
 			// 
@@ -310,20 +313,47 @@ namespace CodeImp.DoomBuilder.Controls
 			this.spritetex.Size = new System.Drawing.Size(68, 60);
 			this.spritetex.TabIndex = 0;
 			// 
+			// flagsPanel
+			// 
+			this.flagsPanel.Controls.Add(this.flags);
+			this.flagsPanel.Location = new System.Drawing.Point(592, 0);
+			this.flagsPanel.Name = "flagsPanel";
+			this.flagsPanel.Size = new System.Drawing.Size(568, 100);
+			this.flagsPanel.TabIndex = 6;
+			this.flagsPanel.TabStop = false;
+			this.flagsPanel.Text = " Flags";
+			// 
+			// flags
+			// 
+			this.flags.BackColor = System.Drawing.SystemColors.Control;
+			this.flags.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.flags.CheckBoxes = true;
+			this.flags.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.flags.Location = new System.Drawing.Point(6, 18);
+			this.flags.Name = "flags";
+			this.flags.Scrollable = false;
+			this.flags.ShowGroups = false;
+			this.flags.Size = new System.Drawing.Size(556, 100);
+			this.flags.TabIndex = 0;
+			this.flags.UseCompatibleStateImageBehavior = false;
+			this.flags.View = System.Windows.Forms.View.List;
+			// 
 			// ThingInfoPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+			this.Controls.Add(this.flagsPanel);
 			this.Controls.Add(this.spritepanel);
 			this.Controls.Add(this.infopanel);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "ThingInfoPanel";
-			this.Size = new System.Drawing.Size(650, 100);
+			this.Size = new System.Drawing.Size(1190, 100);
 			this.infopanel.ResumeLayout(false);
 			this.infopanel.PerformLayout();
 			this.spritepanel.ResumeLayout(false);
+			this.flagsPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -349,6 +379,8 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label arg2;
 		private System.Windows.Forms.Label arg1;
 		private System.Windows.Forms.GroupBox infopanel;
+		private System.Windows.Forms.GroupBox flagsPanel;
+		private System.Windows.Forms.ListView flags;
 
 	}
 }

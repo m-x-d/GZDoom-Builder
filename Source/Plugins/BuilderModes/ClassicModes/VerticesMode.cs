@@ -376,7 +376,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Redraw display
 					General.Interface.RedrawDisplay();
 				}
-				else
+				else if(BuilderPlug.Me.AutoDrawOnEdit)
 				{
 					// Start drawing mode
 					DrawGeometryMode drawmode = new DrawGeometryMode();

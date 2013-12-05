@@ -458,7 +458,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Present();
 				}
 			}
-			else if(!selecting) //mxd. We don't want to draw while multiselecting
+			else if(!selecting && BuilderPlug.Me.AutoDrawOnEdit) //mxd. We don't want to draw while multiselecting
 			{
 				// Start drawing mode
 				DrawGeometryMode drawmode = new DrawGeometryMode();

@@ -72,6 +72,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floortex = new System.Windows.Forms.Panel();
 			this.labelFloorTextureSize = new System.Windows.Forms.Label();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+			this.flagsPanel = new System.Windows.Forms.GroupBox();
+			this.flags = new System.Windows.Forms.ListView();
 			label13 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
@@ -86,6 +88,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floorInfo.SuspendLayout();
 			this.floortex.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
+			this.flagsPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label13
@@ -378,7 +381,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceilingInfo.Controls.Add(this.ceilingAngleLabel);
 			this.ceilingInfo.Controls.Add(this.ceilingScaleLabel);
 			this.ceilingInfo.Controls.Add(this.ceilingAngle);
-			this.ceilingInfo.Location = new System.Drawing.Point(82, 15);
+			this.ceilingInfo.Location = new System.Drawing.Point(80, 15);
 			this.ceilingInfo.Name = "ceilingInfo";
 			this.ceilingInfo.Size = new System.Drawing.Size(118, 80);
 			this.ceilingInfo.TabIndex = 2;
@@ -439,7 +442,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floorInfo.Controls.Add(this.floorAngleLabel);
 			this.floorInfo.Controls.Add(this.floorScaleLabel);
 			this.floorInfo.Controls.Add(this.floorAngle);
-			this.floorInfo.Location = new System.Drawing.Point(82, 15);
+			this.floorInfo.Location = new System.Drawing.Point(80, 15);
 			this.floorInfo.Name = "floorInfo";
 			this.floorInfo.Size = new System.Drawing.Size(118, 80);
 			this.floorInfo.TabIndex = 30;
@@ -514,12 +517,39 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flowLayoutPanel1.Controls.Add(this.sectorinfo);
 			this.flowLayoutPanel1.Controls.Add(this.floorpanel);
 			this.flowLayoutPanel1.Controls.Add(this.ceilingpanel);
+			this.flowLayoutPanel1.Controls.Add(this.flagsPanel);
 			this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-			this.flowLayoutPanel1.Size = new System.Drawing.Size(642, 100);
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(1090, 100);
 			this.flowLayoutPanel1.TabIndex = 5;
 			this.flowLayoutPanel1.WrapContents = false;
+			// 
+			// flagsPanel
+			// 
+			this.flagsPanel.Controls.Add(this.flags);
+			this.flagsPanel.Location = new System.Drawing.Point(629, 0);
+			this.flagsPanel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+			this.flagsPanel.Name = "flagsPanel";
+			this.flagsPanel.Size = new System.Drawing.Size(455, 100);
+			this.flagsPanel.TabIndex = 7;
+			this.flagsPanel.TabStop = false;
+			this.flagsPanel.Text = " Flags";
+			// 
+			// flags
+			// 
+			this.flags.BackColor = System.Drawing.SystemColors.Control;
+			this.flags.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.flags.CheckBoxes = true;
+			this.flags.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.flags.Location = new System.Drawing.Point(6, 18);
+			this.flags.Name = "flags";
+			this.flags.Scrollable = false;
+			this.flags.ShowGroups = false;
+			this.flags.Size = new System.Drawing.Size(443, 100);
+			this.flags.TabIndex = 0;
+			this.flags.UseCompatibleStateImageBehavior = false;
+			this.flags.View = System.Windows.Forms.View.List;
 			// 
 			// SectorInfoPanel
 			// 
@@ -530,7 +560,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "SectorInfoPanel";
-			this.Size = new System.Drawing.Size(642, 100);
+			this.Size = new System.Drawing.Size(1090, 100);
 			this.sectorinfo.ResumeLayout(false);
 			this.sectorinfo.PerformLayout();
 			this.ceilingpanel.ResumeLayout(false);
@@ -542,6 +572,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floortex.ResumeLayout(false);
 			this.floortex.PerformLayout();
 			this.flowLayoutPanel1.ResumeLayout(false);
+			this.flagsPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -586,5 +617,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Panel panelLightColor;
 		private System.Windows.Forms.Label labelFade;
 		private System.Windows.Forms.Label labelLight;
+		private System.Windows.Forms.GroupBox flagsPanel;
+		private System.Windows.Forms.ListView flags;
 	}
 }

@@ -155,15 +155,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartOverlay(true))
 			{
 				//mxd. Render highlighted sector
-				if (BuilderPlug.Me.UseHighlight) {
-					if (highlighted != null) {
-						int highlightedColor = General.Colors.Highlight.WithAlpha(64).ToInt();
-						FlatVertex[] verts = new FlatVertex[highlighted.FlatVertices.Length];
-						highlighted.FlatVertices.CopyTo(verts, 0);
-						for (int i = 0; i < verts.Length; i++)
-							verts[i].c = highlightedColor;
-						renderer.RenderGeometry(verts, null, true);
-					}
+				if(BuilderPlug.Me.UseHighlight && highlighted != null) {
+					int highlightedColor = General.Colors.Highlight.WithAlpha(64).ToInt();
+					FlatVertex[] verts = new FlatVertex[highlighted.FlatVertices.Length];
+					highlighted.FlatVertices.CopyTo(verts, 0);
+					for(int i = 0; i < verts.Length; i++)
+						verts[i].c = highlightedColor;
+					renderer.RenderGeometry(verts, null, true);
 				}
 				
 				// Go for all selected sectors
@@ -719,7 +717,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Present();
 				}
 			}
-			else if(!selecting) //mxd. We don't want to draw while multiselecting
+			else if(!selecting && BuilderPlug.Me.AutoDrawOnEdit) //mxd. We don't want to draw while multiselecting
 			{
 				// Start drawing mode
 				DrawGeometryMode drawmode = new DrawGeometryMode();

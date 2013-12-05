@@ -54,9 +54,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			visualmodeclearselection.Checked = BuilderPlug.Me.VisualModeClearSelection;
 			autodragonpaste.Checked = BuilderPlug.Me.AutoDragOnPaste;
 			autoaligntexturesoncreate.Checked = BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate; //mxd
-			autoalignDraggedSidedefsOffsetX.Checked = BuilderPlug.Me.AutoAlignTextureOffsetsOnDrag; //mxd
 			dontMoveGeometryOutsideBounds.Checked = BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary; //mxd
 			syncSelection.Checked = BuilderPlug.Me.SyncSelection; //mxd
+			autodrawonedit.Checked = BuilderPlug.Me.AutoDrawOnEdit;
 			defaultbrightness.Text = General.Settings.DefaultBrightness.ToString(); //mxd
 			defaultceilheight.Text = General.Settings.DefaultCeilingHeight.ToString();//mxd
 			defaultfloorheight.Text = General.Settings.DefaultFloorHeight.ToString(); //mxd
@@ -82,8 +82,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("autoclearselection", autoclearselection.Checked);
 			General.Settings.WritePluginSetting("visualmodeclearselection", visualmodeclearselection.Checked);
 			General.Settings.WritePluginSetting("autodragonpaste", autodragonpaste.Checked);
+			General.Settings.WritePluginSetting("autodrawonedit", autodrawonedit.Checked); //mxd
 			General.Settings.WritePluginSetting("autoaligntextureoffsetsoncreate", autoaligntexturesoncreate.Checked);//mxd
-			General.Settings.WritePluginSetting("autoaligntextureoffsetsondrag", autoalignDraggedSidedefsOffsetX.Checked);//mxd
 			General.Settings.WritePluginSetting("dontmovegeometryoutsidemapboundary", dontMoveGeometryOutsideBounds.Checked);//mxd
 			General.Settings.WritePluginSetting("syncselection", syncSelection.Checked);//mxd
 
