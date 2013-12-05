@@ -1480,7 +1480,7 @@ namespace CodeImp.DoomBuilder {
 
 			// Fail
 			compiler.Dispose();
-			errors = null;
+			errors.Clear(); //mxd
 			return false;
 		}
 
