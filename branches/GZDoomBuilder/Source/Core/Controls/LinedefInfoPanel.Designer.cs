@@ -28,13 +28,15 @@ namespace CodeImp.DoomBuilder.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.Label label1;
-			System.Windows.Forms.Label label4;
-			System.Windows.Forms.Label label3;
-			System.Windows.Forms.Label label2;
+			System.Windows.Forms.Label actionlabel;
+			this.activationlabel = new System.Windows.Forms.Label();
+			this.taglabel = new System.Windows.Forms.Label();
+			this.anglelabel = new System.Windows.Forms.Label();
+			this.lengthlabel = new System.Windows.Forms.Label();
 			this.infopanel = new System.Windows.Forms.GroupBox();
+			this.activation = new System.Windows.Forms.Label();
 			this.unpegged = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
+			this.peglabel = new System.Windows.Forms.Label();
 			this.arg5 = new System.Windows.Forms.Label();
 			this.arglbl5 = new System.Windows.Forms.Label();
 			this.arglbl4 = new System.Windows.Forms.Label();
@@ -116,10 +118,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.flagsPanel = new System.Windows.Forms.GroupBox();
 			this.flags = new System.Windows.Forms.ListView();
-			label1 = new System.Windows.Forms.Label();
-			label4 = new System.Windows.Forms.Label();
-			label3 = new System.Windows.Forms.Label();
-			label2 = new System.Windows.Forms.Label();
+			actionlabel = new System.Windows.Forms.Label();
 			this.infopanel.SuspendLayout();
 			this.frontpanel.SuspendLayout();
 			this.flowLayoutPanelFront.SuspendLayout();
@@ -147,46 +146,57 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flagsPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// label1
+			// actionlabel
 			// 
-			label1.Location = new System.Drawing.Point(8, 19);
-			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(44, 14);
-			label1.TabIndex = 0;
-			label1.Text = "Action:";
-			label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			actionlabel.Location = new System.Drawing.Point(8, 19);
+			actionlabel.Name = "actionlabel";
+			actionlabel.Size = new System.Drawing.Size(58, 14);
+			actionlabel.TabIndex = 0;
+			actionlabel.Text = "Action:";
+			actionlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// label4
+			// activationlabel
 			// 
-			label4.Location = new System.Drawing.Point(8, 77);
-			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(44, 14);
-			label4.TabIndex = 4;
-			label4.Text = "Tag:";
-			label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.activationlabel.Location = new System.Drawing.Point(8, 34);
+			this.activationlabel.Name = "activationlabel";
+			this.activationlabel.Size = new System.Drawing.Size(58, 14);
+			this.activationlabel.TabIndex = 30;
+			this.activationlabel.Text = "Activation:";
+			this.activationlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// label3
+			// taglabel
 			// 
-			label3.Location = new System.Drawing.Point(8, 58);
-			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(44, 14);
-			label3.TabIndex = 3;
-			label3.Text = "Angle:";
-			label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.taglabel.Location = new System.Drawing.Point(8, 79);
+			this.taglabel.Name = "taglabel";
+			this.taglabel.Size = new System.Drawing.Size(58, 14);
+			this.taglabel.TabIndex = 4;
+			this.taglabel.Text = "Tag:";
+			this.taglabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// label2
+			// anglelabel
 			// 
-			label2.Location = new System.Drawing.Point(8, 39);
-			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(44, 14);
-			label2.TabIndex = 2;
-			label2.Text = "Length:";
-			label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.anglelabel.Location = new System.Drawing.Point(8, 64);
+			this.anglelabel.Name = "anglelabel";
+			this.anglelabel.Size = new System.Drawing.Size(58, 14);
+			this.anglelabel.TabIndex = 3;
+			this.anglelabel.Text = "Angle:";
+			this.anglelabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// lengthlabel
+			// 
+			this.lengthlabel.Location = new System.Drawing.Point(8, 49);
+			this.lengthlabel.Name = "lengthlabel";
+			this.lengthlabel.Size = new System.Drawing.Size(58, 14);
+			this.lengthlabel.TabIndex = 2;
+			this.lengthlabel.Text = "Length:";
+			this.lengthlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// infopanel
 			// 
+			this.infopanel.Controls.Add(this.activation);
+			this.infopanel.Controls.Add(this.activationlabel);
 			this.infopanel.Controls.Add(this.unpegged);
-			this.infopanel.Controls.Add(this.label6);
+			this.infopanel.Controls.Add(this.peglabel);
 			this.infopanel.Controls.Add(this.arg5);
 			this.infopanel.Controls.Add(this.arglbl5);
 			this.infopanel.Controls.Add(this.arglbl4);
@@ -204,11 +214,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.infopanel.Controls.Add(this.tag);
 			this.infopanel.Controls.Add(this.angle);
 			this.infopanel.Controls.Add(this.length);
-			this.infopanel.Controls.Add(label4);
-			this.infopanel.Controls.Add(label3);
-			this.infopanel.Controls.Add(label2);
+			this.infopanel.Controls.Add(this.taglabel);
+			this.infopanel.Controls.Add(this.anglelabel);
+			this.infopanel.Controls.Add(this.lengthlabel);
 			this.infopanel.Controls.Add(this.action);
-			this.infopanel.Controls.Add(label1);
+			this.infopanel.Controls.Add(actionlabel);
 			this.infopanel.Location = new System.Drawing.Point(0, 0);
 			this.infopanel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.infopanel.Name = "infopanel";
@@ -217,24 +227,35 @@ namespace CodeImp.DoomBuilder.Controls
 			this.infopanel.TabStop = false;
 			this.infopanel.Text = " Linedef ";
 			// 
+			// activation
+			// 
+			this.activation.AutoEllipsis = true;
+			this.activation.BackColor = System.Drawing.Color.Transparent;
+			this.activation.Location = new System.Drawing.Point(66, 34);
+			this.activation.Name = "activation";
+			this.activation.Size = new System.Drawing.Size(205, 14);
+			this.activation.TabIndex = 31;
+			this.activation.Text = "0 - When player does a barrel roll";
+			this.activation.UseMnemonic = false;
+			// 
 			// unpegged
 			// 
 			this.unpegged.AutoSize = true;
-			this.unpegged.Location = new System.Drawing.Point(180, 39);
+			this.unpegged.Location = new System.Drawing.Point(180, 49);
 			this.unpegged.Name = "unpegged";
 			this.unpegged.Size = new System.Drawing.Size(32, 14);
 			this.unpegged.TabIndex = 29;
 			this.unpegged.Text = "None";
 			this.unpegged.UseMnemonic = false;
 			// 
-			// label6
+			// peglabel
 			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(118, 39);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(59, 14);
-			this.label6.TabIndex = 28;
-			this.label6.Text = "Unpegged:";
+			this.peglabel.AutoSize = true;
+			this.peglabel.Location = new System.Drawing.Point(118, 49);
+			this.peglabel.Name = "peglabel";
+			this.peglabel.Size = new System.Drawing.Size(59, 14);
+			this.peglabel.TabIndex = 28;
+			this.peglabel.Text = "Unpegged:";
 			// 
 			// arg5
 			// 
@@ -339,7 +360,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// backoffset
 			// 
 			this.backoffset.AutoSize = true;
-			this.backoffset.Location = new System.Drawing.Point(180, 77);
+			this.backoffset.Location = new System.Drawing.Point(180, 79);
 			this.backoffset.Name = "backoffset";
 			this.backoffset.Size = new System.Drawing.Size(49, 14);
 			this.backoffset.TabIndex = 17;
@@ -357,7 +378,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// backoffsetlabel
 			// 
-			this.backoffsetlabel.Location = new System.Drawing.Point(107, 77);
+			this.backoffsetlabel.Location = new System.Drawing.Point(107, 79);
 			this.backoffsetlabel.Name = "backoffsetlabel";
 			this.backoffsetlabel.Size = new System.Drawing.Size(70, 14);
 			this.backoffsetlabel.TabIndex = 14;
@@ -367,7 +388,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// frontoffset
 			// 
 			this.frontoffset.AutoSize = true;
-			this.frontoffset.Location = new System.Drawing.Point(180, 58);
+			this.frontoffset.Location = new System.Drawing.Point(180, 64);
 			this.frontoffset.Name = "frontoffset";
 			this.frontoffset.Size = new System.Drawing.Size(49, 14);
 			this.frontoffset.TabIndex = 11;
@@ -375,7 +396,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// frontoffsetlabel
 			// 
-			this.frontoffsetlabel.Location = new System.Drawing.Point(107, 58);
+			this.frontoffsetlabel.Location = new System.Drawing.Point(107, 64);
 			this.frontoffsetlabel.Name = "frontoffsetlabel";
 			this.frontoffsetlabel.Size = new System.Drawing.Size(70, 14);
 			this.frontoffsetlabel.TabIndex = 8;
@@ -385,7 +406,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// tag
 			// 
 			this.tag.AutoSize = true;
-			this.tag.Location = new System.Drawing.Point(55, 77);
+			this.tag.Location = new System.Drawing.Point(66, 79);
 			this.tag.Name = "tag";
 			this.tag.Size = new System.Drawing.Size(13, 14);
 			this.tag.TabIndex = 7;
@@ -394,7 +415,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// angle
 			// 
 			this.angle.AutoSize = true;
-			this.angle.Location = new System.Drawing.Point(55, 58);
+			this.angle.Location = new System.Drawing.Point(66, 64);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(25, 14);
 			this.angle.TabIndex = 6;
@@ -403,7 +424,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// length
 			// 
 			this.length.AutoSize = true;
-			this.length.Location = new System.Drawing.Point(55, 39);
+			this.length.Location = new System.Drawing.Point(66, 49);
 			this.length.Name = "length";
 			this.length.Size = new System.Drawing.Size(31, 14);
 			this.length.TabIndex = 5;
@@ -413,7 +434,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.action.AutoEllipsis = true;
 			this.action.BackColor = System.Drawing.Color.Transparent;
-			this.action.Location = new System.Drawing.Point(55, 19);
+			this.action.Location = new System.Drawing.Point(66, 19);
 			this.action.Name = "action";
 			this.action.Size = new System.Drawing.Size(205, 14);
 			this.action.TabIndex = 1;
@@ -1152,7 +1173,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label arg1;
 		private System.Windows.Forms.GroupBox infopanel;
 		private System.Windows.Forms.Label unpegged;
-		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label peglabel;
 		private System.Windows.Forms.Label frontsector;
 		private System.Windows.Forms.Label backsector;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelBack;
@@ -1202,6 +1223,11 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 		private System.Windows.Forms.GroupBox flagsPanel;
 		private System.Windows.Forms.ListView flags;
+		private System.Windows.Forms.Label taglabel;
+		private System.Windows.Forms.Label anglelabel;
+		private System.Windows.Forms.Label lengthlabel;
+		private System.Windows.Forms.Label activation;
+		private System.Windows.Forms.Label activationlabel;
 
 	}
 }
