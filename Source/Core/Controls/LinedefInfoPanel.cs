@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private int hexenformatwidth;
 		private int doomformatwidth;
 		private List<UniversalFieldInfo> fieldInfos;
+		private int[] labelPositionsY = new[] { 39, 58, 77 }; //mxd
 		
 		// Constructor
 		public LinedefInfoPanel()
@@ -87,6 +88,34 @@ namespace CodeImp.DoomBuilder.Controls
 				arg4.Visible = true;
 				arg5.Visible = true;
 				infopanel.Width = hexenformatwidth;
+			}
+
+			//mxd. Show activation
+			if(!General.Map.FormatInterface.HasBuiltInActivations && General.Map.FormatInterface.HasNumericLinedefActivations) { //Hexen map format?
+				foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) {
+					if(l.Activate == ai.Index) {
+						activation.Text = ai.Title;
+						break;
+					}
+				}
+			} else { //rearange labels
+				activation.Visible = false;
+				activationlabel.Visible = false;
+
+				length.Top = labelPositionsY[0];
+				lengthlabel.Top = labelPositionsY[0];
+				unpegged.Top = labelPositionsY[0];
+				peglabel.Top = labelPositionsY[0];
+
+				angle.Top = labelPositionsY[1];
+				anglelabel.Top = labelPositionsY[1];
+				frontoffset.Top = labelPositionsY[1];
+				frontoffsetlabel.Top = labelPositionsY[1];
+
+				tag.Top = labelPositionsY[2];
+				taglabel.Top = labelPositionsY[2];
+				backoffset.Top = labelPositionsY[2];
+				backoffsetlabel.Top = labelPositionsY[2];
 			}
 			
 			// Get line action information
@@ -346,10 +375,23 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			//mxd. Flags
+			Dictionary<string, string> activations = new Dictionary<string, string>();
+			foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) {
+				activations.Add(ai.Key, ai.Title);
+			}
+
 			flags.Items.Clear();
 			foreach(KeyValuePair<string, bool> group in l.Flags) {
 				if(group.Value) {
-					ListViewItem item = new ListViewItem(General.Map.Config.LinedefFlags[group.Key]);
+					ListViewItem item;
+					if (General.Map.Config.LinedefFlags.ContainsKey(group.Key)) {
+						item = new ListViewItem(General.Map.Config.LinedefFlags[group.Key]);
+					} else if (activations.ContainsKey(group.Key)) {
+						item = new ListViewItem(activations[group.Key]);
+					} else {
+						item = new ListViewItem(group.Key);
+					}
+
 					item.Checked = true;
 					flags.Items.Add(item);
 				}
