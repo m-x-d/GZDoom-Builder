@@ -32,6 +32,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.GroupBox groupBox2;
 			System.Windows.Forms.Label label7;
 			this.thingtype = new CodeImp.DoomBuilder.Controls.ThingBrowserControl();
+			this.anglecontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			this.gravity = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.labelGravity = new System.Windows.Forms.Label();
 			this.cbRandomAngle = new System.Windows.Forms.CheckBox();
@@ -76,7 +77,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
-			this.anglecontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			groupBox2 = new System.Windows.Forms.GroupBox();
 			label7 = new System.Windows.Forms.Label();
@@ -140,6 +140,15 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox2.TabIndex = 2;
 			groupBox2.TabStop = false;
 			groupBox2.Text = " Coordination ";
+			// 
+			// anglecontrol
+			// 
+			this.anglecontrol.Angle = 0;
+			this.anglecontrol.Location = new System.Drawing.Point(152, 71);
+			this.anglecontrol.Name = "anglecontrol";
+			this.anglecontrol.Size = new System.Drawing.Size(88, 88);
+			this.anglecontrol.TabIndex = 20;
+			this.anglecontrol.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.anglecontrol_AngleChanged);
 			// 
 			// gravity
 			// 
@@ -661,15 +670,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
-			// 
-			// anglecontrol
-			// 
-			this.anglecontrol.Angle = 0;
-			this.anglecontrol.Location = new System.Drawing.Point(152, 71);
-			this.anglecontrol.Name = "anglecontrol";
-			this.anglecontrol.Size = new System.Drawing.Size(88, 88);
-			this.anglecontrol.TabIndex = 20;
-			this.anglecontrol.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.anglecontrol_AngleChanged);
 			// 
 			// ThingEditForm
 			// 
