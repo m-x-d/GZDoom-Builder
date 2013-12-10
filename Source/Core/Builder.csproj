@@ -14,7 +14,7 @@
     <ApplicationIcon>Resources\GZDB2.ico</ApplicationIcon>
     <Win32Resource>
     </Win32Resource>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
@@ -925,6 +925,7 @@
     <None Include="Resources\InfoLine.png" />
     <None Include="Resources\Keyboard.png" />
     <Content Include="Resources\Light.png" />
+    <None Include="Resources\Lightbulb.png" />
     <Content Include="Resources\Light_animate.png" />
     <None Include="Resources\MLogo.png" />
     <None Include="Resources\Marine.png" />
@@ -1105,7 +1106,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>call "$(DevEnvDir)..\tools\vsvars32.bat"
+EDITBIN.EXE /LARGEADDRESSAWARE "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

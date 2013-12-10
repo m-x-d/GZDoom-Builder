@@ -1906,27 +1906,14 @@ namespace CodeImp.DoomBuilder.Map
 			// Go for all lines
 			foreach(Linedef l in lines)
 			{
-				// Check the cs field bits
-				if((GetCSFieldBits(l.Start, ref area) & GetCSFieldBits(l.End, ref area)) == 0)
-				{
-					// The line could be in the area
-					newlines.Add(l);
-				}
+				//mxd. Not within rect?
+				if(!area.Contains(l.Start.Position.x, l.Start.Position.y) || !area.Contains(l.End.Position.x, l.End.Position.y)) continue;
+				// The line could be in the area
+				newlines.Add(l);
 			}
 			
 			// Return result
 			return newlines;
-		}
-
-		// This returns the cohen-sutherland field bits for a vertex in a rectangle area
-		private static int GetCSFieldBits(Vertex v, ref RectangleF area)
-		{
-			int bits = 0;
-			if(v.Position.y < area.Top) bits |= 0x01;
-			if(v.Position.y > area.Bottom) bits |= 0x02;
-			if(v.Position.x < area.Left) bits |= 0x04;
-			if(v.Position.x > area.Right) bits |= 0x08;
-			return bits;
 		}
 
 		/// <summary>This filters vertices by a rectangular area.</summary>
@@ -1938,10 +1925,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Vertex v in verts)
 			{
 				// Within rect?
-				if((v.Position.x >= area.Left) &&
-				   (v.Position.x <= area.Right) &&
-				   (v.Position.y >= area.Top) &&
-				   (v.Position.y <= area.Bottom))
+				if(area.Contains(v.Position.x, v.Position.y)) //mxd
 				{
 					// The vertex is in the area
 					newverts.Add(v);
@@ -2430,7 +2414,7 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Calculate distance and check if closer than previous find
 				d = l.SafeDistanceToSq(pos, true);
-				if((d <= maxrangesq) && (d < distance))
+				if(d < distance && d <= maxrangesq)
 				{
 					// This one is closer
 					closest = l;
@@ -2540,25 +2524,24 @@ namespace CodeImp.DoomBuilder.Map
 			RectangleF range = RectangleF.FromLTRB(pos.x - maxrange, pos.y - maxrange, pos.x + maxrange, pos.y + maxrange);
 			Vertex closest = null;
 			float distance = float.MaxValue;
-			float d;
+			float d, px, py;
 
 			// Go for all vertices in selection
 			foreach(Vertex v in selection)
 			{
+				px = v.Position.x;
+				py = v.Position.y;
+				
 				// Within range?
-				if((v.Position.x >= range.Left) && (v.Position.x <= range.Right))
+				if(!range.Contains(px, py)) continue; //mxd
+
+				// Close than previous find?
+				d = Math.Abs(px - pos.x) + Math.Abs(py - pos.y);
+				if(d < distance) 
 				{
-					if((v.Position.y >= range.Top) && (v.Position.y <= range.Bottom))
-					{
-						// Close than previous find?
-						d = Math.Abs(v.Position.x - pos.x) + Math.Abs(v.Position.y - pos.y);
-						if(d < distance)
-						{
-							// This one is closer
-							closest = v;
-							distance = d;
-						}
-					}
+					// This one is closer
+					closest = v;
+					distance = d;
 				}
 			}
 
@@ -2572,25 +2555,24 @@ namespace CodeImp.DoomBuilder.Map
 			RectangleF range = RectangleF.FromLTRB(pos.x - maxrange, pos.y - maxrange, pos.x + maxrange, pos.y + maxrange);
 			Thing closest = null;
 			float distance = float.MaxValue;
-			float d;
+			float d, px, py;
 
-			// Go for all vertices in selection
+			// Go for all things in selection
 			foreach(Thing t in selection)
 			{
-				// Within range?
-				if((t.Position.x >= (range.Left - t.Size)) && (t.Position.x <= (range.Right + t.Size)))
+				px = t.Position.x;
+				py = t.Position.y;
+
+				//mxd. Within range?
+				if(px < range.Left - t.Size || px > range.Right + t.Size || py < range.Top - t.Size || py > range.Bottom + t.Size) continue;
+
+				// Close than previous find?
+				d = Math.Abs(px - pos.x) + Math.Abs(py - pos.y);
+				if(d < distance) 
 				{
-					if((t.Position.y >= (range.Top - t.Size)) && (t.Position.y <= (range.Bottom + t.Size)))
-					{
-						// Close than previous find?
-						d = Math.Abs(t.Position.x - pos.x) + Math.Abs(t.Position.y - pos.y);
-						if(d < distance)
-						{
-							// This one is closer
-							closest = t;
-							distance = d;
-						}
-					}
+					// This one is closer
+					closest = t;
+					distance = d;
 				}
 			}
 

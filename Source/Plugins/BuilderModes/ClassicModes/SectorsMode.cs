@@ -64,6 +64,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Effects
 		private Dictionary<int, string[]> effects;
 		
+		//mxd. Cached overlays stuff
+		private FlatVertex[] overlayGeometry;
+		private Dictionary<Sector, string[]> selectedEffectLabels;
+		private Dictionary<Sector, string[]> unselectedEffectLabels; 
+		
 		#endregion
 
 		#region ================== Properties
@@ -154,31 +159,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(renderer.StartOverlay(true))
 			{
-				//mxd. Render highlighted sector
-				if(BuilderPlug.Me.UseHighlight && highlighted != null) {
-					int highlightedColor = General.Colors.Highlight.WithAlpha(64).ToInt();
-					FlatVertex[] verts = new FlatVertex[highlighted.FlatVertices.Length];
-					highlighted.FlatVertices.CopyTo(verts, 0);
-					for(int i = 0; i < verts.Length; i++)
-						verts[i].c = highlightedColor;
-					renderer.RenderGeometry(verts, null, true);
-				}
-				
 				// Go for all selected sectors
 				ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 				
 				//mxd. Render selected sectors
 				if (BuilderPlug.Me.UseHighlight) {
-					int selectedColor = General.Colors.Selection.WithAlpha(64).ToInt(); //mxd
-					foreach (Sector s in orderedselection) {
-						if (s != highlighted) {
-							FlatVertex[] verts = new FlatVertex[s.FlatVertices.Length];
-							s.FlatVertices.CopyTo(verts, 0);
-							for (int i = 0; i < verts.Length; i++)
-								verts[i].c = selectedColor;
-							renderer.RenderGeometry(verts, null, true);
-						}
-					}
+					renderer.RenderHighlight(overlayGeometry, General.Colors.Selection.WithAlpha(64).ToInt());
+				}
+
+				//mxd. Render highlighted sector
+				if(BuilderPlug.Me.UseHighlight && highlighted != null) {
+					renderer.RenderHighlight(highlighted.FlatVertices, General.Colors.Highlight.WithAlpha(64).ToInt());
 				}
 
 				if (BuilderPlug.Me.ViewSelectionNumbers) {
@@ -195,11 +186,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
+				//mxd. Render effect labels
 				if (BuilderPlug.Me.ViewSelectionEffects) {
-					//mxd. Render effect labels
-					if(!BuilderPlug.Me.ViewSelectionNumbers)
-						renderEffectLabels(orderedselection);
-					renderEffectLabels(General.Map.Map.GetSelectedSectors(false));
+					if(!BuilderPlug.Me.ViewSelectionNumbers) renderEffectLabels(selectedEffectLabels);
+					renderEffectLabels(unselectedEffectLabels);
 				}
 				
 				renderer.Finish();
@@ -207,51 +197,87 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void renderEffectLabels(ICollection<Sector> selection) {
-			foreach(Sector s in selection) {
-				string label = string.Empty;
-				string labelShort = string.Empty;
-
-				if(s.Effect != 0) {
-					if(effects.ContainsKey(s.Effect)) {
-						if(s.Tag != 0) {
-							label = "Tag " + s.Tag + ", " + effects[s.Effect][0];
-							labelShort = "T" + s.Tag + " " + "E" + s.Effect;
-						} else {
-							label = effects[s.Effect][0];
-							labelShort = "E" + s.Effect;
-						}
-					} else {
-						if(s.Tag != 0) {
-							label = "Tag " + s.Tag + ", Effect " + s.Effect;
-							labelShort = "T" + s.Tag + " " + "E" + s.Effect;
-						} else {
-							label = "Effect " + s.Effect;
-							labelShort = "E" + s.Effect;
-						}
-					}
-				} else if(s.Tag != 0) {
-					label = "Tag " + s.Tag;
-					labelShort = "T" + s.Tag;
-				}
-
-				if (string.IsNullOrEmpty(label)) continue;
-
-				TextLabel[] labelarray = labels[s];
-				for(int i = 0; i < s.Labels.Count; i++) {
+		private void renderEffectLabels(Dictionary<Sector, string[]> labelsGroup) {
+			foreach(KeyValuePair<Sector, string[]> group in labelsGroup) {
+				// Render labels
+				TextLabel[] labelarray = labels[group.Key];
+				for(int i = 0; i < group.Key.Labels.Count; i++) {
 					TextLabel l = labelarray[i];
 					l.Color = General.Colors.InfoLine;
-					float requiredsize = (General.Map.GetTextSize(label, l.Scale).Width) / renderer.Scale;
 
-					if(requiredsize > s.Labels[i].radius) {
-						requiredsize = (General.Map.GetTextSize(labelShort, l.Scale).Width) / renderer.Scale;
-						l.Text = (requiredsize > s.Labels[i].radius ? "+" : labelShort);
+					// Render only when enough space for the label to see
+					float requiredsize = (General.Map.GetTextSize(group.Value[0], l.Scale).Width) / renderer.Scale;
+					if(requiredsize > group.Key.Labels[i].radius) {
+						requiredsize = (General.Map.GetTextSize(group.Value[1], l.Scale).Width) / renderer.Scale;
+						l.Text = (requiredsize > group.Key.Labels[i].radius ? "+" : group.Value[1]);
 					} else {
-						l.Text = label;
+						l.Text = group.Value[0];
 					}
 
 					renderer.RenderText(l);
 				}
+			}
+		}
+
+		//mxd
+		private string[] getEffectText(Sector s) {
+			string[] result = new []{string.Empty, string.Empty};
+
+			if(s.Effect != 0) {
+				if(effects.ContainsKey(s.Effect)) {
+					if(s.Tag != 0) {
+						result[0] = "Tag " + s.Tag + ", " + effects[s.Effect][0];
+						result[1] = "T" + s.Tag + " " + "E" + s.Effect;
+					} else {
+						result[0] = effects[s.Effect][0];
+						result[1] = "E" + s.Effect;
+					}
+				} else {
+					if(s.Tag != 0) {
+						result[0] = "Tag " + s.Tag + ", Effect " + s.Effect;
+						result[1] = "T" + s.Tag + " " + "E" + s.Effect;
+					} else {
+						result[0] = "Effect " + s.Effect;
+						result[1] = "E" + s.Effect;
+					}
+				}
+			} else if(s.Tag != 0) {
+				result[0] = "Tag " + s.Tag;
+				result[1] = "T" + s.Tag;
+			}
+
+			return result;
+		}
+
+		//mxd
+		private void updateOverlaySurfaces() {
+			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
+			List<FlatVertex> vertsList = new List<FlatVertex>();
+			
+			// Go for all selected sectors
+			foreach(Sector s in orderedselection) vertsList.AddRange(s.FlatVertices);
+			overlayGeometry = vertsList.ToArray();
+		}
+
+		//mxd
+		private void updateEffectLabels() {
+			selectedEffectLabels = new Dictionary<Sector, string[]>();
+			unselectedEffectLabels = new Dictionary<Sector, string[]>();
+
+			//update effect labels for selected sectors
+			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
+			foreach(Sector s in orderedselection) {
+				string[] labelText = getEffectText(s);
+				if(!string.IsNullOrEmpty(labelText[0])) 
+					selectedEffectLabels.Add(s, labelText);
+			}
+
+			//update effect labels for unselected sectors
+			orderedselection = General.Map.Map.GetSelectedSectors(false);
+			foreach(Sector s in orderedselection) {
+				string[] labelText = getEffectText(s);
+				if(!string.IsNullOrEmpty(labelText[0]))
+					unselectedEffectLabels.Add(s, labelText);
 			}
 		}
 		
@@ -403,12 +429,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					selectionchanged = true;
 					
 					// Setup labels
-					ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
-					TextLabel[] labelarray = labels[s];
-					foreach(TextLabel l in labelarray)
-					{
-						l.Text = orderedselection.Count.ToString();
-						l.Color = General.Colors.Selection;
+					//ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
+					if(update) { //mxd
+						string selectedCount = General.Map.Map.SelectedSectorsCount.ToString();
+						TextLabel[] labelarray = labels[s];
+						foreach(TextLabel l in labelarray) {
+							l.Text = selectedCount;// orderedselection.Count.ToString();
+							l.Color = General.Colors.Selection;
+						}
+
+						updateEffectLabels();
 					}
 				}
 				// Deselect the sector?
@@ -418,11 +448,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					selectionchanged = true;
 
 					// Clear labels
-					TextLabel[] labelarray = labels[s];
-					foreach(TextLabel l in labelarray) l.Text = "";
+					if(update) {
+						TextLabel[] labelarray = labels[s];
+						foreach(TextLabel l in labelarray) l.Text = "";
 
-					// Update all other labels
-					UpdateSelectedLabels();
+						// Update all other labels
+						UpdateSelectedLabels();
+					}
 				}
 
 				// Selection changed?
@@ -436,12 +468,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(sd.Line.Back != null) back = sd.Line.Back.Sector.Selected; else back = false;
 						sd.Line.Selected = front | back;
 					}
-				}
 
-				if(update)
-				{
-					UpdateOverlay();
-					renderer.Present();
+					if(update) 
+					{
+						UpdateOverlay();
+						renderer.Present();
+					}
 				}
 			}
 		}
@@ -464,39 +496,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				index++;
 			}
+
+			//mxd
+			updateEffectLabels();
 		}
 
 		//mxd
 		private bool isInSelectionRect(Sector s, List<Line2D> selectionOutline) {
-			bool selected = false;
-			
-			if(BuilderPlug.Me.MarqueSelectTouching) {
+			bool isInsideSelection = selectionrect.Contains(s.BBox);
+			if (isInsideSelection) return true;
+
+			if(BuilderPlug.Me.MarqueSelectTouching && s.BBox.IntersectsWith(selectionrect)) {
 				//check endpoints
-				foreach (Sidedef side in s.Sidedefs) {
-					selected = (selectionrect.Contains(side.Line.Start.Position.x, side.Line.Start.Position.y) 
-						|| selectionrect.Contains(side.Line.End.Position.x, side.Line.End.Position.y));
-					if (selected) return true;
+				foreach(Sidedef side in s.Sidedefs) {
+					if((selectionrect.Contains(side.Line.Start.Position.x, side.Line.Start.Position.y)
+						|| selectionrect.Contains(side.Line.End.Position.x, side.Line.End.Position.y))) 
+						return true;
 				}
 
 				//check line intersections
-				foreach (Sidedef side in s.Sidedefs) {
-					foreach (Line2D line in selectionOutline) {
+				foreach(Sidedef side in s.Sidedefs) {
+					foreach(Line2D line in selectionOutline) {
 						if(Line2D.GetIntersection(side.Line.Line, line))
 							return true;
 					}
 				}
-
-				return false;
 			}
 
-			//check endpoints
-			foreach(Sidedef side in s.Sidedefs) {
-				selected = (selectionrect.Contains(side.Line.Start.Position.x, side.Line.Start.Position.y)
-					&& selectionrect.Contains(side.Line.End.Position.x, side.Line.End.Position.y));
-				if(!selected) return false;
-			}
-
-			return selected;
+			return false;
 		}
 
 		#endregion
@@ -539,13 +566,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Convert geometry selection to sectors only
 			General.Map.Map.ConvertSelection(SelectionType.Sectors);
-			updateSelectionInfo(); //mxd
 
 			// Make text labels for sectors
 			SetupLabels();
 			
 			// Update
 			UpdateSelectedLabels();
+			updateOverlaySurfaces();//mxd
+			updateSelectionInfo(); //mxd
 			UpdateOverlay();
 		}
 		
@@ -583,6 +611,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						// Make the highlight the selection
 						SelectSector(highlighted, true, false);
+						UpdateSelectedLabels(); //mxd
 					}
 				}
 			}
@@ -674,12 +703,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Update overlay
 					TextLabel[] labelarray = labels[highlighted];
 					foreach(TextLabel l in labelarray) l.Color = General.Colors.Highlight;
+					updateOverlaySurfaces(); //mxd
 					UpdateOverlay();
 					renderer.Present();
 				//mxd
 				} else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedSectorsCount > 0) {
 					General.Map.Map.ClearSelectedLinedefs();
 					General.Map.Map.ClearSelectedSectors();
+					updateOverlaySurfaces(); //mxd
 					General.Interface.RedrawDisplay();
 				}
 
@@ -705,6 +736,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.Map.ClearSelectedSectors();
 					General.Map.Map.ClearSelectedLinedefs();
 					SelectSector(highlighted, true, false);
+					UpdateSelectedLabels(); //mxd
+					updateOverlaySurfaces(); //mxd
 					General.Interface.RedrawDisplay();
 				}
 
@@ -757,9 +790,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if (selected.Count == 1) {
 							General.Map.Map.ClearSelectedSectors();
 							General.Map.Map.ClearSelectedLinedefs();
+							updateEffectLabels(); //mxd
 						} else if(result == DialogResult.Cancel) { //mxd. Restore selection...
-							foreach (Sector s in selected) SelectSector(s, true, true);
+							foreach (Sector s in selected) SelectSector(s, true, false);
+							UpdateSelectedLabels(); //mxd
 						}
+
+						updateOverlaySurfaces(); //mxd
 						General.Interface.RedrawDisplay();
 					}
 				}
@@ -825,6 +862,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								SelectSector(highlighted, !highlighted.Selected, true);
 
 							// Update entire display
+							updateOverlaySurfaces();//mxd
 							General.Interface.RedrawDisplay();
 						}
 					} else if(highlighted != null) {
@@ -903,6 +941,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					SelectSector(highlighted, !highlighted.Selected, true);
 
 				// Update entire display
+				updateOverlaySurfaces();//mxd
 				General.Interface.RedrawDisplay();
 			}
 
@@ -926,6 +965,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Select only this sector for dragging
 						General.Map.Map.ClearSelectedSectors();
 						SelectSector(highlighted, true, true);
+						updateOverlaySurfaces(); //mxd
 					}
 
 					// Start dragging the selection
@@ -948,7 +988,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						|| sd.Line.End.Position.x < General.Map.Config.LeftBoundary || sd.Line.End.Position.x > General.Map.Config.RightBoundary
 						|| sd.Line.End.Position.y > General.Map.Config.TopBoundary || sd.Line.End.Position.y < General.Map.Config.BottomBoundary) {
 
-						SelectSector(s, false, true);
+						SelectSector(s, false, false);
 						unaffectedCount++;
 						break;
 					}
@@ -964,6 +1004,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(unaffectedCount > 0)
 				General.Interface.DisplayStatus(StatusType.Warning, unaffectedCount + " of selected sectors " + (unaffectedCount == 1 ? "is" : "are") + " outside of map boundary!");
 
+			UpdateSelectedLabels(); //mxd
 			return true;
 		}
 
@@ -1013,7 +1054,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Sidedef sd in General.Map.Map.Sidedefs)
 					sd.Line.Selected = sd.Sector.Selected || (sd.Other != null && sd.Other.Sector.Selected);
 
+				//mxd. Clear labels for unselected sectors
+				if(marqueSelectionMode != MarqueSelectionMode.ADD) {
+					ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(false);
+					foreach(Sector s in orderedselection){
+						TextLabel[] labelarray = labels[s];
+						foreach(TextLabel l in labelarray) l.Text = "";
+					}
+				}
+
+				UpdateSelectedLabels(); //mxd
 				updateSelectionInfo(); //mxd
+				updateOverlaySurfaces(); //mxd
 			}
 			
 			base.OnEndMultiSelection();
@@ -1043,6 +1095,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make the highlight the selection
 				SelectSector(highlighted, true, true);
+				updateOverlaySurfaces();//mxd
 			}
 
 			return base.OnCopyBegin();
@@ -1062,6 +1115,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Clear labels
 			SetupLabels();
+			updateEffectLabels(); //mxd
 		}
 		
 		// When redo is used
@@ -1078,6 +1132,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Clear labels
 			SetupLabels();
+			updateEffectLabels(); //mxd
 			base.OnRedoEnd(); //mxd
 		}
 
@@ -1147,6 +1202,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.IsChanged = true;
 					General.Interface.RefreshInfo();
 					General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
+					updateEffectLabels(); //mxd
 					General.Interface.RedrawDisplay();
 				}
 			}
@@ -1178,6 +1234,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.Map.ClearSelectedSectors();
 				General.Map.Map.ClearSelectedLinedefs();
 				SelectSector(highlighted, true, false);
+				updateOverlaySurfaces();//mxd
 				General.Interface.RedrawDisplay();
 			}
 			
@@ -1388,6 +1445,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update cache values
 				General.Map.IsChanged = true;
 				General.Map.Map.Update();
+				updateOverlaySurfaces(); //mxd
 				
 				// Make text labels for sectors
 				SetupLabels();
@@ -1695,6 +1753,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Clear labels
 			foreach(TextLabel[] labelarray in labels.Values)
 				foreach(TextLabel l in labelarray) l.Text = "";
+			updateOverlaySurfaces(); //mxd
+			updateEffectLabels(); //mxd
 			
 			// Redraw
 			General.Interface.RedrawDisplay();

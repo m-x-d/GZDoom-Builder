@@ -131,6 +131,7 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// Last info on panels
 		private object lastinfoobject;
+		private string currentModeName; //mxd
 		
 		// Recent files
 		private ToolStripMenuItem[] recentitems;
@@ -199,6 +200,7 @@ namespace CodeImp.DoomBuilder.Windows
 			editmodeitems = new List<ToolStripItem>();
 			labelcollapsedinfo.Text = "";
 			display.Dock = DockStyle.Fill;			
+			hintIcon.Image = Resources.Lightbulb; //mxd
 			
 			// Fetch pointer
 			windowptr = base.Handle;
@@ -409,11 +411,11 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// This unlocks for updating
-		internal void ForceUnlockUpdate()
+		/*internal void ForceUnlockUpdate()
 		{
 			if(lockupdatecount > 0) General.LockWindowUpdate(IntPtr.Zero);
 			lockupdatecount = 0;
-		}
+		}*/
 		
 		// This sets the focus on the display for correct key input
 		public bool FocusDisplay()
@@ -2755,7 +2757,8 @@ namespace CodeImp.DoomBuilder.Windows
 				if(vertexinfo.Visible) vertexinfo.Hide();
 				if(sectorinfo.Visible) sectorinfo.Hide();
 				if(thinginfo.Visible) thinginfo.Hide();
-				modename.Visible = false;
+				hints.Visible = false; //mxd
+				hintIcon.Visible = false; //mxd
 				labelcollapsedinfo.Visible = true;
 				itemtoggleinfo.Checked = false;
 			}
@@ -2784,13 +2787,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// This displays the current mode name
 		internal void DisplayModeName(string name)
 		{
-			if(lastinfoobject == null)
-			{
-				labelcollapsedinfo.Text = name;
-				labelcollapsedinfo.Refresh();
-			}
-			modename.Text = name;
-			modename.Refresh();
+			currentModeName = name; //mxd
+			labelcollapsedinfo.Text = name;
+			labelcollapsedinfo.Refresh();
 		}
 		
 		// This hides all info panels
@@ -2802,10 +2801,14 @@ namespace CodeImp.DoomBuilder.Windows
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
 			if(thinginfo.Visible) thinginfo.Hide();
-			labelcollapsedinfo.Text = modename.Text;
+			labelcollapsedinfo.Text = currentModeName;
+			labelcollapsedinfo.Visible = true;
 			labelcollapsedinfo.Refresh();
-			modename.Visible = ((General.Map != null) && IsInfoPanelExpanded);
-			modename.Refresh();
+
+			//mxd. Show hints?
+			bool showHints = ((General.Map != null) && IsInfoPanelExpanded);
+			hints.Visible = showHints;
+			hintIcon.Visible = showHints && hints.Items.Count > 0;
 
 			//mxd. let the plugins know
 			General.Plugins.OnHighlightLost();
@@ -2822,6 +2825,19 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. let the plugins know
 			General.Plugins.OnHighlightRefreshed(lastinfoobject);
 		}
+
+		//mxd
+		public void ShowEditModeHints(string[] hintsText) {
+			hintIcon.Visible = true;
+			hints.Items.Clear();
+			foreach (string s in hintsText) hints.Items.Add(s);
+		}
+
+		//mxd
+		public void ClearEditModeHints() {
+			hintIcon.Visible = false;
+			hints.Items.Clear();
+		}
 		
 		// Show linedef info
 		public void ShowLinedefInfo(Linedef l)
@@ -2833,78 +2849,81 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			
 			lastinfoobject = l;
-			modename.Visible = false;
+			hints.Visible = false; //mxd
+			hintIcon.Visible = false; //mxd
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
 			if(thinginfo.Visible) thinginfo.Hide();
-			if(IsInfoPanelExpanded) linedefinfo.ShowInfo(l);
+			if (IsInfoPanelExpanded) {
+				linedefinfo.ShowInfo(l);
+			} else {
+				// Show info on collapsed label
+				if(General.Map.Config.LinedefActions.ContainsKey(l.Action)) {
+					LinedefActionInfo act = General.Map.Config.LinedefActions[l.Action];
+					labelcollapsedinfo.Text = act.ToString();
+				} else if(l.Action == 0)
+					labelcollapsedinfo.Text = l.Action.ToString() + " - None";
+				else
+					labelcollapsedinfo.Text = l.Action.ToString() + " - Unknown";
 
-			// Show info on collapsed label
-			if(General.Map.Config.LinedefActions.ContainsKey(l.Action))
-			{
-				LinedefActionInfo act = General.Map.Config.LinedefActions[l.Action];
-				labelcollapsedinfo.Text = act.ToString();
+				labelcollapsedinfo.Refresh();
 			}
-			else if(l.Action == 0)
-				labelcollapsedinfo.Text = l.Action.ToString() + " - None";
-			else
-				labelcollapsedinfo.Text = l.Action.ToString() + " - Unknown";
-			
-			labelcollapsedinfo.Refresh();
 
 			//mxd. let the plugins know
 			General.Plugins.OnHighlightLinedef(l);
 		}
 
 		// Show vertex info
-		public void ShowVertexInfo(Vertex v)
-		{
-			if(v.IsDisposed)
-			{
+		public void ShowVertexInfo(Vertex v) {
+			if (v.IsDisposed) {
 				HideInfo();
 				return;
 			}
 
 			lastinfoobject = v;
-			modename.Visible = false;
-			if(linedefinfo.Visible) linedefinfo.Hide();
-			if(sectorinfo.Visible) sectorinfo.Hide();
-			if(thinginfo.Visible) thinginfo.Hide();
-			if(IsInfoPanelExpanded) vertexinfo.ShowInfo(v);
-
-			// Show info on collapsed label
-			labelcollapsedinfo.Text = v.Position.x.ToString("0.##") + ", " + v.Position.y.ToString("0.##");
-			labelcollapsedinfo.Refresh();
+			hints.Visible = false; //mxd
+			hintIcon.Visible = false; //mxd
+			if (linedefinfo.Visible) linedefinfo.Hide();
+			if (sectorinfo.Visible) sectorinfo.Hide();
+			if (thinginfo.Visible) thinginfo.Hide();
+			if (IsInfoPanelExpanded) {
+				vertexinfo.ShowInfo(v);
+			} else {
+				// Show info on collapsed label
+				labelcollapsedinfo.Text = v.Position.x.ToString("0.##") + ", " + v.Position.y.ToString("0.##");
+				labelcollapsedinfo.Refresh();
+			}
 
 			//mxd. let the plugins know
 			General.Plugins.OnHighlightVertex(v);
 		}
 
 		// Show sector info
-		public void ShowSectorInfo(Sector s)
-		{
-			if(s.IsDisposed)
-			{
+		public void ShowSectorInfo(Sector s) {
+			if (s.IsDisposed) {
 				HideInfo();
 				return;
 			}
 
 			lastinfoobject = s;
-			modename.Visible = false;
-			if(linedefinfo.Visible) linedefinfo.Hide();
-			if(vertexinfo.Visible) vertexinfo.Hide();
-			if(thinginfo.Visible) thinginfo.Hide();
-			if(IsInfoPanelExpanded) sectorinfo.ShowInfo(s);
+			hints.Visible = false;
+			hintIcon.Visible = false; //mxd
+			if (linedefinfo.Visible) linedefinfo.Hide();
+			if (vertexinfo.Visible) vertexinfo.Hide();
+			if (thinginfo.Visible) thinginfo.Hide();
+			if (IsInfoPanelExpanded) {
+				sectorinfo.ShowInfo(s);
+			} else {
+				// Show info on collapsed label
+				if (General.Map.Config.SectorEffects.ContainsKey(s.Effect))
+					labelcollapsedinfo.Text = General.Map.Config.SectorEffects[s.Effect].ToString();
+				else if (s.Effect == 0)
+					labelcollapsedinfo.Text = s.Effect.ToString() + " - Normal";
+				else
+					labelcollapsedinfo.Text = s.Effect.ToString() + " - Unknown";
 
-			// Show info on collapsed label
-			if(General.Map.Config.SectorEffects.ContainsKey(s.Effect))
-				labelcollapsedinfo.Text = General.Map.Config.SectorEffects[s.Effect].ToString();
-			else if(s.Effect == 0)
-				labelcollapsedinfo.Text = s.Effect.ToString() + " - Normal";
-			else
-				labelcollapsedinfo.Text = s.Effect.ToString() + " - Unknown";
-
-			labelcollapsedinfo.Refresh();
+				labelcollapsedinfo.Refresh();
+			}
 
 			//mxd. let the plugins know
 			General.Plugins.OnHighlightSector(s);
@@ -2920,16 +2939,19 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			lastinfoobject = t;
-			modename.Visible = false;
+			hints.Visible = false;
+			hintIcon.Visible = false; //mxd
 			if(linedefinfo.Visible) linedefinfo.Hide();
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
-			if(IsInfoPanelExpanded) thinginfo.ShowInfo(t);
-
-			// Show info on collapsed label
-			ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
-			labelcollapsedinfo.Text = t.Type + " - " + ti.Title;
-			labelcollapsedinfo.Refresh();
+			if (IsInfoPanelExpanded) {
+				thinginfo.ShowInfo(t);
+			} else {
+				// Show info on collapsed label
+				ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
+				labelcollapsedinfo.Text = t.Type + " - " + ti.Title;
+				labelcollapsedinfo.Refresh();
+			}
 
 			//mxd. let the plugins know
 			General.Plugins.OnHighlightThing(t);

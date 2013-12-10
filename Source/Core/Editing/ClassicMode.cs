@@ -591,6 +591,9 @@ namespace CodeImp.DoomBuilder.Editing
 		/// </summary>
 		public override void OnEngage()
 		{
+			//mxd. Clear hint
+			General.Interface.ClearEditModeHints();
+			
 			// Clear display overlay
 			renderer.StartOverlay(true);
 			renderer.Finish();

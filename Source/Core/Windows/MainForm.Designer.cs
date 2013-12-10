@@ -38,6 +38,14 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+			System.Windows.Forms.ListViewItem listViewItem25 = new System.Windows.Forms.ListViewItem("Press Use to use");
+			System.Windows.Forms.ListViewItem listViewItem26 = new System.Windows.Forms.ListViewItem("To look around, look around");
+			System.Windows.Forms.ListViewItem listViewItem27 = new System.Windows.Forms.ListViewItem("Another usefull hint");
+			System.Windows.Forms.ListViewItem listViewItem28 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
+			System.Windows.Forms.ListViewItem listViewItem29 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
+			System.Windows.Forms.ListViewItem listViewItem30 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
+			System.Windows.Forms.ListViewItem listViewItem31 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
+			System.Windows.Forms.ListViewItem listViewItem32 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
 			this.seperatorfileopen = new System.Windows.Forms.ToolStripSeparator();
 			this.seperatorfilerecent = new System.Windows.Forms.ToolStripSeparator();
 			this.seperatoreditgrid = new System.Windows.Forms.ToolStripSeparator();
@@ -231,11 +239,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.yposlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.warnsLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.panelinfo = new System.Windows.Forms.Panel();
+			this.hintIcon = new System.Windows.Forms.PictureBox();
+			this.hints = new System.Windows.Forms.ListView();
 			this.heightpanel1 = new System.Windows.Forms.Panel();
-			this.vertexinfo = new CodeImp.DoomBuilder.Controls.VertexInfoPanel();
 			this.labelcollapsedinfo = new System.Windows.Forms.Label();
 			this.buttontoggleinfo = new System.Windows.Forms.Button();
-			this.modename = new System.Windows.Forms.Label();
+			this.vertexinfo = new CodeImp.DoomBuilder.Controls.VertexInfoPanel();
 			this.linedefinfo = new CodeImp.DoomBuilder.Controls.LinedefInfoPanel();
 			this.thinginfo = new CodeImp.DoomBuilder.Controls.ThingInfoPanel();
 			this.sectorinfo = new CodeImp.DoomBuilder.Controls.SectorInfoPanel();
@@ -258,6 +267,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolbarContextMenu.SuspendLayout();
 			this.statusbar.SuspendLayout();
 			this.panelinfo.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.hintIcon)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// toolStripSeparator1
@@ -1854,7 +1864,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.statuslabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(309, 18);
+			this.statuslabel.Size = new System.Drawing.Size(340, 18);
 			this.statuslabel.Spring = true;
 			this.statuslabel.Text = "Initializing user interface...";
 			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -2122,11 +2132,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// panelinfo
 			// 
+			this.panelinfo.Controls.Add(this.hintIcon);
+			this.panelinfo.Controls.Add(this.hints);
 			this.panelinfo.Controls.Add(this.heightpanel1);
-			this.panelinfo.Controls.Add(this.vertexinfo);
 			this.panelinfo.Controls.Add(this.labelcollapsedinfo);
 			this.panelinfo.Controls.Add(this.buttontoggleinfo);
-			this.panelinfo.Controls.Add(this.modename);
+			this.panelinfo.Controls.Add(this.vertexinfo);
 			this.panelinfo.Controls.Add(this.linedefinfo);
 			this.panelinfo.Controls.Add(this.thinginfo);
 			this.panelinfo.Controls.Add(this.sectorinfo);
@@ -2135,6 +2146,44 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelinfo.Name = "panelinfo";
 			this.panelinfo.Size = new System.Drawing.Size(986, 106);
 			this.panelinfo.TabIndex = 4;
+			// 
+			// hintIcon
+			// 
+			this.hintIcon.Location = new System.Drawing.Point(4, 20);
+			this.hintIcon.Name = "hintIcon";
+			this.hintIcon.Size = new System.Drawing.Size(16, 16);
+			this.hintIcon.TabIndex = 9;
+			this.hintIcon.TabStop = false;
+			this.hintIcon.Visible = false;
+			// 
+			// hints
+			// 
+			this.hints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.hints.BackColor = System.Drawing.SystemColors.Control;
+			this.hints.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.hints.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.hints.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.hints.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem25,
+            listViewItem26,
+            listViewItem27,
+            listViewItem28,
+            listViewItem29,
+            listViewItem30,
+            listViewItem31,
+            listViewItem32});
+			this.hints.LabelWrap = false;
+			this.hints.Location = new System.Drawing.Point(20, 21);
+			this.hints.MultiSelect = false;
+			this.hints.Name = "hints";
+			this.hints.Scrollable = false;
+			this.hints.ShowGroups = false;
+			this.hints.Size = new System.Drawing.Size(946, 110);
+			this.hints.TabIndex = 8;
+			this.hints.UseCompatibleStateImageBehavior = false;
+			this.hints.View = System.Windows.Forms.View.List;
+			this.hints.Visible = false;
 			// 
 			// heightpanel1
 			// 
@@ -2146,24 +2195,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.heightpanel1.TabIndex = 7;
 			this.heightpanel1.Visible = false;
 			// 
-			// vertexinfo
-			// 
-			this.vertexinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.vertexinfo.Location = new System.Drawing.Point(3, 3);
-			this.vertexinfo.MaximumSize = new System.Drawing.Size(10000, 100);
-			this.vertexinfo.MinimumSize = new System.Drawing.Size(100, 100);
-			this.vertexinfo.Name = "vertexinfo";
-			this.vertexinfo.Size = new System.Drawing.Size(310, 100);
-			this.vertexinfo.TabIndex = 1;
-			this.vertexinfo.Visible = false;
-			// 
 			// labelcollapsedinfo
 			// 
 			this.labelcollapsedinfo.AutoSize = true;
-			this.labelcollapsedinfo.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelcollapsedinfo.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelcollapsedinfo.Location = new System.Drawing.Point(2, 2);
 			this.labelcollapsedinfo.Name = "labelcollapsedinfo";
-			this.labelcollapsedinfo.Size = new System.Drawing.Size(137, 13);
+			this.labelcollapsedinfo.Size = new System.Drawing.Size(155, 13);
 			this.labelcollapsedinfo.TabIndex = 6;
 			this.labelcollapsedinfo.Text = "Collapsed Descriptions";
 			this.labelcollapsedinfo.Visible = false;
@@ -2184,19 +2222,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontoggleinfo.Click += new System.EventHandler(this.InvokeTaggedAction);
 			this.buttontoggleinfo.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttontoggleinfo_MouseUp);
 			// 
-			// modename
+			// vertexinfo
 			// 
-			this.modename.AutoSize = true;
-			this.modename.Font = new System.Drawing.Font("Verdana", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.modename.ForeColor = System.Drawing.SystemColors.GrayText;
-			this.modename.Location = new System.Drawing.Point(12, 20);
-			this.modename.Name = "modename";
-			this.modename.Size = new System.Drawing.Size(244, 59);
-			this.modename.TabIndex = 4;
-			this.modename.Text = "Vertices";
-			this.modename.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.modename.UseMnemonic = false;
-			this.modename.Visible = false;
+			this.vertexinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.vertexinfo.Location = new System.Drawing.Point(0, 0);
+			this.vertexinfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.vertexinfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.vertexinfo.Name = "vertexinfo";
+			this.vertexinfo.Size = new System.Drawing.Size(310, 100);
+			this.vertexinfo.TabIndex = 1;
+			this.vertexinfo.Visible = false;
 			// 
 			// linedefinfo
 			// 
@@ -2333,6 +2368,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statusbar.PerformLayout();
 			this.panelinfo.ResumeLayout(false);
 			this.panelinfo.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.hintIcon)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -2415,7 +2451,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemgridinc;
 		private System.Windows.Forms.ToolStripMenuItem itemgriddec;
 		private System.Windows.Forms.ToolStripMenuItem itemgridsetup;
-		private System.Windows.Forms.Label modename;
 		private System.Windows.Forms.Timer statusflasher;
 		private System.Windows.Forms.ToolStripSplitButton buttontest;
 		private System.Windows.Forms.ToolStripButton buttoncut;
@@ -2549,5 +2584,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemopenmapincurwad;
 		private System.Windows.Forms.ToolStripMenuItem itemgrid1;
 		private System.Windows.Forms.ToolStripMenuItem itemzoom400;
+		private System.Windows.Forms.ListView hints;
+		private System.Windows.Forms.PictureBox hintIcon;
 	}
 }

@@ -77,6 +77,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		void RenderLine(Vector2D start, Vector2D end, float thickness, PixelColor c, bool transformcoords);
 		void RenderText(TextLabel text);
 		void RenderGeometry(FlatVertex[] vertices, ImageData texture, bool transformcoords);
+		void RenderHighlight(FlatVertex[] vertices, int color); //mxd
 		void RedrawSurface();
 	}
 }
