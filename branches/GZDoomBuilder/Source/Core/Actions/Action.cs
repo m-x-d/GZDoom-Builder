@@ -193,6 +193,11 @@ namespace CodeImp.DoomBuilder.Actions
 			}
 		}
 
+		//mxd. This returns the shortcut key description for an action name
+		public static string GetShortcutKeyDesc(string actionName) {
+			return GetShortcutKeyDesc(General.Actions.GetActionByName(actionName).ShortcutKey);
+		}
+
 		#endregion
 
 		#region ================== Methods

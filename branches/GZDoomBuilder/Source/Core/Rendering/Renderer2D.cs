@@ -1468,6 +1468,30 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 		}
 
+		//mxd
+		public void RenderHighlight(FlatVertex[] vertices, int color) {
+			if(vertices.Length < 3) return;
+
+			// Set renderstates for rendering
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
+
+			SetWorldTransformation(true);
+			graphics.Shaders.Things2D.FillColor = new Color4(color);
+			graphics.Shaders.Things2D.SetSettings(1.0f);
+
+			// Draw
+			graphics.Shaders.Things2D.Begin();
+			graphics.Shaders.Things2D.BeginPass(2);
+			graphics.Device.DrawUserPrimitives(PrimitiveType.TriangleList, 0, vertices.Length / 3, vertices);
+			graphics.Shaders.Things2D.EndPass();
+			graphics.Shaders.Things2D.End();
+		}
+
 		// This renders text
 		public void RenderText(TextLabel text)
 		{
@@ -1493,7 +1517,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Draw
 				graphics.Shaders.Display2D.Begin();
 				graphics.Shaders.Display2D.BeginPass(1); //mxd
-				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, text.NumFaces >> 1);
+				//graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, text.NumFaces >> 1); //mxd. Seems to be working fine without this line, soooo...
 				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, text.NumFaces);
 				graphics.Shaders.Display2D.EndPass();
 				graphics.Shaders.Display2D.End();

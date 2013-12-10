@@ -153,8 +153,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				foreach(Vertex v in General.Map.Map.Vertices)
 				{
 					// Inside the polygon bounding box?
-					if((v.Position.x >= bbox.Left) && (v.Position.x <= bbox.Right) &&
-					   (v.Position.y >= bbox.Top) && (v.Position.y <= bbox.Bottom))
+					if(bbox.Contains(v.Position.x, v.Position.y)) //mxd
 					{
 						// More to the right?
 						if((foundv == null) || (v.Position.x >= foundv.Position.x))
@@ -289,18 +288,15 @@ namespace CodeImp.DoomBuilder.Geometry
 						Line2D testline = new Line2D(foundv.Position, foundv.Position + lineoffset);
 						scanline = null;
 						float foundu = float.MaxValue;
-						foreach(Linedef ld in General.Map.Map.Linedefs)
-						{
+
+						float px = foundv.Position.x; //mxd
+						float py = foundv.Position.y; //mxd
+
+						foreach(Linedef ld in General.Map.Map.Linedefs) {
 							// Line to the right of start point?
-							if((ld.Start.Position.x > foundv.Position.x) ||
-							   (ld.End.Position.x > foundv.Position.x))
-							{
+							if((ld.Start.Position.x > px) || (ld.End.Position.x > px)) {
 								// Line intersecting the y axis?
-								if( !((ld.Start.Position.y > foundv.Position.y) &&
-									  (ld.End.Position.y > foundv.Position.y)) &&
-									!((ld.Start.Position.y < foundv.Position.y) &&
-									  (ld.End.Position.y < foundv.Position.y)))
-								{
+								if((ld.Start.Position.y > py && ld.End.Position.y < py) || (ld.Start.Position.y < py && ld.End.Position.y > py)) { //mxd
 									// Check if this linedef intersects our test line at a closer range
 									float thisu;
 									ld.Line.GetIntersection(testline, out thisu);
@@ -390,7 +386,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					// Trace along the next line
 					Linedef prevline = nextline;
-					if(lines[0] == nextline) nextline = lines[1]; else nextline = lines[0];
+					nextline = (lines[0] == nextline ? lines[1] : lines[0]);
 
 					// Are we allowed to trace this line again?
 					if(!tracecount.ContainsKey(nextline) || (tracecount[nextline] < 3))
@@ -503,12 +499,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				Linedef nearest = MapSet.NearestLinedef(nearbylines, testpoint);
 				if(nearest != null)
 				{
-					Sidedef defaultside;
 					float side = nearest.SideOfLine(testpoint);
-					if(side < 0.0f)
-						defaultside = nearest.Front;
-					else
-						defaultside = nearest.Back;
+					Sidedef defaultside = (side < 0.0f ? nearest.Front : nearest.Back);
 
 					if(defaultside != null)
 					{
@@ -1429,20 +1421,15 @@ namespace CodeImp.DoomBuilder.Geometry
 					}
 				}
 
-				//mxd
-				if(autoAlignTextureOffsets) {
-					//Auto-align new lines
-					if(newlines.Count > 1) {
-						float totalLength = 0f;
+				//mxd. Auto-align new lines
+				if(autoAlignTextureOffsets && newlines.Count > 1) {
+					float totalLength = 0f;
+					foreach(Linedef l in newlines) totalLength += l.Length;
 
-						foreach(Linedef l in newlines)
-							totalLength += l.Length;
-
-						if(General.Map.UDMF)
-							autoAlignTexturesOnSidesUDMF(newlines, totalLength, (newlines[0].End != newlines[1].Start));
-						else
-							autoAlignTexturesOnSides(newlines, totalLength, (newlines[0].End != newlines[1].Start));
-					}
+					if(General.Map.UDMF)
+						autoAlignTexturesOnSidesUDMF(newlines, totalLength, (newlines[0].End != newlines[1].Start));
+					else
+						autoAlignTexturesOnSides(newlines, totalLength, (newlines[0].End != newlines[1].Start));
 				}
 
 				// Mark new geometry only
