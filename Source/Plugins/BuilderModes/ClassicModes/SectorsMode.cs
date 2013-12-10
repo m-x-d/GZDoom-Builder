@@ -429,12 +429,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					selectionchanged = true;
 					
 					// Setup labels
-					//ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 					if(update) { //mxd
 						string selectedCount = General.Map.Map.SelectedSectorsCount.ToString();
 						TextLabel[] labelarray = labels[s];
 						foreach(TextLabel l in labelarray) {
-							l.Text = selectedCount;// orderedselection.Count.ToString();
+							l.Text = selectedCount;
 							l.Color = General.Colors.Selection;
 						}
 

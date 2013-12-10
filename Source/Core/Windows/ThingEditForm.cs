@@ -187,7 +187,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Coordination
 			angle.Text = ft.AngleDoom.ToString();
-			zlabel.Text = useAbsoluteHeight ? "Z:" : "Height:"; //mxd
+			zlabel.Text = useAbsoluteHeight ? "Abs. Z:" : "Z:"; //mxd
 			cbAbsoluteHeight.Checked = useAbsoluteHeight; //mxd
 
 			//mxd
@@ -555,7 +555,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void cbAbsoluteHeight_CheckedChanged(object sender, EventArgs e) {
 			useAbsoluteHeight = cbAbsoluteHeight.Checked;
-			zlabel.Text = useAbsoluteHeight ? "Z:" : "Height:";
+			zlabel.Text = useAbsoluteHeight ? "Abs. Z:" : "Z:";
 			posZ.Text = (useAbsoluteHeight ? initialFloorHeight + initialPosition.z : initialPosition.z).ToString();
 		}
 
@@ -598,7 +598,7 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(Thing t in things)
 					t.Move(new Vector2D(thingProps[i++].X, t.Position.y));
 			} else { //update values
-				int delta = posX.GetResult((int)initialPosition.x) - (int)initialPosition.x;
+				float delta = posX.GetResultFloat(initialPosition.x) - initialPosition.x;
 
 				// Apply position
 				foreach(Thing t in things)
@@ -619,7 +619,7 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(Thing t in things)
 					t.Move(new Vector2D(t.Position.x, thingProps[i++].Y));
 			} else { //update values
-				int delta = posY.GetResult((int)initialPosition.y) - (int)initialPosition.y;
+				float delta = posY.GetResultFloat(initialPosition.y) - initialPosition.y;
 
 				// Apply position
 				foreach(Thing t in things)
@@ -634,7 +634,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(preventchanges) return;
 
 			//restore values
-			if(string.IsNullOrEmpty(posY.Text)) {
+			if(string.IsNullOrEmpty(posZ.Text)) {
 				int i = 0;
 
 				// Apply position
@@ -643,7 +643,7 @@ namespace CodeImp.DoomBuilder.Windows
 			} else { //update values
 				// Apply position
 				foreach(Thing t in things) {
-					float z = posZ.GetResult((int)t.Position.z);
+					float z = posZ.GetResultFloat((int)t.Position.z);
 					if(useAbsoluteHeight && t.Sector != null)
 						z -= t.Sector.FloorHeight;
 					t.Move(new Vector3D(t.Position.x, t.Position.y, z));

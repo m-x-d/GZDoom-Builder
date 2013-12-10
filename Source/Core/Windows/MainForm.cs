@@ -2856,8 +2856,10 @@ namespace CodeImp.DoomBuilder.Windows
 			if(thinginfo.Visible) thinginfo.Hide();
 			if (IsInfoPanelExpanded) {
 				linedefinfo.ShowInfo(l);
+				labelcollapsedinfo.Visible = false; //mxd
 			} else {
 				// Show info on collapsed label
+				labelcollapsedinfo.Visible = true; //mxd
 				if(General.Map.Config.LinedefActions.ContainsKey(l.Action)) {
 					LinedefActionInfo act = General.Map.Config.LinedefActions[l.Action];
 					labelcollapsedinfo.Text = act.ToString();
@@ -2888,8 +2890,10 @@ namespace CodeImp.DoomBuilder.Windows
 			if (thinginfo.Visible) thinginfo.Hide();
 			if (IsInfoPanelExpanded) {
 				vertexinfo.ShowInfo(v);
+				labelcollapsedinfo.Visible = false; //mxd
 			} else {
 				// Show info on collapsed label
+				labelcollapsedinfo.Visible = true; //mxd
 				labelcollapsedinfo.Text = v.Position.x.ToString("0.##") + ", " + v.Position.y.ToString("0.##");
 				labelcollapsedinfo.Refresh();
 			}
@@ -2913,8 +2917,10 @@ namespace CodeImp.DoomBuilder.Windows
 			if (thinginfo.Visible) thinginfo.Hide();
 			if (IsInfoPanelExpanded) {
 				sectorinfo.ShowInfo(s);
+				labelcollapsedinfo.Visible = false; //mxd
 			} else {
 				// Show info on collapsed label
+				labelcollapsedinfo.Visible = true; //mxd
 				if (General.Map.Config.SectorEffects.ContainsKey(s.Effect))
 					labelcollapsedinfo.Text = General.Map.Config.SectorEffects[s.Effect].ToString();
 				else if (s.Effect == 0)
@@ -2946,8 +2952,10 @@ namespace CodeImp.DoomBuilder.Windows
 			if(sectorinfo.Visible) sectorinfo.Hide();
 			if (IsInfoPanelExpanded) {
 				thinginfo.ShowInfo(t);
+				labelcollapsedinfo.Visible = false; //mxd
 			} else {
 				// Show info on collapsed label
+				labelcollapsedinfo.Visible = true; //mxd
 				ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
 				labelcollapsedinfo.Text = t.Type + " - " + ti.Title;
 				labelcollapsedinfo.Refresh();
