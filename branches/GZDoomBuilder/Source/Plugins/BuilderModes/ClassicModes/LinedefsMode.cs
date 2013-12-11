@@ -257,6 +257,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			return selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) && selectionrect.Contains(l.End.Position.x, l.End.Position.y);
 		}
+
+		//mxd. Setup hints for current editing mode
+		protected override void SetupHints() {
+			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
+			string editKey = Actions.Action.GetShortcutKeyDesc("builder_classicedit");
+			string clearKey = Actions.Action.GetShortcutKeyDesc("builder_clearselection");
+			string insertKey = Actions.Action.GetShortcutKeyDesc("builder_insertitem");
+			string deleteKey = Actions.Action.GetShortcutKeyDesc("builder_deleteitem");
+			string panKey = Actions.Action.GetShortcutKeyDesc("builder_pan_view");
+			string drawKey = Actions.Action.GetShortcutKeyDesc("buildermodes_drawlinesmode");
+			string gridIncKey = Actions.Action.GetShortcutKeyDesc("builder_griddec");
+			string gridDecKey = Actions.Action.GetShortcutKeyDesc("builder_gridinc");
+
+			hints = new[]{ "Press " + panKey + " to pan the view",
+						   "Press " + selectKey + " to select a linedef",
+						   "Hold " + selectKey + " and drag to use rectangular selection",
+						   "Press " + clearKey + " to clear selection",
+						   "Press " + deleteKey + " to delete selected linedef(s)",
+						   "Press " + editKey + " to edit properties of current selection",
+						   "Use " + gridIncKey + " and " + gridDecKey + " to change grid size",
+						   "Press " + drawKey + " or " + insertKey + " to start drawing lines",
+			};
+
+			multiselectionHints = new[] { "Hold Shift to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
+										  "Hold Ctrl to enable subtractive selection",
+										  "Hold Ctrl-Shift to intersect the new selection with already existing one",
+			};
+		}
 		
 		#endregion
 		

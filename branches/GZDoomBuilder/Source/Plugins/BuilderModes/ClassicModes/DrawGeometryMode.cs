@@ -408,6 +408,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			return true;
 		}
+
+		//mxd. Setup hints for current editing mode
+		protected override void SetupHints() {
+			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
+			string editKey = Actions.Action.GetShortcutKeyDesc("builder_classicedit");
+			string acceptKey = Actions.Action.GetShortcutKeyDesc("builder_acceptmode");
+			string cancelKey = Actions.Action.GetShortcutKeyDesc("builder_cancelmode");
+			string removeKey = Actions.Action.GetShortcutKeyDesc("buildermodes_removepoint");
+
+			hints = new[]{ "Press " + selectKey + " to place a vertex",
+						  "Press " + removeKey + " to remove last vertex",                
+						  "Press " + acceptKey + " to accept",
+						  "Press " + cancelKey + " or " + editKey + " to cancel"
+			};
+		}
 		
 		#endregion
 
@@ -427,20 +442,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Set cursor
 			General.Interface.SetCursor(Cursors.Cross);
-
-			//mxd. Show hints
-			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
-			string editKey = Actions.Action.GetShortcutKeyDesc("builder_classicedit");
-			string acceptKey = Actions.Action.GetShortcutKeyDesc("builder_acceptmode");
-			string cancelKey = Actions.Action.GetShortcutKeyDesc("builder_cancelmode");
-			string removeKey = Actions.Action.GetShortcutKeyDesc("buildermodes_removepoint");
-			
-			string[] hints = new []{ "Press " + selectKey + " to place a vertex",
-									 "Press " + removeKey + " to remove last vertex",                
-									 "Press " + acceptKey + " to accept",
-									 "Press " + cancelKey + " or " + editKey + " to cancel"};
-
-			General.Interface.ShowEditModeHints(hints);
 		}
 
 		// Disengaging
