@@ -41,6 +41,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 	{
 		private const string DEFAULT = "Default";
 
+		private struct VertexIndices
+		{
+			public int PositionIndex;
+			public int UVIndex;
+			public int NormalIndex;
+		}
+
 		public void Export(ICollection<Sector> sectors, WavefrontExportSettings settings) {
 			createObjFromSelection(sectors, ref settings);
 
@@ -143,7 +150,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			//add header
 			obj.Insert(0, "o " + General.Map.Options.LevelName + Environment.NewLine); //name
 			obj.Insert(0, "# Created by GZDoom Builder " + GZBuilder.GZGeneral.Version.ToString(CultureInfo.InvariantCulture) + Environment.NewLine + Environment.NewLine);
-			obj.Insert(0, "# OBJ version of " + General.Map.FileTitle + ", map " + General.Map.Options.LevelName + Environment.NewLine);
+			obj.Insert(0, "# " + General.Map.FileTitle + ", map " + General.Map.Options.LevelName + Environment.NewLine);
 			data.Obj = obj.ToString();
 
 			string[] textures = new string[geometryByTexture.Keys.Count];
@@ -164,14 +171,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 				if(vs.Floor != null) {
 					texture = vs.Sector.FloorTexture;
 					checkTextureName(ref geo, ref texture);
-					geo[texture].AddRange(optimizeSector(vs.Floor.Vertices, vs.Sector, vs.Floor.GeometryType));
+					geo[texture].AddRange(optimizeSector(vs.Floor.Vertices, vs.Floor.GeometryType));
 				}
 
 				//ceiling
 				if(vs.Ceiling != null) {
 					texture = vs.Sector.CeilTexture;
 					checkTextureName(ref geo, ref texture);
-					geo[texture].AddRange(optimizeSector(vs.Ceiling.Vertices, vs.Sector, vs.Ceiling.GeometryType));
+					geo[texture].AddRange(optimizeSector(vs.Ceiling.Vertices, vs.Ceiling.GeometryType));
 				}
 
 				//walls
@@ -223,14 +230,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 				foreach(VisualCeiling vc in vs.ExtraCeilings) {
 					texture = vc.GetControlSector().FloorTexture;
 					checkTextureName(ref geo, ref texture);
-					geo[texture].AddRange(optimizeSector(vc.Vertices, vc.Sector.Sector, vc.GeometryType));
+					geo[texture].AddRange(optimizeSector(vc.Vertices, vc.GeometryType));
 				}
 
 				//3d floors
 				foreach(VisualFloor vf in vs.ExtraFloors) {
 					texture = vf.GetControlSector().FloorTexture;
 					checkTextureName(ref geo, ref texture);
-					geo[texture].AddRange(optimizeSector(vf.Vertices, vf.Sector.Sector, vf.GeometryType));
+					geo[texture].AddRange(optimizeSector(vf.Vertices, vf.GeometryType));
 				}
 
 				//backsides(?)
@@ -251,30 +258,29 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 //SURFACE OPTIMIZATION
 		//it's either quad, or triangle
 		private WorldVertex[] optimizeWall(WorldVertex[] verts) {
-			if(verts.Length == 6) 
-				verts = new WorldVertex[] { verts[0], verts[1], verts[2], verts[5] };
+			if (verts.Length == 6) {
+				return new[] { verts[5], verts[2], verts[1], verts[0] };
+			}
 
 			Array.Reverse(verts);
 			return verts;
 		}
 
-		private List<WorldVertex[]> optimizeSector(WorldVertex[] verts, Sector sector, CodeImp.DoomBuilder.VisualModes.VisualGeometryType visualGeometryType) {
+		private List<WorldVertex[]> optimizeSector(WorldVertex[] verts, VisualModes.VisualGeometryType visualGeometryType) {
 			List<WorldVertex[]> groups = new List<WorldVertex[]>();
 
 			if(verts.Length == 6) { //rectangle surface
-				if(visualGeometryType == CodeImp.DoomBuilder.VisualModes.VisualGeometryType.FLOOR)
-					verts = new WorldVertex[] { verts[0], verts[1], verts[2], verts[5] };
-				else
-					verts = new WorldVertex[] { verts[0], verts[1], verts[5], verts[2] };
-
+				if (visualGeometryType == VisualModes.VisualGeometryType.FLOOR) {
+					verts = new[] { verts[5], verts[2], verts[1], verts[0] };
+				} else {
+					verts = new[] { verts[2], verts[5], verts[1], verts[0] };
+				}
 				groups.Add(verts);
 			} else {
-				for(int i = 0; i < verts.Length; i += 3)
-					groups.Add(new WorldVertex[] { verts[i], verts[i + 1], verts[i + 2] });
+				for (int i = 0; i < verts.Length; i += 3) {
+					groups.Add(new[] { verts[i + 2], verts[i + 1], verts[i] });
+				}
 			}
-
-			foreach(WorldVertex[] group in groups)
-				Array.Reverse(group);
 
 			return groups;
 		}
@@ -282,33 +288,62 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 //OBJ Creation
 		private StringBuilder createObjGeometry(Dictionary<string, List<WorldVertex[]>> geometryByTexture, WavefrontExportSettings data) {
 			StringBuilder obj = new StringBuilder();
-			bool mtlLibAdded = false;
-			string vertexFormatter = "{0} {2} {1}\n";
+			const string vertexFormatter = "{0} {2} {1}\n";
 
 			List<Vector3D> uniqueVerts = new List<Vector3D>();
 			List<Vector3D> uniqueNormals = new List<Vector3D>();
 			List<PointF> uniqueUVs = new List<PointF>();
 
+			Dictionary<string, Dictionary<WorldVertex, VertexIndices>> vertexDataByTexture = new Dictionary<string, Dictionary<WorldVertex, VertexIndices>>();
+			int ni, pi, uvi;
+
 			//optimize geometry
 			foreach(KeyValuePair<string, List<WorldVertex[]>> group in geometryByTexture) {
+				Dictionary<WorldVertex, VertexIndices> vertsData = new Dictionary<WorldVertex, VertexIndices>();
 				foreach(WorldVertex[] verts in group.Value) {
+					//vertex normals
+					Vector3D n = new Vector3D(verts[0].nx, verts[0].ny, verts[0].nz).GetNormal();
+					ni = uniqueNormals.IndexOf(n);
+					if (ni == -1) {
+						uniqueNormals.Add(n);
+						ni = uniqueNormals.Count;
+					} else {
+						ni++;
+					}
+					
 					foreach(WorldVertex v in verts){
+						if(vertsData.ContainsKey(v)) continue;
+						VertexIndices indices = new VertexIndices();
+						indices.NormalIndex = ni;
+
 						//vertex coords
 						Vector3D vc = new Vector3D(v.x, v.y, v.z);
-						if(!uniqueVerts.Contains(vc))
+						pi = uniqueVerts.IndexOf(vc);
+						if (pi == -1) {
 							uniqueVerts.Add(vc);
+							pi = uniqueVerts.Count;
+						} else {
+							pi++;
+						}
 
 						//uv
 						PointF uv = new PointF(v.u, v.v);
-						if(!uniqueUVs.Contains(uv))
+						uvi = uniqueUVs.IndexOf(uv);
+						if(uvi == -1) {
 							uniqueUVs.Add(uv);
-					}
+							uvi = uniqueUVs.Count;
+						} else {
+							uvi++;
+						}
 
-					//vertex normals
-					Vector3D n = new Vector3D(verts[0].nx, verts[0].ny, verts[0].nz).GetNormal();
-					if(!uniqueNormals.Contains(n))
-						uniqueNormals.Add(n);
+						indices.PositionIndex = pi;
+						indices.UVIndex = uvi;
+
+						vertsData.Add(v, indices);
+					}
 				}
+
+				vertexDataByTexture.Add(group.Key, vertsData);
 			}
 
 			//write geometry
@@ -322,40 +357,29 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			}
 
 			//write normals
-			foreach(Vector3D v in uniqueNormals){
-				Vector3D vn = v.GetNormal();
-				obj.Append(string.Format(CultureInfo.InvariantCulture, "vn " + vertexFormatter, vn.x, vn.y, vn.z));
-			}
+			foreach(Vector3D v in uniqueNormals)
+				obj.Append(string.Format(CultureInfo.InvariantCulture, "vn " + vertexFormatter, v.x, v.y, v.z));
 
-			//write uv coords
+			//write UV coords
 			foreach(PointF p in uniqueUVs)
 				obj.Append(string.Format(CultureInfo.InvariantCulture, "vt {0} {1}\n", p.X, -p.Y));
 
+			//write material library
+			obj.Append("mtllib ").Append(data.ObjName + ".mtl").Append("\n");
+
 			//write materials and surface indices
 			foreach(KeyValuePair<string, List<WorldVertex[]>> group in geometryByTexture) {
-				bool materialAdded = false;
+				//material
+				obj.Append("usemtl ").Append(group.Key).Append("\n");
 				
 				foreach(WorldVertex[] verts in group.Value) {
-					//material
-					if(!materialAdded) {
-						if(!mtlLibAdded) {
-							obj.Append("mtllib ").Append(data.ObjName + ".mtl").Append("\n");
-							mtlLibAdded = true;
-						}
-
-						obj.Append("usemtl ").Append(group.Key).Append("\n");
-						materialAdded = true;
-					}
-
 					//surface indices
-					string str = "f";
+					obj.Append("f");
 					foreach(WorldVertex v in verts) {
-						int vertexIndex = uniqueVerts.IndexOf(new Vector3D(v.x, v.y, v.z)) + 1;
-						int uvIndex = uniqueUVs.IndexOf(new PointF(v.u, v.v)) + 1;
-						int normalIndex = uniqueNormals.IndexOf(new Vector3D(v.nx, v.ny, v.nz).GetNormal()) + 1;
-						str += " " + vertexIndex + "/" + uvIndex + "/" + normalIndex;
+						VertexIndices vi = vertexDataByTexture[group.Key][v];
+						obj.Append(" " + vi.PositionIndex + "/" + vi.UVIndex + "/" + vi.NormalIndex);
 					}
-					obj.Append(str + "\n");
+					obj.Append("\n");
 				}
 			}
 
