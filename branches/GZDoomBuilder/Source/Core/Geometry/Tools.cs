@@ -153,31 +153,31 @@ namespace CodeImp.DoomBuilder.Geometry
 				foreach(Vertex v in General.Map.Map.Vertices)
 				{
 					// Inside the polygon bounding box?
-					if(bbox.Contains(v.Position.x, v.Position.y)) //mxd
-					{
-						// More to the right?
-						if((foundv == null) || (v.Position.x >= foundv.Position.x))
-						{
-							// Vertex is inside the polygon?
-							if(p.Intersect(v.Position))
-							{
-								// Vertex has lines attached?
-								if(v.Linedefs.Count > 0)
-								{
-									// Go for all lines to see if the vertex is not of the polygon itsself
-									vvalid = true;
-									foreach(LinedefSide ls in alllines)
-									{
-										if((ls.Line.Start == v) || (ls.Line.End == v))
-										{
-											vvalid = false;
-											break;
-										}
-									}
+					if(v.Position.x < bbox.Left || v.Position.x > bbox.Right || v.Position.y < bbox.Top || v.Position.y > bbox.Bottom)
+						continue;
 
-									// Valid vertex?
-									if(vvalid) foundv = v;
+					// More to the right?
+					if((foundv == null) || (v.Position.x >= foundv.Position.x)) 
+					{
+						// Vertex is inside the polygon?
+						if(p.Intersect(v.Position)) 
+						{
+							// Vertex has lines attached?
+							if(v.Linedefs.Count > 0)
+							{
+								// Go for all lines to see if the vertex is not of the polygon itsself
+								vvalid = true;
+								foreach(LinedefSide ls in alllines) 
+								{
+									if((ls.Line.Start == v) || (ls.Line.End == v)) 
+									{
+										vvalid = false;
+										break;
+									}
 								}
+
+								// Valid vertex?
+								if(vvalid) foundv = v;
 							}
 						}
 					}
@@ -296,7 +296,7 @@ namespace CodeImp.DoomBuilder.Geometry
 							// Line to the right of start point?
 							if((ld.Start.Position.x > px) || (ld.End.Position.x > px)) {
 								// Line intersecting the y axis?
-								if((ld.Start.Position.y > py && ld.End.Position.y < py) || (ld.Start.Position.y < py && ld.End.Position.y > py)) { //mxd
+								if((ld.Start.Position.y >= py && ld.End.Position.y <= py) || (ld.Start.Position.y <= py && ld.End.Position.y >= py)) { //mxd
 									// Check if this linedef intersects our test line at a closer range
 									float thisu;
 									ld.Line.GetIntersection(testline, out thisu);
