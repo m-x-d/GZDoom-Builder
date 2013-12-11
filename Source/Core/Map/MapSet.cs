@@ -1906,14 +1906,27 @@ namespace CodeImp.DoomBuilder.Map
 			// Go for all lines
 			foreach(Linedef l in lines)
 			{
-				//mxd. Not within rect?
-				if(!area.Contains(l.Start.Position.x, l.Start.Position.y) || !area.Contains(l.End.Position.x, l.End.Position.y)) continue;
-				// The line could be in the area
-				newlines.Add(l);
+				// Check the cs field bits
+				if ((GetCSFieldBits(l.Start, ref area) & GetCSFieldBits(l.End, ref area)) == 0) 
+				{
+					// The line could be in the area
+					newlines.Add(l);
+				}
 			}
 			
 			// Return result
 			return newlines;
+		}
+
+		// This returns the cohen-sutherland field bits for a vertex in a rectangle area
+		private static int GetCSFieldBits(Vertex v, ref RectangleF area) 
+		{
+			int bits = 0;
+			if(v.Position.y < area.Top) bits |= 0x01;
+			if(v.Position.y > area.Bottom) bits |= 0x02;
+			if(v.Position.x < area.Left) bits |= 0x04;
+			if(v.Position.x > area.Right) bits |= 0x08;
+			return bits;
 		}
 
 		/// <summary>This filters vertices by a rectangular area.</summary>
@@ -1925,11 +1938,11 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Vertex v in verts)
 			{
 				// Within rect?
-				if(area.Contains(v.Position.x, v.Position.y)) //mxd
-				{
-					// The vertex is in the area
-					newverts.Add(v);
-				}
+				if((v.Position.x < area.Left) || (v.Position.x > area.Right) ||
+					(v.Position.y < area.Top) || (v.Position.y > area.Bottom)) continue;
+
+				// The vertex is in the area
+				newverts.Add(v);
 			}
 
 			// Return result
@@ -2532,8 +2545,10 @@ namespace CodeImp.DoomBuilder.Map
 				px = v.Position.x;
 				py = v.Position.y;
 				
-				// Within range?
-				if(!range.Contains(px, py)) continue; //mxd
+				//mxd. Within range?
+				if((v.Position.x < range.Left) || (v.Position.x > range.Right) 
+					|| (v.Position.y < range.Top) || (v.Position.y > range.Bottom))
+					continue;
 
 				// Close than previous find?
 				d = Math.Abs(px - pos.x) + Math.Abs(py - pos.y);
