@@ -1776,7 +1776,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Clear selection
 			General.Map.Map.ClearAllSelected();
 
-			General.Interface.DisplayStatus(StatusType.Selection, string.Empty); //mxd
+			//mxd. Clear selection info
+			General.Interface.DisplayStatus(StatusType.Selection, string.Empty); 
 
 			// Clear labels
 			foreach(TextLabel[] labelarray in labels.Values)

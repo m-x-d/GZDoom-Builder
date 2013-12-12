@@ -290,12 +290,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			StringBuilder obj = new StringBuilder();
 			const string vertexFormatter = "{0} {2} {1}\n";
 
-			List<Vector3D> uniqueVerts = new List<Vector3D>();
-			List<Vector3D> uniqueNormals = new List<Vector3D>();
-			List<PointF> uniqueUVs = new List<PointF>();
+			Dictionary<Vector3D, int> uniqueVerts = new Dictionary<Vector3D, int>();
+			Dictionary<Vector3D, int> uniqueNormals = new Dictionary<Vector3D, int>();
+			Dictionary<PointF, int> uniqueUVs = new Dictionary<PointF, int>();
 
 			Dictionary<string, Dictionary<WorldVertex, VertexIndices>> vertexDataByTexture = new Dictionary<string, Dictionary<WorldVertex, VertexIndices>>();
-			int ni, pi, uvi;
+			int ni;
+			int pc = 0;
+			int nc = 0;
+			int uvc = 0;
 
 			//optimize geometry
 			foreach(KeyValuePair<string, List<WorldVertex[]>> group in geometryByTexture) {
@@ -303,12 +306,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 				foreach(WorldVertex[] verts in group.Value) {
 					//vertex normals
 					Vector3D n = new Vector3D(verts[0].nx, verts[0].ny, verts[0].nz).GetNormal();
-					ni = uniqueNormals.IndexOf(n);
-					if (ni == -1) {
-						uniqueNormals.Add(n);
-						ni = uniqueNormals.Count;
+					if(uniqueNormals.ContainsKey(n)) {
+						ni = uniqueNormals[n];
 					} else {
-						ni++;
+						uniqueNormals.Add(n, ++nc);
+						ni = nc;
 					}
 					
 					foreach(WorldVertex v in verts){
@@ -318,26 +320,21 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 
 						//vertex coords
 						Vector3D vc = new Vector3D(v.x, v.y, v.z);
-						pi = uniqueVerts.IndexOf(vc);
-						if (pi == -1) {
-							uniqueVerts.Add(vc);
-							pi = uniqueVerts.Count;
+						if(uniqueVerts.ContainsKey(vc)) {
+							indices.PositionIndex = uniqueVerts[vc];
 						} else {
-							pi++;
+							uniqueVerts.Add(vc, ++pc);
+							indices.PositionIndex = pc;
 						}
 
 						//uv
 						PointF uv = new PointF(v.u, v.v);
-						uvi = uniqueUVs.IndexOf(uv);
-						if(uvi == -1) {
-							uniqueUVs.Add(uv);
-							uvi = uniqueUVs.Count;
-						} else {
-							uvi++;
+						if(uniqueUVs.ContainsKey(uv)) {
+							indices.UVIndex = uniqueUVs[uv];
+						}else{
+							uniqueUVs.Add(uv, ++uvc);
+							indices.UVIndex = uvc;
 						}
-
-						indices.PositionIndex = pi;
-						indices.UVIndex = uvi;
 
 						vertsData.Add(v, indices);
 					}
@@ -349,20 +346,20 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			//write geometry
 			//write vertices
 			if(data.FixScale) {
-				foreach(Vector3D v in uniqueVerts)
-					obj.Append(string.Format(CultureInfo.InvariantCulture, "v " + vertexFormatter, -v.x * data.Scale, v.y * data.Scale, v.z * data.Scale * 1.2f));
+				foreach(KeyValuePair<Vector3D, int> group in uniqueVerts)
+					obj.Append(string.Format(CultureInfo.InvariantCulture, "v " + vertexFormatter, -group.Key.x * data.Scale, group.Key.y * data.Scale, group.Key.z * data.Scale * 1.2f));
 			} else {
-				foreach(Vector3D v in uniqueVerts)
-					obj.Append(string.Format(CultureInfo.InvariantCulture, "v " + vertexFormatter, -v.x * data.Scale, v.y * data.Scale, v.z * data.Scale));
+				foreach(KeyValuePair<Vector3D, int> group in uniqueVerts)
+					obj.Append(string.Format(CultureInfo.InvariantCulture, "v " + vertexFormatter, -group.Key.x * data.Scale, group.Key.y * data.Scale, group.Key.z * data.Scale));
 			}
 
 			//write normals
-			foreach(Vector3D v in uniqueNormals)
-				obj.Append(string.Format(CultureInfo.InvariantCulture, "vn " + vertexFormatter, v.x, v.y, v.z));
+			foreach(KeyValuePair<Vector3D, int> group in uniqueNormals)
+				obj.Append(string.Format(CultureInfo.InvariantCulture, "vn " + vertexFormatter, group.Key.x, group.Key.y, group.Key.z));
 
 			//write UV coords
-			foreach(PointF p in uniqueUVs)
-				obj.Append(string.Format(CultureInfo.InvariantCulture, "vt {0} {1}\n", p.X, -p.Y));
+			foreach(KeyValuePair<PointF, int> group in uniqueUVs)
+				obj.Append(string.Format(CultureInfo.InvariantCulture, "vt {0} {1}\n", group.Key.X, -group.Key.Y));
 
 			//write material library
 			obj.Append("mtllib ").Append(data.ObjName + ".mtl").Append("\n");
