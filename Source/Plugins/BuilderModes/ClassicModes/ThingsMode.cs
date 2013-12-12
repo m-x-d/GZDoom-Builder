@@ -730,6 +730,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Clear selection
 			General.Map.Map.ClearAllSelected();
 
+			//mxd. Clear selection info
+			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
+
 			// Redraw
 			General.Interface.RedrawDisplay();
 		}
