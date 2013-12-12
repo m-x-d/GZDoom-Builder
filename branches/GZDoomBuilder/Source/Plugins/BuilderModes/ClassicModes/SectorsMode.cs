@@ -1143,6 +1143,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SetupLabels();
 			updateEffectLabels(); //mxd
 			updateOverlaySurfaces(); //mxd
+			base.OnUndoEnd(); //mxd
 		}
 		
 		// When redo is used
