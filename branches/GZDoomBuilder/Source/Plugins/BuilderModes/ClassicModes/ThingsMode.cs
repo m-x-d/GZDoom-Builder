@@ -836,8 +836,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Interface.DisplayStatus(StatusType.Action, "Deleted a thing.");
 				}
 
+				General.Map.Map.BeginAddRemove(); //mxd
+
 				// Dispose selected things
 				foreach(Thing t in selected) t.Dispose();
+
+				General.Map.Map.EndAddRemove(); //mxd
 				
 				// Update cache values
 				General.Map.IsChanged = true;

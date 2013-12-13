@@ -1420,13 +1420,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Interface.DisplayStatus(StatusType.Action, "Deleted sector.");
 				}
 
+				General.Map.Map.BeginAddRemove(); //mxd
+
 				// Dispose selected sectors
 				foreach(Sector s in selected)
 				{
 					// Get all the linedefs
-					General.Map.Map.ClearMarkedLinedefs(false);
+					/*General.Map.Map.ClearMarkedLinedefs(false);
 					foreach(Sidedef sd in s.Sidedefs) sd.Line.Marked = true;
-					List<Linedef> lines = General.Map.Map.GetMarkedLinedefs(true);
+					List<Linedef> lines = General.Map.Map.GetMarkedLinedefs(true);*/
+
+					//mxd. Get all the linedefs
+					List<Linedef> lines = new List<Linedef>(s.Sidedefs.Count);
+					foreach(Sidedef side in s.Sidedefs) lines.Add(side.Line);
 					
 					// Dispose the sector
 					s.Dispose();
@@ -1470,6 +1476,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 				}
+
+				General.Map.Map.EndAddRemove(); //mxd
 
 				// Update cache values
 				General.Map.IsChanged = true;

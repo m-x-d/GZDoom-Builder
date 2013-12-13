@@ -528,9 +528,9 @@ namespace CodeImp.DoomBuilder.Map
 			this.offsetx = offsetx;
 			this.offsety = offsety;
 			this.flags = new Dictionary<string, bool>(flags); //mxd
-			SetTextureHigh(thigh);
 			SetTextureMid(tmid);
 			SetTextureLow(tlow);
+			SetTextureHigh(thigh);
 		}
 
 		// This sets texture
