@@ -849,10 +849,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Make list of selected vertices
 			ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
 			if(selected.Count == 0) {
-				if(highlighted != null && !highlighted.IsDisposed)
-					selected.Add(highlighted);
-				else
-					return;
+				if(highlighted == null || highlighted.IsDisposed) return;
+				selected.Add(highlighted);
 			}
 
 			// Make undo

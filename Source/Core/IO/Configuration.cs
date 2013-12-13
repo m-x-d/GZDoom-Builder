@@ -171,6 +171,7 @@ namespace CodeImp.DoomBuilder.IO
 		private string cpErrorDescription = "";
 		private int cpErrorLine = 0;
 		private string cpErrorFile = "";
+		private char[] space = new[]{ ' ' }; //mxd
 		
 		// Configuration root
 		private IDictionary root = null;
@@ -297,7 +298,7 @@ namespace CodeImp.DoomBuilder.IO
 		// This is called by all the ReadSetting overloads to perform the read
 		private bool CheckSetting(IDictionary dic, string setting, string pathseperator)
 		{
-			IDictionary cs = null;
+			IDictionary cs;
 
 			// Split the path in an array
 			string[] keys = setting.Split(pathseperator.ToCharArray());
@@ -312,13 +313,13 @@ namespace CodeImp.DoomBuilder.IO
 				if(item is IDictionary)
 				{
 					// Check if the key is valid
-					if(ValidateKey(null, keys[i].Trim(), "", -1) == true)
+					if(ValidateKey(null, keys[i].Trim(), "", -1))
 					{
 						// Cast to ConfigStruct
 						cs = (IDictionary)item;
 						
 						// Check if the requested item exists
-						if(cs.Contains(keys[i]) == true)
+						if(cs.Contains(keys[i]))
 						{
 							// Set the item to the next item
 							item = cs[keys[i]];
@@ -351,7 +352,7 @@ namespace CodeImp.DoomBuilder.IO
 		private object ReadAnySetting(IDictionary dic, string setting, object defaultsetting, string pathseperator) { return ReadAnySetting(dic, "", -1, setting, defaultsetting, pathseperator); }
 		private object ReadAnySetting(IDictionary dic, string file, int line, string setting, object defaultsetting, string pathseperator)
 		{
-			IDictionary cs = null;
+			IDictionary cs;
 			
 			// Split the path in an array
 			string[] keys = setting.Split(pathseperator.ToCharArray());
@@ -366,13 +367,13 @@ namespace CodeImp.DoomBuilder.IO
 				if(item is IDictionary)
 				{
 					// Check if the key is valid
-					if(ValidateKey(null, keys[i].Trim(), file, line) == true)
+					if(ValidateKey(null, keys[i].Trim(), file, line))
 					{
 						// Cast to ConfigStruct
 						cs = (IDictionary)item;
 						
 						// Check if the requested item exists
-						if(cs.Contains(keys[i]) == true)
+						if(cs.Contains(keys[i]))
 						{
 							// Set the item to the next item
 							item = cs[keys[i]];
@@ -449,7 +450,7 @@ namespace CodeImp.DoomBuilder.IO
 			else
 			{
 				// Check if there are spaces in the key
-				if(key.IndexOfAny(" ".ToCharArray()) > -1)
+				if(key.IndexOfAny(space) > -1)
 				{
 					// ERROR: Spaces not allowed in key names
 					if(errorline > -1) RaiseError(file, errorline, ERROR_KEYSPACES);
@@ -504,7 +505,7 @@ namespace CodeImp.DoomBuilder.IO
 			else
 			{
 				// Check if there are spaces in the key
-				if(keyword.IndexOfAny(" ".ToCharArray()) > -1)
+				if(keyword.IndexOfAny(space) > -1)
 				{
 					// ERROR: Spaces not allowed in key names
 					if(errorline > -1) RaiseError(file, errorline, ERROR_ASSIGNINVALID);
@@ -798,8 +799,8 @@ namespace CodeImp.DoomBuilder.IO
 						// Return result depending on the keyword
 						switch(val.Trim().ToLowerInvariant())
 						{
-							case "true": return (bool)true;
-							case "false": return (bool)false;
+							case "true": return true;
+							case "false": return false;
 							case "null": return null;
 							default: RaiseError(file, line, ERROR_KEYWORDUNKNOWN + "\nUnrecognized token: '" + val.Trim().ToLowerInvariant() + "'"); return null;
 						}
@@ -964,7 +965,6 @@ namespace CodeImp.DoomBuilder.IO
 			}
 			
 			RaiseError(file, line, ERROR_UNEXPECTED_END);
-			return;
 		}
 		
 		
@@ -1174,7 +1174,7 @@ namespace CodeImp.DoomBuilder.IO
 					else if(de.Value is bool)
 					{
 						// Check value
-						if((bool)de.Value == true)
+						if((bool)de.Value)
 						{
 							// Output the keyword "true"
 							db.Append(leveltabs); db.Append(de.Key.ToString()); db.Append(spacing);
@@ -1283,13 +1283,13 @@ namespace CodeImp.DoomBuilder.IO
 			for(int i = 0; i < (keys.Length - 1); i++)
 			{
 				// Check if the key is valid
-				if(ValidateKey(null, keys[i].Trim(), "", -1) == true)
+				if(ValidateKey(null, keys[i].Trim(), "", -1))
 				{
 					// Cast to ConfigStruct
 					cs = (IDictionary)item;
 					
 					// Check if the requested item exists
-					if(cs.Contains(keys[i]) == true)
+					if(cs.Contains(keys[i]))
 					{
 						// Check if the requested item is a ConfigStruct
 						if(cs[keys[i]] is IDictionary)
@@ -1326,7 +1326,7 @@ namespace CodeImp.DoomBuilder.IO
 			cs = (IDictionary)item;
 			
 			// Check if the key already exists
-			if(cs.Contains(finalkey) == true)
+			if(cs.Contains(finalkey))
 			{
 				// Update the value
 				cs[finalkey] = settingvalue;
@@ -1359,13 +1359,13 @@ namespace CodeImp.DoomBuilder.IO
 			for(int i = 0; i < (keys.Length - 1); i++)
 			{
 				// Check if the key is valid
-				if(ValidateKey(null, keys[i].Trim(), "", -1) == true)
+				if(ValidateKey(null, keys[i].Trim(), "", -1))
 				{
 					// Cast to ConfigStruct
 					cs = (IDictionary)item;
 					
 					// Check if the requested item exists
-					if(cs.Contains(keys[i]) == true)
+					if(cs.Contains(keys[i]))
 					{
 						// Check if the requested item is a ConfigStruct
 						if(cs[keys[i]] is IDictionary)
@@ -1403,7 +1403,7 @@ namespace CodeImp.DoomBuilder.IO
 			
 			// Arrived at our destination
 			// Delete the key if the key exists
-			if(cs.Contains(finalkey) == true)
+			if(cs.Contains(finalkey))
 			{
 				// Key exists, delete it
 				cs.Remove(finalkey);
@@ -1425,7 +1425,7 @@ namespace CodeImp.DoomBuilder.IO
 		public bool SaveConfiguration(string filename, string newline, bool whitespace)
 		{
 			// Kill the file if it exists
-			if(File.Exists(filename) == true) File.Delete(filename);
+			if(File.Exists(filename)) File.Delete(filename);
 			
 			// Open file stream for writing
 			FileStream fstream = File.OpenWrite(filename);
@@ -1457,7 +1457,7 @@ namespace CodeImp.DoomBuilder.IO
 		public bool LoadConfiguration(string filename, bool sorted)
 		{
 			// Check if the file is missing
-			if(File.Exists(filename) == false)
+			if(!File.Exists(filename))
 			{
 				throw(new FileNotFoundException("File not found \"" + filename + "\"", filename));
 			}

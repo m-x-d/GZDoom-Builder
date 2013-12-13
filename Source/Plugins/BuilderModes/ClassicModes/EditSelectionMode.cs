@@ -1036,14 +1036,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Resume normal undo/redo recording
 				General.Map.UndoRedo.IgnorePropChanges = false;
 				
-				// Remove the geometry
-				//int index = 0;
-				foreach(Vertex v in selectedvertices)
-					v.Dispose();
+				General.Map.Map.BeginAddRemove(); //mxd
 
-				//index = 0;
-				foreach(Thing t in selectedthings)
-					t.Dispose();
+				// Remove the geometry
+				foreach(Vertex v in selectedvertices) v.Dispose();
+				foreach(Thing t in selectedthings) t.Dispose();
+
+				General.Map.Map.EndAddRemove(); //mxd
 				
 				// Withdraw the undo
 				if(General.Map.UndoRedo.NextUndo != null)

@@ -905,6 +905,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(l.Back != null && l.Back.Sector.Sidedefs.Count < 4 && !toMerge.ContainsKey(l.Back.Sector))
 						toMerge.Add(l.Back.Sector, new Vector2D(l.Back.Sector.BBox.Location.X + l.Back.Sector.BBox.Width / 2, l.Back.Sector.BBox.Location.Y + l.Back.Sector.BBox.Height / 2));
 				}
+
+				General.Map.Map.BeginAddRemove(); //mxd
 				
 				// Dispose selected linedefs
 				foreach(Linedef ld in selected) {
@@ -920,6 +922,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				//mxd
+				General.Map.Map.EndAddRemove();
 				Tools.MergeInvalidSectors(toMerge);
 				
 				// Update cache values
