@@ -910,16 +910,24 @@ namespace CodeImp.DoomBuilder.Geometry
 						// Check if any other lines intersect this line
 						List<float> intersections = new List<float>();
 						Line2D measureline = ld.Line;
-						foreach(Linedef ld2 in map.Linedefs)
-						{
-							// Intersecting?
-							// We only keep the unit length from the start of the line and
-							// do the real splitting later, when all intersections are known
-							float u;
-							if(ld2.Line.GetIntersection(measureline, out u))
-							{
-								if(!float.IsNaN(u) && (u > 0.0f) && (u < 1.0f) && (ld2 != ld))
-									intersections.Add(u);
+						Dictionary<Linedef, bool> processed = new Dictionary<Linedef, bool>(); //mxd
+
+						//mxd
+						foreach (Sector s in map.Sectors) {
+							//line intersects with sector's bounding box?
+							if((MapSet.GetCSFieldBits(measureline.v1, s.BBox) & MapSet.GetCSFieldBits(measureline.v2, s.BBox)) == 0) {
+								foreach (Sidedef side in s.Sidedefs) {
+									if(processed.ContainsKey(side.Line)) continue;
+									if(side.Line == ld) continue;
+
+									float u;
+									if(side.Line.Line.GetIntersection(measureline, out u)) {
+										if(float.IsNaN(u) || (u < 0.0f) || (u > 1.0f)) continue;
+										intersections.Add(u);
+									}
+
+									processed.Add(side.Line, false);
+								}
 							}
 						}
 
@@ -960,7 +968,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 				// Join merge vertices so that overlapping vertices in the draw become one.
 				map.BeginAddRemove();
-				MapSet.JoinVertices(mergeverts, mergeverts, false, MapSet.STITCH_DISTANCE);
+				MapSet.JoinVertices(mergeverts, MapSet.STITCH_DISTANCE); //mxd
 				map.EndAddRemove();
 				
 				/***************************************************\
@@ -1187,7 +1195,7 @@ namespace CodeImp.DoomBuilder.Geometry
 										drawingclosed = true;
 
 										// Join merge vertices so that overlapping vertices in the draw become one.
-										MapSet.JoinVertices(mergeverts, mergeverts, false, MapSet.STITCH_DISTANCE);
+										MapSet.JoinVertices(mergeverts, MapSet.STITCH_DISTANCE); //mxd
 									}
 								}
 							}
@@ -1417,7 +1425,8 @@ namespace CodeImp.DoomBuilder.Geometry
 					for(int i = newlines.Count - 1; i >= 0; i--)
 					{
 						// Remove the line if it has no sides
-						if((newlines[i].Front == null) && (newlines[i].Back == null)) newlines[i].Dispose();
+						if((newlines[i].Front != null) || (newlines[i].Back != null)) continue; 
+						newlines[i].Dispose();
 					}
 				}
 

@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.Map
 		public Size Size { get { return size; } }
 		public RectangleF Range { get { return range; } }
 		public int BlockSize { get { return blocksize; } }
+		internal BE[,] Map { get { return blockmap; } }
 		
 		#endregion
 		

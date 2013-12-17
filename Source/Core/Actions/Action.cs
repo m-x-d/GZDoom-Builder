@@ -130,15 +130,14 @@ namespace CodeImp.DoomBuilder.Actions
 		public static string GetShortcutKeyDesc(int key)
 		{
 			KeysConverter conv = new KeysConverter();
-			int ctrl, button;
 			string ctrlprefix = "";
 			
 			// When key is 0, then return an empty string
 			if(key == 0) return "";
 
 			// Split the key in Control and Button
-			ctrl = key & ((int)Keys.Control | (int)Keys.Shift | (int)Keys.Alt);
-			button = key & ~((int)Keys.Control | (int)Keys.Shift | (int)Keys.Alt);
+			int ctrl = key & ((int)Keys.Control | (int)Keys.Shift | (int)Keys.Alt);
+			int button = key & ~((int)Keys.Control | (int)Keys.Shift | (int)Keys.Alt);
 
 			// When the button is a control key, then remove the control itsself
 			if((button == (int)Keys.ControlKey) ||

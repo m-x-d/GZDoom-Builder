@@ -81,12 +81,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 				if (block == null) continue;
 
 				foreach (Vertex blockVert in block.Vertices) {
-					if(!blockVert.IsDisposed && blockVert.Index != v.Index && blockVert.Position == v.Position) {
-						foreach(Linedef l in blockVert.Linedefs) 
-							if(!movedLines.Contains(l)) movedLines.Add(l);
-						v.Join(blockVert);
-						break;
-					}
+					if(blockVert.IsDisposed || blockVert.Index == v.Index || blockVert.Position != v.Position) continue;
+
+					foreach(Linedef l in blockVert.Linedefs)
+						if(!movedLines.Contains(l)) movedLines.Add(l);
+					v.Join(blockVert);
+					break;
 				}
 			}
 

@@ -269,31 +269,30 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Methods
 
 		// This checks and returns a flag without creating it
-		public bool IsFlagSet(string flagname) {
-			if(flags.ContainsKey(flagname))
-				return flags[flagname];
-			else
-				return false;
+		public bool IsFlagSet(string flagname) 
+		{
+			return (flags.ContainsKey(flagname) && flags[flagname]);
 		}
 
 		// This sets a flag
-		public void SetFlag(string flagname, bool value) {
+		public void SetFlag(string flagname, bool value) 
+		{
 			if(!flags.ContainsKey(flagname) || (IsFlagSet(flagname) != value)) {
 				BeforePropsChange();
-
 				flags[flagname] = value;
 			}
 		}
 
 		// This returns a copy of the flags dictionary
-		public Dictionary<string, bool> GetFlags() {
+		public Dictionary<string, bool> GetFlags() 
+		{
 			return new Dictionary<string, bool>(flags);
 		}
 
 		// This clears all flags
-		public void ClearFlags() {
+		public void ClearFlags() 
+		{
 			BeforePropsChange();
-
 			flags.Clear();
 		}
 		
@@ -306,11 +305,13 @@ namespace CodeImp.DoomBuilder.Map
 		// This removes textures that are not required
 		public void RemoveUnneededTextures(bool removemiddle, bool force)
 		{
-			BeforePropsChange();
+			bool changed = false; //mxd
 			
 			// The middle texture can be removed regardless of any sector tag or linedef action
 			if(!MiddleRequired() && removemiddle)
 			{
+				BeforePropsChange(); //mxd
+				changed = true; //mxd
 				this.texnamemid = "-";
 				this.longtexnamemid = MapSet.EmptyLongName;
 				General.Map.IsChanged = true;
@@ -324,6 +325,10 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				if(!HighRequired())
 				{
+					if(!changed) { //mxd
+						BeforePropsChange();
+						changed = true;
+					}
 					this.texnamehigh = "-";
 					this.longtexnamehigh = MapSet.EmptyLongName;
 					General.Map.IsChanged = true;
@@ -331,6 +336,7 @@ namespace CodeImp.DoomBuilder.Map
 
 				if(!LowRequired())
 				{
+					if(!changed) BeforePropsChange(); //mxd
 					this.texnamelow = "-";
 					this.longtexnamelow = MapSet.EmptyLongName;
 					General.Map.IsChanged = true;
@@ -349,10 +355,8 @@ namespace CodeImp.DoomBuilder.Map
 				// Texture is required when ceiling of other side is lower
 				return (Other.sector.CeilHeight < this.sector.CeilHeight);
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -375,10 +379,8 @@ namespace CodeImp.DoomBuilder.Map
 				// Texture is required when floor of other side is higher
 				return (Other.sector.FloorHeight > this.sector.FloorHeight);
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -394,10 +396,8 @@ namespace CodeImp.DoomBuilder.Map
 				int height = top - bottom;
 				return (height > 0) ? height : 0;
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
 		/// <summary>
@@ -435,10 +435,8 @@ namespace CodeImp.DoomBuilder.Map
 				int height = top - bottom;
 				return (height > 0) ? height : 0;
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 		
 		// This creates a checksum from the sidedef properties
