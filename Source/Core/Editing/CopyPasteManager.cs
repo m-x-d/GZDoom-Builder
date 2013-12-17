@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.Editing
 	{
 		#region ================== Constants
 		
-		private const string CLIPBOARD_DATA_FORMAT = "DOOM_BUILDER_GEOMETRY";
+		private const string CLIPBOARD_DATA_FORMAT = "GZDOOM_BUILDER_GEOMETRY";
 
 		#endregion
 		
@@ -228,9 +228,8 @@ namespace CodeImp.DoomBuilder.Editing
 
 						// Write data to stream
 						MemoryStream memstream = new MemoryStream();
-						UniversalStreamWriter writer = new UniversalStreamWriter();
-						writer.RememberCustomTypes = false;
-						writer.Write(copyset, memstream, null);
+						ClipboardStreamWriter writer = new ClipboardStreamWriter(); //mxd
+						writer.Write(copyset, memstream);
 
 						// Set on clipboard
 						Clipboard.SetData(CLIPBOARD_DATA_FORMAT, memstream);
@@ -283,8 +282,7 @@ namespace CodeImp.DoomBuilder.Editing
 							General.Map.Map.ClearAllMarks(true);
 
 							// Read data stream
-							UniversalStreamReader reader = new UniversalStreamReader(General.Map.FormatInterface.UIFields); //mxd
-							reader.StrictChecking = false;
+							ClipboardStreamReader reader = new ClipboardStreamReader(); //mxd
 							General.Map.Map.BeginAddRemove();
 							reader.Read(General.Map.Map, memstream);
 							General.Map.Map.EndAddRemove();

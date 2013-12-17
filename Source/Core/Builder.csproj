@@ -789,7 +789,9 @@
     <Compile Include="GZBuilder\Windows\TagStatisticsForm.Designer.cs">
       <DependentUpon>TagStatisticsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="IO\ClipboardStreamReader.cs" />
     <Compile Include="IO\DoomColormapReader.cs" />
+    <Compile Include="IO\ClipboardStreamWriter.cs" />
     <Compile Include="Map\GroupInfo.cs" />
     <Compile Include="Map\SelectionType.cs" />
     <Compile Include="Map\MapElementCollection.cs" />

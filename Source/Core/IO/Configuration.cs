@@ -172,6 +172,7 @@ namespace CodeImp.DoomBuilder.IO
 		private int cpErrorLine = 0;
 		private string cpErrorFile = "";
 		private char[] space = new[]{ ' ' }; //mxd
+		private char[] newline = new[] { '\n' }; //mxd
 		
 		// Configuration root
 		private IDictionary root = null;
@@ -1091,7 +1092,7 @@ namespace CodeImp.DoomBuilder.IO
 							{
 								// Count the lines in the block comment
 								string blockdata = data.Substring(pos, np - pos + 2);
-								line += (blockdata.Split("\n".ToCharArray()).Length - 1);
+								line += (blockdata.Split(newline).Length - 1);
 								
 								// Skip everything in this block
 								pos = np + 2;

@@ -56,34 +56,23 @@ namespace CodeImp.DoomBuilder.Controls
 			float zvalue;
 
 			// Show/hide stuff depending on format
-			if(!General.Map.FormatInterface.HasActionArgs)
-			{
-				arglbl1.Visible = false;
-				arglbl2.Visible = false;
-				arglbl3.Visible = false;
-				arglbl4.Visible = false;
-				arglbl5.Visible = false;
-				arg1.Visible = false;
-				arg2.Visible = false;
-				arg3.Visible = false;
-				arg4.Visible = false;
-				arg5.Visible = false;
-				infopanel.Width = doomformatwidth;
-			}
-			else
-			{
-				arglbl1.Visible = true;
-				arglbl2.Visible = true;
-				arglbl3.Visible = true;
-				arglbl4.Visible = true;
-				arglbl5.Visible = true;
-				arg1.Visible = true;
-				arg2.Visible = true;
-				arg3.Visible = true;
-				arg4.Visible = true;
-				arg5.Visible = true;
-				infopanel.Width = hexenformatwidth;
-			}
+			bool hasArgs = General.Map.FormatInterface.HasActionArgs;
+			arglbl1.Visible = hasArgs;
+			arglbl2.Visible = hasArgs;
+			arglbl3.Visible = hasArgs;
+			arglbl4.Visible = hasArgs;
+			arglbl5.Visible = hasArgs;
+			arg1.Visible = hasArgs;
+			arg2.Visible = hasArgs;
+			arg3.Visible = hasArgs;
+			arg4.Visible = hasArgs;
+			arg5.Visible = hasArgs;
+			infopanel.Width = (hasArgs ? hexenformatwidth : doomformatwidth);
+
+			//mxd
+			bool hasAction = General.Map.FormatInterface.HasThingAction;
+			action.Visible = hasAction;
+			labelaction.Visible = hasAction;
 
 			// Move panel
 			spritepanel.Left = infopanel.Left + infopanel.Width + infopanel.Margin.Right + spritepanel.Margin.Left;
@@ -206,7 +195,7 @@ namespace CodeImp.DoomBuilder.Controls
 			flags.Items.Clear();
 			foreach(KeyValuePair<string, bool> group in t.Flags){
 				if(group.Value) {
-					ListViewItem item = new ListViewItem(General.Map.Config.ThingFlags[group.Key]);
+					ListViewItem item = new ListViewItem(General.Map.Config.ThingFlags.ContainsKey(group.Key) ? General.Map.Config.ThingFlags[group.Key] : group.Key);
 					item.Checked = true;
 					flags.Items.Add(item);
 				}
