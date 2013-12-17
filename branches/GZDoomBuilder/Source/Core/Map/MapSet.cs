@@ -17,7 +17,6 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Windows;
@@ -1907,7 +1906,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Linedef l in lines)
 			{
 				// Check the cs field bits
-				if ((GetCSFieldBits(l.Start, ref area) & GetCSFieldBits(l.End, ref area)) == 0) 
+				if ((GetCSFieldBits(l.Start.Position, area) & GetCSFieldBits(l.End.Position, area)) == 0) 
 				{
 					// The line could be in the area
 					newlines.Add(l);
@@ -1918,14 +1917,14 @@ namespace CodeImp.DoomBuilder.Map
 			return newlines;
 		}
 
-		// This returns the cohen-sutherland field bits for a vertex in a rectangle area
-		private static int GetCSFieldBits(Vertex v, ref RectangleF area) 
+		/// <summary> This returns the cohen-sutherland field bits for a vector in a rectangle area</summary>
+		public static int GetCSFieldBits(Vector2D v, RectangleF area) 
 		{
 			int bits = 0;
-			if(v.Position.y < area.Top) bits |= 0x01;
-			if(v.Position.y > area.Bottom) bits |= 0x02;
-			if(v.Position.x < area.Left) bits |= 0x04;
-			if(v.Position.x > area.Right) bits |= 0x08;
+			if(v.y < area.Top) bits |= 0x01;
+			if(v.y > area.Bottom) bits |= 0x02;
+			if(v.x < area.Left) bits |= 0x04;
+			if(v.x > area.Right) bits |= 0x08;
 			return bits;
 		}
 
@@ -2270,6 +2269,48 @@ namespace CodeImp.DoomBuilder.Map
 			return joinsdone;
 		}
 
+		/// <summary>This joins nearby vertices in the same collection </summary>
+		public static int JoinVertices(List<Vertex> set, float joindist) {
+			float joindist2 = joindist * joindist;
+			int joinsdone = 0;
+			bool joined;
+			Vertex v1, v2;
+
+			do {
+				// No joins yet
+				joined = false;
+
+				// Go for all vertices in the first set
+				for(int i = 0; i < set.Count - 1; i++) {
+					for(int c = i + 1; c < set.Count; c++) {
+						v1 = set[i];
+						v2 = set[c];
+
+						// Check if vertices are close enough
+						if (v1.DistanceToSq(v2.Position) <= joindist2) {
+							// Check if not the same vertex
+							if (v1.Index != v2.Index) {
+								// Move the second vertex to match the first
+								v2.Move(v1.Position);
+
+								// Join the second into the first
+								v2.Join(v1);
+								set.Remove(v2);
+
+								// Count the join
+								joinsdone++;
+								joined = true;
+								break;
+							}
+						}
+					}
+				}
+			} while(joined);
+
+			// Return result
+			return joinsdone;
+		}
+
 		/// <summary>This corrects lines that have a back sidedef but no front sidedef by flipping them. Returns the number of flips made.</summary>
 		public static int FlipBackwardLinedefs(ICollection<Linedef> lines)
 		{
@@ -2299,58 +2340,69 @@ namespace CodeImp.DoomBuilder.Map
 			float splitdist2 = splitdist * splitdist;
 			bool splitted;
 
+			//mxd. Create blockmap
+			RectangleF area = CreateArea(verts);
+			BlockMap<BlockEntry> blockmap = new BlockMap<BlockEntry>(area);
+			blockmap.AddVerticesSet(verts);
+			blockmap.AddLinedefsSet(lines);
+			int bmWidth = blockmap.Size.Width;
+			int bmHeight = blockmap.Size.Height;
+			BlockEntry[,] bmap = blockmap.Map;
+			BlockEntry block;
+			int w, h;
+
 			do
 			{
 				// No split yet
 				splitted = false;
-				
-				// Go for all the lines
-				foreach(Linedef l in lines)
-				{
-					// Go for all the vertices
-					foreach(Vertex v in verts)
-					{
-						// Check if v is close enough to l for splitting
-						if(l.DistanceToSq(v.Position, true) <= splitdist2)
-						{
-							// Line is not already referencing v?
-							Vector2D deltastart = l.Start.Position - v.Position;
-							Vector2D deltaend = l.End.Position - v.Position;
-							if(((Math.Abs(deltastart.x) > 0.001f) ||
-								(Math.Abs(deltastart.y) > 0.001f)) &&
-							   ((Math.Abs(deltaend.x) > 0.001f) ||
-								(Math.Abs(deltaend.y) > 0.001f)))
-							{
-								// Split line l with vertex v
-								Linedef nl = l.Split(v);
-								if(nl == null) return false;
 
-								// Add the new line to the list
-								lines.Add(nl);
+				for(w = 0; w < bmWidth; w++) {
+					for(h = 0; h < bmHeight; h++) {
+						block = bmap[w, h];
+						if(block.Vertices.Count == 0 || block.Lines.Count == 0) continue;
 
-								// Both lines must be updated because their new length
-								// is relevant for next iterations!
-								l.UpdateCache();
-								nl.UpdateCache();
+						// Go for all the lines
+						foreach(Linedef l in block.Lines) {
+							// Go for all the vertices
+							foreach(Vertex v in block.Vertices) {
+								// Check if v is close enough to l for splitting
+								if(l.DistanceToSq(v.Position, true) <= splitdist2) {
+									// Line is not already referencing v?
+									Vector2D deltastart = l.Start.Position - v.Position;
+									Vector2D deltaend = l.End.Position - v.Position;
+									if(((Math.Abs(deltastart.x) > 0.001f) || (Math.Abs(deltastart.y) > 0.001f)) &&
+									   ((Math.Abs(deltaend.x) > 0.001f) || (Math.Abs(deltaend.y) > 0.001f))) {
+										// Split line l with vertex v
+										Linedef nl = l.Split(v);
+										if(nl == null) return false;
 
-								// Add both lines to changedlines
-								if(changedlines != null)
-								{
-									changedlines.Add(l);
-									changedlines.Add(nl);
+										// Add the new line to the list
+										lines.Add(nl);
+
+										// Both lines must be updated because their new length
+										// is relevant for next iterations!
+										l.UpdateCache();
+										nl.UpdateCache();
+
+										// Add both lines to changedlines
+										if(changedlines != null) {
+											changedlines.Add(l);
+											changedlines.Add(nl);
+										}
+
+										// Count the split
+										splitted = true;
+										break;
+									}
 								}
-
-								// Count the split
-								splitted = true;
-								break;
 							}
+
+							// Will have to restart when splitted
+							// TODO: If we make (linked) lists from the collections first,
+							// we don't have to restart when splitted?
+							if(splitted) break;
 						}
 					}
-
-					// Will have to restart when splitted
-					// TODO: If we make (linked) lists from the collections first,
-					// we don't have to restart when splitted?
-					if(splitted) break;
 				}
 			}
 			while(splitted);

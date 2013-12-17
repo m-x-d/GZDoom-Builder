@@ -1540,9 +1540,10 @@ namespace CodeImp.DoomBuilder
 		// This outputs log information
 		public static void WriteLogLine(string line)
 		{
+#if DEBUG
 			// Output to console
 			Console.WriteLine(line);
-			
+#endif
 			// Write to log file
 			try { File.AppendAllText(logfile, line + Environment.NewLine); }
 			catch(Exception) { }
@@ -1551,8 +1552,10 @@ namespace CodeImp.DoomBuilder
 		// This outputs log information
 		public static void WriteLog(string text)
 		{
+#if DEBUG
 			// Output to console
 			Console.Write(text);
+#endif
 
 			// Write to log file
 			try { File.AppendAllText(logfile, text); }
