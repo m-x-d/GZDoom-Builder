@@ -231,9 +231,15 @@ namespace CodeImp.DoomBuilder.IO
 				UniversalCollection lc = linescolls[i];
 				int[] args = new int[Linedef.NUM_ARGS];
 				string where = "linedef " + i;
-				int tag = GetCollectionEntry<int>(lc, "id", false, 0, where);
 				int v1 = GetCollectionEntry<int>(lc, "v1", true, 0, where);
 				int v2 = GetCollectionEntry<int>(lc, "v2", true, 0, where);
+
+				if (!vertexlink.ContainsKey(v1) || !vertexlink.ContainsKey(v2)) { //mxd
+					General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references one or more invalid vertices. Linedef has been removed.");
+					continue;
+				}
+
+				int tag = GetCollectionEntry<int>(lc, "id", false, 0, where);
 				int special = GetCollectionEntry<int>(lc, "special", false, 0, where);
 				args[0] = GetCollectionEntry<int>(lc, "arg0", false, 0, where);
 				args[1] = GetCollectionEntry<int>(lc, "arg1", false, 0, where);
@@ -256,48 +262,41 @@ namespace CodeImp.DoomBuilder.IO
 				// Activations
 				foreach(LinedefActivateInfo activate in General.Map.Config.LinedefActivates)
 					stringflags[activate.Key] = GetCollectionEntry<bool>(lc, activate.Key, false, false, where);
-				
-				// Create new linedef
-				if(vertexlink.ContainsKey(v1) && vertexlink.ContainsKey(v2))
+
+				// Check if not zero-length
+				if(Vector2D.ManhattanDistance(vertexlink[v1].Position, vertexlink[v2].Position) > 0.0001f) 
 				{
-					// Check if not zero-length
-					if(Vector2D.ManhattanDistance(vertexlink[v1].Position, vertexlink[v2].Position) > 0.0001f)
+					// Create new linedef
+					Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
+					if(l != null)
 					{
-						Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
-						if(l != null)
+						l.Update(stringflags, 0, tag, special, args);
+						l.UpdateCache();
+
+						// Custom fields
+						ReadCustomFields(lc, l, "linedef");
+
+						// Read sidedefs and connect them to the line
+						if(s1 > -1)
 						{
-							l.Update(stringflags, 0, tag, special, args);
-							l.UpdateCache();
+							if(s1 < sidescolls.Count) 
+								ReadSidedef(map, sidescolls[s1], l, true, sectorlink, s1);
+							else
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid front sidedef " + s1 + ". Sidedef has been removed.");
+						}
 
-							// Custom fields
-							ReadCustomFields(lc, l, "linedef");
-
-							// Read sidedefs and connect them to the line
-							if(s1 > -1)
-							{
-								if(s1 < sidescolls.Count)
-									ReadSidedef(map, sidescolls[s1], l, true, sectorlink, s1);
-								else
-									General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid front sidedef " + s1 + ". Sidedef has been removed.");
-							}
-
-							if(s2 > -1)
-							{
-								if(s2 < sidescolls.Count)
-									ReadSidedef(map, sidescolls[s2], l, false, sectorlink, s2);
-								else
-									General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid back sidedef " + s1 + ". Sidedef has been removed.");
-							}
+						if(s2 > -1)
+						{
+							if(s2 < sidescolls.Count) 
+								ReadSidedef(map, sidescolls[s2], l, false, sectorlink, s2);
+							else
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid back sidedef " + s1 + ". Sidedef has been removed.");
 						}
 					}
-					else
-					{
-						General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " is zero-length. Linedef has been removed.");
-					}
-				}
-				else
+				} 
+				else 
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references one or more invalid vertices. Linedef has been removed.");
+					General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " is zero-length. Linedef has been removed.");
 				}
 			}
 		}
@@ -505,8 +504,7 @@ namespace CodeImp.DoomBuilder.IO
 				if(e.Key == entryname)
 				{
 					// Let's be kind and cast any int to a float if needed
-					if((typeof(T) == typeof(float)) &&
-					   (e.Value.GetType() == typeof(int)))
+					if((typeof(T) == typeof(float)) && (e.Value is int))
 					{
 						// Make it a float
 						object fvalue = (float)(int)e.Value;
@@ -547,8 +545,10 @@ namespace CodeImp.DoomBuilder.IO
 			List<UniversalCollection> list = new List<UniversalCollection>();
 
 			// Make list
-			foreach(UniversalEntry e in collection)
-				if((e.Value is UniversalCollection) && (e.Key == entryname)) list.Add(e.Value as UniversalCollection);
+			foreach (UniversalEntry e in collection) {
+				if (!(e.Value is UniversalCollection) || (e.Key != entryname)) continue; //mxd
+				list.Add(e.Value as UniversalCollection);
+			}
 
 			return list;
 		}

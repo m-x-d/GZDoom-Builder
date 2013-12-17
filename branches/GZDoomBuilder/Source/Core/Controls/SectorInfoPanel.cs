@@ -236,7 +236,7 @@ namespace CodeImp.DoomBuilder.Controls
 				flags.Items.Clear();
 				foreach(KeyValuePair<string, bool> group in s.Flags) {
 					if(group.Value) {
-						ListViewItem item = new ListViewItem(General.Map.Config.SectorFlags[group.Key]);
+						ListViewItem item = new ListViewItem(General.Map.Config.SectorFlags.ContainsKey(group.Key) ? General.Map.Config.SectorFlags[group.Key] : group.Key);
 						item.Checked = true;
 						flags.Items.Add(item);
 					}

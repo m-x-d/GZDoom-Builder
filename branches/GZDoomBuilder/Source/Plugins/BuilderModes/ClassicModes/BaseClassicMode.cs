@@ -182,6 +182,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		protected override void StartMultiSelection() {
+			General.Interface.HideInfo();
 			General.Interface.ShowEditModeHints(multiselectionHints);
 			base.StartMultiSelection();
 		}

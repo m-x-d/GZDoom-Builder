@@ -31,8 +31,8 @@ namespace CodeImp.DoomBuilder.Controls
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.Label label4;
 			System.Windows.Forms.Label label3;
-			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label1;
+			this.labelaction = new System.Windows.Forms.Label();
 			this.infopanel = new System.Windows.Forms.GroupBox();
 			this.arg5 = new System.Windows.Forms.Label();
 			this.arglbl5 = new System.Windows.Forms.Label();
@@ -57,7 +57,6 @@ namespace CodeImp.DoomBuilder.Controls
 			label5 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
-			label2 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
 			this.infopanel.SuspendLayout();
 			this.spritepanel.SuspendLayout();
@@ -91,14 +90,14 @@ namespace CodeImp.DoomBuilder.Controls
 			label3.TabIndex = 3;
 			label3.Text = "Position:";
 			// 
-			// label2
+			// labelaction
 			// 
-			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(17, 39);
-			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(41, 14);
-			label2.TabIndex = 2;
-			label2.Text = "Action:";
+			this.labelaction.AutoSize = true;
+			this.labelaction.Location = new System.Drawing.Point(17, 39);
+			this.labelaction.Name = "labelaction";
+			this.labelaction.Size = new System.Drawing.Size(41, 14);
+			this.labelaction.TabIndex = 2;
+			this.labelaction.Text = "Action:";
 			// 
 			// label1
 			// 
@@ -128,7 +127,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.infopanel.Controls.Add(this.action);
 			this.infopanel.Controls.Add(label4);
 			this.infopanel.Controls.Add(label3);
-			this.infopanel.Controls.Add(label2);
+			this.infopanel.Controls.Add(this.labelaction);
 			this.infopanel.Controls.Add(this.type);
 			this.infopanel.Controls.Add(label1);
 			this.infopanel.Location = new System.Drawing.Point(0, 0);
@@ -381,6 +380,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.GroupBox infopanel;
 		private System.Windows.Forms.GroupBox flagsPanel;
 		private System.Windows.Forms.ListView flags;
+		private System.Windows.Forms.Label labelaction;
 
 	}
 }

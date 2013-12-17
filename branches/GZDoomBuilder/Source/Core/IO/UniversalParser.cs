@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.IO
 		private int cpErrorResult = 0;
 		private string cpErrorDescription = "";
 		private int cpErrorLine = 0;
+		private char[] newline = new[]{'\n'}; //mxd
 		
 		// Configuration root
 		private UniversalCollection root = null;
@@ -296,7 +297,7 @@ namespace CodeImp.DoomBuilder.IO
 								{
 									// Count the lines in the block comment
 									string blockdata = data.Substring(pos, np - pos + 2);
-									line += (blockdata.Split("\n".ToCharArray()).Length - 1);
+									line += (blockdata.Split(newline).Length - 1);
 									
 									// Skip everything in this block
 									pos = np + 1;
@@ -690,19 +691,8 @@ namespace CodeImp.DoomBuilder.IO
 					// Check if the value is of boolean type
 					else if(de.Current.Value is bool)
 					{
-						// Check value
-						if((bool)de.Current.Value == true)
-						{
-							// Output the keyword "true"
-							db.Append(leveltabs); db.Append(de.Current.Key); db.Append(spacing);
-							db.Append("="); db.Append(spacing); db.Append("true;"); db.Append(newline);
-						}
-						else
-						{
-							// Output the keyword "false"
-							db.Append(leveltabs); db.Append(de.Current.Key); db.Append(spacing);
-							db.Append("="); db.Append(spacing); db.Append("false;"); db.Append(newline);
-						}
+						db.Append(leveltabs).Append(de.Current.Key).Append(spacing).Append("=").Append(spacing);
+						db.Append((bool)de.Current.Value ? "true;" : "false;").Append(newline);
 					}
 					// Check if value is of float type
 					else if(de.Current.Value is float)

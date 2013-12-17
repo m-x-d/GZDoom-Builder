@@ -872,64 +872,62 @@ namespace CodeImp.DoomBuilder.Rendering
 			Vector2D ltpos, rbpos;
 			Vector2D tlb, rbb;
 			Vector2D pos = new Vector2D();
-			float sizeinv = 1f / size;
 			float ystart, yend;
 			float xstart, xend;
 			float from, to;
 
-			// Only render grid when not screen-filling
-			if((size * scale) > 6f)
+			//mxd. Increase rendered grid size if needed
+			if(size * scale <= 6f) do { size *= 2; } while(size * scale <= 6f);
+			float sizeinv = 1f / size;
+
+			// Determine map coordinates for view window
+			ltpos = DisplayToMap(new Vector2D(0, 0));
+			rbpos = DisplayToMap(new Vector2D(windowsize.Width, windowsize.Height));
+
+			// Clip to nearest grid
+			ltpos = GridSetup.SnappedToGrid(ltpos, size, sizeinv);
+			rbpos = GridSetup.SnappedToGrid(rbpos, size, sizeinv);
+
+			// Translate top left boundary and right bottom boundary of map to screen coords
+			tlb = new Vector2D(General.Map.Config.LeftBoundary, General.Map.Config.TopBoundary).GetTransformed(translatex, translatey, scale, -scale);
+			rbb = new Vector2D(General.Map.Config.RightBoundary, General.Map.Config.BottomBoundary).GetTransformed(translatex, translatey, scale, -scale);
+
+			// Draw all horizontal grid lines
+			ystart = rbpos.y > General.Map.Config.BottomBoundary ? rbpos.y : General.Map.Config.BottomBoundary;
+			yend = ltpos.y < General.Map.Config.TopBoundary ? ltpos.y : General.Map.Config.TopBoundary;
+
+			for(float y = ystart; y < yend + size; y += size) 
 			{
-				// Determine map coordinates for view window
-				ltpos = DisplayToMap(new Vector2D(0, 0));
-				rbpos = DisplayToMap(new Vector2D(windowsize.Width, windowsize.Height));
+				if(y > General.Map.Config.TopBoundary) y = General.Map.Config.TopBoundary;
+				else if(y < General.Map.Config.BottomBoundary) y = General.Map.Config.BottomBoundary;
 
-				// Clip to nearest grid
-				ltpos = GridSetup.SnappedToGrid(ltpos, size, sizeinv);
-				rbpos = GridSetup.SnappedToGrid(rbpos, size, sizeinv);
+				from = tlb.x < 0 ? 0 : tlb.x;
+				to = rbb.x > windowsize.Width ? windowsize.Width : rbb.x;
 
-				// Translate top left boundary and right bottom boundary of map
-				// to screen coords
-				tlb = new Vector2D(General.Map.Config.LeftBoundary, General.Map.Config.TopBoundary).GetTransformed(translatex, translatey, scale, -scale);
-				rbb = new Vector2D(General.Map.Config.RightBoundary, General.Map.Config.BottomBoundary).GetTransformed(translatex, translatey, scale, -scale);
+				pos.y = y;
+				pos = pos.GetTransformed(translatex, translatey, scale, -scale);
 
-				// Draw all horizontal grid lines
-				ystart = rbpos.y > General.Map.Config.BottomBoundary ? rbpos.y : General.Map.Config.BottomBoundary;
-				yend = ltpos.y < General.Map.Config.TopBoundary ? ltpos.y : General.Map.Config.TopBoundary;
+				// Note: I'm not using Math.Ceiling in this case, because that doesn't work right.
+				gridplotter.DrawGridLineH((int)pos.y, (int)Math.Round(from + 0.49999f), (int)Math.Round(to + 0.49999f), ref c);
+			}
 
-				for (float y = ystart; y < yend + size; y += size)
-				{
-					if (y > General.Map.Config.TopBoundary) y = General.Map.Config.TopBoundary;
-					else if (y < General.Map.Config.BottomBoundary) y = General.Map.Config.BottomBoundary;
+			// Draw all vertical grid lines
+			xstart = ltpos.x > General.Map.Config.LeftBoundary ? ltpos.x : General.Map.Config.LeftBoundary;
+			xend = rbpos.x < General.Map.Config.RightBoundary ? rbpos.x : General.Map.Config.RightBoundary;
 
-					from = tlb.x < 0 ? 0 : tlb.x;
-					to = rbb.x > windowsize.Width ? windowsize.Width : rbb.x;
+			for(float x = xstart; x < xend + size; x += size) 
+			{
+				if(x > General.Map.Config.RightBoundary) x = General.Map.Config.RightBoundary;
+				else if(x < General.Map.Config.LeftBoundary) x = General.Map.Config.LeftBoundary;
 
-					pos.y = y;
-					pos = pos.GetTransformed(translatex, translatey, scale, -scale);
+				from = tlb.y < 0 ? 0 : tlb.y;
+				to = rbb.y > windowsize.Height ? windowsize.Height : rbb.y;
 
-					// Note: I'm not using Math.Ceiling in this case, because that doesn't work right.
-					gridplotter.DrawGridLineH((int)pos.y, (int)Math.Round(from + 0.49999f), (int)Math.Round(to + 0.49999f), ref c);
-				}
+				pos.x = x;
+				pos = pos.GetTransformed(translatex, translatey, scale, -scale);
 
-				// Draw all vertical grid lines
-				xstart = ltpos.x > General.Map.Config.LeftBoundary ? ltpos.x : General.Map.Config.LeftBoundary;
-				xend = rbpos.x < General.Map.Config.RightBoundary ? rbpos.x : General.Map.Config.RightBoundary;
-
-				for (float x = xstart; x < xend + size; x += size)
-				{
-					if (x > General.Map.Config.RightBoundary) x = General.Map.Config.RightBoundary;
-					else if (x < General.Map.Config.LeftBoundary) x = General.Map.Config.LeftBoundary;
-
-					from = tlb.y < 0 ? 0 : tlb.y;
-					to = rbb.y > windowsize.Height ? windowsize.Height : rbb.y;
-
-					pos.x = x;
-					pos = pos.GetTransformed(translatex, translatey, scale, -scale);
-
-					// Note: I'm not using Math.Ceiling in this case, because that doesn't work right.
-					gridplotter.DrawGridLineV((int)pos.x, (int)Math.Round(from + 0.49999f), (int)Math.Round(to + 0.49999f), ref c);
-				}
+				// Note: I'm not using Math.Ceiling in this case, because that doesn't work right.
+				gridplotter.DrawGridLineV((int)pos.x, (int)Math.Round(from + 0.49999f), (int)Math.Round(to + 0.49999f), ref c);
 			}
 		}
 

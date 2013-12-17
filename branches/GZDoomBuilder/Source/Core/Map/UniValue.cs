@@ -135,6 +135,7 @@ namespace CodeImp.DoomBuilder.Map
 				case UniversalType.SectorEffect:
 				case UniversalType.SectorTag:
 				case UniversalType.ThingTag:
+				case UniversalType.ThingType:
 				{
 					int v = 0;
 					//mxd. Seems to work faster this way
@@ -160,6 +161,7 @@ namespace CodeImp.DoomBuilder.Map
 				case UniversalType.String:
 				case UniversalType.Texture:
 				case UniversalType.EnumStrings:
+				case UniversalType.ThingClass:
 				{
 					string v = (string)value;
 					s.rwString(ref v);
