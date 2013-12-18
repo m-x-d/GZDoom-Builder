@@ -42,10 +42,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		protected bool paintselectpressed; //mxd
 		
-		//mxd. Hints
-		protected string[] hints;
-		protected string[] multiselectionHints;
-
 		#endregion
 
 		#region ================== Properties
@@ -58,7 +54,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public BaseClassicMode()
 		{
 			// Initialize
-			SetupHints(); //mxd
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -80,12 +75,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Methods
-
-		//mxd
-		public override void OnEngage() {
-			General.Interface.ShowEditModeHints(hints);
-			base.OnEngage();
-		}
 
 		// This occurs when the user presses Copy. All selected geometry must be marked for copying!
 		public override bool OnCopyBegin()
@@ -155,12 +144,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void OnEndMultiSelection() {
-			General.Interface.ShowEditModeHints(hints);
-			base.OnEndMultiSelection();
-		}
-
-		//mxd
 		public override void OnUndoEnd() {
 			General.Map.Renderer2D.UpdateExtraFloorFlag();
 			base.OnUndoEnd();
@@ -178,13 +161,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMapTestEnd() {
 			base.OnMapTestEnd();
 			General.Interface.RedrawDisplay(); // Redraw display to hide changes :)
-		}
-
-		//mxd
-		protected override void StartMultiSelection() {
-			General.Interface.HideInfo();
-			General.Interface.ShowEditModeHints(multiselectionHints);
-			base.StartMultiSelection();
 		}
 
 		//mxd
@@ -230,12 +206,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Info, "Placed " + things.Count + " things.");
 			}
 			General.Interface.OnEditFormValuesChanged -= thingEditForm_OnValuesChanged;
-		}
-
-		//mxd
-		protected virtual void SetupHints() {
-			hints = new[] { "Press F1 to view help about current editing mode" };
-			multiselectionHints = new[] { "Press F1 to view help about current editing mode" };
 		}
 		
 		#endregion

@@ -332,7 +332,7 @@ namespace CodeImp.DoomBuilder.IO
 						pm = PM_STRING;
 					}
 					// Check for numeric character
-					else if("0123456789-.&".IndexOf(c.ToString(CultureInfo.InvariantCulture)) > -1)
+					else if(Configuration.NUMBERS2.IndexOf(c.ToString(CultureInfo.InvariantCulture)) > -1)
 					{
 						// Now parsing number
 						pm = PM_NUMBER;
@@ -512,7 +512,7 @@ namespace CodeImp.DoomBuilder.IO
 							default:
 								
 								// Is it a number?
-								if("0123456789".IndexOf(c.ToString(CultureInfo.InvariantCulture)) > -1)
+								if(Configuration.NUMBERS.IndexOf(c.ToString(CultureInfo.InvariantCulture)) > -1)
 								{
 									int vv = 0;
 									char vc = '0';

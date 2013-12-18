@@ -136,53 +136,55 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			// Now parse the contents of texture structure
-			while(parser.SkipWhitespace(true))
+			bool done = false; //mxd
+			while(!done && parser.SkipWhitespace(true))
 			{
 				string token = parser.ReadToken();
 				token = token.ToLowerInvariant();
-				if(token == "xscale")
-				{
-					if(!ReadTokenFloat(parser, token, out xscale)) return;
-				}
-				else if(token == "yscale")
-				{
-					if(!ReadTokenFloat(parser, token, out yscale)) return;
-				}
-				else if(token == "worldpanning")
-				{
-					worldpanning = true;
-				}
-				else if(token == "offset")
-				{
-					// Read x offset
-					if(!ReadTokenInt(parser, token, out xoffset)) return;
 
-					// Now we should find a comma
-					parser.SkipWhitespace(true);
-					tokenstr = parser.ReadToken();
-					if(tokenstr != ",")
-					{
-						parser.ReportError("Expected a comma");
-						return;
-					}
-					
-					// Read y offset
-					if(!ReadTokenInt(parser, token, out yoffset)) return;
-				}
-				else if(token == "patch")
-				{
-					// Read patch structure
-					PatchStructure pt = new PatchStructure(parser);
-					if(parser.HasError) break;
+				switch (token) {
+					case "xscale":
+						if (!ReadTokenFloat(parser, token, out xscale)) return;
+						break;
 
-					// Add the patch
-					patches.Add(pt);
-				}
-				else if(token == "}")
-				{
-					// Actor scope ends here,
-					// break out of this parse loop
-					break;
+					case "yscale":
+						if (!ReadTokenFloat(parser, token, out yscale)) return;
+						break;
+
+					case "worldpanning":
+						worldpanning = true;
+						break;
+
+					case "offset":
+						// Read x offset
+						if (!ReadTokenInt(parser, token, out xoffset)) return;
+
+						// Now we should find a comma
+						parser.SkipWhitespace(true);
+						tokenstr = parser.ReadToken();
+						if (tokenstr != ",") {
+							parser.ReportError("Expected a comma");
+							return;
+						}
+
+						// Read y offset
+						if (!ReadTokenInt(parser, token, out yoffset)) return;
+						break;
+
+					case "patch":
+						// Read patch structure
+						PatchStructure pt = new PatchStructure(parser);
+						if (parser.HasError) break;
+
+						// Add the patch
+						patches.Add(pt);
+						break;
+
+					case "}":
+						// Actor scope ends here,
+						// break out of this parse loop
+						done = true;
+						break;
 				}
 			}
 		}

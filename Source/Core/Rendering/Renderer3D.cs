@@ -950,9 +950,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.World3D.Texture1 = group.Key;
 
 				foreach (VisualGeometry g in group.Value) {
-					i = 0;
-					count = 0;
-
 					graphics.Device.SetStreamSource(0, g.Sector.GeometryBuffer, 0, WorldVertex.Stride);
 
 					//normal lights
@@ -963,8 +960,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						for (i = 0; i < count; i++) {
 							if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
 								lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
-								if (lpr.W == 0)
-									continue;
+								if (lpr.W == 0) continue;
 								graphics.Shaders.World3D.LightColor = lights[i].LightColor;
 								graphics.Shaders.World3D.LightPositionAndRadius = lpr;
 								graphics.Shaders.World3D.ApplySettings();
@@ -973,7 +969,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						}
 					}
 
-					//additive lights.
+					//additive lights
 					if (lightOffsets[1] > 0) {
 						count += lightOffsets[1];
 						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
@@ -981,8 +977,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						for (i = lightOffsets[0]; i < count; i++) {
 							if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
 								lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
-								if (lpr.W == 0)
-									continue;
+								if (lpr.W == 0) continue;
 								graphics.Shaders.World3D.LightColor = lights[i].LightColor;
 								graphics.Shaders.World3D.LightPositionAndRadius = lpr;
 								graphics.Shaders.World3D.ApplySettings();
@@ -999,8 +994,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						for (i = lightOffsets[0] + lightOffsets[1]; i < count; i++) {
 							if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
 								lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
-								if (lpr.W == 0)
-									continue;
+								if (lpr.W == 0) continue;
 								Color4 lc = lights[i].LightColor;
 								graphics.Shaders.World3D.LightColor = new Color4(lc.Alpha, (lc.Green + lc.Blue) / 2, (lc.Red + lc.Blue) / 2, (lc.Green + lc.Red) / 2);
 								graphics.Shaders.World3D.LightPositionAndRadius = lpr;

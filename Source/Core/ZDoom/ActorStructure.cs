@@ -79,6 +79,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			props = new Dictionary<string, List<string>>();
 			states = new Dictionary<string, StateStructure>();
 			userVars = new List<string>();//mxd
+			bool done = false; //mxd
 			
 			// Always define a game property, but default to 0 values
 			props["game"] = new List<string>();
@@ -104,59 +105,58 @@ namespace CodeImp.DoomBuilder.ZDoom
 				if(!string.IsNullOrEmpty(token))
 				{
 					token = token.ToLowerInvariant();
-					if(token == ":")
-					{
-						// The next token must be the class to inherit from
-						parser.SkipWhitespace(true);
-						inheritclass = parser.StripTokenQuotes(parser.ReadToken());
-						if(string.IsNullOrEmpty(inheritclass) || parser.IsSpecialToken(inheritclass))
-						{
-							parser.ReportError("Expected class name to inherit from");
-							return;
-						}
-						else
-						{
+
+					switch (token) {
+						case ":":
+							// The next token must be the class to inherit from
+							parser.SkipWhitespace(true);
+							inheritclass = parser.StripTokenQuotes(parser.ReadToken());
+							if(string.IsNullOrEmpty(inheritclass) || parser.IsSpecialToken(inheritclass)) {
+								parser.ReportError("Expected class name to inherit from");
+								return;
+							}
+ 
 							// Find the actor to inherit from
 							baseclass = parser.GetArchivedActorByName(inheritclass);
-						}
+							break;
+
+						case "replaces":
+							// The next token must be the class to replace
+							parser.SkipWhitespace(true);
+							replaceclass = parser.StripTokenQuotes(parser.ReadToken());
+							if(string.IsNullOrEmpty(replaceclass) || parser.IsSpecialToken(replaceclass)) {
+								parser.ReportError("Expected class name to replace");
+								return;
+							}
+							break;
+
+						case "native":
+							// Igore this token
+							break;
+
+						case "{":
+							// Actor scope begins here,
+							// break out of this parse loop
+							done = true;
+							break;
+
+						case "-":
+							// This could be a negative doomednum (but our parser sees the - as separate token)
+							// So read whatever is after this token and ignore it (negative doomednum indicates no doomednum)
+							parser.ReadToken();
+							break;
+
+						default:
+							// Check if numeric
+							if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out doomednum)) {
+								// Not numeric!
+								parser.ReportError("Expected numeric editor thing number or start of actor scope while parsing '" + classname + "'");
+								return;
+							}
+							break;
 					}
-					else if(token == "replaces")
-					{
-						// The next token must be the class to replace
-						parser.SkipWhitespace(true);
-						replaceclass = parser.StripTokenQuotes(parser.ReadToken());
-						if(string.IsNullOrEmpty(replaceclass) || parser.IsSpecialToken(replaceclass))
-						{
-							parser.ReportError("Expected class name to replace");
-							return;
-						}
-					}
-					else if(token == "native")
-					{
-						// Igore this token
-					}
-					else if(token == "{")
-					{
-						// Actor scope begins here,
-						// break out of this parse loop
-						break;
-					}
-					else if(token == "-")
-					{
-						// This could be a negative doomednum (but our parser sees the - as separate token)
-						// So read whatever is after this token and ignore it (negative doomednum indicates no doomednum)
-						parser.ReadToken();
-					}
-					else
-					{
-						// Check if numeric
-						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out doomednum))
-						{
-							// Not numeric!
-							parser.ReportError("Expected numeric editor thing number or start of actor scope while parsing '" + classname + "'");
-							return;
-						}
-					}
+
+					if (done) break; //mxd
 				}
 				else
 				{
@@ -167,191 +167,175 @@ namespace CodeImp.DoomBuilder.ZDoom
 			
 			// Now parse the contents of actor structure
 			string previoustoken = "";
+			done = false; //mxd
 			while(parser.SkipWhitespace(true))
 			{
 				string token = parser.ReadToken();
 				token = token.ToLowerInvariant();
 
-				if((token == "+") || (token == "-"))
-				{
-					// Next token is a flag (option) to set or remove
-					bool flagvalue = (token == "+");
-					parser.SkipWhitespace(true);
-					string flagname = parser.ReadToken();
-					if(!string.IsNullOrEmpty(flagname))
-					{
-						// Add the flag with its value
-						flagname = flagname.ToLowerInvariant();
-						flags[flagname] = flagvalue;
-					}
-					else
-					{
-						parser.ReportError("Expected flag name");
-						return;
-					}
-				}
-				else if((token == "action") || (token == "native"))
-				{
-					// We don't need this, ignore up to the first next ;
-					while(parser.SkipWhitespace(true))
-					{
-						string t = parser.ReadToken();
-						if((t == ";") || (t == null)) break;
-					}
-				}
-				else if(token == "skip_super")
-				{
-					skipsuper = true;
-				}
-				else if(token == "states")
-				{
-					// Now parse actor states until we reach the end of the states structure
-					while(parser.SkipWhitespace(true))
-					{
-						string statetoken = parser.ReadToken();
-						if(!string.IsNullOrEmpty(statetoken))
-						{
-							// Start of scope?
-							if(statetoken == "{")
-							{
-								// This is fine
-							}
-							// End of scope?
-							else if(statetoken == "}")
-							{
-								// Done with the states,
-								// break out of this parse loop
+				switch (token) {
+					case "+":
+					case "-":
+						// Next token is a flag (option) to set or remove
+						bool flagvalue = (token == "+");
+						parser.SkipWhitespace(true);
+						string flagname = parser.ReadToken();
+						if (!string.IsNullOrEmpty(flagname)) {
+							// Add the flag with its value
+							flagname = flagname.ToLowerInvariant();
+							flags[flagname] = flagvalue;
+						} else {
+							parser.ReportError("Expected flag name");
+							return;
+						}
+						break;
+
+					case "action":
+					case "native":
+						// We don't need this, ignore up to the first next ;
+						while (parser.SkipWhitespace(true)) {
+							string t = parser.ReadToken();
+							if ((t == ";") || (t == null))
 								break;
-							}
-							// State label?
-							else if(statetoken == ":")
-							{
-								if(!string.IsNullOrEmpty(previoustoken))
-								{
-									// Parse actor state
-									StateStructure st = new StateStructure(this, parser, previoustoken);
-									if(parser.HasError) return;
-									states[previoustoken.ToLowerInvariant()] = st;
+						}
+						break;
+
+					case "skip_super":
+						skipsuper = true;
+						break;
+
+					case "states":
+						// Now parse actor states until we reach the end of the states structure
+						while (parser.SkipWhitespace(true)) {
+							string statetoken = parser.ReadToken();
+							if (!string.IsNullOrEmpty(statetoken)) {
+								// Start of scope?
+								if (statetoken == "{") {
+									// This is fine
 								}
-								else
-								{
-									parser.ReportError("Unexpected end of structure");
-									return;
+									// End of scope?
+								else if (statetoken == "}") {
+									// Done with the states,
+									// break out of this parse loop
+									break;
 								}
-							}
-							else
-							{
-								// Keep token
-								previoustoken = statetoken;
-							}
-						}
-						else
-						{
-							parser.ReportError("Unexpected end of structure");
-							return;
-						}
-					}
-				} 
-				else if(token == "var") //mxd 
-				{
-					while(parser.SkipWhitespace(true)) {
-						string t = parser.ReadToken();
-						if((t == ";") || (t == null)) break;
-						if(t.StartsWith("user_") && !userVars.Contains(t)) userVars.Add(t);
-					}
-				}
-				else if(token == "}")
-				{
-					// Actor scope ends here,
-					// break out of this parse loop
-					break;
-				}
-				// Monster property?
-				else if(token == "monster")
-				{
-					// This sets certain flags we are interested in
-					flags["shootable"] = true;
-					flags["countkill"] = true;
-					flags["solid"] = true;
-					flags["canpushwalls"] = true;
-					flags["canusewalls"] = true;
-					flags["activatemcross"] = true;
-					flags["canpass"] = true;
-					flags["ismonster"] = true;
-				}
-				// Projectile property?
-				else if(token == "projectile")
-				{
-					// This sets certain flags we are interested in
-					flags["noblockmap"] = true;
-					flags["nogravity"] = true;
-					flags["dropoff"] = true;
-					flags["missile"] = true;
-					flags["activateimpact"] = true;
-					flags["activatepcross"] = true;
-					flags["noteleport"] = true;
-				}
-				// Clearflags property?
-				else if(token == "clearflags")
-				{
-					// Clear all flags
-					flags.Clear();
-				}
-				// Game property?
-				else if(token == "game")
-				{
-					// Include all tokens on the same line
-					List<string> games = new List<string>();
-					while(parser.SkipWhitespace(false))
-					{
-						string v = parser.ReadToken();
-						if(v == null)
-						{
-							parser.ReportError("Unexpected end of structure");
-							return;
-						}
-						if(v == "\n") break;
-						if (v == "}") return; //mxd
-						if(v != ",")
-							games.Add(v.ToLowerInvariant());
-					}
-					props[token] = games;
-				}
-				// Property
-				else
-				{
-					// Property begins with $? Then the whole line is a single value
-					if(token.StartsWith("$"))
-					{
-						// This is for editor-only properties such as $sprite and $category
-						List<string> values = new List<string>();
-						if(parser.SkipWhitespace(false))
-							values.Add(parser.ReadLine());
-						else
-							values.Add("");
-						props[token] = values;
-					}
-					else
-					{
-						// Next tokens up until the next newline are values
-						List<string> values = new List<string>();
-						while(parser.SkipWhitespace(false))
-						{
-							string v = parser.ReadToken();
-							if(v == null)
-							{
+									// State label?
+								else if (statetoken == ":") {
+									if (!string.IsNullOrEmpty(previoustoken)) {
+										// Parse actor state
+										StateStructure st = new StateStructure(this, parser, previoustoken);
+										if (parser.HasError)
+											return;
+										states[previoustoken.ToLowerInvariant()] = st;
+									} else {
+										parser.ReportError("Unexpected end of structure");
+										return;
+									}
+								} else {
+									// Keep token
+									previoustoken = statetoken;
+								}
+							} else {
 								parser.ReportError("Unexpected end of structure");
 								return;
 							}
-							if(v == "\n") break;
-							if (v == "}") return; //mxd
-							if(v != ",")
-								values.Add(v);
 						}
-						props[token] = values;
-					}
+						break;
+
+					case "var": //mxd
+						while (parser.SkipWhitespace(true)) {
+							string t = parser.ReadToken();
+							if ((t == ";") || (t == null)) break;
+							if (t.StartsWith("user_") && !userVars.Contains(t))
+								userVars.Add(t);
+						}
+						break;
+
+					case "}":
+						// Actor scope ends here,
+						// break out of this parse loop
+						done = true;
+						break;
+
+					// Monster property?
+					case "monster":
+						// This sets certain flags we are interested in
+						flags["shootable"] = true;
+						flags["countkill"] = true;
+						flags["solid"] = true;
+						flags["canpushwalls"] = true;
+						flags["canusewalls"] = true;
+						flags["activatemcross"] = true;
+						flags["canpass"] = true;
+						flags["ismonster"] = true;
+						break;
+
+					// Projectile property?
+					case "projectile":
+						// This sets certain flags we are interested in
+						flags["noblockmap"] = true;
+						flags["nogravity"] = true;
+						flags["dropoff"] = true;
+						flags["missile"] = true;
+						flags["activateimpact"] = true;
+						flags["activatepcross"] = true;
+						flags["noteleport"] = true;
+						break;
+
+					// Clearflags property?
+					case "clearflags":
+						// Clear all flags
+						flags.Clear();
+						break;
+
+					// Game property?
+					case "game":
+						// Include all tokens on the same line
+						List<string> games = new List<string>();
+						while (parser.SkipWhitespace(false)) {
+							string v = parser.ReadToken();
+							if (v == null) {
+								parser.ReportError("Unexpected end of structure");
+								return;
+							}
+							if (v == "\n") break;
+							if (v == "}") return; //mxd
+							if (v != ",") games.Add(v.ToLowerInvariant());
+						}
+						props[token] = games;
+						break;
+
+					// Property
+					default:
+						// Property begins with $? Then the whole line is a single value
+						if (token.StartsWith("$")) {
+							// This is for editor-only properties such as $sprite and $category
+							List<string> values = new List<string>();
+							if (parser.SkipWhitespace(false))
+								values.Add(parser.ReadLine());
+							else
+								values.Add("");
+							props[token] = values;
+						} else {
+							// Next tokens up until the next newline are values
+							List<string> values = new List<string>();
+							while (parser.SkipWhitespace(false)) {
+								string v = parser.ReadToken();
+								if (v == null) {
+									parser.ReportError("Unexpected end of structure");
+									return;
+								}
+								if (v == "\n") break;
+								if (v == "}") return; //mxd
+								if (v != ",") values.Add(v);
+							}
+							props[token] = values;
+						}
+						break;
 				}
-				
+
+				if (done) break; //mxd
+
 				// Keep token
 				previoustoken = token;
 			}

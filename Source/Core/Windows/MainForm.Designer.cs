@@ -38,14 +38,14 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-			System.Windows.Forms.ListViewItem listViewItem25 = new System.Windows.Forms.ListViewItem("Press Use to use");
-			System.Windows.Forms.ListViewItem listViewItem26 = new System.Windows.Forms.ListViewItem("To look around, look around");
-			System.Windows.Forms.ListViewItem listViewItem27 = new System.Windows.Forms.ListViewItem("Another usefull hint");
-			System.Windows.Forms.ListViewItem listViewItem28 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
-			System.Windows.Forms.ListViewItem listViewItem29 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
-			System.Windows.Forms.ListViewItem listViewItem30 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
-			System.Windows.Forms.ListViewItem listViewItem31 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
-			System.Windows.Forms.ListViewItem listViewItem32 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
+			System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("Press Use to use");
+			System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("To look around, look around");
+			System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("Another usefull hint");
+			System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
+			System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
+			System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
+			System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
+			System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem("Yet another usefull hint");
 			this.seperatorfileopen = new System.Windows.Forms.ToolStripSeparator();
 			this.seperatorfilerecent = new System.Windows.Forms.ToolStripSeparator();
 			this.seperatoreditgrid = new System.Windows.Forms.ToolStripSeparator();
@@ -2158,21 +2158,19 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// hints
 			// 
-			this.hints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.hints.BackColor = System.Drawing.SystemColors.Control;
 			this.hints.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.hints.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.hints.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.hints.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem25,
-            listViewItem26,
-            listViewItem27,
-            listViewItem28,
-            listViewItem29,
-            listViewItem30,
-            listViewItem31,
-            listViewItem32});
+            listViewItem9,
+            listViewItem10,
+            listViewItem11,
+            listViewItem12,
+            listViewItem13,
+            listViewItem14,
+            listViewItem15,
+            listViewItem16});
 			this.hints.LabelWrap = false;
 			this.hints.Location = new System.Drawing.Point(20, 21);
 			this.hints.MultiSelect = false;

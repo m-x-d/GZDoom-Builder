@@ -161,7 +161,10 @@ namespace CodeImp.DoomBuilder.IO
 		private const string ERROR_UNKNOWN_FUNCTION = "Unknown function call.";
 		private const string ERROR_INVALID_ARGS = "Invalid function arguments.";
 		private const string ERROR_INCLUDE_UNSUPPORTED = "Include function is not supported in data parsed from stream.";
-		
+
+		public const string NUMBERS = "0123456789"; 
+		public const string NUMBERS2 = "0123456789-.&"; 
+
 		#endregion
 		
 		#region ================== Variables
@@ -460,8 +463,8 @@ namespace CodeImp.DoomBuilder.IO
 				else
 				{
 					// Check if we can test existance
-					if(container != null)
-					{
+					//if(container != null)
+					//{
 						/*
 						// Test if the key exists in this container
 						if(container.Contains(key) == true)
@@ -472,16 +475,16 @@ namespace CodeImp.DoomBuilder.IO
 						}
 						else
 						*/
-						{
+						//{
 							// Key OK
-							validateresult = true;
-						}
-					}
-					else
-					{
+							//validateresult = true;
+						//}
+					//}
+					//else
+					//{
 						// Key OK
 						validateresult = true;
-					}
+					//}
 				}
 			}
 			
@@ -545,7 +548,7 @@ namespace CodeImp.DoomBuilder.IO
 					if(cpErrorResult) return null;
 				}
 				// Check for numeric character
-				else if("0123456789-.&".IndexOf(c.ToString(CultureInfo.InvariantCulture)) > -1)
+				else if(NUMBERS2.IndexOf(c.ToString(CultureInfo.InvariantCulture)) > -1)
 				{
 					// Go one byte back, because this
 					// byte is part of the number!
@@ -612,7 +615,7 @@ namespace CodeImp.DoomBuilder.IO
 						default:
 
 							// Is it a number?
-							if("0123456789".IndexOf(c.ToString(CultureInfo.InvariantCulture)) > -1)
+							if(NUMBERS.IndexOf(c.ToString(CultureInfo.InvariantCulture)) > -1)
 							{
 								int vv = 0;
 								char vc = '0';
@@ -654,28 +657,29 @@ namespace CodeImp.DoomBuilder.IO
 				}
 				else
 				{
-					// Check for sequence start
-					if(c == '\\')
-					{
-						// Next character is of escape sequence
-						escape = true;
-					}
-					// Check if string ends
-					else if(c == '\"')
-					{
-						return val;
-					}
-					// Check for new line
-					else if(c == '\n')
-					{
-						// Count the new line
-						line++;
-					}
-					// Everything else is just part of string
-					else
-					{
-						// Add to value
-						val += c.ToString(CultureInfo.InvariantCulture);
+					switch (c) { //mxd
+						// Check for sequence start
+						case '\\':
+							// Next character is of escape sequence
+							escape = true;
+							break;
+
+						// Check if string ends
+						case '\"':
+							return val;
+							break;
+
+						// Check for new line
+						case '\n':
+							// Count the new line
+							line++;
+							break;
+
+						// Everything else is just part of string
+						default:
+							// Add to value
+							val += c.ToString(CultureInfo.InvariantCulture);
+							break;
 					}
 				}
 			}
@@ -929,7 +933,7 @@ namespace CodeImp.DoomBuilder.IO
 					args.Add(val);
 				}
 				// Check for numeric character
-				else if("0123456789-.&".IndexOf(c.ToString(CultureInfo.InvariantCulture)) > -1)
+				else if(NUMBERS2.IndexOf(c.ToString(CultureInfo.InvariantCulture)) > -1)
 				{
 					// Go one byte back, because this
 					// byte is part of the number!

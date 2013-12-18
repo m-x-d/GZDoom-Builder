@@ -79,6 +79,10 @@ namespace CodeImp.DoomBuilder.Editing
 		//mxd. used in "Play From Here" Action
 		private Thing playerStart;
 		private Vector3D playerStartPosition;
+
+		//mxd. Hints
+		protected string[] hints;
+		protected string[] multiselectionHints;
 		
 		#endregion
 
@@ -137,6 +141,8 @@ namespace CodeImp.DoomBuilder.Editing
 				Vector2D campos = new Vector2D(General.Map.VisualCamera.Position.x, General.Map.VisualCamera.Position.y);
 				renderer2d.PositionView(campos.x, campos.y);
 			}
+
+			SetupHints(); //mxd
 		}
 
 		// Disposer
@@ -591,6 +597,10 @@ namespace CodeImp.DoomBuilder.Editing
 		/// </summary>
 		public override void OnEngage()
 		{
+			//mxd. Update hints
+			General.Interface.HideInfo();
+			General.Interface.ShowEditModeHints(hints);
+			
 			// Clear display overlay
 			renderer.StartOverlay(true);
 			renderer.Finish();
@@ -711,6 +721,7 @@ namespace CodeImp.DoomBuilder.Editing
 		protected virtual void OnEndMultiSelection()
 		{
 			selecting = false;
+			General.Interface.ShowEditModeHints(hints); //mxd
 		}
 
 		/// <summary>
@@ -721,6 +732,10 @@ namespace CodeImp.DoomBuilder.Editing
 			selecting = true;
 			selectstart = mousemappos;
 			selectionrect = new RectangleF(selectstart.x, selectstart.y, 0, 0);
+
+			//mxd
+			General.Interface.HideInfo();
+			General.Interface.ShowEditModeHints(multiselectionHints);
 		}
 
 		/// <summary>
@@ -783,6 +798,14 @@ namespace CodeImp.DoomBuilder.Editing
 				// Do the scroll
 				ScrollBy(lastmappos.x - mousemappos.x, lastmappos.y - mousemappos.y);
 			}
+		}
+
+		/// <summary>
+		/// Override this to setup hints for this editing mode
+		/// </summary>
+		protected virtual void SetupHints() { //mxd
+			hints = new[] { "Press F1 to view help about current editing mode" };
+			multiselectionHints = new[] { "Press F1 to view help about current editing mode" };
 		}
 		
 		#endregion

@@ -24,6 +24,7 @@ using CodeImp.DoomBuilder.Actions;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
 using System.Threading;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -32,8 +33,6 @@ namespace CodeImp.DoomBuilder
 	internal class Launcher : IDisposable
 	{
 		#region ================== Constants
-
-		private const string NUMBERS = "0123456789";
 
 		#endregion
 
@@ -155,7 +154,7 @@ namespace CodeImp.DoomBuilder
 			foreach(char c in General.Map.Options.CurrentName)
 			{
 				// Character is a number?
-				if(NUMBERS.IndexOf(c) > -1)
+				if(Configuration.NUMBERS.IndexOf(c) > -1)
 				{
 					// Include it
 					numstr += c;
