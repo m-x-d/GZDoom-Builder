@@ -2830,8 +2830,11 @@ namespace CodeImp.DoomBuilder.Windows
 		public void ShowEditModeHints(string[] hintsText) {
 			if (hintsText != null) {
 				hintIcon.Visible = true;
+
+				hints.BeginUpdate();
 				hints.Items.Clear();
 				foreach (string s in hintsText) hints.Items.Add(s);
+				hints.EndUpdate();
 			} else {
 				ClearEditModeHints();
 			}

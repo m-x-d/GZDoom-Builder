@@ -138,66 +138,69 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			// Now parse the contents of texture structure
-			while(parser.SkipWhitespace(true))
+			bool done = false; //mxd
+			while(!done && parser.SkipWhitespace(true))
 			{
 				string token = parser.ReadToken();
 				token = token.ToLowerInvariant();
-				if(token == "flipx")
-				{
-					flipx = true;
-				}
-				else if(token == "flipy")
-				{
-					flipy = true;
-				}
-				else if(token == "alpha")
-				{
-					if(!ReadTokenFloat(parser, token, out alpha)) return;
-					alpha = General.Clamp(alpha, 0.0f, 1.0f);
-				}
-				else if(token == "rotate") //mxd
-				{
-					if(!ReadTokenInt(parser, token, out rotation)) return;
-					rotation = rotation % 360; //Coalesce multiples
-					if(rotation < 0) rotation += 360; //Force positive
 
-					if(rotation != 0 && rotation != 90 && rotation != 180 && rotation != 270) {
-						General.ErrorLogger.Add(ErrorType.Warning, "Got unsupported rotation ("+rotation+") in patch " + name);
-						rotation = 0;
-					}
-				} 
-				else if(token == "style") //mxd
-				{
-					string s = "";
-					if(!ReadTokenString(parser, token, out s)) return;
-					int index = Array.IndexOf(renderStyles, s.ToLowerInvariant());
-					renderStyle = index == -1 ? TexturePathRenderStyle.Copy : (TexturePathRenderStyle)index;
-				} 
-				else if(token == "blend") //mxd
-				{ 
-					int val = 0;
-					if(!ReadTokenColor(parser, token, out val)) return;
-					blendColor = PixelColor.FromInt(val);
+				switch (token) {
+					case "flipx":
+						flipx = true;
+						break;
 
-					parser.SkipWhitespace(false);
-					token = parser.ReadToken();
+					case "flipy":
+						flipy = true;
+						break;
 
-					if(token == ",") { //read tint ammount
+					case "alpha":
+						if (!ReadTokenFloat(parser, token, out alpha)) return;
+						alpha = General.Clamp(alpha, 0.0f, 1.0f);
+						break;
+
+					case "rotate":
+						if (!ReadTokenInt(parser, token, out rotation)) return;
+						rotation = rotation % 360; //Coalesce multiples
+						if (rotation < 0) rotation += 360; //Force positive
+
+						if (rotation != 0 && rotation != 90 && rotation != 180 && rotation != 270) {
+							General.ErrorLogger.Add(ErrorType.Warning, "Got unsupported rotation (" + rotation + ") in patch " + name);
+							rotation = 0;
+						}
+						break;
+
+					case "style": //mxd
+						string s = "";
+						if (!ReadTokenString(parser, token, out s)) return;
+						int index = Array.IndexOf(renderStyles, s.ToLowerInvariant());
+						renderStyle = index == -1 ? TexturePathRenderStyle.Copy : (TexturePathRenderStyle) index;
+						break;
+
+					case "blend": //mxd
+						int val = 0;
+						if (!ReadTokenColor(parser, token, out val)) return;
+						blendColor = PixelColor.FromInt(val);
+
 						parser.SkipWhitespace(false);
-						if(!ReadTokenFloat(parser, token, out tintAmmount)) return;
-						tintAmmount = General.Clamp(tintAmmount, 0.0f, 1.0f);
-						blendStyle = TexturePathBlendStyle.Tint;
-					} else {
-						blendStyle = TexturePathBlendStyle.Blend;
-						// Rewind so this structure can be read again
-						parser.DataStream.Seek(-token.Length - 1, SeekOrigin.Current);
-					}
-				} 
-				else if(token == "}") 
-				{
-					// Patch scope ends here,
-					// break out of this parse loop
-					break;
+						token = parser.ReadToken();
+
+						if (token == ",") { //read tint ammount
+							parser.SkipWhitespace(false);
+							if (!ReadTokenFloat(parser, token, out tintAmmount)) return;
+							tintAmmount = General.Clamp(tintAmmount, 0.0f, 1.0f);
+							blendStyle = TexturePathBlendStyle.Tint;
+						} else {
+							blendStyle = TexturePathBlendStyle.Blend;
+							// Rewind so this structure can be read again
+							parser.DataStream.Seek(-token.Length - 1, SeekOrigin.Current);
+						}
+						break;
+
+					case "}":
+						// Patch scope ends here,
+						// break out of this parse loop
+						done = true;
+						break;
 				}
 			}
 		}
@@ -220,19 +223,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 					parser.ReportError("Expected numeric value for property '" + propertyname + "'");
 					return false;
 				}
-				else
-				{
-					// Success
-					return true;
-				}
+				// Success
+				return true;
 			}
-			else
-			{
-				// Can't find the property value!
-				parser.ReportError("Expected a value for property '" + propertyname + "'");
-				value = 0.0f;
-				return false;
-			}
+
+			// Can't find the property value!
+			parser.ReportError("Expected a value for property '" + propertyname + "'");
+			value = 0.0f;
+			return false;
 		}
 
 		// This reads the next token and sets an integral value, returns false when failed
@@ -249,19 +247,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 					parser.ReportError("Expected integral value for property '" + propertyname + "'");
 					return false;
 				}
-				else
-				{
-					// Success
-					return true;
-				}
+
+				// Success
+				return true;
 			}
-			else
-			{
-				// Can't find the property value!
-				parser.ReportError("Expected a value for property '" + propertyname + "'");
-				value = 0;
-				return false;
-			}
+
+			// Can't find the property value!
+			parser.ReportError("Expected a value for property '" + propertyname + "'");
+			value = 0;
+			return false;
 		}
 
 		//mxd. This reads the next token and sets a string value, returns false when failed

@@ -14,8 +14,8 @@ namespace CodeImp.DoomBuilder.GZBuilder
 		public static int[] GZ_LIGHTS { get { return gzLights; } }
 		private static int[] gzLightTypes = { 5, 10, 15 }; //these are actually offsets in gz_lights
 		public static int[] GZ_LIGHT_TYPES { get { return gzLightTypes; } }
-		private static int[] gzAnimatedLightTypes = { (int)DynamicLightType.FLICKER, (int)DynamicLightType.RANDOM, (int)DynamicLightType.PULSE };
-		public static int[] GZ_ANIMATED_LIGHT_TYPES {  get { return gzAnimatedLightTypes; } }
+		private static DynamicLightType[] gzAnimatedLightTypes = { DynamicLightType.FLICKER, DynamicLightType.RANDOM, DynamicLightType.PULSE };
+		public static DynamicLightType[] GZ_ANIMATED_LIGHT_TYPES { get { return gzAnimatedLightTypes; } }
 
 		//asc script action specials
 		private static int[] acsSpecials = { 80, 81, 82, 83, 84, 85, 226 };

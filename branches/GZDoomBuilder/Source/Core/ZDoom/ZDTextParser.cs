@@ -297,8 +297,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			float val;
 			bool success = float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out val);
-			if (success)
-				value = val * sign;
+			if (success) value = val * sign;
 			return success;
 		}
 
@@ -312,8 +311,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			int val;
 			bool success = int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out val);
-			if (success)
-				value = val * sign;
+			if (success) value = val * sign;
 			return success;
 		}
 		
