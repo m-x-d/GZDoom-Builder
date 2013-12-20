@@ -49,9 +49,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private ICollection<Linedef> lines;
 		private List<LinedefProperties> linedefProps; //mxd
-		private bool preventchanges = false;
+		private bool preventchanges;
 		private string arg0str; //mxd
 		private bool haveArg0Str; //mxd
+		private readonly List<string> renderStyles = new List<string>() { "translucent", "add", "subtract" }; 
 
 		//mxd. Persistent settings
 		private static bool linkFrontTopScale;
@@ -331,9 +332,8 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. UDMF Settings
 			if(General.Map.FormatInterface.HasCustomFields) {
 				fieldslist.SetValues(fl.Fields, true); // Custom fields
-
-				string renderStyle = fl.Fields.GetValue("renderstyle", "");
-				cbRenderStyle.SelectedIndex = (renderStyle == "add" ? 1 : 0);
+				int renderstyle = renderStyles.IndexOf(fl.Fields.GetValue("renderstyle", ""));
+				cbRenderStyle.SelectedIndex = (renderstyle == -1 ? 0 : renderstyle);
 				alpha.Text = General.Clamp(fl.Fields.GetValue("alpha", 1.0f), 0f, 1f).ToString();
 				lockNumber.Text = fl.Fields.GetValue("locknumber", 0).ToString();
 				arg0str = fl.Fields.GetValue("arg0str", string.Empty);
@@ -459,8 +459,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//mxd. UDMF Settings
 				if(General.Map.FormatInterface.HasCustomFields) {
-					int i = (l.Fields.GetValue("renderstyle", "") == "add" ? 1 : 0);
-
+					int i = Math.Max(0, renderStyles.IndexOf(l.Fields.GetValue("renderstyle", "")));
 					if(cbRenderStyle.SelectedIndex != -1 && i != cbRenderStyle.SelectedIndex)
 						cbRenderStyle.SelectedIndex = -1;
 
@@ -927,12 +926,12 @@ namespace CodeImp.DoomBuilder.Windows
 			if(preventchanges) return;
 
 			//update values
-			if(cbRenderStyle.SelectedIndex == 1) { //add
-				foreach(Linedef l in lines)
-					l.Fields["renderstyle"] = new UniValue(UniversalType.String, "add");
-			} else { 
+			if(cbRenderStyle.SelectedIndex == 0) {
 				foreach(Linedef l in lines)
 					if(l.Fields.ContainsKey("renderstyle")) l.Fields.Remove("renderstyle");
+			} else {
+				foreach(Linedef l in lines)
+					l.Fields["renderstyle"] = new UniValue(UniversalType.String, renderStyles[cbRenderStyle.SelectedIndex]);
 			}
 
 			General.Map.IsChanged = true;

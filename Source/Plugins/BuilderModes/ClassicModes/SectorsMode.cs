@@ -536,7 +536,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			string gridIncKey = Actions.Action.GetShortcutKeyDesc("builder_griddec");
 			string gridDecKey = Actions.Action.GetShortcutKeyDesc("builder_gridinc");
 
-			hints = new[]{ "Press " + panKey + " to pan the view",
+			hints = new[]{ "Hold " + panKey + " to pan the view",
 						   "Press " + selectKey + " to select a sector",
 						   "Hold " + selectKey + " and drag to use rectangular selection",
 						   "Press " + clearKey + " to clear selection",

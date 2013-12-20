@@ -644,7 +644,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbRenderStyle.FormattingEnabled = true;
 			this.cbRenderStyle.Items.AddRange(new object[] {
             "Translucent",
-            "Additive"});
+            "Additive",
+            "Subtractive"});
 			this.cbRenderStyle.Location = new System.Drawing.Point(92, 26);
 			this.cbRenderStyle.Name = "cbRenderStyle";
 			this.cbRenderStyle.Size = new System.Drawing.Size(86, 22);
