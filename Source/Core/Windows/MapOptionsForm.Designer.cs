@@ -118,10 +118,11 @@ namespace CodeImp.DoomBuilder.Windows
 			label4.AutoSize = true;
 			label4.Location = new System.Drawing.Point(15, 190);
 			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(312, 28);
+			label4.Size = new System.Drawing.Size(312, 42);
 			label4.TabIndex = 17;
-			label4.Text = "Drag items to change order (lower items override higher items).\r\nGrayed items are" +
-				" loaded according to the game configuration.";
+			label4.Text = "Drag && drop resources to add them.\r\nDrag items to change order (lower items over" +
+				"ride higher items).\r\nGrayed items are loaded according to the game configuration" +
+				".";
 			// 
 			// apply
 			// 
@@ -155,7 +156,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres.Controls.Add(label4);
 			this.panelres.Location = new System.Drawing.Point(12, 141);
 			this.panelres.Name = "panelres";
-			this.panelres.Size = new System.Drawing.Size(397, 230);
+			this.panelres.Size = new System.Drawing.Size(397, 236);
 			this.panelres.TabIndex = 1;
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Resources ";
@@ -165,13 +166,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.strictpatches.AutoSize = true;
 			this.strictpatches.Location = new System.Drawing.Point(15, 27);
 			this.strictpatches.Name = "strictpatches";
-			this.strictpatches.Size = new System.Drawing.Size(352, 18);
+			this.strictpatches.Size = new System.Drawing.Size(351, 18);
 			this.strictpatches.TabIndex = 20;
 			this.strictpatches.Text = "Strictly load patches between P_START and P_END only for this file";
 			this.strictpatches.UseVisualStyleBackColor = true;
 			// 
 			// datalocations
 			// 
+			this.datalocations.AllowDrop = true;
 			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
 			this.datalocations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.datalocations.Location = new System.Drawing.Point(15, 57);

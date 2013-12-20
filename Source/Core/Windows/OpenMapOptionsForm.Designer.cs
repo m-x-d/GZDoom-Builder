@@ -71,12 +71,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// label3
 			// 
 			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(14, 193);
+			label3.Location = new System.Drawing.Point(14, 191);
 			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(312, 28);
+			label3.Size = new System.Drawing.Size(312, 42);
 			label3.TabIndex = 17;
-			label3.Text = "Drag items to change order (lower items override higher items).\r\nGrayed items are" +
-				" loaded according to the game configuration.";
+			label3.Text = "Drag && drop resources to add them.\r\nDrag items to change order (lower items over" +
+				"ride higher items).\r\nGrayed items are loaded according to the game configuration" +
+				".";
 			// 
 			// panelres
 			// 
@@ -87,7 +88,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres.Controls.Add(label3);
 			this.panelres.Location = new System.Drawing.Point(12, 215);
 			this.panelres.Name = "panelres";
-			this.panelres.Size = new System.Drawing.Size(396, 231);
+			this.panelres.Size = new System.Drawing.Size(396, 238);
 			this.panelres.TabIndex = 2;
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Resources ";
@@ -104,6 +105,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// datalocations
 			// 
+			this.datalocations.AllowDrop = true;
 			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
 			this.datalocations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.datalocations.Location = new System.Drawing.Point(14, 58);
@@ -151,7 +153,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.mapslist.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.mapslist.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			columnHeader1});
+            columnHeader1});
 			this.mapslist.FullRowSelect = true;
 			this.mapslist.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.mapslist.HideSelection = false;

@@ -18,6 +18,7 @@
 
 using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Windows;
@@ -185,6 +186,28 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Done
 			resourceitems.EndUpdate();
+		}
+
+		//mxd
+		internal void DropItem(IDataObject data) {
+			if(!data.GetDataPresent(DataFormats.FileDrop)) return;
+
+			string[] paths = (string[])data.GetData(DataFormats.FileDrop);
+			foreach(string path in paths) {
+				if(File.Exists(path)) {
+					string ext = Path.GetExtension(path);
+					if(string.IsNullOrEmpty(ext))
+						continue;
+					ext = ext.ToLower();
+					if(ext == ".wad") {
+						AddItem(new DataLocation(DataLocation.RESOURCE_WAD, path, false, false, false));
+					} else if(ext == ".pk3" || ext == ".pk7") {
+						AddItem(new DataLocation(DataLocation.RESOURCE_PK3, path, false, false, false));
+					}
+				} else if(Directory.Exists(path)) {
+					AddItem(new DataLocation(DataLocation.RESOURCE_DIRECTORY, path, false, false, false));
+				}
+			}
 		}
 		
 		// This fixes the column header in the list
@@ -355,6 +378,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// Item dropped
 		private void resourceitems_DragDrop(object sender, DragEventArgs e)
 		{
+			DropItem(e.Data); //mxd
+			
 			// Raise content changed event
 			if(OnContentChanged != null) OnContentChanged();
 		}

@@ -506,6 +506,11 @@ namespace CodeImp.DoomBuilder.Windows
 				lastsize = this.Size;
 			}
 
+			//mxd. Enable drag and drop
+			this.AllowDrop = true;
+			this.DragEnter += OnDragEnter;
+			this.DragDrop += OnDragDrop;
+
 			// Info panel state?
 			bool expandedpanel = General.Settings.ReadSetting("mainwindow.expandedinfopanel", true);
 			if(expandedpanel != IsInfoPanelExpanded) ToggleInfoPanel();
@@ -612,6 +617,41 @@ namespace CodeImp.DoomBuilder.Windows
 					// Cancel the close
 					e.Cancel = true;
 				}
+			}
+		}
+
+		//mxd
+		private void OnDragEnter(object sender, DragEventArgs e) {
+			if(e.Data.GetDataPresent(DataFormats.FileDrop)) {
+				e.Effect = DragDropEffects.Copy;
+			} else {
+				e.Effect = DragDropEffects.None;
+			}
+		}
+
+		//mxd
+		private void OnDragDrop(object sender, DragEventArgs e) {
+			if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
+				string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+				if (filePaths.Length != 1) {
+					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open multiple files at once!");
+					return;
+				}
+
+				if (!File.Exists(filePaths[0])) {
+					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open '" + filePaths[0] + "': file does not exist!");
+					return;
+				}
+
+				string ext = Path.GetExtension(filePaths[0]);
+				if(string.IsNullOrEmpty(ext) || ext.ToLower() != ".wad") {
+					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open '" + filePaths[0] + "': only WAD files can be loaded this way!");
+					return;
+				}
+
+				this.Update(); // Update main window
+				General.OpenMapFile(filePaths[0], null);
+				UpdateGZDoomPanel();
 			}
 		}
 
