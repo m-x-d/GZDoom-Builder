@@ -120,6 +120,12 @@ namespace CodeImp.DoomBuilder.Controls
 			ListViewItem insertatitem;
 			Point cp;
 
+			//mxd. Check if valid extenal data is present
+			if(e.Data.GetDataPresent(DataFormats.FileDrop)) {
+				e.Effect = DragDropEffects.Copy;
+				return;
+			}
+
 			// Check if our data format is present
 			if(!e.Data.GetDataPresent(DataFormats.Text))
 			{
@@ -210,6 +216,12 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Pass on to base
 			base.OnDragEnter(e);
+
+			//mxd. Check if valid extenal data is present
+			if(e.Data.GetDataPresent(DataFormats.FileDrop)) {
+				e.Effect = DragDropEffects.Copy;
+				return;
+			}
 
 			// Check if our data format is present
 			if(!e.Data.GetDataPresent(DataFormats.Text))
