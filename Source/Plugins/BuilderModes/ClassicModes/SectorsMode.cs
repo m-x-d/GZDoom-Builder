@@ -1049,31 +1049,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				                                                   };
 				
 				//mxd. collect changed sectors
-				if(marqueSelectionMode == MarqueSelectionMode.SELECT){
-					bool select;
-					foreach (Sector s in General.Map.Map.Sectors) {
-						select = isInSelectionRect(s, selectionOutline);
+				switch(marqueSelectionMode) {
+					case MarqueSelectionMode.SELECT:
+						bool select;
+						foreach(Sector s in General.Map.Map.Sectors) {
+							select = isInSelectionRect(s, selectionOutline);
 
-						if(select && !s.Selected) SelectSector(s, true, false);
-						else if(!select && s.Selected) SelectSector(s, false, false);
-					}
-				}else if(marqueSelectionMode == MarqueSelectionMode.ADD) { //additive selection
-					foreach(Sector s in General.Map.Map.Sectors) {
-						if(!s.Selected && isInSelectionRect(s, selectionOutline))
-							SelectSector(s, true, false);
-					}
-				} else if(marqueSelectionMode == MarqueSelectionMode.SUBTRACT) {
-					foreach(Sector s in General.Map.Map.Sectors) {
-						if(!s.Selected) continue;
-						if(isInSelectionRect(s, selectionOutline))
-							SelectSector(s, false, false);
-					}
-				} else { //should be Intersect
-					foreach(Sector s in General.Map.Map.Sectors) {
-						if(!s.Selected) continue;
-						if(!isInSelectionRect(s, selectionOutline)) 
-							SelectSector(s, false, false);
-					}
+							if(select && !s.Selected) SelectSector(s, true, false);
+							else if(!select && s.Selected) SelectSector(s, false, false);
+						}
+						break;
+
+					case MarqueSelectionMode.ADD:
+						foreach(Sector s in General.Map.Map.Sectors) {
+							if(!s.Selected && isInSelectionRect(s, selectionOutline))
+								SelectSector(s, true, false);
+						}
+						break;
+
+					case MarqueSelectionMode.SUBTRACT:
+						foreach(Sector s in General.Map.Map.Sectors) {
+							if(!s.Selected) continue;
+							if(isInSelectionRect(s, selectionOutline))
+								SelectSector(s, false, false);
+						}
+						break;
+
+					default: //should be Intersect
+						foreach(Sector s in General.Map.Map.Sectors) {
+							if(!s.Selected) continue;
+							if(!isInSelectionRect(s, selectionOutline))
+								SelectSector(s, false, false);
+						}
+						break;
 				}
 
 				// Make sure all linedefs reflect selected sectors
@@ -1186,10 +1194,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.Map.SelectedSectorsCount > 0)
 				sel = General.Map.Map.GetSelectedSectors(true);
 			else if(highlighted != null)
-			{
-				sel = new List<Sector>();
-				sel.Add(highlighted);
-			}
+				sel = new List<Sector> {highlighted};
 			
 			if(sel != null)
 			{

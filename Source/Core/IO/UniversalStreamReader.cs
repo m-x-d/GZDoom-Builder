@@ -141,7 +141,20 @@ namespace CodeImp.DoomBuilder.IO
 			try
 			{
 				// Read UDMF from stream
-				textmap.InputConfiguration(reader.ReadToEnd());
+				List<string> data = new List<string>(100);
+				while(!reader.EndOfStream) {
+					string line = reader.ReadLine();
+					if(string.IsNullOrEmpty(line)) continue;
+
+					// Remove returns and tabs because the
+					// parser only uses newline for new lines.
+					line = line.Replace("\r", "");
+					line = line.Replace("\t", "");
+
+					data.Add(line);
+				}
+
+				textmap.InputConfiguration(data.ToArray());
 
 				// Check for errors
 				if(textmap.ErrorResult != 0)

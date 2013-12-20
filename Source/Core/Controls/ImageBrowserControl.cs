@@ -266,28 +266,13 @@ namespace CodeImp.DoomBuilder.Controls
 			if(list.SelectedItems.Count > 0)
 			{
 				ListViewItem selected = list.SelectedItems[0];
-				bool foundselected = false;
-				foreach(ListViewItem n in visibleitems)
-				{
-					if((n.Text == selected.Text) && foundselected)
-					{
-						// This is the next item
-						n.Selected = true;
-						n.EnsureVisible();
-						return;
-					}
-					
-					if(n == selected)
-						foundselected = true;
-				}
 
-				// Start from the top
-				foreach(ListViewItem n in visibleitems)
-				{
-					if((n.Text == selected.Text) && foundselected)
-					{
-						// This is the next item
+				//mxd
+				foreach(ListViewItem n in visibleitems) {
+					if(n == selected) continue;
+					if(n.Text == selected.Text) {
 						n.Selected = true;
+						n.Focused = true;
 						n.EnsureVisible();
 						return;
 					}

@@ -17,7 +17,6 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
@@ -562,27 +561,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called wheh selection ends
 		protected override void OnEndMultiSelection()
 		{
-			bool selectionvolume = ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f));
+			bool selectionvolume = ((Math.Abs(selectionrect.Width) > 0.1f) && (Math.Abs(selectionrect.Height) > 0.1f));
 
 			if(selectionvolume)
 			{
 				//mxd
-				if(marqueSelectionMode == MarqueSelectionMode.SELECT) {
-					// Go for all vertices
-					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
-						t.Selected = selectionrect.Contains(t.Position.x, t.Position.y);
-				} else if(marqueSelectionMode == MarqueSelectionMode.ADD) {
-					// Go for all vertices
-					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
-						t.Selected |= selectionrect.Contains(t.Position.x, t.Position.y);
-				} else if(marqueSelectionMode == MarqueSelectionMode.SUBTRACT) {
-					// Go for all vertices
-					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
-						if(selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
-				} else { //should be Intersect
-					// Go for all vertices
-					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
-						if(!selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
+				switch(marqueSelectionMode) {
+					case MarqueSelectionMode.SELECT:
+						foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+							t.Selected = selectionrect.Contains(t.Position.x, t.Position.y);
+						break;
+
+					case MarqueSelectionMode.ADD:
+						foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+							t.Selected |= selectionrect.Contains(t.Position.x, t.Position.y);
+						break;
+
+					case MarqueSelectionMode.SUBTRACT:
+						foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+							if(selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
+						break;
+
+					default: //should be Intersect
+						foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+							if(!selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
+						break;
 				}
 
 				updateSelectionInfo(); //mxd
@@ -674,10 +677,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.Map.SelectedThingsCount > 0)
 				sel = General.Map.Map.GetSelectedThings(true);
 			else if(highlighted != null)
-			{
-				sel = new List<Thing>();
-				sel.Add(highlighted);
-			}
+				sel = new List<Thing> {highlighted};
 			
 			if(sel != null)
 			{
@@ -892,7 +892,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			foreach(Thing t in toAlign) {
 				List<Linedef> excludedLines = new List<Linedef>();
-				bool aligned = false;
+				bool aligned;
 
 				do{
 					Linedef l = General.Map.Map.NearestLinedef(t.Position, excludedLines);

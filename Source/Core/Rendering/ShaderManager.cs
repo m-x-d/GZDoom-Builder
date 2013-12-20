@@ -111,10 +111,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Load resources
 		public void ReloadResource()
 		{
-			Capabilities caps;
-
 			// Check if we can use shaders
-			caps = General.Map.Graphics.Device.Capabilities;
+			Capabilities caps = General.Map.Graphics.Device.Capabilities;
 			useshaders = (caps.PixelShaderVersion.Major >= 2);
 			shadertechnique = "SM20";
 
