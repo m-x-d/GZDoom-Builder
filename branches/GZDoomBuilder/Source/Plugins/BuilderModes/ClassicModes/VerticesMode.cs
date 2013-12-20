@@ -17,7 +17,6 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
@@ -572,27 +571,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called wheh selection ends
 		protected override void OnEndMultiSelection()
 		{
-			bool selectionvolume = ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f));
+			bool selectionvolume = ((Math.Abs(selectionrect.Width) > 0.1f) && (Math.Abs(selectionrect.Height) > 0.1f));
 
 			if(selectionvolume)
 			{
 				//mxd
-				if(marqueSelectionMode == MarqueSelectionMode.SELECT) {
-					// Go for all vertices
-					foreach(Vertex v in General.Map.Map.Vertices)
-						v.Selected = selectionrect.Contains(v.Position.x, v.Position.y);
-				} else if(marqueSelectionMode == MarqueSelectionMode.ADD) {
-					// Go for all vertices
-					foreach(Vertex v in General.Map.Map.Vertices)
-						v.Selected |= selectionrect.Contains(v.Position.x, v.Position.y);
-				} else if(marqueSelectionMode == MarqueSelectionMode.SUBTRACT) {
-					// Go for all vertices
-					foreach(Vertex v in General.Map.Map.Vertices)
-						if(selectionrect.Contains(v.Position.x, v.Position.y)) v.Selected = false;
-				} else { //should be Intersect
-					// Go for all vertices
-					foreach(Vertex v in General.Map.Map.Vertices)
-						if(!selectionrect.Contains(v.Position.x, v.Position.y)) v.Selected = false;
+				switch(marqueSelectionMode) {
+					case MarqueSelectionMode.SELECT:
+						foreach(Vertex v in General.Map.Map.Vertices)
+							v.Selected = selectionrect.Contains(v.Position.x, v.Position.y);
+						break;
+
+					case MarqueSelectionMode.ADD:
+						foreach(Vertex v in General.Map.Map.Vertices)
+							v.Selected |= selectionrect.Contains(v.Position.x, v.Position.y);
+						break;
+
+					case MarqueSelectionMode.SUBTRACT:
+						foreach(Vertex v in General.Map.Map.Vertices)
+							if(selectionrect.Contains(v.Position.x, v.Position.y)) v.Selected = false;
+						break;
+
+					default: //should be Intersect
+						foreach(Vertex v in General.Map.Map.Vertices)
+							if(!selectionrect.Contains(v.Position.x, v.Position.y)) v.Selected = false;
+						break;
 				}
 
 				//mxd
@@ -685,10 +688,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.Map.SelectedVerticessCount > 0)
 				sel = General.Map.Map.GetSelectedVertices(true);
 			else if(highlighted != null)
-			{
-				sel = new List<Vertex>();
-				sel.Add(highlighted);
-			}
+				sel = new List<Vertex> {highlighted};
 
 			if(sel != null)
 			{

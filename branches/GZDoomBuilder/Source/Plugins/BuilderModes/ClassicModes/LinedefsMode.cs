@@ -17,7 +17,6 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
@@ -667,7 +666,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called wheh selection ends
 		protected override void OnEndMultiSelection()
 		{
-			bool selectionvolume = ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f));
+			bool selectionvolume = ((Math.Abs(selectionrect.Width) > 0.1f) && (Math.Abs(selectionrect.Height) > 0.1f));
 			   
 			if(selectionvolume)
 			{
@@ -679,22 +678,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				                                                   };
 				
 				//mxd
-				if(marqueSelectionMode == MarqueSelectionMode.SELECT) {
-					// Go for all lines
-					foreach(Linedef l in General.Map.Map.Linedefs) 
-						l.Selected = isInSelectionRect(l, selectionOutline);
-				} else if(marqueSelectionMode == MarqueSelectionMode.ADD) {
-					// Go for all lines
-					foreach(Linedef l in General.Map.Map.Linedefs)
-						l.Selected |= isInSelectionRect(l, selectionOutline);
-				} else if(marqueSelectionMode == MarqueSelectionMode.SUBTRACT) {
-					// Go for all lines
-					foreach (Linedef l in General.Map.Map.Linedefs) 
-						if(isInSelectionRect(l, selectionOutline)) l.Selected = false;
-				} else { //should be Intersect
-					// Go for the eyes, Boo! Go for the eyes!
-					foreach(Linedef l in General.Map.Map.Linedefs)
-						if(!isInSelectionRect(l, selectionOutline)) l.Selected = false;
+				switch(marqueSelectionMode) {
+					case MarqueSelectionMode.SELECT:
+						foreach(Linedef l in General.Map.Map.Linedefs)
+							l.Selected = isInSelectionRect(l, selectionOutline);
+						break;
+
+					case MarqueSelectionMode.ADD:
+						foreach(Linedef l in General.Map.Map.Linedefs)
+							l.Selected |= isInSelectionRect(l, selectionOutline);
+						break;
+
+					case MarqueSelectionMode.SUBTRACT:
+						foreach(Linedef l in General.Map.Map.Linedefs)
+							if(isInSelectionRect(l, selectionOutline)) l.Selected = false;
+						break;
+
+					default:
+						foreach(Linedef l in General.Map.Map.Linedefs)
+							if(!isInSelectionRect(l, selectionOutline)) l.Selected = false;
+						break;
 				}
 
 				//mxd
@@ -758,10 +761,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.Map.SelectedLinedefsCount > 0)
 				sel = General.Map.Map.GetSelectedLinedefs(true);
 			else if(highlighted != null)
-			{
-				sel = new List<Linedef>();
-				sel.Add(highlighted);
-			}
+				sel = new List<Linedef> {highlighted};
 			
 			if(sel != null)
 			{

@@ -57,24 +57,15 @@ namespace CodeImp.DoomBuilder.IO
 		// This validates the data as doom flat
 		public bool Validate(Stream stream)
 		{
-			float sqrlength;
-			
 			// Check if the flat is square
-			sqrlength = (float)Math.Sqrt(stream.Length);
+			float sqrlength = (float)Math.Sqrt(stream.Length);
 			if(sqrlength == (float)Math.Truncate(sqrlength))
 			{
 				// Success when not 0
 				return ((int)sqrlength > 0);
 			}
-			// Check if the data is more than 4096
-			else if(stream.Length > 4096)
-			{
-				// Success
-				return true;
-			}
-
-			// Format invalid
-			return false;
+			// Valid if the data is more than 4096
+			return stream.Length > 4096;
 		}
 
 		// This creates a Bitmap from the given data

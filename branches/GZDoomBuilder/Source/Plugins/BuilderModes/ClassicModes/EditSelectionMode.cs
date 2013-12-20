@@ -17,7 +17,6 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
@@ -47,7 +46,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Enums
 
-		private enum ModifyMode : int
+		private enum ModifyMode
 		{
 			None,
 			Dragging,
@@ -55,7 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Rotating
 		}
 
-		private enum Grip : int
+		private enum Grip
 		{
 			None,
 			Main,
@@ -84,8 +83,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 
 		// Modes
-		private bool modealreadyswitching = false;
-		private bool pasting = false;
+		private bool modealreadyswitching;
+		private bool pasting;
 		private PasteOptions pasteoptions;
 		
 		// Docker
@@ -240,7 +239,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This returns the position of the highlighted item
-		private Vector2D GetHighlightedPosition()
+		/*private Vector2D GetHighlightedPosition()
 		{
 			if(highlighted is Vertex)
 				return (highlighted as Vertex).Position;
@@ -248,7 +247,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return (highlighted as Thing).Position;
 			else
 				throw new Exception("Highlighted element type is not supported.");
-		}
+		}*/
 		
 		// This highlights a new vertex
 		protected void Highlight(MapElement h)
@@ -538,7 +537,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							for(int i = 0; i < 8; i++)
 							{
 								// Make the vectors
-								float angle = (float)i * Angle2D.PI * 0.25f;
+								float angle = i * Angle2D.PI * 0.25f;
 								Vector2D gridvec = Vector2D.FromAngle(angle);
 								Vector3D rotvec = Vector2D.FromAngle(rotation);
 								
@@ -646,7 +645,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This checks if a point is in a rect
 		private bool PointInRectF(RectangleF rect, Vector2D point)
 		{
-			return (point.x >= rect.Left) && (point.x <= rect.Right) && (point.y >= rect.Top) && (point.y <= rect.Bottom);
+			return !(point.x < rect.Left || point.x > rect.Right || point.y < rect.Top || point.y > rect.Bottom); //mxd
 		}
 		
 		// This updates the values in the panel
@@ -658,7 +657,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This moves all things and vertices to match the current transformation
-		private unsafe void UpdateGeometry()
+		private void UpdateGeometry()
 		{
 			float[] newthingangle = thingangle.ToArray();
 			int index;
@@ -1107,7 +1106,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// If we're in the process of switching to another mode, reset to selection
 					// to its old position
-					if (modealreadyswitching == true)
+					if (modealreadyswitching)
 					{
 						// Reset geometry in original position
 						int index = 0;
@@ -1173,10 +1172,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Go for all sidedes in the new geometry
 					List<Sidedef> newsides = General.Map.Map.GetMarkedSidedefs(true);
-					for(int i = 0; i < newsides.Count; i++)
-					{
-						Sidedef s = newsides[i];
-						
+					foreach (Sidedef s in newsides) {
 						// Connected to a virtual sector?
 						if(s.Marked && s.Sector.Fields.ContainsKey(MapSet.VirtualSectorField))
 						{

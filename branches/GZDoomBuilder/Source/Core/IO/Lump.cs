@@ -155,10 +155,8 @@ namespace CodeImp.DoomBuilder.IO
 		// This copies lump data to another lump
 		internal void CopyTo(Lump lump)
 		{
-			BinaryReader reader;
-
 			// Create a reader
-			reader = new BinaryReader(stream);
+			BinaryReader reader = new BinaryReader(stream);
 
 			// Copy bytes over
 			stream.Seek(0, SeekOrigin.Begin);

@@ -20,7 +20,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Globalization;
-using System.Collections;
 using System.Collections.Generic;
 
 #endregion
@@ -61,10 +60,17 @@ namespace CodeImp.DoomBuilder.IO
 		private int cpErrorResult = 0;
 		private string cpErrorDescription = "";
 		private int cpErrorLine = 0;
-		private char[] newline = new[]{'\n'}; //mxd
 		
 		// Configuration root
 		private UniversalCollection root = null;
+
+		private const string numbers = "0123456789";
+		private const string numbers2 = "0123456789-.&";
+		private const string newline = "\n";
+		private char[] newlineChar = new[] {'\n'};
+		private StringBuilder key;  //mxd
+		private StringBuilder val;  //mxd
+		private Dictionary<string, UniversalEntry> matches; //mxd
 
 		// Settings
 		private bool strictchecking = true;
@@ -113,7 +119,7 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			// Replace the \ with \\ first!
 			str = str.Replace("\\", "\\\\");
-			str = str.Replace("\n", "\\n");
+			str = str.Replace(newline, "\\n");
 			str = str.Replace("\r", "\\r");
 			str = str.Replace("\t", "\\t");
 			str = str.Replace("\"", "\\\"");
@@ -146,21 +152,17 @@ namespace CodeImp.DoomBuilder.IO
 				if(errorline > -1) RaiseError(errorline, ERROR_KEYMISSING);
 				validateresult = false;
 			}
-			else
+			else if(strictchecking) //Only when strict checking
 			{
-				// Only when strict checking
-				if(strictchecking)
+				// Check if all characters are valid
+				foreach(char c in key) 
 				{
-					// Check if all characters are valid
-					foreach(char c in key)
+					if(KEY_CHARACTERS.IndexOf(c) == -1) 
 					{
-						if(KEY_CHARACTERS.IndexOf(c) == -1)
-						{
-							// ERROR: Invalid characters in key name
-							if(errorline > -1) RaiseError(errorline, ERROR_KEYCHARACTERS);
-							validateresult = false;
-							break;
-						}
+						// ERROR: Invalid characters in key name
+						if(errorline > -1) RaiseError(errorline, ERROR_KEYCHARACTERS);
+						validateresult = false;
+						break;
 					}
 				}
 			}
@@ -172,11 +174,13 @@ namespace CodeImp.DoomBuilder.IO
 		
 		// This parses a structure in the given data starting
 		// from the given pos and line and updates pos and line.
-		private UniversalCollection InputStructure(ref string data, ref int pos, ref int line)
+		private UniversalCollection InputStructure(ref string[] data, ref int pos, ref int line, bool topLevel)
 		{
 			char c = '\0';					// current data character
 			int pm = PM_NOTHING;			// current parse mode
-			string key = "", val = "";		// current key and value beign built
+			key.Remove(0, key.Length);
+			val.Remove(0, val.Length);
+			string s;
 			bool escape = false;			// escape sequence?
 			bool endofstruct = false;		// true as soon as this level struct ends
 			UniversalCollection cs = new UniversalCollection();
@@ -184,10 +188,16 @@ namespace CodeImp.DoomBuilder.IO
 			// Go through all of the data until
 			// the end or until the struct closes
 			// or when an arror occurred
-			while ((pos < data.Length) && (cpErrorResult == 0) && (endofstruct == false))
+			while ((cpErrorResult == 0) && (endofstruct == false))
 			{
 				// Get current character
-				c = data[pos];
+				if(line == data.Length - 1) break;
+				if(pos > data[line].Length - 1) {
+					pos = 0;
+					line++;
+				}
+
+				c = data[line][pos];
 				
 				// ================ What parse mode are we at?
 				if(pm == PM_NOTHING)
@@ -196,28 +206,27 @@ namespace CodeImp.DoomBuilder.IO
 					switch(c)
 					{
 						case '{': // Begin of new struct
-							
 							// Validate key
-							if(ValidateKey(key.Trim(), line))
+							s = key.ToString().Trim();
+							if(ValidateKey(s, line))
 							{
 								// Next character
 								pos++;
 								
 								// Parse this struct and add it
-								cs.Add(new UniversalEntry(key.Trim(), InputStructure(ref data, ref pos, ref line)));
+								cs.Add(new UniversalEntry(s.ToLowerInvariant(), InputStructure(ref data, ref pos, ref line, false)));
 								
 								// Check the last character
 								pos--;
 								
 								// Reset the key
-								key = "";
+								key.Remove(0, key.Length);
 							}
 							
 							// Leave switch
 							break;
 							
 						case '}': // End of this struct
-							
 							// Stop parsing in this struct
 							endofstruct = true;
 							
@@ -225,9 +234,8 @@ namespace CodeImp.DoomBuilder.IO
 							break;
 							
 						case '=': // Assignment
-							
 							// Validate key
-							if(ValidateKey(key.Trim(), line))
+							if(ValidateKey(key.ToString().Trim(), line))
 							{
 								// Now parsing assignment
 								pm = PM_ASSIGNMENT;
@@ -239,7 +247,7 @@ namespace CodeImp.DoomBuilder.IO
 						case ';': // Terminator
 							
 							// Validate key
-							if(ValidateKey(key.Trim(), line))
+							if(ValidateKey(key.ToString().Trim(), line))
 							{
 								// Error: No value
 								RaiseError(line, ERROR_KEYWITHOUTVALUE);
@@ -249,35 +257,31 @@ namespace CodeImp.DoomBuilder.IO
 							break;
 							
 						case '\n': // New line
-							
 							// Count the line
 							line++;
+							pos = -1;
 							
 							// Add this to the key as a space.
 							// Spaces are not allowed, but it will be trimmed
 							// when its the first or last character.
-							key += " ";
+							key.Append(" ");
 							
 							// Leave switch
 							break;
 							
 						case '\\': // Possible comment
 						case '/':
-							
 							// Check for the line comment //
-							if(data.Substring(pos, 2) == "//")
+							if(data[line].Substring(pos, 2) == "//")
 							{
-								// Find the next line
-								int np = data.IndexOf("\n", pos);
-								
-								// Next line found?
-								if(np > -1)
+								// Have next line?
+								if(line < data.Length)
 								{
 									// Count the line
 									line++;
 									
 									// Skip everything on this line
-									pos = np;
+									pos = -1;
 								}
 								else
 								{
@@ -287,17 +291,17 @@ namespace CodeImp.DoomBuilder.IO
 								}
 							}
 								// Check for the block comment /* */
-							else if(data.Substring(pos, 2) == "/*")
+							else if(data[line].Substring(pos, 2) == "/*")
 							{
 								// Find the next closing block comment
-								int np = data.IndexOf("*/", pos);
+								int np = data[line].IndexOf("*/", pos);
 								
 								// Closing block comment found?
 								if(np > -1)
 								{
 									// Count the lines in the block comment
-									string blockdata = data.Substring(pos, np - pos + 2);
-									line += (blockdata.Split(newline).Length - 1);
+									string blockdata = data[line].Substring(pos, np - pos + 2);
+									line += (blockdata.Split(newlineChar).Length - 1);
 									
 									// Skip everything in this block
 									pos = np + 1;
@@ -314,10 +318,17 @@ namespace CodeImp.DoomBuilder.IO
 							break;
 							
 						default: // Everything else
-							
+							if (!topLevel && pos == 0) {
+								while(matches.ContainsKey(data[line])) {
+									cs.Add(matches[data[line]].Key, matches[data[line]].Value);
+									line++;
+									pos = -1;
+								}
+							}
+
 							// Add character to key
-							key += c.ToString(CultureInfo.InvariantCulture).ToLowerInvariant();
-							
+							if(pos != -1) key.Append(c);
+
 							// Leave switch
 							break;
 					}
@@ -329,10 +340,10 @@ namespace CodeImp.DoomBuilder.IO
 					if(c == '\"')
 					{
 						// Now parsing string
-						pm = PM_STRING;
+						pm = PM_STRING; //numbers
 					}
-					// Check for numeric character
-					else if(Configuration.NUMBERS2.IndexOf(c.ToString(CultureInfo.InvariantCulture)) > -1)
+					// Check for numeric character numbers
+					else if(numbers2.IndexOf(c) > -1)
 					{
 						// Now parsing number
 						pm = PM_NUMBER;
@@ -354,8 +365,8 @@ namespace CodeImp.DoomBuilder.IO
 						pm = PM_NOTHING;
 						
 						// Remove this if it causes problems
-						key = "";
-						val = "";
+						key.Remove(0, key.Length);
+						val.Remove(0, val.Length);
 					}
 					// Otherwise (if not whitespace) it will be a keyword
 					else if((c != ' ') && (c != '\t'))
@@ -375,19 +386,19 @@ namespace CodeImp.DoomBuilder.IO
 					if(c == ';')
 					{
 						// Hexadecimal?
-						if((val.Length > 2) && val.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
+						s = val.ToString();
+						if((s.Length > 2) && s.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
 						{
-							int ival = 0;
-							long lval = 0;
-
 							// Convert to int
 							try
 							{
 								// Convert to value
-								ival = System.Convert.ToInt32(val.Substring(2).Trim(), 16);
+								int ival = System.Convert.ToInt32(s.Substring(2).Trim(), 16);
 
 								// Add it to struct
-								cs.Add(new UniversalEntry(key.Trim(), ival));
+								UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), ival);
+								cs.Add(entry);
+								matches.Add(data[line], entry);
 							}
 							catch(System.OverflowException)
 							{
@@ -395,10 +406,12 @@ namespace CodeImp.DoomBuilder.IO
 								try
 								{
 									// Convert to value
-									lval = System.Convert.ToInt64(val.Substring(2).Trim(), 16);
+									long lval = System.Convert.ToInt64(s.Substring(2).Trim(), 16);
 
 									// Add it to struct
-									cs.Add(new UniversalEntry(key.Trim(), lval));
+									UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), lval);
+									cs.Add(entry);
+									matches.Add(data[line], entry);
 								}
 								catch(System.OverflowException)
 								{
@@ -418,12 +431,12 @@ namespace CodeImp.DoomBuilder.IO
 							}
 						}
 						// Floating point?
-						else if(val.IndexOf(".") > -1)
+						else if(s.IndexOf('.') > -1)
 						{
 							float fval = 0;
 							
 							// Convert to float (remove the f first)
-							try { fval = System.Convert.ToSingle(val.Trim(), CultureInfo.InvariantCulture); }
+							try { fval = System.Convert.ToSingle(s.Trim(), CultureInfo.InvariantCulture); }
 							catch(System.FormatException)
 							{ 
 								// ERROR: Invalid value in assignment
@@ -431,21 +444,22 @@ namespace CodeImp.DoomBuilder.IO
 							}
 							
 							// Add it to struct
-							cs.Add(new UniversalEntry(key.Trim(), fval));
+							UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), fval);
+							cs.Add(entry);
+							matches.Add(data[line], entry);
 						}
 						else
 						{
-							int ival = 0;
-							long lval = 0;
-							
 							// Convert to int
 							try
 							{
 								// Convert to value
-								ival = System.Convert.ToInt32(val.Trim(), CultureInfo.InvariantCulture);
+								int ival = System.Convert.ToInt32(s.Trim(), CultureInfo.InvariantCulture);
 								
 								// Add it to struct
-								cs.Add(new UniversalEntry(key.Trim(), ival));
+								UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), ival);
+								cs.Add(entry);
+								matches.Add(data[line], entry);
 							}
 							catch(System.OverflowException)
 							{
@@ -453,10 +467,12 @@ namespace CodeImp.DoomBuilder.IO
 								try
 								{
 									// Convert to value
-									lval = System.Convert.ToInt64(val.Trim(), CultureInfo.InvariantCulture);
+									long lval = System.Convert.ToInt64(s.Trim(), CultureInfo.InvariantCulture);
 									
 									// Add it to struct
-									cs.Add(new UniversalEntry(key.Trim(), lval));
+									UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), lval);
+									cs.Add(entry);
+									matches.Add(data[line], entry);
 								}
 								catch(System.OverflowException)
 								{
@@ -477,8 +493,8 @@ namespace CodeImp.DoomBuilder.IO
 						}
 						
 						// Reset key and value
-						key = "";
-						val = "";
+						key.Remove(0, key.Length);
+						val.Remove(0, val.Length);
 						
 						// End of assignment
 						pm = PM_NOTHING;
@@ -488,11 +504,12 @@ namespace CodeImp.DoomBuilder.IO
 					{
 						// Count the new line
 						line++;
+						pos = -1;
 					}
 					// Everything else is part of the value
 					else
 					{
-						val += c.ToString(CultureInfo.InvariantCulture);
+						val.Append(c);
 					}
 				}
 				// ================ Parsing a string
@@ -504,21 +521,20 @@ namespace CodeImp.DoomBuilder.IO
 						// What character?
 						switch(c)
 						{
-							case '\\': val += "\\"; break;
-							case 'n': val += "\n"; break;
-							case '\"': val += "\""; break;
-							case 'r': val += "\r"; break;
-							case 't': val += "\t"; break;
+							case '\\': val.Append('\\'); break;
+							case 'n': val.Append(newline); break;
+							case '\"': val.Append('\"'); break;
+							case 'r': val.Append('\r'); break;
+							case 't': val.Append('\t'); break;
 							default:
-								
 								// Is it a number?
-								if(Configuration.NUMBERS.IndexOf(c.ToString(CultureInfo.InvariantCulture)) > -1)
+								if(numbers.IndexOf(c) > -1)
 								{
 									int vv = 0;
 									char vc = '0';
 									
 									// Convert the next 3 characters to a number
-									string v = data.Substring(pos, 3);
+									string v = data[line].Substring(pos, 3);
 									try { vv = System.Convert.ToInt32(v.Trim(), CultureInfo.InvariantCulture); }
 									catch(System.FormatException)
 									{ 
@@ -535,12 +551,12 @@ namespace CodeImp.DoomBuilder.IO
 									}
 									
 									// Add the char
-									val += vc.ToString(CultureInfo.InvariantCulture);
+									val.Append(vc);
 								}
 								else
 								{
 									// Add the character as it is
-									val += c.ToString(CultureInfo.InvariantCulture);
+									val.Append(c);
 								}
 								
 								// Leave switch
@@ -562,26 +578,29 @@ namespace CodeImp.DoomBuilder.IO
 						else if(c == '\"')
 						{
 							// Add string to struct
-							cs.Add(new UniversalEntry(key.Trim(), val));
+							UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), val.ToString());
+							cs.Add(entry);
+							matches.Add(data[line], entry);
 							
 							// End of assignment
 							pm = PM_ASSIGNMENT;
 							
 							// Reset key and value
-							key = "";
-							val = "";
+							key.Remove(0, key.Length);
+							val.Remove(0, val.Length);
 						}
 						// Check for new line
 						else if(c == '\n')
 						{
 							// Count the new line
 							line++;
+							pos = -1;
 						}
 						// Everything else is just part of string
 						else
 						{
 							// Add to value
-							val += c.ToString(CultureInfo.InvariantCulture);
+							val.Append(c);
 						}
 					}
 				}
@@ -592,24 +611,25 @@ namespace CodeImp.DoomBuilder.IO
 					if(c == ';')
 					{
 						// Add to the struct depending on the keyword
-						switch(val.Trim().ToLowerInvariant())
+						switch(val.ToString().Trim().ToLowerInvariant())
 						{
 							case "true":
-								
 								// Add boolean true
-								cs.Add(new UniversalEntry(key.Trim(), true));
+								UniversalEntry t = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), true);
+								cs.Add(t);
+								matches.Add(data[line], t);
 								break;
 								
 							case "false":
-								
 								// Add boolean false
-								cs.Add(new UniversalEntry(key.Trim(), false));
+								UniversalEntry f = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), false);
+								cs.Add(f);
+								matches.Add(data[line], f);
 								break;
 								
 							default:
-								
 								// Unknown keyword
-								RaiseError(line, ERROR_KEYWORDUNKNOWN + "\nUnrecognized token: '" + val.Trim().ToLowerInvariant() + "'");
+								RaiseError(line, ERROR_KEYWORDUNKNOWN + "\nUnrecognized token: '" + val.ToString().Trim().ToLowerInvariant() + "'");
 								break;
 						}
 						
@@ -617,20 +637,21 @@ namespace CodeImp.DoomBuilder.IO
 						pm = PM_NOTHING;
 						
 						// Reset key and value
-						key = "";
-						val = "";
+						key.Remove(0, key.Length);
+						val.Remove(0, val.Length);
 					}
 					// Check for new line
 					else if(c == '\n')
 					{
 						// Count the new line
 						line++;
+						pos = -1;
 					}
 					// Everything else is just part of keyword
 					else
 					{
 						// Add to value
-						val += c.ToString(CultureInfo.InvariantCulture);
+						val.Append(c);
 					}
 				}
 				
@@ -691,8 +712,8 @@ namespace CodeImp.DoomBuilder.IO
 					// Check if the value is of boolean type
 					else if(de.Current.Value is bool)
 					{
-						db.Append(leveltabs).Append(de.Current.Key).Append(spacing).Append("=").Append(spacing);
-						db.Append((bool)de.Current.Value ? "true;" : "false;").Append(newline);
+						db.Append(leveltabs); db.Append(de.Current.Key); db.Append(spacing); db.Append("="); db.Append(spacing);
+						db.Append((bool)de.Current.Value ? "true;" : "false;"); db.Append(newline);
 					}
 					// Check if value is of float type
 					else if(de.Current.Value is float)
@@ -750,7 +771,7 @@ namespace CodeImp.DoomBuilder.IO
 		public bool SaveConfiguration(string filename, string newline, bool whitespace)
 		{
 			// Kill the file if it exists
-			if(File.Exists(filename) == true) File.Delete(filename);
+			if(File.Exists(filename)) File.Delete(filename);
 			
 			// Open file stream for writing
 			FileStream fstream = File.OpenWrite(filename);
@@ -781,42 +802,49 @@ namespace CodeImp.DoomBuilder.IO
 		public bool LoadConfiguration(string filename)
 		{
 			// Check if the file is missing
-			if(File.Exists(filename) == false)
+			if(!File.Exists(filename))
 			{
 				throw(new FileNotFoundException("File not found \"" + filename + "\"", filename));
 			}
 			else
 			{
 				// Load the file contents
-				FileStream fstream = File.OpenRead(filename);
-				byte[] fbuffer = new byte[fstream.Length];
-				fstream.Read(fbuffer, 0, fbuffer.Length);
-				fstream.Close();
-				
-				// Convert byte array to string
-				string data = Encoding.ASCII.GetString(fbuffer);
-				
+				List<string> data = new List<string>(100);
+				using(FileStream stream = File.OpenRead(filename)) {
+					StreamReader reader = new StreamReader(stream, Encoding.ASCII);
+					
+					while(!reader.EndOfStream) {
+						string line = reader.ReadLine();
+						if(string.IsNullOrEmpty(line)) continue;
+
+						// Remove returns and tabs because the
+						// parser only uses newline for new lines.
+						line = line.Replace("\r", "");
+						line = line.Replace("\t", "");
+
+						data.Add(line);
+					}
+				}
+
 				// Load the configuration from this data
-				return InputConfiguration(data);
+				return InputConfiguration(data.ToArray());
 			}
 		}
 		
 		
 		// This will load a configuration from string
-		public bool InputConfiguration(string data)
+		public bool InputConfiguration(string[] data)
 		{
-			// Remove returns and tabs because the
-			// parser only uses newline for new lines.
-			data = data.Replace("\r", "");
-			data = data.Replace("\t", "");
-			
 			// Clear errors
 			ClearError();
 			
 			// Parse the data to the root structure
 			int pos = 0;
 			int line = 1;
-			root = InputStructure(ref data, ref pos, ref line);
+			matches = new Dictionary<string, UniversalEntry>(); //mxd
+			key = new StringBuilder(16); //mxd
+			val = new StringBuilder(16); //mxd
+			root = InputStructure(ref data, ref pos, ref line, true);
 			
 			// Return true when done, false when errors occurred
 			if(cpErrorResult == 0) return true; else return false;

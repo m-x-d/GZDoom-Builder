@@ -43,29 +43,6 @@ namespace CodeImp.DoomBuilder.Data
 		// This check image data and returns the appropriate image reader
 		public static IImageReader GetImageReader(Stream data, int guessformat, Playpal palette)
 		{
-			//mxd. Try to read it as "classic" image format first...
-			// Could it be a doom picture?
-			if(guessformat == DOOMPICTURE) {
-				// Check if data is valid for a doom picture
-				data.Seek(0, SeekOrigin.Begin);
-				DoomPictureReader picreader = new DoomPictureReader(palette);
-				if(picreader.Validate(data)) return picreader;
-			}
-			// Could it be a doom flat?
-			else if(guessformat == DOOMFLAT) {
-				// Check if data is valid for a doom flat
-				data.Seek(0, SeekOrigin.Begin);
-				DoomFlatReader flatreader = new DoomFlatReader(palette);
-				if(flatreader.Validate(data)) return flatreader;
-			}
-			// Could it be a doom colormap?
-			else if(guessformat == DOOMCOLORMAP) {
-				// Check if data is valid for a doom colormap
-				data.Seek(0, SeekOrigin.Begin);
-				DoomColormapReader colormapreader = new DoomColormapReader(palette);
-				if(colormapreader.Validate(data)) return colormapreader;
-			}
-
 			// Data long enough to check for signatures?
 			if(data.Length > 10) {
 				// Check for PNG signature
@@ -102,6 +79,30 @@ namespace CodeImp.DoomBuilder.Data
 				data.Seek(0, SeekOrigin.Begin);
 				if(CheckSignature(data, BMP_SIGNATURE))
 					return new UnknownImageReader(); //mxd. Not supported in (G)ZDoom
+			}
+				
+			// Could it be a doom picture?
+			switch(guessformat) {
+				case DOOMPICTURE:
+					// Check if data is valid for a doom picture
+					data.Seek(0, SeekOrigin.Begin);
+					DoomPictureReader picreader = new DoomPictureReader(palette);
+					if(picreader.Validate(data)) return picreader;
+					break;
+
+				case DOOMFLAT:
+					// Check if data is valid for a doom flat
+					data.Seek(0, SeekOrigin.Begin);
+					DoomFlatReader flatreader = new DoomFlatReader(palette);
+					if(flatreader.Validate(data)) return flatreader;
+					break;
+
+				case DOOMCOLORMAP:
+					// Check if data is valid for a doom colormap
+					data.Seek(0, SeekOrigin.Begin);
+					DoomColormapReader colormapreader = new DoomColormapReader(palette);
+					if(colormapreader.Validate(data)) return colormapreader;
+					break;
 			}
 			
 			// Format not supported

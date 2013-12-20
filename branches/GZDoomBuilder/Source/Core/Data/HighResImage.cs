@@ -249,46 +249,55 @@ namespace CodeImp.DoomBuilder.Data
 													PixelColor* texturepixels = (PixelColor*)(texturebmpdata.Scan0.ToPointer());
 													PixelColor* tcp = texturepixels + numpixels - 1;
 
-													if(p.style == TexturePathRenderStyle.Add) {
-														for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
-															cp->r = (byte)Math.Min(255, (int)cp->r + (int)tcp->r);
-															cp->g = (byte)Math.Min(255, (int)cp->g + (int)tcp->g);
-															cp->b = (byte)Math.Min(255, (int)cp->b + (int)tcp->b);
-															cp->a = (byte)((((float)cp->a * PixelColor.BYTE_TO_FLOAT) * p.alpha) * 255.0f);
-															tcp--;
-														}
-													} else if(p.style == TexturePathRenderStyle.Subtract) {
-														for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
-															cp->r = (byte)Math.Max(0, (int)tcp->r - (int)cp->r);
-															cp->g = (byte)Math.Max(0, (int)tcp->g - (int)cp->g);
-															cp->b = (byte)Math.Max(0, (int)tcp->b - (int)cp->b);
-															cp->a = (byte)((((float)cp->a * PixelColor.BYTE_TO_FLOAT) * p.alpha) * 255.0f);
-															tcp--;
-														}
-													} else if(p.style == TexturePathRenderStyle.ReverseSubtract) {
-														for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
-															cp->r = (byte)Math.Max(0, (int)cp->r - (int)tcp->r);
-															cp->g = (byte)Math.Max(0, (int)cp->g - (int)tcp->g);
-															cp->b = (byte)Math.Max(0, (int)cp->b - (int)tcp->b);
-															cp->a = (byte)((((float)cp->a * PixelColor.BYTE_TO_FLOAT) * p.alpha) * 255.0f);
-															tcp--;
-														}
-													}else if(p.style == TexturePathRenderStyle.Modulate){
-														for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
-															float pr = (float)cp->r * PixelColor.BYTE_TO_FLOAT;
-															float pg = (float)cp->g * PixelColor.BYTE_TO_FLOAT;
-															float pb = (float)cp->b * PixelColor.BYTE_TO_FLOAT;
+													switch(p.style) {
+														case TexturePathRenderStyle.Add:
+															for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
+																cp->r = (byte)Math.Min(255, cp->r + tcp->r);
+																cp->g = (byte)Math.Min(255, cp->g + tcp->g);
+																cp->b = (byte)Math.Min(255, cp->b + tcp->b);
+																cp->a = (byte)(((cp->a * PixelColor.BYTE_TO_FLOAT) * p.alpha) * 255.0f);
+																tcp--;
+															}
+															break;
 
-															float tr = (float)tcp->r * PixelColor.BYTE_TO_FLOAT;
-															float tg = (float)tcp->g * PixelColor.BYTE_TO_FLOAT;
-															float tb = (float)tcp->b * PixelColor.BYTE_TO_FLOAT;
+														case TexturePathRenderStyle.Subtract:
+															for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
+																cp->r = (byte)Math.Max(0, tcp->r - cp->r);
+																cp->g = (byte)Math.Max(0, tcp->g - cp->g);
+																cp->b = (byte)Math.Max(0, tcp->b - cp->b);
+																cp->a = (byte)(((cp->a * PixelColor.BYTE_TO_FLOAT) * p.alpha) * 255.0f);
+																tcp--;
+															}
+															break;
 
-															cp->r = (byte)((pr * tr) * 255.0f);
-															cp->g = (byte)((pg * tg) * 255.0f);
-															cp->b = (byte)((pb * tb) * 255.0f);
+														case TexturePathRenderStyle.ReverseSubtract:
+															for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
+																cp->r = (byte)Math.Max(0, cp->r - tcp->r);
+																cp->g = (byte)Math.Max(0, cp->g - tcp->g);
+																cp->b = (byte)Math.Max(0, cp->b - tcp->b);
+																cp->a = (byte)(((cp->a * PixelColor.BYTE_TO_FLOAT) * p.alpha) * 255.0f);
+																tcp--;
+															}
+															break;
 
-															tcp--;
-														}
+														case TexturePathRenderStyle.Modulate:
+															for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
+																float pr = cp->r * PixelColor.BYTE_TO_FLOAT;
+																float pg = cp->g * PixelColor.BYTE_TO_FLOAT;
+																float pb = cp->b * PixelColor.BYTE_TO_FLOAT;
+
+																float tr = tcp->r * PixelColor.BYTE_TO_FLOAT;
+																float tg = tcp->g * PixelColor.BYTE_TO_FLOAT;
+																float tb = tcp->b * PixelColor.BYTE_TO_FLOAT;
+
+																cp->r = (byte)((pr * tr) * 255.0f);
+																cp->g = (byte)((pg * tg) * 255.0f);
+																cp->b = (byte)((pb * tb) * 255.0f);
+
+																tcp--;
+															}
+															break;
+
 													}
 
 													source.UnlockBits(texturebmpdata);

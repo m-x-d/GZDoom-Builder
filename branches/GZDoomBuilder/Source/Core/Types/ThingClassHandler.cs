@@ -55,23 +55,19 @@ namespace CodeImp.DoomBuilder.Types
 			// Find the thing with this class name
 			foreach(ThingTypeInfo t in General.Map.Data.ThingTypes)
 			{
-				if((t.Actor != null) && (string.Compare(t.Actor.ClassName, value, true) == 0))
+				if((string.Compare(t.ClassName, value, true) == 0)) //mxd
 				{
 					tid = t.Index;
 					break;
 				}
 			}
 			
-			//tid = ThingBrowserForm.BrowseThing(parent, tid);
 			ThingBrowserForm f = new ThingBrowserForm(tid);
-			if(f.ShowDialog(Form.ActiveForm) == DialogResult.OK)
+			if(f.ShowDialog(Form.ActiveForm) == DialogResult.OK) 
 			{
 				// Find the class name for this thing
 				ThingTypeInfo t = General.Map.Data.GetThingInfo(f.SelectedType);
-				if(t.Actor != null)
-					this.value = t.Actor.ClassName;
-				else
-					this.value = "";
+				this.value = !string.IsNullOrEmpty(t.ClassName) ? t.ClassName : ""; //mxd
 			}
 			
 			f.Dispose();

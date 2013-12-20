@@ -768,16 +768,24 @@ namespace CodeImp.DoomBuilder.Editing
 		protected virtual void RenderMultiSelection()
 		{
 			//mxd
-			PixelColor marqueColor = PixelColor.Transparent;
+			PixelColor marqueColor;
 
-			if(marqueSelectionMode == MarqueSelectionMode.SELECT) {
-				marqueColor = General.Colors.Selection.WithAlpha(SELECTION_ALPHA);
-			} else if(marqueSelectionMode == MarqueSelectionMode.ADD) {
-				marqueColor = General.Colors.Highlight.WithAlpha(SELECTION_ALPHA);
-			} else if(marqueSelectionMode == MarqueSelectionMode.SUBTRACT) {
-				marqueColor = General.Colors.Selection.WithAlpha(SELECTION_ALPHA).InverseKeepAlpha();
-			} else { //should be Intersect
-				marqueColor = General.Colors.Highlight.WithAlpha(SELECTION_ALPHA).InverseKeepAlpha();
+			switch(marqueSelectionMode) {
+				case MarqueSelectionMode.SELECT:
+					marqueColor = General.Colors.Selection.WithAlpha(SELECTION_ALPHA);
+					break;
+
+				case MarqueSelectionMode.ADD:
+					marqueColor = General.Colors.Highlight.WithAlpha(SELECTION_ALPHA);
+					break;
+
+				case MarqueSelectionMode.SUBTRACT:
+					marqueColor = General.Colors.Selection.WithAlpha(SELECTION_ALPHA).InverseKeepAlpha();
+					break;
+
+				default: //should be Intersect
+					marqueColor = General.Colors.Highlight.WithAlpha(SELECTION_ALPHA).InverseKeepAlpha();
+					break;
 			}
 						
 			renderer.RenderRectangle(selectionrect, SELECTION_BORDER_SIZE, marqueColor, true);

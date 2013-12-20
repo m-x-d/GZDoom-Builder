@@ -88,15 +88,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This loads an effect
 		protected Effect LoadEffect(string fxfile)
 		{
-			Effect fx;
-			string errors;
-			Stream fxdata;
-			
 			// Return null when not using shaders
 			if(!manager.Enabled) return null;
+
+			Effect fx;
+			string errors;
 			
 			// Load the resource
-			fxdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources." + fxfile);
+			Stream fxdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources." + fxfile);
 			fxdata.Seek(0, SeekOrigin.Begin);
 			
 			try

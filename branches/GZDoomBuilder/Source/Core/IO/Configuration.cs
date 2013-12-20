@@ -667,7 +667,6 @@ namespace CodeImp.DoomBuilder.IO
 						// Check if string ends
 						case '\"':
 							return val;
-							break;
 
 						// Check for new line
 						case '\n':
@@ -723,14 +722,11 @@ namespace CodeImp.DoomBuilder.IO
 					}
 					else
 					{
-						int ival = 0;
-						long lval = 0;
-						
 						// Convert to int
 						try
 						{
 							// Convert to value
-							ival = System.Convert.ToInt32(val.Trim(), CultureInfo.InvariantCulture);
+							int ival = System.Convert.ToInt32(val.Trim(), CultureInfo.InvariantCulture);
 							return ival;
 						}
 						catch(System.OverflowException)
@@ -739,7 +735,7 @@ namespace CodeImp.DoomBuilder.IO
 							try
 							{
 								// Convert to value
-								lval = System.Convert.ToInt64(val.Trim(), CultureInfo.InvariantCulture);
+								long lval = System.Convert.ToInt64(val.Trim(), CultureInfo.InvariantCulture);
 								return lval;
 							}
 							catch(System.OverflowException)
@@ -884,7 +880,7 @@ namespace CodeImp.DoomBuilder.IO
 					}
 					else
 					{
-						RaiseError(file, line, "Include missing structure '" + args[1].ToString() + "' in file '" + includefile + "'");
+						RaiseError(file, line, "Include missing structure '" + args[1] + "' in file '" + includefile + "'");
 						return;
 					}
 				}

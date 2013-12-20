@@ -290,21 +290,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 										if (!gotErrors) {
 											//general checks
 											if (light.Color.Red == 0.0f && light.Color.Green == 0.0f && light.Color.Blue == 0.0f) {
-												General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": light Color is " + light.Color.Red + "," + light.Color.Green + "," + light.Color.Blue + ". It won't be shown in GZDoom!");
+												General.ErrorLogger.Add(ErrorType.Warning, "'" + sourcefilename + "', line " + GetCurrentLineNumber() + ": light Color is " + light.Color.Red + "," + light.Color.Green + "," + light.Color.Blue + ". It won't be shown in GZDoom!");
 												gotErrors = true;
 											}
 
 											//light-type specific checks
 											if (light.Type == DynamicLightType.NORMAL) {
 												if (light.PrimaryRadius == 0) {
-													General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": light Size is 0. It won't be shown in GZDoom!");
+													General.ErrorLogger.Add(ErrorType.Warning, "'" + sourcefilename + "', line " + GetCurrentLineNumber() + ": light Size is 0. It won't be shown in GZDoom!");
 													gotErrors = true;
 												}
 											}
 
 											if (light.Type == DynamicLightType.FLICKER || light.Type == DynamicLightType.PULSE || light.Type == DynamicLightType.RANDOM) {
 												if (light.PrimaryRadius == 0 && light.SecondaryRadius == 0) {
-													General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": 'Size' and 'SecondarySize' are 0. This light won't be shown in GZDoom!");
+													General.ErrorLogger.Add(ErrorType.Warning, "'" + sourcefilename + "', line " + GetCurrentLineNumber() + ": 'Size' and 'SecondarySize' are 0. This light won't be shown in GZDoom!");
 													gotErrors = true;
 												}
 											}
@@ -417,9 +417,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 				}
 			}
 
-			if (objects.Count > 0)
-				return true;
-			return false;
+			return objects.Count > 0;
 		}
 	}
 }

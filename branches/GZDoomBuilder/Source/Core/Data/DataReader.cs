@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.Data
 		// When implemented, this returns the patch lump
 		public virtual Stream GetPatchData(string pname) { return null; }
 
-		//mxd. When implemented, this returns a path to... path (like /patches/walls/WALL001.png)
+		//mxd. When implemented, this returns a path to patch (like /patches/walls/WALL001.png)
 		public virtual string GetPatchLocation(string pname) { return pname; }
 
 		// When implemented, this returns the texture lump

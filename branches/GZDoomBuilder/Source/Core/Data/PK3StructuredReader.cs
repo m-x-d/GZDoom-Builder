@@ -36,6 +36,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected const string HIRES_DIR = "hires";
 		protected const string SPRITES_DIR = "sprites";
 		protected const string COLORMAPS_DIR = "colormaps";
+		protected const string GRAPHICS_DIR = "graphics"; //mxd
 		
 		#endregion
 
@@ -52,7 +53,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Properties
 
-		protected string[] PatchLocations = { PATCHES_DIR, TEXTURES_DIR, FLATS_DIR }; //mxd. Because ZDoom looks for patches in these folders
+		protected string[] PatchLocations = { PATCHES_DIR, TEXTURES_DIR, FLATS_DIR, GRAPHICS_DIR }; //mxd. Because ZDoom looks for patches in these folders ///TODO: check the order of these
 
 		#endregion
 
