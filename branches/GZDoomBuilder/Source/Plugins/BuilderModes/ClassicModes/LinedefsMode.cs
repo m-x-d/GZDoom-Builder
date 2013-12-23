@@ -278,7 +278,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						   "Use " + gridIncKey + " and " + gridDecKey + " to change grid size",
 						   "Press " + drawKey + " or " + insertKey + " to start drawing lines",
 			};
+		}
 
+		//mxd
+		protected override void SetupMultiselectionHints() {
 			multiselectionHints = new[] { "Hold Shift to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
 										  "Hold Ctrl to enable subtractive selection",
 										  "Hold Ctrl-Shift to intersect the new selection with already existing one",

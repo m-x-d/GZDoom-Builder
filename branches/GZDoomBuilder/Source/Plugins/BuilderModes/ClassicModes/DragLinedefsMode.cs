@@ -125,13 +125,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This redraws the display
 		public override void OnRedrawDisplay()
 		{
-			bool viewchanged = CheckViewChanged();
-
 			renderer.RedrawSurface();
 
 			UpdateRedraw();
 
-			if(viewchanged)
+			if(CheckViewChanged())
 			{
 				// Start rendering things
 				if(renderer.StartThings(true))

@@ -464,12 +464,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This checks if the view offset/zoom changed and updates the check
 		protected bool CheckViewChanged()
 		{
-			bool viewchanged = false;
-			
 			// View changed?
-			if(renderer.OffsetX != lastoffsetx) viewchanged = true;
-			if(renderer.OffsetY != lastoffsety) viewchanged = true;
-			if(renderer.Scale != lastscale) viewchanged = true;
+			bool viewchanged = (renderer.OffsetX != lastoffsetx || renderer.OffsetY != lastoffsety || renderer.Scale != lastscale);
 
 			// Keep view information
 			lastoffsetx = renderer.OffsetX;
@@ -501,6 +497,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This redraws only the required things
 		protected virtual void UpdateRedraw()
 		{
+		}
+
+		//mxd
+		protected override void SetupHints() {
+			hints = new[] { "Hold Shift to " + (General.Interface.SnapToGrid ? "disable" : "enable") + " grid snapping.",
+							"Hold Ctrl to " + (General.Interface.AutoMerge ? "disable" : "enable") + " snapping to nearest vertex."
+			              };
 		}
 
 		// When edit button is released

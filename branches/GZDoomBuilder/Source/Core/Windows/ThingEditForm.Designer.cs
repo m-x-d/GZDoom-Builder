@@ -77,6 +77,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
+			this.hint = new System.Windows.Forms.PictureBox();
+			this.hintlabel = new System.Windows.Forms.Label();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			groupBox2 = new System.Windows.Forms.GroupBox();
 			label7 = new System.Windows.Forms.Label();
@@ -90,6 +92,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hexenpanel.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.tabcustom.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.hint)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -671,6 +674,24 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
+			// hint
+			// 
+			this.hint.Image = global::CodeImp.DoomBuilder.Properties.Resources.Lightbulb;
+			this.hint.Location = new System.Drawing.Point(10, 433);
+			this.hint.Name = "hint";
+			this.hint.Size = new System.Drawing.Size(16, 16);
+			this.hint.TabIndex = 3;
+			this.hint.TabStop = false;
+			// 
+			// hintlabel
+			// 
+			this.hintlabel.AutoSize = true;
+			this.hintlabel.Location = new System.Drawing.Point(28, 434);
+			this.hintlabel.Name = "hintlabel";
+			this.hintlabel.Size = new System.Drawing.Size(310, 14);
+			this.hintlabel.TabIndex = 4;
+			this.hintlabel.Text = "Select several thing types to randomly assign them to selection";
+			// 
 			// ThingEditForm
 			// 
 			this.AcceptButton = this.apply;
@@ -678,6 +699,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(680, 461);
+			this.Controls.Add(this.hintlabel);
+			this.Controls.Add(this.hint);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
@@ -706,7 +729,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.tabcustom.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.hint)).EndInit();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -758,5 +783,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox gravity;
 		private System.Windows.Forms.Label labelGravity;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl anglecontrol;
+		private System.Windows.Forms.PictureBox hint;
+		private System.Windows.Forms.Label hintlabel;
 	}
 }
