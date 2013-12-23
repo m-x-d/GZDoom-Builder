@@ -484,7 +484,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			//mxd. LINKS
 			if (General.Settings.GZShowEventLines) {
 				//mxd. gather links
-				List<Line3D> lines = GZBuilder.Data.LinksCollector.GetThingLinks(thingsbydistance);
+				List<Line3D> lines = LinksCollector.GetThingLinks(thingsbydistance);
 				if(lines.Count > 0) {
 					List<Line3D> normalLines = new List<Line3D>();
 					List<Line3D> activatorLines = new List<Line3D>();
@@ -510,7 +510,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			RenderSinglePass((int)RenderPass.Additive);
 
 			//mxd. LIGHT PASS
-			if (General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0 && litGeometry.Count > 0) {
+			if( !(!General.Settings.GZDrawLights || fullbrightness || thingsWithLight.Count == 0 || litGeometry.Count == 0) ) {
 				RenderLights(litGeometry, thingsWithLight);
 			}
 			
@@ -537,12 +537,20 @@ namespace CodeImp.DoomBuilder.Rendering
 			lightOffsets = new int[3];
 			foreach (VisualThing t in thingsWithLight) {
 				//add light to apropriate array.
-				if (t.LightRenderStyle == DynamicLightRenderStyle.NORMAL || t.LightRenderStyle == DynamicLightRenderStyle.VAVOOM)
-					lightOffsets[0]++;
-				else if (t.LightRenderStyle == DynamicLightRenderStyle.ADDITIVE)
-					lightOffsets[1]++;
-				else
-					lightOffsets[2]++;
+				switch(t.LightRenderStyle) {
+					case DynamicLightRenderStyle.NORMAL:
+					case DynamicLightRenderStyle.VAVOOM:
+						lightOffsets[0]++;
+						break;
+
+					case DynamicLightRenderStyle.ADDITIVE:
+						lightOffsets[1]++;
+						break;
+
+					default:
+						lightOffsets[2]++;
+						break;
+				}
 			}
 		}
 
@@ -777,11 +785,11 @@ namespace CodeImp.DoomBuilder.Rendering
 						int wantedshaderpass = (((g == highlighted) && showhighlight) || (g.Selected && showselection)) ? highshaderpass : shaderpass;
 
 						//mxd
-						if (General.Settings.GZDrawFog && !fullbrightness && sector.Sector.Brightness < 248)
+						if( !(!General.Settings.GZDrawFog || fullbrightness || sector.Sector.Brightness > 247) )
 							wantedshaderpass += 8;
 
 						//mxd. Seems that lines rendered with RenderPass.Alpha or RenderPass.Additive aren't affected by dynamic lights in GZDoom
-						if (g.RenderPass != RenderPass.Alpha && g.RenderPass != RenderPass.Additive && General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0) {
+						if ( !(g.RenderPass == RenderPass.Alpha || g.RenderPass == RenderPass.Additive || !General.Settings.GZDrawLights || fullbrightness || thingsWithLight.Count == 0) ) {
 							if (curtexture.Texture != null) {
 								if (!litGeometry.ContainsKey(curtexture.Texture))
 									litGeometry[curtexture.Texture] = new List<VisualGeometry>();
@@ -834,15 +842,15 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Render things collected
 				foreach(KeyValuePair<ImageData, List<VisualThing>> group in thingspass)
 				{
-					ImageData curtexture;
-
 					if(!(group.Key is UnknownImage))
 					{
+						ImageData curtexture;
+						
 						// What texture to use?
-						if((group.Key != null) && group.Key.IsImageLoaded && !group.Key.IsDisposed)
-							curtexture = group.Key;
-						else
+						if((group.Key == null) || !group.Key.IsImageLoaded || group.Key.IsDisposed)
 							curtexture = General.Map.Data.Hourglass3D;
+						else 
+							curtexture = group.Key;
 
 						// Create Direct3D texture if still needed
 						if((curtexture.Texture == null) || curtexture.Texture.Disposed)

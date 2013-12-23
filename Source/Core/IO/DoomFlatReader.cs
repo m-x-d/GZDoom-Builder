@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.IO
 
 		// This draws the picture to the given pixel color data
 		// Throws exception on failure
-		public unsafe void DrawToPixelData(Stream stream, PixelColor* target, int targetwidth, int targetheight, int x, int y)
+		public void DrawToPixelData(Stream stream, PixelColor* target, int targetwidth, int targetheight, int x, int y)
 		{
 			Bitmap bmp;
 			BitmapData bmpdata;

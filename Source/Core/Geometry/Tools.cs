@@ -130,8 +130,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				FindInnerLines(p, alllines);
 				return alllines;
 			}
-			else
-				return null;
+
+			return null;
 		}
 
 		// This finds the inner lines of the sector and adds them to the sector polygon
