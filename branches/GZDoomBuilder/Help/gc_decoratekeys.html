@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	
+	<title>Game Configuration - Things Settings</title>
+	
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" type="text/css" href="default.css" media="screen" title="Default" />
+</head>
+<body>
+	
+	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="keyword" value="Configurations">
+	<param name="keyword" value="Game Configurations">
+	</object>
+	
+	<div id="title"><h1>DECORATE keys</h1></div>
+	
+	<div id="contents">
+	<p>
+	  Doom Builder 2 includes a DECORATE parser used to obtain relevant information (such as editor number, Radius, Height, Scale, and so on) from custom actors. Additional information can be conveyed with keys in the form of special comments inserted within an actor's declaration block:     
+	<p><strong>//$Category &lt;category&gt;</strong><br />
+    Specifies in which category (Monsters, Weapons, etc.) it should be sorted. By default, a custom actor not identified in a configuration file will be put in the Decorate category.    
+	<p> <strong>//$Sprite &lt;sprite&gt;</strong><br />
+	  Specifies which sprite to use to represent the actor in the editor. By default, a custom actor not identified in a configuration file will use the first suitable sprite it finds in the actor definition, trying first the states in the sequence Idle, See, Inactive, Spawn, and if all these fail, the first defined state. This key is therefore especially useful for stateless actor definitions. 
+	  
+	  Keep in mind that this sprite name must match an image in the wad (i.e., if the sprite in your wad is named JUNKA0D0, you need to put JUNKA0D0, JUNKA0 won't work). 
+	<br /> <br />  
+	  <strong>//$Title &lt;title&gt;</strong><br />
+	  Specifies which name to give to the actor. By default, a custom actor not identified in a configuration file will use the Tag property, and if not present, will default to the class name.<br />
+	  <br />
+	  <strong>//$Color &lt;color index&gt;</strong> (GZDoom Builder only)<br />
+	  Allows to override category color for this actor. Possible values:
+	<ul>
+	  <li>0 - Dark Gray;</li>
+	  <li>	    1 - Blue;</li>
+	  <li>	    2 - Green;</li>
+	  <li>	    3 - Cyan;</li>
+	  <li>	    4 - Red;</li>
+	  <li>5 - Magenta;</li>
+	  <li>6 - Brown;</li>
+	  <li>7 - Gray;</li>
+	  <li>8 - Light Gray;</li>
+	  <li>9 - Light Blue;</li>
+	  <li>10 - Light Green;</li>
+	  <li>11 - Light Cyan;</li>
+	  <li>12 - Light Red;</li>
+	  <li>13 - Light Magenta;</li>
+	  <li>14 - Yellow;</li>
+	  <li>15 - White;</li>
+	  <li>16 - Pink;</li>
+	  <li>17 - Light Orange;</li>
+	  <li>18 - Light Brown (default);</li>
+	  <li>19 - Orange;</li>
+	</ul>
+	  
+	  <strong>Example:</strong><br />
+	  Note: It is a good idea to include the Doom Editor Number after the actor definition if you want it to show in Doom Builder, even if it is replacing a standard Doom actor. 
+	  <pre>
+Actor ChexShield : ResistanceRune replaces ResistanceRune 5104
+{
+	//$Category powerups
+	//$Sprite ARMXA0
+	//$Title "Chex Shield"
+	//$Color 12
+	Height 44
+	Radius 26
+	Inventory.PickupMessage "Picked up the energized Chex armor!"
+    
+	States
+	{
+	Spawn:
+	ARMX A 1
+	Loop
+	}
+}
+</pre>
+	</p>
+	</div>
+</body>

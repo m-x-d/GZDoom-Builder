@@ -215,6 +215,10 @@
 				<param name="Local" value="scriptingconfigs.html">
 				</OBJECT>
 		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="DECORATE keys">
+			<param name="Local" value="gc_decoratekeys.html">
+			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="GZDoom Builder manual">
