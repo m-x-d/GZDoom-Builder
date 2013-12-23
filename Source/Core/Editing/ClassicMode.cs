@@ -144,6 +144,7 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 
 			SetupHints(); //mxd
+			SetupMultiselectionHints(); //mxd
 		}
 
 		// Disposer
@@ -814,6 +815,12 @@ namespace CodeImp.DoomBuilder.Editing
 		/// </summary>
 		protected virtual void SetupHints() { //mxd
 			hints = new[] { "Press F1 to view help about current editing mode" };
+		}
+
+		/// <summary>
+		/// Override this to setup hints shown while multiselecting for this editing mode
+		/// </summary>
+		protected virtual void SetupMultiselectionHints() { //mxd
 			multiselectionHints = new[] { "Press F1 to view help about current editing mode" };
 		}
 		

@@ -657,7 +657,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						   "Press " + insertKey + " to create a new thing",
 						   "Press " + drawKey + " to start drawing lines",
 			};
+		}
 
+		//mxd
+		protected override void SetupMultiselectionHints() {
 			multiselectionHints = new[] { "Hold Shift to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
 										  "Hold Ctrl to enable subtractive selection",
 										  "Hold Ctrl-Shift to intersect the new selection with already existing one",

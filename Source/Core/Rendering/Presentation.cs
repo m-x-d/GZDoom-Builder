@@ -34,10 +34,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Static instances
 		private static Presentation standard;
 		private static Presentation things;
+		private static Presentation dragThings; //mxd
 		
 		// Static properties
 		public static Presentation Standard { get { return standard; } }
 		public static Presentation Things { get { return things; } }
+		public static Presentation DragThings { get { return dragThings; } } //mxd
 		
 		// Variables
 		protected internal List<PresentLayer> layers;
@@ -75,6 +77,15 @@ namespace CodeImp.DoomBuilder.Rendering
 			things.layers.Add(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
 			things.layers.Add(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, 1f, false));
 			things.layers.Add(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
+
+			//mxd. Drag things in Classic mode
+			dragThings = new Presentation();
+			dragThings.layers.Add(new PresentLayer(RendererLayer.Background, BlendingMode.Mask, General.Settings.BackgroundAlpha));
+			dragThings.layers.Add(new PresentLayer(RendererLayer.Surface, BlendingMode.Mask));
+			dragThings.layers.Add(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, 1f, false));
+			dragThings.layers.Add(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
+			dragThings.layers.Add(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
+			dragThings.layers.Add(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
 		}
 	}
 

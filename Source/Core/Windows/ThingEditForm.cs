@@ -159,13 +159,13 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets up the form to edit the given things
 		public void Setup(ICollection<Thing> things)
 		{
-			Thing ft;
-
 			preventchanges = true;
 
 			// Keep this list
 			this.things = things;
-			if(things.Count > 1) this.Text = "Edit Things (" + things.Count + ")";
+			if (things.Count > 1) this.Text = "Edit Things (" + things.Count + ")";
+			hint.Visible = things.Count > 1; //mxd
+			hintlabel.Visible = things.Count > 1; //mxd
 
 			//mxd. Make undo
 			string undodesc = "thing";
@@ -176,7 +176,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Set all options to the first thing properties
 			////////////////////////////////////////////////////////////////////////
 
-			ft = General.GetByIndex(things, 0);
+			Thing ft = General.GetByIndex(things, 0);
 			
 			// Set type
 			thingtype.SelectType(ft.Type);

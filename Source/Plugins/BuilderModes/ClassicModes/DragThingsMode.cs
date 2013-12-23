@@ -100,7 +100,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Just keep the base mode button checked
 		public override string EditModeButtonName { get { return basemode.GetType().Name; } }
 
-		internal EditMode BaseMode { get { return basemode; } }
+		//internal EditMode BaseMode { get { return basemode; } }
 		
 		#endregion
 
@@ -250,9 +250,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This redraws the display
 		public override void OnRedrawDisplay()
 		{
-			bool viewchanged = CheckViewChanged();
-
-			if(viewchanged)
+			if(CheckViewChanged())
 			{
 				renderer.RedrawSurface();
 
@@ -315,7 +313,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
-			renderer.SetPresentation(Presentation.Things);
+			renderer.SetPresentation(Presentation.DragThings); //mxd
 		}
 		
 		// Disenagaging
@@ -371,12 +369,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This checks if the view offset/zoom changed and updates the check
 		private bool CheckViewChanged()
 		{
-			bool viewchanged = false;
-			
 			// View changed?
-			if(renderer.OffsetX != lastoffsetx) viewchanged = true;
-			if(renderer.OffsetY != lastoffsety) viewchanged = true;
-			if(renderer.Scale != lastscale) viewchanged = true;
+			bool viewchanged = (renderer.OffsetX != lastoffsetx || renderer.OffsetY != lastoffsety || renderer.Scale != lastscale);
 
 			// Keep view information
 			lastoffsetx = renderer.OffsetX;
@@ -437,6 +431,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UpdateRedraw();
 				renderer.Present();
 			}
+		}
+
+		//mxd
+		protected override void SetupHints() {
+			hints = new[] { "Hold Shift to "+(General.Interface.SnapToGrid ? "disable" : "enable")+ " grid snapping.",
+							"Hold Ctrl to snap to nearest vertex."
+			              };
 		}
 
 		// When edit button is released
