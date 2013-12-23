@@ -39,8 +39,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Variables
-
-		protected bool paintselectpressed; //mxd
 		
 		#endregion
 
@@ -289,29 +287,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Update Visual Mode camera
 			General.Map.VisualCamera.PositionAtThing();
 			
-			// Redraw display to show changes
-			General.Interface.RedrawDisplay();
-		}
-
-		//mxd
-		[BeginAction("classicpaintselect")]
-		protected virtual void OnPaintSelectBegin() {
-			paintselectpressed = true;
-		}
-
-		//mxd
-		[EndAction("classicpaintselect")]
-		protected virtual void OnPaintSelectEnd() {
-			paintselectpressed = false;
-		}
-
-		//mxd
-		[BeginAction("togglebrightness")]
-		protected virtual void ToggleBrightness() {
-			renderer.FullBrightness = !renderer.FullBrightness;
-			string onoff = renderer.FullBrightness ? "ON" : "OFF";
-			General.Interface.DisplayStatus(StatusType.Action, "Full Brightness is now " + onoff + ".");
-
 			// Redraw display to show changes
 			General.Interface.RedrawDisplay();
 		}
