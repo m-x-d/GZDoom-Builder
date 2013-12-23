@@ -273,6 +273,10 @@ namespace CodeImp.DoomBuilder.Config
 			else if(string.IsNullOrEmpty(title))
 				title = actor.ClassName;
 				
+			//mxd. Color override?
+			if (actor.HasPropertyWithValue("$color")) 
+				color = actor.GetPropertyValueInt("$color", 0);
+
 			// Remove doublequotes from title
 			if((title.Length > 2) && title.StartsWith("\"") && title.EndsWith("\""))
 				title = title.Substring(1, title.Length - 2);
