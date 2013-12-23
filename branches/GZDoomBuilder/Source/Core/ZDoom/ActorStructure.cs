@@ -449,8 +449,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			int intvalue;
 			if(int.TryParse(str, NumberStyles.Integer, CultureInfo.InvariantCulture, out intvalue))
 				return intvalue;
-			else
-				return 0;
+			return 0;
 		}
 		
 		/// <summary>
@@ -463,8 +462,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			float fvalue;
 			if(float.TryParse(str, NumberStyles.Float, CultureInfo.InvariantCulture, out fvalue))
 				return fvalue;
-			else
-				return 0.0f;
+			return 0.0f;
 		}
 		
 		/// <summary>
@@ -474,10 +472,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			if(flags.ContainsKey(flag))
 				return true;
-			else if(!skipsuper && (baseclass != null))
+			if(!skipsuper && (baseclass != null))
 				return baseclass.HasFlagValue(flag);
-			else
-				return false;
+			return false;
 		}
 		
 		/// <summary>
@@ -487,10 +484,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			if(flags.ContainsKey(flag))
 				return flags[flag];
-			else if(!skipsuper && (baseclass != null))
+			if(!skipsuper && (baseclass != null))
 				return baseclass.GetFlagValue(flag, defaultvalue);
-			else
-				return defaultvalue;
+			return defaultvalue;
 		}
 		
 		/// <summary>
@@ -500,10 +496,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			if(states.ContainsKey(statename))
 				return true;
-			else if(!skipsuper && (baseclass != null))
+			if(!skipsuper && (baseclass != null))
 				return baseclass.HasState(statename);
-			else
-				return false;
+			return false;
 		}
 		
 		/// <summary>
@@ -513,10 +508,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			if(states.ContainsKey(statename))
 				return states[statename];
-			else if(!skipsuper && (baseclass != null))
+			if(!skipsuper && (baseclass != null))
 				return baseclass.GetState(statename);
-			else
-				return null;
+			return null;
 		}
 		
 		/// <summary>

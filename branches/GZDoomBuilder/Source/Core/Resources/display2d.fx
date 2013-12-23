@@ -49,18 +49,6 @@ sampler2D texture1samp = sampler_state
 	MipMapLodBias = 0.0f;
 };
 
-// Texture sampler settings
-sampler2D texture1linear = sampler_state
-{
-	Texture = <texture1>;
-	MagFilter = Linear;
-	MinFilter = Linear;
-	MipFilter = Linear;
-	AddressU = Wrap;
-	AddressV = Wrap;
-	MipMapLodBias = 0.0f;
-};
-
 // Transformation
 PixelData vs_transform(VertexData vd)
 {
@@ -115,7 +103,7 @@ float4 ps_normal(PixelData pd) : COLOR
 float4 ps_fullbright(PixelData pd) : COLOR
 {
 	// Take this pixel's color
-	float4 c = tex2D(texture1linear, pd.uv);
+	float4 c = tex2D(texture1samp, pd.uv);
 	return float4(c.rgb, c.a * rendersettings.w);
 }
 

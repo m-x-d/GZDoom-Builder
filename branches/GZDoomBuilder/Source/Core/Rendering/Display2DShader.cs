@@ -104,9 +104,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				Matrix world = manager.D3DDevice.Device.GetTransform(TransformState.World);
 				Matrix view = manager.D3DDevice.Device.GetTransform(TransformState.View);
 				effect.SetValue(transformsettings, Matrix.Multiply(world, view));
-				TextureFilter filter = TextureFilter.Point;
-				if(bilinear) filter = TextureFilter.Linear;
-				effect.SetValue<int>(filtersettings, (int)filter);
+				TextureFilter filter = (bilinear ? TextureFilter.Linear : TextureFilter.Point);
+				effect.SetValue(filtersettings, (int)filter);
 			}
 		}
 
