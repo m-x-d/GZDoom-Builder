@@ -17,7 +17,6 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Rendering;
 using SlimDX;
@@ -922,7 +921,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 									float u;
 									if(side.Line.Line.GetIntersection(measureline, out u)) {
-										if(float.IsNaN(u) || (u < 0.0f) || (u > 1.0f)) continue;
+										if(float.IsNaN(u) || (u <= 0.0f) || (u >= 1.0f)) continue;
 										intersections.Add(u);
 									}
 
@@ -1012,10 +1011,10 @@ namespace CodeImp.DoomBuilder.Geometry
 										break;
 									}
 								}
-								else
+								/*else
 								{
 									// We can't tell, so lets ignore this for now.
-								}
+								}*/
 							}
 						}
 
