@@ -2337,6 +2337,8 @@ namespace CodeImp.DoomBuilder.Map
 		/// will be added to changedlines. Returns false when the operation failed.</summary>
 		public static bool SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist, ICollection<Linedef> changedlines)
 		{
+			if (verts.Count == 0 || lines.Count == 0) return true; //mxd
+			
 			float splitdist2 = splitdist * splitdist;
 			bool splitted;
 
@@ -2378,6 +2380,7 @@ namespace CodeImp.DoomBuilder.Map
 
 										// Add the new line to the list
 										lines.Add(nl);
+										blockmap.AddLinedef(nl);
 
 										// Both lines must be updated because their new length
 										// is relevant for next iterations!
