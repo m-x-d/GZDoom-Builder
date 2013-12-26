@@ -79,6 +79,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tvTextureSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tvTextureSets.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tvTextureSets.HideSelection = false;
 			this.tvTextureSets.ImageIndex = 0;
 			this.tvTextureSets.ImageList = this.smallimages;
 			this.tvTextureSets.Location = new System.Drawing.Point(681, 12);
