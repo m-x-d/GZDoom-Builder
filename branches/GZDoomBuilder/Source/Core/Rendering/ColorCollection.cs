@@ -191,8 +191,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		internal void CreateCorrectionTable()
 		{
 			// Determine amounts
-			float gamma = (float)(General.Settings.ImageBrightness + 10) * 0.1f;
-			float bright = (float)General.Settings.ImageBrightness * 5f;
+			float gamma = (General.Settings.ImageBrightness + 10) * 0.1f;
+			float bright = General.Settings.ImageBrightness * 5f;
 			
 			// Make table
 			correctiontable = new byte[256];
@@ -201,7 +201,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			for(int i = 0; i < 256; i++)
 			{
 				byte b;
-				float a = (float)i * gamma + bright;
+				float a = i * gamma + bright;
 				if(a < 0f) b = 0; else if(a > 255f) b = 255; else b = (byte)a;
 				correctiontable[i] = b;
 			}

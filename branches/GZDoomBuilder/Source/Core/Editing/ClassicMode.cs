@@ -75,7 +75,6 @@ namespace CodeImp.DoomBuilder.Editing
 		// View panning
 		protected bool panning;
 		private bool autopanenabled;
-		protected bool paintselectpressed; //mxd
 
 		//mxd. used in "Play From Here" Action
 		private Thing playerStart;
@@ -868,29 +867,6 @@ namespace CodeImp.DoomBuilder.Editing
 		protected virtual void ViewModeCeilings()
 		{
 			SetViewMode(ViewMode.CeilingTextures);
-		}
-
-		//mxd
-		[BeginAction("classicpaintselect")]
-		protected virtual void OnPaintSelectBegin() {
-			paintselectpressed = true;
-		}
-
-		//mxd
-		[EndAction("classicpaintselect")]
-		protected virtual void OnPaintSelectEnd() {
-			paintselectpressed = false;
-		}
-
-		//mxd
-		[BeginAction("togglebrightness")]
-		protected virtual void ToggleBrightness() {
-			renderer.FullBrightness = !renderer.FullBrightness;
-			string onoff = renderer.FullBrightness ? "ON" : "OFF";
-			General.Interface.DisplayStatus(StatusType.Action, "Full Brightness is now " + onoff + ".");
-
-			// Redraw display to show changes
-			General.Interface.RedrawDisplay();
 		}
 
 		#endregion
