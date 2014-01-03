@@ -508,7 +508,7 @@ namespace CodeImp.DoomBuilder.Actions
 		internal bool KeyPressed(int key)
 		{
 			int strippedkey = key & ~((int)Keys.Alt | (int)Keys.Shift | (int)Keys.Control);
-			if((strippedkey == (int)Keys.ShiftKey) || (strippedkey == (int)Keys.ControlKey)) key = strippedkey;
+			if((strippedkey == (int)Keys.ShiftKey) || (strippedkey == (int)Keys.ControlKey) || (strippedkey == (int)Keys.Alt)) key = strippedkey;
 			bool repeat = pressedkeys.Contains(strippedkey);
 			
 			// Update pressed keys
