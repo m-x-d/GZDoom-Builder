@@ -162,6 +162,18 @@ namespace CodeImp.DoomBuilder.Data
 		public virtual Dictionary<string, Stream> GetGldefsData(GameType gameType) { return new Dictionary<string, Stream>(); }
 		public virtual Dictionary<string, Stream> GetGldefsData(string location) { return new Dictionary<string, Stream>(); }
 
+		//mxd. When implemented, this returns the list of voxel model names
+		public virtual string[] GetVoxelNames() { return null; }
+
+		//mxd. When implemented, this checks if the given voxel lump exists
+		public virtual bool GetVoxelExists(string name) { return false; }
+
+		//mxd. When implemented, this returns the voxel lump
+		public virtual Stream GetVoxelData(string name) { return null; }
+
+		//mxd
+		public virtual KeyValuePair<string, Stream> GetVoxeldefData() { return new KeyValuePair<string,Stream>(); }
+
 		//mxd
 		internal virtual MemoryStream LoadFile(string name) { return null; }
 		//mxd

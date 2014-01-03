@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.Data
 				invertedflatranges.Add(range);
 			}
 
-			for (int i = 0; i < flatranges.Count; i++) {
+			for (int i = 1; i < flatranges.Count; i++) {
 				if (flatranges[i].start == 0) continue;
 				LumpRange range = new LumpRange();
 

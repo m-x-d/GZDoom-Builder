@@ -98,10 +98,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// This returns true if the given character is a special token
 		protected internal bool IsSpecialToken(string s)
 		{
-			if(s.Length > 0)
-				return (specialtokens.IndexOf(s[0]) > -1);
-			else
-				return false;
+			if(s.Length > 0) return (specialtokens.IndexOf(s[0]) > -1);
+			return false;
 		}
 		
 		// This removes beginning and ending quotes from a token
@@ -184,11 +182,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// Returns null when the end of the stream has been reached
 		protected internal string ReadToken()
 		{
-			string token = "";
-			bool quotedstring = false;
-			
 			// Return null when the end of the stream has been reached
 			if(datastream.Position == datastream.Length) return null;
+			
+			string token = "";
+			bool quotedstring = false;
 			
 			// Start reading
 			char c = (char)datareader.ReadByte();
@@ -259,6 +257,73 @@ namespace CodeImp.DoomBuilder.ZDoom
 					break;
 			}
 			
+			return token;
+		}
+
+		// This reads a token (all sequential non-whitespace characters or a single character) using custom set of special tokens
+		// Returns null when the end of the stream has been reached (mxd)
+		protected internal string ReadToken(string specialTokens) {
+			// Return null when the end of the stream has been reached
+			if(datastream.Position == datastream.Length) return null;
+			
+			string token = "";
+			bool quotedstring = false;
+
+			// Start reading
+			char c = (char)datareader.ReadByte();
+			while(!IsWhitespace(c) || quotedstring || specialTokens.IndexOf(c) != -1) {
+				// Special token?
+				if(!quotedstring && specialTokens.IndexOf(c) != -1) {
+					// Not reading a token yet?
+					if(token.Length == 0) {
+						// This is our whole token
+						token += c;
+						break;
+					} 
+
+					// This is a new token and shouldn't be read now
+					// Go one character back so we can read this token again
+					datastream.Seek(-1, SeekOrigin.Current);
+					break;
+				} else {
+					// Quote?
+					if(c == '"') {
+						// Quote to end the string?
+						if(quotedstring) quotedstring = false;
+
+						// First character is a quote?
+						if(token.Length == 0) quotedstring = true;
+
+						token += c;
+					}
+						// Potential comment?
+					else if((c == '/') && !quotedstring) {
+						// Check the next byte
+						if(datastream.Position == datastream.Length) return token;
+						char c2 = (char)datareader.ReadByte();
+						if((c2 == '/') || (c2 == '*')) {
+							// This is a comment start, so the token ends here
+							// Go two characters back so we can read this comment again
+							datastream.Seek(-2, SeekOrigin.Current);
+							break;
+						} else {
+							// Not a comment
+							// Go one character back so we can read this char again
+							datastream.Seek(-1, SeekOrigin.Current);
+							token += c;
+						}
+					} else {
+						token += c;
+					}
+				}
+
+				// Next character
+				if(datastream.Position < datastream.Length)
+					c = (char)datareader.Read();
+				else
+					break;
+			}
+
 			return token;
 		}
 

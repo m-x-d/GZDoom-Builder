@@ -313,16 +313,14 @@ namespace CodeImp.DoomBuilder.Data
 			LoadInternalSprites();
 
 			//mxd
-			General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing MAPINFO...");
 			loadMapInfo();
+			ModelReader.Init();
+			loadVoxels();
 			Dictionary<string, int> actorsByClass = createActorsByClassList();
-			General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing model definitions...");
 			loadModeldefs(actorsByClass);
-			General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing GLDEFS...");
 			loadGldefs(actorsByClass);
+			actorsByClass = null; //don't need them any more
 			General.MainWindow.DisplayReady();
-			//don't need them any more
-			actorsByClass = null;
 			
 			// Process colormaps (we just put them in as textures)
 			foreach(KeyValuePair<long, ImageData> t in colormapsonly)
@@ -1055,37 +1053,35 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(ThingTypeInfo ti in General.Map.Data.ThingTypes)
 			{
 				// Valid sprite name?
-				if((ti.Sprite.Length > 0) && (ti.Sprite.Length < 9))
+				if(ti.Sprite.Length == 0 || ti.Sprite.Length > 8) continue; //mxd
+					
+				ImageData image = null;
+
+				// Sprite not in our collection yet?
+				if(!sprites.ContainsKey(ti.SpriteLongName)) 
 				{
-					ImageData image = null;
-					
-					// Sprite not in our collection yet?
-					if(!sprites.ContainsKey(ti.SpriteLongName))
+					// Find sprite data
+					Stream spritedata = GetSpriteData(ti.Sprite);
+					if(spritedata != null) 
 					{
-						// Find sprite data
-						Stream spritedata = GetSpriteData(ti.Sprite);
-						if(spritedata != null)
-						{
-							// Make new sprite image
-							image = new SpriteImage(ti.Sprite);
-							
-							// Add to collection
-							sprites.Add(ti.SpriteLongName, image);
-						}
-						else 
-						{ //mxd
-							General.ErrorLogger.Add(ErrorType.Error, "Missing sprite lump '" + ti.Sprite + "'. Forgot to include required resources?");
-						}
+						// Make new sprite image
+						image = new SpriteImage(ti.Sprite);
+
+						// Add to collection
+						sprites.Add(ti.SpriteLongName, image);
+					} 
+					else 
+					{ //mxd
+						General.ErrorLogger.Add(ErrorType.Error, "Missing sprite lump '" + ti.Sprite + "'. Forgot to include required resources?");
 					}
-					else
-					{
-						image = sprites[ti.SpriteLongName];
-					}
-					
-					// Add to preview manager
-					if(image != null)
-						previews.AddImage(image);
+				} 
+				else 
+				{
+					image = sprites[ti.SpriteLongName];
 				}
+
+				// Add to preview manager
+				if(image != null) previews.AddImage(image);
 			}
 			
 			// Output info
@@ -1388,7 +1384,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#endregion
 
-		#region ================== mxd. Modeldef, Gldefs, Mapinfo
+		#region ================== mxd. Modeldef, Voxeldef, Gldefs, Mapinfo
 
 		//mxd. This creates <Actor Class, Thing.Type> dictionary. Should be called after all DECORATE actors are parsed
 		private Dictionary<string, int> createActorsByClassList() {
@@ -1468,7 +1464,7 @@ namespace CodeImp.DoomBuilder.Data
 			if (actorsByClass == null || actorsByClass.Count == 0) return;
 
 			Dictionary<string, ModelData> modelDefEntriesByName = new Dictionary<string, ModelData>();
-			ModeldefParser mdeParser = new ModeldefParser();
+			ModeldefParser parser = new ModeldefParser();
 
 			foreach (DataReader dr in containers) {
 				currentreader = dr;
@@ -1476,8 +1472,8 @@ namespace CodeImp.DoomBuilder.Data
 				Dictionary<string, Stream> streams = dr.GetModeldefData();
 				foreach (KeyValuePair<string, Stream> group in streams) {
 					// Parse the data
-					if (mdeParser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key)) {
-						foreach (KeyValuePair<string, ModelData> g in mdeParser.ModelDefEntries) {
+					if(parser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key)) {
+						foreach(KeyValuePair<string, ModelData> g in parser.Entries) {
 							modelDefEntriesByName.Add(g.Key, g.Value);
 						}
 					}
@@ -1494,6 +1490,83 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			foreach(Thing t in General.Map.Map.Things) t.UpdateModelStatus();
+		}
+
+		//mxd
+		private void loadVoxels() {
+			//Get names of all voxel models, which can be used "as is"
+			Dictionary<string, bool> voxelNames = new Dictionary<string, bool>();
+			
+			foreach(DataReader dr in containers) {
+				currentreader = dr;
+
+				string[] result = dr.GetVoxelNames();
+				if(result == null) continue;
+
+				foreach(string s in result) {
+					if(!voxelNames.ContainsKey(s)) voxelNames.Add(s, false);
+				}
+			}
+
+			Dictionary<string, List<int>> sprites = new Dictionary<string, List<int>>();
+
+			// Go for all things
+			foreach(ThingTypeInfo ti in thingtypes.Values) {
+				// Valid sprite name?
+				string sprite = string.Empty;
+
+				if(ti.Sprite.Length == 0 || ti.Sprite.Length > 8) {
+					if(ti.Actor == null) continue;
+					sprite = ti.Actor.FindSuitableVoxel(voxelNames);
+				} else {
+					sprite = ti.Sprite;
+				}
+
+				if (string.IsNullOrEmpty(sprite)) continue;
+				if(!sprites.ContainsKey(sprite)) sprites.Add(sprite, new List<int>());
+				sprites[sprite].Add(ti.Index);
+			}
+
+			VoxeldefParser parser = new VoxeldefParser();
+			Dictionary<string, bool> processed = new Dictionary<string,bool>();
+
+			//parse VOXLEDEF
+			foreach(DataReader dr in containers) {
+				currentreader = dr;
+
+				KeyValuePair<string, Stream> group = dr.GetVoxeldefData();
+				if(group.Value != null && parser.Parse(group.Value, group.Key)) {
+					foreach(KeyValuePair<string, ModelData> entry in parser.Entries){
+						foreach(KeyValuePair<string, List<int>> sc in sprites) {
+							if (sc.Key.Contains(entry.Key)) {
+								foreach(int id in sc.Value) {
+									modeldefEntries[id] = entry.Value;
+								}
+								processed.Add(entry.Key, false);
+							}
+						}
+					}
+				}
+			}
+
+			currentreader = null;
+
+			//get voxel models
+			foreach(KeyValuePair<string, bool> group in voxelNames) {
+				if(processed.ContainsKey(group.Key)) continue;
+				foreach (KeyValuePair<string, List<int>> sc in sprites) {
+					if(sc.Key.Contains(group.Key)) {
+						//it's a model without a definition, and it corresponds to a sprite we can display, so let's add it
+						ModelData data = new ModelData();
+						data.IsVoxel = true;
+						data.ModelNames.Add(group.Key);
+
+						foreach(int id in sprites[sc.Key]) {
+							modeldefEntries[id] = data;
+						}
+					}
+				}
+			}
 		}
 
 		//mxd. This parses gldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
