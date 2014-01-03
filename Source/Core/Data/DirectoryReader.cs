@@ -232,7 +232,51 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		#endregion
-		
+
+		#region ================== Voxels (mxd)
+
+		//mxd.  This finds and returns a voxel stream
+		public override Stream GetVoxelData(string name) {
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			try {
+				// Find in voxels directory
+				string path = Path.Combine(VOXELS_DIR, Path.GetDirectoryName(name));
+				string filename = FindFirstFile(path, Path.GetFileName(name), true);
+				if((filename != null) && FileExists(filename)) {
+					return LoadFile(filename);
+				}
+			} catch(Exception e) {
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading voxel '" + name + "' from directory: " + e.Message);
+			}
+
+			// Nothing found
+			return null;
+		}
+
+		//mxd. This checks if the given sprite exists
+		public override bool GetVoxelExists(string name) {
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Find in voxels directory
+			try {
+				string path = Path.Combine(VOXELS_DIR, Path.GetDirectoryName(name));
+				string filename = FindFirstFile(path, Path.GetFileName(name), true);
+				if((filename != null) && FileExists(filename)) {
+					return true;
+				}
+			} catch(Exception e) {
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while checking voxel '" + name + "' existance in directory: " + e.Message);
+			}
+
+			// Nothing found
+			return false;
+		}
+
+		#endregion
+
 		#region ================== Methods
 
 		// Return a short name for this data location

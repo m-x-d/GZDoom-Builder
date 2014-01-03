@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
@@ -37,6 +38,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected const string SPRITES_DIR = "sprites";
 		protected const string COLORMAPS_DIR = "colormaps";
 		protected const string GRAPHICS_DIR = "graphics"; //mxd
+		protected const string VOXELS_DIR = "voxels"; //mxd
 		
 		#endregion
 
@@ -461,16 +463,16 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
-		#region ================== Modeldef
-		
+		#region ================== Modeldef (mxd)
+
 		//mxd
 		public override Dictionary<string, Stream> GetModeldefData() {
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
 			// Error when suspended
 			if (issuspended) throw new Exception("Data reader is suspended");
 
 			//modedef should be in root folder
 			string[] allFiles = GetAllFiles("", false);
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
 
 			foreach (string s in allFiles) {
 				if (s.ToLowerInvariant().IndexOf("modeldef") != -1) {
@@ -481,10 +483,48 @@ namespace CodeImp.DoomBuilder.Data
 			return streams;
 		}
 
+		#endregion 
+
+		#region ================== Voxeldef (mxd)
+
+		//mxd. This returns the list of voxels, which can be used without VOXELDEF definition
+		public override string[] GetVoxelNames() {
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			string[] files = GetAllFiles("voxels", false);
+			List<string> voxels = new List<string>();
+			Regex spriteName = new Regex("(?i)\\A[a-z0-9]{4}([a-z][0-9]{0,2})$");
+
+			for(int i = 0; i < files.Length; i++) {
+				string s = Path.GetFileNameWithoutExtension(files[i]).ToUpperInvariant();
+				if(spriteName.IsMatch(s)) voxels.Add(s);
+			}
+
+			return voxels.ToArray();
+		}
+
+		//mxd
+		public override KeyValuePair<string, Stream> GetVoxeldefData() {
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			//voxeldef should be in root folder
+			string[] files = GetAllFiles("", false);
+
+			foreach(string s in files) {
+				if(Path.GetFileNameWithoutExtension(s).ToUpperInvariant() == "VOXELDEF") {
+					return new KeyValuePair<string,Stream>(s, LoadFile(s));
+				}
+			}
+
+			return new KeyValuePair<string,Stream>();
+		}
+
 		#endregion
 
-		#region ================== (Z)MAPINFO
-		
+		#region ================== (Z)MAPINFO (mxd)
+
 		//mxd
 		public override Dictionary<string, Stream> GetMapinfoData() {
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
@@ -507,13 +547,14 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
-		#region ================== GLDEFS
+		#region ================== GLDEFS (mxd)
 
 		//mxd
 		public override Dictionary<string, Stream> GetGldefsData(GameType gameType) {
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
 			// Error when suspended
 			if (issuspended) throw new Exception("Data reader is suspended");
+
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
 
 			//at least one of gldefs should be in root folder
 			string[] allFiles = GetAllFiles("", false);
@@ -540,15 +581,12 @@ namespace CodeImp.DoomBuilder.Data
 
 		//mxd
 		public override Dictionary<string, Stream> GetGldefsData(string location) {
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
 			// Error when suspended
 			if (issuspended) throw new Exception("Data reader is suspended");
 
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
 			Stream s = LoadFile(location);
-
-			if (s != null)
-				streams.Add(location, s);
-
+			if (s != null) streams.Add(location, s);
 			return streams;
 		}
 

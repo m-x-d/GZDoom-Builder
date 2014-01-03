@@ -864,6 +864,7 @@
     <Compile Include="ZDoom\StateGoto.cs" />
     <Compile Include="ZDoom\TexturesParser.cs" />
     <Compile Include="ZDoom\TextureStructure.cs" />
+    <Compile Include="ZDoom\VoxeldefParser.cs" />
     <Compile Include="ZDoom\ZDTextParser.cs" />
     <Compile Include="ZDoom\DecorateParser.cs" />
     <Compile Include="ZDoom\StateStructure.cs" />

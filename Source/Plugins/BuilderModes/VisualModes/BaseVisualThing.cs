@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This builds the thing geometry. Returns false when nothing was created.
 		public virtual bool Setup()
 		{
-			PixelColor sectorcolor = new PixelColor(255, 255, 255, 255);
+			int sectorcolor = new PixelColor(255, 255, 255, 255).ToInt();
 			
 			//mxd. Check thing size 
 			float infoRadius, infoHeight;
@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Use sector brightness for color shading
 						PixelColor areabrightness = PixelColor.FromInt(mode.CalculateBrightness(level.brightnessbelow));
 						PixelColor areacolor = PixelColor.Modulate(level.colorbelow, areabrightness);
-						sectorcolor = areacolor.WithAlpha(255);
+						sectorcolor = areacolor.WithAlpha(255).ToInt();
 					}
 				}
 				
@@ -157,19 +157,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					if(sizeless) { //mxd
 						float hh = height / 2;
-						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety - hh, sectorcolor.ToInt(), 0.0f, 1.0f);
-						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, hh + offsety, sectorcolor.ToInt(), 0.0f, 0.0f);
-						verts[2] = new WorldVertex(+radius + offsetx, 0.0f, hh + offsety, sectorcolor.ToInt(), 1.0f, 0.0f);
+						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety - hh, sectorcolor, 0.0f, 1.0f);
+						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, hh + offsety, sectorcolor, 0.0f, 0.0f);
+						verts[2] = new WorldVertex(+radius + offsetx, 0.0f, hh + offsety, sectorcolor, 1.0f, 0.0f);
 						verts[3] = verts[0];
 						verts[4] = verts[2];
-						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety - hh, sectorcolor.ToInt(), 1.0f, 1.0f);
+						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety - hh, sectorcolor, 1.0f, 1.0f);
 					} else {
-						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety, sectorcolor.ToInt(), 0.0f, 1.0f);
-						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, height + offsety, sectorcolor.ToInt(), 0.0f, 0.0f);
-						verts[2] = new WorldVertex(+radius + offsetx, 0.0f, height + offsety, sectorcolor.ToInt(), 1.0f, 0.0f);
+						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety, sectorcolor, 0.0f, 1.0f);
+						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, height + offsety, sectorcolor, 0.0f, 0.0f);
+						verts[2] = new WorldVertex(+radius + offsetx, 0.0f, height + offsety, sectorcolor, 1.0f, 0.0f);
 						verts[3] = verts[0];
 						verts[4] = verts[2];
-						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety, sectorcolor.ToInt(), 1.0f, 1.0f);
+						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety, sectorcolor, 1.0f, 1.0f);
 					}
 					SetVertices(verts);
 				}
@@ -183,12 +183,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
-					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, sectorcolor.ToInt(), 0.0f, 1.0f);
-					verts[1] = new WorldVertex(-radius, 0.0f, height, sectorcolor.ToInt(), 0.0f, 0.0f);
-					verts[2] = new WorldVertex(+radius, 0.0f, height, sectorcolor.ToInt(), 1.0f, 0.0f);
+					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, sectorcolor, 0.0f, 1.0f);
+					verts[1] = new WorldVertex(-radius, 0.0f, height, sectorcolor, 0.0f, 0.0f);
+					verts[2] = new WorldVertex(+radius, 0.0f, height, sectorcolor, 1.0f, 0.0f);
 					verts[3] = verts[0];
 					verts[4] = verts[2];
-					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, sectorcolor.ToInt(), 1.0f, 1.0f);
+					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, sectorcolor, 1.0f, 1.0f);
 					SetVertices(verts);
 				}
 			}

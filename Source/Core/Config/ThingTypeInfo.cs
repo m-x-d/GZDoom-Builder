@@ -91,13 +91,8 @@ namespace CodeImp.DoomBuilder.Config
 		public bool AbsoluteZ { get { return absolutez; } }
 		public SizeF SpriteScale { get { return spritescale; } }
 
-		//mxd. need this to add model overrides for things defined in configs.  
-		public string ClassName {
-			get {
-				if (actor != null)
-					return actor.ClassName;
-				return classname;
-		} }
+		//mxd. Need this to add model overrides for things defined in configs.  
+		public string ClassName { get { return (actor != null ? actor.ClassName : classname); } }
 		
 		#endregion
 

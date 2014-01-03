@@ -169,7 +169,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 								else
 									mapInfo.OutsideFogColor = color;
 							} else { //...or not
-								General.ErrorLogger.Add(ErrorType.Error, "Failed to parse " + fadeType + " value from string '" + colorVal + "' in " + sourcename + "' at line " + GetCurrentLineNumber());
+								General.ErrorLogger.Add(ErrorType.Error, "Failed to parse " + fadeType + " value from string '" + colorVal + "' in '" + sourcename + "' at line " + GetCurrentLineNumber());
 								datastream.Seek(-token.Length - 1, SeekOrigin.Current); //step back and try parsing this token again
 							}
 						} else {

@@ -1295,14 +1295,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Reset changed flags
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors) {
 				BaseVisualSector bvs = (vs.Value as BaseVisualSector);
-				foreach(VisualFloor vf in bvs.ExtraFloors)
-					vf.Changed = false;
-				foreach(VisualCeiling vc in bvs.ExtraCeilings)
-					vc.Changed = false;
-				foreach(VisualFloor vf in bvs.ExtraBackFloors)
-					vf.Changed = false;
-				foreach(VisualCeiling vc in bvs.ExtraBackCeilings)
-					vc.Changed = false;
+				foreach(VisualFloor vf in bvs.ExtraFloors) vf.Changed = false;
+				foreach(VisualCeiling vc in bvs.ExtraCeilings) vc.Changed = false;
+				foreach(VisualFloor vf in bvs.ExtraBackFloors) vf.Changed = false;
+				foreach(VisualCeiling vc in bvs.ExtraBackCeilings) vc.Changed = false;
 				bvs.Floor.Changed = false;
 				bvs.Ceiling.Changed = false;
 			}
@@ -2107,6 +2103,122 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			PostAction();
+		}
+
+		//mxd
+		[BeginAction("matchbrightness")]
+		public void MatchBrightness() {
+			//check input
+			if (!General.Map.UDMF) {
+				General.Interface.DisplayStatus(StatusType.Warning, "'Match Brightness' action works only in UDMF map format!");
+				return;
+			}
+
+			if (selectedobjects.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "'Match Brightness' action requires a selection!");
+				return;
+			}
+
+			IVisualEventReceiver highlighted = (target.picked as IVisualEventReceiver);
+
+			if(highlighted is BaseVisualThing) {
+				General.Interface.DisplayStatus(StatusType.Warning, "Highlight a surface, to which you want to match the brightness.");
+				return;
+			}
+
+			//get target brightness
+			int targetBrightness = int.MinValue;
+			if(highlighted is VisualFloor) {
+				VisualFloor v = highlighted as VisualFloor;
+				targetBrightness = v.Level.sector.Fields.GetValue("lightfloor", 0);
+				if (!v.Level.sector.Fields.GetValue("lightfloorabsolute", false)) {
+					targetBrightness += v.Level.sector.Brightness;
+				}
+			} else if(highlighted is VisualCeiling) {
+				VisualCeiling v = highlighted as VisualCeiling;
+				targetBrightness = v.Level.sector.Fields.GetValue("lightceiling", 0);
+				if(!v.Level.sector.Fields.GetValue("lightceilingabsolute", false)) {
+					targetBrightness += v.Level.sector.Brightness;
+				}
+			} else if(highlighted is VisualUpper || highlighted is VisualMiddleSingle || highlighted is VisualMiddleDouble || highlighted is VisualLower) {
+				BaseVisualGeometrySidedef v = highlighted as BaseVisualGeometrySidedef;
+				targetBrightness = v.Sidedef.Fields.GetValue("light", 0);
+				if(!v.Sidedef.Fields.GetValue("lightabsolute", false)) {
+					targetBrightness += v.Sidedef.Sector.Brightness;
+				}
+			} else if(highlighted is VisualMiddle3D) {
+				VisualMiddle3D v = highlighted as VisualMiddle3D;
+				Sidedef sd = v.GetControlLinedef().Front;
+
+				if (sd == null) {
+					General.Interface.DisplayStatus(StatusType.Warning, "Highlight a surface, to which you want to match the brightness.");
+					return;
+				}
+				targetBrightness = sd.Fields.GetValue("light", 0);
+				if(!sd.Fields.GetValue("lightabsolute", false)) {
+					targetBrightness += sd.Sector.Brightness;
+				}
+
+			} else {
+				General.Interface.DisplayStatus(StatusType.Warning, "Highlight a surface, to which you want to match the brightness.");
+				return;
+			}
+
+			if (targetBrightness == int.MinValue) {
+				General.Interface.DisplayStatus(StatusType.Warning, "Highlight a surface, to which you want to match the brightness.");
+				return;
+			}
+
+			//make undo
+			CreateUndo("Match Brightness");
+			targetBrightness = General.Clamp(targetBrightness, 0, 255);
+
+			//apply new brightness
+			foreach (IVisualEventReceiver obj in selectedobjects) {
+				if(obj == highlighted) continue;
+
+				if(obj is VisualFloor) {
+					VisualFloor v = obj as VisualFloor;
+					v.Level.sector.Fields.BeforeFieldsChange();
+					v.Sector.Changed = true;
+
+					if (v.Level.sector.Fields.GetValue("lightfloorabsolute", false)) {
+						v.Level.sector.Fields["lightfloor"] = new UniValue(UniversalType.Integer, targetBrightness);
+					} else {
+						v.Level.sector.Fields["lightfloor"] = new UniValue(UniversalType.Integer, targetBrightness - v.Level.sector.Brightness);
+					}
+
+					v.Sector.UpdateSectorGeometry(false);
+
+				} else if(obj is VisualCeiling) {
+					VisualCeiling v = obj as VisualCeiling;
+					v.Level.sector.Fields.BeforeFieldsChange();
+					v.Sector.Changed = true;
+
+					if(v.Level.sector.Fields.GetValue("lightceilingabsolute", false)) {
+						v.Level.sector.Fields["lightceiling"] = new UniValue(UniversalType.Integer, targetBrightness);
+					} else {
+						v.Level.sector.Fields["lightceiling"] = new UniValue(UniversalType.Integer, targetBrightness - v.Level.sector.Brightness);
+					}
+
+					v.Sector.UpdateSectorGeometry(false);
+
+				} else if(obj is VisualUpper || obj is VisualMiddleSingle || obj is VisualMiddleDouble || obj is VisualLower) {
+					BaseVisualGeometrySidedef v = obj as BaseVisualGeometrySidedef;
+					v.Sidedef.Fields.BeforeFieldsChange();
+					v.Sector.Changed = true;
+
+					if (v.Sidedef.Fields.GetValue("lightabsolute", false)) {
+						v.Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, targetBrightness);
+					} else {
+						v.Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, targetBrightness - v.Sidedef.Sector.Brightness);
+					}
+				}
+			}
+
+			//done
+			General.Interface.DisplayStatus(StatusType.Action, "Matched brightness for " + selectedobjects.Count + " surfaces.");
+			Interface_OnSectorEditFormValuesChanged(this, EventArgs.Empty);
 		}
 
 		[BeginAction("showvisualthings")]

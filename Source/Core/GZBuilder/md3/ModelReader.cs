@@ -41,13 +41,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		#endregion
 
-		#region ================== Load
+		#region ================== Init
 
-		public static void Load(ModelData mde, List<DataReader> containers, Device device) {
-			mde.Model = new GZModel();
-			BoundingBoxSizes bbs = new BoundingBoxSizes();
-			MD3LoadResult result = new MD3LoadResult();
-
+		internal static void Init() {
 			if(vertexElements == null) {
 				vertexElements = new[] {
 					new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
@@ -57,6 +53,61 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					VertexElement.VertexDeclarationEnd
 				};
 			}
+		}
+
+		#endregion
+
+		#region ================== Load
+
+		public static void Load(ModelData mde, List<DataReader> containers, Device device) {
+			if(mde.IsVoxel) {
+				loadKVX(mde, containers, device);
+			} else {
+				loadModel(mde, containers, device);
+			}
+		}
+
+		private static void loadKVX(ModelData mde, List<DataReader> containers, Device device) {
+			mde.Model = new GZModel();
+
+			//prepare WhiteTexture... just in case :)
+			//if(General.Map.Data.WhiteTexture.Texture == null || General.Map.Data.WhiteTexture.Texture.Disposed)
+				//General.Map.Data.WhiteTexture.CreateTexture();
+
+			for(int i = 0; i < mde.ModelNames.Count; i++) {
+				//find the model
+				Stream ms;
+
+				foreach(DataReader dr in containers) {
+					ms = dr.GetVoxelData(mde.ModelNames[i]);
+					if(ms == null) continue;
+
+					//load kvx
+					ReadKVX(mde, ms, device);
+
+					//add texture
+					//mde.Model.Textures.Add(General.Map.Data.WhiteTexture.Texture);
+
+					//done
+					ms.Close();
+					ms.Dispose();
+					break;
+				}
+			}
+
+			//clear unneeded data
+			mde.TextureNames = null;
+			mde.ModelNames = null;
+
+			if(mde.Model.Meshes == null || mde.Model.Meshes.Count == 0) {
+				mde.Model = null;
+			}
+		}
+
+		private static void loadModel(ModelData mde, List<DataReader> containers, Device device) {
+			mde.Model = new GZModel();
+			BoundingBoxSizes bbs = new BoundingBoxSizes();
+			MD3LoadResult result = new MD3LoadResult();
 
 			//load models and textures
 			for(int i = 0; i < mde.ModelNames.Count; i++) {
@@ -196,7 +247,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				Dictionary<string, List<WorldVertex>> vertListsPerTexture = new Dictionary<string, List<WorldVertex>>();
 				Dictionary<string, List<int>> vertexOffsets = new Dictionary<string, List<int>>();
 
-				string error = "";
+				string error;
 				for (int c = 0; c < numSurfaces; c++) {
 					string skin = "";
 					error = ReadSurface(ref bbs, ref skin, br, polyIndecesList, vertList, mde);
@@ -361,18 +412,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			return "";
 		}
 
-		private static void CreateMesh(Device device, ref MD3LoadResult result, List<WorldVertex> vertList, List<int> polyIndecesList) {
+		private static void CreateMesh(Device device, ref MD3LoadResult result, List<WorldVertex> verts, List<int> indices) {
 			//create mesh
-			Mesh mesh = new Mesh(device, polyIndecesList.Count / 3, vertList.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
+			Mesh mesh = new Mesh(device, indices.Count / 3, verts.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
 
 			using(DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) {
-				stream.WriteRange(vertList.ToArray());
+				stream.WriteRange(verts.ToArray());
 			}
 			mesh.UnlockVertexBuffer();
 
 			using(DataStream stream = mesh.LockIndexBuffer(LockFlags.None)) {
-				stream.WriteRange(polyIndecesList.ToArray());
+				stream.WriteRange(indices.ToArray());
 			}
+			mesh.UnlockIndexBuffer();
 
 			mesh.OptimizeInPlace(MeshOptimizeFlags.AttributeSort);
 
@@ -384,7 +436,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		#region ================== MD2
 
-		private static MD3LoadResult ReadMD2Model(ref BoundingBoxSizes bbs, ModelData mde, MemoryStream s, Device D3DDevice) {
+		private static MD3LoadResult ReadMD2Model(ref BoundingBoxSizes bbs, ModelData mde, MemoryStream s, Device device) {
 			long start = s.Position;
 			MD3LoadResult result = new MD3LoadResult();
 
@@ -397,7 +449,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 				int modelVersion = br.ReadInt32();
 				if(modelVersion != 8) { //MD2 version. Must be equal to 8
-					//General.ErrorLogger.Add(ErrorType.Error, "Unable to load model '" + path + "': MD2 version must be 8 but is " + modelVersion);
 					result.Errors = "MD2 version must be 8 but is " + modelVersion;
 					return result;
 				}
@@ -459,7 +510,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				s.Position += 16; //frame name
 
 				//rotation angles
-				float angle = mde.AngleOffset - Angle2D.PIHALF;// 0.5f * (float)Math.PI; //subtract 90 degrees to get correct rotation
+				float angle = mde.AngleOffset - Angle2D.PIHALF; // subtract 90 degrees to get correct rotation
 				float angleOfsetCos = (float)Math.Cos(angle);
 				float angleOfsetSin = (float)Math.Sin(angle);
 				float pitchOfsetCos = (float)Math.Cos(-mde.PitchOffset);
@@ -534,7 +585,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				}
 
 				//mesh
-				Mesh mesh = new Mesh(D3DDevice, polyIndecesList.Count / 3, vertList.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
+				Mesh mesh = new Mesh(device, polyIndecesList.Count / 3, vertList.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
 
 				using (DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) {
 					stream.WriteRange(vertList.ToArray());
@@ -558,9 +609,269 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		#endregion
 
+		#region ================== KVX
+
+		private static void ReadKVX(ModelData mde, Stream stream, Device device) {
+			PixelColor[] palette = new PixelColor[256];
+			List<WorldVertex> verts = new List<WorldVertex>();
+			int xsize, ysize, zsize;
+			Vector3D pivot;
+
+			using(BinaryReader reader = new BinaryReader(stream, Encoding.ASCII)) {
+				reader.ReadInt32(); //numbytes, we don't use that
+				xsize = reader.ReadInt32();
+				ysize = reader.ReadInt32();
+				zsize = reader.ReadInt32();
+
+				pivot = new Vector3D();
+				pivot.x = reader.ReadInt32() / 256f;
+				pivot.y = reader.ReadInt32() / 256f;
+				pivot.z = reader.ReadInt32() / 256f;
+
+				//read offsets
+				int[] xoffset = new int[xsize + 1]; //why is it xsize + 1, not xsize?..
+				short[,] xyoffset = new short[xsize, ysize + 1]; //why is it ysize + 1, not ysize?..
+
+				for(int i = 0; i < xoffset.Length; i++) {
+					xoffset[i] = reader.ReadInt32();
+				}
+
+				for(int x = 0; x < xsize; x++) {
+					for(int y = 0; y < ysize + 1; y++) {
+						xyoffset[x, y] = reader.ReadInt16();
+					}
+				}
+
+				//read slabs
+				List<int> offsets = new List<int>(xsize * ysize);
+				for(int x = 0; x < xsize; x++) {
+					for(int y = 0; y < ysize; y++) {
+						offsets.Add(xoffset[x] + xyoffset[x, y] + 28); //for some reason offsets are counted from start of xoffset[]...
+					}
+				}
+
+				int counter = 0;
+				int slabsEnd = (int)(reader.BaseStream.Length - 768);
+
+				//read palette
+				if(!mde.OverridePalette) {
+					reader.BaseStream.Position = slabsEnd;
+					for(int i = 0; i < 256; i++) {
+						byte r = (byte)(reader.ReadByte() * 4);
+						byte g = (byte)(reader.ReadByte() * 4);
+						byte b = (byte)(reader.ReadByte() * 4);
+						palette[i] = new PixelColor(255, r, g, b);
+					}
+				} else {
+					for(int i = 0; i < 256; i++ ) {
+						palette[i] = General.Map.Data.Palette[i];
+					}
+				}
+
+				for(int x = 0; x < xsize; x++) {
+					for(int y = 0; y < ysize; y++) {
+						reader.BaseStream.Position = offsets[counter];
+						int next = (counter < offsets.Count - 1 ? offsets[counter + 1] : slabsEnd);
+
+						//read slab
+						while(reader.BaseStream.Position < next) {
+							int ztop = reader.ReadByte();
+							int zleng = reader.ReadByte();
+							if(ztop + zleng > zsize) break;
+							int flags = reader.ReadByte();
+
+							if(zleng > 0) {
+								List<int> colorIndices = new List<int>(zleng);
+								for(int i = 0; i < zleng; i++) {
+									colorIndices.Add(reader.ReadByte());
+								}
+
+								if((flags & 16) != 0) {
+									AddFace(verts, new Vector3D(x, y, ztop), new Vector3D(x + 1, y, ztop), new Vector3D(x, y + 1, ztop), new Vector3D(x + 1, y + 1, ztop), pivot, colorIndices[0], mde.AngleOffset, mde.Scale.X);
+								}
+
+								int z = ztop;
+								int cstart = 0;
+								while(z < ztop + zleng) {
+									int c = 0;
+									while(z + c < ztop + zleng && colorIndices[cstart + c] == colorIndices[cstart]) c++;
+
+									if((flags & 1) != 0) {
+										AddFace(verts, new Vector3D(x, y, z), new Vector3D(x, y + 1, z), new Vector3D(x, y, z + c), new Vector3D(x, y + 1, z + c), pivot, colorIndices[cstart], mde.AngleOffset, mde.Scale.X);
+									}
+									if((flags & 2) != 0) {
+										AddFace(verts, new Vector3D(x + 1, y + 1, z), new Vector3D(x + 1, y, z), new Vector3D(x + 1, y + 1, z + c), new Vector3D(x + 1, y, z + c), pivot, colorIndices[cstart], mde.AngleOffset, mde.Scale.X);
+									}
+									if((flags & 4) != 0) {
+										AddFace(verts, new Vector3D(x + 1, y, z), new Vector3D(x, y, z), new Vector3D(x + 1, y, z + c), new Vector3D(x, y, z + c), pivot, colorIndices[cstart], mde.AngleOffset, mde.Scale.X);
+									}
+									if((flags & 8) != 0) {
+										AddFace(verts, new Vector3D(x, y + 1, z), new Vector3D(x + 1, y + 1, z), new Vector3D(x, y + 1, z + c), new Vector3D(x + 1, y + 1, z + c), pivot, colorIndices[cstart], mde.AngleOffset, mde.Scale.X);
+									}
+
+									if(c == 0) c++;
+									z += c;
+									cstart += c;
+								}
+
+								if((flags & 32) != 0) {
+									z = ztop + zleng - 1;
+									AddFace(verts, new Vector3D(x + 1, y, z + 1), new Vector3D(x, y, z + 1), new Vector3D(x + 1, y + 1, z + 1), new Vector3D(x, y + 1, z + 1), pivot, colorIndices[zleng - 1], mde.AngleOffset, mde.Scale.X);
+								}
+							}
+						}
+
+						counter++;
+					}
+				}
+			}
+
+			//create bounding box
+			BoundingBoxSizes bbs = new BoundingBoxSizes();
+			bbs.MinX = (short)((xsize / 2 - pivot.x) * mde.Scale.X);
+			bbs.MaxX = (short)((xsize / 2 + pivot.x) * mde.Scale.X);
+			bbs.MinZ = (short)((zsize / 2 - pivot.z) * mde.Scale.X);
+			bbs.MaxZ = (short)((zsize / 2 + pivot.z) * mde.Scale.X);
+			bbs.MinY = (short)((ysize / 2 - pivot.y) * mde.Scale.X);
+			bbs.MaxY = (short)((ysize / 2 + pivot.y) * mde.Scale.X);
+
+			mde.Model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
+
+			//create bitmap
+			Bitmap bmp = createVoxelTexture(palette);
+
+			//create texture
+			MemoryStream memstream = new MemoryStream((4096 * 4) + 4096);
+			bmp.Save(memstream, ImageFormat.Bmp);
+			memstream.Seek(0, SeekOrigin.Begin);
+
+			Texture texture = Texture.FromStream(device, memstream, (int)memstream.Length, 64, 64, 0, Usage.None, Format.Unknown, Pool.Managed, Filter.Point, Filter.Box, 0);
+			memstream.Dispose();
+
+			//add texture
+			mde.Model.Textures.Add(texture);
+
+			//create mesh
+			int[] indices = new int[verts.Count];
+			for(int i = 0; i < verts.Count; i++) {
+				indices[i] = i;
+			}
+
+			Mesh mesh = new Mesh(device, verts.Count / 3, verts.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
+
+			DataStream mstream = mesh.VertexBuffer.Lock(0, 0, LockFlags.None);
+			mstream.WriteRange(verts.ToArray());
+			mesh.VertexBuffer.Unlock();
+
+			mstream = mesh.IndexBuffer.Lock(0, 0, LockFlags.None);
+			mstream.WriteRange(indices);
+			mesh.IndexBuffer.Unlock();
+
+			mesh.OptimizeInPlace(MeshOptimizeFlags.AttributeSort);
+
+			//add mesh
+			mde.Model.Meshes.Add(mesh);
+		}
+
+		// Shameless GZDoom rip-off
+		private static void AddFace(List<WorldVertex> verts, Vector3D v1, Vector3D v2, Vector3D v3, Vector3D v4, Vector3D pivot, int colorIndex, float angle, float scale) {
+			float pu0 = (colorIndex % 16) / 16f;
+			float pu1 = pu0 + 0.0001f;
+			float pv0 = (colorIndex / 16) / 16f;
+			float pv1 = pv0 + 0.0001f;
+			
+			WorldVertex wv1 = new WorldVertex();
+			wv1.x = v1.x - pivot.x;
+			wv1.y = -v1.y + pivot.y;
+			wv1.z = -v1.z + pivot.z;
+			wv1.u = pu0;
+			wv1.v = pv0;
+			wv1 = TransformVertex(wv1, angle, scale);
+			verts.Add(wv1);
+
+			WorldVertex wv2 = new WorldVertex();
+			wv2.x = v2.x - pivot.x;
+			wv2.y = -v2.y + pivot.y;
+			wv2.z = -v2.z + pivot.z;
+			wv2.u = pu1;
+			wv2.v = pv1;
+			wv2 = TransformVertex(wv2, angle, scale);
+			verts.Add(wv2);
+
+			WorldVertex wv4 = new WorldVertex();
+			wv4.x = v4.x - pivot.x;
+			wv4.y = -v4.y + pivot.y;
+			wv4.z = -v4.z + pivot.z;
+			wv4.u = pu0;
+			wv4.v = pv0;
+			wv4 = TransformVertex(wv4, angle, scale);
+			verts.Add(wv4);
+
+			WorldVertex wv3 = new WorldVertex();
+			wv3.x = v3.x - pivot.x;
+			wv3.y = -v3.y + pivot.y;
+			wv3.z = -v3.z + pivot.z;
+			wv3.u = pu1;
+			wv3.v = pv1;
+			wv3 = TransformVertex(wv3, angle, scale);
+			verts.Add(wv3);
+
+			verts.Add(wv1);
+			verts.Add(wv4);
+		}
+
+		private static WorldVertex TransformVertex(WorldVertex v, float angle, float scale) {
+			if (angle != 0) {
+				float angleOfsetCos = (float) Math.Cos(angle);
+				float angleOfsetSin = (float) Math.Sin(angle);
+
+				float rx1 = angleOfsetCos * v.x - angleOfsetSin * v.y;
+				float ry1 = angleOfsetSin * v.x + angleOfsetCos * v.y;
+				v.y = ry1;
+				v.x = rx1;
+			}
+
+			if (scale != 1.0f) {
+				v.x *= scale;
+				v.y *= scale;
+				v.z *= scale;
+			}
+
+			return v;
+		}
+
+		private unsafe static Bitmap createVoxelTexture(PixelColor[] palette) {
+			Bitmap bmp = new Bitmap(16, 16);
+			BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, 16, 16), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+			if(bmpdata != null) {
+				PixelColor* pixels = (PixelColor*)(bmpdata.Scan0.ToPointer());
+				const int numpixels = 256;
+				int i = 255;
+
+				for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--, i--) {
+					cp->r = palette[i].r;
+					cp->g = palette[i].g;
+					cp->b = palette[i].b;
+					cp->a = palette[i].a;
+				}
+				bmp.UnlockBits(bmpdata);
+			}
+
+			//scale bitmap, so colors stay (almost) the same when bilinear filtering is enabled
+			Bitmap scaled = new Bitmap(64, 64);
+			using(Graphics gs = Graphics.FromImage(scaled)) {
+				gs.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+				gs.DrawImage(bmp, new Rectangle(0, 0, 64, 64), new Rectangle(0, 0, 16, 16), GraphicsUnit.Pixel);
+			}
+
+			return scaled;
+		}
+
+		#endregion
+
 		#region ================== Utility
 
-		//util
 		private static MemoryStream LoadFile(List<DataReader> containers, string path, bool isModel) {
 			foreach(DataReader dr in containers) {
 				if(isModel && dr is WADReader) continue;  //models cannot be stored in WADs

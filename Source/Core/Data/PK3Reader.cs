@@ -239,6 +239,44 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		#endregion
+
+		#region ================== Voxels (mxd)
+
+		//mxd. This finds and returns a voxel stream
+		public override Stream GetVoxelData(string name) {
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			string pfilename = name.Replace('\\', '^');
+
+			// Find in sprites directory
+			string filename = FindFirstFile(VOXELS_DIR, pfilename, true);
+			if((filename != null) && FileExists(filename)) {
+				return LoadFile(filename);
+			}
+
+			// Nothing found
+			return null;
+		}
+
+		//mxd. This checks if the given voxel exists
+		public override bool GetVoxelExists(string name) {
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			string pfilename = name.Replace('\\', '^');
+
+			// Find in sprites directory
+			string filename = FindFirstFile(VOXELS_DIR, pfilename, true);
+			if((filename != null) && FileExists(filename)) {
+				return true;
+			}
+
+			// Nothing found
+			return false;
+		}
+
+		#endregion
 		
 		#region ================== Methods
 

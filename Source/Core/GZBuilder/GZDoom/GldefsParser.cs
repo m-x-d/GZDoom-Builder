@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 							SkipWhitespace(true);
 							token = ReadToken();
 							if (token != "{") {
-								General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected '{', but got " + token);
+								General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected '{', but got '" + token + "'");
 								continue; //something wrong with gldefs declaration, continue to next one
 							}
 
@@ -339,7 +339,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 							token = ReadToken();
 
 							if (token != "{") {
-								General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected '{', but got " + token);
+								General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected '{', but got '" + token + "'");
 								continue;
 							}
 

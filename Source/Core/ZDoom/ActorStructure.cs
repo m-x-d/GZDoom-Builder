@@ -28,8 +28,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 	{
 		#region ================== Constants
 		
-		private readonly string[] SPRITE_POSTFIXES = new string[] {"2C8", "2D8", "2A8", "2B8", "1C1", "1D1", "1A1", "1B1", "A2", "A1", "A0", "2", "1", "0" };
-		
+		private readonly string[] SPRITE_POSTFIXES = new[] {"2C8", "2D8", "2A8", "2B8", "1C1", "1D1", "1A1", "1B1", "A2", "A1", "A0", "2", "1", "0" };
+		internal const string ACTOR_CLASS_SPECIAL_TOKENS = ":{}\n;,"; //mxd
+
 		#endregion
 		
 		#region ================== Variables
@@ -91,7 +92,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 			
 			// First next token is the class name
 			parser.SkipWhitespace(true);
-			classname = parser.StripTokenQuotes(parser.ReadToken());
+			classname = parser.StripTokenQuotes(parser.ReadToken(ACTOR_CLASS_SPECIAL_TOKENS));
+
 			if(string.IsNullOrEmpty(classname))
 			{
 				parser.ReportError("Expected actor class name");
@@ -549,7 +551,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public string FindSuitableSprite()
 		{
-			string result = "";
+			string result = string.Empty;
 			
 			// Sprite forced?
 			if(HasPropertyWithValue("$sprite"))
@@ -622,6 +624,69 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 			
 			// No sprite found
+			return string.Empty;
+		}
+
+		//mxd. 
+		///TODO: rewrite this
+		public string FindSuitableVoxel(Dictionary<string, bool> voxels) {
+			string result = string.Empty;
+			
+			// Try the idle state
+			if(HasState("idle")) {
+				StateStructure s = GetState("idle");
+				string spritename = s.GetSprite(0);
+				if(!string.IsNullOrEmpty(spritename))
+					result = spritename;
+			}
+
+			// Try the see state
+			if(string.IsNullOrEmpty(result) && HasState("see")) {
+				StateStructure s = GetState("see");
+				string spritename = s.GetSprite(0);
+				if(!string.IsNullOrEmpty(spritename))
+					result = spritename;
+			}
+
+			// Try the inactive state
+			if(string.IsNullOrEmpty(result) && HasState("inactive")) {
+				StateStructure s = GetState("inactive");
+				string spritename = s.GetSprite(0);
+				if(!string.IsNullOrEmpty(spritename))
+					result = spritename;
+			}
+
+			// Try the spawn state
+			if(string.IsNullOrEmpty(result) && HasState("spawn")) {
+				StateStructure s = GetState("spawn");
+				string spritename = s.GetSprite(0);
+				if(!string.IsNullOrEmpty(spritename))
+					result = spritename;
+			}
+
+			// Still no sprite found? then just pick the first we can find
+			if(string.IsNullOrEmpty(result)) {
+				Dictionary<string, StateStructure> list = GetAllStates();
+				foreach(StateStructure s in list.Values) {
+					string spritename = s.GetSprite(0);
+					if(!string.IsNullOrEmpty(spritename)) {
+						result = spritename;
+						break;
+					}
+				}
+			}
+
+			if(!string.IsNullOrEmpty(result)) {
+				if (voxels.ContainsKey(result)) return result;
+
+				// The sprite name may be incomplete. Find an existing sprite with direction.
+				foreach(string postfix in SPRITE_POSTFIXES) {
+					if(voxels.ContainsKey(result + postfix)) return result + postfix;
+				}
+			}
+
+
+			// No voxel found
 			return "";
 		}
 		

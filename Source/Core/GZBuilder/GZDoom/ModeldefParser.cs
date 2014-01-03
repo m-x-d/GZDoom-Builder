@@ -6,18 +6,18 @@ using CodeImp.DoomBuilder.GZBuilder.Data;
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
    
 	internal class ModeldefParser : ZDTextParser {
-		private Dictionary<string, ModelData> modelDefEntries; //classname, entry
-		internal Dictionary<string, ModelData> ModelDefEntries { get { return modelDefEntries; } }
+		private Dictionary<string, ModelData> entries; //classname, entry
+		internal Dictionary<string, ModelData> Entries { get { return entries; } }
 		internal string Source { get { return sourcename; } }
 
 		internal ModeldefParser() {
-			modelDefEntries = new Dictionary<string, ModelData>();
+			entries = new Dictionary<string, ModelData>();
 		}
 
 		//should be called after all decorate actors are parsed 
 		public override bool Parse(Stream stream, string sourcefilename) {
 			base.Parse(stream, sourcefilename);
-			modelDefEntries = new Dictionary<string, ModelData>();
+			entries = new Dictionary<string, ModelData>();
 
 			// Continue until at the end of the stream
 			while (SkipWhitespace(true)) {
@@ -29,24 +29,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 					if (token == "model") { //model structure start
 						//find classname
 						SkipWhitespace(true);
-						string className = StripTokenQuotes(ReadToken()).ToLowerInvariant();
+						string className = StripTokenQuotes(ReadToken(ActorStructure.ACTOR_CLASS_SPECIAL_TOKENS)).ToLowerInvariant();
 
-						if (!string.IsNullOrEmpty(className)) {
-							if(modelDefEntries.ContainsKey(className)) continue; //already got this class; continue to next one
-
+						if(!string.IsNullOrEmpty(className) && !entries.ContainsKey(className)) {
 							//now find opening brace
 							SkipWhitespace(true);
 							token = ReadToken();
 							if (token != "{") {
-								General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in "+sourcefilename+" at line "+GetCurrentLineNumber()+": expected '{', but got " + token);
+								General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '"+sourcefilename+"' at line "+GetCurrentLineNumber()+": expected '{', but got '" + token + "'");
 								continue; //something wrong with modeldef declaration, continue to next one
 							}
 
 							ModeldefStructure mds = new ModeldefStructure();
 							ModelData mde = mds.Parse(this);
 							if (mde != null) {
-								mde.ClassName = className;
-								modelDefEntries.Add(className, mde);
+								entries.Add(className, mde);
 							}
 						}
 
@@ -74,9 +71,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
 			}
 
-			if (modelDefEntries.Count > 0)
-				return true;
-			return false;
+			return entries.Count > 0;
 		}
 	}
 }

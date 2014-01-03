@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 						}
 
 						if (modelIndex >= MAX_MODELS) {
-							General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " per MODELDEF entry!");
+							General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " models per MODELDEF entry!");
 							break;
 						}
 
@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 						}
 
 						if (skinIndex >= MAX_MODELS) {
-							General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " per MODELDEF entry!");
+							General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " skins per MODELDEF entry!");
 							break;
 						}
 
@@ -261,7 +261,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 									}
 
 									if (modelIndex >= MAX_MODELS) {
-										General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " per MODELDEF entry!");
+										General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " models per MODELDEF entry!");
 										gotErrors = true;
 										break;
 									}
@@ -314,9 +314,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 			ModelData mde = new ModelData();
 			mde.Scale = scale;
 			mde.zOffset = zOffset;
-			mde.AngleOffset = Angle2D.DegToRad(angleOffset);// *(float)Math.PI / 180.0f;
-			mde.RollOffset = Angle2D.DegToRad(rollOffset);// *(float)Math.PI / 180.0f;
-			mde.PitchOffset = Angle2D.DegToRad(pitchOffset);// *(float)Math.PI / 180.0f;
+			mde.AngleOffset = Angle2D.DegToRad(angleOffset);
+			mde.RollOffset = Angle2D.DegToRad(rollOffset);
+			mde.PitchOffset = Angle2D.DegToRad(pitchOffset);
 
 			for(int i = 0; i < modelNames.Length; i++) {
 				if (!string.IsNullOrEmpty(modelNames[i])) {
