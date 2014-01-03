@@ -46,6 +46,7 @@ namespace CodeImp.DoomBuilder.Actions
 		private bool allowscroll;
 		private bool disregardshift;
 		private bool disregardcontrol;
+		private bool disregardalt; //mxd
 		private bool repeat;
 		
 		// Delegate
@@ -69,6 +70,7 @@ namespace CodeImp.DoomBuilder.Actions
 		public bool AllowScroll { get { return allowscroll; } }
 		public bool DisregardShift { get { return disregardshift; } }
 		public bool DisregardControl { get { return disregardcontrol; } }
+		public bool DisregardAlt { get { return disregardalt; } } //mxd
 		public bool Repeat { get { return repeat; } }
 		public bool BeginBound { get { return (begindelegates.Count > 0); } }
 		public bool EndBound { get { return (enddelegates.Count > 0); } }
@@ -91,18 +93,15 @@ namespace CodeImp.DoomBuilder.Actions
 			this.allowscroll = cfg.ReadSetting(shortname + ".allowscroll", false);
 			this.disregardshift = cfg.ReadSetting(shortname + ".disregardshift", false);
 			this.disregardcontrol = cfg.ReadSetting(shortname + ".disregardcontrol", false);
+			this.disregardalt = cfg.ReadSetting(shortname + ".disregardalt", false); //mxd
 			this.repeat = cfg.ReadSetting(shortname + ".repeat", false);
 			this.defaultkey = cfg.ReadSetting(shortname + ".default", 0);
 			this.begindelegates = new List<ActionDelegate>();
 			this.enddelegates = new List<ActionDelegate>();
-				
-			if(disregardshift)
-				keymask = (int)Keys.Shift;
-			else
-				keymask = 0;
 
-			if(disregardcontrol)
-				keymask |= (int)Keys.Control;
+			keymask = disregardshift ? (int)Keys.Shift : 0;
+			if(disregardcontrol) keymask |= (int)Keys.Control;
+			if(disregardalt) keymask |= (int)Keys.Alt; //mxd
 			
 			keymask = ~keymask;
 

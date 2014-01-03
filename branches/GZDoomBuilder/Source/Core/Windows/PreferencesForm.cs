@@ -560,6 +560,35 @@ namespace CodeImp.DoomBuilder.Windows
 				actioncontrol.Items.Add(new KeyControl(SpecialKeys.MScrollUp, "ScrollUp"));
 				actioncontrol.Items.Add(new KeyControl(SpecialKeys.MScrollDown, "ScrollDown"));
 			}
+
+			//mxd. Alt
+			if(a.AllowMouse && !a.DisregardAlt) {
+				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Alt, "Alt+LButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Alt, "Alt+MButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Alt, "Alt+RButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Alt, "Alt+XButton1"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Alt, "Alt+XButton2"));
+			}
+			if(a.AllowScroll && !a.DisregardAlt) {
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Alt, "Alt+ScrollUp"));
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Alt, "Alt+ScrollDown"));
+			}
+
+			//Ctrl
+			if(a.AllowMouse && !a.DisregardControl) {
+				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Control, "Ctrl+LButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Control, "Ctrl+MButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Control, "Ctrl+RButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Control, "Ctrl+XButton1"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Control, "Ctrl+XButton2"));
+			}
+
+			if(a.AllowScroll && !a.DisregardControl) {
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Control, "Ctrl+ScrollUp"));
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Control, "Ctrl+ScrollDown"));
+			}
+
+			//Shift
 			if(a.AllowMouse && !a.DisregardShift)
 			{
 				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Shift, "Shift+LButton"));
@@ -573,19 +602,34 @@ namespace CodeImp.DoomBuilder.Windows
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift, "Shift+ScrollUp"));
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift, "Shift+ScrollDown"));
 			}
-			if(a.AllowMouse && !a.DisregardControl)
-			{
-				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Control, "Ctrl+LButton"));
-				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Control, "Ctrl+MButton"));
-				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Control, "Ctrl+RButton"));
-				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Control, "Ctrl+XButton1"));
-				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Control, "Ctrl+XButton2"));
+
+			//mxd. Alt-Shift
+			if(a.AllowMouse && !a.DisregardShift && !a.DisregardAlt) {
+				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Shift | Keys.Alt, "Alt+Shift+LButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Shift | Keys.Alt, "Alt+Shift+MButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Shift | Keys.Alt, "Alt+Shift+RButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Shift | Keys.Alt, "Alt+Shift+XButton1"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Shift | Keys.Alt, "Alt+Shift+XButton2"));
 			}
-			if(a.AllowScroll && !a.DisregardControl)
-			{
-				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Control, "Ctrl+ScrollUp"));
-				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Control, "Ctrl+ScrollDown"));
+			if(a.AllowScroll && !a.DisregardShift && !a.DisregardAlt) {
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift | (int)Keys.Alt, "Alt+Shift+ScrollUp"));
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift | (int)Keys.Alt, "Alt+Shift+ScrollDown"));
 			}
+
+			//mxd. Ctrl-Alt
+			if(a.AllowMouse && !a.DisregardAlt && !a.DisregardControl) {
+				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Alt | Keys.Control, "Ctrl+Alt+LButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Alt | Keys.Control, "Ctrl+Alt+MButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Alt | Keys.Control, "Ctrl+Alt+RButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Alt | Keys.Control, "Ctrl+Alt+XButton1"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Alt | Keys.Control, "Ctrl+Alt+XButton2"));
+			}
+			if(a.AllowScroll && !a.DisregardAlt && !a.DisregardControl) {
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift | (int)Keys.Alt, "Ctrl+Alt+ScrollUp"));
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift | (int)Keys.Alt, "Ctrl+Alt+ScrollDown"));
+			}
+			
+			//Ctrl-Shift
 			if(a.AllowMouse && !a.DisregardShift && !a.DisregardControl)
 			{
 				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Shift | Keys.Control, "Ctrl+Shift+LButton"));
@@ -598,6 +642,19 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift | (int)Keys.Control, "Ctrl+Shift+ScrollUp"));
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift | (int)Keys.Control, "Ctrl+Shift+ScrollDown"));
+			}
+
+			//mxd. Ctrl-Alt-Shift
+			if(a.AllowMouse && !a.DisregardShift && !a.DisregardControl && !a.DisregardAlt) {
+				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Shift | Keys.Control | Keys.Alt, "Ctrl+Alt+Shift+LButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Shift | Keys.Control | Keys.Alt, "Ctrl+Alt+Shift+MButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Shift | Keys.Control | Keys.Alt, "Ctrl+Alt+Shift+RButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Shift | Keys.Control | Keys.Alt, "Ctrl+Alt+Shift+XButton1"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Shift | Keys.Control | Keys.Alt, "Ctrl+Alt+Shift+XButton2"));
+			}
+			if(a.AllowScroll && !a.DisregardShift && !a.DisregardControl && !a.DisregardAlt) {
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift | (int)Keys.Control | (int)Keys.Alt, "Ctrl+Alt+Shift+ScrollUp"));
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift | (int)Keys.Control | (int)Keys.Alt, "Ctrl+Alt+Shift+ScrollDown"));
 			}
 		}
 		
