@@ -67,9 +67,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private VisualPickResult target;
 		private float lastpicktime;
 		private bool locktarget;
-
 		private bool useSelectionFromClassicMode;//mxd
-		public bool UseSelectionFromClassicMode { get { return useSelectionFromClassicMode; } }
 
 		// This keeps extra element info
 		private Dictionary<Sector, SectorData> sectordata;
@@ -93,8 +91,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private List<IVisualEventReceiver> selectedobjects;
 		//mxd. Used in Cut/PasteSelection actions
 		private List<ThingCopyData> copyBuffer;
+		private Type lasthighlighttype; //mxd
 
-		public static bool GZDoomRenderingEffects { get { return gzdoomRenderingEffects; } } //mxd
 		private static bool gzdoomRenderingEffects = true; //mxd
 
 		//mxd. Moved here from Tools
@@ -112,6 +110,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// must be subtracted from the X offset first.
 			public bool forward;
 		}
+
+		//mxd. All sorts of hints
+		private string[] thingHints;
+		private string[] sidedefHints;
+		private string[] sectorHints;
+		private string[] vertexHints;
+		private string[] generalHints;
 		
 		#endregion
 		
@@ -146,8 +151,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
-		//mxd
-		public object HighlightedTarget { get { return target.picked; } }
+		public object HighlightedTarget { get { return target.picked; } } //mxd
+		public static bool GZDoomRenderingEffects { get { return gzdoomRenderingEffects; } } //mxd
+		public bool UseSelectionFromClassicMode { get { return useSelectionFromClassicMode; } } //mxd
 
 		new public IRenderer3D Renderer { get { return renderer; } }
 		
@@ -1240,7 +1246,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			GetTargetEventReceiver(true).OnMouseMove(e);
+			IVisualEventReceiver o = GetTargetEventReceiver(true);
+			o.OnMouseMove(e);
+
+			//mxd. Show hints!
+			if (o.GetType() != lasthighlighttype) {
+				if (o is BaseVisualGeometrySidedef) {
+					General.Interface.ShowEditModeHints(sidedefHints);
+				} else if (o is BaseVisualGeometrySector) {
+					General.Interface.ShowEditModeHints(sectorHints);
+				} else if (o is BaseVisualThing) {
+					General.Interface.ShowEditModeHints(thingHints);
+				} else if (o is BaseVisualVertex) {
+					General.Interface.ShowEditModeHints(vertexHints);
+				} else {
+					General.Interface.ShowEditModeHints(generalHints);
+				}
+
+				lasthighlighttype = o.GetType();
+			}
 		}
 		
 		// Undo performed
@@ -1313,6 +1337,75 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ShowTargetInfo();
 		}
 		
+		#endregion
+
+		#region ================== Hints (mxd)
+
+		protected override void SetupHints() {
+			base.SetupHints();
+
+			//GENERAL PURPOSE
+			List<string> generalHintsList = new List<string>() { 
+				"Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_moveforward") + "</b>, <b>" +
+				Actions.Action.GetShortcutKeyDesc("builder_movebackward") + "</b>, <b>" +
+				Actions.Action.GetShortcutKeyDesc("builder_moveleft") + "</b> and <b>" +
+				Actions.Action.GetShortcutKeyDesc("builder_moveright") + "</b> to move around. Hold <b>Shift</b> to double the speed",
+				"Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_moveup") + "</b> and <b>" +
+				Actions.Action.GetShortcutKeyDesc("builder_movedown") + "</b> to move up and down",
+			};
+
+			if (General.Map.UDMF) {
+				generalHintsList.Add("Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_gztogglevisualvertices") + "</b> to toggle vertex handles rendering");
+			}
+
+			//THINGS
+			List<string> thingHintsList = new List<string>() { 
+				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_visualselect") + "</b> to select the highlighted thing",
+				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_clearselection") + "</b> to clear selection",
+                "Use <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_raisesector8") +
+				"</b> and <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_lowersector8") + "</b> to change height of selected/targeted things by 8 map units",                            
+				"Use <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_lowersectortonearest") +
+				"</b> and <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_raisesectortonearest") + "</b> to align selected/targeted things to floor or ceiling",
+                "Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_movethingfwd") + "</b>, <b>" +
+				Actions.Action.GetShortcutKeyDesc("builder_movethingback") + "</b>, <b>" +
+				Actions.Action.GetShortcutKeyDesc("builder_movethingleft") + "</b> and <b>" +
+				Actions.Action.GetShortcutKeyDesc("builder_movethingright") + "</b> to move selected things around",                               
+				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_placethingatcursor") + "</b> to move selected things to cursor location", 
+				"Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_showvisualthings") + "</b> to cycle through the different ways the things are shown", 
+			};
+
+			//SIDEDEFS
+			List<string> sidedefHintsList = new List<string>() { 
+				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to insert a Thing at current cursor position",
+				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_visualselect") + "</b> to select the highlighted surface. Hold <b>Shift</b> to select adjacent surfaces with the same texture. Hold <b>Ctrl</b> to select adjacent surfaces with the same height",
+				"TODO: show more sidedef-related hints here"
+			};
+
+			//SECTORS
+			List<string> sectorHintsList = new List<string>() {
+				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to insert a Thing at current cursor position",
+				"TODO: show more sector-related hints here"
+			};
+
+			//VERTICES
+			List<string> vertexHintsList = new List<string>() {
+				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to insert a Thing at current cursor position",
+				"TODO: show more vertex-related hints here"
+			};
+
+			//instert general stuff into each array
+			generalHints = generalHintsList.ToArray();
+			thingHintsList.InsertRange(0, generalHints);
+			sidedefHintsList.InsertRange(0, generalHints);
+			sectorHintsList.InsertRange(0, generalHints);
+			vertexHintsList.InsertRange(0, generalHints);
+			
+			thingHints = thingHintsList.ToArray();
+			sidedefHints = sidedefHintsList.ToArray();
+			sectorHints = sectorHintsList.ToArray();
+			vertexHints = vertexHintsList.ToArray();
+		}
+
 		#endregion
 
 		#region ================== Action Assist

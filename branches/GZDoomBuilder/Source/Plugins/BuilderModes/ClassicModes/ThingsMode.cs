@@ -638,32 +638,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Setup hints for current editing mode
 		protected override void SetupHints() {
 			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
-			string editKey = Actions.Action.GetShortcutKeyDesc("builder_classicedit");
-			string clearKey = Actions.Action.GetShortcutKeyDesc("builder_clearselection");
-			string insertKey = Actions.Action.GetShortcutKeyDesc("builder_insertitem");
-			string deleteKey = Actions.Action.GetShortcutKeyDesc("builder_deleteitem");
-			string panKey = Actions.Action.GetShortcutKeyDesc("builder_pan_view");
-			string drawKey = Actions.Action.GetShortcutKeyDesc("buildermodes_drawlinesmode");
-			string gridIncKey = Actions.Action.GetShortcutKeyDesc("builder_griddec");
-			string gridDecKey = Actions.Action.GetShortcutKeyDesc("builder_gridinc");
 
-			hints = new[]{ "Hold " + panKey + " to pan the view",
-						   "Press " + selectKey + " to select a thing",
-						   "Hold " + selectKey + " and drag to use rectangular selection",
-						   "Press " + clearKey + " to clear selection",
-						   "Press " + deleteKey + " to delete selected thing(s)",
-						   "Press " + editKey + " to edit properties of current selection",
-						   "Use " + gridIncKey + " and " + gridDecKey + " to change grid size",
-						   "Press " + insertKey + " to create a new thing",
-						   "Press " + drawKey + " to start drawing lines",
+			hints = new[]{ "Hold <b>" + Actions.Action.GetShortcutKeyDesc("builder_pan_view") + "</b> to pan the view",
+						   "Press <b>" + selectKey + "</b> to select a thing",
+						   "Hold <b>" + selectKey + "</b> and drag to use rectangular selection",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_thingsselectinsectors") + "</b> to select things in selected sectors",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_clearselection") + "</b> to clear selection",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_deleteitem") + "</b> to delete selected thing(s)",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicedit") + "</b> to edit properties of current selection",
+						   "Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_griddec") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("builder_gridinc") + "</b> to change grid size",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to create a new thing",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_thinglookatcursor") + "</b> to point selected things to cursor position. Hold <b>Ctrl</b> to point away from cursor",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_thingaligntowall") + "</b> to align selected things to closest linedef",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_drawlinesmode") + "</b> to start drawing lines",
+						   "Check <b>'Things'</b> menu for additional actions"
 			};
 		}
 
 		//mxd
 		protected override void SetupMultiselectionHints() {
-			multiselectionHints = new[] { "Hold Shift to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
-										  "Hold Ctrl to enable subtractive selection",
-										  "Hold Ctrl-Shift to intersect the new selection with already existing one",
+			multiselectionHints = new[] { "Hold <b>Shift</b> to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
+										  "Hold <b>Ctrl</b> to enable subtractive selection",
+										  "Hold <b>Ctrl-Shift</b> to intersect the new selection with already existing one",
 			};
 		}
 

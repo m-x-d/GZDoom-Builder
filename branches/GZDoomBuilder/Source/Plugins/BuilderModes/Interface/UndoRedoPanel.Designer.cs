@@ -35,8 +35,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// list
 			// 
 			this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.coldescription});
+            this.coldescription});
 			this.list.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.list.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.list.FullRowSelect = true;
 			this.list.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.list.Location = new System.Drawing.Point(0, 0);

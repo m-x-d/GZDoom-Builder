@@ -531,6 +531,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// This is called when an editing mode item is checked or unchecked
 		private void listmodes_ItemChecked(object sender, ItemCheckedEventArgs e)
 		{
+			if(preventchanges) return; //mxd
+
 			// Leave when no configuration selected
 			if(configinfo == null) return;
 			

@@ -111,6 +111,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string lastUsedConfigName;
 		private bool gzMarkExtraFloors;
 		private int maxRecentFiles;
+		private bool autoClearSideTextures;
 		
 		// These are not stored in the configuration, only used at runtime
 		private int defaultbrightness;
@@ -193,6 +194,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string LastUsedConfigName { get { return lastUsedConfigName; } internal set { lastUsedConfigName = value; } }
 		public bool GZMarkExtraFloors { get { return gzMarkExtraFloors; } internal set { gzMarkExtraFloors = value; } }
 		public int MaxRecentFiles { get { return maxRecentFiles; } internal set { maxRecentFiles = General.Clamp(value, 8, 25); } }
+		public bool AutoClearSidedefTextures { get { return autoClearSideTextures; } internal set { autoClearSideTextures = value; } }
 
 		//mxd. Left here for compatibility reasons...
 		public string DefaultTexture { get { return General.Map != null ? General.Map.Options.DefaultWallTexture : "-"; } set { if(General.Map != null) General.Map.Options.DefaultWallTexture = value; } }
@@ -296,6 +298,7 @@ namespace CodeImp.DoomBuilder.Config
 				lastUsedConfigName = cfg.ReadSetting("lastusedconfigname", "");
 				gzMarkExtraFloors = cfg.ReadSetting("gzmarkextrafloors", true);
 				maxRecentFiles = cfg.ReadSetting("maxrecentfiles", 8);
+				autoClearSideTextures = cfg.ReadSetting("autoclearsidetextures", true);
 
 				//mxd. Sector defaults
 				defaultceilheight = cfg.ReadSetting("defaultceilheight", 128);
@@ -382,6 +385,7 @@ namespace CodeImp.DoomBuilder.Config
 			if(!string.IsNullOrEmpty(lastUsedConfigName))
 				cfg.WriteSetting("lastusedconfigname", lastUsedConfigName);
 			cfg.WriteSetting("maxrecentfiles", maxRecentFiles);
+			cfg.WriteSetting("autoclearsidetextures", autoClearSideTextures);
 
 			//mxd. Sector defaults
 			cfg.WriteSetting("defaultceilheight", defaultceilheight);
@@ -552,7 +556,7 @@ namespace CodeImp.DoomBuilder.Config
 			if(General.Map == null || General.Map.Options == null) return;
 			
 			// Default texture missing?
-			if(!General.Map.Options.OverrideWallTexture || string.IsNullOrEmpty(General.Map.Options.DefaultWallTexture)) //mxd
+			if(!General.Map.Options.OverrideMiddleTexture || string.IsNullOrEmpty(General.Map.Options.DefaultWallTexture)) //mxd
 			{
 				// Find default texture from map
 				foundone = false;
@@ -561,7 +565,7 @@ namespace CodeImp.DoomBuilder.Config
 					if(sd.MiddleTexture != "-")
 					{
 						General.Map.Options.DefaultWallTexture = sd.MiddleTexture;
-						if(General.Map.Data.GetTextureExists(General.Map.Options.DefaultWallTexture))
+						if(General.Map.Data.GetTextureExists(sd.MiddleTexture))
 						{
 							foundone = true;
 							break;
@@ -592,6 +596,10 @@ namespace CodeImp.DoomBuilder.Config
 					}
 				}
 			}
+
+			//mxd.
+			if(!General.Map.Options.OverrideTopTexture) General.Map.Options.DefaultTopTexture = General.Map.Options.DefaultWallTexture;
+			if(!General.Map.Options.OverrideBottomTexture) General.Map.Options.DefaultBottomTexture = General.Map.Options.DefaultWallTexture;
 
 			// Default floor missing?
 			if(!General.Map.Options.OverrideFloorTexture || string.IsNullOrEmpty(General.Map.Options.DefaultFloorTexture))
@@ -676,7 +684,9 @@ namespace CodeImp.DoomBuilder.Config
 			}
 
 			// Texture names may not be null
+			if(string.IsNullOrEmpty(General.Map.Options.DefaultTopTexture)) General.Map.Options.DefaultTopTexture = "-";
 			if(string.IsNullOrEmpty(General.Map.Options.DefaultWallTexture)) General.Map.Options.DefaultWallTexture = "-";
+			if(string.IsNullOrEmpty(General.Map.Options.DefaultBottomTexture)) General.Map.Options.DefaultBottomTexture = "-";
 			if(string.IsNullOrEmpty(General.Map.Options.DefaultFloorTexture)) General.Map.Options.DefaultFloorTexture = "-";
 			if(string.IsNullOrEmpty(General.Map.Options.DefaultCeilingTexture)) General.Map.Options.DefaultCeilingTexture = "-";
 		}

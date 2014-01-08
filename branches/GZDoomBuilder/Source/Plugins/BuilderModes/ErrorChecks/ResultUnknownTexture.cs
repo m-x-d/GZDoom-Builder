@@ -105,9 +105,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.FindDefaultDrawSettings();
 			switch(part)
 			{
-				case SidedefPart.Upper: side.SetTextureHigh(General.Map.Options.DefaultWallTexture); break;
+				case SidedefPart.Upper: side.SetTextureHigh(General.Map.Options.DefaultTopTexture); break;
 				case SidedefPart.Middle: side.SetTextureMid(General.Map.Options.DefaultWallTexture); break;
-				case SidedefPart.Lower: side.SetTextureLow(General.Map.Options.DefaultWallTexture); break;
+				case SidedefPart.Lower: side.SetTextureLow(General.Map.Options.DefaultBottomTexture); break;
 			}
 			
 			General.Map.Map.Update();

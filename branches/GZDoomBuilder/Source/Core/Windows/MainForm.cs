@@ -131,7 +131,6 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// Last info on panels
 		private object lastinfoobject;
-		private string currentModeName; //mxd
 		
 		// Recent files
 		private ToolStripMenuItem[] recentitems;
@@ -165,6 +164,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 		// Updating
 		private int lockupdatecount;
+
+		//mxd. Hints
+		private Docker hintsDocker;
+		private HintsPanel hintsPanel;
 
 		//mxd
 		private System.Timers.Timer blinkTimer; 
@@ -200,7 +203,6 @@ namespace CodeImp.DoomBuilder.Windows
 			editmodeitems = new List<ToolStripItem>();
 			labelcollapsedinfo.Text = "";
 			display.Dock = DockStyle.Fill;			
-			hintIcon.Image = Resources.Lightbulb; //mxd
 			
 			// Fetch pointer
 			windowptr = base.Handle;
@@ -250,6 +252,10 @@ namespace CodeImp.DoomBuilder.Windows
 			blinkTimer = new System.Timers.Timer();
 			blinkTimer.Interval = 500;
 			blinkTimer.Elapsed += blinkTimer_Elapsed;
+
+			//mxd. Hints
+			hintsPanel = new HintsPanel();
+			hintsDocker = new Docker("hints", "Help", hintsPanel);
 		}
 		
 		#endregion
@@ -1121,6 +1127,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				General.Plugins.OnEditMouseEnter(e);
 				General.Editing.Mode.OnMouseEnter(e);
+				if(!General.Map.IsScriptsWindowOpen) display.Focus(); //mxd
 			}
 		}
 
@@ -1741,6 +1748,7 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonviewnormal.Visible = General.Settings.ToolbarViewModes;
 			buttonsnaptogrid.Visible = General.Settings.ToolbarGeometry;
 			buttonautomerge.Visible = General.Settings.ToolbarGeometry;
+			buttonautoclearsidetextures.Visible = General.Settings.ToolbarGeometry; //mxd
 			buttontest.Visible = General.Settings.ToolbarTesting;
 
 			//mxd
@@ -2350,6 +2358,8 @@ namespace CodeImp.DoomBuilder.Windows
 			itemmapoptions.Enabled = (General.Map != null);
 			itemsnaptogrid.Enabled = (General.Map != null);
 			itemautomerge.Enabled = (General.Map != null);
+			itemautoclearsidetextures.Enabled = (General.Map != null); //mxd
+			itemautoclearsidetextures.Checked = General.Settings.AutoClearSidedefTextures; //mxd
 			itemgridsetup.Enabled = (General.Map != null);
 			itemgridinc.Enabled = (General.Map != null);
 			itemgriddec.Enabled = (General.Map != null);
@@ -2377,6 +2387,8 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonredo.ToolTipText = itemredo.Text;
 			buttonsnaptogrid.Enabled = (General.Map != null);
 			buttonautomerge.Enabled = (General.Map != null);
+			buttonautoclearsidetextures.Enabled = (General.Map != null); //mxd
+			buttonautoclearsidetextures.Checked = itemautoclearsidetextures.Checked; //mxd
 			buttoncut.Enabled = itemcut.Enabled;
 			buttoncopy.Enabled = itemcopy.Enabled;
 			buttonpaste.Enabled = itempaste.Enabled;
@@ -2416,8 +2428,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			buttonsnaptogrid.Checked = !buttonsnaptogrid.Checked;
 			itemsnaptogrid.Checked = buttonsnaptogrid.Checked;
-			string onoff = buttonsnaptogrid.Checked ? "ON" : "OFF";
-			DisplayStatus(StatusType.Action, "Snap to grid is now " + onoff + " by default.");
+			DisplayStatus(StatusType.Action, "Snap to grid is " + (buttonsnaptogrid.Checked ? "ENABLED" : "DISABLED"));
 		}
 
 		// Action to toggle auto merge
@@ -2426,14 +2437,21 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			buttonautomerge.Checked = !buttonautomerge.Checked;
 			itemautomerge.Checked = buttonautomerge.Checked;
-			string onoff = buttonautomerge.Checked ? "ON" : "OFF";
-			DisplayStatus(StatusType.Action, "Snap to geometry is now " + onoff + " by default.");
+			DisplayStatus(StatusType.Action, "Snap to geometry is " + (buttonautomerge.Checked ? "ENABLED" : "DISABLED"));
+		}
+
+		//mxd
+		[BeginAction("toggleautoclearsidetextures")]
+		internal void ToggleAutoClearSideTextures() {
+			buttonautoclearsidetextures.Checked = !buttonautoclearsidetextures.Checked;
+			itemautoclearsidetextures.Checked = buttonautoclearsidetextures.Checked;
+			General.Settings.AutoClearSidedefTextures = buttonautoclearsidetextures.Checked;
+			DisplayStatus(StatusType.Action, "Auto removal of unused sidedef textures is " + (buttonautoclearsidetextures.Checked ? "ENABLED" : "DISABLED"));
 		}
 
 		//mxd
 		[BeginAction("viewusedtags")]
 		internal void ViewUsedTags() {
-			//ShowTagStatistics();
 			TagStatisticsForm f = new TagStatisticsForm();
 			f.ShowDialog(this);
 		}
@@ -2797,8 +2815,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(vertexinfo.Visible) vertexinfo.Hide();
 				if(sectorinfo.Visible) sectorinfo.Hide();
 				if(thinginfo.Visible) thinginfo.Hide();
-				hints.Visible = false; //mxd
-				hintIcon.Visible = false; //mxd
+				modename.Visible = false;
 				labelcollapsedinfo.Visible = true;
 				itemtoggleinfo.Checked = false;
 			}
@@ -2827,9 +2844,12 @@ namespace CodeImp.DoomBuilder.Windows
 		// This displays the current mode name
 		internal void DisplayModeName(string name)
 		{
-			currentModeName = name; //mxd
-			labelcollapsedinfo.Text = name;
-			labelcollapsedinfo.Refresh();
+			if(lastinfoobject == null) {
+				labelcollapsedinfo.Text = name;
+				labelcollapsedinfo.Refresh();
+			}
+			modename.Text = name;
+			modename.Refresh();
 		}
 		
 		// This hides all info panels
@@ -2841,14 +2861,10 @@ namespace CodeImp.DoomBuilder.Windows
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
 			if(thinginfo.Visible) thinginfo.Hide();
-			labelcollapsedinfo.Text = currentModeName;
-			labelcollapsedinfo.Visible = true;
+			labelcollapsedinfo.Text = modename.Text;
 			labelcollapsedinfo.Refresh();
-
-			//mxd. Show hints?
-			bool showHints = ((General.Map != null) && IsInfoPanelExpanded);
-			hints.Visible = showHints;
-			hintIcon.Visible = showHints && hints.Items.Count > 0;
+			modename.Visible = ((General.Map != null) && IsInfoPanelExpanded);
+			modename.Refresh();
 
 			//mxd. let the plugins know
 			General.Plugins.OnHighlightLost();
@@ -2869,12 +2885,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		public void ShowEditModeHints(string[] hintsText) {
 			if (hintsText != null) {
-				hintIcon.Visible = true;
-
-				hints.BeginUpdate();
-				hints.Items.Clear();
-				foreach (string s in hintsText) hints.Items.Add(s);
-				hints.EndUpdate();
+				hintsPanel.SetHints(hintsText);
 			} else {
 				ClearEditModeHints();
 			}
@@ -2882,8 +2893,17 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		public void ClearEditModeHints() {
-			hintIcon.Visible = false;
-			hints.Items.Clear();
+			hintsPanel.ClearHints();
+		}
+
+		//mxd
+		internal void AddHintsDocker() {
+			dockerspanel.Add(hintsDocker);
+		}
+
+		//mxd
+		internal void RemoveHintsDocker() {
+			dockerspanel.Remove(hintsDocker);
 		}
 		
 		// Show linedef info
@@ -2896,27 +2916,22 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			
 			lastinfoobject = l;
-			hints.Visible = false; //mxd
-			hintIcon.Visible = false; //mxd
+			modename.Visible = false;
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
 			if(thinginfo.Visible) thinginfo.Hide();
-			if (IsInfoPanelExpanded) {
-				linedefinfo.ShowInfo(l);
-				labelcollapsedinfo.Visible = false; //mxd
-			} else {
-				// Show info on collapsed label
-				labelcollapsedinfo.Visible = true; //mxd
-				if(General.Map.Config.LinedefActions.ContainsKey(l.Action)) {
-					LinedefActionInfo act = General.Map.Config.LinedefActions[l.Action];
-					labelcollapsedinfo.Text = act.ToString();
-				} else if(l.Action == 0)
-					labelcollapsedinfo.Text = l.Action.ToString() + " - None";
-				else
-					labelcollapsedinfo.Text = l.Action.ToString() + " - Unknown";
+			if(IsInfoPanelExpanded) linedefinfo.ShowInfo(l);
 
-				labelcollapsedinfo.Refresh();
-			}
+			// Show info on collapsed label
+			if(General.Map.Config.LinedefActions.ContainsKey(l.Action)) {
+				LinedefActionInfo act = General.Map.Config.LinedefActions[l.Action];
+				labelcollapsedinfo.Text = act.ToString();
+			} else if(l.Action == 0)
+				labelcollapsedinfo.Text = l.Action.ToString() + " - None";
+			else
+				labelcollapsedinfo.Text = l.Action.ToString() + " - Unknown";
+
+			labelcollapsedinfo.Refresh();
 
 			//mxd. let the plugins know
 			General.Plugins.OnHighlightLinedef(l);
@@ -2930,20 +2945,15 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			lastinfoobject = v;
-			hints.Visible = false; //mxd
-			hintIcon.Visible = false; //mxd
+			modename.Visible = false;
 			if (linedefinfo.Visible) linedefinfo.Hide();
 			if (sectorinfo.Visible) sectorinfo.Hide();
 			if (thinginfo.Visible) thinginfo.Hide();
-			if (IsInfoPanelExpanded) {
-				vertexinfo.ShowInfo(v);
-				labelcollapsedinfo.Visible = false; //mxd
-			} else {
-				// Show info on collapsed label
-				labelcollapsedinfo.Visible = true; //mxd
-				labelcollapsedinfo.Text = v.Position.x.ToString("0.##") + ", " + v.Position.y.ToString("0.##");
-				labelcollapsedinfo.Refresh();
-			}
+			if (IsInfoPanelExpanded) vertexinfo.ShowInfo(v);
+
+			// Show info on collapsed label
+			labelcollapsedinfo.Text = v.Position.x.ToString("0.##") + ", " + v.Position.y.ToString("0.##");
+			labelcollapsedinfo.Refresh();
 
 			//mxd. let the plugins know
 			General.Plugins.OnHighlightVertex(v);
@@ -2957,26 +2967,21 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			lastinfoobject = s;
-			hints.Visible = false;
-			hintIcon.Visible = false; //mxd
+			modename.Visible = false;
 			if (linedefinfo.Visible) linedefinfo.Hide();
 			if (vertexinfo.Visible) vertexinfo.Hide();
 			if (thinginfo.Visible) thinginfo.Hide();
-			if (IsInfoPanelExpanded) {
-				sectorinfo.ShowInfo(s);
-				labelcollapsedinfo.Visible = false; //mxd
-			} else {
-				// Show info on collapsed label
-				labelcollapsedinfo.Visible = true; //mxd
-				if (General.Map.Config.SectorEffects.ContainsKey(s.Effect))
-					labelcollapsedinfo.Text = General.Map.Config.SectorEffects[s.Effect].ToString();
-				else if (s.Effect == 0)
-					labelcollapsedinfo.Text = s.Effect.ToString() + " - Normal";
-				else
-					labelcollapsedinfo.Text = s.Effect.ToString() + " - Unknown";
+			if(IsInfoPanelExpanded) sectorinfo.ShowInfo(s);
 
-				labelcollapsedinfo.Refresh();
-			}
+			// Show info on collapsed label
+			if(General.Map.Config.SectorEffects.ContainsKey(s.Effect))
+				labelcollapsedinfo.Text = General.Map.Config.SectorEffects[s.Effect].ToString();
+			else if(s.Effect == 0)
+				labelcollapsedinfo.Text = s.Effect.ToString() + " - Normal";
+			else
+				labelcollapsedinfo.Text = s.Effect.ToString() + " - Unknown";
+
+			labelcollapsedinfo.Refresh();
 
 			//mxd. let the plugins know
 			General.Plugins.OnHighlightSector(s);
@@ -2992,21 +2997,16 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			lastinfoobject = t;
-			hints.Visible = false;
-			hintIcon.Visible = false; //mxd
+			modename.Visible = false;
 			if(linedefinfo.Visible) linedefinfo.Hide();
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
-			if (IsInfoPanelExpanded) {
-				thinginfo.ShowInfo(t);
-				labelcollapsedinfo.Visible = false; //mxd
-			} else {
-				// Show info on collapsed label
-				labelcollapsedinfo.Visible = true; //mxd
-				ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
-				labelcollapsedinfo.Text = t.Type + " - " + ti.Title;
-				labelcollapsedinfo.Refresh();
-			}
+			if(IsInfoPanelExpanded) thinginfo.ShowInfo(t);
+
+			// Show info on collapsed label
+			ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
+			labelcollapsedinfo.Text = t.Type + " - " + ti.Title;
+			labelcollapsedinfo.Refresh();
 
 			//mxd. let the plugins know
 			General.Plugins.OnHighlightThing(t);

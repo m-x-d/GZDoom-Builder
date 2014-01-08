@@ -558,6 +558,11 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 
 				// Update line
+				if(useOverrides) { //mxd
+					if(ls.Line.Front != null) ls.Line.Front.ShiftTextures();
+					if(ls.Line.Back != null) ls.Line.Back.ShiftTextures();
+				}
+				
 				if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(wassinglesided);
 				if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(wassinglesided);
 
@@ -597,7 +602,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						ls.Line.ApplySidedFlags();
 						
 						// We must remove the (now useless) middle texture on the other side
-						if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(true, true);
+						if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(true, false, true);
 					}
 					// Added 23-9-08, can we do this or will it break things?
 					else if(!original.Sector.IsDisposed) //mxd
@@ -617,7 +622,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						ls.Line.ApplySidedFlags();
 
 						// We must remove the (now useless) middle texture on the other side
-						if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(true, true);
+						if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(true, false, true);
 					}
 					// Added 23-9-08, can we do this or will it break things?
 					else if(!original.Sector.IsDisposed) //mxd
@@ -676,12 +681,12 @@ namespace CodeImp.DoomBuilder.Geometry
 		private static void TakeSidedefDefaults(ref SidedefSettings settings, bool useOverrides)
 		{
 			// Use defaults where no settings could be found
-			if(settings.newtexhigh == null || (useOverrides && General.Map.Options.OverrideWallTexture))
-				settings.newtexhigh = General.Map.Options.DefaultWallTexture;
-			if(settings.newtexmid == null || (useOverrides && General.Map.Options.OverrideWallTexture))
+			if(settings.newtexhigh == null || (useOverrides && General.Map.Options.OverrideTopTexture))
+				settings.newtexhigh = General.Map.Options.DefaultTopTexture;
+			if(settings.newtexmid == null || (useOverrides && General.Map.Options.OverrideMiddleTexture))
 				settings.newtexmid = General.Map.Options.DefaultWallTexture;
-			if(settings.newtexlow == null || (useOverrides && General.Map.Options.OverrideWallTexture)) 
-				settings.newtexlow = General.Map.Options.DefaultWallTexture;
+			if(settings.newtexlow == null || (useOverrides && General.Map.Options.OverrideBottomTexture)) 
+				settings.newtexlow = General.Map.Options.DefaultBottomTexture;
 		}
 
 		// This takes sidedef settings if not taken yet

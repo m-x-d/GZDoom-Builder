@@ -60,7 +60,9 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd. Sector drawing options
 		private string defaultfloortexture;
 		private string defaultceiltexture;
+		private string defaulttoptexture;
 		private string defaultwalltexture;
+		private string defaultbottomtexture;
 		private int custombrightness;
 		private int customfloorheight;
 		private int customceilheight;
@@ -68,7 +70,9 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd. Sector drawing overrides
 		private bool overridefloortexture;
 		private bool overrideceiltexture;
-		private bool overridewalltexture;
+		private bool overridetoptexture;
+		private bool overridemiddletexture;
+		private bool overridebottomtexture;
 		private bool overridefloorheight;
 		private bool overrideceilheight;
 		private bool overridebrightness;
@@ -102,7 +106,9 @@ namespace CodeImp.DoomBuilder.Map
 		private Dictionary<int, string> tagLabels;
 
 		//mxd. Sector drawing options
+		public string DefaultTopTexture { get { return defaulttoptexture; } set { defaulttoptexture = value; } }
 		public string DefaultWallTexture { get { return defaultwalltexture; } set { defaultwalltexture = value; } }
+		public string DefaultBottomTexture { get { return defaultbottomtexture; } set { defaultbottomtexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
 		public string DefaultCeilingTexture { get { return defaultceiltexture; } set { defaultceiltexture = value; } }
 		public int CustomBrightness { get { return custombrightness; } set { custombrightness = value; } }
@@ -112,7 +118,9 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd. Sector drawing overrides
 		public bool OverrideFloorTexture { get { return overridefloortexture; } set { overridefloortexture = value; } }
 		public bool OverrideCeilingTexture { get { return overrideceiltexture; } set { overrideceiltexture = value; } }
-		public bool OverrideWallTexture { get { return overridewalltexture; } set { overridewalltexture = value; } }
+		public bool OverrideTopTexture { get { return overridetoptexture; } set { overridetoptexture = value; } }
+		public bool OverrideMiddleTexture { get { return overridemiddletexture; } set { overridemiddletexture = value; } }
+		public bool OverrideBottomTexture { get { return overridebottomtexture; } set { overridebottomtexture = value; } }
 		public bool OverrideFloorHeight { get { return overridefloorheight; } set { overridefloorheight = value; } }
 		public bool OverrideCeilingHeight { get { return overrideceilheight; } set { overrideceilheight = value; } }
 		public bool OverrideBrightness { get { return overridebrightness; } set { overridebrightness = value; } }
@@ -177,7 +185,9 @@ namespace CodeImp.DoomBuilder.Map
 			//mxd. Read Sector drawing options
 			defaultfloortexture = this.mapconfig.ReadSetting("defaultfloortexture", string.Empty);
 			defaultceiltexture = this.mapconfig.ReadSetting("defaultceiltexture", string.Empty);
+			defaulttoptexture = this.mapconfig.ReadSetting("defaulttoptexture", string.Empty);
 			defaultwalltexture = this.mapconfig.ReadSetting("defaultwalltexture", string.Empty);
+			defaultbottomtexture = this.mapconfig.ReadSetting("defaultbottomtexture", string.Empty);
 			custombrightness = General.Clamp(this.mapconfig.ReadSetting("custombrightness", 196), 0, 255);
 			customfloorheight = this.mapconfig.ReadSetting("customfloorheight", 0);
 			customceilheight = this.mapconfig.ReadSetting("customceilheight", 128);
@@ -185,7 +195,9 @@ namespace CodeImp.DoomBuilder.Map
 			//mxd. Read Sector drawing overrides
 			overridefloortexture = this.mapconfig.ReadSetting("overridefloortexture", false);
 			overrideceiltexture = this.mapconfig.ReadSetting("overrideceiltexture", false);
-			overridewalltexture = this.mapconfig.ReadSetting("overridewalltexture", false);
+			overridetoptexture = this.mapconfig.ReadSetting("overridetoptexture", false);
+			overridemiddletexture = this.mapconfig.ReadSetting("overridemiddletexture", false);
+			overridebottomtexture = this.mapconfig.ReadSetting("overridebottomtexture", false);
 			overridefloorheight = this.mapconfig.ReadSetting("overridefloorheight", false);
 			overrideceilheight = this.mapconfig.ReadSetting("overrideceilheight", false);
 			overridebrightness = this.mapconfig.ReadSetting("overridebrightness", false);
@@ -289,7 +301,9 @@ namespace CodeImp.DoomBuilder.Map
 			//mxd. Write Sector drawing options
 			mapconfig.WriteSetting("defaultfloortexture", defaultfloortexture);
 			mapconfig.WriteSetting("defaultceiltexture", defaultceiltexture);
+			mapconfig.WriteSetting("defaulttoptexture", defaulttoptexture);
 			mapconfig.WriteSetting("defaultwalltexture", defaultwalltexture);
+			mapconfig.WriteSetting("defaultbottomtexture", defaultbottomtexture);
 			mapconfig.WriteSetting("custombrightness", custombrightness);
 			mapconfig.WriteSetting("customfloorheight", customfloorheight);
 			mapconfig.WriteSetting("customceilheight", customceilheight);
@@ -297,7 +311,9 @@ namespace CodeImp.DoomBuilder.Map
 			//mxd. Write Sector drawing overrides
 			mapconfig.WriteSetting("overridefloortexture", overridefloortexture);
 			mapconfig.WriteSetting("overrideceiltexture", overrideceiltexture);
-			mapconfig.WriteSetting("overridewalltexture", overridewalltexture);
+			mapconfig.WriteSetting("overridetoptexture", overridetoptexture);
+			mapconfig.WriteSetting("overridemiddletexture", overridemiddletexture);
+			mapconfig.WriteSetting("overridebottomtexture", overridebottomtexture);
 			mapconfig.WriteSetting("overridefloorheight", overridefloorheight);
 			mapconfig.WriteSetting("overrideceilheight", overrideceilheight);
 			mapconfig.WriteSetting("overridebrightness", overridebrightness);

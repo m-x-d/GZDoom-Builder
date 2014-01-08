@@ -1032,6 +1032,7 @@ namespace CodeImp.DoomBuilder
 					mainwindow.UpdateThingsFilters();
 					mainwindow.UpdateInterface();
 					//mxd
+					mainwindow.AddHintsDocker();
 					mainwindow.UpdateGZDoomPanel();
 					mainwindow.HideInfo();
 
@@ -1083,6 +1084,7 @@ namespace CodeImp.DoomBuilder
 				mainwindow.HideInfo();
 				mainwindow.UpdateThingsFilters();
 				//mxd
+				mainwindow.RemoveHintsDocker();
 				mainwindow.UpdateGZDoomPanel();
 				mainwindow.UpdateInterface();
 				mainwindow.DisplayReady();
@@ -1175,6 +1177,7 @@ namespace CodeImp.DoomBuilder
 			mainwindow.UpdateThingsFilters();
 			mainwindow.UpdateInterface();
 			mainwindow.HideInfo();
+			mainwindow.AddHintsDocker(); //mxd
 
 			//mxd
 			mainwindow.UpdateGZDoomPanel();
@@ -1264,6 +1267,7 @@ namespace CodeImp.DoomBuilder
 			mainwindow.UpdateThingsFilters();
 			mainwindow.UpdateInterface();
 			mainwindow.HideInfo();
+			mainwindow.AddHintsDocker(); //mxd
 
 			if(errorlogger.IsErrorAdded)
 			{

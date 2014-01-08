@@ -23,6 +23,7 @@ using System.IO;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -58,6 +59,7 @@ namespace CodeImp.DoomBuilder.Data
 		private List<LumpRange> spriteranges;
 		private List<LumpRange> textureranges;
 		private List<LumpRange> colormapranges;
+		private List<LumpRange> voxelranges; //mxd
 		
 		#endregion
 
@@ -86,6 +88,7 @@ namespace CodeImp.DoomBuilder.Data
 			flatranges = new List<LumpRange>();
 			textureranges = new List<LumpRange>();
 			colormapranges = new List<LumpRange>();
+			voxelranges = new List<LumpRange>(); //mxd
 			
 			// Find ranges
 			FindRanges(patchranges, General.Map.Config.PatchRanges, "patches");
@@ -93,6 +96,7 @@ namespace CodeImp.DoomBuilder.Data
 			FindRanges(flatranges, General.Map.Config.FlatRanges, "flats");
 			FindRanges(textureranges, General.Map.Config.TextureRanges, "textures");
 			FindRanges(colormapranges, General.Map.Config.ColormapRanges, "colormaps");
+			FindRanges(voxelranges, General.Map.Config.VoxelRanges, "voxels");
 
 			//mxd
 			invertedflatranges = new List<LumpRange>();
@@ -284,10 +288,10 @@ namespace CodeImp.DoomBuilder.Data
 		// This finds and returns a colormap stream
 		public override Stream GetColormapData(string pname)
 		{
-			Lump lump;
-
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
+
+			Lump lump;
 
 			// Strictly read patches only between C_START and C_END?
 			if(strictpatches)
@@ -316,12 +320,13 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the textures
 		public override ICollection<ImageData> LoadTextures(PatchNames pnames)
 		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
 			List<ImageData> images = new List<ImageData>();
 			int lumpindex;
 			Lump lump;
-
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
+			float defaultscale = General.Map.Config.DefaultTextureScale; //mxd
 
 			// Load two sets of textures, if available
 			lump = file.FindLump("TEXTURE1");
@@ -332,8 +337,20 @@ namespace CodeImp.DoomBuilder.Data
 			// Read ranges from configuration
 			foreach(LumpRange range in textureranges)
 			{
-				// Load texture range
-				LoadTexturesRange(range.start, range.end, ref images, pnames);
+				// Go for all lumps between start and end exclusive
+				for(int i = range.start + 1; i < range.end; i++) {
+					// Lump not zero length?
+					if(file.Lumps[i].Length > 0) {
+						// Make the image
+						SimpleTextureImage image = new SimpleTextureImage(file.Lumps[i].Name, file.Lumps[i].Name, defaultscale, defaultscale);
+
+						// Add image to collection
+						images.Add(image);
+					} else {
+						// Can't load image without size
+						General.ErrorLogger.Add(ErrorType.Error, "Can't load texture '" + file.Lumps[i].Name + "' because it doesn't contain any data.");
+					}
+				}
 			}
 			
 			// Load TEXTURES lump file
@@ -354,32 +371,6 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Return result
 			return images;
-		}
-		
-		// This loads a range of textures
-		private void LoadTexturesRange(int startindex, int endindex, ref List<ImageData> images, PatchNames pnames)
-		{
-			// Determine default scale
-			float defaultscale = General.Map.Config.DefaultTextureScale;
-			
-			// Go for all lumps between start and end exclusive
-			for(int i = startindex + 1; i < endindex; i++)
-			{
-				// Lump not zero length?
-				if(file.Lumps[i].Length > 0)
-				{
-					// Make the image
-					SimpleTextureImage image = new SimpleTextureImage(file.Lumps[i].Name, file.Lumps[i].Name, defaultscale, defaultscale);
-					
-					// Add image to collection
-					images.Add(image);
-				}
-				else
-				{
-					// Can't load image without name
-					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed texture from lump index " + i + ". Please consider giving names to your resources.");
-				}
-			}
 		}
 
 		// This loads the texture definitions from a TEXTURES lump
@@ -579,33 +570,32 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#region ================== Flats
 
-		// This loads the textures
-		public override ICollection<ImageData> LoadFlats()
-		{
-			List<ImageData> images = new List<ImageData>();
-			string rangestart, rangeend;
-			int lumpindex;
-			
+		//mxd. This loads the flats
+		public override ICollection<ImageData> LoadFlats() {
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			// Read ranges from configuration
-			foreach(DictionaryEntry r in General.Map.Config.FlatRanges)
-			{
-				// Read start and end
-				rangestart = General.Map.Config.ReadSetting("flats." + r.Key + ".start", "");
-				rangeend = General.Map.Config.ReadSetting("flats." + r.Key + ".end", "");
-				if((rangestart.Length > 0) && (rangeend.Length > 0))
-				{
-					// Load texture range
-					LoadFlatsRange(rangestart, rangeend, ref images);
+			List<ImageData> images = new List<ImageData>();
+			FlatImage image;
+
+			foreach(LumpRange range in flatranges){
+				if(range.end < range.start + 2) continue;
+
+				for(int i = range.start + 1; i < range.end; i++) {
+					// Lump not zero-length?
+					if(file.Lumps[i].Length > 0) {
+						// Make the image object
+						image = new FlatImage(file.Lumps[i].Name);
+
+						// Add image to collection
+						images.Add(image);
+					}
 				}
 			}
 
 			// Load TEXTURES lump file
-			lumpindex = file.FindLumpIndex("TEXTURES");
-			while(lumpindex > -1)
-			{
+			int lumpindex = file.FindLumpIndex("TEXTURES");
+			while(lumpindex > -1) {
 				MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
 				WADReader.LoadHighresFlats(filedata, "TEXTURES", ref images, null, null);
 				filedata.Dispose();
@@ -613,47 +603,12 @@ namespace CodeImp.DoomBuilder.Data
 				// Find next
 				lumpindex = file.FindLumpIndex("TEXTURES", lumpindex + 1);
 			}
-			
+
 			// Add images to the container-specific texture set
-			foreach(ImageData img in images)
-				textureset.AddFlat(img);
+			foreach(ImageData img in images) textureset.AddFlat(img);
 
 			// Return result
 			return images;
-		}
-
-		// This loads a range of flats
-		private void LoadFlatsRange(string startlump, string endlump, ref List<ImageData> images)
-		{
-			int startindex, endindex;
-			FlatImage image;
-
-			// Continue until no more start can be found
-			startindex = file.FindLumpIndex(startlump);
-			while(startindex > -1)
-			{
-				// Find end index
-				endindex = file.FindLumpIndex(endlump, startindex + 1);
-				if(endindex > -1)
-				{
-					// Go for all lumps between start and end exclusive
-					for(int i = startindex + 1; i < endindex; i++)
-					{
-						// Lump not zero-length?
-						if(file.Lumps[i].Length > 0)
-						{
-							// Make the image object
-							image = new FlatImage(file.Lumps[i].Name);
-
-							// Add image to collection
-							images.Add(image);
-						}
-					}
-				}
-				
-				// Find the next start
-				startindex = file.FindLumpIndex(startlump, startindex + 1);
-			}
 		}
 
 		// This loads the flat definitions from a TEXTURES lump
@@ -683,10 +638,10 @@ namespace CodeImp.DoomBuilder.Data
 		// This finds and returns a patch stream
 		public override Stream GetFlatData(string pname)
 		{
-			Lump lump;
-
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
+
+			Lump lump;
 
 			// Find the lump in ranges
 			foreach(LumpRange range in flatranges)
@@ -705,15 +660,13 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the textures
 		public override ICollection<ImageData> LoadSprites()
 		{
-			List<ImageData> images = new List<ImageData>();
-			//string rangestart, rangeend;
-			int lumpindex;
-			
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
+
+			List<ImageData> images = new List<ImageData>();
 			
 			// Load TEXTURES lump file
-			lumpindex = file.FindLumpIndex("TEXTURES");
+			int lumpindex = file.FindLumpIndex("TEXTURES");
 			while(lumpindex > -1)
 			{
 				MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
@@ -788,6 +741,52 @@ namespace CodeImp.DoomBuilder.Data
 			return false;
 		}
 		
+		#endregion
+
+		#region ================== Voxels (mxd)
+
+		//mxd. This returns the list of voxels, which can be used without VOXELDEF definition
+		public override string[] GetVoxelNames() {
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			List<string> voxels = new List<string>();
+			Regex spriteName = new Regex(SPRITE_NAME_PATTERN);
+
+			foreach(LumpRange range in voxelranges) {
+				if(range.start == range.end) continue;
+
+				for(int i = range.start + 1; i < range.end; i++) {
+					if(spriteName.IsMatch(file.Lumps[i].Name)) voxels.Add(file.Lumps[i].Name);
+				}
+			}
+
+			return voxels.ToArray();
+		}
+
+		//mxd
+		public override KeyValuePair<string, Stream> GetVoxeldefData() {
+			Lump lump = file.FindLump("VOXELDEF");
+			if(lump != null) return new KeyValuePair<string, Stream>("VOXELDEF", lump.Stream);
+			return new KeyValuePair<string, Stream>();
+		}
+
+		//mxd. This finds and returns a voxel stream or null if no voxel was found
+		public override Stream GetVoxelData(string name) {
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			Lump lump;
+
+			foreach(LumpRange range in voxelranges) {
+				if(range.start == range.end) continue;
+				lump = file.FindLump(name, range.start, range.end);
+				if(lump != null) return lump.Stream;
+			}
+
+			return null;
+		}
+
 		#endregion
 
 		#region ================== Decorate, Gldefs, Mapinfo, etc...

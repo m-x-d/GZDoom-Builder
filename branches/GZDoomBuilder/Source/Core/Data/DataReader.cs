@@ -27,6 +27,12 @@ namespace CodeImp.DoomBuilder.Data
 {
 	internal abstract class DataReader
 	{
+		#region ================== Constants
+
+		protected const string SPRITE_NAME_PATTERN = "(?i)\\A[a-z0-9]{4}([a-z][0-9]{0,2})$"; //mxd
+
+		#endregion
+
 		#region ================== Variables
 
 		protected DataLocation location;
@@ -164,9 +170,6 @@ namespace CodeImp.DoomBuilder.Data
 
 		//mxd. When implemented, this returns the list of voxel model names
 		public virtual string[] GetVoxelNames() { return null; }
-
-		//mxd. When implemented, this checks if the given voxel lump exists
-		public virtual bool GetVoxelExists(string name) { return false; }
 
 		//mxd. When implemented, this returns the voxel lump
 		public virtual Stream GetVoxelData(string name) { return null; }

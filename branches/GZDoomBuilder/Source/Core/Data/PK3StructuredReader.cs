@@ -494,7 +494,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			string[] files = GetAllFiles("voxels", false);
 			List<string> voxels = new List<string>();
-			Regex spriteName = new Regex("(?i)\\A[a-z0-9]{4}([a-z][0-9]{0,2})$");
+			Regex spriteName = new Regex(SPRITE_NAME_PATTERN);
 
 			for(int i = 0; i < files.Length; i++) {
 				string s = Path.GetFileNameWithoutExtension(files[i]).ToUpperInvariant();

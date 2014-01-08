@@ -240,6 +240,12 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
+			// Find in any of the wad files
+			for(int i = wads.Count - 1; i >= 0; i--) {
+				Stream voxel = wads[i].GetVoxelData(name);
+				if(voxel != null) return voxel;
+			}
+
 			try {
 				// Find in voxels directory
 				string path = Path.Combine(VOXELS_DIR, Path.GetDirectoryName(name));
@@ -253,26 +259,6 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Nothing found
 			return null;
-		}
-
-		//mxd. This checks if the given sprite exists
-		public override bool GetVoxelExists(string name) {
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			// Find in voxels directory
-			try {
-				string path = Path.Combine(VOXELS_DIR, Path.GetDirectoryName(name));
-				string filename = FindFirstFile(path, Path.GetFileName(name), true);
-				if((filename != null) && FileExists(filename)) {
-					return true;
-				}
-			} catch(Exception e) {
-				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while checking voxel '" + name + "' existance in directory: " + e.Message);
-			}
-
-			// Nothing found
-			return false;
 		}
 
 		#endregion

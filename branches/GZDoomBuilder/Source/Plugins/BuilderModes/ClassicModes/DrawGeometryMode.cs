@@ -411,16 +411,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. Setup hints for current editing mode
 		protected override void SetupHints() {
-			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
-			string editKey = Actions.Action.GetShortcutKeyDesc("builder_classicedit");
-			string acceptKey = Actions.Action.GetShortcutKeyDesc("builder_acceptmode");
-			string cancelKey = Actions.Action.GetShortcutKeyDesc("builder_cancelmode");
-			string removeKey = Actions.Action.GetShortcutKeyDesc("buildermodes_removepoint");
-
-			hints = new[]{ "Press " + selectKey + " to place a vertex",
-						  "Press " + removeKey + " to remove last vertex",                
-						  "Press " + acceptKey + " to accept",
-						  "Press " + cancelKey + " or " + editKey + " to cancel"
+			hints = new[]{ "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicselect") + "</b> to place a vertex",
+						  "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_removepoint") + "</b> to remove last vertex",                
+						  "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_acceptmode") + "</b> to accept",
+						  "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_cancelmode") + "</b> or <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicedit") + "</b> to cancel"
 			};
 		}
 		
