@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+﻿using System.Drawing;
 using System.Windows.Forms;
-
-using CodeImp.DoomBuilder;
-using CodeImp.DoomBuilder.Editing;
-using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.VisualModes;
-
 using CodeImp.DoomBuilder.ColorPicker.Windows;
 
 namespace CodeImp.DoomBuilder.ColorPicker
@@ -21,6 +13,8 @@ namespace CodeImp.DoomBuilder.ColorPicker
 		private static BuilderPlug me;
 		public static BuilderPlug Me { get { return me; } }
 
+		public override int MinimumRevision { get { return 1869; } }
+
 		public override string Name { get { return "Color Picker"; } }
 
 		private IColorPicker form;
@@ -29,11 +23,6 @@ namespace CodeImp.DoomBuilder.ColorPicker
 		private Point formLocation; //used to keep form's location constant
 
 		public override void OnInitialize() {
-			if (GZBuilder.GZGeneral.Version < 1.11f) {
-				General.ErrorLogger.Add(ErrorType.Error, "ColorPicker plugin: GZDoom Builder 1.11 or later required!");
-				return;
-			}
-			
 			base.OnInitialize();
 			me = this;
 

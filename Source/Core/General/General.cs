@@ -532,7 +532,6 @@ namespace CodeImp.DoomBuilder
 		internal static void Main(string[] args)
 		{
 			Uri localpath;
-			//Version thisversion;
 			
 			// Determine states
 			#if DEBUG
@@ -561,7 +560,6 @@ namespace CodeImp.DoomBuilder
 			
 			// Get a reference to this assembly
 			thisasm = Assembly.GetExecutingAssembly();
-			//thisversion = thisasm.GetName().Version;
 			
 			// Find application path
 			localpath = new Uri(Path.GetDirectoryName(thisasm.GetName().CodeBase));
@@ -584,8 +582,7 @@ namespace CodeImp.DoomBuilder
 			// Remove the previous log file and start logging
 			if(File.Exists(logfile)) File.Delete(logfile);
 			//mxd
-			General.WriteLogLine("GZDoom Builder " + GZBuilder.GZGeneral.Version + GZBuilder.GZGeneral.Revision + "startup");
-			//General.WriteLogLine("Doom Builder " + thisversion.Major + "." + thisversion.Minor + " startup");
+			General.WriteLogLine("GZDoom Builder " + Application.ProductVersion + " startup");
 			General.WriteLogLine("Application path:        " + apppath);
 			General.WriteLogLine("Temporary path:          " + temppath);
 			General.WriteLogLine("Local settings path:     " + settingspath);
