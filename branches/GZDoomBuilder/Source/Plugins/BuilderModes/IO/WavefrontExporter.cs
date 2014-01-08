@@ -10,6 +10,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Windows;
+using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.BuilderModes.IO
 {
@@ -87,7 +88,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			//create mtl
 			StringBuilder mtl = new StringBuilder();
 			mtl.Append("# MTL for " + General.Map.FileTitle + ", map " + General.Map.Options.LevelName + Environment.NewLine);
-			mtl.Append("# Created by GZDoom Builder " + GZBuilder.GZGeneral.Version.ToString(CultureInfo.InvariantCulture) + Environment.NewLine + Environment.NewLine);
+			mtl.Append("# Created by GZDoom Builder " + Application.ProductVersion + Environment.NewLine + Environment.NewLine);
 
 			foreach(string s in settings.Textures) {
 				if(s == DEFAULT) continue;
@@ -149,7 +150,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 
 			//add header
 			obj.Insert(0, "o " + General.Map.Options.LevelName + Environment.NewLine); //name
-			obj.Insert(0, "# Created by GZDoom Builder " + GZBuilder.GZGeneral.Version.ToString(CultureInfo.InvariantCulture) + Environment.NewLine + Environment.NewLine);
+			obj.Insert(0, "# Created by GZDoom Builder " + Application.ProductVersion + Environment.NewLine + Environment.NewLine);
 			obj.Insert(0, "# " + General.Map.FileTitle + ", map " + General.Map.Options.LevelName + Environment.NewLine);
 			data.Obj = obj.ToString();
 

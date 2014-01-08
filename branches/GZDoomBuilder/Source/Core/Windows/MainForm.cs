@@ -362,7 +362,7 @@ namespace CodeImp.DoomBuilder.Windows
 			else
 			{
 				// Show normal caption
-				this.Text = Application.ProductName;
+				this.Text = Application.ProductName + " v" + Application.ProductVersion;
 			}
 
 			// Update the status bar

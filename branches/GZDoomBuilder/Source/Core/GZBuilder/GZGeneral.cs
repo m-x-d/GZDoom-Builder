@@ -21,10 +21,6 @@ namespace CodeImp.DoomBuilder.GZBuilder
 		private static int[] acsSpecials = { 80, 81, 82, 83, 84, 85, 226 };
 		public static int[] ACS_SPECIALS { get { return acsSpecials; } }
 
-		//version
-		public const float Version = 1.14f;
-		public const char Revision = ' ';
-
 		public static void Init() {
 			//bind actions
 			General.Actions.BindMethods(typeof(GZGeneral));

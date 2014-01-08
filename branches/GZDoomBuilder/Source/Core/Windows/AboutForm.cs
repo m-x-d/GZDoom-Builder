@@ -32,7 +32,7 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
 			// Show version
-			version.Text = "GZDoom Builder " + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Version + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Revision + " " + (General.DebugBuild ? "(debug)" : "");
+			version.Text = Application.ProductName + " v" + Application.ProductVersion + (General.DebugBuild ? " (debug)" : "");
 		}
 
 		// Launch Doom Builder website
@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void copyversion_Click(object sender, EventArgs e)
 		{
 			Clipboard.Clear();
-			Clipboard.SetText(CodeImp.DoomBuilder.GZBuilder.GZGeneral.Version.ToString() + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Revision);
+			Clipboard.SetText(Application.ProductVersion);
 		}
 	}
 }
