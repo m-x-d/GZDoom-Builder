@@ -527,33 +527,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Setup hints for current editing mode
 		protected override void SetupHints() {
 			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
-			string editKey = Actions.Action.GetShortcutKeyDesc("builder_classicedit");
-			string clearKey = Actions.Action.GetShortcutKeyDesc("builder_clearselection");
-			string insertKey = Actions.Action.GetShortcutKeyDesc("builder_insertitem");
-			string deleteKey = Actions.Action.GetShortcutKeyDesc("builder_deleteitem");
-			string panKey = Actions.Action.GetShortcutKeyDesc("builder_pan_view");
-			string drawKey = Actions.Action.GetShortcutKeyDesc("buildermodes_drawlinesmode");
-			string gridIncKey = Actions.Action.GetShortcutKeyDesc("builder_griddec");
-			string gridDecKey = Actions.Action.GetShortcutKeyDesc("builder_gridinc");
 
-			hints = new[]{ "Hold " + panKey + " to pan the view",
-						   "Press " + selectKey + " to select a sector",
-						   "Hold " + selectKey + " and drag to use rectangular selection",
-						   "Press " + clearKey + " to clear selection",
-						   "Press " + deleteKey + " to delete selected sector(s)",
-						   "Press " + editKey + " to edit properties of current selection",
-						   "Use " + gridIncKey + " and " + gridDecKey + " to change grid size",
-						   "Press " + drawKey + " or " + insertKey + " to start drawing lines",
+			hints = new[]{ "Hold <b>" + Actions.Action.GetShortcutKeyDesc("builder_pan_view") + "</b> to pan the view",
+						   "Press <b>" + selectKey + "</b> to select a sector",
+						   "Hold <b>" + selectKey + "</b> and drag to use rectangular selection",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_clearselection") + "</b> to clear selection",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_deleteitem") + "</b> to delete selected sector(s)",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicedit") + "</b> to edit properties of current selection",
+						   "Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_griddec") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("builder_gridinc") + "</b> to change grid size",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_joinsectors") + "</b> to join two or more selected sectors together and keep all linedefs",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_mergesectors") + "</b> to join two or more selected sectors together and remove the shared inedefs",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_gradientbrightness") + "</b> to create a brightness or color gradient over all selected sectors from the first to the last selected sector",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_gradientfloors") + "</b> to create a floor heights gradient over all selected sectors from the first to the last selected sector",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_gradientceilings") + "</b> to create a ceiling heights gradient over all selected sectors from the first to the last selected sector",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_makedoor") + "</b> to create doors from the highlighted or selected sectors",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_drawlinesmode") + "</b> or <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to start drawing lines",
+						   "Check <b>'Sectors'</b> menu for additional actions"
 			};
-
-			
 		}
 
 		//mxd
 		protected override void SetupMultiselectionHints() {
-			multiselectionHints = new[] { "Hold Shift to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
-										  "Hold Ctrl to enable subtractive selection",
-										  "Hold Ctrl-Shift to intersect the new selection with already existing one",
+			multiselectionHints = new[] { "Hold <b>Shift</b> to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
+										  "Hold <b>Ctrl</b> to enable subtractive selection",
+										  "Hold <b>Ctrl-Shift</b> to intersect the new selection with already existing one",
 			};
 		}
 
@@ -1435,11 +1432,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Dispose selected sectors
 				foreach(Sector s in selected)
 				{
-					// Get all the linedefs
-					/*General.Map.Map.ClearMarkedLinedefs(false);
-					foreach(Sidedef sd in s.Sidedefs) sd.Line.Marked = true;
-					List<Linedef> lines = General.Map.Map.GetMarkedLinedefs(true);*/
-
 					//mxd. Get all the linedefs
 					List<Linedef> lines = new List<Linedef>(s.Sidedefs.Count);
 					foreach(Sidedef side in s.Sidedefs) lines.Add(side.Line);
@@ -1475,11 +1467,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							}
 
 							//mxd. Do we still need high/low textures?
-							if(!lines[i].Front.HighRequired() && lines[i].Front.HighTexture.Length > 0 && lines[i].Front.HighTexture != "-")
-								lines[i].Front.SetTextureHigh("-");
-
-							if(!lines[i].Front.LowRequired() && lines[i].Front.LowTexture.Length > 0 && lines[i].Front.LowTexture != "-")
-								lines[i].Front.SetTextureLow("-");
+							lines[i].Front.RemoveUnneededTextures(false);
 							
 							// Update sided flags
 							lines[i].ApplySidedFlags();
@@ -1501,6 +1489,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Redraw screen
 				General.Interface.RedrawDisplay();
 			}
+		}
+
+		[BeginAction("dissolveitem", BaseAction = true)] //mxd
+		public void DissolveItem() {
+			///TODO handle this differently?..
+			DeleteItem();
 		}
 		
 		// This joins sectors together and keeps all lines

@@ -45,8 +45,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// Initialize
 			this.SetStyle(ControlStyles.FixedWidth, true);
 			this.SetStyle(ControlStyles.FixedHeight, true);
-
-			this.MouseEnter += new System.EventHandler(RenderTargetControl_MouseEnter); //mxd
 		}
 		
 		// Disposer
@@ -71,11 +69,6 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		protected override void OnKeyUp(KeyEventArgs e) {
 			if(OnKeyReleased != null) OnKeyReleased(this, e);
-		}
-
-		//mxd
-		private void RenderTargetControl_MouseEnter(object sender, System.EventArgs e) {
-			this.Focus();
 		}
 		
 		#endregion

@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This refills the list
-		public unsafe void UpdateList()
+		public void UpdateList()
 		{
 			ignoreevents = true;
 			currentselection = -1;

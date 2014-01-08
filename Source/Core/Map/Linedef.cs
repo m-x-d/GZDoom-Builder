@@ -530,10 +530,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This checks and returns a flag without creating it
 		public bool IsFlagSet(string flagname)
 		{
-			if(flags.ContainsKey(flagname))
-				return flags[flagname];
-			else
-				return false;
+			if(flags.ContainsKey(flagname)) return flags[flagname];
+			return false;
 		}
 
 		// This sets a flag
@@ -546,7 +544,6 @@ namespace CodeImp.DoomBuilder.Map
 				flags[flagname] = value;
 
 				// Cached flags
-				//if(flagname == General.Map.Config.SoundLinedefFlag) blocksoundflag = value; //mxd
 				if(flagname == General.Map.Config.ImpassableFlag) impassableflag = value;
 
 				//mxd
@@ -565,7 +562,6 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			BeforePropsChange();
 			flags.Clear();
-			//blocksoundflag = false;
 			impassableflag = false;
 
 			//mxd

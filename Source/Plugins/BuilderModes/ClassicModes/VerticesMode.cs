@@ -25,6 +25,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Actions;
+using System.Drawing;
 
 #endregion
 
@@ -48,7 +49,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Highlighted item
 		protected Vertex highlighted;
-		private Linedef highlightedLine;
+		private Vector2D insertPreview = new Vector2D(float.NaN, float.NaN); //mxd
 
 		// Interface
 		private bool editpressed;
@@ -150,15 +151,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.Finish();
 			}
 
-			// Selecting?
-			if(selecting)
+			// Render selection
+			if(selecting && renderer.StartOverlay(true)) 
 			{
-				// Render selection
-				if(renderer.StartOverlay(true))
-				{
-					RenderMultiSelection();
-					renderer.Finish();
-				}
+				RenderMultiSelection();
+				renderer.Finish();
 			}
 
 			renderer.Present();
@@ -191,42 +188,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.ShowVertexInfo(highlighted);
 			else
 				General.Interface.HideInfo();
-		}
-
-		//mxd
-		private void HighlightLine(Linedef l) {
-			// Update display
-			if(renderer.StartPlotter(false)) {
-				// Undraw previous highlight
-				if((highlightedLine != null) && !highlightedLine.IsDisposed) {
-					renderer.PlotLinedef(highlightedLine, renderer.DetermineLinedefColor(highlightedLine));
-
-					if(highlighted == null) {
-						renderer.PlotVertex(highlightedLine.Start, renderer.DetermineVertexColor(highlightedLine.Start));
-						renderer.PlotVertex(highlightedLine.End, renderer.DetermineVertexColor(highlightedLine.End));
-					}
-				}
-
-				// Set new highlight
-				highlightedLine = l;
-
-				// Render highlighted item
-				if((highlightedLine != null) && !highlightedLine.IsDisposed) {
-					renderer.PlotLinedef(highlightedLine, General.Colors.InfoLine.WithAlpha(128));
-
-					if(highlighted != null && !highlighted.IsDisposed) {
-						renderer.PlotVertex(highlightedLine.Start, highlightedLine.Start == highlighted ? ColorCollection.HIGHLIGHT : renderer.DetermineVertexColor(highlightedLine.Start));
-						renderer.PlotVertex(highlightedLine.End, highlightedLine.End == highlighted ? ColorCollection.HIGHLIGHT : renderer.DetermineVertexColor(highlightedLine.End));
-					}else{
-						renderer.PlotVertex(highlightedLine.Start, renderer.DetermineVertexColor(highlightedLine.Start));
-						renderer.PlotVertex(highlightedLine.End, renderer.DetermineVertexColor(highlightedLine.End));
-					}
-				}
-
-				// Done
-				renderer.Finish();
-				renderer.Present();
-			}
 		}
 
 		//mxd
@@ -442,7 +403,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			if(panning) return; //mxd. Skip all this jass while panning
+			if(panning) return; //mxd. Skip all this jazz while panning
 
 			//mxd
 			if(selectpressed && !editpressed && !selecting) {
@@ -485,12 +446,48 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else if(e.Button == MouseButtons.None) // Not holding any buttons?
 			{
-				//mxd
-				// Find the nearest linedef within split linedefs range
+				//mxd. Render insert vertex preview
 				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.SplitLinedefsRange / renderer.Scale);
 
-				// Highlight if not the same
-				if(l != highlightedLine) HighlightLine(l);
+				if(l != null) {
+					// Snip to grid?
+					if(General.Interface.ShiftState ^ General.Interface.SnapToGrid) {
+						// Find all points where the grid intersects the line
+						List<Vector2D> points = l.GetGridIntersections();
+						if(points.Count == 0) {
+							insertPreview = l.NearestOnLine(mousemappos);
+						} else {
+							insertPreview = mousemappos;
+							float distance = float.MaxValue;
+							foreach(Vector2D p in points) {
+								float pdist = Vector2D.DistanceSq(p, mousemappos);
+								if(pdist < distance) {
+									insertPreview = p;
+									distance = pdist;
+								}
+							}
+						}
+					} else {
+						// Just use the nearest point on line
+						insertPreview = l.NearestOnLine(mousemappos);
+					}
+
+					//render preview
+					if(renderer.StartOverlay(true)) {
+						float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
+						renderer.RenderRectangleFilled(new RectangleF(insertPreview.x - vsize, insertPreview.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine, true);
+						renderer.Finish();
+						renderer.Present();
+					}
+				} else if(insertPreview.IsFinite()) {
+					insertPreview.x = float.NaN;
+
+					//undraw preveiw
+					if(renderer.StartOverlay(true)) {
+						renderer.Finish();
+						renderer.Present();
+					}
+				}
 				
 				// Find the nearest vertex within highlight range
 				Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
@@ -507,6 +504,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Highlight nothing
 			Highlight(null);
+		}
+
+		//mxd
+		protected override void BeginViewPan() {
+			if (insertPreview.IsFinite()) {
+				insertPreview.x = float.NaN;
+
+				//undraw preveiw
+				if (renderer.StartOverlay(true)) {
+					renderer.Finish();
+					renderer.Present();
+				}
+			}
+
+			base.BeginViewPan();
 		}
 
 		//mxd
@@ -649,32 +661,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Setup hints for current editing mode
 		protected override void SetupHints() {
 			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
-			string editKey = Actions.Action.GetShortcutKeyDesc("builder_classicedit");
-			string clearKey = Actions.Action.GetShortcutKeyDesc("builder_clearselection");
-			string insertKey = Actions.Action.GetShortcutKeyDesc("builder_insertitem");
-			string deleteKey = Actions.Action.GetShortcutKeyDesc("builder_deleteitem");
-			string panKey = Actions.Action.GetShortcutKeyDesc("builder_pan_view");
-			string drawKey = Actions.Action.GetShortcutKeyDesc("buildermodes_drawlinesmode");
-			string gridIncKey = Actions.Action.GetShortcutKeyDesc("builder_griddec");
-			string gridDecKey = Actions.Action.GetShortcutKeyDesc("builder_gridinc");
-
-			hints = new[]{ "Hold " + panKey + " to pan the view",
-						   "Press " + selectKey + " to select a vertex",
-						   "Hold " + selectKey + " and drag to use rectangular selection",
-						   "Press " + clearKey + " to clear selection",
-						   "Press " + insertKey + " to insert a new vertex",
-						   "Press " + deleteKey + " to delete selected vertices",
-						   "Press " + editKey + " to edit properties of current selection",
-						   "Use " + gridIncKey + " and " + gridDecKey + " to change grid size",
-						   "Press " + drawKey + " to start drawing lines",
+			
+			hints = new[]{ "Hold <b>" + Actions.Action.GetShortcutKeyDesc("builder_pan_view") + "</b> to pan the view",
+						   "Press <b>" + selectKey + "</b> to select a vertex",
+						   "Hold <b>" + selectKey + "</b> and drag to use rectangular selection",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_clearselection") + "</b> to clear selection",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to insert a new vertex",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_deleteitem") + "</b> to delete selected vertices",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicedit") + "</b> to edit properties of current selection",
+						   "Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_griddec") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("builder_gridinc") + "</b> to change grid size",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_drawlinesmode") + "</b> to start drawing lines",
+						   "Check <b>'Vertices'</b> menu for additional actions"
 			};
 		}
 
 		//mxd
 		protected override void SetupMultiselectionHints() {
-			multiselectionHints = new[] { "Hold Shift to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
-										  "Hold Ctrl to enable subtractive selection",
-										  "Hold Ctrl-Shift to intersect the new selection with already existing one",
+			multiselectionHints = new[] { "Hold <b>Shift</b> to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
+										  "Hold <b>Ctrl</b> to enable subtractive selection",
+										  "Hold <b>Ctrl-Shift</b> to intersect the new selection with already existing one",
 			};
 		}
 		
@@ -775,15 +780,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						// Find all points where the grid intersects the line
 						List<Vector2D> points = l.GetGridIntersections();
-						insertpos = mousemappos;
-						float distance = float.MaxValue;
-						foreach(Vector2D p in points)
-						{
-							float pdist = Vector2D.DistanceSq(p, mousemappos);
-							if(pdist < distance)
+						if(points.Count == 0) {
+							//mxd. Just use the nearest point on line
+							insertpos = l.NearestOnLine(mousemappos);
+						} else {
+							insertpos = mousemappos;
+							float distance = float.MaxValue;
+							foreach(Vector2D p in points) 
 							{
-								insertpos = p;
-								distance = pdist;
+								float pdist = Vector2D.DistanceSq(p, mousemappos);
+								if(pdist < distance) 
+								{
+									insertpos = p;
+									distance = pdist;
+								}
 							}
 						}
 					}
@@ -847,8 +857,55 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
-		[BeginAction("deleteitem", BaseAction = true)] //mxd
+		[BeginAction("deleteitem", BaseAction = true)]
 		public void DeleteItem() {
+			// Make list of selected vertices
+			ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+			if(selected.Count == 0) return;
+
+			// Make undo
+			if(selected.Count > 1) {
+				General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " vertices");
+				General.Interface.DisplayStatus(StatusType.Action, "Deleted " + selected.Count + " vertices.");
+			} else {
+				General.Map.UndoRedo.CreateUndo("Delete vertex");
+				General.Interface.DisplayStatus(StatusType.Action, "Deleted a vertex.");
+			}
+
+			// Go for all vertices that need to be removed
+			foreach(Vertex v in selected) {
+				// Not already removed automatically?
+				if(!v.IsDisposed) {
+					// If the vertex only has 2 linedefs attached, then merge the linedefs
+					if(v.Linedefs.Count == 2) {
+						Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
+						Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
+						Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
+						Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
+						if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
+						ld2.Dispose();
+					}
+
+					// Trash vertex
+					v.Dispose();
+				}
+			}
+
+			// Update cache values
+			General.Map.IsChanged = true;
+			General.Map.Map.Update();
+
+			// Invoke a new mousemove so that the highlighted item updates
+			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);
+			OnMouseMove(e);
+
+			// Redraw screen
+			General.Interface.RedrawDisplay();
+		}
+
+		[BeginAction("dissolveitem", BaseAction = true)] //mxd
+		public void DissolveItem() {
 			// Make list of selected vertices
 			ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
 			if(selected.Count == 0) {
@@ -858,11 +915,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Make undo
 			if(selected.Count > 1) {
-				General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " vertices");
-				General.Interface.DisplayStatus(StatusType.Action, "Deleted " + selected.Count + " vertices.");
+				General.Map.UndoRedo.CreateUndo("Dissolve " + selected.Count + " vertices");
+				General.Interface.DisplayStatus(StatusType.Action, "Dissolved " + selected.Count + " vertices.");
 			} else {
-				General.Map.UndoRedo.CreateUndo("Delete vertex");
-				General.Interface.DisplayStatus(StatusType.Action, "Deleted a vertex.");
+				General.Map.UndoRedo.CreateUndo("Dissolve vertex");
+				General.Interface.DisplayStatus(StatusType.Action, "Dissolved a vertex.");
 			}
 
 			//collect linedefs count per vertex

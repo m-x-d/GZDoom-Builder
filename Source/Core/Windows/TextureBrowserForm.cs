@@ -104,8 +104,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Select the last one that was selected
 			string selectname = General.Settings.ReadSetting("browserwindow.textureset", "");
+			TreeNode match;
+			if (string.IsNullOrEmpty(selectname)) {
+				match = tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1];
+			} else {
+				match = findNodeByName(tvTextureSets.Nodes, selectname);
+			}
 
-			TreeNode match = findNodeByName(tvTextureSets.Nodes, selectname);
 			if (match != null) {
 				IFilledTextureSet set = (match.Tag as IFilledTextureSet);
 				

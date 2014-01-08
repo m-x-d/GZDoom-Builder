@@ -47,6 +47,10 @@ namespace CodeImp.DoomBuilder.Editing
 		// Disposing
 		protected bool isdisposed = false;
 
+		//mxd. Hints
+		protected string[] hints;
+		protected string[] multiselectionHints;
+
 		#endregion
 
 		#region ================== Properties
@@ -84,6 +88,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 			// No attributes found?
 			if(attributes == null) throw new Exception("Editing mode \"" + this.GetType().Name + "\" is missing EditMode attributes!");
+
+			SetupHints(); //mxd
+			SetupMultiselectionHints(); //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -129,6 +136,25 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		#endregion
 
+		#region ================== Methods (mxd)
+
+
+		/// <summary>
+		/// Override this to setup hints for this editing mode
+		/// </summary>
+		protected virtual void SetupHints() { //mxd
+			hints = new[] { "Press F1 to view help about current editing mode" };
+		}
+
+		/// <summary>
+		/// Override this to setup hints shown while multiselecting for this editing mode
+		/// </summary>
+		protected virtual void SetupMultiselectionHints() { //mxd
+			multiselectionHints = new[] { "Press F1 to view help about current editing mode" };
+		}
+
+		#endregion
+
 		#region ================== Events
 
 		//
@@ -146,6 +172,9 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Bind any methods
 			General.Actions.BindMethods(this);
+
+			//mxd. Show hints for this mode
+			General.Interface.ShowEditModeHints(hints);
 		}
 
 		// Mode disengages

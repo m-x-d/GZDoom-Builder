@@ -260,31 +260,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Setup hints for current editing mode
 		protected override void SetupHints() {
 			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
-			string editKey = Actions.Action.GetShortcutKeyDesc("builder_classicedit");
-			string clearKey = Actions.Action.GetShortcutKeyDesc("builder_clearselection");
-			string insertKey = Actions.Action.GetShortcutKeyDesc("builder_insertitem");
-			string deleteKey = Actions.Action.GetShortcutKeyDesc("builder_deleteitem");
-			string panKey = Actions.Action.GetShortcutKeyDesc("builder_pan_view");
-			string drawKey = Actions.Action.GetShortcutKeyDesc("buildermodes_drawlinesmode");
-			string gridIncKey = Actions.Action.GetShortcutKeyDesc("builder_griddec");
-			string gridDecKey = Actions.Action.GetShortcutKeyDesc("builder_gridinc");
 
-			hints = new[]{ "Hold " + panKey + " to pan the view",
-						   "Press " + selectKey + " to select a linedef",
-						   "Hold " + selectKey + " and drag to use rectangular selection",
-						   "Press " + clearKey + " to clear selection",
-						   "Press " + deleteKey + " to delete selected linedef(s)",
-						   "Press " + editKey + " to edit properties of current selection",
-						   "Use " + gridIncKey + " and " + gridDecKey + " to change grid size",
-						   "Press " + drawKey + " or " + insertKey + " to start drawing lines",
+			hints = new[]{ "Hold <b>" + Actions.Action.GetShortcutKeyDesc("builder_pan_view") + "</b> to pan the view",
+						   "Press <b>" + selectKey + "</b> to select a linedef",
+						   "Hold <b>" + selectKey + "</b> and drag to use rectangular selection",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_clearselection") + "</b> to clear selection",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_deleteitem") + "</b> to delete selected linedef(s)",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicedit") + "</b> to edit properties of current selection",
+						   "Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_griddec") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("builder_gridinc") + "</b> to change grid size",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_drawlinesmode") + "</b> or <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to start drawing lines",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_flipsidedefs") + "</b> to flips the sidedefs on the selected linedefs around",
+                           "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_selectsinglesided") + "</b> to keep only the single-sided lines in your selection selected",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_selectdoublesided") + "</b> to keep only the double-sided lines in your selection selected",
+						   "Check <b>'Linedefs'</b> menu for additional actions"                           
 			};
 		}
 
 		//mxd
 		protected override void SetupMultiselectionHints() {
-			multiselectionHints = new[] { "Hold Shift to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
-										  "Hold Ctrl to enable subtractive selection",
-										  "Hold Ctrl-Shift to intersect the new selection with already existing one",
+			multiselectionHints = new[] { "Hold <b>Shift</b> to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
+										  "Hold <b>Ctrl</b> to enable subtractive selection",
+										  "Hold <b>Ctrl-Shift</b> to intersect the new selection with already existing one",
 			};
 		}
 		
@@ -875,9 +871,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			General.Editing.ChangeMode(drawmode);
 		}
-		
+
 		[BeginAction("deleteitem", BaseAction = true)]
-		public void DeleteItem()
+		public void DeleteItem() {
+			// Make list of selected linedefs
+			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+			if(selected.Count == 0) return;
+
+			// Make undo
+			if(selected.Count > 1) {
+				General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " linedefs");
+				General.Interface.DisplayStatus(StatusType.Action, "Deleted " + selected.Count + " linedefs.");
+			} else {
+				General.Map.UndoRedo.CreateUndo("Delete linedef");
+				General.Interface.DisplayStatus(StatusType.Action, "Deleted a linedef.");
+			}
+
+			// Dispose selected linedefs
+			foreach(Linedef ld in selected) ld.Dispose();
+
+			// Update cache values
+			General.Map.IsChanged = true;
+			General.Map.Map.Update();
+
+			// Invoke a new mousemove so that the highlighted item updates
+			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);
+			OnMouseMove(e);
+
+			// Redraw screen
+			General.Interface.RedrawDisplay();
+		}
+
+		[BeginAction("dissolveitem", BaseAction = true)] //mxd
+		public void DissolveItem()
 		{
 			// Make list of selected linedefs
 			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
@@ -889,13 +916,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Make undo
 				if(selected.Count > 1)
 				{
-					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " linedefs");
-					General.Interface.DisplayStatus(StatusType.Action, "Deleted " + selected.Count + " linedefs.");
+					General.Map.UndoRedo.CreateUndo("Dissolve " + selected.Count + " linedefs");
+					General.Interface.DisplayStatus(StatusType.Action, "Dissolved " + selected.Count + " linedefs.");
 				}
 				else
 				{
-					General.Map.UndoRedo.CreateUndo("Delete linedef");
-					General.Interface.DisplayStatus(StatusType.Action, "Deleted a linedef.");
+					General.Map.UndoRedo.CreateUndo("Dissolve linedef");
+					General.Interface.DisplayStatus(StatusType.Action, "Dissolved a linedef.");
 				}
 
 				//mxd. Find sectors, which will become invalid after linedefs removal.

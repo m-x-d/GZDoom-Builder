@@ -671,6 +671,12 @@
     <Compile Include="Controls\DockersTabsControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\HintsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\HintsPanel.Designer.cs">
+      <DependentUpon>HintsPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PasteOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -872,6 +878,9 @@
     <EmbeddedResource Include="Controls\DockersControl.resx">
       <DependentUpon>DockersControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\HintsPanel.resx">
+      <DependentUpon>HintsPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\PasteOptionsControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>PasteOptionsControl.cs</DependentUpon>
@@ -917,6 +926,7 @@
     <None Include="Resources\ArrowDown.png" />
     <None Include="Resources\ArrowUp.png" />
     <None Include="Resources\Check.png" />
+    <None Include="Resources\ClearTextures.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\GZDB2.ico" />
     <None Include="Resources\fog.png" />

@@ -85,12 +85,13 @@ namespace CodeImp.DoomBuilder.Config
 		private IDictionary maplumpnames;	// This is old, we should use maplumps instead
 		private Dictionary<string, MapLumpInfo> maplumps;
 		
-		// Texture/flat sources
+		// Texture/flat/voxel sources
 		private IDictionary textureranges;
 		private IDictionary flatranges;
 		private IDictionary patchranges;
 		private IDictionary spriteranges;
 		private IDictionary colormapranges;
+		private IDictionary voxelranges; //mxd
 		
 		// Things
 		private List<string> defaultthingflags;
@@ -185,12 +186,13 @@ namespace CodeImp.DoomBuilder.Config
 		public IDictionary MapLumpNames { get { return maplumpnames; } }
 		public Dictionary<string, MapLumpInfo> MapLumps { get { return maplumps; } }
 
-		// Texture/flat sources
+		// Texture/flat/voxel sources
 		public IDictionary TextureRanges { get { return textureranges; } }
 		public IDictionary FlatRanges { get { return flatranges; } }
 		public IDictionary PatchRanges { get { return patchranges; } }
 		public IDictionary SpriteRanges { get { return spriteranges; } }
 		public IDictionary ColormapRanges { get { return colormapranges; } }
+		public IDictionary VoxelRanges { get { return voxelranges; } } //mxd
 
 		// Things
 		public ICollection<string> DefaultThingFlags { get { return defaultthingflags; } }
@@ -332,6 +334,7 @@ namespace CodeImp.DoomBuilder.Config
 			patchranges = cfg.ReadSetting("patches", new Hashtable());
 			spriteranges = cfg.ReadSetting("sprites", new Hashtable());
 			colormapranges = cfg.ReadSetting("colormaps", new Hashtable());
+			voxelranges = cfg.ReadSetting("voxels", new Hashtable()); //mxd
 			
 			// Map lumps
 			LoadMapLumps();

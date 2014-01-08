@@ -184,19 +184,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
 		//mxd. Setup hints for current editing mode
 		protected override void SetupHints() {
-			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
-			string editKey = Actions.Action.GetShortcutKeyDesc("builder_classicedit");
-			string cancelKey = Actions.Action.GetShortcutKeyDesc("builder_cancelmode");
-			string incSub = Actions.Action.GetShortcutKeyDesc("buildermodes_increasesubdivlevel");
-			string decSub = Actions.Action.GetShortcutKeyDesc("buildermodes_decreasesubdivlevel");
-			string incBvl = Actions.Action.GetShortcutKeyDesc("buildermodes_increasebevel");
-			string decBvl = Actions.Action.GetShortcutKeyDesc("buildermodes_decreasebevel");
-
-			hints = new[]{"Press " + selectKey + " to place a vertex",
-						  "Use " + incBvl + " and " + decBvl + " to change corners bevel by current grid size", 
-						  "Use " + incSub + " and " + decSub + " to change bevel detail level",
+			hints = new[]{"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicselect") + "</b> to place a vertex",
+						  "Use <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_increasebevel") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_decreasebevel") + "</b> to change corners bevel by current grid size", 
+						  "Use <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_increasesubdivlevel") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_decreasesubdivlevel") + "</b> to change bevel detail level",
 						  "Place second vertex to finish drawing",
-						  "Press " + cancelKey + " or " + editKey + " to cancel"
+						  "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_cancelmode") + "</b> or <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicedit") + "</b> to cancel"
 			};
 		}
 
