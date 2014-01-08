@@ -358,7 +358,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal void ShiftTextures() {
 			BeforePropsChange();
 
-			if(string.IsNullOrEmpty(texnamehigh) || texnamehigh == "-" && HighRequired()) {
+			if((string.IsNullOrEmpty(texnamehigh) || texnamehigh == "-") && (!General.Settings.AutoClearSidedefTextures || HighRequired())) {
 				if(General.Map.Options.OverrideTopTexture) {
 					texnamehigh = General.Map.Options.DefaultTopTexture;
 					longtexnamehigh = Lump.MakeLongName(texnamehigh);
@@ -368,7 +368,7 @@ namespace CodeImp.DoomBuilder.Map
 				}
 			}
 
-			if(string.IsNullOrEmpty(texnamelow) || texnamelow == "-" && LowRequired()) {
+			if((string.IsNullOrEmpty(texnamelow) || texnamelow == "-") && (!General.Settings.AutoClearSidedefTextures || LowRequired())) {
 				if(General.Map.Options.OverrideBottomTexture) {
 					texnamelow = General.Map.Options.DefaultBottomTexture;
 					longtexnamelow = Lump.MakeLongName(texnamelow);
