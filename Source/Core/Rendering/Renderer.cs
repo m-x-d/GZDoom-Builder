@@ -34,9 +34,10 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Graphics
 		protected D3DDevice graphics;
+		protected static bool fullbrightness;
 
 		// Disposing
-		protected bool isdisposed = false;
+		protected bool isdisposed;
 
 		#endregion
 

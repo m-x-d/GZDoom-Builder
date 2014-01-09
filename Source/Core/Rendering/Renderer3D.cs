@@ -56,9 +56,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Vector3D cameraposition;
 		private int shaderpass;
 		
-		// Options
-		private bool fullbrightness;
-		
 		// Window size
 		private Size windowsize;
 		
