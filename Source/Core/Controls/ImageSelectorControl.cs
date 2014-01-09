@@ -86,7 +86,6 @@ namespace CodeImp.DoomBuilder.Controls
 		// Image clicked
 		private void preview_Click(object sender, EventArgs e)
 		{
-			//ispressed = false;
 			preview.BackColor = SystemColors.Highlight;
 			ShowPreview(FindImage(name.Text));
 			if(button == MouseButtons.Right)
@@ -156,6 +155,11 @@ namespace CodeImp.DoomBuilder.Controls
 		private void timer_Tick(object sender, EventArgs e) {
 			Refresh();
 		}
+
+		//mxd
+		private void ImageSelectorControl_EnabledChanged(object sender, EventArgs e) {
+			labelSize.Visible = !(!General.Settings.ShowTextureSizes || !this.Enabled || string.IsNullOrEmpty(labelSize.Text));
+		}
 		
 		#endregion
 
@@ -196,13 +200,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 		//mxd
 		protected void DisplayImageSize(float width, float height) {
-			if(!General.Settings.ShowTextureSizes || !this.Enabled || width == 0 || height == 0) {
-				labelSize.Visible = false;
-				return;
-			}
-
-			labelSize.Visible = true;
-			labelSize.Text = width + "x" + height;
+			labelSize.Text = (width > 0 && height > 0) ? width + "x" + height : string.Empty;
+			ImageSelectorControl_EnabledChanged(this, EventArgs.Empty);
 		}
 		
 		// This must determine and return the image to show
@@ -244,7 +243,9 @@ namespace CodeImp.DoomBuilder.Controls
 		// This clamps a value between 0 and 1
 		private float Saturate(float v)
 		{
-			if(v < 0f) return 0f; else if(v > 1f) return 1f; else return v;
+			if(v < 0f) return 0f; 
+			if(v > 1f) return 1f; 
+			return v;
 		}
 		
 		#endregion

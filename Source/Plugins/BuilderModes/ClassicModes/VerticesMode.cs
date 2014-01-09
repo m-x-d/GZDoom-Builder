@@ -474,8 +474,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					//render preview
 					if(renderer.StartOverlay(true)) {
+						float dist = Vector2D.Distance(mousemappos, insertPreview);
+						byte alpha = (byte)(255 - (dist / BuilderPlug.Me.SplitLinedefsRange) * 192);
 						float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
-						renderer.RenderRectangleFilled(new RectangleF(insertPreview.x - vsize, insertPreview.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine, true);
+						renderer.RenderRectangleFilled(new RectangleF(insertPreview.x - vsize, insertPreview.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine.WithAlpha(alpha), true);
 						renderer.Finish();
 						renderer.Present();
 					}
