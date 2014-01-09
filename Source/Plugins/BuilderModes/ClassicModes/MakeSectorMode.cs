@@ -31,7 +31,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	[EditMode(DisplayName = "Make Sectors Mode",
 			  SwitchAction = "makesectormode",
 			  ButtonImage = "NewSector2.png",	// Image resource name for the button
-			  ButtonOrder = int.MinValue + 202,	// Position of the button (lower is more to the left)
+			  ButtonOrder = int.MinValue + 302,	// Position of the button (lower is more to the left)
 			  ButtonGroup = "000_editing",
 			  UseByDefault = true)]
 

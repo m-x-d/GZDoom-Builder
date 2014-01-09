@@ -1132,7 +1132,7 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("openmapincurrentwad")]
 		internal static void OpenMapInCurrentWad() {
 			if (map == null || string.IsNullOrEmpty(map.FilePathName) || !File.Exists(map.FilePathName)){
-				Interface.DisplayStatus(StatusType.Warning, "Unable to open map form current WAD!");
+				Interface.DisplayStatus(StatusType.Warning, "Unable to open map from current WAD!");
 				return;
 			}
 
