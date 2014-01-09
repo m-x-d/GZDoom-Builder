@@ -88,9 +88,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Geometry plotter
 		private Plotter plotter;
 
-		//mxd. Options
-		private bool fullbrightness;
-
 		// Vertices to present the textures
 		private VertexBuffer screenverts;
 		private FlatVertex[] backimageverts;
