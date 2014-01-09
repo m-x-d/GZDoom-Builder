@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder {
 		private List<string> scriptincludes;
 
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 
@@ -532,9 +532,8 @@ namespace CodeImp.DoomBuilder {
 			StatusInfo oldstatus;
 			WAD targetwad;
 			int index;
-			bool includenodes = false;
+			bool includenodes;
 			string origmapname;
-			bool success = true;
 
 			General.WriteLogLine("Saving map to file: " + newfilepathname);
 
@@ -768,7 +767,7 @@ namespace CodeImp.DoomBuilder {
 
 			// Success!
 			General.WriteLogLine("Map saving done");
-			return success;
+			return true;
 		}
 
 		#endregion

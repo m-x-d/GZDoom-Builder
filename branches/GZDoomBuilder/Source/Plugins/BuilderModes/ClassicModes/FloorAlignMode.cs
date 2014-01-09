@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	[EditMode(DisplayName = "Floor Align Mode",
 			  SwitchAction = "flooralignmode",
 			  ButtonImage = "FloorAlign.png",
-			  ButtonOrder = int.MinValue + 210,
+			  ButtonOrder = int.MinValue + 310,
 			  ButtonGroup = "000_editing",
 			  Volatile = true)]
 

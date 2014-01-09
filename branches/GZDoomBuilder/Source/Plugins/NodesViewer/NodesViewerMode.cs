@@ -7,7 +7,6 @@ using System.IO;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Windows;
 
@@ -252,10 +251,10 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		{
 			// Begin with a giant square polygon that covers the entire map
 			List<Vector2D> poly = new List<Vector2D>(16);
-			poly.Add(new Vector2D(-(float)General.Map.FormatInterface.MaxCoordinate, (float)General.Map.FormatInterface.MaxCoordinate));
-			poly.Add(new Vector2D((float)General.Map.FormatInterface.MaxCoordinate, (float)General.Map.FormatInterface.MaxCoordinate));
-			poly.Add(new Vector2D((float)General.Map.FormatInterface.MaxCoordinate, -(float)General.Map.FormatInterface.MaxCoordinate));
-			poly.Add(new Vector2D(-(float)General.Map.FormatInterface.MaxCoordinate, -(float)General.Map.FormatInterface.MaxCoordinate));
+			poly.Add(new Vector2D(-General.Map.FormatInterface.MaxCoordinate, General.Map.FormatInterface.MaxCoordinate));
+			poly.Add(new Vector2D(General.Map.FormatInterface.MaxCoordinate, General.Map.FormatInterface.MaxCoordinate));
+			poly.Add(new Vector2D(General.Map.FormatInterface.MaxCoordinate, -General.Map.FormatInterface.MaxCoordinate));
+			poly.Add(new Vector2D(-General.Map.FormatInterface.MaxCoordinate, -General.Map.FormatInterface.MaxCoordinate));
 
 			// Crop the polygon by the node tree splits
 			foreach(Split s in nodesplits) CropPolygon(poly, s);
@@ -587,6 +586,14 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		{
 			Cursor.Current = Cursors.WaitCursor;
 			base.OnEngage();
+
+			//mxd. General.Map.ExportToFile in BuildNodes() won't do the trick if the map was never saved
+			if (string.IsNullOrEmpty(General.Map.FilePathName)) 
+			{
+				MessageBox.Show("Please save the map before running Nodes Viewer mode.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				General.Editing.CancelMode();
+				return;
+			}
 
 			if(!General.Map.LumpExists("NODES") || !General.Map.LumpExists("SSECTORS") || !General.Map.LumpExists("SEGS") || !General.Map.LumpExists("VERTEXES"))
 			{

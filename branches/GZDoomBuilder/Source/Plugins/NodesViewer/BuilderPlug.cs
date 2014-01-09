@@ -55,12 +55,6 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			me = this;
 		}
 
-		// Preferences changed
-		public override void OnClosePreferences(PreferencesController controller)
-		{
-			base.OnClosePreferences(controller);
-		}
-
 		// This is called when the plugin is terminated
 		public override void Dispose()
 		{

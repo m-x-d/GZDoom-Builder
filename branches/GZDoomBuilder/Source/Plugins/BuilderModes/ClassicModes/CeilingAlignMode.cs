@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	[EditMode(DisplayName = "Ceiling Align Mode",
 			  SwitchAction = "ceilingalignmode",
 			  ButtonImage = "CeilingAlign.png",
-			  ButtonOrder = int.MinValue + 211,
+			  ButtonOrder = int.MinValue + 311,
 			  ButtonGroup = "000_editing",
 			  Volatile = true)]
 
