@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Controls
@@ -13,31 +12,22 @@ namespace CodeImp.DoomBuilder.Controls
 
 		internal void SetHints(string[] hintsText) {
 			hints.Clear();
+			if(hintsText.Length == 0) return;
 
-			foreach (string s in hintsText) {
-				hints.AppendText(s + Environment.NewLine + Environment.NewLine);
-			}
+			//convert to rtf markup
+			hintsText[0] = "{\\rtf1" + hintsText[0];
+			hintsText[hintsText.Length - 1] += "}";
 
-			//apply <b> tags
-			int start = hints.Text.IndexOf("<b>");
-			int end = hints.Text.IndexOf("</b>");
-			Font regular = hints.Font;
-			Font bold = new Font(hints.SelectionFont, FontStyle.Bold);
-
-			while(start != -1 && end != -1) {
-				hints.Select(start, end + 4 - start);
-				hints.SelectionFont = bold;
-				hints.SelectedText = hints.SelectedText.Replace("<b>", "").Replace("</b>", "");
-
-				start = hints.Text.IndexOf("<b>");
-				end = hints.Text.IndexOf("</b>");
-			}
-
-			hints.SelectionFont = regular;
+			hints.SelectedRtf = string.Join("\\par\\par ", hintsText).Replace("<b>", "{\\b ").Replace("</b>", "}");
 		}
 
 		internal void ClearHints() {
 			hints.Clear();
+		}
+
+		// Fight TextBoxes habit of not releasing the focus by using a carefully placed label
+		private void hints_Enter(object sender, EventArgs e) {
+			label1.Focus();
 		}
 	}
 }
