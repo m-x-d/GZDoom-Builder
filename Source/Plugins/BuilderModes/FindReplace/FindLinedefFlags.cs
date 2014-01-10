@@ -16,12 +16,10 @@
 
 #region ================== Namespaces
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Rendering;
 using System.Drawing;
 using CodeImp.DoomBuilder.Config;
 
@@ -30,7 +28,7 @@ using CodeImp.DoomBuilder.Config;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[FindReplace("Linedef Flags", BrowseButton = true, Replacable = false)]
-	internal class FindLinedefFlags : FindReplaceType
+	internal class FindLinedefFlags : BaseFindLinedef
 	{
 		#region ================== Constants
 
@@ -47,18 +45,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Constructor / Destructor
-
-		// Constructor
-		public FindLinedefFlags()
-		{
-			// Initialize
-
-		}
-
-		// Destructor
-		~FindLinedefFlags()
-		{
-		}
 
 		#endregion
 
@@ -112,38 +98,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return objs.ToArray();
-		}
-
-		// This is called when a specific object is selected from the list
-		public override void ObjectSelected(FindReplaceObject[] selection)
-		{
-			if (selection.Length == 1)
-			{
-				ZoomToSelection(selection);
-				General.Interface.ShowLinedefInfo(selection[0].Linedef);
-			}
-			else
-				General.Interface.HideInfo();
-
-			General.Map.Map.ClearAllSelected();
-			foreach (FindReplaceObject obj in selection) obj.Linedef.Selected = true;
-		}
-
-		// Render selection
-		public override void PlotSelection(IRenderer2D renderer, FindReplaceObject[] selection)
-		{
-			foreach (FindReplaceObject o in selection)
-			{
-				renderer.PlotLinedef(o.Linedef, General.Colors.Selection);
-			}
-		}
-
-		// Edit objects
-		public override void EditObjects(FindReplaceObject[] selection)
-		{
-			List<Linedef> lines = new List<Linedef>(selection.Length);
-			foreach (FindReplaceObject o in selection) lines.Add(o.Linedef);
-			General.Interface.ShowEditLinedefs(lines);
 		}
 
 		#endregion

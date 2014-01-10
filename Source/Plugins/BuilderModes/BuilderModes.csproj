@@ -241,6 +241,9 @@
     <Compile Include="ErrorChecks\ResultUnknownFlat.cs" />
     <Compile Include="ErrorChecks\ResultUnknownTexture.cs" />
     <Compile Include="ErrorChecks\ResultUnknownThing.cs" />
+    <Compile Include="FindReplace\BaseFindLinedef.cs" />
+    <Compile Include="FindReplace\BaseFindSector.cs" />
+    <Compile Include="FindReplace\BaseFindThing.cs" />
     <Compile Include="FindReplace\FindLinedefFlags.cs" />
     <Compile Include="FindReplace\FindSectorBrightness.cs" />
     <Compile Include="FindReplace\FindThingAngle.cs" />

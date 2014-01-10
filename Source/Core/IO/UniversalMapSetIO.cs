@@ -120,8 +120,8 @@ namespace CodeImp.DoomBuilder.IO
 		public override int MinBrightness { get { return int.MinValue; } }
 		public override int MaxThingType { get { return int.MaxValue; } }
 		public override int MinThingType { get { return int.MinValue; } }
-		public override float MaxCoordinate { get { return float.MaxValue; } }
-		public override float MinCoordinate { get { return float.MinValue; } }
+		public override float MaxCoordinate { get { return short.MaxValue; } } //mxd. UDMF maps are still bounded to -32768 .. 32767 range
+		public override float MinCoordinate { get { return short.MinValue; } } //mxd
 		public override int MaxThingAngle { get { return int.MaxValue; } }
 		public override int MinThingAngle { get { return int.MinValue; } }
 		public override Dictionary<string, Dictionary<string, UniversalType>> UIFields { get { return uifields; } } //mxd

@@ -17,11 +17,9 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Rendering;
 using System.Drawing;
 using CodeImp.DoomBuilder.Config;
 
@@ -30,7 +28,7 @@ using CodeImp.DoomBuilder.Config;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[FindReplace("Sector Effect", BrowseButton = true)]
-	internal class FindSectorEffect : FindReplaceType
+	internal class FindSectorEffect : BaseFindSector
 	{
 		#region ================== Constants
 
@@ -47,18 +45,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Constructor / Destructor
-
-		// Constructor
-		public FindSectorEffect()
-		{
-			// Initialize
-
-		}
-
-		// Destructor
-		~FindSectorEffect()
-		{
-		}
 
 		#endregion
 
@@ -122,41 +108,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return objs.ToArray();
-		}
-
-		// This is called when a specific object is selected from the list
-		public override void ObjectSelected(FindReplaceObject[] selection)
-		{
-			if(selection.Length == 1)
-			{
-				ZoomToSelection(selection);
-				General.Interface.ShowSectorInfo(selection[0].Sector);
-			}
-			else
-				General.Interface.HideInfo();
-
-			General.Map.Map.ClearAllSelected();
-			foreach(FindReplaceObject obj in selection) obj.Sector.Selected = true;
-		}
-
-		// Render selection
-		public override void PlotSelection(IRenderer2D renderer, FindReplaceObject[] selection)
-		{
-			foreach(FindReplaceObject o in selection)
-			{
-				foreach(Sidedef sd in o.Sector.Sidedefs)
-				{
-					renderer.PlotLinedef(sd.Line, General.Colors.Selection);
-				}
-			}
-		}
-
-		// Edit objects
-		public override void EditObjects(FindReplaceObject[] selection)
-		{
-			List<Sector> sectors = new List<Sector>(selection.Length);
-			foreach(FindReplaceObject o in selection) sectors.Add(o.Sector);
-			General.Interface.ShowEditSectors(sectors);
 		}
 
 		#endregion

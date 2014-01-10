@@ -58,10 +58,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This is called when the browse button is pressed
-		public override string Browse(string initialvalue)
+		/*public override string Browse(string initialvalue)
 		{
 			return "";
-		}
+		}*/
 
 
 		// This is called to perform a search (and replace)

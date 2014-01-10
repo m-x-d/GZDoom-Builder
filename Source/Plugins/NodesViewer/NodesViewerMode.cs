@@ -1,4 +1,4 @@
-#region === Copyright (c) 2010 Pascal van der Heiden ===
+#region ================== Namespaces
 
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 
@@ -39,6 +40,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		private List<PixelColor> distinctcolors;
 		private NodesForm form;
 		private int mouseinssector = -1;
+		private string nodesformat = "Classic nodes";
 
 		#endregion
 
@@ -61,27 +63,22 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			// display multiple things on the screen
 			// Note that black and white are not in this list, because
 			// these are the most likely colors for the user's background
-			distinctcolors = new List<PixelColor>();
-			distinctcolors.Add(PixelColor.FromColor(Color.Blue));
-			distinctcolors.Add(PixelColor.FromColor(Color.Orange));
-			distinctcolors.Add(PixelColor.FromColor(Color.ForestGreen));
-			distinctcolors.Add(PixelColor.FromColor(Color.Sienna));
-			distinctcolors.Add(PixelColor.FromColor(Color.LightPink));
-			distinctcolors.Add(PixelColor.FromColor(Color.Purple));
-			distinctcolors.Add(PixelColor.FromColor(Color.Cyan));
-			distinctcolors.Add(PixelColor.FromColor(Color.LawnGreen));
-			distinctcolors.Add(PixelColor.FromColor(Color.PaleGoldenrod));
-			distinctcolors.Add(PixelColor.FromColor(Color.Red));
-			distinctcolors.Add(PixelColor.FromColor(Color.Yellow));
-			distinctcolors.Add(PixelColor.FromColor(Color.LightSkyBlue));
-			distinctcolors.Add(PixelColor.FromColor(Color.DarkGray));
-			distinctcolors.Add(PixelColor.FromColor(Color.Magenta));
-		}
-
-		// Disposer
-		public override void Dispose()
-		{
-			base.Dispose();
+			distinctcolors = new List<PixelColor> {
+				PixelColor.FromColor(Color.Blue), 
+				PixelColor.FromColor(Color.Orange), 
+				PixelColor.FromColor(Color.ForestGreen), 
+				PixelColor.FromColor(Color.Sienna), 
+				PixelColor.FromColor(Color.LightPink), 
+				PixelColor.FromColor(Color.Purple),
+				PixelColor.FromColor(Color.Cyan), 
+				PixelColor.FromColor(Color.LawnGreen), 
+				PixelColor.FromColor(Color.PaleGoldenrod), 
+				PixelColor.FromColor(Color.Red), 
+				PixelColor.FromColor(Color.Yellow), 
+				PixelColor.FromColor(Color.LightSkyBlue), 
+				PixelColor.FromColor(Color.DarkGray), 
+				PixelColor.FromColor(Color.Magenta)
+			};
 		}
 
 		#endregion
@@ -105,7 +102,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		/// <summary>
 		/// This loads all nodes structures data from the lumps
 		/// </summary>
-		private void LoadStructures()
+		private void LoadClassicStructures()
 		{
 			// Load the nodes structure
 			MemoryStream nodesstream = General.Map.GetLumpData("NODES");
@@ -198,6 +195,181 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 					segs[sg].ssector = i;
 				}
 			}
+		}
+
+		//mxd. This loads all data from the ZNODES lump
+		private bool LoadZNodes() {
+			List<string> supportedFormats = new List<string> { "XNOD", "XGLN", "XGL2", "XGL3" };
+
+			using(MemoryStream stream = General.Map.GetLumpData("ZNODES")) {
+				//boilerplate...
+				if(stream.Length < 4) {
+					MessageBox.Show("ZNODES lump is empty.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return false;
+				}
+
+				using(BinaryReader reader = new BinaryReader(stream)) {
+					//read signature
+					nodesformat = new string(reader.ReadChars(4));
+					if(!supportedFormats.Contains(nodesformat)) {
+						MessageBox.Show("'" + nodesformat + "' node format is not supported.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return false;
+					}
+
+					uint vertsCount = reader.ReadUInt32();
+					uint newVertsCount = reader.ReadUInt32();
+
+					//boilerplate...
+					if(vertsCount != General.Map.Map.Vertices.Count) {
+						MessageBox.Show("Error while reading ZNODES: nodes vertices count in ZNODES lump (" + vertsCount + ") doesn't match with map's vertices count (" + General.Map.Map.Vertices.Count + ")!", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return false;
+					}
+
+					//add map vertices
+					verts = new Vector2D[vertsCount + newVertsCount];
+					int counter = 0;
+					foreach(Vertex v in General.Map.Map.Vertices) {
+						verts[counter++] = v.Position;
+					}
+
+					//read extra vertices
+					for(int i = counter; i < counter + newVertsCount; i++) {
+						verts[i].x = reader.ReadInt32() / 65536.0f;
+						verts[i].y = reader.ReadInt32() / 65536.0f;
+					}
+
+					//read subsectors
+					uint ssecCount = reader.ReadUInt32();
+					ssectors = new Subsector[ssecCount];
+
+					int firstseg = 0;
+					for(int i = 0; i < ssectors.Length; i++) {
+						ssectors[i].numsegs = (int)reader.ReadUInt32();
+						ssectors[i].firstseg = firstseg;
+						firstseg += ssectors[i].numsegs;
+					}
+
+					//read segments. offset and angle are unused anyway
+					uint segsCount = reader.ReadUInt32();
+					segs = new Seg[segsCount];
+
+					switch(nodesformat) {
+						case "XGLN":
+							for(int i = 0; i < segs.Length; i++) {
+								segs[i].startvertex = (int)reader.ReadUInt32();
+								reader.BaseStream.Position += 4; //skip partner
+								segs[i].lineindex = reader.ReadUInt16();
+								segs[i].leftside = reader.ReadBoolean();
+							}
+							break;
+
+						case "XGL3":
+						case "XGL2":
+							for(int i = 0; i < segs.Length; i++) {
+								segs[i].startvertex = (int)reader.ReadUInt32();
+								reader.BaseStream.Position += 4; //skip partner
+								uint lineindex = reader.ReadUInt32();
+								segs[i].lineindex = (lineindex == 0xFFFFFFFF ? -1 : (int)lineindex);
+								segs[i].leftside = reader.ReadBoolean();
+							}
+							break;
+
+						case "XNOD":
+							for(int i = 0; i < segs.Length; i++) {
+								segs[i].startvertex = (int)reader.ReadUInt32();
+								segs[i].endvertex = (int)reader.ReadUInt32();
+								segs[i].lineindex = reader.ReadUInt16();
+								segs[i].leftside = reader.ReadBoolean();
+							}
+							break;
+					}
+
+					//set second vertex, angle and reverse segs order
+					if(nodesformat == "XGLN" || nodesformat == "XGL2" || nodesformat == "XGL3") {
+						int index = 0;
+						foreach(Subsector ss in ssectors) {
+							//set the last vert
+							int lastseg = ss.firstseg + ss.numsegs - 1;
+							segs[lastseg].endvertex = segs[ss.firstseg].startvertex;
+
+							//set the rest
+							for(int i = ss.firstseg + 1; i <= lastseg; i++) {
+								segs[i - 1].endvertex = segs[i].startvertex;
+							}
+
+							//set angle and subsector index
+							for (int i = ss.firstseg; i <= lastseg; i++) {
+								segs[i].angle = Vector2D.GetAngle(verts[segs[i].endvertex], verts[segs[i].startvertex]);
+								segs[i].ssector = index;
+							}
+
+							//reverse segments order
+							Seg[] tmp = new Seg[ss.numsegs - 1];
+							int c = 0;
+							for(int i = ss.firstseg + 1; i <= lastseg; i++) {
+								tmp[c++] = segs[i];
+							}
+
+							//c = ss.numsegs - 1;
+							for (int i = ss.firstseg + 1; i <= lastseg; i++) {
+								segs[i] = tmp[--c];
+							}
+
+							index++;
+						}
+					}
+
+					//read nodes
+					uint nodesCount = reader.ReadUInt32();
+
+					//boilerplate...
+					if(nodesCount < 1) {
+						MessageBox.Show("The map has only one subsector.", "Why are you doing this, Stanley?..", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return false;
+					}
+
+					nodes = new Node[nodesCount];
+
+					for(int i = 0; i < nodes.Length; i++) {
+						if(nodesformat == "XGL3") {
+							nodes[i].linestart.x = reader.ReadInt32() / 65536.0f;
+							nodes[i].linestart.y = reader.ReadInt32() / 65536.0f;
+							nodes[i].linedelta.x = reader.ReadInt32() / 65536.0f;
+							nodes[i].linedelta.y = reader.ReadInt32() / 65536.0f;
+						} else {
+							nodes[i].linestart.x = reader.ReadInt16();
+							nodes[i].linestart.y = reader.ReadInt16();
+							nodes[i].linedelta.x = reader.ReadInt16();
+							nodes[i].linedelta.y = reader.ReadInt16();
+						}
+
+						float top = reader.ReadInt16();
+						float bot = reader.ReadInt16();
+						float left = reader.ReadInt16();
+						float right = reader.ReadInt16();
+						nodes[i].rightbox = new RectangleF(left, top, (right - left), (bot - top));
+
+						top = reader.ReadInt16();
+						bot = reader.ReadInt16();
+						left = reader.ReadInt16();
+						right = reader.ReadInt16();
+						nodes[i].leftbox = new RectangleF(left, top, (right - left), (bot - top));
+
+						uint rightindex = reader.ReadUInt32();
+						uint leftindex = reader.ReadUInt32();
+						nodes[i].rightchild = (int)(rightindex & 0x7FFFFFFF);
+						nodes[i].leftchild = (int)(leftindex & 0x7FFFFFFF);
+						nodes[i].rightsubsector = (rightindex & 0x80000000) != 0;
+						nodes[i].leftsubsector = (leftindex & 0x80000000) != 0;
+					}
+
+					// Add additional properties to nodes
+					nodes[nodes.Length - 1].parent = -1;
+					RecursiveSetupNodes(nodes.Length - 1);
+				}
+			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -470,8 +642,9 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		/// <summary>
 		/// This tests if the given coordinate is inside the specified subsector.
 		/// </summary>
-		private bool PointInSubsector(int index, Vector2D p)
-		{
+		private bool PointInSubsector(int index, Vector2D p) {
+			if (ssectors[index].points.Length == 0) return false; //mxd
+			
 			// Subsectors are convex, so we can simply test if the point is on the front side of all lines.
 			Vector2D[] points = ssectors[index].points;
 			Vector2D prevpoint = points[points.Length - 1];
@@ -595,43 +768,61 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 				return;
 			}
 
-			if(!General.Map.LumpExists("NODES") || !General.Map.LumpExists("SSECTORS") || !General.Map.LumpExists("SEGS") || !General.Map.LumpExists("VERTEXES"))
+			//mxd. No need to check for these twice
+			bool haveNodes = General.Map.LumpExists("NODES");
+			bool haveZnodes = General.Map.LumpExists("ZNODES");
+			bool haveSectors = General.Map.LumpExists("SSECTORS");
+			bool haveSegs = General.Map.LumpExists("SEGS");
+			bool haveVerts = General.Map.LumpExists("VERTEXES");
+
+			if(!haveNodes || !haveSectors || !haveSegs || !haveVerts || !haveZnodes)
 			{
 				// We need to build the nodes!
 				BuildNodes();
 			}
 
-			if(!General.Map.LumpExists("NODES"))
-			{
-				MessageBox.Show("Unable to find the NODES lump. It may be that the nodes could not be built correctly.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				General.Editing.CancelMode();
-				return;
+			//mxd
+			if(haveZnodes) {
+				General.Interface.DisplayStatus(StatusType.Busy, "Reading map nodes...");
+				if(!LoadZNodes()) {
+					General.Editing.CancelMode();
+					return;
+				}
+			} else {
+				if(!haveNodes) {
+					MessageBox.Show("Unable to find the NODES lump. It may be that the nodes could not be built correctly.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					General.Editing.CancelMode();
+					return;
+				}
+
+				if(!haveSectors) {
+					MessageBox.Show("Unable to find the SSECTORS lump. It may be that the nodes could not be built correctly.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					General.Editing.CancelMode();
+					return;
+				}
+
+				if(!haveSegs) {
+					MessageBox.Show("Unable to find the SEGS lump. It may be that the nodes could not be built correctly.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					General.Editing.CancelMode();
+					return;
+				}
+
+				if(!haveVerts) {
+					MessageBox.Show("Unable to find the VERTEXES lump. It may be that the nodes could not be built correctly.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					General.Editing.CancelMode();
+					return;
+				}
+
+				General.Interface.DisplayStatus(StatusType.Busy, "Reading map nodes...");
+				LoadClassicStructures();
+
+				//mxd. More boilerplate
+				if (nodes.Length < 1) {
+					MessageBox.Show("The map has only one subsector.", "Why are you doing this, Stanley?..", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					General.Editing.CancelMode();
+					return;
+				}
 			}
-
-			if(!General.Map.LumpExists("SSECTORS"))
-			{
-				MessageBox.Show("Unable to find the SSECTORS lump. It may be that the nodes could not be built correctly.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				General.Editing.CancelMode();
-				return;
-			}
-
-			if(!General.Map.LumpExists("SEGS"))
-			{
-				MessageBox.Show("Unable to find the SEGS lump. It may be that the nodes could not be built correctly.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				General.Editing.CancelMode();
-				return;
-			}
-
-			if(!General.Map.LumpExists("VERTEXES"))
-			{
-				MessageBox.Show("Unable to find the VERTEXES lump. It may be that the nodes could not be built correctly.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				General.Editing.CancelMode();
-				return;
-			}
-
-			General.Interface.DisplayStatus(StatusType.Busy, "Reading map nodes...");
-
-			LoadStructures();
 			
 			// Setup presentation
 			CustomPresentation presentation = new CustomPresentation();
@@ -647,6 +838,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 
 			// Load and display dialog window
 			form = new NodesForm(this);
+			form.Text += " (" + nodesformat + " format)";
 			form.Show((Form)General.Interface);
 
 			Cursor.Current = Cursors.Default;
@@ -751,25 +943,16 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			{
 				if(form.SelectedTab == 0)
 				{
+					// Render all subsectors in original color
+					for(int si = 0; si < ssectors.Length; si++) 
+					{
+						Subsector s = ssectors[si];
+						PlotSubsectorLines(s.points, PixelColor.FromColor(Color.Gray));
+					}
+					
 					if(mouseinssector > -1)
 					{
-						// Render all subsectors in original color
-						for(int si = 0; si < ssectors.Length; si++)
-						{
-							Subsector s = ssectors[si];
-							PlotSubsectorLines(s.points, PixelColor.FromColor(Color.Gray));
-						}
 						PlotSubsectorLines(ssectors[mouseinssector].points, General.Colors.Highlight);
-					}
-					else
-					{
-						// Render all subsectors with distinct colors
-						for(int si = 0; si < ssectors.Length; si++)
-						{
-							Subsector s = ssectors[si];
-							PixelColor color = distinctcolors[si % distinctcolors.Count];
-							PlotSubsectorLines(s.points, color);
-						}
 					}
 
 					// Draw additional vertices

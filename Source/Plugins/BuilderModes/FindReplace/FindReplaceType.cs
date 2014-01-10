@@ -76,7 +76,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called when the browse button is pressed
 		public virtual string Browse(string initialvalue)
 		{
-			return "";
+			return string.Empty;
 		}
 		
 		// This is called to perform a search (and replace)

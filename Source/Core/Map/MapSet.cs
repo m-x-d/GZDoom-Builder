@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.Map
 		private static UniValue virtualsectorvalue;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 

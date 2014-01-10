@@ -71,6 +71,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			renderer.PlotSector(sector, General.Colors.Selection);
 		}
+
+		//mxd. More rendering
+		public override void RenderOverlaySelection(IRenderer2D renderer) {
+			if(!BuilderPlug.Me.UseHighlight) return;
+			renderer.RenderHighlight(sector.FlatVertices, General.Colors.Selection.WithAlpha(64).ToInt());
+		}
 		
 		// Fix by setting default flat
 		public override bool Button1Click(bool batchMode)
