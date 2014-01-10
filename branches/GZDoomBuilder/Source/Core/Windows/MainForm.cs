@@ -1127,7 +1127,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				General.Plugins.OnEditMouseEnter(e);
 				General.Editing.Mode.OnMouseEnter(e);
-				if(!General.Map.IsScriptsWindowOpen) display.Focus(); //mxd
+				if(Application.OpenForms.Count == 1) display.Focus(); //mxd
 			}
 		}
 

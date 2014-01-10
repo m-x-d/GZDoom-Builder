@@ -59,6 +59,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Interface
 		protected bool editpressed;
 
+		//mxd. Used in overlay rendering
+		private Dictionary<Sector, Sector> associates;
+
 		#endregion
 
 		#region ================== Properties
@@ -94,7 +97,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This draws the geometry
 		private void DrawGeometry()
 		{
-			Dictionary<Sector, Sector> associates = new Dictionary<Sector, Sector>();
+			associates = new Dictionary<Sector, Sector>();
 			
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
@@ -151,6 +154,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if((flashpolygon != null) && (flashintensity > 0.0f))
 				{
 					renderer.RenderGeometry(flashpolygon, null, true);
+				} 
+				else if(BuilderPlug.Me.UseHighlight) //mxd
+				{
+					int color = General.Colors.Indication.WithAlpha(64).ToInt();
+					foreach(Sector s in associates.Keys){
+						renderer.RenderHighlight(s.FlatVertices, color);
+					}
 				}
 
 				renderer.Finish();
@@ -201,6 +211,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						// Redraw overlay
 						DrawGeometry();
+						DrawOverlay(); //mxd
 						renderer.Present();
 					}
 				}

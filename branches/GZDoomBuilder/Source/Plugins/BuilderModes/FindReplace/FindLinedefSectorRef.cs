@@ -16,11 +16,9 @@
 
 #region ================== Namespaces
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 
@@ -29,7 +27,7 @@ using CodeImp.DoomBuilder.Types;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[FindReplace("Linedef Sector Reference", BrowseButton = false)]
-	internal class FindLinedefSectorRef : FindReplaceType
+	internal class FindLinedefSectorRef : BaseFindLinedef
 	{
 		#region ================== Constants
 
@@ -45,18 +43,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor / Destructor
 
-		// Constructor
-		public FindLinedefSectorRef()
-		{
-			// Initialize
-
-		}
-
-		// Destructor
-		~FindLinedefSectorRef()
-		{
-		}
-
 		#endregion
 
 		#region ================== Methods
@@ -66,14 +52,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			return General.Map.FormatInterface.HasActionArgs;
 		}
-
-
-		// This is called when the browse button is pressed
-		public override string Browse(string initialvalue)
-		{
-			return "";
-		}
-
 
 		// This is called to perform a search (and replace)
 		// Returns a list of items to show in the results list
@@ -140,38 +118,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return objs.ToArray();
-		}
-
-		// This is called when a specific object is selected from the list
-		public override void ObjectSelected(FindReplaceObject[] selection)
-		{
-			if(selection.Length == 1)
-			{
-				ZoomToSelection(selection);
-				General.Interface.ShowLinedefInfo(selection[0].Linedef);
-			}
-			else
-				General.Interface.HideInfo();
-
-			General.Map.Map.ClearAllSelected();
-			foreach(FindReplaceObject obj in selection) obj.Linedef.Selected = true;
-		}
-
-		// Render selection
-		public override void PlotSelection(IRenderer2D renderer, FindReplaceObject[] selection)
-		{
-			foreach(FindReplaceObject o in selection)
-			{
-				renderer.PlotLinedef(o.Linedef, General.Colors.Selection);
-			}
-		}
-
-		// Edit objects
-		public override void EditObjects(FindReplaceObject[] selection)
-		{
-			List<Linedef> lines = new List<Linedef>(selection.Length);
-			foreach(FindReplaceObject o in selection) lines.Add(o.Linedef);
-			General.Interface.ShowEditLinedefs(lines);
 		}
 
 		#endregion

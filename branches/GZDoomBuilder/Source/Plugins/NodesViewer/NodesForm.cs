@@ -297,7 +297,8 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		private void segindex_ValueChanged(object sender, EventArgs e)
 		{
 			Seg sg = mode.Segs[(int)segindex.Value];
-			Linedef ld = General.Map.Map.GetLinedefByIndex(sg.lineindex);
+			Linedef ld = null; //mxd
+			if(sg.lineindex != -1) ld = General.Map.Map.GetLinedefByIndex(sg.lineindex); //mxd
 
 			lineindex.Text = sg.lineindex.ToString();
 			startvertex.Text = sg.startvertex + "  (" + mode.Vertices[sg.startvertex].x + ", " + mode.Vertices[sg.startvertex].y + ")";
@@ -305,8 +306,14 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			segside.Text = sg.leftside ? "Back" : "Front";
 			segangle.Text = Angle2D.RealToDoom(sg.angle) + "\u00B0";
 			segoffset.Text = sg.offset + " mp";
-			sideindex.Text = sg.leftside ? ld.Back.Index.ToString() : ld.Front.Index.ToString();
-			sectorindex.Text = sg.leftside ? ld.Back.Sector.Index.ToString() : ld.Front.Sector.Index.ToString();
+
+			if (ld != null) { //mxd
+				sideindex.Text = sg.leftside ? ld.Back.Index.ToString() : ld.Front.Index.ToString();
+				sectorindex.Text = sg.leftside ? ld.Back.Sector.Index.ToString() : ld.Front.Sector.Index.ToString();
+			} else {
+				sideindex.Text = "None";
+				sectorindex.Text = "None";
+			}
 
 			General.Interface.RedrawDisplay();
 		}

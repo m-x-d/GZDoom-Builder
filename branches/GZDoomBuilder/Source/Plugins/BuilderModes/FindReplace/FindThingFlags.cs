@@ -16,7 +16,6 @@
 
 #region ================== Namespaces
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
@@ -30,7 +29,7 @@ using CodeImp.DoomBuilder.Config;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[FindReplace("Thing Flags", BrowseButton = true, Replacable = false)]
-	internal class FindThingFlag : FindReplaceType
+	internal class FindThingFlag : BaseFindThing
 	{
 		#region ================== Constants
 
@@ -48,18 +47,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Constructor / Destructor
-
-		// Constructor
-		public FindThingFlag()
-		{
-			// Initialize
-
-		}
-
-		// Destructor
-		~FindThingFlag()
-		{
-		}
 
 		#endregion
 
@@ -110,38 +97,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return objs.ToArray();
-		}
-
-		// This is called when a specific object is selected from the list
-		public override void ObjectSelected(FindReplaceObject[] selection)
-		{
-			if (selection.Length == 1)
-			{
-				ZoomToSelection(selection);
-				General.Interface.ShowThingInfo(selection[0].Thing);
-			}
-			else
-				General.Interface.HideInfo();
-
-			General.Map.Map.ClearAllSelected();
-			foreach (FindReplaceObject obj in selection) obj.Thing.Selected = true;
-		}
-
-		// Render selection
-		public override void RenderThingsSelection(IRenderer2D renderer, FindReplaceObject[] selection)
-		{
-			foreach (FindReplaceObject o in selection)
-			{
-				renderer.RenderThing(o.Thing, General.Colors.Selection, 1.0f);
-			}
-		}
-
-		// Edit objects
-		public override void EditObjects(FindReplaceObject[] selection)
-		{
-			List<Thing> things = new List<Thing>(selection.Length);
-			foreach (FindReplaceObject o in selection) things.Add(o.Thing);
-			General.Interface.ShowEditThings(things);
 		}
 
 		#endregion

@@ -16,7 +16,6 @@
 
 #region ================== Namespaces
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.IO;
@@ -47,18 +46,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor / Destructor
 
-		// Constructor
-		public FindAnyTextureFlat()
-		{
-			// Initialize
-
-		}
-
-		// Destructor
-		~FindAnyTextureFlat()
-		{
-		}
-
 		#endregion
 
 		#region ================== Methods
@@ -88,7 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(replacewith != null)
 			{
 				// If it cannot be interpreted, set replacewith to null (not replacing at all)
-				if(replacewith.Length < 0) replacewith = null;
+				if(replacewith.Length < 0) replacewith = null; //mxd. WUT?
 				if(replacewith.Length > 8) replacewith = null;
 				if(replacewith == null)
 				{
@@ -199,6 +186,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else if(o.Object is Sidedef)
 				{
 					renderer.PlotLinedef(o.Sidedef.Line, General.Colors.Selection);
+				}
+			}
+		}
+
+		//mxd
+		public override void RenderOverlaySelection(IRenderer2D renderer, FindReplaceObject[] selection) {
+			if(!BuilderPlug.Me.UseHighlight) return;
+
+			int color = General.Colors.Selection.WithAlpha(64).ToInt();
+			foreach(FindReplaceObject o in selection) {
+				if(o.Object is Sector) {
+					renderer.RenderHighlight(o.Sector.FlatVertices, color);
 				}
 			}
 		}
