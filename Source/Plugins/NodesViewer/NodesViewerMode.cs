@@ -221,7 +221,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 
 					//boilerplate...
 					if(vertsCount != General.Map.Map.Vertices.Count) {
-						MessageBox.Show("Error while reading ZNODES: nodes vertices count in ZNODES lump (" + vertsCount + ") doesn't match with map's vertices count (" + General.Map.Map.Vertices.Count + ")!", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						MessageBox.Show("Error while reading ZNODES: vertices count in ZNODES lump (" + vertsCount + ") doesn't match with map's vertices count (" + General.Map.Map.Vertices.Count + ")!", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return false;
 					}
 
@@ -301,18 +301,6 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 							for (int i = ss.firstseg; i <= lastseg; i++) {
 								segs[i].angle = Vector2D.GetAngle(verts[segs[i].endvertex], verts[segs[i].startvertex]);
 								segs[i].ssector = index;
-							}
-
-							//reverse segments order
-							Seg[] tmp = new Seg[ss.numsegs - 1];
-							int c = 0;
-							for(int i = ss.firstseg + 1; i <= lastseg; i++) {
-								tmp[c++] = segs[i];
-							}
-
-							//c = ss.numsegs - 1;
-							for (int i = ss.firstseg + 1; i <= lastseg; i++) {
-								segs[i] = tmp[--c];
 							}
 
 							index++;
@@ -775,7 +763,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			bool haveSegs = General.Map.LumpExists("SEGS");
 			bool haveVerts = General.Map.LumpExists("VERTEXES");
 
-			if(!haveNodes || !haveSectors || !haveSegs || !haveVerts || !haveZnodes)
+			if(General.Map.IsChanged || !haveNodes || !haveSectors || !haveSegs || !haveVerts || !haveZnodes)
 			{
 				// We need to build the nodes!
 				BuildNodes();

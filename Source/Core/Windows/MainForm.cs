@@ -171,6 +171,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		private System.Timers.Timer blinkTimer; 
+		private bool editformopen;
 		
 		#endregion
 
@@ -1127,7 +1128,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				General.Plugins.OnEditMouseEnter(e);
 				General.Editing.Mode.OnMouseEnter(e);
-				if(Application.OpenForms.Count == 1) display.Focus(); //mxd
+				if(Application.OpenForms.Count == 1 || editformopen) display.Focus(); //mxd
 			}
 		}
 
@@ -3059,13 +3060,13 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd. This shows the dialog to edit vertices
 		public DialogResult ShowEditVertices(ICollection<Vertex> vertices, bool allowPositionChange)
 		{
-			DialogResult result;
-
 			// Show sector edit dialog
 			VertexEditForm f = new VertexEditForm();
 			f.Setup(vertices, allowPositionChange);
 			f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
-			result = f.ShowDialog(this);
+			editformopen = true; //mxd
+			DialogResult result = f.ShowDialog(this);
+			editformopen = false; //mxd
 			f.Dispose();
 
 			return result;
@@ -3074,13 +3075,13 @@ namespace CodeImp.DoomBuilder.Windows
 		// This shows the dialog to edit lines
 		public DialogResult ShowEditLinedefs(ICollection<Linedef> lines)
 		{
-			DialogResult result;
-
 			// Show line edit dialog
 			LinedefEditForm f = new LinedefEditForm();
 			f.Setup(lines);
 			f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
-			result = f.ShowDialog(this);
+			editformopen = true; //mxd
+			DialogResult result = f.ShowDialog(this);
+			editformopen = false; //mxd
 			f.Dispose();
 
 			return result;
@@ -3096,13 +3097,17 @@ namespace CodeImp.DoomBuilder.Windows
 				SectorEditFormUDMF f = new SectorEditFormUDMF();
 				f.Setup(sectors);
 				f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
+				editformopen = true; //mxd
 				result = f.ShowDialog(this);
+				editformopen = false; //mxd
 				f.Dispose();
 			}else{
 				SectorEditForm f = new SectorEditForm();
 				f.Setup(sectors);
 				f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
+				editformopen = true; //mxd
 				result = f.ShowDialog(this);
+				editformopen = false; //mxd
 				f.Dispose();
 			}
 
@@ -3112,13 +3117,13 @@ namespace CodeImp.DoomBuilder.Windows
 		// This shows the dialog to edit things
 		public DialogResult ShowEditThings(ICollection<Thing> things)
 		{
-			DialogResult result;
-
 			// Show thing edit dialog
 			ThingEditForm f = new ThingEditForm();
 			f.Setup(things);
 			f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
-			result = f.ShowDialog(this);
+			editformopen = true; //mxd
+			DialogResult result = f.ShowDialog(this);
+			editformopen = false; //mxd
 			f.Dispose();
 			
 			return result;
