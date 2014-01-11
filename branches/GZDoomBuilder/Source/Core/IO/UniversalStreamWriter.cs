@@ -127,14 +127,17 @@ namespace CodeImp.DoomBuilder.IO
 			// Begin with fields that must be at the top
 			if(writenamespace != null) textmap.Root.Add("namespace", writenamespace);
 
-			Dictionary<Vertex, int> vertexids = new Dictionary<Vertex, int>();
-			Dictionary<Sidedef, int> sidedefids = new Dictionary<Sidedef, int>();
-			Dictionary<Sector, int> sectorids = new Dictionary<Sector, int>();
+			Dictionary<Vertex, int> vertexids = new Dictionary<Vertex, int>(vertices.Count); //mxd
+			Dictionary<Sidedef, int> sidedefids = new Dictionary<Sidedef, int>(sidedefs.Count); //mxd
+			Dictionary<Sector, int> sectorids = new Dictionary<Sector, int>(sectors.Count); //mxd
 
 			// Index the elements in the data structures
-			foreach(Vertex v in vertices) vertexids.Add(v, vertexids.Count);
-			foreach(Sidedef sd in sidedefs) sidedefids.Add(sd, sidedefids.Count);
-			foreach(Sector s in sectors) sectorids.Add(s, sectorids.Count);
+			int counter = 0; //mxd
+			foreach(Vertex v in vertices) vertexids.Add(v, counter++);
+			counter = 0; //mxd
+			foreach(Sidedef sd in sidedefs) sidedefids.Add(sd, counter++);
+			counter = 0; //mxd
+			foreach(Sector s in sectors) sectorids.Add(s, counter++);
 
 			// If we write the custom field types again, then forget
 			// all previous field types (this gets rid of unused field types)

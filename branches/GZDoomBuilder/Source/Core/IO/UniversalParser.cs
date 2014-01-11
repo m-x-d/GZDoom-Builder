@@ -681,23 +681,17 @@ namespace CodeImp.DoomBuilder.IO
 					spacing = " ";
 				}
 				
-				// Get enumerator
-				IEnumerator<UniversalEntry> de = cs.GetEnumerator();
-				
 				// Go for each item
 				for(int i = 0; i < cs.Count; i++)
 				{
-					// Go to next item
-					de.MoveNext();
-					
 					// Check if the value if of collection type
-					if(de.Current.Value is UniversalCollection)
+					if(cs[i].Value is UniversalCollection)
 					{
-						UniversalCollection c = (UniversalCollection)de.Current.Value;
+						UniversalCollection c = (UniversalCollection)cs[i].Value;
 						
 						// Output recursive structure
 						if(whitespace) { db.Append(leveltabs); db.Append(newline); }
-						db.Append(leveltabs); db.Append(de.Current.Key);
+						db.Append(leveltabs); db.Append(cs[i].Key);
 						if(!string.IsNullOrEmpty(c.Comment))
 						{
 							if(whitespace) db.Append("\t");
@@ -710,31 +704,31 @@ namespace CodeImp.DoomBuilder.IO
 						if(whitespace) { db.Append(leveltabs); db.Append(newline); }
 					}
 					// Check if the value is of boolean type
-					else if(de.Current.Value is bool)
+					else if(cs[i].Value is bool)
 					{
-						db.Append(leveltabs); db.Append(de.Current.Key); db.Append(spacing); db.Append("="); db.Append(spacing);
-						db.Append((bool)de.Current.Value ? "true;" : "false;"); db.Append(newline);
+						db.Append(leveltabs); db.Append(cs[i].Key); db.Append(spacing); db.Append("="); db.Append(spacing);
+						db.Append((bool)cs[i].Value ? "true;" : "false;"); db.Append(newline);
 					}
 					// Check if value is of float type
-					else if(de.Current.Value is float)
+					else if(cs[i].Value is float)
 					{
 						// Output the value as float (3 decimals)
-						float f = (float)de.Current.Value;
-						db.Append(leveltabs); db.Append(de.Current.Key); db.Append(spacing); db.Append("=");
+						float f = (float)cs[i].Value;
+						db.Append(leveltabs); db.Append(cs[i].Key); db.Append(spacing); db.Append("=");
 						db.Append(spacing); db.Append(f.ToString("0.000", CultureInfo.InvariantCulture)); db.Append(";"); db.Append(newline);
 					}
 					// Check if value is of other numeric type
-					else if(de.Current.Value.GetType().IsPrimitive)
+					else if(cs[i].Value.GetType().IsPrimitive)
 					{
 						// Output the value unquoted
-						db.Append(leveltabs); db.Append(de.Current.Key); db.Append(spacing); db.Append("=");
-						db.Append(spacing); db.Append(String.Format(CultureInfo.InvariantCulture, "{0}", de.Current.Value)); db.Append(";"); db.Append(newline);
+						db.Append(leveltabs); db.Append(cs[i].Key); db.Append(spacing); db.Append("=");
+						db.Append(spacing); db.Append(String.Format(CultureInfo.InvariantCulture, "{0}", cs[i].Value)); db.Append(";"); db.Append(newline);
 					}
 					else
 					{
 						// Output the value with quotes and escape characters
-						db.Append(leveltabs); db.Append(de.Current.Key); db.Append(spacing); db.Append("=");
-						db.Append(spacing); db.Append("\""); db.Append(EscapedString(de.Current.Value.ToString())); db.Append("\";"); db.Append(newline);
+						db.Append(leveltabs); db.Append(cs[i].Key); db.Append(spacing); db.Append("=");
+						db.Append(spacing); db.Append("\""); db.Append(EscapedString(cs[i].Value.ToString())); db.Append("\";"); db.Append(newline);
 					}
 				}
 			}
