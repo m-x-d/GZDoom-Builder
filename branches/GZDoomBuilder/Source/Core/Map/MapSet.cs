@@ -2920,7 +2920,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		//mxd
-		/// <summary>This returns a sector if given coordinates lie inide one.</summary>
+		/// <summary>This returns a sector if given coordinates are inside one.</summary>
 		public Sector GetSectorByCoordinates(Vector2D pos) {
 			Linedef nl;
 			Sector sector = null;
@@ -2930,10 +2930,10 @@ namespace CodeImp.DoomBuilder.Map
 				// Check what side of line we are at
 				if (nl.SideOfLine(pos) < 0f) {
 					// Front side
-					if (nl.Front != null) sector = nl.Front.Sector; else sector = null;
+					if (nl.Front != null) sector = nl.Front.Sector;
 				} else {
 					// Back side
-					if (nl.Back != null) sector = nl.Back.Sector; else sector = null;
+					if (nl.Back != null) sector = nl.Back.Sector;
 				}
 			}
 			return sector;

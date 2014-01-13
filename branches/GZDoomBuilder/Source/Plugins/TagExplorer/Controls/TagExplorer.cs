@@ -585,22 +585,26 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					General.Map.Map.ClearAllSelected();
 
 					//make selection
-					if (info.Type == NodeInfoType.THING) {
+					if (info.Type == NodeInfoType.THING) 
+					{
 						General.Editing.ChangeMode("ThingsMode");
 						Thing t = General.Map.Map.GetThingByIndex(info.Index);
 						if (t != null) t.Selected = true;
-					} else if (info.Type == NodeInfoType.LINEDEF) {
+					} 
+					else if (info.Type == NodeInfoType.LINEDEF) 
+					{
 						General.Editing.ChangeMode("LinedefsMode");
 						Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
 						if (l != null) l.Selected = true;
-					} else {
+					} 
+					else 
+					{
 						General.Editing.ChangeMode("SectorsMode");
 						Sector s = General.Map.Map.GetSectorByIndex(info.Index);
-						if (s != null) {
-							s.Selected = true;
-
-							foreach (Sidedef sd in s.Sidedefs)
-								sd.Line.Selected = true;
+						if (s != null) 
+						{
+							((ClassicMode)General.Editing.Mode).SelectMapElement(s);
+							foreach (Sidedef sd in s.Sidedefs) sd.Line.Selected = true;
 						}
 					}
 				}

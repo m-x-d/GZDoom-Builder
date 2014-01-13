@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 
 		protected bool paintselectpressed; //mxd
+		protected bool marqueSelectionIncludesThings; //mxd
 		
 		#endregion
 
@@ -141,6 +142,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				marqueSelectionMode = MarqueSelectionMode.ADD;
 			else
 				marqueSelectionMode = MarqueSelectionMode.SELECT;
+
+			marqueSelectionIncludesThings = General.Interface.AltState;
 		}
 
 		//mxd
