@@ -2542,11 +2542,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		private void itemShortcutReference_Click(object sender, EventArgs e) {
-			string columnLabels = "<tr><td width=\"240px;\"><strong>Action</strong></td><td width=\"120px;\"><div align=\"center\"><strong>Shortcut</strong></div></td><td width=\"120px;\"><div align=\"center\"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>";
-			string categoryPadding = "<tr><td colspan=\"4\"></td></tr>";
-			string categoryStart = "<tr><td colspan=\"4\" bgcolor=\"#333333\"><strong style=\"color:#FFFFFF\">";
-			string categoryEnd = "</strong></td></tr>";
-			string fileName = "GZDB Keyboard Reference.html";
+			const string columnLabels = "<tr><td width=\"240px;\"><strong>Action</strong></td><td width=\"120px;\"><div align=\"center\"><strong>Shortcut</strong></div></td><td width=\"120px;\"><div align=\"center\"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>";
+			const string categoryPadding = "<tr><td colspan=\"4\"></td></tr>";
+			const string categoryStart = "<tr><td colspan=\"4\" bgcolor=\"#333333\"><strong style=\"color:#FFFFFF\">";
+			const string categoryEnd = "</strong><div style=\"text-align:right; float:right\"><a style=\"color:#FFFFFF\" href=\"#top\">[to top]</a></div></td></tr>";
+			const string fileName = "GZDB Actions Reference.html";
+
 			Actions.Action[] actions = General.Actions.GetAllActions();
 			Dictionary<string, List<Actions.Action>> sortedActions = new Dictionary<string, List<Actions.Action>>();
 
@@ -2559,20 +2560,37 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Text.StringBuilder html = new System.Text.StringBuilder();
 
 			//head
-			html.AppendLine("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">" +
-								"<html xmlns=\"http://www.w3.org/1999/xhtml\">" +
-								"<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /></head>" +
-								"<body bgcolor=\"#666666\">" +
-									"<div style=\"padding-left:60px; padding-right:60px; padding-top:20px; padding-bottom:20px;\">" +
-										"<table bgcolor=\"#FFFFFF\" width=\"100%\" border=\"0\" cellspacing=\"6\" cellpadding=\"6\" style=\"font-family: 'Trebuchet MS',georgia,Verdana,Sans-serif;\">" +
-											"<tr><td colspan=\"4\" bgcolor=\"#333333\"><span style=\"font-size: 24px\"><strong style=\"color:#FFFFFF\">GZDoom Builder Shortcut Reference</strong></span></td></tr>");
+			html.AppendLine("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">" + Environment.NewLine +
+								"<html xmlns=\"http://www.w3.org/1999/xhtml\">" + Environment.NewLine +
+								"<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><title>GZDoom Builder Actions Reference</title></head>" + Environment.NewLine +
+								"<body bgcolor=\"#666666\">" + Environment.NewLine +
+									"<div style=\"padding-left:60px; padding-right:60px; padding-top:20px; padding-bottom:20px;\">" + Environment.NewLine);
+
+			//table header
+			html.AppendLine("<table bgcolor=\"#FFFFFF\" width=\"100%\" border=\"0\" cellspacing=\"6\" cellpadding=\"6\" style=\"font-family: 'Trebuchet MS',georgia,Verdana,Sans-serif;\">" + Environment.NewLine +
+							"<tr><td colspan=\"4\" bgcolor=\"#333333\"><span style=\"font-size: 24px\"><a name=\"top\" id=\"top\"></a><strong style=\"color:#FFFFFF\">GZDoom Builder Actions Reference</strong></span></td></tr>");
+
+			//categories navigator
+			List<string> catnames = new List<string>(sortedActions.Count);
+			int counter = 0;
+			int numActions = 0;
+			foreach(KeyValuePair<string, List<Actions.Action>> category in sortedActions) {
+				catnames.Add("<a href=\"#cat" + (counter++) + "\">" + General.Actions.Categories[category.Key] + "</a>");
+				numActions += category.Value.Count;
+			}
+
+			html.AppendLine("<tr><td colspan=\"4\"><strong>Total number of actions:</strong> " + numActions + "<br/><strong>Jump to:</strong> ");
+			html.AppendLine(string.Join(" | ", catnames.ToArray()));
+			html.AppendLine("</td></tr>" + Environment.NewLine);
 
 			//add descriptions
+			counter = 0;
 			foreach(KeyValuePair<string, List<Actions.Action>> category in sortedActions) {
 				//add category title
 				html.AppendLine(categoryPadding);
-				html.AppendLine(categoryStart + General.Actions.Categories[category.Key] + categoryEnd);
+				html.AppendLine(categoryStart + "<a name=\"cat" + counter + "\" id=\"cat" + counter + "\"></a>" + General.Actions.Categories[category.Key] + categoryEnd);
 				html.AppendLine(columnLabels);
+				counter++;
 
 				Dictionary<string, Actions.Action> actionsByTitle = new Dictionary<string, Actions.Action>();
 				List<string> actionTitles = new List<string>();
