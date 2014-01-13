@@ -648,7 +648,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Apply Texture
 		public virtual void ApplyTexture(string texture)
 		{
-			mode.CreateUndo("Change flat " + texture);
+			mode.CreateUndo("Change flat '" + texture + "'");
 			SetTexture(texture);
 			onTextureChanged(); //mxd
 		}
@@ -658,7 +658,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			BuilderPlug.Me.CopiedFlat = GetTextureName();
 			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedTexture = GetTextureName();
-			mode.SetActionResult("Copied flat " + GetTextureName() + ".");
+			mode.SetActionResult("Copied flat '" + GetTextureName() + "'.");
 		}
 		
 		public virtual void OnPasteTexture() { }

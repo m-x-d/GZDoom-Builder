@@ -256,8 +256,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(BuilderPlug.Me.CopiedFlat != null)
 			{
-				mode.CreateUndo("Paste ceiling " + BuilderPlug.Me.CopiedFlat);
-				mode.SetActionResult("Pasted flat " + BuilderPlug.Me.CopiedFlat + " on ceiling.");
+				mode.CreateUndo("Paste ceiling '" + BuilderPlug.Me.CopiedFlat + "'");
+				mode.SetActionResult("Pasted flat '" + BuilderPlug.Me.CopiedFlat + "' on ceiling.");
 				SetTexture(BuilderPlug.Me.CopiedFlat);
 
 				//mxd. 3D floors may need updating...

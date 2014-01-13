@@ -454,25 +454,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(withSameTexture) {
 					if(line.Front != null) {
-						if(line.Front.HighTexture == texture)
-							addFrontTop = true;
-
-						if(line.Front.MiddleTexture == texture)
-							addFrontMiddle = true;
-
-						if(line.Front.LowTexture == texture)
-							addFrontBottom = true;
+						addFrontTop = (line.Front.HighTexture == texture);
+						addFrontMiddle = (line.Front.MiddleTexture == texture && line.Front.MiddleRequired());
+						addFrontBottom = (line.Front.LowTexture == texture);
 					}
 
 					if(line.Back != null) {
-						if(line.Back.HighTexture == texture)
-							addBackTop = true;
-
-						if(line.Back.MiddleTexture == texture)
-							addBackMiddle = true;
-
-						if(line.Back.LowTexture == texture)
-							addBackBottom = true;
+						addBackTop = line.Back.HighTexture == texture;
+						addBackMiddle = (line.Back.MiddleTexture == texture && line.Back.MiddleRequired());
+						addBackBottom = (line.Back.LowTexture == texture);
 					}
 				}
 
@@ -882,8 +872,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(BuilderPlug.Me.CopiedTexture != null)
 			{
-				mode.CreateUndo("Paste texture " + BuilderPlug.Me.CopiedTexture);
-				mode.SetActionResult("Pasted texture " + BuilderPlug.Me.CopiedTexture + ".");
+				mode.CreateUndo("Paste texture '" + BuilderPlug.Me.CopiedTexture + "'");
+				mode.SetActionResult("Pasted texture '" + BuilderPlug.Me.CopiedTexture + "'.");
 				SetTexture(BuilderPlug.Me.CopiedTexture);
 				onTextureChanged();//mxd
 			}
@@ -912,7 +902,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			BuilderPlug.Me.CopiedTexture = GetTextureName();
 			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedFlat = GetTextureName();
-			mode.SetActionResult("Copied texture " + GetTextureName() + ".");
+			mode.SetActionResult("Copied texture '" + GetTextureName() + "'.");
 		}
 		
 		// Copy texture offsets
