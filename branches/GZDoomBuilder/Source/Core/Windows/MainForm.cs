@@ -2547,12 +2547,12 @@ namespace CodeImp.DoomBuilder.Windows
 			string categoryStart = "<tr><td colspan=\"4\" bgcolor=\"#333333\"><strong style=\"color:#FFFFFF\">";
 			string categoryEnd = "</strong></td></tr>";
 			string fileName = "GZDB Keyboard Reference.html";
-			CodeImp.DoomBuilder.Actions.Action[] actions = General.Actions.GetAllActions();
-			Dictionary<string, List<CodeImp.DoomBuilder.Actions.Action>> sortedActions = new Dictionary<string, List<CodeImp.DoomBuilder.Actions.Action>>();
+			Actions.Action[] actions = General.Actions.GetAllActions();
+			Dictionary<string, List<Actions.Action>> sortedActions = new Dictionary<string, List<Actions.Action>>();
 
-			foreach(CodeImp.DoomBuilder.Actions.Action action in actions) {
+			foreach(Actions.Action action in actions) {
 				if(!sortedActions.ContainsKey(action.Category))
-					sortedActions.Add(action.Category, new List<CodeImp.DoomBuilder.Actions.Action>());
+					sortedActions.Add(action.Category, new List<Actions.Action>());
 				sortedActions[action.Category].Add(action);
 			}
 
@@ -2568,23 +2568,23 @@ namespace CodeImp.DoomBuilder.Windows
 											"<tr><td colspan=\"4\" bgcolor=\"#333333\"><span style=\"font-size: 24px\"><strong style=\"color:#FFFFFF\">GZDoom Builder Shortcut Reference</strong></span></td></tr>");
 
 			//add descriptions
-			foreach(KeyValuePair<string, List<CodeImp.DoomBuilder.Actions.Action>> category in sortedActions) {
+			foreach(KeyValuePair<string, List<Actions.Action>> category in sortedActions) {
 				//add category title
 				html.AppendLine(categoryPadding);
 				html.AppendLine(categoryStart + General.Actions.Categories[category.Key] + categoryEnd);
 				html.AppendLine(columnLabels);
 
-				Dictionary<string, CodeImp.DoomBuilder.Actions.Action> actionsByTitle = new Dictionary<string, CodeImp.DoomBuilder.Actions.Action>();
+				Dictionary<string, Actions.Action> actionsByTitle = new Dictionary<string, Actions.Action>();
 				List<string> actionTitles = new List<string>();
 
-				foreach(CodeImp.DoomBuilder.Actions.Action action in category.Value) {
+				foreach(Actions.Action action in category.Value) {
 					actionsByTitle.Add(action.Title, action);
 					actionTitles.Add(action.Title);
 				}
 
 				actionTitles.Sort();
 
-				CodeImp.DoomBuilder.Actions.Action a;
+				Actions.Action a;
 				foreach(string title in actionTitles) {
 					a = actionsByTitle[title];
 					List<string> modifiers = new List<string>();
@@ -2594,6 +2594,7 @@ namespace CodeImp.DoomBuilder.Windows
 					html.AppendLine("<td><div align=\"center\">" + Actions.Action.GetShortcutKeyDesc(a.ShortcutKey) + "</div></td>");
 
 					if(a.DisregardControl) modifiers.Add("Ctrl");
+					if(a.DisregardAlt) modifiers.Add("Alt");
 					if(a.DisregardShift) modifiers.Add("Shift");
 
 					html.AppendLine("<td><div align=\"center\">" + string.Join(", ", modifiers.ToArray()) + "</div></td>");

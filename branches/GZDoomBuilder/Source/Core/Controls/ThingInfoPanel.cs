@@ -129,6 +129,8 @@ namespace CodeImp.DoomBuilder.Controls
 			position.Text = t.Position.x.ToString() + ", " + t.Position.y.ToString() + ", " + zinfo;
 			tag.Text = t.Tag.ToString();
 			angle.Text = t.AngleDoom.ToString() + "\u00B0";
+			anglecontrol.Angle = t.AngleDoom;
+			anglecontrol.Left = angle.Right + 1;
 			
 			// Sprite
 			if(ti.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) && (ti.Sprite.Length > DataManager.INTERNAL_PREFIX.Length))

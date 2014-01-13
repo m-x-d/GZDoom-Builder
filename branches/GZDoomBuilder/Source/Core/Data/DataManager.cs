@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Data
 		// Special images
 		private ImageData missingtexture3d;
 		private ImageData unknowntexture3d;
-		private UnknownImage unknownImage; //mxd
+		private UnknownImage unknownimage; //mxd
 		private ImageData hourglass3d;
 		private ImageData crosshair;
 		private ImageData crosshairbusy;
@@ -168,7 +168,7 @@ namespace CodeImp.DoomBuilder.Data
 			whitetexture.UseColorCorrection = false;
 			whitetexture.LoadImage();
 			whitetexture.CreateTexture();
-			unknownImage = new UnknownImage(Properties.Resources.UnknownImage); //mxd. There should be only one!
+			unknownimage = new UnknownImage(Properties.Resources.UnknownImage); //mxd. There should be only one!
 		}
 		
 		// Disposer
@@ -191,8 +191,8 @@ namespace CodeImp.DoomBuilder.Data
 				crosshairbusy = null;
 				whitetexture.Dispose();
 				whitetexture = null;
-				unknownImage.Dispose(); //mxd
-				unknownImage = null; //mxd
+				unknownimage.Dispose(); //mxd
+				unknownimage = null; //mxd
 				modeldefEntries = null;//mxd
 				mapInfo = null;
 				
@@ -921,7 +921,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Return null image
-			return unknownImage; //mxd
+			return unknownimage; //mxd
 		}
 		
 		#endregion
@@ -1005,7 +1005,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(flats.ContainsKey(longname)) return flats[longname];
 			
 			// Return null image
-			return unknownImage; //mxd
+			return unknownimage; //mxd
 		}
 
 		// This returns an image by long and doesn't check if it exists

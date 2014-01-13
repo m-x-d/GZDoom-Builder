@@ -2343,7 +2343,8 @@ namespace CodeImp.DoomBuilder.Map
 			bool splitted;
 
 			//mxd. Create blockmap
-			RectangleF area = CreateArea(verts);
+			RectangleF area = CreateArea(lines);
+			IncreaseArea(area, verts);
 			BlockMap<BlockEntry> blockmap = new BlockMap<BlockEntry>(area);
 			blockmap.AddVerticesSet(verts);
 			blockmap.AddLinedefsSet(lines);

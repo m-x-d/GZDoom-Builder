@@ -197,10 +197,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This gets the geometry list for the specified sidedef
 		public List<VisualGeometry> GetSidedefGeometry(Sidedef sd)
 		{
-			if(sidedefgeometry.ContainsKey(sd)) {
-				return sidedefgeometry[sd];
-			} else
-				return new List<VisualGeometry>();
+			if(sidedefgeometry.ContainsKey(sd)) return sidedefgeometry[sd];
+			return new List<VisualGeometry>();
 		}
 		
 		#endregion

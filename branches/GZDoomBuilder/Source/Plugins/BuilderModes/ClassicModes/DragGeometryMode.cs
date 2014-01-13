@@ -46,12 +46,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// List of old vertex positions
 		private List<Vector2D> oldpositions;
+		private List<Vector2D> oldthingpositions; //mxd
 
 		// List of selected items
 		protected ICollection<Vertex> selectedverts;
+		protected ICollection<Thing> selectedthings; //mxd
 
 		// List of non-selected items
 		protected ICollection<Vertex> unselectedverts;
+		protected ICollection<Thing> unselectedthings; //mxd
 
 		//mxd. List of sectors
 		private List<Sector> selectedSectors;
@@ -117,12 +120,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// This will be set back to normal when we're done.
 			General.Map.UndoRedo.IgnorePropChanges = true;
 
-			// Make list of selected vertices
+			// Make list of selected vertices and things
 			selectedverts = General.Map.Map.GetMarkedVertices(true);
+			selectedthings = General.Map.Map.GetSelectedThings(true); //mxd
 
-			// Make list of non-selected vertices
-			// This will be used for snapping to nearest items
+			// Make list of non-selected vertices and things
+			// Non-selected vertices will be used for snapping to nearest items
 			unselectedverts = General.Map.Map.GetMarkedVertices(false);
+			unselectedthings = new List<Thing>(); //mxd
+			foreach(Thing t in General.Map.ThingsFilter.VisibleThings) if(!t.Selected) unselectedthings.Add(t);
 
 			// Get the nearest vertex for snapping
 			dragitem = MapSet.NearestVertex(selectedverts, dragstartmappos);
@@ -134,6 +140,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// We will use this as reference to move the vertices, or to move them back on cancel
 			oldpositions = new List<Vector2D>(selectedverts.Count);
 			foreach(Vertex v in selectedverts) oldpositions.Add(v.Position);
+
+			//mxd
+			oldthingpositions = new List<Vector2D>(selectedthings.Count);
+			foreach(Thing t in selectedthings) oldthingpositions.Add(t.Position);
 
 			// Also keep old position of the dragged item
 			dragitemposition = dragitem.Position;
@@ -306,6 +316,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Next
 					i++;
+				}
+
+				//mxd. Move selected things
+				i = 0;
+				foreach(Thing t in selectedthings) {
+					t.Move(oldthingpositions[i++] + offset);
 				}
 
 				// Update labels

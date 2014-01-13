@@ -780,18 +780,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This sets up background image vertices
 		private void SetupBackground()
 		{
-			Vector2D ltpos, rbpos;
-			Vector2D backoffset = new Vector2D(General.Map.Grid.BackgroundX, General.Map.Grid.BackgroundY);
-			Vector2D backimagesize = new Vector2D(General.Map.Grid.Background.ScaledWidth, General.Map.Grid.Background.ScaledHeight);
-			Vector2D backimagescale = new Vector2D(General.Map.Grid.BackgroundScaleX, General.Map.Grid.BackgroundScaleY);
-			
-			// Scale the background image size
-			backimagesize *= backimagescale;
-			
 			// Only if a background image is set
-			if((General.Map.Grid.Background != null) &&
-			   !(General.Map.Grid.Background is UnknownImage))
+			if((General.Map.Grid.Background != null) && !(General.Map.Grid.Background is UnknownImage))
 			{
+				Vector2D ltpos, rbpos;
+				Vector2D backoffset = new Vector2D(General.Map.Grid.BackgroundX, General.Map.Grid.BackgroundY);
+				Vector2D backimagesize = new Vector2D(General.Map.Grid.Background.ScaledWidth, General.Map.Grid.Background.ScaledHeight);
+				Vector2D backimagescale = new Vector2D(General.Map.Grid.BackgroundScaleX, General.Map.Grid.BackgroundScaleY);
+
+				// Scale the background image size
+				backimagesize *= backimagescale;
+				
 				// Make vertices
 				backimageverts = CreateScreenVerts(windowsize);
 

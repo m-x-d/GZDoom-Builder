@@ -58,5 +58,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.Tools
 			if(fields == null) return defaultValue;
 			return fields.GetValue(key, defaultValue);
 		}
+
+		public static void ClearFields(UniFields fields, string[] keys) {
+			if(fields == null) return;
+
+			foreach(string key in keys){
+				if(fields.ContainsKey(key)) fields.Remove(key);
+			}
+		}
+
+		public static void ClearField(UniFields fields, string key) {
+			if(fields == null || !fields.ContainsKey(key)) return;
+			fields.Remove(key);
+		}
 	}
 }

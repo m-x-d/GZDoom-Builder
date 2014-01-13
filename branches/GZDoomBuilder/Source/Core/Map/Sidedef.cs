@@ -299,14 +299,13 @@ namespace CodeImp.DoomBuilder.Map
 		// This removes textures that are not required
 		public void RemoveUnneededTextures(bool removemiddle)
 		{
-			RemoveUnneededTextures(removemiddle, !General.Settings.AutoClearSidedefTextures, false);
+			RemoveUnneededTextures(removemiddle, false);
 		}
 		
 		// This removes textures that are not required
-		public void RemoveUnneededTextures(bool removemiddle, bool shiftMiddle, bool force)
+		public void RemoveUnneededTextures(bool removemiddle, bool force)
 		{
 			bool changed = false; //mxd
-			string curMidTex = this.texnamemid; //mxd
 			
 			// The middle texture can be removed regardless of any sector tag or linedef action
 			if(!MiddleRequired() && removemiddle)
@@ -325,60 +324,23 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				if(!HighRequired())
 				{
-					if(shiftMiddle) { //mxd
-						if(string.IsNullOrEmpty(this.texnamehigh) || this.texnamehigh == "-")
-							SetTextureHigh(curMidTex);
-					} else {
-						if(!changed) { //mxd
-							BeforePropsChange();
-							changed = true;
-						}
-						this.texnamehigh = "-";
-						this.longtexnamehigh = MapSet.EmptyLongName;
-						General.Map.IsChanged = true;
+					if(!changed) { //mxd
+						BeforePropsChange();
+						changed = true;
 					}
+					this.texnamehigh = "-";
+					this.longtexnamehigh = MapSet.EmptyLongName;
+					General.Map.IsChanged = true;
 				}
 
 				if(!LowRequired())
 				{
-					if(shiftMiddle) { //mxd
-						if(string.IsNullOrEmpty(this.texnamelow) || this.texnamelow == "-")
-							SetTextureLow(curMidTex);
-					} else {
-						if(!changed) BeforePropsChange(); //mxd
-						this.texnamelow = "-";
-						this.longtexnamelow = MapSet.EmptyLongName;
-						General.Map.IsChanged = true;
-					}
+					if(!changed) BeforePropsChange(); //mxd
+					this.texnamelow = "-";
+					this.longtexnamelow = MapSet.EmptyLongName;
+					General.Map.IsChanged = true;
 				}
 			}
-		}
-
-		//mxd
-		internal void ShiftTextures() {
-			BeforePropsChange();
-
-			if((string.IsNullOrEmpty(texnamehigh) || texnamehigh == "-") && (!General.Settings.AutoClearSidedefTextures || HighRequired())) {
-				if(General.Map.Options.OverrideTopTexture) {
-					texnamehigh = General.Map.Options.DefaultTopTexture;
-					longtexnamehigh = Lump.MakeLongName(texnamehigh);
-				} else {
-					texnamehigh = texnamemid;
-					longtexnamehigh = longtexnamemid;
-				}
-			}
-
-			if((string.IsNullOrEmpty(texnamelow) || texnamelow == "-") && (!General.Settings.AutoClearSidedefTextures || LowRequired())) {
-				if(General.Map.Options.OverrideBottomTexture) {
-					texnamelow = General.Map.Options.DefaultBottomTexture;
-					longtexnamelow = Lump.MakeLongName(texnamelow);
-				} else {
-					texnamelow = texnamemid;
-					longtexnamelow = longtexnamemid;
-				}
-			}
-
-			General.Map.IsChanged = true;
 		}
 		
 		/// <summary>

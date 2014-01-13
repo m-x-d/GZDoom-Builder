@@ -831,16 +831,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Split the line with this vertex
 				if(snaptonearest)
 				{
-					//mxd. Check if snapped vertex is on top of a linedef
-					l = General.Map.Map.NearestLinedefRange(insertpos, 1 / rendererscale);
-					if(l != null && l.SideOfLine(insertpos) != 0)
-						l = null;
+					//mxd. Check if snapped vertex is still on top of a linedef
+					l = General.Map.Map.NearestLinedefRange(v.Position, BuilderPlug.Me.SplitLinedefsRange / rendererscale);
 					
 					if(l != null) {
+						//mxd
+						if(v.Position == l.Start.Position || v.Position == l.End.Position) {
+							General.Interface.DisplayStatus(StatusType.Info, "There's already a vertex here.");
+							General.Map.UndoRedo.WithdrawUndo();
+							return;
+						}
+						
 						General.Interface.DisplayStatus(StatusType.Action, "Split a linedef.");
 						Linedef sld = l.Split(v);
 						if(sld == null) {
-							General.Map.UndoRedo.WithdrawUndo();
+							General.Map.UndoRedo.WithdrawUndo(); 
 							return;
 						}
 						BuilderPlug.Me.AdjustSplitCoordinates(l, sld);

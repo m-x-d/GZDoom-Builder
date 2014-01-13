@@ -162,6 +162,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.Finish();
 			}
 
+			//mxd. Render things
+			if(renderer.StartThings(true)) {
+				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
+				renderer.RenderThingSet(unselectedthings, 1.0f);
+				renderer.RenderThingSet(selectedthings, 1.0f);
+				renderer.Finish();
+			}
+
 			// Redraw overlay
 			if(renderer.StartOverlay(true))
 			{

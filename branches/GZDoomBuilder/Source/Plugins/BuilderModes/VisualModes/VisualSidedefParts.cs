@@ -71,5 +71,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					m.Setup();
 			}
 		}
+
+		//mxd
+		public void DeselectAllParts() {
+			if(lower != null) lower.Selected = false;
+			if(middledouble != null) middledouble.Selected = false;
+			if(middlesingle != null) middlesingle.Selected = false;
+			if(upper != null) upper.Selected = false;
+			if(middle3d != null) {
+				foreach(VisualMiddle3D m in middle3d)
+					m.Selected = false;
+			}
+			if(middleback != null) {
+				foreach(VisualMiddleBack m in middleback)
+					m.Selected = false;
+			}
+		}
 	}
 }
