@@ -25,6 +25,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -94,7 +95,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Load texture
 				base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongLowTexture);
-				if(base.Texture == null)
+				if(base.Texture == null || base.Texture is UnknownImage)
 				{
 					base.Texture = General.Map.Data.UnknownTexture3D;
 					setuponloadedtexture = Sidedef.LongLowTexture;

@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.Config
 				this.args[i] = new ArgumentInfo(cfg, "thingtypes." + cat.Name + "." + key, i, enums);
 			
 			// Safety
-			if(this.radius < 4f) this.radius = 8f;
+			if(this.radius < 4f) this.radius = 16f;
 			
 			// Make long name for sprite lookup
 			if(this.sprite.Length <= 8)

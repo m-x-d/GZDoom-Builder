@@ -510,7 +510,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 			
 			// Use defaults where no settings could be found
-			TakeSidedefDefaults(ref sourceside, useOverrides);
+			TakeSidedefDefaults(ref sourceside);
 			
 			// Found a source sector?
 			if(sourcesector != null)
@@ -558,11 +558,6 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 
 				// Update line
-				if(useOverrides) { //mxd
-					if(ls.Line.Front != null) ls.Line.Front.ShiftTextures();
-					if(ls.Line.Back != null) ls.Line.Back.ShiftTextures();
-				}
-				
 				if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(wassinglesided);
 				if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(wassinglesided);
 
@@ -578,7 +573,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 
 		// This joins a sector with the given lines and sides. Returns null when operation could not be completed.
-		public static Sector JoinSector(List<LinedefSide> alllines, Sidedef original, bool useOverrides)
+		public static Sector JoinSector(List<LinedefSide> alllines, Sidedef original)
 		{
 			SidedefSettings sourceside = new SidedefSettings();
 			
@@ -586,7 +581,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			TakeSidedefSettings(ref sourceside, original);
 
 			// Use defaults where no settings could be found
-			TakeSidedefDefaults(ref sourceside, useOverrides);
+			TakeSidedefDefaults(ref sourceside);
 
 			// Go for all sides to make sidedefs
 			foreach(LinedefSide ls in alllines)
@@ -602,7 +597,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						ls.Line.ApplySidedFlags();
 						
 						// We must remove the (now useless) middle texture on the other side
-						if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(true, false, true);
+						if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(true, true);
 					}
 					// Added 23-9-08, can we do this or will it break things?
 					else if(!original.Sector.IsDisposed) //mxd
@@ -622,7 +617,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						ls.Line.ApplySidedFlags();
 
 						// We must remove the (now useless) middle texture on the other side
-						if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(true, false, true);
+						if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(true, true);
 					}
 					// Added 23-9-08, can we do this or will it break things?
 					else if(!original.Sector.IsDisposed) //mxd
@@ -678,15 +673,12 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// This takes default settings if not taken yet
-		private static void TakeSidedefDefaults(ref SidedefSettings settings, bool useOverrides)
+		private static void TakeSidedefDefaults(ref SidedefSettings settings)
 		{
 			// Use defaults where no settings could be found
-			if(settings.newtexhigh == null || (useOverrides && General.Map.Options.OverrideTopTexture))
-				settings.newtexhigh = General.Map.Options.DefaultTopTexture;
-			if(settings.newtexmid == null || (useOverrides && General.Map.Options.OverrideMiddleTexture))
-				settings.newtexmid = General.Map.Options.DefaultWallTexture;
-			if(settings.newtexlow == null || (useOverrides && General.Map.Options.OverrideBottomTexture)) 
-				settings.newtexlow = General.Map.Options.DefaultBottomTexture;
+			if(settings.newtexhigh == null) settings.newtexhigh = General.Map.Options.DefaultTopTexture;
+			if(settings.newtexmid == null) settings.newtexmid = General.Map.Options.DefaultWallTexture;
+			if(settings.newtexlow == null) settings.newtexlow = General.Map.Options.DefaultBottomTexture;
 		}
 
 		// This takes sidedef settings if not taken yet
@@ -716,6 +708,13 @@ namespace CodeImp.DoomBuilder.Geometry
 			s.FloorHeight = (General.Map.Options.OverrideFloorHeight ? General.Map.Options.CustomFloorHeight : General.Settings.DefaultFloorHeight);
 			s.CeilHeight = (General.Map.Options.OverrideCeilingHeight ? General.Map.Options.CustomCeilingHeight : General.Settings.DefaultCeilingHeight);
 			s.Brightness = (General.Map.Options.OverrideBrightness ? General.Map.Options.CustomBrightness : General.Settings.DefaultBrightness);
+		}
+
+		//mxd. This applies overrides to a sidedef
+		private static void ApplyOverridesToSidedef(Sidedef sd) {
+			if (General.Map.Options.OverrideTopTexture) sd.SetTextureHigh(General.Map.Options.DefaultTopTexture);
+			if(sd.MiddleRequired() && General.Map.Options.OverrideMiddleTexture) sd.SetTextureMid(General.Map.Options.DefaultWallTexture);
+			if(General.Map.Options.OverrideBottomTexture) sd.SetTextureLow(General.Map.Options.DefaultBottomTexture);
 		}
 		
 		#endregion
@@ -982,11 +981,12 @@ namespace CodeImp.DoomBuilder.Geometry
 				// We prefer a closed polygon, because then we can determine the interior properly
 				// Check if the two ends of the polygon are closed
 				bool splittingonly = false;
+				bool drawingclosed = false; //mxd
 				if(newlines.Count > 0)
 				{
 					Linedef firstline = newlines[0];
 					Linedef lastline = newlines[newlines.Count - 1];
-					bool drawingclosed = (firstline.Start == lastline.End);
+					drawingclosed = (firstline.Start == lastline.End);
 					if(!drawingclosed)
 					{
 						// When not closed, we will try to find a path to close it.
@@ -1151,10 +1151,7 @@ namespace CodeImp.DoomBuilder.Geometry
 										*/
 										
 										// Begin at first vertex in path
-										if(pathforward)
-											v1 = firstline.Start;
-										else
-											v1 = lastline.End;
+										v1 = (pathforward ? firstline.Start : lastline.End);
 
 										// Go for all vertices in the path to make additional lines
 										for(int i = 1; i < shortestpath.Count; i++)
@@ -1333,7 +1330,8 @@ namespace CodeImp.DoomBuilder.Geometry
 							if(!istruenewsector || !splittingonly)
 							{
 								// Make the new sector
-								Sector newsector = Tools.MakeSector(sectorlines, oldlines, useOverrides);
+								//mxd. Apply sector overrides only if a closed drawing is created
+								Sector newsector = Tools.MakeSector(sectorlines, oldlines, (useOverrides && drawingclosed && newlines.Count > 2));
 								if(newsector == null) return false;
 
 								if(istruenewsector) newsector.Marked = true;
@@ -1375,7 +1373,7 @@ namespace CodeImp.DoomBuilder.Geometry
 									joinsidedef = ls.Line.Front;
 									break;
 								}
-								else if(!ls.Front && (ls.Line.Back != null))
+								if(!ls.Front && (ls.Line.Back != null))
 								{
 									joinsidedef = ls.Line.Back;
 									break;
@@ -1408,7 +1406,7 @@ namespace CodeImp.DoomBuilder.Geometry
 								}
 								
 								// Have our new lines join the existing sector
-								if(Tools.JoinSector(newsectorlines, joinsidedef, useOverrides) == null)
+								if(Tools.JoinSector(newsectorlines, joinsidedef) == null)
 									return false;
 							}
 						}
@@ -1431,6 +1429,15 @@ namespace CodeImp.DoomBuilder.Geometry
 						// Remove the line if it has no sides
 						if((newlines[i].Front != null) || (newlines[i].Back != null)) continue; 
 						newlines[i].Dispose();
+					}
+
+					//mxd. Apply texture overrides
+					if (useOverrides && !General.Settings.AutoClearSidedefTextures) {
+						foreach(Linedef ld in newlines) {
+							if(!newverts.Contains(ld.Start) || !newverts.Contains(ld.End)) continue;
+							if (ld.Front != null) ApplyOverridesToSidedef(ld.Front);
+							if (ld.Back != null) ApplyOverridesToSidedef(ld.Back);
+						}
 					}
 				}
 

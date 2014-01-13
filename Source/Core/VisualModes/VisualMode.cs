@@ -47,7 +47,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		// Graphics
 		protected IRenderer3D renderer;
-		//private Renderer3D renderer3d;
 		
 		// Options
 		private bool processgeometry;

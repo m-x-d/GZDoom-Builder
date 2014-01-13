@@ -625,8 +625,8 @@ namespace CodeImp.DoomBuilder.Windows
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Alt | Keys.Control, "Ctrl+Alt+XButton2"));
 			}
 			if(a.AllowScroll && !a.DisregardAlt && !a.DisregardControl) {
-				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift | (int)Keys.Alt, "Ctrl+Alt+ScrollUp"));
-				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift | (int)Keys.Alt, "Ctrl+Alt+ScrollDown"));
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Control | (int)Keys.Alt, "Ctrl+Alt+ScrollUp"));
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Control | (int)Keys.Alt, "Ctrl+Alt+ScrollDown"));
 			}
 			
 			//Ctrl-Shift

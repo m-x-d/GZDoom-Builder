@@ -1743,11 +1743,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					foreach(Sidedef sd in vs.Key.Sidedefs)
 					{
-						List<VisualGeometry> sidedefgeos = bvs.GetSidedefGeometry(sd);
-						foreach(VisualGeometry sdg in sidedefgeos)
-						{
-							sdg.Selected = false;
-						}
+						//mxd. VisualSidedefParts can contain references to visual geometry, which is not present in VisualSector.sidedefgeometry
+						bvs.GetSidedefParts(sd).DeselectAllParts();
 					}
 				}
 			}
@@ -1784,7 +1781,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[EndAction("visualselect", BaseAction = true)]
 		public void EndSelect()
 		{
-			//PreActionNoChange();
 			IVisualEventReceiver target = GetTargetEventReceiver(true);
 			target.OnSelectEnd();
 
@@ -1957,9 +1953,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(minSelectedCeilingHeight < maxSelectedHeight) {
 					General.Interface.DisplayStatus(StatusType.Warning, "Can't do: lowest ceiling is lower than highest floor!");
 					return;
-				} else {
-					targetFloorHeight = maxSelectedHeight;
-				}
+				} 
+				targetFloorHeight = maxSelectedHeight;
 			} else {
 				//get next higher floor from surrounding unselected sectors
 				foreach(KeyValuePair<Sector, VisualFloor> group in floors) {
@@ -2129,9 +2124,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(minSelectedHeight < maxSelectedFloorHeight) {
 					General.Interface.DisplayStatus(StatusType.Warning, "Can't do: lowest ceiling is lower than highest floor!");
 					return;
-				} else {
-					targetCeilingHeight = minSelectedHeight;
-				}
+				} 
+				targetCeilingHeight = minSelectedHeight;
 			} else {
 				//get next lower ceiling height from surrounding unselected sectors
 				foreach(KeyValuePair<Sector, VisualCeiling> group in ceilings) {

@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.spritetex = new System.Windows.Forms.Panel();
 			this.flagsPanel = new System.Windows.Forms.GroupBox();
 			this.flags = new System.Windows.Forms.ListView();
+			this.anglecontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			label5 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -90,15 +91,6 @@ namespace CodeImp.DoomBuilder.Controls
 			label3.TabIndex = 3;
 			label3.Text = "Position:";
 			// 
-			// labelaction
-			// 
-			this.labelaction.AutoSize = true;
-			this.labelaction.Location = new System.Drawing.Point(17, 39);
-			this.labelaction.Name = "labelaction";
-			this.labelaction.Size = new System.Drawing.Size(41, 14);
-			this.labelaction.TabIndex = 2;
-			this.labelaction.Text = "Action:";
-			// 
 			// label1
 			// 
 			label1.AutoSize = true;
@@ -108,8 +100,18 @@ namespace CodeImp.DoomBuilder.Controls
 			label1.TabIndex = 0;
 			label1.Text = "Type:";
 			// 
+			// labelaction
+			// 
+			this.labelaction.AutoSize = true;
+			this.labelaction.Location = new System.Drawing.Point(17, 39);
+			this.labelaction.Name = "labelaction";
+			this.labelaction.Size = new System.Drawing.Size(41, 14);
+			this.labelaction.TabIndex = 2;
+			this.labelaction.Text = "Action:";
+			// 
 			// infopanel
 			// 
+			this.infopanel.Controls.Add(this.anglecontrol);
 			this.infopanel.Controls.Add(this.arg5);
 			this.infopanel.Controls.Add(this.arglbl5);
 			this.infopanel.Controls.Add(this.arglbl4);
@@ -242,9 +244,9 @@ namespace CodeImp.DoomBuilder.Controls
 			this.angle.AutoSize = true;
 			this.angle.Location = new System.Drawing.Point(206, 77);
 			this.angle.Name = "angle";
-			this.angle.Size = new System.Drawing.Size(13, 14);
+			this.angle.Size = new System.Drawing.Size(25, 14);
 			this.angle.TabIndex = 11;
-			this.angle.Text = "0";
+			this.angle.Text = "270";
 			// 
 			// tag
 			// 
@@ -337,6 +339,14 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flags.UseCompatibleStateImageBehavior = false;
 			this.flags.View = System.Windows.Forms.View.List;
 			// 
+			// anglecontrol
+			// 
+			this.anglecontrol.Angle = 0;
+			this.anglecontrol.Location = new System.Drawing.Point(234, 71);
+			this.anglecontrol.Name = "anglecontrol";
+			this.anglecontrol.Size = new System.Drawing.Size(24, 24);
+			this.anglecontrol.TabIndex = 38;
+			// 
 			// ThingInfoPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -381,6 +391,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.GroupBox flagsPanel;
 		private System.Windows.Forms.ListView flags;
 		private System.Windows.Forms.Label labelaction;
+		private CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl anglecontrol;
 
 	}
 }

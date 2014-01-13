@@ -116,8 +116,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This updates this virtual the sector and neightbours if needed
 		override public void UpdateSectorGeometry(bool includeneighbours)
 		{
-			if(isupdating)
-				return;
+			if(isupdating) return;
 				
 			isupdating = true;
 			changed = true;
@@ -302,18 +301,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Create upper part
 					VisualUpper vu = parts.upper ?? new VisualUpper(mode, this, sd);
-					if(vu.Setup())
-						base.AddGeometry(vu);
+					if(vu.Setup()) base.AddGeometry(vu);
 					
 					// Create lower part
 					VisualLower vl = parts.lower ?? new VisualLower(mode, this, sd);
-					if(vl.Setup())
-						base.AddGeometry(vl);
+					if(vl.Setup()) base.AddGeometry(vl);
 					
 					// Create middle part
 					VisualMiddleDouble vm = parts.middledouble ?? new VisualMiddleDouble(mode, this, sd);
-					if(vm.Setup())
-						base.AddGeometry(vm);
+					if(vm.Setup()) base.AddGeometry(vm);
 					
 					// Create 3D wall parts
 					SectorData osd = mode.GetSectorData(sd.Other.Sector);
@@ -325,10 +321,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(!ef.VavoomType && ef.IgnoreBottomHeight) continue; //mxd
 
 						VisualMiddle3D vm3 = (i < middles.Count) ? middles[i] : new VisualMiddle3D(mode, this, sd);
-						if(vm3.Setup(ef))
-							base.AddGeometry(vm3);
-						if(i >= middles.Count)
-							middles.Add(vm3);
+						if(vm3.Setup(ef)) base.AddGeometry(vm3);
+						if(i >= middles.Count) middles.Add(vm3);
 					}
 
 					//mxd. Create backsides
@@ -338,8 +332,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						if (!ef.VavoomType && ef.RenderInside && !ef.IgnoreBottomHeight) {
 							VisualMiddleBack vms = new VisualMiddleBack(mode, this, sd);
-							if (vms.Setup(ef))
-								base.AddGeometry(vms);
+							if (vms.Setup(ef)) base.AddGeometry(vms);
 							middlebacks.Add(vms);
 						}
 					}
@@ -351,8 +344,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Create middle part
 					VisualMiddleSingle vm = parts.middlesingle ?? new VisualMiddleSingle(mode, this, sd);
-					if(vm.Setup())
-						base.AddGeometry(vm);
+					if(vm.Setup()) base.AddGeometry(vm);
 					
 					// Store
 					sides.Add(sd, new VisualSidedefParts(vm));
@@ -366,10 +358,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This returns the visual sidedef parts for a given sidedef
 		public VisualSidedefParts GetSidedefParts(Sidedef sd)
 		{
-			if(sides.ContainsKey(sd))
-				return sides[sd];
-			else
-				return new VisualSidedefParts();
+			if(sides.ContainsKey(sd)) return sides[sd];
+			return new VisualSidedefParts();
 		}
 
 		//mxd

@@ -1735,6 +1735,78 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.IsChanged = true;
 		}
 
+		// Change heights
+		[BeginAction("lowerfloor8")]
+		public void LowerFloors8() {
+			General.Interface.DisplayStatus(StatusType.Action, "Lowered floor heights by 8mp.");
+			General.Map.UndoRedo.CreateUndo("Floor heights change", this, UndoGroup.FloorHeightChange, CreateSelectionCRC());
+
+			// Change heights
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+			foreach(Sector s in selected) {
+				s.FloorHeight -= 8;
+			}
+
+			// Update
+			General.Interface.RefreshInfo();
+			General.Map.IsChanged = true;
+		}
+
+		// Change heights
+		[BeginAction("raisefloor8")]
+		public void RaiseFloors8() {
+			General.Interface.DisplayStatus(StatusType.Action, "Raised floor heights by 8mp.");
+			General.Map.UndoRedo.CreateUndo("Floor heights change", this, UndoGroup.FloorHeightChange, CreateSelectionCRC());
+
+			// Change heights
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+			foreach(Sector s in selected) {
+				s.FloorHeight += 8;
+			}
+
+			// Update
+			General.Interface.RefreshInfo();
+			General.Map.IsChanged = true;
+		}
+
+		// Change heights
+		[BeginAction("lowerceiling8")]
+		public void LowerCeilings8() {
+			General.Interface.DisplayStatus(StatusType.Action, "Lowered ceiling heights by 8mp.");
+			General.Map.UndoRedo.CreateUndo("Ceiling heights change", this, UndoGroup.CeilingHeightChange, CreateSelectionCRC());
+
+			// Change heights
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+			foreach(Sector s in selected) {
+				s.CeilHeight -= 8;
+			}
+
+			// Update
+			General.Interface.RefreshInfo();
+			General.Map.IsChanged = true;
+		}
+
+		// Change heights
+		[BeginAction("raiseceiling8")]
+		public void RaiseCeilings8() {
+			General.Interface.DisplayStatus(StatusType.Action, "Raised ceiling heights by 8mp.");
+			General.Map.UndoRedo.CreateUndo("Ceiling heights change", this, UndoGroup.CeilingHeightChange, CreateSelectionCRC());
+
+			// Change heights
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+			foreach(Sector s in selected) {
+				s.CeilHeight += 8;
+			}
+
+			// Update
+			General.Interface.RefreshInfo();
+			General.Map.IsChanged = true;
+		}
+
 		//mxd. Raise brightness
 		[BeginAction("raisebrightness8")]
 		public void RaiseBrightness8() {
