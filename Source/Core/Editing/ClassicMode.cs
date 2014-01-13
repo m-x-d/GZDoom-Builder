@@ -797,6 +797,13 @@ namespace CodeImp.DoomBuilder.Editing
 				ScrollBy(lastmappos.x - mousemappos.x, lastmappos.y - mousemappos.y);
 			}
 		}
+
+		/// <summary>
+		/// This selects given map element (mxd)
+		/// </summary>
+		public virtual void SelectMapElement(SelectableElement element) {
+			element.Selected = true;
+		}
 		
 		#endregion
 		

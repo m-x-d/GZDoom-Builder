@@ -529,7 +529,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
 
 			hints = new[]{ "Hold <b>" + Actions.Action.GetShortcutKeyDesc("builder_pan_view") + "</b> to pan the view",
-						   "Press <b>" + selectKey + "</b> to select a sector",
+						   "Press <b>" + selectKey + "</b> to select a sector. Hold <b>Alt<b> to (de)select things inside of a sector",
 						   "Hold <b>" + selectKey + "</b> and drag to use rectangular selection",
 						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_clearselection") + "</b> to clear selection",
 						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_deleteitem") + "</b> to delete selected sector(s)",
@@ -551,7 +551,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			multiselectionHints = new[] { "Hold <b>Shift</b> to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
 										  "Hold <b>Ctrl</b> to enable subtractive selection",
 										  "Hold <b>Ctrl-Shift</b> to intersect the new selection with already existing one",
+										  "Hold <b>Alt<b> to select things inside of selected sectors"                                          
 			};
+		}
+
+		//mxd
+		public override void SelectMapElement(SelectableElement element) {
+			if(element is Sector) {
+				SelectSector(element as Sector, true, true);
+
+				// Update overlay
+				updateOverlaySurfaces();
+				updateSelectionInfo();
+			}
 		}
 
 		#endregion
@@ -718,6 +730,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					//mxd. Flip selection
 					SelectSector(highlighted, !highlighted.Selected, true);
+
+					//mxd. Also (de)select things inside of this sector
+					if (General.Interface.AltState) {
+						foreach(Thing t in General.Map.ThingsFilter.VisibleThings) {
+							t.DetermineSector();
+							if(t.Sector != highlighted) continue;
+							t.Selected = highlighted.Selected;
+						}
+
+						// Render things
+						if(renderer.StartThings(true)) {
+							renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
+							renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, 1.0f);
+							renderer.Finish();
+						}
+					}
 					
 					// Update display
 					if(renderer.StartPlotter(false))
@@ -1060,12 +1088,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							if(select && !s.Selected) SelectSector(s, true, false);
 							else if(!select && s.Selected) SelectSector(s, false, false);
 						}
+						if (marqueSelectionIncludesThings) {
+							ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+
+							foreach (Thing t in General.Map.ThingsFilter.VisibleThings) {
+								t.DetermineSector();
+								if(t.Sector == null) continue;
+								t.Selected = selectionrect.Contains(t.Position.x, t.Position.y) && selected.Contains(t.Sector);
+							}
+						}
 						break;
 
 					case MarqueSelectionMode.ADD:
 						foreach(Sector s in General.Map.Map.Sectors) {
 							if(!s.Selected && isInSelectionRect(s, selectionOutline))
 								SelectSector(s, true, false);
+						}
+						if (marqueSelectionIncludesThings) {
+							ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+
+							foreach (Thing t in General.Map.ThingsFilter.VisibleThings) {
+								t.DetermineSector();
+								if(t.Sector == null) continue;
+								t.Selected |= selectionrect.Contains(t.Position.x, t.Position.y) && selected.Contains(t.Sector);
+							}
 						}
 						break;
 
@@ -1075,6 +1121,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							if(isInSelectionRect(s, selectionOutline))
 								SelectSector(s, false, false);
 						}
+						if (marqueSelectionIncludesThings) {
+							foreach (Thing t in General.Map.ThingsFilter.VisibleThings)
+								if (selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
+						}
 						break;
 
 					default: //should be Intersect
@@ -1082,6 +1132,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							if(!s.Selected) continue;
 							if(!isInSelectionRect(s, selectionOutline))
 								SelectSector(s, false, false);
+						}
+						if (marqueSelectionIncludesThings) {
+							foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+								if(!selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
 						}
 						break;
 				}

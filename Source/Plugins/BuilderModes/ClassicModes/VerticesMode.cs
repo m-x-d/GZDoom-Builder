@@ -670,6 +670,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_clearselection") + "</b> to clear selection",
 						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to insert a new vertex",
 						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_deleteitem") + "</b> to delete selected vertices",
+						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_dissolveitem") + "</b> to delete selected vertices and try to preserve surrounding geometry",
 						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicedit") + "</b> to edit properties of current selection",
 						   "Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_griddec") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("builder_gridinc") + "</b> to change grid size",
 						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_drawlinesmode") + "</b> to start drawing lines",
