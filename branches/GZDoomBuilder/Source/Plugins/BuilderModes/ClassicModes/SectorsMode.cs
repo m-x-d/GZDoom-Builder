@@ -529,7 +529,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
 
 			hints = new[]{ "Hold <b>" + Actions.Action.GetShortcutKeyDesc("builder_pan_view") + "</b> to pan the view",
-						   "Press <b>" + selectKey + "</b> to select a sector. Hold <b>Alt<b> to (de)select things inside of a sector",
+						   "Press <b>" + selectKey + "</b> to select a sector. Hold <b>Alt</b> to (de)select things inside of a sector",
 						   "Hold <b>" + selectKey + "</b> and drag to use rectangular selection",
 						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_clearselection") + "</b> to clear selection",
 						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_deleteitem") + "</b> to delete selected sector(s)",
@@ -551,7 +551,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			multiselectionHints = new[] { "Hold <b>Shift</b> to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
 										  "Hold <b>Ctrl</b> to enable subtractive selection",
 										  "Hold <b>Ctrl-Shift</b> to intersect the new selection with already existing one",
-										  "Hold <b>Alt<b> to select things inside of selected sectors"                                          
+										  "Hold <b>Alt</b> to select things inside of selected sectors"                                          
 			};
 		}
 

@@ -6,9 +6,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	public class HintLabel : LineLengthLabel
 	{
-		private const int TEXT_CAPACITY = 32;
-		private const float TEXT_SCALE = 10f;
-
 		private string text = "";
 		public string Text {
 			get {
@@ -21,12 +18,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		public HintLabel() : base(false) {
-			label.Color = General.Colors.BrightColors[new Random().Next(General.Colors.BrightColors.Length - 1)];
+			label.Color = General.Colors.InfoLine;
 		}
 
 		protected override void Update() {
 			Vector2D delta = end - start;
-			float length = delta.GetLength();
 			label.Text = text;
 			label.Rectangle = new RectangleF(start.x + delta.x * 0.5f, start.y + delta.y * 0.5f, 0f, 0f);
 		}

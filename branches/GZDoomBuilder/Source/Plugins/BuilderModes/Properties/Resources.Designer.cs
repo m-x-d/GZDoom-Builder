@@ -130,6 +130,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap DrawGridMode {
+            get {
+                object obj = ResourceManager.GetObject("DrawGridMode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap DrawLinesMode {
             get {
                 object obj = ResourceManager.GetObject("DrawLinesMode", resourceCulture);
@@ -189,6 +196,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
         internal static System.Drawing.Bitmap PasteProperties {
             get {
                 object obj = ResourceManager.GetObject("PasteProperties", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Reset {
+            get {
+                object obj = ResourceManager.GetObject("Reset", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

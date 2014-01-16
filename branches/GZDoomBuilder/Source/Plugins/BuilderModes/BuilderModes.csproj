@@ -224,6 +224,7 @@
     <Compile Include="ClassicModes\CeilingAlignMode.cs" />
     <Compile Include="ClassicModes\DrawCurveMode.cs" />
     <Compile Include="ClassicModes\DrawEllipseMode.cs" />
+    <Compile Include="ClassicModes\DrawGridMode.cs" />
     <Compile Include="ClassicModes\DrawRectangleMode.cs" />
     <Compile Include="ClassicModes\FlatAlignMode.cs" />
     <Compile Include="ClassicModes\FloorAlignMode.cs" />
@@ -274,6 +275,24 @@
     </Compile>
     <Compile Include="Interface\BridgeModeForm.Designer.cs">
       <DependentUpon>BridgeModeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\DrawEllipseOptionsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\DrawEllipseOptionsPanel.Designer.cs">
+      <DependentUpon>DrawEllipseOptionsPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\DrawGridOptionsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\DrawGridOptionsPanel.Designer.cs">
+      <DependentUpon>DrawGridOptionsPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\DrawRectangleOptionsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\DrawRectangleOptionsPanel.Designer.cs">
+      <DependentUpon>DrawRectangleOptionsPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\EditSelectionPanel.cs">
       <SubType>UserControl</SubType>
@@ -397,6 +416,15 @@
     <EmbeddedResource Include="Resources\FloorAlign.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\DrawEllipseOptionsPanel.resx">
+      <DependentUpon>DrawEllipseOptionsPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\DrawGridOptionsPanel.resx">
+      <DependentUpon>DrawGridOptionsPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\DrawRectangleOptionsPanel.resx">
+      <DependentUpon>DrawRectangleOptionsPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\SectorDrawingOptionsPanel.resx">
       <DependentUpon>SectorDrawingOptionsPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -422,6 +450,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AnnotationsMode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Lightbulb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Reset.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DrawGridMode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.Controls
 			System.Windows.Forms.Label label1;
 			this.labelaction = new System.Windows.Forms.Label();
 			this.infopanel = new System.Windows.Forms.GroupBox();
+			this.anglecontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			this.arg5 = new System.Windows.Forms.Label();
 			this.arglbl5 = new System.Windows.Forms.Label();
 			this.arglbl4 = new System.Windows.Forms.Label();
@@ -54,7 +55,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.spritetex = new System.Windows.Forms.Panel();
 			this.flagsPanel = new System.Windows.Forms.GroupBox();
 			this.flags = new System.Windows.Forms.ListView();
-			this.anglecontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			label5 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// label5
 			// 
 			label5.AutoSize = true;
-			label5.Location = new System.Drawing.Point(165, 77);
+			label5.Location = new System.Drawing.Point(165, 58);
 			label5.Name = "label5";
 			label5.Size = new System.Drawing.Size(38, 14);
 			label5.TabIndex = 8;
@@ -138,6 +138,14 @@ namespace CodeImp.DoomBuilder.Controls
 			this.infopanel.TabIndex = 4;
 			this.infopanel.TabStop = false;
 			this.infopanel.Text = " Thing ";
+			// 
+			// anglecontrol
+			// 
+			this.anglecontrol.Angle = 0;
+			this.anglecontrol.Location = new System.Drawing.Point(232, 52);
+			this.anglecontrol.Name = "anglecontrol";
+			this.anglecontrol.Size = new System.Drawing.Size(24, 24);
+			this.anglecontrol.TabIndex = 38;
 			// 
 			// arg5
 			// 
@@ -242,7 +250,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// angle
 			// 
 			this.angle.AutoSize = true;
-			this.angle.Location = new System.Drawing.Point(206, 77);
+			this.angle.Location = new System.Drawing.Point(206, 58);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(25, 14);
 			this.angle.TabIndex = 11;
@@ -338,14 +346,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flags.TabIndex = 0;
 			this.flags.UseCompatibleStateImageBehavior = false;
 			this.flags.View = System.Windows.Forms.View.List;
-			// 
-			// anglecontrol
-			// 
-			this.anglecontrol.Angle = 0;
-			this.anglecontrol.Location = new System.Drawing.Point(234, 71);
-			this.anglecontrol.Name = "anglecontrol";
-			this.anglecontrol.Size = new System.Drawing.Size(24, 24);
-			this.anglecontrol.TabIndex = 38;
 			// 
 			// ThingInfoPanel
 			// 

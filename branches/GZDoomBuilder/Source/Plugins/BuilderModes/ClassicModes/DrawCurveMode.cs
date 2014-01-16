@@ -9,7 +9,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Windows;
 
-namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
+namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Draw Curve Mode",
 			  SwitchAction = "drawcurvemode",

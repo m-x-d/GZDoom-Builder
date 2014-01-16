@@ -2922,21 +2922,25 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd
 		/// <summary>This returns a sector if given coordinates are inside one.</summary>
 		public Sector GetSectorByCoordinates(Vector2D pos) {
-			Linedef nl;
-			Sector sector = null;
+			List<Linedef> lines = new List<Linedef>(10);
 
-			nl = NearestLinedef(pos);
-			if (nl != null) {
+			foreach (Sector s in sectors) {
+				if(pos.x < s.BBox.Left || pos.x > s.BBox.Right || pos.y < s.BBox.Top || pos.y > s.BBox.Bottom) continue;
+				foreach (Sidedef side in s.Sidedefs) lines.Add(side.Line);
+			}
+
+			Linedef nl = NearestLinedef(lines, pos);
+			if(nl != null) {
 				// Check what side of line we are at
-				if (nl.SideOfLine(pos) < 0f) {
+				if(nl.SideOfLine(pos) < 0f) {
 					// Front side
-					if (nl.Front != null) sector = nl.Front.Sector;
+					if(nl.Front != null) return nl.Front.Sector;
 				} else {
 					// Back side
-					if (nl.Back != null) sector = nl.Back.Sector;
+					if(nl.Back != null) return nl.Back.Sector;
 				}
 			}
-			return sector;
+			return null;
 		}
 
 		/// <summary>This finds the line closest to the specified position.</summary>

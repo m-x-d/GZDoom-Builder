@@ -9,24 +9,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 {
 	internal struct TagInfo
 	{
-		public string Label;
-		public int Tag;
-		public bool HasLabel;
+		public readonly string Label;
+		public readonly int Tag;
 
 		public TagInfo(int tag, string label) {
-			if(string.IsNullOrEmpty(label)) {
-				Label = "Tag " + tag;
-				HasLabel = false;
-			} else {
-				Label = label;
-				HasLabel = true;
-			}
-
+			Label = (string.IsNullOrEmpty(label) ? tag.ToString() : tag + " (" + label + ")");
 			Tag = tag;
 		}
 
 		public override string ToString() {
-			if(HasLabel) return Label + " (tag " + Tag + ")";
 			return Label;
 		}
 	}
@@ -116,13 +107,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 				return;
 			}
 
-			if(string.IsNullOrEmpty(cbTagPicker.Text)) {
+			//check text
+			string text = cbTagPicker.Text.Trim().ToLowerInvariant();
+			if(string.IsNullOrEmpty(text)) {
 				valid = false;
 				return;
 			}
-
-			//check text
-			string text = cbTagPicker.Text.Trim().ToLowerInvariant();
 
 			if(!int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out tag)) {
 				//maybe it's user-pasted label?

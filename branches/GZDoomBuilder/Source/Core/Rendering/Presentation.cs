@@ -82,11 +82,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			dragThings = new Presentation();
 			dragThings.layers.Add(new PresentLayer(RendererLayer.Background, BlendingMode.Mask, General.Settings.BackgroundAlpha));
 			dragThings.layers.Add(new PresentLayer(RendererLayer.Surface, BlendingMode.Mask));
-			dragThings.layers.Add(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1.0f, true));
-			dragThings.layers.Add(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, 1f, false));
+			dragThings.layers.Add(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, 1f));
 			dragThings.layers.Add(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
-			dragThings.layers.Add(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 0.5f, true));
+			dragThings.layers.Add(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
 			dragThings.layers.Add(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
+			dragThings.layers.Add(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, 0.5f));
+
 		}
 	}
 
@@ -147,7 +148,7 @@ namespace CodeImp.DoomBuilder.Rendering
 	}
 	
 	// The different layers
-	public enum RendererLayer : int
+	public enum RendererLayer
 	{
 		Background,
 		Grid,
@@ -158,7 +159,7 @@ namespace CodeImp.DoomBuilder.Rendering
 	}
 
 	// Blending modes
-	public enum BlendingMode : int
+	public enum BlendingMode
 	{
 		None,
 		Mask,

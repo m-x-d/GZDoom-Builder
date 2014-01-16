@@ -1,7 +1,10 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
@@ -9,7 +12,9 @@ using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
 
-namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
+#endregion
+
+namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Draw Rectangle Mode",
 			  SwitchAction = "drawrectanglemode",
@@ -19,13 +24,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
 	public class DrawRectangleMode : DrawGeometryMode
 	{
-		private HintLabel hintLabel;
+		#region ================== Variables
+
+		protected HintLabel hintLabel;
 		protected int bevelWidth;
 		protected int currentBevelWidth;
 		protected int subdivisions;
 
-		protected int maxSubdivisions = 16;
-		protected int minSubdivisions = 0;
+		protected int maxSubdivisions;
+		protected int minSubdivisions;
 
 		protected string undoName = "Rectangle draw";
 		protected string shapeName = "rectangle";
@@ -35,11 +42,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 		protected int width;
 		protected int height;
 
-		protected PixelColor cornersColor;
+		//interface
+		private Docker settingsdocker;
+		private DrawRectangleOptionsPanel panel;
+
+		#endregion
+
+		#region ================== Constructor/Disposer
 
 		public DrawRectangleMode() {
 			snaptogrid = true;
-			cornersColor = General.Colors.BrightColors[new Random().Next(General.Colors.BrightColors.Length - 1)];
+			setupInterface();
 		}
 
 		public override void Dispose() {
@@ -48,7 +61,36 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
 			base.Dispose();
 		}
-		
+
+		#endregion
+
+		#region ================== Settings panel
+
+		protected virtual void setupInterface() {
+			maxSubdivisions = 16;
+
+			//Add options docker
+			panel = new DrawRectangleOptionsPanel();
+			panel.MaxSubdivisions = maxSubdivisions;
+			panel.OnValueChanged += OptionsPanelOnValueChanged;
+			settingsdocker = new Docker("drawrectangle", "Draw Rectangle", panel);
+		}
+
+		protected virtual void addInterface() {
+			General.Interface.AddDocker(settingsdocker);
+			General.Interface.SelectDocker(settingsdocker);
+			bevelWidth = panel.BevelWidth;
+			subdivisions = panel.Subdivisions;
+		}
+
+		protected virtual void removeInterface() {
+			General.Interface.RemoveDocker(settingsdocker);
+		}
+
+		#endregion
+
+		#region ================== Methods
+
 		override protected void Update() {
 			PixelColor stitchcolor = General.Colors.Highlight;
 			PixelColor losecolor = General.Colors.Selection;
@@ -95,7 +137,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 						
 						//and shape corners
 						for (int i = 0; i < 4; i++)
-							renderer.RenderRectangleFilled(new RectangleF(labelCoords[i].x - vsize, labelCoords[i].y - vsize, vsize * 2.0f, vsize * 2.0f), cornersColor, true);
+							renderer.RenderRectangleFilled(new RectangleF(labelCoords[i].x - vsize, labelCoords[i].y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine, true);
 					}
 				} else {
 					// Render vertex at cursor
@@ -112,7 +154,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
 		protected virtual Vector2D[] getShape(Vector2D pStart, Vector2D pEnd) {
 			//no shape
-			if (pEnd.x == pStart.x && pEnd.y == pStart.y) {
+			if (pStart == pEnd) {
 				currentBevelWidth = 0;
 				return new Vector2D[0];
 			}
@@ -138,26 +180,24 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 				reverse = true;
 			}
 
-			List<Vector2D> l_points = new List<Vector2D>();
+			List<Vector2D> shape = new List<Vector2D>();
 
 			//top-left corner
-			l_points.AddRange(getCornerPoints(pStart, currentBevelWidth, currentBevelWidth, !reverse));
+			shape.AddRange(getCornerPoints(pStart, currentBevelWidth, currentBevelWidth, !reverse));
 
 			//top-right corner
-			l_points.AddRange(getCornerPoints(new Vector2D(pEnd.x, pStart.y), -currentBevelWidth, currentBevelWidth, reverse));
+			shape.AddRange(getCornerPoints(new Vector2D(pEnd.x, pStart.y), -currentBevelWidth, currentBevelWidth, reverse));
 
 			//bottom-right corner
-			l_points.AddRange(getCornerPoints(pEnd, -currentBevelWidth, -currentBevelWidth, !reverse));
+			shape.AddRange(getCornerPoints(pEnd, -currentBevelWidth, -currentBevelWidth, !reverse));
 
 			//bottom-left corner
-			l_points.AddRange(getCornerPoints(new Vector2D(pStart.x, pEnd.y), currentBevelWidth, -currentBevelWidth, reverse));
+			shape.AddRange(getCornerPoints(new Vector2D(pStart.x, pEnd.y), currentBevelWidth, -currentBevelWidth, reverse));
 
 			//closing point
-			l_points.Add(l_points[0]);
+			shape.Add(shape[0]);
 
-			Vector2D[] points = new Vector2D[l_points.Count];
-			l_points.CopyTo(points);
-			return points;
+			return shape.ToArray();
 		}
 
 		private Vector2D[] getCornerPoints(Vector2D startPoint, int bevel_width, int bevel_height, bool reverse) {
@@ -183,17 +223,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 		}
 
 		//mxd. Setup hints for current editing mode
-		protected override void SetupHints() {
+		/*protected override void SetupHints() {
 			hints = new[]{"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicselect") + "</b> to place a vertex",
 						  "Use <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_increasebevel") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_decreasebevel") + "</b> to change corners bevel by current grid size", 
 						  "Use <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_increasesubdivlevel") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_decreasesubdivlevel") + "</b> to change bevel detail level",
 						  "Place second vertex to finish drawing",
 						  "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_cancelmode") + "</b> or <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicedit") + "</b> to cancel"
 			};
-		}
+		}*/
 
 		//update top-left and bottom-right points, which define drawing shape
-		private void updateReferencePoints(DrawnVertex p1, DrawnVertex p2) {
+		protected void updateReferencePoints(DrawnVertex p1, DrawnVertex p2) {
 			if (p1.pos.x < p2.pos.x) {
 				start.x = p1.pos.x;
 				end.x = p2.pos.x;
@@ -253,7 +293,20 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			Update();
 		}
 
-//EVENTS
+		#endregion
+
+		#region ================== Events
+
+		public override void OnEngage() {
+			base.OnEngage();
+			addInterface();
+		}
+
+		public override void OnDisengage() {
+			removeInterface();
+			base.OnDisengage();
+		}
+		
 		override public void OnAccept() {
 			Cursor.Current = Cursors.AppStarting;
 			General.Settings.FindDefaultDrawSettings();
@@ -307,11 +360,21 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
 		}
 
-//ACTIONS
+		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) {
+			bevelWidth = panel.BevelWidth;
+			subdivisions = panel.Subdivisions;
+			Update();
+		}
+
+		#endregion
+
+		#region ================== Actions
+
 		[BeginAction("increasesubdivlevel")]
 		protected virtual void increaseSubdivLevel() {
 			if (subdivisions < maxSubdivisions) {
 				subdivisions++;
+				panel.Subdivisions = subdivisions;
 				Update();
 			}
 		}
@@ -320,14 +383,16 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 		protected virtual void decreaseSubdivLevel() {
 			if (subdivisions > minSubdivisions) {
 				subdivisions--;
+				panel.Subdivisions = subdivisions;
 				Update();
 			}
 		}
 
 		[BeginAction("increasebevel")]
 		protected virtual void increaseBevel() {
-			if (currentBevelWidth == bevelWidth || bevelWidth < 0) {
+			if (points.Count < 2 || currentBevelWidth == bevelWidth || bevelWidth < 0) {
 				bevelWidth += General.Map.Grid.GridSize;
+				panel.BevelWidth = bevelWidth;
 				Update();
 			}
 		}
@@ -336,8 +401,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 		protected virtual void decreaseBevel() {
 			if (currentBevelWidth == bevelWidth || bevelWidth > 0) {
 				bevelWidth -= General.Map.Grid.GridSize;
+				panel.BevelWidth = bevelWidth;
 				Update();
 			}
 		}
+
+		#endregion
+
 	}
 }
