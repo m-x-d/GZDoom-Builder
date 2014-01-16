@@ -3219,10 +3219,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Wrap the value within the width of the texture (to prevent ridiculous values)
 					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
 					if(texture.IsImageLoaded) {
-						if(alignx)
-							j.sidedef.OffsetX %= texture.Width;
-						if(aligny)
-							j.sidedef.OffsetY %= texture.Height;
+						if(alignx) j.sidedef.OffsetX %= texture.Width;
+						if(aligny) j.sidedef.OffsetY %= texture.Height;
 					}
 
 					// Add sidedefs forward (connected to the right vertex)
@@ -3239,7 +3237,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Apply alignment
 					if(alignx)
-						j.sidedef.OffsetX = (int)j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
+						j.controlSide.OffsetX = (int)j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
 					if(aligny)
 						j.sidedef.OffsetY = (int)Math.Round((first.controlSide.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + ystartalign;
 					forwardoffset = (int)j.offsetx;
@@ -3250,10 +3248,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Wrap the value within the width of the texture (to prevent ridiculous values)
 					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
 					if(texture.IsImageLoaded) {
-						if(alignx)
-							j.sidedef.OffsetX %= texture.Width;
-						if(aligny)
-							j.sidedef.OffsetY %= texture.Height;
+						if(alignx) j.sidedef.OffsetX %= texture.Width;
+						if(aligny) j.sidedef.OffsetY %= texture.Height;
 					}
 
 					// Add sidedefs backward (connected to the left vertex)

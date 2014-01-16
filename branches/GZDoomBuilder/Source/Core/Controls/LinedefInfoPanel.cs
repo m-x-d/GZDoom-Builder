@@ -50,7 +50,6 @@ namespace CodeImp.DoomBuilder.Controls
 		// This shows the info
 		public void ShowInfo(Linedef l)
 		{
-			TypeHandler th;
 			bool upperunpegged, lowerunpegged;
 			string peggedness;
 			int defaultPanelWidth = 270; //mxd
@@ -165,17 +164,12 @@ namespace CodeImp.DoomBuilder.Controls
 			if (hasArg0Str) {
 				arg1.Text = '"' + l.Fields["arg0str"].Value.ToString() + '"';
 			} else {
-				th = General.Types.GetArgumentHandler(act.Args[0]);
-				th.SetValue(l.Args[0]); arg1.Text = th.GetStringValue();
+				setArgumentText(act.Args[0], arg1, l.Args[0]);
 			}
-			th = General.Types.GetArgumentHandler(act.Args[1]);
-			th.SetValue(l.Args[1]); arg2.Text = th.GetStringValue();
-			th = General.Types.GetArgumentHandler(act.Args[2]);
-			th.SetValue(l.Args[2]); arg3.Text = th.GetStringValue();
-			th = General.Types.GetArgumentHandler(act.Args[3]);
-			th.SetValue(l.Args[3]); arg4.Text = th.GetStringValue();
-			th = General.Types.GetArgumentHandler(act.Args[4]);
-			th.SetValue(l.Args[4]); arg5.Text = th.GetStringValue();
+			setArgumentText(act.Args[1], arg2, l.Args[1]);
+			setArgumentText(act.Args[2], arg3, l.Args[2]);
+			setArgumentText(act.Args[3], arg4, l.Args[3]);
+			setArgumentText(act.Args[4], arg5, l.Args[4]);
 
 			// Front side available?
 			if(l.Front != null)
@@ -458,10 +452,22 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private float getDefaultUDMFValue(string valueName) {
 			foreach (UniversalFieldInfo fi in fieldInfos) {
-				if (fi.Name == valueName)
-					return (float)fi.Default;
+				if (fi.Name == valueName) return (float)fi.Default;
 			}
 			return 0;
+		}
+
+		//mxd
+		private void setArgumentText(ArgumentInfo info, Label label, int value) {
+			TypeHandler th = General.Types.GetArgumentHandler(info);
+			th.SetValue(value);
+			label.Text = th.GetStringValue();
+
+			if(value < 1 || !General.Map.Options.TagLabels.ContainsKey(value)) return;
+
+			if(th is ThingTagHandler || th is LinedefTagHandler || th is SectorTagHandler) {
+				label.Text += " (" + General.Map.Options.TagLabels[value] + ")";
+			}
 		}
 
 		// When visible changed
