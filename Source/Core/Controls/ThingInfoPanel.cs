@@ -50,7 +50,6 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ThingTypeInfo ti;
 			LinedefActionInfo act = null;
-			TypeHandler th;
 			string actioninfo = "";
 			string zinfo;
 			float zvalue;
@@ -106,12 +105,12 @@ namespace CodeImp.DoomBuilder.Controls
 					// Hangs from ceiling?
 					if(ti.Hangs)
 					{
-						zvalue = (float)t.Sector.CeilHeight - t.Position.z - ti.Height; //mxd
+						zvalue = t.Sector.CeilHeight - t.Position.z - ti.Height; //mxd
 						zinfo = zvalue.ToString();
 					}
 					else
 					{
-						zvalue = (float)t.Sector.FloorHeight + t.Position.z;
+						zvalue = t.Sector.FloorHeight + t.Position.z;
 						zinfo = zvalue.ToString();
 					}
 				}
@@ -176,22 +175,12 @@ namespace CodeImp.DoomBuilder.Controls
 			if(hasArg0Str) {
 				arg1.Text = '"' + t.Fields["arg0str"].Value.ToString() + '"';
 			} else {
-				th = General.Types.GetArgumentHandler(arginfo[0]);
-				th.SetValue(t.Args[0]);
-				arg1.Text = th.GetStringValue();
+				setArgumentText(arginfo[0], arg1, t.Args[0]);
 			}
-			th = General.Types.GetArgumentHandler(arginfo[1]);
-			th.SetValue(t.Args[1]);
-			arg2.Text = th.GetStringValue();
-			th = General.Types.GetArgumentHandler(arginfo[2]);
-			th.SetValue(t.Args[2]);
-			arg3.Text = th.GetStringValue();
-			th = General.Types.GetArgumentHandler(arginfo[3]);
-			th.SetValue(t.Args[3]);
-			arg4.Text = th.GetStringValue();
-			th = General.Types.GetArgumentHandler(arginfo[4]);
-			th.SetValue(t.Args[4]);
-			arg5.Text = th.GetStringValue();
+			setArgumentText(arginfo[1], arg2, t.Args[1]);
+			setArgumentText(arginfo[2], arg3, t.Args[2]);
+			setArgumentText(arginfo[3], arg4, t.Args[3]);
+			setArgumentText(arginfo[4], arg5, t.Args[4]);
 
 			//mxd. Flags
 			flags.Items.Clear();
@@ -215,6 +204,19 @@ namespace CodeImp.DoomBuilder.Controls
 			// Show the whole thing
 			this.Show();
 			this.Update();
+		}
+
+		//mxd
+		private void setArgumentText(ArgumentInfo info, Label label, int value) {
+			TypeHandler th = General.Types.GetArgumentHandler(info);
+			th.SetValue(value);
+			label.Text = th.GetStringValue();
+
+			if(value < 1 || !General.Map.Options.TagLabels.ContainsKey(value)) return;
+
+			if (th is ThingTagHandler || th is LinedefTagHandler || th is SectorTagHandler) {
+				label.Text += " (" + General.Map.Options.TagLabels[value] + ")";
+			}
 		}
 
 		// When visible changed
