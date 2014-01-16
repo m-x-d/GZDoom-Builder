@@ -196,8 +196,77 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 		}
 
 		private void dataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
+			if(e.ColumnIndex < 2) return;
+			
+			//select 
+			if (e.Button == MouseButtons.Left) {
+				int tag = (int)dataGridView.Rows[e.RowIndex].Cells[0].Value;
+
+				if(e.ColumnIndex == 2) { //sectors
+					List<Sector> list = getSectorsWithTag(tag, (int)dataGridView.Rows[e.RowIndex].Cells[2].Value);
+					if(list.Count > 0) {
+						General.Map.Map.ClearSelectedSectors();
+						General.Map.Map.ClearSelectedLinedefs();
+						
+						List<Vector2D> points = new List<Vector2D>();
+						General.Editing.ChangeMode("SectorsMode");
+						ClassicMode mode = (ClassicMode)General.Editing.Mode;
+
+						foreach(Sector s in list) {
+							//s.Selected = true;
+							mode.SelectMapElement(s);
+
+							foreach(Sidedef sd in s.Sidedefs) {
+								points.Add(sd.Line.Start.Position);
+								points.Add(sd.Line.End.Position);
+							}
+						}
+
+						//General.Map.Map.Update();
+						showSelection(points);
+					}
+				} else if(e.ColumnIndex == 3) { //linedefs
+					List<Linedef> list = getLinedefsWithTag(tag, (int)dataGridView.Rows[e.RowIndex].Cells[3].Value);
+					if(list.Count > 0) {
+						General.Map.Map.ClearSelectedSectors();
+						General.Map.Map.ClearSelectedLinedefs();
+
+						List<Vector2D> points = new List<Vector2D>();
+						foreach(Linedef l in list) {
+							l.Selected = true;
+							points.Add(l.Start.Position);
+							points.Add(l.End.Position);
+						}
+
+						General.Map.Map.Update();
+						General.Editing.ChangeMode("LinedefsMode");
+						showSelection(points);
+					}
+				} else if(e.ColumnIndex == 4) { //things
+					List<Thing> list = getThingsWithTag(tag, (int)dataGridView.Rows[e.RowIndex].Cells[4].Value);
+					if(list.Count > 0) {
+						General.Map.Map.ClearSelectedThings();
+
+						List<Vector2D> points = new List<Vector2D>();
+						foreach(Thing t in list) {
+							t.Selected = true;
+
+							Vector2D p = (Vector2D)t.Position;
+							points.Add(p);
+							points.Add(p + new Vector2D(t.Size * 2.0f, t.Size * 2.0f));
+							points.Add(p + new Vector2D(t.Size * 2.0f, -t.Size * 2.0f));
+							points.Add(p + new Vector2D(-t.Size * 2.0f, t.Size * 2.0f));
+							points.Add(p + new Vector2D(-t.Size * 2.0f, -t.Size * 2.0f));
+						}
+
+						General.Map.Map.Update();
+						General.Editing.ChangeMode("ThingsMode");
+						showSelection(points);
+					}
+				}
+
 			//open properties window
-			if(e.ColumnIndex > 1 && e.Button == MouseButtons.Right) {
+			} else if(e.Button == MouseButtons.Right) {
 				dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Selected = true;
 				int tag = (int)dataGridView.Rows[e.RowIndex].Cells[0].Value;
 

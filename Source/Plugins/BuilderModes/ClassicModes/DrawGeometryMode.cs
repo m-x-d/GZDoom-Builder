@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This checks if the view offset/zoom changed and updates the check
-		protected bool CheckViewChanged()
+		/*protected bool CheckViewChanged()
 		{
 			// View changed?
 			bool viewchanged = (renderer.OffsetX != lastoffsetx || renderer.OffsetY != lastoffsety || renderer.Scale != lastscale);
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Return result
 			return viewchanged;
-		}
+		}*/
 		
 		// This updates the dragging
 		protected virtual void Update()

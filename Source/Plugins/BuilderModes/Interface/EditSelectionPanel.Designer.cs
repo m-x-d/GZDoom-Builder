@@ -61,23 +61,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label13 = new System.Windows.Forms.Label();
 			this.label11 = new System.Windows.Forms.Label();
 			this.absrot = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.orgCenterY = new System.Windows.Forms.Button();
-			this.orgCenterX = new System.Windows.Forms.Button();
-			this.label10 = new System.Windows.Forms.Label();
-			this.label18 = new System.Windows.Forms.Label();
-			this.label20 = new System.Windows.Forms.Label();
-			this.label21 = new System.Windows.Forms.Label();
-			this.relCenterY = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.relCenterX = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.absCenterY = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.absCenterX = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.label22 = new System.Windows.Forms.Label();
-			this.label23 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
-			this.groupBox5.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -96,7 +82,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox1.Controls.Add(this.absposx);
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Location = new System.Drawing.Point(3, 130);
+			this.groupBox1.Location = new System.Drawing.Point(3, 3);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(243, 117);
 			this.groupBox1.TabIndex = 0;
@@ -167,6 +153,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.relposy.AllowNegative = true;
 			this.relposy.AllowRelative = true;
 			this.relposy.ButtonStep = 1;
+			this.relposy.ButtonStepFloat = 1F;
 			this.relposy.Location = new System.Drawing.Point(136, 83);
 			this.relposy.Name = "relposy";
 			this.relposy.Size = new System.Drawing.Size(72, 24);
@@ -183,6 +170,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.relposx.AllowNegative = true;
 			this.relposx.AllowRelative = true;
 			this.relposx.ButtonStep = 1;
+			this.relposx.ButtonStepFloat = 1F;
 			this.relposx.Location = new System.Drawing.Point(58, 83);
 			this.relposx.Name = "relposx";
 			this.relposx.Size = new System.Drawing.Size(72, 24);
@@ -199,6 +187,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.absposy.AllowNegative = true;
 			this.absposy.AllowRelative = true;
 			this.absposy.ButtonStep = 1;
+			this.absposy.ButtonStepFloat = 1F;
 			this.absposy.Location = new System.Drawing.Point(136, 53);
 			this.absposy.Name = "absposy";
 			this.absposy.Size = new System.Drawing.Size(72, 24);
@@ -215,6 +204,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.absposx.AllowNegative = true;
 			this.absposx.AllowRelative = true;
 			this.absposx.ButtonStep = 1;
+			this.absposx.ButtonStepFloat = 1F;
 			this.absposx.Location = new System.Drawing.Point(58, 53);
 			this.absposx.Name = "absposx";
 			this.absposx.Size = new System.Drawing.Size(72, 24);
@@ -259,7 +249,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox2.Controls.Add(this.abssizey);
 			this.groupBox2.Controls.Add(this.abssizex);
 			this.groupBox2.Controls.Add(this.label3);
-			this.groupBox2.Location = new System.Drawing.Point(3, 253);
+			this.groupBox2.Location = new System.Drawing.Point(3, 126);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(243, 117);
 			this.groupBox2.TabIndex = 1;
@@ -330,6 +320,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.relsizey.AllowNegative = true;
 			this.relsizey.AllowRelative = true;
 			this.relsizey.ButtonStep = 1;
+			this.relsizey.ButtonStepFloat = 1F;
 			this.relsizey.Location = new System.Drawing.Point(136, 83);
 			this.relsizey.Name = "relsizey";
 			this.relsizey.Size = new System.Drawing.Size(72, 24);
@@ -346,6 +337,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.relsizex.AllowNegative = true;
 			this.relsizex.AllowRelative = true;
 			this.relsizex.ButtonStep = 1;
+			this.relsizex.ButtonStepFloat = 1F;
 			this.relsizex.Location = new System.Drawing.Point(58, 83);
 			this.relsizex.Name = "relsizex";
 			this.relsizex.Size = new System.Drawing.Size(72, 24);
@@ -371,6 +363,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.abssizey.AllowNegative = true;
 			this.abssizey.AllowRelative = true;
 			this.abssizey.ButtonStep = 1;
+			this.abssizey.ButtonStepFloat = 1F;
 			this.abssizey.Location = new System.Drawing.Point(136, 53);
 			this.abssizey.Name = "abssizey";
 			this.abssizey.Size = new System.Drawing.Size(72, 24);
@@ -387,6 +380,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.abssizex.AllowNegative = true;
 			this.abssizex.AllowRelative = true;
 			this.abssizex.ButtonStep = 1;
+			this.abssizex.ButtonStepFloat = 1F;
 			this.abssizex.Location = new System.Drawing.Point(58, 53);
 			this.abssizex.Name = "abssizex";
 			this.abssizex.Size = new System.Drawing.Size(72, 24);
@@ -416,7 +410,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox3.Controls.Add(this.label13);
 			this.groupBox3.Controls.Add(this.label11);
 			this.groupBox3.Controls.Add(this.absrot);
-			this.groupBox3.Location = new System.Drawing.Point(3, 376);
+			this.groupBox3.Location = new System.Drawing.Point(3, 249);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(243, 91);
 			this.groupBox3.TabIndex = 2;
@@ -478,6 +472,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.absrot.AllowNegative = true;
 			this.absrot.AllowRelative = true;
 			this.absrot.ButtonStep = 1;
+			this.absrot.ButtonStepFloat = 1F;
 			this.absrot.Location = new System.Drawing.Point(58, 23);
 			this.absrot.Name = "absrot";
 			this.absrot.Size = new System.Drawing.Size(82, 24);
@@ -488,156 +483,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.absrot.WhenButtonsClicked += new System.EventHandler(this.absrot_Validated);
 			this.absrot.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
 			// 
-			// groupBox5
-			// 
-			this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBox5.Controls.Add(this.orgCenterY);
-			this.groupBox5.Controls.Add(this.orgCenterX);
-			this.groupBox5.Controls.Add(this.label10);
-			this.groupBox5.Controls.Add(this.label18);
-			this.groupBox5.Controls.Add(this.label20);
-			this.groupBox5.Controls.Add(this.label21);
-			this.groupBox5.Controls.Add(this.relCenterY);
-			this.groupBox5.Controls.Add(this.relCenterX);
-			this.groupBox5.Controls.Add(this.absCenterY);
-			this.groupBox5.Controls.Add(this.absCenterX);
-			this.groupBox5.Controls.Add(this.label22);
-			this.groupBox5.Controls.Add(this.label23);
-			this.groupBox5.Location = new System.Drawing.Point(3, 7);
-			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(243, 117);
-			this.groupBox5.TabIndex = 30;
-			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = "Center:";
-			// 
-			// orgCenterY
-			// 
-			this.orgCenterY.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-			this.orgCenterY.Location = new System.Drawing.Point(136, 23);
-			this.orgCenterY.Name = "orgCenterY";
-			this.orgCenterY.Size = new System.Drawing.Size(72, 24);
-			this.orgCenterY.TabIndex = 29;
-			this.orgCenterY.Text = "-2000";
-			this.orgCenterY.UseVisualStyleBackColor = true;
-			// 
-			// orgCenterX
-			// 
-			this.orgCenterX.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-			this.orgCenterX.Location = new System.Drawing.Point(58, 23);
-			this.orgCenterX.Name = "orgCenterX";
-			this.orgCenterX.Size = new System.Drawing.Size(72, 24);
-			this.orgCenterX.TabIndex = 28;
-			this.orgCenterX.Text = "-2000";
-			this.orgCenterX.UseVisualStyleBackColor = true;
-			// 
-			// label10
-			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(214, 28);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(21, 14);
-			this.label10.TabIndex = 26;
-			this.label10.Text = "mp";
-			// 
-			// label18
-			// 
-			this.label18.AutoSize = true;
-			this.label18.Location = new System.Drawing.Point(9, 28);
-			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(46, 14);
-			this.label18.TabIndex = 23;
-			this.label18.Text = "Original:";
-			// 
-			// label20
-			// 
-			this.label20.AutoSize = true;
-			this.label20.Location = new System.Drawing.Point(214, 88);
-			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(21, 14);
-			this.label20.TabIndex = 13;
-			this.label20.Text = "mp";
-			// 
-			// label21
-			// 
-			this.label21.AutoSize = true;
-			this.label21.Location = new System.Drawing.Point(214, 58);
-			this.label21.Name = "label21";
-			this.label21.Size = new System.Drawing.Size(21, 14);
-			this.label21.TabIndex = 12;
-			this.label21.Text = "mp";
-			// 
-			// relCenterY
-			// 
-			this.relCenterY.AllowDecimal = true;
-			this.relCenterY.AllowNegative = true;
-			this.relCenterY.AllowRelative = true;
-			this.relCenterY.ButtonStep = 1;
-			this.relCenterY.Location = new System.Drawing.Point(136, 83);
-			this.relCenterY.Name = "relCenterY";
-			this.relCenterY.Size = new System.Drawing.Size(72, 24);
-			this.relCenterY.StepValues = null;
-			this.relCenterY.TabIndex = 11;
-			// 
-			// relCenterX
-			// 
-			this.relCenterX.AllowDecimal = true;
-			this.relCenterX.AllowNegative = true;
-			this.relCenterX.AllowRelative = true;
-			this.relCenterX.ButtonStep = 1;
-			this.relCenterX.Location = new System.Drawing.Point(58, 83);
-			this.relCenterX.Name = "relCenterX";
-			this.relCenterX.Size = new System.Drawing.Size(72, 24);
-			this.relCenterX.StepValues = null;
-			this.relCenterX.TabIndex = 10;
-			// 
-			// absCenterY
-			// 
-			this.absCenterY.AllowDecimal = true;
-			this.absCenterY.AllowNegative = true;
-			this.absCenterY.AllowRelative = true;
-			this.absCenterY.ButtonStep = 1;
-			this.absCenterY.Location = new System.Drawing.Point(136, 53);
-			this.absCenterY.Name = "absCenterY";
-			this.absCenterY.Size = new System.Drawing.Size(72, 24);
-			this.absCenterY.StepValues = null;
-			this.absCenterY.TabIndex = 9;
-			// 
-			// absCenterX
-			// 
-			this.absCenterX.AllowDecimal = true;
-			this.absCenterX.AllowNegative = true;
-			this.absCenterX.AllowRelative = true;
-			this.absCenterX.ButtonStep = 1;
-			this.absCenterX.Location = new System.Drawing.Point(58, 53);
-			this.absCenterX.Name = "absCenterX";
-			this.absCenterX.Size = new System.Drawing.Size(72, 24);
-			this.absCenterX.StepValues = null;
-			this.absCenterX.TabIndex = 8;
-			// 
-			// label22
-			// 
-			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(7, 88);
-			this.label22.Name = "label22";
-			this.label22.Size = new System.Drawing.Size(48, 14);
-			this.label22.TabIndex = 1;
-			this.label22.Text = "Relative:";
-			// 
-			// label23
-			// 
-			this.label23.AutoSize = true;
-			this.label23.Location = new System.Drawing.Point(6, 58);
-			this.label23.Name = "label23";
-			this.label23.Size = new System.Drawing.Size(53, 14);
-			this.label23.TabIndex = 0;
-			this.label23.Text = "Absolute:";
-			// 
 			// EditSelectionPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
@@ -650,8 +499,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox2.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
-			this.groupBox5.ResumeLayout(false);
-			this.groupBox5.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -691,18 +538,5 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.Button orgposy;
 		private System.Windows.Forms.Button orgsizey;
 		private System.Windows.Forms.Button orgsizex;
-		private System.Windows.Forms.GroupBox groupBox5;
-		private System.Windows.Forms.Button orgCenterY;
-		private System.Windows.Forms.Button orgCenterX;
-		private System.Windows.Forms.Label label10;
-		private System.Windows.Forms.Label label18;
-		private System.Windows.Forms.Label label20;
-		private System.Windows.Forms.Label label21;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox relCenterY;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox relCenterX;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox absCenterY;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox absCenterX;
-		private System.Windows.Forms.Label label22;
-		private System.Windows.Forms.Label label23;
 	}
 }

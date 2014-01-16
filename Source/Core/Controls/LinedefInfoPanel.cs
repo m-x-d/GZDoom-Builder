@@ -137,8 +137,8 @@ namespace CodeImp.DoomBuilder.Controls
 			infopanel.Text = " Linedef " + l.Index + " ";
 			action.Text = act.ToString();
 			length.Text = l.Length.ToString("0.##");
-			angle.Text = l.AngleDeg.ToString() + "\u00B0";
-			tag.Text = l.Tag.ToString();
+			angle.Text = l.AngleDeg + "\u00B0";
+			tag.Text = l.Tag + (General.Map.Options.TagLabels.ContainsKey(l.Tag) ? " (" + General.Map.Options.TagLabels[l.Tag] + ")" : string.Empty);
 			unpegged.Text = peggedness;
 
 			//mxd

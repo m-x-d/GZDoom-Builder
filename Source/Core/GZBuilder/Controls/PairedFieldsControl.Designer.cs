@@ -102,9 +102,9 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.bReset);
 			this.Controls.Add(this.bLink);
-			this.Controls.Add(this.label);
 			this.Controls.Add(this.value1);
 			this.Controls.Add(this.value2);
+			this.Controls.Add(this.label);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.Name = "PairedFieldsControl";
 			this.Size = new System.Drawing.Size(268, 26);

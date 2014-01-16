@@ -656,6 +656,7 @@
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />
     <None Include="Resources\Close.png" />
+    <Compile Include="Actions\HintsManager.cs" />
     <Compile Include="Config\AllTexturesSet.cs" />
     <Compile Include="Config\FlagTranslation.cs" />
     <Compile Include="Config\PasteOptions.cs" />

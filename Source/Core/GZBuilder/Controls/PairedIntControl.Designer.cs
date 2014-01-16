@@ -33,7 +33,7 @@
 			// 
 			// label
 			// 
-			this.label.Location = new System.Drawing.Point(0, 6);
+			this.label.Location = new System.Drawing.Point(3, 6);
 			this.label.Name = "label";
 			this.label.Size = new System.Drawing.Size(87, 14);
 			this.label.TabIndex = 40;
@@ -47,6 +47,7 @@
 			this.value1.AllowRelative = true;
 			this.value1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.value1.ButtonStep = 1;
+			this.value1.ButtonStepFloat = 1F;
 			this.value1.Location = new System.Drawing.Point(89, 1);
 			this.value1.Name = "value1";
 			this.value1.Size = new System.Drawing.Size(62, 24);
@@ -62,6 +63,7 @@
 			this.value2.AllowRelative = true;
 			this.value2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.value2.ButtonStep = 1;
+			this.value2.ButtonStepFloat = 1F;
 			this.value2.Location = new System.Drawing.Point(157, 1);
 			this.value2.Name = "value2";
 			this.value2.Size = new System.Drawing.Size(62, 24);
@@ -87,9 +89,9 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.bReset);
-			this.Controls.Add(this.label);
 			this.Controls.Add(this.value1);
 			this.Controls.Add(this.value2);
+			this.Controls.Add(this.label);
 			this.Name = "PairedIntControl";
 			this.Size = new System.Drawing.Size(249, 26);
 			this.ResumeLayout(false);

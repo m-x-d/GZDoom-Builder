@@ -1,0 +1,379 @@
+﻿#region ================== Namespaces
+
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
+using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Windows;
+
+#endregion
+
+namespace CodeImp.DoomBuilder.BuilderModes
+{
+	[EditMode(DisplayName = "Draw Grid Mode",
+			  SwitchAction = "drawgridmode",
+			  AllowCopyPaste = false,
+			  Volatile = true,
+			  Optional = false)]
+
+	public class DrawGridMode : DrawGeometryMode
+	{
+		#region ================== Variables
+
+		private static int horizontalSlices = 3;
+		private static int verticalSlices = 3;
+		private bool triangulate = true;
+
+		private List<DrawnVertex[]> gridpoints;
+		private HintLabel hintLabel;
+		
+		private int width;
+		private int height;
+		private Vector2D start;
+		private Vector2D end;
+
+		//interface
+		private Docker settingsdocker;
+		private DrawGridOptionsPanel panel;
+
+		#endregion
+
+		#region ================== Constructor
+
+		public DrawGridMode() {
+			snaptogrid = true;
+
+			//Options docker
+			panel = new DrawGridOptionsPanel();
+			panel.OnValueChanged += OptionsPanelOnValueChanged;
+			settingsdocker = new Docker("drawgrid", "Draw Grid Settings", panel);
+		}
+
+		#endregion
+
+		#region ================== Events
+
+		public override void OnEngage() {
+			base.OnEngage();
+			General.Interface.AddDocker(settingsdocker);
+			General.Interface.SelectDocker(settingsdocker);
+
+			panel.Triangulate = triangulate;
+			panel.HorizontalSlices = horizontalSlices - 1;
+			panel.VerticalSlices = verticalSlices - 1;
+		}
+
+
+		public override void OnDisengage() {
+			General.Interface.RemoveDocker(settingsdocker);
+			base.OnDisengage();
+		}
+
+		override public void OnAccept() {
+			Cursor.Current = Cursors.AppStarting;
+			General.Settings.FindDefaultDrawSettings();
+
+			// When we have a shape...
+			if(gridpoints.Count > 0) {
+				// Make undo for the draw
+				General.Map.UndoRedo.CreateUndo("Grid draw");
+
+				// Make an analysis and show info
+				string[] adjectives = new[] { "gloomy", "sad", "unhappy", "lonely", "troubled", "depressed", "heartsick", "glum", "pessimistic", "bitter", "downcast" }; // aaand my english vocabulary ends here :)
+				string word = adjectives[new Random().Next(adjectives.Length - 1)];
+				string a = (word[0] == 'u' ? "an " : "a ");
+
+				General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " grid.");
+
+				List<Sector> newsectors = new List<Sector>();
+				foreach (DrawnVertex[] shape in gridpoints) {
+					if(!Tools.DrawLines(shape, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) {
+						// Drawing failed
+						// NOTE: I have to call this twice, because the first time only cancels this volatile mode
+						General.Map.UndoRedo.WithdrawUndo();
+						General.Map.UndoRedo.WithdrawUndo();
+						return;
+					}
+
+					// Update cached values after each step...
+					General.Map.Map.Update();
+
+					newsectors.AddRange(General.Map.Map.GetMarkedSectors(true));
+				}
+
+				// Snap to map format accuracy
+				General.Map.Map.SnapAllToAccuracy();
+
+				// Clear selection
+				General.Map.Map.ClearAllSelected();
+
+				// Edit new sectors?
+				if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))
+					General.Interface.ShowEditSectors(newsectors);
+
+				// Update the used textures
+				General.Map.Data.UpdateUsedTextures();
+
+				// Map is changed
+				General.Map.IsChanged = true;
+			}
+
+			// Done
+			Cursor.Current = Cursors.Default;
+
+			// Return to original mode
+			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
+		}
+
+		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) {
+			triangulate = panel.Triangulate;
+			horizontalSlices = panel.HorizontalSlices + 1;
+			verticalSlices = panel.VerticalSlices + 1;
+			Update();
+		}
+
+		#endregion
+
+		#region ================== Methods
+
+		override protected void Update() {
+			PixelColor stitchcolor = General.Colors.Highlight;
+			PixelColor losecolor = General.Colors.Selection;
+
+			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
+
+			DrawnVertex curp = GetCurrentPosition();
+			float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
+
+			// Render drawing lines
+			if(renderer.StartOverlay(true)) {
+				PixelColor color = snaptonearest ? stitchcolor : losecolor;
+
+				if(points.Count == 1) {
+					updateReferencePoints(points[0], curp);
+					List<Vector2D[]> shapes = getShapes(start, end);
+
+					//render shape
+					foreach (Vector2D[] shape in shapes) {
+						for(int i = 1; i < shape.Length; i++)
+						renderer.RenderLine(shape[i - 1], shape[i], LINE_THICKNESS, color, true);
+					}
+
+					//vertices
+					foreach (Vector2D[] shape in shapes) {
+						for (int i = 0; i < shape.Length; i++)
+							renderer.RenderRectangleFilled(new RectangleF(shape[i].x - vsize, shape[i].y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
+					}
+
+					//and labels
+					Vector2D[] labelCoords = new[] { start, new Vector2D(end.x, start.y), end, new Vector2D(start.x, end.y), start };
+					for(int i = 1; i < 5; i++) {
+						labels[i - 1].Start = labelCoords[i - 1];
+						labels[i - 1].End = labelCoords[i];
+						renderer.RenderText(labels[i - 1].TextLabel);
+					}
+
+					//render hint
+					if (horizontalSlices > 1 || verticalSlices > 1) {
+						if(width > 64 * vsize && height > 16 * vsize) {
+							float vPos = start.y + height / 2.0f;
+							hintLabel.Start = new Vector2D(start.x, vPos);
+							hintLabel.End = new Vector2D(end.x, vPos);
+							hintLabel.Text = "H: " + (horizontalSlices - 1) + "; V: " + (verticalSlices - 1);
+							renderer.RenderText(hintLabel.TextLabel);
+						}
+					}
+				} else {
+					// Render vertex at cursor
+					renderer.RenderRectangleFilled(new RectangleF(curp.pos.x - vsize, curp.pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
+				}
+
+				// Done
+				renderer.Finish();
+			}
+
+			// Done
+			renderer.Present();
+		}
+
+		// This draws a point at a specific location
+		override public bool DrawPointAt(Vector2D pos, bool stitch, bool stitchline) {
+			if(pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
+				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary)
+				return false;
+
+			DrawnVertex newpoint = new DrawnVertex();
+			newpoint.pos = pos;
+			newpoint.stitch = true;
+			newpoint.stitchline = stitchline;
+			points.Add(newpoint);
+
+			if(points.Count == 1) { //add point and labels
+				labels.AddRange(new[] { new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false) });
+				hintLabel = new HintLabel();
+				Update();
+			} else if(points[0].pos == points[1].pos) { //nothing is drawn
+				points = new List<DrawnVertex>();
+				FinishDraw();
+			} else {
+				//create vertices for final shape. 
+				updateReferencePoints(points[0], newpoint);
+				gridpoints = new List<DrawnVertex[]>();
+				List<Vector2D[]> shapes = getShapes(start, end);
+
+				foreach (Vector2D[] shape in shapes) {
+					DrawnVertex[] verts = new DrawnVertex[shape.Length];
+					for(int i = 0; i < shape.Length; i++) {
+						newpoint = new DrawnVertex();
+						newpoint.pos = shape[i];
+						newpoint.stitch = true;
+						newpoint.stitchline = stitchline;
+						verts[i] = newpoint;
+					}
+
+					gridpoints.Add(verts);
+				}
+
+				FinishDraw();
+			}
+			return true;
+		}
+
+		protected List<Vector2D[]> getShapes(Vector2D s, Vector2D e) {
+			//no shape
+			if(s == e) return new List<Vector2D[]>();
+
+			//line
+			if (e.x == s.x || e.y == s.y) return new List<Vector2D[]>{ new[] {s, e} };
+
+			//rectangles
+			float rectWidth = Math.Max(1, (horizontalSlices > 0 ? (float)width / horizontalSlices : width));
+			float rectHeight = Math.Max(1, (verticalSlices > 0 ? (float)height / verticalSlices : height));
+
+			//create shape
+			List<Vector2D> rect = new List<Vector2D> { s, new Vector2D((int)e.x, (int)s.y), e, new Vector2D((int)s.x, (int)e.y), s };
+			if(horizontalSlices == 1 && verticalSlices == 1) {
+				if(triangulate) rect.AddRange(new[] { s, e });
+				return new List<Vector2D[]>{ rect.ToArray() };
+			}
+
+			//create blocks
+			List<Vector2D[]> shapes = new List<Vector2D[]>() { rect.ToArray() };
+			RectangleF[,] blocks = new RectangleF[horizontalSlices, verticalSlices];
+
+			for(int w = 0; w < horizontalSlices; w++) {
+				for(int h = 0; h < verticalSlices; h++) {
+					blocks[w, h] = RectangleF.FromLTRB((int)Math.Round(s.x + rectWidth * w), (int)Math.Round(s.y + rectHeight * h), (int)Math.Round(s.x + rectWidth * (w + 1)), (int)Math.Round(s.y + rectHeight * (h + 1)));
+				}
+			}
+
+			//add subdivisions
+			if (horizontalSlices > 1) {
+				for (int w = 1; w < horizontalSlices; w++) {
+					int px = (int) Math.Round(blocks[w, 0].X);
+					shapes.Add(new[] {new Vector2D(px, s.y), new Vector2D(px, e.y)});
+				}
+			}
+			if (verticalSlices > 1) {
+				for (int h = 1; h < verticalSlices; h++) {
+					int py = (int) Math.Round(blocks[0, h].Y);
+					shapes.Add(new[] { new Vector2D(s.x, py), new Vector2D(e.x, py) });
+				}
+			}
+
+			//triangulate?
+			if (triangulate) {
+				bool startflip = false;
+				bool flip = false;
+
+				for (int w = 0; w < horizontalSlices; w++) {
+					for (int h = 0; h < verticalSlices; h++) {
+						if (flip) {
+							shapes.Add(new[] { new Vector2D(blocks[w, h].X, blocks[w, h].Y), new Vector2D(blocks[w, h].Right, blocks[w, h].Bottom) });
+						} else {
+							shapes.Add(new[] { new Vector2D(blocks[w, h].Right, blocks[w, h].Y), new Vector2D(blocks[w, h].X, blocks[w, h].Bottom) });
+						}
+
+						flip = !flip;
+					}
+
+					startflip = !startflip;
+					flip = startflip;
+				}
+			}
+
+			return shapes;
+		}
+
+		//update top-left and bottom-right points, which define drawing shape
+		private void updateReferencePoints(DrawnVertex p1, DrawnVertex p2) {
+			if(p1.pos.x < p2.pos.x) {
+				start.x = p1.pos.x;
+				end.x = p2.pos.x;
+			} else {
+				start.x = p2.pos.x;
+				end.x = p1.pos.x;
+			}
+
+			if(p1.pos.y < p2.pos.y) {
+				start.y = p1.pos.y;
+				end.y = p2.pos.y;
+			} else {
+				start.y = p2.pos.y;
+				end.y = p1.pos.y;
+			}
+
+			width = (int)(end.x - start.x);
+			height = (int)(end.y - start.y);
+		}
+
+		#endregion
+
+		#region ================== Actions
+
+		[BeginAction("increasebevel")]
+		protected void increaseBevel() {
+			if(points.Count < 2 || horizontalSlices < width - 2) {
+				horizontalSlices++;
+				panel.HorizontalSlices = horizontalSlices - 1;
+				Update();
+			}
+		}
+
+		[BeginAction("decreasebevel")]
+		protected void decreaseBevel() {
+			if(horizontalSlices > 1) {
+				horizontalSlices--;
+				panel.HorizontalSlices = horizontalSlices - 1;
+				Update();
+			}
+		}
+
+		[BeginAction("increasesubdivlevel")]
+		protected void increaseSubdivLevel() {
+			if(points.Count < 2 || verticalSlices < height - 2) {
+				verticalSlices++;
+				panel.VerticalSlices = verticalSlices - 1;
+				Update();
+			}
+		}
+
+		[BeginAction("decreasesubdivlevel")]
+		protected void decreaseSubdivLevel() {
+			if(verticalSlices > 1) {
+				verticalSlices--;
+				panel.VerticalSlices = verticalSlices - 1;
+				Update();
+			}
+		}
+
+		#endregion
+
+	}
+}
