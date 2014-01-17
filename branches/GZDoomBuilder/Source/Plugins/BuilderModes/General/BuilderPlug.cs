@@ -220,10 +220,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel = new UndoRedoPanel();
 			undoredodocker = new Docker("undoredo", "Undo / Redo", undoredopanel);
 			General.Interface.AddDocker(undoredodocker);
-
-			//mxd. Load Sector Drawing Overrides docker
-			drawingOverridesPanel = new SectorDrawingOptionsPanel();
-			drawingOverridesDocker = new Docker("drawingoverrides", "Draw Settings", drawingOverridesPanel);
 			
 			//mxd. Export to .obj
 			exportToObjMenuItem = new ToolStripMenuItem("Export to .obj...");
@@ -293,7 +289,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Clean up
 				General.Interface.RemoveDocker(undoredodocker);
-				General.Interface.RemoveDocker(drawingOverridesDocker); //mxd
 
 				//mxd
 				General.Interface.RemoveMenu(exportToObjMenuItem);
@@ -471,7 +466,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel.UpdateList();
 
 			//mxd
-			General.Interface.AddDocker(drawingOverridesDocker);
+			if (drawingOverridesPanel == null) {
+				drawingOverridesPanel = new SectorDrawingOptionsPanel();
+				drawingOverridesDocker = new Docker("drawingoverrides", "Draw Settings", drawingOverridesPanel);
+				General.Interface.AddDocker(drawingOverridesDocker);
+			}
 			drawingOverridesPanel.Setup();
 
 			//mxd
@@ -492,7 +491,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel.UpdateList();
 
 			//mxd
-			General.Interface.AddDocker(drawingOverridesDocker);
+			if (drawingOverridesPanel == null) {
+				drawingOverridesPanel = new SectorDrawingOptionsPanel();
+				drawingOverridesDocker = new Docker("drawingoverrides", "Draw Settings", drawingOverridesPanel);
+				General.Interface.AddDocker(drawingOverridesDocker);
+			}
 			drawingOverridesPanel.Setup();
 
 			//mxd
@@ -515,6 +518,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd
 			General.Interface.RemoveDocker(drawingOverridesDocker);
+			drawingOverridesDocker = null;
+			drawingOverridesPanel.Dispose();
+			drawingOverridesPanel = null;
 
 			//mxd
 			exportToObjMenuItem.Enabled = false;
