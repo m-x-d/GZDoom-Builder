@@ -454,15 +454,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(withSameTexture) {
 					if(line.Front != null) {
-						addFrontTop = (line.Front.HighTexture == texture);
+						addFrontTop = (line.Front.HighTexture == texture && line.Front.HighRequired());
 						addFrontMiddle = (line.Front.MiddleTexture == texture && line.Front.MiddleRequired());
-						addFrontBottom = (line.Front.LowTexture == texture);
+						addFrontBottom = (line.Front.LowTexture == texture && line.Front.LowRequired());
 					}
 
 					if(line.Back != null) {
-						addBackTop = line.Back.HighTexture == texture;
+						addBackTop = (line.Back.HighTexture == texture && line.Back.HighRequired());
 						addBackMiddle = (line.Back.MiddleTexture == texture && line.Back.MiddleRequired());
-						addBackBottom = (line.Back.LowTexture == texture);
+						addBackBottom = (line.Back.LowTexture == texture && line.Back.LowRequired());
 					}
 				}
 
