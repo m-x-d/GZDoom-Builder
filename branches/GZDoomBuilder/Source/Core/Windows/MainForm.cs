@@ -38,6 +38,7 @@ using CodeImp.DoomBuilder.Data;
 using System.Runtime.InteropServices;
 using CodeImp.DoomBuilder.GZBuilder.Windows;
 using System.Drawing.Imaging;
+using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
@@ -2781,6 +2782,11 @@ namespace CodeImp.DoomBuilder.Windows
 				bounds = this.Bounds;
 			}
 
+			Point cursorLocation = Point.Empty;
+			//dont want to render the cursor in VisualMode
+			if(General.Editing.Mode == null || !(General.Editing.Mode is VisualMode))
+				cursorLocation = Cursor.Position - new Size(bounds.Location);
+
 			string date = DateTime.Now.ToString();
 
 			//because date may be returned like this: 1\1\2000
@@ -2794,6 +2800,9 @@ namespace CodeImp.DoomBuilder.Windows
 			using(Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height)) {
 				using(Graphics g = Graphics.FromImage(bitmap)) {
 					g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
+
+					//draw the cursor
+					if(!cursorLocation.IsEmpty) g.DrawImage(Resources.Cursor, cursorLocation);
 				}
 
 				try {
