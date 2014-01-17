@@ -27,7 +27,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor
 
-		public DrawEllipseMode() : base() {
+		public DrawEllipseMode() {
 			undoName = "Ellipse draw";
 			shapeName = "ellipse";
 		}

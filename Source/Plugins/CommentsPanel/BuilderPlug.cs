@@ -74,12 +74,6 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			// Keep a static reference
             me = this;
 		}
-		
-		// This is called when the plugin is terminated
-		public override void Dispose()
-		{
-			base.Dispose();
-        }
 
 		// When a map is created
 		public override void OnMapNewEnd()

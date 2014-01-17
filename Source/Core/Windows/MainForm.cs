@@ -2918,7 +2918,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		internal void AddHintsDocker() {
-			dockerspanel.Add(hintsDocker);
+			if(!dockerspanel.Contains(hintsDocker)) dockerspanel.Add(hintsDocker);
 		}
 
 		//mxd

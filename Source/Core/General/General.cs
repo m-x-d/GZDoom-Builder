@@ -991,6 +991,7 @@ namespace CodeImp.DoomBuilder
 					
 					// Clear the display
 					mainwindow.ClearDisplay();
+					mainwindow.RemoveHintsDocker(); //mxd
 
 					// Trash the current map, if any
 					if(map != null) map.Dispose();
@@ -1154,6 +1155,7 @@ namespace CodeImp.DoomBuilder
 
 			// Clear the display
 			mainwindow.ClearDisplay();
+			mainwindow.RemoveHintsDocker(); //mxd
 
 			// Let the plugins know
 			plugins.OnMapOpenBegin();
@@ -1223,6 +1225,7 @@ namespace CodeImp.DoomBuilder
 
 			// Clear the display
 			mainwindow.ClearDisplay();
+			mainwindow.RemoveHintsDocker(); //mxd
 
 			// Trash the current map, if any
 			if(map != null) map.Dispose();

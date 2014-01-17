@@ -313,7 +313,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
-			renderer.SetPresentation(Presentation.DragThings); //mxd
+			renderer.SetPresentation(Presentation.Things);
 		}
 		
 		// Disenagaging
