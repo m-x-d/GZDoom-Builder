@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.BuilderModes
@@ -7,15 +6,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	public class HintLabel : LineLengthLabel
 	{
 		private string text = "";
-		public string Text {
-			get {
-				return text;
-			}
-			set {
-				text = value;
-				Update();
-			}
-		}
+		public string Text { get { return text; } set { text = value; Update(); } }
 
 		public HintLabel() : base(false) {
 			label.Color = General.Colors.InfoLine;
