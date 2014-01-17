@@ -234,6 +234,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//update top-left and bottom-right points, which define drawing shape
 		protected void updateReferencePoints(DrawnVertex p1, DrawnVertex p2) {
+			if(!p1.pos.IsFinite() || !p2.pos.IsFinite()) return;
+
 			if (p1.pos.x < p2.pos.x) {
 				start.x = p1.pos.x;
 				end.x = p2.pos.x;

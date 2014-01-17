@@ -28,13 +28,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private static int horizontalSlices = 3;
 		private static int verticalSlices = 3;
-		private bool triangulate = true;
+		private static bool triangulate;
+		private static bool gridlock;
 
 		private List<DrawnVertex[]> gridpoints;
 		private HintLabel hintLabel;
 		
 		private int width;
 		private int height;
+		private int slicesH;
+		private int slicesV;
+		private int initialGridSize;
 		private Vector2D start;
 		private Vector2D end;
 
@@ -52,6 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//Options docker
 			panel = new DrawGridOptionsPanel();
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
+			panel.OnGridLockChanged += OptionsPanelOnOnGridLockChanged;
 			settingsdocker = new Docker("drawgrid", "Draw Grid Settings", panel);
 		}
 
@@ -63,8 +68,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnEngage();
 			General.Interface.AddDocker(settingsdocker);
 			General.Interface.SelectDocker(settingsdocker);
+			initialGridSize = General.Map.Grid.GridSize;
 
+			//setup settings panel
 			panel.Triangulate = triangulate;
+			panel.LockToGrid = gridlock;
 			panel.HorizontalSlices = horizontalSlices - 1;
 			panel.VerticalSlices = verticalSlices - 1;
 		}
@@ -138,6 +146,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Update();
 		}
 
+		private void OptionsPanelOnOnGridLockChanged(object sender, EventArgs eventArgs) {
+			gridlock = panel.LockToGrid;
+			Update();
+		}
+
 		#endregion
 
 		#region ================== Methods
@@ -181,11 +194,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					//render hint
 					if (horizontalSlices > 1 || verticalSlices > 1) {
-						if(width > 64 * vsize && height > 16 * vsize) {
+						hintLabel.Text = "H: " + (slicesH - 1) + "; V: " + (slicesV - 1);
+						if(width > hintLabel.Text.Length * vsize && height > 16 * vsize) {
 							float vPos = start.y + height / 2.0f;
 							hintLabel.Start = new Vector2D(start.x, vPos);
 							hintLabel.End = new Vector2D(end.x, vPos);
-							hintLabel.Text = "H: " + (horizontalSlices - 1) + "; V: " + (verticalSlices - 1);
 							renderer.RenderText(hintLabel.TextLabel);
 						}
 					}
@@ -253,35 +266,48 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if (e.x == s.x || e.y == s.y) return new List<Vector2D[]>{ new[] {s, e} };
 
 			//rectangles
-			float rectWidth = Math.Max(1, (horizontalSlices > 0 ? (float)width / horizontalSlices : width));
-			float rectHeight = Math.Max(1, (verticalSlices > 0 ? (float)height / verticalSlices : height));
+			if(gridlock) {
+				//rendering will be screwed if start point is not aligned to current grid size
+				if (General.Map.Grid.GridSize > initialGridSize && General.Map.Grid.SnappedToGrid(start) == start) {
+					initialGridSize = General.Map.Grid.GridSize;
+				}
+
+				int gs = (General.Map.Grid.GridSize > initialGridSize && General.Map.Grid.SnappedToGrid(start) != start ? initialGridSize : General.Map.Grid.GridSize);
+				slicesH = width / gs;
+				slicesV = height / gs;
+			} else {
+				slicesH = horizontalSlices;
+				slicesV = verticalSlices;
+			}
+
+			float rectWidth = Math.Max(1, (slicesH > 0 ? (float)width / slicesH : width));
+			float rectHeight = Math.Max(1, (slicesV > 0 ? (float)height / slicesV : height));
 
 			//create shape
 			List<Vector2D> rect = new List<Vector2D> { s, new Vector2D((int)e.x, (int)s.y), e, new Vector2D((int)s.x, (int)e.y), s };
-			if(horizontalSlices == 1 && verticalSlices == 1) {
+			if(!gridlock && slicesH == 1 && slicesV == 1) {
 				if(triangulate) rect.AddRange(new[] { s, e });
 				return new List<Vector2D[]>{ rect.ToArray() };
 			}
 
 			//create blocks
-			List<Vector2D[]> shapes = new List<Vector2D[]>() { rect.ToArray() };
-			RectangleF[,] blocks = new RectangleF[horizontalSlices, verticalSlices];
-
-			for(int w = 0; w < horizontalSlices; w++) {
-				for(int h = 0; h < verticalSlices; h++) {
+			List<Vector2D[]> shapes = new List<Vector2D[]> { rect.ToArray() };
+			RectangleF[,] blocks = new RectangleF[slicesH, slicesV];
+			for(int w = 0; w < slicesH; w++) {
+				for(int h = 0; h < slicesV; h++) {
 					blocks[w, h] = RectangleF.FromLTRB((int)Math.Round(s.x + rectWidth * w), (int)Math.Round(s.y + rectHeight * h), (int)Math.Round(s.x + rectWidth * (w + 1)), (int)Math.Round(s.y + rectHeight * (h + 1)));
 				}
 			}
 
 			//add subdivisions
-			if (horizontalSlices > 1) {
-				for (int w = 1; w < horizontalSlices; w++) {
+			if(slicesH > 1) {
+				for(int w = 1; w < slicesH; w++) {
 					int px = (int) Math.Round(blocks[w, 0].X);
 					shapes.Add(new[] {new Vector2D(px, s.y), new Vector2D(px, e.y)});
 				}
 			}
-			if (verticalSlices > 1) {
-				for (int h = 1; h < verticalSlices; h++) {
+			if(slicesV > 1) {
+				for(int h = 1; h < slicesV; h++) {
 					int py = (int) Math.Round(blocks[0, h].Y);
 					shapes.Add(new[] { new Vector2D(s.x, py), new Vector2D(e.x, py) });
 				}
@@ -292,8 +318,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				bool startflip = false;
 				bool flip = false;
 
-				for (int w = 0; w < horizontalSlices; w++) {
-					for (int h = 0; h < verticalSlices; h++) {
+				for(int w = 0; w < slicesH; w++) {
+					for(int h = 0; h < slicesV; h++) {
 						if (flip) {
 							shapes.Add(new[] { new Vector2D(blocks[w, h].X, blocks[w, h].Y), new Vector2D(blocks[w, h].Right, blocks[w, h].Bottom) });
 						} else {
@@ -313,6 +339,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//update top-left and bottom-right points, which define drawing shape
 		private void updateReferencePoints(DrawnVertex p1, DrawnVertex p2) {
+			if(!p1.pos.IsFinite() || !p2.pos.IsFinite()) return;
+			
 			if(p1.pos.x < p2.pos.x) {
 				start.x = p1.pos.x;
 				end.x = p2.pos.x;
@@ -339,7 +367,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		[BeginAction("increasebevel")]
 		protected void increaseBevel() {
-			if(points.Count < 2 || horizontalSlices < width - 2) {
+			if(!gridlock && (points.Count < 2 || horizontalSlices < width - 2)) {
 				horizontalSlices++;
 				panel.HorizontalSlices = horizontalSlices - 1;
 				Update();
@@ -348,7 +376,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		[BeginAction("decreasebevel")]
 		protected void decreaseBevel() {
-			if(horizontalSlices > 1) {
+			if(!gridlock && horizontalSlices > 1) {
 				horizontalSlices--;
 				panel.HorizontalSlices = horizontalSlices - 1;
 				Update();
@@ -357,7 +385,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		[BeginAction("increasesubdivlevel")]
 		protected void increaseSubdivLevel() {
-			if(points.Count < 2 || verticalSlices < height - 2) {
+			if(!gridlock && (points.Count < 2 || verticalSlices < height - 2)) {
 				verticalSlices++;
 				panel.VerticalSlices = verticalSlices - 1;
 				Update();
@@ -366,7 +394,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		[BeginAction("decreasesubdivlevel")]
 		protected void decreaseSubdivLevel() {
-			if(verticalSlices > 1) {
+			if(!gridlock && verticalSlices > 1) {
 				verticalSlices--;
 				panel.VerticalSlices = verticalSlices - 1;
 				Update();
