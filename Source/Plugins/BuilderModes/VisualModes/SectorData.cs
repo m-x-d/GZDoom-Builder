@@ -134,6 +134,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			alleffects.Add(e);
 		}
 
+		// Thing slope effect
+		public void AddEffectThingSlope(Thing sourcething)
+		{
+			EffectThingSlope e = new EffectThingSlope(this, sourcething);
+			alleffects.Add(e);
+		}
+
 		// Thing vertex slope effect
 		public void AddEffectThingVertexSlope(List<Thing> sourcethings, bool slopefloor)
 		{

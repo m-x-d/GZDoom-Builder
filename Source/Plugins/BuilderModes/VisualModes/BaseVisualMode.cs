@@ -645,10 +645,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		internal void StartRealtimeInterfaceUpdate(SelectionType selectionType) {
-			if(selectionType == SelectionType.Sectors || selectionType == SelectionType.Linedefs || selectionType == SelectionType.All) {
-				General.Interface.OnEditFormValuesChanged += new EventHandler(Interface_OnSectorEditFormValuesChanged);
+			if (selectionType == SelectionType.Sectors || selectionType == SelectionType.Linedefs || selectionType == SelectionType.All) {
+				General.Interface.OnEditFormValuesChanged += Interface_OnSectorEditFormValuesChanged;
+			} else if(selectionType == SelectionType.Things) {
+				General.Interface.OnEditFormValuesChanged += Interface_OnThingEditFormValuesChanged;
 			} else {
-				General.Interface.OnEditFormValuesChanged += new EventHandler(Interface_OnEditFormValuesChanged);
+				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged;
 			}
 		}
 
@@ -656,6 +658,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		internal void StopRealtimeInterfaceUpdate(SelectionType selectionType) {
 			if(selectionType == SelectionType.Sectors || selectionType == SelectionType.Linedefs || selectionType == SelectionType.All) {
 				General.Interface.OnEditFormValuesChanged -= Interface_OnSectorEditFormValuesChanged;
+			} else if(selectionType == SelectionType.Things) {
+				General.Interface.OnEditFormValuesChanged -= Interface_OnThingEditFormValuesChanged;
 			} else {
 				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged;
 			}
@@ -900,6 +904,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						SectorData sd = GetSectorData(t.Sector);
 						sd.AddEffectThingLineSlope(t);
+					}
+				}
+				// ========== Thing  slope ==========
+				else if((t.Type == 9502) || (t.Type == 9503))
+				{
+					t.DetermineSector(blockmap);
+					if(t.Sector != null)
+					{
+						SectorData sd = GetSectorData(t.Sector);
+						sd.AddEffectThingSlope(t);
 					}
 				}
 			}
@@ -1327,6 +1341,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				bvs.Ceiling.Changed = false;
 			}
 
+			UpdateChangedObjects();
+			ShowTargetInfo();
+		}
+
+		//mxd
+		private void Interface_OnThingEditFormValuesChanged(object sender, EventArgs e) {
+			//update visual sectors, which are affected by certain things
+			List<Thing> things = GetSelectedThings();
+			foreach(Thing t in things) {
+				if(thingdata.ContainsKey(t)) {
+					// Update what must be updated
+					ThingData td = GetThingData(t);
+					foreach(KeyValuePair<Sector, bool> s in td.UpdateAlso) {
+						if(VisualSectorExists(s.Key)) {
+							BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s.Key);
+							vs.UpdateSectorGeometry(s.Value);
+						}
+					}
+				}
+			}
+			
 			UpdateChangedObjects();
 			ShowTargetInfo();
 		}
