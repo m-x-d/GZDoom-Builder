@@ -332,7 +332,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. UDMF Settings
 			if(General.Map.FormatInterface.HasCustomFields) {
 				fieldslist.SetValues(fl.Fields, true); // Custom fields
-				int renderstyle = renderStyles.IndexOf(fl.Fields.GetValue("renderstyle", ""));
+				int renderstyle = renderStyles.IndexOf(fl.Fields.GetValue("renderstyle", string.Empty));
 				cbRenderStyle.SelectedIndex = (renderstyle == -1 ? 0 : renderstyle);
 				alpha.Text = General.Clamp(fl.Fields.GetValue("alpha", 1.0f), 0f, 1f).ToString();
 				lockNumber.Text = fl.Fields.GetValue("locknumber", 0).ToString();
@@ -383,7 +383,7 @@ namespace CodeImp.DoomBuilder.Windows
 						if(fl.Front.Flags.ContainsKey(c.Tag.ToString())) c.Checked = fl.Front.Flags[c.Tag.ToString()];
 				}
 
-				frontTextureOffset.SetValues(fl.Front.OffsetX, fl.Front.OffsetY); //mxd
+				frontTextureOffset.SetValues(fl.Front.OffsetX, fl.Front.OffsetY, true); //mxd
 			}
 
 			// Back settings
@@ -411,7 +411,7 @@ namespace CodeImp.DoomBuilder.Windows
 						if(fl.Back.Flags.ContainsKey(c.Tag.ToString()))	c.Checked = fl.Back.Flags[c.Tag.ToString()];
 				}
  
-				backTextureOffset.SetValues(fl.Back.OffsetX, fl.Back.OffsetY); //mxd
+				backTextureOffset.SetValues(fl.Back.OffsetX, fl.Back.OffsetY, true); //mxd
 			}
 
 			////////////////////////////////////////////////////////////////////////
@@ -459,15 +459,15 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//mxd. UDMF Settings
 				if(General.Map.FormatInterface.HasCustomFields) {
-					int i = Math.Max(0, renderStyles.IndexOf(l.Fields.GetValue("renderstyle", "")));
+					int i = Math.Max(0, renderStyles.IndexOf(l.Fields.GetValue("renderstyle", string.Empty)));
 					if(cbRenderStyle.SelectedIndex != -1 && i != cbRenderStyle.SelectedIndex)
 						cbRenderStyle.SelectedIndex = -1;
 
 					if(!string.IsNullOrEmpty(alpha.Text) && General.Clamp(alpha.GetResultFloat(1.0f), 0f, 1f) != l.Fields.GetValue("alpha", 1.0f))
-						alpha.Text = "";
+						alpha.Text = string.Empty;
 
 					if(!string.IsNullOrEmpty(lockNumber.Text) && lockNumber.GetResult(0) != l.Fields.GetValue("locknumber", 0))
-						lockNumber.Text = "";
+						lockNumber.Text = string.Empty;
 
 					if(arg0str != l.Fields.GetValue("arg0str", string.Empty)) {
 						haveArg0Str = true;
@@ -506,13 +506,13 @@ namespace CodeImp.DoomBuilder.Windows
 				// Front settings
 				if(l.Front != null)
 				{
-					if(fronthigh.TextureName != l.Front.HighTexture) fronthigh.TextureName = "";
-					if(frontmid.TextureName != l.Front.MiddleTexture) frontmid.TextureName = "";
-					if(frontlow.TextureName != l.Front.LowTexture) frontlow.TextureName = "";
+					if(fronthigh.TextureName != l.Front.HighTexture) fronthigh.TextureName = string.Empty;
+					if(frontmid.TextureName != l.Front.MiddleTexture) frontmid.TextureName = string.Empty;
+					if(frontlow.TextureName != l.Front.LowTexture) frontlow.TextureName = string.Empty;
 					if(fronthigh.Required != l.Front.HighRequired()) fronthigh.Required = false;
 					if(frontmid.Required != l.Front.MiddleRequired()) frontmid.Required = false;
 					if(frontlow.Required != l.Front.LowRequired()) frontlow.Required = false;
-					if(frontsector.Text != l.Front.Sector.Index.ToString()) frontsector.Text = "";
+					if(frontsector.Text != l.Front.Sector.Index.ToString()) frontsector.Text = string.Empty;
 
 					//mxd
 					if(General.Map.FormatInterface.HasCustomFields) {
@@ -521,7 +521,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 						if(!string.IsNullOrEmpty(lightFront.Text)) {
 							int light = UDMFTools.GetInteger(l.Front.Fields, "light", 0);
-							if(light != lightFront.GetResult(light)) lightFront.Text = "";
+							if(light != lightFront.GetResult(light)) lightFront.Text = string.Empty;
 						}
 						
 						if(l.Front.Fields.GetValue("lightabsolute", false) != cbLightAbsoluteFront.Checked) {
@@ -543,19 +543,19 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 
 					l.Front.Fields.BeforeFieldsChange(); //mxd
-					frontTextureOffset.SetValues(l.Front.OffsetX, l.Front.OffsetY); //mxd
+					frontTextureOffset.SetValues(l.Front.OffsetX, l.Front.OffsetY, false); //mxd
 				}
 
 				// Back settings
 				if(l.Back != null)
 				{
-					if(backhigh.TextureName != l.Back.HighTexture) backhigh.TextureName = "";
-					if(backmid.TextureName != l.Back.MiddleTexture) backmid.TextureName = "";
-					if(backlow.TextureName != l.Back.LowTexture) backlow.TextureName = "";
+					if(backhigh.TextureName != l.Back.HighTexture) backhigh.TextureName = string.Empty;
+					if(backmid.TextureName != l.Back.MiddleTexture) backmid.TextureName = string.Empty;
+					if(backlow.TextureName != l.Back.LowTexture) backlow.TextureName = string.Empty;
 					if(backhigh.Required != l.Back.HighRequired()) backhigh.Required = false;
 					if(backmid.Required != l.Back.MiddleRequired()) backmid.Required = false;
 					if(backlow.Required != l.Back.LowRequired()) backlow.Required = false;
-					if(backsector.Text != l.Back.Sector.Index.ToString()) backsector.Text = "";
+					if(backsector.Text != l.Back.Sector.Index.ToString()) backsector.Text = string.Empty;
 
 					//mxd
 					if(General.Map.FormatInterface.HasCustomFields) {
@@ -564,7 +564,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 						if(!string.IsNullOrEmpty(lightBack.Text)) {
 							int light = UDMFTools.GetInteger(l.Back.Fields, "light", 0);
-							if(light != lightBack.GetResult(light)) lightBack.Text = "";
+							if(light != lightBack.GetResult(light)) lightBack.Text = string.Empty;
 						}
 
 						if(l.Back.Fields.GetValue("lightabsolute", false) != cbLightAbsoluteBack.Checked) {
@@ -586,7 +586,7 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 
 					l.Back.Fields.BeforeFieldsChange(); //mxd
-					backTextureOffset.SetValues(l.Back.OffsetX, l.Back.OffsetY); //mxd
+					backTextureOffset.SetValues(l.Back.OffsetX, l.Back.OffsetY, false); //mxd
 				}
 
 				//mxd
@@ -1017,7 +1017,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				if(!string.IsNullOrEmpty(lightFront.Text)) {
 					int light = UDMFTools.GetInteger(s.Fields, "light", 0);
-					if(light != lightFront.GetResult(light)) lightFront.Text = "";
+					if(light != lightFront.GetResult(light)) lightFront.Text = string.Empty;
 				}
 
 				if(s.Fields.GetValue("lightabsolute", false) != cbLightAbsoluteFront.Checked) {
@@ -1073,7 +1073,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				if(!string.IsNullOrEmpty(lightBack.Text)) {
 					int light = UDMFTools.GetInteger(s.Fields, "light", 0);
-					if(light != lightBack.GetResult(light)) lightBack.Text = "";
+					if(light != lightBack.GetResult(light)) lightBack.Text = string.Empty;
 				}
 
 				if(s.Fields.GetValue("lightabsolute", false) != cbLightAbsoluteBack.Checked) {

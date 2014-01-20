@@ -76,8 +76,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 				value1.Text = newValue1;
 				value2.Text = newValue2;
 			} else {
-				value1.Text = ((!string.IsNullOrEmpty(value1.Text) && value1.Text != newValue1) ? "" : newValue1);
-				value2.Text = ((!string.IsNullOrEmpty(value2.Text) && value2.Text != newValue2) ? "" : newValue2);
+				value1.Text = ((!string.IsNullOrEmpty(value1.Text) && value1.Text != newValue1) ? string.Empty : newValue1);
+				value2.Text = ((!string.IsNullOrEmpty(value2.Text) && value2.Text != newValue2) ? string.Empty : newValue2);
 			}
 			checkValues();
 
@@ -85,12 +85,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		}
 
 		public void ApplyTo(UniFields fields, int min, int max, float oldValue1, float oldValue2) {
-			if(value1.Text != "")
+			if(value1.Text != string.Empty)
 				UDMFTools.SetFloat(fields, field1, General.Clamp(value1.GetResultFloat(defaultValue), min, max), defaultValue);
 			else
 				UDMFTools.SetFloat(fields, field1, oldValue1, defaultValue);
 
-			if(value2.Text != "")
+			if(value2.Text != string.Empty)
 				UDMFTools.SetFloat(fields, field2, General.Clamp(value2.GetResultFloat(defaultValue), min, max), defaultValue);
 			else
 				UDMFTools.SetFloat(fields, field2, oldValue2, defaultValue);
