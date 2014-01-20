@@ -27,7 +27,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		public string Label { get { return label.Text; } set { label.Text = value; } }
 		public int DefaultValue { get { return defaultValue; } set { defaultValue = value; } }
-		public int ButtonStep { get { return (int)value1.ButtonStep; } set { value1.ButtonStep = value; value2.ButtonStep = value; } }
+		public int ButtonStep { get { return value1.ButtonStep; } set { value1.ButtonStep = value; value2.ButtonStep = value; } }
 
 		#endregion
 
@@ -35,18 +35,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			InitializeComponent();
 		}
 
-		public void SetValues(int val1, int val2) {
+		public void SetValues(int val1, int val2, bool first) {
 			blockUpdate = true;
 
-			if(!string.IsNullOrEmpty(value1.Text) && value1.Text != val1.ToString())
-				value1.Text = "";
-			else
+			if (first) {
 				value1.Text = val1.ToString();
-
-			if(!string.IsNullOrEmpty(value2.Text) && value2.Text != val2.ToString())
-				value2.Text = "";
-			else
 				value2.Text = val2.ToString();
+			} else {
+				if (!string.IsNullOrEmpty(value1.Text) && value1.Text != val1.ToString())
+					value1.Text = string.Empty;
+
+				if (!string.IsNullOrEmpty(value2.Text) && value2.Text != val2.ToString())
+					value2.Text = string.Empty;
+			}
 
 			blockUpdate = false;
 		}
