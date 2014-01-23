@@ -161,6 +161,7 @@ namespace CodeImp.DoomBuilder
 		private static MapManager map;
 		private static EditingManager editing;
 		private static ActionManager actions;
+		private static HintsManager hints; //mxd
 		private static PluginManager plugins;
 		private static ColorCollection colors;
 		private static TypesManager types;
@@ -214,6 +215,7 @@ namespace CodeImp.DoomBuilder
 		internal static Dictionary<string, ScriptConfiguration> ScriptConfigs { get { return scriptconfigs; } }
 		public static MapManager Map { get { return map; } }
 		public static ActionManager Actions { get { return actions; } }
+		public static HintsManager Hints { get { return hints; } } //mxd
 		internal static PluginManager Plugins { get { return plugins; } }
 		public static Clock Clock { get { return clock; } }
 		public static bool DebugBuild { get { return debugbuild; } }
@@ -609,6 +611,9 @@ namespace CodeImp.DoomBuilder
 				// Bind static methods to actions
 				General.Actions.BindMethods(typeof(General));
 
+				//mxd. Create hints manager
+				hints = new HintsManager();
+
 				// Initialize static classes
 				MapSet.Initialize();
 				ilInit();
@@ -944,7 +949,6 @@ namespace CodeImp.DoomBuilder
 				if(editing != null) editing.Dispose(); editing = null;
 				if(mainwindow != null) mainwindow.Dispose();
 				if(actions != null) actions.Dispose();
-				//if (clock != null) clock.Dispose(); //mxd
 				if(plugins != null) plugins.Dispose();
 				if(types != null) types.Dispose();
 				try { D3DDevice.Terminate(); } catch(Exception) { }

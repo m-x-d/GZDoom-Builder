@@ -108,24 +108,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return "BVL: "+bevelWidth+"; VERTS: "+subdivisions;
 		}
 
-		//mxd. Setup hints for current editing mode
-		/*protected override void SetupHints() {
-			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
-			string editKey = Actions.Action.GetShortcutKeyDesc("builder_classicedit");
-			string cancelKey = Actions.Action.GetShortcutKeyDesc("builder_cancelmode");
-			string incSub = Actions.Action.GetShortcutKeyDesc("buildermodes_increasesubdivlevel");
-			string decSub = Actions.Action.GetShortcutKeyDesc("buildermodes_decreasesubdivlevel");
-			string incBvl = Actions.Action.GetShortcutKeyDesc("buildermodes_increasebevel");
-			string decBvl = Actions.Action.GetShortcutKeyDesc("buildermodes_decreasebevel");
-
-			hints = new[]{"Press " + selectKey + " to place a vertex",
-						  "Use " + incBvl + " and " + decBvl + " to change bevel by current grid size", 
-						  "Use " + incSub + " and " + decSub + " to change the number of points in ellipse",
-						  "Place second vertex to finish drawing",
-						  "Press " + cancelKey + " or " + editKey + " to cancel"
-			};
-		}*/
-
 		#endregion
 
 		#region ================== Events

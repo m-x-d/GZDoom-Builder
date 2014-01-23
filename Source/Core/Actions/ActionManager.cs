@@ -179,6 +179,7 @@ namespace CodeImp.DoomBuilder.Actions
 					// Done with the resource
 					actionsreader.Dispose();
 					actionsdata.Dispose();
+					break; //mxd. Usually we have a single "Actions.cfg", right?
 				}
 			}
 		}

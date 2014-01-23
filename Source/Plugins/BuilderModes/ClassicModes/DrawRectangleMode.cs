@@ -222,16 +222,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return "BVL: " + bevelWidth + "; SUB: " + subdivisions;
 		}
 
-		//mxd. Setup hints for current editing mode
-		/*protected override void SetupHints() {
-			hints = new[]{"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicselect") + "</b> to place a vertex",
-						  "Use <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_increasebevel") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_decreasebevel") + "</b> to change corners bevel by current grid size", 
-						  "Use <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_increasesubdivlevel") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_decreasesubdivlevel") + "</b> to change bevel detail level",
-						  "Place second vertex to finish drawing",
-						  "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_cancelmode") + "</b> or <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicedit") + "</b> to cancel"
-			};
-		}*/
-
 		//update top-left and bottom-right points, which define drawing shape
 		protected void updateReferencePoints(DrawnVertex p1, DrawnVertex p2) {
 			if(!p1.pos.IsFinite() || !p2.pos.IsFinite()) return;

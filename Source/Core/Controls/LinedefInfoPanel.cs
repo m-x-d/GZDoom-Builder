@@ -89,17 +89,40 @@ namespace CodeImp.DoomBuilder.Controls
 				infopanel.Width = hexenformatwidth;
 			}
 
-			//mxd. Show activation
+			//mxd. Hide activation or tag and rearrange labels 
 			if(!General.Map.FormatInterface.HasBuiltInActivations && General.Map.FormatInterface.HasNumericLinedefActivations) { //Hexen map format?
+				activation.Visible = true;
+				activationlabel.Visible = true;
+				taglabel.Visible = false;
+				tag.Visible = false;
+				
 				foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) {
 					if(l.Activate == ai.Index) {
 						activation.Text = ai.Title;
 						break;
 					}
 				}
-			} else { //rearange labels
+
+				activation.Top = labelPositionsY[0];
+				activationlabel.Top = labelPositionsY[0];
+				unpegged.Top = labelPositionsY[0];
+				peglabel.Top = labelPositionsY[0];
+
+				length.Top = labelPositionsY[1];
+				lengthlabel.Top = labelPositionsY[1];
+				frontoffset.Top = labelPositionsY[1];
+				frontoffsetlabel.Top = labelPositionsY[1];
+
+				angle.Top = labelPositionsY[2];
+				anglelabel.Top = labelPositionsY[2];
+				backoffset.Top = labelPositionsY[2];
+				backoffsetlabel.Top = labelPositionsY[2];
+
+			} else {
 				activation.Visible = false;
 				activationlabel.Visible = false;
+				taglabel.Visible = true;
+				tag.Visible = true;
 
 				length.Top = labelPositionsY[0];
 				lengthlabel.Top = labelPositionsY[0];
@@ -137,7 +160,9 @@ namespace CodeImp.DoomBuilder.Controls
 			action.Text = act.ToString();
 			length.Text = l.Length.ToString("0.##");
 			angle.Text = l.AngleDeg + "\u00B0";
-			tag.Text = l.Tag + (General.Map.Options.TagLabels.ContainsKey(l.Tag) ? " (" + General.Map.Options.TagLabels[l.Tag] + ")" : string.Empty);
+			if(tag.Visible) { //mxd
+				tag.Text = l.Tag + (General.Map.Options.TagLabels.ContainsKey(l.Tag) ? " (" + General.Map.Options.TagLabels[l.Tag] + ")" : string.Empty);
+			}
 			unpegged.Text = peggedness;
 
 			//mxd

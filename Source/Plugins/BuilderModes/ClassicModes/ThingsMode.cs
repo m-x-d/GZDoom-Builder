@@ -635,34 +635,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 		}
 
-		//mxd. Setup hints for current editing mode
-		protected override void SetupHints() {
-			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
-
-			hints = new[]{ "Hold <b>" + Actions.Action.GetShortcutKeyDesc("builder_pan_view") + "</b> to pan the view",
-						   "Press <b>" + selectKey + "</b> to select a thing",
-						   "Hold <b>" + selectKey + "</b> and drag to use rectangular selection",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_thingsselectinsectors") + "</b> to select things in selected sectors",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_clearselection") + "</b> to clear selection",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_deleteitem") + "</b> to delete selected thing(s)",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicedit") + "</b> to edit properties of current selection",
-						   "Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_griddec") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("builder_gridinc") + "</b> to change grid size",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to create a new thing",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_thinglookatcursor") + "</b> to point selected things to cursor position. Hold <b>Ctrl</b> to point away from cursor",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_thingaligntowall") + "</b> to align selected things to closest linedef",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_drawlinesmode") + "</b> to start drawing lines",
-						   "Check <b>'Things'</b> menu for additional actions"
-			};
-		}
-
-		//mxd
-		protected override void SetupMultiselectionHints() {
-			multiselectionHints = new[] { "Hold <b>Shift</b> to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
-										  "Hold <b>Ctrl</b> to enable subtractive selection",
-										  "Hold <b>Ctrl-Shift</b> to intersect the new selection with already existing one",
-			};
-		}
-
 		#endregion
 
 		#region ================== Actions

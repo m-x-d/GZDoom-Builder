@@ -433,13 +433,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
-		//mxd
-		protected override void SetupHints() {
-			hints = new[] { "Hold Shift to "+(General.Interface.SnapToGrid ? "disable" : "enable")+ " grid snapping.",
-							"Hold Ctrl to snap to nearest vertex."
-			              };
-		}
-
 		// When edit button is released
 		protected override void OnEditEnd()
 		{

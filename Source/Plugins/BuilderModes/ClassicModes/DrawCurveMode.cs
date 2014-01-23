@@ -25,7 +25,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int minSegmentLength = 16;
 		private int maxSegmentLength = 4096; //just some arbitrary number
 
-		public DrawCurveMode() : base() {
+		public DrawCurveMode() {
 			hintLabel = new HintLabel();
 		}
 
@@ -215,24 +215,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Return to original mode
 			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
-		}
-
-		//mxd. Setup hints for current editing mode
-		protected override void SetupHints() {
-			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
-			string editKey = Actions.Action.GetShortcutKeyDesc("builder_classicedit");
-			string acceptKey = Actions.Action.GetShortcutKeyDesc("builder_acceptmode");
-			string cancelKey = Actions.Action.GetShortcutKeyDesc("builder_cancelmode");
-			string removeKey = Actions.Action.GetShortcutKeyDesc("buildermodes_removepoint");
-			string incSub = Actions.Action.GetShortcutKeyDesc("buildermodes_increasesubdivlevel");
-			string decSub = Actions.Action.GetShortcutKeyDesc("buildermodes_decreasesubdivlevel");
-
-			hints = new[]{"Press " + selectKey + " to place a vertex",
-						  "Use " + incSub + " and " + decSub + " to change detail level of the curve",
-						  "Press " + removeKey + " to remove last vertex",
-						  "Press " + acceptKey + " to accept",
-						  "Press " + cancelKey + " or " + editKey + " to cancel"
-			};
 		}
 
 		//ACTIONS

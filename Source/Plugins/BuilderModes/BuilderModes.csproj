@@ -450,16 +450,11 @@
     <None Include="Resources\TextureLock.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\AnnotationsMode.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Lightbulb.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Reset.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\DrawGridMode.png" />
+    <EmbeddedResource Include="Resources\Hints.cfg" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

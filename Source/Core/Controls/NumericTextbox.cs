@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Forms;
@@ -32,10 +33,10 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Variables
 
-		private bool allownegative = false;		// Allow negative numbers
-		private bool allowrelative = false;		// Allow ++ and -- prefix for relative changes
-		private bool allowdecimal = false;		// Allow decimal (float) numbers
-		private bool controlpressed = false;
+		private bool allownegative;		// Allow negative numbers
+		private bool allowrelative;		// Allow ++, --, * and / prefix for relative changes
+		private bool allowdecimal;		// Allow decimal (float) numbers
+		private bool controlpressed;
 		
 		#endregion
 
@@ -85,9 +86,10 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Determine allowed chars
 			if(allownegative) allowedchars += CultureInfo.CurrentUICulture.NumberFormat.NegativeSign;
-			if(allowrelative) allowedchars += "+-";
+			if(allowrelative) allowedchars += "+-*/"; //mxd
 			if(controlpressed) allowedchars += "\u0018\u0003\u0016";
-			if(allowdecimal) allowedchars += CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator;
+			if(allowdecimal || this.Text.StartsWith("*") || this.Text.StartsWith("/")) //mxd
+				allowedchars += CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator;
 			
 			// Check if key is not allowed
 			if(allowedchars.IndexOf(e.KeyChar) == -1)
@@ -97,8 +99,12 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			else
 			{
+				//mxd. Check if * or / is pressed
+				if(e.KeyChar == '*' || e.KeyChar == '/') {
+					if (this.SelectionStart - 1 > -1) e.Handled = true; //only valid when at the start of the text
+				}
 				// Check if + or - is pressed
-				if((e.KeyChar == '+') || (e.KeyChar == '-'))
+				else if((e.KeyChar == '+') || (e.KeyChar == '-'))
 				{
 					// Determine non-selected text
 					if(this.SelectionLength > 0)
@@ -163,7 +169,7 @@ namespace CodeImp.DoomBuilder.Controls
 			string textpart = this.Text;
 
 			// Strip prefixes
-			textpart = textpart.Replace("+", "");
+			textpart = textpart.Replace("+", "").Replace("*", "").Replace("/", ""); //mxd
 			if(!allownegative) textpart = textpart.Replace("-", "");
 			
 			// No numbers left?
@@ -174,7 +180,7 @@ namespace CodeImp.DoomBuilder.Controls
 			} else if(allowdecimal) { //mxd
 				float value;
 				if(float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out value)) {
-					if(value == System.Math.Round(value))
+					if(value == Math.Round(value))
 						this.Text = this.Text.Replace(textpart, value.ToString("0.0"));
 				}
 			}
@@ -186,8 +192,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// This checks if the number is relative
 		public bool CheckIsRelative()
 		{
-			// Prefixed with ++ or --?
-			return (this.Text.StartsWith("++") || this.Text.StartsWith("--"));
+			// Prefixed with ++, --, * or /?
+			return (this.Text.StartsWith("++") || this.Text.StartsWith("--") || this.Text.StartsWith("*") || this.Text.StartsWith("/")); //mxd
 		}
 		
 		// This determines the result value
@@ -196,8 +202,7 @@ namespace CodeImp.DoomBuilder.Controls
 			string textpart = this.Text;
 			
 			// Strip prefixes
-			textpart = textpart.Replace("+", "");
-			textpart = textpart.Replace("-", "");
+			textpart = textpart.Replace("+", "").Replace("-", "").Replace("*", "").Replace("/", ""); //mxd
 			
 			// Any numbers left?
 			if(textpart.Length > 0)
@@ -220,6 +225,25 @@ namespace CodeImp.DoomBuilder.Controls
 					if(!allownegative && (newvalue < 0)) newvalue = 0;
 					return newvalue;
 				}
+				//mxd. Prefixed with *?
+				if(this.Text.StartsWith("*")) {
+					// Multiply original by number
+					float resultf;
+					float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out resultf);
+					int newvalue = (int)Math.Round(original * resultf);
+					if(!allownegative && (newvalue < 0)) newvalue = 0;
+					return newvalue;
+				}
+				//mxd. Prefixed with /?
+				if(this.Text.StartsWith("/")) {
+					// Divide original by number
+					float resultf;
+					float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out resultf);
+					if (resultf == 0) return original;
+					int newvalue = (int)Math.Round(original / resultf);
+					if(!allownegative && (newvalue < 0)) newvalue = 0;
+					return newvalue;
+				}
 
 				//mxd. Return the new value
 				if(!int.TryParse(this.Text, out result)) return original;
@@ -238,8 +262,7 @@ namespace CodeImp.DoomBuilder.Controls
 			float result;
 
 			// Strip prefixes
-			textpart = textpart.Replace("+", "");
-			textpart = textpart.Replace("-", "");
+			textpart = textpart.Replace("+", "").Replace("-", "").Replace("*", "").Replace("/", ""); //mxd;
 
 			// Any numbers left?
 			if(textpart.Length > 0)
@@ -252,7 +275,7 @@ namespace CodeImp.DoomBuilder.Controls
 					return original + result;
 				}
 				// Prefixed with --?
-				else if(this.Text.StartsWith("--"))
+				if(this.Text.StartsWith("--"))
 				{
 					// Subtract number from original
 					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) result = 0;
@@ -260,19 +283,31 @@ namespace CodeImp.DoomBuilder.Controls
 					if(!allownegative && (newvalue < 0)) newvalue = 0;
 					return newvalue;
 				}
-				else
-				{
-					//mxd. Return the new value
-					if(!float.TryParse(this.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) return original;
-					if(!allownegative && (result < 0)) return 0;
-					return result;
+				//mxd. Prefixed with *?
+				if(this.Text.StartsWith("*")) {
+					// Multiply original by number
+					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) result = 0;
+					float newvalue = original * result;
+					if(!allownegative && (newvalue < 0)) newvalue = 0;
+					return newvalue;
 				}
+				//mxd. Prefixed with /?
+				if(this.Text.StartsWith("/")) {
+					// Divide original by number
+					if (!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) return original;
+					float newvalue = (float)Math.Round(original / result, 3);
+					if(!allownegative && (newvalue < 0)) newvalue = 0;
+					return newvalue;
+				}
+
+				//mxd. Return the new value
+				if(!float.TryParse(this.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) return original;
+				if(!allownegative && (result < 0)) return 0;
+				return result;
 			}
-			else
-			{
-				// Nothing given, keep original value
-				return original;
-			}
+
+			// Nothing given, keep original value
+			return original;
 		}
 		
 		#endregion

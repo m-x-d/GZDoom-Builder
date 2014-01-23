@@ -511,16 +511,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This redraws only the required things
-		protected virtual void UpdateRedraw()
-		{
-		}
-
-		//mxd
-		protected override void SetupHints() {
-			hints = new[] { "Hold Shift to " + (General.Interface.SnapToGrid ? "disable" : "enable") + " grid snapping.",
-							"Hold Ctrl to " + (General.Interface.AutoMerge ? "disable" : "enable") + " snapping to nearest vertex."
-			              };
-		}
+		protected virtual void UpdateRedraw() { }
 
 		// When edit button is released
 		protected override void OnEditEnd()
