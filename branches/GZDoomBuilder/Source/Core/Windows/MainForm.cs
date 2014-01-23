@@ -2787,13 +2787,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Editing.Mode == null || !(General.Editing.Mode is VisualMode))
 				cursorLocation = Cursor.Position - new Size(bounds.Location);
 
-			string date = DateTime.Now.ToString();
-
-			//because date may be returned like this: 1\1\2000
-			char[] invalidChars = Path.GetInvalidFileNameChars();
-			foreach(char c in invalidChars) date = date.Replace(c, '.');
-
 			//create path
+			string date = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
 			string path = Path.Combine(folder, name + date + ".jpg");
 
 			//save image
@@ -2912,16 +2907,16 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		public void ShowEditModeHints(string[] hintsText) {
-			if (hintsText != null) {
+		public void ShowHints(string hintsText) {
+			if (!string.IsNullOrEmpty(hintsText)) {
 				hintsPanel.SetHints(hintsText);
 			} else {
-				ClearEditModeHints();
+				ClearHints();
 			}
 		}
 
 		//mxd
-		public void ClearEditModeHints() {
+		public void ClearHints() {
 			hintsPanel.ClearHints();
 		}
 

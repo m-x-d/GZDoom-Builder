@@ -933,9 +933,6 @@
     <None Include="Resources\GZDB2.ico" />
     <None Include="Resources\fog.png" />
     <None Include="Resources\fx.png" />
-    <Content Include="Resources\DrawEllipseMode.png" />
-    <Content Include="Resources\DrawLinesMode.png" />
-    <Content Include="Resources\DrawRectMode.png" />
     <None Include="Resources\GZDB_Logo_small.png" />
     <None Include="Resources\InfoLine.png" />
     <None Include="Resources\Keyboard.png" />

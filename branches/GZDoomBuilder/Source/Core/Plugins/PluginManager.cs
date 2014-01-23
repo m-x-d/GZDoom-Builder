@@ -167,6 +167,9 @@ namespace CodeImp.DoomBuilder.Plugins
 						
 						// Load actions
 						General.Actions.LoadActions(p.Assembly);
+
+						//mxd. And hints
+						General.Hints.LoadHints(p.Assembly);
 						
 						// Plugin is now initialized
 						p.Plug.OnInitialize();
@@ -198,6 +201,9 @@ namespace CodeImp.DoomBuilder.Plugins
 					
 					// Load actions
 					General.Actions.LoadActions(p.Assembly);
+
+					//mxd. And hints
+					General.Hints.LoadHints(p.Assembly);
 					
 					// Plugin is now initialized
 					p.Plug.OnInitialize();

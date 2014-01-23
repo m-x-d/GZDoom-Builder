@@ -110,13 +110,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// must be subtracted from the X offset first.
 			public bool forward;
 		}
-
-		//mxd. All sorts of hints
-		private string[] thingHints;
-		private string[] sidedefHints;
-		private string[] sectorHints;
-		private string[] vertexHints;
-		private string[] generalHints;
 		
 		#endregion
 		
@@ -315,13 +308,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(singleselection)
 					return General.Map.UndoRedo.CreateUndo(description, this, group, grouptag);
-				else
-					return General.Map.UndoRedo.CreateUndo(description, this, UndoGroup.None, 0);
+				return General.Map.UndoRedo.CreateUndo(description, this, UndoGroup.None, 0);
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
 		// This creates an undo, when only a single selection is made
@@ -626,21 +616,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					numWalls++;
 			}
 
-			string result = "";
+			List<string> results = new List<string>();
+			if (numWalls > 0) results.Add(numWalls + (numWalls > 1 ? " sidedefs" : " sidedef"));
+			if (numFloors > 0) results.Add(numFloors + (numFloors > 1 ? " floors" : " floor"));
+			if (numCeilings > 0) results.Add(numCeilings + (numCeilings > 1 ? " ceilings" : " ceiling"));
+			if (numThings > 0) results.Add(numThings + (numThings > 1 ? " things" : " thing"));
+			if (numVerts > 0) results.Add(numVerts + (numVerts > 1 ? " vertices" : " vertex"));
 
-			if(numWalls > 0)    result = numWalls + (numWalls > 1 ? " sidedefs" : " sidedef");
-			if(numFloors > 0)   result += (result.Length > 0 ? ", " : "") + numFloors + (numFloors > 1 ? " floors" : " floor");
-			if(numCeilings > 0)	result += (result.Length > 0 ? ", " : "") + numCeilings + (numCeilings > 1 ? " ceilings" : " ceiling");
-			if(numThings > 0)	result += (result.Length > 0 ? ", " : "") + numThings + (numThings > 1 ? " things" : " thing");
-			if(numVerts > 0)	result += (result.Length > 0 ? ", " : "") + numVerts + (numVerts > 1 ? " vertices" : " vertex");
-
-			if(!string.IsNullOrEmpty(result)) {
+			if (results.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
+			} else {
+				string result = string.Join(", ", results.ToArray());
 				int pos = result.LastIndexOf(",");
 				if(pos != -1) result = result.Remove(pos, 1).Insert(pos, " and");
-				result += " selected";
+				General.Interface.DisplayStatus(StatusType.Selection, result + " selected");
 			}
-
-			General.Interface.DisplayStatus(StatusType.Selection, result);
 		}
 
 		//mxd
@@ -1266,15 +1256,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. Show hints!
 			if (o.GetType() != lasthighlighttype) {
 				if (o is BaseVisualGeometrySidedef) {
-					General.Interface.ShowEditModeHints(sidedefHints);
+					General.Hints.ShowHints(this.GetType(), "sidedefs");
 				} else if (o is BaseVisualGeometrySector) {
-					General.Interface.ShowEditModeHints(sectorHints);
+					General.Hints.ShowHints(this.GetType(), "sectors");
 				} else if (o is BaseVisualThing) {
-					General.Interface.ShowEditModeHints(thingHints);
+					General.Hints.ShowHints(this.GetType(), "things");
 				} else if (o is BaseVisualVertex) {
-					General.Interface.ShowEditModeHints(vertexHints);
+					General.Hints.ShowHints(this.GetType(), "vertices");
 				} else {
-					General.Interface.ShowEditModeHints(generalHints);
+					General.Hints.ShowHints(this.GetType(), General.Hints.GENERAL);
 				}
 
 				lasthighlighttype = o.GetType();
@@ -1372,75 +1362,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ShowTargetInfo();
 		}
 		
-		#endregion
-
-		#region ================== Hints (mxd)
-
-		protected override void SetupHints() {
-			base.SetupHints();
-
-			//GENERAL PURPOSE
-			List<string> generalHintsList = new List<string>() { 
-				"Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_moveforward") + "</b>, <b>" +
-				Actions.Action.GetShortcutKeyDesc("builder_movebackward") + "</b>, <b>" +
-				Actions.Action.GetShortcutKeyDesc("builder_moveleft") + "</b> and <b>" +
-				Actions.Action.GetShortcutKeyDesc("builder_moveright") + "</b> to move around. Hold <b>Shift</b> to double the speed",
-				"Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_moveup") + "</b> and <b>" +
-				Actions.Action.GetShortcutKeyDesc("builder_movedown") + "</b> to move up and down",
-			};
-
-			if (General.Map.UDMF) {
-				generalHintsList.Add("Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_gztogglevisualvertices") + "</b> to toggle vertex handles rendering");
-			}
-
-			//THINGS
-			List<string> thingHintsList = new List<string>() { 
-				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_visualselect") + "</b> to select the highlighted thing",
-				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_clearselection") + "</b> to clear selection",
-                "Use <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_raisesector8") +
-				"</b> and <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_lowersector8") + "</b> to change height of selected/targeted things by 8 map units",                            
-				"Use <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_lowersectortonearest") +
-				"</b> and <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_raisesectortonearest") + "</b> to align selected/targeted things to floor or ceiling",
-                "Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_movethingfwd") + "</b>, <b>" +
-				Actions.Action.GetShortcutKeyDesc("builder_movethingback") + "</b>, <b>" +
-				Actions.Action.GetShortcutKeyDesc("builder_movethingleft") + "</b> and <b>" +
-				Actions.Action.GetShortcutKeyDesc("builder_movethingright") + "</b> to move selected things around",                               
-				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_placethingatcursor") + "</b> to move selected things to cursor location", 
-				"Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_showvisualthings") + "</b> to cycle through the different ways the things are shown", 
-			};
-
-			//SIDEDEFS
-			List<string> sidedefHintsList = new List<string>() { 
-				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to insert a Thing at current cursor position",
-				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_visualselect") + "</b> to select the highlighted surface. Hold <b>Shift</b> to select adjacent surfaces with the same texture. Hold <b>Ctrl</b> to select adjacent surfaces with the same height",
-				"TODO: show more sidedef-related hints here"
-			};
-
-			//SECTORS
-			List<string> sectorHintsList = new List<string>() {
-				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to insert a Thing at current cursor position",
-				"TODO: show more sector-related hints here"
-			};
-
-			//VERTICES
-			List<string> vertexHintsList = new List<string>() {
-				"Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to insert a Thing at current cursor position",
-				"TODO: show more vertex-related hints here"
-			};
-
-			//instert general stuff into each array
-			generalHints = generalHintsList.ToArray();
-			thingHintsList.InsertRange(0, generalHints);
-			sidedefHintsList.InsertRange(0, generalHints);
-			sectorHintsList.InsertRange(0, generalHints);
-			vertexHintsList.InsertRange(0, generalHints);
-			
-			thingHints = thingHintsList.ToArray();
-			sidedefHints = sidedefHintsList.ToArray();
-			sectorHints = sectorHintsList.ToArray();
-			vertexHints = vertexHintsList.ToArray();
-		}
-
 		#endregion
 
 		#region ================== Action Assist

@@ -256,34 +256,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			return selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) && selectionrect.Contains(l.End.Position.x, l.End.Position.y);
 		}
-
-		//mxd. Setup hints for current editing mode
-		protected override void SetupHints() {
-			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
-
-			hints = new[]{ "Hold <b>" + Actions.Action.GetShortcutKeyDesc("builder_pan_view") + "</b> to pan the view",
-						   "Press <b>" + selectKey + "</b> to select a linedef",
-						   "Hold <b>" + selectKey + "</b> and drag to use rectangular selection",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_clearselection") + "</b> to clear selection",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_deleteitem") + "</b> to delete selected linedef(s)",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_dissolveitem") + "</b> to delete selected linedef(s) and try to preserve surrounding geometry",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicedit") + "</b> to edit properties of current selection",
-						   "Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_griddec") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("builder_gridinc") + "</b> to change grid size",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_drawlinesmode") + "</b> or <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to start drawing lines",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_flipsidedefs") + "</b> to flips the sidedefs on the selected linedefs around",
-                           "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_selectsinglesided") + "</b> to keep only the single-sided lines in your selection selected",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_selectdoublesided") + "</b> to keep only the double-sided lines in your selection selected",
-						   "Check <b>'Linedefs'</b> menu for additional actions"                           
-			};
-		}
-
-		//mxd
-		protected override void SetupMultiselectionHints() {
-			multiselectionHints = new[] { "Hold <b>Shift</b> to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
-										  "Hold <b>Ctrl</b> to enable subtractive selection",
-										  "Hold <b>Ctrl-Shift</b> to intersect the new selection with already existing one",
-			};
-		}
 		
 		#endregion
 		

@@ -10,15 +10,10 @@ namespace CodeImp.DoomBuilder.Controls
 			hints.Clear();
 		}
 
-		internal void SetHints(string[] hintsText) {
+		//hints should be in rtf markup!
+		internal void SetHints(string hintsText) {
 			hints.Clear();
-			if(hintsText.Length == 0) return;
-
-			//convert to rtf markup
-			hintsText[0] = "{\\rtf1" + hintsText[0];
-			hintsText[hintsText.Length - 1] += "}";
-
-			hints.SelectedRtf = string.Join("\\par\\par ", hintsText).Replace("<b>", "{\\b ").Replace("</b>", "}");
+			hints.SelectedRtf = hintsText;
 		}
 
 		internal void ClearHints() {

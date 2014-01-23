@@ -524,37 +524,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return false;
 		}
 
-		//mxd. Setup hints for current editing mode
-		protected override void SetupHints() {
-			string selectKey = Actions.Action.GetShortcutKeyDesc("builder_classicselect");
-
-			hints = new[]{ "Hold <b>" + Actions.Action.GetShortcutKeyDesc("builder_pan_view") + "</b> to pan the view",
-						   "Press <b>" + selectKey + "</b> to select a sector. Hold <b>Alt</b> to (de)select things inside of a sector",
-						   "Hold <b>" + selectKey + "</b> and drag to use rectangular selection",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_clearselection") + "</b> to clear selection",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_deleteitem") + "</b> to delete selected sector(s)",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("builder_classicedit") + "</b> to edit properties of current selection",
-						   "Use <b>" + Actions.Action.GetShortcutKeyDesc("builder_griddec") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("builder_gridinc") + "</b> to change grid size",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_joinsectors") + "</b> to join two or more selected sectors together and keep all linedefs",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_mergesectors") + "</b> to join two or more selected sectors together and remove the shared inedefs",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_gradientbrightness") + "</b> to create a brightness or color gradient over all selected sectors from the first to the last selected sector",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_gradientfloors") + "</b> to create a floor heights gradient over all selected sectors from the first to the last selected sector",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_gradientceilings") + "</b> to create a ceiling heights gradient over all selected sectors from the first to the last selected sector",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_makedoor") + "</b> to create doors from the highlighted or selected sectors",
-						   "Press <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_drawlinesmode") + "</b> or <b>" + Actions.Action.GetShortcutKeyDesc("builder_insertitem") + "</b> to start drawing lines",
-						   "Check <b>'Sectors'</b> menu for additional actions"
-			};
-		}
-
-		//mxd
-		protected override void SetupMultiselectionHints() {
-			multiselectionHints = new[] { "Hold <b>Shift</b> to " + (BuilderPlug.Me.AdditiveSelect ? "disable" : "enable") + " additive selection",
-										  "Hold <b>Ctrl</b> to enable subtractive selection",
-										  "Hold <b>Ctrl-Shift</b> to intersect the new selection with already existing one",
-										  "Hold <b>Alt</b> to select things inside of selected sectors"                                          
-			};
-		}
-
 		//mxd
 		public override void SelectMapElement(SelectableElement element) {
 			if(element is Sector) {
