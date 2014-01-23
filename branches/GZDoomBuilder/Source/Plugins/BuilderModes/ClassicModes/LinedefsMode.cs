@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
@@ -54,6 +55,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Linedef highlighted;
 		private Association[] association = new Association[Linedef.NUM_ARGS];
 		private Association highlightasso = new Association();
+		private Vector2D insertPreview = new Vector2D(float.NaN, float.NaN); //mxd
 		
 		// Interface
 		private bool editpressed;
@@ -560,6 +562,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Find the nearest linedef within highlight range
 				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
 
+				//mxd. Render insert vertex preview
+				if(l != null) {
+					bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+					bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
+					insertPreview = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, renderer, new List<DrawnVertex>()).pos;
+
+					//render preview
+					if(renderer.StartOverlay(true)) {
+						float dist = Math.Min(Vector2D.Distance(mousemappos, insertPreview), BuilderPlug.Me.SplitLinedefsRange);
+						byte alpha = (byte)(255 - (dist / BuilderPlug.Me.SplitLinedefsRange) * 128);
+						float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
+						renderer.RenderRectangleFilled(new RectangleF(insertPreview.x - vsize, insertPreview.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine.WithAlpha(alpha), true);
+						renderer.Finish();
+						renderer.Present();
+					}
+				} else if(insertPreview.IsFinite()) {
+					insertPreview.x = float.NaN;
+
+					//undraw preveiw
+					if(renderer.StartOverlay(true)) {
+						renderer.Finish();
+						renderer.Present();
+					}
+				}
+
 				// Highlight if not the same
 				if(l != highlighted) Highlight(l);
 			} 
@@ -572,6 +599,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Highlight nothing
 			Highlight(null);
+		}
+
+		//mxd
+		protected override void BeginViewPan() {
+			if(insertPreview.IsFinite()) {
+				insertPreview.x = float.NaN;
+
+				//undraw preveiw
+				if(renderer.StartOverlay(true)) {
+					renderer.Finish();
+					renderer.Present();
+				}
+			}
+
+			base.BeginViewPan();
 		}
 
 		//mxd
