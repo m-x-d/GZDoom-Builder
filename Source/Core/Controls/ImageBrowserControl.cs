@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// States
 		private bool updating;
 		private int keepselected;
+		private bool browseFlats; //mxd
 		
 		// All items
 		private List<ImageBrowserItem> items;
@@ -66,6 +67,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public bool PreventSelection { get { return preventselection; } set { preventselection = value; } }
 		public bool HideInputBox { get { return splitter.Panel2Collapsed; } set { splitter.Panel2Collapsed = value; } }
+		public bool BrowseFlats { get { return browseFlats; } set { browseFlats = value; } } //mxd
 		//public string LabelText { get { return label.Text; } set { label.Text = value; objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left; } } //mxd
 		public ListViewItem SelectedItem { get { if(list.SelectedItems.Count > 0) return list.SelectedItems[0]; else return null; } }
 		
@@ -506,10 +508,11 @@ namespace CodeImp.DoomBuilder.Controls
 		// This validates an item
 		private bool ValidateItem(ImageBrowserItem i)
 		{
-			//mxd. mixMode: 0 = All, 1 = Textures, 2 = Flats
+			//mxd. mixMode: 0 = All, 1 = Textures, 2 = Flats, 3 = Based on BrowseFlats
 			if(!splitter.Panel2Collapsed) {
 				if(mixMode == 1 && i.icon.IsFlat) return false;
 				if(mixMode == 2 && !i.icon.IsFlat) return false;
+				if(mixMode == 3 && (browseFlats != i.icon.IsFlat)) return false;
 			}
 
 			return i.Text.Contains(objectname.Text);

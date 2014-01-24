@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.Windows
 			string imgType = (browseFlats ? "flats" : "textures");
 			this.Text = "Browse " + imgType;
 
+			browser.BrowseFlats = browseFlats;
 			browser.ApplySettings();
 			
 			// Update the used textures

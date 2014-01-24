@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// label
 			// 
 			this.label.AutoSize = true;
-			this.label.Location = new System.Drawing.Point(127, 9);
+			this.label.Location = new System.Drawing.Point(131, 9);
 			this.label.Name = "label";
 			this.label.Size = new System.Drawing.Size(33, 14);
 			this.label.TabIndex = 0;
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(336, 9);
+			this.label2.Location = new System.Drawing.Point(337, 9);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(40, 14);
 			this.label2.TabIndex = 0;
@@ -143,7 +143,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(237, 9);
+			this.label1.Location = new System.Drawing.Point(238, 9);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(37, 14);
 			this.label1.TabIndex = 0;
@@ -171,11 +171,12 @@ namespace CodeImp.DoomBuilder.Controls
 			this.cbMixMode.Items.AddRange(new object[] {
             "All",
             "Textures",
-            "Flats"});
-			this.cbMixMode.Location = new System.Drawing.Point(48, 5);
+            "Flats",
+            "By sel. type"});
+			this.cbMixMode.Location = new System.Drawing.Point(43, 5);
 			this.cbMixMode.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.cbMixMode.Name = "cbMixMode";
-			this.cbMixMode.Size = new System.Drawing.Size(70, 22);
+			this.cbMixMode.Size = new System.Drawing.Size(80, 22);
 			this.cbMixMode.TabIndex = 0;
 			this.cbMixMode.TabStop = false;
 			this.cbMixMode.SelectedIndexChanged += new System.EventHandler(this.cbMixMode_SelectedIndexChanged);
@@ -202,10 +203,10 @@ namespace CodeImp.DoomBuilder.Controls
 			// objectname
 			// 
 			this.objectname.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.objectname.Location = new System.Drawing.Point(163, 6);
+			this.objectname.Location = new System.Drawing.Point(166, 6);
 			this.objectname.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.objectname.Name = "objectname";
-			this.objectname.Size = new System.Drawing.Size(69, 20);
+			this.objectname.Size = new System.Drawing.Size(64, 20);
 			this.objectname.TabIndex = 0;
 			this.objectname.TabStop = false;
 			this.objectname.TextChanged += new System.EventHandler(this.objectname_TextChanged);
