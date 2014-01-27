@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// label13
 			// 
-			label13.Location = new System.Drawing.Point(103, 79);
+			label13.Location = new System.Drawing.Point(183, 64);
 			label13.Name = "label13";
 			label13.Size = new System.Drawing.Size(70, 14);
 			label13.TabIndex = 14;
@@ -238,7 +238,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.sectorinfo.Location = new System.Drawing.Point(0, 0);
 			this.sectorinfo.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.sectorinfo.Name = "sectorinfo";
-			this.sectorinfo.Size = new System.Drawing.Size(220, 100);
+			this.sectorinfo.Size = new System.Drawing.Size(300, 100);
 			this.sectorinfo.TabIndex = 2;
 			this.sectorinfo.TabStop = false;
 			this.sectorinfo.Text = " Sector ";
@@ -246,7 +246,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// panelFadeColor
 			// 
 			this.panelFadeColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panelFadeColor.Location = new System.Drawing.Point(180, 65);
+			this.panelFadeColor.Location = new System.Drawing.Point(260, 50);
 			this.panelFadeColor.Name = "panelFadeColor";
 			this.panelFadeColor.Size = new System.Drawing.Size(20, 12);
 			this.panelFadeColor.TabIndex = 21;
@@ -254,14 +254,14 @@ namespace CodeImp.DoomBuilder.Controls
 			// panelLightColor
 			// 
 			this.panelLightColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panelLightColor.Location = new System.Drawing.Point(180, 50);
+			this.panelLightColor.Location = new System.Drawing.Point(260, 35);
 			this.panelLightColor.Name = "panelLightColor";
 			this.panelLightColor.Size = new System.Drawing.Size(20, 12);
 			this.panelLightColor.TabIndex = 20;
 			// 
 			// labelFade
 			// 
-			this.labelFade.Location = new System.Drawing.Point(103, 64);
+			this.labelFade.Location = new System.Drawing.Point(183, 49);
 			this.labelFade.Name = "labelFade";
 			this.labelFade.Size = new System.Drawing.Size(70, 14);
 			this.labelFade.TabIndex = 19;
@@ -270,7 +270,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// labelLight
 			// 
-			this.labelLight.Location = new System.Drawing.Point(103, 49);
+			this.labelLight.Location = new System.Drawing.Point(183, 34);
 			this.labelLight.Name = "labelLight";
 			this.labelLight.Size = new System.Drawing.Size(70, 14);
 			this.labelLight.TabIndex = 18;
@@ -279,7 +279,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// brightness
 			// 
-			this.brightness.Location = new System.Drawing.Point(177, 79);
+			this.brightness.Location = new System.Drawing.Point(257, 64);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(38, 14);
 			this.brightness.TabIndex = 17;
@@ -297,7 +297,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.tag.Location = new System.Drawing.Point(55, 79);
 			this.tag.Name = "tag";
-			this.tag.Size = new System.Drawing.Size(42, 14);
+			this.tag.Size = new System.Drawing.Size(239, 14);
 			this.tag.TabIndex = 7;
 			this.tag.Text = "0";
 			// 
@@ -363,7 +363,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceilingpanel.Controls.Add(this.ceilingInfo);
 			this.ceilingpanel.Controls.Add(this.ceilingname);
 			this.ceilingpanel.Controls.Add(this.ceilingtex);
-			this.ceilingpanel.Location = new System.Drawing.Point(426, 0);
+			this.ceilingpanel.Location = new System.Drawing.Point(506, 0);
 			this.ceilingpanel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.ceilingpanel.Name = "ceilingpanel";
 			this.ceilingpanel.Size = new System.Drawing.Size(200, 100);
@@ -424,7 +424,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floorpanel.Controls.Add(this.floorInfo);
 			this.floorpanel.Controls.Add(this.floorname);
 			this.floorpanel.Controls.Add(this.floortex);
-			this.floorpanel.Location = new System.Drawing.Point(223, 0);
+			this.floorpanel.Location = new System.Drawing.Point(303, 0);
 			this.floorpanel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.floorpanel.Name = "floorpanel";
 			this.floorpanel.Size = new System.Drawing.Size(200, 100);
@@ -528,7 +528,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// flagsPanel
 			// 
 			this.flagsPanel.Controls.Add(this.flags);
-			this.flagsPanel.Location = new System.Drawing.Point(629, 0);
+			this.flagsPanel.Location = new System.Drawing.Point(709, 0);
 			this.flagsPanel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.flagsPanel.Name = "flagsPanel";
 			this.flagsPanel.Size = new System.Drawing.Size(455, 100);
@@ -560,7 +560,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "SectorInfoPanel";
-			this.Size = new System.Drawing.Size(1090, 100);
+			this.Size = new System.Drawing.Size(1400, 100);
 			this.sectorinfo.ResumeLayout(false);
 			this.sectorinfo.PerformLayout();
 			this.ceilingpanel.ResumeLayout(false);

@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if (lf.Value == c.Text)
 					{
 						if (value != "") value += ",";
-						value += lf.Key.ToString();
+						value += lf.Key;
 					}
 				}
 			}
