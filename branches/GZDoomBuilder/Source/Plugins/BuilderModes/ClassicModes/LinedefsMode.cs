@@ -363,7 +363,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render selection
 			if(renderer.StartOverlay(true))
 			{
-				if (!panning) { //mxd
+				if(!panning && !selecting) { //mxd
 					for (int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
 					if ((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
 				}
@@ -570,6 +570,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					//render preview
 					if(renderer.StartOverlay(true)) {
+						if(!panning) {
+							for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
+							if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
+						}
 						float dist = Math.Min(Vector2D.Distance(mousemappos, insertPreview), BuilderPlug.Me.SplitLinedefsRange);
 						byte alpha = (byte)(255 - (dist / BuilderPlug.Me.SplitLinedefsRange) * 128);
 						float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
@@ -582,6 +586,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					//undraw preveiw
 					if(renderer.StartOverlay(true)) {
+						if(!panning) {
+							for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
+							if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
+						}
 						renderer.Finish();
 						renderer.Present();
 					}
