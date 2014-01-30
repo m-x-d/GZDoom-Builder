@@ -118,9 +118,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool autoDrawOnEdit; //mxd
 		private bool marqueSelectTouching; //mxd. Select elements partially/fully inside of marque selection?
 		private bool syncSelection; //mxd. Sync selection between Visual and Classic modes.
-		private bool objExportTextures; //mxd
-		private bool objGZDoomScale; //mxd
-		private float objScale; //mxd
 		private bool lockSectorTextureOffsetsWhileDragging; //mxd
 		
 		#endregion
@@ -181,9 +178,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool DontMoveGeometryOutsideMapBoundary { get { return dontMoveGeometryOutsideMapBoundary; } set { DontMoveGeometryOutsideMapBoundary = value; } } //mxd
 		public bool MarqueSelectTouching { get { return marqueSelectTouching; } set { marqueSelectTouching = value; } } //mxd
 		public bool SyncSelection { get { return syncSelection; } set { syncSelection = value; } } //mxd
-		public bool ObjExportTextures { get { return objExportTextures; } internal set { objExportTextures = value; } } //mxd
-		public bool ObjGZDoomScale { get { return objGZDoomScale; } internal set { objGZDoomScale = value; } } //mxd
-		public float ObjScale { get { return objScale; } internal set { objScale = value; } } //mxd
 		public bool LockSectorTextureOffsetsWhileDragging { get { return lockSectorTextureOffsetsWhileDragging; } internal set { lockSectorTextureOffsetsWhileDragging = value; } } //mxd
 		
 		#endregion
@@ -224,14 +218,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. Export to .obj
 			exportToObjMenuItem = new ToolStripMenuItem("Export to .obj...");
 			exportToObjMenuItem.Tag = "exporttoobj";
-			exportToObjMenuItem.Click += new EventHandler(InvokeTaggedAction);
+			exportToObjMenuItem.Click += InvokeTaggedAction;
 			exportToObjMenuItem.Enabled = false;
 			General.Interface.AddMenu(exportToObjMenuItem, MenuSection.FileNewOpenClose);
 
 			//mxd. add "Snap Vertices" menu button
 			snapModeMenuItem = new ToolStripMenuItem("Snap selected map elements to grid");
 			snapModeMenuItem.Tag = "snapvertstogrid";
-			snapModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+			snapModeMenuItem.Click += InvokeTaggedAction;
 			snapModeMenuItem.Image = Properties.Resources.SnapVerts;
 			snapModeMenuItem.Enabled = false;
 			General.Interface.AddMenu(snapModeMenuItem, MenuSection.EditGeometry);
@@ -240,7 +234,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//draw ellipse
 			drawEllipseModeMenuItem = new ToolStripMenuItem("Draw Ellipse");
 			drawEllipseModeMenuItem.Tag = "drawellipsemode";
-			drawEllipseModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+			drawEllipseModeMenuItem.Click += InvokeTaggedAction;
 			drawEllipseModeMenuItem.Image = Properties.Resources.DrawEllipseMode;
 			drawEllipseModeMenuItem.Enabled = false;
 			General.Interface.AddMenu(drawEllipseModeMenuItem, MenuSection.ModeDrawModes);
@@ -248,7 +242,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//draw grid
 			drawGridModeMenuItem = new ToolStripMenuItem("Draw Grid");
 			drawGridModeMenuItem.Tag = "drawgridmode";
-			drawGridModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+			drawGridModeMenuItem.Click += InvokeTaggedAction;
 			drawGridModeMenuItem.Image = Properties.Resources.DrawGridMode;
 			drawGridModeMenuItem.Enabled = false;
 			General.Interface.AddMenu(drawGridModeMenuItem, MenuSection.ModeDrawModes);
@@ -256,7 +250,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//draw rectangle
 			drawRectModeMenuItem = new ToolStripMenuItem("Draw Rectangle");
 			drawRectModeMenuItem.Tag = "drawrectanglemode";
-			drawRectModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+			drawRectModeMenuItem.Click += InvokeTaggedAction;
 			drawRectModeMenuItem.Image = Properties.Resources.DrawRectMode;
 			drawRectModeMenuItem.Enabled = false;
 			General.Interface.AddMenu(drawRectModeMenuItem, MenuSection.ModeDrawModes);
@@ -264,7 +258,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//draw curve 
 			drawCurveModeMenuItem = new ToolStripMenuItem("Draw Curve");
 			drawCurveModeMenuItem.Tag = "drawcurvemode";
-			drawCurveModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+			drawCurveModeMenuItem.Click += InvokeTaggedAction;
 			drawCurveModeMenuItem.Image = Properties.Resources.DrawCurveMode;
 			drawCurveModeMenuItem.Enabled = false;
 			General.Interface.AddMenu(drawCurveModeMenuItem, MenuSection.ModeDrawModes);
@@ -272,7 +266,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//draw lines 
 			drawLinesModeMenuItem = new ToolStripMenuItem("Draw Lines");
 			drawLinesModeMenuItem.Tag = "drawlinesmode";
-			drawLinesModeMenuItem.Click += new EventHandler(InvokeTaggedAction);
+			drawLinesModeMenuItem.Click += InvokeTaggedAction;
 			drawLinesModeMenuItem.Image = Properties.Resources.DrawLinesMode;
 			drawLinesModeMenuItem.Enabled = false;
 			General.Interface.AddMenu(drawLinesModeMenuItem, MenuSection.ModeDrawModes);
@@ -341,9 +335,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			autoAlignTextureOffsetsOnCreate = General.Settings.ReadPluginSetting("autoaligntextureoffsetsoncreate", false); //mxd
 			dontMoveGeometryOutsideMapBoundary = General.Settings.ReadPluginSetting("dontmovegeometryoutsidemapboundary", false); //mxd
 			syncSelection = General.Settings.ReadPluginSetting("syncselection", false); //mxd
-			objExportTextures = General.Settings.ReadPluginSetting("objexporttextures", false); //mxd
-			objGZDoomScale = General.Settings.ReadPluginSetting("objgzdoomscale", false); //mxd
-			objScale = General.Settings.ReadPluginSetting("objscale", 1.0f); //mxd
 			lockSectorTextureOffsetsWhileDragging = General.Settings.ReadPluginSetting("locktextureoffsets", false); //mxd
 		}
 
@@ -922,7 +913,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//show settings form
 			WavefrontSettingsForm form = new WavefrontSettingsForm(General.Map.Map.SelectedSectorsCount == 0 ? -1 : sectors.Count);
 			if(form.ShowDialog() == DialogResult.OK) {
-				WavefrontExportSettings data = new WavefrontExportSettings(Path.GetFileNameWithoutExtension(form.FilePath), Path.GetDirectoryName(form.FilePath), BuilderPlug.Me.ObjScale, BuilderPlug.Me.ObjGZDoomScale, BuilderPlug.Me.ObjExportTextures);
+				WavefrontExportSettings data = new WavefrontExportSettings(Path.GetFileNameWithoutExtension(form.FilePath), Path.GetDirectoryName(form.FilePath), form.ObjScale, form.UseGZDoomScale, form.ExportTextures);
 				WavefrontExporter e = new WavefrontExporter();
 				e.Export(sectors, data);
 			}

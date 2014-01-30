@@ -27,6 +27,8 @@
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.ceiling = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
+			this.floor = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.cbOverrideFloorTexture = new System.Windows.Forms.CheckBox();
 			this.cbOverrideCeilingTexture = new System.Windows.Forms.CheckBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -58,8 +60,8 @@
 			this.clearfloor = new System.Windows.Forms.Button();
 			this.clearceiling = new System.Windows.Forms.Button();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.floor = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
-			this.ceiling = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
+			this.fillall = new System.Windows.Forms.Button();
+			this.clearall = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -81,6 +83,24 @@
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Sector texture overrides:";
+			// 
+			// ceiling
+			// 
+			this.ceiling.Location = new System.Drawing.Point(6, 41);
+			this.ceiling.Name = "ceiling";
+			this.ceiling.Size = new System.Drawing.Size(68, 90);
+			this.ceiling.TabIndex = 30;
+			this.ceiling.TextureName = "";
+			this.ceiling.OnValueChanged += new System.EventHandler(this.ceiling_OnValueChanged);
+			// 
+			// floor
+			// 
+			this.floor.Location = new System.Drawing.Point(87, 41);
+			this.floor.Name = "floor";
+			this.floor.Size = new System.Drawing.Size(68, 90);
+			this.floor.TabIndex = 29;
+			this.floor.TextureName = "";
+			this.floor.OnValueChanged += new System.EventHandler(this.floor_OnValueChanged);
 			// 
 			// cbOverrideFloorTexture
 			// 
@@ -300,6 +320,7 @@
 			// 
 			this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox4.Controls.Add(this.fillall);
 			this.groupBox4.Controls.Add(this.filllower);
 			this.groupBox4.Controls.Add(this.fillmiddle);
 			this.groupBox4.Controls.Add(this.fillupper);
@@ -314,7 +335,7 @@
 			// 
 			// filllower
 			// 
-			this.filllower.Location = new System.Drawing.Point(133, 19);
+			this.filllower.Location = new System.Drawing.Point(171, 19);
 			this.filllower.Name = "filllower";
 			this.filllower.Size = new System.Drawing.Size(26, 23);
 			this.filllower.TabIndex = 4;
@@ -325,7 +346,7 @@
 			// 
 			// fillmiddle
 			// 
-			this.fillmiddle.Location = new System.Drawing.Point(101, 19);
+			this.fillmiddle.Location = new System.Drawing.Point(139, 19);
 			this.fillmiddle.Name = "fillmiddle";
 			this.fillmiddle.Size = new System.Drawing.Size(26, 23);
 			this.fillmiddle.TabIndex = 3;
@@ -336,7 +357,7 @@
 			// 
 			// fillupper
 			// 
-			this.fillupper.Location = new System.Drawing.Point(69, 19);
+			this.fillupper.Location = new System.Drawing.Point(107, 19);
 			this.fillupper.Name = "fillupper";
 			this.fillupper.Size = new System.Drawing.Size(26, 23);
 			this.fillupper.TabIndex = 2;
@@ -347,7 +368,7 @@
 			// 
 			// fillfloor
 			// 
-			this.fillfloor.Location = new System.Drawing.Point(38, 19);
+			this.fillfloor.Location = new System.Drawing.Point(76, 19);
 			this.fillfloor.Name = "fillfloor";
 			this.fillfloor.Size = new System.Drawing.Size(26, 23);
 			this.fillfloor.TabIndex = 1;
@@ -358,7 +379,7 @@
 			// 
 			// fillceiling
 			// 
-			this.fillceiling.Location = new System.Drawing.Point(6, 19);
+			this.fillceiling.Location = new System.Drawing.Point(44, 19);
 			this.fillceiling.Name = "fillceiling";
 			this.fillceiling.Size = new System.Drawing.Size(26, 23);
 			this.fillceiling.TabIndex = 0;
@@ -370,7 +391,7 @@
 			// 
 			// clearlower
 			// 
-			this.clearlower.Location = new System.Drawing.Point(133, 19);
+			this.clearlower.Location = new System.Drawing.Point(171, 19);
 			this.clearlower.Name = "clearlower";
 			this.clearlower.Size = new System.Drawing.Size(26, 23);
 			this.clearlower.TabIndex = 4;
@@ -381,7 +402,7 @@
 			// 
 			// clearmiddle
 			// 
-			this.clearmiddle.Location = new System.Drawing.Point(101, 19);
+			this.clearmiddle.Location = new System.Drawing.Point(139, 19);
 			this.clearmiddle.Name = "clearmiddle";
 			this.clearmiddle.Size = new System.Drawing.Size(26, 23);
 			this.clearmiddle.TabIndex = 3;
@@ -392,7 +413,7 @@
 			// 
 			// clearupper
 			// 
-			this.clearupper.Location = new System.Drawing.Point(69, 19);
+			this.clearupper.Location = new System.Drawing.Point(107, 19);
 			this.clearupper.Name = "clearupper";
 			this.clearupper.Size = new System.Drawing.Size(26, 23);
 			this.clearupper.TabIndex = 2;
@@ -403,7 +424,7 @@
 			// 
 			// clearfloor
 			// 
-			this.clearfloor.Location = new System.Drawing.Point(38, 19);
+			this.clearfloor.Location = new System.Drawing.Point(76, 19);
 			this.clearfloor.Name = "clearfloor";
 			this.clearfloor.Size = new System.Drawing.Size(26, 23);
 			this.clearfloor.TabIndex = 1;
@@ -414,7 +435,7 @@
 			// 
 			// clearceiling
 			// 
-			this.clearceiling.Location = new System.Drawing.Point(6, 19);
+			this.clearceiling.Location = new System.Drawing.Point(44, 19);
 			this.clearceiling.Name = "clearceiling";
 			this.clearceiling.Size = new System.Drawing.Size(26, 23);
 			this.clearceiling.TabIndex = 0;
@@ -427,6 +448,7 @@
 			// 
 			this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox5.Controls.Add(this.clearall);
 			this.groupBox5.Controls.Add(this.clearlower);
 			this.groupBox5.Controls.Add(this.clearmiddle);
 			this.groupBox5.Controls.Add(this.clearupper);
@@ -439,23 +461,27 @@
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Remove Textures form Selection:";
 			// 
-			// floor
+			// fillall
 			// 
-			this.floor.Location = new System.Drawing.Point(87, 41);
-			this.floor.Name = "floor";
-			this.floor.Size = new System.Drawing.Size(68, 90);
-			this.floor.TabIndex = 29;
-			this.floor.TextureName = "";
-			this.floor.OnValueChanged += new System.EventHandler(this.floor_OnValueChanged);
+			this.fillall.Location = new System.Drawing.Point(6, 19);
+			this.fillall.Name = "fillall";
+			this.fillall.Size = new System.Drawing.Size(32, 23);
+			this.fillall.TabIndex = 5;
+			this.fillall.Text = "All";
+			this.toolTip1.SetToolTip(this.fillall, "Replace all textures with currently enabled overrides");
+			this.fillall.UseVisualStyleBackColor = true;
+			this.fillall.Click += new System.EventHandler(this.fillall_Click);
 			// 
-			// ceiling
+			// clearall
 			// 
-			this.ceiling.Location = new System.Drawing.Point(6, 41);
-			this.ceiling.Name = "ceiling";
-			this.ceiling.Size = new System.Drawing.Size(68, 90);
-			this.ceiling.TabIndex = 30;
-			this.ceiling.TextureName = "";
-			this.ceiling.OnValueChanged += new System.EventHandler(this.ceiling_OnValueChanged);
+			this.clearall.Location = new System.Drawing.Point(6, 19);
+			this.clearall.Name = "clearall";
+			this.clearall.Size = new System.Drawing.Size(32, 23);
+			this.clearall.TabIndex = 6;
+			this.clearall.Text = "All";
+			this.toolTip1.SetToolTip(this.clearall, "Remove all textures from selected map elements");
+			this.clearall.UseVisualStyleBackColor = true;
+			this.clearall.Click += new System.EventHandler(this.clearall_Click);
 			// 
 			// SectorDrawingOptionsPanel
 			// 
@@ -516,5 +542,7 @@
 		private System.Windows.Forms.Button clearceiling;
 		private CodeImp.DoomBuilder.Controls.FlatSelectorControl floor;
 		private CodeImp.DoomBuilder.Controls.FlatSelectorControl ceiling;
+		private System.Windows.Forms.Button fillall;
+		private System.Windows.Forms.Button clearall;
 	}
 }

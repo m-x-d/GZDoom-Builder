@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.Data
 		private const PixelFormat IMAGE_FORMAT = PixelFormat.Format32bppArgb;
 
 		// Dimensions of a single preview image
-		public static readonly int[] PREVIEW_SIZES = new int[] { 48, 64, 80, 96, 112, 128 };
+		public static readonly int[] PREVIEW_SIZES = new[] { 48, 64, 80, 96, 112, 128 };
 
 		#endregion
 
@@ -113,11 +113,8 @@ namespace CodeImp.DoomBuilder.Data
 		// This makes a preview for the given image and updates the image settings
 		private void MakeImagePreview(ImageData img)
 		{
-			int previewwidth, previewheight;
 			int imagewidth, imageheight;
-			Bitmap preview;
-			Graphics g;
-			
+
 			lock(img)
 			{
 				// Load image if needed
@@ -129,28 +126,29 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				else
 				{
-					imagewidth = img.GetBitmap().Size.Width;
-					imageheight = img.GetBitmap().Size.Height;
+					Size size = img.GetBitmap().Size; //mxd
+					imagewidth = size.Width;
+					imageheight = size.Height;
 				}
 				
 				// Determine preview size
 				float scalex = (img.Width > maxpreviewwidth) ? (maxpreviewwidth / (float)imagewidth) : 1.0f;
 				float scaley = (img.Height > maxpreviewheight) ? (maxpreviewheight / (float)imageheight) : 1.0f;
 				float scale = Math.Min(scalex, scaley);
-				previewwidth = (int)(imagewidth * scale);
-				previewheight = (int)(imageheight * scale);
+				int previewwidth = (int)(imagewidth * scale);
+				int previewheight = (int)(imageheight * scale);
 				if(previewwidth < 1) previewwidth = 1;
 				if(previewheight < 1) previewheight = 1;
 
 				// Make new image
-				preview = new Bitmap(previewwidth, previewheight, IMAGE_FORMAT);
-				g = Graphics.FromImage(preview);
+				Bitmap preview = new Bitmap(previewwidth, previewheight, IMAGE_FORMAT);
+				Graphics g = Graphics.FromImage(preview);
 				g.PageUnit = GraphicsUnit.Pixel;
-				g.CompositingQuality = CompositingQuality.HighQuality;
+				//g.CompositingQuality = CompositingQuality.HighQuality; //mxd
 				g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-				g.SmoothingMode = SmoothingMode.HighQuality;
+				//g.SmoothingMode = SmoothingMode.HighQuality; //mxd
 				g.PixelOffsetMode = PixelOffsetMode.None;
-				g.Clear(Color.Transparent);
+				//g.Clear(Color.Transparent); //mxd
 				
 				// Draw image onto atlas
 				Rectangle atlasrect = new Rectangle(0, 0, previewwidth, previewheight);

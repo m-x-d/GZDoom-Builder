@@ -156,6 +156,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode = ModifyMode.None;
 		}
 
+		//mxd. Another constructor
+		public EditSelectionMode(bool pasting) {
+			// Initialize
+			this.pasting = pasting;
+			this.mode = ModifyMode.None;
+		}
+
 		// Disposer
 		public override void Dispose()
 		{

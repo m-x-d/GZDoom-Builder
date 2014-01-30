@@ -67,6 +67,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Terrain {
+            get {
+                object obj = ResourceManager.GetObject("Terrain", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Update {
             get {
                 object obj = ResourceManager.GetObject("Update", resourceCulture);

@@ -40,9 +40,9 @@
 			// 
 			// tbExportPath
 			// 
-			this.tbExportPath.Location = new System.Drawing.Point(82, 12);
+			this.tbExportPath.Location = new System.Drawing.Point(55, 12);
 			this.tbExportPath.Name = "tbExportPath";
-			this.tbExportPath.Size = new System.Drawing.Size(272, 20);
+			this.tbExportPath.Size = new System.Drawing.Size(299, 20);
 			this.tbExportPath.TabIndex = 0;
 			// 
 			// browse
@@ -58,11 +58,11 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 15);
+			this.label1.Location = new System.Drawing.Point(18, 14);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(65, 14);
+			this.label1.Size = new System.Drawing.Size(31, 14);
 			this.label1.TabIndex = 2;
-			this.label1.Text = "Export path:";
+			this.label1.Text = "Path:";
 			// 
 			// cbFixScale
 			// 
@@ -116,30 +116,30 @@
 			// nudScale
 			// 
 			this.nudScale.DecimalPlaces = 4;
-			this.nudScale.Location = new System.Drawing.Point(82, 38);
+			this.nudScale.Location = new System.Drawing.Point(55, 38);
 			this.nudScale.Maximum = new decimal(new int[] {
-			2048,
-			0,
-			0,
-			0});
+            2048,
+            0,
+            0,
+            0});
 			this.nudScale.Minimum = new decimal(new int[] {
-			2048,
-			0,
-			0,
-			-2147483648});
+            2048,
+            0,
+            0,
+            -2147483648});
 			this.nudScale.Name = "nudScale";
 			this.nudScale.Size = new System.Drawing.Size(94, 20);
 			this.nudScale.TabIndex = 8;
 			this.nudScale.Value = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(39, 40);
+			this.label2.Location = new System.Drawing.Point(12, 40);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(37, 14);
 			this.label2.TabIndex = 9;

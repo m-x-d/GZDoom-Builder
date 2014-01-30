@@ -512,7 +512,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Start a low priority thread to load images in background
 			General.WriteLogLine("Starting background resource loading...");
-			backgroundloader = new Thread(new ThreadStart(BackgroundLoad));
+			backgroundloader = new Thread(BackgroundLoad);
 			backgroundloader.Name = "Background Loader";
 			backgroundloader.Priority = ThreadPriority.Lowest;
 			backgroundloader.IsBackground = true;

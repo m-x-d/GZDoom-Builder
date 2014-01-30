@@ -88,6 +88,13 @@
     <Compile Include="Interface\MenusForm.Designer.cs">
       <DependentUpon>MenusForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\ObjImportSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\ObjImportSettingsForm.Designer.cs">
+      <DependentUpon>ObjImportSettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modes\ImportObjAsTerrainMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -113,6 +120,9 @@
     <EmbeddedResource Include="Interface\JitterVerticesForm.resx">
       <DependentUpon>JitterVerticesForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Interface\ObjImportSettingsForm.resx">
+      <DependentUpon>ObjImportSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -124,6 +134,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Jitter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Terrain.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
