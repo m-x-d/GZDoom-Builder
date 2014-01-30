@@ -1848,14 +1848,14 @@ namespace CodeImp.DoomBuilder
 		// This calculates the new rectangle when one is scaled into another keeping aspect ratio
 		public static RectangleF MakeZoomedRect(Size source, RectangleF target)
 		{
-			return MakeZoomedRect(new SizeF((int)source.Width, (int)source.Height), target);
+			return MakeZoomedRect(new SizeF(source.Width, source.Height), target);
 		}
 
 		// This calculates the new rectangle when one is scaled into another keeping aspect ratio
 		public static RectangleF MakeZoomedRect(Size source, Rectangle target)
 		{
-			return MakeZoomedRect(new SizeF((int)source.Width, (int)source.Height),
-								  new RectangleF((int)target.Left, (int)target.Top, (int)target.Width, (int)target.Height));
+			return MakeZoomedRect(new SizeF(source.Width, source.Height),
+								  new RectangleF(target.Left, target.Top, target.Width, target.Height));
 		}
 		
 		// This calculates the new rectangle when one is scaled into another keeping aspect ratio

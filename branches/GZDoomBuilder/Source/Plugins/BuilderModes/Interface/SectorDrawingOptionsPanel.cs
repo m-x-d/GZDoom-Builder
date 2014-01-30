@@ -147,7 +147,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			General.Map.Data.UpdateUsedTextures();
 			General.Map.IsChanged = true;
 
-			if(General.Map.Renderer2D.ViewMode == CodeImp.DoomBuilder.Rendering.ViewMode.CeilingTextures)
+			if(General.Map.Renderer2D.ViewMode == Rendering.ViewMode.CeilingTextures)
 				General.Interface.RedrawDisplay();
 		}
 
@@ -167,7 +167,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			General.Map.Data.UpdateUsedTextures();
 			General.Map.IsChanged = true;
 
-			if(General.Map.Renderer2D.ViewMode == CodeImp.DoomBuilder.Rendering.ViewMode.FloorTextures)
+			if(General.Map.Renderer2D.ViewMode == Rendering.ViewMode.FloorTextures)
 				General.Interface.RedrawDisplay();
 		}
 
@@ -225,6 +225,59 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			General.Map.IsChanged = true;
 		}
 
+		private void fillall_Click(object sender, EventArgs e) {
+			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
+
+			//if we have selected sectors - fill their textures
+			if (sectors.Count > 0) {
+				//make undo
+				General.Map.UndoRedo.CreateUndo("Fill all texturs for " + sectors.Count + (sectors.Count > 1 ? " sectors" : " sector"));
+
+				foreach (Sector s in sectors) {
+					//fill sidedefs
+					foreach(Sidedef side in s.Sidedefs) {
+						if(top.Enabled && side.HighRequired()) side.SetTextureHigh(top.TextureName);
+						if(middle.Enabled && side.MiddleRequired()) side.SetTextureMid(middle.TextureName);
+						if(bottom.Enabled && side.LowRequired()) side.SetTextureLow(bottom.TextureName);
+					}
+
+					//fill flats
+					if(floor.Enabled) s.SetFloorTexture(floor.TextureName);
+					if(ceiling.Enabled) s.SetCeilTexture(ceiling.TextureName);
+				}
+			} else { //if we don't - fill linedef textures
+				ICollection<Linedef> lines = General.Map.Map.GetSelectedLinedefs(true);
+				if(lines.Count == 0) return;
+
+				//make undo
+				General.Map.UndoRedo.CreateUndo("Fill all texturs for " + lines.Count + (lines.Count > 1 ? " linedefs" : " linedef"));
+
+				//fill textures
+				foreach (Linedef l in lines) {
+					if(top.Enabled) {
+						if(l.Front != null && l.Front.HighRequired()) l.Front.SetTextureHigh(top.TextureName);
+						if(l.Back != null && l.Back.HighRequired()) l.Back.SetTextureHigh(top.TextureName);
+					}
+					if(middle.Enabled) {
+						if(l.Front != null && l.Front.MiddleRequired()) l.Front.SetTextureMid(middle.TextureName);
+						if(l.Back != null && l.Back.MiddleRequired()) l.Back.SetTextureMid(middle.TextureName);
+					}
+					if(bottom.Enabled) {
+						if(l.Front != null && l.Front.LowRequired()) l.Front.SetTextureLow(bottom.TextureName);
+						if(l.Back != null && l.Back.LowRequired()) l.Back.SetTextureLow(bottom.TextureName);
+					}
+				}
+			}
+
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+			General.Map.IsChanged = true;
+
+			// Update entire display
+			General.Map.Map.Update();
+			General.Interface.RedrawDisplay();
+		}
+
 		#endregion
 
 		#region Clear Textures
@@ -247,7 +300,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 
 			// Update entire display
 			General.Map.Map.Update();
-			if(General.Map.Renderer2D.ViewMode == CodeImp.DoomBuilder.Rendering.ViewMode.CeilingTextures)
+			if(General.Map.Renderer2D.ViewMode == Rendering.ViewMode.CeilingTextures)
 				General.Interface.RedrawDisplay();
 		}
 
@@ -269,7 +322,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 
 			// Update entire display
 			General.Map.Map.Update();
-			if(General.Map.Renderer2D.ViewMode == CodeImp.DoomBuilder.Rendering.ViewMode.FloorTextures)
+			if(General.Map.Renderer2D.ViewMode == Rendering.ViewMode.FloorTextures)
 				General.Interface.RedrawDisplay();
 		}
 
@@ -325,6 +378,61 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
 			General.Map.IsChanged = true;
+		}
+
+		private void clearall_Click(object sender, EventArgs e) {
+			//if we have selected sectors - clear their textures
+			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
+			if (sectors.Count > 0) {
+				//make undo
+				string undodesc = "sector";
+				if(sectors.Count > 1) undodesc = sectors.Count + " sectors";
+				General.Map.UndoRedo.CreateUndo("Clear all texture from " + undodesc);
+				
+				foreach(Sector s in sectors) {
+					//clear side textures
+					foreach (Sidedef side in s.Sidedefs) {
+						if(side.HighTexture != "-") side.SetTextureHigh("-");
+						if(side.MiddleTexture != "-") side.SetTextureMid("-");
+						if(side.LowTexture != "-") side.SetTextureLow("-");
+					}
+
+					//clear flats
+					s.SetCeilTexture("-");
+					s.SetFloorTexture("-");
+				}
+
+			} else { //if we don't - clear linedef textures
+				ICollection<Linedef> lines = General.Map.Map.GetSelectedLinedefs(true);
+				if(lines.Count == 0) return;
+
+				//make undo
+				string undodesc = "linedef";
+				if(lines.Count > 1) undodesc = lines.Count + " linedefs";
+				General.Map.UndoRedo.CreateUndo("Clear all texture from " + undodesc);
+
+				//clear textures
+				foreach(Linedef l in lines) {
+					if(l.Front != null) {
+						if(l.Front.HighTexture != "-") l.Front.SetTextureHigh("-");
+						if(l.Front.MiddleTexture != "-") l.Front.SetTextureMid("-");
+						if(l.Front.LowTexture != "-") l.Front.SetTextureLow("-");
+					} 
+					if (l.Back != null) {
+						if(l.Back.HighTexture != "-") l.Back.SetTextureHigh("-");
+						if(l.Back.MiddleTexture != "-") l.Back.SetTextureMid("-");
+						if(l.Back.LowTexture != "-") l.Back.SetTextureLow("-");
+					} 
+				}
+			}
+			
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+			General.Map.IsChanged = true;
+
+			// Update entire display
+			General.Map.Map.Update();
+			General.Interface.RedrawDisplay();
 		}
 
 		#endregion
