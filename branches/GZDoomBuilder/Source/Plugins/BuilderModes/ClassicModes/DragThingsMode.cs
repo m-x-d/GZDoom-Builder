@@ -272,6 +272,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This redraws only changed things
 		private void UpdateRedraw()
 		{
+			//mxd. Added, so grid can be rendered properly if the user changes grid size while dragging (very useful and important, I know)
+			if (renderer.StartPlotter(true)) 
+			{
+				// Render lines and vertices
+				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+				renderer.PlotVerticesSet(General.Map.Map.Vertices);
+				
+				// Done
+				renderer.Finish();
+			}
+
 			// Render things
 			if(renderer.StartThings(true))
 			{

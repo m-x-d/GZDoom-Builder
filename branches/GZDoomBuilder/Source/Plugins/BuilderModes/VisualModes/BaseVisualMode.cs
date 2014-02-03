@@ -356,10 +356,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd
 			if(General.Map.UDMF && General.Settings.GZShowVisualVertices) {
 				foreach(KeyValuePair<Vertex, VisualVertexPair> pair in vertices) {
-					if(pair.Value.Vertex1.Selected)
-						selectedobjects.Add((BaseVisualVertex)pair.Value.Vertex1);
-					if(pair.Value.Vertex2.Selected)
-						selectedobjects.Add((BaseVisualVertex)pair.Value.Vertex2);
+					if(pair.Value.CeilingVertex.Selected)
+						selectedobjects.Add((BaseVisualVertex)pair.Value.CeilingVertex);
+					if(pair.Value.FloorVertex.Selected)
+						selectedobjects.Add((BaseVisualVertex)pair.Value.FloorVertex);
 				}
 			}
 		}
@@ -686,10 +686,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return vertexdata[v];
 		}
 
+		internal BaseVisualVertex GetVisualVertex(Vertex v, bool floor) {
+			if(!vertices.ContainsKey(v))
+				vertices.Add(v, new VisualVertexPair(new BaseVisualVertex(this, v, false), new BaseVisualVertex(this, v, true)));
+
+			return (floor ? vertices[v].FloorVertex as BaseVisualVertex : vertices[v].CeilingVertex as BaseVisualVertex);
+		}
+
 		//mxd
 		internal void UpdateVertexHandle(Vertex v) {
 			if(!vertices.ContainsKey(v))
-				vertices.Add(v, new VisualVertexPair(new BaseVisualVertex(this, v, true), new BaseVisualVertex(this, v, false)));
+				vertices.Add(v, new VisualVertexPair(new BaseVisualVertex(this, v, false), new BaseVisualVertex(this, v, true)));
 			else
 				vertices[v].Changed = true;
 		}
@@ -2413,7 +2420,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void TextureCopy()
 		{
 			PreActionNoChange();
-			GetTargetEventReceiver(false).OnCopyTexture();
+			GetTargetEventReceiver(true).OnCopyTexture(); //mxd
 			PostAction();
 		}
 
@@ -2640,7 +2647,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void TextureCopyOffsets()
 		{
 			PreActionNoChange();
-			GetTargetEventReceiver(false).OnCopyTextureOffsets();
+			GetTargetEventReceiver(true).OnCopyTextureOffsets(); //mxd
 			PostAction();
 		}
 
@@ -2657,7 +2664,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void CopyProperties()
 		{
 			PreActionNoChange();
-			GetTargetEventReceiver(false).OnCopyProperties();
+			GetTargetEventReceiver(true).OnCopyProperties(); //mxd
 			PostAction();
 		}
 

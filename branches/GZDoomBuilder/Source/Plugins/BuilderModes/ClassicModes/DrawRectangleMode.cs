@@ -168,10 +168,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//no corners
 			if (bevelWidth == 0) {
 				currentBevelWidth = 0;
-				return new[] { pStart, new Vector2D((int)pEnd.x, (int)pStart.y), pEnd, new Vector2D((int)pStart.x, (int)pEnd.y), pStart };
+				return new[] { pStart, new Vector2D((int)pStart.x, (int)pEnd.y), pEnd, new Vector2D((int)pEnd.x, (int)pStart.y), pStart };
 			}
 
-			//got corners
+			//got corners. TODO: check point order
 			bool reverse = false;
 			currentBevelWidth = Math.Min(Math.Abs(bevelWidth), Math.Min(width, height) / 2);
 			
