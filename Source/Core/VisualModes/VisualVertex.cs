@@ -7,30 +7,30 @@ namespace CodeImp.DoomBuilder.VisualModes
 {
 	public class VisualVertexPair
 	{
-		private VisualVertex v1;
-		private VisualVertex v2;
+		private VisualVertex floorvert;
+		private VisualVertex ceilvert;
 
-		public VisualVertex[] Vertices { get { return new VisualVertex[] { v1, v2 }; } }
-		public VisualVertex Vertex1 { get { return v1; } }
-		public VisualVertex Vertex2 { get { return v2; } }
-		public bool Changed { set { v1.Changed = true; v2.Changed = true; } }
+		public VisualVertex[] Vertices { get { return new[] { floorvert, ceilvert }; } }
+		public VisualVertex FloorVertex { get { return floorvert; } }
+		public VisualVertex CeilingVertex { get { return ceilvert; } }
+		public bool Changed { set { floorvert.Changed = true; ceilvert.Changed = true; } }
 
-		public VisualVertexPair(VisualVertex v1, VisualVertex v2) {
-			if(v1.CeilingVertex == v2.CeilingVertex)
+		public VisualVertexPair(VisualVertex floorvert, VisualVertex ceilvert) {
+			if(floorvert.CeilingVertex == ceilvert.CeilingVertex)
 				throw new Exception("VisualVertexPair: both verts have the same alignment! We cannot tolerate this!");
 
-			this.v1 = v1;
-			this.v2 = v2;
+			this.floorvert = floorvert;
+			this.ceilvert = ceilvert;
 		}
 
 		public void Update() {
-			if(v1.Changed) v1.Update();
-			if(v2.Changed) v2.Update();
+			if(floorvert.Changed) floorvert.Update();
+			if(ceilvert.Changed) ceilvert.Update();
 		}
 
 		public void Deselect() {
-			v1.Selected = false;
-			v2.Selected = false;
+			floorvert.Selected = false;
+			ceilvert.Selected = false;
 		}
 	}
 

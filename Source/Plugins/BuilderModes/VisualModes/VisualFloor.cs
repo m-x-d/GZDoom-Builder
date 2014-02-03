@@ -285,8 +285,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void ChangeHeight(int amount)
 		{
 			mode.CreateUndo("Change floor height", UndoGroup.FloorHeightChange, level.sector.FixedIndex);
+			//mxd. Modify vertex offsets?
+			if(General.Map.UDMF && level.sector.Sidedefs.Count == 3 && changeVertexHeight(amount)) {
+				mode.SetActionResult("Changed floor vertex height by " + amount + ".");
+				return;
+			}
+
 			level.sector.FloorHeight += amount;
 			mode.SetActionResult("Changed floor height to " + level.sector.FloorHeight + ".");
+		}
+
+		//mxd
+		private bool changeVertexHeight(int amount) {
+			List<Vertex> verts = new List<Vertex>(3);
+
+			//do this only if all 3 verts have offsets
+			foreach(Sidedef side in level.sector.Sidedefs) {
+				if(float.IsNaN(side.Line.Start.ZFloor) || float.IsNaN(side.Line.End.ZFloor)) return false;
+				if(!verts.Contains(side.Line.Start)) verts.Add(side.Line.Start);
+				if(!verts.Contains(side.Line.End)) verts.Add(side.Line.End);
+			}
+
+			foreach (Vertex v in verts) 
+				mode.GetVisualVertex(v, true).OnChangeTargetHeight(amount);
+
+			return true;
 		}
 
 		//mxd. Sector brightness change

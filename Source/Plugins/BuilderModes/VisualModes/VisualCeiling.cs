@@ -282,8 +282,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void ChangeHeight(int amount)
 		{
 			mode.CreateUndo("Change ceiling height", UndoGroup.CeilingHeightChange, level.sector.FixedIndex);
+			//mxd. Modify vertex offsets?
+			if(General.Map.UDMF && level.sector.Sidedefs.Count == 3 && changeVertexHeight(amount)) {
+				mode.SetActionResult("Changed ceiling vertex height by " + amount + ".");
+				return;
+			}
+
 			level.sector.CeilHeight += amount;
 			mode.SetActionResult("Changed ceiling height to " + level.sector.CeilHeight + ".");
+		}
+
+		//mxd
+		private bool changeVertexHeight(int amount) {
+			List<Vertex> verts = new List<Vertex>(3);
+
+			//do this only if all 3 verts have offsets
+			foreach(Sidedef side in level.sector.Sidedefs) {
+				if(float.IsNaN(side.Line.Start.ZCeiling) || float.IsNaN(side.Line.End.ZCeiling)) return false;
+				if(!verts.Contains(side.Line.Start)) verts.Add(side.Line.Start);
+				if(!verts.Contains(side.Line.End)) verts.Add(side.Line.End);
+			}
+
+			foreach(Vertex v in verts) 
+				mode.GetVisualVertex(v, false).OnChangeTargetHeight(amount);
+
+			return true;
 		}
 
 		//mxd. Sector brightness change
