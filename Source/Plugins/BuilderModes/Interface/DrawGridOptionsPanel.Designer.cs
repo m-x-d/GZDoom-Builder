@@ -26,6 +26,7 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.gridlock = new System.Windows.Forms.CheckBox();
 			this.slicesV = new System.Windows.Forms.NumericUpDown();
 			this.slicesH = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new System.Windows.Forms.Label();
@@ -33,7 +34,6 @@
 			this.triangulate = new System.Windows.Forms.CheckBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.hints = new System.Windows.Forms.RichTextBox();
-			this.gridlock = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.slicesV)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.slicesH)).BeginInit();
@@ -56,6 +56,17 @@
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Draw Options:";
+			// 
+			// gridlock
+			// 
+			this.gridlock.AutoSize = true;
+			this.gridlock.Location = new System.Drawing.Point(9, 77);
+			this.gridlock.Name = "gridlock";
+			this.gridlock.Size = new System.Drawing.Size(113, 18);
+			this.gridlock.TabIndex = 5;
+			this.gridlock.Text = "Lock slices to grid";
+			this.gridlock.UseVisualStyleBackColor = true;
+			this.gridlock.CheckedChanged += new System.EventHandler(this.gridlock_CheckedChanged);
 			// 
 			// slicesV
 			// 
@@ -119,7 +130,7 @@
 			this.groupBox2.Controls.Add(this.hints);
 			this.groupBox2.Location = new System.Drawing.Point(3, 134);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(243, 115);
+			this.groupBox2.Size = new System.Drawing.Size(243, 132);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Quick Help:";
@@ -135,20 +146,9 @@
 			this.hints.ReadOnly = true;
 			this.hints.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
 			this.hints.ShortcutsEnabled = false;
-			this.hints.Size = new System.Drawing.Size(228, 90);
+			this.hints.Size = new System.Drawing.Size(228, 107);
 			this.hints.TabIndex = 0;
 			this.hints.Text = "";
-			// 
-			// gridlock
-			// 
-			this.gridlock.AutoSize = true;
-			this.gridlock.Location = new System.Drawing.Point(9, 77);
-			this.gridlock.Name = "gridlock";
-			this.gridlock.Size = new System.Drawing.Size(113, 18);
-			this.gridlock.TabIndex = 5;
-			this.gridlock.Text = "Lock slices to grid";
-			this.gridlock.UseVisualStyleBackColor = true;
-			this.gridlock.CheckedChanged += new System.EventHandler(this.gridlock_CheckedChanged);
 			// 
 			// DrawGridOptionsPanel
 			// 

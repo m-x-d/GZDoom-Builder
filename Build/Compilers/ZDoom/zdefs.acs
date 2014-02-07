@@ -746,6 +746,22 @@
 #DEFINE PTROP_UNSAFEMASTER 2
 #DEFINE PTROP_NOSAFEGUARDS PTROP_UNSAFETARGET |PTROP_UNSAFEMASTER 
 
+// Line activation flags
+
+#define SPAC_Cross			1		// when player crosses line
+#define SPAC_Use			2		// when player uses line
+#define SPAC_MCross			4		// when monster crosses line
+#define SPAC_Impact			8		// when projectile hits line
+#define SPAC_Push			16		// when player pushes line
+#define SPAC_PCross			32		// when projectile crosses line
+#define SPAC_UseThrough		64		// when player uses line (doesn't block)
+#define SPAC_AnyCross		128		// when anything without the TELEPORT flag crosses the line
+#define SPAC_MUse			256		// monsters can use
+#define SPAC_MPush			512		// monsters can push
+#define SPAC_UseBack		1024	// can be used from the back side
+
+#define SPAC_None			0
+
 // ==========================================================================
 // Skulltag Definitions
 // ==========================================================================
