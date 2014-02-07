@@ -294,8 +294,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This sets the result for an action
 		public void SetActionResult(string displaystatus)
 		{
-			actionresult = new VisualActionResult();
-			actionresult.displaystatus = displaystatus;
+			actionresult = new VisualActionResult {displaystatus = displaystatus};
 		}
 		
 		// This creates an undo, when only a single selection is made
@@ -330,7 +329,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(vs.Value != null)
 				{
-					BaseVisualSector bvs = (BaseVisualSector)vs.Value;
+					BaseVisualSector bvs = vs.Value as BaseVisualSector;
 					if((bvs.Floor != null) && bvs.Floor.Selected) selectedobjects.Add(bvs.Floor);
 					if((bvs.Ceiling != null) && bvs.Ceiling.Selected) selectedobjects.Add(bvs.Ceiling);
 					foreach(Sidedef sd in vs.Key.Sidedefs)
@@ -348,7 +347,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(vt.Value != null)
 				{
-					BaseVisualThing bvt = (BaseVisualThing)vt.Value;
+					BaseVisualThing bvt = vt.Value as BaseVisualThing;
 					if(bvt.Selected) selectedobjects.Add(bvt);
 				}
 			}
@@ -475,7 +474,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(vs.Value != null)
 				{
-					BaseVisualSector bvs = (BaseVisualSector)vs.Value;
+					BaseVisualSector bvs = vs.Value as BaseVisualSector;
 					if(bvs.Changed) bvs.Rebuild();
 				}
 			}
@@ -484,7 +483,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(vt.Value != null)
 				{
-					BaseVisualThing bvt = (BaseVisualThing)vt.Value;
+					BaseVisualThing bvt = vt.Value as BaseVisualThing;
 					if(bvt.Changed) bvt.Rebuild();
 				}
 			}
@@ -733,7 +732,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				for(int i = 0; i < sectorsWithEffects.Length; i++) {
 					// The visual sector associated is now outdated
 					if(VisualSectorExists(sectorsWithEffects[i])) {
-						BaseVisualSector vs = (BaseVisualSector)GetVisualSector(sectorsWithEffects[i]);
+						BaseVisualSector vs = GetVisualSector(sectorsWithEffects[i]) as BaseVisualSector;
 						vs.UpdateSectorGeometry(true);
 					}
 				}
@@ -961,7 +960,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(obj is BaseVisualThing) {
 						((BaseVisualThing)obj).Thing.Selected = true;
 					} else if(obj is VisualFloor || obj is VisualCeiling) {
-						VisualGeometry vg = (VisualGeometry)obj;
+						VisualGeometry vg = obj as VisualGeometry;
 
 						if(vg.Sector != null && vg.Sector.Sector != null && !selectedSectors.Contains(vg.Sector.Sector)) {
 							selectedSectors.Add(vg.Sector.Sector);
@@ -972,7 +971,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							}
 						}
 					} else if(obj is VisualLower || obj is VisualUpper || obj is VisualMiddleDouble || obj is VisualMiddleSingle || obj is VisualMiddle3D) {
-						VisualGeometry vg = (VisualGeometry)obj;
+						VisualGeometry vg = obj as VisualGeometry;
 
 						if(vg.Sidedef != null && !selectedLines.Contains(vg.Sidedef.Line))
 							selectedLines.Add(vg.Sidedef.Line);
@@ -1181,7 +1180,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(sd.Marked && VisualSectorExists(sd.Sector))
 					{
-						BaseVisualSector vs = (BaseVisualSector)GetVisualSector(sd.Sector);
+						BaseVisualSector vs = GetVisualSector(sd.Sector) as BaseVisualSector;
 						VisualSidedefParts parts = vs.GetSidedefParts(sd);
 						parts.SetupAllParts();
 					}
@@ -1200,7 +1199,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							if(VisualSectorExists(us.Key))
 							{
-								BaseVisualSector vs = (BaseVisualSector)GetVisualSector(us.Key);
+								BaseVisualSector vs = GetVisualSector(us.Key) as BaseVisualSector;
 								vs.UpdateSectorGeometry(us.Value);
 							}
 						}
@@ -1208,7 +1207,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// And update for this sector ofcourse
 						if(VisualSectorExists(s))
 						{
-							BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s);
+							BaseVisualSector vs = GetVisualSector(s) as BaseVisualSector;
 							vs.UpdateSectorGeometry(false);
 						}
 					}
@@ -1290,7 +1289,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. As well as geometry...
 			foreach(KeyValuePair<Sector, VisualSector> group in visiblesectors){
 				if (group.Value is BaseVisualSector)
-					((BaseVisualSector)group.Value).Rebuild();
+					(group.Value as BaseVisualSector).Rebuild();
 			}
 
 			RebuildSelectedObjectsList();
@@ -1314,7 +1313,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. As well as geometry...
 			foreach (KeyValuePair<Sector, VisualSector> group in visiblesectors) {
 				if (group.Value is BaseVisualSector)
-					((BaseVisualSector)group.Value).Rebuild();
+					(group.Value as BaseVisualSector).Rebuild();
 			}
 
 			RebuildSelectedObjectsList();
@@ -1352,7 +1351,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ThingData td = GetThingData(t);
 					foreach(KeyValuePair<Sector, bool> s in td.UpdateAlso) {
 						if(VisualSectorExists(s.Key)) {
-							BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s.Key);
+							BaseVisualSector vs = GetVisualSector(s.Key) as BaseVisualSector;
 							vs.UpdateSectorGeometry(s.Value);
 						}
 					}
@@ -1504,8 +1503,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((selectedobjects.Count == 0) && (target.picked is BaseVisualGeometrySector))
 			{
 				Sector s = (target.picked as BaseVisualGeometrySector).Level.sector;
-				if(!added.ContainsKey(s))
-					sectors.Add(s);
+				if(!added.ContainsKey(s)) sectors.Add(s);
 			}
 			
 			return sectors;
@@ -1520,7 +1518,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(i is BaseVisualGeometrySidedef)
 				{
-					//Linedef l = (i as BaseVisualGeometrySidedef).Sidedef.Line;
 					Linedef l = (i as BaseVisualGeometrySidedef).GetControlLinedef(); //mxd
 					if(!added.ContainsKey(l))
 					{
@@ -1533,10 +1530,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Add highlight?
 			if((selectedobjects.Count == 0) && (target.picked is BaseVisualGeometrySidedef))
 			{
-				//Linedef l = (target.picked as BaseVisualGeometrySidedef).Sidedef.Line;
 				Linedef l = (target.picked as BaseVisualGeometrySidedef).GetControlLinedef(); //mxd
-				if(!added.ContainsKey(l))
-					linedefs.Add(l);
+				if(!added.ContainsKey(l)) linedefs.Add(l);
 			}
 
 			return linedefs;
@@ -1564,8 +1559,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((selectedobjects.Count == 0) && (target.picked is BaseVisualGeometrySidedef))
 			{
 				Sidedef sd = (target.picked as BaseVisualGeometrySidedef).Sidedef;
-				if(!added.ContainsKey(sd))
-					sidedefs.Add(sd);
+				if(!added.ContainsKey(sd)) sidedefs.Add(sd);
 			}
 
 			return sidedefs;
@@ -1593,8 +1587,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((selectedobjects.Count == 0) && (target.picked is BaseVisualThing))
 			{
 				Thing t = (target.picked as BaseVisualThing).Thing;
-				if(!added.ContainsKey(t))
-					things.Add(t);
+				if(!added.ContainsKey(t)) things.Add(t);
 			}
 
 			return things;
@@ -1633,21 +1626,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(singleselection || target.picked.Selected || targetonly)
 				{
-					return (IVisualEventReceiver)target.picked;
+					return target.picked as IVisualEventReceiver;
 				}
-				else if(selectedobjects.Count > 0)
+
+				if(selectedobjects.Count > 0)
 				{
 					return selectedobjects[0];
 				}
-				else
-				{
-					return (IVisualEventReceiver)target.picked;
-				}
+
+				return target.picked as IVisualEventReceiver;
 			}
-			else
-			{
-				return new NullVisualEventReceiver();
-			}
+
+			return new NullVisualEventReceiver();
 		}
 
 		//mxd. Copied from BuilderModes.ThingsMode
@@ -1716,7 +1706,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(vt.Value != null)
 				{
-					BaseVisualThing bvt = (BaseVisualThing)vt.Value;
+					BaseVisualThing bvt = vt.Value as BaseVisualThing;
 					bvt.Selected = false;
 				}
 			}
@@ -2145,7 +2135,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.FormatInterface.HasThingHeight){
 				foreach(BaseVisualThing vt in things) {
 					if(vt.Thing.Sector == null) continue;
-					ThingTypeInfo ti = General.Map.Data.GetThingInfo(vt.Thing.Type);
 					
 					if(vt.Thing.Position.z != 0)
 						vt.OnChangeTargetHeight((int)-vt.Thing.Position.z);
@@ -2874,7 +2863,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			foreach(Thing t in things) {
 				List<Linedef> excludedLines = new List<Linedef>();
-				bool aligned = false;
+				bool aligned;
 
 				do {
 					Linedef l = General.Map.Map.NearestLinedef(t.Position, excludedLines);
@@ -2940,7 +2929,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					if(ip != null) {
 						VisualThing vTarget = !VisualThingExists(ip) ? CreateVisualThing(ip) : GetVisualThing(ip);
-						Vector3D targetPos = new Vector3D();
+						Vector3D targetPos;
 						if(vTarget == null) {
 							targetPos = ip.Position;
 							if(ip.Sector != null) targetPos.z += ip.Sector.FloorHeight;
@@ -2973,7 +2962,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.VisualCamera.AngleZ = Angle2D.PI;
 				} else {
 					VisualThing vTarget = !VisualThingExists(target) ? CreateVisualThing(target) : GetVisualThing(target);
-					Vector3D targetPos = new Vector3D();
+					Vector3D targetPos;
 					if(vTarget == null) {
 						targetPos = target.Position;
 						if(target.Sector != null) targetPos.z += target.Sector.FloorHeight;
