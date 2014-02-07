@@ -230,6 +230,7 @@
     <Compile Include="ClassicModes\FloorAlignMode.cs" />
     <Compile Include="ClassicModes\SnapVerticesMode.cs" />
     <Compile Include="ErrorChecks\CheckMissingTextures.cs" />
+    <Compile Include="ErrorChecks\CheckOverlappingVertices.cs" />
     <Compile Include="ErrorChecks\CheckStrayVertices.cs" />
     <Compile Include="ErrorChecks\CheckUnknownFlats.cs" />
     <Compile Include="ErrorChecks\CheckUnknownTextures.cs" />
@@ -244,6 +245,8 @@
     <Compile Include="ErrorChecks\ResultUnknownTexture.cs" />
     <Compile Include="ErrorChecks\ResultUnknownThing.cs" />
     <Compile Include="ErrorChecks\ResultUnusedTexture.cs" />
+    <Compile Include="ErrorChecks\ResultVertexOverlappingLine.cs" />
+    <Compile Include="ErrorChecks\ResultVertexOverlappingVertex.cs" />
     <Compile Include="FindReplace\BaseFindLinedef.cs" />
     <Compile Include="FindReplace\BaseFindSector.cs" />
     <Compile Include="FindReplace\BaseFindThing.cs" />

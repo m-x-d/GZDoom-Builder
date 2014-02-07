@@ -1846,7 +1846,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			return false;
 		}
 
-		//checks if there's a wall at appropriate height to align thing to
+		// Checks if there's a wall at appropriate height to align thing to
 		private static bool canAlignThingTo(Thing t, Sector front, Sector back) {
 			ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
 			int absz = GetThingAbsoluteZ(t, ti);
@@ -1855,20 +1855,18 @@ namespace CodeImp.DoomBuilder.Geometry
 
 			if(front.FloorHeight < back.FloorHeight) {
 				Rectangle lower = new Rectangle(0, front.FloorHeight, 1, back.FloorHeight - front.FloorHeight);
-				if(thing.IntersectsWith(lower))
-					return true;
+				if(thing.IntersectsWith(lower)) return true;
 			}
 
 			if(front.CeilHeight > back.CeilHeight) {
 				Rectangle upper = new Rectangle(0, back.CeilHeight, 1, front.CeilHeight - back.CeilHeight);
-				if(thing.IntersectsWith(upper))
-					return true;
+				if(thing.IntersectsWith(upper)) return true;
 			}
 
 			return false;
 		}
 
-		//checks if there's a wall at appropriate height to align thing to
+		// Checks if there's a wall at appropriate height to align thing to
 		private static bool canAlignThingTo(Thing t, Sector sector) {
 			ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
 			int absz = GetThingAbsoluteZ(t, ti);
@@ -1878,7 +1876,6 @@ namespace CodeImp.DoomBuilder.Geometry
 			return thing.IntersectsWith(middle);
 		}
 
-		//performs thing alignment
 		private static void alignThingToLine(Thing t, Linedef l, bool front) {
 			//get aligned position
 			Vector2D pos = l.NearestOnLine(t.Position);
@@ -1911,24 +1908,16 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		public static int GetThingAbsoluteZ(Thing t, ThingTypeInfo ti) {
-			int absz = 0;
-
 			// Determine z info
-			if(ti.AbsoluteZ) {
-				absz = (int)t.Position.z;
-			} else {
-				if(t.Sector != null) {
-					// Hangs from ceiling?
-					if(ti.Hangs)
-						absz = (int)(t.Sector.CeilHeight - t.Position.z - ti.Height);
-					else
-						absz = (int)(t.Sector.FloorHeight + t.Position.z);
-				} else {
-					absz = (int)t.Position.z;
-				}
-			}
+			if(ti.AbsoluteZ) return (int)t.Position.z;
 
-			return absz;
+			if(t.Sector != null) {
+				// Hangs from ceiling?
+				if(ti.Hangs) return (int)(t.Sector.CeilHeight - t.Position.z - ti.Height);
+				
+				return (int)(t.Sector.FloorHeight + t.Position.z);
+			}
+			return (int)t.Position.z;
 		}
 
 		#endregion
@@ -1955,7 +1944,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		//mxd
 		public static int GetDropDownWidth(ComboBox cb) {
-			int maxWidth = 0, temp = 0;
+			int maxWidth = 0, temp;
 			foreach(var obj in cb.Items) {
 				temp = TextRenderer.MeasureText(obj.ToString(), cb.Font).Width;
 				if(temp > maxWidth) maxWidth = temp;

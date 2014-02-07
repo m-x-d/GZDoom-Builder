@@ -201,6 +201,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			blockmap.AddLinedefsSet(General.Map.Map.Linedefs);
 			blockmap.AddSectorsSet(General.Map.Map.Sectors);
 			blockmap.AddThingsSet(General.Map.Map.Things);
+			blockmap.AddVerticesSet(General.Map.Map.Vertices); //mxd
 			
 			// Open the results panel
 			this.Size = new Size(this.Width, this.Height - this.ClientSize.Height + resultspanel.Top + resultspanel.Height);

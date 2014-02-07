@@ -73,24 +73,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								float lu, du;
 								
-								// Check if the lines touch. Note that I don't include 0.0 and 1.0 here because
-								// the lines may be touching at the ends when sharing the same vertex.
-								if(l.Line.GetIntersection(d.Line, out du, out lu)) {
-									lu = (float)Math.Round(lu, General.Map.FormatInterface.VertexDecimals); //mxd
-									du = (float)Math.Round(du, General.Map.FormatInterface.VertexDecimals); //mxd
+								//mxd. This can also happen. I suppose. Some people manage to do this. I dunno how, but they do...
+								if((l.Start.Position == d.Start.Position && l.End.Position == d.End.Position)
+									|| (l.Start.Position == d.End.Position && l.End.Position == d.Start.Position)) {
+									SubmitResult(new ResultLineOverlapping(l, d));
+									donelines[d] = d;
+								} 
+								else if(l.Line.GetIntersection(d.Line, out du, out lu)) 
+								{
+									// Check if the lines touch. Note that I don't include 0.0 and 1.0 here because
+									// the lines may be touching at the ends when sharing the same vertex.
+									if(General.Map.FormatInterface.VertexDecimals > 0) //mxd
+									{
+										lu = (float)Math.Round(lu, General.Map.FormatInterface.VertexDecimals);
+										du = (float)Math.Round(du, General.Map.FormatInterface.VertexDecimals);
+									}
 									
 									if((lu > 0.0f) && (lu < 1.0f) && (du > 0.0f) && (du < 1.0f))
 									{
 										// Check if not the same sector on all sides
 										Sector samesector = null;
 										if(l.Front != null) samesector = l.Front.Sector;
-											else if(l.Back != null) samesector = l.Back.Sector;
-											else if(d.Front != null) samesector = d.Front.Sector;
-											else if(d.Back != null) samesector = d.Back.Sector;
+										else if(l.Back != null) samesector = l.Back.Sector;
+										else if(d.Front != null) samesector = d.Front.Sector;
+										else if(d.Back != null) samesector = d.Back.Sector;
+										
 										if((l.Front == null) || (l.Front.Sector != samesector)) samesector = null;
-											else if((l.Back == null) || (l.Back.Sector != samesector)) samesector = null;
-											else if((d.Front == null) || (d.Front.Sector != samesector)) samesector = null;
-											else if((d.Back == null) || (d.Back.Sector != samesector)) samesector = null;
+										else if((l.Back == null) || (l.Back.Sector != samesector)) samesector = null;
+										else if((d.Front == null) || (d.Front.Sector != samesector)) samesector = null;
+										else if((d.Back == null) || (d.Back.Sector != samesector)) samesector = null;
 
 										if(samesector == null)
 										{
