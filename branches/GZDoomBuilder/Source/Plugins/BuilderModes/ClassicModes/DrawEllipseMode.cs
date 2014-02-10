@@ -118,6 +118,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Update();
 		}
 
+		public override void OnHelp() {
+			General.ShowHelp("/gzdb/features/classic_modes/mode_drawellipse.html");
+		}
+
 		#endregion
 
 		#region ================== Actions

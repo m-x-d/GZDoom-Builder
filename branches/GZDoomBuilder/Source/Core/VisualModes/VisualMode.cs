@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -1107,6 +1108,23 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#endregion
 
 		#region ================== Actions
+
+		//mxd
+		[BeginAction("centeroncoordinates", BaseAction = true)]
+		protected virtual void CenterOnCoordinates() {
+			//show form...
+			CenterOnCoordinatesForm form = new CenterOnCoordinatesForm();
+			if(form.ShowDialog() == DialogResult.OK) {
+				Sector s = General.Map.Map.GetSectorByCoordinates(form.Coordinates);
+
+				if (s == null) {
+					General.Map.VisualCamera.Position = form.Coordinates;
+				} else {
+					General.Map.VisualCamera.Position = new Vector3D(form.Coordinates.x, form.Coordinates.y, s.FloorHeight + 54);
+				}
+				General.Map.VisualCamera.Sector = s;
+			}
+		}
 
 		#endregion
 	}

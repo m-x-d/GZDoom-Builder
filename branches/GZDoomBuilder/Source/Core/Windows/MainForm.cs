@@ -2470,6 +2470,7 @@ namespace CodeImp.DoomBuilder.Windows
 			itemscripteditor.Enabled = (General.Map != null);
 			itemfittoscreen.Enabled = (General.Map != null);
 			menuzoom.Enabled = (General.Map != null);
+			menugotocoords.Enabled = (General.Map != null); //mxd
 			itemtoggleinfo.Checked = IsInfoPanelExpanded;
 			
 			// View mode items
