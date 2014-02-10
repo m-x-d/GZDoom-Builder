@@ -2669,6 +2669,8 @@ namespace CodeImp.DoomBuilder.Windows
 			itemReloadGldefs.Enabled = enabled;
 			itemReloadMapinfo.Enabled = enabled;
 			itemReloadModedef.Enabled = enabled;
+			screenshotToolStripMenuItem.Enabled = enabled;
+			editAreaScreenshotToolStripMenuItem.Enabled = enabled;
 		}
 		
 		// Errors and Warnings
@@ -2767,6 +2769,11 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		private void saveScreenshot(bool editAreaOnly) {
+			if (General.Map == null) {
+				DisplayStatus(StatusType.Warning, "Please load a map first!");
+				return;
+			}
+
 			//check folder
 			string folder = Path.Combine(General.AppPath, "Screenshots").Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 			if(!Directory.Exists(folder)) Directory.CreateDirectory(folder);
@@ -2775,11 +2782,11 @@ namespace CodeImp.DoomBuilder.Windows
 			string name;
 			Rectangle bounds;
 			if(editAreaOnly) {
-				name = (General.Map != null ? Path.GetFileNameWithoutExtension(General.Map.FileTitle) + " (edit area) at " : "Edit area at ");
+				name = Path.GetFileNameWithoutExtension(General.Map.FileTitle) + " (edit area) at ";
 				bounds = this.display.Bounds;
 				bounds.Offset(this.PointToScreen(new Point()));
 			} else {
-				name = (General.Map != null ? Path.GetFileNameWithoutExtension(General.Map.FileTitle) + " at " : "GZDB itself at ");
+				name = Path.GetFileNameWithoutExtension(General.Map.FileTitle) + " at ";
 				bounds = this.Bounds;
 			}
 
@@ -2799,6 +2806,33 @@ namespace CodeImp.DoomBuilder.Windows
 
 					//draw the cursor
 					if(!cursorLocation.IsEmpty) g.DrawImage(Resources.Cursor, cursorLocation);
+
+					//draw coordinates
+					if (editAreaOnly && General.Editing.Mode != null) {
+						string coords;
+
+						if (General.Editing.Mode is ClassicMode) {
+							Vector2D pos = ((ClassicMode)General.Editing.Mode).MouseMapPos;
+
+							//mouse inside the view?
+							if (pos.IsFinite()) {
+								coords = "X:" + Math.Round(pos.x) + "; Y:" + Math.Round(pos.y);
+							} else {
+								coords = "X:" + Math.Round(General.Map.Renderer2D.TranslateX) + "; Y:" + Math.Round(General.Map.Renderer2D.TranslateY);
+							}
+						} else { //should be visual mode
+							coords = "X:" + Math.Round(General.Map.VisualCamera.Position.x) + "; Y:" + Math.Round(General.Map.VisualCamera.Position.y) + "; Z:" + Math.Round(General.Map.VisualCamera.Position.z);
+						}
+						
+						Font font = new Font("Tahoma", 10);
+						SolidBrush brush = new SolidBrush(Color.White);
+						SizeF rect = g.MeasureString(coords, font);
+						float px = bounds.Width - rect.Width - 4;
+						float py = bounds.Height - rect.Height - 4;
+
+						g.FillRectangle(Brushes.Black, px, py, rect.Width, rect.Height);
+						g.DrawString(coords, font, brush, px + 2, py + 2);
+					}
 				}
 
 				try {
