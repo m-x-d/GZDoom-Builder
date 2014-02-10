@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 				modething.DetermineSector();
 				float z = modething.Position.z;
 				if(modething.Sector != null)
-					z = modething.Position.z + (float)modething.Sector.FloorHeight;
+					z = modething.Position.z + modething.Sector.FloorHeight;
 				
 				// Position camera here
 				Vector3D wantedposition = new Vector3D(modething.Position.x, modething.Position.y, z + THING_Z_OFFSET);
@@ -130,10 +130,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 				}
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 		
 		// This applies the camera position and angle to the 3D Camera Thing
@@ -158,10 +156,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 				modething.Rotate(anglexy - Angle2D.PI);
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		//mxd

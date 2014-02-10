@@ -812,6 +812,12 @@
     <Compile Include="Types\ThingClassHandler.cs" />
     <Compile Include="Types\ThingTypeHandler.cs" />
     <Compile Include="VisualModes\VisualVertex.cs" />
+    <Compile Include="Windows\CenterOnCoordinatesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\CenterOnCoordinatesForm.Designer.cs">
+      <DependentUpon>CenterOnCoordinatesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ChangeMapForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1058,6 +1064,9 @@
     <EmbeddedResource Include="Windows\BitFlagsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>BitFlagsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\CenterOnCoordinatesForm.resx">
+      <DependentUpon>CenterOnCoordinatesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ChangeMapForm.resx">
       <DependentUpon>ChangeMapForm.cs</DependentUpon>

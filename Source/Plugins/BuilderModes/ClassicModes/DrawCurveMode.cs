@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -8,6 +10,8 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Windows;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
@@ -19,11 +23,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 	public class DrawCurveMode : DrawGeometryMode
 	{
+		#region ================== Variables
+
 		private HintLabel hintLabel;
 		private Curve curve;
 		private static int segmentLength = 32;
 		private int minSegmentLength = 16;
 		private int maxSegmentLength = 4096; //just some arbitrary number
+
+		#endregion
+
+		#region ================== Constructor/Disposer
 
 		public DrawCurveMode() {
 			hintLabel = new HintLabel();
@@ -36,6 +46,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.Dispose();
 		}
 
+		#endregion
+
+		#region ================== Methods
+
 		protected override void Update() {
 			PixelColor stitchcolor = General.Colors.Highlight;
 			PixelColor losecolor = General.Colors.Selection;
@@ -45,8 +59,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 
 			DrawnVertex curp = GetCurrentPosition();
-			float vsize = ((float)renderer.VertexSize + 1.0f) / renderer.Scale;
-			float vsizeborder = ((float)renderer.VertexSize + 3.0f) / renderer.Scale;
+			float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
 
 			// The last label's end must go to the mouse cursor
 			if(labels.Count > 0)
@@ -120,6 +133,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Done
 			renderer.Present();
 		}
+
+		#endregion
+
+		#region ================== Events
 
 		public override void OnAccept() {
 			Cursor.Current = Cursors.AppStarting;
@@ -217,7 +234,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
 		}
 
-		//ACTIONS
+		public override void OnHelp() {
+			General.ShowHelp("/gzdb/features/classic_modes/mode_drawcurve.html");
+		}
+
+		#endregion
+
+		#region ================== Actions
+
 		[BeginAction("increasesubdivlevel")]
 		protected virtual void increaseSubdivLevel() {
 			if(segmentLength < maxSegmentLength) {
@@ -241,5 +265,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Update();
 			}
 		}
+
+		#endregion
+
 	}
 }

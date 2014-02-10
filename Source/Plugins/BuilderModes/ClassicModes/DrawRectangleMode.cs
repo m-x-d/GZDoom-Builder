@@ -352,6 +352,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
 		}
 
+		public override void OnHelp() {
+			General.ShowHelp("/gzdb/features/classic_modes/mode_drawrect.html");
+		}
+
 		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) {
 			bevelWidth = panel.BevelWidth;
 			subdivisions = panel.Subdivisions;

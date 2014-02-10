@@ -139,6 +139,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
 		}
 
+		public override void OnHelp() {
+			General.ShowHelp("/gzdb/features/classic_modes/mode_drawgrid.html");
+		}
+
 		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) {
 			triangulate = panel.Triangulate;
 			horizontalSlices = panel.HorizontalSlices + 1;

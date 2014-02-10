@@ -97,10 +97,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 
 			//show form
 			form = new BridgeModeForm();
-			form.OnCancelClick += new EventHandler(form_OnCancelClick);
-			form.OnOkClick += new EventHandler(form_OnOkClick);
-			form.OnFlipClick += new EventHandler(form_OnFlipClick);
-			form.OnSubdivisionChanged += new EventHandler(form_OnSubdivisionChanged);
+			form.OnCancelClick += form_OnCancelClick;
+			form.OnOkClick += form_OnOkClick;
+			form.OnFlipClick += form_OnFlipClick;
+			form.OnSubdivisionChanged += form_OnSubdivisionChanged;
 			form.Show(Form.ActiveForm);
 			General.Interface.FocusDisplay();
 

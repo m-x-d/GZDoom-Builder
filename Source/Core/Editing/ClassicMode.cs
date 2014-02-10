@@ -360,9 +360,9 @@ namespace CodeImp.DoomBuilder.Editing
 			area.Inflate(area.Width * padding, area.Height * padding);
 			
 			// Calculate scale to view map at
-			scalew = (float)General.Map.Graphics.RenderTarget.ClientSize.Width / area.Width;
-			scaleh = (float)General.Map.Graphics.RenderTarget.ClientSize.Height / area.Height;
-			if(scalew < scaleh) scale = scalew; else scale = scaleh;
+			scalew = General.Map.Graphics.RenderTarget.ClientSize.Width / area.Width;
+			scaleh = General.Map.Graphics.RenderTarget.ClientSize.Height / area.Height;
+			scale = scalew < scaleh ? scalew : scaleh;
 			
 			// Change the view to see the whole map
 			renderer2d.ScaleView(scale);
@@ -848,6 +848,18 @@ namespace CodeImp.DoomBuilder.Editing
 		protected virtual void ViewModeCeilings()
 		{
 			SetViewMode(ViewMode.CeilingTextures);
+		}
+
+		//mxd
+		[BeginAction("centeroncoordinates", BaseAction = true)]
+		protected virtual void CenterOnCoordinates() {
+			//show form...
+			CenterOnCoordinatesForm form = new CenterOnCoordinatesForm();
+			if (form.ShowDialog() == DialogResult.OK) {
+				//center view
+				renderer2d.PositionView(form.Coordinates.x, form.Coordinates.y);
+				General.Interface.RedrawDisplay();
+			}
 		}
 
 		#endregion
