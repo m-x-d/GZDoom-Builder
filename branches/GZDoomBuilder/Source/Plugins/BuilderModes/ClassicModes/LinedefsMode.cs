@@ -560,7 +560,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else if(e.Button == MouseButtons.None) // Not holding any buttons?
 			{
 				// Find the nearest linedef within highlight range
-				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
+				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.StitchRange / renderer.Scale);
 
 				//mxd. Render insert vertex preview
 				if(l != null) {

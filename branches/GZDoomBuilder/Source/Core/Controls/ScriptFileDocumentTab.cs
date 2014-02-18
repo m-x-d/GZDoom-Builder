@@ -65,12 +65,6 @@ namespace CodeImp.DoomBuilder.Controls
 			navigator.Enabled = Array.IndexOf(ScriptTypes.TYPES, config.Description) != -1;
 		}
 		
-		// Disposer
-		protected override void Dispose(bool disposing)
-		{
-			base.Dispose(disposing);
-		}
-		
 		#endregion
 		
 		#region ================== Methods

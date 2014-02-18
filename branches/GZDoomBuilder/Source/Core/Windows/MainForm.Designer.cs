@@ -127,6 +127,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.item2zoom25 = new System.Windows.Forms.ToolStripMenuItem();
 			this.item2zoom10 = new System.Windows.Forms.ToolStripMenuItem();
 			this.item2zoom5 = new System.Windows.Forms.ToolStripMenuItem();
+			this.menugotocoords = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemfittoscreen = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemtoggleinfo = new System.Windows.Forms.ToolStripMenuItem();
 			this.seperatorviewzoom = new System.Windows.Forms.ToolStripSeparator();
@@ -249,7 +250,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockersspace = new System.Windows.Forms.Panel();
 			this.dockerspanel = new CodeImp.DoomBuilder.Controls.DockersControl();
 			this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
-			this.menugotocoords = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -1043,7 +1043,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// item2zoom200
 			// 
 			this.item2zoom200.Name = "item2zoom200";
-			this.item2zoom200.Size = new System.Drawing.Size(152, 22);
+			this.item2zoom200.Size = new System.Drawing.Size(102, 22);
 			this.item2zoom200.Tag = "200";
 			this.item2zoom200.Text = "200%";
 			this.item2zoom200.Click += new System.EventHandler(this.itemzoomto_Click);
@@ -1051,7 +1051,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// item2zoom100
 			// 
 			this.item2zoom100.Name = "item2zoom100";
-			this.item2zoom100.Size = new System.Drawing.Size(152, 22);
+			this.item2zoom100.Size = new System.Drawing.Size(102, 22);
 			this.item2zoom100.Tag = "100";
 			this.item2zoom100.Text = "100%";
 			this.item2zoom100.Click += new System.EventHandler(this.itemzoomto_Click);
@@ -1059,7 +1059,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// item2zoom50
 			// 
 			this.item2zoom50.Name = "item2zoom50";
-			this.item2zoom50.Size = new System.Drawing.Size(152, 22);
+			this.item2zoom50.Size = new System.Drawing.Size(102, 22);
 			this.item2zoom50.Tag = "50";
 			this.item2zoom50.Text = "50%";
 			this.item2zoom50.Click += new System.EventHandler(this.itemzoomto_Click);
@@ -1067,7 +1067,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// item2zoom25
 			// 
 			this.item2zoom25.Name = "item2zoom25";
-			this.item2zoom25.Size = new System.Drawing.Size(152, 22);
+			this.item2zoom25.Size = new System.Drawing.Size(102, 22);
 			this.item2zoom25.Tag = "25";
 			this.item2zoom25.Text = "25%";
 			this.item2zoom25.Click += new System.EventHandler(this.itemzoomto_Click);
@@ -1075,7 +1075,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// item2zoom10
 			// 
 			this.item2zoom10.Name = "item2zoom10";
-			this.item2zoom10.Size = new System.Drawing.Size(152, 22);
+			this.item2zoom10.Size = new System.Drawing.Size(102, 22);
 			this.item2zoom10.Tag = "10";
 			this.item2zoom10.Text = "10%";
 			this.item2zoom10.Click += new System.EventHandler(this.itemzoomto_Click);
@@ -1083,10 +1083,18 @@ namespace CodeImp.DoomBuilder.Windows
 			// item2zoom5
 			// 
 			this.item2zoom5.Name = "item2zoom5";
-			this.item2zoom5.Size = new System.Drawing.Size(152, 22);
+			this.item2zoom5.Size = new System.Drawing.Size(102, 22);
 			this.item2zoom5.Tag = "5";
 			this.item2zoom5.Text = "5%";
 			this.item2zoom5.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// menugotocoords
+			// 
+			this.menugotocoords.Name = "menugotocoords";
+			this.menugotocoords.Size = new System.Drawing.Size(209, 22);
+			this.menugotocoords.Tag = "builder_centeroncoordinates";
+			this.menugotocoords.Text = "Go To Coordinates...";
+			this.menugotocoords.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemfittoscreen
 			// 
@@ -1884,7 +1892,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.statuslabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(340, 18);
+			this.statuslabel.Size = new System.Drawing.Size(309, 18);
 			this.statuslabel.Spring = true;
 			this.statuslabel.Text = "Initializing user interface...";
 			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -2123,18 +2131,22 @@ namespace CodeImp.DoomBuilder.Windows
 			this.xposlabel.AutoSize = false;
 			this.xposlabel.Name = "xposlabel";
 			this.xposlabel.Size = new System.Drawing.Size(50, 18);
+			this.xposlabel.Tag = "builder_centeroncoordinates";
 			this.xposlabel.Text = "0";
 			this.xposlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.xposlabel.ToolTipText = "Current X, Y coordinates on map";
+			this.xposlabel.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// yposlabel
 			// 
 			this.yposlabel.AutoSize = false;
 			this.yposlabel.Name = "yposlabel";
 			this.yposlabel.Size = new System.Drawing.Size(50, 18);
+			this.yposlabel.Tag = "builder_centeroncoordinates";
 			this.yposlabel.Text = "0";
 			this.yposlabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.yposlabel.ToolTipText = "Current X, Y coordinates on map";
+			this.yposlabel.ToolTipText = "Current X, Y coordinates on map.\r\nClick to set specific coordinates.";
+			this.yposlabel.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// warnsLabel
 			// 
@@ -2324,14 +2336,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.dockerscollapser.Interval = 200;
 			this.dockerscollapser.Tick += new System.EventHandler(this.dockerscollapser_Tick);
-			// 
-			// menugotocoords
-			// 
-			this.menugotocoords.Name = "menugotocoords";
-			this.menugotocoords.Size = new System.Drawing.Size(209, 22);
-			this.menugotocoords.Tag = "builder_centeroncoordinates";
-			this.menugotocoords.Text = "Go To Coordinates...";
-			this.menugotocoords.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// MainForm
 			// 

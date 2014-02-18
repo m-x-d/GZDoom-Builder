@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label6.AutoEllipsis = true;
 			label6.Location = new System.Drawing.Point(12, 15);
 			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(477, 37);
+			label6.Size = new System.Drawing.Size(457, 37);
 			label6.TabIndex = 21;
 			label6.Text = "These are the resources that will be loaded when this configuration is chosen for" +
 				" editing. Usually you add your IWAD (like doom.wad or doom2.wad) here.";
@@ -221,7 +221,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(617, 381);
+			this.cancel.Location = new System.Drawing.Point(671, 381);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 3;
@@ -232,7 +232,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(499, 381);
+			this.apply.Location = new System.Drawing.Point(553, 381);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 2;
@@ -242,8 +242,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tabs
 			// 
-			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
+			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabs.Controls.Add(this.tabresources);
 			this.tabs.Controls.Add(this.tabnodebuilder);
@@ -254,7 +253,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Enabled = false;
 			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.ItemSize = new System.Drawing.Size(64, 20);
-			this.tabs.Location = new System.Drawing.Point(223, 12);
+			this.tabs.Location = new System.Drawing.Point(277, 12);
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(12, 3);
 			this.tabs.SelectedIndex = 0;
@@ -277,6 +276,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// configdata
 			// 
+			this.configdata.AllowDrop = true;
 			this.configdata.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
@@ -284,7 +284,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.configdata.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.configdata.Location = new System.Drawing.Point(15, 55);
 			this.configdata.Name = "configdata";
-			this.configdata.Size = new System.Drawing.Size(465, 204);
+			this.configdata.Size = new System.Drawing.Size(445, 204);
 			this.configdata.TabIndex = 0;
 			this.configdata.OnContentChanged += new CodeImp.DoomBuilder.Controls.ResourceListEditor.ContentChanged(this.resourcelocations_OnContentChanged);
 			// 
@@ -655,8 +655,8 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.listmodes.CheckBoxes = true;
 			this.listmodes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.colmodename,
-			this.colmodeplugin});
+            this.colmodename,
+            this.colmodeplugin});
 			this.listmodes.FullRowSelect = true;
 			this.listmodes.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listmodes.Location = new System.Drawing.Point(15, 70);
@@ -707,8 +707,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.listconfigs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
+			this.listconfigs.CheckBoxes = true;
 			this.listconfigs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.columnname});
+            this.columnname});
 			this.listconfigs.FullRowSelect = true;
 			this.listconfigs.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listconfigs.HideSelection = false;
@@ -716,12 +717,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listconfigs.MultiSelect = false;
 			this.listconfigs.Name = "listconfigs";
 			this.listconfigs.ShowGroups = false;
-			this.listconfigs.Size = new System.Drawing.Size(205, 358);
+			this.listconfigs.Size = new System.Drawing.Size(259, 358);
 			this.listconfigs.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listconfigs.TabIndex = 0;
 			this.listconfigs.UseCompatibleStateImageBehavior = false;
 			this.listconfigs.View = System.Windows.Forms.View.Details;
-			this.listconfigs.SelectedIndexChanged += new System.EventHandler(this.listconfigs_SelectedIndexChanged);
 			this.listconfigs.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listconfigs_MouseUp);
 			this.listconfigs.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listconfigs_KeyUp);
 			// 
@@ -741,7 +741,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(740, 416);
+			this.ClientSize = new System.Drawing.Size(794, 416);
 			this.Controls.Add(this.listconfigs);
 			this.Controls.Add(this.tabs);
 			this.Controls.Add(this.cancel);

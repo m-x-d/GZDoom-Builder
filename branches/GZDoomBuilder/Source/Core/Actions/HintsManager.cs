@@ -14,8 +14,8 @@ namespace CodeImp.DoomBuilder.Actions
 	{
 		#region ================== Public constants
 
-		public readonly string GENERAL = "general";
-		public readonly string MULTISELECTION = "multiselection";
+		public const string GENERAL = "general";
+		public const string MULTISELECTION = "multiselection";
 
 		#endregion
 		

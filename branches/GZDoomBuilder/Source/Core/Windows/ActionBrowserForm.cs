@@ -49,8 +49,8 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
 			// Make array references for controls
-			options = new ComboBox[] { option0, option1, option2, option3, option4, option5, option6, option7 };
-			optionlbls = new Label[] { option0label, option1label, option2label, option3label, option4label,
+			options = new[] { option0, option1, option2, option3, option4, option5, option6, option7 };
+			optionlbls = new[] { option0label, option1label, option2label, option3label, option4label,
 									   option5label, option6label, option7label };
 			
 			// Show prefixes panel only for doom type maps
@@ -108,6 +108,8 @@ namespace CodeImp.DoomBuilder.Windows
 				// Remove generalized tab
 				tabs.TabPages.Remove(tabgeneralized);
 			}
+
+			actions.Focus(); //mxd
 		}
 		
 		// This browses for an action

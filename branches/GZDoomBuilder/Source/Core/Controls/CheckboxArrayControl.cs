@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 			c.UseVisualStyleBackColor = true;
 			c.Text = text;
 			c.Tag = tag;
-			c.CheckedChanged += new EventHandler(checkbox_CheckedChanged); //mxd
+			c.CheckedChanged += checkbox_CheckedChanged; //mxd
 
 			// Add to list
 			this.Controls.Add(c);
@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public int GetHeight() {
 			if(columns < 1)	return 0;
 			if(checkboxes.Count < 1) return 0;
-			int col = (int)Math.Ceiling((float)checkboxes.Count / (float)columns);
+			int col = (int)Math.Ceiling(checkboxes.Count / (float)columns);
 			return col * checkboxes[0].Height + (col * spacingY + spacingY);
 		}
 
@@ -83,8 +83,6 @@ namespace CodeImp.DoomBuilder.Controls
 		public void PositionCheckboxes()
 		{
 			int boxheight = 0;
-			int columnlength;
-			int columnwidth;
 			int row = 0;
 			int col = 0;
 			
@@ -93,20 +91,20 @@ namespace CodeImp.DoomBuilder.Controls
 			if(checkboxes.Count < 1) return;
 			
 			// Calculate column width
-			columnwidth = this.ClientSize.Width / columns;
+			int columnwidth = this.ClientSize.Width / columns;
 			
 			// Check what the biggest checkbox height is
 			foreach(CheckBox c in checkboxes) if(c.Height > boxheight) boxheight = c.Height;
 
 			// Check what the preferred column length is
-			columnlength = 1 + (int)Math.Floor((float)(this.ClientSize.Height - boxheight) / (float)(boxheight + spacingY));
+			int columnlength = 1 + (int)Math.Floor((this.ClientSize.Height - boxheight) / (float)(boxheight + spacingY));
 			
 			// When not all items fit with the preferred column length
 			// we have to extend the column length to make it fit
-			if((int)Math.Ceiling((float)checkboxes.Count / (float)columnlength) > columns)
+			if((int)Math.Ceiling(checkboxes.Count / (float)columnlength) > columns)
 			{
 				// Make a column length which works for all items
-				columnlength = (int)Math.Ceiling((float)checkboxes.Count / (float)columns);
+				columnlength = (int)Math.Ceiling(checkboxes.Count / (float)columns);
 			}
 
 			// Go for all items
@@ -134,8 +132,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(this.DesignMode)
 			{
-				Pen p = new Pen(SystemColors.ControlDark, 1);
-				p.DashStyle = DashStyle.Dash;
+				Pen p = new Pen(SystemColors.ControlDark, 1) {DashStyle = DashStyle.Dash};
 				e.Graphics.DrawRectangle(p, 0, 0, this.ClientRectangle.Width - 1, this.ClientRectangle.Height - 1);
 			}
 		}

@@ -17,13 +17,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public CustomLinedefColorsControl() {
 			InitializeComponent();
 
-			colorProperties.PresetChanged += new EventHandler(colorProperties_PresetChanged);
+			colorProperties.PresetChanged += colorProperties_PresetChanged;
 			//disable controls
 			gbPresets.Enabled = false;
 		}
 
 		public void Setup(GameConfiguration config, ConfigurationInfo configInfo) {
-			colorProperties.Setup(config, configInfo);
+			colorProperties.Setup(config);
 			lbColorPresets.Items.Clear();
 
 			if(configInfo.LinedefColorPresets.Length > 0) {

@@ -49,9 +49,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Keep settings
 			this.options = options;
 
-			// Go for all configurations
+			//mxd. Go for all enabled configurations
 			for(int i = 0; i < General.Configs.Count; i++)
 			{
+				//mxd. No disabled configs here
+				if(!General.Configs[i].Enabled) continue;
+				
 				// Add config name to list
 				index = config.Items.Add(General.Configs[i]);
 
@@ -69,16 +72,32 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
+			//mxd. No dice? Check disabled ones
+			if(config.SelectedIndex == -1) 
+			{
+				for(int i = 0; i < General.Configs.Count; i++) 
+				{
+					//No enabled configs here
+					if(General.Configs[i].Enabled) continue;
+
+					if((newmap && !string.IsNullOrEmpty(General.Settings.LastUsedConfigName) && General.Configs[i].Name == General.Settings.LastUsedConfigName) ||
+						string.Compare(General.Configs[i].Filename, options.ConfigFile, true) == 0) 
+					{
+						//Add and select this item
+						config.SelectedIndex = config.Items.Add(General.Configs[i]);
+						break;
+					}
+				}
+			}
+
 			//mxd. Still better than nothing :)
-			if (config.SelectedIndex == -1 && General.Configs.Count > 0) config.SelectedIndex = 0;
+			if(config.SelectedIndex == -1 && config.Items.Count > 0) config.SelectedIndex = 0;
 
 			//mxd
-			if(General.Map != null)
-				datalocations.StartPath = General.Map.FilePathName;
+			if(General.Map != null) datalocations.StartPath = General.Map.FilePathName;
 
 			// Set the level name
-			if (options.CurrentName.Length > 0) //mxd
-				levelname.Text = options.CurrentName;
+			if (!string.IsNullOrEmpty(options.CurrentName)) levelname.Text = options.CurrentName;  //mxd
 
 			// Set strict patches loading
 			strictpatches.Checked = options.StrictPatches;
@@ -90,10 +109,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
-			Configuration newcfg;
-			WAD sourcewad;
-			bool conflictingname;
-			
 			// Configuration selected?
 			if(config.SelectedIndex == -1)
 			{
@@ -113,7 +128,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Collect information
-			ConfigurationInfo configinfo = General.Configs[config.SelectedIndex];
+			ConfigurationInfo configinfo = config.SelectedItem as ConfigurationInfo; //mxd
 			DataLocationList locations = datalocations.GetResources();
 			
 			// When making a new map, check if we should warn the user for missing resources
@@ -141,8 +156,8 @@ namespace CodeImp.DoomBuilder.Windows
 				   (General.Map.FilePathName != "") && File.Exists(General.Map.FilePathName))
 				{
 					// Open the source wad file to check for conflicting name
-					sourcewad = new WAD(General.Map.FilePathName, true);
-					conflictingname = (sourcewad.FindLumpIndex(levelname.Text) > -1);
+					WAD sourcewad = new WAD(General.Map.FilePathName, true);
+					bool conflictingname = (sourcewad.FindLumpIndex(levelname.Text) > -1);
 					sourcewad.Dispose();
 
 					// Names conflict?
@@ -160,14 +175,10 @@ namespace CodeImp.DoomBuilder.Windows
 				// we have to warn the user that the map may not be compatible.
 				
 				// Configuration changed?
-				if((options.ConfigFile != "") && (General.Configs[config.SelectedIndex].Filename != options.ConfigFile))
+				if((options.ConfigFile != "") && (configinfo.Filename != options.ConfigFile))
 				{
-					// Load the new cfg file
-					newcfg = General.LoadGameConfiguration(General.Configs[config.SelectedIndex].Filename);
-					if(newcfg == null) return;
-
 					// Check if the config uses a different IO interface
-					if(newcfg.ReadSetting("formatinterface", "") != General.Map.Config.FormatInterface)
+					if(configinfo.Configuration.ReadSetting("formatinterface", "") != General.Map.Config.FormatInterface)
 					{
 						// Warn the user about IO interface change
 						if(General.ShowWarningMessage("The game configuration you selected uses a different file format than your current map. Because your map was not designed for this format it may cause the map to work incorrectly in the game. Do you want to continue?", MessageBoxButtons.YesNo, MessageBoxDefaultButton.Button2) == DialogResult.No)
@@ -176,7 +187,7 @@ namespace CodeImp.DoomBuilder.Windows
 							for(int i = 0; i < config.Items.Count; i++)
 							{
 								// Is this configuration the old config?
-								if(string.Compare(General.Configs[i].Filename, options.ConfigFile, true) == 0)
+								if(string.Compare((config.Items[i] as ConfigurationInfo).Filename, options.ConfigFile, true) == 0)
 								{
 									// Select this item
 									config.SelectedIndex = i;
@@ -184,17 +195,16 @@ namespace CodeImp.DoomBuilder.Windows
 							}
 							return;
 						} 
-						else 
-						{ //mxd. Otherwise map data won't be saved if a user decides to save the map right after converting to new map format
-							General.Map.IsChanged = true;
-						}
+
+						//mxd. Otherwise map data won't be saved if a user decides to save the map right after converting to new map format
+						General.Map.IsChanged = true;
 					}
 				}
 			}
 			
 			// Apply changes
 			options.ClearResources();
-			options.ConfigFile = General.Configs[config.SelectedIndex].Filename;
+			options.ConfigFile = (config.SelectedItem as ConfigurationInfo).Filename; //mxd
 			options.CurrentName = levelname.Text.Trim().ToUpper();
 			options.StrictPatches = strictpatches.Checked;
 			options.CopyResources(datalocations.GetResources());
@@ -215,13 +225,11 @@ namespace CodeImp.DoomBuilder.Windows
 		// Game configuration chosen
 		private void config_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			ConfigurationInfo ci;
-			
 			// Anything selected?
 			if(config.SelectedIndex > -1)
 			{
 				// Get the info
-				ci = (ConfigurationInfo)config.SelectedItem;
+				ConfigurationInfo ci = config.SelectedItem as ConfigurationInfo;
 
 				// No lump name in the name field?
 				if (levelname.Text.Trim().Length == 0) 

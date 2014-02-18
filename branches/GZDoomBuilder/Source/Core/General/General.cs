@@ -180,11 +180,11 @@ namespace CodeImp.DoomBuilder
 		
 		// Command line arguments
 		private static string[] cmdargs;
-		private static string autoloadfile = null;
-		private static string autoloadmap = null;
-		private static string autoloadconfig = null;
-		private static bool autoloadstrictpatches = false;
-		private static DataLocationList autoloadresources = null;
+		private static string autoloadfile;
+		private static string autoloadmap;
+		private static string autoloadconfig;
+		private static bool autoloadstrictpatches;
+		private static DataLocationList autoloadresources;
 		private static bool delaymainwindow;
 		private static bool nosettings;
 
@@ -204,7 +204,7 @@ namespace CodeImp.DoomBuilder
 		public static string CompilersPath { get { return compilerspath; } }
 		public static string PluginsPath { get { return pluginspath; } }
 		public static string SpritesPath { get { return spritespath; } }
-		public static ICollection<string> CommandArgs { get { return Array.AsReadOnly<string>(cmdargs); } }
+		public static ICollection<string> CommandArgs { get { return Array.AsReadOnly(cmdargs); } }
 		internal static MainForm MainWindow { get { return mainwindow; } }
 		public static IMainForm Interface { get { return mainwindow; } }
 		public static ProgramConfiguration Settings { get { return settings; } }
@@ -254,10 +254,8 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This loads and returns a game configuration
-		internal static Configuration LoadGameConfiguration(string filename)
+		private static Configuration loadGameConfiguration(string filename)
 		{
-			Configuration cfg;
-			
 			// Make the full filepathname
 			string filepathname = Path.Combine(configspath, filename);
 			
@@ -265,7 +263,7 @@ namespace CodeImp.DoomBuilder
 			try
 			{
 				// Try loading the configuration
-				cfg = new Configuration(filepathname, true);
+				Configuration cfg = new Configuration(filepathname, true);
 
 				// Check for erors
 				if(cfg.ErrorResult)
@@ -276,18 +274,16 @@ namespace CodeImp.DoomBuilder
 					return null;
 				}
 				// Check if this is a Doom Builder 2 config
-				else if(cfg.ReadSetting("type", "") != "Doom Builder 2 Game Configuration")
+				if(cfg.ReadSetting("type", "") != "Doom Builder 2 Game Configuration")
 				{
 					// Old configuration
 					errorlogger.Add(ErrorType.Error, "Unable to load the game configuration file \"" + filename + "\". " +
 													 "This configuration is not a Doom Builder 2 game configuration.");
 					return null;
 				}
-				else
-				{
-					// Return config
-					return cfg;
-				}
+
+				// Return config
+				return cfg;
 			}
 			catch(Exception e)
 			{
@@ -302,7 +298,6 @@ namespace CodeImp.DoomBuilder
 		private static void LoadAllGameConfigurations()
 		{
 			Configuration cfg;
-			string[] filenames;
 			string fullfilename;
 			
 			// Display status
@@ -312,11 +307,13 @@ namespace CodeImp.DoomBuilder
 			configs = new List<ConfigurationInfo>();
 
 			// Go for all cfg files in the configurations directory
-			filenames = Directory.GetFiles(configspath, "*.cfg", SearchOption.TopDirectoryOnly);
+			string[] filenames = Directory.GetFiles(configspath, "*.cfg", SearchOption.TopDirectoryOnly);
+			Array.Sort(filenames);
+
 			foreach(string filepath in filenames)
 			{
 				// Check if it can be loaded
-				cfg = LoadGameConfiguration(Path.GetFileName(filepath));
+				cfg = loadGameConfiguration(Path.GetFileName(filepath));
 				if(cfg != null)
 				{
 					fullfilename = Path.GetFileName(filepath);
@@ -327,9 +324,6 @@ namespace CodeImp.DoomBuilder
 					configs.Add(cfginfo);
 				}
 			}
-
-			// Sort the list
-			configs.Sort();
 		}
 
 		// This loads all nodebuilder configurations
@@ -337,7 +331,6 @@ namespace CodeImp.DoomBuilder
 		{
 			Configuration cfg;
 			IDictionary builderslist;
-			string[] filenames;
 			
 			// Display status
 			mainwindow.DisplayStatus(StatusType.Busy, "Loading nodebuilder configurations...");
@@ -346,7 +339,7 @@ namespace CodeImp.DoomBuilder
 			nodebuilders = new List<NodebuilderInfo>();
 
 			// Go for all cfg files in the compilers directory
-			filenames = Directory.GetFiles(compilerspath, "*.cfg", SearchOption.AllDirectories);
+			string[] filenames = Directory.GetFiles(compilerspath, "*.cfg", SearchOption.AllDirectories);
 			foreach(string filepath in filenames)
 			{
 				try
@@ -540,19 +533,18 @@ namespace CodeImp.DoomBuilder
 				debugbuild = true;
 			#else
 				debugbuild = false;
+				//mxd. Custom exception dialog.
+				AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+				Application.ThreadException += Application_ThreadException;
 			#endif
 
-			//mxd. Custom exception dialog.
-			AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
-			Application.ThreadException += Application_ThreadException;
-			
 			// Enable OS visual styles
 			Application.EnableVisualStyles();
 			Application.DoEvents();		// This must be here to work around a .NET bug
 			ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new TanColorTable());
 			
 			// Hook to DLL loading failure event
-			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 			
 			// Set current thread name
 			Thread.CurrentThread.Name = "Main Application";
@@ -583,8 +575,7 @@ namespace CodeImp.DoomBuilder
 			
 			// Remove the previous log file and start logging
 			if(File.Exists(logfile)) File.Delete(logfile);
-			//mxd
-			General.WriteLogLine("GZDoom Builder " + Application.ProductVersion + " startup");
+			General.WriteLogLine("GZDoom Builder " + Application.ProductVersion + " startup"); //mxd
 			General.WriteLogLine("Application path:        " + apppath);
 			General.WriteLogLine("Temporary path:          " + temppath);
 			General.WriteLogLine("Local settings path:     " + settingspath);
@@ -1943,7 +1934,7 @@ namespace CodeImp.DoomBuilder
 
 		#region ==================  mxd. Uncaught exceptions handling
 
-		private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e) {
+		private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e) {
 			try {
 				GZBuilder.Windows.ExceptionDialog dlg = new GZBuilder.Windows.ExceptionDialog(e);
 				dlg.Setup();

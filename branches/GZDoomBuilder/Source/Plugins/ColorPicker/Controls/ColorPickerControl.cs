@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 			cbColorInfo.SelectedIndex = colorInfoMode;
 		}
 
-		private void nudValueChanged(object sender, System.EventArgs e) {
+		private void nudValueChanged(object sender, EventArgs e) {
 			// If the R, G, or B values change, use this code to update the HSV values and invalidate
 			// the color wheel (so it updates the pointers).
 			// Check the isInUpdate flag to avoid recursive events when you update the NumericUpdownControls.
@@ -100,11 +100,11 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 					break;
 
 				case COLOR_INFO_FLOAT:
-					string r2 = ((float)Math.Round((float)RGB.Red / 255f, 2)).ToString();
+					string r2 = ((float)Math.Round(RGB.Red / 255f, 2)).ToString();
 					if (r2.Length == 1) r2 += ".0";
-					string g2 = ((float)Math.Round((float)RGB.Green / 255f, 2)).ToString();
+					string g2 = ((float)Math.Round(RGB.Green / 255f, 2)).ToString();
 					if (g2.Length == 1) g2 += ".0";
-					string b2 = ((float)Math.Round((float)RGB.Blue / 255f, 2)).ToString();
+					string b2 = ((float)Math.Round(RGB.Blue / 255f, 2)).ToString();
 					if (b2.Length == 1) b2 += ".0";
 
 					isInUpdate = true;
@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 			// Create the new ColorWheel class, indicating the locations of the color wheel itself, the
 			// brightness area, and the position of the selected color.
 			colorWheel = new ColorWheel(ColorRectangle, BrightnessRectangle);
-			colorWheel.ColorChanged += new ColorWheel.ColorChangedEventHandler(this.colorChanged);
+			colorWheel.ColorChanged += colorChanged;
 
 			//set initial colors
 			SetCurrentColor(startColor);
@@ -179,7 +179,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 			setRGB(e.RGB);
 		}
 
-		private void onPaint(object sender, System.Windows.Forms.PaintEventArgs e) {
+		private void onPaint(object sender, PaintEventArgs e) {
 			// Depending on the circumstances, force a repaint of the color wheel passing different information.
 			switch (changeType) {
 				case ChangeStyle.MouseMove:

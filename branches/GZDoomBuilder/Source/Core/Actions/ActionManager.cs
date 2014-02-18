@@ -119,11 +119,10 @@ namespace CodeImp.DoomBuilder.Actions
 			Configuration cfg;
 			string name, shortname;
 			bool debugonly;
-			string[] resnames;
 			AssemblyName asmname = asm.GetName();
 
 			// Find a resource named Actions.cfg
-			resnames = asm.GetManifestResourceNames();
+			string[] resnames = asm.GetManifestResourceNames();
 			foreach(string rn in resnames)
 			{
 				// Found one?

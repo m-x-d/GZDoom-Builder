@@ -1270,7 +1270,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				} else if (o is BaseVisualVertex) {
 					General.Hints.ShowHints(this.GetType(), "vertices");
 				} else {
-					General.Hints.ShowHints(this.GetType(), General.Hints.GENERAL);
+					General.Hints.ShowHints(this.GetType(), HintsManager.GENERAL);
 				}
 
 				lasthighlighttype = o.GetType();

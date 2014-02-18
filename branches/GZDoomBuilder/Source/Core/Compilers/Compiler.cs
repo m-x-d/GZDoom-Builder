@@ -158,8 +158,6 @@ namespace CodeImp.DoomBuilder.Compilers
 		// This creates a compiler by interface name
 		internal static Compiler Create(CompilerInfo info)
 		{
-			Compiler result;
-			
 			// Make list of assemblies to search in
 			List<Assembly> asms = General.Plugins.GetPluginAssemblies();
 			asms.Add(General.ThisAssembly);
@@ -186,8 +184,8 @@ namespace CodeImp.DoomBuilder.Compilers
 						if(t.IsSubclassOf(typeof(Compiler)) && (t.Name == info.ProgramInterface))
 						{
 							// Create instance
-							result = (Compiler)a.CreateInstance(t.FullName, false, BindingFlags.Default,
-												null, args, CultureInfo.CurrentCulture, new object[0]);
+							Compiler result = (Compiler)a.CreateInstance(t.FullName, false, BindingFlags.Default,
+							                                             null, args, CultureInfo.CurrentCulture, new object[0]);
 							return result;
 						}
 					}

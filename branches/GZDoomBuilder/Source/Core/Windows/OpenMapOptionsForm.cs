@@ -69,7 +69,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// This loads the settings and attempt to find a suitable config
 		private void LoadSettings()
 		{
-			string dbsfile;
 			string gameconfig;
 			int index;
 			
@@ -102,55 +101,66 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Open the Map Settings configuration
-			dbsfile = filepathname.Substring(0, filepathname.Length - 4) + ".dbs";
+			string dbsfile = filepathname.Substring(0, filepathname.Length - 4) + ".dbs";
 			if(File.Exists(dbsfile))
 				try { mapsettings = new Configuration(dbsfile, true); }
 				catch(Exception) { mapsettings = new Configuration(true); }
 			else
 				mapsettings = new Configuration(true);
 			
-			// Check strict patches box
-			if(options != null)
+			// Check strict patches box, check what game configuration is preferred
+			if (options != null) {
 				strictpatches.Checked = options.StrictPatches;
-			else
-				strictpatches.Checked = mapsettings.ReadSetting("strictpatches", false);
-			
-			// Check what game configuration is preferred
-			if(options != null)
 				gameconfig = options.ConfigFile;
-			else
+			} else {
+				strictpatches.Checked = mapsettings.ReadSetting("strictpatches", false);
 				gameconfig = mapsettings.ReadSetting("gameconfig", "");
+			}
 
-			// Go for all configurations
-			for(int i = 0; i < General.Configs.Count; i++)
-			{
+			//mxd. Go for all enabled configurations
+			for(int i = 0; i < General.Configs.Count; i++) {
+				if(!General.Configs[i].Enabled) continue;
+				
 				// Add config name to list
 				index = config.Items.Add(General.Configs[i]);
 
-				// This is the preferred game configuration?
-				if(General.Configs[i].Filename == gameconfig)
-				{
+				if(General.Configs[i].Filename == gameconfig) {
 					// Select this item
 					config.SelectedIndex = index;
 				}
 			}
 
+			//mxd. No dice? Try disabled ones
+			if(config.SelectedIndex == -1) {
+				for(int i = 0; i < General.Configs.Count; i++) {
+					if(General.Configs[i].Enabled) continue;
+
+					if(General.Configs[i].Filename == gameconfig) {
+						//add and Select this item
+						config.SelectedIndex = config.Items.Add(General.Configs[i]);
+						break;
+					}
+				}
+			}
+
 			// Still no configuration selected?
-			if(config.SelectedIndex == -1)
-			{
+			if(config.SelectedIndex == -1) {
 				// Then go for all configurations to find a suitable one
 				for(int i = 0; i < General.Configs.Count; i++)
 				{
-					// Check if a resource location is set for this configuration
-					if(General.Configs[i].Resources.Count > 0)
+					// Check if a resource location is set for this configuration, if so, match the wad against this configuration
+					if(General.Configs[i].Resources.Count > 0 && MatchConfiguration(General.Configs[i].Configuration, wadfile))
 					{
-						// Match the wad against this configuration
-						if(MatchConfiguration(General.Configs[i].Filename, wadfile))
-						{
+						//mxd. Already added?
+						index = config.Items.IndexOf(General.Configs[i]);
+						if (index != -1) {
 							// Select this item
-							config.SelectedIndex = i;
-							break;
+							config.SelectedIndex = index;
+						} else {
+							// Add and select this item
+							config.SelectedIndex = config.Items.Add(General.Configs[i]);
 						}
+						break;
 					}
 				}
 			}
@@ -161,13 +171,10 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// mxd. This matches a WAD file with the specified game configuration
 		// by checking if the specific lumps are detected
-		private bool MatchConfiguration(string configfile, WAD wadfile) {
+		private bool MatchConfiguration(Configuration cfg, WAD wadfile) {
 			int scanindex, checkoffset;
 			int lumpsfound, lumpsrequired = 0;
 			string lumpname;
-			
-			// Load configuration
-			Configuration cfg = General.LoadGameConfiguration(configfile);
 
 			// Get the map lump names
 			IDictionary maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
@@ -222,10 +229,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// Anything selected?
 			if(config.SelectedIndex < 0) return;
 
-			List<ListViewItem> mapnames;
-			ConfigurationInfo ci;
-			Configuration cfg;
-			IDictionary maplumpnames;
 			int scanindex, checkoffset;
 			int lumpsfound, lumpsrequired = 0;
 			string lumpname, selectedname = "";
@@ -235,16 +238,16 @@ namespace CodeImp.DoomBuilder.Windows
 				selectedname = mapslist.SelectedItems[0].Text;
 
 			// Make an array for the map names
-			mapnames = new List<ListViewItem>();
+			List<ListViewItem> mapnames = new List<ListViewItem>();
 
 			// Get selected configuration info
-			ci = (ConfigurationInfo)config.SelectedItem;
+			ConfigurationInfo ci = (config.SelectedItem as ConfigurationInfo);
 
-			// Load this configuration
-			cfg = General.LoadGameConfiguration(ci.Filename);
+			//mxd. Get configuration
+			Configuration cfg = ci.Configuration;
 
 			// Get the map lump names
-			maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
+			IDictionary maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
 
 			// Count how many required lumps we have to find
 			foreach(DictionaryEntry ml in maplumpnames) {
@@ -324,7 +327,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			
 			// Collect information
-			ConfigurationInfo configinfo = General.Configs[config.SelectedIndex];
+			ConfigurationInfo configinfo = (config.SelectedItem as ConfigurationInfo); //mxd
 			DataLocationList locations = datalocations.GetResources();
 			
 			// No map selected?
@@ -393,7 +396,7 @@ namespace CodeImp.DoomBuilder.Windows
 			DataLocationList listedlocations;
 			
 			// Map previously selected?
-			if((selectedmapname != null) && (selectedmapname != ""))
+			if(!string.IsNullOrEmpty(selectedmapname))
 			{
 				// Get locations from previous selected map settings
 				locations = new DataLocationList(mapsettings, "maps." + selectedmapname + ".resources");

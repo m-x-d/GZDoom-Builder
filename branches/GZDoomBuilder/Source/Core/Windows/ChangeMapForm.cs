@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 
@@ -57,9 +58,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Make an array for the map names
 			List<ListViewItem> mapnames = new List<ListViewItem>();
 
-			// Load this configuration
-			Configuration cfg = General.LoadGameConfiguration(options.ConfigFile);
-
+			//mxd. Get Proper configuration
+			ConfigurationInfo ci = General.GetConfigurationInfo(options.ConfigFile);
+			Configuration cfg = ci.Configuration;
+		
 			// Get the map lump names
 			IDictionary maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
 

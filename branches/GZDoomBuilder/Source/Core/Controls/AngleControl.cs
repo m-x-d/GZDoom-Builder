@@ -107,14 +107,14 @@ namespace CodeImp.DoomBuilder.Controls
 		// Redraw the control
 		private void AngleControl_Paint(object sender, PaintEventArgs e)
 		{
-			float rad = Angle2D.DegToRad((float)angle);
+			float rad = Angle2D.DegToRad(angle);
 			e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 			e.Graphics.InterpolationMode = InterpolationMode.High;
 			e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
 			e.Graphics.Clear(this.BackColor);
 			Pen linepen = new Pen(SystemColors.ControlText, LINE_THICKNESS);
-			PointF start = new PointF((float)this.Size.Width * 0.5f, (float)this.Size.Height * 0.5f);
-			float line_length = (float)this.Size.Width * 0.26f;
+			PointF start = new PointF(this.Size.Width * 0.5f, this.Size.Height * 0.5f);
+			float line_length = this.Size.Width * 0.26f;
 			if((rad >= 0) && (rad < 360))
 			{
 				PointF end = new PointF(start.X + (float)Math.Sin(rad + Angle2D.PIHALF) * line_length,
@@ -134,10 +134,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// This sets an angle manually
 		private void SetAngle(int newangle, bool changebuttons)
 		{
-			bool changed;
-			
 			// Normalize and apply angle
-			changed = (newangle != angle);
+			bool changed = (newangle != angle);
 			angle = newangle;
 			
 			// Check if it matches an angle from the buttons

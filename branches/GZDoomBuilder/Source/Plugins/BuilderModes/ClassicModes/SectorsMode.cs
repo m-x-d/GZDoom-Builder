@@ -1516,7 +1516,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		[BeginAction("dissolveitem", BaseAction = true)] //mxd
 		public void DissolveItem() {
-			///TODO handle this differently?..
+			//TODO handle this differently?..
 			DeleteItem();
 		}
 		

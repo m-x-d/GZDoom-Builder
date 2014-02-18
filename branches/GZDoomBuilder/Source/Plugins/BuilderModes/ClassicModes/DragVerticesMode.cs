@@ -82,12 +82,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Methods
-
-		// Mode engages
-		public override void OnEngage()
-		{
-			base.OnEngage();
-		}
 		
 		// Disenagaging
 		public override void OnDisengage()

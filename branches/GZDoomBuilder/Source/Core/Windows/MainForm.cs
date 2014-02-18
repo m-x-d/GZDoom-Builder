@@ -519,6 +519,21 @@ namespace CodeImp.DoomBuilder.Windows
 			this.DragEnter += OnDragEnter;
 			this.DragDrop += OnDragDrop;
 
+			//mxd. Check enabled game configuration
+			bool noneenabled = true;
+			for (int i = 0; i < General.Configs.Count; i++) {
+				if (General.Configs[i].Enabled) {
+					noneenabled = false;
+					break;
+				}
+			}
+
+			if(noneenabled) {
+				if (MessageBox.Show("No game configurations are currently enabled.\nPlease enable at least one game configuration", "Warning", MessageBoxButtons.OK) == DialogResult.OK) {
+					ShowConfiguration();
+				}
+			}
+
 			// Info panel state?
 			bool expandedpanel = General.Settings.ReadSetting("mainwindow.expandedinfopanel", true);
 			if(expandedpanel != IsInfoPanelExpanded) ToggleInfoPanel();
@@ -2816,12 +2831,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 							//mouse inside the view?
 							if (pos.IsFinite()) {
-								coords = "X:" + Math.Round(pos.x) + "; Y:" + Math.Round(pos.y);
+								coords = "X:" + Math.Round(pos.x) + " Y:" + Math.Round(pos.y);
 							} else {
-								coords = "X:" + Math.Round(General.Map.Renderer2D.TranslateX) + "; Y:" + Math.Round(General.Map.Renderer2D.TranslateY);
+								coords = "X:" + Math.Round(General.Map.Renderer2D.TranslateX) + " Y:" + Math.Round(General.Map.Renderer2D.TranslateY);
 							}
 						} else { //should be visual mode
-							coords = "X:" + Math.Round(General.Map.VisualCamera.Position.x) + "; Y:" + Math.Round(General.Map.VisualCamera.Position.y) + "; Z:" + Math.Round(General.Map.VisualCamera.Position.z);
+							coords = "X:" + Math.Round(General.Map.VisualCamera.Position.x) + " Y:" + Math.Round(General.Map.VisualCamera.Position.y) + " Z:" + Math.Round(General.Map.VisualCamera.Position.z);
 						}
 						
 						Font font = new Font("Tahoma", 10);

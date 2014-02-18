@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.Actions
 		private Mouse mouse;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 
@@ -103,9 +103,6 @@ namespace CodeImp.DoomBuilder.Actions
 		// This processes the input
 		public Vector2D Process()
 		{
-			MouseState ms;
-			float changex, changey;
-			
 			// Poll the device
 			try
 			{
@@ -113,22 +110,20 @@ namespace CodeImp.DoomBuilder.Actions
 				if(result.IsSuccess)
 				{
 					// Get the changes since previous poll
-					ms = mouse.GetCurrentState();
+					MouseState ms = mouse.GetCurrentState();
 
 					// Calculate changes depending on sensitivity
-					changex = (float)ms.X * General.Settings.VisualMouseSensX * (float)General.Settings.MouseSpeed * 0.01f;
-					changey = (float)ms.Y * General.Settings.VisualMouseSensY * (float)General.Settings.MouseSpeed * 0.01f;
+					float changex = ms.X * General.Settings.VisualMouseSensX * General.Settings.MouseSpeed * 0.01f;
+					float changey = ms.Y * General.Settings.VisualMouseSensY * General.Settings.MouseSpeed * 0.01f;
 
 					// Return changes
 					return new Vector2D(changex, changey);
 				}
-				else
-				{
-					// Reaquire device
-					try { mouse.Acquire(); }
-					catch(Exception) { }
-					return new Vector2D();
-				}
+
+				// Reaquire device
+				try { mouse.Acquire(); }
+				catch(Exception) { }
+				return new Vector2D();
 			}
 			catch(DirectInputException)
 			{
