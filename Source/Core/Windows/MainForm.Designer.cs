@@ -362,8 +362,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.poscommalabel.Name = "poscommalabel";
 			this.poscommalabel.Size = new System.Drawing.Size(11, 18);
+			this.poscommalabel.Tag = "builder_centeroncoordinates";
 			this.poscommalabel.Text = ",";
-			this.poscommalabel.ToolTipText = "Current X, Y coordinates on map";
+			this.poscommalabel.ToolTipText = "Current X, Y coordinates on map.\r\nClick to set specific coordinates.";
+			this.poscommalabel.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// menumain
 			// 
@@ -2134,7 +2136,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.xposlabel.Tag = "builder_centeroncoordinates";
 			this.xposlabel.Text = "0";
 			this.xposlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.xposlabel.ToolTipText = "Current X, Y coordinates on map";
+			this.xposlabel.ToolTipText = "Current X, Y coordinates on map.\r\nClick to set specific coordinates.";
 			this.xposlabel.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// yposlabel
