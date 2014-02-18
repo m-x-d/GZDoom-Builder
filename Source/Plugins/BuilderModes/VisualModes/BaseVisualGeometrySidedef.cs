@@ -455,13 +455,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(withSameTexture) {
 					if(line.Front != null) {
 						addFrontTop = (line.Front.HighTexture == texture && line.Front.HighRequired());
-						addFrontMiddle = (line.Front.MiddleTexture == texture && line.Front.MiddleRequired());
+						addFrontMiddle = (line.Front.MiddleTexture == texture && line.Front.Sector.CeilHeight > line.Front.Sector.FloorHeight);
 						addFrontBottom = (line.Front.LowTexture == texture && line.Front.LowRequired());
 					}
 
 					if(line.Back != null) {
 						addBackTop = (line.Back.HighTexture == texture && line.Back.HighRequired());
-						addBackMiddle = (line.Back.MiddleTexture == texture && line.Back.MiddleRequired());
+						addBackMiddle = (line.Back.MiddleTexture == texture && line.Back.Sector.CeilHeight > line.Back.Sector.FloorHeight);
 						addBackBottom = (line.Back.LowTexture == texture && line.Back.LowRequired());
 					}
 				}
@@ -480,11 +480,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					//middle parts match?
-					if((!withSameTexture || addFrontMiddle) && lineHasFrontSector && line.Front.MiddleRequired()) {
+					if((!withSameTexture || addFrontMiddle) && lineHasFrontSector && line.Front.Sector.CeilHeight > line.Front.Sector.FloorHeight) {
 						addFrontMiddle = (line.Front.Sector.CeilHeight == ceilingHeight && line.Front.Sector.FloorHeight == floorHeight);
 					}
 
-					if((!withSameTexture || addBackMiddle) && lineHasBackSector && line.Back.MiddleRequired()) {
+					if((!withSameTexture || addBackMiddle) && lineHasBackSector && line.Back.Sector.CeilHeight > line.Back.Sector.FloorHeight) {
 						addBackMiddle = (line.Back.Sector.CeilHeight == ceilingHeight && line.Back.Sector.FloorHeight == floorHeight);
 					}
 

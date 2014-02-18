@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder {
 		private string filetitle;
 		private string filepathname;
 		private string temppath;
-		private string origmapconfigfile; //mxd. Map configuration, which was used to open the map.
+		private string origmapconfigname; //mxd. Map configuration, which was used to open the map.
 
 		// Main objects
 		private MapSet map;
@@ -249,8 +249,8 @@ namespace CodeImp.DoomBuilder {
 			// Load game configuration
 			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
-			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
-			origmapconfigfile = options.ConfigFile;//mxd
+			config = new GameConfiguration(configinfo.Configuration); //mxd
+			origmapconfigname = configinfo.Name;//mxd
 			configinfo.ApplyDefaults(config);
 			General.Editing.UpdateCurrentEditModes();
 
@@ -338,8 +338,8 @@ namespace CodeImp.DoomBuilder {
 			// Load game configuration
 			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
-			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
-			origmapconfigfile = options.ConfigFile;//mxd
+			config = new GameConfiguration(configinfo.Configuration);
+			origmapconfigname = configinfo.Name;//mxd
 			configinfo.ApplyDefaults(config);
 			General.Editing.UpdateCurrentEditModes();
 
@@ -687,7 +687,14 @@ namespace CodeImp.DoomBuilder {
 					targetwad = new WAD(newfilepathname);
 
 					// Copy all lumps, except the original map
-					GameConfiguration origcfg = (origmapconfigfile == configinfo.Filename ? config : new GameConfiguration(General.LoadGameConfiguration(origmapconfigfile))); //mxd
+					GameConfiguration origcfg; //mxd
+					if (origmapconfigname == configinfo.Name) {
+						origcfg = config;
+					} else {
+						ConfigurationInfo ci = General.GetConfigurationInfo(origmapconfigname);
+						origcfg = new GameConfiguration(ci.Configuration);
+					}
+
 					CopyAllLumpsExceptMap(origwad, targetwad, origcfg, origmapname);
 
 					// Close original file and delete it
@@ -1634,7 +1641,7 @@ namespace CodeImp.DoomBuilder {
 			// Reload game configuration
 			General.WriteLogLine("Reloading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
-			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
+			config = new GameConfiguration(configinfo.Configuration); //mxd
 			General.Editing.UpdateCurrentEditModes();
 
 			// Reload data resources
@@ -1687,10 +1694,10 @@ namespace CodeImp.DoomBuilder {
 				this.options = optionsform.Options;
 
 				// Load new game configuration
-				General.WriteLogLine("Loading game configuration...");
+				General.WriteLogLine("Loading game configuration '" + options.ConfigFile + "'...");
 				configinfo = General.GetConfigurationInfo(options.ConfigFile);
 				string oldFormatInterface = config.FormatInterface; //mxd
-				config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
+				config = new GameConfiguration(configinfo.Configuration); //mxd
 				configinfo.ApplyDefaults(config);
 				General.Editing.UpdateCurrentEditModes();
 
@@ -1734,6 +1741,7 @@ namespace CodeImp.DoomBuilder {
 
 				// Done
 				General.MainWindow.DisplayReady();
+				General.MainWindow.RedrawDisplay(); //mxd
 			}
 
 			// Done

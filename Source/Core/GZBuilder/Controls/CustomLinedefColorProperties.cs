@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			labelErrors.Text = "";
 		}
 
-		public void Setup(GameConfiguration config, ConfigurationInfo configInfo) {
+		public void Setup(GameConfiguration config) {
 			udmf = (config.FormatInterface == "UniversalMapSetIO");
 
 			presetUpdating = true;

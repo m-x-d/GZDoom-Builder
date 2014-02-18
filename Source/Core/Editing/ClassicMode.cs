@@ -711,7 +711,7 @@ namespace CodeImp.DoomBuilder.Editing
 		protected virtual void OnEndMultiSelection()
 		{
 			selecting = false;
-			General.Hints.ShowHints(this.GetType(), General.Hints.GENERAL);
+			General.Hints.ShowHints(this.GetType(), HintsManager.GENERAL);
 		}
 
 		/// <summary>
@@ -724,7 +724,7 @@ namespace CodeImp.DoomBuilder.Editing
 			selectionrect = new RectangleF(selectstart.x, selectstart.y, 0, 0);
 
 			//mxd
-			General.Hints.ShowHints(this.GetType(), General.Hints.MULTISELECTION);
+			General.Hints.ShowHints(this.GetType(), HintsManager.MULTISELECTION);
 		}
 
 		/// <summary>

@@ -46,13 +46,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.SetStyle(ControlStyles.FixedWidth, true);
 			this.SetStyle(ControlStyles.FixedHeight, true);
 		}
-		
-		// Disposer
-		protected override void Dispose(bool disposing)
-		{
-			// Done
-			base.Dispose(disposing);
-		}
 
 		#endregion
 

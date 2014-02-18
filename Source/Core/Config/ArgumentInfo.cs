@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.Config
 					if((argdic["enum"].ToString().Length > 0) && enums.ContainsKey(argdic["enum"].ToString()))
 					{
 						// Get the enum list
-						this.enumlist = enums[argdic["enum"].ToString()] as EnumList;
+						this.enumlist = enums[argdic["enum"].ToString()];
 					}
 					else
 					{

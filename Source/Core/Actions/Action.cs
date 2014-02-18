@@ -243,15 +243,13 @@ namespace CodeImp.DoomBuilder.Actions
 		// This raises events for this action
 		internal void Begin()
 		{
-			List<ActionDelegate> delegateslist;
-
 			General.Plugins.OnActionBegin(this);
 
 			// Method bound?
 			if(begindelegates.Count > 0)
 			{
 				// Copy delegates list
-				delegateslist = new List<ActionDelegate>(begindelegates);
+				List<ActionDelegate> delegateslist = new List<ActionDelegate>(begindelegates);
 				
 				// Invoke all the delegates
 				General.Actions.Current = this;
@@ -265,13 +263,11 @@ namespace CodeImp.DoomBuilder.Actions
 		// This raises events for this action
 		internal void End()
 		{
-			List<ActionDelegate> delegateslist;
-
 			// Method bound?
 			if(enddelegates.Count > 0)
 			{
 				// Copy delegates list
-				delegateslist = new List<ActionDelegate>(enddelegates);
+				List<ActionDelegate> delegateslist = new List<ActionDelegate>(enddelegates);
 
 				// Invoke all the delegates
 				General.Actions.Current = this;

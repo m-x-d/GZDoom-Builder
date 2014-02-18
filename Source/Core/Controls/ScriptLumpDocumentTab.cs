@@ -78,16 +78,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			
 			// Done
-			if(ismapheader)
-				SetTitle(General.Map.Options.CurrentName);
-			else
-				SetTitle(this.lumpname.ToUpper());
-		}
-		
-		// Disposer
-		protected override void Dispose(bool disposing)
-		{
-			base.Dispose(disposing);
+			SetTitle(ismapheader ? General.Map.Options.CurrentName : this.lumpname.ToUpper());
 		}
 		
 		#endregion

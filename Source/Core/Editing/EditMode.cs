@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Diagnostics;
+using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Config;
 
@@ -148,7 +149,7 @@ namespace CodeImp.DoomBuilder.Editing
 			General.Actions.BindMethods(this);
 
 			//mxd. Show hints for this mode
-			General.Hints.ShowHints(this.GetType(), General.Hints.GENERAL);
+			General.Hints.ShowHints(this.GetType(), HintsManager.GENERAL);
 		}
 
 		// Mode disengages

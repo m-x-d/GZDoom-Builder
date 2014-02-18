@@ -192,17 +192,14 @@ namespace CodeImp.DoomBuilder.Data
 										{
 											PixelColor* pixels = (PixelColor*)(bmpdata.Scan0.ToPointer());
 											int numpixels = bmpdata.Width * bmpdata.Height;
+											int patchalpha = (int)Math.Round(General.Clamp(p.alpha, 0f, 1f) * 255); //convert alpha to [0-255] range
 
 											//mxd. Blend/Tint support
 											if(p.blendstyle == TexturePathBlendStyle.Blend) {
-												float br = p.blend.r * PixelColor.BYTE_TO_FLOAT;
-												float bg = p.blend.g * PixelColor.BYTE_TO_FLOAT;
-												float bb = p.blend.b * PixelColor.BYTE_TO_FLOAT;
-
 												for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
-													cp->r = (byte)(((cp->r * PixelColor.BYTE_TO_FLOAT) * br) * 255.0f);
-													cp->g = (byte)(((cp->g * PixelColor.BYTE_TO_FLOAT) * bg) * 255.0f);
-													cp->b = (byte)(((cp->b * PixelColor.BYTE_TO_FLOAT) * bb) * 255.0f);
+													cp->r = (byte)((cp->r * p.blend.r) * PixelColor.BYTE_TO_FLOAT);
+													cp->g = (byte)((cp->g * p.blend.g) * PixelColor.BYTE_TO_FLOAT);
+													cp->b = (byte)((cp->b * p.blend.b) * PixelColor.BYTE_TO_FLOAT);
 												}
 											} else if(p.blendstyle == TexturePathBlendStyle.Tint) {
 												float tintammount = p.tintammount - 0.1f;
@@ -224,7 +221,7 @@ namespace CodeImp.DoomBuilder.Data
 											//mxd. apply RenderStyle
 											if(p.style == TexturePathRenderStyle.Blend) {
 												for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--)
-													cp->a = (byte)(((cp->a * PixelColor.BYTE_TO_FLOAT) * p.alpha) * 255.0f);
+													cp->a = (byte)((cp->a * patchalpha) * PixelColor.BYTE_TO_FLOAT);
 
 											//mxd. we need a copy of underlying part of texture for these styles
 											} else if(p.style != TexturePathRenderStyle.Copy) {
@@ -255,7 +252,7 @@ namespace CodeImp.DoomBuilder.Data
 																cp->r = (byte)Math.Min(255, cp->r + tcp->r);
 																cp->g = (byte)Math.Min(255, cp->g + tcp->g);
 																cp->b = (byte)Math.Min(255, cp->b + tcp->b);
-																cp->a = (byte)(((cp->a * PixelColor.BYTE_TO_FLOAT) * p.alpha) * 255.0f);
+																cp->a = (byte)((cp->a * patchalpha) * PixelColor.BYTE_TO_FLOAT);
 																tcp--;
 															}
 															break;
@@ -265,7 +262,7 @@ namespace CodeImp.DoomBuilder.Data
 																cp->r = (byte)Math.Max(0, tcp->r - cp->r);
 																cp->g = (byte)Math.Max(0, tcp->g - cp->g);
 																cp->b = (byte)Math.Max(0, tcp->b - cp->b);
-																cp->a = (byte)(((cp->a * PixelColor.BYTE_TO_FLOAT) * p.alpha) * 255.0f);
+																cp->a = (byte)((cp->a * patchalpha) * PixelColor.BYTE_TO_FLOAT);
 																tcp--;
 															}
 															break;
@@ -275,24 +272,16 @@ namespace CodeImp.DoomBuilder.Data
 																cp->r = (byte)Math.Max(0, cp->r - tcp->r);
 																cp->g = (byte)Math.Max(0, cp->g - tcp->g);
 																cp->b = (byte)Math.Max(0, cp->b - tcp->b);
-																cp->a = (byte)(((cp->a * PixelColor.BYTE_TO_FLOAT) * p.alpha) * 255.0f);
+																cp->a = (byte)((cp->a * patchalpha) * PixelColor.BYTE_TO_FLOAT);
 																tcp--;
 															}
 															break;
 
 														case TexturePathRenderStyle.Modulate:
 															for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
-																float pr = cp->r * PixelColor.BYTE_TO_FLOAT;
-																float pg = cp->g * PixelColor.BYTE_TO_FLOAT;
-																float pb = cp->b * PixelColor.BYTE_TO_FLOAT;
-
-																float tr = tcp->r * PixelColor.BYTE_TO_FLOAT;
-																float tg = tcp->g * PixelColor.BYTE_TO_FLOAT;
-																float tb = tcp->b * PixelColor.BYTE_TO_FLOAT;
-
-																cp->r = (byte)((pr * tr) * 255.0f);
-																cp->g = (byte)((pg * tg) * 255.0f);
-																cp->b = (byte)((pb * tb) * 255.0f);
+																cp->r = (byte)((cp->r * tcp->r) * PixelColor.BYTE_TO_FLOAT);
+																cp->g = (byte)((cp->g * tcp->g) * PixelColor.BYTE_TO_FLOAT);
+																cp->b = (byte)((cp->b * tcp->b) * PixelColor.BYTE_TO_FLOAT);
 
 																tcp--;
 															}

@@ -75,17 +75,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 		#region ================== Constructor / Destructor
 
-		// Constructor
-		public VisplaneExplorerMode()
-		{
-		}
-
-		// Disposer
-		public override void Dispose()
-		{
-			base.Dispose();
-		}
-
 		#endregion
 
 		#region ================== Methods

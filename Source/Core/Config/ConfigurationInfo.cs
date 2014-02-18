@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.Config
 
 		// The { and } are invalid key names in a configuration so this ensures this string is unique
 		private const string MISSING_NODEBUILDER = "{missing nodebuilder}";
-		private string[] LINEDEF_COLOR_PRESET_FLAGS_SEPARATOR = new string[] { "^" }; //mxd
+		private readonly string[] LINEDEF_COLOR_PRESET_FLAGS_SEPARATOR = new[] { "^" }; //mxd
 
 		#endregion
 		
@@ -54,6 +54,9 @@ namespace CodeImp.DoomBuilder.Config
 		private string nodebuildersave;
 		private string nodebuildertest;
 		private DataLocationList resources;
+		private Configuration config; //mxd
+		private bool enabled; //mxd
+		private bool changed; //mxd
 
 		private List<EngineInfo> testEngines; //mxd
 		private int currentEngineIndex; //mxd
@@ -74,7 +77,10 @@ namespace CodeImp.DoomBuilder.Config
 		public string NodebuilderSave { get { return nodebuildersave; } internal set { nodebuildersave = value; } }
 		public string NodebuilderTest { get { return nodebuildertest; } internal set { nodebuildertest = value; } }
 		internal DataLocationList Resources { get { return resources; } }
-		
+		internal Configuration Configuration { get { return config; } } //mxd
+		public bool Enabled { get { return enabled; } internal set { enabled = value; } } //mxd
+		public bool Changed { get { return changed; } internal set { changed = value; } } //mxd
+
 		//mxd
 		public string TestProgramName { get { return testEngines[currentEngineIndex].TestProgramName; } internal set { testEngines[currentEngineIndex].TestProgramName = value; } }
 		public string TestProgram { get { return testEngines[currentEngineIndex].TestProgram; } internal set { testEngines[currentEngineIndex].TestProgram = value; } }
@@ -100,17 +106,19 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			// Initialize
 			this.filename = filename;
+			this.config = cfg; //mxd
 			this.settingskey = Path.GetFileNameWithoutExtension(filename).ToLower();
 			
 			// Load settings from game configuration
-			this.name = cfg.ReadSetting("game", "<unnamed game>");
-			this.defaultlumpname = cfg.ReadSetting("defaultlumpname", "");
+			this.name = config.ReadSetting("game", "<unnamed game>");
+			this.defaultlumpname = config.ReadSetting("defaultlumpname", "");
 			
 			// Load settings from program configuration
 			this.nodebuildersave = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildersave", MISSING_NODEBUILDER);
 			this.nodebuildertest = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildertest", MISSING_NODEBUILDER);
 			this.resources = new DataLocationList(General.Settings.Config, "configurations." + settingskey + ".resources");
 			this.startmode = General.Settings.ReadSetting("configurations." + settingskey + ".startmode", "VerticesMode");
+			this.enabled = General.Settings.ReadSetting("configurations." + settingskey + ".enabled", false); //mxd
 			
 			//mxd. read test engines
 			testEngines = new List<EngineInfo>();
@@ -160,7 +168,7 @@ namespace CodeImp.DoomBuilder.Config
 				//read custom linedef colors from config
 				foreach(DictionaryEntry de in list) {
 					string path = "configurations." + settingskey + ".linedefcolorpresets." + de.Key;
-					string name = General.Settings.ReadSetting(path + ".name", "Unnamed");
+					string presetname = General.Settings.ReadSetting(path + ".name", "Unnamed");
 					PixelColor color = PixelColor.FromInt(General.Settings.ReadSetting(path + ".color", -1));
 					int action = General.Settings.ReadSetting(path + ".action", 0);
 					int activation = General.Settings.ReadSetting(path + ".activation", 0);
@@ -168,7 +176,7 @@ namespace CodeImp.DoomBuilder.Config
 					flags.AddRange(General.Settings.ReadSetting(path + ".flags", "").Split(LINEDEF_COLOR_PRESET_FLAGS_SEPARATOR, StringSplitOptions.RemoveEmptyEntries));
 					List<string> restrictedFlags = new List<string>();
 					restrictedFlags.AddRange(General.Settings.ReadSetting(path + ".restrictedflags", "").Split(LINEDEF_COLOR_PRESET_FLAGS_SEPARATOR, StringSplitOptions.RemoveEmptyEntries));
-					LinedefColorPreset preset = new LinedefColorPreset(name, color, action, activation, flags, restrictedFlags);
+					LinedefColorPreset preset = new LinedefColorPreset(presetname, color, action, activation, flags, restrictedFlags);
 					colorPresets.Add(preset);
 				}
 			}
@@ -229,6 +237,10 @@ namespace CodeImp.DoomBuilder.Config
 		// This saves the settings to program configuration
 		internal void SaveSettings()
 		{
+			//mxd
+			General.Settings.WriteSetting("configurations." + settingskey + ".enabled", enabled);
+			if(!changed) return;
+			
 			// Write to configuration
 			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuildersave", nodebuildersave);
 			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuildertest", nodebuildertest);
@@ -315,6 +327,9 @@ namespace CodeImp.DoomBuilder.Config
 				ci.LinedefColorPresets[i] = new LinedefColorPreset(linedefColorPresets[i]);
 
 			ci.startmode = this.startmode;
+			ci.config = this.config; //mxd
+			ci.enabled = this.enabled; //mxd
+			ci.changed = this.changed; //mxd
 			ci.texturesets = new List<DefinedTextureSet>();
 			foreach(DefinedTextureSet s in this.texturesets) ci.texturesets.Add(s.Copy());
 			ci.thingsfilters = new List<ThingsFilter>();
@@ -343,6 +358,9 @@ namespace CodeImp.DoomBuilder.Config
 				this.linedefColorPresets[i] = new LinedefColorPreset(ci.linedefColorPresets[i]);
 
 			this.startmode = ci.startmode;
+			this.config = ci.config; //mxd
+			this.enabled = ci.enabled; //mxd
+			this.changed = ci.changed;
 			this.texturesets = new List<DefinedTextureSet>();
 			foreach(DefinedTextureSet s in ci.texturesets) this.texturesets.Add(s.Copy());
 			this.thingsfilters = new List<ThingsFilter>();
@@ -382,8 +400,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 
 				//mxd. Validate filters
-				foreach(ThingsFilter f in thingsfilters)
-					f.Validate();
+				foreach(ThingsFilter f in thingsfilters) f.Validate();
 			}
 			
 			// Go for all available editing modes

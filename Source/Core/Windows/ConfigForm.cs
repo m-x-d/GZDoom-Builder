@@ -24,6 +24,7 @@ using CodeImp.DoomBuilder.Config;
 using System.IO;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using System.Drawing;
 
 #endregion
 
@@ -35,8 +36,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private GameConfiguration gameconfig;
 		private ConfigurationInfo configinfo;
 		private List<DefinedTextureSet> copiedsets;
-		private bool preventchanges = false;
-		private bool reloadresources = false;
+		private bool preventchanges;
+		private bool reloadresources;
 
 		// Properties
 		public bool ReloadResources { get { return reloadresources; } }
@@ -58,6 +59,8 @@ namespace CodeImp.DoomBuilder.Windows
 				// Add a copy
 				lvi = listconfigs.Items.Add(ci.Name);
 				lvi.Tag = ci.Clone();
+				lvi.Checked = ci.Enabled; //mxd
+				lvi.ForeColor = (ci.Enabled ? SystemColors.WindowText : SystemColors.InactiveCaptionText); //mxd
 
 				// This is the current configuration?
 				if((General.Map != null) && (General.Map.ConfigSettings.Filename == ci.Filename))
@@ -86,6 +89,13 @@ namespace CodeImp.DoomBuilder.Windows
 					lvi.SubItems.Add(emi.Plugin.Plug.Name);
 				}
 			}
+
+			//mxd
+			listconfigs.ItemChecked += listconfigs_ItemChecked;
+			listconfigs.SelectedIndexChanged += listconfigs_SelectedIndexChanged;
+
+			//mxd. Trigger change to update the right panel...
+			listconfigs_MouseUp(this, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
 		}
 		
 		// This shows a specific page
@@ -114,8 +124,8 @@ namespace CodeImp.DoomBuilder.Windows
 				// Get config info of selected item
 				configinfo = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 				
-				// Load the game configuration
-				gameconfig = new GameConfiguration(General.LoadGameConfiguration(configinfo.Filename));
+				//mxd. Load the game configuration
+				gameconfig = new GameConfiguration(configinfo.Configuration);
 
 				// Set defaults
 				configinfo.ApplyDefaults(gameconfig);
@@ -224,6 +234,11 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			listconfigs_KeyUp(sender, new KeyEventArgs(Keys.None));
 		}
+
+		//mxd
+		private void listconfigs_ItemChecked(object sender, ItemCheckedEventArgs e) {
+			e.Item.ForeColor = (e.Item.Checked ? SystemColors.WindowText : SystemColors.InactiveCaptionText);
+		}
 		
 		// Resource locations changed
 		private void resourcelocations_OnContentChanged()
@@ -308,7 +323,9 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Get configuration item
 				ci = lvi.Tag as ConfigurationInfo;
-				
+				ci.Enabled = lvi.Checked;
+				if(!ci.Changed) continue; //mxd. This config wasn't changed
+
 				// Find same configuration info in originals
 				foreach(ConfigurationInfo oci in General.Configs)
 				{
@@ -352,6 +369,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//mxd. Update engine name
 				configinfo.TestEngines[configinfo.CurrentEngineIndex].CheckProgramName(true);
+				configinfo.Changed = true;
 				cbEngineSelector.Text = configinfo.TestProgramName;
 			}
 		}
@@ -364,6 +382,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Apply to selected configuration
 			configinfo.CustomParameters = customparameters.Checked;
+			configinfo.Changed = true; //mxd
 
 			// Update interface
 			labelparameters.Visible = customparameters.Checked;
@@ -395,6 +414,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Apply to selected configuration
 			configinfo.TestShortPaths = shortpaths.Checked;
+			configinfo.Changed = true; //mxd
 			
 			CreateParametersExample();
 		}
@@ -407,6 +427,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Apply to selected configuration
 			configinfo.TestSkill = skill.Value;
+			configinfo.Changed = true; //mxd
 			
 			CreateParametersExample();
 		}
@@ -421,6 +442,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Add to texture sets
 				configinfo.TextureSets.Add(s);
+				configinfo.Changed = true; //mxd
 				ListViewItem item = listtextures.Items.Add(s.Name);
 				item.Tag = s;
 				item.ImageIndex = 0;
@@ -454,6 +476,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Remove from config info and list
 				DefinedTextureSet s = (listtextures.SelectedItems[0].Tag as DefinedTextureSet);
 				configinfo.TextureSets.Remove(s);
+				configinfo.Changed = true; //mxd
 				listtextures.SelectedItems[0].Remove();
 				reloadresources = true;
 			}
@@ -504,6 +527,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				listtextures.Sort();
 				reloadresources = true;
+				configinfo.Changed = true; //mxd
 			}
 		}
 		
@@ -525,6 +549,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				listtextures.Sort();
 				reloadresources = true;
+				configinfo.Changed = true; //mxd
 			}
 		}
 		
@@ -543,11 +568,13 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Add
 				configinfo.EditModes[emi.Type.FullName] = true;
+				configinfo.Changed = true; //mxd
 			}
 			else if(!e.Item.Checked && currentstate)
 			{
 				// Remove
 				configinfo.EditModes[emi.Type.FullName] = false;
+				configinfo.Changed = true; //mxd
 			}
 			
 			preventchanges = true;
@@ -586,6 +613,7 @@ namespace CodeImp.DoomBuilder.Windows
 				startmode.SelectedIndex = 0;
 				EditModeInfo emi = (startmode.SelectedItem as EditModeInfo);
 				configinfo.StartMode = emi.Type.Name;
+				configinfo.Changed = true; //mxd
 			}
 		}
 		
@@ -599,6 +627,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				EditModeInfo emi = (startmode.SelectedItem as EditModeInfo);
 				configinfo.StartMode = emi.Type.Name;
+				configinfo.Changed = true; //mxd
 			}
 		}
 
@@ -607,6 +636,7 @@ namespace CodeImp.DoomBuilder.Windows
 			EngineInfo newInfo = new EngineInfo();
 			newInfo.TestSkill = (int)Math.Ceiling(gameconfig.Skills.Count / 2f); //set Medium skill level
 			configinfo.TestEngines.Add(newInfo);
+			configinfo.Changed = true; //mxd
 			
 			//store current engine name
 			if(!String.IsNullOrEmpty(cbEngineSelector.Text))
@@ -628,6 +658,7 @@ namespace CodeImp.DoomBuilder.Windows
 			int index = cbEngineSelector.SelectedIndex;
 			cbEngineSelector.SelectedIndex = -1;
 			configinfo.TestEngines.RemoveAt(index);
+			configinfo.Changed = true; //mxd
 			
 			//refresh engines list
 			cbEngineSelector.Items.Clear();
@@ -649,6 +680,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			//set new values
 			configinfo.CurrentEngineIndex = cbEngineSelector.SelectedIndex;
+			configinfo.Changed = true; //mxd
 			cbEngineSelector.Tag = cbEngineSelector.SelectedIndex; //store for later use
 
 			// Set test application and parameters
@@ -676,6 +708,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(index != -1 && cbEngineSelector.Text != cbEngineSelector.Items[index].ToString()) {
 				cbEngineSelector.Items[index] = cbEngineSelector.Text;
 				configinfo.TestProgramName = cbEngineSelector.Text;
+				configinfo.Changed = true; //mxd
 			}
 		}
 
@@ -683,6 +716,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void colorsControl_PresetsChanged(object sender, EventArgs e) {
 			if(configinfo == null) return;
 			configinfo.LinedefColorPresets = colorsControl.GetPresets();
+			configinfo.Changed = true; //mxd
 		}
 	}
 }

@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Editing
 			this.attribs = attr;
 			
 			// Make switch action info
-			if((attribs.SwitchAction != null) && (attribs.SwitchAction.Length > 0))
+			if(!string.IsNullOrEmpty(attribs.SwitchAction))
 				switchactionattr = new BeginActionAttribute(attribs.SwitchAction);
 			
 			// Make button info
