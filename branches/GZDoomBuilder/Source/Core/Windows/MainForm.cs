@@ -228,11 +228,11 @@ namespace CodeImp.DoomBuilder.Windows
 			buttongrid.DropDownDirection = ToolStripDropDownDirection.AboveLeft;
 
 			// Event handlers
-			buttonvisiblechangedhandler = new EventHandler(ToolbarButtonVisibleChanged);
+			buttonvisiblechangedhandler = ToolbarButtonVisibleChanged;
 			//mxd
-			display.OnKeyReleased += new KeyEventHandler(display_OnKeyReleased);
-			toolbarContextMenu.KeyDown += new KeyEventHandler(toolbarContextMenu_KeyDown);
-			toolbarContextMenu.KeyUp += new KeyEventHandler(toolbarContextMenu_KeyUp);
+			display.OnKeyReleased += display_OnKeyReleased;
+			toolbarContextMenu.KeyDown += toolbarContextMenu_KeyDown;
+			toolbarContextMenu.KeyUp += toolbarContextMenu_KeyUp;
 			
 			// Bind any methods
 			General.Actions.BindMethods(this);
@@ -251,8 +251,7 @@ namespace CodeImp.DoomBuilder.Windows
 			lastsize = this.Size;
 
 			//mxd
-			blinkTimer = new System.Timers.Timer();
-			blinkTimer.Interval = 500;
+			blinkTimer = new System.Timers.Timer {Interval = 500};
 			blinkTimer.Elapsed += blinkTimer_Elapsed;
 
 			//mxd. Hints
@@ -518,21 +517,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AllowDrop = true;
 			this.DragEnter += OnDragEnter;
 			this.DragDrop += OnDragDrop;
-
-			//mxd. Check enabled game configuration
-			bool noneenabled = true;
-			for (int i = 0; i < General.Configs.Count; i++) {
-				if (General.Configs[i].Enabled) {
-					noneenabled = false;
-					break;
-				}
-			}
-
-			if(noneenabled) {
-				if (MessageBox.Show("No game configurations are currently enabled.\nPlease enable at least one game configuration", "Warning", MessageBoxButtons.OK) == DialogResult.OK) {
-					ShowConfiguration();
-				}
-			}
 
 			// Info panel state?
 			bool expandedpanel = General.Settings.ReadSetting("mainwindow.expandedinfopanel", true);

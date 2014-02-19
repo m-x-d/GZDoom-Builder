@@ -718,7 +718,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listconfigs.Name = "listconfigs";
 			this.listconfigs.ShowGroups = false;
 			this.listconfigs.Size = new System.Drawing.Size(259, 358);
-			this.listconfigs.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listconfigs.TabIndex = 0;
 			this.listconfigs.UseCompatibleStateImageBehavior = false;
 			this.listconfigs.View = System.Windows.Forms.View.Details;
