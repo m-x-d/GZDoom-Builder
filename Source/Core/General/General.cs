@@ -308,7 +308,6 @@ namespace CodeImp.DoomBuilder
 
 			// Go for all cfg files in the configurations directory
 			string[] filenames = Directory.GetFiles(configspath, "*.cfg", SearchOption.TopDirectoryOnly);
-			Array.Sort(filenames);
 
 			foreach(string filepath in filenames)
 			{
@@ -324,6 +323,9 @@ namespace CodeImp.DoomBuilder
 					configs.Add(cfginfo);
 				}
 			}
+
+			// Sort the configs
+			configs.Sort();
 		}
 
 		// This loads all nodebuilder configurations
@@ -692,6 +694,21 @@ namespace CodeImp.DoomBuilder
 				}
 
 				random = new Random(); //mxd
+
+				//mxd. Check enabled game configuration
+				bool noneenabled = true;
+				for(int i = 0; i < configs.Count; i++) {
+					if(configs[i].Enabled) {
+						noneenabled = false;
+						break;
+					}
+				}
+
+				if(noneenabled) {
+					if(MessageBox.Show("No game configurations are currently enabled.\nPlease enable at least one game configuration", "Warning", MessageBoxButtons.OK) == DialogResult.OK) {
+						mainwindow.ShowConfiguration();
+					}
+				}
 				
 				// Run application from the main window
 				Application.Run(mainwindow);

@@ -317,21 +317,16 @@ namespace CodeImp.DoomBuilder.Windows
 		private void apply_Click(object sender, EventArgs e)
 		{
 			ConfigurationInfo ci;
-			
-			// Apply configuration items
-			foreach(ListViewItem lvi in listconfigs.Items)
-			{
-				// Get configuration item
-				ci = lvi.Tag as ConfigurationInfo;
-				ci.Enabled = lvi.Checked;
-				if(!ci.Changed) continue; //mxd. This config wasn't changed
 
-				// Find same configuration info in originals
-				foreach(ConfigurationInfo oci in General.Configs)
-				{
-					// Apply settings when they match
-					if(string.Compare(ci.Filename, oci.Filename) == 0) oci.Apply(ci);
-				}
+			//mxd. Apply configuration items. They should be in the same order, riiiight?
+			for(int i = 0; i < listconfigs.Items.Count; i++) {
+				// Get configuration item
+				ci = listconfigs.Items[i].Tag as ConfigurationInfo;
+				ci.Enabled = listconfigs.Items[i].Checked;
+
+				// Apply settings
+				General.Configs[i].Enabled = ci.Enabled;
+				if(ci.Changed) General.Configs[i].Apply(ci);
 			}
 
 			//mxd. Update linedef color presets
