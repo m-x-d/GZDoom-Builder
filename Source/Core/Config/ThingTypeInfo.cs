@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int blocking;
 		private int errorcheck;
 		private bool fixedsize;
+		private bool fixedrotation; //mxd
 		private ThingCategory category;
 		private ArgumentInfo[] args;
 		private bool isknown;
@@ -84,6 +85,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int Blocking { get { return blocking; } }
 		public int ErrorCheck { get { return errorcheck; } }
 		public bool FixedSize { get { return fixedsize; } }
+		public bool FixedRotation { get { return fixedrotation; } } //mxd
 		public ThingCategory Category { get { return category; } }
 		public ArgumentInfo[] Args { get { return args; } }
 		public bool IsKnown { get { return isknown; } }
@@ -116,6 +118,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.errorcheck = 0;
 			this.spritescale = new SizeF(1.0f, 1.0f);
 			this.fixedsize = false;
+			this.fixedrotation = false; //mxd
 			this.spritelongname = long.MaxValue;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			this.isknown = false;
@@ -148,6 +151,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.blocking = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".blocking", cat.Blocking);
 			this.errorcheck = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".error", cat.ErrorCheck);
 			this.fixedsize = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".fixedsize", cat.FixedSize);
+			this.fixedrotation = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".fixedrotation", cat.FixedRotation); //mxd
 			this.absolutez = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".absolutez", cat.AbsoluteZ);
 			float sscale = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".spritescale", cat.SpriteScale);
 			this.spritescale = new SizeF(sscale, sscale);
@@ -178,7 +182,7 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor
 		public ThingTypeInfo(ThingCategory cat, int index, string title)
 		{
-			string key = index.ToString(CultureInfo.InvariantCulture);
+			//string key = index.ToString(CultureInfo.InvariantCulture);
 
 			// Initialize
 			this.index = index;
@@ -199,6 +203,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.blocking = cat.Blocking;
 			this.errorcheck = cat.ErrorCheck;
 			this.fixedsize = cat.FixedSize;
+			this.fixedrotation = cat.FixedRotation; //mxd
 			this.absolutez = cat.AbsoluteZ;
 			this.spritescale = new SizeF(cat.SpriteScale, cat.SpriteScale);
 
@@ -237,6 +242,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.blocking = cat.Blocking;
 			this.errorcheck = cat.ErrorCheck;
 			this.fixedsize = cat.FixedSize;
+			this.fixedrotation = cat.FixedRotation; //mxd
 			this.absolutez = cat.AbsoluteZ;
 			this.spritescale = new SizeF(cat.SpriteScale, cat.SpriteScale);
 

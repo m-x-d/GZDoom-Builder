@@ -1941,9 +1941,9 @@ namespace CodeImp.DoomBuilder
 		// This returns the short path name for a file
 		public static string GetShortFilePath(string longpath)
 		{
-			int maxlen = 256;
+			const int maxlen = 256;
 			StringBuilder shortname = new StringBuilder(maxlen);
-			uint len = GetShortPathName(longpath, shortname, (uint)maxlen);
+			GetShortPathName(longpath, shortname, maxlen);
 			return shortname.ToString();
 		}
 		

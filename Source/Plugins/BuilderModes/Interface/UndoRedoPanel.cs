@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			levels.Reverse();
 			int numundos = levels.Count;
 			levels.AddRange(General.Map.UndoRedo.GetRedoList());
-			int numredos = levels.Count - numundos;
+			//int numredos = levels.Count - numundos;
 			
 			// Determine the offset to show items at
 			int offset = numundos - (MAX_DISPLAY_LEVELS >> 1);

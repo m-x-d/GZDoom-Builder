@@ -301,7 +301,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		protected void alignTextureToSlopeLine(Linedef slopeSource, float slopeAngle, bool isFront, bool alignx, bool aligny) {
-			Vector2D hitpos = mode.GetHitPosition();
 			bool isFloor = (geoType == VisualGeometryType.FLOOR);
 
 			Sector.Sector.Fields.BeforeFieldsChange();

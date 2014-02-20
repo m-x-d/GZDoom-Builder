@@ -31,6 +31,7 @@ namespace CodeImp.DoomBuilder.Windows
 		Views,
 		Geometry,
 		Testing,
-		Custom
+		Custom,
+		Modes //mxd
 	}
 }

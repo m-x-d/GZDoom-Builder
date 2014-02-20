@@ -107,8 +107,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 //utility
 		private void applyTranslationJitter(int ammount) {
-			Random rndX = new Random();
-			Random rndY = new Random();
 			int curAmmount;
 
 			if(relativePosition) {
@@ -129,8 +127,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		}
 
 		private void applyRotationJitter(int ammount) {
-			Random rnd = new Random();
-
 			for(int i = 0; i < selection.Count; i++)
 				selection[i].Rotate((int)((thingData[i].Angle + ammount * thingData[i].JitterRotation) % 360));
 

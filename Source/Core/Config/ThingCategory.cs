@@ -52,11 +52,12 @@ namespace CodeImp.DoomBuilder.Config
 		private int blocking;
 		private int errorcheck;
 		private bool fixedsize;
+		private bool fixedrotation; //mxd
 		private bool absolutez;
 		private float spritescale;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 		
 		#endregion
 
@@ -74,6 +75,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int Blocking { get { return blocking; } }
 		public int ErrorCheck { get { return errorcheck; } }
 		public bool FixedSize { get { return fixedsize; } }
+		public bool FixedRotation { get { return fixedrotation; } } //mxd
 		public bool IsDisposed { get { return isdisposed; } }
 		public bool AbsoluteZ { get { return absolutez; } }
 		public float SpriteScale { get { return spritescale; } }
@@ -102,6 +104,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.blocking = 0;
 			this.errorcheck = 1;
 			this.fixedsize = false;
+			this.fixedrotation = false; //mxd
 			this.absolutez = false;
 			this.spritescale = 1.0f;
 			
@@ -131,6 +134,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.blocking = cfg.ReadSetting("thingtypes." + name + ".blocking", 0);
 			this.errorcheck = cfg.ReadSetting("thingtypes." + name + ".error", 1);
 			this.fixedsize = cfg.ReadSetting("thingtypes." + name + ".fixedsize", false);
+			this.fixedrotation = cfg.ReadSetting("thingtypes." + name + ".fixedrotation", false); //mxd
 			this.absolutez = cfg.ReadSetting("thingtypes." + name + ".absolutez", false);
 			this.spritescale = cfg.ReadSetting("thingtypes." + name + ".spritescale", 1.0f);
 			

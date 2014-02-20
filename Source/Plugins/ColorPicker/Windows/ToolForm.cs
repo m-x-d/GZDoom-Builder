@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-
-using CodeImp.DoomBuilder;
+using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.ColorPicker
 {
@@ -15,9 +9,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
 		public ToolsForm() {
 			InitializeComponent();
 
-			General.Interface.AddButton(separator1);
-			General.Interface.AddButton(cpButton);
-			General.Interface.AddButton(separator2);
+			General.Interface.AddButton(cpButton, ToolbarSection.Modes);
 		}
 
 		private void InvokeTaggedAction(object sender, EventArgs e) {
