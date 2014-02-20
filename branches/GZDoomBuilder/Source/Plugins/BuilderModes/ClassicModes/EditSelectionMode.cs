@@ -98,6 +98,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Selection
 		private ICollection<Vertex> selectedvertices;
 		private ICollection<Thing> selectedthings;
+		private List<int> fixedrotationthingtypes; //mxd 
 		private ICollection<Linedef> selectedlines;
 		private List<Vector2D> vertexpos;
 		private List<Vector2D> thingpos;
@@ -770,7 +771,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			index = 0;
 			foreach(Thing t in selectedthings)
 			{
-				t.Rotate(Angle2D.Normalized(newthingangle[index++]));
+				if(!fixedrotationthingtypes.Contains(t.Type)) //mxd. Polyobject Anchors, I hate you!
+					t.Rotate(Angle2D.Normalized(newthingangle[index++]));
 			}
 			
 			UpdatePanel();
@@ -927,6 +929,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			vertexpos = new List<Vector2D>(selectedvertices.Count);
 			thingpos = new List<Vector2D>(selectedthings.Count);
 			thingangle = new List<float>(selectedthings.Count);
+			fixedrotationthingtypes = new List<int>(); //mxd
 
 			// A selection must be made!
 			if((selectedvertices.Count > 0) || (selectedthings.Count > 0))
@@ -957,6 +960,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if((t.Position.y - t.Size) < offset.y) offset.y = t.Position.y - t.Size;
 					if((t.Position.x + t.Size) > right.x) right.x = t.Position.x + t.Size;
 					if((t.Position.y + t.Size) > right.y) right.y = t.Position.y + t.Size;
+
+					//mxd
+					if (!fixedrotationthingtypes.Contains(t.Type)) {
+						ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(t.Type);
+						if (tti != null && tti.FixedRotation) fixedrotationthingtypes.Add(t.Type);
+					}
 
 					// Keep original coordinates
 					thingpos.Add(t.Position);

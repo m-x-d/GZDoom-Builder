@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		private void ProcessingThread(object index)
 		{
 			// Get function pointers
-			VPO_GetError GetError = (VPO_GetError)Marshal.GetDelegateForFunctionPointer(GetProcAddress(dlls[(int)index], "VPO_GetError"), typeof(VPO_GetError));
+			//VPO_GetError GetError = (VPO_GetError)Marshal.GetDelegateForFunctionPointer(GetProcAddress(dlls[(int)index], "VPO_GetError"), typeof(VPO_GetError));
 			VPO_LoadWAD LoadWAD = (VPO_LoadWAD)Marshal.GetDelegateForFunctionPointer(GetProcAddress(dlls[(int)index], "VPO_LoadWAD"), typeof(VPO_LoadWAD));
 			VPO_OpenMap OpenMap = (VPO_OpenMap)Marshal.GetDelegateForFunctionPointer(GetProcAddress(dlls[(int)index], "VPO_OpenMap"), typeof(VPO_OpenMap));
 			VPO_FreeWAD FreeWAD = (VPO_FreeWAD)Marshal.GetDelegateForFunctionPointer(GetProcAddress(dlls[(int)index], "VPO_FreeWAD"), typeof(VPO_FreeWAD));

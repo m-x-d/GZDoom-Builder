@@ -857,7 +857,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(v.Linedefs.Count == 2) {
 						Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
 						Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
-						Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
+						//Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
 						Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
 						if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
 						ld2.Dispose();

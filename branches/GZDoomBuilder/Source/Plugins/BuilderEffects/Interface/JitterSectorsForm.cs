@@ -292,7 +292,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		}
 
 		private void applyCeilingHeightJitter(int ammount) {
-			Random rnd = new Random();
 			int curAmmount;
 
 			if(relativeCeilingHeight) {
@@ -318,7 +317,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		}
 
 		private void applyFloorHeightJitter(int ammount) {
-			Random rnd = new Random();
 			int curAmmount;
 
 			if(relativeFloorHeight) {

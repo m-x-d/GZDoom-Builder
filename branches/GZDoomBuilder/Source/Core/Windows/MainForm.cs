@@ -1650,6 +1650,7 @@ namespace CodeImp.DoomBuilder.Windows
 				case ToolbarSection.Views: toolbar.Items.Insert(toolbar.Items.IndexOf(seperatorviews), button); break;
 				case ToolbarSection.Geometry: toolbar.Items.Insert(toolbar.Items.IndexOf(seperatorgeometry), button); break;
 				case ToolbarSection.Testing: toolbar.Items.Insert(toolbar.Items.IndexOf(seperatortesting), button); break;
+				case ToolbarSection.Modes: toolbar.Items.Insert(toolbar.Items.IndexOf(seperatormodes), button); break; //mxd
 				case ToolbarSection.Custom: toolbar.Items.Add(button); break;
 			}
 			

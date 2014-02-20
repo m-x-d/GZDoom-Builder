@@ -302,16 +302,14 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			// brightness.
 			CreateGradient();
 
-			using (Brush selectedBrush = new SolidBrush(selectedColor)) {
-				// Draw the saved color wheel image.
-				g.DrawImage(colorImage, colorRectangle);
+			// Draw the saved color wheel image.
+			g.DrawImage(colorImage, colorRectangle);
 
-				// Draw the "brightness" rectangle.
-				DrawLinearGradient(fullColor);
-				// Draw the two pointers.
-				DrawColorPointer(colorPoint);
-				DrawBrightnessPointer(brightnessPoint);
-			}
+			// Draw the "brightness" rectangle.
+			DrawLinearGradient(fullColor);
+			// Draw the two pointers.
+			DrawColorPointer(colorPoint);
+			DrawBrightnessPointer(brightnessPoint);
 		}
 
 		private void CalcCoordsAndUpdate(ColorHandler.HSV HSV) {
