@@ -545,6 +545,16 @@ namespace CodeImp.DoomBuilder.Config
 			t.Type = defaultthingtype;
 			t.Rotate(defaultthingangle);
 			foreach(string f in defaultthingflags) t.SetFlag(f, true);
+
+			//mxd. Set default arguments
+			ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(t.Type);
+			if (tti != null) {
+				t.Args[0] = (int)tti.Args[0].DefaultValue;
+				t.Args[1] = (int)tti.Args[1].DefaultValue;
+				t.Args[2] = (int)tti.Args[2].DefaultValue;
+				t.Args[3] = (int)tti.Args[3].DefaultValue;
+				t.Args[4] = (int)tti.Args[4].DefaultValue;
+			}
 		}
 		
 		// This attempts to find the default drawing settings

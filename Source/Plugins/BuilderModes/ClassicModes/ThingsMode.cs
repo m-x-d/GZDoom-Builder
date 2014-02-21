@@ -730,10 +730,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Redraw screen
 					General.Interface.RedrawDisplay();
-
-					List<Thing> things = new List<Thing>(1);
-					things.Add(t);
-					General.Interface.ShowEditThings(things);
+					General.Interface.ShowEditThings(new List<Thing> { t });
 				}
 
 				General.Interface.DisplayStatus(StatusType.Action, "Inserted a new thing.");
