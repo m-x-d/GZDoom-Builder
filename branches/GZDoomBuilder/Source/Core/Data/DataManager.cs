@@ -1358,11 +1358,9 @@ namespace CodeImp.DoomBuilder.Data
 				// Return from config
 				return thingtypes[thingtype];
 			}
-			else
-			{
-				// Create unknown thing info
-				return new ThingTypeInfo(thingtype);
-			}
+
+			// Create unknown thing info
+			return new ThingTypeInfo(thingtype);
 		}
 
 		// This gets thing information by index
@@ -1375,11 +1373,9 @@ namespace CodeImp.DoomBuilder.Data
 				// Return from config
 				return thingtypes[thingtype];
 			}
-			else
-			{
-				// No such thing type known
-				return null;
-			}
+
+			// No such thing type known
+			return null;
 		}
 		
 		#endregion
