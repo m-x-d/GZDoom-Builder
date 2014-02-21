@@ -77,17 +77,17 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 			InitializeComponent();
 
 			colorPickerControl1.Initialize(Color.FromArgb(currentColorTag == "lightcolor" ? curSectorColor : curFadeColor));
-			colorPickerControl1.ColorChanged += new EventHandler<ColorChangedEventArgs>(colorPickerControl1_ColorChanged);
-			colorPickerControl1.OnOkPressed += new EventHandler(colorPickerControl1_OnOkPressed);
-			colorPickerControl1.OnCancelPressed += new EventHandler(colorPickerControl1_OnCancelPressed);
+			colorPickerControl1.ColorChanged += colorPickerControl1_ColorChanged;
+			colorPickerControl1.OnOkPressed += colorPickerControl1_OnOkPressed;
+			colorPickerControl1.OnCancelPressed += colorPickerControl1_OnCancelPressed;
 
 			if (currentColorTag == "lightcolor")
 				rbSectorColor.Checked = true;
 			else
 				rbFadeColor.Checked = true;
 
-			rbSectorColor.CheckedChanged += new EventHandler(rbColor_CheckedChanged);
-			rbFadeColor.CheckedChanged += new EventHandler(rbColor_CheckedChanged);
+			rbSectorColor.CheckedChanged += rbColor_CheckedChanged;
+			rbFadeColor.CheckedChanged += rbColor_CheckedChanged;
 
 			Text = "Editing " + rest;
 

@@ -1,14 +1,10 @@
 #region === Copyright (c) 2010 Pascal van der Heiden ===
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
@@ -116,7 +112,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// This returns the tile position for the given map coordinate
 		private Point TileForPoint(float x, float y)
 		{
-			return new Point((int)Math.Floor(x / (float)Tile.TILE_SIZE) * Tile.TILE_SIZE, (int)Math.Floor(y / (float)Tile.TILE_SIZE) * Tile.TILE_SIZE);
+			return new Point((int)Math.Floor(x / Tile.TILE_SIZE) * Tile.TILE_SIZE, (int)Math.Floor(y / Tile.TILE_SIZE) * Tile.TILE_SIZE);
 		}
 
 		// This draws all tiles on the image

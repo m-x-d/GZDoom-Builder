@@ -200,11 +200,13 @@ namespace CodeImp.DoomBuilder.Windows
 					v.Move(new Vector2D(vertexProps[i++].X, v.Position.y));
 			} else { //update values
 				// Verify the coordinates
-				float px = positionx.GetResultFloat(vertexProps[i++].X);
+				float px = positionx.GetResultFloat(vertexProps[i].X);
 				if(px < General.Map.FormatInterface.MinCoordinate) {
 					positionx.Text = General.Map.FormatInterface.MinCoordinate.ToString();
 					return;
-				} else if(px > General.Map.FormatInterface.MaxCoordinate) {
+				} 
+				
+				if(px > General.Map.FormatInterface.MaxCoordinate) {
 					positionx.Text = General.Map.FormatInterface.MaxCoordinate.ToString();
 					return;
 				}
@@ -229,11 +231,13 @@ namespace CodeImp.DoomBuilder.Windows
 					v.Move(new Vector2D(v.Position.x, vertexProps[i++].Y));
 			} else { //update values
 				// Verify the coordinates
-				float py = positiony.GetResultFloat(vertexProps[i++].Y);
+				float py = positiony.GetResultFloat(vertexProps[i].Y);
 				if(py < General.Map.FormatInterface.MinCoordinate) {
 					positiony.Text = General.Map.FormatInterface.MinCoordinate.ToString();
 					return;
-				} else if(py > General.Map.FormatInterface.MaxCoordinate) {
+				} 
+				
+				if(py > General.Map.FormatInterface.MaxCoordinate) {
 					positiony.Text = General.Map.FormatInterface.MaxCoordinate.ToString();
 					return;
 				}

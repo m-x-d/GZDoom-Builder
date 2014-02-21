@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.Compilers
 		{
 			if(!isdisposed)
 			{
-				Exception deleteerror = null;
+				Exception deleteerror;
 				float starttime = General.Clock.CurrentTime;
 				
 				do

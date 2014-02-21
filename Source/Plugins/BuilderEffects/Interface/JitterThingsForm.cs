@@ -32,7 +32,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		public JitterThingsForm(string editingModeName) {
 			this.editingModeName = editingModeName;
-			this.HelpRequested += new HelpEventHandler(JitterThingsForm_HelpRequested);
+			this.HelpRequested += JitterThingsForm_HelpRequested;
 
 			InitializeComponent();
 

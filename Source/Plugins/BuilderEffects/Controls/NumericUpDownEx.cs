@@ -11,10 +11,6 @@
 
 using System;
 using System.Reflection;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -33,7 +29,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		/// <summary>
 		/// object creator
 		/// </summary>
-		public NumericUpDownEx() : base()
+		public NumericUpDownEx()
 		{
 			// extract a reference to the underlying TextBox field
 			_textbox = GetPrivateField<TextBox>(this, "upDownEdit");
@@ -77,7 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		}
 
 
-		protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
+		protected override void OnPaint(PaintEventArgs e)
 		{
 			if (_upDownButtons.Visible == false)
 			{
@@ -90,7 +86,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		/// <summary>
 		/// WndProc override to kill WN_MOUSEWHEEL message
 		/// </summary>
-		protected override void WndProc(ref System.Windows.Forms.Message m)
+		protected override void WndProc(ref Message m)
 		{
 			const int WM_MOUSEWHEEL = 0x20a;
 
@@ -133,7 +129,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			set { _autoSelect = value; }
 		}
 
-		private bool _autoSelect = false;
+		private bool _autoSelect;
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -220,7 +216,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			get { return _wrapValue; }
 			set { _wrapValue = value; }
 		}
-		private bool _wrapValue = false;
+		private bool _wrapValue;
 	
 #endregion
 
@@ -228,7 +224,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 #region Text selection
 
 		// select all the text on focus enter
-		protected override void OnGotFocus(System.EventArgs e)
+		protected override void OnGotFocus(EventArgs e)
 		{
 			if (_autoSelect)
 			{
@@ -240,7 +236,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		// MouseUp will kill the SelectAll made on GotFocus.
 		// Will restore it, but only if user have not made a partial text selection.
-		protected override void OnMouseUp(System.Windows.Forms.MouseEventArgs mevent)
+		protected override void OnMouseUp(MouseEventArgs mevent)
 		{
 			if (_autoSelect && _textbox.SelectionLength == 0)
 			{
@@ -263,10 +259,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		public event CancelEventHandler BeforeValueIncrement;
 
 		// flag to track mouse position
-		private bool _mouseOver = false;
+		private bool _mouseOver;
 
 		// this handler is called at each mouse Enter/Leave movement
-		private void _mouseEnterLeave(object sender, System.EventArgs e)
+		private void _mouseEnterLeave(object sender, EventArgs e)
 		{
 			Rectangle cr = RectangleToScreen(ClientRectangle);
 			Point mp = MousePosition;
@@ -349,7 +345,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		public void UpdateUpDownButtonsVisibility()
 		{
 			// test new state
-			bool newVisible = false;
+			bool newVisible;
 			switch (_showUpDownButtons)
 			{
 				case ShowUpDownButtonsMode.WhenMouseOver:
@@ -382,7 +378,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		/// <summary>
 		/// Custom textbox size management
 		/// </summary>
-		protected override void OnTextBoxResize(object source, System.EventArgs e)
+		protected override void OnTextBoxResize(object source, EventArgs e)
 		{
 			if (_textbox == null)
 				return;

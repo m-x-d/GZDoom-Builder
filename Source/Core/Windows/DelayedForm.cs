@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Create a timer that we need to show the form
 			formshowtimer = new Timer();
 			formshowtimer.Interval = 1;
-			formshowtimer.Tick += new EventHandler(formshowtimer_Tick);
+			formshowtimer.Tick += formshowtimer_Tick;
 		}
 		
 		// When form is shown

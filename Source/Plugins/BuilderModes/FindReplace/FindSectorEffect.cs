@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Interpret the number given
-			int effect = 0;
+			int effect;
 			if(int.TryParse(value, out effect))
 			{
 				// Where to search?

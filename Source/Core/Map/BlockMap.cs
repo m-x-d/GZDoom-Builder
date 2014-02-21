@@ -114,8 +114,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This returns the block center in world coordinates
 		protected Vector2D GetBlockCenter(Point p)
 		{
-			return new Vector2D((float)((p.X << blocksizeshift) + (blocksize >> 1)) + range.Left,
-								(float)((p.Y << blocksizeshift) + (blocksize >> 1)) + range.Top);
+			return new Vector2D(((p.X << blocksizeshift) + (blocksize >> 1)) + range.Left,
+								((p.Y << blocksizeshift) + (blocksize >> 1)) + range.Top);
 		}
 		
 		// This returns true when the given block is inside range

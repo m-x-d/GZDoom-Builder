@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// This shows the info
 		public void ShowInfo(Sector s)
 		{
-			string effectinfo = "";
+			string effectinfo;
 			
 			int sheight = s.CeilHeight - s.FloorHeight;
 
@@ -50,9 +50,9 @@ namespace CodeImp.DoomBuilder.Controls
 			if(General.Map.Config.SectorEffects.ContainsKey(s.Effect))
 				effectinfo = General.Map.Config.SectorEffects[s.Effect].ToString();
 			else if(s.Effect == 0)
-				effectinfo = s.Effect.ToString() + " - Normal";
+				effectinfo = s.Effect + " - Normal";
 			else
-				effectinfo = s.Effect.ToString() + " - Unknown";
+				effectinfo = s.Effect + " - Unknown";
 
 			// Sector info
 			sectorinfo.Text = " Sector " + s.Index + " (" + (s.Sidedefs == null ? "no" : s.Sidedefs.Count.ToString()) + " sidedefs)"; //mxd
@@ -213,7 +213,7 @@ namespace CodeImp.DoomBuilder.Controls
 						showExtededCeilingInfo = true;
 						ceilingAngle.Enabled = true;
 						ceilingAngleLabel.Enabled = true;
-						ceilingAngle.Text = s.Fields["rotationceiling"].Value.ToString() + "\u00B0";
+						ceilingAngle.Text = s.Fields["rotationceiling"].Value + "\u00B0";
 					} else {
 						ceilingAngle.Text = "-";
 						ceilingAngle.Enabled = false;
@@ -224,7 +224,7 @@ namespace CodeImp.DoomBuilder.Controls
 						showExtededFloorInfo = true;
 						floorAngle.Enabled = true;
 						floorAngleLabel.Enabled = true;
-						floorAngle.Text = s.Fields["rotationfloor"].Value.ToString() + "\u00B0";
+						floorAngle.Text = s.Fields["rotationfloor"].Value + "\u00B0";
 					} else {
 						floorAngle.Text = "-";
 						floorAngle.Enabled = false;

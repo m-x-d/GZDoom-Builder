@@ -76,7 +76,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		private void tbColor_TextChanged(object sender, EventArgs e) {
 			if(blockUpdate)	return;
-			int colorVal = defaultValue;
+			int colorVal;
 
 			if(int.TryParse(tbColor.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out colorVal)){
 				colorVal = General.Clamp(colorVal, 0, 16777215);

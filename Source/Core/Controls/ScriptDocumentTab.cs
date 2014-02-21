@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Controls
 			navigator.Name = "navigator";
 			navigator.TabStop = true;
 			navigator.TabIndex = 0;
-			navigator.DropDown += new EventHandler(navigator_DropDown);
+			navigator.DropDown += navigator_DropDown;
 			this.Controls.Add(navigator);
 			
 			// Make the script control
@@ -311,7 +311,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if (Array.IndexOf(ScriptTypes.TYPES, config.Description) != -1) {
 				updateNavigator(new MemoryStream(editor.GetText()), config.Description);
 				navigator.Enabled = true;
-				navigator.SelectedIndexChanged += new EventHandler(navigator_SelectedIndexChanged);
+				navigator.SelectedIndexChanged += navigator_SelectedIndexChanged;
 			}else{
 				navigator.Items.Clear();
 				navigator.Enabled = false;

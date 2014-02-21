@@ -45,7 +45,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private Sector sector;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 

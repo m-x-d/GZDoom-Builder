@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// Variables
 		private List<GeneralizedCategory> generalizedcategories;
-		private bool controlpressed = false;
+		private bool controlpressed;
 		
 		// Constants
 		private const string NUMBER_SEPERATOR = "\t";
@@ -99,8 +99,8 @@ namespace CodeImp.DoomBuilder.Controls
 			INumberedTitle item;
 			Brush displaybrush = SystemBrushes.WindowText;
 			Brush backbrush = SystemBrushes.Window;
-			string displayname = "";
-			int intnumber = 0;
+			string displayname = string.Empty;
+			int intnumber;
 			
 			// Only when running
 			if(!this.DesignMode)

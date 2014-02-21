@@ -17,25 +17,9 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 using System.IO;
-using System.Reflection;
-using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Plugins.VisplaneExplorer.Properties;
 using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Geometry;
-using System.Drawing;
-using CodeImp.DoomBuilder.Editing;
-using CodeImp.DoomBuilder.Plugins;
-using CodeImp.DoomBuilder.Types;
-using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Data;
 
 #endregion
 

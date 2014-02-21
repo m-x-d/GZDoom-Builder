@@ -621,8 +621,8 @@ namespace CodeImp.DoomBuilder.IO
 							// Is it a number?
 							if(NUMBERS.IndexOf(c.ToString(CultureInfo.InvariantCulture)) > -1)
 							{
-								int vv = 0;
-								char vc = '0';
+								int vv;
+								char vc;
 
 								// Convert the next 3 characters to a number
 								string v = data.Substring(pos, 3);
@@ -712,7 +712,7 @@ namespace CodeImp.DoomBuilder.IO
 					// Floating point?
 					if(val.IndexOf("f") > -1)
 					{
-						float fval = 0;
+						float fval;
 						
 						// Convert to float (remove the f first)
 						try { fval = Convert.ToSingle(val.Trim().Replace("f", ""), CultureInfo.InvariantCulture); }
@@ -1188,7 +1188,7 @@ namespace CodeImp.DoomBuilder.IO
 						//db.Append("="); db.Append(spacing); db.Append("null;"); db.Append(newline);
 						
 						// Output key only
-						db.Append(leveltabs); db.Append(de.Key.ToString()); db.Append(";"); db.Append(newline);
+						db.Append(leveltabs); db.Append(de.Key); db.Append(";"); db.Append(newline);
 					}
 					// Check if the value if of ConfigStruct type
 					else if(de.Value is IDictionary)
@@ -1208,13 +1208,13 @@ namespace CodeImp.DoomBuilder.IO
 						if((bool)de.Value)
 						{
 							// Output the keyword "true"
-							db.Append(leveltabs); db.Append(de.Key.ToString()); db.Append(spacing);
+							db.Append(leveltabs); db.Append(de.Key); db.Append(spacing);
 							db.Append("="); db.Append(spacing); db.Append("true;"); db.Append(newline);
 						}
 						else
 						{
 							// Output the keyword "false"
-							db.Append(leveltabs); db.Append(de.Key.ToString()); db.Append(spacing);
+							db.Append(leveltabs); db.Append(de.Key); db.Append(spacing);
 							db.Append("="); db.Append(spacing); db.Append("false;"); db.Append(newline);
 						}
 					}

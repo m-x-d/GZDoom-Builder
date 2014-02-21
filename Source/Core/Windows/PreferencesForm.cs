@@ -33,13 +33,13 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Variables
 
 		private PreferencesController controller;
-		private bool allowapplycontrol = false;
-		private bool disregardshift = false;
-		private bool disregardcontrol = false;
+		private bool allowapplycontrol;
+		private bool disregardshift;
+		private bool disregardcontrol;
 		private List<ListViewItem> actionListItems; //mxd
 		private List<int> actionListItemsGroupIndices; //mxd
 
-		private bool reloadresources = false;
+		private bool reloadresources;
 		
 		#endregion
 
@@ -359,7 +359,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void previewsize_ValueChanged(object sender, EventArgs e)
 		{
 			int size = PreviewManager.PREVIEW_SIZES[previewsize.Value];
-			previewsizelabel.Text = size.ToString() + " x " + size.ToString();
+			previewsizelabel.Text = size + " x " + size;
 		}
 		
 		private void fieldofview_ValueChanged(object sender, EventArgs e)
@@ -383,7 +383,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void viewdistance_ValueChanged(object sender, EventArgs e)
 		{
 			int value = viewdistance.Value * 200;
-			viewdistancelabel.Text = value.ToString() + " mp";
+			viewdistancelabel.Text = value + " mp";
 		}
 
 		private void autoscrollspeed_ValueChanged(object sender, EventArgs e)
@@ -391,12 +391,12 @@ namespace CodeImp.DoomBuilder.Windows
 			if(autoscrollspeed.Value == 0)
 				autoscrollspeedlabel.Text = "Off";
 			else
-				autoscrollspeedlabel.Text = autoscrollspeed.Value.ToString() + "x";
+				autoscrollspeedlabel.Text = autoscrollspeed.Value + "x";
 		}
 
 		private void zoomfactor_ValueChanged(object sender, EventArgs e)
 		{
-			zoomfactorlabel.Text = (zoomfactor.Value * 10).ToString() + "%";
+			zoomfactorlabel.Text = (zoomfactor.Value * 10) + "%";
 		}
 
 		//mxd
@@ -889,13 +889,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void imagebrightness_ValueChanged(object sender, EventArgs e)
 		{
-			imagebrightnesslabel.Text = "+ " + imagebrightness.Value.ToString() + " y";
+			imagebrightnesslabel.Text = "+ " + imagebrightness.Value + " y";
 		}
 
 		private void doublesidedalpha_ValueChanged(object sender, EventArgs e)
 		{
 			int percent = doublesidedalpha.Value * 10;
-			doublesidedalphalabel.Text = percent.ToString() + "%";
+			doublesidedalphalabel.Text = percent + "%";
 		}
 
 		//mxd

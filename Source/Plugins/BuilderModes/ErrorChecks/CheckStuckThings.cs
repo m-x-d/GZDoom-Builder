@@ -169,7 +169,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(info.ErrorCheck >= ThingTypeInfo.THING_ERROR_INSIDE)
 					{
 						// Get the nearest line to see if the thing is outside the map
-						bool outside = false;
+						bool outside;
 						Linedef l = General.Map.Map.NearestLinedef(t.Position);
 						if(l.SideOfLine(t.Position) <= 0)
 						{

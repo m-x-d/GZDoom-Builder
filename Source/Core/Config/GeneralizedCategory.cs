@@ -23,7 +23,7 @@ namespace CodeImp.DoomBuilder.Config
 		private List<GeneralizedOption> options;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 

@@ -32,16 +32,16 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Variables
 		
 		// Properties
-		private string switchaction = null;
-		private string buttonimage = null;
-		private int buttonorder = 0;
+		private string switchaction;
+		private string buttonimage;
+		private int buttonorder;
 		private string buttongroup = "~none";
 		private bool optional = true;
-		private bool isvolatile = false;
+		private bool isvolatile;
 		private string displayname = "<unnamed mode>";
 		private bool allowcopypaste = true;
-		private bool usebydefault = false;
-		private bool safestartmode = false;
+		private bool usebydefault;
+		private bool safestartmode;
 		
 		#endregion
 		

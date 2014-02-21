@@ -175,7 +175,7 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 				poly.Add(new Vector3D(vr.x, vr.y, fr));
 				
 				// Determine initial color
-				int lightlevel = 0;
+				int lightlevel;
 				if(((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.DisableLighting) != 0)) {
 					lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
 				}else{
@@ -281,7 +281,7 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 			((BaseVisualSector)mode.GetVisualSector(Sidedef.Other.Sector)).Rebuild();
 
 			//mxd. As well as model sector
-			((BaseVisualSector)mode.GetVisualSector(extrafloor.Linedef.Front.Sector)).UpdateSectorGeometry(false);
+			mode.GetVisualSector(extrafloor.Linedef.Front.Sector).UpdateSectorGeometry(false);
 		}
 
 		protected override void SetTextureOffsetX(int x)
@@ -326,7 +326,7 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 
 			int light = Sidedef.Fields.GetValue("light", 0);
 			bool absolute = Sidedef.Fields.GetValue("lightabsolute", false);
-			int newLight = 0;
+			int newLight;
 
 			if(up)
 				newLight = General.Map.Config.BrightnessLevels.GetNextHigher(light, absolute);

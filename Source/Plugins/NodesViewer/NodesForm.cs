@@ -3,9 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
@@ -67,8 +65,8 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 
 			// Calculate the tree balance. The balance is 100% when all leafs are equal depth and
 			// 0% when 1 leaf equals peakdepth and the others are at level 1.
-			int balance = (int)(((float)mindepth / (float)maxdepth) * 100f);
-			treebalance.Text = balance.ToString() + "%";
+			int balance = (int)(((float)mindepth / maxdepth) * 100f);
+			treebalance.Text = balance + "%";
 
 			// Start viewing root split
 			splitindex.Maximum = mode.Nodes.Length - 1;

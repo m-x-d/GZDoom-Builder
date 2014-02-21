@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Variables
 		
-		private volatile bool running = false;
+		private volatile bool running;
 		private Thread checksthread;
 		private BlockMap<BlockEntry> blockmap;
 		private static bool applyToAll; //mxd
@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(results.InvokeRequired)
 			{
-				CallResultMethodDelegate d = new CallResultMethodDelegate(SubmitResult);
+				CallResultMethodDelegate d = SubmitResult;
 				try { progress.Invoke(d, result); }
 				catch(ThreadInterruptedException) { }
 			}
@@ -130,7 +130,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(progress.InvokeRequired)
 			{
-				CallIntMethodDelegate d = new CallIntMethodDelegate(SetProgressMaximum);
+				CallIntMethodDelegate d = SetProgressMaximum;
 				try { progress.Invoke(d, maximum); }
 				catch(ThreadInterruptedException) { }
 			}
@@ -144,7 +144,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(progress.InvokeRequired)
 			{
-				CallIntMethodDelegate d = new CallIntMethodDelegate(AddProgressValue);
+				CallIntMethodDelegate d = AddProgressValue;
 				try { progress.Invoke(d, value); }
 				catch(ThreadInterruptedException) { }
 			}
@@ -159,7 +159,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(this.InvokeRequired)
 			{
-				CallVoidMethodDeletage d = new CallVoidMethodDeletage(StopChecking);
+				CallVoidMethodDeletage d = StopChecking;
 				this.Invoke(d);
 			}
 			else
@@ -215,7 +215,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Start checking
 			running = true;
-			checksthread = new Thread(new ThreadStart(RunChecks));
+			checksthread = new Thread(RunChecks);
 			checksthread.Name = "Error Checking Management";
 			checksthread.Priority = ThreadPriority.Normal;
 			checksthread.Start();
@@ -273,7 +273,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(c.Checked)
 				{
 					Type t = (c.Tag as Type);
-					ErrorChecker checker = null;
+					ErrorChecker checker;
 					
 					try
 					{
@@ -319,7 +319,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				while((threads.Count < maxthreads) && (nextchecker < checkers.Count))
 				{
 					ErrorChecker c = checkers[nextchecker++];
-					Thread t = new Thread(new ThreadStart(c.Run));
+					Thread t = new Thread(c.Run);
 					t.Name = "Error Checker '" + c.GetType().Name + "'";
 					t.Priority = ThreadPriority.BelowNormal;
 					t.Start();

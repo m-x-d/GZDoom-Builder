@@ -1203,17 +1203,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							// loses both its sidedefs because it doesn't join any sector)
 							//if((s.Other != null) && !s.Other.Sector.Fields.ContainsKey(MapSet.VirtualSectorField))
 							{
-								Sidedef joinsidedef = null;
-								
 								// Find out in which sector this was pasted
 								Vector2D testpoint = s.Line.GetSidePoint(!s.IsFront);
 								Linedef nl = MapSet.NearestLinedef(General.Map.Map.GetMarkedLinedefs(false), testpoint);
-								if(nl != null)
-								{
-									if(nl.SideOfLine(testpoint) <= 0)
-										joinsidedef = nl.Front;
-									else
-										joinsidedef = nl.Back;
+								if(nl != null) {
+									Sidedef joinsidedef = (nl.SideOfLine(testpoint) <= 0 ? nl.Front : nl.Back);
 
 									// Join?
 									if(joinsidedef != null)

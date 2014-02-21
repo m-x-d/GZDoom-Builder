@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.Controls
 			Rectangle imagerect = new Rectangle(bounds.Left + ((bounds.Width - General.Map.Data.Previews.MaxImageWidth) >> 1),
 				bounds.Top + ((bounds.Height - General.Map.Data.Previews.MaxImageHeight - (int)textsize.Height) >> 1),
 				General.Map.Data.Previews.MaxImageWidth, General.Map.Data.Previews.MaxImageHeight);
-			PointF textpos = new PointF(bounds.Left + ((float)bounds.Width - textsize.Width) * 0.5f, bounds.Bottom - textsize.Height - 2);
+			PointF textpos = new PointF(bounds.Left + (bounds.Width - textsize.Width) * 0.5f, bounds.Bottom - textsize.Height - 2);
 
 			// Determine colors
 			if(this.Selected)

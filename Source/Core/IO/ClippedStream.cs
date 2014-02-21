@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.IO
 		private long position;
 
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 		
 		#endregion
 

@@ -787,7 +787,7 @@ namespace CodeImp.DoomBuilder.Config
 			dic = cfg.ReadSetting("skills", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
-				int num = 0;
+				int num;
 				if(int.TryParse(de.Key.ToString(), out num))
 				{
 					skills.Add(new SkillInfo(num, de.Value.ToString()));
@@ -808,7 +808,7 @@ namespace CodeImp.DoomBuilder.Config
 			dic = cfg.ReadSetting("texturesets", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
-				DefinedTextureSet s = new DefinedTextureSet(cfg, "texturesets." + de.Key.ToString());
+				DefinedTextureSet s = new DefinedTextureSet(cfg, "texturesets." + de.Key);
 				texturesets.Add(s);
 			}
 		}
@@ -822,7 +822,7 @@ namespace CodeImp.DoomBuilder.Config
 			dic = cfg.ReadSetting("thingsfilters", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
-				ThingsFilter f = new ThingsFilter(cfg, "thingsfilters." + de.Key.ToString());
+				ThingsFilter f = new ThingsFilter(cfg, "thingsfilters." + de.Key);
 				thingfilters.Add(f);
 			}
 		}

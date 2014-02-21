@@ -24,7 +24,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
 					if (token == "MODEL") {
 						SkipWhitespace(true);
-						token = ReadToken(); //should be model name
+						ReadToken(); //should be model name
 						SkipWhitespace(true);
 						token = ReadToken();//should be opening brace
 						
@@ -35,9 +35,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
 					}else if(token == "SCRIPT"){
 						SkipWhitespace(true);
-						token = ReadToken(); //should be script name or number
+						ReadToken(); //should be script name or number
 						SkipWhitespace(true);
-						token = ReadToken(); //should be script parameters/type
+						ReadToken(); //should be script parameters/type
 						SkipWhitespace(true);
 						token = ReadToken(); //should be opening brace
 						
@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
 					}else if(token == "ACTOR"){
 						SkipWhitespace(true);
-						token = ReadToken(); //should be actor name
+						ReadToken(); //should be actor name
 
 						SkipWhitespace(true);
 						token = ReadToken();

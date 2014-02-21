@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private bool disengaging;
 
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 		
 		#endregion
 		

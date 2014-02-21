@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder
 					// Store the number if we found one
 					if(numstr.Length > 0)
 					{
-						int num = 0;
+						int num;
 						int.TryParse(numstr, out num);
 						if(first) p_l1 = num.ToString(); else p_l2 = num.ToString();
 						numstr = "";
@@ -176,7 +176,7 @@ namespace CodeImp.DoomBuilder
 			// Store the number if we found one
 			if(numstr.Length > 0)
 			{
-				int num = 0;
+				int num;
 				int.TryParse(numstr, out num);
 				if(first) p_l1 = num.ToString(); else p_l2 = num.ToString();
 			}

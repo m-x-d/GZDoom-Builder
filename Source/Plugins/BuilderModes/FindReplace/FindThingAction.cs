@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Interpret the number given
-			int findaction = 0;
+			int findaction;
 			int[] args = null;
 			string[] parts = value.Split(';');
 			bool match;
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//parse the arg value out
 				if (parts.Length > 1)
 				{
-					args = new int[] { 0, 0, 0, 0, 0 };
+					args = new[] { 0, 0, 0, 0, 0 };
 					string[] argparts = parts[1].Split(',');
 					int argout;
 					for (int i = 0; i < argparts.Length && i < args.Length; i++)
@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									match = false;
 									break;
 								}
-								argtext += (x == 0 ? "" : ",") + t.Args[x].ToString();
+								argtext += (x == 0 ? "" : ",") + t.Args[x];
 							}
 							argtext += ")";
 						}

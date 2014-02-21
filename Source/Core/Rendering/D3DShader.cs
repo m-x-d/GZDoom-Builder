@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		protected VertexDeclaration vertexdecl;
 		
 		// Disposing
-		protected bool isdisposed = false;
+		protected bool isdisposed;
 
 		#endregion
 

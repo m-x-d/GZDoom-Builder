@@ -31,7 +31,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Variables
 
-		private int eventcount = 0;
+		private int eventcount;
 		
 		#endregion
 

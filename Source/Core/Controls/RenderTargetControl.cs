@@ -79,9 +79,9 @@ namespace CodeImp.DoomBuilder.Controls
 			this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			this.SetStyle(ControlStyles.Opaque, false);
 			this.UpdateStyles();
-			this.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.BackgroundImage = global::CodeImp.DoomBuilder.Properties.Resources.Splash3_trans;
-			this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.BackColor = SystemColors.AppWorkspace;
+			this.BackgroundImage = Properties.Resources.Splash3_trans;
+			this.BackgroundImageLayout = ImageLayout.Center;
 		}
 		
 		// This sets up the control for manual rendering
@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.UpdateStyles();
 			this.BackColor = Color.Black;
 			this.BackgroundImage = null;
-			this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+			this.BackgroundImageLayout = ImageLayout.None;
 		}
 
 		#endregion

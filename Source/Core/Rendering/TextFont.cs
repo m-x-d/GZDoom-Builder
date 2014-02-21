@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private FontCharacter[] characters;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 
@@ -122,8 +122,8 @@ namespace CodeImp.DoomBuilder.Rendering
 
 				// This is ancient code of mine.
 				// The charater sizes were based on 800x600 resolution.
-				characters[i].width = (float)(int)chr["width"] / 40f;
-				characters[i].height = (float)(int)chr["height"] / 30f;
+				characters[i].width = (int)chr["width"] / 40f;
+				characters[i].height = (int)chr["height"] / 30f;
 				characters[i].u1 = (float)chr["u1"];
 				characters[i].v1 = (float)chr["v1"];
 				characters[i].u2 = (float)chr["u2"];

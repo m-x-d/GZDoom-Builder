@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Editing;
-using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.TagExplorer
@@ -30,7 +28,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		private const string CAT_SECTORS = "Sectors:";
 		private const string CAT_LINEDEFS = "Linedefs:";
 
-		private Color commentColor = Color.DarkMagenta;
+		private readonly Color commentColor = Color.DarkMagenta;
 		private SelectedNode selection;
 
 		private static bool udmf;
@@ -43,12 +41,12 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 			cbDisplayMode.Items.AddRange(DISPLAY_MODES);
 			cbDisplayMode.SelectedIndex = General.Settings.ReadPluginSetting("displaymode", 0);
-			cbDisplayMode.SelectedIndexChanged += new EventHandler(cbDisplayMode_SelectedIndexChanged);
+			cbDisplayMode.SelectedIndexChanged += cbDisplayMode_SelectedIndexChanged;
 			currentDisplayMode = cbDisplayMode.SelectedItem.ToString();
 
 			cbSortMode.Items.AddRange(SortMode.SORT_MODES);
 			cbSortMode.SelectedIndex = General.Settings.ReadPluginSetting("sortmode", 0);
-			cbSortMode.SelectedIndexChanged += new EventHandler(cbSortMode_SelectedIndexChanged);
+			cbSortMode.SelectedIndexChanged += cbSortMode_SelectedIndexChanged;
 			currentSortMode = cbSortMode.SelectedItem.ToString();
 
 			cbCenterOnSelected.Checked = General.Settings.ReadPluginSetting("centeronselected", false);
@@ -97,9 +95,9 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		private void updateTree(bool focusDisplay) {
 			bool showTags = (currentDisplayMode == DISPLAY_TAGS || currentDisplayMode == DISPLAY_TAGS_AND_ACTIONS);
 			bool showActions = (currentDisplayMode == DISPLAY_ACTIONS || currentDisplayMode == DISPLAY_TAGS_AND_ACTIONS);
-			bool hasComment = false;
+			bool hasComment;
 			string comment = "";
-			string serachStr = serachStr = tbSearch.Text.ToLowerInvariant();
+			string serachStr = tbSearch.Text.ToLowerInvariant();
 
 			int filteredTag = -1;
 			int filteredAction = -1;
@@ -472,13 +470,13 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			string token = "";
 			int pos = startPoition;
 
-			while (pos < serachStr.Length && "1234567890".IndexOf(serachStr[pos]) != -1) {
+			while (pos < serachStr.Length && Configuration.NUMBERS.IndexOf(serachStr[pos]) != -1) {
 				token += serachStr[pos];
 				pos++;
 			}
 
 			if (token.Length > 0) {
-				int result = -1;
+				int result;
 				if(int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out result))
 					return result;
 			}
@@ -626,7 +624,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 						}
 					} else if (info.Type == NodeInfoType.THING) {
 						Thing t = General.Map.Map.GetThingByIndex(info.Index);
-						Vector2D p = (Vector2D)t.Position;
+						Vector2D p = t.Position;
 						points.Add(p);
 						points.Add(p + new Vector2D(t.Size * 2.0f, t.Size * 2.0f));
 						points.Add(p + new Vector2D(t.Size * 2.0f, -t.Size * 2.0f));

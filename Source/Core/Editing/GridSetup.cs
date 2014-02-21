@@ -135,8 +135,8 @@ namespace CodeImp.DoomBuilder.Editing
 			backsource = cfg.ReadSetting(path + ".backsource", 0);
 			backoffsetx = cfg.ReadSetting(path + ".backoffsetx", 0);
 			backoffsety = cfg.ReadSetting(path + ".backoffsety", 0);
-			backscalex = (float)cfg.ReadSetting(path + ".backscalex", 100) / 100.0f;
-			backscaley = (float)cfg.ReadSetting(path + ".backscaley", 100) / 100.0f;
+			backscalex = cfg.ReadSetting(path + ".backscalex", 100) / 100.0f;
+			backscaley = cfg.ReadSetting(path + ".backscaley", 100) / 100.0f;
 			gridsize = cfg.ReadSetting(path + ".gridsize", DEFAULT_GRID_SIZE);
 
 			// Setup
@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Change grid
 			this.gridsize = size;
-			this.gridsizef = (float)gridsize;
+			this.gridsizef = gridsize;
 			this.gridsizefinv = 1f / gridsizef;
 
 			// Update in main window

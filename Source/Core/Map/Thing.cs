@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Map
 		private MapSet map;
 
 		// Sector
-		private Sector sector = null;
+		private Sector sector;
 
 		// List items
 		private LinkedListNode<Thing> selecteditem;
@@ -256,7 +256,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// First make a single integer with all flags
 			int bits = 0;
-			int flagbit = 0;
+			int flagbit;
 			foreach(KeyValuePair<string, bool> f in flags)
 				if(int.TryParse(f.Key, out flagbit) && f.Value) bits |= flagbit;
 
@@ -292,7 +292,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(KeyValuePair<string, string> f in General.Map.Config.ThingFlags)
 			{
 				// Flag must be numeric
-				int flagbit = 0;
+				int flagbit;
 				if(int.TryParse(f.Key, out flagbit))
 				{
 					foreach(FlagTranslation ft in General.Map.Config.ThingFlagsTranslation)
@@ -496,7 +496,7 @@ namespace CodeImp.DoomBuilder.Map
 		public void SnapToGrid()
 		{
 			// Calculate nearest grid coordinates
-			this.Move(General.Map.Grid.SnappedToGrid((Vector2D)pos));
+			this.Move(General.Map.Grid.SnappedToGrid(pos));
 		}
 
 		// This snaps the vertex to the map format accuracy

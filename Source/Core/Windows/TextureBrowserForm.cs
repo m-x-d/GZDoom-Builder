@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private TreeNode findTextureByLongName(TreeNode node, long longname) {
 			//first search in child nodes
-			TreeNode match = null;
+			TreeNode match;
 
 			foreach(TreeNode n in node.Nodes) {
 				match = findTextureByLongName(n, longname);

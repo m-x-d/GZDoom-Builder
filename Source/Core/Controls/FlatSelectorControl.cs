@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.Controls
 				DisplayImageSize(0, 0); //mxd
 				
 				// Flat required!
-				return CodeImp.DoomBuilder.Properties.Resources.MissingTexture;
+				return Properties.Resources.MissingTexture;
 			}
 			else
 			{

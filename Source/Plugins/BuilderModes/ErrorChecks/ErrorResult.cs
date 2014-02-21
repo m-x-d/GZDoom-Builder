@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else if(obj is Thing)
 				{
 					Thing t = (obj as Thing);
-					Vector2D p = (Vector2D)t.Position;
+					Vector2D p = t.Position;
 					points.Add(p);
 					points.Add(p + new Vector2D(t.Size * 2.0f, t.Size * 2.0f));
 					points.Add(p + new Vector2D(t.Size * 2.0f, -t.Size * 2.0f));

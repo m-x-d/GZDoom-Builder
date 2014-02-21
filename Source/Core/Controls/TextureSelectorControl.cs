@@ -47,16 +47,12 @@ namespace CodeImp.DoomBuilder.Controls
 			timer.Stop(); //mxd
 			
 			// Check if name is a "none" texture
-			if((imagename.Length < 1) || (imagename == "-"))
-			{
+			if((imagename.Length < 1) || (imagename == "-")) {
 				DisplayImageSize(0, 0); //mxd
 				
 				// Determine image to show
-				if(required)
-					return CodeImp.DoomBuilder.Properties.Resources.MissingTexture;
-				else
-					return null;
-			}
+				return (required ? Properties.Resources.MissingTexture : null);
+			} 
 			else
 			{
 				ImageData texture = General.Map.Data.GetTextureImage(imagename); //mxd
@@ -71,13 +67,10 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This browses for a texture
-		protected override string BrowseImage(string imagename)
-		{
-			string result;
-
+		protected override string BrowseImage(string imagename) {
 			// Browse for texture
-			result = TextureBrowserForm.Browse(this.ParentForm, imagename, false);
-			if(result != null) return result; else return imagename;
+			string result = TextureBrowserForm.Browse(this.ParentForm, imagename, false);
+			return result ?? imagename;
 		}
 	}
 }

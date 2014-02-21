@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using CodeImp.DoomBuilder.Config;
+﻿using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Types;
 
 namespace CodeImp.DoomBuilder.TagExplorer
@@ -147,25 +142,19 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		}
 
 		private string combineName(string name, int tag, int action, int index, string sortMode, bool isDefaultName) {
-			string combinedName = "";
 			switch (sortMode) {
 				case SortMode.SORT_BY_ACTION:
-					combinedName = (tag > 0 ? "Tag:" + tag + "; " : "") + name + (isDefaultName ? " " + index : "");
-					break;
+					return (tag > 0 ? "Tag:" + tag + "; " : "") + name + (isDefaultName ? " " + index : "");
 
 				case SortMode.SORT_BY_INDEX:
-					combinedName = index + (tag > 0 ? ": Tag:" + tag + "; " : ": ") + (action > 0 ? "Action:" + action + "; " : "") + name;
-					break;
+					return index + (tag > 0 ? ": Tag:" + tag + "; " : ": ") + (action > 0 ? "Action:" + action + "; " : "") + name;
 
 				case SortMode.SORT_BY_TAG:
-					combinedName = (action > 0 ? "Action:" + action + "; " : "") + name + (isDefaultName ? " " + index : "");
-					break;
+					return (action > 0 ? "Action:" + action + "; " : "") + name + (isDefaultName ? " " + index : "");
 
 				default:
-					combinedName = name;
-					break;
+					return name;
 			}
-			return combinedName;
 		}
 	}
 

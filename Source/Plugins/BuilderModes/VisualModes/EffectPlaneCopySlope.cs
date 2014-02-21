@@ -38,8 +38,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//check which arguments we must use
-			int floorArg = -1;
-			int ceilingArg = -1;
+			int floorArg, ceilingArg;
 
 			if(isFront) {
 				floorArg = floorCopyToFront ? 2 : 0;

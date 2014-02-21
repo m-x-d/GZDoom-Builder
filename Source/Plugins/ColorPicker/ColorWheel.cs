@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 				// the point by the radius.
 				// Use the smaller of the width and height of
 				// the colorRectangle value.
-				this.radius = (int)Math.Min(colorRectangle.Width, colorRectangle.Height) / 2;
+				this.radius = Math.Min(colorRectangle.Width, colorRectangle.Height) / 2;
 				this.centerPoint = colorRectangle.Location;
 				this.centerPoint.Offset(radius, radius);
 
@@ -249,7 +249,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 					}
 
 					// Calculate the new HSV and RGB values.
-					HSV.Hue = (int)(degrees * 255 / 360);
+					HSV.Hue = degrees * 255 / 360;
 					HSV.Saturation = (int)(distance * 255);
 					HSV.value = brightness;
 					RGB = ColorHandler.HSVtoRGB(HSV);

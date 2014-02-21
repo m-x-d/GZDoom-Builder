@@ -78,14 +78,14 @@ namespace CodeImp.DoomBuilder.Controls
 				item = new ToolStripMenuItem(cfg.Description);
 				//item.Image = buttonnew.Image;
 				item.Tag = cfg;
-				item.Click += new EventHandler(buttonnew_Click);
+				item.Click += buttonnew_Click;
 				buttonnew.DropDownItems.Add(item);
 				
 				// Button for script type menu
 				item = new ToolStripMenuItem(cfg.Description);
 				//item.Image = buttonnew.Image;
 				item.Tag = cfg;
-				item.Click += new EventHandler(buttonscriptconfig_Click);
+				item.Click += buttonscriptconfig_Click;
 				buttonscriptconfig.DropDownItems.Add(item);
 			}
 			
@@ -344,9 +344,9 @@ namespace CodeImp.DoomBuilder.Controls
 				ei.ImageIndex = 0;
 				ei.SubItems.Add(e.description);
 				if(e.filename.StartsWith("?"))
-					ei.SubItems.Add(e.filename.Replace("?", "") + " (line " + e.linenumber.ToString() + ")");
+					ei.SubItems.Add(e.filename.Replace("?", "") + " (line " + e.linenumber + ")");
 				else
-					ei.SubItems.Add(Path.GetFileName(e.filename) + " (line " + e.linenumber.ToString() + ")");
+					ei.SubItems.Add(Path.GetFileName(e.filename) + " (line " + e.linenumber + ")");
 				ei.Tag = e;
 				errorlist.Items.Add(ei);
 				listindex++;
@@ -735,7 +735,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Show warning
 			if((compilererrors != null) && (compilererrors.Count > 0))
-				General.MainWindow.DisplayStatus(StatusType.Warning, compilererrors.Count.ToString() + " errors while compiling " + t.Text + "!");
+				General.MainWindow.DisplayStatus(StatusType.Warning, compilererrors.Count + " errors while compiling " + t.Text + "!");
 			else
 				General.MainWindow.DisplayStatus(StatusType.Info, "Script " + t.Text + " compiled without errors.");
 

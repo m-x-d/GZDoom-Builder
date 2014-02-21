@@ -450,7 +450,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 			for(int i = 0; i < sectorData.Count; i++) {
 				SectorData sd = sectorData[i];
-				sd.JitterFloorHeight = (float)(rnd.Next(-100, 100) / 100f);
+				sd.JitterFloorHeight = rnd.Next(-100, 100) / 100f;
 				sectorData[i] = sd;
 			}
 		}
@@ -460,7 +460,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 			for(int i = 0; i < sectorData.Count; i++) {
 				SectorData sd = sectorData[i];
-				sd.JitterCeilingHeight = (float)(rnd.Next(-100, 100) / 100f);
+				sd.JitterCeilingHeight = rnd.Next(-100, 100) / 100f;
 				sectorData[i] = sd;
 			}
 		}

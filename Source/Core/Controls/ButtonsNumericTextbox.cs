@@ -37,8 +37,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Variables
 		
-		private bool ignorebuttonchange = false;
-		private StepsList steps = null;
+		private bool ignorebuttonchange;
+		private StepsList steps;
 		private int stepsize = 1;
 		private float stepsizeFloat = 1.0f; //mxd
 		

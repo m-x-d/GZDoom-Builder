@@ -1425,10 +1425,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		// The geometry must be a triangle list
 		public void RenderGeometry(FlatVertex[] vertices, ImageData texture, bool transformcoords)
 		{
-			Texture t = null;
-
 			if(vertices.Length > 0)
 			{
+				Texture t;
+				
 				if(texture != null)
 				{
 					// Make sure the texture is loaded
@@ -1456,7 +1456,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Draw
 				graphics.Shaders.Display2D.Begin();
 				graphics.Shaders.Display2D.BeginPass(1);
-				graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleList, 0, vertices.Length / 3, vertices);
+				graphics.Device.DrawUserPrimitives(PrimitiveType.TriangleList, 0, vertices.Length / 3, vertices);
 				graphics.Shaders.Display2D.EndPass();
 				graphics.Shaders.Display2D.End();
 			}

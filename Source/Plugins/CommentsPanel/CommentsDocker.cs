@@ -19,18 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using Microsoft.Win32;
-using CodeImp.DoomBuilder.Actions;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Controls;
-using CodeImp.DoomBuilder.Windows;
-using System.Reflection;
-using System.Globalization;
-using System.Threading;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Types;
@@ -47,7 +37,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		Dictionary<string, CommentInfo> l_comments = new Dictionary<string, CommentInfo>();
 		Dictionary<string, CommentInfo> s_comments = new Dictionary<string, CommentInfo>();
 		Dictionary<string, CommentInfo> t_comments = new Dictionary<string, CommentInfo>();
-		bool preventupdate = false;
+		bool preventupdate;
 		
 		#endregion
 		
@@ -266,7 +256,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 				else if(obj is Thing)
 				{
 					Thing t = (obj as Thing);
-					Vector2D p = (Vector2D)t.Position;
+					Vector2D p = t.Position;
 					points.Add(p);
 					points.Add(p + new Vector2D(t.Size * 2.0f, t.Size * 2.0f));
 					points.Add(p + new Vector2D(t.Size * 2.0f, -t.Size * 2.0f));

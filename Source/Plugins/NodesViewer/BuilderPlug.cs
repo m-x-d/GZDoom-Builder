@@ -18,7 +18,6 @@
 
 using System;
 using System.IO;
-using CodeImp.DoomBuilder.Windows;
 
 #endregion
 

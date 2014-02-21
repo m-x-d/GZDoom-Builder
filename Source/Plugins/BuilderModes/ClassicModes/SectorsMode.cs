@@ -805,7 +805,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(General.Interface.IsActiveWindow)
 					{
 						//mxd. Show realtime vertex edit dialog
-						General.Interface.OnEditFormValuesChanged += new EventHandler(sectorEditForm_OnValuesChanged);
+						General.Interface.OnEditFormValuesChanged += sectorEditForm_OnValuesChanged;
 						DialogResult result = General.Interface.ShowEditSectors(selected);
 						General.Interface.OnEditFormValuesChanged -= sectorEditForm_OnValuesChanged;
 
@@ -1588,8 +1588,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Use UDMF light?
 				string mode = (string)BuilderPlug.Me.MenusForm.BrightnessGradientMode.SelectedItem;
 				if(General.Map.UDMF && (mode == MenusForm.BrightnessGradientModes.Ceilings || mode == MenusForm.BrightnessGradientModes.Floors)) {
-					string lightKey = string.Empty;
-					string lightAbsKey = string.Empty;
+					string lightKey;
+					string lightAbsKey;
 					float startbrightness, endbrightness;
 
 					if(mode == MenusForm.BrightnessGradientModes.Ceilings) {
@@ -1635,7 +1635,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				//mxd. Use UDMF light/fade color?
 				} else if(General.Map.UDMF && (mode == MenusForm.BrightnessGradientModes.Fade || mode == MenusForm.BrightnessGradientModes.Light)) {
-					string key = string.Empty;
+					string key;
 					int defaultValue = 0;
 
 					if(mode == MenusForm.BrightnessGradientModes.Light) {
@@ -1737,14 +1737,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Action, "Created gradient ceiling heights over selected sectors.");
 				General.Map.UndoRedo.CreateUndo("Gradient ceiling heights");
 
-				float startlevel = (float)General.GetByIndex(orderedselection, 0).CeilHeight;
-				float endlevel = (float)General.GetByIndex(orderedselection, orderedselection.Count - 1).CeilHeight;
+				float startlevel = General.GetByIndex(orderedselection, 0).CeilHeight;
+				float endlevel = General.GetByIndex(orderedselection, orderedselection.Count - 1).CeilHeight;
 				float delta = endlevel - startlevel;
 
 				// Go for all sectors in between first and last
 				int index = 0;
 				foreach(Sector s in orderedselection) {
-					float u = (float)index / (float)(orderedselection.Count - 1);
+					float u = (float)index / (orderedselection.Count - 1);
 					float b = startlevel + delta * u;
 					s.CeilHeight = (int)b;
 					index++;

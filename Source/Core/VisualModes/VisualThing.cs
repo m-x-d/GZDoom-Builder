@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		protected bool selected;
 
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		//mxd
 		private int cameraDistance3D;

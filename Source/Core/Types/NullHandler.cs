@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
-		private object value = (int)0;
+		private object value = 0;
 
 		#endregion
 
@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Types
 			if(value != null)
 				this.value = value;
 			else
-				this.value = (int)0;
+				this.value = 0;
 		}
 
 		public override object GetValue()
@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Types
 		{
 			int result;
 			if(int.TryParse(this.value.ToString(), out result)) return result;
-				else return 0;
+			return 0;
 		}
 		
 		public override string GetStringValue()

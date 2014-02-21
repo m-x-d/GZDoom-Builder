@@ -403,7 +403,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(!thinginserted || BuilderPlug.Me.EditNewThing)
 						{
 							//mxd. Show realtime thing edit dialog
-							General.Interface.OnEditFormValuesChanged += new EventHandler(thingEditForm_OnValuesChanged);
+							General.Interface.OnEditFormValuesChanged += thingEditForm_OnValuesChanged;
 							DialogResult result = General.Interface.ShowEditThings(selected);
 							General.Interface.OnEditFormValuesChanged -= thingEditForm_OnValuesChanged;
 

@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder
 
 			while(low < high)
 			{
-				int mid = (int)Math.Floor((float)(low + high) * 0.5f);
+				int mid = (int)Math.Floor((low + high) * 0.5f);
 				int l = base[mid];
 
 				if(l <= level)
@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder
 
 			while(low < high)
 			{
-				int mid = (int)Math.Ceiling((float)(low + high) * 0.5f);
+				int mid = (int)Math.Ceiling((low + high) * 0.5f);
 				int l = base[mid];
 
 				if(l >= level)
@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder
 
 			while(low < high)
 			{
-				int mid = (int)Math.Floor((float)(low + high) * 0.5f);
+				int mid = (int)Math.Floor((low + high) * 0.5f);
 				int l = base[mid];
 
 				if(l <= level)

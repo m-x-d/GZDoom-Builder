@@ -133,10 +133,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
 			{
 				// When lower unpegged is set, the middle texture is bound to the bottom
-				tp.tlt.y = tsz.y - (float)(Sidedef.Sector.CeilHeight - Sidedef.Sector.FloorHeight);
+				tp.tlt.y = tsz.y - (Sidedef.Sector.CeilHeight - Sidedef.Sector.FloorHeight);
 			}
 			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
-			tp.trb.y = tp.tlt.y + ((float)Sidedef.Sector.CeilHeight - ((float)Sidedef.Sector.FloorHeight + floorbias));
+			tp.trb.y = tp.tlt.y + (Sidedef.Sector.CeilHeight - (Sidedef.Sector.FloorHeight + floorbias));
 			
 			// Apply texture offset
 			tp.tlt += tof;
@@ -147,8 +147,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			tp.trb /= tsz;
 			
 			// Left top and right bottom of the geometry that
-			tp.vlt = new Vector3D(vl.x, vl.y, (float)Sidedef.Sector.CeilHeight);
-			tp.vrb = new Vector3D(vr.x, vr.y, (float)Sidedef.Sector.FloorHeight + floorbias);
+			tp.vlt = new Vector3D(vl.x, vl.y, Sidedef.Sector.CeilHeight);
+			tp.vrb = new Vector3D(vr.x, vr.y, Sidedef.Sector.FloorHeight + floorbias);
 			
 			// Make the right-top coordinates
 			tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
@@ -257,7 +257,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			int light = Sidedef.Fields.GetValue("light", 0);
 			bool absolute = Sidedef.Fields.GetValue("lightabsolute", false);
-			int newLight = 0;
+			int newLight;
 
 			if(up)
 				newLight = General.Map.Config.BrightnessLevels.GetNextHigher(light, absolute);

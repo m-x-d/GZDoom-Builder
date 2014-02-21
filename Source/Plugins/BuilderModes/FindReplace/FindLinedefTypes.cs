@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{
-			int num = 0;
+			int num;
 			int.TryParse(initialvalue, out num);
 			return General.Interface.BrowseLinedefActions(BuilderPlug.Me.FindReplaceForm, num).ToString();
 		}
@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Interpret the number given
-			int action = 0;
+			int action;
 			int[] args = null;
 			string[] parts = value.Split(';');
 			bool match;
@@ -100,7 +100,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				//parse the arg value out
 				if (parts.Length > 1) {
-					args = new int[] {0, 0, 0, 0, 0};
+					args = new[] {0, 0, 0, 0, 0};
 					string[] argparts = parts[1].Split(',');
 					int argout;
 					for(int i = 0; i < argparts.Length && i < args.Length; i++) {
@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									match = false;
 									break;
 								}
-								argtext += (x == 0 ? "" : ",") + l.Args[x].ToString();
+								argtext += (x == 0 ? "" : ",") + l.Args[x];
 							}
 							argtext += ")";
 						}

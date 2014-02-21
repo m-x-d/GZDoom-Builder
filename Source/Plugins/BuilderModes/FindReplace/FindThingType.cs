@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Interpret the number given
-			int findtype = 0;
+			int findtype;
 			if(int.TryParse(value, out findtype))
 			{
 				// Where to search?

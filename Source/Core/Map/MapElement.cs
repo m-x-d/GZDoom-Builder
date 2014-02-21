@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.Map
 		protected bool marked;
 		
 		// Disposing
-		protected bool isdisposed = false;
+		protected bool isdisposed;
 		
 		#endregion
 		

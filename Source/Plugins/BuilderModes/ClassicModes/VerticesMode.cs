@@ -365,7 +365,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(General.Interface.IsActiveWindow)
 					{
 						//mxd. Show realtime vertex edit dialog
-						General.Interface.OnEditFormValuesChanged += new EventHandler(vertexEditForm_OnValuesChanged);
+						General.Interface.OnEditFormValuesChanged += vertexEditForm_OnValuesChanged;
 						DialogResult result = General.Interface.ShowEditVertices(selected);
 						General.Interface.OnEditFormValuesChanged -= vertexEditForm_OnValuesChanged;
 
@@ -737,13 +737,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Interface.MouseInDisplay)
 			{
 				Vector2D insertpos;
-				Linedef l = null;
-				
+
 				// Create undo
 				General.Map.UndoRedo.CreateUndo("Insert vertex");
 
 				// Snap to geometry?
-				l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.SplitLinedefsRange / rendererscale);
+				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.SplitLinedefsRange / rendererscale);
 				if(snaptonearest && (l != null))
 				{
 					// Snip to grid also?

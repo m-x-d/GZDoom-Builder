@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private Thread backgroundthread;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 
@@ -170,7 +170,7 @@ namespace CodeImp.DoomBuilder.Editing
 			General.Actions.BindMethods(this);
 
 			// Start background thread
-			backgroundthread = new Thread(new ThreadStart(BackgroundThread));
+			backgroundthread = new Thread(BackgroundThread);
 			backgroundthread.Name = "Snapshot Compressor";
 			backgroundthread.Priority = ThreadPriority.Lowest;
 			backgroundthread.IsBackground = true;

@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				CheckBox box = filterfields.Add(flag.Value, flag.Key);
 				box.ThreeState = true;
-				box.CheckStateChanged += new EventHandler(filterfield_Check);
+				box.CheckStateChanged += filterfield_Check;
 			}
 			
 			// Fill list of filters

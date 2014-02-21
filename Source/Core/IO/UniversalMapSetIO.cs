@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Config;
 using System.Collections;
 using CodeImp.DoomBuilder.Types;
 

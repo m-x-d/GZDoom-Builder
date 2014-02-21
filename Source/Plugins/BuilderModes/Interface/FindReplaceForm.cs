@@ -39,9 +39,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private FindReplaceType newfinder;
 		private FindReplaceType finder;
 		private List<FindReplaceType> findtypeslist;
-		bool controlpressed = false;
-		bool shiftpressed = false;
-		bool suppressevents = false;
+		bool controlpressed;
+		bool shiftpressed;
+		bool suppressevents;
 		
 		#endregion
 

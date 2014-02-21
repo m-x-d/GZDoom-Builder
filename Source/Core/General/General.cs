@@ -373,7 +373,7 @@ namespace CodeImp.DoomBuilder
 								catch(Exception e)
 								{
 									// Unable to load configuration
-									errorlogger.Add(ErrorType.Error, "Unable to load the nodebuilder configuration '" + de.Key.ToString() + "' from \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message);
+									errorlogger.Add(ErrorType.Error, "Unable to load the nodebuilder configuration '" + de.Key + "' from \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message);
 								}
 							}
 						}

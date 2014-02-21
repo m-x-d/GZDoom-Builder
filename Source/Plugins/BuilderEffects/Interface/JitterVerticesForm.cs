@@ -27,7 +27,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		
 		public JitterVerticesForm(string editingModeName) {
 			this.editingModeName = editingModeName;
-			this.HelpRequested += new HelpEventHandler(JitterVerticesForm_HelpRequested);
+			this.HelpRequested += JitterVerticesForm_HelpRequested;
 
 			InitializeComponent();
 

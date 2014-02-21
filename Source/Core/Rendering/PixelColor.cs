@@ -112,26 +112,25 @@ namespace CodeImp.DoomBuilder.Rendering
 		//To ColorRef (alpha-less). mxd. Changed function name to more descriptive one...
 		public int ToInversedColorRef()
 		{
-			return ((int)r + ((int)b << 16) + ((int)g << 8));
-			//return (((int)r << 16) + ((int)g << 8) + (int)b);
+			return (r + (b << 16) + (g << 8));
 		}
 		
 		// To ColorValue
 		public Color4 ToColorValue()
 		{
-			return new Color4((float)a * BYTE_TO_FLOAT,
-							  (float)r * BYTE_TO_FLOAT,
-							  (float)g * BYTE_TO_FLOAT,
-							  (float)b * BYTE_TO_FLOAT);
+			return new Color4(a * BYTE_TO_FLOAT,
+							  r * BYTE_TO_FLOAT,
+							  g * BYTE_TO_FLOAT,
+							  b * BYTE_TO_FLOAT);
 		}
 
 		// To ColorValue
 		public Color4 ToColorValue(float withalpha)
 		{
 			return new Color4(withalpha,
-							  (float)r * BYTE_TO_FLOAT,
-							  (float)g * BYTE_TO_FLOAT,
-							  (float)b * BYTE_TO_FLOAT);
+							  r * BYTE_TO_FLOAT,
+							  g * BYTE_TO_FLOAT,
+							  b * BYTE_TO_FLOAT);
 		}
 		
 		// This returns a new PixelColor with adjusted alpha
@@ -146,11 +145,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			PixelColor c = new PixelColor();
 			float ba;
 			
-			ba = (float)a.a * BYTE_TO_FLOAT;
-			c.r = (byte)((float)a.r * (1f - ba) + (float)b.r * ba);
-			c.g = (byte)((float)a.g * (1f - ba) + (float)b.g * ba);
-			c.b = (byte)((float)a.b * (1f - ba) + (float)b.b * ba);
-			c.a = (byte)((float)a.a * (1f - ba) + ba);
+			ba = a.a * BYTE_TO_FLOAT;
+			c.r = (byte)(a.r * (1f - ba) + b.r * ba);
+			c.g = (byte)(a.g * (1f - ba) + b.g * ba);
+			c.b = (byte)(a.b * (1f - ba) + b.b * ba);
+			c.a = (byte)(a.a * (1f - ba) + ba);
 			
 			return c;
 		}
@@ -158,14 +157,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This modulates two colors
 		public static PixelColor Modulate(PixelColor a, PixelColor b)
 		{
-			float aa = (float)a.a * BYTE_TO_FLOAT;
-			float ar = (float)a.r * BYTE_TO_FLOAT;
-			float ag = (float)a.g * BYTE_TO_FLOAT;
-			float ab = (float)a.b * BYTE_TO_FLOAT;
-			float ba = (float)b.a * BYTE_TO_FLOAT;
-			float br = (float)b.r * BYTE_TO_FLOAT;
-			float bg = (float)b.g * BYTE_TO_FLOAT;
-			float bb = (float)b.b * BYTE_TO_FLOAT;
+			float aa = a.a * BYTE_TO_FLOAT;
+			float ar = a.r * BYTE_TO_FLOAT;
+			float ag = a.g * BYTE_TO_FLOAT;
+			float ab = a.b * BYTE_TO_FLOAT;
+			float ba = b.a * BYTE_TO_FLOAT;
+			float br = b.r * BYTE_TO_FLOAT;
+			float bg = b.g * BYTE_TO_FLOAT;
+			float bb = b.b * BYTE_TO_FLOAT;
 			PixelColor c = new PixelColor();
 			c.a = (byte)((aa * ba) * 255.0f);
 			c.r = (byte)((ar * br) * 255.0f);

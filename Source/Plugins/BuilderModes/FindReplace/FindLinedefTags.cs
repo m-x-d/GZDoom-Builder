@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Interpret the number given
-			int tag = 0;
+			int tag;
 			if(int.TryParse(value, out tag))
 			{
 				// Where to search?

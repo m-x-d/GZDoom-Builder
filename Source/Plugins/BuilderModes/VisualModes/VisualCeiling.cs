@@ -334,7 +334,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				int light = Sector.Sector.Fields.GetValue("lightceiling", 0);
 				bool absolute = Sector.Sector.Fields.GetValue("lightceilingabsolute", false);
-				int newLight = 0;
+				int newLight;
 
 				if(up)
 					newLight = General.Map.Config.BrightnessLevels.GetNextHigher(light, absolute);

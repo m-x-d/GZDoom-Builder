@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(c.ValueType != typeof(Image))
 					{
 						if(str.Length > 0) str.Append("\r\n");
-						str.Append(c.Value.ToString());
+						str.Append(c.Value);
 					}
 				}
 				Clipboard.SetText(str.ToString());

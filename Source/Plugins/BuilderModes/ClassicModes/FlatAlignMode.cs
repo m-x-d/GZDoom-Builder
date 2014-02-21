@@ -447,7 +447,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							for(int i = 0; i < 8; i++)
 							{
 								// Make the vectors
-								float angle = (float)i * Angle2D.PI * 0.25f;
+								float angle = i * Angle2D.PI * 0.25f;
 								Vector2D gridvec = Vector2D.FromAngle(angle);
 								Vector3D rotvec = Vector2D.FromAngle(deltaangle + rotationoffset);
 

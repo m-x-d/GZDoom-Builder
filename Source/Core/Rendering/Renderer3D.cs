@@ -132,7 +132,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Dummy frustum
 			frustum = new ProjectedFrustum2D(new Vector2D(), 0.0f, 0.0f, PROJ_NEAR_PLANE,
-				General.Settings.ViewDistance, Angle2D.DegToRad((float)General.Settings.VisualFOV));
+				General.Settings.ViewDistance, Angle2D.DegToRad(General.Settings.VisualFOV));
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -205,9 +205,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		private void CreateCrosshairVerts(Size texturesize)
 		{
 			// Determine coordinates
-			float width = (float)windowsize.Width;
-			float height = (float)windowsize.Height;
-			float size = (float)height * CROSSHAIR_SCALE;
+			float width = windowsize.Width;
+			float height = windowsize.Height;
+			float size = height * CROSSHAIR_SCALE;
 			RectangleF rect = new RectangleF((width - size) / 2, (height - size) / 2, size, size);
 			
 			// Make vertices
@@ -269,14 +269,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Calculate aspect
 			float aspect = (float)General.Map.Graphics.RenderTarget.ClientSize.Width /
-						   (float)General.Map.Graphics.RenderTarget.ClientSize.Height;
+						   General.Map.Graphics.RenderTarget.ClientSize.Height;
 			
 			// The DirectX PerspectiveFovRH matrix method calculates the scaling in X and Y as follows:
 			// yscale = 1 / tan(fovY / 2)
 			// xscale = yscale / aspect
 			// The fov specified in the method is the FOV over Y, but we want the user to specify the FOV
 			// over X, so calculate what it would be over Y first;
-			float fov = Angle2D.DegToRad((float)General.Settings.VisualFOV);
+			float fov = Angle2D.DegToRad(General.Settings.VisualFOV);
 			float reversefov = 1.0f / (float)Math.Tan(fov / 2.0f);
 			float reversefovy = reversefov * aspect;
 			float fovy = (float)Math.Atan(1.0f / reversefovy) * 2.0f;
@@ -291,14 +291,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This creates matrices for a camera view
 		public void PositionAndLookAt(Vector3D pos, Vector3D lookat)
 		{
-			Vector3D delta;
-			float anglexy, anglez;
-			
 			// Calculate delta vector
 			cameraposition = pos;
-			delta = lookat - pos;
-			anglexy = delta.GetAngleXY();
-			anglez = delta.GetAngleZ();
+			Vector3D delta = lookat - pos;
+			float anglexy = delta.GetAngleXY();
+			float anglez = delta.GetAngleZ();
 
 			// Create frustum
 			frustum = new ProjectedFrustum2D(pos, anglexy, anglez, PROJ_NEAR_PLANE,
@@ -315,7 +312,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private void CreateMatrices2D()
 		{
 			windowsize = graphics.RenderTarget.ClientSize;
-			Matrix scaling = Matrix.Scaling((1f / (float)windowsize.Width) * 2f, (1f / (float)windowsize.Height) * -2f, 1f);
+			Matrix scaling = Matrix.Scaling((1f / windowsize.Width) * 2f, (1f / windowsize.Height) * -2f, 1f);
 			Matrix translate = Matrix.Translation(-(float)windowsize.Width * 0.5f, -(float)windowsize.Height * 0.5f, 0f);
 			view2d = Matrix.Multiply(translate, scaling);
 		}
@@ -582,7 +579,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				ApplyMatrices3D();
 
 				// Setup color
-				Color4 thingColor = new Color4();
+				Color4 thingColor;
 				if (t.Selected && showselection) {
 					thingColor = General.Colors.Selection3D.ToColorValue();
 				} else {
@@ -644,7 +641,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				ApplyMatrices3D();
 
 				// Setup color
-				Color4 color = new Color4();
+				Color4 color;
 				if(v.Selected && showselection) {
 					color = General.Colors.Selection3D.ToColorValue();
 				} else {
