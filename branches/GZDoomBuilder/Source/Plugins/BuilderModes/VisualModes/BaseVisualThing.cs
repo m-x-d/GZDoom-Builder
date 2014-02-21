@@ -25,7 +25,6 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
-using System.Drawing.Drawing2D;
 
 #endregion
 
@@ -533,7 +532,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						updateList.Add(vt as BaseVisualThing);
 				}
 
-				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged);
+				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged;
 				mode.StartRealtimeInterfaceUpdate(SelectionType.Things);
 				General.Interface.ShowEditThings(things);
 				mode.StopRealtimeInterfaceUpdate(SelectionType.Things);
@@ -545,7 +544,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void Interface_OnEditFormValuesChanged(object sender, System.EventArgs e) {
+		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) {
 			foreach(BaseVisualThing vt in updateList)
 				vt.Changed = true;
 		}
@@ -582,7 +581,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Move thing");
 			Thing.Move(newPosition);
-			mode.SetActionResult("Changed thing position to " + Thing.Position.ToString() + ".");
+			mode.SetActionResult("Changed thing position to " + Thing.Position + ".");
 
 			// Update what must be updated
 			ThingData td = mode.GetThingData(this.Thing);
@@ -601,7 +600,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Rotate thing");
 			Thing.Rotate(ammount);
-			mode.SetActionResult("Changed thing rotation to " + Thing.AngleDoom.ToString() + ".");
+			mode.SetActionResult("Changed thing rotation to " + Thing.AngleDoom + ".");
 			this.Changed = true;
 		}
 		

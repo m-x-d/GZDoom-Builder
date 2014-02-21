@@ -130,7 +130,7 @@ namespace CodeImp.DoomBuilder.Windows
 				CheckBox box = options.Add(item.Title, item.GetIntValue());
 				
 				// Bind checking event
-				box.CheckedChanged += new EventHandler(box_CheckedChanged);
+				box.CheckedChanged += box_CheckedChanged;
 
 				// Checking the box?
 				if((value & (int)box.Tag) == (int)box.Tag)

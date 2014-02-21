@@ -1,10 +1,6 @@
 ﻿#region === Copyright (c) 2010 Pascal van der Heiden ===
 
-using System;
 using System.Drawing;
-using System.IO;
-using System.Windows.Forms;
-using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 
 #endregion

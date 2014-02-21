@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
 			// Interpret the number given
-			int index = 0;
+			int index;
 			if(int.TryParse(value, out index))
 			{
 				Sector s = General.Map.Map.GetSectorByIndex(index);

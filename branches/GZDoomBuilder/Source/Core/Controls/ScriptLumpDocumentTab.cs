@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// Compile script
 		public override void Compile()
 		{
-			bool success = false; //mxd
+			bool success; //mxd
 
 			// Compile
 			if(ismapheader)

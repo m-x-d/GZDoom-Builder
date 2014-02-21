@@ -201,11 +201,11 @@ namespace CodeImp.DoomBuilder.Rendering
 				else
 				{
 					// Blend with pixel
-					a = (float)c.a * 0.003921568627450980392156862745098f;
-					if((int)p->a + (int)c.a > 255) p->a = 255; else p->a += c.a;
-					p->r = (byte)((float)p->r * (1f - a) + (float)c.r * a);
-					p->g = (byte)((float)p->g * (1f - a) + (float)c.g * a);
-					p->b = (byte)((float)p->b * (1f - a) + (float)c.b * a);
+					a = c.a * 0.003921568627450980392156862745098f;
+					if(p->a + c.a > 255) p->a = 255; else p->a += c.a;
+					p->r = (byte)(p->r * (1f - a) + c.r * a);
+					p->g = (byte)(p->g * (1f - a) + c.g * a);
+					p->b = (byte)(p->b * (1f - a) + c.b * a);
 				}
 			}
 		}

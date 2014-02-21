@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Variables
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 		
 		// Last inserted prefab
 		private string lastprefabfile;
@@ -161,7 +161,7 @@ namespace CodeImp.DoomBuilder.Editing
 			General.Map.UndoRedo.CreateUndo("Insert prefab");
 			
 			// Decompress stream
-			MemoryStream memstream = null; //mxd
+			MemoryStream memstream; //mxd
 			filedata.Seek(0, SeekOrigin.Begin);
 			
 			try {

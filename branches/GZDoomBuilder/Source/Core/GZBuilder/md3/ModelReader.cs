@@ -483,13 +483,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					s.Position = ofs_tris + start;
 
 				for (int i = 0; i < num_tris; i++) {
-					polyIndecesList.Add((int)br.ReadUInt16());
-					polyIndecesList.Add((int)br.ReadUInt16());
-					polyIndecesList.Add((int)br.ReadUInt16());
+					polyIndecesList.Add(br.ReadUInt16());
+					polyIndecesList.Add(br.ReadUInt16());
+					polyIndecesList.Add(br.ReadUInt16());
 
-					uvIndecesList.Add((int)br.ReadUInt16());
-					uvIndecesList.Add((int)br.ReadUInt16());
-					uvIndecesList.Add((int)br.ReadUInt16());
+					uvIndecesList.Add(br.ReadUInt16());
+					uvIndecesList.Add(br.ReadUInt16());
+					uvIndecesList.Add(br.ReadUInt16());
 				}
 
 				//UV coords
@@ -504,8 +504,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				if (s.Position != ofs_animFrame + start)
 					s.Position = ofs_animFrame + start;
 
-				Vector3 scale = new Vector3((float)br.ReadSingle(), (float)br.ReadSingle(), (float)br.ReadSingle());
-				Vector3 translate = new Vector3((float)br.ReadSingle(), (float)br.ReadSingle(), (float)br.ReadSingle());
+				Vector3 scale = new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
+				Vector3 translate = new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
 
 				s.Position += 16; //frame name
 
@@ -522,9 +522,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				for (int i = 0; i < num_verts; i++) {
 					WorldVertex v = new WorldVertex();
 
-					v.x = ((float)br.ReadByte() * scale.X + translate.X);
-					v.y = ((float)br.ReadByte() * scale.Y + translate.Y);
-					v.z = ((float)br.ReadByte() * scale.Z + translate.Z);
+					v.x = (br.ReadByte() * scale.X + translate.X);
+					v.y = (br.ReadByte() * scale.Y + translate.Y);
+					v.z = (br.ReadByte() * scale.Z + translate.Z);
 
 					//rotate it
 					float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
@@ -900,7 +900,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				ms.Dispose();
 
 				if(bitmap != null) {
-					BitmapData bmlock = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
+					BitmapData bmlock = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
 					texture = new Texture(device, bitmap.Width, bitmap.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
 
 					DataRectangle textureLock = texture.LockRectangle(0, LockFlags.None);
@@ -921,7 +921,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		private static string ReadString(BinaryReader br, int len) {
 			var NAME = string.Empty;
-			int i = 0;
+			int i;
 			for (i = 0; i < len; ++i) {
 				var c = br.ReadChar();
 				if (c == '\0') {

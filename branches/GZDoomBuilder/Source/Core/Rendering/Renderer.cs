@@ -91,7 +91,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Simulat doom light levels
 			if((level < 192) && General.Map.Config.DoomLightLevels)
-				flevel = (192.0f - (float)(192 - level) * 1.5f);
+				flevel = (192.0f - (192 - level) * 1.5f);
 			
 			byte blevel = (byte)General.Clamp((int)flevel, 0, 255);
 			PixelColor c = new PixelColor(255, blevel, blevel, blevel);

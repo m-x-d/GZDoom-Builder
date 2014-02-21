@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		private string name;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 

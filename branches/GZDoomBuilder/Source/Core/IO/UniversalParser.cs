@@ -57,15 +57,13 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Variables
 		
 		// Error result
-		private int cpErrorResult = 0;
+		private int cpErrorResult;
 		private string cpErrorDescription = "";
-		private int cpErrorLine = 0;
+		private int cpErrorLine;
 		
 		// Configuration root
-		private UniversalCollection root = null;
+		private UniversalCollection root;
 
-		private const string numbers = "0123456789";
-		private const string numbers2 = "0123456789-.&";
 		private const string newline = "\n";
 		private char[] newlineChar = new[] {'\n'};
 		private StringBuilder key;  //mxd
@@ -343,7 +341,7 @@ namespace CodeImp.DoomBuilder.IO
 						pm = PM_STRING; //numbers
 					}
 					// Check for numeric character numbers
-					else if(numbers2.IndexOf(c) > -1)
+					else if(Configuration.NUMBERS2.IndexOf(c) > -1)
 					{
 						// Now parsing number
 						pm = PM_NUMBER;
@@ -393,38 +391,38 @@ namespace CodeImp.DoomBuilder.IO
 							try
 							{
 								// Convert to value
-								int ival = System.Convert.ToInt32(s.Substring(2).Trim(), 16);
+								int ival = Convert.ToInt32(s.Substring(2).Trim(), 16);
 
 								// Add it to struct
 								UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), ival);
 								cs.Add(entry);
 								matches.Add(data[line], entry);
 							}
-							catch(System.OverflowException)
+							catch(OverflowException)
 							{
 								// Too large for Int32, try Int64
 								try
 								{
 									// Convert to value
-									long lval = System.Convert.ToInt64(s.Substring(2).Trim(), 16);
+									long lval = Convert.ToInt64(s.Substring(2).Trim(), 16);
 
 									// Add it to struct
 									UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), lval);
 									cs.Add(entry);
 									matches.Add(data[line], entry);
 								}
-								catch(System.OverflowException)
+								catch(OverflowException)
 								{
 									// Too large for Int64, return error
 									RaiseError(line, ERROR_VALUETOOBIG);
 								}
-								catch(System.FormatException)
+								catch(FormatException)
 								{
 									// ERROR: Invalid value in assignment
 									RaiseError(line, ERROR_VALUEINVALID);
 								}
 							}
-							catch(System.FormatException)
+							catch(FormatException)
 							{
 								// ERROR: Invalid value in assignment
 								RaiseError(line, ERROR_VALUEINVALID);
@@ -436,8 +434,8 @@ namespace CodeImp.DoomBuilder.IO
 							float fval = 0;
 							
 							// Convert to float (remove the f first)
-							try { fval = System.Convert.ToSingle(s.Trim(), CultureInfo.InvariantCulture); }
-							catch(System.FormatException)
+							try { fval = Convert.ToSingle(s.Trim(), CultureInfo.InvariantCulture); }
+							catch(FormatException)
 							{ 
 								// ERROR: Invalid value in assignment
 								RaiseError(line, ERROR_VALUEINVALID);
@@ -454,14 +452,14 @@ namespace CodeImp.DoomBuilder.IO
 							try
 							{
 								// Convert to value
-								int ival = System.Convert.ToInt32(s.Trim(), CultureInfo.InvariantCulture);
+								int ival = Convert.ToInt32(s.Trim(), CultureInfo.InvariantCulture);
 								
 								// Add it to struct
 								UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), ival);
 								cs.Add(entry);
 								matches.Add(data[line], entry);
 							}
-							catch(System.OverflowException)
+							catch(OverflowException)
 							{
 								// Too large for Int32, try Int64
 								try
@@ -474,7 +472,7 @@ namespace CodeImp.DoomBuilder.IO
 									cs.Add(entry);
 									matches.Add(data[line], entry);
 								}
-								catch(System.OverflowException)
+								catch(OverflowException)
 								{
 									// Too large for Int64, return error
 									RaiseError(line, ERROR_VALUETOOBIG);
@@ -485,7 +483,7 @@ namespace CodeImp.DoomBuilder.IO
 									RaiseError(line, ERROR_VALUEINVALID);
 								}
 							}
-							catch(System.FormatException)
+							catch(FormatException)
 							{ 
 								// ERROR: Invalid value in assignment
 								RaiseError(line, ERROR_VALUEINVALID);
@@ -528,23 +526,23 @@ namespace CodeImp.DoomBuilder.IO
 							case 't': val.Append('\t'); break;
 							default:
 								// Is it a number?
-								if(numbers.IndexOf(c) > -1)
+								if(Configuration.NUMBERS.IndexOf(c) > -1)
 								{
 									int vv = 0;
 									char vc = '0';
 									
 									// Convert the next 3 characters to a number
 									string v = data[line].Substring(pos, 3);
-									try { vv = System.Convert.ToInt32(v.Trim(), CultureInfo.InvariantCulture); }
-									catch(System.FormatException)
+									try { vv = Convert.ToInt32(v.Trim(), CultureInfo.InvariantCulture); }
+									catch(FormatException)
 									{ 
 										// ERROR: Invalid value in assignment
 										RaiseError(line, ERROR_VALUEINVALID);
 									}
 									
 									// Convert the number to a char
-									try { vc = System.Convert.ToChar(vv, CultureInfo.InvariantCulture); }
-									catch(System.FormatException)
+									try { vc = Convert.ToChar(vv, CultureInfo.InvariantCulture); }
+									catch(FormatException)
 									{ 
 										// ERROR: Invalid value in assignment
 										RaiseError(line, ERROR_VALUEINVALID);

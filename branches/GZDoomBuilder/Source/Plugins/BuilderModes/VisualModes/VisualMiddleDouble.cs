@@ -315,7 +315,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			int light = Sidedef.Fields.GetValue("light", 0);
 			bool absolute = Sidedef.Fields.GetValue("lightabsolute", false);
-			int newLight = 0;
+			int newLight;
 
 			if(up)
 				newLight = General.Map.Config.BrightnessLevels.GetNextHigher(light, absolute);

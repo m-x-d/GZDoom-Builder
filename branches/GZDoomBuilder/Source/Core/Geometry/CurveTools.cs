@@ -214,7 +214,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 			int totalSteps = steps + 1;
 			Vector2D[] points = new Vector2D[totalSteps];
-			float step = 1f / (float)steps;
+			float step = 1f / steps;
 			float curStep = 0f;
 
 			for(int i = 0; i < totalSteps; i++) {
@@ -238,7 +238,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 			int totalSteps = steps + 1;
 			Vector2D[] points = new Vector2D[totalSteps];
-			float step = 1f / (float)steps;
+			float step = 1f / steps;
 			float curStep = 0f;
 
 			for(int i = 0; i < totalSteps; i++) {

@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.Types
 		private Dictionary<int, TypeHandlerAttribute> handlertypes;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 

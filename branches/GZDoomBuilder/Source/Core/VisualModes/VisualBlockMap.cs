@@ -89,15 +89,15 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This returns the block center in world coordinates
 		public Vector2D GetBlockCenter(Point p)
 		{
-			return new Vector2D((float)((p.X << BLOCK_SIZE_SHIFT) + (BLOCK_SIZE >> 1)),
-								(float)((p.Y << BLOCK_SIZE_SHIFT) + (BLOCK_SIZE >> 1)));
+			return new Vector2D((p.X << BLOCK_SIZE_SHIFT) + (BLOCK_SIZE >> 1),
+								(p.Y << BLOCK_SIZE_SHIFT) + (BLOCK_SIZE >> 1));
 		}
 
 		// This returns the key for a block at the given coordinates
 		// TODO: Could we just use the Point struct as key?
 		private ulong GetBlockKey(Point p)
 		{
-			return unchecked( ((ulong)(uint)p.X << 32) + (ulong)(uint)p.Y );
+			return unchecked( ((ulong)(uint)p.X << 32) + (uint)p.Y );
 		}
 		
 		// This returns the block with the given coordinates

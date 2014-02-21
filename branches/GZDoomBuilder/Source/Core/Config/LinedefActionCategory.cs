@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.Config
 		private List<LinedefActionInfo> actions;
 
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 

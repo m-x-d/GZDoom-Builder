@@ -54,8 +54,8 @@ namespace CodeImp.DoomBuilder.IO
 		private List<Lump> lumps;
 		
 		// Status
-		private bool isreadonly = false;
-		private bool isdisposed = false;
+		private bool isreadonly;
+		private bool isdisposed;
 
 		#endregion
 

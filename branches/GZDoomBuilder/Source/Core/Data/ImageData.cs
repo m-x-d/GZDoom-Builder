@@ -67,12 +67,12 @@ namespace CodeImp.DoomBuilder.Data
 		protected Bitmap bitmap;
 		
 		// Direct3D texture
-		private int mipmaplevels = 0;	// 0 = all mipmaps
+		private int mipmaplevels;	// 0 = all mipmaps
 		protected bool dynamictexture;
 		private Texture texture;
 		
 		// Disposing
-		protected bool isdisposed = false;
+		protected bool isdisposed;
 		
 		#endregion
 		

@@ -48,9 +48,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// This shows the info
 		public void ShowInfo(Thing t)
 		{
-			ThingTypeInfo ti;
 			LinedefActionInfo act = null;
-			string actioninfo = "";
+			string actioninfo;
 			string zinfo;
 			float zvalue;
 
@@ -78,7 +77,7 @@ namespace CodeImp.DoomBuilder.Controls
 			flagsPanel.Left = spritepanel.Left + spritepanel.Width + spritepanel.Margin.Right + flagsPanel.Margin.Left; //mxd
 			
 			// Lookup thing info
-			ti = General.Map.Data.GetThingInfo(t.Type);
+			ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
 
 			// Get thing action information
 			if(General.Map.Config.LinedefActions.ContainsKey(t.Action))
@@ -87,9 +86,9 @@ namespace CodeImp.DoomBuilder.Controls
 				actioninfo = act.ToString();
 			}
 			else if(t.Action == 0)
-				actioninfo = t.Action.ToString() + " - None";
+				actioninfo = t.Action + " - None";
 			else
-				actioninfo = t.Action.ToString() + " - Unknown";
+				actioninfo = t.Action + " - Unknown";
 			
 			// Determine z info to show
 			t.DetermineSector();
@@ -117,7 +116,7 @@ namespace CodeImp.DoomBuilder.Controls
 				else
 				{
 					zvalue = t.Position.z;
-					if(zvalue >= 0.0f) zinfo = "+" + zvalue.ToString(); else zinfo = zvalue.ToString();
+					if(zvalue >= 0.0f) zinfo = "+" + zvalue; else zinfo = zvalue.ToString();
 				}
 			}
 

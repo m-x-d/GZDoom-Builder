@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Interpret the number given
-			int brightness = 0;
+			int brightness;
 			if(int.TryParse(value, out brightness)) {
 				// Where to search?
 				ICollection<Sector> list = withinselection ? General.Map.Map.GetSelectedSectors(true) : General.Map.Map.Sectors;

@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//if we have a curve...
 				if(points.Count > 2){
 					//is it a closed curve?
-					int lastPoint = 0;
+					int lastPoint;
 					if(points[0].pos == points[points.Count - 1].pos) {
 						lastPoint = curve.Segments.Count;
 					} else {

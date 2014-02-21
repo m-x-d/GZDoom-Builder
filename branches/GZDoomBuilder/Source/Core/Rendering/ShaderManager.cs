@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private D3DDevice device;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 

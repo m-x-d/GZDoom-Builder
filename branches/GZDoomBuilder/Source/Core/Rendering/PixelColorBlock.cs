@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This clears the memory black
 		public void Clear()
 		{
-			if(memorysize > 0) General.ZeroMemory(new IntPtr(memory), (int)memorysize);
+			if(memorysize > 0) General.ZeroMemory(new IntPtr(memory), memorysize);
 		}
 
 		#endregion

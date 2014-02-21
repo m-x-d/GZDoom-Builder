@@ -35,8 +35,6 @@ namespace CodeImp.DoomBuilder.Config
 		// Construct from IDictionary
 		internal MapLumpInfo(string name, Configuration cfg)
 		{
-			string scriptconfig = "";
-			
 			// Apply settings
 			this.name = name;
 			this.script = null;
@@ -44,7 +42,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.blindcopy = cfg.ReadSetting("maplumpnames." + name + ".blindcopy", false);
 			this.nodebuild = cfg.ReadSetting("maplumpnames." + name + ".nodebuild", false);
 			this.allowempty = cfg.ReadSetting("maplumpnames." + name + ".allowempty", false);
-			scriptconfig = cfg.ReadSetting("maplumpnames." + name + ".script", "");
+			string scriptconfig = cfg.ReadSetting("maplumpnames." + name + ".script", "");
 			
 			// Find script configuration
 			if(scriptconfig.Length > 0)

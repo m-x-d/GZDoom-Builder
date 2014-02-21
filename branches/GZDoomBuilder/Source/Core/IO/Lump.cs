@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.IO
 		private int length;
 
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 

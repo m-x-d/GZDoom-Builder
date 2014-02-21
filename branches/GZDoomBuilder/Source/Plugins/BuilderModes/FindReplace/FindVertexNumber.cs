@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
 			// Interpret the number given
-			int index = 0;
+			int index;
 			if(int.TryParse(value, out index))
 			{
 				Vertex v = General.Map.Map.GetVertexByIndex(index);

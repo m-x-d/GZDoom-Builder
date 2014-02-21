@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
 using SlimDX.Direct3D9;
-using System.ComponentModel;
 using CodeImp.DoomBuilder.Geometry;
 using SlimDX;
 using CodeImp.DoomBuilder.Data;
@@ -61,7 +60,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private ResourceImage fonttexture;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 

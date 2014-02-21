@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private float lastscaley;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 

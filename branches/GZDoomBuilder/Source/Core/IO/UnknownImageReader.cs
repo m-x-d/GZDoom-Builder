@@ -26,7 +26,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	internal unsafe class UnknownImageReader : IImageReader
+	internal class UnknownImageReader : IImageReader
 	{
 		public uint ImageType { get; private set; } //mxd
 		
@@ -56,13 +56,13 @@ namespace CodeImp.DoomBuilder.IO
 		// This reads the image and returns a Bitmap
 		public Bitmap ReadAsBitmap(Stream stream)
 		{
-			return new Bitmap(CodeImp.DoomBuilder.Properties.Resources.Failed);
+			return new Bitmap(Properties.Resources.Failed);
 		}
 
 		// This reads the image and returns a Bitmap
 		public static Bitmap ReadAsBitmap()
 		{
-			return new Bitmap(CodeImp.DoomBuilder.Properties.Resources.Failed);
+			return new Bitmap(Properties.Resources.Failed);
 		}
 
 		// This draws the picture to the given pixel color data

@@ -13,7 +13,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 	{
 		#region Selected Node(s) Properties
 
-		private List<TreeNode> m_SelectedNodes = null;
+		private List<TreeNode> m_SelectedNodes;
 		public List<TreeNode> SelectedNodes {
 			get {
 				return m_SelectedNodes;

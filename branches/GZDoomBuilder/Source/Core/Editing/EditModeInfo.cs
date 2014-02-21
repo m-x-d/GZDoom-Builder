@@ -41,13 +41,13 @@ namespace CodeImp.DoomBuilder.Editing
 		private EditModeAttribute attribs;
 		
 		// Mode switching
-		private BeginActionAttribute switchactionattr = null;
-		private ActionDelegate switchactiondel = null;
+		private BeginActionAttribute switchactionattr;
+		private ActionDelegate switchactiondel;
 
 		// Mode button
-		private Stream buttonimagestream = null;
-		private Image buttonimage = null;
-		private string buttondesc = null;
+		private Stream buttonimagestream;
+		private Image buttonimage;
+		private string buttondesc;
 		private int buttonorder = int.MaxValue;
 		
 		#endregion
@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			if((switchactiondel == null) && (switchactionattr != null))
 			{
-				switchactiondel = new ActionDelegate(UserSwitchToMode);
+				switchactiondel = UserSwitchToMode;
 				General.Actions.BindBeginDelegate(plugin.Assembly, switchactiondel, switchactionattr);
 			}
 		}

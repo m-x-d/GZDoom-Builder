@@ -66,23 +66,23 @@ namespace CodeImp.DoomBuilder.Windows
 		private const int ACTION_FLASH_INTERVAL = 50;
 		private const int ACTION_RESET_DELAY = 5000;
 		
-		private readonly Image[,] STATUS_IMAGES = new Image[2, 4]
+		private readonly Image[,] STATUS_IMAGES = new Image[,]
 		{
 			// Normal versions
 			{
-			  Properties.Resources.Status0, Properties.Resources.Status1,
-			  Properties.Resources.Status2, Properties.Resources.Warning
+			  Resources.Status0, Resources.Status1,
+			  Resources.Status2, Resources.Warning
 			},
 			
 			// Flashing versions
 			{
-			  Properties.Resources.Status10, Properties.Resources.Status11,
-			  Properties.Resources.Status12, Properties.Resources.WarningOff
+			  Resources.Status10, Resources.Status11,
+			  Resources.Status12, Resources.WarningOff
 			}
 		};
 		
 		// Message pump
-		public enum ThreadMessages : int
+		public enum ThreadMessages
 		{
 			// Sent by the background threat to update the status
 			UpdateStatus = General.WM_USER + 1,
@@ -888,7 +888,7 @@ namespace CodeImp.DoomBuilder.Windows
 					zoom = int.Parse((sender as ToolStripMenuItem).Tag.ToString(), CultureInfo.InvariantCulture);
 
 					// Zoom now
-					(General.Editing.Mode as ClassicMode).SetZoom((float)zoom / 100f);
+					(General.Editing.Mode as ClassicMode).SetZoom(zoom / 100f);
 				}
 			}
 		}
@@ -1446,16 +1446,15 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map != null)
 			{
 				// Make the new skills list
-				//mxd
-				skills = new ToolStripItem[(General.Map.Config.Skills.Count * 2) + 3];
+				skills = new ToolStripItem[(General.Map.Config.Skills.Count * 2) + 3]; //mxd
 
 				//mxd. Add engine selector
-				ToolStripMenuItem menuitem = new ToolStripMenuItem("Engine:", Properties.Resources.Marine);
+				ToolStripMenuItem menuitem = new ToolStripMenuItem("Engine:", Resources.Marine);
 				for (int i = 0; i < General.Map.ConfigSettings.TestEngines.Count; i++) {
 					ToolStripMenuItem engineItem = new ToolStripMenuItem(General.Map.ConfigSettings.TestEngines[i].TestProgramName);
 					engineItem.Tag = i;
 					engineItem.Checked = (i == General.Map.ConfigSettings.CurrentEngineIndex);
-					engineItem.Click += new EventHandler(engineItem_Click);
+					engineItem.Click += engineItem_Click;
 					menuitem.DropDownItems.Add(engineItem);
 				}
 				skills[0] = menuitem;
@@ -1469,8 +1468,8 @@ namespace CodeImp.DoomBuilder.Windows
 				for(int i = 0; i < General.Map.Config.Skills.Count; i++)
 				{
 					menuitem = new ToolStripMenuItem(General.Map.Config.Skills[i].ToString());
-					menuitem.Image = Properties.Resources.Monster2;
-					menuitem.Click += new EventHandler(TestSkill_Click);
+					menuitem.Image = Resources.Monster2;
+					menuitem.Click += TestSkill_Click;
 					menuitem.Tag = General.Map.Config.Skills[i].Index;
 					menuitem.Checked = (General.Settings.TestMonsters && (General.Map.ConfigSettings.TestSkill == General.Map.Config.Skills[i].Index));
 					skills[addindex++] = menuitem;
@@ -1485,8 +1484,8 @@ namespace CodeImp.DoomBuilder.Windows
 				for(int i = 0; i < General.Map.Config.Skills.Count; i++)
 				{
 					menuitem = new ToolStripMenuItem(General.Map.Config.Skills[i].ToString());
-					menuitem.Image = Properties.Resources.Monster3;
-					menuitem.Click += new EventHandler(TestSkill_Click);
+					menuitem.Image = Resources.Monster3;
+					menuitem.Click += TestSkill_Click;
 					menuitem.Tag = -General.Map.Config.Skills[i].Index;
 					menuitem.Checked = (!General.Settings.TestMonsters && (General.Map.ConfigSettings.TestSkill == General.Map.Config.Skills[i].Index));
 					skills[addindex++] = menuitem;
@@ -1860,7 +1859,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Create a button
 			index = toolbar.Items.IndexOf(seperatormodes);
-			item = new ToolStripButton(modeinfo.ButtonDesc, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
+			item = new ToolStripButton(modeinfo.ButtonDesc, modeinfo.ButtonImage, EditModeButtonHandler);
 			item.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			item.Tag = modeinfo;
 			toolbar.Items.Insert(index, item);
@@ -1868,7 +1867,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Create menu item
 			index = menumode.DropDownItems.Count;
-			item = new ToolStripMenuItem(controlname, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
+			item = new ToolStripMenuItem(controlname, modeinfo.ButtonImage, EditModeButtonHandler);
 			item.Tag = modeinfo;
 			menumode.DropDownItems.Insert(index, item);
 			editmodeitems.Add(item);
@@ -2208,7 +2207,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Create item
 				recentitems[i] = new ToolStripMenuItem("");
 				recentitems[i].Tag = "";
-				recentitems[i].Click += new EventHandler(recentitem_Click);
+				recentitems[i].Click += recentitem_Click;
 				menufile.DropDownItems.Insert(insertindex + i, recentitems[i]);
 
 				// Get configuration setting
@@ -2217,7 +2216,7 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					// Set up item
 					int number = i + 1;
-					recentitems[i].Text = "&" + number.ToString() + "  " + GetDisplayFilename(filename);
+					recentitems[i].Text = "&" + number + "  " + GetDisplayFilename(filename);
 					recentitems[i].Tag = filename;
 					recentitems[i].Visible = true;
 					anyitems = true;
@@ -2279,7 +2278,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Move recent file down the list
 				int number = i + 2;
-				recentitems[i + 1].Text = "&" + number.ToString() + "  " + GetDisplayFilename(recentitems[i].Tag.ToString());
+				recentitems[i + 1].Text = "&" + number + "  " + GetDisplayFilename(recentitems[i].Tag.ToString());
 				recentitems[i + 1].Tag = recentitems[i].Tag.ToString();
 				recentitems[i + 1].Visible = (recentitems[i].Tag.ToString() != "");
 			}
@@ -2411,7 +2410,7 @@ namespace CodeImp.DoomBuilder.Windows
 					menu.DropDown.Items[i].Visible = false;
 				} else {
 					menu.DropDown.Items[i].Visible = true;
-					menu.DropDown.Items[i].Text = (i + 1) + ": " + General.Map.Map.GroupInfos[i].ToString();
+					menu.DropDown.Items[i].Text = (i + 1) + ": " + General.Map.Map.GroupInfos[i];
 				}
 			}
 		}
@@ -2986,9 +2985,9 @@ namespace CodeImp.DoomBuilder.Windows
 				LinedefActionInfo act = General.Map.Config.LinedefActions[l.Action];
 				labelcollapsedinfo.Text = act.ToString();
 			} else if(l.Action == 0)
-				labelcollapsedinfo.Text = l.Action.ToString() + " - None";
+				labelcollapsedinfo.Text = l.Action + " - None";
 			else
-				labelcollapsedinfo.Text = l.Action.ToString() + " - Unknown";
+				labelcollapsedinfo.Text = l.Action + " - Unknown";
 
 			labelcollapsedinfo.Refresh();
 
@@ -3036,9 +3035,9 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.Config.SectorEffects.ContainsKey(s.Effect))
 				labelcollapsedinfo.Text = General.Map.Config.SectorEffects[s.Effect].ToString();
 			else if(s.Effect == 0)
-				labelcollapsedinfo.Text = s.Effect.ToString() + " - Normal";
+				labelcollapsedinfo.Text = s.Effect + " - Normal";
 			else
-				labelcollapsedinfo.Text = s.Effect.ToString() + " - Unknown";
+				labelcollapsedinfo.Text = s.Effect + " - Unknown";
 
 			labelcollapsedinfo.Refresh();
 
@@ -3121,7 +3120,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show sector edit dialog
 			VertexEditForm f = new VertexEditForm();
 			f.Setup(vertices, allowPositionChange);
-			f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
+			f.OnValuesChanged += EditForm_OnValuesChanged;
 			editformopen = true; //mxd
 			DialogResult result = f.ShowDialog(this);
 			editformopen = false; //mxd
@@ -3136,7 +3135,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show line edit dialog
 			LinedefEditForm f = new LinedefEditForm();
 			f.Setup(lines);
-			f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
+			f.OnValuesChanged += EditForm_OnValuesChanged;
 			editformopen = true; //mxd
 			DialogResult result = f.ShowDialog(this);
 			editformopen = false; //mxd
@@ -3154,7 +3153,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.UDMF){ //mxd
 				SectorEditFormUDMF f = new SectorEditFormUDMF();
 				f.Setup(sectors);
-				f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
+				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd
 				result = f.ShowDialog(this);
 				editformopen = false; //mxd
@@ -3162,7 +3161,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}else{
 				SectorEditForm f = new SectorEditForm();
 				f.Setup(sectors);
-				f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
+				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd
 				result = f.ShowDialog(this);
 				editformopen = false; //mxd
@@ -3178,7 +3177,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show thing edit dialog
 			ThingEditForm f = new ThingEditForm();
 			f.Setup(things);
-			f.OnValuesChanged += new EventHandler(EditForm_OnValuesChanged);
+			f.OnValuesChanged += EditForm_OnValuesChanged;
 			editformopen = true; //mxd
 			DialogResult result = f.ShowDialog(this);
 			editformopen = false; //mxd
@@ -3197,7 +3196,7 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Message Pump
 		
 		// This handles messages
-		protected override unsafe void WndProc(ref Message m)
+		protected override void WndProc(ref Message m)
 		{
 			// Notify message?
 			switch(m.Msg)

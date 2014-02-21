@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Data
 		private Queue<ImageData> imageque;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 

@@ -398,7 +398,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// First make a single integer with all bits from activation and flags
 			int bits = activate;
-			int flagbit = 0;
+			int flagbit;
 			foreach(KeyValuePair<string, bool> f in flags)
 				if(int.TryParse(f.Key, out flagbit) && f.Value) bits |= flagbit;
 			
@@ -444,7 +444,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(KeyValuePair<string, string> f in General.Map.Config.LinedefFlags)
 			{
 				// Flag must be numeric
-				int flagbit = 0;
+				int flagbit;
 				if(int.TryParse(f.Key, out flagbit))
 				{
 					foreach(FlagTranslation ft in General.Map.Config.LinedefFlagsTranslation)

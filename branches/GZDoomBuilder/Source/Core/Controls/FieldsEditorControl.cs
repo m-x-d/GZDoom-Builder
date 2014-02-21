@@ -471,7 +471,7 @@ namespace CodeImp.DoomBuilder.Controls
 			else if(e.ColumnIndex == 2)
 			{
 				// Get the row
-				FieldsEditorRow frow = null;
+				FieldsEditorRow frow;
 				DataGridViewRow row = fieldslist.Rows[e.RowIndex];
 				if(row is FieldsEditorRow)
 				{
@@ -526,10 +526,9 @@ namespace CodeImp.DoomBuilder.Controls
 		private void fieldslist_CellEndEdit(object sender, DataGridViewCellEventArgs e)
 		{
 			FieldsEditorRow frow = null;
-			DataGridViewRow row = null;
-			
+
 			// Get the row
-			row = fieldslist.Rows[e.RowIndex];
+			DataGridViewRow row = fieldslist.Rows[e.RowIndex];
 			if(row is FieldsEditorRow) frow = row as FieldsEditorRow;
 			
 			// Renaming a field?
@@ -825,13 +824,12 @@ namespace CodeImp.DoomBuilder.Controls
 		private void UpdateBrowseButton()
 		{
 			FieldsEditorRow frow = null;
-			DataGridViewRow row = null;
 
 			// Any row selected?
 			if(fieldslist.SelectedRows.Count > 0)
 			{
 				// Get selected row
-				row = fieldslist.SelectedRows[0];
+				DataGridViewRow row = fieldslist.SelectedRows[0];
 				if(row is FieldsEditorRow) frow = row as FieldsEditorRow;
 
 				// Not the new row and FieldsEditorRow available?

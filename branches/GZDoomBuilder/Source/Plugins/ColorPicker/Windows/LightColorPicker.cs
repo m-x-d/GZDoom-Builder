@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.GZBuilder;
 using CodeImp.DoomBuilder.VisualModes;
@@ -20,7 +15,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 
 		private static bool RELATIVE_MODE;
 		
-		private static int[] LIGHT_USES_ANGLE_VALUE = { 9801, 9802, 9804, 9811, 9812, 9814, 9821, 9822, 9824 };
+		private static readonly int[] LIGHT_USES_ANGLE_VALUE = { 9801, 9802, 9804, 9811, 9812, 9814, 9821, 9822, 9824 };
 		
 		private List<Thing> selection;
 		private List<VisualThing> visualSelection;
@@ -74,12 +69,12 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 			setControlsMode();
 
 			colorPickerControl1.Initialize(getThingColor(selection[0]));
-			colorPickerControl1.ColorChanged += new EventHandler<ColorChangedEventArgs>(colorPickerControl1_ColorChanged);
-			colorPickerControl1.OnOkPressed += new EventHandler(colorPickerControl1_OnOkPressed);
-			colorPickerControl1.OnCancelPressed += new EventHandler(colorPickerControl1_OnCancelPressed);
+			colorPickerControl1.ColorChanged += colorPickerControl1_ColorChanged;
+			colorPickerControl1.OnOkPressed += colorPickerControl1_OnOkPressed;
+			colorPickerControl1.OnCancelPressed += colorPickerControl1_OnCancelPressed;
 
 			cbRelativeMode.Checked = RELATIVE_MODE;
-			cbRelativeMode.CheckStateChanged += new EventHandler(cbRelativeMode_CheckStateChanged);
+			cbRelativeMode.CheckStateChanged += cbRelativeMode_CheckStateChanged;
 
 			this.AcceptButton = colorPickerControl1.OkButton;
 			this.CancelButton = colorPickerControl1.CancelButton;
@@ -124,23 +119,23 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 
 			//first slider is always used
 			colorPickerSlider1.Label = typeInfo.Args[firstArg].Title + ":";
-			colorPickerSlider1.OnValueChanged += new EventHandler<ColorPickerSliderEventArgs>(onSliderValueChanged);
+			colorPickerSlider1.OnValueChanged += onSliderValueChanged;
 
 			//either both of them or none are used
 			if (Array.IndexOf(LIGHT_USES_ANGLE_VALUE, referenceThing.Type) != -1) {
 				showAllControls = true;
 				colorPickerSlider2.Label = typeInfo.Args[4].Title + ":";
-				colorPickerSlider2.OnValueChanged += new EventHandler<ColorPickerSliderEventArgs>(onSliderValueChanged);
+				colorPickerSlider2.OnValueChanged += onSliderValueChanged;
 				
 				colorPickerSlider3.Label = "Interval:";
-				colorPickerSlider3.OnValueChanged += new EventHandler<ColorPickerSliderEventArgs>(onSliderValueChanged);
+				colorPickerSlider3.OnValueChanged += onSliderValueChanged;
 			} else {
 				colorPickerSlider2.Visible = false;
 				colorPickerSlider3.Visible = false;
 			}
 
 			//set window height
-			int newHeight = 0;
+			int newHeight;
 			if (showAllControls) {
 				newHeight = colorPickerSlider3.Location.Y + colorPickerSlider3.Height + 8;
 			} else {

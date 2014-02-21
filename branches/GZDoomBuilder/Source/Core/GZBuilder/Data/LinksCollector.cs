@@ -106,8 +106,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 				}
 			}
 
-			Vector3D start = new Vector3D();
-			Vector3D end = new Vector3D();
+			Vector3D start, end;
 
 			//process path nodes
 			if (result.ProcessPathNodes) {

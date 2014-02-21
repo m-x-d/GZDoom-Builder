@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				y = ((float)Math.Sin(a) * R - d) * yDeform;
 
 				//rotate and transform to fit original line
-				vertex = new Vector2D((float)x, (float)y).GetRotated(line.Angle + Angle2D.PIHALF);
+				vertex = new Vector2D(x, y).GetRotated(line.Angle + Angle2D.PIHALF);
 				vertex = vertex.GetTransformed(line.GetCenterPoint().x, line.GetCenterPoint().y, 1, 1);
 
 				points.Add(vertex);

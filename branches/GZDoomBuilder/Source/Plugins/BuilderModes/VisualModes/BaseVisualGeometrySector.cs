@@ -26,9 +26,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.VisualModes;
-using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
-using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -148,7 +146,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd. Modify offsets based on surface and camera angles
-			float angle = 0;
+			float angle;
 
 			if(GeometryType == VisualGeometryType.CEILING)
 				angle = Angle2D.DegToRad(level.sector.Fields.GetValue("rotationceiling", 0f));
@@ -231,8 +229,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!(mode.HighlightedObject is BaseVisualSector)) return;
 			
 			//do we need to align this? (and also grab texture scale while we are at it)
-			float scaleX = 1.0f;
-			float scaleY = 1.0f;
+			float scaleX, scaleY;
 			bool isFloor = (geoType == VisualGeometryType.FLOOR);
 
 			if(mode.HighlightedTarget is VisualFloor) {
@@ -256,7 +253,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//find a linedef to align to
 			Vector2D hitpos = mode.GetHitPosition();
 			if(!hitpos.IsFinite()) return;
-			bool isFront = false;
 
 			//align to line of highlighted sector, which is closest to hitpos
 			Sector highlightedSector = ((BaseVisualSector)mode.HighlightedObject).Sector;
@@ -266,7 +262,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Linedef targetLine = MapSet.NearestLinedef(lines, hitpos);
 			if(targetLine == null) return;
 
-			isFront = targetLine.SideOfLine(hitpos) > 0;
+			bool isFront = targetLine.SideOfLine(hitpos) > 0;
 			Sector.Sector.Fields.BeforeFieldsChange();
 
 			//find an angle to rotate texture
@@ -576,7 +572,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!General.Map.UDMF) return;
 
 			//create undo
-			string rest = string.Empty;
+			string rest;
 			if(alignx && aligny) rest = "(X and Y)";
 			else if(alignx)	rest = "(X)";
 			else rest = "(Y)";
@@ -680,7 +676,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
-				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged); //mxd
+				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged; //mxd
 				mode.StartRealtimeInterfaceUpdate(SelectionType.Sectors); //mxd
 				General.Interface.ShowEditSectors(sectors);
 				mode.StopRealtimeInterfaceUpdate(SelectionType.Sectors); //mxd
@@ -692,7 +688,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void Interface_OnEditFormValuesChanged(object sender, System.EventArgs e) {
+		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) {
 			foreach(BaseVisualSector vs in updateList)
 				vs.UpdateSectorGeometry(true);
 		}

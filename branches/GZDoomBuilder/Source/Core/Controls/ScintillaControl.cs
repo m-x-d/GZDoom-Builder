@@ -2295,7 +2295,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(controlptr != IntPtr.Zero)
 			{
-				return (UInt32)Perform(directptr, message, (UInt32)wParam, (UInt32)lParam);
+				return (UInt32)Perform(directptr, message, wParam, lParam);
 			}
 			else
 			{
@@ -2309,7 +2309,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ignoredkeys.Add(key, key);
 		}
 
-		public void AddIgnoredKey(System.Windows.Forms.Keys key, System.Windows.Forms.Keys modifier)
+		public void AddIgnoredKey(Keys key, Keys modifier)
 		{
 			this.ignoredkeys.Add((int)key + (int)modifier, (int)key + (int)modifier);
 		}
@@ -2370,7 +2370,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Message Pump
 		
 		// This handles messages
-		protected override void WndProc(ref System.Windows.Forms.Message m)
+		protected override void WndProc(ref Message m)
 		{
 			// Notify message?
 			if(m.Msg == WM_NOTIFY)
@@ -2524,7 +2524,7 @@ namespace CodeImp.DoomBuilder.Controls
 									string textstr = null;
 									try
 									{
-										textstr = System.Runtime.InteropServices.Marshal.PtrToStringAuto(scn.text);
+										textstr = Marshal.PtrToStringAuto(scn.text);
 									}
 									catch(IndexOutOfRangeException)
 									{

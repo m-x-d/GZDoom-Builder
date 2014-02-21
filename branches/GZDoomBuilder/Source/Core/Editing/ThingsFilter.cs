@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.Editing
 		protected Dictionary<Thing, bool> thingsvisiblestate;
 		
 		// Disposing
-		protected bool isdisposed = false;
+		protected bool isdisposed;
 
 		#endregion
 
@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.Editing
 			foreach(DictionaryEntry de in fields)
 			{
 				// Add to the corresponding list
-				if((bool)de.Value == true)
+				if((bool)de.Value)
 					requiredfields.Add(de.Key.ToString());
 				else
 					forbiddenfields.Add(de.Key.ToString());
@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.Editing
 			IDictionary fieldvalues = cfg.ReadSetting(path + ".customfieldvalues", new Hashtable());
 			foreach(DictionaryEntry fv in fieldvalues)
 			{
-				int ft = cfg.ReadSetting(path + ".customfieldtypes." + fv.Key.ToString(), 0);
+				int ft = cfg.ReadSetting(path + ".customfieldtypes." + fv.Key, 0);
 				customfields.Add(fv.Key.ToString(), new UniValue(ft, fv.Value));
 			}
 			
@@ -377,7 +377,7 @@ namespace CodeImp.DoomBuilder.Editing
 					{
 						if(t.Flags.ContainsKey(s))
 						{
-							if(t.Flags[s] == true)
+							if(t.Flags[s])
 							{
 								qualifies = false;
 								break;

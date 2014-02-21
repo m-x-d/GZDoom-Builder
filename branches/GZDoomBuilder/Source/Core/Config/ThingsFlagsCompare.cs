@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string group;
 
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 
@@ -108,8 +108,8 @@ namespace CodeImp.DoomBuilder.Config
 		//	1 if the flag overlaps
 		public int Compare(Thing t1, Thing t2)
 		{
-			bool t1flag = false;
-			bool t2flag = false;
+			bool t1flag;
+			bool t2flag;
 
 			// Check if the flags exist
 			if(!t1.Flags.ContainsKey(flag) || !t2.Flags.ContainsKey(flag)) {

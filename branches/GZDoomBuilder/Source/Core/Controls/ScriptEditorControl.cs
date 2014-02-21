@@ -77,8 +77,8 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// Current position information
 		private string curfunctionname = "";
-		private int curargumentindex = 0;
-		private int curfunctionstartpos = 0;
+		private int curargumentindex;
+		private int curfunctionstartpos;
 		
 		// Status
 		private bool changed;
@@ -158,7 +158,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Events
 			scriptedit.ModEventMask = 0x7FFFF;	// Which events to receive (see also ScriptModificationFlags)
-			scriptedit.Modified += new ScintillaControl.ModifiedHandler(scriptedit_Modified);
+			scriptedit.Modified += scriptedit_Modified;
 		}
 		
 		#endregion
@@ -333,7 +333,7 @@ namespace CodeImp.DoomBuilder.Controls
 					stylelookup.Add(stylenum, (ScriptStyleType)(int)de.Value);
 					
 					// Apply color to style
-					int colorindex = 0;
+					int colorindex;
 					switch((ScriptStyleType)(int)de.Value)
 					{
 						case ScriptStyleType.PlainText: colorindex = ColorCollection.PLAINTEXT; break;
@@ -570,7 +570,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		// This registers an XPM image for the autocomplete list
-		private unsafe void RegisterAutoCompleteImage(ImageIndex index, byte[] imagedata)
+		private void RegisterAutoCompleteImage(ImageIndex index, byte[] imagedata)
 		{
 			// Convert to string
 			string bigstring = Encoding.UTF8.GetString(imagedata);
@@ -580,7 +580,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This registers an XPM image for the markes list
-		private unsafe void RegisterMarkerImage(ImageIndex index, byte[] imagedata)
+		private void RegisterMarkerImage(ImageIndex index, byte[] imagedata)
 		{
 			// Convert to string
 			string bigstring = Encoding.UTF8.GetString(imagedata);

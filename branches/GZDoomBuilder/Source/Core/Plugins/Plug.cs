@@ -31,7 +31,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		private Plugin plugin;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		//mxd. It's nice to have these avaliable to plugins...
 		public static Point DisplayLocationAbs {
@@ -288,12 +288,12 @@ namespace CodeImp.DoomBuilder.Plugins
 		/// <summary>
 		/// Called when an Action begins.
 		/// </summary>
-		public virtual void OnActionBegin(CodeImp.DoomBuilder.Actions.Action action) { }
+		public virtual void OnActionBegin(Actions.Action action) { }
 
 		/// <summary>
 		/// Called when an Action ends.
 		/// </summary>
-		public virtual void OnActionEnd(CodeImp.DoomBuilder.Actions.Action action) { }
+		public virtual void OnActionEnd(Actions.Action action) { }
 
 		/// <summary>
 		/// Called when an Editing Mode engages

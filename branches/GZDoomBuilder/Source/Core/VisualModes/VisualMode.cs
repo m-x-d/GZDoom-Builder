@@ -451,18 +451,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if (target.picked == null) return new Vector2D(float.NaN, float.NaN);
 
 			//now find where exactly did we hit
-			Vector2D hitCoords = new Vector2D();
 			if (target.picked is VisualGeometry) {
 				VisualGeometry vg = target.picked as VisualGeometry;
-				hitCoords = getIntersection(start, start + delta, new Vector3D(vg.BoundingBox[0].X, vg.BoundingBox[0].Y, vg.BoundingBox[0].Z), new Vector3D(vg.Vertices[0].nx, vg.Vertices[0].ny, vg.Vertices[0].nz));
-			} else if (target.picked is VisualThing) {
+				return getIntersection(start, start + delta, new Vector3D(vg.BoundingBox[0].X, vg.BoundingBox[0].Y, vg.BoundingBox[0].Z), new Vector3D(vg.Vertices[0].nx, vg.Vertices[0].ny, vg.Vertices[0].nz));
+			} 
+			
+			if (target.picked is VisualThing) {
 				VisualThing vt = target.picked as VisualThing;
-				hitCoords = getIntersection(start, start + delta, new Vector3D(vt.BoundingBox[0].X, vt.BoundingBox[0].Y, vt.BoundingBox[0].Z), D3DDevice.V3D(vt.Center - vt.PositionV3));
-			} else {
-				return new Vector2D(float.NaN, float.NaN);
-			}
+				return getIntersection(start, start + delta, new Vector3D(vt.BoundingBox[0].X, vt.BoundingBox[0].Y, vt.BoundingBox[0].Z), D3DDevice.V3D(vt.Center - vt.PositionV3));
+			} 
 
-			return hitCoords;
+			return new Vector2D(float.NaN, float.NaN);
 		}
 
 		//mxd. This checks intersection between line and plane 
@@ -1082,12 +1081,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 			// Move the camera
 			if(General.Interface.ShiftState) multiplier = MOVE_SPEED_MULTIPLIER * 2.0f; else multiplier = MOVE_SPEED_MULTIPLIER;
-			if(keyforward) camdeltapos += camvec * cammovemul * (float)General.Settings.MoveSpeed * multiplier * deltatime;
-			if(keybackward) camdeltapos -= camvec * cammovemul * (float)General.Settings.MoveSpeed * multiplier * deltatime;
-			if(keyleft) camdeltapos -= camvecstrafe * cammovemul * (float)General.Settings.MoveSpeed * multiplier * deltatime;
-			if(keyright) camdeltapos += camvecstrafe * cammovemul * (float)General.Settings.MoveSpeed * multiplier * deltatime;
-			if(keyup) camdeltapos += upvec * cammovemul * (float)General.Settings.MoveSpeed * multiplier * deltatime;
-			if(keydown) camdeltapos += -upvec * cammovemul * (float)General.Settings.MoveSpeed * multiplier * deltatime;
+			if(keyforward) camdeltapos += camvec * cammovemul * General.Settings.MoveSpeed * multiplier * deltatime;
+			if(keybackward) camdeltapos -= camvec * cammovemul * General.Settings.MoveSpeed * multiplier * deltatime;
+			if(keyleft) camdeltapos -= camvecstrafe * cammovemul * General.Settings.MoveSpeed * multiplier * deltatime;
+			if(keyright) camdeltapos += camvecstrafe * cammovemul * General.Settings.MoveSpeed * multiplier * deltatime;
+			if(keyup) camdeltapos += upvec * cammovemul * General.Settings.MoveSpeed * multiplier * deltatime;
+			if(keydown) camdeltapos += -upvec * cammovemul * General.Settings.MoveSpeed * multiplier * deltatime;
 			
 			// Move the camera
 			General.Map.VisualCamera.ProcessMovement(camdeltapos);
@@ -1099,7 +1098,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			DoCulling();
 			
 			// Update labels in main window
-			General.MainWindow.UpdateCoordinates((Vector2D)General.Map.VisualCamera.Position);
+			General.MainWindow.UpdateCoordinates(General.Map.VisualCamera.Position);
 			
 			// Now redraw
 			General.Interface.RedrawDisplay();

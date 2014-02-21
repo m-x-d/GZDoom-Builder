@@ -392,7 +392,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(gotTagArgument && combobox.SelectedItem != null)
 				return General.Clamp(((TagInfo)combobox.SelectedItem).Tag, General.Map.FormatInterface.MinArgument, General.Map.FormatInterface.MaxArgument);
 			
-			int result = 0;
+			int result;
 			
 			// Strip prefixes
 			string str = combobox.Text.Trim().ToLowerInvariant();

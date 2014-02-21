@@ -449,7 +449,7 @@ namespace CodeImp.DoomBuilder.Editing
 				{
 					// Scale and power this for nicer usability
 					Vector2D pansign = panamount.GetSign();
-					panamount = (panamount * panamount) * pansign * 0.0001f * (float)General.Settings.AutoScrollSpeed / renderer.Scale;
+					panamount = (panamount * panamount) * pansign * 0.0001f * General.Settings.AutoScrollSpeed / renderer.Scale;
 					
 					// Multiply by delta time
 					panamount.x *= deltatime;

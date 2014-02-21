@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.Config
 			for(int i = 0; i < filters.Count; i++)
 			{
 				// Add filters
-				dic.Add("filter" + i.ToString(), filters[i].ToUpperInvariant());
+				dic.Add("filter" + i, filters[i].ToUpperInvariant());
 			}
 			
 			// Write to config

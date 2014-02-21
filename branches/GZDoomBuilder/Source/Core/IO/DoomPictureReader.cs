@@ -179,7 +179,7 @@ namespace CodeImp.DoomBuilder.IO
 		private PixelColorBlock ReadAsPixelData(Stream stream, out int width, out int height, out int offsetx, out int offsety)
 		{
 			BinaryReader reader = new BinaryReader(stream);
-			PixelColorBlock pixeldata = null;
+			PixelColorBlock pixeldata;
 			int y, read_y, count, p;
 			int[] columns;
 			int dataoffset;

@@ -320,19 +320,19 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// Transform
-		public unsafe Vector2D GetTransformed(float offsetx, float offsety, float scalex, float scaley)
+		public Vector2D GetTransformed(float offsetx, float offsety, float scalex, float scaley)
 		{
 			return new Vector2D((x + offsetx) * scalex, (y + offsety) * scaley);
 		}
 
 		// Inverse Transform
-		public unsafe Vector2D GetInvTransformed(float invoffsetx, float invoffsety, float invscalex, float invscaley)
+		public Vector2D GetInvTransformed(float invoffsetx, float invoffsety, float invscalex, float invscaley)
 		{
 			return new Vector2D((x * invscalex) + invoffsetx, (y * invscaley) + invoffsety);
 		}
 		
 		// Rotate (Added by Anders Åstrand 2008-05-18)
-		public unsafe Vector2D GetRotated(float theta)
+		public Vector2D GetRotated(float theta)
 		{
 			float cos = (float)Math.Cos(theta);
 			float sin = (float)Math.Sin(theta);

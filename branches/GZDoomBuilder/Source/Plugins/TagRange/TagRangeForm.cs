@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.TagRange
 {
@@ -124,7 +120,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			doubletagwarning.Visible = tagsused && !outoftags;
 			skipdoubletags.Visible = tagsused && !outoftags;
 			skipdoubletags.BringToFront();
-			
+
 			tags = CreateRange(starttag, skipdoubletags.Checked, out tagsused, out outoftags);
 			
 			if(tags.Count > 0)

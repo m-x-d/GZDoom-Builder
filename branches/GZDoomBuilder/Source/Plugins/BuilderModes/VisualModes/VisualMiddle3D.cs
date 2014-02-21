@@ -324,7 +324,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				((BaseVisualSector)mode.GetVisualSector(Sidedef.Other.Sector)).Rebuild();
 
 			//mxd. As well as model sector
-			((BaseVisualSector)mode.GetVisualSector(extrafloor.Linedef.Front.Sector)).UpdateSectorGeometry(false);
+			mode.GetVisualSector(extrafloor.Linedef.Front.Sector).UpdateSectorGeometry(false);
 		}
 
 		protected override void SetTextureOffsetX(int x)
@@ -344,8 +344,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sidedef.Fields.BeforeFieldsChange();
 			float oldx = Sidedef.Fields.GetValue("offsetx_mid", 0.0f);
 			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
-			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
-			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
+			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, oldx + xy.X);
+			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, oldy + xy.Y);
 		}
 
 		protected override Point GetTextureOffset()

@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Interpret the number given
-			int angle = 0;
+			int angle;
 			if(int.TryParse(value, out angle))
 			{
 				// Where to search?

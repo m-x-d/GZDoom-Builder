@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-using CodeImp.DoomBuilder.Actions;
+﻿using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 

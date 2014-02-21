@@ -517,7 +517,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Determine the intensity of the flash by time elapsed
 				float curtime = General.Clock.CurrentTime;
-				flashintensity = 1f - (float)((curtime - flashstarttime) / FLASH_DURATION);
+				flashintensity = 1f - ((curtime - flashstarttime) / FLASH_DURATION);
 				if(flashintensity > 0.0f)
 				{
 					// Update vertices in polygon

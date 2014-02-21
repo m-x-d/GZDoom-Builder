@@ -17,7 +17,6 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
@@ -2166,7 +2165,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//get target brightness
-			int targetBrightness = int.MinValue;
+			int targetBrightness;
 			if(highlighted is VisualFloor) {
 				VisualFloor v = highlighted as VisualFloor;
 				targetBrightness = v.Level.sector.Fields.GetValue("lightfloor", 0);
@@ -2199,11 +2198,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 			} else {
-				General.Interface.DisplayStatus(StatusType.Warning, "Highlight a surface, to which you want to match the brightness.");
-				return;
-			}
-
-			if (targetBrightness == int.MinValue) {
 				General.Interface.DisplayStatus(StatusType.Warning, "Highlight a surface, to which you want to match the brightness.");
 				return;
 			}
@@ -2502,7 +2496,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		private void autoAlignTexturesToSelected(bool alignX, bool alignY) {
-			string rest = string.Empty;
+			string rest;
 			if(alignX && alignY) rest = "(X and Y)";
 			else if(alignX) rest = "(X)";
 			else rest = "(Y)";
@@ -2996,7 +2990,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return;
 			}
 
-			bool update = false;
+			bool update;
 			List<BaseVisualSector> toUpdate = new List<BaseVisualSector>();
 			General.Map.UndoRedo.CreateUndo("Toggle Slope");
 
@@ -3427,9 +3421,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset = (float)Math.Round(offset); //mxd
 
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, GetTopOffsetY(j.sidedef, offset, j.scaleY, true) % (float)texture.Height); //mxd
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, GetTopOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, GetBottomOffsetY(j.sidedef, offset, j.scaleY, true) % (float)texture.Height); //mxd
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, GetBottomOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
 						if(matchmid) {
 							//mxd. Side is part of a 3D floor?
 							if(j.sidedef.Index != j.controlSide.Index) {
@@ -3437,7 +3431,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
 								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % texture.Height); //mxd
 							} else {
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % (float)texture.Height); //mxd
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
 							}
 						}
 					}

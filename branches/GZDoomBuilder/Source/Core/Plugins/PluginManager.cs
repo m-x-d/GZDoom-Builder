@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		private List<Plugin> plugins;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 
@@ -286,8 +286,8 @@ namespace CodeImp.DoomBuilder.Plugins
 		public void OnSectorFloorSurfaceUpdate(Sector s, ref FlatVertex[] vertices) { foreach(Plugin p in plugins) p.Plug.OnSectorFloorSurfaceUpdate(s, ref vertices); }
 		public void OnShowPreferences(PreferencesController controller) { foreach(Plugin p in plugins) p.Plug.OnShowPreferences(controller); }
 		public void OnClosePreferences(PreferencesController controller) { foreach(Plugin p in plugins) p.Plug.OnClosePreferences(controller); }
-		public void OnActionBegin(CodeImp.DoomBuilder.Actions.Action action) { foreach(Plugin p in plugins) p.Plug.OnActionBegin(action); }
-		public void OnActionEnd(CodeImp.DoomBuilder.Actions.Action action) { foreach(Plugin p in plugins) p.Plug.OnActionEnd(action); }
+		public void OnActionBegin(Actions.Action action) { foreach(Plugin p in plugins) p.Plug.OnActionBegin(action); }
+		public void OnActionEnd(Actions.Action action) { foreach(Plugin p in plugins) p.Plug.OnActionEnd(action); }
 		public void OnEditEngage(EditMode oldmode, EditMode newmode) { foreach(Plugin p in plugins) p.Plug.OnEditEngage(oldmode, newmode); }
 		public void OnEditDisengage(EditMode oldmode, EditMode newmode) { foreach(Plugin p in plugins) p.Plug.OnEditDisengage(oldmode, newmode); }
 		public void OnEditCancel() { foreach(Plugin p in plugins) p.Plug.OnEditCancel(); }

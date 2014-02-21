@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This sets the renderstyle from linedef information and returns the alpha value or the vertices
 		protected byte SetLinedefRenderstyle(bool solidasmask)
 		{
-			byte alpha = 255;
+			byte alpha;
 
 			// From TranslucentLine action
 			if(Sidedef.Line.Action == 208)
@@ -804,7 +804,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnTextureAlign(bool alignx, bool aligny)
 		{
 			//mxd
-			string rest = string.Empty;
+			string rest;
 			if(alignx && aligny) rest = "(X and Y)";
 			else if(alignx)	rest = "(X)";
 			else rest = "(Y)";
@@ -998,7 +998,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						updateList.Add((BaseVisualSector)mode.GetVisualSector(l.Back.Sector));
 				}
 
-				General.Interface.OnEditFormValuesChanged += new System.EventHandler(Interface_OnEditFormValuesChanged);
+				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged;
 				mode.StartRealtimeInterfaceUpdate(SelectionType.Linedefs);
 				DialogResult result = General.Interface.ShowEditLinedefs(linedefs);
 				mode.StopRealtimeInterfaceUpdate(SelectionType.Linedefs);
@@ -1030,7 +1030,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void Interface_OnEditFormValuesChanged(object sender, System.EventArgs e) {
+		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) {
 			foreach(BaseVisualSector vs in updateList)
 				vs.UpdateSectorGeometry(false);
 		}

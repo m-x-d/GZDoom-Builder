@@ -39,48 +39,48 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 		}
 
-		internal Color FromKnownColor(TanColorTable.KnownColors color)
+		internal Color FromKnownColor(KnownColors color)
 		{
-			return (Color)this.ColorTable[color];
+			return this.ColorTable[color];
 		}
 
-		internal static void InitTanLunaColors(ref Dictionary<TanColorTable.KnownColors, Color> rgbTable)
+		internal static void InitTanLunaColors(ref Dictionary<KnownColors, Color> rgbTable)
 		{
-			rgbTable[TanColorTable.KnownColors.GripDark] = Color.FromArgb(0xc1, 190, 0xb3);
-			rgbTable[TanColorTable.KnownColors.SeparatorDark] = Color.FromArgb(0xc5, 0xc2, 0xb8);
-			rgbTable[TanColorTable.KnownColors.MenuItemSelected] = Color.FromArgb(0xc1, 210, 0xee);
-			rgbTable[TanColorTable.KnownColors.ButtonPressedBorder] = Color.FromArgb(0x31, 0x6a, 0xc5);
-			rgbTable[TanColorTable.KnownColors.CheckBackground] = Color.FromArgb(0xe1, 230, 0xe8);
-			rgbTable[TanColorTable.KnownColors.MenuItemBorder] = Color.FromArgb(0x31, 0x6a, 0xc5);
-			rgbTable[TanColorTable.KnownColors.CheckBackgroundMouseOver] = Color.FromArgb(0x31, 0x6a, 0xc5);
-			rgbTable[TanColorTable.KnownColors.MenuItemBorderMouseOver] = Color.FromArgb(0x4b, 0x4b, 0x6f);
-			rgbTable[TanColorTable.KnownColors.ToolStripDropDownBackground] = Color.FromArgb(0xfc, 0xfc, 0xf9);
-			rgbTable[TanColorTable.KnownColors.MenuBorder] = Color.FromArgb(0x8a, 0x86, 0x7a);
-			rgbTable[TanColorTable.KnownColors.SeparatorLight] = Color.FromArgb(0xff, 0xff, 0xff);
-			rgbTable[TanColorTable.KnownColors.ToolStripBorder] = Color.FromArgb(0xa3, 0xa3, 0x7c);
-			rgbTable[TanColorTable.KnownColors.MenuStripGradientBegin] = Color.FromArgb(0xe5, 0xe5, 0xd7);
-			rgbTable[TanColorTable.KnownColors.MenuStripGradientEnd] = Color.FromArgb(0xf4, 0xf2, 0xe8);
-			rgbTable[TanColorTable.KnownColors.ImageMarginGradientBegin] = Color.FromArgb(0xfe, 0xfe, 0xfb);
-			rgbTable[TanColorTable.KnownColors.ImageMarginGradientMiddle] = Color.FromArgb(0xec, 0xe7, 0xe0);
-			rgbTable[TanColorTable.KnownColors.ImageMarginGradientEnd] = Color.FromArgb(0xbd, 0xbd, 0xa3);
-			rgbTable[TanColorTable.KnownColors.OverflowButtonGradientBegin] = Color.FromArgb(0xf3, 0xf2, 240);
-			rgbTable[TanColorTable.KnownColors.OverflowButtonGradientMiddle] = Color.FromArgb(0xe2, 0xe1, 0xdb);
-			rgbTable[TanColorTable.KnownColors.OverflowButtonGradientEnd] = Color.FromArgb(0x92, 0x92, 0x76);
-			rgbTable[TanColorTable.KnownColors.MenuItemPressedGradientBegin] = Color.FromArgb(0xfc, 0xfc, 0xf9);
-			rgbTable[TanColorTable.KnownColors.MenuItemPressedGradientEnd] = Color.FromArgb(0xf6, 0xf4, 0xec);
-			rgbTable[TanColorTable.KnownColors.ImageMarginRevealedGradientBegin] = Color.FromArgb(0xf7, 0xf6, 0xef);
-			rgbTable[TanColorTable.KnownColors.ImageMarginRevealedGradientMiddle] = Color.FromArgb(0xf2, 240, 0xe4);
-			rgbTable[TanColorTable.KnownColors.ImageMarginRevealedGradientEnd] = Color.FromArgb(230, 0xe3, 210);
-			rgbTable[TanColorTable.KnownColors.ButtonCheckedGradientBegin] = Color.FromArgb(0xe1, 230, 0xe8);
-			rgbTable[TanColorTable.KnownColors.ButtonCheckedGradientMiddle] = Color.FromArgb(0xe1, 230, 0xe8);
-			rgbTable[TanColorTable.KnownColors.ButtonCheckedGradientEnd] = Color.FromArgb(0xe1, 230, 0xe8);
-			rgbTable[TanColorTable.KnownColors.ButtonSelectedGradientBegin] = Color.FromArgb(0xc1, 210, 0xee);
-			rgbTable[TanColorTable.KnownColors.ButtonSelectedGradientMiddle] = Color.FromArgb(0xc1, 210, 0xee);
-			rgbTable[TanColorTable.KnownColors.ButtonSelectedGradientEnd] = Color.FromArgb(0xc1, 210, 0xee);
-			rgbTable[TanColorTable.KnownColors.ButtonPressedGradientBegin] = Color.FromArgb(0x98, 0xb5, 0xe2);
-			rgbTable[TanColorTable.KnownColors.ButtonPressedGradientMiddle] = Color.FromArgb(0x98, 0xb5, 0xe2);
-			rgbTable[TanColorTable.KnownColors.ButtonPressedGradientEnd] = Color.FromArgb(0x98, 0xb5, 0xe2);
-			rgbTable[TanColorTable.KnownColors.GripLight] = Color.FromArgb(0xff, 0xff, 0xff);
+			rgbTable[KnownColors.GripDark] = Color.FromArgb(0xc1, 190, 0xb3);
+			rgbTable[KnownColors.SeparatorDark] = Color.FromArgb(0xc5, 0xc2, 0xb8);
+			rgbTable[KnownColors.MenuItemSelected] = Color.FromArgb(0xc1, 210, 0xee);
+			rgbTable[KnownColors.ButtonPressedBorder] = Color.FromArgb(0x31, 0x6a, 0xc5);
+			rgbTable[KnownColors.CheckBackground] = Color.FromArgb(0xe1, 230, 0xe8);
+			rgbTable[KnownColors.MenuItemBorder] = Color.FromArgb(0x31, 0x6a, 0xc5);
+			rgbTable[KnownColors.CheckBackgroundMouseOver] = Color.FromArgb(0x31, 0x6a, 0xc5);
+			rgbTable[KnownColors.MenuItemBorderMouseOver] = Color.FromArgb(0x4b, 0x4b, 0x6f);
+			rgbTable[KnownColors.ToolStripDropDownBackground] = Color.FromArgb(0xfc, 0xfc, 0xf9);
+			rgbTable[KnownColors.MenuBorder] = Color.FromArgb(0x8a, 0x86, 0x7a);
+			rgbTable[KnownColors.SeparatorLight] = Color.FromArgb(0xff, 0xff, 0xff);
+			rgbTable[KnownColors.ToolStripBorder] = Color.FromArgb(0xa3, 0xa3, 0x7c);
+			rgbTable[KnownColors.MenuStripGradientBegin] = Color.FromArgb(0xe5, 0xe5, 0xd7);
+			rgbTable[KnownColors.MenuStripGradientEnd] = Color.FromArgb(0xf4, 0xf2, 0xe8);
+			rgbTable[KnownColors.ImageMarginGradientBegin] = Color.FromArgb(0xfe, 0xfe, 0xfb);
+			rgbTable[KnownColors.ImageMarginGradientMiddle] = Color.FromArgb(0xec, 0xe7, 0xe0);
+			rgbTable[KnownColors.ImageMarginGradientEnd] = Color.FromArgb(0xbd, 0xbd, 0xa3);
+			rgbTable[KnownColors.OverflowButtonGradientBegin] = Color.FromArgb(0xf3, 0xf2, 240);
+			rgbTable[KnownColors.OverflowButtonGradientMiddle] = Color.FromArgb(0xe2, 0xe1, 0xdb);
+			rgbTable[KnownColors.OverflowButtonGradientEnd] = Color.FromArgb(0x92, 0x92, 0x76);
+			rgbTable[KnownColors.MenuItemPressedGradientBegin] = Color.FromArgb(0xfc, 0xfc, 0xf9);
+			rgbTable[KnownColors.MenuItemPressedGradientEnd] = Color.FromArgb(0xf6, 0xf4, 0xec);
+			rgbTable[KnownColors.ImageMarginRevealedGradientBegin] = Color.FromArgb(0xf7, 0xf6, 0xef);
+			rgbTable[KnownColors.ImageMarginRevealedGradientMiddle] = Color.FromArgb(0xf2, 240, 0xe4);
+			rgbTable[KnownColors.ImageMarginRevealedGradientEnd] = Color.FromArgb(230, 0xe3, 210);
+			rgbTable[KnownColors.ButtonCheckedGradientBegin] = Color.FromArgb(0xe1, 230, 0xe8);
+			rgbTable[KnownColors.ButtonCheckedGradientMiddle] = Color.FromArgb(0xe1, 230, 0xe8);
+			rgbTable[KnownColors.ButtonCheckedGradientEnd] = Color.FromArgb(0xe1, 230, 0xe8);
+			rgbTable[KnownColors.ButtonSelectedGradientBegin] = Color.FromArgb(0xc1, 210, 0xee);
+			rgbTable[KnownColors.ButtonSelectedGradientMiddle] = Color.FromArgb(0xc1, 210, 0xee);
+			rgbTable[KnownColors.ButtonSelectedGradientEnd] = Color.FromArgb(0xc1, 210, 0xee);
+			rgbTable[KnownColors.ButtonPressedGradientBegin] = Color.FromArgb(0x98, 0xb5, 0xe2);
+			rgbTable[KnownColors.ButtonPressedGradientMiddle] = Color.FromArgb(0x98, 0xb5, 0xe2);
+			rgbTable[KnownColors.ButtonPressedGradientEnd] = Color.FromArgb(0x98, 0xb5, 0xe2);
+			rgbTable[KnownColors.GripLight] = Color.FromArgb(0xff, 0xff, 0xff);
 		}
 
 		public override Color ButtonCheckedGradientBegin
@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ButtonCheckedGradientBegin);
+					return this.FromKnownColor(KnownColors.ButtonCheckedGradientBegin);
 				}
 				return base.ButtonCheckedGradientBegin;
 			}
@@ -101,7 +101,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ButtonCheckedGradientEnd);
+					return this.FromKnownColor(KnownColors.ButtonCheckedGradientEnd);
 				}
 				return base.ButtonCheckedGradientEnd;
 			}
@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ButtonCheckedGradientMiddle);
+					return this.FromKnownColor(KnownColors.ButtonCheckedGradientMiddle);
 				}
 				return base.ButtonCheckedGradientMiddle;
 			}
@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ButtonPressedBorder);
+					return this.FromKnownColor(KnownColors.ButtonPressedBorder);
 				}
 				return base.ButtonPressedBorder;
 			}
@@ -138,7 +138,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ButtonPressedGradientBegin);
+					return this.FromKnownColor(KnownColors.ButtonPressedGradientBegin);
 				}
 				return base.ButtonPressedGradientBegin;
 			}
@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ButtonPressedGradientEnd);
+					return this.FromKnownColor(KnownColors.ButtonPressedGradientEnd);
 				}
 				return base.ButtonPressedGradientEnd;
 			}
@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ButtonPressedGradientMiddle);
+					return this.FromKnownColor(KnownColors.ButtonPressedGradientMiddle);
 				}
 				return base.ButtonPressedGradientMiddle;
 			}
@@ -175,7 +175,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ButtonPressedBorder);
+					return this.FromKnownColor(KnownColors.ButtonPressedBorder);
 				}
 				return base.ButtonSelectedBorder;
 			}
@@ -188,7 +188,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ButtonSelectedGradientBegin);
+					return this.FromKnownColor(KnownColors.ButtonSelectedGradientBegin);
 				}
 				return base.ButtonSelectedGradientBegin;
 			}
@@ -199,7 +199,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ButtonSelectedGradientEnd);
+					return this.FromKnownColor(KnownColors.ButtonSelectedGradientEnd);
 				}
 				return base.ButtonSelectedGradientEnd;
 			}
@@ -210,7 +210,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ButtonSelectedGradientMiddle);
+					return this.FromKnownColor(KnownColors.ButtonSelectedGradientMiddle);
 				}
 				return base.ButtonSelectedGradientMiddle;
 			}
@@ -222,7 +222,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.CheckBackground);
+					return this.FromKnownColor(KnownColors.CheckBackground);
 				}
 				return base.CheckBackground;
 			}
@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.CheckBackgroundMouseOver);
+					return this.FromKnownColor(KnownColors.CheckBackgroundMouseOver);
 				}
 				return base.CheckPressedBackground;
 			}
@@ -246,7 +246,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.CheckBackgroundMouseOver);
+					return this.FromKnownColor(KnownColors.CheckBackgroundMouseOver);
 				}
 				return base.CheckSelectedBackground;
 			}
@@ -257,7 +257,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			get
 			{
-				return TanColorTable.DisplayInformation.ColorScheme;
+				return DisplayInformation.ColorScheme;
 			}
 		}
 
@@ -268,7 +268,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(this.tanRGB == null)
 				{
 					this.tanRGB = new Dictionary<KnownColors, Color>((int)KnownColors.LastKnownColor);
-					TanColorTable.InitTanLunaColors(ref this.tanRGB);
+					InitTanLunaColors(ref this.tanRGB);
 				}
 				return this.tanRGB;
 			}
@@ -280,7 +280,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.GripDark);
+					return this.FromKnownColor(KnownColors.GripDark);
 				}
 				return base.GripDark;
 			}
@@ -292,7 +292,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.GripLight);
+					return this.FromKnownColor(KnownColors.GripLight);
 				}
 				return base.GripLight;
 			}
@@ -303,7 +303,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ImageMarginGradientBegin);
+					return this.FromKnownColor(KnownColors.ImageMarginGradientBegin);
 				}
 				return base.ImageMarginGradientBegin;
 			}
@@ -315,7 +315,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ImageMarginGradientEnd);
+					return this.FromKnownColor(KnownColors.ImageMarginGradientEnd);
 				}
 				return base.ImageMarginGradientEnd;
 			}
@@ -327,7 +327,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ImageMarginGradientMiddle);
+					return this.FromKnownColor(KnownColors.ImageMarginGradientMiddle);
 				}
 				return base.ImageMarginGradientMiddle;
 			}
@@ -339,7 +339,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ImageMarginRevealedGradientBegin);
+					return this.FromKnownColor(KnownColors.ImageMarginRevealedGradientBegin);
 				}
 				return base.ImageMarginRevealedGradientBegin;
 			}
@@ -351,7 +351,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ImageMarginRevealedGradientEnd);
+					return this.FromKnownColor(KnownColors.ImageMarginRevealedGradientEnd);
 				}
 				return base.ImageMarginRevealedGradientEnd;
 			}
@@ -363,7 +363,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ImageMarginRevealedGradientMiddle);
+					return this.FromKnownColor(KnownColors.ImageMarginRevealedGradientMiddle);
 				}
 				return base.ImageMarginRevealedGradientMiddle;
 			}
@@ -375,7 +375,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.MenuBorder);
+					return this.FromKnownColor(KnownColors.MenuBorder);
 				}
 				return base.MenuItemBorder;
 			}
@@ -388,7 +388,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.MenuItemBorder);
+					return this.FromKnownColor(KnownColors.MenuItemBorder);
 				}
 				return base.MenuItemBorder;
 			}
@@ -400,7 +400,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.MenuItemPressedGradientBegin);
+					return this.FromKnownColor(KnownColors.MenuItemPressedGradientBegin);
 				}
 				return base.MenuItemPressedGradientBegin;
 			}
@@ -412,7 +412,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.MenuItemPressedGradientEnd);
+					return this.FromKnownColor(KnownColors.MenuItemPressedGradientEnd);
 				}
 				return base.MenuItemPressedGradientEnd;
 			}
@@ -424,7 +424,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ImageMarginRevealedGradientMiddle);
+					return this.FromKnownColor(KnownColors.ImageMarginRevealedGradientMiddle);
 				}
 				return base.MenuItemPressedGradientMiddle;
 			}
@@ -436,7 +436,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.MenuItemSelected);
+					return this.FromKnownColor(KnownColors.MenuItemSelected);
 				}
 				return base.MenuItemSelected;
 			}
@@ -448,7 +448,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ButtonSelectedGradientBegin);
+					return this.FromKnownColor(KnownColors.ButtonSelectedGradientBegin);
 				}
 				return base.MenuItemSelectedGradientBegin;
 			}
@@ -460,7 +460,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ButtonSelectedGradientEnd);
+					return this.FromKnownColor(KnownColors.ButtonSelectedGradientEnd);
 				}
 				return base.MenuItemSelectedGradientEnd;
 			}
@@ -473,7 +473,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.MenuStripGradientBegin);
+					return this.FromKnownColor(KnownColors.MenuStripGradientBegin);
 				}
 				return base.MenuStripGradientBegin;
 			}
@@ -485,7 +485,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.MenuStripGradientEnd);
+					return this.FromKnownColor(KnownColors.MenuStripGradientEnd);
 				}
 				return base.MenuStripGradientEnd;
 			}
@@ -497,7 +497,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.OverflowButtonGradientBegin);
+					return this.FromKnownColor(KnownColors.OverflowButtonGradientBegin);
 				}
 				return base.OverflowButtonGradientBegin;
 			}
@@ -509,7 +509,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.OverflowButtonGradientEnd);
+					return this.FromKnownColor(KnownColors.OverflowButtonGradientEnd);
 				}
 				return base.OverflowButtonGradientEnd;
 			}
@@ -521,7 +521,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.OverflowButtonGradientMiddle);
+					return this.FromKnownColor(KnownColors.OverflowButtonGradientMiddle);
 				}
 				return base.OverflowButtonGradientMiddle;
 			}
@@ -534,7 +534,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.MenuStripGradientBegin);
+					return this.FromKnownColor(KnownColors.MenuStripGradientBegin);
 				}
 				return base.RaftingContainerGradientBegin;
 			}
@@ -546,7 +546,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.MenuStripGradientEnd);
+					return this.FromKnownColor(KnownColors.MenuStripGradientEnd);
 				}
 				return base.RaftingContainerGradientEnd;
 			}
@@ -559,7 +559,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.SeparatorDark);
+					return this.FromKnownColor(KnownColors.SeparatorDark);
 				}
 				return base.SeparatorDark;
 			}
@@ -571,7 +571,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.SeparatorLight);
+					return this.FromKnownColor(KnownColors.SeparatorLight);
 				}
 				return base.SeparatorLight;
 			}
@@ -583,7 +583,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ToolStripBorder);
+					return this.FromKnownColor(KnownColors.ToolStripBorder);
 				}
 				return base.ToolStripBorder;
 			}
@@ -596,7 +596,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ToolStripDropDownBackground);
+					return this.FromKnownColor(KnownColors.ToolStripDropDownBackground);
 				}
 				return base.ToolStripDropDownBackground;
 			}
@@ -608,7 +608,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ImageMarginGradientBegin);
+					return this.FromKnownColor(KnownColors.ImageMarginGradientBegin);
 				}
 				return base.ToolStripGradientBegin;
 			}
@@ -620,7 +620,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ImageMarginGradientEnd);
+					return this.FromKnownColor(KnownColors.ImageMarginGradientEnd);
 				}
 				return base.ToolStripGradientEnd;
 			}
@@ -632,7 +632,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if(!this.UseBaseColorTable)
 				{
-					return this.FromKnownColor(TanColorTable.KnownColors.ImageMarginGradientMiddle);
+					return this.FromKnownColor(KnownColors.ImageMarginGradientMiddle);
 				}
 				return base.ToolStripGradientMiddle;
 			}
@@ -642,9 +642,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			get
 			{
-				bool flag1 = !TanColorTable.DisplayInformation.IsLunaTheme ||
-								((TanColorTable.ColorScheme != oliveColorScheme) &&
-								 (TanColorTable.ColorScheme != blueColorScheme));
+				bool flag1 = !DisplayInformation.IsLunaTheme ||
+								((ColorScheme != oliveColorScheme) &&
+								 (ColorScheme != blueColorScheme));
 				if(flag1 && (this.tanRGB != null))
 				{
 					this.tanRGB.Clear();

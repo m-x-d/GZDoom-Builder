@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
-using System.Globalization;
-using CodeImp.DoomBuilder;
 
 namespace CodeImp.DoomBuilder.BuilderEffects
 {
@@ -93,7 +87,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		internal IntControl() {
 			InitializeComponent();
-			numericUpDown1.MouseLeave += new EventHandler<EventArgs>(numericUpDown1_MouseLeave);
+			numericUpDown1.MouseLeave += numericUpDown1_MouseLeave;
 		}
 
 		private void updateLimits() {

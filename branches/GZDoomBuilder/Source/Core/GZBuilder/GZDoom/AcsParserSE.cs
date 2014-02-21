@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							//check if we have something like "999(void)" as a token
 							if (token.Contains("(")) token = token.Substring(0, token.IndexOf("("));
 
-							int n = 0;
+							int n;
 							if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) {
 								int endPos = (int)stream.Position - 1;
 

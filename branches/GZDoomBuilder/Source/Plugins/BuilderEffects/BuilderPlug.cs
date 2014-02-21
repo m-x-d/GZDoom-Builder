@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Actions;
@@ -137,7 +135,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			}
 
 			form.Location = formLocation;
-			form.FormClosed += new FormClosedEventHandler(form_FormClosed);
+			form.FormClosed += form_FormClosed;
 			form.ShowDialog(Form.ActiveForm);
 		}
 

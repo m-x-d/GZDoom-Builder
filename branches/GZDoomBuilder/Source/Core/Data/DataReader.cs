@@ -36,8 +36,8 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		protected DataLocation location;
-		protected bool issuspended = false;
-		protected bool isdisposed = false;
+		protected bool issuspended;
+		protected bool isdisposed;
 		protected ResourceTextureSet textureset;
 
 		#endregion

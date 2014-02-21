@@ -57,13 +57,11 @@ namespace CodeImp.DoomBuilder.Types
 		{
 			int oldvalue = (int)Math.Round(value);
 			int newvalue = AngleForm.ShowDialog(parent, oldvalue);
-			if(newvalue != oldvalue) value = (float)newvalue;
+			if(newvalue != oldvalue) value = newvalue;
 		}
 		
 		public override void SetValue(object value)
 		{
-			float result;
-			
 			// Null?
 			if(value == null)
 			{
@@ -75,9 +73,9 @@ namespace CodeImp.DoomBuilder.Types
 				// Set directly
 				this.value = Convert.ToSingle(value);
 			}
-			else
-			{
+			else {
 				// Try parsing as string
+				float result;
 				if(float.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture, out result))
 				{
 					this.value = result;

@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.Controls
 			tabs.TabsOffsetTop = buttonTogglePinning.Bottom + 2; //mxd
 
 			if(General.Settings != null)
-				buttonTogglePinning.Image = General.Settings.CollapseDockers ? CodeImp.DoomBuilder.Properties.Resources.Unpin : CodeImp.DoomBuilder.Properties.Resources.Pin; //mxd
+				buttonTogglePinning.Image = General.Settings.CollapseDockers ? Properties.Resources.Unpin : Properties.Resources.Pin; //mxd
 		}
 		
 		#endregion
@@ -448,7 +448,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private void buttonTogglePinning_Click(object sender, EventArgs e) {
 			General.Settings.CollapseDockers = !General.Settings.CollapseDockers;
 			General.MainWindow.SetupInterface();
-			buttonTogglePinning.Image = General.Settings.CollapseDockers ? CodeImp.DoomBuilder.Properties.Resources.Unpin : CodeImp.DoomBuilder.Properties.Resources.Pin;
+			buttonTogglePinning.Image = General.Settings.CollapseDockers ? Properties.Resources.Unpin : Properties.Resources.Pin;
 		}
 		
 		#endregion

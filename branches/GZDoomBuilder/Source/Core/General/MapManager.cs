@@ -1121,7 +1121,7 @@ namespace CodeImp.DoomBuilder {
 							// We don't want to bother the user with this. There are a lot of lumps in
 							// the game configs that are trivial and don't need to be found.
 							if (lumprequired) {
-								General.ErrorLogger.Add(ErrorType.Warning, ml.Key.ToString() + " (required lump) should be read but was not found in the WAD file.");
+								General.ErrorLogger.Add(ErrorType.Warning, ml.Key + " (required lump) should be read but was not found in the WAD file.");
 							}
 						}
 					}

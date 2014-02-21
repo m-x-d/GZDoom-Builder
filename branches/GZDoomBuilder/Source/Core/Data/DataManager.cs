@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.Data
 		private float loadfinishtime;
 		
 		// Disposing
-		private bool isdisposed = false;
+		private bool isdisposed;
 
 		#endregion
 
@@ -1513,7 +1513,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Go for all things
 			foreach(ThingTypeInfo ti in thingtypes.Values) {
 				// Valid sprite name?
-				string sprite = string.Empty;
+				string sprite;
 
 				if(ti.Sprite.Length == 0 || ti.Sprite.Length > 8) {
 					if(ti.Actor == null) continue;

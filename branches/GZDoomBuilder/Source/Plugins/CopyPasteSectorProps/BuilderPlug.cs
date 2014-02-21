@@ -16,7 +16,6 @@
 
 #region ================== Namespaces
 
-using System.Collections;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
@@ -58,7 +57,7 @@ namespace CodeImp.DoomBuilder.CopyPasteSectorProps
 		
         // This is set to true to know that we copied sector properties.
 		// If this is false, the variables above are uninitialized.
-        bool didCopyProps = false;
+        bool didCopyProps;
 
 		// This event is called when the plugin is initialized
 		public override void OnInitialize()
@@ -201,7 +200,7 @@ namespace CodeImp.DoomBuilder.CopyPasteSectorProps
             General.Interface.RedrawDisplay();
 
             // Let the user know to how many sectors the properties were copied
-            General.Interface.DisplayStatus(StatusType.Action, "Pasted sector properties to " + pasteCount.ToString() + " sector(s).");
+            General.Interface.DisplayStatus(StatusType.Action, "Pasted sector properties to " + pasteCount + " sector(s).");
         }
 
         #endregion

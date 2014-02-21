@@ -27,7 +27,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	internal unsafe class DoomColormapReader : IImageReader
+	internal class DoomColormapReader : IImageReader
 	{
 		#region ================== Variables
 
@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.IO
 
 		// This creates a Bitmap from the given data
 		// Returns null on failure
-		public Bitmap ReadAsBitmap(Stream stream)
+		public unsafe Bitmap ReadAsBitmap(Stream stream)
 		{
 			BitmapData bitmapdata;
 			PixelColorBlock pixeldata;
@@ -167,9 +167,9 @@ namespace CodeImp.DoomBuilder.IO
 
 		// This creates pixel color data from the given data
 		// Returns null on failure
-		private PixelColorBlock ReadAsPixelData(Stream stream, out int width, out int height)
+		private unsafe PixelColorBlock ReadAsPixelData(Stream stream, out int width, out int height)
 		{
-			PixelColorBlock pixeldata = null;
+			PixelColorBlock pixeldata;
 			byte[] bytes;
 			
 			// Image will be 128x128

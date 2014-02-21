@@ -170,14 +170,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 						break;
 
 					case "style": //mxd
-						string s = "";
+						string s;
 						if (!ReadTokenString(parser, token, out s)) return;
 						int index = Array.IndexOf(renderStyles, s.ToLowerInvariant());
 						renderStyle = index == -1 ? TexturePathRenderStyle.Copy : (TexturePathRenderStyle) index;
 						break;
 
 					case "blend": //mxd
-						int val = 0;
+						int val;
 						if (!ReadTokenColor(parser, token, out val)) return;
 						blendColor = PixelColor.FromInt(val);
 

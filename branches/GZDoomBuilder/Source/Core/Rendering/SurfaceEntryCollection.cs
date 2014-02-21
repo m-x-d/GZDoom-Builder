@@ -26,6 +26,6 @@ namespace CodeImp.DoomBuilder.Rendering
 	// of sector vertices, the surface manager will take care of splitting it up in several SurfaceEntries.
 	internal class SurfaceEntryCollection : List<SurfaceEntry>
 	{
-		public int totalvertices = 0;
+		public int totalvertices;
 	}
 }

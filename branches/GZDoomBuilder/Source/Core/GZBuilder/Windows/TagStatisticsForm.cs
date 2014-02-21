@@ -251,7 +251,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 						foreach(Thing t in list) {
 							t.Selected = true;
 
-							Vector2D p = (Vector2D)t.Position;
+							Vector2D p = t.Position;
 							points.Add(p);
 							points.Add(p + new Vector2D(t.Size * 2.0f, t.Size * 2.0f));
 							points.Add(p + new Vector2D(t.Size * 2.0f, -t.Size * 2.0f));
@@ -345,7 +345,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 					foreach(Thing t in list) {
 						t.Selected = true;
 						
-						Vector2D p = (Vector2D)t.Position;
+						Vector2D p = t.Position;
 						points.Add(p);
 						points.Add(p + new Vector2D(t.Size * 2.0f, t.Size * 2.0f));
 						points.Add(p + new Vector2D(t.Size * 2.0f, -t.Size * 2.0f));
