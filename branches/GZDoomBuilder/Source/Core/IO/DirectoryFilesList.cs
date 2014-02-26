@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -46,7 +47,7 @@ namespace CodeImp.DoomBuilder.IO
 			path = Path.GetFullPath(path);
 			string[] files = Directory.GetFiles(path, "*", subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
 			entries = new DirectoryFileEntry[files.Length];
-			hashedentries = new Dictionary<string, DirectoryFileEntry>(files.Length);
+			hashedentries = new Dictionary<string, DirectoryFileEntry>(files.Length, StringComparer.Ordinal);
 			for(int i = 0; i < files.Length; i++)
 			{
 				entries[i] = new DirectoryFileEntry(files[i], path);
@@ -62,7 +63,7 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			int index = 0;
 			entries = new DirectoryFileEntry[sourceentries.Count];
-			hashedentries = new Dictionary<string, DirectoryFileEntry>(sourceentries.Count);
+			hashedentries = new Dictionary<string, DirectoryFileEntry>(sourceentries.Count, StringComparer.Ordinal);
 			foreach(DirectoryFileEntry e in sourceentries)
 			{
 				entries[index] = e;

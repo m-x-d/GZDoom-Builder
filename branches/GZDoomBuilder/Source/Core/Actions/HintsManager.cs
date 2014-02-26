@@ -37,7 +37,7 @@ namespace CodeImp.DoomBuilder.Actions
 		#region ================== Constructor
 
 		public HintsManager() {
-			hints = new Dictionary<string, Dictionary<string, string>>();
+			hints = new Dictionary<string, Dictionary<string, string>>(StringComparer.Ordinal);
 		}
 
 		#endregion
@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Actions
 						}
 					}
 
-					Dictionary<string, List<string>> group = new Dictionary<string, List<string>>();
+					Dictionary<string, List<string>> group = new Dictionary<string, List<string>>(StringComparer.Ordinal);
 
 					foreach(string s in lines) {
 						line = s.Trim();
@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 
 		private Dictionary<string, string> processHints(Dictionary<string, List<string>> hintsgroup) {
-			Dictionary<string, string> result = new Dictionary<string, string>();
+			var result = new Dictionary<string, string>(StringComparer.Ordinal);
 			foreach(KeyValuePair<string, List<string>> group in hintsgroup) {
 				result.Add(group.Key, "{\\rtf1" + string.Join("\\par\\par ", group.Value.ToArray()) + "}");
 			}

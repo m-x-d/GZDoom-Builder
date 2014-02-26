@@ -146,7 +146,7 @@ namespace CodeImp.DoomBuilder.IO
 				flags = reader.ReadUInt16();
 				
 				// Make string flags
-				stringflags = new Dictionary<string, bool>();
+				stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				foreach(KeyValuePair<string, string> f in manager.Config.ThingFlags)
 				{
 					int fnum;
@@ -301,7 +301,7 @@ namespace CodeImp.DoomBuilder.IO
 				s2 = readline.ReadUInt16();
 
 				// Make string flags
-				stringflags = new Dictionary<string, bool>();
+				stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				foreach(string f in manager.Config.SortedLinedefFlags)
 				{
 					int fnum;

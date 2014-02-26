@@ -178,19 +178,19 @@ namespace CodeImp.DoomBuilder.TagExplorer
 							treeView.Nodes.Add(category);
 
 						} else if(currentSortMode == SortMode.SORT_BY_INDEX) { //create thing categories
-							Dictionary<string, TreeNode> categories = new Dictionary<string, TreeNode>();
+							Dictionary<string, TreeNode> categories = new Dictionary<string, TreeNode>(StringComparer.Ordinal);
 							foreach(TreeNode node in nodes) {
 								NodeInfo nodeInfo = node.Tag as NodeInfo;
 								ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(General.Map.Map.GetThingByIndex(nodeInfo.Index).Type);
 
 								if(tti != null) {
 									if(!categories.ContainsKey(tti.Category.Title))
-										categories.Add(tti.Category.Title, new TreeNode(tti.Category.Title, 0, 0, new TreeNode[] { node }));
+										categories.Add(tti.Category.Title, new TreeNode(tti.Category.Title, 0, 0, new[] { node }));
 									else
 										categories[tti.Category.Title].Nodes.Add(node);
 								} else {
 									if(!categories.ContainsKey("UNKNOWN"))
-										categories.Add("UNKNOWN", new TreeNode("UNKNOWN", 0, 0, new TreeNode[] { node }));
+										categories.Add("UNKNOWN", new TreeNode("UNKNOWN", 0, 0, new[] { node }));
 									else
 										categories["UNKNOWN"].Nodes.Add(node);
 								}
@@ -677,7 +677,6 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
 			if (!udmf || !treeView.LabelEdit || e.Node.Tag == null) {
 				e.CancelEdit = true;
-				return;
 			}
 		}
 

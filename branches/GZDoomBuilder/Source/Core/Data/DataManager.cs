@@ -240,7 +240,7 @@ namespace CodeImp.DoomBuilder.Data
 			previews = new PreviewManager();
 			texturesets = new List<MatchingTextureSet>();
 			usedimages = new Dictionary<long, long>();
-			internalsprites = new Dictionary<string, ImageData>();
+			internalsprites = new Dictionary<string, ImageData>(StringComparer.Ordinal);
 			thingcategories = General.Map.Config.GetThingCategories();
 			thingtypes = General.Map.Config.GetThingTypes();
 			
@@ -1384,8 +1384,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		//mxd. This creates <Actor Class, Thing.Type> dictionary. Should be called after all DECORATE actors are parsed
 		private Dictionary<string, int> createActorsByClassList() {
-			Dictionary<string, int> actors = new Dictionary<string, int>();
-
+			Dictionary<string, int> actors = new Dictionary<string, int>(StringComparer.Ordinal);
 			Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
 
 			//read our new shiny ClassNames for default game things
@@ -1459,7 +1458,7 @@ namespace CodeImp.DoomBuilder.Data
 			//if no actors defined in DECORATE or game config...
 			if (actorsByClass == null || actorsByClass.Count == 0) return;
 
-			Dictionary<string, ModelData> modelDefEntriesByName = new Dictionary<string, ModelData>();
+			Dictionary<string, ModelData> modelDefEntriesByName = new Dictionary<string, ModelData>(StringComparer.Ordinal);
 			ModeldefParser parser = new ModeldefParser();
 
 			foreach (DataReader dr in containers) {
@@ -1491,7 +1490,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		private void loadVoxels() {
 			//Get names of all voxel models, which can be used "as is"
-			Dictionary<string, bool> voxelNames = new Dictionary<string, bool>();
+			Dictionary<string, bool> voxelNames = new Dictionary<string, bool>(StringComparer.Ordinal);
 			
 			foreach(DataReader dr in containers) {
 				currentreader = dr;
@@ -1504,7 +1503,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
-			Dictionary<string, List<int>> sprites = new Dictionary<string, List<int>>();
+			Dictionary<string, List<int>> sprites = new Dictionary<string, List<int>>(StringComparer.Ordinal);
 
 			// Go for all things
 			foreach(ThingTypeInfo ti in thingtypes.Values) {
@@ -1524,7 +1523,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			VoxeldefParser parser = new VoxeldefParser();
-			Dictionary<string, bool> processed = new Dictionary<string,bool>();
+			Dictionary<string, bool> processed = new Dictionary<string, bool>(StringComparer.Ordinal);
 
 			//parse VOXLEDEF
 			foreach(DataReader dr in containers) {
@@ -1553,8 +1552,7 @@ namespace CodeImp.DoomBuilder.Data
 				foreach (KeyValuePair<string, List<int>> sc in sprites) {
 					if(sc.Key.Contains(group.Key)) {
 						//it's a model without a definition, and it corresponds to a sprite we can display, so let's add it
-						ModelData data = new ModelData();
-						data.IsVoxel = true;
+						ModelData data = new ModelData { IsVoxel = true };
 						data.ModelNames.Add(group.Key);
 
 						foreach(int id in sprites[sc.Key]) {

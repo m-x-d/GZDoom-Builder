@@ -951,6 +951,7 @@
     <None Include="Resources\MCrash.png" />
     <Content Include="Resources\Model.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\SnapVerts.png" />
     <EmbeddedResource Include="Resources\UDMF_UI.cfg" />
     <None Include="Resources\Unlink.png" />
     <None Include="Resources\Unpin.png" />

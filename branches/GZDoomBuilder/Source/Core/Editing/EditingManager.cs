@@ -267,7 +267,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Go for all the editing mode groups
 			foreach(string grp in groups)
 			{
-				General.MainWindow.AddEditModeSeperator();
+				General.MainWindow.AddEditModeSeperator(grp);
 				
 				// Go for all used edit modes to add buttons
 				foreach(EditModeInfo emi in usedmodes)

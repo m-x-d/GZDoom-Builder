@@ -1,18 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data {
 	public sealed class ThingCopyData {
 		// Properties
-		private int type;
-		private Vector3D pos;
-		private int angledoom;	// Angle as entered / stored in file
-		private Dictionary<string, bool> flags;
-		private int tag;
-		private int action;
-		private int[] args;
-		private UniFields fields;
+		private readonly int type;
+		private readonly Vector3D pos;
+		private readonly int angledoom;	// Angle as entered / stored in file
+		private readonly Dictionary<string, bool> flags;
+		private readonly int tag;
+		private readonly int action;
+		private readonly int[] args;
+		private readonly UniFields fields;
 
 		public Vector3D Position { get { return pos; } }
 		
@@ -20,7 +21,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			type = t.Type;
 			angledoom = t.AngleDoom;
 			pos = t.Position;
-			flags = new Dictionary<string, bool>(t.Flags); //t.Flags;
+			flags = new Dictionary<string, bool>(t.Flags);
 			tag = t.Tag;
 			action = t.Action;
 			args = (int[])t.Args.Clone();

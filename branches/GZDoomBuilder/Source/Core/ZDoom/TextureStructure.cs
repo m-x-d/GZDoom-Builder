@@ -252,7 +252,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		// This makes a HighResImage texture for this texture
-		internal HighResImage MakeImage(Dictionary<long, ImageData> textures, Dictionary<long, ImageData> flats)
+		internal HighResImage MakeImage()
 		{
 			float scalex, scaley;
 			

@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal StateStructure(ActorStructure actor, DecorateParser parser, string statename)
+		internal StateStructure(ActorStructure actor, DecorateParser parser)
 		{
 			string lasttoken = "";
 			

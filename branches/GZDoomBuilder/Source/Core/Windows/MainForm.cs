@@ -20,24 +20,25 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
-using System.Windows.Forms;
-using CodeImp.DoomBuilder.Actions;
-using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Editing;
-using System.IO;
-using CodeImp.DoomBuilder.Map;
-using System.Reflection;
-using CodeImp.DoomBuilder.Plugins;
-using CodeImp.DoomBuilder.Controls;
-using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Properties;
-using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Data;
-using System.Runtime.InteropServices;
-using CodeImp.DoomBuilder.GZBuilder.Windows;
 using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+
+using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.GZBuilder.Windows;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Plugins;
+using CodeImp.DoomBuilder.Properties;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
@@ -322,6 +323,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Setup docker
 				if(General.Settings.DockersPosition == 0)
 				{
+					modestoolbar.Dock = DockStyle.Right; //mxd
 					dockersspace.Dock = DockStyle.Left;
 					dockerspanel.Setup(false);
 					dockerspanel.Location = dockersspace.Location;
@@ -329,6 +331,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				else
 				{
+					modestoolbar.Dock = DockStyle.Left; //mxd
 					dockersspace.Dock = DockStyle.Right;
 					dockerspanel.Setup(true);
 					dockerspanel.Location = new Point(dockersspace.Right - General.Settings.DockersWidth, dockersspace.Top);
@@ -1649,10 +1652,36 @@ namespace CodeImp.DoomBuilder.Windows
 				case ToolbarSection.Views: toolbar.Items.Insert(toolbar.Items.IndexOf(seperatorviews), button); break;
 				case ToolbarSection.Geometry: toolbar.Items.Insert(toolbar.Items.IndexOf(seperatorgeometry), button); break;
 				case ToolbarSection.Testing: toolbar.Items.Insert(toolbar.Items.IndexOf(seperatortesting), button); break;
-				case ToolbarSection.Modes: toolbar.Items.Insert(toolbar.Items.IndexOf(seperatormodes), button); break; //mxd
-				case ToolbarSection.Custom: toolbar.Items.Add(button); break;
+				case ToolbarSection.Modes: modestoolbar.Items.Add(button); break; //mxd
+				case ToolbarSection.Custom: modecontrolsloolbar.Items.Add(button); break; //mxd
 			}
 			
+			UpdateToolbar();
+		}
+
+		//mxd
+		public void AddModesButton(ToolStripItem button, string group) {
+			// Fix tags to full action names
+			ToolStripItemCollection items = new ToolStripItemCollection(toolbar, new ToolStripItem[0]);
+			items.Add(button);
+			RenameTagsToFullActions(items, General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly()));
+
+			// Add to the list so we can update it as needed
+			PluginToolbarButton buttoninfo = new PluginToolbarButton();
+			buttoninfo.button = button;
+			buttoninfo.section = ToolbarSection.Modes;
+			pluginbuttons.Add(buttoninfo);
+
+			button.VisibleChanged += buttonvisiblechangedhandler;
+
+			//find the separator we need
+			for(int i = 0; i < modestoolbar.Items.Count; i++) {
+				if(modestoolbar.Items[i] is ToolStripSeparator && modestoolbar.Items[i].Text == group) {
+					modestoolbar.Items.Insert(i + 1, button);
+					break;
+				}
+			}
+
 			UpdateToolbar();
 		}
 
@@ -1676,8 +1705,19 @@ namespace CodeImp.DoomBuilder.Windows
 				// Unbind visible changed event
 				if(!(button is ToolStripSeparator)) button.VisibleChanged -= buttonvisiblechangedhandler;
 
-				// Remove button from toolbar
-				toolbar.Items.Remove(button);
+				//mxd. Remove button from toolbars
+				switch (buttoninfo.section) {
+					case ToolbarSection.Modes:
+						modestoolbar.Items.Remove(button);
+						break;
+					case ToolbarSection.Custom:
+						modecontrolsloolbar.Items.Remove(button);
+						break;
+					default:
+						toolbar.Items.Remove(button);
+						break;
+				}
+				
 				UpdateSeparators();
 			}
 		}
@@ -1697,6 +1737,10 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			UpdateToolStripSeparators(toolbar.Items, false);
 			UpdateToolStripSeparators(menumode.DropDownItems, true);
+
+			//mxd
+			UpdateToolStripSeparators(modestoolbar.Items, false);
+			UpdateToolStripSeparators(modecontrolsloolbar.Items, false);
 		}
 		
 		// This updates the seperators
@@ -1767,6 +1811,17 @@ namespace CodeImp.DoomBuilder.Windows
 			// Enable/disable all edit mode items
 			foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
 
+			//mxd. Show/hide additional panels
+			modestoolbar.Visible = (General.Map != null);
+			modecontrolsloolbar.Visible = (General.Map != null && modecontrolsloolbar.Items.Count > 0);
+			//mxd. modestoolbar index in Controls gets messed up when it's invisible. This fixes it. TODO: find why this happens in the first place
+			if(modestoolbar.Visible) {
+				int toolbarpos = this.Controls.IndexOf(toolbar);
+				if(this.Controls.IndexOf(modestoolbar) > toolbarpos) {
+					this.Controls.SetChildIndex(modestoolbar, toolbarpos);
+				}
+			}
+
 			// Update plugin buttons
 			foreach(PluginToolbarButton p in pluginbuttons)
 			{
@@ -1816,7 +1871,7 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(ToolStripItem i in editmodeitems)
 			{
 				// Remove it and restart
-				toolbar.Items.Remove(i);
+				modestoolbar.Items.Remove(i); //mxd
 				menumode.DropDownItems.Remove(i);
 				i.Dispose();
 			}
@@ -1827,21 +1882,19 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 		
 		// This adds an editing mode seperator on the toolbar and menu
-		internal void AddEditModeSeperator()
+		internal void AddEditModeSeperator(string group)
 		{
-			ToolStripSeparator item;
-			int index;
-			
 			// Create a button
-			index = toolbar.Items.IndexOf(seperatormodes);
-			item = new ToolStripSeparator();
+			ToolStripSeparator item = new ToolStripSeparator();
+			item.Text = group; //mxd
 			item.Margin = new Padding(6, 0, 6, 0);
-			toolbar.Items.Insert(index, item);
+			modestoolbar.Items.Add(item); //mxd
 			editmodeitems.Add(item);
 			
 			// Create menu item
-			index = menumode.DropDownItems.Count;
+			int index = menumode.DropDownItems.Count;
 			item = new ToolStripSeparator();
+			item.Text = group; //mxd
 			item.Margin = new Padding(0, 3, 0, 3);
 			menumode.DropDownItems.Insert(index, item);
 			editmodeitems.Add(item);
@@ -1852,21 +1905,17 @@ namespace CodeImp.DoomBuilder.Windows
 		// This adds an editing mode button to the toolbar and edit menu
 		internal void AddEditModeButton(EditModeInfo modeinfo)
 		{
-			ToolStripItem item;
-			int index;
-
 			string controlname = modeinfo.ButtonDesc.Replace("&", "&&");
 			
 			// Create a button
-			index = toolbar.Items.IndexOf(seperatormodes);
-			item = new ToolStripButton(modeinfo.ButtonDesc, modeinfo.ButtonImage, EditModeButtonHandler);
+			ToolStripItem item = new ToolStripButton(modeinfo.ButtonDesc, modeinfo.ButtonImage, EditModeButtonHandler);
 			item.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			item.Tag = modeinfo;
-			toolbar.Items.Insert(index, item);
+			modestoolbar.Items.Add(item); //mxd
 			editmodeitems.Add(item);
 			
 			// Create menu item
-			index = menumode.DropDownItems.Count;
+			int index = menumode.DropDownItems.Count;
 			item = new ToolStripMenuItem(controlname, modeinfo.ButtonImage, EditModeButtonHandler);
 			item.Tag = modeinfo;
 			menumode.DropDownItems.Insert(index, item);
@@ -1880,10 +1929,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// This handles edit mode button clicks
 		private void EditModeButtonHandler(object sender, EventArgs e)
 		{
-			EditModeInfo modeinfo;
-			
 			this.Update();
-			modeinfo = (EditModeInfo)((sender as ToolStripItem).Tag);
+			EditModeInfo modeinfo = (EditModeInfo)((sender as ToolStripItem).Tag);
 			General.Actions.InvokeAction(modeinfo.SwitchAction.GetFullActionName(modeinfo.Plugin.Assembly));
 			this.Update();
 		}
@@ -2060,9 +2107,6 @@ namespace CodeImp.DoomBuilder.Windows
 				case MenuSection.ViewViews: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(seperatorviewviews), menu); break;
 				case MenuSection.ViewZoom: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(seperatorviewzoom), menu); break;
 				case MenuSection.ViewScriptEdit: menuview.DropDownItems.Add(menu); break;
-				//mxd
-				case MenuSection.ModeDrawModes: menumode.DropDownItems.Insert(menumode.DropDownItems.IndexOf(separatorDrawModes) + 1, menu); break;
-
 				case MenuSection.PrefabsInsert: menuprefabs.DropDownItems.Insert(menuprefabs.DropDownItems.IndexOf(seperatorprefabsinsert), menu); break;
 				case MenuSection.PrefabsCreate: menuprefabs.DropDownItems.Add(menu); break;
 				case MenuSection.ToolsResources: menutools.DropDownItems.Insert(menutools.DropDownItems.IndexOf(seperatortoolsresources), menu); break;
@@ -2075,6 +2119,24 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			ApplyShortcutKeys(items);
 		}
+
+		//mxd
+		public void AddModesMenu(ToolStripMenuItem menu, string group) {
+			// Fix tags to full action names
+			ToolStripItemCollection items = new ToolStripItemCollection(this.menumain, new ToolStripItem[0]);
+			items.Add(menu);
+			RenameTagsToFullActions(items, General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly()));
+			
+			//find the separator we need
+			for(int i = 0; i < menumode.DropDownItems.Count; i++) {
+				if(menumode.DropDownItems[i] is ToolStripSeparator && menumode.DropDownItems[i].Text == group) {
+					menumode.DropDownItems.Insert(i + 1, menu);
+					break;
+				}
+			}
+
+			ApplyShortcutKeys(items);
+		}
 		
 		// Removes a menu
 		public void RemoveMenu(ToolStripMenuItem menu)
@@ -2083,6 +2145,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// so try removing from all menus and the top strip
 			menufile.DropDownItems.Remove(menu);
 			menuedit.DropDownItems.Remove(menu);
+			menumode.DropDownItems.Remove(menu); //mxd
 			menuview.DropDownItems.Remove(menu);
 			menuprefabs.DropDownItems.Remove(menu);
 			menutools.DropDownItems.Remove(menu);
@@ -2361,6 +2424,7 @@ namespace CodeImp.DoomBuilder.Windows
 			itemautomerge.Enabled = (General.Map != null);
 			itemautoclearsidetextures.Enabled = (General.Map != null); //mxd
 			itemautoclearsidetextures.Checked = General.Settings.AutoClearSidedefTextures; //mxd
+			itemdosnaptogrid.Enabled = (General.Map != null); //mxd
 			itemgridsetup.Enabled = (General.Map != null);
 			itemgridinc.Enabled = (General.Map != null);
 			itemgriddec.Enabled = (General.Map != null);
@@ -2550,7 +2614,7 @@ namespace CodeImp.DoomBuilder.Windows
 			const string fileName = "GZDB Actions Reference.html";
 
 			Actions.Action[] actions = General.Actions.GetAllActions();
-			Dictionary<string, List<Actions.Action>> sortedActions = new Dictionary<string, List<Actions.Action>>();
+			Dictionary<string, List<Actions.Action>> sortedActions = new Dictionary<string, List<Actions.Action>>(StringComparer.Ordinal);
 
 			foreach(Actions.Action action in actions) {
 				if(!sortedActions.ContainsKey(action.Category))
@@ -2593,7 +2657,7 @@ namespace CodeImp.DoomBuilder.Windows
 				html.AppendLine(columnLabels);
 				counter++;
 
-				Dictionary<string, Actions.Action> actionsByTitle = new Dictionary<string, Actions.Action>();
+				Dictionary<string, Actions.Action> actionsByTitle = new Dictionary<string, Actions.Action>(StringComparer.Ordinal);
 				List<string> actionTitles = new List<string>();
 
 				foreach(Actions.Action action in category.Value) {
@@ -2890,12 +2954,14 @@ namespace CodeImp.DoomBuilder.Windows
 				else HideInfo();
 			}
 
+			dockerspanel.Height = dockersspace.Height; //mxd
 			FocusDisplay();
 		}
 
 		// Mouse released on info panel toggle button
 		private void buttontoggleinfo_MouseUp(object sender, MouseEventArgs e)
 		{
+			dockerspanel.Height = dockersspace.Height; //mxd
 			FocusDisplay();
 		}
 		

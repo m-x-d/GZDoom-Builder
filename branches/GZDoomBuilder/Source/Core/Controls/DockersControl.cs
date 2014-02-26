@@ -317,7 +317,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// This sorts tabs by their full name
 		public void SortTabs(IEnumerable<string> fullnames)
 		{
-			Dictionary<string, TabPage> pages = new Dictionary<string, TabPage>(tabs.TabPages.Count);
+			Dictionary<string, TabPage> pages = new Dictionary<string, TabPage>(tabs.TabPages.Count, StringComparer.Ordinal);
 			foreach(TabPage p in tabs.TabPages) pages.Add((p.Tag as Docker).FullName, p);
 			tabs.TabPages.Clear();
 			

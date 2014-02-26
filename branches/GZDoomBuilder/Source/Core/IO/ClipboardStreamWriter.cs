@@ -215,7 +215,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		private void AddCustomFields(UniFields elementFields, string elementname, BinaryWriter writer) {
-			Dictionary<string, UniValue> fields = new Dictionary<string, UniValue>();
+			Dictionary<string, UniValue> fields = new Dictionary<string, UniValue>(StringComparer.Ordinal);
 
 			foreach(KeyValuePair<string, UniValue> f in elementFields) {
 				if(config.SettingExists("managedfields." + elementname + "." + f.Key)) continue;

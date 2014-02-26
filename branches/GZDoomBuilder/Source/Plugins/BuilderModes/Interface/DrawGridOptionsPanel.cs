@@ -29,8 +29,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		private void ValueChanged(object sender, EventArgs e) {
-			if(blockEvents) return;
-			if(OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
+			if(!blockEvents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 
 		private void gridlock_CheckedChanged(object sender, EventArgs e) {

@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Geometry;
 using System.IO;
@@ -52,7 +53,7 @@ namespace CodeImp.DoomBuilder.IO
 			// Initialize
 			//this.stream = stream;
 			this.writer = new BinaryWriter(stream);
-			this.stringstable = new Dictionary<string, ushort>();
+			this.stringstable = new Dictionary<string, ushort>(StringComparer.Ordinal);
 		}
 
 		#endregion

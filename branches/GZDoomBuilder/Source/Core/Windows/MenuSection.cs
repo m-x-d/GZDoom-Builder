@@ -35,7 +35,6 @@ namespace CodeImp.DoomBuilder.Windows
 		ViewViews,
 		ViewZoom,
 		ViewScriptEdit,
-		ModeDrawModes, //mxd
 		PrefabsInsert,
 		PrefabsCreate,
 		ToolsResources,

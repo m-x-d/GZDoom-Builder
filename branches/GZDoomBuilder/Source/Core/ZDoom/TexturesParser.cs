@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -59,9 +60,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 			specialtokens = ",{}\n";
 
 			// Initialize
-			textures = new Dictionary<string, TextureStructure>();
-			flats = new Dictionary<string, TextureStructure>();
-			sprites = new Dictionary<string, TextureStructure>();
+			textures = new Dictionary<string, TextureStructure>(StringComparer.Ordinal);
+			flats = new Dictionary<string, TextureStructure>(StringComparer.Ordinal);
+			sprites = new Dictionary<string, TextureStructure>(StringComparer.Ordinal);
 		}
 		
 		#endregion

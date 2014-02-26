@@ -400,7 +400,7 @@ namespace CodeImp.DoomBuilder
 			mainwindow.DisplayStatus(StatusType.Busy, "Loading script configurations...");
 			
 			// Make collection
-			scriptconfigs = new Dictionary<string, ScriptConfiguration>();
+			scriptconfigs = new Dictionary<string, ScriptConfiguration>(StringComparer.Ordinal);
 			
 			// Go for all cfg files in the scripts directory
 			filenames = Directory.GetFiles(scriptspath, "*.cfg", SearchOption.TopDirectoryOnly);
@@ -447,7 +447,7 @@ namespace CodeImp.DoomBuilder
 		private static void LoadAllCompilerConfigurations()
 		{
 			Configuration cfg;
-			Dictionary<string, CompilerInfo> addedcompilers = new Dictionary<string,CompilerInfo>();
+			Dictionary<string, CompilerInfo> addedcompilers = new Dictionary<string, CompilerInfo>(StringComparer.Ordinal);
 			IDictionary compilerslist;
 			string[] filenames;
 

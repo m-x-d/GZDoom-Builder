@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.IO
 						foreach(string elementname in elements) {
 							IDictionary dic = config.ReadSetting("uifields." + elementname, new Hashtable());
 
-							Dictionary<string, UniversalType> values = new Dictionary<string, UniversalType>();
+							Dictionary<string, UniversalType> values = new Dictionary<string, UniversalType>(StringComparer.Ordinal);
 							foreach(DictionaryEntry de in dic) {
 								values.Add(de.Key.ToString(), (UniversalType)de.Value);
 							}

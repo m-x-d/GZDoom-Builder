@@ -199,7 +199,7 @@ namespace CodeImp.DoomBuilder.Config
 			}
 			
 			// Make list of edit modes
-			this.editmodes = new Dictionary<string, bool>();
+			this.editmodes = new Dictionary<string, bool>(StringComparer.Ordinal);
 			IDictionary modes = General.Settings.ReadSetting("configurations." + settingskey + ".editmodes", new Hashtable());
 			foreach(DictionaryEntry de in modes)
 			{

@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.IO
 			// Initialize
 			this.wad = wad;
 			this.manager = manager;
-			this.uifields = new Dictionary<string, Dictionary<string, UniversalType>>(); //mxd
+			this.uifields = new Dictionary<string, Dictionary<string, UniversalType>>(StringComparer.Ordinal); //mxd
 		}
 		
 		#endregion

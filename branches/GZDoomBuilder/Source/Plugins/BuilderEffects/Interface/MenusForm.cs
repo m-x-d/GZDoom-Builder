@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.BuilderEffects
 {
 	public partial class MenusForm : Form
 	{
-		// Menus list
-		private ToolStripItem[] menus;
-		
 		public MenusForm() {
 			InitializeComponent();
-
-			// List all menus
-			menus = new ToolStripItem[menuStrip.Items.Count];
-			for(int i = 0; i < menuStrip.Items.Count; i++) menus[i] = menuStrip.Items[i];
 		}
 
 		// This invokes an action from control event
@@ -24,15 +18,19 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		// This registers with the core
 		public void Register() {
 			// Add the menus to the core
-			foreach(ToolStripMenuItem m in menus)
-				General.Interface.AddMenu(m);
+			General.Interface.AddModesMenu(jitterItem, "002_modify");
+			General.Interface.AddModesButton(jitterButton, "002_modify");
+			General.Interface.AddMenu(importStripMenuItem, MenuSection.FileNewOpenClose);
+			General.Interface.AddMenu(exportStripMenuItem, MenuSection.FileNewOpenClose);
 		}
 
 		// This unregisters from the core
 		public void Unregister() {
 			// Remove the menus from the core
-			foreach(ToolStripMenuItem m in menus)
-				General.Interface.RemoveMenu(m);
+			General.Interface.RemoveMenu(jitterItem);
+			General.Interface.RemoveButton(jitterButton);
+			General.Interface.RemoveMenu(importStripMenuItem);
+			General.Interface.RemoveMenu(exportStripMenuItem);
 		}
 	}
 }

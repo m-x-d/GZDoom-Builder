@@ -33,10 +33,10 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 	{
 		#region ================== Variables
 		
-		Dictionary<string, CommentInfo> v_comments = new Dictionary<string, CommentInfo>();
-		Dictionary<string, CommentInfo> l_comments = new Dictionary<string, CommentInfo>();
-		Dictionary<string, CommentInfo> s_comments = new Dictionary<string, CommentInfo>();
-		Dictionary<string, CommentInfo> t_comments = new Dictionary<string, CommentInfo>();
+		Dictionary<string, CommentInfo> v_comments = new Dictionary<string, CommentInfo>(StringComparer.Ordinal);
+		Dictionary<string, CommentInfo> l_comments = new Dictionary<string, CommentInfo>(StringComparer.Ordinal);
+		Dictionary<string, CommentInfo> s_comments = new Dictionary<string, CommentInfo>(StringComparer.Ordinal);
+		Dictionary<string, CommentInfo> t_comments = new Dictionary<string, CommentInfo>(StringComparer.Ordinal);
 		bool preventupdate;
 		
 		#endregion
@@ -160,12 +160,10 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		// This finds all comments and updates the list
 		public void UpdateList()
 		{
-			//bool firstitem = (grid.Rows.Count == 0);
-
 			if(!preventupdate)
 			{
 				// Update vertices
-				Dictionary<string, CommentInfo> newcomments = new Dictionary<string, CommentInfo>();
+				Dictionary<string, CommentInfo> newcomments = new Dictionary<string, CommentInfo>(StringComparer.Ordinal);
 				if(!filtermode.Checked || (General.Editing.Mode.GetType().Name == "VerticesMode"))
 				{
 					foreach(Vertex v in General.Map.Map.Vertices) AddComments(v, newcomments);

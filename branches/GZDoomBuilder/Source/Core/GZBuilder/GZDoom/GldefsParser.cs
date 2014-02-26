@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
 using CodeImp.DoomBuilder.ZDoom;
@@ -26,13 +27,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 			public const string FLICKER2 = "flickerlight2";
 			public const string SECTOR = "sectorlight";
 
-			public static Dictionary<string, DynamicLightType> GLDEFS_TO_GZDOOM_LIGHT_TYPE = new Dictionary<string, DynamicLightType>() { { POINT, DynamicLightType.NORMAL }, { PULSE, DynamicLightType.PULSE }, { FLICKER, DynamicLightType.FLICKER }, { FLICKER2, DynamicLightType.RANDOM }, { SECTOR, DynamicLightType.SECTOR } };
+			public static Dictionary<string, DynamicLightType> GLDEFS_TO_GZDOOM_LIGHT_TYPE = new Dictionary<string, DynamicLightType>(StringComparer.Ordinal) { { POINT, DynamicLightType.NORMAL }, { PULSE, DynamicLightType.PULSE }, { FLICKER, DynamicLightType.FLICKER }, { FLICKER2, DynamicLightType.RANDOM }, { SECTOR, DynamicLightType.SECTOR } };
 		}
 
 		public GldefsParser() {
 			parsedLumps = new List<string>();
-			lightsByName = new Dictionary<string, DynamicLightData>(); //LightName, Light params
-			objects = new Dictionary<string, string>(); //ClassName, LightName
+			lightsByName = new Dictionary<string, DynamicLightData>(StringComparer.Ordinal); //LightName, Light params
+			objects = new Dictionary<string, string>(StringComparer.Ordinal); //ClassName, LightName
 		}
 
 		public override bool Parse(Stream stream, string sourcefilename) {

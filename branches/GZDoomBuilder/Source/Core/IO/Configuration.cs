@@ -182,7 +182,7 @@ namespace CodeImp.DoomBuilder.IO
 		private IDictionary root;
 
 		//mxd. Cache
-		private static Dictionary<string, IDictionary> cfgcache = new Dictionary<string, IDictionary>();
+		private static Dictionary<string, IDictionary> cfgcache = new Dictionary<string, IDictionary>(StringComparer.Ordinal);
 		
 		#endregion
 		

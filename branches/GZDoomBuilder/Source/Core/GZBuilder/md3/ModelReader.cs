@@ -243,9 +243,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				List<int> polyIndecesList = new List<int>();
 				List<WorldVertex> vertList = new List<WorldVertex>();
 
-				Dictionary<string, List<List<int>>> polyIndecesListsPerTexture = new Dictionary<string, List<List<int>>>();
-				Dictionary<string, List<WorldVertex>> vertListsPerTexture = new Dictionary<string, List<WorldVertex>>();
-				Dictionary<string, List<int>> vertexOffsets = new Dictionary<string, List<int>>();
+				Dictionary<string, List<List<int>>> polyIndecesListsPerTexture = new Dictionary<string, List<List<int>>>(StringComparer.Ordinal);
+				Dictionary<string, List<WorldVertex>> vertListsPerTexture = new Dictionary<string, List<WorldVertex>>(StringComparer.Ordinal);
+				Dictionary<string, List<int>> vertexOffsets = new Dictionary<string, List<int>>(StringComparer.Ordinal);
 
 				string error;
 				for (int c = 0; c < numSurfaces; c++) {
