@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using CodeImp.DoomBuilder.Config;
@@ -76,9 +77,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		internal ActorStructure(DecorateParser parser)
 		{
 			// Initialize
-			flags = new Dictionary<string, bool>();
-			props = new Dictionary<string, List<string>>();
-			states = new Dictionary<string, StateStructure>();
+			flags = new Dictionary<string, bool>(StringComparer.Ordinal);
+			props = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+			states = new Dictionary<string, StateStructure>(StringComparer.Ordinal);
 			userVars = new List<string>();//mxd
 			bool done = false; //mxd
 			
@@ -225,7 +226,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 								else if (statetoken == ":") {
 									if (!string.IsNullOrEmpty(previoustoken)) {
 										// Parse actor state
-										StateStructure st = new StateStructure(this, parser, previoustoken);
+										StateStructure st = new StateStructure(this, parser);
 										if (parser.HasError)
 											return;
 										states[previoustoken.ToLowerInvariant()] = st;

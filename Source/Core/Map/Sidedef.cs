@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.longtexnamehigh = MapSet.EmptyLongName;
 			this.longtexnamemid = MapSet.EmptyLongName;
 			this.longtexnamelow = MapSet.EmptyLongName;
-			this.flags = new Dictionary<string, bool>(); //mxd
+			this.flags = new Dictionary<string, bool>(StringComparer.Ordinal); //mxd
 			
 			// Attach linedef
 			this.linedef = l;
@@ -180,7 +180,7 @@ namespace CodeImp.DoomBuilder.Map
 				int c;
 				s.rInt(out c);
 
-				flags = new Dictionary<string, bool>(c);
+				flags = new Dictionary<string, bool>(c, StringComparer.Ordinal);
 				for(int i = 0; i < c; i++) {
 					string t;
 					s.rString(out t);
@@ -513,7 +513,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		// This updates all properties
 		public void Update(int offsetx, int offsety, string thigh, string tmid, string tlow) {
-			Update(offsetx, offsety, thigh, tmid, tlow, new Dictionary<string, bool>());
+			Update(offsetx, offsety, thigh, tmid, tlow, new Dictionary<string, bool>(StringComparer.Ordinal));
 		}
 
 		//mxd. This updates all properties (UDMF version)

@@ -34,8 +34,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			radiusValue = (int)radius.Value;
 			subdivsValue = (int)subdivs.Value;
 
-			if(blockEvents) return;
-			if(OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
+			if(!blockEvents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 
 		private void reset_Click(object sender, EventArgs e) {

@@ -97,11 +97,10 @@ namespace CodeImp.DoomBuilder.Config
 		internal ScriptConfiguration()
 		{
 			// Initialize
-			//this.cfg = new Configuration();
-			this.keywords = new Dictionary<string, string>();
+			this.keywords = new Dictionary<string, string>(StringComparer.Ordinal);
 			this.constants = new List<string>();
-			this.lowerkeywords = new Dictionary<string, string>();
-			this.lowerconstants = new Dictionary<string, string>();
+			this.lowerkeywords = new Dictionary<string, string>(StringComparer.Ordinal);
+			this.lowerconstants = new Dictionary<string, string>(StringComparer.Ordinal);
 
 			// Settings
 			lexer = 1;
@@ -117,28 +116,23 @@ namespace CodeImp.DoomBuilder.Config
 			terminator = "";
 			functionregex = "";
 			description = "Plain text";
-			extensions = new string[] { "txt" };
+			extensions = new[] { "txt" };
 		}
 		
 		// Constructor
 		internal ScriptConfiguration(Configuration cfg)
 		{
-			string compilername;
-			string extensionsstring;
-			IDictionary dic;
-			
 			// Initialize
-			//this.cfg = cfg;
-			this.keywords = new Dictionary<string,string>();
+			this.keywords = new Dictionary<string, string>(StringComparer.Ordinal);
 			this.constants = new List<string>();
-			this.lowerkeywords = new Dictionary<string, string>();
-			this.lowerconstants = new Dictionary<string, string>();
+			this.lowerkeywords = new Dictionary<string, string>(StringComparer.Ordinal);
+			this.lowerconstants = new Dictionary<string, string>(StringComparer.Ordinal);
 			
 			// Read settings
 			description = cfg.ReadSetting("description", "Untitled script");
 			codepage = cfg.ReadSetting("codepage", 0);
-			extensionsstring = cfg.ReadSetting("extensions", "");
-			compilername = cfg.ReadSetting("compiler", "");
+			string extensionsstring = cfg.ReadSetting("extensions", "");
+			string compilername = cfg.ReadSetting("compiler", "");
 			parameters = cfg.ReadSetting("parameters", "");
 			resultlump = cfg.ReadSetting("resultlump", "");
 			casesensitive = cfg.ReadSetting("casesensitive", true);
@@ -156,7 +150,7 @@ namespace CodeImp.DoomBuilder.Config
 			for(int i = 0; i < extensions.Length; i++) extensions[i] = extensions[i].Trim();
 			
 			// Load keywords
-			dic = cfg.ReadSetting("keywords", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("keywords", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				keywords.Add(de.Key.ToString(), de.Value.ToString());

@@ -65,7 +65,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ToolStripComboBox BrightnessGradientMode { get { return brightnessGradientMode; } } //mxd
 		public ToolStripButton MarqueSelectTouching { get { return buttonMarqueSelectTouching; } } //mxd
 		public ToolStripButton AlignThingsToWall { get { return buttonAlignThingsToWall; } } //mxd
-		public ToolStripButton TextureOffsetLock { get { return buttonTextureOffsetLock; } }
+		public ToolStripButton TextureOffsetLock { get { return buttonTextureOffsetLock; } } //mxd
+		public ToolStripButton MakeDoor { get { return buttonMakeDoor; } } //mxd
 
 		#endregion
 

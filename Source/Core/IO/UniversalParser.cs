@@ -833,13 +833,13 @@ namespace CodeImp.DoomBuilder.IO
 			// Parse the data to the root structure
 			int pos = 0;
 			int line = 1;
-			matches = new Dictionary<string, UniversalEntry>(); //mxd
+			matches = new Dictionary<string, UniversalEntry>(StringComparer.Ordinal); //mxd
 			key = new StringBuilder(16); //mxd
 			val = new StringBuilder(16); //mxd
 			root = InputStructure(ref data, ref pos, ref line, true);
 			
 			// Return true when done, false when errors occurred
-			if(cpErrorResult == 0) return true; else return false;
+			return (cpErrorResult == 0);
 		}
 		
 		#endregion

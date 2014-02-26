@@ -18,8 +18,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 	[EditMode(DisplayName = "Bridge Mode",
 			  SwitchAction = "bridgemode",
 			  ButtonImage = "BridgeMode.png",
-			  ButtonOrder = 51,
-			  ButtonGroup = "002_tools",
+			  ButtonOrder = 2,
+			  ButtonGroup = "002_modify",
 			  AllowCopyPaste = false,
 			  Volatile = true,
 			  Optional = false)]

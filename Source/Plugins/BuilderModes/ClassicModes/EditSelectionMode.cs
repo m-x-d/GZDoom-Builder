@@ -36,8 +36,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	[EditMode(DisplayName = "Edit Selection Mode",
 			  SwitchAction = "editselectionmode",
 			  ButtonImage = "Selection3.png",
-			  ButtonOrder = 50,
-			  ButtonGroup = "002_tools",
+			  ButtonOrder = 1,
+			  ButtonGroup = "002_modify",
 			  Volatile = true,
 			  UseByDefault = true,
 			  Optional = false)]

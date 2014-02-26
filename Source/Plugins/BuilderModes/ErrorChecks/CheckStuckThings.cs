@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
@@ -236,7 +237,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Checks if the flags of two things overlap (i.e. if they show up at the same time)
 		private bool FlagsOverlap(Thing t1, Thing t2) {
-			Dictionary<string, List<ThingFlagsCompare>> groups = new Dictionary<string, List<ThingFlagsCompare>>();
+			var groups = new Dictionary<string, List<ThingFlagsCompare>>(StringComparer.Ordinal);
 			int overlappinggroups = 0;
 
 			// Create a summary which flags belong to which groups

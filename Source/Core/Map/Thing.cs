@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Map
 			// Initialize
 			this.map = map;
 			this.listindex = listindex;
-			this.flags = new Dictionary<string, bool>();
+			this.flags = new Dictionary<string, bool>(StringComparer.Ordinal);
 			this.args = new int[NUM_ARGS];
 			this.scale = 1.0f; //mxd
 			
@@ -167,7 +167,7 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				int c; s.rInt(out c);
 
-				flags = new Dictionary<string, bool>(c);
+				flags = new Dictionary<string, bool>(c, StringComparer.Ordinal);
 				for(int i = 0; i < c; i++)
 				{
 					string t; s.rString(out t);

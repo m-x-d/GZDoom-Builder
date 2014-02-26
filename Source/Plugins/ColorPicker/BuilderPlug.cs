@@ -26,16 +26,25 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			base.OnInitialize();
 			me = this;
 
+			// Load menus form
+			toolsform = new ToolsForm();
+
 			General.Actions.BindMethods(this);
 		}
 
 		public override void OnMapOpenEnd() {
-			if (toolsform == null)
-				toolsform = new ToolsForm();
+			base.OnMapOpenEnd();
+			toolsform.Register();
 		}
 
 		public override void OnMapNewEnd() {
-			OnMapOpenEnd();
+			base.OnMapNewEnd();
+			toolsform.Register();
+		}
+
+		public override void OnMapCloseEnd() {
+			base.OnMapCloseEnd();
+			toolsform.Unregister();
 		}
 
 		public override void Dispose() {
@@ -45,8 +54,11 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			if (form != null) form.Close();
 			form = null;
 
-			if (toolsform != null) toolsform.Dispose();
-			toolsform = null;
+			if (toolsform != null) {
+				toolsform.Unregister();
+				toolsform.Dispose();
+				toolsform = null;
+			}
 		}
 
 		[BeginAction("togglelightpannel")]

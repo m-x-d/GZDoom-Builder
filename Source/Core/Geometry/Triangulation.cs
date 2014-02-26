@@ -472,7 +472,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				todo.Remove(found);
 
 				// Get cut start and end
-				SplitOuterWithInner(foundstart, p, found.Value);
+				SplitOuterWithInner(foundstart, p);
 			}
 			
 			// Remove the children, they should be merged in the polygon by now
@@ -497,7 +497,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		// This finds the cut coordinates and splits the other poly with inner vertices
-		private void SplitOuterWithInner(LinkedListNode<EarClipVertex> start, EarClipPolygon p, EarClipPolygon inner)
+		private void SplitOuterWithInner(LinkedListNode<EarClipVertex> start, EarClipPolygon p)
 		{
 			LinkedListNode<EarClipVertex> v1, v2;
 			LinkedListNode<EarClipVertex> insertbefore = null;

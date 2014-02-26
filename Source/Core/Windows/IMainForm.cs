@@ -128,6 +128,17 @@ namespace CodeImp.DoomBuilder.Windows
 		/// <param name="menu">The menu to add to Doom Builder.</param>
 		/// <param name="section">The location where to insert the menu or item.</param>
 		void AddMenu(ToolStripMenuItem menu, MenuSection section);
+
+		/// <summary>
+		/// This adds a menu or menu item to the speicfied group inside of "Modes" menu strip.
+		/// <para>
+		/// NOTE: When the Tag property of menu items is set with a string, this changes the
+		/// tag to a fully qualified action name by prefixing it with the assembly name.
+		/// </para>
+		/// </summary>
+		/// <param name="menu">The menu to add to Doom Builder.</param>
+		/// <param name="group">The group in the "Modes" menu in which to insert the menu.</param>
+		void AddModesMenu(ToolStripMenuItem menu, string group);
 		
 		/// <summary>
 		/// This removes a menu from the Doom Builder menu strip.
@@ -152,6 +163,11 @@ namespace CodeImp.DoomBuilder.Windows
 		/// This adds a custom button to a specific section in the toolbar. Note that the visibility of the button will be controlled by the user's preferences of that section!
 		/// </summary>
 		void AddButton(ToolStripItem button, ToolbarSection section);
+
+		/// <summary>
+		/// This adds a custom button to the Modes section in the toolbar. Note that the visibility of the button will be controlled by the user's preferences of that section!
+		/// </summary>
+		void AddModesButton(ToolStripItem toolbarButton, string group);
 
 		/// <summary>
 		/// This removes a custom button from the toolbar.

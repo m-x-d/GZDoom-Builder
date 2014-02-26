@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Data;
@@ -13,7 +14,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		public override bool Parse(Stream stream, string sourcefilename) {
 			base.Parse(stream, sourcefilename);
-			entries = new Dictionary<string, ModelData>();
+			entries = new Dictionary<string, ModelData>(StringComparer.Ordinal);
 			string prevToken = string.Empty;
 
 			List<string> spriteNames = new List<string>();

@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.ceiltexname = "-";
 			this.longfloortexname = MapSet.EmptyLongName;
 			this.longceiltexname = MapSet.EmptyLongName;
-			this.flags = new Dictionary<string, bool>(); //mxd
+			this.flags = new Dictionary<string, bool>(StringComparer.Ordinal); //mxd
 			this.updateneeded = true;
 			this.triangulationneeded = true;
 			this.surfaceentries = new SurfaceEntryCollection();
@@ -211,7 +211,7 @@ namespace CodeImp.DoomBuilder.Map
 			} else {
 				int c; s.rInt(out c);
 
-				flags = new Dictionary<string, bool>(c);
+				flags = new Dictionary<string, bool>(c, StringComparer.Ordinal);
 				for(int i = 0; i < c; i++) {
 					string t; s.rString(out t);
 					bool b; s.rBool(out b);
@@ -553,7 +553,7 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd. This updates all properties (Doom/Hexen version)
 		public void Update(int hfloor, int hceil, string tfloor, string tceil, int effect, int tag, int brightness) 
 		{
-			Update(hfloor, hceil, tfloor, tceil, effect, new Dictionary<string, bool>(), tag, brightness);
+			Update(hfloor, hceil, tfloor, tceil, effect, new Dictionary<string, bool>(StringComparer.Ordinal), tag, brightness);
 		}
 
 		//mxd. This updates all properties (UDMF version)

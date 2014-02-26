@@ -11,6 +11,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Draw Ellipse Mode",
 			  SwitchAction = "drawellipsemode",
+			  ButtonImage = "DrawEllipseMode.png", //mxd	
+			  ButtonOrder = int.MinValue + 4, //mxd
+			  ButtonGroup = "000_drawing", //mxd
 			  AllowCopyPaste = false,
 			  Volatile = true,
 			  Optional = false)]

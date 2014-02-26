@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
@@ -17,6 +18,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Draw Curve Mode",
 			  SwitchAction = "drawcurvemode",
+			  ButtonImage = "DrawCurveMode.png", //mxd	
+			  ButtonOrder = int.MinValue + 2, //mxd
+			  ButtonGroup = "000_drawing", //mxd
 			  AllowCopyPaste = false,
 			  Volatile = true,
 			  Optional = false)]
@@ -31,12 +35,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int minSegmentLength = 16;
 		private int maxSegmentLength = 4096; //just some arbitrary number
 
+		//interface
+		private Docker settingsdocker;
+		private DrawCurveOptionsPanel panel;
+
 		#endregion
 
 		#region ================== Constructor/Disposer
 
 		public DrawCurveMode() {
 			hintLabel = new HintLabel();
+
+			//Options docker
+			panel = new DrawCurveOptionsPanel(minSegmentLength, maxSegmentLength);
+			panel.OnValueChanged += OptionsPanelOnValueChanged;
+			settingsdocker = new Docker("drawcurve", "Draw Curve Settings", panel);
 		}
 
 		public override void Dispose() {
@@ -138,6 +151,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Events
 
+		public override void OnEngage() {
+			base.OnEngage();
+			General.Interface.AddDocker(settingsdocker);
+			General.Interface.SelectDocker(settingsdocker);
+
+			//setup settings panel
+			panel.SegmentLength = segmentLength;
+		}
+
 		public override void OnAccept() {
 			Cursor.Current = Cursors.AppStarting;
 
@@ -234,6 +256,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
 		}
 
+		public override void OnDisengage() {
+			General.Interface.RemoveDocker(settingsdocker);
+			base.OnDisengage();
+		}
+
+		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) {
+			segmentLength = panel.SegmentLength;
+			Update();
+		}
+
 		public override void OnHelp() {
 			General.ShowHelp("/gzdb/features/classic_modes/mode_drawcurve.html");
 		}
@@ -250,6 +282,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(segmentLength > maxSegmentLength)
 					segmentLength = maxSegmentLength;
+				panel.SegmentLength = segmentLength;
 				Update();
 			}
 		}
@@ -262,6 +295,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(segmentLength < minSegmentLength)
 					segmentLength = minSegmentLength;
+				panel.SegmentLength = segmentLength;
 				Update();
 			}
 		}

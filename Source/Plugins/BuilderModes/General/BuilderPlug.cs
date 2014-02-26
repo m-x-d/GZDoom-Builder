@@ -77,15 +77,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Docker undoredodocker;
 		private SectorDrawingOptionsPanel drawingOverridesPanel; //mxd
 		private Docker drawingOverridesDocker; //mxd
-
-		//mxd
-		private ToolStripMenuItem exportToObjMenuItem;
-		private ToolStripMenuItem snapModeMenuItem;
-		private ToolStripMenuItem drawLinesModeMenuItem;
-		private ToolStripMenuItem drawRectModeMenuItem;
-		private ToolStripMenuItem drawEllipseModeMenuItem;
-		private ToolStripMenuItem drawCurveModeMenuItem;
-		private ToolStripMenuItem drawGridModeMenuItem;
 		
 		// Settings
 		private int showvisualthings;			// 0 = none, 1 = sprite only, 2 = sprite caged
@@ -214,62 +205,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel = new UndoRedoPanel();
 			undoredodocker = new Docker("undoredo", "Undo / Redo", undoredopanel);
 			General.Interface.AddDocker(undoredodocker);
-			
-			//mxd. Export to .obj
-			exportToObjMenuItem = new ToolStripMenuItem("Export to .obj...");
-			exportToObjMenuItem.Tag = "exporttoobj";
-			exportToObjMenuItem.Click += InvokeTaggedAction;
-			exportToObjMenuItem.Enabled = false;
-			General.Interface.AddMenu(exportToObjMenuItem, MenuSection.FileNewOpenClose);
-
-			//mxd. add "Snap Vertices" menu button
-			snapModeMenuItem = new ToolStripMenuItem("Snap selected map elements to grid");
-			snapModeMenuItem.Tag = "snapvertstogrid";
-			snapModeMenuItem.Click += InvokeTaggedAction;
-			snapModeMenuItem.Image = Properties.Resources.SnapVerts;
-			snapModeMenuItem.Enabled = false;
-			General.Interface.AddMenu(snapModeMenuItem, MenuSection.EditGeometry);
-
-			//mxd. add draw modes buttons
-			//draw ellipse
-			drawEllipseModeMenuItem = new ToolStripMenuItem("Draw Ellipse");
-			drawEllipseModeMenuItem.Tag = "drawellipsemode";
-			drawEllipseModeMenuItem.Click += InvokeTaggedAction;
-			drawEllipseModeMenuItem.Image = Properties.Resources.DrawEllipseMode;
-			drawEllipseModeMenuItem.Enabled = false;
-			General.Interface.AddMenu(drawEllipseModeMenuItem, MenuSection.ModeDrawModes);
-
-			//draw grid
-			drawGridModeMenuItem = new ToolStripMenuItem("Draw Grid");
-			drawGridModeMenuItem.Tag = "drawgridmode";
-			drawGridModeMenuItem.Click += InvokeTaggedAction;
-			drawGridModeMenuItem.Image = Properties.Resources.DrawGridMode;
-			drawGridModeMenuItem.Enabled = false;
-			General.Interface.AddMenu(drawGridModeMenuItem, MenuSection.ModeDrawModes);
-
-			//draw rectangle
-			drawRectModeMenuItem = new ToolStripMenuItem("Draw Rectangle");
-			drawRectModeMenuItem.Tag = "drawrectanglemode";
-			drawRectModeMenuItem.Click += InvokeTaggedAction;
-			drawRectModeMenuItem.Image = Properties.Resources.DrawRectMode;
-			drawRectModeMenuItem.Enabled = false;
-			General.Interface.AddMenu(drawRectModeMenuItem, MenuSection.ModeDrawModes);
-
-			//draw curve 
-			drawCurveModeMenuItem = new ToolStripMenuItem("Draw Curve");
-			drawCurveModeMenuItem.Tag = "drawcurvemode";
-			drawCurveModeMenuItem.Click += InvokeTaggedAction;
-			drawCurveModeMenuItem.Image = Properties.Resources.DrawCurveMode;
-			drawCurveModeMenuItem.Enabled = false;
-			General.Interface.AddMenu(drawCurveModeMenuItem, MenuSection.ModeDrawModes);
-
-			//draw lines 
-			drawLinesModeMenuItem = new ToolStripMenuItem("Draw Lines");
-			drawLinesModeMenuItem.Tag = "drawlinesmode";
-			drawLinesModeMenuItem.Click += InvokeTaggedAction;
-			drawLinesModeMenuItem.Image = Properties.Resources.DrawLinesMode;
-			drawLinesModeMenuItem.Enabled = false;
-			General.Interface.AddMenu(drawLinesModeMenuItem, MenuSection.ModeDrawModes);
 
 			//mxd
 			General.Actions.BindMethods(this);
@@ -283,15 +218,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Clean up
 				General.Interface.RemoveDocker(undoredodocker);
-
-				//mxd
-				General.Interface.RemoveMenu(exportToObjMenuItem);
-				General.Interface.RemoveMenu(snapModeMenuItem);
-				General.Interface.RemoveMenu(drawLinesModeMenuItem);
-				General.Interface.RemoveMenu(drawCurveModeMenuItem);
-				General.Interface.RemoveMenu(drawRectModeMenuItem);
-				General.Interface.RemoveMenu(drawEllipseModeMenuItem);
-				General.Interface.RemoveMenu(drawGridModeMenuItem);
 
 				undoredopanel.Dispose();
 				menusform.Unregister();
@@ -463,15 +389,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.AddDocker(drawingOverridesDocker);
 			}
 			drawingOverridesPanel.Setup();
-
-			//mxd
-			exportToObjMenuItem.Enabled = true;
-			snapModeMenuItem.Enabled = true;
-			drawLinesModeMenuItem.Enabled = true;
-			drawCurveModeMenuItem.Enabled = true;
-			drawRectModeMenuItem.Enabled = true;
-			drawEllipseModeMenuItem.Enabled = true;
-			drawGridModeMenuItem.Enabled = true;
 		}
 		
 		// Map opened
@@ -488,16 +405,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.AddDocker(drawingOverridesDocker);
 			}
 			drawingOverridesPanel.Setup();
-
-			//mxd
-			exportToObjMenuItem.Enabled = true;
-			snapModeMenuItem.Enabled = true;
-			drawLinesModeMenuItem.Enabled = true;
-			drawCurveModeMenuItem.Enabled = true;
-			drawRectModeMenuItem.Enabled = true;
-			drawEllipseModeMenuItem.Enabled = true;
-			drawGridModeMenuItem.Enabled = true;
-
 			General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 		}
 		
@@ -512,15 +419,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			drawingOverridesDocker = null;
 			drawingOverridesPanel.Dispose();
 			drawingOverridesPanel = null;
-
-			//mxd
-			exportToObjMenuItem.Enabled = false;
-			snapModeMenuItem.Enabled = false;
-			drawLinesModeMenuItem.Enabled = false;
-			drawCurveModeMenuItem.Enabled = false;
-			drawRectModeMenuItem.Enabled = false;
-			drawEllipseModeMenuItem.Enabled = false;
-			drawGridModeMenuItem.Enabled = false;
 
 			//mxd. Save settings
 			saveSettings();
@@ -552,11 +450,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnUndoWithdrawn();
 			undoredopanel.UpdateList();
-		}
-
-		//mxd
-		private void InvokeTaggedAction(object sender, EventArgs e) {
-			General.Interface.InvokeTaggedAction(sender, e);
 		}
 		
 		#endregion

@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Data
 			archiveType = archive.Type;
 
 			if (archive.Type == ArchiveType.SevenZip) { //random access of 7z archives works TERRIBLY slow in SharpCompress
-				sevenZipEntries = new Dictionary<string, byte[]>();
+				sevenZipEntries = new Dictionary<string, byte[]>(StringComparer.Ordinal);
 
 				IReader reader = archive.ExtractAllEntries();
 				while (reader.MoveToNextEntry()) {

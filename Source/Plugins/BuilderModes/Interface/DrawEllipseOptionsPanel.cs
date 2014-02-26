@@ -34,9 +34,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void ValueChanged(object sender, EventArgs e) {
 			aquityValue = (int)spikiness.Value;
 			subdivsValue = (int)subdivs.Value;
-
-			if(blockEvents) return;
-			if(OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
+			if(!blockEvents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 
 		private void reset_Click(object sender, EventArgs e) {

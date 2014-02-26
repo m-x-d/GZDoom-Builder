@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
@@ -11,13 +12,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 		internal string Source { get { return sourcename; } }
 
 		internal ModeldefParser() {
-			entries = new Dictionary<string, ModelData>();
+			entries = new Dictionary<string, ModelData>(StringComparer.Ordinal);
 		}
 
 		//should be called after all decorate actors are parsed 
 		public override bool Parse(Stream stream, string sourcefilename) {
 			base.Parse(stream, sourcefilename);
-			entries = new Dictionary<string, ModelData>();
+			entries = new Dictionary<string, ModelData>(StringComparer.Ordinal);
 
 			// Continue until at the end of the stream
 			while (SkipWhitespace(true)) {

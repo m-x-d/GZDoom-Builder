@@ -33,6 +33,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Drawing Mode",
 			  SwitchAction = "drawlinesmode",
+			  ButtonImage = "DrawLinesMode.png", //mxd	
+			  ButtonOrder = int.MinValue + 1, //mxd
+			  ButtonGroup = "000_drawing", //mxd
 			  AllowCopyPaste = false,
 			  Volatile = true,
 			  UseByDefault = true,

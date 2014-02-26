@@ -228,7 +228,6 @@
     <Compile Include="ClassicModes\DrawRectangleMode.cs" />
     <Compile Include="ClassicModes\FlatAlignMode.cs" />
     <Compile Include="ClassicModes\FloorAlignMode.cs" />
-    <Compile Include="ClassicModes\SnapVerticesMode.cs" />
     <Compile Include="ErrorChecks\CheckMissingTextures.cs" />
     <Compile Include="ErrorChecks\CheckOverlappingVertices.cs" />
     <Compile Include="ErrorChecks\CheckStrayVertices.cs" />
@@ -278,6 +277,12 @@
     </Compile>
     <Compile Include="Interface\BridgeModeForm.Designer.cs">
       <DependentUpon>BridgeModeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\DrawCurveOptionsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\DrawCurveOptionsPanel.Designer.cs">
+      <DependentUpon>DrawCurveOptionsPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\DrawEllipseOptionsPanel.cs">
       <SubType>UserControl</SubType>
@@ -405,13 +410,13 @@
     <EmbeddedResource Include="Resources\SnapVerts.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\DrawEllipseMode.png" />
+    <EmbeddedResource Include="Resources\DrawEllipseMode.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\DrawLinesMode.png" />
+    <EmbeddedResource Include="Resources\DrawLinesMode.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\DrawRectMode.png" />
+    <EmbeddedResource Include="Resources\DrawRectMode.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\CeilingAlign.png" />
@@ -444,7 +449,7 @@
     <None Include="Resources\AlignThings.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\DrawCurveMode.png" />
+    <EmbeddedResource Include="Resources\DrawCurveMode.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ThingPointAtCursor.png" />
@@ -456,8 +461,14 @@
     <None Include="Resources\Reset.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\DrawGridMode.png" />
+    <EmbeddedResource Include="Interface\DrawCurveOptionsPanel.resx">
+      <DependentUpon>DrawCurveOptionsPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DrawGridMode.png" />
     <EmbeddedResource Include="Resources\Hints.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Door.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

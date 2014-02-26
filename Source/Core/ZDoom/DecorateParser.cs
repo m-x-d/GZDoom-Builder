@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -71,8 +72,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 			specialtokens = ":{}+-\n;,";
 			
 			// Initialize
-			actors = new Dictionary<string, ActorStructure>();
-			archivedactors = new Dictionary<string, ActorStructure>();
+			actors = new Dictionary<string, ActorStructure>(StringComparer.Ordinal);
+			archivedactors = new Dictionary<string, ActorStructure>(StringComparer.Ordinal);
 		}
 		
 		// Disposer

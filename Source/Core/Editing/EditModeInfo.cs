@@ -134,8 +134,6 @@ namespace CodeImp.DoomBuilder.Editing
 		// (when user presses shortcut key)
 		public void UserSwitchToMode()
 		{
-			EditMode newmode;
-			
 			// Only when a map is opened
 			if(General.Map != null)
 			{
@@ -155,7 +153,7 @@ namespace CodeImp.DoomBuilder.Editing
 				else
 				{
 					// Create instance
-					newmode = plugin.CreateObject<EditMode>(type);
+					EditMode newmode = plugin.CreateObject<EditMode>(type);
 					
 					// Switch mode
 					General.Editing.ChangeMode(newmode);
@@ -166,13 +164,11 @@ namespace CodeImp.DoomBuilder.Editing
 		// This switches to the mode
 		public void SwitchToMode()
 		{
-			EditMode newmode;
-			
 			// Only when a map is opened
 			if(General.Map != null)
 			{
 				// Create instance
-				newmode = plugin.CreateObject<EditMode>(type);
+				EditMode newmode = plugin.CreateObject<EditMode>(type);
 
 				// Switch mode
 				General.Editing.ChangeMode(newmode);
@@ -182,13 +178,11 @@ namespace CodeImp.DoomBuilder.Editing
 		// This switches to the mode with arguments
 		public void SwitchToMode(object[] args)
 		{
-			EditMode newmode;
-
 			// Only when a map is opened
 			if(General.Map != null)
 			{
 				// Create instance
-				newmode = plugin.CreateObjectA<EditMode>(type, args);
+				EditMode newmode = plugin.CreateObjectA<EditMode>(type, args);
 
 				// Switch mode
 				if(!General.Editing.ChangeMode(newmode))
@@ -209,8 +203,8 @@ namespace CodeImp.DoomBuilder.Editing
 		public int CompareTo(EditModeInfo other)
 		{
 			if(this.buttonorder > other.buttonorder) return 1;
-			else if(this.buttonorder < other.buttonorder) return -1;
-			else return 0;
+			if(this.buttonorder < other.buttonorder) return -1;
+			return 0;
 		}
 		
 		#endregion

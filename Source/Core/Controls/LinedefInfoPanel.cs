@@ -394,7 +394,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			//mxd. Flags
-			Dictionary<string, string> activations = new Dictionary<string, string>();
+			Dictionary<string, string> activations = new Dictionary<string, string>(StringComparer.Ordinal);
 			foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) {
 				activations.Add(ai.Key, ai.Title);
 			}

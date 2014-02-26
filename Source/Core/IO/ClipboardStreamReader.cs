@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.IO
 				string tceil = ReadString(reader);
 
 				//flags
-				Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
+				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				int numFlags = reader.ReadInt32();
 				for(int f = 0; f < numFlags; f++) 
 					stringflags.Add(ReadString(reader), true);
@@ -154,7 +154,7 @@ namespace CodeImp.DoomBuilder.IO
 				}
 
 				//flags
-				Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
+				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				int numFlags = reader.ReadInt32();
 				for(int f = 0; f < numFlags; f++)
 					stringflags.Add(ReadString(reader), true);
@@ -191,14 +191,14 @@ namespace CodeImp.DoomBuilder.IO
 						// Connect sidedefs to the line
 						if(s1 > -1) {
 							if(s1 < sidedeflink.Count)
-								AddSidedef(map, sidedeflink[s1], l, true, sectorlink, s1);
+								AddSidedef(map, sidedeflink[s1], l, true, sectorlink);
 							else
 								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid front sidedef " + s1 + ". Sidedef has been removed.");
 						}
 
 						if(s2 > -1) {
 							if(s2 < sidedeflink.Count)
-								AddSidedef(map, sidedeflink[s2], l, false, sectorlink, s2);
+								AddSidedef(map, sidedeflink[s2], l, false, sectorlink);
 							else
 								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid back sidedef " + s1 + ". Sidedef has been removed.");
 						}
@@ -209,7 +209,7 @@ namespace CodeImp.DoomBuilder.IO
 			}
 		}
 
-		private void AddSidedef(MapSet map, SidedefData data, Linedef ld, bool front, Dictionary<int, Sector> sectorlink, int index) {
+		private void AddSidedef(MapSet map, SidedefData data, Linedef ld, bool front, Dictionary<int, Sector> sectorlink) {
 			// Create sidedef
 			if(sectorlink.ContainsKey(data.SectorID)) {
 				Sidedef s = map.CreateSidedef(ld, front, sectorlink[data.SectorID]);
@@ -241,7 +241,7 @@ namespace CodeImp.DoomBuilder.IO
 				data.LowTexture = ReadString(reader);
 
 				//flags
-				data.Flags = new Dictionary<string, bool>();
+				data.Flags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				int numFlags = reader.ReadInt32();
 				for(int f = 0; f < numFlags; f++)
 					data.Flags.Add(ReadString(reader), true);
@@ -280,7 +280,7 @@ namespace CodeImp.DoomBuilder.IO
 				}
 
 				//flags
-				Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
+				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				int numFlags = reader.ReadInt32();
 				for(int f = 0; f < numFlags; f++)
 					stringflags.Add(ReadString(reader), true);
@@ -307,7 +307,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		private Dictionary<string, UniValue> ReadCustomFields(BinaryReader reader) {
-			Dictionary<string, UniValue> fields = new Dictionary<string, UniValue>();
+			Dictionary<string, UniValue> fields = new Dictionary<string, UniValue>(StringComparer.Ordinal);
 			int fieldscount = reader.ReadInt32();
 
 			for(int f = 0; f < fieldscount; f++) {

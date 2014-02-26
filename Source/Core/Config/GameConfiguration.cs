@@ -248,33 +248,33 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Initialize
 			this.cfg = cfg;
-			this.thingflags = new Dictionary<string, string>();
+			this.thingflags = new Dictionary<string, string>(StringComparer.Ordinal);
 			this.defaultthingflags = new List<string>();
 			this.thingcategories = new List<ThingCategory>();
 			this.things = new Dictionary<int, ThingTypeInfo>();
-			this.linedefflags = new Dictionary<string, string>();
+			this.linedefflags = new Dictionary<string, string>(StringComparer.Ordinal);
 			this.sortedlinedefflags = new List<string>();
 			this.linedefactions = new Dictionary<int, LinedefActionInfo>();
 			this.actioncategories = new List<LinedefActionCategory>();
 			this.sortedlinedefactions = new List<LinedefActionInfo>();
 			this.linedefactivates = new List<LinedefActivateInfo>();
-			this.sidedefflags = new Dictionary<string, string>(); //mxd
+			this.sidedefflags = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
 			this.genactioncategories = new List<GeneralizedCategory>();
-			this.sectorflags = new Dictionary<string, string>(); //mxd
+			this.sectorflags = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
 			this.sectoreffects = new Dictionary<int, SectorEffectInfo>();
 			this.sortedsectoreffects = new List<SectorEffectInfo>();
 			this.geneffectoptions = new List<GeneralizedOption>();
-			this.enums = new Dictionary<string, EnumList>();
+			this.enums = new Dictionary<string, EnumList>(StringComparer.Ordinal);
 			this.skills = new List<SkillInfo>();
 			this.texturesets = new List<DefinedTextureSet>();
 			this.makedoorargs = new int[Linedef.NUM_ARGS];
-			this.maplumps = new Dictionary<string, MapLumpInfo>();
+			this.maplumps = new Dictionary<string, MapLumpInfo>(StringComparer.Ordinal);
 			this.thingflagstranslation = new List<FlagTranslation>();
 			this.linedefflagstranslation = new List<FlagTranslation>();
 			this.thingfilters = new List<ThingsFilter>();
 			this.thingflagscompare = new List<ThingFlagsCompare>();
 			this.brightnesslevels = new StepsList();
-			this.makedoorflags = new Dictionary<string, bool>();
+			this.makedoorflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
@@ -525,14 +525,13 @@ namespace CodeImp.DoomBuilder.Config
 		// Linedef actions and action categories
 		private void LoadLinedefActions()
 		{
-			Dictionary<string, LinedefActionCategory> cats = new Dictionary<string, LinedefActionCategory>();
-			IDictionary dic;
+			Dictionary<string, LinedefActionCategory> cats = new Dictionary<string, LinedefActionCategory>(StringComparer.Ordinal);
 			LinedefActionInfo ai;
 			LinedefActionCategory ac;
 			int actionnumber;
 			
 			// Get linedef categories
-			dic = cfg.ReadSetting("linedeftypes", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("linedeftypes", new Hashtable());
 			foreach(DictionaryEntry cde in dic)
 			{
 				if(cde.Value is IDictionary)

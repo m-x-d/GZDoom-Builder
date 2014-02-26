@@ -130,7 +130,7 @@
 			this.groupBox2.Controls.Add(this.hints);
 			this.groupBox2.Location = new System.Drawing.Point(3, 134);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(243, 132);
+			this.groupBox2.Size = new System.Drawing.Size(243, 150);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Quick Help:";
@@ -146,7 +146,7 @@
 			this.hints.ReadOnly = true;
 			this.hints.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
 			this.hints.ShortcutsEnabled = false;
-			this.hints.Size = new System.Drawing.Size(228, 107);
+			this.hints.Size = new System.Drawing.Size(228, 146);
 			this.hints.TabIndex = 0;
 			this.hints.Text = "";
 			// 
@@ -158,7 +158,7 @@
 			this.Controls.Add(this.groupBox1);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.Name = "DrawGridOptionsPanel";
-			this.Size = new System.Drawing.Size(249, 332);
+			this.Size = new System.Drawing.Size(249, 330);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.slicesV)).EndInit();

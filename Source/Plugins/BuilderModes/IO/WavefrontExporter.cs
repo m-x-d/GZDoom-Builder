@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			}
 
 			//sort geometry
-			Dictionary<string, List<WorldVertex[]>> geometryByTexture = sortGeometry(visualSectors, data.ExportTextures);
+			Dictionary<string, List<WorldVertex[]>> geometryByTexture = sortGeometry(visualSectors);
 
 			//restore vm settings
 			if(renderingEffectsDisabled)
@@ -162,8 +162,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			data.Valid = true;
 		}
 
-		private Dictionary<string, List<WorldVertex[]>> sortGeometry(List<BaseVisualSector> visualSectors, bool exportTextures) {
-			Dictionary<string, List<WorldVertex[]>> geo = new Dictionary<string, List<WorldVertex[]>>();
+		private Dictionary<string, List<WorldVertex[]>> sortGeometry(List<BaseVisualSector> visualSectors) {
+			var geo = new Dictionary<string, List<WorldVertex[]>>(StringComparer.Ordinal);
 			geo.Add(DEFAULT, new List<WorldVertex[]>());
 			string texture;
 
@@ -295,7 +295,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			Dictionary<Vector3D, int> uniqueNormals = new Dictionary<Vector3D, int>();
 			Dictionary<PointF, int> uniqueUVs = new Dictionary<PointF, int>();
 
-			Dictionary<string, Dictionary<WorldVertex, VertexIndices>> vertexDataByTexture = new Dictionary<string, Dictionary<WorldVertex, VertexIndices>>();
+			var vertexDataByTexture = new Dictionary<string, Dictionary<WorldVertex, VertexIndices>>(StringComparer.Ordinal);
 			int ni;
 			int pc = 0;
 			int nc = 0;

@@ -471,7 +471,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			//modedef should be in root folder
 			string[] allFiles = GetAllFiles("", false);
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 
 			foreach (string s in allFiles) {
 				if (s.ToLowerInvariant().IndexOf("modeldef") != -1) {
@@ -526,7 +526,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		//mxd
 		public override Dictionary<string, Stream> GetMapinfoData() {
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 			// Error when suspended
 			if (issuspended) throw new Exception("Data reader is suspended");
 
@@ -553,7 +553,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if (issuspended) throw new Exception("Data reader is suspended");
 
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 
 			//at least one of gldefs should be in root folder
 			string[] allFiles = GetAllFiles("", false);
@@ -583,7 +583,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if (issuspended) throw new Exception("Data reader is suspended");
 
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 			Stream s = LoadFile(location);
 			if (s != null) streams.Add(location, s);
 			return streams;

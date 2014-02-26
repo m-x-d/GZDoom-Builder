@@ -386,7 +386,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(t.Name.Length > 0)
 				{
 					// Add the texture
-					ImageData img = t.MakeImage(textures, flats);
+					ImageData img = t.MakeImage();
 					images.Add(img);
 				}
 				else
@@ -624,7 +624,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(t.Name.Length > 0)
 				{
 					// Add the texture
-					ImageData img = t.MakeImage(textures, flats);
+					ImageData img = t.MakeImage();
 					images.Add(img);
 				}
 				else
@@ -694,7 +694,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(t.Name.Length > 0)
 				{
 					// Add the sprite
-					ImageData img = t.MakeImage(textures, flats);
+					ImageData img = t.MakeImage();
 					images.Add(img);
 				}
 				else
@@ -794,14 +794,13 @@ namespace CodeImp.DoomBuilder.Data
 		// This finds and returns a sprite stream
 		public override List<Stream> GetDecorateData(string pname)
 		{
-			List<Stream> streams = new List<Stream>();
-			int lumpindex;
-			
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
-			
+
+			List<Stream> streams = new List<Stream>();
+
 			// Find all lumps named 'DECORATE'
-			lumpindex = file.FindLumpIndex(pname);
+			int lumpindex = file.FindLumpIndex(pname);
 			while(lumpindex > -1)
 			{
 				streams.Add(file.Lumps[lumpindex].Stream);
@@ -817,13 +816,12 @@ namespace CodeImp.DoomBuilder.Data
 		public override Dictionary<string, Stream> GetMapinfoData() {
 			if (issuspended) throw new Exception("Data reader is suspended");
 
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
-			int lumpindex;
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 			string src = "ZMAPINFO";
 
 			//should be only one entry per wad
 			//first look for ZMAPINFO
-			lumpindex = file.FindLumpIndex(src);
+			int lumpindex = file.FindLumpIndex(src);
 
 			//then for MAPINFO
 			if (lumpindex == -1) {
@@ -841,7 +839,7 @@ namespace CodeImp.DoomBuilder.Data
 		public override Dictionary<string, Stream> GetGldefsData(GameType gameType) {
 			if (issuspended) throw new Exception("Data reader is suspended");
 
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 			int lumpindex;
 
 			//try to load game specific GLDEFS first
@@ -866,10 +864,8 @@ namespace CodeImp.DoomBuilder.Data
 		public override Dictionary<string, Stream> GetGldefsData(string location) {
 			if (issuspended) throw new Exception("Data reader is suspended");
 
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
-			int lumpindex;
-
-			lumpindex = file.FindLumpIndex(location);
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
+			int lumpindex = file.FindLumpIndex(location);
 			
 			if (lumpindex != -1)
 				streams.Add(location, file.Lumps[lumpindex].Stream);

@@ -47,7 +47,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.seperatorprefabs = new System.Windows.Forms.ToolStripSeparator();
 			this.seperatorundo = new System.Windows.Forms.ToolStripSeparator();
 			this.seperatorcopypaste = new System.Windows.Forms.ToolStripSeparator();
-			this.seperatormodes = new System.Windows.Forms.ToolStripSeparator();
 			this.poscommalabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.menumain = new System.Windows.Forms.MenuStrip();
 			this.menufile = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,6 +74,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.seperatoreditgeometry = new System.Windows.Forms.ToolStripSeparator();
 			this.itemgridinc = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemgriddec = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemdosnaptogrid = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemgridsetup = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.addToGroup = new System.Windows.Forms.ToolStripMenuItem();
@@ -134,6 +134,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemscripteditor = new System.Windows.Forms.ToolStripMenuItem();
 			this.menumode = new System.Windows.Forms.ToolStripMenuItem();
 			this.separatorDrawModes = new System.Windows.Forms.ToolStripSeparator();
+			this.separatorTransformModes = new System.Windows.Forms.ToolStripSeparator();
 			this.menuprefabs = new System.Windows.Forms.ToolStripMenuItem();
 			this.iteminsertprefabfile = new System.Windows.Forms.ToolStripMenuItem();
 			this.iteminsertpreviousprefab = new System.Windows.Forms.ToolStripMenuItem();
@@ -248,8 +249,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statusflasher = new System.Windows.Forms.Timer(this.components);
 			this.statusresetter = new System.Windows.Forms.Timer(this.components);
 			this.dockersspace = new System.Windows.Forms.Panel();
+			this.modestoolbar = new System.Windows.Forms.ToolStrip();
 			this.dockerspanel = new CodeImp.DoomBuilder.Controls.DockersControl();
 			this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
+			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+			this.modecontrolsloolbar = new System.Windows.Forms.ToolStrip();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -261,6 +265,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolbarContextMenu.SuspendLayout();
 			this.statusbar.SuspendLayout();
 			this.panelinfo.SuspendLayout();
+			this.flowLayoutPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStripSeparator1
@@ -351,13 +356,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.seperatorcopypaste.Name = "seperatorcopypaste";
 			this.seperatorcopypaste.Size = new System.Drawing.Size(6, 25);
 			// 
-			// seperatormodes
-			// 
-			this.seperatormodes.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.seperatormodes.Name = "seperatormodes";
-			this.seperatormodes.Size = new System.Drawing.Size(6, 25);
-			this.seperatormodes.Visible = false;
-			// 
 			// poscommalabel
 			// 
 			this.poscommalabel.Name = "poscommalabel";
@@ -369,6 +367,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// menumain
 			// 
+			this.menumain.Dock = System.Windows.Forms.DockStyle.None;
 			this.menumain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menufile,
             this.menuedit,
@@ -379,7 +378,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.menuhelp});
 			this.menumain.Location = new System.Drawing.Point(0, 0);
 			this.menumain.Name = "menumain";
-			this.menumain.Size = new System.Drawing.Size(1012, 24);
+			this.menumain.Size = new System.Drawing.Size(328, 24);
 			this.menumain.TabIndex = 0;
 			// 
 			// menufile
@@ -498,6 +497,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.seperatoreditgeometry,
             this.itemgridinc,
             this.itemgriddec,
+            this.itemdosnaptogrid,
             this.itemgridsetup,
             this.toolStripSeparator5,
             this.addToGroup,
@@ -625,6 +625,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemgriddec.Tag = "builder_gridinc";
 			this.itemgriddec.Text = "&Decrease Grid";
 			this.itemgriddec.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemdosnaptogrid
+			// 
+			this.itemdosnaptogrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.SnapVerts;
+			this.itemdosnaptogrid.Name = "itemdosnaptogrid";
+			this.itemdosnaptogrid.Size = new System.Drawing.Size(219, 22);
+			this.itemdosnaptogrid.Tag = "builder_snapvertstogrid";
+			this.itemdosnaptogrid.Text = "Snap Selection to Grid";
+			this.itemdosnaptogrid.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemgridsetup
 			// 
@@ -1132,7 +1141,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// menumode
 			// 
 			this.menumode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.separatorDrawModes});
+            this.separatorDrawModes,
+            this.separatorTransformModes});
 			this.menumode.Name = "menumode";
 			this.menumode.Size = new System.Drawing.Size(50, 20);
 			this.menumode.Text = "&Mode";
@@ -1141,6 +1151,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.separatorDrawModes.Name = "separatorDrawModes";
 			this.separatorDrawModes.Size = new System.Drawing.Size(57, 6);
+			// 
+			// separatorTransformModes
+			// 
+			this.separatorTransformModes.Name = "separatorTransformModes";
+			this.separatorTransformModes.Size = new System.Drawing.Size(57, 6);
 			// 
 			// menuprefabs
 			// 
@@ -1374,7 +1389,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttoninsertprefabfile,
             this.buttoninsertpreviousprefab,
             this.seperatorprefabs,
-            this.seperatormodes,
             this.buttonthingsfilter,
             this.thingfilters,
             this.buttonviewnormal,
@@ -1636,7 +1650,7 @@ namespace CodeImp.DoomBuilder.Windows
             "Hard skill items only"});
 			this.thingfilters.Margin = new System.Windows.Forms.Padding(1, 0, 6, 0);
 			this.thingfilters.Name = "thingfilters";
-			this.thingfilters.Size = new System.Drawing.Size(130, 25);
+			this.thingfilters.Size = new System.Drawing.Size(100, 25);
 			this.thingfilters.ToolTipText = "Things Filter";
 			this.thingfilters.SelectedIndexChanged += new System.EventHandler(this.thingfilters_SelectedIndexChanged);
 			this.thingfilters.DropDownClosed += new System.EventHandler(this.LoseFocus);
@@ -1894,7 +1908,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.statuslabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(309, 18);
+			this.statuslabel.Size = new System.Drawing.Size(340, 18);
 			this.statuslabel.Spring = true;
 			this.statuslabel.Text = "Initializing user interface...";
 			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -2175,9 +2189,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelinfo.Controls.Add(this.thinginfo);
 			this.panelinfo.Controls.Add(this.sectorinfo);
 			this.panelinfo.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panelinfo.Location = new System.Drawing.Point(26, 564);
+			this.panelinfo.Location = new System.Drawing.Point(0, 564);
 			this.panelinfo.Name = "panelinfo";
-			this.panelinfo.Size = new System.Drawing.Size(986, 106);
+			this.panelinfo.Size = new System.Drawing.Size(1012, 106);
 			this.panelinfo.TabIndex = 4;
 			// 
 			// heightpanel1
@@ -2220,7 +2234,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontoggleinfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttontoggleinfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
 			this.buttontoggleinfo.Font = new System.Drawing.Font("Marlett", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-			this.buttontoggleinfo.Location = new System.Drawing.Point(962, 1);
+			this.buttontoggleinfo.Location = new System.Drawing.Point(988, 1);
 			this.buttontoggleinfo.Name = "buttontoggleinfo";
 			this.buttontoggleinfo.Size = new System.Drawing.Size(22, 19);
 			this.buttontoggleinfo.TabIndex = 5;
@@ -2317,10 +2331,20 @@ namespace CodeImp.DoomBuilder.Windows
 			// dockersspace
 			// 
 			this.dockersspace.Dock = System.Windows.Forms.DockStyle.Left;
-			this.dockersspace.Location = new System.Drawing.Point(0, 49);
+			this.dockersspace.Location = new System.Drawing.Point(32, 49);
 			this.dockersspace.Name = "dockersspace";
-			this.dockersspace.Size = new System.Drawing.Size(26, 621);
+			this.dockersspace.Size = new System.Drawing.Size(26, 515);
 			this.dockersspace.TabIndex = 6;
+			// 
+			// modestoolbar
+			// 
+			this.modestoolbar.Dock = System.Windows.Forms.DockStyle.Left;
+			this.modestoolbar.Location = new System.Drawing.Point(0, 49);
+			this.modestoolbar.Name = "modestoolbar";
+			this.modestoolbar.Size = new System.Drawing.Size(32, 515);
+			this.modestoolbar.TabIndex = 8;
+			this.modestoolbar.Text = "toolStrip1";
+			this.modestoolbar.Visible = false;
 			// 
 			// dockerspanel
 			// 
@@ -2339,6 +2363,26 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockerscollapser.Interval = 200;
 			this.dockerscollapser.Tick += new System.EventHandler(this.dockerscollapser_Tick);
 			// 
+			// flowLayoutPanel
+			// 
+			this.flowLayoutPanel.Controls.Add(this.menumain);
+			this.flowLayoutPanel.Controls.Add(this.modecontrolsloolbar);
+			this.flowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Top;
+			this.flowLayoutPanel.Location = new System.Drawing.Point(0, 0);
+			this.flowLayoutPanel.Name = "flowLayoutPanel";
+			this.flowLayoutPanel.Size = new System.Drawing.Size(1012, 24);
+			this.flowLayoutPanel.TabIndex = 9;
+			// 
+			// modecontrolsloolbar
+			// 
+			this.modecontrolsloolbar.Dock = System.Windows.Forms.DockStyle.None;
+			this.modecontrolsloolbar.Location = new System.Drawing.Point(328, 0);
+			this.modecontrolsloolbar.Name = "modecontrolsloolbar";
+			this.modecontrolsloolbar.Size = new System.Drawing.Size(43, 24);
+			this.modecontrolsloolbar.TabIndex = 1;
+			this.modecontrolsloolbar.Text = "toolStrip1";
+			this.modecontrolsloolbar.Visible = false;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -2346,11 +2390,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ClientSize = new System.Drawing.Size(1012, 693);
 			this.Controls.Add(this.dockerspanel);
 			this.Controls.Add(this.display);
-			this.Controls.Add(this.panelinfo);
 			this.Controls.Add(this.dockersspace);
-			this.Controls.Add(this.statusbar);
+			this.Controls.Add(this.modestoolbar);
 			this.Controls.Add(this.toolbar);
-			this.Controls.Add(this.menumain);
+			this.Controls.Add(this.flowLayoutPanel);
+			this.Controls.Add(this.panelinfo);
+			this.Controls.Add(this.statusbar);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
@@ -2377,6 +2422,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statusbar.PerformLayout();
 			this.panelinfo.ResumeLayout(false);
 			this.panelinfo.PerformLayout();
+			this.flowLayoutPanel.ResumeLayout(false);
+			this.flowLayoutPanel.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -2450,7 +2497,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemsnaptogrid;
 		private System.Windows.Forms.ToolStripButton buttonautomerge;
 		private System.Windows.Forms.ToolStripMenuItem itemautomerge;
-		private System.Windows.Forms.ToolStripSeparator seperatormodes;
 		private System.Windows.Forms.Timer processor;
 		private System.Windows.Forms.ToolStripSeparator separatorgzmodes;
 		private System.Windows.Forms.ToolStripSeparator seperatorfilesave;
@@ -2596,5 +2642,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemautoclearsidetextures;
 		private System.Windows.Forms.ToolStripButton buttonautoclearsidetextures;
 		private System.Windows.Forms.ToolStripMenuItem menugotocoords;
+		private System.Windows.Forms.ToolStripSeparator separatorTransformModes;
+		private System.Windows.Forms.ToolStripMenuItem itemdosnaptogrid;
+		private System.Windows.Forms.ToolStrip modestoolbar;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
+		private System.Windows.Forms.ToolStrip modecontrolsloolbar;
 	}
 }

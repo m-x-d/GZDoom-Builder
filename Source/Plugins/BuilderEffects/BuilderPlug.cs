@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			base.OnInitialize();
 			me = this;
 
-			// Load menus form and register it
+			// Load menus form
 			menusForm = new MenusForm();
 
 			General.Actions.BindMethods(this);

@@ -18,6 +18,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Draw Rectangle Mode",
 			  SwitchAction = "drawrectanglemode",
+			  ButtonImage = "DrawRectMode.png", //mxd	
+			  ButtonOrder = int.MinValue + 3, //mxd
+			  ButtonGroup = "000_drawing", //mxd
 			  AllowCopyPaste = false,
 			  Volatile = true,
 			  Optional = false)]

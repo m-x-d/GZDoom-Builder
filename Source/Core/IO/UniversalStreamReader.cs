@@ -207,7 +207,7 @@ namespace CodeImp.DoomBuilder.IO
 				args[4] = GetCollectionEntry<int>(c, "arg4", false, 0, where);
 
 				// Flags
-				Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
+				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				foreach(KeyValuePair<string, string> flag in General.Map.Config.ThingFlags)
 					stringflags[flag.Key] = GetCollectionEntry<bool>(c, flag.Key, false, false, where);
 				foreach(FlagTranslation ft in General.Map.Config.ThingFlagsTranslation)
@@ -263,7 +263,7 @@ namespace CodeImp.DoomBuilder.IO
 				int s2 = GetCollectionEntry<int>(lc, "sideback", false, -1, where);
 
 				// Flags
-				Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
+				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				foreach(KeyValuePair<string, string> flag in General.Map.Config.LinedefFlags)
 					stringflags[flag.Key] = GetCollectionEntry<bool>(lc, flag.Key, false, false, where);
 				foreach(FlagTranslation ft in General.Map.Config.LinedefFlagsTranslation)
@@ -328,7 +328,7 @@ namespace CodeImp.DoomBuilder.IO
 			int sector = GetCollectionEntry<int>(sc, "sector", true, 0, where);
 
 			//mxd. Flags
-			Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
+			Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 			foreach(KeyValuePair<string, string> flag in General.Map.Config.SidedefFlags)
 				stringflags[flag.Key] = GetCollectionEntry<bool>(sc, flag.Key, false, false, where);
 
@@ -377,7 +377,7 @@ namespace CodeImp.DoomBuilder.IO
 				int tag = GetCollectionEntry<int>(c, "id", false, 0, where);
 
 				//mxd. Flags
-				Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
+				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				foreach(KeyValuePair<string, string> flag in General.Map.Config.SectorFlags)
 					stringflags[flag.Key] = GetCollectionEntry<bool>(c, flag.Key, false, false, where);
 
