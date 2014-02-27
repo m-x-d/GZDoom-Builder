@@ -27,6 +27,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -736,7 +737,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			//mxd
 			if (!General.Map.UDMF) {
-				General.ShowErrorMessage("Floor/ceiling texture offsets cannot be changed in this map format!", MessageBoxButtons.OK);
+				General.Interface.DisplayStatus(StatusType.Warning, "Floor/ceiling texture offsets cannot be changed in this map format!");
 				return;
 			}
 
