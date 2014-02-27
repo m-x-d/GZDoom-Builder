@@ -722,6 +722,9 @@ namespace CodeImp.DoomBuilder.Windows
 		public void DisplayStatus(StatusType type, string message) { DisplayStatus(new StatusInfo(type, message)); }
 		public void DisplayStatus(StatusInfo newstatus)
 		{
+			//mxd. New message is the same as the one being displayed?
+			if(status.displayed && newstatus.type == status.type && newstatus.message == status.message) return;
+			
 			// Stop timers
 			if(newstatus.type != StatusType.Selection && !newstatus.displayed) //mxd
 			{
@@ -1653,7 +1656,7 @@ namespace CodeImp.DoomBuilder.Windows
 				case ToolbarSection.Geometry: toolbar.Items.Insert(toolbar.Items.IndexOf(seperatorgeometry), button); break;
 				case ToolbarSection.Testing: toolbar.Items.Insert(toolbar.Items.IndexOf(seperatortesting), button); break;
 				case ToolbarSection.Modes: modestoolbar.Items.Add(button); break; //mxd
-				case ToolbarSection.Custom: modecontrolsloolbar.Items.Add(button); break; //mxd
+				case ToolbarSection.Custom: modecontrolsloolbar.Items.Add(button); modecontrolsloolbar.Visible = true; break; //mxd
 			}
 			
 			UpdateToolbar();
@@ -1712,6 +1715,7 @@ namespace CodeImp.DoomBuilder.Windows
 						break;
 					case ToolbarSection.Custom:
 						modecontrolsloolbar.Items.Remove(button);
+						modecontrolsloolbar.Visible = (modecontrolsloolbar.Items.Count > 0);
 						break;
 					default:
 						toolbar.Items.Remove(button);
