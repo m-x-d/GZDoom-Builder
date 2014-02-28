@@ -29,15 +29,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 
-		private HintLabel hintLabel;
+		private readonly HintLabel hintLabel;
 		private Curve curve;
 		private static int segmentLength = 32;
-		private int minSegmentLength = 16;
-		private int maxSegmentLength = 4096; //just some arbitrary number
+		private const int minSegmentLength = 16;
+		private const int maxSegmentLength = 4096; //just some arbitrary number
 
 		//interface
-		private Docker settingsdocker;
-		private DrawCurveOptionsPanel panel;
+		private readonly DrawCurveOptionsPanel panel;
 
 		#endregion
 
@@ -49,7 +48,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//Options docker
 			panel = new DrawCurveOptionsPanel(minSegmentLength, maxSegmentLength);
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
-			settingsdocker = new Docker("drawcurve", "Draw Curve Settings", panel);
 		}
 
 		public override void Dispose() {
@@ -153,11 +151,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public override void OnEngage() {
 			base.OnEngage();
-			General.Interface.AddDocker(settingsdocker);
-			General.Interface.SelectDocker(settingsdocker);
 
 			//setup settings panel
 			panel.SegmentLength = segmentLength;
+			panel.Register();
 		}
 
 		public override void OnAccept() {
@@ -171,11 +168,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.CreateUndo("Curve draw");
 
 				// Make an analysis and show info
-				string[] adjectives = new string[]
-				{ "beautiful", "lovely", "romantic", "stylish", "cheerful", "comical",
+				string[] adjectives = new[] {
+				  "beautiful", "lovely", "romantic", "stylish", "cheerful", "comical",
 				  "awesome", "accurate", "adorable", "adventurous", "attractive", "cute",
 				  "elegant", "glamorous", "gorgeous", "handsome", "magnificent", "unusual",
-				  "outstanding", "mysterious", "amusing", "charming", "fantastic", "jolly" };
+				  "outstanding", "mysterious", "amusing", "charming", "fantastic", "jolly" 
+				};
 				string word = adjectives[points.Count % adjectives.Length];
 				word = (points.Count > adjectives.Length) ? "very " + word : word;
 				string a = ((word[0] == 'a') || (word[0] == 'e') || (word[0] == 'o') || (word[0] == 'u')) ? "an " : "a ";
@@ -257,8 +255,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		public override void OnDisengage() {
-			General.Interface.RemoveDocker(settingsdocker);
 			base.OnDisengage();
+			panel.Unregister();
 		}
 
 		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) {

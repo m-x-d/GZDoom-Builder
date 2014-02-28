@@ -1,7 +1,6 @@
 ﻿#region ================== Namespaces
 
 using System;
-using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 
@@ -23,7 +22,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 
 		//interface
-		private Docker settingsdocker;
 		private DrawEllipseOptionsPanel panel;
 
 		#endregion
@@ -47,19 +45,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			panel = new DrawEllipseOptionsPanel();
 			panel.MaxSubdivisions = maxSubdivisions;
 			panel.MinSubdivisions = minSubdivisions;
+			panel.MinSpikiness = (int)General.Map.FormatInterface.MinCoordinate;
+			panel.MaxSpikiness = (int)General.Map.FormatInterface.MaxCoordinate;
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
-			settingsdocker = new Docker("drawrectangle", "Draw Ellipse", panel);
 		}
 
 		override protected void addInterface() {
-			General.Interface.AddDocker(settingsdocker);
-			General.Interface.SelectDocker(settingsdocker);
-			bevelWidth = panel.Aquity;
+			panel.Register();
+			bevelWidth = panel.Spikiness;
 			subdivisions = panel.Subdivisions;
 		}
 
 		override protected void removeInterface() {
-			General.Interface.RemoveDocker(settingsdocker);
+			panel.Unregister();
 		}
 
 		#endregion
@@ -68,16 +66,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		override protected Vector2D[] getShape(Vector2D pStart, Vector2D pEnd) {
 			//no shape
-			if (pEnd.x == pStart.x && pEnd.y == pStart.y)
-				return new Vector2D[0];
+			if (pEnd.x == pStart.x && pEnd.y == pStart.y) return new Vector2D[0];
 
 			//line
-			if(pEnd.x == pStart.x || pEnd.y == pStart.y)
-				return new[] { pStart, pEnd };
+			if(pEnd.x == pStart.x || pEnd.y == pStart.y) return new[] { pStart, pEnd };
 
 			//got shape
-			int bevelSign = (bevelWidth > 0 ? 1 : -1);
-			currentBevelWidth = Math.Min(Math.Abs(bevelWidth), Math.Min(width, height) / 2) * bevelSign;
+			if (bevelWidth < 0) {
+				int bevelSign = (bevelWidth > 0 ? 1 : -1);
+				currentBevelWidth = Math.Min(Math.Abs(bevelWidth), Math.Min(width, height) / 2) * bevelSign;
+			} else {
+				currentBevelWidth = bevelWidth;
+			}
 
 			Vector2D[] shape = new Vector2D[subdivisions + 1];
 
@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Events
 
 		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) {
-			bevelWidth = panel.Aquity;
+			bevelWidth = panel.Spikiness;
 			subdivisions = Math.Min(maxSubdivisions, panel.Subdivisions);
 			Update();
 		}
@@ -130,7 +130,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Actions
 
 		override protected void increaseSubdivLevel() {
-			if (subdivisions < maxSubdivisions) {
+			if(maxSubdivisions - subdivisions > 1) {
 				subdivisions += 2;
 				panel.Subdivisions = subdivisions;
 				Update();
@@ -138,7 +138,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		override protected void decreaseSubdivLevel() {
-			if (subdivisions > minSubdivisions) {
+			if (subdivisions - minSubdivisions > 1) {
 				subdivisions -= 2;
 				panel.Subdivisions = subdivisions;
 				Update();
@@ -147,16 +147,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		protected override void increaseBevel() {
 			if(points.Count < 2 || currentBevelWidth == bevelWidth || bevelWidth < 0) {
-				bevelWidth += General.Map.Grid.GridSize;
-				panel.Aquity = bevelWidth;
+				bevelWidth = Math.Min(bevelWidth + General.Map.Grid.GridSize, panel.MaxSpikiness);
+				panel.Spikiness = bevelWidth;
 				Update();
 			}
 		}
 
 		protected override void decreaseBevel() {
 			if(currentBevelWidth == bevelWidth || bevelWidth > 0) {
-				bevelWidth -= General.Map.Grid.GridSize;
-				panel.Aquity = bevelWidth;
+				bevelWidth = Math.Max(bevelWidth - General.Map.Grid.GridSize, panel.MinSpikiness);
+				panel.Spikiness = bevelWidth;
 				Update();
 			}
 		}

@@ -46,7 +46,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Vector2D end;
 
 		//interface
-		private Docker settingsdocker;
 		private DrawGridOptionsPanel panel;
 
 		#endregion
@@ -58,9 +57,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//Options docker
 			panel = new DrawGridOptionsPanel();
+			panel.MaxHorizontalSlices = (int)General.Map.FormatInterface.MaxCoordinate;
+			panel.MaxVerticalSlices = (int)General.Map.FormatInterface.MaxCoordinate;
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
 			panel.OnGridLockChanged += OptionsPanelOnOnGridLockChanged;
-			settingsdocker = new Docker("drawgrid", "Draw Grid Settings", panel);
 		}
 
 		#endregion
@@ -69,8 +69,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public override void OnEngage() {
 			base.OnEngage();
-			General.Interface.AddDocker(settingsdocker);
-			General.Interface.SelectDocker(settingsdocker);
 			initialGridSize = General.Map.Grid.GridSize;
 
 			//setup settings panel
@@ -78,12 +76,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			panel.LockToGrid = gridlock;
 			panel.HorizontalSlices = horizontalSlices - 1;
 			panel.VerticalSlices = verticalSlices - 1;
+			panel.Register();
 		}
 
 
 		public override void OnDisengage() {
-			General.Interface.RemoveDocker(settingsdocker);
 			base.OnDisengage();
+			panel.Unregister();
 		}
 
 		override public void OnAccept() {
@@ -155,6 +154,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private void OptionsPanelOnOnGridLockChanged(object sender, EventArgs eventArgs) {
 			gridlock = panel.LockToGrid;
+			General.Hints.ShowHints(this.GetType(), (gridlock ? "gridlockhelp" : "general"));
 			Update();
 		}
 
@@ -374,7 +374,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		[BeginAction("increasebevel")]
 		protected void increaseBevel() {
-			if(!gridlock && (points.Count < 2 || horizontalSlices < width - 2)) {
+			if(!gridlock && (points.Count < 2 || horizontalSlices < width - 2) && horizontalSlices - 1 < panel.MaxHorizontalSlices) {
 				horizontalSlices++;
 				panel.HorizontalSlices = horizontalSlices - 1;
 				Update();
@@ -392,7 +392,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		[BeginAction("increasesubdivlevel")]
 		protected void increaseSubdivLevel() {
-			if(!gridlock && (points.Count < 2 || verticalSlices < height - 2)) {
+			if(!gridlock && (points.Count < 2 || verticalSlices < height - 2) && verticalSlices - 1 < panel.MaxVerticalSlices) {
 				verticalSlices++;
 				panel.VerticalSlices = verticalSlices - 1;
 				Update();

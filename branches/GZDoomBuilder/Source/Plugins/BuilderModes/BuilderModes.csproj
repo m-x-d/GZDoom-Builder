@@ -413,12 +413,6 @@
     <EmbeddedResource Include="Resources\DrawEllipseMode.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\DrawLinesMode.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\DrawRectMode.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\CeilingAlign.png" />
   </ItemGroup>
   <ItemGroup>
@@ -469,6 +463,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Door.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Gear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DrawGeometryMode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DrawRectangleMode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
