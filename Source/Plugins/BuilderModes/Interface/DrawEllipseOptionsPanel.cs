@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Actions;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public partial class DrawEllipseOptionsPanel : UserControl
+	internal partial class DrawEllipseOptionsPanel : UserControl
 	{
 		public event EventHandler OnValueChanged;
 		private bool blockEvents;
@@ -12,10 +11,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private static int aquityValue;
 		private static int subdivsValue = 8;
 
-		public int Aquity { get { return (int)spikiness.Value; } set { blockEvents = true; spikiness.Value = value; blockEvents = false; } }
+		public int Spikiness { get { return (int)spikiness.Value; } set { blockEvents = true; spikiness.Value = value; blockEvents = false; } }
 		public int Subdivisions { get { return (int)subdivs.Value; } set { blockEvents = true; subdivs.Value = value; blockEvents = false; } }
-		public int MaxSubdivisions { set { subdivs.Maximum = value; } }
-		public int MinSubdivisions { set { subdivs.Minimum = value; } }
+		public int MaxSubdivisions { get { return (int)subdivs.Maximum; } set { subdivs.Maximum = value; } }
+		public int MinSubdivisions { get { return (int)subdivs.Minimum;  } set { subdivs.Minimum = value; } }
+		public int MaxSpikiness { get { return (int)spikiness.Maximum; } set { spikiness.Maximum = value; } }
+		public int MinSpikiness { get { return (int)spikiness.Minimum; } set { spikiness.Minimum = value; } }
 		
 		public DrawEllipseOptionsPanel() {
 			InitializeComponent();
@@ -24,11 +25,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			subdivs.Value = subdivsValue;
 			spikiness.ValueChanged += ValueChanged;
 			subdivs.ValueChanged += ValueChanged;
+		}
 
-			//set hints
-			string help = "Use <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_increasebevel") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_decreasebevel") + "</b> to change ellipse spikiness<br>"
-						  + "Use <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_increasesubdivlevel") + "</b> and <b>" + Actions.Action.GetShortcutKeyDesc("buildermodes_decreasesubdivlevel") + "</b> to change the number of points in ellipse";
-			hints.SelectedRtf = HintsManager.GetRtfString(help);
+		public void Register() {
+			General.Interface.AddButton(subdivslabel);
+			General.Interface.AddButton(subdivs);
+			General.Interface.AddButton(spikinesslabel);
+			General.Interface.AddButton(spikiness);
+			General.Interface.AddButton(reset);
+		}
+
+		public void Unregister() {
+			General.Interface.RemoveButton(subdivslabel);
+			General.Interface.RemoveButton(subdivs);
+			General.Interface.RemoveButton(spikinesslabel);
+			General.Interface.RemoveButton(spikiness);
+			General.Interface.RemoveButton(reset);
 		}
 
 		private void ValueChanged(object sender, EventArgs e) {
@@ -38,7 +50,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		private void reset_Click(object sender, EventArgs e) {
+			blockEvents = true;
 			spikiness.Value = 0;
+			blockEvents = false;
 			subdivs.Value = subdivs.Minimum;
 		}
 	}

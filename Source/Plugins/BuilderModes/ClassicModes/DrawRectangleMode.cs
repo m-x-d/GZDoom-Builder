@@ -18,7 +18,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Draw Rectangle Mode",
 			  SwitchAction = "drawrectanglemode",
-			  ButtonImage = "DrawRectMode.png", //mxd	
+			  ButtonImage = "DrawRectangleMode.png", //mxd	
 			  ButtonOrder = int.MinValue + 3, //mxd
 			  ButtonGroup = "000_drawing", //mxd
 			  AllowCopyPaste = false,
@@ -46,7 +46,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected int height;
 
 		//interface
-		private Docker settingsdocker;
 		private DrawRectangleOptionsPanel panel;
 
 		#endregion
@@ -75,19 +74,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//Add options docker
 			panel = new DrawRectangleOptionsPanel();
 			panel.MaxSubdivisions = maxSubdivisions;
+			panel.MinSubdivisions = minSubdivisions;
+			panel.MaxBevelWidth = (int)General.Map.FormatInterface.MaxCoordinate;
+			panel.MinBevelWidth = (int)General.Map.FormatInterface.MinCoordinate;
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
-			settingsdocker = new Docker("drawrectangle", "Draw Rectangle", panel);
 		}
 
 		protected virtual void addInterface() {
-			General.Interface.AddDocker(settingsdocker);
-			General.Interface.SelectDocker(settingsdocker);
+			panel.Register();
 			bevelWidth = panel.BevelWidth;
 			subdivisions = panel.Subdivisions;
 		}
 
 		protected virtual void removeInterface() {
-			General.Interface.RemoveDocker(settingsdocker);
+			panel.Unregister();
 		}
 
 		#endregion
@@ -390,7 +390,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("increasebevel")]
 		protected virtual void increaseBevel() {
 			if (points.Count < 2 || currentBevelWidth == bevelWidth || bevelWidth < 0) {
-				bevelWidth += General.Map.Grid.GridSize;
+				bevelWidth = Math.Min(bevelWidth + General.Map.Grid.GridSize, panel.MaxBevelWidth);
 				panel.BevelWidth = bevelWidth;
 				Update();
 			}
@@ -399,7 +399,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("decreasebevel")]
 		protected virtual void decreaseBevel() {
 			if (currentBevelWidth == bevelWidth || bevelWidth > 0) {
-				bevelWidth -= General.Map.Grid.GridSize;
+				bevelWidth = Math.Max(bevelWidth - General.Map.Grid.GridSize, panel.MinBevelWidth);
 				panel.BevelWidth = bevelWidth;
 				Update();
 			}

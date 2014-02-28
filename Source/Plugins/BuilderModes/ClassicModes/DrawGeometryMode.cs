@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Drawing Mode",
 			  SwitchAction = "drawlinesmode",
-			  ButtonImage = "DrawLinesMode.png", //mxd	
+			  ButtonImage = "DrawGeometryMode.png", //mxd	
 			  ButtonOrder = int.MinValue + 1, //mxd
 			  ButtonGroup = "000_drawing", //mxd
 			  AllowCopyPaste = false,
@@ -55,21 +55,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected List<DrawnVertex> points;
 		protected List<LineLengthLabel> labels;
 
-		// Keep track of view changes
-		protected float lastoffsetx;
-		protected float lastoffsety;
-		protected float lastscale;
+		// Keep track of view changes (never used. mxd)
+		//protected float lastoffsetx;
+		//protected float lastoffsety;
+		//protected float lastscale;
 
 		// Options
 		protected bool snaptogrid;		// SHIFT to toggle
-		protected bool snaptonearest;		// CTRL to enable
+		protected bool snaptonearest;	// CTRL to enable
 		
 		#endregion
 
 		#region ================== Properties
 
 		// Just keep the base mode button checked
-		public override string EditModeButtonName { get { return General.Editing.PreviousStableMode.Name; } }
+		//public override string EditModeButtonName { get { return General.Editing.PreviousStableMode.Name; } }
 
 		#endregion
 
@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
-		// This checks if the view offset/zoom changed and updates the check
+		// This checks if the view offset/zoom changed and updates the check (never used. mxd)
 		/*protected bool CheckViewChanged()
 		{
 			// View changed?
@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 
-			DrawnVertex lastp = new DrawnVertex();
+			DrawnVertex lastp;
 			DrawnVertex curp = GetCurrentPosition();
 			float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
 
@@ -162,8 +162,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Determine line color
-					if(lastp.stitchline && snaptonearest) color = stitchcolor;
-					else color = losecolor;
+					color = (lastp.stitchline && snaptonearest ? stitchcolor : losecolor);
 
 					// Render line to cursor
 					renderer.RenderLine(lastp.pos, curp.pos, LINE_THICKNESS, color, true);

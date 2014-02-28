@@ -139,6 +139,9 @@
   <data name="ColorPick" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ColorPick.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="FlipSelectionV" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\FlipSelectionV.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Text" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Text.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -147,12 +150,6 @@
   </data>
   <data name="BrightnessGradient" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BrightnessGradient.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="DrawRectMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\DrawRectMode.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="SnapVerts" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SnapVerts.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CeilsGradient" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CeilsGradient.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -169,8 +166,8 @@
   <data name="Angle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Angle.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="FlipSelectionV" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\FlipSelectionV.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SnapVerts" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SnapVerts.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="VisualModeGZ" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\VisualModeGZ.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -184,9 +181,6 @@
   <data name="List" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\List.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="DrawLinesMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\DrawLinesMode.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="FloorAlign" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\FloorAlign.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -199,6 +193,9 @@
   <data name="DrawGridMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DrawGridMode.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Door" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Door.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="DrawCurveMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DrawCurveMode.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -208,7 +205,13 @@
   <data name="ThingPointAtCursor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ThingPointAtCursor.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Door" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Door.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Gear" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Gear.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DrawGeometryMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DrawGeometryMode.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DrawRectangleMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DrawRectangleMode.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

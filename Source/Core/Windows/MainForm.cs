@@ -723,7 +723,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public void DisplayStatus(StatusInfo newstatus)
 		{
 			//mxd. New message is the same as the one being displayed?
-			if(status.displayed && newstatus.type == status.type && newstatus.message == status.message) return;
+			if(newstatus.type != StatusType.Ready && status.displayed && newstatus.type == status.type && newstatus.message == status.message) return;
 			
 			// Stop timers
 			if(newstatus.type != StatusType.Selection && !newstatus.displayed) //mxd
