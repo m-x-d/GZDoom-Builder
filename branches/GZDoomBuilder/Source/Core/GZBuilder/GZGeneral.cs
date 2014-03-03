@@ -103,22 +103,17 @@ namespace CodeImp.DoomBuilder.GZBuilder
 		//main menu actions
 		[BeginAction("gzreloadmodeldef")]
 		private static void reloadModeldef() {
-			if(General.Map != null) {
-				General.Map.Data.ReloadModeldef();
-				General.MainWindow.RedrawDisplay(); //dbg?
-			}
+			if(General.Map != null) General.Map.Data.ReloadModeldef();
 		}
 
 		[BeginAction("gzreloadgldefs")]
 		private static void reloadGldefs() {
-			if (General.Map != null)
-				General.Map.Data.ReloadGldefs();
+			if (General.Map != null) General.Map.Data.ReloadGldefs();
 		}
 
 		[BeginAction("gzreloadmapinfo")]
 		private static void reloadMapInfo() {
-			if (General.Map != null)
-				General.Map.Data.ReloadMapInfo();
+			if (General.Map != null) General.Map.Data.ReloadMapInfo();
 		}
 	}
 }
