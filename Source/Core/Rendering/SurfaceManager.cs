@@ -658,7 +658,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			if(!resourcesunloaded)
 			{
-				int pass = General.Map.Renderer2D.FullBrightness ? 2 : 1; //mxd
+				int pass = Renderer.FullBrightness ? 2 : 1; //mxd
 				graphics.Shaders.Display2D.Begin();
 				foreach(KeyValuePair<ImageData, List<SurfaceEntry>> imgsurfaces in surfaces)
 				{

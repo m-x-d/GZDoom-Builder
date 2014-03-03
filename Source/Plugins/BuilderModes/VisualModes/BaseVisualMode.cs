@@ -2585,14 +2585,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.DisplayStatus(StatusType.Action, "Gravity is now " + onoff + ".");
 		}
 
-		[BeginAction("togglebrightness")]
-		public void ToggleBrightness()
-		{
-			renderer.FullBrightness = !renderer.FullBrightness;
-			string onoff = renderer.FullBrightness ? "ON" : "OFF";
-			General.Interface.DisplayStatus(StatusType.Action, "Full Brightness is now " + onoff + ".");
-		}
-
 		[BeginAction("togglehighlight")]
 		public void ToggleHighlight()
 		{

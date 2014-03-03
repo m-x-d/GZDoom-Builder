@@ -37,7 +37,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		float Scale { get; }
 		int VertexSize { get; }
 		ViewMode ViewMode { get; }
-		bool FullBrightness { get; set; } //mxd
 		
 		// View methods
 		Vector2D DisplayToMap(Vector2D mousepos);

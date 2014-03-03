@@ -120,6 +120,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemviewfloors = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemviewceilings = new System.Windows.Forms.ToolStripMenuItem();
 			this.seperatorviewviews = new System.Windows.Forms.ToolStripSeparator();
+			this.menufullbrightness = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuzoom = new System.Windows.Forms.ToolStripMenuItem();
 			this.item2zoom200 = new System.Windows.Forms.ToolStripMenuItem();
 			this.item2zoom100 = new System.Windows.Forms.ToolStripMenuItem();
@@ -185,6 +187,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttoninsertpreviousprefab = new System.Windows.Forms.ToolStripButton();
 			this.buttonthingsfilter = new System.Windows.Forms.ToolStripButton();
 			this.thingfilters = new System.Windows.Forms.ToolStripComboBox();
+			this.buttonfullbrightness = new System.Windows.Forms.ToolStripButton();
+			this.separatorfullbrightness = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonviewnormal = new System.Windows.Forms.ToolStripButton();
 			this.buttonviewbrightness = new System.Windows.Forms.ToolStripButton();
 			this.buttonviewfloors = new System.Windows.Forms.ToolStripButton();
@@ -254,6 +258,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.modecontrolsloolbar = new System.Windows.Forms.ToolStrip();
+			this.separatorfilters = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -971,6 +976,8 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemviewfloors,
             this.itemviewceilings,
             this.seperatorviewviews,
+            this.menufullbrightness,
+            this.toolStripSeparator4,
             this.menuzoom,
             this.menugotocoords,
             this.itemfittoscreen,
@@ -1036,6 +1043,21 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.seperatorviewviews.Name = "seperatorviewviews";
 			this.seperatorviewviews.Size = new System.Drawing.Size(206, 6);
+			// 
+			// menufullbrightness
+			// 
+			this.menufullbrightness.CheckOnClick = true;
+			this.menufullbrightness.Image = global::CodeImp.DoomBuilder.Properties.Resources.Brightness;
+			this.menufullbrightness.Name = "menufullbrightness";
+			this.menufullbrightness.Size = new System.Drawing.Size(209, 22);
+			this.menufullbrightness.Tag = "builder_togglebrightness";
+			this.menufullbrightness.Text = "Full Brightness";
+			this.menufullbrightness.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(206, 6);
 			// 
 			// menuzoom
 			// 
@@ -1391,6 +1413,9 @@ namespace CodeImp.DoomBuilder.Windows
             this.seperatorprefabs,
             this.buttonthingsfilter,
             this.thingfilters,
+            this.separatorfilters,
+            this.buttonfullbrightness,
+            this.separatorfullbrightness,
             this.buttonviewnormal,
             this.buttonviewbrightness,
             this.buttonviewfloors,
@@ -1654,6 +1679,23 @@ namespace CodeImp.DoomBuilder.Windows
 			this.thingfilters.ToolTipText = "Things Filter";
 			this.thingfilters.SelectedIndexChanged += new System.EventHandler(this.thingfilters_SelectedIndexChanged);
 			this.thingfilters.DropDownClosed += new System.EventHandler(this.LoseFocus);
+			// 
+			// buttonfullbrightness
+			// 
+			this.buttonfullbrightness.CheckOnClick = true;
+			this.buttonfullbrightness.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonfullbrightness.Image = global::CodeImp.DoomBuilder.Properties.Resources.Brightness;
+			this.buttonfullbrightness.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonfullbrightness.Name = "buttonfullbrightness";
+			this.buttonfullbrightness.Size = new System.Drawing.Size(23, 22);
+			this.buttonfullbrightness.Tag = "builder_togglebrightness";
+			this.buttonfullbrightness.Text = "Full Brightness";
+			this.buttonfullbrightness.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// separatorfullbrightness
+			// 
+			this.separatorfullbrightness.Name = "separatorfullbrightness";
+			this.separatorfullbrightness.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttonviewnormal
 			// 
@@ -2331,7 +2373,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// dockersspace
 			// 
 			this.dockersspace.Dock = System.Windows.Forms.DockStyle.Left;
-			this.dockersspace.Location = new System.Drawing.Point(32, 49);
+			this.dockersspace.Location = new System.Drawing.Point(0, 49);
 			this.dockersspace.Name = "dockersspace";
 			this.dockersspace.Size = new System.Drawing.Size(26, 515);
 			this.dockersspace.TabIndex = 6;
@@ -2382,6 +2424,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modecontrolsloolbar.TabIndex = 1;
 			this.modecontrolsloolbar.Text = "toolStrip1";
 			this.modecontrolsloolbar.Visible = false;
+			// 
+			// separatorfilters
+			// 
+			this.separatorfilters.Name = "separatorfilters";
+			this.separatorfilters.Size = new System.Drawing.Size(6, 25);
 			// 
 			// MainForm
 			// 
@@ -2647,5 +2694,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStrip modestoolbar;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
 		private System.Windows.Forms.ToolStrip modecontrolsloolbar;
+		private System.Windows.Forms.ToolStripMenuItem menufullbrightness;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripButton buttonfullbrightness;
+		private System.Windows.Forms.ToolStripSeparator separatorfullbrightness;
+		private System.Windows.Forms.ToolStripSeparator separatorfilters;
 	}
 }

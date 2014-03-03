@@ -309,17 +309,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		[BeginAction("togglebrightness")]
-		protected virtual void ToggleBrightness() {
-			renderer.FullBrightness = !renderer.FullBrightness;
-			string onoff = renderer.FullBrightness ? "ON" : "OFF";
-			General.Interface.DisplayStatus(StatusType.Action, "Full Brightness is now " + onoff + ".");
-
-			// Redraw display to show changes
-			General.Interface.RedrawDisplay();
-		}
-
-		//mxd
 		[BeginAction("togglehighlight")]
 		public void ToggleHighlight() {
 			BuilderPlug.Me.UseHighlight = !BuilderPlug.Me.UseHighlight;

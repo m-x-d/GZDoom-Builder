@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		public ProjectedFrustum2D Frustum2D { get { return frustum; } }
 		public bool DrawThingCages { get { return renderthingcages; } set { renderthingcages = value; } }
-		public bool FullBrightness { get { return fullbrightness; } set { fullbrightness = value; } }
+		new public bool FullBrightness { get { return fullbrightness; } set { fullbrightness = value; } }
 		public bool ShowSelection { get { return showselection; } set { showselection = value; } }
 		public bool ShowHighlight { get { return showhighlight; } set { showhighlight = value; } }
 		

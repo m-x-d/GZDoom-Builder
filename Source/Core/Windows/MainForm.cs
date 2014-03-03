@@ -1791,6 +1791,9 @@ namespace CodeImp.DoomBuilder.Windows
 			buttoninsertpreviousprefab.Visible = General.Settings.ToolbarPrefabs;
 			buttonthingsfilter.Visible = General.Settings.ToolbarFilter;
 			thingfilters.Visible = General.Settings.ToolbarFilter;
+			separatorfilters.Visible = General.Settings.ToolbarViewModes; //mxd
+			buttonfullbrightness.Visible = General.Settings.ToolbarViewModes; //mxd
+			separatorfullbrightness.Visible = General.Settings.ToolbarViewModes; //mxd
 			buttonviewbrightness.Visible = General.Settings.ToolbarViewModes;
 			buttonviewceilings.Visible = General.Settings.ToolbarViewModes;
 			buttonviewfloors.Visible = General.Settings.ToolbarViewModes;
@@ -2510,6 +2513,18 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
+		[BeginAction("togglebrightness")]
+		internal void ToggleBrightness() {
+			Renderer.FullBrightness = !Renderer.FullBrightness;
+			buttonfullbrightness.Checked = Renderer.FullBrightness;
+			menufullbrightness.Checked = Renderer.FullBrightness;
+			General.Interface.DisplayStatus(StatusType.Action, "Full Brightness is now " + (Renderer.FullBrightness ? "ON" : "OFF"));
+
+			// Redraw display to show changes
+			General.Interface.RedrawDisplay();
+		}
+
+		//mxd
 		[BeginAction("toggleautoclearsidetextures")]
 		internal void ToggleAutoClearSideTextures() {
 			buttonautoclearsidetextures.Checked = !buttonautoclearsidetextures.Checked;
@@ -2538,6 +2553,7 @@ namespace CodeImp.DoomBuilder.Windows
 			itemfittoscreen.Enabled = (General.Map != null);
 			menuzoom.Enabled = (General.Map != null);
 			menugotocoords.Enabled = (General.Map != null); //mxd
+			menufullbrightness.Enabled = (General.Map != null); //mxd
 			itemtoggleinfo.Checked = IsInfoPanelExpanded;
 			
 			// View mode items
@@ -2564,6 +2580,7 @@ namespace CodeImp.DoomBuilder.Windows
 			thingfilters.Enabled = (General.Map != null);
 			buttonthingsfilter.Enabled = (General.Map != null);
 			buttonscripteditor.Enabled = (General.Map != null);
+			buttonfullbrightness.Enabled = (General.Map != null); //mxd
 		}
 
 		#endregion

@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.joinsectorsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mergesectorsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+			this.makedooritem = new System.Windows.Forms.ToolStripMenuItem();
 			this.thingsmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.selectInSectorsItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -80,6 +81,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonAlignThingsToWall = new System.Windows.Forms.ToolStripButton();
 			this.buttonTextureOffsetLock = new System.Windows.Forms.ToolStripButton();
 			this.buttonMakeDoor = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.SuspendLayout();
@@ -253,7 +255,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.toolStripSeparator1,
             this.joinsectorsitem,
             this.mergesectorsitem,
-            this.toolStripMenuItem2});
+            this.toolStripMenuItem2,
+            this.makedooritem,
+            this.toolStripSeparator4});
 			this.sectorsmenu.Name = "sectorsmenu";
 			this.sectorsmenu.Size = new System.Drawing.Size(57, 20);
 			this.sectorsmenu.Text = "&Sectors";
@@ -299,7 +303,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
 			this.toolStripMenuItem2.Size = new System.Drawing.Size(242, 6);
-			this.toolStripMenuItem2.Visible = false;
+			// 
+			// makedooritem
+			// 
+			this.makedooritem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Door;
+			this.makedooritem.Name = "makedooritem";
+			this.makedooritem.Size = new System.Drawing.Size(245, 22);
+			this.makedooritem.Tag = "makedoor";
+			this.makedooritem.Text = "Make &Door";
+			this.makedooritem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// thingsmenu
 			// 
@@ -573,6 +585,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonMakeDoor.Text = "Make Door From Selection";
 			this.buttonMakeDoor.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(242, 6);
+			this.toolStripSeparator4.Visible = false;
+			// 
 			// MenusForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -653,5 +671,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripMenuItem selectInSectorsItem2;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripButton buttonMakeDoor;
+		private System.Windows.Forms.ToolStripMenuItem makedooritem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 	}
 }
