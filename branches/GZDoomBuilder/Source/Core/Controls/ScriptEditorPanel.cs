@@ -782,6 +782,12 @@ namespace CodeImp.DoomBuilder.Controls
 			t.Paste();
 			UpdateToolbar(true);
 		}
+
+		//mxd. Search clicked
+		private void buttonsearch_Click(object sender, EventArgs e) 
+		{
+			OpenFindAndReplace();
+		}
 		
 		// Mouse released on tabs
 		private void tabs_MouseUp(object sender, MouseEventArgs e)

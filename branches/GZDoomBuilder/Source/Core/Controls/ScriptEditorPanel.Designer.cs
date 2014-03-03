@@ -48,6 +48,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttoncompile = new System.Windows.Forms.ToolStripButton();
 			this.buttonclose = new System.Windows.Forms.ToolStripButton();
 			this.buttonkeywordhelp = new System.Windows.Forms.ToolStripButton();
+			this.buttonsearch = new System.Windows.Forms.ToolStripButton();
 			this.openfile = new System.Windows.Forms.OpenFileDialog();
 			this.savefile = new System.Windows.Forms.SaveFileDialog();
 			this.splitter = new System.Windows.Forms.SplitContainer();
@@ -84,22 +85,23 @@ namespace CodeImp.DoomBuilder.Controls
 			this.toolbar.AllowMerge = false;
 			this.toolbar.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.buttonnew,
-			this.buttonopen,
-			this.buttonsave,
-			this.buttonsaveall,
-			this.toolStripSeparator1,
-			this.buttonundo,
-			this.buttonredo,
-			this.toolStripSeparator2,
-			this.buttoncut,
-			this.buttoncopy,
-			this.buttonpaste,
-			this.toolStripSeparator3,
-			this.buttonscriptconfig,
-			this.buttoncompile,
-			this.buttonclose,
-			this.buttonkeywordhelp});
+            this.buttonnew,
+            this.buttonopen,
+            this.buttonsave,
+            this.buttonsaveall,
+            this.toolStripSeparator1,
+            this.buttonundo,
+            this.buttonredo,
+            this.toolStripSeparator2,
+            this.buttoncut,
+            this.buttoncopy,
+            this.buttonpaste,
+            this.toolStripSeparator3,
+            this.buttonscriptconfig,
+            this.buttoncompile,
+            this.buttonclose,
+            this.buttonkeywordhelp,
+            this.buttonsearch});
 			this.toolbar.Location = new System.Drawing.Point(0, 0);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(726, 25);
@@ -262,6 +264,17 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttonkeywordhelp.Text = "Keyword Help";
 			this.buttonkeywordhelp.Click += new System.EventHandler(this.buttonkeywordhelp_Click);
 			// 
+			// buttonsearch
+			// 
+			this.buttonsearch.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.buttonsearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonsearch.Image = global::CodeImp.DoomBuilder.Properties.Resources.Search;
+			this.buttonsearch.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonsearch.Name = "buttonsearch";
+			this.buttonsearch.Size = new System.Drawing.Size(23, 22);
+			this.buttonsearch.Text = "Open Find and Replace Window";
+			this.buttonsearch.Click += new System.EventHandler(this.buttonsearch_Click);
+			// 
 			// openfile
 			// 
 			this.openfile.Title = "Open Script";
@@ -312,9 +325,9 @@ namespace CodeImp.DoomBuilder.Controls
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.errorlist.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.colIndex,
-			this.colDescription,
-			this.colFile});
+            this.colIndex,
+            this.colDescription,
+            this.colFile});
 			this.errorlist.FullRowSelect = true;
 			this.errorlist.GridLines = true;
 			this.errorlist.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
@@ -400,5 +413,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ColumnHeader colFile;
 		private System.Windows.Forms.ImageList errorimages;
 		private System.Windows.Forms.ToolStripButton buttonkeywordhelp;
+		private System.Windows.Forms.ToolStripButton buttonsearch;
 	}
 }
