@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Config;
 using System.Threading;
@@ -1417,6 +1418,9 @@ namespace CodeImp.DoomBuilder.Data
 			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading model definitions...");
 			loadModeldefs(createActorsByClassList());
 
+			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading voxel definitions...");
+			loadVoxels();
+
 			foreach(Thing t in General.Map.Map.Things) t.UpdateModelStatus();
 
 			//rebuild geometry if in Visual mode
@@ -1430,7 +1434,14 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		public void ReloadGldefs() {
 			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading GLDEFS...");
-			loadGldefs(createActorsByClassList());
+
+			try {
+				loadGldefs(createActorsByClassList());
+			} catch(ArgumentNullException) {
+				MessageBox.Show("GLDEFS reload failed. Try using 'Reload Resources' instead.\nCheck 'Errors and Warnings' window for more details.");
+				General.MainWindow.DisplayReady();
+				return;
+			}
 
 			//rebuild geometry if in Visual mode
 			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
@@ -1443,7 +1454,14 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		public void ReloadMapInfo() {
 			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading (Z)MAPINFO...");
-			loadMapInfo();
+
+			try {
+				loadMapInfo();
+			} catch (ArgumentNullException) {
+				MessageBox.Show("(Z)MAPINFO reload failed. Try using 'Reload Resources' instead.\nCheck 'Errors and Warnings' window for more details.");
+				General.MainWindow.DisplayReady();
+				return;
+			}
 
 			//rebuild geometry if in Visual mode
 			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {

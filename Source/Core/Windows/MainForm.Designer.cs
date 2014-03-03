@@ -1253,7 +1253,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemReloadModedef.Name = "itemReloadModedef";
 			this.itemReloadModedef.Size = new System.Drawing.Size(232, 22);
 			this.itemReloadModedef.Tag = "builder_gzreloadmodeldef";
-			this.itemReloadModedef.Text = "Reload MODELDEF";
+			this.itemReloadModedef.Text = "Reload MODELDEF/VOXELDEF";
 			this.itemReloadModedef.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemReloadGldefs
