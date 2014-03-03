@@ -1428,6 +1428,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				form.Dispose();
 				General.Interface.RedrawDisplay();
 			}
+			else //mxd
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection!");
+			}
 		}
 		
 		[BeginAction("deleteitem", BaseAction = true)]

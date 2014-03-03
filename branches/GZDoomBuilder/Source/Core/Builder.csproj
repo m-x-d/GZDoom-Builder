@@ -941,6 +941,7 @@
     <None Include="Resources\Check.png" />
     <None Include="Resources\ClearTextures.png" />
     <None Include="Resources\Cursor.png" />
+    <None Include="Resources\Brightness.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\GZDB2.ico" />
     <None Include="Resources\fog.png" />
