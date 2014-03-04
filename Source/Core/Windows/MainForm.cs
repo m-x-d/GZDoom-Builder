@@ -1664,6 +1664,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		public void AddModesButton(ToolStripItem button, string group) {
+			// Set proper styling
+			button.Padding = new Padding(0, 1, 0, 1);
+			button.Margin = new Padding();
+			
 			// Fix tags to full action names
 			ToolStripItemCollection items = new ToolStripItemCollection(toolbar, new ToolStripItem[0]);
 			items.Add(button);
@@ -1878,12 +1882,12 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(ToolStripItem i in editmodeitems)
 			{
 				// Remove it and restart
-				modestoolbar.Items.Remove(i); //mxd
 				menumode.DropDownItems.Remove(i);
 				i.Dispose();
 			}
 			
 			// Done
+			modestoolbar.Items.Clear(); //mxd
 			editmodeitems.Clear();
 			UpdateSeparators();
 		}
@@ -1894,7 +1898,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Create a button
 			ToolStripSeparator item = new ToolStripSeparator();
 			item.Text = group; //mxd
-			item.Margin = new Padding(6, 0, 6, 0);
+			item.Margin = new Padding(0, 3, 0, 3); //mxd
 			modestoolbar.Items.Add(item); //mxd
 			editmodeitems.Add(item);
 			
@@ -1917,6 +1921,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Create a button
 			ToolStripItem item = new ToolStripButton(modeinfo.ButtonDesc, modeinfo.ButtonImage, EditModeButtonHandler);
 			item.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			item.Padding = new Padding(0, 2, 0, 2);
+			item.Margin = new Padding();
 			item.Tag = modeinfo;
 			modestoolbar.Items.Add(item); //mxd
 			editmodeitems.Add(item);
@@ -1997,11 +2003,11 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		private void toolbarContextMenu_KeyDown(object sender, KeyEventArgs e) {
-			toolbarContextMenuShiftPressed = e.KeyCode == Keys.ShiftKey;
+			toolbarContextMenuShiftPressed = (e.KeyCode == Keys.ShiftKey);
 		}
 
 		private void toolbarContextMenu_KeyUp(object sender, KeyEventArgs e) {
-			toolbarContextMenuShiftPressed = !(e.KeyCode == Keys.ShiftKey);
+			toolbarContextMenuShiftPressed = (e.KeyCode != Keys.ShiftKey);
 		}
 
 		private void toggleFile_Click(object sender, EventArgs e) {

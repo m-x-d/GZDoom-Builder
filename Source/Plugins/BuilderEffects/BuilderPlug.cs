@@ -63,6 +63,11 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			menusForm.Unregister();
 		}
 
+		public override void OnReloadResources() {
+			base.OnReloadResources();
+			menusForm.Register();
+		}
+
 		//actions
 		[BeginAction("applyjitter")]
 		private void applyJitterTransform() {

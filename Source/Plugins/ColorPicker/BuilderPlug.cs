@@ -47,6 +47,11 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			toolsform.Unregister();
 		}
 
+		public override void OnReloadResources() {
+			base.OnReloadResources();
+			toolsform.Register();
+		}
+
 		public override void Dispose() {
 			base.Dispose();
 			General.Actions.UnbindMethods(this);

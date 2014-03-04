@@ -1,3 +1,4 @@
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Windows
@@ -2383,7 +2384,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modestoolbar.Dock = System.Windows.Forms.DockStyle.Left;
 			this.modestoolbar.Location = new System.Drawing.Point(0, 49);
 			this.modestoolbar.Name = "modestoolbar";
-			this.modestoolbar.Size = new System.Drawing.Size(32, 515);
+			this.modestoolbar.Size = new System.Drawing.Size(30, 515);
+			this.modestoolbar.Padding = new Padding(2, 0, 2, 0);
+			this.modestoolbar.AutoSize = false;
 			this.modestoolbar.TabIndex = 8;
 			this.modestoolbar.Text = "toolStrip1";
 			this.modestoolbar.Visible = false;

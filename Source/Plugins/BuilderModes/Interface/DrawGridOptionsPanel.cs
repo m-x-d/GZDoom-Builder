@@ -25,19 +25,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(slicesH);
 			General.Interface.AddButton(slicesvlabel);
 			General.Interface.AddButton(slicesV);
+			General.Interface.AddButton(reset);
 			General.Interface.AddButton(cbseparator);
 			General.Interface.AddButton(gridlock);
 			General.Interface.AddButton(triangulate);
 		}
 
 		public void Unregister() {
-			General.Interface.RemoveButton(sliceshlabel);
-			General.Interface.RemoveButton(slicesH);
-			General.Interface.RemoveButton(slicesvlabel);
-			General.Interface.RemoveButton(slicesV);
-			General.Interface.RemoveButton(cbseparator);
-			General.Interface.RemoveButton(gridlock);
 			General.Interface.RemoveButton(triangulate);
+			General.Interface.RemoveButton(gridlock);
+			General.Interface.RemoveButton(cbseparator);
+			General.Interface.RemoveButton(reset);
+			General.Interface.RemoveButton(slicesV);
+			General.Interface.RemoveButton(slicesvlabel);
+			General.Interface.RemoveButton(slicesH);
+			General.Interface.RemoveButton(sliceshlabel);
 		}
 
 		private void ValueChanged(object sender, EventArgs e) {

@@ -25,8 +25,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		public void Unregister() {
-			General.Interface.RemoveButton(seglabel);
 			General.Interface.RemoveButton(seglen);
+			General.Interface.RemoveButton(seglabel);
 		}
 
 		private void seglen_ValueChanged(object sender, EventArgs e) {
