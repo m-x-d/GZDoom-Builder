@@ -36,11 +36,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		public void Unregister() {
-			General.Interface.RemoveButton(radiuslabel);
-			General.Interface.RemoveButton(radius);
-			General.Interface.RemoveButton(subdivslabel);
-			General.Interface.RemoveButton(subdivs);
 			General.Interface.RemoveButton(reset);
+			General.Interface.RemoveButton(subdivs);
+			General.Interface.RemoveButton(subdivslabel);
+			General.Interface.RemoveButton(radius);
+			General.Interface.RemoveButton(radiuslabel);
 		}
 
 		private void ValueChanged(object sender, EventArgs e) {

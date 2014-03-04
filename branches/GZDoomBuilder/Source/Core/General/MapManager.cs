@@ -1619,14 +1619,11 @@ namespace CodeImp.DoomBuilder {
 				General.MainWindow.DisplayReady();
 
 		}
-		internal void ReloadResources() {
-			DataLocation maplocation;
-			StatusInfo oldstatus;
-			Cursor oldcursor;
 
+		internal void ReloadResources() {
 			// Keep old display info
-			oldstatus = General.MainWindow.Status;
-			oldcursor = Cursor.Current;
+			StatusInfo oldstatus = General.MainWindow.Status;
+			Cursor oldcursor = Cursor.Current;
 
 			// Show status
 			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading data resources...");
@@ -1650,7 +1647,7 @@ namespace CodeImp.DoomBuilder {
 			General.WriteLogLine("Reloading data resources...");
 			data = new DataManager();
 			if (!string.IsNullOrEmpty(filepathname)) {
-				maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false, false);
+				DataLocation maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false, false);
 				data.Load(configinfo.Resources, options.Resources, maplocation);
 			}
 			else {
