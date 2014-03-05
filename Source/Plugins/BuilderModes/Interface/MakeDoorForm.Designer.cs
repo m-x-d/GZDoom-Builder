@@ -43,63 +43,68 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			// 
 			// doortexture
 			// 
-			this.doortexture.Location = new System.Drawing.Point(21, 34);
+			this.doortexture.Location = new System.Drawing.Point(12, 29);
+			this.doortexture.MultipleTextures = false;
 			this.doortexture.Name = "doortexture";
 			this.doortexture.Required = false;
-			this.doortexture.Size = new System.Drawing.Size(96, 115);
+			this.doortexture.Size = new System.Drawing.Size(83, 105);
 			this.doortexture.TabIndex = 0;
 			this.doortexture.TextureName = "";
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(21, 15);
+			this.label1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label1.Location = new System.Drawing.Point(12, 10);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(96, 21);
+			this.label1.Size = new System.Drawing.Size(83, 21);
 			this.label1.TabIndex = 1;
 			this.label1.Text = "Door";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(247, 15);
+			this.label2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label2.Location = new System.Drawing.Point(190, 10);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(99, 21);
+			this.label2.Size = new System.Drawing.Size(83, 21);
 			this.label2.TabIndex = 2;
 			this.label2.Text = "Ceiling";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// ceilingtexture
 			// 
-			this.ceilingtexture.Location = new System.Drawing.Point(247, 34);
+			this.ceilingtexture.Location = new System.Drawing.Point(190, 29);
+			this.ceilingtexture.MultipleTextures = false;
 			this.ceilingtexture.Name = "ceilingtexture";
-			this.ceilingtexture.Size = new System.Drawing.Size(96, 115);
+			this.ceilingtexture.Size = new System.Drawing.Size(83, 105);
 			this.ceilingtexture.TabIndex = 1;
 			this.ceilingtexture.TextureName = "";
 			// 
 			// floortexture
 			// 
-			this.floortexture.Location = new System.Drawing.Point(360, 34);
+			this.floortexture.Location = new System.Drawing.Point(279, 29);
+			this.floortexture.MultipleTextures = false;
 			this.floortexture.Name = "floortexture";
-			this.floortexture.Size = new System.Drawing.Size(96, 115);
+			this.floortexture.Size = new System.Drawing.Size(83, 105);
 			this.floortexture.TabIndex = 2;
 			this.floortexture.TextureName = "";
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(360, 15);
+			this.label3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label3.Location = new System.Drawing.Point(279, 10);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(99, 21);
+			this.label3.Size = new System.Drawing.Size(83, 21);
 			this.label3.TabIndex = 4;
 			this.label3.Text = "Floor";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// cancel
 			// 
-			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(243, 180);
+			this.cancel.Location = new System.Drawing.Point(279, 140);
 			this.cancel.Name = "cancel";
-			this.cancel.Size = new System.Drawing.Size(112, 25);
+			this.cancel.Size = new System.Drawing.Size(83, 25);
 			this.cancel.TabIndex = 4;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
@@ -107,10 +112,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			// 
 			// apply
 			// 
-			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(125, 180);
+			this.apply.Location = new System.Drawing.Point(190, 140);
 			this.apply.Name = "apply";
-			this.apply.Size = new System.Drawing.Size(112, 25);
+			this.apply.Size = new System.Drawing.Size(83, 25);
 			this.apply.TabIndex = 3;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
@@ -121,7 +125,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.resetoffsets.AutoSize = true;
 			this.resetoffsets.Checked = true;
 			this.resetoffsets.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.resetoffsets.Location = new System.Drawing.Point(21, 156);
+			this.resetoffsets.Location = new System.Drawing.Point(12, 140);
 			this.resetoffsets.Name = "resetoffsets";
 			this.resetoffsets.Size = new System.Drawing.Size(129, 18);
 			this.resetoffsets.TabIndex = 5;
@@ -130,18 +134,20 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			// 
 			// tracktexture
 			// 
-			this.tracktexture.Location = new System.Drawing.Point(134, 34);
+			this.tracktexture.Location = new System.Drawing.Point(101, 29);
+			this.tracktexture.MultipleTextures = false;
 			this.tracktexture.Name = "tracktexture";
 			this.tracktexture.Required = false;
-			this.tracktexture.Size = new System.Drawing.Size(96, 115);
+			this.tracktexture.Size = new System.Drawing.Size(83, 105);
 			this.tracktexture.TabIndex = 6;
 			this.tracktexture.TextureName = "";
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(134, 15);
+			this.label4.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label4.Location = new System.Drawing.Point(101, 10);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(96, 21);
+			this.label4.Size = new System.Drawing.Size(83, 21);
 			this.label4.TabIndex = 7;
 			this.label4.Text = "Track";
 			this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -152,7 +158,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(481, 219);
+			this.ClientSize = new System.Drawing.Size(372, 170);
 			this.Controls.Add(this.tracktexture);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.resetoffsets);
@@ -165,7 +171,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.Controls.Add(this.doortexture);
 			this.Controls.Add(this.label1);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "MakeDoorForm";
