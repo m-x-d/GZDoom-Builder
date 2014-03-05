@@ -244,8 +244,6 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor
 		internal GameConfiguration(Configuration cfg)
 		{
-			object obj;
-			
 			// Initialize
 			this.cfg = cfg;
 			this.thingflags = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -314,7 +312,7 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Flags have special (invariant culture) conversion
 			// because they are allowed to be written as integers in the configs
-			obj = cfg.ReadSettingObject("singlesidedflag", 0);
+			object obj = cfg.ReadSettingObject("singlesidedflag", 0);
 			if(obj is int) singlesidedflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else singlesidedflag = obj.ToString();
 			obj = cfg.ReadSettingObject("doublesidedflag", 0);
 			if(obj is int) doublesidedflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else doublesidedflag = obj.ToString();
@@ -393,12 +391,9 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Loading
 		
 		// This loads the map lumps
-		private void LoadMapLumps()
-		{
-			IDictionary dic;
-			
+		private void LoadMapLumps() {
 			// Get map lumps list
-			dic = cfg.ReadSetting("maplumpnames", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("maplumpnames", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				// Make map lumps
@@ -452,11 +447,10 @@ namespace CodeImp.DoomBuilder.Config
 		// Things and thing categories
 		private void LoadThingCategories()
 		{
-			IDictionary dic;
 			ThingCategory thingcat;
 			
 			// Get thing categories
-			dic = cfg.ReadSetting("thingtypes", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("thingtypes", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				if(de.Value is IDictionary)
@@ -486,10 +480,8 @@ namespace CodeImp.DoomBuilder.Config
 		// Linedef flags
 		private void LoadLinedefFlags()
 		{
-			IDictionary dic;
-			
 			// Get linedef flags
-			dic = cfg.ReadSetting("linedefflags", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("linedefflags", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 				linedefflags.Add(de.Key.ToString(), de.Value.ToString());
 			
@@ -593,10 +585,8 @@ namespace CodeImp.DoomBuilder.Config
 		// Linedef activates
 		private void LoadLinedefActivations()
 		{
-			IDictionary dic;
-
 			// Get linedef activations
-			dic = cfg.ReadSetting("linedefactivations", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("linedefactivations", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				// Add to the list
@@ -610,10 +600,8 @@ namespace CodeImp.DoomBuilder.Config
 		// Linedef generalized actions
 		private void LoadLinedefGeneralizedActions()
 		{
-			IDictionary dic;
-
 			// Get linedef activations
-			dic = cfg.ReadSetting("gen_linedeftypes", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("gen_linedeftypes", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				// Check for valid structure
@@ -648,12 +636,11 @@ namespace CodeImp.DoomBuilder.Config
 		// Sector effects
 		private void LoadSectorEffects()
 		{
-			IDictionary dic;
 			SectorEffectInfo si;
 			int actionnumber;
 			
 			// Get sector effects
-			dic = cfg.ReadSetting("sectortypes", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("sectortypes", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				// Try paring the action number
@@ -681,11 +668,10 @@ namespace CodeImp.DoomBuilder.Config
 		// Brightness levels
 		private void LoadBrightnessLevels()
 		{
-			IDictionary dic;
 			int level;
 
 			// Get brightness levels structure
-			dic = cfg.ReadSetting("sectorbrightness", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("sectorbrightness", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				// Try paring the level
@@ -708,10 +694,8 @@ namespace CodeImp.DoomBuilder.Config
 		// Sector generalized effects
 		private void LoadSectorGeneralizedEffects()
 		{
-			IDictionary dic;
-
 			// Get sector effects
-			dic = cfg.ReadSetting("gen_sectortypes", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("gen_sectortypes", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				// Check for valid structure
@@ -730,10 +714,8 @@ namespace CodeImp.DoomBuilder.Config
 		// Thing flags
 		private void LoadThingFlags()
 		{
-			IDictionary dic;
-
 			// Get linedef flags
-			dic = cfg.ReadSetting("thingflags", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("thingflags", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 				thingflags.Add(de.Key.ToString(), de.Value.ToString());
 			
@@ -759,10 +741,8 @@ namespace CodeImp.DoomBuilder.Config
 		// Default thing flags
 		private void LoadDefaultThingFlags()
 		{
-			IDictionary dic;
-
 			// Get linedef flags
-			dic = cfg.ReadSetting("defaultthingflags", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("defaultthingflags", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				// Check if flag exists
@@ -780,10 +760,8 @@ namespace CodeImp.DoomBuilder.Config
 		// Skills
 		private void LoadSkills()
 		{
-			IDictionary dic;
-
 			// Get skills
-			dic = cfg.ReadSetting("skills", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("skills", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				int num;
@@ -799,12 +777,9 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// Texture Sets
-		private void LoadTextureSets()
-		{
-			IDictionary dic;
-
+		private void LoadTextureSets() {
 			// Get sets
-			dic = cfg.ReadSetting("texturesets", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("texturesets", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				DefinedTextureSet s = new DefinedTextureSet(cfg, "texturesets." + de.Key);
@@ -815,10 +790,8 @@ namespace CodeImp.DoomBuilder.Config
 		// Thing Filters
 		private void LoadThingFilters()
 		{
-			IDictionary dic;
-
 			// Get sets
-			dic = cfg.ReadSetting("thingsfilters", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("thingsfilters", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				ThingsFilter f = new ThingsFilter(cfg, "thingsfilters." + de.Key);
@@ -829,9 +802,7 @@ namespace CodeImp.DoomBuilder.Config
 		// Make door flags
 		private void LoadMakeDoorFlags()
 		{
-			IDictionary dic;
-
-			dic = cfg.ReadSetting("makedoorflags", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("makedoorflags", new Hashtable());
 			foreach (DictionaryEntry de in dic)
 			{
 				// Using minus will unset the flag

@@ -1421,6 +1421,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						orderedselection.Clear();
 						General.Map.Map.ClearSelectedSectors();
 						General.Map.Map.ClearSelectedLinedefs();
+						updateOverlaySurfaces();//mxd
 					}
 				}
 				
