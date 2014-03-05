@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SectorData sd = mode.GetSectorData(Sidedef.Sector);
 			
 			// Texture given?
-			if((Sidedef.MiddleTexture.Length > 0) && (Sidedef.MiddleTexture != "-"))
+			if(Sidedef.LongMiddleTexture != MapSet.EmptyLongName)
 			{
 				// Load texture
 				base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongMiddleTexture);

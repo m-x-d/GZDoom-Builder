@@ -91,7 +91,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!osd.Updated) osd.Update();
 			
 			// Texture given?
-			if((Sidedef.LowTexture.Length > 0) && (Sidedef.LowTexture != "-"))
+			if(Sidedef.LongLowTexture != MapSet.EmptyLongName)
 			{
 				// Load texture
 				base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongLowTexture);

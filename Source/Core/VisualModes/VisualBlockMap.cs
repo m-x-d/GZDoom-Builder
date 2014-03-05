@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		// This returns the key for a block at the given coordinates
 		// TODO: Could we just use the Point struct as key?
-		private ulong GetBlockKey(Point p)
+		private static ulong GetBlockKey(Point p)
 		{
 			return unchecked( ((ulong)(uint)p.X << 32) + (uint)p.Y );
 		}

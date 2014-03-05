@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
@@ -119,7 +120,13 @@ namespace CodeImp.DoomBuilder.Windows
 						str.Append(c.Value);
 					}
 				}
-				Clipboard.SetText(str.ToString());
+
+				//mxd
+				try {
+					Clipboard.SetDataObject(str.ToString(), true);
+				} catch(ExternalException) {
+					General.Interface.DisplayStatus(StatusType.Warning, "Failed to perform a Clipboard operation...");
+				}
 			}
 		}
 

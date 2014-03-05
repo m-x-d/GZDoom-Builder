@@ -949,6 +949,7 @@
     <None Include="Resources\GZDB_Logo_small.png" />
     <None Include="Resources\InfoLine.png" />
     <None Include="Resources\Keyboard.png" />
+    <None Include="Resources\ImageStack.png" />
     <Content Include="Resources\Light.png" />
     <None Include="Resources\Lightbulb.png" />
     <Content Include="Resources\Light_animate.png" />

@@ -754,6 +754,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Game Configurations";
+			this.Shown += new System.EventHandler(this.ConfigForm_Shown);
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ConfigForm_HelpRequested);
 			this.tabs.ResumeLayout(false);
 			this.tabresources.ResumeLayout(false);

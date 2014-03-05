@@ -55,11 +55,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
 				// Check floor texture
-				if(!General.Map.Data.GetFlatExists(s.FloorTexture))
+				if(s.LongFloorTexture != MapSet.EmptyLongName && !General.Map.Data.GetFlatExists(s.FloorTexture))
 					SubmitResult(new ResultUnknownFlat(s, false));
 
 				// Check ceiling texture
-				if(!General.Map.Data.GetFlatExists(s.CeilTexture))
+				if(s.LongCeilTexture != MapSet.EmptyLongName && !General.Map.Data.GetFlatExists(s.CeilTexture))
 					SubmitResult(new ResultUnknownFlat(s, true));
 				
 				// Handle thread interruption

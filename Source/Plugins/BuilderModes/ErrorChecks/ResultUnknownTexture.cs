@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.side = sd;
 			this.part = part;
 			this.viewobjects.Add(sd);
-			this.description = "This sidedef uses an unknown texture. This could be the result of missing resources, or a mistyped texture name. Click the Remove Texture button to remove the texture or click on Add Default Texture to use a known texture instead.";
+			this.description = "This sidedef uses an unknown texture. This could be the result of missing resources, or a mistyped texture name. Click the 'Remove Texture' button to remove the texture or click on 'Add Default Texture' to use a known texture instead.";
 		}
 		
 		#endregion

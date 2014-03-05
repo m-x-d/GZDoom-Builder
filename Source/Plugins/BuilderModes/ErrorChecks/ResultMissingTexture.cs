@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.side = sd;
 			this.part = part;
 			this.viewobjects.Add(sd);
-			this.description = "This sidedef is missing a texture where it is required and could cause a 'Hall Of Mirrors' visual problem in the map. Click the Add Default Texture button to add a texture to the line.";
+			this.description = "This sidedef is missing a texture where it is required and could cause a 'Hall Of Mirrors' visual problem in the map. Click the 'Add Default Texture' button to add a texture to the line.";
 		}
 
 		#endregion

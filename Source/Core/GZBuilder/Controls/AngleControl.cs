@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public delegate void AngleChangedDelegate();
 		public event AngleChangedDelegate AngleChanged;
 
-		private PointF DegreesToXY(float degrees, float radius, Point origin)
+		private static PointF DegreesToXY(float degrees, float radius, Point origin)
 		{
 			PointF xy = new PointF();
 			double radians = degrees * Math.PI / 180.0;
@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			return xy;
 		}
 
-		private int XYToDegrees(Point xy, Point origin)
+		private static int XYToDegrees(Point xy, Point origin)
 		{
 			float xDiff = xy.X - origin.X;
 			float yDiff = xy.Y - origin.Y;

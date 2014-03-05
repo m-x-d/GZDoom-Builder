@@ -41,10 +41,17 @@ namespace CodeImp.DoomBuilder.Controls
 			timer.Stop(); //mxd
 
 			// Check if name is a "none" texture
-			if((imagename.Length < 1) || (imagename == "-"))
+			if(string.IsNullOrEmpty(imagename))
 			{
 				DisplayImageSize(0, 0); //mxd
 				
+				//mxd. Flat required?
+				return multipletextures ? Properties.Resources.ImageStack : Properties.Resources.MissingTexture;
+			} 
+			else if(imagename == "-") //mxd
+			{
+				DisplayImageSize(0, 0);
+
 				// Flat required!
 				return Properties.Resources.MissingTexture;
 			}

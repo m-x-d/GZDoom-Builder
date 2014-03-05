@@ -141,7 +141,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			return combineName(comment.Length == 0 ? NodeInfoDefaultName.LINEDEF : comment, l.Tag, l.Action, l.Index, sortMode, isDefaultName);
 		}
 
-		private string combineName(string name, int tag, int action, int index, string sortMode, bool isDefaultName) {
+		private static string combineName(string name, int tag, int action, int index, string sortMode, bool isDefaultName) {
 			switch (sortMode) {
 				case SortMode.SORT_BY_ACTION:
 					return (tag > 0 ? "Tag:" + tag + "; " : "") + name + (isDefaultName ? " " + index : "");

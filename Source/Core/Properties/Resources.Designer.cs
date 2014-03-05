@@ -249,6 +249,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap ImageStack {
+            get {
+                object obj = ResourceManager.GetObject("ImageStack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap InfoLine {
             get {
                 object obj = ResourceManager.GetObject("InfoLine", resourceCulture);

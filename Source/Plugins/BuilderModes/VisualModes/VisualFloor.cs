@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 										  s.Fields.GetValue("yscalefloor", 1.0f));
 			
 			//Load floor texture
-			if ((s.FloorTexture.Length > 0) && (s.FloorTexture != "-"))
+			if (s.LongFloorTexture != MapSet.EmptyLongName)
 			{
 				base.Texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
 				if(base.Texture == null || base.Texture is UnknownImage)

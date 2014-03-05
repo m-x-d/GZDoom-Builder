@@ -124,9 +124,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override int MinimumRevision { get { return Assembly.GetExecutingAssembly().GetName().Version.Revision; } }
 		
 		public MenusForm MenusForm { get { return menusform; } }
-		public CurveLinedefsForm CurveLinedefsForm { get { return curvelinedefsform; } }
-		public FindReplaceForm FindReplaceForm { get { return findreplaceform; } }
-		public ErrorCheckForm ErrorCheckForm { get { return errorcheckform; } }
+		public CurveLinedefsForm CurveLinedefsForm { get { return curvelinedefsform ?? (curvelinedefsform = new CurveLinedefsForm()); } }
+		public FindReplaceForm FindReplaceForm { get { return findreplaceform ?? (findreplaceform = new FindReplaceForm()); } }
+		public ErrorCheckForm ErrorCheckForm { get { return errorcheckform ?? (errorcheckform = new ErrorCheckForm()); } }
 		public PreferencesForm PreferencesForm { get { return preferencesform; } }
 
 		// Settings
@@ -191,15 +191,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			menusform = new MenusForm();
 			menusform.Register();
 			menusform.TextureOffsetLock.Checked = lockSectorTextureOffsetsWhileDragging; //mxd
-			
-			// Load curve linedefs form
-			curvelinedefsform = new CurveLinedefsForm();
-			
-			// Load find/replace form
-			findreplaceform = new FindReplaceForm();
-			
-			// Load error checking form
-			errorcheckform = new ErrorCheckForm();
 			
 			// Load Undo\Redo docker
 			undoredopanel = new UndoRedoPanel();
@@ -490,12 +481,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//get texture
 					ImageData texture = null;
 
-					if(newline.Front.MiddleRequired() && newline.Front.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(newline.Front.MiddleTexture)) {
-						texture = General.Map.Data.GetFlatImage(newline.Front.MiddleTexture);
-					} else if(newline.Front.HighRequired() && newline.Front.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(newline.Front.HighTexture)) {
-						texture = General.Map.Data.GetFlatImage(newline.Front.HighTexture);
-					} else if(newline.Front.LowRequired() && newline.Front.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(newline.Front.LowTexture)) {
-						texture = General.Map.Data.GetFlatImage(newline.Front.LowTexture);
+					if(newline.Front.MiddleRequired() && newline.Front.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(newline.Front.LongMiddleTexture)) {
+						texture = General.Map.Data.GetTextureImage(newline.Front.MiddleTexture);
+					} else if(newline.Front.HighRequired() && newline.Front.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(newline.Front.LongHighTexture)) {
+						texture = General.Map.Data.GetTextureImage(newline.Front.HighTexture);
+					} else if(newline.Front.LowRequired() && newline.Front.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(newline.Front.LongLowTexture)) {
+						texture = General.Map.Data.GetTextureImage(newline.Front.LowTexture);
 					}
 
 					//clamp offsetX
@@ -506,12 +497,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//get texture
 					ImageData texture = null;
 
-					if(newline.Back.MiddleRequired() && newline.Back.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(newline.Back.MiddleTexture)) {
-						texture = General.Map.Data.GetFlatImage(newline.Back.MiddleTexture);
-					} else if(newline.Back.HighRequired() && newline.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(newline.Back.HighTexture)) {
-						texture = General.Map.Data.GetFlatImage(newline.Back.HighTexture);
-					} else if(newline.Back.LowRequired() && newline.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(newline.Back.LowTexture)) {
-						texture = General.Map.Data.GetFlatImage(newline.Back.LowTexture);
+					if(newline.Back.MiddleRequired() && newline.Back.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(newline.Back.LongMiddleTexture)) {
+						texture = General.Map.Data.GetTextureImage(newline.Back.MiddleTexture);
+					} else if(newline.Back.HighRequired() && newline.Back.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(newline.Back.LongHighTexture)) {
+						texture = General.Map.Data.GetTextureImage(newline.Back.HighTexture);
+					} else if(newline.Back.LowRequired() && newline.Back.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(newline.Back.LongLowTexture)) {
+						texture = General.Map.Data.GetTextureImage(newline.Back.LowTexture);
 					}
 
 					//clamp offsetX

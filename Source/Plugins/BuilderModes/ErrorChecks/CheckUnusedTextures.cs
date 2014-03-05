@@ -39,13 +39,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Sidedef sd in General.Map.Map.Sidedefs)
 			{
 				// Check upper texture
-				if(!sd.HighRequired() && ((sd.HighTexture.Length > 1) || (sd.HighTexture != "-")))
+				if(!sd.HighRequired() && sd.LongHighTexture != MapSet.EmptyLongName)
 				{
 					SubmitResult(new ResultUnusedTexture(sd, SidedefPart.Upper));
 				}
 
 				// Check lower texture
-				if(!sd.LowRequired() && ((sd.LowTexture.Length > 1) || (sd.LowTexture != "-")))
+				if(!sd.LowRequired() && sd.LongLowTexture != MapSet.EmptyLongName)
 				{
 					SubmitResult(new ResultUnusedTexture(sd, SidedefPart.Lower));
 				}

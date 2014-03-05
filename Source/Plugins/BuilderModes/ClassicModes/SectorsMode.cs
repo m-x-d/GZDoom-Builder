@@ -1487,10 +1487,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							}
 
 							//mxd. Check textures.
-							if(lines[i].Front.MiddleRequired() && (lines[i].Front.MiddleTexture.Length == 0 || lines[i].Front.MiddleTexture == "-")) {
-								if(lines[i].Front.HighTexture.Length > 0 && lines[i].Front.HighTexture != "-") {
+							if(lines[i].Front.MiddleRequired() && lines[i].Front.LongMiddleTexture == MapSet.EmptyLongName) {
+								if(lines[i].Front.LongHighTexture != MapSet.EmptyLongName) {
 									lines[i].Front.SetTextureMid(lines[i].Front.HighTexture);
-								} else if(lines[i].Front.LowTexture.Length > 0 && lines[i].Front.LowTexture != "-") {
+								} else if(lines[i].Front.LongLowTexture != MapSet.EmptyLongName) {
 									lines[i].Front.SetTextureMid(lines[i].Front.LowTexture);
 								}
 							}

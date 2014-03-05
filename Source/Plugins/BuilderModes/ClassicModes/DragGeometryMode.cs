@@ -409,7 +409,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						s.Fields.BeforeFieldsChange();
 
 						//update ceiling offset
-						if(s.CeilTexture.Length > 1) {
+						if(s.LongCeilTexture != MapSet.EmptyLongName) {
 							ImageData texture = General.Map.Data.GetFlatImage(s.CeilTexture);
 
 							if(texture != null) {
@@ -438,7 +438,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 
 						//update floor offset
-						if(s.FloorTexture.Length > 1) {
+						if(s.LongFloorTexture != MapSet.EmptyLongName) {
 							ImageData texture = General.Map.Data.GetFlatImage(s.FloorTexture);
 
 							if(texture != null) {

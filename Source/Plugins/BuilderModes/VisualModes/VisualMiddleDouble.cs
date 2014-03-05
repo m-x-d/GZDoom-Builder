@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override bool Setup()
 		{
 			//mxd
-			if(Sidedef.MiddleTexture.Length == 0 || Sidedef.MiddleTexture == "-") return false;
+			if(Sidedef.LongMiddleTexture == MapSet.EmptyLongName) return false;
 			
 			Vector2D vl, vr;
 
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!osd.Updated) osd.Update();
 
 			// Load texture
-			if ((Sidedef.MiddleTexture.Length > 0) && (Sidedef.MiddleTexture != "-")){
+			if(Sidedef.LongMiddleTexture != MapSet.EmptyLongName) {
 				base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongMiddleTexture);
 				if(base.Texture == null || base.Texture is UnknownImage) {
 					base.Texture = General.Map.Data.UnknownTexture3D;

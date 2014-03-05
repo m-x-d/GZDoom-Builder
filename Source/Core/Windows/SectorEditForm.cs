@@ -144,8 +144,14 @@ namespace CodeImp.DoomBuilder.Windows
 				// Floor/Ceiling
 				if(s.FloorHeight.ToString() != floorheight.Text) floorheight.Text = "";
 				if(s.CeilHeight.ToString() != ceilingheight.Text) ceilingheight.Text = "";
-				if(s.FloorTexture != floortex.TextureName) floortex.TextureName = "";
-				if(s.CeilTexture != ceilingtex.TextureName) ceilingtex.TextureName = "";
+				if (s.FloorTexture != floortex.TextureName) {
+					floortex.MultipleTextures = true; //mxd
+					floortex.TextureName = "";
+				}
+				if (s.CeilTexture != ceilingtex.TextureName) {
+					ceilingtex.MultipleTextures = true; //mxd
+					ceilingtex.TextureName = "";
+				}
 
 				// Action
 				if(s.Tag != sc.Tag)	tagSelector.ClearTag(); //mxd

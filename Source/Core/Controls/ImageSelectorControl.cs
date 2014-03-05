@@ -38,12 +38,14 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool ismouseinside;
 		private MouseButtons button;
 		private string previousImageName; //mxd
+		protected bool multipletextures; //mxd
 		
 		#endregion
 
 		#region ================== Properties
 		
 		public string TextureName { get { return name.Text; } set { name.Text = value; } }
+		public bool MultipleTextures { get { return multipletextures; } set { multipletextures = value; } }
 
 		#endregion
 
@@ -241,7 +243,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This clamps a value between 0 and 1
-		private float Saturate(float v)
+		private static float Saturate(float v)
 		{
 			if(v < 0f) return 0f; 
 			if(v > 1f) return 1f; 

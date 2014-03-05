@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 										  s.Fields.GetValue("yscaleceiling", 1.0f));
 			
 			//Load ceiling texture
-			if((s.CeilTexture.Length > 0) && (s.CeilTexture != "-")) {
+			if(s.LongCeilTexture != MapSet.EmptyLongName) {
 				base.Texture = General.Map.Data.GetFlatImage(s.LongCeilTexture);
 				if(base.Texture == null || base.Texture is UnknownImage) {
 					base.Texture = General.Map.Data.UnknownTexture3D;

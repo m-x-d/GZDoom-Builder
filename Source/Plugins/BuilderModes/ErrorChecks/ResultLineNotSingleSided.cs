@@ -47,8 +47,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Initialize
 			this.line = l;
 			this.viewobjects.Add(l);
-			this.description = "This linedef is marked as single-sided, but has both a front and a back sidedef. Click Make Double-Sided to flag the line as double-sided." +
-							   " Or click Remove Sidedef to remove the sidedef on the back side (making the line really single-sided).";
+			this.description = "This linedef is marked as single-sided, but has both a front and a back sidedef. Click 'Make Double-Sided' button to flag the line as double-sided." +
+							   " Or click 'Remove Sidedef' button to remove the sidedef on the back side (making the line really single-sided).";
 		}
 		
 		#endregion

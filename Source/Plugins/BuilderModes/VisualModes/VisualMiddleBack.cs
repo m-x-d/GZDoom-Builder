@@ -75,12 +75,12 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 			//mxd. which texture we must use?
 			long textureLong = 0;
 			if ((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0) {
-				if (Sidedef.Other.HighTexture.Length > 0 && Sidedef.Other.HighTexture != "-")
+				if (Sidedef.Other.LongHighTexture != MapSet.EmptyLongName)
 					textureLong = Sidedef.Other.LongHighTexture;
 			} else if ((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0) {
-				if(Sidedef.Other.LowTexture.Length > 0 && Sidedef.Other.LowTexture != "-")
+				if(Sidedef.Other.LongLowTexture != MapSet.EmptyLongName)
 					textureLong = Sidedef.Other.LongLowTexture;
-			} else if ((sourceside.MiddleTexture.Length > 0) && (sourceside.MiddleTexture != "-")) {
+			} else if ((sourceside.LongMiddleTexture != MapSet.EmptyLongName)) {
 				textureLong = sourceside.LongMiddleTexture;
 			}
 

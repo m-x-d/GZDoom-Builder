@@ -713,5 +713,12 @@ namespace CodeImp.DoomBuilder.Windows
 			configinfo.LinedefColorPresets = colorsControl.GetPresets();
 			configinfo.Changed = true; //mxd
 		}
+
+		//mxd
+		private void ConfigForm_Shown(object sender, EventArgs e) {
+			if (listconfigs.SelectedItems.Count > 0) {
+				listconfigs.SelectedItems[0].EnsureVisible();
+			}
+		}
 	}
 }

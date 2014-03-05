@@ -242,7 +242,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Methods
 
 		// This makes the path prefix for the given assembly
-		private string GetPluginPathPrefix(Assembly asm)
+		private static string GetPluginPathPrefix(Assembly asm)
 		{
 			Plugin p = General.Plugins.FindPluginByAssembly(asm);
 			return "plugins." + p.Name.ToLowerInvariant() + ".";

@@ -695,9 +695,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This applies defaults to a sidedef
 		private static void ApplyDefaultsToSidedef(Sidedef sd, SidedefSettings defaults)
 		{
-			if(sd.HighRequired() && sd.HighTexture.StartsWith("-")) sd.SetTextureHigh(defaults.newtexhigh);
-			if(sd.MiddleRequired() && sd.MiddleTexture.StartsWith("-")) sd.SetTextureMid(defaults.newtexmid);
-			if(sd.LowRequired() && sd.LowTexture.StartsWith("-")) sd.SetTextureLow(defaults.newtexlow);
+			if(sd.HighRequired() && sd.LongHighTexture == MapSet.EmptyLongName) sd.SetTextureHigh(defaults.newtexhigh); //mxd
+			if(sd.MiddleRequired() && sd.LongMiddleTexture == MapSet.EmptyLongName) sd.SetTextureMid(defaults.newtexmid); //mxd
+			if(sd.LowRequired() && sd.LongLowTexture == MapSet.EmptyLongName) sd.SetTextureLow(defaults.newtexlow); //mxd
 		}
 
 		// This applies defaults to a sector
@@ -1470,12 +1470,12 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(l.Front != null) {
 					ImageData texture = null;
 
-					if(l.Front.MiddleRequired() && l.Front.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.MiddleTexture)) {
-						texture = General.Map.Data.GetFlatImage(l.Front.MiddleTexture);
-					} else if(l.Front.HighRequired() && l.Front.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.HighTexture)) {
-						texture = General.Map.Data.GetFlatImage(l.Front.HighTexture);
-					} else if(l.Front.LowRequired() && l.Front.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.LowTexture)) {
-						texture = General.Map.Data.GetFlatImage(l.Front.LowTexture);
+					if(l.Front.MiddleRequired() && l.Front.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongMiddleTexture)) {
+						texture = General.Map.Data.GetTextureImage(l.Front.LongMiddleTexture);
+					} else if(l.Front.HighRequired() && l.Front.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongHighTexture)) {
+						texture = General.Map.Data.GetTextureImage(l.Front.LongHighTexture);
+					} else if(l.Front.LowRequired() && l.Front.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongLowTexture)) {
+						texture = General.Map.Data.GetTextureImage(l.Front.LongLowTexture);
 					}
 
 					if(texture != null)
@@ -1485,12 +1485,12 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(l.Back != null) {
 					ImageData texture = null;
 
-					if(l.Back.MiddleRequired() && l.Back.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.MiddleTexture)) {
-						texture = General.Map.Data.GetFlatImage(l.Back.MiddleTexture);
-					} else if(l.Back.HighRequired() && l.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.HighTexture)) {
-						texture = General.Map.Data.GetFlatImage(l.Back.HighTexture);
-					} else if(l.Back.LowRequired() && l.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.LowTexture)) {
-						texture = General.Map.Data.GetFlatImage(l.Back.LowTexture);
+					if(l.Back.MiddleRequired() && l.Back.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongMiddleTexture)) {
+						texture = General.Map.Data.GetTextureImage(l.Back.LongMiddleTexture);
+					} else if(l.Back.HighRequired() && l.Back.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongHighTexture)) {
+						texture = General.Map.Data.GetTextureImage(l.Back.LongHighTexture);
+					} else if(l.Back.LowRequired() && l.Back.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongLowTexture)) {
+						texture = General.Map.Data.GetTextureImage(l.Back.LongLowTexture);
 					}
 
 					if(texture != null)
@@ -1507,22 +1507,22 @@ namespace CodeImp.DoomBuilder.Geometry
 
 			foreach(Linedef l in lines) {
 				if(l.Front != null) {
-					if(l.Front.MiddleRequired() && l.Front.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.MiddleTexture)) {
-						ImageData texture = General.Map.Data.GetFlatImage(l.Front.MiddleTexture);
+					if(l.Front.MiddleRequired() && l.Front.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongMiddleTexture)) {
+						ImageData texture = General.Map.Data.GetTextureImage(l.Front.LongMiddleTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0) UDMFTools.SetFloat(l.Front.Fields, "offsetx_mid", offset);
 					}
 
-					if(l.Front.HighRequired() && l.Front.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.HighTexture)) {
-						ImageData texture = General.Map.Data.GetFlatImage(l.Front.HighTexture);
+					if(l.Front.HighRequired() && l.Front.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongHighTexture)) {
+						ImageData texture = General.Map.Data.GetTextureImage(l.Front.LongHighTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0) UDMFTools.SetFloat(l.Front.Fields, "offsetx_top", offset);
 					}
 
-					if(l.Front.LowRequired() && l.Front.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Front.LowTexture)) {
-						ImageData texture = General.Map.Data.GetFlatImage(l.Front.LowTexture);
+					if(l.Front.LowRequired() && l.Front.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongLowTexture)) {
+						ImageData texture = General.Map.Data.GetTextureImage(l.Front.LongLowTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0) UDMFTools.SetFloat(l.Front.Fields, "offsetx_bottom", offset);
@@ -1530,22 +1530,22 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 
 				if(l.Back != null) {
-					if(l.Back.MiddleRequired() && l.Back.MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.MiddleTexture)) {
-						ImageData texture = General.Map.Data.GetFlatImage(l.Back.MiddleTexture);
+					if(l.Back.MiddleRequired() && l.Back.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongMiddleTexture)) {
+						ImageData texture = General.Map.Data.GetTextureImage(l.Back.LongMiddleTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0) UDMFTools.SetFloat(l.Back.Fields, "offsetx_mid", offset);
 					}
 
-					if(l.Back.HighRequired() && l.Back.HighTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.HighTexture)) {
-						ImageData texture = General.Map.Data.GetFlatImage(l.Back.HighTexture);
+					if(l.Back.HighRequired() && l.Back.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongHighTexture)) {
+						ImageData texture = General.Map.Data.GetTextureImage(l.Back.LongHighTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0) UDMFTools.SetFloat(l.Back.Fields, "offsetx_top", offset);
 					}
 
-					if(l.Back.LowRequired() && l.Back.LowTexture.Length > 1 && General.Map.Data.GetFlatExists(l.Back.LowTexture)) {
-						ImageData texture = General.Map.Data.GetFlatImage(l.Back.LowTexture);
+					if(l.Back.LowRequired() && l.Back.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongLowTexture)) {
+						ImageData texture = General.Map.Data.GetTextureImage(l.Back.LongLowTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0) UDMFTools.SetFloat(l.Back.Fields, "offsetx_bottom", offset);
@@ -1644,7 +1644,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 				// Apply texturing
 				if(j.sidedef.HighRequired() && j.sidedef.LongHighTexture == originaltexture) j.sidedef.SetTextureHigh(filltexture.Name);
-				if((((j.sidedef.MiddleTexture.Length > 0) && (j.sidedef.MiddleTexture != "-")) || j.sidedef.MiddleRequired()) &&
+				if((j.sidedef.LongMiddleTexture != MapSet.EmptyLongName || j.sidedef.MiddleRequired()) &&
 				   (j.sidedef.LongMiddleTexture == originaltexture)) j.sidedef.SetTextureMid(filltexture.Name);
 				if(j.sidedef.LowRequired() && j.sidedef.LongLowTexture == originaltexture) j.sidedef.SetTextureLow(filltexture.Name);
 				j.sidedef.Marked = true;
@@ -1715,7 +1715,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			return ((sd.LongHighTexture == texturelongname) && sd.HighRequired()) ||
 				   ((sd.LongLowTexture == texturelongname) && sd.LowRequired()) ||
-				   ((sd.LongMiddleTexture == texturelongname) && (sd.MiddleRequired() || ((sd.MiddleTexture.Length > 0) && (sd.MiddleTexture != "-")))) ;
+				   ((sd.LongMiddleTexture == texturelongname) && (sd.MiddleRequired() || sd.LongMiddleTexture != MapSet.EmptyLongName)) ;
 		}
 		
 		#endregion

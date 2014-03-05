@@ -1,20 +1,4 @@
-
-#region ================== Copyright (c) 2007 Pascal vd Heiden
-
-/*
- * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
- * This program is released under GNU General Public License
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- */
-
-#endregion
-
-#region ================== Namespaces
+﻿#region ================== Namespaces
 
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -23,7 +7,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public class ResultUnknownFlat : ErrorResult
+	public class ResultMissingFlat : ErrorResult
 	{
 		#region ================== Variables
 		
@@ -42,7 +26,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 		
 		// Constructor
-		public ResultUnknownFlat(Sector s, bool ceiling)
+		public ResultMissingFlat(Sector s, bool ceiling)
 		{
 			// Initialize
 			this.sector = s;
@@ -50,7 +34,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.viewobjects.Add(s);
 			
 			string objname = ceiling ? "ceiling" : "floor";
-			this.description = "This sector's " + objname + " uses an unknown flat. This could be the result of missing resources, or a mistyped flat name. Click the 'Add Default Flat' button to use a known flat instead.";
+			this.description = "This sector's " + objname + " is missing a flat where it is required and could cause a 'Hall Of Mirrors' visual problem in the map. Click the 'Add Default Flat' button to add a flat to the sector.";
 		}
 		
 		#endregion
@@ -60,10 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			if(ceiling)
-				return "Sector " + sector.Index + " has unknown ceiling flat \"" + sector.CeilTexture + "\"";
-			else
-				return "Sector " + sector.Index + " has unknown floor flat \"" + sector.FloorTexture + "\"";
+			return "Sector " + sector.Index + " has no " + (ceiling ? "ceiling" : "floor") + " flat.";
 		}
 		
 		// Rendering
@@ -81,7 +62,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Fix by setting default flat
 		public override bool Button1Click(bool batchMode)
 		{
-			if(!batchMode) General.Map.UndoRedo.CreateUndo("Unknown flat correction");
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Missing flat correction");
 			General.Settings.FindDefaultDrawSettings();
 			
 			if(ceiling)

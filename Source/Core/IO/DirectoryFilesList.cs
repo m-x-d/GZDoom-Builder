@@ -289,7 +289,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 		
 		// This fixes a path so that it doesn't have the \ at the end
-		private string CorrectPath(string path)
+		private static string CorrectPath(string path)
 		{
 			if(path.Length > 0)
 			{
