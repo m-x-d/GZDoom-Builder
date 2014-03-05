@@ -624,7 +624,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This copies images from a collection unless they already exist in the list
-		private void AddImagesToList(Dictionary<long, ImageData> targetlist, ICollection<ImageData> sourcelist)
+		private static void AddImagesToList(Dictionary<long, ImageData> targetlist, ICollection<ImageData> sourcelist)
 		{
 			// Go for all source images
 			foreach(ImageData src in sourcelist)

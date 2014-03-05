@@ -194,7 +194,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Methods
 
 		// This reads the next token and sets a floating point value, returns false when failed
-		private bool ReadTokenFloat(TexturesParser parser, string propertyname, out float value)
+		private static bool ReadTokenFloat(TexturesParser parser, string propertyname, out float value)
 		{
 			// Next token is the property value to set
 			parser.SkipWhitespace(true);
@@ -223,7 +223,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		// This reads the next token and sets an integral value, returns false when failed
-		private bool ReadTokenInt(TexturesParser parser, string propertyname, out int value)
+		private static bool ReadTokenInt(TexturesParser parser, string propertyname, out int value)
 		{
 			// Next token is the property value to set
 			parser.SkipWhitespace(true);
@@ -264,7 +264,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(yscale == 0.0f) scaley = defaultscale; else scaley = 1f / yscale;
 
 			// Make texture
-			HighResImage tex = new HighResImage(name, width, height, scalex, scaley, worldpanning);
+			HighResImage tex = new HighResImage(name, typename, width, height, scalex, scaley, worldpanning);
 
 			// Add patches
 			foreach(PatchStructure p in patches)

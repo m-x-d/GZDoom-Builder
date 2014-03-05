@@ -578,6 +578,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			BeforePropsChange();
 			
+			if(string.IsNullOrEmpty(name)) name = "-"; //mxd
 			floortexname = name;
 			longfloortexname = Lump.MakeLongName(name);
 			updateneeded = true;
@@ -589,6 +590,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			BeforePropsChange();
 			
+			if(string.IsNullOrEmpty(name)) name = "-"; //mxd
 			ceiltexname = name;
 			longceiltexname = Lump.MakeLongName(name);
 			updateneeded = true;

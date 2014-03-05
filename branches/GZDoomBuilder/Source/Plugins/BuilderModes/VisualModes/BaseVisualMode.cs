@@ -3299,7 +3299,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				bool matchtop = (!j.sidedef.Marked && (j.sidedef.LongHighTexture == texture.LongName) && j.sidedef.HighRequired());
 				bool matchbottom = (!j.sidedef.Marked && (j.sidedef.LongLowTexture == texture.LongName) && j.sidedef.LowRequired());
-				bool matchmid = ((j.controlSide.LongMiddleTexture == texture.LongName) && (j.controlSide.MiddleRequired() || ((j.controlSide.MiddleTexture.Length > 0) && (j.controlSide.MiddleTexture != "-")))); //mxd
+				bool matchmid = ((j.controlSide.LongMiddleTexture == texture.LongName) && (j.controlSide.MiddleRequired() || j.controlSide.LongMiddleTexture != MapSet.EmptyLongName)); //mxd
 
 				//mxd. If there's a selection, check if matched part is actually selected
 				if(checkSelectedSidedefParts && !singleselection) {

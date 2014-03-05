@@ -55,24 +55,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Sidedef sd in General.Map.Map.Sidedefs)
 			{
 				// Check upper texture
-				if(sd.HighRequired() && ((sd.HighTexture.Length < 1) || (sd.HighTexture != "-")))
+				if(sd.HighRequired() && sd.LongHighTexture != MapSet.EmptyLongName && !General.Map.Data.GetTextureExists(sd.LongHighTexture))
 				{
-					if(!General.Map.Data.GetTextureExists(sd.LongHighTexture))
-						SubmitResult(new ResultUnknownTexture(sd, SidedefPart.Upper));
+					SubmitResult(new ResultUnknownTexture(sd, SidedefPart.Upper));
 				}
 
 				// Check middle texture
-				if(sd.MiddleRequired() && ((sd.MiddleTexture.Length < 1) || (sd.MiddleTexture != "-")))
+				if(sd.MiddleRequired() && sd.LongMiddleTexture != MapSet.EmptyLongName && !General.Map.Data.GetTextureExists(sd.LongMiddleTexture))
 				{
-					if(!General.Map.Data.GetTextureExists(sd.LongMiddleTexture))
-						SubmitResult(new ResultUnknownTexture(sd, SidedefPart.Middle));
+					SubmitResult(new ResultUnknownTexture(sd, SidedefPart.Middle));
 				}
 
 				// Check lower texture
-				if(sd.LowRequired() && ((sd.LowTexture.Length < 1) || (sd.LowTexture != "-")))
+				if(sd.LowRequired() && sd.LongLowTexture != MapSet.EmptyLongName && !General.Map.Data.GetTextureExists(sd.LongLowTexture))
 				{
-					if(!General.Map.Data.GetTextureExists(sd.LongLowTexture))
-						SubmitResult(new ResultUnknownTexture(sd, SidedefPart.Lower));
+					SubmitResult(new ResultUnknownTexture(sd, SidedefPart.Lower));
 				}
 				
 				// Handle thread interruption

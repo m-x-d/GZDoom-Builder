@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		}
 
 		// This composes point values
-		private uint MakePointValue(uint vp, uint ds, uint ss, uint op)
+		private static uint MakePointValue(uint vp, uint ds, uint ss, uint op)
 		{
 			unchecked
 			{

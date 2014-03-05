@@ -1690,9 +1690,9 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(Sidedef sd in General.Map.Map.Sidedefs)
 				{
 					// Add used textures to dictionary
-					if(sd.HighTexture.Length > 0) usedimages[sd.LongHighTexture] = 0;
-					if(sd.LowTexture.Length > 0) usedimages[sd.LongMiddleTexture] = 0;
-					if(sd.MiddleTexture.Length > 0) usedimages[sd.LongLowTexture] = 0;
+					if(sd.LongHighTexture != MapSet.EmptyLongName) usedimages[sd.LongHighTexture] = 0;
+					if(sd.LongMiddleTexture != MapSet.EmptyLongName) usedimages[sd.LongMiddleTexture] = 0;
+					if(sd.LongLowTexture != MapSet.EmptyLongName) usedimages[sd.LongLowTexture] = 0;
 				}
 
 				// Go through the map to find the used flats

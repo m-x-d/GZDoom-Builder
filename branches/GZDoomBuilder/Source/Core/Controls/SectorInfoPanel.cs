@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.Controls
 			ceilingname.Text = s.CeilTexture;
 
 			//mxd. Texture info
-			if ((s.FloorTexture.Length < 1) || (s.FloorTexture == "-")){
+			if (s.LongFloorTexture == MapSet.EmptyLongName){
 				labelFloorTextureSize.Visible = false;
 				General.DisplayZoomedImage(floortex, Properties.Resources.MissingTexture);
 			} else {
@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Controls
 				General.DisplayZoomedImage(floortex, floorImage.GetPreview());
 			}
 
-			if((s.CeilTexture.Length < 1) || (s.CeilTexture == "-")) {
+			if (s.LongCeilTexture == MapSet.EmptyLongName) {
 				labelCeilTextureSize.Visible = false;
 				General.DisplayZoomedImage(ceilingtex, Properties.Resources.MissingTexture);
 			} else {

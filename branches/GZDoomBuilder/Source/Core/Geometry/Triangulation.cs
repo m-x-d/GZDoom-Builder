@@ -289,7 +289,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This recursively traces a path
 		// Returns the resulting TracePath when the search is complete
 		// or returns null when no path found.
-		private SidedefsTracePath DoTracePath(SidedefsTracePath history, Vertex fromhere, Vertex findme, Sector sector, Dictionary<Sidedef, bool> sides)
+		private static SidedefsTracePath DoTracePath(SidedefsTracePath history, Vertex fromhere, Vertex findme, Sector sector, Dictionary<Sidedef, bool> sides)
 		{
 			SidedefsTracePath nextpath;
 			SidedefsTracePath result;
@@ -359,7 +359,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This removes all sidedefs which has a sidedefs on the other side
 		// of the same line that refers to the same sector. These are removed
 		// because they are useless and make the triangulation inefficient.
-		private void RemoveDoubleSidedefReferences(Dictionary<Sidedef, bool> todosides, ICollection<Sidedef> sides)
+		private static void RemoveDoubleSidedefReferences(Dictionary<Sidedef, bool> todosides, ICollection<Sidedef> sides)
 		{
 			// Go for all sides
 			foreach(Sidedef sd in sides)
@@ -378,7 +378,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// This finds the right-most vertex to start tracing with
-		private Vertex FindRightMostVertex(Dictionary<Sidedef, bool> sides, Dictionary<Vertex, Vertex> ignores)
+		private static Vertex FindRightMostVertex(Dictionary<Sidedef, bool> sides, Dictionary<Vertex, Vertex> ignores)
 		{
 			Vertex found = null;
 			
@@ -480,7 +480,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// This finds the right-most vertex in an inner polygon to use for cut startpoint.
-		private LinkedListNode<EarClipVertex> FindRightMostVertex(EarClipPolygon p)
+		private static LinkedListNode<EarClipVertex> FindRightMostVertex(EarClipPolygon p)
 		{
 			LinkedListNode<EarClipVertex> found = p.First;
 			LinkedListNode<EarClipVertex> v = found.Next;
@@ -813,7 +813,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		// This returns the 3-vertex array triangle for an ear
-		private EarClipVertex[] GetTriangle(EarClipVertex v)
+		private static EarClipVertex[] GetTriangle(EarClipVertex v)
 		{
 			EarClipVertex[] t = new EarClipVertex[3];
 			t[0] = (v.MainListNode.Previous == null) ? v.MainListNode.List.Last.Value : v.MainListNode.Previous.Value;
@@ -823,7 +823,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		// This checks if a vertex is reflex (corner > 180 deg) or convex (corner < 180 deg)
-		private bool IsReflex(EarClipVertex[] t)
+		private static bool IsReflex(EarClipVertex[] t)
 		{
 			// Return true when corner is > 180 deg
 			return (Line2D.GetSideOfLine(t[0].Position, t[2].Position, t[1].Position) < 0.0f);
@@ -881,7 +881,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		
 		// This checks if a line is inside a triangle (touching the triangle is allowed)
 		// NOTE: We already know p1 is on an edge segment of the triangle
-		private bool LineInsideTriangle(EarClipVertex[] t, Vector2D p1, Vector2D p2)
+		private static bool LineInsideTriangle(EarClipVertex[] t, Vector2D p1, Vector2D p2)
 		{
 			float s01 = Line2D.GetSideOfLine(t[0].Position, t[1].Position, p2);
 			float s12 = Line2D.GetSideOfLine(t[1].Position, t[2].Position, p2);
@@ -942,7 +942,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		// This checks if the triangle has an area greater than 0
-		private bool TriangleHasArea(EarClipVertex[] t)
+		private static bool TriangleHasArea(EarClipVertex[] t)
 		{
 			return ((t[0].Position.x * (t[1].Position.y - t[2].Position.y) +
 					 t[1].Position.x * (t[2].Position.y - t[0].Position.y) +
@@ -950,7 +950,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		// This adds an array of vertices
-		private void AddTriangleToList(EarClipVertex[] triangle, List<Vector2D> verticeslist, List<Sidedef> sidedefslist, bool last)
+		private static void AddTriangleToList(EarClipVertex[] triangle, List<Vector2D> verticeslist, List<Sidedef> sidedefslist, bool last)
 		{
 			// Create triangle
 			verticeslist.Add(triangle[0].Position);

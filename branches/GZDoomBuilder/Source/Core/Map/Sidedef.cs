@@ -535,6 +535,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			BeforePropsChange();
 			
+			if(string.IsNullOrEmpty(name)) name = "-"; //mxd
 			texnamehigh = name;
 			longtexnamehigh = Lump.MakeLongName(name);
 			General.Map.IsChanged = true;
@@ -545,6 +546,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			BeforePropsChange();
 			
+			if (string.IsNullOrEmpty(name)) name = "-"; //mxd
 			texnamemid = name;
 			longtexnamemid = Lump.MakeLongName(name);
 			General.Map.IsChanged = true;
@@ -555,6 +557,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			BeforePropsChange();
 			
+			if(string.IsNullOrEmpty(name)) name = "-"; //mxd
 			texnamelow = name;
 			longtexnamelow = Lump.MakeLongName(name);
 			General.Map.IsChanged = true;
@@ -565,7 +568,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.Fields.BeforeFieldsChange();
 
 			//top
-			if(HighTexture.Length > 1 && General.Map.Data.GetFlatExists(HighTexture)) {
+			if(LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(HighTexture)) {
 				ImageData texture = General.Map.Data.GetFlatImage(HighTexture);
 				float scaleTop = Fields.GetValue("scalex_top", 1.0f);
 
@@ -575,7 +578,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			//middle
-			if(MiddleTexture.Length > 1 && General.Map.Data.GetFlatExists(MiddleTexture)) {
+			if(LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(MiddleTexture)) {
 				ImageData texture = General.Map.Data.GetFlatImage(MiddleTexture);
 				float scaleMid = Fields.GetValue("scalex_mid", 1.0f);
 
@@ -585,7 +588,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			//bottom
-			if(LowTexture.Length > 1 && General.Map.Data.GetFlatExists(LowTexture)) {
+			if(LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(LowTexture)) {
 				ImageData texture = General.Map.Data.GetFlatImage(LowTexture);
 				float scaleLow = Fields.GetValue("scalex_bottom", 1.0f);
 

@@ -34,13 +34,14 @@ namespace CodeImp.DoomBuilder.Data
 
 		private List<TexturePatch> patches;
 		private bool gotFullName;//mxd
+		private string type;
 		
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public HighResImage(string name, int width, int height, float scalex, float scaley, bool worldpanning)
+		public HighResImage(string name, string type, int width, int height, float scalex, float scaley, bool worldpanning)
 		{
 			// Initialize
 			this.width = width;
@@ -49,6 +50,7 @@ namespace CodeImp.DoomBuilder.Data
 			this.scale.y = scaley;
 			this.worldpanning = worldpanning;
 			this.patches = new List<TexturePatch>();
+			this.type = type;
 			SetName(name);
 			
 			// We have no destructor
@@ -112,7 +114,15 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(TexturePatch p in patches)
 					{
 						// Get the patch data stream
-						Stream patchdata = General.Map.Data.GetPatchData(p.lumpname);
+						Stream patchdata;
+						
+						//mxd
+						if (type == "sprite") {
+							patchdata = General.Map.Data.GetSpriteData(p.lumpname);
+						} else {
+							patchdata = General.Map.Data.GetPatchData(p.lumpname);
+						}
+
 						if(patchdata != null)
 						{
 							// Copy patch data to memory

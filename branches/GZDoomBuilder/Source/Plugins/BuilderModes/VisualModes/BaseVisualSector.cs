@@ -363,7 +363,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private bool checkFloorVertices(WorldVertex[] verts, Plane plane) {
+		private static bool checkFloorVertices(WorldVertex[] verts, Plane plane) {
 			for(int c = 0; c < verts.Length; c++) {
 				if(plane.GetZ(new Vector2D(verts[c].x, verts[c].y)) > verts[c].z)
 					return true;
@@ -371,7 +371,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return false;
 		}
 		//mxd
-		private bool checkCeilingVertices(WorldVertex[] verts, Plane plane) {
+		private static bool checkCeilingVertices(WorldVertex[] verts, Plane plane) {
 			for(int c = 0; c < verts.Length; c++) {
 				if(plane.GetZ(new Vector2D(verts[c].x, verts[c].y)) < verts[c].z)
 					return true;

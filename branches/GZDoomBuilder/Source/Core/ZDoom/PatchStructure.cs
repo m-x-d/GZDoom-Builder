@@ -210,7 +210,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Methods
 
 		// This reads the next token and sets a floating point value, returns false when failed
-		private bool ReadTokenFloat(TexturesParser parser, string propertyname, out float value)
+		private static bool ReadTokenFloat(TexturesParser parser, string propertyname, out float value)
 		{
 			// Next token is the property value to set
 			parser.SkipWhitespace(true);
@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		// This reads the next token and sets an integral value, returns false when failed
-		private bool ReadTokenInt(TexturesParser parser, string propertyname, out int value)
+		private static bool ReadTokenInt(TexturesParser parser, string propertyname, out int value)
 		{
 			// Next token is the property value to set
 			parser.SkipWhitespace(true);
@@ -259,7 +259,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd. This reads the next token and sets a string value, returns false when failed
-		private bool ReadTokenString(TexturesParser parser, string propertyname, out string value) {
+		private static bool ReadTokenString(TexturesParser parser, string propertyname, out string value) {
 			parser.SkipWhitespace(true);
 			value = parser.StripTokenQuotes(parser.ReadToken());
 			
@@ -272,7 +272,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd. This reads the next token and sets a PixelColor value, returns false when failed
-		private bool ReadTokenColor(TexturesParser parser, string propertyname, out int value) {
+		private static bool ReadTokenColor(TexturesParser parser, string propertyname, out int value) {
 			parser.SkipWhitespace(true);
 			string strvalue = parser.StripTokenQuotes(parser.ReadToken());
 			value = 0;

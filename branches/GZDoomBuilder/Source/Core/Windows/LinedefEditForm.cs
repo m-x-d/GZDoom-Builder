@@ -506,12 +506,22 @@ namespace CodeImp.DoomBuilder.Windows
 				// Front settings
 				if(l.Front != null)
 				{
-					if(fronthigh.TextureName != l.Front.HighTexture) fronthigh.TextureName = string.Empty;
-					if(frontmid.TextureName != l.Front.MiddleTexture) frontmid.TextureName = string.Empty;
-					if(frontlow.TextureName != l.Front.LowTexture) frontlow.TextureName = string.Empty;
-					if(fronthigh.Required != l.Front.HighRequired()) fronthigh.Required = false;
-					if(frontmid.Required != l.Front.MiddleRequired()) frontmid.Required = false;
-					if(frontlow.Required != l.Front.LowRequired()) frontlow.Required = false;
+					//mxd
+					if (fronthigh.TextureName != l.Front.HighTexture) {
+						if(!fronthigh.Required && l.Front.HighRequired()) fronthigh.Required = true;
+						fronthigh.MultipleTextures = true; //mxd
+						fronthigh.TextureName = string.Empty;
+					}
+					if (frontmid.TextureName != l.Front.MiddleTexture) {
+						if(!frontmid.Required && l.Front.MiddleRequired()) frontmid.Required = true;
+						frontmid.MultipleTextures = true; //mxd
+						frontmid.TextureName = string.Empty;
+					}
+					if (frontlow.TextureName != l.Front.LowTexture) {
+						if(!frontlow.Required && l.Front.LowRequired()) frontlow.Required = true;
+						frontlow.MultipleTextures = true; //mxd
+						frontlow.TextureName = string.Empty;
+					}
 					if(frontsector.Text != l.Front.Sector.Index.ToString()) frontsector.Text = string.Empty;
 
 					//mxd
@@ -549,12 +559,22 @@ namespace CodeImp.DoomBuilder.Windows
 				// Back settings
 				if(l.Back != null)
 				{
-					if(backhigh.TextureName != l.Back.HighTexture) backhigh.TextureName = string.Empty;
-					if(backmid.TextureName != l.Back.MiddleTexture) backmid.TextureName = string.Empty;
-					if(backlow.TextureName != l.Back.LowTexture) backlow.TextureName = string.Empty;
-					if(backhigh.Required != l.Back.HighRequired()) backhigh.Required = false;
-					if(backmid.Required != l.Back.MiddleRequired()) backmid.Required = false;
-					if(backlow.Required != l.Back.LowRequired()) backlow.Required = false;
+					//mxd
+					if (backhigh.TextureName != l.Back.HighTexture) {
+						if(!backhigh.Required && l.Back.HighRequired()) backhigh.Required = true;
+						backhigh.MultipleTextures = true; //mxd
+						backhigh.TextureName = string.Empty;
+					}
+					if (backmid.TextureName != l.Back.MiddleTexture) {
+						if(!backmid.Required && l.Back.MiddleRequired()) backmid.Required = true;
+						backmid.MultipleTextures = true; //mxd
+						backmid.TextureName = string.Empty;
+					}
+					if (backlow.TextureName != l.Back.LowTexture) {
+						if(!backlow.Required && l.Back.LowRequired()) backlow.Required = true;
+						backlow.MultipleTextures = true; //mxd
+						backlow.TextureName = string.Empty;
+					}
 					if(backsector.Text != l.Back.Sector.Index.ToString()) backsector.Text = string.Empty;
 
 					//mxd
