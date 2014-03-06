@@ -69,6 +69,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Dictionary<Sector, string[]> selectedEffectLabels;
 		private Dictionary<Sector, string[]> unselectedEffectLabels; 
 		
+		//mxd. "Make Door" textures
+		private static string doortex = "-";
+		private static string tracktex = "-";
+		
 		#endregion
 
 		#region ================== Properties
@@ -1303,8 +1307,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 			if(orderedselection.Count > 0)
 			{
-				string doortex = "";
-				string tracktex = General.Map.Config.MakeDoorTrack;
+				if(doortex == "-") doortex = General.Map.Config.MakeDoorDoor; //mxd
+				if(tracktex == "-") tracktex = General.Map.Config.MakeDoorTrack; //mxd
 				string floortex = null;
 				string ceiltex = null;
 				bool resetoffsets = true;

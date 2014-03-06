@@ -881,6 +881,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnEngage();
 			
 			bool autodrag = (pasting && mouseinside && BuilderPlug.Me.AutoDragOnPaste);
+			snaptonearest = General.Interface.AutoMerge; //mxd
 			
 			// Add toolbar buttons
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionH);

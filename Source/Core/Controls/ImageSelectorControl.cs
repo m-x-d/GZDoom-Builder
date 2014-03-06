@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using SlimDX;
@@ -45,6 +46,8 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Properties
 		
 		public string TextureName { get { return name.Text; } set { name.Text = value; } }
+		
+		[Browsable(false)]
 		public bool MultipleTextures { get { return multipletextures; } set { multipletextures = value; } }
 
 		#endregion
