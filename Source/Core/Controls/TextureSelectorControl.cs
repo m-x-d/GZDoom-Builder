@@ -39,6 +39,9 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Fill autocomplete list
 			name.AutoCompleteCustomSource.AddRange(General.Map.Data.TextureNames.ToArray());
+
+			//mxd
+			if(required) Refresh();
 		}
 		
 		// This finds the image we need for the given texture name

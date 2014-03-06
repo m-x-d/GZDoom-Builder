@@ -3140,17 +3140,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				SidedefAlignJob j = todo.Pop();
 
 				if(j.forward) {
-					Vertex v;
-					int forwardoffset;
-					int backwardoffset;
-
 					// Apply alignment
 					if(alignx)
 						j.controlSide.OffsetX = (int)j.offsetx;
 					if(aligny)
 						j.sidedef.OffsetY = (int)Math.Round((first.controlSide.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + ystartalign;
-					forwardoffset = (int)j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex);
-					backwardoffset = (int)j.offsetx;
+					int forwardoffset = (int)j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex);
+					int backwardoffset = (int)j.offsetx;
 
 					j.sidedef.Marked = true;
 
@@ -3162,24 +3158,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Add sidedefs forward (connected to the right vertex)
-					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
+					Vertex v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
 					AddSidedefsForAlignment(todo, v, true, forwardoffset, 1.0f, texture.LongName, false);
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
 					AddSidedefsForAlignment(todo, v, false, backwardoffset, 1.0f, texture.LongName, false);
 				} else {
-					Vertex v;
-					int forwardoffset;
-					int backwardoffset;
-
 					// Apply alignment
 					if(alignx)
 						j.controlSide.OffsetX = (int)j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
 					if(aligny)
 						j.sidedef.OffsetY = (int)Math.Round((first.controlSide.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + ystartalign;
-					forwardoffset = (int)j.offsetx;
-					backwardoffset = (int)j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
+					int forwardoffset = (int)j.offsetx;
+					int backwardoffset = (int)j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
 
 					j.sidedef.Marked = true;
 
@@ -3191,7 +3183,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Add sidedefs backward (connected to the left vertex)
-					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
+					Vertex v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
 					AddSidedefsForAlignment(todo, v, false, backwardoffset, 1.0f, texture.LongName, false);
 
 					// Add sidedefs forward (connected to the right vertex)

@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.doortexture.Location = new System.Drawing.Point(12, 29);
 			this.doortexture.MultipleTextures = false;
 			this.doortexture.Name = "doortexture";
-			this.doortexture.Required = false;
+			this.doortexture.Required = true;
 			this.doortexture.Size = new System.Drawing.Size(83, 105);
 			this.doortexture.TabIndex = 0;
 			this.doortexture.TextureName = "";
@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.tracktexture.Location = new System.Drawing.Point(101, 29);
 			this.tracktexture.MultipleTextures = false;
 			this.tracktexture.Name = "tracktexture";
-			this.tracktexture.Required = false;
+			this.tracktexture.Required = true;
 			this.tracktexture.Size = new System.Drawing.Size(83, 105);
 			this.tracktexture.TabIndex = 6;
 			this.tracktexture.TextureName = "";
