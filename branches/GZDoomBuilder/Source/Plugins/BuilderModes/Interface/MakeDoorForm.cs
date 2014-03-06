@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			// No door texture selected?
 			if(doortexture.TextureName.Length == 0)
 			{
-				MessageBox.Show(this, "You have to select at least a texture for the door!", "Make Door", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				MessageBox.Show(this, "Please select a door texture!", "Make Door", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				doortexture.Focus();
 			}
 			else
