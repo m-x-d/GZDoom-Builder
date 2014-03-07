@@ -9,9 +9,6 @@
 .style2 {
 	color: #006600
 }
-.style3 {
-	color: #0000FF
-}
 -->
 </style>
 </head>
@@ -20,19 +17,18 @@
   <param name="keyword" value="Template">
 </object>
 <div id="gz_title">
-  <h1>GZDoom Builder-specific settings in game configurations</h1>
+  <h1>New settings in game configurations</h1>
 </div>
 <div id="contents">
-  <p>
   <h2>General settings:</h2>
   <p><b>basegame</b> - indicates which game the current configuration is based on. Used to load game-specific GLDEFS lumps (DOOMDEFS, HTICDEFS, HEXNDEFS or STRFDEFS)</br>
     <b>Possible values:</b> 1 (DOOM), 2 (HERETIC), 3 (HEXEN) or 4 (STRIFE).<br>
-    <b>Example:</b> <span class="style2">basegame = 2; </p>
-  </p>
+    <b>Example:</b> <span class="style2">basegame = 2;</span></p>
+  <br>
   <h2>Thing and linedef definitions:</h2>
   <p>Default values can be set in Thing and Linedef argument definitions.<br>
     <b>Example:</b> <br>
-    <span class="style2">9038<br />
+    <code>9038<br />
     {<br />
     &nbsp;&nbsp;&nbsp;&nbsp;title = &quot;ColorSetter&quot;;<br />
     &nbsp;&nbsp;&nbsp;&nbsp;arg0<br />
@@ -53,7 +49,7 @@
     &nbsp;&nbsp;&nbsp;&nbsp;arg3<br />
     &nbsp;&nbsp;&nbsp;&nbsp;{<br />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Desaturation&quot;;<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;}</span><br />
-    }</p>
+    &nbsp;&nbsp;&nbsp;&nbsp;}<br />
+    }</code>
 </div>
 </body>
