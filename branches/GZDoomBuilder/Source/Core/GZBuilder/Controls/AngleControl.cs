@@ -6,6 +6,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Controls
 {
@@ -69,7 +70,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private static PointF DegreesToXY(float degrees, float radius, Point origin)
 		{
 			PointF xy = new PointF();
-			double radians = degrees * Math.PI / 180.0;
+			float radians = degrees * Angle2D.PI / 180.0f;
 
 			xy.X = (float)Math.Cos(radians) * radius + origin.X;
 			xy.Y = (float)Math.Sin(-radians) * radius + origin.Y;
@@ -81,7 +82,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			float xDiff = xy.X - origin.X;
 			float yDiff = xy.Y - origin.Y;
-			return (int)Math.Round(Math.Atan2(-yDiff, xDiff) * 180.0 / Math.PI);
+			return ((int)Math.Round(Math.Atan2(-yDiff, xDiff) * 180.0 / Angle2D.PI) + 360) % 360;
 		}
 
 		protected override void OnPaint(PaintEventArgs e)

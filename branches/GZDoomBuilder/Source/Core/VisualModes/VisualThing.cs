@@ -450,37 +450,36 @@ namespace CodeImp.DoomBuilder.VisualModes
 			}
 
 			float time = General.Clock.CurrentTime;
-			
 			float rMin = Math.Min(lightPrimaryRadius, lightSecondaryRadius);
 			float rMax = Math.Max(lightPrimaryRadius, lightSecondaryRadius);
 			float diff = rMax - rMin;
 
-			//pulse
-			if (lightType == DynamicLightType.PULSE) {
-				lightDelta = ((float)Math.Sin(time / (interval * 4.0f)) + 1.0f) / 2.0f; //just playing by the eye here... in [0.0 ... 1.0] interval
-				lightRadius = rMin + diff * lightDelta;
-			//flicker
-			} else if (lightType == DynamicLightType.FLICKER) {
-				float delta = (float)Math.Sin(time / 0.1f); //just playing by the eye here...
-				if (Math.Sign(delta) != Math.Sign(lightDelta)) {
-					lightDelta = delta;
-					if (new Random().Next(0, 359) < interval) 
-						lightRadius = rMax;
-					else
-						lightRadius = rMin;
-				}
-			//random
-			} else if (lightType == DynamicLightType.RANDOM) {
-				float delta = (float)Math.Sin(time / (interval * 9.0f)); //just playing by the eye here...
-				if (Math.Sign(delta) != Math.Sign(lightDelta))
-					lightRadius = rMin + (new Random().Next(0, (int)(diff * 10))) / 10.0f;
-				lightDelta = delta;
+			switch (lightType) {
+				case DynamicLightType.PULSE:
+					lightDelta = ((float)Math.Sin(time / (interval * 4.0f)) + 1.0f) / 2.0f; //just playing by the eye here... in [0.0 ... 1.0] interval
+					lightRadius = rMin + diff * lightDelta;
+					break;
+
+				case DynamicLightType.FLICKER: 
+					float fdelta = (float)Math.Sin(time / 0.1f); //just playing by the eye here...
+					if (Math.Sign(fdelta) != Math.Sign(lightDelta)) {
+						lightDelta = fdelta;
+						lightRadius = (General.Random(0, 359) < interval ? rMax : rMin);
+					}
+					break;
+
+				case DynamicLightType.RANDOM:
+					float rdelta = (float)Math.Sin(time / (interval * 9.0f)); //just playing by the eye here...
+					if (Math.Sign(rdelta) != Math.Sign(lightDelta)) {
+						lightRadius = rMin + (General.Random(0, (int) (diff * 10))) / 10.0f;
+					}
+					lightDelta = rdelta;
+					break;
 			}
 		}
 
 		//mxd. update bounding box
 		public void UpdateBoundingBox() {
-			//updateBoundingBox(lightRadius, lightRadius * 2f);
 			if (thing.IsModel) {
 				updateBoundingBoxForModel();
 			} else if (lightType != DynamicLightType.NONE && lightRadius > thing.Size) {
