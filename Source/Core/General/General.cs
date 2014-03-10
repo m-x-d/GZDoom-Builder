@@ -189,7 +189,7 @@ namespace CodeImp.DoomBuilder
 		private static bool nosettings;
 
 		//misc
-		private static Random random; //mxd
+		private static Random random = new Random(); //mxd
 
 		#endregion
 
@@ -692,8 +692,6 @@ namespace CodeImp.DoomBuilder
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during program statup!");
 					if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
 				}
-
-				random = new Random(); //mxd
 
 				//mxd. Check enabled game configuration
 				bool noneenabled = true;
@@ -1789,15 +1787,14 @@ namespace CodeImp.DoomBuilder
 		internal static string MakeTempFilename(string tempdir, string extension)
 		{
 			string filename;
-			string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
-			Random rnd = new Random();
+			const string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
 			int i;
 
 			do
 			{
 				// Generate a filename
 				filename = "";
-				for(i = 0; i < 8; i++) filename += chars[rnd.Next(chars.Length)];
+				for(i = 0; i < 8; i++) filename += chars[Random(0, chars.Length - 1)];
 				filename = Path.Combine(tempdir, filename + "." + extension);
 			}
 			// Continue while file is not unique
@@ -1812,14 +1809,13 @@ namespace CodeImp.DoomBuilder
 		{
 			string dirname;
 			const string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
-			Random rnd = new Random();
 			int i;
 
 			do
 			{
 				// Generate a filename
 				dirname = "";
-				for(i = 0; i < 8; i++) dirname += chars[rnd.Next(chars.Length)];
+				for(i = 0; i < 8; i++) dirname += chars[Random(0, chars.Length - 1)];
 				dirname = Path.Combine(temppath, dirname);
 			}
 			// Continue while file is not unique
