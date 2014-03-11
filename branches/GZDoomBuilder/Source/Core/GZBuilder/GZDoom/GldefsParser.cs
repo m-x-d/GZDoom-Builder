@@ -350,6 +350,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
 							int bracesCount = 1;
 							bool foundLight = false;
+							bool foundFrame = false;
 
 							//read frames structure
 							while (SkipWhitespace(true)) {
@@ -358,7 +359,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 								if (!string.IsNullOrEmpty(token)) {
 									token = StripTokenQuotes(token).ToLowerInvariant();
 
-									if (!foundLight && token == "light") { //just use first light from first frame and be done with it
+									if(!foundLight && !foundFrame && token == "frame") {
+										SkipWhitespace(true);
+										token = ReadToken().ToLowerInvariant(); //should be frame name
+
+										//use this frame if it's 4 characters long or it's the first frame
+										foundFrame = (token.Length == 4 || (token.Length > 4 && token[4] == 'a'));
+									} else if(!foundLight && foundFrame && token == "light") { //just use first light and be done with it
 										SkipWhitespace(true);
 										token = ReadToken().ToLowerInvariant(); //should be light name
 
@@ -376,7 +383,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 									} else if (token == "{") { //continue in this loop until object structure ends
 										bracesCount++;
 									} else if (token == "}") {
-										if (--bracesCount <= 0)
+										if (--bracesCount < 1)
 											break; //This was Cave Johnson. And we are done here.
 									}
 								}
