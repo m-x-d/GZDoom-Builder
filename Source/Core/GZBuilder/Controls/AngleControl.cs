@@ -129,6 +129,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			if (e.Button == MouseButtons.Left) {
 				thisAngle = (int)Math.Round(thisAngle / 45f) * 45;
+				if(thisAngle == 360) thisAngle = 0;
 			}
 
 			if(thisAngle != this.Angle) {

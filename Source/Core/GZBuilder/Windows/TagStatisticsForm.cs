@@ -91,20 +91,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 		private void addRow(int tag, string label, int sectorsCount, int linesCount, int thingsCount) {
 			DataGridViewRow row = new DataGridViewRow();
 
-			DataGridViewTextBoxCell cTag = new DataGridViewTextBoxCell();
-			cTag.Value = tag;
-
-			DataGridViewTextBoxCell cLabel = new DataGridViewTextBoxCell();
-			cLabel.Value = label;
-
-			DataGridViewTextBoxCell cSectors = new DataGridViewTextBoxCell();
-			cSectors.Value = sectorsCount;
-
-			DataGridViewTextBoxCell cLines = new DataGridViewTextBoxCell();
-			cLines.Value = linesCount;
-
-			DataGridViewTextBoxCell cThings = new DataGridViewTextBoxCell();
-			cThings.Value = thingsCount;
+			var cTag = new DataGridViewTextBoxCell {Value = tag};
+			var cLabel = new DataGridViewTextBoxCell { Value = label };
+			var cSectors = new DataGridViewTextBoxCell { Value = sectorsCount };
+			var cLines = new DataGridViewTextBoxCell { Value = linesCount };
+			var cThings = new DataGridViewTextBoxCell { Value = thingsCount };
 
 			row.Cells.Add(cTag);
 			row.Cells.Add(cLabel);

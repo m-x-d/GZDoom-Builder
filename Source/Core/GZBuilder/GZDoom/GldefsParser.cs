@@ -206,6 +206,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 												break;
 											}
 
+											if(interval == 0) {
+												General.ErrorLogger.Add(ErrorType.Warning, "Warning in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": Interval value should be greater than zero");
+											}
+
 											//I wrote logic for dynamic lights animation first, so here I modify gldefs settings to fit in existing logic
 											if (lightType == GldefsLightType.PULSE) {
 												light.Interval = (int)(interval * 35); //measured in tics (35 per second) in PointLightPulse, measured in seconds in gldefs' PulseLight
