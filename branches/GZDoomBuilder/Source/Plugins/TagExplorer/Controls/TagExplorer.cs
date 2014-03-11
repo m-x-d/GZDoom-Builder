@@ -585,19 +585,19 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					//make selection
 					if (info.Type == NodeInfoType.THING) 
 					{
-						General.Editing.ChangeMode("ThingsMode");
+						if(General.Editing.Mode.GetType().Name != "ThingsMode") General.Editing.ChangeMode("ThingsMode");
 						Thing t = General.Map.Map.GetThingByIndex(info.Index);
 						if (t != null) t.Selected = true;
 					} 
 					else if (info.Type == NodeInfoType.LINEDEF) 
 					{
-						General.Editing.ChangeMode("LinedefsMode");
+						if(General.Editing.Mode.GetType().Name != "LinedefsMode") General.Editing.ChangeMode("LinedefsMode");
 						Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
 						if (l != null) l.Selected = true;
 					} 
 					else 
 					{
-						General.Editing.ChangeMode("SectorsMode");
+						if(General.Editing.Mode.GetType().Name != "SectorsMode") General.Editing.ChangeMode("SectorsMode");
 						Sector s = General.Map.Map.GetSectorByIndex(info.Index);
 						if (s != null) 
 						{
