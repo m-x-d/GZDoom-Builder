@@ -251,10 +251,6 @@ namespace CodeImp.DoomBuilder
 		public void TestAtSkill(int skill)
 		{
 			Cursor oldcursor = Cursor.Current;
-			ProcessStartInfo processinfo;
-			Process process;
-			TimeSpan deltatime;
-			string args;
 
 			// Check if configuration is OK
 			if(General.Map.ConfigSettings.TestProgram == "" || !File.Exists(General.Map.ConfigSettings.TestProgram))
@@ -299,10 +295,10 @@ namespace CodeImp.DoomBuilder
 				if(General.Map.Errors.Count == 0)
 				{
 					// Make arguments
-					args = ConvertParameters(General.Map.ConfigSettings.TestParameters, skill, General.Map.ConfigSettings.TestShortPaths);
+					string args = ConvertParameters(General.Map.ConfigSettings.TestParameters, skill, General.Map.ConfigSettings.TestShortPaths);
 
 					// Setup process info
-					processinfo = new ProcessStartInfo();
+					ProcessStartInfo processinfo = new ProcessStartInfo();
 					processinfo.Arguments = args;
 					processinfo.FileName = General.Map.ConfigSettings.TestProgram;
 					processinfo.CreateNoWindow = false;
@@ -321,7 +317,7 @@ namespace CodeImp.DoomBuilder
 					try
 					{
 						// Start the program
-						process = Process.Start(processinfo);
+						Process process = Process.Start(processinfo);
 
 						// Wait for program to complete
 						while(!process.WaitForExit(10))
@@ -330,7 +326,7 @@ namespace CodeImp.DoomBuilder
 						}
 
 						// Done
-						deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
+						TimeSpan deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
 						General.WriteLogLine("Test program has finished.");
 						General.WriteLogLine("Run time: " + deltatime.TotalSeconds.ToString("###########0.00") + " seconds");
 					}
