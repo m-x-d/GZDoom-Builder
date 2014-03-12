@@ -3508,11 +3508,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. This converts offsetY from/to "normalized" offset for given lower wall
 		internal float GetBottomOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) {
-			if(side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag) || side.Other == null || side.Other.Sector == null)
-				return offset;
+			float surfaceHeight;
+			if (side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag)) {
+				if (side.Other == null || side.Other.Sector == null || side.Sector.CeilTexture != General.Map.Config.SkyFlatName ||
+				    side.Other.Sector.CeilTexture != General.Map.Config.SkyFlatName)
+					return offset;
 
-			//normalize offset
-			float surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.FloorHeight) * scaleY;
+				//normalize offset the way Doom does it when front and back sector's ceiling is sky
+				surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.CeilHeight) * scaleY;
+			} else {
+				//normalize offset
+				surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.FloorHeight) * scaleY;
+			}
 
 			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
 			return (float)Math.Round(offset - surfaceHeight);

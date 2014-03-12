@@ -796,11 +796,10 @@ namespace CodeImp.DoomBuilder.Map
 		// Returns the new line resulting from the split, or null when it failed
 		public Linedef Split(Vertex v)
 		{
-			Linedef nl;
 			Sidedef nsd;
 
 			// Copy linedef and change vertices
-			nl = map.CreateLinedef(v, end);
+			Linedef nl = map.CreateLinedef(v, end);
 			if(nl == null) return null;
 			CopyPropertiesTo(nl);
 			SetEndVertex(v);
@@ -815,10 +814,6 @@ namespace CodeImp.DoomBuilder.Map
 				if(nsd == null) return null;
 				front.CopyPropertiesTo(nsd);
 				nsd.Marked = front.Marked;
-
-				// Make texture offset adjustments
-				if(!General.Map.UDMF) //mxd
-					nsd.OffsetX += (int)Vector2D.Distance(this.start.Position, this.end.Position);
 			}
 
 			// Copy back sidedef if exists
@@ -830,19 +825,24 @@ namespace CodeImp.DoomBuilder.Map
 				nsd.Marked = back.Marked;
 				
 				//mxd. Make texture offset adjustments
-				int distance = (int)Vector2D.Distance(nl.start.Position, nl.end.Position);
-				if(General.Map.UDMF) {
-					if (distance != 0)
-						back.SetUdmfTextureOffsetX(distance);
-				} else {
-					back.OffsetX += distance;
+				if((back.MiddleRequired() && back.LongMiddleTexture != MapSet.EmptyLongName) || back.HighRequired() || back.LowRequired()) {
+					int distance = (int) Vector2D.Distance(nl.start.Position, nl.end.Position);
+					if (General.Map.UDMF) {
+						if (distance != 0) back.SetUdmfTextureOffsetX(distance);
+					} else {
+						back.OffsetX += distance;
+					}
 				}
 			}
 
-			//mxd. Both sides of line are required, so we do it here...
-			if(nl.Front != null && General.Map.UDMF) {
+			//mxd. Make texture offset adjustments. Both sides of the new line are required, so we do it here...
+			if(nl.front != null && ((nl.front.MiddleRequired() || nl.front.LongMiddleTexture != MapSet.EmptyLongName) || nl.front.HighRequired() || nl.front.LowRequired())) {
 				int distance = (int)Vector2D.Distance(this.start.Position, this.end.Position);
-				if(distance != 0) nl.Front.SetUdmfTextureOffsetX(distance);
+				if(General.Map.UDMF) {
+					if(distance != 0) nl.front.SetUdmfTextureOffsetX(distance);
+				} else {
+					nl.front.OffsetX += distance;
+				}
 			}
 
 			// Return result

@@ -134,8 +134,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float floorbias = (Sidedef.Other.Sector.FloorHeight == Sidedef.Sector.FloorHeight) ? 1.0f : 0.0f;
 			if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
 			{
-				// When lower unpegged is set, the lower texture is bound to the bottom
-				tp.tlt.y = (float)Sidedef.Sector.CeilHeight - Sidedef.Other.Sector.FloorHeight;
+				if(Sidedef.Sector.CeilTexture == General.Map.Config.SkyFlatName && Sidedef.Other.Sector.CeilTexture == General.Map.Config.SkyFlatName) {
+					// mxd. Replicate Doom texture offset glitch when front and back sector's ceilings are sky
+					tp.tlt.y = (float)Sidedef.Other.Sector.CeilHeight - Sidedef.Other.Sector.FloorHeight;
+				} else {
+					// When lower unpegged is set, the lower texture is bound to the bottom
+					tp.tlt.y = (float) Sidedef.Sector.CeilHeight - Sidedef.Other.Sector.FloorHeight;
+				}
 			}
 			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
 			tp.trb.y = tp.tlt.y + (Sidedef.Other.Sector.FloorHeight - (Sidedef.Sector.FloorHeight + floorbias));
