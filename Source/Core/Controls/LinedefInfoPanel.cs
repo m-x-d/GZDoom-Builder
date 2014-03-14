@@ -96,6 +96,7 @@ namespace CodeImp.DoomBuilder.Controls
 				taglabel.Visible = false;
 				tag.Visible = false;
 				
+				//set activation
 				foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) {
 					if(l.Activate == ai.Index) {
 						activation.Text = ai.Title;
@@ -123,6 +124,9 @@ namespace CodeImp.DoomBuilder.Controls
 				activationlabel.Visible = false;
 				taglabel.Visible = true;
 				tag.Visible = true;
+
+				//set tag
+				tag.Text = l.Tag + (General.Map.Options.TagLabels.ContainsKey(l.Tag) ? " (" + General.Map.Options.TagLabels[l.Tag] + ")" : string.Empty);
 
 				length.Top = labelPositionsY[0];
 				lengthlabel.Top = labelPositionsY[0];
@@ -160,9 +164,6 @@ namespace CodeImp.DoomBuilder.Controls
 			action.Text = act.ToString();
 			length.Text = l.Length.ToString("0.##");
 			angle.Text = l.AngleDeg + "\u00B0";
-			if(tag.Visible) { //mxd
-				tag.Text = l.Tag + (General.Map.Options.TagLabels.ContainsKey(l.Tag) ? " (" + General.Map.Options.TagLabels[l.Tag] + ")" : string.Empty);
-			}
 			unpegged.Text = peggedness;
 
 			//mxd
