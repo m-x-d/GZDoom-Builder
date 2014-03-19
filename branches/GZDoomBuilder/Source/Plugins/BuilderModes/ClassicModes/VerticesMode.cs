@@ -325,7 +325,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Map.UndoRedo.WithdrawUndo();
 						return;
 					}
-					BuilderPlug.Me.AdjustSplitCoordinates(l, sld);
+					//BuilderPlug.Me.AdjustSplitCoordinates(l, sld);
 					
 					// Update
 					General.Map.Map.Update();
@@ -816,7 +816,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							General.Map.UndoRedo.WithdrawUndo(); 
 							return;
 						}
-						BuilderPlug.Me.AdjustSplitCoordinates(l, sld);
+						//BuilderPlug.Me.AdjustSplitCoordinates(l, sld);
 					}
 				}
 				else

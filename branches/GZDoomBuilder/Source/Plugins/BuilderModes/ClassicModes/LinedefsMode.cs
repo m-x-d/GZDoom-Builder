@@ -1047,7 +1047,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Map.UndoRedo.WithdrawUndo();
 						break;
 					}
-					BuilderPlug.Me.AdjustSplitCoordinates(ld, sld);
+					//BuilderPlug.Me.AdjustSplitCoordinates(ld, sld);
 				}
 
 				// Update cache values

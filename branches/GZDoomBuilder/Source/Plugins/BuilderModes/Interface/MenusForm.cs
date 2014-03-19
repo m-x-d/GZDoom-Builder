@@ -19,6 +19,7 @@
 using System;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -30,6 +31,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Menus list
 		private ToolStripItem[] menus;
+
+		// mxd. More menus
+		private ToolStripItem[] exportmenuitems;
 
 		// Buttons list
 		private ToolStripItem[] buttons;
@@ -90,6 +94,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			menus = new ToolStripItem[menustrip.Items.Count];
 			for(int i = 0; i < menustrip.Items.Count; i++) menus[i] = menustrip.Items[i];
 
+			//mxd
+			exportmenuitems = new ToolStripItem[exportStripMenuItem.DropDownItems.Count];
+			for(int i = 0; i < exportStripMenuItem.DropDownItems.Count; i++)
+				exportmenuitems[i] = exportStripMenuItem.DropDownItems[i];
+
 			// List all buttons
 			buttons = new ToolStripItem[globalstrip.Items.Count];
 			for(int i = 0; i < globalstrip.Items.Count; i++) buttons[i] = globalstrip.Items[i];
@@ -109,6 +118,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Add the buttons to the core
 			foreach(ToolStripItem b in buttons)
 				General.Interface.AddButton(b);
+
+			//mxd
+			foreach(ToolStripMenuItem menu in exportmenuitems)
+				General.Interface.AddMenu(menu, MenuSection.FileExport);
 		}
 
 		// This unregisters from the core
@@ -121,6 +134,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Remove the buttons from the core
 			foreach(ToolStripItem b in buttons)
 				General.Interface.RemoveButton(b);
+
+			//mxd
+			foreach(ToolStripMenuItem menu in exportmenuitems)
+				General.Interface.RemoveMenu(menu);
 		}
 
 		// This hides all menus

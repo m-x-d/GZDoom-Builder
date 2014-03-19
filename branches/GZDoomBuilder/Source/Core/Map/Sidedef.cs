@@ -299,23 +299,19 @@ namespace CodeImp.DoomBuilder.Map
 		// This removes textures that are not required
 		public void RemoveUnneededTextures(bool removemiddle)
 		{
-			RemoveUnneededTextures(removemiddle, false);
+			RemoveUnneededTextures(removemiddle, false, false);
+		}
+
+		// This removes textures that are not required
+		public void RemoveUnneededTextures(bool removemiddle, bool force) 
+		{
+			RemoveUnneededTextures(removemiddle, force, false);
 		}
 		
 		// This removes textures that are not required
-		public void RemoveUnneededTextures(bool removemiddle, bool force)
+		public void RemoveUnneededTextures(bool removemiddle, bool force, bool shiftmiddle)
 		{
 			bool changed = false; //mxd
-			
-			// The middle texture can be removed regardless of any sector tag or linedef action
-			if(!MiddleRequired() && removemiddle)
-			{
-				BeforePropsChange(); //mxd
-				changed = true; //mxd
-				this.texnamemid = "-";
-				this.longtexnamemid = MapSet.EmptyLongName;
-				General.Map.IsChanged = true;
-			}
 
 			// Check if the line or sectors have no action or tags because
 			// if they do, any texture on this side could be needed
@@ -324,22 +320,41 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				if(!HighRequired())
 				{
-					if(!changed) { //mxd
-						BeforePropsChange();
-						changed = true;
-					}
+					BeforePropsChange(); //mxd
+					changed = true;
 					this.texnamehigh = "-";
 					this.longtexnamehigh = MapSet.EmptyLongName;
 					General.Map.IsChanged = true;
+				} 
+				else if(shiftmiddle && this.longtexnamehigh == MapSet.EmptyLongName) //mxd
+				{
+					SetTextureHigh(this.texnamemid);
+					changed = true;
 				}
 
 				if(!LowRequired())
 				{
-					if(!changed) BeforePropsChange(); //mxd
+					if(!changed) { //mxd
+						BeforePropsChange();
+						changed = true;
+					}
 					this.texnamelow = "-";
 					this.longtexnamelow = MapSet.EmptyLongName;
 					General.Map.IsChanged = true;
+				} 
+				else if(shiftmiddle && this.longtexnamelow == MapSet.EmptyLongName) //mxd 
+				{
+					SetTextureLow(this.texnamemid);
+					changed = true;
 				}
+			}
+
+			// The middle texture can be removed regardless of any sector tag or linedef action
+			if(!MiddleRequired() && removemiddle) {
+				if(!changed) BeforePropsChange(); //mxd
+				this.texnamemid = "-";
+				this.longtexnamemid = MapSet.EmptyLongName;
+				General.Map.IsChanged = true;
 			}
 		}
 		

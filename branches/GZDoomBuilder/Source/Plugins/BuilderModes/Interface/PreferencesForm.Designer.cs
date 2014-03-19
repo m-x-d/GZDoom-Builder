@@ -493,7 +493,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.splitbehavior.Items.AddRange(new object[] {
             "Interpolate texture coordinates",
             "Duplicate texture coordinates",
-            "Reset X coordinate, duplicate Y coordinate"});
+            "Reset X coordinate, duplicate Y coordinate",
+            "Reset X and Y coordinates"});
 			this.splitbehavior.Location = new System.Drawing.Point(342, 55);
 			this.splitbehavior.Name = "splitbehavior";
 			this.splitbehavior.Size = new System.Drawing.Size(309, 22);
@@ -502,11 +503,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(158, 58);
+			this.label10.Location = new System.Drawing.Point(203, 58);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(166, 14);
+			this.label10.Size = new System.Drawing.Size(121, 14);
 			this.label10.TabIndex = 1;
-			this.label10.Text = "When splitting a linedef manually:";
+			this.label10.Text = "When splitting a linedef:";
 			this.label10.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label1
