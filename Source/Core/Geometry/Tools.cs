@@ -558,8 +558,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 
 				// Update line
-				if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(wassinglesided);
-				if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(wassinglesided);
+				if(ls.Line.Front != null)ls.Line.Front.RemoveUnneededTextures(wassinglesided, false, wassinglesided);
+				if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(wassinglesided, false, wassinglesided);
 
 				// Apply single/double sided flags if the double-sided-ness changed
 				if( (wassinglesided && ((ls.Line.Front != null) && (ls.Line.Back != null))) ||
@@ -597,7 +597,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						ls.Line.ApplySidedFlags();
 						
 						// We must remove the (now useless) middle texture on the other side
-						if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(true, true);
+						if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(true, true, true);
 					}
 					// Added 23-9-08, can we do this or will it break things?
 					else if(!original.Sector.IsDisposed) //mxd
@@ -617,7 +617,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						ls.Line.ApplySidedFlags();
 
 						// We must remove the (now useless) middle texture on the other side
-						if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(true, true);
+						if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(true, true, true);
 					}
 					// Added 23-9-08, can we do this or will it break things?
 					else if(!original.Sector.IsDisposed) //mxd
@@ -1433,23 +1433,56 @@ namespace CodeImp.DoomBuilder.Geometry
 
 					//mxd. Apply texture overrides
 					if (useOverrides && !General.Settings.AutoClearSidedefTextures) {
-						foreach(Linedef ld in newlines) {
-							if(!newverts.Contains(ld.Start) || !newverts.Contains(ld.End)) continue;
-							if (ld.Front != null) ApplyOverridesToSidedef(ld.Front);
-							if (ld.Back != null) ApplyOverridesToSidedef(ld.Back);
+						//if new sectors are created, apply overrides to the sides of these sectors, otherwise, apply overrides to all new lines
+						if (insidesides.Count > 0) {
+							foreach(Sidedef side in insidesides) {
+								ApplyOverridesToSidedef(side);
+							}
+						} else {
+							foreach(Linedef l in newlines) {
+								if(l.IsDisposed) continue;
+								if(!newverts.Contains(l.Start) || !newverts.Contains(l.End)) continue;
+								ApplyOverridesToSidedef(l.Front);
+								if(l.Back != null) ApplyOverridesToSidedef(l.Back);
+							}
 						}
 					}
-				}
 
-				//mxd. Auto-align new lines
-				if(autoAlignTextureOffsets && newlines.Count > 1) {
-					float totalLength = 0f;
-					foreach(Linedef l in newlines) totalLength += l.Length;
+					//mxd. Auto-align new lines
+					if(autoAlignTextureOffsets && newlines.Count > 1 && !splittingonly) {
+						List<List<Linedef>> strips = new List<List<Linedef>>();
+						strips.Add(new List<Linedef> { newlines[0] });
 
-					if(General.Map.UDMF)
-						autoAlignTexturesOnSidesUDMF(newlines, totalLength, (newlines[0].End != newlines[1].Start));
-					else
-						autoAlignTexturesOnSides(newlines, totalLength, (newlines[0].End != newlines[1].Start));
+						for(int i = 1; i < newlines.Count; i++) {
+							//skip double-sided line if it doesn't have lower or upper parts or they are not part of newly created sectors
+							if(newlines[i].Back != null &&
+								(((!newlines[i].Front.LowRequired() && !newlines[i].Front.HighRequired()) || !insidesides.Contains(newlines[i].Front))
+																  && ((!newlines[i].Back.LowRequired() && !newlines[i].Back.HighRequired()) || !insidesides.Contains(newlines[i].Back))))
+								continue;
+
+							bool added = false;
+							foreach(List<Linedef> strip in strips) {
+								if(newlines[i].Start == strip[0].Start || newlines[i].End == strip[0].Start) {
+									strip.Insert(0, newlines[i]);
+									added = true;
+									break;
+								}
+
+								if(newlines[i].Start == strip[strip.Count - 1].End || newlines[i].End == strip[strip.Count - 1].End) {
+									strip.Add(newlines[i]);
+									added = true;
+									break;
+								}
+							}
+
+							if(!added) strips.Add(new List<Linedef> { newlines[i] });
+						}
+
+						foreach(List<Linedef> strip in strips) {
+							if(strip.Count < 2) continue;
+							autoAlignLinedefStrip(strip);
+						}
+					}
 				}
 
 				// Mark new geometry only
@@ -1460,6 +1493,19 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 
 			return true;
+		}
+
+		//mxd
+		private static void autoAlignLinedefStrip(List<Linedef> strip) {
+			if (strip.Count < 2) return;
+
+			float totalLength = 0f;
+			foreach(Linedef l in strip) totalLength += l.Length;
+
+			if(General.Map.UDMF)
+				autoAlignTexturesOnSidesUDMF(strip, totalLength, (strip[0].End != strip[1].Start));
+			else
+				autoAlignTexturesOnSides(strip, totalLength, (strip[0].End != strip[1].Start));	
 		}
 
 		//mxd

@@ -27,12 +27,10 @@
 		private void InitializeComponent() {
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.importStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.exportStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip = new System.Windows.Forms.ToolStrip();
 			this.jitterButton = new System.Windows.Forms.ToolStripButton();
-			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.jitterItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip.SuspendLayout();
 			this.toolStrip.SuspendLayout();
@@ -42,7 +40,6 @@
 			// 
 			this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importStripMenuItem,
-            this.exportStripMenuItem,
             this.toolStripMenuItem3});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
@@ -58,30 +55,13 @@
 			this.importStripMenuItem.Size = new System.Drawing.Size(55, 20);
 			this.importStripMenuItem.Text = "Import";
 			// 
-			// toolStripMenuItem1
+			// toolStripMenuItem3
 			// 
-			this.toolStripMenuItem1.Image = global::CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.Terrain;
-			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(215, 22);
-			this.toolStripMenuItem1.Tag = "importobjasterrain";
-			this.toolStripMenuItem1.Text = "Wavefront .obj as Terrain...";
-			this.toolStripMenuItem1.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// exportStripMenuItem
-			// 
-			this.exportStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem2});
-			this.exportStripMenuItem.Name = "exportStripMenuItem";
-			this.exportStripMenuItem.Size = new System.Drawing.Size(52, 20);
-			this.exportStripMenuItem.Text = "Export";
-			// 
-			// toolStripMenuItem2
-			// 
-			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(229, 22);
-			this.toolStripMenuItem2.Tag = "exporttoobj";
-			this.toolStripMenuItem2.Text = "Selection To Wavefront .obj...";
-			this.toolStripMenuItem2.Click += new System.EventHandler(this.InvokeTaggedAction);
+			this.toolStripMenuItem3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.jitterItem});
+			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(55, 20);
+			this.toolStripMenuItem3.Text = "Modes";
 			// 
 			// toolStrip
 			// 
@@ -104,19 +84,20 @@
 			this.jitterButton.Text = "Apply Jitter";
 			this.jitterButton.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// toolStripMenuItem3
+			// toolStripMenuItem1
 			// 
-			this.toolStripMenuItem3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.jitterItem});
-			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(55, 20);
-			this.toolStripMenuItem3.Text = "Modes";
+			this.toolStripMenuItem1.Image = global::CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.Terrain;
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(215, 22);
+			this.toolStripMenuItem1.Tag = "importobjasterrain";
+			this.toolStripMenuItem1.Text = "Wavefront .obj as Terrain...";
+			this.toolStripMenuItem1.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// jitterItem
 			// 
 			this.jitterItem.Image = global::CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.Jitter;
 			this.jitterItem.Name = "jitterItem";
-			this.jitterItem.Size = new System.Drawing.Size(152, 22);
+			this.jitterItem.Size = new System.Drawing.Size(133, 22);
 			this.jitterItem.Tag = "applyjitter";
 			this.jitterItem.Text = "Apply Jitter";
 			this.jitterItem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -145,8 +126,6 @@
 		private System.Windows.Forms.MenuStrip menuStrip;
 		private System.Windows.Forms.ToolStripMenuItem importStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-		private System.Windows.Forms.ToolStripMenuItem exportStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
 		private System.Windows.Forms.ToolStrip toolStrip;
 		private System.Windows.Forms.ToolStripButton jitterButton;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;

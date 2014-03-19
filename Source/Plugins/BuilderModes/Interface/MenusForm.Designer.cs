@@ -55,6 +55,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.mergesectorsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.makedooritem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.thingsmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.selectInSectorsItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -81,9 +82,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonAlignThingsToWall = new System.Windows.Forms.ToolStripButton();
 			this.buttonTextureOffsetLock = new System.Windows.Forms.ToolStripButton();
 			this.buttonMakeDoor = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.fileMenuStrip = new System.Windows.Forms.MenuStrip();
+			this.exportStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
+			this.fileMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menustrip
@@ -93,7 +97,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.sectorsmenu,
             this.thingsmenu,
             this.vertsmenu});
-			this.menustrip.Location = new System.Drawing.Point(0, 0);
+			this.menustrip.Location = new System.Drawing.Point(0, 24);
 			this.menustrip.Name = "menustrip";
 			this.menustrip.Size = new System.Drawing.Size(588, 24);
 			this.menustrip.TabIndex = 0;
@@ -313,6 +317,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.makedooritem.Text = "Make &Door";
 			this.makedooritem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(242, 6);
+			this.toolStripSeparator4.Visible = false;
+			// 
 			// thingsmenu
 			// 
 			this.thingsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -375,7 +385,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// globalstrip
 			// 
-			this.globalstrip.Location = new System.Drawing.Point(0, 24);
+			this.globalstrip.Location = new System.Drawing.Point(0, 48);
 			this.globalstrip.Name = "globalstrip";
 			this.globalstrip.Size = new System.Drawing.Size(588, 25);
 			this.globalstrip.TabIndex = 1;
@@ -401,7 +411,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.buttonAlignThingsToWall,
             this.buttonTextureOffsetLock,
             this.buttonMakeDoor});
-			this.manualstrip.Location = new System.Drawing.Point(0, 49);
+			this.manualstrip.Location = new System.Drawing.Point(0, 73);
 			this.manualstrip.Name = "manualstrip";
 			this.manualstrip.Size = new System.Drawing.Size(588, 25);
 			this.manualstrip.TabIndex = 2;
@@ -585,11 +595,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonMakeDoor.Text = "Make Door From Selection";
 			this.buttonMakeDoor.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// toolStripSeparator4
+			// fileMenuStrip
 			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(242, 6);
-			this.toolStripSeparator4.Visible = false;
+			this.fileMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportStripMenuItem});
+			this.fileMenuStrip.Location = new System.Drawing.Point(0, 0);
+			this.fileMenuStrip.Name = "fileMenuStrip";
+			this.fileMenuStrip.Size = new System.Drawing.Size(588, 24);
+			this.fileMenuStrip.TabIndex = 3;
+			this.fileMenuStrip.Text = "menuStrip1";
+			// 
+			// exportStripMenuItem
+			// 
+			this.exportStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem5});
+			this.exportStripMenuItem.Name = "exportStripMenuItem";
+			this.exportStripMenuItem.Size = new System.Drawing.Size(52, 20);
+			this.exportStripMenuItem.Text = "Export";
+			// 
+			// toolStripMenuItem5
+			// 
+			this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+			this.toolStripMenuItem5.Size = new System.Drawing.Size(229, 22);
+			this.toolStripMenuItem5.Tag = "exporttoobj";
+			this.toolStripMenuItem5.Text = "Selection To Wavefront .obj...";
+			this.toolStripMenuItem5.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// MenusForm
 			// 
@@ -599,6 +629,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Controls.Add(this.manualstrip);
 			this.Controls.Add(this.globalstrip);
 			this.Controls.Add(this.menustrip);
+			this.Controls.Add(this.fileMenuStrip);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.MainMenuStrip = this.menustrip;
@@ -612,6 +643,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.menustrip.PerformLayout();
 			this.manualstrip.ResumeLayout(false);
 			this.manualstrip.PerformLayout();
+			this.fileMenuStrip.ResumeLayout(false);
+			this.fileMenuStrip.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -673,5 +706,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripButton buttonMakeDoor;
 		private System.Windows.Forms.ToolStripMenuItem makedooritem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.MenuStrip fileMenuStrip;
+		private System.Windows.Forms.ToolStripMenuItem exportStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
 	}
 }

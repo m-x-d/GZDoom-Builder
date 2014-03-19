@@ -43,7 +43,6 @@ namespace CodeImp.DoomBuilder.Config
 		private Configuration cfg;
 		
 		// Cached variables
-		//private int undolevels;
 		private bool blackbrowsers;
 		private int visualfov;
 		private float visualmousesensx;
@@ -89,6 +88,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool toolbarfile;
 		private float filteranisotropy;
 		private bool showtexturesizes;
+		private SplitLineBehavior splitlinebehavior;	//mxd
 
 		//mxd
 		private bool gzDrawModels;
@@ -126,7 +126,6 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Properties
 
 		internal Configuration Config { get { return cfg; } }
-		//public int UndoLevels { get { return undolevels; } internal set { undolevels = value; } }
 		public bool BlackBrowsers { get { return blackbrowsers; } internal set { blackbrowsers = value; } }
 		public int VisualFOV { get { return visualfov; } internal set { visualfov = value; } }
 		public int ImageBrightness { get { return imagebrightness; } internal set { imagebrightness = value; } }
@@ -172,6 +171,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool ToolbarFile { get { return toolbarfile; } internal set { toolbarfile = value; } }
 		public float FilterAnisotropy { get { return filteranisotropy; } internal set { filteranisotropy = value; } }
 		public bool ShowTextureSizes { get { return showtexturesizes; } internal set { showtexturesizes = value; } }
+		public SplitLineBehavior SplitLineBehavior { get { return splitlinebehavior; } set { splitlinebehavior = value; } } //mxd
 
 		//mxd 
 		public bool GZDrawModels { get { return gzDrawModels; } internal set { gzDrawModels = value; } }
@@ -277,6 +277,7 @@ namespace CodeImp.DoomBuilder.Config
 				toolbarfile = cfg.ReadSetting("toolbarfile", true);
 				filteranisotropy = cfg.ReadSetting("filteranisotropy", 8.0f);
 				showtexturesizes = cfg.ReadSetting("showtexturesizes", true);
+				splitlinebehavior = (SplitLineBehavior) General.Clamp(cfg.ReadSetting("splitlinebehavior", 0), 0, 3); //mxd
 
 				//mxd 
 				gzDrawModels = cfg.ReadSetting("gzdrawmodels", true);
@@ -363,6 +364,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("toolbarfile", toolbarfile);
 			cfg.WriteSetting("filteranisotropy", filteranisotropy);
 			cfg.WriteSetting("showtexturesizes", showtexturesizes);
+			cfg.WriteSetting("splitlinebehavior", (int)splitlinebehavior); //mxd
 
 			//mxd
 			cfg.WriteSetting("gzdrawmodels", gzDrawModels);

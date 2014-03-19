@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
 
 #endregion
@@ -42,7 +43,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Apply current settings to interface
 			heightbysidedef.SelectedIndex = General.Settings.ReadPluginSetting("changeheightbysidedef", 0);
-			splitbehavior.SelectedIndex = General.Settings.ReadPluginSetting("splitlinebehavior", 0);
 			editnewthing.Checked = General.Settings.ReadPluginSetting("editnewthing", true);
 			editnewsector.Checked = General.Settings.ReadPluginSetting("editnewsector", false);
 			additiveselect.Checked = General.Settings.ReadPluginSetting("additiveselect", false);
@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			highlightrange.Text = General.Settings.ReadPluginSetting("highlightrange", 20).ToString();
 			highlightthingsrange.Text = General.Settings.ReadPluginSetting("highlightthingsrange", 10).ToString();
 			splitlinedefsrange.Text = General.Settings.ReadPluginSetting("splitlinedefsrange", 10).ToString();
+			splitbehavior.SelectedIndex = (int)General.Settings.SplitLineBehavior; //mxd
 			autoclearselection.Checked = BuilderPlug.Me.AutoClearSelection;
 			visualmodeclearselection.Checked = BuilderPlug.Me.VisualModeClearSelection;
 			autodragonpaste.Checked = BuilderPlug.Me.AutoDragOnPaste;
@@ -71,7 +72,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Write preferred settings
 			General.Settings.WritePluginSetting("changeheightbysidedef", heightbysidedef.SelectedIndex);
-			General.Settings.WritePluginSetting("splitlinebehavior", splitbehavior.SelectedIndex);
 			General.Settings.WritePluginSetting("editnewthing", editnewthing.Checked);
 			General.Settings.WritePluginSetting("editnewsector", editnewsector.Checked);
 			General.Settings.WritePluginSetting("additiveselect", additiveselect.Checked);
@@ -86,6 +86,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("autoaligntextureoffsetsoncreate", autoaligntexturesoncreate.Checked);//mxd
 			General.Settings.WritePluginSetting("dontmovegeometryoutsidemapboundary", dontMoveGeometryOutsideBounds.Checked);//mxd
 			General.Settings.WritePluginSetting("syncselection", syncSelection.Checked);//mxd
+			General.Settings.SplitLineBehavior = (SplitLineBehavior)splitbehavior.SelectedIndex;//mxd
 
 			//default sector values
 			General.Settings.DefaultBrightness = General.Clamp(defaultbrightness.GetResult(192), 0, 255);

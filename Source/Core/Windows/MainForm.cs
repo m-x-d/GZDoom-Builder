@@ -2109,6 +2109,8 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				case MenuSection.FileNewOpenClose: menufile.DropDownItems.Insert(menufile.DropDownItems.IndexOf(seperatorfileopen), menu); break;
 				case MenuSection.FileSave: menufile.DropDownItems.Insert(menufile.DropDownItems.IndexOf(seperatorfilesave), menu); break;
+				case MenuSection.FileImport: itemimport.DropDownItems.Add(menu); break; //mxd
+				case MenuSection.FileExport: itemexport.DropDownItems.Add(menu); break; //mxd
 				case MenuSection.FileRecent: menufile.DropDownItems.Insert(menufile.DropDownItems.IndexOf(seperatorfilerecent), menu); break;
 				case MenuSection.FileExit: menufile.DropDownItems.Insert(menufile.DropDownItems.IndexOf(itemexit), menu); break;
 				case MenuSection.EditUndoRedo: menuedit.DropDownItems.Insert(menuedit.DropDownItems.IndexOf(seperatoreditundo), menu); break;
@@ -2259,6 +2261,8 @@ namespace CodeImp.DoomBuilder.Windows
 			itemsavemapinto.Enabled = (General.Map != null);
 			itemtestmap.Enabled = (General.Map != null);
 			itemopenmapincurwad.Enabled = (General.Map != null); //mxd
+			itemimport.Enabled = (General.Map != null); //mxd
+			itemexport.Enabled = (General.Map != null); //mxd
 
 			// Toolbar icons
 			buttonnewmap.Enabled = itemnewmap.Enabled;

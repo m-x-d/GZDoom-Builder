@@ -20,8 +20,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			// Add the menus to the core
 			General.Interface.AddModesMenu(jitterItem, "002_modify");
 			General.Interface.AddModesButton(jitterButton, "002_modify");
-			General.Interface.AddMenu(importStripMenuItem, MenuSection.FileNewOpenClose);
-			General.Interface.AddMenu(exportStripMenuItem, MenuSection.FileNewOpenClose);
+
+			for(int i = 0; i < importStripMenuItem.DropDownItems.Count; i++) {
+				General.Interface.AddMenu(importStripMenuItem.DropDownItems[i] as ToolStripMenuItem, MenuSection.FileImport);
+			}
 		}
 
 		// This unregisters from the core
@@ -29,8 +31,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			// Remove the menus from the core
 			General.Interface.RemoveMenu(jitterItem);
 			General.Interface.RemoveButton(jitterButton);
-			General.Interface.RemoveMenu(importStripMenuItem);
-			General.Interface.RemoveMenu(exportStripMenuItem);
+
+			for (int i = 0; i < importStripMenuItem.DropDownItems.Count; i++) {
+				General.Interface.RemoveMenu(importStripMenuItem.DropDownItems[i] as ToolStripMenuItem);
+			}
 		}
 	}
 }

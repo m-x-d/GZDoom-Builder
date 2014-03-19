@@ -24,6 +24,8 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		FileNewOpenClose,
 		FileSave,
+		FileImport, //mxd
+		FileExport, //mxd
 		FileRecent,
 		FileExit,
 		EditUndoRedo,

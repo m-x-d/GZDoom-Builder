@@ -82,7 +82,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int showvisualthings;			// 0 = none, 1 = sprite only, 2 = sprite caged
 		private bool usegravity;
 		private int changeheightbysidedef;		// 0 = nothing, 1 = change ceiling, 2 = change floor
-		private int splitlinebehavior;			// 0 = adjust texcoords, 1 = copy texcoords, 2 = reset texcoords
 		private bool editnewthing;
 		private bool editnewsector;
 		private bool additiveselect;
@@ -133,7 +132,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public int ShowVisualThings { get { return showvisualthings; } set { showvisualthings = value; } }
 		public bool UseGravity { get { return usegravity; } set { usegravity = value; } }
 		public int ChangeHeightBySidedef { get { return changeheightbysidedef; } }
-		public int SplitLineBehavior { get { return splitlinebehavior; } }
 		public bool EditNewThing { get { return editnewthing; } }
 		public bool EditNewSector { get { return editnewsector; } }
 		public bool AdditiveSelect { get { return additiveselect; } }
@@ -235,7 +233,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void LoadSettings()
 		{
 			changeheightbysidedef = General.Settings.ReadPluginSetting("changeheightbysidedef", 0);
-			splitlinebehavior = General.Settings.ReadPluginSetting("splitlinebehavior", 0);
 			editnewthing = General.Settings.ReadPluginSetting("editnewthing", true);
 			editnewsector = General.Settings.ReadPluginSetting("editnewsector", false);
 			additiveselect = General.Settings.ReadPluginSetting("additiveselect", false);
@@ -469,115 +466,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				vertices[i].u = pos.x;
 				vertices[i].v = pos.y;
 				vertices[i].c = color;
-			}
-		}
-
-		// This adjusts texture coordinates for splitted lines according to the user preferences
-		public void AdjustSplitCoordinates(Linedef oldline, Linedef newline)
-		{
-			//mxd. Clamp texture coordinates (they are already adjusted, we just need to clamp OffsetX by texture width)
-			if(splitlinebehavior == 0) {
-				if((oldline.Front != null) && (newline.Front != null)) {
-					//get texture
-					ImageData texture = null;
-
-					if(newline.Front.MiddleRequired() && newline.Front.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(newline.Front.LongMiddleTexture)) {
-						texture = General.Map.Data.GetTextureImage(newline.Front.MiddleTexture);
-					} else if(newline.Front.HighRequired() && newline.Front.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(newline.Front.LongHighTexture)) {
-						texture = General.Map.Data.GetTextureImage(newline.Front.HighTexture);
-					} else if(newline.Front.LowRequired() && newline.Front.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(newline.Front.LongLowTexture)) {
-						texture = General.Map.Data.GetTextureImage(newline.Front.LowTexture);
-					}
-
-					//clamp offsetX
-					if(texture != null)	newline.Front.OffsetX %= texture.Width;
-				}
-
-				if((oldline.Back != null) && (newline.Back != null)) {
-					//get texture
-					ImageData texture = null;
-
-					if(newline.Back.MiddleRequired() && newline.Back.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(newline.Back.LongMiddleTexture)) {
-						texture = General.Map.Data.GetTextureImage(newline.Back.MiddleTexture);
-					} else if(newline.Back.HighRequired() && newline.Back.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(newline.Back.LongHighTexture)) {
-						texture = General.Map.Data.GetTextureImage(newline.Back.HighTexture);
-					} else if(newline.Back.LowRequired() && newline.Back.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(newline.Back.LongLowTexture)) {
-						texture = General.Map.Data.GetTextureImage(newline.Back.LowTexture);
-					}
-
-					//clamp offsetX
-					if(texture != null)	newline.Back.OffsetX %= texture.Width;
-				}
-			}
-			// Copy X and Y coordinates
-			if(splitlinebehavior == 1)
-			{
-				if((oldline.Front != null) && (newline.Front != null))
-				{
-					newline.Front.OffsetX = oldline.Front.OffsetX;
-					newline.Front.OffsetY = oldline.Front.OffsetY;
-
-					//mxd. Copy UDMF offsets as well
-					if(General.Map.UDMF) {
-						UDMFTools.SetFloat(newline.Front.Fields, "offsetx_top", oldline.Front.Fields.GetValue("offsetx_top", 0f));
-						UDMFTools.SetFloat(newline.Front.Fields, "offsetx_mid", oldline.Front.Fields.GetValue("offsetx_mid", 0f));
-						UDMFTools.SetFloat(newline.Front.Fields, "offsetx_bottom", oldline.Front.Fields.GetValue("offsetx_bottom", 0f));
-						
-						UDMFTools.SetFloat(newline.Front.Fields, "offsety_top", oldline.Front.Fields.GetValue("offsety_top", 0f));
-						UDMFTools.SetFloat(newline.Front.Fields, "offsety_mid", oldline.Front.Fields.GetValue("offsety_mid", 0f));
-						UDMFTools.SetFloat(newline.Front.Fields, "offsety_bottom", oldline.Front.Fields.GetValue("offsety_bottom", 0f));
-					}
-				}
-				
-				if((oldline.Back != null) && (newline.Back != null))
-				{
-					newline.Back.OffsetX = oldline.Back.OffsetX;
-					newline.Back.OffsetY = oldline.Back.OffsetY;
-
-					//mxd. Copy UDMF offsets as well
-					if(General.Map.UDMF) {
-						UDMFTools.SetFloat(newline.Back.Fields, "offsetx_top", oldline.Back.Fields.GetValue("offsetx_top", 0f));
-						UDMFTools.SetFloat(newline.Back.Fields, "offsetx_mid", oldline.Back.Fields.GetValue("offsetx_mid", 0f));
-						UDMFTools.SetFloat(newline.Back.Fields, "offsetx_bottom", oldline.Back.Fields.GetValue("offsetx_bottom", 0f));
-
-						UDMFTools.SetFloat(newline.Back.Fields, "offsety_top", oldline.Back.Fields.GetValue("offsety_top", 0f));
-						UDMFTools.SetFloat(newline.Back.Fields, "offsety_mid", oldline.Back.Fields.GetValue("offsety_mid", 0f));
-						UDMFTools.SetFloat(newline.Back.Fields, "offsety_bottom", oldline.Back.Fields.GetValue("offsety_bottom", 0f));
-					}
-				}
-			}
-			// Reset X coordinate, copy Y coordinate
-			else if(splitlinebehavior == 2)
-			{
-				if((oldline.Front != null) && (newline.Front != null))
-				{
-					newline.Front.OffsetX = 0;
-					newline.Front.OffsetY = oldline.Front.OffsetY;
-
-					//mxd. Reset UDMF X offset as well
-					if(General.Map.UDMF) {
-						UDMFTools.SetFloat(newline.Front.Fields, "offsetx_top", 0f);
-						UDMFTools.SetFloat(newline.Front.Fields, "offsetx_mid", 0f);
-						UDMFTools.SetFloat(newline.Front.Fields, "offsetx_bottom", 0f);
-					}
-				}
-				
-				if((oldline.Back != null) && (newline.Back != null))
-				{
-					newline.Back.OffsetX = 0;
-					newline.Back.OffsetY = oldline.Back.OffsetY;
-
-					//mxd. Reset UDMF X offset and copy Y offset as well
-					if(General.Map.UDMF) {
-						UDMFTools.SetFloat(newline.Back.Fields, "offsetx_top", 0f);
-						UDMFTools.SetFloat(newline.Back.Fields, "offsetx_mid", 0f);
-						UDMFTools.SetFloat(newline.Back.Fields, "offsetx_bottom", 0f);
-
-						UDMFTools.SetFloat(newline.Back.Fields, "offsety_top", oldline.Back.Fields.GetValue("offsety_top", 0f));
-						UDMFTools.SetFloat(newline.Back.Fields, "offsety_mid", oldline.Back.Fields.GetValue("offsety_mid", 0f));
-						UDMFTools.SetFloat(newline.Back.Fields, "offsety_bottom", oldline.Back.Fields.GetValue("offsety_bottom", 0f));
-					}
-				}
 			}
 		}
 		

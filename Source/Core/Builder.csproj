@@ -808,6 +808,7 @@
     <Compile Include="Map\GroupInfo.cs" />
     <Compile Include="Map\SelectionType.cs" />
     <Compile Include="Map\MapElementCollection.cs" />
+    <Compile Include="Map\SplitLineBehavior.cs" />
     <Compile Include="Rendering\SurfaceBufferSet.cs" />
     <Compile Include="Rendering\SurfaceEntry.cs" />
     <Compile Include="Rendering\SurfaceEntryCollection.cs" />
