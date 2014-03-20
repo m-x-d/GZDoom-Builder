@@ -1110,13 +1110,11 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("openmap")]
 		internal static void OpenMap()
 		{
-			OpenFileDialog openfile;
-
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
 
 			// Open map file dialog
-			openfile = new OpenFileDialog();
+			OpenFileDialog openfile = new OpenFileDialog();
 			openfile.Filter = "Doom WAD Files (*.wad)|*.wad";
 			openfile.Title = "Open Map";
 			openfile.AddExtension = false;
@@ -1207,8 +1205,6 @@ namespace CodeImp.DoomBuilder
 		// This opens the specified file
 		internal static void OpenMapFile(string filename, MapOptions options)
 		{
-			OpenMapOptionsForm openmapwindow;
-
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
 			
@@ -1216,10 +1212,7 @@ namespace CodeImp.DoomBuilder
 			if(General.AskSaveMap())
 			{
 				// Open map options dialog
-				if(options != null)
-					openmapwindow = new OpenMapOptionsForm(filename, options);
-				else
-					openmapwindow = new OpenMapOptionsForm(filename);
+				OpenMapOptionsForm openmapwindow = (options != null ? new OpenMapOptionsForm(filename, options) : new OpenMapOptionsForm(filename));
 
 				if(openmapwindow.ShowDialog(mainwindow) == DialogResult.OK)
 					OpenMapFileWithOptions(filename, openmapwindow.Options);
