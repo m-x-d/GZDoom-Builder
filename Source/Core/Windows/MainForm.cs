@@ -449,11 +449,12 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				bool showdialog = false;
 				MapOptions options = new MapOptions();
-				Configuration mapsettings;
 				
 				// Any of the options already given?
 				if(General.AutoLoadMap != null)
 				{
+					Configuration mapsettings;
+					
 					// Try to find existing options in the settings file
 					string dbsfile = General.AutoLoadFile.Substring(0, General.AutoLoadFile.Length - 4) + ".dbs";
 					if(File.Exists(dbsfile))
@@ -486,7 +487,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(showdialog)
 				{
 					// Show open dialog
-					General.OpenMapFile(General.AutoLoadFile, options);
+					General.OpenMapFile(General.AutoLoadFile, null);
 				}
 				else
 				{
