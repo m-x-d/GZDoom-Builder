@@ -265,8 +265,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd
-		public override bool OnMapTestBegin() {
-			if (General.Settings.GZTestFromCurrentPosition) {
+		public override bool OnMapTestBegin(bool testFromCurrentPosition) {
+			if (testFromCurrentPosition) {
 				//find Single Player Start. Should have Type 1 in all games
 				Thing start = null;
 
@@ -317,8 +317,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd
-		public override void OnMapTestEnd() {
-			if (General.Settings.GZTestFromCurrentPosition) {
+		public override void OnMapTestEnd(bool testFromCurrentPosition) {
+			if (testFromCurrentPosition) {
 				//restore position
 				playerStart.Move(playerStartPosition);
 				playerStart.Rotate(playerStartAngle);

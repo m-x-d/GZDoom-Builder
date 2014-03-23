@@ -586,6 +586,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			if(e.CloseReason != CloseReason.ApplicationExitCall)
 			{
+				//mxd
+				if(General.Map != null && General.Map.Launcher.GameEngineRunning) General.Map.Launcher.StopGameEngine();
+				
 				// Close the map
 				if(General.CloseMap())
 				{

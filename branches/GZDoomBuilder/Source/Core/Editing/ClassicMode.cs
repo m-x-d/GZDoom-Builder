@@ -607,8 +607,8 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		//mxd
-		public override bool OnMapTestBegin() {
-			if (General.Settings.GZTestFromCurrentPosition) {
+		public override bool OnMapTestBegin(bool testFromCurrentPosition) {
+			if(testFromCurrentPosition) {
 				if(!mouseinside){
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: mouse is outside editing vindow!");
 					return false;
@@ -658,8 +658,8 @@ namespace CodeImp.DoomBuilder.Editing
 			return true;
 		}
 
-		public override void OnMapTestEnd() {
-			if (General.Settings.GZTestFromCurrentPosition) {
+		public override void OnMapTestEnd(bool testFromCurrentPosition) {
+			if (testFromCurrentPosition) {
 				//restore position
 				playerStart.Move(playerStartPosition);
 				playerStart = null;
