@@ -161,8 +161,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void OnMapTestEnd() {
-			base.OnMapTestEnd();
+		public override void OnMapTestEnd(bool testFromCurrentPosition) {
+			base.OnMapTestEnd(testFromCurrentPosition);
 			General.Interface.RedrawDisplay(); // Redraw display to hide changes :)
 		}
 

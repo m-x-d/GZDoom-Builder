@@ -103,7 +103,6 @@ namespace CodeImp.DoomBuilder.Config
 		private int gzMaxDynamicLights;
 		private float gzDynamicLightRadius;
 		private float gzDynamicLightIntensity;
-		private bool gzTestFromCurrentPosition;
 		private bool gzStretchModels;
 		private float gzVertexScale2D;
 		private bool gzShowVisualVertices;
@@ -182,7 +181,6 @@ namespace CodeImp.DoomBuilder.Config
 		public bool GZToolbarGZDoom { get { return gzToolbarGZDoom; } internal set { gzToolbarGZDoom = value; } }
 		public bool GZSynchCameras { get { return gzSynchCameras; } internal set { gzSynchCameras = value; } }
 		public bool GZShowEventLines { get { return gzShowEventLines; } internal set { gzShowEventLines = value; } }
-		public bool GZTestFromCurrentPosition { get { return gzTestFromCurrentPosition; } internal set { gzTestFromCurrentPosition = value; } }
 		public bool GZOldHighlightMode { get { return gzOldHighlightMode; } internal set { gzOldHighlightMode = value; } }
 		public int GZMaxDynamicLights { get { return gzMaxDynamicLights; } internal set { gzMaxDynamicLights = value; } }
 		public float GZDynamicLightRadius { get { return gzDynamicLightRadius; } internal set { gzDynamicLightRadius = value; } }

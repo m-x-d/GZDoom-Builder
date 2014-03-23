@@ -39,15 +39,18 @@ namespace CodeImp.DoomBuilder
 		#region ================== Variables
 
 		private string tempwad;
-
+		private Process process; //mxd
 		private bool isdisposed;
+
+		delegate void EngineExitedCallback(); //mxd
 		
 		#endregion
 
 		#region ================== Properties
 
 		public string TempWAD { get { return tempwad; } }
-		
+		public bool GameEngineRunning { get { return process != null; } } //mxd
+
 		#endregion
 
 		#region ================== Constructor / Destructor
@@ -70,6 +73,12 @@ namespace CodeImp.DoomBuilder
 			{
 				// Unbind actions
 				General.Actions.UnbindMethods(this);
+
+				//mxd. Terminate process?
+				if (process != null) {
+					process.CloseMainWindow();
+					process.Close();
+				}
 				
 				// Remove temporary file
 				try { File.Delete(tempwad); }
@@ -227,29 +236,28 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("testmap")]
 		public void Test()
 		{
-			General.Settings.GZTestFromCurrentPosition = false; //mxd
-			if(!General.Editing.Mode.OnMapTestBegin()) return; //mxd
+			if(!General.Editing.Mode.OnMapTestBegin(false)) return; //mxd
 			TestAtSkill(General.Map.ConfigSettings.TestSkill);
-			General.Editing.Mode.OnMapTestEnd(); //mxd
+			General.Editing.Mode.OnMapTestEnd(false); //mxd
 		}
 
 		//mxd
 		[BeginAction("testmapfromview")]
 		public void TestFromView() {
-			General.Settings.GZTestFromCurrentPosition = true;
-			if(!General.Editing.Mode.OnMapTestBegin()) return; //mxd
-
-			General.MainWindow.StopProcessing();
+			if(!General.Editing.Mode.OnMapTestBegin(true)) return;
 			TestAtSkill(General.Map.ConfigSettings.TestSkill);
-			
-			General.Editing.Mode.OnMapTestEnd(); //mxd
-			General.MainWindow.EnableProcessing();
-			General.MainWindow.FocusDisplay();
+			General.Editing.Mode.OnMapTestEnd(true);
 		}
 		
 		// This saves the map to a temporary file and launches a test wit hthe given skill
 		public void TestAtSkill(int skill)
 		{
+			//mxd
+			if (process != null) {
+				General.ShowWarningMessage("Game engine is already running." + Environment.NewLine + " Please close '" + General.Map.ConfigSettings.TestProgram + "' before testing again", MessageBoxButtons.OK);
+				return;
+			}
+			
 			Cursor oldcursor = Cursor.Current;
 
 			// Check if configuration is OK
@@ -310,66 +318,63 @@ namespace CodeImp.DoomBuilder
 					// Output info
 					General.WriteLogLine("Running test program: " + processinfo.FileName);
 					General.WriteLogLine("Program parameters:  " + processinfo.Arguments);
-
-					// Disable interface
-					General.MainWindow.DisplayStatus(StatusType.Busy, "Waiting for game application to finish...");
+					General.MainWindow.DisplayStatus(StatusType.Info, "Launching " + processinfo.FileName + "...");
 
 					try
 					{
 						// Start the program
-						Process process = Process.Start(processinfo);
-
-						// Wait for program to complete
-						while(!process.WaitForExit(10))
-						{
-							//General.MainWindow.Update(); //mxd
-						}
-
-						// Done
-						TimeSpan deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
-						General.WriteLogLine("Test program has finished.");
-						General.WriteLogLine("Run time: " + deltatime.TotalSeconds.ToString("###########0.00") + " seconds");
+						process = Process.Start(processinfo);
+						process.EnableRaisingEvents = true; //mxd
+						process.Exited += ProcessOnExited; //mxd
+						Cursor.Current = oldcursor; //mxd
 					}
 					catch(Exception e)
 					{
 						// Unable to start the program
 						General.ShowErrorMessage("Unable to start the test program, " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
 					}
-					
-					General.MainWindow.DisplayReady();
 				}
 				else
 				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Unable to test the map due to script errors.");
 				}
 			}
-			
+		}
+
+		//mxd
+		private void testingFinished() {
+			//Done
+			TimeSpan deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
+			process = null;
+			General.WriteLogLine("Test program has finished.");
+			General.WriteLogLine("Run time: " + deltatime.TotalSeconds.ToString("###########0.00") + " seconds");
+			General.MainWindow.DisplayReady();
+
 			// Clean up temp file
 			CleanTempFile(General.Map);
-			
-			// Done
-			int retries = 0; //mxd
-			while(!General.Map.Graphics.CheckAvailability()) {
-				Thread.Sleep(100);
-
-				if (retries++ > 50) { //that's 5 seconds, right?
-					DialogResult result = General.ShowErrorMessage("Unable to reset D3D device." + Environment.NewLine + "Press Abort to quit," + Environment.NewLine + "Retry to wait and retry," + Environment.NewLine + "Ignore to proceed anyway (high chances of D3DException)", MessageBoxButtons.AbortRetryIgnore);
-					if(result == DialogResult.Abort) {
-						General.Exit(true);
-					} else if (result == DialogResult.Retry) {
-						retries = 0;
-					} else {
-						break;
-					}
-				}
-			}
 
 			General.Plugins.OnMapSaveEnd(SavePurpose.Testing);
-			General.MainWindow.RedrawDisplay();
 			General.MainWindow.FocusDisplay();
-			Cursor.Current = oldcursor;
 		}
-		
+
+		//mxd
+		public void StopGameEngine() {
+			//mxd. Terminate process?
+			if(process != null) {
+				process.CloseMainWindow();
+				process.Close();
+				process = null;
+
+				// Remove temporary file
+				try { if(File.Exists(tempwad)) File.Delete(tempwad); } catch(Exception) { }
+			}
+		}
+
+		//mxd
+		private void ProcessOnExited(object sender, EventArgs eventArgs) {
+			General.MainWindow.Invoke(new EngineExitedCallback(testingFinished));
+		}
+
 		// This deletes the previous temp file and creates a new, empty temp file
 		private void CleanTempFile(MapManager manager)
 		{

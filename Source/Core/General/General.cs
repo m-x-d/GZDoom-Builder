@@ -982,6 +982,12 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("newmap")]
 		internal static void NewMap()
 		{
+			//mxd
+			if(map.Launcher.GameEngineRunning) {
+				ShowWarningMessage("Cannot create a map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
+				return;
+			}
+			
 			MapOptions newoptions = new MapOptions();
 			MapOptionsForm optionswindow;
 			
@@ -1063,6 +1069,12 @@ namespace CodeImp.DoomBuilder
 		internal static void ActionCloseMap() { CloseMap(); }
 		internal static bool CloseMap()
 		{
+			//mxd
+			if(map.Launcher.GameEngineRunning) {
+				ShowWarningMessage("Cannot close the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
+				return false;
+			}
+			
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
 
@@ -1110,6 +1122,12 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("openmap")]
 		internal static void OpenMap()
 		{
+			//mxd
+			if(map.Launcher.GameEngineRunning) {
+				ShowWarningMessage("Cannot open a map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
+				return;
+			}
+			
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
 
@@ -1140,6 +1158,12 @@ namespace CodeImp.DoomBuilder
 		// This loads a different map from same wad file
 		[BeginAction("openmapincurrentwad")]
 		internal static void OpenMapInCurrentWad() {
+			//mxd
+			if(map.Launcher.GameEngineRunning) {
+				ShowWarningMessage("Cannot change the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
+				return;
+			}
+			
 			if (map == null || string.IsNullOrEmpty(map.FilePathName) || !File.Exists(map.FilePathName)){
 				Interface.DisplayStatus(StatusType.Warning, "Unable to open map from current WAD!");
 				return;
@@ -1290,10 +1314,14 @@ namespace CodeImp.DoomBuilder
 		internal static void ActionSaveMap() { SaveMap(); }
 		internal static bool SaveMap()
 		{
-			bool result = false;
-
-			if(map == null)
+			//mxd
+			if (map.Launcher.GameEngineRunning) {
+				ShowWarningMessage("Cannot save the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
 				return false;
+			}
+
+			if(map == null) return false;
+			bool result = false;
 			
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
@@ -1348,17 +1376,20 @@ namespace CodeImp.DoomBuilder
 		internal static void ActionSaveMapAs() { SaveMapAs(); }
 		internal static bool SaveMapAs()
 		{
-			SaveFileDialog savefile;
-			bool result = false;
-
-			if(map == null)
+			//mxd
+			if(map.Launcher.GameEngineRunning) {
+				ShowWarningMessage("Cannot save the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
 				return false;
+			}
+
+			if(map == null) return false;
+			bool result = false;
 
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
 
 			// Show save as dialog
-			savefile = new SaveFileDialog();
+			SaveFileDialog savefile = new SaveFileDialog();
 			savefile.Filter = "Doom WAD Files (*.wad)|*.wad";
 			savefile.Title = "Save Map As";
 			savefile.AddExtension = true;
@@ -1422,17 +1453,20 @@ namespace CodeImp.DoomBuilder
 		internal static void ActionSaveMapInto() { SaveMapInto(); }
 		internal static bool SaveMapInto()
 		{
-			SaveFileDialog savefile;
-			bool result = false;
-
-			if(map == null)
+			//mxd
+			if(map.Launcher.GameEngineRunning) {
+				ShowWarningMessage("Cannot save the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
 				return false;
+			}
+
+			if(map == null) return false;
+			bool result = false;
 
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
 
 			// Show save as dialog
-			savefile = new SaveFileDialog();
+			SaveFileDialog savefile = new SaveFileDialog();
 			savefile.Filter = "Doom WAD Files (*.wad)|*.wad";
 			savefile.Title = "Save Map Into";
 			savefile.AddExtension = true;
