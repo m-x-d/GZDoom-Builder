@@ -183,6 +183,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void alignTextureToLine(bool alignFloors, bool alignToFrontSide) {
 			ICollection<Linedef> lines = General.Map.Map.GetSelectedLinedefs(true);
 
+			if(lines.Count == 0 && highlighted != null && !highlighted.IsDisposed)
+				lines.Add(highlighted);
+
 			if(lines.Count == 0) {
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection");
 				return;
@@ -1296,15 +1299,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					index++;
 				}
+
+				// Update
+				General.Map.Map.Update();
+				General.Interface.RedrawDisplay();
+				General.Interface.RefreshInfo();
+				General.Map.IsChanged = true;
 			} else {
 				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 linedefs first!");
 			}
-
-			// Update
-			General.Map.Map.Update();
-			General.Interface.RedrawDisplay();
-			General.Interface.RefreshInfo();
-			General.Map.IsChanged = true;
 		}
 
 		[BeginAction("placethings")] //mxd

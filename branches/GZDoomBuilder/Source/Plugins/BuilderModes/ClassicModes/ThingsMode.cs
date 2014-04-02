@@ -73,6 +73,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
+		//mxd. This makes a CRC for the selection
+		public int CreateSelectionCRC() {
+			CRC crc = new CRC();
+			ICollection<Thing> orderedselection = General.Map.Map.GetSelectedThings(true);
+			crc.Add(orderedselection.Count);
+			foreach(Thing t in orderedselection) {
+				crc.Add(t.Index);
+			}
+			return (int)(crc.Value & 0xFFFFFFFF);
+		}
+
+		//mxd. This makes a CRC for given selection
+		public int CreateSelectionCRC(ICollection<Thing> selection) {
+			CRC crc = new CRC();
+			crc.Add(selection.Count);
+			foreach(Thing t in selection) {
+				crc.Add(t.Index);
+			}
+			return (int)(crc.Value & 0xFFFFFFFF);
+		}
+
 		public override void OnHelp()
 		{
 			General.ShowHelp("e_things.html");
@@ -932,11 +953,49 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			// Update cache values
-			General.Map.IsChanged = true;
+			// Redraw screen
+			General.Interface.RedrawDisplay();
+		}
+
+		//mxd. rotate clockwise
+		[BeginAction("rotateclockwise")]
+		public void RotateCW() {
+			rotateThings(-5);
+		}
+
+		//mxd. rotate counterclockwise
+		[BeginAction("rotatecounterclockwise")]
+		public void RotateCCW() {
+			rotateThings(5);
+		}
+
+		//mxd
+		private void rotateThings(int increment) {
+			// Make list of selected things
+			List<Thing> selected = new List<Thing>(General.Map.Map.GetSelectedThings(true));
+			if(selected.Count == 0 && highlighted != null && !highlighted.IsDisposed)
+				selected.Add(highlighted);
+
+			if(selected.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			// Make undo
+			if(selected.Count > 1) {
+				General.Map.UndoRedo.CreateUndo("Rotate " + selected.Count + " things", this, UndoGroup.ThingRotate, CreateSelectionCRC(selected));
+				General.Interface.DisplayStatus(StatusType.Action, "Rotated " + selected.Count + " things.");
+			} else {
+				General.Map.UndoRedo.CreateUndo("Rotate thing", this, UndoGroup.ThingRotate, CreateSelectionCRC(selected));
+				General.Interface.DisplayStatus(StatusType.Action, "Rotated a thing.");
+			}
+
+			//change angle
+			foreach(Thing t in selected) t.Rotate(General.ClampAngle(t.AngleDoom + increment));
 
 			// Redraw screen
 			General.Interface.RedrawDisplay();
+			General.Interface.RefreshInfo();
 		}
 		
 		#endregion
