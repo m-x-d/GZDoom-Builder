@@ -20,17 +20,18 @@
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public class UndoGroup
+	public static class UndoGroup
 	{
 		public const int None = 0;
 		public const int FloorHeightChange = 1;
 		public const int CeilingHeightChange = 2;
 		public const int SectorBrightnessChange = 3;
 		public const int TextureOffsetChange = 4;
-		public const int SectorHeightChange = 5;
-		public const int ThingMove = 6; //mxd
-		public const int ThingRotate = 7; //mxd
-		public const int SurfaceBrightnessChange = 8; //mxd
-		public const int TextureScaleChange = 9; //mxd
+		public const int TextureRotationChange = 5; //mxd
+		public const int TextureScaleChange = 6; //mxd
+		public const int SurfaceBrightnessChange = 7; //mxd
+		public const int SectorHeightChange = 8;
+		public const int ThingMove = 9; //mxd
+		public const int ThingRotate = 10; //mxd
 	}
 }

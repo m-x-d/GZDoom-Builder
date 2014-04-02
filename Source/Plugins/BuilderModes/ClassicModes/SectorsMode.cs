@@ -126,6 +126,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return (int)(crc.Value & 0xFFFFFFFF);
 		}
 
+		//mxd. This makes a CRC for given selection
+		public int CreateSelectionCRC(ICollection<Sector> selection) {
+			CRC crc = new CRC();
+			crc.Add(selection.Count);
+			foreach(Sector s in selection) {
+				crc.Add(s.FixedIndex);
+			}
+			return (int)(crc.Value & 0xFFFFFFFF);
+		}
+
 		// This sets up new labels
 		private void SetupLabels()
 		{
@@ -1692,17 +1702,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						index++;
 					}
 				}
+
+				// Update
+				General.Map.Map.Update();
+				UpdateOverlay();
+				renderer.Present();
+				General.Interface.RedrawDisplay();
+				General.Interface.RefreshInfo();
+				General.Map.IsChanged = true;
 			} else {
 				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 sectors first!");
 			}
-
-			// Update
-			General.Map.Map.Update();
-			UpdateOverlay();
-			renderer.Present();
-			General.Interface.RedrawDisplay();
-			General.Interface.RefreshInfo();
-			General.Map.IsChanged = true;
 		}
 
 		// Make gradient floors
@@ -1728,13 +1738,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					s.FloorHeight = (int)b;
 					index++;
 				}
+
+				// Update
+				General.Interface.RefreshInfo();
+				General.Map.IsChanged = true;
 			} else {
 				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 sectors first!");
 			}
-
-			// Update
-			General.Interface.RefreshInfo();
-			General.Map.IsChanged = true;
 		}
 
 		// Make gradient ceilings
@@ -1760,24 +1770,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					s.CeilHeight = (int)b;
 					index++;
 				}
+
+				// Update
+				General.Interface.RefreshInfo();
+				General.Map.IsChanged = true;
 			} else {
 				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 sectors first!");
 			}
-
-			// Update
-			General.Interface.RefreshInfo();
-			General.Map.IsChanged = true;
 		}
 
 		// Change heights
 		[BeginAction("lowerfloor8")]
 		public void LowerFloors8() {
+			// Get selection
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+			if(selected.Count == 0 && highlighted != null && !highlighted.IsDisposed)
+				selected.Add(highlighted);
+
+			if(selected.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			// Make undo
 			General.Interface.DisplayStatus(StatusType.Action, "Lowered floor heights by 8mp.");
-			General.Map.UndoRedo.CreateUndo("Floor heights change", this, UndoGroup.FloorHeightChange, CreateSelectionCRC());
+			General.Map.UndoRedo.CreateUndo("Floor heights change", this, UndoGroup.FloorHeightChange, CreateSelectionCRC(selected));
 
 			// Change heights
-			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
 			foreach(Sector s in selected) {
 				s.FloorHeight -= 8;
 			}
@@ -1790,12 +1809,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Change heights
 		[BeginAction("raisefloor8")]
 		public void RaiseFloors8() {
+			// Get selection
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+			if(selected.Count == 0 && highlighted != null && !highlighted.IsDisposed)
+				selected.Add(highlighted);
+
+			if(selected.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			// Make undo
 			General.Interface.DisplayStatus(StatusType.Action, "Raised floor heights by 8mp.");
-			General.Map.UndoRedo.CreateUndo("Floor heights change", this, UndoGroup.FloorHeightChange, CreateSelectionCRC());
+			General.Map.UndoRedo.CreateUndo("Floor heights change", this, UndoGroup.FloorHeightChange, CreateSelectionCRC(selected));
 
 			// Change heights
-			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
 			foreach(Sector s in selected) {
 				s.FloorHeight += 8;
 			}
@@ -1808,12 +1836,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Change heights
 		[BeginAction("lowerceiling8")]
 		public void LowerCeilings8() {
+			// Get selection
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed)
+				selected.Add(highlighted);
+
+			if(selected.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			// Make undo
 			General.Interface.DisplayStatus(StatusType.Action, "Lowered ceiling heights by 8mp.");
-			General.Map.UndoRedo.CreateUndo("Ceiling heights change", this, UndoGroup.CeilingHeightChange, CreateSelectionCRC());
+			General.Map.UndoRedo.CreateUndo("Ceiling heights change", this, UndoGroup.CeilingHeightChange, CreateSelectionCRC(selected));
 
 			// Change heights
-			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
 			foreach(Sector s in selected) {
 				s.CeilHeight -= 8;
 			}
@@ -1826,12 +1863,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Change heights
 		[BeginAction("raiseceiling8")]
 		public void RaiseCeilings8() {
+			// Get selection
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+			if(selected.Count == 0 && highlighted != null && !highlighted.IsDisposed)
+				selected.Add(highlighted);
+
+			if(selected.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			// Make undo
 			General.Interface.DisplayStatus(StatusType.Action, "Raised ceiling heights by 8mp.");
-			General.Map.UndoRedo.CreateUndo("Ceiling heights change", this, UndoGroup.CeilingHeightChange, CreateSelectionCRC());
+			General.Map.UndoRedo.CreateUndo("Ceiling heights change", this, UndoGroup.CeilingHeightChange, CreateSelectionCRC(selected));
 
 			// Change heights
-			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
 			foreach(Sector s in selected) {
 				s.CeilHeight += 8;
 			}
@@ -1844,12 +1890,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Raise brightness
 		[BeginAction("raisebrightness8")]
 		public void RaiseBrightness8() {
+			// Get selection
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) 
+				selected.Add(highlighted);
+
+			if(selected.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			// Make undo
 			General.Interface.DisplayStatus(StatusType.Action, "Raised sector brightness by 8.");
-			General.Map.UndoRedo.CreateUndo("Sector brightness change", this, UndoGroup.SectorBrightnessChange, CreateSelectionCRC());
+			General.Map.UndoRedo.CreateUndo("Sector brightness change", this, UndoGroup.SectorBrightnessChange, CreateSelectionCRC(selected));
 
 			// Change heights
-			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
 			foreach(Sector s in selected) {
 				s.Brightness = General.Map.Config.BrightnessLevels.GetNextHigher(s.Brightness);
 				s.UpdateNeeded = true;
@@ -1867,13 +1922,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Lower brightness
 		[BeginAction("lowerbrightness8")]
 		public void LowerBrightness8() {
+			// Get selection
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+			if(selected.Count == 0 && highlighted != null && !highlighted.IsDisposed)
+				selected.Add(highlighted);
+
+			if (selected.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			// Make undo
 			General.Interface.DisplayStatus(StatusType.Action, "Lowered sector brightness by 8.");
-			General.Map.UndoRedo.CreateUndo("Sector brightness change", this, UndoGroup.SectorBrightnessChange, CreateSelectionCRC());
+			General.Map.UndoRedo.CreateUndo("Sector brightness change", this, UndoGroup.SectorBrightnessChange, CreateSelectionCRC(selected));
 
 			// Change heights
-			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed)
-				selected.Add(highlighted);
 			foreach(Sector s in selected) {
 				s.Brightness = General.Map.Config.BrightnessLevels.GetNextLower(s.Brightness);
 				s.UpdateNeeded = true;
@@ -1935,6 +1998,87 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			placeThingsAtPositions(positions);
+		}
+
+		//mxd. rotate clockwise
+		[BeginAction("rotateclockwise")]
+		public void RotateCW() {
+			rotateTextures(5);
+		}
+
+		//mxd. rotate counterclockwise
+		[BeginAction("rotatecounterclockwise")]
+		public void RotateCCW() {
+			rotateTextures(-5);
+		}
+
+		//mxd
+		private void rotateTextures(float increment) {
+			if (!General.Map.UDMF) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action works only in UDMF map format!");
+				return;
+			}
+
+			// Make list of selected sectors
+			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
+
+			if(sectors.Count == 0 && highlighted != null && !highlighted.IsDisposed)
+				sectors.Add(highlighted);
+
+			if(sectors.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			string targets;
+			string target;
+			switch (General.Map.Renderer2D.ViewMode) {
+				case ViewMode.FloorTextures:
+					target = " a floor";
+					targets = " floors";
+					break;
+
+				case ViewMode.CeilingTextures:
+					target = " a ceiling";
+					targets = " ceilings";
+					break;
+
+				default:
+					target = " a floor and a ceiling";
+					targets = " floors and ceilings";
+					break;
+			}
+
+			// Make undo
+			if(sectors.Count > 1) {
+				General.Map.UndoRedo.CreateUndo("Rotate " + sectors.Count + targets, this, UndoGroup.TextureRotationChange, CreateSelectionCRC(sectors));
+				General.Interface.DisplayStatus(StatusType.Action, "Rotated " + sectors.Count + targets + ".");
+			} else {
+				General.Map.UndoRedo.CreateUndo("Rotate" + target, this, UndoGroup.TextureRotationChange, CreateSelectionCRC(sectors));
+				General.Interface.DisplayStatus(StatusType.Action, "Rotated" + target + ".");
+			}
+
+			//rotate stuff
+			foreach (Sector s in sectors) {
+				s.Fields.BeforeFieldsChange();
+
+				//floor
+				if(General.Map.Renderer2D.ViewMode == ViewMode.FloorTextures || General.Map.Renderer2D.ViewMode != ViewMode.CeilingTextures) {
+					UDMFTools.SetFloat(s.Fields, "rotationfloor", General.ClampAngle(UDMFTools.GetFloat(s.Fields, "rotationfloor") + increment));
+					s.UpdateNeeded = true;
+				}
+
+				//ceiling
+				if(General.Map.Renderer2D.ViewMode == ViewMode.CeilingTextures || General.Map.Renderer2D.ViewMode != ViewMode.FloorTextures) {
+					UDMFTools.SetFloat(s.Fields, "rotationceiling", General.ClampAngle(UDMFTools.GetFloat(s.Fields, "rotationceiling") + increment));
+					s.UpdateNeeded = true;
+				}
+			}
+
+			// Redraw screen
+			General.Map.Map.Update();
+			General.Interface.RedrawDisplay();
+			General.Interface.RefreshInfo();
 		}
 		
 		#endregion

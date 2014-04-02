@@ -2777,13 +2777,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. rotate clockwise
-		[BeginAction("rotatethingscw")]
+		[BeginAction("rotateclockwise")]
 		public void RotateCW() {
 			rotateThingsAndTextures(5);
 		}
 
 		//mxd. rotate counterclockwise
-		[BeginAction("rotatethingsccw")]
+		[BeginAction("rotatecounterclockwise")]
 		public void RotateCCW() {
 			rotateThingsAndTextures(-5);
 		}
