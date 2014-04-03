@@ -101,10 +101,13 @@ namespace CodeImp.DoomBuilder.Data
 			//mxd
 			invertedflatranges = new List<LumpRange>();
 
-			if(flatranges.Count > 0 && flatranges[0].start > 0) {
-				LumpRange range = new LumpRange();
-				range.start = 0;
-				range.end = flatranges[0].start - 1;
+			if(flatranges.Count > 0) {
+				if (flatranges[0].start > 0) {
+					LumpRange range = new LumpRange {start = 0, end = flatranges[0].start - 1};
+					invertedflatranges.Add(range);
+				}
+			} else { // No flat ranges? Make one giant range then... 
+				LumpRange range = new LumpRange {start = 0, end = file.Lumps.Count - 1};
 				invertedflatranges.Add(range);
 			}
 
