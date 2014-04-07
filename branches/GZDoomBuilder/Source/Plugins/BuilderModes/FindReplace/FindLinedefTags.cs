@@ -25,7 +25,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Linedef Tags", BrowseButton = false)]
+	[FindReplace("Linedef Tag", BrowseButton = false)]
 	internal class FindLinedefTags : BaseFindLinedef
 	{
 		#region ================== Constants

@@ -253,6 +253,8 @@
     <Compile Include="FindReplace\BaseFindThing.cs" />
     <Compile Include="FindReplace\FindLinedefFlags.cs" />
     <Compile Include="FindReplace\FindSectorBrightness.cs" />
+    <Compile Include="FindReplace\FindSectorCeilingHeight.cs" />
+    <Compile Include="FindReplace\FindSectorFloorHeight.cs" />
     <Compile Include="FindReplace\FindThingAngle.cs" />
     <Compile Include="FindReplace\FindAnyTextureFlat.cs" />
     <Compile Include="FindReplace\FindThingFlags.cs" />
