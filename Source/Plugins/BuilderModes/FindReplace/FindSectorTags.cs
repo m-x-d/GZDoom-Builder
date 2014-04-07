@@ -25,7 +25,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Sector Tags", BrowseButton = false)]
+	[FindReplace("Sector Tag", BrowseButton = false)]
 	internal class FindSectorTags : BaseFindSector
 	{
 		#region ================== Constants

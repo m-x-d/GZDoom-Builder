@@ -251,7 +251,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(string.IsNullOrEmpty(categoryname) && thingtype == -1 && thingangle == -1
 				&& thingzheight == int.MinValue && thingaction == -1 && thingtag == -1
 				&& requiredfields.Count == 0 && forbiddenfields.Count == 0 && customfields.Count == 0) {
-				General.ErrorLogger.Add(ErrorType.Warning, "Things filter '" + name + "' has no properties and is useless!");
+				General.ErrorLogger.Add(ErrorType.Warning, "Things filter '" + name + "' has invalid properties. Configure the thing filter to fix this!");
 			}
 		}
 		
