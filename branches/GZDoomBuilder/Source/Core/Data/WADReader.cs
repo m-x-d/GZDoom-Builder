@@ -102,30 +102,26 @@ namespace CodeImp.DoomBuilder.Data
 			invertedflatranges = new List<LumpRange>();
 
 			if(flatranges.Count > 0) {
+				//add range before first flatrange
 				if (flatranges[0].start > 0) {
 					LumpRange range = new LumpRange {start = 0, end = flatranges[0].start - 1};
+					invertedflatranges.Add(range);
+				}
+
+				//add ranges between flatranges
+				for(int i = 1; i < flatranges.Count; i++) {
+					LumpRange range = new LumpRange { start = flatranges[i - 1].end + 1, end = flatranges[i].start - 1 };
+					invertedflatranges.Add(range);
+				}
+
+				//add range after last flatrange
+				if(flatranges[flatranges.Count - 1].end < file.Lumps.Count - 1) {
+					LumpRange range = new LumpRange { start = flatranges[flatranges.Count - 1].end + 1, end = file.Lumps.Count - 1 };
 					invertedflatranges.Add(range);
 				}
 			} else { // No flat ranges? Make one giant range then... 
 				LumpRange range = new LumpRange {start = 0, end = file.Lumps.Count - 1};
 				invertedflatranges.Add(range);
-			}
-
-			for (int i = 1; i < flatranges.Count; i++) {
-				if (flatranges[i].start == 0) continue;
-				LumpRange range = new LumpRange();
-
-				if(i == flatranges.Count - 1) {
-					if (flatranges[i].end < file.Lumps.Count - 1) {
-						range.start = flatranges[i].end + 1;
-						range.end = file.Lumps.Count - 1;
-						invertedflatranges.Add(range);
-					}
-				} else {
-					range.start = flatranges[i - 1].end + 1;
-					range.end = flatranges[i].start - 1;
-					invertedflatranges.Add(range);
-				}
 			}
 
 			// We have no destructor
