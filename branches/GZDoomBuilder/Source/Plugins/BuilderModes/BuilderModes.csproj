@@ -312,6 +312,12 @@
     <Compile Include="Interface\EditSelectionPanel.Designer.cs">
       <DependentUpon>EditSelectionPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\PastePropertiesOptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\PastePropertiesOptionsForm.Designer.cs">
+      <DependentUpon>PastePropertiesOptionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\SectorDrawingOptionsPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -475,7 +481,13 @@
     <EmbeddedResource Include="Resources\DrawGeometryMode.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\PastePropertiesOptionsForm.resx">
+      <DependentUpon>PastePropertiesOptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\DrawRectangleMode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PastePropertiesOptions.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

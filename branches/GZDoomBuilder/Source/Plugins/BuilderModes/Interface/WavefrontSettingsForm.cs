@@ -32,9 +32,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			}
 
 			//restore settings
-			cbExportTextures.Checked = General.Settings.ReadPluginSetting("objexporttextures", false);//BuilderPlug.Me.ObjExportTextures;
-			cbFixScale.Checked = General.Settings.ReadPluginSetting("objgzdoomscale", false);//BuilderPlug.Me.ObjGZDoomScale;
-			nudScale.Value = (decimal)General.Settings.ReadPluginSetting("objscale", 1.0f);//(decimal)BuilderPlug.Me.ObjScale;
+			cbExportTextures.Checked = General.Settings.ReadPluginSetting("objexporttextures", false);
+			cbFixScale.Checked = General.Settings.ReadPluginSetting("objgzdoomscale", false);
+			nudScale.Value = (decimal)General.Settings.ReadPluginSetting("objscale", 1.0f);
 
 			this.Text = "Export " + (sectorsCount == -1 ? "whole map" : sectorsCount + (sectorsCount > 1 ? "sectors" : "sector")) + " to Wavefront .obj";
 		}
@@ -48,10 +48,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 		}
 
 		private void export_Click(object sender, EventArgs e) {
-			//BuilderPlug.Me.ObjExportTextures = cbExportTextures.Checked;
-			//BuilderPlug.Me.ObjGZDoomScale = cbFixScale.Checked;
-			//BuilderPlug.Me.ObjScale = (float)nudScale.Value;
-
+			//check settings
 			if(nudScale.Value == 0) {
 				MessageBox.Show("Scale should not be zero!");
 				return;
@@ -66,7 +63,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			General.Settings.WritePluginSetting("objgzdoomscale", cbFixScale.Checked);
 			General.Settings.WritePluginSetting("objscale", (float)nudScale.Value);
 			
-			//filePath = tbExportPath.Text;
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}

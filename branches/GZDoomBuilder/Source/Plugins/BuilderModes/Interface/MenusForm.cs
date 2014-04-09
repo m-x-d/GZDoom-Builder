@@ -65,6 +65,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ToolStripButton CurveLinedefs { get { return buttoncurvelinedefs; } }
 		public ToolStripButton CopyProperties { get { return buttoncopyproperties; } }
 		public ToolStripButton PasteProperties { get { return buttonpasteproperties; } }
+		public ToolStripButton PastePropertiesOptions { get { return buttonpastepropertiesoptions; } } //mxd
 		public ToolStripSeparator SeparatorCopyPaste { get { return seperatorcopypaste; } }
 		public ToolStripComboBox BrightnessGradientMode { get { return brightnessGradientMode; } } //mxd
 		public ToolStripButton MarqueSelectTouching { get { return buttonMarqueSelectTouching; } } //mxd

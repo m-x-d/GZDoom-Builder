@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.Data
 			invertedflatranges = new List<LumpRange>();
 
 			if(flatranges.Count > 0) {
-				//add range before first flatrange
+				//add range before the first flatrange
 				if (flatranges[0].start > 0) {
 					LumpRange range = new LumpRange {start = 0, end = flatranges[0].start - 1};
 					invertedflatranges.Add(range);
@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.Data
 					invertedflatranges.Add(range);
 				}
 
-				//add range after last flatrange
+				//add range after the last flatrange
 				if(flatranges[flatranges.Count - 1].end < file.Lumps.Count - 1) {
 					LumpRange range = new LumpRange { start = flatranges[flatranges.Count - 1].end + 1, end = file.Lumps.Count - 1 };
 					invertedflatranges.Add(range);

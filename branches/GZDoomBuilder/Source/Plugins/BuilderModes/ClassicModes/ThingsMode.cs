@@ -117,6 +117,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Add toolbar buttons
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.AlignThingsToWall); //mxd
 			
@@ -134,6 +135,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Remove toolbar buttons
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.AlignThingsToWall); //mxd
 			

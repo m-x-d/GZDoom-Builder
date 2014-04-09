@@ -691,6 +691,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
+		[BeginAction("pastepropertiesoptions")]
+		private void showPastePropertiesOptions() {
+			var form = new PastePropertiesOptionsForm();
+			form.ShowDialog(Form.ActiveForm);
+		}
+
 		#endregion
 	}
 }
