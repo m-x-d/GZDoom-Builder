@@ -60,7 +60,7 @@
 			this.tabControl.Location = new System.Drawing.Point(12, 12);
 			this.tabControl.Name = "tabControl";
 			this.tabControl.SelectedIndex = 0;
-			this.tabControl.Size = new System.Drawing.Size(266, 209);
+			this.tabControl.Size = new System.Drawing.Size(266, 127);
 			this.tabControl.TabIndex = 0;
 			// 
 			// sectors
@@ -69,7 +69,7 @@
 			this.sectors.Location = new System.Drawing.Point(4, 23);
 			this.sectors.Name = "sectors";
 			this.sectors.Padding = new System.Windows.Forms.Padding(3);
-			this.sectors.Size = new System.Drawing.Size(353, 182);
+			this.sectors.Size = new System.Drawing.Size(258, 100);
 			this.sectors.TabIndex = 0;
 			this.sectors.Text = "Sectors";
 			this.sectors.UseVisualStyleBackColor = true;
@@ -81,7 +81,7 @@
 			this.sectorflags.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sectorflags.Location = new System.Drawing.Point(3, 3);
 			this.sectorflags.Name = "sectorflags";
-			this.sectorflags.Size = new System.Drawing.Size(347, 176);
+			this.sectorflags.Size = new System.Drawing.Size(252, 94);
 			this.sectorflags.TabIndex = 3;
 			this.sectorflags.VerticalSpacing = 1;
 			// 
@@ -91,7 +91,7 @@
 			this.linedefs.Location = new System.Drawing.Point(4, 23);
 			this.linedefs.Name = "linedefs";
 			this.linedefs.Padding = new System.Windows.Forms.Padding(3);
-			this.linedefs.Size = new System.Drawing.Size(353, 182);
+			this.linedefs.Size = new System.Drawing.Size(258, 182);
 			this.linedefs.TabIndex = 1;
 			this.linedefs.Text = "Linedefs";
 			this.linedefs.UseVisualStyleBackColor = true;
@@ -103,7 +103,7 @@
 			this.lineflags.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lineflags.Location = new System.Drawing.Point(3, 3);
 			this.lineflags.Name = "lineflags";
-			this.lineflags.Size = new System.Drawing.Size(347, 176);
+			this.lineflags.Size = new System.Drawing.Size(252, 176);
 			this.lineflags.TabIndex = 3;
 			this.lineflags.VerticalSpacing = 1;
 			// 
@@ -113,7 +113,7 @@
 			this.sidedefs.Location = new System.Drawing.Point(4, 23);
 			this.sidedefs.Name = "sidedefs";
 			this.sidedefs.Padding = new System.Windows.Forms.Padding(3);
-			this.sidedefs.Size = new System.Drawing.Size(353, 182);
+			this.sidedefs.Size = new System.Drawing.Size(258, 182);
 			this.sidedefs.TabIndex = 2;
 			this.sidedefs.Text = "Sidedefs";
 			this.sidedefs.UseVisualStyleBackColor = true;
@@ -125,7 +125,7 @@
 			this.sideflags.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sideflags.Location = new System.Drawing.Point(3, 3);
 			this.sideflags.Name = "sideflags";
-			this.sideflags.Size = new System.Drawing.Size(347, 176);
+			this.sideflags.Size = new System.Drawing.Size(252, 176);
 			this.sideflags.TabIndex = 2;
 			this.sideflags.VerticalSpacing = 1;
 			// 
@@ -135,7 +135,7 @@
 			this.things.Location = new System.Drawing.Point(4, 23);
 			this.things.Name = "things";
 			this.things.Padding = new System.Windows.Forms.Padding(3);
-			this.things.Size = new System.Drawing.Size(353, 182);
+			this.things.Size = new System.Drawing.Size(258, 182);
 			this.things.TabIndex = 3;
 			this.things.Text = "Things";
 			this.things.UseVisualStyleBackColor = true;
@@ -147,7 +147,7 @@
 			this.thingflags.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.thingflags.Location = new System.Drawing.Point(3, 3);
 			this.thingflags.Name = "thingflags";
-			this.thingflags.Size = new System.Drawing.Size(347, 176);
+			this.thingflags.Size = new System.Drawing.Size(252, 176);
 			this.thingflags.TabIndex = 2;
 			this.thingflags.VerticalSpacing = 1;
 			// 
@@ -177,7 +177,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(199, 228);
+			this.cancel.Location = new System.Drawing.Point(202, 146);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(75, 23);
 			this.cancel.TabIndex = 0;
@@ -188,7 +188,7 @@
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(118, 228);
+			this.apply.Location = new System.Drawing.Point(121, 146);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(75, 23);
 			this.apply.TabIndex = 1;
@@ -199,7 +199,7 @@
 			// enableall
 			// 
 			this.enableall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.enableall.Location = new System.Drawing.Point(12, 228);
+			this.enableall.Location = new System.Drawing.Point(10, 146);
 			this.enableall.Name = "enableall";
 			this.enableall.Size = new System.Drawing.Size(70, 23);
 			this.enableall.TabIndex = 2;
@@ -213,7 +213,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(290, 258);
+			this.ClientSize = new System.Drawing.Size(290, 176);
 			this.Controls.Add(this.enableall);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.cancel);

@@ -14,6 +14,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 		public PastePropertiesOptionsForm() {
 			Point pos = Cursor.Position;
 			pos.Offset(-this.Width / 2, -this.Height / 2);
+			if (pos.Y < 0) pos.Y = 0;
 			this.Location = pos;
 
 			InitializeComponent();
