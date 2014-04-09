@@ -89,10 +89,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(Presentation.Standard);
 
 			// Add toolbar buttons
-			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
-			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
-			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.TextureOffsetLock, ToolbarSection.Geometry); //mxd
-			
+			if (General.Map.UDMF) {
+				General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
+				General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
+				General.Interface.AddButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
+				General.Interface.AddButton(BuilderPlug.Me.MenusForm.TextureOffsetLock, ToolbarSection.Geometry); //mxd
+			}
+
 			// Convert geometry selection to vertices only
 			General.Map.Map.ConvertSelection(SelectionType.Vertices);
 			updateSelectionInfo(); //mxd
@@ -104,10 +107,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Remove toolbar buttons
-			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
-			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
-			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
-			
+			if (General.Map.UDMF) {
+				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
+				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
+				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
+				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
+			}
+
 			// Going to EditSelectionMode?
 			if(General.Editing.NewMode is EditSelectionMode)
 			{

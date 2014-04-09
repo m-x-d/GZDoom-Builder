@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagExplorer", "Source\Plugi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentsPanel", "Source\Plugins\CommentsPanel\CommentsPanel.csproj", "{58BD8A5B-1B48-435D-8473-A92F27D06C49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CopyPasteSectorProperties", "Source\Plugins\CopyPasteSectorProps\CopyPasteSectorProperties.csproj", "{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodesViewer", "Source\Plugins\NodesViewer\NodesViewer.csproj", "{9F244231-6A0C-42A6-87C5-ED9620DEE096}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StairSectorBuilder", "Source\Plugins\StairSectorBuilder\StairSectorBuilder.csproj", "{3F365121-906B-409D-BB1E-37E0A78056C2}"
@@ -109,18 +107,6 @@ Global
 		{58BD8A5B-1B48-435D-8473-A92F27D06C49}.Release|Win32.ActiveCfg = Release|x86
 		{58BD8A5B-1B48-435D-8473-A92F27D06C49}.Release|x86.ActiveCfg = Release|x86
 		{58BD8A5B-1B48-435D-8473-A92F27D06C49}.Release|x86.Build.0 = Release|x86
-		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Debug|Win32.ActiveCfg = Debug|x86
-		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Debug|x86.ActiveCfg = Debug|x86
-		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Debug|x86.Build.0 = Debug|x86
-		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Release|Any CPU.ActiveCfg = Release|x86
-		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Release|Mixed Platforms.Build.0 = Release|x86
-		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Release|Win32.ActiveCfg = Release|x86
-		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Release|x86.ActiveCfg = Release|x86
-		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Release|x86.Build.0 = Release|x86
 		{9F244231-6A0C-42A6-87C5-ED9620DEE096}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{9F244231-6A0C-42A6-87C5-ED9620DEE096}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{9F244231-6A0C-42A6-87C5-ED9620DEE096}.Debug|Mixed Platforms.Build.0 = Debug|x86
