@@ -542,14 +542,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Highlighted item not selected?
 					if(!highlighted.Selected)
 					{
-						// Select only this sector for dragging
+						// Select only this thing for dragging
 						General.Map.Map.ClearSelectedThings();
 						highlighted.Selected = true;
 					}
 
 					// Start dragging the selection
-					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || canDrag()) //mxd
+					if (!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || canDrag()) { //mxd
+						// Shift pressed? Clone things!
+						if (General.Interface.ShiftState) {
+							ICollection<Thing> selection = General.Map.Map.GetSelectedThings(true);
+							foreach(Thing t in selection) {
+								Thing clone = InsertThing(t.Position);
+								t.CopyPropertiesTo(clone);
+								t.Selected = false;
+								clone.Selected = true;
+							}
+						}
+
 						General.Editing.ChangeMode(new DragThingsMode(new ThingsMode(), mousedownmappos));
+					}
 				}
 			}
 		}
