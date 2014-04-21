@@ -872,6 +872,12 @@
     <Compile Include="Windows\ThingBrowserForm.Designer.cs">
       <DependentUpon>ThingBrowserForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\ThingEditFormUDMF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ThingEditFormUDMF.Designer.cs">
+      <DependentUpon>ThingEditFormUDMF.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ToolbarSection.cs" />
     <Compile Include="Windows\VertexEditForm.cs">
       <SubType>Form</SubType>

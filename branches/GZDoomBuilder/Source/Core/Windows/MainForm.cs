@@ -3273,17 +3273,29 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// This shows the dialog to edit things
-		public DialogResult ShowEditThings(ICollection<Thing> things)
+		public DialogResult ShowEditThings(ICollection<Thing> things) 
 		{
+			DialogResult result;
+
 			// Show thing edit dialog
-			ThingEditForm f = new ThingEditForm();
-			f.Setup(things);
-			f.OnValuesChanged += EditForm_OnValuesChanged;
-			editformopen = true; //mxd
-			DialogResult result = f.ShowDialog(this);
-			editformopen = false; //mxd
-			f.Dispose();
-			
+			if(General.Map.UDMF) {
+				ThingEditFormUDMF f = new ThingEditFormUDMF();
+				f.Setup(things);
+				f.OnValuesChanged += EditForm_OnValuesChanged;
+				editformopen = true; //mxd
+				result = f.ShowDialog(this);
+				editformopen = false; //mxd
+				f.Dispose();
+			} else {
+				ThingEditForm f = new ThingEditForm();
+				f.Setup(things);
+				f.OnValuesChanged += EditForm_OnValuesChanged;
+				editformopen = true; //mxd
+				result = f.ShowDialog(this);
+				editformopen = false; //mxd
+				f.Dispose();
+			}
+
 			return result;
 		}
 
