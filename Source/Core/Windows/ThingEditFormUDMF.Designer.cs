@@ -1,6 +1,6 @@
-namespace CodeImp.DoomBuilder.Windows
+﻿namespace CodeImp.DoomBuilder.Windows
 {
-	partial class ThingEditForm
+	partial class ThingEditFormUDMF
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -11,10 +11,8 @@ namespace CodeImp.DoomBuilder.Windows
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if(disposing && (components != null))
-			{
+		protected override void Dispose(bool disposing) {
+			if(disposing && (components != null)) {
 				components.Dispose();
 			}
 			base.Dispose(disposing);
@@ -26,13 +24,14 @@ namespace CodeImp.DoomBuilder.Windows
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
-		private void InitializeComponent()
-		{
+		private void InitializeComponent() {
 			System.Windows.Forms.GroupBox groupBox1;
 			System.Windows.Forms.GroupBox groupBox2;
 			System.Windows.Forms.Label label7;
 			this.thingtype = new CodeImp.DoomBuilder.Controls.ThingBrowserControl();
 			this.anglecontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
+			this.gravity = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.labelGravity = new System.Windows.Forms.Label();
 			this.cbRandomAngle = new System.Windows.Forms.CheckBox();
 			this.cbAbsoluteHeight = new System.Windows.Forms.CheckBox();
 			this.label2 = new System.Windows.Forms.Label();
@@ -52,6 +51,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup = new System.Windows.Forms.GroupBox();
 			this.hexenpanel = new System.Windows.Forms.Panel();
 			this.scriptNumbers = new System.Windows.Forms.ComboBox();
+			this.scriptNames = new System.Windows.Forms.ComboBox();
+			this.cbArgStr = new System.Windows.Forms.CheckBox();
 			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
@@ -66,7 +67,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browseaction = new System.Windows.Forms.Button();
 			this.doompanel = new System.Windows.Forms.Panel();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.conversationID = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.labelID = new System.Windows.Forms.Label();
 			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
+			this.tabcustom = new System.Windows.Forms.TabPage();
+			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.hint = new System.Windows.Forms.PictureBox();
@@ -83,6 +88,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.SuspendLayout();
 			this.hexenpanel.SuspendLayout();
 			this.groupBox3.SuspendLayout();
+			this.tabcustom.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.hint)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -116,6 +122,8 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			groupBox2.Controls.Add(this.anglecontrol);
+			groupBox2.Controls.Add(this.gravity);
+			groupBox2.Controls.Add(this.labelGravity);
 			groupBox2.Controls.Add(this.cbRandomAngle);
 			groupBox2.Controls.Add(this.cbAbsoluteHeight);
 			groupBox2.Controls.Add(this.label2);
@@ -141,6 +149,28 @@ namespace CodeImp.DoomBuilder.Windows
 			this.anglecontrol.Size = new System.Drawing.Size(88, 88);
 			this.anglecontrol.TabIndex = 20;
 			this.anglecontrol.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.anglecontrol_AngleChanged);
+			// 
+			// gravity
+			// 
+			this.gravity.AllowDecimal = true;
+			this.gravity.AllowNegative = true;
+			this.gravity.AllowRelative = false;
+			this.gravity.ButtonStep = 8;
+			this.gravity.ButtonStepFloat = 0.1F;
+			this.gravity.Location = new System.Drawing.Point(61, 118);
+			this.gravity.Name = "gravity";
+			this.gravity.Size = new System.Drawing.Size(72, 24);
+			this.gravity.StepValues = null;
+			this.gravity.TabIndex = 19;
+			// 
+			// labelGravity
+			// 
+			this.labelGravity.Location = new System.Drawing.Point(5, 123);
+			this.labelGravity.Name = "labelGravity";
+			this.labelGravity.Size = new System.Drawing.Size(50, 14);
+			this.labelGravity.TabIndex = 18;
+			this.labelGravity.Text = "Gravity:";
+			this.labelGravity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// cbRandomAngle
 			// 
@@ -272,6 +302,7 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabs.Controls.Add(this.tabproperties);
 			this.tabs.Controls.Add(this.tabeffects);
+			this.tabs.Controls.Add(this.tabcustom);
 			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.Location = new System.Drawing.Point(10, 10);
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
@@ -369,6 +400,8 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.hexenpanel.Controls.Add(this.scriptNumbers);
+			this.hexenpanel.Controls.Add(this.scriptNames);
+			this.hexenpanel.Controls.Add(this.cbArgStr);
 			this.hexenpanel.Controls.Add(this.arg2);
 			this.hexenpanel.Controls.Add(this.arg1);
 			this.hexenpanel.Controls.Add(this.arg0);
@@ -390,10 +423,31 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptNumbers.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
 			this.scriptNumbers.BackColor = System.Drawing.Color.LemonChiffon;
 			this.scriptNumbers.FormattingEnabled = true;
-			this.scriptNumbers.Location = new System.Drawing.Point(179, 93);
+			this.scriptNumbers.Location = new System.Drawing.Point(179, 121);
 			this.scriptNumbers.Name = "scriptNumbers";
 			this.scriptNumbers.Size = new System.Drawing.Size(127, 22);
 			this.scriptNumbers.TabIndex = 23;
+			// 
+			// scriptNames
+			// 
+			this.scriptNames.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.scriptNames.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+			this.scriptNames.BackColor = System.Drawing.Color.Honeydew;
+			this.scriptNames.FormattingEnabled = true;
+			this.scriptNames.Location = new System.Drawing.Point(179, 93);
+			this.scriptNames.Name = "scriptNames";
+			this.scriptNames.Size = new System.Drawing.Size(127, 22);
+			this.scriptNames.TabIndex = 22;
+			// 
+			// cbArgStr
+			// 
+			this.cbArgStr.Location = new System.Drawing.Point(14, 3);
+			this.cbArgStr.Name = "cbArgStr";
+			this.cbArgStr.Size = new System.Drawing.Size(63, 40);
+			this.cbArgStr.TabIndex = 21;
+			this.cbArgStr.Text = "Named script";
+			this.cbArgStr.UseVisualStyleBackColor = true;
+			this.cbArgStr.CheckedChanged += new System.EventHandler(this.cbArgStr_CheckedChanged);
 			// 
 			// arg2
 			// 
@@ -523,6 +577,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.conversationID);
+			this.groupBox3.Controls.Add(this.labelID);
 			this.groupBox3.Controls.Add(this.tagSelector);
 			this.groupBox3.Location = new System.Drawing.Point(6, 6);
 			this.groupBox3.Name = "groupBox3";
@@ -531,12 +587,66 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Identification ";
 			// 
+			// conversationID
+			// 
+			this.conversationID.AllowDecimal = false;
+			this.conversationID.AllowNegative = false;
+			this.conversationID.AllowRelative = false;
+			this.conversationID.ButtonStep = 1;
+			this.conversationID.ButtonStepFloat = 1F;
+			this.conversationID.Location = new System.Drawing.Point(548, 26);
+			this.conversationID.Name = "conversationID";
+			this.conversationID.Size = new System.Drawing.Size(72, 24);
+			this.conversationID.StepValues = null;
+			this.conversationID.TabIndex = 14;
+			// 
+			// labelID
+			// 
+			this.labelID.AutoSize = true;
+			this.labelID.Location = new System.Drawing.Point(456, 31);
+			this.labelID.Name = "labelID";
+			this.labelID.Size = new System.Drawing.Size(86, 14);
+			this.labelID.TabIndex = 10;
+			this.labelID.Text = "Conversation ID:";
+			// 
 			// tagSelector
 			// 
 			this.tagSelector.Location = new System.Drawing.Point(6, 19);
 			this.tagSelector.Name = "tagSelector";
 			this.tagSelector.Size = new System.Drawing.Size(430, 35);
 			this.tagSelector.TabIndex = 8;
+			// 
+			// tabcustom
+			// 
+			this.tabcustom.Controls.Add(this.fieldslist);
+			this.tabcustom.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabcustom.Location = new System.Drawing.Point(4, 23);
+			this.tabcustom.Name = "tabcustom";
+			this.tabcustom.Size = new System.Drawing.Size(652, 385);
+			this.tabcustom.TabIndex = 2;
+			this.tabcustom.Text = "Custom";
+			this.tabcustom.UseVisualStyleBackColor = true;
+			this.tabcustom.MouseEnter += new System.EventHandler(this.tabcustom_MouseEnter);
+			// 
+			// fieldslist
+			// 
+			this.fieldslist.AllowInsert = true;
+			this.fieldslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.fieldslist.AutoInsertUserPrefix = true;
+			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.fieldslist.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.fieldslist.Location = new System.Drawing.Point(8, 9);
+			this.fieldslist.Margin = new System.Windows.Forms.Padding(8, 9, 8, 9);
+			this.fieldslist.Name = "fieldslist";
+			this.fieldslist.PropertyColumnVisible = true;
+			this.fieldslist.PropertyColumnWidth = 150;
+			this.fieldslist.Size = new System.Drawing.Size(636, 372);
+			this.fieldslist.TabIndex = 1;
+			this.fieldslist.TypeColumnVisible = true;
+			this.fieldslist.TypeColumnWidth = 100;
+			this.fieldslist.ValueColumnVisible = true;
 			// 
 			// cancel
 			// 
@@ -614,6 +724,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.PerformLayout();
 			this.hexenpanel.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
+			this.groupBox3.PerformLayout();
+			this.tabcustom.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.hint)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -627,6 +739,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.TabPage tabeffects;
 		private System.Windows.Forms.Button cancel;
 		private System.Windows.Forms.Button apply;
+		private System.Windows.Forms.TabPage tabcustom;
 		private System.Windows.Forms.GroupBox settingsgroup;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flags;
 		private System.Windows.Forms.Panel spritetex;
@@ -641,6 +754,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ActionSelectorControl action;
 		private System.Windows.Forms.Button browseaction;
 		private System.Windows.Forms.Panel doompanel;
+		private CodeImp.DoomBuilder.Controls.FieldsEditorControl fieldslist;
 		private CodeImp.DoomBuilder.Controls.ArgumentBox arg2;
 		private CodeImp.DoomBuilder.Controls.ArgumentBox arg1;
 		private CodeImp.DoomBuilder.Controls.ArgumentBox arg0;
@@ -654,11 +768,17 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label1;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox posX;
+		private System.Windows.Forms.CheckBox cbArgStr;
+		private System.Windows.Forms.ComboBox scriptNames;
 		private System.Windows.Forms.CheckBox cbAbsoluteHeight;
 		private System.Windows.Forms.CheckBox cbRandomAngle;
 		private System.Windows.Forms.Label labelAngle;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox conversationID;
+		private System.Windows.Forms.Label labelID;
 		private System.Windows.Forms.ComboBox scriptNumbers;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox gravity;
+		private System.Windows.Forms.Label labelGravity;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl anglecontrol;
 		private System.Windows.Forms.PictureBox hint;
 		private System.Windows.Forms.Label hintlabel;
