@@ -264,7 +264,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SetPosition(pos);
 			SetCageSize(infoRadius, infoHeight);
 			SetCageColor(Thing.Color);
-			SetScale(info.SpriteScale.Width, info.SpriteScale.Height); //mxd
 
 			// Keep info for object picking
 			cageradius2 = infoRadius * Angle2D.SQRT2;

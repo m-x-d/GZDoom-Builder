@@ -237,8 +237,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				s.Position += 12;
 				int ofsSurfaces = br.ReadInt32();
 
-				if (s.Position != ofsSurfaces + start)
-					s.Position = ofsSurfaces + start;
+				s.Position = ofsSurfaces + start;
 
 				List<int> polyIndecesList = new List<int>();
 				List<WorldVertex> vertList = new List<WorldVertex>();
@@ -352,10 +351,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			//rotation angles
 			float angleOfsetCos = (float)Math.Cos(mde.AngleOffset);
 			float angleOfsetSin = (float)Math.Sin(mde.AngleOffset);
-			float pitchOfsetCos = (float)Math.Cos(-mde.PitchOffset);
-			float pitchOfsetSin = (float)Math.Sin(-mde.PitchOffset);
-			float rollOfsetCos = (float)Math.Cos(mde.RollOffset);
-			float rollOfsetSin = (float)Math.Sin(mde.RollOffset);
 
 			for (int i = vertexOffset; i < vertexOffset + numVerts; i++) {
 				WorldVertex v = vertList[i];
@@ -370,18 +365,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
 					float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
 					v.y = ry;
-					v.x = rx;
-				}
-				if (mde.PitchOffset != 0) {
-					float ry = pitchOfsetCos * v.y - pitchOfsetSin * v.z;
-					float rz = pitchOfsetSin * v.y + pitchOfsetCos * v.z;
-					v.z = rz;
-					v.y = ry;
-				}
-				if (mde.RollOffset != 0) {
-					float rx = rollOfsetCos * v.x - rollOfsetSin * v.z;
-					float rz = rollOfsetSin * v.x + rollOfsetCos * v.z;
-					v.z = rz;
 					v.x = rx;
 				}
 
@@ -479,8 +462,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				List<WorldVertex> vertList = new List<WorldVertex>();
 
 				//polygons
-				if (s.Position != ofs_tris + start)
-					s.Position = ofs_tris + start;
+				s.Position = ofs_tris + start;
 
 				for (int i = 0; i < num_tris; i++) {
 					polyIndecesList.Add(br.ReadUInt16());
@@ -493,16 +475,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				}
 
 				//UV coords
-				if (s.Position != ofs_uv + start)
-					s.Position = ofs_uv + start;
+				s.Position = ofs_uv + start;
 
 				for (int i = 0; i < num_uv; i++) 
 					uvCoordsList.Add(new Vector2((float)br.ReadInt16() / texWidth, (float)br.ReadInt16() / texHeight));
 
 				//first frame
 				//header
-				if (s.Position != ofs_animFrame + start)
-					s.Position = ofs_animFrame + start;
+				s.Position = ofs_animFrame + start;
 
 				Vector3 scale = new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
 				Vector3 translate = new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
@@ -513,10 +493,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				float angle = mde.AngleOffset - Angle2D.PIHALF; // subtract 90 degrees to get correct rotation
 				float angleOfsetCos = (float)Math.Cos(angle);
 				float angleOfsetSin = (float)Math.Sin(angle);
-				float pitchOfsetCos = (float)Math.Cos(-mde.PitchOffset);
-				float pitchOfsetSin = (float)Math.Sin(-mde.PitchOffset);
-				float rollOfsetCos = (float)Math.Cos(mde.RollOffset);
-				float rollOfsetSin = (float)Math.Sin(mde.RollOffset);
 
 				//verts
 				for (int i = 0; i < num_verts; i++) {
@@ -527,21 +503,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					v.z = (br.ReadByte() * scale.Z + translate.Z);
 
 					//rotate it
-					float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
-					float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
-					v.y = ry;
-					v.x = rx;
-
-					if (mde.PitchOffset != 0) {
-						ry = pitchOfsetCos * v.y - pitchOfsetSin * v.z;
-						float rz = pitchOfsetSin * v.y + pitchOfsetCos * v.z;
-						v.z = rz;
+					if (angle != 0) {
+						float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
+						float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
 						v.y = ry;
-					}
-					if (mde.RollOffset != 0) {
-						rx = rollOfsetCos * v.x - rollOfsetSin * v.z;
-						float rz = rollOfsetSin * v.x + rollOfsetCos * v.z;
-						v.z = rz;
 						v.x = rx;
 					}
 
@@ -555,7 +520,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					v.z += mde.zOffset;
 
 					vertList.Add(v);
-
 					s.Position += 1; //vertex normal
 				}
 

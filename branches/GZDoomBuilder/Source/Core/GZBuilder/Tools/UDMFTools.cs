@@ -59,6 +59,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.Tools
 			return fields.GetValue(key, defaultValue);
 		}
 
+		public static void SetString(UniFields fields, string key, string value, string defaultValue) {
+			if(fields == null) return;
+
+			if(value != defaultValue) {
+				if(!fields.ContainsKey(key))
+					fields.Add(key, new UniValue(UniversalType.String, value));
+				else
+					fields[key].Value = value;
+			} else if(fields.ContainsKey(key)) { //don't save default value
+				fields.Remove(key);
+			}
+		}
+
 		public static void ClearFields(UniFields fields, string[] keys) {
 			if(fields == null) return;
 

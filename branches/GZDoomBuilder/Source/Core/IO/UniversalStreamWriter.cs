@@ -295,6 +295,10 @@ namespace CodeImp.DoomBuilder.IO
 				coll.Add("y", t.Position.y);
 				if(t.Position.z != 0.0f) coll.Add("height", t.Position.z);
 				coll.Add("angle", t.AngleDoom);
+				if (t.Pitch != 0) coll.Add("pitch", t.Pitch); //mxd
+				if (t.Roll != 0) coll.Add("roll", t.Roll); //mxd
+				if (t.ScaleX != 0 && t.ScaleX != 1.0f) coll.Add("scalex", t.ScaleX); //mxd
+				if (t.ScaleY != 0 && t.ScaleY != 1.0f) coll.Add("scaley", t.ScaleY); //mxd
 				coll.Add("type", t.Type);
 				if(t.Action != 0) coll.Add("special", t.Action);
 				if(t.Args[0] != 0) coll.Add("arg0", t.Args[0]);

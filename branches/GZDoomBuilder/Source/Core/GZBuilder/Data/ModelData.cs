@@ -23,6 +23,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		internal float RollOffset; //in radians
 		internal bool OverridePalette; //used for voxel models only
 		internal bool IsVoxel;
+		internal bool InheritActorPitch;
+		internal bool InheritActorRoll;
 
 		internal ModelData() {
 			ModelNames = new List<string>();

@@ -165,7 +165,7 @@ namespace CodeImp.DoomBuilder.IO
 				
 				// Create new item
 				t = map.CreateThing();
-				t.Update(type, x, y, z, angle, stringflags, tag, action, args);
+				t.Update(type, x, y, z, angle, 0, 0, 1.0f, 1.0f, stringflags, tag, action, args);
 			}
 
 			// Done

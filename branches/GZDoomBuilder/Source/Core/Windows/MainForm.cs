@@ -90,7 +90,10 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// This is sent by the background thread when images are loaded
 			// but only when first loaded or when dimensions were changed
-			ImageDataLoaded = General.WM_USER + 2
+			ImageDataLoaded = General.WM_USER + 2,
+			
+			//mxd. This is sent by the background thread when sprites are loaded
+			SpriteDataLoaded = General.WM_USER + 3,
 		}
 		
 		#endregion
@@ -1509,6 +1512,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void engineItem_Click(object sender, EventArgs e) {
 			General.Map.ConfigSettings.CurrentEngineIndex = (int)(((ToolStripMenuItem)sender).Tag);
+			General.Map.ConfigSettings.Changed = true;
 			UpdateSkills();
 		}
 		
@@ -2450,6 +2454,7 @@ namespace CodeImp.DoomBuilder.Windows
 			itemgridinc.Enabled = (General.Map != null);
 			itemgriddec.Enabled = (General.Map != null);
 			itemviewusedtags.Enabled = (General.Map != null); //mxd
+			itemviewthingtypes.Enabled = (General.Map != null); //mxd
 			addToGroup.Enabled = (General.Map != null); //mxd
 			selectGroup.Enabled = (General.Map != null); //mxd
 			clearGroup.Enabled = (General.Map != null); //mxd
@@ -2551,6 +2556,14 @@ namespace CodeImp.DoomBuilder.Windows
 		[BeginAction("viewusedtags")]
 		internal void ViewUsedTags() {
 			TagStatisticsForm f = new TagStatisticsForm();
+			f.ShowDialog(this);
+		}
+
+		//mxd
+		[BeginAction("viewthingtypes")]
+		internal void ViewThingTypes()
+		{
+			ThingStatisticsForm f = new ThingStatisticsForm();
 			f.ShowDialog(this);
 		}
 		
@@ -3324,7 +3337,20 @@ namespace CodeImp.DoomBuilder.Windows
 					if((General.Map != null) && (General.Map.Data != null))
 					{
 						ImageData img = General.Map.Data.GetFlatImage(imagename);
-						if(img != null) ImageDataLoaded(img);
+						ImageDataLoaded(img);
+					}
+					break;
+
+				case (int)ThreadMessages.SpriteDataLoaded: //mxd
+					string spritename = Marshal.PtrToStringAuto(m.WParam);
+					Marshal.FreeCoTaskMem(m.WParam);
+					if ((General.Map != null) && (General.Map.Data != null))
+					{
+						ImageData img = General.Map.Data.GetSpriteImage(spritename);
+						if (img != null && img.UsedInMap && !img.IsDisposed)
+						{
+							DelayedRedraw();
+						}
 					}
 					break;
 

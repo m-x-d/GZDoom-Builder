@@ -205,6 +205,10 @@ namespace CodeImp.DoomBuilder.IO
 				writer.Write(t.Position.y);
 				writer.Write(t.Position.z);
 				writer.Write(t.AngleDoom);
+				writer.Write(t.Pitch); //mxd
+				writer.Write(t.Roll); //mxd
+				writer.Write(t.ScaleX); //mxd
+				writer.Write(t.ScaleY); //mxd
 				writer.Write(t.Type);
 				writer.Write(t.Action);
 				for(int i = 0; i < t.Args.Length; i++) writer.Write(t.Args[i]);

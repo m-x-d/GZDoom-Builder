@@ -19,6 +19,8 @@
 using System;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
+using System.Runtime.InteropServices;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -55,6 +57,17 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 
 		#region ================== Methods
+
+		//mxd
+		override public void LoadImage()
+		{
+			// Do the loading
+			LocalLoadImage();
+
+			// Notify the main thread about the change to redraw display
+			IntPtr strptr = Marshal.StringToCoTaskMemAuto(this.Name);
+			General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.SpriteDataLoaded, strptr.ToInt32(), 0);
+		}
 
 		// This loads the image
 		protected override void LocalLoadImage()

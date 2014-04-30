@@ -147,6 +147,18 @@
     <Compile Include="Actions\ActionManager.cs" />
     <Compile Include="Config\CompilerInfo.cs" />
     <Compile Include="Config\ConfigurationInfo.cs" />
+    <Compile Include="GZBuilder\Controls\PairedFloatControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\PairedFloatControl.Designer.cs">
+      <DependentUpon>PairedFloatControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GZBuilder\Windows\ThingStatisticsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Windows\ThingStatisticsForm.Designer.cs">
+      <DependentUpon>ThingStatisticsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="VisualModes\VisualBlockMap.cs" />
     <Compile Include="VisualModes\VisualMode.cs" />
     <Compile Include="General\Clock.cs" />
@@ -511,6 +523,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="GZBuilder\Controls\PairedFloatControl.resx">
+      <DependentUpon>PairedFloatControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GZBuilder\Windows\ThingStatisticsForm.resx">
+      <DependentUpon>ThingStatisticsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Windows\AboutForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AboutForm.cs</DependentUpon>
@@ -653,6 +671,7 @@
     <EmbeddedResource Include="Resources\Thing2D_0.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ThingStatistics.png" />
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />
     <None Include="Resources\Close.png" />
@@ -1128,6 +1147,9 @@
     <EmbeddedResource Include="Windows\ThingEditForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ThingEditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ThingEditFormUDMF.resx">
+      <DependentUpon>ThingEditFormUDMF.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ThingsFiltersForm.resx">
       <SubType>Designer</SubType>

@@ -18,12 +18,13 @@
 
 using System;
 using System.Collections.Generic;
-using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Rendering;
+using System.Drawing;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.VisualModes;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
@@ -57,7 +58,13 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private int action;
 		private int[] args;
-		private float scale; //mxd. Used in model rendering
+		private float scaleX; //mxd
+		private float scaleY; //mxd
+		private SizeF spritescale; //mxd
+		private int pitch; //mxd. Used in model rendering
+		private int roll; //mxd. Used in model rendering
+		private float pitchrad; //mxd
+		private float rollrad; //mxd
 		private bool isModel; //mxd
 
 		// Configuration
@@ -71,9 +78,15 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Properties
 
 		public MapSet Map { get { return map; } }
-		public int Type { get { return type; } set { BeforePropsChange(); type = value; UpdateModelStatus(); } } //mxd
+		public int Type { get { return type; } set { BeforePropsChange(); type = value; /*UpdateCache();*/ } } //mxd
 		public Vector3D Position { get { return pos; } }
-		public float Scale { get { return scale; } } //mxd
+		public float ScaleX { get { return scaleX; } } //mxd. This is UDMF property, not actual scale!
+		public float ScaleY { get { return scaleY; } } //mxd. This is UDMF property, not actual scale!
+		public int Pitch { get { return pitch; } } //mxd
+		public float PitchRad { get { return pitchrad; } }
+		public int Roll { get { return roll; } } //mxd
+		public float RollRad { get { return rollrad; } }
+		public SizeF ActorScale { get { return spritescale; } } //mxd. Actor scale set in DECORATE
 		public float Angle { get { return anglerad; } }
 		public int AngleDoom { get { return angledoom; } }
 		internal Dictionary<string, bool> Flags { get { return flags; } }
@@ -99,7 +112,9 @@ namespace CodeImp.DoomBuilder.Map
 			this.listindex = listindex;
 			this.flags = new Dictionary<string, bool>(StringComparer.Ordinal);
 			this.args = new int[NUM_ARGS];
-			this.scale = 1.0f; //mxd
+			this.scaleX = 1.0f;
+			this.scaleY = 1.0f;
+			this.spritescale = new SizeF(1.0f, 1.0f);
 			
 			if(map == General.Map.Map)
 				General.Map.UndoRedo.RecAddThing(this);
@@ -122,9 +137,6 @@ namespace CodeImp.DoomBuilder.Map
 
 				// Remove from main list
 				map.RemoveThing(listindex);
-
-				// Remove from sector
-				//if(sector != null) sector.DetachThing(sectorlistitem);
 				
 				// Clean up
 				map = null;
@@ -179,13 +191,17 @@ namespace CodeImp.DoomBuilder.Map
 			s.rwInt(ref type);
 			s.rwVector3D(ref pos);
 			s.rwInt(ref angledoom);
+			s.rwInt(ref pitch); //mxd
+			s.rwInt(ref roll); //mxd
+			s.rwFloat(ref scaleX); //mxd
+			s.rwFloat(ref scaleY); //mxd
 			s.rwInt(ref tag);
 			s.rwInt(ref action);
 			for(int i = 0; i < NUM_ARGS; i++) s.rwInt(ref args[i]);
 
 			if(!s.IsWriting) {
 				anglerad = Angle2D.DoomToReal(angledoom);
-				UpdateModelStatus(); //mxd
+				UpdateCache(); //mxd
 			}
 		}
 
@@ -196,9 +212,15 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Copy properties
 			t.type = type;
-			t.UpdateModelStatus();
 			t.anglerad = anglerad;
 			t.angledoom = angledoom;
+			t.roll = roll; //mxd
+			t.pitch = pitch; //mxd
+			t.rollrad = rollrad; //mxd
+			t.pitchrad = pitchrad; //mxd
+			t.scaleX = scaleX; //mxd
+			t.scaleY = scaleY; //mxd
+			t.spritescale = spritescale; //mxd
 			t.pos = pos;
 			t.flags = new Dictionary<string,bool>(flags);
 			t.tag = tag;
@@ -208,6 +230,7 @@ namespace CodeImp.DoomBuilder.Map
 			t.color = color;
 			t.directional = directional;
 			t.fixedsize = fixedsize;
+			t.isModel = isModel; //mxd
 
 			base.CopyPropertiesTo(t);
 		}
@@ -235,20 +258,6 @@ namespace CodeImp.DoomBuilder.Map
 					break;
 				}
 			}
-		}
-
-		//mxd. This checks if the thing has model override
-		internal void UpdateModelStatus() {
-			if(General.Map.Data == null) {
-				isModel = false;
-				return;
-			}
-
-			isModel = General.Map.Data.ModeldefEntries.ContainsKey(type);
-			if(!isModel) return;
-
-			if(General.Map.Data.ModeldefEntries[type].LoadState == ModelLoadState.None)
-				isModel = General.Map.Data.ProcessModel(type);
 		}
 
 		// This translates the flags into UDMF fields
@@ -405,37 +414,77 @@ namespace CodeImp.DoomBuilder.Map
 			if(type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;
 		}
+
+		//mxd
+		public void SetPitch(int p)
+		{
+			BeforePropsChange();
+
+			pitch = p;
+			pitchrad = ((isModel && General.Map.Data.ModeldefEntries[type].InheritActorRoll) ? Angle2D.DegToRad(pitch) : 0);
+
+			if (type != General.Map.Config.Start3DModeThingType)
+				General.Map.IsChanged = true;
+		}
+
+		//mxd
+		public void SetRoll(int r)
+		{
+			BeforePropsChange();
+
+			roll = r;
+			rollrad = ((isModel && General.Map.Data.ModeldefEntries[type].InheritActorRoll) ? Angle2D.DegToRad(roll) : 0);
+			//rotation = Matrix.RotationYawPitchRoll(rollrad, pitchrad, anglerad); //mxd
+
+			if (type != General.Map.Config.Start3DModeThingType)
+				General.Map.IsChanged = true;
+		}
+
+		//mxd
+		public void SetScale(float scalex, float scaley)
+		{
+			BeforePropsChange();
+
+			scaleX = scalex;
+			scaleY = scaley;
+
+			if (type != General.Map.Config.Start3DModeThingType)
+				General.Map.IsChanged = true;
+		}
 		
 		// This updates all properties
 		// NOTE: This does not update sector! (call DetermineSector)
-		public void Update(int type, float x, float y, float zoffset, int angle,
+		public void Update(int type, float x, float y, float zoffset, int angle, int pitch, int roll, float scaleX, float scaleY,
 						   Dictionary<string, bool> flags, int tag, int action, int[] args)
 		{
 			// Apply changes
 			this.type = type;
 			this.anglerad = Angle2D.DoomToReal(angle);
 			this.angledoom = angle;
+			this.pitch = pitch; //mxd
+			this.roll = roll; //mxd
+			this.scaleX = (scaleX == 0 ? 1.0f : scaleX); //mxd
+			this.scaleY = (scaleY == 0 ? 1.0f : scaleY); //mxd
 			this.flags = new Dictionary<string, bool>(flags);
 			this.tag = tag;
 			this.action = action;
 			this.args = new int[NUM_ARGS];
 			args.CopyTo(this.args, 0);
 			this.Move(x, y, zoffset);
-			UpdateModelStatus(); //mxd
+
+			UpdateCache(); //mxd
 		}
 		
 		// This updates the settings from configuration
 		public void UpdateConfiguration()
 		{
-			ThingTypeInfo ti;
-			
 			// Lookup settings
-			ti = General.Map.Data.GetThingInfo(type);
+			ThingTypeInfo ti = General.Map.Data.GetThingInfo(type);
 			
 			// Apply size
 			size = ti.Radius;
 			fixedsize = ti.FixedSize;
-			scale = ti.SpriteScale.Width; //mxd
+			spritescale = ti.SpriteScale; //mxd
 			
 			// Color valid?
 			if((ti.Color >= 0) && (ti.Color < ColorCollection.NUM_THING_COLORS))
@@ -449,9 +498,30 @@ namespace CodeImp.DoomBuilder.Map
 				color = General.Colors.Colors[ColorCollection.THING_COLORS_OFFSET];
 			}
 			
-			// Apply icon offset (arrow or dot)
-			//if(ti.Arrow) iconoffset = 0f; else iconoffset = 0.25f;
 			directional = ti.Arrow; //mxd
+			UpdateCache(); //mxd
+		}
+
+		//mxd. This checks if the thing has model override
+		internal void UpdateCache()
+		{
+			if (General.Map.Data == null)
+			{
+				isModel = false;
+				return;
+			}
+
+			isModel = General.Map.Data.ModeldefEntries.ContainsKey(type);
+			if (isModel && General.Map.Data.ModeldefEntries[type].LoadState == ModelLoadState.None)
+				isModel = General.Map.Data.ProcessModel(type);
+
+			if (isModel) {
+				rollrad = (General.Map.Data.ModeldefEntries[type].InheritActorRoll ? Angle2D.DegToRad(roll) : 0);
+				pitchrad = (General.Map.Data.ModeldefEntries[type].InheritActorPitch ? Angle2D.DegToRad(pitch) : 0);
+			} else {
+				rollrad = 0;
+				pitchrad = 0;
+			}
 		}
 		
 		#endregion

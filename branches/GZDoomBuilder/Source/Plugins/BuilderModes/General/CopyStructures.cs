@@ -228,6 +228,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		public static bool Type = true; //mxd
 		public static bool Angle = true; //mxd
+		public static bool Pitch = true; //mxd
+		public static bool Roll = true; //mxd
+		public static bool Scale = true; //mxd
 		public static bool Action = true; //mxd
 		public static bool Tag = true; //mxd
 		public static bool Flags = true; //mxd
@@ -235,6 +238,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		private readonly int type;
 		private readonly float angle;
+		private readonly int pitch; //mxd
+		private readonly int roll; //mxd
+		private readonly float scalex; //mxd
+		private readonly float scaley; //mxd
 		private readonly Dictionary<string, bool> flags;
 		private readonly int tag;
 		private readonly int action;
@@ -245,9 +252,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			type = t.Type;
 			angle = t.Angle;
+			pitch = t.Pitch;
+			roll = t.Roll;
+			scalex = t.ScaleX;
+			scaley = t.ScaleY;
 			flags = t.GetFlags();
 			tag = t.Tag;
-			action = t.Action;       
+			action = t.Action;
 			args = (int[])(t.Args.Clone());
 			fields = new UniFields(t.Fields);
 		}
@@ -256,6 +267,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if (Type) t.Type = type;
 			if (Angle) t.Rotate(angle);
+			if (Pitch) t.SetPitch(pitch);
+			if (Roll) t.SetRoll(roll);
+			if (Scale) t.SetScale(scalex, scaley);
 			if (Flags) {
 				t.ClearFlags();
 				foreach (KeyValuePair<string, bool> f in flags)

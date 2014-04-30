@@ -198,6 +198,11 @@ namespace CodeImp.DoomBuilder.IO
 				float height = GetCollectionEntry<float>(c, "height", false, 0.0f, where);
 				int tag = GetCollectionEntry<int>(c, "id", false, 0, where);
 				int angledeg = GetCollectionEntry<int>(c, "angle", false, 0, where);
+				int pitch = GetCollectionEntry<int>(c, "pitch", false, 0, where); //mxd
+				int roll = GetCollectionEntry<int>(c, "roll", false, 0, where); //mxd
+				float scaleX = GetCollectionEntry<float>(c, "scalex", false, 1.0f, where); //mxd
+				float scaleY = GetCollectionEntry<float>(c, "scaley", false, 1.0f, where); //mxd
+				float scale = GetCollectionEntry<float>(c, "scale", false, 0f, where); //mxd
 				int type = GetCollectionEntry<int>(c, "type", true, 0, where);
 				int special = GetCollectionEntry<int>(c, "special", false, 0, where);
 				args[0] = GetCollectionEntry<int>(c, "arg0", false, 0, where);
@@ -205,6 +210,12 @@ namespace CodeImp.DoomBuilder.IO
 				args[2] = GetCollectionEntry<int>(c, "arg2", false, 0, where);
 				args[3] = GetCollectionEntry<int>(c, "arg3", false, 0, where);
 				args[4] = GetCollectionEntry<int>(c, "arg4", false, 0, where);
+
+				if (scale != 0) //mxd
+				{
+					scaleX = scale;
+					scaleY = scale;
+				}
 
 				// Flags
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
@@ -220,7 +231,7 @@ namespace CodeImp.DoomBuilder.IO
 				Thing t = map.CreateThing();
 				if(t != null)
 				{
-					t.Update(type, x, y, height, angledeg, stringflags, tag, special, args);
+					t.Update(type, x, y, height, angledeg, pitch, roll, scaleX, scaleY, stringflags, tag, special, args);
 
 					// Custom fields
 					ReadCustomFields(c, t, "thing");

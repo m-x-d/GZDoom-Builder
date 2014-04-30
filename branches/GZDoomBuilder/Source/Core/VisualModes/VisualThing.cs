@@ -54,10 +54,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		// Rendering
 		private int renderpass;
-		private Matrix orientation;
 		private Matrix position;
 		private Matrix cagescales;
-		private bool billboard;
 		private Vector2D pos2d;
 		private float cameradistance;
 		private int cagecolor;
@@ -72,7 +70,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd
 		private int cameraDistance3D;
 		private int thingHeight;
-		protected Matrix scale; //mxd. Used in model rendering
 
 		//mxd. light properties
 		private DynamicLightType lightType;
@@ -97,14 +94,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal bool NeedsUpdateGeo { get { return updategeo; } }
 		internal int Triangles { get { return triangles; } }
 		internal int RenderPassInt { get { return renderpass; } }
-		internal Matrix Orientation { get { return orientation; } }
 		internal Matrix Position { get { return position; } }
 		internal Matrix CageScales { get { return cagescales; } }
 		internal int CageColor { get { return cagecolor; } }
 		
 		//mxd
 		internal int VertexColor { get { return vertices.Length > 0 ? vertices[0].c : 0;} }
-		internal Matrix Scale { get { return scale; } }
 		public int CameraDistance3D { get { return cameraDistance3D; } }
 		public bool Sizeless { get { return sizeless; } }
 		public Vector3 Center { 
@@ -121,12 +116,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public float LightRadius { get { return lightRadius; } }
 		public DynamicLightRenderStyle LightRenderStyle { get { return lightRenderStyle; } }
 		public Color4 LightColor { get { return lightColor; } }
-
-		/// <summary>
-		/// Set to True to use billboarding for this thing. When using billboarding,
-		/// the geometry will be rotated on the XY plane to face the camera.
-		/// </summary>
-		public bool Billboard { get { return billboard; } set { billboard = value; } }
 
 		/// <summary>
 		/// Returns the Thing that this VisualThing is created for.
@@ -163,11 +152,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Initialize
 			this.thing = t;
 			this.renderpass = (int)RenderPass.Mask;
-			this.billboard = true;
-			this.orientation = Matrix.Identity;
 			this.position = Matrix.Identity;
 			this.cagescales = Matrix.Identity;
-			this.scale = Matrix.Identity; //mxd
 
 			//mxd
 			lightType = DynamicLightType.NONE;
@@ -271,14 +257,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 			}
 		}
 
-		/// <summary>
-		/// This sets the orientation to use for the thing geometry. When using this, you may want to turn off billboarding.
-		/// </summary>
-		public void SetOrientation(Vector3D angles)
-		{
-			orientation = Matrix.RotationYawPitchRoll(angles.z, angles.y, angles.x);
-		}
-		
 		// This sets the vertices for the thing sprite
 		protected void SetVertices(ICollection<WorldVertex> verts)
 		{
@@ -287,11 +265,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 			verts.CopyTo(vertices, 0);
 			triangles = vertices.Length / 3;
 			updategeo = true;
-		}
-
-		//mxd
-		protected void SetScale(float scaleX, float scaleY) {
-			scale = Matrix.Scaling(scaleX, scaleX, scaleY);
 		}
 		
 		// This updates the visual thing

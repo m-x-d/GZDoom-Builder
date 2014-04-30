@@ -55,6 +55,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool haveArg0Str;
 
 		private List<ThingProperties> thingProps; //mxd
+		//TODO: move this into game configuration!
+		private readonly List<string> renderStyles = new List<string>() { "normal", "translucent", "soultrans", "translucentstencil", "add", "subtract", "stencil", "fuzzy", "optfuzzy", "none" };
 
 		//mxd. Window setup stuff
 		private static Point location = Point.Empty;
@@ -64,6 +66,10 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			public readonly int Type;
 			public readonly int AngleDoom;
+			public readonly int Pitch;
+			public readonly int Roll;
+			public readonly float ScaleX;
+			public readonly float ScaleY;
 			public readonly float X;
 			public readonly float Y;
 			public readonly float Z;
@@ -74,6 +80,10 @@ namespace CodeImp.DoomBuilder.Windows
 				Z = t.Position.z;
 				Type = t.Type;
 				AngleDoom = t.AngleDoom;
+				Pitch = t.Pitch;
+				Roll = t.Roll;
+				ScaleX = t.ScaleX;
+				ScaleY = t.ScaleY;
 			}
 		}
 
@@ -105,15 +115,18 @@ namespace CodeImp.DoomBuilder.Windows
 			action.GeneralizedCategories = General.Map.Config.GenActionCategories;
 			action.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
 
-			// Initialize custom fields editor
-			fieldslist.Setup("thing");
+			if (General.Map.FormatInterface.HasCustomFields) {
+				// Initialize custom fields editor
+				fieldslist.Setup("thing");
 
-			// Fill universal fields list
-			fieldslist.ListFixedFields(General.Map.Config.ThingFields);
+				// Fill universal fields list
+				fieldslist.ListFixedFields(General.Map.Config.ThingFields);
+			}
 
 			// Tag/Effects
 			scriptNames.Location = arg0.Location;
 			scriptNumbers.Location = arg0.Location;
+			cbArgStr.Visible = General.Map.FormatInterface.HasCustomFields;
 
 			foreach(ScriptItem nsi in General.Map.NamedScripts)
 				scriptNames.Items.Add(nsi);
@@ -185,12 +198,23 @@ namespace CodeImp.DoomBuilder.Windows
 			posY.ButtonStep = General.Map.Grid.GridSize;
 			posZ.ButtonStep = General.Map.Grid.GridSize;
 
-			//mxd. Custom fields
-			fieldslist.SetValues(ft.Fields, true);
-			conversationID.Text = ft.Fields.GetValue("conversation", 0).ToString();
-			gravity.Text = ft.Fields.GetValue("gravity", 1.0f).ToString();
-			arg0str = ft.Fields.GetValue("arg0str", string.Empty);
-			haveArg0Str = !string.IsNullOrEmpty(arg0str);
+			// Custom fields
+			if (General.Map.FormatInterface.HasCustomFields) {
+				fieldslist.SetValues(ft.Fields, true);
+				conversationID.Text = ft.Fields.GetValue("conversation", 0).ToString();
+				gravity.Text = ft.Fields.GetValue("gravity", 1.0f).ToString();
+				score.Text = ft.Fields.GetValue("score", 0).ToString();
+				health.Text = ft.Fields.GetValue("health", 1).ToString();
+				alpha.Text = ft.Fields.GetValue("alpha", 1.0f).ToString();
+				color.SetValueFrom(ft.Fields);
+				arg0str = ft.Fields.GetValue("arg0str", string.Empty);
+				haveArg0Str = !string.IsNullOrEmpty(arg0str);
+				scale.SetValues(ft.ScaleX, ft.ScaleY, true);
+				pitch.Text = ft.Pitch.ToString();
+				roll.Text = ft.Roll.ToString();
+				int renderstyle = renderStyles.IndexOf(ft.Fields.GetValue("renderstyle", string.Empty));
+				renderStyle.SelectedIndex = (renderstyle == -1 ? 0 : renderstyle);
+			}
 
 			// Action/tags
 			action.Value = ft.Action;
@@ -244,18 +268,39 @@ namespace CodeImp.DoomBuilder.Windows
 				if(t.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
 
 				//mxd. Custom fields
-				t.Fields.BeforeFieldsChange(); //mxd
-				fieldslist.SetValues(t.Fields, false);
+				if (General.Map.FormatInterface.HasCustomFields) {
+					t.Fields.BeforeFieldsChange(); //mxd
+					fieldslist.SetValues(t.Fields, false);
 
-				if(t.Fields.GetValue("conversation", 0).ToString() != conversationID.Text)
-					conversationID.Text = "";
+					if (t.Fields.GetValue("conversation", 0).ToString() != conversationID.Text)
+						conversationID.Text = "";
 
-				if(t.Fields.GetValue("gravity", 1.0f).ToString() != gravity.Text)
-					gravity.Text = "";
+					if (t.Fields.GetValue("gravity", 1.0f).ToString() != gravity.Text)
+						gravity.Text = "";
 
-				if(arg0str != t.Fields.GetValue("arg0str", string.Empty)) {
-					haveArg0Str = true;
-					arg0str = string.Empty;
+					if (t.Fields.GetValue("score", 0).ToString() != score.Text)
+						score.Text = "";
+
+					if (t.Fields.GetValue("health", 1).ToString() != health.Text)
+						health.Text = "";
+
+					if (t.Fields.GetValue("alpha", 1.0f).ToString() != alpha.Text)
+						alpha.Text = "";
+
+					scale.SetValues(t.ScaleX, t.ScaleY, false);
+					color.SetValueFrom(t.Fields);
+
+					if (t.Pitch.ToString() != pitch.Text) pitch.Text = "";
+					if (t.Roll.ToString() != roll.Text) roll.Text = "";
+
+					int i = Math.Max(0, renderStyles.IndexOf(t.Fields.GetValue("renderstyle", string.Empty)));
+					if (renderStyle.SelectedIndex != -1 && i != renderStyle.SelectedIndex)
+						renderStyle.SelectedIndex = -1;
+
+					if (arg0str != t.Fields.GetValue("arg0str", string.Empty)) {
+						haveArg0Str = true;
+						arg0str = string.Empty;
+					}
 				}
 
 				//mxd. Store initial properties
@@ -389,6 +434,26 @@ namespace CodeImp.DoomBuilder.Windows
 			updateAngle();
 		}
 
+		private void pitch_WhenTextChanged(object sender, EventArgs e) {
+			pitchControl.Angle = pitch.GetResult(int.MinValue);
+			updatePitch();
+		}
+
+		private void pitchControl_AngleChanged() {
+			pitch.Text = pitchControl.Angle.ToString();
+			updatePitch();
+		}
+
+		private void roll_WhenTextChanged(object sender, EventArgs e) {
+			rollControl.Angle = roll.GetResult(int.MinValue);
+			updateRoll();
+		}
+
+		private void rollControl_AngleChanged() {
+			roll.Text = rollControl.Angle.ToString();
+			updateRoll();
+		}
+
 		// Apply clicked
 		private void apply_Click(object sender, EventArgs e) {
 			List<string> defaultflags = new List<string>();
@@ -420,9 +485,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// Go for all the things
 			foreach(Thing t in things) {
 				// Coordination
-				if(cbRandomAngle.Checked)
-					t.Rotate(General.Random(0, 359)); //mxd
-
 				//mxd. Check position
 				float px = General.Clamp(t.Position.x, General.Map.Config.LeftBoundary, General.Map.Config.RightBoundary);
 				float py = General.Clamp(t.Position.y, General.Map.Config.BottomBoundary, General.Map.Config.TopBoundary);
@@ -450,7 +512,7 @@ namespace CodeImp.DoomBuilder.Windows
 								else if(!int.TryParse(scriptNumbers.Text.Trim(), out t.Args[0]))
 									t.Args[0] = 0;
 
-								if(t.Fields.ContainsKey("arg0str"))
+								if(General.Map.FormatInterface.HasCustomFields && t.Fields.ContainsKey("arg0str")) 
 									t.Fields.Remove("arg0str");
 							}
 						} else { //apply arg0str
@@ -459,7 +521,7 @@ namespace CodeImp.DoomBuilder.Windows
 						}
 					} else {
 						t.Args[0] = arg0.GetResult(t.Args[0]);
-						if(t.Fields.ContainsKey("arg0str"))
+						if(General.Map.FormatInterface.HasCustomFields && t.Fields.ContainsKey("arg0str"))
 							t.Fields.Remove("arg0str");
 					}
 				} else {
@@ -472,11 +534,22 @@ namespace CodeImp.DoomBuilder.Windows
 				t.Args[4] = arg4.GetResult(t.Args[4]);
 
 				//mxd. Custom fields
-				fieldslist.Apply(t.Fields);
-				if(!string.IsNullOrEmpty(conversationID.Text))
-					UDMFTools.SetInteger(t.Fields, "conversation", conversationID.GetResult(t.Fields.GetValue("conversation", 0)), 0);
-				if(!string.IsNullOrEmpty(gravity.Text))
-					UDMFTools.SetFloat(t.Fields, "gravity", gravity.GetResultFloat(t.Fields.GetValue("gravity", 1.0f)), 1.0f);
+				if (General.Map.FormatInterface.HasCustomFields) {
+					fieldslist.Apply(t.Fields);
+					if (!string.IsNullOrEmpty(conversationID.Text))
+						UDMFTools.SetInteger(t.Fields, "conversation", conversationID.GetResult(t.Fields.GetValue("conversation", 0)), 0);
+					if (!string.IsNullOrEmpty(gravity.Text))
+						UDMFTools.SetFloat(t.Fields, "gravity", gravity.GetResultFloat(t.Fields.GetValue("gravity", 1.0f)), 1.0f);
+					if (!string.IsNullOrEmpty(health.Text))
+						UDMFTools.SetInteger(t.Fields, "health", health.GetResult(t.Fields.GetValue("health", 1)), 1);
+					if (!string.IsNullOrEmpty(score.Text))
+						UDMFTools.SetInteger(t.Fields, "score", score.GetResult(t.Fields.GetValue("score", 0)), 0);
+					if (!string.IsNullOrEmpty(alpha.Text))
+						UDMFTools.SetFloat(t.Fields, "alpha", alpha.GetResultFloat(t.Fields.GetValue("alpha", 1.0f)), 1.0f);
+					
+					color.ApplyTo(t.Fields, t.Fields.GetValue("fillcolor", 0));
+					if (renderStyle.SelectedIndex > -1) UDMFTools.SetString(t.Fields, "renderstyle", renderStyles[renderStyle.SelectedIndex], "normal");
+				}
 
 				// Update settings
 				t.UpdateConfiguration();
@@ -521,13 +594,6 @@ namespace CodeImp.DoomBuilder.Windows
 			useAbsoluteHeight = cbAbsoluteHeight.Checked;
 			zlabel.Text = useAbsoluteHeight ? "Abs. Z:" : "Z:";
 			posZ.Text = (useAbsoluteHeight ? initialFloorHeight + initialPosition.z : initialPosition.z).ToString();
-		}
-
-		//mxd
-		private void cbRandomAngle_CheckedChanged(object sender, EventArgs e) {
-			angle.Enabled = !cbRandomAngle.Checked;
-			anglecontrol.Enabled = !cbRandomAngle.Checked;
-			labelAngle.Enabled = !cbRandomAngle.Checked;
 		}
 
 		//mxd
@@ -617,6 +683,21 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
+		private void scale_OnValuesChanged(object sender, EventArgs e) {
+			if (preventchanges) return;
+			int i = 0;
+
+			foreach (Thing t in things){
+				float sx = scale.GetValue1(thingProps[i].ScaleX);
+				float sy = scale.GetValue2(thingProps[i].ScaleY);
+				t.SetScale((sx == 0 ? 1.0f : sx), (sy == 0 ? 1.0f : sy));
+				i++;
+			}
+
+			General.Map.IsChanged = true;
+			if (OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
 		// Selected type changes
 		private void thingtype_OnTypeChanged(ThingTypeInfo value) {
 			thinginfo = value;
@@ -639,9 +720,9 @@ namespace CodeImp.DoomBuilder.Windows
 			action_ValueChanges(this, EventArgs.Empty);
 
 			//mxd. Update things
-			if(preventchanges)
-				return;
-			if(((thingtype.GetResult(0) < General.Map.FormatInterface.MinThingType) || (thingtype.GetResult(0) > General.Map.FormatInterface.MaxThingType)))
+			if (preventchanges 
+					|| (thingtype.GetResult(0) < General.Map.FormatInterface.MinThingType) 
+					|| (thingtype.GetResult(0) > General.Map.FormatInterface.MaxThingType))
 				return;
 
 			foreach(Thing t in things) {
@@ -663,17 +744,49 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//restore values
 			if(string.IsNullOrEmpty(angle.Text)) {
-				// Apply rotation
 				foreach(Thing t in things)
 					t.Rotate(thingProps[i++].AngleDoom);
 			} else { //update values
-				// Apply rotation
 				foreach(Thing t in things)
 					t.Rotate(angle.GetResult(thingProps[i++].AngleDoom));
 			}
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void updatePitch() {
+			if (preventchanges) return;
+			int i = 0;
+
+			//restore values
+			if (string.IsNullOrEmpty(pitch.Text)) {
+				foreach (Thing t in things)
+					t.SetPitch(thingProps[i++].Pitch);
+			} else { //update values
+				foreach (Thing t in things)
+					t.SetPitch(pitch.GetResult(thingProps[i++].Pitch));
+			}
+
+			General.Map.IsChanged = true;
+			if (OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void updateRoll() {
+			if (preventchanges) return;
+			int i = 0;
+
+			//restore values
+			if (string.IsNullOrEmpty(roll.Text)) {
+				foreach (Thing t in things)
+					t.SetRoll(thingProps[i++].Roll);
+			} else { //update values
+				foreach (Thing t in things)
+					t.SetRoll(roll.GetResult(thingProps[i++].Roll));
+			}
+
+			General.Map.IsChanged = true;
+			if (OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		#endregion
