@@ -1,0 +1,1 @@
+To enable these game configurations, move the contents of a game folder into the "Configurations" folder, and then enable a game configuration(s) in the GZDB's Preferences.
