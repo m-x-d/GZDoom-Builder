@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool preventchanges;
 		private string arg0str; //mxd
 		private bool haveArg0Str; //mxd
+		//TODO: move this into game configuration!
 		private readonly List<string> renderStyles = new List<string>() { "translucent", "add", "subtract" }; 
 
 		//mxd. Persistent settings

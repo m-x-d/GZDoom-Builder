@@ -832,6 +832,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Clamp);
 				graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Clamp);
 				graphics.Device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Clamp);
+				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None); //mxd. Disable backside culling, because otherwise sprites with positive ScaleY and negative ScaleX will be facing away from the camera...
 
 				// Render things collected
 				foreach(KeyValuePair<ImageData, List<VisualThing>> group in thingspass)
@@ -902,9 +903,10 @@ namespace CodeImp.DoomBuilder.Rendering
 								}
 
 								// Create the matrix for positioning / rotation
-								world = t.Orientation;
-								if (t.Billboard) world = Matrix.Multiply(world, billboard);
-								world = Matrix.Multiply(world, t.Position);
+								world = billboard
+										* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY) 
+										* t.Position; //mxd
+
 								ApplyMatrices3D();
 
 								//mxd. set variables for fog rendering
@@ -931,6 +933,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
 				graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Wrap);
 				graphics.Device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Wrap);
+				graphics.Device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise); //mxd
 			}
 
 			// Done rendering with this shader
@@ -1058,9 +1061,13 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 
 					// Create the matrix for positioning / rotation
-					world = Matrix.Multiply(t.Orientation, Matrix.RotationZ(t.Thing.Angle));
-					world = Matrix.Multiply(world, t.Scale);
-					world = Matrix.Multiply(world, t.Position);
+					float sx = t.Thing.ScaleX * t.Thing.ActorScale.Width;
+					float sy = t.Thing.ScaleY * t.Thing.ActorScale.Height;
+					Matrix rotation = Matrix.RotationY(-(t.Thing.RollRad - General.Map.Data.ModeldefEntries[t.Thing.Type].RollOffset))
+						* Matrix.RotationX(-(t.Thing.PitchRad + General.Map.Data.ModeldefEntries[t.Thing.Type].PitchOffset))
+						* Matrix.RotationZ(t.Thing.Angle);
+
+					world = rotation * Matrix.Scaling(sx, sx, sy) * t.Position;
 					ApplyMatrices3D();
 
 					//mxd. set variables for fog rendering

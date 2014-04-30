@@ -1305,6 +1305,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					Color4 cSel = General.Colors.Selection.ToColorValue();
 					Color4 cWire = General.Colors.ModelWireframe.ToColorValue();
+					Matrix viewscale = Matrix.Scaling(scale, -scale, 0.0f);
 					ModelData mde;
 
 					foreach(KeyValuePair<int, List<Thing>> group in modelsByType) {
@@ -1316,7 +1317,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						foreach(Thing t in group.Value) {
 							if(General.Settings.GZDrawSelectedModelsOnly && !t.Selected) continue;
 							Vector2D screenpos = ((Vector2D)t.Position).GetTransformed(translatex, translatey, scale, -scale);
-							float modelScale = scale * t.Scale;
+							float modelScale = scale * t.ActorScale.Width * t.ScaleX;
 
 							//should we render this model?
 							if(((screenpos.x + maxSize * modelScale) <= 0.0f) || ((screenpos.x - maxSize * modelScale) >= windowsize.Width) ||
@@ -1326,7 +1327,12 @@ namespace CodeImp.DoomBuilder.Rendering
 							graphics.Shaders.Things2D.FillColor = t.Selected ? cSel : cWire;
 
 							for(int i = 0; i < mde.Model.Meshes.Count; i++) {
-								graphics.Shaders.Things2D.SetTransformSettings(screenpos, t.Angle, modelScale);
+								Matrix finalscale = viewscale * Matrix.Scaling(t.ScaleX, t.ScaleX, t.ScaleY);
+								Matrix rotation = Matrix.RotationY(-(t.RollRad - General.Map.Data.ModeldefEntries[t.Type].RollOffset))
+										* Matrix.RotationX(-(t.PitchRad + General.Map.Data.ModeldefEntries[t.Type].PitchOffset))
+										* Matrix.RotationZ(t.Angle);
+
+								graphics.Shaders.Things2D.SetTransformSettings(screenpos, rotation, finalscale); 
 								graphics.Shaders.Things2D.ApplySettings();
 
 								// Draw

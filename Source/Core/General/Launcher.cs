@@ -23,8 +23,8 @@ using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
-using System.Threading;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -355,6 +355,7 @@ namespace CodeImp.DoomBuilder
 
 			General.Plugins.OnMapSaveEnd(SavePurpose.Testing);
 			General.MainWindow.FocusDisplay();
+			if(General.Editing.Mode is ClassicMode) General.MainWindow.RedrawDisplay();
 		}
 
 		//mxd

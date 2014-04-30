@@ -214,7 +214,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This loads the image
-		public void LoadImage()
+		public virtual void LoadImage()
 		{
 			// Do the loading
 			LocalLoadImage();

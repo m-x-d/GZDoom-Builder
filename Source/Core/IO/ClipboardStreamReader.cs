@@ -273,6 +273,10 @@ namespace CodeImp.DoomBuilder.IO
 				float y = reader.ReadSingle();
 				float height = reader.ReadSingle();
 				int angledeg = reader.ReadInt32();
+				int pitch = reader.ReadInt32(); //mxd
+				int roll = reader.ReadInt32(); //mxd
+				float scaleX = reader.ReadSingle(); //mxd
+				float scaleY = reader.ReadSingle(); //mxd
 				int type = reader.ReadInt32();
 				int special = reader.ReadInt32();
 				for(int a = 0; a < Linedef.NUM_ARGS; a++) {
@@ -295,7 +299,7 @@ namespace CodeImp.DoomBuilder.IO
 				Dictionary<string, UniValue> fields = ReadCustomFields(reader);
 				Thing t = map.CreateThing();
 				if(t != null) {
-					t.Update(type, x, y, height, angledeg, stringflags, tag, special, args);
+					t.Update(type, x, y, height, angledeg, pitch, roll, scaleX, scaleY, stringflags, tag, special, args);
 
 					// Add custom fields
 					t.Fields.BeforeFieldsChange();

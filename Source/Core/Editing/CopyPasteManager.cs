@@ -17,15 +17,16 @@
 #region ================== Namespaces
 
 using System;
-using System.Windows.Forms;
+using System.Collections.Generic;
 using System.IO;
-using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Map;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
+using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -302,14 +303,15 @@ namespace CodeImp.DoomBuilder.Editing
 							memstream.Dispose();
 
 							// Check if anything was pasted
-							int totalpasted = General.Map.Map.GetMarkedThings(true).Count;
+							List<Thing> things = General.Map.Map.GetMarkedThings(true); //mxd
+							int totalpasted = things.Count;
 							totalpasted += General.Map.Map.GetMarkedVertices(true).Count;
 							totalpasted += General.Map.Map.GetMarkedLinedefs(true).Count;
 							totalpasted += General.Map.Map.GetMarkedSidedefs(true).Count;
 							totalpasted += General.Map.Map.GetMarkedSectors(true).Count;
 							if(totalpasted > 0)
 							{
-								General.Map.Map.UpdateConfiguration();
+								foreach (Thing t in things) t.UpdateConfiguration(); //mxd
 								General.Map.ThingsFilter.Update();
 								General.Editing.Mode.OnPasteEnd(options.Copy());
 								General.Plugins.OnPasteEnd(options);

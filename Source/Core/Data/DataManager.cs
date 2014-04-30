@@ -321,6 +321,7 @@ namespace CodeImp.DoomBuilder.Data
 			loadModeldefs(actorsByClass);
 			loadGldefs(actorsByClass);
 			actorsByClass = null; //don't need them any more
+			foreach (Thing t in General.Map.Map.Things) t.UpdateCache();
 			General.MainWindow.DisplayReady();
 			
 			// Process colormaps (we just put them in as textures)
@@ -593,9 +594,8 @@ namespace CodeImp.DoomBuilder.Data
 						{
 							image.LoadImage();
 						}
-						
 						// Unload this image?
-						if(!image.IsReferenced && image.AllowUnload && (image.ImageState != ImageLoadState.None))
+						else if(!image.IsReferenced && image.AllowUnload && (image.ImageState != ImageLoadState.None))
 						{
 							// Still unreferenced?
 							image.UnloadImage();
@@ -1421,7 +1421,7 @@ namespace CodeImp.DoomBuilder.Data
 			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading voxel definitions...");
 			loadVoxels();
 
-			foreach(Thing t in General.Map.Map.Things) t.UpdateModelStatus();
+			foreach(Thing t in General.Map.Map.Things) t.UpdateCache();
 
 			//rebuild geometry if in Visual mode
 			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
@@ -1501,8 +1501,6 @@ namespace CodeImp.DoomBuilder.Data
 				else if(!invalidDecorateActors.Contains(e.Key))
 					General.ErrorLogger.Add(ErrorType.Warning, "Got MODELDEF override for class '" + e.Key + "', but haven't found such class in Decorate");
 			}
-
-			foreach(Thing t in General.Map.Map.Things) t.UpdateModelStatus();
 		}
 
 		//mxd

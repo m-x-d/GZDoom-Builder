@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 								  "Invalid Error",
 								  "Beam me up Scotty, there’s no life out here",
 								  "Well, you ran into something and the game is over",
-								  "I'm good at writing bad code",                                  
+								  "I'm good at writing bad code",
 								  "$FUNNY_ERROR_CAPTION",
 								  "In Soviet Russia, exception throws YOU!",
 								  "...and then GZDB was the demons!",
@@ -94,6 +94,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 								  "This function is only available in the retail version of GZDoom Builder",
 								  "You picked up the Random Exception.",
 								  "Pinky says that you're the new hope. Bear that in mind.",
+								  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							  };
 			this.Text = titles[new Random().Next(0, titles.Length - 1)];
 		}

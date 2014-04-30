@@ -662,6 +662,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap ThingStatistics {
+            get {
+                object obj = ResourceManager.GetObject("ThingStatistics", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap treeview {
             get {
                 object obj = ResourceManager.GetObject("treeview", resourceCulture);
