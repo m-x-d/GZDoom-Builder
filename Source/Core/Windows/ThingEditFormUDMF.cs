@@ -74,7 +74,8 @@ namespace CodeImp.DoomBuilder.Windows
 			public readonly float Y;
 			public readonly float Z;
 
-			public ThingProperties(Thing t) {
+			public ThingProperties(Thing t) 
+			{
 				X = t.Position.x;
 				Y = t.Position.y;
 				Z = t.Position.z;
@@ -92,7 +93,8 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Constructor
 
 		// Constructor
-		public ThingEditFormUDMF() {
+		public ThingEditFormUDMF() 
+		{
 			// Initialize
 			InitializeComponent();
 
@@ -154,7 +156,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// This sets up the form to edit the given things
-		public void Setup(ICollection<Thing> things) {
+		public void Setup(ICollection<Thing> things) 
+		{
 			preventchanges = true;
 
 			// Keep this list
@@ -317,6 +320,11 @@ namespace CodeImp.DoomBuilder.Windows
 
 			preventchanges = false;
 
+			//mxd. Trigger angle/pitch/roll update manually...
+			angle_WhenTextChanged(angle, EventArgs.Empty);
+			pitch_WhenTextChanged(pitch, EventArgs.Empty);
+			roll_WhenTextChanged(roll, EventArgs.Empty);
+
 			updateScriptControls(); //mxd
 
 			//mxd. Set intial script-related values, if required
@@ -348,7 +356,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void updateScriptControls() {
+		private void updateScriptControls() 
+		{
 			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) {
 				bool showNamedScripts = haveArg0Str;
 				cbArgStr.Visible = true;
@@ -368,12 +377,14 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Events
 
 		//mxd
-		private void thingtype_OnTypeDoubleClicked() {
+		private void thingtype_OnTypeDoubleClicked() 
+		{
 			apply_Click(this, EventArgs.Empty);
 		}
 
 		// Action changes
-		private void action_ValueChanges(object sender, EventArgs e) {
+		private void action_ValueChanges(object sender, EventArgs e) 
+		{
 			int showaction = 0;
 			ArgumentInfo[] arginfo;
 
@@ -418,44 +429,66 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// Browse Action clicked
-		private void browseaction_Click(object sender, EventArgs e) {
+		private void browseaction_Click(object sender, EventArgs e) 
+		{
 			action.Value = ActionBrowserForm.BrowseAction(this, action.Value);
 		}
 
 		// Angle text changes
-		private void angle_TextChanged(object sender, EventArgs e) {
+		private void angle_WhenTextChanged(object sender, EventArgs e) 
+		{
+			if (preventchanges) return;
+			preventchanges = true;
 			anglecontrol.Angle = angle.GetResult(int.MinValue);
+			preventchanges = false;
 			updateAngle(); //mxd
 		}
 
 		//mxd. Angle control clicked
-		private void anglecontrol_AngleChanged() {
+		private void anglecontrol_AngleChanged() 
+		{
+			if(preventchanges) return;
 			angle.Text = anglecontrol.Angle.ToString();
 			updateAngle();
 		}
 
-		private void pitch_WhenTextChanged(object sender, EventArgs e) {
-			pitchControl.Angle = pitch.GetResult(int.MinValue);
+		private void pitch_WhenTextChanged(object sender, EventArgs e) 
+		{
+			if(preventchanges) return;
+			int p = pitch.GetResult(int.MinValue);
+			preventchanges = true;
+			pitchControl.Angle = (p == int.MinValue ? p : p + 90);
+			preventchanges = false;
 			updatePitch();
 		}
 
-		private void pitchControl_AngleChanged() {
-			pitch.Text = pitchControl.Angle.ToString();
+		private void pitchControl_AngleChanged() 
+		{
+			if(preventchanges) return;
+			pitch.Text = (General.ClampAngle(pitchControl.Angle - 90)).ToString();
 			updatePitch();
 		}
 
-		private void roll_WhenTextChanged(object sender, EventArgs e) {
-			rollControl.Angle = roll.GetResult(int.MinValue);
+		private void roll_WhenTextChanged(object sender, EventArgs e) 
+		{
+			if(preventchanges) return;
+			int r = roll.GetResult(int.MinValue);
+			preventchanges = true;
+			rollControl.Angle = (r == int.MinValue ? r : r + 90);
+			preventchanges = false;
 			updateRoll();
 		}
 
-		private void rollControl_AngleChanged() {
-			roll.Text = rollControl.Angle.ToString();
+		private void rollControl_AngleChanged() 
+		{
+			if(preventchanges) return;
+			roll.Text = (General.ClampAngle(rollControl.Angle - 90)).ToString();
 			updateRoll();
 		}
 
 		// Apply clicked
-		private void apply_Click(object sender, EventArgs e) {
+		private void apply_Click(object sender, EventArgs e) 
+		{
 			List<string> defaultflags = new List<string>();
 
 			// Verify the tag
@@ -572,7 +605,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// Cancel clicked
-		private void cancel_Click(object sender, EventArgs e) {
+		private void cancel_Click(object sender, EventArgs e) 
+		{
 			//mxd. perform undo
 			General.Map.UndoRedo.WithdrawUndo();
 
@@ -582,7 +616,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void cbArgStr_CheckedChanged(object sender, EventArgs e) {
+		private void cbArgStr_CheckedChanged(object sender, EventArgs e) 
+		{
 			if(!cbArgStr.Visible) return;
 			scriptNames.Visible = cbArgStr.Checked;
 			scriptNumbers.Visible = !cbArgStr.Checked;
@@ -590,14 +625,16 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void cbAbsoluteHeight_CheckedChanged(object sender, EventArgs e) {
+		private void cbAbsoluteHeight_CheckedChanged(object sender, EventArgs e) 
+		{
 			useAbsoluteHeight = cbAbsoluteHeight.Checked;
 			zlabel.Text = useAbsoluteHeight ? "Abs. Z:" : "Z:";
 			posZ.Text = (useAbsoluteHeight ? initialFloorHeight + initialPosition.z : initialPosition.z).ToString();
 		}
 
 		//mxd
-		private void tabcustom_MouseEnter(object sender, EventArgs e) {
+		private void tabcustom_MouseEnter(object sender, EventArgs e) 
+		{
 			fieldslist.Focus();
 		}
 
@@ -608,7 +645,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// Help
-		private void ThingEditForm_HelpRequested(object sender, HelpEventArgs hlpevent) {
+		private void ThingEditForm_HelpRequested(object sender, HelpEventArgs hlpevent) 
+		{
 			General.ShowHelp("w_thingeditor.html");
 			hlpevent.Handled = true;
 		}
@@ -617,7 +655,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== mxd. Realtime events
 
-		private void posX_WhenTextChanged(object sender, EventArgs e) {
+		private void posX_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(preventchanges) return;
 			int i = 0;
 
@@ -638,7 +677,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void posY_WhenTextChanged(object sender, EventArgs e) {
+		private void posY_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(preventchanges) return;
 			int i = 0;
 
@@ -659,7 +699,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void posZ_WhenTextChanged(object sender, EventArgs e) {
+		private void posZ_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(preventchanges) return;
 
 			//restore values
@@ -683,7 +724,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void scale_OnValuesChanged(object sender, EventArgs e) {
+		private void scale_OnValuesChanged(object sender, EventArgs e) 
+		{
 			if (preventchanges) return;
 			int i = 0;
 
@@ -699,7 +741,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// Selected type changes
-		private void thingtype_OnTypeChanged(ThingTypeInfo value) {
+		private void thingtype_OnTypeChanged(ThingTypeInfo value) 
+		{
 			thinginfo = value;
 
 			// Update preview image
@@ -738,7 +781,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void updateAngle() {
+		private void updateAngle() 
+		{
 			if(preventchanges) return;
 			int i = 0;
 
@@ -755,7 +799,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void updatePitch() {
+		private void updatePitch() 
+		{
 			if (preventchanges) return;
 			int i = 0;
 
@@ -772,7 +817,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if (OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void updateRoll() {
+		private void updateRoll() 
+		{
 			if (preventchanges) return;
 			int i = 0;
 

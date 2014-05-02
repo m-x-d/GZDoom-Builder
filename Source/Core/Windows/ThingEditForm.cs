@@ -65,7 +65,8 @@ namespace CodeImp.DoomBuilder.Windows
 			public readonly float Y;
 			public readonly float Z;
 
-			public ThingProperties(Thing t) {
+			public ThingProperties(Thing t) 
+			{
 				X = t.Position.x;
 				Y = t.Position.y;
 				Z = t.Position.z;
@@ -241,6 +242,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			preventchanges = false;
 
+			//mxd. Trigger angle update manually...
+			angle_WhenTextChanged(angle, EventArgs.Empty);
+
 			updateScriptControls(); //mxd
 
 			//mxd. Set intial script-related values, if required
@@ -267,7 +271,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void updateScriptControls() {
+		private void updateScriptControls() 
+		{
 			scriptNumbers.Visible = (Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1);
 		}
 		
@@ -276,7 +281,8 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Events
 
 		//mxd
-		private void thingtype_OnTypeDoubleClicked() {
+		private void thingtype_OnTypeDoubleClicked() 
+		{
 			apply_Click(this, EventArgs.Empty);
 		}
 		
@@ -333,14 +339,19 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// Angle text changes
-		private void angle_TextChanged(object sender, EventArgs e)
+		private void angle_WhenTextChanged(object sender, EventArgs e)
 		{
+			if(preventchanges) return;
+			preventchanges = true;
 			anglecontrol.Angle = angle.GetResult(int.MinValue);
+			preventchanges = false;
 			updateAngle(); //mxd
 		}
 
 		//mxd. Angle control clicked
-		private void anglecontrol_AngleChanged() {
+		private void anglecontrol_AngleChanged() 
+		{
+			if(preventchanges) return;
 			angle.Text = anglecontrol.Angle.ToString();
 			updateAngle();
 		}
@@ -453,21 +464,24 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void cbAbsoluteHeight_CheckedChanged(object sender, EventArgs e) {
+		private void cbAbsoluteHeight_CheckedChanged(object sender, EventArgs e) 
+		{
 			useAbsoluteHeight = cbAbsoluteHeight.Checked;
 			zlabel.Text = useAbsoluteHeight ? "Abs. Z:" : "Z:";
 			posZ.Text = (useAbsoluteHeight ? initialFloorHeight + initialPosition.z : initialPosition.z).ToString();
 		}
 
 		//mxd
-		private void cbRandomAngle_CheckedChanged(object sender, EventArgs e) {
+		private void cbRandomAngle_CheckedChanged(object sender, EventArgs e) 
+		{
 			angle.Enabled = !cbRandomAngle.Checked;
 			anglecontrol.Enabled = !cbRandomAngle.Checked;
 			labelAngle.Enabled = !cbRandomAngle.Checked;
 		}
 
 		//mxd
-		private void ThingEditForm_FormClosing(object sender, FormClosingEventArgs e) {
+		private void ThingEditForm_FormClosing(object sender, FormClosingEventArgs e) 
+		{
 			location = this.Location;
 			activeTab = tabs.SelectedIndex;
 		}
@@ -483,7 +497,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== mxd. Realtime events
 
-		private void posX_WhenTextChanged(object sender, EventArgs e) {
+		private void posX_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(preventchanges) return;
 			int i = 0;
 
@@ -504,7 +519,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void posY_WhenTextChanged(object sender, EventArgs e) {
+		private void posY_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(preventchanges) return;
 			int i = 0;
 
@@ -525,7 +541,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void posZ_WhenTextChanged(object sender, EventArgs e) {
+		private void posZ_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(preventchanges) return;
 
 			//restore values
@@ -549,7 +566,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// Selected type changes
-		private void thingtype_OnTypeChanged(ThingTypeInfo value) {
+		private void thingtype_OnTypeChanged(ThingTypeInfo value) 
+		{
 			thinginfo = value;
 
 			// Update preview image
@@ -587,7 +605,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void updateAngle() {
+		private void updateAngle() 
+		{
 			if(preventchanges) return;
 			int i = 0;
 
