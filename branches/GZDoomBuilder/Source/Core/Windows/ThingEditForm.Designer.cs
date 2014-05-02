@@ -236,7 +236,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.angle.Size = new System.Drawing.Size(57, 24);
 			this.angle.StepValues = null;
 			this.angle.TabIndex = 10;
-			this.angle.WhenTextChanged += new System.EventHandler(this.angle_TextChanged);
+			this.angle.WhenTextChanged += new System.EventHandler(this.angle_WhenTextChanged);
 			// 
 			// zlabel
 			// 
