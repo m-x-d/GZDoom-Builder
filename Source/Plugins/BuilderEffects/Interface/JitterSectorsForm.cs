@@ -10,19 +10,16 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 {
 	public partial class JitterSectorsForm : Form
 	{
-		private string editingModeName;
-		private List<VisualSector> visualSectors;
-		private VertexData[] vertexData;
-		private List<SectorData> sectorData;
-		private List<SidedefData> sidedefData;
-		private int MaxSafeDistance;
-		private int MaxSafeHeightDistance;
+		private readonly string editingModeName;
+		private readonly List<VisualSector> visualSectors;
+		private readonly VertexData[] vertexData;
+		private readonly List<SectorData> sectorData;
+		private readonly List<SidedefData> sidedefData;
+		private readonly int MaxSafeDistance;
+		private readonly int MaxSafeHeightDistance;
 
 		//settings
 		private static bool keepExistingSideTextures = true;
-		private static bool relativeFloorHeight;
-		private static bool relativeCeilingHeight;
-		private static bool relativePosition;
 
 		private struct VertexData
 		{
@@ -133,7 +130,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			}
 
 			//update window header
-			this.Text = "Jitter Transform (" + sectors.Count + (sectors.Count > 1 ? " sectors)" : " sector)");
+			this.Text = "Randomize " + sectors.Count + (sectors.Count > 1 ? " sectors" : " sector");
 
 			//store intial properties
 //process verts...
@@ -236,15 +233,12 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				}
 			}
 
+			positionJitterAmmount.Maximum = MaxSafeDistance;
+			floorHeightAmmount.Maximum = MaxSafeHeightDistance;
+			ceilingHeightAmmount.Maximum = MaxSafeHeightDistance;
+
 			//set editing settings
 			cbKeepExistingTextures.Checked = keepExistingSideTextures;
-			cbRelativeCeilHeight.Checked = relativeCeilingHeight;
-			cbRelativeFloorHeight.Checked = relativeFloorHeight;
-			cbRelativePos.Checked = relativePosition;
-
-			cbRelativeCeilHeight_CheckedChanged(this, EventArgs.Empty);
-			cbRelativeFloorHeight_CheckedChanged(this, EventArgs.Empty);
-			cbRelativePos_CheckedChanged(this, EventArgs.Empty);
 
 			//texture pickers
 			textureLower.Initialize();
@@ -256,29 +250,23 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			cbLowerTexStyle.SelectedIndex = 0;
 			updateTextureSelectors(); //update interface
 
-			updateAngles(); //create some random values
+			//create random values
+			updateAngles(); 
 			updateFloorHeights();
 			updateCeilingHeights();
 
 			//create undo
 			General.Map.UndoRedo.ClearAllRedos();
-			General.Map.UndoRedo.CreateUndo("Jitter Transform (" + sectors.Count + " sector" + (sectors.Count > 1 ? "s)" : ")"));
+			General.Map.UndoRedo.CreateUndo("Randomize " + sectors.Count + (sectors.Count > 1 ? " sectors" : " sector"));
 		}
 
 //utility
 		private void applyTranslationJitter(int ammount) {
 			int curAmmount;
 
-			if(relativePosition) {
-				for(int i = 0; i < vertexData.Length; i++) {
-					curAmmount = (int)Math.Round(ammount * (vertexData[i].SafeDistance / 100f));
-					vertexData[i].Vertex.Move(new Vector2D(vertexData[i].InitialPosition.x + (int)(Math.Sin(vertexData[i].JitterAngle) * curAmmount), vertexData[i].InitialPosition.y + (int)(Math.Cos(vertexData[i].JitterAngle) * curAmmount)));
-				}
-			} else {
-				for(int i = 0; i < vertexData.Length; i++) {
-					curAmmount = ammount > vertexData[i].SafeDistance ? vertexData[i].SafeDistance : ammount;
-					vertexData[i].Vertex.Move(new Vector2D(vertexData[i].InitialPosition.x + (int)(Math.Sin(vertexData[i].JitterAngle) * curAmmount), vertexData[i].InitialPosition.y + (int)(Math.Cos(vertexData[i].JitterAngle) * curAmmount)));
-				}
+			for(int i = 0; i < vertexData.Length; i++) {
+				curAmmount = ammount > vertexData[i].SafeDistance ? vertexData[i].SafeDistance : ammount;
+				vertexData[i].Vertex.Move(new Vector2D(vertexData[i].InitialPosition.x + (int)(Math.Sin(vertexData[i].JitterAngle) * curAmmount), vertexData[i].InitialPosition.y + (int)(Math.Cos(vertexData[i].JitterAngle) * curAmmount)));
 			}
 
 			//update view
@@ -294,16 +282,9 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		private void applyCeilingHeightJitter(int ammount) {
 			int curAmmount;
 
-			if(relativeCeilingHeight) {
-				for(int i = 0; i < sectorData.Count; i++) {
-					curAmmount = (int)Math.Round(ammount * (sectorData[i].SafeDistance / 100f));
-					sectorData[i].Sector.CeilHeight = sectorData[i].InitialCeilingHeight - (int)Math.Floor(curAmmount * sectorData[i].JitterCeilingHeight);
-				}
-			} else {
-				for(int i = 0; i < sectorData.Count; i++) {
-					curAmmount = ammount > sectorData[i].SafeDistance ? sectorData[i].SafeDistance : ammount;
-					sectorData[i].Sector.CeilHeight = sectorData[i].InitialCeilingHeight - (int)Math.Floor(curAmmount * sectorData[i].JitterCeilingHeight);
-				}
+			for(int i = 0; i < sectorData.Count; i++) {
+				curAmmount = ammount > sectorData[i].SafeDistance ? sectorData[i].SafeDistance : ammount;
+				sectorData[i].Sector.CeilHeight = sectorData[i].InitialCeilingHeight - (int)Math.Floor(curAmmount * sectorData[i].JitterCeilingHeight);
 			}
 
 			//update view
@@ -319,16 +300,9 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		private void applyFloorHeightJitter(int ammount) {
 			int curAmmount;
 
-			if(relativeFloorHeight) {
-				for(int i = 0; i < sectorData.Count; i++) {
-					curAmmount = (int)Math.Round(ammount * (sectorData[i].SafeDistance / 100f));
-					sectorData[i].Sector.FloorHeight = sectorData[i].InitialFloorHeight + (int)Math.Floor(curAmmount * sectorData[i].JitterFloorHeight);
-				}
-			} else {
-				for(int i = 0; i < sectorData.Count; i++) {
-					curAmmount = ammount > sectorData[i].SafeDistance ? sectorData[i].SafeDistance : ammount;
-					sectorData[i].Sector.FloorHeight = sectorData[i].InitialFloorHeight + (int)Math.Floor(curAmmount * sectorData[i].JitterFloorHeight);
-				}
+			for(int i = 0; i < sectorData.Count; i++) {
+				curAmmount = ammount > sectorData[i].SafeDistance ? sectorData[i].SafeDistance : ammount;
+				sectorData[i].Sector.FloorHeight = sectorData[i].InitialFloorHeight + (int)Math.Floor(curAmmount * sectorData[i].JitterFloorHeight);
 			}
 
 			//update view
@@ -342,14 +316,9 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		}
 
 		private void updateVisualGeometry() {
-			foreach(VisualSector vs in visualSectors)
-				vs.UpdateSectorGeometry(true);
-
-			foreach(VisualSector vs in visualSectors)
-				vs.UpdateSectorData();
-
-			foreach(VisualSector vs in visualSectors)
-				vs.UpdateSectorData();
+			foreach(VisualSector vs in visualSectors) vs.UpdateSectorGeometry(true);
+			foreach(VisualSector vs in visualSectors) vs.UpdateSectorData();
+			foreach(VisualSector vs in visualSectors) vs.UpdateSectorData();
 		}
 
 		private void updateTextureSelectors() {
@@ -362,9 +331,9 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		}
 
 		private void updateUpperTextures(int index, bool updateGeometry) {
-			if(index == -1) {
-				return;
-			}else if(index == 0) { //revert
+			if(index == -1) return;
+
+			if(index == 0) { //revert
 				foreach(SidedefData sd in sidedefData)
 					setUpperTexture(sd, sd.HighTexture);
 			} else if(index == 1) { //use ceiling texture
@@ -386,9 +355,9 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		}
 
 		private void updateLowerTextures(int index, bool updateGeometry) {
-			if(index == -1) {
-				return;
-			}else if(index == 0) { //revert
+			if(index == -1) return;
+
+			if(index == 0) { //revert
 				foreach(SidedefData sd in sidedefData)
 					setLowerTexture(sd, sd.LowTexture);
 			} else if(index == 1) { //use floor texture
@@ -436,31 +405,25 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 //jitter generation
 		private void updateAngles() {
-			Random rnd = new Random();
-
 			for(int i = 0; i < vertexData.Length; i++) {
 				VertexData vd = vertexData[i];
-				vd.JitterAngle = (float)(rnd.Next(359) * Math.PI / 180f);
+				vd.JitterAngle = (float)(General.Random(0, 359) * Math.PI / 180f);
 				vertexData[i] = vd;
 			}
 		}
 
 		private void updateFloorHeights() {
-			Random rnd = new Random();
-
 			for(int i = 0; i < sectorData.Count; i++) {
 				SectorData sd = sectorData[i];
-				sd.JitterFloorHeight = rnd.Next(-100, 100) / 100f;
+				sd.JitterFloorHeight = General.Random(-100, 100) / 100f;
 				sectorData[i] = sd;
 			}
 		}
 
 		private void updateCeilingHeights() {
-			Random rnd = new Random();
-
 			for(int i = 0; i < sectorData.Count; i++) {
 				SectorData sd = sectorData[i];
-				sd.JitterCeilingHeight = rnd.Next(-100, 100) / 100f;
+				sd.JitterCeilingHeight = General.Random(-100, 100) / 100f;
 				sectorData[i] = sd;
 			}
 		}
@@ -475,7 +438,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 					sd.Side.Other.RemoveUnneededTextures(false);
 			}
 
-			//
 			General.Map.Map.ClearAllSelected();
 
 			// Update cached values
@@ -485,7 +447,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			if(editingModeName != "BaseVisualMode")
 				General.Interface.RedrawDisplay();
 
-			//settingsApplied = true;
 			this.DialogResult = DialogResult.OK;
 			Close();
 		}
@@ -547,31 +508,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		private void bUpdateFloorHeight_Click(object sender, EventArgs e) {
 			updateFloorHeights();
-			applyFloorHeightJitter(floorHeightAmmount.Value);
-		}
-
-//rel/abs
-		private void cbRelativePos_CheckedChanged(object sender, EventArgs e) {
-			positionJitterAmmount.Label = "Position" + (cbRelativePos.Checked ? " (%):" : ":");
-			relativePosition = cbRelativePos.Checked;
-
-			positionJitterAmmount.Maximum = cbRelativePos.Checked ? 100 : MaxSafeDistance;
-			applyTranslationJitter(positionJitterAmmount.Value);
-		}
-
-		private void cbRelativeCeilHeight_CheckedChanged(object sender, EventArgs e) {
-			ceilingHeightAmmount.Label = "Ceil. Height" + (cbRelativeCeilHeight.Checked ? " (%):" : ":");
-			relativeCeilingHeight = cbRelativeCeilHeight.Checked;
-
-			ceilingHeightAmmount.Maximum = cbRelativeCeilHeight.Checked ? 100 : MaxSafeHeightDistance;
-			applyCeilingHeightJitter(ceilingHeightAmmount.Value);
-		}
-
-		private void cbRelativeFloorHeight_CheckedChanged(object sender, EventArgs e) {
-			floorHeightAmmount.Label = "Floor Height" + (cbRelativeFloorHeight.Checked ? " (%):" : ":");
-			relativeFloorHeight = cbRelativeFloorHeight.Checked;
-
-			floorHeightAmmount.Maximum = cbRelativeFloorHeight.Checked ? 100 : MaxSafeHeightDistance;
 			applyFloorHeightJitter(floorHeightAmmount.Value);
 		}
 

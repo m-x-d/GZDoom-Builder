@@ -115,13 +115,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd. Used to render models
-		public void SetTransformSettings(Vector2D position, Matrix rotation, Matrix scale)
+		public void SetTransformSettings(Matrix world)
 		{
 			if (manager.Enabled) {
 				Matrix view = manager.D3DDevice.Device.GetTransform(TransformState.View);
-
-				Matrix m_position = Matrix.Translation(position.x, position.y, 0.0f);
-				Matrix world = rotation * scale * m_position;
 				effect.SetValue(transformsettings, Matrix.Multiply(world, view));
 			}
 		}
