@@ -30,9 +30,6 @@
 			this.bUpdateTranslation = new System.Windows.Forms.Button();
 			this.bUpdateCeilingHeight = new System.Windows.Forms.Button();
 			this.bUpdateFloorHeight = new System.Windows.Forms.Button();
-			this.cbRelativeFloorHeight = new System.Windows.Forms.CheckBox();
-			this.cbRelativeCeilHeight = new System.Windows.Forms.CheckBox();
-			this.cbRelativePos = new System.Windows.Forms.CheckBox();
 			this.gbUpperTexture = new System.Windows.Forms.GroupBox();
 			this.textureUpper = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.cbPegTop = new System.Windows.Forms.CheckBox();
@@ -105,39 +102,6 @@
 			this.bUpdateFloorHeight.UseVisualStyleBackColor = true;
 			this.bUpdateFloorHeight.Click += new System.EventHandler(this.bUpdateFloorHeight_Click);
 			// 
-			// cbRelativeFloorHeight
-			// 
-			this.cbRelativeFloorHeight.AutoSize = true;
-			this.cbRelativeFloorHeight.Location = new System.Drawing.Point(12, 79);
-			this.cbRelativeFloorHeight.Name = "cbRelativeFloorHeight";
-			this.cbRelativeFloorHeight.Size = new System.Drawing.Size(64, 18);
-			this.cbRelativeFloorHeight.TabIndex = 21;
-			this.cbRelativeFloorHeight.Text = "Relative";
-			this.cbRelativeFloorHeight.UseVisualStyleBackColor = true;
-			this.cbRelativeFloorHeight.CheckedChanged += new System.EventHandler(this.cbRelativeFloorHeight_CheckedChanged);
-			// 
-			// cbRelativeCeilHeight
-			// 
-			this.cbRelativeCeilHeight.AutoSize = true;
-			this.cbRelativeCeilHeight.Location = new System.Drawing.Point(12, 49);
-			this.cbRelativeCeilHeight.Name = "cbRelativeCeilHeight";
-			this.cbRelativeCeilHeight.Size = new System.Drawing.Size(64, 18);
-			this.cbRelativeCeilHeight.TabIndex = 22;
-			this.cbRelativeCeilHeight.Text = "Relative";
-			this.cbRelativeCeilHeight.UseVisualStyleBackColor = true;
-			this.cbRelativeCeilHeight.CheckedChanged += new System.EventHandler(this.cbRelativeCeilHeight_CheckedChanged);
-			// 
-			// cbRelativePos
-			// 
-			this.cbRelativePos.AutoSize = true;
-			this.cbRelativePos.Location = new System.Drawing.Point(12, 19);
-			this.cbRelativePos.Name = "cbRelativePos";
-			this.cbRelativePos.Size = new System.Drawing.Size(64, 18);
-			this.cbRelativePos.TabIndex = 23;
-			this.cbRelativePos.Text = "Relative";
-			this.cbRelativePos.UseVisualStyleBackColor = true;
-			this.cbRelativePos.CheckedChanged += new System.EventHandler(this.cbRelativePos_CheckedChanged);
-			// 
 			// gbUpperTexture
 			// 
 			this.gbUpperTexture.Controls.Add(this.textureUpper);
@@ -152,6 +116,7 @@
 			// textureUpper
 			// 
 			this.textureUpper.Location = new System.Drawing.Point(47, 41);
+			this.textureUpper.MultipleTextures = false;
 			this.textureUpper.Name = "textureUpper";
 			this.textureUpper.Required = false;
 			this.textureUpper.Size = new System.Drawing.Size(83, 112);
@@ -173,6 +138,7 @@
 			// textureLower
 			// 
 			this.textureLower.Location = new System.Drawing.Point(47, 41);
+			this.textureLower.MultipleTextures = false;
 			this.textureLower.Name = "textureLower";
 			this.textureLower.Required = false;
 			this.textureLower.Size = new System.Drawing.Size(83, 112);
@@ -196,9 +162,9 @@
 			this.cbUpperTexStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbUpperTexStyle.FormattingEnabled = true;
 			this.cbUpperTexStyle.Items.AddRange(new object[] {
-			"Don\'t change upper texture",
-			"Use ceiling texture",
-			"Pick upper texture"});
+            "Don\'t change upper texture",
+            "Use ceiling texture",
+            "Pick upper texture"});
 			this.cbUpperTexStyle.Location = new System.Drawing.Point(12, 131);
 			this.cbUpperTexStyle.Name = "cbUpperTexStyle";
 			this.cbUpperTexStyle.Size = new System.Drawing.Size(176, 22);
@@ -210,9 +176,9 @@
 			this.cbLowerTexStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLowerTexStyle.FormattingEnabled = true;
 			this.cbLowerTexStyle.Items.AddRange(new object[] {
-			"Don\'t change lower texture",
-			"Use floor texture",
-			"Pick lower texture"});
+            "Don\'t change lower texture",
+            "Use floor texture",
+            "Pick lower texture"});
 			this.cbLowerTexStyle.Location = new System.Drawing.Point(195, 131);
 			this.cbLowerTexStyle.Name = "cbLowerTexStyle";
 			this.cbLowerTexStyle.Size = new System.Drawing.Size(175, 22);
@@ -247,31 +213,15 @@
 			this.positionJitterAmmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.positionJitterAmmount.ExtendedLimits = true;
 			this.positionJitterAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.positionJitterAmmount.Label = "Position (%):";
-			this.positionJitterAmmount.Location = new System.Drawing.Point(75, 15);
+			this.positionJitterAmmount.Label = "Position:";
+			this.positionJitterAmmount.Location = new System.Drawing.Point(12, 15);
 			this.positionJitterAmmount.Maximum = 100;
 			this.positionJitterAmmount.Minimum = 0;
 			this.positionJitterAmmount.Name = "positionJitterAmmount";
-			this.positionJitterAmmount.Size = new System.Drawing.Size(266, 22);
+			this.positionJitterAmmount.Size = new System.Drawing.Size(329, 22);
 			this.positionJitterAmmount.TabIndex = 18;
 			this.positionJitterAmmount.Value = 0;
 			this.positionJitterAmmount.OnValueChanging += new System.EventHandler(this.positionJitterAmmount_OnValueChanging);
-			// 
-			// ceilingHeightAmmount
-			// 
-			this.ceilingHeightAmmount.AllowNegative = false;
-			this.ceilingHeightAmmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.ceilingHeightAmmount.ExtendedLimits = false;
-			this.ceilingHeightAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.ceilingHeightAmmount.Label = "Ceil. Height (%):";
-			this.ceilingHeightAmmount.Location = new System.Drawing.Point(75, 45);
-			this.ceilingHeightAmmount.Maximum = 100;
-			this.ceilingHeightAmmount.Minimum = 0;
-			this.ceilingHeightAmmount.Name = "ceilingHeightAmmount";
-			this.ceilingHeightAmmount.Size = new System.Drawing.Size(266, 22);
-			this.ceilingHeightAmmount.TabIndex = 19;
-			this.ceilingHeightAmmount.Value = 0;
-			this.ceilingHeightAmmount.OnValueChanging += new System.EventHandler(this.ceilingHeightAmmount_OnValueChanging);
 			// 
 			// floorHeightAmmount
 			// 
@@ -279,15 +229,31 @@
 			this.floorHeightAmmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.floorHeightAmmount.ExtendedLimits = false;
 			this.floorHeightAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.floorHeightAmmount.Label = "Floor Height (%):";
-			this.floorHeightAmmount.Location = new System.Drawing.Point(75, 75);
+			this.floorHeightAmmount.Label = "Floor height:";
+			this.floorHeightAmmount.Location = new System.Drawing.Point(12, 75);
 			this.floorHeightAmmount.Maximum = 100;
 			this.floorHeightAmmount.Minimum = 0;
 			this.floorHeightAmmount.Name = "floorHeightAmmount";
-			this.floorHeightAmmount.Size = new System.Drawing.Size(266, 22);
+			this.floorHeightAmmount.Size = new System.Drawing.Size(329, 22);
 			this.floorHeightAmmount.TabIndex = 20;
 			this.floorHeightAmmount.Value = 0;
 			this.floorHeightAmmount.OnValueChanging += new System.EventHandler(this.floorHeightAmmount_OnValueChanging);
+			// 
+			// ceilingHeightAmmount
+			// 
+			this.ceilingHeightAmmount.AllowNegative = false;
+			this.ceilingHeightAmmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.ceilingHeightAmmount.ExtendedLimits = false;
+			this.ceilingHeightAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.ceilingHeightAmmount.Label = "Ceil. height:";
+			this.ceilingHeightAmmount.Location = new System.Drawing.Point(12, 45);
+			this.ceilingHeightAmmount.Maximum = 100;
+			this.ceilingHeightAmmount.Minimum = 0;
+			this.ceilingHeightAmmount.Name = "ceilingHeightAmmount";
+			this.ceilingHeightAmmount.Size = new System.Drawing.Size(329, 22);
+			this.ceilingHeightAmmount.TabIndex = 19;
+			this.ceilingHeightAmmount.Value = 0;
+			this.ceilingHeightAmmount.OnValueChanging += new System.EventHandler(this.ceilingHeightAmmount_OnValueChanging);
 			// 
 			// JitterSectorsForm
 			// 
@@ -301,9 +267,6 @@
 			this.Controls.Add(this.cbLowerTexStyle);
 			this.Controls.Add(this.cbUpperTexStyle);
 			this.Controls.Add(this.gbUpperTexture);
-			this.Controls.Add(this.cbRelativePos);
-			this.Controls.Add(this.cbRelativeCeilHeight);
-			this.Controls.Add(this.cbRelativeFloorHeight);
 			this.Controls.Add(this.floorHeightAmmount);
 			this.Controls.Add(this.ceilingHeightAmmount);
 			this.Controls.Add(this.positionJitterAmmount);
@@ -339,9 +302,6 @@
 		private IntControl positionJitterAmmount;
 		private IntControl ceilingHeightAmmount;
 		private IntControl floorHeightAmmount;
-		private System.Windows.Forms.CheckBox cbRelativeFloorHeight;
-		private System.Windows.Forms.CheckBox cbRelativeCeilHeight;
-		private System.Windows.Forms.CheckBox cbRelativePos;
 		private System.Windows.Forms.GroupBox gbUpperTexture;
 		private CodeImp.DoomBuilder.Controls.TextureSelectorControl textureLower;
 		private CodeImp.DoomBuilder.Controls.TextureSelectorControl textureUpper;

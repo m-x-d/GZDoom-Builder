@@ -10,13 +10,11 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 {
 	public partial class JitterVerticesForm : Form
 	{
-		private string editingModeName;
-		private List<Vertex> selection;
-		private List<VisualSector> visualSectors;
-		private VertexData[] vertexData;
-		private int MaxSafeDistance;
-
-		private static bool relativePosition;
+		private readonly string editingModeName;
+		private readonly List<Vertex> selection;
+		private readonly List<VisualSector> visualSectors;
+		private readonly VertexData[] vertexData;
+		private readonly int MaxSafeDistance;
 
 		private struct VertexData
 		{
@@ -56,7 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				}
 
 				//update window header
-				this.Text = "Jitter Transform (" + linesCount + (linesCount > 1 ? " linedefs" : " linedef") + ")";
+				this.Text = "Randomize " + linesCount + (linesCount > 1 ? " linedefs" : " linedef");
 			} else if(editingModeName == "LinedefsMode") {
 				ICollection<Linedef> list = General.Map.Map.GetSelectedLinedefs(true);
 				int linesCount = 0;
@@ -70,7 +68,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				}
 
 				//update window header
-				this.Text = "Jitter Transform (" + linesCount + (linesCount > 1 ? " linedefs" : " linedef") + ")";
+				this.Text = "Randomize " + linesCount + (linesCount > 1 ? " linedefs" : " linedef");
 			} else { 
 				ICollection<Vertex> list = General.Map.Map.GetSelectedVertices(true);
 
@@ -78,7 +76,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 					selection.Add(v);
 
 				//update window header
-				this.Text = "Jitter Transform (" + selection.Count + (selection.Count > 1 ? " vertices" : " vertex") + ")";
+				this.Text = "Randomize " + selection.Count + (selection.Count > 1 ? " vertices" : " vertex");
 			}
 
 			if(selection.Count == 0) {
@@ -89,8 +87,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			Dictionary<Vertex, VertexData> data = new Dictionary<Vertex, VertexData>();
 
 			foreach(Vertex v in selection) {
-				VertexData vd = new VertexData();
-				vd.Position = v.Position;
+				VertexData vd = new VertexData {Position = v.Position};
 				data.Add(v, vd);
 			}
 
@@ -150,31 +147,22 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 					MaxSafeDistance = vertexData[i].SafeDistance;
 			}
 
-			updateAngles();
+			positionJitterAmmount.Maximum = MaxSafeDistance;
 
-			//set editing mode
-			cbRelativePos.Checked = relativePosition;
-			cbRelativePos_CheckedChanged(this, EventArgs.Empty);
+			updateAngles();
 
 			//create undo
 			General.Map.UndoRedo.ClearAllRedos();
-			General.Map.UndoRedo.CreateUndo("Jitter Transform (" + selection.Count + (selection.Count > 1 ? " vertices)" : " vertex)"));
+			General.Map.UndoRedo.CreateUndo("Randomize " + selection.Count + (selection.Count > 1 ? " vertices" : " vertex"));
 		}
 
 //utility
 		private void applyTranslationJitter(int ammount) {
 			int curAmmount;
 
-			if(relativePosition) {
-				for(int i = 0; i < selection.Count; i++) {
-					curAmmount = (int)Math.Round(ammount * (vertexData[i].SafeDistance / 100f));
-					selection[i].Move(new Vector2D(vertexData[i].Position.x + (int)(Math.Sin(vertexData[i].JitterAngle) * curAmmount), vertexData[i].Position.y + (int)(Math.Cos(vertexData[i].JitterAngle) * curAmmount)));
-				}
-			} else {
-				for(int i = 0; i < selection.Count; i++) {
-					curAmmount = ammount > vertexData[i].SafeDistance ? vertexData[i].SafeDistance : ammount;
-					selection[i].Move(new Vector2D(vertexData[i].Position.x + (int)(Math.Sin(vertexData[i].JitterAngle) * curAmmount), vertexData[i].Position.y + (int)(Math.Cos(vertexData[i].JitterAngle) * curAmmount)));
-				}
+			for(int i = 0; i < selection.Count; i++) {
+				curAmmount = ammount > vertexData[i].SafeDistance ? vertexData[i].SafeDistance : ammount;
+				selection[i].Move(new Vector2D(vertexData[i].Position.x + (int)(Math.Sin(vertexData[i].JitterAngle) * curAmmount), vertexData[i].Position.y + (int)(Math.Cos(vertexData[i].JitterAngle) * curAmmount)));
 			}
 
 			//update view
@@ -193,11 +181,9 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		}
 
 		private void updateAngles() {
-			Random rnd = new Random();
-
 			for(int i = 0; i < vertexData.Length; i++) {
 				VertexData vd = vertexData[i];
-				vd.JitterAngle = (float)(rnd.Next(359) * Math.PI / 180f);
+				vd.JitterAngle = (float)(General.Random(0, 359) * Math.PI / 180f);
 				vertexData[i] = vd;
 			}
 		}
@@ -231,14 +217,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		private void bUpdateTranslation_Click(object sender, EventArgs e) {
 			updateAngles();
-			applyTranslationJitter(positionJitterAmmount.Value);
-		}
-
-		private void cbRelativePos_CheckedChanged(object sender, EventArgs e) {
-			positionJitterAmmount.Label = "Position" + (cbRelativePos.Checked ? " (%):" : ":");
-			relativePosition = cbRelativePos.Checked;
-
-			positionJitterAmmount.Maximum = relativePosition ? 100 : MaxSafeDistance;
 			applyTranslationJitter(positionJitterAmmount.Value);
 		}
 

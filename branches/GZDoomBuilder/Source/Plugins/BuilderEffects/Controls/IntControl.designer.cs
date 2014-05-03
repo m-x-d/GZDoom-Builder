@@ -59,7 +59,7 @@
 			// 
 			// numericUpDown1
 			// 
-			this.numericUpDown1.Location = new System.Drawing.Point(96, 1);
+			this.numericUpDown1.Location = new System.Drawing.Point(96, 2);
 			this.numericUpDown1.Name = "numericUpDown1";
 			this.numericUpDown1.Size = new System.Drawing.Size(52, 20);
 			this.numericUpDown1.TabIndex = 8;
@@ -67,6 +67,7 @@
 			// 
 			// labelMaximum
 			// 
+			this.labelMaximum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelMaximum.AutoSize = true;
 			this.labelMaximum.Location = new System.Drawing.Point(237, 5);
 			this.labelMaximum.Name = "labelMaximum";

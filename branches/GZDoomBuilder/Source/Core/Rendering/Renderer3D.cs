@@ -1067,7 +1067,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						* Matrix.RotationX(-(t.Thing.PitchRad + General.Map.Data.ModeldefEntries[t.Thing.Type].PitchOffset))
 						* Matrix.RotationZ(t.Thing.Angle);
 
-					world = rotation * Matrix.Scaling(sx, sx, sy) * t.Position;
+					world = Matrix.Scaling(sx, sx, sy) * rotation * t.Position;
 					ApplyMatrices3D();
 
 					//mxd. set variables for fog rendering

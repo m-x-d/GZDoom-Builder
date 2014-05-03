@@ -1303,7 +1303,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					graphics.Shaders.Things2D.BeginPass(2);
 
-					Color4 cSel = General.Colors.Selection.ToColorValue();
+					Color4 cHighlight = General.Colors.Highlight.ToColorValue();
 					Color4 cWire = General.Colors.ModelWireframe.ToColorValue();
 					Matrix viewscale = Matrix.Scaling(scale, -scale, 0.0f);
 					ModelData mde;
@@ -1323,16 +1323,18 @@ namespace CodeImp.DoomBuilder.Rendering
 							if(((screenpos.x + maxSize * modelScale) <= 0.0f) || ((screenpos.x - maxSize * modelScale) >= windowsize.Width) ||
 							((screenpos.y + maxSize * modelScale) <= 0.0f) || ((screenpos.y - maxSize * modelScale) >= windowsize.Height))
 								continue;
-							
-							graphics.Shaders.Things2D.FillColor = t.Selected ? cSel : cWire;
+
+							graphics.Shaders.Things2D.FillColor = t.Selected ? cHighlight : cWire;
 
 							for(int i = 0; i < mde.Model.Meshes.Count; i++) {
-								Matrix finalscale = viewscale * Matrix.Scaling(t.ScaleX, t.ScaleX, t.ScaleY);
+								Matrix modelcale = Matrix.Scaling(t.ScaleX, t.ScaleX, t.ScaleY);
 								Matrix rotation = Matrix.RotationY(-(t.RollRad - General.Map.Data.ModeldefEntries[t.Type].RollOffset))
 										* Matrix.RotationX(-(t.PitchRad + General.Map.Data.ModeldefEntries[t.Type].PitchOffset))
 										* Matrix.RotationZ(t.Angle);
+								Matrix position = Matrix.Translation(screenpos.x, screenpos.y, 0.0f);
+								Matrix world = modelcale * rotation * viewscale * position;
 
-								graphics.Shaders.Things2D.SetTransformSettings(screenpos, rotation, finalscale); 
+								graphics.Shaders.Things2D.SetTransformSettings(world);
 								graphics.Shaders.Things2D.ApplySettings();
 
 								// Draw
