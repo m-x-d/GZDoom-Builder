@@ -510,17 +510,6 @@
 			// 
 			this.renderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.renderStyle.FormattingEnabled = true;
-			this.renderStyle.Items.AddRange(new object[] {
-            "Normal",
-            "Translucent",
-            "Translucent (Lost Soul)",
-            "Translucent (stencil)",
-            "Additive",
-            "Subtractive",
-            "Stencil",
-            "Fuzzy",
-            "OptFuzzy",
-            "None"});
 			this.renderStyle.Location = new System.Drawing.Point(89, 50);
 			this.renderStyle.Name = "renderStyle";
 			this.renderStyle.Size = new System.Drawing.Size(156, 22);

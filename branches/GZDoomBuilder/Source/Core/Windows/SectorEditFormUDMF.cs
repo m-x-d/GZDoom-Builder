@@ -35,36 +35,36 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private struct SectorProperties //mxd
 		{
-			public int Brightness;
-			public int FloorHeight;
-			public int CeilHeight;
-			public string FloorTexture;
-			public string CeilTexture;
+			public readonly int Brightness;
+			public readonly int FloorHeight;
+			public readonly int CeilHeight;
+			public readonly string FloorTexture;
+			public readonly string CeilTexture;
 
 			//UDMF stuff
-			public int LightColor;
-			public int FadeColor;
+			public readonly int LightColor;
+			public readonly int FadeColor;
 			//public float Desaturation;
 
 			//UDMF Ceiling
-			public float CeilOffsetX;
-			public float CeilOffsetY;
-			public float CeilScaleX;
-			public float CeilScaleY;
+			public readonly float CeilOffsetX;
+			public readonly float CeilOffsetY;
+			public readonly float CeilScaleX;
+			public readonly float CeilScaleY;
 			//public float CeilAlpha;
-			public float CeilRotation;
-			public int CeilBrightness;
-			public bool CeilLightAbsoulte;
+			public readonly float CeilRotation;
+			public readonly int CeilBrightness;
+			public readonly bool CeilLightAbsoulte;
 
 			//UDMF Floor
-			public float FloorOffsetX;
-			public float FloorOffsetY;
-			public float FloorScaleX;
-			public float FloorScaleY;
+			public readonly float FloorOffsetX;
+			public readonly float FloorOffsetY;
+			public readonly float FloorScaleX;
+			public readonly float FloorScaleY;
 			//public float FloorAlpha;
-			public float FloorRotation;
-			public int FloorBrightness;
-			public bool FloorLightAbsoulte;
+			public readonly float FloorRotation;
+			public readonly int FloorBrightness;
+			public readonly bool FloorLightAbsoulte;
 
 			public SectorProperties(Sector s) {
 				Brightness = s.Brightness;
@@ -116,6 +116,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill flags list
 			foreach(KeyValuePair<string, string> lf in General.Map.Config.SectorFlags)
 				flags.Add(lf.Value, lf.Key);
+
+			//mxd. Fill renderstyles
+			foreach(KeyValuePair<string, string> lf in General.Map.Config.SectorRenderStyles) {
+				floorRenderStyle.Items.Add(lf.Value);
+				ceilRenderStyle.Items.Add(lf.Value);
+			}
 
 			// Fill effects list
 			effect.AddInfo(General.Map.Config.SortedSectorEffects.ToArray());
@@ -210,8 +216,16 @@ namespace CodeImp.DoomBuilder.Windows
 			floorAlpha.Text = General.Clamp(sc.Fields.GetValue("alphafloor", 1.0f), 0f, 1f).ToString();
 
 			//Render style
-			ceilRenderStyle.SelectedIndex = (sc.Fields.GetValue("renderstyleceiling", "") == "add" ? 1 : 0);
-			floorRenderStyle.SelectedIndex = (sc.Fields.GetValue("renderstylefloor", "") == "add" ? 1 : 0);
+			string[] rskeys = null;
+			if (General.Map.Config.SectorRenderStyles.Count > 0) {
+				rskeys = new string[General.Map.Config.SectorRenderStyles.Count];
+				General.Map.Config.SectorRenderStyles.Keys.CopyTo(rskeys, 0);
+				ceilRenderStyle.SelectedIndex = Array.IndexOf(rskeys, sc.Fields.GetValue("renderstyleceiling", "translucent"));
+				floorRenderStyle.SelectedIndex = Array.IndexOf(rskeys, sc.Fields.GetValue("renderstylefloor", "translucent"));
+			} else {
+				ceilRenderStyle.Enabled = false;
+				floorRenderStyle.Enabled = false;
+			}
 
 			//Misc
 			soundSequence.Text = sc.Fields.GetValue("soundsequence", string.Empty);
@@ -300,8 +314,12 @@ namespace CodeImp.DoomBuilder.Windows
 				if(s.Fields.GetValue("alphafloor", 1.0f).ToString() != floorAlpha.Text) floorAlpha.Text = "";
 
 				//Render style
-				if(ceilRenderStyle.SelectedIndex != (s.Fields.GetValue("renderstyleceiling", "") == "add" ? 1 : 0)) ceilRenderStyle.SelectedIndex = -1;
-				if(floorRenderStyle.SelectedIndex != (s.Fields.GetValue("renderstylefloor", "") == "add" ? 1 : 0)) floorRenderStyle.SelectedIndex = -1;
+				if (rskeys != null) {
+					if (ceilRenderStyle.SelectedIndex > -1 && ceilRenderStyle.SelectedIndex != Array.IndexOf(rskeys, s.Fields.GetValue("renderstyleceiling", "translucent")))
+						ceilRenderStyle.SelectedIndex = -1;
+					if (floorRenderStyle.SelectedIndex > -1 && floorRenderStyle.SelectedIndex != Array.IndexOf(rskeys, s.Fields.GetValue("renderstylefloor", "translucent")))
+						floorRenderStyle.SelectedIndex = -1;
+				}
 
 				//Misc
 				if(s.Fields.GetValue("soundsequence", string.Empty) != soundSequence.Text) soundSequence.Text = "";
@@ -398,6 +416,13 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
+			//mxd
+			string[] rskeys = null;
+			if(General.Map.Config.SectorRenderStyles.Count > 0) {
+				rskeys = new string[General.Map.Config.SectorRenderStyles.Count];
+				General.Map.Config.SectorRenderStyles.Keys.CopyTo(rskeys, 0);
+			}
+
 			// Go for all sectors
 			foreach(Sector s in sectors) {
 				// Apply all flags
@@ -428,16 +453,13 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				//renderstyle
-				if(ceilRenderStyle.SelectedIndex == 1) { //add
-					s.Fields["renderstyleceiling"] = new UniValue(UniversalType.String, "add");
-				} else if(s.Fields.ContainsKey("renderstyleceiling")) {
-					s.Fields.Remove("renderstyleceiling");
-				}
-
-				if(floorRenderStyle.SelectedIndex == 1) { //add
-					s.Fields["renderstylefloor"] = new UniValue(UniversalType.String, "add");
-				} else if(s.Fields.ContainsKey("renderstylefloor")) {
-					s.Fields.Remove("renderstylefloor");
+				if (rskeys != null) {
+					if (ceilRenderStyle.SelectedIndex > -1) {
+						UDMFTools.SetString(s.Fields, "renderstyleceiling", rskeys[ceilRenderStyle.SelectedIndex], "translucent");
+					}
+					if (floorRenderStyle.SelectedIndex > -1) {
+						UDMFTools.SetString(s.Fields, "renderstylefloor", rskeys[floorRenderStyle.SelectedIndex], "translucent");
+					}
 				}
 
 				//misc

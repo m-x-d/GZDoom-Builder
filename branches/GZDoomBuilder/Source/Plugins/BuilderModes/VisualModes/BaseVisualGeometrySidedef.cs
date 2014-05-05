@@ -119,7 +119,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// From UDMF field
 				string field = Sidedef.Line.Fields.GetValue("renderstyle", "translucent");
 				alpha = (byte)(Sidedef.Line.Fields.GetValue("alpha", 1.0f) * 255.0f);
-				
+				if(alpha == 255 && Sidedef.Line.IsFlagSet("transparent")) { //mxd
+					alpha = 64;
+				}
+
 				if(field == "add")
 					this.RenderPass = RenderPass.Additive;
 				else if(alpha < 255)
