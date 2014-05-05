@@ -5,12 +5,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	internal class EffectPlaneCopySlope : SectorEffect
 	{
 		// Linedef that is used to create this effect
-		private Linedef linedef;
-		private bool isFront;
+		private readonly Linedef linedef;
+		private readonly bool front;
+		private readonly bool copyFloor;
+		private readonly bool copyCeiling;
 
-		public EffectPlaneCopySlope(SectorData data, Linedef sourcelinedef, bool front)	: base(data) {
-			linedef = sourcelinedef;
-			isFront = front;
+		public EffectPlaneCopySlope(SectorData data, Linedef sourcelinedef, bool front, bool copyFloor, bool copyCeiling) : base(data) {
+			this.linedef = sourcelinedef;
+			this.front = front;
+			this.copyFloor = copyFloor;
+			this.copyCeiling = copyCeiling;
 
 			// New effect added: This sector needs an update!
 			if(data.Mode.VisualSectorExists(data.Sector)) {
@@ -24,29 +28,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sector sourcesector = null;
 			SectorData sourcesectordata = null;
 
-			//check flags
-			bool floorCopyToBack = false;
-			bool floorCopyToFront = false;
-			bool ceilingCopyToBack = false;
-			bool ceilingCopyToFront = false;
-
-			if(linedef.Args[4] > 0 && linedef.Args[4] != 3 && linedef.Args[4] != 12) {
-				floorCopyToBack = linedef.Args[0] > 0 && (linedef.Args[4] & 1) == 1;
-				floorCopyToFront = linedef.Args[2] > 0 && (linedef.Args[4] & 2) == 2;
-				ceilingCopyToBack = linedef.Args[1] > 0 && (linedef.Args[4] & 4) == 4;
-				ceilingCopyToFront = linedef.Args[3] > 0 && (linedef.Args[4] & 8) == 8;
-			}
-
+			// Copy slopes from tagged sectors
 			//check which arguments we must use
-			int floorArg, ceilingArg;
-
-			if(isFront) {
-				floorArg = floorCopyToFront ? 2 : 0;
-				ceilingArg = ceilingCopyToFront ? 3 : 1;
-			} else {
-				floorArg = floorCopyToBack ? 0 : 2;
-				ceilingArg = ceilingCopyToBack ? 1 : 3;
-			}
+			int floorArg = (front ? 0 : 2);
+			int ceilingArg = (front ? 1 : 3);
 
 			//find sector to align floor to
 			if(linedef.Args[floorArg] > 0) {
@@ -82,7 +67,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						sourcesectordata = data.Mode.GetSectorData(sourcesector);
 						if(!sourcesectordata.Updated) sourcesectordata.Update();
 
-						data.Floor.plane = sourcesectordata.Floor.plane;
+						data.Ceiling.plane = sourcesectordata.Ceiling.plane;
 						sourcesectordata.AddUpdateSector(data.Sector, true);
 					}
 
@@ -90,6 +75,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					data.Ceiling.plane = sourcesectordata.Ceiling.plane;
 				}
 			}
+
+			// Copy slope across the line
+			if(!copyFloor && !copyCeiling) return;
+
+			//get appropriate source sector data
+			sourcesectordata = data.Mode.GetSectorData(front ? linedef.Back.Sector : linedef.Front.Sector);
+			if(!sourcesectordata.Updated) sourcesectordata.Update();
+
+			//copy floor slope?
+			if(copyFloor) {
+				data.Floor.plane = sourcesectordata.Floor.plane;
+				sourcesectordata.AddUpdateSector(data.Sector, true);
+			}
+
+			//copy ceiling slope?
+			if(copyCeiling) {
+				data.Ceiling.plane = sourcesectordata.Ceiling.plane;
+				sourcesectordata.AddUpdateSector(data.Sector, true);
+			}
+			
 		}
 	}
 }

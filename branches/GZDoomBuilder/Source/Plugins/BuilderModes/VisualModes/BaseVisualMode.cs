@@ -817,7 +817,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// ========== Plane Copy (mxd) (see http://zdoom.org/wiki/Plane_Copy) ==========
 				else if(l.Action == 118)
 				{
-					//check sodding flags...
+					//check the flags...
 					bool floorCopyToBack = false;
 					bool floorCopyToFront = false;
 					bool ceilingCopyToBack = false;
@@ -831,20 +831,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 					
 					// Copy slope to front sector
-					//Flags: Back floor to front sector or Back ceiling to front sector
 					if(l.Front != null) {
-						if((l.Args[0] > 0 || l.Args[1] > 0) || (floorCopyToFront && l.Args[2] > 0) || (ceilingCopyToFront && l.Args[3] > 0)) {
+						if( (l.Args[0] > 0 || l.Args[1] > 0) || (l.Back != null && (floorCopyToFront || ceilingCopyToFront)) ) {
 							SectorData sd = GetSectorData(l.Front.Sector);
-							sd.AddEffectPlaneClopySlope(l, true);
+							sd.AddEffectPlaneClopySlope(l, true, floorCopyToFront, ceilingCopyToFront);
 						}
 					}
 
 					// Copy slope to back sector
-					//Flags: Copy front floor to back sector or Front ceiling to back sector
 					if(l.Back != null) {
-						if((l.Args[2] > 0 || l.Args[3] > 0) || (floorCopyToBack && l.Args[0] > 0) || (ceilingCopyToBack && l.Args[1] > 0)) {
+						if( (l.Args[2] > 0 || l.Args[3] > 0) || (l.Front != null && (floorCopyToBack || ceilingCopyToBack)) ) {
 							SectorData sd = GetSectorData(l.Back.Sector);
-							sd.AddEffectPlaneClopySlope(l, false);
+							sd.AddEffectPlaneClopySlope(l, false, floorCopyToBack, ceilingCopyToBack);
 						}
 					}
 				}
