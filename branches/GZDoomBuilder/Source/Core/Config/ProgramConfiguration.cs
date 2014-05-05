@@ -108,6 +108,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool gzShowVisualVertices;
 		private int gzVisualVertexSize;
 		private string lastUsedConfigName;
+		private string lastUsedMapFolder;
 		private bool gzMarkExtraFloors;
 		private int maxRecentFiles;
 		private bool autoClearSideTextures;
@@ -190,6 +191,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool GZShowVisualVertices { get { return gzShowVisualVertices; } internal set { gzShowVisualVertices = value; } }
 		public int GZVisualVertexSize { get { return gzVisualVertexSize; } internal set { gzVisualVertexSize = value; } }
 		public string LastUsedConfigName { get { return lastUsedConfigName; } internal set { lastUsedConfigName = value; } }
+		public string LastUsedMapFolder { get { return lastUsedMapFolder; } internal set { lastUsedMapFolder = value; } }
 		public bool GZMarkExtraFloors { get { return gzMarkExtraFloors; } internal set { gzMarkExtraFloors = value; } }
 		public int MaxRecentFiles { get { return maxRecentFiles; } internal set { maxRecentFiles = General.Clamp(value, 8, 25); } }
 		public bool AutoClearSidedefTextures { get { return autoClearSideTextures; } internal set { autoClearSideTextures = value; } }
@@ -295,6 +297,7 @@ namespace CodeImp.DoomBuilder.Config
 				gzShowVisualVertices = cfg.ReadSetting("gzshowvisualvertices", true);
 				gzVisualVertexSize = cfg.ReadSetting("gzvisualvertexsize", 6);
 				lastUsedConfigName = cfg.ReadSetting("lastusedconfigname", "");
+				lastUsedMapFolder = cfg.ReadSetting("lastusedmapfolder", "");
 				gzMarkExtraFloors = cfg.ReadSetting("gzmarkextrafloors", true);
 				maxRecentFiles = cfg.ReadSetting("maxrecentfiles", 8);
 				autoClearSideTextures = cfg.ReadSetting("autoclearsidetextures", true);
@@ -384,6 +387,8 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("gzmarkextrafloors", gzMarkExtraFloors);
 			if(!string.IsNullOrEmpty(lastUsedConfigName))
 				cfg.WriteSetting("lastusedconfigname", lastUsedConfigName);
+			if(!string.IsNullOrEmpty(lastUsedMapFolder))
+				cfg.WriteSetting("lastusedmapfolder", lastUsedMapFolder);
 			cfg.WriteSetting("maxrecentfiles", maxRecentFiles);
 			cfg.WriteSetting("autoclearsidetextures", autoClearSideTextures);
 
