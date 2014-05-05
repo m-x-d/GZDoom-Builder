@@ -1135,6 +1135,8 @@ namespace CodeImp.DoomBuilder
 			OpenFileDialog openfile = new OpenFileDialog();
 			openfile.Filter = "Doom WAD Files (*.wad)|*.wad";
 			openfile.Title = "Open Map";
+			if(!string.IsNullOrEmpty(settings.LastUsedMapFolder) && Directory.Exists(settings.LastUsedMapFolder)) //mxd
+				openfile.InitialDirectory = settings.LastUsedMapFolder; //mxd
 			openfile.AddExtension = false;
 			openfile.CheckFileExists = true;
 			openfile.Multiselect = false;
@@ -1272,6 +1274,7 @@ namespace CodeImp.DoomBuilder
 
 				//mxd
 				mainwindow.UpdateGZDoomPanel();
+				settings.LastUsedMapFolder = Path.GetDirectoryName(filename);
 			}
 			else
 			{
@@ -1424,6 +1427,7 @@ namespace CodeImp.DoomBuilder
 					{
 						// Add recent file
 						mainwindow.AddRecentFile(map.FilePathName);
+						settings.LastUsedMapFolder = Path.GetDirectoryName(map.FilePathName); //mxd
 						result = true;
 					}
 					General.Plugins.OnMapSaveEnd(SavePurpose.AsNewFile);
