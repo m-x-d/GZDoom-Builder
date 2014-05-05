@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.settingsGroup = new System.Windows.Forms.GroupBox();
 			this.alpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.lockNumber = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.cbRenderStyle = new System.Windows.Forms.ComboBox();
+			this.renderStyle = new System.Windows.Forms.ComboBox();
 			this.idgroup = new System.Windows.Forms.GroupBox();
 			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
 			this.tabsidedefs = new System.Windows.Forms.TabPage();
@@ -602,7 +602,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.settingsGroup.Controls.Add(label6);
 			this.settingsGroup.Controls.Add(this.lockNumber);
 			this.settingsGroup.Controls.Add(label14);
-			this.settingsGroup.Controls.Add(this.cbRenderStyle);
+			this.settingsGroup.Controls.Add(this.renderStyle);
 			this.settingsGroup.Controls.Add(label7);
 			this.settingsGroup.Location = new System.Drawing.Point(8, 183);
 			this.settingsGroup.Name = "settingsGroup";
@@ -638,19 +638,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.lockNumber.StepValues = null;
 			this.lockNumber.TabIndex = 16;
 			// 
-			// cbRenderStyle
+			// renderStyle
 			// 
-			this.cbRenderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cbRenderStyle.FormattingEnabled = true;
-			this.cbRenderStyle.Items.AddRange(new object[] {
-            "Translucent",
-            "Additive",
-            "Subtractive"});
-			this.cbRenderStyle.Location = new System.Drawing.Point(92, 26);
-			this.cbRenderStyle.Name = "cbRenderStyle";
-			this.cbRenderStyle.Size = new System.Drawing.Size(86, 22);
-			this.cbRenderStyle.TabIndex = 12;
-			this.cbRenderStyle.SelectedIndexChanged += new System.EventHandler(this.cbRenderStyle_SelectedIndexChanged);
+			this.renderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.renderStyle.FormattingEnabled = true;
+			this.renderStyle.Location = new System.Drawing.Point(92, 26);
+			this.renderStyle.Name = "renderStyle";
+			this.renderStyle.Size = new System.Drawing.Size(86, 22);
+			this.renderStyle.TabIndex = 12;
+			this.renderStyle.SelectedIndexChanged += new System.EventHandler(this.cbRenderStyle_SelectedIndexChanged);
 			// 
 			// idgroup
 			// 
@@ -806,6 +802,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// frontlow
 			// 
 			this.frontlow.Location = new System.Drawing.Point(434, 37);
+			this.frontlow.MultipleTextures = false;
 			this.frontlow.Name = "frontlow";
 			this.frontlow.Required = false;
 			this.frontlow.Size = new System.Drawing.Size(83, 112);
@@ -816,6 +813,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// frontmid
 			// 
 			this.frontmid.Location = new System.Drawing.Point(343, 37);
+			this.frontmid.MultipleTextures = false;
 			this.frontmid.Name = "frontmid";
 			this.frontmid.Required = false;
 			this.frontmid.Size = new System.Drawing.Size(83, 112);
@@ -826,6 +824,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// fronthigh
 			// 
 			this.fronthigh.Location = new System.Drawing.Point(252, 37);
+			this.fronthigh.MultipleTextures = false;
 			this.fronthigh.Name = "fronthigh";
 			this.fronthigh.Required = false;
 			this.fronthigh.Size = new System.Drawing.Size(83, 112);
@@ -1103,6 +1102,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// backlow
 			// 
 			this.backlow.Location = new System.Drawing.Point(437, 37);
+			this.backlow.MultipleTextures = false;
 			this.backlow.Name = "backlow";
 			this.backlow.Required = false;
 			this.backlow.Size = new System.Drawing.Size(83, 112);
@@ -1113,6 +1113,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// backmid
 			// 
 			this.backmid.Location = new System.Drawing.Point(346, 37);
+			this.backmid.MultipleTextures = false;
 			this.backmid.Name = "backmid";
 			this.backmid.Required = false;
 			this.backmid.Size = new System.Drawing.Size(83, 112);
@@ -1123,6 +1124,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// backhigh
 			// 
 			this.backhigh.Location = new System.Drawing.Point(255, 37);
+			this.backhigh.MultipleTextures = false;
 			this.backhigh.Name = "backhigh";
 			this.backhigh.Required = false;
 			this.backhigh.Size = new System.Drawing.Size(83, 112);
@@ -1467,7 +1469,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcBackOffsetTop;
 		private System.Windows.Forms.TabPage tabBackFlags;
 		private System.Windows.Forms.GroupBox settingsGroup;
-		private System.Windows.Forms.ComboBox cbRenderStyle;
+		private System.Windows.Forms.ComboBox renderStyle;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox lockNumber;
 		private System.Windows.Forms.Label labelLightFront;
 		private System.Windows.Forms.CheckBox cbLightAbsoluteBack;

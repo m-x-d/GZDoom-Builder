@@ -581,9 +581,6 @@
 			// 
 			this.floorRenderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.floorRenderStyle.FormattingEnabled = true;
-			this.floorRenderStyle.Items.AddRange(new object[] {
-            "Translucent",
-            "Additive"});
 			this.floorRenderStyle.Location = new System.Drawing.Point(118, 175);
 			this.floorRenderStyle.Name = "floorRenderStyle";
 			this.floorRenderStyle.Size = new System.Drawing.Size(86, 22);
@@ -628,6 +625,7 @@
 			// floortex
 			// 
 			this.floortex.Location = new System.Drawing.Point(338, 19);
+			this.floortex.MultipleTextures = false;
 			this.floortex.Name = "floortex";
 			this.floortex.Size = new System.Drawing.Size(83, 105);
 			this.floortex.TabIndex = 15;
@@ -780,9 +778,6 @@
 			// 
 			this.ceilRenderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.ceilRenderStyle.FormattingEnabled = true;
-			this.ceilRenderStyle.Items.AddRange(new object[] {
-            "Translucent",
-            "Additive"});
 			this.ceilRenderStyle.Location = new System.Drawing.Point(118, 175);
 			this.ceilRenderStyle.Name = "ceilRenderStyle";
 			this.ceilRenderStyle.Size = new System.Drawing.Size(86, 22);
@@ -827,6 +822,7 @@
 			// ceilingtex
 			// 
 			this.ceilingtex.Location = new System.Drawing.Point(338, 19);
+			this.ceilingtex.MultipleTextures = false;
 			this.ceilingtex.Name = "ceilingtex";
 			this.ceilingtex.Size = new System.Drawing.Size(83, 105);
 			this.ceilingtex.TabIndex = 15;

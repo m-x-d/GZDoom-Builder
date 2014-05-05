@@ -53,10 +53,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private static bool useAbsoluteHeight;
 		private string arg0str;
 		private bool haveArg0Str;
-
 		private List<ThingProperties> thingProps; //mxd
-		//TODO: move this into game configuration!
-		private readonly List<string> renderStyles = new List<string>() { "normal", "translucent", "soultrans", "translucentstencil", "add", "subtract", "stencil", "fuzzy", "optfuzzy", "none" };
 
 		//mxd. Window setup stuff
 		private static Point location = Point.Empty;
@@ -112,6 +109,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill flags list
 			foreach(KeyValuePair<string, string> tf in General.Map.Config.ThingFlags)
 				flags.Add(tf.Value, tf.Key);
+
+			// Fill renderstyles
+			foreach(KeyValuePair<string, string> lf in General.Map.Config.ThingRenderStyles)
+				renderStyle.Items.Add(lf.Value);
 
 			// Fill actions list
 			action.GeneralizedCategories = General.Map.Config.GenActionCategories;
@@ -202,6 +203,7 @@ namespace CodeImp.DoomBuilder.Windows
 			posZ.ButtonStep = General.Map.Grid.GridSize;
 
 			// Custom fields
+			string[] rskeys = null;
 			if (General.Map.FormatInterface.HasCustomFields) {
 				fieldslist.SetValues(ft.Fields, true);
 				conversationID.Text = ft.Fields.GetValue("conversation", 0).ToString();
@@ -215,8 +217,15 @@ namespace CodeImp.DoomBuilder.Windows
 				scale.SetValues(ft.ScaleX, ft.ScaleY, true);
 				pitch.Text = ft.Pitch.ToString();
 				roll.Text = ft.Roll.ToString();
-				int renderstyle = renderStyles.IndexOf(ft.Fields.GetValue("renderstyle", string.Empty));
-				renderStyle.SelectedIndex = (renderstyle == -1 ? 0 : renderstyle);
+
+				//Render style
+				if(General.Map.Config.ThingRenderStyles.Count > 0) {
+					rskeys = new string[General.Map.Config.ThingRenderStyles.Count];
+					General.Map.Config.ThingRenderStyles.Keys.CopyTo(rskeys, 0);
+					renderStyle.SelectedIndex = Array.IndexOf(rskeys, ft.Fields.GetValue("renderstyle", "normal"));
+				} else {
+					renderStyle.Enabled = false;
+				}
 			}
 
 			// Action/tags
@@ -296,9 +305,11 @@ namespace CodeImp.DoomBuilder.Windows
 					if (t.Pitch.ToString() != pitch.Text) pitch.Text = "";
 					if (t.Roll.ToString() != roll.Text) roll.Text = "";
 
-					int i = Math.Max(0, renderStyles.IndexOf(t.Fields.GetValue("renderstyle", string.Empty)));
-					if (renderStyle.SelectedIndex != -1 && i != renderStyle.SelectedIndex)
-						renderStyle.SelectedIndex = -1;
+					//Render style
+					if(rskeys != null) {
+						if(renderStyle.SelectedIndex > -1 && renderStyle.SelectedIndex != Array.IndexOf(rskeys, t.Fields.GetValue("renderstyle", "normal")))
+							renderStyle.SelectedIndex = -1;
+					}
 
 					if (arg0str != t.Fields.GetValue("arg0str", string.Empty)) {
 						haveArg0Str = true;
@@ -515,6 +526,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 			bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1; //mxd
 
+			//mxd
+			string[] rskeys = null;
+			if(General.Map.Config.ThingRenderStyles.Count > 0) {
+				rskeys = new string[General.Map.Config.ThingRenderStyles.Count];
+				General.Map.Config.ThingRenderStyles.Keys.CopyTo(rskeys, 0);
+			}
+
 			// Go for all the things
 			foreach(Thing t in things) {
 				// Coordination
@@ -579,9 +597,10 @@ namespace CodeImp.DoomBuilder.Windows
 						UDMFTools.SetInteger(t.Fields, "score", score.GetResult(t.Fields.GetValue("score", 0)), 0);
 					if (!string.IsNullOrEmpty(alpha.Text))
 						UDMFTools.SetFloat(t.Fields, "alpha", alpha.GetResultFloat(t.Fields.GetValue("alpha", 1.0f)), 1.0f);
-					
+					if (rskeys != null && renderStyle.SelectedIndex > -1)
+						UDMFTools.SetString(t.Fields, "renderstyle", rskeys[renderStyle.SelectedIndex], "normal");
+
 					color.ApplyTo(t.Fields, t.Fields.GetValue("fillcolor", 0));
-					if (renderStyle.SelectedIndex > -1) UDMFTools.SetString(t.Fields, "renderstyle", renderStyles[renderStyle.SelectedIndex], "normal");
 				}
 
 				// Update settings

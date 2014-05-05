@@ -52,8 +52,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool preventchanges;
 		private string arg0str; //mxd
 		private bool haveArg0Str; //mxd
-		//TODO: move this into game configuration!
-		private readonly List<string> renderStyles = new List<string>() { "translucent", "add", "subtract" }; 
+		private readonly string[] renderstyles; //mxd
 
 		//mxd. Persistent settings
 		private static bool linkFrontTopScale;
@@ -63,8 +62,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private static bool linkBackMidScale;
 		private static bool linkBackBottomScale;
 
-		private List<PairedFieldsControl> frontUdmfControls; //mxd
-		private List<PairedFieldsControl> backUdmfControls; //mxd
+		private readonly List<PairedFieldsControl> frontUdmfControls; //mxd
+		private readonly List<PairedFieldsControl> backUdmfControls; //mxd
 
 		//mxd. Window setup stuff
 		private static Point location = Point.Empty;
@@ -74,11 +73,11 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private struct LinedefProperties //mxd
 		{
-			public Dictionary<string, bool> Flags;
-			public float Alpha;
+			public readonly Dictionary<string, bool> Flags;
+			public readonly float Alpha;
 
-			public SidedefProperties Front;
-			public SidedefProperties Back;
+			public readonly SidedefProperties Front;
+			public readonly SidedefProperties Back;
 
 			public LinedefProperties(Linedef line) {
 				Front = (line.Front != null ? new SidedefProperties(line.Front) : null);
@@ -90,31 +89,31 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private class SidedefProperties //mxd
 		{
-			public Dictionary<string, bool> Flags;
+			public readonly Dictionary<string, bool> Flags;
 
-			public float ScaleTopX;
-			public float ScaleTopY;
-			public float ScaleMidX;
-			public float ScaleMidY;
-			public float ScaleBottomX;
-			public float ScaleBottomY;
+			public readonly float ScaleTopX;
+			public readonly float ScaleTopY;
+			public readonly float ScaleMidX;
+			public readonly float ScaleMidY;
+			public readonly float ScaleBottomX;
+			public readonly float ScaleBottomY;
 
-			public int OffsetX;
-			public int OffsetY;
+			public readonly int OffsetX;
+			public readonly int OffsetY;
 
-			public float OffsetTopX;
-			public float OffsetTopY;
-			public float OffsetMidX;
-			public float OffsetMidY;
-			public float OffsetBottomX;
-			public float OffsetBottomY;
+			public readonly float OffsetTopX;
+			public readonly float OffsetTopY;
+			public readonly float OffsetMidX;
+			public readonly float OffsetMidY;
+			public readonly float OffsetBottomX;
+			public readonly float OffsetBottomY;
 
-			public int Brightness;
-			public bool AbsoluteBrightness;
+			public readonly int Brightness;
+			public readonly bool AbsoluteBrightness;
 
-			public string TextureTop;
-			public string TextureMid;
-			public string TextureLow;
+			public readonly string TextureTop;
+			public readonly string TextureMid;
+			public readonly string TextureLow;
 
 			public SidedefProperties(Sidedef side) {
 				Flags = side.GetFlags();
@@ -223,6 +222,19 @@ namespace CodeImp.DoomBuilder.Windows
 				//initialize controls
 				frontUdmfControls = new List<PairedFieldsControl>() { pfcFrontOffsetTop, pfcFrontOffsetMid, pfcFrontOffsetBottom, pfcFrontScaleTop, pfcFrontScaleMid, pfcFrontScaleBottom };
 				backUdmfControls = new List<PairedFieldsControl>() { pfcBackOffsetTop, pfcBackOffsetMid, pfcBackOffsetBottom, pfcBackScaleTop, pfcBackScaleMid, pfcBackScaleBottom };
+
+				// Store renderstyle keys?
+				if(General.Map.Config.LinedefRenderStyles.Count > 0) {
+					renderstyles = new string[General.Map.Config.LinedefRenderStyles.Count];
+					General.Map.Config.LinedefRenderStyles.Keys.CopyTo(renderstyles, 0);
+				} else {
+					renderStyle.Enabled = false;
+				}
+
+				// Fill renderstyles
+				foreach(KeyValuePair<string, string> lf in General.Map.Config.LinedefRenderStyles) {
+					renderStyle.Items.Add(lf.Value);
+				}
 
 				//Restore value linking
 				pfcFrontScaleTop.LinkValues = linkFrontTopScale;
@@ -333,8 +345,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. UDMF Settings
 			if(General.Map.FormatInterface.HasCustomFields) {
 				fieldslist.SetValues(fl.Fields, true); // Custom fields
-				int renderstyle = renderStyles.IndexOf(fl.Fields.GetValue("renderstyle", string.Empty));
-				cbRenderStyle.SelectedIndex = (renderstyle == -1 ? 0 : renderstyle);
+				renderStyle.SelectedIndex = Array.IndexOf(renderstyles, fl.Fields.GetValue("renderstyle", "translucent"));
 				alpha.Text = General.Clamp(fl.Fields.GetValue("alpha", 1.0f), 0f, 1f).ToString();
 				lockNumber.Text = fl.Fields.GetValue("locknumber", 0).ToString();
 				arg0str = fl.Fields.GetValue("arg0str", string.Empty);
@@ -460,9 +471,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//mxd. UDMF Settings
 				if(General.Map.FormatInterface.HasCustomFields) {
-					int i = Math.Max(0, renderStyles.IndexOf(l.Fields.GetValue("renderstyle", string.Empty)));
-					if(cbRenderStyle.SelectedIndex != -1 && i != cbRenderStyle.SelectedIndex)
-						cbRenderStyle.SelectedIndex = -1;
+					if(renderstyles != null) {
+						if(renderStyle.SelectedIndex > -1 && renderStyle.SelectedIndex != Array.IndexOf(renderstyles, l.Fields.GetValue("renderstyle", "translucent")))
+							renderStyle.SelectedIndex = -1;
+					}
 
 					if(!string.IsNullOrEmpty(alpha.Text) && General.Clamp(alpha.GetResultFloat(1.0f), 0f, 1f) != l.Fields.GetValue("alpha", 1.0f))
 						alpha.Text = string.Empty;
@@ -947,13 +959,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(preventchanges) return;
 
 			//update values
-			if(cbRenderStyle.SelectedIndex == 0) {
-				foreach(Linedef l in lines)
-					if(l.Fields.ContainsKey("renderstyle")) l.Fields.Remove("renderstyle");
-			} else {
-				foreach(Linedef l in lines)
-					l.Fields["renderstyle"] = new UniValue(UniversalType.String, renderStyles[cbRenderStyle.SelectedIndex]);
-			}
+			foreach(Linedef l in lines)
+				UDMFTools.SetString(l.Fields, "renderstyle", renderstyles[renderStyle.SelectedIndex], "translucent");
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);

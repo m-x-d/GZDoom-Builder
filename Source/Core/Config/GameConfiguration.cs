@@ -39,105 +39,108 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Variables
 
 		// Original configuration
-		private Configuration cfg;
+		private readonly Configuration cfg;
 		
 		// General settings
-		private string configname;
-		private string enginename;
-		private float defaulttexturescale;
-		private float defaultflatscale;
-		private bool scaledtextureoffsets;
-		private string defaultsavecompiler;
-		private string defaulttestcompiler;
-		private string formatinterface;
-		private string defaultLinedefActivation; //mxd
-		private string singlesidedflag;
-		private string doublesidedflag;
-		private string impassableflag;
-		private string upperunpeggedflag;
-		private string lowerunpeggedflag;
-		private bool mixtexturesflats;
-		private bool generalizedactions;
-		private bool generalizedeffects;
-		private int start3dmodethingtype;
-		private int linedefactivationsfilter;
-		private string testparameters;
-		private bool testshortpaths;
-		private string makedoortrack;
-		private string makedoordoor; //mxd
-		private int makedooraction;
-		private int makedooractivate;
-		private int[] makedoorargs;
-		private Dictionary<string, bool> makedoorflags;
-		private bool linetagindicatesectors;
-		private string decorategames;
-		private string skyflatname;
-		private int maxtexturenamelength;
-		private int leftboundary;
-		private int rightboundary;
-		private int topboundary;
-		private int bottomboundary;
-		private bool doomlightlevels;
+		private readonly string configname;
+		private readonly string enginename;
+		private readonly float defaulttexturescale;
+		private readonly float defaultflatscale;
+		private readonly bool scaledtextureoffsets;
+		private readonly string defaultsavecompiler;
+		private readonly string defaulttestcompiler;
+		private readonly string formatinterface;
+		private readonly string defaultLinedefActivation; //mxd
+		private readonly string singlesidedflag;
+		private readonly string doublesidedflag;
+		private readonly string impassableflag;
+		private readonly string upperunpeggedflag;
+		private readonly string lowerunpeggedflag;
+		private readonly bool mixtexturesflats;
+		private readonly bool generalizedactions;
+		private readonly bool generalizedeffects;
+		private readonly int start3dmodethingtype;
+		private readonly int linedefactivationsfilter;
+		private readonly string testparameters;
+		private readonly bool testshortpaths;
+		private readonly string makedoortrack;
+		private readonly string makedoordoor; //mxd
+		private readonly int makedooraction;
+		private readonly int makedooractivate;
+		private readonly int[] makedoorargs;
+		private readonly Dictionary<string, bool> makedoorflags;
+		private readonly bool linetagindicatesectors;
+		private readonly string decorategames;
+		private readonly string skyflatname;
+		private readonly int maxtexturenamelength;
+		private readonly int leftboundary;
+		private readonly int rightboundary;
+		private readonly int topboundary;
+		private readonly int bottomboundary;
+		private readonly bool doomlightlevels;
 		
 		// Skills
-		private List<SkillInfo> skills;
+		private readonly List<SkillInfo> skills;
 
 		// Map lumps
-		private IDictionary maplumpnames;	// This is old, we should use maplumps instead
-		private Dictionary<string, MapLumpInfo> maplumps;
+		private readonly IDictionary maplumpnames;	// This is old, we should use maplumps instead
+		private readonly Dictionary<string, MapLumpInfo> maplumps;
 		
 		// Texture/flat/voxel sources
-		private IDictionary textureranges;
-		private IDictionary flatranges;
-		private IDictionary patchranges;
-		private IDictionary spriteranges;
-		private IDictionary colormapranges;
-		private IDictionary voxelranges; //mxd
+		private readonly IDictionary textureranges;
+		private readonly IDictionary flatranges;
+		private readonly IDictionary patchranges;
+		private readonly IDictionary spriteranges;
+		private readonly IDictionary colormapranges;
+		private readonly IDictionary voxelranges; //mxd
 		
 		// Things
-		private List<string> defaultthingflags;
-		private Dictionary<string, string> thingflags;
-		private List<ThingCategory> thingcategories;
-		private Dictionary<int, ThingTypeInfo> things;
-		private List<FlagTranslation> thingflagstranslation;
-		private List<ThingFlagsCompare> thingflagscompare;
+		private readonly List<string> defaultthingflags;
+		private readonly Dictionary<string, string> thingflags;
+		private readonly List<ThingCategory> thingcategories;
+		private readonly Dictionary<int, ThingTypeInfo> things;
+		private readonly List<FlagTranslation> thingflagstranslation;
+		private readonly List<ThingFlagsCompare> thingflagscompare;
+		private readonly Dictionary<string, string> thingrenderstyles; //mxd
 		
 		// Linedefs
-		private Dictionary<string, string> linedefflags;
-		private List<string> sortedlinedefflags;
-		private Dictionary<int, LinedefActionInfo> linedefactions;
-		private List<LinedefActionInfo> sortedlinedefactions;
-		private List<LinedefActionCategory> actioncategories;
-		private List<LinedefActivateInfo> linedefactivates;
-		private List<GeneralizedCategory> genactioncategories;
-		private List<FlagTranslation> linedefflagstranslation;
+		private readonly Dictionary<string, string> linedefflags;
+		private readonly List<string> sortedlinedefflags;
+		private readonly Dictionary<int, LinedefActionInfo> linedefactions;
+		private readonly List<LinedefActionInfo> sortedlinedefactions;
+		private readonly List<LinedefActionCategory> actioncategories;
+		private readonly List<LinedefActivateInfo> linedefactivates;
+		private readonly List<GeneralizedCategory> genactioncategories;
+		private readonly List<FlagTranslation> linedefflagstranslation;
+		private readonly Dictionary<string, string> linedefrenderstyles; //mxd
 
 		//mxd. Sidedefs
-		private Dictionary<string, string> sidedefflags; //mxd
+		private readonly Dictionary<string, string> sidedefflags; //mxd
 		
 		// Sectors
-		private Dictionary<string, string> sectorflags; //mxd
-		private Dictionary<int, SectorEffectInfo> sectoreffects;
-		private List<SectorEffectInfo> sortedsectoreffects;
-		private List<GeneralizedOption> geneffectoptions;
-		private StepsList brightnesslevels;
+		private readonly Dictionary<string, string> sectorflags; //mxd
+		private readonly Dictionary<int, SectorEffectInfo> sectoreffects;
+		private readonly List<SectorEffectInfo> sortedsectoreffects;
+		private readonly List<GeneralizedOption> geneffectoptions;
+		private readonly StepsList brightnesslevels;
+		private readonly Dictionary<string, string> sectorrenderstyles; //mxd
 
 		// Universal fields
-		private List<UniversalFieldInfo> linedeffields;
-		private List<UniversalFieldInfo> sectorfields;
-		private List<UniversalFieldInfo> sidedeffields;
-		private List<UniversalFieldInfo> thingfields;
-		private List<UniversalFieldInfo> vertexfields;
+		private readonly List<UniversalFieldInfo> linedeffields;
+		private readonly List<UniversalFieldInfo> sectorfields;
+		private readonly List<UniversalFieldInfo> sidedeffields;
+		private readonly List<UniversalFieldInfo> thingfields;
+		private readonly List<UniversalFieldInfo> vertexfields;
 		
 		// Enums
-		private Dictionary<string, EnumList> enums;
+		private readonly Dictionary<string, EnumList> enums;
 		
 		// Defaults
-		private List<DefinedTextureSet> texturesets;
-		private List<ThingsFilter> thingfilters;
+		private readonly List<DefinedTextureSet> texturesets;
+		private readonly List<ThingsFilter> thingfilters;
 
 		//mxd. Holds base game type (doom, heretic, hexen or strife)
-		private GameType gameType;
+		private readonly GameType gameType;
 		
 		#endregion
 
@@ -201,6 +204,7 @@ namespace CodeImp.DoomBuilder.Config
 		public IDictionary<string, string> ThingFlags { get { return thingflags; } }
 		public List<FlagTranslation> ThingFlagsTranslation { get { return thingflagstranslation; } }
 		public List<ThingFlagsCompare> ThingFlagsCompare { get { return thingflagscompare; } }
+		public Dictionary<string, string> ThingRenderStyles { get { return thingrenderstyles; } } //mxd
 		
 		// Linedefs
 		public IDictionary<string, string> LinedefFlags { get { return linedefflags; } }
@@ -211,6 +215,7 @@ namespace CodeImp.DoomBuilder.Config
 		public List<LinedefActivateInfo> LinedefActivates { get { return linedefactivates; } }
 		public List<GeneralizedCategory> GenActionCategories { get { return genactioncategories; } }
 		public List<FlagTranslation> LinedefFlagsTranslation { get { return linedefflagstranslation; } }
+		public Dictionary<string, string> LinedefRenderStyles { get { return linedefrenderstyles; } } //mxd
 
 		//mxd. Sidedefs
 		public IDictionary<string, string> SidedefFlags { get { return sidedefflags; } }
@@ -221,6 +226,7 @@ namespace CodeImp.DoomBuilder.Config
 		public List<SectorEffectInfo> SortedSectorEffects { get { return sortedsectoreffects; } }
 		public List<GeneralizedOption> GenEffectOptions { get { return geneffectoptions; } }
 		public StepsList BrightnessLevels { get { return brightnesslevels; } }
+		public Dictionary<string, string> SectorRenderStyles { get { return sectorrenderstyles; } } //mxd
 
 		// Universal fields
 		public List<UniversalFieldInfo> LinedefFields { get { return linedeffields; } }
@@ -275,6 +281,9 @@ namespace CodeImp.DoomBuilder.Config
 			this.thingflagscompare = new List<ThingFlagsCompare>();
 			this.brightnesslevels = new StepsList();
 			this.makedoorflags = new Dictionary<string, bool>(StringComparer.Ordinal);
+			this.linedefrenderstyles = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
+			this.sectorrenderstyles = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
+			this.thingrenderstyles = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
 			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
@@ -350,21 +359,24 @@ namespace CodeImp.DoomBuilder.Config
 			LoadThingFlags();
 			LoadDefaultThingFlags();
 			LoadThingCategories();
+			LoadStringDictionary(thingrenderstyles, "thingrenderstyles"); //mxd
 			
 			// Linedefs
 			LoadLinedefFlags();
 			LoadLinedefActions();
 			LoadLinedefActivations();
 			LoadLinedefGeneralizedActions();
+			LoadStringDictionary(linedefrenderstyles, "linedefrenderstyles"); //mxd
 
 			//mxd. Sidedefs
-			LoadSidedefFlags();
+			LoadStringDictionary(sidedefflags, "sidedefflags");
 
 			// Sectors
-			LoadSectorFlags(); //mxd
+			LoadStringDictionary(sectorflags, "sectorflags"); //mxd
 			LoadBrightnessLevels();
 			LoadSectorEffects();
 			LoadSectorGeneralizedEffects();
+			LoadStringDictionary(sectorrenderstyles, "sectorrenderstyles"); //mxd
 			
 			// Universal fields
 			linedeffields = LoadUniversalFields("linedef");
@@ -406,12 +418,9 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// This loads the enumerations
-		private void LoadEnums()
-		{
-			IDictionary dic;
-
+		private void LoadEnums() {
 			// Get enums list
-			dic = cfg.ReadSetting("enums", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("enums", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				// Make new enum
@@ -425,10 +434,9 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			List<UniversalFieldInfo> list = new List<UniversalFieldInfo>();
 			UniversalFieldInfo uf;
-			IDictionary dic;
-			
+
 			// Get fields
-			dic = cfg.ReadSetting("universalfields." + elementname, new Hashtable());
+			IDictionary dic = cfg.ReadSetting("universalfields." + elementname, new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				try
@@ -484,12 +492,10 @@ namespace CodeImp.DoomBuilder.Config
 		private void LoadLinedefFlags()
 		{
 			// Get linedef flags
-			IDictionary dic = cfg.ReadSetting("linedefflags", new Hashtable());
-			foreach(DictionaryEntry de in dic)
-				linedefflags.Add(de.Key.ToString(), de.Value.ToString());
+			LoadStringDictionary(linedefflags, "linedefflags"); //mxd
 			
 			// Get translations
-			dic = cfg.ReadSetting("linedefflagstranslation", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("linedefflagstranslation", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 				linedefflagstranslation.Add(new FlagTranslation(de));
 			
@@ -620,22 +626,6 @@ namespace CodeImp.DoomBuilder.Config
 			}
 		}
 
-		//mxd. SIdedef flags
-		private void LoadSidedefFlags() {
-			// Get linedef flags
-			IDictionary dic = cfg.ReadSetting("sidedefflags", new Hashtable());
-			foreach(DictionaryEntry de in dic)
-				sidedefflags.Add(de.Key.ToString(), de.Value.ToString());
-		}
-
-		//mxd. Sector flags
-		private void LoadSectorFlags() {
-			// Get linedef flags
-			IDictionary dic = cfg.ReadSetting("sectorflags", new Hashtable());
-			foreach(DictionaryEntry de in dic)
-				sectorflags.Add(de.Key.ToString(), de.Value.ToString());
-		}
-
 		// Sector effects
 		private void LoadSectorEffects()
 		{
@@ -717,13 +707,11 @@ namespace CodeImp.DoomBuilder.Config
 		// Thing flags
 		private void LoadThingFlags()
 		{
-			// Get linedef flags
-			IDictionary dic = cfg.ReadSetting("thingflags", new Hashtable());
-			foreach(DictionaryEntry de in dic)
-				thingflags.Add(de.Key.ToString(), de.Value.ToString());
+			// Get thing flags
+			LoadStringDictionary(thingflags, "thingflags"); //mxd
 			
 			// Get translations
-			dic = cfg.ReadSetting("thingflagstranslation", new Hashtable());
+			IDictionary dic = cfg.ReadSetting("thingflagstranslation", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 				thingflagstranslation.Add(new FlagTranslation(de));
 				
@@ -818,6 +806,13 @@ namespace CodeImp.DoomBuilder.Config
 					makedoorflags[de.Key.ToString()] = true;
 				}
 			}
+		}
+
+		//mxd
+		private void LoadStringDictionary(Dictionary<string, string> target, string settingname) {
+			IDictionary dic = cfg.ReadSetting(settingname, new Hashtable());
+			foreach(DictionaryEntry de in dic)
+				target.Add(de.Key.ToString(), de.Value.ToString());
 		}
 		
 		#endregion

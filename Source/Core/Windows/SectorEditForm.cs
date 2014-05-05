@@ -46,11 +46,11 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private struct SectorProperties //mxd
 		{
-			public int Brightness;
-			public int FloorHeight;
-			public int CeilHeight;
-			public string FloorTexture;
-			public string CeilTexture;
+			public readonly int Brightness;
+			public readonly int FloorHeight;
+			public readonly int CeilHeight;
+			public readonly string FloorTexture;
+			public readonly string CeilTexture;
 
 			public SectorProperties(Sector s) {
 				Brightness = s.Brightness;
