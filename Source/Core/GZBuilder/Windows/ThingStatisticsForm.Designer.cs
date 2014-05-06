@@ -35,11 +35,11 @@
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.apply = new System.Windows.Forms.Button();
 			this.dataGridView = new System.Windows.Forms.DataGridView();
+			this.hideUnused = new System.Windows.Forms.CheckBox();
 			this.ThingType = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.ThingTitle = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.ThingClassName = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.ThingCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.hideUnused = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -57,6 +57,7 @@
 			// dataGridView
 			// 
 			this.dataGridView.AllowUserToAddRows = false;
+			this.dataGridView.AllowUserToDeleteRows = false;
 			this.dataGridView.AllowUserToResizeColumns = false;
 			this.dataGridView.AllowUserToResizeRows = false;
 			this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -83,6 +84,7 @@
 			this.dataGridView.Location = new System.Drawing.Point(12, 12);
 			this.dataGridView.MultiSelect = false;
 			this.dataGridView.Name = "dataGridView";
+			this.dataGridView.ReadOnly = true;
 			this.dataGridView.RowHeadersVisible = false;
 			this.dataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.dataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -90,22 +92,34 @@
 			this.dataGridView.TabIndex = 6;
 			this.dataGridView.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_CellMouseClick);
 			// 
+			// hideUnused
+			// 
+			this.hideUnused.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.hideUnused.AutoSize = true;
+			this.hideUnused.Location = new System.Drawing.Point(13, 322);
+			this.hideUnused.Name = "hideUnused";
+			this.hideUnused.Size = new System.Drawing.Size(122, 18);
+			this.hideUnused.TabIndex = 8;
+			this.hideUnused.Text = "Hide Unused Things";
+			this.hideUnused.UseVisualStyleBackColor = true;
+			this.hideUnused.CheckedChanged += new System.EventHandler(this.hideUnused_CheckedChanged);
+			// 
 			// ThingType
 			// 
 			this.ThingType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
 			dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
 			this.ThingType.DefaultCellStyle = dataGridViewCellStyle2;
-			this.ThingType.HeaderText = "№";
+			this.ThingType.HeaderText = "Type";
 			this.ThingType.Name = "ThingType";
 			this.ThingType.ReadOnly = true;
-			this.ThingType.Width = 45;
+			this.ThingType.Width = 55;
 			// 
 			// ThingTitle
 			// 
 			this.ThingTitle.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
 			dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
 			this.ThingTitle.DefaultCellStyle = dataGridViewCellStyle3;
-			this.ThingTitle.HeaderText = "Thing Name";
+			this.ThingTitle.HeaderText = "Title";
 			this.ThingTitle.Name = "ThingTitle";
 			this.ThingTitle.ReadOnly = true;
 			// 
@@ -131,18 +145,6 @@
 			this.ThingCount.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.ThingCount.Width = 60;
 			// 
-			// hideUnused
-			// 
-			this.hideUnused.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.hideUnused.AutoSize = true;
-			this.hideUnused.Location = new System.Drawing.Point(13, 322);
-			this.hideUnused.Name = "hideUnused";
-			this.hideUnused.Size = new System.Drawing.Size(122, 18);
-			this.hideUnused.TabIndex = 8;
-			this.hideUnused.Text = "Hide Unused Things";
-			this.hideUnused.UseVisualStyleBackColor = true;
-			this.hideUnused.CheckedChanged += new System.EventHandler(this.hideUnused_CheckedChanged);
-			// 
 			// ThingStatisticsForm
 			// 
 			this.AcceptButton = this.apply;
@@ -167,11 +169,11 @@
         #endregion
 
         private System.Windows.Forms.Button apply;
-        private System.Windows.Forms.DataGridView dataGridView;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ThingType;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ThingTitle;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ThingClassName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ThingCount;
+		private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.CheckBox hideUnused;
+		private System.Windows.Forms.DataGridViewTextBoxColumn ThingType;
+		private System.Windows.Forms.DataGridViewTextBoxColumn ThingTitle;
+		private System.Windows.Forms.DataGridViewTextBoxColumn ThingClassName;
+		private System.Windows.Forms.DataGridViewTextBoxColumn ThingCount;
     }
 }

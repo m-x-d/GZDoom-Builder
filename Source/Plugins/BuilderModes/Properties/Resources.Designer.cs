@@ -158,6 +158,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap FilterThings {
+            get {
+                object obj = ResourceManager.GetObject("FilterThings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap FlipSelectionH {
             get {
                 object obj = ResourceManager.GetObject("FlipSelectionH", resourceCulture);
