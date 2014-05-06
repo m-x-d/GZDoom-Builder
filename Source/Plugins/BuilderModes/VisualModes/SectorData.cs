@@ -115,8 +115,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Plane copy slope effect
-		public void AddEffectPlaneClopySlope(Linedef sourcelinedef, bool front, bool copyFloor, bool copyCeiling) {
-			EffectPlaneCopySlope e = new EffectPlaneCopySlope(this, sourcelinedef, front, copyFloor, copyCeiling);
+		public void AddEffectPlaneClopySlope(Linedef sourcelinedef, bool front) {
+			EffectPlaneCopySlope e = new EffectPlaneCopySlope(this, sourcelinedef, front);
 			alleffects.Add(e);
 		}
 

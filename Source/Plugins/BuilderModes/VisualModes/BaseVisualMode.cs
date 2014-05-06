@@ -834,7 +834,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(l.Front != null) {
 						if( (l.Args[0] > 0 || l.Args[1] > 0) || (l.Back != null && (floorCopyToFront || ceilingCopyToFront)) ) {
 							SectorData sd = GetSectorData(l.Front.Sector);
-							sd.AddEffectPlaneClopySlope(l, true, floorCopyToFront, ceilingCopyToFront);
+							sd.AddEffectPlaneClopySlope(l, true);
 						}
 					}
 
@@ -842,7 +842,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(l.Back != null) {
 						if( (l.Args[2] > 0 || l.Args[3] > 0) || (l.Front != null && (floorCopyToBack || ceilingCopyToBack)) ) {
 							SectorData sd = GetSectorData(l.Back.Sector);
-							sd.AddEffectPlaneClopySlope(l, false, floorCopyToBack, ceilingCopyToBack);
+							sd.AddEffectPlaneClopySlope(l, false);
 						}
 					}
 				}
