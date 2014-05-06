@@ -7,14 +7,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Linedef that is used to create this effect
 		private readonly Linedef linedef;
 		private readonly bool front;
-		private readonly bool copyFloor;
-		private readonly bool copyCeiling;
 
-		public EffectPlaneCopySlope(SectorData data, Linedef sourcelinedef, bool front, bool copyFloor, bool copyCeiling) : base(data) {
+		public EffectPlaneCopySlope(SectorData data, Linedef sourcelinedef, bool front) : base(data) {
 			this.linedef = sourcelinedef;
 			this.front = front;
-			this.copyFloor = copyFloor;
-			this.copyCeiling = copyCeiling;
 
 			// New effect added: This sector needs an update!
 			if(data.Mode.VisualSectorExists(data.Sector)) {
@@ -73,6 +69,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				} else if(sourcesector != null) { //ceiling uses the same sector as floor 
 					data.Ceiling.plane = sourcesectordata.Ceiling.plane;
+				}
+			}
+
+			//check the flags...
+			bool copyFloor = false;
+			bool copyCeiling = false;
+
+			if(linedef.Args[4] > 0 && linedef.Args[4] != 3 && linedef.Args[4] != 12) {
+				if (front) {
+					copyFloor = (linedef.Args[4] & 2) == 2;
+					copyCeiling = (linedef.Args[4] & 8) == 8;
+				} else {
+					copyFloor = (linedef.Args[4] & 1) == 1;
+					copyCeiling = (linedef.Args[4] & 4) == 4;
 				}
 			}
 
