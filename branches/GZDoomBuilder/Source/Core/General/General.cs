@@ -1985,11 +1985,7 @@ namespace CodeImp.DoomBuilder
 			try {
 				GZBuilder.Windows.ExceptionDialog dlg = new GZBuilder.Windows.ExceptionDialog(e);
 				dlg.Setup();
-				//dbg
-				DialogResult r = dlg.ShowDialog();
-
-				if(r == DialogResult.Cancel)
-					Application.Exit();
+				if(dlg.ShowDialog() == DialogResult.Cancel) Application.Exit();
 			} catch {
 				try {
 					MessageBox.Show("Fatal Windows Forms Error", "Fatal Windows Forms Error", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Stop);

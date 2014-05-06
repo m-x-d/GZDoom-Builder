@@ -181,7 +181,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 		}
 
 		private void dataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
-			if(e.ColumnIndex < 2) return;
+			if(e.ColumnIndex < 2 || e.RowIndex == -1) return;
 			
 			//select 
 			if (e.Button == MouseButtons.Left) {
@@ -198,7 +198,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 						ClassicMode mode = (ClassicMode)General.Editing.Mode;
 
 						foreach(Sector s in list) {
-							//s.Selected = true;
 							mode.SelectMapElement(s);
 
 							foreach(Sidedef sd in s.Sidedefs) {
@@ -207,7 +206,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 							}
 						}
 
-						//General.Map.Map.Update();
 						showSelection(points);
 					}
 				} else if(e.ColumnIndex == 3) { //linedefs
@@ -281,7 +279,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 		}
 
 		private void dataGridView_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
-			if(e.ColumnIndex < 2) return;
+			if(e.ColumnIndex < 2 || e.RowIndex == -1) return;
 			int tag = (int)dataGridView.Rows[e.RowIndex].Cells[0].Value;
 
 			if(e.ColumnIndex == 2) { //sectors

@@ -1011,7 +1011,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RedrawDisplay();
 			General.Interface.RefreshInfo();
 		}
-		
+
+		//mxd
+		[BeginAction("filterselectedthings")]
+		public void ShowFilterDialog() {
+			ICollection<Thing> selection = General.Map.Map.GetSelectedThings(true);
+
+			if (selection.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			new FilterSelectedThingsForm(selection).ShowDialog();
+		}
+
 		#endregion
 	}
 }

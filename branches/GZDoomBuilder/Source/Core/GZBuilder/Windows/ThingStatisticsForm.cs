@@ -103,7 +103,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
         }
 
         private void dataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
-            if (e.Button == MouseButtons.Left) { //select
+            if (e.RowIndex == -1) return;
+			if (e.Button == MouseButtons.Left) { //select
                 List<Thing> list = getThingsByType((int)dataGridView.Rows[e.RowIndex].Cells[0].Value);
                 if (list.Count > 0) {
                     General.Map.Map.ClearSelectedThings();

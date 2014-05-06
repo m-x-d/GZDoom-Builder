@@ -312,6 +312,12 @@
     <Compile Include="Interface\EditSelectionPanel.Designer.cs">
       <DependentUpon>EditSelectionPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\FilterSelectedThingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\FilterSelectedThingsForm.Designer.cs">
+      <DependentUpon>FilterSelectedThingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\PastePropertiesOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -481,6 +487,9 @@
     <EmbeddedResource Include="Resources\DrawGeometryMode.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\FilterSelectedThingsForm.resx">
+      <DependentUpon>FilterSelectedThingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\PastePropertiesOptionsForm.resx">
       <DependentUpon>PastePropertiesOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -488,6 +497,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\PastePropertiesOptions.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FilterThings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

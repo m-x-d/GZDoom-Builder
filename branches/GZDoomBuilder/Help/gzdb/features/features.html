@@ -122,6 +122,10 @@ Jump to: <a href="#general">General interface</a> |
         <li><a href="classic_modes/mode_snapelements.html">Snap map elements mode</a>.</li>
         <li><span class="style5"><strong>[new]</strong></span> Selected things are now dragged while dragging vertices, linedefs and sectors.</li>
         <li><span class="style5">[new]</span> You can place things on top of selected vertices in Vertices and Linedefs modes and inside of selected sectors in Sectors mode using &quot;<strong>Place Things</strong>&quot; action.</li>
+        <li><span class="style5">[new]</span> You can view all loaded thing types and some additional info using Thing Statistics form (<strong>Edit -&gt; View Thing Types...</strong>).
+        <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
+          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"> <img src="classic_modes/thing_statistics.jpg" alt="" /></div>
+          </li>
         <li><span class="style5">[new]</span> You can override default sector properties, which are used  to create new geometry, using &quot;<strong><a href="classic_modes/drawsettingspanel.html">Draw Settings</a></strong>&quot; panel (by default, when the new sector overlaps or touches existing sector, the editor uses textures, brighntess and floor/ceiling heights from that sector when drawing the new one).</li>
         <li><span class="style1"><strong>[new]</strong></span> You can disable Doom Builder's auto-clear textures behaviour by using this button in the toolbar: <img src="general/autoclear_textures.jpg"/></li>
         <li><span class="style5">[new]</span> You can change default sector brightness and floor/ceiling height (<strong>Preferences -&gt; Editing -&gt; Default sector settings</strong>). These settings are used when the new sector doesn't touch or overlap already existing sectors.</li>
@@ -168,6 +172,10 @@ Jump to: <a href="#general">General interface</a> |
     <li><h3><a name="things" id="things"></a>Things mode:</h3>
       <ul>
       <li><span class="style1"><strong>[new]</strong></span> Several thing types can now be selected at once in Thing Edit form. If   you do so,  a type randomly chosen from selected ones will be assigned   to each selected thing. <a href="things_mode/multiple_thing_types.html">More info</a>.</li>
+      <li><span class="style1"><strong>[new]</strong></span> You can filter selected things by type using Filter Things form (<strong>Things -&gt; Filter Things...</strong>). 
+      <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
+      <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="things_mode/filter_selection.jpg" alt="" /></div>
+          </li>
       <li><span class="style1"><strong>[new]</strong></span> You can clone selected/highlighted things by holding &quot;Shift&quot; before starting to drag them.</li>
       <li><span class="style1"><strong>[new]</strong></span> New action: &quot;<strong>Point Thing to cursor</strong>&quot;. <a href="things_mode/pointthing.html">More info</a>.</li>
       <li><span class="style1"><strong>[new]</strong></span> New action: &quot;<strong>Select Things in Selected Sectors</strong>&quot; (Default key is Shift+T).</li>
