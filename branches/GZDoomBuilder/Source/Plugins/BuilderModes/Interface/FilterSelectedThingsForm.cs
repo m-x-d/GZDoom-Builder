@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
@@ -14,9 +13,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private static Size size = Size.Empty;
 		private static Point location = Point.Empty;
 		private ICollection<Thing> selection;
+		private ThingsMode mode;
 
-		public FilterSelectedThingsForm(ICollection<Thing> selection) {
+		public FilterSelectedThingsForm(ICollection<Thing> selection, ThingsMode mode) {
 			InitializeComponent();
+			this.mode = mode;
 
 			//apply window size and location
 			if(!size.IsEmpty && !location.IsEmpty) {
@@ -75,13 +76,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
-				//update selection info
-				if(General.Map.Map.SelectedThingsCount > 0)
-					General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedThingsCount + (General.Map.Map.SelectedThingsCount == 1 ? " thing" : " things") + " selected.");
-				else
-					General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
-
-				//redraw display
+				//update display
+				mode.UpdateSelectionInfo();
 				General.Interface.RedrawDisplay();
 			}
 			

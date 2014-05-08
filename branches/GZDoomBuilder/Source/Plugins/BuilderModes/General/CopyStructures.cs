@@ -16,19 +16,40 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
+	//mxd
+	public class FieldDescription : Attribute
+	{
+		public string Description { get; private set; }
+
+		public FieldDescription(string description) {
+			this.Description = description;
+		}
+	}
+	
+	//mxd
+	public class VertexPropertiesCopySettings
+	{
+		[FieldDescription("Vertex Floor Height")]
+		public bool ZFloor = true;
+		[FieldDescription("Vertex Ceiling Height")]
+		public bool ZCeiling = true;
+		[FieldDescription("Custom Fields")]
+		public bool Fields = true;
+	}
+	
 	// Vertex
 	public class VertexProperties
 	{
-		public static bool ZCeiling = true; //mxd
-		public static bool ZFloor = true; //mxd
-		public static bool Universal_Fields = true; //mxd
+		public static VertexPropertiesCopySettings CopySettings = new VertexPropertiesCopySettings();
 		
 		private readonly UniFields fields;
 		private readonly float zceiling; //mxd
@@ -43,9 +64,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public void Apply(Vertex v)
 		{
-			if (ZCeiling) v.ZCeiling = zceiling; //mxd
-			if (ZFloor) v.ZFloor = zfloor; //mxd
-			if (Universal_Fields) {
+			if(CopySettings.ZCeiling) v.ZCeiling = zceiling; //mxd
+			if(CopySettings.ZFloor) v.ZFloor = zfloor; //mxd
+			if(CopySettings.Fields) {
 				v.Fields.BeforeFieldsChange();
 				v.Fields.Clear();
 				foreach (KeyValuePair<string, UniValue> uv in fields)
@@ -54,18 +75,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 	}
 
+	//mxd
+	public class SectorPropertiesCopySettings
+	{
+		[FieldDescription("Floor Height")]
+		public bool FloorHeight = true;
+		[FieldDescription("Ceiling Height")]
+		public bool CeilingHeight = true;
+		[FieldDescription("Floor Texture")]
+		public bool FloorTexture = true;
+		[FieldDescription("Ceiling Texture")]
+		public bool CeilingTexture = true;
+		[FieldDescription("Brightness")]
+		public bool Brightness = true;
+		[FieldDescription("Tag")]
+		public bool Tag = true;
+		[FieldDescription("Effect")]
+		public bool Special = true;
+		[FieldDescription("Flags")]
+		public bool Flags = true;
+		[FieldDescription("Custom Fields")]
+		public bool Fields = true;
+	}
+
 	// Sector
 	public class SectorProperties
 	{
-		public static bool Floor_Height = true; //mxd
-		public static bool Ceiling_Height = true; //mxd
-		public static bool Floor_Texture = true; //mxd
-		public static bool Ceiling_Texture = true; //mxd
-		public static bool Brightness = true; //mxd
-		public static bool Tag = true; //mxd
-		public static bool Special = true; //mxd
-		public static bool Flags = true; //mxd
-		public static bool Universal_Fields = true; //mxd
+		//mxd
+		public static SectorPropertiesCopySettings CopySettings = new SectorPropertiesCopySettings();
 		
 		private readonly int floorheight;
 		private readonly int ceilheight;
@@ -92,19 +129,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		public void Apply(Sector s)
 		{
-			if (Floor_Height) s.FloorHeight = floorheight;
-			if (Ceiling_Height) s.CeilHeight = ceilheight;
-			if (Floor_Texture) s.SetFloorTexture(floortexture);
-			if (Ceiling_Texture) s.SetCeilTexture(ceilingtexture);
-			if (Brightness) s.Brightness = brightness;
-			if (Tag) s.Tag = tag;
-			if (Special) s.Effect = effect;
-			if (Flags) {
+			if(CopySettings.FloorHeight) s.FloorHeight = floorheight;
+			if(CopySettings.CeilingHeight) s.CeilHeight = ceilheight;
+			if(CopySettings.FloorTexture) s.SetFloorTexture(floortexture);
+			if(CopySettings.CeilingTexture) s.SetCeilTexture(ceilingtexture);
+			if(CopySettings.Brightness) s.Brightness = brightness;
+			if(CopySettings.Tag) s.Tag = tag;
+			if(CopySettings.Special) s.Effect = effect;
+			if(CopySettings.Flags) {
 				s.ClearFlags(); //mxd
 				foreach (KeyValuePair<string, bool> f in flags) //mxd
 					s.SetFlag(f.Key, f.Value);
 			}
-			if (Universal_Fields) {
+			if(CopySettings.Fields) {
 				s.Fields.BeforeFieldsChange();
 				s.Fields.Clear();
 				foreach (KeyValuePair<string, UniValue> v in fields)
@@ -113,17 +150,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 	}
 
+	//mxd
+	public class SidedefPropertiesCopySettings
+	{
+		[FieldDescription("Upper Texture")]
+		public bool UpperTexture = true;
+		[FieldDescription("Middle Texture")]
+		public bool MiddleTexture = true;
+		[FieldDescription("Lower Texture")]
+		public bool LowerTexture = true;
+		[FieldDescription("Offset X")]
+		public bool OffsetX = true;
+		[FieldDescription("Offset Y")]
+		public bool OffsetY = true;
+		[FieldDescription("Flags")]
+		public bool Flags = true;
+		[FieldDescription("Custom Fields")]
+		public bool Fields = true;
+	}
+
 	// Sidedef
 	public class SidedefProperties
 	{
-		public static bool Upper_Texture = true; //mxd
-		public static bool Middle_Texture = true; //mxd
-		public static bool Lower_Texture = true; //mxd
-		public static bool OffsetX = true; //mxd
-		public static bool OffsetY = true; //mxd
-		public static bool Flags = true; //mxd
-		public static bool Universal_Fields = true; //mxd
-		
+		//mxd
+		public static SidedefPropertiesCopySettings CopySettings = new SidedefPropertiesCopySettings();
+
 		private readonly string hightexture;
 		private readonly string middletexture;
 		private readonly string lowtexture;
@@ -145,17 +196,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		public void Apply(Sidedef s)
 		{
-			if (Upper_Texture) s.SetTextureHigh(hightexture);
-			if (Middle_Texture) s.SetTextureMid(middletexture);
-			if (Lower_Texture) s.SetTextureLow(lowtexture);
-			if (OffsetX) s.OffsetX = offsetx;
-			if (OffsetY) s.OffsetY = offsety;
-			if (Flags) {
+			if(CopySettings.UpperTexture) s.SetTextureHigh(hightexture);
+			if(CopySettings.MiddleTexture) s.SetTextureMid(middletexture);
+			if(CopySettings.LowerTexture) s.SetTextureLow(lowtexture);
+			if(CopySettings.OffsetX) s.OffsetX = offsetx;
+			if(CopySettings.OffsetY) s.OffsetY = offsety;
+			if(CopySettings.Flags) {
 				s.ClearFlags(); //mxd
 				foreach (KeyValuePair<string, bool> f in flags) //mxd
 					s.SetFlag(f.Key, f.Value);
 			}
-			if (Universal_Fields) {
+			if(CopySettings.Fields) {
 				s.Fields.BeforeFieldsChange();
 				s.Fields.Clear();
 				foreach (KeyValuePair<string, UniValue> v in fields)
@@ -164,15 +215,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 	}
 
+	//mxd
+	public class LinedefPropertiesCopySettings
+	{
+		[FieldDescription("Sidedef Properties")]
+		public bool SidedefProperties = true;
+		[FieldDescription("Action")]
+		public bool Action = true;
+		[FieldDescription("Action Arguments")]
+		public bool Arguments = true;
+		[FieldDescription("Activation")]
+		public bool Activation = true;
+		[FieldDescription("Tag")]
+		public bool Tag = true;
+		[FieldDescription("Flags")]
+		public bool Flags = true;
+		[FieldDescription("Custom Fields")]
+		public bool Fields = true;
+	}
+
 	// Linedef
 	public class LinedefProperties
 	{
-		public static bool Sidedef_Properties = true; //mxd
-		public static bool Action = true; //mxd
-		public static bool Activation = true; //mxd
-		public static bool Tag = true; //mxd
-		public static bool Flags = true; //mxd
-		public static bool Universal_Fields = true; //mxd
+		//mxd
+		public static LinedefPropertiesCopySettings CopySettings = new LinedefPropertiesCopySettings();
 		
 		private readonly SidedefProperties front;
 		private readonly SidedefProperties back;
@@ -198,23 +264,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		public void Apply(Linedef l)
 		{
-			if (Sidedef_Properties) {
+			if(CopySettings.SidedefProperties) {
 				if ((front != null) && (l.Front != null)) front.Apply(l.Front);
 				if ((back != null) && (l.Back != null)) back.Apply(l.Back);
 			}
-			if (Flags) {
+			if(CopySettings.Flags) {
 				l.ClearFlags();
 				foreach (KeyValuePair<string, bool> f in flags)
 					l.SetFlag(f.Key, f.Value);
 			}
-			if (Activation) l.Activate = activate;
-			if (Tag)l.Tag = tag;
-			if (Action) {
-				l.Action = action;
-				for (int i = 0; i < l.Args.Length; i++)
+			if(CopySettings.Activation) l.Activate = activate;
+			if(CopySettings.Tag) l.Tag = tag;
+			if(CopySettings.Action) l.Action = action;
+			if(CopySettings.Arguments) {
+				for(int i = 0; i < l.Args.Length; i++)
 					l.Args[i] = args[i];
 			}
-			if (Universal_Fields) {
+			if(CopySettings.Fields) {
 				l.Fields.BeforeFieldsChange();
 				l.Fields.Clear();
 				foreach (KeyValuePair<string, UniValue> v in fields)
@@ -222,19 +288,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 	}
+
+	//mxd
+	public class ThingPropertiesCopySettings
+	{
+		[FieldDescription("Type")]
+		public bool Type = true;
+		[FieldDescription("Angle")]
+		public bool Angle = true;
+		[FieldDescription("Pitch")]
+		public bool Pitch = true;
+		[FieldDescription("Roll")]
+		public bool Roll = true;
+		[FieldDescription("Scale")]
+		public bool Scale = true;
+		[FieldDescription("Action")]
+		public bool Action = true;
+		[FieldDescription("Action Arguments")]
+		public bool Arguments = true;
+		[FieldDescription("Tag")]
+		public bool Tag = true;
+		[FieldDescription("Flags")]
+		public bool Flags = true;
+		[FieldDescription("Custom Fields")]
+		public bool Fields = true;
+	}
 	
 	// Thing
 	public class ThingProperties
 	{
-		public static bool Type = true; //mxd
-		public static bool Angle = true; //mxd
-		public static bool Pitch = true; //mxd
-		public static bool Roll = true; //mxd
-		public static bool Scale = true; //mxd
-		public static bool Action = true; //mxd
-		public static bool Tag = true; //mxd
-		public static bool Flags = true; //mxd
-		public static bool Universal_Fields = true; //mxd
+		//mxd
+		public static ThingPropertiesCopySettings CopySettings = new ThingPropertiesCopySettings();
 		
 		private readonly int type;
 		private readonly float angle;
@@ -265,28 +349,128 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		public void Apply(Thing t)
 		{
-			if (Type) t.Type = type;
-			if (Angle) t.Rotate(angle);
-			if (Pitch) t.SetPitch(pitch);
-			if (Roll) t.SetRoll(roll);
-			if (Scale) t.SetScale(scalex, scaley);
-			if (Flags) {
+			if(CopySettings.Type) t.Type = type;
+			if(CopySettings.Angle) t.Rotate(angle);
+			if(CopySettings.Pitch) t.SetPitch(pitch);
+			if(CopySettings.Roll) t.SetRoll(roll);
+			if(CopySettings.Scale) t.SetScale(scalex, scaley);
+			if(CopySettings.Flags) {
 				t.ClearFlags();
 				foreach (KeyValuePair<string, bool> f in flags)
 					t.SetFlag(f.Key, f.Value);
 			}
-			if (Tag) t.Tag = tag;
-			if (Action) {
-				t.Action = action;
-				for (int i = 0; i < t.Args.Length; i++)
+			if(CopySettings.Tag) t.Tag = tag;
+			if(CopySettings.Action) t.Action = action;
+			if(CopySettings.Arguments) {
+				for(int i = 0; i < t.Args.Length; i++)
 					t.Args[i] = args[i];
 			}
-			if (Universal_Fields) {
+			if(CopySettings.Fields) {
 				t.Fields.BeforeFieldsChange();
 				t.Fields.Clear();
 				foreach (KeyValuePair<string, UniValue> v in fields)
 					t.Fields.Add(v.Key, new UniValue(v.Value));
 			}
+		}
+	}
+
+	//mxd. A class, which checks whether source and target map element's properties match
+	public static class PropertiesComparer
+	{
+
+		#region Vertex
+
+		public static bool PropertiesMatch(VertexPropertiesCopySettings flags, Vertex source, Vertex target) {
+			if(flags.ZCeiling && source.ZCeiling != target.ZCeiling) return false;
+			if(flags.ZFloor && source.ZFloor != target.ZFloor) return false;
+			return !flags.Fields || UDMFTools.FieldsMatch(source.Fields, target.Fields);
+		}
+
+		#endregion
+
+		#region Sector
+
+		public static bool PropertiesMatch(SectorPropertiesCopySettings flags, Sector source, Sector target) {
+			if(flags.FloorHeight && source.FloorHeight != target.FloorHeight) return false;
+			if(flags.CeilingHeight && source.CeilHeight != target.CeilHeight) return false;
+			if(flags.FloorTexture && source.FloorTexture != target.FloorTexture) return false;
+			if(flags.CeilingTexture && source.CeilTexture != target.CeilTexture) return false;
+			if(flags.Brightness && source.Brightness != target.Brightness) return false;
+			if(flags.Tag && source.Tag != target.Tag) return false;
+			if(flags.Special && source.Effect != target.Effect) return false;
+			if(flags.Flags && !FlagsMatch(source.GetFlags(), target.GetFlags())) return false;
+			return !flags.Fields || UDMFTools.FieldsMatch(source.Fields, target.Fields);
+		}
+
+		#endregion
+
+		#region Linedef
+
+		public static bool PropertiesMatch(LinedefPropertiesCopySettings linedefflags, SidedefPropertiesCopySettings sideflags, Linedef source, Linedef target) {
+			if(linedefflags.Action && source.Action != target.Action) return false;
+			if(linedefflags.Activation && source.Activate != target.Activate) return false;
+			if(linedefflags.Tag && source.Tag != target.Tag) return false;
+			if(linedefflags.Arguments) {
+				for(int i = 0; i < source.Args.Length; i++) {
+					if(source.Args[i] != target.Args[i]) return false;
+				}
+			}
+			if(linedefflags.Flags && !FlagsMatch(source.GetFlags(), target.GetFlags())) return false;
+			if(linedefflags.SidedefProperties) {
+				if ((source.Front == null && target.Front != null) || (source.Front != null && target.Front == null) ||
+					(source.Back == null && target.Back != null) || (source.Back != null && target.Back == null)) 
+					return false;
+
+				if(source.Front != null && !PropertiesMatch(sideflags, source.Front, target.Front)) return false;
+				if(source.Back != null && !PropertiesMatch(sideflags, source.Back, target.Back)) return false;
+			}
+			return !linedefflags.Fields || UDMFTools.FieldsMatch(source.Fields, target.Fields);
+		}
+
+		#endregion
+
+		#region Sidedef
+
+		public static bool PropertiesMatch(SidedefPropertiesCopySettings flags, Sidedef source, Sidedef target) {
+			if(flags.OffsetX && source.OffsetX != target.OffsetX) return false;
+			if(flags.OffsetY && source.OffsetY != target.OffsetY) return false;
+			if(flags.UpperTexture && source.HighTexture != target.HighTexture) return false;
+			if(flags.MiddleTexture && source.MiddleTexture != target.MiddleTexture) return false;
+			if(flags.LowerTexture && source.LowTexture != target.LowTexture) return false;
+			if(flags.Flags && !FlagsMatch(source.GetFlags(), target.GetFlags())) return false;
+			return !flags.Fields || UDMFTools.FieldsMatch(source.Fields, target.Fields);
+		}
+
+		#endregion
+
+		#region Thing
+
+		public static bool PropertiesMatch(ThingPropertiesCopySettings flags, Thing source, Thing target) {
+			if(flags.Type && source.Type != target.Type) return false;
+			if(flags.Angle && source.AngleDoom != target.AngleDoom) return false;
+			if(flags.Action && source.Action != target.Action) return false;
+			if (flags.Arguments) {
+				for(int i = 0; i < source.Args.Length; i++) {
+					if (source.Args[i] != target.Args[i]) return false;
+				}
+			}
+			if(flags.Tag && source.Tag != target.Tag) return false;
+			if(flags.Pitch && source.Pitch != target.Pitch) return false;
+			if(flags.Roll && source.Roll != target.Roll) return false;
+			if(flags.Scale && (source.ScaleX != target.ScaleX) || (source.ScaleY != target.ScaleY))
+				return false;
+			if(flags.Flags && !FlagsMatch(source.GetFlags(), target.GetFlags())) return false;
+			return !flags.Fields || UDMFTools.FieldsMatch(source.Fields, target.Fields);
+		}
+
+		#endregion
+
+		private static bool FlagsMatch(Dictionary<string, bool> flags1, Dictionary<string, bool> flags2) {
+			if (flags1.Count != flags2.Count) return false;
+			foreach (KeyValuePair<string, bool> group in flags1) {
+				if (!flags2.ContainsKey(group.Key) || flags2[group.Key] != flags1[group.Key]) return false;
+			}
+			return true;
 		}
 	}
 }

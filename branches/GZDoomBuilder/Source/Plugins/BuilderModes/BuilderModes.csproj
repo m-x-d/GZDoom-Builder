@@ -330,6 +330,12 @@
     <Compile Include="Interface\SectorDrawingOptionsPanel.Designer.cs">
       <DependentUpon>SectorDrawingOptionsPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\SelectSimilarElementOptionsPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\SelectSimilarElementOptionsPanel.Designer.cs">
+      <DependentUpon>SelectSimilarElementOptionsPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\WavefrontSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -493,6 +499,9 @@
     <EmbeddedResource Include="Interface\PastePropertiesOptionsForm.resx">
       <DependentUpon>PastePropertiesOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Interface\SelectSimilarElementOptionsPanel.resx">
+      <DependentUpon>SelectSimilarElementOptionsPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\DrawRectangleMode.png" />
   </ItemGroup>
   <ItemGroup>
@@ -500,6 +509,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\FilterThings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Similar.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

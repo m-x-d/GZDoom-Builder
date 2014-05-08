@@ -1,6 +1,6 @@
-﻿namespace CodeImp.DoomBuilder.BuilderModes.Interface
+﻿namespace CodeImp.DoomBuilder.BuilderModes
 {
-	partial class PastePropertiesOptionsForm
+	partial class SelectSimilarElementOptionsPanel
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -25,6 +25,9 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			this.enableall = new System.Windows.Forms.Button();
+			this.apply = new System.Windows.Forms.Button();
+			this.cancel = new System.Windows.Forms.Button();
 			this.tabControl = new System.Windows.Forms.TabControl();
 			this.sectors = new System.Windows.Forms.TabPage();
 			this.sectorflags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
@@ -36,9 +39,6 @@
 			this.thingflags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.vertices = new System.Windows.Forms.TabPage();
 			this.vertexflags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
-			this.cancel = new System.Windows.Forms.Button();
-			this.apply = new System.Windows.Forms.Button();
-			this.enableall = new System.Windows.Forms.Button();
 			this.tabControl.SuspendLayout();
 			this.sectors.SuspendLayout();
 			this.linedefs.SuspendLayout();
@@ -46,6 +46,40 @@
 			this.things.SuspendLayout();
 			this.vertices.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// enableall
+			// 
+			this.enableall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.enableall.Location = new System.Drawing.Point(11, 144);
+			this.enableall.Name = "enableall";
+			this.enableall.Size = new System.Drawing.Size(70, 23);
+			this.enableall.TabIndex = 7;
+			this.enableall.Text = "Toggle All";
+			this.enableall.UseVisualStyleBackColor = true;
+			this.enableall.Click += new System.EventHandler(this.enableall_Click);
+			// 
+			// apply
+			// 
+			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.apply.Location = new System.Drawing.Point(203, 144);
+			this.apply.Name = "apply";
+			this.apply.Size = new System.Drawing.Size(75, 23);
+			this.apply.TabIndex = 6;
+			this.apply.Text = "OK";
+			this.apply.UseVisualStyleBackColor = true;
+			this.apply.Click += new System.EventHandler(this.apply_Click);
+			// 
+			// cancel
+			// 
+			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.cancel.Location = new System.Drawing.Point(122, 144);
+			this.cancel.Name = "cancel";
+			this.cancel.Size = new System.Drawing.Size(75, 23);
+			this.cancel.TabIndex = 5;
+			this.cancel.Text = "Cancel";
+			this.cancel.UseVisualStyleBackColor = true;
+			this.cancel.Click += new System.EventHandler(this.cancel_Click);
 			// 
 			// tabControl
 			// 
@@ -60,7 +94,7 @@
 			this.tabControl.Name = "tabControl";
 			this.tabControl.SelectedIndex = 0;
 			this.tabControl.Size = new System.Drawing.Size(266, 127);
-			this.tabControl.TabIndex = 0;
+			this.tabControl.TabIndex = 8;
 			// 
 			// sectors
 			// 
@@ -172,57 +206,23 @@
 			this.vertexflags.TabIndex = 1;
 			this.vertexflags.VerticalSpacing = 1;
 			// 
-			// cancel
-			// 
-			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(122, 144);
-			this.cancel.Name = "cancel";
-			this.cancel.Size = new System.Drawing.Size(75, 23);
-			this.cancel.TabIndex = 0;
-			this.cancel.Text = "Cancel";
-			this.cancel.UseVisualStyleBackColor = true;
-			this.cancel.Click += new System.EventHandler(this.cancel_Click);
-			// 
-			// apply
-			// 
-			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(203, 144);
-			this.apply.Name = "apply";
-			this.apply.Size = new System.Drawing.Size(75, 23);
-			this.apply.TabIndex = 1;
-			this.apply.Text = "OK";
-			this.apply.UseVisualStyleBackColor = true;
-			this.apply.Click += new System.EventHandler(this.apply_Click);
-			// 
-			// enableall
-			// 
-			this.enableall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.enableall.Location = new System.Drawing.Point(11, 144);
-			this.enableall.Name = "enableall";
-			this.enableall.Size = new System.Drawing.Size(70, 23);
-			this.enableall.TabIndex = 2;
-			this.enableall.Text = "Toggle All";
-			this.enableall.UseVisualStyleBackColor = true;
-			this.enableall.Click += new System.EventHandler(this.enableall_Click);
-			// 
-			// PastePropertiesOptionsForm
+			// SelectSimilarElementOptionsPanel
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(290, 171);
+			this.Controls.Add(this.tabControl);
 			this.Controls.Add(this.enableall);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.cancel);
-			this.Controls.Add(this.tabControl);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-			this.Name = "PastePropertiesOptionsForm";
+			this.Name = "SelectSimilarElementOptionsPanel";
 			this.ShowInTaskbar = false;
-			this.Text = "Paste Properties Options";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PastePropertiesOptionsForm_FormClosing);
+			this.Text = "Selection Options";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectSimilarElementOptionsPanel_FormClosing);
 			this.tabControl.ResumeLayout(false);
 			this.sectors.ResumeLayout(false);
 			this.linedefs.ResumeLayout(false);
@@ -235,19 +235,19 @@
 
 		#endregion
 
+		private System.Windows.Forms.Button enableall;
+		private System.Windows.Forms.Button apply;
+		private System.Windows.Forms.Button cancel;
 		private System.Windows.Forms.TabControl tabControl;
 		private System.Windows.Forms.TabPage sectors;
+		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl sectorflags;
 		private System.Windows.Forms.TabPage linedefs;
-		private System.Windows.Forms.Button cancel;
-		private System.Windows.Forms.Button apply;
+		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl lineflags;
 		private System.Windows.Forms.TabPage sidedefs;
+		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl sideflags;
 		private System.Windows.Forms.TabPage things;
+		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl thingflags;
 		private System.Windows.Forms.TabPage vertices;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl vertexflags;
-		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl sectorflags;
-		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl lineflags;
-		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl sideflags;
-		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl thingflags;
-		private System.Windows.Forms.Button enableall;
 	}
 }

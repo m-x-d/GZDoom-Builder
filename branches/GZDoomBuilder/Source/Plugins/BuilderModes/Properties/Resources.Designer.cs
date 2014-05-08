@@ -242,6 +242,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Similar {
+            get {
+                object obj = ResourceManager.GetObject("Similar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap SnapVerts {
             get {
                 object obj = ResourceManager.GetObject("SnapVerts", resourceCulture);

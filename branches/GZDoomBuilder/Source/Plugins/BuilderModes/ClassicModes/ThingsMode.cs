@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Convert geometry selection to linedefs selection
 			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
 			General.Map.Map.SelectionType = SelectionType.Things;
-			updateSelectionInfo(); //mxd
+			UpdateSelectionInfo(); //mxd
 		}
 
 		// Mode disengages
@@ -352,7 +352,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Interface.RedrawDisplay();
 				}
 
-				updateSelectionInfo(); //mxd
+				UpdateSelectionInfo(); //mxd
 			}
 
 			base.OnSelectEnd();
@@ -441,7 +441,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
-				updateSelectionInfo(); //mxd
+				UpdateSelectionInfo(); //mxd
 			}
 
 			editpressed = false;
@@ -489,7 +489,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							t.Selected = !t.Selected;
 						highlighted = t;
 
-						updateSelectionInfo(); //mxd
+						UpdateSelectionInfo(); //mxd
 
 						// Update entire display
 						General.Interface.RedrawDisplay();
@@ -623,7 +623,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						break;
 				}
 
-				updateSelectionInfo(); //mxd
+				UpdateSelectionInfo(); //mxd
 			}
 			
 			base.OnEndMultiSelection();
@@ -663,7 +663,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void updateSelectionInfo() {
+		public override void UpdateSelectionInfo() {
 			if(General.Map.Map.SelectedThingsCount > 0)
 				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedThingsCount + (General.Map.Map.SelectedThingsCount == 1 ? " thing" : " things") + " selected.");
 			else
@@ -1022,7 +1022,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return;
 			}
 
-			new FilterSelectedThingsForm(selection).ShowDialog();
+			new FilterSelectedThingsForm(selection, this).ShowDialog();
+		}
+
+		//mxd
+		[BeginAction("selectsimilar")]
+		public void SelectSimilar() {
+			ICollection<Thing> selection = General.Map.Map.GetSelectedThings(true);
+
+			if(selection.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			var form = new SelectSimilarElementOptionsPanel();
+			if (form.Setup(this)) form.ShowDialog();
 		}
 
 		#endregion

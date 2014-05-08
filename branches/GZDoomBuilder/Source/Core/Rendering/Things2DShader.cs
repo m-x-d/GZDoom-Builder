@@ -19,7 +19,6 @@
 using System;
 using SlimDX.Direct3D9;
 using SlimDX;
-using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 

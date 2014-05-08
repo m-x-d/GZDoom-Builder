@@ -1,4 +1,6 @@
-﻿using CodeImp.DoomBuilder.Map;
+﻿using System;
+using System.Collections.Generic;
+using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Tools
@@ -83,6 +85,37 @@ namespace CodeImp.DoomBuilder.GZBuilder.Tools
 		public static void ClearField(UniFields fields, string key) {
 			if(fields == null || !fields.ContainsKey(key)) return;
 			fields.Remove(key);
+		}
+
+		public static bool FieldsMatch(UniFields fields1, UniFields fields2) {
+			if (fields1.Keys.Count != fields2.Keys.Count) return false;
+			foreach(KeyValuePair<string, UniValue> group in fields1) {
+				if (!fields2.ContainsKey(group.Key)) return false;
+				if (fields2[group.Key].Type != fields1[group.Key].Type) return false;
+				
+				if (fields1[group.Key].Value is int) 
+				{
+					if ((int)fields1[group.Key].Value != (int)fields2[group.Key].Value) return false;
+				}
+				else if (fields1[group.Key].Value is float) 
+				{
+					if((float)fields1[group.Key].Value != (float)fields2[group.Key].Value) return false;
+				}
+				else if(fields1[group.Key].Value is bool) 
+				{
+					if((bool)fields1[group.Key].Value != (bool)fields2[group.Key].Value) return false;
+				}
+				else if (fields1[group.Key].Value is string) 
+				{
+					if ((string)fields1[group.Key].Value != (string)fields2[group.Key].Value) return false;
+				} 
+				else 
+				{
+					throw new Exception("Got unknown Custom Field type to compare: " + fields1[group.Key].Value.GetType());
+				}
+			}
+
+			return true;
 		}
 	}
 }

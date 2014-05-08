@@ -298,7 +298,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Convert geometry selection to linedefs selection
 			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
-			updateSelectionInfo(); //mxd
+			UpdateSelectionInfo(); //mxd
 		}
 		
 		// Mode disengages
@@ -429,7 +429,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				//mxd
-				updateSelectionInfo();
+				UpdateSelectionInfo();
 			}
 
 			base.OnSelectEnd();
@@ -510,7 +510,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
-				updateSelectionInfo(); //mxd
+				UpdateSelectionInfo(); //mxd
 			}
 
 			editpressed = false;
@@ -549,7 +549,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							l.Selected = !l.Selected;
 						highlighted = l;
 
-						updateSelectionInfo(); //mxd
+						UpdateSelectionInfo(); //mxd
 
 						// Update entire display
 						General.Interface.RedrawDisplay();
@@ -728,7 +728,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				//mxd
-				updateSelectionInfo();
+				UpdateSelectionInfo();
 			}
 			
 			base.OnEndMultiSelection();
@@ -768,7 +768,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void updateSelectionInfo() {
+		public override void UpdateSelectionInfo() {
 			if(General.Map.Map.SelectedLinedefsCount > 0)
 				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedLinedefsCount + (General.Map.Map.SelectedLinedefsCount == 1 ? " linedef" : " linedefs") + " selected.");
 			else
@@ -1367,6 +1367,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void AlignCeilingToBack() {
 			if(!General.Map.UDMF) return;
 			alignTextureToLine(false, false);
+		}
+
+		//mxd
+		[BeginAction("selectsimilar")]
+		public void SelectSimilar() {
+			ICollection<Linedef> selection = General.Map.Map.GetSelectedLinedefs(true);
+
+			if(selection.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			var form = new SelectSimilarElementOptionsPanel();
+			if(form.Setup(this)) form.ShowDialog();
 		}
 
 		#endregion
