@@ -46,12 +46,13 @@
 			this.flags.Name = "flags";
 			this.flags.Size = new System.Drawing.Size(418, 195);
 			this.flags.TabIndex = 0;
+			this.flags.VerticalSpacing = 1;
 			// 
 			// cancel
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(351, 238);
+			this.cancel.Location = new System.Drawing.Point(254, 238);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(91, 25);
 			this.cancel.TabIndex = 4;
@@ -62,7 +63,7 @@
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(254, 238);
+			this.apply.Location = new System.Drawing.Point(351, 238);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(91, 25);
 			this.apply.TabIndex = 3;

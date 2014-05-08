@@ -51,6 +51,7 @@
 			// 
 			// buttonCancel
 			// 
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonCancel.Location = new System.Drawing.Point(95, 139);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
@@ -120,10 +121,10 @@
 			this.nudSubdivisions.Size = new System.Drawing.Size(46, 20);
 			this.nudSubdivisions.TabIndex = 3;
 			this.nudSubdivisions.Value = new decimal(new int[] {
-			5,
-			0,
-			0,
-			0});
+            5,
+            0,
+            0,
+            0});
 			this.nudSubdivisions.ValueChanged += new System.EventHandler(this.nudSubdivisions_ValueChanged);
 			// 
 			// label4
@@ -170,8 +171,10 @@
 			// 
 			// BridgeModeForm
 			// 
+			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(263, 166);
 			this.Controls.Add(this.cbCopy);
 			this.Controls.Add(this.cbMirror);

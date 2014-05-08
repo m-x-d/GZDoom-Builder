@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listfilters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
 			this.listfilters.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.columnname});
+            this.columnname});
 			this.listfilters.FullRowSelect = true;
 			this.listfilters.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listfilters.HideSelection = false;
@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listfilters.MultiSelect = false;
 			this.listfilters.Name = "listfilters";
 			this.listfilters.ShowGroups = false;
-			this.listfilters.Size = new System.Drawing.Size(202, 354);
+			this.listfilters.Size = new System.Drawing.Size(202, 379);
 			this.listfilters.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listfilters.TabIndex = 0;
 			this.listfilters.UseCompatibleStateImageBehavior = false;
@@ -109,8 +109,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// addfilter
 			// 
-			this.addfilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.addfilter.Location = new System.Drawing.Point(12, 372);
+			this.addfilter.Location = new System.Drawing.Point(12, 397);
 			this.addfilter.Name = "addfilter";
 			this.addfilter.Size = new System.Drawing.Size(98, 25);
 			this.addfilter.TabIndex = 1;
@@ -120,9 +119,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// deletefilter
 			// 
-			this.deletefilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.deletefilter.Enabled = false;
-			this.deletefilter.Location = new System.Drawing.Point(116, 372);
+			this.deletefilter.Location = new System.Drawing.Point(116, 397);
 			this.deletefilter.Name = "deletefilter";
 			this.deletefilter.Size = new System.Drawing.Size(98, 25);
 			this.deletefilter.TabIndex = 2;
@@ -139,7 +137,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filtergroup.Controls.Add(this.filtername);
 			this.filtergroup.Controls.Add(this.label1);
 			this.filtergroup.Enabled = false;
-			this.filtergroup.Location = new System.Drawing.Point(232, 12);
+			this.filtergroup.Location = new System.Drawing.Point(220, 12);
 			this.filtergroup.Name = "filtergroup";
 			this.filtergroup.Size = new System.Drawing.Size(465, 385);
 			this.filtergroup.TabIndex = 3;
@@ -190,7 +188,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(34, 235);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(342, 14);
+			this.label6.Size = new System.Drawing.Size(341, 14);
 			this.label6.TabIndex = 15;
 			this.label6.Text = "Note:  Clear the input fields which you do not want to use in this filter.";
 			// 
@@ -209,6 +207,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filterzheight.AllowNegative = true;
 			this.filterzheight.AllowRelative = false;
 			this.filterzheight.ButtonStep = 1;
+			this.filterzheight.ButtonStepFloat = 1F;
 			this.filterzheight.Location = new System.Drawing.Point(123, 162);
 			this.filterzheight.Name = "filterzheight";
 			this.filterzheight.Size = new System.Drawing.Size(72, 24);
@@ -236,6 +235,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filterangle.AllowNegative = true;
 			this.filterangle.AllowRelative = false;
 			this.filterangle.ButtonStep = 45;
+			this.filterangle.ButtonStepFloat = 1F;
 			this.filterangle.Location = new System.Drawing.Point(123, 119);
 			this.filterangle.Name = "filterangle";
 			this.filterangle.Size = new System.Drawing.Size(72, 24);
@@ -335,6 +335,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filterfields.Name = "filterfields";
 			this.filterfields.Size = new System.Drawing.Size(402, 229);
 			this.filterfields.TabIndex = 5;
+			this.filterfields.VerticalSpacing = 1;
 			// 
 			// label3
 			// 
@@ -536,6 +537,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filtertag.AllowNegative = true;
 			this.filtertag.AllowRelative = false;
 			this.filtertag.ButtonStep = 1;
+			this.filtertag.ButtonStepFloat = 1F;
 			this.filtertag.Location = new System.Drawing.Point(122, 244);
 			this.filtertag.Name = "filtertag";
 			this.filtertag.Size = new System.Drawing.Size(72, 24);
@@ -566,6 +568,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// fieldslist
 			// 
+			this.fieldslist.AllowInsert = true;
 			this.fieldslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
@@ -575,8 +578,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.Location = new System.Drawing.Point(8, 9);
 			this.fieldslist.Margin = new System.Windows.Forms.Padding(8, 9, 8, 9);
 			this.fieldslist.Name = "fieldslist";
+			this.fieldslist.PropertyColumnVisible = true;
+			this.fieldslist.PropertyColumnWidth = 150;
 			this.fieldslist.Size = new System.Drawing.Size(426, 271);
 			this.fieldslist.TabIndex = 2;
+			this.fieldslist.TypeColumnVisible = true;
+			this.fieldslist.TypeColumnWidth = 100;
+			this.fieldslist.ValueColumnVisible = true;
 			this.fieldslist.Validated += new System.EventHandler(this.fieldslist_Validated);
 			// 
 			// filtername
@@ -601,7 +609,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(585, 414);
+			this.cancel.Location = new System.Drawing.Point(455, 403);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 5;
@@ -612,7 +620,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(467, 414);
+			this.apply.Location = new System.Drawing.Point(573, 403);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 4;
@@ -626,7 +634,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(707, 449);
+			this.ClientSize = new System.Drawing.Size(696, 436);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.filtergroup);
@@ -634,7 +642,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.addfilter);
 			this.Controls.Add(this.listfilters);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ThingsFiltersForm";

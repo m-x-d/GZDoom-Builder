@@ -44,12 +44,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.options.Name = "options";
 			this.options.Size = new System.Drawing.Size(185, 170);
 			this.options.TabIndex = 0;
+			this.options.VerticalSpacing = 1;
 			// 
 			// cancel
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(106, 188);
+			this.cancel.Location = new System.Drawing.Point(12, 188);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(91, 25);
 			this.cancel.TabIndex = 2;
@@ -60,7 +61,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(12, 188);
+			this.apply.Location = new System.Drawing.Point(106, 188);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(91, 25);
 			this.apply.TabIndex = 1;
@@ -79,7 +80,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.options);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "BitFlagsForm";

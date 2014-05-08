@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			// cancel
 			// 
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(279, 140);
+			this.cancel.Location = new System.Drawing.Point(190, 140);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(83, 25);
 			this.cancel.TabIndex = 4;
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			// 
 			// apply
 			// 
-			this.apply.Location = new System.Drawing.Point(190, 140);
+			this.apply.Location = new System.Drawing.Point(279, 140);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(83, 25);
 			this.apply.TabIndex = 3;

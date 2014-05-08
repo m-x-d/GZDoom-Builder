@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label3
 			// 
 			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(239, 76);
+			label3.Location = new System.Drawing.Point(239, 60);
 			label3.Name = "label3";
 			label3.Size = new System.Drawing.Size(90, 14);
 			label3.TabIndex = 9;
@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label2
 			// 
 			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(58, 76);
+			label2.Location = new System.Drawing.Point(58, 60);
 			label2.Name = "label2";
 			label2.Size = new System.Drawing.Size(65, 14);
 			label2.TabIndex = 7;
@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(18, 34);
+			label1.Location = new System.Drawing.Point(18, 27);
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(105, 14);
 			label1.TabIndex = 5;
@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Windows
 			panelsettings.Controls.Add(label1);
 			panelsettings.Location = new System.Drawing.Point(12, 12);
 			panelsettings.Name = "panelsettings";
-			panelsettings.Size = new System.Drawing.Size(397, 118);
+			panelsettings.Size = new System.Drawing.Size(397, 88);
 			panelsettings.TabIndex = 0;
 			panelsettings.TabStop = false;
 			panelsettings.Text = " Settings ";
@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// levelname
 			// 
 			this.levelname.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.levelname.Location = new System.Drawing.Point(129, 73);
+			this.levelname.Location = new System.Drawing.Point(129, 57);
 			this.levelname.Name = "levelname";
 			this.levelname.Size = new System.Drawing.Size(94, 20);
 			this.levelname.TabIndex = 1;
@@ -107,9 +107,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.config.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.config.FormattingEnabled = true;
 			this.config.IntegralHeight = false;
-			this.config.Location = new System.Drawing.Point(129, 31);
+			this.config.Location = new System.Drawing.Point(129, 24);
 			this.config.Name = "config";
-			this.config.Size = new System.Drawing.Size(213, 22);
+			this.config.Size = new System.Drawing.Size(254, 22);
 			this.config.TabIndex = 0;
 			this.config.SelectedIndexChanged += new System.EventHandler(this.config_SelectedIndexChanged);
 			// 
@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(179, 392);
+			this.apply.Location = new System.Drawing.Point(297, 358);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 2;
@@ -139,7 +139,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(297, 392);
+			this.cancel.Location = new System.Drawing.Point(179, 358);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 3;
@@ -154,9 +154,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres.Controls.Add(this.strictpatches);
 			this.panelres.Controls.Add(this.datalocations);
 			this.panelres.Controls.Add(label4);
-			this.panelres.Location = new System.Drawing.Point(12, 141);
+			this.panelres.Location = new System.Drawing.Point(12, 106);
 			this.panelres.Name = "panelres";
-			this.panelres.Size = new System.Drawing.Size(397, 236);
+			this.panelres.Size = new System.Drawing.Size(397, 240);
 			this.panelres.TabIndex = 1;
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Resources ";
@@ -187,13 +187,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(421, 429);
+			this.ClientSize = new System.Drawing.Size(421, 391);
 			this.Controls.Add(this.panelres);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(panelsettings);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "MapOptionsForm";

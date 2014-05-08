@@ -30,8 +30,6 @@ namespace CodeImp.DoomBuilder.TagRange
 		{
 			this.rangestart = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.itemcountlabel = new System.Windows.Forms.Label();
 			this.doubletagwarning = new System.Windows.Forms.Label();
 			this.skipdoubletags = new System.Windows.Forms.CheckBox();
 			this.okbutton = new System.Windows.Forms.Button();
@@ -47,7 +45,8 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.rangestart.AllowNegative = false;
 			this.rangestart.AllowRelative = false;
 			this.rangestart.ButtonStep = 1;
-			this.rangestart.Location = new System.Drawing.Point(110, 56);
+			this.rangestart.ButtonStepFloat = 1F;
+			this.rangestart.Location = new System.Drawing.Point(76, 12);
 			this.rangestart.Name = "rangestart";
 			this.rangestart.Size = new System.Drawing.Size(96, 24);
 			this.rangestart.StepValues = null;
@@ -57,35 +56,17 @@ namespace CodeImp.DoomBuilder.TagRange
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(44, 61);
+			this.label1.Location = new System.Drawing.Point(10, 17);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(54, 14);
+			this.label1.Size = new System.Drawing.Size(53, 14);
 			this.label1.TabIndex = 1;
 			this.label1.Text = "Start Tag:";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(30, 27);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(68, 14);
-			this.label2.TabIndex = 2;
-			this.label2.Text = "Items to Tag:";
-			// 
-			// itemcountlabel
-			// 
-			this.itemcountlabel.AutoSize = true;
-			this.itemcountlabel.Location = new System.Drawing.Point(110, 27);
-			this.itemcountlabel.Name = "itemcountlabel";
-			this.itemcountlabel.Size = new System.Drawing.Size(13, 14);
-			this.itemcountlabel.TabIndex = 3;
-			this.itemcountlabel.Text = "0";
 			// 
 			// doubletagwarning
 			// 
 			this.doubletagwarning.BackColor = System.Drawing.SystemColors.Info;
 			this.doubletagwarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.doubletagwarning.Location = new System.Drawing.Point(12, 130);
+			this.doubletagwarning.Location = new System.Drawing.Point(12, 45);
 			this.doubletagwarning.Name = "doubletagwarning";
 			this.doubletagwarning.Padding = new System.Windows.Forms.Padding(3);
 			this.doubletagwarning.Size = new System.Drawing.Size(273, 50);
@@ -97,7 +78,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			// 
 			this.skipdoubletags.AutoSize = true;
 			this.skipdoubletags.BackColor = System.Drawing.SystemColors.Info;
-			this.skipdoubletags.Location = new System.Drawing.Point(63, 154);
+			this.skipdoubletags.Location = new System.Drawing.Point(63, 69);
 			this.skipdoubletags.Name = "skipdoubletags";
 			this.skipdoubletags.Size = new System.Drawing.Size(161, 18);
 			this.skipdoubletags.TabIndex = 5;
@@ -109,7 +90,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			// okbutton
 			// 
 			this.okbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.okbutton.Location = new System.Drawing.Point(41, 197);
+			this.okbutton.Location = new System.Drawing.Point(186, 102);
 			this.okbutton.Name = "okbutton";
 			this.okbutton.Size = new System.Drawing.Size(99, 26);
 			this.okbutton.TabIndex = 6;
@@ -120,7 +101,8 @@ namespace CodeImp.DoomBuilder.TagRange
 			// cancelbutton
 			// 
 			this.cancelbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.cancelbutton.Location = new System.Drawing.Point(158, 197);
+			this.cancelbutton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.cancelbutton.Location = new System.Drawing.Point(81, 102);
 			this.cancelbutton.Name = "cancelbutton";
 			this.cancelbutton.Size = new System.Drawing.Size(99, 26);
 			this.cancelbutton.TabIndex = 7;
@@ -132,7 +114,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			// 
 			this.outoftagswarning.BackColor = System.Drawing.SystemColors.Info;
 			this.outoftagswarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.outoftagswarning.Location = new System.Drawing.Point(12, 130);
+			this.outoftagswarning.Location = new System.Drawing.Point(12, 45);
 			this.outoftagswarning.Name = "outoftagswarning";
 			this.outoftagswarning.Padding = new System.Windows.Forms.Padding(3);
 			this.outoftagswarning.Size = new System.Drawing.Size(273, 50);
@@ -143,7 +125,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			// endtaglabel
 			// 
 			this.endtaglabel.AutoSize = true;
-			this.endtaglabel.Location = new System.Drawing.Point(110, 95);
+			this.endtaglabel.Location = new System.Drawing.Point(250, 17);
 			this.endtaglabel.Name = "endtaglabel";
 			this.endtaglabel.Size = new System.Drawing.Size(13, 14);
 			this.endtaglabel.TabIndex = 10;
@@ -152,30 +134,30 @@ namespace CodeImp.DoomBuilder.TagRange
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(49, 95);
+			this.label4.Location = new System.Drawing.Point(189, 17);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(49, 14);
+			this.label4.Size = new System.Drawing.Size(48, 14);
 			this.label4.TabIndex = 9;
 			this.label4.Text = "End Tag:";
 			// 
 			// TagRangeForm
 			// 
+			this.AcceptButton = this.okbutton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.ClientSize = new System.Drawing.Size(298, 231);
+			this.CancelButton = this.cancelbutton;
+			this.ClientSize = new System.Drawing.Size(298, 134);
 			this.Controls.Add(this.endtaglabel);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.cancelbutton);
 			this.Controls.Add(this.okbutton);
 			this.Controls.Add(this.skipdoubletags);
 			this.Controls.Add(this.doubletagwarning);
-			this.Controls.Add(this.itemcountlabel);
-			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.rangestart);
 			this.Controls.Add(this.outoftagswarning);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TagRangeForm";
@@ -193,8 +175,6 @@ namespace CodeImp.DoomBuilder.TagRange
 
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox rangestart;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label itemcountlabel;
 		private System.Windows.Forms.Label doubletagwarning;
 		private System.Windows.Forms.CheckBox skipdoubletags;
 		private System.Windows.Forms.Button okbutton;

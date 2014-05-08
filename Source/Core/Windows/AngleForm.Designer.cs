@@ -36,8 +36,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// angle
 			// 
 			this.angle.BackColor = System.Drawing.SystemColors.Control;
+			this.angle.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.angle.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.angle.Location = new System.Drawing.Point(60, 22);
+			this.angle.Location = new System.Drawing.Point(12, 12);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(84, 84);
 			this.angle.TabIndex = 0;
@@ -45,11 +46,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// cancel
 			// 
-			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(105, 131);
+			this.cancel.Location = new System.Drawing.Point(102, 69);
 			this.cancel.Name = "cancel";
-			this.cancel.Size = new System.Drawing.Size(91, 25);
+			this.cancel.Size = new System.Drawing.Size(60, 25);
 			this.cancel.TabIndex = 2;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
@@ -57,10 +57,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// apply
 			// 
-			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.apply.Location = new System.Drawing.Point(8, 131);
+			this.apply.Location = new System.Drawing.Point(102, 12);
 			this.apply.Name = "apply";
-			this.apply.Size = new System.Drawing.Size(91, 25);
+			this.apply.Size = new System.Drawing.Size(60, 51);
 			this.apply.TabIndex = 1;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
@@ -72,12 +71,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(204, 165);
+			this.ClientSize = new System.Drawing.Size(168, 106);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.angle);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "AngleForm";

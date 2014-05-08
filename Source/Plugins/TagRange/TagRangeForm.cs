@@ -32,22 +32,22 @@ namespace CodeImp.DoomBuilder.TagRange
 				selectiontype = UniversalType.SectorTag;
 				ICollection<Sector> list = General.Map.Map.GetSelectedSectors(true);
 				selectioncount = list.Count;
+				this.Text = "Create tag range for " + selectioncount + (selectioncount > 1 ? " sectors" : " sector");
 			}
 			else if(modename == "LinedefsMode")
 			{
 				selectiontype = UniversalType.LinedefTag;
 				ICollection<Linedef> list = General.Map.Map.GetSelectedLinedefs(true);
 				selectioncount = list.Count;
+				this.Text = "Create tag range for " + selectioncount + (selectioncount > 1 ? " linedefs" : " linedef");
 			}
 			else if(modename == "ThingsMode")
 			{
 				selectiontype = UniversalType.ThingTag;
 				ICollection<Thing> list = General.Map.Map.GetSelectedThings(true);
 				selectioncount = list.Count;
+				this.Text = "Create tag range for " + selectioncount + (selectioncount > 1 ? " things" : " thing");
 			}
-			
-			// Show number of selected items
-			itemcountlabel.Text = selectioncount.ToString();
 			
 			// Find out which tags are used
 			usedtags = new Dictionary<int, bool>();

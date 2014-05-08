@@ -94,7 +94,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// findnextbutton
 			// 
-			this.findnextbutton.Location = new System.Drawing.Point(277, 18);
+			this.findnextbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.findnextbutton.Location = new System.Drawing.Point(257, 18);
 			this.findnextbutton.Name = "findnextbutton";
 			this.findnextbutton.Size = new System.Drawing.Size(98, 25);
 			this.findnextbutton.TabIndex = 4;
@@ -104,7 +105,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// replaceallbutton
 			// 
-			this.replaceallbutton.Location = new System.Drawing.Point(277, 80);
+			this.replaceallbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.replaceallbutton.Location = new System.Drawing.Point(257, 80);
 			this.replaceallbutton.Name = "replaceallbutton";
 			this.replaceallbutton.Size = new System.Drawing.Size(98, 25);
 			this.replaceallbutton.TabIndex = 6;
@@ -114,8 +116,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// closebutton
 			// 
+			this.closebutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.closebutton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.closebutton.Location = new System.Drawing.Point(277, 127);
+			this.closebutton.Location = new System.Drawing.Point(257, 127);
 			this.closebutton.Name = "closebutton";
 			this.closebutton.Size = new System.Drawing.Size(98, 25);
 			this.closebutton.TabIndex = 7;
@@ -125,7 +128,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// replacebutton
 			// 
-			this.replacebutton.Location = new System.Drawing.Point(277, 49);
+			this.replacebutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.replacebutton.Location = new System.Drawing.Point(257, 49);
 			this.replacebutton.Name = "replacebutton";
 			this.replacebutton.Size = new System.Drawing.Size(98, 25);
 			this.replacebutton.TabIndex = 5;
@@ -139,7 +143,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.closebutton;
-			this.ClientSize = new System.Drawing.Size(387, 163);
+			this.ClientSize = new System.Drawing.Size(367, 163);
 			this.Controls.Add(this.replacebutton);
 			this.Controls.Add(this.closebutton);
 			this.Controls.Add(this.replaceallbutton);
