@@ -1029,13 +1029,12 @@ namespace CodeImp.DoomBuilder.Map
 			if(dosectors)
 			{
 				foreach(Sector s in sectors) s.Triangulate();
-				
 				General.Map.CRenderer2D.Surfaces.AllocateBuffers();
-				
 				foreach(Sector s in sectors) s.CreateSurfaces();
-				
 				General.Map.CRenderer2D.Surfaces.UnlockBuffers();
 			}
+
+			General.Interface.UpdateStatistics(); //mxd
 		}
 		
 		/// <summary>

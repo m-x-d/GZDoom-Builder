@@ -2986,6 +2986,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(sectorinfo.Visible) sectorinfo.Hide();
 				if(thinginfo.Visible) thinginfo.Hide();
 				modename.Visible = false;
+				statistics.Visible = false; //mxd
 				labelcollapsedinfo.Visible = true;
 				itemtoggleinfo.Checked = false;
 			}
@@ -3028,6 +3029,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public void HideInfo()
 		{
 			// Hide them all
+			bool showModeName = ((General.Map != null) && IsInfoPanelExpanded); //mxd
 			lastinfoobject = null;
 			if(linedefinfo.Visible) linedefinfo.Hide();
 			if(vertexinfo.Visible) vertexinfo.Hide();
@@ -3035,8 +3037,9 @@ namespace CodeImp.DoomBuilder.Windows
 			if(thinginfo.Visible) thinginfo.Hide();
 			labelcollapsedinfo.Text = modename.Text;
 			labelcollapsedinfo.Refresh();
-			modename.Visible = ((General.Map != null) && IsInfoPanelExpanded);
+			modename.Visible = showModeName;
 			modename.Refresh();
+			statistics.Visible = showModeName; //mxd
 
 			//mxd. let the plugins know
 			General.Plugins.OnHighlightLost();
@@ -3077,6 +3080,11 @@ namespace CodeImp.DoomBuilder.Windows
 		internal void RemoveHintsDocker() {
 			dockerspanel.Remove(hintsDocker);
 		}
+
+		//mxd
+		public void UpdateStatistics() {
+			statistics.UpdateStatistics();
+		}
 		
 		// Show linedef info
 		public void ShowLinedefInfo(Linedef l)
@@ -3089,6 +3097,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			lastinfoobject = l;
 			modename.Visible = false;
+			statistics.Visible = false; //mxd
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
 			if(thinginfo.Visible) thinginfo.Hide();
@@ -3118,6 +3127,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			lastinfoobject = v;
 			modename.Visible = false;
+			statistics.Visible = false; //mxd
 			if (linedefinfo.Visible) linedefinfo.Hide();
 			if (sectorinfo.Visible) sectorinfo.Hide();
 			if (thinginfo.Visible) thinginfo.Hide();
@@ -3140,6 +3150,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			lastinfoobject = s;
 			modename.Visible = false;
+			statistics.Visible = false; //mxd
 			if (linedefinfo.Visible) linedefinfo.Hide();
 			if (vertexinfo.Visible) vertexinfo.Hide();
 			if (thinginfo.Visible) thinginfo.Hide();
@@ -3170,6 +3181,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			lastinfoobject = t;
 			modename.Visible = false;
+			statistics.Visible = false; //mxd
 			if(linedefinfo.Visible) linedefinfo.Hide();
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
