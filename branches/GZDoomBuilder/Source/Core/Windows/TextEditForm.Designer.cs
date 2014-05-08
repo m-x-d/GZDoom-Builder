@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(354, 220);
+			this.cancel.Location = new System.Drawing.Point(235, 224);
 			this.cancel.Margin = new System.Windows.Forms.Padding(1);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(235, 220);
+			this.apply.Location = new System.Drawing.Point(354, 224);
 			this.apply.Margin = new System.Windows.Forms.Padding(1);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.textbox.Multiline = true;
 			this.textbox.Name = "textbox";
 			this.textbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.textbox.Size = new System.Drawing.Size(456, 194);
+			this.textbox.Size = new System.Drawing.Size(456, 204);
 			this.textbox.TabIndex = 0;
 			this.textbox.TabStop = false;
 			// 
@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TextEditForm";

@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodesViewer", "Source\Plugi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StairSectorBuilder", "Source\Plugins\StairSectorBuilder\StairSectorBuilder.csproj", "{3F365121-906B-409D-BB1E-37E0A78056C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statistics", "Source\Plugins\Statistics\Statistics.csproj", "{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagRange", "Source\Plugins\TagRange\TagRange.csproj", "{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisplaneExplorer", "Source\Plugins\VisplaneExplorer\VisplaneExplorer.csproj", "{CF670175-7099-4090-A330-EE25C7230139}"
@@ -131,18 +129,6 @@ Global
 		{3F365121-906B-409D-BB1E-37E0A78056C2}.Release|Win32.ActiveCfg = Release|x86
 		{3F365121-906B-409D-BB1E-37E0A78056C2}.Release|x86.ActiveCfg = Release|x86
 		{3F365121-906B-409D-BB1E-37E0A78056C2}.Release|x86.Build.0 = Release|x86
-		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Debug|Win32.ActiveCfg = Debug|x86
-		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Debug|x86.ActiveCfg = Debug|x86
-		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Debug|x86.Build.0 = Debug|x86
-		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Release|Any CPU.ActiveCfg = Release|x86
-		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Release|Mixed Platforms.Build.0 = Release|x86
-		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Release|Win32.ActiveCfg = Release|x86
-		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Release|x86.ActiveCfg = Release|x86
-		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Release|x86.Build.0 = Release|x86
 		{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}.Debug|Mixed Platforms.Build.0 = Debug|x86

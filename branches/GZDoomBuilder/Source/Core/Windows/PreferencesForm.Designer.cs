@@ -38,6 +38,9 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label18;
 			System.Windows.Forms.Label label20;
 			System.Windows.Forms.Label label21;
+			this.recentFiles = new Dotnetrix.Controls.TrackBar();
+			this.labelRecentFiles = new System.Windows.Forms.Label();
+			this.label25 = new System.Windows.Forms.Label();
 			this.vertexScaleLabel = new System.Windows.Forms.Label();
 			this.label22 = new System.Windows.Forms.Label();
 			this.vertexScale = new Dotnetrix.Controls.TrackBar();
@@ -159,9 +162,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label16 = new System.Windows.Forms.Label();
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.recentFiles = new Dotnetrix.Controls.TrackBar();
-			this.labelRecentFiles = new System.Windows.Forms.Label();
-			this.label25 = new System.Windows.Forms.Label();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -171,6 +171,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label20 = new System.Windows.Forms.Label();
 			label21 = new System.Windows.Forms.Label();
 			groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.recentFiles)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.vertexScale)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.zoomfactor)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).BeginInit();
@@ -196,7 +197,6 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
 			this.colorsgroup3.SuspendLayout();
 			this.tabpasting.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.recentFiles)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label7
@@ -254,6 +254,37 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1.TabIndex = 0;
 			groupBox1.TabStop = false;
 			groupBox1.Text = " Options ";
+			// 
+			// recentFiles
+			// 
+			this.recentFiles.LargeChange = 1;
+			this.recentFiles.Location = new System.Drawing.Point(127, 238);
+			this.recentFiles.Maximum = 25;
+			this.recentFiles.Minimum = 8;
+			this.recentFiles.Name = "recentFiles";
+			this.recentFiles.Size = new System.Drawing.Size(116, 45);
+			this.recentFiles.TabIndex = 46;
+			this.recentFiles.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.recentFiles.Value = 8;
+			this.recentFiles.ValueChanged += new System.EventHandler(this.recentFiles_ValueChanged);
+			// 
+			// labelRecentFiles
+			// 
+			this.labelRecentFiles.AutoSize = true;
+			this.labelRecentFiles.Location = new System.Drawing.Point(249, 250);
+			this.labelRecentFiles.Name = "labelRecentFiles";
+			this.labelRecentFiles.Size = new System.Drawing.Size(13, 14);
+			this.labelRecentFiles.TabIndex = 48;
+			this.labelRecentFiles.Text = "8";
+			// 
+			// label25
+			// 
+			this.label25.AutoSize = true;
+			this.label25.Location = new System.Drawing.Point(31, 251);
+			this.label25.Name = "label25";
+			this.label25.Size = new System.Drawing.Size(90, 14);
+			this.label25.TabIndex = 47;
+			this.label25.Text = "Max. recent files:";
 			// 
 			// vertexScaleLabel
 			// 
@@ -701,7 +732,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(589, 558);
+			this.cancel.Location = new System.Drawing.Point(469, 557);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 2;
@@ -713,7 +744,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.apply.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.apply.Location = new System.Drawing.Point(471, 558);
+			this.apply.Location = new System.Drawing.Point(587, 557);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 1;
@@ -1723,37 +1754,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pasteoptions.Size = new System.Drawing.Size(666, 427);
 			this.pasteoptions.TabIndex = 0;
 			// 
-			// recentFiles
-			// 
-			this.recentFiles.LargeChange = 1;
-			this.recentFiles.Location = new System.Drawing.Point(127, 238);
-			this.recentFiles.Maximum = 25;
-			this.recentFiles.Minimum = 8;
-			this.recentFiles.Name = "recentFiles";
-			this.recentFiles.Size = new System.Drawing.Size(116, 45);
-			this.recentFiles.TabIndex = 46;
-			this.recentFiles.TickStyle = System.Windows.Forms.TickStyle.Both;
-			this.recentFiles.Value = 8;
-			this.recentFiles.ValueChanged += new System.EventHandler(this.recentFiles_ValueChanged);
-			// 
-			// labelRecentFiles
-			// 
-			this.labelRecentFiles.AutoSize = true;
-			this.labelRecentFiles.Location = new System.Drawing.Point(249, 250);
-			this.labelRecentFiles.Name = "labelRecentFiles";
-			this.labelRecentFiles.Size = new System.Drawing.Size(13, 14);
-			this.labelRecentFiles.TabIndex = 48;
-			this.labelRecentFiles.Text = "8";
-			// 
-			// label25
-			// 
-			this.label25.AutoSize = true;
-			this.label25.Location = new System.Drawing.Point(31, 251);
-			this.label25.Name = "label25";
-			this.label25.Size = new System.Drawing.Size(90, 14);
-			this.label25.TabIndex = 47;
-			this.label25.Text = "Max. recent files:";
-			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -1766,7 +1766,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.tabs);
 			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "PreferencesForm";
@@ -1777,6 +1777,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.PreferencesForm_HelpRequested);
 			groupBox1.ResumeLayout(false);
 			groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.recentFiles)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.vertexScale)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.zoomfactor)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).EndInit();
@@ -1810,7 +1811,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup3.ResumeLayout(false);
 			this.colorsgroup3.PerformLayout();
 			this.tabpasting.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.recentFiles)).EndInit();
 			this.ResumeLayout(false);
 
 		}

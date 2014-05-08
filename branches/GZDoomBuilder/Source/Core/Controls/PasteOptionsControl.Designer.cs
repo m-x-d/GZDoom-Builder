@@ -44,9 +44,9 @@ namespace CodeImp.DoomBuilder.Controls
 			this.sectorheightsgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.sectorheightsgroup.Controls.Add(this.adjustheights);
-			this.sectorheightsgroup.Location = new System.Drawing.Point(0, 164);
+			this.sectorheightsgroup.Location = new System.Drawing.Point(0, 138);
 			this.sectorheightsgroup.Name = "sectorheightsgroup";
-			this.sectorheightsgroup.Size = new System.Drawing.Size(443, 83);
+			this.sectorheightsgroup.Size = new System.Drawing.Size(443, 50);
 			this.sectorheightsgroup.TabIndex = 3;
 			this.sectorheightsgroup.TabStop = false;
 			this.sectorheightsgroup.Text = " Floor and Ceiling heights ";
@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// adjustheights
 			// 
 			this.adjustheights.AutoSize = true;
-			this.adjustheights.Location = new System.Drawing.Point(30, 39);
+			this.adjustheights.Location = new System.Drawing.Point(30, 24);
 			this.adjustheights.Name = "adjustheights";
 			this.adjustheights.Size = new System.Drawing.Size(292, 17);
 			this.adjustheights.TabIndex = 0;
@@ -71,7 +71,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.tagsgroup.Controls.Add(this.keeptags);
 			this.tagsgroup.Location = new System.Drawing.Point(0, 0);
 			this.tagsgroup.Name = "tagsgroup";
-			this.tagsgroup.Size = new System.Drawing.Size(443, 158);
+			this.tagsgroup.Size = new System.Drawing.Size(443, 132);
 			this.tagsgroup.TabIndex = 2;
 			this.tagsgroup.TabStop = false;
 			this.tagsgroup.Text = " Tags and Actions ";
@@ -79,7 +79,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// removeactions
 			// 
 			this.removeactions.AutoSize = true;
-			this.removeactions.Location = new System.Drawing.Point(30, 117);
+			this.removeactions.Location = new System.Drawing.Point(30, 107);
 			this.removeactions.Name = "removeactions";
 			this.removeactions.Size = new System.Drawing.Size(116, 17);
 			this.removeactions.TabIndex = 3;
@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// removetags
 			// 
 			this.removetags.AutoSize = true;
-			this.removetags.Location = new System.Drawing.Point(30, 81);
+			this.removetags.Location = new System.Drawing.Point(30, 71);
 			this.removetags.Name = "removetags";
 			this.removetags.Size = new System.Drawing.Size(101, 17);
 			this.removetags.TabIndex = 2;
@@ -100,7 +100,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// renumbertags
 			// 
 			this.renumbertags.AutoSize = true;
-			this.renumbertags.Location = new System.Drawing.Point(30, 57);
+			this.renumbertags.Location = new System.Drawing.Point(30, 47);
 			this.renumbertags.Name = "renumbertags";
 			this.renumbertags.Size = new System.Drawing.Size(271, 17);
 			this.renumbertags.TabIndex = 1;
@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// keeptags
 			// 
 			this.keeptags.AutoSize = true;
-			this.keeptags.Location = new System.Drawing.Point(30, 33);
+			this.keeptags.Location = new System.Drawing.Point(30, 24);
 			this.keeptags.Name = "keeptags";
 			this.keeptags.Size = new System.Drawing.Size(217, 17);
 			this.keeptags.TabIndex = 0;
@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Controls.Add(this.sectorheightsgroup);
 			this.Controls.Add(this.tagsgroup);
 			this.Name = "PasteOptionsControl";
-			this.Size = new System.Drawing.Size(443, 282);
+			this.Size = new System.Drawing.Size(443, 208);
 			this.sectorheightsgroup.ResumeLayout(false);
 			this.sectorheightsgroup.PerformLayout();
 			this.tagsgroup.ResumeLayout(false);

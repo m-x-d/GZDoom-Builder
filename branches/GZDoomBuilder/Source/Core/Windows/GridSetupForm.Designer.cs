@@ -68,12 +68,15 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// gridsize
 			// 
+			this.gridsize.AllowDecimal = false;
 			this.gridsize.AllowNegative = false;
 			this.gridsize.AllowRelative = true;
 			this.gridsize.ButtonStep = 8;
+			this.gridsize.ButtonStepFloat = 1F;
 			this.gridsize.Location = new System.Drawing.Point(146, 26);
 			this.gridsize.Name = "gridsize";
 			this.gridsize.Size = new System.Drawing.Size(75, 24);
+			this.gridsize.StepValues = null;
 			this.gridsize.TabIndex = 1;
 			// 
 			// label1
@@ -109,46 +112,58 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// backscaley
 			// 
+			this.backscaley.AllowDecimal = false;
 			this.backscaley.AllowNegative = false;
 			this.backscaley.AllowRelative = true;
 			this.backscaley.ButtonStep = 1;
+			this.backscaley.ButtonStepFloat = 1F;
 			this.backscaley.Enabled = false;
 			this.backscaley.Location = new System.Drawing.Point(197, 212);
 			this.backscaley.Name = "backscaley";
 			this.backscaley.Size = new System.Drawing.Size(67, 24);
+			this.backscaley.StepValues = null;
 			this.backscaley.TabIndex = 13;
 			// 
 			// backscalex
 			// 
+			this.backscalex.AllowDecimal = false;
 			this.backscalex.AllowNegative = false;
 			this.backscalex.AllowRelative = true;
 			this.backscalex.ButtonStep = 1;
+			this.backscalex.ButtonStepFloat = 1F;
 			this.backscalex.Enabled = false;
 			this.backscalex.Location = new System.Drawing.Point(124, 212);
 			this.backscalex.Name = "backscalex";
 			this.backscalex.Size = new System.Drawing.Size(67, 24);
+			this.backscalex.StepValues = null;
 			this.backscalex.TabIndex = 12;
 			// 
 			// backoffsety
 			// 
+			this.backoffsety.AllowDecimal = false;
 			this.backoffsety.AllowNegative = true;
 			this.backoffsety.AllowRelative = true;
 			this.backoffsety.ButtonStep = 1;
+			this.backoffsety.ButtonStepFloat = 1F;
 			this.backoffsety.Enabled = false;
 			this.backoffsety.Location = new System.Drawing.Point(197, 173);
 			this.backoffsety.Name = "backoffsety";
 			this.backoffsety.Size = new System.Drawing.Size(67, 24);
+			this.backoffsety.StepValues = null;
 			this.backoffsety.TabIndex = 11;
 			// 
 			// backoffsetx
 			// 
+			this.backoffsetx.AllowDecimal = false;
 			this.backoffsetx.AllowNegative = true;
 			this.backoffsetx.AllowRelative = true;
 			this.backoffsetx.ButtonStep = 1;
+			this.backoffsetx.ButtonStepFloat = 1F;
 			this.backoffsetx.Enabled = false;
 			this.backoffsetx.Location = new System.Drawing.Point(124, 173);
 			this.backoffsetx.Name = "backoffsetx";
 			this.backoffsetx.Size = new System.Drawing.Size(67, 24);
+			this.backoffsetx.StepValues = null;
 			this.backoffsetx.TabIndex = 10;
 			// 
 			// backscale
@@ -229,7 +244,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(193, 368);
+			this.cancel.Location = new System.Drawing.Point(75, 359);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 3;
@@ -240,7 +255,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(75, 368);
+			this.apply.Location = new System.Drawing.Point(193, 359);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 2;
@@ -260,13 +275,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(317, 403);
+			this.ClientSize = new System.Drawing.Size(317, 392);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(groupBox2);
 			this.Controls.Add(groupBox1);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "GridSetupForm";

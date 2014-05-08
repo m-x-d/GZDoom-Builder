@@ -703,6 +703,12 @@
     <Compile Include="Controls\PasteOptionsControl.Designer.cs">
       <DependentUpon>PasteOptionsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\StatisticsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\StatisticsControl.Designer.cs">
+      <DependentUpon>StatisticsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ThingBrowserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -923,6 +929,9 @@
     <EmbeddedResource Include="Controls\PasteOptionsControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>PasteOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\StatisticsControl.resx">
+      <DependentUpon>StatisticsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ThingBrowserControl.resx">
       <SubType>Designer</SubType>

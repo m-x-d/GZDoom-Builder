@@ -257,6 +257,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// floortex
 			// 
 			this.floortex.Location = new System.Drawing.Point(242, 35);
+			this.floortex.MultipleTextures = false;
 			this.floortex.Name = "floortex";
 			this.floortex.Size = new System.Drawing.Size(83, 105);
 			this.floortex.TabIndex = 2;
@@ -280,6 +281,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// ceilingtex
 			// 
 			this.ceilingtex.Location = new System.Drawing.Point(337, 35);
+			this.ceilingtex.MultipleTextures = false;
 			this.ceilingtex.Name = "ceilingtex";
 			this.ceilingtex.Size = new System.Drawing.Size(83, 105);
 			this.ceilingtex.TabIndex = 3;
@@ -290,7 +292,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(346, 278);
+			this.cancel.Location = new System.Drawing.Point(226, 278);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 2;
@@ -301,7 +303,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(227, 278);
+			this.apply.Location = new System.Drawing.Point(344, 278);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 1;
@@ -312,6 +314,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// flatSelectorControl2
 			// 
 			this.flatSelectorControl2.Location = new System.Drawing.Point(271, 37);
+			this.flatSelectorControl2.MultipleTextures = false;
 			this.flatSelectorControl2.Name = "flatSelectorControl2";
 			this.flatSelectorControl2.Size = new System.Drawing.Size(83, 105);
 			this.flatSelectorControl2.TabIndex = 13;
@@ -320,6 +323,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// flatSelectorControl1
 			// 
 			this.flatSelectorControl1.Location = new System.Drawing.Point(363, 37);
+			this.flatSelectorControl1.MultipleTextures = false;
 			this.flatSelectorControl1.Name = "flatSelectorControl1";
 			this.flatSelectorControl1.Size = new System.Drawing.Size(83, 105);
 			this.flatSelectorControl1.TabIndex = 12;
@@ -346,7 +350,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SectorEditForm";

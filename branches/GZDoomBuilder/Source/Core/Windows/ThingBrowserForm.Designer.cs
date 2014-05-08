@@ -42,13 +42,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.thingslist.Name = "thingslist";
 			this.thingslist.Size = new System.Drawing.Size(394, 383);
 			this.thingslist.TabIndex = 0;
+			this.thingslist.UseMultiSelection = false;
 			this.thingslist.OnTypeDoubleClicked += new CodeImp.DoomBuilder.Controls.ThingBrowserControl.TypeDoubleClickDeletegate(this.thingslist_OnTypeDoubleClicked);
 			// 
 			// cancel
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(291, 416);
+			this.cancel.Location = new System.Drawing.Point(173, 403);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 27);
 			this.cancel.TabIndex = 2;
@@ -59,7 +60,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(171, 416);
+			this.apply.Location = new System.Drawing.Point(291, 403);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 27);
 			this.apply.TabIndex = 1;
@@ -73,12 +74,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(412, 453);
+			this.ClientSize = new System.Drawing.Size(412, 437);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.thingslist);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ThingBrowserForm";

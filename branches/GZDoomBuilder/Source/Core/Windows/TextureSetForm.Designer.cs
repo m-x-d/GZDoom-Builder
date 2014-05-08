@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.filters.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.filtercolumn});
+            this.filtercolumn});
 			this.filters.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.filters.HideSelection = false;
 			this.filters.LabelEdit = true;
@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(503, 515);
+			this.apply.Location = new System.Drawing.Point(604, 511);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(105, 25);
 			this.apply.TabIndex = 3;
@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(614, 515);
+			this.cancel.Location = new System.Drawing.Point(493, 511);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(105, 25);
 			this.cancel.TabIndex = 4;
@@ -199,7 +199,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox2.Controls.Add(this.matchesbutton);
 			this.groupBox2.Controls.Add(this.matcheslist);
 			this.groupBox2.Controls.Add(this.noresultlabel);
-			this.groupBox2.Location = new System.Drawing.Point(298, 60);
+			this.groupBox2.Location = new System.Drawing.Point(288, 60);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(421, 440);
 			this.groupBox2.TabIndex = 2;
@@ -237,6 +237,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.matcheslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.matcheslist.BrowseFlats = false;
 			this.matcheslist.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.matcheslist.HideInputBox = true;
 			this.matcheslist.Location = new System.Drawing.Point(18, 55);
@@ -271,7 +272,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(731, 552);
+			this.ClientSize = new System.Drawing.Size(721, 544);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.cancel);
@@ -280,7 +281,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.groupBox1);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TextureSetForm";

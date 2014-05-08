@@ -36,7 +36,7 @@
 			// paste
 			// 
 			this.paste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.paste.Location = new System.Drawing.Point(272, 278);
+			this.paste.Location = new System.Drawing.Point(260, 214);
 			this.paste.Name = "paste";
 			this.paste.Size = new System.Drawing.Size(112, 25);
 			this.paste.TabIndex = 3;
@@ -48,7 +48,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(390, 278);
+			this.cancel.Location = new System.Drawing.Point(142, 214);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 4;
@@ -63,7 +63,7 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.pasteoptions.Location = new System.Drawing.Point(12, 12);
 			this.pasteoptions.Name = "pasteoptions";
-			this.pasteoptions.Size = new System.Drawing.Size(490, 260);
+			this.pasteoptions.Size = new System.Drawing.Size(360, 188);
 			this.pasteoptions.TabIndex = 5;
 			// 
 			// PasteOptionsForm
@@ -72,13 +72,13 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(514, 318);
+			this.ClientSize = new System.Drawing.Size(384, 246);
 			this.ControlBox = false;
 			this.Controls.Add(this.pasteoptions);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.paste);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "PasteOptionsForm";

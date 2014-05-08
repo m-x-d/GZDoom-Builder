@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres.Controls.Add(label3);
 			this.panelres.Location = new System.Drawing.Point(12, 215);
 			this.panelres.Name = "panelres";
-			this.panelres.Size = new System.Drawing.Size(396, 238);
+			this.panelres.Size = new System.Drawing.Size(396, 240);
 			this.panelres.TabIndex = 2;
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Resources ";
@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(178, 462);
+			this.apply.Location = new System.Drawing.Point(296, 465);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 3;
@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(296, 462);
+			this.cancel.Location = new System.Drawing.Point(178, 464);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 4;
@@ -144,7 +144,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.config.IntegralHeight = false;
 			this.config.Location = new System.Drawing.Point(141, 21);
 			this.config.Name = "config";
-			this.config.Size = new System.Drawing.Size(242, 22);
+			this.config.Size = new System.Drawing.Size(267, 22);
 			this.config.TabIndex = 0;
 			this.config.SelectedIndexChanged += new System.EventHandler(this.config_SelectedIndexChanged);
 			// 
@@ -185,7 +185,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.panelres);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "OpenMapOptionsForm";

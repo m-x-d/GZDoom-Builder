@@ -51,7 +51,7 @@
 			this.mapslist.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.mapslist.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			columnHeader1});
+            columnHeader1});
 			this.mapslist.FullRowSelect = true;
 			this.mapslist.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.mapslist.HideSelection = false;
@@ -71,7 +71,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(296, 152);
+			this.cancel.Location = new System.Drawing.Point(178, 152);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 20;
@@ -82,7 +82,7 @@
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(178, 152);
+			this.apply.Location = new System.Drawing.Point(296, 152);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 19;
@@ -102,7 +102,7 @@
 			this.Controls.Add(this.mapslist);
 			this.Controls.Add(label2);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ChangeMapForm";
