@@ -545,7 +545,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Update overlay
 				updateOverlaySurfaces();
-				updateSelectionInfo();
+				UpdateSelectionInfo();
 			}
 		}
 
@@ -598,7 +598,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Update
 			UpdateSelectedLabels();
 			updateOverlaySurfaces();//mxd
-			updateSelectionInfo(); //mxd
+			UpdateSelectionInfo(); //mxd
 			UpdateOverlay();
 		}
 		
@@ -757,7 +757,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Interface.RedrawDisplay();
 				}
 
-				updateSelectionInfo(); //mxd
+				UpdateSelectionInfo(); //mxd
 			}
 
 			base.OnSelectEnd();
@@ -844,7 +844,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
-				updateSelectionInfo(); //mxd
+				UpdateSelectionInfo(); //mxd
 			}
 
 			editpressed = false;
@@ -916,7 +916,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Interface.RedrawDisplay();
 					}
 
-					updateSelectionInfo(); //mxd
+					UpdateSelectionInfo(); //mxd
 				}
 			} 
 			else if(e.Button == MouseButtons.None) // Not holding any buttons?
@@ -1141,7 +1141,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				UpdateSelectedLabels(); //mxd
-				updateSelectionInfo(); //mxd
+				UpdateSelectionInfo(); //mxd
 				updateOverlaySurfaces(); //mxd
 			}
 			
@@ -1217,7 +1217,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void updateSelectionInfo() {
+		public override void UpdateSelectionInfo() {
 			if(General.Map.Map.SelectedSectorsCount > 0)
 				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedSectorsCount + (General.Map.Map.SelectedSectorsCount == 1 ? " sector" : " sectors") + " selected.");
 			else
@@ -2081,6 +2081,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.Map.Update();
 			General.Interface.RedrawDisplay();
 			General.Interface.RefreshInfo();
+		}
+
+		//mxd
+		[BeginAction("selectsimilar")]
+		public void SelectSimilar() {
+			ICollection<Sector> selection = General.Map.Map.GetSelectedSectors(true);
+
+			if(selection.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			var form = new SelectSimilarElementOptionsPanel();
+			if(form.Setup(this)) form.ShowDialog();
 		}
 		
 		#endregion

@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Convert geometry selection to vertices only
 			General.Map.Map.ConvertSelection(SelectionType.Vertices);
-			updateSelectionInfo(); //mxd
+			UpdateSelectionInfo(); //mxd
 		}
 
 		// Mode disengages
@@ -240,7 +240,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				//mxd
-				updateSelectionInfo();
+				UpdateSelectionInfo();
 			}
 
 			base.OnSelectEnd();
@@ -385,7 +385,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
-				updateSelectionInfo(); //mxd
+				UpdateSelectionInfo(); //mxd
 			}
 
 			editpressed = false;
@@ -431,7 +431,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							v.Selected = !v.Selected;
 						highlighted = v;
 
-						updateSelectionInfo(); //mxd
+						UpdateSelectionInfo(); //mxd
 
 						// Update entire display
 						General.Interface.RedrawDisplay();
@@ -613,7 +613,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				//mxd
-				updateSelectionInfo();
+				UpdateSelectionInfo();
 			}
 			
 			base.OnEndMultiSelection();
@@ -653,7 +653,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void updateSelectionInfo() {
+		public override void UpdateSelectionInfo() {
 			if(General.Map.Map.SelectedVerticessCount > 0)
 				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedVerticessCount + (General.Map.Map.SelectedVerticessCount == 1 ? " vertex" : " vertices") + " selected.");
 			else
@@ -977,6 +977,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach (Vertex v in selected)
 				if (!positions.Contains(v.Position)) positions.Add(v.Position);
 			placeThingsAtPositions(positions);
+		}
+
+		//mxd
+		[BeginAction("selectsimilar")]
+		public void SelectSimilar() {
+			ICollection<Vertex> selection = General.Map.Map.GetSelectedVertices(true);
+
+			if(selection.Count == 0) {
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			var form = new SelectSimilarElementOptionsPanel();
+			if(form.Setup(this)) form.ShowDialog();
 		}
 
 		#endregion

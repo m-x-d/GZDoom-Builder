@@ -9,30 +9,42 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 {
 	public partial class PastePropertiesOptionsForm : Form
 	{
-		private readonly Dictionary<Type, CheckboxArrayControl> typecontrols;
+		private static Size size = Size.Empty;
+		private static Point location = Point.Empty;
+		private readonly Dictionary<object, CheckboxArrayControl> typecontrols;
 		
 		public PastePropertiesOptionsForm() {
-			Point pos = Cursor.Position;
-			pos.Offset(-this.Width / 2, -this.Height / 2);
-			if (pos.Y < 0) pos.Y = 0;
-			this.Location = pos;
-
 			InitializeComponent();
 
+			//apply window size and location
+			if(!size.IsEmpty && !location.IsEmpty) {
+				this.StartPosition = FormStartPosition.Manual;
+				this.Size = size;
+				this.Location = location;
+			}
+
 			//create a collection
-			typecontrols = new Dictionary<Type, CheckboxArrayControl> {
-				{typeof (SectorProperties), sectorflags}, 
-				{typeof (LinedefProperties), lineflags}, 
-				{typeof (SidedefProperties), sideflags}, 
-				{typeof (ThingProperties), thingflags}, 
-				{typeof (VertexProperties), vertexflags}
+			typecontrols = new Dictionary<object, CheckboxArrayControl> {
+				{SectorProperties.CopySettings, sectorflags},
+				{LinedefProperties.CopySettings, lineflags},
+				{SidedefProperties.CopySettings, sideflags},
+				{ThingProperties.CopySettings, thingflags},
+				{VertexProperties.CopySettings, vertexflags}
 			};
 
 			//fill flags
-			foreach(KeyValuePair<Type, CheckboxArrayControl> group in typecontrols) {
-				FieldInfo[] props = group.Key.GetFields(BindingFlags.Static | BindingFlags.Public);
+			foreach(KeyValuePair<object, CheckboxArrayControl> group in typecontrols) {
+				FieldInfo[] props = group.Key.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+				string title = "<unknown flag>";
 				foreach(var prop in props) {
-					group.Value.Add(prop.Name.Replace("_", " "), prop.Name).Checked = (bool)prop.GetValue(group.Key);
+					foreach(Attribute attr in Attribute.GetCustomAttributes(prop)) {
+						if(attr.GetType() == typeof(FieldDescription)) {
+							title = ((FieldDescription)attr).Description;
+							break;
+						}
+					}
+
+					group.Value.Add(title, prop.Name).Checked = (bool)prop.GetValue(group.Key);
 				}
 
 				group.Value.PositionCheckboxes();
@@ -49,8 +61,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 		}
 
 		private void apply_Click(object sender, EventArgs e) {
-			foreach (KeyValuePair<Type, CheckboxArrayControl> group in typecontrols) {
-				FieldInfo[] props = group.Key.GetFields(BindingFlags.Static | BindingFlags.Public);
+			foreach (KeyValuePair<object, CheckboxArrayControl> group in typecontrols) {
+				FieldInfo[] props = group.Key.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
 				var fields = new Dictionary<string, FieldInfo>(props.Length);
 				for(int i = 0; i < props.Length; i++) {
 					fields[props[i].Name] = props[i];
@@ -68,9 +80,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 		}
 
 		private void enableall_Click(object sender, EventArgs e) {
-			foreach (KeyValuePair<Type, CheckboxArrayControl> group in typecontrols) {
-				foreach (var cb in group.Value.Checkboxes) cb.Checked = true;
-			}
+			CheckboxArrayControl curControl = tabControl.SelectedTab.Controls[0] as CheckboxArrayControl;
+			if(curControl == null) return; //just a piece of boilerplate...
+			bool enable = !curControl.Checkboxes[0].Checked;
+			foreach(var cb in curControl.Checkboxes) cb.Checked = enable;
+		}
+
+		private void PastePropertiesOptionsForm_FormClosing(object sender, FormClosingEventArgs e) {
+			size = this.Size;
+			location = this.Location;
 		}
 	}
 }

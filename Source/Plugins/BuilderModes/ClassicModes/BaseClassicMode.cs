@@ -150,14 +150,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnUndoEnd() {
 			General.Map.Renderer2D.UpdateExtraFloorFlag();
 			base.OnUndoEnd();
-			updateSelectionInfo();
+			UpdateSelectionInfo();
 		}
 
 		//mxd
 		public override void OnRedoEnd() {
 			General.Map.Renderer2D.UpdateExtraFloorFlag();
 			base.OnRedoEnd();
-			updateSelectionInfo();
+			UpdateSelectionInfo();
 		}
 
 		//mxd
@@ -167,7 +167,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected virtual void updateSelectionInfo() {
+		public virtual void UpdateSelectionInfo() {
 			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 		}
 
