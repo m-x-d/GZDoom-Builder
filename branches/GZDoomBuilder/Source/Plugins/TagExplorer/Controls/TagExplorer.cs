@@ -118,7 +118,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 				if(!(things is MapElementCollection<Thing>)) { //don't want to enumerate when array is locked
 					foreach(Thing t in things) {
-						if((showTags && t.Tag > 0) || (showActions && t.Action > 0)) {
+						if((showTags && t.Tag != 0) || (showActions && t.Action > 0)) {
 							if(filteredTag != -1 && t.Tag != filteredTag)
 								continue;
 							if(filteredAction != -1 && t.Action != filteredAction)
@@ -242,7 +242,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 			if (!(sectors is MapElementCollection<Sector>)) { //don't want to enumerate when array is locked
 				foreach (Sector s in sectors) {
-					if ((showTags && s.Tag > 0) || (showActions && s.Effect > 0)) {
+					if ((showTags && s.Tag != 0) || (showActions && s.Effect > 0)) {
 						if (filteredTag != -1 && s.Tag != filteredTag)
 							continue;
 						if (filteredAction != -1 && s.Effect != filteredAction)
@@ -341,7 +341,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 			if (!(linedefs is MapElementCollection<Linedef>)) { //don't want to enumerate when array is locked
 				foreach (Linedef l in linedefs) {
-					if ((showTags && l.Tag > 0) || (showActions && l.Action > 0)) {
+					if ((showTags && l.Tag != 0) || (showActions && l.Action > 0)) {
 						if (filteredTag != -1 && l.Tag != filteredTag)
 							continue;
 						if (filteredAction != -1 && l.Action != filteredAction)
