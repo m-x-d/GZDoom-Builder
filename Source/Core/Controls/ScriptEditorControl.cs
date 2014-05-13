@@ -41,11 +41,12 @@ namespace CodeImp.DoomBuilder.Controls
 		private const int MAX_BACKTRACK_LENGTH = 200;
 
 		// Index for registered images
-		private enum ImageIndex : int
+		private enum ImageIndex
 		{
 			ScriptConstant = 0,
 			ScriptKeyword = 1,
-			ScriptError = 2
+			ScriptError = 2,
+			ScriptSnippet = 3, //mxd
 		}
 		
 		#endregion
@@ -154,6 +155,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Images
 			RegisterAutoCompleteImage(ImageIndex.ScriptConstant, Resources.ScriptConstant);
 			RegisterAutoCompleteImage(ImageIndex.ScriptKeyword, Resources.ScriptKeyword);
+			RegisterAutoCompleteImage(ImageIndex.ScriptSnippet, Resources.ScriptSnippet); //mxd
 			RegisterMarkerImage(ImageIndex.ScriptError, Resources.ScriptError);
 
 			// Events
@@ -244,8 +246,7 @@ namespace CodeImp.DoomBuilder.Controls
 			Stream lexersdata;
 			StreamReader lexersreader;
 			Configuration lexercfg = new Configuration();
-			int imageindex;
-			
+
 			// Make collections
 			stylelookup = new Dictionary<int, ScriptStyleType>();
 			SortedList<string, string> autocompletelist = new SortedList<string, string>(StringComparer.Ordinal);
@@ -347,7 +348,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			
 			// Create the keywords list and apply it
-			imageindex = (int)ImageIndex.ScriptKeyword;
+			string imageindex = ((int)ImageIndex.ScriptKeyword).ToString(CultureInfo.InvariantCulture);
 			int keywordsindex = lexercfg.ReadSetting(lexername + ".keywordsindex", -1);
 			if(keywordsindex > -1)
 			{
@@ -356,7 +357,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					if(keywordslist.Length > 0) keywordslist.Append(" ");
 					keywordslist.Append(k);
-					autocompletelist.Add(k.ToUpperInvariant(), k + "?" + imageindex.ToString(CultureInfo.InvariantCulture));
+					autocompletelist.Add(k.ToUpperInvariant(), k + "?" + imageindex);
 				}
 				string words = keywordslist.ToString();
 				if(scriptconfig.CaseSensitive)
@@ -366,7 +367,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Create the constants list and apply it
-			imageindex = (int)ImageIndex.ScriptConstant;
+			imageindex = ((int)ImageIndex.ScriptConstant).ToString(CultureInfo.InvariantCulture);
 			int constantsindex = lexercfg.ReadSetting(lexername + ".constantsindex", -1);
 			if(constantsindex > -1)
 			{
@@ -375,13 +376,33 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					if(constantslist.Length > 0) constantslist.Append(" ");
 					constantslist.Append(c);
-					autocompletelist.Add(c.ToUpperInvariant(), c + "?" + imageindex.ToString(CultureInfo.InvariantCulture));
+					autocompletelist.Add(c.ToUpperInvariant(), c + "?" + imageindex);
 				}
 				string words = constantslist.ToString();
 				if(scriptconfig.CaseSensitive)
 					scriptedit.KeyWords(constantsindex, words);
 				else
 					scriptedit.KeyWords(constantsindex, words.ToLowerInvariant());
+			}
+
+			//mxd. Create the snippets list and apply it
+			imageindex = ((int)ImageIndex.ScriptSnippet).ToString(CultureInfo.InvariantCulture);
+			int snippetindex = lexercfg.ReadSetting(lexername + ".snippetindex", -1);
+			if(snippetindex > -1 && scriptconfig.Snippets.Count > 0) 
+			{
+				StringBuilder snippetslist = new StringBuilder("");
+				foreach(string c in scriptconfig.Snippets.Keys) 
+				{
+					if(autocompletelist.ContainsKey(c.ToUpperInvariant())) continue;
+					if(snippetslist.Length > 0) snippetslist.Append(" ");
+					snippetslist.Append(c);
+					autocompletelist.Add(c.ToUpperInvariant(), c + "?" + imageindex);
+				}
+				string words = snippetslist.ToString();
+				if(scriptconfig.CaseSensitive)
+					scriptedit.KeyWords(snippetindex, words);
+				else
+					scriptedit.KeyWords(snippetindex, words.ToLowerInvariant());
 			}
 			
 			// Sort the autocomplete list
@@ -640,23 +661,35 @@ namespace CodeImp.DoomBuilder.Controls
 			int numtabs = scriptedit.GetLineIndentation(curline);
 			string tabs = Environment.NewLine + new String(' ', numtabs);
 			string spaces = new String(' ', General.Settings.ScriptTabWidth);
-			for (int i = 0; i < lines.Length; i++) {
-				lines[i] = lines[i].Replace("\t", spaces);
-			}
-			string text = string.Join(tabs, lines);
-			scriptedit.InsertText(scriptedit.SelectionStart, text);
+			int entrypos = -1;
+			int entryline = -1;
+			string[] processedlines = new string[lines.Length];
 
-			//check if we have the $EP marker
-			for(int i = 0; i < lines.Length; i++) {
-				int pos = lines[i].IndexOf("$EP");
-				if(pos != -1) {
-					MoveToLine(curline + i);
-					pos += scriptedit.PositionFromLine(curline + i);
-					scriptedit.SelectionStart = pos + numtabs;
-					scriptedit.SelectionEnd = pos + numtabs + 3;
-					ReplaceSelection("");
-					break;
+			for (int i = 0; i < lines.Length; i++) {
+				processedlines[i] = lines[i].Replace("\t", spaces);
+
+				//check if we have the $EP marker
+				if (entrypos == -1) {
+					int pos = processedlines[i].IndexOf("$EP");
+					if (pos != -1) {
+						entryline = curline + i;
+						entrypos = pos + numtabs;
+						processedlines[i] = processedlines[i].Remove(pos, 3);
+					}
 				}
+			}
+
+			//replace the text
+			string text = string.Join(tabs, processedlines);
+			scriptedit.SelectionStart = scriptedit.WordStartPosition(scriptedit.CurrentPos, true);
+			scriptedit.SelectionEnd = scriptedit.WordEndPosition(scriptedit.CurrentPos, true);
+			scriptedit.ReplaceSel(text);
+
+			//move the cursor if we had the $EP marker
+			if (entrypos != -1) {
+				MoveToLine(entryline);
+				scriptedit.SelectionStart = scriptedit.PositionFromLine(entryline) + entrypos;
+				scriptedit.SelectionEnd = scriptedit.PositionFromLine(entryline) + entrypos;
 			}
 		}
 
@@ -693,65 +726,65 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// These key combinations put odd characters in the script, so I disabled them
 			if((e.KeyCode == Keys.Q) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.W) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.E) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.R) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.Y) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.U) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.I) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.P) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.A) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
-			if((e.KeyCode == Keys.D) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.G) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.H) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.J) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.K) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.L) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.Z) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
-			if((e.KeyCode == Keys.X) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
-			if((e.KeyCode == Keys.C) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
-			if((e.KeyCode == Keys.V) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
-			if((e.KeyCode == Keys.B) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.N) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.M) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.W) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.E) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.R) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.Y) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.U) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.I) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.P) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.A) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
+			else if((e.KeyCode == Keys.D) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.G) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.H) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.J) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.K) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.L) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.Z) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
+			else if((e.KeyCode == Keys.X) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
+			else if((e.KeyCode == Keys.C) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
+			else if((e.KeyCode == Keys.V) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
+			else if((e.KeyCode == Keys.B) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.N) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			else if((e.KeyCode == Keys.M) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
 
 			// F3 for Find Next
-			if((e.KeyCode == Keys.F3) && (e.Modifiers == Keys.None))
+			else if((e.KeyCode == Keys.F3) && (e.Modifiers == Keys.None))
 			{
 				if(OnFindNext != null) OnFindNext();
 				e.Handled = true;
 			}
 
 			// F2 for Keyword Help
-			if((e.KeyCode == Keys.F2) && (e.Modifiers == Keys.None))
+			else if((e.KeyCode == Keys.F2) && (e.Modifiers == Keys.None))
 			{
 				LaunchKeywordHelp();
 				e.Handled = true;
 			}
 
 			// CTRL+F for find & replace
-			if((e.KeyCode == Keys.F) && ((e.Modifiers & Keys.Control) == Keys.Control))
+			else if((e.KeyCode == Keys.F) && ((e.Modifiers & Keys.Control) == Keys.Control))
 			{
 				if(OnOpenFindAndReplace != null) OnOpenFindAndReplace();
 				e.Handled = true;
 			}
 
 			// CTRL+S for save
-			if((e.KeyCode == Keys.S) && ((e.Modifiers & Keys.Control) == Keys.Control))
+			else if((e.KeyCode == Keys.S) && ((e.Modifiers & Keys.Control) == Keys.Control))
 			{
 				if(OnExplicitSaveTab != null) OnExplicitSaveTab();
 				e.Handled = true;
 			}
 
 			// CTRL+O for open
-			if((e.KeyCode == Keys.O) && ((e.Modifiers & Keys.Control) == Keys.Control))
+			else if((e.KeyCode == Keys.O) && ((e.Modifiers & Keys.Control) == Keys.Control))
 			{
 				if(OnOpenScriptBrowser != null) OnOpenScriptBrowser();
 				e.Handled = true;
 			}
 
 			// CTRL+Space to autocomplete
-			if((e.KeyCode == Keys.Space) && (e.Modifiers == Keys.Control))
+			else if((e.KeyCode == Keys.Space) && (e.Modifiers == Keys.Control))
 			{
 				// Hide call tip if any
 				scriptedit.CallTipCancel();
@@ -762,6 +795,17 @@ namespace CodeImp.DoomBuilder.Controls
 				scriptedit.AutoCShow(currentpos - wordstartpos, autocompletestring);
 				
 				e.Handled = true;
+			}
+
+			//mxd. Tab to expand code snippet
+			else if(e.KeyCode == Keys.Tab) 
+			{
+				string curword = GetCurrentWord().ToLowerInvariant();
+				if (scriptconfig.Snippets.ContainsKey(curword)) 
+				{
+					InsertSnippet(scriptconfig.Snippets[curword]);
+					e.Handled = true;
+				}
 			}
 		}
 		
@@ -784,11 +828,17 @@ namespace CodeImp.DoomBuilder.Controls
 					{
 						// Apply identation of the previous line to this line
 						int ident = scriptedit.GetLineIndentation(curline - 1);
-						int tabs = ident ;// / scriptedit.Indent;
+
+						//mxd. Indent a bit more if a code block is started on the previous line
+						string prevline = scriptedit.GetLine(curline - 1);
+						int blockstartpos = prevline.LastIndexOf("{"); //TODO: should we move block start/end symbols to script configuration?..
+						int blockendpos = prevline.LastIndexOf("}");
+						if(blockstartpos > blockendpos) ident += General.Settings.ScriptTabWidth;
+
 						if(scriptedit.GetLineIndentation(curline) == 0)
 						{
 							scriptedit.SetLineIndentation(curline, ident);
-							scriptedit.SetSel(scriptedit.SelectionStart + tabs, scriptedit.SelectionStart + tabs);
+							scriptedit.SetSel(scriptedit.SelectionStart + ident, scriptedit.SelectionStart + ident);
 						}
 					}
 				}

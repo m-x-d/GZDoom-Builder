@@ -48,15 +48,15 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Variables
 		
 		// The script edit control
-		protected ScriptEditorControl editor;
+		protected readonly ScriptEditorControl editor;
 		//mxd
-		protected ComboBox navigator;
+		protected readonly ComboBox navigator;
 
 		// Derived classes must set this!
 		protected ScriptConfiguration config;
 		
 		// The panel we're on
-		protected ScriptEditorPanel panel;
+		protected readonly ScriptEditorPanel panel;
 		
 		#endregion
 
