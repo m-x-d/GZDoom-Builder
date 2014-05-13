@@ -3127,7 +3127,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			byte[] buffer = new byte[sz + 1];
 			fixed(byte* b = buffer)
-				FastPerform(2153, (uint)line + 1, (uint)b);
+				FastPerform(2153, (uint)line, (uint)b);
 			return System.Text.UTF8Encoding.UTF8.GetString(buffer, 0, sz);
 		}
 

@@ -671,6 +671,7 @@
     <EmbeddedResource Include="Resources\Thing2D_0.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ScriptSnippet.xpm" />
     <None Include="Resources\ThingStatistics.png" />
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />

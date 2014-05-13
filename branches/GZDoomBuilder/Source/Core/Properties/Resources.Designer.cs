@@ -564,6 +564,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static byte[] ScriptSnippet {
+            get {
+                object obj = ResourceManager.GetObject("ScriptSnippet", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Search {
             get {
                 object obj = ResourceManager.GetObject("Search", resourceCulture);
