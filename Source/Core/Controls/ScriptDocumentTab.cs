@@ -307,7 +307,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		protected void updateNavigator() {
+		protected void updateNavigator() 
+		{
 			//mxd. known script type?
 			if (Array.IndexOf(ScriptTypes.TYPES, config.Description) != -1) {
 				updateNavigator(new MemoryStream(editor.GetText()), config.Description);
@@ -319,7 +320,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void updateNavigator(MemoryStream stream, string scriptType) {
+		private void updateNavigator(MemoryStream stream, string scriptType) 
+		{
 			if (scriptType == ScriptTypes.TYPES[(int)ScriptType.ACS]) {
 				updateNavigatorAcs(stream);
 			} else if (scriptType == ScriptTypes.TYPES[(int)ScriptType.MODELDEF]) {
@@ -330,7 +332,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void updateNavigatorDecorate(MemoryStream stream) {
+		private void updateNavigatorDecorate(MemoryStream stream) 
+		{
 			if (stream == null) return;
 
 			navigator.Items.Clear();
@@ -344,7 +347,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void updateNavigatorModeldef(MemoryStream stream) {
+		private void updateNavigatorModeldef(MemoryStream stream) 
+		{
 			if (stream == null) return;
 
 			navigator.Items.Clear();
@@ -358,7 +362,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void updateNavigatorAcs(MemoryStream stream) {
+		private void updateNavigatorAcs(MemoryStream stream) 
+		{
 			if (stream == null) return;
 			
 			navigator.Items.Clear();
@@ -375,13 +380,20 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		//mxd
-		internal ScriptType VerifyScriptType() {
+		internal ScriptType VerifyScriptType() 
+		{
 			ScriptTypeParserSE parser = new ScriptTypeParserSE();
 			if (parser.Parse(new MemoryStream(editor.GetText()), config.Description)) {
 				if (parser.ScriptType != (int)ScriptType.UNKNOWN && config.Description != ScriptTypes.TYPES[(int)parser.ScriptType])
 					return parser.ScriptType;
 			}
 			return ScriptType.UNKNOWN;
+		}
+
+		//mxd
+		internal void InsertSnippet(string[] lines) 
+		{
+			editor.InsertSnippet(lines);
 		}
 
 		#endregion

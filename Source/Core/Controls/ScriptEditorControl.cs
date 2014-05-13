@@ -244,19 +244,17 @@ namespace CodeImp.DoomBuilder.Controls
 			Stream lexersdata;
 			StreamReader lexersreader;
 			Configuration lexercfg = new Configuration();
-			SortedList<string, string> autocompletelist;
-			string[] resnames;
 			int imageindex;
 			
 			// Make collections
 			stylelookup = new Dictionary<int, ScriptStyleType>();
-			autocompletelist = new SortedList<string, string>(StringComparer.Ordinal);
+			SortedList<string, string> autocompletelist = new SortedList<string, string>(StringComparer.Ordinal);
 			
 			// Keep script configuration
 			if(scriptconfig != config) scriptconfig = config;
 			
 			// Find a resource named Lexers.cfg
-			resnames = General.ThisAssembly.GetManifestResourceNames();
+			string[] resnames = General.ThisAssembly.GetManifestResourceNames();
 			foreach(string rn in resnames)
 			{
 				// Found one?
@@ -440,7 +438,6 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			int bracketlevel = 0;			// bracket level counting
 			int argindex = 0;				// function argument counting
-			int limitpos;					// lowest position we'll backtrack to
 			int pos = scriptedit.CurrentPos;
 			
 			// Decode the text
@@ -454,7 +451,7 @@ namespace CodeImp.DoomBuilder.Controls
 			curfunctionstartpos = 0;
 			
 			// Determine lowest backtrack position
-			limitpos = scriptedit.CurrentPos - MAX_BACKTRACK_LENGTH;
+			int limitpos = scriptedit.CurrentPos - MAX_BACKTRACK_LENGTH;
 			if(limitpos < 0) limitpos = 0;
 			
 			// We can only do this when we have function syntax information
@@ -633,6 +630,34 @@ namespace CodeImp.DoomBuilder.Controls
 		public void SetText(byte[] text)
 		{
 			scriptedit.SetText(text);
+		}
+
+		//mxd
+		public void InsertSnippet(string[] lines) 
+		{
+			//insert the snippet
+			int curline = scriptedit.LineFromPosition(scriptedit.SelectionStart);
+			int numtabs = scriptedit.GetLineIndentation(curline);
+			string tabs = Environment.NewLine + new String(' ', numtabs);
+			string spaces = new String(' ', General.Settings.ScriptTabWidth);
+			for (int i = 0; i < lines.Length; i++) {
+				lines[i] = lines[i].Replace("\t", spaces);
+			}
+			string text = string.Join(tabs, lines);
+			scriptedit.InsertText(scriptedit.SelectionStart, text);
+
+			//check if we have the $EP marker
+			for(int i = 0; i < lines.Length; i++) {
+				int pos = lines[i].IndexOf("$EP");
+				if(pos != -1) {
+					MoveToLine(curline + i);
+					pos += scriptedit.PositionFromLine(curline + i);
+					scriptedit.SelectionStart = pos + numtabs;
+					scriptedit.SelectionEnd = pos + numtabs + 3;
+					ReplaceSelection("");
+					break;
+				}
+			}
 		}
 
 		#endregion
