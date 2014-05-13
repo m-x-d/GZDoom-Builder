@@ -14,9 +14,16 @@
 	color: #336600;
 	font-weight: bold;
 }
-.style5 {color: #990000; font-weight: bold; }
-.style7 {color: #6600CC}
-.style9 {color: #003300}
+.style5 {
+	color: #990000;
+	font-weight: bold;
+}
+.style7 {
+	color: #6600CC
+}
+.style9 {
+	color: #003300
+}
 -->
 </style>
 </head>
@@ -27,18 +34,11 @@
 <div id="gz_title">
   <h1>GZDoom Builder features</h1>
 </div>
-<div id="contents">
-Jump to: <a href="#general">General interface</a> | 
-
-  <a href="#allmodes">Classic and Visual modes</a> | 
-  <a href="#classic">Classic modes</a>
-  | <a href="#sectors">Sectors mode</a>  | <a href="#linedefs">Linedefs mode</a>  | <a href="#things">Things mode</a> | <a href="#vertices">Vertices mode</a> | <a href="#visual">GZDB Visual mode</a> | <a href="#fields">Custom Fields</a> | <a href="#mapanalysis">Map Analysis mode</a> | <a href="#findreplace">Find and Replace mode</a>
-  | <a href="#misc">Misc.</a> | <a href="#formats">(G)ZDoom features support</a>
+<div id="contents"> Jump to: <a href="#general">General interface</a> | <a href="#allmodes">Classic and Visual modes</a> | <a href="#classic">Classic modes</a> | <a href="#sectors">Sectors mode</a> | <a href="#linedefs">Linedefs mode</a> | <a href="#things">Things mode</a> | <a href="#vertices">Vertices mode</a> | <a href="#visual">GZDB Visual mode</a> | <a href="#fields">Custom Fields</a> | <a href="#mapanalysis">Map Analysis mode</a> | <a href="#findreplace">Find and Replace mode</a> | <a href="#misc">Misc.</a> | <a href="#formats">(G)ZDoom features support</a>
   <ul style="list-style-type:none;">
     <li>
       <h3><a name="general" id="general"></a>General interface:</h3>
       <ul>
-        <li><a href="general/acs.html">Enhanced scripting workflow</a>.</li>
         <li><span class="style1"><strong>[new]</strong></span> <strong>Help</strong> side panel, which shows most of actions, available in current mode.</li>
         <li><span class="style1"><strong>[new]</strong></span> Maps can now be loaded by dragging wad files on top of GZDB's main window.</li>
         <li><span class="style1"><strong>[new]</strong></span> Open Map Options,  Map Options and Game Configurations forms: resources can be added by dragging them on top of resources list.</li>
@@ -59,23 +59,32 @@ Jump to: <a href="#general">General interface</a> |
           <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
           <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="general/selection_info.jpg" alt="" /></div>
         </li>
-        <li><span class="style1"><strong>[new]</strong></span> Texture size is now shown in texture previews. You can disable this   feature by unchecking &quot;<strong>Preferences -&gt; Interface -&gt; Show texture   and flat sizes in browsers</strong>&quot; checkbox. 
+        <li><span class="style1"><strong>[new]</strong></span> Texture size is now shown in texture previews. You can disable this   feature by unchecking &quot;<strong>Preferences -&gt; Interface -&gt; Show texture   and flat sizes in browsers</strong>&quot; checkbox.
           <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
-        <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="general/texturesize_preview.jpg" alt="" /></div></li>
+          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="general/texturesize_preview.jpg" alt="" /></div>
+        </li>
         <li><a href="general/multi_engines.html">Several game engines can be used per game configuration</a>.</li>
         <li>Size of vertex handles in 2D modes can be changed in <a href="../preferences.html">preferences</a>.</li>
         <li><span class="style1"><strong>[new]</strong></span> <strong>Script editor</strong>: pressing &quot;F1&quot;  opens keyword help instead of program manual.</li>
-        <li><span class="style1"><strong>[new]</strong></span> Side panel auto hiding can be now toggled much easier. <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
-        <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="general/pinsidepanel.jpg" alt="" /></div>
+        <li><span class="style1"><strong>[new]</strong></span> Side panel auto hiding can be now toggled much easier.
+          <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
+          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="general/pinsidepanel.jpg" alt="" /></div>
         </li>
         <li><span class="style1"><strong>[new]</strong></span> Things can be filtered in Thing Edit form.</li>
         <li><span class="style1"><strong>[new]</strong></span> Added &quot;<strong>Hints</strong>&quot; side panel, which shows the list of actions, available in current editing mode.</li>
-        <li>Actions and Effects can  be filtered (useful when you remember   action/effect name, but don't remember it's number or category). 
+        <li>Actions and Effects can  be filtered (useful when you remember   action/effect name, but don't remember it's number or category).
           <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
-        <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="general/actions_filter.jpg" alt="" /></div>
+          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="general/actions_filter.jpg" alt="" /></div>
         </li>
         <li>Actions can be filtered in Preferences form.</li>
         <li>Added errors and warnings indicator to main window (bottom-right   corner). You can click on it to open <strong>Errors and warnings</strong> window.</li>
+      </ul>
+    </li>
+    <li>
+      <h3><a name="scripting" id="allmodes"></a>Scripting</h3>
+      <ul>
+        <li><a href="scripting/acs.html">Enhanced scripting workflow</a>.</li>
+        <li><span class="style1"><strong>[new]</strong></span> <a href="scripting/snippets.html">Code snippets.</a></li>
       </ul>
     </li>
     <li>
@@ -91,8 +100,10 @@ Jump to: <a href="#general">General interface</a> |
         <li>Camera position can be  synchronized between Classic and Visual modes. <a href="all_modes/synch_camera.html">More info</a>.</li>
         <li>You can use <a href="all_modes/colorpicker.html">Color Picker plugin </a> to edit dynamic light properties and sector's fog and tint colors in Classic and Visual modes.</li>
         <li>You can use <a href="all_modes/tagexplorer.html">Tag Explorer plugin</a> to view all tags and actions used in current map.</li>
-        <li><span class="style1"><strong>[new]</strong></span> You can pick, which properties are pasted by &quot;Paste Properties&quot; action using &quot;Paste Properties Options&quot; window. <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
-          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"> <img src="all_modes/paste_properties_options.jpg" alt="" /></div></li>
+        <li><span class="style1"><strong>[new]</strong></span> You can pick, which properties are pasted by &quot;Paste Properties&quot; action using &quot;Paste Properties Options&quot; window.
+          <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
+          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"> <img src="all_modes/paste_properties_options.jpg" alt="" /></div>
+        </li>
         <li><span class="style1"><strong>[new]</strong></span> You can apply <a href="all_modes/jitter.html">randomized transformations</a> to any map element.</li>
         <li>Image browser shows directory structure of Folder, PK3 and PK7 resources and can filter images by texture type and size. <a href="all_modes/texture_browser.html">More info</a>.</li>
         <li><span class="style1"><strong>[new]</strong></span> Most controls of Edit Sector/Linedef/Thing forms now work in realtime (e.g. you can immediately see texture offset/scale/rotation changes while you are changing appropriate values). Action and Tag changes are still applied only after you press &quot;OK&quot; button.</li>
@@ -123,13 +134,13 @@ Jump to: <a href="#general">General interface</a> |
         <li><span class="style5"><strong>[new]</strong></span> Selected things are now dragged while dragging vertices, linedefs and sectors.</li>
         <li><span class="style5">[new]</span> You can place things on top of selected vertices in Vertices and Linedefs modes and inside of selected sectors in Sectors mode using &quot;<strong>Place Things</strong>&quot; action.</li>
         <li><span class="style5">[new]</span> You can view all loaded thing types and some additional info using Thing Statistics form (<strong>Edit -&gt; View Thing Types...</strong>).
-        <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
+          <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
           <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"> <img src="classic_modes/thing_statistics.jpg" alt="" /></div>
-          </li>
+        </li>
         <li><span class="style5">[new]</span> You can override default sector properties, which are used  to create new geometry, using &quot;<strong><a href="classic_modes/drawsettingspanel.html">Draw Settings</a></strong>&quot; panel (by default, when the new sector overlaps or touches existing sector, the editor uses textures, brighntess and floor/ceiling heights from that sector when drawing the new one).</li>
         <li><span class="style1"><strong>[new]</strong></span> You can disable Doom Builder's auto-clear textures behaviour by using this button in the toolbar: <img src="general/autoclear_textures.jpg"/></li>
         <li><span class="style5">[new]</span> You can change default sector brightness and floor/ceiling height (<strong>Preferences -&gt; Editing -&gt; Default sector settings</strong>). These settings are used when the new sector doesn't touch or overlap already existing sectors.</li>
-        <li><span class="style5">[new]</span> 3D floor indication (color can be changed in <strong>Preferences -&gt; Appearance -&gt; 3D Floors</strong>, the setting can be disabled in <a href="../preferences.html#markextrafloors">Preferences</a>). 
+        <li><span class="style5">[new]</span> 3D floor indication (color can be changed in <strong>Preferences -&gt; Appearance -&gt; 3D Floors</strong>, the setting can be disabled in <a href="../preferences.html#markextrafloors">Preferences</a>).
           <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
           <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"> <img src="classic_modes/3dfloor_marks.jpg" alt="" /></div>
         </li>
@@ -143,54 +154,56 @@ Jump to: <a href="#general">General interface</a> |
         <li>Center of map is  shown in Classic modes using Highlight color.</li>
       </ul>
     </li>
-    
-    <li><h3><a name="sectors" id="sectors"></a>Sectors mode:</h3>
+    <li>
+      <h3><a name="sectors" id="sectors"></a>Sectors mode:</h3>
       <ul>
-      <li><span class="style1"><strong>[new]</strong></span> Hold <strong>Alt</strong> while (de)selecting sectors to (de)select things inside of them.</li>
-      <li><span class="style1"><strong>[new]</strong></span> Sector Tag and Effect can now be shown on top of sectors. You can use &quot;<strong>View Tags and Effects</strong>&quot; button to toggle this overlay.
-        <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
-        <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="sectors_mode/toggle_effect_overlay.jpg" alt="" /></div>
-      </li>
-      <li><span class="style1"><strong>[new]</strong></span> <strong>[UDMF]</strong> Create Brightness Gradient option can work in 5 modes: 
-        <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
-        <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="sectors_mode/gradientmodes.jpg" alt="" /></div>
-      </li>
-      <li><span class="style1"><strong>[new]</strong></span><strong> </strong>Sector Info panel  shows the number of sector's sidedefs as well as light and fade colors (UDMF only): <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
-          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="sectors_mode/sector_info.jpg" alt="" /></div></li>
+        <li><span class="style1"><strong>[new]</strong></span> Hold <strong>Alt</strong> while (de)selecting sectors to (de)select things inside of them.</li>
+        <li><span class="style1"><strong>[new]</strong></span> Sector Tag and Effect can now be shown on top of sectors. You can use &quot;<strong>View Tags and Effects</strong>&quot; button to toggle this overlay.
+          <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
+          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="sectors_mode/toggle_effect_overlay.jpg" alt="" /></div>
+        </li>
+        <li><span class="style1"><strong>[new]</strong></span> <strong>[UDMF]</strong> Create Brightness Gradient option can work in 5 modes:
+          <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
+          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="sectors_mode/gradientmodes.jpg" alt="" /></div>
+        </li>
+        <li><span class="style1"><strong>[new]</strong></span><strong> </strong>Sector Info panel  shows the number of sector's sidedefs as well as light and fade colors (UDMF only):
+          <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
+          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="sectors_mode/sector_info.jpg" alt="" /></div>
+        </li>
       </ul>
     </li>
-      
-      <li><h3><a name="linedefs" id="linedefs"></a>Linedefs mode:</h3>
+    <li>
+      <h3><a name="linedefs" id="linedefs"></a>Linedefs mode:</h3>
       <ul>
-      <li><span class="style1"><strong>[new]</strong></span> <strong>[UDMF]</strong> New actions: &quot;<strong>Align Ceiling Texture to Back Side</strong>&quot;, &quot;<strong>Align Ceiling Texture to Front Side</strong>&quot;, &quot;<strong>Align Floor Texture to Back Side</strong>&quot; and &quot;<strong>Align Floor Texture to Front Side</strong>&quot; (available in <strong>Linedefs -&gt; Align Textures</strong> menu).</li>
-      <li><span class="style1"><strong>[new]</strong></span> <strong>[UDMF]</strong> &quot;<strong>Make brightness gradient</strong>&quot; command is available in Linedefs mode.</li>
-      <li><strong>[UDMF]</strong> Linedef info panel: relative UDMF light values are  shown like this:   <span class="style7">16</span> (<span class="style9">128</span>), which means &quot;<span class="style7">UDMF light value</span>&quot; (&quot;<span class="style9">total surface brightness</span>&quot;). Total surface brightness is UDMF light value + sector brightness.</li>
-      <li><span class="style1"><strong>[new]</strong></span> When a linedef is within Split Linedefs range, it is  highlighted using Info line color</li>
+        <li><span class="style1"><strong>[new]</strong></span> <strong>[UDMF]</strong> New actions: &quot;<strong>Align Ceiling Texture to Back Side</strong>&quot;, &quot;<strong>Align Ceiling Texture to Front Side</strong>&quot;, &quot;<strong>Align Floor Texture to Back Side</strong>&quot; and &quot;<strong>Align Floor Texture to Front Side</strong>&quot; (available in <strong>Linedefs -&gt; Align Textures</strong> menu).</li>
+        <li><span class="style1"><strong>[new]</strong></span> <strong>[UDMF]</strong> &quot;<strong>Make brightness gradient</strong>&quot; command is available in Linedefs mode.</li>
+        <li><strong>[UDMF]</strong> Linedef info panel: relative UDMF light values are  shown like this: <span class="style7">16</span> (<span class="style9">128</span>), which means &quot;<span class="style7">UDMF light value</span>&quot; (&quot;<span class="style9">total surface brightness</span>&quot;). Total surface brightness is UDMF light value + sector brightness.</li>
+        <li><span class="style1"><strong>[new]</strong></span> When a linedef is within Split Linedefs range, it is  highlighted using Info line color</li>
       </ul>
     </li>
-    
-    <li><h3><a name="things" id="things"></a>Things mode:</h3>
+    <li>
+      <h3><a name="things" id="things"></a>Things mode:</h3>
       <ul>
-      <li><span class="style1"><strong>[new]</strong></span> Several thing types can now be selected at once in Thing Edit form. If   you do so,  a type randomly chosen from selected ones will be assigned   to each selected thing. <a href="things_mode/multiple_thing_types.html">More info</a>.</li>
-      <li><span class="style1"><strong>[new]</strong></span> You can filter selected things by type using Filter Things form (<strong>Things -&gt; Filter Things...</strong>). 
-      <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
-      <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="things_mode/filter_selection.jpg" alt="" /></div>
-          </li>
-      <li><span class="style1"><strong>[new]</strong></span> You can clone selected/highlighted things by holding &quot;Shift&quot; before starting to drag them.</li>
-      <li><span class="style1"><strong>[new]</strong></span> New action: &quot;<strong>Point Thing to cursor</strong>&quot;. <a href="things_mode/pointthing.html">More info</a>.</li>
-      <li><span class="style1"><strong>[new]</strong></span> New action: &quot;<strong>Select Things in Selected Sectors</strong>&quot; (Default key is Shift+T).</li>
-      <li><span class="style1"><strong>[new]</strong></span> New action: &quot;<strong>Align Things To Linedef</strong>&quot;.</li>
-      <li>Z-height of a thing can  be changed in absolute and relative mode in Thing Edit form.</li>
-      <li>Thing's X and Y position can be edited in Edit Thing form.</li>
+        <li><span class="style1"><strong>[new]</strong></span> Several thing types can now be selected at once in Thing Edit form. If   you do so,  a type randomly chosen from selected ones will be assigned   to each selected thing. <a href="things_mode/multiple_thing_types.html">More info</a>.</li>
+        <li><span class="style1"><strong>[new]</strong></span> You can filter selected things by type using Filter Things form (<strong>Things -&gt; Filter Things...</strong>).
+          <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
+          <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="things_mode/filter_selection.jpg" alt="" /></div>
+        </li>
+        <li><span class="style1"><strong>[new]</strong></span> You can clone selected/highlighted things by holding &quot;Shift&quot; before starting to drag them.</li>
+        <li><span class="style1"><strong>[new]</strong></span> New action: &quot;<strong>Point Thing to cursor</strong>&quot;. <a href="things_mode/pointthing.html">More info</a>.</li>
+        <li><span class="style1"><strong>[new]</strong></span> New action: &quot;<strong>Select Things in Selected Sectors</strong>&quot; (Default key is Shift+T).</li>
+        <li><span class="style1"><strong>[new]</strong></span> New action: &quot;<strong>Align Things To Linedef</strong>&quot;.</li>
+        <li>Z-height of a thing can  be changed in absolute and relative mode in Thing Edit form.</li>
+        <li>Thing's X and Y position can be edited in Edit Thing form.</li>
       </ul>
     </li>
-    
-    <li><h3><a name="vertices" id="vertices"></a>Vertices mode:</h3>
+    <li>
+      <h3><a name="vertices" id="vertices"></a>Vertices mode:</h3>
       <ul>
         <li><strong>[UDMF]</strong> Vertical offsets of a vertex can  be edited in Vertex Edit form and are shown in Vertex Info panel.</li>
         <li> When a linedef is within Split Linedefs range, it is  highlighted using Info line color.</li>
-      </ul></li>
-    
+      </ul>
+    </li>
     <li>
       <h3><a name="visual" id="visual"></a>GZDB Visual mode:</h3>
       <ul>
@@ -227,7 +240,7 @@ Jump to: <a href="#general">General interface</a> |
           New editing features avaliable in this mode:</strong>
           <ul>
             <li><span class="style1"><strong>[new]</strong></span> You can <strong>Shift-Select</strong> (usually Select action = LMB) to select all adjacent   surfaces with same texture, <strong>Ctrl-Select</strong> to select all adjacent surfaces   with same height. <strong>Ctrl-Shift-Select</strong> will also work as expected.</li>
-            <li><strong>[UDMF]</strong> Vertex height offsets (&quot;zfloor&quot; and &quot;zceiling&quot;)  <a href="visual_mode/visual_verts.html">can be edited</a>.</li>
+            <li><strong>[UDMF]</strong> Vertex height offsets (&quot;zfloor&quot; and &quot;zceiling&quot;) <a href="visual_mode/visual_verts.html">can be edited</a>.</li>
             <li><strong>[UDMF]</strong> Using &quot;<strong>Increase/Decrease brightness</strong>&quot; actions (bound to Ctrl+Mouse Wheel by default) on walls and ceilings will change sidedef/ceiling brightness, using them on floors will change sector brightness, using them on 3d floors will change brightness of 3d floor.</li>
             <li>You can use &quot;<strong>Toggle geometry effects</strong>&quot; action (default key is Tab) to toggle   GZDoom's geometry effects, such as slopes, 3D-floors, transfer brightness effects etc.</li>
             <li><span class="style1"><strong>[new]</strong></span> You can hold <strong>Shift</strong> while dragging a texture to lock movement to horizontal axis, and <strong>Ctrl</strong> to lock it to vertical axis.</li>
@@ -244,7 +257,7 @@ Jump to: <a href="#general">General interface</a> |
             <li><span class="style1"><strong>[new]</strong></span> New action: &quot;<strong>Toggle slope</strong>&quot; (default key is Alt-S). Select or highlight upper/lower walls then call this action to add   slopes. Select or highlight floors or ceilings then call this action to   remove slopes.</li>
             <li><span class="style1"><strong>[new]</strong></span> New action: &quot;<strong>Look Through Selection</strong>&quot;  (default key is &quot;Y&quot;). This action places   visual camera at the same position as selected/highlighted thing and   rotates it to match thing's angle. Special handling is available if   targeted thing is AimingCamera, MovingCamera, SecurityCamera or   InterpolationPoint.</li>
             <li><span class="style1"><strong>[new]</strong></span> New actions: &quot;<strong><a href="visual_mode/autoalign_to_selection.html">Auto-align Textures to Selection</a> (X)</strong>&quot;, &quot;<strong>Auto-align Textures to Selection (Y)</strong>&quot; and &quot;<strong>Auto-align Textures to Selection (X and Y)</strong>&quot;.</li>
-            <li>New actions: &quot;<strong>Rotate Clockwise</strong>&quot; and &quot;<strong>Rotate Counterclockwise</strong>&quot;, which can be used to rotate things and <span class="style1"><strong>[new]</strong></span><strong>[UDMF]</strong>  floor/ceiling textures.</li>
+            <li>New actions: &quot;<strong>Rotate Clockwise</strong>&quot; and &quot;<strong>Rotate Counterclockwise</strong>&quot;, which can be used to rotate things and <span class="style1"><strong>[new]</strong></span><strong>[UDMF]</strong> floor/ceiling textures.</li>
             <li>Things can be moved horizontally using &quot;<strong>Move Thing Forward/Backward/Left/Right</strong>&quot; actions.</li>
             <li>Things can be moved to cursor position using &quot;<strong>Move Thing To Cursor Location</strong>&quot; (default key is Ctrl + Middle mouse) action.</li>
             <li>Things can be inserted at cursor position using &quot;<strong>Insert Item</strong>&quot; action (default key is Insert).</li>
@@ -254,7 +267,7 @@ Jump to: <a href="#general">General interface</a> |
             <li><span class="style1"><strong>[new] </strong></span><strong>[UDMF] </strong>New action:  &quot;<strong>Reset Local Texture Offsets (UDMF)</strong>&quot;. It will reset upper/middle/lower texture offsets, texture scale and rotation.</li>
             <li><span class="style1"><strong>[new]</strong></span> <strong>[UDMF]</strong> &quot;<strong>Reset Texture Offsets</strong>&quot; action  works on floors and ceilings.</li>
           </ul>
-        </li>        
+        </li>
       </ul>
     </li>
     <li>
@@ -269,7 +282,7 @@ Jump to: <a href="#general">General interface</a> |
       <ul>
         <li><span class="style1"><strong>[new]</strong></span> Map Analysis mode can  check the map for unconnected vertices.</li>
         <li><span class="style1"><strong>[new]</strong></span> &quot;Check overlapping lines&quot;  finds duplicate   linedefs (e.g. when 2 lines have the same start and end positions).</li>
-        <li><span class="style1"><strong>[new]</strong></span>           Map Analysis mode can  check the map for  overlapping vertices. This will   check if a vertex is on top of a linedef or another vertex.</li>
+        <li><span class="style1"><strong>[new]</strong></span> Map Analysis mode can  check the map for  overlapping vertices. This will   check if a vertex is on top of a linedef or another vertex.</li>
         <li><span class="style1"><strong>[new]</strong></span> Map Analysis mode can  check the map for invalid sectors (sectors with less than 3 sidedefs or sectors without area).</li>
         <li><span class="style1"><strong>[new]</strong></span> Map Analysis mode can  check the map for unused textures.</li>
         <li><span class="style1"><strong>[new]</strong></span> Map Analysis mode can  check the map for missing flats.</li>
@@ -281,11 +294,11 @@ Jump to: <a href="#general">General interface</a> |
     <li>
       <h3><a name="findreplace" id="findreplace"></a>Find and Replace mode:</h3>
       <ul>
-      <li>Find and Replace mode now have &quot;<strong>Sector Brightness</strong>&quot; search mode.</li>
-      <li>Find and Replace Mode can  find things and linedefs by their flags.</li>
-      <li>Find and Replace Mode can  find Action with specific argunemts. Syntax is &quot;[Action]; [arg1]  [...]&quot;.</li>
+        <li>Find and Replace mode now have &quot;<strong>Sector Brightness</strong>&quot; search mode.</li>
+        <li>Find and Replace Mode can  find things and linedefs by their flags.</li>
+        <li>Find and Replace Mode can  find Action with specific argunemts. Syntax is &quot;[Action]; [arg1]  [...]&quot;.</li>
       </ul>
-      </li>
+    </li>
     <li>
       <h3><a name="misc" id="formats"></a>Misc. features:</h3>
       <ul>

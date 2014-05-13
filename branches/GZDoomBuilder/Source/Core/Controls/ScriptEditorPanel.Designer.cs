@@ -44,6 +44,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttoncopy = new System.Windows.Forms.ToolStripButton();
 			this.buttonpaste = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.buttonsnippets = new System.Windows.Forms.ToolStripDropDownButton();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonscriptconfig = new System.Windows.Forms.ToolStripDropDownButton();
 			this.buttoncompile = new System.Windows.Forms.ToolStripButton();
 			this.buttonclose = new System.Windows.Forms.ToolStripButton();
@@ -97,6 +99,8 @@ namespace CodeImp.DoomBuilder.Controls
             this.buttoncopy,
             this.buttonpaste,
             this.toolStripSeparator3,
+            this.buttonsnippets,
+            this.toolStripSeparator4,
             this.buttonscriptconfig,
             this.buttoncompile,
             this.buttonclose,
@@ -219,6 +223,22 @@ namespace CodeImp.DoomBuilder.Controls
 			this.toolStripSeparator3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
 			this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+			// 
+			// buttonsnippets
+			// 
+			this.buttonsnippets.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonsnippets.Enabled = false;
+			this.buttonsnippets.Image = global::CodeImp.DoomBuilder.Properties.Resources.PuzzlePiece;
+			this.buttonsnippets.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonsnippets.Name = "buttonsnippets";
+			this.buttonsnippets.Size = new System.Drawing.Size(29, 22);
+			this.buttonsnippets.Text = "Intert a Code Snippet";
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttonscriptconfig
 			// 
@@ -414,5 +434,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ImageList errorimages;
 		private System.Windows.Forms.ToolStripButton buttonkeywordhelp;
 		private System.Windows.Forms.ToolStripButton buttonsearch;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripDropDownButton buttonsnippets;
 	}
 }

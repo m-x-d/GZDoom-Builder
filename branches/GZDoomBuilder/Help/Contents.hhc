@@ -236,16 +236,26 @@
 				</OBJECT>
 			<UL>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="Enhanced scripting workflow">
-					<param name="Local" value="gzdb\features\general\acs.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="Rendering toolbar">
 					<param name="Local" value="gzdb\features\general\rendering_toolbar.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="Multiple engines per game configuration">
 					<param name="Local" value="gzdb\features\general\multi_engines.html">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Scripting">
+				<param name="Local" value="gzdb\features\features.html#scripting">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Enhanced scripting workflow">
+					<param name="Local" value="gzdb\features\scripting\acs.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Code Snippets">
+					<param name="Local" value="gzdb\features\scripting\snippets.html">
 					</OBJECT>
 			</UL>
 			<LI> <OBJECT type="text/sitemap">

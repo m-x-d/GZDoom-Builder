@@ -122,6 +122,7 @@ namespace CodeImp.DoomBuilder
 		private const string COMPILERS_DIR = "Compilers";
 		private const string PLUGINS_DIR = "Plugins";
 		private const string SCRIPTS_DIR = "Scripting";
+		private const string SNIPPETS_DIR = "Snippets"; //mxd
 		private const string SETUP_DIR = "Setup";
 		private const string SPRITES_DIR = "Sprites";
 		private const string HELP_FILE = "Refmanual.chm";
@@ -151,6 +152,7 @@ namespace CodeImp.DoomBuilder
 		private static string configspath;
 		private static string compilerspath;
 		private static string scriptspath;
+		private static string snippetspath; //mxd
 		private static string pluginspath;
 		private static string spritespath;
 		
@@ -204,6 +206,7 @@ namespace CodeImp.DoomBuilder
 		public static string CompilersPath { get { return compilerspath; } }
 		public static string PluginsPath { get { return pluginspath; } }
 		public static string SpritesPath { get { return spritespath; } }
+		public static string SnippetsPath { get { return snippetspath; } } //mxd
 		public static ICollection<string> CommandArgs { get { return Array.AsReadOnly(cmdargs); } }
 		internal static MainForm MainWindow { get { return mainwindow; } }
 		public static IMainForm Interface { get { return mainwindow; } }
@@ -569,6 +572,7 @@ namespace CodeImp.DoomBuilder
 			compilerspath = Path.Combine(apppath, COMPILERS_DIR);
 			pluginspath = Path.Combine(apppath, PLUGINS_DIR);
 			scriptspath = Path.Combine(apppath, SCRIPTS_DIR);
+			snippetspath = Path.Combine(apppath, SNIPPETS_DIR); //mxd
 			spritespath = Path.Combine(apppath, SPRITES_DIR);
 			logfile = Path.Combine(settingspath, LOG_FILE);
 			

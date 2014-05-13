@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	
+	<title>GZDoom Builder features</title>
+	
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" type="text/css" href="../../../default.css" media="screen" title="Default" />
+    <style type="text/css">
+<!--
+.style1 {
+	color: #990000;
+	font-weight: bold;
+}
+-->
+    </style>
+</head>
+<body>
+	
+	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="keyword" value="Template">
+	</object>
+	
+	<div id="gz_title">
+	  <h1>Code Snippets</h1>
+</div>
+	
+<div id="contents">
+<div style="float:right; padding-left:10px;"><br /><img src="snippets1.jpg"/></div>
+  <p>In the Script Editor you can use and create code snippets, which are small blocks of reusable code that you can insert where you need it in your code.</p>
+  <p><strong>Using code snippets:</strong><br />
+  To use a snippet, just pick it from the drop-down menu.</p>
+  <p><strong>Creating new code snippets:</strong><br />
+  Code snippets are plain text files stored in [GZDB]\Snippets\[category], so just create a new text file there and add the code you want into it. Currently the only supported &quot;special&quot; token is <strong>$EP</strong> (Entry Point) - that's the place where the cursor will be placed after inserting a snippet.<br />
+  <span class="style1">Warning:</span> snippet's file name should not contain spaces.</p>
+  <p><strong>Creating new code snippets for custom scripting configurations:</strong><br />
+  To add snippets to a scripting configuration, which doesn't already have  existing snippets (&quot;Insert a Code Snippet&quot; drop-down is disabled in the Script Editor), you'll have to:</p>
+  <ol>
+    <li>Add a new folder inside of &quot;Snippets&quot; folder (for example, &quot;[GZDB]\Snippets\Decorate&quot;).</li>
+    <li>Add the &quot;<strong>snippetsdir</strong>&quot; parameter to a scripting configuration, in which you want to use snippets, and set it to the folder name you've just created  (for example, <strong>snippetsdir = &quot;Decorate&quot;;</strong>).</li>
+    <li>Add the snippets to the folder you've created.</li>
+  </ol>
+</div>
+</body>

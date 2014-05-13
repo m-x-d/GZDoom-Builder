@@ -475,6 +475,8 @@ namespace CodeImp.DoomBuilder.Controls
 			buttoncut.Enabled = (t != null);
 			buttonpaste.Enabled = (t != null);
 			buttonclose.Enabled = (t != null) && t.IsClosable;
+			buttonsnippets.DropDownItems.Clear(); //mxd
+			buttonsnippets.Enabled = (t != null) && t.Config.Snippets.Count > 0; //mxd
 			
 			if(t != null)
 			{
@@ -483,6 +485,13 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					ScriptConfiguration config = (item.Tag as ScriptConfiguration);
 					item.Checked = (config == t.Config);
+				}
+
+				//mxd. Add snippets
+				if(t.Config.Snippets.Count > 0) {
+					foreach(KeyValuePair<string, string[]> group in t.Config.Snippets) {
+						buttonsnippets.DropDownItems.Add(group.Key).Click += OnInsertSnippetClick;
+					}
 				}
 				
 				// Focus to script editor
@@ -787,6 +796,13 @@ namespace CodeImp.DoomBuilder.Controls
 		private void buttonsearch_Click(object sender, EventArgs e) 
 		{
 			OpenFindAndReplace();
+		}
+
+		//mxd
+		private void OnInsertSnippetClick(object sender, EventArgs eventArgs) 
+		{
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			t.InsertSnippet( t.Config.Snippets[((ToolStripItem)sender).Text] );
 		}
 		
 		// Mouse released on tabs

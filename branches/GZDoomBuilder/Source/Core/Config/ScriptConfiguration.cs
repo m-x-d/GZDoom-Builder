@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using CodeImp.DoomBuilder.IO;
 
 #endregion
@@ -32,34 +33,32 @@ namespace CodeImp.DoomBuilder.Config
 		#endregion
 
 		#region ================== Variables
-
-		// Original configuration
-		//private Configuration cfg;
 		
 		// Compiler settings
-		private CompilerInfo compiler;
-		private string parameters;
-		private string resultlump;
+		private readonly CompilerInfo compiler;
+		private readonly string parameters;
+		private readonly string resultlump;
 		
 		// Editor settings
-		private string description;
-		private int codepage;
-		private string[] extensions;
-		private bool casesensitive;
-		private int insertcase;
-		private int lexer;
-		private string keywordhelp;
-		private string functionopen;
-		private string functionclose;
-		private string argumentdelimiter;
-		private string terminator;
-		private string functionregex;
+		private readonly string description;
+		private readonly int codepage;
+		private readonly string[] extensions;
+		private readonly bool casesensitive;
+		private readonly int insertcase;
+		private readonly int lexer;
+		private readonly string keywordhelp;
+		private readonly string functionopen;
+		private readonly string functionclose;
+		private readonly string argumentdelimiter;
+		private readonly string terminator;
+		private readonly string functionregex;
 		
 		// Collections
-		private Dictionary<string, string> keywords;
-		private Dictionary<string, string> lowerkeywords;
-		private List<string> constants;
-		private Dictionary<string, string> lowerconstants;
+		private readonly Dictionary<string, string> keywords;
+		private readonly Dictionary<string, string> lowerkeywords;
+		private readonly List<string> constants;
+		private readonly Dictionary<string, string> lowerconstants;
+		private readonly Dictionary<string, string[]> snippets; //mxd
 		
 		#endregion
 
@@ -83,7 +82,8 @@ namespace CodeImp.DoomBuilder.Config
 		public string ArgumentDelimiter { get { return argumentdelimiter; } }
 		public string Terminator { get { return terminator; } }
 		public string FunctionRegEx { get { return functionregex; } }
-		
+		public Dictionary<string, string[]> Snippets { get { return snippets; } } //mxd
+
 		// Collections
 		public ICollection<string> Keywords { get { return keywords.Keys; } }
 		public ICollection<string> Constants { get { return constants; } }
@@ -117,6 +117,7 @@ namespace CodeImp.DoomBuilder.Config
 			functionregex = "";
 			description = "Plain text";
 			extensions = new[] { "txt" };
+			snippets = new Dictionary<string, string[]>(StringComparer.Ordinal); //mxd
 		}
 		
 		// Constructor
@@ -127,6 +128,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.constants = new List<string>();
 			this.lowerkeywords = new Dictionary<string, string>(StringComparer.Ordinal);
 			this.lowerconstants = new Dictionary<string, string>(StringComparer.Ordinal);
+			this.snippets = new Dictionary<string, string[]>(StringComparer.Ordinal); //mxd
 			
 			// Read settings
 			description = cfg.ReadSetting("description", "Untitled script");
@@ -182,6 +184,29 @@ namespace CodeImp.DoomBuilder.Config
 				
 				// No compiler found?
 				if(this.compiler == null) throw new Exception("No such compiler defined: '" + compilername + "'");
+			}
+
+			//mxd. Load Snippets
+			string snippetsdir = cfg.ReadSetting("snippetsdir", "");
+			if (!string.IsNullOrEmpty(snippetsdir)) {
+				string snippetspath = Path.Combine(General.SnippetsPath, snippetsdir);
+				if (Directory.Exists(snippetspath)) {
+					string[] files = Directory.GetFiles(snippetspath, "*.txt", SearchOption.TopDirectoryOnly);
+
+					foreach (string file in files) {
+						string name = Path.GetFileNameWithoutExtension(file);
+						if (name.Contains(" ")) {
+							General.ErrorLogger.Add(ErrorType.Warning, "Failed to load snippet '" + file + "' for '" + description + "' script configuration: snippet file name must not contain spaces!");
+						} else {
+							string[] lines = File.ReadAllLines(file);
+							if (lines.Length > 0) {
+								snippets.Add(name, lines);
+							} else {
+								General.ErrorLogger.Add(ErrorType.Warning, "Failed to load snippet '" + file + "' for '" + description + "' script configuration: file is empty!");
+							}
+						}
+					}
+				}
 			}
 		}
 		
