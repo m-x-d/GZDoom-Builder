@@ -325,7 +325,7 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(DictionaryEntry de in dic)
 			{
 				// Check if this is a numeric key
-				int stylenum = -1;
+				int stylenum;
 				if(int.TryParse(de.Key.ToString(), out stylenum))
 				{
 					// Add style to lookup table
@@ -824,22 +824,12 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Get the current line index and check if its not the first line
 					int curline = scriptedit.LineFromPosition(scriptedit.CurrentPos);
-					if(curline > 0)
+					if(curline > 0 && scriptedit.GetLineIndentation(curline) == 0)
 					{
 						// Apply identation of the previous line to this line
 						int ident = scriptedit.GetLineIndentation(curline - 1);
-
-						//mxd. Indent a bit more if a code block is started on the previous line
-						string prevline = scriptedit.GetLine(curline - 1);
-						int blockstartpos = prevline.LastIndexOf("{"); //TODO: should we move block start/end symbols to script configuration?..
-						int blockendpos = prevline.LastIndexOf("}");
-						if(blockstartpos > blockendpos) ident += General.Settings.ScriptTabWidth;
-
-						if(scriptedit.GetLineIndentation(curline) == 0)
-						{
-							scriptedit.SetLineIndentation(curline, ident);
-							scriptedit.SetSel(scriptedit.SelectionStart + ident, scriptedit.SelectionStart + ident);
-						}
+						scriptedit.SetLineIndentation(curline, ident);
+						scriptedit.SetSel(scriptedit.SelectionStart + ident, scriptedit.SelectionStart + ident);
 					}
 				}
 			}
@@ -889,9 +879,19 @@ namespace CodeImp.DoomBuilder.Controls
 							highlightend = highlightstart + args[curargumentindex].Length;
 						}
 					}
+
+					//mxd. If the tip obscures the view, move it down
+					int tippos;
+					int funcline = scriptedit.LineFromPosition(curfunctionstartpos);
+					int curline = scriptedit.LineFromPosition(scriptedit.CurrentPos);
+					if(curline > funcline) {
+						tippos = scriptedit.PositionFromLine(curline) + scriptedit.GetLineIndentation(curline); //scriptedit.PositionFromLine(curline) /*+ (curfunctionstartpos - scriptedit.PositionFromLine(funcline))*/;
+					} else {
+						tippos = curfunctionstartpos;
+					}
 					
 					// Show tip
-					scriptedit.CallTipShow(curfunctionstartpos, functiondef);
+					scriptedit.CallTipShow(tippos, functiondef);
 					scriptedit.CallTipSetHlt(highlightstart, highlightend);
 				}
 			}

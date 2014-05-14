@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		// This ignores key combinations so that they are passed
 		// on to the other controls on the parent form
-		private Dictionary<int, int> ignoredkeys;
+		private readonly Dictionary<int, int> ignoredkeys;
 		
 		// States
 		private ScriptMarginType indexmargintype;
