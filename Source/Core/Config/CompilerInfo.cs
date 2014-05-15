@@ -33,12 +33,12 @@ namespace CodeImp.DoomBuilder.Config
 		
 		#region ================== Variables
 		
-		private string filename;
-		private string name;
-		private string programfile;
-		private string programinterface;
-		private string path;
-		private List<string> files;
+		private readonly string filename;
+		private readonly string name;
+		private readonly string programfile;
+		private readonly string programinterface;
+		private readonly string path;
+		private readonly List<string> files;
 		
 		#endregion
 		
@@ -58,8 +58,6 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor
 		internal CompilerInfo(string filename, string name, string path, Configuration cfg)
 		{
-			IDictionary cfgfiles;
-			
 			General.WriteLogLine("Registered compiler configuration '" + name + "' from '" + filename + "'");
 			
 			// Initialize
@@ -73,10 +71,10 @@ namespace CodeImp.DoomBuilder.Config
 			this.programinterface = cfg.ReadSetting("compilers." + name + ".interface", "");
 			
 			// Make list of files required
-			cfgfiles = cfg.ReadSetting("compilers." + name, new Hashtable());
+			IDictionary cfgfiles = cfg.ReadSetting("compilers." + name, new Hashtable());
 			foreach(DictionaryEntry de in cfgfiles)
 			{
-				if(de.Key.ToString() != "interface")
+				if(de.Key.ToString() != "interface" && de.Key.ToString() != "program")
 					files.Add(de.Value.ToString());
 			}
 		}

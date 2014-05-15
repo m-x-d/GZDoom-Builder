@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.Compilers
 		#region ================== Variables
 		
 		// Parameters
-		protected CompilerInfo info;
+		protected readonly CompilerInfo info;
 		protected string parameters;
 		protected string workingdir;
 		protected string sourcefile;
@@ -42,10 +42,10 @@ namespace CodeImp.DoomBuilder.Compilers
 		protected string inputfile;
 		
 		// Files
-		protected DirectoryInfo tempdir;
+		protected readonly DirectoryInfo tempdir;
 
 		// Errors
-		private List<CompilerError> errors;
+		private readonly List<CompilerError> errors;
 		
 		// Disposing
 		protected bool isdisposed;
@@ -135,9 +135,12 @@ namespace CodeImp.DoomBuilder.Compilers
 			foreach(string f in info.Files)
 			{
 				string sourcefile = Path.Combine(info.Path, f);
-				string targetfile = Path.Combine(tempdir.FullName, f);
-				if(!File.Exists(sourcefile)) General.ErrorLogger.Add(ErrorType.Error, "The file '" + f + "' required by the '" + info.Name + "' compiler is missing. According to the compiler configuration in '" + info.FileName + "', the was expected to be found in the following path: " + info.Path);
-				File.Copy(sourcefile, targetfile, true);
+				if (!File.Exists(sourcefile)) {
+					General.ErrorLogger.Add(ErrorType.Error, "The file '" + f + "' required by the '" + info.Name + "' compiler is missing. According to the compiler configuration in '" + info.FileName + "', the was expected to be found in the following path: " + info.Path);
+				} else {
+					string targetfile = Path.Combine(tempdir.FullName, f);
+					File.Copy(sourcefile, targetfile, true);
+				}
 			}
 		}
 		
@@ -169,16 +172,10 @@ namespace CodeImp.DoomBuilder.Compilers
 			try
 			{
 				// Go for all assemblies
-				foreach(Assembly a in asms)
-				{
-					Type[] types;
-					
+				foreach(Assembly a in asms) {
 					// Find the class
-					if(a == General.ThisAssembly)
-						types = a.GetTypes();
-					else
-						types = a.GetExportedTypes();
-					
+					Type[] types = (Equals(a, General.ThisAssembly) ? a.GetTypes() : a.GetExportedTypes());
+
 					foreach(Type t in types)
 					{
 						if(t.IsSubclassOf(typeof(Compiler)) && (t.Name == info.ProgramInterface))

@@ -83,7 +83,8 @@ namespace CodeImp.DoomBuilder.Compilers
 			// Setup process info
 			processinfo = new ProcessStartInfo();
 			processinfo.Arguments = args;
-			processinfo.FileName = Path.Combine(this.tempdir.FullName, info.ProgramFile);
+			//processinfo.FileName = Path.Combine(this.tempdir.FullName, info.ProgramFile);
+			processinfo.FileName = Path.Combine(info.Path, info.ProgramFile); //mxd
 			processinfo.CreateNoWindow = true; //mxd. was false
 			processinfo.ErrorDialog = false;
 			processinfo.UseShellExecute = false; //mxd. was true
