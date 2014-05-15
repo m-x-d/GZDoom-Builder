@@ -74,6 +74,7 @@ namespace CodeImp.DoomBuilder.Windows
 			scriptontop.Checked = General.Settings.ScriptOnTop;
 			scripttabwidth.Text = General.Settings.ScriptTabWidth.ToString();
 			scriptautoindent.Checked = General.Settings.ScriptAutoIndent;
+			snippetsallmanstyle.Checked = General.Settings.SnippetsAllmanStyle; //mxd
 			previewsize.Value = General.Clamp(General.Settings.PreviewImageSize, previewsize.Minimum, previewsize.Maximum);
 			autoscrollspeed.Value = General.Clamp(General.Settings.AutoScrollSpeed, autoscrollspeed.Minimum, autoscrollspeed.Maximum);
 			zoomfactor.Value = General.Clamp(General.Settings.ZoomFactor, zoomfactor.Minimum, zoomfactor.Maximum);
@@ -225,6 +226,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ScriptOnTop = scriptontop.Checked;
 			General.Settings.ScriptTabWidth = scripttabwidth.GetResult(General.Settings.ScriptTabWidth);
 			General.Settings.ScriptAutoIndent = scriptautoindent.Checked;
+			General.Settings.SnippetsAllmanStyle = snippetsallmanstyle.Checked; //mxd
 			General.Settings.PreviewImageSize = previewsize.Value;
 			General.Settings.AutoScrollSpeed = autoscrollspeed.Value;
 			General.Settings.ZoomFactor = zoomfactor.Value;

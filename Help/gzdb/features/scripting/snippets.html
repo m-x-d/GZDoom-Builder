@@ -34,8 +34,14 @@
   <strong>Example:</strong> to create the while loop, type &quot;<strong>while</strong>&quot;...<br /><img src="snippets_expand1.jpg"/><br />
   <br />...and press the <strong>Tab</strong> key.<br /><img src="snippets_expand2.jpg"/></p>
   <p><strong>Creating new code snippets:</strong><br />
-  Code snippets are plain text files stored in [GZDB]\Snippets\[category], so just create a new text file there and add the code you want into it. Currently the only supported &quot;special&quot; token is <strong>$EP</strong> (Entry Point) - that's the place where the cursor will be placed after inserting a snippet.<br />
-  <span class="style1">Warning:</span> snippet's file name should not contain spaces.</p>
+  Code snippets are plain text files stored in [GZDB]\Snippets\[category], so just create a new text file there and add the code you want into it.<br />
+  There are several special tokens you can use: </p>
+  <ul>
+    <li><strong>[EP]</strong> (Entry Point) - that's the place where the cursor will be placed after inserting a snippet.</li>
+    <li><strong>[LB]</strong> (Line Break)
+  - these will be converted to line breaks when &quot;<strong>Allman-style bracing in snippets</strong>&quot; (located in Preferences -&gt; Appearance -&gt; Script Editor) setting is enabled, or a space character when it's not.
+  </ul>
+  <span class="style1">Warning:</span> snippet's file name must not contain spaces.
   <p><strong>Creating new code snippets for custom scripting configurations:</strong><br />
   To add snippets to a scripting configuration, which doesn't already have  existing snippets (&quot;Insert a Code Snippet&quot; drop-down is disabled in the Script Editor), you'll have to:</p>
   <ol>

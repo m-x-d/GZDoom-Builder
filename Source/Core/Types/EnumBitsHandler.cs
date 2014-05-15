@@ -73,8 +73,6 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override void SetValue(object value)
 		{
-			int result;
-
 			// Null?
 			if(value == null)
 			{
@@ -89,6 +87,7 @@ namespace CodeImp.DoomBuilder.Types
 			else
 			{
 				// Try parsing as string
+				int result;
 				if(int.TryParse(value.ToString(), NumberStyles.Integer, CultureInfo.CurrentCulture, out result))
 				{
 					this.value = result;

@@ -118,7 +118,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.nodebuildertest = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildertest", MISSING_NODEBUILDER);
 			this.resources = new DataLocationList(General.Settings.Config, "configurations." + settingskey + ".resources");
 			this.startmode = General.Settings.ReadSetting("configurations." + settingskey + ".startmode", "VerticesMode");
-			this.enabled = General.Settings.ReadSetting("configurations." + settingskey + ".enabled", false); //mxd
+			this.enabled = General.Settings.ReadSetting("configurations." + settingskey + ".enabled", config.ReadSetting("enabledbydefault", false)); //mxd
 			
 			//mxd. read test engines
 			testEngines = new List<EngineInfo>();
