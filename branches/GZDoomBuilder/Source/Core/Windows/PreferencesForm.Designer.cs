@@ -38,6 +38,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label18;
 			System.Windows.Forms.Label label20;
 			System.Windows.Forms.Label label21;
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreferencesForm));
 			this.recentFiles = new Dotnetrix.Controls.TrackBar();
 			this.labelRecentFiles = new System.Windows.Forms.Label();
 			this.label25 = new System.Windows.Forms.Label();
@@ -142,10 +143,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.imagebrightnesslabel = new System.Windows.Forms.Label();
 			this.imagebrightness = new Dotnetrix.Controls.TrackBar();
 			this.colorsgroup3 = new System.Windows.Forms.GroupBox();
-			this.fontpreview = new System.Windows.Forms.RichTextBox();
+			this.snippetsallmanstyle = new System.Windows.Forms.CheckBox();
 			this.scripttabwidth = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.scriptautoindent = new System.Windows.Forms.CheckBox();
 			this.label10 = new System.Windows.Forms.Label();
+			this.fontpreview = new System.Windows.Forms.RichTextBox();
 			this.scriptfontsize = new System.Windows.Forms.ComboBox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.scriptfontbold = new System.Windows.Forms.CheckBox();
@@ -478,6 +480,8 @@ namespace CodeImp.DoomBuilder.Windows
 			label18.TabIndex = 25;
 			label18.Text = "Max. dynamic lights to render:";
 			label18.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.toolTip1.SetToolTip(label18, "Controlls how many dynamic lights could be \r\nrendered simultaneously in Visual mo" +
+					"de ");
 			// 
 			// label20
 			// 
@@ -1490,10 +1494,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colorsgroup3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.colorsgroup3.Controls.Add(this.fontpreview);
+			this.colorsgroup3.Controls.Add(this.snippetsallmanstyle);
 			this.colorsgroup3.Controls.Add(this.scripttabwidth);
 			this.colorsgroup3.Controls.Add(this.scriptautoindent);
 			this.colorsgroup3.Controls.Add(this.label10);
+			this.colorsgroup3.Controls.Add(this.fontpreview);
 			this.colorsgroup3.Controls.Add(this.scriptfontsize);
 			this.colorsgroup3.Controls.Add(this.label8);
 			this.colorsgroup3.Controls.Add(this.scriptfontbold);
@@ -1514,19 +1519,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup3.Text = " Script editor ";
 			this.colorsgroup3.Visible = false;
 			// 
-			// fontpreview
+			// snippetsallmanstyle
 			// 
-			this.fontpreview.Cursor = System.Windows.Forms.Cursors.Arrow;
-			this.fontpreview.DetectUrls = false;
-			this.fontpreview.Location = new System.Drawing.Point(202, 73);
-			this.fontpreview.Name = "fontpreview";
-			this.fontpreview.ReadOnly = true;
-			this.fontpreview.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-			this.fontpreview.Size = new System.Drawing.Size(233, 100);
-			this.fontpreview.TabIndex = 33;
-			this.fontpreview.Text = "1 #include \"zcommon.acs\"\n2 script 0 (void) { //a comment\n3       CONSTANT_VALUE;\n" +
-				"4 }";
-			this.fontpreview.WordWrap = false;
+			this.snippetsallmanstyle.AutoSize = true;
+			this.snippetsallmanstyle.Location = new System.Drawing.Point(202, 187);
+			this.snippetsallmanstyle.Name = "snippetsallmanstyle";
+			this.snippetsallmanstyle.Size = new System.Drawing.Size(179, 18);
+			this.snippetsallmanstyle.TabIndex = 34;
+			this.snippetsallmanstyle.Text = "Allman-style bracing in snippets";
+			this.toolTip1.SetToolTip(this.snippetsallmanstyle, resources.GetString("snippetsallmanstyle.ToolTip"));
+			this.snippetsallmanstyle.UseVisualStyleBackColor = true;
 			// 
 			// scripttabwidth
 			// 
@@ -1535,7 +1537,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scripttabwidth.AllowRelative = false;
 			this.scripttabwidth.ButtonStep = 2;
 			this.scripttabwidth.ButtonStepFloat = 1F;
-			this.scripttabwidth.Location = new System.Drawing.Point(259, 179);
+			this.scripttabwidth.Location = new System.Drawing.Point(364, 157);
 			this.scripttabwidth.Name = "scripttabwidth";
 			this.scripttabwidth.Size = new System.Drawing.Size(71, 24);
 			this.scripttabwidth.StepValues = null;
@@ -1544,7 +1546,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// scriptautoindent
 			// 
 			this.scriptautoindent.AutoSize = true;
-			this.scriptautoindent.Location = new System.Drawing.Point(354, 183);
+			this.scriptautoindent.Location = new System.Drawing.Point(202, 161);
 			this.scriptautoindent.Name = "scriptautoindent";
 			this.scriptautoindent.Size = new System.Drawing.Size(81, 18);
 			this.scriptautoindent.TabIndex = 31;
@@ -1554,11 +1556,25 @@ namespace CodeImp.DoomBuilder.Windows
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(199, 184);
+			this.label10.Location = new System.Drawing.Point(304, 162);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(57, 14);
 			this.label10.TabIndex = 30;
 			this.label10.Text = "Tab width:";
+			// 
+			// fontpreview
+			// 
+			this.fontpreview.Cursor = System.Windows.Forms.Cursors.Arrow;
+			this.fontpreview.DetectUrls = false;
+			this.fontpreview.Location = new System.Drawing.Point(202, 70);
+			this.fontpreview.Name = "fontpreview";
+			this.fontpreview.ReadOnly = true;
+			this.fontpreview.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+			this.fontpreview.Size = new System.Drawing.Size(233, 80);
+			this.fontpreview.TabIndex = 33;
+			this.fontpreview.Text = "1 #include \"zcommon.acs\"\n2 script 0 (void) { //a comment\n3       CONSTANT_VALUE;\n" +
+				"4 }";
+			this.fontpreview.WordWrap = false;
 			// 
 			// scriptfontsize
 			// 
@@ -1582,7 +1598,7 @@ namespace CodeImp.DoomBuilder.Windows
             "36",
             "48",
             "72"});
-			this.scriptfontsize.Location = new System.Drawing.Point(236, 45);
+			this.scriptfontsize.Location = new System.Drawing.Point(236, 43);
 			this.scriptfontsize.Name = "scriptfontsize";
 			this.scriptfontsize.Size = new System.Drawing.Size(94, 22);
 			this.scriptfontsize.TabIndex = 25;
@@ -1591,7 +1607,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(199, 48);
+			this.label8.Location = new System.Drawing.Point(199, 46);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(31, 14);
 			this.label8.TabIndex = 28;
@@ -1600,7 +1616,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// scriptfontbold
 			// 
 			this.scriptfontbold.AutoSize = true;
-			this.scriptfontbold.Location = new System.Drawing.Point(354, 47);
+			this.scriptfontbold.Location = new System.Drawing.Point(354, 45);
 			this.scriptfontbold.Name = "scriptfontbold";
 			this.scriptfontbold.Size = new System.Drawing.Size(47, 18);
 			this.scriptfontbold.TabIndex = 26;
@@ -1941,5 +1957,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private Dotnetrix.Controls.TrackBar recentFiles;
 		private System.Windows.Forms.Label labelRecentFiles;
 		private System.Windows.Forms.Label label25;
+		private System.Windows.Forms.CheckBox snippetsallmanstyle;
 	}
 }

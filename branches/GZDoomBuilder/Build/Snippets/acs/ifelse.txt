@@ -1,5 +1,5 @@
-if ($EP) {
+if ([EP])[LB]{
 	
-} else {
+}[LB]else[LB]{
 	
 }

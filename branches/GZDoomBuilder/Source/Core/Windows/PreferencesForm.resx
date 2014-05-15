@@ -144,4 +144,14 @@
   <metadata name="label21.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
+  <data name="snippetsallmanstyle.ToolTip" xml:space="preserve">
+    <value>When enabled, the opening brace 
+will be placed on a new line.
+
+Technical side: when enabled, $LB
+markers in snippets will be replaced 
+with newline characters, otherwise 
+they will be replaced with spaces
+</value>
+  </data>
 </root>

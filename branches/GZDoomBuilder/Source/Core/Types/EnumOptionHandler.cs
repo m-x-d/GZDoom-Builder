@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Types
 			base.SetupField(attr, fieldinfo);
 
 			// Keep enum list reference
-			if(fieldinfo != null) list = fieldinfo.Enum; else list = new EnumList();
+			list = (fieldinfo != null ? fieldinfo.Enum : new EnumList());
 		}
 
 		#endregion
@@ -140,7 +140,8 @@ namespace CodeImp.DoomBuilder.Types
 		}
 
 		//mxd
-		public override void SetDefaultValue() {
+		public override void SetDefaultValue() 
+		{
 			value = defaultValue;
 		}
 
@@ -171,9 +172,9 @@ namespace CodeImp.DoomBuilder.Types
 			}
 		}
 		
-		public override string GetStringValue()
+		public override string GetStringValue() 
 		{
-			if(this.value != null) return this.value.Title; else return "NULL";
+			return (this.value != null ? this.value.Title : "NULL");
 		}
 
 		// This returns an enum list
