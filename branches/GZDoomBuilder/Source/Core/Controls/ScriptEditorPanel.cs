@@ -344,9 +344,9 @@ namespace CodeImp.DoomBuilder.Controls
 				ei.ImageIndex = 0;
 				ei.SubItems.Add(e.description);
 				if(e.filename.StartsWith("?"))
-					ei.SubItems.Add(e.filename.Replace("?", "") + " (line " + e.linenumber + ")");
+					ei.SubItems.Add(e.filename.Replace("?", "") + " (line " + (e.linenumber + 1) + ")");
 				else
-					ei.SubItems.Add(Path.GetFileName(e.filename) + " (line " + e.linenumber + ")");
+					ei.SubItems.Add(Path.GetFileName(e.filename) + " (line " + (e.linenumber + 1) + ")");
 				ei.Tag = e;
 				errorlist.Items.Add(ei);
 				listindex++;
