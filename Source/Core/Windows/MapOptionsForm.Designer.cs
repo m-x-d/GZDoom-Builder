@@ -96,6 +96,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.levelname.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.levelname.Location = new System.Drawing.Point(129, 57);
+			this.levelname.MaxLength = 8;
 			this.levelname.Name = "levelname";
 			this.levelname.Size = new System.Drawing.Size(94, 20);
 			this.levelname.TabIndex = 1;
