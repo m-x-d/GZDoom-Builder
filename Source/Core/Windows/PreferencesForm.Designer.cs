@@ -164,6 +164,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label16 = new System.Windows.Forms.Label();
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.capitalizetexturenames = new System.Windows.Forms.CheckBox();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -1313,6 +1314,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.appearancegroup1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.appearancegroup1.Controls.Add(this.capitalizetexturenames);
 			this.appearancegroup1.Controls.Add(this.cbMarkExtraFloors);
 			this.appearancegroup1.Controls.Add(this.cbOldHighlightMode);
 			this.appearancegroup1.Controls.Add(label21);
@@ -1356,7 +1358,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbOldHighlightMode
 			// 
 			this.cbOldHighlightMode.AutoSize = true;
-			this.cbOldHighlightMode.Location = new System.Drawing.Point(236, 233);
+			this.cbOldHighlightMode.Location = new System.Drawing.Point(236, 254);
 			this.cbOldHighlightMode.Name = "cbOldHighlightMode";
 			this.cbOldHighlightMode.Size = new System.Drawing.Size(218, 18);
 			this.cbOldHighlightMode.TabIndex = 33;
@@ -1434,7 +1436,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// animatevisualselection
 			// 
 			this.animatevisualselection.AutoSize = true;
-			this.animatevisualselection.Location = new System.Drawing.Point(236, 212);
+			this.animatevisualselection.Location = new System.Drawing.Point(236, 233);
 			this.animatevisualselection.Name = "animatevisualselection";
 			this.animatevisualselection.Size = new System.Drawing.Size(188, 18);
 			this.animatevisualselection.TabIndex = 23;
@@ -1770,6 +1772,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pasteoptions.Size = new System.Drawing.Size(666, 427);
 			this.pasteoptions.TabIndex = 0;
 			// 
+			// capitalizetexturenames
+			// 
+			this.capitalizetexturenames.AutoSize = true;
+			this.capitalizetexturenames.Location = new System.Drawing.Point(236, 212);
+			this.capitalizetexturenames.Name = "capitalizetexturenames";
+			this.capitalizetexturenames.Size = new System.Drawing.Size(144, 18);
+			this.capitalizetexturenames.TabIndex = 36;
+			this.capitalizetexturenames.Text = "Capitalize texture names";
+			this.toolTip1.SetToolTip(this.capitalizetexturenames, "When enabled, texture names will be shown \r\nand saved as all caps (DB2 behaviour)" +
+					"");
+			this.capitalizetexturenames.UseVisualStyleBackColor = true;
+			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -1958,5 +1972,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label labelRecentFiles;
 		private System.Windows.Forms.Label label25;
 		private System.Windows.Forms.CheckBox snippetsallmanstyle;
+		private System.Windows.Forms.CheckBox capitalizetexturenames;
 	}
 }

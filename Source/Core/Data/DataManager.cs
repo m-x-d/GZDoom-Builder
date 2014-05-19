@@ -1159,7 +1159,8 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			//mxd
-			if(!internalsprites.ContainsKey("missingthing")) {
+			if(!internalsprites.ContainsKey("missingthing")) 
+			{
 				ImageData img = new ResourceImage("CodeImp.DoomBuilder.Resources.MissingThing.png");
 				img.LoadImage();
 				img.AllowUnload = false;

@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool LineTagIndicatesSectors { get { return linetagindicatesectors ; } }
 		public string DecorateGames { get { return decorategames; } }
 		public string SkyFlatName { get { return skyflatname; } }
-		public int MaxTextureNamelength { get { return maxtexturenamelength; } }
+		public int MaxTextureNameLength { get { return maxtexturenamelength; } }
 		public int LeftBoundary { get { return leftboundary; } }
 		public int RightBoundary { get { return rightboundary; } }
 		public int TopBoundary { get { return topboundary; } }

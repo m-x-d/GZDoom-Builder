@@ -464,7 +464,7 @@
 			// cbUseFloorLineAngles
 			// 
 			this.cbUseFloorLineAngles.AutoSize = true;
-			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(236, 119);
+			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(236, 147);
 			this.cbUseFloorLineAngles.Name = "cbUseFloorLineAngles";
 			this.cbUseFloorLineAngles.Size = new System.Drawing.Size(99, 18);
 			this.cbUseFloorLineAngles.TabIndex = 57;
@@ -476,7 +476,7 @@
 			// floorAngleControl
 			// 
 			this.floorAngleControl.Angle = 0;
-			this.floorAngleControl.Location = new System.Drawing.Point(186, 104);
+			this.floorAngleControl.Location = new System.Drawing.Point(186, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
 			this.floorAngleControl.Size = new System.Drawing.Size(44, 44);
 			this.floorAngleControl.TabIndex = 56;
@@ -484,7 +484,7 @@
 			// 
 			// label7
 			// 
-			this.label7.Location = new System.Drawing.Point(29, 178);
+			this.label7.Location = new System.Drawing.Point(29, 88);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(80, 14);
 			this.label7.TabIndex = 54;
@@ -494,7 +494,7 @@
 			// 
 			// label10
 			// 
-			this.label10.Location = new System.Drawing.Point(29, 150);
+			this.label10.Location = new System.Drawing.Point(29, 178);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(80, 14);
 			this.label10.TabIndex = 52;
@@ -509,7 +509,7 @@
 			this.floorAlpha.AllowRelative = false;
 			this.floorAlpha.ButtonStep = 1;
 			this.floorAlpha.ButtonStepFloat = 0.1F;
-			this.floorAlpha.Location = new System.Drawing.Point(118, 145);
+			this.floorAlpha.Location = new System.Drawing.Point(118, 173);
 			this.floorAlpha.Name = "floorAlpha";
 			this.floorAlpha.Size = new System.Drawing.Size(62, 24);
 			this.floorAlpha.StepValues = null;
@@ -518,7 +518,7 @@
 			// 
 			// label11
 			// 
-			this.label11.Location = new System.Drawing.Point(29, 120);
+			this.label11.Location = new System.Drawing.Point(29, 148);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(80, 14);
 			this.label11.TabIndex = 50;
@@ -533,7 +533,7 @@
 			this.floorRotation.AllowRelative = true;
 			this.floorRotation.ButtonStep = 5;
 			this.floorRotation.ButtonStepFloat = 1F;
-			this.floorRotation.Location = new System.Drawing.Point(118, 115);
+			this.floorRotation.Location = new System.Drawing.Point(118, 143);
 			this.floorRotation.Name = "floorRotation";
 			this.floorRotation.Size = new System.Drawing.Size(62, 24);
 			this.floorRotation.StepValues = null;
@@ -544,7 +544,7 @@
 			// floorLightAbsolute
 			// 
 			this.floorLightAbsolute.AutoSize = true;
-			this.floorLightAbsolute.Location = new System.Drawing.Point(186, 89);
+			this.floorLightAbsolute.Location = new System.Drawing.Point(186, 117);
 			this.floorLightAbsolute.Name = "floorLightAbsolute";
 			this.floorLightAbsolute.Size = new System.Drawing.Size(69, 18);
 			this.floorLightAbsolute.TabIndex = 49;
@@ -554,7 +554,7 @@
 			// 
 			// label12
 			// 
-			this.label12.Location = new System.Drawing.Point(29, 90);
+			this.label12.Location = new System.Drawing.Point(29, 118);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(80, 14);
 			this.label12.TabIndex = 47;
@@ -569,7 +569,7 @@
 			this.floorBrightness.AllowRelative = true;
 			this.floorBrightness.ButtonStep = 16;
 			this.floorBrightness.ButtonStepFloat = 1F;
-			this.floorBrightness.Location = new System.Drawing.Point(118, 85);
+			this.floorBrightness.Location = new System.Drawing.Point(118, 113);
 			this.floorBrightness.Name = "floorBrightness";
 			this.floorBrightness.Size = new System.Drawing.Size(62, 24);
 			this.floorBrightness.StepValues = null;
@@ -581,9 +581,9 @@
 			// 
 			this.floorRenderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.floorRenderStyle.FormattingEnabled = true;
-			this.floorRenderStyle.Location = new System.Drawing.Point(118, 175);
+			this.floorRenderStyle.Location = new System.Drawing.Point(118, 85);
 			this.floorRenderStyle.Name = "floorRenderStyle";
-			this.floorRenderStyle.Size = new System.Drawing.Size(86, 22);
+			this.floorRenderStyle.Size = new System.Drawing.Size(130, 22);
 			this.floorRenderStyle.TabIndex = 46;
 			// 
 			// floorScale
@@ -624,10 +624,10 @@
 			// 
 			// floortex
 			// 
-			this.floortex.Location = new System.Drawing.Point(338, 19);
+			this.floortex.Location = new System.Drawing.Point(305, 19);
 			this.floortex.MultipleTextures = false;
 			this.floortex.Name = "floortex";
-			this.floortex.Size = new System.Drawing.Size(83, 105);
+			this.floortex.Size = new System.Drawing.Size(132, 105);
 			this.floortex.TabIndex = 15;
 			this.floortex.TextureName = "";
 			this.floortex.OnValueChanged += new System.EventHandler(this.floortex_OnValueChanged);
@@ -660,7 +660,7 @@
 			// cbUseCeilLineAngles
 			// 
 			this.cbUseCeilLineAngles.AutoSize = true;
-			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(236, 119);
+			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(236, 147);
 			this.cbUseCeilLineAngles.Name = "cbUseCeilLineAngles";
 			this.cbUseCeilLineAngles.Size = new System.Drawing.Size(99, 18);
 			this.cbUseCeilLineAngles.TabIndex = 56;
@@ -672,7 +672,7 @@
 			// ceilAngleControl
 			// 
 			this.ceilAngleControl.Angle = 0;
-			this.ceilAngleControl.Location = new System.Drawing.Point(186, 104);
+			this.ceilAngleControl.Location = new System.Drawing.Point(186, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
 			this.ceilAngleControl.Size = new System.Drawing.Size(44, 44);
 			this.ceilAngleControl.TabIndex = 55;
@@ -680,7 +680,7 @@
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(29, 178);
+			this.label3.Location = new System.Drawing.Point(29, 88);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(80, 14);
 			this.label3.TabIndex = 54;
@@ -690,7 +690,7 @@
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(29, 150);
+			this.label4.Location = new System.Drawing.Point(29, 178);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(80, 14);
 			this.label4.TabIndex = 52;
@@ -705,7 +705,7 @@
 			this.ceilAlpha.AllowRelative = false;
 			this.ceilAlpha.ButtonStep = 1;
 			this.ceilAlpha.ButtonStepFloat = 0.1F;
-			this.ceilAlpha.Location = new System.Drawing.Point(118, 145);
+			this.ceilAlpha.Location = new System.Drawing.Point(118, 173);
 			this.ceilAlpha.Name = "ceilAlpha";
 			this.ceilAlpha.Size = new System.Drawing.Size(62, 24);
 			this.ceilAlpha.StepValues = null;
@@ -714,7 +714,7 @@
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(29, 120);
+			this.label1.Location = new System.Drawing.Point(29, 148);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(80, 14);
 			this.label1.TabIndex = 50;
@@ -729,7 +729,7 @@
 			this.ceilRotation.AllowRelative = true;
 			this.ceilRotation.ButtonStep = 5;
 			this.ceilRotation.ButtonStepFloat = 1F;
-			this.ceilRotation.Location = new System.Drawing.Point(118, 115);
+			this.ceilRotation.Location = new System.Drawing.Point(118, 143);
 			this.ceilRotation.Name = "ceilRotation";
 			this.ceilRotation.Size = new System.Drawing.Size(62, 24);
 			this.ceilRotation.StepValues = null;
@@ -740,7 +740,7 @@
 			// ceilLightAbsolute
 			// 
 			this.ceilLightAbsolute.AutoSize = true;
-			this.ceilLightAbsolute.Location = new System.Drawing.Point(186, 89);
+			this.ceilLightAbsolute.Location = new System.Drawing.Point(186, 117);
 			this.ceilLightAbsolute.Name = "ceilLightAbsolute";
 			this.ceilLightAbsolute.Size = new System.Drawing.Size(69, 18);
 			this.ceilLightAbsolute.TabIndex = 49;
@@ -751,7 +751,7 @@
 			// 
 			// labelLightFront
 			// 
-			this.labelLightFront.Location = new System.Drawing.Point(29, 90);
+			this.labelLightFront.Location = new System.Drawing.Point(29, 118);
 			this.labelLightFront.Name = "labelLightFront";
 			this.labelLightFront.Size = new System.Drawing.Size(80, 14);
 			this.labelLightFront.TabIndex = 47;
@@ -766,7 +766,7 @@
 			this.ceilBrightness.AllowRelative = true;
 			this.ceilBrightness.ButtonStep = 16;
 			this.ceilBrightness.ButtonStepFloat = 1F;
-			this.ceilBrightness.Location = new System.Drawing.Point(118, 85);
+			this.ceilBrightness.Location = new System.Drawing.Point(118, 113);
 			this.ceilBrightness.Name = "ceilBrightness";
 			this.ceilBrightness.Size = new System.Drawing.Size(62, 24);
 			this.ceilBrightness.StepValues = null;
@@ -778,9 +778,9 @@
 			// 
 			this.ceilRenderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.ceilRenderStyle.FormattingEnabled = true;
-			this.ceilRenderStyle.Location = new System.Drawing.Point(118, 175);
+			this.ceilRenderStyle.Location = new System.Drawing.Point(118, 85);
 			this.ceilRenderStyle.Name = "ceilRenderStyle";
-			this.ceilRenderStyle.Size = new System.Drawing.Size(86, 22);
+			this.ceilRenderStyle.Size = new System.Drawing.Size(130, 22);
 			this.ceilRenderStyle.TabIndex = 46;
 			// 
 			// ceilScale
@@ -821,10 +821,10 @@
 			// 
 			// ceilingtex
 			// 
-			this.ceilingtex.Location = new System.Drawing.Point(338, 19);
+			this.ceilingtex.Location = new System.Drawing.Point(305, 19);
 			this.ceilingtex.MultipleTextures = false;
 			this.ceilingtex.Name = "ceilingtex";
-			this.ceilingtex.Size = new System.Drawing.Size(83, 105);
+			this.ceilingtex.Size = new System.Drawing.Size(132, 105);
 			this.ceilingtex.TabIndex = 15;
 			this.ceilingtex.TextureName = "";
 			this.ceilingtex.OnValueChanged += new System.EventHandler(this.ceilingtex_OnValueChanged);

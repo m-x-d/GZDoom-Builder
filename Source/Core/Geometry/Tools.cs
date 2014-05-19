@@ -1697,10 +1697,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				
 				if(j.forward)
 				{
-					Vertex v;
-
 					// Add sidedefs forward (connected to the right vertex)
-					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
+					Vertex v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
 					AddSidedefsForFloodfill(todo, v, true, originaltexture);
 
 					// Add sidedefs backward (connected to the left vertex)
@@ -1709,10 +1707,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 				else
 				{
-					Vertex v;
-
 					// Add sidedefs backward (connected to the left vertex)
-					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
+					Vertex v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
 					AddSidedefsForFloodfill(todo, v, false, originaltexture);
 
 					// Add sidedefs forward (connected to the right vertex)

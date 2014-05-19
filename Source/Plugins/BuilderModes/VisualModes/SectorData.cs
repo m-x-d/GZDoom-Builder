@@ -114,8 +114,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			alleffects.Add(e);
 		}
 
+		//mxd. Sector slope effect
+		public void AddEffectSectorSlope(bool ceilingslope) 
+		{
+			EffectSectorSlope e = new EffectSectorSlope(this, ceilingslope);
+			alleffects.Add(e);
+		}
+
 		//mxd. Plane copy slope effect
-		public void AddEffectPlaneClopySlope(Linedef sourcelinedef, bool front) {
+		public void AddEffectPlaneClopySlope(Linedef sourcelinedef, bool front) 
+		{
 			EffectPlaneCopySlope e = new EffectPlaneCopySlope(this, sourcelinedef, front);
 			alleffects.Add(e);
 		}
@@ -149,7 +157,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Add UDMF vertex offset effect
-		public void AddEffectVertexOffset() {
+		public void AddEffectVertexOffset() 
+		{
 			EffectUDMFVertexOffset e = new EffectUDMFVertexOffset(this);
 			alleffects.Add(e);
 		}

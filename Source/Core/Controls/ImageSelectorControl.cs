@@ -59,13 +59,14 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			InitializeComponent();
+			if(General.Settings.CapitalizeTextureNames) this.name.CharacterCasing = CharacterCasing.Upper; //mxd
 		}
 		
 		// Setup
 		public virtual void Initialize()
 		{
 			// set the max length of texture names
-			name.MaxLength = General.Map.Config.MaxTextureNamelength;
+			name.MaxLength = General.Map.Config.MaxTextureNameLength;
 		}
 		
 		#endregion
@@ -157,12 +158,14 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void timer_Tick(object sender, EventArgs e) {
+		private void timer_Tick(object sender, EventArgs e) 
+		{
 			Refresh();
 		}
 
 		//mxd
-		private void ImageSelectorControl_EnabledChanged(object sender, EventArgs e) {
+		private void ImageSelectorControl_EnabledChanged(object sender, EventArgs e) 
+		{
 			labelSize.Visible = !(!General.Settings.ShowTextureSizes || !this.Enabled || string.IsNullOrEmpty(labelSize.Text));
 		}
 		
@@ -204,7 +207,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		protected void DisplayImageSize(float width, float height) {
+		protected void DisplayImageSize(float width, float height) 
+		{
 			labelSize.Text = (width > 0 && height > 0) ? width + "x" + height : string.Empty;
 			ImageSelectorControl_EnabledChanged(this, EventArgs.Empty);
 		}

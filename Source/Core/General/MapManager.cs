@@ -1637,6 +1637,9 @@ namespace CodeImp.DoomBuilder {
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
 
+			// Clear errors
+			General.ErrorLogger.Clear();
+
 			// Reload game configuration
 			General.WriteLogLine("Reloading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);

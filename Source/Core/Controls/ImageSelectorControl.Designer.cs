@@ -72,7 +72,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.name.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
 			this.name.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-			this.name.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.name.Location = new System.Drawing.Point(0, 64);
 			this.name.MaxLength = 8;
 			this.name.Name = "name";

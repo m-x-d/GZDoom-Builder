@@ -32,8 +32,9 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Variables
 
 		// Display image and text
-		public ImageData icon;
+		public readonly ImageData icon;
 		private string displaytext;
+		private static readonly StringFormat format = new StringFormat { Alignment = StringAlignment.Center }; //mxd
 		
 		// Group
 		private ListViewGroup listgroup;
@@ -99,7 +100,7 @@ namespace CodeImp.DoomBuilder.Controls
 			Rectangle imagerect = new Rectangle(bounds.Left + ((bounds.Width - General.Map.Data.Previews.MaxImageWidth) >> 1),
 				bounds.Top + ((bounds.Height - General.Map.Data.Previews.MaxImageHeight - (int)textsize.Height) >> 1),
 				General.Map.Data.Previews.MaxImageWidth, General.Map.Data.Previews.MaxImageHeight);
-			PointF textpos = new PointF(bounds.Left + (bounds.Width - textsize.Width) * 0.5f, bounds.Bottom - textsize.Height - 2);
+			PointF textpos = new PointF(bounds.Left + (bounds.Width * 0.5f), bounds.Bottom - textsize.Height - 2);
 
 			// Determine colors
 			if(this.Selected)
@@ -120,7 +121,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Draw!
 			g.FillRectangle(backcolor, bounds);
 			icon.DrawPreview(g, imagerect.Location);
-			g.DrawString(displaytext, this.ListView.Font, forecolor, textpos);
+			g.DrawString(displaytext, this.ListView.Font, forecolor, textpos, format);
 		}
 
 		// This brightens or darkens a color
@@ -146,7 +147,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// Comparer
 		public int CompareTo(ImageBrowserItem other)
 		{
-			return this.Text.CompareTo(other.Text);
+			return this.Text.ToUpperInvariant().CompareTo(other.Text.ToUpperInvariant());
 		}
 
 		#endregion
