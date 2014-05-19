@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(337, 9);
+			this.label2.Location = new System.Drawing.Point(367, 9);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(40, 14);
 			this.label2.TabIndex = 0;
@@ -132,7 +132,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filterHeight.AllowRelative = false;
 			this.filterHeight.ButtonStep = 1;
 			this.filterHeight.ButtonStepFloat = 1F;
-			this.filterHeight.Location = new System.Drawing.Point(380, 4);
+			this.filterHeight.Location = new System.Drawing.Point(410, 4);
 			this.filterHeight.Name = "filterHeight";
 			this.filterHeight.Size = new System.Drawing.Size(54, 24);
 			this.filterHeight.StepValues = null;
@@ -143,7 +143,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(238, 9);
+			this.label1.Location = new System.Drawing.Point(268, 9);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(37, 14);
 			this.label1.TabIndex = 0;
@@ -156,7 +156,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filterWidth.AllowRelative = false;
 			this.filterWidth.ButtonStep = 1;
 			this.filterWidth.ButtonStepFloat = 1F;
-			this.filterWidth.Location = new System.Drawing.Point(278, 4);
+			this.filterWidth.Location = new System.Drawing.Point(308, 4);
 			this.filterWidth.Name = "filterWidth";
 			this.filterWidth.Size = new System.Drawing.Size(54, 24);
 			this.filterWidth.StepValues = null;
@@ -183,7 +183,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// texturesize
 			// 
-			this.texturesize.Location = new System.Drawing.Point(479, 9);
+			this.texturesize.Location = new System.Drawing.Point(509, 9);
 			this.texturesize.Name = "texturesize";
 			this.texturesize.Size = new System.Drawing.Size(100, 14);
 			this.texturesize.TabIndex = 0;
@@ -193,7 +193,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// texturesizelabel
 			// 
 			this.texturesizelabel.AutoSize = true;
-			this.texturesizelabel.Location = new System.Drawing.Point(442, 9);
+			this.texturesizelabel.Location = new System.Drawing.Point(472, 9);
 			this.texturesizelabel.Name = "texturesizelabel";
 			this.texturesizelabel.Size = new System.Drawing.Size(31, 14);
 			this.texturesizelabel.TabIndex = 0;
@@ -206,7 +206,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.objectname.Location = new System.Drawing.Point(166, 6);
 			this.objectname.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.objectname.Name = "objectname";
-			this.objectname.Size = new System.Drawing.Size(64, 20);
+			this.objectname.Size = new System.Drawing.Size(94, 20);
 			this.objectname.TabIndex = 0;
 			this.objectname.TabStop = false;
 			this.objectname.TextChanged += new System.EventHandler(this.objectname_TextChanged);

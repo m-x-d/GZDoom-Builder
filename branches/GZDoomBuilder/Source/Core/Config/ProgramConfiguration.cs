@@ -44,6 +44,7 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Cached variables
 		private bool blackbrowsers;
+		private bool capitalizetexturenames; //mxd
 		private int visualfov;
 		private float visualmousesensx;
 		private float visualmousesensy;
@@ -128,6 +129,7 @@ namespace CodeImp.DoomBuilder.Config
 
 		internal Configuration Config { get { return cfg; } }
 		public bool BlackBrowsers { get { return blackbrowsers; } internal set { blackbrowsers = value; } }
+		public bool CapitalizeTextureNames { get { return capitalizetexturenames; } internal set { capitalizetexturenames = value; } } //mxd
 		public int VisualFOV { get { return visualfov; } internal set { visualfov = value; } }
 		public int ImageBrightness { get { return imagebrightness; } internal set { imagebrightness = value; } }
 		public float DoubleSidedAlpha { get { return doublesidedalpha; } internal set { doublesidedalpha = value; doublesidedalphabyte = (byte)(doublesidedalpha * 255f); } }
@@ -234,6 +236,7 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				// Read the cache variables
 				blackbrowsers = cfg.ReadSetting("blackbrowsers", false);
+				capitalizetexturenames = cfg.ReadSetting("capitalizetexturenames", true); //mxd
 				//undolevels = cfg.ReadSetting("undolevels", 20);
 				visualfov = cfg.ReadSetting("visualfov", 80);
 				visualmousesensx = cfg.ReadSetting("visualmousesensx", 40f);
@@ -324,6 +327,7 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Write the cache variables
 			cfg.WriteSetting("blackbrowsers", blackbrowsers);
+			cfg.WriteSetting("capitalizetexturenames", capitalizetexturenames); //mxd
 			//cfg.WriteSetting("undolevels", undolevels);
 			cfg.WriteSetting("visualfov", visualfov);
 			cfg.WriteSetting("visualmousesensx", visualmousesensx);

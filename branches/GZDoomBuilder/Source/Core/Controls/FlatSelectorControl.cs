@@ -71,10 +71,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// This browses for a flat
 		protected override string BrowseImage(string imagename)
 		{
-			string result;
-
 			// Browse for texture
-			result = TextureBrowserForm.Browse(this.ParentForm, imagename, true); //mxd
+			string result = TextureBrowserForm.Browse(this.ParentForm, imagename, true);
 			if(result != null) return result; else return imagename;
 		}
 	}

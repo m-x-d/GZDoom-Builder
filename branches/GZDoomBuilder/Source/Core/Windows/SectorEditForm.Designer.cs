@@ -220,9 +220,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label2
 			// 
-			label2.Location = new System.Drawing.Point(242, 16);
+			label2.Location = new System.Drawing.Point(193, 16);
 			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(83, 16);
+			label2.Size = new System.Drawing.Size(114, 16);
 			label2.TabIndex = 15;
 			label2.Text = "Floor";
 			label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -238,9 +238,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label4
 			// 
-			label4.Location = new System.Drawing.Point(337, 16);
+			label4.Location = new System.Drawing.Point(313, 16);
 			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(83, 16);
+			label4.Size = new System.Drawing.Size(114, 16);
 			label4.TabIndex = 14;
 			label4.Text = "Ceiling";
 			label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -256,10 +256,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// floortex
 			// 
-			this.floortex.Location = new System.Drawing.Point(242, 35);
+			this.floortex.Location = new System.Drawing.Point(196, 35);
 			this.floortex.MultipleTextures = false;
 			this.floortex.Name = "floortex";
-			this.floortex.Size = new System.Drawing.Size(83, 105);
+			this.floortex.Size = new System.Drawing.Size(114, 105);
 			this.floortex.TabIndex = 2;
 			this.floortex.TextureName = "";
 			this.floortex.OnValueChanged += new System.EventHandler(this.floortex_OnValueChanged);
@@ -280,10 +280,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// ceilingtex
 			// 
-			this.ceilingtex.Location = new System.Drawing.Point(337, 35);
+			this.ceilingtex.Location = new System.Drawing.Point(316, 35);
 			this.ceilingtex.MultipleTextures = false;
 			this.ceilingtex.Name = "ceilingtex";
-			this.ceilingtex.Size = new System.Drawing.Size(83, 105);
+			this.ceilingtex.Size = new System.Drawing.Size(114, 105);
 			this.ceilingtex.TabIndex = 3;
 			this.ceilingtex.TextureName = "";
 			this.ceilingtex.OnValueChanged += new System.EventHandler(this.ceilingtex_OnValueChanged);

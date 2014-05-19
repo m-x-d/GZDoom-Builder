@@ -177,6 +177,7 @@ namespace CodeImp.DoomBuilder.Windows
 			colorliterals.Color = General.Colors.Literals;
 			colorconstants.Color = General.Colors.Constants;
 			blackbrowsers.Checked = General.Settings.BlackBrowsers;
+			capitalizetexturenames.Checked = General.Settings.CapitalizeTextureNames; //mxd
 			classicbilinear.Checked = General.Settings.ClassicBilinear;
 			visualbilinear.Checked = General.Settings.VisualBilinear;
 			qualitydisplay.Checked = General.Settings.QualityDisplay;
@@ -280,6 +281,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			General.Colors.CreateAssistColors();
 			General.Settings.BlackBrowsers = blackbrowsers.Checked;
+			General.Settings.CapitalizeTextureNames = capitalizetexturenames.Checked; //mxd
 			General.Settings.ClassicBilinear = classicbilinear.Checked;
 			General.Settings.VisualBilinear = visualbilinear.Checked;
 			General.Settings.QualityDisplay = qualitydisplay.Checked;

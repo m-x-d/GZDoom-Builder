@@ -597,25 +597,27 @@ namespace CodeImp.DoomBuilder.Data
 		private ICollection<ImageData> LoadDirectoryImages(string path, int imagetype, bool includesubdirs)
 		{
 			List<ImageData> images = new List<ImageData>();
-			string[] files;
 			string name;
 			
 			// Go for all files
-			files = GetAllFiles(path, includesubdirs);
+			string[] files = GetAllFiles(path, includesubdirs);
 			foreach(string f in files)
 			{
 				// Make the texture name from filename without extension
-				name = Path.GetFileNameWithoutExtension(f).ToUpperInvariant();
-				if(name.Length > 8) name = name.Substring(0, 8);
-				if(name.Length > 0)
-				{
-					// Add image to list
-					images.Add(CreateImage(name, f, imagetype));
-				}
-				else
+				name = Path.GetFileNameWithoutExtension(f);
+
+				if (string.IsNullOrEmpty(name)) 
 				{
 					// Can't load image without name
 					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed texture from \"" + path + "\". Please consider giving names to your resources.");
+				} 
+				else 
+				{
+					if(name.Length > General.Map.Config.MaxTextureNameLength) name = name.Substring(0, General.Map.Config.MaxTextureNameLength);
+					if(General.Settings.CapitalizeTextureNames) name = name.ToUpperInvariant(); //mxd
+					
+					// Add image to list
+					images.Add(CreateImage(name, f, imagetype));
 				}
 			}
 			

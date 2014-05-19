@@ -53,13 +53,14 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool browseFlats; //mxd
 		
 		// All items
-		private List<ImageBrowserItem> items;
+		private readonly List<ImageBrowserItem> items;
 
 		// Items visible in the list
 		private List<ImageBrowserItem> visibleitems;
 
 		//mxd
 		private static int mixMode;
+		private string longestTextureName = "";
 		
 		#endregion
 
@@ -86,6 +87,7 @@ namespace CodeImp.DoomBuilder.Controls
 			StepsList sizes = new StepsList { 4, 8, 16, 32, 48, 64, 96, 128, 196, 256, 512, 1024 };
 			filterWidth.StepValues = sizes;
 			filterHeight.StepValues = sizes;
+			if(!General.Settings.CapitalizeTextureNames) objectname.CharacterCasing = CharacterCasing.Normal;
 		}
 		
 		// This applies the application settings
@@ -200,7 +202,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void filterSize_WhenTextChanged(object sender, EventArgs e) {
+		private void filterSize_WhenTextChanged(object sender, EventArgs e) 
+		{
 			objectname_TextChanged(sender, e);
 		}
 
@@ -416,6 +419,14 @@ namespace CodeImp.DoomBuilder.Controls
 		// This ends adding items
 		public void EndAdding()
 		{
+			//mxd. Do we need to change item width?
+			if (longestTextureName.Length > 8) 
+			{
+				Graphics g = Graphics.FromImage(new Bitmap(1, 1));
+				SizeF size = g.MeasureString(longestTextureName, list.Font);
+				list.TileSize = new Size((int)(size.Width + 12), list.TileSize.Height);
+			}
+			
 			// Fill list with items
 			RefillList(true);
 
@@ -426,6 +437,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// This adds an item
 		public void Add(string text, ImageData image, object tag, ListViewGroup group)
 		{
+			if(text.Length > longestTextureName.Length) longestTextureName = text; //mxd
 			ImageBrowserItem i = new ImageBrowserItem(text, image, tag);
 			i.ListGroup = group;
 			i.Group = group;
@@ -435,6 +447,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// This adds an item
 		public void Add(string text, ImageData image, object tag, ListViewGroup group, string tooltiptext)
 		{
+			if(text.Length > longestTextureName.Length) longestTextureName = text; //mxd
 			ImageBrowserItem i = new ImageBrowserItem(text, image, tag);
 			i.ListGroup = group;
 			i.Group = group;
@@ -515,11 +528,12 @@ namespace CodeImp.DoomBuilder.Controls
 				if(mixMode == 3 && (browseFlats != i.icon.IsFlat)) return false;
 			}
 
-			return i.Text.Contains(objectname.Text);
+			return i.Text.ToUpperInvariant().Contains(objectname.Text.ToUpperInvariant());
 		}
 
 		//mxd. This validates an item's texture size
-		private static bool ValidateItemSize(ImageBrowserItem i, int w, int h) {
+		private static bool ValidateItemSize(ImageBrowserItem i, int w, int h) 
+		{
 			if (!i.icon.IsPreviewLoaded) return true;
 			if (w > 0 && i.icon.Width != w) return false;
 			if (h > 0 && i.icon.Height != h) return false;
