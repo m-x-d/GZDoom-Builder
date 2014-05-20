@@ -493,7 +493,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		// This makes the path prefix for the given assembly
-		private string GetPluginPathPrefix(string assemblyname)
+		private static string GetPluginPathPrefix(string assemblyname)
 		{
 			return "plugins." + assemblyname.ToLowerInvariant() + ".";
 		}

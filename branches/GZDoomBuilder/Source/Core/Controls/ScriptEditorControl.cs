@@ -694,7 +694,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd. This converts [LB] markers to line breaks if necessary
-		private string[] processLineBreaks(string[] lines) 
+		private static string[] processLineBreaks(string[] lines) 
 		{
 			List<string> result = new List<string>(lines.Length);
 			string[] separator = new[] { "[LB]" };

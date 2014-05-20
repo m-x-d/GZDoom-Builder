@@ -204,13 +204,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Point in rect?
-		private bool PointInRect(Vector2D lt, Vector2D rb, Vector2D p)
+		private static bool PointInRect(Vector2D lt, Vector2D rb, Vector2D p)
 		{
 			return (p.x >= lt.x) && (p.x <= rb.x) && (p.y <= lt.y) && (p.y >= rb.y);
 		}
 
 		// Checks if two things overlap
-		private bool ThingsOverlap(Thing t1, Thing t2)
+		private static bool ThingsOverlap(Thing t1, Thing t2)
 		{
 			Vector3D p1 = t1.Position;
 			Vector3D p2 = t2.Position;
@@ -236,7 +236,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Checks if the flags of two things overlap (i.e. if they show up at the same time)
-		private bool FlagsOverlap(Thing t1, Thing t2) {
+		private static bool FlagsOverlap(Thing t1, Thing t2) 
+		{
 			var groups = new Dictionary<string, List<ThingFlagsCompare>>(StringComparer.Ordinal);
 			int overlappinggroups = 0;
 
@@ -260,10 +261,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// All groups have to overlap for the things to show up
 			// at the same time
-			if (overlappinggroups == groups.Count)
-				return true;
-
-			return false;
+			return (overlappinggroups == groups.Count);
 		}
 		
 		#endregion

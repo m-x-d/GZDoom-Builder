@@ -211,7 +211,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		#region ================== Tracing
 
 		// This traces sector lines to create a polygon tree
-		private List<EarClipPolygon> DoTrace(Sector s)
+		private static List<EarClipPolygon> DoTrace(Sector s)
 		{
 			Dictionary<Sidedef, bool> todosides = new Dictionary<Sidedef, bool>(s.Sidedefs.Count);
 			Dictionary<Vertex, Vertex> ignores = new Dictionary<Vertex,Vertex>();
@@ -497,7 +497,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		// This finds the cut coordinates and splits the other poly with inner vertices
-		private void SplitOuterWithInner(LinkedListNode<EarClipVertex> start, EarClipPolygon p)
+		private static void SplitOuterWithInner(LinkedListNode<EarClipVertex> start, EarClipPolygon p)
 		{
 			LinkedListNode<EarClipVertex> v1, v2;
 			LinkedListNode<EarClipVertex> insertbefore = null;
@@ -833,7 +833,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// When the point is on an edge of the triangle, it depends on the lines
 		// adjacent to the point if it is considered inside or not
 		// NOTE: vertices in t must be in clockwise order!
-		private bool PointInsideTriangle(EarClipVertex[] t, LinkedListNode<EarClipVertex> p)
+		private static bool PointInsideTriangle(EarClipVertex[] t, LinkedListNode<EarClipVertex> p)
 		{
 			// If the triangle has no area, there can never be a point inside
 			if(TriangleHasArea(t))

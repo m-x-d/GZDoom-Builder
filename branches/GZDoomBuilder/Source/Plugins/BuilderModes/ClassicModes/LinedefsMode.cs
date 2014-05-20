@@ -662,7 +662,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Check if any selected linedef is outside of map boundary
-		private bool canDrag() {
+		private static bool canDrag() 
+		{
 			ICollection<Linedef> selectedlines = General.Map.Map.GetSelectedLinedefs(true);
 			int unaffectedCount = 0;
 

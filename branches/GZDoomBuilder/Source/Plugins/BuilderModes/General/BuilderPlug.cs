@@ -445,8 +445,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. merged from GZDoomEditing plugin
 		// This applies the given values on the vertices
-		private void SetupSurfaceVertices(FlatVertex[] vertices, Sector s, ImageData img, Vector2D offset,
-										  Vector2D scale, float rotate, int color, int light, bool absolute) {
+		private static void SetupSurfaceVertices(FlatVertex[] vertices, Sector s, ImageData img, Vector2D offset,
+										  Vector2D scale, float rotate, int color, int light, bool absolute) 
+		{
 			// Prepare for math!
 			rotate = Angle2D.DegToRad(rotate);
 			Vector2D texscale = new Vector2D(1.0f / img.ScaledWidth, 1.0f / img.ScaledHeight);

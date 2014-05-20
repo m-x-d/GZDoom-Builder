@@ -236,7 +236,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void listconfigs_ItemChecked(object sender, ItemCheckedEventArgs e) {
+		private void listconfigs_ItemChecked(object sender, ItemCheckedEventArgs e) 
+		{
 			e.Item.ForeColor = (e.Item.Checked ? SystemColors.WindowText : SystemColors.InactiveCaptionText);
 		}
 		

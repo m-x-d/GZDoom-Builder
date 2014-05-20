@@ -199,7 +199,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			return line;
 		}
 
-		private Vertex getVertex(Dictionary<Vector3D, Vertex> verts, Vector3D pos) {
+		private static Vertex getVertex(Dictionary<Vector3D, Vertex> verts, Vector3D pos) {
 			//already there?
 			if(verts.ContainsKey(pos)) return verts[pos];
 			

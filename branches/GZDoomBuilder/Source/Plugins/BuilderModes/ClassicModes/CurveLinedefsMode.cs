@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This generates the vertices to split the line with, from start to end
-		private List<Vector2D> GenerateCurve(Linedef line)
+		private static List<Vector2D> GenerateCurve(Linedef line)
 		{
 			// Fetch settings from window
 			int vertices = BuilderPlug.Me.CurveLinedefsForm.Vertices;

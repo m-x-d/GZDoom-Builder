@@ -281,7 +281,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 		}
 
 		//this is called only once
-		private Color getThingColor(Thing thing) {
+		private static Color getThingColor(Thing thing) {
 			if (thing.Type == 1502) //vavoom light
 				return Color.White;
 			if (thing.Type == 1503)  //vavoom colored light

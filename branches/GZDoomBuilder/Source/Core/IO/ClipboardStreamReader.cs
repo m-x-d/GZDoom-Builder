@@ -209,7 +209,7 @@ namespace CodeImp.DoomBuilder.IO
 			}
 		}
 
-		private void AddSidedef(MapSet map, SidedefData data, Linedef ld, bool front, Dictionary<int, Sector> sectorlink) {
+		private static void AddSidedef(MapSet map, SidedefData data, Linedef ld, bool front, Dictionary<int, Sector> sectorlink) {
 			// Create sidedef
 			if(sectorlink.ContainsKey(data.SectorID)) {
 				Sidedef s = map.CreateSidedef(ld, front, sectorlink[data.SectorID]);
@@ -344,11 +344,11 @@ namespace CodeImp.DoomBuilder.IO
 			return fields;
 		}
 
-		private string ReadString(BinaryReader reader) {
+		private static string ReadString(BinaryReader reader) {
 			int len = reader.ReadInt32();
 			if (len == 0) return string.Empty;
 			char[] chars = new char[len];
-			for (int i = 0; i < len; ++i) chars[i] = reader.ReadChar(); //sb.Append(reader.ReadChar());
+			for (int i = 0; i < len; ++i) chars[i] = reader.ReadChar();
 			return new string(chars);
 		}
 

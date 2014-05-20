@@ -516,7 +516,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private Vector3D[] translateCoordinates(Vector3D[] coordinates, Vector2D direction, bool absolutePosition) {
+		private static Vector3D[] translateCoordinates(Vector3D[] coordinates, Vector2D direction, bool absolutePosition) 
+		{
 			if (coordinates.Length == 0) return null;
 
 			direction.x = (float)Math.Round(direction.x);
@@ -526,7 +527,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//move things...
 			if (!absolutePosition) { //...relatively (that's easy)
-				int camAngle = (int)Math.Round(Angle2D.RadToDeg(General.Map.VisualCamera.AngleXY));// * 180 / Math.PI);
+				int camAngle = (int)Math.Round(Angle2D.RadToDeg(General.Map.VisualCamera.AngleXY));
 				int sector = General.ClampAngle(camAngle - 45) / 90;
 				direction = direction.GetRotated(sector * Angle2D.PIHALF);
 
@@ -1082,10 +1083,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Time to pick a new target?
-			if(General.Clock.CurrentTime > (lastpicktime + PICK_INTERVAL))
+			if(Clock.CurrentTime > (lastpicktime + PICK_INTERVAL))
 			{
 				PickTargetUnlocked();
-				lastpicktime = General.Clock.CurrentTime;
+				lastpicktime = Clock.CurrentTime;
 			}
 			
 			// The mouse is always in motion
@@ -1648,7 +1649,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. Copied from BuilderModes.ThingsMode
 		// This creates a new thing
-		private Thing CreateThing(Vector2D pos) {
+		private static Thing CreateThing(Vector2D pos) 
+		{
 			if (pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
 				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary) {
 				General.Interface.DisplayStatus(StatusType.Warning, "Failed to insert thing: outside of map boundaries.");
@@ -3483,14 +3485,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private bool sidePartIsSelected(List<BaseVisualGeometrySidedef> selection, Sidedef side, VisualGeometryType geoType) {
+		private static bool sidePartIsSelected(List<BaseVisualGeometrySidedef> selection, Sidedef side, VisualGeometryType geoType) 
+		{
 			foreach(BaseVisualGeometrySidedef vs in selection) 
 				if(vs.GeometryType == geoType && vs.Sidedef.Index == side.Index) return true;
 			return false;
 		}
 
 		//mxd. This converts offsetY from/to "normalized" offset for given upper wall
-		internal float GetTopOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) {
+		internal float GetTopOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) 
+		{
 			if(side.Line.IsFlagSet(General.Map.Config.UpperUnpeggedFlag) || side.Other == null || side.Other.Sector == null)
 				return offset;
 
@@ -3502,7 +3506,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. This converts offsetY from/to "normalized" offset for given middle wall
-		internal float GetMiddleOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) {
+		internal float GetMiddleOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) 
+		{
 			if(!side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag) || side.Sector == null)
 				return offset;
 
@@ -3514,7 +3519,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. This converts offsetY from/to "normalized" offset for given lower wall
-		internal float GetBottomOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) {
+		internal float GetBottomOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) 
+		{
 			float surfaceHeight;
 			if (side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag)) {
 				if (side.Other == null || side.Other.Sector == null || side.Sector.CeilTexture != General.Map.Config.SkyFlatName ||

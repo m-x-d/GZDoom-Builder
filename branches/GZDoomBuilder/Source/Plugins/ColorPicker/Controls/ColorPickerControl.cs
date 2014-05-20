@@ -120,7 +120,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 			btnCancel.ForeColor = (RGB.Red < 180 && RGB.Green < 180) ? Color.White : Color.Black;
 		}
 
-		private void refreshNudValue(NumericUpDown nud, int value) {
+		private static void refreshNudValue(NumericUpDown nud, int value) {
 			// Update the value of the NumericUpDown control, if the value is different than the current value.
 			// Refresh the control, causing an immediate repaint.
 			if (nud.Value != value) {

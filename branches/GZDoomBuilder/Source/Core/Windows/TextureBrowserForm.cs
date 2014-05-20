@@ -170,12 +170,14 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private int sortImageData(ImageData img1, ImageData img2) {
+		private static int sortImageData(ImageData img1, ImageData img2) 
+		{
 			return img1.FullName.CompareTo(img2.FullName);
 		}
 
 		//mxd
-		private TreeNode findTextureByLongName(TreeNode node, long longname) {
+		private static TreeNode findTextureByLongName(TreeNode node, long longname) 
+		{
 			//first search in child nodes
 			TreeNode match;
 
@@ -194,7 +196,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private TreeNode findNodeByName(TreeNodeCollection nodes, string selectname) {
+		private static TreeNode findNodeByName(TreeNodeCollection nodes, string selectname) 
+		{
 			foreach (TreeNode n in nodes) {
 				if (n.Name == selectname) return n;
 
@@ -205,7 +208,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void createNodes(TreeNode root) {
+		private void createNodes(TreeNode root) 
+		{
 			ResourceTextureSet set = root.Tag as ResourceTextureSet;
 			if (set == null) {
 				General.ErrorLogger.Add(ErrorType.Error, "Resource " + root.Name + " doesn't have TextureSet!");
@@ -266,7 +270,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void SetItemsCount(TreeNode node) {
+		private static void SetItemsCount(TreeNode node) 
+		{
 			ResourceTextureSet ts = node.Tag as ResourceTextureSet;
 			if (ts == null) throw new Exception("Expected IFilledTextureSet, but got null...");
 			node.Text += " [" + ts.Textures.Count + "]";

@@ -1761,7 +1761,7 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// This updates the seperators
 		// Hides redundant seperators and shows single seperators
-		private void UpdateToolStripSeparators(ToolStripItemCollection items, bool defaultvisible)
+		private static void UpdateToolStripSeparators(ToolStripItemCollection items, bool defaultvisible)
 		{
 			ToolStripItem pvi = null;
 			foreach(ToolStripItem i in items)
@@ -2184,7 +2184,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 		
 		// This sets the shortcut keys on menu items
-		private void ApplyShortcutKeys(ToolStripItemCollection items)
+		private static void ApplyShortcutKeys(ToolStripItemCollection items)
 		{
 			// Go for all controls to find menu items
 			foreach(ToolStripItem item in items)
@@ -2227,13 +2227,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 		// This fixes short action names to fully qualified
 		// action names on menu item tags
-		private void RenameTagsToFullActions(ToolStripItemCollection items, Plugin plugin)
+		private static void RenameTagsToFullActions(ToolStripItemCollection items, Plugin plugin)
 		{
 			// Go for all controls to find menu items
 			foreach(ToolStripItem item in items)
 			{
 				// Tag set for this item?
-				if((item.Tag != null) && (item.Tag is string))
+				if(item.Tag is string)
 				{
 					// Check if the tag doe not already begin with the assembly name
 					if(!(item.Tag as string).StartsWith(plugin.Name + "_", StringComparison.InvariantCultureIgnoreCase))
@@ -3462,7 +3462,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(!processor.Enabled)
 			{
 				processor.Enabled = true;
-				lastupdatetime = General.Clock.CurrentTime;
+				lastupdatetime = Clock.CurrentTime;
 			}
 		}
 
@@ -3488,7 +3488,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void processor_Tick(object sender, EventArgs e)
 		{
 			Vector2D deltamouse;
-			float curtime = General.Clock.CurrentTime;
+			float curtime = Clock.CurrentTime;
 			float deltatime = curtime - lastupdatetime;
 			lastupdatetime = curtime;
 			

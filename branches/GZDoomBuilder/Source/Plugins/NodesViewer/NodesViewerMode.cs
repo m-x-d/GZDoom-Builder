@@ -470,7 +470,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		/// <summary>
 		/// Crop a polygon by a split line
 		/// </summary>
-		private void CropPolygon(List<Vector2D> poly, Split split)
+		private static void CropPolygon(List<Vector2D> poly, Split split)
 		{
 			if(poly.Count == 0) return;
 			Vector2D prev = poly[poly.Count - 1];

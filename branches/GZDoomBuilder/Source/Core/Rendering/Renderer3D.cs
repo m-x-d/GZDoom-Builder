@@ -375,7 +375,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Highlight
 				if(General.Settings.AnimateVisualSelection)
 				{
-					float time = General.Clock.CurrentTime;
+					float time = Clock.CurrentTime;
 					highlightglow = (float)Math.Sin(time / 100.0f) * 0.1f + 0.4f;
 					//mxd. WHY?!
 					//highlightglowinv = -(float)Math.Sin(time / 100.0f) * 0.1f + 0.4f;
@@ -549,13 +549,16 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		private int sortThingsByCameraDistance(VisualThing t1, VisualThing t2) {
+		private static int sortThingsByCameraDistance(VisualThing t1, VisualThing t2) 
+		{
 			if (t1.CameraDistance3D == t2.CameraDistance3D) return 0;
 			if (t1.CameraDistance3D > t2.CameraDistance3D) return 1;
 			return -1;
 		}
+
 		//mxd
-		private int sortThingsByLightRenderStyle(VisualThing t1, VisualThing t2) {
+		private static int sortThingsByLightRenderStyle(VisualThing t1, VisualThing t2) 
+		{
 			if (t1.LightRenderStyle == t2.LightRenderStyle) return 0;
 			if (t1.LightRenderStyle > t2.LightRenderStyle) return 1;
 			return -1;
@@ -1120,7 +1123,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd. This returns distance, at which fog color completely replaces texture color for given sector
-		private float getFogEnd(Sector s) {
+		private static float getFogEnd(Sector s) 
+		{
 			float brightness = Math.Max(30, s.Brightness);
 			
 			if (s.HasFogColor) {

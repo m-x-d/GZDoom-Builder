@@ -416,7 +416,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			}
 		}
 
-		private void HandleException(Exception ex) {
+		private static void HandleException(Exception ex) {
 			// Perform some error handling here.
 			// We don't want to bubble errors to the CLR. 
 			General.ErrorLogger.Add(ErrorType.Error, ex.Message);

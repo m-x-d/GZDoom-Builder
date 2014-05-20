@@ -140,11 +140,12 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private List<TreeNode> getValidNodes() {
+		private List<TreeNode> getValidNodes() 
+		{
 			List<TreeNode> validNodes = new List<TreeNode>();
 
 			foreach(TreeNode n in typelist.SelectedNodes) {
-				if((n.Nodes.Count == 0) && (n.Tag != null) && (n.Tag is ThingTypeInfo))
+				if((n.Nodes.Count == 0) && (n.Tag is ThingTypeInfo))
 					validNodes.Add(n);
 			}
 
@@ -162,7 +163,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Node is a child node?
 				TreeNode n = typelist.SelectedNode;
-				if((n.Nodes.Count == 0) && (n.Tag != null) && (n.Tag is ThingTypeInfo))
+				if((n.Nodes.Count == 0) && (n.Tag is ThingTypeInfo))
 				{
 					if((OnTypeDoubleClicked != null) && (typeid.Text.Length > 0)) OnTypeDoubleClicked();
 				}
@@ -188,7 +189,7 @@ namespace CodeImp.DoomBuilder.Controls
 					TreeNode n = typelist.SelectedNode;
 
 					// Node is a child node?
-					if((n.Nodes.Count == 0) && (n.Tag != null) && (n.Tag is ThingTypeInfo))
+					if((n.Nodes.Count == 0) && (n.Tag is ThingTypeInfo))
 					{
 						ThingTypeInfo ti = (n.Tag as ThingTypeInfo);
 

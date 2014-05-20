@@ -402,13 +402,13 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This returns the type name as string
-		private string TypeNameOrNull(Type type)
+		private static string TypeNameOrNull(Type type)
 		{
 			return (type != null) ? type.Name : "NULL";
 		}
 
 		// This returns the type name as string
-		private string TypeNameOrNull(object obj)
+		private static string TypeNameOrNull(object obj)
 		{
 			return (obj != null) ? obj.GetType().Name : "NULL";
 		}

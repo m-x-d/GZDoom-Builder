@@ -556,7 +556,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Check if any selected vertex is outside of map boundary
-		private bool canDrag() {
+		private static bool canDrag()
+		{
 			ICollection<Vertex> selectedverts = General.Map.Map.GetSelectedVertices(true);
 			int unaffectedCount = 0;
 
@@ -839,7 +840,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("deleteitem", BaseAction = true)]
-		public void DeleteItem() {
+		public void DeleteItem() 
+		{
 			// Make list of selected vertices
 			ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
 			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
@@ -886,7 +888,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("dissolveitem", BaseAction = true)] //mxd
-		public void DissolveItem() {
+		public void DissolveItem() 
+		{
 			// Make list of selected vertices
 			ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
 			if(selected.Count == 0) {
@@ -961,7 +964,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("placethings")] //mxd
-		public void PlaceThings() {
+		public void PlaceThings() 
+		{
 			// Make list of selected vertices
 			ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
 			if (selected.Count == 0) {
@@ -981,7 +985,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		[BeginAction("selectsimilar")]
-		public void SelectSimilar() {
+		public void SelectSimilar() 
+		{
 			ICollection<Vertex> selection = General.Map.Map.GetSelectedVertices(true);
 
 			if(selection.Count == 0) {
@@ -998,7 +1003,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Action assist (mxd)
 
 		//mxd
-		private void mergeLines(ICollection<Vertex> selected, Linedef ld1, Linedef ld2, Vertex v) {
+		private void mergeLines(ICollection<Vertex> selected, Linedef ld1, Linedef ld2, Vertex v) 
+		{
 			Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
 			Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
 
@@ -1038,7 +1044,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void drawLine(Vector2D start, Vector2D end) {
+		private static void drawLine(Vector2D start, Vector2D end) 
+		{
 			DrawnVertex dv1 = new DrawnVertex();
 			DrawnVertex dv2 = new DrawnVertex();
 			dv1.stitchline = true;
@@ -1055,7 +1062,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. If there are different sectors on both sides of given linedef, join them
-		private void tryJoinSectors(Linedef ld) {
+		private void tryJoinSectors(Linedef ld) 
+		{
 			if(ld.IsDisposed) return;
 
 			if(ld.Front != null && ld.Front.Sector != null && ld.Back != null && ld.Back.Sector != null && ld.Front.Sector.Index != ld.Back.Sector.Index) {

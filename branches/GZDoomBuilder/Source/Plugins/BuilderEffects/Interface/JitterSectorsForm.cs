@@ -383,7 +383,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			setUpperTexture(sd, textureName, textureName);
 		}
 
-		private void setUpperTexture(SidedefData sd, string textureName, string otherTextureName) {
+		private static void setUpperTexture(SidedefData sd, string textureName, string otherTextureName) {
 			if(!keepExistingSideTextures || string.IsNullOrEmpty(sd.HighTexture) || sd.HighTexture == "-")
 				sd.Side.SetTextureHigh(textureName);
 
@@ -395,7 +395,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			setLowerTexture(sd, textureName, textureName);
 		}
 
-		private void setLowerTexture(SidedefData sd, string textureName, string otherTextureName) {
+		private static void setLowerTexture(SidedefData sd, string textureName, string otherTextureName) {
 			if(!keepExistingSideTextures || string.IsNullOrEmpty(sd.LowTexture) || sd.LowTexture == "-")
 				sd.Side.SetTextureLow(textureName);
 

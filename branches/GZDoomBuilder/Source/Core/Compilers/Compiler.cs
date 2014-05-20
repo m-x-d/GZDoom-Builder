@@ -91,7 +91,7 @@ namespace CodeImp.DoomBuilder.Compilers
 			if(!isdisposed)
 			{
 				Exception deleteerror;
-				float starttime = General.Clock.CurrentTime;
+				float starttime = Clock.CurrentTime;
 				
 				do
 				{
@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.Compilers
 					}
 
 					// Bail out when it takes too long
-					if((General.Clock.CurrentTime - starttime) > 2000) break;
+					if((Clock.CurrentTime - starttime) > 2000) break;
 				}
 				while(deleteerror != null);
 				

@@ -207,7 +207,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		}
 		
 		// This adds comments from a MapElement
-		private void AddComments(MapElement e, Dictionary<string, CommentInfo> comments)
+		private static void AddComments(MapElement e, Dictionary<string, CommentInfo> comments)
 		{
 			if(e.Fields.ContainsKey("comment"))
 			{
@@ -220,7 +220,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		}
 		
 		// This changes the view to see the objects of a comment
-		private void ViewComment(CommentInfo c)
+		private static void ViewComment(CommentInfo c)
 		{
 			List<Vector2D> points = new List<Vector2D>();
 			RectangleF area = MapSet.CreateEmptyArea();
@@ -293,7 +293,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		}
 		
 		// This selects the elements in a comment
-		private void SelectComment(CommentInfo c, bool clear)
+		private static void SelectComment(CommentInfo c, bool clear)
 		{
 			//string editmode = "";
 

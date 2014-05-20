@@ -247,7 +247,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This checks and removes a level when the limit is reached
-		private void LimitUndoRedoLevel(List<UndoSnapshot> list)
+		private static void LimitUndoRedoLevel(List<UndoSnapshot> list)
 		{
 			UndoSnapshot u;
 			

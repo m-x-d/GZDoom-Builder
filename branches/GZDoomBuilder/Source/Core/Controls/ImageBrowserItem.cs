@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This brightens or darkens a color
-		private Color AdjustedColor(Color c, float amount)
+		private static Color AdjustedColor(Color c, float amount)
 		{
 			Color4 cc = new Color4(c);
 			
