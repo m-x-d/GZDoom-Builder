@@ -100,7 +100,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			dataGridView.Rows.Add(row);
 		}
 
-		private List<Sector> getSectorsWithTag(int tag, int count) {
+		private static List<Sector> getSectorsWithTag(int tag, int count) {
 			List<Sector> list = new List<Sector>();
 			foreach(Sector s in General.Map.Map.Sectors) {
 				if(s.Tag == tag) {
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			return list;
 		}
 
-		private List<Linedef> getLinedefsWithTag(int tag, int count) {
+		private static List<Linedef> getLinedefsWithTag(int tag, int count) {
 			List<Linedef> list = new List<Linedef>();
 			foreach(Linedef l in General.Map.Map.Linedefs) {
 				if(l.Tag == tag) {
@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			return list;
 		}
 
-		private List<Thing> getThingsWithTag(int tag, int count) {
+		private static List<Thing> getThingsWithTag(int tag, int count) {
 			List<Thing> list = new List<Thing>();
 			foreach(Thing t in General.Map.Map.Things) {
 				if(t.Tag == tag) {
@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			return list;
 		}
 
-		private void showSelection(List<Vector2D> points) {
+		private static void showSelection(List<Vector2D> points) {
 			RectangleF area = MapSet.CreateEmptyArea();
 			
 			// Make a view area from the points

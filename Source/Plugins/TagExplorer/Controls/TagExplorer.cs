@@ -466,7 +466,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				filteredAction = readNumber(serachStr, pos+1);
 		}
 
-		private int readNumber(string serachStr, int startPoition) {
+		private static int readNumber(string serachStr, int startPoition) {
 			string token = "";
 			int pos = startPoition;
 
@@ -494,7 +494,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				nodes.Sort(sortByIndex);
 		}
 
-		private int sortByAction(TreeNode t1, TreeNode t2) {
+		private static int sortByAction(TreeNode t1, TreeNode t2) {
 			NodeInfo i1 = t1.Tag as NodeInfo;
 			NodeInfo i2 = t2.Tag as NodeInfo;
 
@@ -505,7 +505,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			return -1; //should be i1 < i2
 		}
 
-		private int sortByTag(TreeNode t1, TreeNode t2) {
+		private static int sortByTag(TreeNode t1, TreeNode t2) {
 			NodeInfo i1 = t1.Tag as NodeInfo;
 			NodeInfo i2 = t2.Tag as NodeInfo;
 
@@ -516,7 +516,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			return -1; //should be i1 < i2
 		}
 
-		private int sortByIndex(TreeNode t1, TreeNode t2) {
+		private static int sortByIndex(TreeNode t1, TreeNode t2) {
 			NodeInfo i1 = t1.Tag as NodeInfo;
 			NodeInfo i2 = t2.Tag as NodeInfo;
 

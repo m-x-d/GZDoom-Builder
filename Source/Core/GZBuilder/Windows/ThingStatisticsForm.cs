@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
             dataGridView.Sort(ThingType, ListSortDirection.Ascending);
         }
 
-        private List<Thing> getThingsByType(int type) {
+        private static List<Thing> getThingsByType(int type) {
             List<Thing> list = new List<Thing>();
             foreach (Thing t in General.Map.Map.Things) {
                 if (t.Type == type) list.Add(t);
@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
             return list;
         }
 
-        private void showSelection(List<Vector2D> points) {
+        private static void showSelection(List<Vector2D> points) {
             RectangleF area = MapSet.CreateEmptyArea();
 
             // Make a view area from the points

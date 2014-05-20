@@ -206,7 +206,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void setArgumentText(ArgumentInfo info, Label label, int value) {
+		private static void setArgumentText(ArgumentInfo info, Label label, int value) 
+		{
 			TypeHandler th = General.Types.GetArgumentHandler(info);
 			th.SetValue(value);
 			label.Text = th.GetStringValue();

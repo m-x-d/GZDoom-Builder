@@ -567,7 +567,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Check if any selected thing is outside of map boundary
-		private bool canDrag() {
+		private static bool canDrag() 
+		{
 			ICollection<Thing> selectedthings = General.Map.Map.GetSelectedThings(true);
 			int unaffectedCount = 0;
 
@@ -779,7 +780,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This creates a new thing
-		private Thing InsertThing(Vector2D pos)
+		private static Thing InsertThing(Vector2D pos)
 		{
 			if (pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
 				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary)

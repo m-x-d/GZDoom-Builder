@@ -465,7 +465,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd. This checks intersection between line and plane 
-		protected Vector2D getIntersection(Vector3D start, Vector3D end, Vector3D planeCenter, Vector3D planeNormal) {
+		protected Vector2D getIntersection(Vector3D start, Vector3D end, Vector3D planeCenter, Vector3D planeNormal) 
+		{
 			Vector3D delta = new Vector3D(planeCenter.x - start.x, planeCenter.y - start.y, planeCenter.z - start.z);
 			return start + Vector3D.DotProduct(planeNormal, delta) / Vector3D.DotProduct(planeNormal, end - start) * (end - start);
 		}
@@ -627,22 +628,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		// This returns the camera sector from linedef
-		private Sector GetCameraSectorFromLinedef(Linedef ld)
+		private static Sector GetCameraSectorFromLinedef(Linedef ld)
 		{
 			if(ld.SideOfLine(General.Map.VisualCamera.Position) < 0)
 			{
-				if(ld.Front != null)
-					return ld.Front.Sector;
-				else
-					return null;
+				return (ld.Front != null ? ld.Front.Sector : null);
 			}
-			else
-			{
-				if(ld.Back != null)
-					return ld.Back.Sector;
-				else
-					return null;
-			}
+
+			return (ld.Back != null ? ld.Back.Sector : null);
 		}
 		
 		#endregion
@@ -957,7 +950,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public VisualThing GetVisualThing(Thing t) { return allthings[t]; }
 
 		//mxd
-		public List<VisualThing> GetSelectedVisualThings(bool refreshSelection) {
+		public List<VisualThing> GetSelectedVisualThings(bool refreshSelection) 
+		{
 			if (refreshSelection || selectedVisualThings == null) {
 				selectedVisualThings = new List<VisualThing>();
 				foreach (KeyValuePair<Thing, VisualThing> group in allthings) {
@@ -973,7 +967,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 					VisualPickResult target = PickObject(start, start + delta);
 
 					//not appropriate way to do this, but...
-					if (target.picked != null && target.picked is VisualThing)
+					if (target.picked is VisualThing)
 						selectedVisualThings.Add((VisualThing)target.picked);
 				}
 			}
@@ -984,7 +978,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// mxd. This returns list of selected sectors based on surfaces selected in visual mode
 		/// </summary>
-		public List<VisualSector> GetSelectedVisualSectors(bool refreshSelection) {
+		public List<VisualSector> GetSelectedVisualSectors(bool refreshSelection) 
+		{
 			if (refreshSelection || selectedVisualSectors == null) {
 				selectedVisualSectors = new List<VisualSector>();
 				foreach (KeyValuePair<Sector, VisualSector> group in allsectors) {
@@ -1008,12 +1003,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// mxd. This returns list of surfaces selected in visual mode
 		/// </summary>
-		public List<VisualGeometry> GetSelectedSurfaces() {
+		public List<VisualGeometry> GetSelectedSurfaces() 
+		{
 			List<VisualGeometry> selectedSurfaces = new List<VisualGeometry>();
 			foreach (KeyValuePair<Sector, VisualSector> group in allsectors) {
 				foreach (VisualGeometry vg in group.Value.AllGeometry) {
-					if (vg.Selected)
-						selectedSurfaces.Add(vg);
+					if (vg.Selected) selectedSurfaces.Add(vg);
 				}
 			}
 
@@ -1026,16 +1021,16 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd
-		private VisualGeometry getHilightedSurface() {
+		private VisualGeometry getHilightedSurface() 
+		{
 			Vector3D start = General.Map.VisualCamera.Position;
 			Vector3D delta = General.Map.VisualCamera.Target - General.Map.VisualCamera.Position;
 			delta = delta.GetFixedLength(General.Settings.ViewDistance * 0.98f);
 			VisualPickResult target = PickObject(start, start + delta);
 
-			if(target.picked != null && target.picked is VisualGeometry) {
+			if(target.picked is VisualGeometry) {
 				VisualGeometry vg = (VisualGeometry)target.picked;
-				if (vg.Sector != null)
-					return vg;
+				if (vg.Sector != null) return vg;
 			}
 			return null;
 		}

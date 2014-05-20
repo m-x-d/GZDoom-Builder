@@ -247,7 +247,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			return geo;
 		}
 
-		private void checkTextureName(ref Dictionary<string, List<WorldVertex[]>> geo, ref string texture) {
+		private static void checkTextureName(ref Dictionary<string, List<WorldVertex[]>> geo, ref string texture) {
 			if(!string.IsNullOrEmpty(texture) && texture != "-") {
 				if(!geo.ContainsKey(texture))
 					geo.Add(texture, new List<WorldVertex[]>());
@@ -258,7 +258,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 
 //SURFACE OPTIMIZATION
 		//it's either quad, or triangle
-		private WorldVertex[] optimizeWall(WorldVertex[] verts) {
+		private static WorldVertex[] optimizeWall(WorldVertex[] verts) {
 			if (verts.Length == 6) {
 				return new[] { verts[5], verts[2], verts[1], verts[0] };
 			}
@@ -267,7 +267,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			return verts;
 		}
 
-		private List<WorldVertex[]> optimizeSector(WorldVertex[] verts, VisualModes.VisualGeometryType visualGeometryType) {
+		private static List<WorldVertex[]> optimizeSector(WorldVertex[] verts, VisualModes.VisualGeometryType visualGeometryType) {
 			List<WorldVertex[]> groups = new List<WorldVertex[]>();
 
 			if(verts.Length == 6) { //rectangle surface
@@ -287,7 +287,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 		}
 
 //OBJ Creation
-		private StringBuilder createObjGeometry(Dictionary<string, List<WorldVertex[]>> geometryByTexture, WavefrontExportSettings data) {
+		private static StringBuilder createObjGeometry(Dictionary<string, List<WorldVertex[]>> geometryByTexture, WavefrontExportSettings data) {
 			StringBuilder obj = new StringBuilder();
 			const string vertexFormatter = "{0} {2} {1}\n";
 

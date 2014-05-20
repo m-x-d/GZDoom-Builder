@@ -651,7 +651,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This checks if a point is in a rect
-		private bool PointInRectF(RectangleF rect, Vector2D point)
+		private static bool PointInRectF(RectangleF rect, Vector2D point)
 		{
 			return !(point.x < rect.Left || point.x > rect.Right || point.y < rect.Top || point.y > rect.Bottom); //mxd
 		}

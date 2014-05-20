@@ -253,7 +253,7 @@ namespace CodeImp.DoomBuilder.IO
 			}
 		}
 
-		private void AddFlags(Dictionary<string, bool> elementFlags, BinaryWriter writer) {
+		private static void AddFlags(Dictionary<string, bool> elementFlags, BinaryWriter writer) {
 			List<string> flags = new List<string>();
 
 			foreach(KeyValuePair<string, bool> f in elementFlags) {

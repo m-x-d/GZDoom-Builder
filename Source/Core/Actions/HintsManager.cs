@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.Actions
 			}
 		}
 
-		private Dictionary<string, string> processHints(Dictionary<string, List<string>> hintsgroup) {
+		private static Dictionary<string, string> processHints(Dictionary<string, List<string>> hintsgroup) {
 			var result = new Dictionary<string, string>(StringComparer.Ordinal);
 			foreach(KeyValuePair<string, List<string>> group in hintsgroup) {
 				result.Add(group.Key, "{\\rtf1" + string.Join("\\par\\par ", group.Value.ToArray()) + "}");

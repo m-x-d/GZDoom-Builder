@@ -519,7 +519,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 		}
 
 		//this returns relative handle location
-		private Vector2D getHandleLocation(Vector2D start, Vector2D end, Vector2D direction) {
+		private static Vector2D getHandleLocation(Vector2D start, Vector2D end, Vector2D direction) {
 			float angle = -(float)Math.Atan2(start.y - end.y, start.x - end.x);
 			float dirAngle = -(float)Math.Atan2(direction.y - start.y, direction.x - start.x);
 			float length = (float)Math.Sqrt(Math.Pow(Math.Abs(start.x - end.x), 2.0) + Math.Pow(Math.Abs(start.y - end.y), 2.0)) * 0.3f;
@@ -533,16 +533,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 
 //LINE DRAWING
 		//returns true if 2 lines intersect
-		private bool linesIntersect(Line line1, Line line2) {
+		private static bool linesIntersect(Line line1, Line line2) {
 			float zn = (line2.End.y - line2.Start.y) * (line1.End.x - line1.Start.x) - (line2.End.x - line2.Start.x) * (line1.End.y - line1.Start.y);
 			float ch1 = (line2.End.x - line2.Start.x) * (line1.Start.y - line2.Start.y) - (line2.End.y - line2.Start.y) * (line1.Start.x - line2.Start.x);
 			float ch2 = (line1.End.x - line1.Start.x) * (line1.Start.y - line2.Start.y) - (line1.End.y - line1.Start.y) * (line1.Start.x - line2.Start.x);
 
 			if (zn == 0) return false;
-
-			if ((ch1 / zn <= 1 && ch1 / zn >= 0) && (ch2 / zn <= 1 && ch2 / zn >= 0))
-				return true;
-			return false;
+			return (ch1 / zn <= 1 && ch1 / zn >= 0) && (ch2 / zn <= 1 && ch2 / zn >= 0);
 		}
 
 		#endregion
@@ -658,7 +655,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 		/**
 		 * Easing equation function for a sinusoidal (sin(t)) easing in: accelerating from zero velocity.
 		 */
-		private int easeInSine(int val1, int val2, float delta) {
+		private static int easeInSine(int val1, int val2, float delta) {
 			float f_val1 = val1;
 			float f_val2 = val2 - f_val1;
 			return (int)(-f_val2 * Math.Cos(delta * Angle2D.PIHALF) + f_val2 + f_val1);
@@ -667,7 +664,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 		/**
 		 * Easing equation function for a sinusoidal (sin(t)) easing out: decelerating from zero velocity.
 		 */
-		private int easeOutSine(int val1, int val2, float delta) {
+		private static int easeOutSine(int val1, int val2, float delta) {
 			float f_val1 = val1;
 			float f_val2 = val2;
 			return (int)((f_val2 - f_val1) * Math.Sin(delta * Angle2D.PIHALF) + f_val1);
@@ -676,7 +673,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes {
 		/**
 		 * Easing equation function for a sinusoidal (sin(t)) easing in/out: acceleration until halfway, then deceleration.
 		 */
-		private int easeInOutSine(int val1, int val2, float delta) {
+		private static int easeInOutSine(int val1, int val2, float delta) {
 			float f_val1 = val1;
 			float f_val2 = val2;
 			return (int)(-f_val2 / 2.0f * (Math.Cos(Angle2D.PI * delta) - 1.0f) + f_val1);

@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			return combineName(comment.Length == 0 ? defaultName : comment, t.Tag, t.Action, t.Index, sortMode, isDefaultName);
 		}
 
-		private string getSectorName(Sector s, ref string comment, string sortMode) {
+		private static string getSectorName(Sector s, ref string comment, string sortMode) {
 			bool isDefaultName = true;
 			comment = "";
 			if (TagExplorer.UDMF && s.Fields.ContainsKey("comment")) {
@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			return combineName(comment.Length == 0 ? NodeInfoDefaultName.SECTOR : comment, s.Tag, s.Effect, s.Index, sortMode, isDefaultName);
 		}
 
-		private string getLinedefName(Linedef l, ref string comment, string sortMode) {
+		private static string getLinedefName(Linedef l, ref string comment, string sortMode) {
 			bool isDefaultName = true;
 			comment = "";
 			if (TagExplorer.UDMF && l.Fields.ContainsKey("comment")) {

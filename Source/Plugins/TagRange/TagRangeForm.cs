@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.TagRange
 		}
 		
 		// Handler for finding a new tag
-		private void TagHandler(MapElement element, bool actionargument, UniversalType type, ref int value, Dictionary<int, bool> usedtags)
+		private static void TagHandler(MapElement element, bool actionargument, UniversalType type, ref int value, Dictionary<int, bool> usedtags)
 		{
 			usedtags[value] = true;
 		}

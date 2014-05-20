@@ -242,7 +242,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 			return false;
 		}
 
-		private bool getColor(string name, ref Color4 color) {
+		private static bool getColor(string name, ref Color4 color) {
 			if (name == "black") return true;
 
 			//probably it's a hex color (like FFCC11)?

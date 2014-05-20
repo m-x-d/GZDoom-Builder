@@ -354,7 +354,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			}
 		}
 
-		private int CalcDegrees(Point pt) {
+		private static int CalcDegrees(Point pt) {
 			int degrees;
 
 			if (pt.X == 0) {
@@ -433,7 +433,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			return Points;
 		}
 
-		private Point GetPoint(float degrees, float radius, Point centerPoint) {
+		private static Point GetPoint(float degrees, float radius, Point centerPoint) {
 			// Given the center of a circle and its radius, along
 			// with the angle corresponding to the point, find the coordinates. 
 			// In other words, conver  t from polar to rectangular coordinates.

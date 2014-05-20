@@ -427,7 +427,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 				return;
 			}
 
-			float time = General.Clock.CurrentTime;
+			float time = Clock.CurrentTime;
 			float rMin = Math.Min(lightPrimaryRadius, lightSecondaryRadius);
 			float rMax = Math.Max(lightPrimaryRadius, lightSecondaryRadius);
 			float diff = rMax - rMin;

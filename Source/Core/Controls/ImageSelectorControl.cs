@@ -59,7 +59,6 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			InitializeComponent();
-			if(General.Settings.CapitalizeTextureNames) this.name.CharacterCasing = CharacterCasing.Upper; //mxd
 		}
 		
 		// Setup
@@ -67,6 +66,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// set the max length of texture names
 			name.MaxLength = General.Map.Config.MaxTextureNameLength;
+			if(General.Settings.CapitalizeTextureNames) this.name.CharacterCasing = CharacterCasing.Upper; //mxd
 		}
 		
 		#endregion
@@ -228,15 +228,13 @@ namespace CodeImp.DoomBuilder.Controls
 				// Return the new value
 				return name.Text;
 			}
-			else
-			{
-				// Nothing given, keep original value
-				return original;
-			}
+
+			// Nothing given, keep original value
+			return original;
 		}
 
 		// This brightens or darkens a color
-		private Color AdjustedColor(Color c, float amount)
+		private static Color AdjustedColor(Color c, float amount)
 		{
 			Color4 cc = new Color4(c);
 

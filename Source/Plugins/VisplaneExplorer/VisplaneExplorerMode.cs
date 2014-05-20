@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		}
 
 		// This returns the tile position for the given map coordinate
-		private Point TileForPoint(float x, float y)
+		private static Point TileForPoint(float x, float y)
 		{
 			return new Point((int)Math.Floor(x / Tile.TILE_SIZE) * Tile.TILE_SIZE, (int)Math.Floor(y / Tile.TILE_SIZE) * Tile.TILE_SIZE);
 		}

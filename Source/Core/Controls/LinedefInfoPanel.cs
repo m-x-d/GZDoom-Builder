@@ -457,7 +457,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void setUDMFLight(Sidedef sd, Label label, Label value) {
+		private static void setUDMFLight(Sidedef sd, Label label, Label value) 
+		{
 			if(sd.Fields.ContainsKey("light")) {
 				int light = (int)sd.Fields["light"].Value;
 				
@@ -476,7 +477,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private float getDefaultUDMFValue(string valueName) {
+		private float getDefaultUDMFValue(string valueName) 
+		{
 			foreach (UniversalFieldInfo fi in fieldInfos) {
 				if (fi.Name == valueName) return (float)fi.Default;
 			}
@@ -484,7 +486,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void setArgumentText(ArgumentInfo info, Label label, int value) {
+		private static void setArgumentText(ArgumentInfo info, Label label, int value) 
+		{
 			TypeHandler th = General.Types.GetArgumentHandler(info);
 			th.SetValue(value);
 			label.Text = th.GetStringValue();
@@ -515,7 +518,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This shows a sidedef texture in a panel
-		private void DisplaySidedefTexture(Panel panel, Label label, string name, bool required)
+		private static void DisplaySidedefTexture(Panel panel, Label label, string name, bool required)
 		{
 			// Check if name is a "none" texture
 			if((name.Length < 1) || (name == "-"))

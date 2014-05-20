@@ -456,7 +456,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This makes screen vertices for display
-		private FlatVertex[] CreateScreenVerts(Size texturesize)
+		private static FlatVertex[] CreateScreenVerts(Size texturesize)
 		{
 			FlatVertex[] screenverts = new FlatVertex[4];
 			screenverts[0].x = 0.5f;
@@ -1026,7 +1026,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		private void CreateThingSpriteVerts(Vector2D screenpos, float width, float height, ref FlatVertex[] verts, int offset, int color) {
+		private static void CreateThingSpriteVerts(Vector2D screenpos, float width, float height, ref FlatVertex[] verts, int offset, int color) 
+		{
 			// Setup fixed rect for circle
 			verts[offset].x = screenpos.x - width;
 			verts[offset].y = screenpos.y - height;

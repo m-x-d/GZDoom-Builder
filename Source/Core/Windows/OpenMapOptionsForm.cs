@@ -171,7 +171,8 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// mxd. This matches a WAD file with the specified game configuration
 		// by checking if the specific lumps are detected
-		private bool MatchConfiguration(Configuration cfg, WAD wadfile) {
+		private static bool MatchConfiguration(Configuration cfg, WAD wadfile) 
+		{
 			int scanindex, checkoffset;
 			int lumpsfound, lumpsrequired = 0;
 			string lumpname;

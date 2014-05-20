@@ -1051,7 +1051,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Selection
 		
 		// This checks a flag in a selection type
-		private bool InSelectionType(SelectionType value, SelectionType bits)
+		private static bool InSelectionType(SelectionType value, SelectionType bits)
 		{
 			return (value & bits) == bits;
 		}
@@ -2775,7 +2775,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Handler for finding a new tag
-		private void NewTagHandler(MapElement element, bool actionargument, UniversalType type, ref int value, Dictionary<int, bool> usedtags)
+		private static void NewTagHandler(MapElement element, bool actionargument, UniversalType type, ref int value, Dictionary<int, bool> usedtags)
 		{
 			usedtags[value] = true;
 		}
@@ -2857,7 +2857,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This checks if the given action argument type is a tag type
-		private bool CheckIsTagType(int argtype)
+		private static bool CheckIsTagType(int argtype)
 		{
 			return (argtype == (int)UniversalType.LinedefTag) ||
 				   (argtype == (int)UniversalType.SectorTag) ||
@@ -2994,7 +2994,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			Dictionary<uint, List<Sidedef>> storedsides = new Dictionary<uint, List<Sidedef>>(numsidedefs);
 			int originalsidescount = numsidedefs;
-			float starttime = General.Clock.CurrentTime;
+			float starttime = Clock.CurrentTime;
 
 			BeginAddRemove();
 			
@@ -3081,7 +3081,7 @@ namespace CodeImp.DoomBuilder.Map
 			EndAddRemove();
 
 			// Output info
-			float endtime = General.Clock.CurrentTime;
+			float endtime = Clock.CurrentTime;
 			float deltatimesec = (endtime - starttime) / 1000.0f;
 			float ratio = 100.0f - ((numsidedefs / (float)originalsidescount) * 100.0f);
 			General.WriteLogLine("Sidedefs compressed: " + numsidedefs + " remaining out of " + originalsidescount + " (" + ratio.ToString("########0.00") + "%) in " + deltatimesec.ToString("########0.00") + " seconds");

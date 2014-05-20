@@ -1031,7 +1031,7 @@ namespace CodeImp.DoomBuilder {
 		}
 
 		// This copies all lumps, except those of a specific map
-		private void CopyAllLumpsExceptMap(WAD source, WAD target, GameConfiguration mapconfig, string sourcemapname) {
+		private static void CopyAllLumpsExceptMap(WAD source, WAD target, GameConfiguration mapconfig, string sourcemapname) {
 			// Go for all lumps
 			bool skipping = false;
 			foreach (Lump srclump in source.Lumps) {
@@ -1534,7 +1534,8 @@ namespace CodeImp.DoomBuilder {
 		}
 
 		//mxd
-		private void updateScriptsFromLocation(AcsParserSE parser, string path) {
+		private static void updateScriptsFromLocation(AcsParserSE parser, string path) 
+		{
 			MemoryStream s = General.Map.Data.LoadFile(path);
 			if(s != null && s.Length > 0) parser.Parse(s, path, true, true);
 		}
@@ -1896,7 +1897,8 @@ namespace CodeImp.DoomBuilder {
 		}
 
 		//mxd
-		private void snapThings(ICollection<Thing> things) {
+		private static void snapThings(IEnumerable<Thing> things) 
+		{
 			//we are terribly busy...
 			Cursor.Current = Cursors.AppStarting;
 

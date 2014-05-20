@@ -219,7 +219,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 		
 		// This clamps a value between 0 and 1
-		private float Saturate(float v)
+		private static float Saturate(float v)
 		{
 			if(v < 0f) return 0f; else if(v > 1f) return 1f; else return v;
 		}
