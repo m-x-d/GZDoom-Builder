@@ -297,7 +297,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				VisualSidedefParts parts = oldsides.ContainsKey(sd) ? oldsides[sd] : new VisualSidedefParts();
 				
 				// Doublesided or singlesided?
-				if(sd.Other != null)
+				if(sd.Other != null && sd.Line.IsFlagSet(General.Map.Config.DoubleSidedFlag))
 				{
 					// Create upper part
 					VisualUpper vu = parts.upper ?? new VisualUpper(mode, this, sd);
