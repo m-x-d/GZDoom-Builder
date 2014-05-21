@@ -488,7 +488,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd
-			if(General.Map.UDMF) {
+			if(General.Map.UDMF) 
+			{
 				foreach(KeyValuePair<Vertex, VisualVertexPair> pair in vertices)
 					pair.Value.Update();
 			}
