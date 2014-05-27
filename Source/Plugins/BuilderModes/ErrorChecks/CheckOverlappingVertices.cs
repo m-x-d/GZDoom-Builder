@@ -23,7 +23,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public CheckOverlappingVertices() {
 			// Total progress is done when all lines are checked
-			SetTotalProgress(General.Map.Map.Linedefs.Count / PROGRESS_STEP);
+			SetTotalProgress(General.Map.Map.Vertices.Count / PROGRESS_STEP);
 		}
 		
 		#endregion

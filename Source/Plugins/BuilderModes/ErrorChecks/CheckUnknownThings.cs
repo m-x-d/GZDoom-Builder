@@ -5,7 +5,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks {
 
 	[ErrorChecker("Check unknown things", true, 50)]
 	public class CheckUnknownThings : ErrorChecker {
-		private int PROGRESS_STEP = 1000;
+		
+		private const int PROGRESS_STEP = 1000;
 
 		// Constructor
 		public CheckUnknownThings()	{
