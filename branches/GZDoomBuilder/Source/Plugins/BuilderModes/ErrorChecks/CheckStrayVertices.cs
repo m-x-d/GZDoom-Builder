@@ -6,7 +6,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
 	[ErrorChecker("Check unconnected vertices", true, 50)]
 	public class CheckStrayVertices : ErrorChecker
 	{
-		private int PROGRESS_STEP = 1000;
+		private const int PROGRESS_STEP = 1000;
 
 		// Constructor
 		public CheckStrayVertices() {

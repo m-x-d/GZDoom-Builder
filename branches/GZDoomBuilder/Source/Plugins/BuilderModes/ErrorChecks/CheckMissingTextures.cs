@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
-		private int PROGRESS_STEP = 1000;
+		private const int PROGRESS_STEP = 1000;
 
 		#endregion
 
