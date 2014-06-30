@@ -639,7 +639,8 @@ namespace CodeImp.DoomBuilder {
 					includenodes = false;
 				General.MainWindow.DisplayStatus(oldstatus);
 			}
-			else {
+			else 
+			{
 				// Check if we have nodebuilder lumps
 				includenodes = VerifyNodebuilderLumps(tempwad, TEMP_MAP_HEADER);
 			}
@@ -648,11 +649,24 @@ namespace CodeImp.DoomBuilder {
 			data.Suspend();
 
 			// Determine original map name
-			origmapname = (options.PreviousName != "") ? options.PreviousName : options.CurrentName;
+			origmapname = (options.PreviousName != "" && purpose != SavePurpose.IntoFile) ? options.PreviousName : options.CurrentName;
 
 			try {
-				// Backup existing file, if any
 				if (File.Exists(newfilepathname)) {
+					// mxd. Check if target wad already has a map with the same name
+					if (purpose == SavePurpose.IntoFile) {
+						WAD wad = new WAD(newfilepathname, true);
+						int mapindex = wad.FindLumpIndex(origmapname);
+						wad.Dispose();
+
+						if(mapindex != -1 && MessageBox.Show(General.MainWindow, "Target file already contains map '" + origmapname + "'\nDo you want to replace it?", "Map already exists!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No) {
+							data.Resume();
+							General.WriteLogLine("Map saving cancelled...");
+							return false;
+						}
+					}
+
+					// Backup existing file, if any
 					if (File.Exists(newfilepathname + ".backup3")) File.Delete(newfilepathname + ".backup3");
 					if (File.Exists(newfilepathname + ".backup2")) File.Move(newfilepathname + ".backup2", newfilepathname + ".backup3");
 					if (File.Exists(newfilepathname + ".backup1")) File.Move(newfilepathname + ".backup1", newfilepathname + ".backup2");
@@ -703,7 +717,8 @@ namespace CodeImp.DoomBuilder {
 					origwad.Dispose();
 					File.Delete(origwadfile);
 				}
-				else {
+				else 
+				{
 					// Create new target file
 					targetwad = new WAD(newfilepathname);
 				}
@@ -722,24 +737,26 @@ namespace CodeImp.DoomBuilder {
 			// Copy map lumps to target file
 			CopyLumpsByType(tempwad, TEMP_MAP_HEADER, targetwad, origmapname, true, true, includenodes, true);
 
-			// Was the map lump name renamed?
-			if ((options.PreviousName != options.CurrentName) &&
-			   (options.PreviousName != "")) {
-				General.WriteLogLine("Renaming map lump name from " + options.PreviousName + " to " + options.CurrentName);
+			// mxd. Was the map renamed?
+			if(!string.IsNullOrEmpty(options.PreviousName) && options.PreviousName != options.CurrentName) 
+			{
+				if (purpose != SavePurpose.IntoFile) 
+				{
+					General.WriteLogLine("Changing map name from '" + options.PreviousName + "' to '" + options.CurrentName + "'");
 
-				// Find the map header in target
-				index = targetwad.FindLumpIndex(options.PreviousName);
-				if (index > -1) {
-					// Rename the map lump name
-					targetwad.Lumps[index].Rename(options.CurrentName);
-					options.PreviousName = "";
+					// Find the map header in target
+					index = targetwad.FindLumpIndex(options.PreviousName);
+					if (index > -1) {
+						// Rename the map lump name
+						targetwad.Lumps[index].Rename(options.CurrentName);
+					} else {
+						// Houston, we've got a problem!
+						General.ShowErrorMessage("Error renaming map lump name: the original map lump could not be found!", MessageBoxButtons.OK);
+						options.CurrentName = options.PreviousName;
+					}
+					
 				}
-				else {
-					// Houston, we've got a problem!
-					General.ShowErrorMessage("Error renaming map lump name: the original map lump could not be found!", MessageBoxButtons.OK);
-					options.CurrentName = options.PreviousName;
-					options.PreviousName = "";
-				}
+				options.PreviousName = "";
 			}
 
 			// Done with the target file
@@ -797,7 +814,8 @@ namespace CodeImp.DoomBuilder {
 				General.ShowWarningMessage("Unable to build the nodes: The configured nodebuilder cannot be found.\nPlease check your game configuration settings!", MessageBoxButtons.OK);
 				return false;
 			}
-			else {
+			else 
+			{
 				// Create the compiler interface that will run the nodebuilder
 				// This automatically creates a temporary directory for us
 				Compiler compiler = nodebuilder.CreateCompiler();
@@ -881,7 +899,8 @@ namespace CodeImp.DoomBuilder {
 					// Done with the build wad
 					if (buildwad != null) buildwad.Dispose();
 				}
-				else { //mxd
+				else 
+				{ //mxd
 					//collect errors
 					string errors = "";
 					foreach (CompilerError e in compiler.Errors)
