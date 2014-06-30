@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
-		private int PROGRESS_STEP = 1000;
+		private const int PROGRESS_STEP = 1000;
 
 		#endregion
 
@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Check middle texture
-				if(sd.MiddleRequired() && sd.LongMiddleTexture != MapSet.EmptyLongName && !General.Map.Data.GetTextureExists(sd.LongMiddleTexture))
+				if(sd.LongMiddleTexture != MapSet.EmptyLongName && !General.Map.Data.GetTextureExists(sd.LongMiddleTexture))
 				{
 					SubmitResult(new ResultUnknownTexture(sd, SidedefPart.Middle));
 				}
