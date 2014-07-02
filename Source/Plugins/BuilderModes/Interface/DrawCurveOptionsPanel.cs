@@ -22,15 +22,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void Register() {
 			General.Interface.AddButton(seglabel);
 			General.Interface.AddButton(seglen);
+			General.Interface.AddButton(reset);
 		}
 
 		public void Unregister() {
+			General.Interface.RemoveButton(reset);
 			General.Interface.RemoveButton(seglen);
 			General.Interface.RemoveButton(seglabel);
 		}
 
 		private void seglen_ValueChanged(object sender, EventArgs e) {
 			if(!blockEvents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
+		}
+
+		private void reset_Click(object sender, EventArgs e) {
+			seglen.Value = seglen.Minimum;
 		}
 	}
 }
