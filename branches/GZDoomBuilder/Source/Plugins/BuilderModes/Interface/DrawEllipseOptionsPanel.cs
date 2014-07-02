@@ -20,14 +20,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		public DrawEllipseOptionsPanel() {
 			InitializeComponent();
+		}
 
+		public void Register() {
 			spikiness.Value = aquityValue;
 			subdivs.Value = subdivsValue;
 			spikiness.ValueChanged += ValueChanged;
 			subdivs.ValueChanged += ValueChanged;
-		}
 
-		public void Register() {
 			General.Interface.AddButton(subdivslabel);
 			General.Interface.AddButton(subdivs);
 			General.Interface.AddButton(spikinesslabel);

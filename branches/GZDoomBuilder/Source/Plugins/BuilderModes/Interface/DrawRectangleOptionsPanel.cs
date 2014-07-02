@@ -20,14 +20,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public DrawRectangleOptionsPanel() {
 			InitializeComponent();
+		}
 
+		public void Register() {
 			radius.Value = radiusValue;
 			subdivs.Value = subdivsValue;
 			radius.ValueChanged += ValueChanged;
 			subdivs.ValueChanged += ValueChanged;
-		}
 
-		public void Register() {
 			General.Interface.AddButton(radiuslabel);
 			General.Interface.AddButton(radius);
 			General.Interface.AddButton(subdivslabel);

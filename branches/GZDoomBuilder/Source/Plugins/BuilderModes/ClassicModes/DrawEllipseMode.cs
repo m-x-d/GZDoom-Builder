@@ -73,8 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//got shape
 			if (bevelWidth < 0) {
-				int bevelSign = (bevelWidth > 0 ? 1 : -1);
-				currentBevelWidth = Math.Min(Math.Abs(bevelWidth), Math.Min(width, height) / 2) * bevelSign;
+				currentBevelWidth = -Math.Min(Math.Abs(bevelWidth), Math.Min(width, height) / 2) + 1;
 			} else {
 				currentBevelWidth = bevelWidth;
 			}
@@ -108,7 +107,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		protected override string getHintText() {
-			return "BVL: "+bevelWidth+"; VERTS: "+subdivisions;
+			return "BVL: " + bevelWidth + "; VERTS: " + subdivisions;
 		}
 
 		#endregion
@@ -154,7 +153,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		protected override void decreaseBevel() {
-			if(currentBevelWidth == bevelWidth || bevelWidth > 0) {
+			if(bevelWidth > 0 || currentBevelWidth <= bevelWidth + 1) {
 				bevelWidth = Math.Max(bevelWidth - General.Map.Grid.GridSize, panel.MinSpikiness);
 				panel.Spikiness = bevelWidth;
 				Update();
