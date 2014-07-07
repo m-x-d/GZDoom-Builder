@@ -1964,6 +1964,54 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		#endregion
 
+		#region ================== Linedefs (mxd)
+
+		/// <summary>Flips sector linedefs so they all face either inward or outward.</summary>
+		public static void FlipSectorLinedefs(ICollection<Sector> sectors, bool selectedlinesonly) 
+		{
+			Dictionary<Linedef, bool> processed = new Dictionary<Linedef, bool>();
+			
+			foreach(Sector s in sectors) 
+			{
+				List<Linedef> frontlines = new List<Linedef>();
+				List<Linedef> backlines = new List<Linedef>();
+
+				//sort lines
+				foreach (Sidedef side in s.Sidedefs) 
+				{
+					if (processed.ContainsKey(side.Line) 
+						|| (selectedlinesonly && !side.Line.Selected)) continue;
+					
+					if (side == side.Line.Front) 
+						frontlines.Add(side.Line);
+					else
+						backlines.Add(side.Line);
+
+					processed.Add(side.Line, false);
+				}
+
+				//flip lines
+				if (frontlines.Count == 0 || (frontlines.Count > backlines.Count && backlines.Count > 0)) 
+				{
+					foreach (Linedef l in backlines) 
+					{
+						l.FlipVertices();
+						l.FlipSidedefs();
+					}
+				} 
+				else 
+				{
+					foreach(Linedef l in frontlines) 
+					{
+						l.FlipVertices();
+						l.FlipSidedefs();
+					}
+				}
+			}
+		}
+
+		#endregion
+
 		#region ================== Misc Exported Functions
 
 		/// <summary>
