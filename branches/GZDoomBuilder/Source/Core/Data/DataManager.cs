@@ -358,6 +358,10 @@ namespace CodeImp.DoomBuilder.Data
 						flats.Add(t.Key, t.Value);
 						flatnames.Add(t.Value.Name);
 					}
+					else if (t.Value is HighResImage) //mxd. Textures defined in TEXTURE[S|x] override "regular" flats in ZDoom
+					{
+						flats[t.Key] = t.Value;
+					}
 				}
 
 				// Add flats to textures
