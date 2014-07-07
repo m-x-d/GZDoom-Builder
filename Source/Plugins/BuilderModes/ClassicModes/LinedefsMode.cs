@@ -1120,13 +1120,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Interface.DisplayStatus(StatusType.Action, "Flipped a linedef.");
 				}
 
-				// Flip all selected linedefs
-				foreach(Linedef l in selected)
+				//mxd. Do it sector-wise
+				List<Sector> sectors = new List<Sector>(1);
+
+				foreach(Linedef l in selected) 
 				{
-					l.FlipVertices();
-					l.FlipSidedefs();
+					if (l.Front != null && l.Front.Sector != null && !sectors.Contains(l.Front.Sector)) 
+						sectors.Add(l.Front.Sector);
+
+					if (l.Back != null && l.Back.Sector != null && !sectors.Contains(l.Back.Sector)) 
+						sectors.Add(l.Back.Sector);
 				}
-				
+
+				//mxd. Flip the lines
+				Tools.FlipSectorLinedefs(sectors, true);
+
 				// Remove selection if only one was selected
 				if(selected.Count == 1)
 				{
@@ -1152,40 +1160,38 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Anything highlighted?
 				if(highlighted != null)
 				{
-					// Select the highlighted item
-					highlighted.Selected = true;
 					selected.Add(highlighted);
 				}
 			}
 
+			//mxd. Do this only with double-sided linedefs
+			List<Linedef> validlines = new List<Linedef>();
+			foreach(Linedef l in selected) 
+			{
+				if(l.Front != null && l.Back != null) validlines.Add(l);
+			}
+
 			// Any selected lines?
-			if(selected.Count > 0)
+			if (validlines.Count > 0) 
 			{
 				// Make undo
-				if(selected.Count > 1)
+				if (validlines.Count > 1) 
 				{
-					General.Map.UndoRedo.CreateUndo("Flip " + selected.Count + " sidedefs");
-					General.Interface.DisplayStatus(StatusType.Action, "Flipped " + selected.Count + " sidedefs.");
+					General.Map.UndoRedo.CreateUndo("Flip " + validlines.Count + " sidedefs");
+					General.Interface.DisplayStatus(StatusType.Action, "Flipped " + validlines.Count + " sidedefs.");
 				}
 				else
 				{
-					General.Map.UndoRedo.CreateUndo("Flip sidedefs");
-					General.Interface.DisplayStatus(StatusType.Action, "Flipped sidedefs.");
+					General.Map.UndoRedo.CreateUndo("Flip sidedef");
+					General.Interface.DisplayStatus(StatusType.Action, "Flipped a sidedef.");
 				}
 
 				// Flip sidedefs in all selected linedefs
-				foreach(Linedef l in selected)
+				foreach (Linedef l in validlines) 
 				{
 					l.FlipSidedefs();
-					if(l.Front != null) l.Front.Sector.UpdateNeeded = true;
-					if(l.Back != null) l.Back.Sector.UpdateNeeded = true;
-				}
-
-				// Remove selection if only one was selected
-				if(selected.Count == 1)
-				{
-					foreach(Linedef ld in selected) ld.Selected = false;
-					selected.Clear();
+					l.Front.Sector.UpdateNeeded = true;
+					l.Back.Sector.UpdateNeeded = true;
 				}
 
 				// Redraw
@@ -1193,6 +1199,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.IsChanged = true;
 				General.Interface.RefreshInfo();
 				General.Interface.RedrawDisplay();
+			} 
+			else 
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "No sidedefs to flip (only 2-sided linedefs can be flipped)!");
 			}
 		}
 

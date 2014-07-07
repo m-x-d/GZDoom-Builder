@@ -2097,6 +2097,44 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(form.Setup(this)) form.ShowDialog();
 		}
 		
+		//mxd
+		[BeginAction("fliplinedefs")]
+		public void FlipLinedefs() 
+		{
+			// Get selection
+			ICollection<Sector> selection = General.Map.Map.GetSelectedSectors(true);
+
+			if(selection.Count == 0 && highlighted != null && !highlighted.IsDisposed)
+				selection.Add(highlighted);
+
+			if(selection.Count == 0) 
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			// Make undo
+			if(selection.Count > 1) 
+			{
+				General.Map.UndoRedo.CreateUndo("Flip linedefs of " + selection.Count + " sectors");
+				General.Interface.DisplayStatus(StatusType.Action, "Flipped linedefs of " + selection.Count + "sectors.");
+			} 
+			else 
+			{
+				General.Map.UndoRedo.CreateUndo("Flip sector linedefs");
+				General.Interface.DisplayStatus(StatusType.Action, "Flipped sector linedefs.");
+			}
+
+			// Flip lines
+			Tools.FlipSectorLinedefs(selection, false);
+			
+			// Redraw
+			General.Map.Map.Update();
+			General.Map.IsChanged = true;
+			General.Interface.RefreshInfo();
+			General.Interface.RedrawDisplay();
+		}
+
 		#endregion
 	}
 }
