@@ -18,6 +18,7 @@
 
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -64,7 +65,7 @@ namespace CodeImp.DoomBuilder.Config
 		// Add a texture
 		internal void AddTexture(ImageData image)
 		{
-			if(textures.ContainsKey(image.LongName))
+			if(textures.ContainsKey(image.LongName) && (!(image is HighResImage) || !(image as HighResImage).ContainsPatch(image.Name)) )
 				General.ErrorLogger.Add(ErrorType.Warning, "Texture \"" + image.Name + "\" is double defined in resource \"" + this.Location.location + "\".");
 			textures[image.LongName] = image;
 		}
