@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Controls
 				success = General.Map.CompileLump(lumpname, true);
 
 			//mxd
-			if (success && config.Description == ScriptTypes.TYPES[(int)ScriptType.ACS])
+			if (success && config.ScriptType == ScriptType.ACS)
 				General.Map.UpdateScriptNames();
 
 			// Feed errors to panel

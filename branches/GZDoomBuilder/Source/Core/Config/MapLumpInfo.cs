@@ -25,12 +25,13 @@ namespace CodeImp.DoomBuilder.Config
 	public struct MapLumpInfo
 	{
 		// Members
-		public string name;
-		public bool required;
-		public bool blindcopy;
-		public bool nodebuild;
-		public bool allowempty;
-		internal ScriptConfiguration script;
+		public readonly string name;
+		public readonly bool required;
+		public readonly bool blindcopy;
+		public readonly bool nodebuild;
+		public readonly bool allowempty;
+		public readonly bool scriptbuild; //mxd
+		internal readonly ScriptConfiguration script;
 		
 		// Construct from IDictionary
 		internal MapLumpInfo(string name, Configuration cfg)
@@ -42,6 +43,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.blindcopy = cfg.ReadSetting("maplumpnames." + name + ".blindcopy", false);
 			this.nodebuild = cfg.ReadSetting("maplumpnames." + name + ".nodebuild", false);
 			this.allowempty = cfg.ReadSetting("maplumpnames." + name + ".allowempty", false);
+			this.scriptbuild = cfg.ReadSetting("maplumpnames." + name + ".scriptbuild", false); //mxd
 			string scriptconfig = cfg.ReadSetting("maplumpnames." + name + ".script", "");
 			
 			// Find script configuration

@@ -33,6 +33,8 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.GroupBox panelsettings;
 			System.Windows.Forms.Label label4;
+			this.scriptcompiler = new System.Windows.Forms.ComboBox();
+			this.scriptcompilerlabel = new System.Windows.Forms.Label();
 			this.levelname = new System.Windows.Forms.TextBox();
 			this.config = new System.Windows.Forms.ComboBox();
 			this.apply = new System.Windows.Forms.Button();
@@ -52,7 +54,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label3
 			// 
 			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(239, 60);
+			label3.Location = new System.Drawing.Point(239, 83);
 			label3.Name = "label3";
 			label3.Size = new System.Drawing.Size(90, 14);
 			label3.TabIndex = 9;
@@ -61,7 +63,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label2
 			// 
 			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(58, 60);
+			label2.Location = new System.Drawing.Point(58, 83);
 			label2.Name = "label2";
 			label2.Size = new System.Drawing.Size(65, 14);
 			label2.TabIndex = 7;
@@ -69,17 +71,19 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label1
 			// 
-			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(18, 27);
+			label1.Location = new System.Drawing.Point(13, 27);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(105, 14);
+			label1.Size = new System.Drawing.Size(110, 14);
 			label1.TabIndex = 5;
 			label1.Text = "Game Configuration:";
+			label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// panelsettings
 			// 
 			panelsettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			panelsettings.Controls.Add(this.scriptcompiler);
+			panelsettings.Controls.Add(this.scriptcompilerlabel);
 			panelsettings.Controls.Add(label3);
 			panelsettings.Controls.Add(this.levelname);
 			panelsettings.Controls.Add(label2);
@@ -87,15 +91,35 @@ namespace CodeImp.DoomBuilder.Windows
 			panelsettings.Controls.Add(label1);
 			panelsettings.Location = new System.Drawing.Point(12, 12);
 			panelsettings.Name = "panelsettings";
-			panelsettings.Size = new System.Drawing.Size(397, 88);
+			panelsettings.Size = new System.Drawing.Size(397, 112);
 			panelsettings.TabIndex = 0;
 			panelsettings.TabStop = false;
 			panelsettings.Text = " Settings ";
 			// 
+			// scriptcompiler
+			// 
+			this.scriptcompiler.DropDownHeight = 206;
+			this.scriptcompiler.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.scriptcompiler.FormattingEnabled = true;
+			this.scriptcompiler.IntegralHeight = false;
+			this.scriptcompiler.Location = new System.Drawing.Point(129, 52);
+			this.scriptcompiler.Name = "scriptcompiler";
+			this.scriptcompiler.Size = new System.Drawing.Size(254, 22);
+			this.scriptcompiler.TabIndex = 10;
+			// 
+			// scriptcompilerlabel
+			// 
+			this.scriptcompilerlabel.Location = new System.Drawing.Point(13, 55);
+			this.scriptcompilerlabel.Name = "scriptcompilerlabel";
+			this.scriptcompilerlabel.Size = new System.Drawing.Size(110, 14);
+			this.scriptcompilerlabel.TabIndex = 11;
+			this.scriptcompilerlabel.Text = "Script Language:";
+			this.scriptcompilerlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
 			// levelname
 			// 
 			this.levelname.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.levelname.Location = new System.Drawing.Point(129, 57);
+			this.levelname.Location = new System.Drawing.Point(129, 80);
 			this.levelname.MaxLength = 8;
 			this.levelname.Name = "levelname";
 			this.levelname.Size = new System.Drawing.Size(94, 20);
@@ -128,7 +152,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(297, 358);
+			this.apply.Location = new System.Drawing.Point(297, 378);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 2;
@@ -140,7 +164,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(179, 358);
+			this.cancel.Location = new System.Drawing.Point(179, 378);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 3;
@@ -155,7 +179,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres.Controls.Add(this.strictpatches);
 			this.panelres.Controls.Add(this.datalocations);
 			this.panelres.Controls.Add(label4);
-			this.panelres.Location = new System.Drawing.Point(12, 106);
+			this.panelres.Location = new System.Drawing.Point(12, 130);
 			this.panelres.Name = "panelres";
 			this.panelres.Size = new System.Drawing.Size(397, 240);
 			this.panelres.TabIndex = 1;
@@ -188,7 +212,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(421, 391);
+			this.ClientSize = new System.Drawing.Size(421, 411);
 			this.Controls.Add(this.panelres);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
@@ -221,6 +245,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.GroupBox panelres;
 		private CodeImp.DoomBuilder.Controls.ResourceListEditor datalocations;
 		private System.Windows.Forms.CheckBox strictpatches;
+		private System.Windows.Forms.ComboBox scriptcompiler;
+		private System.Windows.Forms.Label scriptcompilerlabel;
 
 
 	}

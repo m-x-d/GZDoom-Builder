@@ -26,7 +26,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private bool allowValueLinking;
 		private bool linkValues;
 		private bool blockUpdate;
-		private int bResetOffsetX;
+		private readonly int bResetOffsetX;
 
 		#endregion
 

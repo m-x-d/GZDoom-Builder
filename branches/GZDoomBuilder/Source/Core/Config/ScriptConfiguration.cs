@@ -26,6 +26,14 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Config
 {
+	//mxd
+	internal enum ScriptType {
+		UNKNOWN = 0,
+		ACS = 1,
+		MODELDEF = 2,
+		DECORATE = 3,
+	}
+	
 	internal class ScriptConfiguration : IComparable<ScriptConfiguration>
 	{
 		#region ================== Constants
@@ -52,6 +60,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly string argumentdelimiter;
 		private readonly string terminator;
 		private readonly string functionregex;
+		private readonly ScriptType scripttype; //mxd
 		
 		// Collections
 		private readonly Dictionary<string, string> keywords;
@@ -82,6 +91,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string ArgumentDelimiter { get { return argumentdelimiter; } }
 		public string Terminator { get { return terminator; } }
 		public string FunctionRegEx { get { return functionregex; } }
+		public ScriptType ScriptType { get { return scripttype; } } //mxd
 		public Dictionary<string, string[]> Snippets { get { return snippets; } } //mxd
 
 		// Collections
@@ -116,6 +126,7 @@ namespace CodeImp.DoomBuilder.Config
 			terminator = "";
 			functionregex = "";
 			description = "Plain text";
+			scripttype = ScriptType.UNKNOWN; //mxd
 			extensions = new[] { "txt" };
 			snippets = new Dictionary<string, string[]>(StringComparer.Ordinal); //mxd
 		}
@@ -146,6 +157,7 @@ namespace CodeImp.DoomBuilder.Config
 			argumentdelimiter = cfg.ReadSetting("argumentdelimiter", "");
 			terminator = cfg.ReadSetting("terminator", "");
 			functionregex = cfg.ReadSetting("functionregex", "");
+			scripttype = (ScriptType)cfg.ReadSetting("scripttype", (int)ScriptType.UNKNOWN); //mxd
 			
 			// Make extensions array
 			extensions = extensionsstring.Split(',');
@@ -261,6 +273,12 @@ namespace CodeImp.DoomBuilder.Config
 		public int CompareTo(ScriptConfiguration other)
 		{
 			return string.Compare(this.description, other.description, true);
+		}
+
+		//mxd
+		public override string ToString() 
+		{
+			return description;
 		}
 		
 		#endregion

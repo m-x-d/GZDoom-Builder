@@ -176,6 +176,7 @@ namespace CodeImp.DoomBuilder
 		private static List<CompilerInfo> compilers;
 		private static List<NodebuilderInfo> nodebuilders;
 		private static Dictionary<string, ScriptConfiguration> scriptconfigs;
+		private static Dictionary<string, ScriptConfiguration> compiledscriptconfigs; //mxd
 		
 		// States
 		private static bool debugbuild;
@@ -216,6 +217,7 @@ namespace CodeImp.DoomBuilder
 		internal static List<NodebuilderInfo> Nodebuilders { get { return nodebuilders; } }
 		internal static List<CompilerInfo> Compilers { get { return compilers; } }
 		internal static Dictionary<string, ScriptConfiguration> ScriptConfigs { get { return scriptconfigs; } }
+		internal static Dictionary<string, ScriptConfiguration> CompiledScriptConfigs { get { return compiledscriptconfigs; } } //mxd
 		public static MapManager Map { get { return map; } }
 		public static ActionManager Actions { get { return actions; } }
 		public static HintsManager Hints { get { return hints; } } //mxd
@@ -404,6 +406,7 @@ namespace CodeImp.DoomBuilder
 			
 			// Make collection
 			scriptconfigs = new Dictionary<string, ScriptConfiguration>(StringComparer.Ordinal);
+			compiledscriptconfigs = new Dictionary<string, ScriptConfiguration>(StringComparer.Ordinal); //mxd
 			
 			// Go for all cfg files in the scripts directory
 			filenames = Directory.GetFiles(scriptspath, "*.cfg", SearchOption.TopDirectoryOnly);
@@ -429,6 +432,10 @@ namespace CodeImp.DoomBuilder
 							ScriptConfiguration scfg = new ScriptConfiguration(cfg);
 							string filename = Path.GetFileName(filepath);
 							scriptconfigs.Add(filename.ToLowerInvariant(), scfg);
+
+							//mxd. Store acc compilers in a separate dictionary
+							if(scfg.ScriptType == ScriptType.ACS)
+								compiledscriptconfigs.Add(filename.ToLowerInvariant(), scfg);
 						}
 						catch(Exception e)
 						{

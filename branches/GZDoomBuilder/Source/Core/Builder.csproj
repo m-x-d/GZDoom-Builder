@@ -704,6 +704,12 @@
     <Compile Include="Controls\PasteOptionsControl.Designer.cs">
       <DependentUpon>PasteOptionsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SectorSlopeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SectorSlopeControl.Designer.cs">
+      <DependentUpon>SectorSlopeControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\StatisticsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -796,7 +802,6 @@
     <Compile Include="GZBuilder\Data\ModelData.cs" />
     <Compile Include="GZBuilder\Data\ModelLoadState.cs" />
     <Compile Include="GZBuilder\Data\ScriptItem.cs" />
-    <Compile Include="GZBuilder\Data\ScriptType.cs" />
     <Compile Include="GZBuilder\Data\SharpCompressHelper.cs" />
     <Compile Include="GZBuilder\Data\TextureData.cs" />
     <Compile Include="GZBuilder\Rendering\SizelessVisualThingCage.cs" />
@@ -930,6 +935,9 @@
     <EmbeddedResource Include="Controls\PasteOptionsControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>PasteOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SectorSlopeControl.resx">
+      <DependentUpon>SectorSlopeControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\StatisticsControl.resx">
       <DependentUpon>StatisticsControl.cs</DependentUpon>

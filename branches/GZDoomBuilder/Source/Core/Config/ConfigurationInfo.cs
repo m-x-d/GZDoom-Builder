@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string defaultlumpname;
 		private string nodebuildersave;
 		private string nodebuildertest;
+		private readonly string defaultscriptcompiler; //mxd
 		private DataLocationList resources;
 		private Configuration config; //mxd
 		private bool enabled; //mxd
@@ -76,6 +77,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string DefaultLumpName { get { return defaultlumpname; } }
 		public string NodebuilderSave { get { return nodebuildersave; } internal set { nodebuildersave = value; } }
 		public string NodebuilderTest { get { return nodebuildertest; } internal set { nodebuildertest = value; } }
+		public string DefaultScriptCompiler { get { return defaultscriptcompiler; } } //mxd
 		internal DataLocationList Resources { get { return resources; } }
 		internal Configuration Configuration { get { return config; } } //mxd
 		public bool Enabled { get { return enabled; } internal set { enabled = value; } } //mxd
@@ -116,6 +118,7 @@ namespace CodeImp.DoomBuilder.Config
 			// Load settings from program configuration
 			this.nodebuildersave = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildersave", MISSING_NODEBUILDER);
 			this.nodebuildertest = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildertest", MISSING_NODEBUILDER);
+			this.defaultscriptcompiler = cfg.ReadSetting("defaultscriptcompiler", ""); //mxd
 			this.resources = new DataLocationList(General.Settings.Config, "configurations." + settingskey + ".resources");
 			this.startmode = General.Settings.ReadSetting("configurations." + settingskey + ".startmode", "VerticesMode");
 			this.enabled = General.Settings.ReadSetting("configurations." + settingskey + ".enabled", config.ReadSetting("enabledbydefault", false)); //mxd

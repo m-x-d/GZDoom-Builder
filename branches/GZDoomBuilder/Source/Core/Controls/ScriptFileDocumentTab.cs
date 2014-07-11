@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.Controls
 			SetTitle("Untitled" + ext);
 			editor.ClearUndoRedo();
 			//mxd
-			navigator.Enabled = Array.IndexOf(ScriptTypes.TYPES, config.Description) != -1;
+			navigator.Enabled = (config.ScriptType != ScriptType.UNKNOWN);
 		}
 		
 		#endregion
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 
 				//mxd. Should be called only if script is compiled successfully
-				if (compiler.Errors.Length == 0 && config.Description == ScriptTypes.TYPES[(int)ScriptType.ACS]) {
+				if (compiler.Errors.Length == 0 && config.ScriptType == ScriptType.ACS) {
 					General.Map.UpdateScriptNames();
 				}
 			}
