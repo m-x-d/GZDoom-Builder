@@ -2300,7 +2300,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Get configuration setting
 				filename = General.Settings.ReadSetting("recentfiles.file" + i, "");
-				if(filename != "")
+				if(filename != "" && File.Exists(filename))
 				{
 					// Set up item
 					int number = i + 1;

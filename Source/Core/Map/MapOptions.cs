@@ -57,6 +57,9 @@ namespace CodeImp.DoomBuilder.Map
 		// Script files opened
 		private List<string> scriptfiles;
 
+		// mxd. Script compiler
+		private string scriptcompiler;
+
 		//mxd. Sector drawing options
 		private string defaultfloortexture;
 		private string defaultceiltexture;
@@ -85,6 +88,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal DataLocationList Resources { get { return resources; } }
 		internal bool StrictPatches { get { return strictpatches; } set { strictpatches = value; } }
 		internal List<string> ScriptFiles { get { return scriptfiles; } set { scriptfiles = value; } }
+		internal string ScriptCompiler { get { return scriptcompiler; } set { scriptcompiler = value; } } //mxd
 		internal string PreviousName { get { return previousname; } set { previousname = value; } }
 		internal string CurrentName
 		{
@@ -140,6 +144,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.resources = new DataLocationList();
 			this.mapconfig = new Configuration(true);
 			this.scriptfiles = new List<string>();
+			this.scriptcompiler = ""; //mxd
 			this.tagLabels = new Dictionary<int, string>(); //mxd
 
 			//mxd. Sector drawing options
@@ -181,6 +186,9 @@ namespace CodeImp.DoomBuilder.Map
 				if(tag != 0 && !string.IsNullOrEmpty(label))
 					tagLabels.Add(tag, label);
 			}
+
+			//mxd. Script compiler
+			scriptcompiler = this.mapconfig.ReadSetting("scriptcompiler", string.Empty);
 
 			//mxd. Read Sector drawing options
 			defaultfloortexture = this.mapconfig.ReadSetting("defaultfloortexture", string.Empty);
@@ -320,6 +328,9 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Write grid settings
 			General.Map.Grid.WriteToConfig(mapconfig, "grid");
+
+			//mxd. Write script compiler
+			if(!string.IsNullOrEmpty(scriptcompiler)) mapconfig.WriteSetting("scriptcompiler", scriptcompiler);
 
 			// Write scripts to config
 			mapconfig.DeleteSetting("scripts");

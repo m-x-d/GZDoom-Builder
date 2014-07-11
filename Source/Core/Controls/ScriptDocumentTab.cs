@@ -310,24 +310,28 @@ namespace CodeImp.DoomBuilder.Controls
 		protected void updateNavigator() 
 		{
 			//mxd. known script type?
-			if (Array.IndexOf(ScriptTypes.TYPES, config.Description) != -1) {
-				updateNavigator(new MemoryStream(editor.GetText()), config.Description);
+			if (config.ScriptType != ScriptType.UNKNOWN) {
+				switch(config.ScriptType) {
+					case ScriptType.ACS:
+						updateNavigatorAcs(new MemoryStream(editor.GetText()));
+						break;
+
+					case ScriptType.DECORATE:
+						updateNavigatorDecorate(new MemoryStream(editor.GetText()));
+						break;
+
+					case ScriptType.MODELDEF:
+						updateNavigatorModeldef(new MemoryStream(editor.GetText()));
+						break;
+
+					default:
+						throw new NotImplementedException("Script type " + config.ScriptType + " navigator support is not implemented!");
+				}
+
 				navigator.Enabled = true;
 			}else{
 				navigator.Items.Clear();
 				navigator.Enabled = false;
-			}
-		}
-
-		//mxd
-		private void updateNavigator(MemoryStream stream, string scriptType) 
-		{
-			if (scriptType == ScriptTypes.TYPES[(int)ScriptType.ACS]) {
-				updateNavigatorAcs(stream);
-			} else if (scriptType == ScriptTypes.TYPES[(int)ScriptType.MODELDEF]) {
-				updateNavigatorModeldef(stream);
-			} else if (scriptType == ScriptTypes.TYPES[(int)ScriptType.DECORATE]) {
-				updateNavigatorDecorate(stream);
 			}
 		}
 
@@ -384,7 +388,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptTypeParserSE parser = new ScriptTypeParserSE();
 			if (parser.Parse(new MemoryStream(editor.GetText()), config.Description)) {
-				if (parser.ScriptType != (int)ScriptType.UNKNOWN && config.Description != ScriptTypes.TYPES[(int)parser.ScriptType])
+				if (parser.ScriptType != ScriptType.UNKNOWN && config.ScriptType != parser.ScriptType)
 					return parser.ScriptType;
 			}
 			return ScriptType.UNKNOWN;

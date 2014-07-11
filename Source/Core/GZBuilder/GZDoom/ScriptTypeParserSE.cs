@@ -1,6 +1,6 @@
 ﻿using System.IO;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.ZDoom;
-using CodeImp.DoomBuilder.GZBuilder.Data;
 
 //mxd. Parser used to determine which script type given text is.
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {

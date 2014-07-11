@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Data;
@@ -95,6 +96,46 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd
 			if(General.Map != null) datalocations.StartPath = General.Map.FilePathName;
+
+			//mxd. Set script compiler
+			if (config.SelectedIndex != -1) 
+			{
+				ConfigurationInfo ci = config.SelectedItem as ConfigurationInfo;
+
+				foreach(KeyValuePair<string, ScriptConfiguration> group in General.CompiledScriptConfigs) 
+				{
+					scriptcompiler.Items.Add(group.Value);
+					if(group.Key == options.ScriptCompiler)
+						scriptcompiler.SelectedIndex = scriptcompiler.Items.Count - 1;
+				}
+
+				//Nothing selected? Let's try default one form the game configuration, if we have any
+				if(scriptcompiler.SelectedIndex == -1 && !string.IsNullOrEmpty(ci.DefaultScriptCompiler)) 
+				{
+					int cfgindex = 0;
+
+					foreach(KeyValuePair<string, ScriptConfiguration> group in General.CompiledScriptConfigs) 
+					{
+						if(group.Key == ci.DefaultScriptCompiler) 
+						{
+							scriptcompiler.SelectedIndex = cfgindex;
+							break;
+						}
+						cfgindex++;
+					}
+				}
+
+				if(General.CompiledScriptConfigs.Count == 0 || string.IsNullOrEmpty(ci.DefaultScriptCompiler)) 
+				{
+					scriptcompiler.Enabled = false;
+					scriptcompilerlabel.Enabled = false;
+				} 
+				else if (scriptcompiler.SelectedIndex == -1 && scriptcompiler.Items.Count > 0) 
+				{
+					scriptcompiler.SelectedIndex = 0;
+				}
+			}
+
 
 			// Set the level name
 			if (!string.IsNullOrEmpty(options.CurrentName)) levelname.Text = options.CurrentName;  //mxd
@@ -208,6 +249,21 @@ namespace CodeImp.DoomBuilder.Windows
 			options.CurrentName = levelname.Text.Trim().ToUpper();
 			options.StrictPatches = strictpatches.Checked;
 			options.CopyResources(datalocations.GetResources());
+
+			//mxd. Store script compiler
+			if(scriptcompiler.Enabled && scriptcompiler.SelectedIndex > -1) 
+			{
+				ScriptConfiguration scriptcfg = scriptcompiler.SelectedItem as ScriptConfiguration;
+
+				foreach(KeyValuePair<string, ScriptConfiguration> group in General.CompiledScriptConfigs) 
+				{
+					if(group.Value == scriptcfg)
+					{
+						options.ScriptCompiler = group.Key;
+						break;
+					}
+				}
+			}
 			
 			// Hide window
 			this.DialogResult = DialogResult.OK;
@@ -236,6 +292,22 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					// Get default lump name from configuration
 					levelname.Text = ci.DefaultLumpName;
+				}
+
+				//mxd
+				bool enablescriptcompiler = !string.IsNullOrEmpty(ci.DefaultScriptCompiler);
+				scriptcompiler.Enabled = enablescriptcompiler;
+				scriptcompilerlabel.Enabled = enablescriptcompiler;
+
+				//mxd. Select default script compiler for this game configuration
+				if (scriptcompiler.Enabled) 
+				{
+					if (General.CompiledScriptConfigs.ContainsKey(ci.DefaultScriptCompiler))
+						scriptcompiler.SelectedItem = General.CompiledScriptConfigs[ci.DefaultScriptCompiler];
+				} 
+				else 
+				{
+					scriptcompiler.SelectedIndex = -1;
 				}
 				
 				// Show resources

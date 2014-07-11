@@ -114,6 +114,12 @@ namespace CodeImp.DoomBuilder.Controls
 					// Load this!
 					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.name, maplumpinfo.script);
 					tabs.TabPages.Add(t);
+				} 
+				else if(maplumpinfo.scriptbuild) //mxd
+				{
+					// Load this!
+					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.name, General.CompiledScriptConfigs[General.Map.Options.ScriptCompiler]);
+					tabs.TabPages.Add(t);
 				}
 			}
 
@@ -525,9 +531,8 @@ namespace CodeImp.DoomBuilder.Controls
 				//mxd
 				ScriptType st = t.VerifyScriptType();
 				if (st != ScriptType.UNKNOWN) {
-					string cfgType = ScriptTypes.TYPES[(int)st];
 					foreach (ScriptConfiguration cfg in scriptconfigs) {
-						if (cfg.Description == cfgType) {
+						if (cfg.ScriptType == st) {
 							t.ChangeScriptConfig(cfg);
 							break;
 						}

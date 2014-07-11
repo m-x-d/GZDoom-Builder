@@ -1398,7 +1398,7 @@ namespace CodeImp.DoomBuilder {
 			// Go for all the map lumps
 			foreach (MapLumpInfo lumpinfo in config.MapLumps.Values) {
 				// Is this a script lump?
-				if (lumpinfo.script != null) {
+				if(lumpinfo.script != null || lumpinfo.scriptbuild) {
 					// Compile it now
 					success &= CompileLump(lumpinfo.name, false);
 				}
@@ -1416,7 +1416,12 @@ namespace CodeImp.DoomBuilder {
 			string reallumpname = lumpname;
 
 			//mxd. Does lump require compiling?
-			ScriptConfiguration scriptconfig = config.MapLumps[lumpname].script;
+			ScriptConfiguration scriptconfig;
+			if(config.MapLumps[lumpname].scriptbuild) {
+				scriptconfig = General.CompiledScriptConfigs[General.Map.Options.ScriptCompiler];
+			} else {
+				scriptconfig = config.MapLumps[lumpname].script;
+			}
 			if (scriptconfig.Compiler == null) return true;
 
 			// Find the lump
