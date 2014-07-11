@@ -652,7 +652,13 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This returns all points at which the line intersects with the grid
-		public List<Vector2D> GetGridIntersections()
+		public List<Vector2D> GetGridIntersections() 
+		{
+			return GetGridIntersections(new Vector2D());
+		}
+
+		// This returns all points at which the line intersects with the grid
+		public List<Vector2D> GetGridIntersections(Vector2D gridoffset)
 		{
 			List<Vector2D> coords = new List<Vector2D>();
 			Vector2D v = new Vector2D();
@@ -686,7 +692,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			// Go for all vertical grid lines in between line start and end
-			gx = General.Map.Grid.GetHigher(minx);
+			gx = General.Map.Grid.GetHigher(minx) + gridoffset.x;
 			if(gx < maxx)
 			{
 				for(; gx < maxx; gx += General.Map.Grid.GridSizeF)
@@ -701,7 +707,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			
 			// Go for all horizontal grid lines in between line start and end
-			gy = General.Map.Grid.GetHigher(miny);
+			gy = General.Map.Grid.GetHigher(miny) + gridoffset.y;
 			if(gy < maxy)
 			{
 				for(; gy < maxy; gy += General.Map.Grid.GridSizeF)
