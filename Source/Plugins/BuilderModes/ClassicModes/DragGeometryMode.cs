@@ -40,6 +40,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Mouse position on map where dragging started
 		private Vector2D dragstartmappos;
 
+		//mxd. Offset from nearest grid intersection to dragstartmappos
+		private Vector2D dragstartoffset;
+
 		// Item used as reference for snapping to the grid
 		protected Vertex dragitem;
 		private Vector2D dragitemposition;
@@ -77,6 +80,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Options
 		private bool snaptogrid;		// SHIFT to toggle
 		private bool snaptonearest;		// CTRL to enable
+		private bool snaptogridincrement; //mxd. ALT to toggle 
 
 		#endregion
 
@@ -132,6 +136,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Get the nearest vertex for snapping
 			dragitem = MapSet.NearestVertex(selectedverts, dragstartmappos);
+
+			//mxd. Get drag offset
+			dragstartoffset = dragitem.Position - General.Map.Grid.SnappedToGrid(dragitem.Position);
 			
 			// Lines to snap to
 			snaptolines = General.Map.Map.LinedefsFromMarkedVertices(true, false, false);
@@ -202,7 +209,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// This moves the selected geometry relatively
 		// Returns true when geometry has actually moved
-		private bool MoveGeometryRelative(Vector2D offset, bool snapgrid, bool snapnearest)
+		private bool MoveGeometryRelative(Vector2D offset, bool snapgrid, bool snapgridincrement, bool snapnearest)
 		{
 			Vector2D oldpos = dragitem.Position;
 			Vector2D anchorpos = dragitemposition + offset;
@@ -236,6 +243,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Do not snap to grid!
 					snapgrid = false;
+					snaptogridincrement = false; //mxd
 				}
 				else
 				{
@@ -244,10 +252,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(nl != null)
 					{
 						// Snap to grid?
-						if(snaptogrid)
+						if(snaptogrid || snapgridincrement)
 						{
 							// Get grid intersection coordinates
-							List<Vector2D> coords = nl.GetGridIntersections();
+							List<Vector2D> coords = nl.GetGridIntersections(snapgridincrement ? dragstartoffset : new Vector2D());
 
 							// Find nearest grid intersection
 							float found_distance = float.MaxValue;
@@ -270,6 +278,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 							// Do not snap to grid anymore
 							snapgrid = false;
+							snapgridincrement = false; //mxd
 						}
 						else
 						{
@@ -283,14 +292,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			// Snap to grid?
-			if(snapgrid)
+			// Snap to grid or grid increment?
+			if(snapgrid || snapgridincrement)
 			{
 				// Move the dragged item
 				dragitem.Move(anchorpos);
 
-				// Snap item to grid
-				dragitem.SnapToGrid();
+				// Snap item to grid increment
+				if(snapgridincrement) //mxd
+				{
+					dragitem.Move(General.Map.Grid.SnappedToGrid(dragitem.Position + dragstartoffset) - dragstartoffset);
+				}
+				else // Or to the grid itself
+				{
+					dragitem.SnapToGrid();
+				}
 
 				// Adjust the offset
 				offset += dragitem.Position - anchorpos;
@@ -303,24 +319,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if (offset.y + br.y < General.Map.Config.BottomBoundary) offset.y = General.Map.Config.BottomBoundary - br.y;
 
 			// Drag item moved?
-			if(!snapgrid || (dragitem.Position != oldpos))
+			if((!snapgrid && !snapgridincrement) || (dragitem.Position != oldpos))
 			{
 				int i = 0;
 
 				// Move selected geometry
 				foreach(Vertex v in selectedverts)
 				{
-					// Move vertex from old position relative to the
-					// mouse position change since drag start
-					v.Move(oldpositions[i] + offset);
-
-					// Next
-					i++;
+					// Move vertex from old position relative to the mouse position change since drag start
+					v.Move(oldpositions[i++] + offset);
 				}
 
 				//mxd. Move selected things
 				i = 0;
-				foreach(Thing t in selectedthings) {
+				foreach(Thing t in selectedthings) 
+				{
 					t.Move(oldthingpositions[i++] + offset);
 				}
 
@@ -332,18 +345,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Moved
 				return true;
 			}
-			else
-			{
-				// No changes
-				return false;
-			}
+
+			// No changes
+			return false;
 		}
 
 		// Cancelled
 		public override void OnCancel()
 		{
 			// Move geometry back to original position
-			MoveGeometryRelative(new Vector2D(0f, 0f), false, false);
+			MoveGeometryRelative(new Vector2D(0f, 0f), false, false, false);
 			
 			// Resume normal undo/redo recording
 			General.Map.UndoRedo.IgnorePropChanges = false;
@@ -381,7 +392,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Cursor.Current = Cursors.AppStarting;
 				
 				// Move geometry back to original position
-				MoveGeometryRelative(new Vector2D(0f, 0f), false, false);
+				MoveGeometryRelative(new Vector2D(0f, 0f), false, false, false);
 
 				// Resume normal undo/redo recording
 				General.Map.UndoRedo.IgnorePropChanges = false;
@@ -390,7 +401,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.CreateUndo("Drag geometry");
 
 				// Move selected geometry to final position
-				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest);
+				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest);
 
 				// Stitch geometry
 				if(snaptonearest) General.Map.Map.StitchGeometry();
@@ -497,9 +508,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
+			snaptogridincrement = General.Interface.AltState; //mxd
 			
 			// Move selected geometry
-			if(MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest))
+			if(MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest))
 			{
 				// Update cached values
 				General.Map.Map.Update(true, false);
@@ -526,7 +538,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			if(panning) return; //mxd. Skip all this jass while panning
+			if(panning) return; //mxd. Skip all this jazz while panning
 			Update();
 		}
 		// When a key is released
@@ -534,7 +546,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnKeyUp(e);
 			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
-			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge)) ||
+			   (snaptogridincrement != General.Interface.AltState)) Update();
 		}
 
 		// When a key is pressed
@@ -542,7 +555,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnKeyDown(e);
 			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
-			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge)) ||
+			   (snaptogridincrement != General.Interface.AltState)) Update();
 		}
 		
 		#endregion
