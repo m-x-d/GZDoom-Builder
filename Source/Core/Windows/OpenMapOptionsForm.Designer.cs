@@ -39,6 +39,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel = new System.Windows.Forms.Button();
 			this.config = new System.Windows.Forms.ComboBox();
 			this.mapslist = new System.Windows.Forms.ListView();
+			this.scriptcompiler = new System.Windows.Forms.ComboBox();
+			this.scriptcompilerlabel = new System.Windows.Forms.Label();
 			columnHeader1 = new System.Windows.Forms.ColumnHeader();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
@@ -52,16 +54,16 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label1
 			// 
-			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(30, 24);
+			label1.Location = new System.Drawing.Point(15, 24);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(105, 14);
+			label1.Size = new System.Drawing.Size(120, 14);
 			label1.TabIndex = 14;
 			label1.Text = "Game Configuration:";
+			label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label2
 			// 
-			label2.Location = new System.Drawing.Point(12, 57);
+			label2.Location = new System.Drawing.Point(12, 89);
 			label2.Name = "label2";
 			label2.Size = new System.Drawing.Size(396, 30);
 			label2.TabIndex = 16;
@@ -86,7 +88,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres.Controls.Add(this.strictpatches);
 			this.panelres.Controls.Add(this.datalocations);
 			this.panelres.Controls.Add(label3);
-			this.panelres.Location = new System.Drawing.Point(12, 215);
+			this.panelres.Location = new System.Drawing.Point(12, 246);
 			this.panelres.Name = "panelres";
 			this.panelres.Size = new System.Drawing.Size(396, 240);
 			this.panelres.TabIndex = 2;
@@ -116,7 +118,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(296, 465);
+			this.apply.Location = new System.Drawing.Point(296, 496);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 3;
@@ -128,7 +130,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(178, 464);
+			this.cancel.Location = new System.Drawing.Point(178, 495);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 4;
@@ -158,7 +160,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.mapslist.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.mapslist.HideSelection = false;
 			this.mapslist.LabelWrap = false;
-			this.mapslist.Location = new System.Drawing.Point(12, 90);
+			this.mapslist.Location = new System.Drawing.Point(12, 122);
 			this.mapslist.MultiSelect = false;
 			this.mapslist.Name = "mapslist";
 			this.mapslist.ShowGroups = false;
@@ -170,13 +172,37 @@ namespace CodeImp.DoomBuilder.Windows
 			this.mapslist.DoubleClick += new System.EventHandler(this.mapslist_DoubleClick);
 			this.mapslist.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.mapslist_ItemSelectionChanged);
 			// 
+			// scriptcompiler
+			// 
+			this.scriptcompiler.DropDownHeight = 206;
+			this.scriptcompiler.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.scriptcompiler.Enabled = false;
+			this.scriptcompiler.FormattingEnabled = true;
+			this.scriptcompiler.IntegralHeight = false;
+			this.scriptcompiler.Location = new System.Drawing.Point(141, 49);
+			this.scriptcompiler.Name = "scriptcompiler";
+			this.scriptcompiler.Size = new System.Drawing.Size(267, 22);
+			this.scriptcompiler.TabIndex = 17;
+			// 
+			// scriptcompilerlabel
+			// 
+			this.scriptcompilerlabel.Enabled = false;
+			this.scriptcompilerlabel.Location = new System.Drawing.Point(15, 52);
+			this.scriptcompilerlabel.Name = "scriptcompilerlabel";
+			this.scriptcompilerlabel.Size = new System.Drawing.Size(120, 14);
+			this.scriptcompilerlabel.TabIndex = 18;
+			this.scriptcompilerlabel.Text = "Script Type:";
+			this.scriptcompilerlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
 			// OpenMapOptionsForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(420, 499);
+			this.ClientSize = new System.Drawing.Size(420, 530);
+			this.Controls.Add(this.scriptcompiler);
+			this.Controls.Add(this.scriptcompilerlabel);
 			this.Controls.Add(this.mapslist);
 			this.Controls.Add(label2);
 			this.Controls.Add(this.config);
@@ -199,7 +225,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres.ResumeLayout(false);
 			this.panelres.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
@@ -212,6 +237,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ListView mapslist;
 		private CodeImp.DoomBuilder.Controls.ResourceListEditor datalocations;
 		private System.Windows.Forms.CheckBox strictpatches;
+		private System.Windows.Forms.ComboBox scriptcompiler;
+		private System.Windows.Forms.Label scriptcompilerlabel;
 
 
 	}

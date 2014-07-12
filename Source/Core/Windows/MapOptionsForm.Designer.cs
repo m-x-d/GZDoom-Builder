@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptcompilerlabel.Name = "scriptcompilerlabel";
 			this.scriptcompilerlabel.Size = new System.Drawing.Size(110, 14);
 			this.scriptcompilerlabel.TabIndex = 11;
-			this.scriptcompilerlabel.Text = "Script Language:";
+			this.scriptcompilerlabel.Text = "Script Type:";
 			this.scriptcompilerlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// levelname
