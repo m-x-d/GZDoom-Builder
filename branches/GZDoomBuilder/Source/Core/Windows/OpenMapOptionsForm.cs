@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private Configuration mapsettings;
 		private MapOptions options;
 		private WAD wadfile;
-		private string filepathname;
+		private readonly string filepathname;
 		private string selectedmapname;
 		
 		// Properties
@@ -115,6 +115,11 @@ namespace CodeImp.DoomBuilder.Windows
 			} else {
 				strictpatches.Checked = mapsettings.ReadSetting("strictpatches", false);
 				gameconfig = mapsettings.ReadSetting("gameconfig", "");
+			}
+
+			//mxd. Fill script compilers list
+			foreach(KeyValuePair<string, ScriptConfiguration> group in General.CompiledScriptConfigs) {
+				scriptcompiler.Items.Add(group.Value);
 			}
 
 			//mxd. Go for all enabled configurations
@@ -311,6 +316,14 @@ namespace CodeImp.DoomBuilder.Windows
 				mapslist.Items[0].Selected = true;
 			mapslist.EndUpdate();
 
+			//mxd. Disable script compiler selector when there are no maps detected using current configuration
+			if (mapslist.Items.Count == 0) 
+			{
+				scriptcompiler.Enabled = false;
+				scriptcompiler.SelectedIndex = -1;
+				scriptcompilerlabel.Enabled = false;
+			}
+
 			// Show configuration resources
 			datalocations.FixedResourceLocationList(ci.Resources);
 		}
@@ -358,6 +371,21 @@ namespace CodeImp.DoomBuilder.Windows
 			options.StrictPatches = strictpatches.Checked;
 			options.CopyResources(locations);
 
+			//mxd. Store script compiler
+			if(scriptcompiler.Enabled && scriptcompiler.SelectedIndex > -1) 
+			{
+				ScriptConfiguration scriptcfg = scriptcompiler.SelectedItem as ScriptConfiguration;
+
+				foreach(KeyValuePair<string, ScriptConfiguration> group in General.CompiledScriptConfigs) 
+				{
+					if(group.Value == scriptcfg) 
+					{
+						options.ScriptCompiler = group.Key;
+						break;
+					}
+				}
+			}
+
 			// Hide window
 			wadfile.Dispose();
 			this.DialogResult = DialogResult.OK;
@@ -393,8 +421,11 @@ namespace CodeImp.DoomBuilder.Windows
 		// Map name selected
 		private void mapslist_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
+			if(!e.IsSelected) return; //mxd. Don't want to trigger this for every item in mapslist
+			
 			DataLocationList locations;
 			DataLocationList listedlocations;
+			string scriptconfig = string.Empty;
 			
 			// Map previously selected?
 			if(!string.IsNullOrEmpty(selectedmapname))
@@ -431,6 +462,31 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Set new data locations
 				datalocations.EditResourceLocationList(listedlocations);
+
+				//mxd. Select script compiler
+				if (!string.IsNullOrEmpty(options.ScriptCompiler) && General.CompiledScriptConfigs.ContainsKey(options.ScriptCompiler)) {
+					scriptconfig = options.ScriptCompiler;
+				} 
+				else 
+				{
+					string defaultscriptconfig = (config.SelectedItem as ConfigurationInfo).Configuration.ReadSetting("defaultscriptcompiler", string.Empty);
+					if(!string.IsNullOrEmpty(defaultscriptconfig) && General.CompiledScriptConfigs.ContainsKey(defaultscriptconfig))
+						scriptconfig = defaultscriptconfig;
+				}
+			}
+
+			//mxd. Select proper script compiler
+			if (!string.IsNullOrEmpty(scriptconfig)) 
+			{
+				scriptcompiler.Enabled = true;
+				scriptcompiler.SelectedItem = General.CompiledScriptConfigs[scriptconfig];
+				scriptcompilerlabel.Enabled = true;
+			} 
+			else 
+			{
+				scriptcompiler.Enabled = false;
+				scriptcompiler.SelectedIndex = -1;
+				scriptcompilerlabel.Enabled = false;
 			}
 		}
 
