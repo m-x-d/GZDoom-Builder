@@ -98,28 +98,12 @@ IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
 IF NOT EXIST "Build\Plugins\CommentsPanel.dll" GOTO FILEFAIL
 
 ECHO.
-ECHO Compiling CopyPasteSectorProps plugin...
-ECHO.
-IF EXIST "Build\Plugins\CopyPasteSectorProps.dll" DEL /F /Q "Build\Plugins\CopyPasteSectorProps.dll" > NUL
-msbuild "Source\Plugins\CopyPasteSectorProps\CopyPasteSectorProperties.csproj" /t:Rebuild /p:Configuration=Release /p:Platform=x86 /v:minimal
-IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
-IF NOT EXIST "Build\Plugins\CopyPasteSectorProps.dll" GOTO FILEFAIL
-
-ECHO.
 ECHO Compiling Nodes Viewer plugin...
 ECHO.
 IF EXIST "Build\Plugins\NodesViewer.dll" DEL /F /Q "Build\Plugins\NodesViewer.dll" > NUL
 msbuild "Source\Plugins\NodesViewer\NodesViewer.csproj" /t:Rebuild /p:Configuration=Release /p:Platform=x86 /v:minimal
 IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
 IF NOT EXIST "Build\Plugins\NodesViewer.dll" GOTO FILEFAIL
-
-ECHO.
-ECHO Compiling Statistics plugin...
-ECHO.
-IF EXIST "Build\Plugins\Statistics.dll" DEL /F /Q "Build\Plugins\Statistics.dll" > NUL
-msbuild "Source\Plugins\Statistics\Statistics.csproj" /t:Rebuild /p:Configuration=Release /p:Platform=x86 /v:minimal
-IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
-IF NOT EXIST "Build\Plugins\Statistics.dll" GOTO FILEFAIL
 
 ECHO.
 ECHO Compiling Tag Explorer plugin...
