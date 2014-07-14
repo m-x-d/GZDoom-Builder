@@ -1080,7 +1080,7 @@ namespace CodeImp.DoomBuilder {
 									 WAD target, string targetmapname,
 									 bool copyrequired, bool copyblindcopy,
 									 bool copynodebuild, bool copyscript) {
-			bool lumprequired, lumpblindcopy, lumpnodebuild;
+			bool lumprequired, lumpblindcopy, lumpnodebuild, lumpscriptbuild;
 			string lumpscript, srclumpname, tgtlumpname;
 			int srcheaderindex, tgtheaderindex, targetindex, sourceindex, lumpindex;
 			Lump lump, newlump;
@@ -1109,11 +1109,12 @@ namespace CodeImp.DoomBuilder {
 					lumprequired = config.ReadSetting("maplumpnames." + ml.Key + ".required", false);
 					lumpblindcopy = config.ReadSetting("maplumpnames." + ml.Key + ".blindcopy", false);
 					lumpnodebuild = config.ReadSetting("maplumpnames." + ml.Key + ".nodebuild", false);
+					lumpscriptbuild = config.ReadSetting("maplumpnames." + ml.Key + ".scriptbuild", false); //mxd
 					lumpscript = config.ReadSetting("maplumpnames." + ml.Key + ".script", "");
 
 					// Check if this lump should be copied
 					if ((lumprequired && copyrequired) || (lumpblindcopy && copyblindcopy) ||
-					   (lumpnodebuild && copynodebuild) || ((lumpscript.Length != 0) && copyscript)) {
+					   (lumpnodebuild && copynodebuild) || ((lumpscript.Length != 0 || lumpscriptbuild) && copyscript)) {
 						// Get the lump name
 						srclumpname = ml.Key.ToString();
 						tgtlumpname = ml.Key.ToString();
@@ -1529,7 +1530,7 @@ namespace CodeImp.DoomBuilder {
 			// Load the script lumps
 			foreach (MapLumpInfo maplumpinfo in config.MapLumps.Values) {
 				// Is this a script lump?
-				if (maplumpinfo.script != null && maplumpinfo.name == "SCRIPTS") {
+				if ((maplumpinfo.scriptbuild || maplumpinfo.script != null) && maplumpinfo.name == "SCRIPTS") {
 					// Load the lump data
 					MemoryStream stream = GetLumpData(maplumpinfo.name);
 					if (stream != null) {
