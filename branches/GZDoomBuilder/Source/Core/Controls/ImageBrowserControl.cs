@@ -87,7 +87,6 @@ namespace CodeImp.DoomBuilder.Controls
 			StepsList sizes = new StepsList { 4, 8, 16, 32, 48, 64, 96, 128, 196, 256, 512, 1024 };
 			filterWidth.StepValues = sizes;
 			filterHeight.StepValues = sizes;
-			if(!General.Settings.CapitalizeTextureNames) objectname.CharacterCasing = CharacterCasing.Normal;
 		}
 		
 		// This applies the application settings
@@ -121,6 +120,10 @@ namespace CodeImp.DoomBuilder.Controls
 					mixMode = 0;
 				}
 			}
+
+			//mxd
+			if(!General.Settings.CapitalizeTextureNames)
+				objectname.CharacterCasing = CharacterCasing.Normal;
 		}
 
 		// This cleans everything up

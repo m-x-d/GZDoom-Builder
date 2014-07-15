@@ -29,7 +29,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.label1 = new System.Windows.Forms.Label();
 			this.name = new System.Windows.Forms.TextBox();
 			this.filters = new System.Windows.Forms.ListView();
 			this.filtercolumn = new System.Windows.Forms.ColumnHeader();
@@ -48,25 +47,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.matcheslist = new CodeImp.DoomBuilder.Controls.ImageBrowserControl();
 			this.noresultlabel = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+			this.groupBox3.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(36, 24);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(37, 14);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Name:";
 			// 
 			// name
 			// 
-			this.name.Location = new System.Drawing.Point(79, 21);
+			this.name.Location = new System.Drawing.Point(36, 19);
 			this.name.Name = "name";
-			this.name.Size = new System.Drawing.Size(173, 20);
+			this.name.Size = new System.Drawing.Size(212, 20);
 			this.name.TabIndex = 0;
 			// 
 			// filters
@@ -82,7 +74,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filters.Location = new System.Drawing.Point(21, 110);
 			this.filters.Name = "filters";
 			this.filters.ShowGroups = false;
-			this.filters.Size = new System.Drawing.Size(219, 280);
+			this.filters.Size = new System.Drawing.Size(227, 283);
 			this.filters.TabIndex = 0;
 			this.filters.UseCompatibleStateImageBehavior = false;
 			this.filters.View = System.Windows.Forms.View.Details;
@@ -148,9 +140,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// addfilter
 			// 
 			this.addfilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.addfilter.Location = new System.Drawing.Point(21, 396);
+			this.addfilter.Location = new System.Drawing.Point(21, 399);
 			this.addfilter.Name = "addfilter";
-			this.addfilter.Size = new System.Drawing.Size(97, 24);
+			this.addfilter.Size = new System.Drawing.Size(110, 24);
 			this.addfilter.TabIndex = 1;
 			this.addfilter.Text = "Add Texture";
 			this.addfilter.UseVisualStyleBackColor = true;
@@ -160,9 +152,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.removefilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.removefilter.Enabled = false;
-			this.removefilter.Location = new System.Drawing.Point(124, 396);
+			this.removefilter.Location = new System.Drawing.Point(138, 399);
 			this.removefilter.Name = "removefilter";
-			this.removefilter.Size = new System.Drawing.Size(105, 24);
+			this.removefilter.Size = new System.Drawing.Size(110, 24);
 			this.removefilter.TabIndex = 2;
 			this.removefilter.Text = "Remove Selection";
 			this.removefilter.UseVisualStyleBackColor = true;
@@ -178,9 +170,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.filters);
-			this.groupBox1.Location = new System.Drawing.Point(12, 60);
+			this.groupBox1.Location = new System.Drawing.Point(12, 66);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(270, 440);
+			this.groupBox1.Size = new System.Drawing.Size(270, 434);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Filters ";
@@ -199,9 +191,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox2.Controls.Add(this.matchesbutton);
 			this.groupBox2.Controls.Add(this.matcheslist);
 			this.groupBox2.Controls.Add(this.noresultlabel);
-			this.groupBox2.Location = new System.Drawing.Point(288, 60);
+			this.groupBox2.Location = new System.Drawing.Point(288, 12);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(421, 440);
+			this.groupBox2.Size = new System.Drawing.Size(421, 488);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Results ";
@@ -243,7 +235,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.matcheslist.Location = new System.Drawing.Point(18, 55);
 			this.matcheslist.Name = "matcheslist";
 			this.matcheslist.PreventSelection = true;
-			this.matcheslist.Size = new System.Drawing.Size(387, 365);
+			this.matcheslist.Size = new System.Drawing.Size(387, 422);
 			this.matcheslist.TabIndex = 2;
 			this.matcheslist.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.matcheslist_SelectedItemDoubleClicked);
 			// 
@@ -259,12 +251,23 @@ namespace CodeImp.DoomBuilder.Windows
 			// pictureBox1
 			// 
 			this.pictureBox1.Image = global::CodeImp.DoomBuilder.Properties.Resources.KnownTextureSet;
-			this.pictureBox1.Location = new System.Drawing.Point(12, 23);
+			this.pictureBox1.Location = new System.Drawing.Point(11, 21);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(19, 16);
 			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			this.pictureBox1.TabIndex = 12;
 			this.pictureBox1.TabStop = false;
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.name);
+			this.groupBox3.Controls.Add(this.pictureBox1);
+			this.groupBox3.Location = new System.Drawing.Point(12, 12);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(270, 48);
+			this.groupBox3.TabIndex = 13;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = " Texture Set Name ";
 			// 
 			// TextureSetForm
 			// 
@@ -273,12 +276,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(721, 544);
-			this.Controls.Add(this.pictureBox1);
+			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
-			this.Controls.Add(this.name);
-			this.Controls.Add(this.label1);
 			this.Controls.Add(this.groupBox1);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -296,14 +297,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+			this.groupBox3.ResumeLayout(false);
+			this.groupBox3.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox name;
 		private System.Windows.Forms.ListView filters;
 		private System.Windows.Forms.Label label2;
@@ -322,5 +323,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.RadioButton nomatchesbutton;
 		private System.Windows.Forms.RadioButton matchesbutton;
 		private System.Windows.Forms.PictureBox pictureBox1;
+		private System.Windows.Forms.GroupBox groupBox3;
 	}
 }
