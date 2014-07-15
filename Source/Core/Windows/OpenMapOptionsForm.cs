@@ -421,7 +421,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Map name selected
 		private void mapslist_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
-			if(!e.IsSelected) return; //mxd. Don't want to trigger this for every item in mapslist
+			if(!e.IsSelected) return; //mxd. Don't want to trigger this twice
 			
 			DataLocationList locations;
 			DataLocationList listedlocations;

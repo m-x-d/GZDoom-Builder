@@ -220,6 +220,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// Selection changed
 		private void list_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
+			if(!e.IsSelected) return; //mxd. Don't want to trigger this twice
+			
 			// Prevent selecting?
 			if(preventselection)
 			{
