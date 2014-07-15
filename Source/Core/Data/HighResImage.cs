@@ -32,7 +32,7 @@ namespace CodeImp.DoomBuilder.Data
 	{
 		#region ================== Variables
 
-		private Dictionary<string, TexturePatch> patches; //mxd
+		private List<TexturePatch> patches; //mxd
 		private bool gotFullName;//mxd
 		private string type;
 		
@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Data
 			this.scale.x = scalex;
 			this.scale.y = scaley;
 			this.worldpanning = worldpanning;
-			this.patches = new Dictionary<string, TexturePatch>(1);
+			this.patches = new List<TexturePatch>(1);
 			this.type = type;
 			SetName(name);
 			
@@ -65,13 +65,15 @@ namespace CodeImp.DoomBuilder.Data
 		public void AddPatch(TexturePatch patch)
 		{
 			// Add it
-			patches.Add(patch.lumpname, patch);
+			patches.Add(patch);
 
 			//mxd. Get full name from first patch
 			if (!gotFullName) {
 				fullName = General.Map.Data.GetPatchLocation(patch.lumpname);
 				gotFullName = true;
 			}
+
+			if (patch.lumpname == Name) hasPatchWithSameName = true; //mxd
 		}
 		
 		// This loads the image
@@ -111,7 +113,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(!loadfailed)
 				{
 					// Go for all patches
-					foreach(TexturePatch p in patches.Values)
+					foreach(TexturePatch p in patches)
 					{
 						// Get the patch data stream
 						Stream patchdata;
@@ -336,12 +338,6 @@ namespace CodeImp.DoomBuilder.Data
 				// Pass on to base
 				base.LocalLoadImage();
 			}
-		}
-
-		//mxd
-		public bool ContainsPatch(string name) 
-		{
-			return patches.ContainsKey(name);
 		}
 
 		#endregion
