@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected bool usecolorcorrection;
 		protected string fullName; //mxd. name with path;
 		protected bool isFlat; //mxd. if false, it's a texture
+		protected bool hasPatchWithSameName; //mxd
 		
 		// Loading
 		private volatile ImageLoadState previewstate;
@@ -82,6 +83,7 @@ namespace CodeImp.DoomBuilder.Data
 		public long LongName { get { return longname; } }
 		public string FullName { get { return fullName; } } //mxd
 		public bool IsFlat { get { return isFlat; } internal set { isFlat = value; } } //mxd
+		public bool HasPatchWithSameName { get { return hasPatchWithSameName; } } //mxd
 		public bool UseColorCorrection { get { return usecolorcorrection; } set { usecolorcorrection = value; } }
 		public Texture Texture { get { lock(this) { return texture; } } }
 		public bool IsPreviewLoaded { get { return (previewstate == ImageLoadState.Ready); } }

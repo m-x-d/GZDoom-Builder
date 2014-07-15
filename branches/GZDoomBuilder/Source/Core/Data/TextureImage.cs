@@ -62,6 +62,8 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Add it
 			patches.Add(patch);
+
+			if(patch.lumpname == Name) hasPatchWithSameName = true; //mxd
 		}
 		
 		// This loads the image

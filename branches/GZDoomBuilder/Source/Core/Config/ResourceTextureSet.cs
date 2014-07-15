@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.Config
 		// Add a texture
 		internal void AddTexture(ImageData image)
 		{
-			if(textures.ContainsKey(image.LongName) && (!(image is HighResImage) || !(image as HighResImage).ContainsPatch(image.Name)) )
+			if(textures.ContainsKey(image.LongName) && !image.HasPatchWithSameName)
 				General.ErrorLogger.Add(ErrorType.Warning, "Texture \"" + image.Name + "\" is double defined in resource \"" + this.Location.location + "\".");
 			textures[image.LongName] = image;
 		}
