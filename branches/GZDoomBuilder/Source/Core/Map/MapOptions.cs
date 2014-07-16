@@ -290,6 +290,9 @@ namespace CodeImp.DoomBuilder.Map
 			// Write resources to config
 			resources.WriteToConfig(mapconfig, "resources");
 
+			//mxd. Save selection groups
+			General.Map.Map.WriteSelectionGroups(mapconfig);
+
 			//mxd. Save Tag Labels
 			if(tagLabels.Count > 0) {
 				ListDictionary tagLabelsData = new ListDictionary();
@@ -326,11 +329,12 @@ namespace CodeImp.DoomBuilder.Map
 			mapconfig.WriteSetting("overrideceilheight", overrideceilheight);
 			mapconfig.WriteSetting("overridebrightness", overridebrightness);
 
+			//mxd. Write script compiler
+			if(!string.IsNullOrEmpty(scriptcompiler))
+				mapconfig.WriteSetting("scriptcompiler", scriptcompiler);
+
 			// Write grid settings
 			General.Map.Grid.WriteToConfig(mapconfig, "grid");
-
-			//mxd. Write script compiler
-			if(!string.IsNullOrEmpty(scriptcompiler)) mapconfig.WriteSetting("scriptcompiler", scriptcompiler);
 
 			// Write scripts to config
 			mapconfig.DeleteSetting("scripts");
@@ -413,6 +417,12 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			General.Map.Grid.ReadFromConfig(mapconfig, "grid");
 		}
+
+		//mxd. This reads stored selection groups from the map configuration
+		internal void ReadSelectionGroups() 
+		{
+			General.Map.Map.ReadSelectionGroups(mapconfig);
+		}
 		
 		// This displays the current map name
 		public override string ToString()
@@ -423,10 +433,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This returns the UDMF field type
 		internal int GetUniversalFieldType(string elementname, string fieldname, int defaulttype)
 		{
-			int type;
-			
 			// Check if the field type is set in the game configuration
-			type = General.Map.Config.ReadSetting("universalfields." + elementname + "." + fieldname + ".type", -1);
+			int type = General.Map.Config.ReadSetting("universalfields." + elementname + "." + fieldname + ".type", -1);
 			if(type == -1)
 			{
 				// Read from map configuration

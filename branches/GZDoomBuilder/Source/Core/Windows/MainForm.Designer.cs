@@ -82,38 +82,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemgridsetup = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.addToGroup = new System.Windows.Forms.ToolStripMenuItem();
-			this.addGroup1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.addGroup2 = new System.Windows.Forms.ToolStripMenuItem();
-			this.addGroup3 = new System.Windows.Forms.ToolStripMenuItem();
-			this.addGroup4 = new System.Windows.Forms.ToolStripMenuItem();
-			this.addGroup5 = new System.Windows.Forms.ToolStripMenuItem();
-			this.addGroup6 = new System.Windows.Forms.ToolStripMenuItem();
-			this.addGroup7 = new System.Windows.Forms.ToolStripMenuItem();
-			this.addGroup8 = new System.Windows.Forms.ToolStripMenuItem();
-			this.addGroup9 = new System.Windows.Forms.ToolStripMenuItem();
-			this.addGroup10 = new System.Windows.Forms.ToolStripMenuItem();
 			this.selectGroup = new System.Windows.Forms.ToolStripMenuItem();
-			this.selectGroup1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.selectGroup2 = new System.Windows.Forms.ToolStripMenuItem();
-			this.selectGroup3 = new System.Windows.Forms.ToolStripMenuItem();
-			this.selectGroup4 = new System.Windows.Forms.ToolStripMenuItem();
-			this.selectGroup5 = new System.Windows.Forms.ToolStripMenuItem();
-			this.selectGroup6 = new System.Windows.Forms.ToolStripMenuItem();
-			this.selectGroup7 = new System.Windows.Forms.ToolStripMenuItem();
-			this.selectGroup8 = new System.Windows.Forms.ToolStripMenuItem();
-			this.selectGroup9 = new System.Windows.Forms.ToolStripMenuItem();
-			this.selectGroup10 = new System.Windows.Forms.ToolStripMenuItem();
 			this.clearGroup = new System.Windows.Forms.ToolStripMenuItem();
-			this.clearGroup1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.clearGroup2 = new System.Windows.Forms.ToolStripMenuItem();
-			this.clearGroup3 = new System.Windows.Forms.ToolStripMenuItem();
-			this.clearGroup4 = new System.Windows.Forms.ToolStripMenuItem();
-			this.clearGroup5 = new System.Windows.Forms.ToolStripMenuItem();
-			this.clearGroup6 = new System.Windows.Forms.ToolStripMenuItem();
-			this.clearGroup7 = new System.Windows.Forms.ToolStripMenuItem();
-			this.clearGroup8 = new System.Windows.Forms.ToolStripMenuItem();
-			this.clearGroup9 = new System.Windows.Forms.ToolStripMenuItem();
-			this.clearGroup10 = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemmapoptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemviewusedtags = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemviewthingtypes = new System.Windows.Forms.ToolStripMenuItem();
@@ -389,7 +359,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.menuhelp});
 			this.menumain.Location = new System.Drawing.Point(0, 0);
 			this.menumain.Name = "menumain";
-			this.menumain.Size = new System.Drawing.Size(328, 24);
+			this.menumain.Size = new System.Drawing.Size(420, 24);
 			this.menumain.TabIndex = 0;
 			// 
 			// menufile
@@ -683,297 +653,21 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// addToGroup
 			// 
-			this.addToGroup.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addGroup1,
-            this.addGroup2,
-            this.addGroup3,
-            this.addGroup4,
-            this.addGroup5,
-            this.addGroup6,
-            this.addGroup7,
-            this.addGroup8,
-            this.addGroup9,
-            this.addGroup10});
 			this.addToGroup.Name = "addToGroup";
 			this.addToGroup.Size = new System.Drawing.Size(219, 22);
 			this.addToGroup.Text = "Add Selection to Group";
-			this.addToGroup.DropDownOpening += new System.EventHandler(this.addToGroup_DropDownOpening);
-			// 
-			// addGroup1
-			// 
-			this.addGroup1.Name = "addGroup1";
-			this.addGroup1.Size = new System.Drawing.Size(253, 22);
-			this.addGroup1.Tag = "builder_assigngroup1";
-			this.addGroup1.Text = "1: 100 sectors, 12 vertices, 5 things";
-			this.addGroup1.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// addGroup2
-			// 
-			this.addGroup2.Name = "addGroup2";
-			this.addGroup2.Size = new System.Drawing.Size(253, 22);
-			this.addGroup2.Tag = "builder_assigngroup2";
-			this.addGroup2.Text = "2:";
-			this.addGroup2.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// addGroup3
-			// 
-			this.addGroup3.Name = "addGroup3";
-			this.addGroup3.Size = new System.Drawing.Size(253, 22);
-			this.addGroup3.Tag = "builder_assigngroup3";
-			this.addGroup3.Text = "3:";
-			this.addGroup3.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// addGroup4
-			// 
-			this.addGroup4.Name = "addGroup4";
-			this.addGroup4.Size = new System.Drawing.Size(253, 22);
-			this.addGroup4.Tag = "builder_assigngroup4";
-			this.addGroup4.Text = "4:";
-			this.addGroup4.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// addGroup5
-			// 
-			this.addGroup5.Name = "addGroup5";
-			this.addGroup5.Size = new System.Drawing.Size(253, 22);
-			this.addGroup5.Tag = "builder_assigngroup5";
-			this.addGroup5.Text = "5:";
-			this.addGroup5.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// addGroup6
-			// 
-			this.addGroup6.Name = "addGroup6";
-			this.addGroup6.Size = new System.Drawing.Size(253, 22);
-			this.addGroup6.Tag = "builder_assigngroup6";
-			this.addGroup6.Text = "6:";
-			this.addGroup6.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// addGroup7
-			// 
-			this.addGroup7.Name = "addGroup7";
-			this.addGroup7.Size = new System.Drawing.Size(253, 22);
-			this.addGroup7.Tag = "builder_assigngroup7";
-			this.addGroup7.Text = "7:";
-			this.addGroup7.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// addGroup8
-			// 
-			this.addGroup8.Name = "addGroup8";
-			this.addGroup8.Size = new System.Drawing.Size(253, 22);
-			this.addGroup8.Tag = "builder_assigngroup8";
-			this.addGroup8.Text = "8:";
-			this.addGroup8.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// addGroup9
-			// 
-			this.addGroup9.Name = "addGroup9";
-			this.addGroup9.Size = new System.Drawing.Size(253, 22);
-			this.addGroup9.Tag = "builder_assigngroup9";
-			this.addGroup9.Text = "9:";
-			this.addGroup9.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// addGroup10
-			// 
-			this.addGroup10.Name = "addGroup10";
-			this.addGroup10.Size = new System.Drawing.Size(253, 22);
-			this.addGroup10.Tag = "builder_assigngroup10";
-			this.addGroup10.Text = "10:";
-			this.addGroup10.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// selectGroup
 			// 
-			this.selectGroup.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.selectGroup1,
-            this.selectGroup2,
-            this.selectGroup3,
-            this.selectGroup4,
-            this.selectGroup5,
-            this.selectGroup6,
-            this.selectGroup7,
-            this.selectGroup8,
-            this.selectGroup9,
-            this.selectGroup10});
 			this.selectGroup.Name = "selectGroup";
 			this.selectGroup.Size = new System.Drawing.Size(219, 22);
 			this.selectGroup.Text = "Select Group";
-			this.selectGroup.DropDownOpening += new System.EventHandler(this.selectGroup_DropDownOpening);
-			// 
-			// selectGroup1
-			// 
-			this.selectGroup1.Name = "selectGroup1";
-			this.selectGroup1.Size = new System.Drawing.Size(89, 22);
-			this.selectGroup1.Tag = "builder_selectgroup1";
-			this.selectGroup1.Text = "1:";
-			this.selectGroup1.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// selectGroup2
-			// 
-			this.selectGroup2.Name = "selectGroup2";
-			this.selectGroup2.Size = new System.Drawing.Size(89, 22);
-			this.selectGroup2.Tag = "builder_selectgroup2";
-			this.selectGroup2.Text = "2:";
-			this.selectGroup2.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// selectGroup3
-			// 
-			this.selectGroup3.Name = "selectGroup3";
-			this.selectGroup3.Size = new System.Drawing.Size(89, 22);
-			this.selectGroup3.Tag = "builder_selectgroup3";
-			this.selectGroup3.Text = "3:";
-			this.selectGroup3.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// selectGroup4
-			// 
-			this.selectGroup4.Name = "selectGroup4";
-			this.selectGroup4.Size = new System.Drawing.Size(89, 22);
-			this.selectGroup4.Tag = "builder_selectgroup4";
-			this.selectGroup4.Text = "4:";
-			this.selectGroup4.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// selectGroup5
-			// 
-			this.selectGroup5.Name = "selectGroup5";
-			this.selectGroup5.Size = new System.Drawing.Size(89, 22);
-			this.selectGroup5.Tag = "builder_selectgroup5";
-			this.selectGroup5.Text = "5:";
-			this.selectGroup5.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// selectGroup6
-			// 
-			this.selectGroup6.Name = "selectGroup6";
-			this.selectGroup6.Size = new System.Drawing.Size(89, 22);
-			this.selectGroup6.Tag = "builder_selectgroup6";
-			this.selectGroup6.Text = "6:";
-			this.selectGroup6.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// selectGroup7
-			// 
-			this.selectGroup7.Name = "selectGroup7";
-			this.selectGroup7.Size = new System.Drawing.Size(89, 22);
-			this.selectGroup7.Tag = "builder_selectgroup7";
-			this.selectGroup7.Text = "7:";
-			this.selectGroup7.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// selectGroup8
-			// 
-			this.selectGroup8.Name = "selectGroup8";
-			this.selectGroup8.Size = new System.Drawing.Size(89, 22);
-			this.selectGroup8.Tag = "builder_selectgroup8";
-			this.selectGroup8.Text = "8:";
-			this.selectGroup8.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// selectGroup9
-			// 
-			this.selectGroup9.Name = "selectGroup9";
-			this.selectGroup9.Size = new System.Drawing.Size(89, 22);
-			this.selectGroup9.Tag = "builder_selectgroup9";
-			this.selectGroup9.Text = "9:";
-			this.selectGroup9.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// selectGroup10
-			// 
-			this.selectGroup10.Name = "selectGroup10";
-			this.selectGroup10.Size = new System.Drawing.Size(89, 22);
-			this.selectGroup10.Tag = "builder_selectgroup10";
-			this.selectGroup10.Text = "10:";
-			this.selectGroup10.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// clearGroup
 			// 
-			this.clearGroup.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearGroup1,
-            this.clearGroup2,
-            this.clearGroup3,
-            this.clearGroup4,
-            this.clearGroup5,
-            this.clearGroup6,
-            this.clearGroup7,
-            this.clearGroup8,
-            this.clearGroup9,
-            this.clearGroup10});
 			this.clearGroup.Name = "clearGroup";
 			this.clearGroup.Size = new System.Drawing.Size(219, 22);
 			this.clearGroup.Text = "Clear Group";
-			this.clearGroup.DropDownOpening += new System.EventHandler(this.selectGroup_DropDownOpening);
-			// 
-			// clearGroup1
-			// 
-			this.clearGroup1.Name = "clearGroup1";
-			this.clearGroup1.Size = new System.Drawing.Size(89, 22);
-			this.clearGroup1.Tag = "builder_cleargroup1";
-			this.clearGroup1.Text = "1:";
-			this.clearGroup1.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// clearGroup2
-			// 
-			this.clearGroup2.Name = "clearGroup2";
-			this.clearGroup2.Size = new System.Drawing.Size(89, 22);
-			this.clearGroup2.Tag = "builder_cleargroup2";
-			this.clearGroup2.Text = "2:";
-			this.clearGroup2.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// clearGroup3
-			// 
-			this.clearGroup3.Name = "clearGroup3";
-			this.clearGroup3.Size = new System.Drawing.Size(89, 22);
-			this.clearGroup3.Tag = "builder_cleargroup3";
-			this.clearGroup3.Text = "3:";
-			this.clearGroup3.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// clearGroup4
-			// 
-			this.clearGroup4.Name = "clearGroup4";
-			this.clearGroup4.Size = new System.Drawing.Size(89, 22);
-			this.clearGroup4.Tag = "builder_cleargroup4";
-			this.clearGroup4.Text = "4:";
-			this.clearGroup4.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// clearGroup5
-			// 
-			this.clearGroup5.Name = "clearGroup5";
-			this.clearGroup5.Size = new System.Drawing.Size(89, 22);
-			this.clearGroup5.Tag = "builder_cleargroup5";
-			this.clearGroup5.Text = "5:";
-			this.clearGroup5.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// clearGroup6
-			// 
-			this.clearGroup6.Name = "clearGroup6";
-			this.clearGroup6.Size = new System.Drawing.Size(89, 22);
-			this.clearGroup6.Tag = "builder_cleargroup6";
-			this.clearGroup6.Text = "6:";
-			this.clearGroup6.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// clearGroup7
-			// 
-			this.clearGroup7.Name = "clearGroup7";
-			this.clearGroup7.Size = new System.Drawing.Size(89, 22);
-			this.clearGroup7.Tag = "builder_cleargroup7";
-			this.clearGroup7.Text = "7:";
-			this.clearGroup7.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// clearGroup8
-			// 
-			this.clearGroup8.Name = "clearGroup8";
-			this.clearGroup8.Size = new System.Drawing.Size(89, 22);
-			this.clearGroup8.Tag = "builder_cleargroup8";
-			this.clearGroup8.Text = "8:";
-			this.clearGroup8.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// clearGroup9
-			// 
-			this.clearGroup9.Name = "clearGroup9";
-			this.clearGroup9.Size = new System.Drawing.Size(89, 22);
-			this.clearGroup9.Tag = "builder_cleargroup9";
-			this.clearGroup9.Text = "9:";
-			this.clearGroup9.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// clearGroup10
-			// 
-			this.clearGroup10.Name = "clearGroup10";
-			this.clearGroup10.Size = new System.Drawing.Size(89, 22);
-			this.clearGroup10.Tag = "builder_cleargroup10";
-			this.clearGroup10.Text = "10:";
-			this.clearGroup10.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemmapoptions
 			// 
@@ -2281,6 +1975,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// statistics
 			// 
 			this.statistics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.statistics.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.statistics.ForeColor = System.Drawing.SystemColors.GrayText;
 			this.statistics.Location = new System.Drawing.Point(869, 2);
 			this.statistics.Name = "statistics";
 			this.statistics.Size = new System.Drawing.Size(118, 102);
@@ -2684,37 +2380,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem addToGroup;
 		private System.Windows.Forms.ToolStripMenuItem selectGroup;
-		private System.Windows.Forms.ToolStripMenuItem addGroup1;
-		private System.Windows.Forms.ToolStripMenuItem addGroup2;
-		private System.Windows.Forms.ToolStripMenuItem addGroup3;
-		private System.Windows.Forms.ToolStripMenuItem addGroup4;
-		private System.Windows.Forms.ToolStripMenuItem addGroup5;
-		private System.Windows.Forms.ToolStripMenuItem addGroup6;
-		private System.Windows.Forms.ToolStripMenuItem addGroup7;
-		private System.Windows.Forms.ToolStripMenuItem addGroup8;
-		private System.Windows.Forms.ToolStripMenuItem addGroup9;
-		private System.Windows.Forms.ToolStripMenuItem addGroup10;
-		private System.Windows.Forms.ToolStripMenuItem selectGroup1;
-		private System.Windows.Forms.ToolStripMenuItem selectGroup2;
-		private System.Windows.Forms.ToolStripMenuItem selectGroup3;
-		private System.Windows.Forms.ToolStripMenuItem selectGroup4;
-		private System.Windows.Forms.ToolStripMenuItem selectGroup5;
-		private System.Windows.Forms.ToolStripMenuItem selectGroup6;
-		private System.Windows.Forms.ToolStripMenuItem selectGroup7;
-		private System.Windows.Forms.ToolStripMenuItem selectGroup8;
-		private System.Windows.Forms.ToolStripMenuItem selectGroup9;
-		private System.Windows.Forms.ToolStripMenuItem selectGroup10;
 		private System.Windows.Forms.ToolStripMenuItem clearGroup;
-		private System.Windows.Forms.ToolStripMenuItem clearGroup1;
-		private System.Windows.Forms.ToolStripMenuItem clearGroup2;
-		private System.Windows.Forms.ToolStripMenuItem clearGroup3;
-		private System.Windows.Forms.ToolStripMenuItem clearGroup4;
-		private System.Windows.Forms.ToolStripMenuItem clearGroup5;
-		private System.Windows.Forms.ToolStripMenuItem clearGroup6;
-		private System.Windows.Forms.ToolStripMenuItem clearGroup7;
-		private System.Windows.Forms.ToolStripMenuItem clearGroup8;
-		private System.Windows.Forms.ToolStripMenuItem clearGroup9;
-		private System.Windows.Forms.ToolStripMenuItem clearGroup10;
 		private System.Windows.Forms.ContextMenuStrip toolbarContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem toggleFile;
 		private System.Windows.Forms.ToolStripMenuItem toggleScript;
