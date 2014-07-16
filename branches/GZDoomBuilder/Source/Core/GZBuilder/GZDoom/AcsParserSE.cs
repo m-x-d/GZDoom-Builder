@@ -12,18 +12,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		internal delegate void IncludeDelegate(AcsParserSE parser, string includefile);
 		internal IncludeDelegate OnInclude;
 
-		private List<string> parsedLumps;
-		private List<string> includes;
-		
-		private List<ScriptItem> namedScripts;
-		private List<ScriptItem> numberedScripts;
+		private readonly List<string> parsedLumps;
+		private readonly List<string> includes;
+
+		private readonly List<ScriptItem> namedScripts;
+		private readonly List<ScriptItem> numberedScripts;
+		private readonly List<ScriptItem> functions;
 
 		internal List<ScriptItem> NamedScripts { get { return namedScripts; } }
 		internal List<ScriptItem> NumberedScripts { get { return numberedScripts; } }
+		internal List<ScriptItem> Functions { get { return functions; } }
 
 		internal AcsParserSE() {
 			namedScripts = new List<ScriptItem>();
 			numberedScripts = new List<ScriptItem>();
+			functions = new List<ScriptItem>();
 			parsedLumps = new List<string>();
 			includes = new List<string>();
 		}
@@ -104,6 +107,33 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								numberedScripts.Add(i);
 							}
 						}
+
+					} else if(token == "function") {
+						int startPos = (int)stream.Position - 9;
+						SkipWhitespace(true);
+						string funcname = ReadToken(); //read return type
+						SkipWhitespace(true);
+						funcname += " " + ReadToken(); //read function name
+
+						//look for opening brace
+						if (!funcname.Contains("(")) {
+							SkipWhitespace(true);
+							funcname += " " + ReadToken();
+						} else {
+							funcname = funcname.Replace("(", " (");
+						}
+
+						//look for closing brace
+						if(!funcname.Contains(")")) {
+							do {
+								SkipWhitespace(true);
+								token = ReadToken();
+								funcname += " " + token;
+							} while(!token.Contains(")"));
+						}
+
+						ScriptItem i = new ScriptItem(0, funcname, startPos, (int)stream.Position - 1);
+						functions.Add(i);
 
 					} else if (processIncludes && (token == "#include" || token == "#import")) {
 						SkipWhitespace(true);
