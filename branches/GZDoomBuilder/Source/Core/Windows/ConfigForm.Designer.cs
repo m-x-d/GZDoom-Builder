@@ -82,7 +82,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsControl = new CodeImp.DoomBuilder.GZBuilder.Controls.CustomLinedefColorsControl();
 			this.listconfigs = new System.Windows.Forms.ListView();
 			this.columnname = new System.Windows.Forms.ColumnHeader();
+			this.copypastemenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.copyall = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.pasteall = new System.Windows.Forms.ToolStripMenuItem();
+			this.pasteresources = new System.Windows.Forms.ToolStripMenuItem();
+			this.pasteengines = new System.Windows.Forms.ToolStripMenuItem();
+			this.pastecolorpresets = new System.Windows.Forms.ToolStripMenuItem();
 			this.testprogramdialog = new System.Windows.Forms.OpenFileDialog();
+			this.hintlabel = new System.Windows.Forms.Label();
+			this.hint = new System.Windows.Forms.PictureBox();
 			label5 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -100,6 +109,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabtextures.SuspendLayout();
 			this.tabmodes.SuspendLayout();
 			this.tabcustomcolors.SuspendLayout();
+			this.copypastemenu.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.hint)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label5
@@ -710,6 +721,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listconfigs.CheckBoxes = true;
 			this.listconfigs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnname});
+			this.listconfigs.ContextMenuStrip = this.copypastemenu;
 			this.listconfigs.FullRowSelect = true;
 			this.listconfigs.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listconfigs.HideSelection = false;
@@ -729,10 +741,88 @@ namespace CodeImp.DoomBuilder.Windows
 			this.columnname.Text = "Configuration";
 			this.columnname.Width = 200;
 			// 
+			// copypastemenu
+			// 
+			this.copypastemenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyall,
+            this.toolStripSeparator1,
+            this.pasteall,
+            this.pasteresources,
+            this.pasteengines,
+            this.pastecolorpresets});
+			this.copypastemenu.Name = "copypastemenu";
+			this.copypastemenu.Size = new System.Drawing.Size(175, 120);
+			this.copypastemenu.Opening += new System.ComponentModel.CancelEventHandler(this.copypastemenu_Opening);
+			// 
+			// copyall
+			// 
+			this.copyall.Image = global::CodeImp.DoomBuilder.Properties.Resources.Copy;
+			this.copyall.Name = "copyall";
+			this.copyall.Size = new System.Drawing.Size(174, 22);
+			this.copyall.Text = "Copy";
+			this.copyall.Click += new System.EventHandler(this.copyall_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(171, 6);
+			// 
+			// pasteall
+			// 
+			this.pasteall.Image = global::CodeImp.DoomBuilder.Properties.Resources.Paste;
+			this.pasteall.Name = "pasteall";
+			this.pasteall.Size = new System.Drawing.Size(174, 22);
+			this.pasteall.Text = "Paste";
+			this.pasteall.Click += new System.EventHandler(this.pasteall_Click);
+			// 
+			// pasteresources
+			// 
+			this.pasteresources.Image = global::CodeImp.DoomBuilder.Properties.Resources.PasteSpecial;
+			this.pasteresources.Name = "pasteresources";
+			this.pasteresources.Size = new System.Drawing.Size(174, 22);
+			this.pasteresources.Text = "Paste Resources";
+			this.pasteresources.Click += new System.EventHandler(this.pasteresources_Click);
+			// 
+			// pasteengines
+			// 
+			this.pasteengines.Image = global::CodeImp.DoomBuilder.Properties.Resources.PasteSpecial;
+			this.pasteengines.Name = "pasteengines";
+			this.pasteengines.Size = new System.Drawing.Size(174, 22);
+			this.pasteengines.Text = "Paste Test Engines";
+			this.pasteengines.Click += new System.EventHandler(this.pasteengines_Click);
+			// 
+			// pastecolorpresets
+			// 
+			this.pastecolorpresets.Image = global::CodeImp.DoomBuilder.Properties.Resources.PasteSpecial;
+			this.pastecolorpresets.Name = "pastecolorpresets";
+			this.pastecolorpresets.Size = new System.Drawing.Size(174, 22);
+			this.pastecolorpresets.Text = "Paste Color Presets";
+			this.pastecolorpresets.Click += new System.EventHandler(this.pastecolorpresets_Click);
+			// 
 			// testprogramdialog
 			// 
 			this.testprogramdialog.Filter = "Executable Files (*.exe)|*.exe|Batch Files (*.bat)|*.bat";
 			this.testprogramdialog.Title = "Browse Test Program";
+			// 
+			// hintlabel
+			// 
+			this.hintlabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.hintlabel.AutoSize = true;
+			this.hintlabel.Location = new System.Drawing.Point(30, 384);
+			this.hintlabel.Name = "hintlabel";
+			this.hintlabel.Size = new System.Drawing.Size(265, 14);
+			this.hintlabel.TabIndex = 6;
+			this.hintlabel.Text = "Use context menu to copy-paste game configurations";
+			// 
+			// hint
+			// 
+			this.hint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.hint.Image = global::CodeImp.DoomBuilder.Properties.Resources.Lightbulb;
+			this.hint.Location = new System.Drawing.Point(12, 383);
+			this.hint.Name = "hint";
+			this.hint.Size = new System.Drawing.Size(16, 16);
+			this.hint.TabIndex = 5;
+			this.hint.TabStop = false;
 			// 
 			// ConfigForm
 			// 
@@ -741,6 +831,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(794, 416);
+			this.Controls.Add(this.hintlabel);
+			this.Controls.Add(this.hint);
 			this.Controls.Add(this.listconfigs);
 			this.Controls.Add(this.tabs);
 			this.Controls.Add(this.cancel);
@@ -767,7 +859,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabmodes.ResumeLayout(false);
 			this.tabmodes.PerformLayout();
 			this.tabcustomcolors.ResumeLayout(false);
+			this.copypastemenu.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.hint)).EndInit();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -816,5 +911,14 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.TabPage tabcustomcolors;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.CustomLinedefColorsControl colorsControl;
+		private System.Windows.Forms.ContextMenuStrip copypastemenu;
+		private System.Windows.Forms.ToolStripMenuItem copyall;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem pasteall;
+		private System.Windows.Forms.ToolStripMenuItem pasteresources;
+		private System.Windows.Forms.ToolStripMenuItem pasteengines;
+		private System.Windows.Forms.ToolStripMenuItem pastecolorpresets;
+		private System.Windows.Forms.Label hintlabel;
+		private System.Windows.Forms.PictureBox hint;
 	}
 }

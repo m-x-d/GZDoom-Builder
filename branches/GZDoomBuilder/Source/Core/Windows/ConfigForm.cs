@@ -39,6 +39,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool preventchanges;
 		private bool reloadresources;
 
+		//mxd. "Copy/Paste" stuff
+		private ConfigurationInfo configinfocopy;
+
 		// Properties
 		public bool ReloadResources { get { return reloadresources; } }
 
@@ -721,5 +724,89 @@ namespace CodeImp.DoomBuilder.Windows
 				listconfigs.SelectedItems[0].EnsureVisible();
 			}
 		}
+
+		#region ============= Copy/Paste context menu (mxd)
+
+		private void copypastemenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) 
+		{
+			if (listconfigs.SelectedIndices.Count < 1) 
+			{
+				e.Cancel = true;
+				return;
+			}
+
+			ConfigurationInfo current = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
+			bool havecopiedconfig = configinfocopy != null;
+			bool formatinterfacesmatch = havecopiedconfig && current.FormatInterface == configinfocopy.FormatInterface;
+
+			pasteall.Enabled = formatinterfacesmatch;
+			pasteengines.Enabled = havecopiedconfig;
+			pasteresources.Enabled = havecopiedconfig;
+			pastecolorpresets.Enabled = formatinterfacesmatch;
+		}
+
+		private void copyall_Click(object sender, EventArgs e) 
+		{
+			if(listconfigs.SelectedIndices.Count < 1) return;
+			ConfigurationInfo current = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
+			configinfocopy = current.Clone();
+
+			//display info
+			General.Interface.DisplayStatus(StatusType.Info, "Copied '" + configinfocopy.Name + "' game configuration");
+		}
+
+		private void pasteall_Click(object sender, EventArgs e) 
+		{
+			if(listconfigs.SelectedIndices.Count < 1) return;
+
+			//get current configinfo
+			ConfigurationInfo current = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
+			current.PasteFrom(configinfocopy);
+
+			//update display
+			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
+			General.Interface.DisplayStatus(StatusType.Info, "Pasted game configuration from '" + configinfocopy.Name + "'");
+		}
+
+		private void pasteresources_Click(object sender, EventArgs e) 
+		{
+			if(listconfigs.SelectedIndices.Count < 1) return;
+
+			//get current configinfo
+			ConfigurationInfo current = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
+			current.PasteResourcesFrom(configinfocopy);
+
+			//update display
+			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
+			General.Interface.DisplayStatus(StatusType.Info, "Pasted resources from '" + configinfocopy.Name + "'");
+		}
+
+		private void pasteengines_Click(object sender, EventArgs e) 
+		{
+			if(listconfigs.SelectedIndices.Count < 1) return;
+
+			//get current configinfo
+			ConfigurationInfo current = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
+			current.PasteTestEnginesFrom(configinfocopy);
+
+			//update display
+			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
+			General.Interface.DisplayStatus(StatusType.Info, "Pasted engines list from '" + configinfocopy.Name + "'");
+		}
+
+		private void pastecolorpresets_Click(object sender, EventArgs e) 
+		{
+			if(listconfigs.SelectedIndices.Count < 1) return;
+
+			//get current configinfo
+			ConfigurationInfo current = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
+			current.PasteColorPresetsFrom(configinfocopy);
+
+			//update display
+			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
+			General.Interface.DisplayStatus(StatusType.Info, "Pasted color presets from '" + configinfocopy.Name + "'");
+		}
+
+		#endregion
 	}
 }
