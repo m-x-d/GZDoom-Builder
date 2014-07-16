@@ -100,6 +100,12 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			this.Selected = ((groups & groupsmask) != 0);
 		}
+
+		//mxd. This checks if given element belongs to a particular group
+		public bool IsInGroup(int groupsmask) 
+		{
+			return ((groups & groupsmask) != 0);
+		}
 		
 		#endregion
 	}

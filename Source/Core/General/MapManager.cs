@@ -417,6 +417,9 @@ namespace CodeImp.DoomBuilder {
 			//mxd. check script names
 			UpdateScriptNames();
 
+			//mxd. Restore selection groups
+			options.ReadSelectionGroups();
+
 			// Bind any methods
 			General.Actions.BindMethods(this);
 
@@ -502,6 +505,9 @@ namespace CodeImp.DoomBuilder {
 
 			//mxd. check script names
 			UpdateScriptNames();
+
+			//mxd. Restore selection groups
+			options.ReadSelectionGroups();
 
 			// Center map in screen
 			if (General.Editing.Mode is ClassicMode) {
@@ -1239,7 +1245,7 @@ namespace CodeImp.DoomBuilder {
 			General.Interface.SetCursor(Cursors.WaitCursor);
 
 			// Clear group
-			map.ClearGroup(0x01 << groupindex, groupindex);
+			map.ClearGroup(0x01 << groupindex);
 
 			General.Interface.DisplayStatus(StatusType.Action, "Cleared group " + (groupindex + 1));
 			General.Interface.SetCursor(Cursors.Default);

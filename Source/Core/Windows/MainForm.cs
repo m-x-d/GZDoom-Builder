@@ -2486,31 +2486,51 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void addToGroup_DropDownOpening(object sender, EventArgs e) {
-			for(int i = 0; i < addToGroup.DropDown.Items.Count; i++)
-				addToGroup.DropDown.Items[i].Text = (i + 1) + ": " + (General.Map.Map.GroupInfos[i] == null ? " Empty" : General.Map.Map.GroupInfos[i].ToString());
-		}
-
-		//mxd
-		private void selectGroup_DropDownOpening(object sender, EventArgs e) {
-			ToolStripMenuItem menu = sender as ToolStripMenuItem;
-
-			for(int i = 0; i < menu.DropDown.Items.Count; i++) {
-				if(General.Map.Map.GroupInfos[i] == null) {
-					menu.DropDown.Items[i].Visible = false;
-				} else {
-					menu.DropDown.Items[i].Visible = true;
-					menu.DropDown.Items[i].Text = (i + 1) + ": " + General.Map.Map.GroupInfos[i];
-				}
+		private void menuedit_DropDownOpening(object sender, EventArgs e) 
+		{
+			if (General.Map == null) 
+			{
+				selectGroup.Enabled = false;
+				clearGroup.Enabled = false;
+				addToGroup.Enabled = false;
+				return;
 			}
-		}
 
-		//mxd
-		private void menuedit_DropDownOpening(object sender, EventArgs e) {
-			if(General.Map == null) return;
-			bool haveGroups = General.Map.Map.HaveSelectionGroups();
-			selectGroup.Enabled = haveGroups;
-			clearGroup.Enabled = haveGroups;
+			//get data
+			ToolStripItem item;
+			GroupInfo[] infos = new GroupInfo[10];
+			for(int i = 0; i < infos.Length; i++) infos[i] = General.Map.Map.GetGroupInfo(i);
+
+			//update "Add to group" menu
+			addToGroup.Enabled = true;
+			addToGroup.DropDownItems.Clear();
+			foreach (GroupInfo gi in infos) 
+			{
+				item = addToGroup.DropDownItems.Add(gi.ToString());
+				item.Tag = "builder_assigngroup" + gi.Index;
+				item.Click += InvokeTaggedAction;
+			}
+
+			//update "Select group" menu
+			selectGroup.DropDownItems.Clear();
+			foreach (GroupInfo gi in infos) {
+				if(gi.Empty) continue;
+				item = selectGroup.DropDownItems.Add(gi.ToString());
+				item.Tag = "builder_selectgroup" + gi.Index;
+				item.Click += InvokeTaggedAction;
+			}
+
+			//update "Clear group" menu
+			clearGroup.DropDownItems.Clear();
+			foreach(GroupInfo gi in infos) {
+				if(gi.Empty) continue;
+				item = clearGroup.DropDownItems.Add(gi.ToString());
+				item.Tag = "builder_cleargroup" + gi.Index;
+				item.Click += InvokeTaggedAction;
+			}
+
+			selectGroup.Enabled = selectGroup.DropDownItems.Count > 0;
+			clearGroup.Enabled = clearGroup.DropDownItems.Count > 0;
 		}
 
 		// Action to toggle snap to grid

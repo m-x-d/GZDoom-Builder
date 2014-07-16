@@ -17,14 +17,16 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Windows;
+using System.Collections.Specialized;
 using System.Drawing;
-using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Types;
 using System.IO;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -48,6 +50,9 @@ namespace CodeImp.DoomBuilder.Map
 		// in our parser, so that it can only be used by Doom Builder and will never
 		// conflict with any other valid UDMF field.
 		internal const string VIRTUAL_SECTOR_FIELD = "!virtual_sector";
+		
+		//mxd
+		private const string SELECTION_GROUPS_PATH = "selectiongroups";
 		
 		// Handler for tag fields
 		public delegate void TagHandler<T>(MapElement element, bool actionargument, UniversalType type, ref int value, T obj);
@@ -74,9 +79,6 @@ namespace CodeImp.DoomBuilder.Map
 		private int numsidedefs;
 		private int numsectors;
 		private int numthings;
-
-		//mxd
-		private GroupInfo[] groupInfos;
 		
 		// Behavior
 		private int freezearrays;
@@ -158,8 +160,6 @@ namespace CodeImp.DoomBuilder.Map
 
 		internal bool AutoRemove { get { return autoremove; } set { autoremove = value; } }
 
-		public GroupInfo[] GroupInfos { get { return groupInfos; } } //mxd
-
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -180,7 +180,6 @@ namespace CodeImp.DoomBuilder.Map
 			indexholes = new List<int>();
 			lastsectorindex = 0;
 			autoremove = true;
-			groupInfos = new GroupInfo[10]; //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -202,7 +201,6 @@ namespace CodeImp.DoomBuilder.Map
 			indexholes = new List<int>();
 			lastsectorindex = 0;
 			autoremove = true;
-			groupInfos = new GroupInfo[10]; //mxd
 
 			// Deserialize
 			Deserialize(stream);
@@ -252,7 +250,6 @@ namespace CodeImp.DoomBuilder.Map
 				sel_sectors = null;
 				sel_things = null;
 				indexholes = null;
-				groupInfos = null; //mxd
 				
 				// Done
 				isdisposed = true;
@@ -1317,100 +1314,201 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Thing t in things) if(t.Marked == mark) t.Selected = select;
 		}
 
+		#endregion
+
+		#region ================== Selection groups
+
 		/// <summary>This selects geometry by selection group index.</summary>
 		public void SelectVerticesByGroup(int groupmask)
 		{
-			foreach(SelectableElement e in vertices) e.SelectByGroup(groupmask);
+			foreach(Vertex e in vertices) e.SelectByGroup(groupmask);
 		}
 
 		/// <summary>This selects geometry by selection group index.</summary>
 		public void SelectLinedefsByGroup(int groupmask)
 		{
-			foreach(SelectableElement e in linedefs) e.SelectByGroup(groupmask);
+			foreach(Linedef e in linedefs) e.SelectByGroup(groupmask);
 		}
 
 		/// <summary>This selects geometry by selection group index.</summary>
 		public void SelectSectorsByGroup(int groupmask)
 		{
-			foreach(SelectableElement e in sectors) e.SelectByGroup(groupmask);
+			foreach(Sector e in sectors) e.SelectByGroup(groupmask);
 		}
 
 		/// <summary>This selects geometry by selection group index.</summary>
 		public void SelectThingsByGroup(int groupmask)
 		{
-			foreach(SelectableElement e in things) e.SelectByGroup(groupmask);
+			foreach(Thing e in things) e.SelectByGroup(groupmask);
 		}
 
 		/// <summary>This adds the current selection to the specified selection group.</summary>
 		//mxd. switched groupmask to groupindex
 		public void AddSelectionToGroup(int groupindex)
 		{
-			//mxd
+			int groupmask = 0x01 << groupindex;
+			foreach(Vertex e in vertices) if(e.Selected) e.AddToGroup(groupmask);
+			foreach(Linedef e in linedefs) if(e.Selected) e.AddToGroup(groupmask);
+			foreach(Sector e in sectors) if(e.Selected) e.AddToGroup(groupmask);
+			foreach(Thing e in things) if(e.Selected) e.AddToGroup(groupmask);
+		}
+
+		/// <summary>This clears specified selection group.</summary>
+		//mxd
+		public void ClearGroup(int groupmask) 
+		{
+			foreach(Vertex e in vertices)  e.RemoveFromGroup(groupmask);
+			foreach(Linedef e in linedefs) e.RemoveFromGroup(groupmask);
+			foreach(Sector e in sectors)   e.RemoveFromGroup(groupmask);
+			foreach(Thing e in things)     e.RemoveFromGroup(groupmask);
+		}
+
+		//mxd
+		internal GroupInfo GetGroupInfo(int groupindex) 
+		{
 			int numSectors = 0;
 			int numLines = 0;
 			int numVerts = 0;
 			int numThings = 0;
 			int groupmask = 0x01 << groupindex;
 
-			foreach(SelectableElement e in vertices) {
-				if(e.Selected) {
-					numVerts++;//mxd
-					e.AddToGroup(groupmask);
-				}
+			foreach(Vertex e in vertices)  if(e.IsInGroup(groupmask)) numVerts++; //mxd
+			foreach(Linedef e in linedefs) if(e.IsInGroup(groupmask)) numLines++; //mxd
+			foreach(Sector e in sectors)   if(e.IsInGroup(groupmask)) numSectors++; //mxd
+			foreach(Thing e in things)     if(e.IsInGroup(groupmask)) numThings++; //mxd
+
+			return new GroupInfo(groupindex + 1, numSectors, numLines, numVerts, numThings);
+		}
+
+		//mxd
+		internal void WriteSelectionGroups(Configuration cfg) 
+		{
+			List<string> indices;
+
+			// Fill structure
+			IDictionary groups = new ListDictionary();
+			for(int i = 0; i < 10; i++) 
+			{
+				IDictionary group = new ListDictionary();
+				int groupmask = 0x01 << i;
+
+				//store verts
+				indices = new List<string>();
+				foreach(Vertex e in vertices) if(e.IsInGroup(groupmask)) indices.Add(e.Index.ToString());
+				if(indices.Count > 0) group.Add("vertices", string.Join(" ", indices.ToArray()));
+
+				//store linedefs
+				indices.Clear();
+				foreach(Linedef e in linedefs) if(e.IsInGroup(groupmask)) indices.Add(e.Index.ToString());
+				if(indices.Count > 0) group.Add("linedefs", string.Join(" ", indices.ToArray()));
+
+				//store sectors
+				indices.Clear();
+				foreach(Sector e in sectors) if(e.IsInGroup(groupmask)) indices.Add(e.Index.ToString());
+				if(indices.Count > 0) group.Add("sectors", string.Join(" ", indices.ToArray()));
+
+				//store things
+				indices.Clear();
+				foreach(Thing e in things) if(e.IsInGroup(groupmask)) indices.Add(e.Index.ToString());
+				if(indices.Count > 0) group.Add("things", string.Join(" ", indices.ToArray()));
+
+				//add to main collection
+				if(group.Count > 0) groups.Add(i, group);
 			}
 
-			foreach(SelectableElement e in linedefs) {
-				if(e.Selected) {
-					numLines++;//mxd
-					e.AddToGroup(groupmask);
-				}
-			}
+			// Write to config
+			if(groups.Count > 0) cfg.WriteSetting(SELECTION_GROUPS_PATH, groups);
+		}
 
-			foreach(SelectableElement e in sectors) {
-				if(e.Selected) {
-					numSectors++;//mxd
-					e.AddToGroup(groupmask); 
-				}
-			}
+		//mxd
+		internal void ReadSelectionGroups(Configuration cfg) 
+		{
+			IDictionary grouplist = cfg.ReadSetting(SELECTION_GROUPS_PATH, new Hashtable());
+			IDictionary groupinfo;
 
-			foreach(SelectableElement e in things) {
-				if(e.Selected) {
-					numThings++;//mxd
-					e.AddToGroup(groupmask);
-				}
-			}
+			foreach(DictionaryEntry mp in grouplist) {
+				// Item is a structure?
+				if(mp.Value is IDictionary) {
+					//get group number
+					int groupnum;
+					if(!int.TryParse(mp.Key as string, out groupnum)) continue;
 
-			//mxd
-			if(numSectors > 0 || numLines > 0 || numThings > 0 || numVerts > 0) {
-				if(groupInfos[groupindex] != null)
-					groupInfos[groupindex].Append(numSectors, numLines, numVerts, numThings);
-				else
-					groupInfos[groupindex] = new GroupInfo(numSectors, numLines, numVerts, numThings);
+					int groupmask = 0x01 << groupnum;
+					groupinfo = (IDictionary)mp.Value;
+
+					if(groupinfo.Contains("vertices")) 
+					{
+						string s = groupinfo["vertices"] as string;
+						if (!string.IsNullOrEmpty(s)) 
+						{
+							List<int> indices = getIndices(groupinfo["vertices"] as string);
+
+							foreach (int index in indices) 
+							{
+								if(index > vertices.Length) continue;
+								vertices[index].AddToGroup(groupmask);
+							}
+						}
+					}
+
+					if(groupinfo.Contains("linedefs")) 
+					{
+						string s = groupinfo["linedefs"] as string;
+						if(!string.IsNullOrEmpty(s)) 
+						{
+							List<int> indices = getIndices(groupinfo["linedefs"] as string);
+
+							foreach(int index in indices) 
+							{
+								if(index > linedefs.Length) continue;
+								linedefs[index].AddToGroup(groupmask);
+							}
+						}
+					}
+
+					if(groupinfo.Contains("sectors")) 
+					{
+						string s = groupinfo["sectors"] as string;
+						if(!string.IsNullOrEmpty(s)) 
+						{
+							List<int> indices = getIndices(groupinfo["sectors"] as string);
+
+							foreach(int index in indices) 
+							{
+								if(index > sectors.Length) continue;
+								sectors[index].AddToGroup(groupmask);
+							}
+						}
+					}
+
+					if(groupinfo.Contains("things")) 
+					{
+						string s = groupinfo["things"] as string;
+						if(!string.IsNullOrEmpty(s)) 
+						{
+							List<int> indices = getIndices(groupinfo["things"] as string);
+
+							foreach(int index in indices) 
+							{
+								if(index > things.Length) continue;
+								things[index].AddToGroup(groupmask);
+							}
+						}
+					}
+				}
 			}
 		}
 
 		//mxd
-		public void ClearGroup(int groupmask, int groupindex) {
-			foreach(SelectableElement e in vertices)
-				e.RemoveFromGroup(groupmask);
+		private List<int> getIndices(string input) 
+		{
+			string[] parts = input.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+			int index;
+			List<int> result = new List<int>(parts.Length);
 
-			foreach(SelectableElement e in linedefs)
-				e.RemoveFromGroup(groupmask);
+			foreach (string part in parts) if(int.TryParse(part, out index)) result.Add(index);
 
-			foreach(SelectableElement e in sectors)
-				e.RemoveFromGroup(groupmask);
-
-			foreach(SelectableElement e in things)
-				e.RemoveFromGroup(groupmask);
-
-			groupInfos[groupindex] = null;
-		}
-
-		//mxd
-		public bool HaveSelectionGroups() {
-			foreach(GroupInfo info in groupInfos)
-				if(info != null) return true;
-			return false;
+			return result;
 		}
 		
 		#endregion
@@ -3117,9 +3215,9 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		//mxd
-		public void UpdateCustomLinedefColors() {
-			foreach(Linedef l in linedefs)
-				l.UpdateColorPreset();
+		public void UpdateCustomLinedefColors() 
+		{
+			foreach(Linedef l in linedefs) l.UpdateColorPreset();
 		}
 		
 		#endregion
