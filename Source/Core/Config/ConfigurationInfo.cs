@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string defaultlumpname;
 		private string nodebuildersave;
 		private string nodebuildertest;
+		private string formatinterface; //mxd
 		private readonly string defaultscriptcompiler; //mxd
 		private DataLocationList resources;
 		private Configuration config; //mxd
@@ -77,6 +78,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string DefaultLumpName { get { return defaultlumpname; } }
 		public string NodebuilderSave { get { return nodebuildersave; } internal set { nodebuildersave = value; } }
 		public string NodebuilderTest { get { return nodebuildertest; } internal set { nodebuildertest = value; } }
+		public string FormatInterface { get { return formatinterface; } } //mxd
 		public string DefaultScriptCompiler { get { return defaultscriptcompiler; } } //mxd
 		internal DataLocationList Resources { get { return resources; } }
 		internal Configuration Configuration { get { return config; } } //mxd
@@ -118,6 +120,7 @@ namespace CodeImp.DoomBuilder.Config
 			// Load settings from program configuration
 			this.nodebuildersave = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildersave", MISSING_NODEBUILDER);
 			this.nodebuildertest = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildertest", MISSING_NODEBUILDER);
+			this.formatinterface = config.ReadSetting("formatinterface", "").ToLowerInvariant(); //mxd
 			this.defaultscriptcompiler = cfg.ReadSetting("defaultscriptcompiler", ""); //mxd
 			this.resources = new DataLocationList(General.Settings.Config, "configurations." + settingskey + ".resources");
 			this.startmode = General.Settings.ReadSetting("configurations." + settingskey + ".startmode", "VerticesMode");
@@ -319,15 +322,17 @@ namespace CodeImp.DoomBuilder.Config
 			ci.settingskey = this.settingskey;
 			ci.nodebuildersave = this.nodebuildersave;
 			ci.nodebuildertest = this.nodebuildertest;
+			ci.formatinterface = this.formatinterface; //mxd
 			ci.resources = new DataLocationList();
 			ci.resources.AddRange(this.resources);
 			
 			//mxd
-			ci.TestEngines = new List<EngineInfo>();
-			foreach (EngineInfo info in testEngines) ci.TestEngines.Add(new EngineInfo(info));
-			ci.LinedefColorPresets = new LinedefColorPreset[linedefColorPresets.Length];
+			ci.testEngines = new List<EngineInfo>();
+			foreach (EngineInfo info in testEngines) ci.testEngines.Add(new EngineInfo(info));
+			ci.currentEngineIndex = this.currentEngineIndex;
+			ci.linedefColorPresets = new LinedefColorPreset[linedefColorPresets.Length];
 			for(int i = 0; i < linedefColorPresets.Length; i++)
-				ci.LinedefColorPresets[i] = new LinedefColorPreset(linedefColorPresets[i]);
+				ci.linedefColorPresets[i] = new LinedefColorPreset(linedefColorPresets[i]);
 
 			ci.startmode = this.startmode;
 			ci.config = this.config; //mxd
@@ -349,13 +354,14 @@ namespace CodeImp.DoomBuilder.Config
 			this.settingskey = ci.settingskey;
 			this.nodebuildersave = ci.nodebuildersave;
 			this.nodebuildertest = ci.nodebuildertest;
+			this.formatinterface = ci.formatinterface; //mxd
 			this.resources = new DataLocationList();
 			this.resources.AddRange(ci.resources);
 			
 			//mxd
 			this.testEngines = new List<EngineInfo>();
-			foreach (EngineInfo info in ci.TestEngines) testEngines.Add(new EngineInfo(info));
-			if (this.CurrentEngineIndex >= testEngines.Count) this.CurrentEngineIndex = testEngines.Count - 1;
+			foreach (EngineInfo info in ci.testEngines) testEngines.Add(new EngineInfo(info));
+			if (this.currentEngineIndex >= testEngines.Count) this.currentEngineIndex = testEngines.Count - 1;
 			this.linedefColorPresets = new LinedefColorPreset[ci.linedefColorPresets.Length];
 			for(int i = 0; i < ci.linedefColorPresets.Length; i++)
 				this.linedefColorPresets[i] = new LinedefColorPreset(ci.linedefColorPresets[i]);
@@ -417,6 +423,55 @@ namespace CodeImp.DoomBuilder.Config
 						editmodes.Add(info.Type.FullName, info.Attributes.UseByDefault);
 				}
 			}
+		}
+
+		//mxd
+		internal void PasteResourcesFrom(ConfigurationInfo source) 
+		{
+			resources = new DataLocationList();
+			resources.AddRange(source.resources);
+			changed = true;
+		}
+
+		//mxd
+		internal void PasteTestEnginesFrom(ConfigurationInfo source) 
+		{
+			testEngines = new List<EngineInfo>();
+			foreach(EngineInfo info in source.testEngines) testEngines.Add(new EngineInfo(info));
+			changed = true;
+		}
+
+		//mxd
+		internal void PasteColorPresetsFrom(ConfigurationInfo source) 
+		{
+			linedefColorPresets = new LinedefColorPreset[source.linedefColorPresets.Length];
+			for(int i = 0; i < source.linedefColorPresets.Length; i++)
+				linedefColorPresets[i] = new LinedefColorPreset(source.linedefColorPresets[i]);
+			changed = true;
+		}
+
+		//mxd. Not all properties should be pasted
+		internal void PasteFrom(ConfigurationInfo source) 
+		{
+			nodebuildersave = source.nodebuildersave;
+			nodebuildertest = source.nodebuildertest;
+			resources = new DataLocationList();
+			resources.AddRange(source.resources);
+
+			testEngines = new List<EngineInfo>();
+			foreach(EngineInfo info in source.testEngines)
+				testEngines.Add(new EngineInfo(info)); if(currentEngineIndex >= testEngines.Count) currentEngineIndex = testEngines.Count - 1;
+			linedefColorPresets = new LinedefColorPreset[source.linedefColorPresets.Length];
+			for(int i = 0; i < source.linedefColorPresets.Length; i++)
+				linedefColorPresets[i] = new LinedefColorPreset(source.linedefColorPresets[i]);
+
+			startmode = source.startmode;
+			changed = true;
+			texturesets = new List<DefinedTextureSet>();
+			foreach(DefinedTextureSet s in source.texturesets) texturesets.Add(s.Copy());
+			thingsfilters = new List<ThingsFilter>();
+			foreach(ThingsFilter f in source.thingsfilters) thingsfilters.Add(new ThingsFilter(f));
+			editmodes = new Dictionary<string, bool>(source.editmodes);
 		}
 		
 		#endregion
