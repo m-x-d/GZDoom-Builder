@@ -1433,7 +1433,7 @@ namespace CodeImp.DoomBuilder.Map
 					int groupnum;
 					if(!int.TryParse(mp.Key as string, out groupnum)) continue;
 
-					int groupmask = 0x01 << groupnum;
+					int groupmask = 0x01 << General.Clamp(groupnum, 0, 10);
 					groupinfo = (IDictionary)mp.Value;
 
 					if(groupinfo.Contains("vertices")) 
