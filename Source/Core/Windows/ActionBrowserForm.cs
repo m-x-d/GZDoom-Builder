@@ -32,9 +32,9 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// Variables
 		private int selectedaction;
-		private ComboBox[] options;
-		private Label[] optionlbls;
-		private TreeNode[] allNodes; //mxd
+		private readonly ComboBox[] options;
+		private readonly Label[] optionlbls;
+		private readonly TreeNode[] allNodes; //mxd
 		
 		// Properties
 		public int SelectedAction { get { return selectedaction; } }
@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.Windows
 				tabs.TabPages.Remove(tabgeneralized);
 			}
 
-			actions.Focus(); //mxd
+			//tbFilter.Focus(); //mxd
 		}
 		
 		// This browses for an action
@@ -300,6 +300,11 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void btnClearFilter_Click(object sender, EventArgs e) {
 			tbFilter.Clear();
+		}
+
+		//mxd
+		private void ActionBrowserForm_Shown(object sender, EventArgs e) {
+			tbFilter.Focus();
 		}
 	}
 }

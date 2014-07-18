@@ -14,10 +14,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 		
 		// VisualMode
-		private BaseVisualMode mode;
+		private readonly BaseVisualMode mode;
 		
 		// Sector for which this data is
-		private Sector sector;
+		private readonly Sector sector;
 		
 		// Levels have been updated?
 		private bool updated;
@@ -26,20 +26,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool isupdating;
 		
 		// All planes in the sector that cast or are affected by light
-		private List<SectorLevel> lightlevels;
+		private readonly List<SectorLevel> lightlevels;
 		
 		// Effects
-		private List<SectorEffect> alleffects;
-		private List<Effect3DFloor> extrafloors;
+		private readonly List<SectorEffect> alleffects;
+		private readonly List<Effect3DFloor> extrafloors;
 		
 		// Sectors that must be updated when this sector is changed
 		// The boolean value is the 'includeneighbours' of the UpdateSectorGeometry function which
 		// indicates if the sidedefs of neighbouring sectors should also be rebuilt.
-		private Dictionary<Sector, bool> updatesectors;
+		private readonly Dictionary<Sector, bool> updatesectors;
 		
 		// Original floor and ceiling levels
-		private SectorLevel floor;
-		private SectorLevel ceiling;
+		private readonly SectorLevel floor;
+		private readonly SectorLevel ceiling;
 		
 		// This helps keeping track of changes
 		// otherwise we update ceiling/floor too much
@@ -258,7 +258,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Sort the levels (but not the first and the last)
 			SectorLevelComparer comparer = new SectorLevelComparer(sector);
-			lightlevels.Sort(1, lightlevels.Count - 2, comparer);
+			lightlevels.Sort(0, lightlevels.Count, comparer); //mxd. Was lightlevels.Sort(1, lightlevels.Count - 2, comparer); 
 			
 			// Now that we know the levels in this sector (and in the right order) we
 			// can determine the lighting in between and on the levels.
