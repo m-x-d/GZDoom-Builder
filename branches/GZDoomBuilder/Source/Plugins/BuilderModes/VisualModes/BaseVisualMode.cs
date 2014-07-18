@@ -1025,7 +1025,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Camera below floor level?
 				Vector3D feetposition = General.Map.VisualCamera.Position;
-				SectorLevel floorlevel = sd.GetFloorBelow(feetposition) ?? sd.LightLevels[0];
+				SectorLevel floorlevel = sd.GetFloorBelow(feetposition) ?? sd.Floor;
 				float floorheight = floorlevel.plane.GetZ(General.Map.VisualCamera.Position);
 				if(General.Map.VisualCamera.Position.z < (floorheight + cameraflooroffset + 0.1f))
 				{
@@ -1059,7 +1059,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Camera above ceiling?
 				feetposition = General.Map.VisualCamera.Position - new Vector3D(0, 0, cameraflooroffset - 7.0f);
-				SectorLevel ceillevel = sd.GetCeilingAbove(feetposition) ?? sd.LightLevels[sd.LightLevels.Count - 1];
+				SectorLevel ceillevel = sd.GetCeilingAbove(feetposition) ?? sd.Ceiling;
 				float ceilheight = ceillevel.plane.GetZ(General.Map.VisualCamera.Position);
 				if(General.Map.VisualCamera.Position.z > (ceilheight - cameraceilingoffset - 0.01f))
 				{
