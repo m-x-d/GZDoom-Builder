@@ -153,5 +153,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			cbTagPicker.Text = tag.ToString();
 			valid = true;
 		}
+
+		private void clear_Click(object sender, EventArgs e) {
+			tag = 0;
+			cbTagPicker.SelectedIndex = -1;
+			cbTagPicker.Text = tag.ToString();
+			valid = true;
+		}
 	}
 }
