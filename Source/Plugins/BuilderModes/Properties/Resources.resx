@@ -139,6 +139,9 @@
   <data name="SnapVerts" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SnapVerts.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Similar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Similar.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="DrawGridMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DrawGridMode.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -220,7 +223,7 @@
   <data name="FilterThings" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\FilterThings.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Similar" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Similar.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="MoveThingsInSectors" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MoveThingsInSectors.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

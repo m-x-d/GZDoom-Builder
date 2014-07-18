@@ -108,6 +108,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool marqueSelectTouching; //mxd. Select elements partially/fully inside of marque selection?
 		private bool syncSelection; //mxd. Sync selection between Visual and Classic modes.
 		private bool lockSectorTextureOffsetsWhileDragging; //mxd
+		private bool dragThingsInSectorsMode; //mxd
 		
 		#endregion
 
@@ -167,6 +168,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool MarqueSelectTouching { get { return marqueSelectTouching; } set { marqueSelectTouching = value; } } //mxd
 		public bool SyncSelection { get { return syncSelection; } set { syncSelection = value; } } //mxd
 		public bool LockSectorTextureOffsetsWhileDragging { get { return lockSectorTextureOffsetsWhileDragging; } internal set { lockSectorTextureOffsetsWhileDragging = value; } } //mxd
+		public bool DragThingsInSectorsMode { get { return dragThingsInSectorsMode; } internal set { dragThingsInSectorsMode = value; } } //mxd
 		
 		#endregion
 
@@ -188,6 +190,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			menusform = new MenusForm();
 			menusform.Register();
 			menusform.TextureOffsetLock.Checked = lockSectorTextureOffsetsWhileDragging; //mxd
+			menusform.DragThingsInSelectedSectors.Checked = dragThingsInSectorsMode; //mxd
 			
 			// Load Undo\Redo docker
 			undoredopanel = new UndoRedoPanel();
@@ -249,6 +252,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			dontMoveGeometryOutsideMapBoundary = General.Settings.ReadPluginSetting("dontmovegeometryoutsidemapboundary", false); //mxd
 			syncSelection = General.Settings.ReadPluginSetting("syncselection", false); //mxd
 			lockSectorTextureOffsetsWhileDragging = General.Settings.ReadPluginSetting("locktextureoffsets", false); //mxd
+			dragThingsInSectorsMode = General.Settings.ReadPluginSetting("dragthingsinsectorsmode", true); //mxd
 		}
 
 		//mxd. Save settings, which can be changed via UI
@@ -256,6 +260,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("locktextureoffsets", lockSectorTextureOffsetsWhileDragging);
 			General.Settings.WritePluginSetting("viewselectionnumbers", viewselectionnumbers);
 			General.Settings.WritePluginSetting("viewselectioneffects", viewselectioneffects);
+			General.Settings.WritePluginSetting("dragthingsinsectorsmode", dragThingsInSectorsMode);
 		}
 
 		#endregion

@@ -59,6 +59,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected ICollection<Vertex> unselectedverts;
 		protected ICollection<Thing> unselectedthings; //mxd
 
+		// List of things, which should be moved
+		protected ICollection<Thing> thingstodrag; //mxd
+
 		//mxd. List of sectors
 		private List<Sector> selectedSectors;
 
@@ -127,6 +130,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Make list of selected vertices and things
 			selectedverts = General.Map.Map.GetMarkedVertices(true);
 			selectedthings = General.Map.Map.GetSelectedThings(true); //mxd
+			thingstodrag = GetThingsToDrag(); //mxd
 
 			// Make list of non-selected vertices and things
 			// Non-selected vertices will be used for snapping to nearest items
@@ -149,8 +153,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Vertex v in selectedverts) oldpositions.Add(v.Position);
 
 			//mxd
-			oldthingpositions = new List<Vector2D>(selectedthings.Count);
-			foreach(Thing t in selectedthings) oldthingpositions.Add(t.Position);
+			oldthingpositions = new List<Vector2D>(thingstodrag.Count);
+			foreach(Thing t in thingstodrag) oldthingpositions.Add(t.Position);
 
 			// Also keep old position of the dragged item
 			dragitemposition = dragitem.Position;
@@ -207,6 +211,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Cursor.Current = Cursors.Default;
 		}
 
+		//mxd
+		protected virtual ICollection<Thing> GetThingsToDrag() 
+		{
+			return selectedthings;
+		}
+
 		// This moves the selected geometry relatively
 		// Returns true when geometry has actually moved
 		private bool MoveGeometryRelative(Vector2D offset, bool snapgrid, bool snapgridincrement, bool snapnearest)
@@ -252,7 +262,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(nl != null)
 					{
 						// Snap to grid?
-						if(snaptogrid || snapgridincrement)
+						if(snapgrid || snapgridincrement)
 						{
 							// Get grid intersection coordinates
 							List<Vector2D> coords = nl.GetGridIntersections(snapgridincrement ? dragstartoffset : new Vector2D());
@@ -332,7 +342,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				//mxd. Move selected things
 				i = 0;
-				foreach(Thing t in selectedthings) 
+				foreach(Thing t in thingstodrag) 
 				{
 					t.Move(oldthingpositions[i++] + offset);
 				}
