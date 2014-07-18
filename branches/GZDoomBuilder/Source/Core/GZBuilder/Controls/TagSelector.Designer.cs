@@ -31,6 +31,7 @@
 			this.newTag = new System.Windows.Forms.Button();
 			this.unusedTag = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.clear = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -51,15 +52,15 @@
 			this.cbTagPicker.FormattingEnabled = true;
 			this.cbTagPicker.Location = new System.Drawing.Point(42, 7);
 			this.cbTagPicker.Name = "cbTagPicker";
-			this.cbTagPicker.Size = new System.Drawing.Size(190, 21);
+			this.cbTagPicker.Size = new System.Drawing.Size(165, 21);
 			this.cbTagPicker.TabIndex = 1;
 			// 
 			// newTag
 			// 
 			this.newTag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.newTag.Location = new System.Drawing.Point(238, 6);
+			this.newTag.Location = new System.Drawing.Point(213, 5);
 			this.newTag.Name = "newTag";
-			this.newTag.Size = new System.Drawing.Size(54, 23);
+			this.newTag.Size = new System.Drawing.Size(54, 24);
 			this.newTag.TabIndex = 2;
 			this.newTag.Text = "New";
 			this.toolTip1.SetToolTip(this.newTag, "Finds a tag, which is not used as a tag or tag action argument \r\nby any map eleme" +
@@ -70,19 +71,32 @@
 			// unusedTag
 			// 
 			this.unusedTag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.unusedTag.Location = new System.Drawing.Point(298, 6);
+			this.unusedTag.Location = new System.Drawing.Point(270, 5);
 			this.unusedTag.Name = "unusedTag";
-			this.unusedTag.Size = new System.Drawing.Size(54, 23);
+			this.unusedTag.Size = new System.Drawing.Size(54, 24);
 			this.unusedTag.TabIndex = 3;
 			this.unusedTag.Text = "Unused";
 			this.toolTip1.SetToolTip(this.unusedTag, "Finds a tag, which is not used as a tag \r\nby any map element of this type");
 			this.unusedTag.UseVisualStyleBackColor = true;
 			this.unusedTag.Click += new System.EventHandler(this.unusedTag_Click);
 			// 
+			// clear
+			// 
+			this.clear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.clear.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.clear.Location = new System.Drawing.Point(327, 5);
+			this.clear.Name = "clear";
+			this.clear.Size = new System.Drawing.Size(26, 24);
+			this.clear.TabIndex = 4;
+			this.toolTip1.SetToolTip(this.clear, "Sets tag to 0");
+			this.clear.UseVisualStyleBackColor = true;
+			this.clear.Click += new System.EventHandler(this.clear_Click);
+			// 
 			// TagSelector
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.clear);
 			this.Controls.Add(this.unusedTag);
 			this.Controls.Add(this.newTag);
 			this.Controls.Add(this.cbTagPicker);
@@ -101,5 +115,6 @@
 		private System.Windows.Forms.Button newTag;
 		private System.Windows.Forms.Button unusedTag;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.Button clear;
 	}
 }
