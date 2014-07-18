@@ -214,6 +214,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap MoveThingsInSectors {
+            get {
+                object obj = ResourceManager.GetObject("MoveThingsInSectors", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap PasteProperties {
             get {
                 object obj = ResourceManager.GetObject("PasteProperties", resourceCulture);

@@ -587,6 +587,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientFloors);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientCeilings);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.DragThingsInSelectedSectors); //mxd
 			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.TextureOffsetLock, ToolbarSection.Geometry); //mxd
 			
 			// Convert geometry selection to sectors only
@@ -621,6 +622,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientFloors);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientCeilings);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.DragThingsInSelectedSectors); //mxd
 			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
 			
 			// Keep only sectors selected
@@ -717,22 +719,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					//mxd. Flip selection
 					SelectSector(highlighted, !highlighted.Selected, true);
-
-					//mxd. Also (de)select things inside of this sector
-					if (General.Interface.AltState) {
-						foreach(Thing t in General.Map.ThingsFilter.VisibleThings) {
-							t.DetermineSector();
-							if(t.Sector != highlighted) continue;
-							t.Selected = highlighted.Selected;
-						}
-
-						// Render things
-						if(renderer.StartThings(true)) {
-							renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
-							renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, 1.0f);
-							renderer.Finish();
-						}
-					}
 					
 					// Update display
 					if(renderer.StartPlotter(false))
