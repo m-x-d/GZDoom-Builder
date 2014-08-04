@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.IO
 		private UniversalCollection root;
 
 		private const string newline = "\n";
-		private char[] newlineChar = new[] {'\n'};
+		private readonly char[] newlineChar = new[] {'\n'};
 		private StringBuilder key;  //mxd
 		private StringBuilder val;  //mxd
 		private Dictionary<string, UniversalEntry> matches; //mxd
@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.IO
 			// Raise error
 			cpErrorResult = 1;
 			cpErrorDescription = description;
-			cpErrorLine = line;
+			cpErrorLine = line + 1; //mxd
 		}
 		
 		
@@ -174,7 +174,7 @@ namespace CodeImp.DoomBuilder.IO
 		// from the given pos and line and updates pos and line.
 		private UniversalCollection InputStructure(ref string[] data, ref int pos, ref int line, bool topLevel)
 		{
-			char c = '\0';					// current data character
+			char c;							// current data character
 			int pm = PM_NOTHING;			// current parse mode
 			key.Remove(0, key.Length);
 			val.Remove(0, val.Length);
@@ -832,7 +832,7 @@ namespace CodeImp.DoomBuilder.IO
 			
 			// Parse the data to the root structure
 			int pos = 0;
-			int line = 1;
+			int line = 0; //mxd
 			matches = new Dictionary<string, UniversalEntry>(StringComparer.Ordinal); //mxd
 			key = new StringBuilder(16); //mxd
 			val = new StringBuilder(16); //mxd
