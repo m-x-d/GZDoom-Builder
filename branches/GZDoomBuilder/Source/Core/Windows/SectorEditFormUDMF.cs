@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Windows
 {
@@ -32,6 +33,20 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd. Window setup stuff
 		private static Point location = Point.Empty;
 		private static int activeTab;
+
+		//mxd. Slope stuff
+		private static readonly string[] floorslopekeys = { "floorplane_a", "floorplane_b", "floorplane_c", "floorplane_d" };
+		private static readonly string[] ceilslopekeys = { "ceilingplane_a", "ceilingplane_b", "ceilingplane_c", "ceilingplane_d" };
+		
+		//mxd. Slope pivots
+		//private Vector3D ceilslopenormal;
+		//private Vector3D floorslopenormal;
+		private Vector3D globalceilslopepivot;
+		private Vector3D globalfloorslopepivot;
+		private List<Vector3D> ceilslopepivots;
+		private List<Vector3D> floorslopepivots;
+		//private static SlopePivotMode ceilpivotmode = SlopePivotMode.LOCAL; //dbg?
+		//private static SlopePivotMode floorpivotmode = SlopePivotMode.LOCAL;
 
 		private struct SectorProperties //mxd
 		{
@@ -66,6 +81,18 @@ namespace CodeImp.DoomBuilder.Windows
 			public readonly int FloorBrightness;
 			public readonly bool FloorLightAbsoulte;
 
+			//UDMF floor slope
+			public readonly float FloorSlopeX;
+			public readonly float FloorSlopeY;
+			public readonly float FloorSlopeZ;
+			public readonly float FloorSlopeOffset;
+
+			//UDMF ceiling slope
+			public readonly float CeilSlopeX;
+			public readonly float CeilSlopeY;
+			public readonly float CeilSlopeZ;
+			public readonly float CeilSlopeOffset;
+
 			public SectorProperties(Sector s) {
 				Brightness = s.Brightness;
 				FloorHeight = s.FloorHeight;
@@ -96,6 +123,18 @@ namespace CodeImp.DoomBuilder.Windows
 				FloorRotation = s.Fields.GetValue("rotationfloor", 0.0f);
 				FloorBrightness = s.Fields.GetValue("lightfloor", 0);
 				FloorLightAbsoulte = s.Fields.GetValue("lightfloorabsolute", false);
+
+				//UDMF Ceiling slope
+				CeilSlopeX = UDMFTools.GetFloat(s.Fields, "ceilingplane_a", 0f);
+				CeilSlopeY = UDMFTools.GetFloat(s.Fields, "ceilingplane_b", 0f);
+				CeilSlopeZ = UDMFTools.GetFloat(s.Fields, "ceilingplane_c", 0f);
+				CeilSlopeOffset = UDMFTools.GetFloat(s.Fields, "ceilingplane_d", 0f);
+
+				//UDMF Floor slope
+				FloorSlopeX = UDMFTools.GetFloat(s.Fields, "floorplane_a", 0f);
+				FloorSlopeY = UDMFTools.GetFloat(s.Fields, "floorplane_b", 0f);
+				FloorSlopeZ = UDMFTools.GetFloat(s.Fields, "floorplane_c", 0f);
+				FloorSlopeOffset = UDMFTools.GetFloat(s.Fields, "floorplane_d", 0f);
 			}
 		}
 
@@ -105,6 +144,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 		public SectorEditFormUDMF() {
 			InitializeComponent();
+
+#if !DEBUG //TODO: implement this!
+			tabs.TabPages.Remove(tabslopes);
+#endif
 
 			//mxd. Widow setup
 			if(location != Point.Empty) {
@@ -145,6 +188,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 			cbUseCeilLineAngles.Checked = useCeilLineAngles;
 			cbUseFloorLineAngles.Checked = useFloorLineAngles;
+
+			// Slopes stuff
+			//ceilslopenormal = new Vector3D(0f, 0f, -1f);
+			//floorslopenormal = new Vector3D(0f, 0f, 1f);
+			globalceilslopepivot = new Vector3D();
+			globalfloorslopepivot = new Vector3D();
+
+			//TODO: set stored pivot mode
 		}
 
 		#endregion
@@ -236,6 +287,17 @@ namespace CodeImp.DoomBuilder.Windows
 			fadeColor.SetValueFrom(sc.Fields);
 			lightColor.SetValueFrom(sc.Fields);
 
+			//Slopes
+			ceilslopex.Text = sc.Fields.GetValue("ceilingplane_a", 0f).ToString();
+			ceilslopey.Text = sc.Fields.GetValue("ceilingplane_b", 0f).ToString();
+			ceilslopez.Text = sc.Fields.GetValue("ceilingplane_c", 0f).ToString();
+			ceilslopeoffset.Text = sc.Fields.GetValue("ceilingplane_d", 0f).ToString();
+
+			floorslopex.Text = sc.Fields.GetValue("floorplane_a", 0f).ToString();
+			floorslopey.Text = sc.Fields.GetValue("floorplane_b", 0f).ToString();
+			floorslopez.Text = sc.Fields.GetValue("floorplane_c", 0f).ToString();
+			floorslopeoffset.Text = sc.Fields.GetValue("floorplane_d", 0f).ToString();
+
 			// Action
 			tagSelector.Setup(UniversalType.SectorTag); //mxd
 			tagSelector.SetTag(sc.Tag);//mxd
@@ -245,6 +307,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			angleSteps = new StepsList();
 
+			floorslopepivots = new List<Vector3D>(sectors.Count);
+			ceilslopepivots = new List<Vector3D>(sectors.Count);
+
 			////////////////////////////////////////////////////////////////////////
 			// Now go for all sectors and change the options when a setting is different
 			////////////////////////////////////////////////////////////////////////
@@ -253,11 +318,10 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(Sector s in sectors) {
 				// Flags
 				foreach(CheckBox c in flags.Checkboxes) {
-					if(s.Flags.ContainsKey(c.Tag.ToString())) {
-						if(s.Flags[c.Tag.ToString()] != c.Checked) {
-							c.ThreeState = true;
-							c.CheckState = CheckState.Indeterminate;
-						}
+					if(c.CheckState == CheckState.Indeterminate) continue; //mxd
+					if(s.IsFlagSet(c.Tag.ToString()) != c.Checked) {
+						c.ThreeState = true;
+						c.CheckState = CheckState.Indeterminate;
 					}
 				}
 
@@ -330,6 +394,17 @@ namespace CodeImp.DoomBuilder.Windows
 				fadeColor.SetValueFrom(s.Fields);
 				lightColor.SetValueFrom(s.Fields);
 
+				//Slopes
+				if(s.Fields.GetValue("ceilingplane_a", 0f).ToString() != ceilslopex.Text) ceilslopex.Text = "";
+				if(s.Fields.GetValue("ceilingplane_b", 0f).ToString() != ceilslopey.Text) ceilslopey.Text = "";
+				if(s.Fields.GetValue("ceilingplane_c", 0f).ToString() != ceilslopez.Text) ceilslopez.Text = "";
+				if(s.Fields.GetValue("ceilingplane_d", 0f).ToString() != ceilslopeoffset.Text) ceilslopeoffset.Text = "";
+
+				if(s.Fields.GetValue("floorplane_a", 0f).ToString() != floorslopex.Text) floorslopex.Text = "";
+				if(s.Fields.GetValue("floorplane_b", 0f).ToString() != floorslopey.Text) floorslopey.Text = "";
+				if(s.Fields.GetValue("floorplane_c", 0f).ToString() != floorslopez.Text) floorslopez.Text = "";
+				if(s.Fields.GetValue("floorplane_d", 0f).ToString() != floorslopeoffset.Text) floorslopeoffset.Text = "";
+
 				// Action
 				if(s.Tag != sc.Tag) tagSelector.ClearTag(); //mxd
 
@@ -349,6 +424,43 @@ namespace CodeImp.DoomBuilder.Windows
 						angle = General.ClampAngle(90 - side.Line.AngleDeg);
 
 					if(!angleSteps.Contains(angle)) angleSteps.Add(angle);
+				}
+
+				//Slope pivots
+				Vector3D ceilpivot = new Vector3D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2, s.CeilHeight);
+				Vector3D floorpivot = new Vector3D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2, s.FloorHeight);
+
+				globalfloorslopepivot += floorpivot;
+				globalceilslopepivot += ceilpivot;
+
+				floorslopepivots.Add(floorpivot);
+				ceilslopepivots.Add(ceilpivot);
+			}
+
+			globalfloorslopepivot /= sectors.Count;
+			globalceilslopepivot /= sectors.Count;
+
+			//mxd. Set ceiling slope controls
+			if (!string.IsNullOrEmpty(ceilslopex.Text) && !string.IsNullOrEmpty(ceilslopey.Text) && !string.IsNullOrEmpty(ceilslopez.Text)) {
+				Vector3D v = new Vector3D(ceilslopex.GetResultFloat(0f), ceilslopey.GetResultFloat(0f), ceilslopez.GetResultFloat(0f));
+				if (v.x != 0 || v.y != 0 || v.z != 0) {
+					ceilslopeangle.Value = (int) Math.Round(Angle2D.RadToDeg(v.GetAngleXY()));
+					ceilsloperoll.Value = (int) Math.Round(Angle2D.RadToDeg(v.GetAngleZ()));
+					ceilslopeanglelabel.Text = ceilslopeangle.Value + "\u00B0";
+					ceilsloperolllabel.Text = ceilsloperoll.Value + "\u00B0";
+				}
+			}
+
+			//mxd. Set floor slope controls
+			if(!string.IsNullOrEmpty(floorslopex.Text) && !string.IsNullOrEmpty(floorslopey.Text) && !string.IsNullOrEmpty(floorslopez.Text)) {
+				Vector3D v = new Vector3D(floorslopex.GetResultFloat(0f), floorslopey.GetResultFloat(0f), floorslopez.GetResultFloat(0f));
+				if(v.x != 0 || v.y != 0 || v.z != 0) {
+					/*ceilslopeangle.Value = General.ClampAngle((int)Math.Round(Angle2D.RadToDeg(v.GetAngleXY())));
+					ceilsloperoll.Value = (int)Math.Round(Angle2D.RadToDeg(v.GetAngleZ()));
+					ceilslopeanglelabel.Text = ceilslopeangle.Value + "\u00B0";
+					ceilsloperolllabel.Text = ceilsloperoll.Value + "\u00B0";*/
+					floorsloperotation.Text = ((int)Math.Round(Angle2D.RadToDeg(v.GetAngleXY()))).ToString();
+					floorslopeangle.Text = ((int)Math.Round(Angle2D.RadToDeg(v.GetAngleZ()))).ToString();
 				}
 			}
 
@@ -469,6 +581,19 @@ namespace CodeImp.DoomBuilder.Windows
 				if(desaturation.Text != "") {
 					float val = General.Clamp(desaturation.GetResultFloat(s.Fields.GetValue("desaturation", 0f)), 0f, 1f);
 					UDMFTools.SetFloat(s.Fields, "desaturation", val, 0f);
+				}
+
+				//clear slope props if all values are 0
+				if(UDMFTools.GetFloat(s.Fields, ceilslopekeys[0]) == 0 && UDMFTools.GetFloat(s.Fields, ceilslopekeys[1]) == 0
+					&& UDMFTools.GetFloat(s.Fields, ceilslopekeys[2]) == 0) {
+					UDMFTools.ClearFields(s.Fields, ceilslopekeys);
+					s.UpdateNeeded = true;
+				}
+
+				if(UDMFTools.GetFloat(s.Fields, floorslopekeys[0]) == 0 && UDMFTools.GetFloat(s.Fields, floorslopekeys[1]) == 0
+					&& UDMFTools.GetFloat(s.Fields, floorslopekeys[2]) == 0) {
+					UDMFTools.ClearFields(s.Fields, floorslopekeys);
+					s.UpdateNeeded = true;
 				}
 			}
 
@@ -908,6 +1033,323 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		#endregion
+
+		#region mxd. Floor slope realtime events
+
+		private void resetfloorslope_Click(object sender, EventArgs e) {
+			foreach(Sector s in sectors) {
+				UDMFTools.ClearFields(s.Fields, floorslopekeys);
+				s.UpdateNeeded = true;
+			}
+
+			blockUpdate = true;
+			floorslopex.Text = "0";
+			floorslopey.Text = "0";
+			floorslopez.Text = "0";
+			floorslopeoffset.Text = "0";
+			blockUpdate = false;
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void floorslopex_WhenTextChanged(object sender, EventArgs e) {
+			/*if(blockUpdate) return;
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(floorslopex.Text)) {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "floorplane_a", sectorProps[i++].FloorSlopeX, float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			//update values
+			} else {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "floorplane_a", floorslopex.GetResultFloat(sectorProps[i++].FloorSlopeX), float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);*/
+		}
+
+		private void floorslopey_WhenTextChanged(object sender, EventArgs e) {
+			/*if(blockUpdate) return;
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(floorslopey.Text)) {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "floorplane_b", sectorProps[i++].FloorSlopeY, float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			//update values
+			} else {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "floorplane_b", floorslopey.GetResultFloat(sectorProps[i++].FloorSlopeY), float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);*/
+		}
+
+		private void floorslopez_WhenTextChanged(object sender, EventArgs e) {
+			/*if(blockUpdate) return;
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(floorslopez.Text)) {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "floorplane_c", sectorProps[i++].FloorSlopeZ, float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			//update values
+			} else {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "floorplane_c", floorslopez.GetResultFloat(sectorProps[i++].FloorSlopeZ), float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);*/
+		}
+
+		private void floorslopeoffset_WhenTextChanged(object sender, EventArgs e) {
+			if(blockUpdate) return;
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(floorslopeoffset.Text)) {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "floorplane_d", sectorProps[i++].FloorSlopeOffset, float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			//update values
+			} else {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "floorplane_d", floorslopeoffset.GetResultFloat(sectorProps[i++].FloorSlopeOffset), float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void floorsloperotation_WhenTextChanged(object sender, EventArgs e) {
+			if(blockUpdate) return;
+			float anglexy = floorsloperotation.GetResultFloat(float.NaN);
+			float anglez = floorslopeangle.GetResultFloat(float.NaN);
+			if(float.IsNaN(anglexy) || float.IsNaN(anglez)) return;
+
+			applySlopeTransform(Angle2D.DegToRad(anglexy), Angle2D.DegToRad(anglez), floorslopekeys);
+		}
+
+		private void floorslopeangle_WhenTextChanged(object sender, EventArgs e) {
+			if(blockUpdate) return;
+			float anglexy = floorsloperotation.GetResultFloat(float.NaN);
+			float anglez = floorslopeangle.GetResultFloat(float.NaN);
+			if(float.IsNaN(anglexy) || float.IsNaN(anglez)) return;
+
+			applySlopeTransform(Angle2D.DegToRad(anglexy), Angle2D.DegToRad(anglez), floorslopekeys);
+		}
+
+		private void applySlopeTransform(float anglexy, float anglez, string[] keys) {
+			Vector3D v = Vector3D.FromAngleXYZ(anglexy + Angle2D.PI, anglez);
+
+			//restore or set values
+			if(v.x == 0 && v.y == 0 && v.z == 0) {
+				foreach(Sector s in sectors) {
+					UDMFTools.ClearFields(s.Fields, keys);
+					s.UpdateNeeded = true;
+				}
+			} else {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, keys[0], v.x, float.MinValue);
+					UDMFTools.SetFloat(s.Fields, keys[1], v.y, float.MinValue);
+					UDMFTools.SetFloat(s.Fields, keys[2], v.z, float.MinValue);
+					//TODO: set offset based on current SlopePivotMode
+					s.UpdateNeeded = true;
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		#endregion
+
+		#region mxd. Ceiling slope realtime events
+
+		private void resetceilslope_Click(object sender, EventArgs e) {
+			foreach(Sector s in sectors) {
+				UDMFTools.ClearFields(s.Fields, ceilslopekeys);
+				s.UpdateNeeded = true;
+			}
+
+			blockUpdate = true;
+			ceilslopex.Text = "0";
+			ceilslopey.Text = "0";
+			ceilslopez.Text = "0";
+			ceilslopeoffset.Text = "0";
+			ceilslopeangle.Value = 0;
+			ceilslopeanglelabel.Text = "0";
+			ceilsloperoll.Value = 0;
+			ceilsloperolllabel.Text = "0";
+			blockUpdate = false;
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void ceilslopex_WhenTextChanged(object sender, EventArgs e) {
+			if(blockUpdate) return;
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(ceilslopex.Text)) {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "ceilingplane_a", sectorProps[i++].CeilSlopeX, float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			//update values
+			} else {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "ceilingplane_a", ceilslopex.GetResultFloat(sectorProps[i++].CeilSlopeX), float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void ceilslopey_WhenTextChanged(object sender, EventArgs e) {
+			if(blockUpdate) return;
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(ceilslopey.Text)) {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "ceilingplane_b", sectorProps[i++].CeilSlopeY, float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			//update values
+			} else {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "ceilingplane_b", ceilslopey.GetResultFloat(sectorProps[i++].CeilSlopeY), float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void ceilslopez_WhenTextChanged(object sender, EventArgs e) {
+			if(blockUpdate) return;
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(ceilslopez.Text)) {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "ceilingplane_c", sectorProps[i++].CeilSlopeZ, float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			//update values
+			} else {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "ceilingplane_c", ceilslopez.GetResultFloat(sectorProps[i++].CeilSlopeZ), float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void ceilslopeoffset_WhenTextChanged(object sender, EventArgs e) {
+			if(blockUpdate) return;
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(ceilslopeoffset.Text)) {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "ceilingplane_d", sectorProps[i++].CeilSlopeOffset, float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			//update values
+			} else {
+				foreach(Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, "ceilingplane_d", ceilslopeoffset.GetResultFloat(sectorProps[i++].CeilSlopeOffset), float.MinValue);
+					s.UpdateNeeded = true;
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		#endregion
+
+		private void ceilslopeangle_Scroll(object sender, EventArgs e) {
+			if(blockUpdate) return;
+
+			//ceilslopeanglelabel.Text = ceilslopeangle.Value + "\u00B0";
+			//applySlopeValues(Angle2D.DegToRad(ceilslopeangle.Value), Angle2D.DegToRad(ceilsloperoll.Value), ceilslopekeys);
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void ceilsloperoll_Scroll(object sender, EventArgs e) {
+			if(blockUpdate) return;
+
+			//ceilsloperolllabel.Text = ceilsloperoll.Value + "\u00B0";
+			//applySlopeValues(Angle2D.DegToRad(ceilslopeangle.Value), Angle2D.DegToRad(ceilsloperoll.Value), ceilslopekeys);
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		//TODO: remove this
+		/*private void applySlopeValues(float anglexy, float anglez, string[] keys) {
+			Vector3D v = Vector3D.FromAngleXYZ(anglexy, anglez); //normalize?
+
+			//restore or set values
+			if (v.x == 0 && v.y == 0 && v.z == 0) {
+				foreach(Sector s in sectors) {
+					UDMFTools.ClearFields(s.Fields, keys);
+					s.UpdateNeeded = true;
+				}
+
+				//update offset text
+				blockUpdate = true;
+				ceilslopeoffset.Text = "0";
+				blockUpdate = false;
+
+			} else {
+				foreach (Sector s in sectors) {
+					UDMFTools.SetFloat(s.Fields, keys[0], v.x, float.MinValue);
+					UDMFTools.SetFloat(s.Fields, keys[1], v.y, float.MinValue);
+					UDMFTools.SetFloat(s.Fields, keys[2], v.z, float.MinValue);
+					//TODO: set offset based on current SlopePivotMode
+					s.UpdateNeeded = true;
+				}
+			}
+
+			//update xyz text
+			blockUpdate = true;
+			ceilslopex.Text = v.x.ToString();
+			ceilslopey.Text = v.y.ToString();
+			ceilslopez.Text = v.z.ToString();
+			blockUpdate = false;
+		}*/
 
 	}
 }
