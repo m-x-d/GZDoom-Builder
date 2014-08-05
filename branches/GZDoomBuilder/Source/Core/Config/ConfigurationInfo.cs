@@ -253,26 +253,10 @@ namespace CodeImp.DoomBuilder.Config
 			
 			//mxd. Test Engines
 			General.Settings.WriteSetting("configurations." + settingskey + ".currentengineindex", currentEngineIndex);
-			for (int i = 0; i < testEngines.Count; i++ ) {
-				string path = "configurations." + settingskey + ".engines.engine" + i.ToString(CultureInfo.InvariantCulture);
-				General.Settings.WriteSetting(path + ".testprogramname", testEngines[i].TestProgramName);
-				General.Settings.WriteSetting(path + ".testprogram", testEngines[i].TestProgram);
-				General.Settings.WriteSetting(path + ".testparameters", testEngines[i].TestParameters);
-				General.Settings.WriteSetting(path + ".testshortpaths", testEngines[i].TestShortPaths);
-				General.Settings.WriteSetting(path + ".customparameters", testEngines[i].CustomParameters);
-				General.Settings.WriteSetting(path + ".testskill", testEngines[i].TestSkill);
-			}
+			SaveTestEngines();
 
 			//mxd. Custom linedef colors
-			for(int i = 0; i < linedefColorPresets.Length; i++) {
-				string path = "configurations." + settingskey + ".linedefcolorpresets.preset" + i.ToString(CultureInfo.InvariantCulture);
-				General.Settings.WriteSetting(path + ".name", linedefColorPresets[i].Name);
-				General.Settings.WriteSetting(path + ".color", linedefColorPresets[i].Color.ToInt());
-				General.Settings.WriteSetting(path + ".action", linedefColorPresets[i].Action);
-				General.Settings.WriteSetting(path + ".activation", linedefColorPresets[i].Activation);
-				General.Settings.WriteSetting(path + ".flags", string.Join(LINEDEF_COLOR_PRESET_FLAGS_SEPARATOR[0], linedefColorPresets[i].Flags.ToArray()));
-				General.Settings.WriteSetting(path + ".restrictedflags", string.Join(LINEDEF_COLOR_PRESET_FLAGS_SEPARATOR[0], linedefColorPresets[i].RestrictedFlags.ToArray()));
-			}
+			SaveLinedefColorPresets();
 
 			General.Settings.WriteSetting("configurations." + settingskey + ".startmode", startmode);
 			resources.WriteToConfig(General.Settings.Config, "configurations." + settingskey + ".resources");
@@ -286,13 +270,14 @@ namespace CodeImp.DoomBuilder.Config
 			}
 
 			// Write texturesets to configuration
+			General.Settings.DeleteSetting("configurations." + settingskey + ".texturesets"); //mxd
 			for(int i = 0; i < texturesets.Count; i++)
 			{
 				texturesets[i].WriteToConfig(General.Settings.Config,
 					"configurations." + settingskey + ".texturesets.set" + i.ToString(CultureInfo.InvariantCulture));
 			}
 			
-			// Write filters to configuration
+			// Write edit modes to configuration
 			ListDictionary modeslist = new ListDictionary();
 			int index = 0;
 			foreach(KeyValuePair<string, bool> em in editmodes)
@@ -306,6 +291,57 @@ namespace CodeImp.DoomBuilder.Config
 			}
 			General.Settings.WriteSetting("configurations." + settingskey + ".editmodes", modeslist);
 		}
+
+		//mxd
+		private void SaveTestEngines() 
+		{
+			IDictionary resinfo, rlinfo;
+
+			// Fill structure
+			resinfo = new ListDictionary();
+
+			for(int i = 0; i < testEngines.Count; i++) {
+				rlinfo = new ListDictionary();
+				rlinfo.Add("testprogramname", testEngines[i].TestProgramName);
+				rlinfo.Add("testprogram", testEngines[i].TestProgram);
+				rlinfo.Add("testparameters", testEngines[i].TestParameters);
+				rlinfo.Add("testshortpaths", testEngines[i].TestShortPaths);
+				rlinfo.Add("customparameters", testEngines[i].CustomParameters);
+				rlinfo.Add("testskill", testEngines[i].TestSkill);
+
+				// Add structure
+				resinfo.Add("engine" + i.ToString(CultureInfo.InvariantCulture), rlinfo);
+			}
+
+			// Write to config
+			General.Settings.Config.WriteSetting("configurations." + settingskey + ".engines", resinfo);
+		}
+
+		//mxd
+		private void SaveLinedefColorPresets() 
+		{
+			IDictionary resinfo, rlinfo;
+
+			// Fill structure
+			resinfo = new ListDictionary();
+
+			for(int i = 0; i < linedefColorPresets.Length; i++) {
+				rlinfo = new ListDictionary();
+				rlinfo.Add("name", linedefColorPresets[i].Name);
+				rlinfo.Add("color", linedefColorPresets[i].Color.ToInt());
+				rlinfo.Add("action", linedefColorPresets[i].Action);
+				rlinfo.Add("activation", linedefColorPresets[i].Activation);
+				rlinfo.Add("flags", string.Join(LINEDEF_COLOR_PRESET_FLAGS_SEPARATOR[0], linedefColorPresets[i].Flags.ToArray()));
+				rlinfo.Add("restrictedflags", string.Join(LINEDEF_COLOR_PRESET_FLAGS_SEPARATOR[0], linedefColorPresets[i].RestrictedFlags.ToArray()));
+
+				// Add structure
+				resinfo.Add("preset" + i.ToString(CultureInfo.InvariantCulture), rlinfo);
+			}
+
+			// Write to config
+			General.Settings.Config.WriteSetting("configurations." + settingskey + ".linedefcolorpresets", resinfo);
+		}
+
 
 		// String representation
 		public override string ToString()
