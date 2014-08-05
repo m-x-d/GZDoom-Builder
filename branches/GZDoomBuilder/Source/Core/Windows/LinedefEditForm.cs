@@ -705,6 +705,7 @@ namespace CodeImp.DoomBuilder.Windows
 			int lockNum = lockNumber.GetResult(0);
 			
 			// Go for all the lines
+			int tagoffset = 0; //mxd
 			foreach(Linedef l in lines)
 			{
 				// Apply chosen activation flag
@@ -720,7 +721,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				
 				// Action/tags
-				l.Tag = tagSelector.GetTag(l.Tag); //mxd
+				l.Tag = General.Clamp(tagSelector.GetTag(l.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
 				if(!action.Empty) {
 					l.Action = action.Value;
 

@@ -536,6 +536,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Go for all sectors
+			int tagoffset = 0; //mxd
 			foreach(Sector s in sectors) {
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes) {
@@ -548,7 +549,7 @@ namespace CodeImp.DoomBuilder.Windows
 				s.Brightness = General.Clamp(brightness.GetResult(s.Brightness), General.Map.FormatInterface.MinBrightness, General.Map.FormatInterface.MaxBrightness);
 
 				// Action
-				s.Tag = tagSelector.GetTag(s.Tag); //mxd
+				s.Tag = General.Clamp(tagSelector.GetTag(s.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
 
 				//Fields
 				fieldslist.Apply(s.Fields);
