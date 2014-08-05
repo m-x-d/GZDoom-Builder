@@ -534,6 +534,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Go for all the things
+			int tagoffset = 0; //mxd
 			foreach(Thing t in things) {
 				// Coordination
 				//mxd. Check position
@@ -550,7 +551,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				// Action/tags
-				t.Tag = tagSelector.GetTag(t.Tag); //mxd
+				t.Tag = General.Clamp(tagSelector.GetTag(t.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
 				if(!action.Empty) {
 					t.Action = action.Value;
 

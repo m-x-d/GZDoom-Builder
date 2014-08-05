@@ -29,6 +29,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private bool valid;
 		private int tag;
 		private UniversalType elementType;
+		private int offsetmode; //0 - none, 1 - positive (++), -1 - negative (--)
 		
 		public TagSelector() {
 			InitializeComponent();
@@ -92,12 +93,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public void ClearTag() {
 			cbTagPicker.SelectedIndex = -1;
 			cbTagPicker.Text = string.Empty;
+			offsetmode = 0;
 			valid = false;
 		}
 
 		public int GetTag(int original) {
+			return GetTag(original, 0);
+		}
+
+		public int GetTag(int original, int offset) {
 			if(!valid) return original;
-			return tag;
+			return tag + offset * offsetmode;
 		}
 
 		public void ValidateTag() {
@@ -110,8 +116,24 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			//check text
 			string text = cbTagPicker.Text.Trim().ToLowerInvariant();
 			if(string.IsNullOrEmpty(text)) {
+				offsetmode = 0;
 				valid = false;
 				return;
+			}
+
+			//incremental?
+			if(text.Length > 2){
+				if(text.StartsWith("++")) {
+					offsetmode = 1;
+					text = text.Substring(2, text.Length - 2);
+				} else if (text.StartsWith("--")) {
+					offsetmode = -1;
+					text = text.Substring(2, text.Length - 2);
+				} else {
+					offsetmode = 0;
+				}
+			} else {
+				offsetmode = 0;
 			}
 
 			if(!int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out tag)) {
@@ -131,9 +153,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 					General.Map.Options.TagLabels[tag] = cbTagPicker.Text.Trim();
 				else
 					General.Map.Options.TagLabels.Add(tag, cbTagPicker.Text.Trim());
-
-				valid = true;
-				return;
 			}
 
 			valid = true;

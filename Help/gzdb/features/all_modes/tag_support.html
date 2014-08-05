@@ -1,53 +1,67 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	
-	<title>GZDoom Builder features</title>
-	
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-	<link rel="stylesheet" type="text/css" href="../../../default.css" media="screen" title="Default" />
+<title>Enhanced Tag Support</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="../../../default.css" media="screen" title="Default" />
+<style type="text/css">
+<!--
+.style1 {
+	color: #990000;
+	font-weight: bold;
+}
+-->
+</style>
 </head>
 <body>
-	
-	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-	<param name="keyword" value="Template">
-	</object>
-	
-	<div id="gz_title"><h1>Enhanced Tag support</h1>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="keyword" value="Template">
+</object>
+<div id="gz_title">
+  <h1>Enhanced Tag Support</h1>
 </div>
-	
-	<div id="contents">
-    <h2><strong>New Tag vs. Unused Tag:</strong></h2>
-    <p><img src="tags_newlabel.jpg" /><br />
+<div id="contents">
+  <h2><strong>New Tag vs. Unused Tag:</strong></h2>
+  <p><img src="tags_newlabel.jpg" /><br />
     Two methods can be used to assign a new tag to a map element.<br />
     Pressing &quot;<strong>New</strong>&quot; button will find a tag number, which is not used by any map element or any action argument, which expects a tag (classic Doom Builder 2 behaviour).<br />
     Pressing "<strong>Unused</strong>" button will  find a tag number, which is not used by any map element of current type (e.g. not used by any linedef in the map, if the button is pressed in Edit Linedefs form).</p>
-    
-    <h2><strong>Tag support:</strong></h2>
-    <table width="100%" border="0" cellspacing="3" cellpadding="3">
-      <tr>
-        <td valign="top">If a tag is already used in a map, you can  pick it from the list:
+  <h2><strong>Setting Tag Range:</strong></h2>
+  <p>When several map elements are selected, you can set a tag range by entering "<strong>++N</strong>" or "<strong>--N</strong>" as a tag.<br />
+    <strong>Example:</strong> to tag selected sectors starting from 10 and going up, enter "<strong>++10</strong>" as the tag and press <strong>OK</strong> button:<br />
+    <img src="incremental_tags1.jpg" /><br />
+    <br />
+    The result:<br />
+    <img src="incremental_tags2.jpg" /><br />
+    <br />
+    <span class="style1">Warning:</span> setting tag ranges this way doesn't check if tags being set are already used in the map. If you need that functionality, set tag ranges using <strong>Tag Range</strong> plugin.</p>
+  <h2><strong>Enhanced Tag Support:</strong></h2>
+  <table width="100%" border="0" cellspacing="3" cellpadding="3">
+    <tr>
+      <td valign="top">If a tag is already used in a map, you can  pick it from the list:
         </p></td>
-        <td><img src="tags_dropdown.jpg" alt="" width="398" height="400" /></td>
-      </tr>
-      <tr>
-        <td valign="top"><p>This also works for action arguments. Only relevant tags will be shown in this case (e.g. if an argument is a sector tag, only sector tags will be shown in the drop down).<br />
-				<strong>If you want, you can type the tag number manually.</strong></p></td>
-        <td><img src="tags_action_arg.jpg" alt="" width="400" height="329" /></td>
-      </tr>
-    </table>
-    <h2><strong>Tag Labels</strong>:</h2>
-      <p>You can add labels to tags. This can be done in several ways:<br />
-      1. If you type any text in the tag selector, then an unused tag number will be found, and your text will be assigned to it as a label (this won't work for action arguments).      
-      <p><img src="tags_newlabel.jpg" />
-      <p>2. You can use the <strong>Tag statistics</strong> form to view all tags used in a map, and view and edit labels, if any are assigned to them:      
-      <p><img src="tags_view1.jpg" alt="" width="264" height="399" /><br /><br /><img src="tags_table.jpg" alt="" />
-      <p>Double-click on a value in the &quot;Label&quot; column to edit the tag label.<br />
-      Double-click on Sectors, Linedefs or Things cells to select map elements,  right click to open their properties.<br />
-All columns are sortable.
-      <p>Tag labels support autocompletion. Start typing a tag label to show the autocompletion list:
-      <p><img src="tags_autocomplete.jpg" alt="" width="356" height="400" />
-      <p>When sort mode is set to &quot;By Tag&quot;, then tag labels will be shown in Tag Explorer:
-      <p><img src="tags_tagexplorer.jpg" alt="" width="285" height="311" />
+      <td><img src="tags_dropdown.jpg" alt="" width="398" height="400" /></td>
+    </tr>
+    <tr>
+      <td valign="top"><p>This also works for action arguments. Only relevant tags will be shown in this case (e.g. if an argument is a sector tag, only sector tags will be shown in the drop down).<br />
+          <strong>If you want, you can type the tag number manually.</strong></p></td>
+      <td><img src="tags_action_arg.jpg" alt="" width="400" height="329" /></td>
+    </tr>
+  </table>
+  <h2><strong>Tag Labels</strong>:</h2>
+  <p>You can add labels to tags. This can be done in several ways:<br />
+    1. If you type any text in the tag selector, then an unused tag number will be found, and your text will be assigned to it as a label (this won't work for action arguments).
+  <p><img src="tags_newlabel.jpg" />
+  <p>2. You can use the <strong>Tag statistics</strong> form to view all tags used in a map, and view and edit labels, if any are assigned to them:
+  <p><img src="tags_view1.jpg" alt="" width="264" height="399" /><br />
+    <br />
+    <img src="tags_table.jpg" alt="" />
+  <p>Double-click on a value in the &quot;<strong>Label</strong>&quot; column to edit the tag label.<br />
+    Double-click on Sectors, Linedefs or Things cells to select map elements,  right click to open their properties.<br />
+    All columns are sortable.
+  <p>Tag labels support autocompletion. Start typing a tag label to show the autocompletion list:
+  <p><img src="tags_autocomplete.jpg" alt="" width="356" height="400" />
+  <p>When sort mode is set to &quot;By Tag&quot;, then tag labels will be shown in Tag Explorer:
+  <p><img src="tags_tagexplorer.jpg" alt="" width="285" height="311" /> 
 </div>
 </body>
