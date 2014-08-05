@@ -252,11 +252,11 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Flags
 				foreach(CheckBox c in flags.Checkboxes) {
-					if(t.Flags.ContainsKey(c.Tag.ToString())) {
-						if(t.Flags[c.Tag.ToString()] != c.Checked) {
-							c.ThreeState = true;
-							c.CheckState = CheckState.Indeterminate;
-						}
+					if(c.CheckState == CheckState.Indeterminate) continue; //mxd
+					if(t.IsFlagSet(c.Tag.ToString()) != c.Checked) 
+					{
+						c.ThreeState = true;
+						c.CheckState = CheckState.Indeterminate;
 					}
 				}
 

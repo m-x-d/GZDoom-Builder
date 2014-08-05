@@ -436,13 +436,11 @@ namespace CodeImp.DoomBuilder.Windows
 				// Flags
 				foreach(CheckBox c in flags.Checkboxes)
 				{
-					if(l.Flags.ContainsKey(c.Tag.ToString()))
+					if(c.CheckState == CheckState.Indeterminate) continue; //mxd
+					if(l.IsFlagSet(c.Tag.ToString()) != c.Checked) 
 					{
-						if(l.Flags[c.Tag.ToString()] != c.Checked)
-						{
-							c.ThreeState = true;
-							c.CheckState = CheckState.Indeterminate;
-						}
+						c.ThreeState = true;
+						c.CheckState = CheckState.Indeterminate;
 					}
 				}
 
@@ -458,14 +456,13 @@ namespace CodeImp.DoomBuilder.Windows
 				// UDMF Activations
 				foreach(CheckBox c in udmfactivates.Checkboxes)
 				{
+					if(c.CheckState == CheckState.Indeterminate) continue; //mxd
+
 					LinedefActivateInfo ai = (c.Tag as LinedefActivateInfo);
-					if(l.Flags.ContainsKey(ai.Key))
+					if(l.IsFlagSet(ai.Key) != c.Checked) 
 					{
-						if(c.Checked != l.Flags[ai.Key])
-						{
-							c.ThreeState = true;
-							c.CheckState = CheckState.Indeterminate;
-						}
+						c.ThreeState = true;
+						c.CheckState = CheckState.Indeterminate;
 					}
 				}
 
@@ -555,12 +552,9 @@ namespace CodeImp.DoomBuilder.Windows
 						//flags
 						foreach(CheckBox c in flagsFront.Checkboxes) {
 							if(c.CheckState == CheckState.Indeterminate) continue;
-
-							if(l.Front.Flags.ContainsKey(c.Tag.ToString())) {
-								if(l.Front.Flags[c.Tag.ToString()] != c.Checked) {
-									c.ThreeState = true;
-									c.CheckState = CheckState.Indeterminate;
-								}
+							if(l.Front.IsFlagSet(c.Tag.ToString()) != c.Checked) {
+								c.ThreeState = true;
+								c.CheckState = CheckState.Indeterminate;
 							}
 						}
 					}
@@ -608,12 +602,9 @@ namespace CodeImp.DoomBuilder.Windows
 						//flags
 						foreach(CheckBox c in flagsBack.Checkboxes) {
 							if(c.CheckState == CheckState.Indeterminate) continue;
-
-							if(l.Back.Flags.ContainsKey(c.Tag.ToString())) {
-								if(l.Back.Flags[c.Tag.ToString()] != c.Checked) {
-									c.ThreeState = true;
-									c.CheckState = CheckState.Indeterminate;
-								}
+							if(l.Back.IsFlagSet(c.Tag.ToString()) != c.Checked) {
+								c.ThreeState = true;
+								c.CheckState = CheckState.Indeterminate;
 							}
 						}
 					}
