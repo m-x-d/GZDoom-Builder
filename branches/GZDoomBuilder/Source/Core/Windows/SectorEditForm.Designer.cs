@@ -175,7 +175,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// brightness
 			// 
 			this.brightness.AllowDecimal = false;
-			this.brightness.AllowNegative = false;
+			this.brightness.AllowNegative = true;
 			this.brightness.AllowRelative = true;
 			this.brightness.ButtonStep = 8;
 			this.brightness.ButtonStepFloat = 1F;
