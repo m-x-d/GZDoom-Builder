@@ -2938,32 +2938,40 @@ namespace CodeImp.DoomBuilder.Windows
 					//draw the cursor
 					if(!cursorLocation.IsEmpty) g.DrawImage(Resources.Cursor, cursorLocation);
 
-					//draw coordinates
+					//gather some info
+					string info = string.Empty;
+					string revision = "[r" + General.ThisAssembly.GetName().Version.MinorRevision + "]";
 					if (editAreaOnly && General.Editing.Mode != null) {
-						string coords;
-
+						//get map coordinates
 						if (General.Editing.Mode is ClassicMode) {
-							Vector2D pos = ((ClassicMode)General.Editing.Mode).MouseMapPos;
+							Vector2D pos = ((ClassicMode) General.Editing.Mode).MouseMapPos;
 
 							//mouse inside the view?
 							if (pos.IsFinite()) {
-								coords = "X:" + Math.Round(pos.x) + " Y:" + Math.Round(pos.y);
+								info = "X:" + Math.Round(pos.x) + " Y:" + Math.Round(pos.y);
 							} else {
-								coords = "X:" + Math.Round(General.Map.Renderer2D.TranslateX) + " Y:" + Math.Round(General.Map.Renderer2D.TranslateY);
+								info = "X:" + Math.Round(General.Map.Renderer2D.TranslateX) + " Y:" + Math.Round(General.Map.Renderer2D.TranslateY);
 							}
 						} else { //should be visual mode
-							coords = "X:" + Math.Round(General.Map.VisualCamera.Position.x) + " Y:" + Math.Round(General.Map.VisualCamera.Position.y) + " Z:" + Math.Round(General.Map.VisualCamera.Position.z);
+							info = "X:" + Math.Round(General.Map.VisualCamera.Position.x) + " Y:" + Math.Round(General.Map.VisualCamera.Position.y) + " Z:" + Math.Round(General.Map.VisualCamera.Position.z);
 						}
-						
-						Font font = new Font("Tahoma", 10);
-						SolidBrush brush = new SolidBrush(Color.White);
-						SizeF rect = g.MeasureString(coords, font);
-						float px = bounds.Width - rect.Width - 4;
-						float py = bounds.Height - rect.Height - 4;
 
-						g.FillRectangle(Brushes.Black, px, py, rect.Width, rect.Height);
-						g.DrawString(coords, font, brush, px + 2, py + 2);
+						//add the revision number
+						info += " " + revision;
+					} else {
+						//just use the revision number
+						info = revision;
 					}
+
+					//draw info
+					Font font = new Font("Tahoma", 10);
+					SolidBrush brush = new SolidBrush(Color.White);
+					SizeF rect = g.MeasureString(info, font);
+					float px = bounds.Width - rect.Width - 4;
+					float py = 4;
+
+					g.FillRectangle(Brushes.Black, px, py, rect.Width, rect.Height + 3);
+					g.DrawString(info, font, brush, px + 2, py + 2);
 				}
 
 				try {
