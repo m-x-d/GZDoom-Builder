@@ -989,9 +989,10 @@ namespace CodeImp.DoomBuilder.Windows
 						l.SetFlag(c.Tag.ToString(), true);
 					else if(c.CheckState == CheckState.Unchecked)
 						l.SetFlag(c.Tag.ToString(), false);
-					else
+					else if(linedefProps[i].Flags.ContainsKey(c.Tag.ToString()))
 						l.SetFlag(c.Tag.ToString(), linedefProps[i].Flags[c.Tag.ToString()]);
-
+					else //linedefs created in the editor have empty Flags by default
+						l.SetFlag(c.Tag.ToString(), false);
 				}
 
 				i++;
@@ -1690,8 +1691,10 @@ namespace CodeImp.DoomBuilder.Windows
 						l.Front.SetFlag(c.Tag.ToString(), true);
 					else if(c.CheckState == CheckState.Unchecked)
 						l.Front.SetFlag(c.Tag.ToString(), false);
-					else
+					else if(linedefProps[i].Front.Flags.ContainsKey(c.Tag.ToString()))
 						l.Front.SetFlag(c.Tag.ToString(), linedefProps[i].Front.Flags[c.Tag.ToString()]);
+					else //linedefs created in the editor have empty Flags by default
+						l.Front.SetFlag(c.Tag.ToString(), false);
 				}
 
 				i++;
@@ -1714,8 +1717,10 @@ namespace CodeImp.DoomBuilder.Windows
 						l.Back.SetFlag(c.Tag.ToString(), true);
 					else if(c.CheckState == CheckState.Unchecked)
 						l.Back.SetFlag(c.Tag.ToString(), false);
-					else
+					else if(linedefProps[i].Back.Flags.ContainsKey(c.Tag.ToString()))
 						l.Back.SetFlag(c.Tag.ToString(), linedefProps[i].Back.Flags[c.Tag.ToString()]);
+					else //linedefs created in the editor have empty Flags by default
+						l.Back.SetFlag(c.Tag.ToString(), false);
 				}
 
 				i++;
