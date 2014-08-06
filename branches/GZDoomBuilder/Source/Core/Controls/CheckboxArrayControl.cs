@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 			c.UseVisualStyleBackColor = true;
 			c.Text = text;
 			c.Tag = tag;
-			c.CheckedChanged += checkbox_CheckedChanged; //mxd
+			c.CheckStateChanged += checkbox_OnCheckStateChanged; //mxd
 
 			// Add to list
 			this.Controls.Add(c);
@@ -72,7 +72,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		public int GetHeight() {
+		public int GetHeight() 
+		{
 			if(columns < 1)	return 0;
 			if(checkboxes.Count < 1) return 0;
 			int col = (int)Math.Ceiling(checkboxes.Count / (float)columns);
@@ -138,7 +139,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void checkbox_CheckedChanged(object sender, EventArgs e) {
+		private void checkbox_OnCheckStateChanged(object sender, EventArgs eventArgs) 
+		{
 			if(OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 	}
