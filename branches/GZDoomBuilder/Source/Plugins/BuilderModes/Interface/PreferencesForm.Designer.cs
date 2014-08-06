@@ -241,7 +241,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.syncSelection.Name = "syncSelection";
 			this.syncSelection.Size = new System.Drawing.Size(306, 18);
 			this.syncSelection.TabIndex = 10;
-			this.syncSelection.Text = "Synhcronise selection between Visual and Classic modes";
+			this.syncSelection.Text = "Synchronise selection between Visual and Classic modes";
 			this.syncSelection.UseVisualStyleBackColor = true;
 			// 
 			// dontMoveGeometryOutsideBounds
