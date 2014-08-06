@@ -2928,7 +2928,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//create path
 			string date = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
-			string path = Path.Combine(folder, name + date + ".jpg");
+			string revision = "[r" + General.ThisAssembly.GetName().Version.MinorRevision + "]";
+			string path = Path.Combine(folder, name + date + " " + revision + ".jpg");
 
 			//save image
 			using(Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height)) {
@@ -2940,7 +2941,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 					//gather some info
 					string info = string.Empty;
-					string revision = "[r" + General.ThisAssembly.GetName().Version.MinorRevision + "]";
 					if (editAreaOnly && General.Editing.Mode != null) {
 						//get map coordinates
 						if (General.Editing.Mode is ClassicMode) {
