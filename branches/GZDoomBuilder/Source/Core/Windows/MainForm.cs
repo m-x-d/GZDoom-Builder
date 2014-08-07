@@ -2905,9 +2905,18 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
-			//check folder
-			string folder = Path.Combine(General.AppPath, "Screenshots").Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-			if(!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+			//pick a valid folder
+			string folder = General.Settings.ScreenshotsPath;
+			if (!Directory.Exists(folder)) {
+				if (General.ShowErrorMessage("Screenshots save path '" + folder 
+					+ "' does not exist!\nPress OK to save to the default folder ('" 
+					+ General.DefaultScreenshotsPath 
+					+ "').\nPress Cancel to abort.", MessageBoxButtons.OKCancel) == DialogResult.Cancel) return;
+
+
+				folder = General.DefaultScreenshotsPath;
+				if(!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+			}
 
 			//create name
 			string name;
