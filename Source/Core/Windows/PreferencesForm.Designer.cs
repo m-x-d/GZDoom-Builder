@@ -82,6 +82,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply = new System.Windows.Forms.Button();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabinterface = new System.Windows.Forms.TabPage();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.resetscreenshotsdir = new System.Windows.Forms.Button();
+			this.browsescreenshotsdir = new System.Windows.Forms.Button();
+			this.screenshotsfolderpath = new System.Windows.Forms.TextBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.toolbar_gzdoom = new System.Windows.Forms.CheckBox();
 			this.toolbar_file = new System.Windows.Forms.CheckBox();
@@ -128,6 +132,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actionkey = new System.Windows.Forms.TextBox();
 			this.tabcolors = new System.Windows.Forms.TabPage();
 			this.appearancegroup1 = new System.Windows.Forms.GroupBox();
+			this.capitalizetexturenames = new System.Windows.Forms.CheckBox();
 			this.cbMarkExtraFloors = new System.Windows.Forms.CheckBox();
 			this.cbOldHighlightMode = new System.Windows.Forms.CheckBox();
 			this.labelDynLightIntensity = new System.Windows.Forms.Label();
@@ -164,7 +169,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label16 = new System.Windows.Forms.Label();
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.capitalizetexturenames = new System.Windows.Forms.CheckBox();
+			this.browseScreenshotsFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -183,6 +188,7 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).BeginInit();
 			this.tabs.SuspendLayout();
 			this.tabinterface.SuspendLayout();
+			this.groupBox3.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -748,7 +754,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.apply.Location = new System.Drawing.Point(587, 557);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
@@ -778,6 +783,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tabinterface
 			// 
+			this.tabinterface.Controls.Add(this.groupBox3);
 			this.tabinterface.Controls.Add(this.groupBox5);
 			this.tabinterface.Controls.Add(this.groupBox4);
 			this.tabinterface.Controls.Add(this.groupBox2);
@@ -790,6 +796,47 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabinterface.TabIndex = 0;
 			this.tabinterface.Text = "Interface";
 			this.tabinterface.UseVisualStyleBackColor = true;
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.resetscreenshotsdir);
+			this.groupBox3.Controls.Add(this.browsescreenshotsdir);
+			this.groupBox3.Controls.Add(this.screenshotsfolderpath);
+			this.groupBox3.Location = new System.Drawing.Point(8, 449);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(331, 51);
+			this.groupBox3.TabIndex = 5;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = " Screenshots Folder: ";
+			// 
+			// resetscreenshotsdir
+			// 
+			this.resetscreenshotsdir.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetscreenshotsdir.Location = new System.Drawing.Point(301, 17);
+			this.resetscreenshotsdir.Name = "resetscreenshotsdir";
+			this.resetscreenshotsdir.Size = new System.Drawing.Size(24, 24);
+			this.resetscreenshotsdir.TabIndex = 2;
+			this.toolTip1.SetToolTip(this.resetscreenshotsdir, "Use Default Screenshots Folder");
+			this.resetscreenshotsdir.UseVisualStyleBackColor = true;
+			this.resetscreenshotsdir.Click += new System.EventHandler(this.resetscreenshotsdir_Click);
+			// 
+			// browsescreenshotsdir
+			// 
+			this.browsescreenshotsdir.Image = global::CodeImp.DoomBuilder.Properties.Resources.FolderExplore;
+			this.browsescreenshotsdir.Location = new System.Drawing.Point(275, 17);
+			this.browsescreenshotsdir.Name = "browsescreenshotsdir";
+			this.browsescreenshotsdir.Size = new System.Drawing.Size(24, 24);
+			this.browsescreenshotsdir.TabIndex = 1;
+			this.toolTip1.SetToolTip(this.browsescreenshotsdir, "Browse Screenshots Folder");
+			this.browsescreenshotsdir.UseVisualStyleBackColor = true;
+			this.browsescreenshotsdir.Click += new System.EventHandler(this.browsescreenshotsdir_Click);
+			// 
+			// screenshotsfolderpath
+			// 
+			this.screenshotsfolderpath.Location = new System.Drawing.Point(6, 19);
+			this.screenshotsfolderpath.Name = "screenshotsfolderpath";
+			this.screenshotsfolderpath.Size = new System.Drawing.Size(264, 20);
+			this.screenshotsfolderpath.TabIndex = 0;
 			// 
 			// groupBox5
 			// 
@@ -915,9 +962,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox4.Controls.Add(this.collapsedockers);
 			this.groupBox4.Controls.Add(this.dockersposition);
 			this.groupBox4.Controls.Add(this.label17);
-			this.groupBox4.Location = new System.Drawing.Point(10, 386);
+			this.groupBox4.Location = new System.Drawing.Point(8, 386);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(329, 114);
+			this.groupBox4.Size = new System.Drawing.Size(331, 57);
 			this.groupBox4.TabIndex = 3;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Side Panels ";
@@ -925,7 +972,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// collapsedockers
 			// 
 			this.collapsedockers.AutoSize = true;
-			this.collapsedockers.Location = new System.Drawing.Point(204, 36);
+			this.collapsedockers.Location = new System.Drawing.Point(200, 24);
 			this.collapsedockers.Name = "collapsedockers";
 			this.collapsedockers.Size = new System.Drawing.Size(72, 18);
 			this.collapsedockers.TabIndex = 2;
@@ -940,7 +987,7 @@ namespace CodeImp.DoomBuilder.Windows
             "Left",
             "Right",
             "None"});
-			this.dockersposition.Location = new System.Drawing.Point(95, 34);
+			this.dockersposition.Location = new System.Drawing.Point(91, 22);
 			this.dockersposition.Name = "dockersposition";
 			this.dockersposition.Size = new System.Drawing.Size(85, 22);
 			this.dockersposition.TabIndex = 1;
@@ -948,7 +995,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label17
 			// 
 			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(33, 37);
+			this.label17.Location = new System.Drawing.Point(29, 25);
 			this.label17.Name = "label17";
 			this.label17.Size = new System.Drawing.Size(47, 14);
 			this.label17.TabIndex = 0;
@@ -1342,6 +1389,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.appearancegroup1.TabIndex = 24;
 			this.appearancegroup1.TabStop = false;
 			this.appearancegroup1.Text = " Additional Options ";
+			// 
+			// capitalizetexturenames
+			// 
+			this.capitalizetexturenames.AutoSize = true;
+			this.capitalizetexturenames.Location = new System.Drawing.Point(236, 212);
+			this.capitalizetexturenames.Name = "capitalizetexturenames";
+			this.capitalizetexturenames.Size = new System.Drawing.Size(144, 18);
+			this.capitalizetexturenames.TabIndex = 36;
+			this.capitalizetexturenames.Text = "Capitalize texture names";
+			this.toolTip1.SetToolTip(this.capitalizetexturenames, "When enabled, texture names will be shown \r\nand saved as all caps (DB2 behaviour)" +
+					"");
+			this.capitalizetexturenames.UseVisualStyleBackColor = true;
 			// 
 			// cbMarkExtraFloors
 			// 
@@ -1772,24 +1831,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pasteoptions.Size = new System.Drawing.Size(666, 427);
 			this.pasteoptions.TabIndex = 0;
 			// 
-			// capitalizetexturenames
+			// browseScreenshotsFolderDialog
 			// 
-			this.capitalizetexturenames.AutoSize = true;
-			this.capitalizetexturenames.Location = new System.Drawing.Point(236, 212);
-			this.capitalizetexturenames.Name = "capitalizetexturenames";
-			this.capitalizetexturenames.Size = new System.Drawing.Size(144, 18);
-			this.capitalizetexturenames.TabIndex = 36;
-			this.capitalizetexturenames.Text = "Capitalize texture names";
-			this.toolTip1.SetToolTip(this.capitalizetexturenames, "When enabled, texture names will be shown \r\nand saved as all caps (DB2 behaviour)" +
-					"");
-			this.capitalizetexturenames.UseVisualStyleBackColor = true;
+			this.browseScreenshotsFolderDialog.Description = "Select a Folder to Save Screenshots Into";
 			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.CancelButton = this.apply;
+			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(711, 594);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
@@ -1817,6 +1868,8 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).EndInit();
 			this.tabs.ResumeLayout(false);
 			this.tabinterface.ResumeLayout(false);
+			this.groupBox3.ResumeLayout(false);
+			this.groupBox3.PerformLayout();
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
@@ -1973,5 +2026,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label label25;
 		private System.Windows.Forms.CheckBox snippetsallmanstyle;
 		private System.Windows.Forms.CheckBox capitalizetexturenames;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.Button browsescreenshotsdir;
+		private System.Windows.Forms.TextBox screenshotsfolderpath;
+		private System.Windows.Forms.Button resetscreenshotsdir;
+		private System.Windows.Forms.FolderBrowserDialog browseScreenshotsFolderDialog;
 	}
 }

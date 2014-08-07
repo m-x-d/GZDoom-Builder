@@ -193,6 +193,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap FolderExplore {
+            get {
+                object obj = ResourceManager.GetObject("FolderExplore", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap fx {
             get {
                 object obj = ResourceManager.GetObject("fx", resourceCulture);

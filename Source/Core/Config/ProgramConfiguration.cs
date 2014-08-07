@@ -68,6 +68,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool scriptontop;
 		private bool scriptautoindent;
 		private bool snippetsallmanstyle; //mxd
+		private string screenshotspath; //mxd
 		private int scripttabwidth;
 		private int previewimagesize;
 		private int autoscrollspeed;
@@ -159,6 +160,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int ScriptTabWidth { get { return scripttabwidth; } internal set { scripttabwidth = value; } }
 		public bool ScriptAutoIndent { get { return scriptautoindent; } internal set { scriptautoindent = value; } }
 		public bool SnippetsAllmanStyle { get { return snippetsallmanstyle; } internal set { snippetsallmanstyle = value; } } //mxd
+		internal string ScreenshotsPath { get { return screenshotspath; } set { screenshotspath = value; } } //mxd
 		internal int PreviousVersion { get { return previousversion; } }
 		internal PasteOptions PasteOptions { get { return pasteoptions; } set { pasteoptions = value; } }
 		public int DockersPosition { get { return dockersposition; } internal set { dockersposition = value; } }
@@ -260,6 +262,7 @@ namespace CodeImp.DoomBuilder.Config
 				scriptfontbold = cfg.ReadSetting("scriptfontbold", false);
 				scriptautoindent = cfg.ReadSetting("scriptautoindent", true);
 				snippetsallmanstyle = cfg.ReadSetting("snippetsallmanstyle", false); //mxd
+				screenshotspath = cfg.ReadSetting("screenshotspath", General.DefaultScreenshotsPath); //mxd
 				scriptontop = cfg.ReadSetting("scriptontop", true);
 				scripttabwidth = cfg.ReadSetting("scripttabwidth", 4);
 				previewimagesize = cfg.ReadSetting("previewimagesize", 1);
@@ -352,6 +355,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("scripttabwidth", scripttabwidth);
 			cfg.WriteSetting("scriptautoindent", scriptautoindent);
 			cfg.WriteSetting("snippetsallmanstyle", snippetsallmanstyle); //mxd
+			cfg.WriteSetting("screenshotspath", screenshotspath); //mxd
 			cfg.WriteSetting("previewimagesize", previewimagesize);
 			cfg.WriteSetting("autoscrollspeed", autoscrollspeed);
 			cfg.WriteSetting("zoomfactor", zoomfactor);

@@ -23,6 +23,7 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
 using System.Globalization;
 using CodeImp.DoomBuilder.Data;
+using System.IO;
 
 #endregion
 
@@ -106,6 +107,9 @@ namespace CodeImp.DoomBuilder.Windows
 			vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
 			cbMarkExtraFloors.Checked = General.Settings.GZMarkExtraFloors;
 			recentFiles.Value = General.Settings.MaxRecentFiles;
+			screenshotsfolderpath.Text = General.Settings.ScreenshotsPath;
+			if(Directory.Exists(General.Settings.ScreenshotsPath))
+				browseScreenshotsFolderDialog.SelectedPath = General.Settings.ScreenshotsPath;
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
@@ -205,6 +209,13 @@ namespace CodeImp.DoomBuilder.Windows
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
+			//mxd. Check if Screenshots folder is valid
+			if(screenshotsfolderpath.Text != General.Settings.ScreenshotsPath && !Directory.Exists(screenshotsfolderpath.Text.Trim())) 
+			{
+				General.ShowErrorMessage("Screenshots folder does not exist!\nPlease enter a correct path.", MessageBoxButtons.OK);
+				return;
+			}
+			
 			// Let the plugins know
 			controller.RaiseAccept();
 			
@@ -246,6 +257,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.GZToolbarGZDoom = toolbar_gzdoom.Checked; //mxd
 			General.Settings.ShowTextureSizes = showtexturesizes.Checked;
 			General.Settings.MaxRecentFiles = recentFiles.Value; //mxd
+			General.Settings.ScreenshotsPath = screenshotsfolderpath.Text.Trim(); //mxd
 			
 			// Script font size
 			int fontsize = 8;
@@ -935,6 +947,22 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void scriptcolor_ColorChanged(object sender, EventArgs e) {
 			updateScriptFontPreview();
+		}
+
+		#endregion
+
+		#region ================== Screenshots Stuff (mxd)
+
+		private void resetscreenshotsdir_Click(object sender, EventArgs e) 
+		{
+			screenshotsfolderpath.Text = General.DefaultScreenshotsPath;
+			browseScreenshotsFolderDialog.SelectedPath = General.DefaultScreenshotsPath;
+		}
+
+		private void browsescreenshotsdir_Click(object sender, EventArgs e) 
+		{
+			if (browseScreenshotsFolderDialog.ShowDialog(General.MainWindow) == DialogResult.OK) 
+				screenshotsfolderpath.Text = browseScreenshotsFolderDialog.SelectedPath;
 		}
 
 		#endregion
