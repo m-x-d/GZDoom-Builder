@@ -320,6 +320,10 @@ special
 	-75:CheckFlag(2),
 	-76:SetLineActivation(2),
 	-77:GetLineActivation(1),
+	-78:GetActorPowerupTics(2),
+	-79:ChangeActorAngle(2,3),
+	-80:ChangeActorPitch(2,3),
+	-81:GetArmorInfo(1),
 	
 	// Zandronum's
 	-100:ResetMap(0),
