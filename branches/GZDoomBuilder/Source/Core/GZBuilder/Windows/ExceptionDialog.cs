@@ -88,13 +88,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 								  "In Soviet Russia, exception throws YOU!",
 								  "...and then GZDB was the demons!",
 								  "B U S T E D",
-								  "Freeze mode on",
+								  "Freeze mode enabled",
 								  "You feel strange...",
 								  "That doesn't seem to work",
 								  "This function is only available in the retail version of GZDoom Builder",
 								  "You picked up the Random Exception.",
 								  "Pinky says that you're the new hope. Bear that in mind.",
-								  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+								  "Deal with it",
+								  "Error 47",
+								  "YOU DIED",
+								  "Thanks, Obama"
 							  };
 			this.Text = titles[new Random().Next(0, titles.Length - 1)];
 		}
