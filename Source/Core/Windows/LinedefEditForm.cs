@@ -721,7 +721,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				
 				// Action/tags
-				l.Tag = General.Clamp(tagSelector.GetTag(l.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
+				l.Tag = General.Clamp(tagSelector.GetSmartTag(l.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
 				if(!action.Empty) {
 					l.Action = action.Value;
 

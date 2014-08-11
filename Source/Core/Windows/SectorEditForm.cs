@@ -230,7 +230,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(!effect.Empty) s.Effect = effect.Value;
 
 				// Action
-				s.Tag = General.Clamp(tagSelector.GetTag(s.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
+				s.Tag = General.Clamp(tagSelector.GetSmartTag(s.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
 			}
 
 			// Done

@@ -129,6 +129,7 @@
 			// 
 			// angletrackbar
 			// 
+			this.angletrackbar.BackColor = System.Drawing.SystemColors.ControlLightLight;
 			this.angletrackbar.Location = new System.Drawing.Point(173, 82);
 			this.angletrackbar.Maximum = 85;
 			this.angletrackbar.Minimum = -85;

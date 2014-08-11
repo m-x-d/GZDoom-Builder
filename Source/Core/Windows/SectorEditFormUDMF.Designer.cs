@@ -85,33 +85,9 @@
 			this.ceilingtex = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.tabslopes = new System.Windows.Forms.TabPage();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.floorslopeangle = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.label23 = new System.Windows.Forms.Label();
-			this.floorsloperotation = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.label24 = new System.Windows.Forms.Label();
-			this.resetfloorslope = new System.Windows.Forms.Button();
-			this.floorslopeoffset = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.label18 = new System.Windows.Forms.Label();
-			this.floorslopez = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.label17 = new System.Windows.Forms.Label();
-			this.floorslopey = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.label16 = new System.Windows.Forms.Label();
-			this.floorslopex = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.label15 = new System.Windows.Forms.Label();
+			this.floorslopecontrol = new CodeImp.DoomBuilder.Controls.SectorSlopeControl();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.ceilslopeanglelabel = new System.Windows.Forms.Label();
-			this.ceilsloperolllabel = new System.Windows.Forms.Label();
-			this.ceilslopeangle = new System.Windows.Forms.TrackBar();
-			this.ceilsloperoll = new System.Windows.Forms.TrackBar();
-			this.resetceilslope = new System.Windows.Forms.Button();
-			this.ceilslopeoffset = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.ceilslopex = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.label19 = new System.Windows.Forms.Label();
-			this.label22 = new System.Windows.Forms.Label();
-			this.ceilslopez = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.label21 = new System.Windows.Forms.Label();
-			this.label20 = new System.Windows.Forms.Label();
-			this.ceilslopey = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.ceilingslopecontrol = new CodeImp.DoomBuilder.Controls.SectorSlopeControl();
 			this.tabcustom = new System.Windows.Forms.TabPage();
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
@@ -138,8 +114,6 @@
 			this.tabslopes.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.groupBox4.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.ceilslopeangle)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.ceilsloperoll)).BeginInit();
 			this.tabcustom.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -878,19 +852,7 @@
 			// 
 			// groupBox5
 			// 
-			this.groupBox5.Controls.Add(this.floorslopeangle);
-			this.groupBox5.Controls.Add(this.label23);
-			this.groupBox5.Controls.Add(this.floorsloperotation);
-			this.groupBox5.Controls.Add(this.label24);
-			this.groupBox5.Controls.Add(this.resetfloorslope);
-			this.groupBox5.Controls.Add(this.floorslopeoffset);
-			this.groupBox5.Controls.Add(this.label18);
-			this.groupBox5.Controls.Add(this.floorslopez);
-			this.groupBox5.Controls.Add(this.label17);
-			this.groupBox5.Controls.Add(this.floorslopey);
-			this.groupBox5.Controls.Add(this.label16);
-			this.groupBox5.Controls.Add(this.floorslopex);
-			this.groupBox5.Controls.Add(this.label15);
+			this.groupBox5.Controls.Add(this.floorslopecontrol);
 			this.groupBox5.Location = new System.Drawing.Point(3, 212);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(443, 203);
@@ -898,169 +860,17 @@
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = " Floor: ";
 			// 
-			// floorslopeangle
+			// floorslopecontrol
 			// 
-			this.floorslopeangle.AllowDecimal = true;
-			this.floorslopeangle.AllowNegative = true;
-			this.floorslopeangle.AllowRelative = true;
-			this.floorslopeangle.ButtonStep = 1;
-			this.floorslopeangle.ButtonStepFloat = 1F;
-			this.floorslopeangle.Location = new System.Drawing.Point(282, 52);
-			this.floorslopeangle.Name = "floorslopeangle";
-			this.floorslopeangle.Size = new System.Drawing.Size(82, 24);
-			this.floorslopeangle.StepValues = null;
-			this.floorslopeangle.TabIndex = 22;
-			this.floorslopeangle.WhenTextChanged += new System.EventHandler(this.floorslopeangle_WhenTextChanged);
-			// 
-			// label23
-			// 
-			this.label23.AutoSize = true;
-			this.label23.Location = new System.Drawing.Point(223, 57);
-			this.label23.Name = "label23";
-			this.label23.Size = new System.Drawing.Size(38, 14);
-			this.label23.TabIndex = 21;
-			this.label23.Text = "Angle:";
-			// 
-			// floorsloperotation
-			// 
-			this.floorsloperotation.AllowDecimal = true;
-			this.floorsloperotation.AllowNegative = true;
-			this.floorsloperotation.AllowRelative = true;
-			this.floorsloperotation.ButtonStep = 1;
-			this.floorsloperotation.ButtonStepFloat = 1F;
-			this.floorsloperotation.Location = new System.Drawing.Point(282, 22);
-			this.floorsloperotation.Name = "floorsloperotation";
-			this.floorsloperotation.Size = new System.Drawing.Size(82, 24);
-			this.floorsloperotation.StepValues = null;
-			this.floorsloperotation.TabIndex = 20;
-			this.floorsloperotation.WhenTextChanged += new System.EventHandler(this.floorsloperotation_WhenTextChanged);
-			// 
-			// label24
-			// 
-			this.label24.AutoSize = true;
-			this.label24.Location = new System.Drawing.Point(223, 27);
-			this.label24.Name = "label24";
-			this.label24.Size = new System.Drawing.Size(49, 14);
-			this.label24.TabIndex = 19;
-			this.label24.Text = "Rotation:";
-			// 
-			// resetfloorslope
-			// 
-			this.resetfloorslope.Location = new System.Drawing.Point(74, 142);
-			this.resetfloorslope.Name = "resetfloorslope";
-			this.resetfloorslope.Size = new System.Drawing.Size(82, 23);
-			this.resetfloorslope.TabIndex = 18;
-			this.resetfloorslope.Text = "Reset";
-			this.resetfloorslope.UseVisualStyleBackColor = true;
-			this.resetfloorslope.Click += new System.EventHandler(this.resetfloorslope_Click);
-			// 
-			// floorslopeoffset
-			// 
-			this.floorslopeoffset.AllowDecimal = true;
-			this.floorslopeoffset.AllowNegative = true;
-			this.floorslopeoffset.AllowRelative = true;
-			this.floorslopeoffset.ButtonStep = 1;
-			this.floorslopeoffset.ButtonStepFloat = 16F;
-			this.floorslopeoffset.Location = new System.Drawing.Point(74, 112);
-			this.floorslopeoffset.Name = "floorslopeoffset";
-			this.floorslopeoffset.Size = new System.Drawing.Size(82, 24);
-			this.floorslopeoffset.StepValues = null;
-			this.floorslopeoffset.TabIndex = 8;
-			this.floorslopeoffset.WhenTextChanged += new System.EventHandler(this.floorslopeoffset_WhenTextChanged);
-			// 
-			// label18
-			// 
-			this.label18.AutoSize = true;
-			this.label18.Location = new System.Drawing.Point(27, 117);
-			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(41, 14);
-			this.label18.TabIndex = 7;
-			this.label18.Text = "Offset:";
-			// 
-			// floorslopez
-			// 
-			this.floorslopez.AllowDecimal = true;
-			this.floorslopez.AllowNegative = true;
-			this.floorslopez.AllowRelative = true;
-			this.floorslopez.ButtonStep = 1;
-			this.floorslopez.ButtonStepFloat = 0.1F;
-			this.floorslopez.Location = new System.Drawing.Point(74, 82);
-			this.floorslopez.Name = "floorslopez";
-			this.floorslopez.Size = new System.Drawing.Size(82, 24);
-			this.floorslopez.StepValues = null;
-			this.floorslopez.TabIndex = 6;
-			this.floorslopez.WhenTextChanged += new System.EventHandler(this.floorslopez_WhenTextChanged);
-			// 
-			// label17
-			// 
-			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(15, 87);
-			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(53, 14);
-			this.label17.TabIndex = 5;
-			this.label17.Text = "Normal Z:";
-			// 
-			// floorslopey
-			// 
-			this.floorslopey.AllowDecimal = true;
-			this.floorslopey.AllowNegative = true;
-			this.floorslopey.AllowRelative = true;
-			this.floorslopey.ButtonStep = 1;
-			this.floorslopey.ButtonStepFloat = 0.1F;
-			this.floorslopey.Location = new System.Drawing.Point(74, 52);
-			this.floorslopey.Name = "floorslopey";
-			this.floorslopey.Size = new System.Drawing.Size(82, 24);
-			this.floorslopey.StepValues = null;
-			this.floorslopey.TabIndex = 4;
-			this.floorslopey.WhenTextChanged += new System.EventHandler(this.floorslopey_WhenTextChanged);
-			// 
-			// label16
-			// 
-			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(15, 57);
-			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(53, 14);
-			this.label16.TabIndex = 3;
-			this.label16.Text = "Normal Y:";
-			// 
-			// floorslopex
-			// 
-			this.floorslopex.AllowDecimal = true;
-			this.floorslopex.AllowNegative = true;
-			this.floorslopex.AllowRelative = true;
-			this.floorslopex.ButtonStep = 1;
-			this.floorslopex.ButtonStepFloat = 0.1F;
-			this.floorslopex.Location = new System.Drawing.Point(74, 22);
-			this.floorslopex.Name = "floorslopex";
-			this.floorslopex.Size = new System.Drawing.Size(82, 24);
-			this.floorslopex.StepValues = null;
-			this.floorslopex.TabIndex = 2;
-			this.floorslopex.WhenTextChanged += new System.EventHandler(this.floorslopex_WhenTextChanged);
-			// 
-			// label15
-			// 
-			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(15, 27);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(53, 14);
-			this.label15.TabIndex = 0;
-			this.label15.Text = "Normal X:";
+			this.floorslopecontrol.Location = new System.Drawing.Point(6, 19);
+			this.floorslopecontrol.Name = "floorslopecontrol";
+			this.floorslopecontrol.Size = new System.Drawing.Size(431, 178);
+			this.floorslopecontrol.TabIndex = 0;
+			this.floorslopecontrol.OnValuesChanged += new System.EventHandler(this.floorslopecontrol_OnValuesChanged);
 			// 
 			// groupBox4
 			// 
-			this.groupBox4.Controls.Add(this.ceilslopeanglelabel);
-			this.groupBox4.Controls.Add(this.ceilsloperolllabel);
-			this.groupBox4.Controls.Add(this.ceilslopeangle);
-			this.groupBox4.Controls.Add(this.ceilsloperoll);
-			this.groupBox4.Controls.Add(this.resetceilslope);
-			this.groupBox4.Controls.Add(this.ceilslopeoffset);
-			this.groupBox4.Controls.Add(this.ceilslopex);
-			this.groupBox4.Controls.Add(this.label19);
-			this.groupBox4.Controls.Add(this.label22);
-			this.groupBox4.Controls.Add(this.ceilslopez);
-			this.groupBox4.Controls.Add(this.label21);
-			this.groupBox4.Controls.Add(this.label20);
-			this.groupBox4.Controls.Add(this.ceilslopey);
+			this.groupBox4.Controls.Add(this.ceilingslopecontrol);
 			this.groupBox4.Location = new System.Drawing.Point(3, 3);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(443, 203);
@@ -1068,147 +878,13 @@
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Ceiling: ";
 			// 
-			// ceilslopeanglelabel
+			// ceilingslopecontrol
 			// 
-			this.ceilslopeanglelabel.AutoSize = true;
-			this.ceilslopeanglelabel.Location = new System.Drawing.Point(387, 73);
-			this.ceilslopeanglelabel.Name = "ceilslopeanglelabel";
-			this.ceilslopeanglelabel.Size = new System.Drawing.Size(50, 14);
-			this.ceilslopeanglelabel.TabIndex = 21;
-			this.ceilslopeanglelabel.Text = "0 \\u00B0";
-			// 
-			// ceilsloperolllabel
-			// 
-			this.ceilsloperolllabel.AutoSize = true;
-			this.ceilsloperolllabel.Location = new System.Drawing.Point(387, 23);
-			this.ceilsloperolllabel.Name = "ceilsloperolllabel";
-			this.ceilsloperolllabel.Size = new System.Drawing.Size(50, 14);
-			this.ceilsloperolllabel.TabIndex = 20;
-			this.ceilsloperolllabel.Text = "0 \\u00B0";
-			// 
-			// ceilslopeangle
-			// 
-			this.ceilslopeangle.Location = new System.Drawing.Point(226, 73);
-			this.ceilslopeangle.Maximum = 359;
-			this.ceilslopeangle.Name = "ceilslopeangle";
-			this.ceilslopeangle.Size = new System.Drawing.Size(155, 45);
-			this.ceilslopeangle.TabIndex = 19;
-			this.ceilslopeangle.TickFrequency = 15;
-			this.ceilslopeangle.Scroll += new System.EventHandler(this.ceilslopeangle_Scroll);
-			// 
-			// ceilsloperoll
-			// 
-			this.ceilsloperoll.Location = new System.Drawing.Point(226, 22);
-			this.ceilsloperoll.Maximum = 85;
-			this.ceilsloperoll.Minimum = -85;
-			this.ceilsloperoll.Name = "ceilsloperoll";
-			this.ceilsloperoll.Size = new System.Drawing.Size(155, 45);
-			this.ceilsloperoll.SmallChange = 5;
-			this.ceilsloperoll.TabIndex = 18;
-			this.ceilsloperoll.TickFrequency = 5;
-			this.ceilsloperoll.Scroll += new System.EventHandler(this.ceilsloperoll_Scroll);
-			// 
-			// resetceilslope
-			// 
-			this.resetceilslope.Location = new System.Drawing.Point(74, 142);
-			this.resetceilslope.Name = "resetceilslope";
-			this.resetceilslope.Size = new System.Drawing.Size(82, 23);
-			this.resetceilslope.TabIndex = 17;
-			this.resetceilslope.Text = "Reset";
-			this.resetceilslope.UseVisualStyleBackColor = true;
-			this.resetceilslope.Click += new System.EventHandler(this.resetceilslope_Click);
-			// 
-			// ceilslopeoffset
-			// 
-			this.ceilslopeoffset.AllowDecimal = true;
-			this.ceilslopeoffset.AllowNegative = true;
-			this.ceilslopeoffset.AllowRelative = true;
-			this.ceilslopeoffset.ButtonStep = 1;
-			this.ceilslopeoffset.ButtonStepFloat = 16F;
-			this.ceilslopeoffset.Location = new System.Drawing.Point(74, 112);
-			this.ceilslopeoffset.Name = "ceilslopeoffset";
-			this.ceilslopeoffset.Size = new System.Drawing.Size(82, 24);
-			this.ceilslopeoffset.StepValues = null;
-			this.ceilslopeoffset.TabIndex = 16;
-			this.ceilslopeoffset.WhenTextChanged += new System.EventHandler(this.ceilslopeoffset_WhenTextChanged);
-			// 
-			// ceilslopex
-			// 
-			this.ceilslopex.AllowDecimal = true;
-			this.ceilslopex.AllowNegative = true;
-			this.ceilslopex.AllowRelative = true;
-			this.ceilslopex.ButtonStep = 1;
-			this.ceilslopex.ButtonStepFloat = 0.1F;
-			this.ceilslopex.Location = new System.Drawing.Point(74, 22);
-			this.ceilslopex.Name = "ceilslopex";
-			this.ceilslopex.Size = new System.Drawing.Size(82, 24);
-			this.ceilslopex.StepValues = null;
-			this.ceilslopex.TabIndex = 10;
-			this.ceilslopex.WhenTextChanged += new System.EventHandler(this.ceilslopex_WhenTextChanged);
-			// 
-			// label19
-			// 
-			this.label19.AutoSize = true;
-			this.label19.Location = new System.Drawing.Point(27, 117);
-			this.label19.Name = "label19";
-			this.label19.Size = new System.Drawing.Size(41, 14);
-			this.label19.TabIndex = 15;
-			this.label19.Text = "Offset:";
-			// 
-			// label22
-			// 
-			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(15, 27);
-			this.label22.Name = "label22";
-			this.label22.Size = new System.Drawing.Size(53, 14);
-			this.label22.TabIndex = 9;
-			this.label22.Text = "Normal X:";
-			// 
-			// ceilslopez
-			// 
-			this.ceilslopez.AllowDecimal = true;
-			this.ceilslopez.AllowNegative = true;
-			this.ceilslopez.AllowRelative = true;
-			this.ceilslopez.ButtonStep = 1;
-			this.ceilslopez.ButtonStepFloat = 0.1F;
-			this.ceilslopez.Location = new System.Drawing.Point(74, 82);
-			this.ceilslopez.Name = "ceilslopez";
-			this.ceilslopez.Size = new System.Drawing.Size(82, 24);
-			this.ceilslopez.StepValues = null;
-			this.ceilslopez.TabIndex = 14;
-			this.ceilslopez.WhenTextChanged += new System.EventHandler(this.ceilslopez_WhenTextChanged);
-			// 
-			// label21
-			// 
-			this.label21.AutoSize = true;
-			this.label21.Location = new System.Drawing.Point(15, 57);
-			this.label21.Name = "label21";
-			this.label21.Size = new System.Drawing.Size(53, 14);
-			this.label21.TabIndex = 11;
-			this.label21.Text = "Normal Y:";
-			// 
-			// label20
-			// 
-			this.label20.AutoSize = true;
-			this.label20.Location = new System.Drawing.Point(15, 87);
-			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(53, 14);
-			this.label20.TabIndex = 13;
-			this.label20.Text = "Normal Z:";
-			// 
-			// ceilslopey
-			// 
-			this.ceilslopey.AllowDecimal = true;
-			this.ceilslopey.AllowNegative = true;
-			this.ceilslopey.AllowRelative = true;
-			this.ceilslopey.ButtonStep = 1;
-			this.ceilslopey.ButtonStepFloat = 0.1F;
-			this.ceilslopey.Location = new System.Drawing.Point(74, 52);
-			this.ceilslopey.Name = "ceilslopey";
-			this.ceilslopey.Size = new System.Drawing.Size(82, 24);
-			this.ceilslopey.StepValues = null;
-			this.ceilslopey.TabIndex = 12;
-			this.ceilslopey.WhenTextChanged += new System.EventHandler(this.ceilslopey_WhenTextChanged);
+			this.ceilingslopecontrol.Location = new System.Drawing.Point(6, 19);
+			this.ceilingslopecontrol.Name = "ceilingslopecontrol";
+			this.ceilingslopecontrol.Size = new System.Drawing.Size(431, 178);
+			this.ceilingslopecontrol.TabIndex = 1;
+			this.ceilingslopecontrol.OnValuesChanged += new System.EventHandler(this.ceilingslopecontrol_OnValuesChanged);
 			// 
 			// tabcustom
 			// 
@@ -1303,11 +979,7 @@
 			this.groupBox1.PerformLayout();
 			this.tabslopes.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
-			this.groupBox5.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
-			this.groupBox4.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.ceilslopeangle)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.ceilsloperoll)).EndInit();
 			this.tabcustom.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -1370,31 +1042,7 @@
 		private System.Windows.Forms.TabPage tabslopes;
 		private System.Windows.Forms.GroupBox groupBox5;
 		private System.Windows.Forms.GroupBox groupBox4;
-		private System.Windows.Forms.Label label15;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floorslopeoffset;
-		private System.Windows.Forms.Label label18;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floorslopez;
-		private System.Windows.Forms.Label label17;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floorslopey;
-		private System.Windows.Forms.Label label16;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floorslopex;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox ceilslopeoffset;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox ceilslopex;
-		private System.Windows.Forms.Label label19;
-		private System.Windows.Forms.Label label22;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox ceilslopez;
-		private System.Windows.Forms.Label label21;
-		private System.Windows.Forms.Label label20;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox ceilslopey;
-		private System.Windows.Forms.Button resetceilslope;
-		private System.Windows.Forms.Button resetfloorslope;
-		private System.Windows.Forms.TrackBar ceilslopeangle;
-		private System.Windows.Forms.TrackBar ceilsloperoll;
-		private System.Windows.Forms.Label ceilslopeanglelabel;
-		private System.Windows.Forms.Label ceilsloperolllabel;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floorslopeangle;
-		private System.Windows.Forms.Label label23;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floorsloperotation;
-		private System.Windows.Forms.Label label24;
+		private CodeImp.DoomBuilder.Controls.SectorSlopeControl floorslopecontrol;
+		private CodeImp.DoomBuilder.Controls.SectorSlopeControl ceilingslopecontrol;
 	}
 }

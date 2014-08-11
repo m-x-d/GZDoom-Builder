@@ -50,8 +50,6 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Methods
 
 		public void SetValues(float anglexy, float anglez, float offset, bool first) {
-			blockUpdate = true;
-
 			//update values
 			if (first) {
 				this.anglexy = anglexy;
@@ -62,22 +60,25 @@ namespace CodeImp.DoomBuilder.Controls
 				if(!float.IsNaN(this.anglez) && this.anglez != anglez) this.anglez = float.NaN;
 				if(!float.IsNaN(this.offset) && this.offset != offset) this.offset = float.NaN;
 			}
+		}
 
-			//update controls
-			if(float.IsNaN(this.anglexy)) {
+		public void UpdateControls() {
+			blockUpdate = true;
+
+			if(float.IsNaN(anglexy)) {
 				sloperotation.Text = "";
 				rotationcontrol.Angle = 0;
 			} else {
-				sloperotation.Text = this.anglexy.ToString();
-				rotationcontrol.Angle = (int)Math.Round(Angle2D.RadToDeg(this.anglexy));
+				sloperotation.Text = anglexy.ToString();
+				rotationcontrol.Angle = (int)Math.Round(anglexy); //(int)Math.Round(Angle2D.RadToDeg(this.anglexy));
 			}
 
-			if(float.IsNaN(this.anglez)) {
+			if(float.IsNaN(anglez)) {
 				slopeangle.Text = "";
 				angletrackbar.Value = 0;
 			} else {
-				slopeangle.Text = this.anglez.ToString();
-				angletrackbar.Value = General.Clamp((int)Math.Round(Angle2D.RadToDeg(this.anglez)), angletrackbar.Minimum, angletrackbar.Maximum);
+				slopeangle.Text = anglez.ToString();
+				angletrackbar.Value = General.Clamp((int)Math.Round(anglez - 90), angletrackbar.Minimum, angletrackbar.Maximum);
 			}
 
 			slopeoffset.Text = float.IsNaN(this.offset) ? "" : this.offset.ToString();
@@ -93,7 +94,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(blockUpdate) return;
 			blockUpdate = true;
 
-			anglexy = Angle2D.DegToRad(sloperotation.GetResultFloat(0f));
+			anglexy = sloperotation.GetResultFloat(0f); //Angle2D.DegToRad(sloperotation.GetResultFloat(0f));
 			rotationcontrol.Angle = (int)Math.Round(sloperotation.GetResultFloat(0f));
 
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
@@ -117,7 +118,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			int anglezdeg = General.Clamp((int)Math.Round(slopeangle.GetResultFloat(0f)), angletrackbar.Minimum, angletrackbar.Maximum);
 			angletrackbar.Value = anglezdeg;
-			anglez = Angle2D.DegToRad(anglezdeg);
+			anglez = Angle2D.DegToRad(anglezdeg - 90);
 
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 			blockUpdate = false;
