@@ -325,6 +325,9 @@ namespace CodeImp.DoomBuilder.Config
 			hangs = actor.GetFlagValue("spawnceiling", hangs);
 			int blockvalue = (blocking > 0) ? blocking : 2;
 			blocking = actor.GetFlagValue("solid", (blocking != 0)) ? blockvalue : 0;
+
+			//mxd
+			if(blocking > THING_BLOCKING_NONE) errorcheck = THING_ERROR_INSIDE_STUCK;
 		}
 
 		// This is used for sorting
