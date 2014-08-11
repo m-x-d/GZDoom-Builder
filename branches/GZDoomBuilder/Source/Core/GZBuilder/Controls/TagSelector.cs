@@ -29,7 +29,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private bool valid;
 		private int tag;
 		private UniversalType elementType;
-		private int offsetmode; //0 - none, 1 - positive (++), -1 - negative (--)
+		private int rangemode; //0 - none, 1 - positive (>=), -1 - negative (<=)
+		private int offsetmode = 0; //0 - none, 1 - positive (++), -1 - negative (--)
 		
 		public TagSelector() {
 			InitializeComponent();
@@ -93,20 +94,26 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public void ClearTag() {
 			cbTagPicker.SelectedIndex = -1;
 			cbTagPicker.Text = string.Empty;
+			rangemode = 0;
 			offsetmode = 0;
 			valid = false;
 		}
 
 		public int GetTag(int original) {
-			return GetTag(original, 0);
+			return (valid ? tag : original);
 		}
 
-		public int GetTag(int original, int offset) {
-			if(!valid) return original;
-			return tag + offset * offsetmode;
+		public int GetSmartTag(int original, int offset) {
+			if (!valid) return original;
+			if (rangemode != 0) return tag + offset * rangemode;
+			if (offsetmode != 0) return original + tag * offsetmode;
+			return tag;
 		}
 
 		public void ValidateTag() {
+			rangemode = 0;
+			offsetmode = 0;
+			
 			if(cbTagPicker.SelectedIndex != -1) {
 				tag = infos[cbTagPicker.SelectedIndex].Tag;
 				valid = true;
@@ -116,25 +123,26 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			//check text
 			string text = cbTagPicker.Text.Trim().ToLowerInvariant();
 			if(string.IsNullOrEmpty(text)) {
-				offsetmode = 0;
 				valid = false;
 				return;
 			}
 
 			//incremental?
 			if(text.Length > 2){
-				if(text.StartsWith("++")) {
+				if(text.StartsWith(">=")) { //range up
+					rangemode = 1;
+					text = text.Substring(2, text.Length - 2);
+				} else if (text.StartsWith("<=")) { //range down
+					rangemode = -1;
+					text = text.Substring(2, text.Length - 2);
+				} else if(text.StartsWith("++")) { //relative up
 					offsetmode = 1;
 					text = text.Substring(2, text.Length - 2);
-				} else if (text.StartsWith("--")) {
+				} else if(text.StartsWith("--")) { //relative down
 					offsetmode = -1;
 					text = text.Substring(2, text.Length - 2);
-				} else {
-					offsetmode = 0;
 				}
-			} else {
-				offsetmode = 0;
-			}
+			} 
 
 			if(!int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out tag)) {
 				//maybe it's user-pasted label?

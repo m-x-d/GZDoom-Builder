@@ -119,9 +119,10 @@ namespace CodeImp.DoomBuilder.Windows
 			label5.AutoSize = true;
 			label5.Location = new System.Drawing.Point(12, 272);
 			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(312, 14);
+			label5.Size = new System.Drawing.Size(312, 28);
 			label5.TabIndex = 19;
-			label5.Text = "Drag items to change order (lower items override higher items).";
+			label5.Text = "Drag && drop resources to add them.\r\nDrag items to change order (lower items over" +
+				"ride higher items).";
 			// 
 			// label6
 			// 
