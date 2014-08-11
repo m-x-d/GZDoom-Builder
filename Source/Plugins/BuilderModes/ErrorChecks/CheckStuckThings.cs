@@ -65,6 +65,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int progress = 0;
 			int stepprogress = 0;
 			float maxradius = 0;
+			Thing other = null; //mxd
 
 			foreach (ThingTypeInfo tti in General.Map.Data.ThingTypes)
 			{
@@ -142,6 +143,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								if (FlagsOverlap(t, ot) && ThingsOverlap(t, ot))
 								{
 									stuck = true;
+									other = ot; //mxd
 									stucktype = StuckType.Thing;
 								}
 							}
@@ -160,7 +162,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							break;
 
 						case StuckType.Thing:
-							SubmitResult(new ResultStuckThingInThing(t));
+							SubmitResult(new ResultStuckThingInThing(t, other));
 							break;
 					}
 				}

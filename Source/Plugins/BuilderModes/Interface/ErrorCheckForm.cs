@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Thread checksthread;
 		private BlockMap<BlockEntry> blockmap;
 		private static bool applyToAll; //mxd
+		private int errorscount; //mxd
 		
 		#endregion
 
@@ -95,6 +96,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			bExport.Top = checks.Bottom + 14; //mxd
 			resultspanel.Top = buttoncheck.Bottom + 14;
 			cbApplyToAll.Checked = applyToAll; //mxd
+			this.Text = "Map Analysis"; //mxd
 			
 
 			// Position at left-top of owner
@@ -123,6 +125,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				results.Items.Add(result);
+				errorscount++;
+				this.Text = "Map Analysis [" + errorscount + " errors]"; //mxd
 			}
 		}
 
@@ -193,6 +197,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd
 			bExport.Enabled = false;
+			errorscount = 0;
 			
 			// Make blockmap
 			RectangleF area = MapSet.CreateArea(General.Map.Map.Vertices);
