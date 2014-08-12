@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.TagRange
 		// Handler for finding a new tag
 		private static void TagHandler(MapElement element, bool actionargument, UniversalType type, ref int value, Dictionary<int, bool> usedtags)
 		{
-			usedtags[value] = true;
+			if(value > 0) usedtags[value] = true; //mxd
 		}
 		
 		// This creates a range
