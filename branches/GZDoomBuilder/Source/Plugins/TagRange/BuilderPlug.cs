@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			if(f.SelectionCount > 0)
 				f.ShowDialog(Form.ActiveForm);
 			else
-				General.Interface.MessageBeep(MessageBeepType.Default);
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!"); //mxd
 			f.Dispose();
 		}
     }

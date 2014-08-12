@@ -37,6 +37,10 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.outoftagswarning = new System.Windows.Forms.Label();
 			this.endtaglabel = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.rangestep = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.relativemode = new System.Windows.Forms.CheckBox();
+			this.bglabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// rangestart
@@ -55,18 +59,19 @@ namespace CodeImp.DoomBuilder.TagRange
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(10, 17);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(53, 14);
+			this.label1.Size = new System.Drawing.Size(62, 14);
 			this.label1.TabIndex = 1;
 			this.label1.Text = "Start Tag:";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// doubletagwarning
 			// 
+			this.doubletagwarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.doubletagwarning.BackColor = System.Drawing.SystemColors.Info;
 			this.doubletagwarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.doubletagwarning.Location = new System.Drawing.Point(12, 45);
+			this.doubletagwarning.Location = new System.Drawing.Point(12, 94);
 			this.doubletagwarning.Name = "doubletagwarning";
 			this.doubletagwarning.Padding = new System.Windows.Forms.Padding(3);
 			this.doubletagwarning.Size = new System.Drawing.Size(273, 50);
@@ -76,9 +81,10 @@ namespace CodeImp.DoomBuilder.TagRange
 			// 
 			// skipdoubletags
 			// 
+			this.skipdoubletags.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.skipdoubletags.AutoSize = true;
 			this.skipdoubletags.BackColor = System.Drawing.SystemColors.Info;
-			this.skipdoubletags.Location = new System.Drawing.Point(63, 69);
+			this.skipdoubletags.Location = new System.Drawing.Point(63, 118);
 			this.skipdoubletags.Name = "skipdoubletags";
 			this.skipdoubletags.Size = new System.Drawing.Size(161, 18);
 			this.skipdoubletags.TabIndex = 5;
@@ -90,7 +96,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			// okbutton
 			// 
 			this.okbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.okbutton.Location = new System.Drawing.Point(186, 102);
+			this.okbutton.Location = new System.Drawing.Point(186, 151);
 			this.okbutton.Name = "okbutton";
 			this.okbutton.Size = new System.Drawing.Size(99, 26);
 			this.okbutton.TabIndex = 6;
@@ -102,7 +108,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			// 
 			this.cancelbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.cancelbutton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelbutton.Location = new System.Drawing.Point(81, 102);
+			this.cancelbutton.Location = new System.Drawing.Point(81, 151);
 			this.cancelbutton.Name = "cancelbutton";
 			this.cancelbutton.Size = new System.Drawing.Size(99, 26);
 			this.cancelbutton.TabIndex = 7;
@@ -112,14 +118,16 @@ namespace CodeImp.DoomBuilder.TagRange
 			// 
 			// outoftagswarning
 			// 
+			this.outoftagswarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.outoftagswarning.BackColor = System.Drawing.SystemColors.Info;
 			this.outoftagswarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.outoftagswarning.Location = new System.Drawing.Point(12, 45);
+			this.outoftagswarning.Location = new System.Drawing.Point(12, 94);
 			this.outoftagswarning.Name = "outoftagswarning";
 			this.outoftagswarning.Padding = new System.Windows.Forms.Padding(3);
 			this.outoftagswarning.Size = new System.Drawing.Size(273, 50);
 			this.outoftagswarning.TabIndex = 8;
-			this.outoftagswarning.Text = "The range exceeds the maximum allowed tags and cannot be created.";
+			this.outoftagswarning.Text = "The range exceeds the maximum or minimum allowed tags and cannot be created.";
+			this.outoftagswarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.outoftagswarning.Visible = false;
 			// 
 			// endtaglabel
@@ -140,13 +148,62 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.label4.TabIndex = 9;
 			this.label4.Text = "End Tag:";
 			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(10, 47);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(62, 14);
+			this.label2.TabIndex = 11;
+			this.label2.Text = "Increment:";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// rangestep
+			// 
+			this.rangestep.AllowDecimal = false;
+			this.rangestep.AllowNegative = true;
+			this.rangestep.AllowRelative = false;
+			this.rangestep.ButtonStep = 1;
+			this.rangestep.ButtonStepFloat = 1F;
+			this.rangestep.Location = new System.Drawing.Point(76, 42);
+			this.rangestep.Name = "rangestep";
+			this.rangestep.Size = new System.Drawing.Size(96, 24);
+			this.rangestep.StepValues = null;
+			this.rangestep.TabIndex = 12;
+			this.rangestep.WhenTextChanged += new System.EventHandler(this.rangestep_WhenTextChanged);
+			// 
+			// relativemode
+			// 
+			this.relativemode.AutoSize = true;
+			this.relativemode.Location = new System.Drawing.Point(76, 72);
+			this.relativemode.Name = "relativemode";
+			this.relativemode.Size = new System.Drawing.Size(140, 18);
+			this.relativemode.TabIndex = 13;
+			this.relativemode.Text = "Relative to existing tags";
+			this.relativemode.UseVisualStyleBackColor = false;
+			this.relativemode.CheckedChanged += new System.EventHandler(this.relativemode_CheckedChanged);
+			// 
+			// bglabel
+			// 
+			this.bglabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.bglabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.bglabel.Enabled = false;
+			this.bglabel.Location = new System.Drawing.Point(12, 94);
+			this.bglabel.Name = "bglabel";
+			this.bglabel.Padding = new System.Windows.Forms.Padding(3);
+			this.bglabel.Size = new System.Drawing.Size(273, 50);
+			this.bglabel.TabIndex = 14;
+			this.bglabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// TagRangeForm
 			// 
 			this.AcceptButton = this.okbutton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancelbutton;
-			this.ClientSize = new System.Drawing.Size(298, 134);
+			this.ClientSize = new System.Drawing.Size(298, 183);
+			this.Controls.Add(this.relativemode);
+			this.Controls.Add(this.rangestep);
+			this.Controls.Add(this.label2);
 			this.Controls.Add(this.endtaglabel);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.cancelbutton);
@@ -156,6 +213,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.rangestart);
 			this.Controls.Add(this.outoftagswarning);
+			this.Controls.Add(this.bglabel);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
@@ -182,5 +240,9 @@ namespace CodeImp.DoomBuilder.TagRange
 		private System.Windows.Forms.Label outoftagswarning;
 		private System.Windows.Forms.Label endtaglabel;
 		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label2;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox rangestep;
+		private System.Windows.Forms.CheckBox relativemode;
+		private System.Windows.Forms.Label bglabel;
 	}
 }
