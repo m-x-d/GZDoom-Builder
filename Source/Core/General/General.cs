@@ -2011,17 +2011,20 @@ namespace CodeImp.DoomBuilder
 		}
 
 		private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e) {
+			string exceptionmsg = string.Empty;
+			
 			try {
 				// Since we can't prevent the app from terminating, log this to the event log. 
 				if(!EventLog.SourceExists("ThreadException"))
 					EventLog.CreateEventSource("ThreadException", "Application");
 
 				Exception ex = (Exception)e.ExceptionObject;
+				exceptionmsg = "An application error occurred: " + ex.Message + "\n\nStack Trace:\n" + ex.StackTrace;
 
 				// Create an EventLog instance and assign its source.
 				using (EventLog myLog = new EventLog()) {
 					myLog.Source = "ThreadException";
-					myLog.WriteEntry("An application error occurred: " + ex.Message + "\n\nStack Trace:\n" + ex.StackTrace);
+					myLog.WriteEntry(exceptionmsg);
 				}
 
 				GZBuilder.Windows.ExceptionDialog dlg = new GZBuilder.Windows.ExceptionDialog(e);
@@ -2029,8 +2032,8 @@ namespace CodeImp.DoomBuilder
 				dlg.ShowDialog();
 			} catch(Exception exc) {
 				try {
-					MessageBox.Show("Fatal Non-UI Error", "Fatal Non-UI Error. Could not write the error to the event log. Reason: "
-						+ exc.Message, MessageBoxButtons.OK, MessageBoxIcon.Stop);
+					MessageBox.Show("Could not write the error to the event log. Reason: "
+						+ exc.Message + "\n\nOriginal message:\n" + exceptionmsg, "Fatal Non-UI Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 				} finally {
 					Application.Exit();
 				}
