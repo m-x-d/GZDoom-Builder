@@ -86,7 +86,7 @@
       <ul>
         <li><a href="scripting/acs.html">Enhanced scripting workflow</a>.</li>
         <li><span class="style1"><strong>[new]</strong></span> <a href="scripting/snippets.html">Code snippets.</a></li>
-        <li><span class="style1"><strong>[new]</strong></span> Added support for multiple ACC compilers. </li>
+        <li><span class="style1"><strong>[new]</strong></span> Added support for multiple ACC compilers.</li>
         <li><span class="style1"><strong>[new]</strong></span> BCC script compiler (<a href="https://github.com/wormt/bcc/">https://github.com/wormt/bcc/</a>) is  bundled with GZDB.</li>
         <li><span class="style1"><strong>[new]</strong></span> Script type can  be chosen when creating or opening a map, and can be changed in Map Options form.</li>
       </ul>
@@ -151,6 +151,8 @@
         </li>
         <li>Line angle and front side direction are displayed when a line is drawn in Draw Geometry mode.</li>
         <li><span class="style1"><strong>[new]</strong></span> <strong>[UDMF]</strong> Floor/ceiling texture offsets can be pinned using this button in the toolbar: <img src="general/pin_textures.jpg"/>. When pinned, textures will be aligned to a sector while it is dragged.</li>
+        <li><span class="style1"><strong>[new]</strong></span> <strong>Tag Range plugin</strong>: custom increment can now be set.</li>
+        <li><span class="style1"><strong>[new]</strong></span> <strong>Tag Range plugin:</strong> tags can be set in relative mode (when this mode is enabled, generated values are added to existing tags instead of replacing them).</li>
         <li><span class="style1"><strong>[new]</strong></span> You can clear selection groups (default shortcuts are Ctrl-Shift-1 ... 0).</li>
         <li><span class="style1"><strong>[new]</strong></span> You can add selection to groups, select and clear groups using <strong>Edit</strong> menu.
           <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
@@ -184,7 +186,7 @@
         <li><span class="style1"><strong>[new]</strong></span> <strong>[UDMF]</strong> New actions: &quot;<strong>Align Ceiling Texture to Back Side</strong>&quot;, &quot;<strong>Align Ceiling Texture to Front Side</strong>&quot;, &quot;<strong>Align Floor Texture to Back Side</strong>&quot; and &quot;<strong>Align Floor Texture to Front Side</strong>&quot; (available in <strong>Linedefs -&gt; Align Textures</strong> menu).</li>
         <li><span class="style1"><strong>[new]</strong></span> <strong>[UDMF]</strong> &quot;<strong>Make brightness gradient</strong>&quot; command is available in Linedefs mode.</li>
         <li><strong>[UDMF]</strong> Linedef info panel: relative UDMF light values are  shown like this: <span class="style7">16</span> (<span class="style9">128</span>), which means &quot;<span class="style7">UDMF light value</span>&quot; (&quot;<span class="style9">total surface brightness</span>&quot;). Total surface brightness is UDMF light value + sector brightness.</li>
-        <li><span class="style1"><strong>[new]</strong></span> When a linedef is within Split Linedefs range, it is  highlighted using Info line color.</li>
+        <li><span class="style1"><strong>[new]</strong></span> Split Linedefs preview (a rectangle, colored using Info line color) is shown in this mode.</li>
         <li><span class="style1"><strong>[new]</strong></span> &quot;<strong>Flip Linedefs</strong>&quot; action will try to align linedefs, so their front (or back) point towards the same sector.</li>
       </ul>
     </li>
@@ -208,7 +210,7 @@
       <h3><a name="vertices" id="vertices"></a>Vertices mode:</h3>
       <ul>
         <li><strong>[UDMF]</strong> Vertical offsets of a vertex can  be edited in Vertex Edit form and are shown in Vertex Info panel.</li>
-        <li> When a linedef is within Split Linedefs range, it is  highlighted using Info line color.</li>
+        <li><span class="style1"><strong>[new]</strong></span> Split Linedefs preview (a rectangle, colored using Info line color) is shown in this mode.</li>
       </ul>
     </li>
     <li>

@@ -12,6 +12,11 @@ namespace CodeImp.DoomBuilder.TagRange
 		private UniversalType selectiontype;
 		private int selectioncount;
 		Dictionary<int, bool> usedtags;
+		private List<int> initialtags; //mxd
+
+		//mxd. Persistent settings
+		private static int storedstep = 1;
+		private static bool storedrelative;
 		
 		public int SelectionCount { get { return selectioncount; } }
 		
@@ -31,6 +36,8 @@ namespace CodeImp.DoomBuilder.TagRange
 			{
 				selectiontype = UniversalType.SectorTag;
 				ICollection<Sector> list = General.Map.Map.GetSelectedSectors(true);
+				initialtags = new List<int>(list.Count); //mxd
+				foreach(Sector element in list) initialtags.Add(element.Tag); //mxd
 				selectioncount = list.Count;
 				this.Text = "Create tag range for " + selectioncount + (selectioncount > 1 ? " sectors" : " sector");
 			}
@@ -38,6 +45,8 @@ namespace CodeImp.DoomBuilder.TagRange
 			{
 				selectiontype = UniversalType.LinedefTag;
 				ICollection<Linedef> list = General.Map.Map.GetSelectedLinedefs(true);
+				initialtags = new List<int>(list.Count); //mxd
+				foreach(Linedef element in list) initialtags.Add(element.Tag); //mxd
 				selectioncount = list.Count;
 				this.Text = "Create tag range for " + selectioncount + (selectioncount > 1 ? " linedefs" : " linedef");
 			}
@@ -45,6 +54,8 @@ namespace CodeImp.DoomBuilder.TagRange
 			{
 				selectiontype = UniversalType.ThingTag;
 				ICollection<Thing> list = General.Map.Map.GetSelectedThings(true);
+				initialtags = new List<int>(list.Count); //mxd
+				foreach(Thing element in list) initialtags.Add(element.Tag); //mxd
 				selectioncount = list.Count;
 				this.Text = "Create tag range for " + selectioncount + (selectioncount > 1 ? " things" : " thing");
 			}
@@ -56,6 +67,13 @@ namespace CodeImp.DoomBuilder.TagRange
 			// Find the first unused tag to use as range start
 			int starttag = General.Map.Map.GetNewTag();
 			rangestart.Text = starttag.ToString();
+
+			//mxd. Apply saved settings
+			rangestep.Text = storedstep.ToString();
+			relativemode.Checked = storedrelative;
+
+			//mxd. Do useless stuff
+			if(General.Random(0, 255) > 230) bglabel.Text = "Creating tag ranges is fun! ^_^";
 		}
 		
 		// Handler for finding a new tag
@@ -65,44 +83,84 @@ namespace CodeImp.DoomBuilder.TagRange
 		}
 		
 		// This creates a range
-		private List<int> CreateRange(int starttag, bool skipusedtags, out bool tagsused, out bool outoftags)
+		private List<int> CreateRange(int starttag, int increment, bool relative, bool skipusedtags, out bool tagsused, out bool outoftags) 
 		{
 			List<int> newtags = new List<int>(selectioncount);
 			outoftags = false;
 			tagsused = false;
-			
-			// Go for the number of tags we need
-			for(int i = 0; i < selectioncount; i++)
+
+			//mxd. Get relative tag range
+			if (relative) 
 			{
-				if(starttag > General.Map.FormatInterface.MaxTag)
+				int newtag;
+
+				// Go for the number of tags we need
+				for(int i = 0; i < selectioncount; i++) 
 				{
-					outoftags = true;
-					return newtags;
-				}
-					
-				if(skipusedtags)
-				{
-					// Find next unused tag
-					while(usedtags.ContainsKey(starttag))
+					newtag = initialtags[i] + starttag;
+
+					if(newtag > General.Map.FormatInterface.MaxTag || newtag < General.Map.FormatInterface.MinTag) 
 					{
-						if(starttag == General.Map.FormatInterface.MaxTag)
-						{
-							outoftags = true;
-							return newtags;
-						}
-						
-						starttag++;
+						outoftags = true;
+						return newtags;
 					}
+
+					if(skipusedtags) 
+					{
+						// Find next unused tag
+						while(usedtags.ContainsKey(newtag)) 
+						{
+							if(newtag >= General.Map.FormatInterface.MaxTag || newtag <= General.Map.FormatInterface.MinTag) 
+							{
+								outoftags = true;
+								return newtags;
+							}
+
+							starttag += increment; //mxd
+						}
+					} 
+					else 
+					{
+						tagsused |= usedtags.ContainsKey(newtag);
+					}
+
+					newtags.Add(newtag);
+					starttag += increment;
 				}
-				else
+			} 
+			else //mxd. Get absolute tag range
+			{
+				// Go for the number of tags we need
+				for (int i = 0; i < selectioncount; i++) 
 				{
-					tagsused |= usedtags.ContainsKey(starttag);
+					if (starttag > General.Map.FormatInterface.MaxTag || starttag < General.Map.FormatInterface.MinTag) 
+					{
+						outoftags = true;
+						return newtags;
+					}
+
+					if (skipusedtags) 
+					{
+						// Find next unused tag
+						while (usedtags.ContainsKey(starttag)) 
+						{
+							if (starttag >= General.Map.FormatInterface.MaxTag || starttag <= General.Map.FormatInterface.MinTag) 
+							{
+								outoftags = true;
+								return newtags;
+							}
+
+							starttag += increment; //mxd
+						}
+					} 
+					else 
+					{
+						tagsused |= usedtags.ContainsKey(starttag);
+					}
+
+					newtags.Add(starttag);
+					starttag += increment; //mxd
 				}
-				
-				newtags.Add(starttag);
-				
-				if(starttag < General.Map.FormatInterface.MaxTag)
-					starttag++;
 			}
 			
 			return newtags;
@@ -113,18 +171,17 @@ namespace CodeImp.DoomBuilder.TagRange
 		{
 			bool outoftags, tagsused;
 			int starttag = rangestart.GetResult(0);
+			int step = rangestep.GetResult(1); //mxd
 			
-			List<int> tags = CreateRange(starttag, false, out tagsused, out outoftags);
-			
+			List<int> tags = CreateRange(starttag, step, relativemode.Checked, skipdoubletags.Checked, out tagsused, out outoftags); //mxd
+
 			outoftagswarning.Visible = outoftags;
+			okbutton.Enabled = !outoftags;
 			doubletagwarning.Visible = tagsused && !outoftags;
 			skipdoubletags.Visible = tagsused && !outoftags;
 			skipdoubletags.BringToFront();
-
-			tags = CreateRange(starttag, skipdoubletags.Checked, out tagsused, out outoftags);
 			
-			if(tags.Count > 0)
-				endtaglabel.Text = tags[tags.Count - 1].ToString();
+			if(tags.Count > 0) endtaglabel.Text = tags[tags.Count - 1].ToString();
 		}
 		
 		// Range start changes
@@ -138,9 +195,11 @@ namespace CodeImp.DoomBuilder.TagRange
 		{
 			bool outoftags, tagsused;
 			int starttag = rangestart.GetResult(0);
-			
-			List<int> tags = CreateRange(starttag, skipdoubletags.Checked, out tagsused, out outoftags);
-			
+			int step = rangestep.GetResult(1);
+
+			//mxd
+			List<int> tags = CreateRange(starttag, step, relativemode.Checked, skipdoubletags.Checked, out tagsused, out outoftags);
+
 			if(outoftags)
 			{
 				General.ShowWarningMessage("The range exceeds the maximum allowed tags and cannot be created.", MessageBoxButtons.OK);
@@ -153,28 +212,30 @@ namespace CodeImp.DoomBuilder.TagRange
 					General.Map.UndoRedo.CreateUndo("Set " + selectioncount + " sector tags");
 					ICollection<Sector> list = General.Map.Map.GetSelectedSectors(true);
 					int index = 0;
-					foreach(Sector s in list)
-						s.Tag = tags[index++];
+					foreach(Sector s in list) s.Tag = tags[index++];
 				}
 				else if(selectiontype == UniversalType.LinedefTag)
 				{
 					General.Map.UndoRedo.CreateUndo("Set " + selectioncount + " linedef tags");
 					ICollection<Linedef> list = General.Map.Map.GetSelectedLinedefs(true);
 					int index = 0;
-					foreach(Linedef l in list)
-						l.Tag = tags[index++];
+					foreach(Linedef l in list) l.Tag = tags[index++];
 				}
 				else if(selectiontype == UniversalType.ThingTag)
 				{
 					General.Map.UndoRedo.CreateUndo("Set " + selectioncount + " thing tags");
 					ICollection<Thing> list = General.Map.Map.GetSelectedThings(true);
 					int index = 0;
-					foreach(Thing t in list)
-						t.Tag = tags[index++];
+					foreach(Thing t in list) t.Tag = tags[index++];
 				}
+
+				//mxd. Store settings
+				storedstep = rangestep.GetResult(1);
+				storedrelative = relativemode.Checked;
+
+				//We are done here.
+				this.Close();
 			}
-			
-			this.Close();
 		}
 		
 		// Cancel clicked
@@ -186,6 +247,19 @@ namespace CodeImp.DoomBuilder.TagRange
 		// Skip over used tags changed
 		private void skipdoubletags_CheckedChanged(object sender, EventArgs e)
 		{
+			UpdateChanges();
+		}
+
+		//mxd
+		private void rangestep_WhenTextChanged(object sender, EventArgs e) 
+		{
+			UpdateChanges();
+		}
+
+		//mxd
+		private void relativemode_CheckedChanged(object sender, EventArgs e) 
+		{
+			rangestart.AllowNegative = relativemode.Checked;
 			UpdateChanges();
 		}
 	}
