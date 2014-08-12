@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			string modename = General.Editing.Mode.GetType().Name;
 			if(modename == "SectorsMode")
 			{
+				General.Map.Map.MarkSelectedSectors(true, true); //mxd
 				selectiontype = UniversalType.SectorTag;
 				ICollection<Sector> list = General.Map.Map.GetSelectedSectors(true);
 				initialtags = new List<int>(list.Count); //mxd
@@ -43,6 +44,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			}
 			else if(modename == "LinedefsMode")
 			{
+				General.Map.Map.MarkSelectedLinedefs(true, true); //mxd
 				selectiontype = UniversalType.LinedefTag;
 				ICollection<Linedef> list = General.Map.Map.GetSelectedLinedefs(true);
 				initialtags = new List<int>(list.Count); //mxd
@@ -52,6 +54,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			}
 			else if(modename == "ThingsMode")
 			{
+				General.Map.Map.MarkSelectedThings(true, true); //mxd
 				selectiontype = UniversalType.ThingTag;
 				ICollection<Thing> list = General.Map.Map.GetSelectedThings(true);
 				initialtags = new List<int>(list.Count); //mxd
