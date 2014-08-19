@@ -75,12 +75,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.results.FormattingEnabled = true;
+			this.results.HorizontalScrollbar = true;
 			this.results.IntegralHeight = false;
 			this.results.ItemHeight = 14;
 			this.results.Location = new System.Drawing.Point(10, 34);
 			this.results.Margin = new System.Windows.Forms.Padding(1);
 			this.results.Name = "results";
-			this.results.Size = new System.Drawing.Size(357, 168);
+			this.results.Size = new System.Drawing.Size(356, 267);
 			this.results.Sorted = true;
 			this.results.TabIndex = 0;
 			this.results.SelectedIndexChanged += new System.EventHandler(this.results_SelectedIndexChanged);
@@ -99,14 +100,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultspanel.Controls.Add(this.results);
 			this.resultspanel.Location = new System.Drawing.Point(0, 124);
 			this.resultspanel.Name = "resultspanel";
-			this.resultspanel.Size = new System.Drawing.Size(380, 343);
+			this.resultspanel.Size = new System.Drawing.Size(379, 442);
 			this.resultspanel.TabIndex = 2;
 			// 
 			// cbApplyToAll
 			// 
 			this.cbApplyToAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.cbApplyToAll.AutoSize = true;
-			this.cbApplyToAll.Location = new System.Drawing.Point(12, 317);
+			this.cbApplyToAll.Location = new System.Drawing.Point(12, 416);
 			this.cbApplyToAll.Name = "cbApplyToAll";
 			this.cbApplyToAll.Size = new System.Drawing.Size(169, 18);
 			this.cbApplyToAll.TabIndex = 6;
@@ -116,7 +117,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// fix3
 			// 
 			this.fix3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.fix3.Location = new System.Drawing.Point(256, 285);
+			this.fix3.Location = new System.Drawing.Point(256, 384);
 			this.fix3.Name = "fix3";
 			this.fix3.Size = new System.Drawing.Size(114, 26);
 			this.fix3.TabIndex = 3;
@@ -128,7 +129,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// fix2
 			// 
 			this.fix2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.fix2.Location = new System.Drawing.Point(133, 285);
+			this.fix2.Location = new System.Drawing.Point(133, 384);
 			this.fix2.Name = "fix2";
 			this.fix2.Size = new System.Drawing.Size(114, 26);
 			this.fix2.TabIndex = 2;
@@ -142,16 +143,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultinfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.resultinfo.Enabled = false;
-			this.resultinfo.Location = new System.Drawing.Point(12, 208);
+			this.resultinfo.Location = new System.Drawing.Point(12, 307);
 			this.resultinfo.Name = "resultinfo";
-			this.resultinfo.Size = new System.Drawing.Size(355, 74);
+			this.resultinfo.Size = new System.Drawing.Size(354, 74);
 			this.resultinfo.TabIndex = 5;
 			this.resultinfo.Text = "Select a result from the list to see more information.";
 			// 
 			// fix1
 			// 
 			this.fix1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.fix1.Location = new System.Drawing.Point(10, 285);
+			this.fix1.Location = new System.Drawing.Point(10, 384);
 			this.fix1.Name = "fix1";
 			this.fix1.Size = new System.Drawing.Size(114, 26);
 			this.fix1.TabIndex = 1;
@@ -167,7 +168,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.progress.Location = new System.Drawing.Point(10, 3);
 			this.progress.Margin = new System.Windows.Forms.Padding(1);
 			this.progress.Name = "progress";
-			this.progress.Size = new System.Drawing.Size(357, 18);
+			this.progress.Size = new System.Drawing.Size(356, 18);
 			this.progress.TabIndex = 3;
 			this.progress.Value = 30;
 			// 
@@ -200,7 +201,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.closebutton;
-			this.ClientSize = new System.Drawing.Size(380, 468);
+			this.ClientSize = new System.Drawing.Size(380, 566);
 			this.Controls.Add(this.bExport);
 			this.Controls.Add(this.closebutton);
 			this.Controls.Add(this.resultspanel);
@@ -210,7 +211,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(396, 502);
 			this.Name = "ErrorCheckForm";
 			this.Opacity = 0;
 			this.ShowIcon = false;

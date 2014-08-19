@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private BlockMap<BlockEntry> blockmap;
 		private static bool applyToAll; //mxd
 		private int errorscount; //mxd
+		private Size initialsize; //mxd
 		
 		#endregion
 
@@ -85,6 +86,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					c.Checked = checkerattr.DefaultChecked;
 				}
 			}
+
+			//mxd. Store initial height
+			initialsize = this.Size;
 		}
 		
 		// This shows the window
@@ -104,7 +108,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Close results part
 			resultspanel.Visible = false;
-			this.Size = new Size(this.Width, this.Height - this.ClientSize.Height + resultspanel.Top);
+			this.Size = new Size(initialsize.Width, this.Height - this.ClientSize.Height + resultspanel.Top);
+			this.MinimumSize = this.Size; //mxd
+			this.MaximumSize = this.Size; //mxd
 			
 			// Show window
 			base.Show(owner);
@@ -208,13 +214,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			blockmap.AddThingsSet(General.Map.Map.Things);
 			blockmap.AddVerticesSet(General.Map.Map.Vertices); //mxd
 			
-			// Open the results panel
-			this.Size = new Size(this.Width, this.Height - this.ClientSize.Height + resultspanel.Top + resultspanel.Height);
+			//mxd. Open the results panel
+			if (!resultspanel.Visible) {
+				this.MinimumSize = new Size();
+				this.MaximumSize = new Size();
+				this.Size = initialsize;
+				resultspanel.Size = new Size(resultspanel.Width, this.ClientSize.Height - resultspanel.Top);
+				resultspanel.Visible = true;
+			}
 			progress.Value = 0;
 			results.Items.Clear();
 			results.Enabled = true;
 			ClearSelectedResult();
-			resultspanel.Visible = true;
 			buttoncheck.Text = "Abort Analysis";
 			General.Interface.RedrawDisplay();
 			
