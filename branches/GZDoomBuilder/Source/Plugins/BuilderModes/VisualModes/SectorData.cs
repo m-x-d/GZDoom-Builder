@@ -202,7 +202,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void BasicSetup()
 		{
 			//mxd
-			if(sector.FloorSlope.GetLengthSq() > 0) 
+			if(sector.FloorSlope.GetLengthSq() > 0 && !float.IsNaN(-sector.FloorSlopeOffset / sector.FloorSlope.z)) 
 			{
 				// Sloped plane
 				floor.plane = new Plane(sector.FloorSlope, sector.FloorSlopeOffset);
@@ -213,7 +213,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				floor.plane = new Plane(new Vector3D(0, 0, 1), -sector.FloorHeight);
 			}
 
-			if(sector.CeilingSlope.GetLengthSq() > 0) 
+			if(sector.CeilingSlope.GetLengthSq() > 0 && !float.IsNaN(-sector.CeilingSlopeOffset / sector.CeilingSlope.z)) 
 			{
 				// Sloped plane
 				ceiling.plane = new Plane(sector.CeilingSlope, sector.CeilingSlopeOffset);
