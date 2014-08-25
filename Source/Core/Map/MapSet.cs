@@ -27,6 +27,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
@@ -3018,25 +3019,26 @@ namespace CodeImp.DoomBuilder.Map
 
 		//mxd
 		/// <summary>This returns a sector if given coordinates are inside one.</summary>
-		public Sector GetSectorByCoordinates(Vector2D pos) {
-			List<Linedef> lines = new List<Linedef>(10);
+		public Sector GetSectorByCoordinates(Vector2D pos) 
+		{
+			foreach (Sector s in sectors) 
+			{
+				if (s.Intersect(pos)) return s;
+			}
+			return null;
+		}
 
-			foreach (Sector s in sectors) {
-				if(pos.x < s.BBox.Left || pos.x > s.BBox.Right || pos.y < s.BBox.Top || pos.y > s.BBox.Bottom) continue;
-				foreach (Sidedef side in s.Sidedefs) lines.Add(side.Line);
+		//mxd
+		/// <summary>This returns a sector if given coordinates are inside one.</summary>
+		public Sector GetSectorByCoordinates(Vector2D pos, VisualBlockMap blockmap) 
+		{
+			// Find nearest sectors using the blockmap
+			List<Sector> possiblesectors = blockmap.GetBlock(blockmap.GetBlockCoordinates(pos)).Sectors;
+			foreach(Sector s in possiblesectors) 
+			{
+				if(s.Intersect(pos)) return s;
 			}
 
-			Linedef nl = NearestLinedef(lines, pos);
-			if(nl != null) {
-				// Check what side of line we are at
-				if(nl.SideOfLine(pos) < 0f) {
-					// Front side
-					if(nl.Front != null) return nl.Front.Sector;
-				} else {
-					// Back side
-					if(nl.Back != null) return nl.Back.Sector;
-				}
-			}
 			return null;
 		}
 

@@ -188,6 +188,16 @@ namespace CodeImp.DoomBuilder.IO
 				writer.Write(s.CeilTexture.Length);
 				writer.Write(s.CeilTexture.ToCharArray());
 
+				//mxd. Slopes
+				writer.Write(s.FloorSlopeOffset);
+				writer.Write(s.FloorSlope.x);
+				writer.Write(s.FloorSlope.y);
+				writer.Write(s.FloorSlope.z);
+				writer.Write(s.CeilingSlopeOffset);
+				writer.Write(s.CeilingSlope.x);
+				writer.Write(s.CeilingSlope.y);
+				writer.Write(s.CeilingSlope.z);
+
 				AddFlags(s.Flags, writer);
 				AddCustomFields(s.Fields, "sector", writer);
 			}

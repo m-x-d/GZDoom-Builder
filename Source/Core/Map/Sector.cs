@@ -72,12 +72,18 @@ namespace CodeImp.DoomBuilder.Map
 		private Triangulation triangles;
 		private FlatVertex[] flatvertices;
 		private ReadOnlyCollection<LabelPositionInfo> labels;
-		private SurfaceEntryCollection surfaceentries;
+		private readonly SurfaceEntryCollection surfaceentries;
 
 		//mxd. Rendering
-		protected Color4 fogColor; //mxd
-		protected bool hasFogColor; //mxd
-		protected bool useOutsideFog; //mxd
+		private Color4 fogColor;
+		private bool hasFogColor;
+		private bool useOutsideFog;
+
+		//mxd. Slopes
+		private Vector3D floorslope;
+		private float flooroffset;
+		private Vector3D ceilslope;
+		private float ceiloffset;
 		
 		#endregion
 
@@ -112,6 +118,12 @@ namespace CodeImp.DoomBuilder.Map
 		public Color4 FogColor { get { return fogColor; } }
 		public bool HasFogColor { get { return hasFogColor; } }
 		public bool UsesOutsideFog { get { return useOutsideFog; } }
+
+		//mxd. Slopes
+		public Vector3D FloorSlope { get { return floorslope; } set { BeforePropsChange(); floorslope = value; updateneeded = true; } }
+		public float FloorSlopeOffset { get { return flooroffset; } set { BeforePropsChange(); flooroffset = value; updateneeded = true; } }
+		public Vector3D CeilingSlope { get { return ceilslope; } set { BeforePropsChange(); ceilslope = value; updateneeded = true; } }
+		public float CeilingSlopeOffset { get { return ceiloffset; } set { BeforePropsChange(); ceiloffset = value; updateneeded = true; } }
 
 		#endregion
 
@@ -229,6 +241,12 @@ namespace CodeImp.DoomBuilder.Map
 			s.rwInt(ref effect);
 			s.rwInt(ref tag);
 			s.rwInt(ref brightness);
+
+			//mxd. Slopes
+			s.rwFloat(ref flooroffset);
+			s.rwVector3D(ref floorslope);
+			s.rwFloat(ref ceiloffset);
+			s.rwVector3D(ref ceilslope);
 		}
 		
 		// After deserialization
@@ -255,6 +273,10 @@ namespace CodeImp.DoomBuilder.Map
 			s.tag = tag;
 			s.flags = new Dictionary<string, bool>(flags); //mxd
 			s.brightness = brightness;
+			s.flooroffset = flooroffset; //mxd
+			s.floorslope = floorslope; //mxd
+			s.ceiloffset = ceiloffset; //mxd
+			s.ceilslope = ceilslope; //mxd
 			s.updateneeded = true;
 			base.CopyPropertiesTo(s);
 		}
@@ -445,8 +467,10 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This checks if the given point is inside the sector polygon
-		public bool Intersect(Vector2D p)
+		public bool Intersect(Vector2D p) 
 		{
+			if (MapSet.GetCSFieldBits(p, bbox) != 0) return false; //mxd. Check bounding box
+			
 			uint c = 0;
 			
 			// Go for all sidedefs
@@ -455,6 +479,9 @@ namespace CodeImp.DoomBuilder.Map
 				// Get vertices
 				Vector2D v1 = sd.Line.Start.Position;
 				Vector2D v2 = sd.Line.End.Position;
+
+				//mxd. On top of a vertex?
+				if (p == v1 || p == v2) return true;
 				
 				// Determine min/max values
 				float miny = Math.Min(v1.y, v2.y);
@@ -553,11 +580,11 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd. This updates all properties (Doom/Hexen version)
 		public void Update(int hfloor, int hceil, string tfloor, string tceil, int effect, int tag, int brightness) 
 		{
-			Update(hfloor, hceil, tfloor, tceil, effect, new Dictionary<string, bool>(StringComparer.Ordinal), tag, brightness);
+			Update(hfloor, hceil, tfloor, tceil, effect, new Dictionary<string, bool>(StringComparer.Ordinal), tag, brightness, 0, new Vector3D(), 0, new Vector3D());
 		}
 
 		//mxd. This updates all properties (UDMF version)
-		public void Update(int hfloor, int hceil, string tfloor, string tceil, int effect, Dictionary<string, bool> flags, int tag, int brightness)
+		public void Update(int hfloor, int hceil, string tfloor, string tceil, int effect, Dictionary<string, bool> flags, int tag, int brightness, float flooroffset, Vector3D floorslope, float ceiloffset, Vector3D ceilslope)
 		{
 			BeforePropsChange();
 			
@@ -570,6 +597,10 @@ namespace CodeImp.DoomBuilder.Map
 			this.tag = tag;
 			this.flags = new Dictionary<string, bool>(flags); //mxd
 			this.brightness = brightness;
+			this.flooroffset = flooroffset; //mxd
+			this.floorslope = floorslope; //mxd
+			this.ceiloffset = ceiloffset; //mxd
+			this.ceilslope = ceilslope; //mxd
 			updateneeded = true;
 		}
 

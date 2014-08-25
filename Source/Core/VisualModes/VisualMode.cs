@@ -42,9 +42,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#endregion
 
 		#region ================== Variables
-
-		// 3D Mode thing
-		protected Thing modething;
 		
 		// Graphics
 		protected IRenderer3D renderer;
@@ -65,6 +62,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private List<VisualThing> selectedVisualThings;
 		private List<VisualSector> selectedVisualSectors;
 		protected Dictionary<Vertex, VisualVertexPair> vertices;
+		private static Vector2D initialcameraposition;
 		//used in "Play From Here" Action
 		private Thing playerStart;
 		private Vector3D playerStartPosition;
@@ -101,7 +99,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			// Initialize
 			this.renderer = General.Map.Renderer3D;
-			//this.renderer3d = (Renderer3D)General.Map.Renderer3D;
 			this.blockmap = new VisualBlockMap();
 			this.allsectors = new Dictionary<Sector, VisualSector>(General.Map.Map.Sectors.Count);
 			this.allthings = new Dictionary<Thing,VisualThing>(General.Map.Map.Things.Count);
@@ -118,35 +115,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 			//mxd. Synch camera position to cursor position or center of the screen in 2d-mode
 			if (General.Settings.GZSynchCameras && General.Editing.Mode is ClassicMode) {
 				ClassicMode oldmode = General.Editing.Mode as ClassicMode;
-				Vector2D pos2d;
 
-				if (oldmode.IsMouseInside)
-					pos2d = new Vector2D(oldmode.MouseMapPos.x, oldmode.MouseMapPos.y);
-				 else
-					pos2d = new Vector2D(General.Map.CRenderer2D.Viewport.Left + General.Map.CRenderer2D.Viewport.Width / 2.0f, General.Map.CRenderer2D.Viewport.Top + General.Map.CRenderer2D.Viewport.Height / 2.0f);
-
-				//if position is inside sector - adjust camera.z accordingly
-				Sector sector = General.Map.Map.GetSectorByCoordinates(pos2d);
-
-				float posz = General.Map.VisualCamera.Position.z;
-				if(sector != null) {
-					int sectorHeight = sector.CeilHeight - sector.FloorHeight;
-					if (General.Map.VisualCamera.Position.z < sector.FloorHeight + 41) {
-						if (sectorHeight < 41) {
-							posz = sector.FloorHeight + sectorHeight / 2;
-						} else {
-							posz = sector.FloorHeight + 41; // same as in doom
-						}
-					} else if(General.Map.VisualCamera.Position.z > sector.CeilHeight) {
-						if(sectorHeight < 41) {
-							posz = sector.FloorHeight + sectorHeight / 2;
-						} else {
-							posz = sector.CeilHeight - 4;
-						}
-					}
-				}
-
-				General.Map.VisualCamera.Position = new Vector3D(pos2d.x, pos2d.y, posz);
+				if(oldmode.IsMouseInside)
+					initialcameraposition = new Vector2D(oldmode.MouseMapPos.x, oldmode.MouseMapPos.y);
+				else
+					initialcameraposition = new Vector2D(General.Map.CRenderer2D.Viewport.Left + General.Map.CRenderer2D.Viewport.Width / 2.0f, General.Map.CRenderer2D.Viewport.Top + General.Map.CRenderer2D.Viewport.Height / 2.0f);
 			}
 		}
 		
@@ -185,13 +158,43 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			base.OnEngage();
 			
-			General.Map.VisualCamera.PositionAtThing();
-			
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
 			
 			// Fill the blockmap
 			FillBlockMap();
+
+			//mxd. Synch camera position to cursor position or center of the screen in 2d-mode
+			if(General.Settings.GZSynchCameras) 
+			{
+				//if position is inside sector - adjust camera.z accordingly
+				Sector sector = General.Map.Map.GetSectorByCoordinates(initialcameraposition, blockmap);
+
+				float posz = General.Map.VisualCamera.Position.z;
+				if(sector != null) 
+				{
+					int sectorHeight = sector.CeilHeight - sector.FloorHeight;
+					if(General.Map.VisualCamera.Position.z < sector.FloorHeight + 41) 
+					{
+						if(sectorHeight < 41)
+							posz = sector.FloorHeight + sectorHeight / 2;
+						else
+							posz = sector.FloorHeight + 41; // same as in doom
+					} 
+					else if(General.Map.VisualCamera.Position.z > sector.CeilHeight) 
+					{
+						if(sectorHeight < 41)
+							posz = sector.FloorHeight + sectorHeight / 2;
+						else
+							posz = sector.CeilHeight - 4;
+					}
+				}
+				General.Map.VisualCamera.Position = new Vector3D(initialcameraposition.x, initialcameraposition.y, posz);
+			} 
+			else 
+			{
+				General.Map.VisualCamera.PositionAtThing();
+			}
 			
 			// Start special input mode
 			General.Interface.EnableProcessing();
@@ -285,7 +288,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 				//now check if camera is located inside a sector
 				Vector3D camPos = General.Map.VisualCamera.Position;
-				Sector s = General.Map.Map.GetSectorByCoordinates(new Vector2D(camPos.x, camPos.y));
+				Sector s = General.Map.Map.GetSectorByCoordinates(new Vector2D(camPos.x, camPos.y), blockmap);
 
 				if (s == null) {
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: cursor is not inside sector!");
@@ -1109,7 +1112,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			//show form...
 			CenterOnCoordinatesForm form = new CenterOnCoordinatesForm();
 			if(form.ShowDialog() == DialogResult.OK) {
-				Sector s = General.Map.Map.GetSectorByCoordinates(form.Coordinates);
+				Sector s = General.Map.Map.GetSectorByCoordinates(form.Coordinates, blockmap);
 
 				if (s == null) {
 					General.Map.VisualCamera.Position = form.Coordinates;

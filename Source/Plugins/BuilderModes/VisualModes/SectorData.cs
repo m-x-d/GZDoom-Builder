@@ -114,13 +114,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			alleffects.Add(e);
 		}
 
-		//mxd. Sector slope effect
-		public void AddEffectSectorSlope(bool ceilingslope) 
-		{
-			EffectSectorSlope e = new EffectSectorSlope(this, ceilingslope);
-			alleffects.Add(e);
-		}
-
 		//mxd. Plane copy slope effect
 		public void AddEffectPlaneClopySlope(Linedef sourcelinedef, bool front) 
 		{
@@ -208,9 +201,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This sets up the basic floor and ceiling, as they would be in normal Doom circumstances
 		private void BasicSetup()
 		{
-			// Normal (flat) floor and ceiling planes
-			floor.plane = new Plane(new Vector3D(0, 0, 1), -sector.FloorHeight);
-			ceiling.plane = new Plane(new Vector3D(0, 0, -1), sector.CeilHeight);
+			//mxd
+			if(sector.FloorSlope.GetLengthSq() > 0) 
+			{
+				// Sloped plane
+				floor.plane = new Plane(sector.FloorSlope, sector.FloorSlopeOffset);
+			} 
+			else 
+			{
+				// Normal (flat) floor plane
+				floor.plane = new Plane(new Vector3D(0, 0, 1), -sector.FloorHeight);
+			}
+
+			if(sector.CeilingSlope.GetLengthSq() > 0) 
+			{
+				// Sloped plane
+				ceiling.plane = new Plane(sector.CeilingSlope, sector.CeilingSlopeOffset);
+			} 
+			else 
+			{
+				// Normal (flat) ceiling plane
+				ceiling.plane = new Plane(new Vector3D(0, 0, -1), sector.CeilHeight);
+			}
 			
 			// Fetch ZDoom fields
 			int color = sector.Fields.GetValue("lightcolor", -1);

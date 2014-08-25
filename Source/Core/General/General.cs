@@ -2032,8 +2032,8 @@ namespace CodeImp.DoomBuilder
 				dlg.ShowDialog();
 			} catch(Exception exc) {
 				try {
-					MessageBox.Show("Could not write the error to the event log. Reason: "
-						+ exc.Message + "\n\nOriginal message:\n" + exceptionmsg, "Fatal Non-UI Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+					MessageBox.Show("Could not write the error to the event log.\nReason: "
+						+ exc.Message + "\n\nInitial exception:\n" + exceptionmsg, "Fatal Non-UI Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 				} finally {
 					Application.Exit();
 				}

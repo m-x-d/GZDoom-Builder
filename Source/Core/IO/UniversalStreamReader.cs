@@ -379,24 +379,35 @@ namespace CodeImp.DoomBuilder.IO
 				// Read fields
 				UniversalCollection c = collections[i];
 				string where = "sector " + i;
-				int hfloor = GetCollectionEntry<int>(c, "heightfloor", false, 0, where);
-				int hceil = GetCollectionEntry<int>(c, "heightceiling", false, 0, where);
-				string tfloor = GetCollectionEntry<string>(c, "texturefloor", true, "-", where);
-				string tceil = GetCollectionEntry<string>(c, "textureceiling", true, "-", where);
-				int bright = GetCollectionEntry<int>(c, "lightlevel", false, 160, where);
-				int special = GetCollectionEntry<int>(c, "special", false, 0, where);
-				int tag = GetCollectionEntry<int>(c, "id", false, 0, where);
+				int hfloor = GetCollectionEntry(c, "heightfloor", false, 0, where);
+				int hceil = GetCollectionEntry(c, "heightceiling", false, 0, where);
+				string tfloor = GetCollectionEntry(c, "texturefloor", true, "-", where);
+				string tceil = GetCollectionEntry(c, "textureceiling", true, "-", where);
+				int bright = GetCollectionEntry(c, "lightlevel", false, 160, where);
+				int special = GetCollectionEntry(c, "special", false, 0, where);
+				int tag = GetCollectionEntry(c, "id", false, 0, where);
 
-				//mxd. Flags
+				//mxd. Read slopes
+				float fslopex = GetCollectionEntry(c, "floorplane_a", false, 0.0f, where);
+				float fslopey = GetCollectionEntry(c, "floorplane_b", false, 0.0f, where);
+				float fslopez = GetCollectionEntry(c, "floorplane_c", false, 0.0f, where);
+				float foffset = GetCollectionEntry(c, "floorplane_d", false, float.NaN, where);
+
+				float cslopex = GetCollectionEntry(c, "ceilingplane_a", false, 0.0f, where);
+				float cslopey = GetCollectionEntry(c, "ceilingplane_b", false, 0.0f, where);
+				float cslopez = GetCollectionEntry(c, "ceilingplane_c", false, 0.0f, where);
+				float coffset = GetCollectionEntry(c, "ceilingplane_d", false, float.NaN, where);
+
+				//mxd. Read flags
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				foreach(KeyValuePair<string, string> flag in General.Map.Config.SectorFlags)
-					stringflags[flag.Key] = GetCollectionEntry<bool>(c, flag.Key, false, false, where);
+					stringflags[flag.Key] = GetCollectionEntry(c, flag.Key, false, false, where);
 
 				// Create new item
 				Sector s = map.CreateSector();
 				if(s != null)
 				{
-					s.Update(hfloor, hceil, tfloor, tceil, special, stringflags, tag, bright);
+					s.Update(hfloor, hceil, tfloor, tceil, special, stringflags, tag, bright, foffset, new Vector3D(fslopex, fslopey, fslopez).GetNormal(), coffset, new Vector3D(cslopex, cslopey, cslopez).GetNormal());
 
 					// Custom fields
 					ReadCustomFields(c, s, "sector");

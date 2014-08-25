@@ -475,10 +475,10 @@
 			this.cbUseFloorLineAngles.AutoSize = true;
 			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(236, 147);
 			this.cbUseFloorLineAngles.Name = "cbUseFloorLineAngles";
-			this.cbUseFloorLineAngles.Size = new System.Drawing.Size(99, 18);
+			this.cbUseFloorLineAngles.Size = new System.Drawing.Size(115, 18);
 			this.cbUseFloorLineAngles.TabIndex = 57;
 			this.cbUseFloorLineAngles.Tag = "";
-			this.cbUseFloorLineAngles.Text = "Use line angles";
+			this.cbUseFloorLineAngles.Text = "Use linedef angles";
 			this.cbUseFloorLineAngles.UseVisualStyleBackColor = true;
 			this.cbUseFloorLineAngles.CheckedChanged += new System.EventHandler(this.cbUseFloorLineAngles_CheckedChanged);
 			// 
@@ -671,10 +671,10 @@
 			this.cbUseCeilLineAngles.AutoSize = true;
 			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(236, 147);
 			this.cbUseCeilLineAngles.Name = "cbUseCeilLineAngles";
-			this.cbUseCeilLineAngles.Size = new System.Drawing.Size(99, 18);
+			this.cbUseCeilLineAngles.Size = new System.Drawing.Size(115, 18);
 			this.cbUseCeilLineAngles.TabIndex = 56;
 			this.cbUseCeilLineAngles.Tag = "";
-			this.cbUseCeilLineAngles.Text = "Use line angles";
+			this.cbUseCeilLineAngles.Text = "Use linedef angles";
 			this.cbUseCeilLineAngles.UseVisualStyleBackColor = true;
 			this.cbUseCeilLineAngles.CheckedChanged += new System.EventHandler(this.cbUseCeilLineAngles_CheckedChanged);
 			// 
@@ -866,7 +866,9 @@
 			this.floorslopecontrol.Name = "floorslopecontrol";
 			this.floorslopecontrol.Size = new System.Drawing.Size(431, 178);
 			this.floorslopecontrol.TabIndex = 0;
+			this.floorslopecontrol.UseLineAngles = false;
 			this.floorslopecontrol.OnValuesChanged += new System.EventHandler(this.floorslopecontrol_OnValuesChanged);
+			this.floorslopecontrol.OnUseLineAnglesChanged += new System.EventHandler(this.floorslopecontrol_OnUseLineAnglesChanged);
 			// 
 			// groupBox4
 			// 
@@ -884,7 +886,9 @@
 			this.ceilingslopecontrol.Name = "ceilingslopecontrol";
 			this.ceilingslopecontrol.Size = new System.Drawing.Size(431, 178);
 			this.ceilingslopecontrol.TabIndex = 1;
+			this.ceilingslopecontrol.UseLineAngles = false;
 			this.ceilingslopecontrol.OnValuesChanged += new System.EventHandler(this.ceilingslopecontrol_OnValuesChanged);
+			this.ceilingslopecontrol.OnUseLineAnglesChanged += new System.EventHandler(this.ceilingslopecontrol_OnUseLineAnglesChanged);
 			// 
 			// tabcustom
 			// 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Controls
 {
@@ -20,13 +19,14 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Events
 
-		public event EventHandler OnValuesChanged; //mxd
+		public event EventHandler OnValuesChanged;
+		public event EventHandler OnUseLineAnglesChanged;
 
 		#endregion
 
 		#region ================== Variables
 
-		private static SlopePivotMode pivotmode = SlopePivotMode.LOCAL;
+		private static SlopePivotMode pivotmode = SlopePivotMode.ORIGIN; //DBG SlopePivotMode.LOCAL
 		internal SlopePivotMode PivotMode { get { return pivotmode; } }
 
 		private bool blockUpdate;
@@ -36,15 +36,16 @@ namespace CodeImp.DoomBuilder.Controls
 		private float anglez;
 		private float offset;
 
-		public float AngleXY { get { return anglexy; } }
-		public float AngleZ { get { return anglez; } }
+		public float AngleXY { get { return anglexy; } } //in dergrees
+		public float AngleZ { get { return anglez; } } //in dergrees, add 90
 		public float Offset { get { return offset; } }
+		public StepsList StepValues { set { sloperotation.StepValues = value; } }
+		public bool UseLineAngles { get { return cbuselineangles.Checked; } set { blockUpdate = true; cbuselineangles.Checked = value; blockUpdate = false; } }
 
 		#endregion
 
 		public SectorSlopeControl() {
 			InitializeComponent();
-			pivotmodeselector.SelectedIndex = (int) pivotmode;
 		}
 
 		#region ================== Methods
@@ -55,10 +56,19 @@ namespace CodeImp.DoomBuilder.Controls
 				this.anglexy = anglexy;
 				this.anglez = anglez;
 				this.offset = offset;
+
+				//dbg
+				//Console.WriteLine("SetValues: anglexy=" + this.anglexy + "; anglez=" + this.anglez + "; offset=" + this.offset + "[first time]");
 			} else {
+				//dbg
+				//Console.WriteLine("SetValues: this.anglexy=" + this.anglexy + "; anglexy = " + anglexy + "; this.anglez=" + this.anglez + "; anglez = " + anglez + "; this.offset=" + this.offset + "; offset = " + offset + "[before]");
+
 				if(!float.IsNaN(this.anglexy) && this.anglexy != anglexy) this.anglexy = float.NaN;
 				if(!float.IsNaN(this.anglez) && this.anglez != anglez) this.anglez = float.NaN;
 				if(!float.IsNaN(this.offset) && this.offset != offset) this.offset = float.NaN;
+
+				//dbg
+				//Console.WriteLine("SetValues: this.anglexy=" + this.anglexy + "; anglexy = " + anglexy + "; this.anglez=" + this.anglez + "; anglez = " + anglez + "; this.offset=" + this.offset + "; offset = " + offset + "[after]");
 			}
 		}
 
@@ -70,21 +80,31 @@ namespace CodeImp.DoomBuilder.Controls
 				rotationcontrol.Angle = 0;
 			} else {
 				sloperotation.Text = anglexy.ToString();
-				rotationcontrol.Angle = (int)Math.Round(anglexy); //(int)Math.Round(Angle2D.RadToDeg(this.anglexy));
+				rotationcontrol.Angle = (int)Math.Round(anglexy + 90); //(int)Math.Round(Angle2D.RadToDeg(this.anglexy));
 			}
 
 			if(float.IsNaN(anglez)) {
 				slopeangle.Text = "";
 				angletrackbar.Value = 0;
 			} else {
+				//clamp value to [-85 .. 85]
+				//anglez = General.Clamp((anglez + 90) % 90 - 90, angletrackbar.Minimum, angletrackbar.Maximum);
+				anglez = General.Clamp(anglez, angletrackbar.Minimum, angletrackbar.Maximum);
+
 				slopeangle.Text = anglez.ToString();
-				angletrackbar.Value = General.Clamp((int)Math.Round(anglez - 90), angletrackbar.Minimum, angletrackbar.Maximum);
+				//angletrackbar.Value = (int)Math.Round(anglez);
+				angletrackbar.Value = (int)General.Clamp(anglez, angletrackbar.Minimum, angletrackbar.Maximum);
 			}
 
-			slopeoffset.Text = float.IsNaN(this.offset) ? "" : this.offset.ToString();
+			slopeoffset.Text = float.IsNaN(offset) ? "" : offset.ToString();
 
 			blockUpdate = false;
 		}
+
+		/*public void ClearOffset() {
+			offset = float.NaN;
+			slopeoffset.Text = string.Empty;
+		}*/
 
 		#endregion
 
@@ -94,8 +114,8 @@ namespace CodeImp.DoomBuilder.Controls
 			if(blockUpdate) return;
 			blockUpdate = true;
 
-			anglexy = sloperotation.GetResultFloat(0f); //Angle2D.DegToRad(sloperotation.GetResultFloat(0f));
-			rotationcontrol.Angle = (int)Math.Round(sloperotation.GetResultFloat(0f));
+			anglexy = General.ClampAngle(sloperotation.GetResultFloat(0f));
+			rotationcontrol.Angle = (int)Math.Round(anglexy + 90);
 
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 			blockUpdate = false;
@@ -105,8 +125,8 @@ namespace CodeImp.DoomBuilder.Controls
 			if(blockUpdate) return;
 			blockUpdate = true;
 
-			sloperotation.Text = rotationcontrol.Angle.ToString();
-			anglexy = Angle2D.DegToRad(rotationcontrol.Angle);
+			anglexy = General.ClampAngle(rotationcontrol.Angle - 90);
+			sloperotation.Text = anglexy.ToString();
 
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 			blockUpdate = false;
@@ -116,9 +136,8 @@ namespace CodeImp.DoomBuilder.Controls
 			if(blockUpdate) return;
 			blockUpdate = true;
 
-			int anglezdeg = General.Clamp((int)Math.Round(slopeangle.GetResultFloat(0f)), angletrackbar.Minimum, angletrackbar.Maximum);
-			angletrackbar.Value = anglezdeg;
-			anglez = Angle2D.DegToRad(anglezdeg - 90);
+			anglez = General.Clamp((int)Math.Round(slopeangle.GetResultFloat(0f)), angletrackbar.Minimum, angletrackbar.Maximum);
+			angletrackbar.Value = (int)anglez;
 
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 			blockUpdate = false;
@@ -129,7 +148,7 @@ namespace CodeImp.DoomBuilder.Controls
 			blockUpdate = true;
 
 			slopeangle.Text = angletrackbar.Value.ToString();
-			anglez = Angle2D.DegToRad(angletrackbar.Value);
+			anglez = angletrackbar.Value;
 
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 			blockUpdate = false;
@@ -144,7 +163,7 @@ namespace CodeImp.DoomBuilder.Controls
 			blockUpdate = true;
 
 			sloperotation.Text = "0";
-			rotationcontrol.Angle = 0;
+			rotationcontrol.Angle = 90;
 			slopeangle.Text = "0";
 			angletrackbar.Value = 0;
 			slopeoffset.Text = "0";
@@ -157,7 +176,17 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		private void pivotmodeselector_SelectedIndexChanged(object sender, EventArgs e) {
+			if(blockUpdate) return;
 			pivotmode = (SlopePivotMode)pivotmodeselector.SelectedIndex;
+		}
+
+		private void SectorSlopeControl_Load(object sender, EventArgs e) {
+			pivotmodeselector.SelectedIndex = (int)pivotmode;
+		}
+
+		private void cbuselineangles_CheckedChanged(object sender, EventArgs e) {
+			if(blockUpdate) return;
+			if(OnUseLineAnglesChanged != null) OnUseLineAnglesChanged(this, EventArgs.Empty);
 		}
 
 		#endregion

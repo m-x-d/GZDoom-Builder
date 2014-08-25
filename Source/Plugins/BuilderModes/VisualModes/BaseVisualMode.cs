@@ -759,16 +759,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Find sectors with 3 vertices, because they can be sloped
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
-				// ========== Sector slope, Thing vertex slope, vertices with UDMF vertex offsets ==========
-				if (General.Map.UDMF) 
-				{
-					bool havesectorfloorslope = !(!s.Fields.ContainsKey("floorplane_a") || !s.Fields.ContainsKey("floorplane_b") || !s.Fields.ContainsKey("floorplane_c") || !s.Fields.ContainsKey("floorplane_d"));
-					bool havesectorceilingslope = !(!s.Fields.ContainsKey("ceilingplane_a") || !s.Fields.ContainsKey("ceilingplane_b") || !s.Fields.ContainsKey("ceilingplane_c") || !s.Fields.ContainsKey("ceilingplane_d"));
-
-					if(havesectorfloorslope) GetSectorData(s).AddEffectSectorSlope(false);
-					if(havesectorceilingslope) GetSectorData(s).AddEffectSectorSlope(true);
-				}
-
+				// ========== Thing vertex slope, vertices with UDMF vertex offsets ==========
 				if(s.Sidedefs.Count == 3)
 				{
 					if(General.Map.UDMF) //mxd
