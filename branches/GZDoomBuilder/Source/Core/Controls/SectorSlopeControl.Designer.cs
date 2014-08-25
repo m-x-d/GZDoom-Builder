@@ -25,33 +25,20 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			this.slopeangle = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label23 = new System.Windows.Forms.Label();
-			this.sloperotation = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label24 = new System.Windows.Forms.Label();
 			this.reset = new System.Windows.Forms.Button();
-			this.slopeoffset = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label18 = new System.Windows.Forms.Label();
-			this.rotationcontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			this.angletrackbar = new System.Windows.Forms.TrackBar();
 			this.label1 = new System.Windows.Forms.Label();
 			this.pivotmodeselector = new System.Windows.Forms.ComboBox();
+			this.rotationcontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
+			this.slopeangle = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.sloperotation = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.slopeoffset = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.cbuselineangles = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.angletrackbar)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// slopeangle
-			// 
-			this.slopeangle.AllowDecimal = true;
-			this.slopeangle.AllowNegative = true;
-			this.slopeangle.AllowRelative = true;
-			this.slopeangle.ButtonStep = 1;
-			this.slopeangle.ButtonStepFloat = 1F;
-			this.slopeangle.Location = new System.Drawing.Point(85, 78);
-			this.slopeangle.Name = "slopeangle";
-			this.slopeangle.Size = new System.Drawing.Size(82, 24);
-			this.slopeangle.StepValues = null;
-			this.slopeangle.TabIndex = 29;
-			this.slopeangle.WhenTextChanged += new System.EventHandler(this.slopeangle_WhenTextChanged);
 			// 
 			// label23
 			// 
@@ -61,20 +48,6 @@
 			this.label23.TabIndex = 28;
 			this.label23.Text = "Slope angle:";
 			this.label23.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// sloperotation
-			// 
-			this.sloperotation.AllowDecimal = true;
-			this.sloperotation.AllowNegative = true;
-			this.sloperotation.AllowRelative = true;
-			this.sloperotation.ButtonStep = 1;
-			this.sloperotation.ButtonStepFloat = 1F;
-			this.sloperotation.Location = new System.Drawing.Point(85, 48);
-			this.sloperotation.Name = "sloperotation";
-			this.sloperotation.Size = new System.Drawing.Size(82, 24);
-			this.sloperotation.StepValues = null;
-			this.sloperotation.TabIndex = 27;
-			this.sloperotation.WhenTextChanged += new System.EventHandler(this.sloperotation_WhenTextChanged);
 			// 
 			// label24
 			// 
@@ -95,20 +68,6 @@
 			this.reset.UseVisualStyleBackColor = true;
 			this.reset.Click += new System.EventHandler(this.reset_Click);
 			// 
-			// slopeoffset
-			// 
-			this.slopeoffset.AllowDecimal = true;
-			this.slopeoffset.AllowNegative = true;
-			this.slopeoffset.AllowRelative = true;
-			this.slopeoffset.ButtonStep = 1;
-			this.slopeoffset.ButtonStepFloat = 16F;
-			this.slopeoffset.Location = new System.Drawing.Point(85, 108);
-			this.slopeoffset.Name = "slopeoffset";
-			this.slopeoffset.Size = new System.Drawing.Size(82, 24);
-			this.slopeoffset.StepValues = null;
-			this.slopeoffset.TabIndex = 24;
-			this.slopeoffset.WhenTextChanged += new System.EventHandler(this.slopeoffset_WhenTextChanged);
-			// 
 			// label18
 			// 
 			this.label18.Location = new System.Drawing.Point(3, 113);
@@ -117,15 +76,6 @@
 			this.label18.TabIndex = 23;
 			this.label18.Text = "Height offset:";
 			this.label18.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// rotationcontrol
-			// 
-			this.rotationcontrol.Angle = 0;
-			this.rotationcontrol.Location = new System.Drawing.Point(173, 36);
-			this.rotationcontrol.Name = "rotationcontrol";
-			this.rotationcontrol.Size = new System.Drawing.Size(44, 44);
-			this.rotationcontrol.TabIndex = 56;
-			this.rotationcontrol.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.rotationcontrol_AngleChanged);
 			// 
 			// angletrackbar
 			// 
@@ -153,7 +103,7 @@
 			this.pivotmodeselector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.pivotmodeselector.FormattingEnabled = true;
 			this.pivotmodeselector.Items.AddRange(new object[] {
-            "Origin",
+            "World origin",
             "Selection center",
             "Sector center"});
 			this.pivotmodeselector.Location = new System.Drawing.Point(85, 9);
@@ -162,10 +112,74 @@
 			this.pivotmodeselector.TabIndex = 59;
 			this.pivotmodeselector.SelectedIndexChanged += new System.EventHandler(this.pivotmodeselector_SelectedIndexChanged);
 			// 
+			// rotationcontrol
+			// 
+			this.rotationcontrol.Angle = 0;
+			this.rotationcontrol.Location = new System.Drawing.Point(173, 36);
+			this.rotationcontrol.Name = "rotationcontrol";
+			this.rotationcontrol.Size = new System.Drawing.Size(44, 44);
+			this.rotationcontrol.TabIndex = 56;
+			this.rotationcontrol.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.rotationcontrol_AngleChanged);
+			// 
+			// slopeangle
+			// 
+			this.slopeangle.AllowDecimal = true;
+			this.slopeangle.AllowNegative = true;
+			this.slopeangle.AllowRelative = true;
+			this.slopeangle.ButtonStep = 1;
+			this.slopeangle.ButtonStepFloat = 1F;
+			this.slopeangle.Location = new System.Drawing.Point(85, 78);
+			this.slopeangle.Name = "slopeangle";
+			this.slopeangle.Size = new System.Drawing.Size(82, 24);
+			this.slopeangle.StepValues = null;
+			this.slopeangle.TabIndex = 29;
+			this.slopeangle.WhenTextChanged += new System.EventHandler(this.slopeangle_WhenTextChanged);
+			// 
+			// sloperotation
+			// 
+			this.sloperotation.AllowDecimal = true;
+			this.sloperotation.AllowNegative = true;
+			this.sloperotation.AllowRelative = true;
+			this.sloperotation.ButtonStep = 1;
+			this.sloperotation.ButtonStepFloat = 1F;
+			this.sloperotation.Location = new System.Drawing.Point(85, 48);
+			this.sloperotation.Name = "sloperotation";
+			this.sloperotation.Size = new System.Drawing.Size(82, 24);
+			this.sloperotation.StepValues = null;
+			this.sloperotation.TabIndex = 27;
+			this.sloperotation.WhenTextChanged += new System.EventHandler(this.sloperotation_WhenTextChanged);
+			// 
+			// slopeoffset
+			// 
+			this.slopeoffset.AllowDecimal = true;
+			this.slopeoffset.AllowNegative = true;
+			this.slopeoffset.AllowRelative = true;
+			this.slopeoffset.ButtonStep = 1;
+			this.slopeoffset.ButtonStepFloat = 16F;
+			this.slopeoffset.Location = new System.Drawing.Point(85, 108);
+			this.slopeoffset.Name = "slopeoffset";
+			this.slopeoffset.Size = new System.Drawing.Size(82, 24);
+			this.slopeoffset.StepValues = null;
+			this.slopeoffset.TabIndex = 24;
+			this.slopeoffset.WhenTextChanged += new System.EventHandler(this.slopeoffset_WhenTextChanged);
+			// 
+			// cbuselineangles
+			// 
+			this.cbuselineangles.AutoSize = true;
+			this.cbuselineangles.Location = new System.Drawing.Point(226, 52);
+			this.cbuselineangles.Name = "cbuselineangles";
+			this.cbuselineangles.Size = new System.Drawing.Size(113, 17);
+			this.cbuselineangles.TabIndex = 60;
+			this.cbuselineangles.Tag = "";
+			this.cbuselineangles.Text = "Use linedef angles";
+			this.cbuselineangles.UseVisualStyleBackColor = true;
+			this.cbuselineangles.CheckedChanged += new System.EventHandler(this.cbuselineangles_CheckedChanged);
+			// 
 			// SectorSlopeControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+			this.Controls.Add(this.cbuselineangles);
 			this.Controls.Add(this.pivotmodeselector);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.angletrackbar);
@@ -179,6 +193,7 @@
 			this.Controls.Add(this.label18);
 			this.Name = "SectorSlopeControl";
 			this.Size = new System.Drawing.Size(353, 169);
+			this.Load += new System.EventHandler(this.SectorSlopeControl_Load);
 			((System.ComponentModel.ISupportInitialize)(this.angletrackbar)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -198,5 +213,6 @@
 		private System.Windows.Forms.TrackBar angletrackbar;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ComboBox pivotmodeselector;
+		private System.Windows.Forms.CheckBox cbuselineangles;
 	}
 }

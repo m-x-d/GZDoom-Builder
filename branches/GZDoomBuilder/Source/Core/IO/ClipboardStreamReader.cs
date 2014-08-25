@@ -102,6 +102,12 @@ namespace CodeImp.DoomBuilder.IO
 				string tfloor = ReadString(reader);
 				string tceil = ReadString(reader);
 
+				//mxd. Slopes
+				float foffset = reader.ReadSingle();
+				Vector3D fslope = new Vector3D(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+				float coffset = reader.ReadSingle();
+				Vector3D cslope = new Vector3D(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+
 				//flags
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				int numFlags = reader.ReadInt32();
@@ -118,7 +124,7 @@ namespace CodeImp.DoomBuilder.IO
 				Dictionary<string, UniValue> fields = ReadCustomFields(reader);
 				Sector s = map.CreateSector();
 				if(s != null) {
-					s.Update(hfloor, hceil, tfloor, tceil, effect, stringflags, tag, bright);
+					s.Update(hfloor, hceil, tfloor, tceil, effect, stringflags, tag, bright, foffset, fslope, coffset, cslope);
 
 					// Add custom fields
 					s.Fields.BeforeFieldsChange();

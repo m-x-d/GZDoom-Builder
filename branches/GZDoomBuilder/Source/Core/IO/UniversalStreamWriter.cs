@@ -270,6 +270,23 @@ namespace CodeImp.DoomBuilder.IO
 				if(s.Tag != 0) coll.Add("id", s.Tag);
 				coll.Comment = s.Index.ToString();
 
+				//mxd. Slopes
+				if (s.FloorSlope.GetLengthSq() > 0) 
+				{
+					coll.Add("floorplane_a", Math.Round(s.FloorSlope.x, 3));
+					coll.Add("floorplane_b", Math.Round(s.FloorSlope.y, 3));
+					coll.Add("floorplane_c", Math.Round(s.FloorSlope.z, 3));
+					coll.Add("floorplane_d", Math.Round(s.FloorSlopeOffset, 3));
+				}
+
+				if (s.CeilingSlope.GetLengthSq() > 0) 
+				{
+					coll.Add("ceilingplane_a", Math.Round(s.CeilingSlope.x, 3));
+					coll.Add("ceilingplane_b", Math.Round(s.CeilingSlope.y, 3));
+					coll.Add("ceilingplane_c", Math.Round(s.CeilingSlope.z, 3));
+					coll.Add("ceilingplane_d", Math.Round(s.CeilingSlopeOffset, 3));
+				}
+
 				//mxd. Flags
 				foreach(KeyValuePair<string, bool> flag in s.Flags)
 					if(flag.Value) coll.Add(flag.Key, flag.Value);

@@ -98,7 +98,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 								  "Deal with it",
 								  "Error 47",
 								  "YOU DIED",
-								  "Thanks, Obama"
+								  "Thanks, Obama",
+								  "The God Of Exceptions Demands MORE Exceptions!"
 							  };
 			this.Text = titles[new Random().Next(0, titles.Length - 1)];
 		}
