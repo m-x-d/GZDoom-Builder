@@ -220,16 +220,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(ef.VavoomType || !ef.IgnoreBottomHeight) {
 					//mxd. check if 3d floor is between real floor and ceiling
 					if(!ef.VavoomType) {
-						if(ef.Ceiling.plane.GetInverted().Normal == floor.Level.plane.Normal) {
-							if(-floor.Level.plane.Offset < ef.Ceiling.plane.Offset && ceiling.Level.plane.Offset > ef.Ceiling.plane.Offset) {
+						//if floor, ceiling and 3d floor are not sloped, compare offsets
+						if(ef.Ceiling.plane.GetInverted().Normal == floor.Level.plane.Normal 
+							&& ef.Floor.plane.Normal == floor.Level.plane.Normal 
+							&& -floor.Level.plane.Offset < ef.Ceiling.plane.Offset 
+							&& ceiling.Level.plane.Offset > ef.Ceiling.plane.Offset) {
 								floorRequired = true;
-							} else if(-floor.Level.plane.Offset == ef.Ceiling.plane.Offset) {
-								//mxd. check if 3d floor is higher than real one at any vertex
-								floorRequired = checkFloorVertices(floor.Vertices, ef.Ceiling.plane);
-							}
 						} else {
-							//mxd. check if 3d floor is higher than real one at any vertex
-							floorRequired = checkFloorVertices(floor.Vertices, ef.Ceiling.plane);
+							//mxd. check if at least one vertex of 3d floor is between floor and ceiling
+							floorRequired = Check3dFloorPlane(floor.Vertices, ceiling.Vertices, ef.Ceiling.plane);
 						}
 					}
 
@@ -255,16 +254,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				//mxd. check if 3d ceiling is between real floor and ceiling
 				if(!ef.VavoomType) {
-					if(ef.Floor.plane.GetInverted().Normal == ceiling.Level.plane.Normal) {
-						if(ceiling.Level.plane.Offset > -ef.Floor.plane.Offset && -floor.Level.plane.Offset < -ef.Floor.plane.Offset) {
+					//if floor, ceiling and 3d ceiling are not sloped, compare offsets
+					if(ef.Floor.plane.GetInverted().Normal == ceiling.Level.plane.Normal 
+						&& ef.Ceiling.plane.Normal == ceiling.Level.plane.Normal
+						&& ceiling.Level.plane.Offset > -ef.Floor.plane.Offset 
+						&& floor.Level.plane.Offset > ef.Floor.plane.Offset) {
 							ceilingRequired = true;
-						} else if(-ceiling.Level.plane.Offset == ef.Floor.plane.Offset) {
-							//mxd. check if 3d floor is higher than real one at any vertex
-							ceilingRequired = checkCeilingVertices(ceiling.Vertices, ef.Floor.plane);
-						}
 					} else {
-						//mxd. check if 3d floor is higher than real one at any vertex
-						ceilingRequired = checkCeilingVertices(ceiling.Vertices, ef.Floor.plane);
+						//mxd. check if at least one vertex of 3d ceiling is between floor and ceiling
+						ceilingRequired = Check3dFloorPlane(floor.Vertices, ceiling.Vertices, ef.Floor.plane);
 					}
 				}
 
@@ -362,20 +360,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return new VisualSidedefParts();
 		}
 
-		//mxd
-		private static bool checkFloorVertices(WorldVertex[] verts, Plane plane) {
-			for(int c = 0; c < verts.Length; c++) {
-				if(plane.GetZ(new Vector2D(verts[c].x, verts[c].y)) > verts[c].z)
+		//mxd. Checks if given plane is between given floor and ceiling vertices
+		private static bool Check3dFloorPlane(WorldVertex[] floorverts, WorldVertex[] ceilingverts, Plane plane) 
+		{
+			bool show = false;
+
+			//check floor
+			for(int c = 0; c < floorverts.Length; c++) {
+				if (plane.GetZ(new Vector2D(floorverts[c].x, floorverts[c].y)) > Math.Round(floorverts[c].z, 3)) 
+				{
+					show = true;
+					break;
+				}
+			}
+
+			if (!show) return false;
+
+			//check ceiling
+			for(int c = 0; c < ceilingverts.Length; c++) 
+			{
+				if(plane.GetZ(new Vector2D(ceilingverts[c].x, ceilingverts[c].y)) < Math.Round(ceilingverts[c].z, 3))
 					return true;
 			}
-			return false;
-		}
-		//mxd
-		private static bool checkCeilingVertices(WorldVertex[] verts, Plane plane) {
-			for(int c = 0; c < verts.Length; c++) {
-				if(plane.GetZ(new Vector2D(verts[c].x, verts[c].y)) < verts[c].z)
-					return true;
-			}
+
 			return false;
 		}
 		
