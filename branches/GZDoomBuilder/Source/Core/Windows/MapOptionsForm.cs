@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Variables
 		private MapOptions options;
 		private bool newmap;
+		private string previousdefaultmaplumpname; //mxd
 		
 		// Properties
 		public MapOptions Options { get { return options; } }
@@ -288,7 +289,7 @@ namespace CodeImp.DoomBuilder.Windows
 				ConfigurationInfo ci = config.SelectedItem as ConfigurationInfo;
 
 				// No lump name in the name field?
-				if (levelname.Text.Trim().Length == 0) 
+				if (levelname.Text.Trim().Length == 0 || levelname.Text.Trim() == previousdefaultmaplumpname) 
 				{
 					// Get default lump name from configuration
 					levelname.Text = ci.DefaultLumpName;
@@ -298,6 +299,7 @@ namespace CodeImp.DoomBuilder.Windows
 				bool enablescriptcompiler = !string.IsNullOrEmpty(ci.DefaultScriptCompiler);
 				scriptcompiler.Enabled = enablescriptcompiler;
 				scriptcompilerlabel.Enabled = enablescriptcompiler;
+				previousdefaultmaplumpname = ci.DefaultLumpName;
 
 				//mxd. Select default script compiler for this game configuration
 				if (scriptcompiler.Enabled) 

@@ -186,37 +186,58 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			BuilderPlug.Me.ViewSelectionNumbers = buttonselectionnumbers.Checked;
 			General.Interface.RedrawDisplay();
+			General.Interface.DisplayStatus(StatusType.Info, (buttonselectionnumbers.Checked ?
+				"Show selection numbers" :
+				"Don't show selection numbers"));
 		}
 
 		//mxd
-		private void buttonselectioneffects_Click(object sender, EventArgs e) {
+		private void buttonselectioneffects_Click(object sender, EventArgs e) 
+		{
 			BuilderPlug.Me.ViewSelectionEffects = buttonselectioneffects.Checked;
 			General.Interface.RedrawDisplay();
+			General.Interface.DisplayStatus(StatusType.Info, (buttonselectioneffects.Checked ?
+				"Show sector tags and effects" :
+				"Don't show sector tags and effects"));
 		}
 
 		//mxd
-		private void buttonMarqueSelectTouching_Click(object sender, EventArgs e) {
+		private void buttonMarqueSelectTouching_Click(object sender, EventArgs e) 
+		{
 			BuilderPlug.Me.MarqueSelectTouching = buttonMarqueSelectTouching.Checked;
+			General.Interface.DisplayStatus(StatusType.Info, (buttonMarqueSelectTouching.Checked ? 
+				"Select map elements touching selection rectangle" :
+				"Select map elements inside of selection rectangle"));
 		}
 
 		//mxd
-		private void buttonTextureOffsetLock_Click(object sender, EventArgs e) {
+		private void buttonTextureOffsetLock_Click(object sender, EventArgs e) 
+		{
 			BuilderPlug.Me.LockSectorTextureOffsetsWhileDragging = buttonTextureOffsetLock.Checked;
+			General.Interface.DisplayStatus(StatusType.Info, (buttonTextureOffsetLock.Checked ? 
+				"Lock texture offsets when dragging sectors" : 
+				"Don't lock texture offsets when dragging sectors"));
 		}
 
 		//mxd
-		private void linedefsmenu_DropDownOpening(object sender, EventArgs e) {
+		private void linedefsmenu_DropDownOpening(object sender, EventArgs e) 
+		{
 			alignLinedefsItem.Enabled = General.Map.UDMF;
 		}
 
 		//mxd
-		private void brightnessGradientMode_DropDownClosed(object sender, EventArgs e) {
+		private void brightnessGradientMode_DropDownClosed(object sender, EventArgs e) 
+		{
 			General.Interface.FocusDisplay();
 		}
 
 		//mxd
-		private void buttonDragThingsInSelectedSectors_Click(object sender, EventArgs e) {
+		private void buttonDragThingsInSelectedSectors_Click(object sender, EventArgs e) 
+		{
 			BuilderPlug.Me.DragThingsInSectorsMode = buttonDragThingsInSelectedSectors.Checked;
+			General.Interface.DisplayStatus(StatusType.Info, (buttonDragThingsInSelectedSectors.Checked ? 
+				"Drag things in selected sectors" : 
+				"Don't drag things in selected sectors"));
 		}
 
 		#endregion

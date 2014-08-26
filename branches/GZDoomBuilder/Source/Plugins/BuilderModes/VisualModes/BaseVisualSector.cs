@@ -220,15 +220,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(ef.VavoomType || !ef.IgnoreBottomHeight) {
 					//mxd. check if 3d floor is between real floor and ceiling
 					if(!ef.VavoomType) {
-						//if floor, ceiling and 3d floor are not sloped, compare offsets
-						if(ef.Ceiling.plane.GetInverted().Normal == floor.Level.plane.Normal 
-							&& ef.Floor.plane.Normal == floor.Level.plane.Normal 
-							&& -floor.Level.plane.Offset < ef.Ceiling.plane.Offset 
-							&& ceiling.Level.plane.Offset > ef.Ceiling.plane.Offset) {
-								floorRequired = true;
-						} else {
+						if (ef.Ceiling.plane.GetInverted().Normal != floor.Level.plane.Normal
+							|| ef.Ceiling.plane.Normal != ceiling.Level.plane.Normal) {
 							//mxd. check if at least one vertex of 3d floor is between floor and ceiling
 							floorRequired = Check3dFloorPlane(floor.Vertices, ceiling.Vertices, ef.Ceiling.plane);
+						//if floor, ceiling and 3d floor are not sloped, compare offsets
+						} else if(-floor.Level.plane.Offset < ef.Ceiling.plane.Offset
+							&& ceiling.Level.plane.Offset > ef.Ceiling.plane.Offset) {
+							floorRequired = true;
 						}
 					}
 
@@ -241,28 +240,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							//mxd. add backside as well
 							if(!ef.VavoomType && ef.RenderInside) {
 								VisualFloor vfb = (i < extrabackfloors.Count) ? extrabackfloors[i] : new VisualFloor(mode, this);
-								if(vfb.Setup(ef.Ceiling, ef, true))
-									base.AddGeometry(vfb);
-								if(i >= extrabackfloors.Count)
-									extrabackfloors.Add(vfb);
+								if(vfb.Setup(ef.Ceiling, ef, true)) base.AddGeometry(vfb);
+								if(i >= extrabackfloors.Count) extrabackfloors.Add(vfb);
 							}
 						}
-						if(i >= extrafloors.Count)
-							extrafloors.Add(vf);
+						if(i >= extrafloors.Count) extrafloors.Add(vf);
 					}
 				}
 
 				//mxd. check if 3d ceiling is between real floor and ceiling
 				if(!ef.VavoomType) {
-					//if floor, ceiling and 3d ceiling are not sloped, compare offsets
-					if(ef.Floor.plane.GetInverted().Normal == ceiling.Level.plane.Normal 
-						&& ef.Ceiling.plane.Normal == ceiling.Level.plane.Normal
-						&& ceiling.Level.plane.Offset > -ef.Floor.plane.Offset 
-						&& floor.Level.plane.Offset > ef.Floor.plane.Offset) {
-							ceilingRequired = true;
-					} else {
+					if (ef.Floor.plane.GetInverted().Normal != ceiling.Level.plane.Normal
+						|| ef.Floor.plane.Normal != floor.Level.plane.Normal) {
 						//mxd. check if at least one vertex of 3d ceiling is between floor and ceiling
 						ceilingRequired = Check3dFloorPlane(floor.Vertices, ceiling.Vertices, ef.Floor.plane);
+					//if floor, ceiling and 3d ceiling are not sloped, compare offsets
+					} else if(ceiling.Level.plane.Offset > -ef.Floor.plane.Offset
+						&& floor.Level.plane.Offset > ef.Floor.plane.Offset) {
+						ceilingRequired = true;
 					}
 				}
 
@@ -275,14 +270,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						//mxd. add backside as well
 						if(!ef.VavoomType && (ef.RenderInside || ef.IgnoreBottomHeight)) {
 							VisualCeiling vcb = (i < extrabackceilings.Count) ? extrabackceilings[i] : new VisualCeiling(mode, this);
-							if(vcb.Setup(ef.Floor, ef, true))
-								base.AddGeometry(vcb);
-							if(i >= extrabackceilings.Count)
-								extrabackceilings.Add(vcb);
+							if(vcb.Setup(ef.Floor, ef, true)) base.AddGeometry(vcb);
+							if(i >= extrabackceilings.Count) extrabackceilings.Add(vcb);
 						}
 					}
-					if(i >= extraceilings.Count)
-						extraceilings.Add(vc);
+					if(i >= extraceilings.Count) extraceilings.Add(vc);
 				}
 			}
 			
