@@ -156,14 +156,14 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Events
 
-		// List double-clicked
-		private void typelist_DoubleClick(object sender, EventArgs e)
+		// List double-clicked (mxd)
+		private void typelist_MouseDoubleClick(object sender, MouseEventArgs e) 
 		{
-			if(typelist.SelectedNode != null)
+			var info = typelist.HitTest(e.Location);
+			if(info.Node != null && info.Location == TreeViewHitTestLocations.Label) 
 			{
 				// Node is a child node?
-				TreeNode n = typelist.SelectedNode;
-				if((n.Nodes.Count == 0) && (n.Tag is ThingTypeInfo))
+				if((info.Node.Nodes.Count == 0) && (info.Node.Tag is ThingTypeInfo)) 
 				{
 					if((OnTypeDoubleClicked != null) && (typeid.Text.Length > 0)) OnTypeDoubleClicked();
 				}
