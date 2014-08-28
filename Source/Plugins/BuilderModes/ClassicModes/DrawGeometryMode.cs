@@ -353,6 +353,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				// Normal position
+				vm.x = (float)Math.Round(vm.x); //mxd
+				vm.y = (float)Math.Round(vm.y); //mxd
 				p.pos = vm;
 				//p.stitch = snaptonearest;
 				//p.stitchline = snaptonearest;
