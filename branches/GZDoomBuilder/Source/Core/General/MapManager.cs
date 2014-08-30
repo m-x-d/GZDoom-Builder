@@ -252,7 +252,7 @@ namespace CodeImp.DoomBuilder {
 			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = new GameConfiguration(configinfo.Configuration); //mxd
-			origmapconfigname = configinfo.Name;//mxd
+			origmapconfigname = configinfo.Filename;//mxd
 			configinfo.ApplyDefaults(config);
 			General.Editing.UpdateCurrentEditModes();
 
@@ -341,7 +341,7 @@ namespace CodeImp.DoomBuilder {
 			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = new GameConfiguration(configinfo.Configuration);
-			origmapconfigname = configinfo.Name;//mxd
+			origmapconfigname = configinfo.Filename;//mxd
 			configinfo.ApplyDefaults(config);
 			General.Editing.UpdateCurrentEditModes();
 
@@ -710,7 +710,7 @@ namespace CodeImp.DoomBuilder {
 
 					// Copy all lumps, except the original map
 					GameConfiguration origcfg; //mxd
-					if (origmapconfigname == configinfo.Name) {
+					if (origmapconfigname == configinfo.Filename) {
 						origcfg = config;
 					} else {
 						ConfigurationInfo ci = General.GetConfigurationInfo(origmapconfigname);
