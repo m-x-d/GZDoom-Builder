@@ -281,10 +281,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 						if(verts[v1] == verts[v2] || verts[v1] == verts[v3] || verts[v2] == verts[v3]) continue;
 
-						if (axis == UpAxis.X) {
-							faces.Add(new Face(verts[v1], verts[v2], verts[v3]));
-						} else {
+						if (axis == UpAxis.Y) {
 							faces.Add(new Face(verts[v3], verts[v2], verts[v1]));
+						} else {
+							faces.Add(new Face(verts[v1], verts[v2], verts[v3]));
 						}
 					}
 				}
