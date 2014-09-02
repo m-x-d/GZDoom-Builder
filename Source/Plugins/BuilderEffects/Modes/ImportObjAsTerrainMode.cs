@@ -243,13 +243,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 								break;
 
 							case UpAxis.Z:
-								px = (int)Math.Round(x * scale);
+								px = (int)Math.Round(-x * scale);
 								py = (int)Math.Round(-y * scale);
 								pz = (int)Math.Round(z * scale);
 								break;
 
 							case UpAxis.X:
-								px = (int)Math.Round(y * scale);
+								px = (int)Math.Round(-y * scale);
 								py = (int)Math.Round(-z * scale);
 								pz = (int)Math.Round(x * scale);
 								break;
@@ -280,12 +280,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 						int v3 = readVertexIndex(parts[3]) - 1;
 
 						if(verts[v1] == verts[v2] || verts[v1] == verts[v3] || verts[v2] == verts[v3]) continue;
-
-						if (axis == UpAxis.Y) {
-							faces.Add(new Face(verts[v3], verts[v2], verts[v1]));
-						} else {
-							faces.Add(new Face(verts[v1], verts[v2], verts[v3]));
-						}
+						faces.Add(new Face(verts[v3], verts[v2], verts[v1]));
 					}
 				}
 			}
