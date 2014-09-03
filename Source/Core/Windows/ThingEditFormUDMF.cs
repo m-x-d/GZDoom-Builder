@@ -48,8 +48,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private ICollection<Thing> things;
 		private ThingTypeInfo thinginfo;
 		private bool preventchanges;
-		private Vector3D initialPosition; //initial position of a thing used to fill posX, posY and posZ fields
-		private int initialFloorHeight; //floor height of the sector first thing is in
 		private static bool useAbsoluteHeight;
 		private string arg0str;
 		private bool haveArg0Str;
@@ -61,7 +59,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private struct ThingProperties //mxd
 		{
-			public readonly int Type;
+			//public readonly int Type;
 			public readonly int AngleDoom;
 			public readonly int Pitch;
 			public readonly int Roll;
@@ -76,7 +74,7 @@ namespace CodeImp.DoomBuilder.Windows
 				X = t.Position.x;
 				Y = t.Position.y;
 				Z = t.Position.z;
-				Type = t.Type;
+				//Type = t.Type;
 				AngleDoom = t.AngleDoom;
 				Pitch = t.Pitch;
 				Roll = t.Roll;
@@ -193,11 +191,11 @@ namespace CodeImp.DoomBuilder.Windows
 			cbAbsoluteHeight.Checked = useAbsoluteHeight; //mxd
 
 			//mxd
-			initialPosition = ft.Position;
-			if(ft.Sector != null) initialFloorHeight = ft.Sector.FloorHeight;
-			posX.Text = ((int)ft.Position.x).ToString();
-			posY.Text = ((int)ft.Position.y).ToString();
-			posZ.Text = useAbsoluteHeight ? ((int)ft.Position.z + initialFloorHeight).ToString() : ((int)ft.Position.z).ToString();
+			ft.DetermineSector();
+			int floorheight = (ft.Sector != null ? ft.Sector.FloorHeight : 0);
+			posX.Text = (ft.Position.x).ToString();
+			posY.Text = (ft.Position.y).ToString();
+			posZ.Text = useAbsoluteHeight ? (ft.Position.z + floorheight).ToString() : (ft.Position.z).ToString();
 			posX.ButtonStep = General.Map.Grid.GridSize;
 			posY.ButtonStep = General.Map.Grid.GridSize;
 			posZ.ButtonStep = General.Map.Grid.GridSize;
@@ -246,6 +244,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Go for all things
 			foreach(Thing t in things) {
+				//mxd. Update sector info
+				t.DetermineSector();
+
 				// Type does not match?
 				ThingTypeInfo info = thingtype.GetSelectedInfo(); //mxd
 				if(info != null && info.Index != t.Type) thingtype.ClearSelectedType();
@@ -263,10 +264,12 @@ namespace CodeImp.DoomBuilder.Windows
 				// Coordination
 				if(t.AngleDoom.ToString() != angle.Text) angle.Text = "";
 
-				//mxd
+				//mxd. Position
+				if((t.Position.x).ToString() != posX.Text) posX.Text = "";
+				if((t.Position.y).ToString() != posY.Text) posY.Text = "";
 				if(useAbsoluteHeight && t.Sector != null) {
-					if(((int)t.Position.z + t.Sector.FloorHeight).ToString() != posZ.Text) posZ.Text = "";
-				} else if(((int)t.Position.z).ToString() != posZ.Text) {
+					if((t.Position.z + t.Sector.FloorHeight).ToString() != posZ.Text) posZ.Text = "";
+				} else if((t.Position.z).ToString() != posZ.Text) {
 					posZ.Text = "";
 				}
 
@@ -647,9 +650,28 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void cbAbsoluteHeight_CheckedChanged(object sender, EventArgs e) 
 		{
+			if(preventchanges) return;
 			useAbsoluteHeight = cbAbsoluteHeight.Checked;
 			zlabel.Text = useAbsoluteHeight ? "Abs. Z:" : "Z:";
-			posZ.Text = (useAbsoluteHeight ? initialFloorHeight + initialPosition.z : initialPosition.z).ToString();
+
+			preventchanges = true;
+
+			//update label text
+			Thing ft = General.GetByIndex(things, 0);
+			float z = ft.Position.z;
+			if(useAbsoluteHeight && ft.Sector != null) z += ft.Sector.FloorHeight;
+			posZ.Text = z.ToString();
+
+			foreach(Thing t in things) {
+				z = t.Position.z;
+				if(useAbsoluteHeight && t.Sector != null) z += t.Sector.FloorHeight;
+				if(posZ.Text != z.ToString()) {
+					posZ.Text = "";
+					break;
+				}
+			}
+
+			preventchanges = false;
 		}
 
 		//mxd
@@ -680,18 +702,9 @@ namespace CodeImp.DoomBuilder.Windows
 			if(preventchanges) return;
 			int i = 0;
 
-			//restore values
-			if(string.IsNullOrEmpty(posX.Text)) {
-				// Apply position
-				foreach(Thing t in things)
-					t.Move(new Vector2D(thingProps[i++].X, t.Position.y));
-			} else { //update values
-				float delta = posX.GetResultFloat(initialPosition.x) - initialPosition.x;
-
-				// Apply position
-				foreach(Thing t in things)
-					t.Move(new Vector2D(thingProps[i++].X + delta, t.Position.y));
-			}
+			// Update values
+			foreach(Thing t in things)
+				t.Move(new Vector2D(posX.GetResultFloat(thingProps[i++].X), t.Position.y));
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
@@ -702,18 +715,9 @@ namespace CodeImp.DoomBuilder.Windows
 			if(preventchanges) return;
 			int i = 0;
 
-			//restore values
-			if(string.IsNullOrEmpty(posY.Text)) {
-				// Apply position
-				foreach(Thing t in things)
-					t.Move(new Vector2D(t.Position.x, thingProps[i++].Y));
-			} else { //update values
-				float delta = posY.GetResultFloat(initialPosition.y) - initialPosition.y;
-
-				// Apply position
-				foreach(Thing t in things)
-					t.Move(new Vector2D(t.Position.x, thingProps[i++].Y + delta));
-			}
+			// Update values
+			foreach(Thing t in things)
+				t.Move(new Vector2D(t.Position.x, posY.GetResultFloat(thingProps[i++].Y)));
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
@@ -722,19 +726,17 @@ namespace CodeImp.DoomBuilder.Windows
 		private void posZ_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			int i = 0;
 
-			//restore values
 			if(string.IsNullOrEmpty(posZ.Text)) {
-				int i = 0;
-
-				// Apply position
+				// Restore values
 				foreach(Thing t in things)
 					t.Move(new Vector3D(t.Position.x, t.Position.y, thingProps[i++].Z));
-			} else { //update values
-				// Apply position
+			} else {
+				// Update values
 				foreach(Thing t in things) {
-					float z = posZ.GetResultFloat((int)t.Position.z);
-					if(useAbsoluteHeight && t.Sector != null)
+					float z = posZ.GetResultFloat(thingProps[i++].Z);
+					if(useAbsoluteHeight && !posZ.CheckIsRelative() && t.Sector != null)
 						z -= t.Sector.FloorHeight;
 					t.Move(new Vector3D(t.Position.x, t.Position.y, z));
 				}

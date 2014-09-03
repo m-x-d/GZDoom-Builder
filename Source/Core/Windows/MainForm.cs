@@ -3363,7 +3363,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		private void EditForm_OnValuesChanged(object sender, EventArgs e) {
-			if(OnEditFormValuesChanged != null)	OnEditFormValuesChanged(sender, e);
+			if (OnEditFormValuesChanged != null) {
+				OnEditFormValuesChanged(sender, e);
+			} else {
+				//If current mode doesn't handle this event, let's at least update the map and redraw display.
+				General.Map.Map.Update();
+				RedrawDisplay();
+			}
 		}
 
 		#endregion
