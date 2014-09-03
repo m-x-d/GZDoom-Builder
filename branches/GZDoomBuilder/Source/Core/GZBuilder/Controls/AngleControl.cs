@@ -19,6 +19,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		#region Variables
 
 		private int angle;
+		private int angleoffset;
 
 		private Rectangle drawRegion;
 		private const int drawOffset = 2;
@@ -37,7 +38,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public delegate void AngleChangedDelegate();
 		public event AngleChangedDelegate AngleChanged;
 
-		public int Angle { get { return angle; } set { angle = value; this.Refresh(); } }
+		public int Angle { get { return angle - angleoffset; } set { angle = value + angleoffset; this.Refresh(); } }
+		public int AngleOffset { get { return angleoffset; } set { angleoffset = value; this.Refresh(); } }
 
 		#endregion
 
@@ -146,8 +148,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 				if(thisAngle == 360) thisAngle = 0;
 			}
 
-			if(thisAngle != this.Angle) {
-				this.Angle = thisAngle;
+			if(thisAngle != angle) {
+				angle = thisAngle;
 				if(!this.DesignMode && AngleChanged != null) AngleChanged(); //Raise event
 				this.Refresh();
 			}
@@ -163,8 +165,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 					if(thisAngle == 360) thisAngle = 0;
 				}
 
-				if(thisAngle != this.Angle) {
-					this.Angle = thisAngle;
+				if(thisAngle != angle) {
+					angle = thisAngle;
 					if(!this.DesignMode && AngleChanged != null) AngleChanged(); //Raise event
 					this.Refresh();
 				}

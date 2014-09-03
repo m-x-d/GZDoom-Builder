@@ -229,6 +229,7 @@
 			// anglecontrol
 			// 
 			this.anglecontrol.Angle = 0;
+			this.anglecontrol.AngleOffset = 0;
 			this.anglecontrol.Location = new System.Drawing.Point(7, 17);
 			this.anglecontrol.Name = "anglecontrol";
 			this.anglecontrol.Size = new System.Drawing.Size(64, 64);
@@ -303,6 +304,7 @@
 			// rollControl
 			// 
 			this.rollControl.Angle = -90;
+			this.rollControl.AngleOffset = 0;
 			this.rollControl.Location = new System.Drawing.Point(7, 17);
 			this.rollControl.Name = "rollControl";
 			this.rollControl.Size = new System.Drawing.Size(64, 64);
@@ -322,6 +324,7 @@
 			// pitchControl
 			// 
 			this.pitchControl.Angle = -90;
+			this.pitchControl.AngleOffset = 0;
 			this.pitchControl.Location = new System.Drawing.Point(7, 17);
 			this.pitchControl.Name = "pitchControl";
 			this.pitchControl.Size = new System.Drawing.Size(64, 64);
@@ -571,7 +574,7 @@
 			// 
 			// posX
 			// 
-			this.posX.AllowDecimal = false;
+			this.posX.AllowDecimal = true;
 			this.posX.AllowNegative = true;
 			this.posX.AllowRelative = true;
 			this.posX.ButtonStep = 8;
@@ -585,7 +588,7 @@
 			// 
 			// posY
 			// 
-			this.posY.AllowDecimal = false;
+			this.posY.AllowDecimal = true;
 			this.posY.AllowNegative = true;
 			this.posY.AllowRelative = true;
 			this.posY.ButtonStep = 8;
@@ -599,7 +602,7 @@
 			// 
 			// posZ
 			// 
-			this.posZ.AllowDecimal = false;
+			this.posZ.AllowDecimal = true;
 			this.posZ.AllowNegative = true;
 			this.posZ.AllowRelative = true;
 			this.posZ.ButtonStep = 8;
