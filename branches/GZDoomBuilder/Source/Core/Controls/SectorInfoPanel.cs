@@ -42,17 +42,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// This shows the info
 		public void ShowInfo(Sector s)
 		{
-			string effectinfo;
-			
 			int sheight = s.CeilHeight - s.FloorHeight;
 
 			// Lookup effect description in config
-			if(General.Map.Config.SectorEffects.ContainsKey(s.Effect))
-				effectinfo = General.Map.Config.SectorEffects[s.Effect].ToString();
-			else if(s.Effect == 0)
-				effectinfo = s.Effect + " - Normal";
-			else
-				effectinfo = s.Effect + " - Unknown";
+			string effectinfo = s.Effect + " - " + General.Map.Config.GetSectorEffectInfo(s.Effect).Title; //mxd
 
 			// Sector info
 			sectorinfo.Text = " Sector " + s.Index + " (" + (s.Sidedefs == null ? "no" : s.Sidedefs.Count.ToString()) + " sidedefs)"; //mxd

@@ -19,8 +19,11 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Events
 
-		public event EventHandler OnValuesChanged;
+		public event EventHandler OnAnglesChanged;
 		public event EventHandler OnUseLineAnglesChanged;
+		public event EventHandler OnOffsetChanged;
+		public event EventHandler OnPivotModeChanged;
+		public event EventHandler OnResetClicked;
 
 		#endregion
 
@@ -51,24 +54,31 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Methods
 
 		public void SetValues(float anglexy, float anglez, float offset, bool first) {
-			//update values
+			blockUpdate = true;
+			
+			//dbg
+			//if(first) Console.WriteLine("First: anglexy=" + anglexy + "; anglez=" + anglez + "; offset=" + offset);
+			
 			if (first) {
+				// Set values
 				this.anglexy = anglexy;
 				this.anglez = anglez;
 				this.offset = offset;
-
-				//dbg
-				//Console.WriteLine("SetValues: anglexy=" + this.anglexy + "; anglez=" + this.anglez + "; offset=" + this.offset + "[first time]");
 			} else {
-				//dbg
-				//Console.WriteLine("SetValues: this.anglexy=" + this.anglexy + "; anglexy = " + anglexy + "; this.anglez=" + this.anglez + "; anglez = " + anglez + "; this.offset=" + this.offset + "; offset = " + offset + "[before]");
-
+				// Or update values
 				if(!float.IsNaN(this.anglexy) && this.anglexy != anglexy) this.anglexy = float.NaN;
 				if(!float.IsNaN(this.anglez) && this.anglez != anglez) this.anglez = float.NaN;
 				if(!float.IsNaN(this.offset) && this.offset != offset) this.offset = float.NaN;
+			}
 
-				//dbg
-				//Console.WriteLine("SetValues: this.anglexy=" + this.anglexy + "; anglexy = " + anglexy + "; this.anglez=" + this.anglez + "; anglez = " + anglez + "; this.offset=" + this.offset + "; offset = " + offset + "[after]");
+			blockUpdate = false;
+		}
+
+		public void SetOffset(float offset, bool first) {
+			if(first) {
+				this.offset = offset;
+			} else {
+				if(!float.IsNaN(this.offset) && this.offset != offset) this.offset = float.NaN;
 			}
 		}
 
@@ -88,7 +98,6 @@ namespace CodeImp.DoomBuilder.Controls
 				angletrackbar.Value = 0;
 			} else {
 				//clamp value to [-85 .. 85]
-				//anglez = General.Clamp((anglez + 90) % 90 - 90, angletrackbar.Minimum, angletrackbar.Maximum);
 				anglez = General.Clamp(anglez, angletrackbar.Minimum, angletrackbar.Maximum);
 
 				slopeangle.Text = anglez.ToString();
@@ -96,15 +105,16 @@ namespace CodeImp.DoomBuilder.Controls
 				angletrackbar.Value = (int)General.Clamp(anglez, angletrackbar.Minimum, angletrackbar.Maximum);
 			}
 
-			slopeoffset.Text = float.IsNaN(offset) ? "" : offset.ToString();
+			slopeoffset.Text = (float.IsNaN(offset) ? "" : offset.ToString());
 
 			blockUpdate = false;
 		}
 
-		/*public void ClearOffset() {
-			offset = float.NaN;
-			slopeoffset.Text = string.Empty;
-		}*/
+		public void UpdateOffset() {
+			blockUpdate = true;
+			slopeoffset.Text = (float.IsNaN(offset) ? "" : offset.ToString());
+			blockUpdate = false;
+		}
 
 		#endregion
 
@@ -117,7 +127,7 @@ namespace CodeImp.DoomBuilder.Controls
 			anglexy = General.ClampAngle(sloperotation.GetResultFloat(0f));
 			rotationcontrol.Angle = (int)Math.Round(anglexy + 90);
 
-			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+			if(OnAnglesChanged != null) OnAnglesChanged(this, EventArgs.Empty);
 			blockUpdate = false;
 		}
 
@@ -128,7 +138,7 @@ namespace CodeImp.DoomBuilder.Controls
 			anglexy = General.ClampAngle(rotationcontrol.Angle - 90);
 			sloperotation.Text = anglexy.ToString();
 
-			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+			if(OnAnglesChanged != null) OnAnglesChanged(this, EventArgs.Empty);
 			blockUpdate = false;
 		}
 
@@ -139,7 +149,7 @@ namespace CodeImp.DoomBuilder.Controls
 			anglez = General.Clamp((int)Math.Round(slopeangle.GetResultFloat(0f)), angletrackbar.Minimum, angletrackbar.Maximum);
 			angletrackbar.Value = (int)anglez;
 
-			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+			if(OnAnglesChanged != null) OnAnglesChanged(this, EventArgs.Empty);
 			blockUpdate = false;
 		}
 
@@ -150,13 +160,13 @@ namespace CodeImp.DoomBuilder.Controls
 			slopeangle.Text = angletrackbar.Value.ToString();
 			anglez = angletrackbar.Value;
 
-			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+			if(OnAnglesChanged != null) OnAnglesChanged(this, EventArgs.Empty);
 			blockUpdate = false;
 		}
 
 		private void slopeoffset_WhenTextChanged(object sender, EventArgs e) {
 			offset = slopeoffset.GetResultFloat(0f);
-			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+			if(OnOffsetChanged != null) OnOffsetChanged(this, EventArgs.Empty);
 		}
 
 		private void reset_Click(object sender, EventArgs e) {
@@ -171,13 +181,15 @@ namespace CodeImp.DoomBuilder.Controls
 			anglez = 0f;
 			offset = 0f;
 
-			if (OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+			if(OnResetClicked != null) OnResetClicked(this, EventArgs.Empty);
 			blockUpdate = false;
 		}
 
 		private void pivotmodeselector_SelectedIndexChanged(object sender, EventArgs e) {
-			if(blockUpdate) return;
 			pivotmode = (SlopePivotMode)pivotmodeselector.SelectedIndex;
+
+			if(blockUpdate) return;
+			if (OnPivotModeChanged != null) OnPivotModeChanged(this, EventArgs.Empty);
 		}
 
 		private void SectorSlopeControl_Load(object sender, EventArgs e) {

@@ -78,6 +78,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Fill effects list
+			effect.GeneralizedOptions = General.Map.Config.GenEffectOptions; //mxd
 			effect.AddInfo(General.Map.Config.SortedSectorEffects.ToArray());
 
 			// Initialize image selectors
