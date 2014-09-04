@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// Variables
 		private List<GeneralizedCategory> generalizedcategories;
+		private List<GeneralizedOption> generalizedoptions; //mxd
 		private bool controlpressed;
 		
 		// Constants
@@ -42,6 +43,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool Empty { get { return (number.Text.Length == 0); } set { if(value) number.Text = ""; } }
 		public int Value { get { return GetValue(); } set { number.Text = value.ToString(); } }
 		public List<GeneralizedCategory> GeneralizedCategories { get { return generalizedcategories; } set { generalizedcategories = value; } }
+		public List<GeneralizedOption> GeneralizedOptions { get { return generalizedoptions; } set { generalizedoptions = value; } } //mxd
 		
 		// Constructor
 		public ActionSelectorControl()
@@ -122,6 +124,8 @@ namespace CodeImp.DoomBuilder.Controls
 						displayname = "None";
 					else if((generalizedcategories != null) && GameConfiguration.IsGeneralized(intnumber, generalizedcategories))
 						displayname = "Generalized (" + General.Map.Config.GetGeneralizedActionCategory(intnumber) + ")";
+					else if((generalizedoptions != null) && GameConfiguration.IsGeneralizedSectorEffect(intnumber, generalizedoptions)) //mxd
+						displayname = General.Map.Config.GetGeneralizedSectorEffectName(intnumber); //mxd
 					else
 						displayname = "Unknown";
 				}

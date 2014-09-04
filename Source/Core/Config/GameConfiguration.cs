@@ -876,6 +876,43 @@ namespace CodeImp.DoomBuilder.Config
 			// Not generalized
 			return null;
 		}
+
+		//mxd
+		public static bool IsGeneralizedSectorEffect(int effect, IEnumerable<GeneralizedOption> options) 
+		{
+			if (effect == 0) return false;
+			foreach (GeneralizedOption option in options) 
+			{
+				foreach(GeneralizedBit bit in option.Bits) 
+				{
+					if(bit.Index > 0 && (effect & bit.Index) == bit.Index) return true;
+				}
+			}
+
+			return false;
+		}
+
+		//mxd
+		public string GetGeneralizedSectorEffectName(int effect) 
+		{
+			if (effect == 0) return "None";
+			string title = "Unknown";
+			int matches = 0;
+
+			foreach(GeneralizedOption option in geneffectoptions) 
+			{
+				foreach(GeneralizedBit bit in option.Bits) 
+				{
+					if(bit.Index > 0 && (effect & bit.Index) == bit.Index) 
+					{
+						title = option.Name + ": " + bit.Title;
+						matches++;
+					}
+				}
+			}
+
+			return (matches > 1 ? "Generalized (" + matches + " effects)" : title);
+		}
 		
 		// This checks if a specific edit mode class is listed
 		public bool IsEditModeSpecified(string classname)
@@ -916,6 +953,10 @@ namespace CodeImp.DoomBuilder.Config
 			else if(effect == 0)
 			{
 				return new SectorEffectInfo(0, "None", true, false);
+			} 
+			else if(IsGeneralizedSectorEffect(effect, geneffectoptions)) //mxd
+			{
+				return new SectorEffectInfo(effect, GetGeneralizedSectorEffectName(effect), true, true);
 			}
 			else
 			{

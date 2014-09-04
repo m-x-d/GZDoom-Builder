@@ -247,11 +247,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						result[1] = "E" + s.Effect;
 					}
 				} else {
+					string effect = s.Effect + " - " + General.Map.Config.GetGeneralizedSectorEffectName(s.Effect);
 					if(s.Tag != 0) {
-						result[0] = "Tag " + s.Tag + ", Effect " + s.Effect;
+						result[0] = "Tag " + s.Tag + ", Effect " + effect;
 						result[1] = "T" + s.Tag + " " + "E" + s.Effect;
 					} else {
-						result[0] = "Effect " + s.Effect;
+						result[0] = "Effect " + effect;
 						result[1] = "E" + s.Effect;
 					}
 				}

@@ -484,7 +484,8 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = 0;
+			this.floorAngleControl.Angle = 90;
+			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.Location = new System.Drawing.Point(186, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
 			this.floorAngleControl.Size = new System.Drawing.Size(44, 44);
@@ -680,7 +681,8 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = 0;
+			this.ceilAngleControl.Angle = 90;
+			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.Location = new System.Drawing.Point(186, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
 			this.ceilAngleControl.Size = new System.Drawing.Size(44, 44);
@@ -867,8 +869,11 @@
 			this.floorslopecontrol.Size = new System.Drawing.Size(431, 178);
 			this.floorslopecontrol.TabIndex = 0;
 			this.floorslopecontrol.UseLineAngles = false;
-			this.floorslopecontrol.OnValuesChanged += new System.EventHandler(this.floorslopecontrol_OnValuesChanged);
 			this.floorslopecontrol.OnUseLineAnglesChanged += new System.EventHandler(this.floorslopecontrol_OnUseLineAnglesChanged);
+			this.floorslopecontrol.OnResetClicked += new System.EventHandler(this.floorslopecontrol_OnResetClicked);
+			this.floorslopecontrol.OnAnglesChanged += new System.EventHandler(this.floorslopecontrol_OnAnglesChanged);
+			this.floorslopecontrol.OnOffsetChanged += new System.EventHandler(this.floorslopecontrol_OnOffsetChanged);
+			this.floorslopecontrol.OnPivotModeChanged += new System.EventHandler(this.floorslopecontrol_OnPivotModeChanged);
 			// 
 			// groupBox4
 			// 
@@ -887,8 +892,11 @@
 			this.ceilingslopecontrol.Size = new System.Drawing.Size(431, 178);
 			this.ceilingslopecontrol.TabIndex = 1;
 			this.ceilingslopecontrol.UseLineAngles = false;
-			this.ceilingslopecontrol.OnValuesChanged += new System.EventHandler(this.ceilingslopecontrol_OnValuesChanged);
 			this.ceilingslopecontrol.OnUseLineAnglesChanged += new System.EventHandler(this.ceilingslopecontrol_OnUseLineAnglesChanged);
+			this.ceilingslopecontrol.OnResetClicked += new System.EventHandler(this.ceilingslopecontrol_OnResetClicked);
+			this.ceilingslopecontrol.OnAnglesChanged += new System.EventHandler(this.ceilingslopecontrol_OnAnglesChanged);
+			this.ceilingslopecontrol.OnOffsetChanged += new System.EventHandler(this.ceilingslopecontrol_OnOffsetChanged);
+			this.ceilingslopecontrol.OnPivotModeChanged += new System.EventHandler(this.ceilingslopecontrol_OnPivotModeChanged);
 			// 
 			// tabcustom
 			// 
