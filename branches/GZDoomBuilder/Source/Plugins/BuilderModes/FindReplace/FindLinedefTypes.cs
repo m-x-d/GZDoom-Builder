@@ -36,6 +36,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
+		private List<int> generalizedbits;
+
 		#endregion
 
 		#region ================== Properties
@@ -45,6 +47,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Constructor / Destructor
+
+		//mxd
+		public FindLinedefTypes() 
+		{
+			if (!General.Map.Config.GeneralizedActions) return;
+
+			// Get all them generalized bits
+			generalizedbits = new List<int>();
+			foreach(GeneralizedCategory cat in General.Map.Config.GenActionCategories) 
+			{
+				foreach(GeneralizedOption option in cat.Options) 
+				{
+					foreach(GeneralizedBit bit in option.Bits) 
+					{
+						if(bit.Index > 0) generalizedbits.Add(bit.Index);
+					}
+				}
+			}
+		}
 
 		#endregion
 
@@ -110,6 +131,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
+				//mxd
+				List<int> expectedbits = GetGeneralizedBits(action);
+
 				// Where to search?
 				ICollection<Linedef> list = withinselection ? General.Map.Map.GetSelectedLinedefs(true) : General.Map.Map.Linedefs;
 
@@ -117,7 +141,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Linedef l in list)
 				{
 					// Action matches?
-					if(l.Action == action)
+					if(l.Action == action || BitsMatch(l.Action, expectedbits))
 					{
 						match = true;
 						argtext = "";
@@ -152,6 +176,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return objs.ToArray();
+		}
+
+		//mxd
+		private List<int> GetGeneralizedBits(int effect) 
+		{
+			if(!General.Map.Config.GeneralizedActions) return new List<int>();
+			List<int> bits = new List<int>();
+
+			foreach(GeneralizedCategory cat in General.Map.Config.GenActionCategories) 
+			{
+				foreach(GeneralizedOption option in cat.Options) 
+				{
+					foreach(GeneralizedBit bit in option.Bits) 
+					{
+						if(bit.Index > 0 && (effect & bit.Index) == bit.Index)
+							bits.Add(bit.Index);
+					}
+				}
+			}
+
+			return bits;
+		}
+
+		//mxd
+		private bool BitsMatch(int action, List<int> expectedbits) 
+		{
+			if(!General.Map.Config.GeneralizedActions) return false;
+
+			foreach(int bit in expectedbits) 
+			{
+				if((action & bit) != bit) return false;
+			}
+
+			return true;
 		}
 		
 		#endregion

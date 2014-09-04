@@ -36,6 +36,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
+		private List<int> generalizedbits;
+
 		#endregion
 
 		#region ================== Properties
@@ -45,6 +47,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Constructor / Destructor
+
+		//mxd
+		public FindSectorEffect() 
+		{
+			if (!General.Map.Config.GeneralizedEffects) return;
+
+			// Get all them generalized bits
+			generalizedbits = new List<int>();
+			foreach(GeneralizedOption option in General.Map.Config.GenEffectOptions) 
+			{
+				foreach(GeneralizedBit bit in option.Bits) 
+				{
+					if(bit.Index > 0) generalizedbits.Add(bit.Index);
+				}
+			}
+		}
 
 		#endregion
 
@@ -86,14 +104,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int effect;
 			if(int.TryParse(value, out effect))
 			{
+				//mxd
+				List<int> expectedbits = GetGeneralizedBits(effect);
+				
 				// Where to search?
 				ICollection<Sector> list = withinselection ? General.Map.Map.GetSelectedSectors(true) : General.Map.Map.Sectors;
 
 				// Go for all sectors
 				foreach(Sector s in list)
 				{
-					// Tag matches?
-					if(s.Effect == effect)
+					// Effect matches?
+					if(s.Effect == effect || BitsMatch(s.Effect, expectedbits))
 					{
 						// Replace
 						if(replacewith != null) s.Effect = replaceeffect;
@@ -108,6 +129,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return objs.ToArray();
+		}
+
+		//mxd
+		private List<int> GetGeneralizedBits(int effect) 
+		{
+			if (!General.Map.Config.GeneralizedEffects) return new List<int>();
+			List<int> bits = new List<int>();
+
+			foreach(GeneralizedOption option in General.Map.Config.GenEffectOptions) 
+			{
+				foreach(GeneralizedBit bit in option.Bits) 
+				{
+					if(bit.Index > 0 && (effect & bit.Index) == bit.Index)
+						bits.Add(bit.Index);
+				}
+			}
+
+			return bits;
+		}
+
+		//mxd
+		private bool BitsMatch(int effect, List<int> expectedbits) 
+		{
+			if (!General.Map.Config.GeneralizedEffects) return false;
+
+			foreach (int bit in expectedbits) 
+			{
+				if ((effect & bit) != bit) return false;
+			}
+
+			return true;
 		}
 
 		#endregion
