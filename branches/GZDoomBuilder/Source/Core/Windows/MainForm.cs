@@ -2908,7 +2908,8 @@ namespace CodeImp.DoomBuilder.Windows
 			//pick a valid folder
 			string folder = General.Settings.ScreenshotsPath;
 			if (!Directory.Exists(folder)) {
-				if (General.ShowErrorMessage("Screenshots save path '" + folder 
+				if (folder != General.DefaultScreenshotsPath 
+					&& General.ShowErrorMessage("Screenshots save path '" + folder 
 					+ "' does not exist!\nPress OK to save to the default folder ('" 
 					+ General.DefaultScreenshotsPath 
 					+ "').\nPress Cancel to abort.", MessageBoxButtons.OKCancel) == DialogResult.Cancel) return;
@@ -2951,18 +2952,20 @@ namespace CodeImp.DoomBuilder.Windows
 					//gather some info
 					string info = string.Empty;
 					if (editAreaOnly && General.Editing.Mode != null) {
+						info = General.Map.FileTitle + " (" + General.Map.Options.CurrentName + "): ";
+
 						//get map coordinates
 						if (General.Editing.Mode is ClassicMode) {
 							Vector2D pos = ((ClassicMode) General.Editing.Mode).MouseMapPos;
 
 							//mouse inside the view?
 							if (pos.IsFinite()) {
-								info = "X:" + Math.Round(pos.x) + " Y:" + Math.Round(pos.y);
+								info += "X:" + Math.Round(pos.x) + " Y:" + Math.Round(pos.y);
 							} else {
-								info = "X:" + Math.Round(General.Map.Renderer2D.TranslateX) + " Y:" + Math.Round(General.Map.Renderer2D.TranslateY);
+								info += "X:" + Math.Round(General.Map.Renderer2D.TranslateX) + " Y:" + Math.Round(General.Map.Renderer2D.TranslateY);
 							}
 						} else { //should be visual mode
-							info = "X:" + Math.Round(General.Map.VisualCamera.Position.x) + " Y:" + Math.Round(General.Map.VisualCamera.Position.y) + " Z:" + Math.Round(General.Map.VisualCamera.Position.z);
+							info += "X:" + Math.Round(General.Map.VisualCamera.Position.x) + " Y:" + Math.Round(General.Map.VisualCamera.Position.y) + " Z:" + Math.Round(General.Map.VisualCamera.Position.z);
 						}
 
 						//add the revision number
