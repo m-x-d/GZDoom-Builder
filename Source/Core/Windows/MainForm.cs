@@ -2758,12 +2758,21 @@ namespace CodeImp.DoomBuilder.Windows
 			html.AppendLine("</table></div></body></html>");
 
 			//write
-			using(StreamWriter writer = File.CreateText(fileName)) {
-				writer.Write(html.ToString());
+			string path;
+			try {
+				path = Path.Combine(General.AppPath, fileName);
+				using(StreamWriter writer = File.CreateText(path)) {
+					writer.Write(html.ToString());
+				}
+			} catch (Exception) {
+				//Configurtions path SHOULD be accessible and not read-only, right?
+				path = Path.Combine(General.SettingsPath, fileName);
+				using(StreamWriter writer = File.CreateText(path)) {
+					writer.Write(html.ToString());
+				}
 			}
 
 			//open file
-			string path = Path.Combine(General.AppPath, fileName);
 			DisplayStatus(StatusType.Info, "Shortcut reference saved to '" + path + "'");
 			System.Diagnostics.Process.Start(path);
 		}

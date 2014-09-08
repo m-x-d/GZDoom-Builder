@@ -25,6 +25,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			  ButtonGroup = "002_tools",
 			  Volatile = true,
 			  UseByDefault = true,
+			  SupportedMapFormats = new[] { "DoomMapSetIO" }, //mxd
 			  AllowCopyPaste = false)]
 	public class VisplaneExplorerMode : ClassicMode
 	{
@@ -248,13 +249,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// Mode starts
 		public override void OnEngage()
 		{
-            //mxd. I think it only applies to maps in Doom format
-            if (General.Map.Config.FormatInterface != "DoomMapSetIO") {
-				General.Interface.DisplayStatus(StatusType.Warning, "Visplane Explorer requires map in Doom format!");
-                OnCancel(); //return to previous mode
-				return;
-			}
-
 			Cursor.Current = Cursors.WaitCursor;
 			base.OnEngage();
 			General.Interface.DisplayStatus(StatusType.Busy, "Setting up test environment...");
