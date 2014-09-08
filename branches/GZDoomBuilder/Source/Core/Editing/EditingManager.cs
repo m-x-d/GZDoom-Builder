@@ -247,10 +247,12 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				foreach(EditModeInfo emi in allmodes)
 				{
-					// Include the mode when it is listed and enabled
-					// Also include the mode when it is not optional
-					if( (General.Map.ConfigSettings.EditModes.ContainsKey(emi.Type.FullName) &&
-						 General.Map.ConfigSettings.EditModes[emi.Type.FullName]) || !emi.IsOptional )
+					// Include the mode if it supports current map format (mxd)
+					// Also include the mode when it is listed and enabled or when it's not optional
+					if( (emi.Attributes.SupportedMapFormats == null || Array.IndexOf(emi.Attributes.SupportedMapFormats, General.Map.Config.FormatInterface) != -1) &&
+						((General.Map.ConfigSettings.EditModes.ContainsKey(emi.Type.FullName) && 
+						General.Map.ConfigSettings.EditModes[emi.Type.FullName] ) 
+						 || !emi.IsOptional) )
 					{
 						// Add the mode to be used and bind switch action
 						usedmodes.Add(emi);

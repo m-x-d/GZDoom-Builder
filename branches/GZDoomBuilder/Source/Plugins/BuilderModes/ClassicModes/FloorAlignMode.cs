@@ -30,6 +30,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  ButtonImage = "FloorAlign.png",
 			  ButtonOrder = int.MinValue + 310,
 			  ButtonGroup = "000_editing",
+			  UseByDefault = true, //mxd
+			  SupportedMapFormats = new[] { "UniversalMapSetIO" }, //mxd
 			  Volatile = true)]
 
 	public class FloorAlignMode : FlatAlignMode

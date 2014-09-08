@@ -90,6 +90,7 @@ namespace CodeImp.DoomBuilder.Windows
 					lvi = listmodes.Items.Add(emi.Attributes.DisplayName);
 					lvi.Tag = emi;
 					lvi.SubItems.Add(emi.Plugin.Plug.Name);
+					lvi.UseItemStyleForSubItems = true; //mxd
 				}
 			}
 
@@ -194,8 +195,27 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(ListViewItem lvi in listmodes.Items)
 				{
 					EditModeInfo emi = (lvi.Tag as EditModeInfo);
-					lvi.Checked = (configinfo.EditModes.ContainsKey(emi.Type.FullName) && configinfo.EditModes[emi.Type.FullName]);
+
+					//mxd. Disable item if the mode does not support current map format
+					if (emi.Attributes.SupportedMapFormats != null &&
+					    Array.IndexOf(emi.Attributes.SupportedMapFormats, gameconfig.FormatInterface) == -1) 
+					{
+						lvi.Text = emi.Attributes.DisplayName + " (map format not supported)";
+						lvi.ForeColor = SystemColors.GrayText;
+						lvi.BackColor = SystemColors.InactiveBorder;
+						lvi.Checked = false;
+					} 
+					else 
+					{
+						lvi.Text = emi.Attributes.DisplayName;
+						lvi.ForeColor = SystemColors.WindowText;
+						lvi.BackColor = SystemColors.Window;
+						lvi.Checked = (configinfo.EditModes.ContainsKey(emi.Type.FullName) && configinfo.EditModes[emi.Type.FullName]);
+					}
 				}
+
+				// Update listmodes columns width (mxd)
+				listmodes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
 				
 				// Fill start modes
 				RefillStartModes();
@@ -559,6 +579,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Leave when no configuration selected
 			if(configinfo == null) return;
+
+			// mxd. Not the best way to detect a disabled item, but we will go with that...
+			if(e.Item.ForeColor == SystemColors.GrayText) e.Item.Checked = false;
 			
 			// Apply changes
 			EditModeInfo emi = (e.Item.Tag as EditModeInfo);

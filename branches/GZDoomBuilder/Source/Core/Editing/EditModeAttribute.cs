@@ -42,6 +42,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private bool allowcopypaste = true;
 		private bool usebydefault;
 		private bool safestartmode;
+		private string[] supportedmapformats; //mxd
 		
 		#endregion
 		
@@ -108,7 +109,12 @@ namespace CodeImp.DoomBuilder.Editing
 		/// opening a map. The user can then select this as starting mode in the configuration.
 		/// </summary>
 		public bool SafeStartMode { get { return safestartmode; } set { safestartmode = value; } }
-		
+
+		/// <summary>
+		/// List of map formats this mode can work with. Null means all map formats are supported (mxd)
+		/// </summary>
+		public string[] SupportedMapFormats { get { return supportedmapformats; } set { supportedmapformats = value; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer

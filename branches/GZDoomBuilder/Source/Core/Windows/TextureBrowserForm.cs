@@ -92,8 +92,10 @@ namespace CodeImp.DoomBuilder.Windows
 				item.ImageIndex = 2 + ts.Location.type;
 				item.SelectedImageIndex = item.ImageIndex;
 
-				if (ts.Location.type != DataLocation.RESOURCE_WAD)
+				if (ts.Location.type != DataLocation.RESOURCE_WAD) {
 					createNodes(item);
+					item.Expand();
+				}
 			}
 
 			//mxd. Add All textures set
@@ -124,11 +126,10 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			//mxd. If the selected texture was not found in the last-selected set, try finding it in the other sets
-			if (selectedset == null) {
+			if (selectedset == null && selecttexture != "-") {
 				foreach (TreeNode n in tvTextureSets.Nodes) {
 					selectedset = findTextureByLongName(n, longname);
-					if (selectedset != null) 
-						break;
+					if (selectedset != null) break;
 				}
 			}
 
@@ -136,13 +137,11 @@ namespace CodeImp.DoomBuilder.Windows
 			if (selectedset == null && match != null)
 				selectedset = match;
 
-			if(tvTextureSets.Nodes.Count > 0)
-				tvTextureSets.Nodes[0].Expand();//mxd
-			tvTextureSets.EndUpdate();//mxd
+			//mxd. Select found node or "All" node, if none were found
+			if (tvTextureSets.Nodes.Count > 0) 
+				tvTextureSets.SelectedNode = (selectedset ?? tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1]);
 
-			if (selectedset != null) {//mxd
-				tvTextureSets.SelectedNode = selectedset;
-			}
+			tvTextureSets.EndUpdate();//mxd
 
 			// Keep last position and size
 			lastposition = this.Location;
@@ -375,7 +374,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.WriteSetting("browserwindow.windowstate", windowstate);
 
 			//mxd. Save last selected texture set
-			if(tvTextureSets.SelectedNode != null)
+			if(this.DialogResult == DialogResult.OK && tvTextureSets.SelectedNode != null)
 				General.Settings.WriteSetting("browserwindow.textureset", tvTextureSets.SelectedNode.Name);
 			
 			// Clean up

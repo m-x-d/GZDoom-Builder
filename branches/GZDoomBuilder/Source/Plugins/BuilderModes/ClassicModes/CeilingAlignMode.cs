@@ -30,6 +30,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  ButtonImage = "CeilingAlign.png",
 			  ButtonOrder = int.MinValue + 311,
 			  ButtonGroup = "000_editing",
+			  UseByDefault = true, //mxd
+			  SupportedMapFormats = new[] { "UniversalMapSetIO" }, //mxd
 			  Volatile = true)]
 
 	public class CeilingAlignMode : FlatAlignMode
