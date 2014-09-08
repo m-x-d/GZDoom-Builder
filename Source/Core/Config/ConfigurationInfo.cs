@@ -391,6 +391,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.nodebuildersave = ci.nodebuildersave;
 			this.nodebuildertest = ci.nodebuildertest;
 			this.formatinterface = ci.formatinterface; //mxd
+			this.currentEngineIndex = ci.currentEngineIndex; //mxd
 			this.resources = new DataLocationList();
 			this.resources.AddRange(ci.resources);
 			
@@ -472,8 +473,10 @@ namespace CodeImp.DoomBuilder.Config
 		//mxd
 		internal void PasteTestEnginesFrom(ConfigurationInfo source) 
 		{
+			currentEngineIndex = source.currentEngineIndex;
 			testEngines = new List<EngineInfo>();
 			foreach(EngineInfo info in source.testEngines) testEngines.Add(new EngineInfo(info));
+			if(currentEngineIndex >= testEngines.Count) currentEngineIndex = testEngines.Count - 1;
 			changed = true;
 		}
 
@@ -491,12 +494,14 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			nodebuildersave = source.nodebuildersave;
 			nodebuildertest = source.nodebuildertest;
+			currentEngineIndex = source.currentEngineIndex;
 			resources = new DataLocationList();
 			resources.AddRange(source.resources);
 
 			testEngines = new List<EngineInfo>();
 			foreach(EngineInfo info in source.testEngines)
-				testEngines.Add(new EngineInfo(info)); if(currentEngineIndex >= testEngines.Count) currentEngineIndex = testEngines.Count - 1;
+				testEngines.Add(new EngineInfo(info)); 
+			if(currentEngineIndex >= testEngines.Count) currentEngineIndex = testEngines.Count - 1;
 			linedefColorPresets = new LinedefColorPreset[source.linedefColorPresets.Length];
 			for(int i = 0; i < source.linedefColorPresets.Length; i++)
 				linedefColorPresets[i] = new LinedefColorPreset(source.linedefColorPresets[i]);

@@ -309,7 +309,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			//mxd. Update engine name if needed
 			configinfo.TestEngines[configinfo.CurrentEngineIndex].CheckProgramName(false);
-			cbEngineSelector.Text = configinfo.TestProgramName;
+			cbEngineSelector.Items[cbEngineSelector.SelectedIndex] = configinfo.TestProgramName;
 		}
 
 		// Test parameters changed
@@ -336,11 +336,26 @@ namespace CodeImp.DoomBuilder.Windows
 				testresult.Text = General.Map.Launcher.ConvertParameters(testparameters.Text, skill.Value, shortpaths.Checked);
 			}
 		}
+
+		//mxd
+		private void ApplyTestEngineNameChange() 
+		{
+			int index = (int)cbEngineSelector.Tag;
+			if(index != -1 && cbEngineSelector.Text != cbEngineSelector.Items[index].ToString()) {
+				cbEngineSelector.Items[index] = cbEngineSelector.Text;
+				configinfo.TestProgramName = cbEngineSelector.Text;
+				configinfo.Changed = true; //mxd
+			}
+		}
 		
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
 			ConfigurationInfo ci;
+
+			//mxd. Apply changes of current test engine name, if there are any
+			//TODO: move engine selector stuff into separate component!
+			if(configinfo != null) ApplyTestEngineNameChange();
 
 			//mxd. Apply configuration items. They should be in the same order, riiiight?
 			for(int i = 0; i < listconfigs.Items.Count; i++) {
@@ -389,7 +404,6 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd. Update engine name
 				configinfo.TestEngines[configinfo.CurrentEngineIndex].CheckProgramName(true);
 				configinfo.Changed = true;
-				cbEngineSelector.Text = configinfo.TestProgramName;
 			}
 		}
 
@@ -725,13 +739,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		private void cbEngineSelector_DropDown(object sender, EventArgs e) {
-			int index = (int)cbEngineSelector.Tag;
-
-			if(index != -1 && cbEngineSelector.Text != cbEngineSelector.Items[index].ToString()) {
-				cbEngineSelector.Items[index] = cbEngineSelector.Text;
-				configinfo.TestProgramName = cbEngineSelector.Text;
-				configinfo.Changed = true; //mxd
-			}
+			ApplyTestEngineNameChange();
 		}
 
 		//mxd
