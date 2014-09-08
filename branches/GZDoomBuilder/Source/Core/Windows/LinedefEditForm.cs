@@ -700,6 +700,24 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
+			// Check if we have at least one activation flag when there's an action in UDMF map format (mxd)
+			if (General.Map.UDMF && !action.Empty) 
+			{
+				bool haveactivationflag = false;
+				foreach (CheckBox c in udmfactivates.Checkboxes) 
+				{
+					if (c.CheckState != CheckState.Unchecked) 
+					{
+						haveactivationflag = true;
+						break;
+					}
+				}
+
+				if (!haveactivationflag && 
+					General.ShowWarningMessage("You are setting an action without any activation flags.\nIs that OK?", MessageBoxButtons.YesNo) == DialogResult.No) 
+					return;
+			}
+
 			//mxd
 			bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
 			int lockNum = lockNumber.GetResult(0);
