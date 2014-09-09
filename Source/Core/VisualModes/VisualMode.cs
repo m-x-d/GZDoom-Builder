@@ -157,6 +157,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
+
+			// Update projection (mxd)
+			General.Map.CRenderer3D.CreateProjection();
 			
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
