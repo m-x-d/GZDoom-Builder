@@ -58,6 +58,9 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void VPO_CloseMap();
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)] //mxd
+		private delegate void VPO_OpenDoorSectors(int dir);
+
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate int VPO_TestSpot(int x, int y, int dz, int angle,
 			ref int visplanes, ref int drawsegs, ref int openings, ref int solidsegs);
@@ -67,7 +70,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		#region ================== Variables
 
 		// Main objects
-		private string[] tempfiles;
+		private readonly string[] tempfiles;
 		private IntPtr[] dlls;
 		private Thread[] threads;
 
@@ -76,8 +79,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		private string mapname;
 
 		// Input and output queue (both require a lock on 'points' !)
-		private Queue<TilePoint> points = new Queue<TilePoint>(EXPECTED_RESULTS_BUFFER);
-		private Queue<PointData> results = new Queue<PointData>(EXPECTED_RESULTS_BUFFER);
+		private readonly Queue<TilePoint> points = new Queue<TilePoint>(EXPECTED_RESULTS_BUFFER);
+		private readonly Queue<PointData> results = new Queue<PointData>(EXPECTED_RESULTS_BUFFER);
 		
 		#endregion
 
@@ -146,6 +149,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			VPO_OpenMap OpenMap = (VPO_OpenMap)Marshal.GetDelegateForFunctionPointer(GetProcAddress(dlls[(int)index], "VPO_OpenMap"), typeof(VPO_OpenMap));
 			VPO_FreeWAD FreeWAD = (VPO_FreeWAD)Marshal.GetDelegateForFunctionPointer(GetProcAddress(dlls[(int)index], "VPO_FreeWAD"), typeof(VPO_FreeWAD));
 			VPO_CloseMap CloseMap = (VPO_CloseMap)Marshal.GetDelegateForFunctionPointer(GetProcAddress(dlls[(int)index], "VPO_CloseMap"), typeof(VPO_CloseMap));
+			VPO_OpenDoorSectors OpenDoors = (VPO_OpenDoorSectors)Marshal.GetDelegateForFunctionPointer(GetProcAddress(dlls[(int)index], "VPO_OpenDoorSectors"), typeof(VPO_OpenDoorSectors)); //mxd
 			VPO_TestSpot TestSpot = (VPO_TestSpot)Marshal.GetDelegateForFunctionPointer(GetProcAddress(dlls[(int)index], "VPO_TestSpot"), typeof(VPO_TestSpot));
 
 			try
@@ -154,6 +158,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				bool isHexen = (General.Map.Config.FormatInterface == "HexenMapSetIO");
 				if(LoadWAD(filename) != 0) throw new Exception("VPO is unable to read this file.");
 				if(OpenMap(mapname, ref isHexen) != 0) throw new Exception("VPO is unable to open this map.");
+				OpenDoors(BuilderPlug.InterfaceForm.OpenDoors ? 1 : -1); //mxd
 
 				// Processing
 				Queue<TilePoint> todo = new Queue<TilePoint>(POINTS_PER_ITERATION);
@@ -244,6 +249,13 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 					results.Clear();
 				}
 			}
+		}
+
+		//mxd
+		internal void Restart() 
+		{
+			Stop();
+			Start(filename, mapname);
 		}
 
 		// This clears the list of enqueued points

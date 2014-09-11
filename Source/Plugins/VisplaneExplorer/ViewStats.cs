@@ -6,10 +6,11 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 {
 	internal enum ViewStats
 	{
-		Visplanes = 0,
-		Drawsegs = 1,
-		Solidsegs = 2,
-		Openings = 3,
-		NumStats = 4
+		Visplanes,
+		Drawsegs,
+		Solidsegs,
+		Openings,
+		Heatmap, //mxd
+		NumStats
 	}
 }

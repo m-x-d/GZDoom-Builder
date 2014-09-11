@@ -132,7 +132,7 @@
 			// gridlock
 			// 
 			this.gridlock.Checked = false;
-			this.gridlock.Margin = new System.Windows.Forms.Padding(6, 1, 0, 2);
+			this.gridlock.Margin = new System.Windows.Forms.Padding(12, 1, 0, 2);
 			this.gridlock.Name = "gridlock";
 			this.gridlock.Size = new System.Drawing.Size(120, 22);
 			this.gridlock.Text = "Lock slices to grid";
