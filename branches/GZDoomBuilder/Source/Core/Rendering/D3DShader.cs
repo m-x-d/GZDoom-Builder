@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(!manager.Enabled) return null;
 
 			Effect fx;
-			string errors;
+			string errors = string.Empty;
 			
 			// Load the resource
 			Stream fxdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources." + fxfile);
@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				catch(Exception e)
 				{
 					// No debug information, just crash
-					throw new Exception(e.GetType().Name + " while loading effect " + fxfile + ": " + e.Message);
+					throw new Exception(e.GetType().Name + " while loading effect " + fxfile + ": " + e.Message + "\nInitial message: " + errors);
 				}
 			}
 			
