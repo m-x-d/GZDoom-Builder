@@ -25,7 +25,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			  ButtonGroup = "002_tools",
 			  Volatile = true,
 			  UseByDefault = true,
-			  SupportedMapFormats = new[] { "DoomMapSetIO" }, //mxd
+			  SupportedMapFormats = new[] { "DoomMapSetIO", "HexenMapSetIO" }, //mxd
 			  AllowCopyPaste = false)]
 	public class VisplaneExplorerMode : ClassicMode
 	{
