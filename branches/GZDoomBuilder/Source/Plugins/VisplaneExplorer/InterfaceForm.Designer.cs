@@ -35,14 +35,20 @@
 			this.dsstats = new System.Windows.Forms.ToolStripMenuItem();
 			this.ssstats = new System.Windows.Forms.ToolStripMenuItem();
 			this.opstats = new System.Windows.Forms.ToolStripMenuItem();
+			this.cbopendoors = new CodeImp.DoomBuilder.Controls.ToolStripCheckBox();
+			this.cbheatmap = new CodeImp.DoomBuilder.Controls.ToolStripCheckBox();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.separator = new System.Windows.Forms.ToolStripSeparator();
 			this.toolstrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolstrip
 			// 
 			this.toolstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statsbutton});
+            this.statsbutton,
+            this.separator,
+            this.cbopendoors,
+            this.cbheatmap});
 			this.toolstrip.Location = new System.Drawing.Point(0, 0);
 			this.toolstrip.Name = "toolstrip";
 			this.toolstrip.Size = new System.Drawing.Size(465, 25);
@@ -68,7 +74,7 @@
 			this.vpstats.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.vpstats.Image = global::CodeImp.DoomBuilder.Plugins.VisplaneExplorer.Properties.Resources.Visplanes;
 			this.vpstats.Name = "vpstats";
-			this.vpstats.Size = new System.Drawing.Size(132, 22);
+			this.vpstats.Size = new System.Drawing.Size(152, 22);
 			this.vpstats.Tag = "0";
 			this.vpstats.Text = "Visplanes";
 			this.vpstats.Click += new System.EventHandler(this.stats_Click);
@@ -77,7 +83,7 @@
 			// 
 			this.dsstats.Image = global::CodeImp.DoomBuilder.Plugins.VisplaneExplorer.Properties.Resources.Drawsegs;
 			this.dsstats.Name = "dsstats";
-			this.dsstats.Size = new System.Drawing.Size(132, 22);
+			this.dsstats.Size = new System.Drawing.Size(152, 22);
 			this.dsstats.Tag = "1";
 			this.dsstats.Text = "Drawsegs";
 			this.dsstats.Click += new System.EventHandler(this.stats_Click);
@@ -86,7 +92,7 @@
 			// 
 			this.ssstats.Image = global::CodeImp.DoomBuilder.Plugins.VisplaneExplorer.Properties.Resources.Solidsegs;
 			this.ssstats.Name = "ssstats";
-			this.ssstats.Size = new System.Drawing.Size(132, 22);
+			this.ssstats.Size = new System.Drawing.Size(152, 22);
 			this.ssstats.Tag = "2";
 			this.ssstats.Text = "Solidsegs";
 			this.ssstats.Click += new System.EventHandler(this.stats_Click);
@@ -95,10 +101,27 @@
 			// 
 			this.opstats.Image = global::CodeImp.DoomBuilder.Plugins.VisplaneExplorer.Properties.Resources.Openings;
 			this.opstats.Name = "opstats";
-			this.opstats.Size = new System.Drawing.Size(132, 22);
+			this.opstats.Size = new System.Drawing.Size(152, 22);
 			this.opstats.Tag = "3";
 			this.opstats.Text = "Openings";
 			this.opstats.Click += new System.EventHandler(this.stats_Click);
+			// 
+			// cbopendoors
+			// 
+			this.cbopendoors.Checked = false;
+			this.cbopendoors.Margin = new System.Windows.Forms.Padding(12, 1, 0, 2);
+			this.cbopendoors.Name = "cbopendoors";
+			this.cbopendoors.Size = new System.Drawing.Size(89, 22);
+			this.cbopendoors.Text = "Open Doors";
+			this.cbopendoors.Click += new System.EventHandler(this.cbopendoors_Click);
+			// 
+			// cbheatmap
+			// 
+			this.cbheatmap.Checked = false;
+			this.cbheatmap.Name = "cbheatmap";
+			this.cbheatmap.Size = new System.Drawing.Size(88, 22);
+			this.cbheatmap.Text = "Heat Colors";
+			this.cbheatmap.Click += new System.EventHandler(this.cbheatmap_Click);
 			// 
 			// tooltip
 			// 
@@ -107,6 +130,11 @@
 			this.tooltip.InitialDelay = 1;
 			this.tooltip.ReshowDelay = 0;
 			this.tooltip.ShowAlways = true;
+			// 
+			// separator
+			// 
+			this.separator.Name = "separator";
+			this.separator.Size = new System.Drawing.Size(6, 25);
 			// 
 			// InterfaceForm
 			// 
@@ -138,6 +166,9 @@
 		private System.Windows.Forms.ToolStripMenuItem ssstats;
 		private System.Windows.Forms.ToolStripMenuItem opstats;
 		private System.Windows.Forms.ToolTip tooltip;
+		private CodeImp.DoomBuilder.Controls.ToolStripCheckBox cbopendoors;
+		private CodeImp.DoomBuilder.Controls.ToolStripCheckBox cbheatmap;
+		private System.Windows.Forms.ToolStripSeparator separator;
 
 	}
 }

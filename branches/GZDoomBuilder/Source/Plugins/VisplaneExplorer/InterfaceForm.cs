@@ -19,13 +19,17 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		#region ================== Variables
 
 		private ViewStats viewstats;
-		Point oldttposition;
+		private static bool opendoors; //mxd
+		private static bool showheatmap; //mxd
+		private Point oldttposition;
 
 		#endregion
 
 		#region ================== Properties
 
 		internal ViewStats ViewStats { get { return viewstats; } }
+		internal bool OpenDoors { get { return opendoors; } } //mxd
+		internal bool ShowHeatmap { get { return showheatmap; } } //mxd
 
 		#endregion
 
@@ -35,6 +39,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public InterfaceForm()
 		{
 			InitializeComponent();
+			cbopendoors.Checked = opendoors; //mxd
+			cbheatmap.Checked = showheatmap; //mxd
 		}
 
 		#endregion
@@ -44,12 +50,18 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// This adds the buttons to the toolbar
 		public void AddToInterface()
 		{
-			General.Interface.AddButton(statsbutton, ToolbarSection.Custom);
+			General.Interface.AddButton(statsbutton);
+			General.Interface.AddButton(separator); //mxd
+			General.Interface.AddButton(cbopendoors); //mxd
+			General.Interface.AddButton(cbheatmap); //mxd
 		}
 
 		// This removes the buttons from the toolbar
 		public void RemoveFromInterface()
 		{
+			General.Interface.RemoveButton(cbheatmap); //mxd
+			General.Interface.RemoveButton(cbopendoors); //mxd
+			General.Interface.RemoveButton(separator); //mxd
 			General.Interface.RemoveButton(statsbutton);
 		}
 
@@ -88,6 +100,23 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			item.Checked = true;
 			statsbutton.Image = item.Image;
 
+			General.Interface.RedrawDisplay();
+		}
+
+		//mxd
+		private void cbheatmap_Click(object sender, EventArgs e)
+		{
+			showheatmap = cbheatmap.Checked;
+			General.Interface.RedrawDisplay();
+		}
+
+		//mxd
+		private void cbopendoors_Click(object sender, EventArgs e)
+		{
+			opendoors = cbopendoors.Checked;
+			
+			// Restart processing 
+			BuilderPlug.VPO.Restart();
 			General.Interface.RedrawDisplay();
 		}
 

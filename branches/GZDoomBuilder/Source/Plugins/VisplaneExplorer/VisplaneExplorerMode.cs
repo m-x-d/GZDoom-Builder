@@ -128,8 +128,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			Rectangle mapviewrect = new Rectangle((int)mapleftbot.x - Tile.TILE_SIZE, (int)maprighttop.y - Tile.TILE_SIZE, (int)maprighttop.x - (int)mapleftbot.x + Tile.TILE_SIZE, (int)mapleftbot.y - (int)maprighttop.y + Tile.TILE_SIZE);
 
 			int viewstats = (int)BuilderPlug.InterfaceForm.ViewStats;
-			Palette pal = BuilderPlug.Palettes[viewstats];
-			
+			Palette pal = (BuilderPlug.InterfaceForm.ShowHeatmap ? BuilderPlug.Palettes[(int)ViewStats.Heatmap] : BuilderPlug.Palettes[viewstats]);
+
 			Size canvassize = canvas.Size;
 			BitmapData bd = canvas.LockBits(new Rectangle(0, 0, canvassize.Width, canvassize.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			RtlZeroMemory(bd.Scan0, bd.Width * bd.Height * 4);

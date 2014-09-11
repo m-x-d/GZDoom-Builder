@@ -88,6 +88,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				palettes[(int)ViewStats.Drawsegs] = new Palette(Resources.Drawsegs_pal);
 				palettes[(int)ViewStats.Solidsegs] = new Palette(Resources.Solidsegs_pal);
 				palettes[(int)ViewStats.Openings] = new Palette(Resources.Openings_pal);
+				palettes[(int)ViewStats.Heatmap] = new Palette(Resources.Heatmap_pal); //mxd
 				ApplyUserColors();
 			}
 		}
@@ -107,7 +108,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			interfaceform = null;
 			vpo.Dispose();
 			vpo = null;
-            //General.Actions.UnbindMethods(this); //mxd. But... we have no methods to unbind!
 			base.Dispose();
 		}
 

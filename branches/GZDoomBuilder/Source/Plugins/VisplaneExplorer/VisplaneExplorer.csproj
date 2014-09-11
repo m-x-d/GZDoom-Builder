@@ -85,6 +85,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Gauge.png" />
     <Content Include="Resources\Gauge_large.ico" />
+    <None Include="Resources\Heatmap_pal.png" />
     <EmbeddedResource Include="Resources\vpo.dll" />
     <None Include="Resources\Solidsegs_pal.png" />
     <None Include="Resources\Openings_pal.png" />
