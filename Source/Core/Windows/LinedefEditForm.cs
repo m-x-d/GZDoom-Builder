@@ -701,7 +701,8 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Check if we have at least one activation flag when there's an action in UDMF map format (mxd)
-			if (General.Map.UDMF && action.Value != 0)
+			// Too obnoxious...
+			/*if (General.Map.UDMF && action.Value != 0)
 			{
 				bool haveactivationflag = false;
 				foreach (CheckBox c in udmfactivates.Checkboxes) 
@@ -716,7 +717,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if (!haveactivationflag && 
 					General.ShowWarningMessage("You are setting an action without any activation flags.\nIs that OK?", MessageBoxButtons.YesNo) == DialogResult.No) 
 					return;
-			}
+			}*/
 
 			//mxd
 			bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
