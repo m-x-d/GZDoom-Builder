@@ -77,8 +77,8 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			}
 		}
 
-		// This is called after a map has been closed
-		public override void OnMapCloseEnd()
+		// Occurs before the map is closed
+		public override void OnMapCloseBegin()
 		{
 			// If we have a Comments panel, remove it
 			if(dockerpanel != null)
