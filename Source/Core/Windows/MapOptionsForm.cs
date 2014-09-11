@@ -293,6 +293,7 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					// Get default lump name from configuration
 					levelname.Text = ci.DefaultLumpName;
+					examplelabel.Text = ci.DefaultLumpName; //mxd
 				}
 
 				//mxd

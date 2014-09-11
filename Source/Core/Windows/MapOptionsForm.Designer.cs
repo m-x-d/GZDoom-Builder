@@ -42,6 +42,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres = new System.Windows.Forms.GroupBox();
 			this.strictpatches = new System.Windows.Forms.CheckBox();
 			this.datalocations = new CodeImp.DoomBuilder.Controls.ResourceListEditor();
+			this.examplelabel = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
@@ -56,9 +57,9 @@ namespace CodeImp.DoomBuilder.Windows
 			label3.AutoSize = true;
 			label3.Location = new System.Drawing.Point(239, 83);
 			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(90, 14);
+			label3.Size = new System.Drawing.Size(53, 14);
 			label3.TabIndex = 9;
-			label3.Text = "example:  MAP01";
+			label3.Text = "example: ";
 			// 
 			// label2
 			// 
@@ -82,6 +83,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			panelsettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			panelsettings.Controls.Add(this.examplelabel);
 			panelsettings.Controls.Add(this.scriptcompiler);
 			panelsettings.Controls.Add(this.scriptcompilerlabel);
 			panelsettings.Controls.Add(label3);
@@ -206,6 +208,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.datalocations.Size = new System.Drawing.Size(368, 130);
 			this.datalocations.TabIndex = 0;
 			// 
+			// examplelabel
+			// 
+			this.examplelabel.AutoSize = true;
+			this.examplelabel.Location = new System.Drawing.Point(288, 83);
+			this.examplelabel.Name = "examplelabel";
+			this.examplelabel.Size = new System.Drawing.Size(41, 14);
+			this.examplelabel.TabIndex = 12;
+			this.examplelabel.Text = "MAP01";
+			// 
 			// MapOptionsForm
 			// 
 			this.AcceptButton = this.apply;
@@ -247,6 +258,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox strictpatches;
 		private System.Windows.Forms.ComboBox scriptcompiler;
 		private System.Windows.Forms.Label scriptcompilerlabel;
+		private System.Windows.Forms.Label examplelabel;
 
 
 	}

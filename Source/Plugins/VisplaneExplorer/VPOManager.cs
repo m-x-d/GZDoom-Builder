@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		private delegate int VPO_LoadWAD(string filename);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate int VPO_OpenMap(string mapname);
+		private delegate int VPO_OpenMap(string mapname, ref bool isHexen);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void VPO_FreeWAD();
@@ -151,8 +151,9 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			try
 			{
 				// Load the map
+				bool isHexen = (General.Map.Config.FormatInterface == "HexenMapSetIO");
 				if(LoadWAD(filename) != 0) throw new Exception("VPO is unable to read this file.");
-				if(OpenMap(mapname) != 0) throw new Exception("VPO is unable to open this map.");
+				if(OpenMap(mapname, ref isHexen) != 0) throw new Exception("VPO is unable to open this map.");
 
 				// Processing
 				Queue<TilePoint> todo = new Queue<TilePoint>(POINTS_PER_ITERATION);

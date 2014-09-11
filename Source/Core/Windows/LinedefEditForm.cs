@@ -701,7 +701,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Check if we have at least one activation flag when there's an action in UDMF map format (mxd)
-			if (General.Map.UDMF && !action.Empty && action.Value != 0) 
+			if (General.Map.UDMF && action.Value != 0)
 			{
 				bool haveactivationflag = false;
 				foreach (CheckBox c in udmfactivates.Checkboxes) 
