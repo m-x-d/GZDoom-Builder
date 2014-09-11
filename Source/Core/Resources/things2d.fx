@@ -73,7 +73,14 @@ float4 ps_sprite(PixelData pd) : COLOR
 {
 	// Take this pixel's color
 	float4 c = tex2D(texture1sprite, pd.uv);
-	return float4(c.rgb, c.a * rendersettings.w) * pd.color;
+	
+	// Modulate it by selection color
+	if(pd.color.a > 0){
+		return float4((c.r + pd.color.r) / 2.0f, (c.g + pd.color.g) / 2.0f, (c.b + pd.color.b) / 2.0f, c.a * rendersettings.w * pd.color.a);
+	}
+
+	// Or leave it as it is
+	return float4(c.rgb, c.a * rendersettings.w);
 }
 
 //mxd. Pixel shader for thing box and arrow drawing
@@ -105,7 +112,7 @@ technique SM20
 	}
 
 
-        pass p2 //mxd
+	pass p2 //mxd
 	{
 		VertexShader = compile vs_2_0 vs_transform();
 		PixelShader = compile ps_2_0 ps_fill();

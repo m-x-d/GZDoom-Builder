@@ -1157,7 +1157,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.Things2D.EndPass();
 
 				//mxd. Render sprites
-				int color = new PixelColor(255, 255, 255, 255).ToInt();
 				int selectionColor = General.Colors.Selection.ToInt();
 				graphics.Shaders.Things2D.BeginPass(1);
 				float spriteShrink = General.Settings.SquareThings ? THING_SPRITE_SHRINK : THING_SPRITE_SHRINK * 2;
@@ -1209,7 +1208,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					foreach(Thing t in group.Value) {
 						if(t.IsModel) continue;
-						CreateThingSpriteVerts(thingsByPosition[t], spriteWidth, spriteHeight, ref verts, buffercount * 6, t.Selected ? selectionColor : color);
+						CreateThingSpriteVerts(thingsByPosition[t], spriteWidth, spriteHeight, ref verts, buffercount * 6, t.Selected ? selectionColor : 0xFFFFFF);
 						buffercount++;
 						totalcount++;
 
