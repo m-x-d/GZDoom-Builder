@@ -201,12 +201,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				blockmap = null;
 				
 				// When no results found, show "no results" and disable the list
-				if(results.Items.Count == 0) {
+				if(resultslist.Count == 0) {
 					results.Items.Add(new ResultNoErrors());
 					results.Enabled = false;
 					exportresults.Enabled = false; //mxd
 				} else { 
 					exportresults.Enabled = true; //mxd
+					ClearSelectedResult(); //mxd
 				}
 			}
 		}
@@ -270,9 +271,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			ClearSelectedResult();
-
-			//mxd
-			applyToAll = cbApplyToAll.Checked;
+			applyToAll = cbApplyToAll.Checked; //mxd
 
 			this.Hide();
 		}
@@ -281,7 +280,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void ClearSelectedResult()
 		{
 			results.SelectedIndex = -1;
-			resultinfo.Text = "Select a result from the list to see more information.\r\nRight-click on a result to show context menu.";
+			if (results.Items.Count == 0 && resultslist.Count > 0) //mxd
+				resultinfo.Text = "All results are hidden. Use context menu to show them.";
+			else 
+				resultinfo.Text = "Select a result from the list to see more information.\r\nRight-click on a result to show context menu.";
 			resultinfo.Enabled = false;
 			fix1.Visible = false;
 			fix2.Visible = false;
@@ -621,6 +623,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Do the obvious
 			UpdateTitle();
+			ClearSelectedResult();
 		}
 
 		private void resulthidecurrent_Click(object sender, EventArgs e) 
@@ -632,6 +635,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Do the obvious
 			UpdateTitle();
+			ClearSelectedResult();
 		}
 
 		private void resulthidecurrenttype_Click(object sender, EventArgs e)
@@ -654,6 +658,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Do the obvious
 			UpdateTitle();
+			ClearSelectedResult();
 		}
 
 		private void resultshowonlycurrent_Click(object sender, EventArgs e) 
@@ -684,6 +689,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Do the obvious
 			UpdateTitle();
+			ClearSelectedResult();
 		}
 
 		private void resultcopytoclipboard_Click(object sender, EventArgs e) 
