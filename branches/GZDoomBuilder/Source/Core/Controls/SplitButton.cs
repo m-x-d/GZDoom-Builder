@@ -60,15 +60,7 @@ namespace CodeImp.DoomBuilder.Controls
 	                value.Closing += SplitMenuStrip_Closing;
 	                value.Opening += SplitMenuStrip_Opening;
 	                value.ItemClicked += SplitMenuStrip_OnItemClicked; //mxd
-					if (value.Items.Count > 0) //mxd
-					{
-						if (currentmenustripitem >= value.Items.Count) currentmenustripitem = 0;
-						this.Text = value.Items[currentmenustripitem].Text;
-					}
-					else
-					{
-						currentmenustripitem = -1;
-					}
+	                CurrentMenuStripItem = currentmenustripitem;
                 }
                 else
                 {
@@ -85,14 +77,17 @@ namespace CodeImp.DoomBuilder.Controls
 	    {
 		    get { return currentmenustripitem; }
 			set 
-			{ 
-				
-				if (m_SplitMenuStrip != null && m_SplitMenuStrip.Items.Count > value)
+			{
+				if (value > -1 && m_SplitMenuStrip != null && m_SplitMenuStrip.Items.Count > value)
 				{
 					currentmenustripitem = value;
 					this.Text = m_SplitMenuStrip.Items[value].Text;
 					this.Image = m_SplitMenuStrip.Items[value].Image;
-				} 
+				}
+				else
+				{
+					currentmenustripitem = -1;
+				}
 			}
 	    }
 

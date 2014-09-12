@@ -207,6 +207,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Hide {
+            get {
+                object obj = ResourceManager.GetObject("Hide", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap List {
             get {
                 object obj = ResourceManager.GetObject("List", resourceCulture);
@@ -259,6 +266,20 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
         internal static System.Drawing.Bitmap SelectTouching {
             get {
                 object obj = ResourceManager.GetObject("SelectTouching", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Show {
+            get {
+                object obj = ResourceManager.GetObject("Show", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Show2 {
+            get {
+                object obj = ResourceManager.GetObject("Show2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
