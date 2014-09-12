@@ -27,12 +27,13 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public class ErrorResult
+	public abstract class ErrorResult
 	{
 		#region ================== Variables
 		
 		protected string description;
-		protected List<MapElement> viewobjects;
+		protected readonly List<MapElement> viewobjects;
+		protected bool hidden;
 		
 		#endregion
 		
@@ -45,13 +46,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual string Button1Text { get { return ""; } }
 		public virtual string Button2Text { get { return ""; } }
 		public virtual string Button3Text { get { return ""; } }
-		
+		public bool IsHidden { get { return hidden; } }
+
 		#endregion
 		
 		#region ================== Constructor / Destructor
 		
 		// Constructor
-		public ErrorResult()
+		protected ErrorResult()
 		{
 			// Initialize
 			viewobjects = new List<MapElement>(1);
@@ -177,7 +179,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ClassicMode editmode = (General.Editing.Mode as ClassicMode);
 			editmode.CenterOnArea(area, 0.6f);
 		}
-		
+
+		internal abstract void Hide(bool hide); //mxd. Marks map elements of this result as hidden in ErrorCheckForm
+
 		#endregion
 	}
 }

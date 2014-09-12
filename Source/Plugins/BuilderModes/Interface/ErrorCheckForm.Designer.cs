@@ -35,6 +35,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultcontextmenustrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.resultshowall = new System.Windows.Forms.ToolStripMenuItem();
 			this.resulthidecurrent = new System.Windows.Forms.ToolStripMenuItem();
+			this.resulthidecurrenttype = new System.Windows.Forms.ToolStripMenuItem();
 			this.resultshowonlycurrent = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.resultcopytoclipboard = new System.Windows.Forms.ToolStripMenuItem();
@@ -107,11 +108,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultcontextmenustrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.resultshowall,
             this.resulthidecurrent,
+            this.resulthidecurrenttype,
             this.resultshowonlycurrent,
             this.toolStripSeparator1,
             this.resultcopytoclipboard});
 			this.resultcontextmenustrip.Name = "resultcontextmenustrip";
-			this.resultcontextmenustrip.Size = new System.Drawing.Size(232, 120);
+			this.resultcontextmenustrip.Size = new System.Drawing.Size(232, 142);
 			this.resultcontextmenustrip.Opening += new System.ComponentModel.CancelEventHandler(this.resultcontextmenustrip_Opening);
 			// 
 			// resultshowall
@@ -119,7 +121,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultshowall.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Show;
 			this.resultshowall.Name = "resultshowall";
 			this.resultshowall.Size = new System.Drawing.Size(231, 22);
-			this.resultshowall.Text = "Show All Results";
+			this.resultshowall.Text = "Show all results";
 			this.resultshowall.Click += new System.EventHandler(this.resultshowall_Click);
 			// 
 			// resulthidecurrent
@@ -127,8 +129,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resulthidecurrent.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Hide;
 			this.resulthidecurrent.Name = "resulthidecurrent";
 			this.resulthidecurrent.Size = new System.Drawing.Size(231, 22);
-			this.resulthidecurrent.Text = "Hide results of this type";
+			this.resulthidecurrent.Text = "Hide result";
 			this.resulthidecurrent.Click += new System.EventHandler(this.resulthidecurrent_Click);
+			// 
+			// resulthidecurrenttype
+			// 
+			this.resulthidecurrenttype.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.HideAll;
+			this.resulthidecurrenttype.Name = "resulthidecurrenttype";
+			this.resulthidecurrenttype.Size = new System.Drawing.Size(231, 22);
+			this.resulthidecurrenttype.Text = "Hide results of this type";
+			this.resulthidecurrenttype.Click += new System.EventHandler(this.resulthidecurrenttype_Click);
 			// 
 			// resultshowonlycurrent
 			// 
@@ -255,22 +265,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.exporttofile,
             this.copytoclipboard});
 			this.exporttrsultsmenustrip.Name = "exporttrsultsmenustrip";
-			this.exporttrsultsmenustrip.Size = new System.Drawing.Size(172, 48);
+			this.exporttrsultsmenustrip.Size = new System.Drawing.Size(207, 48);
 			// 
 			// exporttofile
 			// 
 			this.exporttofile.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Save;
 			this.exporttofile.Name = "exporttofile";
-			this.exporttofile.Size = new System.Drawing.Size(171, 22);
-			this.exporttofile.Text = "Export to File";
+			this.exporttofile.Size = new System.Drawing.Size(206, 22);
+			this.exporttofile.Text = "Export results to file";
 			this.exporttofile.Click += new System.EventHandler(this.exporttofile_Click);
 			// 
 			// copytoclipboard
 			// 
 			this.copytoclipboard.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Copy;
 			this.copytoclipboard.Name = "copytoclipboard";
-			this.copytoclipboard.Size = new System.Drawing.Size(171, 22);
-			this.copytoclipboard.Text = "Copy to Clipboard";
+			this.copytoclipboard.Size = new System.Drawing.Size(206, 22);
+			this.copytoclipboard.Text = "Copy results to clipboard";
 			this.copytoclipboard.Click += new System.EventHandler(this.copytoclipboard_Click);
 			// 
 			// saveFileDialog
@@ -288,7 +298,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.exportresults.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.exportresults.Location = new System.Drawing.Point(10, 89);
 			this.exportresults.Name = "exportresults";
-			this.exportresults.Size = new System.Drawing.Size(140, 25);
+			this.exportresults.Size = new System.Drawing.Size(160, 25);
 			this.exportresults.SplitMenuStrip = this.exporttrsultsmenustrip;
 			this.exportresults.TabIndex = 0;
 			this.exportresults.Text = "Export to File";
@@ -347,9 +357,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.SaveFileDialog saveFileDialog;
 		private System.Windows.Forms.ContextMenuStrip resultcontextmenustrip;
 		private System.Windows.Forms.ToolStripMenuItem resultshowall;
-		private System.Windows.Forms.ToolStripMenuItem resulthidecurrent;
+		private System.Windows.Forms.ToolStripMenuItem resulthidecurrenttype;
 		private System.Windows.Forms.ToolStripMenuItem resultshowonlycurrent;
 		private System.Windows.Forms.ToolStripMenuItem resultcopytoclipboard;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem resulthidecurrent;
 	}
 }

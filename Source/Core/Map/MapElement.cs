@@ -44,6 +44,9 @@ namespace CodeImp.DoomBuilder.Map
 		// Disposing
 		protected bool isdisposed;
 		
+		// Error Ignoring (mxd)
+		private List<Type> ignorederrorchecks;
+		
 		#endregion
 		
 		#region ================== Properties
@@ -52,6 +55,7 @@ namespace CodeImp.DoomBuilder.Map
 		public UniFields Fields { get { return fields; } }
 		public bool Marked { get { return marked; } set { marked = value; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public List<Type> IgnoredErrorChecks { get { return ignorederrorchecks; } } //mxd
 		
 		#endregion
 
@@ -62,6 +66,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Initialize
 			fields = new UniFields(this);
+			ignorederrorchecks = new List<Type>(); //mxd
 		}
 
 		// Disposer

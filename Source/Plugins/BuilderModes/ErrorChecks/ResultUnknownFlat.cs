@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 
@@ -27,8 +28,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 		
-		private Sector sector;
-		private bool ceiling;
+		private readonly Sector sector;
+		private readonly bool ceiling;
 		
 		#endregion
 		
@@ -48,7 +49,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.sector = s;
 			this.ceiling = ceiling;
 			this.viewobjects.Add(s);
-			
+			this.hidden = s.IgnoredErrorChecks.Contains(this.GetType()); //mxd
 			string objname = ceiling ? "ceiling" : "floor";
 			this.description = "This sector's " + objname + " uses an unknown flat. This could be the result of missing resources, or a mistyped flat name. Click the 'Add Default Flat' button to use a known flat instead.";
 		}
@@ -56,6 +57,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Methods
+
+		// This sets if this result is displayed in ErrorCheckForm (mxd)
+		internal override void Hide(bool hide) 
+		{
+			hidden = hide;
+			Type t = this.GetType();
+			if(hide) sector.IgnoredErrorChecks.Add(t);
+			else if(sector.IgnoredErrorChecks.Contains(t)) sector.IgnoredErrorChecks.Remove(t);
+		}
 		
 		// This must return the string that is displayed in the listbox
 		public override string ToString()

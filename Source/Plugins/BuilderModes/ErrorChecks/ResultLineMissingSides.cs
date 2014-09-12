@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -29,10 +30,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 		
-		private Linedef line;
-		private int buttons;
-		private Sidedef copysidedeffront;
-		private Sidedef copysidedefback;
+		private readonly Linedef line;
+		private readonly int buttons;
+		private readonly Sidedef copysidedeffront;
+		private readonly Sidedef copysidedefback;
 		
 		#endregion
 		
@@ -49,20 +50,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public ResultLineMissingSides(Linedef l)
 		{
-			List<LinedefSide> sides;
-			bool fixable;
-			
 			// Initialize
-			this.line = l;
-			this.viewobjects.Add(l);
-			this.description = "This linedef is missing front and back sidedefs." +
-							   "A line must have at least a front side and optionally a back side!";
+			line = l;
+			viewobjects.Add(l);
+			hidden = l.IgnoredErrorChecks.Contains(this.GetType()); //mxd
+			description = "This linedef is missing front and back sidedefs." +
+						  "A line must have at least a front side and optionally a back side!";
 			
 			buttons = 0;
 			
 			// Check if we can join a sector on the front side
-			fixable = false;
-			sides = Tools.FindPotentialSectorAt(l, true);
+			bool fixable = false;
+			List<LinedefSide> sides = Tools.FindPotentialSectorAt(l, true);
+			
 			if(sides != null)
 			{
 				foreach(LinedefSide sd in sides)
@@ -75,7 +75,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						fixable = true;
 						break;
 					}
-					else if(!sd.Front && (sd.Line.Back != null))
+					
+					if(!sd.Front && (sd.Line.Back != null))
 					{
 						copysidedeffront = sd.Line.Back;
 						fixable = true;
@@ -102,7 +103,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						fixable = true;
 						break;
 					}
-					else if(!sd.Front && (sd.Line.Back != null))
+					
+					if(!sd.Front && (sd.Line.Back != null))
 					{
 						copysidedefback = sd.Line.Back;
 						fixable = true;
@@ -126,6 +128,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Methods
+
+		// This sets if this result is displayed in ErrorCheckForm (mxd)
+		internal override void Hide(bool hide) 
+		{
+			hidden = hide;
+			Type t = this.GetType();
+			if(hide) line.IgnoredErrorChecks.Add(t);
+			else if(line.IgnoredErrorChecks.Contains(t)) line.IgnoredErrorChecks.Remove(t);
+		}
 		
 		// This must return the string that is displayed in the listbox
 		public override string ToString()

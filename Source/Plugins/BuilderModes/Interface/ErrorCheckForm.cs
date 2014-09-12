@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 			{
-				if (!hiddentresulttypes.Contains(result.GetType())) //mxd
+				if (!result.IsHidden && !hiddentresulttypes.Contains(result.GetType())) //mxd
 				{
 					results.Items.Add(result);
 				}
@@ -596,7 +596,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#endregion
 
-		#region =================== Results Context Menu (mxd)
+		#region ================== Results Context Menu (mxd)
 
 		private void resultcontextmenustrip_Opening(object sender, System.ComponentModel.CancelEventArgs e) 
 		{
@@ -605,11 +605,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			resultshowall.Enabled = (resultslist.Count > 0 && resultslist.Count > results.Items.Count);
 			resultcopytoclipboard.Enabled = haveresult;
 			resulthidecurrent.Enabled = haveresult;
+			resulthidecurrenttype.Enabled = haveresult;
 			resultshowonlycurrent.Enabled = haveresult;
 		}
 
 		private void resultshowall_Click(object sender, EventArgs e) 
 		{
+			// Reset ignored items
+			foreach(ErrorResult result in resultslist) result.Hide(false);
+			
 			// Restore items
 			results.Items.Clear();
 			results.Items.AddRange(resultslist.ToArray());
@@ -619,7 +623,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			UpdateTitle();
 		}
 
-		private void resulthidecurrent_Click(object sender, EventArgs e)
+		private void resulthidecurrent_Click(object sender, EventArgs e) 
+		{
+			ErrorResult r = results.SelectedItem as ErrorResult;
+			if(r == null) return;
+			r.Hide(true);
+			results.Items.Remove(r);
+
+			// Do the obvious
+			UpdateTitle();
+		}
+
+		private void resulthidecurrenttype_Click(object sender, EventArgs e)
 		{
 			ErrorResult r = results.SelectedItem as ErrorResult;
 			if(r == null) return;
