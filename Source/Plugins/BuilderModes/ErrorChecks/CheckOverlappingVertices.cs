@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Go for all the linedefs that our vertex could overlap
 				foreach(Linedef l in block.Lines) {
 					if(v == l.Start || v == l.End) continue;
-					if((float)Math.Round(l.Line.GetDistanceToLine(v.Position, true), General.Map.FormatInterface.VertexDecimals) == 0) {
+					if((float)Math.Round(l.Line.GetDistanceToLine(v.Position, true), 3) == 0) {
 						SubmitResult(new ResultVertexOverlappingLine(v, l));
 					}
 				}
