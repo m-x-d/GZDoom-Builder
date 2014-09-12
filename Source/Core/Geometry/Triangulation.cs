@@ -750,8 +750,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				
 				// Test first neighbour
 				t1 = GetTriangle(v1);
-				bool t1a = true;	//TriangleHasArea(t1);
-				if(t1a && IsReflex(t1))
+				//bool t1a = true;	//TriangleHasArea(t1);
+				if(/*t1a && */IsReflex(t1))
 				{
 					// List as reflex if not listed yet
 					if(!v1.IsReflex) v1.AddReflex(reflexes);
@@ -765,8 +765,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				
 				// Test second neighbour
 				t2 = GetTriangle(v2);
-				bool t2a = true;	//TriangleHasArea(t2);
-				if(t2a && IsReflex(t2))
+				//bool t2a = true;	//TriangleHasArea(t2);
+				if(/*t2a && */IsReflex(t2))
 				{
 					// List as reflex if not listed yet
 					if(!v2.IsReflex) v2.AddReflex(reflexes);
@@ -779,8 +779,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 				
 				// Check if any neightbour have become a valid or invalid ear
-				if(!v1.IsReflex && (!t1a || CheckValidEar(t1, reflexes))) v1.AddEarTip(eartips); else v1.RemoveEarTip();
-				if(!v2.IsReflex && (!t2a || CheckValidEar(t2, reflexes))) v2.AddEarTip(eartips); else v2.RemoveEarTip();
+				if(!v1.IsReflex && (/*!t1a || */CheckValidEar(t1, reflexes))) v1.AddEarTip(eartips); else v1.RemoveEarTip();
+				if(!v2.IsReflex && (/*!t2a || */CheckValidEar(t2, reflexes))) v2.AddEarTip(eartips); else v2.RemoveEarTip();
 			}
 
 			#if DEBUG

@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			if(File.Exists(General.LogFile)) {
 				try {
 					string[] lines = File.ReadAllLines(General.LogFile);
-					message += Environment.NewLine + "********ACTIONS LOG********";
+					message += Environment.NewLine + Environment.NewLine + "***********ACTIONS LOG***********";
 					for(int i = lines.Length - 1; i > -1; i--)
 						message += Environment.NewLine + lines[i];
 				} catch(Exception) { }

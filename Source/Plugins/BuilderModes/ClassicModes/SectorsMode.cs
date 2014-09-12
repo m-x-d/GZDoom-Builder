@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Dictionary<Sector, TextLabel[]> labels;
 
 		//mxd. Effects
-		private Dictionary<int, string[]> effects;
+		private readonly Dictionary<int, string[]> effects;
 		
 		//mxd. Cached overlays stuff
 		private FlatVertex[] overlayGeometry;
@@ -72,6 +72,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. "Make Door" textures
 		private static string doortex = "-";
 		private static string tracktex = "-";
+		private static bool resetoffsets = true;
 		
 		#endregion
 
@@ -1310,7 +1311,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(tracktex == "-") tracktex = General.Map.Config.MakeDoorTrack; //mxd
 				string floortex = null;
 				string ceiltex = null;
-				bool resetoffsets = true;
 				
 				// Find ceiling and floor textures
 				foreach(Sector s in orderedselection)

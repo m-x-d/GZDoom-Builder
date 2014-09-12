@@ -719,17 +719,22 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		}
 
 		private void bExportToFile_Click(object sender, EventArgs e) {
-			if(treeView.Nodes == null || treeView.Nodes.Count == 0)
-				return;
+			if(treeView.Nodes == null || treeView.Nodes.Count == 0) return;
 
+			// Show save dialog
+			string path = Path.GetDirectoryName(General.Map.FilePathName);
+			saveFileDialog.InitialDirectory = path;
+			saveFileDialog.FileName = Path.GetFileNameWithoutExtension(General.Map.FileTitle) + "_info.txt";
+			if(saveFileDialog.ShowDialog(this) == DialogResult.Cancel) return;
+
+			// Generate stuff
 			StringBuilder sb = new StringBuilder();
 
 			//top level
 			foreach(TreeNode n in treeView.Nodes) {
 				if(n.Nodes.Count == 0) continue;
 
-				if(sb.Length > 0)
-					sb.AppendLine(Environment.NewLine);
+				if(sb.Length > 0) sb.AppendLine(Environment.NewLine);
 				sb.AppendLine(n.Text.Replace(":", " (" +currentSortMode.ToLowerInvariant()+ "):"));
 
 				//second level
@@ -745,13 +750,17 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					}
 				}
 			}
-
-			string path = Path.GetDirectoryName(General.Map.FilePathName) + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(General.Map.FileTitle) + ".txt";
-
-			using(StreamWriter sw = File.CreateText(path))
-				sw.Write(sb.ToString());
-
-			General.Interface.DisplayStatus(StatusType.Info, "Info saved to '" + path + "'");
+			
+			// Save to file
+			try
+			{
+				using (StreamWriter sw = File.CreateText(path)) sw.Write(sb.ToString());
+				General.Interface.DisplayStatus(StatusType.Info, "Info saved to '" + path + "'");
+			}
+			catch (Exception)
+			{
+				General.Interface.DisplayStatus(StatusType.Info, "Failed to save errors list... Make sure map path is not write-protected.");
+			}
 		}
 	}
 
@@ -760,7 +769,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		public const string SORT_BY_INDEX = "By Index";
 		public const string SORT_BY_TAG = "By Tag";
 		public const string SORT_BY_ACTION = "By Action special";
-		public static object[] SORT_MODES = new object[] { SORT_BY_INDEX, SORT_BY_TAG, SORT_BY_ACTION };
+		public static readonly object[] SORT_MODES = new object[] { SORT_BY_INDEX, SORT_BY_TAG, SORT_BY_ACTION };
 	}
 
 	internal struct SelectedNode

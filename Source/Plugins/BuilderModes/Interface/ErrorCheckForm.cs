@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private static bool applyToAll; //mxd
 		private int errorscount; //mxd
 		private Size initialsize; //mxd
+		private static int exportmode; //mxd
 		
 		#endregion
 
@@ -97,11 +98,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Move controls according to the height of the checkers box
 			checks.PerformLayout();
 			buttoncheck.Top = checks.Bottom + 14;
-			bExport.Top = checks.Bottom + 14; //mxd
+			exportresults.Top = checks.Bottom + 14; //mxd
 			resultspanel.Top = buttoncheck.Bottom + 14;
 			cbApplyToAll.Checked = applyToAll; //mxd
 			this.Text = "Map Analysis"; //mxd
-			
 
 			// Position at left-top of owner
 			this.Location = new Point(owner.Location.X + 20, owner.Location.Y + 90);
@@ -111,6 +111,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Size = new Size(initialsize.Width, this.Height - this.ClientSize.Height + resultspanel.Top);
 			this.MinimumSize = this.Size; //mxd
 			this.MaximumSize = this.Size; //mxd
+
+			//mxd. Restore export mode
+			exportresults.CurrentMenuStripItem = exportmode;
+			exportresults.Enabled = false;
 			
 			// Show window
 			base.Show(owner);
@@ -186,10 +190,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(results.Items.Count == 0) {
 					results.Items.Add(new ResultNoErrors());
 					results.Enabled = false;
-					//mxd
-					bExport.Enabled = false;
-				} else { //mxd
-					bExport.Enabled = true;
+					exportresults.Enabled = false; //mxd
+				} else { 
+					exportresults.Enabled = true; //mxd
 				}
 			}
 		}
@@ -201,8 +204,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			Cursor.Current = Cursors.WaitCursor;
 
-			//mxd
-			bExport.Enabled = false;
+			exportresults.Enabled = false; //mxd
 			errorscount = 0;
 			
 			// Make blockmap
@@ -382,6 +384,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Window closing
 		private void ErrorCheckForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			//mxd. Store export mode
+			exportmode = exportresults.CurrentMenuStripItem;
+			
 			// If the user closes the form, then just cancel the mode
 			if(e.CloseReason == CloseReason.UserClosing)
 			{
@@ -523,19 +528,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void bExport_Click(object sender, EventArgs e) {
+		private void exporttofile_Click(object sender, EventArgs e) 
+		{
+			// Show save dialog
+			string path = Path.GetDirectoryName(General.Map.FilePathName);
+			saveFileDialog.InitialDirectory = path;
+			saveFileDialog.FileName = Path.GetFileNameWithoutExtension(General.Map.FileTitle) + "_errors.txt";
+			if(saveFileDialog.ShowDialog(this) == DialogResult.Cancel) return;
+			
+			// Get results
 			StringBuilder sb = new StringBuilder();
+			foreach(ErrorResult result in results.Items) sb.AppendLine(result.ToString());
 
-			foreach(ErrorResult result in results.Items) {
-				sb.AppendLine(result.ToString());
+			// Save to file
+			try 
+			{
+				using(StreamWriter sw = File.CreateText(saveFileDialog.FileName)) sw.Write(sb.ToString());
+				General.Interface.DisplayStatus(StatusType.Info, "Errors list saved to '" + path + "'");
+			} 
+			catch(Exception) 
+			{
+				General.Interface.DisplayStatus(StatusType.Info, "Failed to save errors list... Make sure map path is not write-protected.");
 			}
+		}
 
-			string path = Path.GetDirectoryName(General.Map.FilePathName) + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(General.Map.FileTitle) + "_errors.txt";
+		//mxd
+		private void copytoclipboard_Click(object sender, EventArgs e) 
+		{
+			// Get results
+			StringBuilder sb = new StringBuilder();
+			foreach(ErrorResult result in results.Items) sb.AppendLine(result.ToString());
 
-			using(StreamWriter sw = File.CreateText(path))
-				sw.Write(sb.ToString());
+			// Set on clipboard
+			Clipboard.SetText(sb.ToString());
 
-			General.Interface.DisplayStatus(StatusType.Info, "Errors list saved to '" + path + "'");
+			General.Interface.DisplayStatus(StatusType.Info, "Errors copied to clipboard.");
 		}
 
 		private void ErrorCheckForm_HelpRequested(object sender, HelpEventArgs hlpevent)
@@ -544,5 +571,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		#endregion
+
 	}
 }

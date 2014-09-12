@@ -28,6 +28,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.checks = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.buttoncheck = new System.Windows.Forms.Button();
 			this.results = new System.Windows.Forms.ListBox();
@@ -39,8 +40,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fix1 = new System.Windows.Forms.Button();
 			this.progress = new System.Windows.Forms.ProgressBar();
 			this.closebutton = new System.Windows.Forms.Button();
-			this.bExport = new System.Windows.Forms.Button();
+			this.exportresults = new CodeImp.DoomBuilder.Controls.SplitButton();
+			this.exporttrsultsmenustrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+			this.exporttofile = new System.Windows.Forms.ToolStripMenuItem();
+			this.copytoclipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.resultspanel.SuspendLayout();
+			this.exporttrsultsmenustrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// checks
@@ -183,17 +189,49 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.closebutton.UseVisualStyleBackColor = true;
 			this.closebutton.Click += new System.EventHandler(this.closebutton_Click);
 			// 
-			// bExport
+			// exportresults
 			// 
-			this.bExport.Enabled = false;
-			this.bExport.Location = new System.Drawing.Point(10, 89);
-			this.bExport.Margin = new System.Windows.Forms.Padding(1);
-			this.bExport.Name = "bExport";
-			this.bExport.Size = new System.Drawing.Size(116, 25);
-			this.bExport.TabIndex = 5;
-			this.bExport.Text = "Export results to file";
-			this.bExport.UseVisualStyleBackColor = true;
-			this.bExport.Click += new System.EventHandler(this.bExport_Click);
+			this.exportresults.AutoSize = true;
+			this.exportresults.ContextMenuStrip = this.exporttrsultsmenustrip;
+			this.exportresults.CurrentMenuStripItem = 0;
+			this.exportresults.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.exportresults.Location = new System.Drawing.Point(10, 89);
+			this.exportresults.Name = "exportresults";
+			this.exportresults.Size = new System.Drawing.Size(140, 25);
+			this.exportresults.SplitMenuStrip = this.exporttrsultsmenustrip;
+			this.exportresults.TabIndex = 0;
+			this.exportresults.Text = "Export to File";
+			this.exportresults.UseVisualStyleBackColor = true;
+			// 
+			// exporttrsultsmenustrip
+			// 
+			this.exporttrsultsmenustrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exporttofile,
+            this.copytoclipboard});
+			this.exporttrsultsmenustrip.Name = "exporttrsultsmenustrip";
+			this.exporttrsultsmenustrip.Size = new System.Drawing.Size(172, 48);
+			// 
+			// saveFileDialog
+			// 
+			this.saveFileDialog.DefaultExt = "txt";
+			this.saveFileDialog.Filter = "Text files|*.txt";
+			this.saveFileDialog.Title = "Choose export location:";
+			// 
+			// exporttofile
+			// 
+			this.exporttofile.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Save;
+			this.exporttofile.Name = "exporttofile";
+			this.exporttofile.Size = new System.Drawing.Size(171, 22);
+			this.exporttofile.Text = "Export to File";
+			this.exporttofile.Click += new System.EventHandler(this.exporttofile_Click);
+			// 
+			// copytoclipboard
+			// 
+			this.copytoclipboard.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Copy;
+			this.copytoclipboard.Name = "copytoclipboard";
+			this.copytoclipboard.Size = new System.Drawing.Size(171, 22);
+			this.copytoclipboard.Text = "Copy to Clipboard";
+			this.copytoclipboard.Click += new System.EventHandler(this.copytoclipboard_Click);
 			// 
 			// ErrorCheckForm
 			// 
@@ -202,7 +240,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.closebutton;
 			this.ClientSize = new System.Drawing.Size(380, 566);
-			this.Controls.Add(this.bExport);
+			this.Controls.Add(this.exportresults);
 			this.Controls.Add(this.closebutton);
 			this.Controls.Add(this.resultspanel);
 			this.Controls.Add(this.buttoncheck);
@@ -221,6 +259,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ErrorCheckForm_HelpRequested);
 			this.resultspanel.ResumeLayout(false);
 			this.resultspanel.PerformLayout();
+			this.exporttrsultsmenustrip.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -239,6 +278,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.Button fix1;
 		private System.Windows.Forms.Button closebutton;
 		private System.Windows.Forms.CheckBox cbApplyToAll;
-		private System.Windows.Forms.Button bExport;
+		private CodeImp.DoomBuilder.Controls.SplitButton exportresults;
+		private System.Windows.Forms.ContextMenuStrip exporttrsultsmenustrip;
+		private System.Windows.Forms.ToolStripMenuItem exporttofile;
+		private System.Windows.Forms.ToolStripMenuItem copytoclipboard;
+		private System.Windows.Forms.SaveFileDialog saveFileDialog;
 	}
 }
