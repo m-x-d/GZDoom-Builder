@@ -124,6 +124,9 @@
   <data name="DrawEllipseMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DrawEllipseMode.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Copy.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="VisualModeGZ" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\VisualModeGZ.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -139,14 +142,14 @@
   <data name="SnapVerts" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SnapVerts.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Similar" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Similar.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="DrawGridMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DrawGridMode.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="PastePropertiesOptions" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PastePropertiesOptions.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Hide" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Hide.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CurveLines" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CurveLines.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -157,8 +160,8 @@
   <data name="treeview" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\treeview.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="FlipSelectionV" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\FlipSelectionV.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Similar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Similar.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="FloorsGradient" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\FloorsGradient.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -190,6 +193,9 @@
   <data name="BrightnessGradient" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BrightnessGradient.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="FlipSelectionV" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\FlipSelectionV.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Door" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Door.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -201,6 +207,9 @@
   </data>
   <data name="PasteProperties" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PasteProperties.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Show" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Show.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ViewSelectionIndex" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ViewSelectionIndex.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -229,7 +238,7 @@
   <data name="FilterThings" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\FilterThings.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Copy.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Show2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Show2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

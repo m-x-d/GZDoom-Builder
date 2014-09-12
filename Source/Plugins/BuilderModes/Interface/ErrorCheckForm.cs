@@ -52,9 +52,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Thread checksthread;
 		private BlockMap<BlockEntry> blockmap;
 		private static bool applyToAll; //mxd
-		private int errorscount; //mxd
 		private Size initialsize; //mxd
 		private static int exportmode; //mxd
+		private List<ErrorResult> resultslist; //mxd 
+		private List<Type> hiddentresulttypes; //mxd 
 		
 		#endregion
 
@@ -90,6 +91,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd. Store initial height
 			initialsize = this.Size;
+			resultslist = new List<ErrorResult>();
+			hiddentresulttypes = new List<Type>();
 		}
 		
 		// This shows the window
@@ -134,9 +137,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 			{
-				results.Items.Add(result);
-				errorscount++;
-				this.Text = "Map Analysis [" + errorscount + " errors]"; //mxd
+				if (!hiddentresulttypes.Contains(result.GetType())) //mxd
+				{
+					results.Items.Add(result);
+				}
+				resultslist.Add(result); //mxd
+				UpdateTitle();
 			}
 		}
 
@@ -166,6 +172,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				progress.Value += value;
 			}
+		}
+
+		//mxd
+		private void UpdateTitle()
+		{
+			int hiddencount = resultslist.Count - results.Items.Count;
+			this.Text = "Map Analysis [" + resultslist.Count + " results"
+				+ (hiddencount > 0 ? ", " + hiddencount + " are hidden]" : "]"); //mxd
 		}
 		
 		// This stops checking (only called from the checking management thread)
@@ -205,7 +219,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Cursor.Current = Cursors.WaitCursor;
 
 			exportresults.Enabled = false; //mxd
-			errorscount = 0;
 			
 			// Make blockmap
 			RectangleF area = MapSet.CreateArea(General.Map.Map.Vertices);
@@ -227,6 +240,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			progress.Value = 0;
 			results.Items.Clear();
 			results.Enabled = true;
+			resultslist = new List<ErrorResult>(); //mxd
 			ClearSelectedResult();
 			buttoncheck.Text = "Abort Analysis";
 			General.Interface.RedrawDisplay();
@@ -267,7 +281,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void ClearSelectedResult()
 		{
 			results.SelectedIndex = -1;
-			resultinfo.Text = "Select a result from the list to see more information.";
+			resultinfo.Text = "Select a result from the list to see more information.\r\nRight-click on a result to show context menu.";
 			resultinfo.Enabled = false;
 			fix1.Visible = false;
 			fix2.Visible = false;
@@ -386,6 +400,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			//mxd. Store export mode
 			exportmode = exportresults.CurrentMenuStripItem;
+
+			//mxd. Clear stored results 
+			resultslist.Clear();
 			
 			// If the user closes the form, then just cancel the mode
 			if(e.CloseReason == CloseReason.UserClosing)
@@ -442,6 +459,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			General.Interface.RedrawDisplay();
+		}
+
+		//mxd
+		private void results_MouseDown(object sender, MouseEventArgs e) 
+		{
+			int index = results.IndexFromPoint(e.Location);
+			if(index != results.SelectedIndex) results.SelectedIndex = index;
 		}
 		
 		// First button
@@ -544,11 +568,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			try 
 			{
 				using(StreamWriter sw = File.CreateText(saveFileDialog.FileName)) sw.Write(sb.ToString());
-				General.Interface.DisplayStatus(StatusType.Info, "Errors list saved to '" + path + "'");
+				General.Interface.DisplayStatus(StatusType.Info, "Analysis results saved to '" + path + "'");
 			} 
 			catch(Exception) 
 			{
-				General.Interface.DisplayStatus(StatusType.Info, "Failed to save errors list... Make sure map path is not write-protected.");
+				General.Interface.DisplayStatus(StatusType.Info, "Failed to save analysis results... Make sure map path is not write-protected.");
 			}
 		}
 
@@ -562,7 +586,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Set on clipboard
 			Clipboard.SetText(sb.ToString());
 
-			General.Interface.DisplayStatus(StatusType.Info, "Errors copied to clipboard.");
+			General.Interface.DisplayStatus(StatusType.Info, "Analysis results copied to clipboard.");
 		}
 
 		private void ErrorCheckForm_HelpRequested(object sender, HelpEventArgs hlpevent)
@@ -570,6 +594,99 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.ShowHelp("e_mapanalysis.html");
 		}
 		
+		#endregion
+
+		#region =================== Results Context Menu (mxd)
+
+		private void resultcontextmenustrip_Opening(object sender, System.ComponentModel.CancelEventArgs e) 
+		{
+			//disable or enable stuff
+			bool haveresult = resultslist.Count > 0 && results.SelectedIndex > -1;
+			resultshowall.Enabled = (resultslist.Count > 0 && resultslist.Count > results.Items.Count);
+			resultcopytoclipboard.Enabled = haveresult;
+			resulthidecurrent.Enabled = haveresult;
+			resultshowonlycurrent.Enabled = haveresult;
+		}
+
+		private void resultshowall_Click(object sender, EventArgs e) 
+		{
+			// Restore items
+			results.Items.Clear();
+			results.Items.AddRange(resultslist.ToArray());
+			hiddentresulttypes.Clear();
+
+			// Do the obvious
+			UpdateTitle();
+		}
+
+		private void resulthidecurrent_Click(object sender, EventArgs e)
+		{
+			ErrorResult r = results.SelectedItem as ErrorResult;
+			if(r == null) return;
+			Type resulttype = r.GetType();
+			List<ErrorResult> filtered = new List<ErrorResult>();
+			hiddentresulttypes.Add(resulttype);
+
+			// Apply filtering
+			foreach(ErrorResult result in results.Items)
+			{
+				if (result.GetType() != resulttype) filtered.Add(result);
+			}
+
+			// Replace items
+			results.Items.Clear();
+			results.Items.AddRange(filtered.ToArray());
+
+			// Do the obvious
+			UpdateTitle();
+		}
+
+		private void resultshowonlycurrent_Click(object sender, EventArgs e) 
+		{
+			ErrorResult r = results.SelectedItem as ErrorResult;
+			if(r == null) return;
+			Type resulttype = r.GetType();
+			List<ErrorResult> filtered = new List<ErrorResult>();
+			hiddentresulttypes.Clear();
+
+			// Apply filtering
+			foreach(ErrorResult result in results.Items)
+			{
+				Type curresulttype = result.GetType();
+				if (curresulttype != resulttype)
+				{
+					hiddentresulttypes.Add(curresulttype);
+				}
+				else
+				{
+					filtered.Add(result);
+				}
+			}
+
+			// Replace items
+			results.Items.Clear();
+			results.Items.AddRange(filtered.ToArray());
+
+			// Do the obvious
+			UpdateTitle();
+		}
+
+		private void resultcopytoclipboard_Click(object sender, EventArgs e) 
+		{
+			ErrorResult r = results.SelectedItem as ErrorResult;
+			if(r == null) return;
+			Clipboard.SetText(r.ToString());
+			General.Interface.DisplayStatus(StatusType.Info, "Analysis result copied to clipboard.");
+		}
+
+		private void results_KeyUp(object sender, KeyEventArgs e) 
+		{
+			if (e.Control && e.KeyCode == Keys.C)
+			{
+				resultcopytoclipboard_Click(sender, EventArgs.Empty);
+			}
+		}
+
 		#endregion
 
 	}
