@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -28,9 +29,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 		
-		private Sector sector;
-		private List<Vertex> vertices;
-		private int index;
+		private readonly Sector sector;
+		private readonly List<Vertex> vertices;
+		private readonly int index;
 		
 		#endregion
 		
@@ -44,17 +45,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ResultSectorUnclosed(Sector s, List<Vertex> v)
 		{
 			// Initialize
-			this.sector = s;
-			this.vertices = new List<Vertex>(v);
-			this.viewobjects.Add(s);
+			sector = s;
+			vertices = new List<Vertex>(v);
+			viewobjects.Add(s);
+			hidden = s.IgnoredErrorChecks.Contains(this.GetType()); //mxd
 			foreach(Vertex vv in v) this.viewobjects.Add(vv);
-			this.description = "This sector is not a closed region and could cause problems with clipping and rendering in the game. The 'leaks' in the sector are indicated by the colored vertices.";
-			this.index = s.Index;
+			description = "This sector is not a closed region and could cause problems with clipping and rendering in the game. The 'leaks' in the sector are indicated by the colored vertices.";
+			index = s.Index;
 		}
 		
 		#endregion
 		
 		#region ================== Methods
+
+		// This sets if this result is displayed in ErrorCheckForm (mxd)
+		internal override void Hide(bool hide) 
+		{
+			hidden = hide;
+			Type t = this.GetType();
+			if(hide) sector.IgnoredErrorChecks.Add(t);
+			else if(sector.IgnoredErrorChecks.Contains(t)) sector.IgnoredErrorChecks.Remove(t);
+		}
 		
 		// This must return the string that is displayed in the listbox
 		public override string ToString()

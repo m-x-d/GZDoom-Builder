@@ -43,6 +43,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
+		// This sets if this result is displayed in ErrorCheckForm (mxd)
+		internal override void Hide(bool hide) { }
+
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{

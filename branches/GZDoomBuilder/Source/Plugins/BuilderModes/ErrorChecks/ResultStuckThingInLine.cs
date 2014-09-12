@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 
@@ -27,7 +28,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 
-		private Thing thing;
+		private readonly Thing thing;
 		
 		#endregion
 		
@@ -44,14 +45,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ResultStuckThingInLine(Thing t)
 		{
 			// Initialize
-			this.thing = t;
-			this.viewobjects.Add(t);
-			this.description = "This thing is stuck in a wall (single-sided line) and will likely not be able to move around.";
+			thing = t;
+			viewobjects.Add(t);
+			hidden = t.IgnoredErrorChecks.Contains(this.GetType()); //mxd
+			description = "This thing is stuck in a wall (single-sided line) and will likely not be able to move around.";
 		}
 		
 		#endregion
 		
 		#region ================== Methods
+
+		// This sets if this result is displayed in ErrorCheckForm (mxd)
+		internal override void Hide(bool hide) 
+		{
+			hidden = hide;
+			Type t = this.GetType();
+			if(hide) thing.IgnoredErrorChecks.Add(t);
+			else if(thing.IgnoredErrorChecks.Contains(t)) thing.IgnoredErrorChecks.Remove(t);
+		}
 		
 		// This must return the string that is displayed in the listbox
 		public override string ToString()

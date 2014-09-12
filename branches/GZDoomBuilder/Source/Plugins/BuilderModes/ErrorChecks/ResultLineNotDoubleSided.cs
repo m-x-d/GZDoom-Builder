@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -29,9 +30,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 		
-		private Linedef line;
-		private int buttons;
-		private Sidedef copysidedef;
+		private readonly Linedef line;
+		private readonly int buttons;
+		private readonly Sidedef copysidedef;
 		
 		#endregion
 		
@@ -49,9 +50,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ResultLineNotDoubleSided(Linedef l)
 		{
 			// Initialize
-			this.line = l;
-			this.viewobjects.Add(l);
-			this.description = "This linedef is marked as double-sided, but is missing the back sidedef. Click 'Make Single-Sided' button to remove the double-sided flag from the line.";
+			line = l;
+			viewobjects.Add(l);
+			hidden = l.IgnoredErrorChecks.Contains(this.GetType()); //mxd
+			description = "This linedef is marked as double-sided, but is missing the back sidedef. Click 'Make Single-Sided' button to remove the double-sided flag from the line.";
 			
 			// One solution is to remove the double-sided flag
 			buttons = 1;
@@ -71,7 +73,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						fixable = true;
 						break;
 					}
-					else if(!sd.Front && (sd.Line.Back != null))
+					
+					if(!sd.Front && (sd.Line.Back != null))
 					{
 						copysidedef = sd.Line.Back;
 						fixable = true;
@@ -91,6 +94,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Methods
+
+		// This sets if this result is displayed in ErrorCheckForm (mxd)
+		internal override void Hide(bool hide) 
+		{
+			hidden = hide;
+			Type t = this.GetType();
+			if(hide) line.IgnoredErrorChecks.Add(t);
+			else if(line.IgnoredErrorChecks.Contains(t)) line.IgnoredErrorChecks.Remove(t);
+		}
 		
 		// This must return the string that is displayed in the listbox
 		public override string ToString()

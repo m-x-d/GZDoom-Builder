@@ -1,5 +1,6 @@
 ﻿#region ================== Namespaces
 
+using System;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
@@ -12,8 +13,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 		
-		private Sidedef side;
-		private SidedefPart part;
+		private readonly Sidedef side;
+		private readonly SidedefPart part;
 		
 		#endregion
 		
@@ -33,12 +34,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.side = sd;
 			this.part = part;
 			this.viewobjects.Add(sd);
+			this.hidden = sd.IgnoredErrorChecks.Contains(this.GetType()); //mxd
 			this.description = "This sidedef uses an upper or lower texture, which is not required (it will never be visible ingame). Click the Remove Texture button to remove the texture (this will also reset texture offsets and scale in UDMF map format).";
 		}
 		
 		#endregion
 		
 		#region ================== Methods
+
+		// This sets if this result is displayed in ErrorCheckForm (mxd)
+		internal override void Hide(bool hide) 
+		{
+			hidden = hide;
+			Type t = this.GetType();
+			if(hide) side.IgnoredErrorChecks.Add(t);
+			else if(side.IgnoredErrorChecks.Contains(t)) side.IgnoredErrorChecks.Remove(t);
+		}
 		
 		// This must return the string that is displayed in the listbox
 		public override string ToString()

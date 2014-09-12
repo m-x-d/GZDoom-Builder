@@ -1,5 +1,6 @@
 ﻿#region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
@@ -30,14 +31,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ResultSectorInvalid(Sector s)
 		{
 			// Initialize
-			this.sector = s;
-			this.viewobjects.Add(s);
-			this.description = "This sector has invalid geometry (it has less than 3 sidedefs or it's area is 0). This could cause problems with clipping and rendering in the game.";
+			sector = s;
+			viewobjects.Add(s);
+			hidden = s.IgnoredErrorChecks.Contains(this.GetType()); //mxd
+			description = "This sector has invalid geometry (it has less than 3 sidedefs or it's area is 0). This could cause problems with clipping and rendering in the game.";
 		}
 		
 		#endregion
 		
 		#region ================== Methods
+
+		// This sets if this result is displayed in ErrorCheckForm (mxd)
+		internal override void Hide(bool hide) 
+		{
+			hidden = hide;
+			Type t = this.GetType();
+			if(hide) sector.IgnoredErrorChecks.Add(t);
+			else if(sector.IgnoredErrorChecks.Contains(t)) sector.IgnoredErrorChecks.Remove(t);
+		}
 		
 		// This must return the string that is displayed in the listbox
 		public override string ToString() {
