@@ -111,8 +111,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 						parser.ReportError("Unexpected end of structure");
 						return;
 					}
+					
 					// Label?
-					else if(spriteframes == ":")
+					if(spriteframes == ":")
 					{
 						// Rewind so that this label can be read again
 						parser.DataStream.Seek(-(token.Length + 1), SeekOrigin.Current);

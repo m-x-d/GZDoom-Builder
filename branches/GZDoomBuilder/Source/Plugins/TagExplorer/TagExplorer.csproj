@@ -78,6 +78,7 @@
     <Content Include="Resources\Lines.png" />
     <Content Include="Resources\LinesGroup.png" />
     <None Include="Resources\SearchClear.png" />
+    <None Include="Resources\Save.png" />
     <Content Include="Resources\Sectors.png" />
     <Content Include="Resources\SectorsGroup.png" />
     <Content Include="Resources\Things.png" />
