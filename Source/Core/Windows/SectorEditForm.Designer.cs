@@ -28,12 +28,14 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.GroupBox groupeffect;
 			System.Windows.Forms.Label label8;
 			System.Windows.Forms.Label label9;
 			System.Windows.Forms.GroupBox groupfloorceiling;
+			System.Windows.Forms.Label label7;
 			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.Label label2;
@@ -41,6 +43,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browseeffect = new System.Windows.Forms.Button();
 			this.effect = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
+			this.heightoffset = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.brightness = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.ceilingheight = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.sectorheightlabel = new System.Windows.Forms.Label();
@@ -53,12 +56,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flatSelectorControl2 = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.flatSelectorControl1 = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			label1 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			groupeffect = new System.Windows.Forms.GroupBox();
 			label8 = new System.Windows.Forms.Label();
 			label9 = new System.Windows.Forms.Label();
 			groupfloorceiling = new System.Windows.Forms.GroupBox();
+			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
@@ -93,7 +98,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupeffect.Controls.Add(this.effect);
 			groupeffect.Controls.Add(label8);
 			groupeffect.Controls.Add(this.tagSelector);
-			groupeffect.Location = new System.Drawing.Point(3, 165);
+			groupeffect.Location = new System.Drawing.Point(3, 195);
 			groupeffect.Name = "groupeffect";
 			groupeffect.Size = new System.Drawing.Size(436, 92);
 			groupeffect.TabIndex = 1;
@@ -119,6 +124,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.effect.Cursor = System.Windows.Forms.Cursors.Default;
 			this.effect.Empty = false;
 			this.effect.GeneralizedCategories = null;
+			this.effect.GeneralizedOptions = null;
 			this.effect.Location = new System.Drawing.Point(61, 28);
 			this.effect.Name = "effect";
 			this.effect.Size = new System.Drawing.Size(335, 21);
@@ -143,16 +149,18 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label9
 			// 
-			label9.AutoSize = true;
-			label9.Location = new System.Drawing.Point(31, 129);
+			label9.Location = new System.Drawing.Point(16, 159);
 			label9.Name = "label9";
-			label9.Size = new System.Drawing.Size(62, 14);
+			label9.Size = new System.Drawing.Size(78, 14);
 			label9.TabIndex = 2;
 			label9.Text = "Brightness:";
+			label9.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// groupfloorceiling
 			// 
 			groupfloorceiling.BackColor = System.Drawing.Color.Transparent;
+			groupfloorceiling.Controls.Add(label7);
+			groupfloorceiling.Controls.Add(this.heightoffset);
 			groupfloorceiling.Controls.Add(this.brightness);
 			groupfloorceiling.Controls.Add(this.ceilingheight);
 			groupfloorceiling.Controls.Add(label6);
@@ -167,10 +175,36 @@ namespace CodeImp.DoomBuilder.Windows
 			groupfloorceiling.Controls.Add(this.ceilingtex);
 			groupfloorceiling.Location = new System.Drawing.Point(3, 3);
 			groupfloorceiling.Name = "groupfloorceiling";
-			groupfloorceiling.Size = new System.Drawing.Size(436, 156);
+			groupfloorceiling.Size = new System.Drawing.Size(436, 186);
 			groupfloorceiling.TabIndex = 0;
 			groupfloorceiling.TabStop = false;
 			groupfloorceiling.Text = "Floor and Ceiling ";
+			// 
+			// label7
+			// 
+			label7.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label7.ForeColor = System.Drawing.SystemColors.HotTrack;
+			label7.Location = new System.Drawing.Point(16, 100);
+			label7.Name = "label7";
+			label7.Size = new System.Drawing.Size(78, 14);
+			label7.TabIndex = 25;
+			label7.Text = "Height offset:";
+			label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.tooltip.SetToolTip(label7, "Changes floor and ceiling\r\nheight by given value");
+			// 
+			// heightoffset
+			// 
+			this.heightoffset.AllowDecimal = false;
+			this.heightoffset.AllowNegative = true;
+			this.heightoffset.AllowRelative = false;
+			this.heightoffset.ButtonStep = 8;
+			this.heightoffset.ButtonStepFloat = 1F;
+			this.heightoffset.Location = new System.Drawing.Point(99, 95);
+			this.heightoffset.Name = "heightoffset";
+			this.heightoffset.Size = new System.Drawing.Size(88, 24);
+			this.heightoffset.StepValues = null;
+			this.heightoffset.TabIndex = 26;
+			this.heightoffset.WhenTextChanged += new System.EventHandler(this.heightoffset_WhenTextChanged);
 			// 
 			// brightness
 			// 
@@ -179,7 +213,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.brightness.AllowRelative = true;
 			this.brightness.ButtonStep = 8;
 			this.brightness.ButtonStepFloat = 1F;
-			this.brightness.Location = new System.Drawing.Point(99, 124);
+			this.brightness.Location = new System.Drawing.Point(99, 154);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(73, 24);
 			this.brightness.StepValues = null;
@@ -202,21 +236,27 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label6
 			// 
-			label6.AutoSize = true;
-			label6.Location = new System.Drawing.Point(20, 40);
+			label6.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label6.ForeColor = System.Drawing.SystemColors.HotTrack;
+			label6.Location = new System.Drawing.Point(16, 40);
 			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(73, 14);
+			label6.Size = new System.Drawing.Size(78, 14);
 			label6.TabIndex = 19;
 			label6.Text = "Ceiling height:";
+			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.tooltip.SetToolTip(label6, "Use ++ or -- prefixes to change\r\nheight by given value");
 			// 
 			// label5
 			// 
-			label5.AutoSize = true;
-			label5.Location = new System.Drawing.Point(27, 70);
+			label5.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label5.ForeColor = System.Drawing.SystemColors.HotTrack;
+			label5.Location = new System.Drawing.Point(16, 70);
 			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(66, 14);
+			label5.Size = new System.Drawing.Size(78, 14);
 			label5.TabIndex = 17;
 			label5.Text = "Floor height:";
+			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.tooltip.SetToolTip(label5, "Use ++ or -- prefixes to change\r\nheight by given value");
 			// 
 			// label2
 			// 
@@ -229,12 +269,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// sectorheightlabel
 			// 
-			this.sectorheightlabel.AutoSize = true;
-			this.sectorheightlabel.Location = new System.Drawing.Point(19, 100);
+			this.sectorheightlabel.Location = new System.Drawing.Point(16, 130);
 			this.sectorheightlabel.Name = "sectorheightlabel";
-			this.sectorheightlabel.Size = new System.Drawing.Size(74, 14);
+			this.sectorheightlabel.Size = new System.Drawing.Size(78, 14);
 			this.sectorheightlabel.TabIndex = 20;
 			this.sectorheightlabel.Text = "Sector height:";
+			this.sectorheightlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label4
 			// 
@@ -248,7 +288,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// sectorheight
 			// 
 			this.sectorheight.AutoSize = true;
-			this.sectorheight.Location = new System.Drawing.Point(100, 100);
+			this.sectorheight.Location = new System.Drawing.Point(100, 130);
 			this.sectorheight.Name = "sectorheight";
 			this.sectorheight.Size = new System.Drawing.Size(13, 14);
 			this.sectorheight.TabIndex = 21;
@@ -292,7 +332,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(226, 278);
+			this.cancel.Location = new System.Drawing.Point(226, 305);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 2;
@@ -303,7 +343,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(344, 278);
+			this.apply.Location = new System.Drawing.Point(344, 305);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 1;
@@ -336,8 +376,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panel1.Controls.Add(groupeffect);
 			this.panel1.Location = new System.Drawing.Point(12, 10);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(443, 260);
+			this.panel1.Size = new System.Drawing.Size(443, 290);
 			this.panel1.TabIndex = 3;
+			// 
+			// tooltip
+			// 
+			this.tooltip.AutomaticDelay = 10;
+			this.tooltip.AutoPopDelay = 4000;
+			this.tooltip.InitialDelay = 10;
+			this.tooltip.IsBalloon = true;
+			this.tooltip.ReshowDelay = 100;
+			this.tooltip.UseAnimation = false;
+			this.tooltip.UseFading = false;
 			// 
 			// SectorEditForm
 			// 
@@ -345,7 +395,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(468, 310);
+			this.ClientSize = new System.Drawing.Size(468, 337);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
@@ -387,5 +437,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox brightness;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
 		private System.Windows.Forms.Panel panel1;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox heightoffset;
+		private System.Windows.Forms.ToolTip tooltip;
 	}
 }
