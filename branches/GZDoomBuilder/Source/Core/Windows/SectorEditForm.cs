@@ -97,9 +97,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public void Setup(ICollection<Sector> sectors)
 		{
 			blockUpdate = true; //mxd
-			
-			Sector sc;
-			
+
 			// Keep this list
 			this.sectors = sectors;
 			if(sectors.Count > 1) this.Text = "Edit Sectors (" + sectors.Count + ")";
@@ -110,12 +108,15 @@ namespace CodeImp.DoomBuilder.Windows
 			if(sectors.Count > 1) undodesc = sectors.Count + " sectors";
 			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 
+			//mxd. Set default height offset
+			heightoffset.Text = "0";
+
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first sector properties
 			////////////////////////////////////////////////////////////////////////
 
 			// Get first sector
-			sc = General.GetByIndex(sectors, 0);
+			Sector sc = General.GetByIndex(sectors, 0);
 
 			// Effects
 			effect.Value = sc.Effect;
@@ -203,6 +204,44 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
+		//mxd
+		private void UpdateCeilingHeight() 
+		{
+			int i = 0;
+			int offset = heightoffset.GetResult(0);
+
+			//restore values
+			if(string.IsNullOrEmpty(ceilingheight.Text)) {
+				foreach(Sector s in sectors)
+					s.CeilHeight = sectorProps[i++].CeilHeight + offset;
+
+			} 
+			else //update values
+			{
+				foreach(Sector s in sectors)
+					s.CeilHeight = ceilingheight.GetResult(sectorProps[i++].CeilHeight) + offset;
+			}
+		}
+
+		//mxd
+		private void UpdateFloorHeight() 
+		{
+			int i = 0;
+			int offset = heightoffset.GetResult(0);
+
+			//restore values
+			if(string.IsNullOrEmpty(floorheight.Text)) {
+				foreach(Sector s in sectors)
+					s.FloorHeight = sectorProps[i++].FloorHeight + offset;
+
+			} 
+			else //update values
+			{
+				foreach(Sector s in sectors)
+					s.FloorHeight = floorheight.GetResult(sectorProps[i++].FloorHeight) + offset;
+			}
+		}
+
 		#endregion
 
 		#region ================== Events
@@ -278,18 +317,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private void ceilingheight_TextChanged(object sender, EventArgs e)
 		{
 			if(blockUpdate) return;
-			int i = 0;
 
-			//restore values
-			if(string.IsNullOrEmpty(ceilingheight.Text)) {
-				foreach(Sector s in sectors)
-					s.CeilHeight = sectorProps[i++].CeilHeight;
-			//update values
-			} else {
-				foreach(Sector s in sectors)
-					s.CeilHeight = ceilingheight.GetResult(sectorProps[i++].CeilHeight);
-			}
-
+			UpdateCeilingHeight();
 			UpdateSectorHeight();
 
 			General.Map.IsChanged = true;
@@ -300,18 +329,21 @@ namespace CodeImp.DoomBuilder.Windows
 		private void floorheight_TextChanged(object sender, EventArgs e)
 		{
 			if(blockUpdate) return;
-			int i = 0;
 
-			//restore values
-			if(string.IsNullOrEmpty(floorheight.Text)) {
-				foreach(Sector s in sectors)
-					s.FloorHeight = sectorProps[i++].FloorHeight;
-			//update values
-			} else {
-				foreach(Sector s in sectors)
-					s.FloorHeight = floorheight.GetResult(sectorProps[i++].FloorHeight);
-			}
+			UpdateFloorHeight();
+			UpdateSectorHeight();
 
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		// Height offset changes
+		private void heightoffset_WhenTextChanged(object sender, EventArgs e) 
+		{
+			if(blockUpdate) return;
+
+			UpdateFloorHeight();
+			UpdateCeilingHeight();
 			UpdateSectorHeight();
 
 			General.Map.IsChanged = true;

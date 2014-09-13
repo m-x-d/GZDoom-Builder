@@ -8,7 +8,7 @@ ECHO.       - Microsoft HTML Help compiler
 ECHO.       - 7zip
 ECHO.
 ECHO.     You have to commit your work before using this script.
-ECHO.     Results will be in the 'SVN_Build' directory. Anything currently in
+ECHO.     Results will be in the 'SVN_Build' directory. Files in
 ECHO.     the 'SVN_Build' directory may be overwritten.
 ECHO.
 ECHO.

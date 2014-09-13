@@ -25,6 +25,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.GroupBox groupaction;
 			System.Windows.Forms.GroupBox groupeffect;
 			System.Windows.Forms.Label label14;
@@ -33,6 +34,7 @@
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label8;
 			System.Windows.Forms.GroupBox groupfloorceiling;
+			System.Windows.Forms.Label label15;
 			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label5;
 			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
@@ -44,6 +46,7 @@
 			this.gravity = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.browseeffect = new System.Windows.Forms.Button();
 			this.effect = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
+			this.heightoffset = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.ceilingheight = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.sectorheightlabel = new System.Windows.Forms.Label();
 			this.sectorheight = new System.Windows.Forms.Label();
@@ -92,6 +95,7 @@
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			groupaction = new System.Windows.Forms.GroupBox();
 			groupeffect = new System.Windows.Forms.GroupBox();
 			label14 = new System.Windows.Forms.Label();
@@ -100,6 +104,7 @@
 			label2 = new System.Windows.Forms.Label();
 			label8 = new System.Windows.Forms.Label();
 			groupfloorceiling = new System.Windows.Forms.GroupBox();
+			label15 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
 			groupaction.SuspendLayout();
@@ -284,6 +289,7 @@
 			this.effect.Cursor = System.Windows.Forms.Cursors.Default;
 			this.effect.Empty = false;
 			this.effect.GeneralizedCategories = null;
+			this.effect.GeneralizedOptions = null;
 			this.effect.Location = new System.Drawing.Point(68, 28);
 			this.effect.Name = "effect";
 			this.effect.Size = new System.Drawing.Size(328, 21);
@@ -303,6 +309,8 @@
 			// 
 			groupfloorceiling.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			groupfloorceiling.Controls.Add(label15);
+			groupfloorceiling.Controls.Add(this.heightoffset);
 			groupfloorceiling.Controls.Add(this.ceilingheight);
 			groupfloorceiling.Controls.Add(label6);
 			groupfloorceiling.Controls.Add(label5);
@@ -315,6 +323,32 @@
 			groupfloorceiling.TabIndex = 0;
 			groupfloorceiling.TabStop = false;
 			groupfloorceiling.Text = " Heights: ";
+			// 
+			// label15
+			// 
+			label15.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label15.ForeColor = System.Drawing.SystemColors.HotTrack;
+			label15.Location = new System.Drawing.Point(9, 84);
+			label15.Name = "label15";
+			label15.Size = new System.Drawing.Size(74, 14);
+			label15.TabIndex = 27;
+			label15.Text = "Height offset:";
+			label15.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.tooltip.SetToolTip(label15, "Changes floor and ceiling\r\nheight by given value");
+			// 
+			// heightoffset
+			// 
+			this.heightoffset.AllowDecimal = false;
+			this.heightoffset.AllowNegative = true;
+			this.heightoffset.AllowRelative = false;
+			this.heightoffset.ButtonStep = 8;
+			this.heightoffset.ButtonStepFloat = 1F;
+			this.heightoffset.Location = new System.Drawing.Point(89, 79);
+			this.heightoffset.Name = "heightoffset";
+			this.heightoffset.Size = new System.Drawing.Size(88, 24);
+			this.heightoffset.StepValues = null;
+			this.heightoffset.TabIndex = 28;
+			this.heightoffset.WhenTextChanged += new System.EventHandler(this.heightoffset_WhenTextChanged);
 			// 
 			// ceilingheight
 			// 
@@ -332,25 +366,31 @@
 			// 
 			// label6
 			// 
+			label6.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label6.ForeColor = System.Drawing.SystemColors.HotTrack;
 			label6.Location = new System.Drawing.Point(9, 24);
 			label6.Name = "label6";
 			label6.Size = new System.Drawing.Size(74, 14);
 			label6.TabIndex = 19;
 			label6.Text = "Ceiling height:";
 			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.tooltip.SetToolTip(label6, "Use ++ or -- prefixes to change\r\nheight by given value");
 			// 
 			// label5
 			// 
+			label5.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label5.ForeColor = System.Drawing.SystemColors.HotTrack;
 			label5.Location = new System.Drawing.Point(9, 54);
 			label5.Name = "label5";
 			label5.Size = new System.Drawing.Size(74, 14);
 			label5.TabIndex = 17;
 			label5.Text = "Floor height:";
 			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.tooltip.SetToolTip(label5, "Use ++ or -- prefixes to change\r\nheight by given value");
 			// 
 			// sectorheightlabel
 			// 
-			this.sectorheightlabel.Location = new System.Drawing.Point(9, 83);
+			this.sectorheightlabel.Location = new System.Drawing.Point(9, 114);
 			this.sectorheightlabel.Name = "sectorheightlabel";
 			this.sectorheightlabel.Size = new System.Drawing.Size(74, 14);
 			this.sectorheightlabel.TabIndex = 20;
@@ -360,7 +400,7 @@
 			// sectorheight
 			// 
 			this.sectorheight.AutoSize = true;
-			this.sectorheight.Location = new System.Drawing.Point(90, 83);
+			this.sectorheight.Location = new System.Drawing.Point(90, 114);
 			this.sectorheight.Name = "sectorheight";
 			this.sectorheight.Size = new System.Drawing.Size(13, 14);
 			this.sectorheight.TabIndex = 21;
@@ -484,7 +524,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = 90;
+			this.floorAngleControl.Angle = -270;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.Location = new System.Drawing.Point(186, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
@@ -681,7 +721,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = 90;
+			this.ceilAngleControl.Angle = -270;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.Location = new System.Drawing.Point(186, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
@@ -954,6 +994,16 @@
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
+			// tooltip
+			// 
+			this.tooltip.AutomaticDelay = 10;
+			this.tooltip.AutoPopDelay = 4000;
+			this.tooltip.InitialDelay = 10;
+			this.tooltip.IsBalloon = true;
+			this.tooltip.ReshowDelay = 100;
+			this.tooltip.UseAnimation = false;
+			this.tooltip.UseFading = false;
+			// 
 			// SectorEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
@@ -1056,5 +1106,7 @@
 		private System.Windows.Forms.GroupBox groupBox4;
 		private CodeImp.DoomBuilder.Controls.SectorSlopeControl floorslopecontrol;
 		private CodeImp.DoomBuilder.Controls.SectorSlopeControl ceilingslopecontrol;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox heightoffset;
+		private System.Windows.Forms.ToolTip tooltip;
 	}
 }

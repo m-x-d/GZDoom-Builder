@@ -219,6 +219,9 @@ namespace CodeImp.DoomBuilder.Windows
 			if(sectors.Count > 1) undodesc = sectors.Count + " sectors";
 			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 
+			//mxd. Set default height offset
+			heightoffset.Text = "0";
+
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first sector properties
 			////////////////////////////////////////////////////////////////////////
@@ -475,6 +478,44 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
+		//mxd
+		private void UpdateCeilingHeight() 
+		{
+			int offset = heightoffset.GetResult(0);
+
+			//restore values
+			if(string.IsNullOrEmpty(ceilingheight.Text)) 
+			{
+				foreach(Sector s in sectors)
+					s.CeilHeight = sectorprops[s].CeilHeight + offset;
+				
+			} 
+			else //update values
+			{
+				foreach(Sector s in sectors)
+					s.CeilHeight = ceilingheight.GetResult(sectorprops[s].CeilHeight) + offset;
+			}
+		}
+
+		//mxd
+		private void UpdateFloorHeight() 
+		{
+			int offset = heightoffset.GetResult(0);
+
+			//restore values
+			if(string.IsNullOrEmpty(floorheight.Text)) 
+			{
+				foreach(Sector s in sectors)
+					s.FloorHeight = sectorprops[s].FloorHeight + offset;
+				
+			} 
+			else //update values
+			{
+				foreach(Sector s in sectors)
+					s.FloorHeight = floorheight.GetResult(sectorprops[s].FloorHeight) + offset;
+			}
+		}
+
 		#endregion
 
 		#region ================== Events
@@ -616,42 +657,38 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Sector Realtime events (mxd)
 
-		private void ceilingheight_WhenTextChanged(object sender, EventArgs e) {
+		private void ceilingheight_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
-			//restore values
-			if(string.IsNullOrEmpty(ceilingheight.Text)) {
-				foreach(Sector s in sectors)
-					s.CeilHeight = sectorprops[s].CeilHeight;
-			//update values
-			} else {
-				foreach(Sector s in sectors)
-					s.CeilHeight = ceilingheight.GetResult(sectorprops[s].CeilHeight);
-			}
-
+			UpdateCeilingHeight();
 			UpdateSectorHeight();
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void floorheight_WhenTextChanged(object sender, EventArgs e) {
+		private void floorheight_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
-			//restore values
-			if(string.IsNullOrEmpty(floorheight.Text)) {
-				foreach(Sector s in sectors)
-					s.FloorHeight = sectorprops[s].FloorHeight;
-			//update values
-			} else {
-				foreach(Sector s in sectors)
-					s.FloorHeight = floorheight.GetResult(sectorprops[s].FloorHeight);
-			}
-
+			UpdateFloorHeight();
 			UpdateSectorHeight();
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void heightoffset_WhenTextChanged(object sender, EventArgs e) 
+		{
+			if(blockupdate) return;
+
+			UpdateFloorHeight();
+			UpdateCeilingHeight();
+			UpdateSectorHeight();
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		private void brightness_WhenTextChanged(object sender, EventArgs e) {

@@ -174,6 +174,20 @@
   <data name="label10.Text" xml:space="preserve">
     <value>Here you can select the editing modes that you wish to use in this configuration. This is useful in case there are plugins with additional editing modes that can be used as a replacement for the original editing modes.</value>
   </data>
+  <metadata name="tooltip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>416, 17</value>
+  </metadata>
+  <data name="labelparameters.ToolTip" xml:space="preserve">
+    <value>%F     - WAD file with the map that is to be tested. NOTE: this is a temporary file and not the file you opened or saved. 
+%WP - IWAD resource file with full path included. This is the first (highest) IWAD file that is found in the resources list. 
+%WF - IWAD resource filename only, without path. This is the first (highest) IWAD file that is found in the resources list. 
+%L     - Map lump name as is set in the map options window.
+%L1   - The first number found in the map lump name (as is set in the map options window).
+%L2   - The second number found in the map lump name (as is set in the map options window).
+%AP  - All resource files, except the first IWAD, with full paths included.
+%S     - Skill number at which to test.
+%NM - Either -nomonsters when testing without monsters, or nothing at all.</value>
+  </data>
   <metadata name="tabresources.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -192,20 +206,6 @@
   <metadata name="tabtesting.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="tooltip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>416, 17</value>
-  </metadata>
-  <data name="hintbox.ToolTip" xml:space="preserve">
-    <value>%F     - WAD file with the map that is to be tested. NOTE: this is a temporary file and not the file you opened or saved. 
-%WP - IWAD resource file with full path included. This is the first (highest) IWAD file that is found in the resources list. 
-%WF - IWAD resource filename only, without path. This is the first (highest) IWAD file that is found in the resources list. 
-%L     - Map lump name as is set in the map options window.
-%L1   - The first number found in the map lump name (as is set in the map options window).
-%L2   - The second number found in the map lump name (as is set in the map options window).
-%AP  - All resource files, except the first IWAD, with full paths included.
-%S     - Skill number at which to test.
-%NM - Either -nomonsters when testing without monsters, or nothing at all.</value>
-  </data>
   <metadata name="tabtextures.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -220,7 +220,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0yLjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAAA4
-        CAAAAk1TRnQBSQFMAwEBAAFkAQEBZAEBARMBAAEQAQAE/wEJAQAI/wFCAU0BNgEEBgABNgEEAgABKAMA
+        CAAAAk1TRnQBSQFMAwEBAAFsAQEBbAEBARMBAAEQAQAE/wEJAQAI/wFCAU0BNgEEBgABNgEEAgABKAMA
         AUwDAAEQAwABAQEAAQgFAAHAAQQYAAGAAgABgAMAAoABAAGAAwABgAEAAYABAAKAAgADwAEAAcAB3AHA
         AQAB8AHKAaYBAAEzBQABMwEAATMBAAEzAQACMwIAAxYBAAMcAQADIgEAAykBAANVAQADTQEAA0IBAAM5
         AQABgAF8Af8BAAJQAf8BAAGTAQAB1gEAAf8B7AHMAQABxgHWAe8BAAHWAucBAAGQAakBrQIAAf8BMwMA
