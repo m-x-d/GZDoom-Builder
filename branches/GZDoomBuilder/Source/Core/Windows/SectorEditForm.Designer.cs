@@ -36,8 +36,8 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label9;
 			System.Windows.Forms.GroupBox groupfloorceiling;
 			System.Windows.Forms.Label label7;
-			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label5;
+			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label4;
 			this.browseeffect = new System.Windows.Forms.Button();
@@ -64,8 +64,8 @@ namespace CodeImp.DoomBuilder.Windows
 			label9 = new System.Windows.Forms.Label();
 			groupfloorceiling = new System.Windows.Forms.GroupBox();
 			label7 = new System.Windows.Forms.Label();
-			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
+			label6 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			groupeffect.SuspendLayout();
@@ -192,6 +192,30 @@ namespace CodeImp.DoomBuilder.Windows
 			label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.tooltip.SetToolTip(label7, "Changes floor and ceiling\r\nheight by given value");
 			// 
+			// label5
+			// 
+			label5.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label5.ForeColor = System.Drawing.SystemColors.HotTrack;
+			label5.Location = new System.Drawing.Point(16, 70);
+			label5.Name = "label5";
+			label5.Size = new System.Drawing.Size(78, 14);
+			label5.TabIndex = 17;
+			label5.Text = "Floor height:";
+			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.tooltip.SetToolTip(label5, "Use ++ or -- prefixes to change\r\nheight by given value");
+			// 
+			// label6
+			// 
+			label6.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label6.ForeColor = System.Drawing.SystemColors.HotTrack;
+			label6.Location = new System.Drawing.Point(16, 40);
+			label6.Name = "label6";
+			label6.Size = new System.Drawing.Size(78, 14);
+			label6.TabIndex = 19;
+			label6.Text = "Ceiling height:";
+			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.tooltip.SetToolTip(label6, "Use ++ or -- prefixes to change\r\nheight by given value");
+			// 
 			// heightoffset
 			// 
 			this.heightoffset.AllowDecimal = false;
@@ -210,7 +234,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// brightness
 			// 
 			this.brightness.AllowDecimal = false;
-			this.brightness.AllowNegative = false;
+			this.brightness.AllowNegative = true;
 			this.brightness.AllowRelative = true;
 			this.brightness.ButtonStep = 8;
 			this.brightness.ButtonStepFloat = 1F;
@@ -236,30 +260,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingheight.StepValues = null;
 			this.ceilingheight.TabIndex = 22;
 			this.ceilingheight.WhenTextChanged += new System.EventHandler(this.ceilingheight_TextChanged);
-			// 
-			// label6
-			// 
-			label6.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label6.ForeColor = System.Drawing.SystemColors.HotTrack;
-			label6.Location = new System.Drawing.Point(16, 40);
-			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(78, 14);
-			label6.TabIndex = 19;
-			label6.Text = "Ceiling height:";
-			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(label6, "Use ++ or -- prefixes to change\r\nheight by given value");
-			// 
-			// label5
-			// 
-			label5.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label5.ForeColor = System.Drawing.SystemColors.HotTrack;
-			label5.Location = new System.Drawing.Point(16, 70);
-			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(78, 14);
-			label5.TabIndex = 17;
-			label5.Text = "Floor height:";
-			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(label5, "Use ++ or -- prefixes to change\r\nheight by given value");
 			// 
 			// label2
 			// 
