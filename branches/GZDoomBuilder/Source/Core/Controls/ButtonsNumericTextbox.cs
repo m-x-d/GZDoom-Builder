@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private StepsList steps;
 		private int stepsize = 1;
 		private float stepsizeFloat = 1.0f; //mxd
+		private bool wrapsteps; //mxd
 		
 		#endregion
 
@@ -54,7 +55,8 @@ namespace CodeImp.DoomBuilder.Controls
 		override public string Text { get { return textbox.Text; } set { textbox.Text = value; } }
 		internal NumericTextbox Textbox { get { return textbox; } }
 		public StepsList StepValues { get { return steps; } set { steps = value; } }
-		
+		public bool ButtonStepsWrapAround { get { return wrapsteps; } set { wrapsteps = value; } }
+
 		#endregion
 		
 		#region ================== Constructor / Disposer
@@ -111,9 +113,9 @@ namespace CodeImp.DoomBuilder.Controls
 					if(steps != null)
 					{
 						if(buttons.Value < 0)
-							textbox.Text = steps.GetNextHigher(textbox.GetResult(0)).ToString();
+							textbox.Text = steps.GetNextHigherWrap(textbox.GetResult(0), wrapsteps).ToString(); //mxd
 						else if(buttons.Value > 0)
-							textbox.Text = steps.GetNextLower(textbox.GetResult(0)).ToString();
+							textbox.Text = steps.GetNextLowerWrap(textbox.GetResult(0), wrapsteps).ToString(); //mxd
 					}
 					else if(textbox.AllowDecimal)
 					{

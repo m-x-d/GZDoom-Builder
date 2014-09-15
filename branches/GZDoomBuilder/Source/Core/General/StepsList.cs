@@ -65,14 +65,32 @@ namespace CodeImp.DoomBuilder
 			return base[low];
 		}
 
+		//mxd. This returns a step higher, or lowest step if level is already the highest possible value
+		public int GetNextHigherWrap(int level, bool wraparound) 
+		{
+			int result = GetNextHigher(level);
+			if(!wraparound) return result;
+			return (result == level ? this[0] : result);
+		}
+
+		//mxd. This returns a step lower, or highest step if level is already the lowest possible value
+		public int GetNextLowerWrap(int level, bool wraparound) 
+		{
+			int result = GetNextLower(level);
+			if(!wraparound) return result;
+			return (result == level ? this[this.Count - 1] : result);
+		}
+
 		//mxd. This returns a step higher for UDMF relative light range (-255..255)
-		public int GetNextHigher(int level, bool absolute) {
+		public int GetNextHigher(int level, bool absolute) 
+		{
 			if(absolute || level >= 0) return GetNextHigher(level);
 			return -GetNextLower(Math.Abs(level));
 		}
 
 		//mxd. This returns a step lower for UDMF relative light range (-255..255)
-		public int GetNextLower(int level, bool absolute) {
+		public int GetNextLower(int level, bool absolute) 
+		{
 			if(absolute || level > 0) return GetNextLower(level);
 			return -GetNextHigher(Math.Abs(level));
 		}

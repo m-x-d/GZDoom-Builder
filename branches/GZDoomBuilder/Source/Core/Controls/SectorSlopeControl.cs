@@ -54,11 +54,6 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Methods
 
 		public void SetValues(float anglexy, float anglez, float offset, bool first) {
-			blockUpdate = true;
-			
-			//dbg
-			//if(first) Console.WriteLine("First: anglexy=" + anglexy + "; anglez=" + anglez + "; offset=" + offset);
-			
 			if (first) {
 				// Set values
 				this.anglexy = anglexy;
@@ -70,8 +65,6 @@ namespace CodeImp.DoomBuilder.Controls
 				if(!float.IsNaN(this.anglez) && this.anglez != anglez) this.anglez = float.NaN;
 				if(!float.IsNaN(this.offset) && this.offset != offset) this.offset = float.NaN;
 			}
-
-			blockUpdate = false;
 		}
 
 		public void SetOffset(float offset, bool first) {
@@ -197,6 +190,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		private void cbuselineangles_CheckedChanged(object sender, EventArgs e) {
+			sloperotation.ButtonStepsWrapAround = cbuselineangles.Checked;
 			if(blockUpdate) return;
 			if(OnUseLineAnglesChanged != null) OnUseLineAnglesChanged(this, EventArgs.Empty);
 		}

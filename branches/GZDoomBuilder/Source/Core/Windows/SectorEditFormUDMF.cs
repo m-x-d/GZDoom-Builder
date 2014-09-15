@@ -646,10 +646,12 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		private void cbUseCeilLineAngles_CheckedChanged(object sender, EventArgs e) {
+			ceilRotation.ButtonStepsWrapAround = cbUseCeilLineAngles.Checked;
 			ceilRotation.StepValues = (cbUseCeilLineAngles.Checked ? anglesteps : null);
 		}
 
 		private void cbUseFloorLineAngles_CheckedChanged(object sender, EventArgs e) {
+			floorRotation.ButtonStepsWrapAround = cbUseFloorLineAngles.Checked;
 			floorRotation.StepValues = (cbUseFloorLineAngles.Checked ? anglesteps : null);
 		}
 
@@ -700,14 +702,6 @@ namespace CodeImp.DoomBuilder.Windows
 					s.Brightness = sectorprops[s].Brightness;
 			//update values
 			} else {
-				//clamp value?
-				int val = brightness.GetResult(0);
-				int clampedVal = General.Clamp(val, 0, 255);
-				if(val != clampedVal) {
-					brightness.Text = clampedVal.ToString();
-					return;
-				}
-
 				foreach(Sector s in sectors)
 					s.Brightness = General.Clamp(brightness.GetResult(sectorprops[s].Brightness), General.Map.FormatInterface.MinBrightness, General.Map.FormatInterface.MaxBrightness);
 			}
@@ -1002,85 +996,45 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void SetupSlopes(Sector s, bool first) {
 			if(s.CeilingSlope.GetLengthSq() > 0) {
-				float anglexy = (float) Math.Round(Angle2D.RadToDeg(s.CeilingSlope.GetAngleXY()), 1);
-				float anglez = (float)(Math.Round(-Angle2D.RadToDeg(s.CeilingSlope.GetAngleZ()) + 90, 1) % 90 + 90);
+				float anglexy = (float)Math.Round(Angle2D.RadToDeg(s.CeilingSlope.GetAngleXY()), 1);
+				float anglez = (float)(270 - Math.Round(Angle2D.RadToDeg(s.CeilingSlope.GetAngleZ()), 1));
+				float offset = (float)Math.Round(GetSlopeOffset(s, s.CeilingSlopeOffset, ceilingslopecontrol.PivotMode, false), 1);
 				if (anglexy == 180.0f) {
 					anglexy = 0;
 					anglez = -anglez;
 				}
-				ceilingslopecontrol.SetValues(anglexy, anglez, (float)Math.Round(-s.CeilingSlopeOffset, 1), first);
+				ceilingslopecontrol.SetValues(anglexy, anglez, offset, first);
 			} else {
 				ceilingslopecontrol.SetValues(0f, 0f, s.CeilHeight, first);
 			}
 
 			if(s.FloorSlope.GetLengthSq() > 0) {
-				//dbg
-				Console.WriteLine("1 anglez=" + Angle2D.RadToDeg(s.FloorSlope.GetAngleZ()));
-				Console.WriteLine("2 anglez=" + Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleZ()) - 90, 1));
-				Console.WriteLine("3 anglez=" + (float)(Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleZ()) - 90, 1) % 90));
-
-				float anglexy = (float) Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleXY()), 1);
+				float anglexy = (float)Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleXY()), 1);
 				float anglez = (float)(Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleZ()) - 90, 1));
+				float offset = (float)Math.Round(GetSlopeOffset(s, -s.FloorSlopeOffset, floorslopecontrol.PivotMode, true), 1);
 				if (anglexy == 180.0f) {
 					anglexy = 0;
 					anglez = -anglez;
 				}
-				floorslopecontrol.SetValues(anglexy, anglez, (float)Math.Round(-s.FloorSlopeOffset, 1), first);
+				floorslopecontrol.SetValues(anglexy, anglez, offset, first);
 			} else {
-				//dbg
-				Console.WriteLine("Default anglez=" + Angle2D.RadToDeg(s.FloorSlope.GetAngleZ()));
-
 				floorslopecontrol.SetValues(0f, 0f, s.FloorHeight, first);
 			}
 		}
-
-		/*private float GetSlopeOffset(Sector target, float offset, bool floor) {
-			//float offset = (float)Math.Round((floor ? target.FloorSlopeOffset : target.CeilingSlopeOffset), 1);
-			if(float.IsNaN(offset)) {
-				float storedoffset = (floor ? sectorprops[target].FloorSlopeOffset : sectorprops[target].CeilingSlopeOffset);
-				if(float.IsNaN(storedoffset)) {
-					//return an offset based on sector's floor/ceiling height
-					return (floor ? target.FloorHeight : target.CeilHeight);
-				} else {
-					//restore initial value
-					return storedoffset;
-				}
-			} else {
-				//use current value
-				return offset;
-			}
-		}*/
 
 		private float GetSlopeOffset(Sector target, float offset, SlopePivotMode mode, bool floor) {
 			float validoffset;
 
 			if (mode == SlopePivotMode.ORIGIN) {
 				if (float.IsNaN(offset)) {
-					//float storedoffset = (floor ? sectorprops[target].FloorSlopeOffset : sectorprops[target].CeilingSlopeOffset);
 					validoffset = (floor ? sectorprops[target].FloorSlopeOffset : sectorprops[target].CeilingSlopeOffset);
-					/*if(float.IsNaN(storedoffset)) {
-						//return an offset based on sector's floor/ceiling height
-						validoffset = (floor ? target.FloorHeight : target.CeilHeight);
-					} else {
-						//restore initial value
-						validoffset = storedoffset;
-					}*/
-
-					//dbg
-					if(!floor) Console.WriteLine("1: validoffset=" + validoffset);
 				} else {
 					//use current value
 					validoffset = offset;
-
-					//dbg
-					if(!floor) Console.WriteLine("2: validoffset=" + validoffset);
 				}
 			} else {
 				//use virtual value
 				validoffset = (floor ? sectorprops[target].VirtualFloorSlopeOffset : sectorprops[target].VirtualCeilingSlopeOffset);
-
-				//dbg
-				if(!floor) Console.WriteLine("3: validoffset=" + validoffset);
 			}
 
 			switch(mode) {
@@ -1117,12 +1071,6 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				anglexy = (float.IsNaN(ceilingslopecontrol.AngleXY) ? sectorprops[s].CeilingSlopeAngleXY : ceilingslopecontrol.AngleXY);
 				anglez = (float.IsNaN(ceilingslopecontrol.AngleZ) ? sectorprops[s].CeilingSlopeAngleZ : ceilingslopecontrol.AngleZ + 90);
-				
-				/*if (s.CeilingSlope.GetLengthSq() > 0) {
-					s.CeilingSlopeOffset = SetSlopeOffset(ceilingslopecontrol.Offset, sectorprops[i].CeilingSlopeOffset, i);
-				} else {
-					s.CeilingSlopeOffset = s.CeilHeight;
-				}*/
 				if (anglexy == 0 && anglez == 90) {
 					s.CeilingSlope = new Vector3D();
 				} else {
@@ -1197,28 +1145,41 @@ namespace CodeImp.DoomBuilder.Windows
 				s.FloorSlopeOffset = GetSlopeOffset(s, -floorslopecontrol.Offset, floorslopecontrol.PivotMode, true);
 				s.UpdateNeeded = true;
 			}
+
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		private void ceilingslopecontrol_OnResetClicked(object sender, EventArgs e) 
 		{
+			ceilingslopecontrol.SetOffset(General.GetByIndex(sectors, 0).CeilHeight, true);
+			
 			foreach(Sector s in sectors) {
 				s.CeilingSlope = new Vector3D();
 				s.CeilingSlopeOffset = float.NaN;
 				s.UpdateNeeded = true;
+				ceilingslopecontrol.SetOffset(s.CeilHeight, false);
 			}
+
+			ceilingslopecontrol.UpdateOffset();
+
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		private void floorslopecontrol_OnResetClicked(object sender, EventArgs e) 
 		{
+			floorslopecontrol.SetOffset(General.GetByIndex(sectors, 0).FloorHeight, true);
+			
 			foreach(Sector s in sectors) {
 				s.FloorSlope = new Vector3D();
 				s.FloorSlopeOffset = float.NaN;
 				s.UpdateNeeded = true;
+				floorslopecontrol.SetOffset(s.FloorHeight, false);
 			}
+
+			floorslopecontrol.UpdateOffset();
+
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
