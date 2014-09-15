@@ -76,8 +76,8 @@ namespace CodeImp.DoomBuilder.Windows
 						// Not the same box?
 						if(b != sender)
 						{
-							// Overlapping bit flags?
-							if(((int)b.Tag & (int)thisbox.Tag) != 0)
+							// Overlapping bit flags? mxd: box with flag 0 requires special handling...
+							if( (int)b.Tag == 0 || (int)thisbox.Tag == 0 || (((int)b.Tag & (int)thisbox.Tag) != 0) ) 
 							{
 								// Uncheck the other
 								b.Checked = false;
@@ -143,8 +143,8 @@ namespace CodeImp.DoomBuilder.Windows
 						// Not the same box?
 						if(b != box)
 						{
-							// Overlapping bit flags?
-							if(((int)b.Tag & (int)box.Tag) != 0)
+							// Overlapping bit flags? mxd: box with flag 0 requires special handling...
+							if( ((int)b.Tag == 0 && value != 0) || ((int)b.Tag & (int)box.Tag) != 0 )
 							{
 								// Uncheck the other
 								b.Checked = false;
