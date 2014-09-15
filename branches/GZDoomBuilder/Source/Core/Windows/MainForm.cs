@@ -3285,7 +3285,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		public DialogResult ShowEditVertices(ICollection<Vertex> vertices) {
+		public DialogResult ShowEditVertices(ICollection<Vertex> vertices) 
+		{
 			return ShowEditVertices(vertices, true);
 		}
 
@@ -3307,14 +3308,29 @@ namespace CodeImp.DoomBuilder.Windows
 		// This shows the dialog to edit lines
 		public DialogResult ShowEditLinedefs(ICollection<Linedef> lines)
 		{
+			DialogResult result;
+			
 			// Show line edit dialog
-			LinedefEditForm f = new LinedefEditForm();
-			f.Setup(lines);
-			f.OnValuesChanged += EditForm_OnValuesChanged;
-			editformopen = true; //mxd
-			DialogResult result = f.ShowDialog(this);
-			editformopen = false; //mxd
-			f.Dispose();
+			if(General.Map.UDMF) //mxd
+			{
+				LinedefEditFormUDMF f = new LinedefEditFormUDMF();
+				f.Setup(lines);
+				f.OnValuesChanged += EditForm_OnValuesChanged;
+				editformopen = true; //mxd
+				result = f.ShowDialog(this);
+				editformopen = false; //mxd
+				f.Dispose();
+			}
+			else
+			{
+				LinedefEditForm f = new LinedefEditForm();
+				f.Setup(lines);
+				f.OnValuesChanged += EditForm_OnValuesChanged;
+				editformopen = true; //mxd
+				result = f.ShowDialog(this);
+				editformopen = false; //mxd
+				f.Dispose();
+			}
 
 			return result;
 		}
@@ -3325,7 +3341,8 @@ namespace CodeImp.DoomBuilder.Windows
 			DialogResult result;
 
 			// Show sector edit dialog
-			if(General.Map.UDMF){ //mxd
+			if(General.Map.UDMF) //mxd
+			{ 
 				SectorEditFormUDMF f = new SectorEditFormUDMF();
 				f.Setup(sectors);
 				f.OnValuesChanged += EditForm_OnValuesChanged;
@@ -3333,7 +3350,9 @@ namespace CodeImp.DoomBuilder.Windows
 				result = f.ShowDialog(this);
 				editformopen = false; //mxd
 				f.Dispose();
-			}else{
+			}
+			else
+			{
 				SectorEditForm f = new SectorEditForm();
 				f.Setup(sectors);
 				f.OnValuesChanged += EditForm_OnValuesChanged;
@@ -3352,7 +3371,8 @@ namespace CodeImp.DoomBuilder.Windows
 			DialogResult result;
 
 			// Show thing edit dialog
-			if(General.Map.UDMF) {
+			if(General.Map.UDMF) 
+			{
 				ThingEditFormUDMF f = new ThingEditFormUDMF();
 				f.Setup(things);
 				f.OnValuesChanged += EditForm_OnValuesChanged;
@@ -3360,7 +3380,9 @@ namespace CodeImp.DoomBuilder.Windows
 				result = f.ShowDialog(this);
 				editformopen = false; //mxd
 				f.Dispose();
-			} else {
+			} 
+			else 
+			{
 				ThingEditForm f = new ThingEditForm();
 				f.Setup(things);
 				f.OnValuesChanged += EditForm_OnValuesChanged;
@@ -3374,10 +3396,14 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void EditForm_OnValuesChanged(object sender, EventArgs e) {
-			if (OnEditFormValuesChanged != null) {
+		private void EditForm_OnValuesChanged(object sender, EventArgs e) 
+		{
+			if (OnEditFormValuesChanged != null) 
+			{
 				OnEditFormValuesChanged(sender, e);
-			} else {
+			} 
+			else 
+			{
 				//If current mode doesn't handle this event, let's at least update the map and redraw display.
 				General.Map.Map.Update();
 				RedrawDisplay();

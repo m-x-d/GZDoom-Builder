@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private bool setup;
 		private int value;
-		private int initialFlagsHeight; //mxd
+		private readonly int initialFlagsHeight; //mxd
 		
 		#endregion
 
