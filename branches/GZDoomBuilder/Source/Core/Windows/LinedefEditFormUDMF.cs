@@ -608,6 +608,7 @@ namespace CodeImp.DoomBuilder.Windows
 			preventchanges = false;
 
 			updateScriptControls(); //mxd
+			CheckActivationFlagsRequired(); //mxd
 
 			//mxd. Set intial script-related values, if required
 			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
@@ -666,6 +667,33 @@ namespace CodeImp.DoomBuilder.Windows
 				scriptNames.Visible = false;
 				scriptNumbers.Visible = false;
 				cbArgStr.Checked = false;
+			}
+		}
+
+		//mxd
+		private void CheckActivationFlagsRequired()
+		{
+			// Display a warning if we have an action and no activation flags
+			if(action.Value != 0) 
+			{
+				bool haveactivationflag = false;
+				foreach(CheckBox c in udmfactivates.Checkboxes) 
+				{
+					if(c.CheckState != CheckState.Unchecked) 
+					{
+						haveactivationflag = true;
+						break;
+					}
+				}
+
+				//TODO: check if action actually requires activation :)
+				missingactivation.Visible = !haveactivationflag;
+				activationGroup.ForeColor = (!haveactivationflag ? Color.DarkRed : SystemColors.ControlText);
+			} 
+			else 
+			{
+				missingactivation.Visible = false;
+				activationGroup.ForeColor = SystemColors.ControlText;
 			}
 		}
 
@@ -914,30 +942,12 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			} 
 
-			//mxd. Display a warning if we have an action and no activation flags
-			if (action.Value != 0)
+			//mxd
+			if(!preventchanges)
 			{
-				bool haveactivationflag = false;
-				foreach (CheckBox c in udmfactivates.Checkboxes)
-				{
-					if (c.CheckState != CheckState.Unchecked)
-					{
-						haveactivationflag = true;
-						break;
-					}
-				}
-
-				//TODO: check if action actually requires activation :)
-				missingactivation.Visible = !haveactivationflag;
-				activationGroup.ForeColor = (!haveactivationflag ? Color.DarkRed : SystemColors.ControlText);
+				updateScriptControls();
+				CheckActivationFlagsRequired();
 			}
-			else
-			{
-				missingactivation.Visible = false;
-				activationGroup.ForeColor = SystemColors.ControlText;
-			}
-
-			if(!preventchanges) updateScriptControls(); //mxd
 		}
 
 		// Browse Action clicked
@@ -1044,11 +1054,18 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
+		//mxd
+		private void udmfactivates_OnValueChanged(object sender, EventArgs e) 
+		{
+			if(preventchanges) return;
+			CheckActivationFlagsRequired();
+		}
+
 		#endregion
 
-		#region Reltime events (sides)
+		#region ================== mxd. Realtime events (sides)
 
-			#region Custom fields changed
+		#region Custom fields changed
 
 		// Custom fields on front sides
 		private void customfrontbutton_Click(object sender, EventArgs e) 
