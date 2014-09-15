@@ -188,7 +188,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Fill actions list
-			action.GeneralizedCategories = General.Map.Config.GenActionCategories;
 			action.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
 
 			// Fill activations list
@@ -674,7 +673,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private void CheckActivationFlagsRequired()
 		{
 			// Display a warning if we have an action and no activation flags
-			if(action.Value != 0) 
+			if(action.Value != 0 
+				&& General.Map.Config.LinedefActions.ContainsKey(action.Value) 
+				&& General.Map.Config.LinedefActions[action.Value].RequiresActivation) 
 			{
 				bool haveactivationflag = false;
 				foreach(CheckBox c in udmfactivates.Checkboxes) 
@@ -686,7 +687,6 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 
-				//TODO: check if action actually requires activation :)
 				missingactivation.Visible = !haveactivationflag;
 				activationGroup.ForeColor = (!haveactivationflag ? Color.DarkRed : SystemColors.ControlText);
 			} 

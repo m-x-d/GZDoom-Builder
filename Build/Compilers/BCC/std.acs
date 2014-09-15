@@ -684,6 +684,15 @@ enum PTROP_UNSAFETARGET = 0x1;
 enum PTROP_UNSAFEMASTER = 0x2;
 enum PTROP_NOSAFEGUARDS = PTROP_UNSAFETARGET | PTROP_UNSAFEMASTER;
 
+enum {
+   ARMORINFO_CLASSNAME,
+   ARMORINFO_SAVEAMOUNT,
+   ARMORINFO_SAVEPERCENT,
+   ARMORINFO_MAXABSORB,
+   ARMORINFO_MAXFULLABSORB,
+   ARMORINFO_ACTUALSAVEAMOUNT,
+};
+
 enum SPAC_NONE = 0x0;
 enum SPAC_CROSS = 0x1;
 enum SPAC_USE = 0x2;
@@ -1230,6 +1239,7 @@ int GetLineActivation( int ) -= 77;
 int GetActorPowerupTics( int, str ) -= 78;
 void ChangeActorAngle( int, int, bool = false ) -= 79;
 void ChangeActorPitch( int, int, bool = false ) -= 80;
+int GetArmorInfo( int ) -= 81;
 bool ResetMap() -= 100;
 bool PlayerIsSpectator( int ) -= 101;
 int ConsolePlayerNumber() -= 102;
@@ -1245,12 +1255,16 @@ str GetDBEntryString( str, str ) -= 111;
 void IncrementDBEntry( str, str, int ) -= 112;
 bool PlayerIsLoggedIn( int ) -= 113;
 str GetPlayerAccountName( int ) -= 114;
-int QuerySortedDBEntries( str, int, int, bool ) -= 115;
-int GetDBResultSize( int ) -= 116;
-void ClearDBResultHandle( int ) -= 117;
-str GetDBResultEntryNameString( int, int ) -= 118;
-str GetDBResultEntryValueString( int, int ) -= 119;
-int GetDBEntryRank( str, str, bool ) -= 120;
+int SortDBEntries( str, int, int, bool ) -= 115;
+int CountDBResults( int ) -= 116;
+void FreeDBResults( int ) -= 117;
+str GetDBResultKeyString( int, int ) -= 118;
+str GetDBResultValueString( int, int ) -= 119;
+int GetDBResultValue( int, int ) -= 120;
+int GetDBEntryRank( str, str, bool ) -= 121;
+int RequestScriptPuke( int, int = 0, int = 0, int = 0 ) -= 122;
+int GetTeamScore( int ) -= 19620;
+void SetTeamScore( int, int ) -= 19621;
 
 // Dedicated functions
 // Tail format: += <opcode> , <is-latent>
