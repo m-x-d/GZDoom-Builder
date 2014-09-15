@@ -493,6 +493,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.udmfactivates.Size = new System.Drawing.Size(509, 133);
 			this.udmfactivates.TabIndex = 0;
 			this.udmfactivates.VerticalSpacing = 1;
+			this.udmfactivates.OnValueChanged += new System.EventHandler(this.udmfactivates_OnValueChanged);
 			// 
 			// flagsgroup
 			// 
