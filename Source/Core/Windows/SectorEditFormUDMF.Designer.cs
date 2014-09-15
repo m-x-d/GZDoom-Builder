@@ -190,10 +190,11 @@
 			// brightness
 			// 
 			this.brightness.AllowDecimal = false;
-			this.brightness.AllowNegative = true;
+			this.brightness.AllowNegative = false;
 			this.brightness.AllowRelative = true;
 			this.brightness.ButtonStep = 8;
 			this.brightness.ButtonStepFloat = 1F;
+			this.brightness.ButtonStepsWrapAround = false;
 			this.brightness.Location = new System.Drawing.Point(125, 84);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(81, 24);
@@ -208,6 +209,7 @@
 			this.desaturation.AllowRelative = false;
 			this.desaturation.ButtonStep = 1;
 			this.desaturation.ButtonStepFloat = 0.1F;
+			this.desaturation.ButtonStepsWrapAround = false;
 			this.desaturation.Location = new System.Drawing.Point(125, 142);
 			this.desaturation.Name = "desaturation";
 			this.desaturation.Size = new System.Drawing.Size(81, 24);
@@ -255,6 +257,7 @@
 			this.gravity.AllowRelative = true;
 			this.gravity.ButtonStep = 1;
 			this.gravity.ButtonStepFloat = 0.1F;
+			this.gravity.ButtonStepsWrapAround = false;
 			this.gravity.Location = new System.Drawing.Point(125, 112);
 			this.gravity.Name = "gravity";
 			this.gravity.Size = new System.Drawing.Size(81, 24);
@@ -310,10 +313,10 @@
 			groupfloorceiling.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			groupfloorceiling.Controls.Add(label15);
-			groupfloorceiling.Controls.Add(this.heightoffset);
-			groupfloorceiling.Controls.Add(this.ceilingheight);
 			groupfloorceiling.Controls.Add(label6);
 			groupfloorceiling.Controls.Add(label5);
+			groupfloorceiling.Controls.Add(this.heightoffset);
+			groupfloorceiling.Controls.Add(this.ceilingheight);
 			groupfloorceiling.Controls.Add(this.sectorheightlabel);
 			groupfloorceiling.Controls.Add(this.sectorheight);
 			groupfloorceiling.Controls.Add(this.floorheight);
@@ -343,6 +346,7 @@
 			this.heightoffset.AllowRelative = false;
 			this.heightoffset.ButtonStep = 8;
 			this.heightoffset.ButtonStepFloat = 1F;
+			this.heightoffset.ButtonStepsWrapAround = false;
 			this.heightoffset.Location = new System.Drawing.Point(89, 79);
 			this.heightoffset.Name = "heightoffset";
 			this.heightoffset.Size = new System.Drawing.Size(88, 24);
@@ -357,6 +361,7 @@
 			this.ceilingheight.AllowRelative = true;
 			this.ceilingheight.ButtonStep = 8;
 			this.ceilingheight.ButtonStepFloat = 1F;
+			this.ceilingheight.ButtonStepsWrapAround = false;
 			this.ceilingheight.Location = new System.Drawing.Point(89, 19);
 			this.ceilingheight.Name = "ceilingheight";
 			this.ceilingheight.Size = new System.Drawing.Size(88, 24);
@@ -413,6 +418,7 @@
 			this.floorheight.AllowRelative = true;
 			this.floorheight.ButtonStep = 8;
 			this.floorheight.ButtonStepFloat = 1F;
+			this.floorheight.ButtonStepsWrapAround = false;
 			this.floorheight.Location = new System.Drawing.Point(89, 49);
 			this.floorheight.Name = "floorheight";
 			this.floorheight.Size = new System.Drawing.Size(88, 24);
@@ -524,7 +530,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -270;
+			this.floorAngleControl.Angle = -540;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.Location = new System.Drawing.Point(186, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
@@ -559,6 +565,7 @@
 			this.floorAlpha.AllowRelative = false;
 			this.floorAlpha.ButtonStep = 1;
 			this.floorAlpha.ButtonStepFloat = 0.1F;
+			this.floorAlpha.ButtonStepsWrapAround = false;
 			this.floorAlpha.Location = new System.Drawing.Point(118, 173);
 			this.floorAlpha.Name = "floorAlpha";
 			this.floorAlpha.Size = new System.Drawing.Size(62, 24);
@@ -583,6 +590,7 @@
 			this.floorRotation.AllowRelative = true;
 			this.floorRotation.ButtonStep = 5;
 			this.floorRotation.ButtonStepFloat = 1F;
+			this.floorRotation.ButtonStepsWrapAround = false;
 			this.floorRotation.Location = new System.Drawing.Point(118, 143);
 			this.floorRotation.Name = "floorRotation";
 			this.floorRotation.Size = new System.Drawing.Size(62, 24);
@@ -619,6 +627,7 @@
 			this.floorBrightness.AllowRelative = true;
 			this.floorBrightness.ButtonStep = 16;
 			this.floorBrightness.ButtonStepFloat = 1F;
+			this.floorBrightness.ButtonStepsWrapAround = false;
 			this.floorBrightness.Location = new System.Drawing.Point(118, 113);
 			this.floorBrightness.Name = "floorBrightness";
 			this.floorBrightness.Size = new System.Drawing.Size(62, 24);
@@ -721,7 +730,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -270;
+			this.ceilAngleControl.Angle = -540;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.Location = new System.Drawing.Point(186, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
@@ -756,6 +765,7 @@
 			this.ceilAlpha.AllowRelative = false;
 			this.ceilAlpha.ButtonStep = 1;
 			this.ceilAlpha.ButtonStepFloat = 0.1F;
+			this.ceilAlpha.ButtonStepsWrapAround = false;
 			this.ceilAlpha.Location = new System.Drawing.Point(118, 173);
 			this.ceilAlpha.Name = "ceilAlpha";
 			this.ceilAlpha.Size = new System.Drawing.Size(62, 24);
@@ -780,6 +790,7 @@
 			this.ceilRotation.AllowRelative = true;
 			this.ceilRotation.ButtonStep = 5;
 			this.ceilRotation.ButtonStepFloat = 1F;
+			this.ceilRotation.ButtonStepsWrapAround = false;
 			this.ceilRotation.Location = new System.Drawing.Point(118, 143);
 			this.ceilRotation.Name = "ceilRotation";
 			this.ceilRotation.Size = new System.Drawing.Size(62, 24);
@@ -817,6 +828,7 @@
 			this.ceilBrightness.AllowRelative = true;
 			this.ceilBrightness.ButtonStep = 16;
 			this.ceilBrightness.ButtonStepFloat = 1F;
+			this.ceilBrightness.ButtonStepsWrapAround = false;
 			this.ceilBrightness.Location = new System.Drawing.Point(118, 113);
 			this.ceilBrightness.Name = "ceilBrightness";
 			this.ceilBrightness.Size = new System.Drawing.Size(62, 24);

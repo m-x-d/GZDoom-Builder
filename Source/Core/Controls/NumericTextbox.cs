@@ -193,7 +193,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool CheckIsRelative()
 		{
 			// Prefixed with ++, --, * or /?
-			return (this.Text.StartsWith("++") || this.Text.StartsWith("--") || this.Text.StartsWith("*") || this.Text.StartsWith("/")); //mxd
+			return ( (this.Text.Length > 2 && (this.Text.StartsWith("++") || this.Text.StartsWith("--"))) || 
+				(this.Text.Length > 1 && (this.Text.StartsWith("*") || this.Text.StartsWith("/"))) ); //mxd
 		}
 		
 		// This determines the result value

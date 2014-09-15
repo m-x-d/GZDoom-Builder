@@ -160,12 +160,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			groupfloorceiling.BackColor = System.Drawing.Color.Transparent;
 			groupfloorceiling.Controls.Add(label7);
+			groupfloorceiling.Controls.Add(label5);
+			groupfloorceiling.Controls.Add(label6);
 			groupfloorceiling.Controls.Add(this.heightoffset);
 			groupfloorceiling.Controls.Add(this.brightness);
 			groupfloorceiling.Controls.Add(this.ceilingheight);
-			groupfloorceiling.Controls.Add(label6);
 			groupfloorceiling.Controls.Add(label9);
-			groupfloorceiling.Controls.Add(label5);
 			groupfloorceiling.Controls.Add(label2);
 			groupfloorceiling.Controls.Add(this.sectorheightlabel);
 			groupfloorceiling.Controls.Add(label4);
@@ -199,6 +199,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.heightoffset.AllowRelative = false;
 			this.heightoffset.ButtonStep = 8;
 			this.heightoffset.ButtonStepFloat = 1F;
+			this.heightoffset.ButtonStepsWrapAround = false;
 			this.heightoffset.Location = new System.Drawing.Point(99, 95);
 			this.heightoffset.Name = "heightoffset";
 			this.heightoffset.Size = new System.Drawing.Size(88, 24);
@@ -209,10 +210,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// brightness
 			// 
 			this.brightness.AllowDecimal = false;
-			this.brightness.AllowNegative = true;
+			this.brightness.AllowNegative = false;
 			this.brightness.AllowRelative = true;
 			this.brightness.ButtonStep = 8;
 			this.brightness.ButtonStepFloat = 1F;
+			this.brightness.ButtonStepsWrapAround = false;
 			this.brightness.Location = new System.Drawing.Point(99, 154);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(73, 24);
@@ -227,6 +229,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingheight.AllowRelative = true;
 			this.ceilingheight.ButtonStep = 8;
 			this.ceilingheight.ButtonStepFloat = 1F;
+			this.ceilingheight.ButtonStepsWrapAround = false;
 			this.ceilingheight.Location = new System.Drawing.Point(99, 35);
 			this.ceilingheight.Name = "ceilingheight";
 			this.ceilingheight.Size = new System.Drawing.Size(88, 24);
@@ -311,6 +314,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floorheight.AllowRelative = true;
 			this.floorheight.ButtonStep = 8;
 			this.floorheight.ButtonStepFloat = 1F;
+			this.floorheight.ButtonStepsWrapAround = false;
 			this.floorheight.Location = new System.Drawing.Point(99, 65);
 			this.floorheight.Name = "floorheight";
 			this.floorheight.Size = new System.Drawing.Size(88, 24);
