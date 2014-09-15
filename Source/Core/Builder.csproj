@@ -878,6 +878,12 @@
     <Compile Include="Windows\FlagsForm.Designer.cs">
       <DependentUpon>FlagsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\LinedefEditFormUDMF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\LinedefEditFormUDMF.designer.cs">
+      <DependentUpon>LinedefEditFormUDMF.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\MenuSection.cs" />
     <Compile Include="Windows\PasteOptionsForm.cs">
       <SubType>Form</SubType>
@@ -1140,6 +1146,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\FlagsForm.resx">
       <DependentUpon>FlagsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\LinedefEditFormUDMF.resx">
+      <DependentUpon>LinedefEditFormUDMF.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\PasteOptionsForm.resx">
       <DependentUpon>PasteOptionsForm.cs</DependentUpon>
