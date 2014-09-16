@@ -3199,6 +3199,8 @@ namespace CodeImp.DoomBuilder.Map
 		internal void TranslateFromUDMF()
 		{
 			foreach(Linedef l in linedefs) if(l.Marked) l.TranslateFromUDMF();
+			foreach(Sidedef s in sidedefs) if(s.Marked) s.TranslateFromUDMF(); //mxd
+			foreach(Sector s in sectors) if(s.Marked) s.TranslateFromUDMF(); //mxd
 			foreach(Thing t in things) if(t.Marked) t.TranslateFromUDMF();
 		}
 

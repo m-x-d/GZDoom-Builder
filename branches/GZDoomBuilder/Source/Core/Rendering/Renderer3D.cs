@@ -124,6 +124,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Initialize
 			CreateProjection();
 			CreateMatrices2D();
+			SetupHelperObjects(); //mxd
 			SetupTextures();
 			renderthingcages = true;
 			showselection = true;

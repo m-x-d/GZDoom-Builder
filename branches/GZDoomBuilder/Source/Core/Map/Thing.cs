@@ -293,6 +293,15 @@ namespace CodeImp.DoomBuilder.Map
 		// This translates UDMF fields back into the normal flags
 		internal void TranslateFromUDMF()
 		{
+			//mxd. Clear UDMF-related properties
+			this.Fields.Clear();
+			scaleX = 1.0f;
+			scaleY = 1.0f;
+			pitch = 0;
+			pitchrad = 0;
+			roll = 0;
+			rollrad = 0;
+			
 			// Make copy of the flags
 			Dictionary<string, bool> oldfields = new Dictionary<string, bool>(flags);
 
