@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			: base(v, ceilingVertex) {
 
 			this.mode = mode;
-			cageradius2 = General.Settings.GZVisualVertexSize * Angle2D.SQRT2;
+			cageradius2 = DEFAULT_SIZE * General.Settings.GZVertexScale3D * Angle2D.SQRT2;
 			cageradius2 = cageradius2 * cageradius2;
 
 			changed = true;
@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector3D pos = new Vector3D(vertex.Position.x, vertex.Position.y, z);
 			SetPosition(pos);
 
-			int radius = General.Settings.GZVisualVertexSize;
+			float radius = DEFAULT_SIZE * General.Settings.GZVertexScale3D;
 			boxp1 = new Vector3D(pos.x - radius, pos.y - radius, pos.z - radius);
 			boxp2 = new Vector3D(pos.x + radius, pos.y + radius, pos.z + radius);
 
