@@ -438,6 +438,10 @@ namespace CodeImp.DoomBuilder.Map
 		// This translates UDMF fields back into the normal flags and activations
 		internal void TranslateFromUDMF()
 		{
+			//mxd. Clear UDMF-related properties
+			this.Fields.Clear();
+			ExtraFloorFlag = false;
+			
 			// Make copy of the flags
 			Dictionary<string, bool> oldfields = new Dictionary<string, bool>(flags);
 

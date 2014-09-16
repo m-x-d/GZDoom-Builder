@@ -64,12 +64,12 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Properties
 
 		public MapSet Map { get { return map; } }
-		public bool IsFront { get { return (linedef != null) ? (this == linedef.Front) : false; } }
+		public bool IsFront { get { return (linedef != null) && (this == linedef.Front); } }
 		public Linedef Line { get { return linedef; } }
-		public Sidedef Other { get { if(this == linedef.Front) return linedef.Back; else return linedef.Front; } }
+		public Sidedef Other { get { return (this == linedef.Front ? linedef.Back : linedef.Front); } }
 		public Sector Sector { get { return sector; } }
 		internal Dictionary<string, bool> Flags { get { return flags; } } //mxd
-		public float Angle { get { if(IsFront) return linedef.Angle; else return Angle2D.Normalized(linedef.Angle + Angle2D.PI); } }
+		public float Angle { get { return (IsFront ? linedef.Angle : Angle2D.Normalized(linedef.Angle + Angle2D.PI)); } }
 		public int OffsetX { get { return offsetx; } set { BeforePropsChange(); offsetx = value; } }
 		public int OffsetY { get { return offsety; } set { BeforePropsChange(); offsety = value; } }
 		public string HighTexture { get { return texnamehigh; } }
@@ -262,6 +262,31 @@ namespace CodeImp.DoomBuilder.Map
 		internal void SetLinedefP(Linedef ld)
 		{
 			linedef = ld;
+		}
+
+		//mxd. This translates UDMF fields back into the normal flags and activations
+		internal void TranslateFromUDMF() 
+		{
+			// Try to translate UDMF texture offsets to regular ones
+			if (longtexnamemid != MapSet.EmptyLongName && MiddleRequired()) 
+			{
+				offsetx += (int)UDMFTools.GetFloat(this.Fields, "offsetx_mid");
+				offsety += (int)UDMFTools.GetFloat(this.Fields, "offsety_mid");
+			}
+			else if (longtexnamehigh != MapSet.EmptyLongName && HighRequired()) 
+			{
+				offsetx += (int)UDMFTools.GetFloat(this.Fields, "offsetx_top");
+				offsety += (int)UDMFTools.GetFloat(this.Fields, "offsety_top");
+			}
+			else if (longtexnamelow != MapSet.EmptyLongName && LowRequired()) 
+			{
+				offsetx += (int)UDMFTools.GetFloat(this.Fields, "offsetx_bottom");
+				offsety += (int)UDMFTools.GetFloat(this.Fields, "offsety_bottom");
+			}
+			
+			// Clear UDMF-related properties
+			this.Fields.Clear();
+			this.Flags.Clear();
 		}
 		
 		#endregion
@@ -583,8 +608,8 @@ namespace CodeImp.DoomBuilder.Map
 			this.Fields.BeforeFieldsChange();
 
 			//top
-			if(LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(HighTexture)) {
-				ImageData texture = General.Map.Data.GetFlatImage(HighTexture);
+			if(longtexnamehigh != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(texnamehigh)) {
+				ImageData texture = General.Map.Data.GetFlatImage(texnamehigh);
 				float scaleTop = Fields.GetValue("scalex_top", 1.0f);
 
 				float value = Fields.GetValue("offsetx_top", 0f);
@@ -593,8 +618,8 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			//middle
-			if(LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(MiddleTexture)) {
-				ImageData texture = General.Map.Data.GetFlatImage(MiddleTexture);
+			if(longtexnamemid != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(texnamemid)) {
+				ImageData texture = General.Map.Data.GetFlatImage(texnamemid);
 				float scaleMid = Fields.GetValue("scalex_mid", 1.0f);
 
 				float value = Fields.GetValue("offsetx_mid", 0f);
@@ -603,8 +628,8 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			//bottom
-			if(LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(LowTexture)) {
-				ImageData texture = General.Map.Data.GetFlatImage(LowTexture);
+			if(longtexnamelow != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(texnamelow)) {
+				ImageData texture = General.Map.Data.GetFlatImage(texnamelow);
 				float scaleLow = Fields.GetValue("scalex_bottom", 1.0f);
 
 				float value = Fields.GetValue("offsetx_bottom", 0f);

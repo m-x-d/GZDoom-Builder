@@ -432,6 +432,22 @@ namespace CodeImp.DoomBuilder.Map
 			if(selecteditem.List != null) selecteditem.List.Remove(selecteditem);
 			selecteditem = null;
 		}
+
+		// This removes UDMF stuff
+		internal void TranslateFromUDMF() 
+		{
+			// Clear UDMF-related properties
+			this.Fields.Clear();
+			this.Flags.Clear();
+			hasFogColor = false;
+			useOutsideFog = false;
+
+			// Reset Slopes
+			floorslope = new Vector3D();
+			flooroffset = 0;
+			ceilslope = new Vector3D();
+			ceiloffset = 0;
+		}
 		
 		#endregion
 		
