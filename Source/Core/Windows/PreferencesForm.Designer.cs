@@ -102,6 +102,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockersposition = new System.Windows.Forms.ComboBox();
 			this.label17 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.vertexScale3D = new Dotnetrix.Controls.TrackBar();
+			this.vertexScale3DLabel = new System.Windows.Forms.Label();
+			this.label26 = new System.Windows.Forms.Label();
 			this.viewdistance = new Dotnetrix.Controls.TrackBar();
 			this.movespeed = new Dotnetrix.Controls.TrackBar();
 			this.mousespeed = new Dotnetrix.Controls.TrackBar();
@@ -192,6 +195,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox5.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.vertexScale3D)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.viewdistance)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.movespeed)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.mousespeed)).BeginInit();
@@ -294,6 +298,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label25.Size = new System.Drawing.Size(90, 14);
 			this.label25.TabIndex = 47;
 			this.label25.Text = "Max. recent files:";
+			this.toolTip1.SetToolTip(this.label25, "Controls how many recent files \r\nare shown in th File menu. ");
 			// 
 			// vertexScaleLabel
 			// 
@@ -307,12 +312,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// label22
 			// 
 			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(17, 199);
+			this.label22.Location = new System.Drawing.Point(26, 199);
 			this.label22.Name = "label22";
-			this.label22.Size = new System.Drawing.Size(103, 14);
+			this.label22.Size = new System.Drawing.Size(95, 14);
 			this.label22.TabIndex = 44;
-			this.label22.Text = "Vertex scale factor:";
-			this.toolTip1.SetToolTip(this.label22, "Controls the size of \r\nvertex handles in 2D Modes");
+			this.label22.Text = "Vertex scale (2D):";
+			this.toolTip1.SetToolTip(this.label22, "Sets the size of vertex handles\r\nin 2D modes");
 			// 
 			// vertexScale
 			// 
@@ -807,7 +812,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox3.Size = new System.Drawing.Size(331, 51);
 			this.groupBox3.TabIndex = 5;
 			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = " Screenshots Folder: ";
+			this.groupBox3.Text = " Screenshots Folder ";
 			// 
 			// resetscreenshotsdir
 			// 
@@ -850,9 +855,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox5.Controls.Add(this.toolbar_copy);
 			this.groupBox5.Controls.Add(this.toolbar_undo);
 			this.groupBox5.Controls.Add(this.toolbar_script);
-			this.groupBox5.Location = new System.Drawing.Point(345, 327);
+			this.groupBox5.Location = new System.Drawing.Point(343, 342);
 			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(331, 173);
+			this.groupBox5.Size = new System.Drawing.Size(331, 158);
 			this.groupBox5.TabIndex = 4;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = " Toolbar Buttons ";
@@ -860,7 +865,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_gzdoom
 			// 
 			this.toolbar_gzdoom.AutoSize = true;
-			this.toolbar_gzdoom.Location = new System.Drawing.Point(188, 137);
+			this.toolbar_gzdoom.Location = new System.Drawing.Point(188, 129);
 			this.toolbar_gzdoom.Name = "toolbar_gzdoom";
 			this.toolbar_gzdoom.Size = new System.Drawing.Size(75, 18);
 			this.toolbar_gzdoom.TabIndex = 50;
@@ -870,7 +875,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_file
 			// 
 			this.toolbar_file.AutoSize = true;
-			this.toolbar_file.Location = new System.Drawing.Point(32, 33);
+			this.toolbar_file.Location = new System.Drawing.Point(32, 25);
 			this.toolbar_file.Name = "toolbar_file";
 			this.toolbar_file.Size = new System.Drawing.Size(118, 18);
 			this.toolbar_file.TabIndex = 49;
@@ -880,7 +885,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_testing
 			// 
 			this.toolbar_testing.AutoSize = true;
-			this.toolbar_testing.Location = new System.Drawing.Point(188, 111);
+			this.toolbar_testing.Location = new System.Drawing.Point(188, 103);
 			this.toolbar_testing.Name = "toolbar_testing";
 			this.toolbar_testing.Size = new System.Drawing.Size(60, 18);
 			this.toolbar_testing.TabIndex = 48;
@@ -890,7 +895,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_geometry
 			// 
 			this.toolbar_geometry.AutoSize = true;
-			this.toolbar_geometry.Location = new System.Drawing.Point(188, 85);
+			this.toolbar_geometry.Location = new System.Drawing.Point(188, 77);
 			this.toolbar_geometry.Name = "toolbar_geometry";
 			this.toolbar_geometry.Size = new System.Drawing.Size(90, 18);
 			this.toolbar_geometry.TabIndex = 47;
@@ -900,7 +905,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_viewmodes
 			// 
 			this.toolbar_viewmodes.AutoSize = true;
-			this.toolbar_viewmodes.Location = new System.Drawing.Point(188, 59);
+			this.toolbar_viewmodes.Location = new System.Drawing.Point(188, 51);
 			this.toolbar_viewmodes.Name = "toolbar_viewmodes";
 			this.toolbar_viewmodes.Size = new System.Drawing.Size(87, 18);
 			this.toolbar_viewmodes.TabIndex = 46;
@@ -910,7 +915,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_filter
 			// 
 			this.toolbar_filter.AutoSize = true;
-			this.toolbar_filter.Location = new System.Drawing.Point(188, 33);
+			this.toolbar_filter.Location = new System.Drawing.Point(188, 25);
 			this.toolbar_filter.Name = "toolbar_filter";
 			this.toolbar_filter.Size = new System.Drawing.Size(84, 18);
 			this.toolbar_filter.TabIndex = 45;
@@ -920,7 +925,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_prefabs
 			// 
 			this.toolbar_prefabs.AutoSize = true;
-			this.toolbar_prefabs.Location = new System.Drawing.Point(32, 137);
+			this.toolbar_prefabs.Location = new System.Drawing.Point(32, 129);
 			this.toolbar_prefabs.Name = "toolbar_prefabs";
 			this.toolbar_prefabs.Size = new System.Drawing.Size(64, 18);
 			this.toolbar_prefabs.TabIndex = 44;
@@ -930,7 +935,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_copy
 			// 
 			this.toolbar_copy.AutoSize = true;
-			this.toolbar_copy.Location = new System.Drawing.Point(32, 111);
+			this.toolbar_copy.Location = new System.Drawing.Point(32, 103);
 			this.toolbar_copy.Name = "toolbar_copy";
 			this.toolbar_copy.Size = new System.Drawing.Size(112, 18);
 			this.toolbar_copy.TabIndex = 43;
@@ -940,7 +945,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_undo
 			// 
 			this.toolbar_undo.AutoSize = true;
-			this.toolbar_undo.Location = new System.Drawing.Point(32, 85);
+			this.toolbar_undo.Location = new System.Drawing.Point(32, 77);
 			this.toolbar_undo.Name = "toolbar_undo";
 			this.toolbar_undo.Size = new System.Drawing.Size(85, 18);
 			this.toolbar_undo.TabIndex = 42;
@@ -950,7 +955,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_script
 			// 
 			this.toolbar_script.AutoSize = true;
-			this.toolbar_script.Location = new System.Drawing.Point(32, 59);
+			this.toolbar_script.Location = new System.Drawing.Point(32, 51);
 			this.toolbar_script.Name = "toolbar_script";
 			this.toolbar_script.Size = new System.Drawing.Size(84, 18);
 			this.toolbar_script.TabIndex = 41;
@@ -1003,6 +1008,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.vertexScale3D);
+			this.groupBox2.Controls.Add(this.vertexScale3DLabel);
+			this.groupBox2.Controls.Add(this.label26);
 			this.groupBox2.Controls.Add(this.viewdistance);
 			this.groupBox2.Controls.Add(this.movespeed);
 			this.groupBox2.Controls.Add(this.mousespeed);
@@ -1018,15 +1026,47 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Location = new System.Drawing.Point(345, 8);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(329, 313);
+			this.groupBox2.Size = new System.Drawing.Size(331, 328);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Visual Modes ";
 			// 
+			// vertexScale3D
+			// 
+			this.vertexScale3D.LargeChange = 1;
+			this.vertexScale3D.Location = new System.Drawing.Point(116, 187);
+			this.vertexScale3D.Maximum = 15;
+			this.vertexScale3D.Minimum = 2;
+			this.vertexScale3D.Name = "vertexScale3D";
+			this.vertexScale3D.Size = new System.Drawing.Size(150, 45);
+			this.vertexScale3D.TabIndex = 31;
+			this.vertexScale3D.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.vertexScale3D.Value = 10;
+			this.vertexScale3D.ValueChanged += new System.EventHandler(this.vertexScale3D_ValueChanged);
+			// 
+			// vertexScale3DLabel
+			// 
+			this.vertexScale3DLabel.AutoSize = true;
+			this.vertexScale3DLabel.Location = new System.Drawing.Point(272, 199);
+			this.vertexScale3DLabel.Name = "vertexScale3DLabel";
+			this.vertexScale3DLabel.Size = new System.Drawing.Size(35, 14);
+			this.vertexScale3DLabel.TabIndex = 33;
+			this.vertexScale3DLabel.Text = "100%";
+			// 
+			// label26
+			// 
+			this.label26.AutoSize = true;
+			this.label26.Location = new System.Drawing.Point(16, 199);
+			this.label26.Name = "label26";
+			this.label26.Size = new System.Drawing.Size(95, 14);
+			this.label26.TabIndex = 32;
+			this.label26.Text = "Vertex scale (3D):";
+			this.toolTip1.SetToolTip(this.label26, "Sets the size of vertex handles\r\nin 3D mode");
+			// 
 			// viewdistance
 			// 
 			this.viewdistance.LargeChange = 2;
-			this.viewdistance.Location = new System.Drawing.Point(108, 187);
+			this.viewdistance.Location = new System.Drawing.Point(116, 238);
 			this.viewdistance.Maximum = 45;
 			this.viewdistance.Minimum = 1;
 			this.viewdistance.Name = "viewdistance";
@@ -1039,7 +1079,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// movespeed
 			// 
-			this.movespeed.Location = new System.Drawing.Point(108, 135);
+			this.movespeed.Location = new System.Drawing.Point(116, 135);
 			this.movespeed.Maximum = 20;
 			this.movespeed.Minimum = 1;
 			this.movespeed.Name = "movespeed";
@@ -1051,7 +1091,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// mousespeed
 			// 
-			this.mousespeed.Location = new System.Drawing.Point(108, 81);
+			this.mousespeed.Location = new System.Drawing.Point(116, 81);
 			this.mousespeed.Maximum = 20;
 			this.mousespeed.Minimum = 1;
 			this.mousespeed.Name = "mousespeed";
@@ -1064,7 +1104,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// fieldofview
 			// 
 			this.fieldofview.LargeChange = 1;
-			this.fieldofview.Location = new System.Drawing.Point(108, 29);
+			this.fieldofview.Location = new System.Drawing.Point(116, 29);
 			this.fieldofview.Maximum = 17;
 			this.fieldofview.Minimum = 5;
 			this.fieldofview.Name = "fieldofview";
@@ -1077,7 +1117,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// viewdistancelabel
 			// 
 			this.viewdistancelabel.AutoSize = true;
-			this.viewdistancelabel.Location = new System.Drawing.Point(264, 199);
+			this.viewdistancelabel.Location = new System.Drawing.Point(272, 250);
 			this.viewdistancelabel.Name = "viewdistancelabel";
 			this.viewdistancelabel.Size = new System.Drawing.Size(42, 14);
 			this.viewdistancelabel.TabIndex = 30;
@@ -1086,7 +1126,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label13
 			// 
 			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(22, 199);
+			this.label13.Location = new System.Drawing.Point(30, 251);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(80, 14);
 			this.label13.TabIndex = 28;
@@ -1095,7 +1135,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// invertyaxis
 			// 
 			this.invertyaxis.AutoSize = true;
-			this.invertyaxis.Location = new System.Drawing.Point(36, 248);
+			this.invertyaxis.Location = new System.Drawing.Point(36, 298);
 			this.invertyaxis.Name = "invertyaxis";
 			this.invertyaxis.Size = new System.Drawing.Size(122, 18);
 			this.invertyaxis.TabIndex = 4;
@@ -1105,7 +1145,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// movespeedlabel
 			// 
 			this.movespeedlabel.AutoSize = true;
-			this.movespeedlabel.Location = new System.Drawing.Point(264, 147);
+			this.movespeedlabel.Location = new System.Drawing.Point(272, 147);
 			this.movespeedlabel.Name = "movespeedlabel";
 			this.movespeedlabel.Size = new System.Drawing.Size(25, 14);
 			this.movespeedlabel.TabIndex = 25;
@@ -1114,7 +1154,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label11
 			// 
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(33, 147);
+			this.label11.Location = new System.Drawing.Point(41, 147);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(69, 14);
 			this.label11.TabIndex = 23;
@@ -1123,7 +1163,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// mousespeedlabel
 			// 
 			this.mousespeedlabel.AutoSize = true;
-			this.mousespeedlabel.Location = new System.Drawing.Point(264, 93);
+			this.mousespeedlabel.Location = new System.Drawing.Point(272, 93);
 			this.mousespeedlabel.Name = "mousespeedlabel";
 			this.mousespeedlabel.Size = new System.Drawing.Size(25, 14);
 			this.mousespeedlabel.TabIndex = 22;
@@ -1132,7 +1172,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(27, 93);
+			this.label9.Location = new System.Drawing.Point(35, 93);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(75, 14);
 			this.label9.TabIndex = 20;
@@ -1141,7 +1181,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// fieldofviewlabel
 			// 
 			this.fieldofviewlabel.AutoSize = true;
-			this.fieldofviewlabel.Location = new System.Drawing.Point(264, 41);
+			this.fieldofviewlabel.Location = new System.Drawing.Point(272, 41);
 			this.fieldofviewlabel.Name = "fieldofviewlabel";
 			this.fieldofviewlabel.Size = new System.Drawing.Size(23, 14);
 			this.fieldofviewlabel.TabIndex = 19;
@@ -1150,7 +1190,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(30, 41);
+			this.label4.Location = new System.Drawing.Point(38, 41);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(72, 14);
 			this.label4.TabIndex = 17;
@@ -1598,6 +1638,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scripttabwidth.AllowRelative = false;
 			this.scripttabwidth.ButtonStep = 2;
 			this.scripttabwidth.ButtonStepFloat = 1F;
+			this.scripttabwidth.ButtonStepsWrapAround = false;
 			this.scripttabwidth.Location = new System.Drawing.Point(364, 157);
 			this.scripttabwidth.Name = "scripttabwidth";
 			this.scripttabwidth.Size = new System.Drawing.Size(71, 24);
@@ -1876,6 +1917,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox4.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.vertexScale3D)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.viewdistance)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.movespeed)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.mousespeed)).EndInit();
@@ -2031,5 +2073,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.TextBox screenshotsfolderpath;
 		private System.Windows.Forms.Button resetscreenshotsdir;
 		private System.Windows.Forms.FolderBrowserDialog browseScreenshotsFolderDialog;
+		private Dotnetrix.Controls.TrackBar vertexScale3D;
+		private System.Windows.Forms.Label vertexScale3DLabel;
+		private System.Windows.Forms.Label label26;
 	}
 }

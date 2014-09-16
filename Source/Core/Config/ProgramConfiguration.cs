@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool gzStretchModels;
 		private float gzVertexScale2D;
 		private bool gzShowVisualVertices;
-		private int gzVisualVertexSize;
+		private float gzVertexScale3D;
 		private string lastUsedConfigName;
 		private string lastUsedMapFolder;
 		private bool gzMarkExtraFloors;
@@ -195,7 +195,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool GZStretchModels { get { return gzStretchModels; } internal set { gzStretchModels = value; } }
 		public float GZVertexScale2D { get { return gzVertexScale2D; } internal set { gzVertexScale2D = value; } }
 		public bool GZShowVisualVertices { get { return gzShowVisualVertices; } internal set { gzShowVisualVertices = value; } }
-		public int GZVisualVertexSize { get { return gzVisualVertexSize; } internal set { gzVisualVertexSize = value; } }
+		public float GZVertexScale3D { get { return gzVertexScale3D; } internal set { gzVertexScale3D = value; } }
 		public string LastUsedConfigName { get { return lastUsedConfigName; } internal set { lastUsedConfigName = value; } }
 		public string LastUsedMapFolder { get { return lastUsedMapFolder; } internal set { lastUsedMapFolder = value; } }
 		public bool GZMarkExtraFloors { get { return gzMarkExtraFloors; } internal set { gzMarkExtraFloors = value; } }
@@ -304,7 +304,7 @@ namespace CodeImp.DoomBuilder.Config
 				gzStretchModels = cfg.ReadSetting("gzstretchmodels", true);
 				gzVertexScale2D = cfg.ReadSetting("gzvertexscale2d", 1.0f);
 				gzShowVisualVertices = cfg.ReadSetting("gzshowvisualvertices", true);
-				gzVisualVertexSize = cfg.ReadSetting("gzvisualvertexsize", 6);
+				gzVertexScale3D = cfg.ReadSetting("gzvertexscale3d", 1.0f);
 				lastUsedConfigName = cfg.ReadSetting("lastusedconfigname", "");
 				lastUsedMapFolder = cfg.ReadSetting("lastusedmapfolder", "");
 				gzMarkExtraFloors = cfg.ReadSetting("gzmarkextrafloors", true);
@@ -395,7 +395,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("gzstretchmodels", gzStretchModels);
 			cfg.WriteSetting("gzvertexscale2d", gzVertexScale2D);
 			cfg.WriteSetting("gzshowvisualvertices", gzShowVisualVertices);
-			cfg.WriteSetting("gzvisualvertexsize", gzVisualVertexSize);
+			cfg.WriteSetting("gzvertexscale3d", gzVertexScale3D);
 			cfg.WriteSetting("gzmarkextrafloors", gzMarkExtraFloors);
 			if(!string.IsNullOrEmpty(lastUsedConfigName))
 				cfg.WriteSetting("lastusedconfigname", lastUsedConfigName);

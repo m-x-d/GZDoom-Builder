@@ -69,6 +69,7 @@ namespace CodeImp.DoomBuilder.Windows
 			fieldofview.Value = General.Clamp(General.Settings.VisualFOV / 10, fieldofview.Minimum, fieldofview.Maximum);
 			mousespeed.Value = General.Clamp(General.Settings.MouseSpeed / 100, mousespeed.Minimum, mousespeed.Maximum);
 			movespeed.Value = General.Clamp(General.Settings.MoveSpeed / 100, movespeed.Minimum, movespeed.Maximum);
+			vertexScale3D.Value = General.Clamp((int)(General.Settings.GZVertexScale3D * 10), vertexScale3D.Minimum, vertexScale3D.Maximum); //mxd
 			viewdistance.Value = General.Clamp((int)(General.Settings.ViewDistance / 200.0f), viewdistance.Minimum, viewdistance.Maximum);
 			invertyaxis.Checked = General.Settings.InvertYAxis;
 			scriptfontbold.Checked = General.Settings.ScriptFontBold;
@@ -231,6 +232,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.VisualFOV = fieldofview.Value * 10;
 			General.Settings.MouseSpeed = mousespeed.Value * 100;
 			General.Settings.MoveSpeed = movespeed.Value * 100;
+			General.Settings.GZVertexScale3D = vertexScale3D.Value * 0.1f; //mxd
 			General.Settings.ViewDistance = viewdistance.Value * 200.0f;
 			General.Settings.InvertYAxis = invertyaxis.Checked;
 			General.Settings.ScriptFontBold = scriptfontbold.Checked;
@@ -396,6 +398,12 @@ namespace CodeImp.DoomBuilder.Windows
 			movespeedlabel.Text = value.ToString();
 		}
 
+		//mxd
+		private void vertexScale3D_ValueChanged(object sender, EventArgs e) 
+		{
+			vertexScale3DLabel.Text = (vertexScale3D.Value * 10) + "%";
+		}
+
 		private void viewdistance_ValueChanged(object sender, EventArgs e)
 		{
 			int value = viewdistance.Value * 200;
@@ -416,8 +424,9 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void vertexScale_ValueChanged(object sender, EventArgs e) {
-			vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
+		private void vertexScale_ValueChanged(object sender, EventArgs e) 
+		{
+			vertexScaleLabel.Text = (vertexScale.Value * 100) + "%";
 		}
 
 		//mxd

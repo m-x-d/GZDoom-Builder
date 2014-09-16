@@ -1,4 +1,5 @@
-﻿using SlimDX.Direct3D9;
+﻿using CodeImp.DoomBuilder.VisualModes;
+using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Rendering
@@ -6,13 +7,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Rendering
 	internal sealed class VisualVertexHandle
 	{
 		public VertexBuffer Upper { get { return upper; } }
-		private VertexBuffer upper;
+		private readonly VertexBuffer upper;
 
 		public VertexBuffer Lower { get { return lower; } }
-		private VertexBuffer lower;
+		private readonly VertexBuffer lower;
 
 		public VisualVertexHandle(Device device) {
-			float radius = General.Settings.GZVisualVertexSize;
+			float radius = VisualVertex.DEFAULT_SIZE * General.Settings.GZVertexScale3D;
 
 			WorldVertex c = new WorldVertex();
 			WorldVertex v0 = new WorldVertex(-radius, -radius, -radius);

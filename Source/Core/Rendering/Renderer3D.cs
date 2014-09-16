@@ -124,7 +124,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Initialize
 			CreateProjection();
 			CreateMatrices2D();
-			SetupHelperObjects();
 			SetupTextures();
 			renderthingcages = true;
 			showselection = true;
@@ -254,10 +253,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		private void SetupHelperObjects() {
+		private void SetupHelperObjects() 
+		{
 			bbox = new ThingBoundingBox(graphics.Device);
-			vertexHandle = new VisualVertexHandle(graphics.Device);
 			sizelessThingHandle = new SizelessVisualThingCage(graphics.Device);
+			UpdateVertexHandle();
+		}
+
+		//mxd
+		internal void UpdateVertexHandle()
+		{
+			vertexHandle = new VisualVertexHandle(graphics.Device);
 		}
 
 		#endregion

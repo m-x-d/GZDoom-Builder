@@ -36,6 +36,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 	public abstract class VisualVertex : IVisualPickable, IComparable<VisualVertex>
 	{
+		//Constants
+		public const float DEFAULT_SIZE = 6.0f;
+		
 		//Variables
 		protected Vertex vertex;
 		private Matrix position;
