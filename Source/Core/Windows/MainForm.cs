@@ -2947,8 +2947,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//create path
 			string date = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
-			string revision = "[r" + General.ThisAssembly.GetName().Version.MinorRevision + "]";
-			string path = Path.Combine(folder, name + date + " " + revision + ".jpg");
+			string revision = "R" + General.ThisAssembly.GetName().Version.MinorRevision;
+			string path = Path.Combine(folder, name + date + " [" + revision + "].jpg");
 
 			//save image
 			using(Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height)) {
@@ -2961,7 +2961,7 @@ namespace CodeImp.DoomBuilder.Windows
 					//gather some info
 					string info = string.Empty;
 					if (editAreaOnly && General.Editing.Mode != null) {
-						info = General.Map.FileTitle + " (" + General.Map.Options.CurrentName + "): ";
+						info = General.Map.FileTitle + " | " + General.Map.Options.CurrentName + " | ";
 
 						//get map coordinates
 						if (General.Editing.Mode is ClassicMode) {
@@ -2978,7 +2978,7 @@ namespace CodeImp.DoomBuilder.Windows
 						}
 
 						//add the revision number
-						info += " " + revision;
+						info += " | " + revision;
 					} else {
 						//just use the revision number
 						info = revision;
