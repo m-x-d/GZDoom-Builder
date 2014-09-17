@@ -65,17 +65,16 @@ namespace CodeImp.DoomBuilder.Actions
 				CooperativeLevel.Nonexclusive | CooperativeLevel.Foreground);
 			
 			// Aquire device
-			try
-			{
-				mouse.Acquire();
-			}
+			try { mouse.Acquire(); }
+#if DEBUG
 			catch (Exception e)
 			{
-#if DEBUG
-				System.Console.WriteLine("MouseInput initialization failed: " + e.Message);
-#endif
+				Console.WriteLine("MouseInput initialization failed: " + e.Message);
 			}
-			
+#else
+			catch (Exception) { }
+#endif
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -129,23 +128,22 @@ namespace CodeImp.DoomBuilder.Actions
 				}
 
 				// Reaquire device
-				try
-				{
-					mouse.Acquire();
-				}
-				catch (Exception e) 
-				{
+				try { mouse.Acquire(); }
 #if DEBUG
-					System.Console.WriteLine("MouseInput process failed: " + e.Message);
-#endif
+				catch (Exception e)
+				{
+					Console.WriteLine("MouseInput process failed: " + e.Message);
 				}
+#else
+				catch (Exception) { }
+#endif
 				return new Vector2D();
 			}
+#if DEBUG
 			catch(DirectInputException die)
 			{
-#if DEBUG
-				System.Console.WriteLine("MouseInput process failed: " + die.Message);
-#endif				
+				Console.WriteLine("MouseInput process failed: " + die.Message);
+			
 				// Reaquire device
 				try
 				{
@@ -153,12 +151,19 @@ namespace CodeImp.DoomBuilder.Actions
 				}
 				catch (Exception e)
 				{
-#if DEBUG
-					System.Console.WriteLine("MouseInput process failed: " + die.Message);
-#endif
+					System.Console.WriteLine("MouseInput process failed: " + e.Message);
 				}
 				return new Vector2D();
 			}
+#else
+			catch(DirectInputException)
+			{
+				// Reaquire device
+				try { mouse.Acquire(); } 
+				catch (Exception) { }
+				return new Vector2D();
+			}
+#endif
 		}
 
 		#endregion
