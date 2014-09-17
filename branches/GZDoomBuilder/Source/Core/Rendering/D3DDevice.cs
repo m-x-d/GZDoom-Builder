@@ -397,14 +397,20 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Reset the device
 					device.Reset(displaypp);
 				}
+#if DEBUG
 				catch(Exception e)
 				{
 					// Failed to re-initialize
-#if DEBUG
 					Console.WriteLine("Device reset failed: " + e.Message);
-#endif
 					return false;
 				}
+#else
+				catch (Exception) 
+				{
+					// Failed to re-initialize
+					return false;
+				}
+#endif
 
 				// Keep a reference to the original buffers
 				backbuffer = device.GetBackBuffer(0, 0);
