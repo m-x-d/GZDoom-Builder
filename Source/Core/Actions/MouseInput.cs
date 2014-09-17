@@ -65,8 +65,16 @@ namespace CodeImp.DoomBuilder.Actions
 				CooperativeLevel.Nonexclusive | CooperativeLevel.Foreground);
 			
 			// Aquire device
-			try { mouse.Acquire(); }
-			catch(Exception) { }
+			try
+			{
+				mouse.Acquire();
+			}
+			catch (Exception e)
+			{
+#if DEBUG
+				System.Console.WriteLine("MouseInput initialization failed: " + e.Message);
+#endif
+			}
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -121,15 +129,34 @@ namespace CodeImp.DoomBuilder.Actions
 				}
 
 				// Reaquire device
-				try { mouse.Acquire(); }
-				catch(Exception) { }
+				try
+				{
+					mouse.Acquire();
+				}
+				catch (Exception e) 
+				{
+#if DEBUG
+					System.Console.WriteLine("MouseInput process failed: " + e.Message);
+#endif
+				}
 				return new Vector2D();
 			}
-			catch(DirectInputException)
+			catch(DirectInputException die)
 			{
+#if DEBUG
+				System.Console.WriteLine("MouseInput process failed: " + die.Message);
+#endif				
 				// Reaquire device
-				try { mouse.Acquire(); }
-				catch(Exception) { }
+				try
+				{
+					mouse.Acquire();
+				}
+				catch (Exception e)
+				{
+#if DEBUG
+					System.Console.WriteLine("MouseInput process failed: " + die.Message);
+#endif
+				}
 				return new Vector2D();
 			}
 		}

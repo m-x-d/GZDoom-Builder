@@ -197,6 +197,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredodocker = new Docker("undoredo", "Undo / Redo", undoredopanel);
 			General.Interface.AddDocker(undoredodocker);
 
+			//mxd. Create Overrides docker
+			drawingOverridesPanel = new SectorDrawingOptionsPanel();
+			drawingOverridesDocker = new Docker("drawingoverrides", "Draw Settings", drawingOverridesPanel);
+
 			//mxd
 			General.Actions.BindMethods(this);
 		}
@@ -209,8 +213,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Clean up
 				General.Interface.RemoveDocker(undoredodocker);
+				General.Interface.RemoveDocker(drawingOverridesDocker); //mxd
 
 				undoredopanel.Dispose();
+				drawingOverridesPanel.Dispose(); //mxd
 				menusform.Unregister();
 				menusform.Dispose();
 				menusform = null;
@@ -375,11 +381,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel.UpdateList();
 
 			//mxd
-			if (drawingOverridesPanel == null) {
-				drawingOverridesPanel = new SectorDrawingOptionsPanel();
-				drawingOverridesDocker = new Docker("drawingoverrides", "Draw Settings", drawingOverridesPanel);
-				General.Interface.AddDocker(drawingOverridesDocker);
-			}
+			General.Interface.AddDocker(drawingOverridesDocker);
 			drawingOverridesPanel.Setup();
 		}
 		
@@ -391,11 +393,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			undoredopanel.UpdateList();
 
 			//mxd
-			if (drawingOverridesPanel == null) {
-				drawingOverridesPanel = new SectorDrawingOptionsPanel();
-				drawingOverridesDocker = new Docker("drawingoverrides", "Draw Settings", drawingOverridesPanel);
-				General.Interface.AddDocker(drawingOverridesDocker);
-			}
+			General.Interface.AddDocker(drawingOverridesDocker);
 			drawingOverridesPanel.Setup();
 			General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 		}
@@ -408,9 +406,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd
 			General.Interface.RemoveDocker(drawingOverridesDocker);
-			drawingOverridesDocker = null;
-			drawingOverridesPanel.Dispose();
-			drawingOverridesPanel = null;
 
 			//mxd. Save settings
 			saveSettings();

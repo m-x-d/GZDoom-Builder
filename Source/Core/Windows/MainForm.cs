@@ -390,8 +390,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Generic event that invokes the tagged action
 		public void InvokeTaggedAction(object sender, EventArgs e)
 		{
-			//string asmname;
-			
 			this.Update();
 			
 			if(sender is ToolStripItem)
@@ -585,8 +583,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Window is being closed
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			int windowstate;
-
 			if(e.CloseReason != CloseReason.ApplicationExitCall)
 			{
 				//mxd
@@ -610,6 +606,7 @@ namespace CodeImp.DoomBuilder.Windows
 					General.Actions.UnbindMethods(this);
 
 					// Determine window state to save
+					int windowstate;
 					if(this.WindowState != FormWindowState.Minimized)
 						windowstate = (int)this.WindowState;
 					else
@@ -1029,6 +1026,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Disable timer (only redraw once)
 			redrawtimer.Enabled = false;
+
+			// Don't do anything when minimized (mxd)
+			if(this.WindowState == FormWindowState.Minimized) return;
 
 			// Resume control layouts
 			//if(displayresized) General.LockWindowUpdate(IntPtr.Zero);
@@ -1748,40 +1748,30 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
-		// This hides redundant seperators and shows single seperators
+		// This hides redundant separators
 		internal void UpdateSeparators()
 		{
-			UpdateToolStripSeparators(toolbar.Items, false);
-			UpdateToolStripSeparators(menumode.DropDownItems, true);
+			UpdateToolStripSeparators(toolbar.Items);
+			UpdateToolStripSeparators(menumode.DropDownItems);
 
 			//mxd
-			UpdateToolStripSeparators(modestoolbar.Items, false);
-			UpdateToolStripSeparators(modecontrolsloolbar.Items, false);
+			UpdateToolStripSeparators(modestoolbar.Items);
+			UpdateToolStripSeparators(modecontrolsloolbar.Items);
 		}
 		
-		// This updates the seperators
-		// Hides redundant seperators and shows single seperators
-		private static void UpdateToolStripSeparators(ToolStripItemCollection items, bool defaultvisible)
+		// This hides redundant separators (mxd)
+		private static void UpdateToolStripSeparators(ToolStripItemCollection items)
 		{
 			ToolStripItem pvi = null;
 			foreach(ToolStripItem i in items)
 			{
-				bool separatorvisible = false;
-				
-				// This is a seperator?
-				if(i is ToolStripSeparator)
+				if (i is ToolStripSeparator)
 				{
-					// Make visible when previous item was not a seperator
-					separatorvisible = !(pvi is ToolStripSeparator) && (pvi != null);
-					i.Visible = separatorvisible;
+					i.Visible = !(pvi != null && (!pvi.Visible || pvi is ToolStripSeparator));
 				}
-				
-				// Keep as previous visible item
-				if(i.Visible || separatorvisible || (defaultvisible && !(i is ToolStripSeparator))) pvi = i;
+
+				pvi = i;
 			}
-			
-			// Hide last item if it is a seperator
-			if(pvi is ToolStripSeparator) pvi.Visible = false;
 		}
 		
 		// This enables or disables all editing mode items and toolbar buttons
