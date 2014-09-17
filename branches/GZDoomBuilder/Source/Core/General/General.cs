@@ -1290,6 +1290,18 @@ namespace CodeImp.DoomBuilder
 				//mxd
 				mainwindow.UpdateGZDoomPanel();
 				settings.LastUsedMapFolder = Path.GetDirectoryName(filename);
+				settings.FindDefaultDrawSettings();
+
+				// Let the plugins know
+				plugins.OnMapOpenEnd();
+
+				// All done
+				mainwindow.SetupInterface();
+				mainwindow.RedrawDisplay();
+				mainwindow.UpdateThingsFilters();
+				mainwindow.UpdateInterface();
+				mainwindow.HideInfo();
+				mainwindow.AddHintsDocker(); //mxd
 			}
 			else
 			{
@@ -1300,19 +1312,6 @@ namespace CodeImp.DoomBuilder
 				// Show splash logo on display
 				mainwindow.ShowSplashDisplay();
 			}
-
-			settings.FindDefaultDrawSettings(); //mxd
-
-			// Let the plugins know
-			plugins.OnMapOpenEnd();
-
-			// All done
-			mainwindow.SetupInterface();
-			mainwindow.RedrawDisplay();
-			mainwindow.UpdateThingsFilters();
-			mainwindow.UpdateInterface();
-			mainwindow.HideInfo();
-			mainwindow.AddHintsDocker(); //mxd
 
 			if(errorlogger.IsErrorAdded)
 			{

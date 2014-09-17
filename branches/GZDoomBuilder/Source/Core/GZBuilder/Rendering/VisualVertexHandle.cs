@@ -1,18 +1,66 @@
-﻿using CodeImp.DoomBuilder.VisualModes;
+﻿#region ================== Namespaces
+
+using System;
+using CodeImp.DoomBuilder.VisualModes;
 using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Rendering;
 
+#endregion
+
 namespace CodeImp.DoomBuilder.GZBuilder.Rendering
 {
-	internal sealed class VisualVertexHandle
+	internal sealed class VisualVertexHandle : IDisposable, ID3DResource
 	{
+		#region ================== Variables
+
+		private VertexBuffer upper;
+		private VertexBuffer lower;
+		private bool isdisposed;
+
+		#endregion
+
+		#region ================== Properties
+
 		public VertexBuffer Upper { get { return upper; } }
-		private readonly VertexBuffer upper;
-
 		public VertexBuffer Lower { get { return lower; } }
-		private readonly VertexBuffer lower;
 
-		public VisualVertexHandle(Device device) {
+		#endregion
+
+		#region ================== Constructor / Disposer
+
+		public VisualVertexHandle() 
+		{
+			// Create geometry
+			ReloadResource();
+
+			// Register as resource
+			General.Map.Graphics.RegisterResource(this);
+		}
+
+		public void Dispose() 
+		{
+			// Not already disposed?
+			if(!isdisposed) 
+			{
+				if(upper != null) upper.Dispose();
+				if(lower != null) lower.Dispose();
+
+				// Unregister resource
+				General.Map.Graphics.UnregisterResource(this);
+
+				// Done
+				isdisposed = true;
+			}
+		}
+
+		#endregion
+
+		#region ================== Methods
+
+		// This is called resets when the device is reset
+		// (when resized or display adapter was changed)
+		public void ReloadResource() 
+		{
 			float radius = VisualVertex.DEFAULT_SIZE * General.Settings.GZVertexScale3D;
 
 			WorldVertex c = new WorldVertex();
@@ -36,8 +84,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Rendering
 												  v2, v3,
 												  v3, v0 };
 
-			upper = new VertexBuffer(device, WorldVertex.Stride * vu.Length, Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
-			upper.Lock(0, WorldVertex.Stride * vu.Length, LockFlags.None).WriteRange<WorldVertex>(vu);
+			upper = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * vu.Length, Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+			upper.Lock(0, WorldVertex.Stride * vu.Length, LockFlags.None).WriteRange(vu);
 			upper.Unlock();
 
 			WorldVertex[] vl = new WorldVertex[]{ c, v4,
@@ -50,14 +98,22 @@ namespace CodeImp.DoomBuilder.GZBuilder.Rendering
 												  v6, v7,
 												  v7, v4, };
 
-			lower = new VertexBuffer(device, WorldVertex.Stride * vl.Length, Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
-			lower.Lock(0, WorldVertex.Stride * vl.Length, LockFlags.None).WriteRange<WorldVertex>(vl);
+			lower = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * vl.Length, Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+			lower.Lock(0, WorldVertex.Stride * vl.Length, LockFlags.None).WriteRange(vl);
 			lower.Unlock();
 		}
 
-		public void Dispose() {
+		// This is called before a device is reset
+		// (when resized or display adapter was changed)
+		public void UnloadResource() 
+		{
+			// Trash geometry buffers
 			if(upper != null) upper.Dispose();
 			if(lower != null) lower.Dispose();
+			upper = null;
+			lower = null;
 		}
+
+		#endregion
 	}
 }

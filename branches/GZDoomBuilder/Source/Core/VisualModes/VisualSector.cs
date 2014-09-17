@@ -124,7 +124,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This updates the visual sector
 		public void Update()
 		{
-			DataStream bufferstream;
 			int numverts = 0;
 			int v = 0;
 			
@@ -143,12 +142,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 											 Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
 
 				// Fill the buffer
-				bufferstream = geobuffer.Lock(0, WorldVertex.Stride * numverts, LockFlags.Discard);
+				DataStream bufferstream = geobuffer.Lock(0, WorldVertex.Stride * numverts, LockFlags.Discard);
 				foreach(VisualGeometry g in allgeometry)
 				{
 					if((g.Vertices != null) && (g.Vertices.Length > 0))
 					{
-						bufferstream.WriteRange<WorldVertex>(g.Vertices);
+						bufferstream.WriteRange(g.Vertices);
 						g.VertexOffset = v;
 						v += g.Vertices.Length;
 					}

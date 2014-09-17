@@ -333,10 +333,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		private PresentParameters CreatePresentParameters(int adapter)
 		{
 			PresentParameters displaypp = new PresentParameters();
-			DisplayMode currentmode;
-			
+
 			// Get current display mode
-			currentmode = d3d.Adapters[adapter].CurrentDisplayMode;
+			DisplayMode currentmode = d3d.Adapters[adapter].CurrentDisplayMode;
 
 			// Make present parameters
 			displaypp.Windowed = true;
@@ -398,9 +397,12 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Reset the device
 					device.Reset(displaypp);
 				}
-				catch(Exception)
+				catch(Exception e)
 				{
 					// Failed to re-initialize
+#if DEBUG
+					Console.WriteLine("Device reset failed: " + e.Message);
+#endif
 					return false;
 				}
 
@@ -523,7 +525,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 				else
 				{
-					// Read to go!
+					// Ready to go!
 					return true;
 				}
 			}

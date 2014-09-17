@@ -145,19 +145,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(!isdisposed)
 			{
 				// Clean up
-				//mxd
-				if(bbox != null) bbox.Dispose();
-				if(vertexHandle != null) vertexHandle.Dispose();
-				if(sizelessThingHandle != null)	sizelessThingHandle.Dispose();
-
 				if(selectionimage != null) selectionimage.Dispose();
 				if(highlightimage != null) highlightimage.Dispose();
-				
-				//mxd
-				bbox = null;
-				vertexHandle = null;
-				sizelessThingHandle = null;
-
 				selectionimage = null;
 				highlightimage = null;
 				
@@ -175,19 +164,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		public override void UnloadResource()
 		{
 			crosshairverts = null;
-			//mxd
-			if(bbox != null) bbox.Dispose();
-			if(vertexHandle != null) vertexHandle.Dispose();
-			if(sizelessThingHandle != null)	sizelessThingHandle.Dispose();
 
 			if(selectionimage != null) selectionimage.Dispose();
 			if(highlightimage != null) highlightimage.Dispose();
-			
-			//mxd
-			vertexHandle = null;
-			bbox = null;
-			sizelessThingHandle = null;
-
 			selectionimage = null;
 			highlightimage = null;
 		}
@@ -197,7 +176,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		public override void ReloadResource()
 		{
 			CreateMatrices2D();
-			SetupHelperObjects();
 			SetupTextures();
 		}
 
@@ -256,15 +234,16 @@ namespace CodeImp.DoomBuilder.Rendering
 		//mxd
 		private void SetupHelperObjects() 
 		{
-			bbox = new ThingBoundingBox(graphics.Device);
-			sizelessThingHandle = new SizelessVisualThingCage(graphics.Device);
-			UpdateVertexHandle();
+			bbox = new ThingBoundingBox();
+			sizelessThingHandle = new SizelessVisualThingCage();
+			vertexHandle = new VisualVertexHandle();
 		}
 
 		//mxd
 		internal void UpdateVertexHandle()
 		{
-			vertexHandle = new VisualVertexHandle(graphics.Device);
+			vertexHandle.UnloadResource();
+			vertexHandle.ReloadResource();
 		}
 
 		#endregion
