@@ -275,6 +275,7 @@
     <Compile Include="FindReplace\FindThingType.cs" />
     <Compile Include="FindReplace\FindVertexNumber.cs" />
     <Compile Include="General\HintLabel.cs" />
+    <Compile Include="General\BuilderModesTools.cs" />
     <Compile Include="General\UndoGroup.cs" />
     <Compile Include="Interface\BridgeModeForm.cs">
       <SubType>Form</SubType>

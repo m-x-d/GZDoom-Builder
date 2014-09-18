@@ -42,7 +42,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		// Desired modulate color
 		private PixelColor modulatecolor;
-		private Color4 modcolor4;
 		
 		// Selected?
 		protected bool selected;
@@ -81,7 +80,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal int VertexOffset { get { return vertexoffset; } set { vertexoffset = value; } }
 		internal int Triangles { get { return triangles; } }
 		internal int RenderPassInt { get { return renderpass; } }
-		internal Color4 ModColor4 { get { return modcolor4; } }
 
 		//mxd
 		public Vector3[] BoundingBox { get { return boundingBox; } }
@@ -100,7 +98,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// Color to modulate the texture pixels with.
 		/// </summary>
-		public PixelColor ModulateColor { get { return modulatecolor; } set { modcolor4 = value.ToColorValue(); modulatecolor = value; } }
+		public PixelColor ModulateColor { get { return modulatecolor; } set { modulatecolor = value; } }
 
 		/// <summary>
 		/// Returns the VisualSector this geometry has been added to.
@@ -248,7 +246,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 	}
 
 	//mxd
-	public enum VisualGeometryType{
+	public enum VisualGeometryType
+	{
 		FLOOR,
 		CEILING,
 		WALL_UPPER,
