@@ -199,6 +199,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				running = false;
 				blockmap.Dispose();
 				blockmap = null;
+				UpdateTitle(); //mxd
 				
 				// When no results found, show "no results" and disable the list
 				if(resultslist.Count == 0) {

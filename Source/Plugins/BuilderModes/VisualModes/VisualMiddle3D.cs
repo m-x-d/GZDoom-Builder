@@ -356,8 +356,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override Linedef GetControlLinedef() {
+		public override Linedef GetControlLinedef()
+		{
 			return extrafloor.Linedef;
+		}
+
+		//mxd
+		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) 
+		{
+			selectNeighbours(extrafloor.Linedef.Front.MiddleTexture, select, withSameTexture, withSameHeight);
 		}
 		
 		#endregion

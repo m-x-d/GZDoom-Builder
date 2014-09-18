@@ -1767,7 +1767,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				if (i is ToolStripSeparator)
 				{
-					i.Visible = !(pvi != null && (!pvi.Visible || pvi is ToolStripSeparator));
+					i.Visible = !(pvi == null || (!pvi.Visible || pvi is ToolStripSeparator));
 				}
 
 				pvi = i;
