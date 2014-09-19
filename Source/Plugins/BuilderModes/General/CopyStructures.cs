@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
 
@@ -88,6 +89,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool CeilingTexture = true;
 		[FieldDescription("Brightness")]
 		public bool Brightness = true;
+		[FieldDescription("Ceiling Slope")]
+		public bool CeilingSlope = true;
+		[FieldDescription("Floor Slope")]
+		public bool FloorSlope = true;
 		[FieldDescription("Tag")]
 		public bool Tag = true;
 		[FieldDescription("Effect")]
@@ -110,6 +115,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private readonly string ceilingtexture;
 		private readonly int effect;
 		private readonly int brightness;
+		private readonly float ceilslopeoffset;
+		private readonly float floorslopeoffset;
+		private readonly Vector3D ceilslope;
+		private readonly Vector3D floorslope;
 		private readonly int tag;
 		private readonly UniFields fields;
 		private readonly Dictionary<string, bool> flags; //mxd
@@ -122,6 +131,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ceilingtexture = s.CeilTexture;
 			brightness = s.Brightness;
 			effect = s.Effect;
+			ceilslopeoffset = s.CeilingSlopeOffset;
+			floorslopeoffset = s.FloorSlopeOffset;
+			ceilslope = s.CeilingSlope;
+			floorslope = s.FloorSlope;
 			tag = s.Tag;
 			fields = new UniFields(s.Fields);
 			flags = s.GetFlags(); //mxd
@@ -136,12 +149,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(CopySettings.Brightness) s.Brightness = brightness;
 			if(CopySettings.Tag) s.Tag = tag;
 			if(CopySettings.Special) s.Effect = effect;
-			if(CopySettings.Flags) {
+			if (CopySettings.CeilingSlope) 
+			{
+				s.CeilingSlopeOffset = ceilslopeoffset;
+				s.CeilingSlope = ceilslope;
+			}
+			if(CopySettings.FloorSlope) 
+			{
+				s.FloorSlopeOffset = floorslopeoffset;
+				s.FloorSlope = floorslope;
+			}
+			if(CopySettings.Flags) 
+			{
 				s.ClearFlags(); //mxd
 				foreach (KeyValuePair<string, bool> f in flags) //mxd
 					s.SetFlag(f.Key, f.Value);
 			}
-			if(CopySettings.Fields) {
+			if(CopySettings.Fields) 
+			{
 				s.Fields.BeforeFieldsChange();
 				s.Fields.Clear();
 				foreach (KeyValuePair<string, UniValue> v in fields)
