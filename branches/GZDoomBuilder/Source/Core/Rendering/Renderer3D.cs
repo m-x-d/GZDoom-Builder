@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float PROJ_NEAR_PLANE = 1f;
 		private const float CROSSHAIR_SCALE = 0.06f;
 		private const float FOG_RANGE = 0.9f;
+		private const float INVERTED_VERTICAL_STRETCH = 1.0f / 1.2f;
 		
 		#endregion
 
@@ -53,6 +54,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Matrix worldviewproj;
 		private Matrix view2d;
 		private Matrix world;
+		private float viewstretch; //mxd
 		private Vector3D cameraposition;
 		private int shaderpass;
 		
@@ -254,8 +256,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		internal void CreateProjection()
 		{
 			// Calculate aspect
-			float aspect = (float)General.Map.Graphics.RenderTarget.ClientSize.Width /
-						   General.Map.Graphics.RenderTarget.ClientSize.Height;
+			float screenheight = General.Map.Graphics.RenderTarget.ClientSize.Height * (General.Settings.GZStretchView ? INVERTED_VERTICAL_STRETCH : 1.0f); //mxd
+			float aspect = General.Map.Graphics.RenderTarget.ClientSize.Width / screenheight;
 			
 			// The DirectX PerspectiveFovRH matrix method calculates the scaling in X and Y as follows:
 			// yscale = 1 / tan(fovY / 2)
@@ -269,6 +271,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Make the projection matrix
 			projection = Matrix.PerspectiveFovRH(fovy, aspect, PROJ_NEAR_PLANE, General.Settings.ViewDistance);
+
+			// Update the view stretch scaler (mxd)
+			viewstretch = (General.Settings.GZStretchView ? INVERTED_VERTICAL_STRETCH : 1.0f);
 
 			// Apply matrices
 			ApplyMatrices3D();
@@ -1051,7 +1056,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					// Create the matrix for positioning / rotation
 					float sx = t.Thing.ScaleX * t.Thing.ActorScale.Width;
-					float sy = t.Thing.ScaleY * t.Thing.ActorScale.Height;
+					float sy = t.Thing.ScaleY * t.Thing.ActorScale.Height * viewstretch;
 					Matrix rotation = Matrix.RotationY(-(t.Thing.RollRad - General.Map.Data.ModeldefEntries[t.Thing.Type].RollOffset))
 						* Matrix.RotationX(-(t.Thing.PitchRad + General.Map.Data.ModeldefEntries[t.Thing.Type].PitchOffset))
 						* Matrix.RotationZ(t.Thing.Angle);

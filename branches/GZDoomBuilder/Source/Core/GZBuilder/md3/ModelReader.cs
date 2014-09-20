@@ -23,8 +23,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 	{
 		#region ================== Variables
 
-		private const float VERTICAL_STRETCH = 1 / 1.2f;
-
 		private class MD3LoadResult
 		{
 			public List<string> Skins;
@@ -372,7 +370,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				v.y *= mde.Scale.X;
 				v.x *= mde.Scale.Y;
 				v.z *= mde.Scale.Z;
-				if(General.Settings.GZStretchModels) v.z *= VERTICAL_STRETCH; //GZDoom vertical stretch hack
 
 				//add zOffset
 				v.z += mde.zOffset;
@@ -514,7 +511,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					v.x *= mde.Scale.X;
 					v.y *= mde.Scale.Y;
 					v.z *= mde.Scale.Z;
-					if(General.Settings.GZStretchModels) v.z *= VERTICAL_STRETCH; //GZDoom vertical stretch hack
 
 					//add zOffset
 					v.z += mde.zOffset;

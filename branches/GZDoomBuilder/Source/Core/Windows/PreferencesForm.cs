@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.Windows
 			labelDynLightSize.Text = General.Settings.GZDynamicLightRadius.ToString();
 			tbDynLightIntensity.Value = General.Clamp((int)(General.Settings.GZDynamicLightIntensity * 10), tbDynLightIntensity.Minimum, tbDynLightIntensity.Maximum);
 			labelDynLightIntensity.Text = General.Settings.GZDynamicLightIntensity.ToString();
-			cbStretchModels.Checked = General.Settings.GZStretchModels;
+			cbStretchView.Checked = General.Settings.GZStretchView;
 			cbOldHighlightMode.Checked = General.Settings.GZOldHighlightMode;
 			vertexScale.Value = General.Clamp((int)(General.Settings.GZVertexScale2D), vertexScale.Minimum, vertexScale.Maximum);
 			vertexScaleLabel.Text = vertexScale.Value * 100 + "%" + (vertexScale.Value == 1 ? " (default)" : "");
@@ -305,7 +305,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.GZMaxDynamicLights = tbDynLightCount.Value;
 			General.Settings.GZDynamicLightRadius = (tbDynLightSize.Value / 10.0f);
 			General.Settings.GZDynamicLightIntensity = (tbDynLightIntensity.Value / 10.0f);
-			General.Settings.GZStretchModels = cbStretchModels.Checked;
+			General.Settings.GZStretchView = cbStretchView.Checked;
 			General.Settings.GZVertexScale2D = vertexScale.Value;
 			General.Settings.GZOldHighlightMode = cbOldHighlightMode.Checked;
 			General.Settings.GZMarkExtraFloors = cbMarkExtraFloors.Checked;
