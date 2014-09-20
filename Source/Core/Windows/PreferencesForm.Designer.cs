@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorvertices = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorhighlight = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorlinedefs = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.cbStretchModels = new System.Windows.Forms.CheckBox();
+			this.cbStretchView = new System.Windows.Forms.CheckBox();
 			this.squarethings = new System.Windows.Forms.CheckBox();
 			this.qualitydisplay = new System.Windows.Forms.CheckBox();
 			this.cancel = new System.Windows.Forms.Button();
@@ -712,17 +712,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorlinedefs.Size = new System.Drawing.Size(168, 23);
 			this.colorlinedefs.TabIndex = 2;
 			// 
-			// cbStretchModels
+			// cbStretchView
 			// 
-			this.cbStretchModels.AutoSize = true;
-			this.cbStretchModels.Location = new System.Drawing.Point(236, 170);
-			this.cbStretchModels.Name = "cbStretchModels";
-			this.cbStretchModels.Size = new System.Drawing.Size(167, 18);
-			this.cbStretchModels.TabIndex = 18;
-			this.cbStretchModels.Text = "Scale models in visual modes";
-			this.toolTip1.SetToolTip(this.cbStretchModels, "If enabled, heights of models will be scaled down by 15% in Visual mode \r\nto mimi" +
-					"ck GZDoom\'s way of rendering.");
-			this.cbStretchModels.UseVisualStyleBackColor = true;
+			this.cbStretchView.AutoSize = true;
+			this.cbStretchView.Location = new System.Drawing.Point(236, 170);
+			this.cbStretchView.Name = "cbStretchView";
+			this.cbStretchView.Size = new System.Drawing.Size(177, 18);
+			this.cbStretchView.TabIndex = 18;
+			this.cbStretchView.Text = "Stretched view in visual modes";
+			this.toolTip1.SetToolTip(this.cbStretchView, "When enabled, visual mode will emulate \r\n(G)ZDoom\'s way of rendering by increasin" +
+					"g\r\nvertical scale of the world geometry and \r\nsprites by 15%.\r\n");
+			this.cbStretchView.UseVisualStyleBackColor = true;
 			// 
 			// squarethings
 			// 
@@ -1406,7 +1406,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.appearancegroup1.Controls.Add(this.cbOldHighlightMode);
 			this.appearancegroup1.Controls.Add(label21);
 			this.appearancegroup1.Controls.Add(this.labelDynLightIntensity);
-			this.appearancegroup1.Controls.Add(this.cbStretchModels);
+			this.appearancegroup1.Controls.Add(this.cbStretchView);
 			this.appearancegroup1.Controls.Add(this.squarethings);
 			this.appearancegroup1.Controls.Add(this.tbDynLightIntensity);
 			this.appearancegroup1.Controls.Add(label20);
@@ -2049,7 +2049,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label labelDynLightIntensity;
 		private Dotnetrix.Controls.TrackBar tbDynLightIntensity;
 		private System.Windows.Forms.CheckBox cbSynchCameras;
-		private System.Windows.Forms.CheckBox cbStretchModels;
+		private System.Windows.Forms.CheckBox cbStretchView;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private Dotnetrix.Controls.TrackBar vertexScale;
 		private System.Windows.Forms.Label vertexScaleLabel;

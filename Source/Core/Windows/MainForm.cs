@@ -2851,9 +2851,6 @@ namespace CodeImp.DoomBuilder.Windows
 		[BeginAction("preferences")]
 		internal void ShowPreferences()
 		{
-			//mxd
-			bool stretchModels = General.Settings.GZStretchModels;
-			
 			// Show preferences dialog
 			PreferencesForm prefform = new PreferencesForm();
 			if(prefform.ShowDialog(this) == DialogResult.OK)
@@ -2873,8 +2870,6 @@ namespace CodeImp.DoomBuilder.Windows
 					General.Map.Graphics.SetupSettings();
 					General.Map.UpdateConfiguration();
 					if(prefform.ReloadResources) General.Actions.InvokeAction("builder_reloadresources");
-					//mxd
-					if(stretchModels != General.Settings.GZStretchModels) General.Map.Data.ReloadModeldef();
 				}
 				
 				// Redraw display

@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int gzMaxDynamicLights;
 		private float gzDynamicLightRadius;
 		private float gzDynamicLightIntensity;
-		private bool gzStretchModels;
+		private bool gzStretchView;
 		private float gzVertexScale2D;
 		private bool gzShowVisualVertices;
 		private float gzVertexScale3D;
@@ -192,7 +192,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int GZMaxDynamicLights { get { return gzMaxDynamicLights; } internal set { gzMaxDynamicLights = value; } }
 		public float GZDynamicLightRadius { get { return gzDynamicLightRadius; } internal set { gzDynamicLightRadius = value; } }
 		public float GZDynamicLightIntensity { get { return gzDynamicLightIntensity; } internal set { gzDynamicLightIntensity = value; } }
-		public bool GZStretchModels { get { return gzStretchModels; } internal set { gzStretchModels = value; } }
+		public bool GZStretchView { get { return gzStretchView; } internal set { gzStretchView = value; } }
 		public float GZVertexScale2D { get { return gzVertexScale2D; } internal set { gzVertexScale2D = value; } }
 		public bool GZShowVisualVertices { get { return gzShowVisualVertices; } internal set { gzShowVisualVertices = value; } }
 		public float GZVertexScale3D { get { return gzVertexScale3D; } internal set { gzVertexScale3D = value; } }
@@ -301,7 +301,7 @@ namespace CodeImp.DoomBuilder.Config
 				gzMaxDynamicLights = cfg.ReadSetting("gzmaxdynamiclights", 16);
 				gzDynamicLightRadius = cfg.ReadSetting("gzdynamiclightradius", 1.0f);
 				gzDynamicLightIntensity = cfg.ReadSetting("gzdynamiclightintensity", 1.0f);
-				gzStretchModels = cfg.ReadSetting("gzstretchmodels", true);
+				gzStretchView = cfg.ReadSetting("gzstretchview", true);
 				gzVertexScale2D = cfg.ReadSetting("gzvertexscale2d", 1.0f);
 				gzShowVisualVertices = cfg.ReadSetting("gzshowvisualvertices", true);
 				gzVertexScale3D = cfg.ReadSetting("gzvertexscale3d", 1.0f);
@@ -392,7 +392,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("gzmaxdynamiclights", gzMaxDynamicLights);
 			cfg.WriteSetting("gzdynamiclightradius", gzDynamicLightRadius);
 			cfg.WriteSetting("gzdynamiclightintensity", gzDynamicLightIntensity);
-			cfg.WriteSetting("gzstretchmodels", gzStretchModels);
+			cfg.WriteSetting("gzstretchview", gzStretchView);
 			cfg.WriteSetting("gzvertexscale2d", gzVertexScale2D);
 			cfg.WriteSetting("gzshowvisualvertices", gzShowVisualVertices);
 			cfg.WriteSetting("gzvertexscale3d", gzVertexScale3D);
