@@ -158,9 +158,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			base.OnEngage();
 
-			// Update projection and vertex handles (mxd)
+			// Update projection (mxd)
 			General.Map.CRenderer3D.CreateProjection();
-			General.Map.CRenderer3D.UpdateVertexHandle();
 			
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
