@@ -1582,6 +1582,7 @@ namespace CodeImp.DoomBuilder {
 
 			// Update settings
 			renderer3d.CreateProjection();
+			renderer3d.UpdateVertexHandle(); //mxd
 
 			// Things filters
 			General.MainWindow.UpdateThingsFilters();
