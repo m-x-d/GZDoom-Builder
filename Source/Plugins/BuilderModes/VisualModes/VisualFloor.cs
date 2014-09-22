@@ -74,7 +74,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public bool Setup(SectorLevel level, Effect3DFloor extrafloor, bool innerSide)
 		{
-			WorldVertex[] verts;
 			Sector s = level.sector;
 			Vector2D texscale;
 			this.innerSide = innerSide;
@@ -116,7 +115,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Make vertices
 			ReadOnlyCollection<Vector2D> triverts = base.Sector.Sector.Triangles.Vertices;
-			verts = new WorldVertex[triverts.Count];
+			WorldVertex[] verts = new WorldVertex[triverts.Count];
 			for(int i = 0; i < triverts.Count; i++)
 			{
 				// Color shading
@@ -375,13 +374,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) {
-			if(!withSameTexture && !withSameHeight) return;
+		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) 
+		{
+			if (!withSameTexture && !withSameHeight) return;
 
-			if(select && !selected) {
+			if (select && !selected) {
 				selected = true;
 				mode.AddSelectedObject(this);
-			}else if(!select && selected){
+			}
+			else if (!select && selected)
+			{
 				selected = false;
 				mode.RemoveSelectedObject(this);
 			}
@@ -389,25 +391,93 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<Sector> neighbours = new List<Sector>();
 
 			//collect neighbour sectors
-			foreach(Sidedef side in level.sector.Sidedefs) {
-				if(side.Other != null && side.Other.Sector != level.sector && !neighbours.Contains(side.Other.Sector)) {
-					bool add = false;
-					
-					if(withSameTexture && side.Other.Sector.FloorTexture == level.sector.FloorTexture)
-						add = true;
+			foreach(Sidedef side in Sector.Sector.Sidedefs) 
+			{
+				if (side.Other != null && side.Other.Sector != Sector.Sector && !neighbours.Contains(side.Other.Sector))
+				{
+					BaseVisualSector vs = mode.GetVisualSector(side.Other.Sector) as BaseVisualSector;
+					if (vs == null) continue;
+					bool add;
 
-					if(withSameHeight)
-						add = ((withSameTexture && add) || !withSameTexture) && side.Other.Sector.FloorHeight == level.sector.FloorHeight;
+					// When current floor is part of a 3d floor, it looks like a ceiling, so we need to select adjacent ceilings
+					if (level.sector != Sector.Sector)
+					{
+						add = (withSameTexture && side.Other.Sector.CeilTexture == level.sector.FloorTexture);
 
-					if(add) neighbours.Add(side.Other.Sector);
+						if (withSameHeight) 
+						{
+							add = ((withSameTexture && add) || !withSameTexture) && side.Other.Sector.CeilHeight == level.sector.FloorHeight;
+						}
+
+						if (add) 
+						{
+							neighbours.Add(side.Other.Sector);
+
+							//(de)select regular visual ceiling?
+							if (select != vs.Ceiling.Selected) 
+							{
+								vs.Ceiling.SelectNeighbours(select, withSameTexture, withSameHeight);
+							}
+						}
+
+						// (De)select adjacent extra floors
+						foreach(VisualFloor ef in vs.ExtraFloors) 
+						{
+							if(select == ef.Selected) continue;
+
+							add = (withSameTexture && level.sector.FloorTexture == ef.level.sector.FloorTexture);
+
+							if(withSameHeight) 
+							{
+								add = ((withSameTexture && add) || !withSameTexture) && level.sector.FloorHeight == ef.level.sector.FloorHeight;
+							}
+
+							if(add) 
+							{
+								ef.SelectNeighbours(select, withSameTexture, withSameHeight);
+							}
+						}
+					}
+					else // Regular floor
+					{
+						// (De)select adjacent floor
+						add = (withSameTexture && side.Other.Sector.FloorTexture == level.sector.FloorTexture);
+
+						if (withSameHeight) 
+						{
+							add = ((withSameTexture && add) || !withSameTexture) && side.Other.Sector.FloorHeight == level.sector.FloorHeight;
+						}
+
+						if (add) 
+						{
+							neighbours.Add(side.Other.Sector);
+
+							//(de)select regular visual floor?
+							if (select != vs.Floor.Selected) 
+							{
+								vs.Floor.SelectNeighbours(select, withSameTexture, withSameHeight);
+							}
+						}
+
+						// (De)select adjacent extra ceilings
+						foreach(VisualCeiling ec in vs.ExtraCeilings)
+						{
+							if(select == ec.Selected) continue;
+
+							add = (withSameTexture && level.sector.FloorTexture == ec.Level.sector.CeilTexture);
+
+							if(withSameHeight) 
+							{
+								add = ((withSameTexture && add) || !withSameTexture) && level.sector.FloorHeight == ec.Level.sector.CeilHeight;
+							}
+
+							if(add) 
+							{
+								ec.SelectNeighbours(select, withSameTexture, withSameHeight);
+							}
+						}
+					}
 				}
-			}
-
-			//(de)select neighbour sectors
-			foreach(Sector s in neighbours){
-				BaseVisualSector vs = mode.GetVisualSector(s) as BaseVisualSector;
-				if((select && !vs.Floor.Selected) || (!select && vs.Floor.Selected))
-					vs.Floor.SelectNeighbours(select, withSameTexture, withSameHeight);
 			}
 		}
 
