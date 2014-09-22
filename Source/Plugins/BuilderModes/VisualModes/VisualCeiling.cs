@@ -422,6 +422,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			List<Sector> neighbours = new List<Sector>();
+			bool regularorvavoom = extrafloor == null || (extrafloor != null && extrafloor.VavoomType);
 
 			//collect neighbour sectors
 			foreach(Sidedef side in Sector.Sector.Sidedefs)
@@ -433,7 +434,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					bool add;
 
 					// When current ceiling is part of a 3d floor, it looks like a floor, so we need to select adjacent floors
-					if(level.sector != Sector.Sector) 
+					if(level.sector != Sector.Sector && !regularorvavoom)
 					{
 						add = (withSameTexture && side.Other.Sector.FloorTexture == level.sector.CeilTexture);
 
@@ -452,26 +453,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								vs.Floor.SelectNeighbours(select, withSameTexture, withSameHeight);
 							}
 						}
-
-						// (De)select adjacent extra floors
-						foreach(VisualCeiling ec in vs.ExtraCeilings) 
-						{
-							if(select == ec.Selected) continue;
-
-							add = (withSameTexture && level.sector.CeilTexture == ec.level.sector.CeilTexture);
-
-							if(withSameHeight) 
-							{
-								add = ((withSameTexture && add) || !withSameTexture) && level.sector.CeilHeight == ec.level.sector.CeilHeight;
-							}
-
-							if(add) 
-							{
-								ec.SelectNeighbours(select, withSameTexture, withSameHeight);
-							}
-						}
 					} 
-					else // Regular ceiling
+					else // Regular ceiling or vavoom-type extra ceiling
 					{
 						// (De)select adjacent ceilings
 						add = (withSameTexture && side.Other.Sector.CeilTexture == level.sector.CeilTexture);
@@ -491,23 +474,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								vs.Ceiling.SelectNeighbours(select, withSameTexture, withSameHeight);
 							}
 						}
+					}
 
-						// (De)select adjacent extra floors
-						foreach(VisualFloor ef in vs.ExtraFloors)
+					// (De)select adjacent extra ceilings
+					foreach(VisualCeiling ec in vs.ExtraCeilings)
+					{
+						if(select == ec.Selected || ec.extrafloor.VavoomType != regularorvavoom) continue;
+
+						add = (withSameTexture && level.sector.CeilTexture == ec.level.sector.CeilTexture);
+
+						if(withSameHeight) 
 						{
-							if(select == ef.Selected) continue;
+							add = ((withSameTexture && add) || !withSameTexture) && level.sector.CeilHeight == ec.level.sector.CeilHeight;
+						}
 
-							add = (withSameTexture && level.sector.CeilTexture == ef.Level.sector.FloorTexture);
+						if(add) 
+						{
+							ec.SelectNeighbours(select, withSameTexture, withSameHeight);
+						}
+					}
 
-							if(withSameHeight) 
-							{
-								add = ((withSameTexture && add) || !withSameTexture) && level.sector.CeilHeight == ef.Level.sector.FloorHeight;
-							}
+					// (De)select adjacent extra floors
+					foreach(VisualFloor ef in vs.ExtraFloors)
+					{
+						if(select == ef.Selected || ef.ExtraFloor.VavoomType == regularorvavoom) continue;
 
-							if(add) 
-							{
-								ef.SelectNeighbours(select, withSameTexture, withSameHeight);
-							}
+						add = (withSameTexture && level.sector.CeilTexture == ef.Level.sector.FloorTexture);
+
+						if(withSameHeight) 
+						{
+							add = ((withSameTexture && add) || !withSameTexture) && level.sector.CeilHeight == ef.Level.sector.FloorHeight;
+						}
+
+						if(add) 
+						{
+							ef.SelectNeighbours(select, withSameTexture, withSameHeight);
 						}
 					}
 				}
