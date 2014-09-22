@@ -1492,7 +1492,13 @@ namespace CodeImp.DoomBuilder.Data
 					// Parse the data
 					if(parser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key)) {
 						foreach(KeyValuePair<string, ModelData> g in parser.Entries) {
-							modelDefEntriesByName.Add(g.Key, g.Value);
+							if (modelDefEntriesByName.ContainsKey(g.Key)) {
+								General.ErrorLogger.Add(ErrorType.Warning, "Model definition for actor '" + g.Key + "' is double-defined in '" + group.Key + "'");
+								modelDefEntriesByName[g.Key] = g.Value;
+							} else {
+								modelDefEntriesByName.Add(g.Key, g.Value);
+							}
+							
 						}
 					}
 				}
