@@ -267,28 +267,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							// Get grid intersection coordinates
 							List<Vector2D> coords = nl.GetGridIntersections(snapgridincrement ? dragstartoffset : new Vector2D());
 
-							// Find nearest grid intersection
-							float found_distance = float.MaxValue;
-							Vector2D found_coord = new Vector2D();
-							foreach(Vector2D v in coords)
+							// mxd. Do the rest only if we actually have some coordinates
+							if (coords.Count > 0) 
 							{
-								Vector2D delta = anchorpos - v;
-								if(delta.GetLengthSq() < found_distance)
+								// Find nearest grid intersection
+								float found_distance = float.MaxValue;
+								Vector2D found_coord = new Vector2D();
+
+								foreach (Vector2D v in coords) 
 								{
-									found_distance = delta.GetLengthSq();
-									found_coord = v;
+									Vector2D delta = anchorpos - v;
+									if (delta.GetLengthSq() < found_distance) 
+									{
+										found_distance = delta.GetLengthSq();
+										found_coord = v;
+									}
 								}
+
+								// Move the dragged item
+								dragitem.Move(found_coord);
+
+								// Align to line here
+								offset = found_coord - dragitemposition;
+
+								// Do not snap to grid anymore
+								snapgrid = false;
+								snapgridincrement = false; //mxd
 							}
-							
-							// Move the dragged item
-							dragitem.Move(found_coord);
-
-							// Align to line here
-							offset = found_coord - dragitemposition;
-
-							// Do not snap to grid anymore
-							snapgrid = false;
-							snapgridincrement = false; //mxd
 						}
 						else
 						{
