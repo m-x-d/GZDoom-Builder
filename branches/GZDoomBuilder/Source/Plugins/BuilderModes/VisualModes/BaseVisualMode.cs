@@ -98,10 +98,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private struct SidedefAlignJob
 		{
 			public Sidedef sidedef;
-			public Sidedef controlSide; //mxd
 
 			public float offsetx;
 			public float scaleY; //mxd
+
+			private Sidedef controlside; //mxd
+			public Sidedef controlSide { //mxd
+				get
+				{
+					return controlside;
+				}
+				set
+				{
+					controlside = value;
+					ceilingheight = (controlside.Index != sidedef.Index && controlside.Line.Args[1] == 0 ? controlside.Sector.FloorHeight : controlside.Sector.CeilHeight);
+				}
+			}
+
+			private int ceilingheight; //mxd
+			public int ceilingHeight { get { return ceilingheight; } } //mxd
 
 			// When this is true, the previous sidedef was on the left of
 			// this one and the texture X offset of this sidedef can be set
@@ -3145,7 +3160,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(alignx)
 						j.controlSide.OffsetX = (int)j.offsetx;
 					if(aligny)
-						j.sidedef.OffsetY = (int)Math.Round((first.controlSide.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + ystartalign;
+						j.sidedef.OffsetY = (int)Math.Round((first.ceilingHeight - j.ceilingHeight) / scaley) + ystartalign;
 					int forwardoffset = (int)j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex);
 					int backwardoffset = (int)j.offsetx;
 
@@ -3170,7 +3185,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(alignx)
 						j.controlSide.OffsetX = (int)j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
 					if(aligny)
-						j.sidedef.OffsetY = (int)Math.Round((first.controlSide.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) + ystartalign;
+						j.sidedef.OffsetY = (int)Math.Round((first.ceilingHeight - j.ceilingHeight) / scaley) + ystartalign;
 					int forwardoffset = (int)j.offsetx;
 					int backwardoffset = (int)j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
 
@@ -3209,7 +3224,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float scalex = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.x : 1.0f;
 			float scaley = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.y : 1.0f;
 
-			Sidedef startControlSide = (start.GeometryType == VisualGeometryType.WALL_MIDDLE_3D ? start.GetControlLinedef().Front : start.Sidedef);
+			SidedefAlignJob first = new SidedefAlignJob();
+			first.sidedef = start.Sidedef;
+			first.offsetx = start.Sidedef.OffsetX;
+
+			if (start.GeometryType == VisualGeometryType.WALL_MIDDLE_3D)
+				first.controlSide = start.GetControlLinedef().Front;
+			else
+				first.controlSide = start.Sidedef;
 
 			//mxd
 			List<BaseVisualGeometrySidedef> selectedVisualSides = new List<BaseVisualGeometrySidedef>();
@@ -3221,8 +3243,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 			}
-
-			SidedefAlignJob first = new SidedefAlignJob();
 			
 			//mxd. scaleY
 			switch(start.GeometryType) {
@@ -3231,7 +3251,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					break;
 				case VisualGeometryType.WALL_MIDDLE:
 				case VisualGeometryType.WALL_MIDDLE_3D:
-					first.scaleY = startControlSide.Fields.GetValue("scaley_mid", 1.0f);
+					first.scaleY = first.controlSide.Fields.GetValue("scaley_mid", 1.0f);
 					break;
 				case VisualGeometryType.WALL_LOWER:
 					first.scaleY = start.Sidedef.Fields.GetValue("scaley_bottom", 1.0f);
@@ -3248,9 +3268,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ystartalign += GetMiddleOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_mid", 0.0f), first.scaleY, false);//mxd
 					break;
 				case VisualGeometryType.WALL_MIDDLE_3D: //mxd. 3d-floors are not affected by Lower/Upper unpegged flags
-					ystartalign += startControlSide.OffsetY - (start.Sidedef.Sector.CeilHeight - startControlSide.Sector.CeilHeight);
+					ystartalign += first.controlSide.OffsetY - (start.Sidedef.Sector.CeilHeight - first.ceilingHeight);
 					ystartalign += start.Sidedef.Fields.GetValue("offsety_mid", 0.0f);
-					ystartalign += startControlSide.Fields.GetValue("offsety_mid", 0.0f);
+					ystartalign += first.controlSide.Fields.GetValue("offsety_mid", 0.0f);
 					break;
 				case VisualGeometryType.WALL_LOWER:
 					ystartalign += GetBottomOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_bottom", 0.0f), first.scaleY, false);//mxd
@@ -3258,8 +3278,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Begin with first sidedef
-			first.sidedef = start.Sidedef;
-			first.offsetx = start.Sidedef.OffsetX;
 			switch(start.GeometryType) {
 				case VisualGeometryType.WALL_UPPER:
 					first.offsetx += start.Sidedef.Fields.GetValue("offsetx_top", 0.0f);
@@ -3269,15 +3287,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					break;
 				case VisualGeometryType.WALL_MIDDLE_3D: //mxd. Yup, 4 sets of texture offsets are used
 					first.offsetx += start.Sidedef.Fields.GetValue("offsetx_mid", 0.0f);
-					first.offsetx += startControlSide.OffsetX;
-					first.offsetx += startControlSide.Fields.GetValue("offsetx_mid", 0.0f);
+					first.offsetx += first.controlSide.OffsetX;
+					first.offsetx += first.controlSide.Fields.GetValue("offsetx_mid", 0.0f);
 					break;
 				case VisualGeometryType.WALL_LOWER:
 					first.offsetx += start.Sidedef.Fields.GetValue("offsetx_bottom", 0.0f);
 					break;
 			}
 			first.forward = true;
-			first.controlSide = startControlSide; //mxd
 			todo.Push(first);
 
 			// Continue until nothing more to align
@@ -3340,7 +3357,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					if(aligny) {
-						float offset = ((start.Sidedef.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) * j.scaleY + ystartalign; //mxd
+						float offset = ((start.Sidedef.Sector.CeilHeight - j.ceilingHeight) / scaley) * j.scaleY + ystartalign; //mxd
 						offset -= j.sidedef.OffsetY; //mxd
 						offset = (float)Math.Round(offset); //mxd
 						
@@ -3401,7 +3418,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 					if(aligny) {
-						float offset = ((start.Sidedef.Sector.CeilHeight - j.controlSide.Sector.CeilHeight) / scaley) * j.scaleY + ystartalign; //mxd
+						float offset = ((start.Sidedef.Sector.CeilHeight - j.ceilingHeight) / scaley) * j.scaleY + ystartalign; //mxd
 						offset -= j.sidedef.OffsetY; //mxd
 						offset = (float)Math.Round(offset); //mxd
 
@@ -3503,8 +3520,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag) || side.Sector == null)
 				return offset;
 
-			//if we have LowerUnpegged flag, normalize offset
-			float surfaceHeight = (side.Sector.CeilHeight - side.Sector.FloorHeight) * scaleY;
+			// If we have LowerUnpegged flag, normalize offset
+			// Absolute value is used because ceiling height of vavoom-type 3d floors 
+			// is lower than floor height
+			float surfaceHeight = (Math.Abs(side.Sector.CeilHeight - side.Sector.FloorHeight)) * scaleY;
 			
 			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
 			return (float)Math.Round(offset - surfaceHeight);

@@ -293,6 +293,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Methods
 
+		// This performs a fast test in object picking (mxd)
+		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir) 
+		{
+			// Top and bottom are swapped in Vavoom-type 3d floors
+			if (extrafloor.VavoomType)
+				return (pickintersect.z >= top.GetZ(pickintersect)) && (pickintersect.z <= bottom.GetZ(pickintersect));
+			return base.PickFastReject(from, to, dir);
+		}
+
 		// Return texture name
 		public override string GetTextureName()
 		{
