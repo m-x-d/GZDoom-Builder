@@ -268,10 +268,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(SectorEffect e in alleffects)
 				e.Update();
 			
-			// Sort the levels (but not the first and the last)
-			SectorLevelComparer comparer = new SectorLevelComparer(sector);
-			lightlevels.Sort(0, lightlevels.Count, comparer); //mxd. Was lightlevels.Sort(1, lightlevels.Count - 2, comparer); 
-			
+			// Sort the levels (only if there are more than 2 sector levels - mxd)
+			if (lightlevels.Count > 2) 
+			{
+				SectorLevelComparer comparer = new SectorLevelComparer(sector);
+				lightlevels.Sort(0, lightlevels.Count, comparer); //mxd. Was lightlevels.Sort(1, lightlevels.Count - 2, comparer); 
+			}
+
 			// Now that we know the levels in this sector (and in the right order) we
 			// can determine the lighting in between and on the levels.
 			// Start from the absolute ceiling and go down to 'cast' the lighting
