@@ -108,6 +108,7 @@ special
 //	101:Scroll_Texture_Right
 //	102:Scroll_Texture_Up
 //	103:Scroll_Texture_Down
+	104:Ceiling_CrushAndRaiseSilentDist(4,5),
 
 	109:Light_ForceLightning(1),
 	110:Light_RaiseByValue(2),
@@ -324,6 +325,8 @@ special
 	-79:ChangeActorAngle(2,3),
 	-80:ChangeActorPitch(2,3),
 	-81:GetArmorInfo(1),
+	-82:DropInventory(2),
+	-83:PickActor(5,7),
 	
 	// Zandronum's
 	-100:ResetMap(0),
