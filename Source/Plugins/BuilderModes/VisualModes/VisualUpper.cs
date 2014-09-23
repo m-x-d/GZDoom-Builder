@@ -306,7 +306,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				float scaleY = (float)Texture.Height / (Sidedef.Sector.CeilHeight - Sidedef.Other.Sector.CeilHeight);
 				UDMFTools.SetFloat(Sidedef.Fields, "scaley_top", scaleY, 1.0f);
 
-				float offsetY = mode.GetTopOffsetY(Sidedef, -Sidedef.OffsetY, scaleY, true) % Texture.Height;
+				float offsetY = Tools.GetSidedefTopOffsetY(Sidedef, -Sidedef.OffsetY, scaleY, true) % Texture.Height;
 				UDMFTools.SetFloat(Sidedef.Fields, "offsety_top", offsetY, 0.0f);
 			}
 

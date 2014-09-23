@@ -1759,6 +1759,57 @@ namespace CodeImp.DoomBuilder.Geometry
 				   ((sd.LongLowTexture == texturelongname) && sd.LowRequired()) ||
 				   ((sd.LongMiddleTexture == texturelongname) && (sd.MiddleRequired() || sd.LongMiddleTexture != MapSet.EmptyLongName)) ;
 		}
+
+		//mxd. This converts offsetY from/to "normalized" offset for given upper wall
+		public static float GetSidedefTopOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) 
+		{
+			if(side.Line.IsFlagSet(General.Map.Config.UpperUnpeggedFlag) || side.Other == null || side.Other.Sector == null)
+				return offset;
+
+			//if we don't have UpperUnpegged flag, normalize offset
+			float surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.CeilHeight) * scaleY;
+
+			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
+			return (float)Math.Round(offset - surfaceHeight);
+		}
+
+		//mxd. This converts offsetY from/to "normalized" offset for given middle wall
+		public static float GetSidedefMiddleOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) 
+		{
+			if(!side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag) || side.Sector == null)
+				return offset;
+
+			// If we have LowerUnpegged flag, normalize offset
+			// Absolute value is used because ceiling height of vavoom-type 3d floors 
+			// is lower than floor height
+			float surfaceHeight = (Math.Abs(side.Sector.CeilHeight - side.Sector.FloorHeight)) * scaleY;
+
+			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
+			return (float)Math.Round(offset - surfaceHeight);
+		}
+
+		//mxd. This converts offsetY from/to "normalized" offset for given lower wall
+		public static float GetSidedefBottomOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) 
+		{
+			float surfaceHeight;
+			if(side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag)) 
+			{
+				if(side.Other == null || side.Other.Sector == null || side.Sector.CeilTexture != General.Map.Config.SkyFlatName ||
+					side.Other.Sector.CeilTexture != General.Map.Config.SkyFlatName)
+					return offset;
+
+				//normalize offset the way Doom does it when front and back sector's ceiling is sky
+				surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.CeilHeight) * scaleY;
+			} 
+			else 
+			{
+				//normalize offset
+				surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.FloorHeight) * scaleY;
+			}
+
+			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
+			return (float)Math.Round(offset - surfaceHeight);
+		}
 		
 		#endregion
 		

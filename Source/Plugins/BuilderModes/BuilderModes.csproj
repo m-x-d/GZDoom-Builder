@@ -232,6 +232,7 @@
     <Compile Include="ErrorChecks\CheckMissingTextures.cs" />
     <Compile Include="ErrorChecks\CheckOverlappingVertices.cs" />
     <Compile Include="ErrorChecks\CheckStrayVertices.cs" />
+    <Compile Include="ErrorChecks\CheckTextureAlignment.cs" />
     <Compile Include="ErrorChecks\CheckUnknownFlats.cs" />
     <Compile Include="ErrorChecks\CheckUnknownTextures.cs" />
     <Compile Include="ErrorChecks\CheckUnknownThings.cs" />
@@ -242,6 +243,7 @@
     <Compile Include="ErrorChecks\ResultStrayVertex.cs" />
     <Compile Include="ErrorChecks\ResultStuckThingInThing.cs" />
     <Compile Include="ErrorChecks\ResultMissingTexture.cs" />
+    <Compile Include="ErrorChecks\ResultTexturesMisaligned.cs" />
     <Compile Include="ErrorChecks\ResultUnknownFlat.cs" />
     <Compile Include="ErrorChecks\ResultUnknownTexture.cs" />
     <Compile Include="ErrorChecks\ResultUnknownThing.cs" />
