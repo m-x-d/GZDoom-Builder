@@ -3262,10 +3262,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float ystartalign = start.Sidedef.OffsetY;
 			switch(start.GeometryType) {
 				case VisualGeometryType.WALL_UPPER:
-					ystartalign += GetTopOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_top", 0.0f), first.scaleY, false);//mxd
+					ystartalign += Tools.GetSidedefTopOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_top", 0.0f), first.scaleY, false);//mxd
 					break;
 				case VisualGeometryType.WALL_MIDDLE:
-					ystartalign += GetMiddleOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_mid", 0.0f), first.scaleY, false);//mxd
+					ystartalign += Tools.GetSidedefMiddleOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_mid", 0.0f), first.scaleY, false);//mxd
 					break;
 				case VisualGeometryType.WALL_MIDDLE_3D: //mxd. 3d-floors are not affected by Lower/Upper unpegged flags
 					ystartalign += first.controlSide.OffsetY - (start.Sidedef.Sector.CeilHeight - first.ceilingHeight);
@@ -3273,7 +3273,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ystartalign += first.controlSide.Fields.GetValue("offsety_mid", 0.0f);
 					break;
 				case VisualGeometryType.WALL_LOWER:
-					ystartalign += GetBottomOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_bottom", 0.0f), first.scaleY, false);//mxd
+					ystartalign += Tools.GetSidedefBottomOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_bottom", 0.0f), first.scaleY, false);//mxd
 					break;
 			}
 
@@ -3362,9 +3362,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset = (float)Math.Round(offset); //mxd
 						
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, GetTopOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, GetBottomOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
 						if(matchmid) {
 							//mxd. Side is part of a 3D floor?
 							if(j.sidedef.Index != j.controlSide.Index) {
@@ -3372,7 +3372,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
 								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % texture.Height);
 							} else {
-								offset = GetMiddleOffsetY(j.sidedef, offset, j.scaleY, true);
+								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY, true);
 
 								//mxd. Clamp offset if this part is middle single or wrapped middle double 
 								if(j.sidedef.Other == null || j.sidedef.IsFlagSet("wrapmidtex") || j.sidedef.Line.IsFlagSet("wrapmidtex")) {
@@ -3423,9 +3423,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset = (float)Math.Round(offset); //mxd
 
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, GetTopOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, GetBottomOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
 						if(matchmid) {
 							//mxd. Side is part of a 3D floor?
 							if(j.sidedef.Index != j.controlSide.Index) {
@@ -3433,7 +3433,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
 								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % texture.Height); //mxd
 							} else {
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
 							}
 						}
 					}
@@ -3499,54 +3499,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(BaseVisualGeometrySidedef vs in selection) 
 				if(vs.GeometryType == geoType && vs.Sidedef.Index == side.Index) return true;
 			return false;
-		}
-
-		//mxd. This converts offsetY from/to "normalized" offset for given upper wall
-		internal float GetTopOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) 
-		{
-			if(side.Line.IsFlagSet(General.Map.Config.UpperUnpeggedFlag) || side.Other == null || side.Other.Sector == null)
-				return offset;
-
-			//if we don't have UpperUnpegged flag, normalize offset
-			float surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.CeilHeight) * scaleY;
-
-			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
-			return (float)Math.Round(offset - surfaceHeight);
-		}
-
-		//mxd. This converts offsetY from/to "normalized" offset for given middle wall
-		internal float GetMiddleOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) 
-		{
-			if(!side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag) || side.Sector == null)
-				return offset;
-
-			// If we have LowerUnpegged flag, normalize offset
-			// Absolute value is used because ceiling height of vavoom-type 3d floors 
-			// is lower than floor height
-			float surfaceHeight = (Math.Abs(side.Sector.CeilHeight - side.Sector.FloorHeight)) * scaleY;
-			
-			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
-			return (float)Math.Round(offset - surfaceHeight);
-		}
-
-		//mxd. This converts offsetY from/to "normalized" offset for given lower wall
-		internal float GetBottomOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) 
-		{
-			float surfaceHeight;
-			if (side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag)) {
-				if (side.Other == null || side.Other.Sector == null || side.Sector.CeilTexture != General.Map.Config.SkyFlatName ||
-				    side.Other.Sector.CeilTexture != General.Map.Config.SkyFlatName)
-					return offset;
-
-				//normalize offset the way Doom does it when front and back sector's ceiling is sky
-				surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.CeilHeight) * scaleY;
-			} else {
-				//normalize offset
-				surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.FloorHeight) * scaleY;
-			}
-
-			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
-			return (float)Math.Round(offset - surfaceHeight);
 		}
 
 		//mxd
