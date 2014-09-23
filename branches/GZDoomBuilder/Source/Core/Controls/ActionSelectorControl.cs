@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			InitializeComponent();
+			number.MouseWheel += number_OnMouseWheel; //mxd
 		}
 
 		// This returns the numeric value
@@ -223,6 +224,30 @@ namespace CodeImp.DoomBuilder.Controls
 			// Allow CTRL+X, CTRL+C and CTRL+V
 			if(controlpressed && ((e.KeyCode == Keys.X) || (e.KeyCode == Keys.C) || (e.KeyCode == Keys.V))) return;
 
+			//mxd. Scroll action list using arrow keys
+			if (e.KeyCode == Keys.Down)
+			{
+				if (list.SelectedIndex > 0)
+				{
+					list.SelectedIndex--;
+					list_SelectionChangeCommitted(list, EventArgs.Empty);
+				}
+				// Cancel this
+				e.Handled = true;
+				return;
+			}
+			if(e.KeyCode == Keys.Up) 
+			{
+				if (list.SelectedIndex < list.Items.Count)
+				{
+					list.SelectedIndex++;
+					list_SelectionChangeCommitted(list, EventArgs.Empty);
+				}
+				// Cancel this
+				e.Handled = true;
+				return;
+			}
+
 			// Not numeric or control key?
 			if(((e.KeyValue < 48) || (e.KeyValue > 57)) &&
 			   (e.KeyCode != Keys.Back) && (e.KeyCode != Keys.Left) &&
@@ -244,6 +269,21 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Cancel this
 				e.Handled = true;
+			}
+		}
+
+		//mxd. Scrolls action list using mouse wheel
+		private void number_OnMouseWheel(object sender, MouseEventArgs e) 
+		{
+			if (e.Delta < 0 && list.SelectedIndex > 0)
+			{
+				list.SelectedIndex--;
+				list_SelectionChangeCommitted(list, EventArgs.Empty);
+			}
+			else if (e.Delta > 0 && list.SelectedIndex < list.Items.Count)
+			{
+				list.SelectedIndex++;
+				list_SelectionChangeCommitted(list, EventArgs.Empty);
 			}
 		}
 		
