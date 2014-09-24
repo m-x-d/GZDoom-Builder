@@ -744,7 +744,7 @@ namespace CodeImp.DoomBuilder {
 			CopyLumpsByType(tempwad, TEMP_MAP_HEADER, targetwad, origmapname, true, true, includenodes, true);
 
 			// mxd. Was the map renamed?
-			if(!string.IsNullOrEmpty(options.PreviousName) && options.PreviousName != options.CurrentName) 
+			if(options.LevelNameChanged) 
 			{
 				if (purpose != SavePurpose.IntoFile) 
 				{
@@ -799,6 +799,31 @@ namespace CodeImp.DoomBuilder {
 
 			// Success!
 			General.WriteLogLine("Map saving done");
+			return true;
+		}
+
+		//mxd. Don't save the map if it was not changed
+		internal bool MapSaveRequired(string newfilepathname, SavePurpose purpose)
+		{
+			return (changed || scriptschanged || CheckScriptChanged() || options.LevelNameChanged || newfilepathname != filepathname || purpose != SavePurpose.Normal);
+		}
+
+		//mxd. Saves .dbs file
+		internal bool SaveSettingsFile(string newfilepathname)
+		{
+			try 
+			{
+				string settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
+				if(File.Exists(settingsfile)) File.Delete(settingsfile);
+				options.WriteConfiguration(settingsfile);
+			} 
+			catch(Exception e) 
+			{
+				// Warning only
+				General.ErrorLogger.Add(ErrorType.Warning, "Could not write the map settings configuration file. " + e.GetType().Name + ": " + e.Message);
+				return false;
+			}
+
 			return true;
 		}
 
