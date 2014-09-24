@@ -1334,7 +1334,8 @@ namespace CodeImp.DoomBuilder
 			if(map == null) return false;
 
 			//mxd
-			if (map.Launcher.GameEngineRunning) {
+			if (map.Launcher.GameEngineRunning) 
+			{
 				ShowWarningMessage("Cannot save the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
 				return false;
 			}
@@ -1352,6 +1353,20 @@ namespace CodeImp.DoomBuilder
 			}
 			else
 			{
+				//mxd. Do we need to save the map?
+				if (!map.MapSaveRequired(map.FilePathName, SavePurpose.Normal))
+				{
+					// Still save settings file
+					result = map.SaveSettingsFile(map.FilePathName);
+					
+					// Display status
+					mainwindow.DisplayStatus(StatusType.Info, "Map is up to date. No saving required.");
+
+					// All done
+					mainwindow.UpdateInterface();
+					return result;
+				}
+				
 				// Display status
 				mainwindow.DisplayStatus(StatusType.Busy, "Saving map file...");
 				Cursor.Current = Cursors.WaitCursor;
@@ -1397,8 +1412,9 @@ namespace CodeImp.DoomBuilder
 			if(map == null) return false;
 
 			//mxd
-			if(map.Launcher.GameEngineRunning) {
-				ShowWarningMessage("Cannot save the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
+			if(map.Launcher.GameEngineRunning)
+			{
+				ShowWarningMessage("Cannot save the map while a game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
 				return false;
 			}
 
@@ -1476,7 +1492,8 @@ namespace CodeImp.DoomBuilder
 			if(map == null) return false;
 
 			//mxd
-			if(map.Launcher.GameEngineRunning) {
+			if(map.Launcher.GameEngineRunning) 
+			{
 				ShowWarningMessage("Cannot save the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
 				return false;
 			}

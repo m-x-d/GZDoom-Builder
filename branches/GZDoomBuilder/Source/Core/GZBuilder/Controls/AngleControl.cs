@@ -29,7 +29,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		//UI colors
 		private readonly Color fillColor = SystemColors.Window;
 		private readonly Color fillInactiveColor = SystemColors.Control;
-		private readonly Color outlineColor = SystemColors.ActiveCaption;
+		private readonly Color outlineColor = SystemColors.WindowFrame;
 		private readonly Color outlineInactiveColor = SystemColors.ControlDarkDark;
 		private readonly Color needleColor = SystemColors.ControlText;
 		private readonly Color needleInactiveColor = SystemColors.ControlDarkDark;

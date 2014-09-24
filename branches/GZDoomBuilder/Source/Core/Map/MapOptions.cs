@@ -104,6 +104,7 @@ namespace CodeImp.DoomBuilder.Map
 				}
 			}
 		}
+		internal bool LevelNameChanged { get { return (!string.IsNullOrEmpty(previousname) && previousname != currentname); } } //mxd
 
 		public string LevelName { get { return currentname; } }
 		public Dictionary<int, string> TagLabels { get { return tagLabels; } internal set { tagLabels = value; } } //mxd 
