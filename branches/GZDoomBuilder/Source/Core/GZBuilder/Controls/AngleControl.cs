@@ -23,13 +23,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		private Rectangle drawRegion;
 		private const int drawOffset = 2;
+		private const int markScaler = 5;
 		private Point origin;
 
 		//UI colors
-		private readonly Color fillColor = Color.FromArgb(90, 255, 255, 255);
-		private readonly Color fillInactiveColor = SystemColors.InactiveCaption;
-		private readonly Color outlineColor = Color.FromArgb(86, 103, 141);
-		private readonly Color outlineInactiveColor = SystemColors.InactiveBorder;
+		private readonly Color fillColor = SystemColors.Window;
+		private readonly Color fillInactiveColor = SystemColors.Control;
+		private readonly Color outlineColor = SystemColors.ActiveCaption;
+		private readonly Color outlineInactiveColor = SystemColors.ControlDarkDark;
+		private readonly Color needleColor = SystemColors.ControlText;
+		private readonly Color needleInactiveColor = SystemColors.ControlDarkDark;
+		private readonly Color marksColor = SystemColors.ActiveBorder;
+		private readonly Color marksInactiveColor = SystemColors.ControlDark;
 
 		#endregion
 
@@ -93,7 +98,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		private void AngleSelector_SizeChanged(object sender, EventArgs e) 
 		{
-			this.Height = this.Width; //Keep it a square
+			this.Height = this.Width; // Keep it there and keep it square!
 			setDrawRegion();
 		}
 
@@ -103,30 +108,42 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			Pen outline;
 			Pen needle;
+			Pen marks;
 			SolidBrush fill;
 			Brush center;
 
 			if (this.Enabled) {
 				outline = new Pen(outlineColor, 2.0f);
 				fill = new SolidBrush(fillColor);
-				needle = Pens.Black;
-				center = Brushes.Black;
+				needle = new Pen(needleColor);
+				center = new SolidBrush(needleColor);
+				marks = new Pen(marksColor);
 			} else {
 				outline = new Pen(outlineInactiveColor, 2.0f);
 				fill = new SolidBrush(fillInactiveColor);
-				needle = Pens.DarkGray;
-				center = Brushes.DarkGray;
+				needle = new Pen(needleInactiveColor);
+				center = new SolidBrush(needleInactiveColor);
+				marks = new Pen(marksInactiveColor);
 			}
 
 			Rectangle originSquare = new Rectangle(origin.X - 1, origin.Y - 1, 3, 3);
 
-			//Draw
+			//Draw circle
 			g.SmoothingMode = SmoothingMode.AntiAlias;
 			g.DrawEllipse(outline, drawRegion);
 			g.FillEllipse(fill, drawRegion);
 
-			if (angle != int.MinValue) {
-				PointF anglePoint = DegreesToXY(angle, origin.X - 2, origin);
+			// Draw angle marks
+			int offset = this.Height / markScaler;
+			for(int i = 0; i < 360; i += 45) {
+				PointF p1 = DegreesToXY(i, origin.X - 6, origin);
+				PointF p2 = DegreesToXY(i, origin.X - offset, origin);
+				g.DrawLine(marks, p1, p2);
+			}
+
+			// Draw needle
+			if(angle != int.MinValue) {
+				PointF anglePoint = DegreesToXY(angle, origin.X - 4, origin);
 				g.DrawLine(needle, origin, anglePoint);
 			}
 
