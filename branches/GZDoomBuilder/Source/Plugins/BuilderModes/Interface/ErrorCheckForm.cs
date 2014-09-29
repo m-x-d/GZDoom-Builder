@@ -88,6 +88,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					c.Checked = checkerattr.DefaultChecked;
 				}
 			}
+			checks.Sort(); //mxd
 
 			//mxd. Store initial height
 			initialsize = this.Size;
@@ -272,7 +273,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			ClearSelectedResult();
-			applyToAll = cbApplyToAll.Checked; //mxd
+			
+			//mxd. Clear results 
+			resultslist.Clear();
+			results.Items.Clear();
 
 			this.Hide();
 		}
@@ -401,11 +405,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Window closing
 		private void ErrorCheckForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			//mxd. Store export mode
+			//mxd. Store persistent settings
 			exportmode = exportresults.CurrentMenuStripItem;
+			applyToAll = cbApplyToAll.Checked;
 
-			//mxd. Clear stored results 
+			//mxd. Clear results 
 			resultslist.Clear();
+			results.Items.Clear();
 			
 			// If the user closes the form, then just cancel the mode
 			if(e.CloseReason == CloseReason.UserClosing)
@@ -590,6 +596,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Clipboard.SetText(sb.ToString());
 
 			General.Interface.DisplayStatus(StatusType.Info, "Analysis results copied to clipboard.");
+		}
+
+		//mxd
+		private void toggleall_CheckedChanged(object sender, EventArgs e) 
+		{
+			foreach(CheckBox cb in checks.Checkboxes) cb.Checked = toggleall.Checked;
 		}
 
 		private void ErrorCheckForm_HelpRequested(object sender, HelpEventArgs hlpevent)
