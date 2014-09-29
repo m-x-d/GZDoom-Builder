@@ -312,9 +312,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.toggleall.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.toggleall.Location = new System.Drawing.Point(10, 12);
 			this.toggleall.Name = "toggleall";
-			this.toggleall.Size = new System.Drawing.Size(71, 18);
+			this.toggleall.Size = new System.Drawing.Size(70, 18);
 			this.toggleall.TabIndex = 5;
-			this.toggleall.Text = "Toggle All";
+			this.toggleall.Text = "Toggle all";
 			this.toggleall.UseVisualStyleBackColor = true;
 			this.toggleall.CheckedChanged += new System.EventHandler(this.toggleall_CheckedChanged);
 			// 
