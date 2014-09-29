@@ -36,13 +36,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private const int PROGRESS_STEP = 10;
 		private const float ALLOWED_STUCK_DISTANCE = 6.0f;
 
-		enum StuckType
-		{
-			None = 0,
-			Line,
-			Thing
-		}
-
 		#endregion
 
 		#region ================== Constructor / Destructor
@@ -65,7 +58,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int progress = 0;
 			int stepprogress = 0;
 			float maxradius = 0;
-			Thing other = null; //mxd
+			Dictionary<int, Dictionary<int, bool>> processedthingpairs = new Dictionary<int, Dictionary<int, bool>>(); //mxd
 
 			foreach (ThingTypeInfo tti in General.Map.Data.ThingTypes)
 			{
@@ -77,7 +70,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
 				bool stuck = false;
-				StuckType stucktype = StuckType.None;
 
 				// Check this thing for getting stuck?
 				if( (info.ErrorCheck == ThingTypeInfo.THING_ERROR_INSIDE_STUCK) &&
@@ -102,11 +94,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							if(((l.Back == null) || l.IsFlagSet(General.Map.Config.ImpassableFlag)) && !doneblocklines.ContainsKey(l))
 							{
 								// Test if line ends are inside the thing
-								if(PointInRect(lt, rb, l.Start.Position) ||
-								   PointInRect(lt, rb, l.End.Position))
+								if(PointInRect(lt, rb, l.Start.Position) || PointInRect(lt, rb, l.End.Position))
 								{
 									// Thing stuck in line!
 									stuck = true;
+									SubmitResult(new ResultStuckThingInLine(t, l));
 								}
 								// Test if the line intersects the square
 								else if(Line2D.GetIntersection(l.Start.Position, l.End.Position, lt.x, lt.y, rb.x, lt.y) ||
@@ -116,7 +108,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								{
 									// Thing stuck in line!
 									stuck = true;
-									stucktype = StuckType.Line;
+									SubmitResult(new ResultStuckThingInLine(t, l));
 								}
 								
 								// Checked
@@ -125,70 +117,59 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 
 						// Check if thing is stuck in other things
-						if(info.Blocking != ThingTypeInfo.THING_BLOCKING_NONE) {
+						if(info.Blocking != ThingTypeInfo.THING_BLOCKING_NONE) 
+						{
 							foreach (Thing ot in b.Things)
 							{
 								// Don't compare the thing with itself
 								if (t.Index == ot.Index) continue;
 
+								// mxd. Don't compare already processed stuff
+								if (processedthingpairs.ContainsKey(t.Index) && processedthingpairs[t.Index].ContainsKey(ot.Index)) continue;
+
 								// Only check of items that can block
 								if (General.Map.Data.GetThingInfo(ot.Type).Blocking == ThingTypeInfo.THING_BLOCKING_NONE) continue;
 
 								// need to compare the flags
-								/* TODO: skill settings
-								Dictionary<string, bool> flags1 = t.GetFlags();
-								Dictionary<string, bool> flags2 = ot.GetFlags();
-								*/
-
 								if (FlagsOverlap(t, ot) && ThingsOverlap(t, ot))
 								{
 									stuck = true;
-									other = ot; //mxd
-									stucktype = StuckType.Thing;
+									
+									//mxd. Prepare collection
+									if(!processedthingpairs.ContainsKey(t.Index)) processedthingpairs.Add(t.Index, new Dictionary<int, bool>());
+									if(!processedthingpairs.ContainsKey(ot.Index)) processedthingpairs.Add(ot.Index, new Dictionary<int, bool>());
+
+									//mxd. Add both ways
+									processedthingpairs[t.Index].Add(ot.Index, false);
+									processedthingpairs[ot.Index].Add(t.Index, false);
+
+									SubmitResult(new ResultStuckThingInThing(t, ot));
 								}
 							}
 						}
 					}
 				}
-				
-				// Stuck?
-				if(stuck)
-				{
-					// Make result
-					switch (stucktype)
-					{
-						case StuckType.Line:
-							SubmitResult(new ResultStuckThingInLine(t));
-							break;
 
-						case StuckType.Thing:
-							SubmitResult(new ResultStuckThingInThing(t, other));
-							break;
+				// Check this thing for being outside the map?
+				if(!stuck && info.ErrorCheck >= ThingTypeInfo.THING_ERROR_INSIDE) 
+				{
+					// Get the nearest line to see if the thing is outside the map
+					bool outside;
+					Linedef l = General.Map.Map.NearestLinedef(t.Position);
+					if(l.SideOfLine(t.Position) <= 0) 
+					{
+						outside = (l.Front == null);
+					} 
+					else 
+					{
+						outside = (l.Back == null);
 					}
-				}
-				else
-				{
-					// Check this thing for being outside the map?
-					if(info.ErrorCheck >= ThingTypeInfo.THING_ERROR_INSIDE)
-					{
-						// Get the nearest line to see if the thing is outside the map
-						bool outside;
-						Linedef l = General.Map.Map.NearestLinedef(t.Position);
-						if(l.SideOfLine(t.Position) <= 0)
-						{
-							outside = (l.Front == null);
-						}
-						else
-						{
-							outside = (l.Back == null);
-						}
 
-						// Outside the map?
-						if(outside)
-						{
-							// Make result
-							SubmitResult(new ResultThingOutside(t));
-						}
+					// Outside the map?
+					if(outside) 
+					{
+						// Make result
+						SubmitResult(new ResultThingOutside(t));
 					}
 				}
 				
@@ -240,30 +221,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Checks if the flags of two things overlap (i.e. if they show up at the same time)
 		private static bool FlagsOverlap(Thing t1, Thing t2) 
 		{
-			var groups = new Dictionary<string, List<ThingFlagsCompare>>(StringComparer.Ordinal);
+			if (General.Map.Config.ThingFlagsCompare.Count < 1) return false; //mxd. Bail out if no settings...
 			int overlappinggroups = 0;
 
-			// Create a summary which flags belong to which groups
-			foreach (ThingFlagsCompare tfc in General.Map.Config.ThingFlagsCompare) {
-				if (!groups.ContainsKey(tfc.Group))
-					groups[tfc.Group] = new List<ThingFlagsCompare>();
-
-				groups[tfc.Group].Add(tfc);
-			}
-
 			// Go through all flags in all groups and check if they overlap
-			foreach (string g in groups.Keys) {
-				foreach (ThingFlagsCompare tfc in groups[g]) {
-					if (tfc.Compare(t1, t2) > 0) {
+			foreach(KeyValuePair<string, Dictionary<string, ThingFlagsCompare>> group in General.Map.Config.ThingFlagsCompare) 
+			{
+				foreach(ThingFlagsCompare tfc in group.Value.Values) 
+				{
+					if(tfc.Compare(t1, t2) > 0) 
+					{
 						overlappinggroups++;
 						break;
 					}
 				}
 			}
 
-			// All groups have to overlap for the things to show up
-			// at the same time
-			return (overlappinggroups == groups.Count);
+			// All groups have to overlap for the things to show up at the same time
+			return (overlappinggroups == General.Map.Config.ThingFlagsCompare.Count);
 		}
 		
 		#endregion

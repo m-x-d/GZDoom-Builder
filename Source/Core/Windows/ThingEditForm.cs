@@ -242,8 +242,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			preventchanges = false;
 
-			//mxd. Trigger angle update manually...
+			//mxd. Trigger updates manually...
 			angle_WhenTextChanged(angle, EventArgs.Empty);
+			flags_OnValueChanged(flags, EventArgs.Empty);
 
 			updateScriptControls(); //mxd
 
@@ -624,6 +625,55 @@ namespace CodeImp.DoomBuilder.Windows
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		//mxd
+		private void flags_OnValueChanged(object sender, EventArgs e) 
+		{
+			if(preventchanges) return;
+
+			foreach(KeyValuePair<string, Dictionary<string, ThingFlagsCompare>> group in General.Map.Config.ThingFlagsCompare)
+			{
+				if(group.Value.Count < 2) continue;
+				int enabledcount = 0;
+				
+				foreach(CheckBox cb in flags.Checkboxes)
+				{
+					if (group.Value.ContainsKey(cb.Tag.ToString()) && cb.CheckState != CheckState.Unchecked)
+					{
+						enabledcount++;
+					}
+				}
+
+				if (enabledcount == 0)
+				{
+					switch(group.Key)
+					{
+						case "skills":
+							tooltip.SetToolTip(missingflags, "Thing is not used in any skill level.");
+							break;
+
+						case "gamemodes":
+							tooltip.SetToolTip(missingflags, "Thing is not used in any game mode.");
+							break;
+
+						case "classes":
+							tooltip.SetToolTip(missingflags, "Thing is not used by any class.");
+							break;
+
+						default:
+							tooltip.SetToolTip(missingflags, "At least one '" + group.Key + "' flag should be set.");
+							break;
+					}
+					
+					missingflags.Visible = true;
+					settingsgroup.ForeColor = Color.DarkRed;
+					return;
+				}
+			}
+
+			missingflags.Visible = false;
+			settingsgroup.ForeColor = SystemColors.ControlText;
 		}
 
 		#endregion

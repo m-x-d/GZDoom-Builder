@@ -35,8 +35,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
-		public override int Buttons { get { return 1; } }
-		public override string Button1Text { get { return "Delete Thing"; } }
+		public override int Buttons { get { return 2; } }
+		public override string Button1Text { get { return "Delete 1-st Thing"; } }
+		public override string Button2Text { get { return "Delete 2-nd Thing"; } } //mxd
 
 		#endregion
 
@@ -84,13 +85,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void RenderOverlaySelection(IRenderer2D renderer)
 		{
 			renderer.RenderThing(thing1, renderer.DetermineThingColor(thing1), 1.0f);
+			renderer.RenderThing(thing2, renderer.DetermineThingColor(thing2), 1.0f);
 		}
 
-		// This removes the thing
+		// This removes the first thing
 		public override bool Button1Click(bool batchMode)
 		{
 			if(!batchMode) General.Map.UndoRedo.CreateUndo("Delete thing");
 			thing1.Dispose();
+			General.Map.IsChanged = true;
+			General.Map.ThingsFilter.Update();
+			return true;
+		}
+
+		// This removes the thing
+		public override bool Button2Click(bool batchMode) 
+		{
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Delete thing");
+			thing2.Dispose();
 			General.Map.IsChanged = true;
 			General.Map.ThingsFilter.Update();
 			return true;
