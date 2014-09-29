@@ -25,7 +25,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
 
 		#region ================== Variables
 
-		private Dictionary<VisualGeometryType, Dictionary<int, Dictionary<int, bool>>> donesides;
+		// Now THAT'S what I call a collection! :)
+		private Dictionary<VisualGeometryType, Dictionary<int, Dictionary<VisualGeometryType, Dictionary<int, bool>>>> donesides;
 
 		#endregion
 
@@ -45,10 +46,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
 		// This runs the check
 		public override void Run()
 		{
-			donesides = new Dictionary<VisualGeometryType, Dictionary<int, Dictionary<int, bool>>>(3);
-			donesides.Add(VisualGeometryType.WALL_UPPER, new Dictionary<int, Dictionary<int, bool>>());
-			donesides.Add(VisualGeometryType.WALL_MIDDLE, new Dictionary<int, Dictionary<int, bool>>());
-			donesides.Add(VisualGeometryType.WALL_LOWER, new Dictionary<int, Dictionary<int, bool>>());
+			donesides = new Dictionary<VisualGeometryType, Dictionary<int, Dictionary<VisualGeometryType, Dictionary<int, bool>>>>(3);
+			donesides.Add(VisualGeometryType.WALL_UPPER, new Dictionary<int, Dictionary<VisualGeometryType, Dictionary<int, bool>>>());
+			donesides.Add(VisualGeometryType.WALL_MIDDLE, new Dictionary<int, Dictionary<VisualGeometryType, Dictionary<int, bool>>>());
+			donesides.Add(VisualGeometryType.WALL_LOWER, new Dictionary<int, Dictionary<VisualGeometryType, Dictionary<int, bool>>>());
 			
 			int progress = 0;
 			int stepprogress = 0;
@@ -176,18 +177,22 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
 				if(line.Front != null && line.End == v) target = line.Front;
 				else if(line.Back != null && line.Start == v) target = line.Back;
 
-				// No target or laready processed?
-				if(target == null || (donesides[parttype].ContainsKey(sidedef.Index) && donesides[parttype][sidedef.Index].ContainsKey(target.Index)))
-					continue;
+				// No target?
+				if(target == null) continue;
 
 				// Get expected texture offsets
-				VisualGeometryType targetparttype = VisualGeometryType.UNKNOWN;
-				int alignedY = GetExpectedOffsetY(sidedef, target, texturename, texture.Height, scaley, linescaley, partsize, ref targetparttype);
+				VisualGeometryType targetparttype;
+				int alignedY = GetExpectedOffsetY(sidedef, target, texturename, texture.Height, scaley, linescaley, partsize, out targetparttype);
 				if(targetparttype == VisualGeometryType.UNKNOWN) continue;
+
+				// Already added?
+				if(donesides[parttype].ContainsKey(sidedef.Index) && donesides[parttype][sidedef.Index][targetparttype].ContainsKey(target.Index))
+					continue;
 
 				// Not aligned if scaley is not equal
 				float targetscaley = GetSidedefValue(target, targetparttype, "scaley", 1.0f);
-				if(targetscaley != linescaley) {
+				if(targetscaley != linescaley) 
+				{
 #if DEBUG //TODO: remove this
 					string msg = "Case 1: '" + texturename + "' source " + sidedef.Line.Index + " (" + (sidedef.IsFront ? "front" : "back")
 						+ "), target " + target.Line.Index + " (" + (target.IsFront ? "front" : "back")
@@ -238,13 +243,16 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
 				else if(line.Back != null && line.End == v) target = line.Back;
 
 				// No target or laready processed?
-				if(target == null || (donesides[parttype].ContainsKey(sidedef.Index) && donesides[parttype][sidedef.Index].ContainsKey(target.Index)))
-					continue;
+				if(target == null) continue;
 
 				// Get expected texture offsets
-				VisualGeometryType targetparttype = VisualGeometryType.UNKNOWN;
-				int alignedY = GetExpectedOffsetY(sidedef, target, texturename, texture.Height, scaley, linescaley, partsize, ref targetparttype);
+				VisualGeometryType targetparttype;
+				int alignedY = GetExpectedOffsetY(sidedef, target, texturename, texture.Height, scaley, linescaley, partsize, out targetparttype);
 				if(targetparttype == VisualGeometryType.UNKNOWN) continue;
+
+				// Already added?
+				if(donesides[parttype].ContainsKey(sidedef.Index) && donesides[parttype][sidedef.Index][targetparttype].ContainsKey(target.Index))
+					continue;
 
 				// Not aligned if scaley is not equal
 				float targetscaley = GetSidedefValue(target, targetparttype, "scaley", 1.0f);
@@ -307,14 +315,26 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
 		private void AddProcessedSides(Sidedef s1, VisualGeometryType type1, Sidedef s2, VisualGeometryType type2)
 		{
 			// Add them both ways
-			if(!donesides[type1].ContainsKey(s1.Index)) donesides[type1].Add(s1.Index, new Dictionary<int, bool>());
-			donesides[type1][s1.Index].Add(s2.Index, false);
+			if (!donesides[type1].ContainsKey(s1.Index)) 
+			{
+				donesides[type1].Add(s1.Index, new Dictionary<VisualGeometryType, Dictionary<int, bool>>());
+				donesides[type1][s1.Index].Add(VisualGeometryType.WALL_UPPER, new Dictionary<int, bool>());
+				donesides[type1][s1.Index].Add(VisualGeometryType.WALL_MIDDLE, new Dictionary<int, bool>());
+				donesides[type1][s1.Index].Add(VisualGeometryType.WALL_LOWER, new Dictionary<int, bool>());
+			}
+			donesides[type1][s1.Index][type2].Add(s2.Index, false);
 
-			if(!donesides[type2].ContainsKey(s2.Index)) donesides[type2].Add(s2.Index, new Dictionary<int, bool>());
-			donesides[type2][s2.Index].Add(s1.Index, false);
+			if (!donesides[type2].ContainsKey(s2.Index)) 
+			{
+				donesides[type2].Add(s2.Index, new Dictionary<VisualGeometryType, Dictionary<int, bool>>());
+				donesides[type2][s2.Index].Add(VisualGeometryType.WALL_UPPER, new Dictionary<int, bool>());
+				donesides[type2][s2.Index].Add(VisualGeometryType.WALL_MIDDLE, new Dictionary<int, bool>());
+				donesides[type2][s2.Index].Add(VisualGeometryType.WALL_LOWER, new Dictionary<int, bool>());
+			}
+			donesides[type2][s2.Index][type1].Add(s1.Index, false);
 		}
 
-		private int GetExpectedOffsetY(Sidedef source, Sidedef target, string texturename, int textureheight, float texturescaley, float linescaley, Rectangle partsize, ref VisualGeometryType matchingparttype) 
+		private int GetExpectedOffsetY(Sidedef source, Sidedef target, string texturename, int textureheight, float texturescaley, float linescaley, Rectangle partsize, out VisualGeometryType matchingparttype) 
 		{
 			if(target.MiddleTexture == texturename
 					&& partsize.IntersectsWith(BuilderModesTools.GetSidedefPartSize(target, VisualGeometryType.WALL_MIDDLE)))

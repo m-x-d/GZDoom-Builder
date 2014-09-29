@@ -28,6 +28,7 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.GroupBox groupBox1;
 			System.Windows.Forms.GroupBox groupBox2;
 			System.Windows.Forms.Label label7;
@@ -71,6 +72,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply = new System.Windows.Forms.Button();
 			this.hint = new System.Windows.Forms.PictureBox();
 			this.hintlabel = new System.Windows.Forms.Label();
+			this.missingflags = new System.Windows.Forms.PictureBox();
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			groupBox2 = new System.Windows.Forms.GroupBox();
 			label7 = new System.Windows.Forms.Label();
@@ -84,6 +87,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hexenpanel.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.hint)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.missingflags)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -136,6 +140,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// anglecontrol
 			// 
 			this.anglecontrol.Angle = 0;
+			this.anglecontrol.AngleOffset = 0;
 			this.anglecontrol.Location = new System.Drawing.Point(152, 71);
 			this.anglecontrol.Name = "anglecontrol";
 			this.anglecontrol.Size = new System.Drawing.Size(88, 88);
@@ -189,6 +194,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posX.AllowRelative = true;
 			this.posX.ButtonStep = 8;
 			this.posX.ButtonStepFloat = 1F;
+			this.posX.ButtonStepsWrapAround = false;
 			this.posX.Location = new System.Drawing.Point(61, 16);
 			this.posX.Name = "posX";
 			this.posX.Size = new System.Drawing.Size(72, 24);
@@ -203,6 +209,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posY.AllowRelative = true;
 			this.posY.ButtonStep = 8;
 			this.posY.ButtonStepFloat = 1F;
+			this.posY.ButtonStepsWrapAround = false;
 			this.posY.Location = new System.Drawing.Point(61, 41);
 			this.posY.Name = "posY";
 			this.posY.Size = new System.Drawing.Size(72, 24);
@@ -217,6 +224,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posZ.AllowRelative = true;
 			this.posZ.ButtonStep = 8;
 			this.posZ.ButtonStepFloat = 1F;
+			this.posZ.ButtonStepsWrapAround = false;
 			this.posZ.Location = new System.Drawing.Point(61, 66);
 			this.posZ.Name = "posZ";
 			this.posZ.Size = new System.Drawing.Size(72, 24);
@@ -231,6 +239,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.angle.AllowRelative = true;
 			this.angle.ButtonStep = 1;
 			this.angle.ButtonStepFloat = 1F;
+			this.angle.ButtonStepsWrapAround = false;
 			this.angle.Location = new System.Drawing.Point(186, 41);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(57, 24);
@@ -312,6 +321,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.settingsgroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.settingsgroup.Controls.Add(this.missingflags);
 			this.settingsgroup.Controls.Add(this.flags);
 			this.settingsgroup.Location = new System.Drawing.Point(284, 6);
 			this.settingsgroup.Name = "settingsgroup";
@@ -332,6 +342,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flags.Size = new System.Drawing.Size(337, 178);
 			this.flags.TabIndex = 0;
 			this.flags.VerticalSpacing = 1;
+			this.flags.OnValueChanged += new System.EventHandler(this.flags_OnValueChanged);
 			// 
 			// tabeffects
 			// 
@@ -491,6 +502,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.action.Cursor = System.Windows.Forms.Cursors.Default;
 			this.action.Empty = false;
 			this.action.GeneralizedCategories = null;
+			this.action.GeneralizedOptions = null;
 			this.action.Location = new System.Drawing.Point(62, 27);
 			this.action.Name = "action";
 			this.action.Size = new System.Drawing.Size(524, 21);
@@ -579,6 +591,27 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hintlabel.TabIndex = 4;
 			this.hintlabel.Text = "Select several thing types to randomly assign them to selection";
 			// 
+			// missingflags
+			// 
+			this.missingflags.BackColor = System.Drawing.SystemColors.Window;
+			this.missingflags.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+			this.missingflags.Location = new System.Drawing.Point(55, -2);
+			this.missingflags.Name = "missingflags";
+			this.missingflags.Size = new System.Drawing.Size(16, 16);
+			this.missingflags.TabIndex = 5;
+			this.missingflags.TabStop = false;
+			this.missingflags.Visible = false;
+			// 
+			// tooltip
+			// 
+			this.tooltip.AutomaticDelay = 10;
+			this.tooltip.AutoPopDelay = 3000;
+			this.tooltip.InitialDelay = 10;
+			this.tooltip.IsBalloon = true;
+			this.tooltip.ReshowDelay = 100;
+			this.tooltip.UseAnimation = false;
+			this.tooltip.UseFading = false;
+			// 
 			// ThingEditForm
 			// 
 			this.AcceptButton = this.apply;
@@ -615,6 +648,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hexenpanel.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.hint)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.missingflags)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -662,5 +696,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl anglecontrol;
 		private System.Windows.Forms.PictureBox hint;
 		private System.Windows.Forms.Label hintlabel;
+		private System.Windows.Forms.PictureBox missingflags;
+		private System.Windows.Forms.ToolTip tooltip;
 	}
 }

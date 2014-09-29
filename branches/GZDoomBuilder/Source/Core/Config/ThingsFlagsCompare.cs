@@ -38,13 +38,10 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Variables
 
-		private string flag;
-		private CompareMethod comparemethod;
-		private bool invert;
-		private string group;
-
-		// Disposing
-		private bool isdisposed;
+		private readonly string flag;
+		private readonly CompareMethod comparemethod;
+		private readonly bool invert;
+		private readonly string group;
 
 		#endregion
 
@@ -52,7 +49,6 @@ namespace CodeImp.DoomBuilder.Config
 
 		public string Flag { get { return flag; } }
 		public string Group { get { return group; } }
-		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
 
@@ -86,17 +82,6 @@ namespace CodeImp.DoomBuilder.Config
 			GC.SuppressFinalize(this);
 		}
 
-		// Disposer
-		internal void Dispose()
-		{
-			// Not already disposed?
-			if (!isdisposed)
-			{
-				// Done
-				isdisposed = true;
-			}
-		}
-
 		#endregion
 
 		#region ================== Methods
@@ -126,11 +111,8 @@ namespace CodeImp.DoomBuilder.Config
 				t2flag = invert ? !t2.Flags[flag] : t2.Flags[flag];
 			}
 
-			if (comparemethod == CompareMethod.And && (t1flag && t2flag))
-				return 1;
-			else if (comparemethod == CompareMethod.Equal && (t1flag == t2flag))
-				return 1;
-	
+			if (comparemethod == CompareMethod.And && (t1flag && t2flag)) return 1;
+			if (comparemethod == CompareMethod.Equal && (t1flag == t2flag)) return 1;
 			return 0;
 		}
 

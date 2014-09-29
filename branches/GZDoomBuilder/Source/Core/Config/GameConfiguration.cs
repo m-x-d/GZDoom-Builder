@@ -100,7 +100,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly List<ThingCategory> thingcategories;
 		private readonly Dictionary<int, ThingTypeInfo> things;
 		private readonly List<FlagTranslation> thingflagstranslation;
-		private readonly List<ThingFlagsCompare> thingflagscompare;
+		private readonly Dictionary<string, Dictionary<string, ThingFlagsCompare>> thingflagscompare; //mxd 
 		private readonly Dictionary<string, string> thingrenderstyles; //mxd
 		
 		// Linedefs
@@ -203,7 +203,7 @@ namespace CodeImp.DoomBuilder.Config
 		public ICollection<string> DefaultThingFlags { get { return defaultthingflags; } }
 		public IDictionary<string, string> ThingFlags { get { return thingflags; } }
 		public List<FlagTranslation> ThingFlagsTranslation { get { return thingflagstranslation; } }
-		public List<ThingFlagsCompare> ThingFlagsCompare { get { return thingflagscompare; } }
+		public Dictionary<string, Dictionary<string, ThingFlagsCompare>> ThingFlagsCompare { get { return thingflagscompare; } } //mxd
 		public Dictionary<string, string> ThingRenderStyles { get { return thingrenderstyles; } } //mxd
 		
 		// Linedefs
@@ -278,7 +278,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.thingflagstranslation = new List<FlagTranslation>();
 			this.linedefflagstranslation = new List<FlagTranslation>();
 			this.thingfilters = new List<ThingsFilter>();
-			this.thingflagscompare = new List<ThingFlagsCompare>();
+			this.thingflagscompare = new Dictionary<string, Dictionary<string, ThingFlagsCompare>>(); //mxd
 			this.brightnesslevels = new StepsList();
 			this.makedoorflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 			this.linedefrenderstyles = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
@@ -398,7 +398,6 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			foreach(ThingCategory tc in thingcategories) tc.Dispose();
 			foreach(LinedefActionCategory ac in actioncategories) ac.Dispose();
-			foreach (ThingFlagsCompare tfc in thingflagscompare) tfc.Dispose();
 		}
 		
 		#endregion
@@ -717,11 +716,20 @@ namespace CodeImp.DoomBuilder.Config
 				
 			// Get thing compare flag info (for the stuck thing error checker
 			dic = cfg.ReadSetting("thingflagscompare", new Hashtable());
-			foreach(DictionaryEntry de in dic) {
+			foreach(DictionaryEntry de in dic) 
+			{
 				IDictionary gdic = cfg.ReadSetting("thingflagscompare." + de.Key, new Hashtable());
 
-				foreach(DictionaryEntry gde in gdic) {
-					thingflagscompare.Add(new ThingFlagsCompare(cfg, de.Key.ToString(), gde.Key.ToString()));
+				foreach(DictionaryEntry gde in gdic)
+				{
+					string group = de.Key.ToString(); //mxd
+					string flag = gde.Key.ToString(); //mxd
+					
+					if(!thingflagscompare.ContainsKey(group)) //mxd
+						thingflagscompare.Add(group, new Dictionary<string, ThingFlagsCompare>());
+
+					if(!thingflagscompare[group].ContainsKey(flag)) //mxd
+						thingflagscompare[group].Add(flag, new ThingFlagsCompare(cfg, group, flag));
 				}
 			}
 

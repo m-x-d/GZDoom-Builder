@@ -25,6 +25,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.thingtype = new CodeImp.DoomBuilder.Controls.ThingBrowserControl();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -70,6 +71,7 @@
 			this.zlabel = new System.Windows.Forms.Label();
 			this.tabeffects = new System.Windows.Forms.TabPage();
 			this.settingsgroup = new System.Windows.Forms.GroupBox();
+			this.missingflags = new System.Windows.Forms.PictureBox();
 			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
 			this.hexenpanel = new System.Windows.Forms.Panel();
@@ -97,6 +99,7 @@
 			this.apply = new System.Windows.Forms.Button();
 			this.hint = new System.Windows.Forms.PictureBox();
 			this.hintlabel = new System.Windows.Forms.Label();
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabs.SuspendLayout();
@@ -109,6 +112,7 @@
 			this.groupBox4.SuspendLayout();
 			this.tabeffects.SuspendLayout();
 			this.settingsgroup.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.missingflags)).BeginInit();
 			this.actiongroup.SuspendLayout();
 			this.hexenpanel.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -164,6 +168,7 @@
 			this.roll.AllowRelative = true;
 			this.roll.ButtonStep = 1;
 			this.roll.ButtonStepFloat = 1F;
+			this.roll.ButtonStepsWrapAround = false;
 			this.roll.Location = new System.Drawing.Point(61, 66);
 			this.roll.Name = "roll";
 			this.roll.Size = new System.Drawing.Size(57, 24);
@@ -187,6 +192,7 @@
 			this.pitch.AllowRelative = true;
 			this.pitch.ButtonStep = 1;
 			this.pitch.ButtonStepFloat = 1F;
+			this.pitch.ButtonStepsWrapAround = false;
 			this.pitch.Location = new System.Drawing.Point(61, 41);
 			this.pitch.Name = "pitch";
 			this.pitch.Size = new System.Drawing.Size(57, 24);
@@ -210,6 +216,7 @@
 			this.angle.AllowRelative = true;
 			this.angle.ButtonStep = 1;
 			this.angle.ButtonStepFloat = 1F;
+			this.angle.ButtonStepsWrapAround = false;
 			this.angle.Location = new System.Drawing.Point(61, 16);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(57, 24);
@@ -366,6 +373,7 @@
 			this.conversationID.AllowRelative = false;
 			this.conversationID.ButtonStep = 1;
 			this.conversationID.ButtonStepFloat = 1F;
+			this.conversationID.ButtonStepsWrapAround = false;
 			this.conversationID.Location = new System.Drawing.Point(98, 106);
 			this.conversationID.Name = "conversationID";
 			this.conversationID.Size = new System.Drawing.Size(72, 24);
@@ -399,6 +407,7 @@
 			this.health.AllowRelative = false;
 			this.health.ButtonStep = 8;
 			this.health.ButtonStepFloat = 0.1F;
+			this.health.ButtonStepsWrapAround = false;
 			this.health.Location = new System.Drawing.Point(98, 76);
 			this.health.Name = "health";
 			this.health.Size = new System.Drawing.Size(72, 24);
@@ -421,6 +430,7 @@
 			this.score.AllowRelative = false;
 			this.score.ButtonStep = 8;
 			this.score.ButtonStepFloat = 0.1F;
+			this.score.ButtonStepsWrapAround = false;
 			this.score.Location = new System.Drawing.Point(98, 46);
 			this.score.Name = "score";
 			this.score.Size = new System.Drawing.Size(72, 24);
@@ -443,6 +453,7 @@
 			this.gravity.AllowRelative = false;
 			this.gravity.ButtonStep = 8;
 			this.gravity.ButtonStepFloat = 0.1F;
+			this.gravity.ButtonStepsWrapAround = false;
 			this.gravity.Location = new System.Drawing.Point(98, 16);
 			this.gravity.Name = "gravity";
 			this.gravity.Size = new System.Drawing.Size(72, 24);
@@ -494,6 +505,7 @@
 			this.alpha.AllowRelative = false;
 			this.alpha.ButtonStep = 8;
 			this.alpha.ButtonStepFloat = 0.1F;
+			this.alpha.ButtonStepsWrapAround = false;
 			this.alpha.Location = new System.Drawing.Point(89, 78);
 			this.alpha.Name = "alpha";
 			this.alpha.Size = new System.Drawing.Size(72, 24);
@@ -579,6 +591,7 @@
 			this.posX.AllowRelative = true;
 			this.posX.ButtonStep = 8;
 			this.posX.ButtonStepFloat = 1F;
+			this.posX.ButtonStepsWrapAround = false;
 			this.posX.Location = new System.Drawing.Point(61, 16);
 			this.posX.Name = "posX";
 			this.posX.Size = new System.Drawing.Size(72, 24);
@@ -593,6 +606,7 @@
 			this.posY.AllowRelative = true;
 			this.posY.ButtonStep = 8;
 			this.posY.ButtonStepFloat = 1F;
+			this.posY.ButtonStepsWrapAround = false;
 			this.posY.Location = new System.Drawing.Point(61, 41);
 			this.posY.Name = "posY";
 			this.posY.Size = new System.Drawing.Size(72, 24);
@@ -607,6 +621,7 @@
 			this.posZ.AllowRelative = true;
 			this.posZ.ButtonStep = 8;
 			this.posZ.ButtonStepFloat = 1F;
+			this.posZ.ButtonStepsWrapAround = false;
 			this.posZ.Location = new System.Drawing.Point(61, 66);
 			this.posZ.Name = "posZ";
 			this.posZ.Size = new System.Drawing.Size(72, 24);
@@ -641,6 +656,7 @@
 			// 
 			this.settingsgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
+			this.settingsgroup.Controls.Add(this.missingflags);
 			this.settingsgroup.Controls.Add(this.flags);
 			this.settingsgroup.Location = new System.Drawing.Point(6, 238);
 			this.settingsgroup.Name = "settingsgroup";
@@ -648,6 +664,17 @@
 			this.settingsgroup.TabIndex = 23;
 			this.settingsgroup.TabStop = false;
 			this.settingsgroup.Text = " Flags ";
+			// 
+			// missingflags
+			// 
+			this.missingflags.BackColor = System.Drawing.SystemColors.Window;
+			this.missingflags.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+			this.missingflags.Location = new System.Drawing.Point(42, -1);
+			this.missingflags.Name = "missingflags";
+			this.missingflags.Size = new System.Drawing.Size(16, 16);
+			this.missingflags.TabIndex = 5;
+			this.missingflags.TabStop = false;
+			this.missingflags.Visible = false;
 			// 
 			// flags
 			// 
@@ -661,6 +688,7 @@
 			this.flags.Size = new System.Drawing.Size(603, 132);
 			this.flags.TabIndex = 0;
 			this.flags.VerticalSpacing = 1;
+			this.flags.OnValueChanged += new System.EventHandler(this.flags_OnValueChanged);
 			// 
 			// actiongroup
 			// 
@@ -830,6 +858,7 @@
 			this.action.Cursor = System.Windows.Forms.Cursors.Default;
 			this.action.Empty = false;
 			this.action.GeneralizedCategories = null;
+			this.action.GeneralizedOptions = null;
 			this.action.Location = new System.Drawing.Point(62, 27);
 			this.action.Name = "action";
 			this.action.Size = new System.Drawing.Size(513, 21);
@@ -952,6 +981,16 @@
 			this.hintlabel.TabIndex = 4;
 			this.hintlabel.Text = "Select several thing types to randomly assign them to selection";
 			// 
+			// tooltip
+			// 
+			this.tooltip.AutomaticDelay = 10;
+			this.tooltip.AutoPopDelay = 3000;
+			this.tooltip.InitialDelay = 10;
+			this.tooltip.IsBalloon = true;
+			this.tooltip.ReshowDelay = 100;
+			this.tooltip.UseAnimation = false;
+			this.tooltip.UseFading = false;
+			// 
 			// ThingEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
@@ -990,6 +1029,7 @@
 			this.groupBox4.PerformLayout();
 			this.tabeffects.ResumeLayout(false);
 			this.settingsgroup.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.missingflags)).EndInit();
 			this.actiongroup.ResumeLayout(false);
 			this.actiongroup.PerformLayout();
 			this.hexenpanel.ResumeLayout(false);
@@ -1075,5 +1115,7 @@
         private GZBuilder.Controls.AngleControl pitchControl;
         private System.Windows.Forms.GroupBox groupBox7;
         private GZBuilder.Controls.PairedFloatControl scale;
+		private System.Windows.Forms.PictureBox missingflags;
+		private System.Windows.Forms.ToolTip tooltip;
 	}
 }

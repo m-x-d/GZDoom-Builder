@@ -29,6 +29,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 
 		private readonly Thing thing;
+		private readonly Linedef line; //mxd
 		
 		#endregion
 		
@@ -42,10 +43,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 		
 		// Constructor
-		public ResultStuckThingInLine(Thing t)
+		public ResultStuckThingInLine(Thing t, Linedef l)
 		{
 			// Initialize
 			thing = t;
+			line = l; //mxd
 			viewobjects.Add(t);
 			hidden = t.IgnoredErrorChecks.Contains(this.GetType()); //mxd
 			description = "This thing is stuck in a wall (single-sided line) and will likely not be able to move around.";
@@ -67,13 +69,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			return "Thing " + thing.Index + " (" + General.Map.Data.GetThingInfo(thing.Type).Title + ") is stuck in a wall at " + thing.Position.x + ", " + thing.Position.y;
+			return "Thing " + thing.Index + " (" + General.Map.Data.GetThingInfo(thing.Type).Title + ") is stuck in linedef " + line.Index + " at " + thing.Position.x + ", " + thing.Position.y;
 		}
 
 		// Rendering
 		public override void RenderOverlaySelection(IRenderer2D renderer)
 		{
-			renderer.RenderThing(thing, renderer.DetermineThingColor(thing), 1.0f);
+			renderer.RenderThing(thing, renderer.DetermineThingColor(thing), 0.8f);
+		}
+
+		// mxd. More rencering
+		public override void PlotSelection(IRenderer2D renderer) 
+		{
+			renderer.PlotLinedef(line, General.Colors.Selection);
+			renderer.PlotVertex(line.Start, ColorCollection.VERTICES);
+			renderer.PlotVertex(line.End, ColorCollection.VERTICES);
 		}
 
 		// This removes the thing

@@ -2026,31 +2026,46 @@ namespace CodeImp.DoomBuilder
 			}
 		}
 
-		private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e) {
+		private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e) 
+		{
 			string exceptionmsg = string.Empty;
 			
-			try {
-				// Since we can't prevent the app from terminating, log this to the event log. 
-				if(!EventLog.SourceExists("ThreadException"))
-					EventLog.CreateEventSource("ThreadException", "Application");
-
+			try 
+			{
 				Exception ex = (Exception)e.ExceptionObject;
 				exceptionmsg = "An application error occurred: " + ex.Message + "\n\nStack Trace:\n" + ex.StackTrace;
 
-				// Create an EventLog instance and assign its source.
-				using (EventLog myLog = new EventLog()) {
-					myLog.Source = "ThreadException";
-					myLog.WriteEntry(exceptionmsg);
+				// Since we can't prevent the app from terminating, log this to the event log.
+				try {
+					if (!EventLog.SourceExists("ThreadException"))
+						EventLog.CreateEventSource("ThreadException", "Application");
+
+					// Create an EventLog instance and assign its source.
+					using (EventLog myLog = new EventLog()) 
+					{
+						myLog.Source = "ThreadException";
+						myLog.WriteEntry(exceptionmsg);
+					}
+				}
+				catch (Exception exc) 
+				{
+					MessageBox.Show("Could not write the error to the event log.\nReason: "
+						+ exc.Message + "\n\nInitial exception:\n" + exceptionmsg, "Fatal Non-UI Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 				}
 
 				GZBuilder.Windows.ExceptionDialog dlg = new GZBuilder.Windows.ExceptionDialog(e);
 				dlg.Setup();
 				dlg.ShowDialog();
-			} catch(Exception exc) {
-				try {
-					MessageBox.Show("Could not write the error to the event log.\nReason: "
+			} 
+			catch(Exception exc) 
+			{
+				try 
+				{
+					MessageBox.Show("Failed to write the error to the event log or to show the Exception Dialog.\n\nReason: "
 						+ exc.Message + "\n\nInitial exception:\n" + exceptionmsg, "Fatal Non-UI Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-				} finally {
+				} 
+				finally 
+				{
 					Application.Exit();
 				}
 			}
