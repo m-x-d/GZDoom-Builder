@@ -123,6 +123,18 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
+		//mxd
+		public void Sort()
+		{
+			checkboxes.Sort(CheckboxesComparison);
+		}
+
+		//mxd
+		private int CheckboxesComparison(CheckBox cb1, CheckBox cb2)
+		{
+			return String.Compare(cb1.Text, cb2.Text, StringComparison.Ordinal);
+		}
+
 		// When layout must change
 		private void CheckboxArrayControl_Layout(object sender, LayoutEventArgs e)
 		{

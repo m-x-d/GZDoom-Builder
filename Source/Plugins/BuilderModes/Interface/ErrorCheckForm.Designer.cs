@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.copytoclipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.exportresults = new CodeImp.DoomBuilder.Controls.SplitButton();
+			this.toggleall = new System.Windows.Forms.CheckBox();
 			this.resultcontextmenustrip.SuspendLayout();
 			this.resultspanel.SuspendLayout();
 			this.exporttrsultsmenustrip.SuspendLayout();
@@ -64,10 +65,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.checks.AutoScroll = true;
 			this.checks.AutoSize = true;
 			this.checks.Columns = 2;
-			this.checks.Location = new System.Drawing.Point(10, 15);
+			this.checks.Location = new System.Drawing.Point(10, 32);
 			this.checks.Margin = new System.Windows.Forms.Padding(1);
 			this.checks.Name = "checks";
-			this.checks.Size = new System.Drawing.Size(360, 63);
+			this.checks.Size = new System.Drawing.Size(360, 53);
 			this.checks.TabIndex = 0;
 			this.checks.VerticalSpacing = 1;
 			// 
@@ -113,7 +114,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.toolStripSeparator1,
             this.resultcopytoclipboard});
 			this.resultcontextmenustrip.Name = "resultcontextmenustrip";
-			this.resultcontextmenustrip.Size = new System.Drawing.Size(232, 142);
+			this.resultcontextmenustrip.Size = new System.Drawing.Size(232, 120);
 			this.resultcontextmenustrip.Opening += new System.ComponentModel.CancelEventHandler(this.resultcontextmenustrip_Opening);
 			// 
 			// resultshowall
@@ -304,6 +305,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.exportresults.Text = "Export to File";
 			this.exportresults.UseVisualStyleBackColor = true;
 			// 
+			// toggleall
+			// 
+			this.toggleall.AutoSize = true;
+			this.toggleall.Checked = true;
+			this.toggleall.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.toggleall.Location = new System.Drawing.Point(10, 12);
+			this.toggleall.Name = "toggleall";
+			this.toggleall.Size = new System.Drawing.Size(71, 18);
+			this.toggleall.TabIndex = 5;
+			this.toggleall.Text = "Toggle All";
+			this.toggleall.UseVisualStyleBackColor = true;
+			this.toggleall.CheckedChanged += new System.EventHandler(this.toggleall_CheckedChanged);
+			// 
 			// ErrorCheckForm
 			// 
 			this.AcceptButton = this.buttoncheck;
@@ -311,6 +325,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.closebutton;
 			this.ClientSize = new System.Drawing.Size(380, 566);
+			this.Controls.Add(this.toggleall);
 			this.Controls.Add(this.exportresults);
 			this.Controls.Add(this.closebutton);
 			this.Controls.Add(this.resultspanel);
@@ -362,5 +377,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripMenuItem resultcopytoclipboard;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem resulthidecurrent;
+		private System.Windows.Forms.CheckBox toggleall;
 	}
 }
