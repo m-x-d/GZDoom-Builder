@@ -28,7 +28,7 @@ ECHO.
 ECHO Writing SVN log file...
 ECHO.
 IF EXIST "SVN_Build\log.xml" DEL /F /Q "SVN_Build\log.xml" > NUL
-svn log --xml -r HEAD:1 > "SVN_Build\log.xml"
+svn log --xml -r HEAD:1496 > "SVN_Build\log.xml"
 IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
 IF NOT EXIST "SVN_Build\log.xml" GOTO FILEFAIL
 
