@@ -305,7 +305,7 @@ namespace CodeImp.DoomBuilder.IO
 			lumps.RemoveAt(index);
 			
 			// Remove from lookup (mxd)
-			if(lookup[l.LongName].Count > 0)
+			if(lookup[l.LongName].Count > 1)
 			{
 				lookup[l.LongName].Remove(index);
 			} 
@@ -330,7 +330,7 @@ namespace CodeImp.DoomBuilder.IO
 			lump.Dispose();
 			
 			// Remove from lookup (mxd)
-			if (lookup[lump.LongName].Count > 0)
+			if (lookup[lump.LongName].Count > 1)
 			{
 				lookup[lump.LongName].Remove(pos);
 			}
