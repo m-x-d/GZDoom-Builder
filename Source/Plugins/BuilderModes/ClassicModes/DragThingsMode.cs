@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			dragitemposition = dragitem.Position;
 
 			//mxd. Get drag offset
-			dragstartoffset = dragitemposition - General.Map.Grid.SnappedToGrid(dragitem.Position);
+			dragstartoffset = General.Map.Grid.SnappedToGrid(dragitem.Position) - dragitemposition;
 
 			// Keep view information
 			lastoffsetx = renderer.OffsetX;
@@ -216,10 +216,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Move the dragged item
 				dragitem.Move(dragitemposition + offset);
 
-				// Snap item to grid increment
-				if(snapgridincrement) //mxd
+				// Snap item to grid increment (mxd)
+				if(snapgridincrement)
 				{
-					dragitem.Move(General.Map.Grid.SnappedToGrid(dragitemposition + offset + dragstartoffset) - dragstartoffset);
+					dragitem.Move(General.Map.Grid.SnappedToGrid(dragitemposition + offset) - dragstartoffset);
 				} 
 				else // Or to the grid itself
 				{

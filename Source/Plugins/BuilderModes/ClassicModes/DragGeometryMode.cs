@@ -142,7 +142,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			dragitem = MapSet.NearestVertex(selectedverts, dragstartmappos);
 
 			//mxd. Get drag offset
-			dragstartoffset = dragitem.Position - General.Map.Grid.SnappedToGrid(dragitem.Position);
+			dragstartoffset = General.Map.Grid.SnappedToGrid(dragitem.Position) - dragitem.Position;
 			
 			// Lines to snap to
 			snaptolines = General.Map.Map.LinedefsFromMarkedVertices(true, false, false);
@@ -316,7 +316,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Snap item to grid increment
 				if(snapgridincrement) //mxd
 				{
-					dragitem.Move(General.Map.Grid.SnappedToGrid(dragitem.Position + dragstartoffset) - dragstartoffset);
+					dragitem.Move(General.Map.Grid.SnappedToGrid(dragitem.Position) - dragstartoffset);
 				}
 				else // Or to the grid itself
 				{
