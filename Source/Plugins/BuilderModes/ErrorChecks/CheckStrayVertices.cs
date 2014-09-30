@@ -1,7 +1,7 @@
 ﻿using CodeImp.DoomBuilder.Map;
 using System.Threading;
 
-namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
+namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[ErrorChecker("Check unconnected vertices", true, 50)]
 	public class CheckStrayVertices : ErrorChecker

@@ -7,7 +7,7 @@ using System.Drawing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
+namespace CodeImp.DoomBuilder.BuilderModes
 {
 	public class ResultStrayVertex : ErrorResult
 	{

@@ -8,31 +8,33 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public class ResultUnknownThing : ErrorResult
+	public class ResultUnusedThing : ErrorResult
 	{
-
 		#region ================== Variables
 
 		private readonly Thing thing;
+		private readonly string details;
 
 		#endregion
 
 		#region ================== Properties
 
-		public override int Buttons { get { return 1; } }
+		public override int Buttons { get { return 2; } }
 		public override string Button1Text { get { return "Delete Thing"; } }
+		public override string Button2Text { get { return "Apply default flags"; } }
 
 		#endregion
 
 		#region ================== Constructor / Destructor
 
-		public ResultUnknownThing(Thing t) 
+		public ResultUnusedThing(Thing t, string details) 
 		{
 			// Initialize
-			thing = t;
-			viewobjects.Add(t);
-			hidden = t.IgnoredErrorChecks.Contains(this.GetType()); //mxd
-			description = "This thing has unknown type (eg. it's not defined in DECORATE or current game configuration).";
+			this.thing = t;
+			this.details = details;
+			this.viewobjects.Add(t);
+			this.hidden = t.IgnoredErrorChecks.Contains(this.GetType());
+			this.description = "This thing is not used by any class, skill or game mode.";
 		}
 
 		#endregion
@@ -51,7 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString() 
 		{
-			return "Thing " + thing.Index + " at " + thing.Position.x + ", " + thing.Position.y + " has unknown type (" + thing.Type + ").";
+			return "Thing " + thing.Index + " (" + General.Map.Data.GetThingInfo(thing.Type).Title + ") at " + thing.Position.x + ", " + thing.Position.y + details;
 		}
 
 		// Rendering
@@ -65,6 +67,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(!batchMode) General.Map.UndoRedo.CreateUndo("Delete thing");
 			thing.Dispose();
+			General.Map.IsChanged = true;
+			General.Map.ThingsFilter.Update();
+			return true;
+		}
+
+		// This sets default flags
+		public override bool Button2Click(bool batchMode) 
+		{
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Set default thing flags");
+			foreach(string f in General.Map.Config.DefaultThingFlags) thing.SetFlag(f, true);
 			General.Map.IsChanged = true;
 			General.Map.ThingsFilter.Update();
 			return true;

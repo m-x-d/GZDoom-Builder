@@ -237,6 +237,7 @@
     <Compile Include="ErrorChecks\CheckUnknownTextures.cs" />
     <Compile Include="ErrorChecks\CheckUnknownThings.cs" />
     <Compile Include="ErrorChecks\CheckUnusedTextures.cs" />
+    <Compile Include="ErrorChecks\CheckUnusedThings.cs" />
     <Compile Include="ErrorChecks\ResultMissingFlat.cs" />
     <Compile Include="ErrorChecks\ResultNoErrors.cs" />
     <Compile Include="ErrorChecks\ResultSectorInvalid.cs" />
@@ -248,6 +249,7 @@
     <Compile Include="ErrorChecks\ResultUnknownTexture.cs" />
     <Compile Include="ErrorChecks\ResultUnknownThing.cs" />
     <Compile Include="ErrorChecks\ResultUnusedTexture.cs" />
+    <Compile Include="ErrorChecks\ResultUnusedThing.cs" />
     <Compile Include="ErrorChecks\ResultVertexOverlappingLine.cs" />
     <Compile Include="ErrorChecks\ResultVertexOverlappingVertex.cs" />
     <Compile Include="FindReplace\BaseFindLinedef.cs" />

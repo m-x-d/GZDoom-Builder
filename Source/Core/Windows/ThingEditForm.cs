@@ -635,17 +635,18 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(KeyValuePair<string, Dictionary<string, ThingFlagsCompare>> group in General.Map.Config.ThingFlagsCompare)
 			{
 				if(group.Value.Count < 2) continue;
-				int enabledcount = 0;
+				bool haveflags = false;
 				
 				foreach(CheckBox cb in flags.Checkboxes)
 				{
 					if (group.Value.ContainsKey(cb.Tag.ToString()) && cb.CheckState != CheckState.Unchecked)
 					{
-						enabledcount++;
+						haveflags = true;
+						break;
 					}
 				}
 
-				if (enabledcount == 0)
+				if (!haveflags)
 				{
 					switch(group.Key)
 					{

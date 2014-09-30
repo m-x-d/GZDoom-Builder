@@ -12,7 +12,7 @@ using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
+namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[ErrorChecker("Check texture alignment", true, 1000)]
 	public class CheckTextureAlignment : ErrorChecker
