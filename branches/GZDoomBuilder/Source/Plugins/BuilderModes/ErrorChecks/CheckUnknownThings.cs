@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using CodeImp.DoomBuilder.Map;
 
-namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks {
-
+namespace CodeImp.DoomBuilder.BuilderModes 
+{
 	[ErrorChecker("Check unknown things", true, 50)]
 	public class CheckUnknownThings : ErrorChecker {
 		
