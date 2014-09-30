@@ -130,6 +130,12 @@ IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
 IF NOT EXIST "Build\Plugins\VisplaneExplorer.dll" GOTO FILEFAIL
 
 ECHO.
+ECHO Creating changelog...
+ECHO.
+ChangelogMaker.exe "SVN_Build\log.xml" "Build" "m-x-d"
+IF %ERRORLEVEL% NEQ 0 GOTO LOGFAIL
+
+ECHO.
 ECHO Packing release...
 ECHO.
 IF EXIST "SVN_Build\*.7z" DEL /F /Q "SVN_Build\*.7z" > NUL
@@ -138,6 +144,7 @@ IF %ERRORLEVEL% NEQ 0 GOTO PACKFAIL
 IF NOT EXIST .\SVN_Build\gzdb.7z GOTO FILEFAIL
 
 REN "SVN_Build\gzdb.7z" GZDoom_Builder-r%REVISIONNUMBER%.7z
+IF EXIST "Build\Changelog.txt" DEL /F /Q "Build\Changelog.txt" > NUL
 
 svn revert "Source\Core\Properties\AssemblyInfo.cs" > NUL
 svn revert "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" > NUL
@@ -167,6 +174,13 @@ GOTO LEAVE
 :FILEFAIL
 ECHO.
 ECHO.     BUILD FAILED (Output file was not built)
+ECHO.
+PAUSE > NUL
+GOTO LEAVE
+
+:LOGFAIL
+ECHO.
+ECHO.     CHANGELOG GENERATION FAILED (Tool returned error %ERRORLEVEL%)
 ECHO.
 PAUSE > NUL
 GOTO LEAVE
