@@ -303,7 +303,17 @@ namespace CodeImp.DoomBuilder.IO
 			// Remove from list
 			Lump l = lumps[index];
 			lumps.RemoveAt(index);
-			lookup[l.LongName].Remove(index); //mxd
+			
+			// Remove from lookup (mxd)
+			if(lookup[l.LongName].Count > 0)
+			{
+				lookup[l.LongName].Remove(index);
+			} 
+			else 
+			{
+				lookup.Remove(l.LongName);
+			}
+			
 			l.Dispose();
 			numlumps--;
 			
@@ -318,7 +328,17 @@ namespace CodeImp.DoomBuilder.IO
 			int pos = lumps.IndexOf(lump); //mxd
 			lumps.Remove(lump);
 			lump.Dispose();
-			lookup[lump.LongName].Remove(pos); //mxd
+			
+			// Remove from lookup (mxd)
+			if (lookup[lump.LongName].Count > 0)
+			{
+				lookup[lump.LongName].Remove(pos);
+			}
+			else 
+			{
+				lookup.Remove(lump.LongName);
+			}
+				
 			numlumps--;
 			
 			// Write the new headers
