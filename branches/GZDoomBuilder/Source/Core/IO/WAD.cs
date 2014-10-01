@@ -52,7 +52,6 @@ namespace CodeImp.DoomBuilder.IO
 		
 		// Lumps
 		private List<Lump> lumps;
-		private Dictionary<long, List<int>> lookup; //mxd 
 		
 		// Status
 		private readonly bool isreadonly;
@@ -172,7 +171,6 @@ namespace CodeImp.DoomBuilder.IO
 
 			// New lumps array
 			lumps = new List<Lump>(numlumps);
-			lookup = new Dictionary<long, List<int>>(); //mxd
 			
 			// Write the headers
 			WriteHeaders();
@@ -207,7 +205,6 @@ namespace CodeImp.DoomBuilder.IO
 			// Dispose old lumps and create new list
 			if(lumps != null) foreach(Lump l in lumps) l.Dispose();
 			lumps = new List<Lump>(numlumps);
-			lookup = new Dictionary<long, List<int>>(); //mxd
 
 			// Go for all lumps
 			for(int i = 0; i < numlumps; i++)
@@ -219,10 +216,6 @@ namespace CodeImp.DoomBuilder.IO
 
 				// Create the lump
 				lumps.Add(new Lump(file, this, fixedname, offset, length));
-
-				// Add to lookup (mxd)
-				if(!lookup.ContainsKey(lumps[i].LongName)) lookup.Add(lumps[i].LongName, new List<int>());
-				lookup[lumps[i].LongName].Add(i);
 			}
 		}
 
@@ -282,10 +275,6 @@ namespace CodeImp.DoomBuilder.IO
 			// Create the lump
 			Lump lump = new Lump(file, this, Lump.MakeFixedName(name, ENCODING), lumpsoffset, datalength);
 			lumps.Insert(position, lump);
-
-			// Insert into lookup (mxd)
-			if(!lookup.ContainsKey(lumps[position].LongName)) lookup.Add(lumps[position].LongName, new List<int>());
-			lookup[lumps[position].LongName].Add(position);
 			
 			// Advance lumps table offset
 			lumpsoffset += datalength;
@@ -303,17 +292,6 @@ namespace CodeImp.DoomBuilder.IO
 			// Remove from list
 			Lump l = lumps[index];
 			lumps.RemoveAt(index);
-			
-			// Remove from lookup (mxd)
-			if(lookup[l.LongName].Count > 1)
-			{
-				lookup[l.LongName].Remove(index);
-			} 
-			else 
-			{
-				lookup.Remove(l.LongName);
-			}
-			
 			l.Dispose();
 			numlumps--;
 			
@@ -325,20 +303,8 @@ namespace CodeImp.DoomBuilder.IO
 		public void Remove(Lump lump)
 		{
 			// Remove from list
-			int pos = lumps.IndexOf(lump); //mxd
 			lumps.Remove(lump);
 			lump.Dispose();
-			
-			// Remove from lookup (mxd)
-			if (lookup[lump.LongName].Count > 1)
-			{
-				lookup[lump.LongName].Remove(pos);
-			}
-			else 
-			{
-				lookup.Remove(lump.LongName);
-			}
-				
 			numlumps--;
 			
 			// Write the new headers
@@ -348,40 +314,22 @@ namespace CodeImp.DoomBuilder.IO
 		// This finds a lump by name, returns null when not found
 		public Lump FindLump(string name)
 		{
-			//mxd
-			long longname = Lump.MakeLongName(name);
-			if (!lookup.ContainsKey(longname)) return null;
-			return lumps[lookup[longname][0]];
+			int index = FindLumpIndex(name);
+			return (index == -1 ? null : lumps[index]);
 		}
 
 		// This finds a lump by name, returns null when not found
 		public Lump FindLump(string name, int start)
 		{
-			//mxd
-			long longname = Lump.MakeLongName(name);
-			if(!lookup.ContainsKey(longname)) return null;
-
-			foreach(int pos in lookup[longname]) {
-				if(pos >= start && pos <= lumps.Count - 1)
-					return lumps[pos];
-			}
-			return null;
+			int index = FindLumpIndex(name, start);
+			return (index == -1 ? null : lumps[index]);
 		}
 
 		// This finds a lump by name, returns null when not found
 		public Lump FindLump(string name, int start, int end)
 		{
-			long longname = Lump.MakeLongName(name);
-			if(!lookup.ContainsKey(longname)) return null;
-			
-			// Fix end when it exceeds length
-			if(end > (lumps.Count - 1)) end = lumps.Count - 1;
-
-			foreach(int pos in lookup[longname]) {
-				if(pos >= start && pos <= end)
-					return lumps[pos];
-			}
-			return null;
+			int index = FindLumpIndex(name, start, end);
+			return (index == -1 ? null : lumps[index]);
 		}
 
 		// This finds a lump by name, returns -1 when not found
@@ -404,15 +352,19 @@ namespace CodeImp.DoomBuilder.IO
 			if(name.Length > 8)	return -1;//mxd. Can't be here. Go away!
 			
 			long longname = Lump.MakeLongName(name);
-			if(!lookup.ContainsKey(longname)) return -1;
 			
 			// Fix end when it exceeds length
 			if(end > (lumps.Count - 1)) end = lumps.Count - 1;
 
-			// Find in the lookup (~30x faster than DB2 implementation) (mxd)
-			foreach(int pos in lookup[longname]) 
+			// Loop through the lumps
+			for(int i = start; i <= end; i++)
 			{
-				if(pos >= start && pos <= end) return pos;
+				// Check if the lump name matches
+				if(lumps[i].LongName == longname)
+				{
+					// Found the lump!
+					return i;
+				}
 			}
 
 			// Nothing found
