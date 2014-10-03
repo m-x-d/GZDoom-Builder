@@ -490,7 +490,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void PlotAssociations(IRenderer2D renderer, Association asso)
 		{
 			// Tag must be above zero
-			if(asso.tag <= 0) return;
+			if(asso.tag < 1) return;
 			
 			// Sectors?
 			if(asso.type == UniversalType.SectorTag)
@@ -535,7 +535,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void RenderAssociations(IRenderer2D renderer, Association asso)
 		{
 			// Tag must be above zero
-			if(asso.tag <= 0) return;
+			if(asso.tag < 1) return;
 
 			// Things?
 			if(asso.type == UniversalType.ThingTag)
@@ -573,7 +573,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void PlotReverseAssociations(IRenderer2D renderer, Association asso)
 		{
 			// Tag must be above zero
-			if(asso.tag <= 0) return;
+			if(asso.tag < 1) return;
 
 			List<Line3D> lines = new List<Line3D>(); //mxd
 			
@@ -635,7 +635,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void RenderReverseAssociations(IRenderer2D renderer, Association asso)
 		{
 			// Tag must be above zero
-			if(asso.tag <= 0) return;
+			if(asso.tag < 1) return;
 
 			List<Line3D> lines = new List<Line3D>(); //mxd
 

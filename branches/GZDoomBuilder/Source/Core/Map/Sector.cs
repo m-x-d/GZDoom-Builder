@@ -433,11 +433,13 @@ namespace CodeImp.DoomBuilder.Map
 			selecteditem = null;
 		}
 
-		// This removes UDMF stuff
+		// This removes UDMF stuff (mxd)
 		internal void TranslateFromUDMF() 
 		{
-			// Clear UDMF-related properties
+			// Clear UDMF-related properties (but keep VirtualSectorField!)
+			bool isvirtual = this.Fields.ContainsKey(MapSet.VirtualSectorField);
 			this.Fields.Clear();
+			if(isvirtual) this.Fields.Add(MapSet.VirtualSectorField, MapSet.VirtualSectorValue);
 			this.Flags.Clear();
 			hasFogColor = false;
 			useOutsideFog = false;
