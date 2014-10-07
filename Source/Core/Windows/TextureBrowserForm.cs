@@ -79,7 +79,8 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(IFilledTextureSet ts in General.Map.Data.TextureSets) 
 			{
 				count = (browseFlats ? ts.Flats.Count : ts.Textures.Count);
-				if(count == 0 && !General.Map.Config.MixTexturesFlats) continue;
+				if((count == 0 && !General.Map.Config.MixTexturesFlats) || (ts.Flats.Count == 0 && ts.Textures.Count == 0)) 
+					continue;
 
 				item = tvTextureSets.Nodes.Add(ts.Name + " [" + count + "]");
 				item.Name = ts.Name;
@@ -91,7 +92,8 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(ResourceTextureSet ts in General.Map.Data.ResourceTextureSets)
 			{
 				count = (browseFlats ? ts.Flats.Count : ts.Textures.Count);
-				if(count == 0 && !General.Map.Config.MixTexturesFlats) continue;
+				if((count == 0 && !General.Map.Config.MixTexturesFlats) || (ts.Flats.Count == 0 && ts.Textures.Count == 0))
+					continue;
 
 				item = tvTextureSets.Nodes.Add(ts.Name + " [" + count + "]");
 				item.Name = ts.Name;
@@ -99,7 +101,8 @@ namespace CodeImp.DoomBuilder.Windows
 				item.ImageIndex = 2 + ts.Location.type;
 				item.SelectedImageIndex = item.ImageIndex;
 
-				if (ts.Location.type != DataLocation.RESOURCE_WAD) {
+				if (ts.Location.type != DataLocation.RESOURCE_WAD) 
+				{
 					createNodes(item);
 					item.Expand();
 				}
@@ -146,8 +149,11 @@ namespace CodeImp.DoomBuilder.Windows
 				selectedset = match;
 
 			//mxd. Select found node or "All" node, if none were found
-			if (tvTextureSets.Nodes.Count > 0) 
-				tvTextureSets.SelectedNode = (selectedset ?? tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1]);
+			if (tvTextureSets.Nodes.Count > 0)
+			{
+				if (selectedset == null) selectedset = tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1];
+				tvTextureSets.SelectedNode = selectedset;
+			}
 
 			tvTextureSets.EndUpdate();//mxd
 

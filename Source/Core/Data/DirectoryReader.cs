@@ -80,12 +80,24 @@ namespace CodeImp.DoomBuilder.Data
 			
 			try
 			{
-				//mxd. Find in directories ZDoom expects them to be
-				foreach(string loc in PatchLocations)
+				if (General.Map.Config.MixTexturesFlats)
 				{
-					string path = Path.Combine(loc, Path.GetDirectoryName(pname));
+					//mxd. Find in directories ZDoom expects them to be
+					string dir = Path.GetDirectoryName(pname);
+					string name = Path.GetFileName(pname);
+					foreach (string loc in PatchLocations)
+					{
+						string path = Path.Combine(loc, dir);
+						string filename = FindFirstFile(path, name, true);
+						if (!string.IsNullOrEmpty(filename) && FileExists(filename)) 
+							return LoadFile(filename);
+					}
+				}
+				else
+				{
+					// Find in patches directory
+					string path = Path.Combine(PATCHES_DIR, Path.GetDirectoryName(pname));
 					string filename = FindFirstFile(path, Path.GetFileName(pname), true);
-
 					if(!string.IsNullOrEmpty(filename) && FileExists(filename))
 						return LoadFile(filename);
 				}
@@ -115,12 +127,25 @@ namespace CodeImp.DoomBuilder.Data
 			
 			try
 			{
-				//mxd. Find in directories ZDoom expects them to be
-				foreach(string loc in TextureLocations) 
+				if (General.Map.Config.MixTexturesFlats)
 				{
-					string path = Path.Combine(loc, Path.GetDirectoryName(pname));
+					//mxd. Find in directories ZDoom expects them to be
+					string dir = Path.GetDirectoryName(pname);
+					string name = Path.GetFileName(pname);
+					foreach (string loc in TextureLocations)
+					{
+						string path = Path.Combine(loc, dir);
+						string filename = FindFirstFile(path, name, true);
+						if(!string.IsNullOrEmpty(filename) && FileExists(filename)) 
+							return LoadFile(filename);
+					}
+				}
+				else
+				{
+					// Find in textures directory
+					string path = Path.Combine(TEXTURES_DIR, Path.GetDirectoryName(pname));
 					string filename = FindFirstFile(path, Path.GetFileName(pname), true);
-					if(!string.IsNullOrEmpty(filename) && FileExists(filename)) 
+					if(!string.IsNullOrEmpty(filename) && FileExists(filename))
 						return LoadFile(filename);
 				}
 			}
