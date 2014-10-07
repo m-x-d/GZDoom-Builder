@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Properties
 
-		protected readonly string[] PatchLocations = { TEXTURES_DIR, PATCHES_DIR, FLATS_DIR, SPRITES_DIR, GRAPHICS_DIR }; //mxd. Because ZDoom looks for patches and sprites in this order
+		protected readonly string[] PatchLocations = { PATCHES_DIR, TEXTURES_DIR, FLATS_DIR, SPRITES_DIR, GRAPHICS_DIR }; //mxd. Because ZDoom looks for patches and sprites in this order
 		protected readonly string[] TextureLocations = { TEXTURES_DIR, FLATS_DIR, SPRITES_DIR, PATCHES_DIR, GRAPHICS_DIR }; //mxd. Because ZDoom looks for textures in this order
 
 		#endregion
@@ -319,10 +319,22 @@ namespace CodeImp.DoomBuilder.Data
 				collection = LoadDirectoryImages("", ImageDataFormat.DOOMFLAT, false);
 				AddImagesToList(images, collection);
 			}
-			
-			// Add images from flats directory
-			collection = LoadDirectoryImages(FLATS_DIR, ImageDataFormat.DOOMFLAT, true);
-			AddImagesToList(images, collection);
+
+			if (General.Map.Config.MixTexturesFlats)
+			{
+				//mxd. Load from directories ZDoom expects them to be
+				foreach(string loc in TextureLocations) 
+				{
+					collection = LoadDirectoryImages(loc, ImageDataFormat.DOOMFLAT, true);
+					AddImagesToList(images, collection);
+				}
+			}
+			else
+			{
+				// Add images from flats directory
+				collection = LoadDirectoryImages(FLATS_DIR, ImageDataFormat.DOOMFLAT, true);
+				AddImagesToList(images, collection);
+			}
 
 			// Load TEXTURES lump file
 			string[] alltexturefiles = GetAllFilesWhichTitleStartsWith("", "TEXTURES"); //mxd

@@ -72,14 +72,14 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the image
 		protected override void LocalLoadImage()
 		{
+			// Checks
+			if(this.IsImageLoaded) return;
+			if((width == 0) || (height == 0)) return;
+
 			IImageReader reader;
 			MemoryStream mem;
 			byte[] membytes;
 			Graphics g = null;
-			
-			// Checks
-			if(this.IsImageLoaded) return;
-			if((width == 0) || (height == 0)) return;
 			
 			lock(this)
 			{
