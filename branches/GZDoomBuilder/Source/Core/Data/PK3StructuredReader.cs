@@ -54,8 +54,8 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Properties
 
-		protected readonly string[] PatchLocations = { PATCHES_DIR, TEXTURES_DIR, FLATS_DIR, SPRITES_DIR, GRAPHICS_DIR }; //mxd. Because ZDoom looks for patches and sprites in this order
-		protected readonly string[] TextureLocations = { TEXTURES_DIR, PATCHES_DIR, FLATS_DIR, SPRITES_DIR, GRAPHICS_DIR }; //mxd. Because ZDoom looks for textures in this order
+		protected readonly string[] PatchLocations = { TEXTURES_DIR, PATCHES_DIR, FLATS_DIR, SPRITES_DIR, GRAPHICS_DIR }; //mxd. Because ZDoom looks for patches and sprites in this order
+		protected readonly string[] TextureLocations = { TEXTURES_DIR, FLATS_DIR, SPRITES_DIR, PATCHES_DIR, GRAPHICS_DIR }; //mxd. Because ZDoom looks for textures in this order
 
 		#endregion
 
@@ -268,10 +268,21 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if (issuspended) throw new Exception("Data reader is suspended");
 
-			// Find in directories ZDoom expects them to be
-			foreach (string loc in PatchLocations)
+			if (General.Map.Config.MixTexturesFlats)
 			{
-				string path = Path.Combine(loc, Path.GetDirectoryName(pname));
+				// Find in directories ZDoom expects them to be
+				foreach (string loc in PatchLocations)
+				{
+					string path = Path.Combine(loc, Path.GetDirectoryName(pname));
+					string filename = FindFirstFile(path, Path.GetFileName(pname), true);
+					if (!string.IsNullOrEmpty(filename) && FileExists(filename)) 
+						return filename;
+				}
+			}
+			else
+			{
+				// Find in patches directory
+				string path = Path.Combine(PATCHES_DIR, Path.GetDirectoryName(pname));
 				string filename = FindFirstFile(path, Path.GetFileName(pname), true);
 				if (!string.IsNullOrEmpty(filename) && FileExists(filename)) 
 					return filename;

@@ -122,10 +122,20 @@ namespace CodeImp.DoomBuilder.Data
 				if(data != null) return data;
 			}
 
-			//mxd. Find in directories ZDoom expects them to be
-			foreach(string loc in PatchLocations) 
+			if (General.Map.Config.MixTexturesFlats)
 			{
-				string filename = FindFirstFile(loc, pname, true);
+				//mxd. Find in directories ZDoom expects them to be
+				foreach (string loc in PatchLocations)
+				{
+					string filename = FindFirstFile(loc, pname, true);
+					if ((filename != null) && FileExists(filename)) 
+						return LoadFile(filename);
+				}
+			}
+			else
+			{
+				// Find in patches directory
+				string filename = FindFirstFile(PATCHES_DIR, pname, true);
 				if((filename != null) && FileExists(filename))
 					return LoadFile(filename);
 			}
@@ -148,10 +158,20 @@ namespace CodeImp.DoomBuilder.Data
 				if(data != null) return data;
 			}
 
-			//mxd. Find in directories ZDoom expects them to be
-			foreach(string loc in TextureLocations) 
+			if(General.Map.Config.MixTexturesFlats)
 			{
-				string filename = FindFirstFile(loc, pname, true);
+				//mxd. Find in directories ZDoom expects them to be
+				foreach(string loc in TextureLocations) 
+				{
+					string filename = FindFirstFile(loc, pname, true);
+					if(!string.IsNullOrEmpty(filename) && FileExists(filename))
+						return LoadFile(filename);
+				}
+			}
+			else
+			{
+				// Find in textures directory
+				string filename = FindFirstFile(TEXTURES_DIR, pname, true);
 				if(!string.IsNullOrEmpty(filename) && FileExists(filename))
 					return LoadFile(filename);
 			}
