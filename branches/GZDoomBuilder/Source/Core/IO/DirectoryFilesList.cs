@@ -288,20 +288,18 @@ namespace CodeImp.DoomBuilder.IO
 			return null;
 		}
 		
-		// This fixes a path so that it doesn't have the \ at the end
+		// This fixes a path so that it ends with the proper directory separator (mxd)
 		private static string CorrectPath(string path)
 		{
 			if(path.Length > 0)
 			{
-				if((path[path.Length - 1] == Path.DirectorySeparatorChar) || (path[path.Length - 1] == Path.AltDirectorySeparatorChar))
-					return path.Substring(0, path.Length - 1);
-				else
-					return path;
+				if(path[path.Length - 1] == Path.DirectorySeparatorChar) return path;
+				if(path[path.Length - 1] == Path.AltDirectorySeparatorChar)
+					path = path.Substring(0, path.Length - 1);
+				return path + Path.DirectorySeparatorChar;
 			}
-			else
-			{
-				return path;
-			}
+
+			return path;
 		}
 
 		#endregion

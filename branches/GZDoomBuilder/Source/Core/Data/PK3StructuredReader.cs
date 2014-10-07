@@ -54,7 +54,8 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Properties
 
-		protected string[] PatchLocations = { PATCHES_DIR, TEXTURES_DIR, FLATS_DIR, GRAPHICS_DIR }; //mxd. Because ZDoom looks for patches in these folders ///TODO: check the order of these
+		protected readonly string[] PatchLocations = { PATCHES_DIR, TEXTURES_DIR, FLATS_DIR, SPRITES_DIR, GRAPHICS_DIR }; //mxd. Because ZDoom looks for patches and sprites in this order
+		protected readonly string[] TextureLocations = { TEXTURES_DIR, PATCHES_DIR, FLATS_DIR, SPRITES_DIR, GRAPHICS_DIR }; //mxd. Because ZDoom looks for textures in this order
 
 		#endregion
 
@@ -210,7 +211,6 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Load TEXTURES lump files
 			imgset.Clear();
-			//string[] alltexturefiles = GetAllFilesWithTitle("", "TEXTURES", false);
 			string[] alltexturefiles = GetAllFilesWhichTitleStartsWith("", "TEXTURES"); //mxd
 			foreach(string texturesfile in alltexturefiles)
 			{
@@ -268,12 +268,14 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if (issuspended) throw new Exception("Data reader is suspended");
 
-			//no need to search in wads...
-			// Find in patches directory
-			//string filename = FindFirstFile(PATCHES_DIR, pname, true);
-			string filename = FindFirstFile("", pname, true); //mxd. ZDoom can load them from anywhere, so shall we
-			if ((filename != null) && FileExists(filename))
-				return filename;
+			// Find in directories ZDoom expects them to be
+			foreach (string loc in PatchLocations)
+			{
+				string path = Path.Combine(loc, Path.GetDirectoryName(pname));
+				string filename = FindFirstFile(path, Path.GetFileName(pname), true);
+				if (!string.IsNullOrEmpty(filename) && FileExists(filename)) 
+					return filename;
+			}
 
 			return pname;
 		}
@@ -311,19 +313,21 @@ namespace CodeImp.DoomBuilder.Data
 			collection = LoadDirectoryImages(FLATS_DIR, ImageDataFormat.DOOMFLAT, true);
 			AddImagesToList(images, collection);
 
-			// Add images to the container-specific texture set
-			foreach(ImageData img in images.Values)
-				textureset.AddFlat(img);
-
 			// Load TEXTURES lump file
-			imgset.Clear();
-			string[] alltexturefiles = GetAllFilesWithTitle("", "TEXTURES", false);
+			string[] alltexturefiles = GetAllFilesWhichTitleStartsWith("", "TEXTURES"); //mxd
 			foreach(string texturesfile in alltexturefiles)
 			{
 				MemoryStream filedata = LoadFile(texturesfile);
 				WADReader.LoadHighresFlats(filedata, texturesfile, ref imgset, null, images);
 				filedata.Dispose();
 			}
+
+			// Add images from TEXTURES lump file
+			AddImagesToList(images, imgset);
+
+			// Add images to the container-specific texture set
+			foreach(ImageData img in images.Values) 
+				textureset.AddFlat(img);
 
 			// Add images from TEXTURES lump file
 			AddImagesToList(images, imgset);
@@ -371,7 +375,7 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Load TEXTURES lump file
 			imgset.Clear();
-			string[] alltexturefiles = GetAllFilesWithTitle("", "TEXTURES", false);
+			string[] alltexturefiles = GetAllFilesWhichTitleStartsWith("", "TEXTURES"); //mxd
 			foreach(string texturesfile in alltexturefiles)
 			{
 				MemoryStream filedata = LoadFile(texturesfile);
