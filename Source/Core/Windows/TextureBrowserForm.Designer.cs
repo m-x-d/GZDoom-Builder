@@ -73,6 +73,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.smallimages.Images.SetKeyName(4, "PK3TextureSet.ico");
 			this.smallimages.Images.SetKeyName(5, "FolderImage.png");
 			this.smallimages.Images.SetKeyName(6, "ArchiveImage.png");
+			this.smallimages.Images.SetKeyName(7, "TextLump.png");
 			// 
 			// tvTextureSets
 			// 

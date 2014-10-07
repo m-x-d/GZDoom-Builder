@@ -190,7 +190,8 @@ namespace CodeImp.DoomBuilder.Windows
 			label7.TabIndex = 25;
 			label7.Text = "Height offset:";
 			label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(label7, "Changes floor and ceiling\r\nheight by given value");
+			this.tooltip.SetToolTip(label7, "Use ++ or -- prefixes to change\r\nheight by given value.\r\nUse * or / prefixes to m" +
+					"ultiply\r\nor divide height by given value.");
 			// 
 			// label5
 			// 
@@ -202,7 +203,8 @@ namespace CodeImp.DoomBuilder.Windows
 			label5.TabIndex = 17;
 			label5.Text = "Floor height:";
 			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(label5, "Use ++ or -- prefixes to change\r\nheight by given value");
+			this.tooltip.SetToolTip(label5, "Use ++ or -- prefixes to change\r\nheight by given value.\r\nUse * or / prefixes to m" +
+					"ultiply\r\nor divide height by given value.");
 			// 
 			// label6
 			// 
@@ -214,7 +216,8 @@ namespace CodeImp.DoomBuilder.Windows
 			label6.TabIndex = 19;
 			label6.Text = "Ceiling height:";
 			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(label6, "Use ++ or -- prefixes to change\r\nheight by given value");
+			this.tooltip.SetToolTip(label6, "Use ++ or -- prefixes to change\r\nheight by given value.\r\nUse * or / prefixes to m" +
+					"ultiply\r\nor divide height by given value.");
 			// 
 			// heightoffset
 			// 

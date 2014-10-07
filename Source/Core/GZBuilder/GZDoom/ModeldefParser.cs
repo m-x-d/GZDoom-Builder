@@ -51,12 +51,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 					} else {
 						// Unknown structure!
 						string token2;
-						do {
-							if (!SkipWhitespace(true)) break;
-							token2 = ReadToken();
-							if (token2 == null) break;
+						if (token != "{") {
+							do
+							{
+								if (!SkipWhitespace(true)) break;
+								token2 = ReadToken();
+								if (token2 == null) break;
+							} 
+							while (token2 != "{");
 						}
-						while (token2 != "{");
+
 						int scopelevel = 1;
 						do {
 							if (!SkipWhitespace(true)) break;

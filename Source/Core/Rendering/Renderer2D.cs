@@ -1327,7 +1327,9 @@ namespace CodeImp.DoomBuilder.Rendering
 							graphics.Shaders.Things2D.FillColor = t.Selected ? cHighlight : cWire;
 
 							for(int i = 0; i < mde.Model.Meshes.Count; i++) {
-								Matrix modelcale = Matrix.Scaling(t.ScaleX, t.ScaleX, t.ScaleY);
+								float sx = t.ScaleX * t.ActorScale.Width;
+								float sy = t.ScaleY * t.ActorScale.Height;
+								Matrix modelcale = Matrix.Scaling(sx, sx, sy);
 								Matrix rotation = Matrix.RotationY(-(t.RollRad - General.Map.Data.ModeldefEntries[t.Type].RollOffset))
 										* Matrix.RotationX(-(t.PitchRad + General.Map.Data.ModeldefEntries[t.Type].PitchOffset))
 										* Matrix.RotationZ(t.Angle);

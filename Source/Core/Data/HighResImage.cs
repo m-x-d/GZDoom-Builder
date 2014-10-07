@@ -33,7 +33,6 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private List<TexturePatch> patches; //mxd
-		private bool gotFullName;//mxd
 		private string type;
 		
 		#endregion
@@ -52,6 +51,7 @@ namespace CodeImp.DoomBuilder.Data
 			this.patches = new List<TexturePatch>(1);
 			this.type = type;
 			SetName(name);
+			this.fullName = "[TEXTURES]\\" + type + "s\\" + name; //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -66,13 +66,6 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Add it
 			patches.Add(patch);
-
-			//mxd. Get full name from first patch
-			if (!gotFullName) {
-				fullName = General.Map.Data.GetPatchLocation(patch.lumpname);
-				gotFullName = true;
-			}
-
 			if (patch.lumpname == Name) hasPatchWithSameName = true; //mxd
 		}
 		
@@ -116,14 +109,7 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(TexturePatch p in patches)
 					{
 						// Get the patch data stream
-						Stream patchdata;
-						
-						//mxd
-						if (type == "sprite") {
-							patchdata = General.Map.Data.GetSpriteData(p.lumpname);
-						} else {
-							patchdata = General.Map.Data.GetPatchData(p.lumpname);
-						}
+						Stream patchdata = General.Map.Data.GetPatchData(p.lumpname);
 
 						if(patchdata != null)
 						{

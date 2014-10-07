@@ -47,9 +47,10 @@ namespace CodeImp.DoomBuilder.Windows
 		public TextureBrowserForm(string selecttexture, bool browseFlats)
 		{
 			Cursor.Current = Cursors.WaitCursor;
-			TreeNode item;//mxd
+			TreeNode item; //mxd
 			long longname = Lump.MakeLongName(selecttexture ?? "");
-			selectedset = null;//mxd
+			int count; //mxd
+			selectedset = null; //mxd
 			this.browseFlats = browseFlats;
 			
 			// Initialize
@@ -75,9 +76,12 @@ namespace CodeImp.DoomBuilder.Windows
 			availgroup = browser.AddGroup("Available " + imgType + ":");
 
 			//mxd. Fill texture sets list with normal texture sets
-			foreach(IFilledTextureSet ts in General.Map.Data.TextureSets)
+			foreach(IFilledTextureSet ts in General.Map.Data.TextureSets) 
 			{
-				item = tvTextureSets.Nodes.Add(ts.Name + " [" + ts.Textures.Count + "]");
+				count = (browseFlats ? ts.Flats.Count : ts.Textures.Count);
+				if(count == 0 && !General.Map.Config.MixTexturesFlats) continue;
+
+				item = tvTextureSets.Nodes.Add(ts.Name + " [" + count + "]");
 				item.Name = ts.Name;
 				item.Tag = ts;
 				item.ImageIndex = 0;
@@ -86,7 +90,10 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. Add container-specific texture sets
 			foreach(ResourceTextureSet ts in General.Map.Data.ResourceTextureSets)
 			{
-				item = tvTextureSets.Nodes.Add(ts.Name + " [" + ts.Textures.Count + "]");
+				count = (browseFlats ? ts.Flats.Count : ts.Textures.Count);
+				if(count == 0 && !General.Map.Config.MixTexturesFlats) continue;
+
+				item = tvTextureSets.Nodes.Add(ts.Name + " [" + count + "]");
 				item.Name = ts.Name;
 				item.Tag = ts;
 				item.ImageIndex = 2 + ts.Location.type;
@@ -99,7 +106,8 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			//mxd. Add All textures set
-			item = tvTextureSets.Nodes.Add(General.Map.Data.AllTextureSet.Name + " [" + General.Map.Data.AllTextureSet.Textures.Count + "]");
+			count = (browseFlats ? General.Map.Data.AllTextureSet.Flats.Count : General.Map.Data.AllTextureSet.Textures.Count);
+			item = tvTextureSets.Nodes.Add(General.Map.Data.AllTextureSet.Name + " [" + count + "]");
 			item.Name = General.Map.Data.AllTextureSet.Name;
 			item.Tag = General.Map.Data.AllTextureSet;
 			item.ImageIndex = 1;
@@ -175,7 +183,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private static TreeNode findTextureByLongName(TreeNode node, long longname) 
+		private TreeNode findTextureByLongName(TreeNode node, long longname) 
 		{
 			//first search in child nodes
 			TreeNode match;
@@ -188,8 +196,16 @@ namespace CodeImp.DoomBuilder.Windows
 			//then - in current node
 			IFilledTextureSet set = (node.Tag as IFilledTextureSet);
 
-			foreach (ImageData img in set.Textures)
-				if (img.LongName == longname) return node;
+			if (browseFlats)
+			{
+				foreach(ImageData img in set.Flats)
+					if(img.LongName == longname) return node;
+			}
+			else 
+			{
+				foreach(ImageData img in set.Textures)
+					if(img.LongName == longname) return node;
+			}
 
 			return null;
 		}
@@ -218,8 +234,17 @@ namespace CodeImp.DoomBuilder.Windows
 			int imageIndex = set.Location.type + 4;
 			string[] separator = new[] { Path.DirectorySeparatorChar.ToString() };
 			
-			ImageData[] textures = new ImageData[set.Textures.Count];
-			set.Textures.CopyTo(textures, 0);
+			ImageData[] textures;
+			if (browseFlats)
+			{
+				textures = new ImageData[set.Flats.Count];
+				set.Flats.CopyTo(textures, 0);
+			}
+			else
+			{
+				textures = new ImageData[set.Textures.Count];
+				set.Textures.CopyTo(textures, 0);
+			}
 			Array.Sort(textures, sortImageData);
 
 			foreach (ImageData image in textures) {
@@ -228,6 +253,7 @@ namespace CodeImp.DoomBuilder.Windows
 				TreeNode curNode = root;
 
 				if (parts.Length == 1) continue;
+				int localindex = parts[0] == "[TEXTURES]" ? 7 : imageIndex;
 
 				for (int i = 0; i < parts.Length - 1; i++) {
 					string category = parts[i];
@@ -237,7 +263,7 @@ namespace CodeImp.DoomBuilder.Windows
 						curNode = curNode.Nodes[category];
 
 					} else { //create a new one
-						TreeNode n = new TreeNode(category) {Name = category, ImageIndex = imageIndex, SelectedImageIndex = imageIndex};
+						TreeNode n = new TreeNode(category) { Name = category, ImageIndex = localindex, SelectedImageIndex = localindex };
 
 						curNode.Nodes.Add(n);
 						curNode = n;
@@ -251,7 +277,10 @@ namespace CodeImp.DoomBuilder.Windows
 						TreeNode cn = curNode;
 						while (cn != root) {
 							ResourceTextureSet curTs = cn.Tag as ResourceTextureSet;
-							curTs.AddTexture(image);
+							if (image.IsFlat)
+								curTs.AddFlat(image);
+							else
+								curTs.AddTexture(image);
 							cn = cn.Parent;
 						}
 					}
@@ -269,14 +298,21 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private static void SetItemsCount(TreeNode node) 
+		private void SetItemsCount(TreeNode node) 
 		{
 			ResourceTextureSet ts = node.Tag as ResourceTextureSet;
 			if (ts == null) throw new Exception("Expected IFilledTextureSet, but got null...");
-			node.Text += " [" + ts.Textures.Count + "]";
+			
 
-			if (General.Map.Config.MixTexturesFlats)
+			if (node.Parent != null && General.Map.Config.MixTexturesFlats)
+			{
 				ts.MixTexturesAndFlats();
+				node.Text += " [" + ts.Textures.Count + "]";
+			} 
+			else
+			{
+				node.Text += " [" + (browseFlats ? ts.Flats.Count : ts.Textures.Count) + "]";
+			}
 
 			foreach (TreeNode child in node.Nodes) SetItemsCount(child);
 		}
