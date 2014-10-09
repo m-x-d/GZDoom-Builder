@@ -3581,6 +3581,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// This adds a docker
 		public void AddDocker(Docker d)
 		{
+			if(dockerspanel.Contains(d)) return; //mxd
+			
 			// Make sure the full name is set with the plugin name as prefix
 			Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
 			d.MakeFullName(plugin.Name.ToLowerInvariant());
