@@ -27,12 +27,12 @@
 			this.cbCommentsOnly = new System.Windows.Forms.CheckBox();
 			this.cbSelectOnClick = new System.Windows.Forms.CheckBox();
 			this.labelSearch = new System.Windows.Forms.Label();
+			this.btnClearSearch = new System.Windows.Forms.Button();
 			this.tbSearch = new System.Windows.Forms.TextBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.bExportToFile = new System.Windows.Forms.Button();
 			this.updatetimer = new System.Windows.Forms.Timer(this.components);
 			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.bExportToFile = new System.Windows.Forms.Button();
-			this.btnClearSearch = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -172,41 +172,6 @@
 			this.labelSearch.Text = "Filter:";
 			this.labelSearch.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// tbSearch
-			// 
-			this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tbSearch.Location = new System.Drawing.Point(57, 68);
-			this.tbSearch.Name = "tbSearch";
-			this.tbSearch.Size = new System.Drawing.Size(175, 20);
-			this.tbSearch.TabIndex = 7;
-			this.tbSearch.TextChanged += new System.EventHandler(this.tbSearch_TextChanged);
-			// 
-			// updatetimer
-			// 
-			this.updatetimer.Interval = 750;
-			this.updatetimer.Tick += new System.EventHandler(this.updatetimer_Tick);
-			// 
-			// saveFileDialog
-			// 
-			this.saveFileDialog.Filter = "Text files|*.txt";
-			this.saveFileDialog.Title = "Choose save location:";
-			// 
-			// bExportToFile
-			// 
-			this.bExportToFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.bExportToFile.Image = global::CodeImp.DoomBuilder.TagExplorer.Properties.Resources.Save;
-			this.bExportToFile.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bExportToFile.Location = new System.Drawing.Point(3, 402);
-			this.bExportToFile.Name = "bExportToFile";
-			this.bExportToFile.Size = new System.Drawing.Size(266, 23);
-			this.bExportToFile.TabIndex = 0;
-			this.bExportToFile.Text = "Export to file...";
-			this.toolTip1.SetToolTip(this.bExportToFile, "Saves current infromation to given file.");
-			this.bExportToFile.UseVisualStyleBackColor = true;
-			this.bExportToFile.Click += new System.EventHandler(this.bExportToFile_Click);
-			// 
 			// btnClearSearch
 			// 
 			this.btnClearSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -219,6 +184,40 @@
 			this.toolTip1.SetToolTip(this.btnClearSearch, "Clear Search");
 			this.btnClearSearch.UseVisualStyleBackColor = true;
 			this.btnClearSearch.Click += new System.EventHandler(this.btnClearSearch_Click);
+			// 
+			// tbSearch
+			// 
+			this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.tbSearch.Location = new System.Drawing.Point(57, 68);
+			this.tbSearch.Name = "tbSearch";
+			this.tbSearch.Size = new System.Drawing.Size(175, 20);
+			this.tbSearch.TabIndex = 7;
+			this.tbSearch.TextChanged += new System.EventHandler(this.tbSearch_TextChanged);
+			// 
+			// bExportToFile
+			// 
+			this.bExportToFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.bExportToFile.Image = global::CodeImp.DoomBuilder.TagExplorer.Properties.Resources.Save;
+			this.bExportToFile.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.bExportToFile.Location = new System.Drawing.Point(3, 402);
+			this.bExportToFile.Name = "bExportToFile";
+			this.bExportToFile.Size = new System.Drawing.Size(266, 23);
+			this.bExportToFile.TabIndex = 0;
+			this.bExportToFile.Text = "Export to file...";
+			this.bExportToFile.UseVisualStyleBackColor = true;
+			this.bExportToFile.Click += new System.EventHandler(this.bExportToFile_Click);
+			// 
+			// updatetimer
+			// 
+			this.updatetimer.Interval = 750;
+			this.updatetimer.Tick += new System.EventHandler(this.updatetimer_Tick);
+			// 
+			// saveFileDialog
+			// 
+			this.saveFileDialog.Filter = "Text files|*.txt";
+			this.saveFileDialog.Title = "Choose save location:";
 			// 
 			// TagExplorer
 			// 

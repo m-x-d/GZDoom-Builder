@@ -754,12 +754,13 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			// Save to file
 			try
 			{
-				using (StreamWriter sw = File.CreateText(path)) sw.Write(sb.ToString());
-				General.Interface.DisplayStatus(StatusType.Info, "Info saved to '" + path + "'");
+				using(StreamWriter sw = File.CreateText(saveFileDialog.FileName)) sw.Write(sb.ToString());
+				General.Interface.DisplayStatus(StatusType.Info, "Tag info successfully saved.");
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				General.Interface.DisplayStatus(StatusType.Info, "Failed to save errors list... Make sure map path is not write-protected.");
+				General.ErrorLogger.Add(ErrorType.Error, "Failed to save tag info: " + ex.Message);
+				General.Interface.DisplayStatus(StatusType.Info, "Failed to save tag info...");
 			}
 		}
 	}
