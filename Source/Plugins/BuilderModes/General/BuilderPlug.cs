@@ -213,7 +213,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Clean up
 				General.Interface.RemoveDocker(undoredodocker);
-				General.Interface.RemoveDocker(drawingOverridesDocker); //mxd
 
 				undoredopanel.Dispose();
 				drawingOverridesPanel.Dispose(); //mxd
