@@ -630,6 +630,9 @@ namespace CodeImp.DoomBuilder.Data
 			string[] files = GetAllFiles(path, includesubdirs);
 			foreach(string f in files)
 			{
+				//mxd. Skip IMGZ files
+				if(Path.GetExtension(f).ToUpperInvariant() == ".IMGZ") continue;
+				
 				// Make the texture name from filename without extension
 				name = Path.GetFileNameWithoutExtension(f);
 

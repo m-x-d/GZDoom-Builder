@@ -88,6 +88,14 @@ namespace CodeImp.DoomBuilder.Data
 					data.Seek(0, SeekOrigin.Begin);
 					DoomPictureReader picreader = new DoomPictureReader(palette);
 					if(picreader.Validate(data)) return picreader;
+
+					// Also check if data is valid for a doom flat... (mxd)
+					if (General.Map.Config.MixTexturesFlats) 
+					{
+						data.Seek(0, SeekOrigin.Begin);
+						DoomFlatReader flatpicreader = new DoomFlatReader(palette);
+						if(flatpicreader.Validate(data)) return flatpicreader;
+					}
 					break;
 
 				case DOOMFLAT:
@@ -95,6 +103,14 @@ namespace CodeImp.DoomBuilder.Data
 					data.Seek(0, SeekOrigin.Begin);
 					DoomFlatReader flatreader = new DoomFlatReader(palette);
 					if(flatreader.Validate(data)) return flatreader;
+
+					// Also check if data is valid for a doom picture... (mxd)
+					if (General.Map.Config.MixTexturesFlats) 
+					{
+						data.Seek(0, SeekOrigin.Begin);
+						DoomPictureReader picflatreader = new DoomPictureReader(palette);
+						if(picflatreader.Validate(data)) return picflatreader;
+					}
 					break;
 
 				case DOOMCOLORMAP:

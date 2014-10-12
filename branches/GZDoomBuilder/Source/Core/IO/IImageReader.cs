@@ -26,9 +26,6 @@ namespace CodeImp.DoomBuilder.IO
 {
 	internal unsafe interface IImageReader
 	{
-		//mxd. Variables
-		uint ImageType { get; } //holds Devil library Image type
-		
 		// Methods
 		Bitmap ReadAsBitmap(Stream stream);
 		Bitmap ReadAsBitmap(Stream stream, out int offsetx, out int offsety);
