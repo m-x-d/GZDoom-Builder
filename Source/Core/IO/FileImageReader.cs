@@ -342,7 +342,7 @@ namespace CodeImp.DoomBuilder.IO
 		private const int IL_IMAGE_CHANNELS        = 0x0DFF;*/
 
 		//mxd
-		public uint ImageType { get; private set; }
+		private readonly uint imagetype;
 		
 		#endregion
 
@@ -351,15 +351,16 @@ namespace CodeImp.DoomBuilder.IO
 		// Constructor
 		public FileImageReader()
 		{
-			ImageType = DevilImageType.IL_TYPE_UNKNOWN;//mxd
+			imagetype = DevilImageType.IL_TYPE_UNKNOWN;//mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
 		//mxd
-		public FileImageReader(uint devilImageType) {
-			ImageType = devilImageType;//mxd
+		public FileImageReader(uint devilImagetype) 
+		{
+			imagetype = devilImagetype;//mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -394,7 +395,7 @@ namespace CodeImp.DoomBuilder.IO
 				stream.Read(bytes, 0, bytes.Length);
 				fixed(byte* bptr = bytes)
 				{
-					if (!ilLoadL(ImageType, new IntPtr(bptr), (uint)bytes.Length))
+					if (!ilLoadL(imagetype, new IntPtr(bptr), (uint)bytes.Length))
 						throw new BadImageFormatException();
 				}
 				
@@ -417,7 +418,7 @@ namespace CodeImp.DoomBuilder.IO
 				ilDeleteImages(1, new IntPtr(&imageid));
 
 				//mxd. TGA fix
-				if (ImageType == DevilImageType.IL_TGA)
+				if (imagetype == DevilImageType.IL_TGA)
 					bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
 				return bmp;
