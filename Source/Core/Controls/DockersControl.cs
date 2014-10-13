@@ -64,7 +64,8 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Properties
 		
 		public bool IsCollpased { get { return iscollapsed; } }
-		
+		public string SelectedTabName { get { return (tabs.SelectedTab == null ? "None" : tabs.SelectedTab.Text); } } //mxd
+
 		// This returns true when the focus is here, but not in some special cases
 		public bool IsFocused
 		{
