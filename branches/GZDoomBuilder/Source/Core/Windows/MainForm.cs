@@ -193,6 +193,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public bool MouseExclusive { get { return mouseexclusive; } }
 		new public IntPtr Handle { get { return windowptr; } }
 		public bool IsInfoPanelExpanded { get { return (panelinfo.Height == heightpanel1.Height); } }
+		public string ActiveDockerTabName { get { return dockerspanel.IsCollpased ? "None" : dockerspanel.SelectedTabName; } }
 		public bool IsActiveWindow { get { return windowactive; } }
 		public StatusInfo Status { get { return status; } }
 		
@@ -3553,7 +3554,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Processor event
 		private void processor_Tick(object sender, EventArgs e)
 		{
-			Vector2D deltamouse;
 			float curtime = Clock.CurrentTime;
 			float deltatime = curtime - lastupdatetime;
 			lastupdatetime = curtime;
@@ -3562,7 +3562,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(mouseinput != null)
 			{
 				// Process mouse input
-				deltamouse = mouseinput.Process();
+				Vector2D deltamouse = mouseinput.Process();
 				if((General.Map != null) && (General.Editing.Mode != null))
 				{
 					General.Plugins.OnEditMouseInput(deltamouse);

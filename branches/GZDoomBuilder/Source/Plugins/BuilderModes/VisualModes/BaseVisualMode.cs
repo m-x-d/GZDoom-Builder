@@ -1274,17 +1274,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			o.OnMouseMove(e);
 
 			//mxd. Show hints!
-			if (o.GetType() != lasthighlighttype) {
-				if (o is BaseVisualGeometrySidedef) {
-					General.Hints.ShowHints(this.GetType(), "sidedefs");
-				} else if (o is BaseVisualGeometrySector) {
-					General.Hints.ShowHints(this.GetType(), "sectors");
-				} else if (o is BaseVisualThing) {
-					General.Hints.ShowHints(this.GetType(), "things");
-				} else if (o is BaseVisualVertex) {
-					General.Hints.ShowHints(this.GetType(), "vertices");
-				} else {
-					General.Hints.ShowHints(this.GetType(), HintsManager.GENERAL);
+			if(o.GetType() != lasthighlighttype) 
+			{
+				if(General.Interface.ActiveDockerTabName == "Help") 
+				{
+					if (o is BaseVisualGeometrySidedef) 
+					{
+						General.Hints.ShowHints(this.GetType(), "sidedefs");
+					}
+					else if (o is BaseVisualGeometrySector) 
+					{
+						General.Hints.ShowHints(this.GetType(), "sectors");
+					}
+					else if (o is BaseVisualThing) 
+					{
+						General.Hints.ShowHints(this.GetType(), "things");
+					}
+					else if (o is BaseVisualVertex) 
+					{
+						General.Hints.ShowHints(this.GetType(), "vertices");
+					}
+					else 
+					{
+						General.Hints.ShowHints(this.GetType(), HintsManager.GENERAL);
+					}
 				}
 
 				lasthighlighttype = o.GetType();

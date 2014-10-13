@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Windows
 		bool MouseExclusive { get; }
 		MouseButtons MouseButtons { get; }
 		bool IsActiveWindow { get; }
+		string ActiveDockerTabName { get; } //mxd
 		RenderTargetControl Display { get; }
 
 		//mxd. Events
