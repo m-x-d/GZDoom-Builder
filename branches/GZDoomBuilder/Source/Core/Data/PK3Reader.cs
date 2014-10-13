@@ -158,23 +158,10 @@ namespace CodeImp.DoomBuilder.Data
 				if(data != null) return data;
 			}
 
-			if(General.Map.Config.MixTexturesFlats)
-			{
-				//mxd. Find in directories ZDoom expects them to be
-				foreach(string loc in TextureLocations) 
-				{
-					string filename = FindFirstFile(loc, pname, true);
-					if(!string.IsNullOrEmpty(filename) && FileExists(filename))
-						return LoadFile(filename);
-				}
-			}
-			else
-			{
-				// Find in textures directory
-				string filename = FindFirstFile(TEXTURES_DIR, pname, true);
-				if(!string.IsNullOrEmpty(filename) && FileExists(filename))
-					return LoadFile(filename);
-			}
+			// Find in textures directory
+			string filename = FindFirstFile(TEXTURES_DIR, pname, true);
+			if(!string.IsNullOrEmpty(filename) && FileExists(filename))
+				return LoadFile(filename);
 
 			// Nothing found
 			return null;
