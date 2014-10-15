@@ -32,9 +32,17 @@ namespace CodeImp.DoomBuilder.Data
 	{
 		#region ================== Variables
 
-		private DirectoryFilesList files;
-		private ArchiveType archiveType; //mxd
-		private static Dictionary<string, byte[]> sevenZipEntries; //mxd
+		private readonly DirectoryFilesList files;
+		private IArchive archive; //mxd
+		private readonly ArchiveType archivetype; //mxd
+		private readonly Dictionary<string, byte[]> sevenzipentries; //mxd
+		private bool bathmode = true; //mxd
+
+		#endregion
+
+		#region ================== Properties (mxd)
+
+		public bool BathMode { get { return bathmode; } set { bathmode = value; UpdateArchive(bathmode); } }
 
 		#endregion
 
@@ -51,34 +59,37 @@ namespace CodeImp.DoomBuilder.Data
 			// Make list of all files
 			List<DirectoryFileEntry> fileentries = new List<DirectoryFileEntry>();
 
-			//mxd
-			IArchive archive = ArchiveFactory.Open(location.location);
-			archiveType = archive.Type;
+			// Create archive
+			archive = ArchiveFactory.Open(location.location, Options.KeepStreamsOpen);
+			archivetype = archive.Type;
 
-			if (archive.Type == ArchiveType.SevenZip) { //random access of 7z archives works TERRIBLY slow in SharpCompress
-				sevenZipEntries = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+			// Random access of 7z archives works TERRIBLY slow in SharpCompress
+			if(archivetype == ArchiveType.SevenZip) 
+			{
+				sevenzipentries = new Dictionary<string, byte[]>(StringComparer.Ordinal);
 
 				IReader reader = archive.ExtractAllEntries();
-				while (reader.MoveToNextEntry()) {
-					if (!reader.Entry.IsDirectory) {
-						MemoryStream s = new MemoryStream();
-						reader.WriteEntryTo(s);
-						sevenZipEntries.Add(reader.Entry.FilePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar), s.ToArray());
-						fileentries.Add(new DirectoryFileEntry(reader.Entry.FilePath));
-					}
-				}
-				//archive.Dispose();
-				//archive = null;
+				while(reader.MoveToNextEntry()) 
+				{
+					if(reader.Entry.IsDirectory) continue;
 
-			} else {
-				foreach (IEntry entry in archive.Entries) {
-					if (!entry.IsDirectory)
-						fileentries.Add(new DirectoryFileEntry(entry.FilePath));
+					MemoryStream s = new MemoryStream();
+					reader.WriteEntryTo(s);
+					sevenzipentries.Add(reader.Entry.FilePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar), s.ToArray());
+					fileentries.Add(new DirectoryFileEntry(reader.Entry.FilePath));
+				}
+
+				archive.Dispose();
+				archive = null;
+			} 
+			else 
+			{
+				foreach(IArchiveEntry entry in archive.Entries) 
+				{
+					if(entry.IsDirectory) continue;
+					fileentries.Add(new DirectoryFileEntry(entry.FilePath));
 				}
 			}
-
-			archive.Dispose();
-			archive = null;
 
 			// Make files list
 			files = new DirectoryFilesList(fileentries);
@@ -97,10 +108,32 @@ namespace CodeImp.DoomBuilder.Data
 			if(!isdisposed)
 			{
 				General.WriteLogLine("Closing " + Path.GetExtension(location.location).ToUpper().Replace(".", "") + " resource '" + location.location + "'");
-				//if(archive != null) archive.Dispose(); //mxd
+				
+				//mxd
+				if(archive != null)
+				{
+					archive.Dispose();
+					archive = null;
+				}
 
 				// Done
 				base.Dispose();
+			}
+		}
+
+		//mxd
+		private void UpdateArchive(bool enable) 
+		{
+			if(archivetype == ArchiveType.SevenZip) return;
+
+			if (enable && archive == null)
+			{
+				archive = ArchiveFactory.Open(location.location, Options.KeepStreamsOpen);
+			} 
+			else if(!enable && !bathmode && archive != null)
+			{
+				archive.Dispose();
+				archive = null;
 			}
 		}
 
@@ -349,7 +382,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			string title = Path.GetFileNameWithoutExtension(beginswith);
 			string ext = Path.GetExtension(beginswith);
-			if(ext.Length > 1) ext = ext.Substring(1); else ext = "";
+			ext = (!string.IsNullOrEmpty(ext) && ext.Length > 1 ? ext.Substring(1) : "");
 			return files.GetFirstFile(path, title, subfolders, ext);
 		}
 
@@ -358,32 +391,40 @@ namespace CodeImp.DoomBuilder.Data
 		internal override MemoryStream LoadFile(string filename)
 		{
 			MemoryStream filedata = null;
-		   
-			//mxd
-			if (archiveType == ArchiveType.SevenZip) { //this works waaaaaay faster with 7z archive
-				if (sevenZipEntries.ContainsKey(filename))
-					filedata = new MemoryStream(sevenZipEntries[filename]);
-			} else {
-				IArchive archive = ArchiveFactory.Open(location.location);
 
-				foreach (var entry in archive.Entries) {
-					if (!entry.IsDirectory) {
-						// Is this the entry we are looking for?
-						string entryname = entry.FilePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-						if (string.Compare(entryname, filename, true) == 0) {
-							filedata = new MemoryStream();
-							entry.WriteTo(filedata);
-							break;
-						}
+			//mxd. This works waaaaaay faster with 7z archive
+			if (archivetype == ArchiveType.SevenZip) 
+			{
+				if (sevenzipentries.ContainsKey(filename))
+					filedata = new MemoryStream(sevenzipentries[filename]);
+			} 
+			else 
+			{
+				UpdateArchive(true);
+				
+				foreach (var entry in archive.Entries) 
+				{
+					if (entry.IsDirectory) continue;
+					
+					// Is this the entry we are looking for?
+					string entryname = entry.FilePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+					if (string.Compare(entryname, filename, true) == 0) 
+					{
+						filedata = new MemoryStream();
+						entry.WriteTo(filedata);
+						break;
 					}
 				}
+
+				UpdateArchive(false);
 			}
 			
 			// Nothing found?
-			if (filedata == null){
+			if (filedata == null)
+			{
 				//mxd
-				General.ErrorLogger.Add(ErrorType.Error, "Cannot find the file " + filename + " in archive " + location.location + ".");
-				return new MemoryStream();
+				General.ErrorLogger.Add(ErrorType.Error, "Cannot find the file '" + filename + "' in archive '" + location.location + "'.");
+				return null;
 			}
 
 			filedata.Position = 0; //mxd. rewind before use
@@ -400,12 +441,6 @@ namespace CodeImp.DoomBuilder.Data
 			File.WriteAllBytes(tempfile, filedata.ToArray());
 			filedata.Dispose();
 			return tempfile;
-		}
-
-		// Public version to load a file
-		internal MemoryStream ExtractFile(string filename)
-		{
-			return LoadFile(filename);
 		}
 		
 		#endregion

@@ -642,6 +642,12 @@ namespace CodeImp.DoomBuilder.Data
 							// Timing
 							if(loadfinishtime == 0)
 							{
+								//mxd. Release PK3 files
+								foreach (DataReader reader in containers)
+								{
+									if (reader is PK3Reader) (reader as PK3Reader).BathMode = false;
+								}
+								
 								loadfinishtime = Clock.CurrentTime;
 								float deltatimesec = (loadfinishtime - loadstarttime) / 1000.0f;
 								General.WriteLogLine("Resources loading took " + deltatimesec.ToString("########0.00") + " seconds");
@@ -1408,7 +1414,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			if (actors.Count == 0) 
-				General.ErrorLogger.Add(ErrorType.Warning, "Warning: unable to find any DECORATE actors definition!");
+				General.ErrorLogger.Add(ErrorType.Warning, "Warning: unable to find any DECORATE actor definitions!");
 
 			return actors;
 		}

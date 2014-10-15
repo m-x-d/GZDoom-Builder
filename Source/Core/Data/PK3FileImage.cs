@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Load file data
 				if(bitmap != null) bitmap.Dispose(); bitmap = null;
-				MemoryStream filedata = datareader.ExtractFile(fullName); //mxd
+				MemoryStream filedata = datareader.LoadFile(fullName); //mxd
 
 				// Get a reader for the data
 				IImageReader reader = ImageDataFormat.GetImageReader(filedata, probableformat, General.Map.Data.Palette);
