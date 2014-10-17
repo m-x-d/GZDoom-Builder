@@ -79,6 +79,7 @@
 			this.gotoy.AllowRelative = false;
 			this.gotoy.ButtonStep = 1;
 			this.gotoy.ButtonStepFloat = 1F;
+			this.gotoy.ButtonStepsWrapAround = false;
 			this.gotoy.Location = new System.Drawing.Point(32, 42);
 			this.gotoy.Name = "gotoy";
 			this.gotoy.Size = new System.Drawing.Size(71, 24);
@@ -92,6 +93,7 @@
 			this.gotox.AllowRelative = false;
 			this.gotox.ButtonStep = 1;
 			this.gotox.ButtonStepFloat = 1F;
+			this.gotox.ButtonStepsWrapAround = false;
 			this.gotox.Location = new System.Drawing.Point(32, 12);
 			this.gotox.Name = "gotox";
 			this.gotox.Size = new System.Drawing.Size(71, 24);
@@ -112,7 +114,9 @@
 			this.Controls.Add(this.gotoy);
 			this.Controls.Add(this.gotox);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "CenterOnCoordinatesForm";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

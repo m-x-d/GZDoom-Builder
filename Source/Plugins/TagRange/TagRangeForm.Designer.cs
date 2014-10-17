@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.rangestart.AllowRelative = false;
 			this.rangestart.ButtonStep = 1;
 			this.rangestart.ButtonStepFloat = 1F;
+			this.rangestart.ButtonStepsWrapAround = false;
 			this.rangestart.Location = new System.Drawing.Point(76, 12);
 			this.rangestart.Name = "rangestart";
 			this.rangestart.Size = new System.Drawing.Size(96, 24);
@@ -164,6 +165,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.rangestep.AllowRelative = false;
 			this.rangestep.ButtonStep = 1;
 			this.rangestep.ButtonStepFloat = 1F;
+			this.rangestep.ButtonStepsWrapAround = false;
 			this.rangestep.Location = new System.Drawing.Point(76, 42);
 			this.rangestep.Name = "rangestep";
 			this.rangestep.Size = new System.Drawing.Size(96, 24);
@@ -215,7 +217,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.Controls.Add(this.outoftagswarning);
 			this.Controls.Add(this.bglabel);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TagRangeForm";

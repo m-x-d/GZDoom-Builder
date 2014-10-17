@@ -77,7 +77,7 @@
 			// export
 			// 
 			this.export.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.export.Location = new System.Drawing.Point(360, 82);
+			this.export.Location = new System.Drawing.Point(360, 84);
 			this.export.Name = "export";
 			this.export.Size = new System.Drawing.Size(75, 23);
 			this.export.TabIndex = 4;
@@ -89,7 +89,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(279, 82);
+			this.cancel.Location = new System.Drawing.Point(279, 84);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(75, 23);
 			this.cancel.TabIndex = 5;
@@ -162,8 +162,11 @@
 			this.Controls.Add(this.browse);
 			this.Controls.Add(this.tbExportPath);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "WavefrontSettingsForm";
+			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Export to Wavefront .obj";
 			((System.ComponentModel.ISupportInitialize)(this.nudScale)).EndInit();

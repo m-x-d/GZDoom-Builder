@@ -198,7 +198,9 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.browse);
 			this.Controls.Add(this.tbImportPath);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "ObjImportSettingsForm";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;

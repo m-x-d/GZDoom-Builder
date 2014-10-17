@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.GroupBox panelsettings;
 			System.Windows.Forms.Label label4;
+			this.examplelabel = new System.Windows.Forms.Label();
 			this.scriptcompiler = new System.Windows.Forms.ComboBox();
 			this.scriptcompilerlabel = new System.Windows.Forms.Label();
 			this.levelname = new System.Windows.Forms.TextBox();
@@ -42,7 +43,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres = new System.Windows.Forms.GroupBox();
 			this.strictpatches = new System.Windows.Forms.CheckBox();
 			this.datalocations = new CodeImp.DoomBuilder.Controls.ResourceListEditor();
-			this.examplelabel = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
@@ -97,6 +97,15 @@ namespace CodeImp.DoomBuilder.Windows
 			panelsettings.TabIndex = 0;
 			panelsettings.TabStop = false;
 			panelsettings.Text = " Settings ";
+			// 
+			// examplelabel
+			// 
+			this.examplelabel.AutoSize = true;
+			this.examplelabel.Location = new System.Drawing.Point(288, 83);
+			this.examplelabel.Name = "examplelabel";
+			this.examplelabel.Size = new System.Drawing.Size(41, 14);
+			this.examplelabel.TabIndex = 12;
+			this.examplelabel.Text = "MAP01";
 			// 
 			// scriptcompiler
 			// 
@@ -208,15 +217,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.datalocations.Size = new System.Drawing.Size(368, 130);
 			this.datalocations.TabIndex = 0;
 			// 
-			// examplelabel
-			// 
-			this.examplelabel.AutoSize = true;
-			this.examplelabel.Location = new System.Drawing.Point(288, 83);
-			this.examplelabel.Name = "examplelabel";
-			this.examplelabel.Size = new System.Drawing.Size(41, 14);
-			this.examplelabel.TabIndex = 12;
-			this.examplelabel.Text = "MAP01";
-			// 
 			// MapOptionsForm
 			// 
 			this.AcceptButton = this.apply;
@@ -229,7 +229,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.apply);
 			this.Controls.Add(panelsettings);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "MapOptionsForm";

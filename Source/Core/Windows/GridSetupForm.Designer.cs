@@ -73,6 +73,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.gridsize.AllowRelative = true;
 			this.gridsize.ButtonStep = 8;
 			this.gridsize.ButtonStepFloat = 1F;
+			this.gridsize.ButtonStepsWrapAround = false;
 			this.gridsize.Location = new System.Drawing.Point(146, 26);
 			this.gridsize.Name = "gridsize";
 			this.gridsize.Size = new System.Drawing.Size(75, 24);
@@ -117,6 +118,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backscaley.AllowRelative = true;
 			this.backscaley.ButtonStep = 1;
 			this.backscaley.ButtonStepFloat = 1F;
+			this.backscaley.ButtonStepsWrapAround = false;
 			this.backscaley.Enabled = false;
 			this.backscaley.Location = new System.Drawing.Point(197, 212);
 			this.backscaley.Name = "backscaley";
@@ -131,6 +133,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backscalex.AllowRelative = true;
 			this.backscalex.ButtonStep = 1;
 			this.backscalex.ButtonStepFloat = 1F;
+			this.backscalex.ButtonStepsWrapAround = false;
 			this.backscalex.Enabled = false;
 			this.backscalex.Location = new System.Drawing.Point(124, 212);
 			this.backscalex.Name = "backscalex";
@@ -145,6 +148,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backoffsety.AllowRelative = true;
 			this.backoffsety.ButtonStep = 1;
 			this.backoffsety.ButtonStepFloat = 1F;
+			this.backoffsety.ButtonStepsWrapAround = false;
 			this.backoffsety.Enabled = false;
 			this.backoffsety.Location = new System.Drawing.Point(197, 173);
 			this.backoffsety.Name = "backoffsety";
@@ -159,6 +163,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backoffsetx.AllowRelative = true;
 			this.backoffsetx.ButtonStep = 1;
 			this.backoffsetx.ButtonStepFloat = 1F;
+			this.backoffsetx.ButtonStepsWrapAround = false;
 			this.backoffsetx.Enabled = false;
 			this.backoffsetx.Location = new System.Drawing.Point(124, 173);
 			this.backoffsetx.Name = "backoffsetx";
@@ -281,7 +286,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(groupBox2);
 			this.Controls.Add(groupBox1);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "GridSetupForm";
