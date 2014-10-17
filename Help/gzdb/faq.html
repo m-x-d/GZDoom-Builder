@@ -8,7 +8,10 @@
 	<link rel="stylesheet" type="text/css" href="../default.css" media="screen" title="Default" />
     <style type="text/css">
 <!--
-.style1 {color: #006600}
+.style1 {
+	color: #990000;
+	font-weight: bold;
+}
 -->
     </style>
 </head>
@@ -22,9 +25,17 @@
 	
 	<div id="contents">
     <p><strong>Q:</strong> I'm getting a ton of &quot;<strong>Unable to find the DECORATE class '[some actor]' to inherit from, while parsing '[some other actor]:[DoomEdNum]'</strong>&quot; warnings. What's wrong?<br />
-      <strong>A:</strong> This happens when a DECORATE actor is inherited from another actor, which is not defined in game configuration and is not defined in any included resources. To fix this, add "<strong>(g)zdoom.pk3</strong>" as a map resource. Don't forget to check "Exclude from testing parameters" chekbox while adding it, otherwise (G)ZDoom won't load your map. &quot;<strong>(g)zdoom.pk3</strong>&quot; can be found in (G)ZDoom folder.    </p>
+      <strong>A:</strong> This happens when a DECORATE actor is inherited from another actor, which is not defined in game configuration and is not defined in any included resources. <br />
+      <span class="style1">If you are using (G)ZDoom:</span><br />
+      To fix this, add "<strong>(g)zdoom.pk3</strong>" as a map resource. Don't forget to check "<strong>Exclude from testing parameters</strong>" chekbox while adding it, otherwise (G)ZDoom won't load your map. &quot;<strong>(g)zdoom.pk3</strong>&quot; can be found in (G)ZDoom folder.<br />
+      <span class="style1">If you are using Zandronum:</span><br />
+      To fix this, add "<strong>zandronum.pk3</strong>" as a map resource. If you are using Skulltag monsters, you'll also need to add &quot;<strong>skulltag_actors.pk3</strong>&quot; and &quot;<strong>skulltag_data.pk3</strong>&quot;. Don't forget to check "<strong>Exclude from testing parameters</strong>" chekbox while adding any of them, otherwise Zandronum won't load your map. "<strong>zandronum.pk3</strong>" and &quot;<strong>skulltag_actors.pk3</strong>&quot;  can be found in Zandronum folder. You'll have to find <strong>&quot;skulltag_data.pk3</strong>&quot; on your own.</p><br />
     <p><strong>Q: </strong>Dynamic lights defined in GLDEFS are not rendered in Visual mode / I'm getting a ton of &quot;<strong>Light declaration not found for light '[light name]' ('[source]', line [n])</strong>&quot; warnings. What's wrong?<br />
-      <strong>A:</strong> GZDoom Builder doesn't include GZDoom's GLDEFS lights definitions. To get rid of these errors, add &quot;<strong>lights.pk3</strong>&quot; as a map resource. Don't forget to check &quot;<strong>Exclude from testing parameters</strong>&quot; chekbox while adding it, otherwise GZDoom won't load your map. &quot;<strong>lights.pk3</strong>&quot; can be found in GZDoom folder. </p>
+      <strong>A:</strong> GZDoom Builder doesn't include GZDoom's/Zandronum's GLDEFS light definitions.<br />
+      <span class="style1">If you are using GZDoom:</span><br />
+      To get rid of these errors, add &quot;<strong>lights.pk3</strong>&quot; as a map resource. Don't forget to check &quot;<strong>Exclude from testing parameters</strong>&quot; chekbox while adding it, otherwise GZDoom won't load your map. &quot;<strong>lights.pk3</strong>&quot; can be found in GZDoom folder.<br />
+      <span class="style1">If you are using Zandronum:</span><br />
+      To get rid of these errors, add &quot;<strong>zandronum.pk3</strong>&quot; as a map resource. Don't forget to check &quot;<strong>Exclude from testing parameters</strong>&quot; chekbox while adding it, otherwise Zandronum won't load your map. &quot;<strong>zandronum.pk3</strong>&quot; can be found in Zandronum folder.</p><br />
     <p><strong>Q:</strong> I don't like the &quot;fake contrast&quot; (<a href="http://zdoom.org/wiki/Fake_contrast">zdoom.org/wiki/Fake_contrast</a>)  GZDB uses to render sector walls in Visual mode. How can I disable this?<br />
       <strong>A:</strong> GZDB's Visual mode emulates (G)ZDoom's default rendering preferences (in (G)ZDoom, Options -&gt; Display options -&gt; Use fake contrast is &quot;on&quot; by default). You can change this behaviour by adding &quot;evenlighting&quot; or &quot;smoothlighting&quot; property to the &quot;map&quot; or &quot;defaultmap&quot; definition in the MAPINFO. More info about  MAPINFO properties supported by GZDB can be found <a href="mapinfo.html">here</a>.</p>
 </div>
