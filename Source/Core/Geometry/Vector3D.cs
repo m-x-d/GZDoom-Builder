@@ -56,6 +56,14 @@ namespace CodeImp.DoomBuilder.Geometry
 			this.y = v.y;
 			this.z = 0f;
 		}
+
+		// Constructor (mxd)
+		public Vector3D(Vector2D v, float z) 
+		{
+			this.x = v.x;
+			this.y = v.y;
+			this.z = z;
+		}
 		
 		#endregion
 

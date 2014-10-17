@@ -18,6 +18,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 
@@ -37,14 +38,15 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool allowrelative;		// Allow ++, --, * and / prefix for relative changes
 		private bool allowdecimal;		// Allow decimal (float) numbers
 		private bool controlpressed;
+		private readonly ToolTip tooltip; //mxd
 		
 		#endregion
 
 		#region ================== Properties
 
 		public bool AllowNegative { get { return allownegative; } set { allownegative = value; } }
-		public bool AllowRelative { get { return allowrelative; } set { allowrelative = value; } }
-		public bool AllowDecimal { get { return allowdecimal; } set { allowdecimal = value; } }
+		public bool AllowRelative { get { return allowrelative; } set { allowrelative = value; UpdateTextboxStyle(); } }
+		public bool AllowDecimal  { get { return allowdecimal; } set { allowdecimal = value; } }
 
 		#endregion
 
@@ -54,6 +56,9 @@ namespace CodeImp.DoomBuilder.Controls
 		public NumericTextbox()
 		{
 			this.ImeMode = ImeMode.Off;
+
+			//mxd. Setup tooltip
+			this.tooltip = new ToolTip { AutomaticDelay = 100, AutoPopDelay = 4000, InitialDelay = 100, ReshowDelay = 100 };
 		}
 
 		#endregion
@@ -78,11 +83,6 @@ namespace CodeImp.DoomBuilder.Controls
 		protected override void OnKeyPress(KeyPressEventArgs e)
 		{
 			string allowedchars = "0123456789\b";
-			string nonselectedtext;
-			string textpart;
-			int selectionpos;
-			int numprefixes;
-			char otherprefix;
 			
 			// Determine allowed chars
 			if(allownegative) allowedchars += CultureInfo.CurrentUICulture.NumberFormat.NegativeSign;
@@ -100,12 +100,15 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				//mxd. Check if * or / is pressed
-				if(e.KeyChar == '*' || e.KeyChar == '/') {
+				if(e.KeyChar == '*' || e.KeyChar == '/') 
+				{
 					if (this.SelectionStart - 1 > -1) e.Handled = true; //only valid when at the start of the text
 				}
 				// Check if + or - is pressed
 				else if((e.KeyChar == '+') || (e.KeyChar == '-'))
 				{
+					string nonselectedtext;
+					
 					// Determine non-selected text
 					if(this.SelectionLength > 0)
 					{
@@ -123,12 +126,12 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 					
 					// Not at the start?
-					selectionpos = this.SelectionStart - 1;
+					int selectionpos = this.SelectionStart - 1;
 					if(this.SelectionLength < 0) selectionpos = (this.SelectionStart + this.SelectionLength) - 1;
 					if(selectionpos > -1)
 					{
 						// Find any other characters before the insert position
-						textpart = this.Text.Substring(0, selectionpos + 1);
+						string textpart = this.Text.Substring(0, selectionpos + 1);
 						textpart = textpart.Replace("+", "");
 						textpart = textpart.Replace("-", "");
 						if(textpart.Length > 0)
@@ -139,10 +142,10 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 
 					// Determine other prefix
-					if(e.KeyChar == '+') otherprefix = '-'; else otherprefix = '+';
+					char otherprefix = (e.KeyChar == '+' ? '-' : '+');
 					
 					// Limit the number of + and - allowed
-					numprefixes = nonselectedtext.Split(e.KeyChar, otherprefix).Length;
+					int numprefixes = nonselectedtext.Split(e.KeyChar, otherprefix).Length;
 					if(numprefixes > 2)
 					{
 						// Can't have more than 2 prefixes
@@ -166,10 +169,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// Validate contents
 		protected override void OnValidating(CancelEventArgs e)
 		{
-			string textpart = this.Text;
-
 			// Strip prefixes
-			textpart = textpart.Replace("+", "").Replace("*", "").Replace("/", ""); //mxd
+			string textpart = this.Text.Replace("+", "").Replace("*", "").Replace("/", ""); //mxd
 			if(!allownegative) textpart = textpart.Replace("-", "");
 			
 			// No numbers left?
@@ -177,9 +178,12 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Make the textbox empty
 				this.Text = "";
-			} else if(allowdecimal) { //mxd
+			} 
+			else if(allowdecimal) //mxd
+			{ 
 				float value;
-				if(float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out value)) {
+				if(float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out value)) 
+				{
 					if(value == Math.Round(value))
 						this.Text = this.Text.Replace(textpart, value.ToString("0.0"));
 				}
@@ -227,7 +231,8 @@ namespace CodeImp.DoomBuilder.Controls
 					return newvalue;
 				}
 				//mxd. Prefixed with *?
-				if(this.Text.StartsWith("*")) {
+				if(this.Text.StartsWith("*")) 
+				{
 					// Multiply original by number
 					float resultf;
 					float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out resultf);
@@ -236,7 +241,8 @@ namespace CodeImp.DoomBuilder.Controls
 					return newvalue;
 				}
 				//mxd. Prefixed with /?
-				if(this.Text.StartsWith("/")) {
+				if(this.Text.StartsWith("/")) 
+				{
 					// Divide original by number
 					float resultf;
 					float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out resultf);
@@ -259,15 +265,14 @@ namespace CodeImp.DoomBuilder.Controls
 		// This determines the result value
 		public float GetResultFloat(float original)
 		{
-			string textpart = this.Text;
-			float result;
-
 			// Strip prefixes
-			textpart = textpart.Replace("+", "").Replace("-", "").Replace("*", "").Replace("/", ""); //mxd;
+			string textpart = this.Text.Replace("+", "").Replace("-", "").Replace("*", "").Replace("/", ""); //mxd;
 
 			// Any numbers left?
 			if(textpart.Length > 0)
 			{
+				float result;
+				
 				// Prefixed with ++?
 				if(this.Text.StartsWith("++"))
 				{
@@ -285,7 +290,8 @@ namespace CodeImp.DoomBuilder.Controls
 					return newvalue;
 				}
 				//mxd. Prefixed with *?
-				if(this.Text.StartsWith("*")) {
+				if(this.Text.StartsWith("*")) 
+				{
 					// Multiply original by number
 					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) result = 0;
 					float newvalue = original * result;
@@ -293,7 +299,8 @@ namespace CodeImp.DoomBuilder.Controls
 					return newvalue;
 				}
 				//mxd. Prefixed with /?
-				if(this.Text.StartsWith("/")) {
+				if(this.Text.StartsWith("/")) 
+				{
 					// Divide original by number
 					if (!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) return original;
 					float newvalue = (float)Math.Round(original / result, 3);
@@ -309,6 +316,20 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Nothing given, keep original value
 			return original;
+		}
+
+		//mxd
+		private void UpdateTextboxStyle() 
+		{
+			this.ForeColor = (allowrelative ? SystemColors.HotTrack : SystemColors.WindowText);
+			if (allowrelative)
+			{
+				tooltip.SetToolTip(this, "Use ++ or -- prefixes to change\r\nexisting values by given value.\r\nUse * or / prefixes to multiply\r\nor divide existing values by given value.");
+			}
+			else
+			{
+				tooltip.RemoveAll();
+			}
 		}
 		
 		#endregion

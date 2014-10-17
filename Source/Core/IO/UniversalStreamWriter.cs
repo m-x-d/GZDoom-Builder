@@ -280,13 +280,13 @@ namespace CodeImp.DoomBuilder.IO
 						(float.IsNaN(s.FloorSlopeOffset) ? 0f : Math.Round(s.FloorSlopeOffset, 3)));
 				}
 
-				if (s.CeilingSlope.GetLengthSq() > 0) 
+				if (s.CeilSlope.GetLengthSq() > 0) 
 				{
-					coll.Add("ceilingplane_a", Math.Round(s.CeilingSlope.x, 3));
-					coll.Add("ceilingplane_b", Math.Round(s.CeilingSlope.y, 3));
-					coll.Add("ceilingplane_c", Math.Round(s.CeilingSlope.z, 3));
+					coll.Add("ceilingplane_a", Math.Round(s.CeilSlope.x, 3));
+					coll.Add("ceilingplane_b", Math.Round(s.CeilSlope.y, 3));
+					coll.Add("ceilingplane_c", Math.Round(s.CeilSlope.z, 3));
 					coll.Add("ceilingplane_d", 
-						(float.IsNaN(s.CeilingSlopeOffset) ? 0f : Math.Round(s.CeilingSlopeOffset, 3)));
+						(float.IsNaN(s.CeilSlopeOffset) ? 0f : Math.Round(s.CeilSlopeOffset, 3)));
 				}
 
 				//mxd. Flags

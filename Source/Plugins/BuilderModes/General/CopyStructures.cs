@@ -131,9 +131,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ceilingtexture = s.CeilTexture;
 			brightness = s.Brightness;
 			effect = s.Effect;
-			ceilslopeoffset = s.CeilingSlopeOffset;
+			ceilslopeoffset = s.CeilSlopeOffset;
 			floorslopeoffset = s.FloorSlopeOffset;
-			ceilslope = s.CeilingSlope;
+			ceilslope = s.CeilSlope;
 			floorslope = s.FloorSlope;
 			tag = s.Tag;
 			fields = new UniFields(s.Fields);
@@ -151,8 +151,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(CopySettings.Special) s.Effect = effect;
 			if (CopySettings.CeilingSlope) 
 			{
-				s.CeilingSlopeOffset = ceilslopeoffset;
-				s.CeilingSlope = ceilslope;
+				s.CeilSlopeOffset = ceilslopeoffset;
+				s.CeilSlope = ceilslope;
 			}
 			if(CopySettings.FloorSlope) 
 			{

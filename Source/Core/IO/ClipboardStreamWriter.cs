@@ -193,10 +193,10 @@ namespace CodeImp.DoomBuilder.IO
 				writer.Write(s.FloorSlope.x);
 				writer.Write(s.FloorSlope.y);
 				writer.Write(s.FloorSlope.z);
-				writer.Write(s.CeilingSlopeOffset);
-				writer.Write(s.CeilingSlope.x);
-				writer.Write(s.CeilingSlope.y);
-				writer.Write(s.CeilingSlope.z);
+				writer.Write(s.CeilSlopeOffset);
+				writer.Write(s.CeilSlope.x);
+				writer.Write(s.CeilSlope.y);
+				writer.Write(s.CeilSlope.z);
 
 				AddFlags(s.Flags, writer);
 				AddCustomFields(s.Fields, "sector", writer);

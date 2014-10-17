@@ -107,11 +107,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// browseeffect
 			// 
-			this.browseeffect.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browseeffect.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
 			this.browseeffect.Location = new System.Drawing.Point(402, 26);
 			this.browseeffect.Name = "browseeffect";
-			this.browseeffect.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browseeffect.Size = new System.Drawing.Size(28, 25);
 			this.browseeffect.TabIndex = 1;
 			this.browseeffect.Text = " ";
@@ -190,34 +188,25 @@ namespace CodeImp.DoomBuilder.Windows
 			label7.TabIndex = 25;
 			label7.Text = "Height offset:";
 			label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(label7, "Use ++ or -- prefixes to change\r\nheight by given value.\r\nUse * or / prefixes to m" +
-					"ultiply\r\nor divide height by given value.");
+			this.tooltip.SetToolTip(label7, "Changes floor and ceiling\r\nheight by given value.");
 			// 
 			// label5
 			// 
-			label5.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label5.ForeColor = System.Drawing.SystemColors.HotTrack;
 			label5.Location = new System.Drawing.Point(16, 70);
 			label5.Name = "label5";
 			label5.Size = new System.Drawing.Size(78, 14);
 			label5.TabIndex = 17;
 			label5.Text = "Floor height:";
 			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(label5, "Use ++ or -- prefixes to change\r\nheight by given value.\r\nUse * or / prefixes to m" +
-					"ultiply\r\nor divide height by given value.");
 			// 
 			// label6
 			// 
-			label6.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label6.ForeColor = System.Drawing.SystemColors.HotTrack;
 			label6.Location = new System.Drawing.Point(16, 40);
 			label6.Name = "label6";
 			label6.Size = new System.Drawing.Size(78, 14);
 			label6.TabIndex = 19;
 			label6.Text = "Ceiling height:";
 			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(label6, "Use ++ or -- prefixes to change\r\nheight by given value.\r\nUse * or / prefixes to m" +
-					"ultiply\r\nor divide height by given value.");
 			// 
 			// heightoffset
 			// 
@@ -389,12 +378,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// tooltip
 			// 
 			this.tooltip.AutomaticDelay = 10;
-			this.tooltip.AutoPopDelay = 4000;
+			this.tooltip.AutoPopDelay = 10000;
 			this.tooltip.InitialDelay = 10;
-			this.tooltip.IsBalloon = true;
 			this.tooltip.ReshowDelay = 100;
-			this.tooltip.UseAnimation = false;
-			this.tooltip.UseFading = false;
 			// 
 			// SectorEditForm
 			// 
