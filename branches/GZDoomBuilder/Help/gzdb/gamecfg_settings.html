@@ -4,11 +4,10 @@
 <title>Template</title>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
 <link rel="stylesheet" type="text/css" href="../default.css" media="screen" title="Default" />
+<script type="text/javascript" src="../scripts.js"></script>
 <style type="text/css">
 <!--
-.style2 {
-	color: #006600
-}
+.style3 {color: #003399}
 -->
 </style>
 </head>
@@ -21,12 +20,27 @@
 </div>
 <div id="contents">
   <h2>General settings:</h2>
-  <p><b>basegame</b> - indicates which game the current configuration is based on. Used to load game-specific GLDEFS lumps (DOOMDEFS, HTICDEFS, HEXNDEFS or STRFDEFS)</br>
-    <b>Possible values:</b> 1 (DOOM), 2 (HERETIC), 3 (HEXEN) or 4 (STRIFE).<br>
-    <b>Example:</b> <span class="style2">basegame = 2;</span></p>
+  <p>int<b> basegame</b> - indicates which game the current configuration is based on. Used to load game-specific GLDEFS lumps (DOOMDEFS, HTICDEFS, HEXNDEFS or STRFDEFS)</br>
+    <b>Possible values:</b> 1 (DOOM), 2 (HERETIC), 3 (HEXEN) or 4 (STRIFE).<br />
+   <b>Example: </b><span class="style3">basegame = 2;</span>
+    </p>
+  <p>bool<strong> enabledbydefault</strong> - this game configuration is available by default.<br />
+  <strong>Default value</strong> is "false".</p>
+  <h2>Linedef definitions:</h2>
+  <p>bool <strong>requiresactivation</strong> - this linedef action requires activation flag(s). When this property is set to true, a warning will be shown when a user selects this linedef action and no activation flags are set. 
+  <br />
+  <strong>Default value</strong> is "true".
+  <br />
+  <b>Example:</b> <br>
+    <code>1<br />
+    {<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Polyobj Start Line&quot;;<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="style3">requiresactivation = false;</span><br />
+    
+    }</code>  </p>
   <br>
   <h2>Thing and linedef definitions:</h2>
-  <p>Default values can be set in Thing and Linedef argument definitions.<br>
+  <p>int <strong>default</strong> - sets default value for a Thing or Linedef argument definition.<br>
     <b>Example:</b> <br>
     <code>9038<br />
     {<br />
@@ -36,20 +50,6 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Red&quot;;<br />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style3">default = 255;</span><br />
     &nbsp;&nbsp;&nbsp;&nbsp;}<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;arg1<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;{<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Green&quot;;<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style3">default = 255;</span><br />
-    &nbsp;&nbsp;&nbsp;&nbsp;}<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;arg2<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;{<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Blue&quot;;<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style3">default = 255;</span><br />
-    &nbsp;&nbsp;&nbsp;&nbsp;}<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;arg3<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;{<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = &quot;Desaturation&quot;;<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;}<br />
-    }</code>
-</div>
+    
+    }</code></div>
 </body>
