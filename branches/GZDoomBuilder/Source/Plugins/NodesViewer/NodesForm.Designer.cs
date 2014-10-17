@@ -91,9 +91,9 @@
 			// 
 			// tabs
 			// 
-			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabs.Controls.Add(this.taboverview);
 			this.tabs.Controls.Add(this.tabsplits);
 			this.tabs.Controls.Add(this.tabsubsectors);
@@ -135,16 +135,16 @@
 			// 
 			// label11
 			// 
-			this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.label11.Location = new System.Drawing.Point(31, 209);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(322, 60);
 			this.label11.TabIndex = 14;
 			this.label11.Text = "NOTE: This will rebuild the nodes using the settings configured for \"testing\" in " +
-    "the current game configuration. You can change these settings in the Game Config" +
-    "uration dialog (press F6).";
+				"the current game configuration. You can change these settings in the Game Config" +
+				"uration dialog (press F6).";
 			// 
 			// buildnodesbutton
 			// 
@@ -324,8 +324,8 @@
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox2.BackColor = System.Drawing.Color.Transparent;
 			this.groupBox2.Controls.Add(this.rightindex);
 			this.groupBox2.Controls.Add(this.rightarea);
@@ -386,8 +386,8 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.leftindex);
 			this.groupBox1.Controls.Add(this.leftarea);
 			this.groupBox1.Controls.Add(this.lefttype);
@@ -745,9 +745,13 @@
 			this.Controls.Add(this.closebutton);
 			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "NodesForm";
-			this.Opacity = 0D;
+			this.Opacity = 0;
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Nodes Viewer";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.NodesForm_FormClosing);

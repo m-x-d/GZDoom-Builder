@@ -127,6 +127,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.zceiling.AllowRelative = true;
 			this.zceiling.ButtonStep = 1;
 			this.zceiling.ButtonStepFloat = 1F;
+			this.zceiling.ButtonStepsWrapAround = false;
 			this.zceiling.Location = new System.Drawing.Point(188, 0);
 			this.zceiling.Name = "zceiling";
 			this.zceiling.Size = new System.Drawing.Size(120, 24);
@@ -141,6 +142,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.zfloor.AllowRelative = true;
 			this.zfloor.ButtonStep = 1;
 			this.zfloor.ButtonStepFloat = 1F;
+			this.zfloor.ButtonStepsWrapAround = false;
 			this.zfloor.Location = new System.Drawing.Point(188, 32);
 			this.zfloor.Name = "zfloor";
 			this.zfloor.Size = new System.Drawing.Size(120, 24);
@@ -173,6 +175,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.positiony.AllowRelative = true;
 			this.positiony.ButtonStep = 1;
 			this.positiony.ButtonStepFloat = 1F;
+			this.positiony.ButtonStepsWrapAround = false;
 			this.positiony.Location = new System.Drawing.Point(236, 34);
 			this.positiony.Name = "positiony";
 			this.positiony.Size = new System.Drawing.Size(120, 24);
@@ -187,6 +190,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.positionx.AllowRelative = true;
 			this.positionx.ButtonStep = 1;
 			this.positionx.ButtonStepFloat = 1F;
+			this.positionx.ButtonStepsWrapAround = false;
 			this.positionx.Location = new System.Drawing.Point(68, 34);
 			this.positionx.Name = "positionx";
 			this.positionx.Size = new System.Drawing.Size(120, 24);
@@ -295,11 +299,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "VertexEditForm";
 			this.Opacity = 0;
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Vertex";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VertexEditForm_FormClosing);

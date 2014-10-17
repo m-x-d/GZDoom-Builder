@@ -40,6 +40,8 @@
 			this.bUpdateRoll = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.cbNegativeRoll = new System.Windows.Forms.CheckBox();
+			this.cbNegativePitch = new System.Windows.Forms.CheckBox();
 			this.cbRelativeRoll = new System.Windows.Forms.CheckBox();
 			this.cbRelativePitch = new System.Windows.Forms.CheckBox();
 			this.scalegroup = new System.Windows.Forms.GroupBox();
@@ -58,8 +60,6 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.minScaleX = new System.Windows.Forms.NumericUpDown();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.cbNegativeRoll = new System.Windows.Forms.CheckBox();
-			this.cbNegativePitch = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.scalegroup.SuspendLayout();
@@ -261,6 +261,28 @@
 			this.groupBox2.TabIndex = 18;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Rotation: ";
+			// 
+			// cbNegativeRoll
+			// 
+			this.cbNegativeRoll.AutoSize = true;
+			this.cbNegativeRoll.Location = new System.Drawing.Point(150, 134);
+			this.cbNegativeRoll.Name = "cbNegativeRoll";
+			this.cbNegativeRoll.Size = new System.Drawing.Size(106, 18);
+			this.cbNegativeRoll.TabIndex = 20;
+			this.cbNegativeRoll.Text = "Use negative roll";
+			this.toolTip.SetToolTip(this.cbNegativeRoll, "When checked, 50% of the time \r\nnegative roll will be used");
+			this.cbNegativeRoll.UseVisualStyleBackColor = true;
+			// 
+			// cbNegativePitch
+			// 
+			this.cbNegativePitch.AutoSize = true;
+			this.cbNegativePitch.Location = new System.Drawing.Point(150, 110);
+			this.cbNegativePitch.Name = "cbNegativePitch";
+			this.cbNegativePitch.Size = new System.Drawing.Size(115, 18);
+			this.cbNegativePitch.TabIndex = 19;
+			this.cbNegativePitch.Text = "Use negative pitch";
+			this.toolTip.SetToolTip(this.cbNegativePitch, "When checked, 50% of the time \r\nnegative pitch will be used.");
+			this.cbNegativePitch.UseVisualStyleBackColor = true;
 			// 
 			// cbRelativeRoll
 			// 
@@ -513,28 +535,6 @@
             0});
 			this.minScaleX.ValueChanged += new System.EventHandler(this.minScaleX_ValueChanged);
 			// 
-			// cbNegativeRoll
-			// 
-			this.cbNegativeRoll.AutoSize = true;
-			this.cbNegativeRoll.Location = new System.Drawing.Point(150, 134);
-			this.cbNegativeRoll.Name = "cbNegativeRoll";
-			this.cbNegativeRoll.Size = new System.Drawing.Size(106, 18);
-			this.cbNegativeRoll.TabIndex = 20;
-			this.cbNegativeRoll.Text = "Use negative roll";
-			this.toolTip.SetToolTip(this.cbNegativeRoll, "When checked, 50% of the time \r\nnegative roll will be used");
-			this.cbNegativeRoll.UseVisualStyleBackColor = true;
-			// 
-			// cbNegativePitch
-			// 
-			this.cbNegativePitch.AutoSize = true;
-			this.cbNegativePitch.Location = new System.Drawing.Point(150, 110);
-			this.cbNegativePitch.Name = "cbNegativePitch";
-			this.cbNegativePitch.Size = new System.Drawing.Size(115, 18);
-			this.cbNegativePitch.TabIndex = 19;
-			this.cbNegativePitch.Text = "Use negative pitch";
-			this.toolTip.SetToolTip(this.cbNegativePitch, "When checked, 50% of the time \r\nnegative pitch will be used.");
-			this.cbNegativePitch.UseVisualStyleBackColor = true;
-			// 
 			// JitterThingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -546,8 +546,11 @@
 			this.Controls.Add(this.bCancel);
 			this.Controls.Add(this.bApply);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "JitterThingsForm";
+			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Randomize Things!";

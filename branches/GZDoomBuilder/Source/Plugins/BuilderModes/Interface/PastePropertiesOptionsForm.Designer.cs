@@ -91,7 +91,7 @@
 			this.linedefs.Location = new System.Drawing.Point(4, 23);
 			this.linedefs.Name = "linedefs";
 			this.linedefs.Padding = new System.Windows.Forms.Padding(3);
-			this.linedefs.Size = new System.Drawing.Size(258, 100);
+			this.linedefs.Size = new System.Drawing.Size(258, 121);
 			this.linedefs.TabIndex = 1;
 			this.linedefs.Text = "Linedefs";
 			this.linedefs.UseVisualStyleBackColor = true;
@@ -103,7 +103,7 @@
 			this.lineflags.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lineflags.Location = new System.Drawing.Point(3, 3);
 			this.lineflags.Name = "lineflags";
-			this.lineflags.Size = new System.Drawing.Size(252, 94);
+			this.lineflags.Size = new System.Drawing.Size(252, 115);
 			this.lineflags.TabIndex = 3;
 			this.lineflags.VerticalSpacing = 1;
 			// 
@@ -113,7 +113,7 @@
 			this.sidedefs.Location = new System.Drawing.Point(4, 23);
 			this.sidedefs.Name = "sidedefs";
 			this.sidedefs.Padding = new System.Windows.Forms.Padding(3);
-			this.sidedefs.Size = new System.Drawing.Size(258, 100);
+			this.sidedefs.Size = new System.Drawing.Size(258, 121);
 			this.sidedefs.TabIndex = 2;
 			this.sidedefs.Text = "Sidedefs";
 			this.sidedefs.UseVisualStyleBackColor = true;
@@ -125,7 +125,7 @@
 			this.sideflags.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sideflags.Location = new System.Drawing.Point(3, 3);
 			this.sideflags.Name = "sideflags";
-			this.sideflags.Size = new System.Drawing.Size(252, 94);
+			this.sideflags.Size = new System.Drawing.Size(252, 115);
 			this.sideflags.TabIndex = 2;
 			this.sideflags.VerticalSpacing = 1;
 			// 
@@ -135,7 +135,7 @@
 			this.things.Location = new System.Drawing.Point(4, 23);
 			this.things.Name = "things";
 			this.things.Padding = new System.Windows.Forms.Padding(3);
-			this.things.Size = new System.Drawing.Size(258, 100);
+			this.things.Size = new System.Drawing.Size(258, 121);
 			this.things.TabIndex = 3;
 			this.things.Text = "Things";
 			this.things.UseVisualStyleBackColor = true;
@@ -147,7 +147,7 @@
 			this.thingflags.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.thingflags.Location = new System.Drawing.Point(3, 3);
 			this.thingflags.Name = "thingflags";
-			this.thingflags.Size = new System.Drawing.Size(252, 94);
+			this.thingflags.Size = new System.Drawing.Size(252, 115);
 			this.thingflags.TabIndex = 2;
 			this.thingflags.VerticalSpacing = 1;
 			// 
@@ -157,7 +157,7 @@
 			this.vertices.Location = new System.Drawing.Point(4, 23);
 			this.vertices.Name = "vertices";
 			this.vertices.Padding = new System.Windows.Forms.Padding(3);
-			this.vertices.Size = new System.Drawing.Size(258, 100);
+			this.vertices.Size = new System.Drawing.Size(258, 121);
 			this.vertices.TabIndex = 4;
 			this.vertices.Text = "Vertices";
 			this.vertices.UseVisualStyleBackColor = true;
@@ -169,7 +169,7 @@
 			this.vertexflags.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.vertexflags.Location = new System.Drawing.Point(3, 3);
 			this.vertexflags.Name = "vertexflags";
-			this.vertexflags.Size = new System.Drawing.Size(252, 94);
+			this.vertexflags.Size = new System.Drawing.Size(252, 115);
 			this.vertexflags.TabIndex = 1;
 			this.vertexflags.VerticalSpacing = 1;
 			// 
@@ -219,8 +219,11 @@
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.tabControl);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "PastePropertiesOptionsForm";
+			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Paste Properties Options";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PastePropertiesOptionsForm_FormClosing);

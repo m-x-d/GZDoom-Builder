@@ -189,7 +189,9 @@
 			this.Controls.Add(this.cbFloorAlign);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "BridgeModeForm";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;

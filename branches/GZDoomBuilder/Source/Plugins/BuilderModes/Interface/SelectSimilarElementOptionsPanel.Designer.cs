@@ -218,8 +218,11 @@
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.cancel);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "SelectSimilarElementOptionsPanel";
+			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Selection Options";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectSimilarElementOptionsPanel_FormClosing);

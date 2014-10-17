@@ -522,7 +522,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -1080;
+			this.floorAngleControl.Angle = 0;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.Location = new System.Drawing.Point(186, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
@@ -722,7 +722,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -1080;
+			this.ceilAngleControl.Angle = 0;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.Location = new System.Drawing.Point(186, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
@@ -1002,8 +1002,6 @@
 			this.tooltip.AutoPopDelay = 10000;
 			this.tooltip.InitialDelay = 10;
 			this.tooltip.ReshowDelay = 100;
-			this.tooltip.UseAnimation = false;
-			this.tooltip.UseFading = false;
 			// 
 			// SectorEditFormUDMF
 			// 
@@ -1016,7 +1014,7 @@
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SectorEditFormUDMF";

@@ -83,9 +83,13 @@
 			this.Controls.Add(this.colorPickerControl1);
 			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "SectorColorPicker";
 			this.Opacity = 0;
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "SectorColorPicker";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SectorColorPicker_FormClosing);

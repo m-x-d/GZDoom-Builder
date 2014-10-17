@@ -35,11 +35,11 @@
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.apply = new System.Windows.Forms.Button();
 			this.dataGridView = new System.Windows.Forms.DataGridView();
-			this.hideUnused = new System.Windows.Forms.CheckBox();
 			this.ThingType = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.ThingTitle = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.ThingClassName = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.ThingCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.hideUnused = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -92,18 +92,6 @@
 			this.dataGridView.TabIndex = 6;
 			this.dataGridView.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_CellMouseClick);
 			// 
-			// hideUnused
-			// 
-			this.hideUnused.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.hideUnused.AutoSize = true;
-			this.hideUnused.Location = new System.Drawing.Point(13, 322);
-			this.hideUnused.Name = "hideUnused";
-			this.hideUnused.Size = new System.Drawing.Size(122, 18);
-			this.hideUnused.TabIndex = 8;
-			this.hideUnused.Text = "Hide Unused Things";
-			this.hideUnused.UseVisualStyleBackColor = true;
-			this.hideUnused.CheckedChanged += new System.EventHandler(this.hideUnused_CheckedChanged);
-			// 
 			// ThingType
 			// 
 			this.ThingType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
@@ -145,6 +133,18 @@
 			this.ThingCount.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.ThingCount.Width = 60;
 			// 
+			// hideUnused
+			// 
+			this.hideUnused.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.hideUnused.AutoSize = true;
+			this.hideUnused.Location = new System.Drawing.Point(13, 322);
+			this.hideUnused.Name = "hideUnused";
+			this.hideUnused.Size = new System.Drawing.Size(122, 18);
+			this.hideUnused.TabIndex = 8;
+			this.hideUnused.Text = "Hide Unused Things";
+			this.hideUnused.UseVisualStyleBackColor = true;
+			this.hideUnused.CheckedChanged += new System.EventHandler(this.hideUnused_CheckedChanged);
+			// 
 			// ThingStatisticsForm
 			// 
 			this.AcceptButton = this.apply;
@@ -156,7 +156,9 @@
 			this.Controls.Add(this.dataGridView);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+			this.MinimizeBox = false;
 			this.Name = "ThingStatisticsForm";
+			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Thing statistics";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ThingStatisticsForm_FormClosing);

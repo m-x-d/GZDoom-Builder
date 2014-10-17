@@ -263,7 +263,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Controls.Add(label1);
 			this.Controls.Add(this.resultspanel);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;

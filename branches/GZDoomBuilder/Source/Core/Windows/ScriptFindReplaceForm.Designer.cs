@@ -155,8 +155,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.findtext);
 			this.Controls.Add(this.label1);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "ScriptFindReplaceForm";
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.Text = "Find and Replace";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScriptFindReplaceForm_FormClosing);
 			this.ResumeLayout(false);
