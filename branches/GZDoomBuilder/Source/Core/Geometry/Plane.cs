@@ -16,6 +16,8 @@
 
 #region ================== Namespaces
 
+using System;
+
 #endregion
 
 namespace CodeImp.DoomBuilder.Geometry
@@ -58,7 +60,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			#if DEBUG
 				if(!normal.IsNormalized())
-					General.Fail("Attempt to create a plane with a vector that is not normalized!");
+					throw new NotSupportedException("Attempt to create a plane with a vector that is not normalized!"); // General.Fail("Attempt to create a plane with a vector that is not normalized!");
 			#endif
 			this.normal = normal;
 			this.offset = offset;
@@ -69,7 +71,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			#if DEBUG
 				if(!normal.IsNormalized())
-					General.Fail("Attempt to create a plane with a vector that is not normalized!");
+					throw new NotSupportedException("Attempt to create a plane with a vector that is not normalized!"); //General.Fail("Attempt to create a plane with a vector that is not normalized!");
 			#endif
 			this.normal = normal;
 			this.offset = -Vector3D.DotProduct(normal, position);
@@ -83,6 +85,23 @@ namespace CodeImp.DoomBuilder.Geometry
 			if((up && (this.normal.z < 0.0f)) || (!up && (this.normal.z > 0.0f)))
 				this.normal = -this.normal;
 			
+			this.offset = -Vector3D.DotProduct(normal, p3);
+		}
+
+		/// <summary></summary>
+		public Plane(Vector3D center, float anglexy, float anglez, bool up) //mxd
+		{
+			Vector2D point = new Vector2D(center.x + (float)Math.Cos(anglexy) * (float)Math.Sin(anglez), center.y + (float)Math.Sin(anglexy) * (float)Math.Sin(anglez));
+			Vector2D perpendicular = new Line2D(center, point).GetPerpendicular();
+
+			Vector3D p2 = new Vector3D(point.x + perpendicular.x, point.y + perpendicular.y, center.z + (float)Math.Cos(anglez));
+			Vector3D p3 = new Vector3D(point.x - perpendicular.x, point.y - perpendicular.y, center.z + (float)Math.Cos(anglez));
+
+			this.normal = Vector3D.CrossProduct(p2 - center, p3 - center).GetNormal();
+
+			if((up && (this.normal.z < 0.0f)) || (!up && (this.normal.z > 0.0f)))
+				this.normal = -this.normal;
+
 			this.offset = -Vector3D.DotProduct(normal, p3);
 		}
 		

@@ -48,6 +48,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabproperties = new System.Windows.Forms.TabPage();
 			this.spritetex = new System.Windows.Forms.Panel();
 			this.settingsgroup = new System.Windows.Forms.GroupBox();
+			this.missingflags = new System.Windows.Forms.PictureBox();
 			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.tabeffects = new System.Windows.Forms.TabPage();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
@@ -72,7 +73,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply = new System.Windows.Forms.Button();
 			this.hint = new System.Windows.Forms.PictureBox();
 			this.hintlabel = new System.Windows.Forms.Label();
-			this.missingflags = new System.Windows.Forms.PictureBox();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			groupBox2 = new System.Windows.Forms.GroupBox();
@@ -82,12 +82,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.SuspendLayout();
 			this.tabproperties.SuspendLayout();
 			this.settingsgroup.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.missingflags)).BeginInit();
 			this.tabeffects.SuspendLayout();
 			this.actiongroup.SuspendLayout();
 			this.hexenpanel.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.hint)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.missingflags)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -330,6 +330,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.settingsgroup.TabStop = false;
 			this.settingsgroup.Text = " Settings ";
 			// 
+			// missingflags
+			// 
+			this.missingflags.BackColor = System.Drawing.SystemColors.Window;
+			this.missingflags.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+			this.missingflags.Location = new System.Drawing.Point(55, -2);
+			this.missingflags.Name = "missingflags";
+			this.missingflags.Size = new System.Drawing.Size(16, 16);
+			this.missingflags.TabIndex = 5;
+			this.missingflags.TabStop = false;
+			this.missingflags.Visible = false;
+			// 
 			// flags
 			// 
 			this.flags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -512,11 +523,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// browseaction
 			// 
-			this.browseaction.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
 			this.browseaction.Location = new System.Drawing.Point(592, 25);
 			this.browseaction.Name = "browseaction";
-			this.browseaction.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browseaction.Size = new System.Drawing.Size(28, 25);
 			this.browseaction.TabIndex = 1;
 			this.browseaction.Text = " ";
@@ -591,17 +600,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hintlabel.TabIndex = 4;
 			this.hintlabel.Text = "Select several thing types to randomly assign them to selection";
 			// 
-			// missingflags
-			// 
-			this.missingflags.BackColor = System.Drawing.SystemColors.Window;
-			this.missingflags.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
-			this.missingflags.Location = new System.Drawing.Point(55, -2);
-			this.missingflags.Name = "missingflags";
-			this.missingflags.Size = new System.Drawing.Size(16, 16);
-			this.missingflags.TabIndex = 5;
-			this.missingflags.TabStop = false;
-			this.missingflags.Visible = false;
-			// 
 			// tooltip
 			// 
 			this.tooltip.AutomaticDelay = 10;
@@ -642,13 +640,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.ResumeLayout(false);
 			this.tabproperties.ResumeLayout(false);
 			this.settingsgroup.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.missingflags)).EndInit();
 			this.tabeffects.ResumeLayout(false);
 			this.actiongroup.ResumeLayout(false);
 			this.actiongroup.PerformLayout();
 			this.hexenpanel.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.hint)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.missingflags)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

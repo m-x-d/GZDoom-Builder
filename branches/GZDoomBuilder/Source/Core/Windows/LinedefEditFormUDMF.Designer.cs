@@ -470,11 +470,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// browseaction
 			// 
-			this.browseaction.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
 			this.browseaction.Location = new System.Drawing.Point(496, 25);
 			this.browseaction.Name = "browseaction";
-			this.browseaction.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browseaction.Size = new System.Drawing.Size(28, 25);
 			this.browseaction.TabIndex = 1;
 			this.browseaction.Text = " ";

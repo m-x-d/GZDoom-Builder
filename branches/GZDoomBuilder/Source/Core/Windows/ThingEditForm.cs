@@ -344,7 +344,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(preventchanges) return;
 			preventchanges = true;
-			anglecontrol.Angle = angle.GetResult(int.MinValue);
+			anglecontrol.Angle = angle.GetResult(GZBuilder.Controls.AngleControl.NO_ANGLE);
 			preventchanges = false;
 			updateAngle(); //mxd
 		}

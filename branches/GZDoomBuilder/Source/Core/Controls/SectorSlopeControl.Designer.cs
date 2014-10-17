@@ -115,6 +115,7 @@
 			// rotationcontrol
 			// 
 			this.rotationcontrol.Angle = 0;
+			this.rotationcontrol.AngleOffset = 0;
 			this.rotationcontrol.Location = new System.Drawing.Point(173, 36);
 			this.rotationcontrol.Name = "rotationcontrol";
 			this.rotationcontrol.Size = new System.Drawing.Size(44, 44);
@@ -128,6 +129,7 @@
 			this.slopeangle.AllowRelative = true;
 			this.slopeangle.ButtonStep = 1;
 			this.slopeangle.ButtonStepFloat = 1F;
+			this.slopeangle.ButtonStepsWrapAround = false;
 			this.slopeangle.Location = new System.Drawing.Point(85, 78);
 			this.slopeangle.Name = "slopeangle";
 			this.slopeangle.Size = new System.Drawing.Size(82, 24);
@@ -142,6 +144,7 @@
 			this.sloperotation.AllowRelative = true;
 			this.sloperotation.ButtonStep = 1;
 			this.sloperotation.ButtonStepFloat = 1F;
+			this.sloperotation.ButtonStepsWrapAround = false;
 			this.sloperotation.Location = new System.Drawing.Point(85, 48);
 			this.sloperotation.Name = "sloperotation";
 			this.sloperotation.Size = new System.Drawing.Size(82, 24);
@@ -155,7 +158,8 @@
 			this.slopeoffset.AllowNegative = true;
 			this.slopeoffset.AllowRelative = true;
 			this.slopeoffset.ButtonStep = 1;
-			this.slopeoffset.ButtonStepFloat = 16F;
+			this.slopeoffset.ButtonStepFloat = 8F;
+			this.slopeoffset.ButtonStepsWrapAround = false;
 			this.slopeoffset.Location = new System.Drawing.Point(85, 108);
 			this.slopeoffset.Name = "slopeoffset";
 			this.slopeoffset.Size = new System.Drawing.Size(82, 24);
@@ -193,7 +197,6 @@
 			this.Controls.Add(this.label18);
 			this.Name = "SectorSlopeControl";
 			this.Size = new System.Drawing.Size(353, 169);
-			this.Load += new System.EventHandler(this.SectorSlopeControl_Load);
 			((System.ComponentModel.ISupportInitialize)(this.angletrackbar)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();

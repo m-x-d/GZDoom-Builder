@@ -275,11 +275,9 @@
 			// 
 			// browseeffect
 			// 
-			this.browseeffect.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browseeffect.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
 			this.browseeffect.Location = new System.Drawing.Point(402, 26);
 			this.browseeffect.Name = "browseeffect";
-			this.browseeffect.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browseeffect.Size = new System.Drawing.Size(28, 25);
 			this.browseeffect.TabIndex = 1;
 			this.browseeffect.Text = " ";
@@ -337,7 +335,25 @@
 			label15.TabIndex = 27;
 			label15.Text = "Height offset:";
 			label15.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(label15, "Changes floor and ceiling\r\nheight by given value");
+			this.tooltip.SetToolTip(label15, "Changes floor and ceiling\r\nheight by given value.");
+			// 
+			// label6
+			// 
+			label6.Location = new System.Drawing.Point(9, 24);
+			label6.Name = "label6";
+			label6.Size = new System.Drawing.Size(74, 14);
+			label6.TabIndex = 19;
+			label6.Text = "Ceiling height:";
+			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// label5
+			// 
+			label5.Location = new System.Drawing.Point(9, 54);
+			label5.Name = "label5";
+			label5.Size = new System.Drawing.Size(74, 14);
+			label5.TabIndex = 17;
+			label5.Text = "Floor height:";
+			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// heightoffset
 			// 
@@ -368,30 +384,6 @@
 			this.ceilingheight.StepValues = null;
 			this.ceilingheight.TabIndex = 22;
 			this.ceilingheight.WhenTextChanged += new System.EventHandler(this.ceilingheight_WhenTextChanged);
-			// 
-			// label6
-			// 
-			label6.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label6.ForeColor = System.Drawing.SystemColors.HotTrack;
-			label6.Location = new System.Drawing.Point(9, 24);
-			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(74, 14);
-			label6.TabIndex = 19;
-			label6.Text = "Ceiling height:";
-			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(label6, "Use ++ or -- prefixes to change\r\nheight by given value");
-			// 
-			// label5
-			// 
-			label5.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			label5.ForeColor = System.Drawing.SystemColors.HotTrack;
-			label5.Location = new System.Drawing.Point(9, 54);
-			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(74, 14);
-			label5.TabIndex = 17;
-			label5.Text = "Floor height:";
-			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(label5, "Use ++ or -- prefixes to change\r\nheight by given value");
 			// 
 			// sectorheightlabel
 			// 
@@ -530,7 +522,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -540;
+			this.floorAngleControl.Angle = -1080;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.Location = new System.Drawing.Point(186, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
@@ -730,7 +722,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -540;
+			this.ceilAngleControl.Angle = -1080;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.Location = new System.Drawing.Point(186, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
@@ -924,7 +916,6 @@
 			this.floorslopecontrol.OnUseLineAnglesChanged += new System.EventHandler(this.floorslopecontrol_OnUseLineAnglesChanged);
 			this.floorslopecontrol.OnResetClicked += new System.EventHandler(this.floorslopecontrol_OnResetClicked);
 			this.floorslopecontrol.OnAnglesChanged += new System.EventHandler(this.floorslopecontrol_OnAnglesChanged);
-			this.floorslopecontrol.OnOffsetChanged += new System.EventHandler(this.floorslopecontrol_OnOffsetChanged);
 			this.floorslopecontrol.OnPivotModeChanged += new System.EventHandler(this.floorslopecontrol_OnPivotModeChanged);
 			// 
 			// groupBox4
@@ -947,7 +938,6 @@
 			this.ceilingslopecontrol.OnUseLineAnglesChanged += new System.EventHandler(this.ceilingslopecontrol_OnUseLineAnglesChanged);
 			this.ceilingslopecontrol.OnResetClicked += new System.EventHandler(this.ceilingslopecontrol_OnResetClicked);
 			this.ceilingslopecontrol.OnAnglesChanged += new System.EventHandler(this.ceilingslopecontrol_OnAnglesChanged);
-			this.ceilingslopecontrol.OnOffsetChanged += new System.EventHandler(this.ceilingslopecontrol_OnOffsetChanged);
 			this.ceilingslopecontrol.OnPivotModeChanged += new System.EventHandler(this.ceilingslopecontrol_OnPivotModeChanged);
 			// 
 			// tabcustom
@@ -1009,9 +999,8 @@
 			// tooltip
 			// 
 			this.tooltip.AutomaticDelay = 10;
-			this.tooltip.AutoPopDelay = 4000;
+			this.tooltip.AutoPopDelay = 10000;
 			this.tooltip.InitialDelay = 10;
-			this.tooltip.IsBalloon = true;
 			this.tooltip.ReshowDelay = 100;
 			this.tooltip.UseAnimation = false;
 			this.tooltip.UseFading = false;

@@ -281,31 +281,50 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void ChangeHeight(int amount)
 		{
 			mode.CreateUndo("Change ceiling height", UndoGroup.CeilingHeightChange, level.sector.FixedIndex);
-			//mxd. Modify vertex offsets?
-			if(General.Map.UDMF && level.sector.Sidedefs.Count == 3 && changeVertexHeight(amount)) {
-				mode.SetActionResult("Changed ceiling vertex height by " + amount + ".");
-				return;
+			level.sector.CeilHeight += amount;
+
+			if(General.Map.UDMF)
+			{
+				//mxd. Modify vertex offsets?
+				if(level.sector.Sidedefs.Count == 3)
+				{
+					ChangeVertexHeight(amount);
+				}
+
+				//mxd. Modify slope offset?
+				if(level.sector.CeilSlope.GetLengthSq() > 0) 
+				{
+					Vector3D center = new Vector3D(level.sector.BBox.X + level.sector.BBox.Width / 2,
+												   level.sector.BBox.Y + level.sector.BBox.Height / 2,
+												   level.sector.CeilHeight);
+					
+					Plane p = new Plane(center,
+										level.sector.CeilSlope.GetAngleXY() - Angle2D.PIHALF,
+										level.sector.CeilSlope.GetAngleZ(),
+										false);
+
+					level.sector.CeilSlopeOffset = p.Offset;
+				}
 			}
 
-			level.sector.CeilHeight += amount;
 			mode.SetActionResult("Changed ceiling height to " + level.sector.CeilHeight + ".");
 		}
 
 		//mxd
-		private bool changeVertexHeight(int amount) {
+		private void ChangeVertexHeight(int amount) 
+		{
 			List<Vertex> verts = new List<Vertex>(3);
 
 			//do this only if all 3 verts have offsets
-			foreach(Sidedef side in level.sector.Sidedefs) {
-				if(float.IsNaN(side.Line.Start.ZCeiling) || float.IsNaN(side.Line.End.ZCeiling)) return false;
+			foreach(Sidedef side in level.sector.Sidedefs) 
+			{
+				if(float.IsNaN(side.Line.Start.ZCeiling) || float.IsNaN(side.Line.End.ZCeiling)) return;
 				if(!verts.Contains(side.Line.Start)) verts.Add(side.Line.Start);
 				if(!verts.Contains(side.Line.End)) verts.Add(side.Line.End);
 			}
 
 			foreach(Vertex v in verts) 
 				mode.GetVisualVertex(v, false).OnChangeTargetHeight(amount);
-
-			return true;
 		}
 
 		//mxd. Sector brightness change

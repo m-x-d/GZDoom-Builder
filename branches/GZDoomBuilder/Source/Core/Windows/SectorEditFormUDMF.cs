@@ -1,12 +1,16 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
-using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Controls;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.Windows
 {
@@ -32,16 +36,16 @@ namespace CodeImp.DoomBuilder.Windows
 		private static bool useCeilLineAngles;
 		private static bool useFloorSlopeLineAngles;
 		private static bool useCeilSlopeLineAngles;
+		private static SlopePivotMode ceilpivotmode = SlopePivotMode.LOCAL;
+		private static SlopePivotMode floorpivotmode = SlopePivotMode.LOCAL;
 
 		//mxd. Window setup stuff
 		private static Point location = Point.Empty;
 		private static int activetab;
 	
 		//mxd. Slope pivots
-		private Vector3D globalceilslopepivot;
-		private Vector3D globalfloorslopepivot;
-		private Dictionary<Sector, Vector3D> ceilslopepivots;
-		private Dictionary<Sector, Vector3D> floorslopepivots;
+		private Vector2D globalslopepivot;
+		private Dictionary<Sector, Vector2D> slopepivots;
 
 		#endregion
 
@@ -81,17 +85,17 @@ namespace CodeImp.DoomBuilder.Windows
 			public readonly bool FloorLightAbsoulte;
 
 			//UDMF slopes. Angles are in degrees
+			public readonly Vector3D FloorSlope;
+			public readonly Vector3D CeilSlope;
 			public readonly float FloorSlopeAngleXY;
 			public readonly float FloorSlopeAngleZ;
 			public readonly float FloorSlopeOffset;
-			public readonly float CeilingSlopeAngleXY;
-			public readonly float CeilingSlopeAngleZ;
-			public readonly float CeilingSlopeOffset;
+			public readonly float CeilSlopeAngleXY;
+			public readonly float CeilSlopeAngleZ;
+			public readonly float CeilSlopeOffset;
 
-			public float VirtualFloorSlopeOffset;
-			public float VirtualCeilingSlopeOffset;
-
-			public SectorProperties(Sector s) {
+			public SectorProperties(Sector s) 
+			{
 				Brightness = s.Brightness;
 				FloorHeight = s.FloorHeight;
 				CeilHeight = s.CeilHeight;
@@ -123,25 +127,33 @@ namespace CodeImp.DoomBuilder.Windows
 				FloorLightAbsoulte = s.Fields.GetValue("lightfloorabsolute", false);
 
 				//UDMF slopes
-				if (s.FloorSlope.GetLengthSq() > 0) {
-					FloorSlopeAngleXY = (float)Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleXY()), 1);
-					FloorSlopeAngleZ = (float)Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleZ()), 1);
-				} else {
+				if (s.FloorSlope.GetLengthSq() > 0)
+				{
+					FloorSlopeAngleXY = General.ClampAngle((float)Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleXY()) - 180, 1));
+					FloorSlopeAngleZ = -(float)Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleZ()) - 90, 1);
+					FloorSlopeOffset = (float.IsNaN(s.FloorSlopeOffset) ? s.FloorHeight : s.FloorSlopeOffset);
+				} 
+				else 
+				{
 					FloorSlopeAngleXY = 0;
 					FloorSlopeAngleZ = 0;
+					FloorSlopeOffset = -s.FloorHeight;
 				}
-				FloorSlopeOffset = float.IsNaN(s.FloorSlopeOffset) ? -s.FloorHeight : s.FloorSlopeOffset;
-				VirtualFloorSlopeOffset = FloorSlopeOffset;
+				FloorSlope = s.FloorSlope;
 
-				if (s.CeilingSlope.GetLengthSq() > 0) {
-					CeilingSlopeAngleXY = (float)Math.Round(Angle2D.RadToDeg(s.CeilingSlope.GetAngleXY()), 1);
-					CeilingSlopeAngleZ = (float)Math.Round(Angle2D.RadToDeg(s.CeilingSlope.GetAngleZ()), 1);
-				} else {
-					CeilingSlopeAngleXY = 0;
-					CeilingSlopeAngleZ = 0;
+				if (s.CeilSlope.GetLengthSq() > 0)
+				{
+					CeilSlopeAngleXY = General.ClampAngle((float)Math.Round(Angle2D.RadToDeg(s.CeilSlope.GetAngleXY()) - 180, 1));
+					CeilSlopeAngleZ = -(float)Math.Round(270 - Angle2D.RadToDeg(s.CeilSlope.GetAngleZ()), 1);
+					CeilSlopeOffset = (float.IsNaN(s.CeilSlopeOffset) ? s.CeilHeight : s.CeilSlopeOffset);
+				} 
+				else 
+				{
+					CeilSlopeAngleXY = 0;
+					CeilSlopeAngleZ = 0;
+					CeilSlopeOffset = s.CeilHeight;
 				}
-				CeilingSlopeOffset = float.IsNaN(s.CeilingSlopeOffset) ? -s.CeilHeight : s.CeilingSlopeOffset;
-				VirtualCeilingSlopeOffset = CeilingSlopeOffset;
+				CeilSlope = s.CeilSlope;
 			}
 		}
 
@@ -149,15 +161,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Constructor
 
-		public SectorEditFormUDMF() {
+		public SectorEditFormUDMF() 
+		{
 			InitializeComponent();
 
-#if !DEBUG //TODO: implement this!
-			tabs.TabPages.Remove(tabslopes);
-#endif
-
 			//mxd. Widow setup
-			if(location != Point.Empty) {
+			if(location != Point.Empty) 
+			{
 				this.StartPosition = FormStartPosition.Manual;
 				this.Location = location;
 				if(activetab > 0) tabs.SelectTab(activetab);
@@ -168,7 +178,8 @@ namespace CodeImp.DoomBuilder.Windows
 				flags.Add(lf.Value, lf.Key);
 
 			//mxd. Fill renderstyles
-			foreach(KeyValuePair<string, string> lf in General.Map.Config.SectorRenderStyles) {
+			foreach(KeyValuePair<string, string> lf in General.Map.Config.SectorRenderStyles) 
+			{
 				floorRenderStyle.Items.Add(lf.Value);
 				ceilRenderStyle.Items.Add(lf.Value);
 			}
@@ -199,6 +210,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			floorslopecontrol.UseLineAngles = useFloorSlopeLineAngles;
 			ceilingslopecontrol.UseLineAngles = useCeilSlopeLineAngles;
+
+			floorslopecontrol.PivotMode = floorpivotmode;
+			ceilingslopecontrol.PivotMode = ceilpivotmode;
 		}
 
 		#endregion
@@ -206,7 +220,8 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Methods
 
 		// This sets up the form to edit the given sectors
-		public void Setup(ICollection<Sector> sectors) {
+		public void Setup(ICollection<Sector> sectors) 
+		{
 			blockupdate = true; //mxd
 
 			// Keep this list
@@ -221,6 +236,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Set default height offset
 			heightoffset.Text = "0";
+
+			CreateHelperProps(sectors); //mxd
 
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first sector properties
@@ -274,12 +291,15 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//Render style
 			string[] rskeys = null;
-			if (General.Map.Config.SectorRenderStyles.Count > 0) {
+			if (General.Map.Config.SectorRenderStyles.Count > 0) 
+			{
 				rskeys = new string[General.Map.Config.SectorRenderStyles.Count];
 				General.Map.Config.SectorRenderStyles.Keys.CopyTo(rskeys, 0);
 				ceilRenderStyle.SelectedIndex = Array.IndexOf(rskeys, sc.Fields.GetValue("renderstyleceiling", "translucent"));
 				floorRenderStyle.SelectedIndex = Array.IndexOf(rskeys, sc.Fields.GetValue("renderstylefloor", "translucent"));
-			} else {
+			} 
+			else 
+			{
 				ceilRenderStyle.Enabled = false;
 				floorRenderStyle.Enabled = false;
 			}
@@ -294,7 +314,8 @@ namespace CodeImp.DoomBuilder.Windows
 			lightColor.SetValueFrom(sc.Fields);
 
 			//Slopes
-			SetupSlopes(sc, true);
+			SetupFloorSlope(sc, true);
+			SetupCeilingSlope(sc, true);
 
 			// Action
 			tagSelector.Setup(UniversalType.SectorTag); //mxd
@@ -305,24 +326,19 @@ namespace CodeImp.DoomBuilder.Windows
 
 			anglesteps = new StepsList();
 
-			//mxd. Slope pivots
-			floorslopepivots = new Dictionary<Sector, Vector3D>(sectors.Count);
-			ceilslopepivots = new Dictionary<Sector, Vector3D>(sectors.Count);
-
 			////////////////////////////////////////////////////////////////////////
 			// Now go for all sectors and change the options when a setting is different
 			////////////////////////////////////////////////////////////////////////
 
 			// Go for all sectors
-			foreach(Sector s in sectors) {
-				//mxd. Store initial properties
-				SectorProperties sp = new SectorProperties(s);
-				sectorprops.Add(s, sp);
-
+			foreach(Sector s in sectors) 
+			{
 				// Flags
-				foreach(CheckBox c in flags.Checkboxes) {
+				foreach(CheckBox c in flags.Checkboxes) 
+				{
 					if(c.CheckState == CheckState.Indeterminate) continue; //mxd
-					if(s.IsFlagSet(c.Tag.ToString()) != c.Checked) {
+					if(s.IsFlagSet(c.Tag.ToString()) != c.Checked) 
+					{
 						c.ThreeState = true;
 						c.CheckState = CheckState.Indeterminate;
 					}
@@ -335,11 +351,13 @@ namespace CodeImp.DoomBuilder.Windows
 				// Floor/Ceiling
 				if(s.FloorHeight.ToString() != floorheight.Text) floorheight.Text = "";
 				if(s.CeilHeight.ToString() != ceilingheight.Text) ceilingheight.Text = "";
-				if (s.FloorTexture != floortex.TextureName) {
+				if (s.FloorTexture != floortex.TextureName) 
+				{
 					floortex.MultipleTextures = true; //mxd
 					floortex.TextureName = "";
 				}
-				if (s.CeilTexture != ceilingtex.TextureName) {
+				if (s.CeilTexture != ceilingtex.TextureName) 
+				{
 					ceilingtex.MultipleTextures = true; //mxd
 					ceilingtex.TextureName = "";
 				}
@@ -354,24 +372,28 @@ namespace CodeImp.DoomBuilder.Windows
 				floorScale.SetValuesFrom(s.Fields, false);
 
 				//Texture rotation
-				if(s.Fields.GetValue("rotationceiling", 0.0f).ToString() != ceilRotation.Text) {
+				if(s.Fields.GetValue("rotationceiling", 0.0f).ToString() != ceilRotation.Text) 
+				{
 					ceilRotation.Text = "";
-					ceilAngleControl.Angle = 0;
+					ceilAngleControl.Angle = GZBuilder.Controls.AngleControl.NO_ANGLE;
 				}
-				if(s.Fields.GetValue("rotationfloor", 0.0f).ToString() != floorRotation.Text) {
+				if(s.Fields.GetValue("rotationfloor", 0.0f).ToString() != floorRotation.Text)
+				{
 					floorRotation.Text = "";
-					floorAngleControl.Angle = 0;
+					floorAngleControl.Angle = GZBuilder.Controls.AngleControl.NO_ANGLE;
 				}
 
 				//Texture brightness
 				if(s.Fields.GetValue("lightceiling", 0).ToString() != ceilBrightness.Text) ceilBrightness.Text = "";
 				if(s.Fields.GetValue("lightfloor", 0).ToString() != floorBrightness.Text) floorBrightness.Text = "";
 
-				if(s.Fields.GetValue("lightceilingabsolute", false) != ceilLightAbsolute.Checked) {
+				if(s.Fields.GetValue("lightceilingabsolute", false) != ceilLightAbsolute.Checked) 
+				{
 					ceilLightAbsolute.ThreeState = true;
 					ceilLightAbsolute.CheckState = CheckState.Indeterminate;
 				}
-				if(s.Fields.GetValue("lightfloorabsolute", false) != floorLightAbsolute.Checked) {
+				if(s.Fields.GetValue("lightfloorabsolute", false) != floorLightAbsolute.Checked) 
+				{
 					floorLightAbsolute.ThreeState = true;
 					floorLightAbsolute.CheckState = CheckState.Indeterminate;
 				}
@@ -381,7 +403,8 @@ namespace CodeImp.DoomBuilder.Windows
 				if(s.Fields.GetValue("alphafloor", 1.0f).ToString() != floorAlpha.Text) floorAlpha.Text = "";
 
 				//Render style
-				if (rskeys != null) {
+				if (rskeys != null) 
+				{
 					if (ceilRenderStyle.SelectedIndex > -1 && ceilRenderStyle.SelectedIndex != Array.IndexOf(rskeys, s.Fields.GetValue("renderstyleceiling", "translucent")))
 						ceilRenderStyle.SelectedIndex = -1;
 					if (floorRenderStyle.SelectedIndex > -1 && floorRenderStyle.SelectedIndex != Array.IndexOf(rskeys, s.Fields.GetValue("renderstylefloor", "translucent")))
@@ -398,7 +421,8 @@ namespace CodeImp.DoomBuilder.Windows
 				lightColor.SetValueFrom(s.Fields);
 
 				//Slopes
-				SetupSlopes(s, false);
+				SetupFloorSlope(s, false);
+				SetupCeilingSlope(s, false);
 
 				// Action
 				if(s.Tag != sc.Tag) tagSelector.ClearTag(); //mxd
@@ -409,7 +433,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//mxd. Angle steps
 				int angle;
-				foreach(Sidedef side in s.Sidedefs){
+				foreach(Sidedef side in s.Sidedefs)
+				{
 					if (side.Line.Front != null && side.Index == side.Line.Front.Index)
 						angle = General.ClampAngle(270 - side.Line.AngleDeg);
 					else
@@ -417,26 +442,11 @@ namespace CodeImp.DoomBuilder.Windows
 
 					if(!anglesteps.Contains(angle)) anglesteps.Add(angle);
 				}
-
-				//Slope pivots
-				Vector3D floorpivot = new Vector3D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2, s.FloorHeight);
-				Vector3D ceilpivot = new Vector3D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2, s.CeilHeight);
-
-				globalfloorslopepivot += floorpivot;
-				globalceilslopepivot += ceilpivot;
-
-				floorslopepivots.Add(s, floorpivot);
-				ceilslopepivots.Add(s, ceilpivot);
 			}
 
-			globalfloorslopepivot /= sectors.Count;
-			globalceilslopepivot /= sectors.Count;
-
 			//mxd. Update slope controls
-			#if DEBUG
 			ceilingslopecontrol.UpdateControls();
 			floorslopecontrol.UpdateControls();
-			#endif
 
 			// Show sector height
 			UpdateSectorHeight();
@@ -451,16 +461,39 @@ namespace CodeImp.DoomBuilder.Windows
 			blockupdate = false; //mxd
 		}
 
+		// mxd
+		private void CreateHelperProps(ICollection<Sector> sectors) 
+		{
+			slopepivots = new Dictionary<Sector, Vector2D>(sectors.Count);
+			
+			foreach (Sector s in sectors)
+			{
+				Vector2D pivot = new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2);
+				globalslopepivot += pivot;
+				slopepivots.Add(s, pivot);
+
+				//mxd. Store initial properties
+				sectorprops.Add(s, new SectorProperties(s));
+			}
+
+			globalslopepivot /= sectors.Count;
+		}
+
 		// This updates the sector height field
-		private void UpdateSectorHeight() {
+		private void UpdateSectorHeight() 
+		{
 			int delta = int.MinValue;
 
 			// Check all selected sectors
-			foreach(Sector s in sectors) {
-				if(delta == int.MinValue) {
+			foreach(Sector s in sectors) 
+			{
+				if(delta == int.MinValue) 
+				{
 					// First sector in list
 					delta = s.CeilHeight - s.FloorHeight;
-				} else if(delta != (s.CeilHeight - s.FloorHeight)) {
+				} 
+				else if(delta != (s.CeilHeight - s.FloorHeight)) 
+				{
 					// We can't show heights because the delta
 					// heights for the sectors is different
 					delta = int.MinValue;
@@ -468,11 +501,14 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
-			if(delta != int.MinValue) {
+			if(delta != int.MinValue) 
+			{
 				sectorheight.Text = delta.ToString();
 				sectorheight.Visible = true;
 				sectorheightlabel.Visible = true;
-			} else {
+			} 
+			else 
+			{
 				sectorheight.Visible = false;
 				sectorheightlabel.Visible = false;
 			}
@@ -486,14 +522,20 @@ namespace CodeImp.DoomBuilder.Windows
 			//restore values
 			if(string.IsNullOrEmpty(ceilingheight.Text)) 
 			{
-				foreach(Sector s in sectors)
+				foreach (Sector s in sectors)
+				{
 					s.CeilHeight = sectorprops[s].CeilHeight + offset;
-				
+					SynchCeilSlopeOffsetToHeight(s);
+				}
+
 			} 
 			else //update values
 			{
-				foreach(Sector s in sectors)
+				foreach (Sector s in sectors)
+				{
 					s.CeilHeight = ceilingheight.GetResult(sectorprops[s].CeilHeight) + offset;
+					SynchCeilSlopeOffsetToHeight(s);
+				}
 			}
 		}
 
@@ -505,47 +547,75 @@ namespace CodeImp.DoomBuilder.Windows
 			//restore values
 			if(string.IsNullOrEmpty(floorheight.Text)) 
 			{
-				foreach(Sector s in sectors)
+				foreach (Sector s in sectors)
+				{
 					s.FloorHeight = sectorprops[s].FloorHeight + offset;
-				
+					SynchFloorSlopeOffsetToHeight(s);
+				}
+
 			} 
 			else //update values
 			{
-				foreach(Sector s in sectors)
+				foreach (Sector s in sectors)
+				{
 					s.FloorHeight = floorheight.GetResult(sectorprops[s].FloorHeight) + offset;
+					SynchFloorSlopeOffsetToHeight(s);
+				}
 			}
+		}
+
+		//mxd
+		private void SynchCeilSlopeOffsetToHeight(Sector s) 
+		{
+			Vector3D center = GetSectorCenter(s, s.CeilHeight, SlopePivotMode.LOCAL);
+			Plane p = new Plane(center, s.CeilSlope.GetAngleXY() - Angle2D.PIHALF, s.CeilSlope.GetAngleZ(), false);
+			s.CeilSlopeOffset = p.Offset;
+		}
+
+		//mxd
+		private void SynchFloorSlopeOffsetToHeight(Sector s)
+		{
+			Vector3D center = GetSectorCenter(s, s.FloorHeight, SlopePivotMode.LOCAL);
+			Plane p = new Plane(center, s.FloorSlope.GetAngleXY() + Angle2D.PIHALF, -s.FloorSlope.GetAngleZ(), true);
+			s.FloorSlopeOffset = p.Offset;
 		}
 
 		#endregion
 
 		#region ================== Events
 
-		private void apply_Click(object sender, EventArgs e) {
+		private void apply_Click(object sender, EventArgs e) 
+		{
 			// Verify the tag
 			tagSelector.ValidateTag(); //mxd
-			if((tagSelector.GetTag(0) < General.Map.FormatInterface.MinTag) || (tagSelector.GetTag(0) > General.Map.FormatInterface.MaxTag)) {
+			if((tagSelector.GetTag(0) < General.Map.FormatInterface.MinTag) || (tagSelector.GetTag(0) > General.Map.FormatInterface.MaxTag)) 
+			{
 				General.ShowWarningMessage("Sector tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
 				return;
 			}
 
 			// Verify the effect
-			if((effect.Value < General.Map.FormatInterface.MinEffect) || (effect.Value > General.Map.FormatInterface.MaxEffect)) {
+			if((effect.Value < General.Map.FormatInterface.MinEffect) || (effect.Value > General.Map.FormatInterface.MaxEffect)) 
+			{
 				General.ShowWarningMessage("Sector effect must be between " + General.Map.FormatInterface.MinEffect + " and " + General.Map.FormatInterface.MaxEffect + ".", MessageBoxButtons.OK);
 				return;
 			}
 
 			//mxd
 			string[] rskeys = null;
-			if(General.Map.Config.SectorRenderStyles.Count > 0) {
+			if(General.Map.Config.SectorRenderStyles.Count > 0) 
+			{
 				rskeys = new string[General.Map.Config.SectorRenderStyles.Count];
 				General.Map.Config.SectorRenderStyles.Keys.CopyTo(rskeys, 0);
 			}
 
 			// Go for all sectors
 			int tagoffset = 0; //mxd
-			foreach(Sector s in sectors) {
+			foreach(Sector s in sectors) 
+			{
 				// Apply all flags
-				foreach(CheckBox c in flags.Checkboxes) {
+				foreach(CheckBox c in flags.Checkboxes) 
+				{
 					if(c.CheckState == CheckState.Checked) s.SetFlag(c.Tag.ToString(), true);
 					else if(c.CheckState == CheckState.Unchecked) s.SetFlag(c.Tag.ToString(), false);
 				}
@@ -557,37 +627,56 @@ namespace CodeImp.DoomBuilder.Windows
 				// Action
 				s.Tag = General.Clamp(tagSelector.GetSmartTag(s.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
 
-				//Fields
+				// Fields
 				fieldslist.Apply(s.Fields);
 
-				//alpha
-				if(!string.IsNullOrEmpty(ceilAlpha.Text)) {
+				// Alpha
+				if(!string.IsNullOrEmpty(ceilAlpha.Text)) 
+				{
 					float ceilAlphaVal = General.Clamp(ceilAlpha.GetResultFloat(s.Fields.GetValue("alphaceiling", 1.0f)), 0f, 1f);
 					UDMFTools.SetFloat(s.Fields, "alphaceiling", ceilAlphaVal, 1.0f);
 				}
 				
-				if(!string.IsNullOrEmpty(floorAlpha.Text)){
+				if(!string.IsNullOrEmpty(floorAlpha.Text))
+				{
 					float floorAlphaVal = General.Clamp(floorAlpha.GetResultFloat(s.Fields.GetValue("alphafloor", 1.0f)), 0f, 1f);
 					UDMFTools.SetFloat(s.Fields, "alphafloor", floorAlphaVal, 1.0f);
 				}
 
 				//renderstyle
-				if (rskeys != null) {
-					if (ceilRenderStyle.SelectedIndex > -1) {
+				if (rskeys != null) 
+				{
+					if (ceilRenderStyle.SelectedIndex > -1) 
+					{
 						UDMFTools.SetString(s.Fields, "renderstyleceiling", rskeys[ceilRenderStyle.SelectedIndex], "translucent");
 					}
-					if (floorRenderStyle.SelectedIndex > -1) {
+					if (floorRenderStyle.SelectedIndex > -1) 
+					{
 						UDMFTools.SetString(s.Fields, "renderstylefloor", rskeys[floorRenderStyle.SelectedIndex], "translucent");
 					}
 				}
 
-				//misc
-				if(soundSequence.Text != "") s.Fields["soundsequence"] = new UniValue(UniversalType.String, soundSequence.Text);
-				if(gravity.Text != "")
+				// Misc
+				if(soundSequence.Text != "")
+					s.Fields["soundsequence"] = new UniValue(UniversalType.String, soundSequence.Text);
+				if(gravity.Text != "") 
 					UDMFTools.SetFloat(s.Fields, "gravity", gravity.GetResultFloat(s.Fields.GetValue("gravity", 1.0f)), 1.0f);
-				if(desaturation.Text != "") {
+				if(desaturation.Text != "") 
+				{
 					float val = General.Clamp(desaturation.GetResultFloat(s.Fields.GetValue("desaturation", 0f)), 0f, 1f);
 					UDMFTools.SetFloat(s.Fields, "desaturation", val, 0f);
+				}
+
+				// Clear horizontal slopes
+				if((float)Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleZ()), 3) == 90f)
+				{
+					s.FloorSlope = new Vector3D();
+					s.FloorSlopeOffset = float.NaN;
+				}
+				if((float)Math.Round(Angle2D.RadToDeg(s.CeilSlope.GetAngleZ()), 3) == 270f)
+				{
+					s.CeilSlope = new Vector3D();
+					s.CeilSlopeOffset = float.NaN;
 				}
 			}
 
@@ -601,6 +690,8 @@ namespace CodeImp.DoomBuilder.Windows
 			useFloorLineAngles = cbUseFloorLineAngles.Checked;
 			useCeilSlopeLineAngles = ceilingslopecontrol.UseLineAngles;
 			useFloorSlopeLineAngles = floorslopecontrol.UseLineAngles;
+			floorpivotmode = floorslopecontrol.PivotMode;
+			ceilpivotmode = ceilingslopecontrol.PivotMode;
 
 			// Done
 			General.Map.IsChanged = true;
@@ -609,7 +700,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Close();
 		}
 
-		private void cancel_Click(object sender, EventArgs e) {
+		private void cancel_Click(object sender, EventArgs e) 
+		{
 			//mxd. Let's pretend nothing of this really happened...
 			General.Map.UndoRedo.WithdrawUndo();
 			
@@ -618,39 +710,47 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Close();
 		}
 
-		private void browseeffect_Click(object sender, EventArgs e) {
+		private void browseeffect_Click(object sender, EventArgs e) 
+		{
 			effect.Value = EffectBrowserForm.BrowseEffect(this, effect.Value);
 		}
 
 		//mxd
-		private void SectorEditFormUDMF_FormClosing(object sender, FormClosingEventArgs e) {
+		private void SectorEditFormUDMF_FormClosing(object sender, FormClosingEventArgs e) 
+		{
 			location = this.Location;
 			activetab = tabs.SelectedIndex;
 		}
 
-		private void SectorEditFormUDMF_HelpRequested(object sender, HelpEventArgs hlpevent) {
+		private void SectorEditFormUDMF_HelpRequested(object sender, HelpEventArgs hlpevent) 
+		{
 			General.ShowHelp("w_sectoredit.html");
 			hlpevent.Handled = true;
 		}
 
-		private void tabcustom_MouseEnter(object sender, EventArgs e) {
+		private void tabcustom_MouseEnter(object sender, EventArgs e) 
+		{
 			fieldslist.Focus();
 		}
 
-		private void ceilAngleControl_AngleChanged() {
+		private void ceilAngleControl_AngleChanged() 
+		{
 			ceilRotation.Text = (General.ClampAngle(360 - ceilAngleControl.Angle)).ToString();
 		}
 
-		private void floorAngleControl_AngleChanged() {
+		private void floorAngleControl_AngleChanged() 
+		{
 			floorRotation.Text = (General.ClampAngle(360 - floorAngleControl.Angle)).ToString();
 		}
 
-		private void cbUseCeilLineAngles_CheckedChanged(object sender, EventArgs e) {
+		private void cbUseCeilLineAngles_CheckedChanged(object sender, EventArgs e) 
+		{
 			ceilRotation.ButtonStepsWrapAround = cbUseCeilLineAngles.Checked;
 			ceilRotation.StepValues = (cbUseCeilLineAngles.Checked ? anglesteps : null);
 		}
 
-		private void cbUseFloorLineAngles_CheckedChanged(object sender, EventArgs e) {
+		private void cbUseFloorLineAngles_CheckedChanged(object sender, EventArgs e) 
+		{
 			floorRotation.ButtonStepsWrapAround = cbUseFloorLineAngles.Checked;
 			floorRotation.StepValues = (cbUseFloorLineAngles.Checked ? anglesteps : null);
 		}
@@ -697,11 +797,14 @@ namespace CodeImp.DoomBuilder.Windows
 			if(blockupdate)	return;
 
 			//restore values
-			if(string.IsNullOrEmpty(brightness.Text)) {
+			if(string.IsNullOrEmpty(brightness.Text)) 
+			{
 				foreach(Sector s in sectors)
 					s.Brightness = sectorprops[s].Brightness;
-			//update values
-			} else {
+			
+			} 
+			else //update values
+			{
 				foreach(Sector s in sectors)
 					s.Brightness = General.Clamp(brightness.GetResult(sectorprops[s].Brightness), General.Map.FormatInterface.MinBrightness, General.Map.FormatInterface.MaxBrightness);
 			}
@@ -710,15 +813,19 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void ceilingtex_OnValueChanged(object sender, EventArgs e) {
+		private void ceilingtex_OnValueChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
 			//restore values
-			if(string.IsNullOrEmpty(ceilingtex.TextureName)) {
+			if(string.IsNullOrEmpty(ceilingtex.TextureName)) 
+			{
 				foreach(Sector s in sectors)
 					s.SetCeilTexture(sectorprops[s].CeilTexture);
-			//update values
-			} else {
+			
+			} 
+			else //update values
+			{
 				foreach(Sector s in sectors)
 					s.SetCeilTexture(ceilingtex.GetResult(s.CeilTexture));
 			}
@@ -730,15 +837,19 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void floortex_OnValueChanged(object sender, EventArgs e) {
+		private void floortex_OnValueChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
 			//restore values
-			if(string.IsNullOrEmpty(floortex.TextureName)) {
+			if(string.IsNullOrEmpty(floortex.TextureName)) 
+			{
 				foreach(Sector s in sectors)
 					s.SetFloorTexture(sectorprops[s].FloorTexture);
-			//update values
-			} else {
+
+			} 
+			else //update values
+			{
 				foreach(Sector s in sectors)
 					s.SetFloorTexture(floortex.GetResult(s.FloorTexture));
 			}
@@ -750,19 +861,27 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void floorRotation_WhenTextChanged(object sender, EventArgs e) {
-			floorAngleControl.Angle = (int)General.ClampAngle(360 - floorRotation.GetResultFloat(0));
+		private void floorRotation_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
 			//restore values
-			if(string.IsNullOrEmpty(floorRotation.Text)) {
-				foreach(Sector s in sectors) {
+			if(string.IsNullOrEmpty(floorRotation.Text))
+			{
+				floorAngleControl.Angle = GZBuilder.Controls.AngleControl.NO_ANGLE;
+				
+				foreach(Sector s in sectors) 
+				{
 					UDMFTools.SetFloat(s.Fields, "rotationfloor", sectorprops[s].FloorRotation, 0f);
 					s.UpdateNeeded = true;
 				}
-			//update values
-			} else {
-				foreach(Sector s in sectors) {
+			} 
+			else //update values
+			{
+				floorAngleControl.Angle = (int)General.ClampAngle(360 - floorRotation.GetResultFloat(0));
+				
+				foreach(Sector s in sectors) 
+				{
 					UDMFTools.SetFloat(s.Fields, "rotationfloor", floorRotation.GetResultFloat(sectorprops[s].FloorRotation), 0f);
 					s.UpdateNeeded = true;
 				}
@@ -772,19 +891,27 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void ceilRotation_WhenTextChanged(object sender, EventArgs e) {
-			ceilAngleControl.Angle = (int)General.ClampAngle(360 - ceilRotation.GetResultFloat(0));
+		private void ceilRotation_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
 			//restore values
-			if(string.IsNullOrEmpty(ceilRotation.Text)) {
-				foreach(Sector s in sectors) {
+			if(string.IsNullOrEmpty(ceilRotation.Text))
+			{
+				ceilAngleControl.Angle = GZBuilder.Controls.AngleControl.NO_ANGLE;
+				
+				foreach(Sector s in sectors) 
+				{
 					UDMFTools.SetFloat(s.Fields, "rotationceiling", sectorprops[s].CeilRotation, 0f);
 					s.UpdateNeeded = true;
 				}
-			//update values
-			} else {
-				foreach(Sector s in sectors) {
+			} 
+			else //update values
+			{
+				ceilAngleControl.Angle = (int)General.ClampAngle(360 - ceilRotation.GetResultFloat(0));
+				
+				foreach(Sector s in sectors) 
+				{
 					UDMFTools.SetFloat(s.Fields, "rotationceiling", ceilRotation.GetResultFloat(sectorprops[s].CeilRotation), 0f);
 					s.UpdateNeeded = true;
 				}
@@ -794,10 +921,12 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void lightColor_OnValueChanged(object sender, EventArgs e) {
+		private void lightColor_OnValueChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
-			foreach(Sector s in sectors) {
+			foreach(Sector s in sectors) 
+			{
 				lightColor.ApplyTo(s.Fields, sectorprops[s].LightColor);
 				s.UpdateNeeded = true;
 			}
@@ -806,10 +935,12 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void fadeColor_OnValueChanged(object sender, EventArgs e) {
+		private void fadeColor_OnValueChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
-			foreach(Sector s in sectors) {
+			foreach(Sector s in sectors) 
+			{
 				fadeColor.ApplyTo(s.Fields, sectorprops[s].FadeColor);
 				s.UpdateNeeded = true;
 			}
@@ -822,10 +953,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Ceiling/Floor realtime events (mxd)
 
-		private void ceilOffsets_OnValuesChanged(object sender, EventArgs e) {
+		private void ceilOffsets_OnValuesChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
-			foreach(Sector s in sectors) {
+			foreach(Sector s in sectors) 
+			{
 				ceilOffsets.ApplyTo(s.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, sectorprops[s].CeilOffsetX, sectorprops[s].CeilOffsetY);
 				s.UpdateNeeded = true;
 			}
@@ -834,10 +967,12 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void floorOffsets_OnValuesChanged(object sender, EventArgs e) {
+		private void floorOffsets_OnValuesChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
-			foreach(Sector s in sectors) {
+			foreach(Sector s in sectors) 
+			{
 				floorOffsets.ApplyTo(s.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, sectorprops[s].FloorOffsetX, sectorprops[s].FloorOffsetY);
 				s.UpdateNeeded = true;
 			}
@@ -846,10 +981,12 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void ceilScale_OnValuesChanged(object sender, EventArgs e) {
+		private void ceilScale_OnValuesChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
-			foreach(Sector s in sectors) {
+			foreach(Sector s in sectors) 
+			{
 				ceilScale.ApplyTo(s.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, sectorprops[s].CeilScaleX, sectorprops[s].CeilScaleY);
 				s.UpdateNeeded = true;
 			}
@@ -858,10 +995,12 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void floorScale_OnValuesChanged(object sender, EventArgs e) {
+		private void floorScale_OnValuesChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
-			foreach(Sector s in sectors) {
+			foreach(Sector s in sectors) 
+			{
 				floorScale.ApplyTo(s.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, sectorprops[s].FloorScaleX, sectorprops[s].FloorScaleY);
 				s.UpdateNeeded = true;
 			}
@@ -870,22 +1009,30 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void ceilBrightness_WhenTextChanged(object sender, EventArgs e) {
+		private void ceilBrightness_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
 			//restore values
-			if(string.IsNullOrEmpty(ceilBrightness.Text)) {
-				foreach(Sector s in sectors) {
+			if(string.IsNullOrEmpty(ceilBrightness.Text)) 
+			{
+				foreach(Sector s in sectors) 
+				{
 					UDMFTools.SetInteger(s.Fields, "lightceiling", sectorprops[s].CeilBrightness, 0);
 					s.UpdateNeeded = true;
 				}
-			//update values
-			} else {
-				foreach(Sector s in sectors) {
+			} 
+			else //update values
+			{
+				foreach(Sector s in sectors) 
+				{
 					bool absolute = false;
-					if(ceilLightAbsolute.CheckState == CheckState.Indeterminate) {
+					if(ceilLightAbsolute.CheckState == CheckState.Indeterminate) 
+					{
 						absolute = s.Fields.GetValue("lightceilingabsolute", false);
-					} else if(ceilLightAbsolute.CheckState == CheckState.Checked) {
+					} 
+					else if(ceilLightAbsolute.CheckState == CheckState.Checked) 
+					{
 						absolute = true;
 					}
 
@@ -899,22 +1046,30 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void floorBrightness_WhenTextChanged(object sender, EventArgs e) {
+		private void floorBrightness_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
 			//restore values
-			if(string.IsNullOrEmpty(floorBrightness.Text)) {
-				foreach(Sector s in sectors) {
+			if(string.IsNullOrEmpty(floorBrightness.Text)) 
+			{
+				foreach(Sector s in sectors) 
+				{
 					UDMFTools.SetInteger(s.Fields, "lightfloor", sectorprops[s].FloorBrightness, 0);
 					s.UpdateNeeded = true;
 				}
-			//update values
-			} else {
-				foreach(Sector s in sectors) {
+			} 
+			else //update values
+			{
+				foreach(Sector s in sectors) 
+				{
 					bool absolute = false;
-					if(floorLightAbsolute.CheckState == CheckState.Indeterminate) {
+					if(floorLightAbsolute.CheckState == CheckState.Indeterminate) 
+					{
 						absolute = s.Fields.GetValue("lightfloorabsolute", false);
-					} else if(floorLightAbsolute.CheckState == CheckState.Checked) {
+					} 
+					else if(floorLightAbsolute.CheckState == CheckState.Checked) 
+					{
 						absolute = true;
 					}
 
@@ -928,27 +1083,40 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void ceilLightAbsolute_CheckedChanged(object sender, EventArgs e) {
+		private void ceilLightAbsolute_CheckedChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
-			if(ceilLightAbsolute.Checked) {
-				foreach(Sector s in sectors) {
+			if(ceilLightAbsolute.Checked) 
+			{
+				foreach(Sector s in sectors) 
+				{
 					s.Fields["lightceilingabsolute"] = new UniValue(UniversalType.Boolean, true);
 					s.UpdateNeeded = true;
 				}
-			} else if(ceilLightAbsolute.CheckState == CheckState.Indeterminate) {
-				foreach(Sector s in sectors) {
-					if(sectorprops[s].CeilLightAbsoulte) {
+			} 
+			else if(ceilLightAbsolute.CheckState == CheckState.Indeterminate) 
+			{
+				foreach(Sector s in sectors) 
+				{
+					if(sectorprops[s].CeilLightAbsoulte) 
+					{
 						s.Fields["lightceilingabsolute"] = new UniValue(UniversalType.Boolean, true);
 						s.UpdateNeeded = true;
-					}else if(s.Fields.ContainsKey("lightceilingabsolute")) {
+					}
+					else if(s.Fields.ContainsKey("lightceilingabsolute")) 
+					{
 						s.Fields.Remove("lightceilingabsolute");
 						s.UpdateNeeded = true;
 					}
 				}
-			} else {
-				foreach(Sector s in sectors) {
-					if(s.Fields.ContainsKey("lightceilingabsolute")) {
+			} 
+			else 
+			{
+				foreach(Sector s in sectors) 
+				{
+					if(s.Fields.ContainsKey("lightceilingabsolute")) 
+					{
 						s.Fields.Remove("lightceilingabsolute");
 						s.UpdateNeeded = true;
 					}
@@ -959,27 +1127,40 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void floorLightAbsolute_CheckedChanged(object sender, EventArgs e) {
+		private void floorLightAbsolute_CheckedChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
-			if(floorLightAbsolute.Checked){
-				foreach(Sector s in sectors) {
+			if(floorLightAbsolute.Checked)
+			{
+				foreach(Sector s in sectors) 
+				{
 					s.Fields["lightfloorabsolute"] = new UniValue(UniversalType.Boolean, true);
 					s.UpdateNeeded = true;
 				}
-			} else if(floorLightAbsolute.CheckState == CheckState.Indeterminate) {
-				foreach(Sector s in sectors) {
-					if(sectorprops[s].FloorLightAbsoulte) {
+			} 
+			else if(floorLightAbsolute.CheckState == CheckState.Indeterminate) 
+			{
+				foreach(Sector s in sectors) 
+				{
+					if(sectorprops[s].FloorLightAbsoulte) 
+					{
 						s.Fields["lightfloorabsolute"] = new UniValue(UniversalType.Boolean, true);
 						s.UpdateNeeded = true;
-					} else if(s.Fields.ContainsKey("lightfloorabsolute")) {
+					} 
+					else if(s.Fields.ContainsKey("lightfloorabsolute")) 
+					{
 						s.Fields.Remove("lightfloorabsolute");
 						s.UpdateNeeded = true;
 					}
 				}
-			} else {
-				foreach(Sector s in sectors) {
-					if(s.Fields.ContainsKey("lightfloorabsolute")) {
+			} 
+			else 
+			{
+				foreach(Sector s in sectors) 
+				{
+					if(s.Fields.ContainsKey("lightfloorabsolute")) 
+					{
 						s.Fields.Remove("lightfloorabsolute");
 						s.UpdateNeeded = true;
 					}
@@ -994,66 +1175,102 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Slope Utility (mxd)
 
-		private void SetupSlopes(Sector s, bool first) {
-			if(s.CeilingSlope.GetLengthSq() > 0) {
-				float anglexy = (float)Math.Round(Angle2D.RadToDeg(s.CeilingSlope.GetAngleXY()), 1);
-				float anglez = (float)(270 - Math.Round(Angle2D.RadToDeg(s.CeilingSlope.GetAngleZ()), 1));
-				float offset = (float)Math.Round(GetSlopeOffset(s, s.CeilingSlopeOffset, ceilingslopecontrol.PivotMode, false), 1);
-				if (anglexy == 180.0f) {
-					anglexy = 0;
-					anglez = -anglez;
-				}
-				ceilingslopecontrol.SetValues(anglexy, anglez, offset, first);
-			} else {
-				ceilingslopecontrol.SetValues(0f, 0f, s.CeilHeight, first);
-			}
+		private void SetupFloorSlope(Sector s, bool first) 
+		{
+			if(s.FloorSlope.GetLengthSq() > 0) 
+			{
+				float anglexy = General.ClampAngle((float)Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleXY()) - 180, 1));
+				float anglez = -(float)Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleZ()) - 90, 1);
+				float offset = (float)Math.Round(GetVirtualSlopeOffset(s, floorslopecontrol.PivotMode, true), 1);
 
-			if(s.FloorSlope.GetLengthSq() > 0) {
-				float anglexy = (float)Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleXY()), 1);
-				float anglez = (float)(Math.Round(Angle2D.RadToDeg(s.FloorSlope.GetAngleZ()) - 90, 1));
-				float offset = (float)Math.Round(GetSlopeOffset(s, -s.FloorSlopeOffset, floorslopecontrol.PivotMode, true), 1);
-				if (anglexy == 180.0f) {
-					anglexy = 0;
+				if(anglexy >= 180 && anglez < 0) 
+				{
+					anglexy -= 180;
 					anglez = -anglez;
 				}
+
 				floorslopecontrol.SetValues(anglexy, anglez, offset, first);
-			} else {
+			} 
+			else 
+			{
 				floorslopecontrol.SetValues(0f, 0f, s.FloorHeight, first);
 			}
 		}
 
-		private float GetSlopeOffset(Sector target, float offset, SlopePivotMode mode, bool floor) {
-			float validoffset;
+		private void SetupCeilingSlope(Sector s, bool first) 
+		{
+			if(s.CeilSlope.GetLengthSq() > 0) 
+			{
+				float anglexy = General.ClampAngle((float)Math.Round(Angle2D.RadToDeg(s.CeilSlope.GetAngleXY()) - 180, 1));
+				float anglez = -(float)(270 - Math.Round(Angle2D.RadToDeg(s.CeilSlope.GetAngleZ()), 1));
+				float offset = (float)Math.Round(GetVirtualSlopeOffset(s, ceilingslopecontrol.PivotMode, false), 1);
 
-			if (mode == SlopePivotMode.ORIGIN) {
-				if (float.IsNaN(offset)) {
-					validoffset = (floor ? sectorprops[target].FloorSlopeOffset : sectorprops[target].CeilingSlopeOffset);
-				} else {
-					//use current value
-					validoffset = offset;
+				if(anglexy >= 180 && anglez < 0) 
+				{
+					anglexy -= 180;
+					anglez = -anglez;
 				}
-			} else {
-				//use virtual value
-				validoffset = (floor ? sectorprops[target].VirtualFloorSlopeOffset : sectorprops[target].VirtualCeilingSlopeOffset);
+
+				ceilingslopecontrol.SetValues(anglexy, anglez, offset, first);
+			} 
+			else 
+			{
+				ceilingslopecontrol.SetValues(0f, 0f, s.CeilHeight, first);
+			}
+		}
+
+		// Gets the offset to be displayed in a SectorSlopeControl
+		private float GetVirtualSlopeOffset(Sector s, SlopePivotMode mode, bool floor) 
+		{
+			float offset = (floor ? s.FloorSlopeOffset : s.CeilSlopeOffset);
+			if (float.IsNaN(offset))
+			{
+				offset = (floor ? s.FloorHeight : s.CeilHeight);
 			}
 
-			switch(mode) {
-				case SlopePivotMode.GLOBAL: //rotate around the center of selection 
-					//TODO: translate offset from virtual to real
+			Vector3D normal = (floor ? s.FloorSlope : s.CeilSlope);
+			
+			if (normal.GetLengthSq() > 0)
+			{
+				Vector3D center = GetSectorCenter(s, 0, mode);
+				Plane p = new Plane(normal, offset);
+				return p.GetZ(center);
+			}
 
-					return validoffset;
+			return offset;
+		}
 
-				case SlopePivotMode.LOCAL: //rotate around sector's bounding box center
-					//TODO: translate offset from virtual to real
-					//Vector3D pivot = floor
+		// Gets the offset to be displayed in a SectorSlopeControl
+		private float GetInitialVirtualSlopeOffset(Sector s, SlopePivotMode mode, bool floor) 
+		{
+			float offset = (floor ? sectorprops[s].FloorSlopeOffset : sectorprops[s].CeilSlopeOffset);
+			Vector3D normal = (floor ? sectorprops[s].FloorSlope : sectorprops[s].CeilSlope);
 
-					return validoffset;
+			if(normal.GetLengthSq() > 0) 
+			{
+				Vector3D center = GetSectorCenter(s, 0, mode);
+				Plane p = new Plane(normal, offset);
+				return p.GetZ(center);
+			}
 
-				case SlopePivotMode.ORIGIN: //rotate around world origin (0, 0)
-					return validoffset;
+			return offset;
+		}
+
+		private Vector3D GetSectorCenter(Sector s, float offset, SlopePivotMode mode)
+		{
+			switch(mode) 
+			{
+				case SlopePivotMode.GLOBAL: //translate from the center of selection 
+					return new Vector3D(globalslopepivot, offset);
+
+				case SlopePivotMode.LOCAL: //translate from sector's bounding box center
+					return new Vector3D(slopepivots[s], offset);
+
+				case SlopePivotMode.ORIGIN: //don't translate
+					return new Vector3D(0, 0, offset);
 
 				default:
-					throw new NotImplementedException("SectorEditFormUDMF.SetSlopeOffset: Got unknown SlopePivotMode (" + (int)mode + ")");
+					throw new NotImplementedException("SectorEditFormUDMF.GetSectorCenter: Got unknown SlopePivotMode (" + (int)mode + ")");
 			}
 		}
 
@@ -1069,14 +1286,16 @@ namespace CodeImp.DoomBuilder.Windows
 			//Set or restore values
 			foreach(Sector s in sectors) 
 			{
-				anglexy = (float.IsNaN(ceilingslopecontrol.AngleXY) ? sectorprops[s].CeilingSlopeAngleXY : ceilingslopecontrol.AngleXY);
-				anglez = (float.IsNaN(ceilingslopecontrol.AngleZ) ? sectorprops[s].CeilingSlopeAngleZ : ceilingslopecontrol.AngleZ + 90);
-				if (anglexy == 0 && anglez == 90) {
-					s.CeilingSlope = new Vector3D();
-				} else {
-					s.CeilingSlope = Vector3D.FromAngleXYZ(Angle2D.DegToRad(anglexy) + Angle2D.PI, Angle2D.DegToRad(-anglez));
-				}
-				s.CeilingSlopeOffset = GetSlopeOffset(s, ceilingslopecontrol.Offset, ceilingslopecontrol.PivotMode, false);
+				anglexy = General.ClampAngle(ceilingslopecontrol.GetAngleXY(sectorprops[s].CeilSlopeAngleXY) + 270); //90
+				anglez = -(ceilingslopecontrol.GetAngleZ(sectorprops[s].CeilSlopeAngleZ) + 90);
+
+				float virtualoffset = GetInitialVirtualSlopeOffset(s, ceilingslopecontrol.PivotMode, false);
+				Vector3D center = GetSectorCenter(s, ceilingslopecontrol.GetOffset(virtualoffset), ceilingslopecontrol.PivotMode);
+				Plane p = new Plane(center, Angle2D.DegToRad(anglexy), Angle2D.DegToRad(anglez), false);
+				s.CeilSlope = p.Normal;
+				s.CeilSlopeOffset = p.Offset;
+				s.CeilHeight = (int)Math.Round(p.GetZ(center.x, center.y));
+
 				s.UpdateNeeded = true;
 			}
 
@@ -1092,14 +1311,16 @@ namespace CodeImp.DoomBuilder.Windows
 			//Set or restore values
 			foreach(Sector s in sectors)
 			{
-				anglexy = (float.IsNaN(floorslopecontrol.AngleXY) ? sectorprops[s].FloorSlopeAngleXY : floorslopecontrol.AngleXY);
-				anglez = (float.IsNaN(floorslopecontrol.AngleZ) ? sectorprops[s].FloorSlopeAngleZ : floorslopecontrol.AngleZ + 90);
-				if(anglexy == 0 && anglez == 90) {
-					s.FloorSlope = new Vector3D();
-				} else {
-					s.FloorSlope = Vector3D.FromAngleXYZ(Angle2D.DegToRad(anglexy) + Angle2D.PI, Angle2D.DegToRad(anglez));
-				}
-				s.FloorSlopeOffset = GetSlopeOffset(s, -floorslopecontrol.Offset, floorslopecontrol.PivotMode, true);
+				anglexy = General.ClampAngle(floorslopecontrol.GetAngleXY(sectorprops[s].FloorSlopeAngleXY) + 90);
+				anglez = -(floorslopecontrol.GetAngleZ(sectorprops[s].FloorSlopeAngleZ) + 90);
+
+				float virtualoffset = GetInitialVirtualSlopeOffset(s, floorslopecontrol.PivotMode, true);
+				Vector3D center = GetSectorCenter(s, floorslopecontrol.GetOffset(virtualoffset), floorslopecontrol.PivotMode);
+				Plane p = new Plane(center, Angle2D.DegToRad(anglexy), Angle2D.DegToRad(anglez), true);
+				s.FloorSlope = p.Normal;
+				s.FloorSlopeOffset = p.Offset;
+				s.FloorHeight = (int)Math.Round(p.GetZ(center.x, center.y));
+
 				s.UpdateNeeded = true;
 			}
 
@@ -1107,56 +1328,37 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
+		// Update displayed ceiling offset value
 		private void ceilingslopecontrol_OnPivotModeChanged(object sender, EventArgs e) 
 		{
-			//TODO: update offsets to match current PivotMode
-
-
-			//TODO: update Offset value
-
-
+			bool first = true;
+			foreach (Sector s in sectors)
+			{
+				SetupCeilingSlope(s, first);
+				first = false;
+			}
 		}
 
+		// Update displayed floor offset value
 		private void floorslopecontrol_OnPivotModeChanged(object sender, EventArgs e) 
 		{
-			//TODO: update offsets to match current PivotMode
-
-
-			//TODO: update Offset value
-
-
-		}
-
-		private void ceilingslopecontrol_OnOffsetChanged(object sender, EventArgs e) 
-		{
-			if(blockupdate) return;
-			foreach(Sector s in sectors) {
-				s.CeilingSlopeOffset = GetSlopeOffset(s, ceilingslopecontrol.Offset, ceilingslopecontrol.PivotMode, false);
-				s.UpdateNeeded = true;
+			bool first = true;
+			foreach (Sector s in sectors)
+			{
+				SetupFloorSlope(s, first);
+				first = false;
 			}
-			General.Map.IsChanged = true;
-			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
-		}
-
-		private void floorslopecontrol_OnOffsetChanged(object sender, EventArgs e) 
-		{
-			if(blockupdate) return;
-			foreach(Sector s in sectors) {
-				s.FloorSlopeOffset = GetSlopeOffset(s, -floorslopecontrol.Offset, floorslopecontrol.PivotMode, true);
-				s.UpdateNeeded = true;
-			}
-
-			General.Map.IsChanged = true;
-			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		private void ceilingslopecontrol_OnResetClicked(object sender, EventArgs e) 
 		{
 			ceilingslopecontrol.SetOffset(General.GetByIndex(sectors, 0).CeilHeight, true);
 			
-			foreach(Sector s in sectors) {
-				s.CeilingSlope = new Vector3D();
-				s.CeilingSlopeOffset = float.NaN;
+			foreach(Sector s in sectors) 
+			{
+				s.CeilSlope = new Vector3D();
+				s.CeilSlopeOffset = float.NaN;
+				s.CeilHeight = ceilingheight.GetResult(sectorprops[s].CeilHeight);
 				s.UpdateNeeded = true;
 				ceilingslopecontrol.SetOffset(s.CeilHeight, false);
 			}
@@ -1171,9 +1373,11 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			floorslopecontrol.SetOffset(General.GetByIndex(sectors, 0).FloorHeight, true);
 			
-			foreach(Sector s in sectors) {
+			foreach(Sector s in sectors) 
+			{
 				s.FloorSlope = new Vector3D();
 				s.FloorSlopeOffset = float.NaN;
+				s.FloorHeight = floorheight.GetResult(sectorprops[s].FloorHeight);
 				s.UpdateNeeded = true;
 				floorslopecontrol.SetOffset(s.FloorHeight, false);
 			}

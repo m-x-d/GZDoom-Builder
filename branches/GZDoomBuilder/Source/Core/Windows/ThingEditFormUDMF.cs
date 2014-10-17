@@ -453,7 +453,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if (preventchanges) return;
 			preventchanges = true;
-			anglecontrol.Angle = angle.GetResult(int.MinValue);
+			anglecontrol.Angle = angle.GetResult(GZBuilder.Controls.AngleControl.NO_ANGLE);
 			preventchanges = false;
 			updateAngle(); //mxd
 		}
@@ -469,9 +469,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pitch_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-			int p = pitch.GetResult(int.MinValue);
+			int p = pitch.GetResult(GZBuilder.Controls.AngleControl.NO_ANGLE);
 			preventchanges = true;
-			pitchControl.Angle = (p == int.MinValue ? p : p + 90);
+			pitchControl.Angle = (p == GZBuilder.Controls.AngleControl.NO_ANGLE ? p : p + 90);
 			preventchanges = false;
 			updatePitch();
 		}
@@ -486,9 +486,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private void roll_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-			int r = roll.GetResult(int.MinValue);
+			int r = roll.GetResult(GZBuilder.Controls.AngleControl.NO_ANGLE);
 			preventchanges = true;
-			rollControl.Angle = (r == int.MinValue ? r : r + 90);
+			rollControl.Angle = (r == GZBuilder.Controls.AngleControl.NO_ANGLE ? r : r + 90);
 			preventchanges = false;
 			updateRoll();
 		}

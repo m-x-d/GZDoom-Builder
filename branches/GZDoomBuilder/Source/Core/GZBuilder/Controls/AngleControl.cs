@@ -43,8 +43,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public delegate void AngleChangedDelegate();
 		public event AngleChangedDelegate AngleChanged;
 
-		public int Angle { get { return angle - angleoffset; } set { angle = value + angleoffset; this.Refresh(); } }
+		public int Angle { get { return (angle == NO_ANGLE ? NO_ANGLE : angle - angleoffset); } set { angle = (value == NO_ANGLE ? NO_ANGLE : value + angleoffset); this.Refresh(); } }
 		public int AngleOffset { get { return angleoffset; } set { angleoffset = value; this.Refresh(); } }
+		public static int NO_ANGLE = int.MinValue; 
 
 		#endregion
 
@@ -112,13 +113,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			SolidBrush fill;
 			Brush center;
 
-			if (this.Enabled) {
+			if (this.Enabled) 
+			{
 				outline = new Pen(outlineColor, 2.0f);
 				fill = new SolidBrush(fillColor);
 				needle = new Pen(needleColor);
 				center = new SolidBrush(needleColor);
 				marks = new Pen(marksColor);
-			} else {
+			} 
+			else 
+			{
 				outline = new Pen(outlineInactiveColor, 2.0f);
 				fill = new SolidBrush(fillInactiveColor);
 				needle = new Pen(needleInactiveColor);
@@ -135,14 +139,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			// Draw angle marks
 			int offset = this.Height / markScaler;
-			for(int i = 0; i < 360; i += 45) {
+			for(int i = 0; i < 360; i += 45) 
+			{
 				PointF p1 = DegreesToXY(i, origin.X - 6, origin);
 				PointF p2 = DegreesToXY(i, origin.X - offset, origin);
 				g.DrawLine(marks, p1, p2);
 			}
 
 			// Draw needle
-			if(angle != int.MinValue) {
+			if(angle != NO_ANGLE) 
+			{
 				PointF anglePoint = DegreesToXY(angle, origin.X - 4, origin);
 				g.DrawLine(needle, origin, anglePoint);
 			}
@@ -160,12 +166,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			int thisAngle = XYToDegrees(new Point(e.X, e.Y), origin);
 
-			if (e.Button == MouseButtons.Left) {
+			if (e.Button == MouseButtons.Left) 
+			{
 				thisAngle = (int)Math.Round(thisAngle / 45f) * 45;
 				if(thisAngle == 360) thisAngle = 0;
 			}
 
-			if(thisAngle != angle) {
+			if(thisAngle != angle) 
+			{
 				angle = thisAngle;
 				if(!this.DesignMode && AngleChanged != null) AngleChanged(); //Raise event
 				this.Refresh();
@@ -174,15 +182,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		private void AngleSelector_MouseMove(object sender, MouseEventArgs e) 
 		{
-			if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right) {
+			if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right) 
+			{
 				int thisAngle = XYToDegrees(new Point(e.X, e.Y), origin);
 
-				if(e.Button == MouseButtons.Left) {
+				if(e.Button == MouseButtons.Left) 
+				{
 					thisAngle = (int)Math.Round(thisAngle / 45f) * 45;
 					if(thisAngle == 360) thisAngle = 0;
 				}
 
-				if(thisAngle != angle) {
+				if(thisAngle != angle) 
+				{
 					angle = thisAngle;
 					if(!this.DesignMode && AngleChanged != null) AngleChanged(); //Raise event
 					this.Refresh();
