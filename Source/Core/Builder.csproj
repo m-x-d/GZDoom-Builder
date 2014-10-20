@@ -679,6 +679,7 @@
     <Compile Include="Actions\HintsManager.cs" />
     <Compile Include="Config\AllTexturesSet.cs" />
     <Compile Include="Config\FlagTranslation.cs" />
+    <Compile Include="Config\ModelAndLightRenderModes.cs" />
     <Compile Include="Config\PasteOptions.cs" />
     <Compile Include="Config\ThingsFlagsCompare.cs" />
     <Compile Include="Controls\ButtonsNumericTextboxDesigner.cs" />
@@ -1006,6 +1007,7 @@
     <None Include="Resources\FolderExplore.png" />
     <Content Include="Resources\Light.png" />
     <None Include="Resources\Lightbulb.png" />
+    <None Include="Resources\LightDisabled.png" />
     <Content Include="Resources\Light_animate.png" />
     <None Include="Resources\MLogo.png" />
     <None Include="Resources\Marine.png" />
@@ -1013,6 +1015,7 @@
     <EmbeddedResource Include="Resources\MissingThing.png" />
     <None Include="Resources\MCrash.png" />
     <Content Include="Resources\Model.png" />
+    <None Include="Resources\ModelDisabled.png" />
     <Content Include="Resources\Model_selected.png" />
     <None Include="Resources\PuzzlePiece.png" />
     <None Include="Resources\Search.png" />
