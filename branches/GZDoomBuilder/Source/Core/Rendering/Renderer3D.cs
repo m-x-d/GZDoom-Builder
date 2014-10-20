@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using CodeImp.DoomBuilder.Config;
 using SlimDX;
 using CodeImp.DoomBuilder.Geometry;
 using SlimDX.Direct3D9;
@@ -413,7 +414,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			//mxd
-			if (General.Settings.GZDrawLights) {
+			if (General.Settings.GZDrawLightsMode != LightRenderMode.NONE) 
+			{
 				thingsWithLight = new List<VisualThing>();
 			}
 		}
@@ -422,7 +424,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void FinishGeometry()
 		{
 			//mxd. sort lights
-			if (General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0)
+			if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && thingsWithLight.Count > 0)
 				updateLights();
 			
 			// Initial renderstates
@@ -495,7 +497,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			RenderSinglePass((int)RenderPass.Additive);
 
 			//mxd. LIGHT PASS
-			if( !(!General.Settings.GZDrawLights || fullbrightness || thingsWithLight.Count == 0 || litGeometry.Count == 0) ) {
+			if( !(General.Settings.GZDrawLightsMode == LightRenderMode.NONE || fullbrightness || thingsWithLight.Count == 0 || litGeometry.Count == 0) ) 
+			{
 				RenderLights(litGeometry, thingsWithLight);
 			}
 			
@@ -777,7 +780,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							wantedshaderpass += 8;
 
 						//mxd. Seems that lines rendered with RenderPass.Alpha or RenderPass.Additive aren't affected by dynamic lights in GZDoom
-						if ( !(g.RenderPass == RenderPass.Alpha || g.RenderPass == RenderPass.Additive || !General.Settings.GZDrawLights || fullbrightness || thingsWithLight.Count == 0) ) {
+						if ( !(g.RenderPass == RenderPass.Alpha || g.RenderPass == RenderPass.Additive || General.Settings.GZDrawLightsMode == LightRenderMode.NONE || fullbrightness || thingsWithLight.Count == 0) ) {
 							if (curtexture.Texture != null) {
 								if (!litGeometry.ContainsKey(curtexture.Texture))
 									litGeometry[curtexture.Texture] = new List<VisualGeometry>();
@@ -853,14 +856,15 @@ namespace CodeImp.DoomBuilder.Rendering
 						foreach(VisualThing t in group.Value)
 						{
 							//mxd
-							if (t.Thing.IsModel && General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected))
+							if(t.Thing.IsModel && General.Settings.GZDrawModelsMode != ModelRenderMode.NONE && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL || t.Selected))
 								continue;
 
 							// Update buffer if needed
 							t.Update();
 
 							// Only do this sector when a vertexbuffer is created
-							if (t.GeometryBuffer != null) {
+							if (t.GeometryBuffer != null) 
+							{
 								// Determine the shader pass we want to use for this object
 								int wantedshaderpass = (((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass;
 
@@ -869,30 +873,38 @@ namespace CodeImp.DoomBuilder.Rendering
 									wantedshaderpass += 8;
 
 								//mxd. if current thing is light - set it's color to light color
-								if (Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness) {
+								if (Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness) 
+								{
 									wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
 									graphics.Shaders.World3D.VertexColor = t.LightColor;
 									//mxd. check if Thing is affected by dynamic lights and set color accordingly
-								} else if (General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0) {
+								} 
+								else if (General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && thingsWithLight.Count > 0) 
+								{
 									Color4 litColor = getLitColorForThing(t);
-									if (litColor.ToArgb() != 0) {
+									if (litColor.ToArgb() != 0) 
+									{
 										wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
 										graphics.Shaders.World3D.VertexColor = new Color4(t.VertexColor) + litColor;
 									}
 								}
 
 								// Switch shader pass?
-								if (currentshaderpass != wantedshaderpass) {
+								if (currentshaderpass != wantedshaderpass) 
+								{
 									graphics.Shaders.World3D.EndPass();
 									graphics.Shaders.World3D.BeginPass(wantedshaderpass);
 									currentshaderpass = wantedshaderpass;
 								}
 
 								// Set the colors to use
-								if (!graphics.Shaders.Enabled) {
+								if (!graphics.Shaders.Enabled) 
+								{
 									graphics.Device.SetTexture(2, (t.Selected && showselection) ? selectionimage.Texture : null);
 									graphics.Device.SetTexture(3, ((t == highlighted) && showhighlight) ? highlightimage.Texture : null);
-								} else {
+								} 
+								else 
+								{
 									graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection)).ToArgb());
 								}
 
@@ -904,7 +916,8 @@ namespace CodeImp.DoomBuilder.Rendering
 								ApplyMatrices3D();
 
 								//mxd. set variables for fog rendering
-								if (wantedshaderpass > 7) {
+								if (wantedshaderpass > 7) 
+								{
 									graphics.Shaders.World3D.World = world;
 
 									graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
@@ -1010,7 +1023,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd. render models
-		private void RenderModels() {
+		private void RenderModels() 
+		{
 			int shaderpass = fullbrightness ? 1 : 4;
 			int currentshaderpass = shaderpass;
 			int highshaderpass = shaderpass + 2;
@@ -1018,17 +1032,23 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Begin rendering with this shader
 			graphics.Shaders.World3D.BeginPass(currentshaderpass);
 
-			foreach (KeyValuePair<ModelData, List<VisualThing>> group in thingsWithModel) {
-				foreach (VisualThing t in group.Value) {
+			foreach (KeyValuePair<ModelData, List<VisualThing>> group in thingsWithModel) 
+			{
+				foreach (VisualThing t in group.Value) 
+				{
 					t.Update();
 					
 					Color4 vertexColor = new Color4(t.VertexColor);
 					vertexColor.Alpha = 1.0f;
+					
 					//check if model is affected by dynamic lights and set color accordingly
-					if (General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0) {
+					if (General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && thingsWithLight.Count > 0) 
+					{
 						Color4 litColor = getLitColorForThing(t);
 						graphics.Shaders.World3D.VertexColor = vertexColor + litColor;
-					} else {
+					} 
+					else 
+					{
 						graphics.Shaders.World3D.VertexColor = vertexColor;
 					}
 
@@ -1040,17 +1060,21 @@ namespace CodeImp.DoomBuilder.Rendering
 						wantedshaderpass += 8;
 
 					// Switch shader pass?
-					if (currentshaderpass != wantedshaderpass) {
+					if (currentshaderpass != wantedshaderpass) 
+					{
 						graphics.Shaders.World3D.EndPass();
 						graphics.Shaders.World3D.BeginPass(wantedshaderpass);
 						currentshaderpass = wantedshaderpass;
 					}
 
 					// Set the colors to use
-					if (!graphics.Shaders.Enabled) {
+					if (!graphics.Shaders.Enabled) 
+					{
 						graphics.Device.SetTexture(2, (t.Selected && showselection) ? selectionimage.Texture : null);
 						graphics.Device.SetTexture(3, ((t == highlighted) && showhighlight) ? highlightimage.Texture : null);
-					} else {
+					} 
+					else 
+					{
 						graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection)).ToArgb());
 					}
 
@@ -1065,14 +1089,16 @@ namespace CodeImp.DoomBuilder.Rendering
 					ApplyMatrices3D();
 
 					//mxd. set variables for fog rendering
-					if (wantedshaderpass > 7) {
+					if (wantedshaderpass > 7) 
+					{
 						graphics.Shaders.World3D.World = world;
 
 						graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
 						graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(t.Thing.Sector));
 					}
 
-					for(int i = 0; i < group.Key.Model.Meshes.Count; i++) {
+					for(int i = 0; i < group.Key.Model.Meshes.Count; i++) 
+					{
 						if (!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, group.Key.Model.Textures[i]);
 						graphics.Shaders.World3D.Texture1 = group.Key.Model.Textures[i];
 						graphics.Shaders.World3D.ApplySettings();
@@ -1180,13 +1206,16 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void AddThingGeometry(VisualThing t)
 		{
 			//mxd. gater lights
-			if (General.Settings.GZDrawLights && !fullbrightness && t.LightType != DynamicLightType.NONE) {
+			if (General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && t.LightType != DynamicLightType.NONE) 
+			{
 				t.UpdateLightRadius();
 
-				if (t.LightRadius > 0) {
+				if (t.LightRadius > 0) 
+				{
 					t.CalculateCameraDistance3D(D3DDevice.V3(cameraposition));
 					//t.CameraDistance3D is actually squared distance, hence (t.LightRadius * t.LightRadius)
-					if (t.CameraDistance3D < (t.LightRadius * t.LightRadius) || isThingOnScreen(t.BoundingBox)) { //always render light if camera is within it's radius 
+					if(t.CameraDistance3D < (t.LightRadius * t.LightRadius) || isThingOnScreen(t.BoundingBox)) //always render light if camera is within it's radius 
+					{
 						if (Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, t.LightType) != -1)
 							t.UpdateBoundingBox();
 						thingsWithLight.Add(t);
@@ -1197,7 +1226,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			if (!isThingOnScreen(t.BoundingBox)) return;
 
 			//mxd. gather models
-			if(t.Thing.IsModel && General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected)) {
+			if(t.Thing.IsModel && General.Settings.GZDrawModelsMode != ModelRenderMode.NONE && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL || t.Selected)) 
+			{
 				ModelData mde = General.Map.Data.ModeldefEntries[t.Thing.Type];
 				if (!thingsWithModel.ContainsKey(mde))
 					thingsWithModel.Add(mde, new List<VisualThing>() { t });
@@ -1225,12 +1255,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		public void AddVisualVertices(VisualVertex[] verts) {
+		public void AddVisualVertices(VisualVertex[] verts) 
+		{
 			visualvertices = verts;
 		}
 
 		//mxd
-		private bool isThingOnScreen(Vector3[] bbox) {
+		private bool isThingOnScreen(Vector3[] bbox) 
+		{
 			Vector3D camNormal = Vector3D.FromAngleXYZ(General.Map.VisualCamera.AngleXY, General.Map.VisualCamera.AngleZ);
 			Vector3D thingNormal = D3DDevice.V3D(bbox[0]) - cameraposition; //bbox[0] is always thing center
 
@@ -1244,7 +1276,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			int topCount = 0;
 			int bottomCount = 0;
 
-			for (int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++) 
+			{
 				//check visibility
 				screenPos = Vector3.Project(bbox[i], 0, 0, 1, 1, PROJ_NEAR_PLANE, General.Settings.ViewDistance, worldviewproj);
 
@@ -1269,7 +1302,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		private static bool checkBBoxIntersection(Vector3[] bbox1, Vector3[] bbox2) {
+		private static bool checkBBoxIntersection(Vector3[] bbox1, Vector3[] bbox2) 
+		{
 			Vector3 dist = bbox1[0] - bbox2[0];
 
 			Vector3 halfSize1 = bbox1[0] - bbox1[1];

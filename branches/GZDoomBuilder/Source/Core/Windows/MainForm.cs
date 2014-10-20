@@ -1464,7 +1464,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//mxd. Add engine selector
 				ToolStripMenuItem menuitem = new ToolStripMenuItem("Engine:", Resources.Marine);
-				for (int i = 0; i < General.Map.ConfigSettings.TestEngines.Count; i++) {
+				for (int i = 0; i < General.Map.ConfigSettings.TestEngines.Count; i++) 
+				{
 					ToolStripMenuItem engineItem = new ToolStripMenuItem(General.Map.ConfigSettings.TestEngines[i].TestProgramName);
 					engineItem.Tag = i;
 					engineItem.Checked = (i == General.Map.ConfigSettings.CurrentEngineIndex);
@@ -1807,16 +1808,13 @@ namespace CodeImp.DoomBuilder.Windows
 			buttontest.Visible = General.Settings.ToolbarTesting;
 
 			//mxd
-			buttontogglemodels.Visible = General.Settings.GZToolbarGZDoom;
-			buttonselectedmodelsonly.Visible = General.Settings.GZToolbarGZDoom;
-			buttontoggledynlight.Visible = General.Settings.GZToolbarGZDoom;
-			buttontoggleanimatedlight.Visible = General.Settings.GZToolbarGZDoom;
+			modelrendermode.Visible = General.Settings.GZToolbarGZDoom;
+			dynamiclightmode.Visible = General.Settings.GZToolbarGZDoom;
 			buttontogglefx.Visible = General.Settings.GZToolbarGZDoom;
 			buttontogglefog.Visible = General.Settings.GZToolbarGZDoom;
 			buttontoggleeventlines.Visible = General.Settings.GZToolbarGZDoom;
 			buttontogglevisualvertices.Visible = General.Settings.GZToolbarGZDoom;
 			separatorgzmodes.Visible = General.Settings.GZToolbarGZDoom;
-
 
 			// Enable/disable all edit mode items
 			foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
@@ -1824,10 +1822,13 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. Show/hide additional panels
 			modestoolbar.Visible = (General.Map != null);
 			modecontrolsloolbar.Visible = (General.Map != null && modecontrolsloolbar.Items.Count > 0);
+			
 			//mxd. modestoolbar index in Controls gets messed up when it's invisible. This fixes it. TODO: find why this happens in the first place
-			if(modestoolbar.Visible) {
+			if(modestoolbar.Visible) 
+			{
 				int toolbarpos = this.Controls.IndexOf(toolbar);
-				if(this.Controls.IndexOf(modestoolbar) > toolbarpos) {
+				if(this.Controls.IndexOf(modestoolbar) > toolbarpos) 
+				{
 					this.Controls.SetChildIndex(modestoolbar, toolbarpos);
 				}
 			}
@@ -1948,31 +1949,39 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		public void UpdateGZDoomPanel() {
-			if (General.Map != null) {
-				buttontogglemodels.Enabled = true;
-				buttonselectedmodelsonly.Enabled = true;
-				buttontoggledynlight.Enabled = true;
-				buttontoggleanimatedlight.Enabled = true;
+		public void UpdateGZDoomPanel() 
+		{
+			if (General.Map != null) 
+			{
+				modelrendermode.Enabled = true;
+				dynamiclightmode.Enabled = true;
 				buttontogglefog.Enabled = true;
 				buttontogglefx.Enabled = true;
 				buttontoggleeventlines.Enabled = true;
 				buttontogglevisualvertices.Enabled = General.Map.UDMF;
 
-				if (General.Settings.GZToolbarGZDoom) {
-					buttontogglemodels.Checked = General.Settings.GZDrawModels;
-					buttonselectedmodelsonly.Checked = General.Settings.GZDrawSelectedModelsOnly;
-					buttontoggledynlight.Checked = General.Settings.GZDrawLights;
-					buttontoggleanimatedlight.Checked = General.Settings.GZAnimateLights;
+				if (General.Settings.GZToolbarGZDoom) 
+				{
+					foreach(ToolStripMenuItem item in modelrendermode.DropDownItems)
+					{
+						item.Checked = ((ModelRenderMode)item.Tag == General.Settings.GZDrawModelsMode);
+						if (item.Checked) modelrendermode.Image = item.Image;
+					}
+					foreach(ToolStripMenuItem item in dynamiclightmode.DropDownItems)
+					{
+						item.Checked = ((LightRenderMode)item.Tag == General.Settings.GZDrawLightsMode);
+						if(item.Checked) dynamiclightmode.Image = item.Image;
+					}
+					
 					buttontogglefog.Checked = General.Settings.GZDrawFog;
 					buttontoggleeventlines.Checked = General.Settings.GZShowEventLines;
 					buttontogglevisualvertices.Checked = General.Settings.GZShowVisualVertices;
 				}
-			} else {
-				buttontogglemodels.Enabled = false;
-				buttonselectedmodelsonly.Enabled = false;
-				buttontoggledynlight.Enabled = false;
-				buttontoggleanimatedlight.Enabled = false;
+			} 
+			else
+			{
+				modelrendermode.Enabled = false;
+				dynamiclightmode.Enabled = false;
 				buttontogglefog.Enabled = false;
 				buttontogglefx.Enabled = false;
 				buttontoggleeventlines.Enabled = false;
@@ -3005,7 +3014,58 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 		
 		#endregion
-		
+
+		#region ================== Models and Lights mode (mxd)
+
+		private void ChangeModelRenderingMode(object sender, EventArgs e)
+		{
+			General.Settings.GZDrawModelsMode = (ModelRenderMode)((ToolStripMenuItem)sender).Tag;
+
+			switch(General.Settings.GZDrawModelsMode) 
+			{
+				case ModelRenderMode.NONE:
+					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: NONE");
+					break;
+
+				case ModelRenderMode.SELECTION:
+					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: SELECTION ONLY");
+					break;
+
+				case ModelRenderMode.ALL:
+					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: ALL");
+					break;
+			}
+			
+			UpdateGZDoomPanel();
+			RedrawDisplay();
+		}
+
+		private void ChangeLightRenderingMode(object sender, EventArgs e) 
+		{
+			General.Settings.GZDrawLightsMode = (LightRenderMode)((ToolStripMenuItem)sender).Tag;
+
+			switch(General.Settings.GZDrawLightsMode) 
+			{
+				case LightRenderMode.NONE:
+					General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering mode: NONE");
+					break;
+
+				case LightRenderMode.ALL:
+					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: ALL");
+					break;
+
+				case LightRenderMode.ALL_ANIMATED:
+					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: ANIMATED");
+					break;
+			}
+			
+			UpdateGZDoomPanel();
+			RedrawDisplay();
+		}
+
+
+		#endregion
+
 		#region ================== Info Panels
 
 		// This toggles the panel expanded / collapsed

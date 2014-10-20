@@ -94,10 +94,8 @@ namespace CodeImp.DoomBuilder.Config
 		private SplitLineBehavior splitlinebehavior;	//mxd
 
 		//mxd
-		private bool gzDrawModels;
-		private bool gzDrawSelectedModelsOnly;
-		private bool gzDrawLights;
-		private bool gzAnimateLights;
+		private ModelRenderMode gzDrawModelsMode;
+		private LightRenderMode gzDrawLightsMode;
 		private bool gzDrawFog;
 		private bool gzToolbarGZDoom;
 		private bool gzSynchCameras;
@@ -180,10 +178,8 @@ namespace CodeImp.DoomBuilder.Config
 		public SplitLineBehavior SplitLineBehavior { get { return splitlinebehavior; } set { splitlinebehavior = value; } } //mxd
 
 		//mxd 
-		public bool GZDrawModels { get { return gzDrawModels; } internal set { gzDrawModels = value; } }
-		public bool GZDrawSelectedModelsOnly { get { return gzDrawSelectedModelsOnly; } internal set { gzDrawSelectedModelsOnly = value; } }
-		public bool GZDrawLights { get { return gzDrawLights; } internal set { gzDrawLights = value; } }
-		public bool GZAnimateLights { get { return gzAnimateLights; } internal set { gzAnimateLights = value; } }
+		public ModelRenderMode GZDrawModelsMode { get { return gzDrawModelsMode; } internal set { gzDrawModelsMode = value; } }
+		public LightRenderMode GZDrawLightsMode { get { return gzDrawLightsMode; } internal set { gzDrawLightsMode = value; } }
 		public bool GZDrawFog { get { return gzDrawFog; } internal set { gzDrawFog = value; } }
 		public bool GZToolbarGZDoom { get { return gzToolbarGZDoom; } internal set { gzToolbarGZDoom = value; } }
 		public bool GZSynchCameras { get { return gzSynchCameras; } internal set { gzSynchCameras = value; } }
@@ -289,10 +285,8 @@ namespace CodeImp.DoomBuilder.Config
 				splitlinebehavior = (SplitLineBehavior) General.Clamp(cfg.ReadSetting("splitlinebehavior", 0), 0, 3); //mxd
 
 				//mxd 
-				gzDrawModels = cfg.ReadSetting("gzdrawmodels", true);
-				gzDrawSelectedModelsOnly = cfg.ReadSetting("gzdrawselectedmodelsonly", false);
-				gzDrawLights = cfg.ReadSetting("gzdrawlights", true);
-				gzAnimateLights = cfg.ReadSetting("gzanimatelights", false);
+				gzDrawModelsMode = (ModelRenderMode)cfg.ReadSetting("gzdrawmodels", (int)ModelRenderMode.ALL);
+				gzDrawLightsMode = (LightRenderMode)cfg.ReadSetting("gzdrawlights", (int)LightRenderMode.ALL);
 				gzDrawFog = cfg.ReadSetting("gzdrawfog", false);
 				gzToolbarGZDoom = cfg.ReadSetting("gztoolbargzdoom", true);
 				gzSynchCameras = cfg.ReadSetting("gzsynchcameras", true);
@@ -380,10 +374,8 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("splitlinebehavior", (int)splitlinebehavior); //mxd
 
 			//mxd
-			cfg.WriteSetting("gzdrawmodels", gzDrawModels);
-			cfg.WriteSetting("gzdrawselectedmodelsonly", gzDrawSelectedModelsOnly);
-			cfg.WriteSetting("gzdrawlights", gzDrawLights);
-			cfg.WriteSetting("gzanimatelights", gzAnimateLights);
+			cfg.WriteSetting("gzdrawmodels", (int)gzDrawModelsMode);
+			cfg.WriteSetting("gzdrawlights", (int)gzDrawLightsMode);
 			cfg.WriteSetting("gzdrawfog", gzDrawFog);
 			cfg.WriteSetting("gzsynchcameras", gzSynchCameras);
 			cfg.WriteSetting("gzshoweventlines", gzShowEventLines);

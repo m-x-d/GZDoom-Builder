@@ -2841,12 +2841,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		[BeginAction("togglegzdoomrenderingeffects")]
-		public void ToggleGZDoomRenderingEffects() {
+		[BeginAction("togglegzdoomgeometryeffects")]
+		public void ToggleGZDoomRenderingEffects() 
+		{
 			gzdoomRenderingEffects = !gzdoomRenderingEffects;
 			RebuildElementData();
 			UpdateChangedObjects();
-			General.Interface.DisplayStatus(StatusType.Info, "(G)ZDoom rendering effects are " + (gzdoomRenderingEffects ? "ENABLED" : "DISABLED"));
+			General.Interface.DisplayStatus(StatusType.Info, "(G)ZDoom geometry effects are " + (gzdoomRenderingEffects ? "ENABLED" : "DISABLED"));
 		}
 
 		//mxd

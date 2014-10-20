@@ -194,8 +194,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			General.Map.Map.Update();
 			General.Map.IsChanged = true;
 
-			if(editingModeName != "BaseVisualMode")
-				General.Interface.RedrawDisplay();
+			// Clear selection
+			General.Actions.InvokeAction("builder_clearselection");
 
 			this.DialogResult = DialogResult.OK;
 			Close();

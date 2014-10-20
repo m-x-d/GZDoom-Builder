@@ -1207,7 +1207,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 
 					foreach(Thing t in group.Value) {
-						if(t.IsModel) continue;
+						if(t.IsModel && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL || (General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected))) continue;
 						CreateThingSpriteVerts(thingsByPosition[t], spriteWidth, spriteHeight, ref verts, buffercount * 6, t.Selected ? selectionColor : 0xFFFFFF);
 						buffercount++;
 						totalcount++;
@@ -1295,7 +1295,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.Things2D.EndPass();
 
 				//mxd. Render models
-				if (General.Settings.GZDrawModels) {
+				if (General.Settings.GZDrawModelsMode != ModelRenderMode.NONE) 
+				{
 					// Set renderstates for rendering
 					graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 					graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
@@ -1308,14 +1309,16 @@ namespace CodeImp.DoomBuilder.Rendering
 					Matrix viewscale = Matrix.Scaling(scale, -scale, 0.0f);
 					ModelData mde;
 
-					foreach(KeyValuePair<int, List<Thing>> group in modelsByType) {
+					foreach(KeyValuePair<int, List<Thing>> group in modelsByType) 
+					{
 						mde = General.Map.Data.ModeldefEntries[group.Key];
 						float maxX = Math.Max(Math.Abs(mde.Model.BoundingBox[4].X), Math.Abs(mde.Model.BoundingBox[1].X));
 						float maxY = Math.Max(Math.Abs(mde.Model.BoundingBox[4].Y), Math.Abs(mde.Model.BoundingBox[1].Y));
 						float maxSize = Math.Max(maxX, maxY);
 
-						foreach(Thing t in group.Value) {
-							if(General.Settings.GZDrawSelectedModelsOnly && !t.Selected) continue;
+						foreach(Thing t in group.Value) 
+						{
+							if(General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && !t.Selected) continue;
 							Vector2D screenpos = ((Vector2D)t.Position).GetTransformed(translatex, translatey, scale, -scale);
 							float modelScale = scale * t.ActorScale.Width * t.ScaleX;
 
@@ -1326,7 +1329,8 @@ namespace CodeImp.DoomBuilder.Rendering
 
 							graphics.Shaders.Things2D.FillColor = t.Selected ? cHighlight : cWire;
 
-							for(int i = 0; i < mde.Model.Meshes.Count; i++) {
+							for(int i = 0; i < mde.Model.Meshes.Count; i++) 
+							{
 								float sx = t.ScaleX * t.ActorScale.Width;
 								float sy = t.ScaleY * t.ActorScale.Height;
 								Matrix modelcale = Matrix.Scaling(sx, sx, sy);

@@ -430,7 +430,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 //EVENTS
 		private void bApply_Click(object sender, EventArgs e) {
-			//clean unused sidedef textures
+			// Clean unused sidedef textures
 			foreach(SidedefData sd in sidedefData) {
 				sd.Side.RemoveUnneededTextures(false);
 
@@ -438,14 +438,12 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 					sd.Side.Other.RemoveUnneededTextures(false);
 			}
 
-			General.Map.Map.ClearAllSelected();
-
 			// Update cached values
 			General.Map.Map.Update();
 			General.Map.IsChanged = true;
 
-			if(editingModeName != "BaseVisualMode")
-				General.Interface.RedrawDisplay();
+			// Clear selection
+			General.Actions.InvokeAction("builder_clearselection");
 
 			this.DialogResult = DialogResult.OK;
 			Close();

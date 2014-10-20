@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
 using SlimDX.Direct3D9;
 using SlimDX;
@@ -417,7 +418,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 				return;
 			}
 
-			if (!General.Settings.GZAnimateLights || Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, lightType) == -1) {
+			if (General.Settings.GZDrawLightsMode == LightRenderMode.ALL || Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, lightType) == -1) {
 				lightRadius = lightPrimaryRadius;
 				return;
 			}

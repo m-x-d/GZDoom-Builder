@@ -353,6 +353,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		private void bApply_Click(object sender, EventArgs e) {
 			foreach(Thing t in selection) t.DetermineSector();
+
+			// Clear selection
+			General.Actions.InvokeAction("builder_clearselection");
+
 			this.DialogResult = DialogResult.OK;
 			Close();
 		}

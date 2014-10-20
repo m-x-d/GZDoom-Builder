@@ -305,6 +305,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap LightDisabled {
+            get {
+                object obj = ResourceManager.GetObject("LightDisabled", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Link {
             get {
                 object obj = ResourceManager.GetObject("Link", resourceCulture);
@@ -385,6 +392,13 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap Model_selected {
             get {
                 object obj = ResourceManager.GetObject("Model_selected", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ModelDisabled {
+            get {
+                object obj = ResourceManager.GetObject("ModelDisabled", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
