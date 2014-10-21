@@ -142,15 +142,10 @@ namespace CodeImp.DoomBuilder.IO
 			{
 				// Read UDMF from stream
 				List<string> data = new List<string>(100);
-				while(!reader.EndOfStream) {
+				while(!reader.EndOfStream) 
+				{
 					string line = reader.ReadLine();
 					if(string.IsNullOrEmpty(line)) continue;
-
-					// Remove returns and tabs because the
-					// parser only uses newline for new lines.
-					line = line.Replace("\r", "");
-					line = line.Replace("\t", "");
-
 					data.Add(line);
 				}
 

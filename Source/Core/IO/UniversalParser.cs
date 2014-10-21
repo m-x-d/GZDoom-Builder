@@ -65,7 +65,6 @@ namespace CodeImp.DoomBuilder.IO
 		private UniversalCollection root;
 
 		private const string newline = "\n";
-		private readonly char[] newlineChar = new[] {'\n'};
 		private StringBuilder key;  //mxd
 		private StringBuilder val;  //mxd
 		private Dictionary<string, UniversalEntry> matches; //mxd
@@ -190,7 +189,8 @@ namespace CodeImp.DoomBuilder.IO
 			{
 				// Get current character
 				if(line == data.Length - 1) break;
-				if(pos > data[line].Length - 1) {
+				if(pos > data[line].Length - 1) 
+				{
 					pos = 0;
 					line++;
 				}
@@ -272,43 +272,37 @@ namespace CodeImp.DoomBuilder.IO
 							// Check for the line comment //
 							if(data[line].Substring(pos, 2) == "//")
 							{
+								// Skip everything on this line
+								pos = -1;
+								
 								// Have next line?
-								if(line < data.Length)
-								{
-									// Count the line
-									line++;
-									
-									// Skip everything on this line
-									pos = -1;
-								}
-								else
-								{
-									// No end of line
-									// Skip everything else
-									pos = data.Length;
-								}
+								if(line < data.Length - 1) line++;
 							}
-								// Check for the block comment /* */
+							// Check for the block comment /* */
 							else if(data[line].Substring(pos, 2) == "/*")
 							{
-								// Find the next closing block comment
+								// Block comment closes on the same line?.. (mxd)
 								int np = data[line].IndexOf("*/", pos);
-								
-								// Closing block comment found?
-								if(np > -1)
+								if (np > -1)
 								{
-									// Count the lines in the block comment
-									string blockdata = data[line].Substring(pos, np - pos + 2);
-									line += (blockdata.Split(newlineChar).Length - 1);
-									
-									// Skip everything in this block
 									pos = np + 1;
 								}
 								else
 								{
-									// No end of line
-									// Skip everything else
-									pos = data.Length;
+									// Find the next closing block comment
+									line++;
+									while((np = data[line].IndexOf("*/", 0)) == -1) 
+									{
+										if(line == data.Length - 1) break;
+										line++;
+									}
+
+									// Closing block comment found?
+									if(np > -1) 
+									{
+										// Skip everything in this block
+										pos = np + 1;
+									}
 								}
 							}
 							
@@ -316,8 +310,10 @@ namespace CodeImp.DoomBuilder.IO
 							break;
 							
 						default: // Everything else
-							if (!topLevel && pos == 0) {
-								while(matches.ContainsKey(data[line])) {
+							if (!topLevel && pos == 0) 
+							{
+								while(matches.ContainsKey(data[line])) 
+								{
 									cs.Add(matches[data[line]].Key, matches[data[line]].Value);
 									line++;
 									pos = -1;
@@ -465,7 +461,7 @@ namespace CodeImp.DoomBuilder.IO
 								try
 								{
 									// Convert to value
-									long lval = System.Convert.ToInt64(s.Trim(), CultureInfo.InvariantCulture);
+									long lval = Convert.ToInt64(s.Trim(), CultureInfo.InvariantCulture);
 									
 									// Add it to struct
 									UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), lval);
@@ -477,7 +473,7 @@ namespace CodeImp.DoomBuilder.IO
 									// Too large for Int64, return error
 									RaiseError(line, ERROR_VALUETOOBIG);
 								}
-								catch(System.FormatException)
+								catch(FormatException)
 								{ 
 									// ERROR: Invalid value in assignment
 									RaiseError(line, ERROR_VALUEINVALID);
@@ -776,7 +772,7 @@ namespace CodeImp.DoomBuilder.IO
 			fstream.Close();
 			
 			// Return true when done, false when errors occurred
-			if(cpErrorResult == 0) return true; else return false;
+			return cpErrorResult == 0;
 		}
 		
 		
@@ -802,18 +798,14 @@ namespace CodeImp.DoomBuilder.IO
 			{
 				// Load the file contents
 				List<string> data = new List<string>(100);
-				using(FileStream stream = File.OpenRead(filename)) {
+				using(FileStream stream = File.OpenRead(filename)) 
+				{
 					StreamReader reader = new StreamReader(stream, Encoding.ASCII);
 					
-					while(!reader.EndOfStream) {
+					while(!reader.EndOfStream) 
+					{
 						string line = reader.ReadLine();
 						if(string.IsNullOrEmpty(line)) continue;
-
-						// Remove returns and tabs because the
-						// parser only uses newline for new lines.
-						line = line.Replace("\r", "");
-						line = line.Replace("\t", "");
-
 						data.Add(line);
 					}
 				}

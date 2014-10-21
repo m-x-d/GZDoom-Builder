@@ -357,7 +357,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// arg2
 			// 
 			this.arg2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg2.Location = new System.Drawing.Point(157, 55);
+			this.arg2.Location = new System.Drawing.Point(153, 55);
 			this.arg2.Name = "arg2";
 			this.arg2.Size = new System.Drawing.Size(120, 24);
 			this.arg2.TabIndex = 2;
@@ -365,7 +365,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// arg1
 			// 
 			this.arg1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg1.Location = new System.Drawing.Point(157, 29);
+			this.arg1.Location = new System.Drawing.Point(153, 29);
 			this.arg1.Name = "arg1";
 			this.arg1.Size = new System.Drawing.Size(120, 24);
 			this.arg1.TabIndex = 1;
@@ -373,7 +373,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// arg0
 			// 
 			this.arg0.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg0.Location = new System.Drawing.Point(157, 3);
+			this.arg0.Location = new System.Drawing.Point(153, 3);
 			this.arg0.Name = "arg0";
 			this.arg0.Size = new System.Drawing.Size(120, 24);
 			this.arg0.TabIndex = 0;
@@ -396,7 +396,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// arg1label
 			// 
-			this.arg1label.Location = new System.Drawing.Point(-28, 34);
+			this.arg1label.Location = new System.Drawing.Point(-32, 34);
 			this.arg1label.Name = "arg1label";
 			this.arg1label.Size = new System.Drawing.Size(179, 14);
 			this.arg1label.TabIndex = 33;
@@ -416,7 +416,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// arg2label
 			// 
-			this.arg2label.Location = new System.Drawing.Point(-28, 60);
+			this.arg2label.Location = new System.Drawing.Point(-32, 60);
 			this.arg2label.Name = "arg2label";
 			this.arg2label.Size = new System.Drawing.Size(179, 14);
 			this.arg2label.TabIndex = 35;
@@ -446,7 +446,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// arg0label
 			// 
-			this.arg0label.Location = new System.Drawing.Point(-28, 8);
+			this.arg0label.Location = new System.Drawing.Point(-32, 8);
 			this.arg0label.Name = "arg0label";
 			this.arg0label.Size = new System.Drawing.Size(179, 14);
 			this.arg0label.TabIndex = 32;
