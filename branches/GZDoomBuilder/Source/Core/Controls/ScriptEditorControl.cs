@@ -27,6 +27,7 @@ using System.Collections;
 using System.Globalization;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Properties;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -827,6 +828,12 @@ namespace CodeImp.DoomBuilder.Controls
 					InsertSnippet(scriptconfig.Snippets[curword]);
 					e.Handled = true;
 				}
+			}
+
+			//mxd. Handle screenshot saving
+			else if(DelayedForm.ProcessSaveScreenshotAction((int)e.KeyData))
+			{
+				e.Handled = true;
 			}
 		}
 		

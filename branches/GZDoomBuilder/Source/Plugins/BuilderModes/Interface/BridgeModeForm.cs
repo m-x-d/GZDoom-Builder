@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.BuilderModes.ClassicModes;
+using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Interface {
 
@@ -20,7 +21,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface {
 		public static string[] BRIGHTNESS_INTERPOLATION_MODES = { LINEAR, BRIGHTNESS_HIGHEST, BRIGHTNESS_LOWEST };
 	}
 	
-	public partial class BridgeModeForm : Form {
+	public partial class BridgeModeForm : DelayedForm {
 
 		internal int Subdivisions { 
 			get {

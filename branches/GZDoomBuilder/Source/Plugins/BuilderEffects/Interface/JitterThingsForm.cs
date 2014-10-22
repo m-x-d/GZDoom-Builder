@@ -6,12 +6,13 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderEffects
 {
-	public partial class JitterThingsForm : Form
+	public partial class JitterThingsForm : DelayedForm
 	{
 		#region Variables
 

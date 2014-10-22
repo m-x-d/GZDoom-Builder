@@ -18,6 +18,8 @@
 
 using System;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Actions;
+using Action = CodeImp.DoomBuilder.Actions.Action;
 
 #endregion
 
@@ -36,6 +38,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Constructor
 		public DelayedForm()
 		{
+			this.Opacity = 0; //mxd
+			
 			// Create a timer that we need to show the form
 			formshowtimer = new Timer();
 			formshowtimer.Interval = 1;
@@ -50,6 +54,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Start the timer to show the form
 			formshowtimer.Enabled = true;
+
+			// Bind any methods (mxd)
+			if(!DesignMode) General.Actions.BindMethods(this);
 		}
 
 		// When the form is to be shown
@@ -66,11 +73,40 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
-		// Block this
+		// Block this. MainForm overrides this, so it's only called from child DelayedForms (mxd).
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
-			//return base.ProcessCmdKey(ref msg, keyData);
+			ProcessSaveScreenshotAction((int)keyData);
 			return false;
+		}
+
+		// mxd. Handle screenshot saving from any form
+		internal static bool ProcessSaveScreenshotAction(int key)
+		{
+			Action[] actions = General.Actions.GetActionsByKey(key);
+			foreach(Action action in actions) 
+			{
+				if(action.ShortName == "savescreenshot" || action.ShortName == "saveeditareascreenshot") {
+					General.Actions.InvokeAction(action.Name);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		//mxd
+		[BeginAction("savescreenshot", BaseAction = true)]
+		internal void SaveScreenshot() 
+		{
+			General.MainWindow.SaveScreenshot(false);
+		}
+
+		//mxd
+		[BeginAction("saveeditareascreenshot", BaseAction = true)]
+		internal void SaveEditAreaScreenshot() 
+		{
+			General.MainWindow.SaveScreenshot(true);
 		}
 	}
 }

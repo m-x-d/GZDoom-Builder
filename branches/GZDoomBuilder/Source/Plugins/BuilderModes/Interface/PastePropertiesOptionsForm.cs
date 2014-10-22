@@ -4,10 +4,11 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Interface
 {
-	public partial class PastePropertiesOptionsForm : Form
+	public partial class PastePropertiesOptionsForm : DelayedForm
 	{
 		private static Size size = Size.Empty;
 		private static Point location = Point.Empty;

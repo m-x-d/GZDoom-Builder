@@ -5,10 +5,11 @@ using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public partial class FilterSelectedThingsForm : Form
+	public partial class FilterSelectedThingsForm : DelayedForm
 	{
 		private static Size size = Size.Empty;
 		private static Point location = Point.Empty;

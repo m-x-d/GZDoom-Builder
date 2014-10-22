@@ -28,7 +28,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	internal partial class TextureBrowserForm : Form
+	internal partial class TextureBrowserForm : DelayedForm
 	{
 		// Variables
 		private string selectedname;

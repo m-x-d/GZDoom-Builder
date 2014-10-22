@@ -1017,6 +1017,8 @@
     <Content Include="Resources\Model.png" />
     <None Include="Resources\ModelDisabled.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\ScreenshotActiveWindow.png" />
+    <None Include="Resources\Screenshot.png" />
     <None Include="Resources\PuzzlePiece.png" />
     <None Include="Resources\Search.png" />
     <None Include="Resources\SnapVerts.png" />

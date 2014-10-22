@@ -7,8 +7,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 {
 	public partial class ExceptionDialog : Form
 	{
-		private bool cannotContinue;
-		private string logPath;
+		private readonly bool cannotContinue;
+		private readonly string logPath;
 		
 		public ExceptionDialog(UnhandledExceptionEventArgs e) {
 			InitializeComponent();

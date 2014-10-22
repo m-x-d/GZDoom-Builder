@@ -239,9 +239,6 @@ namespace CodeImp.DoomBuilder.Windows
 			toolbarContextMenu.KeyDown += toolbarContextMenu_KeyDown;
 			toolbarContextMenu.KeyUp += toolbarContextMenu_KeyUp;
 			
-			// Bind any methods
-			General.Actions.BindMethods(this);
-			
 			// Apply shortcut keys
 			ApplyShortcutKeys();
 			
@@ -2809,8 +2806,6 @@ namespace CodeImp.DoomBuilder.Windows
 			itemReloadGldefs.Enabled = enabled;
 			itemReloadMapinfo.Enabled = enabled;
 			itemReloadModedef.Enabled = enabled;
-			screenshotToolStripMenuItem.Enabled = enabled;
-			editAreaScreenshotToolStripMenuItem.Enabled = enabled;
 		}
 		
 		// Errors and Warnings
@@ -2891,27 +2886,12 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		[BeginAction("savescreenshot")]
-		internal void SaveScreenshot() {
-			saveScreenshot(false);
-		}
-
-		//mxd
-		[BeginAction("saveeditareascreenshot")]
-		internal void SaveEditAreaScreenshot() {
-			saveScreenshot(true);
-		}
-
-		//mxd
-		private void saveScreenshot(bool editAreaOnly) {
-			if (General.Map == null) {
-				DisplayStatus(StatusType.Warning, "Please load a map first!");
-				return;
-			}
-
+		internal void SaveScreenshot(bool activeControlOnly) 
+		{
 			//pick a valid folder
 			string folder = General.Settings.ScreenshotsPath;
-			if (!Directory.Exists(folder)) {
+			if (!Directory.Exists(folder)) 
+			{
 				if (folder != General.DefaultScreenshotsPath 
 					&& General.ShowErrorMessage("Screenshots save path '" + folder 
 					+ "' does not exist!\nPress OK to save to the default folder ('" 
@@ -2923,15 +2903,30 @@ namespace CodeImp.DoomBuilder.Windows
 				if(!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 			}
 
-			//create name
+			// Create name and bounds
 			string name;
 			Rectangle bounds;
-			if(editAreaOnly) {
-				name = Path.GetFileNameWithoutExtension(General.Map.FileTitle) + " (edit area) at ";
-				bounds = this.display.Bounds;
-				bounds.Offset(this.PointToScreen(new Point()));
-			} else {
-				name = Path.GetFileNameWithoutExtension(General.Map.FileTitle) + " at ";
+			bool displayextrainfo = false;
+			string mapname = (General.Map != null ? Path.GetFileNameWithoutExtension(General.Map.FileTitle) : General.ThisAssembly.GetName().Name);
+
+			if(activeControlOnly)
+			{
+				if (!this.IsActiveWindow && OwnedForms.Length > 0)
+				{
+					name = mapname + " (" + OwnedForms[0].Text + ") at ";
+					bounds = OwnedForms[0].Bounds;
+				}
+				else
+				{
+					name = mapname + " (edit area) at ";
+					bounds = this.display.Bounds;
+					bounds.Offset(this.PointToScreen(new Point()));
+					displayextrainfo = true;
+				}
+			} 
+			else 
+			{
+				name = mapname + " at ";
 				bounds = this.Bounds;
 			}
 
@@ -2946,20 +2941,24 @@ namespace CodeImp.DoomBuilder.Windows
 			string path = Path.Combine(folder, name + date + " [" + revision + "].jpg");
 
 			//save image
-			using(Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height)) {
-				using(Graphics g = Graphics.FromImage(bitmap)) {
+			using(Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height)) 
+			{
+				using(Graphics g = Graphics.FromImage(bitmap)) 
+				{
 					g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
 
 					//draw the cursor
 					if(!cursorLocation.IsEmpty) g.DrawImage(Resources.Cursor, cursorLocation);
 
 					//gather some info
-					string info = string.Empty;
-					if (editAreaOnly && General.Editing.Mode != null) {
+					string info;
+					if(displayextrainfo && General.Editing.Mode != null) 
+					{
 						info = General.Map.FileTitle + " | " + General.Map.Options.CurrentName + " | ";
 
 						//get map coordinates
-						if (General.Editing.Mode is ClassicMode) {
+						if (General.Editing.Mode is ClassicMode) 
+						{
 							Vector2D pos = ((ClassicMode) General.Editing.Mode).MouseMapPos;
 
 							//mouse inside the view?
@@ -2968,13 +2967,17 @@ namespace CodeImp.DoomBuilder.Windows
 							} else {
 								info += "X:" + Math.Round(General.Map.Renderer2D.TranslateX) + " Y:" + Math.Round(General.Map.Renderer2D.TranslateY);
 							}
-						} else { //should be visual mode
+						} 
+						else 
+						{ //should be visual mode
 							info += "X:" + Math.Round(General.Map.VisualCamera.Position.x) + " Y:" + Math.Round(General.Map.VisualCamera.Position.y) + " Z:" + Math.Round(General.Map.VisualCamera.Position.z);
 						}
 
 						//add the revision number
 						info += " | " + revision;
-					} else {
+					} 
+					else 
+					{
 						//just use the revision number
 						info = revision;
 					}
@@ -2990,11 +2993,14 @@ namespace CodeImp.DoomBuilder.Windows
 					g.DrawString(info, font, brush, px + 2, py + 2);
 				}
 
-				try {
+				try 
+				{
 					ImageCodecInfo jpegCodec = null;
 					ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
-					foreach(ImageCodecInfo codec in codecs) {
-						if(codec.FormatID == ImageFormat.Jpeg.Guid) {
+					foreach(ImageCodecInfo codec in codecs) 
+					{
+						if(codec.FormatID == ImageFormat.Jpeg.Guid) 
+						{
 							jpegCodec = codec;
 							break;
 						}
@@ -3006,7 +3012,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 					bitmap.Save(path, jpegCodec, encoderParams);
 					DisplayStatus(StatusType.Info, "Screenshot saved to '" + path + "'");
-				} catch(ExternalException e) {
+				} 
+				catch(ExternalException e) 
+				{
 					DisplayStatus(StatusType.Warning, "Failed to save screenshot...");
 					General.ErrorLogger.Add(ErrorType.Error, "Failed to save screenshot: " + e.Message);
 				}
@@ -3153,31 +3161,39 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		public void ShowHints(string hintsText) {
-			if (!string.IsNullOrEmpty(hintsText)) {
+		public void ShowHints(string hintsText) 
+		{
+			if (!string.IsNullOrEmpty(hintsText)) 
+			{
 				hintsPanel.SetHints(hintsText);
-			} else {
+			} 
+			else 
+			{
 				ClearHints();
 			}
 		}
 
 		//mxd
-		public void ClearHints() {
+		public void ClearHints() 
+		{
 			hintsPanel.ClearHints();
 		}
 
 		//mxd
-		internal void AddHintsDocker() {
+		internal void AddHintsDocker() 
+		{
 			if(!dockerspanel.Contains(hintsDocker)) dockerspanel.Add(hintsDocker);
 		}
 
 		//mxd
-		internal void RemoveHintsDocker() {
+		internal void RemoveHintsDocker() 
+		{
 			dockerspanel.Remove(hintsDocker);
 		}
 
 		//mxd
-		public void UpdateStatistics() {
+		public void UpdateStatistics() 
+		{
 			statistics.UpdateStatistics();
 		}
 		

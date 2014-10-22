@@ -3,12 +3,13 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderEffects
 {
-	public partial class ObjImportSettingsForm : Form
+	public partial class ObjImportSettingsForm : DelayedForm
 	{
 		#region ================== Variables
 
