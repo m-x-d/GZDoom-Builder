@@ -24,7 +24,7 @@ using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public partial class PreferencesForm : Form
+	public partial class PreferencesForm : DelayedForm
 	{
 		#region ================== Variables
 

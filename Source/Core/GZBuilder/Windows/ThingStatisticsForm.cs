@@ -7,10 +7,11 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Windows
 {
-    public partial class ThingStatisticsForm : Form
+    public partial class ThingStatisticsForm : DelayedForm
     {
         private static Size size = Size.Empty;
         private static Point location = Point.Empty;

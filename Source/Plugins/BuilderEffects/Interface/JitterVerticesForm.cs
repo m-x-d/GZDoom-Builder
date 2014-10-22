@@ -8,7 +8,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.BuilderEffects
 {
-	public partial class JitterVerticesForm : Form
+	public partial class JitterVerticesForm : DelayedForm
 	{
 		private readonly string editingModeName;
 		private readonly List<Vertex> selection;

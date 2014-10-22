@@ -25,7 +25,7 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	internal partial class ScriptEditorForm : Form
+	internal partial class ScriptEditorForm : DelayedForm
 	{
 		#region ================== Variables
 

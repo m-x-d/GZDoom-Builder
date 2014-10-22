@@ -6,10 +6,11 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Windows
 {
-	public partial class TagStatisticsForm : Form
+	public partial class TagStatisticsForm : DelayedForm
 	{
 		private static Size size = Size.Empty;
 		private static Point location = Point.Empty;

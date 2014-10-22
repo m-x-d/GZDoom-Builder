@@ -536,6 +536,20 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Screenshot {
+            get {
+                object obj = ResourceManager.GetObject("Screenshot", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ScreenshotActiveWindow {
+            get {
+                object obj = ResourceManager.GetObject("ScreenshotActiveWindow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Script2 {
             get {
                 object obj = ResourceManager.GetObject("Script2", resourceCulture);

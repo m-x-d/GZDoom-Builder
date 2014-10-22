@@ -10,7 +10,7 @@ using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 {
-	public partial class InterfaceForm : Form
+	public partial class InterfaceForm : DelayedForm
 	{
 		#region ================== Constants
 

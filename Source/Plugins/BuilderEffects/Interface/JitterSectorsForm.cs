@@ -8,7 +8,7 @@ using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.BuilderEffects
 {
-	public partial class JitterSectorsForm : Form
+	public partial class JitterSectorsForm : DelayedForm
 	{
 		private readonly string editingModeName;
 		private readonly List<VisualSector> visualSectors;

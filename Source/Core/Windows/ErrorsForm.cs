@@ -27,7 +27,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	public partial class ErrorsForm : Form
+	public partial class ErrorsForm : DelayedForm
 	{
 		#region ================== Variables
 

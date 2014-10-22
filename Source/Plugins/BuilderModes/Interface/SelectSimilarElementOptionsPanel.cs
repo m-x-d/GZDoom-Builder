@@ -9,7 +9,7 @@ using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public partial class SelectSimilarElementOptionsPanel : Form
+	public partial class SelectSimilarElementOptionsPanel : DelayedForm
 	{
 		private static Size size = Size.Empty;
 		private static Point location = Point.Empty;

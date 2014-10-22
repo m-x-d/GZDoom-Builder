@@ -3,12 +3,13 @@
 using System;
 using System.Windows.Forms;
 using System.IO;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes.Interface
 {
-	public partial class WavefrontSettingsForm : Form
+	public partial class WavefrontSettingsForm : DelayedForm
 	{
 		#region ================== Properties
 
