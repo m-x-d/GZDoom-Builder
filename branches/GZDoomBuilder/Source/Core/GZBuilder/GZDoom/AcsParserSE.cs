@@ -39,10 +39,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			return Parse(stream, sourcefilename, false, false);
 		}
 
-		public bool Parse(Stream stream, string sourcefilename, bool processIncludes) {
-			return Parse(stream, sourcefilename, processIncludes, false);
-		}
-
 		public bool Parse(Stream stream, string sourcefilename, bool processIncludes, bool isinclude) {
 			base.Parse(stream, sourcefilename);
 
