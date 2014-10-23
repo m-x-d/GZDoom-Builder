@@ -666,8 +666,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#endregion
 
-		//mxd
-		#region Actions
+		#region ================== Actions (mxd)
 
 		[BeginAction("exporttoobj")]
 		private void exportToObj() {
