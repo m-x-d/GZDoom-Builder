@@ -469,6 +469,13 @@ namespace CodeImp.DoomBuilder.Editing
 			General.MainWindow.UpdateInterface();
 		}
 
+		// This clears all undos (mxd)
+		internal void ClearAllUndos() 
+		{
+			ClearUndos();
+			General.MainWindow.UpdateInterface();
+		}
+
 		/// <summary>
 		/// This makes an undo and returns the unique ticket id. Also automatically indicates that the map is changed.
 		/// </summary>

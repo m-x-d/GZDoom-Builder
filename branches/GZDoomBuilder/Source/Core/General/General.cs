@@ -194,7 +194,7 @@ namespace CodeImp.DoomBuilder
 		private static bool nosettings;
 
 		//misc
-		private static Random random = new Random(); //mxd
+		private static readonly Random random = new Random(); //mxd
 
 		#endregion
 
@@ -1007,10 +1007,10 @@ namespace CodeImp.DoomBuilder
 			MapOptionsForm optionswindow;
 			
 			// Cancel volatile mode, if any
-			General.Editing.DisengageVolatileMode();
+			editing.DisengageVolatileMode();
 			
 			// Ask the user to save changes (if any)
-			if(General.AskSaveMap())
+			if(AskSaveMap())
 			{
 				// Open map options dialog
 				optionswindow = new MapOptionsForm(newoptions, true);
@@ -1032,15 +1032,11 @@ namespace CodeImp.DoomBuilder
 
 					// Set this to false so we can see if errors are added
 					//General.ErrorLogger.IsErrorAdded = false;
-					General.ErrorLogger.Clear(); //mxd
+					errorlogger.Clear(); //mxd
 					
 					// Create map manager with given options
 					map = new MapManager();
-					if(map.InitializeNewMap(newoptions))
-					{
-						// Done
-					}
-					else
+					if(!map.InitializeNewMap(newoptions))
 					{
 						// Unable to create map manager
 						map.Dispose();
@@ -1060,16 +1056,15 @@ namespace CodeImp.DoomBuilder
 					mainwindow.RedrawDisplay();
 					mainwindow.UpdateThingsFilters();
 					mainwindow.UpdateInterface();
-					//mxd
-					mainwindow.AddHintsDocker();
-					mainwindow.UpdateGZDoomPanel();
-					mainwindow.HideInfo();
+					mainwindow.AddHintsDocker(); //mxd
+					mainwindow.UpdateGZDoomPanel(); //mxd
+					mainwindow.HideInfo(); //mxd
 
 					if(errorlogger.IsErrorAdded)
 					{
 						// Show any errors if preferred
 						mainwindow.DisplayStatus(StatusType.Warning, "There were errors during loading!");
-						if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
+						if(!delaymainwindow && settings.ShowErrorsWindow) mainwindow.ShowErrors();
 					}
 					else
 						mainwindow.DisplayReady();
@@ -1085,20 +1080,21 @@ namespace CodeImp.DoomBuilder
 		internal static bool CloseMap()
 		{
 			//mxd
-			if(map != null && map.Launcher.GameEngineRunning) {
+			if(map != null && map.Launcher.GameEngineRunning) 
+			{
 				ShowWarningMessage("Cannot close the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
 				return false;
 			}
 			
 			// Cancel volatile mode, if any
-			General.Editing.DisengageVolatileMode();
+			editing.DisengageVolatileMode();
 
 			// Ask the user to save changes (if any)
-			if(General.AskSaveMap())
+			if(AskSaveMap())
 			{
 				// Display status
 				mainwindow.DisplayStatus(StatusType.Busy, "Closing map...");
-				General.WriteLogLine("Unloading map...");
+				WriteLogLine("Unloading map...");
 				Cursor.Current = Cursors.WaitCursor;
 				
 				// Trash the current map
@@ -1106,7 +1102,7 @@ namespace CodeImp.DoomBuilder
 				map = null;
 				
 				// Clear errors
-				General.ErrorLogger.Clear();
+				errorlogger.Clear();
 				
 				// Show splash logo on display
 				mainwindow.ShowSplashDisplay();
@@ -1123,7 +1119,7 @@ namespace CodeImp.DoomBuilder
 				mainwindow.UpdateGZDoomPanel();
 				mainwindow.UpdateInterface();
 				mainwindow.DisplayReady();
-				General.WriteLogLine("Map unload done");
+				WriteLogLine("Map unload done");
 				return true;
 			}
 			else
@@ -1144,7 +1140,7 @@ namespace CodeImp.DoomBuilder
 			}
 			
 			// Cancel volatile mode, if any
-			General.Editing.DisengageVolatileMode();
+			editing.DisengageVolatileMode();
 
 			// Open map file dialog
 			OpenFileDialog openfile = new OpenFileDialog();
@@ -1174,14 +1170,17 @@ namespace CodeImp.DoomBuilder
 		//mxd
 		// This loads a different map from same wad file
 		[BeginAction("openmapincurrentwad")]
-		internal static void OpenMapInCurrentWad() {
-			if (map == null || string.IsNullOrEmpty(map.FilePathName) || !File.Exists(map.FilePathName)){
+		internal static void OpenMapInCurrentWad() 
+		{
+			if (map == null || string.IsNullOrEmpty(map.FilePathName) || !File.Exists(map.FilePathName))
+			{
 				Interface.DisplayStatus(StatusType.Warning, "Unable to open map from current WAD!");
 				return;
 			}
 
 			//mxd
-			if(map.Launcher.GameEngineRunning) {
+			if(map.Launcher.GameEngineRunning) 
+			{
 				ShowWarningMessage("Cannot change the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
 				return;
 			}
@@ -1214,6 +1213,10 @@ namespace CodeImp.DoomBuilder
 
 			if(!map.InitializeSwitchMap(changemapwindow.Options)) return;
 
+			// Clear undo history
+			map.UndoRedo.ClearAllUndos();
+			map.UndoRedo.ClearAllRedos();
+
 			settings.FindDefaultDrawSettings(); //mxd
 
 			// Let the plugins know
@@ -1226,17 +1229,17 @@ namespace CodeImp.DoomBuilder
 			mainwindow.UpdateInterface();
 			mainwindow.HideInfo();
 			mainwindow.AddHintsDocker(); //mxd
+			mainwindow.UpdateGZDoomPanel(); //mxd
 
-			//mxd
-			mainwindow.UpdateGZDoomPanel();
-
-			if (errorlogger.IsErrorAdded)
+			if(errorlogger.IsErrorAdded)
 			{
 				// Show any errors if preferred
 				mainwindow.DisplayStatus(StatusType.Warning, "There were errors during loading!");
 				if (!delaymainwindow && Settings.ShowErrorsWindow)
 					mainwindow.ShowErrors();
-			} else {
+			} 
+			else 
+			{
 				mainwindow.DisplayReady();
 			}
 
@@ -1247,10 +1250,10 @@ namespace CodeImp.DoomBuilder
 		internal static void OpenMapFile(string filename, MapOptions options)
 		{
 			// Cancel volatile mode, if any
-			General.Editing.DisengageVolatileMode();
+			editing.DisengageVolatileMode();
 			
 			// Ask the user to save changes (if any)
-			if(General.AskSaveMap())
+			if(AskSaveMap())
 			{
 				// Open map options dialog
 				OpenMapOptionsForm openmapwindow = (options != null ? new OpenMapOptionsForm(filename, options) : new OpenMapOptionsForm(filename));
@@ -1278,7 +1281,7 @@ namespace CodeImp.DoomBuilder
 			plugins.OnMapOpenBegin();
 
 			// mxd. Clear old errors
-			General.ErrorLogger.Clear();
+			errorlogger.Clear();
 
 			// Create map manager with given options
 			map = new MapManager();
@@ -1317,7 +1320,7 @@ namespace CodeImp.DoomBuilder
 			{
 				// Show any errors if preferred
 				mainwindow.DisplayStatus(StatusType.Warning, "There were errors during loading!");
-				if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
+				if(!delaymainwindow && settings.ShowErrorsWindow) mainwindow.ShowErrors();
 			}
 			else
 				mainwindow.DisplayReady();
@@ -1343,7 +1346,7 @@ namespace CodeImp.DoomBuilder
 			bool result = false;
 			
 			// Cancel volatile mode, if any
-			General.Editing.DisengageVolatileMode();
+			editing.DisengageVolatileMode();
 			
 			// Check if a wad file is known
 			if(map.FilePathName == "")
@@ -1372,17 +1375,17 @@ namespace CodeImp.DoomBuilder
 				Cursor.Current = Cursors.WaitCursor;
 
 				// Set this to false so we can see if errors are added
-				General.ErrorLogger.IsErrorAdded = false;
+				errorlogger.IsErrorAdded = false;
 				
 				// Save the map
-				General.Plugins.OnMapSaveBegin(SavePurpose.Normal);
+				plugins.OnMapSaveBegin(SavePurpose.Normal);
 				if(map.SaveMap(map.FilePathName, SavePurpose.Normal))
 				{
 					// Add recent file
 					mainwindow.AddRecentFile(map.FilePathName);
 					result = true;
 				}
-				General.Plugins.OnMapSaveEnd(SavePurpose.Normal);
+				plugins.OnMapSaveEnd(SavePurpose.Normal);
 
 				// All done
 				mainwindow.UpdateInterface();
@@ -1391,7 +1394,7 @@ namespace CodeImp.DoomBuilder
 				{
 					// Show any errors if preferred
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
-					if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
+					if(!delaymainwindow && settings.ShowErrorsWindow) mainwindow.ShowErrors();
 				}
 				else
 					mainwindow.DisplayStatus(StatusType.Info, "Map saved in " + map.FileTitle + ".");
@@ -1421,7 +1424,7 @@ namespace CodeImp.DoomBuilder
 			bool result = false;
 
 			// Cancel volatile mode, if any
-			General.Editing.DisengageVolatileMode();
+			editing.DisengageVolatileMode();
 
 			// Show save as dialog
 			SaveFileDialog savefile = new SaveFileDialog();
@@ -1449,10 +1452,10 @@ namespace CodeImp.DoomBuilder
 					Cursor.Current = Cursors.WaitCursor;
 					
 					// Set this to false so we can see if errors are added
-					General.ErrorLogger.IsErrorAdded = false;
+					errorlogger.IsErrorAdded = false;
 					
 					// Save the map
-					General.Plugins.OnMapSaveBegin(SavePurpose.AsNewFile);
+					plugins.OnMapSaveBegin(SavePurpose.AsNewFile);
 					if(map.SaveMap(savefile.FileName, SavePurpose.AsNewFile))
 					{
 						// Add recent file
@@ -1460,7 +1463,7 @@ namespace CodeImp.DoomBuilder
 						settings.LastUsedMapFolder = Path.GetDirectoryName(map.FilePathName); //mxd
 						result = true;
 					}
-					General.Plugins.OnMapSaveEnd(SavePurpose.AsNewFile);
+					plugins.OnMapSaveEnd(SavePurpose.AsNewFile);
 					
 					// All done
 					mainwindow.UpdateInterface();
@@ -1501,7 +1504,7 @@ namespace CodeImp.DoomBuilder
 			bool result = false;
 
 			// Cancel volatile mode, if any
-			General.Editing.DisengageVolatileMode();
+			editing.DisengageVolatileMode();
 
 			// Show save as dialog
 			SaveFileDialog savefile = new SaveFileDialog();
@@ -1518,17 +1521,17 @@ namespace CodeImp.DoomBuilder
 				Cursor.Current = Cursors.WaitCursor;
 
 				// Set this to false so we can see if errors are added
-				General.ErrorLogger.IsErrorAdded = false;
+				errorlogger.IsErrorAdded = false;
 				
 				// Save the map
-				General.Plugins.OnMapSaveBegin(SavePurpose.IntoFile);
+				plugins.OnMapSaveBegin(SavePurpose.IntoFile);
 				if(map.SaveMap(savefile.FileName, SavePurpose.IntoFile))
 				{
 					// Add recent file
 					mainwindow.AddRecentFile(map.FilePathName);
 					result = true;
 				}
-				General.Plugins.OnMapSaveEnd(SavePurpose.IntoFile);
+				plugins.OnMapSaveEnd(SavePurpose.IntoFile);
 
 				// All done
 				mainwindow.UpdateInterface();
@@ -1537,7 +1540,7 @@ namespace CodeImp.DoomBuilder
 				{
 					// Show any errors if preferred
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
-					if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
+					if(!delaymainwindow && settings.ShowErrorsWindow) mainwindow.ShowErrors();
 				}
 				else
 					mainwindow.DisplayStatus(StatusType.Info, "Map saved into " + map.FileTitle + ".");
@@ -1553,15 +1556,13 @@ namespace CodeImp.DoomBuilder
 		// Returns false when action was cancelled
 		internal static bool AskSaveMap()
 		{
-			DialogResult result;
-			
 			// Map open and not saved?
 			if(map != null)
 			{
 				if(map.IsChanged)
 				{
 					// Ask to save changes
-					result = MessageBox.Show(mainwindow, "Do you want to save changes to " + map.FileTitle + " (" + map.Options.CurrentName + ")?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+					DialogResult result = MessageBox.Show(mainwindow, "Do you want to save changes to " + map.FileTitle + " (" + map.Options.CurrentName + ")?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 					if(result == DialogResult.Yes)
 					{
 						// Save map
@@ -1606,11 +1607,11 @@ namespace CodeImp.DoomBuilder
 		// This shows a major failure
 		public static void Fail(string message)
 		{
-			General.WriteLogLine("FAIL: " + message);
-//mxd. Lets notify the user about our Epic Failure before crashing...
+			WriteLogLine("FAIL: " + message);
 #if DEBUG
 			Debug.Fail(message);
 #else
+			//mxd. Lets notify the user about our Epic Failure before crashing...
 			ShowErrorMessage(message, MessageBoxButtons.OK);
 #endif
 			Terminate(false);
@@ -1656,7 +1657,7 @@ namespace CodeImp.DoomBuilder
 		// This calculates the bits needed for a number
 		public static int BitsForInt(int v)
 		{
-			int[] LOGTABLE = new int[] {
+			int[] LOGTABLE = new[] {
 			  0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
 			  4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
 			  5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
@@ -1708,22 +1709,26 @@ namespace CodeImp.DoomBuilder
 		}
 
 		//mxd. This clamps angle between 0 and 359
-		public static int ClampAngle(int angle) {
+		public static int ClampAngle(int angle) 
+		{
 			return (angle + 360) % 360;
 		}
 
 		//mxd. This clamps angle between 0 and 359
-		public static float ClampAngle(float angle) {
+		public static float ClampAngle(float angle) 
+		{
 			return (angle + 360) % 360;
 		}
 
 		//mxd
-		public static int Random(int min, int max) {
+		public static int Random(int min, int max) 
+		{
 			return random.Next(min, max + 1); //because max is never rolled
 		}
 
 		//mxd
-		public static float Random(float min, float max) {
+		public static float Random(float min, float max) 
+		{
 			return (float)Math.Round(min + (max - min) * random.NextDouble(), 2);
 		}
 		
@@ -1762,20 +1767,17 @@ namespace CodeImp.DoomBuilder
 		// This shows a message and logs the message
 		public static DialogResult ShowErrorMessage(string message, MessageBoxButtons buttons)
 		{
-			Cursor oldcursor;
-			DialogResult result;
-			
 			// Log the message
 			WriteLogLine(message);
 			
 			// Use normal cursor
-			oldcursor = Cursor.Current;
+			Cursor oldcursor = Cursor.Current;
 			Cursor.Current = Cursors.Default;
 			
 			// Show message
 			IWin32Window window = null;
 			if((Form.ActiveForm != null) && Form.ActiveForm.Visible) window = Form.ActiveForm;
-			result = MessageBox.Show(window, message, Application.ProductName, buttons, MessageBoxIcon.Error);
+			DialogResult result = MessageBox.Show(window, message, Application.ProductName, buttons, MessageBoxIcon.Error);
 
 			// Restore old cursor
 			Cursor.Current = oldcursor;
@@ -1793,20 +1795,17 @@ namespace CodeImp.DoomBuilder
 		// This shows a message and logs the message
 		public static DialogResult ShowWarningMessage(string message, MessageBoxButtons buttons, MessageBoxDefaultButton defaultbutton)
 		{
-			Cursor oldcursor;
-			DialogResult result;
-
 			// Log the message
 			WriteLogLine(message);
 
 			// Use normal cursor
-			oldcursor = Cursor.Current;
+			Cursor oldcursor = Cursor.Current;
 			Cursor.Current = Cursors.Default;
 
 			// Show message
 			IWin32Window window = null;
 			if((Form.ActiveForm != null) && Form.ActiveForm.Visible) window = Form.ActiveForm;
-			result = MessageBox.Show(window, message, Application.ProductName, buttons, MessageBoxIcon.Warning, defaultbutton);
+			DialogResult result = MessageBox.Show(window, message, Application.ProductName, buttons, MessageBoxIcon.Warning, defaultbutton);
 
 			// Restore old cursor
 			Cursor.Current = oldcursor;
@@ -1933,8 +1932,7 @@ namespace CodeImp.DoomBuilder
 			float scale;
 			
 			// Image fits?
-			if((source.Width <= target.Width) &&
-			   (source.Height <= target.Height))
+			if((source.Width <= target.Width) && (source.Height <= target.Height))
 			{
 				// Just center
 				scale = 1.0f;
@@ -2012,15 +2010,22 @@ namespace CodeImp.DoomBuilder
 
 		#region ==================  mxd. Uncaught exceptions handling
 
-		private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e) {
-			try {
+		private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e) 
+		{
+			try 
+			{
 				GZBuilder.Windows.ExceptionDialog dlg = new GZBuilder.Windows.ExceptionDialog(e);
 				dlg.Setup();
 				if(dlg.ShowDialog() == DialogResult.Cancel) Application.Exit();
-			} catch {
-				try {
+			} 
+			catch 
+			{
+				try 
+				{
 					MessageBox.Show("Fatal Windows Forms Error", "Fatal Windows Forms Error", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Stop);
-				} finally {
+				} 
+				finally 
+				{
 					Application.Exit();
 				}
 			}
@@ -2036,7 +2041,8 @@ namespace CodeImp.DoomBuilder
 				exceptionmsg = "An application error occurred: " + ex.Message + "\n\nStack Trace:\n" + ex.StackTrace;
 
 				// Since we can't prevent the app from terminating, log this to the event log.
-				try {
+				try 
+				{
 					if (!EventLog.SourceExists("ThreadException"))
 						EventLog.CreateEventSource("ThreadException", "Application");
 
