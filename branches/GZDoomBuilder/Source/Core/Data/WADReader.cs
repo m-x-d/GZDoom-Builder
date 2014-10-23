@@ -791,24 +791,24 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Decorate, Gldefs, Mapinfo, etc...
 
 		// This finds and returns a sprite stream
-		public override List<Stream> GetDecorateData(string pname)
+		public override Dictionary<string, Stream> GetDecorateData(string pname)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			List<Stream> streams = new List<Stream>();
+			Dictionary<string, Stream> result = new Dictionary<string, Stream>();
 
 			// Find all lumps named 'DECORATE'
 			int lumpindex = file.FindLumpIndex(pname);
 			while(lumpindex > -1)
 			{
-				streams.Add(file.Lumps[lumpindex].Stream);
+				result.Add(pname, file.Lumps[lumpindex].Stream);
 				
 				// Find next
 				lumpindex = file.FindLumpIndex(pname, lumpindex + 1);
 			}
 			
-			return streams;
+			return result;
 		}
 
 		//mxd

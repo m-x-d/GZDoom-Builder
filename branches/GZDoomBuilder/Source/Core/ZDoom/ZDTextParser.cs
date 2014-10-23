@@ -76,6 +76,21 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// Returns false on errors
 		public virtual bool Parse(Stream stream, string sourcefilename)
 		{
+			return Parse(stream, sourcefilename, false);
+		}
+
+		// This parses the given decorate stream (mxd)
+		// Returns false on errors
+		public virtual bool Parse(Stream stream, string sourcefilename, bool clearerrors)
+		{
+			// Clear error status (mxd)
+			if(clearerrors) 
+			{
+				errordesc = null;
+				errorsource = null;
+				errorline = -1;
+			}
+			
 			datastream = stream;
 			datareader = new BinaryReader(stream, Encoding.ASCII);
 			sourcename = sourcefilename;

@@ -1264,19 +1264,18 @@ namespace CodeImp.DoomBuilder.Data
 					// Load Decorate info cumulatively (the last Decorate is added to the previous)
 					// I'm not sure if this is the right thing to do though.
 					currentreader = dr;
-					List<Stream> decostreams = dr.GetDecorateData("DECORATE");
-					foreach(Stream decodata in decostreams)
+					Dictionary<string, Stream> decostreams = dr.GetDecorateData("DECORATE");
+					foreach(KeyValuePair<string, Stream> group in decostreams)
 					{
 						// Parse the data
-						decodata.Seek(0, SeekOrigin.Begin);
-						decorate.Parse(decodata, "DECORATE");
+						group.Value.Seek(0, SeekOrigin.Begin);
+						decorate.Parse(group.Value, group.Key, true);
 						
 						// Check for errors
 						if(decorate.HasError)
 						{
-							General.ErrorLogger.Add(ErrorType.Error, "Unable to parse DECORATE data from location " +
-								dr.Location.location + ". " + decorate.ErrorDescription + " on line " + decorate.ErrorLine +
-								" in '" + decorate.ErrorSource + "'");
+							General.ErrorLogger.Add(ErrorType.Error, "DECORATE error in '" + decorate.ErrorSource 
+								+ "', line " + decorate.ErrorLine + ". " + decorate.ErrorDescription + ".");
 							break;
 						}
 					}
@@ -1353,11 +1352,11 @@ namespace CodeImp.DoomBuilder.Data
 		private void LoadDecorateFromLocation(DecorateParser parser, string location)
 		{
 			//General.WriteLogLine("Including DECORATE resource '" + location + "'...");
-			List<Stream> decostreams = currentreader.GetDecorateData(location);
-			foreach(Stream decodata in decostreams)
+			Dictionary<string, Stream> decostreams = currentreader.GetDecorateData(location);
+			foreach(KeyValuePair<string, Stream> group in decostreams)
 			{
 				// Parse this data
-				parser.Parse(decodata, location);
+				parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key));
 			}
 		}
 		
