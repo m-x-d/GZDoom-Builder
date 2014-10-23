@@ -802,7 +802,7 @@ namespace CodeImp.DoomBuilder.Data
 			int lumpindex = file.FindLumpIndex(pname);
 			while(lumpindex > -1)
 			{
-				result.Add(pname, file.Lumps[lumpindex].Stream);
+				result.Add(Path.Combine(file.Filename, pname), file.Lumps[lumpindex].Stream);
 				
 				// Find next
 				lumpindex = file.FindLumpIndex(pname, lumpindex + 1);
