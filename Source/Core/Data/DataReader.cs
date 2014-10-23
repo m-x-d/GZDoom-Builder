@@ -156,7 +156,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Decorate, Modeldef, Mapinfo, Gldefs, etc...
 
 		// When implemented, this returns the decorate lump
-		public virtual List<Stream> GetDecorateData(string pname) { return new List<Stream>(); }
+		public virtual Dictionary<string, Stream> GetDecorateData(string pname) { return new Dictionary<string, Stream>(); }
 
 		//mxd. When implemented, this returns the Modeldef lump
 		public virtual Dictionary<string, Stream> GetModeldefData() { return new Dictionary<string, Stream>(); }

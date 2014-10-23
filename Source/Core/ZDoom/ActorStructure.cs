@@ -150,10 +150,16 @@ namespace CodeImp.DoomBuilder.ZDoom
 							break;
 
 						default:
-							// Check if numeric
-							if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out doomednum)) {
+							//mxd. Property begins with $? Then the whole line is a single value
+							if(token.StartsWith("$")) 
+							{
+								// This is for editor-only properties such as $sprite and $category
+								props[token] = new List<string> { (parser.SkipWhitespace(false) ? parser.ReadLine() : "") };
+							} 
+							else if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out doomednum)) // Check if numeric
+							{
 								// Not numeric!
-								parser.ReportError("Expected numeric editor thing number or start of actor scope while parsing '" + classname + "'");
+								parser.ReportError("Expected editor thing number or start of actor scope while parsing '" + classname + "'");
 								return;
 							}
 							break;
@@ -313,12 +319,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						// Property begins with $? Then the whole line is a single value
 						if (token.StartsWith("$")) {
 							// This is for editor-only properties such as $sprite and $category
-							List<string> values = new List<string>();
-							if (parser.SkipWhitespace(false))
-								values.Add(parser.ReadLine());
-							else
-								values.Add("");
-							props[token] = values;
+							props[token] = new List<string> { (parser.SkipWhitespace(false) ? parser.ReadLine() : "") };
 						} else {
 							// Next tokens up until the next newline are values
 							List<string> values = new List<string>();

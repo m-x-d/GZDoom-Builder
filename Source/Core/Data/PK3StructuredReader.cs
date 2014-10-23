@@ -436,9 +436,9 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Decorate
 
 		// This finds and returns a sprite stream
-		public override List<Stream> GetDecorateData(string pname)
+		public override Dictionary<string, Stream> GetDecorateData(string pname)
 		{
-			List<Stream> streams = new List<Stream>();
+			Dictionary<string, Stream> result = new Dictionary<string, Stream>();
 			string[] allfilenames;
 			
 			// Error when suspended
@@ -451,10 +451,13 @@ namespace CodeImp.DoomBuilder.Data
 			if(filename.IndexOf('.') > -1)
 			{
 				string fullName = Path.Combine(pathname, filename);
-				if(FileExists(fullName)) {
+				if(FileExists(fullName)) 
+				{
 					allfilenames = new string[1];
 					allfilenames[0] = Path.Combine(pathname, filename);
-				} else {
+				} 
+				else 
+				{
 					allfilenames = new string[0];
 					General.ErrorLogger.Add(ErrorType.Warning, "Unable to load DECORATE file '" + fullName + "'");
 				}
@@ -464,14 +467,20 @@ namespace CodeImp.DoomBuilder.Data
 
 			foreach(string foundfile in allfilenames)
 			{
-				streams.Add(LoadFile(foundfile));
+				result.Add(foundfile, LoadFile(foundfile));
 			}
 			
 			// Find in any of the wad files
 			for(int i = wads.Count - 1; i >= 0; i--)
-				streams.AddRange(wads[i].GetDecorateData(pname));
-			
-			return streams;
+			{
+				Dictionary<string, Stream> wadresult = wads[i].GetDecorateData(pname);
+				foreach(KeyValuePair<string, Stream> group in wadresult)
+				{
+					result.Add(group.Key, group.Value);
+				}
+			}
+
+			return result;
 		}
 
 		#endregion
