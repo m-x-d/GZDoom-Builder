@@ -1567,7 +1567,7 @@ namespace CodeImp.DoomBuilder {
 					if (stream != null) {
 						AcsParserSE parser = new AcsParserSE();
 						parser.OnInclude = updateScriptsFromLocation;
-						parser.Parse(stream, "SCRIPTS", true);
+						parser.Parse(stream, "SCRIPTS", true, false);
 
 						if(parser.NamedScripts.Count > 0 && (FormatInterface is DoomMapSetIO || FormatInterface is HexenMapSetIO)) {
 							List<string> names = new List<string>();
