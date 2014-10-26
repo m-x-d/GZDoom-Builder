@@ -802,7 +802,8 @@ namespace CodeImp.DoomBuilder.Data
 			int lumpindex = file.FindLumpIndex(pname);
 			while(lumpindex > -1)
 			{
-				result.Add(Path.Combine(file.Filename, pname), file.Lumps[lumpindex].Stream);
+				//mxd. Since we are using Dictionary, all names should be unique
+				result.Add(Path.Combine(file.Filename, pname + "#" + lumpindex), file.Lumps[lumpindex].Stream);
 				
 				// Find next
 				lumpindex = file.FindLumpIndex(pname, lumpindex + 1);
