@@ -240,7 +240,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label7
 			// 
 			label7.AutoSize = true;
-			label7.Location = new System.Drawing.Point(15, 30);
+			label7.Location = new System.Drawing.Point(15, 24);
 			label7.Name = "label7";
 			label7.Size = new System.Drawing.Size(71, 14);
 			label7.TabIndex = 11;
@@ -249,7 +249,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label14
 			// 
 			label14.AutoSize = true;
-			label14.Location = new System.Drawing.Point(330, 30);
+			label14.Location = new System.Drawing.Point(330, 24);
 			label14.Name = "label14";
 			label14.Size = new System.Drawing.Size(73, 14);
 			label14.TabIndex = 15;
@@ -258,7 +258,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label6
 			// 
 			label6.AutoSize = true;
-			label6.Location = new System.Drawing.Point(199, 30);
+			label6.Location = new System.Drawing.Point(199, 24);
 			label6.Name = "label6";
 			label6.Size = new System.Drawing.Size(38, 14);
 			label6.TabIndex = 17;
@@ -305,7 +305,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.Controls.Add(label2);
 			this.actiongroup.Controls.Add(this.action);
 			this.actiongroup.Controls.Add(this.browseaction);
-			this.actiongroup.Location = new System.Drawing.Point(8, 247);
+			this.actiongroup.Location = new System.Drawing.Point(8, 253);
 			this.actiongroup.Name = "actiongroup";
 			this.actiongroup.Size = new System.Drawing.Size(533, 142);
 			this.actiongroup.TabIndex = 1;
@@ -486,11 +486,11 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.udmfactivates.AutoScroll = true;
 			this.udmfactivates.Columns = 2;
-			this.udmfactivates.Location = new System.Drawing.Point(18, 19);
+			this.udmfactivates.Location = new System.Drawing.Point(18, 17);
 			this.udmfactivates.Name = "udmfactivates";
-			this.udmfactivates.Size = new System.Drawing.Size(509, 133);
+			this.udmfactivates.Size = new System.Drawing.Size(509, 130);
 			this.udmfactivates.TabIndex = 0;
-			this.udmfactivates.VerticalSpacing = 1;
+			this.udmfactivates.VerticalSpacing = 0;
 			this.udmfactivates.OnValueChanged += new System.EventHandler(this.udmfactivates_OnValueChanged);
 			// 
 			// flagsgroup
@@ -500,7 +500,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flagsgroup.Controls.Add(this.flags);
 			this.flagsgroup.Location = new System.Drawing.Point(8, 3);
 			this.flagsgroup.Name = "flagsgroup";
-			this.flagsgroup.Size = new System.Drawing.Size(533, 174);
+			this.flagsgroup.Size = new System.Drawing.Size(533, 186);
 			this.flagsgroup.TabIndex = 0;
 			this.flagsgroup.TabStop = false;
 			this.flagsgroup.Text = " Flags";
@@ -514,9 +514,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flags.Columns = 3;
 			this.flags.Location = new System.Drawing.Point(18, 17);
 			this.flags.Name = "flags";
-			this.flags.Size = new System.Drawing.Size(509, 152);
+			this.flags.Size = new System.Drawing.Size(509, 164);
 			this.flags.TabIndex = 0;
-			this.flags.VerticalSpacing = 1;
+			this.flags.VerticalSpacing = 0;
 			this.flags.OnValueChanged += new System.EventHandler(this.flags_OnValueChanged);
 			// 
 			// tabs
@@ -562,9 +562,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.settingsGroup.Controls.Add(label14);
 			this.settingsGroup.Controls.Add(this.renderStyle);
 			this.settingsGroup.Controls.Add(label7);
-			this.settingsGroup.Location = new System.Drawing.Point(8, 183);
+			this.settingsGroup.Location = new System.Drawing.Point(8, 195);
 			this.settingsGroup.Name = "settingsGroup";
-			this.settingsGroup.Size = new System.Drawing.Size(533, 58);
+			this.settingsGroup.Size = new System.Drawing.Size(533, 52);
 			this.settingsGroup.TabIndex = 3;
 			this.settingsGroup.TabStop = false;
 			this.settingsGroup.Text = " Settings";
@@ -577,7 +577,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.alpha.ButtonStep = 1;
 			this.alpha.ButtonStepFloat = 0.1F;
 			this.alpha.ButtonStepsWrapAround = false;
-			this.alpha.Location = new System.Drawing.Point(243, 25);
+			this.alpha.Location = new System.Drawing.Point(243, 19);
 			this.alpha.Name = "alpha";
 			this.alpha.Size = new System.Drawing.Size(65, 24);
 			this.alpha.StepValues = null;
@@ -592,7 +592,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.lockNumber.ButtonStep = 1;
 			this.lockNumber.ButtonStepFloat = 1F;
 			this.lockNumber.ButtonStepsWrapAround = false;
-			this.lockNumber.Location = new System.Drawing.Point(405, 25);
+			this.lockNumber.Location = new System.Drawing.Point(405, 19);
 			this.lockNumber.Name = "lockNumber";
 			this.lockNumber.Size = new System.Drawing.Size(65, 24);
 			this.lockNumber.StepValues = null;
@@ -602,7 +602,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.renderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.renderStyle.FormattingEnabled = true;
-			this.renderStyle.Location = new System.Drawing.Point(92, 26);
+			this.renderStyle.Location = new System.Drawing.Point(92, 20);
 			this.renderStyle.Name = "renderStyle";
 			this.renderStyle.Size = new System.Drawing.Size(86, 22);
 			this.renderStyle.TabIndex = 12;
@@ -612,9 +612,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.activationGroup.Controls.Add(this.missingactivation);
 			this.activationGroup.Controls.Add(this.udmfactivates);
-			this.activationGroup.Location = new System.Drawing.Point(8, 395);
+			this.activationGroup.Location = new System.Drawing.Point(8, 401);
 			this.activationGroup.Name = "activationGroup";
-			this.activationGroup.Size = new System.Drawing.Size(533, 158);
+			this.activationGroup.Size = new System.Drawing.Size(533, 152);
 			this.activationGroup.TabIndex = 1;
 			this.activationGroup.TabStop = false;
 			this.activationGroup.Text = " Activation ";
@@ -1335,7 +1335,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "LinedefEditFormUDMF";
-			this.Opacity = 0;
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
