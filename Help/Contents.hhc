@@ -259,7 +259,7 @@
 					</OBJECT>
 			</UL>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Classic and Visual modes">
+				<param name="Name" value="New features in Classic and Visual modes">
 				<param name="Local" value="gzdb\features\features.html#allmodes">
 				</OBJECT>
 			<UL>
@@ -292,26 +292,18 @@
 					<param name="Local" value="gzdb\features\all_modes\tagexplorer.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="Jitter command">
-					<param name="Local" value="gzdb\features\all_modes\jitter.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="Image Browser">
 					<param name="Local" value="gzdb\features\all_modes\texture_browser.html">
 					</OBJECT>
 			</UL>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Classic modes">
+				<param name="Name" value="New features in Classic modes">
 				<param name="Local" value="gzdb\features\features.html#classic">
 				</OBJECT>
 			<UL>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="Draw Settings Panel">
 					<param name="Local" value="gzdb\features\classic_modes\drawsettingspanel.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="Import Terrain mode">
-					<param name="Local" value="gzdb\features\classic_modes\mode_importterrain.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="Custom linedef colors">
@@ -321,41 +313,49 @@
 					<param name="Name" value="Enhanced rectangular selection">
 					<param name="Local" value="gzdb\features\classic_modes\selection.html">
 					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="Draw Rectangle mode">
-					<param name="Local" value="gzdb\features\classic_modes\mode_drawrect.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="Draw Ellipse mode">
-					<param name="Local" value="gzdb\features\classic_modes\mode_drawellipse.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="Draw Curve mode">
-					<param name="Local" value="gzdb\features\classic_modes\mode_drawcurve.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="Draw Grid mode">
-					<param name="Local" value="gzdb\features\classic_modes\mode_drawgrid.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="Bridge mode">
-					<param name="Local" value="gzdb\features\classic_modes\mode_drawbridge.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="Snap geometry mode">
-					<param name="Local" value="gzdb\features\classic_modes\mode_snapelements.html">
-					</OBJECT>
 			</UL>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Sectors mode">
+				<param name="Name" value="New features in Sectors mode">
 				<param name="Local" value="gzdb\features\features.html#sectors">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Linedefs mode">
+				<param name="Name" value="New features in Linedefs mode">
 				<param name="Local" value="gzdb\features\features.html#linedefs">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Things mode">
+				<param name="Name" value="Draw Rectangle mode">
+				<param name="Local" value="gzdb\features\classic_modes\mode_drawrect.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Draw Ellipse mode">
+				<param name="Local" value="gzdb\features\classic_modes\mode_drawellipse.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Draw Curve mode">
+				<param name="Local" value="gzdb\features\classic_modes\mode_drawcurve.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Draw Grid mode">
+				<param name="Local" value="gzdb\features\classic_modes\mode_drawgrid.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Randomize mode">
+				<param name="Local" value="gzdb\features\all_modes\jitter.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Bridge mode">
+				<param name="Local" value="gzdb\features\classic_modes\mode_drawbridge.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Import Terrain mode">
+				<param name="Local" value="gzdb\features\classic_modes\mode_importterrain.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Snap geometry mode">
+				<param name="Local" value="gzdb\features\classic_modes\mode_snapelements.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="New features in Things mode">
 				<param name="Local" value="gzdb\features\features.html#things">
 				</OBJECT>
 			<UL>
@@ -369,7 +369,7 @@
 					</OBJECT>
 			</UL>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Vertices mode">
+				<param name="Name" value="New features in Vertices mode">
 				<param name="Local" value="gzdb\features\features.html#vertices">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
@@ -395,6 +395,14 @@
 					</OBJECT>
 			</UL>
 			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="New features in Map Analysis mode">
+				<param name="Local" value="gzdb\features\features.html#mapanalysis">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="New features in Find and Replace mode">
+				<param name="Local" value="gzdb\features\features.html#findreplace">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Custom Fields">
 				<param name="Local" value="gzdb\features\features.html#fields">
 				</OBJECT>
@@ -404,14 +412,6 @@
 					<param name="Local" value="gzdb\features\custom_fields\newfieldtypes.html">
 					</OBJECT>
 			</UL>
-			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Map Analysis mode">
-				<param name="Local" value="gzdb\features\features.html#mapanalysis">
-				</OBJECT>
-			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Find and Replace mode">
-				<param name="Local" value="gzdb\features\features.html#findreplace">
-				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="(G)ZDoom features support">
 				<param name="Local" value="gzdb\features\features.html#formats">

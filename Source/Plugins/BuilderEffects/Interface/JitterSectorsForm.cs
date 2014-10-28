@@ -12,7 +12,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 	{
 		private readonly string editingModeName;
 		private readonly List<VisualSector> visualSectors;
-		private readonly VertexData[] vertexData;
+		private readonly TranslationOffsetVertexData[] vertexData;
 		private readonly List<SectorData> sectorData;
 		private readonly List<SidedefData> sidedefData;
 		private readonly int MaxSafeDistance;
@@ -20,8 +20,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		//settings
 		private static bool keepExistingSideTextures = true;
+		private static bool useFloorVertexHeights;
+		private static bool useCeilingVertexHeights;
 
-		private struct VertexData
+		private struct TranslationOffsetVertexData
 		{
 			public Vertex Vertex;
 			public Vector2D InitialPosition;
@@ -29,14 +31,27 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			public float JitterAngle;
 		}
 
+		private struct HeightOffsetVertexData
+		{
+			public Vertex Vertex;
+			public float InitialFloorHeight;
+			public float InitialCeilingHeight;
+			public float ZFloor;
+			public float ZCeiling;
+			public float JitterFloorHeight;
+			public float JitterCeilingHeight;
+		}
+
 		private struct SectorData
 		{
 			public Sector Sector;
+			public HeightOffsetVertexData[] Verts;
 			public int InitialCeilingHeight;
 			public int InitialFloorHeight;
 			public int SafeDistance;
 			public float JitterFloorHeight;
 			public float JitterCeilingHeight;
+			public bool Triangular;
 		}
 
 		private struct SidedefData
@@ -134,10 +149,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 			//store intial properties
 //process verts...
-			Dictionary<Vertex, VertexData> data = new Dictionary<Vertex, VertexData>();
+			Dictionary<Vertex, TranslationOffsetVertexData> data = new Dictionary<Vertex, TranslationOffsetVertexData>();
 
 			foreach(Vertex v in verts) {
-				VertexData vd = new VertexData();
+				TranslationOffsetVertexData vd = new TranslationOffsetVertexData();
 				vd.Vertex = v;
 				vd.InitialPosition = v.Position;
 				data.Add(v, vd);
@@ -169,12 +184,12 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 				//check SafeDistance of closest line
 				if(data.ContainsKey(closestLine.Start) && data[closestLine.Start].SafeDistance > closestLineDistance) {
-					VertexData vd = data[closestLine.Start];
+					TranslationOffsetVertexData vd = data[closestLine.Start];
 					vd.SafeDistance = (int)Math.Floor(closestLineDistance);
 					data[closestLine.Start] = vd;
 				}
 				if(data.ContainsKey(closestLine.End) && data[closestLine.End].SafeDistance > closestLineDistance) {
-					VertexData vd = data[closestLine.End];
+					TranslationOffsetVertexData vd = data[closestLine.End];
 					vd.SafeDistance = (int)Math.Floor(closestLineDistance);
 					data[closestLine.End] = vd;
 				}
@@ -182,17 +197,17 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				//save SafeDistance
 				int dist = (int)Math.Floor(closestLineDistance);
 				if(data[v].SafeDistance == 0 || data[v].SafeDistance > dist) {
-					VertexData vd = data[v];
+					TranslationOffsetVertexData vd = data[v];
 					vd.SafeDistance = dist;
 					data[v] = vd;
 				}
 			}
 
 			//store properties
-			vertexData = new VertexData[data.Values.Count];
+			vertexData = new TranslationOffsetVertexData[data.Values.Count];
 			data.Values.CopyTo(vertexData, 0);
 
-			for(int i = 0; i < vertexData.Length; i++) {
+			for(int i = 0; i < data.Count; i++) {
 				if(vertexData[i].SafeDistance > 0)
 					vertexData[i].SafeDistance /= 2;
 				if(MaxSafeDistance < vertexData[i].SafeDistance)
@@ -209,6 +224,23 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				sd.Sector = s;
 				sd.InitialCeilingHeight = s.CeilHeight;
 				sd.InitialFloorHeight = s.FloorHeight;
+				sd.Triangular = General.Map.UDMF && s.Sidedefs.Count == 3;
+				if (sd.Triangular)
+				{
+					Vertex[] sectorverts = GetSectorVerts(s);
+					sd.Verts = new HeightOffsetVertexData[sectorverts.Length];
+					for(int i = 0; i < sectorverts.Length; i++)
+					{
+						HeightOffsetVertexData vd = new HeightOffsetVertexData();
+						vd.Vertex = sectorverts[i];
+						vd.ZFloor = sectorverts[i].ZFloor;
+						vd.ZCeiling = sectorverts[i].ZCeiling;
+						vd.InitialFloorHeight = float.IsNaN(vd.ZFloor) ? GetHighestFloor(sectorverts[i]) : sectorverts[i].ZFloor;
+						vd.InitialCeilingHeight = float.IsNaN(vd.ZCeiling) ? GetLowestCeiling(sectorverts[i]) : sectorverts[i].ZCeiling;
+
+						sd.Verts[i] = vd;
+					}
+				}
 				sd.SafeDistance = (s.CeilHeight - s.FloorHeight) / 2;
 				if(sd.SafeDistance > MaxSafeHeightDistance)	MaxSafeHeightDistance = sd.SafeDistance;
 				sectorData.Add(sd);
@@ -239,6 +271,18 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 			//set editing settings
 			cbKeepExistingTextures.Checked = keepExistingSideTextures;
+			if (General.Map.UDMF) {
+				cbUseFloorVertexHeights.Checked = useFloorVertexHeights;
+				cbUseCeilingVertexHeights.Checked = useCeilingVertexHeights;
+			} else {
+				useFloorVertexHeights = false;
+				cbUseFloorVertexHeights.Checked = false;
+				cbUseFloorVertexHeights.Enabled = false;
+
+				useCeilingVertexHeights = false;
+				cbUseCeilingVertexHeights.Checked = false;
+				cbUseCeilingVertexHeights.Enabled = false;
+			}
 
 			//texture pickers
 			textureLower.Initialize();
@@ -258,6 +302,56 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			//create undo
 			General.Map.UndoRedo.ClearAllRedos();
 			General.Map.UndoRedo.CreateUndo("Randomize " + sectors.Count + (sectors.Count > 1 ? " sectors" : " sector"));
+		}
+
+		private float GetLowestCeiling(Vertex v) {
+			if (v.Linedefs.Count == 0) return float.NaN;
+			List<Sector> sectors = GetSectors(v);
+			if (sectors.Count == 0) return float.NaN;
+
+			float target = sectors[0].CeilHeight;
+			for(int i = 1; i < sectors.Count; i++) {
+				if(target > sectors[i].CeilHeight && sectors[i].Sidedefs.Count == 3)
+					target = sectors[i].CeilHeight;
+			}
+
+			return target;
+		}
+
+		private float GetHighestFloor(Vertex v) {
+			if(v.Linedefs.Count == 0) return float.NaN;
+			List<Sector> sectors = GetSectors(v);
+			if(sectors.Count == 0) return float.NaN;
+
+			float target = sectors[0].FloorHeight;
+			for(int i = 1; i < sectors.Count; i++) {
+				if(target < sectors[i].FloorHeight && sectors[i].Sidedefs.Count == 3)
+					target = sectors[i].FloorHeight;
+			}
+
+			return target;
+		}
+
+		private List<Sector> GetSectors(Vertex v) {
+			List<Sector> result = new List<Sector>();
+			foreach (Linedef l in v.Linedefs) {
+				if(l.Front != null && l.Front.Sector != null && !result.Contains(l.Front.Sector))
+					result.Add(l.Front.Sector);
+				if(l.Back != null && l.Back.Sector != null && !result.Contains(l.Back.Sector))
+					result.Add(l.Back.Sector);
+			}
+			return result;
+		}
+
+		private Vertex[] GetSectorVerts(Sector s) {
+			List<Vertex> result = new List<Vertex>();
+			foreach (Sidedef side in s.Sidedefs) {
+				if(side.Line == null) continue;
+				if(!result.Contains(side.Line.Start)) result.Add(side.Line.Start);
+				if(!result.Contains(side.Line.End)) result.Add(side.Line.End);
+			}
+
+			return result.ToArray();
 		}
 
 //utility
@@ -284,7 +378,14 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 			for(int i = 0; i < sectorData.Count; i++) {
 				curAmmount = ammount > sectorData[i].SafeDistance ? sectorData[i].SafeDistance : ammount;
-				sectorData[i].Sector.CeilHeight = sectorData[i].InitialCeilingHeight - (int)Math.Floor(curAmmount * sectorData[i].JitterCeilingHeight);
+
+				if (sectorData[i].Triangular && useCeilingVertexHeights) {
+					foreach(HeightOffsetVertexData vd in sectorData[i].Verts) {
+						vd.Vertex.ZCeiling = vd.InitialCeilingHeight + (float)Math.Floor(curAmmount * vd.JitterCeilingHeight);
+					}
+				} else {
+					sectorData[i].Sector.CeilHeight = sectorData[i].InitialCeilingHeight - (int) Math.Floor(curAmmount * sectorData[i].JitterCeilingHeight);
+				}
 			}
 
 			//update view
@@ -302,7 +403,14 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 			for(int i = 0; i < sectorData.Count; i++) {
 				curAmmount = ammount > sectorData[i].SafeDistance ? sectorData[i].SafeDistance : ammount;
-				sectorData[i].Sector.FloorHeight = sectorData[i].InitialFloorHeight + (int)Math.Floor(curAmmount * sectorData[i].JitterFloorHeight);
+
+				if (sectorData[i].Triangular && useFloorVertexHeights) {
+					foreach(HeightOffsetVertexData vd in sectorData[i].Verts) {
+						vd.Vertex.ZFloor = vd.InitialFloorHeight + (float)Math.Floor(curAmmount * vd.JitterFloorHeight);
+					}
+				} else {
+					sectorData[i].Sector.FloorHeight = sectorData[i].InitialFloorHeight + (int) Math.Floor(curAmmount * sectorData[i].JitterFloorHeight);
+				}
 			}
 
 			//update view
@@ -406,7 +514,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 //jitter generation
 		private void updateAngles() {
 			for(int i = 0; i < vertexData.Length; i++) {
-				VertexData vd = vertexData[i];
+				TranslationOffsetVertexData vd = vertexData[i];
 				vd.JitterAngle = (float)(General.Random(0, 359) * Math.PI / 180f);
 				vertexData[i] = vd;
 			}
@@ -415,6 +523,15 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		private void updateFloorHeights() {
 			for(int i = 0; i < sectorData.Count; i++) {
 				SectorData sd = sectorData[i];
+
+				if (sd.Triangular) {
+					for(int c = 0; c < 3; c++) {
+						HeightOffsetVertexData vd = sd.Verts[c];
+						vd.JitterFloorHeight = General.Random(-100, 100) / 100f;
+						sd.Verts[c] = vd;
+					}
+				} 
+
 				sd.JitterFloorHeight = General.Random(-100, 100) / 100f;
 				sectorData[i] = sd;
 			}
@@ -423,6 +540,16 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		private void updateCeilingHeights() {
 			for(int i = 0; i < sectorData.Count; i++) {
 				SectorData sd = sectorData[i];
+
+				if(sd.Triangular) {
+					for(int c = 0; c < 3; c++)
+					{
+						HeightOffsetVertexData vd = sd.Verts[c];
+						vd.JitterCeilingHeight = General.Random(-100, 100) / 100f;
+						sd.Verts[c] = vd;
+					}
+				} 
+
 				sd.JitterCeilingHeight = General.Random(-100, 100) / 100f;
 				sectorData[i] = sd;
 			}
@@ -491,6 +618,44 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				updateLowerTextures(cbLowerTexStyle.SelectedIndex, false);
 				updateUpperTextures(cbUpperTexStyle.SelectedIndex, true);
 			}
+		}
+
+		private void cbUseFloorVertexHeights_CheckedChanged(object sender, EventArgs e) 
+		{
+			useFloorVertexHeights = cbUseFloorVertexHeights.Checked;
+
+			//Reset values?
+			if (!useFloorVertexHeights || floorHeightAmmount.Value == 0)
+			{
+				foreach (SectorData data in sectorData)
+				{
+					if(!data.Triangular) continue;
+					foreach(HeightOffsetVertexData vd in data.Verts) vd.Vertex.ZFloor = vd.ZFloor;
+				}
+			}
+
+			//update changes
+			applyFloorHeightJitter(floorHeightAmmount.Value);
+			updateTextureSelectors();
+		}
+
+		private void cbUseCeilingVertexHeights_CheckedChanged(object sender, EventArgs e) 
+		{
+			useCeilingVertexHeights = cbUseCeilingVertexHeights.Checked;
+
+			//Reset values?
+			if(!useCeilingVertexHeights || ceilingHeightAmmount.Value == 0) 
+			{
+				foreach(SectorData data in sectorData) 
+				{
+					if(!data.Triangular) continue;
+					foreach(HeightOffsetVertexData vd in data.Verts) vd.Vertex.ZCeiling = vd.ZCeiling;
+				}
+			}
+
+			//update changes
+			applyCeilingHeightJitter(ceilingHeightAmmount.Value);
+			updateTextureSelectors();
 		}
 
 //update buttons
