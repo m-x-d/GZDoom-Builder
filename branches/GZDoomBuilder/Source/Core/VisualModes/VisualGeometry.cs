@@ -151,15 +151,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 		protected void SetVertices(ICollection<WorldVertex> verts)
 		{
 			// Copy vertices
-			if (verts != null) { //mxd
+			if(verts != null) //mxd
+			{ 
 				vertices = new WorldVertex[verts.Count];
 				verts.CopyTo(vertices, 0);
 				triangles = vertices.Length / 3;
 
-				//mxd
-				CalculateNormals();
-			} else {
-				vertices = new WorldVertex[1];
+				CalculateNormals(); //mxd
+			} 
+			else 
+			{
+				vertices = null;
 				triangles = 0;
 			}
 
@@ -167,46 +169,50 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd. Normals calculation algorithm taken from OpenGl wiki 
-		protected void CalculateNormals() {
-			if (triangles > 0) {
-				int startIndex;
-				Vector3 U, V;
+		protected void CalculateNormals() 
+		{
+			if (triangles == 0) return;
+			
+			int startIndex;
+			Vector3 U, V;
 
-				BoundingBoxSizes bbs = new BoundingBoxSizes(vertices[0]);
+			BoundingBoxSizes bbs = new BoundingBoxSizes(vertices[0]);
 
-				for (int i = 0; i < triangles; i++) {
-					startIndex = i * 3;
-					WorldVertex p1 = vertices[startIndex];
-					WorldVertex p2 = vertices[startIndex + 1];
-					WorldVertex p3 = vertices[startIndex + 2];
+			for(int i = 0; i < triangles; i++) 
+			{
+				startIndex = i * 3;
+				WorldVertex p1 = vertices[startIndex];
+				WorldVertex p2 = vertices[startIndex + 1];
+				WorldVertex p3 = vertices[startIndex + 2];
 
-					U = new Vector3(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
-					V = new Vector3(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z);
+				U = new Vector3(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+				V = new Vector3(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z);
 
-					p1.nx = p2.nx = p3.nx = -(U.Y * V.Z - U.Z * V.Y);
-					p1.ny = p2.ny = p3.ny = -(U.Z * V.X - U.X * V.Z);
-					p1.nz = p2.nz = p3.nz = -(U.X * V.Y - U.Y * V.X);
+				p1.nx = p2.nx = p3.nx = -(U.Y * V.Z - U.Z * V.Y);
+				p1.ny = p2.ny = p3.ny = -(U.Z * V.X - U.X * V.Z);
+				p1.nz = p2.nz = p3.nz = -(U.X * V.Y - U.Y * V.X);
 
-					vertices[startIndex] = p1;
-					vertices[startIndex + 1] = p2;
-					vertices[startIndex + 2] = p3;
+				vertices[startIndex] = p1;
+				vertices[startIndex + 1] = p2;
+				vertices[startIndex + 2] = p3;
 
-					BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p1);
-					BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p2);
-					BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p3);
-				}
-
-				boundingBox = BoundingBoxTools.CalculateBoundingPlane(bbs);
+				BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p1);
+				BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p2);
+				BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p3);
 			}
+
+			boundingBox = BoundingBoxTools.CalculateBoundingPlane(bbs);
 		}
 
 		//mxd. Used to get proper sector from 3d-floors
-		public virtual Sector GetControlSector() {
+		public virtual Sector GetControlSector() 
+		{
 			return sector.Sector;
 		}
 
 		//mxd. Used to get proper linedef from 3d-floors
-		public virtual Linedef GetControlLinedef() {
+		public virtual Linedef GetControlLinedef() 
+		{
 			return sidedef.Line;
 		}
 		
