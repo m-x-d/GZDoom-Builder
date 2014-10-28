@@ -269,13 +269,17 @@ namespace CodeImp.DoomBuilder.Config
 			// Set the title
 			if(actor.HasPropertyWithValue("$title"))
 				title = actor.GetPropertyAllValues("$title");
-			else if(actor.HasPropertyWithValue("tag"))
-				title = actor.GetPropertyAllValues("tag");
-			else if(string.IsNullOrEmpty(title))
-				title = actor.ClassName;
+			else if (actor.HasPropertyWithValue("tag")) 
+			{
+				string tag = actor.GetPropertyAllValues("tag");
+				if(!tag.StartsWith("\"$")) title = tag; //mxd. Don't use LANGUAGE keywords.
+			}
+
+			if(string.IsNullOrEmpty(title)) title = actor.ClassName;
 				
 			//mxd. Color override?
-			if (actor.HasPropertyWithValue("$color")) {
+			if (actor.HasPropertyWithValue("$color")) 
+			{
 				int ci = actor.GetPropertyValueInt("$color", 0);
 				color = (ci == 0 || ci > 19 ? 18 : ci) ;
 			}
