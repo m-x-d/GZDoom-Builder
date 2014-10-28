@@ -101,7 +101,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 								  "Thanks, Obama",
 								  "The God Of Exceptions Demands MORE Exceptions!",
 								  "Good. It's boring here anyway.",
-								  "Shameful display!"
+								  "Shameful display!",
+								  "It's CRASHENING!",
 							  };
 			this.Text = titles[new Random().Next(0, titles.Length - 1)];
 		}

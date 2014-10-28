@@ -42,6 +42,8 @@
 			this.positionJitterAmmount = new IntControl();
 			this.floorHeightAmmount = new IntControl();
 			this.ceilingHeightAmmount = new IntControl();
+			this.cbUseFloorVertexHeights = new System.Windows.Forms.CheckBox();
+			this.cbUseCeilingVertexHeights = new System.Windows.Forms.CheckBox();
 			this.gbUpperTexture.SuspendLayout();
 			this.gbLowerTexture.SuspendLayout();
 			this.SuspendLayout();
@@ -50,7 +52,7 @@
 			// 
 			this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.bCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.bCancel.Location = new System.Drawing.Point(195, 324);
+			this.bCancel.Location = new System.Drawing.Point(195, 368);
 			this.bCancel.Name = "bCancel";
 			this.bCancel.Size = new System.Drawing.Size(75, 25);
 			this.bCancel.TabIndex = 10;
@@ -61,7 +63,7 @@
 			// bApply
 			// 
 			this.bApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.bApply.Location = new System.Drawing.Point(276, 324);
+			this.bApply.Location = new System.Drawing.Point(276, 368);
 			this.bApply.Name = "bApply";
 			this.bApply.Size = new System.Drawing.Size(95, 25);
 			this.bApply.TabIndex = 9;
@@ -95,7 +97,7 @@
 			// 
 			this.bUpdateFloorHeight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.bUpdateFloorHeight.Image = global::CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.Update;
-			this.bUpdateFloorHeight.Location = new System.Drawing.Point(347, 74);
+			this.bUpdateFloorHeight.Location = new System.Drawing.Point(347, 93);
 			this.bUpdateFloorHeight.Name = "bUpdateFloorHeight";
 			this.bUpdateFloorHeight.Size = new System.Drawing.Size(23, 25);
 			this.bUpdateFloorHeight.TabIndex = 16;
@@ -104,9 +106,10 @@
 			// 
 			// gbUpperTexture
 			// 
+			this.gbUpperTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.gbUpperTexture.Controls.Add(this.textureUpper);
 			this.gbUpperTexture.Controls.Add(this.cbPegTop);
-			this.gbUpperTexture.Location = new System.Drawing.Point(12, 159);
+			this.gbUpperTexture.Location = new System.Drawing.Point(12, 203);
 			this.gbUpperTexture.Name = "gbUpperTexture";
 			this.gbUpperTexture.Size = new System.Drawing.Size(176, 159);
 			this.gbUpperTexture.TabIndex = 24;
@@ -159,13 +162,14 @@
 			// 
 			// cbUpperTexStyle
 			// 
+			this.cbUpperTexStyle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.cbUpperTexStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbUpperTexStyle.FormattingEnabled = true;
 			this.cbUpperTexStyle.Items.AddRange(new object[] {
             "Don\'t change upper texture",
             "Use ceiling texture",
             "Pick upper texture"});
-			this.cbUpperTexStyle.Location = new System.Drawing.Point(12, 131);
+			this.cbUpperTexStyle.Location = new System.Drawing.Point(12, 175);
 			this.cbUpperTexStyle.Name = "cbUpperTexStyle";
 			this.cbUpperTexStyle.Size = new System.Drawing.Size(176, 22);
 			this.cbUpperTexStyle.TabIndex = 26;
@@ -173,13 +177,14 @@
 			// 
 			// cbLowerTexStyle
 			// 
+			this.cbLowerTexStyle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.cbLowerTexStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLowerTexStyle.FormattingEnabled = true;
 			this.cbLowerTexStyle.Items.AddRange(new object[] {
             "Don\'t change lower texture",
             "Use floor texture",
             "Pick lower texture"});
-			this.cbLowerTexStyle.Location = new System.Drawing.Point(195, 131);
+			this.cbLowerTexStyle.Location = new System.Drawing.Point(195, 175);
 			this.cbLowerTexStyle.Name = "cbLowerTexStyle";
 			this.cbLowerTexStyle.Size = new System.Drawing.Size(175, 22);
 			this.cbLowerTexStyle.TabIndex = 27;
@@ -187,9 +192,10 @@
 			// 
 			// gbLowerTexture
 			// 
+			this.gbLowerTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.gbLowerTexture.Controls.Add(this.textureLower);
 			this.gbLowerTexture.Controls.Add(this.cbPegBottom);
-			this.gbLowerTexture.Location = new System.Drawing.Point(195, 159);
+			this.gbLowerTexture.Location = new System.Drawing.Point(195, 203);
 			this.gbLowerTexture.Name = "gbLowerTexture";
 			this.gbLowerTexture.Size = new System.Drawing.Size(176, 159);
 			this.gbLowerTexture.TabIndex = 29;
@@ -198,14 +204,26 @@
 			// 
 			// cbKeepExistingTextures
 			// 
+			this.cbKeepExistingTextures.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.cbKeepExistingTextures.AutoSize = true;
-			this.cbKeepExistingTextures.Location = new System.Drawing.Point(12, 107);
+			this.cbKeepExistingTextures.Location = new System.Drawing.Point(12, 151);
 			this.cbKeepExistingTextures.Name = "cbKeepExistingTextures";
 			this.cbKeepExistingTextures.Size = new System.Drawing.Size(211, 18);
 			this.cbKeepExistingTextures.TabIndex = 30;
 			this.cbKeepExistingTextures.Text = "Don\'t change existing sidedef textures";
 			this.cbKeepExistingTextures.UseVisualStyleBackColor = true;
 			this.cbKeepExistingTextures.CheckedChanged += new System.EventHandler(this.cbKeepExistingTextures_CheckedChanged);
+			// 
+			// cbUseFloorVertexHeights
+			// 
+			this.cbUseFloorVertexHeights.AutoSize = true;
+			this.cbUseFloorVertexHeights.Location = new System.Drawing.Point(108, 119);
+			this.cbUseFloorVertexHeights.Name = "cbUseFloorVertexHeights";
+			this.cbUseFloorVertexHeights.Size = new System.Drawing.Size(117, 18);
+			this.cbUseFloorVertexHeights.TabIndex = 31;
+			this.cbUseFloorVertexHeights.Text = "Use vertex heights";
+			this.cbUseFloorVertexHeights.UseVisualStyleBackColor = true;
+			this.cbUseFloorVertexHeights.CheckedChanged += new System.EventHandler(this.cbUseFloorVertexHeights_CheckedChanged);
 			// 
 			// positionJitterAmmount
 			// 
@@ -230,7 +248,7 @@
 			this.floorHeightAmmount.ExtendedLimits = false;
 			this.floorHeightAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.floorHeightAmmount.Label = "Floor height:";
-			this.floorHeightAmmount.Location = new System.Drawing.Point(12, 75);
+			this.floorHeightAmmount.Location = new System.Drawing.Point(12, 94);
 			this.floorHeightAmmount.Maximum = 100;
 			this.floorHeightAmmount.Minimum = 0;
 			this.floorHeightAmmount.Name = "floorHeightAmmount";
@@ -255,13 +273,26 @@
 			this.ceilingHeightAmmount.Value = 0;
 			this.ceilingHeightAmmount.OnValueChanging += new System.EventHandler(this.ceilingHeightAmmount_OnValueChanging);
 			// 
+			// cbUseCeilingVertexHeights
+			// 
+			this.cbUseCeilingVertexHeights.AutoSize = true;
+			this.cbUseCeilingVertexHeights.Location = new System.Drawing.Point(108, 70);
+			this.cbUseCeilingVertexHeights.Name = "cbUseCeilingVertexHeights";
+			this.cbUseCeilingVertexHeights.Size = new System.Drawing.Size(117, 18);
+			this.cbUseCeilingVertexHeights.TabIndex = 32;
+			this.cbUseCeilingVertexHeights.Text = "Use vertex heights";
+			this.cbUseCeilingVertexHeights.UseVisualStyleBackColor = true;
+			this.cbUseCeilingVertexHeights.CheckedChanged += new System.EventHandler(this.cbUseCeilingVertexHeights_CheckedChanged);
+			// 
 			// JitterSectorsForm
 			// 
 			this.AcceptButton = this.bApply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.bCancel;
-			this.ClientSize = new System.Drawing.Size(382, 352);
+			this.ClientSize = new System.Drawing.Size(382, 396);
+			this.Controls.Add(this.cbUseCeilingVertexHeights);
+			this.Controls.Add(this.cbUseFloorVertexHeights);
 			this.Controls.Add(this.cbKeepExistingTextures);
 			this.Controls.Add(this.gbLowerTexture);
 			this.Controls.Add(this.cbLowerTexStyle);
@@ -280,6 +311,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "JitterSectorsForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
@@ -314,5 +346,7 @@
 		private System.Windows.Forms.ComboBox cbLowerTexStyle;
 		private System.Windows.Forms.GroupBox gbLowerTexture;
 		private System.Windows.Forms.CheckBox cbKeepExistingTextures;
+		private System.Windows.Forms.CheckBox cbUseFloorVertexHeights;
+		private System.Windows.Forms.CheckBox cbUseCeilingVertexHeights;
 	}
 }

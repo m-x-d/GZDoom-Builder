@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float lastpicktime;
 		private bool locktarget;
 		private bool useSelectionFromClassicMode;//mxd
-		private Timer selectioninfoupdatetimer; //mxd
+		private readonly Timer selectioninfoupdatetimer; //mxd
 
 		// This keeps extra element info
 		private Dictionary<Sector, SectorData> sectordata;
