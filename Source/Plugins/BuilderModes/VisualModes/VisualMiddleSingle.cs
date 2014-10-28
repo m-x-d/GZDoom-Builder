@@ -180,16 +180,50 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
 				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
 				poly.color = wallcolor.WithAlpha(255).ToInt();
-				
-				// Process the polygon and create vertices
-				List<WorldVertex> verts = CreatePolygonVertices(poly, tp, sd, lightvalue, lightabsolute);
-				if(verts.Count > 0)
+
+				// Cut out pieces that overlap 3D floors in this sector
+				List<WallPolygon> polygons = new List<WallPolygon>(1);
+				polygons.Add(poly);
+				foreach(Effect3DFloor ef in sd.ExtraFloors) {
+					//mxd. Walls should be clipped by solid 3D floors
+					if(!ef.RenderInside && ef.Alpha == 255) {
+						int num = polygons.Count;
+						for(int pi = 0; pi < num; pi++) {
+							// Split by floor plane of 3D floor
+							WallPolygon p = polygons[pi];
+							WallPolygon np = SplitPoly(ref p, ef.Ceiling.plane, true);
+
+							if(np.Count > 0) {
+								// Split part below floor by the ceiling plane of 3D floor
+								// and keep only the part below the ceiling (front)
+								SplitPoly(ref np, ef.Floor.plane, true);
+
+								if(p.Count == 0) {
+									polygons[pi] = np;
+								} else {
+									polygons[pi] = p;
+									polygons.Add(np);
+								}
+							} else {
+								polygons[pi] = p;
+							}
+						}
+					}
+				}
+
+				if (polygons.Count > 0)
 				{
-					base.SetVertices(verts);
-					return true;
+					// Process the polygon and create vertices
+					List<WorldVertex> verts = CreatePolygonVertices(polygons, tp, sd, lightvalue, lightabsolute);
+					if (verts.Count > 2)
+					{
+						base.SetVertices(verts);
+						return true;
+					}
 				}
 			}
 			
+			base.SetVertices(null); //mxd
 			return false;
 		}
 		
