@@ -67,6 +67,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float lastpicktime;
 		private bool locktarget;
 		private bool useSelectionFromClassicMode;//mxd
+		private Timer selectioninfoupdatetimer; //mxd
 
 		// This keeps extra element info
 		private Dictionary<Sector, SectorData> sectordata;
@@ -138,23 +139,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					VisualGeometry pickedgeo = (target.picked as VisualGeometry);
 
-					if(pickedgeo.Sidedef != null)
-						return pickedgeo.Sidedef;
-					else if(pickedgeo.Sector != null)
-						return pickedgeo.Sector;
-					else
-						return null;
+					if(pickedgeo.Sidedef != null) return pickedgeo.Sidedef;
+					if(pickedgeo.Sector != null) return pickedgeo.Sector;
+					return null;
 				}
 				// Thing picked?
-				else if(target.picked is VisualThing)
+				if(target.picked is VisualThing)
 				{
 					VisualThing pickedthing = (target.picked as VisualThing);
 					return pickedthing.Thing;
 				}
-				else
-				{
-					return null;
-				}
+
+				return null;
 			}
 		}
 
@@ -179,6 +175,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.selectedobjects = new List<IVisualEventReceiver>();
 			//mxd
 			this.copyBuffer = new List<ThingCopyData>();
+			this.selectioninfoupdatetimer = new Timer();
+			selectioninfoupdatetimer.Interval = 100;
+			selectioninfoupdatetimer.Tick += SelectioninfoupdatetimerOnTick;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -208,7 +207,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. This calculates brightness level with doom-style shading
-		internal int CalculateBrightness(int level, Sidedef sd) {
+		internal int CalculateBrightness(int level, Sidedef sd) 
+		{
 			return renderer.CalculateBrightness(level, sd);
 		}
 		
@@ -217,6 +217,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			selectedobjects.Add(obj);
 			selectionchanged = true;
+			selectioninfoupdatetimer.Start(); //mxd
 		}
 		
 		// This removes a selected object
@@ -224,6 +225,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			selectedobjects.Remove(obj);
 			selectionchanged = true;
+			selectioninfoupdatetimer.Start(); //mxd
 		}
 		
 		// This is called before an action is performed
@@ -367,18 +369,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd
-			if(General.Map.UDMF && General.Settings.GZShowVisualVertices) {
-				foreach(KeyValuePair<Vertex, VisualVertexPair> pair in vertices) {
+			if(General.Map.UDMF && General.Settings.GZShowVisualVertices) 
+			{
+				foreach(KeyValuePair<Vertex, VisualVertexPair> pair in vertices) 
+				{
 					if(pair.Value.CeilingVertex.Selected)
 						selectedobjects.Add((BaseVisualVertex)pair.Value.CeilingVertex);
 					if(pair.Value.FloorVertex.Selected)
 						selectedobjects.Add((BaseVisualVertex)pair.Value.FloorVertex);
 				}
 			}
+
+			//mxd
+			UpdateSelectionInfo();
 		}
 
 		//mxd. Need this to apply changes to 3d-floor even if control sector doesn't exist as BaseVisualSector
-		internal BaseVisualSector CreateBaseVisualSector(Sector s) {
+		internal BaseVisualSector CreateBaseVisualSector(Sector s) 
+		{
 			BaseVisualSector vs = new BaseVisualSector(this, s);
 			if(vs != null) allsectors.Add(s, vs);
 			return vs;
@@ -613,14 +621,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void updateSelectionInfo() {
+		private void UpdateSelectionInfo() 
+		{
 			int numWalls = 0;
 			int numFloors = 0;
 			int numCeilings = 0;
 			int numThings = 0;
 			int numVerts = 0;
 
-			foreach(IVisualEventReceiver obj in selectedobjects) {
+			foreach(IVisualEventReceiver obj in selectedobjects) 
+			{
 				if(!obj.IsSelected()) continue;
 
 				if(obj is BaseVisualThing) numThings++;
@@ -638,9 +648,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if (numThings > 0) results.Add(numThings + (numThings > 1 ? " things" : " thing"));
 			if (numVerts > 0) results.Add(numVerts + (numVerts > 1 ? " vertices" : " vertex"));
 
-			if (results.Count == 0) {
+			if (results.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
-			} else {
+			} 
+			else 
+			{
 				string result = string.Join(", ", results.ToArray());
 				int pos = result.LastIndexOf(",");
 				if(pos != -1) result = result.Remove(pos, 1).Insert(pos, " and");
@@ -649,23 +662,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		internal void StartRealtimeInterfaceUpdate(SelectionType selectionType) {
-			if (selectionType == SelectionType.Sectors || selectionType == SelectionType.Linedefs || selectionType == SelectionType.All) {
+		internal void StartRealtimeInterfaceUpdate(SelectionType selectionType) 
+		{
+			if (selectionType == SelectionType.Sectors || selectionType == SelectionType.Linedefs || selectionType == SelectionType.All) 
+			{
 				General.Interface.OnEditFormValuesChanged += Interface_OnSectorEditFormValuesChanged;
-			} else if(selectionType == SelectionType.Things) {
+			} 
+			else if(selectionType == SelectionType.Things) 
+			{
 				General.Interface.OnEditFormValuesChanged += Interface_OnThingEditFormValuesChanged;
-			} else {
+			} 
+			else 
+			{
 				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged;
 			}
 		}
 
 		//mxd
-		internal void StopRealtimeInterfaceUpdate(SelectionType selectionType) {
-			if(selectionType == SelectionType.Sectors || selectionType == SelectionType.Linedefs || selectionType == SelectionType.All) {
+		internal void StopRealtimeInterfaceUpdate(SelectionType selectionType) 
+		{
+			if(selectionType == SelectionType.Sectors || selectionType == SelectionType.Linedefs || selectionType == SelectionType.All) 
+			{
 				General.Interface.OnEditFormValuesChanged -= Interface_OnSectorEditFormValuesChanged;
-			} else if(selectionType == SelectionType.Things) {
+			} 
+			else if(selectionType == SelectionType.Things) 
+			{
 				General.Interface.OnEditFormValuesChanged -= Interface_OnThingEditFormValuesChanged;
-			} else {
+			} 
+			else 
+			{
 				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged;
 			}
 		}
@@ -946,7 +971,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd
 			useSelectionFromClassicMode = BuilderPlug.Me.SyncSelection ? !General.Interface.ShiftState : General.Interface.ShiftState;
-			if(useSelectionFromClassicMode)	updateSelectionInfo();
+			if(useSelectionFromClassicMode)	UpdateSelectionInfo();
 
 			// Read settings
 			cameraflooroffset = General.Map.Config.ReadSetting("cameraflooroffset", cameraflooroffset);
@@ -1323,9 +1348,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// We can't group with this undo level anymore
 			lastundogroup = UndoGroup.None;
-
-			//mxd
-			updateSelectionInfo();
 		}
 		
 		// Redo performed
@@ -1344,17 +1366,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			RebuildSelectedObjectsList();
-
-			//mxd
-			updateSelectionInfo();
 		}
 
 		//mxd
-		private void Interface_OnSectorEditFormValuesChanged(object sender, EventArgs e) {
+		private void Interface_OnSectorEditFormValuesChanged(object sender, EventArgs e) 
+		{
 			if(allsectors == null) return;
 
 			// Reset changed flags
-			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors) {
+			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors) 
+			{
 				BaseVisualSector bvs = (vs.Value as BaseVisualSector);
 				foreach(VisualFloor vf in bvs.ExtraFloors) vf.Changed = false;
 				foreach(VisualCeiling vc in bvs.ExtraCeilings) vc.Changed = false;
@@ -1369,7 +1390,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void Interface_OnThingEditFormValuesChanged(object sender, EventArgs e) {
+		private void Interface_OnThingEditFormValuesChanged(object sender, EventArgs e) 
+		{
 			//update visual sectors, which are affected by certain things
 			List<Thing> things = GetSelectedThings();
 			foreach(Thing t in things) {
@@ -1390,9 +1412,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) {
+		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) 
+		{
 			UpdateChangedObjects();
 			ShowTargetInfo();
+		}
+
+		//mxd
+		private void SelectioninfoupdatetimerOnTick(object sender, EventArgs eventArgs) 
+		{
+			selectioninfoupdatetimer.Stop();
+			UpdateSelectionInfo();
 		}
 		
 		#endregion
@@ -1777,9 +1807,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Renderer.ShowSelection = true;
 			Renderer.ShowHighlight = true;
 			PostAction();
-
-			//mxd
-			updateSelectionInfo();
 		}
 
 		[BeginAction("visualedit", BaseAction = true)]
