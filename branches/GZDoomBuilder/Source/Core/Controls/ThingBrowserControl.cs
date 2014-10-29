@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.GZBuilder.Controls;
 
 #endregion
 
@@ -43,13 +44,14 @@ namespace CodeImp.DoomBuilder.Controls
 		private ThingTypeInfo thinginfo;
 		private bool doupdatenode;
 		private bool doupdatetextbox;
+		private TreeNode doubleclickednode; //mxd
 		
 		#endregion
 
 		#region ================== Properties
 
 		public string TypeStringValue { get { return typeid.Text; } }
-		public bool UseMultiSelection { get { return typelist.UseMultiSelection; } set { typelist.UseMultiSelection = value; } }
+		public bool UseMultiSelection { get { return typelist.SelectionMode == TreeViewSelectionMode.MultiSelectSameLevel; } set { typelist.SelectionMode = (value ? TreeViewSelectionMode.MultiSelectSameLevel : TreeViewSelectionMode.SingleSelect); } }
 
 		#endregion
 
@@ -112,7 +114,7 @@ namespace CodeImp.DoomBuilder.Controls
 			doupdatenode = false;
 
 			// Clear selection
-			typelist.ClearSelectedNodes(); //mxd
+			typelist.SelectedNodes.Clear(); //mxd
 			typeid.Text = "";
 
 			// Collapse nodes
@@ -126,11 +128,13 @@ namespace CodeImp.DoomBuilder.Controls
 		public int GetResult(int original)
 		{
 			//mxd
-			if(typelist.UseMultiSelection && typelist.SelectedNodes.Count > 1) {
-				List<TreeNode> validNodes = getValidNodes();
+			if(typelist.SelectionMode == TreeViewSelectionMode.MultiSelectSameLevel && typelist.SelectedNodes.Count > 1) 
+			{
+				List<TreeNode> validNodes = GetValidNodes();
 
 				//get a random ThingTypeInfo from valid nodes
-				if(validNodes.Count > 1) {
+				if(validNodes.Count > 1) 
+				{
 					ThingTypeInfo ti = validNodes[General.Random(0, validNodes.Count - 1)].Tag as ThingTypeInfo;
 					return ti.Index;
 				}
@@ -140,13 +144,13 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private List<TreeNode> getValidNodes() 
+		private List<TreeNode> GetValidNodes() 
 		{
 			List<TreeNode> validNodes = new List<TreeNode>();
 
-			foreach(TreeNode n in typelist.SelectedNodes) {
-				if((n.Nodes.Count == 0) && (n.Tag is ThingTypeInfo))
-					validNodes.Add(n);
+			foreach(TreeNode n in typelist.SelectedNodes) 
+			{
+				if((n.Nodes.Count == 0) && (n.Tag is ThingTypeInfo)) validNodes.Add(n);
 			}
 
 			return validNodes;
@@ -156,48 +160,51 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Events
 
-		// List double-clicked (mxd)
+		// List double-clicked. e.Node and typelist.SelectedNodes[0] may contain incorrect node, 
+		// so we set the correct one in typelist_AfterSelect handler (mxd)
 		private void typelist_MouseDoubleClick(object sender, MouseEventArgs e) 
 		{
-			var info = typelist.HitTest(e.Location);
-			if(info.Node != null && info.Location == TreeViewHitTestLocations.Label) 
+			if (typelist.SelectedNodes.Count == 1
+			    && doubleclickednode != null
+			    && doubleclickednode.Nodes.Count == 0
+			    && doubleclickednode.Tag is ThingTypeInfo
+			    && OnTypeDoubleClicked != null
+			    && typeid.Text.Length > 0)
 			{
-				// Node is a child node?
-				if((info.Node.Nodes.Count == 0) && (info.Node.Tag is ThingTypeInfo)) 
-				{
-					if((OnTypeDoubleClicked != null) && (typeid.Text.Length > 0)) OnTypeDoubleClicked();
-				}
+				OnTypeDoubleClicked();
 			}
 		}
 		
 		// Thing type selection changed
 		private void typelist_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			if(doupdatetextbox)
+			doubleclickednode = null; //mxd
+			if (!doupdatetextbox) return;
+
+			//mxd. Got a valid multiselection? Well, can't show any useful info about that...
+			if(typelist.SelectionMode == TreeViewSelectionMode.MultiSelectSameLevel && typelist.SelectedNodes.Count > 1 && GetValidNodes().Count > 1) 
 			{
-				//mxd. Got a valid multiselection? Well, can't show any useful info about that...
-				if(typelist.UseMultiSelection && typelist.SelectedNodes.Count > 1 && getValidNodes().Count > 1) {
-					doupdatenode = false;
-					if(!string.IsNullOrEmpty(typeid.Text)) // Event will be raised in typeid_OnTextChanged
-						typeid.Text = "";
-					else if(OnTypeChanged != null) // Or raise event here
-						OnTypeChanged(thinginfo); 
-					doupdatenode = true;
-				}
-				else if(typelist.SelectedNode != null) //Anything selected?
+				doupdatenode = false;
+				if(!string.IsNullOrEmpty(typeid.Text)) // Event will be raised in typeid_OnTextChanged
+					typeid.Text = "";
+				else if(OnTypeChanged != null) // Or raise event here
+					OnTypeChanged(thinginfo); 
+				doupdatenode = true;
+			}
+			else if(typelist.SelectedNodes.Count > 0) //Anything selected?
+			{
+				TreeNode n = typelist.SelectedNodes[0];
+
+				// Node is a child node?
+				if ((n.Nodes.Count == 0) && (n.Tag is ThingTypeInfo))
 				{
-					TreeNode n = typelist.SelectedNode;
+					ThingTypeInfo ti = (n.Tag as ThingTypeInfo);
 
-					// Node is a child node?
-					if((n.Nodes.Count == 0) && (n.Tag is ThingTypeInfo))
-					{
-						ThingTypeInfo ti = (n.Tag as ThingTypeInfo);
-
-						// Show info
-						doupdatenode = false;
-						typeid.Text = ti.Index.ToString();
-						doupdatenode = true;
-					}
+					// Show info
+					doupdatenode = false;
+					typeid.Text = ti.Index.ToString();
+					doupdatenode = true;
+					doubleclickednode = n; //mxd
 				}
 			}
 		}
@@ -236,17 +243,19 @@ namespace CodeImp.DoomBuilder.Controls
 				if(doupdatenode)
 				{
 					doupdatetextbox = false;
-					typelist.ClearSelectedNodes();
+					typelist.SelectedNodes.Clear();
 					foreach(TreeNode n in nodes)
 					{
 						// Matching node?
 						if((n.Tag as ThingTypeInfo).Index == typeindex)
 						{
 							// Select this
-							if(typelist.Nodes.Contains(n.Parent)) { //mxd. Tree node may've been removed during filtering
+							if(typelist.Nodes.Contains(n.Parent)) //mxd. Tree node may've been removed during filtering
+							{
 								n.Parent.Expand();
-								typelist.SelectedNode = n;
+								typelist.SelectedNodes.Add(n);
 								n.EnsureVisible();
+								break;
 							}
 						}
 					}
@@ -256,7 +265,7 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				thinginfo = null;
-				if(doupdatenode) typelist.ClearSelectedNodes();
+				if(doupdatenode) typelist.SelectedNodes.Clear();
 			}
 
 			// No known thing?
@@ -291,30 +300,38 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void typelist_MouseEnter(object sender, EventArgs e) {
+		private void typelist_MouseEnter(object sender, EventArgs e) 
+		{
 			typelist.Focus();
 		}
 
 		//mxd
-		private void bClear_Click(object sender, EventArgs e) {
+		private void bClear_Click(object sender, EventArgs e) 
+		{
 			tbFilter.Clear();
 		}
 
 		//mxd
-		private void tbFilter_TextChanged(object sender, EventArgs e) {
+		private void tbFilter_TextChanged(object sender, EventArgs e) 
+		{
 			typelist.SuspendLayout();
 
-			if(string.IsNullOrEmpty(tbFilter.Text)) {
+			if(string.IsNullOrEmpty(tbFilter.Text)) 
+			{
 				Setup();
 				typeid_TextChanged(this, EventArgs.Empty);
-			} else {
+			}
+			else
+			{
 				// Go for all predefined categories
-				typelist.ClearSelectedNodes();
+				typelist.SelectedNodes.Clear();
 				typelist.Nodes.Clear();
 
 				string match = tbFilter.Text.ToUpperInvariant();
-				foreach(TreeNode node in nodes){
-					if(node.Text.ToUpperInvariant().Contains(match)) {
+				foreach(TreeNode node in nodes)
+				{
+					if(node.Text.ToUpperInvariant().Contains(match)) 
+					{
 						typelist.Nodes.Add(node);
 					}
 				}
