@@ -354,6 +354,17 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		#region Events
 
 		private void bApply_Click(object sender, EventArgs e) {
+			// Store settings
+			relativePitch = cbRelativePitch.Checked;
+			relativeRoll = cbRelativeRoll.Checked;
+			relativeScale = cbRelativeScale.Checked;
+			allowNegativeScaleX = cbNegativeScaleX.Checked;
+			allowNegativeScaleY = cbNegativeScaleY.Checked;
+			uniformScale = cbUniformScale.Checked;
+			allowNegativePitch = cbNegativePitch.Checked;
+			allowNegativeRoll = cbNegativeRoll.Checked;
+
+			// Update
 			foreach(Thing t in selection) t.DetermineSector();
 
 			// Clear selection
@@ -369,20 +380,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		}
 
 		private void JitterThingsForm_FormClosing(object sender, FormClosingEventArgs e) {
-			if (this.DialogResult == DialogResult.Cancel) {
-				//undo changes
-				General.Map.UndoRedo.WithdrawUndo();
-			} else { 
-				//store settings
-				relativePitch = cbRelativePitch.Checked;
-				relativeRoll = cbRelativeRoll.Checked;
-				relativeScale = cbRelativeScale.Checked;
-				allowNegativeScaleX = cbNegativeScaleX.Checked;
-				allowNegativeScaleY = cbNegativeScaleY.Checked;
-				uniformScale = cbUniformScale.Checked;
-				allowNegativePitch = cbNegativePitch.Checked;
-				allowNegativeRoll = cbNegativeRoll.Checked;
-			}
+			if (this.DialogResult == DialogResult.Cancel)
+				General.Map.UndoRedo.WithdrawUndo(); //undo changes
 		}
 
 		private void positionJitterAmmount_OnValueChanged(object sender, EventArgs e) {
