@@ -140,6 +140,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if (things.Count > 1) this.Text = "Edit Things (" + things.Count + ")";
 			hint.Visible = things.Count > 1; //mxd
 			hintlabel.Visible = things.Count > 1; //mxd
+			thingtype.UseMultiSelection = things.Count > 1; //mxd
 
 			//mxd. Make undo
 			string undodesc = "thing";

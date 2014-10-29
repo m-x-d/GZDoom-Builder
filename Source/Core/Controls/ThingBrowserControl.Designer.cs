@@ -39,11 +39,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.positionlabel = new System.Windows.Forms.Label();
 			this.thingimages = new System.Windows.Forms.ImageList(this.components);
 			this.infopanel = new System.Windows.Forms.Panel();
+			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.tbFilter = new System.Windows.Forms.TextBox();
 			this.bClear = new System.Windows.Forms.Button();
 			this.typelist = new CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview();
-			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.infopanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -152,6 +152,19 @@ namespace CodeImp.DoomBuilder.Controls
 			this.infopanel.Size = new System.Drawing.Size(304, 48);
 			this.infopanel.TabIndex = 18;
 			// 
+			// typeid
+			// 
+			this.typeid.AllowDecimal = false;
+			this.typeid.AllowNegative = false;
+			this.typeid.AllowRelative = false;
+			this.typeid.ForeColor = System.Drawing.SystemColors.WindowText;
+			this.typeid.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.typeid.Location = new System.Drawing.Point(41, 5);
+			this.typeid.Name = "typeid";
+			this.typeid.Size = new System.Drawing.Size(68, 20);
+			this.typeid.TabIndex = 1;
+			this.typeid.TextChanged += new System.EventHandler(this.typeid_TextChanged);
+			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
@@ -191,25 +204,13 @@ namespace CodeImp.DoomBuilder.Controls
 			this.typelist.Margin = new System.Windows.Forms.Padding(8, 8, 9, 8);
 			this.typelist.Name = "typelist";
 			this.typelist.SelectedImageIndex = 0;
-			this.typelist.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("typelist.SelectedNodes")));
+			this.typelist.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			this.typelist.SelectionMode = CodeImp.DoomBuilder.GZBuilder.Controls.TreeViewSelectionMode.SingleSelect;
 			this.typelist.Size = new System.Drawing.Size(304, 244);
 			this.typelist.TabIndex = 22;
-			this.typelist.UseMultiSelection = false;
 			this.typelist.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.typelist_MouseDoubleClick);
 			this.typelist.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.typelist_AfterSelect);
 			this.typelist.MouseEnter += new System.EventHandler(this.typelist_MouseEnter);
-			// 
-			// typeid
-			// 
-			this.typeid.AllowDecimal = false;
-			this.typeid.AllowNegative = false;
-			this.typeid.AllowRelative = false;
-			this.typeid.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.typeid.Location = new System.Drawing.Point(41, 5);
-			this.typeid.Name = "typeid";
-			this.typeid.Size = new System.Drawing.Size(68, 20);
-			this.typeid.TabIndex = 1;
-			this.typeid.TextChanged += new System.EventHandler(this.typeid_TextChanged);
 			// 
 			// ThingBrowserControl
 			// 
