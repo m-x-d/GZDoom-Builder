@@ -84,6 +84,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public bool ProcessGeometry { get { return processgeometry; } set { processgeometry = value; } }
 		public bool ProcessThings { get { return processthings; } set { processthings = value; } }
 		public VisualBlockMap BlockMap { get { return blockmap; } }
+		public Dictionary<Vertex, VisualVertexPair> VisualVertices { get { return vertices; } } //mxd
 
 		// Rendering
 		public IRenderer3D Renderer { get { return renderer; } }
@@ -108,9 +109,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.visiblethings = new List<VisualThing>(100);
 			this.processgeometry = true;
 			this.processthings = true;
-
-			//mxd
-			if(General.Map.UDMF) this.vertices = new Dictionary<Vertex,VisualVertexPair>();
+			this.vertices = new Dictionary<Vertex, VisualVertexPair>(); //mxd
 
 			//mxd. Synch camera position to cursor position or center of the screen in 2d-mode
 			if (General.Settings.GZSynchCameras && General.Editing.Mode is ClassicMode) {
@@ -845,8 +844,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			visibleblocks.Clear();
 			visiblegeometry.Clear();
 			visiblethings.Clear();
-
-			if(General.Map.UDMF) vertices.Clear(); //mxd
+			vertices.Clear(); //mxd
 			
 			// Make new blockmap
 			FillBlockMap();

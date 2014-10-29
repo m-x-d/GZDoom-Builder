@@ -12,6 +12,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 	{
 		private readonly string editingModeName;
 		private readonly List<VisualSector> visualSectors;
+		private readonly List<VisualVertexPair> visualVerts;
 		private readonly TranslationOffsetVertexData[] vertexData;
 		private readonly List<SectorData> sectorData;
 		private readonly List<SidedefData> sidedefData;
@@ -124,6 +125,12 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 					}
 				}
 
+				visualVerts = new List<VisualVertexPair>();
+				foreach (Vertex vert in affectedVerts)
+				{
+					if(vm.VisualVertices.ContainsKey(vert)) visualVerts.Add(vm.VisualVertices[vert]);
+				}
+
 			} else if(editingModeName == "SectorsMode") {
 				ICollection<Sector> list = General.Map.Map.GetSelectedSectors(true);
 
@@ -143,6 +150,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				General.Interface.DisplayStatus(StatusType.Warning, "Unable to get sectors from selection!");
 				return;
 			}
+
+			//create undo
+			General.Map.UndoRedo.ClearAllRedos();
+			General.Map.UndoRedo.CreateUndo("Randomize " + sectors.Count + (sectors.Count > 1 ? " sectors" : " sector"));
 
 			//update window header
 			this.Text = "Randomize " + sectors.Count + (sectors.Count > 1 ? " sectors" : " sector");
@@ -287,8 +298,20 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			//texture pickers
 			textureLower.Initialize();
 			textureUpper.Initialize();
-			textureLower.TextureName = General.Settings.DefaultFloorTexture;
-			textureUpper.TextureName = General.Settings.DefaultCeilingTexture;
+
+			//We can't use floor/ceiling textures when MixTexturesFlats is disabled
+			if (General.Map.Config.MixTexturesFlats)
+			{
+				textureLower.TextureName = General.Settings.DefaultFloorTexture;
+				textureUpper.TextureName = General.Settings.DefaultCeilingTexture;
+			}
+			else
+			{
+				textureLower.TextureName = General.Settings.DefaultTexture;
+				textureUpper.TextureName = General.Settings.DefaultTexture;
+				cbUpperTexStyle.Items[1] = "Use default texture";
+				cbLowerTexStyle.Items[1] = "Use default texture";
+			}
 
 			cbUpperTexStyle.SelectedIndex = 0;
 			cbLowerTexStyle.SelectedIndex = 0;
@@ -298,10 +321,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			updateAngles(); 
 			updateFloorHeights();
 			updateCeilingHeights();
-
-			//create undo
-			General.Map.UndoRedo.ClearAllRedos();
-			General.Map.UndoRedo.CreateUndo("Randomize " + sectors.Count + (sectors.Count > 1 ? " sectors" : " sector"));
 		}
 
 		private float GetLowestCeiling(Vertex v) {
@@ -427,6 +446,11 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			foreach(VisualSector vs in visualSectors) vs.UpdateSectorGeometry(true);
 			foreach(VisualSector vs in visualSectors) vs.UpdateSectorData();
 			foreach(VisualSector vs in visualSectors) vs.UpdateSectorData();
+			foreach (VisualVertexPair pair in visualVerts)
+			{
+				pair.Changed = true;
+				pair.Update();
+			}
 		}
 
 		private void updateTextureSelectors() {
@@ -438,22 +462,36 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			textureUpper.Enabled = ceilingHeightAmmount.Value > 0 && cbUpperTexStyle.SelectedIndex == 2;
 		}
 
-		private void updateUpperTextures(int index, bool updateGeometry) {
+		private void updateUpperTextures(int index, bool updateGeometry) 
+		{
 			if(index == -1) return;
 
-			if(index == 0) { //revert
+			if(index == 0) 
+			{ //revert
 				foreach(SidedefData sd in sidedefData)
 					setUpperTexture(sd, sd.HighTexture);
-			} else if(index == 1) { //use ceiling texture
-				foreach(SidedefData sd in sidedefData) {
-					if(sd.Side.Sector != null) {
-						if(sd.UpdateTextureOnOtherSide && sd.Side.Other.Sector != null)
-							setUpperTexture(sd, sd.Side.Sector.CeilTexture, sd.Side.Other.Sector.CeilTexture);
-						else
-							setUpperTexture(sd, sd.Side.Sector.CeilTexture);
+			}
+			else if(index == 1) //use ceiling or default texture
+			{
+				if(General.Map.Config.MixTexturesFlats)
+				{
+
+					foreach(SidedefData sd in sidedefData)
+					{
+						if(sd.Side.Sector != null)
+						{
+							if (sd.UpdateTextureOnOtherSide && sd.Side.Other.Sector != null) setUpperTexture(sd, sd.Side.Sector.CeilTexture, sd.Side.Other.Sector.CeilTexture);
+							else setUpperTexture(sd, sd.Side.Sector.CeilTexture);
+						}
 					}
 				}
-			} else if(index == 2) { //use given texture
+				else
+				{
+					foreach(SidedefData sd in sidedefData) setUpperTexture(sd, General.Settings.DefaultTexture);
+				}
+			}
+			else if(index == 2) //use given texture
+			{
 				foreach(SidedefData sd in sidedefData)
 					setUpperTexture(sd, textureUpper.TextureName);
 			}
@@ -462,22 +500,35 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			if(updateGeometry && editingModeName == "BaseVisualMode") updateVisualGeometry();
 		}
 
-		private void updateLowerTextures(int index, bool updateGeometry) {
+		private void updateLowerTextures(int index, bool updateGeometry) 
+		{
 			if(index == -1) return;
 
-			if(index == 0) { //revert
+			if(index == 0)
+			{ //revert
 				foreach(SidedefData sd in sidedefData)
 					setLowerTexture(sd, sd.LowTexture);
-			} else if(index == 1) { //use floor texture
-				foreach(SidedefData sd in sidedefData) {
-					if(sd.Side.Sector != null) {
-						if(sd.UpdateTextureOnOtherSide && sd.Side.Other.Sector != null)
-							setLowerTexture(sd, sd.Side.Sector.FloorTexture, sd.Side.Other.Sector.FloorTexture);
-						else
-							setLowerTexture(sd, sd.Side.Sector.FloorTexture);
+			}
+			else if(index == 1) //use floor or default texture
+			{
+				if(General.Map.Config.MixTexturesFlats)
+				{
+					foreach(SidedefData sd in sidedefData)
+					{
+						if(sd.Side.Sector != null)
+						{
+							if (sd.UpdateTextureOnOtherSide && sd.Side.Other.Sector != null) setLowerTexture(sd, sd.Side.Sector.FloorTexture, sd.Side.Other.Sector.FloorTexture);
+							else setLowerTexture(sd, sd.Side.Sector.FloorTexture);
+						}
 					}
 				}
-			} else if(index == 2) { //use given texture
+				else
+				{
+					foreach (SidedefData sd in sidedefData) setLowerTexture(sd, General.Settings.DefaultTexture);
+				}
+			}
+			else if(index == 2) //use given texture
+			{
 				foreach(SidedefData sd in sidedefData)
 					setLowerTexture(sd, textureLower.TextureName);
 			}
