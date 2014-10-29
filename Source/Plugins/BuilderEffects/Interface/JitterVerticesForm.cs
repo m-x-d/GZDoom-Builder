@@ -13,6 +13,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		private readonly string editingModeName;
 		private readonly List<Vertex> selection;
 		private readonly List<VisualSector> visualSectors;
+		private readonly List<VisualVertexPair> visualVerts;
 		private readonly VertexData[] vertexData;
 		private readonly int MaxSafeDistance;
 
@@ -53,8 +54,15 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 					}
 				}
 
+				visualVerts = new List<VisualVertexPair>();
+				foreach(Vertex vert in selection) 
+				{
+					if(vm.VisualVertices.ContainsKey(vert)) visualVerts.Add(vm.VisualVertices[vert]);
+				}
+
 				//update window header
 				this.Text = "Randomize " + linesCount + (linesCount > 1 ? " linedefs" : " linedef");
+
 			} else if(editingModeName == "LinedefsMode") {
 				ICollection<Linedef> list = General.Map.Map.GetSelectedLinedefs(true);
 				int linesCount = 0;
@@ -83,6 +91,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				General.Interface.DisplayStatus(StatusType.Warning, "Unable to get vertices from selection!");
 				return;
 			}
+
+			//create undo
+			General.Map.UndoRedo.ClearAllRedos();
+			General.Map.UndoRedo.CreateUndo("Randomize " + selection.Count + (selection.Count > 1 ? " vertices" : " vertex"));
 
 			Dictionary<Vertex, VertexData> data = new Dictionary<Vertex, VertexData>();
 
@@ -150,10 +162,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			positionJitterAmmount.Maximum = MaxSafeDistance;
 
 			updateAngles();
-
-			//create undo
-			General.Map.UndoRedo.ClearAllRedos();
-			General.Map.UndoRedo.CreateUndo("Randomize " + selection.Count + (selection.Count > 1 ? " vertices" : " vertex"));
 		}
 
 //utility
@@ -170,11 +178,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				General.Map.Map.Update();
 				General.Map.IsChanged = true;
 
-				foreach(VisualSector vs in visualSectors)
-					vs.UpdateSectorGeometry(true);
-
-				foreach(VisualSector vs in visualSectors)
-					vs.UpdateSectorData();
+				foreach(VisualSector vs in visualSectors) vs.UpdateSectorGeometry(true);
+				foreach(VisualSector vs in visualSectors) vs.UpdateSectorData();
+				foreach(VisualVertexPair pair in visualVerts)
+				{
+					pair.Changed = true;
+					pair.Update();
+				}
 			} else {
 				General.Interface.RedrawDisplay();
 			}

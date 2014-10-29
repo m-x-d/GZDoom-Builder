@@ -13,7 +13,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public VisualVertex[] Vertices { get { return new[] { floorvert, ceilvert }; } }
 		public VisualVertex FloorVertex { get { return floorvert; } }
 		public VisualVertex CeilingVertex { get { return ceilvert; } }
-		public bool Changed { set { floorvert.Changed = true; ceilvert.Changed = true; } }
+		public bool Changed { set { floorvert.Changed = value; ceilvert.Changed = value; } }
 
 		public VisualVertexPair(VisualVertex floorvert, VisualVertex ceilvert) {
 			if(floorvert.CeilingVertex == ceilvert.CeilingVertex)

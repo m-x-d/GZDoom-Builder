@@ -130,6 +130,11 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			positionJitterAmmount.Maximum = MaxSafeDistance;
 			heightJitterAmmount.Maximum = MaxSafeHeightDistance;
 
+			//create undo
+			General.Map.UndoRedo.ClearAllRedos();
+			General.Map.UndoRedo.CreateUndo("Randomize " + selection.Count + (selection.Count > 1 ? " things" : " thing"));
+
+			//update controls
 			updateOffsetAngles();
 			updateHeights();
 			updateRotationAngles();
@@ -137,10 +142,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			updateRollAngles();
 			updateScaleX();
 			updateScaleY();
-
-			//create undo
-			General.Map.UndoRedo.ClearAllRedos();
-			General.Map.UndoRedo.CreateUndo("Randomize " + selection.Count +(selection.Count > 1 ? " things" : " thing"));
 
 			//apply settings
 			cbRelativeScale.Checked = relativeScale;
