@@ -986,7 +986,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			//mxd
-			if(BuilderPlug.Me.SyncSelection ? !General.Interface.ShiftState : General.Interface.ShiftState) {
+			if(BuilderPlug.Me.SyncSelection ? !General.Interface.ShiftState : General.Interface.ShiftState)
+			{
 				//clear previously selected stuff
 				General.Map.Map.ClearAllSelected();
 				
@@ -995,42 +996,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				List<Linedef> selectedLines = new List<Linedef>();
 				List<Vertex> selectedVertices = new List<Vertex>();
 
-				foreach(IVisualEventReceiver obj in selectedobjects) {
-					if(obj is BaseVisualThing) {
+				foreach(IVisualEventReceiver obj in selectedobjects)
+				{
+					if(obj is BaseVisualThing) 
+					{
 						((BaseVisualThing)obj).Thing.Selected = true;
-					} else if(obj is VisualFloor || obj is VisualCeiling) {
+					}
+					else if(obj is VisualFloor || obj is VisualCeiling) 
+					{
 						VisualGeometry vg = obj as VisualGeometry;
 
-						if(vg.Sector != null && vg.Sector.Sector != null && !selectedSectors.Contains(vg.Sector.Sector)) {
+						if(vg.Sector != null && vg.Sector.Sector != null && !selectedSectors.Contains(vg.Sector.Sector)) 
 							selectedSectors.Add(vg.Sector.Sector);
-
-							foreach(Sidedef s in vg.Sector.Sector.Sidedefs){
-								if(!selectedLines.Contains(s.Line))
-									selectedLines.Add(s.Line);
-							}
-						}
-					} else if(obj is VisualLower || obj is VisualUpper || obj is VisualMiddleDouble || obj is VisualMiddleSingle || obj is VisualMiddle3D) {
+					}
+					else if(obj is VisualLower || obj is VisualUpper || obj is VisualMiddleDouble 
+						|| obj is VisualMiddleSingle || obj is VisualMiddle3D) 
+					{
 						VisualGeometry vg = obj as VisualGeometry;
 
 						if(vg.Sidedef != null && !selectedLines.Contains(vg.Sidedef.Line))
 							selectedLines.Add(vg.Sidedef.Line);
 					}
+					else if (obj is VisualVertex)
+					{
+						VisualVertex v = obj as VisualVertex;
+						if(!selectedVertices.Contains(v.Vertex)) selectedVertices.Add(v.Vertex);
+					}
 				}
 
-				foreach(Sector s in selectedSectors) 
-					s.Selected = true;
+				foreach(Sector s in selectedSectors) s.Selected = true;
+				foreach(Linedef l in selectedLines) l.Selected = true;
 
-				foreach(Linedef l in selectedLines) {
-					l.Selected = true;
-
-					if(!selectedVertices.Contains(l.Start))
-						selectedVertices.Add(l.Start);
-					if(!selectedVertices.Contains(l.End))
-						selectedVertices.Add(l.End);
+				if (selectedSectors.Count == 0)
+				{
+					foreach (Vertex v in selectedVertices) v.Selected = true;
 				}
-
-				foreach(Vertex v in selectedVertices)
-					v.Selected = true;
 			}
 
 			copyBuffer.Clear(); //mxd
