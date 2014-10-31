@@ -2914,7 +2914,9 @@ namespace CodeImp.DoomBuilder.Windows
 				if (Form.ActiveForm != null && Form.ActiveForm != this)
 				{
 					name = mapname + " (" + Form.ActiveForm.Text + ") at ";
-					bounds = Form.ActiveForm.Bounds;
+					bounds = (Form.ActiveForm.WindowState == FormWindowState.Maximized ? 
+						Screen.GetWorkingArea(Form.ActiveForm) : 
+						Form.ActiveForm.Bounds);
 				}
 				else
 				{
@@ -2924,10 +2926,10 @@ namespace CodeImp.DoomBuilder.Windows
 					displayextrainfo = true;
 				}
 			} 
-			else 
+			else
 			{
 				name = mapname + " at ";
-				bounds = this.Bounds;
+				bounds = (this.WindowState == FormWindowState.Maximized ? Screen.GetWorkingArea(this) : this.Bounds);
 			}
 
 			Point cursorLocation = Point.Empty;
@@ -2936,7 +2938,7 @@ namespace CodeImp.DoomBuilder.Windows
 				cursorLocation = Cursor.Position - new Size(bounds.Location);
 
 			//create path
-			string date = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
+			string date = DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss.fff");
 			string revision = "R" + General.ThisAssembly.GetName().Version.MinorRevision;
 			string path = Path.Combine(folder, name + date + " [" + revision + "].jpg");
 
