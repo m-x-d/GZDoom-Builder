@@ -172,6 +172,10 @@ namespace CodeImp.DoomBuilder.Data
 		// This fills a ranges list
 		private void FindRanges(List<LumpRange> ranges, IDictionary rangeinfos, string rangename)
 		{
+			Dictionary<LumpRange, KeyValuePair<string, string>> failedranges = new Dictionary<LumpRange, KeyValuePair<string, string>>(); //mxd
+			Dictionary<int, bool> successfulrangestarts = new Dictionary<int, bool>(); //mxd
+			Dictionary<int, bool> failedrangestarts = new Dictionary<int, bool>(); //mxd
+			
 			foreach(DictionaryEntry r in rangeinfos)
 			{
 				// Read start and end
@@ -188,15 +192,30 @@ namespace CodeImp.DoomBuilder.Data
 						range.end = file.FindLumpIndex(rangeend, startindex);
 						if(range.end > -1)
 						{
+							if(!successfulrangestarts.ContainsKey(startindex)) successfulrangestarts.Add(startindex, false); //mxd
 							ranges.Add(range);
 							startindex = file.FindLumpIndex(rangestart, range.end);
 						}
 						else
 						{
+							//mxd
+							if (!failedrangestarts.ContainsKey(startindex))
+							{
+								failedranges.Add(range, new KeyValuePair<string, string>(rangestart, rangeend)); //mxd
+								failedrangestarts.Add(startindex, false);
+							}
+							
 							startindex = -1;
 						}
 					}
 				}
+			}
+
+			//mxd. Display warnings for unclosed ranges
+			foreach (KeyValuePair<LumpRange, KeyValuePair<string, string>> group in failedranges)
+			{
+				if(successfulrangestarts.ContainsKey(group.Key.start)) continue;
+				General.ErrorLogger.Add(ErrorType.Warning, "'" + group.Value.Key + "' range at index " + group.Key.start + " is not closed in '" + location.location + "' ('" + group.Value.Value + "' marker is missing)!");
 			}
 		}
 		
