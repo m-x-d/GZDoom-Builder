@@ -76,7 +76,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Block this. MainForm overrides this, so it's only called from child DelayedForms (mxd).
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
-			ProcessSaveScreenshotAction((int)keyData);
+			if(Form.ActiveForm == this) ProcessSaveScreenshotAction((int)keyData);
 			return false;
 		}
 
@@ -86,7 +86,8 @@ namespace CodeImp.DoomBuilder.Windows
 			Action[] actions = General.Actions.GetActionsByKey(key);
 			foreach(Action action in actions) 
 			{
-				if(action.ShortName == "savescreenshot" || action.ShortName == "saveeditareascreenshot") {
+				if(action.ShortName == "savescreenshot" || action.ShortName == "saveeditareascreenshot")
+				{
 					General.Actions.InvokeAction(action.Name);
 					return true;
 				}
@@ -99,14 +100,14 @@ namespace CodeImp.DoomBuilder.Windows
 		[BeginAction("savescreenshot", BaseAction = true)]
 		internal void SaveScreenshot() 
 		{
-			General.MainWindow.SaveScreenshot(false);
+			if(Form.ActiveForm == this) General.MainWindow.SaveScreenshot(false);
 		}
 
 		//mxd
 		[BeginAction("saveeditareascreenshot", BaseAction = true)]
 		internal void SaveEditAreaScreenshot() 
 		{
-			General.MainWindow.SaveScreenshot(true);
+			if(Form.ActiveForm == this) General.MainWindow.SaveScreenshot(true);
 		}
 	}
 }
