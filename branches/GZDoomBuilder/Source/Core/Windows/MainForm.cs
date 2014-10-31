@@ -2911,10 +2911,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 			if(activeControlOnly)
 			{
-				if (!this.IsActiveWindow && OwnedForms.Length > 0)
+				if (Form.ActiveForm != null && Form.ActiveForm != this)
 				{
-					name = mapname + " (" + OwnedForms[0].Text + ") at ";
-					bounds = OwnedForms[0].Bounds;
+					name = mapname + " (" + Form.ActiveForm.Text + ") at ";
+					bounds = Form.ActiveForm.Bounds;
 				}
 				else
 				{
