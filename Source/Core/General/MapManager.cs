@@ -1063,11 +1063,17 @@ namespace CodeImp.DoomBuilder {
 		}
 
 		//mxd. This is called on tempwad, which should only have the current map inside it.
-		private void removeUnneededLumps(WAD target, string mapname) {
+		private void RemoveUnneededLumps(WAD target, string mapname) 
+		{
 			//Get the list of lumps required by current map format
 			List<string> requiredLumps = new List<string>();
-			foreach (DictionaryEntry ml in config.MapLumpNames){
-				string lumpname = ml.Key.ToString();
+			foreach(KeyValuePair<string, MapLumpInfo> group in config.MapLumps) 
+			{
+				if(group.Value.nodebuild) continue; //this lump well be recreated by a nodebuilder when saving the map 
+													//(or it won't be if the new map format doesn't require this lump, 
+													//so it will just stay there, possibly messing things up)
+
+				string lumpname = group.Key;
 				if(lumpname == CONFIG_MAP_HEADER) lumpname = mapname;
 				requiredLumps.Add(lumpname);
 			}
@@ -1767,7 +1773,7 @@ namespace CodeImp.DoomBuilder {
 
 				//mxd. Some lumps may've become unneeded during map format conversion. 
 				if(oldFormatInterface != config.FormatInterface)
-					removeUnneededLumps(tempwad, TEMP_MAP_HEADER);
+					RemoveUnneededLumps(tempwad, TEMP_MAP_HEADER);
 
 				// Create required lumps if they don't exist yet
 				CreateRequiredLumps(tempwad, TEMP_MAP_HEADER);
