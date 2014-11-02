@@ -120,6 +120,8 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			mapslist.EndUpdate();
+			apply.Focus();    //"creative" way
+			mapslist.Focus(); //to set keyboard focus to the maplist
 			
 			// Done
 			Cursor.Current = Cursors.Default;
