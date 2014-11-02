@@ -62,7 +62,7 @@
 			this.mapslist.ShowGroups = false;
 			this.mapslist.Size = new System.Drawing.Size(396, 116);
 			this.mapslist.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.mapslist.TabIndex = 18;
+			this.mapslist.TabIndex = 1;
 			this.mapslist.UseCompatibleStateImageBehavior = false;
 			this.mapslist.View = System.Windows.Forms.View.List;
 			this.mapslist.DoubleClick += new System.EventHandler(this.mapslist_DoubleClick);
@@ -74,7 +74,7 @@
 			this.cancel.Location = new System.Drawing.Point(178, 152);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 20;
+			this.cancel.TabIndex = 2;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -85,7 +85,7 @@
 			this.apply.Location = new System.Drawing.Point(296, 152);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 19;
+			this.apply.TabIndex = 3;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
