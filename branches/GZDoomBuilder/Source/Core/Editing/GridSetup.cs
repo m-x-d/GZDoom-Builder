@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constants
 
 		private const int DEFAULT_GRID_SIZE = 32;
+		private const int MINIMUM_GRID_SIZE = 1; //mxd
 
 		public const int SOURCE_TEXTURES = 0;
 		public const int SOURCE_FLATS = 1;
@@ -147,6 +148,9 @@ namespace CodeImp.DoomBuilder.Editing
 		// This sets the grid size
 		internal void SetGridSize(int size)
 		{
+			//mxd. Bad things happen when size <= 0
+			size = Math.Max(size, MINIMUM_GRID_SIZE);
+			
 			// Change grid
 			this.gridsize = size;
 			this.gridsizef = gridsize;
