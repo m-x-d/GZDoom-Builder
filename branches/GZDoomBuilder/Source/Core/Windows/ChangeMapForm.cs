@@ -137,6 +137,12 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		private void apply_Click(object sender, EventArgs e) {
+			if (mapslist.SelectedItems.Count < 1)
+			{
+				General.ShowWarningMessage("Please select a map first!", MessageBoxButtons.OK);
+				return;
+			}
+			
 			options.CurrentName = mapslist.SelectedItems[0].Text;
 			options.PreviousName = string.Empty;
 			
