@@ -1194,6 +1194,11 @@ namespace CodeImp.DoomBuilder
 			// Open map options dialog
 			ChangeMapForm changemapwindow = new ChangeMapForm(map.FilePathName, map.Options);
 			if(changemapwindow.ShowDialog(mainwindow) != DialogResult.OK) return;
+			if (map.Options.CurrentName == changemapwindow.Options.CurrentName)
+			{
+				mainwindow.DisplayStatus(StatusType.Info, "Map '" + map.Options.CurrentName + "' is already loaded!");
+				return;
+			}
 
 			// Display status
 			mainwindow.DisplayStatus(StatusType.Busy, "Switching to map '" + changemapwindow.Options.CurrentName + "'...");
