@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.Config
 			// Gather flags
 			foreach (CheckBox cb in checkboxes)
 			{
-				flags.Add(cb.Tag.ToString(), cb.CheckState == CheckState.Checked);
+				flags.Add(cb.Tag.ToString(), cb.CheckState != CheckState.Unchecked);
 			}
 
 			// Gather flags per group
