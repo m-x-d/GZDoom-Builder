@@ -130,7 +130,7 @@ namespace CodeImp.DoomBuilder.Config
 			}
 
 			//mxd. We should ignore the flag if requiredflag is not set
-			if (string.IsNullOrEmpty(requiredflag))
+			if(!string.IsNullOrEmpty(requiredflag))
 			{
 				bool inverted = General.Map.Config.ThingFlagsCompare[group].ContainsKey(requiredflag) && General.Map.Config.ThingFlagsCompare[group][requiredflag].invert;
 
