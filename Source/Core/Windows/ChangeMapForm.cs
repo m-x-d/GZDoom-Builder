@@ -142,6 +142,11 @@ namespace CodeImp.DoomBuilder.Windows
 				General.ShowWarningMessage("Please select a map first!", MessageBoxButtons.OK);
 				return;
 			}
+			if (mapslist.SelectedItems[0].Text == options.LevelName)
+			{
+				General.ShowWarningMessage("Map '" + options.LevelName + "' is already loaded!", MessageBoxButtons.OK);
+				return;
+			}
 			
 			options.CurrentName = mapslist.SelectedItems[0].Text;
 			options.PreviousName = string.Empty;
