@@ -733,6 +733,34 @@ namespace CodeImp.DoomBuilder.Config
 				}
 			}
 
+			//mxd. Integrity check
+			foreach (KeyValuePair<string, Dictionary<string, ThingFlagsCompare>> group in thingflagscompare)
+			{
+				foreach (KeyValuePair<string, ThingFlagsCompare> flaggrp in group.Value)
+				{
+					// Required group is missing?
+					if (!string.IsNullOrEmpty(flaggrp.Value.RequiredGroup) && !thingflagscompare.ContainsKey(flaggrp.Value.RequiredGroup))
+					{
+						General.ErrorLogger.Add(ErrorType.Warning, "thingflagscompare group '" + flaggrp.Value.RequiredGroup + "', required by flag '" + flaggrp.Key + "' does not exist!");
+						flaggrp.Value.RequiredGroup = string.Empty;
+					}
+
+					// Ignored group is missing?
+					if(!string.IsNullOrEmpty(flaggrp.Value.IgnoredGroup) && !thingflagscompare.ContainsKey(flaggrp.Value.IgnoredGroup)) 
+					{
+						General.ErrorLogger.Add(ErrorType.Warning, "thingflagscompare group '" + flaggrp.Value.IgnoredGroup + "', ignored by flag '" + flaggrp.Key + "' does not exist!");
+						flaggrp.Value.IgnoredGroup = string.Empty;
+					}
+
+					// Required flag is missing?
+					if(!string.IsNullOrEmpty(flaggrp.Value.RequiredFlag) && !group.Value.ContainsKey(flaggrp.Value.RequiredFlag)) 
+					{
+						General.ErrorLogger.Add(ErrorType.Warning, "thingflagscompare flag '" + flaggrp.Value.RequiredFlag + "', required by flag '" + flaggrp.Key + "' does not exist!");
+						flaggrp.Value.RequiredFlag = string.Empty;
+					}
+				}
+			}
+
 			// Sort the translation flags, because they must be compared highest first!
 			thingflagstranslation.Sort();
 		}
