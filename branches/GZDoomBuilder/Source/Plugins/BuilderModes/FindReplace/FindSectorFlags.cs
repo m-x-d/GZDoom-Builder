@@ -1,20 +1,4 @@
-﻿
-#region ================== Copyright (c) 2007 Pascal vd Heiden
-
-/*
- * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
- * This program is released under GNU General Public License
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- */
-
-#endregion
-
-#region ================== Namespaces
+﻿#region ================== Namespaces
 
 using System;
 using System.Collections.Generic;
@@ -28,33 +12,27 @@ using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Linedef Flags", BrowseButton = true)]
-	internal class FindLinedefFlags : BaseFindLinedef
+	[FindReplace("Sector Flags", BrowseButton = true)]
+	internal class FindSectorFlags : BaseFindSector
 	{
-		#region ================== Constants
-
-		#endregion
-
-		#region ================== Variables
-
-		#endregion
-
 		#region ================== Properties
 
 		public override Image BrowseImage { get { return Properties.Resources.List; } }
 
 		#endregion
 
-		#region ================== Constructor / Destructor
-
-		#endregion
-
 		#region ================== Methods
+
+		// This is called to test if the item should be displayed
+		public override bool DetermineVisiblity() 
+		{
+			return General.Map.Config.SectorFlags.Count > 0;
+		}
 
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{
-			return FlagsForm.ShowDialog(Form.ActiveForm, initialvalue, General.Map.Config.LinedefFlags);
+			return FlagsForm.ShowDialog(Form.ActiveForm, initialvalue, General.Map.Config.SectorFlags);
 		}
 
 		// This is called to perform a search (and replace)
@@ -65,14 +43,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
 			// Where to search?
-			ICollection<Linedef> list = withinselection ? General.Map.Map.GetSelectedLinedefs(true) : General.Map.Map.Linedefs;
+			ICollection<Sector> list = withinselection ? General.Map.Map.GetSelectedSectors(true) : General.Map.Map.Sectors;
 
 			// Find what? (mxd)
 			List<string> findflagslist = new List<string>();
 			foreach(string flag in value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)) 
 			{
 				string f = flag.Trim();
-				if(General.Map.Config.LinedefFlags.ContainsKey(f)) findflagslist.Add(f);
+				if(General.Map.Config.SectorFlags.ContainsKey(f)) findflagslist.Add(f);
 			}
 			if(findflagslist.Count == 0) 
 			{
@@ -88,7 +66,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(string flag in replaceflags) 
 				{
 					string f = flag.Trim();
-					if (!General.Map.Config.LinedefFlags.ContainsKey(f))
+					if (!General.Map.Config.SectorFlags.ContainsKey(f))
 					{
 						MessageBox.Show("Invalid replace value '" + f + "' for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return objs.ToArray();
@@ -98,7 +76,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Go for all linedefs
-			foreach (Linedef l in list)
+			foreach (Sector s in list)
 			{
 				bool match = true;
 
@@ -106,7 +84,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(string flag in findflagslist)
 				{
 					// ... and check if the flags don't match
-					if(!l.IsFlagSet(flag))
+					if(!s.IsFlagSet(flag))
 					{
 						match = false;
 						break;
@@ -120,18 +98,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(replace) 
 					{
 						// Clear all flags
-						l.ClearFlags();
+						s.ClearFlags();
 
 						// Set new flags
-						foreach(string flag in replaceflagslist) l.SetFlag(flag, true);
+						foreach(string flag in replaceflagslist) s.SetFlag(flag, true);
 					}
 					
 					// Add to list
-					LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
-					if (!info.IsNull)
-						objs.Add(new FindReplaceObject(l, "Linedef " + l.Index + " (" + info.Title + ")"));
+					SectorEffectInfo info = General.Map.Config.GetSectorEffectInfo(s.Effect);
+					if(!info.IsNull)
+						objs.Add(new FindReplaceObject(s, "Sector " + s.Index + " (" + info.Title + ")"));
 					else
-						objs.Add(new FindReplaceObject(l, "Linedef " + l.Index));
+						objs.Add(new FindReplaceObject(s, "Sector " + s.Index));
 				}
 			}
 

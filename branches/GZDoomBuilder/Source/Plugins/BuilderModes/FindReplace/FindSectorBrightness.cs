@@ -16,12 +16,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called to perform a search (and replace)
 		// Returns a list of items to show in the results list
 		// replacewith is null when not replacing
-		public override FindReplaceObject[] Find(string value, bool withinselection, string replacewith, bool keepselection) {
+		public override FindReplaceObject[] Find(string value, bool withinselection, bool replace, string replacewith, bool keepselection) {
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
 			// Interpret the replacement
 			int replacebrightness = 0;
-			if(replacewith != null) {
+			if(replace) {
 				// If it cannot be interpreted, set replacewith to null (not replacing at all)
 				if(!int.TryParse(replacewith, out replacebrightness)) replacewith = null;
 				if(replacebrightness < 0) replacewith = null;
@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Brightness matches?
 					if(s.Brightness == brightness) {
 						// Replace
-						if(replacewith != null) s.Brightness = replacebrightness;
+						if(replace) s.Brightness = replacebrightness;
 
 						objs.Add(new FindReplaceObject(s, "Sector " + s.Index));
 					}
@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//refresh map
-			if(replacewith != null) {
+			if(replace) {
 				General.Map.Map.Update();
 				General.Map.IsChanged = true;
 			}

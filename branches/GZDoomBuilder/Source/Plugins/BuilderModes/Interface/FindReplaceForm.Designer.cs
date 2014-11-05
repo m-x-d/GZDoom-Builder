@@ -96,6 +96,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.findinput.Name = "findinput";
 			this.findinput.Size = new System.Drawing.Size(106, 20);
 			this.findinput.TabIndex = 1;
+			this.findinput.TextChanged += new System.EventHandler(this.findinput_TextChanged);
 			// 
 			// browsefind
 			// 
@@ -103,7 +104,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.browsefind.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.treeview;
 			this.browsefind.Location = new System.Drawing.Point(212, 46);
 			this.browsefind.Name = "browsefind";
-			this.browsefind.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsefind.Size = new System.Drawing.Size(28, 25);
 			this.browsefind.TabIndex = 2;
 			this.browsefind.UseVisualStyleBackColor = true;
@@ -125,7 +125,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.browsereplace.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.treeview;
 			this.browsereplace.Location = new System.Drawing.Point(203, 23);
 			this.browsereplace.Name = "browsereplace";
-			this.browsereplace.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsereplace.Size = new System.Drawing.Size(28, 25);
 			this.browsereplace.TabIndex = 1;
 			this.browsereplace.UseVisualStyleBackColor = true;
@@ -140,6 +139,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// findbutton
 			// 
+			this.findbutton.Enabled = false;
 			this.findbutton.Location = new System.Drawing.Point(273, 12);
 			this.findbutton.Name = "findbutton";
 			this.findbutton.Size = new System.Drawing.Size(74, 25);
@@ -268,7 +268,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "FindReplaceForm";
-			this.Opacity = 0;
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

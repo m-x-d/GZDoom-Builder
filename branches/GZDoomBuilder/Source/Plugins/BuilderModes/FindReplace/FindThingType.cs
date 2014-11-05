@@ -65,13 +65,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called to perform a search (and replace)
 		// Returns a list of items to show in the results list
 		// replacewith is null when not replacing
-		public override FindReplaceObject[] Find(string value, bool withinselection, string replacewith, bool keepselection)
+		public override FindReplaceObject[] Find(string value, bool withinselection, bool replace, string replacewith, bool keepselection)
 		{
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
 			// Interpret the replacement
 			int replacetype = 0;
-			if(replacewith != null)
+			if(replace)
 			{
 				// If it cannot be interpreted, set replacewith to null (not replacing at all)
 				if(!int.TryParse(replacewith, out replacetype)) replacewith = null;
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(t.Type == findtype)
 					{
 						// Replace
-						if(replacewith != null)
+						if(replace)
 						{
 							t.Type = replacetype;
 							t.UpdateConfiguration();

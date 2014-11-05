@@ -25,7 +25,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(DisplayName = "Find & Replace Mode",
+	[EditMode(DisplayName = "Find and Replace Mode",
 			  SwitchAction = "findmode",
 			  ButtonImage = "FindMode.png",
 			  ButtonOrder = 100,

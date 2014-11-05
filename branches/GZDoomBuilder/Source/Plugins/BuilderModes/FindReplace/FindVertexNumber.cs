@@ -24,7 +24,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Vertex Index", BrowseButton = false, Replacable = false)]
+	[FindReplace("Vertex Index", BrowseButton = false)]
 	internal class FindVertexNumber : FindReplaceType
 	{
 		#region ================== Constants
@@ -57,17 +57,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
-		// This is called when the browse button is pressed
-		/*public override string Browse(string initialvalue)
+		//mxd
+		public override bool CanReplace() 
 		{
-			return "";
-		}*/
-
+			return false;
+		}
 
 		// This is called to perform a search (and replace)
 		// Returns a list of items to show in the results list
 		// replacewith is null when not replacing
-		public override FindReplaceObject[] Find(string value, bool withinselection, string replacewith, bool keepselection)
+		public override FindReplaceObject[] Find(string value, bool withinselection, bool replace, string replacewith, bool keepselection)
 		{
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
