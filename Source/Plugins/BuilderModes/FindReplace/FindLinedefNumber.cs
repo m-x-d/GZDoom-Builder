@@ -24,7 +24,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Linedef Index", BrowseButton = false, Replacable = false)]
+	[FindReplace("Linedef Index", BrowseButton = false)]
 	internal class FindLinedefNumber : BaseFindLinedef
 	{
 		#region ================== Constants
@@ -45,10 +45,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
+		//mxd
+		public override bool CanReplace() 
+		{
+			return false;
+		}
+
 		// This is called to perform a search (and replace)
 		// Returns a list of items to show in the results list
 		// replacewith is null when not replacing
-		public override FindReplaceObject[] Find(string value, bool withinselection, string replacewith, bool keepselection)
+		public override FindReplaceObject[] Find(string value, bool withinselection, bool replace, string replacewith, bool keepselection)
 		{
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 

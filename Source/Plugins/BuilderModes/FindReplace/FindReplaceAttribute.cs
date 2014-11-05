@@ -29,7 +29,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private string displayname;
 		private bool browsebutton;
-		private bool replacable;
 
 		#endregion
 
@@ -37,7 +36,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public string DisplayName { get { return displayname; } set { displayname = value; } }
 		public bool BrowseButton { get { return browsebutton; } set { browsebutton = value; } }
-		public bool Replacable { get { return replacable; } set { replacable = value; } }
 
 		#endregion
 
@@ -48,7 +46,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Initialize
 			this.displayname = displayname;
-			this.replacable = true;
 		}
 
 		#endregion

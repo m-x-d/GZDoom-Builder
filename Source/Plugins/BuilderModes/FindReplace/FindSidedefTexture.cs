@@ -17,10 +17,10 @@
 #region ================== Namespaces
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Rendering;
 using System.Drawing;
 
 #endregion
@@ -28,7 +28,7 @@ using System.Drawing;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[FindReplace("Sidedef Texture", BrowseButton = true)]
-	internal class FindSidedefTexture : FindReplaceType
+	internal class FindSidedefTexture : BaseFindSidedef
 	{
 		#region ================== Constants
 
@@ -46,18 +46,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor / Destructor
 
-		// Constructor
-		public FindSidedefTexture()
-		{
-			// Initialize
-
-		}
-
-		// Destructor
-		~FindSidedefTexture()
-		{
-		}
-
 		#endregion
 
 		#region ================== Methods
@@ -72,92 +60,55 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called to perform a search (and replace)
 		// Returns a list of items to show in the results list
 		// replacewith is null when not replacing
-		public override FindReplaceObject[] Find(string value, bool withinselection, string replacewith, bool keepselection)
+		public override FindReplaceObject[] Find(string value, bool withinselection, bool replace, string replacewith, bool keepselection)
 		{
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
 			// Interpret the replacement
-			if(replacewith != null)
+			if(replace && (string.IsNullOrEmpty(replacewith) || replacewith.Length > 8)) 
 			{
-				// If it cannot be interpreted, set replacewith to null (not replacing at all)
-				if(replacewith.Length < 0) replacewith = null;
-				if(replacewith.Length > 8) replacewith = null;
-				if(replacewith == null)
-				{
-					MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return objs.ToArray();
-				}
+				MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return objs.ToArray();
 			}
 			
 			// Interpret the find
-			long longfind = Lump.MakeLongName(value.Trim());
+			bool isregex = (value.IndexOf('*') != -1 || value.IndexOf('?') != -1); //mxd
+			MatchingTextureSet set = new MatchingTextureSet(new Collection<string> { value.Trim() }); //mxd
 
 			// Where to search?
-			ICollection<Sidedef> list = withinselection ? General.Map.Map.GetSidedefsFromSelectedLinedefs(true) : General.Map.Map.Sidedefs;
+			ICollection<Sidedef> sidelist = withinselection ? General.Map.Map.GetSidedefsFromSelectedLinedefs(true) : General.Map.Map.Sidedefs;
 
 			// Go for all sidedefs
-			foreach(Sidedef sd in list)
+			foreach(Sidedef sd in sidelist) 
 			{
 				string side = sd.IsFront ? "front" : "back";
 				
-				if(sd.LongHighTexture == longfind)
+				if(set.IsMatch(sd.HighTexture)) 
 				{
 					// Replace and add to list
-					if(replacewith != null) sd.SetTextureHigh(replacewith);
-					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.Index + " (" + side + ", high)"));
+					if(replace) sd.SetTextureHigh(replacewith);
+					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.Index + " (" + side + ", high)" + (isregex ? " - " + sd.HighTexture : null)));
 				}
 				
-				if(sd.LongMiddleTexture == longfind)
+				if(set.IsMatch(sd.MiddleTexture)) 
 				{
 					// Replace and add to list
-					if(replacewith != null) sd.SetTextureMid(replacewith);
-					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.Index + " (" + side + ", middle)"));
+					if(replace) sd.SetTextureMid(replacewith);
+					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.Index + " (" + side + ", middle)" + (isregex ? " - " + sd.MiddleTexture : null)));
 				}
 				
-				if(sd.LongLowTexture == longfind)
+				if(set.IsMatch(sd.LowTexture)) 
 				{
 					// Replace and add to list
-					if(replacewith != null) sd.SetTextureLow(replacewith);
-					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.Index + " (" + side + ", low)"));
+					if(replace) sd.SetTextureLow(replacewith);
+					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.Index + " (" + side + ", low)" + (isregex ? " - " + sd.LowTexture : null)));
 				}
 			}
 			
 			// When replacing, make sure we keep track of used textures
-			if(replacewith != null) General.Map.Data.UpdateUsedTextures();
+			if(replace) General.Map.Data.UpdateUsedTextures();
 			
 			return objs.ToArray();
-		}
-
-		// This is called when a specific object is selected from the list
-		public override void ObjectSelected(FindReplaceObject[] selection)
-		{
-			if(selection.Length == 1)
-			{
-				ZoomToSelection(selection);
-				General.Interface.ShowLinedefInfo(selection[0].Sidedef.Line);
-			}
-			else
-				General.Interface.HideInfo();
-
-			General.Map.Map.ClearAllSelected();
-			foreach(FindReplaceObject obj in selection) obj.Sidedef.Line.Selected = true;
-		}
-
-		// Render selection
-		public override void PlotSelection(IRenderer2D renderer, FindReplaceObject[] selection)
-		{
-			foreach(FindReplaceObject o in selection)
-			{
-				renderer.PlotLinedef(o.Sidedef.Line, General.Colors.Selection);
-			}
-		}
-
-		// Edit objects
-		public override void EditObjects(FindReplaceObject[] selection)
-		{
-			List<Linedef> linedefs = new List<Linedef>(selection.Length);
-			foreach(FindReplaceObject o in selection) linedefs.Add(o.Sidedef.Line);
-			General.Interface.ShowEditLinedefs(linedefs);
 		}
 
 		#endregion

@@ -26,7 +26,7 @@ using System.Text.RegularExpressions;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	internal sealed class MatchingTextureSet : TextureSet, IFilledTextureSet, IComparable<MatchingTextureSet>
+	public sealed class MatchingTextureSet : TextureSet, IFilledTextureSet, IComparable<MatchingTextureSet>
 	{
 		#region ================== Variables
 		
@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// Texture set from defined set
-		public MatchingTextureSet(DefinedTextureSet definedset)
+		internal MatchingTextureSet(DefinedTextureSet definedset)
 		{
 			// Copy the name
 			this.name = definedset.Name;
@@ -175,6 +175,12 @@ namespace CodeImp.DoomBuilder.Config
 		internal bool IsMatch(ImageData image)
 		{
 			return regex.IsMatch(image.Name.ToUpperInvariant());
+		}
+
+		// This only checks if the given texture name is a match (mxd)
+		public bool IsMatch(string texturename) 
+		{
+			return regex.IsMatch(texturename.ToUpperInvariant());
 		}
 
 		// This compares it for sorting

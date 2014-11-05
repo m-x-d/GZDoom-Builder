@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
-		protected FindReplaceAttribute attribs;
+		protected readonly FindReplaceAttribute attribs;
 		
 		#endregion
 
@@ -58,17 +58,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			attribs = (FindReplaceAttribute)attrs[0];
 		}
 
-		// Destructor
-		~FindReplaceType()
-		{
-		}
-
 		#endregion
 
 		#region ================== Methods
 		
 		// This is called to test if the item should be displayed
 		public virtual bool DetermineVisiblity()
+		{
+			return true;
+		}
+
+		// This is called to test if replacing is supported (mxd)
+		public virtual bool CanReplace() 
 		{
 			return true;
 		}
@@ -82,7 +83,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called to perform a search (and replace)
 		// Must return a list of items to show in the results list
 		// replacewith is null when not replacing
-		public virtual FindReplaceObject[] Find(string value, bool withinselection, string replacewith, bool keepselection)
+		public virtual FindReplaceObject[] Find(string value, bool withinselection, bool replace, string replacewith, bool keepselection)
 		{
 			return new FindReplaceObject[0];
 		}

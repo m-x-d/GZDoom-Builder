@@ -124,8 +124,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			browsefind.Image = newfinder.BrowseImage;
 			browsereplace.Enabled = newfinder.Attributes.BrowseButton;
 			browsereplace.Image = newfinder.BrowseImage;
-			if(!newfinder.Attributes.Replacable) doreplace.Checked = false;
-			doreplace.Enabled = newfinder.Attributes.Replacable;
+			if(!newfinder.CanReplace()) doreplace.Checked = false;
+			doreplace.Enabled = newfinder.CanReplace();
 		}
 		
 		// Browse find button clicked
@@ -138,6 +138,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void browsereplace_Click(object sender, EventArgs e)
 		{
 			replaceinput.Text = newfinder.Browse(replaceinput.Text);
+		}
+
+		//mxd
+		private void findinput_TextChanged(object sender, EventArgs e)
+		{
+			findbutton.Enabled = !string.IsNullOrEmpty(findinput.Text);
 		}
 
 		// Find / Replace clicked
@@ -164,16 +170,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				General.Map.UndoRedo.CreateUndo("Replace " + searchtypes.SelectedItem);
 
-				resultslist.Items.AddRange(finder.Find(findinput.Text, withinselection.Checked, replaceinput.Text, false));
+				resultslist.Items.AddRange(finder.Find(findinput.Text, withinselection.Checked, true, replaceinput.Text, false));
 				resultscount.Text = resultslist.Items.Count + " items found and replaced.";
 
 				// Withdraw the undo step if nothing was replaced
-				if (resultslist.Items.Count <= 0)
+				if (resultslist.Items.Count < 1)
 					General.Map.UndoRedo.WithdrawUndo();
 			}
 			else
 			{
-				resultslist.Items.AddRange(finder.Find(findinput.Text, withinselection.Checked, null, false));
+				resultslist.Items.AddRange(finder.Find(findinput.Text, withinselection.Checked, false, string.Empty, false));
 				resultscount.Text = resultslist.Items.Count + " items found.";
 			}
 			
@@ -407,5 +413,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		#endregion
+
 	}
 }

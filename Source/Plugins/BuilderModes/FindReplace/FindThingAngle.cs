@@ -65,13 +65,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called to perform a search (and replace)
 		// Returns a list of items to show in the results list
 		// replacewith is null when not replacing
-		public override FindReplaceObject[] Find(string value, bool withinselection, string replacewith, bool keepselection)
+		public override FindReplaceObject[] Find(string value, bool withinselection, bool replace, string replacewith, bool keepselection)
 		{
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
 			// Interpret the replacement
 			int replaceangle = 0;
-			if(replacewith != null)
+			if(replace)
 			{
 				// If it cannot be interpreted, set replacewith to null (not replacing at all)
 				if(!int.TryParse(replacewith, out replaceangle)) replacewith = null;
@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(Angle2D.RealToDoom(t.Angle) == angle)
 					{
 						// Replace
-						if(replacewith != null) t.Rotate(Angle2D.DoomToReal(replaceangle));
+						if(replace) t.Rotate(Angle2D.DoomToReal(replaceangle));
 
 						// Add to list
 						ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
