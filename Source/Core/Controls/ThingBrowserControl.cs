@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.Controls;
 
 #endregion
@@ -156,6 +157,34 @@ namespace CodeImp.DoomBuilder.Controls
 			return validNodes;
 		}
 
+		// Update preview image (mxd)
+		private void UpdateThingSprite() 
+		{
+			if(General.Map == null) return;
+			if(thinginfo != null) 
+			{
+				if(thinginfo.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) &&
+				   (thinginfo.Sprite.Length > DataManager.INTERNAL_PREFIX.Length)) 
+				{
+					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetBitmap());
+				} 
+				else if((thinginfo.Sprite.Length < 9) && (thinginfo.Sprite.Length > 0))
+				{
+					ImageData sprite = General.Map.Data.GetSpriteImage(thinginfo.Sprite);
+					General.DisplayZoomedImage(spritetex, sprite.GetPreview());
+					if(!sprite.IsPreviewLoaded) updatetimer.Start();
+				}
+				else 
+				{
+					spritetex.BackgroundImage = null;
+				}
+			} 
+			else 
+			{
+				spritetex.BackgroundImage = null;
+			}
+		}
+
 		#endregion
 
 		#region ================== Events
@@ -185,10 +214,17 @@ namespace CodeImp.DoomBuilder.Controls
 			if(typelist.SelectionMode == TreeViewSelectionMode.MultiSelectSameLevel && typelist.SelectedNodes.Count > 1 && GetValidNodes().Count > 1) 
 			{
 				doupdatenode = false;
-				if(!string.IsNullOrEmpty(typeid.Text)) // Event will be raised in typeid_OnTextChanged
+				if (!string.IsNullOrEmpty(typeid.Text))
+				{
+					// Event will be raised in typeid_OnTextChanged
 					typeid.Text = "";
-				else if(OnTypeChanged != null) // Or raise event here
-					OnTypeChanged(thinginfo); 
+				}
+				else if (OnTypeChanged != null)
+				{
+					// Or raise event here
+					UpdateThingSprite();
+					OnTypeChanged(thinginfo);
+				}
 				doupdatenode = true;
 			}
 			else if(typelist.SelectedNodes.Count > 0) //Anything selected?
@@ -276,27 +312,17 @@ namespace CodeImp.DoomBuilder.Controls
 				blockinglabel.Text = "-";
 			}
 
+			// Update icon (mxd)
+			UpdateThingSprite();
+
 			// Raise event
 			if(OnTypeChanged != null) OnTypeChanged(thinginfo);
 		}
 
-		// Layout update!
-		private void ThingBrowserControl_Layout(object sender, LayoutEventArgs e)
+		private void updatetimer_Tick(object sender, EventArgs e) 
 		{
-			ThingBrowserControl_SizeChanged(sender, EventArgs.Empty);
-		}
-
-		private void ThingBrowserControl_Resize(object sender, EventArgs e)
-		{
-			ThingBrowserControl_SizeChanged(sender, EventArgs.Empty);
-		}
-
-		private void ThingBrowserControl_SizeChanged(object sender, EventArgs e)
-		{
-			blockingcaption.Left = infopanel.Width / 2;
-			blockinglabel.Left = blockingcaption.Right + blockingcaption.Margin.Right;
-			sizecaption.Left = blockingcaption.Right - sizecaption.Width;
-			sizelabel.Left = sizecaption.Right + sizecaption.Margin.Right;
+			updatetimer.Stop();
+			UpdateThingSprite();
 		}
 
 		//mxd

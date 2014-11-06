@@ -39,54 +39,56 @@ namespace CodeImp.DoomBuilder.Controls
 			this.positionlabel = new System.Windows.Forms.Label();
 			this.thingimages = new System.Windows.Forms.ImageList(this.components);
 			this.infopanel = new System.Windows.Forms.Panel();
-			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.tbFilter = new System.Windows.Forms.TextBox();
 			this.bClear = new System.Windows.Forms.Button();
+			this.spritetex = new System.Windows.Forms.Panel();
 			this.typelist = new CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview();
+			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.updatetimer = new System.Windows.Forms.Timer(this.components);
 			this.infopanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// sizecaption
 			// 
-			this.sizecaption.AutoSize = true;
-			this.sizecaption.Location = new System.Drawing.Point(166, 8);
+			this.sizecaption.Location = new System.Drawing.Point(0, 41);
 			this.sizecaption.Name = "sizecaption";
-			this.sizecaption.Size = new System.Drawing.Size(30, 13);
+			this.sizecaption.Size = new System.Drawing.Size(54, 13);
 			this.sizecaption.TabIndex = 16;
 			this.sizecaption.Text = "Size:";
+			this.sizecaption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// blockingcaption
 			// 
-			this.blockingcaption.AutoSize = true;
-			this.blockingcaption.Location = new System.Drawing.Point(145, 30);
+			this.blockingcaption.Location = new System.Drawing.Point(0, 58);
 			this.blockingcaption.Name = "blockingcaption";
-			this.blockingcaption.Size = new System.Drawing.Size(51, 13);
+			this.blockingcaption.Size = new System.Drawing.Size(54, 13);
 			this.blockingcaption.TabIndex = 14;
 			this.blockingcaption.Text = "Blocking:";
+			this.blockingcaption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// positioncaption
 			// 
-			this.positioncaption.AutoSize = true;
-			this.positioncaption.Location = new System.Drawing.Point(-2, 30);
+			this.positioncaption.Location = new System.Drawing.Point(0, 24);
 			this.positioncaption.Name = "positioncaption";
-			this.positioncaption.Size = new System.Drawing.Size(47, 13);
+			this.positioncaption.Size = new System.Drawing.Size(54, 13);
 			this.positioncaption.TabIndex = 12;
 			this.positioncaption.Text = "Position:";
+			this.positioncaption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// typecaption
 			// 
-			this.typecaption.AutoSize = true;
-			this.typecaption.Location = new System.Drawing.Point(-2, 8);
+			this.typecaption.Location = new System.Drawing.Point(0, 6);
 			this.typecaption.Name = "typecaption";
-			this.typecaption.Size = new System.Drawing.Size(34, 13);
+			this.typecaption.Size = new System.Drawing.Size(54, 13);
 			this.typecaption.TabIndex = 10;
 			this.typecaption.Text = "Type:";
+			this.typecaption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// sizelabel
 			// 
 			this.sizelabel.AutoSize = true;
-			this.sizelabel.Location = new System.Drawing.Point(200, 8);
+			this.sizelabel.Location = new System.Drawing.Point(60, 41);
 			this.sizelabel.Name = "sizelabel";
 			this.sizelabel.Size = new System.Drawing.Size(42, 13);
 			this.sizelabel.TabIndex = 17;
@@ -95,7 +97,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// blockinglabel
 			// 
 			this.blockinglabel.AutoSize = true;
-			this.blockinglabel.Location = new System.Drawing.Point(198, 30);
+			this.blockinglabel.Location = new System.Drawing.Point(60, 58);
 			this.blockinglabel.Name = "blockinglabel";
 			this.blockinglabel.Size = new System.Drawing.Size(63, 13);
 			this.blockinglabel.TabIndex = 15;
@@ -104,7 +106,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// positionlabel
 			// 
 			this.positionlabel.AutoSize = true;
-			this.positionlabel.Location = new System.Drawing.Point(48, 30);
+			this.positionlabel.Location = new System.Drawing.Point(60, 24);
 			this.positionlabel.Name = "positionlabel";
 			this.positionlabel.Size = new System.Drawing.Size(38, 13);
 			this.positionlabel.TabIndex = 13;
@@ -139,6 +141,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.infopanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.infopanel.Controls.Add(this.spritetex);
 			this.infopanel.Controls.Add(this.sizelabel);
 			this.infopanel.Controls.Add(this.typecaption);
 			this.infopanel.Controls.Add(this.sizecaption);
@@ -147,23 +150,10 @@ namespace CodeImp.DoomBuilder.Controls
 			this.infopanel.Controls.Add(this.positioncaption);
 			this.infopanel.Controls.Add(this.blockingcaption);
 			this.infopanel.Controls.Add(this.positionlabel);
-			this.infopanel.Location = new System.Drawing.Point(0, 272);
+			this.infopanel.Location = new System.Drawing.Point(0, 246);
 			this.infopanel.Name = "infopanel";
-			this.infopanel.Size = new System.Drawing.Size(304, 48);
+			this.infopanel.Size = new System.Drawing.Size(304, 74);
 			this.infopanel.TabIndex = 18;
-			// 
-			// typeid
-			// 
-			this.typeid.AllowDecimal = false;
-			this.typeid.AllowNegative = false;
-			this.typeid.AllowRelative = false;
-			this.typeid.ForeColor = System.Drawing.SystemColors.WindowText;
-			this.typeid.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.typeid.Location = new System.Drawing.Point(41, 5);
-			this.typeid.Name = "typeid";
-			this.typeid.Size = new System.Drawing.Size(68, 20);
-			this.typeid.TabIndex = 1;
-			this.typeid.TextChanged += new System.EventHandler(this.typeid_TextChanged);
 			// 
 			// label1
 			// 
@@ -192,6 +182,18 @@ namespace CodeImp.DoomBuilder.Controls
 			this.bClear.UseVisualStyleBackColor = true;
 			this.bClear.Click += new System.EventHandler(this.bClear_Click);
 			// 
+			// spritetex
+			// 
+			this.spritetex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.spritetex.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.spritetex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+			this.spritetex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.spritetex.Location = new System.Drawing.Point(235, 2);
+			this.spritetex.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+			this.spritetex.Name = "spritetex";
+			this.spritetex.Size = new System.Drawing.Size(70, 70);
+			this.spritetex.TabIndex = 23;
+			// 
 			// typelist
 			// 
 			this.typelist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -206,11 +208,28 @@ namespace CodeImp.DoomBuilder.Controls
 			this.typelist.SelectedImageIndex = 0;
 			this.typelist.SelectionBackColor = System.Drawing.SystemColors.Highlight;
 			this.typelist.SelectionMode = CodeImp.DoomBuilder.GZBuilder.Controls.TreeViewSelectionMode.SingleSelect;
-			this.typelist.Size = new System.Drawing.Size(304, 244);
+			this.typelist.Size = new System.Drawing.Size(304, 216);
 			this.typelist.TabIndex = 22;
 			this.typelist.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.typelist_MouseDoubleClick);
 			this.typelist.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.typelist_AfterSelect);
 			this.typelist.MouseEnter += new System.EventHandler(this.typelist_MouseEnter);
+			// 
+			// typeid
+			// 
+			this.typeid.AllowDecimal = false;
+			this.typeid.AllowNegative = false;
+			this.typeid.AllowRelative = false;
+			this.typeid.ForeColor = System.Drawing.SystemColors.WindowText;
+			this.typeid.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.typeid.Location = new System.Drawing.Point(60, 2);
+			this.typeid.Name = "typeid";
+			this.typeid.Size = new System.Drawing.Size(68, 20);
+			this.typeid.TabIndex = 1;
+			this.typeid.TextChanged += new System.EventHandler(this.typeid_TextChanged);
+			// 
+			// updatetimer
+			// 
+			this.updatetimer.Tick += new System.EventHandler(this.updatetimer_Tick);
 			// 
 			// ThingBrowserControl
 			// 
@@ -223,9 +242,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Controls.Add(this.infopanel);
 			this.Name = "ThingBrowserControl";
 			this.Size = new System.Drawing.Size(304, 320);
-			this.Layout += new System.Windows.Forms.LayoutEventHandler(this.ThingBrowserControl_Layout);
-			this.Resize += new System.EventHandler(this.ThingBrowserControl_Resize);
-			this.SizeChanged += new System.EventHandler(this.ThingBrowserControl_SizeChanged);
 			this.infopanel.ResumeLayout(false);
 			this.infopanel.PerformLayout();
 			this.ResumeLayout(false);
@@ -249,5 +265,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.TextBox tbFilter;
 		private System.Windows.Forms.Button bClear;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview typelist;
+		private System.Windows.Forms.Panel spritetex;
+		private System.Windows.Forms.Timer updatetimer;
 	}
 }

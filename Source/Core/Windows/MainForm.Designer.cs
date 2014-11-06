@@ -2239,7 +2239,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menumain;
 			this.Name = "MainForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "GZDoom Builder";
 			this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);

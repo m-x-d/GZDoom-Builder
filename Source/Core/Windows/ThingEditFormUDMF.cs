@@ -769,20 +769,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			thinginfo = value;
 
-			// Update preview image
-			if(thinginfo != null) {
-				if(thinginfo.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) &&
-				   (thinginfo.Sprite.Length > DataManager.INTERNAL_PREFIX.Length)) {
-					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetBitmap());
-				} else if((thinginfo.Sprite.Length <= 8) && (thinginfo.Sprite.Length > 0)) {
-					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetPreview());
-				} else {
-					spritetex.BackgroundImage = null;
-				}
-			} else {
-				spritetex.BackgroundImage = null;
-			}
-
 			// Update arguments
 			action_ValueChanges(this, EventArgs.Empty);
 
