@@ -40,15 +40,26 @@
 			this.label7 = new System.Windows.Forms.Label();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabproperties = new System.Windows.Forms.TabPage();
+			this.settingsgroup = new System.Windows.Forms.GroupBox();
+			this.missingflags = new System.Windows.Forms.PictureBox();
+			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.groupBox9 = new System.Windows.Forms.GroupBox();
 			this.rollControl = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
 			this.pitchControl = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.cbAbsoluteHeight = new System.Windows.Forms.CheckBox();
+			this.label4 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.posX = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.posY = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.posZ = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.zlabel = new System.Windows.Forms.Label();
+			this.tabeffects = new System.Windows.Forms.TabPage();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.conversationID = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.labelID = new System.Windows.Forms.Label();
-			this.spritetex = new System.Windows.Forms.Panel();
 			this.health = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label10 = new System.Windows.Forms.Label();
 			this.score = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -61,18 +72,6 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.renderStyle = new System.Windows.Forms.ComboBox();
 			this.label3 = new System.Windows.Forms.Label();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.cbAbsoluteHeight = new System.Windows.Forms.CheckBox();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.posX = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.posY = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.posZ = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.zlabel = new System.Windows.Forms.Label();
-			this.tabeffects = new System.Windows.Forms.TabPage();
-			this.settingsgroup = new System.Windows.Forms.GroupBox();
-			this.missingflags = new System.Windows.Forms.PictureBox();
-			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
 			this.hexenpanel = new System.Windows.Forms.Panel();
 			this.scriptNumbers = new System.Windows.Forms.ComboBox();
@@ -104,15 +103,15 @@
 			this.groupBox2.SuspendLayout();
 			this.tabs.SuspendLayout();
 			this.tabproperties.SuspendLayout();
+			this.settingsgroup.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.missingflags)).BeginInit();
 			this.groupBox9.SuspendLayout();
 			this.groupBox8.SuspendLayout();
 			this.groupBox7.SuspendLayout();
-			this.groupBox6.SuspendLayout();
-			this.groupBox5.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.tabeffects.SuspendLayout();
-			this.settingsgroup.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.missingflags)).BeginInit();
+			this.groupBox6.SuspendLayout();
+			this.groupBox5.SuspendLayout();
 			this.actiongroup.SuspendLayout();
 			this.hexenpanel.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -154,7 +153,7 @@
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.angle);
 			this.groupBox2.Controls.Add(this.labelAngle);
-			this.groupBox2.Location = new System.Drawing.Point(488, 6);
+			this.groupBox2.Location = new System.Drawing.Point(488, 298);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(133, 98);
 			this.groupBox2.TabIndex = 2;
@@ -169,9 +168,9 @@
 			this.roll.ButtonStep = 1;
 			this.roll.ButtonStepFloat = 1F;
 			this.roll.ButtonStepsWrapAround = false;
-			this.roll.Location = new System.Drawing.Point(61, 66);
+			this.roll.Location = new System.Drawing.Point(55, 66);
 			this.roll.Name = "roll";
-			this.roll.Size = new System.Drawing.Size(57, 24);
+			this.roll.Size = new System.Drawing.Size(71, 24);
 			this.roll.StepValues = null;
 			this.roll.TabIndex = 24;
 			this.roll.WhenTextChanged += new System.EventHandler(this.roll_WhenTextChanged);
@@ -193,9 +192,9 @@
 			this.pitch.ButtonStep = 1;
 			this.pitch.ButtonStepFloat = 1F;
 			this.pitch.ButtonStepsWrapAround = false;
-			this.pitch.Location = new System.Drawing.Point(61, 41);
+			this.pitch.Location = new System.Drawing.Point(55, 41);
 			this.pitch.Name = "pitch";
-			this.pitch.Size = new System.Drawing.Size(57, 24);
+			this.pitch.Size = new System.Drawing.Size(71, 24);
 			this.pitch.StepValues = null;
 			this.pitch.TabIndex = 22;
 			this.pitch.WhenTextChanged += new System.EventHandler(this.pitch_WhenTextChanged);
@@ -217,9 +216,9 @@
 			this.angle.ButtonStep = 1;
 			this.angle.ButtonStepFloat = 1F;
 			this.angle.ButtonStepsWrapAround = false;
-			this.angle.Location = new System.Drawing.Point(61, 16);
+			this.angle.Location = new System.Drawing.Point(55, 16);
 			this.angle.Name = "angle";
-			this.angle.Size = new System.Drawing.Size(57, 24);
+			this.angle.Size = new System.Drawing.Size(71, 24);
 			this.angle.StepValues = null;
 			this.angle.TabIndex = 10;
 			this.angle.WhenTextChanged += new System.EventHandler(this.angle_WhenTextChanged);
@@ -281,11 +280,10 @@
 			// 
 			// tabproperties
 			// 
+			this.tabproperties.Controls.Add(this.settingsgroup);
 			this.tabproperties.Controls.Add(this.groupBox9);
 			this.tabproperties.Controls.Add(this.groupBox8);
 			this.tabproperties.Controls.Add(this.groupBox7);
-			this.tabproperties.Controls.Add(this.groupBox6);
-			this.tabproperties.Controls.Add(this.groupBox5);
 			this.tabproperties.Controls.Add(this.groupBox4);
 			this.tabproperties.Controls.Add(this.groupBox2);
 			this.tabproperties.Controls.Add(this.groupBox1);
@@ -298,10 +296,48 @@
 			this.tabproperties.Text = "Properties";
 			this.tabproperties.UseVisualStyleBackColor = true;
 			// 
+			// settingsgroup
+			// 
+			this.settingsgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)));
+			this.settingsgroup.Controls.Add(this.missingflags);
+			this.settingsgroup.Controls.Add(this.flags);
+			this.settingsgroup.Location = new System.Drawing.Point(262, 6);
+			this.settingsgroup.Name = "settingsgroup";
+			this.settingsgroup.Size = new System.Drawing.Size(275, 286);
+			this.settingsgroup.TabIndex = 23;
+			this.settingsgroup.TabStop = false;
+			this.settingsgroup.Text = " Flags ";
+			// 
+			// missingflags
+			// 
+			this.missingflags.BackColor = System.Drawing.SystemColors.Window;
+			this.missingflags.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+			this.missingflags.Location = new System.Drawing.Point(42, -1);
+			this.missingflags.Name = "missingflags";
+			this.missingflags.Size = new System.Drawing.Size(16, 16);
+			this.missingflags.TabIndex = 5;
+			this.missingflags.TabStop = false;
+			this.missingflags.Visible = false;
+			// 
+			// flags
+			// 
+			this.flags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.flags.AutoScroll = true;
+			this.flags.Columns = 2;
+			this.flags.Location = new System.Drawing.Point(6, 19);
+			this.flags.Name = "flags";
+			this.flags.Size = new System.Drawing.Size(263, 260);
+			this.flags.TabIndex = 0;
+			this.flags.VerticalSpacing = 1;
+			this.flags.OnValueChanged += new System.EventHandler(this.flags_OnValueChanged);
+			// 
 			// groupBox9
 			// 
 			this.groupBox9.Controls.Add(this.rollControl);
-			this.groupBox9.Location = new System.Drawing.Point(544, 298);
+			this.groupBox9.Location = new System.Drawing.Point(543, 16);
 			this.groupBox9.Name = "groupBox9";
 			this.groupBox9.Size = new System.Drawing.Size(78, 88);
 			this.groupBox9.TabIndex = 26;
@@ -321,7 +357,7 @@
 			// groupBox8
 			// 
 			this.groupBox8.Controls.Add(this.pitchControl);
-			this.groupBox8.Location = new System.Drawing.Point(544, 204);
+			this.groupBox8.Location = new System.Drawing.Point(543, 110);
 			this.groupBox8.Name = "groupBox8";
 			this.groupBox8.Size = new System.Drawing.Size(78, 88);
 			this.groupBox8.TabIndex = 25;
@@ -341,203 +377,12 @@
 			// groupBox7
 			// 
 			this.groupBox7.Controls.Add(this.anglecontrol);
-			this.groupBox7.Location = new System.Drawing.Point(544, 110);
+			this.groupBox7.Location = new System.Drawing.Point(543, 204);
 			this.groupBox7.Name = "groupBox7";
 			this.groupBox7.Size = new System.Drawing.Size(78, 88);
 			this.groupBox7.TabIndex = 24;
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = " Angle";
-			// 
-			// groupBox6
-			// 
-			this.groupBox6.Controls.Add(this.conversationID);
-			this.groupBox6.Controls.Add(this.labelID);
-			this.groupBox6.Controls.Add(this.spritetex);
-			this.groupBox6.Controls.Add(this.health);
-			this.groupBox6.Controls.Add(this.label10);
-			this.groupBox6.Controls.Add(this.score);
-			this.groupBox6.Controls.Add(this.label9);
-			this.groupBox6.Controls.Add(this.gravity);
-			this.groupBox6.Controls.Add(this.labelGravity);
-			this.groupBox6.Location = new System.Drawing.Point(262, 257);
-			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(276, 138);
-			this.groupBox6.TabIndex = 23;
-			this.groupBox6.TabStop = false;
-			this.groupBox6.Text = " Behaviour ";
-			// 
-			// conversationID
-			// 
-			this.conversationID.AllowDecimal = false;
-			this.conversationID.AllowNegative = false;
-			this.conversationID.AllowRelative = false;
-			this.conversationID.ButtonStep = 1;
-			this.conversationID.ButtonStepFloat = 1F;
-			this.conversationID.ButtonStepsWrapAround = false;
-			this.conversationID.Location = new System.Drawing.Point(98, 106);
-			this.conversationID.Name = "conversationID";
-			this.conversationID.Size = new System.Drawing.Size(72, 24);
-			this.conversationID.StepValues = null;
-			this.conversationID.TabIndex = 26;
-			// 
-			// labelID
-			// 
-			this.labelID.AutoSize = true;
-			this.labelID.Location = new System.Drawing.Point(6, 111);
-			this.labelID.Name = "labelID";
-			this.labelID.Size = new System.Drawing.Size(86, 14);
-			this.labelID.TabIndex = 25;
-			this.labelID.Text = "Conversation ID:";
-			// 
-			// spritetex
-			// 
-			this.spritetex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.spritetex.BackColor = System.Drawing.SystemColors.ControlDark;
-			this.spritetex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-			this.spritetex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.spritetex.Location = new System.Drawing.Point(177, 27);
-			this.spritetex.Name = "spritetex";
-			this.spritetex.Size = new System.Drawing.Size(94, 94);
-			this.spritetex.TabIndex = 24;
-			// 
-			// health
-			// 
-			this.health.AllowDecimal = false;
-			this.health.AllowNegative = true;
-			this.health.AllowRelative = false;
-			this.health.ButtonStep = 8;
-			this.health.ButtonStepFloat = 0.1F;
-			this.health.ButtonStepsWrapAround = false;
-			this.health.Location = new System.Drawing.Point(98, 76);
-			this.health.Name = "health";
-			this.health.Size = new System.Drawing.Size(72, 24);
-			this.health.StepValues = null;
-			this.health.TabIndex = 23;
-			// 
-			// label10
-			// 
-			this.label10.Location = new System.Drawing.Point(42, 81);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(50, 14);
-			this.label10.TabIndex = 22;
-			this.label10.Text = "Health:";
-			this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// score
-			// 
-			this.score.AllowDecimal = false;
-			this.score.AllowNegative = false;
-			this.score.AllowRelative = false;
-			this.score.ButtonStep = 8;
-			this.score.ButtonStepFloat = 0.1F;
-			this.score.ButtonStepsWrapAround = false;
-			this.score.Location = new System.Drawing.Point(98, 46);
-			this.score.Name = "score";
-			this.score.Size = new System.Drawing.Size(72, 24);
-			this.score.StepValues = null;
-			this.score.TabIndex = 21;
-			// 
-			// label9
-			// 
-			this.label9.Location = new System.Drawing.Point(42, 51);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(50, 14);
-			this.label9.TabIndex = 20;
-			this.label9.Text = "Score:";
-			this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// gravity
-			// 
-			this.gravity.AllowDecimal = true;
-			this.gravity.AllowNegative = true;
-			this.gravity.AllowRelative = false;
-			this.gravity.ButtonStep = 8;
-			this.gravity.ButtonStepFloat = 0.1F;
-			this.gravity.ButtonStepsWrapAround = false;
-			this.gravity.Location = new System.Drawing.Point(98, 16);
-			this.gravity.Name = "gravity";
-			this.gravity.Size = new System.Drawing.Size(72, 24);
-			this.gravity.StepValues = null;
-			this.gravity.TabIndex = 19;
-			// 
-			// groupBox5
-			// 
-			this.groupBox5.Controls.Add(this.scale);
-			this.groupBox5.Controls.Add(this.color);
-			this.groupBox5.Controls.Add(this.alpha);
-			this.groupBox5.Controls.Add(this.label8);
-			this.groupBox5.Controls.Add(this.renderStyle);
-			this.groupBox5.Controls.Add(this.label3);
-			this.groupBox5.Location = new System.Drawing.Point(262, 110);
-			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(276, 141);
-			this.groupBox5.TabIndex = 22;
-			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = " Rendering ";
-			// 
-			// scale
-			// 
-			this.scale.ButtonStep = 0.1F;
-			this.scale.DefaultValue = 1F;
-			this.scale.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.scale.Label = "Scale:";
-			this.scale.Location = new System.Drawing.Point(3, 17);
-			this.scale.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-			this.scale.Name = "scale";
-			this.scale.Size = new System.Drawing.Size(268, 26);
-			this.scale.TabIndex = 31;
-			this.scale.OnValuesChanged += new System.EventHandler(this.scale_OnValuesChanged);
-			// 
-			// color
-			// 
-			this.color.DefaultValue = 0;
-			this.color.Field = "fillcolor";
-			this.color.Label = "Color:";
-			this.color.Location = new System.Drawing.Point(42, 108);
-			this.color.Name = "color";
-			this.color.Size = new System.Drawing.Size(207, 31);
-			this.color.TabIndex = 30;
-			// 
-			// alpha
-			// 
-			this.alpha.AllowDecimal = true;
-			this.alpha.AllowNegative = true;
-			this.alpha.AllowRelative = false;
-			this.alpha.ButtonStep = 8;
-			this.alpha.ButtonStepFloat = 0.1F;
-			this.alpha.ButtonStepsWrapAround = false;
-			this.alpha.Location = new System.Drawing.Point(89, 78);
-			this.alpha.Name = "alpha";
-			this.alpha.Size = new System.Drawing.Size(72, 24);
-			this.alpha.StepValues = null;
-			this.alpha.TabIndex = 23;
-			// 
-			// label8
-			// 
-			this.label8.Location = new System.Drawing.Point(3, 83);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(80, 14);
-			this.label8.TabIndex = 25;
-			this.label8.Text = "Alpha:";
-			this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// renderStyle
-			// 
-			this.renderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.renderStyle.FormattingEnabled = true;
-			this.renderStyle.Location = new System.Drawing.Point(89, 50);
-			this.renderStyle.Name = "renderStyle";
-			this.renderStyle.Size = new System.Drawing.Size(156, 22);
-			this.renderStyle.TabIndex = 24;
-			// 
-			// label3
-			// 
-			this.label3.Location = new System.Drawing.Point(3, 53);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(80, 14);
-			this.label3.TabIndex = 23;
-			this.label3.Text = "Render style:";
-			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// groupBox4
 			// 
@@ -548,7 +393,7 @@
 			this.groupBox4.Controls.Add(this.posY);
 			this.groupBox4.Controls.Add(this.posZ);
 			this.groupBox4.Controls.Add(this.zlabel);
-			this.groupBox4.Location = new System.Drawing.Point(262, 6);
+			this.groupBox4.Location = new System.Drawing.Point(262, 298);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(220, 98);
 			this.groupBox4.TabIndex = 21;
@@ -640,7 +485,8 @@
 			// 
 			// tabeffects
 			// 
-			this.tabeffects.Controls.Add(this.settingsgroup);
+			this.tabeffects.Controls.Add(this.groupBox6);
+			this.tabeffects.Controls.Add(this.groupBox5);
 			this.tabeffects.Controls.Add(this.actiongroup);
 			this.tabeffects.Controls.Add(this.groupBox3);
 			this.tabeffects.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -649,46 +495,187 @@
 			this.tabeffects.Padding = new System.Windows.Forms.Padding(3);
 			this.tabeffects.Size = new System.Drawing.Size(627, 402);
 			this.tabeffects.TabIndex = 1;
-			this.tabeffects.Text = "Action / ID / Flags";
+			this.tabeffects.Text = "Tag / Action / Misc.";
 			this.tabeffects.UseVisualStyleBackColor = true;
 			// 
-			// settingsgroup
+			// groupBox6
 			// 
-			this.settingsgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
-			this.settingsgroup.Controls.Add(this.missingflags);
-			this.settingsgroup.Controls.Add(this.flags);
-			this.settingsgroup.Location = new System.Drawing.Point(6, 238);
-			this.settingsgroup.Name = "settingsgroup";
-			this.settingsgroup.Size = new System.Drawing.Size(615, 158);
-			this.settingsgroup.TabIndex = 23;
-			this.settingsgroup.TabStop = false;
-			this.settingsgroup.Text = " Flags ";
+			this.groupBox6.Controls.Add(this.conversationID);
+			this.groupBox6.Controls.Add(this.labelID);
+			this.groupBox6.Controls.Add(this.health);
+			this.groupBox6.Controls.Add(this.label10);
+			this.groupBox6.Controls.Add(this.score);
+			this.groupBox6.Controls.Add(this.label9);
+			this.groupBox6.Controls.Add(this.gravity);
+			this.groupBox6.Controls.Add(this.labelGravity);
+			this.groupBox6.Location = new System.Drawing.Point(288, 238);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(333, 158);
+			this.groupBox6.TabIndex = 23;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = " Behaviour ";
 			// 
-			// missingflags
+			// conversationID
 			// 
-			this.missingflags.BackColor = System.Drawing.SystemColors.Window;
-			this.missingflags.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
-			this.missingflags.Location = new System.Drawing.Point(42, -1);
-			this.missingflags.Name = "missingflags";
-			this.missingflags.Size = new System.Drawing.Size(16, 16);
-			this.missingflags.TabIndex = 5;
-			this.missingflags.TabStop = false;
-			this.missingflags.Visible = false;
+			this.conversationID.AllowDecimal = false;
+			this.conversationID.AllowNegative = false;
+			this.conversationID.AllowRelative = false;
+			this.conversationID.ButtonStep = 1;
+			this.conversationID.ButtonStepFloat = 1F;
+			this.conversationID.ButtonStepsWrapAround = false;
+			this.conversationID.Location = new System.Drawing.Point(98, 112);
+			this.conversationID.Name = "conversationID";
+			this.conversationID.Size = new System.Drawing.Size(72, 24);
+			this.conversationID.StepValues = null;
+			this.conversationID.TabIndex = 26;
 			// 
-			// flags
+			// labelID
 			// 
-			this.flags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.flags.AutoScroll = true;
-			this.flags.Columns = 3;
-			this.flags.Location = new System.Drawing.Point(6, 19);
-			this.flags.Name = "flags";
-			this.flags.Size = new System.Drawing.Size(603, 132);
-			this.flags.TabIndex = 0;
-			this.flags.VerticalSpacing = 1;
-			this.flags.OnValueChanged += new System.EventHandler(this.flags_OnValueChanged);
+			this.labelID.AutoSize = true;
+			this.labelID.Location = new System.Drawing.Point(6, 117);
+			this.labelID.Name = "labelID";
+			this.labelID.Size = new System.Drawing.Size(86, 14);
+			this.labelID.TabIndex = 25;
+			this.labelID.Text = "Conversation ID:";
+			// 
+			// health
+			// 
+			this.health.AllowDecimal = false;
+			this.health.AllowNegative = true;
+			this.health.AllowRelative = false;
+			this.health.ButtonStep = 8;
+			this.health.ButtonStepFloat = 0.1F;
+			this.health.ButtonStepsWrapAround = false;
+			this.health.Location = new System.Drawing.Point(98, 80);
+			this.health.Name = "health";
+			this.health.Size = new System.Drawing.Size(72, 24);
+			this.health.StepValues = null;
+			this.health.TabIndex = 23;
+			// 
+			// label10
+			// 
+			this.label10.Location = new System.Drawing.Point(42, 85);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(50, 14);
+			this.label10.TabIndex = 22;
+			this.label10.Text = "Health:";
+			this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// score
+			// 
+			this.score.AllowDecimal = false;
+			this.score.AllowNegative = false;
+			this.score.AllowRelative = false;
+			this.score.ButtonStep = 8;
+			this.score.ButtonStepFloat = 0.1F;
+			this.score.ButtonStepsWrapAround = false;
+			this.score.Location = new System.Drawing.Point(98, 48);
+			this.score.Name = "score";
+			this.score.Size = new System.Drawing.Size(72, 24);
+			this.score.StepValues = null;
+			this.score.TabIndex = 21;
+			// 
+			// label9
+			// 
+			this.label9.Location = new System.Drawing.Point(42, 53);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(50, 14);
+			this.label9.TabIndex = 20;
+			this.label9.Text = "Score:";
+			this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// gravity
+			// 
+			this.gravity.AllowDecimal = true;
+			this.gravity.AllowNegative = true;
+			this.gravity.AllowRelative = false;
+			this.gravity.ButtonStep = 8;
+			this.gravity.ButtonStepFloat = 0.1F;
+			this.gravity.ButtonStepsWrapAround = false;
+			this.gravity.Location = new System.Drawing.Point(98, 16);
+			this.gravity.Name = "gravity";
+			this.gravity.Size = new System.Drawing.Size(72, 24);
+			this.gravity.StepValues = null;
+			this.gravity.TabIndex = 19;
+			// 
+			// groupBox5
+			// 
+			this.groupBox5.Controls.Add(this.scale);
+			this.groupBox5.Controls.Add(this.color);
+			this.groupBox5.Controls.Add(this.alpha);
+			this.groupBox5.Controls.Add(this.label8);
+			this.groupBox5.Controls.Add(this.renderStyle);
+			this.groupBox5.Controls.Add(this.label3);
+			this.groupBox5.Location = new System.Drawing.Point(6, 238);
+			this.groupBox5.Name = "groupBox5";
+			this.groupBox5.Size = new System.Drawing.Size(276, 158);
+			this.groupBox5.TabIndex = 22;
+			this.groupBox5.TabStop = false;
+			this.groupBox5.Text = " Rendering ";
+			// 
+			// scale
+			// 
+			this.scale.ButtonStep = 0.1F;
+			this.scale.DefaultValue = 1F;
+			this.scale.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.scale.Label = "Scale:";
+			this.scale.Location = new System.Drawing.Point(3, 17);
+			this.scale.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.scale.Name = "scale";
+			this.scale.Size = new System.Drawing.Size(268, 26);
+			this.scale.TabIndex = 31;
+			this.scale.OnValuesChanged += new System.EventHandler(this.scale_OnValuesChanged);
+			// 
+			// color
+			// 
+			this.color.DefaultValue = 0;
+			this.color.Field = "fillcolor";
+			this.color.Label = "Color:";
+			this.color.Location = new System.Drawing.Point(42, 108);
+			this.color.Name = "color";
+			this.color.Size = new System.Drawing.Size(207, 31);
+			this.color.TabIndex = 30;
+			// 
+			// alpha
+			// 
+			this.alpha.AllowDecimal = true;
+			this.alpha.AllowNegative = true;
+			this.alpha.AllowRelative = false;
+			this.alpha.ButtonStep = 8;
+			this.alpha.ButtonStepFloat = 0.1F;
+			this.alpha.ButtonStepsWrapAround = false;
+			this.alpha.Location = new System.Drawing.Point(89, 78);
+			this.alpha.Name = "alpha";
+			this.alpha.Size = new System.Drawing.Size(72, 24);
+			this.alpha.StepValues = null;
+			this.alpha.TabIndex = 23;
+			// 
+			// label8
+			// 
+			this.label8.Location = new System.Drawing.Point(3, 83);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(80, 14);
+			this.label8.TabIndex = 25;
+			this.label8.Text = "Alpha:";
+			this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// renderStyle
+			// 
+			this.renderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.renderStyle.FormattingEnabled = true;
+			this.renderStyle.Location = new System.Drawing.Point(89, 50);
+			this.renderStyle.Name = "renderStyle";
+			this.renderStyle.Size = new System.Drawing.Size(156, 22);
+			this.renderStyle.TabIndex = 24;
+			// 
+			// label3
+			// 
+			this.label3.Location = new System.Drawing.Point(3, 53);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(80, 14);
+			this.label3.TabIndex = 23;
+			this.label3.Text = "Render style:";
+			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// actiongroup
 			// 
@@ -899,7 +886,7 @@
 			// 
 			// tagSelector
 			// 
-			this.tagSelector.Location = new System.Drawing.Point(6, 19);
+			this.tagSelector.Location = new System.Drawing.Point(6, 21);
 			this.tagSelector.Name = "tagSelector";
 			this.tagSelector.Size = new System.Drawing.Size(569, 35);
 			this.tagSelector.TabIndex = 8;
@@ -1017,17 +1004,17 @@
 			this.groupBox2.ResumeLayout(false);
 			this.tabs.ResumeLayout(false);
 			this.tabproperties.ResumeLayout(false);
+			this.settingsgroup.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.missingflags)).EndInit();
 			this.groupBox9.ResumeLayout(false);
 			this.groupBox8.ResumeLayout(false);
 			this.groupBox7.ResumeLayout(false);
-			this.groupBox6.ResumeLayout(false);
-			this.groupBox6.PerformLayout();
-			this.groupBox5.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
 			this.tabeffects.ResumeLayout(false);
-			this.settingsgroup.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.missingflags)).EndInit();
+			this.groupBox6.ResumeLayout(false);
+			this.groupBox6.PerformLayout();
+			this.groupBox5.ResumeLayout(false);
 			this.actiongroup.ResumeLayout(false);
 			this.actiongroup.PerformLayout();
 			this.hexenpanel.ResumeLayout(false);
@@ -1101,8 +1088,7 @@
         private System.Windows.Forms.Label label10;
         private Controls.ButtonsNumericTextbox score;
         private System.Windows.Forms.Label label9;
-        private GZBuilder.Controls.ColorFieldsControl color;
-        private System.Windows.Forms.Panel spritetex;
+		private GZBuilder.Controls.ColorFieldsControl color;
         private System.Windows.Forms.GroupBox settingsgroup;
         private Controls.CheckboxArrayControl flags;
         private Controls.ButtonsNumericTextbox conversationID;
