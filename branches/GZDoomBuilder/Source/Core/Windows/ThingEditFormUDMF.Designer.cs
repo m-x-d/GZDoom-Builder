@@ -962,9 +962,9 @@
 			this.hintlabel.AutoSize = true;
 			this.hintlabel.Location = new System.Drawing.Point(28, 451);
 			this.hintlabel.Name = "hintlabel";
-			this.hintlabel.Size = new System.Drawing.Size(310, 14);
+			this.hintlabel.Size = new System.Drawing.Size(377, 14);
 			this.hintlabel.TabIndex = 4;
-			this.hintlabel.Text = "Select several thing types to randomly assign them to selection";
+			this.hintlabel.Text = "Select categories or several thing types to randomly assign them to selection";
 			// 
 			// tooltip
 			// 

@@ -1014,9 +1014,11 @@
     <None Include="Resources\Link.png" />
     <EmbeddedResource Include="Resources\MissingThing.png" />
     <None Include="Resources\MCrash.png" />
+    <None Include="Resources\MixedThings.png" />
     <Content Include="Resources\Model.png" />
     <None Include="Resources\ModelDisabled.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\ThingCategory.png" />
     <None Include="Resources\ScreenshotActiveWindow.png" />
     <None Include="Resources\Screenshot.png" />
     <None Include="Resources\PuzzlePiece.png" />

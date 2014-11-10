@@ -1509,7 +1509,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void engineItem_Click(object sender, EventArgs e) {
+		private void engineItem_Click(object sender, EventArgs e)
+		{
 			General.Map.ConfigSettings.CurrentEngineIndex = (int)(((ToolStripMenuItem)sender).Tag);
 			General.Map.ConfigSettings.Changed = true;
 			UpdateSkills();
