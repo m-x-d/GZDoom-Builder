@@ -163,12 +163,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components;
 
 		/// <summary>
 		/// Used to make sure that SelectedNode can only be used from within this class.
 		/// </summary>
-		private bool blnInternalCall = false;
+		private bool blnInternalCall;
 
 		/// <summary>
 		/// Hashtable that contains all selected nodes.
@@ -179,7 +179,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// Track whether the total SelectedNodes changed across multiple operations
 		/// for SelectionsChanged event
 		/// </summary>
-		private bool blnSelectionChanged = false;
+		private bool blnSelectionChanged;
 
 		/// <summary>
 		/// Hashtable to preserve Node's original colors (colors can be set on the TreeView, or individual nodes)
@@ -190,28 +190,28 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// <summary>
 		/// Keeps track of node that has to be pu in edit mode.
 		/// </summary>
-		private TreeNode tnNodeToStartEditOn = null;
+		private TreeNode tnNodeToStartEditOn;
 
 		/// <summary>
 		/// Remembers whether mouse click on a node was single or double click.
 		/// </summary>
-		private bool blnWasDoubleClick = false;
+		private bool blnWasDoubleClick;
 
 		/// <summary>
 		/// Keeps track of most recent selected node.
 		/// </summary>
-		private TreeNode tnMostRecentSelectedNode = null;
+		private TreeNode tnMostRecentSelectedNode;
 
 		/// <summary>
 		/// Keeps track of the selection mirror point; this is the last selected node without SHIFT key pressed.
 		/// It is used as the mirror node during SHIFT selection.
 		/// </summary>
-		private TreeNode tnSelectionMirrorPoint = null;
+		private TreeNode tnSelectionMirrorPoint;
 
 		/// <summary>
 		/// Keeps track of the number of mouse clicks.
 		/// </summary>
-		private int intMouseClicks = 0;
+		private int intMouseClicks;
 
 		/// <summary>
 		/// Selection mode.
@@ -221,7 +221,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// <summary>
 		/// Backcolor for selected nodes.
 		/// </summary>
-		private Color selectionBackColor = System.Drawing.SystemColors.Highlight;
+		private Color selectionBackColor = SystemColors.Highlight;
 
 		/// <summary>
 		/// Keeps track whether a node click has been handled by the mouse down event. This is almost always the
@@ -229,17 +229,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// down event because we might want to drag the node and if that's the case, node should not go in edit 
 		/// mode.
 		/// </summary>
-		private bool blnNodeProcessedOnMouseDown = false;
+		private bool blnNodeProcessedOnMouseDown;
 
 		/// <summary>
 		/// Holds node that needs to be flashed.
 		/// </summary>
-		private TreeNode tnToFlash = null;
+		private TreeNode tnToFlash;
 
 		/// <summary>
 		/// Keeps track of the first selected node when selection has begun with the keyboard.
 		/// </summary>
-		private TreeNode tnKeysStartNode = null;
+		private TreeNode tnKeysStartNode;
 
 		#endregion
 
@@ -907,6 +907,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void InitializeComponent()
 		{
 			components = new System.ComponentModel.Container();
+			DoubleBuffered = true; //mxd
 		}
 
 		#endregion

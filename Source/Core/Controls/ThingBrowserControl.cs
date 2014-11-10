@@ -42,6 +42,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Variables
 
 		private List<TreeNode> nodes;
+		private List<TreeNode> validnodes; //mxd
 		private ThingTypeInfo thinginfo;
 		private bool doupdatenode;
 		private bool doupdatetextbox;
@@ -70,6 +71,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Go for all predefined categories
 			typelist.Nodes.Clear();
 			nodes = new List<TreeNode>();
+			validnodes = new List<TreeNode>(); //mxd
 			foreach(ThingCategory tc in General.Map.Data.ThingCategories)
 			{
 				// Create category
@@ -116,6 +118,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Clear selection
 			typelist.SelectedNodes.Clear(); //mxd
+			validnodes.Clear(); //mxd
 			typeid.Text = "";
 
 			// Collapse nodes
@@ -128,17 +131,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// Result
 		public int GetResult(int original)
 		{
-			//mxd
-			if(typelist.SelectionMode == TreeViewSelectionMode.MultiSelectSameLevel && typelist.SelectedNodes.Count > 1) 
+			//mxd. Get a random ThingTypeInfo from valid nodes?
+			if(typelist.SelectionMode == TreeViewSelectionMode.MultiSelectSameLevel && validnodes.Count > 0) 
 			{
-				List<TreeNode> validNodes = GetValidNodes();
-
-				//get a random ThingTypeInfo from valid nodes
-				if(validNodes.Count > 1) 
-				{
-					ThingTypeInfo ti = validNodes[General.Random(0, validNodes.Count - 1)].Tag as ThingTypeInfo;
-					return ti.Index;
-				}
+				return (validnodes[General.Random(0, validnodes.Count - 1)].Tag as ThingTypeInfo).Index;
 			}
 			
 			return typeid.GetResult(original);
@@ -147,42 +143,54 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private List<TreeNode> GetValidNodes() 
 		{
-			List<TreeNode> validNodes = new List<TreeNode>();
+			Dictionary<string, TreeNode> vn = new Dictionary<string, TreeNode>(StringComparer.Ordinal);
+			foreach(TreeNode n in typelist.SelectedNodes) GetValidNodes(n, ref vn);
+			return new List<TreeNode>(vn.Values);
+		}
 
-			foreach(TreeNode n in typelist.SelectedNodes) 
+		private void GetValidNodes(TreeNode root, ref Dictionary<string, TreeNode> vn)
+		{
+			if (root.Nodes.Count == 0)
 			{
-				if((n.Nodes.Count == 0) && (n.Tag is ThingTypeInfo)) validNodes.Add(n);
+				if(root.Tag is ThingTypeInfo && !vn.ContainsKey(root.Text)) vn.Add(root.Text, root);
 			}
-
-			return validNodes;
+			else
+			{
+				foreach(TreeNode n in root.Nodes) GetValidNodes(n, ref vn);
+			}
 		}
 
 		// Update preview image (mxd)
 		private void UpdateThingSprite() 
 		{
 			if(General.Map == null) return;
+			
 			if(thinginfo != null) 
 			{
 				if(thinginfo.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) &&
 				   (thinginfo.Sprite.Length > DataManager.INTERNAL_PREFIX.Length)) 
 				{
 					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetBitmap());
+					return;
 				} 
-				else if((thinginfo.Sprite.Length < 9) && (thinginfo.Sprite.Length > 0))
+
+				if((thinginfo.Sprite.Length < 9) && (thinginfo.Sprite.Length > 0))
 				{
 					ImageData sprite = General.Map.Data.GetSpriteImage(thinginfo.Sprite);
 					General.DisplayZoomedImage(spritetex, sprite.GetPreview());
 					if(!sprite.IsPreviewLoaded) updatetimer.Start();
+					return;
 				}
-				else 
-				{
-					spritetex.BackgroundImage = null;
-				}
-			} 
-			else 
-			{
-				spritetex.BackgroundImage = null;
 			}
+
+			//Show Mixed Things icon?
+			if(validnodes.Count > 1)
+			{
+				spritetex.BackgroundImage = Properties.Resources.MixedThings;
+				return;
+			}
+
+			spritetex.BackgroundImage = null;
 		}
 
 		#endregion
@@ -205,13 +213,16 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		// Thing type selection changed
-		private void typelist_AfterSelect(object sender, TreeViewEventArgs e)
+		private void typelist_SelectionsChanged(object sender, EventArgs e) 
 		{
 			doubleclickednode = null; //mxd
 			if (!doupdatetextbox) return;
 
+			//mxd
+			validnodes = GetValidNodes();
+
 			//mxd. Got a valid multiselection? Well, can't show any useful info about that...
-			if(typelist.SelectionMode == TreeViewSelectionMode.MultiSelectSameLevel && typelist.SelectedNodes.Count > 1 && GetValidNodes().Count > 1) 
+			if(typelist.SelectionMode == TreeViewSelectionMode.MultiSelectSameLevel && validnodes.Count > 1) 
 			{
 				doupdatenode = false;
 				if (!string.IsNullOrEmpty(typeid.Text))
@@ -227,21 +238,22 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 				doupdatenode = true;
 			}
-			else if(typelist.SelectedNodes.Count > 0) //Anything selected?
+			else if(validnodes.Count == 1) //Anything selected?
 			{
-				TreeNode n = typelist.SelectedNodes[0];
+				// Show info
+				doupdatenode = false;
+				typeid.Text = (validnodes[0].Tag as ThingTypeInfo).Index.ToString();
+				doupdatenode = true;
 
-				// Node is a child node?
-				if ((n.Nodes.Count == 0) && (n.Tag is ThingTypeInfo))
+				// Set as double-clicked only if a single child node is selected
+				if (typelist.SelectedNodes.Count == 1 && typelist.SelectedNodes[0].Nodes.Count == 0)
 				{
-					ThingTypeInfo ti = (n.Tag as ThingTypeInfo);
-
-					// Show info
-					doupdatenode = false;
-					typeid.Text = ti.Index.ToString();
-					doupdatenode = true;
-					doubleclickednode = n; //mxd
+					doubleclickednode = validnodes[0]; //mxd
 				}
+			}
+			else
+			{
+				UpdateThingSprite(); //mxd
 			}
 		}
 
@@ -280,6 +292,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					doupdatetextbox = false;
 					typelist.SelectedNodes.Clear();
+					validnodes.Clear(); //mxd
 					foreach(TreeNode n in nodes)
 					{
 						// Matching node?
@@ -301,7 +314,11 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				thinginfo = null;
-				if(doupdatenode) typelist.SelectedNodes.Clear();
+				if (doupdatenode)
+				{
+					typelist.SelectedNodes.Clear();
+					validnodes.Clear(); //mxd
+				}
 			}
 
 			// No known thing?
@@ -352,6 +369,7 @@ namespace CodeImp.DoomBuilder.Controls
 				// Go for all predefined categories
 				typelist.SelectedNodes.Clear();
 				typelist.Nodes.Clear();
+				validnodes.Clear();
 
 				string match = tbFilter.Text.ToUpperInvariant();
 				foreach(TreeNode node in nodes)

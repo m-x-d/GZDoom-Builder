@@ -375,6 +375,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap MixedThings {
+            get {
+                object obj = ResourceManager.GetObject("MixedThings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap MLogo {
             get {
                 object obj = ResourceManager.GetObject("MLogo", resourceCulture);
