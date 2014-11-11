@@ -60,13 +60,15 @@ namespace CodeImp.DoomBuilder.IO
 						
 						// Load configuration from stream
 						config.InputConfiguration(udmfcfgreader.ReadToEnd());
-						string[] elements = new string[] { "vertex", "linedef", "sidedef", "sector", "thing" };
+						string[] elements = new[] { "vertex", "linedef", "sidedef", "sector", "thing" };
 
-						foreach(string elementname in elements) {
+						foreach(string elementname in elements) 
+						{
 							IDictionary dic = config.ReadSetting("uifields." + elementname, new Hashtable());
 
 							Dictionary<string, UniversalType> values = new Dictionary<string, UniversalType>(StringComparer.Ordinal);
-							foreach(DictionaryEntry de in dic) {
+							foreach(DictionaryEntry de in dic) 
+							{
 								values.Add(de.Key.ToString(), (UniversalType)de.Value);
 							}
 
@@ -166,7 +168,7 @@ namespace CodeImp.DoomBuilder.IO
 			udmfwriter.Write(map, memstream, manager.Config.EngineName);
 
 			// Find insert position and remove old lump
-			int insertpos = MapManager.RemoveSpecificLump(wad, "TEXTMAP", position, MapManager.TEMP_MAP_HEADER, manager.Config.MapLumpNames);
+			int insertpos = MapManager.RemoveSpecificLump(wad, "TEXTMAP", position, MapManager.TEMP_MAP_HEADER, manager.Config.MapLumps);
 			if(insertpos == -1) insertpos = position + 1;
 			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 

@@ -83,7 +83,6 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly List<SkillInfo> skills;
 
 		// Map lumps
-		private readonly IDictionary maplumpnames;	// This is old, we should use maplumps instead
 		private readonly Dictionary<string, MapLumpInfo> maplumps;
 		
 		// Texture/flat/voxel sources
@@ -188,7 +187,6 @@ namespace CodeImp.DoomBuilder.Config
 		public List<SkillInfo> Skills { get { return skills; } }
 		
 		// Map lumps
-		public IDictionary MapLumpNames { get { return maplumpnames; } }
 		public Dictionary<string, MapLumpInfo> MapLumps { get { return maplumps; } }
 
 		// Texture/flat/voxel sources
@@ -334,9 +332,6 @@ namespace CodeImp.DoomBuilder.Config
 			if(obj is int) upperunpeggedflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else upperunpeggedflag = obj.ToString();
 			obj = cfg.ReadSettingObject("lowerunpeggedflag", 0);
 			if(obj is int) lowerunpeggedflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else lowerunpeggedflag = obj.ToString();
-			
-			// Get map lumps
-			maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
 
 			// Get texture and flat sources
 			textureranges = cfg.ReadSetting("textures", new Hashtable());

@@ -109,16 +109,16 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(MapLumpInfo maplumpinfo in General.Map.Config.MapLumps.Values)
 			{
 				// Is this a script lump?
-				if(maplumpinfo.script != null)
+				if(maplumpinfo.Script != null)
 				{
 					// Load this!
-					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.name, maplumpinfo.script);
+					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.Name, maplumpinfo.Script);
 					tabs.TabPages.Add(t);
 				} 
-				else if(maplumpinfo.scriptbuild) //mxd
+				else if(maplumpinfo.ScriptBuild) //mxd
 				{
 					// Load this!
-					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.name, General.CompiledScriptConfigs[General.Map.Options.ScriptCompiler]);
+					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.Name, General.CompiledScriptConfigs[General.Map.Options.ScriptCompiler]);
 					tabs.TabPages.Add(t);
 				}
 			}

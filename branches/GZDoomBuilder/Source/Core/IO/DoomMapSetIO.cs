@@ -17,9 +17,9 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Types;
@@ -91,17 +91,14 @@ namespace CodeImp.DoomBuilder.IO
 		// This reads a map from the file and returns a MapSet
 		public override MapSet Read(MapSet map, string mapname)
 		{
-			Dictionary<int, Vertex> vertexlink;
-			Dictionary<int, Sector> sectorlink;
-			
 			// Find the index where first map lump begins
 			int firstindex = wad.FindLumpIndex(mapname) + 1;
 
 			// Read vertices
-			vertexlink = ReadVertices(map, firstindex);
+			Dictionary<int, Vertex> vertexlink = ReadVertices(map, firstindex);
 
 			// Read sectors
-			sectorlink = ReadSectors(map, firstindex);
+			Dictionary<int, Sector> sectorlink = ReadSectors(map, firstindex);
 
 			// Read linedefs and sidedefs
 			ReadLinedefs(map, firstindex, vertexlink, sectorlink);
@@ -119,34 +116,28 @@ namespace CodeImp.DoomBuilder.IO
 		// This reads the THINGS from WAD file
 		private void ReadThings(MapSet map, int firstindex)
 		{
-			MemoryStream mem;
-			BinaryReader reader;
-			int num, i, x, y, type, flags, angle;
-			Dictionary<string, bool> stringflags;
-			Thing t;
-			
 			// Get the lump from wad file
 			Lump lump = wad.FindLump("THINGS", firstindex);
 			if(lump == null) throw new Exception("Could not find required lump THINGS!");
 			
 			// Prepare to read the items
-			mem = new MemoryStream(lump.Stream.ReadAllBytes());
-			num = (int)lump.Stream.Length / 10;
-			reader = new BinaryReader(mem);
+			MemoryStream mem = new MemoryStream(lump.Stream.ReadAllBytes());
+			int num = (int)lump.Stream.Length / 10;
+			BinaryReader reader = new BinaryReader(mem);
 			
 			// Read items from the lump
 			map.SetCapacity(0, 0, 0, 0, map.Things.Count + num);
-			for(i = 0; i < num; i++)
+			for(int i = 0; i < num; i++)
 			{
 				// Read properties from stream
-				x = reader.ReadInt16();
-				y = reader.ReadInt16();
-				angle = reader.ReadInt16();
-				type = reader.ReadUInt16();
-				flags = reader.ReadUInt16();
+				int x = reader.ReadInt16();
+				int y = reader.ReadInt16();
+				int angle = reader.ReadInt16();
+				int type = reader.ReadUInt16();
+				int flags = reader.ReadUInt16();
 				
 				// Make string flags
-				stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
+				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				foreach(KeyValuePair<string, string> f in manager.Config.ThingFlags)
 				{
 					int fnum;
@@ -154,7 +145,7 @@ namespace CodeImp.DoomBuilder.IO
 				}
 				
 				// Create new item
-				t = map.CreateThing();
+				Thing t = map.CreateThing();
 				t.Update(type, x, y, 0, angle, 0, 0, 1.0f, 1.0f, stringflags, 0, 0, new int[Thing.NUM_ARGS]);
 			}
 
@@ -166,34 +157,28 @@ namespace CodeImp.DoomBuilder.IO
 		// Returns a lookup table with indices
 		private Dictionary<int, Vertex> ReadVertices(MapSet map, int firstindex)
 		{
-			MemoryStream mem;
-			Dictionary<int, Vertex> link;
-			BinaryReader reader;
-			int num, i, x, y;
-			Vertex v;
-			
 			// Get the lump from wad file
 			Lump lump = wad.FindLump("VERTEXES", firstindex);
 			if(lump == null) throw new Exception("Could not find required lump VERTEXES!");
 
 			// Prepare to read the items
-			mem = new MemoryStream(lump.Stream.ReadAllBytes());
-			num = (int)lump.Stream.Length / 4;
-			reader = new BinaryReader(mem);
+			MemoryStream mem = new MemoryStream(lump.Stream.ReadAllBytes());
+			int num = (int)lump.Stream.Length / 4;
+			BinaryReader reader = new BinaryReader(mem);
 
 			// Create lookup table
-			link = new Dictionary<int, Vertex>(num);
+			Dictionary<int, Vertex> link = new Dictionary<int, Vertex>(num);
 
 			// Read items from the lump
 			map.SetCapacity(map.Vertices.Count + num, 0, 0, 0, 0);
-			for(i = 0; i < num; i++)
+			for(int i = 0; i < num; i++)
 			{
 				// Read properties from stream
-				x = reader.ReadInt16();
-				y = reader.ReadInt16();
+				int x = reader.ReadInt16();
+				int y = reader.ReadInt16();
 
 				// Create new item
-				v = map.CreateVertex(new Vector2D(x, y));
+				Vertex v = map.CreateVertex(new Vector2D(x, y));
 				
 				// Add it to the lookup table
 				link.Add(i, v);
@@ -210,40 +195,33 @@ namespace CodeImp.DoomBuilder.IO
 		// Returns a lookup table with indices
 		private Dictionary<int, Sector> ReadSectors(MapSet map, int firstindex)
 		{
-			MemoryStream mem;
-			Dictionary<int, Sector> link;
-			BinaryReader reader;
-			int num, i, hfloor, hceil, bright, special, tag;
-			string tfloor, tceil;
-			Sector s;
-
 			// Get the lump from wad file
 			Lump lump = wad.FindLump("SECTORS", firstindex);
 			if(lump == null) throw new Exception("Could not find required lump SECTORS!");
 
 			// Prepare to read the items
-			mem = new MemoryStream(lump.Stream.ReadAllBytes());
-			num = (int)lump.Stream.Length / 26;
-			reader = new BinaryReader(mem);
+			MemoryStream mem = new MemoryStream(lump.Stream.ReadAllBytes());
+			int num = (int)lump.Stream.Length / 26;
+			BinaryReader reader = new BinaryReader(mem);
 
 			// Create lookup table
-			link = new Dictionary<int, Sector>(num);
+			Dictionary<int, Sector> link = new Dictionary<int, Sector>(num);
 
 			// Read items from the lump
 			map.SetCapacity(0, 0, 0, map.Sectors.Count + num, 0);
-			for(i = 0; i < num; i++)
+			for(int i = 0; i < num; i++)
 			{
 				// Read properties from stream
-				hfloor = reader.ReadInt16();
-				hceil = reader.ReadInt16();
-				tfloor = Lump.MakeNormalName(reader.ReadBytes(8), WAD.ENCODING);
-				tceil = Lump.MakeNormalName(reader.ReadBytes(8), WAD.ENCODING);
-				bright = reader.ReadInt16();
-				special = reader.ReadUInt16();
-				tag = reader.ReadUInt16();
+				int hfloor = reader.ReadInt16();
+				int hceil = reader.ReadInt16();
+				string tfloor = Lump.MakeNormalName(reader.ReadBytes(8), WAD.ENCODING);
+				string tceil = Lump.MakeNormalName(reader.ReadBytes(8), WAD.ENCODING);
+				int bright = reader.ReadInt16();
+				int special = reader.ReadUInt16();
+				int tag = reader.ReadUInt16();
 				
 				// Create new item
-				s = map.CreateSector();
+				Sector s = map.CreateSector();
 				s.Update(hfloor, hceil, tfloor, tceil, special, tag, bright);
 
 				// Add it to the lookup table
@@ -261,47 +239,37 @@ namespace CodeImp.DoomBuilder.IO
 		private void ReadLinedefs(MapSet map, int firstindex,
 			Dictionary<int, Vertex> vertexlink, Dictionary<int, Sector> sectorlink)
 		{
-			MemoryStream linedefsmem, sidedefsmem;
-			BinaryReader readline, readside;
-			Lump linedefslump, sidedefslump;
-			int num, numsides, i, offsetx, offsety, v1, v2;
-			int s1, s2, flags, action, tag, sc;
-			Dictionary<string, bool> stringflags;
-			string thigh, tmid, tlow;
-			Linedef l;
-			Sidedef s;
-
 			// Get the linedefs lump from wad file
-			linedefslump = wad.FindLump("LINEDEFS", firstindex);
+			Lump linedefslump = wad.FindLump("LINEDEFS", firstindex);
 			if(linedefslump == null) throw new Exception("Could not find required lump LINEDEFS!");
 
 			// Get the sidedefs lump from wad file
-			sidedefslump = wad.FindLump("SIDEDEFS", firstindex);
+			Lump sidedefslump = wad.FindLump("SIDEDEFS", firstindex);
 			if(sidedefslump == null) throw new Exception("Could not find required lump SIDEDEFS!");
 
 			// Prepare to read the items
-			linedefsmem = new MemoryStream(linedefslump.Stream.ReadAllBytes());
-			sidedefsmem = new MemoryStream(sidedefslump.Stream.ReadAllBytes());
-			num = (int)linedefslump.Stream.Length / 14;
-			numsides = (int)sidedefslump.Stream.Length / 30;
-			readline = new BinaryReader(linedefsmem);
-			readside = new BinaryReader(sidedefsmem);
+			MemoryStream linedefsmem = new MemoryStream(linedefslump.Stream.ReadAllBytes());
+			MemoryStream sidedefsmem = new MemoryStream(sidedefslump.Stream.ReadAllBytes());
+			int num = (int)linedefslump.Stream.Length / 14;
+			int numsides = (int)sidedefslump.Stream.Length / 30;
+			BinaryReader readline = new BinaryReader(linedefsmem);
+			BinaryReader readside = new BinaryReader(sidedefsmem);
 
 			// Read items from the lump
 			map.SetCapacity(0, map.Linedefs.Count + num, map.Sidedefs.Count + numsides, 0, 0);
-			for(i = 0; i < num; i++)
+			for(int i = 0; i < num; i++)
 			{
 				// Read properties from stream
-				v1 = readline.ReadUInt16();
-				v2 = readline.ReadUInt16();
-				flags = readline.ReadUInt16();
-				action = readline.ReadUInt16();
-				tag = readline.ReadUInt16();
-				s1 = readline.ReadUInt16();
-				s2 = readline.ReadUInt16();
+				int v1 = readline.ReadUInt16();
+				int v2 = readline.ReadUInt16();
+				int flags = readline.ReadUInt16();
+				int action = readline.ReadUInt16();
+				int tag = readline.ReadUInt16();
+				int s1 = readline.ReadUInt16();
+				int s2 = readline.ReadUInt16();
 
 				// Make string flags
-				stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
+				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				foreach(string f in manager.Config.SortedLinedefFlags)
 				{
 					int fnum;
@@ -314,9 +282,13 @@ namespace CodeImp.DoomBuilder.IO
 					// Check if not zero-length
 					if(Vector2D.ManhattanDistance(vertexlink[v1].Position, vertexlink[v2].Position) > 0.0001f)
 					{
-						l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
+						Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
 						l.Update(stringflags, 0, tag, action, new int[Linedef.NUM_ARGS]);
 						l.UpdateCache();
+
+						string thigh, tmid, tlow;
+						int offsetx, offsety, sc;
+						Sidedef s;
 
 						// Line has a front side?
 						if(s1 != ushort.MaxValue)
@@ -414,31 +386,25 @@ namespace CodeImp.DoomBuilder.IO
 			
 			// Write lumps to wad (note the backwards order because they
 			// are all inserted at position+1 when not found)
-			WriteSectors(map, position, manager.Config.MapLumpNames);
-			WriteVertices(map, position, manager.Config.MapLumpNames);
-			WriteSidedefs(map, position, manager.Config.MapLumpNames, sectorids);
-			WriteLinedefs(map, position, manager.Config.MapLumpNames, sidedefids, vertexids);
-			WriteThings(map, position, manager.Config.MapLumpNames);
+			WriteSectors(map, position, manager.Config.MapLumps);
+			WriteVertices(map, position, manager.Config.MapLumps);
+			WriteSidedefs(map, position, manager.Config.MapLumps, sectorids);
+			WriteLinedefs(map, position, manager.Config.MapLumps, sidedefids, vertexids);
+			WriteThings(map, position, manager.Config.MapLumps);
 		}
 
 		// This writes the THINGS to WAD file
-		private void WriteThings(MapSet map, int position, IDictionary maplumps)
+		private void WriteThings(MapSet map, int position, Dictionary<string, MapLumpInfo> maplumps)
 		{
-			MemoryStream mem;
-			BinaryWriter writer;
-			Lump lump;
-			int insertpos;
-			int flags;
-			
 			// Create memory to write to
-			mem = new MemoryStream();
-			writer = new BinaryWriter(mem, WAD.ENCODING);
+			MemoryStream mem = new MemoryStream();
+			BinaryWriter writer = new BinaryWriter(mem, WAD.ENCODING);
 			
 			// Go for all things
 			foreach(Thing t in map.Things)
 			{
 				// Convert flags
-				flags = 0;
+				int flags = 0;
 				foreach(KeyValuePair<string, bool> f in t.Flags)
 				{
 					int fnum;
@@ -454,28 +420,23 @@ namespace CodeImp.DoomBuilder.IO
 			}
 			
 			// Find insert position and remove old lump
-			insertpos = MapManager.RemoveSpecificLump(wad, "THINGS", position, MapManager.TEMP_MAP_HEADER, maplumps);
+			int insertpos = MapManager.RemoveSpecificLump(wad, "THINGS", position, MapManager.TEMP_MAP_HEADER, maplumps);
 			if(insertpos == -1) insertpos = position + 1;
 			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 			
 			// Create the lump from memory
-			lump = wad.Insert("THINGS", insertpos, (int)mem.Length);
+			Lump lump = wad.Insert("THINGS", insertpos, (int)mem.Length);
 			lump.Stream.Seek(0, SeekOrigin.Begin);
 			mem.WriteTo(lump.Stream);
 			mem.Flush();
 		}
 
 		// This writes the VERTEXES to WAD file
-		private void WriteVertices(MapSet map, int position, IDictionary maplumps)
+		private void WriteVertices(MapSet map, int position, Dictionary<string, MapLumpInfo> maplumps)
 		{
-			MemoryStream mem;
-			BinaryWriter writer;
-			Lump lump;
-			int insertpos;
-
 			// Create memory to write to
-			mem = new MemoryStream();
-			writer = new BinaryWriter(mem, WAD.ENCODING);
+			MemoryStream mem = new MemoryStream();
+			BinaryWriter writer = new BinaryWriter(mem, WAD.ENCODING);
 
 			// Go for all vertices
 			foreach(Vertex v in map.Vertices)
@@ -486,36 +447,29 @@ namespace CodeImp.DoomBuilder.IO
 			}
 
 			// Find insert position and remove old lump
-			insertpos = MapManager.RemoveSpecificLump(wad, "VERTEXES", position, MapManager.TEMP_MAP_HEADER, maplumps);
+			int insertpos = MapManager.RemoveSpecificLump(wad, "VERTEXES", position, MapManager.TEMP_MAP_HEADER, maplumps);
 			if(insertpos == -1) insertpos = position + 1;
 			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 
 			// Create the lump from memory
-			lump = wad.Insert("VERTEXES", insertpos, (int)mem.Length);
+			Lump lump = wad.Insert("VERTEXES", insertpos, (int)mem.Length);
 			lump.Stream.Seek(0, SeekOrigin.Begin);
 			mem.WriteTo(lump.Stream);
 			mem.Flush();
 		}
 
 		// This writes the LINEDEFS to WAD file
-		private void WriteLinedefs(MapSet map, int position, IDictionary maplumps, IDictionary<Sidedef, int> sidedefids, IDictionary<Vertex, int> vertexids)
+		private void WriteLinedefs(MapSet map, int position, Dictionary<string, MapLumpInfo> maplumps, IDictionary<Sidedef, int> sidedefids, IDictionary<Vertex, int> vertexids)
 		{
-			MemoryStream mem;
-			BinaryWriter writer;
-			Lump lump;
-			ushort sid;
-			int insertpos;
-			int flags;
-			
 			// Create memory to write to
-			mem = new MemoryStream();
-			writer = new BinaryWriter(mem, WAD.ENCODING);
+			MemoryStream mem = new MemoryStream();
+			BinaryWriter writer = new BinaryWriter(mem, WAD.ENCODING);
 
 			// Go for all lines
 			foreach(Linedef l in map.Linedefs)
 			{
 				// Convert flags
-				flags = 0;
+				int flags = 0;
 				foreach(KeyValuePair<string, bool> f in l.Flags)
 				{
 					int fnum;
@@ -530,39 +484,32 @@ namespace CodeImp.DoomBuilder.IO
 				writer.Write((UInt16)l.Tag);
 
 				// Front sidedef
-				if(l.Front == null) sid = ushort.MaxValue;
-					else sid = (UInt16)sidedefids[l.Front];
+				ushort sid = (l.Front == null ? ushort.MaxValue : (UInt16)sidedefids[l.Front]);
 				writer.Write(sid);
 
 				// Back sidedef
-				if(l.Back == null) sid = ushort.MaxValue;
-					else sid = (UInt16)sidedefids[l.Back];
+				sid = (l.Back == null ? ushort.MaxValue : (UInt16)sidedefids[l.Back]);
 				writer.Write(sid);
 			}
 
 			// Find insert position and remove old lump
-			insertpos = MapManager.RemoveSpecificLump(wad, "LINEDEFS", position, MapManager.TEMP_MAP_HEADER, maplumps);
+			int insertpos = MapManager.RemoveSpecificLump(wad, "LINEDEFS", position, MapManager.TEMP_MAP_HEADER, maplumps);
 			if(insertpos == -1) insertpos = position + 1;
 			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 
 			// Create the lump from memory
-			lump = wad.Insert("LINEDEFS", insertpos, (int)mem.Length);
+			Lump lump = wad.Insert("LINEDEFS", insertpos, (int)mem.Length);
 			lump.Stream.Seek(0, SeekOrigin.Begin);
 			mem.WriteTo(lump.Stream);
 			mem.Flush();
 		}
 
 		// This writes the SIDEDEFS to WAD file
-		private void WriteSidedefs(MapSet map, int position, IDictionary maplumps, IDictionary<Sector, int> sectorids)
+		private void WriteSidedefs(MapSet map, int position, Dictionary<string, MapLumpInfo> maplumps, IDictionary<Sector, int> sectorids)
 		{
-			MemoryStream mem;
-			BinaryWriter writer;
-			Lump lump;
-			int insertpos;
-
 			// Create memory to write to
-			mem = new MemoryStream();
-			writer = new BinaryWriter(mem, WAD.ENCODING);
+			MemoryStream mem = new MemoryStream();
+			BinaryWriter writer = new BinaryWriter(mem, WAD.ENCODING);
 
 			// Go for all sidedefs
 			foreach(Sidedef sd in map.Sidedefs)
@@ -577,28 +524,23 @@ namespace CodeImp.DoomBuilder.IO
 			}
 
 			// Find insert position and remove old lump
-			insertpos = MapManager.RemoveSpecificLump(wad, "SIDEDEFS", position, MapManager.TEMP_MAP_HEADER, maplumps);
+			int insertpos = MapManager.RemoveSpecificLump(wad, "SIDEDEFS", position, MapManager.TEMP_MAP_HEADER, maplumps);
 			if(insertpos == -1) insertpos = position + 1;
 			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 
 			// Create the lump from memory
-			lump = wad.Insert("SIDEDEFS", insertpos, (int)mem.Length);
+			Lump lump = wad.Insert("SIDEDEFS", insertpos, (int)mem.Length);
 			lump.Stream.Seek(0, SeekOrigin.Begin);
 			mem.WriteTo(lump.Stream);
 			mem.Flush();
 		}
 
 		// This writes the SECTORS to WAD file
-		private void WriteSectors(MapSet map, int position, IDictionary maplumps)
+		private void WriteSectors(MapSet map, int position, Dictionary<string, MapLumpInfo> maplumps)
 		{
-			MemoryStream mem;
-			BinaryWriter writer;
-			Lump lump;
-			int insertpos;
-
 			// Create memory to write to
-			mem = new MemoryStream();
-			writer = new BinaryWriter(mem, WAD.ENCODING);
+			MemoryStream mem = new MemoryStream();
+			BinaryWriter writer = new BinaryWriter(mem, WAD.ENCODING);
 
 			// Go for all sectors
 			foreach(Sector s in map.Sectors)
@@ -614,12 +556,12 @@ namespace CodeImp.DoomBuilder.IO
 			}
 
 			// Find insert position and remove old lump
-			insertpos = MapManager.RemoveSpecificLump(wad, "SECTORS", position, MapManager.TEMP_MAP_HEADER, maplumps);
+			int insertpos = MapManager.RemoveSpecificLump(wad, "SECTORS", position, MapManager.TEMP_MAP_HEADER, maplumps);
 			if(insertpos == -1) insertpos = position + 1;
 			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 
 			// Create the lump from memory
-			lump = wad.Insert("SECTORS", insertpos, (int)mem.Length);
+			Lump lump = wad.Insert("SECTORS", insertpos, (int)mem.Length);
 			lump.Stream.Seek(0, SeekOrigin.Begin);
 			mem.WriteTo(lump.Stream);
 			mem.Flush();
