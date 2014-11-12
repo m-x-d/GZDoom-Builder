@@ -122,8 +122,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//and labels
 					Vector2D[] labelCoords = new[] { start, new Vector2D(end.x, start.y), end, new Vector2D(start.x, end.y), start };
 					for (int i = 1; i < 5; i++) {
-						labels[i - 1].Start = labelCoords[i - 1];
-						labels[i - 1].End = labelCoords[i];
+						SetLabelPosition(labels[i - 1], labelCoords[i], labelCoords[i - 1]);
 						renderer.RenderText(labels[i - 1].TextLabel);
 					}
 
