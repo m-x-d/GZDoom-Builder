@@ -849,7 +849,8 @@ namespace CodeImp.DoomBuilder.Geometry
 		#region ================== Drawing
 
 		//mxd
-		public static bool DrawLines(IList<DrawnVertex> points) {
+		public static bool DrawLines(IList<DrawnVertex> points) 
+		{
 			return DrawLines(points, false, false);
 		}
 		

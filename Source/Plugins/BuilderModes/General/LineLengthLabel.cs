@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected TextLabel label;
 		protected Vector2D start;
 		protected Vector2D end;
-		private bool showAngle; //mxd
+		private readonly bool showAngle; //mxd
 		
 		#endregion
 
@@ -99,10 +99,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float length = delta.GetLength();
 
 			//mxd
-			if(showAngle) {
+			if(showAngle)
+			{
 				int angle = (int)Math.Round(Angle2D.RadToDeg(delta.GetAngle()));
 				label.Text = "l:" + length.ToString(VALUE_FORMAT) + "; a:" + angle;
-			} else {
+			}
+			else
+			{
 				label.Text = length.ToString(VALUE_FORMAT);
 			}
 

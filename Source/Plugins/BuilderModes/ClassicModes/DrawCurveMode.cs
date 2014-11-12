@@ -71,9 +71,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			DrawnVertex curp = GetCurrentPosition();
 			float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
 
-			// The last label's end must go to the mouse cursor
-			if(labels.Count > 0)
-				labels[labels.Count - 1].End = curp.pos;
+			// Update active label position (mxd)
+			if(labels.Count > 0) 
+				SetLabelPosition(labels[labels.Count - 1], points[points.Count - 1].pos, curp.pos);
 
 			// Render drawing lines
 			if(renderer.StartOverlay(true)) {

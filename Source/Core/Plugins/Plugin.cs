@@ -135,10 +135,8 @@ namespace CodeImp.DoomBuilder.Plugins
 		// This creates a stream to read a resource or returns null when not found
 		public Stream GetResourceStream(string resourcename)
 		{
-			string[] resnames;
-			
 			// Find a resource
-			resnames = asm.GetManifestResourceNames();
+			string[] resnames = asm.GetManifestResourceNames();
 			foreach(string rn in resnames)
 			{
 				// Found it?
@@ -157,10 +155,9 @@ namespace CodeImp.DoomBuilder.Plugins
 		public Type[] FindClasses(Type t)
 		{
 			List<Type> found = new List<Type>();
-			Type[] types;
-			
+
 			// Get all exported types
-			types = asm.GetExportedTypes();
+			Type[] types = asm.GetExportedTypes();
 			foreach(Type it in types)
 			{
 				// Compare types

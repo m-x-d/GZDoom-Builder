@@ -68,9 +68,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
-		// Just keep the base mode button checked
-		//public override string EditModeButtonName { get { return General.Editing.PreviousStableMode.Name; } }
-
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -134,12 +131,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 
-			DrawnVertex lastp;
 			DrawnVertex curp = GetCurrentPosition();
 			float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
 
-			// The last label's end must go to the mouse cursor
-			if(labels.Count > 0) labels[labels.Count - 1].End = curp.pos;
+			// Update active label position (mxd)
+			if (labels.Count > 0)
+				SetLabelPosition(labels[labels.Count - 1], points[points.Count - 1].pos, curp.pos);
 
 			// Render drawing lines
 			if(renderer.StartOverlay(true))
@@ -148,7 +145,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(points.Count > 0)
 				{
 					// Render lines
-					lastp = points[0];
+					DrawnVertex lastp = points[0];
 					for(int i = 1; i < points.Count; i++)
 					{
 						// Determine line color
@@ -197,11 +194,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected void RenderLinedefDirectionIndicator(Vector2D start, Vector2D end, PixelColor color) {
+		private void RenderLinedefDirectionIndicator(Vector2D start, Vector2D end, PixelColor color) 
+		{
 			Vector2D delta = end - start;
 			Vector2D middlePoint = new Vector2D(start.x + delta.x / 2, start.y + delta.y / 2);
 			Vector2D scaledPerpendicular = delta.GetPerpendicular().GetNormal().GetScaled(18f / renderer.Scale);
 			renderer.RenderLine(middlePoint, new Vector2D(middlePoint.x - scaledPerpendicular.x, middlePoint.y - scaledPerpendicular.y), LINE_THICKNESS, color, true);
+		}
+
+		//mxd
+		protected void SetLabelPosition(LineLengthLabel label, Vector2D start, Vector2D end)
+		{
+			Vector2D perpendicular = (end - start).GetPerpendicular();
+			float angle = perpendicular.GetAngle();
+			float offset = label.TextLabel.TextSize.Width * Math.Abs((float)Math.Sin(angle)) + label.TextLabel.TextSize.Height * Math.Abs((float)Math.Cos(angle));
+			perpendicular = perpendicular.GetNormal().GetScaled(offset / 2.0f / renderer.Scale);
+
+			label.Start = start + perpendicular;
+			label.End = end + perpendicular;
 		}
 		
 		// This returns the aligned and snapped draw position
@@ -387,8 +397,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			newpoint.stitchline = stitchline;
 			points.Add(newpoint);
 			labels.Add(new LineLengthLabel(true));
-			labels[labels.Count - 1].Start = newpoint.pos;
-			if(labels.Count > 1) labels[labels.Count - 2].End = newpoint.pos;
 			Update();
 
 			// Check if point stitches with the first
