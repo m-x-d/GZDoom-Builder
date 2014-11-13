@@ -519,7 +519,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void moveSelectedThings(Vector2D direction, bool absolutePosition) {
+		protected override void MoveSelectedThings(Vector2D direction, bool absolutePosition) 
+		{
 			List<VisualThing> visualThings = GetSelectedVisualThings(true);
 			if (visualThings.Count == 0) return;
 
@@ -531,7 +532,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//move things...
 			Vector3D[] translatedCoords = translateCoordinates(coords, direction, absolutePosition);
-			for (int i = 0; i < visualThings.Count; i++) {
+			for (int i = 0; i < visualThings.Count; i++) 
+			{
 				BaseVisualThing t = visualThings[i] as BaseVisualThing;
 				t.OnMove(translatedCoords[i]);
 			}
