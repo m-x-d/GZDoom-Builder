@@ -228,6 +228,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.linedefinfo = new CodeImp.DoomBuilder.Controls.LinedefInfoPanel();
 			this.thinginfo = new CodeImp.DoomBuilder.Controls.ThingInfoPanel();
 			this.sectorinfo = new CodeImp.DoomBuilder.Controls.SectorInfoPanel();
+			this.console = new CodeImp.DoomBuilder.DebugConsole();
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new RenderTargetControl();
 			this.processor = new System.Windows.Forms.Timer(this.components);
@@ -363,7 +364,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.menuhelp});
 			this.menumain.Location = new System.Drawing.Point(0, 0);
 			this.menumain.Name = "menumain";
-			this.menumain.Size = new System.Drawing.Size(420, 24);
+			this.menumain.Size = new System.Drawing.Size(328, 24);
 			this.menumain.TabIndex = 0;
 			// 
 			// menufile
@@ -2009,6 +2010,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelinfo.Controls.Add(this.labelcollapsedinfo);
 			this.panelinfo.Controls.Add(this.modename);
 			this.panelinfo.Controls.Add(this.buttontoggleinfo);
+			this.panelinfo.Controls.Add(this.console);
 			this.panelinfo.Controls.Add(this.vertexinfo);
 			this.panelinfo.Controls.Add(this.linedefinfo);
 			this.panelinfo.Controls.Add(this.thinginfo);
@@ -2125,6 +2127,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.sectorinfo.TabIndex = 2;
 			this.sectorinfo.Visible = false;
 			// 
+			// console
+			// 
+			this.console.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.console.Location = new System.Drawing.Point(3, 3);
+			this.console.Name = "console";
+			this.console.Size = new System.Drawing.Size(851, 98);
+			this.console.TabIndex = 10;
+			// 
 			// redrawtimer
 			// 
 			this.redrawtimer.Interval = 1;
@@ -2239,7 +2251,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menumain;
 			this.Name = "MainForm";
-			this.Opacity = 0;
+			this.Opacity = 1;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "GZDoom Builder";
 			this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);
@@ -2470,5 +2482,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private ToolStripMenuItem modelsdontshow;
 		private ToolStripMenuItem modelsshowselection;
 		private ToolStripMenuItem modelsshowall;
+		private DebugConsole console;
 	}
 }

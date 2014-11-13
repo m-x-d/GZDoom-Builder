@@ -416,38 +416,46 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		//mxd
 		[BeginAction("movethingleft", BaseAction = true)]
-		protected void moveSelectedThingsLeft() {
-			moveSelectedThings(new Vector2D(0f, -General.Map.Grid.GridSize), false);
+		protected void MoveSelectedThingsLeft() 
+		{
+			MoveSelectedThings(new Vector2D(0f, -General.Map.Grid.GridSize), false);
 		}
 		//mxd
 		[BeginAction("movethingright", BaseAction = true)]
-		protected void moveSelectedThingsRight() {
-			moveSelectedThings(new Vector2D(0f, General.Map.Grid.GridSize), false);
+		protected void MoveSelectedThingsRight() 
+		{
+			MoveSelectedThings(new Vector2D(0f, General.Map.Grid.GridSize), false);
 		}
 		//mxd
 		[BeginAction("movethingfwd", BaseAction = true)]
-		protected void moveSelectedThingsForward() {
-			moveSelectedThings(new Vector2D(-General.Map.Grid.GridSize, 0f), false);
+		protected void MoveSelectedThingsForward() 
+		{
+			MoveSelectedThings(new Vector2D(-General.Map.Grid.GridSize, 0f), false);
 		}
 		//mxd
 		[BeginAction("movethingback", BaseAction = true)]
-		protected void moveSelectedThingsBackward() {
-			moveSelectedThings(new Vector2D(General.Map.Grid.GridSize, 0f), false);
+		protected void MoveSelectedThingsBackward() 
+		{
+			MoveSelectedThings(new Vector2D(General.Map.Grid.GridSize, 0f), false);
 		}
+
 		//mxd
 		[BeginAction("placethingatcursor", BaseAction = true)]
-		protected void placeThingAtCursor() {
+		protected void PlaceThingAtCursor() 
+		{
 			Vector2D hitpos = GetHitPosition();
-			if (!hitpos.IsFinite()) {
+			if (!hitpos.IsFinite()) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Cannot place Thing here");
 				return;
 			}
 
-			moveSelectedThings(new Vector2D((float)Math.Round(hitpos.x), (float)Math.Round(hitpos.y)), true);
+			MoveSelectedThings(new Vector2D((float)Math.Round(hitpos.x), (float)Math.Round(hitpos.y)), true);
 		}
 
 		//mxd. 
-		public Vector2D GetHitPosition() {
+		public Vector2D GetHitPosition() 
+		{
 			Vector3D start = General.Map.VisualCamera.Position;
 			Vector3D delta = General.Map.VisualCamera.Target - General.Map.VisualCamera.Position;
 			delta = delta.GetFixedLength(General.Settings.ViewDistance * 0.98f);
@@ -456,12 +464,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if (target.picked == null) return new Vector2D(float.NaN, float.NaN);
 
 			//now find where exactly did we hit
-			if (target.picked is VisualGeometry) {
+			if (target.picked is VisualGeometry) 
+			{
 				VisualGeometry vg = target.picked as VisualGeometry;
 				return getIntersection(start, start + delta, new Vector3D(vg.BoundingBox[0].X, vg.BoundingBox[0].Y, vg.BoundingBox[0].Z), new Vector3D(vg.Vertices[0].nx, vg.Vertices[0].ny, vg.Vertices[0].nz));
 			} 
 			
-			if (target.picked is VisualThing) {
+			if (target.picked is VisualThing) 
+			{
 				VisualThing vt = target.picked as VisualThing;
 				return getIntersection(start, start + delta, new Vector3D(vt.BoundingBox[0].X, vt.BoundingBox[0].Y, vt.BoundingBox[0].Z), D3DDevice.V3D(vt.Center - vt.PositionV3));
 			} 
@@ -477,7 +487,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd. Should move selected things in specified direction
-		protected abstract void moveSelectedThings(Vector2D direction, bool absolutePosition);
+		protected virtual void MoveSelectedThings(Vector2D direction, bool absolutePosition) { }
 		
 		#endregion
 

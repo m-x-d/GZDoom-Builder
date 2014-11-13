@@ -1621,8 +1621,9 @@ namespace CodeImp.DoomBuilder
 		public static void WriteLogLine(string line)
 		{
 #if DEBUG
-			// Output to console
+			// Output to consoles
 			Console.WriteLine(line);
+			DebugConsole.WriteLine(DebugMessageType.Log, line); //mxd
 #endif
 			// Write to log file
 			try { File.AppendAllText(logfile, line + Environment.NewLine); }
@@ -1633,8 +1634,9 @@ namespace CodeImp.DoomBuilder
 		public static void WriteLog(string text)
 		{
 #if DEBUG
-			// Output to console
+			// Output to consoles
 			Console.Write(text);
+			DebugConsole.Write(DebugMessageType.Log, text);
 #endif
 
 			// Write to log file

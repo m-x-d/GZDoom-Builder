@@ -256,6 +256,13 @@ namespace CodeImp.DoomBuilder.Windows
 			blinkTimer = new System.Timers.Timer {Interval = 500};
 			blinkTimer.Elapsed += blinkTimer_Elapsed;
 
+			//mxd. Debug Console
+#if DEBUG
+			modename.Visible = false;
+#else
+			console.Visible = false;
+#endif
+
 			//mxd. Hints
 			hintsPanel = new HintsPanel();
 			hintsDocker = new Docker("hints", "Help", hintsPanel);
@@ -3092,6 +3099,9 @@ namespace CodeImp.DoomBuilder.Windows
 				if(sectorinfo.Visible) sectorinfo.Hide();
 				if(thinginfo.Visible) thinginfo.Hide();
 				modename.Visible = false;
+#if DEBUG
+				console.Visible = false; //mxd
+#endif
 				statistics.Visible = false; //mxd
 				labelcollapsedinfo.Visible = true;
 				itemtoggleinfo.Checked = false;
@@ -3143,7 +3153,11 @@ namespace CodeImp.DoomBuilder.Windows
 			if(thinginfo.Visible) thinginfo.Hide();
 			labelcollapsedinfo.Text = modename.Text;
 			labelcollapsedinfo.Refresh();
+#if DEBUG
+			console.Visible = true;
+#else
 			modename.Visible = showModeName;
+#endif
 			modename.Refresh();
 			statistics.Visible = showModeName; //mxd
 
@@ -3211,6 +3225,9 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			lastinfoobject = l;
 			modename.Visible = false;
+#if DEBUG
+			console.Visible = console.AlwaysOnTop; //mxd
+#endif
 			statistics.Visible = false; //mxd
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
@@ -3241,6 +3258,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			lastinfoobject = v;
 			modename.Visible = false;
+#if DEBUG
+			console.Visible = console.AlwaysOnTop; //mxd
+#endif
 			statistics.Visible = false; //mxd
 			if (linedefinfo.Visible) linedefinfo.Hide();
 			if (sectorinfo.Visible) sectorinfo.Hide();
@@ -3264,6 +3284,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			lastinfoobject = s;
 			modename.Visible = false;
+#if DEBUG
+			console.Visible = console.AlwaysOnTop; //mxd
+#endif
 			statistics.Visible = false; //mxd
 			if (linedefinfo.Visible) linedefinfo.Hide();
 			if (vertexinfo.Visible) vertexinfo.Hide();
@@ -3295,6 +3318,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			lastinfoobject = t;
 			modename.Visible = false;
+#if DEBUG
+			console.Visible = console.AlwaysOnTop; //mxd
+#endif
 			statistics.Visible = false; //mxd
 			if(linedefinfo.Visible) linedefinfo.Hide();
 			if(vertexinfo.Visible) vertexinfo.Hide();

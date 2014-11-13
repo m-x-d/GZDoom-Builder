@@ -102,6 +102,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Clear {
+            get {
+                object obj = ResourceManager.GetObject("Clear", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap ClearTextures {
             get {
                 object obj = ResourceManager.GetObject("ClearTextures", resourceCulture);
@@ -812,6 +819,13 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap WarningOff {
             get {
                 object obj = ResourceManager.GetObject("WarningOff", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap WordWrap {
+            get {
+                object obj = ResourceManager.GetObject("WordWrap", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

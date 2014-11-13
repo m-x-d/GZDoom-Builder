@@ -683,6 +683,12 @@
     <Compile Include="Config\PasteOptions.cs" />
     <Compile Include="Config\ThingsFlagsCompare.cs" />
     <Compile Include="Controls\ButtonsNumericTextboxDesigner.cs" />
+    <Compile Include="Controls\DebugConsole.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DebugConsole.designer.cs">
+      <DependentUpon>DebugConsole.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Docker.cs" />
     <Compile Include="Controls\DockersControl.cs">
       <SubType>UserControl</SubType>
@@ -746,6 +752,7 @@
     <Compile Include="General\CRC.cs" />
     <Compile Include="General\ErrorItem.cs" />
     <Compile Include="General\ErrorLogger.cs" />
+    <Compile Include="General\MurmurHash2.cs" />
     <Compile Include="General\SavePurpose.cs" />
     <Compile Include="Geometry\CurveTools.cs" />
     <Compile Include="GZBuilder\Controls\AngleControl.cs">
@@ -936,6 +943,9 @@
     <Compile Include="ZDoom\DecorateParser.cs" />
     <Compile Include="ZDoom\StateStructure.cs" />
     <Compile Include="Editing\EditingManager.cs" />
+    <EmbeddedResource Include="Controls\DebugConsole.resx">
+      <DependentUpon>DebugConsole.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\DockersControl.resx">
       <DependentUpon>DockersControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -996,6 +1006,7 @@
     <None Include="Resources\ClearTextures.png" />
     <None Include="Resources\Cursor.png" />
     <None Include="Resources\Brightness.png" />
+    <None Include="Resources\Clear.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\GZDB2.ico" />
     <None Include="Resources\fog.png" />
@@ -1018,6 +1029,7 @@
     <Content Include="Resources\Model.png" />
     <None Include="Resources\ModelDisabled.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\WordWrap.png" />
     <None Include="Resources\ThingCategory.png" />
     <None Include="Resources\ScreenshotActiveWindow.png" />
     <None Include="Resources\Screenshot.png" />
