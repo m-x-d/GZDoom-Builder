@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private string arg0str; //mxd
 		private bool haveArg0Str; //mxd
 		private readonly string[] renderstyles; //mxd
+		private readonly List<int> keynumbers; //mxd 
 
 		//mxd. Persistent settings
 		private static bool linkFrontTopScale;
@@ -192,6 +193,17 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Fill activations list
 			foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) udmfactivates.Add(ai.Title, ai);
+
+			//mxd. Fill keys list
+			keynumbers = new List<int>();
+			if (General.Map.Config.Enums.ContainsKey("keys")) 
+			{
+				foreach(EnumItem item in General.Map.Config.Enums["keys"]) 
+				{
+					keynumbers.Add(item.GetIntValue());
+					lockpick.Items.Add(item);
+				}
+			}
 			
 			// Initialize image selectors
 			fronthigh.Initialize();
@@ -314,9 +326,13 @@ namespace CodeImp.DoomBuilder.Windows
 				fieldslist.SetValues(fl.Fields, true); // Custom fields
 				renderStyle.SelectedIndex = Array.IndexOf(renderstyles, fl.Fields.GetValue("renderstyle", "translucent"));
 				alpha.Text = General.Clamp(fl.Fields.GetValue("alpha", 1.0f), 0f, 1f).ToString();
-				lockNumber.Text = fl.Fields.GetValue("locknumber", 0).ToString();
 				arg0str = fl.Fields.GetValue("arg0str", string.Empty);
 				haveArg0Str = !string.IsNullOrEmpty(arg0str);
+
+				// Locknumber
+				int locknumber = fl.Fields.GetValue("locknumber", 0);
+				lockpick.SelectedIndex = keynumbers.IndexOf(locknumber);
+				if (lockpick.SelectedIndex == -1) lockpick.Text = locknumber.ToString();
 			}
 
 			// Action/tags
@@ -439,8 +455,23 @@ namespace CodeImp.DoomBuilder.Windows
 					if(!string.IsNullOrEmpty(alpha.Text) && General.Clamp(alpha.GetResultFloat(1.0f), 0f, 1f) != l.Fields.GetValue("alpha", 1.0f))
 						alpha.Text = string.Empty;
 
-					if(!string.IsNullOrEmpty(lockNumber.Text) && lockNumber.GetResult(0) != l.Fields.GetValue("locknumber", 0))
-						lockNumber.Text = string.Empty;
+					if (!string.IsNullOrEmpty(lockpick.Text)) 
+					{
+						if (lockpick.SelectedIndex == -1) 
+						{
+							int locknumber;
+							if (int.TryParse(lockpick.Text, out locknumber) && locknumber != l.Fields.GetValue("locknumber", 0)) 
+							{
+								lockpick.SelectedIndex = -1;
+								lockpick.Text = string.Empty;
+							}
+						} 
+						else if(keynumbers[lockpick.SelectedIndex] != l.Fields.GetValue("locknumber", 0)) 
+						{
+							lockpick.SelectedIndex = -1;
+							lockpick.Text = string.Empty;
+						}
+					}
 
 					if(arg0str != l.Fields.GetValue("arg0str", string.Empty)) 
 					{
@@ -726,7 +757,20 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd
 			bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
-			int lockNum = lockNumber.GetResult(0);
+			int locknumber = 0;
+			bool setlocknumber = false;
+			if(!string.IsNullOrEmpty(lockpick.Text)) 
+			{
+				if(lockpick.SelectedIndex == -1) 
+				{
+					setlocknumber = int.TryParse(lockpick.Text, out locknumber);
+				} 
+				else 
+				{
+					locknumber = keynumbers[lockpick.SelectedIndex];
+					setlocknumber = true;
+				}
+			}
 			
 			// Go for all the lines
 			int tagoffset = 0; //mxd
@@ -842,7 +886,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(General.Map.FormatInterface.HasCustomFields) 
 				{
 					fieldslist.Apply(l.Fields);
-					UDMFTools.SetInteger(l.Fields, "locknumber", lockNum, 0);
+					if(setlocknumber) UDMFTools.SetInteger(l.Fields, "locknumber", locknumber, 0);
 				}
 			}
 

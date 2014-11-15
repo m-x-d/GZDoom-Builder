@@ -67,8 +67,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabproperties = new System.Windows.Forms.TabPage();
 			this.settingsGroup = new System.Windows.Forms.GroupBox();
+			this.lockpick = new System.Windows.Forms.ComboBox();
 			this.alpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.lockNumber = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.renderStyle = new System.Windows.Forms.ComboBox();
 			this.activationGroup = new System.Windows.Forms.GroupBox();
 			this.missingactivation = new System.Windows.Forms.PictureBox();
@@ -251,9 +251,9 @@ namespace CodeImp.DoomBuilder.Windows
 			label14.AutoSize = true;
 			label14.Location = new System.Drawing.Point(330, 24);
 			label14.Name = "label14";
-			label14.Size = new System.Drawing.Size(73, 14);
+			label14.Size = new System.Drawing.Size(72, 14);
 			label14.TabIndex = 15;
-			label14.Text = "Lock Number:";
+			label14.Text = "Lock number:";
 			// 
 			// label6
 			// 
@@ -556,9 +556,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.settingsGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.settingsGroup.Controls.Add(this.lockpick);
 			this.settingsGroup.Controls.Add(this.alpha);
 			this.settingsGroup.Controls.Add(label6);
-			this.settingsGroup.Controls.Add(this.lockNumber);
 			this.settingsGroup.Controls.Add(label14);
 			this.settingsGroup.Controls.Add(this.renderStyle);
 			this.settingsGroup.Controls.Add(label7);
@@ -568,6 +568,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.settingsGroup.TabIndex = 3;
 			this.settingsGroup.TabStop = false;
 			this.settingsGroup.Text = " Settings";
+			// 
+			// lockpick
+			// 
+			this.lockpick.FormattingEnabled = true;
+			this.lockpick.Location = new System.Drawing.Point(408, 20);
+			this.lockpick.Name = "lockpick";
+			this.lockpick.Size = new System.Drawing.Size(115, 22);
+			this.lockpick.TabIndex = 19;
 			// 
 			// alpha
 			// 
@@ -583,20 +591,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.alpha.StepValues = null;
 			this.alpha.TabIndex = 18;
 			this.alpha.WhenTextChanged += new System.EventHandler(this.alpha_WhenTextChanged);
-			// 
-			// lockNumber
-			// 
-			this.lockNumber.AllowDecimal = false;
-			this.lockNumber.AllowNegative = false;
-			this.lockNumber.AllowRelative = false;
-			this.lockNumber.ButtonStep = 1;
-			this.lockNumber.ButtonStepFloat = 1F;
-			this.lockNumber.ButtonStepsWrapAround = false;
-			this.lockNumber.Location = new System.Drawing.Point(405, 19);
-			this.lockNumber.Name = "lockNumber";
-			this.lockNumber.Size = new System.Drawing.Size(65, 24);
-			this.lockNumber.StepValues = null;
-			this.lockNumber.TabIndex = 16;
 			// 
 			// renderStyle
 			// 
@@ -1441,7 +1435,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.TabPage tabBackFlags;
 		private System.Windows.Forms.GroupBox settingsGroup;
 		private System.Windows.Forms.ComboBox renderStyle;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox lockNumber;
 		private System.Windows.Forms.Label labelLightFront;
 		private System.Windows.Forms.CheckBox cbLightAbsoluteBack;
 		private System.Windows.Forms.Label labelLightBack;
@@ -1455,5 +1448,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.GroupBox activationGroup;
 		private System.Windows.Forms.PictureBox missingactivation;
 		private System.Windows.Forms.ToolTip tooltip;
+		private System.Windows.Forms.ComboBox lockpick;
 	}
 }
