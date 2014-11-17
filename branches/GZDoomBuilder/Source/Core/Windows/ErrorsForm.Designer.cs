@@ -159,11 +159,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.copyselected);
 			this.Controls.Add(this.grid);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(680, 300);
 			this.Name = "ErrorsForm";
+			this.Opacity = 0;
+			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Errors and Warnings";
