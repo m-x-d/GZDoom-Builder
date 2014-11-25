@@ -90,6 +90,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 				return;
 			}
 
+			//mxd
+			name = name.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
 			// Now we should find a comma
 			parser.SkipWhitespace(true);
 			tokenstr = parser.ReadToken();

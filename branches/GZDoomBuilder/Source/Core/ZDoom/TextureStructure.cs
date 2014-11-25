@@ -70,8 +70,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// Constructor
 		internal TextureStructure(TexturesParser parser, string typename)
 		{
-			string tokenstr;
-			
 			// Initialize
 			this.typename = typename;
 			patches = new List<PatchStructure>(4);
@@ -92,7 +90,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			// Now we should find a comma
 			parser.SkipWhitespace(true);
-			tokenstr = parser.ReadToken();
+			string tokenstr = parser.ReadToken();
 			if(tokenstr != ",")
 			{
 				parser.ReportError("Expected a comma");
@@ -264,7 +262,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(yscale == 0.0f) scaley = defaultscale; else scaley = 1f / yscale;
 
 			// Make texture
-			HighResImage tex = new HighResImage(name, typename, width, height, scalex, scaley, worldpanning);
+			HighResImage tex = new HighResImage(name, width, height, scalex, scaley, worldpanning, typename == "flat");
 
 			// Add patches
 			foreach(PatchStructure p in patches)

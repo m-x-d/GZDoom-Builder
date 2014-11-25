@@ -61,10 +61,10 @@ namespace CodeImp.DoomBuilder.Controls
 
 				if(string.IsNullOrEmpty(texture.FullName) || texture is UnknownImage) DisplayImageSize(0, 0); //mxd
 				else DisplayImageSize(texture.ScaledWidth, texture.ScaledHeight); //mxd
-				if(!texture.IsPreviewLoaded) timer.Start(); //mxd
+				if(usepreviews ? !texture.IsPreviewLoaded : !texture.IsImageLoaded) timer.Start(); //mxd
 				
 				// Set the image
-				return texture.GetPreview();
+				return (usepreviews ? texture.GetPreview() : texture.GetBitmap());
 			}
 		}
 

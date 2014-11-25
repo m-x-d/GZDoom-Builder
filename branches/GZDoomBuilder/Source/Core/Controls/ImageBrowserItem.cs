@@ -29,6 +29,12 @@ namespace CodeImp.DoomBuilder.Controls
 {
 	internal class ImageBrowserItem : ListViewItem, IComparable<ImageBrowserItem>
 	{
+		#region ================== Constants
+
+		private const int MAX_DISPLAY_NAME_LENGTH = 16; //mxd
+
+		#endregion
+		
 		#region ================== Variables
 
 		// Display image and text
@@ -58,6 +64,9 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			this.Text = text;
+			if (text.Length > MAX_DISPLAY_NAME_LENGTH) text = text.Substring(0, MAX_DISPLAY_NAME_LENGTH); //mxd
+			this.displaytext = text;
+
 			if(General.Settings.ShowTextureSizes)
 				this.displaytext = text + "\n" + icon.ScaledWidth + " x " + icon.ScaledHeight;
 			else

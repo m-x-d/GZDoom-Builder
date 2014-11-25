@@ -413,7 +413,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemopenmapincurwad.Name = "itemopenmapincurwad";
 			this.itemopenmapincurwad.Size = new System.Drawing.Size(223, 22);
 			this.itemopenmapincurwad.Tag = "builder_openmapincurrentwad";
-			this.itemopenmapincurwad.Text = "Open Map in current &WAD...";
+			this.itemopenmapincurwad.Text = "Open Map in Current &WAD...";
 			this.itemopenmapincurwad.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemclosemap
@@ -869,7 +869,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemfittoscreen.Name = "itemfittoscreen";
 			this.itemfittoscreen.Size = new System.Drawing.Size(209, 22);
 			this.itemfittoscreen.Tag = "builder_centerinscreen";
-			this.itemfittoscreen.Text = "Fit to screen";
+			this.itemfittoscreen.Text = "Fit to Screen";
 			this.itemfittoscreen.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemtoggleinfo

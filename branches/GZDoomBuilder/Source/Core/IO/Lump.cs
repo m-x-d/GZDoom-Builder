@@ -19,6 +19,7 @@
 using System;
 using System.Text;
 using System.IO;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -107,7 +108,7 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Methods
 
 		// This returns the long value for a 8 byte texture name
-		public static unsafe long MakeLongName(string name)
+		/*public static unsafe long MakeLongName(string name)
 		{
 			long value = 0;
 			byte[] namebytes = Encoding.ASCII.GetBytes(name.Trim().ToUpper());
@@ -120,6 +121,17 @@ namespace CodeImp.DoomBuilder.IO
 			}
 
 			return value;
+		}*/
+
+		//mxd. This returns (hopefully) unique hash value for a texture name of any length
+		public static long MakeLongName(string name)
+		{
+			name = name.Trim().ToUpper();
+			if(name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH && General.Map != null && General.Map.Options != null && !General.Map.Options.UseLongTextureNames)
+			{
+				name = name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+			}
+			return MurmurHash2.Hash(name);
 		}
 		
 		// This makes the normal name from fixed name

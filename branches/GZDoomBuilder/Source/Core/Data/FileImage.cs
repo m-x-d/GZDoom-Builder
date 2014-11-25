@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.Data
 	{
 		#region ================== Variables
 
-		private int probableformat;
+		private readonly int probableformat;
 		
 		#endregion
 
@@ -38,8 +38,8 @@ namespace CodeImp.DoomBuilder.Data
 		public FileImage(string name, string filepathname, bool asflat)
 		{
 			// Initialize
-			SetName(name);
-			this.fullName = filepathname; //mxd
+			this.isFlat = asflat; //mxd
+			SetName(name, filepathname);
 
 			if(asflat)
 			{
@@ -62,15 +62,24 @@ namespace CodeImp.DoomBuilder.Data
 		public FileImage(string name, string filepathname, bool asflat, float scalex, float scaley)
 		{
 			// Initialize
-			this.fullName = filepathname; //mxd
 			this.scale.x = scalex;
 			this.scale.y = scaley;
-			SetName(name);
+			this.isFlat = asflat; //mxd
+			SetName(name, filepathname);
 
-			if(asflat)
-				probableformat = ImageDataFormat.DOOMFLAT;
-			else
-				probableformat = ImageDataFormat.DOOMPICTURE;
+			probableformat = (asflat ? ImageDataFormat.DOOMFLAT : ImageDataFormat.DOOMPICTURE);
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		//mxd. Constructor for loading internal images
+		internal FileImage(string name, string filepathname)
+		{
+			// Initialize
+			SetName(name, filepathname, true);
+
+			probableformat = ImageDataFormat.DOOMPICTURE;
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -79,6 +88,43 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 
 		#region ================== Methods
+
+		//mxd: name is relative path to the image ("\Textures\sometexture.png")
+		//mxd: filepathname is absolute path to the image ("D:\Doom\MyCoolProject\Textures\sometexture.png")
+		//mxd: also, zdoom uses '/' as directory separator char.
+		private void SetName(string name, string filepathname)
+		{
+			SetName(name, filepathname, General.Map.Options.UseLongTextureNames);
+		}
+
+		private void SetName(string name, string filepathname, bool uselongtexturenames)
+		{
+			name = name.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+			if(!uselongtexturenames)
+			{
+				this.name = Path.GetFileNameWithoutExtension(name.ToUpperInvariant());
+				if(this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+					this.name = this.name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+				this.virtualname = Path.Combine(Path.GetDirectoryName(name), this.name).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+				this.displayname = this.name;
+				this.longname = Lump.MakeLongName(this.name); //mxd
+			}
+			else
+			{
+				this.name = name;
+				this.virtualname = name;
+				this.displayname = Path.GetFileNameWithoutExtension(name);
+				this.longname = Lump.MakeLongName(name);
+				hasLongName = true;
+			}
+
+			this.fullname = filepathname;
+			if(General.Settings.CapitalizeTextureNames && !string.IsNullOrEmpty(this.displayname))
+			{
+				this.displayname = this.displayname.ToUpperInvariant();
+			}
+		}
 
 		// This loads the image
 		protected override void LocalLoadImage()
@@ -91,24 +137,30 @@ namespace CodeImp.DoomBuilder.Data
 				// Load file data
 				if(bitmap != null) bitmap.Dispose(); bitmap = null;
 
-				MemoryStream filedata = new MemoryStream(File.ReadAllBytes(fullName));
+				MemoryStream filedata = new MemoryStream(File.ReadAllBytes(fullname));
 
 				// Get a reader for the data
 				IImageReader reader = ImageDataFormat.GetImageReader(filedata, probableformat, General.Map.Data.Palette);
-				if(!(reader is UnknownImageReader)) {
+				if(!(reader is UnknownImageReader)) 
+				{
 					// Load the image
 					filedata.Seek(0, SeekOrigin.Begin);
-					try { bitmap = reader.ReadAsBitmap(filedata); } catch(InvalidDataException) {
+					try { bitmap = reader.ReadAsBitmap(filedata); } 
+					catch(InvalidDataException) 
+					{
 						// Data cannot be read!
 						bitmap = null;
 					}
 				}
 
 				// Not loaded?
-				if(bitmap == null) {
-					General.ErrorLogger.Add(ErrorType.Error, "Image file '" + fullName + "' data format could not be read, while loading image '" + this.Name + "'. Is this a valid picture file at all?");
+				if(bitmap == null) 
+				{
+					General.ErrorLogger.Add(ErrorType.Error, "Image file '" + fullname + "' data format could not be read, while loading image '" + this.Name + "'. Is this a valid picture file at all?");
 					loadfailed = true;
-				} else {
+				} 
+				else 
+				{
 					// Get width and height
 					width = bitmap.Size.Width;
 					height = bitmap.Size.Height;

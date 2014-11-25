@@ -79,6 +79,8 @@ namespace CodeImp.DoomBuilder.Map
 		private bool overridefloorheight;
 		private bool overrideceilheight;
 		private bool overridebrightness;
+
+		private bool uselongtexturenames; //mxd
 		
 		#endregion
 
@@ -129,6 +131,8 @@ namespace CodeImp.DoomBuilder.Map
 		public bool OverrideFloorHeight { get { return overridefloorheight; } set { overridefloorheight = value; } }
 		public bool OverrideCeilingHeight { get { return overrideceilheight; } set { overrideceilheight = value; } }
 		public bool OverrideBrightness { get { return overridebrightness; } set { overridebrightness = value; } }
+
+		public bool UseLongTextureNames { get { return uselongtexturenames; } set { uselongtexturenames = value; } } //mxd
 		
 		#endregion
 
@@ -210,6 +214,8 @@ namespace CodeImp.DoomBuilder.Map
 			overridefloorheight = this.mapconfig.ReadSetting("overridefloorheight", false);
 			overrideceilheight = this.mapconfig.ReadSetting("overrideceilheight", false);
 			overridebrightness = this.mapconfig.ReadSetting("overridebrightness", false);
+
+			uselongtexturenames = this.mapconfig.ReadSetting("uselongtexturenames", false); //mxd
 
 			// Resources
 			IDictionary reslist = this.mapconfig.ReadSetting("resources", new Hashtable());
@@ -295,11 +301,13 @@ namespace CodeImp.DoomBuilder.Map
 			General.Map.Map.WriteSelectionGroups(mapconfig);
 
 			//mxd. Save Tag Labels
-			if(tagLabels.Count > 0) {
+			if(tagLabels.Count > 0) 
+			{
 				ListDictionary tagLabelsData = new ListDictionary();
 				int counter = 1;
 
-				foreach(KeyValuePair<int, string> group in tagLabels){
+				foreach(KeyValuePair<int, string> group in tagLabels)
+				{
 					ListDictionary data = new ListDictionary();
 					data.Add("tag", group.Key);
 					data.Add("label", group.Value);
@@ -329,6 +337,8 @@ namespace CodeImp.DoomBuilder.Map
 			mapconfig.WriteSetting("overridefloorheight", overridefloorheight);
 			mapconfig.WriteSetting("overrideceilheight", overrideceilheight);
 			mapconfig.WriteSetting("overridebrightness", overridebrightness);
+
+			mapconfig.WriteSetting("uselongtexturenames", uselongtexturenames); //mxd
 
 			//mxd. Write script compiler
 			if(!string.IsNullOrEmpty(scriptcompiler))
@@ -416,7 +426,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This loads the grid settings
 		internal void ApplyGridSettings()
 		{
-			General.Map.Grid.ReadFromConfig(mapconfig, "grid");
+			General.Map.Grid.ReadFromConfig(mapconfig, "grid", uselongtexturenames);
 		}
 
 		//mxd. This reads stored selection groups from the map configuration

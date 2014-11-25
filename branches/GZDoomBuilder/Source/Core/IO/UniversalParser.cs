@@ -392,7 +392,7 @@ namespace CodeImp.DoomBuilder.IO
 								// Add it to struct
 								UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), ival);
 								cs.Add(entry);
-								matches.Add(data[line], entry);
+								if(!matches.ContainsKey(data[line])) matches.Add(data[line], entry);
 							}
 							catch(OverflowException)
 							{
@@ -405,7 +405,7 @@ namespace CodeImp.DoomBuilder.IO
 									// Add it to struct
 									UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), lval);
 									cs.Add(entry);
-									matches.Add(data[line], entry);
+									if(!matches.ContainsKey(data[line])) matches.Add(data[line], entry);
 								}
 								catch(OverflowException)
 								{
@@ -440,7 +440,7 @@ namespace CodeImp.DoomBuilder.IO
 							// Add it to struct
 							UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), fval);
 							cs.Add(entry);
-							matches.Add(data[line], entry);
+							if(!matches.ContainsKey(data[line])) matches.Add(data[line], entry);
 						}
 						else
 						{
@@ -453,7 +453,7 @@ namespace CodeImp.DoomBuilder.IO
 								// Add it to struct
 								UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), ival);
 								cs.Add(entry);
-								matches.Add(data[line], entry);
+								if(!matches.ContainsKey(data[line])) matches.Add(data[line], entry);
 							}
 							catch(OverflowException)
 							{
@@ -466,7 +466,7 @@ namespace CodeImp.DoomBuilder.IO
 									// Add it to struct
 									UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), lval);
 									cs.Add(entry);
-									matches.Add(data[line], entry);
+									if(!matches.ContainsKey(data[line])) matches.Add(data[line], entry);
 								}
 								catch(OverflowException)
 								{
@@ -574,7 +574,7 @@ namespace CodeImp.DoomBuilder.IO
 							// Add string to struct
 							UniversalEntry entry = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), val.ToString());
 							cs.Add(entry);
-							matches.Add(data[line], entry);
+							if(!matches.ContainsKey(data[line])) matches.Add(data[line], entry);
 							
 							// End of assignment
 							pm = PM_ASSIGNMENT;
@@ -611,14 +611,14 @@ namespace CodeImp.DoomBuilder.IO
 								// Add boolean true
 								UniversalEntry t = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), true);
 								cs.Add(t);
-								matches.Add(data[line], t);
+								if(!matches.ContainsKey(data[line])) matches.Add(data[line], t);
 								break;
 								
 							case "false":
 								// Add boolean false
 								UniversalEntry f = new UniversalEntry(key.ToString().Trim().ToLowerInvariant(), false);
 								cs.Add(f);
-								matches.Add(data[line], f);
+								if(!matches.ContainsKey(data[line])) matches.Add(data[line], f);
 								break;
 								
 							default:

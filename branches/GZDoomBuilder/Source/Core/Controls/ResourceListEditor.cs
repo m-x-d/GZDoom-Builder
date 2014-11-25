@@ -170,13 +170,11 @@ namespace CodeImp.DoomBuilder.Controls
 		// This adds a normal item
 		private void AddItem(DataLocation rl)
 		{
-			int index;
-
 			// Start editing list
 			resourceitems.BeginUpdate();
 
 			// Add item
-			index = resourceitems.Items.Count;
+			int index = resourceitems.Items.Count;
 			resourceitems.Items.Add(new ListViewItem(rl.location));
 			resourceitems.Items[index].Tag = rl;
 			resourceitems.Items[index].ImageIndex = GetIconIndex(rl.type, false);
@@ -189,22 +187,30 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		internal void DropItem(IDataObject data) {
+		internal void DropItem(IDataObject data) 
+		{
 			if(!data.GetDataPresent(DataFormats.FileDrop)) return;
 
 			string[] paths = (string[])data.GetData(DataFormats.FileDrop);
-			foreach(string path in paths) {
-				if(File.Exists(path)) {
+			foreach(string path in paths) 
+			{
+				if(File.Exists(path)) 
+				{
 					string ext = Path.GetExtension(path);
-					if(string.IsNullOrEmpty(ext))
-						continue;
+					if(string.IsNullOrEmpty(ext)) continue;
+					
 					ext = ext.ToLower();
-					if(ext == ".wad") {
+					if(ext == ".wad") 
+					{
 						AddItem(new DataLocation(DataLocation.RESOURCE_WAD, path, false, false, false));
-					} else if(ext == ".pk3" || ext == ".pk7") {
+					} 
+					else if(ext == ".pk3" || ext == ".pk7") 
+					{
 						AddItem(new DataLocation(DataLocation.RESOURCE_PK3, path, false, false, false));
 					}
-				} else if(Directory.Exists(path)) {
+				} 
+				else if(Directory.Exists(path)) 
+				{
 					AddItem(new DataLocation(DataLocation.RESOURCE_DIRECTORY, path, false, false, false));
 				}
 			}
@@ -227,13 +233,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// Add a resource
 		private void addresource_Click(object sender, EventArgs e)
 		{
-			ResourceOptionsForm resoptions;
-			Rectangle startposition;
-			
 			// Open resource options dialog
-			resoptions = new ResourceOptionsForm(new DataLocation(), "Add Resource", StartPath);
+			ResourceOptionsForm resoptions = new ResourceOptionsForm(new DataLocation(), "Add Resource", StartPath);
 			resoptions.StartPosition = FormStartPosition.Manual;
-			startposition = new Rectangle(dialogoffset.X, dialogoffset.Y, 1, 1);
+			Rectangle startposition = new Rectangle(dialogoffset.X, dialogoffset.Y, 1, 1);
 			startposition = this.RectangleToScreen(startposition);
 			Screen screen = Screen.FromPoint(startposition.Location);
 			if(startposition.X + resoptions.Size.Width > screen.WorkingArea.Right)
@@ -254,21 +257,16 @@ namespace CodeImp.DoomBuilder.Controls
 		// Edit resource
 		private void editresource_Click(object sender, EventArgs e)
 		{
-			ResourceOptionsForm resoptions;
-			Rectangle startposition;
-			ListViewItem selecteditem;
-			DataLocation rl;
-
 			// Anything selected?
 			if(resourceitems.SelectedItems.Count > 0)
 			{
 				// Get selected item
-				selecteditem = resourceitems.SelectedItems[0];
+				ListViewItem selecteditem = resourceitems.SelectedItems[0];
 
 				// Open resource options dialog
-				resoptions = new ResourceOptionsForm((DataLocation)selecteditem.Tag, "Resource Options", StartPath);
+				ResourceOptionsForm resoptions = new ResourceOptionsForm((DataLocation)selecteditem.Tag, "Resource Options", StartPath);
 				resoptions.StartPosition = FormStartPosition.Manual;
-				startposition = new Rectangle(dialogoffset.X, dialogoffset.Y, 1, 1);
+				Rectangle startposition = new Rectangle(dialogoffset.X, dialogoffset.Y, 1, 1);
 				startposition = this.RectangleToScreen(startposition);
 				Screen screen = Screen.FromPoint(startposition.Location);
 				if(startposition.X + resoptions.Size.Width > screen.WorkingArea.Right)
@@ -282,7 +280,7 @@ namespace CodeImp.DoomBuilder.Controls
 					resourceitems.BeginUpdate();
 
 					// Update item
-					rl = resoptions.ResourceLocation;
+					DataLocation rl = resoptions.ResourceLocation;
 					selecteditem.Text = rl.location;
 					selecteditem.Tag = rl;
 					selecteditem.ImageIndex = GetIconIndex(rl.type, false);

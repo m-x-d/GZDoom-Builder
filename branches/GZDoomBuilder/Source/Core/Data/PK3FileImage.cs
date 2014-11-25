@@ -28,20 +28,20 @@ namespace CodeImp.DoomBuilder.Data
 	{
 		#region ================== Variables
 
-		private PK3Reader datareader;
-		private int probableformat;
+		private readonly PK3Reader datareader;
+		private readonly int probableformat;
 		
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal PK3FileImage(PK3Reader datareader, string name, string filepathname, bool asflat)
+		internal PK3FileImage(PK3Reader datareader, string filepathname, bool asflat)
 		{
 			// Initialize
 			this.datareader = datareader;
-			SetName(name);
-			this.fullName = filepathname;
+			this.isFlat = asflat; //mxd
+			SetName(filepathname);
 
 			if(asflat)
 			{
@@ -64,6 +64,33 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Methods
 
+		//mxd: filepathname is relative path to the image ("Textures\sometexture.png")
+		protected override void SetName(string filepathname) 
+		{
+			if(!General.Map.Options.UseLongTextureNames) 
+			{
+				this.name = Path.GetFileNameWithoutExtension(filepathname.ToUpperInvariant());
+				if(this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+					this.name = this.name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+				this.displayname = this.name;
+				this.longname = Lump.MakeLongName(this.name); //mxd
+			} 
+			else 
+			{
+				this.name = filepathname.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+				this.displayname = Path.GetFileNameWithoutExtension(name);
+				this.longname = Lump.MakeLongName(this.name);
+				this.hasLongName = true;
+			}
+
+			this.virtualname = filepathname.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+			this.fullname = filepathname;
+			if(General.Settings.CapitalizeTextureNames && !string.IsNullOrEmpty(this.displayname)) 
+			{
+				this.displayname = this.displayname.ToUpperInvariant();
+			}
+		}
+
 		// This loads the image
 		protected override void LocalLoadImage()
 		{
@@ -74,37 +101,44 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Load file data
 				if(bitmap != null) bitmap.Dispose(); bitmap = null;
-				MemoryStream filedata = datareader.LoadFile(fullName); //mxd
-
-				// Get a reader for the data
-				IImageReader reader = ImageDataFormat.GetImageReader(filedata, probableformat, General.Map.Data.Palette);
-				if(!(reader is UnknownImageReader))
+				MemoryStream filedata = datareader.LoadFile(fullname); //mxd
+				
+				if(filedata != null)
 				{
-					// Load the image
-					filedata.Seek(0, SeekOrigin.Begin);
-					try { bitmap = reader.ReadAsBitmap(filedata); }
-					catch(InvalidDataException)
+					// Get a reader for the data
+					IImageReader reader = ImageDataFormat.GetImageReader(filedata, probableformat, General.Map.Data.Palette);
+					if(!(reader is UnknownImageReader))
 					{
-						// Data cannot be read!
-						bitmap = null;
+						// Load the image
+						filedata.Seek(0, SeekOrigin.Begin);
+						try
+						{
+							bitmap = reader.ReadAsBitmap(filedata);
+						}
+						catch (InvalidDataException)
+						{
+							// Data cannot be read!
+							bitmap = null;
+						}
 					}
+
+					// Not loaded?
+					if(bitmap == null)
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Image file '" + fullname + "' data format could not be read, while loading texture '" + this.Name + "'");
+						loadfailed = true;
+					}
+					else
+					{
+						// Get width and height from image
+						width = bitmap.Size.Width;
+						height = bitmap.Size.Height;
+					}
+
+					filedata.Dispose();
 				}
-				
-				// Not loaded?
-				if(bitmap == null)
-				{
-					General.ErrorLogger.Add(ErrorType.Error, "Image file '" + fullName + "' data format could not be read, while loading texture '" + this.Name + "'");
-					loadfailed = true;
-				}
-				else
-				{
-					// Get width and height from image
-					width = bitmap.Size.Width;
-					height = bitmap.Size.Height;
-				}
-				
+
 				// Pass on to base
-				filedata.Dispose();
 				base.LocalLoadImage();
 			}
 		}

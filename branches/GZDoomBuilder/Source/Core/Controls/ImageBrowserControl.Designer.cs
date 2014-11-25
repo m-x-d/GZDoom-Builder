@@ -100,6 +100,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// list
 			// 
 			this.list.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.list.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.list.HideSelection = false;
 			this.list.Location = new System.Drawing.Point(0, 0);
 			this.list.MultiSelect = false;
@@ -132,6 +133,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filterHeight.AllowRelative = false;
 			this.filterHeight.ButtonStep = 1;
 			this.filterHeight.ButtonStepFloat = 1F;
+			this.filterHeight.ButtonStepsWrapAround = false;
 			this.filterHeight.Location = new System.Drawing.Point(410, 4);
 			this.filterHeight.Name = "filterHeight";
 			this.filterHeight.Size = new System.Drawing.Size(54, 24);
@@ -156,6 +158,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filterWidth.AllowRelative = false;
 			this.filterWidth.ButtonStep = 1;
 			this.filterWidth.ButtonStepFloat = 1F;
+			this.filterWidth.ButtonStepsWrapAround = false;
 			this.filterWidth.Location = new System.Drawing.Point(308, 4);
 			this.filterWidth.Name = "filterWidth";
 			this.filterWidth.Size = new System.Drawing.Size(54, 24);

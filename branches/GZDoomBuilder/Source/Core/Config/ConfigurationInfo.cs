@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.Config
 		private Configuration config; //mxd
 		private bool enabled; //mxd
 		private bool changed; //mxd
+		private bool longtexturenames; //mxd
 
 		private List<EngineInfo> testEngines; //mxd
 		private int currentEngineIndex; //mxd
@@ -84,6 +85,7 @@ namespace CodeImp.DoomBuilder.Config
 		internal Configuration Configuration { get { return config; } } //mxd
 		public bool Enabled { get { return enabled; } internal set { enabled = value; } } //mxd
 		public bool Changed { get { return changed; } internal set { changed = value; } } //mxd
+		public bool SupportsLongTextureNames { get { return longtexturenames; } internal set { longtexturenames = value; } } //mxd
 
 		//mxd
 		public string TestProgramName { get { return testEngines[currentEngineIndex].TestProgramName; } internal set { testEngines[currentEngineIndex].TestProgramName = value; } }
@@ -116,6 +118,7 @@ namespace CodeImp.DoomBuilder.Config
 			// Load settings from game configuration
 			this.name = config.ReadSetting("game", "<unnamed game>");
 			this.defaultlumpname = config.ReadSetting("defaultlumpname", "");
+			this.longtexturenames = config.ReadSetting("longtexturenames", false); //mxd
 			
 			// Load settings from program configuration
 			this.nodebuildersave = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildersave", MISSING_NODEBUILDER);
@@ -132,7 +135,8 @@ namespace CodeImp.DoomBuilder.Config
 			currentEngineIndex = General.Settings.ReadSetting("configurations." + settingskey + ".currentengineindex", 0);
 			
 			//no engine list found? use old engine properties
-			if (list.Count == 0) {
+			if (list.Count == 0) 
+			{
 				EngineInfo info = new EngineInfo();
 				info.TestProgram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
 				info.TestProgramName = General.Settings.ReadSetting("configurations." + settingskey + ".testprogramname", EngineInfo.DEFAULT_ENGINE_NAME);
@@ -143,9 +147,12 @@ namespace CodeImp.DoomBuilder.Config
 				info.TestSkill = General.Settings.ReadSetting("configurations." + settingskey + ".testskill", 3);
 				testEngines.Add(info);
 				currentEngineIndex = 0;
-			} else {
+			} 
+			else 
+			{
 				//read engines settings from config
-				foreach (DictionaryEntry de in list) {
+				foreach (DictionaryEntry de in list) 
+				{
 					string path = "configurations." + settingskey + ".engines." + de.Key;
 					EngineInfo info = new EngineInfo();
 					info.TestProgram = General.Settings.ReadSetting(path + ".testprogram", "");
@@ -166,13 +173,17 @@ namespace CodeImp.DoomBuilder.Config
 			list = General.Settings.ReadSetting("configurations." + settingskey + ".linedefcolorpresets", new ListDictionary());
 
 			//no presets? add "classic" ones then.
-			if(list.Count == 0) {
+			if(list.Count == 0) 
+			{
 				LinedefColorPreset anyActionPreset = new LinedefColorPreset("Any action", PixelColor.FromColor(System.Drawing.Color.PaleGreen), -1, 0, new List<string>(), new List<string>());
 				anyActionPreset.SetValid();
 				colorPresets.Add(anyActionPreset);
-			} else {
+			} 
+			else 
+			{
 				//read custom linedef colors from config
-				foreach(DictionaryEntry de in list) {
+				foreach(DictionaryEntry de in list) 
+				{
 					string path = "configurations." + settingskey + ".linedefcolorpresets." + de.Key;
 					string presetname = General.Settings.ReadSetting(path + ".name", "Unnamed");
 					PixelColor color = PixelColor.FromInt(General.Settings.ReadSetting(path + ".color", -1));

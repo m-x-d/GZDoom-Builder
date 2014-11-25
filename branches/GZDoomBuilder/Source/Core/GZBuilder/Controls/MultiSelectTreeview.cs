@@ -908,6 +908,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			components = new System.ComponentModel.Container();
 			DoubleBuffered = true; //mxd
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true); //mxd
 		}
 
 		#endregion

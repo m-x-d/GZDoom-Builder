@@ -65,22 +65,31 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Textures
 
 		// This finds and returns a patch stream
-		public override Stream GetPatchData(string pname)
+		public override Stream GetPatchData(string pname, bool longname)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Find in any of the wad files
 			// Note the backward order, because the last wad's images have priority
-			for(int i = wads.Count - 1; i > -1; i--)
+			if(!longname) //mxd. Patches with long names can't be in wads
 			{
-				Stream data = wads[i].GetPatchData(pname);
-				if(data != null) return data;
+				for (int i = wads.Count - 1; i > -1; i--)
+				{
+					Stream data = wads[i].GetPatchData(pname, false);
+					if (data != null) return data;
+				}
 			}
-			
+
 			try
 			{
-				if (General.Map.Config.MixTexturesFlats)
+				if(longname)
+				{
+					//mxd. Long names are absolute
+					pname = pname.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+					return (FileExists(pname) ? LoadFile(pname) : null);
+				}
+				else if (General.Map.Config.MixTexturesFlats)
 				{
 					//mxd. Find in directories ZDoom expects them to be
 					string dir = Path.GetDirectoryName(pname);
@@ -112,21 +121,31 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This finds and returns a textue stream
-		public override Stream GetTextureData(string pname)
+		public override Stream GetTextureData(string pname, bool longname)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Find in any of the wad files
 			// Note the backward order, because the last wad's images have priority
-			for(int i = wads.Count - 1; i >= 0; i--)
+			if (!longname) //mxd. Textures with long names can't be in wads
 			{
-				Stream data = wads[i].GetTextureData(pname);
-				if(data != null) return data;
+				for (int i = wads.Count - 1; i >= 0; i--)
+				{
+					Stream data = wads[i].GetTextureData(pname, false);
+					if (data != null) return data;
+				}
 			}
 			
 			try
 			{
+				//mxd. Long names are absolute
+				if(General.Map.Options.UseLongTextureNames && !string.IsNullOrEmpty(Path.GetExtension(pname))) 
+				{
+					pname = pname.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+					return (FileExists(pname) ? LoadFile(pname) : null);
+				}
+				
 				// Find in textures directory
 				string path = Path.Combine(TEXTURES_DIR, Path.GetDirectoryName(pname));
 				string filename = FindFirstFile(path, Path.GetFileName(pname), true);
@@ -283,18 +302,18 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This creates an image
-		protected override ImageData CreateImage(string name, string filename, int imagetype)
+		protected override ImageData CreateImage(string filename, int imagetype)
 		{
 			switch(imagetype)
 			{
 				case ImageDataFormat.DOOMFLAT:
-					return new FileImage(name, Path.Combine(location.location, filename), true);
+					return new FileImage(filename, Path.Combine(location.location, filename), true);
 				
 				case ImageDataFormat.DOOMPICTURE:
-					return new FileImage(name, Path.Combine(location.location, filename), false);
+					return new FileImage(filename, Path.Combine(location.location, filename), false);
 					
 				case ImageDataFormat.DOOMCOLORMAP:
-					return new ColormapImage(name);
+					return new ColormapImage(Path.GetFileNameWithoutExtension(filename));
 
 				default:
 					throw new ArgumentException("Invalid image format specified!");
@@ -320,7 +339,8 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd. This returns all files in a given directory which title starts with given title
-		protected override string[] GetAllFilesWhichTitleStartsWith(string path, string title) {
+		protected override string[] GetAllFilesWhichTitleStartsWith(string path, string title) 
+		{
 			return files.GetAllFilesWhichTitleStartsWith(path, title).ToArray();
 		}
 		
@@ -357,9 +377,12 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			MemoryStream s = null;
 
-			try {
+			try 
+			{
 				s = new MemoryStream(File.ReadAllBytes(Path.Combine(location.location, filename)));
-			} catch(Exception e) {
+			} 
+			catch(Exception e) 
+			{
 				General.ErrorLogger.Add(ErrorType.Error, "Unable to load file: "+e.Message);
 			}
 			return s;

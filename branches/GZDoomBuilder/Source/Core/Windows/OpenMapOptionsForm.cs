@@ -324,6 +324,10 @@ namespace CodeImp.DoomBuilder.Windows
 				scriptcompilerlabel.Enabled = false;
 			}
 
+			//mxd. Long texture names
+			uselongtexturenames.Enabled = ci.SupportsLongTextureNames;
+			uselongtexturenames.Checked = (ci.SupportsLongTextureNames && options.UseLongTextureNames);
+
 			// Show configuration resources
 			datalocations.FixedResourceLocationList(ci.Resources);
 		}
@@ -339,6 +343,15 @@ namespace CodeImp.DoomBuilder.Windows
 				config.Focus();
 				return;
 			}
+
+			//mxd. Use long texture names?
+			if (uselongtexturenames.Enabled && !options.UseLongTextureNames && uselongtexturenames.Checked &&
+				MessageBox.Show(this, "Switching to long texture names can make the map incompatible with some map editors and game engines. Do you want to continue?",
+				Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No)
+			{
+				return;
+			}
+			options.UseLongTextureNames = uselongtexturenames.Checked;
 			
 			// Collect information
 			ConfigurationInfo configinfo = (config.SelectedItem as ConfigurationInfo); //mxd
@@ -464,7 +477,8 @@ namespace CodeImp.DoomBuilder.Windows
 				datalocations.EditResourceLocationList(listedlocations);
 
 				//mxd. Select script compiler
-				if (!string.IsNullOrEmpty(options.ScriptCompiler) && General.CompiledScriptConfigs.ContainsKey(options.ScriptCompiler)) {
+				if (!string.IsNullOrEmpty(options.ScriptCompiler) && General.CompiledScriptConfigs.ContainsKey(options.ScriptCompiler)) 
+				{
 					scriptconfig = options.ScriptCompiler;
 				} 
 				else 
@@ -473,6 +487,9 @@ namespace CodeImp.DoomBuilder.Windows
 					if(!string.IsNullOrEmpty(defaultscriptconfig) && General.CompiledScriptConfigs.ContainsKey(defaultscriptconfig))
 						scriptconfig = defaultscriptconfig;
 				}
+
+				//mxd. Long texture names
+				if(uselongtexturenames.Enabled) uselongtexturenames.Checked = options.UseLongTextureNames;
 			}
 
 			//mxd. Select proper script compiler

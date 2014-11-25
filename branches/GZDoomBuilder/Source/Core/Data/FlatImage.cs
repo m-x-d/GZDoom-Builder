@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Initialize
 			SetName(name);
+			isFlat = true; //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -51,7 +52,7 @@ namespace CodeImp.DoomBuilder.Data
 			lock(this)
 			{
 				// Get the lump data stream
-				Stream lumpdata = General.Map.Data.GetFlatData(Name);
+				Stream lumpdata = General.Map.Data.GetFlatData(Name, hasLongName);
 				if(lumpdata != null)
 				{
 					// Copy lump data to memory

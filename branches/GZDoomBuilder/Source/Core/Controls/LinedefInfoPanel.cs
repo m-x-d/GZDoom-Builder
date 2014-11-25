@@ -35,6 +35,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private int doomformatwidth;
 		private List<UniversalFieldInfo> fieldInfos;
 		private int[] labelPositionsY = new[] { 39, 58, 77 }; //mxd
+		private const int defaultPanelWidth = 270; //mxd
 		
 		// Constructor
 		public LinedefInfoPanel()
@@ -52,12 +53,10 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			bool upperunpegged, lowerunpegged;
 			string peggedness;
-			int defaultPanelWidth = 270; //mxd
 
 			//mxd
-			if (General.Map.UDMF && fieldInfos == null) {
+			if (General.Map.UDMF && fieldInfos == null) 
 				fieldInfos = General.Map.Config.SidedefFields;
-			}
 			
 			// Show/hide stuff depending on format
 			if(!General.Map.FormatInterface.HasActionArgs)
@@ -90,15 +89,18 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			//mxd. Hide activation or tag and rearrange labels 
-			if(!General.Map.FormatInterface.HasBuiltInActivations && General.Map.FormatInterface.HasNumericLinedefActivations) { //Hexen map format?
+			if(!General.Map.FormatInterface.HasBuiltInActivations && General.Map.FormatInterface.HasNumericLinedefActivations) //Hexen map format?
+			{ 
 				activation.Visible = true;
 				activationlabel.Visible = true;
 				taglabel.Visible = false;
 				tag.Visible = false;
 				
 				//set activation
-				foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) {
-					if(l.Activate == ai.Index) {
+				foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) 
+				{
+					if(l.Activate == ai.Index) 
+					{
 						activation.Text = ai.Title;
 						break;
 					}
@@ -118,8 +120,9 @@ namespace CodeImp.DoomBuilder.Controls
 				anglelabel.Top = labelPositionsY[2];
 				backoffset.Top = labelPositionsY[2];
 				backoffsetlabel.Top = labelPositionsY[2];
-
-			} else {
+			} 
+			else 
+			{
 				activation.Visible = false;
 				activationlabel.Visible = false;
 				taglabel.Visible = true;
@@ -187,11 +190,10 @@ namespace CodeImp.DoomBuilder.Controls
 			arg5.Enabled = act.Args[4].Used;
 
 			//mxd
-			if (hasArg0Str) {
+			if (hasArg0Str) 
 				arg1.Text = '"' + l.Fields["arg0str"].Value.ToString() + '"';
-			} else {
+			else 
 				setArgumentText(act.Args[0], arg1, l.Args[0]);
-			}
 			setArgumentText(act.Args[1], arg2, l.Args[1]);
 			setArgumentText(act.Args[2], arg3, l.Args[2]);
 			setArgumentText(act.Args[3], arg4, l.Args[3]);
@@ -210,7 +212,8 @@ namespace CodeImp.DoomBuilder.Controls
 				frontsector.Visible = true;
 				
 				//mxd
-				if(General.Map.UDMF) {
+				if(General.Map.UDMF) 
+				{
 					//light
 					frontoffsetlabel.Text = "Front light:";
 					setUDMFLight(l.Front, frontoffsetlabel, frontoffset);
@@ -249,7 +252,9 @@ namespace CodeImp.DoomBuilder.Controls
 					if(hasTopFields) addedWidth = 64;
 					if(hasMiddleFields) addedWidth += 64;
 					if(hasBottomFields) addedWidth += 64;
-				} else {
+				} 
+				else 
+				{
 					frontoffsetlabel.Text = "Front offset:";
 					frontoffset.Text = l.Front.OffsetX + ", " + l.Front.OffsetY;
 					frontoffsetlabel.Enabled = true;
@@ -264,12 +269,10 @@ namespace CodeImp.DoomBuilder.Controls
 				frontpanel.Width = defaultPanelWidth + addedWidth + 12;
 				flowLayoutPanelFront.Width = defaultPanelWidth + addedWidth;
 
-				fronthighname.Text = l.Front.HighTexture;
-				frontmidname.Text = l.Front.MiddleTexture;
-				frontlowname.Text = l.Front.LowTexture;
-				DisplaySidedefTexture(fronthightex, labelTextureFrontTop, l.Front.HighTexture, l.Front.HighRequired());
-				DisplaySidedefTexture(frontmidtex, labelTextureFrontMid, l.Front.MiddleTexture, l.Front.MiddleRequired());
-				DisplaySidedefTexture(frontlowtex, labelTextureFrontBottom, l.Front.LowTexture, l.Front.LowRequired());
+				// Show textures
+				DisplaySidedefTexture(fronthightex, fronthighname, labelTextureFrontTop, l.Front.HighTexture, l.Front.HighRequired());
+				DisplaySidedefTexture(frontmidtex, frontmidname, labelTextureFrontMid, l.Front.MiddleTexture, l.Front.MiddleRequired());
+				DisplaySidedefTexture(frontlowtex, frontlowname, labelTextureFrontBottom, l.Front.LowTexture, l.Front.LowRequired());
 
 				//mxd. Position label
 				frontsector.Left = frontpanel.Width - frontsector.Width - 12;
@@ -277,11 +280,13 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				// Show no info
-				//mxd
-				if(General.Map.UDMF) {
+				if(General.Map.UDMF) //mxd
+				{
 					frontoffsetlabel.Text = "Front light:";
 					frontoffset.Text = "--";
-				} else {
+				} 
+				else 
+				{
 					frontoffsetlabel.Text = "Front offset:";
 					frontoffset.Text = "--, --";
 				}
@@ -362,12 +367,10 @@ namespace CodeImp.DoomBuilder.Controls
 				backpanel.Width = defaultPanelWidth + addedWidth + 12;
 				flowLayoutPanelBack.Width = defaultPanelWidth + addedWidth;
 
-				backhighname.Text = l.Back.HighTexture;
-				backmidname.Text = l.Back.MiddleTexture;
-				backlowname.Text = l.Back.LowTexture;
-				DisplaySidedefTexture(backhightex, labelTextureBackTop, l.Back.HighTexture, l.Back.HighRequired());
-				DisplaySidedefTexture(backmidtex, labelTextureBackMid, l.Back.MiddleTexture, l.Back.MiddleRequired());
-				DisplaySidedefTexture(backlowtex, labelTextureBackBottom, l.Back.LowTexture, l.Back.LowRequired());
+				// Show textures
+				DisplaySidedefTexture(backhightex, backhighname, labelTextureBackTop, l.Back.HighTexture, l.Back.HighRequired());
+				DisplaySidedefTexture(backmidtex, backmidname, labelTextureBackMid, l.Back.MiddleTexture, l.Back.MiddleRequired());
+				DisplaySidedefTexture(backlowtex, backlowname, labelTextureBackBottom, l.Back.LowTexture, l.Back.LowRequired());
 
 				//mxd. Position label
 				backsector.Left = backpanel.Width - backsector.Width - 12;
@@ -375,11 +378,13 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				// Show no info
-				//mxd
-				if(General.Map.UDMF) {
+				if(General.Map.UDMF) //mxd
+				{ 
 					backoffsetlabel.Text = "Back light:";
 					backoffset.Text = "--";
-				} else {
+				} 
+				else 
+				{
 					backoffsetlabel.Text = "Back offset:";
 					backoffset.Text = "--, --";
 				}
@@ -396,21 +401,21 @@ namespace CodeImp.DoomBuilder.Controls
 
 			//mxd. Flags
 			Dictionary<string, string> activations = new Dictionary<string, string>(StringComparer.Ordinal);
-			foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) {
+			foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) 
 				activations.Add(ai.Key, ai.Title);
-			}
 
 			flags.Items.Clear();
-			foreach(KeyValuePair<string, bool> group in l.Flags) {
-				if(group.Value) {
+			foreach(KeyValuePair<string, bool> group in l.Flags) 
+			{
+				if(group.Value) 
+				{
 					ListViewItem item;
-					if (General.Map.Config.LinedefFlags.ContainsKey(group.Key)) {
+					if (General.Map.Config.LinedefFlags.ContainsKey(group.Key))
 						item = new ListViewItem(General.Map.Config.LinedefFlags[group.Key]);
-					} else if (activations.ContainsKey(group.Key)) {
+					else if (activations.ContainsKey(group.Key))
 						item = new ListViewItem(activations[group.Key]);
-					} else {
+					else 
 						item = new ListViewItem(group.Key);
-					}
 
 					item.Checked = true;
 					flags.Items.Add(item);
@@ -419,7 +424,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 			//mxd. Flags panel visibility and size
 			flagsPanel.Visible = (flags.Items.Count > 0);
-			if(flags.Items.Count > 0) {
+			if(flags.Items.Count > 0) 
+			{
 				int itemWidth = flags.Items[0].GetBounds(ItemBoundsPortion.Entire).Width;
 				if(itemWidth == 0) itemWidth = 96;
 				flags.Width = itemWidth * (int)Math.Ceiling(flags.Items.Count / 5.0f);
@@ -432,7 +438,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private bool checkPairedUDMFFields(UniFields fields, string paramX, string paramY, Label label, Label value) {
+		private bool checkPairedUDMFFields(UniFields fields, string paramX, string paramY, Label label, Label value) 
+		{
 			float dx = getDefaultUDMFValue(paramX);
 			float dy = getDefaultUDMFValue(paramY);
 			float x = dx;
@@ -443,7 +450,8 @@ namespace CodeImp.DoomBuilder.Controls
 			if(fields.ContainsKey(paramY))
 				y = (float)fields[paramY].Value;
 
-			if(x != dx || y != dy) {
+			if(x != dx || y != dy) 
+			{
 				value.Text = String.Format("{0:0.##}", x) + ", " + String.Format("{0:0.##}", y);
 				value.Enabled = true;
 				label.Enabled = true;
@@ -459,7 +467,8 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private static void setUDMFLight(Sidedef sd, Label label, Label value) 
 		{
-			if(sd.Fields.ContainsKey("light")) {
+			if(sd.Fields.ContainsKey("light")) 
+			{
 				int light = (int)sd.Fields["light"].Value;
 				
 				if (sd.Fields.ContainsKey("lightabsolute") && Boolean.Parse(sd.Fields["lightabsolute"].Value.ToString()))
@@ -469,7 +478,9 @@ namespace CodeImp.DoomBuilder.Controls
 
 				value.Enabled = true;
 				label.Enabled = true;
-			} else {
+			} 
+			else 
+			{
 				value.Text = "--";
 				label.Enabled = false;
 				value.Enabled = false;
@@ -479,9 +490,8 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private float getDefaultUDMFValue(string valueName) 
 		{
-			foreach (UniversalFieldInfo fi in fieldInfos) {
+			foreach (UniversalFieldInfo fi in fieldInfos) 
 				if (fi.Name == valueName) return (float)fi.Default;
-			}
 			return 0;
 		}
 
@@ -494,9 +504,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 			if(value < 1 || !General.Map.Options.TagLabels.ContainsKey(value)) return;
 
-			if(th is ThingTagHandler || th is LinedefTagHandler || th is SectorTagHandler) {
+			if(th is ThingTagHandler || th is LinedefTagHandler || th is SectorTagHandler) 
 				label.Text += " (" + General.Map.Options.TagLabels[value] + ")";
-			}
 		}
 
 		// When visible changed
@@ -518,29 +527,39 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This shows a sidedef texture in a panel
-		private static void DisplaySidedefTexture(Panel panel, Label label, string name, bool required)
+		private static void DisplaySidedefTexture(Panel panel, Label namelabel, Label sizelabel, string name, bool required)
 		{
 			// Check if name is a "none" texture
 			if((name.Length < 1) || (name == "-"))
 			{
-				label.Visible = false; //mxd
+				sizelabel.Visible = false; //mxd
 				
 				// Determine image to show
 				if(required) 
 					General.DisplayZoomedImage(panel, Properties.Resources.MissingTexture);
 				else
 					panel.BackgroundImage = null;
+
+				// Set texture name
+				namelabel.Text = "-";
 			}
 			else
 			{
 				//mxd
 				ImageData texture = General.Map.Data.GetTextureImage(name);
-				if(General.Settings.ShowTextureSizes && texture.ImageState == ImageLoadState.Ready && !(texture is UnknownImage)) {
-					label.Visible = true;
-					label.Text = texture.ScaledWidth + "x" + texture.ScaledHeight;
-				} else {
-					label.Visible = false;
+				bool unknowntexture = texture is UnknownImage;
+				if(General.Settings.ShowTextureSizes && texture.ImageState == ImageLoadState.Ready && !unknowntexture) 
+				{
+					sizelabel.Visible = true;
+					sizelabel.Text = texture.ScaledWidth + "x" + texture.ScaledHeight;
+				} 
+				else 
+				{
+					sizelabel.Visible = false;
 				}
+
+				// Set texture name
+				namelabel.Text = (unknowntexture ? name : texture.DisplayName);
 				
 				// Set the image
 				General.DisplayZoomedImage(panel, texture.GetPreview());

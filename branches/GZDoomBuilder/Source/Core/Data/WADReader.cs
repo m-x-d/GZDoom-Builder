@@ -536,28 +536,32 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This finds and returns a patch stream
-		public override Stream GetPatchData(string pname)
+		public override Stream GetPatchData(string pname, bool longname)
 		{
-			Lump lump;
-
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
+			if(longname) return null; //mxd
+			Lump lump;
 
 			// mxd. First strictly read patches between P_START and P_END
-			foreach(LumpRange range in patchranges) {
+			foreach(LumpRange range in patchranges) 
+			{
 				lump = file.FindLump(pname, range.start, range.end);
 				if(lump != null) return lump.Stream;
 			}
 			
-			if (!strictpatches) {
+			if (!strictpatches) 
+			{
 				//mxd. Find the lump anywhere EXCEPT flat ranges (the way it's done in ZDoom)
-				foreach (LumpRange range in invertedflatranges) {
+				foreach (LumpRange range in invertedflatranges) 
+				{
 					lump = file.FindLump(pname, range.start, range.end);
 					if(lump != null) return lump.Stream;
 				}
 
 				// Find the lump anywhere IN flat ranges
-				foreach (LumpRange range in flatranges) {
+				foreach (LumpRange range in flatranges) 
+				{
 					lump = file.FindLump(pname, range.start, range.end);
 					if(lump != null) return lump.Stream;
 				}
@@ -567,12 +571,12 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This finds and returns a texture stream
-		public override Stream GetTextureData(string pname)
+		public override Stream GetTextureData(string pname, bool longname)
 		{
-			Lump lump;
-
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
+			if(longname) return null; //mxd
+			Lump lump;
 
 			// Find the lump in ranges
 			foreach(LumpRange range in textureranges)
@@ -589,19 +593,23 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Flats
 
 		//mxd. This loads the flats
-		public override ICollection<ImageData> LoadFlats() {
+		public override ICollection<ImageData> LoadFlats() 
+		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			List<ImageData> images = new List<ImageData>();
 			FlatImage image;
 
-			foreach(LumpRange range in flatranges){
+			foreach(LumpRange range in flatranges)
+			{
 				if(range.end < range.start + 2) continue;
 
-				for(int i = range.start + 1; i < range.end; i++) {
+				for(int i = range.start + 1; i < range.end; i++) 
+				{
 					// Lump not zero-length?
-					if(file.Lumps[i].Length > 0) {
+					if(file.Lumps[i].Length > 0) 
+					{
 						// Make the image object
 						image = new FlatImage(file.Lumps[i].Name);
 
@@ -613,7 +621,8 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Load TEXTURES lump file
 			int lumpindex = file.FindLumpIndex("TEXTURES");
-			while(lumpindex > -1) {
+			while(lumpindex > -1) 
+			{
 				MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
 				WADReader.LoadHighresFlats(filedata, "TEXTURES", ref images, null, null);
 				filedata.Dispose();
@@ -654,11 +663,11 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This finds and returns a patch stream
-		public override Stream GetFlatData(string pname)
+		public override Stream GetFlatData(string pname, bool longname)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
-
+			if(longname) return null; //mxd
 			Lump lump;
 
 			// Find the lump in ranges

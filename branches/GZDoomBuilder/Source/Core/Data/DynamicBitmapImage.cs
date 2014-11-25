@@ -27,9 +27,6 @@ namespace CodeImp.DoomBuilder.Data
 	{
 		#region ================== Variables
 
-		// Image source
-		//private Bitmap img;
-
 		#endregion
 
 		#region ================== Constructor / Disposer

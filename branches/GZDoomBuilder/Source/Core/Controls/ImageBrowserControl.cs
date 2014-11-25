@@ -69,7 +69,6 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool PreventSelection { get { return preventselection; } set { preventselection = value; } }
 		public bool HideInputBox { get { return splitter.Panel2Collapsed; } set { splitter.Panel2Collapsed = value; } }
 		public bool BrowseFlats { get { return browseFlats; } set { browseFlats = value; } } //mxd
-		//public string LabelText { get { return label.Text; } set { label.Text = value; objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left; } } //mxd
 		public ListViewItem SelectedItem { get { if(list.SelectedItems.Count > 0) return list.SelectedItems[0]; else return null; } }
 		
 		#endregion
@@ -108,9 +107,12 @@ namespace CodeImp.DoomBuilder.Controls
 				list.TileSize = new Size(itemwidth, itemheight);
 
 				//mxd
-				if(General.Map.Config.MixTexturesFlats) {
+				if(General.Map.Config.MixTexturesFlats) 
+				{
 					cbMixMode.SelectedIndex = mixMode;
-				} else {
+				} 
+				else 
+				{
 					labelMixMode.Visible = false;
 					cbMixMode.Visible = false;
 					label.Left = labelMixMode.Left;
@@ -261,7 +263,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void cbMixMode_SelectedIndexChanged(object sender, EventArgs e) {
+		private void cbMixMode_SelectedIndexChanged(object sender, EventArgs e) 
+		{
 			mixMode = cbMixMode.SelectedIndex;
 			RefillList(false);
 		}
@@ -278,9 +281,11 @@ namespace CodeImp.DoomBuilder.Controls
 				ListViewItem selected = list.SelectedItems[0];
 
 				//mxd
-				foreach(ListViewItem n in visibleitems) {
+				foreach(ListViewItem n in visibleitems) 
+				{
 					if(n == selected) continue;
-					if(n.Text == selected.Text) {
+					if(n.Text == selected.Text) 
+					{
 						n.Selected = true;
 						n.Focused = true;
 						n.EnsureVisible();
@@ -293,7 +298,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// This selects an item by name
 		public void SelectItem(string name, ListViewGroup preferredgroup)
 		{
-			ListViewItem lvi = null;
+			ImageBrowserItem lvi = null; //mxd
 
 			// Not when selecting is prevented
 			if(preventselection) return;
@@ -303,9 +308,10 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				foreach(ListViewItem item in list.Items)
 				{
-					if(string.Compare(item.Text, name, true) == 0)
+					ImageBrowserItem curitem = item as ImageBrowserItem;
+					if(curitem != null && string.Compare(curitem.icon.Name, name, true) == 0)
 					{
-						lvi = item;
+						lvi = curitem;
 						if(item.Group == preferredgroup) break;
 					}
 				}
@@ -326,9 +332,6 @@ namespace CodeImp.DoomBuilder.Controls
 		// This performs item sleection by keys
 		private void SelectNextItem(SearchDirectionHint dir)
 		{
-			ListViewItem lvi;
-			Point spos;
-			
 			// Not when selecting is prevented
 			if(preventselection) return;
 			
@@ -341,9 +344,9 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				// Get selected item
-				lvi = list.SelectedItems[0];
+				ListViewItem lvi = list.SelectedItems[0];
 				Rectangle lvirect = list.GetItemRect(lvi.Index, ItemBoundsPortion.Entire);
-				spos = new Point(lvirect.Location.X + lvirect.Width / 2, lvirect.Y + lvirect.Height / 2);
+				Point spos = new Point(lvirect.Location.X + lvirect.Width / 2, lvirect.Y + lvirect.Height / 2);
 				
 				// Try finding 5 times in the given direction
 				for(int i = 0; i < 5; i++)
@@ -378,8 +381,6 @@ namespace CodeImp.DoomBuilder.Controls
 		// This selectes the first item
 		private void SelectFirstItem()
 		{
-			ListViewItem lvi;
-			
 			// Not when selecting is prevented
 			if(preventselection) return;
 			
@@ -387,7 +388,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(list.Items.Count > 0)
 			{
 				list.SelectedItems.Clear();
-				lvi = list.GetItemAt(list.TileSize.Width / 2, list.TileSize.Height / 2);
+				ListViewItem lvi = list.GetItemAt(list.TileSize.Width / 2, list.TileSize.Height / 2);
 				if(lvi != null)
 				{
 					lvi.Selected = true;
@@ -424,14 +425,6 @@ namespace CodeImp.DoomBuilder.Controls
 		// This ends adding items
 		public void EndAdding()
 		{
-			//mxd. Do we need to change item width?
-			if (longestTextureName.Length > 8) 
-			{
-				Graphics g = Graphics.FromImage(new Bitmap(1, 1));
-				SizeF size = g.MeasureString(longestTextureName, list.Font);
-				list.TileSize = new Size((int)(size.Width + 12), list.TileSize.Height);
-			}
-			
 			// Fill list with items
 			RefillList(true);
 

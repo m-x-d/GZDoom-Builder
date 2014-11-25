@@ -19,6 +19,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Config;
@@ -34,11 +35,11 @@ namespace CodeImp.DoomBuilder.Windows
 		private string selectedname;
 		private Point lastposition;
 		private Size lastsize;
-		private ListViewGroup usedgroup;
-		private ListViewGroup availgroup;
+		private readonly ListViewGroup usedgroup;
+		private readonly ListViewGroup availgroup;
 		private TreeNode selectedset; //mxd
 		private string selecttextureonfill;
-		private bool browseFlats;
+		private readonly bool browseFlats;
 		
 		// Properties
 		public string SelectedName { get { return selectedname; } }
@@ -119,17 +120,22 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. Select the last one that was selected
 			string selectname = General.Settings.ReadSetting("browserwindow.textureset", "");
 			TreeNode match;
-			if (string.IsNullOrEmpty(selectname)) {
+			if (string.IsNullOrEmpty(selectname)) 
+			{
 				match = tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1];
-			} else {
+			} 
+			else 
+			{
 				match = findNodeByName(tvTextureSets.Nodes, selectname);
 			}
 
-			if (match != null) {
+			if (match != null) 
+			{
 				IFilledTextureSet set = (match.Tag as IFilledTextureSet);
-				
-				foreach (ImageData img in set.Textures) {
-					if (img.LongName == longname) {
+				foreach (ImageData img in set.Textures) 
+				{
+					if (img.LongName == longname) 
+					{
 						selectedset = match;
 						break;
 					}
@@ -137,8 +143,10 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			//mxd. If the selected texture was not found in the last-selected set, try finding it in the other sets
-			if (selectedset == null && selecttexture != "-") {
-				foreach (TreeNode n in tvTextureSets.Nodes) {
+			if (selectedset == null && selecttexture != "-") 
+			{
+				foreach (TreeNode n in tvTextureSets.Nodes) 
+				{
 					selectedset = findTextureByLongName(n, longname);
 					if (selectedset != null) break;
 				}
@@ -169,12 +177,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.WindowState = (FormWindowState)General.Settings.ReadSetting("browserwindow.windowstate", (int)FormWindowState.Normal);
 			
 			//mxd
-			if (this.WindowState == FormWindowState.Normal) {
+			if (this.WindowState == FormWindowState.Normal) 
+			{
 				Point location = new Point(General.Settings.ReadSetting("browserwindow.positionx", int.MaxValue), General.Settings.ReadSetting("browserwindow.positiony", int.MaxValue));
-
-				if (location.X < int.MaxValue && location.Y < int.MaxValue) {
+				if (location.X < int.MaxValue && location.Y < int.MaxValue) 
+				{
 					this.Location = location;
-				} else {
+				} 
+				else 
+				{
 					this.StartPosition = FormStartPosition.CenterParent;
 				}
 			}
@@ -194,7 +205,8 @@ namespace CodeImp.DoomBuilder.Windows
 			//first search in child nodes
 			TreeNode match;
 
-			foreach(TreeNode n in node.Nodes) {
+			foreach(TreeNode n in node.Nodes) 
+			{
 				match = findTextureByLongName(n, longname);
 				if(match != null) return match;
 			}
@@ -219,7 +231,8 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private static TreeNode findNodeByName(TreeNodeCollection nodes, string selectname) 
 		{
-			foreach (TreeNode n in nodes) {
+			foreach (TreeNode n in nodes) 
+			{
 				if (n.Name == selectname) return n;
 
 				TreeNode match = findNodeByName(n.Nodes, selectname);
@@ -232,43 +245,47 @@ namespace CodeImp.DoomBuilder.Windows
 		private void createNodes(TreeNode root) 
 		{
 			ResourceTextureSet set = root.Tag as ResourceTextureSet;
-			if (set == null) {
+			if (set == null) 
+			{
 				General.ErrorLogger.Add(ErrorType.Error, "Resource " + root.Name + " doesn't have TextureSet!");
 				return;
 			}
 
 			int imageIndex = set.Location.type + 4;
-			string[] separator = new[] { Path.DirectorySeparatorChar.ToString() };
+			char[] separator = new[] { Path.AltDirectorySeparatorChar };
 			
-			ImageData[] textures;
+			ImageData[] images;
 			if (browseFlats)
 			{
-				textures = new ImageData[set.Flats.Count];
-				set.Flats.CopyTo(textures, 0);
+				images = new ImageData[set.Flats.Count];
+				set.Flats.CopyTo(images, 0);
 			}
 			else
 			{
-				textures = new ImageData[set.Textures.Count];
-				set.Textures.CopyTo(textures, 0);
+				images = new ImageData[set.Textures.Count];
+				set.Textures.CopyTo(images, 0);
 			}
-			Array.Sort(textures, sortImageData);
+			Array.Sort(images, sortImageData);
 
-			foreach (ImageData image in textures) {
-				string localName = image.FullName.Replace(set.Location.location, "");
-				string[] parts = localName.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+			foreach(ImageData image in images) 
+			{
+				string[] parts = image.VirtualName.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 				TreeNode curNode = root;
 
 				if (parts.Length == 1) continue;
 				int localindex = parts[0] == "[TEXTURES]" ? 7 : imageIndex;
 
-				for (int i = 0; i < parts.Length - 1; i++) {
+				for (int i = 0; i < parts.Length - 1; i++) 
+				{
 					string category = parts[i];
 					
 					//already got such category?
-					if (curNode.Nodes.Count > 0 && curNode.Nodes.ContainsKey(category)) {
+					if (curNode.Nodes.Count > 0 && curNode.Nodes.ContainsKey(category)) 
+					{
 						curNode = curNode.Nodes[category];
-
-					} else { //create a new one
+					} 
+					else //create a new one
+					{ 
 						TreeNode n = new TreeNode(category) { Name = category, ImageIndex = localindex, SelectedImageIndex = localindex };
 
 						curNode.Nodes.Add(n);
@@ -279,9 +296,11 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 
 					//add to current and parent nodes
-					if (i == parts.Length - 2) {
+					if (i == parts.Length - 2) 
+					{
 						TreeNode cn = curNode;
-						while (cn != root) {
+						while (cn != root) 
+						{
 							ResourceTextureSet curTs = cn.Tag as ResourceTextureSet;
 							if (image.IsFlat)
 								curTs.AddFlat(image);
@@ -293,7 +312,8 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
-			if (root.Nodes.Count == 1 && root.Nodes[0].Nodes.Count > 0) {
+			if (root.Nodes.Count == 1 && root.Nodes[0].Nodes.Count > 0) 
+			{
 				TreeNode[] children = new TreeNode[root.Nodes[0].Nodes.Count];
 				root.Nodes[0].Nodes.CopyTo(children, 0);
 				root.Nodes.Clear();
@@ -335,7 +355,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Set selected name and close
 			if(browser.SelectedItem != null)
 			{
-				selectedname = browser.SelectedItem.Text;
+				ImageBrowserItem item = browser.SelectedItem as ImageBrowserItem;
+				selectedname = item.icon.Name;
 				DialogResult = DialogResult.OK;
 			}
 			else
@@ -450,22 +471,25 @@ namespace CodeImp.DoomBuilder.Windows
 			// Start adding
 			browser.BeginAdding(false);
 
-			if (browseFlats) {
+			if (browseFlats) 
+			{
 				// Add all available flats
 				foreach(ImageData img in set.Flats)
-					browser.Add(img.Name, img, img, availgroup);
+					browser.Add(img.DisplayName, img, img, availgroup);
 
 				// Add all used flats
 				foreach(ImageData img in set.Flats)
-					if(img.UsedInMap) browser.Add(img.Name, img, img, usedgroup);
-			}else{
+					if(img.UsedInMap) browser.Add(img.DisplayName, img, img, usedgroup);
+			}
+			else
+			{
 				// Add all available textures and mark the images for temporary loading
 				foreach (ImageData img in set.Textures)
-					browser.Add(img.Name, img, img, availgroup);
+					browser.Add(img.DisplayName, img, img, availgroup);
 
 				// Add all used textures and mark the images for permanent loading
 				foreach (ImageData img in set.Textures)
-					if (img.UsedInMap) browser.Add(img.Name, img, img, usedgroup);
+					if(img.UsedInMap) browser.Add(img.DisplayName, img, img, usedgroup);
 			}
 			
 			// Done adding
@@ -496,14 +520,17 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void tvTextureSets_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
+		private void tvTextureSets_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) 
+		{
 			selectedset = e.Node;
 			FillImagesList();
 		}
 
 		//mxd
-		private void tvTextureSets_KeyUp(object sender, KeyEventArgs e) {
-			if(tvTextureSets.SelectedNode != selectedset) {
+		private void tvTextureSets_KeyUp(object sender, KeyEventArgs e) 
+		{
+			if(tvTextureSets.SelectedNode != selectedset) 
+			{
 				selectedset = tvTextureSets.SelectedNode;
 				FillImagesList();
 			}

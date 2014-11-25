@@ -25,6 +25,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Editing;
 
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -311,7 +312,6 @@ namespace CodeImp.DoomBuilder.Config
 			linetagindicatesectors = cfg.ReadSetting("linetagindicatesectors", false);
 			decorategames = cfg.ReadSetting("decorategames", "");
 			skyflatname = cfg.ReadSetting("skyflatname", "F_SKY1");
-			maxtexturenamelength = cfg.ReadSetting("maxtexturenamelength", 8);
 			leftboundary = cfg.ReadSetting("leftboundary", -32768);
 			rightboundary = cfg.ReadSetting("rightboundary", 32767);
 			topboundary = cfg.ReadSetting("topboundary", 32767);
@@ -319,6 +319,10 @@ namespace CodeImp.DoomBuilder.Config
 			doomlightlevels = cfg.ReadSetting("doomlightlevels", true);
 			defaultLinedefActivation = cfg.ReadSetting("defaultlinedefactivation", ""); //mxd
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
+
+			//mxd. Texture names length
+			bool uselongtexturenames = cfg.ReadSetting("longtexturenames", false);
+			maxtexturenamelength = (uselongtexturenames ? short.MaxValue : DataManager.CLASIC_IMAGE_NAME_LENGTH);
 
 			// Flags have special (invariant culture) conversion
 			// because they are allowed to be written as integers in the configs

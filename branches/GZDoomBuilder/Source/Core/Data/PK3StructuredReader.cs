@@ -261,34 +261,6 @@ namespace CodeImp.DoomBuilder.Data
 			
 			return null;
 		}
-
-		//mxd
-		public override string GetPatchLocation(string pname) {
-			// Error when suspended
-			if (issuspended) throw new Exception("Data reader is suspended");
-
-			if (General.Map.Config.MixTexturesFlats)
-			{
-				// Find in directories ZDoom expects them to be
-				foreach (string loc in PatchLocations)
-				{
-					string path = Path.Combine(loc, Path.GetDirectoryName(pname));
-					string filename = FindFirstFile(path, Path.GetFileName(pname), true);
-					if (!string.IsNullOrEmpty(filename) && FileExists(filename)) 
-						return filename;
-				}
-			}
-			else
-			{
-				// Find in patches directory
-				string path = Path.Combine(PATCHES_DIR, Path.GetDirectoryName(pname));
-				string filename = FindFirstFile(path, Path.GetFileName(pname), true);
-				if (!string.IsNullOrEmpty(filename) && FileExists(filename)) 
-					return filename;
-			}
-
-			return pname;
-		}
 		
 		#endregion
 
@@ -346,15 +318,20 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd.
-		public override Stream GetFlatData(string pname) {
+		public override Stream GetFlatData(string pname, bool longname) 
+		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Find in any of the wad files
 			// Note the backward order, because the last wad's images have priority
-			for(int i = wads.Count - 1; i > -1; i--) {
-				Stream data = wads[i].GetFlatData(pname);
-				if(data != null) return data;
+			if(!longname) //mxd. Flats with long names can't be in wads
+			{
+				for (int i = wads.Count - 1; i > -1; i--)
+				{
+					Stream data = wads[i].GetFlatData(pname, false);
+					if (data != null) return data;
+				}
 			}
 
 			// Nothing found
@@ -488,18 +465,18 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Modeldef (mxd)
 
 		//mxd
-		public override Dictionary<string, Stream> GetModeldefData() {
+		public override Dictionary<string, Stream> GetModeldefData() 
+		{
 			// Error when suspended
 			if (issuspended) throw new Exception("Data reader is suspended");
 
 			//modedef should be in root folder
-			string[] allFiles = GetAllFiles("", false);
+			string[] files = GetAllFiles("", false);
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 
-			foreach (string s in allFiles) {
-				if (s.ToLowerInvariant().IndexOf("modeldef") != -1) {
+			foreach (string s in files) {
+				if (s.ToLowerInvariant().IndexOf("modeldef") != -1) 
 					streams.Add(s, LoadFile(s));
-				}
 			}
 
 			return streams;
@@ -510,34 +487,37 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Voxeldef (mxd)
 
 		//mxd. This returns the list of voxels, which can be used without VOXELDEF definition
-		public override string[] GetVoxelNames() {
+		public override string[] GetVoxelNames() 
+		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			string[] files = GetAllFiles("voxels", false);
 			List<string> voxels = new List<string>();
-			Regex spriteName = new Regex(SPRITE_NAME_PATTERN);
+			Regex spritename = new Regex(SPRITE_NAME_PATTERN);
 
-			for(int i = 0; i < files.Length; i++) {
-				string s = Path.GetFileNameWithoutExtension(files[i]).ToUpperInvariant();
-				if(spriteName.IsMatch(s)) voxels.Add(s);
+			foreach (string t in files)
+			{
+				string s = Path.GetFileNameWithoutExtension(t).ToUpperInvariant();
+				if(spritename.IsMatch(s)) voxels.Add(s);
 			}
 
 			return voxels.ToArray();
 		}
 
 		//mxd
-		public override KeyValuePair<string, Stream> GetVoxeldefData() {
+		public override KeyValuePair<string, Stream> GetVoxeldefData() 
+		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			//voxeldef should be in root folder
 			string[] files = GetAllFiles("", false);
 
-			foreach(string s in files) {
-				if(Path.GetFileNameWithoutExtension(s).ToUpperInvariant() == "VOXELDEF") {
+			foreach(string s in files) 
+			{
+				if(Path.GetFileNameWithoutExtension(s).ToUpperInvariant() == "VOXELDEF") 
 					return new KeyValuePair<string,Stream>(s, LoadFile(s));
-				}
 			}
 
 			return new KeyValuePair<string,Stream>();
@@ -548,19 +528,21 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== (Z)MAPINFO (mxd)
 
 		//mxd
-		public override Dictionary<string, Stream> GetMapinfoData() {
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
+		public override Dictionary<string, Stream> GetMapinfoData() 
+		{
 			// Error when suspended
 			if (issuspended) throw new Exception("Data reader is suspended");
 
 			//mapinfo should be in root folder
-			string[] allFiles = GetAllFiles("", false);
-			string fileName;
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
+			string[] files = GetAllFiles("", false);
+			string filename;
 
 			//try to find (z)mapinfo
-			foreach (string s in allFiles) {
-				fileName = s.ToLowerInvariant();
-				if (fileName.IndexOf("zmapinfo") != -1 || fileName.IndexOf("mapinfo") != -1)
+			foreach (string s in files) 
+			{
+				filename = Path.GetFileNameWithoutExtension(s.ToLowerInvariant());
+				if(filename == "zmapinfo" || filename == "mapinfo")
 					streams.Add(s, LoadFile(s));
 			}
 
@@ -572,29 +554,31 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== GLDEFS (mxd)
 
 		//mxd
-		public override Dictionary<string, Stream> GetGldefsData(GameType gameType) {
+		public override Dictionary<string, Stream> GetGldefsData(GameType gametype) 
+		{
 			// Error when suspended
 			if (issuspended) throw new Exception("Data reader is suspended");
 
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 
 			//at least one of gldefs should be in root folder
-			string[] allFiles = GetAllFiles("", false);
+			string[] files = GetAllFiles("", false);
 
 			//try to load game specific GLDEFS first
-			string lumpName;
-			if (gameType != GameType.UNKNOWN) {
-				lumpName = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gameType].ToLowerInvariant();
-				foreach (string s in allFiles) {
-					if (s.ToLowerInvariant().IndexOf(lumpName) != -1)
+			if (gametype != GameType.UNKNOWN) 
+			{
+				string lumpname = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gametype].ToLowerInvariant();
+				foreach (string s in files) 
+				{
+					if (s.ToLowerInvariant().IndexOf(lumpname) != -1)
 						streams.Add(s, LoadFile(s));
 				}
 			}
 
-			//can be several entries
-			lumpName = "gldefs";
-			foreach (string s in allFiles) {
-				if (s.ToLowerInvariant().IndexOf(lumpName) != -1)
+			// Can be several entries
+			foreach (string s in files)
+			{
+				if(s.ToLowerInvariant().IndexOf("gldefs") != -1)
 					streams.Add(s, LoadFile(s));
 			}
 
@@ -602,7 +586,8 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		public override Dictionary<string, Stream> GetGldefsData(string location) {
+		public override Dictionary<string, Stream> GetGldefsData(string location) 
+		{
 			// Error when suspended
 			if (issuspended) throw new Exception("Data reader is suspended");
 
@@ -620,30 +605,24 @@ namespace CodeImp.DoomBuilder.Data
 		private ICollection<ImageData> LoadDirectoryImages(string path, int imagetype, bool includesubdirs)
 		{
 			List<ImageData> images = new List<ImageData>();
-			string name;
 			
 			// Go for all files
 			string[] files = GetAllFiles(path, includesubdirs);
 			foreach(string f in files)
 			{
 				//mxd. Skip IMGZ files
-				if(Path.GetExtension(f).ToUpperInvariant() == ".IMGZ") continue;
+				string ext = Path.GetExtension(f);
+				if(!string.IsNullOrEmpty(ext) && ext.ToUpperInvariant() == ".IMGZ") continue;
 				
-				// Make the texture name from filename without extension
-				name = Path.GetFileNameWithoutExtension(f);
-
-				if (string.IsNullOrEmpty(name)) 
+				if(string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(f))) 
 				{
 					// Can't load image without name
 					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed texture from \"" + path + "\". Please consider giving names to your resources.");
 				} 
 				else 
 				{
-					if(name.Length > General.Map.Config.MaxTextureNameLength) name = name.Substring(0, General.Map.Config.MaxTextureNameLength);
-					if(General.Settings.CapitalizeTextureNames) name = name.ToUpperInvariant(); //mxd
-					
 					// Add image to list
-					images.Add(CreateImage(name, f, imagetype));
+					images.Add(CreateImage(f, imagetype));
 				}
 			}
 			
@@ -664,7 +643,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This must create an image
-		protected abstract ImageData CreateImage(string name, string filename, int imagetype);
+		protected abstract ImageData CreateImage(string filename, int imagetype);
 
 		// This must return all files in a given directory
 		protected abstract string[] GetAllFiles(string path, bool subfolders);

@@ -87,18 +87,23 @@ namespace CodeImp.DoomBuilder
 					case ErrorType.Error:
 						erroradded = true;
 						prefix = "ERROR: ";
+#if DEBUG
+						DebugConsole.WriteLine(DebugMessageType.Error, message);
+#endif
 						break;
 						
 					case ErrorType.Warning:
 						warningadded = true;
 						prefix = "WARNING: ";
+#if DEBUG
+						DebugConsole.WriteLine(DebugMessageType.Warning, message);
+#endif
 						break;
 				}
 				changed = true;
+
 				General.WriteLogLine(prefix + message);
-				
-				//mxd
-				General.MainWindow.SetWarningsCount(errors.Count, erroradded);
+				General.MainWindow.SetWarningsCount(errors.Count, erroradded); //mxd
 			}
 		}
 		

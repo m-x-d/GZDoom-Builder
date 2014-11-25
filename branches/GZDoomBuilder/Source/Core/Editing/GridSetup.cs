@@ -17,7 +17,9 @@
 #region ================== Namespaces
 
 using System;
+using System.IO;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Actions;
@@ -129,7 +131,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// Read settings from configuration
-		internal void ReadFromConfig(Configuration cfg, string path)
+		internal void ReadFromConfig(Configuration cfg, string path, bool uselongtexturenames)
 		{
 			// Read settings
 			background = cfg.ReadSetting(path + ".background", "");
@@ -139,6 +141,9 @@ namespace CodeImp.DoomBuilder.Editing
 			backscalex = cfg.ReadSetting(path + ".backscalex", 100) / 100.0f;
 			backscaley = cfg.ReadSetting(path + ".backscaley", 100) / 100.0f;
 			gridsize = cfg.ReadSetting(path + ".gridsize", DEFAULT_GRID_SIZE);
+
+			//mxd. Translate background name?
+			TranslateBackgroundName(uselongtexturenames);
 
 			// Setup
 			SetGridSize(gridsize);
@@ -172,6 +177,23 @@ namespace CodeImp.DoomBuilder.Editing
 			LinkBackground();
 		}
 
+		//mxd
+		internal void TranslateBackgroundName(bool uselongtexturenames)
+		{
+			if(string.IsNullOrEmpty(background)) return;
+
+			switch(backsource) 
+			{
+				case SOURCE_TEXTURES:
+					background = (uselongtexturenames ? General.Map.Data.GetFullTextureName(background) : MapSet.GetShortTextureName(background));
+					break;
+
+				case SOURCE_FLATS:
+					background = (uselongtexturenames ? General.Map.Data.GetFullFlatName(background) : MapSet.GetShortTextureName(background));
+					break;
+			}
+		}
+
 		// This sets the background view
 		internal void SetBackgroundView(int offsetx, int offsety, float scalex, float scaley)
 		{
@@ -200,7 +222,7 @@ namespace CodeImp.DoomBuilder.Editing
 					break;
 
 				case SOURCE_FILE:
-					backimage = new FileImage(background, background, false, 1.0f, 1.0f);
+					backimage = new FileImage(Path.GetFileNameWithoutExtension(background), background, false, 1.0f, 1.0f);
 					break;
 			}
 

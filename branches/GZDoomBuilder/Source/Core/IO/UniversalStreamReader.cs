@@ -133,13 +133,13 @@ namespace CodeImp.DoomBuilder.IO
 		public MapSet Read(MapSet map, Stream stream)
 		{
 			StreamReader reader = new StreamReader(stream, Encoding.ASCII);
-			Dictionary<int, Vertex> vertexlink;
-			Dictionary<int, Sector> sectorlink;
 			UniversalParser textmap = new UniversalParser();
 			textmap.StrictChecking = strictchecking;
 			
+#if !DEBUG
 			try
 			{
+#endif
 				// Read UDMF from stream
 				List<string> data = new List<string>(100);
 				while(!reader.EndOfStream) 
@@ -160,16 +160,18 @@ namespace CodeImp.DoomBuilder.IO
 				else
 				{
 					// Read the map
-					vertexlink = ReadVertices(map, textmap);
-					sectorlink = ReadSectors(map, textmap);
+					Dictionary<int, Vertex> vertexlink = ReadVertices(map, textmap);
+					Dictionary<int, Sector> sectorlink = ReadSectors(map, textmap);
 					ReadLinedefs(map, textmap, vertexlink, sectorlink);
 					ReadThings(map, textmap);
 				}
+#if !DEBUG
 			}
 			catch(Exception e)
 			{
 				General.ShowErrorMessage("Unexpected error reading UDMF map data. " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
 			}
+#endif
 
 			return map;
 		}
@@ -326,12 +328,12 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			// Read fields
 			string where = "linedef " + ld.Index + (front ? " front sidedef " : " back sidedef ") + index;
-			int offsetx = GetCollectionEntry<int>(sc, "offsetx", false, 0, where);
-			int offsety = GetCollectionEntry<int>(sc, "offsety", false, 0, where);
-			string thigh = GetCollectionEntry<string>(sc, "texturetop", false, "-", where);
-			string tlow = GetCollectionEntry<string>(sc, "texturebottom", false, "-", where);
-			string tmid = GetCollectionEntry<string>(sc, "texturemiddle", false, "-", where);
-			int sector = GetCollectionEntry<int>(sc, "sector", true, 0, where);
+			int offsetx = GetCollectionEntry(sc, "offsetx", false, 0, where);
+			int offsety = GetCollectionEntry(sc, "offsety", false, 0, where);
+			string thigh = GetCollectionEntry(sc, "texturetop", false, "-", where);
+			string tlow = GetCollectionEntry(sc, "texturebottom", false, "-", where);
+			string tmid = GetCollectionEntry(sc, "texturemiddle", false, "-", where);
+			int sector = GetCollectionEntry(sc, "sector", true, 0, where);
 
 			//mxd. Flags
 			Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
@@ -359,13 +361,11 @@ namespace CodeImp.DoomBuilder.IO
 		// This reads the sectors
 		private Dictionary<int, Sector> ReadSectors(MapSet map, UniversalParser textmap)
 		{
-			Dictionary<int, Sector> link;
-
 			// Get list of entries
 			List<UniversalCollection> collections = GetNamedCollections(textmap.Root, "sector");
 
 			// Create lookup table
-			link = new Dictionary<int, Sector>(collections.Count);
+			Dictionary<int, Sector> link = new Dictionary<int, Sector>(collections.Count);
 
 			// Go for all collections
 			map.SetCapacity(0, 0, 0, map.Sectors.Count + collections.Count, 0);
@@ -419,13 +419,11 @@ namespace CodeImp.DoomBuilder.IO
 		// This reads the vertices
 		private Dictionary<int, Vertex> ReadVertices(MapSet map, UniversalParser textmap)
 		{
-			Dictionary<int, Vertex> link;
-
 			// Get list of entries
 			List<UniversalCollection> collections = GetNamedCollections(textmap.Root, "vertex");
 
 			// Create lookup table
-			link = new Dictionary<int, Vertex>(collections.Count);
+			Dictionary<int, Vertex> link = new Dictionary<int, Vertex>(collections.Count);
 
 			// Go for all collections
 			map.SetCapacity(map.Vertices.Count + collections.Count, 0, 0, 0, 0);

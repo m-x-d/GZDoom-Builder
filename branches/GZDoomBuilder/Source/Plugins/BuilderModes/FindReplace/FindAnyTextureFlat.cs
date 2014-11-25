@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
 			// Interpret the replacement
-			if(replace && (string.IsNullOrEmpty(replacewith) || replacewith.Length > 8))
+			if(replace && (string.IsNullOrEmpty(replacewith) || replacewith.Length > General.Map.Config.MaxTextureNameLength))
 			{
 				MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return objs.ToArray();

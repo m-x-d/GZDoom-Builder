@@ -998,14 +998,14 @@ namespace CodeImp.DoomBuilder
 		internal static void NewMap()
 		{
 			//mxd
-			if(map != null && map.Launcher.GameEngineRunning) {
+			if(map != null && map.Launcher.GameEngineRunning) 
+			{
 				ShowWarningMessage("Cannot create a map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
 				return;
 			}
 			
 			MapOptions newoptions = new MapOptions();
-			MapOptionsForm optionswindow;
-			
+
 			// Cancel volatile mode, if any
 			editing.DisengageVolatileMode();
 			
@@ -1013,7 +1013,7 @@ namespace CodeImp.DoomBuilder
 			if(AskSaveMap())
 			{
 				// Open map options dialog
-				optionswindow = new MapOptionsForm(newoptions, true);
+				MapOptionsForm optionswindow = new MapOptionsForm(newoptions, true);
 				if(optionswindow.ShowDialog(mainwindow) == DialogResult.OK)
 				{
 					// Display status
@@ -1030,9 +1030,8 @@ namespace CodeImp.DoomBuilder
 					// Let the plugins know
 					plugins.OnMapNewBegin();
 
-					// Set this to false so we can see if errors are added
-					//General.ErrorLogger.IsErrorAdded = false;
-					errorlogger.Clear(); //mxd
+					// Clear old errors (mxd)
+					errorlogger.Clear();
 					
 					// Create map manager with given options
 					map = new MapManager();
@@ -1194,6 +1193,26 @@ namespace CodeImp.DoomBuilder
 			// Open map options dialog
 			ChangeMapForm changemapwindow = new ChangeMapForm(map.FilePathName, map.Options);
 			if(changemapwindow.ShowDialog(mainwindow) != DialogResult.OK) return;
+
+			// If resources don't match, perform regular map loading
+			bool resourcesmismatch = changemapwindow.Options.Resources.Count != map.Options.Resources.Count;
+			if (!resourcesmismatch)
+			{
+				for(int i = 0; i < changemapwindow.Options.Resources.Count; i++) 
+				{
+					if(changemapwindow.Options.Resources[i].location != map.Options.Resources[i].location)
+					{
+						resourcesmismatch = true;
+						break;
+					}
+				}
+			}
+
+			if(resourcesmismatch) 
+			{
+				OpenMapFileWithOptions(map.FilePathName, changemapwindow.Options);
+				return;
+			}
 
 			// Display status
 			mainwindow.DisplayStatus(StatusType.Busy, "Switching to map '" + changemapwindow.Options.CurrentName + "'...");
@@ -1363,7 +1382,7 @@ namespace CodeImp.DoomBuilder
 					result = map.SaveSettingsFile(map.FilePathName);
 					
 					// Display status
-					mainwindow.DisplayStatus(StatusType.Info, "Map is up to date. No saving required.");
+					mainwindow.DisplayStatus(StatusType.Info, "Map is up to date. Updated map settings file.");
 
 					// All done
 					mainwindow.UpdateInterface();
@@ -1894,24 +1913,14 @@ namespace CodeImp.DoomBuilder
 		// This shows an image in a panel either zoomed or centered depending on size
 		public static void DisplayZoomedImage(Panel panel, Image image)
 		{
-			// Set the image
-			panel.BackgroundImage = image;
-			
 			// Image not null?
 			if(image != null)
 			{
-				// Small enough to fit in panel?
-				if((image.Size.Width < panel.ClientRectangle.Width) &&
-				   (image.Size.Height < panel.ClientRectangle.Height))
-				{
-					// Display centered
-					panel.BackgroundImageLayout = ImageLayout.Center;
-				}
-				else
-				{
-					// Display zoomed
-					panel.BackgroundImageLayout = ImageLayout.Zoom;
-				}
+				// Set the image
+				panel.BackgroundImage = image;
+
+				// Display zoomed
+				panel.BackgroundImageLayout = ImageLayout.Zoom;
 			}
 		}
 

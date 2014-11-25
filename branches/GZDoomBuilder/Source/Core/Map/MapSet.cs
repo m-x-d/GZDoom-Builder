@@ -28,6 +28,7 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.VisualModes;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -3202,6 +3203,151 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Sidedef s in sidedefs) if(s.Marked) s.TranslateFromUDMF(); //mxd
 			foreach(Sector s in sectors) if(s.Marked) s.TranslateFromUDMF(); //mxd
 			foreach(Thing t in things) if(t.Marked) t.TranslateFromUDMF();
+		}
+
+		//mxd
+		internal bool TranslateTextureNames(bool uselongnames, bool markedonly)
+		{
+			if (markedonly)
+			{
+				List<Sector> markedsectors = GetMarkedSectors(true);
+				List<Sidedef> markedsides = GetMarkedSidedefs(true);
+				if(uselongnames) return TranslateToLongTextureNames(markedsectors, markedsides);
+				return TranslateToShortTextureNames(markedsectors, markedsides);
+			}
+			else
+			{
+				if(uselongnames) return TranslateToLongTextureNames(sectors, sidedefs);
+				return TranslateToShortTextureNames(sectors, sidedefs);
+			}
+		}
+
+		//mxd
+		private bool TranslateToLongTextureNames(IEnumerable<Sector> sectors, IEnumerable<Sidedef> sidedefs)
+		{
+			bool changed = false;
+			
+			foreach (Sector s in sectors)
+			{
+				if (s.FloorTexture != "-")
+				{
+					string ft = General.Map.Data.GetFullFlatName(s.FloorTexture);
+					if (ft != s.FloorTexture)
+					{
+						s.SetFloorTexture(ft);
+						changed = true;
+					}
+				}
+				if (s.CeilTexture != "-")
+				{
+					string ct = General.Map.Data.GetFullFlatName(s.CeilTexture);
+					if (ct != s.CeilTexture)
+					{
+						s.SetCeilTexture(ct);
+						changed = true;
+					}
+				}
+			}
+
+			foreach (Sidedef s in sidedefs)
+			{
+				if (s.HighTexture != "-")
+				{
+					string ht = General.Map.Data.GetFullTextureName(s.HighTexture);
+					if (ht != s.HighTexture)
+					{
+						s.SetTextureHigh(ht);
+						changed = true;
+					}
+				}
+				if (s.MiddleTexture != "-")
+				{
+					string mt = General.Map.Data.GetFullTextureName(s.MiddleTexture);
+					if (mt != s.MiddleTexture)
+					{
+						s.SetTextureMid(mt);
+						changed = true;
+					}
+				}
+				if (s.LowTexture != "-")
+				{
+					string lt = General.Map.Data.GetFullTextureName(s.LowTexture);
+					if (lt != s.LowTexture)
+					{
+						s.SetTextureLow(lt);
+						changed = true;
+					}
+				}
+			}
+
+			return changed;
+		}
+
+		private bool TranslateToShortTextureNames(IEnumerable<Sector> sectors, IEnumerable<Sidedef> sidedefs)
+		{
+			bool changed = false;
+			
+			foreach(Sector s in sectors) 
+			{
+				if(s.FloorTexture != "-") 
+				{
+					string ft = GetShortTextureName(s.FloorTexture);
+					if (ft != s.FloorTexture)
+					{
+						s.SetFloorTexture(ft);
+						changed = true;
+					}
+				}
+				if(s.CeilTexture != "-") 
+				{
+					string ct = GetShortTextureName(s.CeilTexture);
+					if (ct != s.CeilTexture)
+					{
+						s.SetCeilTexture(ct);
+						changed = true;
+					}
+				}
+			}
+
+			foreach(Sidedef s in sidedefs) 
+			{
+				if(s.HighTexture != "-") 
+				{
+					string ht = GetShortTextureName(s.HighTexture);
+					if (ht != s.HighTexture)
+					{
+						s.SetTextureHigh(ht);
+						changed = true;
+					}
+				}
+				if(s.MiddleTexture != "-") 
+				{
+					string mt = GetShortTextureName(s.MiddleTexture);
+					if (mt != s.MiddleTexture)
+					{
+						s.SetTextureMid(mt);
+						changed = true;
+					}
+				}
+				if(s.LowTexture != "-") 
+				{
+					string lt = GetShortTextureName(s.LowTexture);
+					if (lt != s.LowTexture)
+					{
+						s.SetTextureLow(lt);
+						changed = true;
+					}
+				}
+			}
+
+			return changed;
+		}
+
+		internal static string GetShortTextureName(string name)
+		{
+			string shortname = Path.GetFileNameWithoutExtension(name).ToUpperInvariant();
+			if (shortname.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH) shortname = shortname.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+			return shortname;
 		}
 
 		/// <summary>This removes unused vertices.</summary>
