@@ -11,7 +11,8 @@ namespace CodeImp.DoomBuilder.Windows
 {
 	public partial class ChangeMapForm : DelayedForm
 	{
-		private readonly MapOptions options;
+		private MapOptions options;
+		private Configuration mapsettings;
 		private readonly string filepathname;
 
 		public MapOptions Options { get { return options; } }
@@ -58,19 +59,36 @@ namespace CodeImp.DoomBuilder.Windows
 			// Make an array for the map names
 			List<ListViewItem> mapnames = new List<ListViewItem>();
 
+			// Open the Map Settings configuration
+			string dbsfile = filepathname.Substring(0, filepathname.Length - 4) + ".dbs";
+			if (File.Exists(dbsfile))
+			{
+				try
+				{
+					mapsettings = new Configuration(dbsfile, true);
+				}
+				catch (Exception)
+				{
+					mapsettings = new Configuration(true);
+				}
+			}
+			else
+			{
+				mapsettings = new Configuration(true);
+			}
+
 			//mxd. Get Proper configuration
 			ConfigurationInfo ci = General.GetConfigurationInfo(options.ConfigFile);
-			Configuration cfg = ci.Configuration;
-		
+
 			// Get the map lump names
-			IDictionary maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
+			IDictionary maplumpnames = ci.Configuration.ReadSetting("maplumpnames", new Hashtable());
 
 			// Count how many required lumps we have to find
 			foreach(DictionaryEntry ml in maplumpnames) {
 				// Ignore the map header (it will not be found because the name is different)
 				if(ml.Key.ToString() != MapManager.CONFIG_MAP_HEADER) {
 					// Read lump setting and count it
-					if(cfg.ReadSetting("maplumpnames." + ml.Key + ".required", false))
+					if(ci.Configuration.ReadSetting("maplumpnames." + ml.Key + ".required", false))
 						lumpsrequired++;
 				}
 			}
@@ -88,7 +106,7 @@ namespace CodeImp.DoomBuilder.Windows
 						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name)) {
 						// Count the lump when it is marked as required
 						lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
-						if(cfg.ReadSetting("maplumpnames." + lumpname + ".required", false))
+						if(ci.Configuration.ReadSetting("maplumpnames." + lumpname + ".required", false))
 							lumpsfound++;
 
 						// Check the next lump
@@ -147,9 +165,9 @@ namespace CodeImp.DoomBuilder.Windows
 				General.ShowWarningMessage("Map '" + options.LevelName + "' is already loaded!", MessageBoxButtons.OK);
 				return;
 			}
-			
-			options.CurrentName = mapslist.SelectedItems[0].Text;
-			options.PreviousName = string.Empty;
+
+			// Create new map options
+			options = new MapOptions(mapsettings, mapslist.SelectedItems[0].Text);
 			
 			// Hide window
 			this.DialogResult = DialogResult.OK;

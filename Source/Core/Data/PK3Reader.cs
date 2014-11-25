@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Data
 
 					MemoryStream s = new MemoryStream();
 					reader.WriteEntryTo(s);
-					sevenzipentries.Add(reader.Entry.FilePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar), s.ToArray());
+					sevenzipentries.Add(reader.Entry.FilePath.ToLowerInvariant(), s.ToArray());
 					fileentries.Add(new DirectoryFileEntry(reader.Entry.FilePath));
 				}
 
@@ -142,17 +142,25 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Textures
 
 		// This finds and returns a patch stream
-		public override Stream GetPatchData(string pname)
+		public override Stream GetPatchData(string pname, bool longname)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Find in any of the wad files
 			// Note the backward order, because the last wad's images have priority
-			for(int i = wads.Count - 1; i >= 0; i--)
+			if (!longname) //mxd. Patches with long names can't be in wads
 			{
-				Stream data = wads[i].GetPatchData(pname);
-				if(data != null) return data;
+				for (int i = wads.Count - 1; i >= 0; i--)
+				{
+					Stream data = wads[i].GetPatchData(pname, false);
+					if (data != null) return data;
+				}
+			}
+			else
+			{
+				//mxd. Long names are absolute
+				return (FileExists(pname) ? LoadFile(pname) : null);
 			}
 
 			if (General.Map.Config.MixTexturesFlats)
@@ -178,17 +186,25 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This finds and returns a textue stream
-		public override Stream GetTextureData(string pname)
+		public override Stream GetTextureData(string pname, bool longname)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Find in any of the wad files
 			// Note the backward order, because the last wad's images have priority
-			for(int i = wads.Count - 1; i >= 0; i--)
+			if (!longname) //mxd. Textures with long names can't be in wads
 			{
-				Stream data = wads[i].GetTextureData(pname);
-				if(data != null) return data;
+				for (int i = wads.Count - 1; i >= 0; i--)
+				{
+					Stream data = wads[i].GetTextureData(pname, false);
+					if (data != null) return data;
+				}
+			}
+			else
+			{
+				//mxd. Long names are absolute
+				return (FileExists(pname) ? LoadFile(pname) : null);
 			}
 
 			// Find in textures directory
@@ -285,12 +301,14 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Voxels (mxd)
 
 		//mxd. This finds and returns a voxel stream or null if no voxel was found
-		public override Stream GetVoxelData(string name) {
+		public override Stream GetVoxelData(string name) 
+		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Find in any of the wad files
-			for(int i = wads.Count - 1; i >= 0; i--) {
+			for(int i = wads.Count - 1; i >= 0; i--) 
+			{
 				Stream voxel = wads[i].GetVoxelData(name);
 				if(voxel != null) return voxel;
 			}
@@ -299,7 +317,8 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Find in sprites directory
 			string filename = FindFirstFile(VOXELS_DIR, pfilename, true);
-			if((filename != null) && FileExists(filename)) {
+			if((filename != null) && FileExists(filename)) 
+			{
 				return LoadFile(filename);
 			}
 
@@ -318,18 +337,18 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This creates an image
-		protected override ImageData CreateImage(string name, string filename, int imagetype)
+		protected override ImageData CreateImage(string filename, int imagetype)
 		{
 			switch(imagetype)
 			{
 				case ImageDataFormat.DOOMFLAT:
-					return new PK3FileImage(this, name, filename, true);
+					return new PK3FileImage(this, filename, true);
 
 				case ImageDataFormat.DOOMPICTURE:
-					return new PK3FileImage(this, name, filename, false);
+					return new PK3FileImage(this, filename, false);
 
 				case ImageDataFormat.DOOMCOLORMAP:
-					return new ColormapImage(name);
+					return new ColormapImage(Path.GetFileNameWithoutExtension(filename));
 					
 				default:
 					throw new ArgumentException("Invalid image format specified!");
@@ -355,7 +374,8 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd. This returns all files in a given directory which title starts with given title
-		protected override string[] GetAllFilesWhichTitleStartsWith(string path, string title) {
+		protected override string[] GetAllFilesWhichTitleStartsWith(string path, string title) 
+		{
 			return files.GetAllFilesWhichTitleStartsWith(path, title).ToArray();
 		}
 		
@@ -391,24 +411,24 @@ namespace CodeImp.DoomBuilder.Data
 		internal override MemoryStream LoadFile(string filename)
 		{
 			MemoryStream filedata = null;
+			string fn = filename.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar); //mxd
 
 			//mxd. This works waaaaaay faster with 7z archive
-			if (archivetype == ArchiveType.SevenZip) 
+			if (archivetype == ArchiveType.SevenZip)
 			{
-				if (sevenzipentries.ContainsKey(filename))
-					filedata = new MemoryStream(sevenzipentries[filename]);
+				fn = fn.ToLowerInvariant();
+				if (sevenzipentries.ContainsKey(fn)) filedata = new MemoryStream(sevenzipentries[fn]);
 			} 
 			else 
 			{
 				UpdateArchive(true);
-				
+
 				foreach (var entry in archive.Entries) 
 				{
 					if (entry.IsDirectory) continue;
 					
 					// Is this the entry we are looking for?
-					string entryname = entry.FilePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-					if (string.Compare(entryname, filename, true) == 0) 
+					if(string.Compare(entry.FilePath, fn, true) == 0)
 					{
 						filedata = new MemoryStream();
 						entry.WriteTo(filedata);

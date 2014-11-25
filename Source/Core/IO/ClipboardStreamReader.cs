@@ -29,6 +29,14 @@ namespace CodeImp.DoomBuilder.IO
 			public Dictionary<string, bool> Flags;
 		}
 
+		private bool uselongtexturenames; //mxd
+
+		#endregion 
+
+		#region ================== Properties
+
+		public bool UseLongTextureNames { get { return uselongtexturenames; } } //mxd
+
 		#endregion
 
 		#region ================== Reading
@@ -38,6 +46,7 @@ namespace CodeImp.DoomBuilder.IO
 			BinaryReader reader = new BinaryReader(stream);
 
 			// Read the map
+			uselongtexturenames = reader.ReadBoolean(); //mxd
 			Dictionary<int, Vertex> vertexlink = ReadVertices(map, reader);
 			Dictionary<int, Sector> sectorlink = ReadSectors(map, reader);
 			Dictionary<int, SidedefData> sidedeflink = ReadSidedefs(reader);

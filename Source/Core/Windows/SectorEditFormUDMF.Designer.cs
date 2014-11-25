@@ -129,7 +129,7 @@
 			groupaction.Controls.Add(this.tagSelector);
 			groupaction.Location = new System.Drawing.Point(7, 341);
 			groupaction.Name = "groupaction";
-			groupaction.Size = new System.Drawing.Size(436, 71);
+			groupaction.Size = new System.Drawing.Size(490, 71);
 			groupaction.TabIndex = 2;
 			groupaction.TabStop = false;
 			groupaction.Text = " Identification: ";
@@ -138,7 +138,7 @@
 			// 
 			this.tagSelector.Location = new System.Drawing.Point(6, 21);
 			this.tagSelector.Name = "tagSelector";
-			this.tagSelector.Size = new System.Drawing.Size(424, 35);
+			this.tagSelector.Size = new System.Drawing.Size(478, 35);
 			this.tagSelector.TabIndex = 0;
 			// 
 			// groupeffect
@@ -160,7 +160,7 @@
 			groupeffect.Controls.Add(label8);
 			groupeffect.Location = new System.Drawing.Point(7, 160);
 			groupeffect.Name = "groupeffect";
-			groupeffect.Size = new System.Drawing.Size(436, 175);
+			groupeffect.Size = new System.Drawing.Size(490, 175);
 			groupeffect.TabIndex = 1;
 			groupeffect.TabStop = false;
 			groupeffect.Text = " Effects: ";
@@ -170,7 +170,7 @@
 			this.fadeColor.DefaultValue = 0;
 			this.fadeColor.Field = "fadecolor";
 			this.fadeColor.Label = "Fade:";
-			this.fadeColor.Location = new System.Drawing.Point(223, 111);
+			this.fadeColor.Location = new System.Drawing.Point(241, 111);
 			this.fadeColor.Name = "fadeColor";
 			this.fadeColor.Size = new System.Drawing.Size(207, 31);
 			this.fadeColor.TabIndex = 30;
@@ -181,7 +181,7 @@
 			this.lightColor.DefaultValue = 16777215;
 			this.lightColor.Field = "lightcolor";
 			this.lightColor.Label = "Light:";
-			this.lightColor.Location = new System.Drawing.Point(223, 82);
+			this.lightColor.Location = new System.Drawing.Point(241, 82);
 			this.lightColor.Name = "lightColor";
 			this.lightColor.Size = new System.Drawing.Size(207, 29);
 			this.lightColor.TabIndex = 29;
@@ -247,7 +247,7 @@
 			// 
 			this.soundSequence.Location = new System.Drawing.Point(125, 55);
 			this.soundSequence.Name = "soundSequence";
-			this.soundSequence.Size = new System.Drawing.Size(271, 20);
+			this.soundSequence.Size = new System.Drawing.Size(325, 20);
 			this.soundSequence.TabIndex = 2;
 			// 
 			// gravity
@@ -276,7 +276,7 @@
 			// browseeffect
 			// 
 			this.browseeffect.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
-			this.browseeffect.Location = new System.Drawing.Point(402, 26);
+			this.browseeffect.Location = new System.Drawing.Point(456, 26);
 			this.browseeffect.Name = "browseeffect";
 			this.browseeffect.Size = new System.Drawing.Size(28, 25);
 			this.browseeffect.TabIndex = 1;
@@ -293,7 +293,7 @@
 			this.effect.GeneralizedOptions = null;
 			this.effect.Location = new System.Drawing.Point(68, 28);
 			this.effect.Name = "effect";
-			this.effect.Size = new System.Drawing.Size(328, 21);
+			this.effect.Size = new System.Drawing.Size(382, 21);
 			this.effect.TabIndex = 0;
 			this.effect.Value = 402;
 			// 
@@ -320,7 +320,7 @@
 			groupfloorceiling.Controls.Add(this.floorheight);
 			groupfloorceiling.Location = new System.Drawing.Point(7, 6);
 			groupfloorceiling.Name = "groupfloorceiling";
-			groupfloorceiling.Size = new System.Drawing.Size(188, 148);
+			groupfloorceiling.Size = new System.Drawing.Size(242, 148);
 			groupfloorceiling.TabIndex = 0;
 			groupfloorceiling.TabStop = false;
 			groupfloorceiling.Text = " Heights: ";
@@ -432,7 +432,7 @@
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
 			this.tabs.Name = "tabs";
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(457, 445);
+			this.tabs.Size = new System.Drawing.Size(511, 445);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 1;
 			// 
@@ -446,7 +446,7 @@
 			this.tabproperties.Location = new System.Drawing.Point(4, 23);
 			this.tabproperties.Name = "tabproperties";
 			this.tabproperties.Padding = new System.Windows.Forms.Padding(3);
-			this.tabproperties.Size = new System.Drawing.Size(449, 418);
+			this.tabproperties.Size = new System.Drawing.Size(503, 418);
 			this.tabproperties.TabIndex = 0;
 			this.tabproperties.Text = "Properties";
 			this.tabproperties.UseVisualStyleBackColor = true;
@@ -456,7 +456,7 @@
 			this.groupBox3.Controls.Add(this.flags);
 			this.groupBox3.Location = new System.Drawing.Point(201, 6);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(242, 148);
+			this.groupBox3.Size = new System.Drawing.Size(296, 148);
 			this.groupBox3.TabIndex = 3;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Flags: ";
@@ -467,7 +467,7 @@
 			this.flags.Columns = 1;
 			this.flags.Location = new System.Drawing.Point(15, 21);
 			this.flags.Name = "flags";
-			this.flags.Size = new System.Drawing.Size(222, 121);
+			this.flags.Size = new System.Drawing.Size(275, 121);
 			this.flags.TabIndex = 5;
 			this.flags.VerticalSpacing = 2;
 			// 
@@ -478,7 +478,7 @@
 			this.tabSurfaces.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabSurfaces.Location = new System.Drawing.Point(4, 23);
 			this.tabSurfaces.Name = "tabSurfaces";
-			this.tabSurfaces.Size = new System.Drawing.Size(449, 418);
+			this.tabSurfaces.Size = new System.Drawing.Size(503, 418);
 			this.tabSurfaces.TabIndex = 2;
 			this.tabSurfaces.Text = "Surfaces";
 			this.tabSurfaces.UseVisualStyleBackColor = true;
@@ -503,7 +503,7 @@
 			this.groupBox2.Controls.Add(this.floortex);
 			this.groupBox2.Location = new System.Drawing.Point(3, 212);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(443, 203);
+			this.groupBox2.Size = new System.Drawing.Size(497, 203);
 			this.groupBox2.TabIndex = 55;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Floor: ";
@@ -511,7 +511,7 @@
 			// cbUseFloorLineAngles
 			// 
 			this.cbUseFloorLineAngles.AutoSize = true;
-			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(236, 147);
+			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(181, 147);
 			this.cbUseFloorLineAngles.Name = "cbUseFloorLineAngles";
 			this.cbUseFloorLineAngles.Size = new System.Drawing.Size(115, 18);
 			this.cbUseFloorLineAngles.TabIndex = 57;
@@ -522,9 +522,9 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = 0;
+			this.floorAngleControl.Angle = -360;
 			this.floorAngleControl.AngleOffset = 90;
-			this.floorAngleControl.Location = new System.Drawing.Point(186, 132);
+			this.floorAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
 			this.floorAngleControl.Size = new System.Drawing.Size(44, 44);
 			this.floorAngleControl.TabIndex = 56;
@@ -532,7 +532,7 @@
 			// 
 			// label7
 			// 
-			this.label7.Location = new System.Drawing.Point(29, 88);
+			this.label7.Location = new System.Drawing.Point(24, 88);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(80, 14);
 			this.label7.TabIndex = 54;
@@ -542,7 +542,7 @@
 			// 
 			// label10
 			// 
-			this.label10.Location = new System.Drawing.Point(29, 178);
+			this.label10.Location = new System.Drawing.Point(24, 178);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(80, 14);
 			this.label10.TabIndex = 52;
@@ -558,7 +558,7 @@
 			this.floorAlpha.ButtonStep = 1;
 			this.floorAlpha.ButtonStepFloat = 0.1F;
 			this.floorAlpha.ButtonStepsWrapAround = false;
-			this.floorAlpha.Location = new System.Drawing.Point(118, 173);
+			this.floorAlpha.Location = new System.Drawing.Point(113, 173);
 			this.floorAlpha.Name = "floorAlpha";
 			this.floorAlpha.Size = new System.Drawing.Size(62, 24);
 			this.floorAlpha.StepValues = null;
@@ -567,7 +567,7 @@
 			// 
 			// label11
 			// 
-			this.label11.Location = new System.Drawing.Point(29, 148);
+			this.label11.Location = new System.Drawing.Point(24, 148);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(80, 14);
 			this.label11.TabIndex = 50;
@@ -583,7 +583,7 @@
 			this.floorRotation.ButtonStep = 5;
 			this.floorRotation.ButtonStepFloat = 1F;
 			this.floorRotation.ButtonStepsWrapAround = false;
-			this.floorRotation.Location = new System.Drawing.Point(118, 143);
+			this.floorRotation.Location = new System.Drawing.Point(113, 143);
 			this.floorRotation.Name = "floorRotation";
 			this.floorRotation.Size = new System.Drawing.Size(62, 24);
 			this.floorRotation.StepValues = null;
@@ -594,7 +594,7 @@
 			// floorLightAbsolute
 			// 
 			this.floorLightAbsolute.AutoSize = true;
-			this.floorLightAbsolute.Location = new System.Drawing.Point(186, 117);
+			this.floorLightAbsolute.Location = new System.Drawing.Point(181, 117);
 			this.floorLightAbsolute.Name = "floorLightAbsolute";
 			this.floorLightAbsolute.Size = new System.Drawing.Size(69, 18);
 			this.floorLightAbsolute.TabIndex = 49;
@@ -604,7 +604,7 @@
 			// 
 			// label12
 			// 
-			this.label12.Location = new System.Drawing.Point(29, 118);
+			this.label12.Location = new System.Drawing.Point(24, 118);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(80, 14);
 			this.label12.TabIndex = 47;
@@ -620,7 +620,7 @@
 			this.floorBrightness.ButtonStep = 16;
 			this.floorBrightness.ButtonStepFloat = 1F;
 			this.floorBrightness.ButtonStepsWrapAround = false;
-			this.floorBrightness.Location = new System.Drawing.Point(118, 113);
+			this.floorBrightness.Location = new System.Drawing.Point(113, 113);
 			this.floorBrightness.Name = "floorBrightness";
 			this.floorBrightness.Size = new System.Drawing.Size(62, 24);
 			this.floorBrightness.StepValues = null;
@@ -632,7 +632,7 @@
 			// 
 			this.floorRenderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.floorRenderStyle.FormattingEnabled = true;
-			this.floorRenderStyle.Location = new System.Drawing.Point(118, 85);
+			this.floorRenderStyle.Location = new System.Drawing.Point(113, 85);
 			this.floorRenderStyle.Name = "floorRenderStyle";
 			this.floorRenderStyle.Size = new System.Drawing.Size(130, 22);
 			this.floorRenderStyle.TabIndex = 46;
@@ -649,7 +649,7 @@
 			this.floorScale.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.floorScale.Label = "Texture Scale:";
 			this.floorScale.LinkValues = false;
-			this.floorScale.Location = new System.Drawing.Point(23, 51);
+			this.floorScale.Location = new System.Drawing.Point(18, 51);
 			this.floorScale.Name = "floorScale";
 			this.floorScale.Size = new System.Drawing.Size(276, 28);
 			this.floorScale.TabIndex = 17;
@@ -667,7 +667,7 @@
 			this.floorOffsets.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.floorOffsets.Label = "Texture Offsets:";
 			this.floorOffsets.LinkValues = false;
-			this.floorOffsets.Location = new System.Drawing.Point(23, 19);
+			this.floorOffsets.Location = new System.Drawing.Point(18, 19);
 			this.floorOffsets.Name = "floorOffsets";
 			this.floorOffsets.Size = new System.Drawing.Size(276, 26);
 			this.floorOffsets.TabIndex = 16;
@@ -675,12 +675,13 @@
 			// 
 			// floortex
 			// 
-			this.floortex.Location = new System.Drawing.Point(305, 19);
+			this.floortex.Location = new System.Drawing.Point(300, 13);
 			this.floortex.MultipleTextures = false;
 			this.floortex.Name = "floortex";
-			this.floortex.Size = new System.Drawing.Size(132, 105);
+			this.floortex.Size = new System.Drawing.Size(190, 184);
 			this.floortex.TabIndex = 15;
 			this.floortex.TextureName = "";
+			this.floortex.UsePreviews = false;
 			this.floortex.OnValueChanged += new System.EventHandler(this.floortex_OnValueChanged);
 			// 
 			// groupBox1
@@ -703,7 +704,7 @@
 			this.groupBox1.Controls.Add(this.ceilingtex);
 			this.groupBox1.Location = new System.Drawing.Point(3, 3);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(443, 203);
+			this.groupBox1.Size = new System.Drawing.Size(497, 203);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Ceiling: ";
@@ -711,7 +712,7 @@
 			// cbUseCeilLineAngles
 			// 
 			this.cbUseCeilLineAngles.AutoSize = true;
-			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(236, 147);
+			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(181, 147);
 			this.cbUseCeilLineAngles.Name = "cbUseCeilLineAngles";
 			this.cbUseCeilLineAngles.Size = new System.Drawing.Size(115, 18);
 			this.cbUseCeilLineAngles.TabIndex = 56;
@@ -722,9 +723,9 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = 0;
+			this.ceilAngleControl.Angle = -360;
 			this.ceilAngleControl.AngleOffset = 90;
-			this.ceilAngleControl.Location = new System.Drawing.Point(186, 132);
+			this.ceilAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
 			this.ceilAngleControl.Size = new System.Drawing.Size(44, 44);
 			this.ceilAngleControl.TabIndex = 55;
@@ -732,7 +733,7 @@
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(29, 88);
+			this.label3.Location = new System.Drawing.Point(24, 88);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(80, 14);
 			this.label3.TabIndex = 54;
@@ -742,7 +743,7 @@
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(29, 178);
+			this.label4.Location = new System.Drawing.Point(24, 178);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(80, 14);
 			this.label4.TabIndex = 52;
@@ -758,7 +759,7 @@
 			this.ceilAlpha.ButtonStep = 1;
 			this.ceilAlpha.ButtonStepFloat = 0.1F;
 			this.ceilAlpha.ButtonStepsWrapAround = false;
-			this.ceilAlpha.Location = new System.Drawing.Point(118, 173);
+			this.ceilAlpha.Location = new System.Drawing.Point(113, 173);
 			this.ceilAlpha.Name = "ceilAlpha";
 			this.ceilAlpha.Size = new System.Drawing.Size(62, 24);
 			this.ceilAlpha.StepValues = null;
@@ -767,7 +768,7 @@
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(29, 148);
+			this.label1.Location = new System.Drawing.Point(24, 148);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(80, 14);
 			this.label1.TabIndex = 50;
@@ -783,7 +784,7 @@
 			this.ceilRotation.ButtonStep = 5;
 			this.ceilRotation.ButtonStepFloat = 1F;
 			this.ceilRotation.ButtonStepsWrapAround = false;
-			this.ceilRotation.Location = new System.Drawing.Point(118, 143);
+			this.ceilRotation.Location = new System.Drawing.Point(113, 143);
 			this.ceilRotation.Name = "ceilRotation";
 			this.ceilRotation.Size = new System.Drawing.Size(62, 24);
 			this.ceilRotation.StepValues = null;
@@ -794,7 +795,7 @@
 			// ceilLightAbsolute
 			// 
 			this.ceilLightAbsolute.AutoSize = true;
-			this.ceilLightAbsolute.Location = new System.Drawing.Point(186, 117);
+			this.ceilLightAbsolute.Location = new System.Drawing.Point(181, 117);
 			this.ceilLightAbsolute.Name = "ceilLightAbsolute";
 			this.ceilLightAbsolute.Size = new System.Drawing.Size(69, 18);
 			this.ceilLightAbsolute.TabIndex = 49;
@@ -805,7 +806,7 @@
 			// 
 			// labelLightFront
 			// 
-			this.labelLightFront.Location = new System.Drawing.Point(29, 118);
+			this.labelLightFront.Location = new System.Drawing.Point(24, 118);
 			this.labelLightFront.Name = "labelLightFront";
 			this.labelLightFront.Size = new System.Drawing.Size(80, 14);
 			this.labelLightFront.TabIndex = 47;
@@ -821,7 +822,7 @@
 			this.ceilBrightness.ButtonStep = 16;
 			this.ceilBrightness.ButtonStepFloat = 1F;
 			this.ceilBrightness.ButtonStepsWrapAround = false;
-			this.ceilBrightness.Location = new System.Drawing.Point(118, 113);
+			this.ceilBrightness.Location = new System.Drawing.Point(113, 113);
 			this.ceilBrightness.Name = "ceilBrightness";
 			this.ceilBrightness.Size = new System.Drawing.Size(62, 24);
 			this.ceilBrightness.StepValues = null;
@@ -833,7 +834,7 @@
 			// 
 			this.ceilRenderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.ceilRenderStyle.FormattingEnabled = true;
-			this.ceilRenderStyle.Location = new System.Drawing.Point(118, 85);
+			this.ceilRenderStyle.Location = new System.Drawing.Point(113, 85);
 			this.ceilRenderStyle.Name = "ceilRenderStyle";
 			this.ceilRenderStyle.Size = new System.Drawing.Size(130, 22);
 			this.ceilRenderStyle.TabIndex = 46;
@@ -850,7 +851,7 @@
 			this.ceilScale.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.ceilScale.Label = "Texture Scale:";
 			this.ceilScale.LinkValues = false;
-			this.ceilScale.Location = new System.Drawing.Point(23, 51);
+			this.ceilScale.Location = new System.Drawing.Point(18, 51);
 			this.ceilScale.Name = "ceilScale";
 			this.ceilScale.Size = new System.Drawing.Size(276, 28);
 			this.ceilScale.TabIndex = 17;
@@ -868,7 +869,7 @@
 			this.ceilOffsets.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.ceilOffsets.Label = "Texture Offsets:";
 			this.ceilOffsets.LinkValues = false;
-			this.ceilOffsets.Location = new System.Drawing.Point(23, 19);
+			this.ceilOffsets.Location = new System.Drawing.Point(18, 19);
 			this.ceilOffsets.Name = "ceilOffsets";
 			this.ceilOffsets.Size = new System.Drawing.Size(276, 26);
 			this.ceilOffsets.TabIndex = 16;
@@ -876,12 +877,13 @@
 			// 
 			// ceilingtex
 			// 
-			this.ceilingtex.Location = new System.Drawing.Point(305, 19);
+			this.ceilingtex.Location = new System.Drawing.Point(300, 13);
 			this.ceilingtex.MultipleTextures = false;
 			this.ceilingtex.Name = "ceilingtex";
-			this.ceilingtex.Size = new System.Drawing.Size(132, 105);
+			this.ceilingtex.Size = new System.Drawing.Size(190, 184);
 			this.ceilingtex.TabIndex = 15;
 			this.ceilingtex.TextureName = "";
+			this.ceilingtex.UsePreviews = false;
 			this.ceilingtex.OnValueChanged += new System.EventHandler(this.ceilingtex_OnValueChanged);
 			// 
 			// tabslopes
@@ -891,7 +893,7 @@
 			this.tabslopes.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabslopes.Location = new System.Drawing.Point(4, 23);
 			this.tabslopes.Name = "tabslopes";
-			this.tabslopes.Size = new System.Drawing.Size(449, 418);
+			this.tabslopes.Size = new System.Drawing.Size(503, 418);
 			this.tabslopes.TabIndex = 3;
 			this.tabslopes.Text = "Slopes";
 			this.tabslopes.UseVisualStyleBackColor = true;
@@ -901,7 +903,7 @@
 			this.groupBox5.Controls.Add(this.floorslopecontrol);
 			this.groupBox5.Location = new System.Drawing.Point(3, 212);
 			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(443, 203);
+			this.groupBox5.Size = new System.Drawing.Size(497, 203);
 			this.groupBox5.TabIndex = 1;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = " Floor: ";
@@ -923,7 +925,7 @@
 			this.groupBox4.Controls.Add(this.ceilingslopecontrol);
 			this.groupBox4.Location = new System.Drawing.Point(3, 3);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(443, 203);
+			this.groupBox4.Size = new System.Drawing.Size(497, 203);
 			this.groupBox4.TabIndex = 0;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Ceiling: ";
@@ -947,7 +949,7 @@
 			this.tabcustom.Location = new System.Drawing.Point(4, 23);
 			this.tabcustom.Name = "tabcustom";
 			this.tabcustom.Padding = new System.Windows.Forms.Padding(3);
-			this.tabcustom.Size = new System.Drawing.Size(449, 418);
+			this.tabcustom.Size = new System.Drawing.Size(503, 418);
 			this.tabcustom.TabIndex = 1;
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;
@@ -967,7 +969,7 @@
 			this.fieldslist.Name = "fieldslist";
 			this.fieldslist.PropertyColumnVisible = true;
 			this.fieldslist.PropertyColumnWidth = 150;
-			this.fieldslist.Size = new System.Drawing.Size(427, 397);
+			this.fieldslist.Size = new System.Drawing.Size(481, 397);
 			this.fieldslist.TabIndex = 1;
 			this.fieldslist.TypeColumnVisible = true;
 			this.fieldslist.TypeColumnWidth = 100;
@@ -977,7 +979,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(235, 459);
+			this.cancel.Location = new System.Drawing.Point(289, 459);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 4;
@@ -988,7 +990,7 @@
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(353, 459);
+			this.apply.Location = new System.Drawing.Point(407, 459);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 3;
@@ -1009,7 +1011,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(477, 489);
+			this.ClientSize = new System.Drawing.Size(531, 489);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
@@ -1018,7 +1020,6 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SectorEditFormUDMF";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

@@ -50,7 +50,8 @@ namespace CodeImp.DoomBuilder.Controls
 			timer.Stop(); //mxd
 			
 			// Check if name is a "none" texture
-			if(string.IsNullOrEmpty(imagename)) {
+			if(string.IsNullOrEmpty(imagename)) 
+			{
 				DisplayImageSize(0, 0); //mxd
 				
 				//mxd. Determine image to show
@@ -70,15 +71,16 @@ namespace CodeImp.DoomBuilder.Controls
 
 				if(string.IsNullOrEmpty(texture.FullName) || texture is UnknownImage) DisplayImageSize(0, 0); //mxd
 				else DisplayImageSize(texture.ScaledWidth, texture.ScaledHeight); //mxd
-				if(!texture.IsPreviewLoaded) timer.Start(); //mxd
+				if(usepreviews ? !texture.IsPreviewLoaded : !texture.IsImageLoaded) timer.Start(); //mxd
 				
 				// Set the image
-				return texture.GetPreview();
+				return (usepreviews ? texture.GetPreview() : texture.GetBitmap());
 			}
 		}
 
 		// This browses for a texture
-		protected override string BrowseImage(string imagename) {
+		protected override string BrowseImage(string imagename) 
+		{
 			// Browse for texture
 			string result = TextureBrowserForm.Browse(this.ParentForm, imagename, false);
 			return result ?? imagename;

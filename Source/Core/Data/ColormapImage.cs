@@ -45,29 +45,24 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the image
 		protected override void LocalLoadImage()
 		{
-			Stream lumpdata;
-			MemoryStream mem;
-			IImageReader reader;
-			byte[] membytes;
-
 			// Leave when already loaded
 			if(this.IsImageLoaded) return;
 
 			lock(this)
 			{
 				// Get the lump data stream
-				lumpdata = General.Map.Data.GetColormapData(Name);
+				Stream lumpdata = General.Map.Data.GetColormapData(Name);
 				if(lumpdata != null)
 				{
 					// Copy lump data to memory
 					lumpdata.Seek(0, SeekOrigin.Begin);
-					membytes = new byte[(int)lumpdata.Length];
+					byte[] membytes = new byte[(int)lumpdata.Length];
 					lumpdata.Read(membytes, 0, (int)lumpdata.Length);
-					mem = new MemoryStream(membytes);
+					MemoryStream mem = new MemoryStream(membytes);
 					mem.Seek(0, SeekOrigin.Begin);
 
 					// Get a reader for the data
-					reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMCOLORMAP, General.Map.Data.Palette);
+					IImageReader reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMCOLORMAP, General.Map.Data.Palette);
 					if(reader is UnknownImageReader)
 					{
 						// Data is in an unknown format!

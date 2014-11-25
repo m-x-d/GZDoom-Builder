@@ -117,13 +117,10 @@ namespace CodeImp.DoomBuilder.Data
 		public virtual PatchNames LoadPatchNames() { return null; }
 
 		// When implemented, this returns the patch lump
-		public virtual Stream GetPatchData(string pname) { return null; }
-
-		//mxd. When implemented, this returns a path to patch (like /patches/walls/WALL001.png)
-		public virtual string GetPatchLocation(string pname) { return pname; }
+		public virtual Stream GetPatchData(string pname, bool longname) { return null; }
 
 		// When implemented, this returns the texture lump
-		public virtual Stream GetTextureData(string pname) { return null; }
+		public virtual Stream GetTextureData(string pname, bool longname) { return null; }
 
 		// When implemented, this loads the textures
 		public virtual ICollection<ImageData> LoadTextures(PatchNames pnames) { return null; }
@@ -136,7 +133,7 @@ namespace CodeImp.DoomBuilder.Data
 		public virtual ICollection<ImageData> LoadFlats() { return null; }
 
 		// When implemented, this returns the flat lump
-		public virtual Stream GetFlatData(string pname) { return null; }
+		public virtual Stream GetFlatData(string pname, bool longname) { return null; }
 		
 		#endregion
 		
@@ -179,7 +176,6 @@ namespace CodeImp.DoomBuilder.Data
 
 		//mxd
 		internal virtual MemoryStream LoadFile(string name) { return null; }
-		//mxd
 		internal virtual bool FileExists(string filename) { return false; }
 
 		#endregion

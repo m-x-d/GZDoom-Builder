@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(TexturePatch p in patches)
 					{
 						// Get the patch data stream
-						patchdata = General.Map.Data.GetPatchData(p.lumpname);
+						patchdata = General.Map.Data.GetPatchData(p.lumpname, p.haslongname);
 						if(patchdata != null)
 						{
 							// Copy patch data to memory

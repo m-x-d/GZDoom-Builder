@@ -69,8 +69,6 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd. Window setup stuff
 		private static Point location = Point.Empty;
 		private static int activeTab;
-		private static int activeFrontTab;
-		private static int activeBackTab;
 
 		private struct LinedefProperties //mxd
 		{
@@ -173,8 +171,6 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					activeTab = 0;
 				}
-				if(activeFrontTab > 0) udmfPropertiesFront.SelectTab(activeFrontTab);
-				if(activeBackTab > 0) udmfPropertiesBack.SelectTab(activeBackTab);
 			}
 			
 			// Fill flags lists
@@ -278,8 +274,16 @@ namespace CodeImp.DoomBuilder.Windows
 				labelLightBack.Visible = false;
 				lightBack.Visible = false;
 				cbLightAbsoluteBack.Visible = false;
-				udmfPropertiesFront.Visible = false;
-				udmfPropertiesBack.Visible = false;
+				frontflagsgroup.Enabled = false;
+				backflagsgroup.Enabled = false;
+				frontscalegroup.Enabled = false;
+				backscalegroup.Enabled = false;
+				pfcFrontOffsetTop.Enabled = false;
+				pfcFrontOffsetMid.Enabled = false;
+				pfcFrontOffsetBottom.Enabled = false;
+				pfcBackOffsetTop.Enabled = false;
+				pfcBackOffsetMid.Enabled = false;
+				pfcBackOffsetBottom.Enabled = false;
 			}
 		}
 
@@ -925,6 +929,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Enable/disable panel
 			// NOTE: Also enabled when checkbox is grayed!
 			frontgroup.Enabled = (frontside.CheckState != CheckState.Unchecked);
+			tabfront.ImageIndex = (frontside.CheckState == CheckState.Unchecked ? 1 : 0);
 		}
 
 		// Back side (un)checked
@@ -933,6 +938,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Enable/disable panel
 			// NOTE: Also enabled when checkbox is grayed!
 			backgroup.Enabled = (backside.CheckState != CheckState.Unchecked);
+			tabback.ImageIndex = (backside.CheckState == CheckState.Unchecked ? 1 : 0);
 		}
 
 		// Action changes
@@ -1020,8 +1026,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			location = this.Location;
 			activeTab = tabs.SelectedIndex;
-			activeFrontTab = udmfPropertiesFront.SelectedIndex;
-			activeBackTab = udmfPropertiesBack.SelectedIndex;
 		}
 
 		// Help!

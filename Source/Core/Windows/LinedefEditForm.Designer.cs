@@ -451,12 +451,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.frontgroup.Controls.Add(this.frontside);
-			this.frontgroup.Controls.Add(this.frontTextureOffset);
 			this.frontgroup.Controls.Add(this.frontsector);
 			this.frontgroup.Controls.Add(label11);
 			this.frontgroup.Controls.Add(this.frontlow);
 			this.frontgroup.Controls.Add(this.frontmid);
 			this.frontgroup.Controls.Add(this.fronthigh);
+			this.frontgroup.Controls.Add(this.frontTextureOffset);
 			this.frontgroup.Controls.Add(label5);
 			this.frontgroup.Controls.Add(label4);
 			this.frontgroup.Controls.Add(label3);
@@ -475,7 +475,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontTextureOffset.Label = "Texture Offset:";
 			this.frontTextureOffset.Location = new System.Drawing.Point(3, 65);
 			this.frontTextureOffset.Name = "frontTextureOffset";
-			this.frontTextureOffset.Size = new System.Drawing.Size(247, 26);
+			this.frontTextureOffset.Size = new System.Drawing.Size(268, 26);
 			this.frontTextureOffset.TabIndex = 41;
 			this.frontTextureOffset.OnValuesChanged += new System.EventHandler(this.frontTextureOffset_OnValuesChanged);
 			// 
@@ -541,13 +541,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.backgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.backgroup.Controls.Add(this.backTextureOffset);
 			this.backgroup.Controls.Add(this.backside);
 			this.backgroup.Controls.Add(this.backsector);
 			this.backgroup.Controls.Add(label12);
 			this.backgroup.Controls.Add(this.backlow);
 			this.backgroup.Controls.Add(this.backmid);
 			this.backgroup.Controls.Add(this.backhigh);
+			this.backgroup.Controls.Add(this.backTextureOffset);
 			this.backgroup.Controls.Add(label8);
 			this.backgroup.Controls.Add(label9);
 			this.backgroup.Controls.Add(label10);
@@ -566,7 +566,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backTextureOffset.Label = "Texture Offset:";
 			this.backTextureOffset.Location = new System.Drawing.Point(3, 65);
 			this.backTextureOffset.Name = "backTextureOffset";
-			this.backTextureOffset.Size = new System.Drawing.Size(247, 28);
+			this.backTextureOffset.Size = new System.Drawing.Size(268, 28);
 			this.backTextureOffset.TabIndex = 42;
 			this.backTextureOffset.OnValuesChanged += new System.EventHandler(this.backTextureOffset_OnValuesChanged);
 			// 
@@ -648,7 +648,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "LinedefEditForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

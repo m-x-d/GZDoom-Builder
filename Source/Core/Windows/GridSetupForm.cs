@@ -18,6 +18,7 @@
 
 using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
@@ -84,10 +85,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Browse texture
 		private void selecttexture_Click(object sender, EventArgs e)
 		{
-			string result;
-			
 			// Browse for texture
-			result = TextureBrowserForm.Browse(this, backgroundname, false);
+			string result = TextureBrowserForm.Browse(this, backgroundname, false);
 			if(result != null)
 			{
 				// Set this texture as background
@@ -102,10 +101,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Browse flat
 		private void selectflat_Click(object sender, EventArgs e)
 		{
-			string result;
-
 			// Browse for flat
-			result = TextureBrowserForm.Browse(this, backgroundname, true); //mxd. was FlatBrowserForm
+			string result = TextureBrowserForm.Browse(this, backgroundname, true);
 			if(result != null)
 			{
 				// Set this flat as background
@@ -126,7 +123,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Set this file as background
 				backgroundname = browsefile.FileName;
 				backgroundsource = GridSetup.SOURCE_FILE;
-				ImageData img = new FileImage(backgroundname, backgroundname, false, 1.0f, 1.0f);
+				ImageData img = new FileImage(Path.GetFileNameWithoutExtension(backgroundname), backgroundname, false, 1.0f, 1.0f);
 				img.LoadImage();
 				General.DisplayZoomedImage(backgroundimage, new Bitmap(img.GetBitmap()));
 				img.Dispose();

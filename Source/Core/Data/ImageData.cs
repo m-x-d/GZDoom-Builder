@@ -42,15 +42,18 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 		
 		// Properties
-		private string name;
-		private long longname;
+		protected string name;
+		protected long longname;
 		protected int width;
 		protected int height;
 		protected Vector2D scale;
 		protected bool worldpanning;
-		protected bool usecolorcorrection;
-		protected string fullName; //mxd. name with path;
+		private bool usecolorcorrection;
+		protected string fullname; //mxd. name with path;
+		protected string virtualname; //mxd
+		protected string displayname; //mxd
 		protected bool isFlat; //mxd. if false, it's a texture
+		protected bool hasLongName; //mxd. Texture name is longer than DataManager.CLASIC_IMAGE_NAME_LENGTH
 		protected bool hasPatchWithSameName; //mxd
 		
 		// Loading
@@ -81,8 +84,10 @@ namespace CodeImp.DoomBuilder.Data
 		
 		public string Name { get { return name; } }
 		public long LongName { get { return longname; } }
-		public string FullName { get { return fullName; } } //mxd
-		public bool IsFlat { get { return isFlat; } internal set { isFlat = value; } } //mxd
+		public string FullName { get { return fullname; } } //mxd
+		public string VirtualName { get { return virtualname; } } //mxd
+		public string DisplayName { get { return displayname; } } //mxd
+		public bool IsFlat { get { return isFlat; } } //mxd
 		public bool HasPatchWithSameName { get { return hasPatchWithSameName; } } //mxd
 		public bool UseColorCorrection { get { return usecolorcorrection; } set { usecolorcorrection = value; } }
 		public Texture Texture { get { lock(this) { return texture; } } }
@@ -175,11 +180,13 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This sets the name
-		protected void SetName(string name)
+		protected virtual void SetName(string name)
 		{
 			this.name = name;
-			this.longname = Lump.MakeLongName(name);
-			fullName = name; //mxd
+			this.fullname = name; //mxd
+			this.virtualname = name; //mxd
+			this.displayname = name; //mxd
+			this.longname = Lump.MakeLongName(name); //mxd
 		}
 		
 		// This unloads the image
@@ -200,18 +207,10 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Image loaded successfully?
 				if(!loadfailed && (imagestate == ImageLoadState.Ready) && (bitmap != null))
-				{
 					return bitmap;
-				}
+				
 				// Image loading failed?
-				else if(loadfailed)
-				{
-					return Properties.Resources.Failed;
-				}
-				else
-				{
-					return Properties.Resources.Hourglass;
-				}
+				return (loadfailed ? Properties.Resources.Failed : Properties.Resources.Hourglass);
 			}
 		}
 		
@@ -229,8 +228,6 @@ namespace CodeImp.DoomBuilder.Data
 		// This requests loading the image
 		protected virtual void LocalLoadImage()
 		{
-			BitmapData bmpdata = null;
-			
 			lock(this)
 			{
 				// Bitmap loaded successfully?
@@ -269,6 +266,8 @@ namespace CodeImp.DoomBuilder.Data
 					// This applies brightness correction on the image
 					if(usecolorcorrection)
 					{
+						BitmapData bmpdata = null;
+						
 						try
 						{
 							// Try locking the bitmap
@@ -333,8 +332,6 @@ namespace CodeImp.DoomBuilder.Data
 		// This creates the Direct3D texture
 		public virtual void CreateTexture()
 		{
-			MemoryStream memstream;
-			
 			lock(this)
 			{
 				// Only do this when texture is not created yet
@@ -344,7 +341,7 @@ namespace CodeImp.DoomBuilder.Data
 					if(loadfailed) img = Properties.Resources.Failed;
 					
 					// Write to memory stream and read from memory
-					memstream = new MemoryStream((img.Size.Width * img.Size.Height * 4) + 4096);
+					MemoryStream memstream = new MemoryStream((img.Size.Width * img.Size.Height * 4) + 4096);
 					img.Save(memstream, ImageFormat.Bmp);
 					memstream.Seek(0, SeekOrigin.Begin);
 					if(dynamictexture)

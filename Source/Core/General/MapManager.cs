@@ -413,6 +413,17 @@ namespace CodeImp.DoomBuilder {
 			// Remove unused sectors
 			map.RemoveUnusedSectors(true);
 
+			//mxd. Translate to long or short texture names.
+			bool nameschanged = map.TranslateTextureNames(options.UseLongTextureNames, false);
+			grid.TranslateBackgroundName(options.UseLongTextureNames);
+
+			//mxd. Sector textures may've been changed 
+			if (nameschanged)
+			{
+				data.UpdateUsedTextures();
+				General.Map.IsChanged = true;
+			}
+
 			// Update structures
 			options.ApplyGridSettings();
 			map.UpdateConfiguration();
@@ -445,8 +456,23 @@ namespace CodeImp.DoomBuilder {
 		}
 
 		//mxd. This switches to another map in the same wad 
-		internal bool InitializeSwitchMap(MapOptions options) 
+		internal bool InitializeSwitchMap(MapOptions options)
 		{
+			bool uselongtexturenames = this.options.UseLongTextureNames;
+			
+			// Does not compute! (we don't reload resources, so it can potentially 
+			// lead to texture lookup FIALS if there are non-WAD resources)
+			if(uselongtexturenames != options.UseLongTextureNames &&
+				MessageBox.Show(General.MainWindow, 
+				"Texture names in the map you are opening will be translated to "
+				+ (uselongtexturenames ? "long" : "short") + " texture names."
+				+ (!uselongtexturenames ? " This may lead to texture and flat name conflicts." : "") 
+				+ " Do you want to continue?",
+				Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No)
+			{
+				return false;
+			}
+			
 			this.changed = false;
 			this.options = options;
 
@@ -508,7 +534,16 @@ namespace CodeImp.DoomBuilder {
 
 			ChangeMapSet(newmap);
 
-			data.UpdateUsedTextures();
+			//mxd. Translate texture names
+			bool nameschanged = map.TranslateTextureNames(uselongtexturenames, false);
+			grid.TranslateBackgroundName(uselongtexturenames);
+
+			//mxd. Sector textures may've been changed 
+			if (nameschanged)
+			{
+				data.UpdateUsedTextures();
+				General.Map.IsChanged = true;
+			}
 
 			//mxd. check script names
 			UpdateScriptNames();
@@ -1875,7 +1910,7 @@ namespace CodeImp.DoomBuilder {
 					foreach (Thing t in General.Map.Map.Things) 
 						for(int i = 0; i < t.Args.Length; i++) t.Args[i] = 0;
 				}
-				General.Map.Map.UpdateCustomLinedefColors();
+				map.UpdateCustomLinedefColors();
 
 				// Update interface
 				General.MainWindow.SetupInterface();
@@ -1885,6 +1920,17 @@ namespace CodeImp.DoomBuilder {
 				// Reload resources
 				ReloadResources();
 				UpdateScriptNames(); //mxd
+
+				//mxd. Translate texture names
+				bool nameschanged = map.TranslateTextureNames(options.UseLongTextureNames, false);
+				grid.TranslateBackgroundName(options.UseLongTextureNames);
+				
+				//mxd. Sector textures may've been changed 
+				if (nameschanged)
+				{
+					data.UpdateUsedTextures();
+					General.Map.IsChanged = true;
+				}
 
 				// Done
 				General.MainWindow.DisplayReady();
@@ -1950,7 +1996,7 @@ namespace CodeImp.DoomBuilder {
 			Cursor.Current = Cursors.AppStarting;
 
 			// Make undo for the snapping
-			General.Map.UndoRedo.CreateUndo("Snap vertices");
+			undoredo.CreateUndo("Snap vertices");
 
 			int snappedCount = 0;
 			List<Vertex> movedVerts = new List<Vertex>();

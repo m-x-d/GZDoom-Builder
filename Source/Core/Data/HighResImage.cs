@@ -32,15 +32,14 @@ namespace CodeImp.DoomBuilder.Data
 	{
 		#region ================== Variables
 
-		private List<TexturePatch> patches; //mxd
-		private string type;
+		private readonly List<TexturePatch> patches; //mxd
 		
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public HighResImage(string name, string type, int width, int height, float scalex, float scaley, bool worldpanning)
+		public HighResImage(string name, int width, int height, float scalex, float scaley, bool worldpanning, bool isflat)
 		{
 			// Initialize
 			this.width = width;
@@ -49,9 +48,18 @@ namespace CodeImp.DoomBuilder.Data
 			this.scale.y = scaley;
 			this.worldpanning = worldpanning;
 			this.patches = new List<TexturePatch>(1);
-			this.type = type;
+
+			//mxd
+			if (!General.Map.Options.UseLongTextureNames)
+			{
+				if(name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+					name = name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+				name = name.ToUpperInvariant();
+			}
+
 			SetName(name);
-			this.fullName = "[TEXTURES]\\" + type + "s\\" + name; //mxd
+			this.virtualname = "[TEXTURES]/" + this.name; //mxd
+			this.isFlat = isflat; //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -109,7 +117,7 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(TexturePatch p in patches)
 					{
 						// Get the patch data stream
-						Stream patchdata = General.Map.Data.GetPatchData(p.lumpname);
+						Stream patchdata = General.Map.Data.GetPatchData(p.lumpname, p.haslongname);
 
 						if(patchdata != null)
 						{

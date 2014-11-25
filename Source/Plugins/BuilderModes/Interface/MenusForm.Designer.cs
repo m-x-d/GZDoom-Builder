@@ -485,7 +485,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.toolStripMenuItem5.Name = "toolStripMenuItem5";
 			this.toolStripMenuItem5.Size = new System.Drawing.Size(229, 22);
 			this.toolStripMenuItem5.Tag = "exporttoobj";
-			this.toolStripMenuItem5.Text = "Selection To Wavefront .obj...";
+			this.toolStripMenuItem5.Text = "Selection to Wavefront .obj...";
 			this.toolStripMenuItem5.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttoncopyproperties

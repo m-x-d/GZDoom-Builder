@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Get the patch data stream
 				if(bitmap != null) bitmap.Dispose(); bitmap = null;
-				patchdata = General.Map.Data.GetTextureData(lumpname);
+				patchdata = General.Map.Data.GetTextureData(lumpname, hasLongName);
 				if(patchdata != null)
 				{
 					// Copy patch data to memory

@@ -80,12 +80,12 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Writing
 
-		public void Write(MapSet map, Stream stream) {
-			Write(map.Vertices, map.Linedefs, map.Sidedefs, map.Sectors, map.Things, stream);
+		public void Write(MapSet map, Stream stream, bool longtexturenames) {
+			Write(map.Vertices, map.Linedefs, map.Sidedefs, map.Sectors, map.Things, stream, longtexturenames);
 		}
 
 		public void Write(ICollection<Vertex> vertices, ICollection<Linedef> linedefs, ICollection<Sidedef> sidedefs, 
-						  ICollection<Sector> sectors, ICollection<Thing> things, Stream stream) {
+						  ICollection<Sector> sectors, ICollection<Thing> things, Stream stream, bool longtexturenames) {
 			// Create collections
 			Dictionary<Vertex, int> vertexids = new Dictionary<Vertex, int>();
 			Dictionary<Sidedef, int> sidedefids = new Dictionary<Sidedef, int>();
@@ -98,6 +98,7 @@ namespace CodeImp.DoomBuilder.IO
 
 			BinaryWriter writer = new BinaryWriter(stream);
 			// Write the data structures to stream
+			writer.Write(longtexturenames); //mxd
 			WriteVertices(vertices, writer);
 			WriteSectors(sectors, writer);
 			WriteSidedefs(sidedefs, writer, sectorids);

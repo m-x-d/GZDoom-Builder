@@ -699,6 +699,9 @@
     <Compile Include="Controls\DockersTabsControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\ConfigurablePictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\HintsPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>

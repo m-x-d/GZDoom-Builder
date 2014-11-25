@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constants
 		
 		public const string INTERNAL_PREFIX = "internal:";
+		public const int CLASIC_IMAGE_NAME_LENGTH = 8; //mxd
 		
 		#endregion
 
@@ -53,8 +54,10 @@ namespace CodeImp.DoomBuilder.Data
 		
 		// Textures, Flats and Sprites
 		private Dictionary<long, ImageData> textures;
+		private Dictionary<long, long> texturenamesshorttofull; //mxd
 		private List<string> texturenames;
 		private Dictionary<long, ImageData> flats;
+		private Dictionary<long, long> flatnamesshorttofull; //mxd
 		private List<string> flatnames;
 		private Dictionary<long, ImageData> sprites;
 		private List<MatchingTextureSet> texturesets;
@@ -237,6 +240,8 @@ namespace CodeImp.DoomBuilder.Data
 			sprites = new Dictionary<long, ImageData>();
 			texturenames = new List<string>();
 			flatnames = new List<string>();
+			texturenamesshorttofull = new Dictionary<long, long>(); //mxd
+			flatnamesshorttofull = new Dictionary<long, long>(); //mxd
 			imageque = new Queue<ImageData>();
 			previews = new PreviewManager();
 			texturesets = new List<MatchingTextureSet>();
@@ -320,7 +325,6 @@ namespace CodeImp.DoomBuilder.Data
 			Dictionary<string, int> actorsByClass = createActorsByClassList();
 			loadModeldefs(actorsByClass);
 			loadGldefs(actorsByClass);
-			actorsByClass = null; //don't need them any more
 			foreach (Thing t in General.Map.Map.Things) t.UpdateCache();
 			General.MainWindow.DisplayReady();
 			
@@ -386,6 +390,10 @@ namespace CodeImp.DoomBuilder.Data
 			// Sort things
 			foreach(ThingCategory tc in thingcategories) tc.SortIfNeeded();
 
+			//mxd. Create texture name translation lists
+			texturenamesshorttofull = CreateShortTextureNamesCollection(textures);
+			flatnamesshorttofull = CreateShortTextureNamesCollection(flats);
+
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
 			
@@ -416,6 +424,33 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Output info
 			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + colormapcount + " colormaps, " + spritecount + " sprites, " + thingcount + " decorate things, " + modeldefEntries.Count + " model deinitions, " + gldefsEntries.Count + " dynamic light definitions");
+		}
+
+		//mxd
+		private Dictionary<long, long> CreateShortTextureNamesCollection(Dictionary<long, ImageData> images) 
+		{
+			Dictionary<long, long> names = new Dictionary<long, long>();
+
+			foreach(KeyValuePair<long, ImageData> pair in images) 
+			{
+				if(pair.Value.FullName.Length > CLASIC_IMAGE_NAME_LENGTH) 
+				{
+					string shortname = pair.Value.DisplayName.ToUpperInvariant();
+					if(shortname.Length > CLASIC_IMAGE_NAME_LENGTH) shortname = shortname.Substring(0, CLASIC_IMAGE_NAME_LENGTH);
+					long hash = MurmurHash2.Hash(shortname);
+
+					if(names.ContainsKey(hash)) 
+					{
+						names[hash] = pair.Value.LongName;
+					} 
+					else 
+					{
+						names.Add(hash, pair.Value.LongName);
+					}
+				}
+			}
+
+			return names;
 		}
 		
 		// This unloads all data
@@ -854,7 +889,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This returns a specific patch stream
-		internal Stream GetPatchData(string pname)
+		internal Stream GetPatchData(string pname, bool longname)
 		{
 			Stream patch;
 
@@ -862,7 +897,7 @@ namespace CodeImp.DoomBuilder.Data
 			for(int i = containers.Count - 1; i > -1; i--)
 			{
 				// This contain provides this patch?
-				patch = containers[i].GetPatchData(pname);
+				patch = containers[i].GetPatchData(pname, longname);
 				if(patch != null) return patch;
 			}
 
@@ -870,21 +905,8 @@ namespace CodeImp.DoomBuilder.Data
 			return null;
 		}
 
-		//mxd
-		internal string GetPatchLocation(string pname) {
-			string fullName = pname;
-			// Go for all opened containers
-			for (int i = containers.Count - 1; i >= 0; i--) {
-				// This contain provides this patch?
-				fullName = containers[i].GetPatchLocation(pname);
-				if (fullName != pname) return fullName;
-			}
-
-			return pname;
-		}
-
 		// This returns a specific texture stream
-		internal Stream GetTextureData(string pname)
+		internal Stream GetTextureData(string pname, bool longname)
 		{
 			Stream patch;
 
@@ -892,7 +914,7 @@ namespace CodeImp.DoomBuilder.Data
 			for(int i = containers.Count - 1; i >= 0; i--)
 			{
 				// This contain provides this patch?
-				patch = containers[i].GetTextureData(pname);
+				patch = containers[i].GetTextureData(pname, longname);
 				if(patch != null) return patch;
 			}
 
@@ -934,6 +956,17 @@ namespace CodeImp.DoomBuilder.Data
 			// Return null image
 			return unknownimage; //mxd
 		}
+
+		//mxd
+		public string GetFullTextureName(string name)
+		{
+			if (Path.GetFileNameWithoutExtension(name) == name && name.Length > CLASIC_IMAGE_NAME_LENGTH) 
+				name = name.Substring(0, CLASIC_IMAGE_NAME_LENGTH);
+			long hash = MurmurHash2.Hash(name.Trim().ToUpperInvariant());
+			if(textures.ContainsKey(hash)) return textures[hash].Name;
+			if(texturenamesshorttofull.ContainsKey(hash)) return textures[texturenamesshorttofull[hash]].Name;
+			return name;
+		}
 		
 		#endregion
 
@@ -962,7 +995,6 @@ namespace CodeImp.DoomBuilder.Data
 
 						// Add to preview manager
 						previews.AddImage(img);
-						img.IsFlat = true; //mxd
 					}
 				}
 			}
@@ -972,7 +1004,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This returns a specific flat stream
-		internal Stream GetFlatData(string pname)
+		internal Stream GetFlatData(string pname, bool longname)
 		{
 			Stream flat;
 
@@ -980,7 +1012,7 @@ namespace CodeImp.DoomBuilder.Data
 			for(int i = containers.Count - 1; i >= 0; i--)
 			{
 				// This contain provides this flat?
-				flat = containers[i].GetFlatData(pname);
+				flat = containers[i].GetFlatData(pname, longname);
 				if(flat != null) return flat;
 			}
 
@@ -1025,6 +1057,17 @@ namespace CodeImp.DoomBuilder.Data
 			// Return flat
 			return flats[longname];
 		}
+
+		//mxd. Gets full flat name by short flat name
+		public string GetFullFlatName(string name)
+		{
+			if(Path.GetFileNameWithoutExtension(name) == name && name.Length > CLASIC_IMAGE_NAME_LENGTH)
+				name = name.Substring(0, CLASIC_IMAGE_NAME_LENGTH);
+			long hash = MurmurHash2.Hash(name.ToUpperInvariant());
+			if(flats.ContainsKey(hash)) return flats[hash].Name;
+			if(flatnamesshorttofull.ContainsKey(hash)) return flats[flatnamesshorttofull[hash]].Name;
+			return name;
+		}
 		
 		#endregion
 
@@ -1064,7 +1107,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(ThingTypeInfo ti in General.Map.Data.ThingTypes)
 			{
 				// Valid sprite name?
-				if(ti.Sprite.Length == 0 || ti.Sprite.Length > 8) continue; //mxd
+				if(ti.Sprite.Length == 0 || ti.Sprite.Length > CLASIC_IMAGE_NAME_LENGTH) continue; //mxd
 					
 				ImageData image = null;
 
@@ -1145,7 +1188,7 @@ namespace CodeImp.DoomBuilder.Data
 			string[] files = Directory.GetFiles(General.SpritesPath, "*.png", SearchOption.TopDirectoryOnly);
 			foreach(string spritefile in files)
 			{
-				ImageData img = new FileImage(Path.GetFileNameWithoutExtension(spritefile).ToLowerInvariant(), spritefile, false);
+				ImageData img = new FileImage(Path.GetFileNameWithoutExtension(spritefile).ToLowerInvariant(), spritefile);
 				img.LoadImage();
 				img.AllowUnload = false;
 				internalsprites.Add(img.Name, img);
@@ -1542,7 +1585,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Valid sprite name?
 				string sprite;
 
-				if(ti.Sprite.Length == 0 || ti.Sprite.Length > 8) {
+				if(ti.Sprite.Length == 0 || ti.Sprite.Length > CLASIC_IMAGE_NAME_LENGTH) {
 					if(ti.Actor == null) continue;
 					sprite = ti.Actor.FindSuitableVoxel(voxelNames);
 				} else {
@@ -1720,12 +1763,6 @@ namespace CodeImp.DoomBuilder.Data
 				// Notify the background thread that it needs to update the images
 				updatedusedtextures = true;
 			}
-		}
-
-		// This returns the long name for a string
-		public long GetLongImageName(string name)
-		{
-			return Lump.MakeLongName(name);
 		}
 		
 		#endregion

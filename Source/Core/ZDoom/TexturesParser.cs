@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -36,9 +37,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		
 		#region ================== Variables
 
-		private Dictionary<string, TextureStructure> textures;
-		private Dictionary<string, TextureStructure> flats;
-		private Dictionary<string, TextureStructure> sprites;
+		private readonly Dictionary<string, TextureStructure> textures;
+		private readonly Dictionary<string, TextureStructure> flats;
+		private readonly Dictionary<string, TextureStructure> sprites;
 
 		#endregion
 		
@@ -90,7 +91,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						if(this.HasError) break;
 
 						// if a limit for the texture name length is set make sure that it's not exceeded
-						if((General.Map.Config.MaxTextureNameLength > 0) && (tx.Name.Length > General.Map.Config.MaxTextureNameLength))
+						if(tx.Name.Length > General.Map.Config.MaxTextureNameLength)
 						{
 							General.ErrorLogger.Add(ErrorType.Error, "Texture name \"" + tx.Name + "\" too long. Texture names must have a length of " + General.Map.Config.MaxTextureNameLength + " characters or less");
 						}
@@ -108,9 +109,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 						if(this.HasError) break;
 
 						// if a limit for the sprite name length is set make sure that it's not exceeded
-						if((General.Map.Config.MaxTextureNameLength > 0) && (tx.Name.Length > General.Map.Config.MaxTextureNameLength))
+						if(tx.Name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
 						{
-							General.ErrorLogger.Add(ErrorType.Error, "Sprite name \"" + tx.Name + "\" too long. Sprite names must have a length of " + General.Map.Config.MaxTextureNameLength + " characters or less");
+							General.ErrorLogger.Add(ErrorType.Error, "Sprite name \"" + tx.Name + "\" too long. Sprite names must have a length of " + DataManager.CLASIC_IMAGE_NAME_LENGTH + " characters or less");
 						}
 						else
 						{
@@ -125,7 +126,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						if(this.HasError) break;
 
 						// if a limit for the walltexture name length is set make sure that it's not exceeded
-						if((General.Map.Config.MaxTextureNameLength > 0) && (tx.Name.Length > General.Map.Config.MaxTextureNameLength))
+						if(tx.Name.Length > General.Map.Config.MaxTextureNameLength)
 						{
 							General.ErrorLogger.Add(ErrorType.Error, "WallTexture name \"" + tx.Name + "\" too long. WallTexture names must have a length of " + General.Map.Config.MaxTextureNameLength + " characters or less");
 						}
@@ -143,7 +144,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						if(this.HasError) break;
 
 						// if a limit for the flat name length is set make sure that it's not exceeded
-						if((General.Map.Config.MaxTextureNameLength > 0) && (tx.Name.Length > General.Map.Config.MaxTextureNameLength))
+						if(tx.Name.Length > General.Map.Config.MaxTextureNameLength)
 						{
 							General.ErrorLogger.Add(ErrorType.Error, "Flat name \"" + tx.Name + "\" too long. Flat names must have a length of " + General.Map.Config.MaxTextureNameLength + " characters or less");
 						}

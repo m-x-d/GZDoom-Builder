@@ -36,17 +36,18 @@ namespace CodeImp.DoomBuilder.Controls
 		public event EventHandler OnValueChanged; //mxd
 		
 		private Bitmap bmp;
-		private bool ismouseinside;
 		private MouseButtons button;
 		private string previousImageName; //mxd
 		protected bool multipletextures; //mxd
+		protected bool usepreviews = true; //mxd
 		
 		#endregion
 
 		#region ================== Properties
 		
 		public string TextureName { get { return name.Text; } set { name.Text = value; } }
-		
+		public bool UsePreviews { get { return usepreviews; } set { usepreviews = value; } } //mxd
+
 		[Browsable(false)]
 		public bool MultipleTextures { get { return multipletextures; } set { multipletextures = value; } }
 
@@ -67,6 +68,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// set the max length of texture names
 			name.MaxLength = General.Map.Config.MaxTextureNameLength;
 			if(General.Settings.CapitalizeTextureNames) this.name.CharacterCasing = CharacterCasing.Upper; //mxd
+			labelSize.BackColor = Color.FromArgb(196, labelSize.BackColor);
 		}
 		
 		#endregion
@@ -92,8 +94,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// Image clicked
 		private void preview_Click(object sender, EventArgs e)
 		{
-			preview.BackColor = SystemColors.Highlight;
-			ShowPreview(FindImage(name.Text));
+			imagebox.BackColor = SystemColors.Highlight;
 			if(button == MouseButtons.Right)
 			{
 				name.Text = "-";
@@ -109,6 +110,9 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Show it centered
 			ShowPreview(FindImage(name.Text));
+
+			// Update tooltip (mxd)
+			tooltip.SetToolTip(imagebox, name.Text);
 		}
 		
 		// Mouse pressed
@@ -117,44 +121,20 @@ namespace CodeImp.DoomBuilder.Controls
 			button = e.Button;
 			if((button == MouseButtons.Left) || ((button == MouseButtons.Right)))
 			{
-				//ispressed = true;
-				preview.BackColor = AdjustedColor(SystemColors.Highlight, 0.2f);
-				ShowPreview(FindImage(name.Text));
+				imagebox.BackColor = AdjustedColor(SystemColors.Highlight, 0.2f);
 			}
-		}
-
-		// Mouse released
-		private void preview_MouseUp(object sender, MouseEventArgs e)
-		{
-			//ispressed = false;
-			ShowPreview(FindImage(name.Text));
 		}
 
 		// Mouse leaves
 		private void preview_MouseLeave(object sender, EventArgs e)
 		{
-			//ispressed = false;
-			ismouseinside = false;
-			preview.BackColor = SystemColors.AppWorkspace;
+			imagebox.BackColor = SystemColors.AppWorkspace;
 		}
 		
 		// Mouse enters
 		private void preview_MouseEnter(object sender, EventArgs e)
 		{
-			ismouseinside = true;
-			preview.BackColor = SystemColors.Highlight;
-			ShowPreview(FindImage(name.Text));
-		}
-
-		// Mouse moves
-		private void preview_MouseMove(object sender, MouseEventArgs e)
-		{
-			if(!ismouseinside)
-			{
-				ismouseinside = true;
-				preview.BackColor = SystemColors.Highlight;
-				ShowPreview(FindImage(name.Text));
-			}
+			imagebox.BackColor = SystemColors.Highlight;
 		}
 
 		//mxd
@@ -185,7 +165,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private void ShowPreview(Image image)
 		{
 			// Dispose old image
-			preview.BackgroundImage = null;
+			imagebox.BackgroundImage = null;
 			if(bmp != null)
 			{
 				bmp.Dispose();
@@ -195,12 +175,13 @@ namespace CodeImp.DoomBuilder.Controls
 			if(image != null)
 			{
 				// Show it centered
-				General.DisplayZoomedImage(preview, image);
-				preview.Refresh();
+				imagebox.Image = image;
+				imagebox.Refresh();
 			}
 
 			//mxd. Dispatch event
-			if(OnValueChanged != null && previousImageName != name.Text) {
+			if(OnValueChanged != null && previousImageName != name.Text) 
+			{
 				previousImageName = name.Text;
 				OnValueChanged(this, EventArgs.Empty);
 			}

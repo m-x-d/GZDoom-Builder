@@ -27,15 +27,14 @@ namespace CodeImp.DoomBuilder
 	{
 		#region ================== Variables
 
-		private static readonly List<KeyValuePair<DebugMessageType, string>> messages = new List<KeyValuePair<DebugMessageType, string>>(1000);
-		private DebugMessageType filters;
+		private const int MAX_MESSAGES = 1024;
+		private static readonly List<KeyValuePair<DebugMessageType, string>> messages = new List<KeyValuePair<DebugMessageType, string>>(MAX_MESSAGES);
 
 		//Colors
 		private readonly Dictionary<DebugMessageType, Color> textcolors;
 		private readonly Dictionary<DebugMessageType, string> textheaders;
 
-		private static int charcount;
-		private const int MAX_CHARS = short.MaxValue;
+		private DebugMessageType filters;
 		private static long starttime = -1;
 		private static DebugConsole me;
 
@@ -107,6 +106,7 @@ namespace CodeImp.DoomBuilder
 			} 
 			else 
 			{
+				if (messages.Count + 1 > MAX_MESSAGES) lock (messages) { messages.RemoveAt(0); }
 				messages.Add(new KeyValuePair<DebugMessageType, string>(type, text));
 				if(me != null && (me.filters & type) == type) 
 				{
@@ -130,7 +130,6 @@ namespace CodeImp.DoomBuilder
 			{
 				if (me != null) me.console.Clear();
 				messages.Clear();
-				charcount = 0;
 			}
 		}
 
@@ -163,18 +162,6 @@ namespace CodeImp.DoomBuilder
 		private void AddMessage(DebugMessageType type, string text, bool scroll)
 		{
 			text = textheaders[type] + text;
-			bool updatemessages = false;
-
-			while (charcount + text.Length > MAX_CHARS) 
-			{
-				charcount -= messages[0].Value.Length;
-				messages.RemoveAt(0);
-				updatemessages = true;
-			}
-
-			if(updatemessages) UpdateMessages();
-			charcount += text.Length; 
-
 			console.SelectionStart = console.TextLength;
 			console.SelectionColor = textcolors[type];
 			console.AppendText(text);
@@ -197,7 +184,6 @@ namespace CodeImp.DoomBuilder
 		private void UpdateMessages()
 		{
 			console.Clear();
-			charcount = 0;
 
 			console.SuspendLayout();
 			foreach (KeyValuePair<DebugMessageType, string> pair in messages)

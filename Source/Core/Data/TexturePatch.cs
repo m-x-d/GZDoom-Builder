@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System.IO;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.ZDoom;
 
@@ -45,17 +46,18 @@ namespace CodeImp.DoomBuilder.Data
 	
 	internal struct TexturePatch
 	{
-		public string lumpname;
-		public int x;
-		public int y;
-		public bool flipx;
-		public bool flipy;
-		public int rotate;
+		public readonly string lumpname;
+		public readonly int x;
+		public readonly int y;
+		public readonly bool flipx;
+		public readonly bool flipy;
+		public readonly bool haslongname; //mxd
+		public readonly int rotate;
 		public PixelColor blend;
-		public float alpha;
-		public TexturePathRenderStyle style;
-		public TexturePathBlendStyle blendstyle; //mxd
-		public float tintammount;//mxd
+		public readonly float alpha;
+		public readonly TexturePathRenderStyle style;
+		public readonly TexturePathBlendStyle blendstyle; //mxd
+		public readonly float tintammount;//mxd
 		
 		// Constructor for simple patches
 		public TexturePatch(string lumpname, int x, int y)
@@ -72,6 +74,7 @@ namespace CodeImp.DoomBuilder.Data
 			this.style = TexturePathRenderStyle.Copy;
 			this.blendstyle = TexturePathBlendStyle.None;//mxd
 			this.tintammount = 0; //mxd
+			this.haslongname = false; //mxd
 		}
 
 		//mxd. Constructor for hires patches
@@ -88,9 +91,11 @@ namespace CodeImp.DoomBuilder.Data
 			this.style = patch.RenderStyle;
 			this.blendstyle = patch.BlendStyle;
 			this.tintammount = patch.TintAmmount;
+			this.haslongname = (Path.GetFileNameWithoutExtension(this.lumpname) != this.lumpname);
 
 			//mxd. Check data so we don't perform unneeded operations later on
-			if(this.alpha == 1.0f) {
+			if(this.alpha == 1.0f) 
+			{
 				if(this.style == TexturePathRenderStyle.Blend || this.style == TexturePathRenderStyle.CopyAlpha || this.style == TexturePathRenderStyle.CopyNewAlpha || this.style == TexturePathRenderStyle.Overlay)
 					this.style = TexturePathRenderStyle.Copy;
 			}

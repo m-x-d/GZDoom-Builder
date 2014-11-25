@@ -32,19 +32,22 @@ namespace CodeImp.DoomBuilder.Data
 		public const int DOOMCOLORMAP = 3;		// Could be Doom Colormap format (raw 8-bit pixel palette mapping)
 		
 		// File format signatures
-		private static readonly int[] PNG_SIGNATURE = new int[] { 137, 80, 78, 71, 13, 10, 26, 10 };
-		private static readonly int[] GIF_SIGNATURE = new int[] { 71, 73, 70 };
-		private static readonly int[] BMP_SIGNATURE = new int[] { 66, 77 }; 
-		private static readonly int[] DDS_SIGNATURE = new int[] { 68, 68, 83, 32 };
-		private static readonly int[] JPG_SIGNATURE = new int[] { 255, 216, 255 }; //mxd
-		private static readonly int[] TGA_SIGNATURE = new int[] { 0, 0, 2, 0 }; //mxd
-		private static readonly int[] PCX_SIGNATURE = new int[] { 10, 5, 1, 8 }; //mxd
+		private static readonly int[] PNG_SIGNATURE = new[] { 137, 80, 78, 71, 13, 10, 26, 10 };
+		private static readonly int[] GIF_SIGNATURE = new[] { 71, 73, 70 };
+		private static readonly int[] BMP_SIGNATURE = new[] { 66, 77 }; 
+		private static readonly int[] DDS_SIGNATURE = new[] { 68, 68, 83, 32 };
+		private static readonly int[] JPG_SIGNATURE = new[] { 255, 216, 255 }; //mxd
+		private static readonly int[] TGA_SIGNATURE = new[] { 0, 0, 2, 0 }; //mxd
+		private static readonly int[] PCX_SIGNATURE = new[] { 10, 5, 1, 8 }; //mxd
 
 		// This check image data and returns the appropriate image reader
 		public static IImageReader GetImageReader(Stream data, int guessformat, Playpal palette)
 		{
+			if(data == null) return new UnknownImageReader(); //mxd
+			
 			// Data long enough to check for signatures?
-			if(data.Length > 10) {
+			if(data.Length > 10) 
+			{
 				// Check for PNG signature
 				data.Seek(0, SeekOrigin.Begin);
 				if(CheckSignature(data, PNG_SIGNATURE))
@@ -82,7 +85,8 @@ namespace CodeImp.DoomBuilder.Data
 			}
 				
 			// Could it be a doom picture?
-			switch(guessformat) {
+			switch(guessformat) 
+			{
 				case DOOMPICTURE:
 					// Check if data is valid for a doom picture
 					data.Seek(0, SeekOrigin.Begin);
