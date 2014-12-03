@@ -62,6 +62,9 @@ namespace CodeImp.DoomBuilder.Windows
 			string imgType = (browseFlats ? "flats" : "textures");
 			this.Text = "Browse " + imgType;
 
+			// Setup texture browser
+			ImageBrowserControl.ShowTextureSizes = General.Settings.ReadSetting("browserwindow.showtexturesizes", General.Settings.ShowTextureSizes);
+			ImageBrowserControl.UseLongTextureNames = General.Map.Config.UseLongTextureNames && General.Settings.ReadSetting("browserwindow.uselongtexturenames", true);
 			browser.BrowseFlats = browseFlats;
 			browser.ApplySettings();
 			
@@ -441,6 +444,10 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. Save last selected texture set
 			if(this.DialogResult == DialogResult.OK && tvTextureSets.SelectedNode != null)
 				General.Settings.WriteSetting("browserwindow.textureset", tvTextureSets.SelectedNode.Name);
+
+			//mxd. Save ImageBrowserControl settings
+			General.Settings.WriteSetting("browserwindow.showtexturesizes", ImageBrowserControl.ShowTextureSizes);
+			General.Settings.WriteSetting("browserwindow.uselongtexturenames", ImageBrowserControl.UseLongTextureNames);
 			
 			// Clean up
 			browser.CleanUp();
@@ -451,8 +458,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public static string Browse(IWin32Window parent, string select, bool browseFlats)
 		{
 			TextureBrowserForm browser = new TextureBrowserForm(select, browseFlats);
-			if(browser.ShowDialog(parent) == DialogResult.OK)
-				return browser.SelectedName; // Return result
+			if(browser.ShowDialog(parent) == DialogResult.OK) return browser.SelectedName; // Return result
 			
 			// Cancelled
 			return select;
