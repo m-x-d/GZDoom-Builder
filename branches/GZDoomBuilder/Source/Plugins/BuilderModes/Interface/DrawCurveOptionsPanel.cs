@@ -10,7 +10,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public int SegmentLength { get { return (int)seglen.Value; } set { blockEvents = true; seglen.Value = value; blockEvents = false; } }
 
-		public DrawCurveOptionsPanel(int minLength, int maxLength) {
+		public DrawCurveOptionsPanel(int minLength, int maxLength) 
+		{
 			InitializeComponent();
 
 			seglen.Minimum = minLength;
@@ -19,23 +20,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private DrawCurveOptionsPanel() { InitializeComponent(); }
 
-		public void Register() {
+		public void Register() 
+		{
 			General.Interface.AddButton(seglabel);
 			General.Interface.AddButton(seglen);
 			General.Interface.AddButton(reset);
 		}
 
-		public void Unregister() {
+		public void Unregister() 
+		{
 			General.Interface.RemoveButton(reset);
 			General.Interface.RemoveButton(seglen);
 			General.Interface.RemoveButton(seglabel);
 		}
 
-		private void seglen_ValueChanged(object sender, EventArgs e) {
+		private void seglen_ValueChanged(object sender, EventArgs e) 
+		{
 			if(!blockEvents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 
-		private void reset_Click(object sender, EventArgs e) {
+		private void reset_Click(object sender, EventArgs e) 
+		{
 			seglen.Value = seglen.Minimum;
 		}
 	}

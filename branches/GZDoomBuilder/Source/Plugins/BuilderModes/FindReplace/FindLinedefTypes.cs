@@ -120,14 +120,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(int.TryParse(parts[0], out action))
 			{
 				//parse the arg value out
-				if (parts.Length > 1) {
+				if (parts.Length > 1) 
+				{
 					args = new[] {0, 0, 0, 0, 0};
 					string[] argparts = parts[1].Split(',');
 					int argout;
-					for(int i = 0; i < argparts.Length && i < args.Length; i++) {
-						if (int.TryParse(argparts[i], out argout)) {
-							args[i] = argout;
-						}
+					for(int i = 0; i < argparts.Length && i < args.Length; i++) 
+					{
+						if (int.TryParse(argparts[i], out argout)) args[i] = argout;
 					}
 				}
 
@@ -147,11 +147,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						argtext = "";
 
 						//if args were specified, then process them
-						if (args != null) {
+						if (args != null) 
+						{
 							argtext = " args: (";
 							for (int x = 0; x < args.Length; x++)
 							{
-								if (args[x] != 0 && args[x] != l.Args[x]) {
+								if (args[x] != 0 && args[x] != l.Args[x]) 
+								{
 									match = false;
 									break;
 								}
@@ -160,7 +162,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							argtext += ")";
 						}
 
-						if (match) {
+						if (match) 
+						{
 							// Replace
 							if(replace) l.Action = replaceaction;
 
@@ -179,7 +182,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private List<int> GetGeneralizedBits(int effect) 
+		private static List<int> GetGeneralizedBits(int effect) 
 		{
 			if(!General.Map.Config.GeneralizedActions) return new List<int>();
 			List<int> bits = new List<int>();
@@ -200,7 +203,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private bool BitsMatch(int action, List<int> expectedbits) 
+		private static bool BitsMatch(int action, List<int> expectedbits) 
 		{
 			if(!General.Map.Config.GeneralizedActions) return false;
 

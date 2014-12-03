@@ -14,7 +14,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private const string DEFAULT_PRESET_NAME = "Enter preset name";
 		private const string NO_PRESET_NAME = "ENTER PRESET NAME!";
 		
-		public CustomLinedefColorsControl() {
+		public CustomLinedefColorsControl() 
+		{
 			InitializeComponent();
 
 			colorProperties.PresetChanged += colorProperties_PresetChanged;
@@ -22,26 +23,30 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			gbPresets.Enabled = false;
 		}
 
-		public void Setup(GameConfiguration config, ConfigurationInfo configInfo) {
+		public void Setup(GameConfiguration config, ConfigurationInfo configInfo) 
+		{
 			colorProperties.Setup(config);
 			lbColorPresets.Items.Clear();
 
-			if(configInfo.LinedefColorPresets.Length > 0) {
+			if(configInfo.LinedefColorPresets.Length > 0) 
+			{
 				//validate
-				for(int i = 0; i < configInfo.LinedefColorPresets.Length; i++) {
-					validatePreset(configInfo.LinedefColorPresets[i]);
-					checkDuplicates(configInfo.LinedefColorPresets[i]);
+				for(int i = 0; i < configInfo.LinedefColorPresets.Length; i++) 
+				{
+					ValidatePreset(configInfo.LinedefColorPresets[i]);
+					CheckDuplicates(configInfo.LinedefColorPresets[i]);
 				}
 
 				lbColorPresets.Items.AddRange(configInfo.LinedefColorPresets);
 				lbColorPresets.SelectedIndex = 0;
 			}
 
-			updatePresetListControls();
+			UpdatePresetListControls();
 			gbPresets.Enabled = true;
 		}
 
-		public LinedefColorPreset[] GetPresets() {
+		public LinedefColorPreset[] GetPresets() 
+		{
 			List<LinedefColorPreset> presets = new List<LinedefColorPreset>();
 
 			foreach(LinedefColorPreset preset in lbColorPresets.Items)
@@ -50,33 +55,38 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			return presets.ToArray();
 		}
 
-		private void validatePreset(LinedefColorPreset preset) {
+		private void ValidatePreset(LinedefColorPreset preset) 
+		{
 			bool hasAction = preset.Action != 0;
 			bool hasFlags = preset.Flags.Count > 0 || preset.RestrictedFlags.Count > 0;
 			bool hasActivation = preset.Activation != 0;
 
 			//validate
-			if(!hasAction && !hasFlags && !hasActivation) {
-				if(colorProperties.UDMF) {
+			if(!hasAction && !hasFlags && !hasActivation) 
+			{
+				if(colorProperties.UDMF)
 					preset.SetInvalid("Invalid preset: no flags, action or activation type selected!");
-				} else {
+				else
 					preset.SetInvalid("Invalid preset: no flags or action selected!");
-				}
 				return;
 			}
 
 			preset.SetValid();
 		}
 
-		private bool validatePresetName() {
-			if(string.IsNullOrEmpty(tbNewPresetName.Text) || tbNewPresetName.Text == DEFAULT_PRESET_NAME || tbNewPresetName.Text == NO_PRESET_NAME) {
+		private bool ValidatePresetName() 
+		{
+			if(string.IsNullOrEmpty(tbNewPresetName.Text) || tbNewPresetName.Text == DEFAULT_PRESET_NAME || tbNewPresetName.Text == NO_PRESET_NAME) 
+			{
 				tbNewPresetName.ForeColor = Color.DarkRed;
 				tbNewPresetName.Text = string.IsNullOrEmpty(tbNewPresetName.Text) ? DEFAULT_PRESET_NAME : NO_PRESET_NAME;
 				return false;
 			}
 
-			foreach(LinedefColorPreset preset in lbColorPresets.Items) {
-				if(preset.Name.ToLowerInvariant() == tbNewPresetName.Text.ToLowerInvariant()) {
+			foreach(LinedefColorPreset preset in lbColorPresets.Items) 
+			{
+				if(preset.Name.ToLowerInvariant() == tbNewPresetName.Text.ToLowerInvariant()) 
+				{
 					General.ShowWarningMessage("Preset with this name already exists!", MessageBoxButtons.OK);
 					return false;
 				}
@@ -86,9 +96,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			return true;
 		}
 
-		private void checkDuplicates(LinedefColorPreset preset)
+		private void CheckDuplicates(LinedefColorPreset preset)
 		{
-			foreach(LinedefColorPreset p in lbColorPresets.Items) {
+			foreach(LinedefColorPreset p in lbColorPresets.Items) 
+			{
 				if(preset.Name == p.Name) continue;
 				if(p.Action != preset.Action) continue;
 				if(p.Activation != preset.Activation) continue;
@@ -96,15 +107,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 				if(p.RestrictedFlags.Count != preset.RestrictedFlags.Count)	continue;
 
 				bool gotMismatch = false;
-				foreach(string flag in p.Flags) {
-					if(!preset.Flags.Contains(flag)) {
+				foreach(string flag in p.Flags) 
+				{
+					if(!preset.Flags.Contains(flag)) 
+					{
 						gotMismatch = true;
 						break;
 					}
 				}
 
-				foreach(string flag in p.RestrictedFlags) {
-					if(!preset.RestrictedFlags.Contains(flag)) {
+				foreach(string flag in p.RestrictedFlags) 
+				{
+					if(!preset.RestrictedFlags.Contains(flag)) 
+					{
 						gotMismatch = true;
 						break;
 					}
@@ -118,23 +133,28 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			}
 		}
 
-		private void updatePresetListControls() {
+		private void UpdatePresetListControls() 
+		{
 			int c = lbColorPresets.Items.Count;
 
 			bRemovePreset.Enabled = c > 0;
 			colorProperties.Enabled = c > 0;
 
-			if(c < 2) {
+			if(c < 2) 
+			{
 				bMoveDown.Enabled = false;
 				bMoveUp.Enabled = false;
-			} else {
+			} 
+			else 
+			{
 				bMoveDown.Enabled = lbColorPresets.SelectedIndex < c - 1;
 				bMoveUp.Enabled = lbColorPresets.SelectedIndex > 0;
 			}
 		}
 
 //EVENTS
-		private void bMoveDown_Click(object sender, EventArgs e) {
+		private void bMoveDown_Click(object sender, EventArgs e) 
+		{
 			if(lbColorPresets.SelectedIndex == -1) return;
 
 			//I like to move it, move it!
@@ -144,11 +164,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			lbColorPresets.SelectedIndex++;
 
-			if(PresetsChanged != null)
-				PresetsChanged(this, EventArgs.Empty);
+			if(PresetsChanged != null) PresetsChanged(this, EventArgs.Empty);
 		}
 
-		private void bMoveUp_Click(object sender, EventArgs e) {
+		private void bMoveUp_Click(object sender, EventArgs e)
+		{
 			if(lbColorPresets.SelectedIndex == -1) return;
 
 			LinedefColorPreset preset = (LinedefColorPreset)lbColorPresets.SelectedItem;
@@ -157,12 +177,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			lbColorPresets.SelectedIndex--;
 
-			if(PresetsChanged != null)
-				PresetsChanged(this, EventArgs.Empty);
+			if(PresetsChanged != null) PresetsChanged(this, EventArgs.Empty);
 		}
 
-		private void bAddPreset_Click(object sender, EventArgs e) {
-			if(!validatePresetName()) return;
+		private void bAddPreset_Click(object sender, EventArgs e) 
+		{
+			if(!ValidatePresetName()) return;
 
 			//add new item
 			lbColorPresets.Items.Insert(0, new LinedefColorPreset(tbNewPresetName.Text, colorProperties.DefaultColor));
@@ -174,13 +194,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			else
 				lbColorPresets_SelectedIndexChanged(this, EventArgs.Empty);
 
-			updatePresetListControls();
+			UpdatePresetListControls();
 
-			if(PresetsChanged != null)
-				PresetsChanged(this, EventArgs.Empty);
+			if(PresetsChanged != null) PresetsChanged(this, EventArgs.Empty);
 		}
 
-		private void bRemovePreset_Click(object sender, EventArgs e) {
+		private void bRemovePreset_Click(object sender, EventArgs e) 
+		{
 			if(lbColorPresets.Items.Count == 0 || lbColorPresets.SelectedIndex == -1) return; //sanity check
 
 			//remove item
@@ -188,43 +208,48 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			lbColorPresets.Items.RemoveAt(index);
 			lbColorPresets.SelectedIndex = (index >= lbColorPresets.Items.Count ? lbColorPresets.Items.Count - 1 : index);
 
-			updatePresetListControls();
+			UpdatePresetListControls();
 
-			if(PresetsChanged != null)
-				PresetsChanged(this, EventArgs.Empty);
+			if(PresetsChanged != null) PresetsChanged(this, EventArgs.Empty);
 		}
 
-		private void lbColorPresets_SelectedIndexChanged(object sender, EventArgs e) {
-			if(lbColorPresets.SelectedIndex == -1) {
+		private void lbColorPresets_SelectedIndexChanged(object sender, EventArgs e) 
+		{
+			if(lbColorPresets.SelectedIndex == -1) 
+			{
 				colorProperties.Enabled = false;
 				return;
 			}
 			
 			colorProperties.SetPreset((LinedefColorPreset)lbColorPresets.SelectedItem);
-			updatePresetListControls();
+			UpdatePresetListControls();
 		}
 
-		private void colorProperties_PresetChanged(object sender, EventArgs e) {
+		private void colorProperties_PresetChanged(object sender, EventArgs e) 
+		{
 			LinedefColorPreset preset = (LinedefColorPreset)lbColorPresets.SelectedItem;
 			preset.SetValid(); //clear error/warning messages
-			validatePreset(preset); //validate it
-			checkDuplicates(preset);
+			ValidatePreset(preset); //validate it
+			CheckDuplicates(preset);
 			colorProperties.UpdateMessages(); //update error/warning messages
 			lbColorPresets.Invalidate(); //redraw icons
 
-			if(PresetsChanged != null)
-				PresetsChanged(this, EventArgs.Empty);
+			if(PresetsChanged != null) PresetsChanged(this, EventArgs.Empty);
 		}
 
-		private void tbNewPresetName_Click(object sender, EventArgs e) {
-			if(tbNewPresetName.Text == DEFAULT_PRESET_NAME || tbNewPresetName.Text == NO_PRESET_NAME) {
+		private void tbNewPresetName_Click(object sender, EventArgs e) 
+		{
+			if(tbNewPresetName.Text == DEFAULT_PRESET_NAME || tbNewPresetName.Text == NO_PRESET_NAME) 
+			{
 				tbNewPresetName.Text = "";
 				tbNewPresetName.ForeColor = Color.Black;
 			}
 		}
 
-		private void tbNewPresetName_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e) {
-			if(e.KeyCode == Keys.Enter) {
+		private void tbNewPresetName_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e) 
+		{
+			if(e.KeyCode == Keys.Enter) 
+			{
 				bAddPreset_Click(this, EventArgs.Empty);
 				e.IsInputKey = true;
 			}

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 
-namespace CodeImp.DoomBuilder.GZBuilder.Data {
-	public class EngineInfo {
+namespace CodeImp.DoomBuilder.GZBuilder.Data 
+{
+	public class EngineInfo 
+	{
 		public const string DEFAULT_ENGINE_NAME = "Engine with no name";
 		
 		public string TestProgramName;
@@ -12,11 +14,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 		public int TestSkill;
 		public bool TestShortPaths;
 
-		public EngineInfo() {
+		public EngineInfo() 
+		{
 			TestProgramName = DEFAULT_ENGINE_NAME;
 		}
 
-		public EngineInfo(EngineInfo other) {
+		public EngineInfo(EngineInfo other) 
+		{
 			TestProgramName = other.TestProgramName;
 			TestProgram = other.TestProgram;
 			TestParameters = other.TestParameters;
@@ -25,8 +29,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			TestShortPaths = other.TestShortPaths;
 		}
 
-		public void CheckProgramName(bool forced) {
-			if ((forced || TestProgramName == DEFAULT_ENGINE_NAME) && !String.IsNullOrEmpty(TestProgram)) {
+		public void CheckProgramName(bool forced) 
+		{
+			if ((forced || TestProgramName == DEFAULT_ENGINE_NAME) && !String.IsNullOrEmpty(TestProgram)) 
+			{
 				//get engine name from folder name
 				TestProgramName = Path.GetFileNameWithoutExtension(TestProgram);
 			}

@@ -336,12 +336,14 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		//mxd. This puts vertices in the blockmap
-		public virtual void AddVerticesSet(ICollection<Vertex> verts) {
+		public virtual void AddVerticesSet(ICollection<Vertex> verts) 
+		{
 			foreach(Vertex v in verts) AddVertex(v);
 		}
 
 		//mxd. This puts a vertex in the blockmap
-		public virtual void AddVertex(Vertex v) {
+		public virtual void AddVertex(Vertex v) 
+		{
 			Point p = GetBlockCoordinates(v.Position);
 			if(IsInRange(p)) blockmap[p.X, p.Y].Vertices.Add(v);
 		}

@@ -66,23 +66,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(VisualMiddle3D m in middle3d)
 					m.Setup();
 			}
-			if(middleback != null) {
+			if(middleback != null) 
+			{
 				foreach(VisualMiddleBack m in middleback)
 					m.Setup();
 			}
 		}
 
 		//mxd
-		public void DeselectAllParts() {
+		public void DeselectAllParts() 
+		{
 			if(lower != null) lower.Selected = false;
 			if(middledouble != null) middledouble.Selected = false;
 			if(middlesingle != null) middlesingle.Selected = false;
 			if(upper != null) upper.Selected = false;
-			if(middle3d != null) {
+			if(middle3d != null) 
+			{
 				foreach(VisualMiddle3D m in middle3d)
 					m.Selected = false;
 			}
-			if(middleback != null) {
+			if(middleback != null) 
+			{
 				foreach(VisualMiddleBack m in middleback)
 					m.Selected = false;
 			}

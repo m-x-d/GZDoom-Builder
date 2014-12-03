@@ -1,7 +1,9 @@
 ﻿using SlimDX;
 
-namespace CodeImp.DoomBuilder.GZBuilder.Data {
-	public sealed class MapInfo {
+namespace CodeImp.DoomBuilder.GZBuilder.Data 
+{
+	public sealed class MapInfo 
+	{
 		public string Sky1;
 		public float Sky1ScrollSpeed;
 		public string Sky2;
@@ -19,7 +21,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 		public int VertWallShade;
 		public int HorizWallShade;
 
-		public MapInfo() {
+		public MapInfo() 
+		{
 			VertWallShade = 16;
 			HorizWallShade = -16;
 		}

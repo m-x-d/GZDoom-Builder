@@ -158,7 +158,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Another constructor
-		public EditSelectionMode(bool pasting) {
+		public EditSelectionMode(bool pasting) 
+		{
 			// Initialize
 			this.pasting = pasting;
 			this.mode = ModifyMode.None;
@@ -962,8 +963,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if((t.Position.x + t.Size) > right.x) right.x = t.Position.x + t.Size;
 					if((t.Position.y + t.Size) > right.y) right.y = t.Position.y + t.Size;
 
-					//mxd
-					if (!fixedrotationthingtypes.Contains(t.Type)) {
+					
+					if (!fixedrotationthingtypes.Contains(t.Type)) //mxd
+					{
 						ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(t.Type);
 						if (tti != null && tti.FixedRotation) fixedrotationthingtypes.Add(t.Type);
 					}
@@ -1189,7 +1191,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Go for all sidedes in the new geometry
 					List<Sidedef> newsides = General.Map.Map.GetMarkedSidedefs(true);
-					foreach (Sidedef s in newsides) {
+					foreach (Sidedef s in newsides) 
+					{
 						// Connected to a virtual sector?
 						if(s.Marked && s.Sector.Fields.ContainsKey(MapSet.VirtualSectorField))
 						{
@@ -1207,7 +1210,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								// Find out in which sector this was pasted
 								Vector2D testpoint = s.Line.GetSidePoint(!s.IsFront);
 								Linedef nl = MapSet.NearestLinedef(General.Map.Map.GetMarkedLinedefs(false), testpoint);
-								if(nl != null) {
+								if(nl != null) 
+								{
 									Sidedef joinsidedef = (nl.SideOfLine(testpoint) <= 0 ? nl.Front : nl.Back);
 
 									// Join?

@@ -89,7 +89,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(Presentation.Standard);
 
 			// Add toolbar buttons
-			if (General.Map.UDMF) {
+			if (General.Map.UDMF) 
+			{
 				General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
 				General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
 				General.Interface.AddButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
@@ -107,7 +108,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Remove toolbar buttons
-			if (General.Map.UDMF) {
+			if (General.Map.UDMF)
+			{
 				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
 				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
 				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
@@ -168,7 +170,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This highlights a new item
-		protected void Highlight(Vertex v)
+		private void Highlight(Vertex v)
 		{
 			// Update display
 			if(renderer.StartPlotter(false))
@@ -233,8 +235,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						renderer.Finish();
 						renderer.Present();
 					}
-				//mxd
-				} else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedVerticessCount > 0) {
+				} 
+				else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedVerticessCount > 0) 
+				{
+					//mxd
 					General.Map.Map.ClearSelectedVertices();
 					General.Interface.RedrawDisplay();
 				}
@@ -376,9 +380,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Interface.OnEditFormValuesChanged -= vertexEditForm_OnValuesChanged;
 
 						// When a single vertex was selected, deselect it now
-						if (selected.Count == 1) {
+						if (selected.Count == 1) 
+						{
 							General.Map.Map.ClearSelectedVertices();
-						} else if(result == DialogResult.Cancel) { //mxd. Restore selection...
+						} 
+						else if(result == DialogResult.Cancel) //mxd. Restore selection...
+						{ 
 							foreach (Vertex v in selected) v.Selected = true;
 						}
 						General.Interface.RedrawDisplay();
@@ -393,7 +400,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void vertexEditForm_OnValuesChanged(object sender, EventArgs e) {
+		private void vertexEditForm_OnValuesChanged(object sender, EventArgs e) 
+		{
 			// Update entire display
 			General.Map.Map.Update();
 			General.Interface.RedrawDisplay();
@@ -406,11 +414,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(panning) return; //mxd. Skip all this jazz while panning
 
 			//mxd
-			if(selectpressed && !editpressed && !selecting) {
+			if(selectpressed && !editpressed && !selecting) 
+			{
 				// Check if moved enough pixels for multiselect
 				Vector2D delta = mousedownpos - mousepos;
 				if((Math.Abs(delta.x) > MULTISELECT_START_MOVE_PIXELS) ||
-				   (Math.Abs(delta.y) > MULTISELECT_START_MOVE_PIXELS)) {
+				   (Math.Abs(delta.y) > MULTISELECT_START_MOVE_PIXELS)) 
+				{
 					// Start multiselecting
 					StartMultiSelection();
 				}
@@ -420,8 +430,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Find the nearest thing within highlight range
 				Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
 
-				if(v != null) {
-					if(v != highlighted) {
+				if(v != null) 
+				{
+					if(v != highlighted) 
+					{
 						//toggle selected state
 						if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
 							v.Selected = true;
@@ -436,7 +448,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Update entire display
 						General.Interface.RedrawDisplay();
 					}
-				} else if(highlighted != null) {
+				} 
+				else if(highlighted != null) 
+				{
 					highlighted = null;
 					Highlight(null);
 
@@ -449,31 +463,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Render insert vertex preview
 				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.SplitLinedefsRange / renderer.Scale);
 
-				if(l != null) {
+				if(l != null) 
+				{
 					// Snip to grid?
-					if(General.Interface.ShiftState ^ General.Interface.SnapToGrid) {
+					if(General.Interface.ShiftState ^ General.Interface.SnapToGrid) 
+					{
 						// Find all points where the grid intersects the line
 						List<Vector2D> points = l.GetGridIntersections();
-						if(points.Count == 0) {
+						if(points.Count == 0) 
+						{
 							insertPreview = l.NearestOnLine(mousemappos);
-						} else {
+						} 
+						else 
+						{
 							insertPreview = mousemappos;
 							float distance = float.MaxValue;
-							foreach(Vector2D p in points) {
+							foreach(Vector2D p in points) 
+							{
 								float pdist = Vector2D.DistanceSq(p, mousemappos);
-								if(pdist < distance) {
+								if(pdist < distance) 
+								{
 									insertPreview = p;
 									distance = pdist;
 								}
 							}
 						}
-					} else {
+					} 
+					else 
+					{
 						// Just use the nearest point on line
 						insertPreview = l.NearestOnLine(mousemappos);
 					}
 
 					//render preview
-					if(renderer.StartOverlay(true)) {
+					if(renderer.StartOverlay(true)) 
+					{
 						float dist = Math.Min(Vector2D.Distance(mousemappos, insertPreview), BuilderPlug.Me.SplitLinedefsRange);
 						byte alpha = (byte)(255 - (dist / BuilderPlug.Me.SplitLinedefsRange) * 128);
 						float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
@@ -481,11 +505,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						renderer.Finish();
 						renderer.Present();
 					}
-				} else if(insertPreview.IsFinite()) {
+				} 
+				else if(insertPreview.IsFinite()) 
+				{
 					insertPreview.x = float.NaN;
 
 					//undraw preveiw
-					if(renderer.StartOverlay(true)) {
+					if(renderer.StartOverlay(true)) 
+					{
 						renderer.Finish();
 						renderer.Present();
 					}
@@ -509,12 +536,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void BeginViewPan() {
-			if (insertPreview.IsFinite()) {
+		protected override void BeginViewPan() 
+		{
+			if (insertPreview.IsFinite()) 
+			{
 				insertPreview.x = float.NaN;
 
 				//undraw preveiw
-				if (renderer.StartOverlay(true)) {
+				if (renderer.StartOverlay(true)) 
+				{
 					renderer.Finish();
 					renderer.Present();
 				}
@@ -524,7 +554,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void OnPaintSelectBegin() {
+		protected override void OnPaintSelectBegin() 
+		{
 			highlighted = null;
 			base.OnPaintSelectBegin();
 		}
@@ -549,29 +580,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Start dragging the selection
-					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || canDrag()) //mxd
+					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || CanDrag()) //mxd
 						General.Editing.ChangeMode(new DragVerticesMode(highlighted, mousedownmappos));
 				}
 			}
 		}
 
 		//mxd. Check if any selected vertex is outside of map boundary
-		private static bool canDrag()
+		private static bool CanDrag()
 		{
 			ICollection<Vertex> selectedverts = General.Map.Map.GetSelectedVertices(true);
 			int unaffectedCount = 0;
 
-			foreach(Vertex v in selectedverts) {
+			foreach(Vertex v in selectedverts) 
+			{
 				// Make sure the vertex is inside the map boundary
 				if(v.Position.x < General.Map.Config.LeftBoundary || v.Position.x > General.Map.Config.RightBoundary
-					|| v.Position.y > General.Map.Config.TopBoundary || v.Position.y < General.Map.Config.BottomBoundary) {
+					|| v.Position.y > General.Map.Config.TopBoundary || v.Position.y < General.Map.Config.BottomBoundary) 
+				{
 
 					v.Selected = false;
 					unaffectedCount++;
 				}
 			}
 
-			if(unaffectedCount == selectedverts.Count) {
+			if(unaffectedCount == selectedverts.Count) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Unable to drag selection: " + (selectedverts.Count == 1 ? "selected vertex is" : "all of selected vertices are") + " outside of map boundary!");
 				General.Interface.RedrawDisplay();
 				return false;
@@ -591,7 +625,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selectionvolume)
 			{
 				//mxd
-				switch(marqueSelectionMode) {
+				switch(marqueSelectionMode) 
+				{
 					case MarqueSelectionMode.SELECT:
 						foreach(Vertex v in General.Map.Map.Vertices)
 							v.Selected = selectionrect.Contains(v.Position.x, v.Position.y);
@@ -654,7 +689,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void UpdateSelectionInfo() {
+		public override void UpdateSelectionInfo() 
+		{
 			if(General.Map.Map.SelectedVerticessCount > 0)
 				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedVerticessCount + (General.Map.Map.SelectedVerticessCount == 1 ? " vertex" : " vertices") + " selected.");
 			else
@@ -757,10 +793,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						// Find all points where the grid intersects the line
 						List<Vector2D> points = l.GetGridIntersections();
-						if(points.Count == 0) {
+						if(points.Count == 0) 
+						{
 							//mxd. Just use the nearest point on line
 							insertpos = l.NearestOnLine(mousemappos);
-						} else {
+						} 
+						else 
+						{
 							insertpos = mousemappos;
 							float distance = float.MaxValue;
 							foreach(Vector2D p in points) 
@@ -809,9 +848,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//mxd. Check if snapped vertex is still on top of a linedef
 					l = General.Map.Map.NearestLinedefRange(v.Position, BuilderPlug.Me.SplitLinedefsRange / rendererscale);
 					
-					if(l != null) {
+					if(l != null) 
+					{
 						//mxd
-						if(v.Position == l.Start.Position || v.Position == l.End.Position) {
+						if(v.Position == l.Start.Position || v.Position == l.End.Position) 
+						{
 							General.Interface.DisplayStatus(StatusType.Info, "There's already a vertex here.");
 							General.Map.UndoRedo.WithdrawUndo();
 							return;
@@ -819,7 +860,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						
 						General.Interface.DisplayStatus(StatusType.Action, "Split a linedef.");
 						Linedef sld = l.Split(v);
-						if(sld == null) {
+						if(sld == null) 
+						{
 							General.Map.UndoRedo.WithdrawUndo(); 
 							return;
 						}
@@ -848,23 +890,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selected.Count == 0) return;
 
 			// Make undo
-			if(selected.Count > 1) {
+			if(selected.Count > 1) 
+			{
 				General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " vertices");
 				General.Interface.DisplayStatus(StatusType.Action, "Deleted " + selected.Count + " vertices.");
-			} else {
+			} 
+			else 
+			{
 				General.Map.UndoRedo.CreateUndo("Delete vertex");
 				General.Interface.DisplayStatus(StatusType.Action, "Deleted a vertex.");
 			}
 
 			// Go for all vertices that need to be removed
-			foreach(Vertex v in selected) {
+			foreach(Vertex v in selected) 
+			{
 				// Not already removed automatically?
-				if(!v.IsDisposed) {
+				if(!v.IsDisposed) 
+				{
 					// If the vertex only has 2 linedefs attached, then merge the linedefs
-					if(v.Linedefs.Count == 2) {
+					if(v.Linedefs.Count == 2) 
+					{
 						Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
 						Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
-						//Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
 						Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
 						if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
 						ld2.Dispose();
@@ -892,40 +939,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Make list of selected vertices
 			ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
-			if(selected.Count == 0) {
+			if(selected.Count == 0) 
+			{
 				if(highlighted == null || highlighted.IsDisposed) return;
 				selected.Add(highlighted);
 			}
 
 			// Make undo
-			if(selected.Count > 1) {
+			if(selected.Count > 1) 
+			{
 				General.Map.UndoRedo.CreateUndo("Dissolve " + selected.Count + " vertices");
 				General.Interface.DisplayStatus(StatusType.Action, "Dissolved " + selected.Count + " vertices.");
-			} else {
+			} 
+			else 
+			{
 				General.Map.UndoRedo.CreateUndo("Dissolve vertex");
 				General.Interface.DisplayStatus(StatusType.Action, "Dissolved a vertex.");
 			}
 
 			//collect linedefs count per vertex
 			Dictionary<Vertex, int> linesPerVertex = new Dictionary<Vertex, int>();
-			//List<Sector> affectedSectors = new List<Sector>();
-			foreach(Vertex v in selected) {
+			foreach(Vertex v in selected) 
+			{
 				linesPerVertex.Add(v, v.Linedefs.Count);
-
-				/*foreach(Linedef l in v.Linedefs) {
-					if(l.Front != null && l.Front.Sector != null && !affectedSectors.Contains(l.Front.Sector))
-						affectedSectors.Add(l.Front.Sector);
-					if(l.Back != null && l.Back.Sector != null && !affectedSectors.Contains(l.Back.Sector))
-						affectedSectors.Add(l.Back.Sector);
-				}*/
 			}
 
 			// Go for all vertices that need to be removed
-			foreach(Vertex v in selected) {
+			foreach(Vertex v in selected) 
+			{
 				// Not already removed automatically?
-				if(!v.IsDisposed) {
+				if(!v.IsDisposed) 
+				{
 					// If the vertex only had 2 linedefs attached, then merge the linedefs
-					if(linesPerVertex[v] == 2) {
+					if(linesPerVertex[v] == 2) 
+					{
 						Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
 						Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
 						Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
@@ -933,16 +980,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						//don't merge if it will collapse 3-sided sector
 						bool dontMerge = false;
-						foreach(Linedef l in v1.Linedefs) {
+						foreach(Linedef l in v1.Linedefs) 
+						{
 							if(l == ld2) continue;
-							if(l.Start == v2 || l.End == v2) {
-								tryJoinSectors(l);
+							if(l.Start == v2 || l.End == v2) 
+							{
+								TryJoinSectors(l);
 								dontMerge = true;
 								break;
 							}
 						}
 
-						if(!dontMerge) mergeLines(selected, ld1, ld2, v);
+						if(!dontMerge) MergeLines(selected, ld1, ld2, v);
 					}
 
 					// Trash vertex
@@ -968,10 +1017,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Make list of selected vertices
 			ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
-			if (selected.Count == 0) {
-				if (highlighted != null && !highlighted.IsDisposed){
+			if (selected.Count == 0) 
+			{
+				if (highlighted != null && !highlighted.IsDisposed)
+				{
 					selected.Add(highlighted);
-				} else {
+				} 
+				else 
+				{
 					General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection of some description!");
 					return;
 				}
@@ -980,7 +1033,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<Vector2D> positions = new List<Vector2D>(selected.Count);
 			foreach (Vertex v in selected)
 				if (!positions.Contains(v.Position)) positions.Add(v.Position);
-			placeThingsAtPositions(positions);
+			PlaceThingsAtPositions(positions);
 		}
 
 		//mxd
@@ -989,7 +1042,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			ICollection<Vertex> selection = General.Map.Map.GetSelectedVertices(true);
 
-			if(selection.Count == 0) {
+			if(selection.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
 			}
@@ -1003,7 +1057,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Action assist (mxd)
 
 		//mxd
-		private void mergeLines(ICollection<Vertex> selected, Linedef ld1, Linedef ld2, Vertex v) 
+		private static void MergeLines(ICollection<Vertex> selected, Linedef ld1, Linedef ld2, Vertex v) 
 		{
 			Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
 			Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
@@ -1013,38 +1067,43 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ld2.Dispose();
 			bool redraw = true;
 
-			if(!v2.IsDisposed && selected.Contains(v2) && v2.Linedefs.Count == 2) {
+			if(!v2.IsDisposed && selected.Contains(v2) && v2.Linedefs.Count == 2) 
+			{
 				Linedef[] lines = new Linedef[2];
 				v2.Linedefs.CopyTo(lines, 0);
 				Linedef other = lines[0] == ld2 ? lines[1] :lines[0];
 
-				mergeLines(selected, ld1, other, v2);
+				MergeLines(selected, ld1, other, v2);
 				v2.Dispose();
 				redraw = false;
 			}
 
-			if(!v1.IsDisposed && selected.Contains(v1) && v1.Linedefs.Count == 2) {
+			if(!v1.IsDisposed && selected.Contains(v1) && v1.Linedefs.Count == 2) 
+			{
 				Linedef[] lines = new Linedef[2];
 				v1.Linedefs.CopyTo(lines, 0);
 				Linedef other = lines[0] == ld1 ? lines[1] : lines[0];
 
-				mergeLines(selected, other, ld1, v1);
+				MergeLines(selected, other, ld1, v1);
 				v1.Dispose();
 				redraw = false;
 			}
 
-			if(redraw && ld1.Start != null && ld1.End != null) {
+			if(redraw && ld1.Start != null && ld1.End != null) 
+			{
 				Vector2D start = ld1.Start.Position;
 				Vector2D end = ld1.End.Position;
 				ld1.Dispose();
-				drawLine(start, end);
-			} else {
+				DrawLine(start, end);
+			} 
+			else 
+			{
 				ld1.Dispose();
 			}
 		}
 
 		//mxd
-		private static void drawLine(Vector2D start, Vector2D end) 
+		private static void DrawLine(Vector2D start, Vector2D end) 
 		{
 			DrawnVertex dv1 = new DrawnVertex();
 			DrawnVertex dv2 = new DrawnVertex();
@@ -1062,11 +1121,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. If there are different sectors on both sides of given linedef, join them
-		private void tryJoinSectors(Linedef ld) 
+		private static void TryJoinSectors(Linedef ld) 
 		{
 			if(ld.IsDisposed) return;
 
-			if(ld.Front != null && ld.Front.Sector != null && ld.Back != null && ld.Back.Sector != null && ld.Front.Sector.Index != ld.Back.Sector.Index) {
+			if(ld.Front != null && ld.Front.Sector != null && ld.Back != null 
+				&& ld.Back.Sector != null && ld.Front.Sector.Index != ld.Back.Sector.Index) 
+			{
 				if(ld.Front.Sector.BBox.Width * ld.Front.Sector.BBox.Height > ld.Back.Sector.BBox.Width * ld.Back.Sector.BBox.Height)
 					ld.Back.Sector.Join(ld.Front.Sector);
 				else

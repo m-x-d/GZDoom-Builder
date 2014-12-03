@@ -40,8 +40,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if (t.Sector != null)
 				{
 					//mxd. Vertex zheight overrides this effect
-					if (General.Map.UDMF && t.Sector.Sidedefs.Count == 3) {
-						foreach(Sidedef side in t.Sector.Sidedefs) {
+					if (General.Map.UDMF && t.Sector.Sidedefs.Count == 3) 
+					{
+						foreach(Sidedef side in t.Sector.Sidedefs) 
+						{
 							if(!float.IsNaN(side.Line.Start.ZFloor) || !float.IsNaN(side.Line.End.ZFloor)) 
 								return;
 						}
@@ -80,8 +82,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if (t.Sector != null)
 				{
 					//mxd. Vertex zheight overrides this effect
-					if(General.Map.UDMF && t.Sector.Sidedefs.Count == 3) {
-						foreach(Sidedef side in t.Sector.Sidedefs) {
+					if(General.Map.UDMF && t.Sector.Sidedefs.Count == 3) 
+					{
+						foreach(Sidedef side in t.Sector.Sidedefs) 
+						{
 							if(!float.IsNaN(side.Line.Start.ZCeiling) || !float.IsNaN(side.Line.End.ZCeiling))
 								return;
 						}

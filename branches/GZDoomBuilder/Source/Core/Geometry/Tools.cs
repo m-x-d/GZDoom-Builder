@@ -291,11 +291,15 @@ namespace CodeImp.DoomBuilder.Geometry
 						float px = foundv.Position.x; //mxd
 						float py = foundv.Position.y; //mxd
 
-						foreach(Linedef ld in General.Map.Map.Linedefs) {
+						foreach(Linedef ld in General.Map.Map.Linedefs) 
+						{
 							// Line to the right of start point?
-							if((ld.Start.Position.x > px) || (ld.End.Position.x > px)) {
+							if((ld.Start.Position.x > px) || (ld.End.Position.x > px)) 
+							{
 								// Line intersecting the y axis?
-								if((ld.Start.Position.y >= py && ld.End.Position.y <= py) || (ld.Start.Position.y <= py && ld.End.Position.y >= py)) { //mxd
+								if((ld.Start.Position.y >= py && ld.End.Position.y <= py) 
+									|| (ld.Start.Position.y <= py && ld.End.Position.y >= py)) //mxd
+								{ 
 									// Check if this linedef intersects our test line at a closer range
 									float thisu;
 									ld.Line.GetIntersection(testline, out thisu);
@@ -519,7 +523,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				sourcesector.CopyPropertiesTo(newsector);
 
 				//mxd. Apply overrides
-				if(useOverrides) {
+				if(useOverrides) 
+				{
 					if (General.Map.Options.OverrideCeilingTexture) newsector.SetCeilTexture(General.Map.Options.DefaultCeilingTexture);
 					if (General.Map.Options.OverrideFloorTexture) newsector.SetFloorTexture(General.Map.Options.DefaultFloorTexture);
 					if (General.Map.Options.OverrideCeilingHeight) newsector.CeilHeight = General.Map.Options.CustomCeilingHeight;
@@ -636,29 +641,35 @@ namespace CodeImp.DoomBuilder.Geometry
 		//Most of the logic is taken from MakeSectorsMode.
 		//Vector2D is sector's center BEFORE sides were removed.
 		//See VerticesMode.DeleteItem() for usage example
-		public static void MergeInvalidSectors(Dictionary<Sector, Vector2D> toMerge) {
-			foreach(KeyValuePair<Sector, Vector2D> group in toMerge) {
-				if(!group.Key.IsDisposed && group.Key.Sidedefs.Count > 0 && group.Key.Sidedefs.Count < 3) {
+		public static void MergeInvalidSectors(Dictionary<Sector, Vector2D> toMerge) 
+		{
+			foreach(KeyValuePair<Sector, Vector2D> group in toMerge) 
+			{
+				if(!group.Key.IsDisposed && group.Key.Sidedefs.Count > 0 && group.Key.Sidedefs.Count < 3) 
+				{
 					group.Key.Dispose();
 
 					List<LinedefSide> sides = Tools.FindPotentialSectorAt(group.Value);
 
-					if(sides != null) {
+					if(sides != null) 
+					{
 						// Mark the lines we are going to use for this sector
 						General.Map.Map.ClearAllMarks(true);
-						foreach(LinedefSide ls in sides)
-							ls.Line.Marked = false;
+						foreach(LinedefSide ls in sides) ls.Line.Marked = false;
 						List<Linedef> oldlines = General.Map.Map.GetMarkedLinedefs(true);
 
 						// Make the sector
 						Sector s = Tools.MakeSector(sides, oldlines, false);
 
-						if(s != null) {
+						if(s != null) 
+						{
 							// Now we go for all the lines along the sector to
 							// see if they only have a back side. In that case we want
 							// to flip the linedef to that it only has a front side.
-							foreach(Sidedef sd in s.Sidedefs) {
-								if((sd.Line.Front == null) && (sd.Line.Back != null)) {
+							foreach(Sidedef sd in s.Sidedefs) 
+							{
+								if((sd.Line.Front == null) && (sd.Line.Back != null)) 
+								{
 									// Flip linedef
 									sd.Line.FlipVertices();
 									sd.Line.FlipSidedefs();
@@ -711,7 +722,8 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		//mxd. This applies overrides to a sidedef
-		private static void ApplyOverridesToSidedef(Sidedef sd) {
+		private static void ApplyOverridesToSidedef(Sidedef sd) 
+		{
 			if (General.Map.Options.OverrideTopTexture) sd.SetTextureHigh(General.Map.Options.DefaultTopTexture);
 			if(sd.MiddleRequired() && General.Map.Options.OverrideMiddleTexture) sd.SetTextureMid(General.Map.Options.DefaultWallTexture);
 			if(General.Map.Options.OverrideBottomTexture) sd.SetTextureLow(General.Map.Options.DefaultBottomTexture);
@@ -917,15 +929,19 @@ namespace CodeImp.DoomBuilder.Geometry
 						Dictionary<Linedef, bool> processed = new Dictionary<Linedef, bool>(); //mxd
 
 						//mxd
-						foreach (Sector s in map.Sectors) {
+						foreach (Sector s in map.Sectors) 
+						{
 							//line intersects with sector's bounding box?
-							if((MapSet.GetCSFieldBits(measureline.v1, s.BBox) & MapSet.GetCSFieldBits(measureline.v2, s.BBox)) == 0) {
-								foreach (Sidedef side in s.Sidedefs) {
+							if((MapSet.GetCSFieldBits(measureline.v1, s.BBox) & MapSet.GetCSFieldBits(measureline.v2, s.BBox)) == 0) 
+							{
+								foreach (Sidedef side in s.Sidedefs) 
+								{
 									if(processed.ContainsKey(side.Line)) continue;
 									if(side.Line == ld) continue;
 
 									float u;
-									if(side.Line.Line.GetIntersection(measureline, out u)) {
+									if(side.Line.Line.GetIntersection(measureline, out u)) 
+									{
 										if(float.IsNaN(u) || (u <= 0.0f) || (u >= 1.0f)) continue;
 										intersections.Add(u);
 									}
@@ -1433,14 +1449,17 @@ namespace CodeImp.DoomBuilder.Geometry
 					}
 
 					//mxd. Apply texture overrides
-					if (useOverrides && !General.Settings.AutoClearSidedefTextures) {
+					if (useOverrides && !General.Settings.AutoClearSidedefTextures) 
+					{
 						//if new sectors are created, apply overrides to the sides of these sectors, otherwise, apply overrides to all new lines
-						if (insidesides.Count > 0) {
-							foreach(Sidedef side in insidesides) {
-								ApplyOverridesToSidedef(side);
-							}
-						} else {
-							foreach(Linedef l in newlines) {
+						if (insidesides.Count > 0) 
+						{
+							foreach(Sidedef side in insidesides) ApplyOverridesToSidedef(side);
+						} 
+						else 
+						{
+							foreach(Linedef l in newlines) 
+							{
 								if(l.IsDisposed) continue;
 								if(!newverts.Contains(l.Start) || !newverts.Contains(l.End)) continue;
 								ApplyOverridesToSidedef(l.Front);
@@ -1450,26 +1469,31 @@ namespace CodeImp.DoomBuilder.Geometry
 					}
 
 					//mxd. Auto-align new lines
-					if(autoAlignTextureOffsets && newlines.Count > 1 && !splittingonly) {
+					if(autoAlignTextureOffsets && newlines.Count > 1 && !splittingonly) 
+					{
 						List<List<Linedef>> strips = new List<List<Linedef>>();
 						strips.Add(new List<Linedef> { newlines[0] });
 
-						for(int i = 1; i < newlines.Count; i++) {
+						for(int i = 1; i < newlines.Count; i++) 
+						{
 							//skip double-sided line if it doesn't have lower or upper parts or they are not part of newly created sectors
-							if(newlines[i].Back != null &&
-								(((!newlines[i].Front.LowRequired() && !newlines[i].Front.HighRequired()) || !insidesides.Contains(newlines[i].Front))
-																  && ((!newlines[i].Back.LowRequired() && !newlines[i].Back.HighRequired()) || !insidesides.Contains(newlines[i].Back))))
+							if(newlines[i].Back != null
+								&& (((!newlines[i].Front.LowRequired() && !newlines[i].Front.HighRequired()) || !insidesides.Contains(newlines[i].Front))
+								&& ((!newlines[i].Back.LowRequired() && !newlines[i].Back.HighRequired()) || !insidesides.Contains(newlines[i].Back))))
 								continue;
 
 							bool added = false;
-							foreach(List<Linedef> strip in strips) {
-								if(newlines[i].Start == strip[0].Start || newlines[i].End == strip[0].Start) {
+							foreach(List<Linedef> strip in strips) 
+							{
+								if(newlines[i].Start == strip[0].Start || newlines[i].End == strip[0].Start) 
+								{
 									strip.Insert(0, newlines[i]);
 									added = true;
 									break;
 								}
 
-								if(newlines[i].Start == strip[strip.Count - 1].End || newlines[i].End == strip[strip.Count - 1].End) {
+								if(newlines[i].Start == strip[strip.Count - 1].End || newlines[i].End == strip[strip.Count - 1].End) 
+								{
 									strip.Add(newlines[i]);
 									added = true;
 									break;
@@ -1479,9 +1503,10 @@ namespace CodeImp.DoomBuilder.Geometry
 							if(!added) strips.Add(new List<Linedef> { newlines[i] });
 						}
 
-						foreach(List<Linedef> strip in strips) {
+						foreach(List<Linedef> strip in strips) 
+						{
 							if(strip.Count < 2) continue;
-							autoAlignLinedefStrip(strip);
+							AutoAlignLinedefStrip(strip);
 						}
 					}
 				}
@@ -1497,48 +1522,51 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		//mxd
-		private static void autoAlignLinedefStrip(List<Linedef> strip) {
+		private static void AutoAlignLinedefStrip(List<Linedef> strip) 
+		{
 			if (strip.Count < 2) return;
 
 			float totalLength = 0f;
 			foreach(Linedef l in strip) totalLength += l.Length;
 
 			if(General.Map.UDMF)
-				autoAlignTexturesOnSidesUDMF(strip, totalLength, (strip[0].End != strip[1].Start));
+				AutoAlignTexturesOnSidesUdmf(strip, totalLength, (strip[0].End != strip[1].Start));
 			else
-				autoAlignTexturesOnSides(strip, totalLength, (strip[0].End != strip[1].Start));	
+				AutoAlignTexturesOnSides(strip, totalLength, (strip[0].End != strip[1].Start));	
 		}
 
 		//mxd
-		private static void autoAlignTexturesOnSides(List<Linedef> lines, float totalLength, bool reversed) {
+		private static void AutoAlignTexturesOnSides(List<Linedef> lines, float totalLength, bool reversed) 
+		{
 			float curLength = 0f;
 			
-			foreach(Linedef l in lines) {
-				if(l.Front != null) {
+			foreach(Linedef l in lines) 
+			{
+				if(l.Front != null) 
+				{
 					ImageData texture = null;
 
-					if(l.Front.MiddleRequired() && l.Front.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongMiddleTexture)) {
+					if(l.Front.MiddleRequired() && l.Front.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongMiddleTexture))
 						texture = General.Map.Data.GetTextureImage(l.Front.LongMiddleTexture);
-					} else if(l.Front.HighRequired() && l.Front.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongHighTexture)) {
+					else if(l.Front.HighRequired() && l.Front.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongHighTexture))
 						texture = General.Map.Data.GetTextureImage(l.Front.LongHighTexture);
-					} else if(l.Front.LowRequired() && l.Front.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongLowTexture)) {
+					else if(l.Front.LowRequired() && l.Front.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongLowTexture))
 						texture = General.Map.Data.GetTextureImage(l.Front.LongLowTexture);
-					}
 
 					if(texture != null)
 						l.Front.OffsetX = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 				}
 
-				if(l.Back != null) {
+				if(l.Back != null) 
+				{
 					ImageData texture = null;
 
-					if(l.Back.MiddleRequired() && l.Back.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongMiddleTexture)) {
+					if(l.Back.MiddleRequired() && l.Back.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongMiddleTexture))
 						texture = General.Map.Data.GetTextureImage(l.Back.LongMiddleTexture);
-					} else if(l.Back.HighRequired() && l.Back.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongHighTexture)) {
+					else if(l.Back.HighRequired() && l.Back.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongHighTexture))
 						texture = General.Map.Data.GetTextureImage(l.Back.LongHighTexture);
-					} else if(l.Back.LowRequired() && l.Back.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongLowTexture)) {
+					else if(l.Back.LowRequired() && l.Back.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongLowTexture))
 						texture = General.Map.Data.GetTextureImage(l.Back.LongLowTexture);
-					}
 
 					if(texture != null)
 						l.Back.OffsetX = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
@@ -1549,26 +1577,32 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		//mxd
-		private static void autoAlignTexturesOnSidesUDMF(List<Linedef> lines, float totalLength, bool reversed) {
+		private static void AutoAlignTexturesOnSidesUdmf(List<Linedef> lines, float totalLength, bool reversed) 
+		{
 			float curLength = 0f;
 
-			foreach(Linedef l in lines) {
-				if(l.Front != null) {
-					if(l.Front.MiddleRequired() && l.Front.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongMiddleTexture)) {
+			foreach(Linedef l in lines) 
+			{
+				if(l.Front != null) 
+				{
+					if(l.Front.MiddleRequired() && l.Front.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongMiddleTexture)) 
+					{
 						ImageData texture = General.Map.Data.GetTextureImage(l.Front.LongMiddleTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0) UDMFTools.SetFloat(l.Front.Fields, "offsetx_mid", offset);
 					}
 
-					if(l.Front.HighRequired() && l.Front.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongHighTexture)) {
+					if(l.Front.HighRequired() && l.Front.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongHighTexture)) 
+					{
 						ImageData texture = General.Map.Data.GetTextureImage(l.Front.LongHighTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0) UDMFTools.SetFloat(l.Front.Fields, "offsetx_top", offset);
 					}
 
-					if(l.Front.LowRequired() && l.Front.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongLowTexture)) {
+					if(l.Front.LowRequired() && l.Front.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Front.LongLowTexture)) 
+					{
 						ImageData texture = General.Map.Data.GetTextureImage(l.Front.LongLowTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
@@ -1576,22 +1610,26 @@ namespace CodeImp.DoomBuilder.Geometry
 					}
 				}
 
-				if(l.Back != null) {
-					if(l.Back.MiddleRequired() && l.Back.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongMiddleTexture)) {
+				if(l.Back != null) 
+				{
+					if(l.Back.MiddleRequired() && l.Back.LongMiddleTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongMiddleTexture)) 
+					{
 						ImageData texture = General.Map.Data.GetTextureImage(l.Back.LongMiddleTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0) UDMFTools.SetFloat(l.Back.Fields, "offsetx_mid", offset);
 					}
 
-					if(l.Back.HighRequired() && l.Back.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongHighTexture)) {
+					if(l.Back.HighRequired() && l.Back.LongHighTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongHighTexture)) 
+					{
 						ImageData texture = General.Map.Data.GetTextureImage(l.Back.LongHighTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
 						if(offset > 0) UDMFTools.SetFloat(l.Back.Fields, "offsetx_top", offset);
 					}
 
-					if(l.Back.LowRequired() && l.Back.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongLowTexture)) {
+					if(l.Back.LowRequired() && l.Back.LongLowTexture != MapSet.EmptyLongName && General.Map.Data.GetTextureExists(l.Back.LongLowTexture)) 
+					{
 						ImageData texture = General.Map.Data.GetTextureImage(l.Back.LongLowTexture);
 						float offset = (int)Math.Round((reversed ? totalLength - curLength - l.Length : curLength)) % texture.Width;
 
@@ -1896,18 +1934,23 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		#region ================== Thing Alignment (mxd)
 
-		public static bool TryAlignThingToLine(Thing t, Linedef l) {
-			if(l.Back == null) {
-				if(canAlignThingTo(t, l.Front.Sector)){
-					alignThingToLine(t, l, true);
+		public static bool TryAlignThingToLine(Thing t, Linedef l) 
+		{
+			if(l.Back == null) 
+			{
+				if(CanAlignThingTo(t, l.Front.Sector))
+				{
+					AlignThingToLine(t, l, true);
 					return true;
 				}
 				return false;
 			}
 
-			if(l.Front == null ) {
-				if(canAlignThingTo(t, l.Back.Sector)) {
-					alignThingToLine(t, l, false);
+			if(l.Front == null ) 
+			{
+				if(CanAlignThingTo(t, l.Back.Sector)) 
+				{
+					AlignThingToLine(t, l, false);
 					return true;
 				}
 				return false;
@@ -1915,15 +1958,20 @@ namespace CodeImp.DoomBuilder.Geometry
 
 			float side = l.SideOfLine(t.Position);
 
-			if(side == 0) { //already on line
+			//already on line
+			if(side == 0) 
+			{ 
 				t.Rotate(General.ClampAngle(180 + l.AngleDeg));
 				return true;
 			}
 
-			if(side < 0) { //thing is on front side of the line
+			//thing is on front side of the line
+			if(side < 0) 
+			{ 
 				//got any walls to align to?
-				if(canAlignThingTo(t, l.Front.Sector, l.Back.Sector)) {
-					alignThingToLine(t, l, true);
+				if(CanAlignThingTo(t, l.Front.Sector, l.Back.Sector)) 
+				{
+					AlignThingToLine(t, l, true);
 					return true;
 				}
 
@@ -1932,8 +1980,9 @@ namespace CodeImp.DoomBuilder.Geometry
 
 			//thing is on back side of the line
 			//got any walls to align to?
-			if(canAlignThingTo(t, l.Back.Sector, l.Front.Sector)) {
-				alignThingToLine(t, l, false);
+			if(CanAlignThingTo(t, l.Back.Sector, l.Front.Sector)) 
+			{
+				AlignThingToLine(t, l, false);
 				return true;
 			}
 
@@ -1941,18 +1990,21 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// Checks if there's a wall at appropriate height to align thing to
-		private static bool canAlignThingTo(Thing t, Sector front, Sector back) {
+		private static bool CanAlignThingTo(Thing t, Sector front, Sector back) 
+		{
 			ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
 			int absz = GetThingAbsoluteZ(t, ti);
 			int height = ti.Height == 0 ? 1 : (int)ti.Height;
 			Rectangle thing =  new Rectangle(0, ti.Hangs ? absz - height : absz, 1, height);
 
-			if(front.FloorHeight < back.FloorHeight) {
+			if(front.FloorHeight < back.FloorHeight) 
+			{
 				Rectangle lower = new Rectangle(0, front.FloorHeight, 1, back.FloorHeight - front.FloorHeight);
 				if(thing.IntersectsWith(lower)) return true;
 			}
 
-			if(front.CeilHeight > back.CeilHeight) {
+			if(front.CeilHeight > back.CeilHeight) 
+			{
 				Rectangle upper = new Rectangle(0, back.CeilHeight, 1, front.CeilHeight - back.CeilHeight);
 				if(thing.IntersectsWith(upper)) return true;
 			}
@@ -1961,7 +2013,8 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// Checks if there's a wall at appropriate height to align thing to
-		private static bool canAlignThingTo(Thing t, Sector sector) {
+		private static bool CanAlignThingTo(Thing t, Sector sector) 
+		{
 			ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
 			int absz = GetThingAbsoluteZ(t, ti);
 			Rectangle thing = new Rectangle(0, absz, 1, ti.Height == 0 ? 1 : (int)ti.Height);
@@ -1970,7 +2023,8 @@ namespace CodeImp.DoomBuilder.Geometry
 			return thing.IntersectsWith(middle);
 		}
 
-		private static void alignThingToLine(Thing t, Linedef l, bool front) {
+		private static void AlignThingToLine(Thing t, Linedef l, bool front) 
+		{
 			//get aligned position
 			Vector2D pos = l.NearestOnLine(t.Position);
 			Sector initialSector = t.Sector;
@@ -1987,11 +2041,13 @@ namespace CodeImp.DoomBuilder.Geometry
 			t.Rotate(General.ClampAngle(front ? 180 + l.AngleDeg : l.AngleDeg));
 
 			//keep thing height constant
-			if(initialSector != t.Sector && General.Map.FormatInterface.HasThingHeight) {
+			if(initialSector != t.Sector && General.Map.FormatInterface.HasThingHeight) 
+			{
 				ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
 				if(ti.AbsoluteZ) return;
 
-				if(ti.Hangs && initialSector.CeilHeight != t.Sector.CeilHeight) {
+				if(ti.Hangs && initialSector.CeilHeight != t.Sector.CeilHeight) 
+				{
 					t.Move(t.Position.x, t.Position.y, t.Position.z - (initialSector.CeilHeight - t.Sector.CeilHeight));
 					return;
 				}
@@ -2001,11 +2057,13 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 		}
 
-		public static int GetThingAbsoluteZ(Thing t, ThingTypeInfo ti) {
+		public static int GetThingAbsoluteZ(Thing t, ThingTypeInfo ti) 
+		{
 			// Determine z info
 			if(ti.AbsoluteZ) return (int)t.Position.z;
 
-			if(t.Sector != null) {
+			if(t.Sector != null) 
+			{
 				// Hangs from ceiling?
 				if(ti.Hangs) return (int)(t.Sector.CeilHeight - t.Position.z - ti.Height);
 				
@@ -2085,9 +2143,11 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		//mxd
-		public static int GetDropDownWidth(ComboBox cb) {
+		public static int GetDropDownWidth(ComboBox cb) 
+		{
 			int maxWidth = 0, temp;
-			foreach(var obj in cb.Items) {
+			foreach(var obj in cb.Items) 
+			{
 				temp = TextRenderer.MeasureText(obj.ToString(), cb.Font).Width;
 				if(temp > maxWidth) maxWidth = temp;
 			}

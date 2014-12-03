@@ -16,15 +16,18 @@ namespace CodeImp.DoomBuilder.BuilderModes.FindReplace
 		// This is called to perform a search (and replace)
 		// Returns a list of items to show in the results list
 		// replacewith is null when not replacing
-		public override FindReplaceObject[] Find(string value, bool withinselection, bool replace, string replacewith, bool keepselection) {
+		public override FindReplaceObject[] Find(string value, bool withinselection, bool replace, string replacewith, bool keepselection) 
+		{
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
 			// Interpret the replacement
 			int replaceheight = 0;
-			if(replace) {
+			if(replace) 
+			{
 				// If it cannot be interpreted, set replacewith to null (not replacing at all)
 				if(!int.TryParse(replacewith, out replaceheight)) replacewith = null;
-				if(replacewith == null) {
+				if(replacewith == null) 
+				{
 					MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return objs.ToArray();
 				}
@@ -32,14 +35,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.FindReplace
 
 			// Interpret the number given
 			int height;
-			if(int.TryParse(value, out height)) {
+			if(int.TryParse(value, out height)) 
+			{
 				// Where to search?
 				ICollection<Sector> list = withinselection ? General.Map.Map.GetSelectedSectors(true) : General.Map.Map.Sectors;
 
 				// Go for all sectors
-				foreach(Sector s in list) {
+				foreach(Sector s in list) 
+				{
 					// Height matches?
-					if(s.CeilHeight == height) {
+					if(s.CeilHeight == height) 
+					{
 						// Replace
 						if(replace) s.CeilHeight = replaceheight;
 
@@ -49,7 +55,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.FindReplace
 			}
 
 			//refresh map
-			if(replace) {
+			if(replace) 
+			{
 				General.Map.Map.Update();
 				General.Map.IsChanged = true;
 			}

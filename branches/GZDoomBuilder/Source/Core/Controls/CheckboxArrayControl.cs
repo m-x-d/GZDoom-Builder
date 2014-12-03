@@ -130,7 +130,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private int CheckboxesComparison(CheckBox cb1, CheckBox cb2)
+		private static int CheckboxesComparison(CheckBox cb1, CheckBox cb2)
 		{
 			return String.Compare(cb1.Text, cb2.Text, StringComparison.Ordinal);
 		}

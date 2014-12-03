@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
@@ -41,7 +42,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor/Disposer
 
-		public DrawCurveMode() {
+		public DrawCurveMode() 
+		{
 			hintLabel = new HintLabel();
 
 			//Options docker
@@ -49,10 +51,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
 		}
 
-		public override void Dispose() {
-			if(!isdisposed && hintLabel != null)
-				hintLabel.Dispose();
-
+		public override void Dispose() 
+		{
+			if(!isdisposed && hintLabel != null) hintLabel.Dispose();
 			base.Dispose();
 		}
 
@@ -60,7 +61,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
-		protected override void Update() {
+		protected override void Update() 
+		{
 			PixelColor stitchcolor = General.Colors.Highlight;
 			PixelColor losecolor = General.Colors.Selection;
 			PixelColor color;
@@ -76,22 +78,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				SetLabelPosition(labels[labels.Count - 1], points[points.Count - 1].pos, curp.pos);
 
 			// Render drawing lines
-			if(renderer.StartOverlay(true)) {
+			if(renderer.StartOverlay(true)) 
+			{
 				// Go for all points to draw lines
-				if(points.Count > 0) {
+				if(points.Count > 0) 
+				{
 					//update curve
 					List<Vector2D> verts = new List<Vector2D>();
-					
-					for(int i = 0; i < points.Count; i++)
-						verts.Add(points[i].pos);
-
-					if(curp.pos != verts[verts.Count-1])
-						verts.Add(curp.pos);
-
+					for(int i = 0; i < points.Count; i++) verts.Add(points[i].pos);
+					if(curp.pos != verts[verts.Count-1]) verts.Add(curp.pos);
 					curve = CurveTools.CurveThroughPoints(verts, 0.5f, 0.75f, segmentLength);
 
 					// Render lines
-					for(int i = 1; i < curve.Shape.Count; i++) {
+					for(int i = 1; i < curve.Shape.Count; i++) 
+					{
 						// Determine line color
 						color = snaptonearest ? stitchcolor : losecolor;
 
@@ -100,7 +100,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					//render "inactive" vertices
-					for(int i = 1; i < curve.Shape.Count - 1; i++) {
+					for(int i = 1; i < curve.Shape.Count - 1; i++) 
+					{
 						// Determine vertex color
 						color = !snaptonearest ? stitchcolor : losecolor;
 
@@ -109,9 +110,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
-				if(points.Count > 0) {
+				if(points.Count > 0) 
+				{
 					// Render vertices
-					for(int i = 0; i < points.Count; i++) {
+					for(int i = 0; i < points.Count; i++) 
+					{
 						// Determine vertex color
 						color = points[i].stitch ? stitchcolor : losecolor;
 
@@ -127,8 +130,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.RenderRectangleFilled(new RectangleF(curp.pos.x - vsize, curp.pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
 
 				// Go for all labels
-				foreach(LineLengthLabel l in labels)
-					renderer.RenderText(l.TextLabel);
+				foreach(LineLengthLabel l in labels) renderer.RenderText(l.TextLabel);
 
 				//Render info label
 				hintLabel.Start = new Vector2D(mousemappos.x + (32 / renderer.Scale), mousemappos.y - (16 / renderer.Scale));
@@ -148,7 +150,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Events
 
-		public override void OnEngage() {
+		public override void OnEngage() 
+		{
 			base.OnEngage();
 
 			//setup settings panel
@@ -156,18 +159,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			panel.Register();
 		}
 
-		public override void OnAccept() {
+		public override void OnAccept() 
+		{
 			Cursor.Current = Cursors.AppStarting;
-
 			General.Settings.FindDefaultDrawSettings();
 
 			// When points have been drawn
-			if(points.Count > 0) {
+			if(points.Count > 0) 
+			{
 				// Make undo for the draw
 				General.Map.UndoRedo.CreateUndo("Curve draw");
 
 				// Make an analysis and show info
-				string[] adjectives = new[] {
+				string[] adjectives = new[] 
+				{
 				  "beautiful", "lovely", "romantic", "stylish", "cheerful", "comical",
 				  "awesome", "accurate", "adorable", "adventurous", "attractive", "cute",
 				  "elegant", "glamorous", "gorgeous", "handsome", "magnificent", "unusual",
@@ -181,22 +186,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				List<DrawnVertex> verts = new List<DrawnVertex>();
 				
 				//if we have a curve...
-				if(points.Count > 2){
+				if(points.Count > 2)
+				{
 					//is it a closed curve?
 					int lastPoint;
-					if(points[0].pos == points[points.Count - 1].pos) {
+					if(points[0].pos == points[points.Count - 1].pos) 
+					{
 						lastPoint = curve.Segments.Count;
-					} else {
+					}
+					else 
+					{
 						lastPoint = curve.Segments.Count - 1;
 					}
 
-					for(int i = 0; i < lastPoint; i++) {
+					for(int i = 0; i < lastPoint; i++) 
+					{
 						int next = (i == curve.Segments.Count - 1 ? 0 : i + 1);
 						bool stitch = points[i].stitch && points[next].stitch;
 						bool stitchline = points[i].stitchline && points[next].stitchline;
 
 						//add segment points except the last one
-						for(int c = 0; c < curve.Segments[i].Points.Length - 1; c++) {
+						for(int c = 0; c < curve.Segments[i].Points.Length - 1; c++) 
+						{
 							DrawnVertex dv = new DrawnVertex();
 							dv.pos = curve.Segments[i].Points[c];
 							dv.stitch = stitch;
@@ -211,7 +222,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					end.stitch = verts[verts.Count - 1].stitch;
 					end.stitchline = verts[verts.Count - 1].stitchline;
 					verts.Add(end);
-				}else{
+				}
+				else
+				{
 					verts = points;
 				}
 
@@ -253,17 +266,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
 		}
 
-		public override void OnDisengage() {
+		public override void OnDisengage() 
+		{
 			base.OnDisengage();
 			panel.Unregister();
 		}
 
-		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) {
+		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) 
+		{
 			segmentLength = panel.SegmentLength;
 			Update();
 		}
 
-		public override void OnHelp() {
+		public override void OnHelp() 
+		{
 			General.ShowHelp("/gzdb/features/classic_modes/mode_drawcurve.html");
 		}
 
@@ -272,26 +288,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Actions
 
 		[BeginAction("increasesubdivlevel")]
-		protected virtual void increaseSubdivLevel() {
-			if(segmentLength < maxSegmentLength) {
+		protected virtual void IncreaseSubdivLevel() 
+		{
+			if(segmentLength < maxSegmentLength) 
+			{
 				int increment = Math.Max(minSegmentLength, segmentLength / 32 * 16);
 				segmentLength += increment;
 
-				if(segmentLength > maxSegmentLength)
-					segmentLength = maxSegmentLength;
+				if(segmentLength > maxSegmentLength) segmentLength = maxSegmentLength;
 				panel.SegmentLength = segmentLength;
 				Update();
 			}
 		}
 
 		[BeginAction("decreasesubdivlevel")]
-		protected virtual void decreaseSubdivLevel() {
-			if(segmentLength > minSegmentLength) {
+		protected virtual void DecreaseSubdivLevel() 
+		{
+			if(segmentLength > minSegmentLength) 
+			{
 				int increment = Math.Max(minSegmentLength, segmentLength / 32 * 16);
 				segmentLength -= increment;
 
-				if(segmentLength < minSegmentLength)
-					segmentLength = minSegmentLength;
+				if(segmentLength < minSegmentLength) segmentLength = minSegmentLength;
 				panel.SegmentLength = segmentLength;
 				Update();
 			}

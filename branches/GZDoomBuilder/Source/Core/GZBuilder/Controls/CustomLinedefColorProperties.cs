@@ -27,17 +27,20 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			public string Flag { get { return flag; } }
 			private string flag;
 
-			public FlagData(string title, string flag) {
+			public FlagData(string title, string flag) 
+			{
 				this.title = title;
 				this.flag = flag;
 			}
 
-			public override string ToString() {
+			public override string ToString() 
+			{
 				return Title;
 			}
 		}
 
-		public CustomLinedefColorProperties() {
+		public CustomLinedefColorProperties() 
+		{
 			InitializeComponent();
 
 			defaultColor = lineColor.Color;
@@ -47,7 +50,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			labelErrors.Text = "";
 		}
 
-		public void Setup(GameConfiguration config) {
+		public void Setup(GameConfiguration config) 
+		{
 			udmf = (config.FormatInterface == "UniversalMapSetIO");
 
 			presetUpdating = true;
@@ -75,19 +79,25 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			//get activates
 			List<LinedefActivateInfo> activations = config.LinedefActivates;
 
-			if(activations.Count > 0) {
+			if(activations.Count > 0) 
+			{
 				activations.Insert(0, new LinedefActivateInfo("-1", "Any activation"));
 
-				if(udmf) {
+				if(udmf) 
+				{
 					foreach(LinedefActivateInfo ai in config.LinedefActivates)
 						udmfactivates.Items.Add(new FlagData(ai.Title, ai.Key), CheckState.Indeterminate);
-				} else {
+				} 
+				else 
+				{
 					activation.Items.AddRange(activations.ToArray());
 				}
 
 				if(!tcLineSettings.TabPages.Contains(tabActivation))
 					tcLineSettings.TabPages.Add(tabActivation);
-			} else {
+			} 
+			else 
+			{
 				tcLineSettings.TabPages.Remove(tabActivation);
 			}
 
@@ -100,7 +110,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			presetUpdating = false;
 		}
 
-		public void SetPreset(LinedefColorPreset preset) {
+		public void SetPreset(LinedefColorPreset preset) 
+		{
 			this.Enabled = true;
 			presetUpdating = true;
 
@@ -110,19 +121,27 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			lineColor.Color = this.preset.Color;
 
 			//set flags
-			applyFlagsToControl(flags, cbUseFlags);
+			ApplyFlagsToControl(flags, cbUseFlags);
 
 			//set activation
-			if(udmf) {
-				applyFlagsToControl(udmfactivates, cbUseActivation);
-			} else if(tcLineSettings.TabPages.Contains(tabActivation)) {
-				if(this.preset.Activation == 0) {
+			if(udmf) 
+			{
+				ApplyFlagsToControl(udmfactivates, cbUseActivation);
+			} 
+			else if(tcLineSettings.TabPages.Contains(tabActivation)) 
+			{
+				if(this.preset.Activation == 0) 
+				{
 					activation.SelectedIndex = 1;
 					cbUseActivation.Checked = false;
 					activation.Enabled = false;
-				} else {
-					for(int i = 0; i < activation.Items.Count; i++) {
-						if(((LinedefActivateInfo)activation.Items[i]).Index == this.preset.Activation) {
+				} 
+				else 
+				{
+					for(int i = 0; i < activation.Items.Count; i++) 
+					{
+						if(((LinedefActivateInfo)activation.Items[i]).Index == this.preset.Activation) 
+						{
 							activation.SelectedIndex = i;
 							cbUseActivation.Checked = true;
 							activation.Enabled = true;
@@ -143,53 +162,63 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			presetUpdating = false;
 		}
 
-		public LinedefColorPreset GetPreset() {
+		/*public LinedefColorPreset GetPreset() 
+		{
 			return preset;
-		}
+		}*/
 
-		public void UpdateMessages() {
+		public void UpdateMessages() 
+		{
 			//warnings/errors?
 			List<string> errors = new List<string>();
-
-			if(!preset.Valid)
-				errors.Add(preset.ErrorDescription);
-
-			if(!string.IsNullOrEmpty(preset.WarningDescription))
-				errors.Add(preset.WarningDescription);
-
+			if(!preset.Valid) errors.Add(preset.ErrorDescription);
+			if(!string.IsNullOrEmpty(preset.WarningDescription)) errors.Add(preset.WarningDescription);
 			labelErrors.Text = (errors.Count > 0 ? string.Join(Environment.NewLine, errors.ToArray()) : "");
 		}
 
-		private void raiseEvent() {
-			if(PresetChanged != null)
-				PresetChanged(this, EventArgs.Empty);
+		private void RaiseEvent() 
+		{
+			if(PresetChanged != null) PresetChanged(this, EventArgs.Empty);
 		}
 
-		private void applyFlagsToPreset(CheckedListBox source) {
-			if(source.Enabled) {
-				for(int i = 0; i < source.Items.Count; i++) {
+		private void ApplyFlagsToPreset(CheckedListBox source) 
+		{
+			if(source.Enabled) 
+			{
+				for(int i = 0; i < source.Items.Count; i++) 
+				{
 					string flag = ((FlagData)source.Items[i]).Flag;
 					CheckState state = source.GetItemCheckState(i);
 
-					if(state == CheckState.Checked) {
-						if(!preset.Flags.Contains(flag))
-							preset.Flags.Add(flag);
-						if(preset.RestrictedFlags.Contains(flag))
-							preset.RestrictedFlags.Remove(flag);
-					} else if(state == CheckState.Unchecked) {
-						if(preset.Flags.Contains(flag))
-							preset.Flags.Remove(flag);
-						if(!preset.RestrictedFlags.Contains(flag))
-							preset.RestrictedFlags.Add(flag);
-					} else {
-						if(preset.Flags.Contains(flag))
-							preset.Flags.Remove(flag);
-						if(preset.RestrictedFlags.Contains(flag))
-							preset.RestrictedFlags.Remove(flag);
+					switch (state) 
+					{
+						case CheckState.Checked:
+							if(!preset.Flags.Contains(flag))
+								preset.Flags.Add(flag);
+							if(preset.RestrictedFlags.Contains(flag))
+								preset.RestrictedFlags.Remove(flag);
+							break;
+
+						case CheckState.Unchecked:
+							if(preset.Flags.Contains(flag))
+								preset.Flags.Remove(flag);
+							if(!preset.RestrictedFlags.Contains(flag))
+								preset.RestrictedFlags.Add(flag);
+							break;
+
+						default:
+							if(preset.Flags.Contains(flag))
+								preset.Flags.Remove(flag);
+							if(preset.RestrictedFlags.Contains(flag))
+								preset.RestrictedFlags.Remove(flag);
+							break;
 					}
 				}
-			} else {
-				for(int i = 0; i < source.Items.Count; i++) {
+			} 
+			else 
+			{
+				for(int i = 0; i < source.Items.Count; i++) 
+				{
 					string flag = ((FlagData)source.Items[i]).Flag;
 
 					if(preset.Flags.Contains(flag))
@@ -200,18 +229,23 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			}
 		}
 
-		private void applyFlagsToControl(CheckedListBox target, CheckBox cb) {
-			if(preset.Flags.Count == 0 && preset.RestrictedFlags.Count == 0) {
+		private void ApplyFlagsToControl(CheckedListBox target, CheckBox cb) 
+		{
+			if(preset.Flags.Count == 0 && preset.RestrictedFlags.Count == 0) 
+			{
 				cb.Checked = false;
 				target.Enabled = false;
 
 				for(int i = 0; i < target.Items.Count; i++)
 					target.SetItemCheckState(i, CheckState.Indeterminate);
-			} else {
+			} 
+			else 
+			{
 				bool hasFlags = false;
 				CheckState flagState;
 
-				for(int i = 0; i < target.Items.Count; i++) {
+				for(int i = 0; i < target.Items.Count; i++) 
+				{
 					string flag = ((FlagData)target.Items[i]).Flag;
 
 					if(preset.Flags.Contains(flag))
@@ -231,79 +265,85 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		}
 
 //EVENTS
-		private void cbUseFlags_CheckedChanged(object sender, EventArgs e) {
+		private void cbUseFlags_CheckedChanged(object sender, EventArgs e) 
+		{
 			if(presetUpdating) return;
 			flags.Enabled = cbUseFlags.Checked;
-			applyFlagsToPreset(flags);
+			ApplyFlagsToPreset(flags);
 
-			if(!flags.Enabled) raiseEvent();
+			if(!flags.Enabled) RaiseEvent();
 		}
 
-		private void flags_SelectedValueChanged(object sender, EventArgs e) {
+		private void flags_SelectedValueChanged(object sender, EventArgs e) 
+		{
 			if(presetUpdating) return;
-			applyFlagsToPreset(flags);
+			ApplyFlagsToPreset(flags);
 
-			raiseEvent();
+			RaiseEvent();
 		}
 
-		private void cbUseAction_CheckedChanged(object sender, EventArgs e) {
+		private void cbUseAction_CheckedChanged(object sender, EventArgs e) 
+		{
 			if(presetUpdating) return;
-
 			action.Enabled = cbUseAction.Checked;
 			action.Value = 0;
-			//raiseEvent();
 		}
 
-		private void action_ValueChanges(object sender, EventArgs e) {
+		private void action_ValueChanges(object sender, EventArgs e) 
+		{
 			if(presetUpdating) return;
 			preset.Action = action.Value;
-			raiseEvent();
+			RaiseEvent();
 		}
 
-		private void cbUseActivation_CheckedChanged(object sender, EventArgs e) {
+		private void cbUseActivation_CheckedChanged(object sender, EventArgs e) 
+		{
 			if(presetUpdating) return;
 			activation.Enabled = cbUseActivation.Checked;
 			udmfactivates.Enabled = cbUseActivation.Checked;
 
-			if(udmf) {
-				applyFlagsToPreset(udmfactivates);
-			} else {
-				if(!cbUseActivation.Checked)
-					activation.SelectedIndex = 1;
-			}
+			if(udmf) ApplyFlagsToPreset(udmfactivates);
+			else if(!cbUseActivation.Checked) activation.SelectedIndex = 1;
 
-			if(!cbUseActivation.Checked) raiseEvent();
+			if(!cbUseActivation.Checked) RaiseEvent();
 		}
 
-		private void activation_SelectedIndexChanged(object sender, EventArgs e) {
+		private void activation_SelectedIndexChanged(object sender, EventArgs e) 
+		{
 			if(presetUpdating) return;
-			
 			preset.Activation = ((LinedefActivateInfo)activation.SelectedItem).Index;
-			raiseEvent();
+			RaiseEvent();
 		}
 
-		private void udmfactivates_SelectedValueChanged(object sender, EventArgs e) {
+		private void udmfactivates_SelectedValueChanged(object sender, EventArgs e) 
+		{
 			if(presetUpdating) return;
-			applyFlagsToPreset(udmfactivates);
-			raiseEvent();
+			ApplyFlagsToPreset(udmfactivates);
+			RaiseEvent();
 		}
 
-		private void lineColor_ColorChanged(object sender, EventArgs e) {
+		private void lineColor_ColorChanged(object sender, EventArgs e) 
+		{
 			if(presetUpdating) return;
-			
 			preset.Color = lineColor.Color;
-			raiseEvent();
+			RaiseEvent();
 		}
 
-		private void flags_ItemCheck(object sender, ItemCheckEventArgs e) {
+		private void flags_ItemCheck(object sender, ItemCheckEventArgs e) 
+		{
 			if(presetUpdating)	return;
-			
-			if(e.CurrentValue == CheckState.Checked)
-				e.NewValue = CheckState.Indeterminate;
-			else if(e.CurrentValue == CheckState.Indeterminate)
-				e.NewValue = CheckState.Unchecked;
-			else
-				e.NewValue = CheckState.Checked;
+			switch (e.CurrentValue) 
+			{
+				case CheckState.Checked:
+					e.NewValue = CheckState.Indeterminate;
+					break;
+				case CheckState.Indeterminate:
+					e.NewValue = CheckState.Unchecked;
+					break;
+				default:
+					e.NewValue = CheckState.Checked;
+					break;
+			}
 		}
 	}
 }

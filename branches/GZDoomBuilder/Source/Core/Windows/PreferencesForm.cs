@@ -148,10 +148,13 @@ namespace CodeImp.DoomBuilder.Windows
 				item.SubItems[1].Tag = a.ShortcutKey;
 
 				// Put in category, if the category exists
-				if(General.Actions.Categories.ContainsKey(a.Category)) {
+				if(General.Actions.Categories.ContainsKey(a.Category)) 
+				{
 					item.Group = listactions.Groups[a.Category];
 					actionListItemsGroupIndices.Add(listactions.Groups.IndexOf(item.Group));
-				}else{ //mxd
+				}
+				else //mxd
+				{ 
 					actionListItemsGroupIndices.Add(-1);
 				}
 
@@ -189,7 +192,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Paste options
 			pasteoptions.Setup(General.Settings.PasteOptions.Copy());
-			updateScriptFontPreview(); //mxd
+			UpdateScriptFontPreview(); //mxd
 
 			// Allow plugins to add tabs
 			this.SuspendLayout();
@@ -430,12 +433,13 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void recentFiles_ValueChanged(object sender, EventArgs e) {
+		private void recentFiles_ValueChanged(object sender, EventArgs e) 
+		{
 			labelRecentFiles.Text = recentFiles.Value.ToString();
 		}
 
 		// This updates the script font preview label
-		private void updateScriptFontPreview()
+		private void UpdateScriptFontPreview()
 		{
 			if((scriptfontname.SelectedIndex > -1) &&
 			   (scriptfontsize.SelectedIndex > -1))
@@ -587,20 +591,23 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			//mxd. Alt
-			if(a.AllowMouse && !a.DisregardAlt) {
+			if(a.AllowMouse && !a.DisregardAlt) 
+			{
 				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Alt, "Alt+LButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Alt, "Alt+MButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Alt, "Alt+RButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Alt, "Alt+XButton1"));
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Alt, "Alt+XButton2"));
 			}
-			if(a.AllowScroll && !a.DisregardAlt) {
+			if(a.AllowScroll && !a.DisregardAlt) 
+			{
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Alt, "Alt+ScrollUp"));
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Alt, "Alt+ScrollDown"));
 			}
 
 			//Ctrl
-			if(a.AllowMouse && !a.DisregardControl) {
+			if(a.AllowMouse && !a.DisregardControl) 
+			{
 				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Control, "Ctrl+LButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Control, "Ctrl+MButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Control, "Ctrl+RButton"));
@@ -608,7 +615,8 @@ namespace CodeImp.DoomBuilder.Windows
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Control, "Ctrl+XButton2"));
 			}
 
-			if(a.AllowScroll && !a.DisregardControl) {
+			if(a.AllowScroll && !a.DisregardControl) 
+			{
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Control, "Ctrl+ScrollUp"));
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Control, "Ctrl+ScrollDown"));
 			}
@@ -629,27 +637,31 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			//mxd. Alt-Shift
-			if(a.AllowMouse && !a.DisregardShift && !a.DisregardAlt) {
+			if(a.AllowMouse && !a.DisregardShift && !a.DisregardAlt) 
+			{
 				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Shift | Keys.Alt, "Alt+Shift+LButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Shift | Keys.Alt, "Alt+Shift+MButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Shift | Keys.Alt, "Alt+Shift+RButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Shift | Keys.Alt, "Alt+Shift+XButton1"));
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Shift | Keys.Alt, "Alt+Shift+XButton2"));
 			}
-			if(a.AllowScroll && !a.DisregardShift && !a.DisregardAlt) {
+			if(a.AllowScroll && !a.DisregardShift && !a.DisregardAlt) 
+			{
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift | (int)Keys.Alt, "Alt+Shift+ScrollUp"));
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift | (int)Keys.Alt, "Alt+Shift+ScrollDown"));
 			}
 
 			//mxd. Ctrl-Alt
-			if(a.AllowMouse && !a.DisregardAlt && !a.DisregardControl) {
+			if(a.AllowMouse && !a.DisregardAlt && !a.DisregardControl) 
+			{
 				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Alt | Keys.Control, "Ctrl+Alt+LButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Alt | Keys.Control, "Ctrl+Alt+MButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Alt | Keys.Control, "Ctrl+Alt+RButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Alt | Keys.Control, "Ctrl+Alt+XButton1"));
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Alt | Keys.Control, "Ctrl+Alt+XButton2"));
 			}
-			if(a.AllowScroll && !a.DisregardAlt && !a.DisregardControl) {
+			if(a.AllowScroll && !a.DisregardAlt && !a.DisregardControl) 
+			{
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Control | (int)Keys.Alt, "Ctrl+Alt+ScrollUp"));
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Control | (int)Keys.Alt, "Ctrl+Alt+ScrollDown"));
 			}
@@ -670,14 +682,16 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			//mxd. Ctrl-Alt-Shift
-			if(a.AllowMouse && !a.DisregardShift && !a.DisregardControl && !a.DisregardAlt) {
+			if(a.AllowMouse && !a.DisregardShift && !a.DisregardControl && !a.DisregardAlt) 
+			{
 				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Shift | Keys.Control | Keys.Alt, "Ctrl+Alt+Shift+LButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Shift | Keys.Control | Keys.Alt, "Ctrl+Alt+Shift+MButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Shift | Keys.Control | Keys.Alt, "Ctrl+Alt+Shift+RButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Shift | Keys.Control | Keys.Alt, "Ctrl+Alt+Shift+XButton1"));
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Shift | Keys.Control | Keys.Alt, "Ctrl+Alt+Shift+XButton2"));
 			}
-			if(a.AllowScroll && !a.DisregardShift && !a.DisregardControl && !a.DisregardAlt) {
+			if(a.AllowScroll && !a.DisregardShift && !a.DisregardControl && !a.DisregardAlt) 
+			{
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift | (int)Keys.Control | (int)Keys.Alt, "Ctrl+Alt+Shift+ScrollUp"));
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift | (int)Keys.Control | (int)Keys.Alt, "Ctrl+Alt+Shift+ScrollDown"));
 			}
@@ -865,39 +879,49 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void bClearActionFilter_Click(object sender, EventArgs e) {
+		private void bClearActionFilter_Click(object sender, EventArgs e) 
+		{
 			tbFilterActions.Clear();
 		}
 
 		//mxd
-		private void tbFilterActions_TextChanged(object sender, EventArgs e) {
+		private void tbFilterActions_TextChanged(object sender, EventArgs e) 
+		{
 			listactions.BeginUpdate();
 			
 			//restore everything
-			if(string.IsNullOrEmpty(tbFilterActions.Text)) {
+			if(string.IsNullOrEmpty(tbFilterActions.Text)) 
+			{
 				//restore items
 				listactions.Items.Clear();
 				listactions.Items.AddRange(actionListItems.ToArray());
 
 				//restore groups
-				for(int i = 0; i < actionListItems.Count; i++) {
+				for(int i = 0; i < actionListItems.Count; i++) 
+				{
 					if(actionListItemsGroupIndices[i] != -1)
 						actionListItems[i].Group = listactions.Groups[actionListItemsGroupIndices[i]];
 				}
-			} else { //apply filtering
+			} 
+			else //apply filtering
+			{ 
 				string match = tbFilterActions.Text.ToUpperInvariant();
-
-				for(int i = 0; i < actionListItems.Count; i++) {
-					if(actionListItems[i].Text.ToUpperInvariant().Contains(match)) {
+				for(int i = 0; i < actionListItems.Count; i++) 
+				{
+					if(actionListItems[i].Text.ToUpperInvariant().Contains(match)) 
+					{
 						//ensure visible
-						if(!listactions.Items.Contains(actionListItems[i])) {
+						if(!listactions.Items.Contains(actionListItems[i])) 
+						{
 							listactions.Items.Add(actionListItems[i]);
 
 							//restore group
 							if(actionListItemsGroupIndices[i] != -1)
 								actionListItems[i].Group = listactions.Groups[actionListItemsGroupIndices[i]];
 						}
-					} else if(listactions.Items.Contains(actionListItems[i])) {
+					} 
+					else if(listactions.Items.Contains(actionListItems[i])) 
+					{
 						//ensure invisible
 						listactions.Items.Remove(actionListItems[i]);
 					}
@@ -924,38 +948,45 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void tbDynLightCount_ValueChanged(object sender, EventArgs e) {
+		private void tbDynLightCount_ValueChanged(object sender, EventArgs e) 
+		{
 			labelDynLightCount.Text = tbDynLightCount.Value.ToString();
 		}
 
 		//mxd
-		private void tbDynLightSize_ValueChanged(object sender, EventArgs e) {
+		private void tbDynLightSize_ValueChanged(object sender, EventArgs e) 
+		{
 			labelDynLightSize.Text = ((float)tbDynLightSize.Value / 10).ToString();
 		}
 
 		//mxd
-		private void tbDynLightIntensity_ValueChanged(object sender, EventArgs e) {
+		private void tbDynLightIntensity_ValueChanged(object sender, EventArgs e) 
+		{
 			labelDynLightIntensity.Text = ((float)tbDynLightIntensity.Value / 10).ToString();
 		}
 
 		//mxd
-		private void scriptfontbold_CheckedChanged(object sender, EventArgs e) {
-			updateScriptFontPreview();
+		private void scriptfontbold_CheckedChanged(object sender, EventArgs e) 
+		{
+			UpdateScriptFontPreview();
 		}
 
 		//mxd
-		private void scriptfontsize_SelectedIndexChanged(object sender, EventArgs e) {
-			updateScriptFontPreview();
+		private void scriptfontsize_SelectedIndexChanged(object sender, EventArgs e) 
+		{
+			UpdateScriptFontPreview();
 		}
 
 		//mxd
-		private void scriptfontname_SelectedIndexChanged(object sender, EventArgs e) {
-			updateScriptFontPreview();
+		private void scriptfontname_SelectedIndexChanged(object sender, EventArgs e) 
+		{
+			UpdateScriptFontPreview();
 		}
 
 		//mxd
-		private void scriptcolor_ColorChanged(object sender, EventArgs e) {
-			updateScriptFontPreview();
+		private void scriptcolor_ColorChanged(object sender, EventArgs e) 
+		{
+			UpdateScriptFontPreview();
 		}
 
 		#endregion

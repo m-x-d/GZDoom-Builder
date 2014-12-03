@@ -876,7 +876,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayAddVertex(DeserializerStream ds)
+		private void PlayAddVertex(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			//LogRecordInfo("PLY: Removing vertex " + index);
@@ -898,7 +898,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayRemVertex(DeserializerStream ds)
+		private void PlayRemVertex(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			Vector2D pos; ds.rVector2D(out pos);
@@ -921,7 +921,7 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 		}
 
-		internal void PlayPrpVertex(DeserializerStream ds)
+		private void PlayPrpVertex(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			Vertex v = General.Map.Map.GetVertexByIndex(index);
@@ -940,7 +940,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayAddLinedef(DeserializerStream ds)
+		private void PlayAddLinedef(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			//LogRecordInfo("PLY: Removing linedef " + index);
@@ -964,7 +964,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayRemLinedef(DeserializerStream ds)
+		private void PlayRemLinedef(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			int sindex; ds.rInt(out sindex);
@@ -990,7 +990,7 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 		}
 
-		internal void PlayPrpLinedef(DeserializerStream ds)
+		private static void PlayPrpLinedef(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
@@ -1009,7 +1009,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayRefLinedefStart(DeserializerStream ds)
+		private void PlayRefLinedefStart(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
@@ -1033,7 +1033,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayRefLinedefEnd(DeserializerStream ds)
+		private void PlayRefLinedefEnd(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
@@ -1057,7 +1057,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayRefLinedefFront(DeserializerStream ds)
+		private void PlayRefLinedefFront(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
@@ -1081,7 +1081,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayRefLinedefBack(DeserializerStream ds)
+		private void PlayRefLinedefBack(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
@@ -1104,7 +1104,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayAddSidedef(DeserializerStream ds)
+		private void PlayAddSidedef(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			//LogRecordInfo("PLY: Removing sidedef " + index);
@@ -1128,7 +1128,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayRemSidedef(DeserializerStream ds)
+		private void PlayRemSidedef(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			int dindex; ds.rInt(out dindex);
@@ -1155,7 +1155,7 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 		}
 
-		internal void PlayPrpSidedef(DeserializerStream ds)
+		private static void PlayPrpSidedef(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			Sidedef s = General.Map.Map.GetSidedefByIndex(index);
@@ -1174,7 +1174,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayRefSidedefSector(DeserializerStream ds)
+		private void PlayRefSidedefSector(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			Sidedef sd = General.Map.Map.GetSidedefByIndex(index);
@@ -1197,7 +1197,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayAddSector(DeserializerStream ds)
+		private void PlayAddSector(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			//LogRecordInfo("PLY: Removing sector " + index);
@@ -1217,7 +1217,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayRemSector(DeserializerStream ds)
+		private void PlayRemSector(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			//LogRecordInfo("PLY: Adding sector " + index);
@@ -1239,7 +1239,7 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 		}
 
-		internal void PlayPrpSector(DeserializerStream ds)
+		private static void PlayPrpSector(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			Sector s = General.Map.Map.GetSectorByIndex(index);
@@ -1257,7 +1257,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayAddThing(DeserializerStream ds)
+		private void PlayAddThing(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			//LogRecordInfo("PLY: Removing thing " + index);
@@ -1277,7 +1277,7 @@ namespace CodeImp.DoomBuilder.Editing
 			propsrecorded = null;
 		}
 
-		internal void PlayRemThing(DeserializerStream ds)
+		private void PlayRemThing(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			//LogRecordInfo("PLY: Adding thing " + index);
@@ -1299,7 +1299,7 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 		}
 
-		internal void PlayPrpThing(DeserializerStream ds)
+		private static void PlayPrpThing(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
 			Thing t = General.Map.Map.GetThingByIndex(index);

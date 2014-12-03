@@ -14,11 +14,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This is called when a specific object is selected from the list
-		public override void ObjectSelected(FindReplaceObject[] selection) {
-			if(selection.Length == 1) {
+		public override void ObjectSelected(FindReplaceObject[] selection) 
+		{
+			if(selection.Length == 1) 
+			{
 				ZoomToSelection(selection);
 				General.Interface.ShowLinedefInfo(selection[0].Linedef);
-			} else {
+			} 
+			else 
+			{
 				General.Interface.HideInfo();
 			}
 
@@ -27,14 +31,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Render selection
-		public override void PlotSelection(IRenderer2D renderer, FindReplaceObject[] selection) {
-			foreach(FindReplaceObject o in selection) {
+		public override void PlotSelection(IRenderer2D renderer, FindReplaceObject[] selection) 
+		{
+			foreach(FindReplaceObject o in selection) 
 				renderer.PlotLinedef(o.Linedef, General.Colors.Selection);
-			}
 		}
 
 		// Edit objects
-		public override void EditObjects(FindReplaceObject[] selection) {
+		public override void EditObjects(FindReplaceObject[] selection) 
+		{
 			List<Linedef> linedefs = new List<Linedef>(selection.Length);
 			foreach(FindReplaceObject o in selection) linedefs.Add(o.Linedef);
 			General.Interface.ShowEditLinedefs(linedefs);

@@ -40,20 +40,27 @@ namespace CodeImp.DoomBuilder.Controls
 			position.Text = v.Position.x.ToString("0.##") + ", " + v.Position.y.ToString("0.##");
 			
 			//mxd. Height offsets
-			if(General.Map.UDMF) {
-				if(!float.IsNaN(v.ZCeiling)) {
+			if(General.Map.UDMF) 
+			{
+				if(!float.IsNaN(v.ZCeiling)) 
+				{
 					zceiling.Text = v.ZCeiling.ToString("0.##");
 					zceiling.Enabled = true;
 					labelCeilingOffset.Enabled = true;
-				} else {
+				} 
+				else 
+				{
 					zceiling.Text = "--";
 				}
 
-				if(!float.IsNaN(v.ZFloor)) {
+				if(!float.IsNaN(v.ZFloor)) 
+				{
 					zfloor.Text = v.ZFloor.ToString("0.##");
 					zfloor.Enabled = true;
 					labelFloorOffset.Enabled = true;
-				} else {
+				} 
+				else 
+				{
 					zfloor.Text = "--";
 				}
 

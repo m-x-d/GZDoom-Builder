@@ -2,7 +2,8 @@
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
-	public sealed class DynamicLightData {
+	public sealed class DynamicLightData 
+	{
 		public DynamicLightType Type; //holds DynamicLightType
 		public Color3 Color;
 		public int PrimaryRadius;
@@ -12,7 +13,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		public bool Subtractive;
 		public bool DontLightSelf;
 
-		public DynamicLightData() {
+		public DynamicLightData() 
+		{
 			Color = new Color3();
 			Offset = new Vector3();
 		}

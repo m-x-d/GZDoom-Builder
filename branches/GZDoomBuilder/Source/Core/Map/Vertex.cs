@@ -68,7 +68,8 @@ namespace CodeImp.DoomBuilder.Map
 		public float ZCeiling {	//mxd
 			get { return zceiling; }
 			set {
-				if(zceiling != value) {
+				if(zceiling != value) 
+				{
 					BeforeFieldsChange();
 					zceiling = value;
 				}
@@ -77,7 +78,8 @@ namespace CodeImp.DoomBuilder.Map
 		public float ZFloor { //mxd
 			get { return zfloor; }
 			set {
-				if(zfloor != value) {
+				if(zfloor != value) 
+				{
 					BeforeFieldsChange();
 					zfloor = value;
 				}

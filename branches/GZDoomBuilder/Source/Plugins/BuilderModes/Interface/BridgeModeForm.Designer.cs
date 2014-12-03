@@ -9,8 +9,10 @@
 		/// Освободить все используемые ресурсы.
 		/// </summary>
 		/// <param name="disposing">истинно, если управляемый ресурс должен быть удален; иначе ложно.</param>
-		protected override void Dispose(bool disposing) {
-			if (disposing && (components != null)) {
+		protected override void Dispose(bool disposing) 
+		{
+			if (disposing && (components != null)) 
+			{
 				components.Dispose();
 			}
 			base.Dispose(disposing);
@@ -22,7 +24,8 @@
 		/// Обязательный метод для поддержки конструктора - не изменяйте
 		/// содержимое данного метода при помощи редактора кода.
 		/// </summary>
-		private void InitializeComponent() {
+		private void InitializeComponent() 
+		{
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.cbFloorAlign = new System.Windows.Forms.ComboBox();

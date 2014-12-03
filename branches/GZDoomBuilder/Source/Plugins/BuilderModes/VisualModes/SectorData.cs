@@ -248,7 +248,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public void UpdateForced() {
+		public void UpdateForced() 
+		{
 			updated = false;
 			Update();
 		}

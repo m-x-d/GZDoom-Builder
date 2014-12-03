@@ -156,17 +156,20 @@ namespace CodeImp.DoomBuilder.Data
 							if(reader is UnknownImageReader)
 							{
 								//mxd. Probably that's a flat?..
-								if (General.Map.Config.MixTexturesFlats) {
+								if (General.Map.Config.MixTexturesFlats) 
+								{
 									reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMFLAT, General.Map.Data.Palette);
 								}
-								if (reader is UnknownImageReader) {
+								if (reader is UnknownImageReader) 
+								{
 									// Data is in an unknown format!
 									General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'");
 									failCount++; //mxd
 								}
 							}
 
-							if(!(reader is UnknownImageReader)) {
+							if(!(reader is UnknownImageReader)) 
+							{
 								// Get the patch
 								mem.Seek(0, SeekOrigin.Begin);
 								Bitmap patchbmp = null;
@@ -180,7 +183,8 @@ namespace CodeImp.DoomBuilder.Data
 								if(patchbmp != null)
 								{
 									//mxd. Flip
-									if(p.flipx || p.flipy) {
+									if(p.flipx || p.flipy) 
+									{
 										RotateFlipType flip;
 										if(p.flipx && !p.flipy)
 											flip = RotateFlipType.RotateNoneFlipX;
@@ -192,7 +196,8 @@ namespace CodeImp.DoomBuilder.Data
 									}
 
 									//mxd. Then rotate. I do it this way because RotateFlip function rotates THEN flips, and GZDoom does it the other way around.
-									if(p.rotate != 0) {
+									if(p.rotate != 0) 
+									{
 										RotateFlipType rotate;
 										if(p.rotate == 90)
 											rotate = RotateFlipType.Rotate90FlipNone;
@@ -224,36 +229,45 @@ namespace CodeImp.DoomBuilder.Data
 											int patchalpha = (int)Math.Round(General.Clamp(p.alpha, 0f, 1f) * 255); //convert alpha to [0-255] range
 
 											//mxd. Blend/Tint support
-											if(p.blendstyle == TexturePathBlendStyle.Blend) {
-												for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
+											if(p.blendstyle == TexturePathBlendStyle.Blend) 
+											{
+												for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) 
+												{
 													cp->r = (byte)((cp->r * p.blend.r) * PixelColor.BYTE_TO_FLOAT);
 													cp->g = (byte)((cp->g * p.blend.g) * PixelColor.BYTE_TO_FLOAT);
 													cp->b = (byte)((cp->b * p.blend.b) * PixelColor.BYTE_TO_FLOAT);
 												}
-											} else if(p.blendstyle == TexturePathBlendStyle.Tint) {
+											} 
+											else if(p.blendstyle == TexturePathBlendStyle.Tint) 
+											{
 												float tintammount = p.tintammount - 0.1f;
 
-												if(tintammount > 0) {
+												if(tintammount > 0) 
+												{
 													float br = p.blend.r * PixelColor.BYTE_TO_FLOAT * tintammount;
 													float bg = p.blend.g * PixelColor.BYTE_TO_FLOAT * tintammount;
 													float bb = p.blend.b * PixelColor.BYTE_TO_FLOAT * tintammount;
 													float invTint = 1.0f - tintammount;
 
-													for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
+													for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) 
+													{
 														cp->r = (byte)(((cp->r * PixelColor.BYTE_TO_FLOAT) * invTint + br) * 255.0f);
 														cp->g = (byte)(((cp->g * PixelColor.BYTE_TO_FLOAT) * invTint + bg) * 255.0f);
 														cp->b = (byte)(((cp->b * PixelColor.BYTE_TO_FLOAT) * invTint + bb) * 255.0f);
 													}
 												}
 											}
-
 											//mxd. apply RenderStyle
-											if(p.style == TexturePathRenderStyle.Blend) {
+											if(p.style == TexturePathRenderStyle.Blend) 
+											{
 												for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--)
 													cp->a = (byte)((cp->a * patchalpha) * PixelColor.BYTE_TO_FLOAT);
 
+											
+											}
 											//mxd. we need a copy of underlying part of texture for these styles
-											} else if(p.style != TexturePathRenderStyle.Copy) {
+											else if(p.style != TexturePathRenderStyle.Copy) 
+											{
 												//copy portion of texture
 												int lockWidth = (p.x + patchbmp.Size.Width > bitmap.Width) ? bitmap.Width - p.x : patchbmp.Size.Width;
 												int lockHeight = (p.y + patchbmp.Size.Height > bitmap.Height) ? bitmap.Height - p.y : patchbmp.Size.Height;
@@ -265,19 +279,25 @@ namespace CodeImp.DoomBuilder.Data
 												//lock texture
 												BitmapData texturebmpdata = null;
 												
-												try {
+												try 
+												{
 													texturebmpdata = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-												} catch(Exception e) {
+												} 
+												catch(Exception e) 
+												{
 													General.ErrorLogger.Add(ErrorType.Error, "Cannot lock texture '" + this.Name + "' to apply render style. " + e.GetType().Name + ": " + e.Message);
 												}
 
-												if(texturebmpdata != null) {
+												if(texturebmpdata != null) 
+												{
 													PixelColor* texturepixels = (PixelColor*)(texturebmpdata.Scan0.ToPointer());
 													PixelColor* tcp = texturepixels + numpixels - 1;
 
-													switch(p.style) {
+													switch(p.style) 
+													{
 														case TexturePathRenderStyle.Add:
-															for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
+															for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) 
+															{
 																cp->r = (byte)Math.Min(255, cp->r + tcp->r);
 																cp->g = (byte)Math.Min(255, cp->g + tcp->g);
 																cp->b = (byte)Math.Min(255, cp->b + tcp->b);
@@ -287,7 +307,8 @@ namespace CodeImp.DoomBuilder.Data
 															break;
 
 														case TexturePathRenderStyle.Subtract:
-															for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
+															for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) 
+															{
 																cp->r = (byte)Math.Max(0, tcp->r - cp->r);
 																cp->g = (byte)Math.Max(0, tcp->g - cp->g);
 																cp->b = (byte)Math.Max(0, tcp->b - cp->b);
@@ -297,7 +318,8 @@ namespace CodeImp.DoomBuilder.Data
 															break;
 
 														case TexturePathRenderStyle.ReverseSubtract:
-															for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
+															for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) 
+															{
 																cp->r = (byte)Math.Max(0, cp->r - tcp->r);
 																cp->g = (byte)Math.Max(0, cp->g - tcp->g);
 																cp->b = (byte)Math.Max(0, cp->b - tcp->b);
@@ -307,7 +329,8 @@ namespace CodeImp.DoomBuilder.Data
 															break;
 
 														case TexturePathRenderStyle.Modulate:
-															for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) {
+															for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--) 
+															{
 																cp->r = (byte)((cp->r * tcp->r) * PixelColor.BYTE_TO_FLOAT);
 																cp->g = (byte)((cp->g * tcp->g) * PixelColor.BYTE_TO_FLOAT);
 																cp->b = (byte)((cp->b * tcp->b) * PixelColor.BYTE_TO_FLOAT);

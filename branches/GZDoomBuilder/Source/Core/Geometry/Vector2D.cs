@@ -348,12 +348,14 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		//mxd. Addeed to make compiler a bit more happy...
-		public override int GetHashCode() {
+		public override int GetHashCode() 
+		{
 			return base.GetHashCode();
 		}
 
 		//mxd. Addeed to make compiler a bit more happy...
-		public override bool Equals(object obj) {
+		public override bool Equals(object obj) 
+		{
 			if (!(obj is Vector2D)) return false;
 
 			Vector2D other = (Vector2D)obj;

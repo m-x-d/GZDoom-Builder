@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Geometry;
@@ -6,10 +8,14 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Windows;
 
+#endregion
+
 namespace CodeImp.DoomBuilder.BuilderEffects
 {
 	public partial class JitterSectorsForm : DelayedForm
 	{
+		#region ================== Variables
+
 		private readonly string editingModeName;
 		private readonly List<VisualSector> visualSectors;
 		private readonly List<VisualVertexPair> visualVerts;
@@ -25,6 +31,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		private static bool useCeilingVertexHeights;
 		private static int storedceiloffsetmode;
 		private static int storedflooroffsetmode;
+
+		#endregion
+
+		#region ================== Structs
 
 		private struct TranslationOffsetVertexData
 		{
@@ -68,8 +78,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			public bool PegBottom;
 			public bool UpdateTextureOnOtherSide;
 		}
-		
-		public JitterSectorsForm(string editingModeName) {
+
+		#endregion
+
+		#region ================== Constructor / Setup
+
+		public JitterSectorsForm(string editingModeName) 
+		{
 			this.editingModeName = editingModeName;
 
 			InitializeComponent();
@@ -78,18 +93,22 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			List<Vertex> verts = new List<Vertex>();
 			List<Sector> sectors = new List<Sector>();
 
-			if(editingModeName == "BaseVisualMode") {
+			if(editingModeName == "BaseVisualMode") 
+			{
 				VisualMode vm = (VisualMode)General.Editing.Mode;
 				List<VisualGeometry> visualGeometry = vm.GetSelectedSurfaces();
 				visualSectors = new List<VisualSector>();
 
 				//get selected visual and regular sectors
-				foreach(VisualGeometry vg in visualGeometry) {
+				foreach(VisualGeometry vg in visualGeometry) 
+				{
 					if(vg.GeometryType != VisualGeometryType.CEILING && vg.GeometryType != VisualGeometryType.FLOOR)
 						continue;
 
-					if(vg.Sector != null && vg.Sector.Sector != null) {
-						foreach(Sidedef sd in vg.Sector.Sector.Sidedefs) {
+					if(vg.Sector != null && vg.Sector.Sector != null) 
+					{
+						foreach(Sidedef sd in vg.Sector.Sector.Sidedefs) 
+						{
 							if(!verts.Contains(sd.Line.Start))
 								verts.Add(sd.Line.Start);
 							if(!verts.Contains(sd.Line.End))
@@ -104,8 +123,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				//also get visual sectors around selected ones (because they also may be affected)
 				List<Vertex> affectedVerts = new List<Vertex>();
 
-				foreach(Sector s in sectors) {
-					foreach(Sidedef sd in s.Sidedefs) {
+				foreach(Sector s in sectors) 
+				{
+					foreach(Sidedef sd in s.Sidedefs) 
+					{
 						if(!affectedVerts.Contains(sd.Line.Start))
 							affectedVerts.Add(sd.Line.Start);
 						if(!affectedVerts.Contains(sd.Line.End))
@@ -114,13 +135,21 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				}
 
 				List<Sector> affectedSectors = new List<Sector>();
-				foreach(Vertex v in affectedVerts) {
-					foreach(Linedef l in v.Linedefs) {
-						if(l.Front != null && !sectors.Contains(l.Front.Sector) && !affectedSectors.Contains(l.Front.Sector) && vm.VisualSectorExists(l.Front.Sector)) {
+				foreach(Vertex v in affectedVerts) 
+				{
+					foreach(Linedef l in v.Linedefs) 
+					{
+						if(l.Front != null && !sectors.Contains(l.Front.Sector) 
+							&& !affectedSectors.Contains(l.Front.Sector) 
+							&& vm.VisualSectorExists(l.Front.Sector)) 
+						{
 							visualSectors.Add(vm.GetVisualSector(l.Front.Sector));
 							affectedSectors.Add(l.Front.Sector);
 						}
-						if(l.Back != null && !sectors.Contains(l.Back.Sector) && !affectedSectors.Contains(l.Back.Sector) && vm.VisualSectorExists(l.Back.Sector)) {
+						if(l.Back != null && !sectors.Contains(l.Back.Sector) 
+							&& !affectedSectors.Contains(l.Back.Sector) 
+							&& vm.VisualSectorExists(l.Back.Sector)) 
+						{
 							visualSectors.Add(vm.GetVisualSector(l.Back.Sector));
 							affectedSectors.Add(l.Back.Sector);
 						}
@@ -132,12 +161,15 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				{
 					if(vm.VisualVertices.ContainsKey(vert)) visualVerts.Add(vm.VisualVertices[vert]);
 				}
-
-			} else if(editingModeName == "SectorsMode") {
+			} 
+			else if(editingModeName == "SectorsMode") 
+			{
 				ICollection<Sector> list = General.Map.Map.GetSelectedSectors(true);
 
-				foreach(Sector s in list) {
-					foreach(Sidedef sd in s.Sidedefs) {
+				foreach(Sector s in list) 
+				{
+					foreach(Sidedef sd in s.Sidedefs) 
+					{
 						if(!verts.Contains(sd.Line.Start))
 							verts.Add(sd.Line.Start);
 						if(!verts.Contains(sd.Line.End))
@@ -145,10 +177,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 					}
 					sectors.Add(s);
 				}
-
 			}
 
-			if(verts.Count == 0 || sectors.Count == 0) {
+			if(verts.Count == 0 || sectors.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Unable to get sectors from selection!");
 				return;
 			}
@@ -164,14 +196,16 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 //process verts...
 			Dictionary<Vertex, TranslationOffsetVertexData> data = new Dictionary<Vertex, TranslationOffsetVertexData>();
 
-			foreach(Vertex v in verts) {
+			foreach(Vertex v in verts) 
+			{
 				TranslationOffsetVertexData vd = new TranslationOffsetVertexData();
 				vd.Vertex = v;
 				vd.InitialPosition = v.Position;
 				data.Add(v, vd);
 			}
 
-			foreach(Vertex v in verts) {
+			foreach(Vertex v in verts) 
+			{
 				if(v.Linedefs == null) continue;
 
 				//get nearest linedef
@@ -179,12 +213,14 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				float distance = float.MaxValue;
 
 				// Go for all linedefs in selection
-				foreach(Linedef l in General.Map.Map.Linedefs) {
+				foreach(Linedef l in General.Map.Map.Linedefs) 
+				{
 					if(v.Linedefs.Contains(l)) continue;
 
 					// Calculate distance and check if closer than previous find
 					float d = l.SafeDistanceToSq(v.Position, true);
-					if(d < distance) {
+					if(d < distance) 
+					{
 						// This one is closer
 						closestLine = l;
 						distance = d;
@@ -196,12 +232,16 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				float closestLineDistance = Vector2D.Distance(v.Position, closestLine.NearestOnLine(v.Position));
 
 				//check SafeDistance of closest line
-				if(data.ContainsKey(closestLine.Start) && data[closestLine.Start].SafeDistance > closestLineDistance) {
+				if(data.ContainsKey(closestLine.Start) 
+					&& data[closestLine.Start].SafeDistance > closestLineDistance) 
+				{
 					TranslationOffsetVertexData vd = data[closestLine.Start];
 					vd.SafeDistance = (int)Math.Floor(closestLineDistance);
 					data[closestLine.Start] = vd;
 				}
-				if(data.ContainsKey(closestLine.End) && data[closestLine.End].SafeDistance > closestLineDistance) {
+				if(data.ContainsKey(closestLine.End) 
+					&& data[closestLine.End].SafeDistance > closestLineDistance) 
+				{
 					TranslationOffsetVertexData vd = data[closestLine.End];
 					vd.SafeDistance = (int)Math.Floor(closestLineDistance);
 					data[closestLine.End] = vd;
@@ -209,7 +249,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 				//save SafeDistance
 				int dist = (int)Math.Floor(closestLineDistance);
-				if(data[v].SafeDistance == 0 || data[v].SafeDistance > dist) {
+				if(data[v].SafeDistance == 0 || data[v].SafeDistance > dist) 
+				{
 					TranslationOffsetVertexData vd = data[v];
 					vd.SafeDistance = dist;
 					data[v] = vd;
@@ -220,7 +261,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			vertexData = new TranslationOffsetVertexData[data.Values.Count];
 			data.Values.CopyTo(vertexData, 0);
 
-			for(int i = 0; i < data.Count; i++) {
+			for(int i = 0; i < data.Count; i++) 
+			{
 				if(vertexData[i].SafeDistance > 0)
 					vertexData[i].SafeDistance /= 2;
 				if(MaxSafeDistance < vertexData[i].SafeDistance)
@@ -231,7 +273,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			sectorData = new List<SectorData>();
 			sidedefData = new List<SidedefData>();
 
-			foreach(Sector s in sectors){
+			foreach(Sector s in sectors)
+			{
 				SectorData sd = new SectorData();
 
 				sd.Sector = s;
@@ -258,7 +301,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				if(sd.SafeDistance > MaxSafeHeightDistance)	MaxSafeHeightDistance = sd.SafeDistance;
 				sectorData.Add(sd);
 
-				foreach(Sidedef side in s.Sidedefs) {
+				foreach(Sidedef side in s.Sidedefs) 
+				{
 					//store initial sidedef properties
 					SidedefData sdd = new SidedefData();
 
@@ -268,7 +312,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 					sdd.PegBottom = side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag);
 					sdd.PegTop = side.Line.IsFlagSet(General.Map.Config.UpperUnpeggedFlag);
 
-					if(side.Other != null && !sectors.Contains(side.Other.Sector)) {
+					if(side.Other != null && !sectors.Contains(side.Other.Sector)) 
+					{
 						sdd.UpdateTextureOnOtherSide = true;
 						sdd.OtherHighTexture = side.Other.HighTexture;
 						sdd.OtherLowTexture = side.Other.LowTexture;
@@ -288,10 +333,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			flooroffsetmode.SelectedIndex = storedflooroffsetmode;
 
 			//vertex heights can not be set in non-UDMF maps
-			if (General.Map.UDMF) {
+			if (General.Map.UDMF) 
+			{
 				cbUseFloorVertexHeights.Checked = useFloorVertexHeights;
 				cbUseCeilingVertexHeights.Checked = useCeilingVertexHeights;
-			} else {
+			} 
+			else 
+			{
 				useFloorVertexHeights = false;
 				cbUseFloorVertexHeights.Checked = false;
 				cbUseFloorVertexHeights.Enabled = false;
@@ -321,21 +369,27 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 			cbUpperTexStyle.SelectedIndex = 0;
 			cbLowerTexStyle.SelectedIndex = 0;
-			updateTextureSelectors(); //update interface
+			UpdateTextureSelectors(); //update interface
 
 			//create random values
-			updateAngles(); 
-			updateFloorHeights();
-			updateCeilingHeights();
+			UpdateAngles(); 
+			UpdateFloorHeights();
+			UpdateCeilingHeights();
 		}
 
-		private float GetLowestCeiling(Vertex v) {
+		#endregion
+
+		#region ================== Methods
+
+		private static float GetLowestCeiling(Vertex v) 
+		{
 			if (v.Linedefs.Count == 0) return float.NaN;
 			List<Sector> sectors = GetSectors(v);
 			if (sectors.Count == 0) return float.NaN;
 
 			float target = sectors[0].CeilHeight;
-			for(int i = 1; i < sectors.Count; i++) {
+			for(int i = 1; i < sectors.Count; i++) 
+			{
 				if(target > sectors[i].CeilHeight && sectors[i].Sidedefs.Count == 3)
 					target = sectors[i].CeilHeight;
 			}
@@ -343,13 +397,15 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			return target;
 		}
 
-		private float GetHighestFloor(Vertex v) {
+		private static float GetHighestFloor(Vertex v) 
+		{
 			if(v.Linedefs.Count == 0) return float.NaN;
 			List<Sector> sectors = GetSectors(v);
 			if(sectors.Count == 0) return float.NaN;
 
 			float target = sectors[0].FloorHeight;
-			for(int i = 1; i < sectors.Count; i++) {
+			for(int i = 1; i < sectors.Count; i++) 
+			{
 				if(target < sectors[i].FloorHeight && sectors[i].Sidedefs.Count == 3)
 					target = sectors[i].FloorHeight;
 			}
@@ -357,9 +413,11 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			return target;
 		}
 
-		private List<Sector> GetSectors(Vertex v) {
+		private static List<Sector> GetSectors(Vertex v) 
+		{
 			List<Sector> result = new List<Sector>();
-			foreach (Linedef l in v.Linedefs) {
+			foreach (Linedef l in v.Linedefs) 
+			{
 				if(l.Front != null && l.Front.Sector != null && !result.Contains(l.Front.Sector))
 					result.Add(l.Front.Sector);
 				if(l.Back != null && l.Back.Sector != null && !result.Contains(l.Back.Sector))
@@ -368,9 +426,11 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			return result;
 		}
 
-		private Vertex[] GetSectorVerts(Sector s) {
+		private static Vertex[] GetSectorVerts(Sector s) 
+		{
 			List<Vertex> result = new List<Vertex>();
-			foreach (Sidedef side in s.Sidedefs) {
+			foreach (Sidedef side in s.Sidedefs) 
+			{
 				if(side.Line == null) continue;
 				if(!result.Contains(side.Line.Start)) result.Add(side.Line.Start);
 				if(!result.Contains(side.Line.End)) result.Add(side.Line.End);
@@ -379,80 +439,102 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			return result.ToArray();
 		}
 
-//utility
-		private void applyTranslationJitter(int ammount) {
+		#endregion
+
+		#region ================== Utility
+
+		private void ApplyTranslationJitter(int ammount) 
+		{
 			int curAmmount;
 
-			for(int i = 0; i < vertexData.Length; i++) {
+			for(int i = 0; i < vertexData.Length; i++) 
+			{
 				curAmmount = ammount > vertexData[i].SafeDistance ? vertexData[i].SafeDistance : ammount;
 				vertexData[i].Vertex.Move(new Vector2D(vertexData[i].InitialPosition.x + (int)(Math.Sin(vertexData[i].JitterAngle) * curAmmount), vertexData[i].InitialPosition.y + (int)(Math.Cos(vertexData[i].JitterAngle) * curAmmount)));
 			}
 
 			//update view
-			if(editingModeName == "BaseVisualMode") {
+			if(editingModeName == "BaseVisualMode") 
+			{
 				General.Map.Map.Update();
 				General.Map.IsChanged = true;
-				updateVisualGeometry();
-			} else {
+				UpdateVisualGeometry();
+			} 
+			else 
+			{
 				General.Interface.RedrawDisplay();
 			}
 		}
 
-		private void applyCeilingHeightJitter(int ammount) {
+		private void ApplyCeilingHeightJitter(int ammount) 
+		{
 			int curAmmount;
 
-			for(int i = 0; i < sectorData.Count; i++) {
+			for(int i = 0; i < sectorData.Count; i++) 
+			{
 				curAmmount = ammount > sectorData[i].SafeDistance ? sectorData[i].SafeDistance : ammount;
 
-				if (sectorData[i].Triangular && cbUseCeilingVertexHeights.Checked) {
-					foreach(HeightOffsetVertexData vd in sectorData[i].Verts) {
+				if (sectorData[i].Triangular && cbUseCeilingVertexHeights.Checked) 
+				{
+					foreach(HeightOffsetVertexData vd in sectorData[i].Verts) 
+					{
 						vd.Vertex.ZCeiling = vd.InitialCeilingHeight - (float)Math.Floor(curAmmount
 							* ModifyByOffsetMode(vd.JitterCeilingHeight, ceiloffsetmode.SelectedIndex));
 					}
-				} else {
+				} 
+				else 
+				{
 					sectorData[i].Sector.CeilHeight = sectorData[i].InitialCeilingHeight - (int)Math.Floor(curAmmount
 						* ModifyByOffsetMode(sectorData[i].JitterCeilingHeight, ceiloffsetmode.SelectedIndex));
 				}
 			}
 
 			//update view
-			if(editingModeName == "BaseVisualMode") {
+			if(editingModeName == "BaseVisualMode") 
+			{
 				General.Map.Map.Update();
 				General.Map.IsChanged = true;
-				updateVisualGeometry();
+				UpdateVisualGeometry();
 			}
 
-			updateUpperTextures(cbUpperTexStyle.SelectedIndex, false);
+			UpdateUpperTextures(cbUpperTexStyle.SelectedIndex, false);
 		}
 
-		private void applyFloorHeightJitter(int ammount) {
+		private void ApplyFloorHeightJitter(int ammount) 
+		{
 			int curAmmount;
 
-			for(int i = 0; i < sectorData.Count; i++) {
+			for(int i = 0; i < sectorData.Count; i++) 
+			{
 				curAmmount = ammount > sectorData[i].SafeDistance ? sectorData[i].SafeDistance : ammount;
 
-				if (sectorData[i].Triangular && cbUseFloorVertexHeights.Checked) {
-					foreach(HeightOffsetVertexData vd in sectorData[i].Verts) {
+				if (sectorData[i].Triangular && cbUseFloorVertexHeights.Checked) 
+				{
+					foreach(HeightOffsetVertexData vd in sectorData[i].Verts) 
+					{
 						vd.Vertex.ZFloor = vd.InitialFloorHeight + (float)Math.Floor(curAmmount
 							* ModifyByOffsetMode(vd.JitterFloorHeight, flooroffsetmode.SelectedIndex));
 					}
-				} else {
+				} 
+				else 
+				{
 					sectorData[i].Sector.FloorHeight = sectorData[i].InitialFloorHeight + (int)Math.Floor(curAmmount
 						* ModifyByOffsetMode(sectorData[i].JitterFloorHeight, flooroffsetmode.SelectedIndex));
 				}
 			}
 
 			//update view
-			if(editingModeName == "BaseVisualMode") {
+			if(editingModeName == "BaseVisualMode") 
+			{
 				General.Map.Map.Update();
 				General.Map.IsChanged = true;
-				updateVisualGeometry();
+				UpdateVisualGeometry();
 			}
 
-			updateLowerTextures(cbLowerTexStyle.SelectedIndex, false);
+			UpdateLowerTextures(cbLowerTexStyle.SelectedIndex, false);
 		}
 
-		private float ModifyByOffsetMode(float value, int mode)
+		private static float ModifyByOffsetMode(float value, int mode)
 		{
 			switch (mode)
 			{
@@ -470,7 +552,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			}
 		}
 
-		private void updateVisualGeometry() {
+		private void UpdateVisualGeometry() 
+		{
 			foreach(VisualSector vs in visualSectors) vs.UpdateSectorGeometry(true);
 			foreach(VisualSector vs in visualSectors) vs.UpdateSectorData();
 			foreach(VisualSector vs in visualSectors) vs.UpdateSectorData();
@@ -481,7 +564,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			}
 		}
 
-		private void updateTextureSelectors() {
+		private void UpdateTextureSelectors() 
+		{
 			cbLowerTexStyle.Enabled = floorHeightAmmount.Value > 0;
 			cbUpperTexStyle.Enabled = ceilingHeightAmmount.Value > 0;
 			gbLowerTexture.Enabled = floorHeightAmmount.Value > 0 && cbLowerTexStyle.SelectedIndex > 0;
@@ -490,14 +574,14 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			textureUpper.Enabled = ceilingHeightAmmount.Value > 0 && cbUpperTexStyle.SelectedIndex == 2;
 		}
 
-		private void updateUpperTextures(int index, bool updateGeometry) 
+		private void UpdateUpperTextures(int index, bool updateGeometry) 
 		{
 			if(index == -1) return;
 
-			if(index == 0) 
-			{ //revert
+			if(index == 0) //revert
+			{ 
 				foreach(SidedefData sd in sidedefData)
-					setUpperTexture(sd, sd.HighTexture);
+					SetUpperTexture(sd, sd.HighTexture);
 			}
 			else if(index == 1) //use ceiling or default texture
 			{
@@ -508,34 +592,34 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 					{
 						if(sd.Side.Sector != null)
 						{
-							if (sd.UpdateTextureOnOtherSide && sd.Side.Other.Sector != null) setUpperTexture(sd, sd.Side.Sector.CeilTexture, sd.Side.Other.Sector.CeilTexture);
-							else setUpperTexture(sd, sd.Side.Sector.CeilTexture);
+							if (sd.UpdateTextureOnOtherSide && sd.Side.Other.Sector != null) SetUpperTexture(sd, sd.Side.Sector.CeilTexture, sd.Side.Other.Sector.CeilTexture);
+							else SetUpperTexture(sd, sd.Side.Sector.CeilTexture);
 						}
 					}
 				}
 				else
 				{
-					foreach(SidedefData sd in sidedefData) setUpperTexture(sd, General.Settings.DefaultTexture);
+					foreach(SidedefData sd in sidedefData) SetUpperTexture(sd, General.Settings.DefaultTexture);
 				}
 			}
 			else if(index == 2) //use given texture
 			{
 				foreach(SidedefData sd in sidedefData)
-					setUpperTexture(sd, textureUpper.TextureName);
+					SetUpperTexture(sd, textureUpper.TextureName);
 			}
 
 			General.Map.Data.UpdateUsedTextures();
-			if(updateGeometry && editingModeName == "BaseVisualMode") updateVisualGeometry();
+			if(updateGeometry && editingModeName == "BaseVisualMode") UpdateVisualGeometry();
 		}
 
-		private void updateLowerTextures(int index, bool updateGeometry) 
+		private void UpdateLowerTextures(int index, bool updateGeometry) 
 		{
 			if(index == -1) return;
 
-			if(index == 0)
-			{ //revert
+			if(index == 0) //revert
+			{ 
 				foreach(SidedefData sd in sidedefData)
-					setLowerTexture(sd, sd.LowTexture);
+					SetLowerTexture(sd, sd.LowTexture);
 			}
 			else if(index == 1) //use floor or default texture
 			{
@@ -545,32 +629,37 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 					{
 						if(sd.Side.Sector != null)
 						{
-							if (sd.UpdateTextureOnOtherSide && sd.Side.Other.Sector != null) setLowerTexture(sd, sd.Side.Sector.FloorTexture, sd.Side.Other.Sector.FloorTexture);
-							else setLowerTexture(sd, sd.Side.Sector.FloorTexture);
+							if (sd.UpdateTextureOnOtherSide && sd.Side.Other.Sector != null) SetLowerTexture(sd, sd.Side.Sector.FloorTexture, sd.Side.Other.Sector.FloorTexture);
+							else SetLowerTexture(sd, sd.Side.Sector.FloorTexture);
 						}
 					}
 				}
 				else
 				{
-					foreach (SidedefData sd in sidedefData) setLowerTexture(sd, General.Settings.DefaultTexture);
+					foreach (SidedefData sd in sidedefData) SetLowerTexture(sd, General.Settings.DefaultTexture);
 				}
 			}
 			else if(index == 2) //use given texture
 			{
 				foreach(SidedefData sd in sidedefData)
-					setLowerTexture(sd, textureLower.TextureName);
+					SetLowerTexture(sd, textureLower.TextureName);
 			}
 
 			General.Map.Data.UpdateUsedTextures();
-			if(updateGeometry && editingModeName == "BaseVisualMode") updateVisualGeometry();
+			if(updateGeometry && editingModeName == "BaseVisualMode") UpdateVisualGeometry();
 		}
 
-//set textures
-		private void setUpperTexture(SidedefData sd, string textureName) {
-			setUpperTexture(sd, textureName, textureName);
+		#endregion
+
+		#region ================== Set Textures
+
+		private void SetUpperTexture(SidedefData sd, string textureName) 
+		{
+			SetUpperTexture(sd, textureName, textureName);
 		}
 
-		private void setUpperTexture(SidedefData sd, string textureName, string otherTextureName) {
+		private void SetUpperTexture(SidedefData sd, string textureName, string otherTextureName) 
+		{
 			if(!cbKeepExistingTextures.Checked || string.IsNullOrEmpty(sd.HighTexture) || sd.HighTexture == "-")
 				sd.Side.SetTextureHigh(textureName);
 
@@ -578,11 +667,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				sd.Side.Other.SetTextureHigh(otherTextureName);
 		}
 
-		private void setLowerTexture(SidedefData sd, string textureName) {
-			setLowerTexture(sd, textureName, textureName);
+		private void SetLowerTexture(SidedefData sd, string textureName) 
+		{
+			SetLowerTexture(sd, textureName, textureName);
 		}
 
-		private void setLowerTexture(SidedefData sd, string textureName, string otherTextureName) {
+		private void SetLowerTexture(SidedefData sd, string textureName, string otherTextureName) 
+		{
 			if(!cbKeepExistingTextures.Checked || string.IsNullOrEmpty(sd.LowTexture) || sd.LowTexture == "-")
 				sd.Side.SetTextureLow(textureName);
 
@@ -590,21 +681,30 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				sd.Side.Other.SetTextureLow(otherTextureName);
 		}
 
-//jitter generation
-		private void updateAngles() {
-			for(int i = 0; i < vertexData.Length; i++) {
+		#endregion
+
+		#region ================== Jitter generation
+
+		private void UpdateAngles() 
+		{
+			for(int i = 0; i < vertexData.Length; i++) 
+			{
 				TranslationOffsetVertexData vd = vertexData[i];
 				vd.JitterAngle = (float)(General.Random(0, 359) * Math.PI / 180f);
 				vertexData[i] = vd;
 			}
 		}
 
-		private void updateFloorHeights() {
-			for(int i = 0; i < sectorData.Count; i++) {
+		private void UpdateFloorHeights() 
+		{
+			for(int i = 0; i < sectorData.Count; i++) 
+			{
 				SectorData sd = sectorData[i];
 
-				if (sd.Triangular) {
-					for(int c = 0; c < 3; c++) {
+				if (sd.Triangular) 
+				{
+					for(int c = 0; c < 3; c++) 
+					{
 						HeightOffsetVertexData vd = sd.Verts[c];
 						vd.JitterFloorHeight = General.Random(-100, 100) / 100f;
 						sd.Verts[c] = vd;
@@ -616,11 +716,14 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			}
 		}
 
-		private void updateCeilingHeights() {
-			for(int i = 0; i < sectorData.Count; i++) {
+		private void UpdateCeilingHeights() 
+		{
+			for(int i = 0; i < sectorData.Count; i++) 
+			{
 				SectorData sd = sectorData[i];
 
-				if(sd.Triangular) {
+				if(sd.Triangular) 
+				{
 					for(int c = 0; c < 3; c++)
 					{
 						HeightOffsetVertexData vd = sd.Verts[c];
@@ -634,8 +737,12 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			}
 		}
 
-//EVENTS
-		private void bApply_Click(object sender, EventArgs e) {
+		#endregion
+
+		#region ================== Events
+
+		private void bApply_Click(object sender, EventArgs e) 
+		{
 			//store settings
 			keepExistingSideTextures = cbKeepExistingTextures.Checked;
 			useFloorVertexHeights = cbUseFloorVertexHeights.Checked;
@@ -644,7 +751,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			storedflooroffsetmode = flooroffsetmode.SelectedIndex;
 			
 			// Clean unused sidedef textures
-			foreach(SidedefData sd in sidedefData) {
+			foreach(SidedefData sd in sidedefData) 
+			{
 				sd.Side.RemoveUnneededTextures(false);
 
 				if(sd.UpdateTextureOnOtherSide)
@@ -662,34 +770,42 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			Close();
 		}
 
-		private void bCancel_Click(object sender, EventArgs e) {
+		private void bCancel_Click(object sender, EventArgs e) 
+		{
 			this.DialogResult = DialogResult.Cancel;
 			Close();
 		}
 
-		private void JitterSectorsForm_FormClosing(object sender, FormClosingEventArgs e) {
+		private void JitterSectorsForm_FormClosing(object sender, FormClosingEventArgs e) 
+		{
 			if(this.DialogResult == DialogResult.Cancel)
 				General.Map.UndoRedo.WithdrawUndo(); //undo changes
 		}
 
-		private void positionJitterAmmount_OnValueChanging(object sender, EventArgs e) {
-			applyTranslationJitter(positionJitterAmmount.Value);
+		private void positionJitterAmmount_OnValueChanging(object sender, EventArgs e) 
+		{
+			ApplyTranslationJitter(positionJitterAmmount.Value);
 		}
 
-		private void ceilingHeightAmmount_OnValueChanging(object sender, EventArgs e) {
-			applyCeilingHeightJitter(ceilingHeightAmmount.Value);
-			updateTextureSelectors();
+		private void ceilingHeightAmmount_OnValueChanging(object sender, EventArgs e) 
+		{
+			ApplyCeilingHeightJitter(ceilingHeightAmmount.Value);
+			UpdateTextureSelectors();
 		}
 
-		private void floorHeightAmmount_OnValueChanging(object sender, EventArgs e) {
-			applyFloorHeightJitter(floorHeightAmmount.Value);
-			updateTextureSelectors();
+		private void floorHeightAmmount_OnValueChanging(object sender, EventArgs e) 
+		{
+			ApplyFloorHeightJitter(floorHeightAmmount.Value);
+			UpdateTextureSelectors();
 		}
 
-		private void cbKeepExistingTextures_CheckedChanged(object sender, EventArgs e) {
+		private void cbKeepExistingTextures_CheckedChanged(object sender, EventArgs e) 
+		{
 			//revert possible changes
-			if(cbKeepExistingTextures.Checked) {
-				foreach(SidedefData sd in sidedefData) {
+			if(cbKeepExistingTextures.Checked) 
+			{
+				foreach(SidedefData sd in sidedefData) 
+				{
 					if(!string.IsNullOrEmpty(sd.HighTexture))
 						sd.Side.SetTextureHigh(sd.HighTexture);
 
@@ -697,10 +813,12 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 						sd.Side.Other.SetTextureHigh(sd.OtherHighTexture);
 				}
 
-				if(editingModeName == "BaseVisualMode")	updateVisualGeometry();
-			} else {
-				updateLowerTextures(cbLowerTexStyle.SelectedIndex, false);
-				updateUpperTextures(cbUpperTexStyle.SelectedIndex, true);
+				if(editingModeName == "BaseVisualMode")	UpdateVisualGeometry();
+			} 
+			else 
+			{
+				UpdateLowerTextures(cbLowerTexStyle.SelectedIndex, false);
+				UpdateUpperTextures(cbUpperTexStyle.SelectedIndex, true);
 			}
 		}
 
@@ -717,8 +835,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			}
 
 			//update changes
-			applyFloorHeightJitter(floorHeightAmmount.Value);
-			updateTextureSelectors();
+			ApplyFloorHeightJitter(floorHeightAmmount.Value);
+			UpdateTextureSelectors();
 		}
 
 		private void cbUseCeilingVertexHeights_CheckedChanged(object sender, EventArgs e) 
@@ -734,92 +852,129 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			}
 
 			//update changes
-			applyCeilingHeightJitter(ceilingHeightAmmount.Value);
-			updateTextureSelectors();
+			ApplyCeilingHeightJitter(ceilingHeightAmmount.Value);
+			UpdateTextureSelectors();
 		}
 
-//update buttons
-		private void bUpdateTranslation_Click(object sender, EventArgs e) {
-			updateAngles();
-			applyTranslationJitter(positionJitterAmmount.Value);
+		#region ================== Update Events
+
+		private void bUpdateTranslation_Click(object sender, EventArgs e) 
+		{
+			UpdateAngles();
+			ApplyTranslationJitter(positionJitterAmmount.Value);
 		}
 
-		private void bUpdateCeilingHeight_Click(object sender, EventArgs e) {
-			updateCeilingHeights();
-			applyCeilingHeightJitter(ceilingHeightAmmount.Value);
+		private void bUpdateCeilingHeight_Click(object sender, EventArgs e) 
+		{
+			UpdateCeilingHeights();
+			ApplyCeilingHeightJitter(ceilingHeightAmmount.Value);
 		}
 
-		private void bUpdateFloorHeight_Click(object sender, EventArgs e) {
-			updateFloorHeights();
-			applyFloorHeightJitter(floorHeightAmmount.Value);
+		private void bUpdateFloorHeight_Click(object sender, EventArgs e) 
+		{
+			UpdateFloorHeights();
+			ApplyFloorHeightJitter(floorHeightAmmount.Value);
 		}
 
-//height offset modes
+		#endregion
+
+		#region ================== Height Offset Mode Events
+
 		private void ceiloffsetmode_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			applyCeilingHeightJitter(ceilingHeightAmmount.Value);
+			ApplyCeilingHeightJitter(ceilingHeightAmmount.Value);
 		}
 
 		private void flooroffsetmode_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			applyFloorHeightJitter(floorHeightAmmount.Value);
+			ApplyFloorHeightJitter(floorHeightAmmount.Value);
 		}
 
-//texture pegging
-		private void cbPegTop_CheckedChanged(object sender, EventArgs e) {
-			if(cbPegTop.Checked) { //apply flag
+		#endregion
+
+		#region ================== Texture Pegging Events
+
+		private void cbPegTop_CheckedChanged(object sender, EventArgs e) 
+		{
+			if(cbPegTop.Checked) //apply flag
+			{ 
 				foreach(SidedefData sd in sidedefData)
 					sd.Side.Line.SetFlag(General.Map.Config.UpperUnpeggedFlag, true);
-			} else { //revert to initial setting
+			} 
+			else //revert to initial setting
+			{ 
 				foreach(SidedefData sd in sidedefData)
 					sd.Side.Line.SetFlag(General.Map.Config.UpperUnpeggedFlag, sd.PegTop);
 			}
 
-			if(editingModeName == "BaseVisualMode") {
+			if(editingModeName == "BaseVisualMode") 
+			{
 				General.Map.Data.UpdateUsedTextures();
-				updateVisualGeometry();
+				UpdateVisualGeometry();
 			}
 		}
 
-		private void cbPegBottom_CheckedChanged(object sender, EventArgs e) {
-			if(cbPegBottom.Checked) { //apply flag
+		private void cbPegBottom_CheckedChanged(object sender, EventArgs e) 
+		{
+			if(cbPegBottom.Checked) //apply flag
+			{ 
 				foreach(SidedefData sd in sidedefData)
 					sd.Side.Line.SetFlag(General.Map.Config.LowerUnpeggedFlag, true);
-			} else { //revert to initial setting
+			} 
+			else //revert to initial setting
+			{ 
 				foreach(SidedefData sd in sidedefData)
 					sd.Side.Line.SetFlag(General.Map.Config.LowerUnpeggedFlag, sd.PegBottom);
 			}
 
-			if(editingModeName == "BaseVisualMode") {
+			if(editingModeName == "BaseVisualMode") 
+			{
 				General.Map.Data.UpdateUsedTextures();
-				updateVisualGeometry();
+				UpdateVisualGeometry();
 			}
 		}
 
-//texture pickers
-		private void textureLower_OnValueChanged(object sender, EventArgs e) {
-			updateLowerTextures(cbLowerTexStyle.SelectedIndex, true);
+		#endregion
+
+		#region ================== Texture Picker Events
+
+		//texture pickers
+		private void textureLower_OnValueChanged(object sender, EventArgs e) 
+		{
+			UpdateLowerTextures(cbLowerTexStyle.SelectedIndex, true);
 		}
 
-		private void textureUpper_OnValueChanged(object sender, EventArgs e) {
-			updateUpperTextures(cbUpperTexStyle.SelectedIndex, true);
+		private void textureUpper_OnValueChanged(object sender, EventArgs e) 
+		{
+			UpdateUpperTextures(cbUpperTexStyle.SelectedIndex, true);
 		}
 
-//texture style selectors
-		private void cbUpperTexStyle_SelectedIndexChanged(object sender, EventArgs e) {
-			updateUpperTextures(cbUpperTexStyle.SelectedIndex, true);
-			updateTextureSelectors();
+		#endregion
+
+		#region ================== Texture Style Selector Events
+
+		//texture style selectors
+		private void cbUpperTexStyle_SelectedIndexChanged(object sender, EventArgs e) 
+		{
+			UpdateUpperTextures(cbUpperTexStyle.SelectedIndex, true);
+			UpdateTextureSelectors();
 		}
 
-		private void cbLowerTexStyle_SelectedIndexChanged(object sender, EventArgs e) {
-			updateLowerTextures(cbLowerTexStyle.SelectedIndex, true);
-			updateTextureSelectors();
+		private void cbLowerTexStyle_SelectedIndexChanged(object sender, EventArgs e) 
+		{
+			UpdateLowerTextures(cbLowerTexStyle.SelectedIndex, true);
+			UpdateTextureSelectors();
 		}
 
-//HALP!
-		private void JitterSectorsForm_HelpRequested(object sender, HelpEventArgs hlpevent) {
+		#endregion
+
+		//HALP!
+		private void JitterSectorsForm_HelpRequested(object sender, HelpEventArgs hlpevent) 
+		{
 			General.ShowHelp("gzdb/features/all_modes/jitter.html");
 			hlpevent.Handled = true;
 		}
+
+		#endregion
 	}
 }

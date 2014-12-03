@@ -6,11 +6,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 {
 	internal class IconListBox : ListBox
 	{
-		public IconListBox() {
+		public IconListBox() 
+		{
 			this.DrawMode = DrawMode.OwnerDrawFixed;
 		}
 
-		protected override void OnDrawItem(DrawItemEventArgs e) {
+		protected override void OnDrawItem(DrawItemEventArgs e) 
+		{
 			e.DrawBackground();
 			e.DrawFocusRectangle();
 

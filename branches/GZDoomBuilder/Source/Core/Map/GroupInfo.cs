@@ -15,7 +15,8 @@ namespace CodeImp.DoomBuilder.Map
 		public bool Empty { get { return empty; } }
 		public int Index { get { return index; } }
 
-		public GroupInfo(int index, int numSectors, int numLines, int numVerts, int numThings) {
+		public GroupInfo(int index, int numSectors, int numLines, int numVerts, int numThings) 
+		{
 			this.index = index;
 			this.numSectors = numSectors;
 			this.numLines = numLines;
@@ -25,7 +26,8 @@ namespace CodeImp.DoomBuilder.Map
 			empty = (numSectors == 0 && numLines == 0 && numVerts == 0 && numThings == 0);
 		}
 
-		public override string ToString() {
+		public override string ToString() 
+		{
 			if (empty) return index + ": Empty";
 			List<string> result = new List<string>();
 

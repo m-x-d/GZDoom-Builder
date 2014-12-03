@@ -140,7 +140,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 				string token = parser.ReadToken();
 				token = token.ToLowerInvariant();
 
-				switch (token) {
+				switch (token) 
+				{
 					case "xscale":
 						if (!ReadTokenFloat(parser, token, out xscale)) return;
 						break;
@@ -160,7 +161,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 						// Now we should find a comma
 						parser.SkipWhitespace(true);
 						tokenstr = parser.ReadToken();
-						if (tokenstr != ",") {
+						if (tokenstr != ",") 
+						{
 							parser.ReportError("Expected a comma");
 							return;
 						}

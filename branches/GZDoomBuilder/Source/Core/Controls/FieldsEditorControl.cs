@@ -121,7 +121,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public void ListFixedFields(List<UniversalFieldInfo> list)
 		{
 			// Add all fields
-			foreach(UniversalFieldInfo uf in list) {
+			foreach(UniversalFieldInfo uf in list) 
+			{
 				if(uifields.ContainsKey(uf.Name)) continue; //mxd
 				fieldslist.Rows.Add(new FieldsEditorRow(fieldslist, uf));
 			}
@@ -237,48 +238,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// Sort fields
 			Sort();
 		}
-
-		//mxd
-		/*public object GetValue(string name) {
-			//have required row?
-			foreach (DataGridViewRow row in fieldslist.Rows) {
-				// Row is a field?
-				if (row is FieldsEditorRow) {
-					FieldsEditorRow frow = row as FieldsEditorRow;
-					// Row name matches with field
-					if (frow.Name == name) {
-						// Apply value of field to row
-						if (frow.IsDefined && !frow.IsEmpty)
-							return frow.GetResult(null);
-						return null;
-					}
-				}
-			}
-
-			return null;
-		}*/
-
-		//mxd
-		/*public void SetValue(string name, object value, UniversalType type) {
-			//have required row?
-			foreach (DataGridViewRow row in fieldslist.Rows) {
-				// Row is a field?
-				if (row is FieldsEditorRow) {
-					FieldsEditorRow frow = row as FieldsEditorRow;
-					// Row name matches with field
-					if (frow.Name == name) {
-						// Apply value of field to row
-						frow.Define(value);
-						return;
-					}
-				}
-			}
-
-			//no such row... let's add it
-			FieldsEditorRow newfrow = new FieldsEditorRow(fieldslist, name, (int)type, value);
-			fieldslist.Rows.Insert(fieldslist.Rows.Count - 1, newfrow);
-		}*/
-
 		
 		// This applies the current fields to a UniFields object
 		public void Apply(UniFields tofields)
@@ -287,7 +246,8 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Go for all the fields
 			UniFields tempfields = new UniFields(tofields);
-			foreach(KeyValuePair<string, UniValue> f in tempfields) {
+			foreach(KeyValuePair<string, UniValue> f in tempfields) 
+			{
 				if (uifields.ContainsKey(f.Key)) continue; //mxd
 				
 				// Go for all rows
@@ -544,15 +504,19 @@ namespace CodeImp.DoomBuilder.Controls
 						string validname = UniValue.ValidateName(row.Cells[0].Value.ToString());
 						if(validname.Length > 0) 
 						{
-							if(uifields.ContainsKey(validname)) { //mxd
+							if(uifields.ContainsKey(validname)) //mxd
+							{ 
 								MessageBox.Show("Please set this field's value via user interface.");
-							} else {
+							} 
+							else 
+							{
 								// Check if no other row already has this name
 								foreach (DataGridViewRow r in fieldslist.Rows) 
 								{
 									// Name matches and not the same row?
 									if ((r.Index != row.Index) && (r.Cells.Count > 0) && (r.Cells[0].Value != null) &&
-									    (r.Cells[0].Value.ToString().ToLowerInvariant() == validname)) {
+									    (r.Cells[0].Value.ToString().ToLowerInvariant() == validname)) 
+									{
 										// Cannot have two rows with same name
 										validname = "";
 										General.ShowWarningMessage("Fields must have unique names!", MessageBoxButtons.OK);

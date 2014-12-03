@@ -325,7 +325,7 @@ namespace CodeImp.DoomBuilder.Controls
 				foreach(ListViewItem item in list.Items)
 				{
 					ImageBrowserItem curitem = item as ImageBrowserItem;
-					if(curitem != null && string.Compare(curitem.icon.Name, name, true) == 0)
+					if(curitem != null && string.Compare(curitem.Icon.Name, name, true) == 0)
 					{
 						lvi = curitem;
 						if(item.Group == preferredgroup) break;
@@ -536,9 +536,9 @@ namespace CodeImp.DoomBuilder.Controls
 			//mxd. mixMode: 0 = All, 1 = Textures, 2 = Flats, 3 = Based on BrowseFlats
 			if(!splitter.Panel2Collapsed) 
 			{
-				if(mixMode == 1 && i.icon.IsFlat) return false;
-				if(mixMode == 2 && !i.icon.IsFlat) return false;
-				if(mixMode == 3 && (browseFlats != i.icon.IsFlat)) return false;
+				if(mixMode == 1 && i.Icon.IsFlat) return false;
+				if(mixMode == 2 && !i.Icon.IsFlat) return false;
+				if(mixMode == 3 && (browseFlats != i.Icon.IsFlat)) return false;
 			}
 
 			return i.Text.ToUpperInvariant().Contains(objectname.Text.ToUpperInvariant());
@@ -547,9 +547,9 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd. This validates an item's texture size
 		private static bool ValidateItemSize(ImageBrowserItem i, int w, int h) 
 		{
-			if (!i.icon.IsPreviewLoaded) return true;
-			if (w > 0 && i.icon.Width != w) return false;
-			if (h > 0 && i.icon.Height != h) return false;
+			if (!i.Icon.IsPreviewLoaded) return true;
+			if (w > 0 && i.Icon.Width != w) return false;
+			if (h > 0 && i.Icon.Height != h) return false;
 			return true;
 		}
 		

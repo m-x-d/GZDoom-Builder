@@ -180,13 +180,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void alignTextureToLine(bool alignFloors, bool alignToFrontSide) {
+		private void AlignTextureToLine(bool alignFloors, bool alignToFrontSide) 
+		{
 			ICollection<Linedef> lines = General.Map.Map.GetSelectedLinedefs(true);
 
 			if(lines.Count == 0 && highlighted != null && !highlighted.IsDisposed)
 				lines.Add(highlighted);
 
-			if(lines.Count == 0) {
+			if(lines.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection");
 				return;
 			}
@@ -196,12 +198,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.UndoRedo.CreateUndo("Align " + rest);
 			int counter = 0;
 
-			foreach(Linedef l in lines){
+			foreach(Linedef l in lines)
+			{
 				Sector s = null;
 
-				if(alignToFrontSide) {
+				if(alignToFrontSide) 
+				{
 					if(l.Front != null && l.Front.Sector != null) s = l.Front.Sector;
-				} else {
+				} 
+				else 
+				{
 					if(l.Back != null && l.Back.Sector != null)	s = l.Back.Sector;
 				}
 
@@ -221,8 +227,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ImageData texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
 
 				if((texture == null) || (texture == General.Map.Data.WhiteTexture) ||
-				   (texture.Width <= 0) || (texture.Height <= 0) || !texture.IsImageLoaded) {
-				}else{
+				   (texture.Width <= 0) || (texture.Height <= 0) || !texture.IsImageLoaded) 
+				{
+					//meh...
+				}
+				else
+				{
 					offset.x %= texture.Width / s.Fields.GetValue((alignFloors ? "xscalefloor" : "xscaleceiling"), 1.0f);
 					offset.y %= texture.Height / s.Fields.GetValue((alignFloors ? "yscalefloor" : "yscaleceiling"), 1.0f);
 				}
@@ -245,15 +255,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private bool isInSelectionRect(Linedef l, List<Line2D> selectionOutline) {
-			if(BuilderPlug.Me.MarqueSelectTouching) {
+		private bool IsInSelectionRect(Linedef l, List<Line2D> selectionOutline) 
+		{
+			if(BuilderPlug.Me.MarqueSelectTouching) 
+			{
 				bool selected = selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) || selectionrect.Contains(l.End.Position.x, l.End.Position.y);
 
 				//check intersections with outline
-				if(!selected) {
-					foreach(Line2D line in selectionOutline) {
-						if(Line2D.GetIntersection(l.Line, line))
-							return true;
+				if(!selected) 
+				{
+					foreach(Line2D line in selectionOutline) 
+					{
+						if(Line2D.GetIntersection(l.Line, line)) return true;
 					}
 				}
 				return selected;
@@ -368,7 +381,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render selection
 			if(renderer.StartOverlay(true))
 			{
-				if(!panning && !selecting) { //mxd
+				if(!panning && !selecting) //mxd
+				{ 
 					for (int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
 					if ((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
 				}
@@ -422,8 +436,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						renderer.Finish();
 						renderer.Present();
 					}
-				//mxd
-				} else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedLinedefsCount > 0) {
+				
+				} 
+				else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedLinedefsCount > 0) //mxd
+				{
 					General.Map.Map.ClearSelectedLinedefs();
 					General.Interface.RedrawDisplay();
 				}
@@ -498,9 +514,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Map.Map.Update();
 						
 						// When a single line was selected, deselect it now
-						if (selected.Count == 1) {
+						if (selected.Count == 1) 
+						{
 							General.Map.Map.ClearSelectedLinedefs();
-						} else if(result == DialogResult.Cancel) { //mxd. Restore selection...
+						} 
+						else if(result == DialogResult.Cancel) //mxd. Restore selection...
+						{ 
 							foreach (Linedef l in selected) l.Selected = true;
 						}
 
@@ -524,11 +543,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(panning) return; //mxd. Skip all this jass while panning
 
 			//mxd
-			if(selectpressed && !editpressed && !selecting) {
+			if(selectpressed && !editpressed && !selecting) 
+			{
 				// Check if moved enough pixels for multiselect
 				Vector2D delta = mousedownpos - mousepos;
 				if((Math.Abs(delta.x) > MULTISELECT_START_MOVE_PIXELS) ||
-				   (Math.Abs(delta.y) > MULTISELECT_START_MOVE_PIXELS)) {
+				   (Math.Abs(delta.y) > MULTISELECT_START_MOVE_PIXELS)) 
+				{
 					// Start multiselecting
 					StartMultiSelection();
 				}
@@ -538,8 +559,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Find the nearest thing within highlight range
 				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
 
-				if(l != null) {
-					if(l != highlighted) {
+				if(l != null) 
+				{
+					if(l != highlighted) 
+					{
 						//toggle selected state
 						if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
 							l.Selected = true;
@@ -554,7 +577,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Update entire display
 						General.Interface.RedrawDisplay();
 					}
-				} else if(highlighted != null) {
+				} 
+				else if(highlighted != null) 
+				{
 					highlighted = null;
 					Highlight(null);
 
@@ -568,14 +593,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.StitchRange / renderer.Scale);
 
 				//mxd. Render insert vertex preview
-				if(l != null) {
+				if(l != null) 
+				{
 					bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 					bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 					insertPreview = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, renderer, new List<DrawnVertex>()).pos;
 
 					//render preview
-					if(renderer.StartOverlay(true)) {
-						if(!panning) {
+					if(renderer.StartOverlay(true)) 
+					{
+						if(!panning) 
+						{
 							for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
 							if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
 						}
@@ -586,12 +614,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						renderer.Finish();
 						renderer.Present();
 					}
-				} else if(insertPreview.IsFinite()) {
+				} 
+				else if(insertPreview.IsFinite()) 
+				{
 					insertPreview.x = float.NaN;
 
 					//undraw preveiw
-					if(renderer.StartOverlay(true)) {
-						if(!panning) {
+					if(renderer.StartOverlay(true)) 
+					{
+						if(!panning) 
+						{
 							for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
 							if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
 						}
@@ -615,12 +647,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void BeginViewPan() {
-			if(insertPreview.IsFinite()) {
+		protected override void BeginViewPan() 
+		{
+			if(insertPreview.IsFinite()) 
+			{
 				insertPreview.x = float.NaN;
 
 				//undraw preveiw
-				if(renderer.StartOverlay(true)) {
+				if(renderer.StartOverlay(true)) 
+				{
 					renderer.Finish();
 					renderer.Present();
 				}
@@ -630,7 +665,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void OnPaintSelectBegin() {
+		protected override void OnPaintSelectBegin() 
+		{
 			highlighted = null;
 			base.OnPaintSelectBegin();
 		}
@@ -655,31 +691,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Start dragging the selection
-					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || canDrag()) //mxd
+					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || CanDrag()) //mxd
 						General.Editing.ChangeMode(new DragLinedefsMode(mousedownmappos));
 				}
 			}
 		}
 
 		//mxd. Check if any selected linedef is outside of map boundary
-		private static bool canDrag() 
+		private static bool CanDrag() 
 		{
 			ICollection<Linedef> selectedlines = General.Map.Map.GetSelectedLinedefs(true);
 			int unaffectedCount = 0;
 
-			foreach(Linedef l in selectedlines) {
+			foreach(Linedef l in selectedlines) 
+			{
 				// Make sure the linedef is inside the map boundary
 				if(l.Start.Position.x < General.Map.Config.LeftBoundary || l.Start.Position.x > General.Map.Config.RightBoundary
 					|| l.Start.Position.y > General.Map.Config.TopBoundary || l.Start.Position.y < General.Map.Config.BottomBoundary
 					|| l.End.Position.x < General.Map.Config.LeftBoundary || l.End.Position.x > General.Map.Config.RightBoundary
-					|| l.End.Position.y > General.Map.Config.TopBoundary || l.End.Position.y < General.Map.Config.BottomBoundary) {
+					|| l.End.Position.y > General.Map.Config.TopBoundary || l.End.Position.y < General.Map.Config.BottomBoundary) 
+				{
 
 					l.Selected = false;
 					unaffectedCount++;
 				}
 			}
 
-			if(unaffectedCount == selectedlines.Count) {
+			if(unaffectedCount == selectedlines.Count) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Unable to drag selection: " + (selectedlines.Count == 1 ? "selected linedef is" : "all of selected linedefs are") + " outside of map boundary!");
 				General.Interface.RedrawDisplay();
 				return false;
@@ -698,33 +737,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			   
 			if(selectionvolume)
 			{
-				List<Line2D> selectionOutline = new List<Line2D>() {
+				List<Line2D> selectionOutline = new List<Line2D> 
+				{
 					new Line2D(selectionrect.Left, selectionrect.Top, selectionrect.Right, selectionrect.Top),
 					new Line2D(selectionrect.Right, selectionrect.Top, selectionrect.Right, selectionrect.Bottom),
 					new Line2D(selectionrect.Left, selectionrect.Bottom, selectionrect.Right, selectionrect.Bottom),
 					new Line2D(selectionrect.Left, selectionrect.Bottom, selectionrect.Left, selectionrect.Top)
-				                                                   };
+				};
 				
 				//mxd
-				switch(marqueSelectionMode) {
+				switch(marqueSelectionMode) 
+				{
 					case MarqueSelectionMode.SELECT:
 						foreach(Linedef l in General.Map.Map.Linedefs)
-							l.Selected = isInSelectionRect(l, selectionOutline);
+							l.Selected = IsInSelectionRect(l, selectionOutline);
 						break;
 
 					case MarqueSelectionMode.ADD:
 						foreach(Linedef l in General.Map.Map.Linedefs)
-							l.Selected |= isInSelectionRect(l, selectionOutline);
+							l.Selected |= IsInSelectionRect(l, selectionOutline);
 						break;
 
 					case MarqueSelectionMode.SUBTRACT:
 						foreach(Linedef l in General.Map.Map.Linedefs)
-							if(isInSelectionRect(l, selectionOutline)) l.Selected = false;
+							if(IsInSelectionRect(l, selectionOutline)) l.Selected = false;
 						break;
 
 					default:
 						foreach(Linedef l in General.Map.Map.Linedefs)
-							if(!isInSelectionRect(l, selectionOutline)) l.Selected = false;
+							if(!IsInSelectionRect(l, selectionOutline)) l.Selected = false;
 						break;
 				}
 
@@ -769,7 +810,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void UpdateSelectionInfo() {
+		public override void UpdateSelectionInfo() 
+		{
 			if(General.Map.Map.SelectedLinedefsCount > 0)
 				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedLinedefsCount + (General.Map.Map.SelectedLinedefsCount == 1 ? " linedef" : " linedefs") + " selected.");
 			else
@@ -902,17 +944,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("deleteitem", BaseAction = true)]
-		public void DeleteItem() {
+		public void DeleteItem() 
+		{
 			// Make list of selected linedefs
 			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
 			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
 			if(selected.Count == 0) return;
 
 			// Make undo
-			if(selected.Count > 1) {
+			if(selected.Count > 1) 
+			{
 				General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " linedefs");
 				General.Interface.DisplayStatus(StatusType.Action, "Deleted " + selected.Count + " linedefs.");
-			} else {
+			} 
+			else 
+			{
 				General.Map.UndoRedo.CreateUndo("Delete linedef");
 				General.Interface.DisplayStatus(StatusType.Action, "Deleted a linedef.");
 			}
@@ -957,7 +1003,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Find sectors, which will become invalid after linedefs removal.
 				Dictionary<Sector, Vector2D> toMerge = new Dictionary<Sector, Vector2D>();
 
-				foreach(Linedef l in selected) {
+				foreach(Linedef l in selected) 
+				{
 					if(l.Front != null && l.Front.Sector.Sidedefs.Count < 4 && !toMerge.ContainsKey(l.Front.Sector))
 						toMerge.Add(l.Front.Sector, new Vector2D(l.Front.Sector.BBox.Location.X + l.Front.Sector.BBox.Width / 2, l.Front.Sector.BBox.Location.Y + l.Front.Sector.BBox.Height / 2));
 
@@ -968,9 +1015,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.Map.BeginAddRemove(); //mxd
 				
 				// Dispose selected linedefs
-				foreach(Linedef ld in selected) {
+				foreach(Linedef ld in selected) 
+				{
 					//mxd. If there are different sectors on both sides, join them
-					if(ld.Front != null && ld.Front.Sector != null && ld.Back != null && ld.Back.Sector != null && ld.Front.Sector.Index != ld.Back.Sector.Index) {
+					if(ld.Front != null && ld.Front.Sector != null && ld.Back != null 
+						&& ld.Back.Sector != null && ld.Front.Sector.Index != ld.Back.Sector.Index) 
+					{
 						if(ld.Front.Sector.BBox.Width * ld.Front.Sector.BBox.Height > ld.Back.Sector.BBox.Width * ld.Back.Sector.BBox.Height)
 							ld.Back.Sector.Join(ld.Front.Sector);
 						else
@@ -1208,13 +1258,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. Make gradient brightness
 		[BeginAction("gradientbrightness")]
-		public void MakeGradientBrightness() {
+		public void MakeGradientBrightness() 
+		{
 			if(!General.Map.UDMF) return;
 
 			// Need at least 3 selected linedefs
 			// The first and last are not modified
 			ICollection<Linedef> orderedselection = General.Map.Map.GetSelectedLinedefs(true);
-			if(orderedselection.Count > 2) {
+			if(orderedselection.Count > 2) 
+			{
 				General.Interface.DisplayStatus(StatusType.Action, "Created gradient brightness over selected linedefs.");
 				General.Map.UndoRedo.CreateUndo("Linedefs gradient brightness");
 
@@ -1227,20 +1279,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				float endbrightness = float.NaN;
 
 				//get total brightness of start sidedef(s)
-				if(start.Front != null) {
-					if(start.Front.Fields.GetValue(lightAbsKey, false)) {
+				if(start.Front != null) 
+				{
+					if(start.Front.Fields.GetValue(lightAbsKey, false)) 
+					{
 						startbrightness = start.Front.Fields.GetValue(lightKey, 0);
-					} else {
+					} 
+					else 
+					{
 						startbrightness = Math.Min(255, Math.Max(0, (float)start.Front.Sector.Brightness + start.Front.Fields.GetValue(lightKey, 0)));
 					}
 				}
 
-				if(start.Back != null) {
+				if(start.Back != null) 
+				{
 					float b;
 
-					if(start.Back.Fields.GetValue(lightAbsKey, false)) {
+					if(start.Back.Fields.GetValue(lightAbsKey, false)) 
+					{
 						b = start.Back.Fields.GetValue(lightKey, 0);
-					} else {
+					} 
+					else 
+					{
 						b = Math.Min(255, Math.Max(0, (float)start.Back.Sector.Brightness + start.Back.Fields.GetValue(lightKey, 0)));
 					}
 
@@ -1248,20 +1308,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				//get total brightness of end sidedef(s)
-				if(end.Front != null) {
-					if(end.Front.Fields.GetValue(lightAbsKey, false)) {
+				if(end.Front != null) 
+				{
+					if(end.Front.Fields.GetValue(lightAbsKey, false)) 
+					{
 						endbrightness = end.Front.Fields.GetValue(lightKey, 0);
-					} else {
+					} 
+					else 
+					{
 						endbrightness = Math.Min(255, Math.Max(0, (float)end.Front.Sector.Brightness + end.Front.Fields.GetValue(lightKey, 0)));
 					}
 				}
 
-				if(end.Back != null) {
+				if(end.Back != null) 
+				{
 					float b;
 
-					if(end.Back.Fields.GetValue(lightAbsKey, false)) {
+					if(end.Back.Fields.GetValue(lightAbsKey, false)) 
+					{
 						b = end.Back.Fields.GetValue(lightKey, 0);
-					} else {
+					} 
+					else 
+					{
 						b = Math.Min(255, Math.Max(0, (float)end.Back.Sector.Brightness + end.Back.Fields.GetValue(lightKey, 0)));
 					}
 
@@ -1272,20 +1340,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Go for all sectors in between first and last
 				int index = 0;
-				foreach(Linedef l in orderedselection) {
+				foreach(Linedef l in orderedselection) 
+				{
 					float u = index / (float)(orderedselection.Count - 1);
 					float b = startbrightness + delta * u;
 
-					if(l.Front != null) {
+					if(l.Front != null) 
+					{
 						l.Front.Fields.BeforeFieldsChange();
 
 						//absolute flag set?
-						if(l.Front.Fields.GetValue(lightAbsKey, false)) {
+						if(l.Front.Fields.GetValue(lightAbsKey, false)) 
+						{
 							if(l.Front.Fields.ContainsKey(lightKey))
 								l.Front.Fields[lightKey].Value = (int)b;
 							else
 								l.Front.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b));
-						} else {
+						} 
+						else 
+						{
 							if(l.Front.Fields.ContainsKey(lightKey))
 								l.Front.Fields[lightKey].Value = (int)b - l.Front.Sector.Brightness;
 							else
@@ -1293,16 +1366,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 
-					if(l.Back != null) {
+					if(l.Back != null) 
+					{
 						l.Back.Fields.BeforeFieldsChange();
 
 						//absolute flag set?
-						if(l.Back.Fields.GetValue(lightAbsKey, false)) {
+						if(l.Back.Fields.GetValue(lightAbsKey, false)) 
+						{
 							if(l.Back.Fields.ContainsKey(lightKey))
 								l.Back.Fields[lightKey].Value = (int)b;
 							else
 								l.Back.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b));
-						} else {
+						} 
+						else 
+						{
 							if(l.Back.Fields.ContainsKey(lightKey))
 								l.Back.Fields[lightKey].Value = (int)b - l.Back.Sector.Brightness;
 							else
@@ -1318,74 +1395,89 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.RedrawDisplay();
 				General.Interface.RefreshInfo();
 				General.Map.IsChanged = true;
-			} else {
+			} 
+			else 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 linedefs first!");
 			}
 		}
 
 		[BeginAction("placethings")] //mxd
-		public void PlaceThings() {
+		public void PlaceThings() 
+		{
 			// Make list of selected linedefs
 			ICollection<Linedef> lines = General.Map.Map.GetSelectedLinedefs(true);
 			List<Vector2D> positions = new List<Vector2D>();
 
-			if(lines.Count == 0) {
-				if (highlighted != null && !highlighted.IsDisposed) {
+			if(lines.Count == 0) 
+			{
+				if (highlighted != null && !highlighted.IsDisposed) 
+				{
 					lines.Add(highlighted);
-				} else {
+				} 
+				else 
+				{
 					General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection of some description!");
 					return;
 				}
 			}
 
 			// Make list of vertex positions
-			foreach(Linedef l in lines) {
+			foreach(Linedef l in lines) 
+			{
 				if(!positions.Contains(l.Start.Position)) positions.Add(l.Start.Position);
 				if(!positions.Contains(l.End.Position)) positions.Add(l.End.Position);
 			}
 
-			if(positions.Count < 1) {
+			if(positions.Count < 1) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Unable to get vertex positions from selection!");
 				return;
 			}
 
-			placeThingsAtPositions(positions);
+			PlaceThingsAtPositions(positions);
 		}
 
 		//mxd
 		[BeginAction("alignfloortofront")]
-		public void AlignFloorToFront() {
+		public void AlignFloorToFront() 
+		{
 			if(!General.Map.UDMF) return;
-			alignTextureToLine(true, true);
+			AlignTextureToLine(true, true);
 		}
 
 		//mxd
 		[BeginAction("alignfloortoback")]
-		public void AlignFloorToBack() {
+		public void AlignFloorToBack() 
+		{
 			if(!General.Map.UDMF) return;
-			alignTextureToLine(true, false);
+			AlignTextureToLine(true, false);
 		}
 
 		//mxd
 		[BeginAction("alignceilingtofront")]
-		public void AlignCeilingToFront() {
+		public void AlignCeilingToFront() 
+		{
 			if(!General.Map.UDMF) return;
-			alignTextureToLine(false, true);
+			AlignTextureToLine(false, true);
 		}
 
 		//mxd
 		[BeginAction("alignceilingtoback")]
-		public void AlignCeilingToBack() {
+		public void AlignCeilingToBack() 
+		{
 			if(!General.Map.UDMF) return;
-			alignTextureToLine(false, false);
+			AlignTextureToLine(false, false);
 		}
 
 		//mxd
 		[BeginAction("selectsimilar")]
-		public void SelectSimilar() {
+		public void SelectSimilar() 
+		{
 			ICollection<Linedef> selection = General.Map.Map.GetSelectedLinedefs(true);
 
-			if(selection.Count == 0) {
+			if(selection.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
 			}

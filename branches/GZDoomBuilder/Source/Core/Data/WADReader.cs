@@ -101,25 +101,31 @@ namespace CodeImp.DoomBuilder.Data
 			//mxd
 			invertedflatranges = new List<LumpRange>();
 
-			if(flatranges.Count > 0) {
+			if(flatranges.Count > 0) 
+			{
 				//add range before the first flatrange
-				if (flatranges[0].start > 0) {
+				if (flatranges[0].start > 0) 
+				{
 					LumpRange range = new LumpRange {start = 0, end = flatranges[0].start - 1};
 					invertedflatranges.Add(range);
 				}
 
 				//add ranges between flatranges
-				for(int i = 1; i < flatranges.Count; i++) {
+				for(int i = 1; i < flatranges.Count; i++) 
+				{
 					LumpRange range = new LumpRange { start = flatranges[i - 1].end + 1, end = flatranges[i].start - 1 };
 					invertedflatranges.Add(range);
 				}
 
 				//add range after the last flatrange
-				if(flatranges[flatranges.Count - 1].end < file.Lumps.Count - 1) {
+				if(flatranges[flatranges.Count - 1].end < file.Lumps.Count - 1) 
+				{
 					LumpRange range = new LumpRange { start = flatranges[flatranges.Count - 1].end + 1, end = file.Lumps.Count - 1 };
 					invertedflatranges.Add(range);
 				}
-			} else { // No flat ranges? Make one giant range then... 
+			} 
+			else // No flat ranges? Make one giant range then... 
+			{ 
 				LumpRange range = new LumpRange {start = 0, end = file.Lumps.Count - 1};
 				invertedflatranges.Add(range);
 			}
@@ -356,15 +362,19 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(LumpRange range in textureranges)
 			{
 				// Go for all lumps between start and end exclusive
-				for(int i = range.start + 1; i < range.end; i++) {
+				for(int i = range.start + 1; i < range.end; i++) 
+				{
 					// Lump not zero length?
-					if(file.Lumps[i].Length > 0) {
+					if(file.Lumps[i].Length > 0) 
+					{
 						// Make the image
 						SimpleTextureImage image = new SimpleTextureImage(file.Lumps[i].Name, file.Lumps[i].Name, defaultscale, defaultscale);
 
 						// Add image to collection
 						images.Add(image);
-					} else {
+					} 
+					else 
+					{
 						// Can't load image without size
 						General.ErrorLogger.Add(ErrorType.Error, "Can't load texture '" + file.Lumps[i].Name + "' because it doesn't contain any data.");
 					}
@@ -773,17 +783,20 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Voxels (mxd)
 
 		//mxd. This returns the list of voxels, which can be used without VOXELDEF definition
-		public override string[] GetVoxelNames() {
+		public override string[] GetVoxelNames() 
+		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			List<string> voxels = new List<string>();
 			Regex spriteName = new Regex(SPRITE_NAME_PATTERN);
 
-			foreach(LumpRange range in voxelranges) {
+			foreach(LumpRange range in voxelranges) 
+			{
 				if(range.start == range.end) continue;
 
-				for(int i = range.start + 1; i < range.end; i++) {
+				for(int i = range.start + 1; i < range.end; i++) 
+				{
 					if(spriteName.IsMatch(file.Lumps[i].Name)) voxels.Add(file.Lumps[i].Name);
 				}
 			}
@@ -792,20 +805,23 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		public override KeyValuePair<string, Stream> GetVoxeldefData() {
+		public override KeyValuePair<string, Stream> GetVoxeldefData() 
+		{
 			Lump lump = file.FindLump("VOXELDEF");
 			if(lump != null) return new KeyValuePair<string, Stream>("VOXELDEF", lump.Stream);
 			return new KeyValuePair<string, Stream>();
 		}
 
 		//mxd. This finds and returns a voxel stream or null if no voxel was found
-		public override Stream GetVoxelData(string name) {
+		public override Stream GetVoxelData(string name) 
+		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			Lump lump;
 
-			foreach(LumpRange range in voxelranges) {
+			foreach(LumpRange range in voxelranges) 
+			{
 				if(range.start == range.end) continue;
 				lump = file.FindLump(name, range.start, range.end);
 				if(lump != null) return lump.Stream;
@@ -841,7 +857,8 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		public override Dictionary<string, Stream> GetMapinfoData() {
+		public override Dictionary<string, Stream> GetMapinfoData() 
+		{
 			if (issuspended) throw new Exception("Data reader is suspended");
 
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
@@ -852,26 +869,27 @@ namespace CodeImp.DoomBuilder.Data
 			int lumpindex = file.FindLumpIndex(src);
 
 			//then for MAPINFO
-			if (lumpindex == -1) {
+			if (lumpindex == -1) 
+			{
 				src = "MAPINFO";
 				lumpindex = file.FindLumpIndex(src);
 			}
 
-			if(lumpindex != -1)
-				streams.Add(src, file.Lumps[lumpindex].Stream);
-
+			if(lumpindex != -1) streams.Add(src, file.Lumps[lumpindex].Stream);
 			return streams;
 		}
 
 		//mxd
-		public override Dictionary<string, Stream> GetGldefsData(GameType gameType) {
+		public override Dictionary<string, Stream> GetGldefsData(GameType gameType) 
+		{
 			if (issuspended) throw new Exception("Data reader is suspended");
 
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 			int lumpindex;
 
 			//try to load game specific GLDEFS first
-			if (gameType != GameType.UNKNOWN) {
+			if (gameType != GameType.UNKNOWN) 
+			{
 				string lumpName = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gameType];
 				lumpindex = file.FindLumpIndex(lumpName);
 
@@ -882,35 +900,35 @@ namespace CodeImp.DoomBuilder.Data
 			//should be only one entry per wad
 			lumpindex = file.FindLumpIndex("GLDEFS");
 			
-			if (lumpindex != -1)
-				streams.Add("GLDEFS", file.Lumps[lumpindex].Stream);
-
+			if (lumpindex != -1) streams.Add("GLDEFS", file.Lumps[lumpindex].Stream);
 			return streams;
 		}
 
 		//mxd
-		public override Dictionary<string, Stream> GetGldefsData(string location) {
+		public override Dictionary<string, Stream> GetGldefsData(string location) 
+		{
 			if (issuspended) throw new Exception("Data reader is suspended");
 
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 			int lumpindex = file.FindLumpIndex(location);
 			
-			if (lumpindex != -1)
-				streams.Add(location, file.Lumps[lumpindex].Stream);
-
+			if (lumpindex != -1) streams.Add(location, file.Lumps[lumpindex].Stream);
 			return streams;
 		}
 
 		//mxd
-		public override Dictionary<string, Stream> GetModeldefData() {
+		public override Dictionary<string, Stream> GetModeldefData() 
+		{
 			return GetGldefsData("MODELDEF");
 		}
 
 		//mxd
-		internal override MemoryStream LoadFile(string name) {
+		internal override MemoryStream LoadFile(string name) 
+		{
 			Lump l = file.FindLump(name);
 
-			if (l != null) {
+			if (l != null) 
+			{
 				l.Stream.Seek(0, SeekOrigin.Begin);
 				return new MemoryStream(l.Stream.ReadAllBytes());
 			}
@@ -919,7 +937,8 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		internal override bool FileExists(string name) {
+		internal override bool FileExists(string name) 
+		{
 			return file.FindLumpIndex(name) != -1;
 		}
 

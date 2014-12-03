@@ -147,7 +147,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 				string token = parser.ReadToken();
 				token = token.ToLowerInvariant();
 
-				switch (token) {
+				switch (token) 
+				{
 					case "flipx":
 						flipx = true;
 						break;
@@ -166,7 +167,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 						rotation = rotation % 360; //Coalesce multiples
 						if (rotation < 0) rotation += 360; //Force positive
 
-						if (rotation != 0 && rotation != 90 && rotation != 180 && rotation != 270) {
+						if (rotation != 0 && rotation != 90 && rotation != 180 && rotation != 270) 
+						{
 							General.ErrorLogger.Add(ErrorType.Warning, "Got unsupported rotation (" + rotation + ") in patch " + name);
 							rotation = 0;
 						}
@@ -187,12 +189,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 						parser.SkipWhitespace(false);
 						token = parser.ReadToken();
 
-						if (token == ",") { //read tint ammount
+						if (token == ",") //read tint ammount
+						{ 
 							parser.SkipWhitespace(false);
 							if (!ReadTokenFloat(parser, token, out tintAmmount)) return;
 							tintAmmount = General.Clamp(tintAmmount, 0.0f, 1.0f);
 							blendStyle = TexturePathBlendStyle.Tint;
-						} else {
+						} 
+						else 
+						{
 							blendStyle = TexturePathBlendStyle.Blend;
 							// Rewind so this structure can be read again
 							parser.DataStream.Seek(-token.Length - 1, SeekOrigin.Current);
@@ -262,11 +267,13 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd. This reads the next token and sets a string value, returns false when failed
-		private static bool ReadTokenString(TexturesParser parser, string propertyname, out string value) {
+		private static bool ReadTokenString(TexturesParser parser, string propertyname, out string value) 
+		{
 			parser.SkipWhitespace(true);
 			value = parser.StripTokenQuotes(parser.ReadToken());
 			
-			if(string.IsNullOrEmpty(value)) {
+			if(string.IsNullOrEmpty(value)) 
+			{
 				// Can't find the property value!
 				parser.ReportError("Expected a value for property '" + propertyname + "'");
 				return false;
@@ -275,24 +282,28 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd. This reads the next token and sets a PixelColor value, returns false when failed
-		private static bool ReadTokenColor(TexturesParser parser, string propertyname, out int value) {
+		private static bool ReadTokenColor(TexturesParser parser, string propertyname, out int value) 
+		{
 			parser.SkipWhitespace(true);
 			string strvalue = parser.StripTokenQuotes(parser.ReadToken());
 			value = 0;
 
-			if(string.IsNullOrEmpty(strvalue)) {
+			if(string.IsNullOrEmpty(strvalue)) 
+			{
 				// Can't find the property value!
 				parser.ReportError("Expected a value for property '" + propertyname + "'");
 				return false;
 			}
 
-			if(strvalue[0] != '#') {
+			if(strvalue[0] != '#') 
+			{
 				parser.ReportError("Expected color value for property '" + propertyname + "'");
 				return false;
 			}
 
 			// Try parsing as value
-			if(!int.TryParse(strvalue.Remove(0, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out value)) {
+			if(!int.TryParse(strvalue.Remove(0, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out value)) 
+			{
 				parser.ReportError("Expected color value for property '" + propertyname + "'");
 				return false;
 			} 

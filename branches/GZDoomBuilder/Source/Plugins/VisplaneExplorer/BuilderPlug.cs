@@ -71,7 +71,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		}
 
         //mxd. This, actually, can also happen
-        public override void OnMapNewBegin() {
+        public override void OnMapNewBegin() 
+		{
             OnMapOpenBegin();
         }
 

@@ -129,13 +129,15 @@ namespace CodeImp.DoomBuilder.Compilers
 			General.WriteLogLine("Compile time: " + deltatime.TotalSeconds.ToString("########0.00") + " seconds");
 
 			//mxd
-			if (process.ExitCode > 0 || errorsInNormalOurput || errorsInErrorOutput) {
-				if (errorsInNormalOurput) {
+			if (process.ExitCode > 0 || errorsInNormalOurput || errorsInErrorOutput) 
+			{
+				if (errorsInNormalOurput) 
+				{
 					ReportError(new CompilerError(outMsg));
 					General.WriteLogLine("Normal output: " + outMsg);
 				}
-
-				if (errorsInErrorOutput) {
+				if (errorsInErrorOutput) 
+				{
 					ReportError(new CompilerError(outErr));
 					General.WriteLogLine("Error output: " + outErr);
 				}

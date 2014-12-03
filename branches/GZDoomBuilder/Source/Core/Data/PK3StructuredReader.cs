@@ -470,11 +470,12 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if (issuspended) throw new Exception("Data reader is suspended");
 
-			//modedef should be in root folder
+			// Modedef should be in root folder
 			string[] files = GetAllFiles("", false);
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 
-			foreach (string s in files) {
+			foreach (string s in files) 
+			{
 				if (s.ToLowerInvariant().IndexOf("modeldef") != -1) 
 					streams.Add(s, LoadFile(s));
 			}

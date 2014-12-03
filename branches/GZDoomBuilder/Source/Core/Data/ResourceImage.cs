@@ -90,7 +90,8 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		public override Image GetPreview() {
+		public override Image GetPreview() 
+		{
 			return base.GetBitmap();
 		}
 		

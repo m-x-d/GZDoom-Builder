@@ -15,7 +15,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public VisualVertex CeilingVertex { get { return ceilvert; } }
 		public bool Changed { set { floorvert.Changed = value; ceilvert.Changed = value; } }
 
-		public VisualVertexPair(VisualVertex floorvert, VisualVertex ceilvert) {
+		public VisualVertexPair(VisualVertex floorvert, VisualVertex ceilvert) 
+		{
 			if(floorvert.CeilingVertex == ceilvert.CeilingVertex)
 				throw new Exception("VisualVertexPair: both verts have the same alignment! We cannot tolerate this!");
 
@@ -23,12 +24,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.ceilvert = ceilvert;
 		}
 
-		public void Update() {
+		public void Update() 
+		{
 			if(floorvert.Changed) floorvert.Update();
 			if(ceilvert.Changed) ceilvert.Update();
 		}
 
-		public void Deselect() {
+		public void Deselect() 
+		{
 			floorvert.Selected = false;
 			ceilvert.Selected = false;
 		}
@@ -56,18 +59,21 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public bool CeilingVertex { get { return ceilingVertex; } }
 		public bool HaveHeightOffset { get { return haveOffset; } }
 
-		public VisualVertex(Vertex v, bool ceilingVertex) {
+		public VisualVertex(Vertex v, bool ceilingVertex) 
+		{
 			vertex = v;
 			position = Matrix.Identity;
 			this.ceilingVertex = ceilingVertex;
 		}
 
 		// This sets the distance from the camera
-		internal void CalculateCameraDistance(Vector2D campos) {
+		internal void CalculateCameraDistance(Vector2D campos) 
+		{
 			cameradistance = Vector2D.DistanceSq(vertex.Position, campos);
 		}
 
-		public void SetPosition(Vector3D pos) {
+		public void SetPosition(Vector3D pos) 
+		{
 			position = Matrix.Translation(pos.x, pos.y, pos.z);
 		}
 
@@ -77,7 +83,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// This is called when the thing must be tested for line intersection. This should reject
 		/// as fast as possible to rule out all geometry that certainly does not touch the line.
 		/// </summary>
-		public virtual bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir) {
+		public virtual bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir) 
+		{
 			return false;
 		}
 
@@ -85,14 +92,16 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// This is called when the thing must be tested for line intersection. This should perform
 		/// accurate hit detection and set u_ray to the position on the ray where this hits the geometry.
 		/// </summary>
-		public virtual bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray) {
+		public virtual bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray) 
+		{
 			return false;
 		}
 
 		/// <summary>
 		/// This sorts things by distance from the camera. Farthest first.
 		/// </summary>
-		public int CompareTo(VisualVertex other) {
+		public int CompareTo(VisualVertex other) 
+		{
 			return Math.Sign(other.cameradistance - this.cameradistance);
 		}
 	}

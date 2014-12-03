@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Windows
 			Cursor.Current = Cursors.WaitCursor;
 			TreeNode item; //mxd
 			long longname = Lump.MakeLongName(selecttexture ?? "");
+			longname = (browseFlats ? General.Map.Data.GetFullLongFlatName(longname) : General.Map.Data.GetFullLongTextureName(longname)); //mxd
 			int count; //mxd
 			selectedset = null; //mxd
 			this.browseFlats = browseFlats;
@@ -104,7 +105,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				if (ts.Location.type != DataLocation.RESOURCE_WAD) 
 				{
-					createNodes(item);
+					CreateNodes(item);
 					item.Expand();
 				}
 			}
@@ -127,7 +128,7 @@ namespace CodeImp.DoomBuilder.Windows
 			} 
 			else 
 			{
-				match = findNodeByName(tvTextureSets.Nodes, selectname);
+				match = FindNodeByName(tvTextureSets.Nodes, selectname);
 			}
 
 			if (match != null) 
@@ -148,7 +149,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				foreach (TreeNode n in tvTextureSets.Nodes) 
 				{
-					selectedset = findTextureByLongName(n, longname);
+					selectedset = FindTextureByLongName(n, longname);
 					if (selectedset != null) break;
 				}
 			}
@@ -195,20 +196,20 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private static int sortImageData(ImageData img1, ImageData img2) 
+		private static int SortImageData(ImageData img1, ImageData img2) 
 		{
 			return img1.FullName.CompareTo(img2.FullName);
 		}
 
 		//mxd
-		private TreeNode findTextureByLongName(TreeNode node, long longname) 
+		private TreeNode FindTextureByLongName(TreeNode node, long longname) 
 		{
 			//first search in child nodes
 			TreeNode match;
 
 			foreach(TreeNode n in node.Nodes) 
 			{
-				match = findTextureByLongName(n, longname);
+				match = FindTextureByLongName(n, longname);
 				if(match != null) return match;
 			}
 
@@ -230,20 +231,20 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private static TreeNode findNodeByName(TreeNodeCollection nodes, string selectname) 
+		private static TreeNode FindNodeByName(TreeNodeCollection nodes, string selectname) 
 		{
 			foreach (TreeNode n in nodes) 
 			{
 				if (n.Name == selectname) return n;
 
-				TreeNode match = findNodeByName(n.Nodes, selectname);
+				TreeNode match = FindNodeByName(n.Nodes, selectname);
 				if(match != null) return match;
 			}
 			return null;
 		}
 
 		//mxd
-		private void createNodes(TreeNode root) 
+		private void CreateNodes(TreeNode root) 
 		{
 			ResourceTextureSet set = root.Tag as ResourceTextureSet;
 			if (set == null) 
@@ -266,7 +267,7 @@ namespace CodeImp.DoomBuilder.Windows
 				images = new ImageData[set.Textures.Count];
 				set.Textures.CopyTo(images, 0);
 			}
-			Array.Sort(images, sortImageData);
+			Array.Sort(images, SortImageData);
 
 			foreach(ImageData image in images) 
 			{

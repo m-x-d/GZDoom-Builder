@@ -217,25 +217,30 @@ namespace CodeImp.DoomBuilder.Editing
 				if(!General.Map.FormatInterface.HasCustomFields) customfields.Clear();
 
 				//mxd. We don't want to keep unknown flags (like flags from different map format)
-				if(General.Map.Config != null && General.Map.Config.ThingFlags != null) {
+				if(General.Map.Config != null && General.Map.Config.ThingFlags != null) 
+				{
 					List<String> unknownfields = new List<string>();
-					foreach(String s in forbiddenfields) {
+					foreach(String s in forbiddenfields) 
+					{
 						if(!General.Map.Config.ThingFlags.ContainsKey(s))
 							unknownfields.Add(s);
 					}
 
-					if(unknownfields.Count > 0) {
+					if(unknownfields.Count > 0) 
+					{
 						foreach(String s in unknownfields)
 							forbiddenfields.Remove(s);
 					}
 
 					unknownfields = new List<string>();
-					foreach(String s in requiredfields) {
+					foreach(String s in requiredfields) 
+					{
 						if(!General.Map.Config.ThingFlags.ContainsKey(s))
 							unknownfields.Add(s);
 					}
 
-					if(unknownfields.Count > 0) {
+					if(unknownfields.Count > 0) 
+					{
 						foreach(String s in unknownfields)
 							requiredfields.Remove(s);
 					}
@@ -244,13 +249,15 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		//mxd
-		public void Validate() {
+		public void Validate() 
+		{
 			AdjustForMapFormat();
 
 			//Integrity check
 			if(string.IsNullOrEmpty(categoryname) && thingtype == -1 && thingangle == -1
 				&& thingzheight == int.MinValue && thingaction == -1 && thingtag == -1
-				&& requiredfields.Count == 0 && forbiddenfields.Count == 0 && customfields.Count == 0) {
+				&& requiredfields.Count == 0 && forbiddenfields.Count == 0 && customfields.Count == 0) 
+			{
 				General.ErrorLogger.Add(ErrorType.Warning, "Things filter '" + name + "' has invalid properties. Configure the thing filter to fix this!");
 			}
 		}

@@ -28,7 +28,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor
 
-		public DrawEllipseMode() {
+		public DrawEllipseMode() 
+		{
 			undoName = "Ellipse draw";
 			shapeName = "ellipse";
 		}
@@ -37,7 +38,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Settings panel
 
-		override protected void setupInterface() {
+		override protected void SetupInterface() 
+		{
 			maxSubdivisions = 512;
 			minSubdivisions = 6;
 
@@ -50,13 +52,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
 		}
 
-		override protected void addInterface() {
+		override protected void AddInterface() 
+		{
 			panel.Register();
 			bevelWidth = panel.Spikiness;
 			subdivisions = panel.Subdivisions;
 		}
 
-		override protected void removeInterface() {
+		override protected void RemoveInterface() 
+		{
 			panel.Unregister();
 		}
 
@@ -64,7 +68,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
-		override protected Vector2D[] getShape(Vector2D pStart, Vector2D pEnd) {
+		override protected Vector2D[] GetShape(Vector2D pStart, Vector2D pEnd) 
+		{
 			//no shape
 			if (pEnd.x == pStart.x && pEnd.y == pStart.y) return new Vector2D[0];
 
@@ -72,9 +77,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(pEnd.x == pStart.x || pEnd.y == pStart.y) return new[] { pStart, pEnd };
 
 			//got shape
-			if (bevelWidth < 0) {
+			if (bevelWidth < 0) 
+			{
 				currentBevelWidth = -Math.Min(Math.Abs(bevelWidth), Math.Min(width, height) / 2) + 1;
-			} else {
+			} 
+			else 
+			{
 				currentBevelWidth = bevelWidth;
 			}
 
@@ -89,11 +97,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float angleStep = -Angle2D.PI / subdivisions * 2;
 			int px, py;
 
-			for (int i = 0; i < subdivisions; i++) {
-				if (doBevel) {
+			for (int i = 0; i < subdivisions; i++) 
+			{
+				if (doBevel) 
+				{
 					px = (int)(center.x - (float)Math.Sin(curAngle) * (hw + currentBevelWidth));
 					py = (int)(center.y - (float)Math.Cos(curAngle) * (hh + currentBevelWidth));
-				} else {
+				} 
+				else 
+				{
 					px = (int)(center.x - (float)Math.Sin(curAngle) * hw);
 					py = (int)(center.y - (float)Math.Cos(curAngle) * hh);
 				}
@@ -106,7 +118,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return shape;
 		}
 
-		protected override string getHintText() {
+		protected override string GetHintText() 
+		{
 			return "BVL: " + bevelWidth + "; VERTS: " + subdivisions;
 		}
 
@@ -114,13 +127,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Events
 
-		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) {
+		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) 
+		{
 			bevelWidth = panel.Spikiness;
 			subdivisions = Math.Min(maxSubdivisions, panel.Subdivisions);
 			Update();
 		}
 
-		public override void OnHelp() {
+		public override void OnHelp() 
+		{
 			General.ShowHelp("/gzdb/features/classic_modes/mode_drawellipse.html");
 		}
 
@@ -128,32 +143,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Actions
 
-		override protected void increaseSubdivLevel() {
-			if(maxSubdivisions - subdivisions > 1) {
+		override protected void IncreaseSubdivLevel() 
+		{
+			if(maxSubdivisions - subdivisions > 1) 
+			{
 				subdivisions += 2;
 				panel.Subdivisions = subdivisions;
 				Update();
 			}
 		}
 
-		override protected void decreaseSubdivLevel() {
-			if (subdivisions - minSubdivisions > 1) {
+		override protected void DecreaseSubdivLevel() 
+		{
+			if (subdivisions - minSubdivisions > 1) 
+			{
 				subdivisions -= 2;
 				panel.Subdivisions = subdivisions;
 				Update();
 			}
 		}
 
-		protected override void increaseBevel() {
-			if(points.Count < 2 || currentBevelWidth == bevelWidth || bevelWidth < 0) {
+		protected override void IncreaseBevel() 
+		{
+			if(points.Count < 2 || currentBevelWidth == bevelWidth || bevelWidth < 0) 
+			{
 				bevelWidth = Math.Min(bevelWidth + General.Map.Grid.GridSize, panel.MaxSpikiness);
 				panel.Spikiness = bevelWidth;
 				Update();
 			}
 		}
 
-		protected override void decreaseBevel() {
-			if(bevelWidth > 0 || currentBevelWidth <= bevelWidth + 1) {
+		protected override void DecreaseBevel() 
+		{
+			if(bevelWidth > 0 || currentBevelWidth <= bevelWidth + 1) 
+			{
 				bevelWidth = Math.Max(bevelWidth - General.Map.Grid.GridSize, panel.MinSpikiness);
 				panel.Spikiness = bevelWidth;
 				Update();

@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -408,7 +409,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if((Math.Abs(delta.x) <= 0.001f) && (Math.Abs(delta.y) <= 0.001f))
 				{
 					//mxd. Seems... logical?
-					if (points.Count == 2) {
+					if (points.Count == 2) 
+					{
 						OnCancel();
 						return true;
 					}
@@ -462,7 +464,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnAccept()
 		{
 			Cursor.Current = Cursors.AppStarting;
-
 			General.Settings.FindDefaultDrawSettings();
 
 			// When points have been drawn
@@ -472,7 +473,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.CreateUndo("Line draw");
 				
 				// Make an analysis and show info
-				string[] adjectives = new string[]
+				string[] adjectives = new[]
 				{ "beautiful", "lovely", "romantic", "stylish", "cheerful", "comical",
 				  "awesome", "accurate", "adorable", "adventurous", "attractive", "cute",
 				  "elegant", "glamorous", "gorgeous", "handsome", "magnificent", "unusual",

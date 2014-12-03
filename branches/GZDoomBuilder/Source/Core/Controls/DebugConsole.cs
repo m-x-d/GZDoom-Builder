@@ -14,11 +14,11 @@ namespace CodeImp.DoomBuilder
 	[Flags]
 	public enum DebugMessageType
 	{
-		Log = 1,
-		Info = 2,
-		Warning = 4,
-		Error = 8,
-		Special = 16,
+		LOG = 1,
+		INFO = 2,
+		WARNING = 4,
+		ERROR = 8,
+		SPECIAL = 16,
 	}
 
 	#endregion
@@ -61,20 +61,20 @@ namespace CodeImp.DoomBuilder
 
 			// Setup colors
 			textcolors = new Dictionary<DebugMessageType, Color> {
-				             { DebugMessageType.Log, SystemColors.WindowText }, 
-							 { DebugMessageType.Info, Color.DarkGreen }, 
-							 { DebugMessageType.Warning, Color.DarkOrange }, 
-							 { DebugMessageType.Error, Color.DarkRed }, 
-							 { DebugMessageType.Special, Color.DarkMagenta }
+				             { DebugMessageType.LOG, SystemColors.WindowText }, 
+							 { DebugMessageType.INFO, Color.DarkGreen }, 
+							 { DebugMessageType.WARNING, Color.DarkOrange }, 
+							 { DebugMessageType.ERROR, Color.DarkRed }, 
+							 { DebugMessageType.SPECIAL, Color.DarkMagenta }
 			             };
 
 			// Setup headers
 			textheaders = new Dictionary<DebugMessageType, string> {
-				              { DebugMessageType.Log, string.Empty}, 
-							  { DebugMessageType.Info, string.Empty}, 
-							  { DebugMessageType.Warning, "Warning: "}, 
-							  { DebugMessageType.Error, "ERROR: "}, 
-							  { DebugMessageType.Special, string.Empty}
+				              { DebugMessageType.LOG, string.Empty}, 
+							  { DebugMessageType.INFO, string.Empty}, 
+							  { DebugMessageType.WARNING, "Warning: "}, 
+							  { DebugMessageType.ERROR, "ERROR: "}, 
+							  { DebugMessageType.SPECIAL, string.Empty}
 			              };
 
 			// Word wrap?
@@ -90,12 +90,12 @@ namespace CodeImp.DoomBuilder
 
 		public static void Write(string text)
 		{
-			Write(DebugMessageType.Info, text);
+			Write(DebugMessageType.INFO, text);
 		}
 
 		public static void WriteLine(string text) 
 		{
-			Write(DebugMessageType.Info, text + Environment.NewLine);
+			Write(DebugMessageType.INFO, text + Environment.NewLine);
 		}
 
 		public static void Write(DebugMessageType type, string text)
@@ -142,7 +142,7 @@ namespace CodeImp.DoomBuilder
 		{
 			if (starttime == -1) 
 			{
-				Write(DebugMessageType.Warning, "Call General.Console.StartTimer before General.Console.StopTimer!");
+				Write(DebugMessageType.WARNING, "Call General.Console.StartTimer before General.Console.StopTimer!");
 			}
 			else 
 			{
@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder
 				else 
 					message = message.TrimEnd() + " " + (endtime - starttime) + " ms.";
 
-				Write(DebugMessageType.Special, message);
+				Write(DebugMessageType.SPECIAL, message);
 			}
 
 			starttime = -1;
@@ -199,7 +199,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// Should we display this message?
-		private bool CheckTextFilter(string text, string filter) 
+		private static bool CheckTextFilter(string text, string filter) 
 		{
 			if (string.IsNullOrEmpty(filter) || filter.Length < 3) return true;
 			return text.ToUpperInvariant().Contains(filter.ToUpperInvariant());

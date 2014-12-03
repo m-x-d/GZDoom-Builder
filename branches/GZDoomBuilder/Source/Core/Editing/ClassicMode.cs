@@ -607,9 +607,12 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		//mxd
-		public override bool OnMapTestBegin(bool testFromCurrentPosition) {
-			if(testFromCurrentPosition) {
-				if(!mouseinside){
+		public override bool OnMapTestBegin(bool testFromCurrentPosition) 
+		{
+			if(testFromCurrentPosition) 
+			{
+				if(!mouseinside)
+				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: mouse is outside editing vindow!");
 					return false;
 				}
@@ -617,18 +620,25 @@ namespace CodeImp.DoomBuilder.Editing
 				//find Single Player Start. Should be type 1 in all games
 				Thing start = null;
 				
-				foreach (Thing t in General.Map.Map.Things) {
-					if (t.Type == 1) {
+				foreach (Thing t in General.Map.Map.Things) 
+				{
+					if (t.Type == 1) 
+					{
 						//store thing and position
-						if (start == null) {
+						if (start == null) 
+						{
 							start = t;
-						} else if(t.Index > start.Index) {
-							start = t; //if there are several Player Start 1 things, GZDoom uses one with the biggest index.
+						} 
+						else if(t.Index > start.Index) 
+						{
+							//if there are several Player Start 1 things, GZDoom uses one with the biggest index.
+							start = t;
 						}
 					}
 				}
 
-				if (start == null) {
+				if (start == null) 
+				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: no Player 1 start found!");
 					return false;
 				}
@@ -636,13 +646,15 @@ namespace CodeImp.DoomBuilder.Editing
 				//now check if cursor is located inside a sector
 				Sector s = General.Map.Map.GetSectorByCoordinates(mousemappos);
 
-				if(s == null){
+				if(s == null)
+				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: cursor is not inside sector!");
 					return false;
 				}
 
 				//41 = player's height in Doom. Is that so in all other games as well?
-				if (s.CeilHeight - s.FloorHeight < 41) {
+				if (s.CeilHeight - s.FloorHeight < 41) 
+				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: sector is too low!");
 					return false;
 				}
@@ -658,8 +670,10 @@ namespace CodeImp.DoomBuilder.Editing
 			return true;
 		}
 
-		public override void OnMapTestEnd(bool testFromCurrentPosition) {
-			if (testFromCurrentPosition) {
+		public override void OnMapTestEnd(bool testFromCurrentPosition) 
+		{
+			if (testFromCurrentPosition) 
+			{
 				//restore position
 				playerStart.Move(playerStartPosition);
 				playerStart = null;
@@ -759,7 +773,8 @@ namespace CodeImp.DoomBuilder.Editing
 			//mxd
 			PixelColor marqueColor;
 
-			switch(marqueSelectionMode) {
+			switch(marqueSelectionMode) 
+			{
 				case MarqueSelectionMode.SELECT:
 					marqueColor = General.Colors.Selection.WithAlpha(SELECTION_ALPHA);
 					break;
@@ -800,7 +815,8 @@ namespace CodeImp.DoomBuilder.Editing
 		/// <summary>
 		/// This selects given map element (mxd)
 		/// </summary>
-		public virtual void SelectMapElement(SelectableElement element) {
+		public virtual void SelectMapElement(SelectableElement element) 
+		{
 			element.Selected = true;
 		}
 		
@@ -811,7 +827,7 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("gridsetup", BaseAction = true)]
 		protected void ShowGridSetup()
 		{
-			General.Map.Grid.ShowGridSetup();
+			GridSetup.ShowGridSetup();
 		}
 		
 		[BeginAction("pan_view", BaseAction = true)]
@@ -852,10 +868,12 @@ namespace CodeImp.DoomBuilder.Editing
 
 		//mxd
 		[BeginAction("centeroncoordinates", BaseAction = true)]
-		protected virtual void CenterOnCoordinates() {
+		protected virtual void CenterOnCoordinates() 
+		{
 			//show form...
 			CenterOnCoordinatesForm form = new CenterOnCoordinatesForm();
-			if (form.ShowDialog() == DialogResult.OK) {
+			if (form.ShowDialog() == DialogResult.OK) 
+			{
 				//center view
 				renderer2d.PositionView(form.Coordinates.x, form.Coordinates.y);
 				General.Interface.RedrawDisplay();

@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
-using CodeImp.DoomBuilder.VisualModes;
-using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Geometry;
+﻿#region ================== Namespaces
+
+using System.Collections.Generic;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.VisualModes;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
@@ -25,7 +29,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Constructor
 		public BaseVisualVertex(BaseVisualMode mode, Vertex v, bool ceilingVertex)
-			: base(v, ceilingVertex) {
+			: base(v, ceilingVertex) 
+		{
 
 			this.mode = mode;
 			cageradius2 = DEFAULT_SIZE * General.Settings.GZVertexScale3D * Angle2D.SQRT2;
@@ -36,14 +41,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//this updates the handle itself
-		public override void Update() {
+		public override void Update() 
+		{
 			if(!changed) return;
 			float z = ceilingVertex ? vertex.ZCeiling : vertex.ZFloor;
 
-			if(!float.IsNaN(z)) {
+			if(!float.IsNaN(z)) 
+			{
 				haveOffset = true;
-			} else {
-				z = getSectorHeight();
+			} 
+			else 
+			{
+				z = GetSectorHeight();
 				haveOffset = false;
 			}
 
@@ -57,10 +66,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			changed = false;
 		}
 
-		private void updateGeometry(Vertex v) {
+		private void UpdateGeometry(Vertex v) 
+		{
 			VertexData vd = mode.GetVertexData(v);
-			foreach(KeyValuePair<Sector, bool> s in vd.UpdateAlso) {
-				if(mode.VisualSectorExists(s.Key)) {
+			foreach(KeyValuePair<Sector, bool> s in vd.UpdateAlso) 
+			{
+				if(mode.VisualSectorExists(s.Key)) 
+				{
 					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
 					vs.UpdateSectorGeometry(s.Value);
 				}
@@ -68,22 +80,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//get the most appropriate height from sectors
-		private int getSectorHeight() {
+		private int GetSectorHeight() 
+		{
 			int height;
 
 			VertexData vd = mode.GetVertexData(vertex);
 			Sector[] sectors = new Sector[vd.UpdateAlso.Keys.Count];
 			vd.UpdateAlso.Keys.CopyTo(sectors, 0);
 
-			if(ceilingVertex) {
+			if(ceilingVertex) 
+			{
 				height = sectors[0].CeilHeight;
-				for(int i = 1; i < sectors.Length; i++) {
+				for(int i = 1; i < sectors.Length; i++) 
+				{
 					if(sectors[i].CeilHeight < height)
 						height = sectors[i].CeilHeight;
 				}
-			} else {
+			} 
+			else 
+			{
 				height = sectors[0].FloorHeight;
-				for(int i = 1; i < sectors.Length; i++) {
+				for(int i = 1; i < sectors.Length; i++) 
+				{
 					if(sectors[i].FloorHeight > height)
 						height = sectors[i].FloorHeight;
 				}
@@ -93,20 +111,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual bool IsSelected() {
+		public virtual bool IsSelected() 
+		{
 			return selected;
 		}
 
 		#region ================== Object picking
 
 		// This performs a fast test in object picking
-		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir) {
+		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir) 
+		{
 			float distance2 = Line2D.GetDistanceToLineSq(from, to, vertex.Position, false);
 			return (distance2 <= cageradius2);
 		}
 
 		// This performs an accurate test for object picking
-		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray) {
+		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray) 
+		{
 			Vector3D delta = to - from;
 			float tfar = float.MaxValue;
 			float tnear = float.MinValue;
@@ -115,12 +136,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// See http://www.masm32.com/board/index.php?topic=9941.0
 
 			// Check X slab
-			if(delta.x == 0.0f) {
-				if(from.x > boxp2.x || from.x < boxp1.x) {
+			if(delta.x == 0.0f) 
+			{
+				if(from.x > boxp2.x || from.x < boxp1.x) 
+				{
 					// Ray is parallel to the planes & outside slab
 					return false;
 				}
-			} else {
+			}
+			else 
+			{
 				float tmp = 1.0f / delta.x;
 				float t1 = (boxp1.x - from.x) * tmp;
 				float t2 = (boxp2.x - from.x) * tmp;
@@ -130,19 +155,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					tnear = t1;
 				if(t2 < tfar)
 					tfar = t2;
-				if(tnear > tfar || tfar < 0.0f) {
+				if(tnear > tfar || tfar < 0.0f) 
+				{
 					// Ray missed box or box is behind ray
 					return false;
 				}
 			}
 
 			// Check Y slab
-			if(delta.y == 0.0f) {
-				if(from.y > boxp2.y || from.y < boxp1.y) {
+			if(delta.y == 0.0f) 
+			{
+				if(from.y > boxp2.y || from.y < boxp1.y) 
+				{
 					// Ray is parallel to the planes & outside slab
 					return false;
 				}
-			} else {
+			} 
+			else 
+			{
 				float tmp = 1.0f / delta.y;
 				float t1 = (boxp1.y - from.y) * tmp;
 				float t2 = (boxp2.y - from.y) * tmp;
@@ -152,19 +182,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					tnear = t1;
 				if(t2 < tfar)
 					tfar = t2;
-				if(tnear > tfar || tfar < 0.0f) {
+				if(tnear > tfar || tfar < 0.0f) 
+				{
 					// Ray missed box or box is behind ray
 					return false;
 				}
 			}
 
 			// Check Z slab
-			if(delta.z == 0.0f) {
-				if(from.z > boxp2.z || from.z < boxp1.z) {
+			if(delta.z == 0.0f) 
+			{
+				if(from.z > boxp2.z || from.z < boxp1.z) 
+				{
 					// Ray is parallel to the planes & outside slab
 					return false;
 				}
-			} else {
+			} 
+			else 
+			{
 				float tmp = 1.0f / delta.z;
 				float t1 = (boxp1.z - from.z) * tmp;
 				float t2 = (boxp2.z - from.z) * tmp;
@@ -174,7 +209,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					tnear = t1;
 				if(t2 < tfar)
 					tfar = t2;
-				if(tnear > tfar || tfar < 0.0f) {
+				if(tnear > tfar || tfar < 0.0f) 
+				{
 					// Ray missed box or box is behind ray
 					return false;
 				}
@@ -221,70 +257,86 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Events
 
 		// Select or deselect
-		public virtual void OnSelectEnd() {
-			if(this.selected) {
+		public virtual void OnSelectEnd() 
+		{
+			if(this.selected) 
+			{
 				this.selected = false;
 				mode.RemoveSelectedObject(this);
-			} else {
+			} 
+			else 
+			{
 				this.selected = true;
 				mode.AddSelectedObject(this);
 			}
 		}
 
 		// Copy properties
-		public virtual void OnCopyProperties() {
+		public virtual void OnCopyProperties() 
+		{
 			BuilderPlug.Me.CopiedVertexProps = new VertexProperties(vertex);
 			mode.SetActionResult("Copied vertex properties.");
 		}
 
 		// Paste properties
-		public virtual void OnPasteProperties() {
-			if(BuilderPlug.Me.CopiedVertexProps != null) {
+		public virtual void OnPasteProperties() 
+		{
+			if(BuilderPlug.Me.CopiedVertexProps != null) 
+			{
 				mode.CreateUndo("Paste vertex properties");
 				mode.SetActionResult("Pasted vertex properties.");
 				BuilderPlug.Me.CopiedVertexProps.Apply(vertex);
 				
 				//update affected sectors
-				updateGeometry(vertex);
+				UpdateGeometry(vertex);
 				changed = true;
 				mode.ShowTargetInfo();
 			}
 		}
 
 		//Delete key pressed - remove zoffset field
-		public virtual void OnDelete() {
+		public virtual void OnDelete() 
+		{
 			mode.CreateUndo("Clear vertex height offset");
 			mode.SetActionResult("Cleared vertex height offset.");
 			
-			if(ceilingVertex) {
+			if(ceilingVertex) 
+			{
 				if(float.IsNaN(vertex.ZCeiling)) return;
 				vertex.ZCeiling = float.NaN;
 
 				//update affected sectors
-				updateGeometry(vertex);
+				UpdateGeometry(vertex);
 				changed = true;
 				mode.ShowTargetInfo();
-			} else {
+			} 
+			else 
+			{
 				if(float.IsNaN(vertex.ZFloor)) return;
 				vertex.ZFloor = float.NaN;
 
 				//update affected sectors
-				updateGeometry(vertex);
+				UpdateGeometry(vertex);
 				changed = true;
 				mode.ShowTargetInfo();
 			}
 		}
 
 		// Edit button released
-		public virtual void OnEditEnd() {
-			if(General.Interface.IsActiveWindow) {
+		public virtual void OnEditEnd() 
+		{
+			if(General.Interface.IsActiveWindow) 
+			{
 				List<Vertex> verts = mode.GetSelectedVertices();
 				updateList = new Dictionary<BaseVisualSector, bool>();
 
-				foreach(Vertex v in verts){
+				foreach(Vertex v in verts)
+				{
 					VertexData vd = mode.GetVertexData(v);
-					foreach(KeyValuePair<Sector, bool> s in vd.UpdateAlso) {
-						if(mode.VisualSectorExists(s.Key)) {
+					foreach(KeyValuePair<Sector, bool> s in vd.UpdateAlso) 
+					{
+						if(mode.VisualSectorExists(s.Key)) 
+						{
 							BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
 							updateList.Add(vs, s.Value);
 						}
@@ -303,7 +355,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void Interface_OnEditFormValuesChanged(object sender, System.EventArgs e) {
+		private void Interface_OnEditFormValuesChanged(object sender, System.EventArgs e) 
+		{
 			foreach(KeyValuePair<BaseVisualSector, bool> group in updateList) 
 				group.Key.UpdateSectorGeometry(group.Value);
 
@@ -312,20 +365,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Raise/lower thing
-		public virtual void OnChangeTargetHeight(int amount) {
+		public virtual void OnChangeTargetHeight(int amount) 
+		{
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Change vertex height");
 
-			if(ceilingVertex) {
-				vertex.ZCeiling = (float.IsNaN(vertex.ZCeiling) ? getSectorHeight() + amount : vertex.ZCeiling + amount);
+			if(ceilingVertex) 
+			{
+				vertex.ZCeiling = (float.IsNaN(vertex.ZCeiling) ? GetSectorHeight() + amount : vertex.ZCeiling + amount);
 				mode.SetActionResult("Changed vertex height to " + vertex.ZCeiling + ".");
-			} else {
-				vertex.ZFloor = (float.IsNaN(vertex.ZFloor) ? getSectorHeight() + amount : vertex.ZFloor + amount);
+			} 
+			else 
+			{
+				vertex.ZFloor = (float.IsNaN(vertex.ZFloor) ? GetSectorHeight() + amount : vertex.ZFloor + amount);
 				mode.SetActionResult("Changed vertex height to " + vertex.ZFloor + ".");
 			}
 
 			// Update what must be updated
-			updateGeometry(vertex);
+			UpdateGeometry(vertex);
 			changed = true;
 		}
 

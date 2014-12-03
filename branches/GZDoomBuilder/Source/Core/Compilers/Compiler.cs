@@ -135,9 +135,12 @@ namespace CodeImp.DoomBuilder.Compilers
 			foreach(string f in info.Files)
 			{
 				string sourcefile = Path.Combine(info.Path, f);
-				if (!File.Exists(sourcefile)) {
+				if (!File.Exists(sourcefile)) 
+				{
 					General.ErrorLogger.Add(ErrorType.Error, "The file '" + f + "' required by the '" + info.Name + "' compiler is missing. According to the compiler configuration in '" + info.FileName + "', the was expected to be found in the following path: " + info.Path);
-				} else {
+				} 
+				else 
+				{
 					string targetfile = Path.Combine(tempdir.FullName, f);
 					File.Copy(sourcefile, targetfile, true);
 				}
@@ -172,7 +175,8 @@ namespace CodeImp.DoomBuilder.Compilers
 			try
 			{
 				// Go for all assemblies
-				foreach(Assembly a in asms) {
+				foreach(Assembly a in asms) 
+				{
 					// Find the class
 					Type[] types = (Equals(a, General.ThisAssembly) ? a.GetTypes() : a.GetExportedTypes());
 

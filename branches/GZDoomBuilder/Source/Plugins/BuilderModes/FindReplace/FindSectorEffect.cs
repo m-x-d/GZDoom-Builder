@@ -132,7 +132,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private List<int> GetGeneralizedBits(int effect) 
+		private static List<int> GetGeneralizedBits(int effect) 
 		{
 			if (!General.Map.Config.GeneralizedEffects) return new List<int>();
 			List<int> bits = new List<int>();
@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private bool BitsMatch(int effect, List<int> expectedbits) 
+		private static bool BitsMatch(int effect, List<int> expectedbits) 
 		{
 			if (!General.Map.Config.GeneralizedEffects) return false;
 

@@ -96,13 +96,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			//mxd. which texture we must use?
 			long textureLong = 0;
-			if((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0) {
+			if((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0) 
+			{
 				if(Sidedef.LongHighTexture != MapSet.EmptyLongName)
 					textureLong = Sidedef.LongHighTexture;
-			} else if((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0) {
+			} 
+			else if((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0) 
+			{
 				if(Sidedef.LongLowTexture != MapSet.EmptyLongName)
 					textureLong = Sidedef.LongLowTexture;
-			} else if(sourceside.LongMiddleTexture != MapSet.EmptyLongName) {
+			} 
+			else if(sourceside.LongMiddleTexture != MapSet.EmptyLongName) 
+			{
 				textureLong = sourceside.LongMiddleTexture;
 			}
 
@@ -222,7 +227,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Effect3DFloor ef in sd.ExtraFloors)
 				{
 					//mxd. Walls of solid 3D floors shouldn't be clipped by translucent 3D floors
-					if(extrafloor.Alpha < 255 || (!extrafloor.RenderInside && !ef.RenderInside && extrafloor.Alpha == 255 & ef.Alpha == 255)) {
+					if(extrafloor.Alpha < 255 || (!extrafloor.RenderInside && !ef.RenderInside && extrafloor.Alpha == 255 & ef.Alpha == 255)) 
+					{
 						int num = polygons.Count;
 						for(int pi = 0; pi < num; pi++)
 						{
@@ -377,7 +383,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) 
 		{
-			selectNeighbours(extrafloor.Linedef.Front.MiddleTexture, select, withSameTexture, withSameHeight);
+			SelectNeighbours(extrafloor.Linedef.Front.MiddleTexture, select, withSameTexture, withSameHeight);
 		}
 		
 		#endregion

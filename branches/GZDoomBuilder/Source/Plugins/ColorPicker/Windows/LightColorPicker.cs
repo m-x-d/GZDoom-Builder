@@ -9,8 +9,10 @@ using CodeImp.DoomBuilder.GZBuilder;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.ColorPicker.Controls;
 
-namespace CodeImp.DoomBuilder.ColorPicker.Windows {
-	public partial class LightColorPicker : DelayedForm, IColorPicker {
+namespace CodeImp.DoomBuilder.ColorPicker.Windows 
+{
+	public partial class LightColorPicker : DelayedForm, IColorPicker 
+	{
 		public ColorPickerType Type { get { return ColorPickerType.CP_LIGHT; } }
 
 		private static bool RELATIVE_MODE;
@@ -49,12 +51,14 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 		private const int TB_ANGLE_REL_MAX = 180;
 
 		//initialise pannel
-		public bool Setup(string editingModeName) {
+		public bool Setup(string editingModeName) 
+		{
 			this.editingModeName = editingModeName;
-			setupSelection();
+			SetupSelection();
 
 			int selCount = selection.Count;
-			if (selCount == 0) {
+			if (selCount == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "No lights found in selection!");
 				return false;
 			}
@@ -64,12 +68,12 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 			//initialise
 			InitializeComponent();
 
-			setupSliders(selection[0]);
-			updateLightPropsFromThing(selection[0]);
-			setControlsMode();
+			SetupSliders(selection[0]);
+			UpdateLightPropsFromThing(selection[0]);
+			SetControlsMode();
 
-			colorPickerControl1.Initialize(getThingColor(selection[0]));
-			colorPickerControl1.ColorChanged += colorPickerControl1_ColorChanged;
+			colorPickerControl1.Initialize(GetThingColor(selection[0]));
+			colorPickerControl1.OnColorChanged += OnColorPickerControl1OnColorChanged;
 			colorPickerControl1.OnOkPressed += colorPickerControl1_OnOkPressed;
 			colorPickerControl1.OnCancelPressed += colorPickerControl1_OnCancelPressed;
 
@@ -81,28 +85,35 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 			this.Text = "Editing " + selCount + " light" + (selCount > 1 ? "s" : "");
 			
 			//undo
-			makeUndo(this.Text);
+			MakeUndo(this.Text);
 			return true;
 		}
 
 		//create selection of lights. This is called only once
-		private void setupSelection() {
+		private void SetupSelection() 
+		{
 			selection = new List<Thing>();
 
 			//check things
-			if (editingModeName == "BaseVisualMode") {
+			if (editingModeName == "BaseVisualMode") 
+			{
 				visualSelection = new List<VisualThing>();
 				List<VisualThing> selectedVisualThings = ((VisualMode)General.Editing.Mode).GetSelectedVisualThings(false);
 
-				foreach (VisualThing t in selectedVisualThings) {
-					if (Array.IndexOf(GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1) {
+				foreach (VisualThing t in selectedVisualThings) 
+				{
+					if (Array.IndexOf(GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1) 
+					{
 						selection.Add(t.Thing);
 						visualSelection.Add(t);
 					}
 				}
-			} else {
+			} 
+			else 
+			{
 				ICollection<Thing> list = General.Map.Map.GetSelectedThings(true);
-				foreach (Thing t in list) {
+				foreach (Thing t in list) 
+				{
 					if (Array.IndexOf(GZGeneral.GZ_LIGHTS, t.Type) != -1)
 						selection.Add(t);
 				}
@@ -111,7 +122,8 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 
 		//set sliders count and labels based on given thing, set lightProps start values
 		//this is called only once
-		private void setupSliders(Thing referenceThing) {
+		private void SetupSliders(Thing referenceThing) 
+		{
 			ThingTypeInfo typeInfo = General.Map.Data.GetThingInfoEx(referenceThing.Type);
 			int firstArg = 3;
 			if (referenceThing.Type == 1502 || referenceThing.Type == 1503)
@@ -119,36 +131,39 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 
 			//first slider is always used
 			colorPickerSlider1.Label = typeInfo.Args[firstArg].Title + ":";
-			colorPickerSlider1.OnValueChanged += onSliderValueChanged;
+			colorPickerSlider1.OnValueChanged += OnSliderValueChanged;
 
 			//either both of them or none are used
-			if (Array.IndexOf(LIGHT_USES_ANGLE_VALUE, referenceThing.Type) != -1) {
+			if (Array.IndexOf(LIGHT_USES_ANGLE_VALUE, referenceThing.Type) != -1) 
+			{
 				showAllControls = true;
 				colorPickerSlider2.Label = typeInfo.Args[4].Title + ":";
-				colorPickerSlider2.OnValueChanged += onSliderValueChanged;
+				colorPickerSlider2.OnValueChanged += OnSliderValueChanged;
 				
 				colorPickerSlider3.Label = "Interval:";
-				colorPickerSlider3.OnValueChanged += onSliderValueChanged;
-			} else {
+				colorPickerSlider3.OnValueChanged += OnSliderValueChanged;
+			} 
+			else 
+			{
 				colorPickerSlider2.Visible = false;
 				colorPickerSlider3.Visible = false;
 			}
 
 			//set window height
 			int newHeight;
-			if (showAllControls) {
+			if (showAllControls) 
 				newHeight = colorPickerSlider3.Location.Y + colorPickerSlider3.Height + 8;
-			} else {
+			else
 				newHeight = colorPickerSlider1.Location.Y + colorPickerSlider1.Height + 8;
-			}
 
 			this.ClientSize = new Size(this.ClientSize.Width, newHeight);
 		}
 
 		//this sets lightProps values from given thing
-		private void updateLightPropsFromThing(Thing referenceThing) {
+		private void UpdateLightPropsFromThing(Thing referenceThing) 
+		{
 			//color
-			Color c = getThingColor(referenceThing);
+			Color c = GetThingColor(referenceThing);
 			lightProps.Red = c.R;
 			lightProps.Green = c.G;
 			lightProps.Blue = c.B;
@@ -161,18 +176,21 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 			lightProps.PrimaryRadius = referenceThing.Args[firstArg];
 
 			//either both of them or none are used
-			if (showAllControls && Array.IndexOf(LIGHT_USES_ANGLE_VALUE, referenceThing.Type) != -1) {
+			if (showAllControls && Array.IndexOf(LIGHT_USES_ANGLE_VALUE, referenceThing.Type) != -1) 
+			{
 				lightProps.SecondaryRadius = referenceThing.Args[4];
 				lightProps.Interval = referenceThing.AngleDoom;
 			}
 		}
 
 		//this sets lightProps values from sliders
-		private void updateLightPropsFromSliders() {
+		private void UpdateLightPropsFromSliders() 
+		{
 			ColorHandler.RGB curColor = colorPickerControl1.CurrentColor;
 			bool colorChanged = false; //need this check to allow relative mode to work properly
 
-			if ((byte)curColor.Red != lightProps.Red || (byte)curColor.Green != lightProps.Green || (byte)curColor.Blue != lightProps.Blue) {
+			if ((byte)curColor.Red != lightProps.Red || (byte)curColor.Green != lightProps.Green || (byte)curColor.Blue != lightProps.Blue) 
+			{
 				lightProps.Red = (byte)curColor.Red;
 				lightProps.Green = (byte)curColor.Green;
 				lightProps.Blue = (byte)curColor.Blue;
@@ -180,25 +198,32 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 			}
 
 			lightProps.PrimaryRadius = colorPickerSlider1.Value;
-			if (showAllControls) {
+			if (showAllControls) 
+			{
 				lightProps.SecondaryRadius = colorPickerSlider2.Value;
 				lightProps.Interval = colorPickerSlider3.Value;
 			}
-			updateSelection(colorChanged);
+			UpdateSelection(colorChanged);
 		}
 
 		//this sets values from lightProps to things in selection
-		private void updateSelection(bool colorChanged) {
-			for (int i = 0; i < selection.Count; i++) {
+		private void UpdateSelection(bool colorChanged) 
+		{
+			for (int i = 0; i < selection.Count; i++) 
+			{
 				Thing t = selection[i];
 
 				//update color 
-				if (colorChanged) { //need this check to allow relative mode to work properly
-					if (t.Type == 1503) { //Vavoom Light Color
+				if (colorChanged) //need this check to allow relative mode to work properly
+				{ 
+					if (t.Type == 1503) //Vavoom Light Color
+					{ 
 						t.Args[1] = lightProps.Red;
 						t.Args[2] = lightProps.Green;
 						t.Args[3] = lightProps.Blue;
-					} else if (t.Type != 1502) { //vavoom light has no color settings
+					} 
+					else if (t.Type != 1502) //vavoom light has no color settings
+					{ 
 						t.Args[0] = lightProps.Red;
 						t.Args[1] = lightProps.Green;
 						t.Args[2] = lightProps.Blue;
@@ -206,28 +231,31 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 				}
 
 				int firstArg = 3;
-
-				if (t.Type == 1502 || t.Type == 1503)
-					firstArg = 0;
+				if (t.Type == 1502 || t.Type == 1503) firstArg = 0;
 
 				//update radius and intensity
-				if (RELATIVE_MODE) {
+				if (RELATIVE_MODE) 
+				{
 					LightProps fixedVal = fixedValues[i];
 
 					t.Args[firstArg] = fixedVal.PrimaryRadius + lightProps.PrimaryRadius;
 					if (t.Args[firstArg] < 0) t.Args[firstArg] = 0;
 
-					if (showAllControls && Array.IndexOf(LIGHT_USES_ANGLE_VALUE, t.Type) != -1) {
+					if (showAllControls && Array.IndexOf(LIGHT_USES_ANGLE_VALUE, t.Type) != -1) 
+					{
 						t.Args[4] = fixedVal.SecondaryRadius + lightProps.SecondaryRadius;
 						if (t.Args[4] < 0) t.Args[4] = 0;
 
 						t.Rotate(General.ClampAngle(fixedVal.Interval + lightProps.Interval));
 					}
-				} else {
+				} 
+				else 
+				{
 					if (lightProps.PrimaryRadius != -1)
 						t.Args[firstArg] = lightProps.PrimaryRadius;
 
-					if (showAllControls && Array.IndexOf(LIGHT_USES_ANGLE_VALUE, t.Type) != -1) {
+					if (showAllControls && Array.IndexOf(LIGHT_USES_ANGLE_VALUE, t.Type) != -1) 
+					{
 						t.Args[4] = lightProps.SecondaryRadius;
 						t.Rotate(General.ClampAngle(lightProps.Interval));
 					}
@@ -235,34 +263,39 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 			}
 
 			//update VisualThings
-			if (editingModeName == "BaseVisualMode") {
+			if (editingModeName == "BaseVisualMode") 
+			{
 				foreach (VisualThing t in visualSelection)
 					t.UpdateLight();
 			}
 		}
 
 		//switch between absolute and relative mode
-		private void setControlsMode() {
-			if (RELATIVE_MODE) {
-				setFixedValues();
-
+		private void SetControlsMode() 
+		{
+			if (RELATIVE_MODE) 
+			{
+				SetFixedValues();
 				colorPickerSlider1.SetLimits(TB_REL_MIN, TB_REL_MAX, NUD_REL_MIN, NUD_REL_MAX);
 				colorPickerSlider1.Value = 0;
 
-				if (showAllControls) {
+				if (showAllControls) 
+				{
 					colorPickerSlider2.SetLimits(TB_REL_MIN, TB_REL_MAX, NUD_REL_MIN, NUD_REL_MAX);
 					colorPickerSlider2.Value = 0;
 
 					colorPickerSlider3.SetLimits(TB_ANGLE_REL_MIN, TB_ANGLE_REL_MAX, NUD_REL_MIN, NUD_REL_MAX);
 					colorPickerSlider3.Value = 0;
 				}    
-			} else {
-				updateLightPropsFromThing(selection[0]);
-
+			} 
+			else 
+			{
+				UpdateLightPropsFromThing(selection[0]);
 				colorPickerSlider1.SetLimits(TB_ABS_MIN, TB_ABS_MAX, NUD_ABS_MIN, NUD_ABS_MAX);
 				colorPickerSlider1.Value = lightProps.PrimaryRadius;
 
-				if (showAllControls) {
+				if (showAllControls) 
+				{
 					colorPickerSlider2.SetLimits(TB_ABS_MIN, TB_ABS_MAX, NUD_ABS_MIN, NUD_ABS_MAX);
 					colorPickerSlider2.Value = lightProps.SecondaryRadius;
 
@@ -272,44 +305,38 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 			}
 		}
 
-		private void makeUndo(string description) {
+		private void MakeUndo(string description) 
+		{
 			General.Map.UndoRedo.CreateUndo(description);
 
 			//tricky way to actually store undo information...
-			foreach (Thing t in selection)
-				t.Move(t.Position);
+			foreach (Thing t in selection) t.Move(t.Position);
 		}
 
 		//this is called only once
-		private static Color getThingColor(Thing thing) {
-			if (thing.Type == 1502) //vavoom light
-				return Color.White;
-			if (thing.Type == 1503)  //vavoom colored light
-				return Color.FromArgb((byte)thing.Args[1], (byte)thing.Args[2], (byte)thing.Args[3]);
+		private static Color GetThingColor(Thing thing) 
+		{
+			if (thing.Type == 1502) return Color.White; //vavoom light
+			if (thing.Type == 1503) return Color.FromArgb((byte)thing.Args[1], (byte)thing.Args[2], (byte)thing.Args[3]); //vavoom colored light
 			return Color.FromArgb((byte)thing.Args[0], (byte)thing.Args[1], (byte)thing.Args[2]);
 		}
 
 		//this sets data to use as a reference for relative mode
-		private void setFixedValues() {
+		private void SetFixedValues() 
+		{
 			fixedValues = new List<LightProps>();
 
-			for (int i = 0; i < selection.Count; i++) {
+			for (int i = 0; i < selection.Count; i++) 
+			{
 				Thing t = selection[i];
-				//ThingTypeInfo typeInfo = General.Map.Data.GetThingInfoEx(t.Type);
 				LightProps lp = new LightProps();
-
 				int firstArg = 3;
-				if (t.Type == 1502 || t.Type == 1503)
-					firstArg = 0;
-
-				//if(typeInfo.Args[firstArg].Used)
-					lp.PrimaryRadius = t.Args[firstArg];
-
-				//if(typeInfo.Args[4].Used)
-					//lp.SecondaryRadius = t.Args[4];
+				if (t.Type == 1502 || t.Type == 1503) firstArg = 0;
+				lp.PrimaryRadius = t.Args[firstArg];
 
 				//either both of them or none are used
-				if (showAllControls &&  Array.IndexOf(LIGHT_USES_ANGLE_VALUE, t.Type) != -1) {
+				if (showAllControls &&  Array.IndexOf(LIGHT_USES_ANGLE_VALUE, t.Type) != -1) 
+				{
 					lp.SecondaryRadius = t.Args[4];
 					lp.Interval = t.AngleDoom;
 				}
@@ -319,45 +346,51 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
 		}
 
 //events
-		private void colorPickerControl1_ColorChanged(object sender, ColorChangedEventArgs e) {
+		private void OnColorPickerControl1OnColorChanged(object sender, ColorChangedEventArgs e) 
+		{
 			//need this check to allow relative mode to work properly
-			if ((byte)e.RGB.Red != lightProps.Red || (byte)e.RGB.Green != lightProps.Green || (byte)e.RGB.Blue != lightProps.Blue) {
-				updateLightPropsFromSliders();
-			}
+			if ((byte)e.RGB.Red != lightProps.Red || (byte)e.RGB.Green != lightProps.Green || (byte)e.RGB.Blue != lightProps.Blue)
+				UpdateLightPropsFromSliders();
 		}
 
-		private void colorPickerControl1_OnCancelPressed(object sender, EventArgs e) {
+		private void colorPickerControl1_OnCancelPressed(object sender, EventArgs e) 
+		{
 			this.DialogResult = DialogResult.Cancel;
 			Close();
 		}
 
-		private void colorPickerControl1_OnOkPressed(object sender, EventArgs e) {
+		private void colorPickerControl1_OnOkPressed(object sender, EventArgs e) 
+		{
 			this.DialogResult = DialogResult.OK;
 			General.Interface.RefreshInfo();
 			Close();
 		}
 
-		private void LightColorPicker_FormClosing(object sender, FormClosingEventArgs e) {
-			if(this.DialogResult == DialogResult.Cancel)
-				General.Map.UndoRedo.WithdrawUndo();
+		private void LightColorPicker_FormClosing(object sender, FormClosingEventArgs e) 
+		{
+			if(this.DialogResult == DialogResult.Cancel) General.Map.UndoRedo.WithdrawUndo();
 		}
 
-		private void cbRelativeMode_CheckStateChanged(object sender, EventArgs e) {
+		private void cbRelativeMode_CheckStateChanged(object sender, EventArgs e) 
+		{
 			RELATIVE_MODE = ((CheckBox)sender).Checked;
-			setControlsMode();
+			SetControlsMode();
 		}
 
-		private void onSliderValueChanged(object sender, ColorPickerSliderEventArgs e) {
-			updateLightPropsFromSliders();
+		private void OnSliderValueChanged(object sender, ColorPickerSliderEventArgs e) 
+		{
+			UpdateLightPropsFromSliders();
 		}
 
-		private void LightColorPicker_HelpRequested(object sender, HelpEventArgs hlpevent) {
+		private void LightColorPicker_HelpRequested(object sender, HelpEventArgs hlpevent) 
+		{
 			General.ShowHelp("gzdb/features/all_modes/colorpicker.html");
 			hlpevent.Handled = true;
 		}
 	}
 
-	struct LightProps {
+	struct LightProps 
+	{
 		public byte Red;
 		public byte Green;
 		public byte Blue;

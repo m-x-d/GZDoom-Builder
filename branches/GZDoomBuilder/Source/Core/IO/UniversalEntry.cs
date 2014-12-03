@@ -64,7 +64,8 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		//mxd 
-		public bool IsValidType(Type t) {
+		public bool IsValidType(Type t) 
+		{
 			return value.GetType() == t;
 		}
 		

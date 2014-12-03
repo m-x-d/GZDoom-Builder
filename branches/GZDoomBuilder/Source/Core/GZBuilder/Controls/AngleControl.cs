@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		#region Methods
 
-		private void setDrawRegion() 
+		private void SetDrawRegion() 
 		{
 			drawRegion = new Rectangle(0, 0, this.Width, this.Height);
 			drawRegion.X += 2;
@@ -94,13 +94,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		private void AngleSelector_Load(object sender, EventArgs e) 
 		{
-			setDrawRegion();
+			SetDrawRegion();
 		}
 
 		private void AngleSelector_SizeChanged(object sender, EventArgs e) 
 		{
 			this.Height = this.Width; // Keep it there and keep it square!
-			setDrawRegion();
+			SetDrawRegion();
 		}
 
 		protected override void OnPaint(PaintEventArgs e) 

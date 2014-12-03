@@ -199,7 +199,8 @@ namespace CodeImp.DoomBuilder.Map
 			s.rwInt(ref action);
 			for(int i = 0; i < NUM_ARGS; i++) s.rwInt(ref args[i]);
 
-			if(!s.IsWriting) {
+			if(!s.IsWriting) 
+			{
 				anglerad = Angle2D.DoomToReal(angledoom);
 				UpdateCache(); //mxd
 			}
@@ -524,10 +525,13 @@ namespace CodeImp.DoomBuilder.Map
 			if (isModel && General.Map.Data.ModeldefEntries[type].LoadState == ModelLoadState.None)
 				isModel = General.Map.Data.ProcessModel(type);
 
-			if (isModel) {
+			if (isModel) 
+			{
 				rollrad = (General.Map.Data.ModeldefEntries[type].InheritActorRoll ? Angle2D.DegToRad(roll) : 0);
 				pitchrad = (General.Map.Data.ModeldefEntries[type].InheritActorPitch ? Angle2D.DegToRad(pitch) : 0);
-			} else {
+			} 
+			else 
+			{
 				rollrad = 0;
 				pitchrad = 0;
 			}

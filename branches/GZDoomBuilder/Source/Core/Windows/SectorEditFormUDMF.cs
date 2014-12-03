@@ -793,7 +793,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void brightness_WhenTextChanged(object sender, EventArgs e) {
+		private void brightness_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(blockupdate)	return;
 
 			//restore values

@@ -175,11 +175,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				unstableLinesInitialLengths.Add(l.Length);
 
 			//mxd. Collect selected sectors
-			if(General.Map.UDMF) {
+			if(General.Map.UDMF) 
+			{
 				ICollection<Linedef> selectedLines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
-
 				List<Sector> affectedSectors = new List<Sector>();
-				foreach(Linedef l in selectedLines) {
+				foreach(Linedef l in selectedLines) 
+				{
 					if(l.Front != null && l.Front.Sector != null && !affectedSectors.Contains(l.Front.Sector))
 						affectedSectors.Add(l.Front.Sector);
 					if(l.Back != null && l.Back.Sector != null && !affectedSectors.Contains(l.Back.Sector))
@@ -187,18 +188,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				selectedSectors = new List<Sector>();
-				foreach(Sector s in affectedSectors) {
+				foreach(Sector s in affectedSectors) 
+				{
 					bool selected = true;
-
-					foreach(Sidedef side in s.Sidedefs) {
-						if(!selectedLines.Contains(side.Line)) {
+					foreach(Sidedef side in s.Sidedefs) 
+					{
+						if(!selectedLines.Contains(side.Line)) 
+						{
 							selected = false;
 							break;
 						}
 					}
 
-					if(selected)
-						selectedSectors.Add(s);
+					if(selected) selectedSectors.Add(s);
 				}
 			}
 
@@ -428,21 +430,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.Map.SnapAllToAccuracy();
 
 				//mxd. Update floor/ceiling texture offsets
-				if(General.Map.UDMF && BuilderPlug.Me.LockSectorTextureOffsetsWhileDragging && selectedSectors.Count > 0) {
+				if(General.Map.UDMF && BuilderPlug.Me.LockSectorTextureOffsetsWhileDragging && selectedSectors.Count > 0) 
+				{
 					Vector2D offset = dragitemposition - dragitem.Position;
-
-					foreach(Sector s in selectedSectors) {
+					foreach(Sector s in selectedSectors) 
+					{
 						s.Fields.BeforeFieldsChange();
 
 						//update ceiling offset
-						if(s.LongCeilTexture != MapSet.EmptyLongName) {
+						if(s.LongCeilTexture != MapSet.EmptyLongName) 
+						{
 							ImageData texture = General.Map.Data.GetFlatImage(s.CeilTexture);
 
-							if(texture != null) {
+							if(texture != null) 
+							{
 								float scaleX = s.Fields.GetValue("xscaleceiling", 1.0f);
 								float scaleY = s.Fields.GetValue("yscaleceiling", 1.0f);
 
-								if(scaleX != 0 && scaleY != 0) {
+								if(scaleX != 0 && scaleY != 0) 
+								{
 									Vector2D ceilOffset = new Vector2D(offset.x, -offset.y).GetRotated(-Angle2D.DegToRad((int)s.Fields.GetValue("rotationceiling", 0f)));
 									ceilOffset.x += s.Fields.GetValue("xpanningceiling", 0f);
 									ceilOffset.y += s.Fields.GetValue("ypanningceiling", 0f);
@@ -464,14 +470,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 
 						//update floor offset
-						if(s.LongFloorTexture != MapSet.EmptyLongName) {
+						if(s.LongFloorTexture != MapSet.EmptyLongName) 
+						{
 							ImageData texture = General.Map.Data.GetFlatImage(s.FloorTexture);
-
-							if(texture != null) {
+							if(texture != null) 
+							{
 								float scaleX = s.Fields.GetValue("xscalefloor", 1.0f);
 								float scaleY = s.Fields.GetValue("yscalefloor", 1.0f);
-
-								if(scaleX != 0 && scaleY != 0) {
+								if(scaleX != 0 && scaleY != 0) 
+								{
 									Vector2D floorOffset = new Vector2D(offset.x, -offset.y).GetRotated(-Angle2D.DegToRad((int)s.Fields.GetValue("rotationfloor", 0f)));
 									floorOffset.x += s.Fields.GetValue("xpanningfloor", 0f);
 									floorOffset.y += s.Fields.GetValue("ypanningfloor", 0f);

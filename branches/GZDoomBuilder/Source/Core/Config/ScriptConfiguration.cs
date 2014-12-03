@@ -200,20 +200,29 @@ namespace CodeImp.DoomBuilder.Config
 
 			//mxd. Load Snippets
 			string snippetsdir = cfg.ReadSetting("snippetsdir", "");
-			if (!string.IsNullOrEmpty(snippetsdir)) {
+			if (!string.IsNullOrEmpty(snippetsdir)) 
+			{
 				string snippetspath = Path.Combine(General.SnippetsPath, snippetsdir);
-				if (Directory.Exists(snippetspath)) {
+				if (Directory.Exists(snippetspath)) 
+				{
 					string[] files = Directory.GetFiles(snippetspath, "*.txt", SearchOption.TopDirectoryOnly);
 
-					foreach (string file in files) {
+					foreach (string file in files) 
+					{
 						string name = Path.GetFileNameWithoutExtension(file);
-						if (name.Contains(" ")) {
+						if (name.Contains(" ")) 
+						{
 							General.ErrorLogger.Add(ErrorType.Warning, "Failed to load snippet '" + file + "' for '" + description + "' script configuration: snippet file name must not contain spaces!");
-						} else {
+						} 
+						else 
+						{
 							string[] lines = File.ReadAllLines(file);
-							if (lines.Length > 0) {
+							if (lines.Length > 0) 
+							{
 								snippets.Add(name, lines);
-							} else {
+							} 
+							else 
+							{
 								General.ErrorLogger.Add(ErrorType.Warning, "Failed to load snippet '" + file + "' for '" + description + "' script configuration: file is empty!");
 							}
 						}

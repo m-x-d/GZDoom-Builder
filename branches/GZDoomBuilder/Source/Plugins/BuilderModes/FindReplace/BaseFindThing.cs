@@ -14,11 +14,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This is called when a specific object is selected from the list
-		public override void ObjectSelected(FindReplaceObject[] selection) {
-			if(selection.Length == 1) {
+		public override void ObjectSelected(FindReplaceObject[] selection) 
+		{
+			if(selection.Length == 1) 
+			{
 				ZoomToSelection(selection);
 				General.Interface.ShowThingInfo(selection[0].Thing);
-			} else {
+			} 
+			else 
+			{
 				General.Interface.HideInfo();
 			}
 
@@ -27,14 +31,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Render selection
-		public override void RenderThingsSelection(IRenderer2D renderer, FindReplaceObject[] selection) {
-			foreach(FindReplaceObject o in selection) {
+		public override void RenderThingsSelection(IRenderer2D renderer, FindReplaceObject[] selection) 
+		{
+			foreach(FindReplaceObject o in selection)
 				renderer.RenderThing(o.Thing, General.Colors.Selection, 1.0f);
-			}
 		}
 
 		// Edit objects
-		public override void EditObjects(FindReplaceObject[] selection) {
+		public override void EditObjects(FindReplaceObject[] selection) 
+		{
 			List<Thing> things = new List<Thing>(selection.Length);
 			foreach(FindReplaceObject o in selection) things.Add(o.Thing);
 			General.Interface.ShowEditThings(things);

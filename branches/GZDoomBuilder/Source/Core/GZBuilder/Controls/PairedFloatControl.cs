@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Properties;
 
@@ -37,18 +38,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
         {
             blockUpdate = true;
 
-            if (first) {
-                value1.Text = val1.ToString();
-                value2.Text = val2.ToString();
-            } else {
-                if (!string.IsNullOrEmpty(value1.Text) && value1.Text != val1.ToString())
+            if (first) 
+			{
+                value1.Text = val1.ToString(CultureInfo.InvariantCulture);
+                value2.Text = val2.ToString(CultureInfo.InvariantCulture);
+            } 
+			else 
+			{
+                if (!string.IsNullOrEmpty(value1.Text) && value1.Text != val1.ToString(CultureInfo.InvariantCulture))
                     value1.Text = string.Empty;
 
-                if (!string.IsNullOrEmpty(value2.Text) && value2.Text != val2.ToString())
+                if (!string.IsNullOrEmpty(value2.Text) && value2.Text != val2.ToString(CultureInfo.InvariantCulture))
                     value2.Text = string.Empty;
             }
 
-            checkValues();
+            CheckValues();
 
             blockUpdate = false;
         }
@@ -63,10 +67,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
             return value2.GetResultFloat(original);
         }
 
-        private void checkValues()
+        private void CheckValues()
         {
-            bool changed = string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text)
-                || value1.GetResultFloat(defaultValue) != defaultValue || value2.GetResultFloat(defaultValue) != defaultValue;
+            bool changed = (string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text)
+                || value1.GetResultFloat(defaultValue) != defaultValue || value2.GetResultFloat(defaultValue) != defaultValue);
             label.Enabled = changed;
             bReset.Visible = changed;
 
@@ -78,7 +82,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
             string newValue = String.Format("{0:0.0}", defaultValue);
             value1.Text = newValue;
             value2.Text = newValue;
-            checkValues();
+            CheckValues();
         }
 
         private void bLink_Click(object sender, EventArgs e)
@@ -91,26 +95,28 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
         {
             if (blockUpdate) return;
             
-            if (linkValues) {
+            if (linkValues) 
+			{
                 blockUpdate = true;
                 value2.Text = value1.Text;
                 blockUpdate = false;
             }
             
-            checkValues();
+            CheckValues();
         }
 
         private void value2_WhenTextChanged(object sender, EventArgs e)
         {
             if (blockUpdate) return;
 
-            if (linkValues) {
+            if (linkValues) 
+			{
                 blockUpdate = true;
                 value1.Text = value2.Text;
                 blockUpdate = false;
             }
 
-            checkValues();
+            CheckValues();
         }
     }
 }

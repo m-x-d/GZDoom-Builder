@@ -334,13 +334,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		public void DrawLine3DFloor(Vector2D start, Vector2D end, ref PixelColor c, PixelColor c2) {
+		public void DrawLine3DFloor(Vector2D start, Vector2D end, ref PixelColor c, PixelColor c2) 
+		{
 			Vector2D delta = end - start;
 			float length = delta.GetLength();
 
-			if(length < DASH_INTERVAL * 2) {
+			if(length < DASH_INTERVAL * 2) 
+			{
 				DrawLineSolid((int)start.x, (int)start.y, (int)end.x, (int)end.y, ref c2);
-			} else {
+			} 
+			else 
+			{
 				float d1 = DASH_INTERVAL / length;
 				float d2 = 1.0f - d1;
 

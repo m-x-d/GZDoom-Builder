@@ -261,7 +261,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Save settings, which can be changed via UI
-		private void saveSettings() {
+		private void SaveSettings() 
+		{
 			General.Settings.WritePluginSetting("locktextureoffsets", lockSectorTextureOffsetsWhileDragging);
 			General.Settings.WritePluginSetting("viewselectionnumbers", viewselectionnumbers);
 			General.Settings.WritePluginSetting("viewselectioneffects", viewselectioneffects);
@@ -279,7 +280,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((img != null) && img.IsImageLoaded)
 			{
 				//mxd. Merged from GZDoomEditing plugin
-				if(General.Map.UDMF) {
+				if(General.Map.UDMF) 
+				{
 					// Fetch ZDoom fields
 					Vector2D offset = new Vector2D(s.Fields.GetValue("xpanningfloor", 0.0f),
 												   s.Fields.GetValue("ypanningfloor", 0.0f));
@@ -292,13 +294,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Setup the vertices with the given settings
 					SetupSurfaceVertices(vertices, s, img, offset, scale, rotate, color, light, absolute);
-				} else {
+				} 
+				else 
+				{
 					// Make scalars
 					float sw = 1.0f / img.ScaledWidth;
 					float sh = 1.0f / img.ScaledHeight;
 
 					// Make proper texture coordinates
-					for(int i = 0; i < vertices.Length; i++) {
+					for(int i = 0; i < vertices.Length; i++) 
+					{
 						vertices[i].u = vertices[i].u * sw;
 						vertices[i].v = -vertices[i].v * sh;
 					}
@@ -313,7 +318,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((img != null) && img.IsImageLoaded)
 			{
 				//mxd. Merged from GZDoomEditing plugin
-				if(General.Map.UDMF) {
+				if(General.Map.UDMF) 
+				{
 					// Fetch ZDoom fields
 					Vector2D offset = new Vector2D(s.Fields.GetValue("xpanningceiling", 0.0f),
 												   s.Fields.GetValue("ypanningceiling", 0.0f));
@@ -326,13 +332,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Setup the vertices with the given settings
 					SetupSurfaceVertices(vertices, s, img, offset, scale, rotate, color, light, absolute);
-				} else {
+				} 
+				else 
+				{
 					// Make scalars
 					float sw = 1.0f / img.ScaledWidth;
 					float sh = 1.0f / img.ScaledHeight;
 
 					// Make proper texture coordinates
-					for(int i = 0; i < vertices.Length; i++) {
+					for(int i = 0; i < vertices.Length; i++) 
+					{
 						vertices[i].u = vertices[i].u * sw;
 						vertices[i].v = -vertices[i].v * sh;
 					}
@@ -407,7 +416,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveDocker(drawingOverridesDocker);
 
 			//mxd. Save settings
-			saveSettings();
+			SaveSettings();
 		}
 		
 		// Redo performed
@@ -457,7 +466,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			color = finalcolor.WithAlpha(255).ToInt();
 
 			// Do the math for all vertices
-			for(int i = 0; i < vertices.Length; i++) {
+			for(int i = 0; i < vertices.Length; i++) 
+			{
 				Vector2D pos = new Vector2D(vertices[i].x, vertices[i].y);
 				pos = pos.GetRotated(rotate);
 				pos.y = -pos.y;
@@ -495,17 +505,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(asso.type == UniversalType.SectorTag)
 			{
 				List<Line3D> lines = new List<Line3D>(); //mxd
-				foreach(Sector s in General.Map.Map.Sectors) {
-					if(s.Tag == asso.tag) {
+				foreach(Sector s in General.Map.Map.Sectors)
+				{
+					if(s.Tag == asso.tag) 
+					{
 						renderer.PlotSector(s, General.Colors.Indication);
-						if (General.Settings.GZShowEventLines) {
+						if (General.Settings.GZShowEventLines) 
+						{
 							Vector2D end = (s.Labels.Count > 0 ? s.Labels[0].position : new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2));
 							lines.Add(new Line3D(asso.Center, end)); //mxd
 						}
 					}
 				}
 
-				if(General.Settings.GZShowEventLines) { //mxd
+				if(General.Settings.GZShowEventLines) //mxd
+				{ 
 					foreach(Line3D l in lines)
 						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
 				}
@@ -514,15 +528,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else if(asso.type == UniversalType.LinedefTag)
 			{
 				List<Line3D> lines = new List<Line3D>(); //mxd
-				foreach(Linedef l in General.Map.Map.Linedefs) {
-					if(l.Tag == asso.tag) {
+				foreach(Linedef l in General.Map.Map.Linedefs) 
+				{
+					if(l.Tag == asso.tag) 
+					{
 						renderer.PlotLinedef(l, General.Colors.Indication);
 						if(General.Settings.GZShowEventLines)
 							lines.Add(new Line3D(asso.Center, l.GetCenterPoint()));//mxd
 					}
 				}
 
-				if(General.Settings.GZShowEventLines) { //mxd
+				if(General.Settings.GZShowEventLines) //mxd
+				{ 
 					foreach(Line3D l in lines)
 						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
 				}
@@ -540,33 +557,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(asso.type == UniversalType.ThingTag)
 			{
 				List<Line3D> lines = new List<Line3D>(); //mxd
-				foreach(Thing t in General.Map.Map.Things){
-					if(t.Tag == asso.tag) {
+				foreach(Thing t in General.Map.Map.Things)
+				{
+					if(t.Tag == asso.tag) 
+					{
 						renderer.RenderThing(t, General.Colors.Indication, 1.0f);
 						if(General.Settings.GZShowEventLines)
 							lines.Add(new Line3D(asso.Center, t.Position));//mxd
 					}
 				}
-				if(General.Settings.GZShowEventLines) { //mxd
+				if(General.Settings.GZShowEventLines) //mxd
+				{ 
 					foreach(Line3D l in lines)
 						renderer.RenderArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
 				}
 			} 
 			else if(asso.type == UniversalType.SectorTag) //mxd. Render sector highlight
 			{ 
-				foreach(Sector s in General.Map.Map.Sectors) {
-					if(s.Tag == asso.tag) {
+				foreach(Sector s in General.Map.Map.Sectors) 
+				{
+					if(s.Tag == asso.tag) 
+					{
 						int highlightedColor = General.Colors.Highlight.WithAlpha(128).ToInt();
 						FlatVertex[] verts = new FlatVertex[s.FlatVertices.Length];
 						s.FlatVertices.CopyTo(verts, 0);
-						for(int i = 0; i < verts.Length; i++)
-							verts[i].c = highlightedColor;
+						for(int i = 0; i < verts.Length; i++) verts[i].c = highlightedColor;
 						renderer.RenderGeometry(verts, null, true);
 					}
 				}
 			}
 		}
-		
 
 		// This renders the associated sectors/linedefs with the indication color
 		public void PlotReverseAssociations(IRenderer2D renderer, Association asso)
@@ -585,7 +605,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Any action on this line?
 					if(l.Action > 0)
 					{
-						if(l.Tag == asso.tag) {
+						if(l.Tag == asso.tag) 
+						{
 							renderer.PlotLinedef(l, General.Colors.Indication);
 							
 							if(General.Settings.GZShowEventLines) //mxd
@@ -593,7 +614,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 				}
-				if(General.Settings.GZShowEventLines) { //mxd
+				if(General.Settings.GZShowEventLines) //mxd
+				{ 
 					foreach(Line3D l in lines)
 						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
 				}
@@ -611,7 +633,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							((action.Args[1].Type == (int)asso.type) && (l.Args[1] == asso.tag)) ||
 							((action.Args[2].Type == (int)asso.type) && (l.Args[2] == asso.tag)) ||
 							((action.Args[3].Type == (int)asso.type) && (l.Args[3] == asso.tag)) ||
-							((action.Args[4].Type == (int)asso.type) && (l.Args[4] == asso.tag)) ){
+							((action.Args[4].Type == (int)asso.type) && (l.Args[4] == asso.tag)) )
+						{
 							
 							renderer.PlotLinedef(l, General.Colors.Indication);
 
@@ -621,10 +644,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
-				if(General.Settings.GZShowEventLines) { //mxd
-					foreach(Line3D l in lines) {
+				if(General.Settings.GZShowEventLines) //mxd
+				{ 
+					foreach(Line3D l in lines) 
 						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
-					}
 				}
 			}
 		}
@@ -649,7 +672,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						 ((action.Args[1].Type == (int)asso.type) && (t.Args[1] == asso.tag)) ||
 						 ((action.Args[2].Type == (int)asso.type) && (t.Args[2] == asso.tag)) ||
 						 ((action.Args[3].Type == (int)asso.type) && (t.Args[3] == asso.tag)) ||
-						 ((action.Args[4].Type == (int)asso.type) && (t.Args[4] == asso.tag)) ){
+						 ((action.Args[4].Type == (int)asso.type) && (t.Args[4] == asso.tag)) )
+					{
 						renderer.RenderThing(t, General.Colors.Indication, 1.0f);
 						if(General.Settings.GZShowEventLines) //mxd
 							lines.Add(new Line3D(t.Position, asso.Center));
@@ -657,10 +681,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			if(General.Settings.GZShowEventLines) {//mxd
-				foreach(Line3D l in lines) {
+			if(General.Settings.GZShowEventLines) //mxd
+			{
+				foreach(Line3D l in lines) 
 					renderer.RenderArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
-				}
 			}
 		}
 
@@ -669,20 +693,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Actions (mxd)
 
 		[BeginAction("exporttoobj")]
-		private void exportToObj() {
+		private void ExportToObj() 
+		{
 			// Convert geometry selection to sectors
 			General.Map.Map.ConvertSelection(SelectionType.Sectors);
 			
 			//get sectors
 			ICollection<Sector> sectors = General.Map.Map.SelectedSectorsCount == 0 ? General.Map.Map.Sectors : General.Map.Map.GetSelectedSectors(true);
-			if(sectors.Count == 0) {
+			if(sectors.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "OBJ export failed. Map has no sectors!");
 				return;
 			}
 
 			//show settings form
 			WavefrontSettingsForm form = new WavefrontSettingsForm(General.Map.Map.SelectedSectorsCount == 0 ? -1 : sectors.Count);
-			if(form.ShowDialog() == DialogResult.OK) {
+			if(form.ShowDialog() == DialogResult.OK) 
+			{
 				WavefrontExportSettings data = new WavefrontExportSettings(Path.GetFileNameWithoutExtension(form.FilePath), Path.GetDirectoryName(form.FilePath), form.ObjScale, form.UseGZDoomScale, form.ExportTextures);
 				WavefrontExporter e = new WavefrontExporter();
 				e.Export(sectors, data);
@@ -690,7 +717,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("pastepropertiesoptions")]
-		private void showPastePropertiesOptions() {
+		private void ShowPastePropertiesOptions() 
+		{
 			var form = new PastePropertiesOptionsForm();
 			form.ShowDialog(Form.ActiveForm);
 		}

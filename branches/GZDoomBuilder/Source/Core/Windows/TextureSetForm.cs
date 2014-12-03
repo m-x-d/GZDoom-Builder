@@ -98,9 +98,9 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(ListViewItem i in filters.SelectedItems) i.Remove();
 
 			//mxd
-			if(filters.Items.Count > 0){
-				if(index >= filters.Items.Count)
-					index = filters.Items.Count - 1;
+			if(filters.Items.Count > 0)
+			{
+				if(index >= filters.Items.Count) index = filters.Items.Count - 1;
 				filters.Items[index].Selected = true;
 			}
 

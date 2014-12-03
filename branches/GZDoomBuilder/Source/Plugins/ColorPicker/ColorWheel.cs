@@ -3,8 +3,10 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
-namespace CodeImp.DoomBuilder.ColorPicker {
-	public sealed class ColorWheel : IDisposable {
+namespace CodeImp.DoomBuilder.ColorPicker 
+{
+	public sealed class ColorWheel : IDisposable 
+	{
 
 		// These resources should be disposed
 		// of when you're done with them.
@@ -17,7 +19,8 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 		public ColorChangedEventHandler ColorChanged;
 
 		// Keep track of the current mouse state. 
-		public enum MouseState {
+		private enum MouseState 
+		{
 			MouseUp,
 			ClickOnColor,
 			DragInColor,
@@ -71,13 +74,15 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 
 		public Color Color { get { return selectedColor; } }
 
-		public ColorWheel(Rectangle colorRectangle, Rectangle brightnessRectangle) {
+		public ColorWheel(Rectangle colorRectangle, Rectangle brightnessRectangle) 
+		{
 
 			// Caller must provide locations for color wheel
 			// (colorRectangle), brightness "strip" (brightnessRectangle)
 			// and location to display selected color (selectedColorRectangle).
 
-			using (GraphicsPath path = new GraphicsPath()) {
+			using (GraphicsPath path = new GraphicsPath()) 
+			{
 				// Store away locations for later use. 
 				this.colorRectangle = colorRectangle;
 				this.brightnessRectangle = brightnessRectangle;
@@ -132,30 +137,30 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			}
 		}
 
-		private void OnColorChanged(ColorHandler.RGB RGB, ColorHandler.HSV HSV) {
+		private void OnColorChanged(ColorHandler.RGB RGB, ColorHandler.HSV HSV) 
+		{
 			ColorChangedEventArgs e = new ColorChangedEventArgs(RGB, HSV);
 			ColorChanged(this, e);
 		}
 
-		void IDisposable.Dispose() {
+		void IDisposable.Dispose() 
+		{
 			// Dispose of graphic resources
-			if (colorImage != null)
-				colorImage.Dispose();
-			if (colorRegion != null)
-				colorRegion.Dispose();
-			if (brightnessRegion != null)
-				brightnessRegion.Dispose();
-			if (g != null)
-				g.Dispose();
+			if (colorImage != null) colorImage.Dispose();
+			if (colorRegion != null) colorRegion.Dispose();
+			if (brightnessRegion != null) brightnessRegion.Dispose();
+			if (g != null) g.Dispose();
 		}
 
-		public void SetMouseUp() {
+		public void SetMouseUp() 
+		{
 			// Indicate that the user has
 			// released the mouse.
 			currentState = MouseState.MouseUp;
 		}
 
-		public void Draw(Graphics g, ColorHandler.RGB RGB) {
+		public void Draw(Graphics g, ColorHandler.RGB RGB) 
+		{
 			// Given RGB values, calculate HSV and then update the screen.
 			this.g = g;
 			this.HSV = ColorHandler.RGBtoHSV(RGB);
@@ -163,7 +168,8 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			UpdateDisplay();
 		}
 
-		public void Draw(Graphics g, Point mousePoint) {
+		public void Draw(Graphics g, Point mousePoint) 
+		{
 			// You've moved the mouse. 
 			// Now update the screen to match.
 			float distance;
@@ -182,17 +188,24 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			// Store this away for later use.
 			this.g = g;
 
-			if (currentState == MouseState.MouseUp) {
-				if (!mousePoint.IsEmpty) {
-					if (colorRegion.IsVisible(mousePoint)) {
+			if (currentState == MouseState.MouseUp) 
+			{
+				if (!mousePoint.IsEmpty) 
+				{
+					if (colorRegion.IsVisible(mousePoint)) 
+					{
 						// Is the mouse point within the color circle?
 						// If so, you just clicked on the color wheel.
 						currentState = MouseState.ClickOnColor;
-					} else if (brightnessRegion.IsVisible(mousePoint)) {
+					} 
+					else if (brightnessRegion.IsVisible(mousePoint)) 
+					{
 						// Is the mouse point within the brightness area?
 						// You clicked on the brightness area.
 						currentState = MouseState.ClickOnBrightness;
-					} else {
+					} 
+					else 
+					{
 						// Clicked outside the color and the brightness
 						// regions. In that case, just put the 
 						// pointers back where they were.
@@ -201,15 +214,19 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 				}
 			}
 
-			switch (currentState) {
+			switch (currentState) 
+			{
 				case MouseState.ClickOnBrightness:
 				case MouseState.DragInBrightness:
 					// Calculate new color information
 					// based on the brightness, which may have changed.
 					newPoint = mousePoint;
-					if (newPoint.Y < brightnessMin) {
+					if (newPoint.Y < brightnessMin) 
+					{
 						newPoint.Y = brightnessMin;
-					} else if (newPoint.Y > brightnessMax) {
+					} 
+					else if (newPoint.Y > brightnessMax) 
+					{
 						newPoint.Y = brightnessMax;
 					}
 					newBrightnessPoint = new Point(brightnessX, newPoint.Y);
@@ -227,8 +244,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 					// Calculate x and y distance from the center,
 					// and then calculate the angle corresponding to the
 					// new location.
-					delta = new Point(
-						mousePoint.X - centerPoint.X, mousePoint.Y - centerPoint.Y);
+					delta = new Point(mousePoint.X - centerPoint.X, mousePoint.Y - centerPoint.Y);
 					degrees = CalcDegrees(delta);
 
 					// Calculate distance from the center to the new point 
@@ -236,8 +252,10 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 					// the Pythagorean theorem, to calculate this value.
 					distance = (float)Math.Sqrt(delta.X * delta.X + delta.Y * delta.Y) / radius;
 
-					if (currentState == MouseState.DragInColor) {
-						if (distance > 1) {
+					if (currentState == MouseState.DragInColor) 
+					{
+						if (distance > 1) 
+						{
 							// Mouse is down, and outside the circle, but you 
 							// were previously dragging in the color circle. 
 							// What to do?
@@ -264,7 +282,8 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			OnColorChanged(RGB, HSV);
 
 			// On the way out, set the new state.
-			switch (currentState) {
+			switch (currentState) 
+			{
 				case MouseState.ClickOnBrightness:
 					currentState = MouseState.DragInBrightness;
 					break;
@@ -284,7 +303,8 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			UpdateDisplay();
 		}
 
-		private Point CalcBrightnessPoint(int brightness) {
+		private Point CalcBrightnessPoint(int brightness) 
+		{
 			// Take the value for brightness (0 to 255), scale to the 
 			// scaling used in the brightness bar, then add the value 
 			// to the bottom of the bar. return the correct point at which 
@@ -292,12 +312,8 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			return new Point(brightnessX, (int)(brightnessMax - brightness / brightnessScaling));
 		}
 
-		/*public void SetColor(Color c) {
-			fullColor = c;
-			UpdateDisplay();
-		}*/
-
-		private void UpdateDisplay() {
+		private void UpdateDisplay() 
+		{
 			// Update the gradients, and place the pointers correctly based on colors and 
 			// brightness.
 			CreateGradient();
@@ -312,7 +328,8 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			DrawBrightnessPointer(brightnessPoint);
 		}
 
-		private void CalcCoordsAndUpdate(ColorHandler.HSV HSV) {
+		private void CalcCoordsAndUpdate(ColorHandler.HSV HSV) 
+		{
 			// Convert color to real-world coordinates and then calculate
 			// the various points. HSV.Hue represents the degrees (0 to 360), 
 			// HSV.Saturation represents the radius. 
@@ -325,8 +342,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			// calculate the point corresponding to 
 			// the selected color, on the color wheel.
 			colorPoint = GetPoint((float)HSV.Hue / 255 * 360,
-				(float)HSV.Saturation / 255 * radius,
-				centerPoint);
+				(float)HSV.Saturation / 255 * radius, centerPoint);
 
 			// Given the brightness (HSV.value), calculate the 
 			// point corresponding to the brightness indicator.
@@ -343,30 +359,31 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			fullColor = ColorHandler.HSVtoColor(HSV.Hue, HSV.Saturation, 255);
 		}
 
-		private void DrawLinearGradient(Color TopColor) {
+		private void DrawLinearGradient(Color TopColor) 
+		{
 			// Given the top color, draw a linear gradient
 			// ranging from black to the top color. Use the 
 			// brightness rectangle as the area to fill.
-			using (LinearGradientBrush lgb =
-							 new LinearGradientBrush(brightnessRectangle, TopColor,
-							 Color.Black, LinearGradientMode.Vertical)) {
+			using (LinearGradientBrush lgb = new LinearGradientBrush(brightnessRectangle, TopColor,
+							 Color.Black, LinearGradientMode.Vertical)) 
+			{
 				g.FillRectangle(lgb, brightnessRectangle);
 			}
 		}
 
-		private static int CalcDegrees(Point pt) {
+		private static int CalcDegrees(Point pt) 
+		{
 			int degrees;
 
-			if (pt.X == 0) {
+			if (pt.X == 0) 
+			{
 				// The point is on the y-axis. Determine whether it's above or below the x-axis, and return the 
 				// corresponding angle. Note that the orientation of the y-coordinate is backwards. That is, 
 				// A positive Y value indicates a point BELOW the x-axis.
-				if (pt.Y > 0) {
-					degrees = 270;
-				} else {
-					degrees = 90;
-				}
-			} else {
+				degrees = pt.Y > 0 ? 270 : 90;
+			} 
+			else 
+			{
 				// This value needs to be multiplied by -1 because the y-coordinate
 				// is opposite from the normal direction here.
 				// That is, a y-coordinate that's "higher" on the form has a lower y-value, in this coordinate
@@ -376,9 +393,7 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 				// If the x-coordinate of the selected point is to the left of the center of the circle, you 
 				// need to add 180 degrees to the angle. ArcTan only gives you a value on the right-hand side 
 				// of the circle.
-				if (pt.X < 0) {
-					degrees += 180;
-				}
+				if (pt.X < 0) degrees += 180;
 
 				// Ensure that the return value is between 0 and 360.
 				degrees = (degrees + 360) % 360;
@@ -386,11 +401,12 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			return degrees;
 		}
 
-		private void CreateGradient() {
+		private void CreateGradient() 
+		{
 			// Create a new PathGradientBrush, supplying an array of points created by calling
 			// the GetPoints method.
-			using (PathGradientBrush pgb =
-				new PathGradientBrush(GetPoints(radius, new Point(radius, radius)))) {
+			using (PathGradientBrush pgb = new PathGradientBrush(GetPoints(radius, new Point(radius, radius)))) 
+			{
 				// Set the various properties. Note the SurroundColors property, which contains an array of points, 
 				// in a one-to-one relationship with the points that created the gradient.
 				pgb.CenterColor = Color.White;
@@ -400,19 +416,17 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 				// Create a new bitmap containing the color wheel gradient, so the 
 				// code only needs to do all this work once. Later code uses the bitmap
 				// rather than recreating the gradient.
-				colorImage = new Bitmap(
-					colorRectangle.Width, colorRectangle.Height,
-					PixelFormat.Format32bppArgb);
+				colorImage = new Bitmap(colorRectangle.Width, colorRectangle.Height, PixelFormat.Format32bppArgb);
 
-				using (Graphics newGraphics =
-								 Graphics.FromImage(colorImage)) {
-					newGraphics.FillEllipse(pgb, 0, 0,
-						colorRectangle.Width, colorRectangle.Height);
+				using (Graphics newGraphics = Graphics.FromImage(colorImage)) 
+				{
+					newGraphics.FillEllipse(pgb, 0, 0, colorRectangle.Width, colorRectangle.Height);
 				}
 			}
 		}
 
-		private Color[] GetColors() {
+		private Color[] GetColors() 
+		{
 			// Create an array of COLOR_COUNT colors, looping through all the hues between 0 and 255, broken
 			// into COLOR_COUNT intervals. HSV is particularly well-suited for this, because the only value 
 			// that changes as you create colors is the Hue.
@@ -423,7 +437,8 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			return Colors;
 		}
 
-		private Point[] GetPoints(float radius, Point centerPoint) {
+		private static Point[] GetPoints(float radius, Point centerPoint) 
+		{
 			// Generate the array of points that describe the locations of the COLOR_COUNT colors to be 
 			// displayed on the color wheel.
 			Point[] Points = new Point[COLOR_COUNT];
@@ -433,7 +448,8 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 			return Points;
 		}
 
-		private static Point GetPoint(float degrees, float radius, Point centerPoint) {
+		private static Point GetPoint(float degrees, float radius, Point centerPoint) 
+		{
 			// Given the center of a circle and its radius, along
 			// with the angle corresponding to the point, find the coordinates. 
 			// In other words, conver  t from polar to rectangular coordinates.
@@ -443,15 +459,16 @@ namespace CodeImp.DoomBuilder.ColorPicker {
 				(int)(centerPoint.Y - Math.Floor(radius * Math.Sin(radians))));
 		}
 
-		private void DrawColorPointer(Point pt) {
+		private void DrawColorPointer(Point pt) 
+		{
 			// Given a point, draw the color selector. The constant SIZE represents half
 			// the width -- the square will be twice this value in width and height.
 			const int SIZE = 3;
-			g.DrawRectangle(Pens.Black,
-				pt.X - SIZE, pt.Y - SIZE, SIZE * 2, SIZE * 2);
+			g.DrawRectangle(Pens.Black, pt.X - SIZE, pt.Y - SIZE, SIZE * 2, SIZE * 2);
 		}
 
-		private void DrawBrightnessPointer(Point pt) {
+		private void DrawBrightnessPointer(Point pt) 
+		{
 			// Draw a triangle for the brightness indicator that "points" at the provided point.
 			const int HEIGHT = 10;
 			const int WIDTH = 7;

@@ -58,7 +58,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This sets if this result is displayed in ErrorCheckForm (mxd)
-		internal override void Hide(bool hide) {
+		internal override void Hide(bool hide) 
+		{
 			hidden = hide;
 			Type t = this.GetType();
 			if (hide) 

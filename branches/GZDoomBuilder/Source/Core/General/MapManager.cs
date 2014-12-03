@@ -553,12 +553,14 @@ namespace CodeImp.DoomBuilder {
 		/// <summary>
 		/// This exports the structures from memory into a WAD file with the current map format.
 		/// </summary>
-		public bool ExportToFile(string filepathname) {
+		public bool ExportToFile(string filepathname) 
+		{
 			return SaveMap(filepathname, SavePurpose.Testing);
 		}
 
 		// Initializes for an existing map
-		internal bool SaveMap(string newfilepathname, SavePurpose purpose) {
+		internal bool SaveMap(string newfilepathname, SavePurpose purpose) 
+		{
 			MapSet outputset;
 			string nodebuildername, settingsfile;
 			StatusInfo oldstatus;
@@ -577,14 +579,13 @@ namespace CodeImp.DoomBuilder {
 
 			// Only recompile scripts when the scripts have changed
 			// (not when only the map changed)
-			if (localscriptschanged) {
-				if (!CompileScriptLumps()) {
-					// Compiler failure
-					if (errors.Count > 0)
-						General.ShowErrorMessage("Error while compiling scripts: " + errors[0].description, MessageBoxButtons.OK);
-					else
-						General.ShowErrorMessage("Unknown compiler error while compiling scripts!", MessageBoxButtons.OK);
-				}
+			if(localscriptschanged && !CompileScriptLumps()) 
+			{
+				// Compiler failure
+				if(errors.Count > 0)
+					General.ShowErrorMessage("Error while compiling scripts: " + errors[0].description, MessageBoxButtons.OK);
+				else
+					General.ShowErrorMessage("Unknown compiler error while compiling scripts!", MessageBoxButtons.OK);
 			}
 
 			// Show script window if there are any errors and we are going to test the map
@@ -594,13 +595,16 @@ namespace CodeImp.DoomBuilder {
 
 			// Only write the map and rebuild nodes when the actual map has changed
 			// (not when only scripts have changed)
-			if (changed) {
+			if (changed) 
+			{
 				// Make a copy of the map data
 				outputset = map.Clone();
 
 				// Remove all flags from all 3D Start things
-				foreach (Thing t in outputset.Things) {
-					if (t.Type == config.Start3DModeThingType) {
+				foreach (Thing t in outputset.Things) 
+				{
+					if (t.Type == config.Start3DModeThingType) 
+					{
 						// We're not using SetFlag here, this doesn't have to be undone.
 						// Please note that this is totally exceptional!
 						List<string> flagkeys = new List<string>(t.Flags.Keys);
@@ -609,7 +613,8 @@ namespace CodeImp.DoomBuilder {
 				}
 
 				// Do we need sidedefs compression?
-				if (map.Sidedefs.Count > io.MaxSidedefs) {
+				if (map.Sidedefs.Count > io.MaxSidedefs) 
+				{
 					// Compress sidedefs
 					oldstatus = General.MainWindow.Status;
 					General.MainWindow.DisplayStatus(StatusType.Busy, "Compressing sidedefs...");
@@ -617,7 +622,8 @@ namespace CodeImp.DoomBuilder {
 					General.MainWindow.DisplayStatus(oldstatus);
 
 					// Check if it still doesnt fit
-					if (outputset.Sidedefs.Count > io.MaxSidedefs) {
+					if (outputset.Sidedefs.Count > io.MaxSidedefs) 
+					{
 						// Problem! Can't save the map like this!
 						General.ShowErrorMessage("Unable to save the map: There are too many unique sidedefs!", MessageBoxButtons.OK);
 						return false;
@@ -625,25 +631,29 @@ namespace CodeImp.DoomBuilder {
 				}
 
 				// Check things
-				if (map.Things.Count > io.MaxThings) {
+				if (map.Things.Count > io.MaxThings) 
+				{
 					General.ShowErrorMessage("Unable to save the map: There are too many things!", MessageBoxButtons.OK);
 					return false;
 				}
 
 				// Check sectors
-				if (map.Sectors.Count > io.MaxSectors) {
+				if (map.Sectors.Count > io.MaxSectors) 
+				{
 					General.ShowErrorMessage("Unable to save the map: There are too many sectors!", MessageBoxButtons.OK);
 					return false;
 				}
 
 				// Check linedefs
-				if (map.Linedefs.Count > io.MaxLinedefs) {
+				if (map.Linedefs.Count > io.MaxLinedefs) 
+				{
 					General.ShowErrorMessage("Unable to save the map: There are too many linedefs!", MessageBoxButtons.OK);
 					return false;
 				}
 
 				// Check vertices
-				if (map.Vertices.Count > io.MaxVertices) {
+				if (map.Vertices.Count > io.MaxVertices) 
+				{
 					General.ShowErrorMessage("Unable to save the map: There are too many vertices!", MessageBoxButtons.OK);
 					return false;
 				}
@@ -681,15 +691,19 @@ namespace CodeImp.DoomBuilder {
 			// Determine original map name
 			origmapname = (options.PreviousName != "" && purpose != SavePurpose.IntoFile) ? options.PreviousName : options.CurrentName;
 
-			try {
-				if (File.Exists(newfilepathname)) {
+			try 
+			{
+				if (File.Exists(newfilepathname)) 
+				{
 					// mxd. Check if target wad already has a map with the same name
-					if (purpose == SavePurpose.IntoFile) {
+					if (purpose == SavePurpose.IntoFile) 
+					{
 						WAD wad = new WAD(newfilepathname, true);
 						int mapindex = wad.FindLumpIndex(origmapname);
 						wad.Dispose();
 
-						if(mapindex != -1 && MessageBox.Show(General.MainWindow, "Target file already contains map '" + origmapname + "'\nDo you want to replace it?", "Map already exists!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No) {
+						if(mapindex != -1 && MessageBox.Show(General.MainWindow, "Target file already contains map '" + origmapname + "'\nDo you want to replace it?", "Map already exists!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No) 
+						{
 							data.Resume();
 							General.WriteLogLine("Map saving cancelled...");
 							return false;
@@ -705,7 +719,8 @@ namespace CodeImp.DoomBuilder {
 
 				// Except when saving INTO another file,
 				// kill the target file if it is different from source file
-				if ((purpose != SavePurpose.IntoFile) && (newfilepathname != filepathname)) {
+				if ((purpose != SavePurpose.IntoFile) && (newfilepathname != filepathname)) 
+				{
 					// Kill target file
 					if (File.Exists(newfilepathname)) File.Delete(newfilepathname);
 
@@ -715,13 +730,15 @@ namespace CodeImp.DoomBuilder {
 				}
 
 				// On Save AS we have to copy the previous file to the new file
-				if ((purpose == SavePurpose.AsNewFile) && (filepathname != "")) {
+				if ((purpose == SavePurpose.AsNewFile) && (filepathname != "")) 
+				{
 					// Copy if original file still exists
 					if (File.Exists(filepathname)) File.Copy(filepathname, newfilepathname, true);
 				}
 
 				// If the target file exists, we need to rebuild it
-				if (File.Exists(newfilepathname)) {
+				if (File.Exists(newfilepathname)) 
+				{
 					// Move the target file aside
 					string origwadfile = newfilepathname + ".temp";
 					File.Move(newfilepathname, origwadfile);
@@ -734,9 +751,12 @@ namespace CodeImp.DoomBuilder {
 
 					// Copy all lumps, except the original map
 					GameConfiguration origcfg; //mxd
-					if (origmapconfigname == configinfo.Filename) {
+					if (origmapconfigname == configinfo.Filename) 
+					{
 						origcfg = config;
-					} else {
+					} 
+					else 
+					{
 						ConfigurationInfo ci = General.GetConfigurationInfo(origmapconfigname);
 						origcfg = new GameConfiguration(ci.Configuration);
 					}
@@ -752,12 +772,16 @@ namespace CodeImp.DoomBuilder {
 					// Create new target file
 					targetwad = new WAD(newfilepathname);
 				}
-			} catch (IOException) {
+			} 
+			catch (IOException) 
+			{
 				General.ShowErrorMessage("IO Error while writing target file: " + newfilepathname + ". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
 				data.Resume();
 				General.WriteLogLine("Map saving failed");
 				return false;
-			} catch (UnauthorizedAccessException) {
+			} 
+			catch (UnauthorizedAccessException) 
+			{
 				General.ShowErrorMessage("Error while accessing target file: " + newfilepathname + ". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
 				data.Resume();
 				General.WriteLogLine("Map saving failed");
@@ -776,10 +800,13 @@ namespace CodeImp.DoomBuilder {
 
 					// Find the map header in target
 					index = targetwad.FindLumpIndex(options.PreviousName);
-					if (index > -1) {
+					if (index > -1) 
+					{
 						// Rename the map lump name
 						targetwad.Lumps[index].Rename(options.CurrentName);
-					} else {
+					} 
+					else 
+					{
 						// Houston, we've got a problem!
 						General.ShowErrorMessage("Error renaming map lump name: the original map lump could not be found!", MessageBoxButtons.OK);
 						options.CurrentName = options.PreviousName;
@@ -796,9 +823,11 @@ namespace CodeImp.DoomBuilder {
 			data.Resume();
 
 			// Not saved for testing purpose?
-			if (purpose != SavePurpose.Testing) {
+			if (purpose != SavePurpose.Testing) 
+			{
 				// Saved in a different file?
-				if (newfilepathname != filepathname) {
+				if (newfilepathname != filepathname) 
+				{
 					// Keep new filename
 					filepathname = newfilepathname;
 					filetitle = Path.GetFileName(filepathname);
@@ -807,11 +836,14 @@ namespace CodeImp.DoomBuilder {
 					ReloadResources();
 				}
 
-				try {
+				try 
+				{
 					// Open or create the map settings
 					settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
 					options.WriteConfiguration(settingsfile);
-				} catch (Exception e) {
+				} 
+				catch (Exception e) 
+				{
 					// Warning only
 					General.ErrorLogger.Add(ErrorType.Warning, "Could not write the map settings configuration file. " + e.GetType().Name + ": " + e.Message);
 				}
@@ -1234,7 +1266,8 @@ namespace CodeImp.DoomBuilder {
 				{
 					// Check if this is a known lump name
 					if (maplumps.ContainsKey(source.Lumps[mapheaderindex + i].Name) ||
-					   (maplumps.ContainsKey(CONFIG_MAP_HEADER) && (source.Lumps[mapheaderindex + i].Name == mapheadername))) {
+					   (maplumps.ContainsKey(CONFIG_MAP_HEADER) && (source.Lumps[mapheaderindex + i].Name == mapheadername))) 
+					{
 						// Is this the lump we are looking for?
 						if (source.Lumps[mapheaderindex + i].Name == lumpname) 
 						{
@@ -1648,7 +1681,7 @@ namespace CodeImp.DoomBuilder {
 					if (stream != null) 
 					{
 						AcsParserSE parser = new AcsParserSE();
-						parser.OnInclude = updateScriptsFromLocation;
+						parser.OnInclude = UpdateScriptsFromLocation;
 						parser.Parse(stream, "SCRIPTS", true, false);
 
 						if(parser.NamedScripts.Count > 0 && (FormatInterface is DoomMapSetIO || FormatInterface is HexenMapSetIO)) 
@@ -1675,7 +1708,7 @@ namespace CodeImp.DoomBuilder {
 		}
 
 		//mxd
-		private static void updateScriptsFromLocation(AcsParserSE parser, string path) 
+		private static void UpdateScriptsFromLocation(AcsParserSE parser, string path) 
 		{
 			MemoryStream s = General.Map.Data.LoadFile(path);
 			if(s != null && s.Length > 0) parser.Parse(s, path, true, true);
@@ -1954,7 +1987,7 @@ namespace CodeImp.DoomBuilder {
 			//snap vertices?
 			if (verts.Count > 0) 
 			{
-				snapVertices(verts);
+				SnapVertices(verts);
 				return;
 			}
 
@@ -1966,12 +1999,12 @@ namespace CodeImp.DoomBuilder {
 			} 
 			else 
 			{
-				snapThings(things);
+				SnapThings(things);
 			}
 		}
 
 		//mxd
-		private void snapVertices(ICollection<Vertex> verts) 
+		private void SnapVertices(ICollection<Vertex> verts) 
 		{
 			//we are terribly busy...
 			Cursor.Current = Cursors.AppStarting;
@@ -2091,7 +2124,7 @@ namespace CodeImp.DoomBuilder {
 		}
 
 		//mxd
-		private static void snapThings(IEnumerable<Thing> things) 
+		private static void SnapThings(IEnumerable<Thing> things) 
 		{
 			//we are terribly busy...
 			Cursor.Current = Cursors.AppStarting;

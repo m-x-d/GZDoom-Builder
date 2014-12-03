@@ -36,7 +36,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			public readonly Vector3D V2;
 			public readonly Vector3D V3;
 
-			public Face(Vector3D v1, Vector3D v2, Vector3D v3) {
+			public Face(Vector3D v1, Vector3D v2, Vector3D v3) 
+			{
 				V1 = v1;
 				V2 = v2;
 				V3 = v3;
@@ -60,7 +61,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		#region ================== Constructor
 
-		public ImportObjAsTerrainMode() {
+		public ImportObjAsTerrainMode() 
+		{
 			form = new ObjImportSettingsForm();
 		}
 
@@ -68,8 +70,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		#region ================== Methods
 
-		public override void OnEngage() {
-			if(!General.Map.UDMF) {
+		public override void OnEngage() 
+		{
+			if(!General.Map.UDMF) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Terrain importer works only in UDMF map format!");
 				OnCancel();
 			}
@@ -78,14 +82,18 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			General.Map.Map.ClearAllSelected();
 
 			//show interface
-			if(form.ShowDialog() == DialogResult.OK && File.Exists(form.FilePath)) {
+			if(form.ShowDialog() == DialogResult.OK && File.Exists(form.FilePath)) 
+			{
 				OnAccept();
-			} else {
+			} 
+			else 
+			{
 				OnCancel();
 			}
 		}
 
-		public override void OnAccept() {
+		public override void OnAccept() 
+		{
 			Cursor.Current = Cursors.AppStarting;
 			General.Interface.DisplayStatus(StatusType.Busy, "Creating geometry...");
 
@@ -96,7 +104,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			int maxZ = int.MinValue;
 
 			// Read .obj, create and select sectors 
-			if(!readGeometry(form.FilePath, form.ObjScale, form.UpAxis, verts, faces, ref minZ, ref maxZ) || !createGeometry(verts, faces, minZ, maxZ + (maxZ - minZ)/2)) {
+			if(!ReadGeometry(form.FilePath, form.ObjScale, form.UpAxis, verts, faces, ref minZ, ref maxZ) || !CreateGeometry(verts, faces, minZ, maxZ + (maxZ - minZ)/2)) 
+			{
 				// Fial!
 				Cursor.Current = Cursors.Default;
 
@@ -115,7 +124,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			General.Editing.ChangeMode("EditSelectionMode", true);
 		}
 
-		public override void OnCancel() {
+		public override void OnCancel() 
+		{
 			// Cancel base class
 			base.OnCancel();
 
@@ -127,7 +137,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		#region ================== Geometry creation
 
-		private bool createGeometry(List<Vector3D> verts, List<Face> faces, int minZ, int maxZ) {
+		private static bool CreateGeometry(List<Vector3D> verts, List<Face> faces, int minZ, int maxZ) 
+		{
 			//make undo
 			General.Map.UndoRedo.CreateUndo("Import Terrain");
 
@@ -139,7 +150,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 			//terrain has many faces... let's create them
 			Dictionary<Vector3D, Vertex> newverts = new Dictionary<Vector3D, Vertex>();
-			foreach(Face face in faces){
+			foreach(Face face in faces)
+			{
 				Sector s = map.CreateSector();
 				s.Selected = true;
 				s.FloorHeight = minZ;
@@ -148,49 +160,53 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				s.SetCeilTexture(General.Map.Config.SkyFlatName);
 				s.SetFloorTexture(General.Map.Options.DefaultFloorTexture); //todo: allow user to change this
 
-				Linedef newline = getLine(newverts, s, face.V1, face.V2);
+				Linedef newline = GetLine(newverts, s, face.V1, face.V2);
 				if(newline != null) newlines.Add(newline);
 
-				newline = getLine(newverts, s, face.V2, face.V3);
+				newline = GetLine(newverts, s, face.V2, face.V3);
 				if(newline != null) newlines.Add(newline);
 
-				newline = getLine(newverts, s, face.V3, face.V1);
+				newline = GetLine(newverts, s, face.V3, face.V1);
 				if(newline != null) newlines.Add(newline);
 
 				s.UpdateCache();
 			}
 
 			//update new lines
-			foreach(Linedef l in newlines){
-				l.ApplySidedFlags();
-			}
+			foreach(Linedef l in newlines) l.ApplySidedFlags();
 
 			map.EndAddRemove();
 			return true;
 		}
 
-		private Linedef getLine(Dictionary<Vector3D, Vertex> verts, Sector sector, Vector3D v1, Vector3D v2) {
+		private static Linedef GetLine(Dictionary<Vector3D, Vertex> verts, Sector sector, Vector3D v1, Vector3D v2) 
+		{
 			Linedef line = null;
 
 			//get start and end verts
-			Vertex start = getVertex(verts, v1);
-			Vertex end = getVertex(verts, v2);
+			Vertex start = GetVertex(verts, v1);
+			Vertex end = GetVertex(verts, v2);
 
 			//check if the line is already created
-			foreach(Linedef l in start.Linedefs){
-				if(l.End == end || l.Start == end) {
+			foreach(Linedef l in start.Linedefs)
+			{
+				if(l.End == end || l.Start == end) 
+				{
 					line = l;
 					break;
 				}
 			}
 
 			//create a new line?
-			if(line == null) {
+			if(line == null) 
+			{
 				line = General.Map.Map.CreateLinedef(start, end);
 
 				//create front sidedef and attach sector to it
 				General.Map.Map.CreateSidedef(line, true, sector);
-			} else {
+			} 
+			else 
+			{
 				//create back sidedef and attach sector to it
 				General.Map.Map.CreateSidedef(line, false, sector);
 			}
@@ -199,7 +215,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			return line;
 		}
 
-		private static Vertex getVertex(Dictionary<Vector3D, Vertex> verts, Vector3D pos) {
+		private static Vertex GetVertex(Dictionary<Vector3D, Vertex> verts, Vector3D pos) 
+		{
 			//already there?
 			if(verts.ContainsKey(pos)) return verts[pos];
 			
@@ -214,28 +231,34 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		#region ================== .obj import
 
-		private static bool readGeometry(string path, float scale, UpAxis axis, List<Vector3D> verts, List<Face> faces, ref int minZ, ref int maxZ) {
-			using(StreamReader reader = File.OpenText(path)) {
+		private static bool ReadGeometry(string path, float scale, UpAxis axis, List<Vector3D> verts, List<Face> faces, ref int minZ, ref int maxZ) 
+		{
+			using(StreamReader reader = File.OpenText(path)) 
+			{
 				string line;
 				float x, y, z;
 				int px, py, pz;
 				int counter = 0;
 
-				while((line = reader.ReadLine()) != null) {
+				while((line = reader.ReadLine()) != null) 
+				{
 					counter++;
 
-					if(line.StartsWith("v ")) {
+					if(line.StartsWith("v ")) 
+					{
 						string[] parts = line.Split(space);
 
 						if(parts.Length != 4 || !float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out x) ||
 							!float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out y) ||
-							!float.TryParse(parts[3], NumberStyles.Float, CultureInfo.InvariantCulture, out z)) {
+							!float.TryParse(parts[3], NumberStyles.Float, CultureInfo.InvariantCulture, out z)) 
+						{
 							MessageBox.Show("Failed to parse vertex definition at line " + counter + "!", "Terrain Importer", MessageBoxButtons.OK, MessageBoxIcon.Error);
 							return false;
 						}
 
 						//apply up axis
-						switch (axis) {
+						switch (axis) 
+						{
 							case UpAxis.Y:
 								px = (int)Math.Round(x * scale);
 								py = (int)Math.Round(-z * scale);
@@ -265,19 +288,21 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 						if(minZ > pz) minZ = pz;
 
 						verts.Add(new Vector3D(px, py, pz));
-
-					} else if(line.StartsWith("f ")) {
+					} 
+					else if(line.StartsWith("f ")) 
+					{
 						string[] parts = line.Split(space);
 
-						if(parts.Length != 4) {
+						if(parts.Length != 4) 
+						{
 							MessageBox.Show("Failed to parse face definition at line " + counter + ": only triangle faces are supported!", "Terrain Importer", MessageBoxButtons.OK, MessageBoxIcon.Error);
 							return false;
 						}
 
 						//.obj vertex indices are 1-based
-						int v1 = readVertexIndex(parts[1]) - 1;
-						int v2 = readVertexIndex(parts[2]) - 1;
-						int v3 = readVertexIndex(parts[3]) - 1;
+						int v1 = ReadVertexIndex(parts[1]) - 1;
+						int v2 = ReadVertexIndex(parts[2]) - 1;
+						int v3 = ReadVertexIndex(parts[3]) - 1;
 
 						if(verts[v1] == verts[v2] || verts[v1] == verts[v3] || verts[v2] == verts[v3]) continue;
 						faces.Add(new Face(verts[v3], verts[v2], verts[v1]));
@@ -288,7 +313,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			return true;
 		}
 
-		private static int readVertexIndex(string def) {
+		private static int ReadVertexIndex(string def) 
+		{
 			int slashpos = def.IndexOf(slash);
 			if(slashpos != -1) def = def.Substring(0, slashpos);
 			return int.Parse(def);

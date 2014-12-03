@@ -122,9 +122,12 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				//mxd
-				try {
+				try 
+				{
 					Clipboard.SetDataObject(str.ToString(), true);
-				} catch(ExternalException) {
+				} 
+				catch(ExternalException) 
+				{
 					General.Interface.DisplayStatus(StatusType.Warning, "Failed to perform a Clipboard operation...");
 				}
 			}
@@ -141,12 +144,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void ErrorsForm_Shown(object sender, EventArgs e)
 		{
-			if(grid.Rows.Count > 0)
-				grid.Rows[0].Selected = false;
+			if(grid.Rows.Count > 0) grid.Rows[0].Selected = false;
 
 		}
 
-		private void grid_CellContentClick(object sender, DataGridViewCellEventArgs e) {
+		private void grid_CellContentClick(object sender, DataGridViewCellEventArgs e) 
+		{
 			copyselected.Enabled = true;
 		}
 	}

@@ -586,7 +586,8 @@ namespace CodeImp.DoomBuilder.Windows
 						backmid.MultipleTextures = true; //mxd
 						backmid.TextureName = string.Empty;
 					}
-					if (backlow.TextureName != l.Back.LowTexture) {
+					if (backlow.TextureName != l.Back.LowTexture) 
+					{
 						if(!backlow.Required && l.Back.LowRequired()) backlow.Required = true;
 						backlow.MultipleTextures = true; //mxd
 						backlow.TextureName = string.Empty;
@@ -641,7 +642,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			preventchanges = false;
 
-			updateScriptControls(); //mxd
+			UpdateScriptControls(); //mxd
 			CheckActivationFlagsRequired(); //mxd
 
 			//mxd. Set intial script-related values, if required
@@ -685,7 +686,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void updateScriptControls() 
+		private void UpdateScriptControls() 
 		{
 			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
 			{
@@ -746,7 +747,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.FormatInterface.HasLinedefTag)
 			{
 				tagSelector.ValidateTag(); //mxd
-				if(((tagSelector.GetTag(0) < General.Map.FormatInterface.MinTag) || (tagSelector.GetTag(0) > General.Map.FormatInterface.MaxTag))) {
+				if(((tagSelector.GetTag(0) < General.Map.FormatInterface.MinTag) || (tagSelector.GetTag(0) > General.Map.FormatInterface.MaxTag))) 
+				{
 					General.ShowWarningMessage("Linedef tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
 					return;
 				}
@@ -995,7 +997,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd
 			if(!preventchanges)
 			{
-				updateScriptControls();
+				UpdateScriptControls();
 				CheckActivationFlagsRequired();
 			}
 		}
@@ -1353,7 +1355,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void backmid_OnValueChanged(object sender, EventArgs e) {
+		private void backmid_OnValueChanged(object sender, EventArgs e) 
+		{
 			if(preventchanges) return;
 
 			//restore values
@@ -1380,7 +1383,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void backlow_OnValueChanged(object sender, EventArgs e) {
+		private void backlow_OnValueChanged(object sender, EventArgs e) 
+		{
 			if(preventchanges) return;
 
 			//restore values

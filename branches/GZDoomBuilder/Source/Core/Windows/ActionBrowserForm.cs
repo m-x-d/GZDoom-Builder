@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			
 			// Go for all predefined categories
-			createActionCategories(action);
+			CreateActionCategories(action);
 			allNodes = new TreeNode[actions.Nodes.Count];
 			actions.Nodes.CopyTo(allNodes, 0);
 
@@ -123,33 +123,41 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void createActionCategories(int action) {
+		private void CreateActionCategories(int action) 
+		{
 			TreeNode cn, n;
 
 			actions.BeginUpdate();
 			actions.ShowLines = true;
-			foreach (LinedefActionCategory ac in General.Map.Config.ActionCategories) {
+			foreach (LinedefActionCategory ac in General.Map.Config.ActionCategories) 
+			{
 				// Empty category names will not be created
 				// (those actions will go in the root of the tree)
-				if (ac.Title.Length > 0) {
+				if (ac.Title.Length > 0) 
+				{
 					// Create category
 					cn = actions.Nodes.Add(ac.Title);
-					foreach (LinedefActionInfo ai in ac.Actions) {
+					foreach (LinedefActionInfo ai in ac.Actions) 
+					{
 						// Create action
 						n = cn.Nodes.Add(ai.Title);
 						n.Tag = ai;
 
 						// This is the given action?
-						if (ai.Index == action) {
+						if (ai.Index == action) 
+						{
 							// Select this and expand the category
 							cn.Expand();
 							actions.SelectedNode = n;
 							n.EnsureVisible();
 						}
 					}
-				} else {
+				} 
+				else 
+				{
 					// Put actions in the tree root
-					foreach (LinedefActionInfo ai in ac.Actions) {
+					foreach (LinedefActionInfo ai in ac.Actions) 
+					{
 						// Create action
 						n = actions.Nodes.Add(ai.Title);
 						n.Tag = ai;
@@ -160,13 +168,15 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void filterActions(string p) {
+		private void FilterActions(string p) 
+		{
 			List<TreeNode> filteredNodes = new List<TreeNode>();
 
-			foreach (TreeNode n in allNodes) {
-				foreach (TreeNode cn in n.Nodes) {
+			foreach (TreeNode n in allNodes) 
+			{
+				foreach (TreeNode cn in n.Nodes) 
+				{
 					LinedefActionInfo ai = cn.Tag as LinedefActionInfo;
-
 					if (ai.Title.ToLowerInvariant().IndexOf(p) != -1)
 						filteredNodes.Add(cn);
 				}
@@ -288,22 +298,28 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void tbFilter_TextChanged(object sender, EventArgs e) {
-			if (tbFilter.Text.Length > 1) {
-				filterActions(tbFilter.Text);
-			} else if (String.IsNullOrEmpty(tbFilter.Text.ToLowerInvariant())) {
+		private void tbFilter_TextChanged(object sender, EventArgs e) 
+		{
+			if (tbFilter.Text.Length > 1) 
+			{
+				FilterActions(tbFilter.Text);
+			} 
+			else if (String.IsNullOrEmpty(tbFilter.Text.ToLowerInvariant())) 
+			{
 				actions.Nodes.Clear();
-				createActionCategories(actions.SelectedNode != null ? ((LinedefActionInfo)actions.SelectedNode.Tag).Index : 0);
+				CreateActionCategories(actions.SelectedNode != null ? ((LinedefActionInfo)actions.SelectedNode.Tag).Index : 0);
 			}
 		}
 
 		//mxd
-		private void btnClearFilter_Click(object sender, EventArgs e) {
+		private void btnClearFilter_Click(object sender, EventArgs e) 
+		{
 			tbFilter.Clear();
 		}
 
 		//mxd
-		private void ActionBrowserForm_Shown(object sender, EventArgs e) {
+		private void ActionBrowserForm_Shown(object sender, EventArgs e) 
+		{
 			tbFilter.Focus();
 		}
 	}

@@ -89,7 +89,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			//mxd
 			effects = new Dictionary<int, string[]>();
-			foreach (SectorEffectInfo info in General.Map.Config.SortedSectorEffects) {
+			foreach (SectorEffectInfo info in General.Map.Config.SortedSectorEffects) 
+			{
 				string name = info.Index + ": " + info.Title;
 				effects.Add(info.Index, new[] { name, "E" + info.Index });
 			}
@@ -128,12 +129,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. This makes a CRC for given selection
-		public int CreateSelectionCRC(ICollection<Sector> selection) {
+		private static int CreateSelectionCRC(ICollection<Sector> selection) 
+		{
 			CRC crc = new CRC();
 			crc.Add(selection.Count);
-			foreach(Sector s in selection) {
-				crc.Add(s.FixedIndex);
-			}
+			foreach(Sector s in selection) crc.Add(s.FixedIndex);
 			return (int)(crc.Value & 0xFFFFFFFF);
 		}
 
@@ -178,20 +178,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 				
 				//mxd. Render selected sectors
-				if (BuilderPlug.Me.UseHighlight) {
+				if (BuilderPlug.Me.UseHighlight) 
+				{
 					renderer.RenderHighlight(overlayGeometry, General.Colors.Selection.WithAlpha(64).ToInt());
 				}
 
 				//mxd. Render highlighted sector
-				if(BuilderPlug.Me.UseHighlight && highlighted != null) {
+				if(BuilderPlug.Me.UseHighlight && highlighted != null) 
+				{
 					renderer.RenderHighlight(highlighted.FlatVertices, General.Colors.Highlight.WithAlpha(64).ToInt());
 				}
 
-				if (BuilderPlug.Me.ViewSelectionNumbers) {
-					foreach (Sector s in orderedselection) {
+				if (BuilderPlug.Me.ViewSelectionNumbers) 
+				{
+					foreach (Sector s in orderedselection) 
+					{
 						// Render labels
 						TextLabel[] labelarray = labels[s];
-						for (int i = 0; i < s.Labels.Count; i++) {
+						for (int i = 0; i < s.Labels.Count; i++) 
+						{
 							TextLabel l = labelarray[i];
 
 							// Render only when enough space for the label to see
@@ -202,9 +207,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				//mxd. Render effect labels
-				if (BuilderPlug.Me.ViewSelectionEffects) {
-					if(!BuilderPlug.Me.ViewSelectionNumbers) renderEffectLabels(selectedEffectLabels);
-					renderEffectLabels(unselectedEffectLabels);
+				if (BuilderPlug.Me.ViewSelectionEffects) 
+				{
+					if(!BuilderPlug.Me.ViewSelectionNumbers) RenderEffectLabels(selectedEffectLabels);
+					RenderEffectLabels(unselectedEffectLabels);
 				}
 				
 				renderer.Finish();
@@ -212,20 +218,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void renderEffectLabels(Dictionary<Sector, string[]> labelsGroup) {
-			foreach(KeyValuePair<Sector, string[]> group in labelsGroup) {
+		private void RenderEffectLabels(Dictionary<Sector, string[]> labelsGroup) 
+		{
+			foreach(KeyValuePair<Sector, string[]> group in labelsGroup) 
+			{
 				// Render labels
 				TextLabel[] labelarray = labels[group.Key];
-				for(int i = 0; i < group.Key.Labels.Count; i++) {
+				for(int i = 0; i < group.Key.Labels.Count; i++) 
+				{
 					TextLabel l = labelarray[i];
 					l.Color = General.Colors.InfoLine;
 
 					// Render only when enough space for the label to see
 					float requiredsize = (General.Map.GetTextSize(group.Value[0], l.Scale).Width) / renderer.Scale;
-					if(requiredsize > group.Key.Labels[i].radius) {
+					if(requiredsize > group.Key.Labels[i].radius) 
+					{
 						requiredsize = (General.Map.GetTextSize(group.Value[1], l.Scale).Width) / renderer.Scale;
 						l.Text = (requiredsize > group.Key.Labels[i].radius ? "+" : group.Value[1]);
-					} else {
+					} 
+					else 
+					{
 						l.Text = group.Value[0];
 					}
 
@@ -235,29 +247,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private string[] getEffectText(Sector s) {
+		private string[] GetEffectText(Sector s) 
+		{
 			string[] result = new []{string.Empty, string.Empty};
 
-			if(s.Effect != 0) {
-				if(effects.ContainsKey(s.Effect)) {
-					if(s.Tag != 0) {
+			if(s.Effect != 0) 
+			{
+				if(effects.ContainsKey(s.Effect)) 
+				{
+					if(s.Tag != 0) 
+					{
 						result[0] = "Tag " + s.Tag + ", " + effects[s.Effect][0];
 						result[1] = "T" + s.Tag + " " + "E" + s.Effect;
-					} else {
+					} 
+					else 
+					{
 						result[0] = effects[s.Effect][0];
 						result[1] = "E" + s.Effect;
 					}
-				} else {
+				} 
+				else 
+				{
 					string effect = s.Effect + " - " + General.Map.Config.GetGeneralizedSectorEffectName(s.Effect);
-					if(s.Tag != 0) {
+					if(s.Tag != 0) 
+					{
 						result[0] = "Tag " + s.Tag + ", Effect " + effect;
 						result[1] = "T" + s.Tag + " " + "E" + s.Effect;
-					} else {
+					} 
+					else 
+					{
 						result[0] = "Effect " + effect;
 						result[1] = "E" + s.Effect;
 					}
 				}
-			} else if(s.Tag != 0) {
+			} 
+			else if(s.Tag != 0) 
+			{
 				result[0] = "Tag " + s.Tag;
 				result[1] = "T" + s.Tag;
 			}
@@ -266,7 +291,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void updateOverlaySurfaces() {
+		private void UpdateOverlaySurfaces() 
+		{
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 			List<FlatVertex> vertsList = new List<FlatVertex>();
 			
@@ -276,22 +302,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void updateEffectLabels() {
+		private void UpdateEffectLabels() 
+		{
 			selectedEffectLabels = new Dictionary<Sector, string[]>();
 			unselectedEffectLabels = new Dictionary<Sector, string[]>();
 
 			//update effect labels for selected sectors
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
-			foreach(Sector s in orderedselection) {
-				string[] labelText = getEffectText(s);
+			foreach(Sector s in orderedselection) 
+			{
+				string[] labelText = GetEffectText(s);
 				if(!string.IsNullOrEmpty(labelText[0])) 
 					selectedEffectLabels.Add(s, labelText);
 			}
 
 			//update effect labels for unselected sectors
 			orderedselection = General.Map.Map.GetSelectedSectors(false);
-			foreach(Sector s in orderedselection) {
-				string[] labelText = getEffectText(s);
+			foreach(Sector s in orderedselection) 
+			{
+				string[] labelText = GetEffectText(s);
 				if(!string.IsNullOrEmpty(labelText[0]))
 					unselectedEffectLabels.Add(s, labelText);
 			}
@@ -354,10 +383,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			bool completeredraw = (highlighted != null) && (highlighted.Tag > 0);
 
 			// Set highlight association
-			if (s != null) {
+			if (s != null) 
+			{
 				Vector2D center = (s.Labels.Count > 0 ? s.Labels[0].position : new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2));
 				highlightasso.Set(center, s.Tag, UniversalType.SectorTag);
-			} else {
+			} 
+			else 
+			{
 				highlightasso.Set(new Vector2D(), 0, 0);
 			}
 
@@ -445,15 +477,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					selectionchanged = true;
 					
 					// Setup labels
-					if(update) { //mxd
+					if(update) 
+					{ 
+						//mxd
 						string selectedCount = General.Map.Map.SelectedSectorsCount.ToString();
 						TextLabel[] labelarray = labels[s];
-						foreach(TextLabel l in labelarray) {
+						foreach(TextLabel l in labelarray) 
+						{
 							l.Text = selectedCount;
 							l.Color = General.Colors.Selection;
 						}
 
-						updateEffectLabels();
+						UpdateEffectLabels();
 					}
 				}
 				// Deselect the sector?
@@ -463,7 +498,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					selectionchanged = true;
 
 					// Clear labels
-					if(update) {
+					if(update) 
+					{
 						TextLabel[] labelarray = labels[s];
 						foreach(TextLabel l in labelarray) l.Text = "";
 
@@ -513,26 +549,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd
-			updateEffectLabels();
+			UpdateEffectLabels();
 		}
 
 		//mxd
-		private bool isInSelectionRect(Sector s, List<Line2D> selectionOutline) {
+		private bool IsInSelectionRect(Sector s, List<Line2D> selectionOutline) 
+		{
 			if(selectionrect.Contains(s.BBox)) return true;
 
-			if(BuilderPlug.Me.MarqueSelectTouching && s.BBox.IntersectsWith(selectionrect)) {
+			if(BuilderPlug.Me.MarqueSelectTouching && s.BBox.IntersectsWith(selectionrect)) 
+			{
 				//check endpoints
-				foreach(Sidedef side in s.Sidedefs) {
+				foreach(Sidedef side in s.Sidedefs) 
+				{
 					if((selectionrect.Contains(side.Line.Start.Position.x, side.Line.Start.Position.y)
 						|| selectionrect.Contains(side.Line.End.Position.x, side.Line.End.Position.y))) 
 						return true;
 				}
 
 				//check line intersections
-				foreach(Sidedef side in s.Sidedefs) {
-					foreach(Line2D line in selectionOutline) {
-						if(Line2D.GetIntersection(side.Line.Line, line))
-							return true;
+				foreach(Sidedef side in s.Sidedefs) 
+				{
+					foreach(Line2D line in selectionOutline) 
+					{
+						if(Line2D.GetIntersection(side.Line.Line, line)) return true;
 					}
 				}
 			}
@@ -541,12 +581,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void SelectMapElement(SelectableElement element) {
-			if(element is Sector) {
+		public override void SelectMapElement(SelectableElement element) 
+		{
+			if(element is Sector) 
+			{
 				SelectSector(element as Sector, true, true);
 
 				// Update overlay
-				updateOverlaySurfaces();
+				UpdateOverlaySurfaces();
 				UpdateSelectionInfo();
 			}
 		}
@@ -600,7 +642,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Update
 			UpdateSelectedLabels();
-			updateOverlaySurfaces();//mxd
+			UpdateOverlaySurfaces();//mxd
 			UpdateSelectionInfo(); //mxd
 			UpdateOverlay();
 		}
@@ -734,14 +776,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Update overlay
 					TextLabel[] labelarray = labels[highlighted];
 					foreach(TextLabel l in labelarray) l.Color = General.Colors.Highlight;
-					updateOverlaySurfaces(); //mxd
+					UpdateOverlaySurfaces(); //mxd
 					UpdateOverlay();
 					renderer.Present();
-				//mxd
-				} else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedSectorsCount > 0) {
+				} 
+				else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedSectorsCount > 0) //mxd
+				{
 					General.Map.Map.ClearSelectedLinedefs();
 					General.Map.Map.ClearSelectedSectors();
-					updateOverlaySurfaces(); //mxd
+					UpdateOverlaySurfaces(); //mxd
 					General.Interface.RedrawDisplay();
 				}
 
@@ -768,7 +811,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.Map.ClearSelectedLinedefs();
 					SelectSector(highlighted, true, false);
 					UpdateSelectedLabels(); //mxd
-					updateOverlaySurfaces(); //mxd
+					UpdateOverlaySurfaces(); //mxd
 					General.Interface.RedrawDisplay();
 				}
 
@@ -818,16 +861,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 
 						// When a single sector was selected, deselect it now
-						if (selected.Count == 1) {
+						if (selected.Count == 1) 
+						{
 							General.Map.Map.ClearSelectedSectors();
 							General.Map.Map.ClearSelectedLinedefs();
-							updateEffectLabels(); //mxd
-						} else if(result == DialogResult.Cancel) { //mxd. Restore selection...
+							UpdateEffectLabels(); //mxd
+						} 
+						else if(result == DialogResult.Cancel) //mxd. Restore selection...
+						{ 
 							foreach (Sector s in selected) SelectSector(s, true, false);
 							UpdateSelectedLabels(); //mxd
 						}
 
-						updateOverlaySurfaces(); //mxd
+						UpdateOverlaySurfaces(); //mxd
 						General.Interface.RedrawDisplay();
 					}
 				}
@@ -840,7 +886,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void sectorEditForm_OnValuesChanged(object sender, EventArgs e) {
+		private void sectorEditForm_OnValuesChanged(object sender, EventArgs e) 
+		{
 			// Update entire display
 			General.Map.Map.Update();
 			General.Interface.RedrawDisplay();
@@ -853,11 +900,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(panning) return; //mxd. Skip all this jazz while panning
 
 			//mxd
-			if(selectpressed && !editpressed && !selecting) {
+			if(selectpressed && !editpressed && !selecting) 
+			{
 				// Check if moved enough pixels for multiselect
 				Vector2D delta = mousedownpos - mousepos;
 				if((Math.Abs(delta.x) > MULTISELECT_START_MOVE_PIXELS) ||
-				   (Math.Abs(delta.y) > MULTISELECT_START_MOVE_PIXELS)) {
+				   (Math.Abs(delta.y) > MULTISELECT_START_MOVE_PIXELS)) 
+				{
 					// Start multiselecting
 					StartMultiSelection();
 				}
@@ -868,21 +917,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
 				Sector s = null;
 
-				if(l != null) {
+				if(l != null) 
+				{
 					// Check on which side of the linedef the mouse is
 					float side = l.SideOfLine(mousemappos);
-					if(side > 0) {
+					if(side > 0) 
+					{
 						// Is there a sidedef here?
-						if(l.Back != null)
-							s = l.Back.Sector;
-					} else {
+						if(l.Back != null) s = l.Back.Sector;
+					} 
+					else 
+					{
 						// Is there a sidedef here?
-						if(l.Front != null)
-							s = l.Front.Sector;
+						if(l.Front != null) s = l.Front.Sector;
 					}
 
-					if(s != null) {
-						if(s != highlighted) {
+					if(s != null) 
+					{
+						if(s != highlighted) 
+						{
 							//toggle selected state
 							highlighted = s;
 							if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
@@ -893,10 +946,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								SelectSector(highlighted, !highlighted.Selected, true);
 
 							// Update entire display
-							updateOverlaySurfaces();//mxd
+							UpdateOverlaySurfaces();//mxd
 							General.Interface.RedrawDisplay();
 						}
-					} else if(highlighted != null) {
+					} 
+					else if(highlighted != null) 
+					{
 						highlighted = null;
 						Highlight(null);
 
@@ -962,8 +1017,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void OnPaintSelectBegin() {
-			if(highlighted != null) {
+		protected override void OnPaintSelectBegin() 
+		{
+			if(highlighted != null) 
+			{
 				if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
 					SelectSector(highlighted, true, true);
 				else if(General.Interface.CtrlState)
@@ -972,7 +1029,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					SelectSector(highlighted, !highlighted.Selected, true);
 
 				// Update entire display
-				updateOverlaySurfaces();//mxd
+				UpdateOverlaySurfaces();//mxd
 				General.Interface.RedrawDisplay();
 			}
 
@@ -996,29 +1053,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Select only this sector for dragging
 						General.Map.Map.ClearSelectedSectors();
 						SelectSector(highlighted, true, true);
-						updateOverlaySurfaces(); //mxd
+						UpdateOverlaySurfaces(); //mxd
 					}
 
 					// Start dragging the selection
-					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || canDrag()) //mxd
+					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || CanDrag()) //mxd
 						General.Editing.ChangeMode(new DragSectorsMode(mousedownmappos));
 				}
 			}
 		}
 
 		//mxd. Check if any selected sector is outside of map boundary
-		private bool canDrag() {
+		private bool CanDrag() 
+		{
 			ICollection<Sector> selectedsectors = General.Map.Map.GetSelectedSectors(true);
 			int unaffectedCount = 0;
 
-			foreach(Sector s in selectedsectors) {
+			foreach(Sector s in selectedsectors) 
+			{
 				// Make sure the sector is inside the map boundary
-				foreach(Sidedef sd in s.Sidedefs) {
+				foreach(Sidedef sd in s.Sidedefs) 
+				{
 					if(sd.Line.Start.Position.x < General.Map.Config.LeftBoundary || sd.Line.Start.Position.x > General.Map.Config.RightBoundary
 						|| sd.Line.Start.Position.y > General.Map.Config.TopBoundary || sd.Line.Start.Position.y < General.Map.Config.BottomBoundary
 						|| sd.Line.End.Position.x < General.Map.Config.LeftBoundary || sd.Line.End.Position.x > General.Map.Config.RightBoundary
-						|| sd.Line.End.Position.y > General.Map.Config.TopBoundary || sd.Line.End.Position.y < General.Map.Config.BottomBoundary) {
-
+						|| sd.Line.End.Position.y > General.Map.Config.TopBoundary || sd.Line.End.Position.y < General.Map.Config.BottomBoundary) 
+					{
 						SelectSector(s, false, false);
 						unaffectedCount++;
 						break;
@@ -1026,7 +1086,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			if(unaffectedCount == selectedsectors.Count) {
+			if(unaffectedCount == selectedsectors.Count) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Unable to drag selection: " + (selectedsectors.Count == 1 ? "selected sector is" : "all of selected sectors are") + " outside of map boundary!");
 				General.Interface.RedrawDisplay();
 				return false;
@@ -1046,27 +1107,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(selectionvolume)
 			{
-				List<Line2D> selectionOutline = new List<Line2D>() {
+				List<Line2D> selectionOutline = new List<Line2D> {
 					new Line2D(selectionrect.Left, selectionrect.Top, selectionrect.Right, selectionrect.Top),
 					new Line2D(selectionrect.Right, selectionrect.Top, selectionrect.Right, selectionrect.Bottom),
 					new Line2D(selectionrect.Left, selectionrect.Bottom, selectionrect.Right, selectionrect.Bottom),
 					new Line2D(selectionrect.Left, selectionrect.Bottom, selectionrect.Left, selectionrect.Top)
-				                                                   };
+				};
 				
 				//mxd. collect changed sectors
-				switch(marqueSelectionMode) {
+				switch(marqueSelectionMode) 
+				{
 					case MarqueSelectionMode.SELECT:
 						bool select;
-						foreach(Sector s in General.Map.Map.Sectors) {
-							select = isInSelectionRect(s, selectionOutline);
+						foreach(Sector s in General.Map.Map.Sectors) 
+						{
+							select = IsInSelectionRect(s, selectionOutline);
 
 							if(select && !s.Selected) SelectSector(s, true, false);
 							else if(!select && s.Selected) SelectSector(s, false, false);
 						}
-						if (marqueSelectionIncludesThings) {
+						if (marqueSelectionIncludesThings) 
+						{
 							ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
 
-							foreach (Thing t in General.Map.ThingsFilter.VisibleThings) {
+							foreach (Thing t in General.Map.ThingsFilter.VisibleThings) 
+							{
 								t.DetermineSector();
 								if(t.Sector == null) continue;
 								t.Selected = selectionrect.Contains(t.Position.x, t.Position.y) && selected.Contains(t.Sector);
@@ -1075,14 +1140,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						break;
 
 					case MarqueSelectionMode.ADD:
-						foreach(Sector s in General.Map.Map.Sectors) {
-							if(!s.Selected && isInSelectionRect(s, selectionOutline))
+						foreach(Sector s in General.Map.Map.Sectors) 
+						{
+							if(!s.Selected && IsInSelectionRect(s, selectionOutline))
 								SelectSector(s, true, false);
 						}
-						if (marqueSelectionIncludesThings) {
+						if (marqueSelectionIncludesThings) 
+						{
 							ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
 
-							foreach (Thing t in General.Map.ThingsFilter.VisibleThings) {
+							foreach (Thing t in General.Map.ThingsFilter.VisibleThings) 
+							{
 								t.DetermineSector();
 								if(t.Sector == null) continue;
 								t.Selected |= selectionrect.Contains(t.Position.x, t.Position.y) && selected.Contains(t.Sector);
@@ -1091,24 +1159,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						break;
 
 					case MarqueSelectionMode.SUBTRACT:
-						foreach(Sector s in General.Map.Map.Sectors) {
+						foreach(Sector s in General.Map.Map.Sectors) 
+						{
 							if(!s.Selected) continue;
-							if(isInSelectionRect(s, selectionOutline))
+							if(IsInSelectionRect(s, selectionOutline))
 								SelectSector(s, false, false);
 						}
-						if (marqueSelectionIncludesThings) {
+						if (marqueSelectionIncludesThings) 
+						{
 							foreach (Thing t in General.Map.ThingsFilter.VisibleThings)
 								if (selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
 						}
 						break;
 
 					default: //should be Intersect
-						foreach(Sector s in General.Map.Map.Sectors) {
+						foreach(Sector s in General.Map.Map.Sectors) 
+						{
 							if(!s.Selected) continue;
-							if(!isInSelectionRect(s, selectionOutline))
+							if(!IsInSelectionRect(s, selectionOutline))
 								SelectSector(s, false, false);
 						}
-						if (marqueSelectionIncludesThings) {
+						if (marqueSelectionIncludesThings) 
+						{
 							foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
 								if(!selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
 						}
@@ -1120,9 +1192,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					sd.Line.Selected = sd.Sector.Selected || (sd.Other != null && sd.Other.Sector.Selected);
 
 				//mxd. Clear labels for unselected sectors
-				if(marqueSelectionMode != MarqueSelectionMode.ADD) {
+				if(marqueSelectionMode != MarqueSelectionMode.ADD) 
+				{
 					ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(false);
-					foreach(Sector s in orderedselection){
+					foreach(Sector s in orderedselection)
+					{
 						TextLabel[] labelarray = labels[s];
 						foreach(TextLabel l in labelarray) l.Text = "";
 					}
@@ -1130,7 +1204,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				UpdateSelectedLabels(); //mxd
 				UpdateSelectionInfo(); //mxd
-				updateOverlaySurfaces(); //mxd
+				UpdateOverlaySurfaces(); //mxd
 			}
 			
 			base.OnEndMultiSelection();
@@ -1160,7 +1234,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make the highlight the selection
 				SelectSector(highlighted, true, true);
-				updateOverlaySurfaces();//mxd
+				UpdateOverlaySurfaces();//mxd
 			}
 
 			return base.OnCopyBegin();
@@ -1180,8 +1254,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Clear labels
 			SetupLabels();
-			updateEffectLabels(); //mxd
-			updateOverlaySurfaces(); //mxd
+			UpdateEffectLabels(); //mxd
+			UpdateOverlaySurfaces(); //mxd
 			base.OnUndoEnd(); //mxd
 		}
 		
@@ -1199,13 +1273,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Clear labels
 			SetupLabels();
-			updateEffectLabels(); //mxd
-			updateOverlaySurfaces(); //mxd
+			UpdateEffectLabels(); //mxd
+			UpdateOverlaySurfaces(); //mxd
 			base.OnRedoEnd(); //mxd
 		}
 
 		//mxd
-		public override void UpdateSelectionInfo() {
+		public override void UpdateSelectionInfo() 
+		{
 			if(General.Map.Map.SelectedSectorsCount > 0)
 				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedSectorsCount + (General.Map.Map.SelectedSectorsCount == 1 ? " sector" : " sectors") + " selected.");
 			else
@@ -1267,7 +1342,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.IsChanged = true;
 					General.Interface.RefreshInfo();
 					General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
-					updateEffectLabels(); //mxd
+					UpdateEffectLabels(); //mxd
 					General.Interface.RedrawDisplay();
 				}
 			}
@@ -1299,7 +1374,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.Map.ClearSelectedSectors();
 				General.Map.Map.ClearSelectedLinedefs();
 				SelectSector(highlighted, true, false);
-				updateOverlaySurfaces();//mxd
+				UpdateOverlaySurfaces();//mxd
 				General.Interface.RedrawDisplay();
 			}
 			
@@ -1424,7 +1499,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						orderedselection.Clear();
 						General.Map.Map.ClearSelectedSectors();
 						General.Map.Map.ClearSelectedLinedefs();
-						updateOverlaySurfaces();//mxd
+						UpdateOverlaySurfaces();//mxd
 					}
 				}
 				
@@ -1491,10 +1566,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							}
 
 							//mxd. Check textures.
-							if(lines[i].Front.MiddleRequired() && lines[i].Front.LongMiddleTexture == MapSet.EmptyLongName) {
-								if(lines[i].Front.LongHighTexture != MapSet.EmptyLongName) {
+							if(lines[i].Front.MiddleRequired() && lines[i].Front.LongMiddleTexture == MapSet.EmptyLongName) 
+							{
+								if(lines[i].Front.LongHighTexture != MapSet.EmptyLongName) 
+								{
 									lines[i].Front.SetTextureMid(lines[i].Front.HighTexture);
-								} else if(lines[i].Front.LongLowTexture != MapSet.EmptyLongName) {
+								} 
+								else if(lines[i].Front.LongLowTexture != MapSet.EmptyLongName) 
+								{
 									lines[i].Front.SetTextureMid(lines[i].Front.LowTexture);
 								}
 							}
@@ -1513,7 +1592,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update cache values
 				General.Map.IsChanged = true;
 				General.Map.Map.Update();
-				updateOverlaySurfaces(); //mxd
+				UpdateOverlaySurfaces(); //mxd
 				
 				// Make text labels for sectors
 				SetupLabels();
@@ -1525,7 +1604,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("dissolveitem", BaseAction = true)] //mxd
-		public void DissolveItem() {
+		public void DissolveItem() 
+		{
 			//TODO handle this differently?..
 			DeleteItem();
 		}
@@ -1587,7 +1667,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Need at least 3 selected sectors
 			// The first and last are not modified
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
-			if(orderedselection.Count > 2) {
+			if(orderedselection.Count > 2) 
+			{
 				General.Interface.DisplayStatus(StatusType.Action, "Created gradient brightness over selected sectors.");
 				General.Map.UndoRedo.CreateUndo("Gradient brightness");
 
@@ -1597,15 +1678,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				//mxd. Use UDMF light?
 				string mode = (string)BuilderPlug.Me.MenusForm.BrightnessGradientMode.SelectedItem;
-				if(General.Map.UDMF && (mode == MenusForm.BrightnessGradientModes.Ceilings || mode == MenusForm.BrightnessGradientModes.Floors)) {
+				if(General.Map.UDMF && (mode == MenusForm.BrightnessGradientModes.Ceilings || mode == MenusForm.BrightnessGradientModes.Floors)) 
+				{
 					string lightKey;
 					string lightAbsKey;
 					float startbrightness, endbrightness;
 
-					if(mode == MenusForm.BrightnessGradientModes.Ceilings) {
+					if(mode == MenusForm.BrightnessGradientModes.Ceilings) 
+					{
 						lightKey = "lightceiling";
 						lightAbsKey = "lightceilingabsolute";
-					} else { //should be floors...
+					} 
+					else //should be floors...
+					{ 
 						lightKey = "lightfloor";
 						lightAbsKey = "lightfloorabsolute";
 					}
@@ -1626,38 +1711,51 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Go for all sectors in between first and last
 					int index = 0;
-					foreach(Sector s in orderedselection) {
+					foreach(Sector s in orderedselection) 
+					{
 						s.Fields.BeforeFieldsChange();
 						float u = index / (float)(orderedselection.Count - 1);
 						float b = startbrightness + delta * u;
 
 						//absolute flag set?
-						if(s.Fields.GetValue(lightAbsKey, false)) {
+						if(s.Fields.GetValue(lightAbsKey, false)) 
+						{
 							if(s.Fields.ContainsKey(lightKey))
 								s.Fields[lightKey].Value = (int)b;
 							else
 								s.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b));
-						} else {
+						} 
+						else 
+						{
 							UDMFTools.SetInteger(s.Fields, lightKey, (int)b - s.Brightness, 0);
 						}
 
 						index++;
 					}
+				
+				}
 				//mxd. Use UDMF light/fade color?
-				} else if(General.Map.UDMF && (mode == MenusForm.BrightnessGradientModes.Fade || mode == MenusForm.BrightnessGradientModes.Light)) {
+				else if(General.Map.UDMF && (mode == MenusForm.BrightnessGradientModes.Fade || mode == MenusForm.BrightnessGradientModes.Light)) 
+				{
 					string key;
 					int defaultValue = 0;
 
-					if(mode == MenusForm.BrightnessGradientModes.Light) {
+					if(mode == MenusForm.BrightnessGradientModes.Light) 
+					{
 						key = "lightcolor";
 						defaultValue = 0xFFFFFF;
-					} else {
+					} 
+					else 
+					{
 						key = "fadecolor";
 					}
 
-					if(!start.Fields.ContainsKey(key) && !end.Fields.ContainsKey(key)) {
+					if(!start.Fields.ContainsKey(key) && !end.Fields.ContainsKey(key)) 
+					{
 						General.Interface.DisplayStatus(StatusType.Warning, "First or last sector must have " + key + "!");
-					} else {
+					} 
+					else 
+					{
 						Color startColor = PixelColor.FromInt(start.Fields.GetValue(key, defaultValue)).ToColor();
 						Color endColor = PixelColor.FromInt(end.Fields.GetValue(key, defaultValue)).ToColor();
 						int dr = endColor.R - startColor.R;
@@ -1666,7 +1764,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						// Go for all sectors in between first and last
 						int index = 0;
-						foreach(Sector s in orderedselection) {
+						foreach(Sector s in orderedselection) 
+						{
 							s.Fields.BeforeFieldsChange();
 							float u = index / (float)(orderedselection.Count - 1);
 							Color c = Color.FromArgb(0, General.Clamp((int)(startColor.R + dr * u), 0, 255), General.Clamp((int)(startColor.G + dg * u), 0, 255), General.Clamp((int)(startColor.B + db * u), 0, 255));
@@ -1676,15 +1775,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							index++;
 						}
 					}
-
-				} else {
+				} 
+				else 
+				{
 					float startbrightness = start.Brightness;
 					float endbrightness = end.Brightness;
 					float delta = endbrightness - startbrightness;
 
 					// Go for all sectors in between first and last
 					int index = 0;
-					foreach(Sector s in orderedselection) {
+					foreach(Sector s in orderedselection) 
+					{
 						float u = index / (float)(orderedselection.Count - 1);
 						float b = startbrightness + delta * u;
 						s.Brightness = (int)b;
@@ -1699,7 +1800,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.RedrawDisplay();
 				General.Interface.RefreshInfo();
 				General.Map.IsChanged = true;
-			} else {
+			} 
+			else 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 sectors first!");
 			}
 		}
@@ -1711,7 +1814,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Need at least 3 selected sectors
 			// The first and last are not modified
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
-			if(orderedselection.Count > 2) {
+			if(orderedselection.Count > 2) 
+			{
 				General.Interface.DisplayStatus(StatusType.Action, "Created gradient floor heights over selected sectors.");
 				General.Map.UndoRedo.CreateUndo("Gradient floor heights");
 
@@ -1721,7 +1825,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Go for all sectors in between first and last
 				int index = 0;
-				foreach(Sector s in orderedselection) {
+				foreach(Sector s in orderedselection) 
+				{
 					float u = index / (float)(orderedselection.Count - 1);
 					float b = startlevel + delta * u;
 					s.FloorHeight = (int)b;
@@ -1731,7 +1836,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update
 				General.Interface.RefreshInfo();
 				General.Map.IsChanged = true;
-			} else {
+			} 
+			else 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 sectors first!");
 			}
 		}
@@ -1743,7 +1850,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Need at least 3 selected sectors
 			// The first and last are not modified
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
-			if(orderedselection.Count > 2) {
+			if(orderedselection.Count > 2) 
+			{
 				General.Interface.DisplayStatus(StatusType.Action, "Created gradient ceiling heights over selected sectors.");
 				General.Map.UndoRedo.CreateUndo("Gradient ceiling heights");
 
@@ -1753,7 +1861,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Go for all sectors in between first and last
 				int index = 0;
-				foreach(Sector s in orderedselection) {
+				foreach(Sector s in orderedselection) 
+				{
 					float u = (float)index / (orderedselection.Count - 1);
 					float b = startlevel + delta * u;
 					s.CeilHeight = (int)b;
@@ -1763,20 +1872,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update
 				General.Interface.RefreshInfo();
 				General.Map.IsChanged = true;
-			} else {
+			} 
+			else 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 sectors first!");
 			}
 		}
 
 		// Change heights
 		[BeginAction("lowerfloor8")]
-		public void LowerFloors8() {
+		public void LowerFloors8() 
+		{
 			// Get selection
 			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
 			if(selected.Count == 0 && highlighted != null && !highlighted.IsDisposed)
 				selected.Add(highlighted);
 
-			if(selected.Count == 0) {
+			if(selected.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
 			}
@@ -1786,9 +1899,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.UndoRedo.CreateUndo("Floor heights change", this, UndoGroup.FloorHeightChange, CreateSelectionCRC(selected));
 
 			// Change heights
-			foreach(Sector s in selected) {
-				s.FloorHeight -= 8;
-			}
+			foreach(Sector s in selected) s.FloorHeight -= 8;
 
 			// Update
 			General.Interface.RefreshInfo();
@@ -1797,13 +1908,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Change heights
 		[BeginAction("raisefloor8")]
-		public void RaiseFloors8() {
+		public void RaiseFloors8() 
+		{
 			// Get selection
 			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
 			if(selected.Count == 0 && highlighted != null && !highlighted.IsDisposed)
 				selected.Add(highlighted);
 
-			if(selected.Count == 0) {
+			if(selected.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
 			}
@@ -1813,9 +1926,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.UndoRedo.CreateUndo("Floor heights change", this, UndoGroup.FloorHeightChange, CreateSelectionCRC(selected));
 
 			// Change heights
-			foreach(Sector s in selected) {
-				s.FloorHeight += 8;
-			}
+			foreach(Sector s in selected) s.FloorHeight += 8;
 
 			// Update
 			General.Interface.RefreshInfo();
@@ -1824,13 +1935,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Change heights
 		[BeginAction("lowerceiling8")]
-		public void LowerCeilings8() {
+		public void LowerCeilings8() 
+		{
 			// Get selection
 			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
 			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed)
 				selected.Add(highlighted);
 
-			if(selected.Count == 0) {
+			if(selected.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
 			}
@@ -1840,9 +1953,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.UndoRedo.CreateUndo("Ceiling heights change", this, UndoGroup.CeilingHeightChange, CreateSelectionCRC(selected));
 
 			// Change heights
-			foreach(Sector s in selected) {
-				s.CeilHeight -= 8;
-			}
+			foreach(Sector s in selected) s.CeilHeight -= 8;
 
 			// Update
 			General.Interface.RefreshInfo();
@@ -1851,13 +1962,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Change heights
 		[BeginAction("raiseceiling8")]
-		public void RaiseCeilings8() {
+		public void RaiseCeilings8() 
+		{
 			// Get selection
 			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
 			if(selected.Count == 0 && highlighted != null && !highlighted.IsDisposed)
 				selected.Add(highlighted);
 
-			if(selected.Count == 0) {
+			if(selected.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
 			}
@@ -1867,9 +1980,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.UndoRedo.CreateUndo("Ceiling heights change", this, UndoGroup.CeilingHeightChange, CreateSelectionCRC(selected));
 
 			// Change heights
-			foreach(Sector s in selected) {
-				s.CeilHeight += 8;
-			}
+			foreach(Sector s in selected) s.CeilHeight += 8;
 
 			// Update
 			General.Interface.RefreshInfo();
@@ -1878,13 +1989,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. Raise brightness
 		[BeginAction("raisebrightness8")]
-		public void RaiseBrightness8() {
+		public void RaiseBrightness8() 
+		{
 			// Get selection
 			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
 			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) 
 				selected.Add(highlighted);
 
-			if(selected.Count == 0) {
+			if(selected.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
 			}
@@ -1894,7 +2007,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.UndoRedo.CreateUndo("Sector brightness change", this, UndoGroup.SectorBrightnessChange, CreateSelectionCRC(selected));
 
 			// Change heights
-			foreach(Sector s in selected) {
+			foreach(Sector s in selected) 
+			{
 				s.Brightness = General.Map.Config.BrightnessLevels.GetNextHigher(s.Brightness);
 				s.UpdateNeeded = true;
 				s.UpdateCache();
@@ -1910,13 +2024,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. Lower brightness
 		[BeginAction("lowerbrightness8")]
-		public void LowerBrightness8() {
+		public void LowerBrightness8() 
+		{
 			// Get selection
 			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
 			if(selected.Count == 0 && highlighted != null && !highlighted.IsDisposed)
 				selected.Add(highlighted);
 
-			if (selected.Count == 0) {
+			if (selected.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
 			}
@@ -1926,7 +2042,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.UndoRedo.CreateUndo("Sector brightness change", this, UndoGroup.SectorBrightnessChange, CreateSelectionCRC(selected));
 
 			// Change heights
-			foreach(Sector s in selected) {
+			foreach(Sector s in selected) 
+			{
 				s.Brightness = General.Map.Config.BrightnessLevels.GetNextLower(s.Brightness);
 				s.UpdateNeeded = true;
 				s.UpdateCache();
@@ -1953,57 +2070,68 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Clear labels
 			foreach(TextLabel[] labelarray in labels.Values)
 				foreach(TextLabel l in labelarray) l.Text = "";
-			updateOverlaySurfaces(); //mxd
-			updateEffectLabels(); //mxd
+			UpdateOverlaySurfaces(); //mxd
+			UpdateEffectLabels(); //mxd
 			
 			// Redraw
 			General.Interface.RedrawDisplay();
 		}
 
 		[BeginAction("placethings")] //mxd
-		public void PlaceThings() {
+		public void PlaceThings() 
+		{
 			// Make list of selected sectors
 			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
 			List<Vector2D> positions = new List<Vector2D>();
 			
-			if(sectors.Count == 0) {
-				if(highlighted != null && !highlighted.IsDisposed) {
+			if(sectors.Count == 0) 
+			{
+				if(highlighted != null && !highlighted.IsDisposed) 
+				{
 					sectors.Add(highlighted);
-				} else {
+				} 
+				else 
+				{
 					General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection of some description!");
 					return;
 				}
 			}
 
 			// Make list of suitable positions
-			foreach(Sector s in sectors) {
+			foreach(Sector s in sectors) 
+			{
 				Vector2D pos = (s.Labels.Count > 0 ? s.Labels[0].position : new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2));
 				if(!positions.Contains(pos)) positions.Add(pos);
 			}
 
-			if(positions.Count < 1) {
+			if(positions.Count < 1) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Unable to get vertex positions from selection!");
 				return;
 			}
 
-			placeThingsAtPositions(positions);
+			PlaceThingsAtPositions(positions);
 		}
 
 		//mxd. rotate clockwise
 		[BeginAction("rotateclockwise")]
-		public void RotateCW() {
-			rotateTextures(5);
+		public void RotateCW() 
+		{
+			RotateTextures(5);
 		}
 
 		//mxd. rotate counterclockwise
 		[BeginAction("rotatecounterclockwise")]
-		public void RotateCCW() {
-			rotateTextures(-5);
+		public void RotateCCW() 
+		{
+			RotateTextures(-5);
 		}
 
 		//mxd
-		private void rotateTextures(float increment) {
-			if (!General.Map.UDMF) {
+		private void RotateTextures(float increment) 
+		{
+			if (!General.Map.UDMF) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action works only in UDMF map format!");
 				return;
 			}
@@ -2014,14 +2142,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(sectors.Count == 0 && highlighted != null && !highlighted.IsDisposed)
 				sectors.Add(highlighted);
 
-			if(sectors.Count == 0) {
+			if(sectors.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
 			}
 
 			string targets;
 			string target;
-			switch (General.Map.Renderer2D.ViewMode) {
+			switch (General.Map.Renderer2D.ViewMode) 
+			{
 				case ViewMode.FloorTextures:
 					target = " a floor";
 					targets = " floors";
@@ -2039,26 +2169,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Make undo
-			if(sectors.Count > 1) {
+			if(sectors.Count > 1) 
+			{
 				General.Map.UndoRedo.CreateUndo("Rotate " + sectors.Count + targets, this, UndoGroup.TextureRotationChange, CreateSelectionCRC(sectors));
 				General.Interface.DisplayStatus(StatusType.Action, "Rotated " + sectors.Count + targets + ".");
-			} else {
+			} 
+			else 
+			{
 				General.Map.UndoRedo.CreateUndo("Rotate" + target, this, UndoGroup.TextureRotationChange, CreateSelectionCRC(sectors));
 				General.Interface.DisplayStatus(StatusType.Action, "Rotated" + target + ".");
 			}
 
 			//rotate stuff
-			foreach (Sector s in sectors) {
+			foreach (Sector s in sectors) 
+			{
 				s.Fields.BeforeFieldsChange();
 
 				//floor
-				if(General.Map.Renderer2D.ViewMode == ViewMode.FloorTextures || General.Map.Renderer2D.ViewMode != ViewMode.CeilingTextures) {
+				if(General.Map.Renderer2D.ViewMode == ViewMode.FloorTextures || General.Map.Renderer2D.ViewMode != ViewMode.CeilingTextures)
+				{
 					UDMFTools.SetFloat(s.Fields, "rotationfloor", General.ClampAngle(UDMFTools.GetFloat(s.Fields, "rotationfloor") + increment));
 					s.UpdateNeeded = true;
 				}
 
 				//ceiling
-				if(General.Map.Renderer2D.ViewMode == ViewMode.CeilingTextures || General.Map.Renderer2D.ViewMode != ViewMode.FloorTextures) {
+				if(General.Map.Renderer2D.ViewMode == ViewMode.CeilingTextures || General.Map.Renderer2D.ViewMode != ViewMode.FloorTextures) 
+				{
 					UDMFTools.SetFloat(s.Fields, "rotationceiling", General.ClampAngle(UDMFTools.GetFloat(s.Fields, "rotationceiling") + increment));
 					s.UpdateNeeded = true;
 				}
@@ -2072,10 +2208,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		[BeginAction("selectsimilar")]
-		public void SelectSimilar() {
+		public void SelectSimilar() 
+		{
 			ICollection<Sector> selection = General.Map.Map.GetSelectedSectors(true);
 
-			if(selection.Count == 0) {
+			if(selection.Count == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
 			}

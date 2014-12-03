@@ -75,7 +75,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								
 								//mxd. This can also happen. I suppose. Some people manage to do this. I dunno how, but they do...
 								if((l.Start.Position == d.Start.Position && l.End.Position == d.End.Position)
-									|| (l.Start.Position == d.End.Position && l.End.Position == d.Start.Position)) {
+									|| (l.Start.Position == d.End.Position && l.End.Position == d.Start.Position)) 
+								{
 									SubmitResult(new ResultLineOverlapping(l, d));
 									donelines[d] = d;
 								} 

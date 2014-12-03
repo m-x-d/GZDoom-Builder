@@ -19,7 +19,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				Rectangle rect = new Rectangle(0, 0, 1, 0);
 				Linedef cl = side.GetControlLinedef();
-				if(cl.Front != null && cl.Front.Sector != null) {
+				if(cl.Front != null && cl.Front.Sector != null) 
+				{
 					// Use ceiling height for vavoom-type 3d floors. Also, FloorHeight is > CeilHeight for these...
 					if (cl.Args[1] == 0)
 					{
@@ -32,7 +33,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						rect.Height = cl.Front.GetMiddleHeight();
 					}
 					
-				} else {
+				} 
+				else 
+				{
 					rect.Y = side.Sidedef.Sector.FloorHeight;
 					rect.Height = side.Sidedef.GetMiddleHeight();
 				}

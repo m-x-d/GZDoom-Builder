@@ -1,9 +1,13 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using SlimDX;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.ZDoom
 {
@@ -12,7 +16,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private Dictionary<string, ModelData> entries; //sprite name, entry
 		internal Dictionary<string, ModelData> Entries { get { return entries; } }
 
-		public override bool Parse(Stream stream, string sourcefilename) {
+		public override bool Parse(Stream stream, string sourcefilename) 
+		{
 			base.Parse(stream, sourcefilename);
 			entries = new Dictionary<string, ModelData>(StringComparer.Ordinal);
 			string prevToken = string.Empty;
@@ -21,55 +26,69 @@ namespace CodeImp.DoomBuilder.ZDoom
 			string modelName = string.Empty;
 
 			// Continue until at the end of the stream
-			while(SkipWhitespace(true)) {
+			while(SkipWhitespace(true)) 
+			{
 				string token = ReadToken();
 
-				if(token != null) {
+				if(token != null) 
+				{
 					token = StripTokenQuotes(token).ToLowerInvariant();
 
-					if(token == ",") { //previous token was a sprite name
-						if(!string.IsNullOrEmpty(prevToken)) {
-							//if(prevToken.Length > 4) prevToken = prevToken.Substring(0, 4);
+					if(token == ",") //previous token was a sprite name
+					{ 
+						if(!string.IsNullOrEmpty(prevToken)) 
+						{
 							if(!spriteNames.Contains(prevToken)) spriteNames.Add(prevToken);
 						}
 						prevToken = token.ToUpperInvariant();
 
-					} else if(token == "=") { //next token should be a voxel model name
-						if(!string.IsNullOrEmpty(prevToken)) {
-							//if(prevToken.Length > 4) prevToken = prevToken.Substring(0, 4);
+					} 
+					else if(token == "=") //next token should be a voxel model name
+					{ 
+						if(!string.IsNullOrEmpty(prevToken)) 
+						{
 							if(!spriteNames.Contains(prevToken)) spriteNames.Add(prevToken);
 						}
 
 						SkipWhitespace(true);
 						token = ReadToken();
 
-						if(string.IsNullOrEmpty(token)) {
+						if(string.IsNullOrEmpty(token)) 
+						{
 							General.ErrorLogger.Add(ErrorType.Error, "Unable to get voxel model name from '" + sourcefilename + "', line " + GetCurrentLineNumber());
 							spriteNames.Clear();
 							continue;
 						}
 
 						modelName = StripTokenQuotes(token).ToLowerInvariant();
-
-					//read the settings
-					} else if(token == "{") {
+					} 
+					else if(token == "{") //read the settings
+					{
 						ModelData data = new ModelData();
 						data.IsVoxel = true;
 
-						while(SkipWhitespace(true)) {
+						while(SkipWhitespace(true)) 
+						{
 							token = ReadToken();
 
-							if(!string.IsNullOrEmpty(token)) {
+							if(!string.IsNullOrEmpty(token)) 
+							{
 								token = StripTokenQuotes(token).ToLowerInvariant();
 
-								if(token == "}") { //store data
-									if(!string.IsNullOrEmpty(modelName) && spriteNames.Count > 0) {
+								if(token == "}") //store data
+								{ 
+									if(!string.IsNullOrEmpty(modelName) && spriteNames.Count > 0) 
+									{
 										data.ModelNames.Add(modelName);
 
-										foreach(string s in spriteNames){
-											if(entries.ContainsKey(s)) { //TODO: is this a proper behaviour? 
+										foreach(string s in spriteNames)
+										{
+											if(entries.ContainsKey(s)) //TODO: is this a proper behaviour? 
+											{ 
 												entries[s] = data;
-											} else {
+											} 
+											else 
+											{
 												entries.Add(s, data);
 											}
 										}
@@ -81,38 +100,47 @@ namespace CodeImp.DoomBuilder.ZDoom
 									}
 
 									break;
-								} else if(token == "overridepalette") {
+								} 
+								else if(token == "overridepalette") 
+								{
 									data.OverridePalette = true;
-
-								} else if(token == "angleoffset") {
+								} 
+								else if(token == "angleoffset") 
+								{
 									SkipWhitespace(true);
 
 									token = StripTokenQuotes(ReadToken());
-									if(token != "=") {
+									if(token != "=") 
+									{
 										General.ErrorLogger.Add(ErrorType.Error, "Error in " + sourcefilename + " at line " + GetCurrentLineNumber() + ": expected '=', but got '" + token + "'");
 										break;
 									}
 
 									float angleOffset = 0; //90?
 									token = StripTokenQuotes(ReadToken());
-									if(!ReadSignedFloat(token, ref angleOffset)) {
+									if(!ReadSignedFloat(token, ref angleOffset)) 
+									{
 										// Not numeric!
 										General.ErrorLogger.Add(ErrorType.Error, "Error in " + sourcefilename + " at line " + GetCurrentLineNumber() + ": expected AngleOffset value, but got '" + token + "'");
 									}
 									data.AngleOffset = Angle2D.DegToRad(angleOffset);
 
-								} else if(token == "scale") {
+								} 
+								else if(token == "scale") 
+								{
 									SkipWhitespace(true);
 
 									token = StripTokenQuotes(ReadToken());
-									if(token != "=") {
+									if(token != "=") 
+									{
 										General.ErrorLogger.Add(ErrorType.Error, "Error in " + sourcefilename + " at line " + GetCurrentLineNumber() + ": expected '=', but got '" + token + "'");
 										break;
 									}
 
 									float scale = 1.0f;
 									token = StripTokenQuotes(ReadToken());
-									if(!ReadSignedFloat(token, ref scale)) {
+									if(!ReadSignedFloat(token, ref scale)) 
+									{
 										// Not numeric!
 										General.ErrorLogger.Add(ErrorType.Error, "Error in " + sourcefilename + " at line " + GetCurrentLineNumber() + ": expected Scale value, but got '" + token + "'");
 									}
@@ -122,7 +150,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 								prevToken = token.ToUpperInvariant();
 							}
 						}
-					} else {
+					} 
+					else 
+					{
 						prevToken = token.ToUpperInvariant();
 					}
 				}

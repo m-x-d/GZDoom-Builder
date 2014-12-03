@@ -171,20 +171,25 @@ namespace CodeImp.DoomBuilder.Controls
 			arg5.Enabled = arginfo[4].Used;
 
 			//mxd
-			if(hasArg0Str) {
+			if(hasArg0Str) 
+			{
 				arg1.Text = '"' + t.Fields["arg0str"].Value.ToString() + '"';
-			} else {
-				setArgumentText(arginfo[0], arg1, t.Args[0]);
+			} 
+			else 
+			{
+				SetArgumentText(arginfo[0], arg1, t.Args[0]);
 			}
-			setArgumentText(arginfo[1], arg2, t.Args[1]);
-			setArgumentText(arginfo[2], arg3, t.Args[2]);
-			setArgumentText(arginfo[3], arg4, t.Args[3]);
-			setArgumentText(arginfo[4], arg5, t.Args[4]);
+			SetArgumentText(arginfo[1], arg2, t.Args[1]);
+			SetArgumentText(arginfo[2], arg3, t.Args[2]);
+			SetArgumentText(arginfo[3], arg4, t.Args[3]);
+			SetArgumentText(arginfo[4], arg5, t.Args[4]);
 
 			//mxd. Flags
 			flags.Items.Clear();
-			foreach(KeyValuePair<string, bool> group in t.Flags){
-				if(group.Value) {
+			foreach(KeyValuePair<string, bool> group in t.Flags)
+			{
+				if(group.Value) 
+				{
 					ListViewItem item = new ListViewItem(General.Map.Config.ThingFlags.ContainsKey(group.Key) ? General.Map.Config.ThingFlags[group.Key] : group.Key);
 					item.Checked = true;
 					flags.Items.Add(item);
@@ -193,7 +198,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 			//mxd. Flags panel visibility and size
 			flagsPanel.Visible = (flags.Items.Count > 0);
-			if(flags.Items.Count > 0) {
+			if(flags.Items.Count > 0) 
+			{
 				int itemWidth = flags.Items[0].GetBounds(ItemBoundsPortion.Entire).Width;
 				if(itemWidth == 0) itemWidth = 96;
 				flags.Width = itemWidth * (int)Math.Ceiling(flags.Items.Count / 5.0f);
@@ -206,7 +212,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private static void setArgumentText(ArgumentInfo info, Label label, int value) 
+		private static void SetArgumentText(ArgumentInfo info, Label label, int value) 
 		{
 			TypeHandler th = General.Types.GetArgumentHandler(info);
 			th.SetValue(value);
@@ -214,7 +220,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 			if(value < 1 || !General.Map.Options.TagLabels.ContainsKey(value)) return;
 
-			if (th is ThingTagHandler || th is LinedefTagHandler || th is SectorTagHandler) {
+			if (th is ThingTagHandler || th is LinedefTagHandler || th is SectorTagHandler) 
+			{
 				label.Text += " (" + General.Map.Options.TagLabels[value] + ")";
 			}
 		}

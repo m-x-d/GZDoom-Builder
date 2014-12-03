@@ -75,7 +75,8 @@ namespace CodeImp.DoomBuilder
 				General.Actions.UnbindMethods(this);
 
 				//mxd. Terminate process?
-				if (process != null) {
+				if (process != null) 
+				{
 					process.CloseMainWindow();
 					process.Close();
 				}
@@ -243,7 +244,8 @@ namespace CodeImp.DoomBuilder
 
 		//mxd
 		[BeginAction("testmapfromview")]
-		public void TestFromView() {
+		public void TestFromView() 
+		{
 			if(!General.Editing.Mode.OnMapTestBegin(true)) return;
 			TestAtSkill(General.Map.ConfigSettings.TestSkill);
 			General.Editing.Mode.OnMapTestEnd(true);
@@ -253,7 +255,8 @@ namespace CodeImp.DoomBuilder
 		public void TestAtSkill(int skill)
 		{
 			//mxd
-			if (process != null) {
+			if (process != null) 
+			{
 				General.ShowWarningMessage("Game engine is already running." + Environment.NewLine + " Please close '" + General.Map.ConfigSettings.TestProgram + "' before testing again", MessageBoxButtons.OK);
 				return;
 			}
@@ -342,7 +345,8 @@ namespace CodeImp.DoomBuilder
 		}
 
 		//mxd
-		private void testingFinished() {
+		private void TestingFinished() 
+		{
 			//Done
 			TimeSpan deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
 			process = null;
@@ -359,9 +363,11 @@ namespace CodeImp.DoomBuilder
 		}
 
 		//mxd
-		public void StopGameEngine() {
+		public void StopGameEngine() 
+		{
 			//mxd. Terminate process?
-			if(process != null) {
+			if(process != null) 
+			{
 				process.CloseMainWindow();
 				process.Close();
 				process = null;
@@ -372,8 +378,9 @@ namespace CodeImp.DoomBuilder
 		}
 
 		//mxd
-		private void ProcessOnExited(object sender, EventArgs eventArgs) {
-			General.MainWindow.Invoke(new EngineExitedCallback(testingFinished));
+		private void ProcessOnExited(object sender, EventArgs eventArgs) 
+		{
+			General.MainWindow.Invoke(new EngineExitedCallback(TestingFinished));
 		}
 
 		// This deletes the previous temp file and creates a new, empty temp file

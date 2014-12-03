@@ -99,7 +99,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// This is from the sides point of view, where the side is always the "right" of line,
 					// so start and end are flipped depending if the current side is the front of the
 					// line or not
-					if(sd.IsFront) {
+					if(sd.IsFront) 
+					{
 						vertices[sd.Line.Start] |= 1;
 						vertices[sd.Line.End] |= 2;
 					}

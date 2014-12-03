@@ -1,39 +1,53 @@
-﻿using System.IO;
+﻿#region ================== Namespaces
+
+using System.IO;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.ZDoom;
 
+#endregion
+
 //mxd. Parser used to determine which script type given text is.
-namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
-	internal sealed class ScriptTypeParserSE :ZDTextParser {
+namespace CodeImp.DoomBuilder.GZBuilder.GZDoom 
+{
+	internal sealed class ScriptTypeParserSE :ZDTextParser 
+	{
 		private ScriptType scriptType;
 		internal ScriptType ScriptType { get { return scriptType; } }
 
-		internal ScriptTypeParserSE() {
+		internal ScriptTypeParserSE() 
+		{
 			scriptType = ScriptType.UNKNOWN;
 		}
 		
-		public override bool Parse(Stream stream, string sourcefilename) {
+		public override bool Parse(Stream stream, string sourcefilename) 
+		{
 			base.Parse(stream, sourcefilename);
 
 			// Continue until at the end of the stream
-			while (SkipWhitespace(true)) {
+			while (SkipWhitespace(true)) 
+			{
 				string token = ReadToken();
 
-				if (!string.IsNullOrEmpty(token)) {
+				if (!string.IsNullOrEmpty(token)) 
+				{
 					token = token.ToUpperInvariant();
 
-					if (token == "MODEL") {
+					if (token == "MODEL") 
+					{
 						SkipWhitespace(true);
 						ReadToken(); //should be model name
 						SkipWhitespace(true);
 						token = ReadToken();//should be opening brace
 						
-						if (token == "{") {
+						if (token == "{") 
+						{
 							scriptType = ScriptType.MODELDEF;
 							return true;
 						}
 
-					}else if(token == "SCRIPT"){
+					}
+					else if(token == "SCRIPT")
+					{
 						SkipWhitespace(true);
 						ReadToken(); //should be script name or number
 						SkipWhitespace(true);
@@ -41,19 +55,23 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 						SkipWhitespace(true);
 						token = ReadToken(); //should be opening brace
 						
-						if (token == "{") {
+						if (token == "{") 
+						{
 							scriptType = ScriptType.ACS;
 							return true;
 						}
 
-					}else if(token == "ACTOR"){
+					}
+					else if(token == "ACTOR")
+					{
 						SkipWhitespace(true);
 						ReadToken(); //should be actor name
 
 						SkipWhitespace(true);
 						token = ReadToken();
 
-						if (token == ":" || token == "{" || token == "REPLACES") {
+						if (token == ":" || token == "{" || token == "REPLACES") 
+						{
 							scriptType = ScriptType.DECORATE;
 							return true;
 						}
@@ -61,7 +79,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 						SkipWhitespace(true);
 						token = ReadToken(); //should be actor name
 
-						if (token == "{") {
+						if (token == "{") 
+						{
 							scriptType = ScriptType.DECORATE;
 							return true;
 						}

@@ -28,15 +28,18 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Constructor / Disposer
 
-		public ClipboardStreamWriter() {
+		public ClipboardStreamWriter() 
+		{
 			// Make configurations
 			config = new Configuration();
 
 			// Find a resource named UDMF.cfg
 			string[] resnames = General.ThisAssembly.GetManifestResourceNames();
-			foreach(string rn in resnames) {
+			foreach(string rn in resnames) 
+			{
 				// Found it?
-				if(rn.EndsWith(UDMF_CONFIG_NAME, StringComparison.InvariantCultureIgnoreCase)) {
+				if(rn.EndsWith(UDMF_CONFIG_NAME, StringComparison.InvariantCultureIgnoreCase)) 
+				{
 					// Get a stream from the resource
 					Stream udmfcfg = General.ThisAssembly.GetManifestResourceStream(rn);
 					StreamReader udmfcfgreader = new StreamReader(udmfcfg, Encoding.ASCII);
@@ -80,12 +83,14 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Writing
 
-		public void Write(MapSet map, Stream stream, bool longtexturenames) {
+		public void Write(MapSet map, Stream stream, bool longtexturenames) 
+		{
 			Write(map.Vertices, map.Linedefs, map.Sidedefs, map.Sectors, map.Things, stream, longtexturenames);
 		}
 
 		public void Write(ICollection<Vertex> vertices, ICollection<Linedef> linedefs, ICollection<Sidedef> sidedefs, 
-						  ICollection<Sector> sectors, ICollection<Thing> things, Stream stream, bool longtexturenames) {
+						  ICollection<Sector> sectors, ICollection<Thing> things, Stream stream, bool longtexturenames) 
+		{
 			// Create collections
 			Dictionary<Vertex, int> vertexids = new Dictionary<Vertex, int>();
 			Dictionary<Sidedef, int> sidedefids = new Dictionary<Sidedef, int>();
@@ -97,6 +102,7 @@ namespace CodeImp.DoomBuilder.IO
 			foreach(Sector s in sectors) sectorids.Add(s, sectorids.Count);
 
 			BinaryWriter writer = new BinaryWriter(stream);
+			
 			// Write the data structures to stream
 			writer.Write(longtexturenames); //mxd
 			WriteVertices(vertices, writer);
@@ -107,10 +113,12 @@ namespace CodeImp.DoomBuilder.IO
 			writer.Flush();
 		}
 
-		private void WriteVertices(ICollection<Vertex> vertices, BinaryWriter writer) {
+		private void WriteVertices(ICollection<Vertex> vertices, BinaryWriter writer) 
+		{
 			writer.Write(vertices.Count);
 			
-			foreach(Vertex v in vertices) {
+			foreach(Vertex v in vertices) 
+			{
 				//write "static" properties
 				writer.Write(v.Position.x);
 				writer.Write(v.Position.y);
@@ -123,11 +131,13 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This adds linedefs
-		private void WriteLinedefs(ICollection<Linedef> linedefs, BinaryWriter writer, IDictionary<Sidedef, int> sidedefids, IDictionary<Vertex, int> vertexids) {
+		private void WriteLinedefs(ICollection<Linedef> linedefs, BinaryWriter writer, IDictionary<Sidedef, int> sidedefids, IDictionary<Vertex, int> vertexids) 
+		{
 			writer.Write(linedefs.Count);
 			
 			// Go for all linedefs
-			foreach(Linedef l in linedefs) {
+			foreach(Linedef l in linedefs) 
+			{
 				//write "static" properties
 				writer.Write(l.Tag);
 				writer.Write(vertexids[l.Start]);
@@ -147,11 +157,13 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This adds sidedefs
-		private void WriteSidedefs(ICollection<Sidedef> sidedefs, BinaryWriter writer, IDictionary<Sector, int> sectorids) {
+		private void WriteSidedefs(ICollection<Sidedef> sidedefs, BinaryWriter writer, IDictionary<Sector, int> sectorids) 
+		{
 			writer.Write(sidedefs.Count);
 			
 			// Go for all sidedefs
-			foreach(Sidedef s in sidedefs) {
+			foreach(Sidedef s in sidedefs) 
+			{
 				//write "static" properties
 				writer.Write(s.OffsetX);
 				writer.Write(s.OffsetY);
@@ -171,11 +183,13 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This adds sectors
-		private void WriteSectors(ICollection<Sector> sectors, BinaryWriter writer) {
+		private void WriteSectors(ICollection<Sector> sectors, BinaryWriter writer) 
+		{
 			writer.Write(sectors.Count);
 			
 			// Go for all sectors
-			foreach(Sector s in sectors) {
+			foreach(Sector s in sectors) 
+			{
 				//write "static" properties
 				writer.Write(s.Tag);
 				writer.Write(s.Effect);
@@ -205,11 +219,13 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This adds things
-		private void WriteThings(ICollection<Thing> things, BinaryWriter writer) {
+		private void WriteThings(ICollection<Thing> things, BinaryWriter writer) 
+		{
 			writer.Write(things.Count);
 			
 			// Go for all things
-			foreach(Thing t in things) {
+			foreach(Thing t in things) 
+			{
 				//write "static" properties
 				writer.Write(t.Tag);
 				writer.Write(t.Position.x);
@@ -229,52 +245,67 @@ namespace CodeImp.DoomBuilder.IO
 			}
 		}
 
-		private void AddCustomFields(UniFields elementFields, string elementname, BinaryWriter writer) {
+		private void AddCustomFields(UniFields elementFields, string elementname, BinaryWriter writer) 
+		{
 			Dictionary<string, UniValue> fields = new Dictionary<string, UniValue>(StringComparer.Ordinal);
 
-			foreach(KeyValuePair<string, UniValue> f in elementFields) {
+			foreach(KeyValuePair<string, UniValue> f in elementFields) 
+			{
 				if(config.SettingExists("managedfields." + elementname + "." + f.Key)) continue;
 				fields.Add(f.Key, f.Value);
 			}
 
 			writer.Write(fields.Count);
 
-			foreach(KeyValuePair<string, UniValue> f in fields) {
+			foreach(KeyValuePair<string, UniValue> f in fields) 
+			{
 				writer.Write(f.Key.Length);
 				writer.Write(f.Key.ToCharArray());
 
 				writer.Write(f.Value.Type);
-				if(f.Value.Value is bool) {
+				if(f.Value.Value is bool) 
+				{
 					writer.Write((int)UniversalType.Boolean);
 					writer.Write((bool)f.Value.Value);
-				} else if(f.Value.Value is float) {
+				} 
+				else if(f.Value.Value is float) 
+				{
 					writer.Write((int)UniversalType.Float);
 					writer.Write((float)f.Value.Value);
-				} else if(f.Value.Value.GetType().IsPrimitive) {
+				} 
+				else if(f.Value.Value.GetType().IsPrimitive) 
+				{
 					writer.Write((int)UniversalType.Integer);
 					writer.Write((int)f.Value.Value);
-				} else if(f.Value.Value is string) {
+				} 
+				else if(f.Value.Value is string) 
+				{
 					writer.Write((int)UniversalType.String);
 					string s = (string)f.Value.Value;
 					writer.Write(s.Length);
 					writer.Write(s.ToCharArray());
-				} else { //WOLOLO! ERRORS!
+				} 
+				else //WOLOLO! ERRORS!
+				{ 
 					General.ErrorLogger.Add(ErrorType.Error, "Unable to copy Universal Field '" + f.Key + "' to clipboard: unknown value type '" + f.Value.Type + "'!");
 				}
 			}
 		}
 
-		private static void AddFlags(Dictionary<string, bool> elementFlags, BinaryWriter writer) {
+		private static void AddFlags(Dictionary<string, bool> elementFlags, BinaryWriter writer) 
+		{
 			List<string> flags = new List<string>();
 
-			foreach(KeyValuePair<string, bool> f in elementFlags) {
+			foreach(KeyValuePair<string, bool> f in elementFlags) 
+			{
 				if(!f.Value) continue;
 				flags.Add(f.Key);
 			}
 
 			writer.Write(flags.Count);
 
-			foreach(string s in flags) {
+			foreach(string s in flags) 
+			{
 				writer.Write(s.Length);
 				writer.Write(s.ToCharArray());
 			}

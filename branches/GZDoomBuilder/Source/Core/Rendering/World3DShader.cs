@@ -103,16 +103,21 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			// Initialize world vertex declaration
-			if (manager.Enabled){ //mxd
-				vertexElements = new VertexElement[] {
+			if(manager.Enabled) //mxd
+			{ 
+				vertexElements = new[] 
+				{
 					new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
 					new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
 					new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
 					new VertexElement(0, 24, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0), //mxd
 					VertexElement.VertexDeclarationEnd
 				};
-			} else {
-				vertexElements = new VertexElement[] {
+			} 
+			else 
+			{
+				vertexElements = new[] 
+				{
 					new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
 					new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
 					new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),

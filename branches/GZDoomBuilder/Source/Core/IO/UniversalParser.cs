@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Private Methods
 
 		// This returns a string added with escape characters
-		private string EscapedString(string str)
+		private static string EscapedString(string str)
 		{
 			// Replace the \ with \\ first!
 			str = str.Replace("\\", "\\\\");

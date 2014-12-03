@@ -10,9 +10,9 @@ namespace CodeImp.DoomBuilder.Controls
 {
     public class SplitButton : Button
     {
-        private PushButtonState _state;
-        private const int SplitSectionWidth = 18;
-        private static readonly int BorderSize = SystemInformation.Border3DSize.Width * 2;
+        private PushButtonState state;
+        private const int splitsectionwidth = 18;
+        private static readonly int borderSize = SystemInformation.Border3DSize.Width * 2;
 		private bool skipNextOpen;
 		private Rectangle dropDownRectangle;
 		private bool showSplit;
@@ -111,13 +111,13 @@ namespace CodeImp.DoomBuilder.Controls
         {
             get
             {
-                return _state;
+                return state;
             }
             set
             {
-                if (!_state.Equals(value))
+                if (!state.Equals(value))
                 {
-                    _state = value;
+                    state = value;
                     Invalidate();
                 }
             }
@@ -127,9 +127,7 @@ namespace CodeImp.DoomBuilder.Controls
 
         protected override bool IsInputKey(Keys keyData)
         {
-            if (keyData.Equals(Keys.Down) && showSplit)
-                return true;
-
+            if (keyData.Equals(Keys.Down) && showSplit) return true;
             return base.IsInputKey(keyData);
         }
 
@@ -302,9 +300,9 @@ namespace CodeImp.DoomBuilder.Controls
             }
 
             // calculate the current dropdown rectangle.
-            dropDownRectangle = new Rectangle(bounds.Right - SplitSectionWidth, 0, SplitSectionWidth, bounds.Height);
+            dropDownRectangle = new Rectangle(bounds.Right - splitsectionwidth, 0, splitsectionwidth, bounds.Height);
 
-            int internalBorder = BorderSize;
+            int internalBorder = borderSize;
             Rectangle focusRect =
                 new Rectangle(internalBorder - 1,
                               internalBorder - 1,
@@ -322,8 +320,8 @@ namespace CodeImp.DoomBuilder.Controls
                 if (drawSplitLine)
                 {
                     // draw two lines at the edge of the dropdown button
-                    g.DrawLine(SystemPens.ButtonShadow, bounds.Left + SplitSectionWidth, BorderSize, bounds.Left + SplitSectionWidth, bounds.Bottom - BorderSize);
-                    g.DrawLine(SystemPens.ButtonFace, bounds.Left + SplitSectionWidth + 1, BorderSize, bounds.Left + SplitSectionWidth + 1, bounds.Bottom - BorderSize);
+                    g.DrawLine(SystemPens.ButtonShadow, bounds.Left + splitsectionwidth, borderSize, bounds.Left + splitsectionwidth, bounds.Bottom - borderSize);
+                    g.DrawLine(SystemPens.ButtonFace, bounds.Left + splitsectionwidth + 1, borderSize, bounds.Left + splitsectionwidth + 1, bounds.Bottom - borderSize);
                 }
             }
             else
@@ -331,8 +329,8 @@ namespace CodeImp.DoomBuilder.Controls
                 if (drawSplitLine)
                 {
                     // draw two lines at the edge of the dropdown button
-                    g.DrawLine(SystemPens.ButtonShadow, bounds.Right - SplitSectionWidth, BorderSize, bounds.Right - SplitSectionWidth, bounds.Bottom - BorderSize);
-                    g.DrawLine(SystemPens.ButtonFace, bounds.Right - SplitSectionWidth - 1, BorderSize, bounds.Right - SplitSectionWidth - 1, bounds.Bottom - BorderSize);
+                    g.DrawLine(SystemPens.ButtonShadow, bounds.Right - splitsectionwidth, borderSize, bounds.Right - splitsectionwidth, bounds.Bottom - borderSize);
+                    g.DrawLine(SystemPens.ButtonFace, bounds.Right - splitsectionwidth - 1, borderSize, bounds.Right - splitsectionwidth - 1, bounds.Bottom - borderSize);
                 }
             }
 
@@ -402,8 +400,8 @@ namespace CodeImp.DoomBuilder.Controls
             {
                 if (AutoSize) return CalculateButtonAutoSize();
                 
-                if (!string.IsNullOrEmpty(Text) && TextRenderer.MeasureText(Text, Font).Width + SplitSectionWidth > preferredSize.Width)
-                    return preferredSize + new Size(SplitSectionWidth + BorderSize * 2, 0);
+                if (!string.IsNullOrEmpty(Text) && TextRenderer.MeasureText(Text, Font).Width + splitsectionwidth > preferredSize.Width)
+                    return preferredSize + new Size(splitsectionwidth + borderSize * 2, 0);
             }
 
             return preferredSize;
@@ -445,7 +443,7 @@ namespace CodeImp.DoomBuilder.Controls
             ret_size.Width += (Padding.Horizontal + 6);
 
             //pad the splitButton arrow region
-            if (showSplit) ret_size.Width += SplitSectionWidth;
+            if (showSplit) ret_size.Width += splitsectionwidth;
 
             return ret_size;
         }
@@ -471,7 +469,7 @@ namespace CodeImp.DoomBuilder.Controls
                     textRectangle = OverlayObjectRect(ref content_rect, ref text_size, TextAlign); // Rectangle.Inflate(content_rect, -4, -4);
 
                     //Offset on Windows 98 style when button is pressed
-                    if (_state == PushButtonState.Pressed && !Application.RenderWithVisualStyles)
+                    if (state == PushButtonState.Pressed && !Application.RenderWithVisualStyles)
                         textRectangle.Offset(1, 1);
 
                     // Image is dependent on ImageAlign

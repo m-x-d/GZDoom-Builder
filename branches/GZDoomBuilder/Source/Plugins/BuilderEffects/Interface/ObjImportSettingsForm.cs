@@ -27,14 +27,16 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		#endregion
 
-		public ObjImportSettingsForm() {
+		public ObjImportSettingsForm() 
+		{
 			InitializeComponent();
 
 			//restore settings
 			axis = (ImportObjAsTerrainMode.UpAxis)General.Settings.ReadPluginSetting("objexportupaxis", 0);
 			nudScale.Value = (decimal)General.Settings.ReadPluginSetting("objexportscale", 1.0f);
 
-			switch(axis) {
+			switch(axis) 
+			{
 				case ImportObjAsTerrainMode.UpAxis.X: axisx.Checked = true; break;
 				case ImportObjAsTerrainMode.UpAxis.Y: axisy.Checked = true; break;
 				case ImportObjAsTerrainMode.UpAxis.Z: axisz.Checked = true; break;
@@ -44,18 +46,20 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		#region ================== Events
 
-		private void browse_Click(object sender, EventArgs e) {
-			if(openFileDialog.ShowDialog() == DialogResult.OK) {
-				tbImportPath.Text = openFileDialog.FileName;
-			}
+		private void browse_Click(object sender, EventArgs e) 
+		{
+			if(openFileDialog.ShowDialog() == DialogResult.OK) tbImportPath.Text = openFileDialog.FileName;
 		}
 
-		private void import_Click(object sender, EventArgs e) {
-			if(nudScale.Value == 0) {
+		private void import_Click(object sender, EventArgs e) 
+		{
+			if(nudScale.Value == 0) 
+			{
 				MessageBox.Show("Scale should not be zero!");
 				return;
 			}
-			if(!File.Exists(tbImportPath.Text)) {
+			if(!File.Exists(tbImportPath.Text)) 
+			{
 				MessageBox.Show("Selected path does not exist!");
 				return;
 			}
@@ -70,7 +74,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			this.Close();
 		}
 
-		private void cancel_Click(object sender, EventArgs e) {
+		private void cancel_Click(object sender, EventArgs e) 
+		{
 			this.Close();
 		}
 

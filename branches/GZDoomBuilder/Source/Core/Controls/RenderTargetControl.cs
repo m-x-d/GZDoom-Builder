@@ -60,7 +60,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		protected override void OnKeyUp(KeyEventArgs e) {
+		protected override void OnKeyUp(KeyEventArgs e) 
+		{
 			if(OnKeyReleased != null) OnKeyReleased(this, e);
 		}
 		

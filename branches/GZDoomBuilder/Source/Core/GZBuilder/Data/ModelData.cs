@@ -26,20 +26,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		internal bool InheritActorPitch;
 		internal bool InheritActorRoll;
 
-		internal ModelData() {
+		internal ModelData() 
+		{
 			ModelNames = new List<string>();
 			TextureNames = new List<string>();
 			Scale = new Vector3(1, 1, 1);
 		}
 
-		internal void Dispose() {
-			if (Model != null) {
-				foreach (Mesh mesh in Model.Meshes)
-					mesh.Dispose();
-
-				foreach (Texture t in Model.Textures)
-					t.Dispose();
-
+		internal void Dispose() 
+		{
+			if (Model != null) 
+			{
+				foreach (Mesh mesh in Model.Meshes) mesh.Dispose();
+				foreach (Texture t in Model.Textures) t.Dispose();
 				loadstate = ModelLoadState.None;
 			}
 		}

@@ -74,27 +74,38 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 
 			//mxd. which texture we must use?
 			long textureLong = 0;
-			if ((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0) {
+			if ((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0) 
+			{
 				if (Sidedef.Other.LongHighTexture != MapSet.EmptyLongName)
 					textureLong = Sidedef.Other.LongHighTexture;
-			} else if ((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0) {
+			} 
+			else if ((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0) 
+			{
 				if(Sidedef.Other.LongLowTexture != MapSet.EmptyLongName)
 					textureLong = Sidedef.Other.LongLowTexture;
-			} else if ((sourceside.LongMiddleTexture != MapSet.EmptyLongName)) {
+			} 
+			else if ((sourceside.LongMiddleTexture != MapSet.EmptyLongName)) 
+			{
 				textureLong = sourceside.LongMiddleTexture;
 			}
 
 			// Texture given?
-			if (textureLong != 0) {
+			if (textureLong != 0) 
+			{
 				// Load texture
 				base.Texture = General.Map.Data.GetTextureImage(textureLong);
-				if(base.Texture == null || base.Texture is UnknownImage) {
+				if(base.Texture == null || base.Texture is UnknownImage) 
+				{
 					base.Texture = General.Map.Data.UnknownTexture3D;
 					setuponloadedtexture = textureLong;
-				} else if (!base.Texture.IsImageLoaded) {
+				} 
+				else if (!base.Texture.IsImageLoaded) 
+				{
 					setuponloadedtexture = textureLong;
 				}
-			} else {
+			} 
+			else 
+			{
 				// Use missing texture
 				base.Texture = General.Map.Data.MissingTexture3D;
 				setuponloadedtexture = 0;
@@ -176,11 +187,11 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 				
 				// Determine initial color
 				int lightlevel;
-				if(((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.DisableLighting) != 0)) {
+				if(((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.DisableLighting) != 0))
 					lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
-				}else{
+				else
 					lightlevel = lightabsolute ? lightvalue : sourceside.Sector.Brightness + lightvalue;
-				}
+
 				//mxd
 				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
 				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
@@ -194,25 +205,33 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 				List<WallPolygon> polygons = new List<WallPolygon>(1);
 				polygons.Add(poly);
 
-				foreach(Effect3DFloor ef in sd.ExtraFloors) {
+				foreach(Effect3DFloor ef in sd.ExtraFloors) 
+				{
 					int num = polygons.Count;
-					for(int pi = 0; pi < num; pi++) {
+					for(int pi = 0; pi < num; pi++) 
+					{
 						// Split by floor plane of 3D floor
 						WallPolygon p = polygons[pi];
 						WallPolygon np = SplitPoly(ref p, ef.Ceiling.plane, true);
 
-						if(np.Count > 0) {
+						if(np.Count > 0) 
+						{
 							// Split part below floor by the ceiling plane of 3D floor
 							// and keep only the part below the ceiling (front)
 							SplitPoly(ref np, ef.Floor.plane, true);
 
-							if(p.Count == 0) {
+							if(p.Count == 0) 
+							{
 								polygons[pi] = np;
-							} else {
+							} 
+							else 
+							{
 								polygons[pi] = p;
 								polygons.Add(np);
 							}
-						} else {
+						} 
+						else 
+						{
 							polygons[pi] = p;
 						}
 					}
@@ -262,7 +281,8 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 		#region ================== Methods
 
 		// Return texture name
-		public override string GetTextureName() {
+		public override string GetTextureName() 
+		{
 			//mxd
 			if ((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0)
 				return Sidedef.HighTexture;
@@ -272,7 +292,8 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 		}
 
 		// This changes the texture
-		protected override void SetTexture(string texturename) {
+		protected override void SetTexture(string texturename) 
+		{
 			//mxd
 			if ((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0)
 				Sidedef.Other.SetTextureHigh(texturename);
@@ -310,11 +331,11 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
 			float scalex = Sidedef.Fields.GetValue("scalex_mid", 1.0f);
 			float scaley = Sidedef.Fields.GetValue("scaley_mid", 1.0f);
-			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldx, xy.X, scalex, Texture != null ? Texture.Width : -1)); //mxd
+			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldx, xy.X, scalex, Texture != null ? Texture.Width : -1)); //mxd
 
 			//mxd. Don't clamp offsetY of clipped mid textures
 			bool dontClamp = (Texture == null || Sidedef.IsFlagSet("clipmidtex") || Sidedef.Line.IsFlagSet("clipmidtex"));
-			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldy, xy.Y, scaley, dontClamp ? -1 : Texture.Height));
+			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldy, xy.Y, scaley, dontClamp ? -1 : Texture.Height));
 		}
 
 		protected override Point GetTextureOffset()
@@ -325,8 +346,10 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 		}
 
 		//mxd
-		public override void OnChangeTargetBrightness(bool up) {
-			if(!General.Map.UDMF) {
+		public override void OnChangeTargetBrightness(bool up) 
+		{
+			if(!General.Map.UDMF) 
+			{
 				base.OnChangeTargetBrightness(up);
 				return;
 			}
@@ -356,7 +379,8 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 		}
 
 		//mxd
-		public override Linedef GetControlLinedef() {
+		public override Linedef GetControlLinedef() 
+		{
 			return extrafloor.Linedef;
 		}
 

@@ -277,7 +277,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		// This reads a token (all sequential non-whitespace characters or a single character) using custom set of special tokens
 		// Returns null when the end of the stream has been reached (mxd)
-		protected internal string ReadToken(string specialTokens) {
+		protected internal string ReadToken(string specialTokens) 
+		{
 			// Return null when the end of the stream has been reached
 			if(datastream.Position == datastream.Length) return null;
 			
@@ -286,11 +287,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			// Start reading
 			char c = (char)datareader.ReadByte();
-			while(!IsWhitespace(c) || quotedstring || specialTokens.IndexOf(c) != -1) {
+			while(!IsWhitespace(c) || quotedstring || specialTokens.IndexOf(c) != -1) 
+			{
 				// Special token?
-				if(!quotedstring && specialTokens.IndexOf(c) != -1) {
+				if(!quotedstring && specialTokens.IndexOf(c) != -1) 
+				{
 					// Not reading a token yet?
-					if(token.Length == 0) {
+					if(token.Length == 0) 
+					{
 						// This is our whole token
 						token += c;
 						break;
@@ -300,9 +304,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 					// Go one character back so we can read this token again
 					datastream.Seek(-1, SeekOrigin.Current);
 					break;
-				} else {
+				} 
+				else 
+				{
 					// Quote?
-					if(c == '"') {
+					if(c == '"') 
+					{
 						// Quote to end the string?
 						if(quotedstring) quotedstring = false;
 
@@ -311,23 +318,29 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						token += c;
 					}
-						// Potential comment?
-					else if((c == '/') && !quotedstring) {
+					// Potential comment?
+					else if((c == '/') && !quotedstring) 
+					{
 						// Check the next byte
 						if(datastream.Position == datastream.Length) return token;
 						char c2 = (char)datareader.ReadByte();
-						if((c2 == '/') || (c2 == '*')) {
+						if((c2 == '/') || (c2 == '*')) 
+						{
 							// This is a comment start, so the token ends here
 							// Go two characters back so we can read this comment again
 							datastream.Seek(-2, SeekOrigin.Current);
 							break;
-						} else {
+						} 
+						else 
+						{
 							// Not a comment
 							// Go one character back so we can read this char again
 							datastream.Seek(-1, SeekOrigin.Current);
 							token += c;
 						}
-					} else {
+					} 
+					else 
+					{
 						token += c;
 					}
 				}
@@ -368,9 +381,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd
-		protected internal bool ReadSignedFloat(string token, ref float value) {
+		protected internal bool ReadSignedFloat(string token, ref float value) 
+		{
 			int sign = 1;
-			if (token == "-") {
+			if (token == "-") 
+			{
 				sign = -1;
 				token = StripTokenQuotes(ReadToken());
 			}
@@ -382,9 +397,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd
-		protected internal bool ReadSignedInt(string token, ref int value) {
+		protected bool ReadSignedInt(string token, ref int value) 
+		{
 			int sign = 1;
-			if (token == "-") {
+			if (token == "-") 
+			{
 				sign = -1;
 				token = StripTokenQuotes(ReadToken());
 			}
@@ -405,7 +422,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd 
-		protected internal int GetCurrentLineNumber() {
+		protected internal int GetCurrentLineNumber() 
+		{
 			long position = datastream.Position;
 			long readpos = 0;
 			int linenumber = 1;
@@ -413,7 +431,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Find the line on which we found this error
 			datastream.Seek(0, SeekOrigin.Begin);
 			StreamReader textreader = new StreamReader(datastream, Encoding.ASCII);
-			while (readpos < position) {
+			while (readpos < position) 
+			{
 				string line = textreader.ReadLine();
 				if (line == null) break;
 				readpos += line.Length + 2;

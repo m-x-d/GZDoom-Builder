@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Windows
 									   option5label, option6label, option7label };
 			
 			// Go for all predefined effects
-			selected = createEffects(effect); //mxd
+			selected = CreateEffects(effect); //mxd
 			allItems = new ListViewItem[effects.Items.Count]; //mxd
 			effects.Items.CopyTo(allItems, 0); //mxd
 			
@@ -118,16 +118,19 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private bool createEffects(int effect) {
+		private bool CreateEffects(int effect) 
+		{
 			bool selected = false;
 			ListViewItem n;
 
-			foreach (SectorEffectInfo si in General.Map.Config.SortedSectorEffects) {
+			foreach (SectorEffectInfo si in General.Map.Config.SortedSectorEffects) 
+			{
 				// Create effect
 				n = effects.Items.Add(si.Index.ToString());
 				n.SubItems.Add(si.Title);
 				n.Tag = si;
-				if (si.Index == effect) {
+				if (si.Index == effect) 
+				{
 					selected = true;
 					n.Selected = true;
 				}
@@ -136,12 +139,13 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void filterEffects(string p) {
+		private void FilterEffects(string p) 
+		{
 			List<ListViewItem> filteredItems = new List<ListViewItem>();
 
-			foreach (ListViewItem i in allItems) {
+			foreach (ListViewItem i in allItems) 
+			{
 				SectorEffectInfo si = i.Tag as SectorEffectInfo;
-
 				if (si.Title.ToLowerInvariant().IndexOf(p) != -1)
 					filteredItems.Add(i);
 			}
@@ -208,17 +212,22 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void tbFilter_TextChanged(object sender, EventArgs e) {
-			if (tbFilter.Text.Length > 1) {
-				filterEffects(tbFilter.Text);
-			} else if (String.IsNullOrEmpty(tbFilter.Text.ToLowerInvariant())) {
+		private void tbFilter_TextChanged(object sender, EventArgs e) 
+		{
+			if (tbFilter.Text.Length > 1) 
+			{
+				FilterEffects(tbFilter.Text);
+			} 
+			else if (String.IsNullOrEmpty(tbFilter.Text.ToLowerInvariant())) 
+			{
 				effects.Items.Clear();
-				createEffects(effects.SelectedItems.Count > 0 ? ((SectorEffectInfo)effects.SelectedItems[0].Tag).Index : 0);
+				CreateEffects(effects.SelectedItems.Count > 0 ? ((SectorEffectInfo)effects.SelectedItems[0].Tag).Index : 0);
 			}
 		}
 
 		//mxd
-		private void btnClearFilter_Click(object sender, EventArgs e) {
+		private void btnClearFilter_Click(object sender, EventArgs e) 
+		{
 			tbFilter.Clear();
 		}
 	}

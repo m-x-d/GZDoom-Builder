@@ -29,7 +29,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			public List<Mesh> Meshes;
 			public string Errors;
 
-			public MD3LoadResult() {
+			public MD3LoadResult() 
+			{
 				Skins = new List<string>();
 				Meshes = new List<Mesh>();
 			}
@@ -41,9 +42,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		#region ================== Init
 
-		internal static void Init() {
-			if(vertexElements == null) {
-				vertexElements = new[] {
+		internal static void Init() 
+		{
+			if(vertexElements == null) 
+			{
+				vertexElements = new[] 
+				{
 					new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
 					new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
 					new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
@@ -57,34 +61,30 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		#region ================== Load
 
-		public static void Load(ModelData mde, List<DataReader> containers, Device device) {
-			if(mde.IsVoxel) {
-				loadKVX(mde, containers, device);
-			} else {
-				loadModel(mde, containers, device);
-			}
+		public static void Load(ModelData mde, List<DataReader> containers, Device device) 
+		{
+			if(mde.IsVoxel) 
+				LoadKVX(mde, containers, device);
+			else
+				LoadModel(mde, containers, device);
 		}
 
-		private static void loadKVX(ModelData mde, List<DataReader> containers, Device device) {
+		private static void LoadKVX(ModelData mde, List<DataReader> containers, Device device) 
+		{
 			mde.Model = new GZModel();
 
-			//prepare WhiteTexture... just in case :)
-			//if(General.Map.Data.WhiteTexture.Texture == null || General.Map.Data.WhiteTexture.Texture.Disposed)
-				//General.Map.Data.WhiteTexture.CreateTexture();
-
-			for(int i = 0; i < mde.ModelNames.Count; i++) {
+			for(int i = 0; i < mde.ModelNames.Count; i++) 
+			{
 				//find the model
 				Stream ms;
 
-				foreach(DataReader dr in containers) {
+				foreach(DataReader dr in containers) 
+				{
 					ms = dr.GetVoxelData(mde.ModelNames[i]);
 					if(ms == null) continue;
 
 					//load kvx
 					ReadKVX(mde, ms, device);
-
-					//add texture
-					//mde.Model.Textures.Add(General.Map.Data.WhiteTexture.Texture);
 
 					//done
 					ms.Close();
@@ -97,24 +97,28 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			mde.TextureNames = null;
 			mde.ModelNames = null;
 
-			if(mde.Model.Meshes == null || mde.Model.Meshes.Count == 0) {
+			if(mde.Model.Meshes == null || mde.Model.Meshes.Count == 0) 
+			{
 				mde.Model = null;
 			}
 		}
 
-		private static void loadModel(ModelData mde, List<DataReader> containers, Device device) {
+		private static void LoadModel(ModelData mde, List<DataReader> containers, Device device) 
+		{
 			mde.Model = new GZModel();
 			BoundingBoxSizes bbs = new BoundingBoxSizes();
 			MD3LoadResult result = new MD3LoadResult();
 
 			//load models and textures
-			for(int i = 0; i < mde.ModelNames.Count; i++) {
+			for(int i = 0; i < mde.ModelNames.Count; i++) 
+			{
 				//need to use model skins?
 				bool useSkins = string.IsNullOrEmpty(mde.TextureNames[i]);
 			
 				//load mesh
 				MemoryStream ms = LoadFile(containers, mde.ModelNames[i], true);
-				if (ms == null) {
+				if (ms == null) 
+				{
 					General.ErrorLogger.Add(ErrorType.Error, "Error while loading '" + mde.ModelNames[i] + "': unable to find file.");
 					continue;
 				}
@@ -132,9 +136,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				ms.Dispose();
 
 				//got errors?
-				if(!String.IsNullOrEmpty(result.Errors)) {
+				if(!String.IsNullOrEmpty(result.Errors)) 
+				{
 					General.ErrorLogger.Add(ErrorType.Error, "Error while loading '" + mde.ModelNames[i] + "': " + result.Errors);
-				} else {
+				} 
+				else 
+				{
 					//add loaded data to ModeldefEntry
 					mde.Model.Meshes.AddRange(result.Meshes);
 
@@ -146,15 +153,20 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					List<string> errors = new List<string>();
 
 					//texture has unsupported extension?
-					if(mde.TextureNames[i] == TextureData.INVALID_TEXTURE) {
+					if(mde.TextureNames[i] == TextureData.INVALID_TEXTURE) 
+					{
 						for (int c = 0; c < result.Meshes.Count; c++)
 							mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
 					
 					//texture not defined in MODELDEF?
-					} else if(useSkins) {
+					} 
+					else if(useSkins) 
+					{
 						//try to use model's own skins 
-						for(int m = 0; m < result.Meshes.Count; m++) {
-							if(string.IsNullOrEmpty(result.Skins[m])) {
+						for(int m = 0; m < result.Meshes.Count; m++) 
+						{
+							if(string.IsNullOrEmpty(result.Skins[m])) 
+							{
 								mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
 								errors.Add("texture not found in MODELDEF or model skin.");
 								continue;
@@ -163,7 +175,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 							string path = result.Skins[m].Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 							ext = Path.GetExtension(path);
 
-							if(Array.IndexOf(TextureData.SUPPORTED_TEXTURE_EXTENSIONS, ext) == -1) {
+							if(Array.IndexOf(TextureData.SUPPORTED_TEXTURE_EXTENSIONS, ext) == -1) 
+							{
 								mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
 								errors.Add("image format '" + ext + "' is not supported!");
 								continue;
@@ -175,7 +188,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 							Texture t = LoadTexture(containers, path, device);
 
-							if(t == null) {
+							if(t == null) 
+							{
 								mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
 								errors.Add("unable to load skin '" + result.Skins[m] + "'");
 								continue;
@@ -183,20 +197,24 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 							mde.Model.Textures.Add(t);
 						}
-
-					//try to use texture loaded from MODELDEFS
-					} else {
+					} 
+					else //try to use texture loaded from MODELDEFS
+					{
 						Texture t = LoadTexture(containers, mde.TextureNames[i], device);
-						if(t == null) {
+						if(t == null) 
+						{
 							mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
 							errors.Add("unable to load texture '" + mde.TextureNames[i] + "'");
-						} else {
+						} 
+						else 
+						{
 							mde.Model.Textures.Add(t);
 						}
 					}
 
 					//report errors
-					if(errors.Count > 0) {
+					if(errors.Count > 0) 
+					{
 						foreach(string e in errors)
 							General.ErrorLogger.Add(ErrorType.Error, "Error while loading '" + mde.ModelNames[i] + "': " + e);
 					}
@@ -207,7 +225,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			mde.TextureNames = null;
 			mde.ModelNames = null;
 
-			if(mde.Model.Meshes == null || mde.Model.Meshes.Count == 0) {
+			if(mde.Model.Meshes == null || mde.Model.Meshes.Count == 0) 
+			{
 				mde.Model = null;
 				return;
 			}
@@ -219,13 +238,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		#region ================== MD3
 
-		private static MD3LoadResult ReadMD3Model(ref BoundingBoxSizes bbs, ModelData mde, bool useSkins, MemoryStream s, Device device) {
+		private static MD3LoadResult ReadMD3Model(ref BoundingBoxSizes bbs, ModelData mde, bool useSkins, MemoryStream s, Device device) 
+		{
 			long start = s.Position;
 			MD3LoadResult result = new MD3LoadResult();
 
-			using (var br = new BinaryReader(s, Encoding.ASCII)) {
+			using (var br = new BinaryReader(s, Encoding.ASCII)) 
+			{
 				string magic = ReadString(br, 4);
-				if (magic != "IDP3"){
+				if (magic != "IDP3")
+				{
 					result.Errors = "magic should be 'IDP3', not '" + magic + "'";
 					return result;
 				}
@@ -245,24 +267,30 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				Dictionary<string, List<int>> vertexOffsets = new Dictionary<string, List<int>>(StringComparer.Ordinal);
 
 				string error;
-				for (int c = 0; c < numSurfaces; c++) {
+				for (int c = 0; c < numSurfaces; c++) 
+				{
 					string skin = "";
 					error = ReadSurface(ref bbs, ref skin, br, polyIndecesList, vertList, mde);
 
-					if(!string.IsNullOrEmpty(error)) {
+					if(!string.IsNullOrEmpty(error)) 
+					{
 						result.Errors = error;
 						return result;
 					}
 
-					if(useSkins) {
-						if(polyIndecesListsPerTexture.ContainsKey(skin)) {
+					if(useSkins) 
+					{
+						if(polyIndecesListsPerTexture.ContainsKey(skin)) 
+						{
 							polyIndecesListsPerTexture[skin].Add(polyIndecesList);
 							vertListsPerTexture[skin].AddRange(vertList.ToArray());
 							vertexOffsets[skin].Add(vertList.Count);
-						} else {
-							polyIndecesListsPerTexture.Add(skin, new List<List<int>>() { polyIndecesList } );
+						} 
+						else 
+						{
+							polyIndecesListsPerTexture.Add(skin, new List<List<int>> { polyIndecesList } );
 							vertListsPerTexture.Add(skin, vertList);
-							vertexOffsets.Add(skin, new List<int>() { vertList.Count });
+							vertexOffsets.Add(skin, new List<int> { vertList.Count });
 						}
 
 						//reset lists
@@ -271,20 +299,27 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					}
 				}
 
-				if(!useSkins) { //create mesh
+				if(!useSkins) 
+				{ 
+					//create mesh
 					CreateMesh(device, ref result, vertList, polyIndecesList);
 					result.Skins.Add("");
-				} else {
+				} 
+				else 
+				{
 					//create a mesh for each surface texture
-					foreach(KeyValuePair<string, List<List<int>>> group in polyIndecesListsPerTexture) {
+					foreach(KeyValuePair<string, List<List<int>>> group in polyIndecesListsPerTexture) 
+					{
 						polyIndecesList = new List<int>();
 						int offset = 0;
 						
 						//collect indices, fix vertex offsets
-						for(int i = 0; i < group.Value.Count; i++) {
-							if(i > 0) {
-								offset += vertexOffsets[group.Key][i - 1]; //Damn I need to rewrite all of this stuff from scratch...
-
+						for(int i = 0; i < group.Value.Count; i++) 
+						{
+							if(i > 0) 
+							{
+								//TODO: Damn I need to rewrite all of this stuff from scratch...
+								offset += vertexOffsets[group.Key][i - 1]; 
 								for(int c = 0; c < group.Value[i].Count; c++)
 									group.Value[i][c] += offset;
 							}
@@ -300,7 +335,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			return result;
 		}
 
-		private static string ReadSurface(ref BoundingBoxSizes bbs, ref string skin, BinaryReader br, List<int> polyIndecesList, List<WorldVertex> vertList, ModelData mde) {
+		private static string ReadSurface(ref BoundingBoxSizes bbs, ref string skin, BinaryReader br, List<int> polyIndecesList, List<WorldVertex> vertList, ModelData mde) 
+		{
 			int vertexOffset = vertList.Count;
 			long start = br.BaseStream.Position;
 			string magic = ReadString(br, 4);
@@ -333,7 +369,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			if (start + ofsST != br.BaseStream.Position)
 				br.BaseStream.Position = start + ofsST;
 
-			for (int i = 0; i < numVerts; i++) {
+			for (int i = 0; i < numVerts; i++) 
+			{
 				WorldVertex v = new WorldVertex();
 				v.c = -1; //white
 				v.u = br.ReadSingle();
@@ -350,7 +387,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			float angleOfsetCos = (float)Math.Cos(mde.AngleOffset);
 			float angleOfsetSin = (float)Math.Sin(mde.AngleOffset);
 
-			for (int i = vertexOffset; i < vertexOffset + numVerts; i++) {
+			for (int i = vertexOffset; i < vertexOffset + numVerts; i++) 
+			{
 				WorldVertex v = vertList[i];
 
 				//read vertex
@@ -359,7 +397,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				v.z = (float)br.ReadInt16() / 64;
 
 				//rotate it
-				if (mde.AngleOffset != 0) {
+				if (mde.AngleOffset != 0) 
+				{
 					float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
 					float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
 					v.y = ry;
@@ -392,16 +431,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			return "";
 		}
 
-		private static void CreateMesh(Device device, ref MD3LoadResult result, List<WorldVertex> verts, List<int> indices) {
+		private static void CreateMesh(Device device, ref MD3LoadResult result, List<WorldVertex> verts, List<int> indices) 
+		{
 			//create mesh
 			Mesh mesh = new Mesh(device, indices.Count / 3, verts.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
 
-			using(DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) {
+			using(DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) 
+			{
 				stream.WriteRange(verts.ToArray());
 			}
 			mesh.UnlockVertexBuffer();
 
-			using(DataStream stream = mesh.LockIndexBuffer(LockFlags.None)) {
+			using(DataStream stream = mesh.LockIndexBuffer(LockFlags.None)) 
+			{
 				stream.WriteRange(indices.ToArray());
 			}
 			mesh.UnlockIndexBuffer();
@@ -416,19 +458,23 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		#region ================== MD2
 
-		private static MD3LoadResult ReadMD2Model(ref BoundingBoxSizes bbs, ModelData mde, MemoryStream s, Device device) {
+		private static MD3LoadResult ReadMD2Model(ref BoundingBoxSizes bbs, ModelData mde, MemoryStream s, Device device) 
+		{
 			long start = s.Position;
 			MD3LoadResult result = new MD3LoadResult();
 
-			using (var br = new BinaryReader(s, Encoding.ASCII)) {
+			using (var br = new BinaryReader(s, Encoding.ASCII)) 
+			{
 				string magic = ReadString(br, 4);
-				if(magic != "IDP2") {  //magic number: "IDP2"
+				if(magic != "IDP2") //magic number: "IDP2"
+				{  
 					result.Errors = "magic should be 'IDP2', not '" + magic + "'";
 					return result;
 				}
 
 				int modelVersion = br.ReadInt32();
-				if(modelVersion != 8) { //MD2 version. Must be equal to 8
+				if(modelVersion != 8) //MD2 version. Must be equal to 8
+				{ 
 					result.Errors = "MD2 version must be 8 but is " + modelVersion;
 					return result;
 				}
@@ -442,8 +488,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				int num_tris = br.ReadInt32(); //Number of triangles
 				s.Position += 4; //Number of OpenGL commands
 
-				if(br.ReadInt32() == 0) {  //Total number of frames
-					//General.ErrorLogger.Add(ErrorType.Error, "Unable to load model '" + path + "': model has 0 frames.");
+				if(br.ReadInt32() == 0) //Total number of frames
+				{  
 					result.Errors = "model has 0 frames.";
 					return result;
 				}
@@ -461,7 +507,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				//polygons
 				s.Position = ofs_tris + start;
 
-				for (int i = 0; i < num_tris; i++) {
+				for (int i = 0; i < num_tris; i++) 
+				{
 					polyIndecesList.Add(br.ReadUInt16());
 					polyIndecesList.Add(br.ReadUInt16());
 					polyIndecesList.Add(br.ReadUInt16());
@@ -492,7 +539,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				float angleOfsetSin = (float)Math.Sin(angle);
 
 				//verts
-				for (int i = 0; i < num_verts; i++) {
+				for (int i = 0; i < num_verts; i++) 
+				{
 					WorldVertex v = new WorldVertex();
 
 					v.x = (br.ReadByte() * scale.X + translate.X);
@@ -500,7 +548,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					v.z = (br.ReadByte() * scale.Z + translate.Z);
 
 					//rotate it
-					if (angle != 0) {
+					if (angle != 0) 
+					{
 						float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
 						float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
 						v.y = ry;
@@ -519,7 +568,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					s.Position += 1; //vertex normal
 				}
 
-				for (int i = 0; i < polyIndecesList.Count; i++) {
+				for (int i = 0; i < polyIndecesList.Count; i++) 
+				{
 					WorldVertex v = vertList[polyIndecesList[i]];
 					
 					//bounding box
@@ -530,11 +580,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					float tv = uvCoordsList[uvIndecesList[i]].Y;
 
 					//uv-coordinates already set?
-					if(v.c == -1 && (v.u != tu || v.v != tv)) { 
+					if(v.c == -1 && (v.u != tu || v.v != tv)) 
+					{ 
 						//add a new vertex
 						vertList.Add(new WorldVertex(v.x, v.y, v.z, -1, tu, tv));
 						polyIndecesList[i] = vertList.Count - 1;
-					} else {
+					} 
+					else 
+					{
 						v.u = tu;
 						v.v = tv;
 						v.c = -1; //set color to white
@@ -547,12 +600,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				//mesh
 				Mesh mesh = new Mesh(device, polyIndecesList.Count / 3, vertList.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
 
-				using (DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) {
+				using (DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) 
+				{
 					stream.WriteRange(vertList.ToArray());
 				}
 				mesh.UnlockVertexBuffer();
 
-				using (DataStream stream = mesh.LockIndexBuffer(LockFlags.None)) {
+				using (DataStream stream = mesh.LockIndexBuffer(LockFlags.None)) 
+				{
 					stream.WriteRange(polyIndecesList.ToArray());
 				}
 				mesh.UnlockIndexBuffer();
@@ -571,13 +626,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		#region ================== KVX
 
-		private static void ReadKVX(ModelData mde, Stream stream, Device device) {
+		private static void ReadKVX(ModelData mde, Stream stream, Device device) 
+		{
 			PixelColor[] palette = new PixelColor[256];
 			List<WorldVertex> verts = new List<WorldVertex>();
 			int xsize, ysize, zsize;
 			Vector3D pivot;
 
-			using(BinaryReader reader = new BinaryReader(stream, Encoding.ASCII)) {
+			using(BinaryReader reader = new BinaryReader(stream, Encoding.ASCII)) 
+			{
 				reader.ReadInt32(); //numbytes, we don't use that
 				xsize = reader.ReadInt32();
 				ysize = reader.ReadInt32();
@@ -592,20 +649,25 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				int[] xoffset = new int[xsize + 1]; //why is it xsize + 1, not xsize?..
 				short[,] xyoffset = new short[xsize, ysize + 1]; //why is it ysize + 1, not ysize?..
 
-				for(int i = 0; i < xoffset.Length; i++) {
+				for(int i = 0; i < xoffset.Length; i++) 
+				{
 					xoffset[i] = reader.ReadInt32();
 				}
 
-				for(int x = 0; x < xsize; x++) {
-					for(int y = 0; y < ysize + 1; y++) {
+				for(int x = 0; x < xsize; x++) 
+				{
+					for(int y = 0; y < ysize + 1; y++) 
+					{
 						xyoffset[x, y] = reader.ReadInt16();
 					}
 				}
 
 				//read slabs
 				List<int> offsets = new List<int>(xsize * ysize);
-				for(int x = 0; x < xsize; x++) {
-					for(int y = 0; y < ysize; y++) {
+				for(int x = 0; x < xsize; x++) 
+				{
+					for(int y = 0; y < ysize; y++) 
+					{
 						offsets.Add(xoffset[x] + xyoffset[x, y] + 28); //for some reason offsets are counted from start of xoffset[]...
 					}
 				}
@@ -614,58 +676,74 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				int slabsEnd = (int)(reader.BaseStream.Length - 768);
 
 				//read palette
-				if(!mde.OverridePalette) {
+				if(!mde.OverridePalette) 
+				{
 					reader.BaseStream.Position = slabsEnd;
-					for(int i = 0; i < 256; i++) {
+					for(int i = 0; i < 256; i++) 
+					{
 						byte r = (byte)(reader.ReadByte() * 4);
 						byte g = (byte)(reader.ReadByte() * 4);
 						byte b = (byte)(reader.ReadByte() * 4);
 						palette[i] = new PixelColor(255, r, g, b);
 					}
-				} else {
-					for(int i = 0; i < 256; i++ ) {
+				} 
+				else 
+				{
+					for(int i = 0; i < 256; i++ ) 
+					{
 						palette[i] = General.Map.Data.Palette[i];
 					}
 				}
 
-				for(int x = 0; x < xsize; x++) {
-					for(int y = 0; y < ysize; y++) {
+				for(int x = 0; x < xsize; x++) 
+				{
+					for(int y = 0; y < ysize; y++) 
+					{
 						reader.BaseStream.Position = offsets[counter];
 						int next = (counter < offsets.Count - 1 ? offsets[counter + 1] : slabsEnd);
 
 						//read slab
-						while(reader.BaseStream.Position < next) {
+						while(reader.BaseStream.Position < next) 
+						{
 							int ztop = reader.ReadByte();
 							int zleng = reader.ReadByte();
 							if(ztop + zleng > zsize) break;
 							int flags = reader.ReadByte();
 
-							if(zleng > 0) {
+							if(zleng > 0) 
+							{
 								List<int> colorIndices = new List<int>(zleng);
-								for(int i = 0; i < zleng; i++) {
+								for(int i = 0; i < zleng; i++) 
+								{
 									colorIndices.Add(reader.ReadByte());
 								}
 
-								if((flags & 16) != 0) {
+								if((flags & 16) != 0) 
+								{
 									AddFace(verts, new Vector3D(x, y, ztop), new Vector3D(x + 1, y, ztop), new Vector3D(x, y + 1, ztop), new Vector3D(x + 1, y + 1, ztop), pivot, colorIndices[0], mde.AngleOffset, mde.Scale.X);
 								}
 
 								int z = ztop;
 								int cstart = 0;
-								while(z < ztop + zleng) {
+								while(z < ztop + zleng) 
+								{
 									int c = 0;
 									while(z + c < ztop + zleng && colorIndices[cstart + c] == colorIndices[cstart]) c++;
 
-									if((flags & 1) != 0) {
+									if((flags & 1) != 0) 
+									{
 										AddFace(verts, new Vector3D(x, y, z), new Vector3D(x, y + 1, z), new Vector3D(x, y, z + c), new Vector3D(x, y + 1, z + c), pivot, colorIndices[cstart], mde.AngleOffset, mde.Scale.X);
 									}
-									if((flags & 2) != 0) {
+									if((flags & 2) != 0) 
+									{
 										AddFace(verts, new Vector3D(x + 1, y + 1, z), new Vector3D(x + 1, y, z), new Vector3D(x + 1, y + 1, z + c), new Vector3D(x + 1, y, z + c), pivot, colorIndices[cstart], mde.AngleOffset, mde.Scale.X);
 									}
-									if((flags & 4) != 0) {
+									if((flags & 4) != 0) 
+									{
 										AddFace(verts, new Vector3D(x + 1, y, z), new Vector3D(x, y, z), new Vector3D(x + 1, y, z + c), new Vector3D(x, y, z + c), pivot, colorIndices[cstart], mde.AngleOffset, mde.Scale.X);
 									}
-									if((flags & 8) != 0) {
+									if((flags & 8) != 0) 
+									{
 										AddFace(verts, new Vector3D(x, y + 1, z), new Vector3D(x + 1, y + 1, z), new Vector3D(x, y + 1, z + c), new Vector3D(x + 1, y + 1, z + c), pivot, colorIndices[cstart], mde.AngleOffset, mde.Scale.X);
 									}
 
@@ -674,7 +752,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 									cstart += c;
 								}
 
-								if((flags & 32) != 0) {
+								if((flags & 32) != 0) 
+								{
 									z = ztop + zleng - 1;
 									AddFace(verts, new Vector3D(x + 1, y, z + 1), new Vector3D(x, y, z + 1), new Vector3D(x + 1, y + 1, z + 1), new Vector3D(x, y + 1, z + 1), pivot, colorIndices[zleng - 1], mde.AngleOffset, mde.Scale.X);
 								}
@@ -698,7 +777,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			mde.Model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
 
 			//create bitmap
-			Bitmap bmp = createVoxelTexture(palette);
+			Bitmap bmp = CreateVoxelTexture(palette);
 
 			//create texture
 			MemoryStream memstream = new MemoryStream((4096 * 4) + 4096);
@@ -713,7 +792,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 			//create mesh
 			int[] indices = new int[verts.Count];
-			for(int i = 0; i < verts.Count; i++) {
+			for(int i = 0; i < verts.Count; i++) 
+			{
 				indices[i] = i;
 			}
 
@@ -734,7 +814,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 		}
 
 		// Shameless GZDoom rip-off
-		private static void AddFace(List<WorldVertex> verts, Vector3D v1, Vector3D v2, Vector3D v3, Vector3D v4, Vector3D pivot, int colorIndex, float angle, float scale) {
+		private static void AddFace(List<WorldVertex> verts, Vector3D v1, Vector3D v2, Vector3D v3, Vector3D v4, Vector3D pivot, int colorIndex, float angle, float scale) 
+		{
 			float pu0 = (colorIndex % 16) / 16f;
 			float pu1 = pu0 + 0.0001f;
 			float pv0 = (colorIndex / 16) / 16f;
@@ -780,8 +861,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			verts.Add(wv4);
 		}
 
-		private static WorldVertex TransformVertex(WorldVertex v, float angle, float scale) {
-			if (angle != 0) {
+		private static WorldVertex TransformVertex(WorldVertex v, float angle, float scale) 
+		{
+			if (angle != 0) 
+			{
 				float angleOfsetCos = (float) Math.Cos(angle);
 				float angleOfsetSin = (float) Math.Sin(angle);
 
@@ -791,7 +874,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				v.x = rx1;
 			}
 
-			if (scale != 1.0f) {
+			if (scale != 1.0f) 
+			{
 				v.x *= scale;
 				v.y *= scale;
 				v.z *= scale;
@@ -800,16 +884,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			return v;
 		}
 
-		private unsafe static Bitmap createVoxelTexture(PixelColor[] palette) {
+		private unsafe static Bitmap CreateVoxelTexture(PixelColor[] palette) 
+		{
 			Bitmap bmp = new Bitmap(16, 16);
 			BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, 16, 16), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			if(bmpdata != null) {
+			if(bmpdata != null) 
+			{
 				PixelColor* pixels = (PixelColor*)(bmpdata.Scan0.ToPointer());
 				const int numpixels = 256;
 				int i = 255;
 
-				for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--, i--) {
+				for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--, i--) 
+				{
 					cp->r = palette[i].r;
 					cp->g = palette[i].g;
 					cp->b = palette[i].b;
@@ -820,7 +907,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 			//scale bitmap, so colors stay (almost) the same when bilinear filtering is enabled
 			Bitmap scaled = new Bitmap(64, 64);
-			using(Graphics gs = Graphics.FromImage(scaled)) {
+			using(Graphics gs = Graphics.FromImage(scaled)) 
+			{
 				gs.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 				gs.DrawImage(bmp, new Rectangle(0, 0, 64, 64), new Rectangle(0, 0, 16, 16), GraphicsUnit.Pixel);
 			}
@@ -832,18 +920,20 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		#region ================== Utility
 
-		private static MemoryStream LoadFile(List<DataReader> containers, string path, bool isModel) {
-			foreach(DataReader dr in containers) {
+		private static MemoryStream LoadFile(List<DataReader> containers, string path, bool isModel) 
+		{
+			foreach(DataReader dr in containers) 
+			{
 				if(isModel && dr is WADReader) continue;  //models cannot be stored in WADs
 
 				//load file
-				if(dr.FileExists(path))
-					return dr.LoadFile(path);
+				if(dr.FileExists(path)) return dr.LoadFile(path);
 			}
 			return null;
 		}
 
-		private static Texture LoadTexture(List<DataReader> containers, string path, Device device) {
+		private static Texture LoadTexture(List<DataReader> containers, string path, Device device) 
+		{
 			if(string.IsNullOrEmpty(path)) return null;
 
 			MemoryStream ms = LoadFile(containers, path, false);
@@ -852,14 +942,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			Texture texture = null;
 
 			//create texture
-			if(Path.GetExtension(path) == ".pcx") { //pcx format requires special handling...
+			if(Path.GetExtension(path) == ".pcx") //pcx format requires special handling...
+			{ 
 				FileImageReader fir = new FileImageReader();
 				Bitmap bitmap = fir.ReadAsBitmap(ms);
 
 				ms.Close();
 				ms.Dispose();
 
-				if(bitmap != null) {
+				if(bitmap != null) 
+				{
 					BitmapData bmlock = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
 					texture = new Texture(device, bitmap.Width, bitmap.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
 
@@ -869,7 +961,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					bitmap.UnlockBits(bmlock);
 					texture.UnlockRectangle(0);
 				}
-			} else {
+			} 
+			else 
+			{
 				texture = Texture.FromStream(device, ms);
 
 				ms.Close();
@@ -879,18 +973,22 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			return texture;
 		}
 
-		private static string ReadString(BinaryReader br, int len) {
+		private static string ReadString(BinaryReader br, int len) 
+		{
 			var NAME = string.Empty;
 			int i;
-			for (i = 0; i < len; ++i) {
+			for (i = 0; i < len; ++i) 
+			{
 				var c = br.ReadChar();
-				if (c == '\0') {
+				if (c == '\0') 
+				{
 					++i;
 					break;
 				}
 				NAME += c;
 			}
-			for (; i < len; ++i) {
+			for (; i < len; ++i) 
+			{
 				br.ReadChar();
 			}
 			return NAME;

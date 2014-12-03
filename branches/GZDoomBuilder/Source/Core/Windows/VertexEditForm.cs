@@ -58,7 +58,8 @@ namespace CodeImp.DoomBuilder.Windows
 			public float ZCeiling;
 			public float ZFloor;
 
-			public VertexProperties(Vertex v) {
+			public VertexProperties(Vertex v) 
+			{
 				X = v.Position.x;
 				Y = v.Position.y;
 				ZCeiling = v.ZCeiling;
@@ -76,23 +77,30 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
 			//mxd. Widow setup
-			if(location != Point.Empty) {
+			if(location != Point.Empty) 
+			{
 				this.StartPosition = FormStartPosition.Manual;
 				this.Location = location;
-				if(activeTab > 0 && activeTab < tabs.TabCount) {
+				if(activeTab > 0 && activeTab < tabs.TabCount) 
+				{
 					tabs.SelectTab(activeTab);
-				} else {
+				} 
+				else 
+				{
 					activeTab = 0;
 				}
 			}
 
-			if(General.Map.FormatInterface.HasCustomFields) { //mxd
+			if(General.Map.FormatInterface.HasCustomFields) //mxd
+			{ 
 				// Initialize custom fields editor
 				fieldslist.Setup("vertex");
 
 				// Fill universal fields list
 				fieldslist.ListFixedFields(General.Map.Config.VertexFields);
-			} else {
+			} 
+			else 
+			{
 				tabs.TabPages.Remove(tabcustom);
 				panelHeightControls.Visible = false;
 			}
@@ -169,11 +177,13 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			//mxd. Height offsets
-			if(General.Map.UDMF) {
+			if(General.Map.UDMF) 
+			{
 				zceiling.Text = (float.IsNaN(vc.ZCeiling) ? CLEAR_VALUE : vc.ZCeiling.ToString());
 				zfloor.Text = (float.IsNaN(vc.ZFloor) ? CLEAR_VALUE : vc.ZFloor.ToString());
 
-				foreach(Vertex v in vertices) {
+				foreach(Vertex v in vertices) 
+				{
 					string zc = (float.IsNaN(v.ZCeiling) ? CLEAR_VALUE : v.ZCeiling.ToString());
 					string zf = (float.IsNaN(v.ZFloor) ? CLEAR_VALUE : v.ZFloor.ToString());
 
@@ -189,82 +199,94 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== mxd. Realtime Events
 
-		private void positionx_WhenTextChanged(object sender, EventArgs e) {
+		private void positionx_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(blockUpdate) return;
 			int i = 0;
 
 			//restore values
-			if(string.IsNullOrEmpty(positionx.Text)) {
+			if(string.IsNullOrEmpty(positionx.Text)) 
+			{
 				// Apply position
-				foreach(Vertex v in vertices)
-					v.Move(new Vector2D(vertexProps[i++].X, v.Position.y));
-			} else { //update values
+				foreach(Vertex v in vertices) v.Move(new Vector2D(vertexProps[i++].X, v.Position.y));
+			} 
+			else //update values
+			{ 
 				// Verify the coordinates
 				float px = positionx.GetResultFloat(vertexProps[i].X);
-				if(px < General.Map.FormatInterface.MinCoordinate) {
+				if(px < General.Map.FormatInterface.MinCoordinate) 
+				{
 					positionx.Text = General.Map.FormatInterface.MinCoordinate.ToString();
 					return;
 				} 
 				
-				if(px > General.Map.FormatInterface.MaxCoordinate) {
+				if(px > General.Map.FormatInterface.MaxCoordinate) 
+				{
 					positionx.Text = General.Map.FormatInterface.MaxCoordinate.ToString();
 					return;
 				}
 
 				// Apply position
-				foreach(Vertex v in vertices)
-					v.Move(new Vector2D(px, v.Position.y));
+				foreach(Vertex v in vertices) v.Move(new Vector2D(px, v.Position.y));
 			}
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void positiony_WhenTextChanged(object sender, EventArgs e) {
+		private void positiony_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(blockUpdate) return;
 			int i = 0;
 
 			//restore values
-			if(string.IsNullOrEmpty(positiony.Text)) {
+			if(string.IsNullOrEmpty(positiony.Text)) 
+			{
 				// Apply position
-				foreach(Vertex v in vertices)
-					v.Move(new Vector2D(v.Position.x, vertexProps[i++].Y));
-			} else { //update values
+				foreach(Vertex v in vertices) v.Move(new Vector2D(v.Position.x, vertexProps[i++].Y));
+			} 
+			else //update values
+			{ 
 				// Verify the coordinates
 				float py = positiony.GetResultFloat(vertexProps[i].Y);
-				if(py < General.Map.FormatInterface.MinCoordinate) {
+				if(py < General.Map.FormatInterface.MinCoordinate) 
+				{
 					positiony.Text = General.Map.FormatInterface.MinCoordinate.ToString();
 					return;
 				} 
 				
-				if(py > General.Map.FormatInterface.MaxCoordinate) {
+				if(py > General.Map.FormatInterface.MaxCoordinate) 
+				{
 					positiony.Text = General.Map.FormatInterface.MaxCoordinate.ToString();
 					return;
 				}
 
 				// Apply position
-				foreach(Vertex v in vertices)
-					v.Move(new Vector2D(v.Position.x, py));
+				foreach(Vertex v in vertices) v.Move(new Vector2D(v.Position.x, py));
 			}
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void zceiling_WhenTextChanged(object sender, EventArgs e) {
+		private void zceiling_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(blockUpdate) return;
 			int i = 0;
 
 			//restore values
-			if(string.IsNullOrEmpty(zceiling.Text)) {
-				foreach(Vertex v in vertices)
-					v.ZCeiling = vertexProps[i++].ZCeiling;
-			//clear values
-			} else if(zceiling.Text == CLEAR_VALUE) { 
-				foreach(Vertex v in vertices)
-					v.ZCeiling = float.NaN;
-			//update values
-			} else { 
+			if(string.IsNullOrEmpty(zceiling.Text)) 
+			{
+				foreach(Vertex v in vertices) v.ZCeiling = vertexProps[i++].ZCeiling;
+
+			} 
+			else if(zceiling.Text == CLEAR_VALUE) //clear values
+			{ 
+				foreach(Vertex v in vertices) v.ZCeiling = float.NaN;
+
+			} 
+			else //update values
+			{ 
 				foreach(Vertex v in vertices)
 					v.ZCeiling = zceiling.GetResultFloat(vertexProps[i++].ZCeiling);
 			}
@@ -273,20 +295,24 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void zfloor_WhenTextChanged(object sender, EventArgs e) {
+		private void zfloor_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(blockUpdate) return;
 			int i = 0;
 
 			//restore values
-			if(string.IsNullOrEmpty(zfloor.Text)) {
+			if(string.IsNullOrEmpty(zfloor.Text)) 
+			{
 				foreach(Vertex v in vertices)
 					v.ZFloor = vertexProps[i++].ZFloor;
-			//clear values
-			}else if(zfloor.Text == CLEAR_VALUE){
-				foreach(Vertex v in vertices)
-					v.ZFloor = float.NaN;
-			//update values
-			} else { 
+			
+			} 
+			else if(zfloor.Text == CLEAR_VALUE) //clear values
+			{
+				foreach(Vertex v in vertices) v.ZFloor = float.NaN;
+			} 
+			else //update values
+			{ 
 				foreach(Vertex v in vertices)
 					v.ZFloor = zfloor.GetResultFloat(vertexProps[i++].ZFloor);
 			}
@@ -296,12 +322,14 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void clearZFloor_Click(object sender, EventArgs e) {
+		private void clearZFloor_Click(object sender, EventArgs e) 
+		{
 			zfloor.Text = CLEAR_VALUE;
 		}
 
 		//mxd
-		private void clearZCeiling_Click(object sender, EventArgs e) {
+		private void clearZCeiling_Click(object sender, EventArgs e) 
+		{
 			zceiling.Text = CLEAR_VALUE;
 		}
 
@@ -313,8 +341,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private void apply_Click(object sender, EventArgs e)
 		{
 			//apply custom fields
-			if(General.Map.FormatInterface.HasCustomFields) { //mxd
-				foreach(Vertex v in vertices) fieldslist.Apply(v.Fields);
+			if(General.Map.FormatInterface.HasCustomFields) 
+			{
+				foreach(Vertex v in vertices) fieldslist.Apply(v.Fields); //mxd
 			}
 			
 			General.Map.IsChanged = true;
@@ -337,12 +366,14 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void tabcustom_MouseEnter(object sender, EventArgs e) {
+		private void tabcustom_MouseEnter(object sender, EventArgs e) 
+		{
 			fieldslist.Focus();
 		}
 
 		//mxd
-		private void VertexEditForm_FormClosing(object sender, FormClosingEventArgs e) {
+		private void VertexEditForm_FormClosing(object sender, FormClosingEventArgs e) 
+		{
 			location = this.Location;
 			activeTab = tabs.SelectedIndex;
 		}

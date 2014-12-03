@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.showtexturesize.Location = new System.Drawing.Point(470, 9);
 			this.showtexturesize.Name = "showtexturesize";
 			this.showtexturesize.Size = new System.Drawing.Size(109, 18);
-			this.showtexturesize.TabIndex = 2;
+			this.showtexturesize.TabIndex = 0;
 			this.showtexturesize.Text = "Show image size";
 			this.showtexturesize.UseVisualStyleBackColor = true;
 			this.showtexturesize.CheckedChanged += new System.EventHandler(this.showtexturesize_CheckedChanged);
@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.longtexturenames.Location = new System.Drawing.Point(585, 9);
 			this.longtexturenames.Name = "longtexturenames";
 			this.longtexturenames.Size = new System.Drawing.Size(122, 18);
-			this.longtexturenames.TabIndex = 1;
+			this.longtexturenames.TabIndex = 0;
 			this.longtexturenames.Text = "Long texture names";
 			this.longtexturenames.UseVisualStyleBackColor = true;
 			this.longtexturenames.CheckedChanged += new System.EventHandler(this.longtexturenames_CheckedChanged);

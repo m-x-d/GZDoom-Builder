@@ -120,7 +120,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		}
 
 		// Returns a position by index
-		public TilePoint PointByIndex(int index)
+		private static TilePoint PointByIndex(int index)
 		{
 			#if DEBUG
 			if(index > (TILE_SIZE * TILE_SIZE))

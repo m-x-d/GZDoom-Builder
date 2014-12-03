@@ -112,7 +112,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.vertices = new Dictionary<Vertex, VisualVertexPair>(); //mxd
 
 			//mxd. Synch camera position to cursor position or center of the screen in 2d-mode
-			if (General.Settings.GZSynchCameras && General.Editing.Mode is ClassicMode) {
+			if (General.Settings.GZSynchCameras && General.Editing.Mode is ClassicMode) 
+			{
 				ClassicMode oldmode = General.Editing.Mode as ClassicMode;
 
 				if(oldmode.IsMouseInside)
@@ -270,20 +271,24 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd
-		public override bool OnMapTestBegin(bool testFromCurrentPosition) {
-			if (testFromCurrentPosition) {
+		public override bool OnMapTestBegin(bool testFromCurrentPosition) 
+		{
+			if (testFromCurrentPosition) 
+			{
 				//find Single Player Start. Should have Type 1 in all games
 				Thing start = null;
-
-				foreach (Thing t in General.Map.Map.Things) {
-					if (t.Type == 1) {
+				foreach (Thing t in General.Map.Map.Things) 
+				{
+					if (t.Type == 1) 
+					{
 						//store thing and position
 						start = t;
 						break;
 					}
 				}
 
-				if (start == null) {
+				if (start == null) 
+				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: no Player 1 start found!");
 					return false;
 				}
@@ -292,13 +297,15 @@ namespace CodeImp.DoomBuilder.VisualModes
 				Vector3D camPos = General.Map.VisualCamera.Position;
 				Sector s = General.Map.Map.GetSectorByCoordinates(new Vector2D(camPos.x, camPos.y), blockmap);
 
-				if (s == null) {
+				if (s == null) 
+				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: cursor is not inside sector!");
 					return false;
 				}
 
 				//41 = player's height in Doom. Is that so in all other games as well?
-				if (s.CeilHeight - s.FloorHeight < 41) {
+				if (s.CeilHeight - s.FloorHeight < 41) 
+				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: sector is too low!");
 					return false;
 				}
@@ -322,8 +329,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd
-		public override void OnMapTestEnd(bool testFromCurrentPosition) {
-			if (testFromCurrentPosition) {
+		public override void OnMapTestEnd(bool testFromCurrentPosition) 
+		{
+			if (testFromCurrentPosition) 
+			{
 				//restore position
 				playerStart.Move(playerStartPosition);
 				playerStart.Rotate(playerStartAngle);
@@ -467,20 +476,20 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if (target.picked is VisualGeometry) 
 			{
 				VisualGeometry vg = target.picked as VisualGeometry;
-				return getIntersection(start, start + delta, new Vector3D(vg.BoundingBox[0].X, vg.BoundingBox[0].Y, vg.BoundingBox[0].Z), new Vector3D(vg.Vertices[0].nx, vg.Vertices[0].ny, vg.Vertices[0].nz));
+				return GetIntersection(start, start + delta, new Vector3D(vg.BoundingBox[0].X, vg.BoundingBox[0].Y, vg.BoundingBox[0].Z), new Vector3D(vg.Vertices[0].nx, vg.Vertices[0].ny, vg.Vertices[0].nz));
 			} 
 			
 			if (target.picked is VisualThing) 
 			{
 				VisualThing vt = target.picked as VisualThing;
-				return getIntersection(start, start + delta, new Vector3D(vt.BoundingBox[0].X, vt.BoundingBox[0].Y, vt.BoundingBox[0].Z), D3DDevice.V3D(vt.Center - vt.PositionV3));
+				return GetIntersection(start, start + delta, new Vector3D(vt.BoundingBox[0].X, vt.BoundingBox[0].Y, vt.BoundingBox[0].Z), D3DDevice.V3D(vt.Center - vt.PositionV3));
 			} 
 
 			return new Vector2D(float.NaN, float.NaN);
 		}
 
 		//mxd. This checks intersection between line and plane 
-		protected Vector2D getIntersection(Vector3D start, Vector3D end, Vector3D planeCenter, Vector3D planeNormal) 
+		private static Vector2D GetIntersection(Vector3D start, Vector3D end, Vector3D planeCenter, Vector3D planeNormal) 
 		{
 			Vector3D delta = new Vector3D(planeCenter.x - start.x, planeCenter.y - start.y, planeCenter.z - start.z);
 			return start + Vector3D.DotProduct(planeNormal, delta) / Vector3D.DotProduct(planeNormal, end - start) * (end - start);
@@ -788,11 +797,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 			}
 			
 			// Add all the visible things
-			foreach(VisualThing vt in visiblethings)
-				pickables.Add(vt);
+			foreach(VisualThing vt in visiblethings) pickables.Add(vt);
 
 			//mxd. And all visual vertices
-			if(General.Map.UDMF && General.Settings.GZShowVisualVertices) {
+			if(General.Map.UDMF && General.Settings.GZShowVisualVertices) 
+			{
 				foreach(KeyValuePair<Vertex, VisualVertexPair> pair in vertices)
 					pickables.AddRange(pair.Value.Vertices);
 			}
@@ -953,7 +962,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// This returns the VisualSector for the given Sector.
 		/// </summary>
-		public VisualSector GetVisualSector(Sector s) {
+		public VisualSector GetVisualSector(Sector s) 
+		{
 			if(!allsectors.ContainsKey(s)) return CreateVisualSector(s); //mxd
 			return allsectors[s]; 
 		}
@@ -966,15 +976,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd
 		public List<VisualThing> GetSelectedVisualThings(bool refreshSelection) 
 		{
-			if (refreshSelection || selectedVisualThings == null) {
+			if (refreshSelection || selectedVisualThings == null) 
+			{
 				selectedVisualThings = new List<VisualThing>();
-				foreach (KeyValuePair<Thing, VisualThing> group in allthings) {
+				foreach (KeyValuePair<Thing, VisualThing> group in allthings) 
+				{
 					if (group.Value != null && group.Value.Selected)
 						selectedVisualThings.Add(group.Value);
 				}
 
 				//if nothing is selected - try to get thing from hilighted object
-				if (selectedVisualThings.Count == 0) {
+				if (selectedVisualThings.Count == 0) 
+				{
 					Vector3D start = General.Map.VisualCamera.Position;
 					Vector3D delta = General.Map.VisualCamera.Target - General.Map.VisualCamera.Position;
 					delta = delta.GetFixedLength(General.Settings.ViewDistance * 0.98f);
@@ -994,11 +1007,15 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// </summary>
 		public List<VisualSector> GetSelectedVisualSectors(bool refreshSelection) 
 		{
-			if (refreshSelection || selectedVisualSectors == null) {
+			if (refreshSelection || selectedVisualSectors == null) 
+			{
 				selectedVisualSectors = new List<VisualSector>();
-				foreach (KeyValuePair<Sector, VisualSector> group in allsectors) {
-					foreach (VisualGeometry vg in group.Value.AllGeometry) {
-						if (vg.Selected) {
+				foreach (KeyValuePair<Sector, VisualSector> group in allsectors) 
+				{
+					foreach (VisualGeometry vg in group.Value.AllGeometry) 
+					{
+						if (vg.Selected) 
+						{
 							selectedVisualSectors.Add(group.Value);
 							break;
 						}
@@ -1006,8 +1023,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 				}
 
 				//if nothing is selected - try to get sector from hilighted object
-				if (selectedVisualSectors.Count == 0) {
-					VisualGeometry vg = getHilightedSurface();
+				if (selectedVisualSectors.Count == 0) 
+				{
+					VisualGeometry vg = GetHilightedSurface();
 					if (vg != null) selectedVisualSectors.Add(vg.Sector);
 				}
 			}
@@ -1020,29 +1038,33 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public List<VisualGeometry> GetSelectedSurfaces() 
 		{
 			List<VisualGeometry> selectedSurfaces = new List<VisualGeometry>();
-			foreach (KeyValuePair<Sector, VisualSector> group in allsectors) {
-				foreach (VisualGeometry vg in group.Value.AllGeometry) {
+			foreach (KeyValuePair<Sector, VisualSector> group in allsectors) 
+			{
+				foreach (VisualGeometry vg in group.Value.AllGeometry) 
+				{
 					if (vg.Selected) selectedSurfaces.Add(vg);
 				}
 			}
 
 			//if nothing is selected - try to get hilighted surface
-			if (selectedSurfaces.Count == 0) {
-				VisualGeometry vg = getHilightedSurface();
+			if (selectedSurfaces.Count == 0) 
+			{
+				VisualGeometry vg = GetHilightedSurface();
 				if (vg != null) selectedSurfaces.Add(vg);
 			}
 			return selectedSurfaces;
 		}
 
 		//mxd
-		private VisualGeometry getHilightedSurface() 
+		private VisualGeometry GetHilightedSurface() 
 		{
 			Vector3D start = General.Map.VisualCamera.Position;
 			Vector3D delta = General.Map.VisualCamera.Target - General.Map.VisualCamera.Position;
 			delta = delta.GetFixedLength(General.Settings.ViewDistance * 0.98f);
 			VisualPickResult target = PickObject(start, start + delta);
 
-			if(target.picked is VisualGeometry) {
+			if(target.picked is VisualGeometry) 
+			{
 				VisualGeometry vg = (VisualGeometry)target.picked;
 				if (vg.Sector != null) return vg;
 			}
@@ -1119,17 +1141,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		//mxd
 		[BeginAction("centeroncoordinates", BaseAction = true)]
-		protected virtual void CenterOnCoordinates() {
+		protected virtual void CenterOnCoordinates() 
+		{
 			//show form...
 			CenterOnCoordinatesForm form = new CenterOnCoordinatesForm();
-			if(form.ShowDialog() == DialogResult.OK) {
+			if(form.ShowDialog() == DialogResult.OK) 
+			{
 				Sector s = General.Map.Map.GetSectorByCoordinates(form.Coordinates, blockmap);
 
-				if (s == null) {
+				if (s == null)
 					General.Map.VisualCamera.Position = form.Coordinates;
-				} else {
+				else
 					General.Map.VisualCamera.Position = new Vector3D(form.Coordinates.x, form.Coordinates.y, s.FloorHeight + 54);
-				}
 				General.Map.VisualCamera.Sector = s;
 			}
 		}

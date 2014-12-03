@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -12,8 +14,12 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Windows;
 using System.Windows.Forms;
 
+#endregion
+
 namespace CodeImp.DoomBuilder.BuilderModes.IO
 {
+	#region ================== Structs
+
 	internal struct WavefrontExportSettings
 	{
 		public string Obj;
@@ -26,7 +32,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 		public string[] Textures;
 		public string[] Flats;
 
-		public WavefrontExportSettings(string name, string path, float scale, bool fixScale, bool exportTextures) {
+		public WavefrontExportSettings(string name, string path, float scale, bool fixScale, bool exportTextures) 
+		{
 			ObjName = name;
 			ObjPath = path;
 			Scale = scale;
@@ -39,9 +46,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			Flats = null;
 		}
 	}
-	
+
+	#endregion
+
 	internal class WavefrontExporter
 	{
+
+		#region ================== Variables and structs
+
 		private const string DEFAULT = "Default";
 
 		private struct VertexIndices
@@ -51,22 +63,33 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			public int NormalIndex;
 		}
 
-		public void Export(ICollection<Sector> sectors, WavefrontExportSettings settings) {
-			createObjFromSelection(sectors, ref settings);
+		#endregion
 
-			if(!settings.Valid) {
+		#region ================== Export
+
+		public void Export(ICollection<Sector> sectors, WavefrontExportSettings settings) 
+		{
+			CreateObjFromSelection(sectors, ref settings);
+
+			if(!settings.Valid) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "OBJ creation failed. Check 'Errors and Warnings' window for details.");
 				return;
 			}
 
-			if(settings.ExportTextures) {
+			if(settings.ExportTextures) 
+			{
 				//save all used textures
-				if(settings.Textures != null) {
-					foreach(string s in settings.Textures) {
+				if(settings.Textures != null) 
+				{
+					foreach(string s in settings.Textures) 
+					{
 						if(s == DEFAULT) continue;
-						if(General.Map.Data.GetTextureExists(s)) {
+						if(General.Map.Data.GetTextureExists(s)) 
+						{
 							ImageData id = General.Map.Data.GetTextureImage(s);
-							if(id.Width == 0 || id.Height == 0) {
+							if(id.Width == 0 || id.Height == 0) 
+							{
 								General.ErrorLogger.Add(ErrorType.Warning, "OBJ Exporter: texture '" + s + "' has invalid size (" + id.Width + "x" + id.Height + ")!");
 								continue;
 							}
@@ -74,18 +97,24 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 							if(!id.IsImageLoaded) id.LoadImage();
 							Bitmap bmp = id.GetBitmap();
 							bmp.Save(Path.Combine(settings.ObjPath, s + ".PNG"), ImageFormat.Png);
-						} else {
+						} 
+						else 
+						{
 							General.ErrorLogger.Add(ErrorType.Warning, "OBJ Exporter: texture '" + s + "' does not exist!");
 						}
 					}
 				}
 
-				if (settings.Flats != null) {
-					foreach(string s in settings.Flats) {
+				if (settings.Flats != null) 
+				{
+					foreach(string s in settings.Flats) 
+					{
 						if(s == DEFAULT) continue;
-						if(General.Map.Data.GetFlatExists(s)) {
+						if(General.Map.Data.GetFlatExists(s)) 
+						{
 							ImageData id = General.Map.Data.GetFlatImage(s);
-							if(id.Width == 0 || id.Height == 0) {
+							if(id.Width == 0 || id.Height == 0) 
+							{
 								General.ErrorLogger.Add(ErrorType.Warning, "OBJ Exporter: flat '" + s + "' has invalid size (" + id.Width + "x" + id.Height + ")!");
 								continue;
 							}
@@ -95,13 +124,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 
 							// Handle duplicate names
 							string flatname = s;
-							if(settings.Textures != null && Array.IndexOf(settings.Textures, s) != -1) {
+							if(settings.Textures != null && Array.IndexOf(settings.Textures, s) != -1)
 								flatname += "_FLAT";
-							}
 
 							bmp.Save(Path.Combine(settings.ObjPath, flatname + ".PNG"), ImageFormat.Png);
 
-						} else {
+						} 
+						else 
+						{
 							General.ErrorLogger.Add(ErrorType.Warning, "OBJ Exporter: flat '" + s + "' does not exist!");
 						}
 					}
@@ -118,8 +148,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			mtl.Append("# MTL for " + General.Map.FileTitle + ", map " + General.Map.Options.LevelName + Environment.NewLine);
 			mtl.Append("# Created by GZDoom Builder " + Application.ProductVersion + Environment.NewLine + Environment.NewLine);
 
-			if (settings.Textures != null) {
-				foreach (string s in settings.Textures) {
+			if (settings.Textures != null) 
+			{
+				foreach (string s in settings.Textures) 
+				{
 					if (s == DEFAULT) continue;
 					mtl.Append("newmtl " + s.ToUpperInvariant() + Environment.NewLine);
 					mtl.Append("Kd 1.0 1.0 1.0" + Environment.NewLine);
@@ -128,17 +160,19 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 				}
 			}
 
-			if(settings.Flats != null) {
-				foreach (string s in settings.Flats) {
+			if(settings.Flats != null) 
+			{
+				foreach (string s in settings.Flats) 
+				{
 					if (s == DEFAULT) continue;
 					mtl.Append("newmtl " + s.ToUpperInvariant() + Environment.NewLine);
 					mtl.Append("Kd 1.0 1.0 1.0" + Environment.NewLine);
-					if (settings.ExportTextures) {
+					if (settings.ExportTextures) 
+					{
 						// Handle duplicate names
 						string flatname = s;
-						if(settings.Textures != null && Array.IndexOf(settings.Textures, s) != -1) {
+						if(settings.Textures != null && Array.IndexOf(settings.Textures, s) != -1)
 							flatname += "_FLAT";
-						}
 
 						mtl.Append("map_Kd " + Path.Combine(settings.ObjPath, flatname.ToUpperInvariant() + ".PNG") + Environment.NewLine);
 					}
@@ -154,11 +188,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			General.Interface.DisplayStatus(StatusType.Warning, "Geometry exported to '" + savePath + ".obj'");
 		}
 
-		private void createObjFromSelection(ICollection<Sector> sectors, ref WavefrontExportSettings data) {
+		#endregion
+
+		#region ================== Utility
+
+		private static void CreateObjFromSelection(ICollection<Sector> sectors, ref WavefrontExportSettings data) 
+		{
 			BaseVisualMode mode = new BaseVisualMode();
 			bool renderingEffectsDisabled = false;
 
-			if(!BaseVisualMode.GZDoomRenderingEffects) {
+			if(!BaseVisualMode.GZDoomRenderingEffects) 
+			{
 				renderingEffectsDisabled = true;
 				mode.ToggleGZDoomRenderingEffects();
 			}
@@ -168,29 +208,30 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			List<BaseVisualSector> visualSectors = new List<BaseVisualSector>();
 
 			//create visual geometry
-			foreach(Sector s in sectors) {
+			foreach(Sector s in sectors) 
+			{
 				BaseVisualSector bvs = mode.CreateBaseVisualSector(s);
 				if(bvs != null) visualSectors.Add(bvs);
 			}
 
-			if(visualSectors.Count == 0) {
+			if(visualSectors.Count == 0) 
+			{
 				General.ErrorLogger.Add(ErrorType.Error, "OBJ Exporter: no visual sectors to export!");
 				return;
 			}
 
 			//sort geometry
-			List<Dictionary<string, List<WorldVertex[]>>> geometryByTexture = sortGeometry(visualSectors);
+			List<Dictionary<string, List<WorldVertex[]>>> geometryByTexture = SortGeometry(visualSectors);
 
 			//restore vm settings
-			if(renderingEffectsDisabled)
-				mode.ToggleGZDoomRenderingEffects();
-
+			if(renderingEffectsDisabled) mode.ToggleGZDoomRenderingEffects();
 			mode.Dispose();
 
 			//create obj
-			StringBuilder obj = createObjGeometry(geometryByTexture, data);
+			StringBuilder obj = CreateObjGeometry(geometryByTexture, data);
 
-			if(obj.Length == 0) {
+			if(obj.Length == 0) 
+			{
 				General.ErrorLogger.Add(ErrorType.Error, "OBJ Exporter: failed to create geometry!");
 				return;
 			}
@@ -214,58 +255,69 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			data.Valid = true;
 		}
 
-		private List<Dictionary<string, List<WorldVertex[]>>> sortGeometry(List<BaseVisualSector> visualSectors) {
+		private static List<Dictionary<string, List<WorldVertex[]>>> SortGeometry(List<BaseVisualSector> visualSectors) 
+		{
 			var texturegeo = new Dictionary<string, List<WorldVertex[]>>(StringComparer.Ordinal);
 			texturegeo.Add(DEFAULT, new List<WorldVertex[]>());
 			var flatgeo = new Dictionary<string, List<WorldVertex[]>>(StringComparer.Ordinal);
 			flatgeo.Add(DEFAULT, new List<WorldVertex[]>());
 			string texture;
 
-			foreach(BaseVisualSector vs in visualSectors) {
+			foreach(BaseVisualSector vs in visualSectors) 
+			{
 				//floor
-				if(vs.Floor != null) {
+				if(vs.Floor != null) 
+				{
 					texture = vs.Sector.FloorTexture;
-					checkTextureName(ref flatgeo, ref texture);
+					CheckTextureName(ref flatgeo, ref texture);
 					flatgeo[texture].AddRange(OptimizeGeometry(vs.Floor.Vertices, vs.Floor.GeometryType, vs.Floor.Sector.Sector.Labels.Count > 1));
 				}
 
 				//ceiling
-				if(vs.Ceiling != null) {
+				if(vs.Ceiling != null) 
+				{
 					texture = vs.Sector.CeilTexture;
-					checkTextureName(ref flatgeo, ref texture);
+					CheckTextureName(ref flatgeo, ref texture);
 					flatgeo[texture].AddRange(OptimizeGeometry(vs.Ceiling.Vertices, vs.Ceiling.GeometryType, vs.Ceiling.Sector.Sector.Labels.Count > 1));
 				}
 
 				//walls
-				if(vs.Sides != null) {
-					foreach(VisualSidedefParts part in vs.Sides.Values) {
+				if(vs.Sides != null) 
+				{
+					foreach(VisualSidedefParts part in vs.Sides.Values) 
+					{
 						//upper
-						if(part.upper != null && part.upper.Vertices != null) {
+						if(part.upper != null && part.upper.Vertices != null) 
+						{
 							texture = part.upper.Sidedef.HighTexture;
-							checkTextureName(ref texturegeo, ref texture);
+							CheckTextureName(ref texturegeo, ref texture);
 							texturegeo[texture].AddRange(OptimizeGeometry(part.upper.Vertices, part.upper.GeometryType));
 						}
 
 						//middle single
-						if(part.middlesingle != null && part.middlesingle.Vertices != null) {
+						if(part.middlesingle != null && part.middlesingle.Vertices != null) 
+						{
 							texture = part.middlesingle.Sidedef.MiddleTexture;
-							checkTextureName(ref texturegeo, ref texture);
+							CheckTextureName(ref texturegeo, ref texture);
 							texturegeo[texture].AddRange(OptimizeGeometry(part.middlesingle.Vertices, part.middlesingle.GeometryType));
 						}
 
 						//middle double
-						if(part.middledouble != null && part.middledouble.Vertices != null) {
+						if(part.middledouble != null && part.middledouble.Vertices != null) 
+						{
 							texture = part.middledouble.Sidedef.MiddleTexture;
-							checkTextureName(ref texturegeo, ref texture);
+							CheckTextureName(ref texturegeo, ref texture);
 							texturegeo[texture].AddRange(OptimizeGeometry(part.middledouble.Vertices, part.middledouble.GeometryType));
 						}
 
 						//middle3d
-						if(part.middle3d != null && part.middle3d.Count > 0) {
-							foreach(VisualMiddle3D m3d in part.middle3d) {
+						if(part.middle3d != null && part.middle3d.Count > 0) 
+						{
+							foreach(VisualMiddle3D m3d in part.middle3d) 
+							{
 								if(m3d.Vertices == null) continue;
 								texture = m3d.GetControlLinedef().Front.MiddleTexture;
-								checkTextureName(ref texturegeo, ref texture);
+								CheckTextureName(ref texturegeo, ref texture);
 								texturegeo[texture].AddRange(OptimizeGeometry(m3d.Vertices, m3d.GeometryType));
 							}
 						}
@@ -273,25 +325,28 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 						//backsides(?)
 
 						//lower
-						if(part.lower != null && part.lower.Vertices != null) {
+						if(part.lower != null && part.lower.Vertices != null) 
+						{
 							texture = part.lower.Sidedef.LowTexture;
-							checkTextureName(ref texturegeo, ref texture);
+							CheckTextureName(ref texturegeo, ref texture);
 							texturegeo[texture].AddRange(OptimizeGeometry(part.lower.Vertices, part.lower.GeometryType));
 						}
 					}
 				}
 
 				//3d ceilings
-				foreach(VisualCeiling vc in vs.ExtraCeilings) {
+				foreach(VisualCeiling vc in vs.ExtraCeilings) 
+				{
 					texture = vc.GetControlSector().CeilTexture;
-					checkTextureName(ref flatgeo, ref texture);
+					CheckTextureName(ref flatgeo, ref texture);
 					flatgeo[texture].AddRange(OptimizeGeometry(vc.Vertices, (vc.ExtraFloor.VavoomType ? vc.GeometryType : VisualModes.VisualGeometryType.FLOOR)));
 				}
 
 				//3d floors
-				foreach(VisualFloor vf in vs.ExtraFloors) {
+				foreach(VisualFloor vf in vs.ExtraFloors) 
+				{
 					texture = vf.GetControlSector().FloorTexture;
-					checkTextureName(ref flatgeo, ref texture);
+					CheckTextureName(ref flatgeo, ref texture);
 					flatgeo[texture].AddRange(OptimizeGeometry(vf.Vertices, (vf.ExtraFloor.VavoomType ? vf.GeometryType : VisualModes.VisualGeometryType.CEILING)));
 				}
 
@@ -301,33 +356,47 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			return new List<Dictionary<string, List<WorldVertex[]>>> { texturegeo, flatgeo };
 		}
 
-		private static void checkTextureName(ref Dictionary<string, List<WorldVertex[]>> geo, ref string texture) {
-			if(!string.IsNullOrEmpty(texture) && texture != "-") {
-				if(!geo.ContainsKey(texture))
-					geo.Add(texture, new List<WorldVertex[]>());
-			} else {
+		private static void CheckTextureName(ref Dictionary<string, List<WorldVertex[]>> geo, ref string texture) 
+		{
+			if(!string.IsNullOrEmpty(texture) && texture != "-") 
+			{
+				if(!geo.ContainsKey(texture)) geo.Add(texture, new List<WorldVertex[]>());
+			} 
+			else 
+			{
 				texture = DEFAULT;
 			}
 		}
 
-//SURFACE OPTIMIZATION
+		#endregion
+
+		#region ================== Surface optimization
+
 		private static List<WorldVertex[]> OptimizeGeometry(WorldVertex[] verts, VisualModes.VisualGeometryType geotype)
 		{
 			return OptimizeGeometry(verts, geotype, false);
 		}
 
-		private static List<WorldVertex[]> OptimizeGeometry(WorldVertex[] verts, VisualModes.VisualGeometryType geotype, bool skiprectoptimization) {
+		private static List<WorldVertex[]> OptimizeGeometry(WorldVertex[] verts, VisualModes.VisualGeometryType geotype, bool skiprectoptimization) 
+		{
 			List<WorldVertex[]> groups = new List<WorldVertex[]>();
 
-			if(!skiprectoptimization && verts.Length == 6) { //rectangular surface
-				if(geotype == VisualModes.VisualGeometryType.CEILING) {
+			if(!skiprectoptimization && verts.Length == 6) //rectangular surface
+			{
+				if(geotype == VisualModes.VisualGeometryType.CEILING) 
+				{
 					verts = new[] { verts[2], verts[5], verts[1], verts[0] };
-				} else {
+				} 
+				else 
+				{
 					verts = new[] { verts[5], verts[2], verts[1], verts[0] };
 				}
 				groups.Add(verts);
-			} else {
-				for (int i = 0; i < verts.Length; i += 3) {
+			} 
+			else 
+			{
+				for (int i = 0; i < verts.Length; i += 3) 
+				{
 					groups.Add(new[] { verts[i + 2], verts[i + 1], verts[i] });
 				}
 			}
@@ -335,8 +404,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			return groups;
 		}
 
-//OBJ Creation
-		private static StringBuilder createObjGeometry(List<Dictionary<string, List<WorldVertex[]>>> geometryByTexture, WavefrontExportSettings data) {
+		#endregion
+
+		#region ================== OBJ Creation
+
+		private static StringBuilder CreateObjGeometry(List<Dictionary<string, List<WorldVertex[]>>> geometryByTexture, WavefrontExportSettings data) 
+		{
 			StringBuilder obj = new StringBuilder();
 			const string vertexFormatter = "{0} {2} {1}\n";
 
@@ -351,38 +424,51 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			int uvc = 0;
 
 			//optimize geometry
-			foreach(Dictionary<string, List<WorldVertex[]>> dictionary in geometryByTexture) {
-				foreach(KeyValuePair<string, List<WorldVertex[]>> group in dictionary) {
+			foreach(Dictionary<string, List<WorldVertex[]>> dictionary in geometryByTexture) 
+			{
+				foreach(KeyValuePair<string, List<WorldVertex[]>> group in dictionary) 
+				{
 					Dictionary<WorldVertex, VertexIndices> vertsData = new Dictionary<WorldVertex, VertexIndices>();
-					foreach(WorldVertex[] verts in group.Value) {
+					foreach(WorldVertex[] verts in group.Value) 
+					{
 						//vertex normals
 						Vector3D n = new Vector3D(verts[0].nx, verts[0].ny, verts[0].nz).GetNormal();
-						if (uniqueNormals.ContainsKey(n)) {
+						if (uniqueNormals.ContainsKey(n)) 
+						{
 							ni = uniqueNormals[n];
-						} else {
+						} 
+						else 
+						{
 							uniqueNormals.Add(n, ++nc);
 							ni = nc;
 						}
 
-						foreach(WorldVertex v in verts) {
+						foreach(WorldVertex v in verts) 
+						{
 							if (vertsData.ContainsKey(v)) continue;
 							VertexIndices indices = new VertexIndices();
 							indices.NormalIndex = ni;
 
 							//vertex coords
 							Vector3D vc = new Vector3D(v.x, v.y, v.z);
-							if (uniqueVerts.ContainsKey(vc)) {
+							if (uniqueVerts.ContainsKey(vc)) 
+							{
 								indices.PositionIndex = uniqueVerts[vc];
-							} else {
+							} 
+							else 
+							{
 								uniqueVerts.Add(vc, ++pc);
 								indices.PositionIndex = pc;
 							}
 
 							//uv
 							PointF uv = new PointF(v.u, v.v);
-							if (uniqueUVs.ContainsKey(uv)) {
+							if (uniqueUVs.ContainsKey(uv)) 
+							{
 								indices.UVIndex = uniqueUVs[uv];
-							} else {
+							} 
+							else 
+							{
 								uniqueUVs.Add(uv, ++uvc);
 								indices.UVIndex = uvc;
 							}
@@ -391,12 +477,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 						}
 					}
 
-					if(vertsData.Count > 0) {
-						if(vertexDataByTexture.ContainsKey(group.Key)) {
-							foreach(KeyValuePair<WorldVertex, VertexIndices> g in vertsData) {
+					if(vertsData.Count > 0) 
+					{
+						if(vertexDataByTexture.ContainsKey(group.Key)) 
+						{
+							foreach(KeyValuePair<WorldVertex, VertexIndices> g in vertsData) 
 								vertexDataByTexture[group.Key].Add(g.Key, g.Value);
-							}
-						} else {
+						} 
+						else 
+						{
 							vertexDataByTexture.Add(group.Key, vertsData);
 						}
 					}
@@ -405,10 +494,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 
 			//write geometry
 			//write vertices
-			if(data.FixScale) {
+			if(data.FixScale) 
+			{
 				foreach(KeyValuePair<Vector3D, int> group in uniqueVerts)
 					obj.Append(string.Format(CultureInfo.InvariantCulture, "v " + vertexFormatter, -group.Key.x * data.Scale, group.Key.y * data.Scale, group.Key.z * data.Scale * 1.2f));
-			} else {
+			} 
+			else 
+			{
 				foreach(KeyValuePair<Vector3D, int> group in uniqueVerts)
 					obj.Append(string.Format(CultureInfo.InvariantCulture, "v " + vertexFormatter, -group.Key.x * data.Scale, group.Key.y * data.Scale, group.Key.z * data.Scale));
 			}
@@ -425,15 +517,19 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			obj.Append("mtllib ").Append(data.ObjName + ".mtl").Append("\n");
 
 			//write materials and surface indices
-			foreach(Dictionary<string, List<WorldVertex[]>> dictionary in geometryByTexture) {
-				foreach(KeyValuePair<string, List<WorldVertex[]>> group in dictionary) {
+			foreach(Dictionary<string, List<WorldVertex[]>> dictionary in geometryByTexture) 
+			{
+				foreach(KeyValuePair<string, List<WorldVertex[]>> group in dictionary) 
+				{
 					//material
 					obj.Append("usemtl ").Append(group.Key).Append("\n");
 
-					foreach(WorldVertex[] verts in group.Value) {
+					foreach(WorldVertex[] verts in group.Value) 
+					{
 						//surface indices
 						obj.Append("f");
-						foreach(WorldVertex v in verts) {
+						foreach(WorldVertex v in verts) 
+						{
 							VertexIndices vi = vertexDataByTexture[group.Key][v];
 							obj.Append(" " + vi.PositionIndex + "/" + vi.UVIndex + "/" + vi.NormalIndex);
 						}
@@ -444,5 +540,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 
 			return obj;
 		}
+
+		#endregion
 	}
 }

@@ -84,10 +84,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 											Sidedef.Fields.GetValue("offsety_mid", 0.0f));
 			
 			// Left and right vertices for this sidedef
-			if(Sidedef.IsFront) {
+			if(Sidedef.IsFront) 
+			{
 				vl = new Vector2D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y);
 				vr = new Vector2D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y);
-			} else {
+			} 
+			else 
+			{
 				vl = new Vector2D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y);
 				vr = new Vector2D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y);
 			}
@@ -98,15 +101,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!osd.Updated) osd.Update();
 
 			// Load texture
-			if(Sidedef.LongMiddleTexture != MapSet.EmptyLongName) {
+			if(Sidedef.LongMiddleTexture != MapSet.EmptyLongName) 
+			{
 				base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongMiddleTexture);
-				if(base.Texture == null || base.Texture is UnknownImage) {
+				if(base.Texture == null || base.Texture is UnknownImage) 
+				{
 					base.Texture = General.Map.Data.UnknownTexture3D;
 					setuponloadedtexture = Sidedef.LongMiddleTexture;
-				} else if (!base.Texture.IsImageLoaded) {
+				} 
+				else if (!base.Texture.IsImageLoaded) 
+				{
 					setuponloadedtexture = Sidedef.LongMiddleTexture;
 				}
-			} else {
+			} 
+			else 
+			{
 				// Use missing texture
 				base.Texture = General.Map.Data.MissingTexture3D;
 				setuponloadedtexture = 0;
@@ -183,8 +192,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Determine if we should repeat the middle texture
 			repeatmidtex = Sidedef.IsFlagSet("wrapmidtex") || Sidedef.Line.IsFlagSet("wrapmidtex"); //mxd
-
-			if(!repeatmidtex) {
+			if(!repeatmidtex) 
+			{
 				// First determine the visible portion of the texture
 				float textop, texbottom;
 
@@ -209,45 +218,58 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Cut out pieces that overlap 3D floors in this sector
 			List<WallPolygon> polygons = new List<WallPolygon>(1);
 			polygons.Add(poly);
-			foreach(Effect3DFloor ef in sd.ExtraFloors) {
+			foreach(Effect3DFloor ef in sd.ExtraFloors) 
+			{
 				//mxd. Walls should be clipped by solid 3D floors
-				if(!ef.RenderInside && ef.Alpha == 255) {
+				if(!ef.RenderInside && ef.Alpha == 255) 
+				{
 					int num = polygons.Count;
-					for(int pi = 0; pi < num; pi++) {
+					for(int pi = 0; pi < num; pi++) 
+					{
 						// Split by floor plane of 3D floor
 						WallPolygon p = polygons[pi];
 						WallPolygon np = SplitPoly(ref p, ef.Ceiling.plane, true);
 
-						if(np.Count > 0) {
+						if(np.Count > 0) 
+						{
 							// Split part below floor by the ceiling plane of 3D floor
 							// and keep only the part below the ceiling (front)
 							SplitPoly(ref np, ef.Floor.plane, true);
 
-							if(p.Count == 0) {
+							if(p.Count == 0) 
+							{
 								polygons[pi] = np;
-							} else {
+							} 
+							else 
+							{
 								polygons[pi] = p;
 								polygons.Add(np);
 							}
-						} else {
+						} 
+						else 
+						{
 							polygons[pi] = p;
 						}
 					}
 				}
 			}
 
-			if(polygons.Count > 0) {
+			if(polygons.Count > 0) 
+			{
 				// Keep top and bottom planes for intersection testing
 				top = osd.Ceiling.plane;
 				bottom = osd.Floor.plane;
 
 				// Process the polygon and create vertices
 				List<WorldVertex> verts = CreatePolygonVertices(polygons, tp, sd, lightvalue, lightabsolute);
-				if(verts.Count > 2) {
+				if(verts.Count > 2) 
+				{
 					// Apply alpha to vertices
 					byte alpha = SetLinedefRenderstyle(true);
-					if(alpha < 255) {
-						for(int i = 0; i < verts.Count; i++) {
+					if(alpha < 255) 
+					{
+						for(int i = 0; i < verts.Count; i++) 
+						{
 							WorldVertex v = verts[i];
 							PixelColor c = PixelColor.FromInt(v.c);
 							v.c = c.WithAlpha(alpha).ToInt();
@@ -315,11 +337,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
 			float scalex = Sidedef.Fields.GetValue("scalex_mid", 1.0f);
 			float scaley = Sidedef.Fields.GetValue("scaley_mid", 1.0f);
-			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldx, xy.X, scalex, Texture != null ? Texture.Width : -1)); //mxd
+			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldx, xy.X, scalex, Texture != null ? Texture.Width : -1)); //mxd
 
 			//mxd. Don't clamp offsetY of clipped mid textures
 			bool dontClamp = (Texture == null || (!Sidedef.IsFlagSet("wrapmidtex") && !Sidedef.Line.IsFlagSet("wrapmidtex")));
-			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldy, xy.Y, scaley, dontClamp ? -1 : Texture.Height));
+			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldy, xy.Y, scaley, dontClamp ? -1 : Texture.Height));
 		}
 
 		protected override Point GetTextureOffset()
@@ -330,15 +352,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void ResetTextureScale() {
+		protected override void ResetTextureScale() 
+		{
 			Sidedef.Fields.BeforeFieldsChange();
 			if(Sidedef.Fields.ContainsKey("scalex_mid")) Sidedef.Fields.Remove("scalex_mid");
 			if(Sidedef.Fields.ContainsKey("scaley_mid")) Sidedef.Fields.Remove("scaley_mid");
 		}
 
 		//mxd
-		public override void OnChangeTargetBrightness(bool up) {
-			if(!General.Map.UDMF) {
+		public override void OnChangeTargetBrightness(bool up) 
+		{
+			if(!General.Map.UDMF) 
+			{
 				base.OnChangeTargetBrightness(up);
 				return;
 			}
@@ -368,7 +393,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void OnTextureFit(bool fitWidth, bool fitHeight) {
+		public override void OnTextureFit(bool fitWidth, bool fitHeight) 
+		{
 			if(!General.Map.UDMF) return;
 			if(string.IsNullOrEmpty(Sidedef.MiddleTexture) || Sidedef.MiddleTexture == "-" || !Texture.IsImageLoaded) return;
 
@@ -381,13 +407,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode.CreateUndo("Fit texture (" + s + ")", UndoGroup.TextureOffsetChange, Sector.Sector.FixedIndex);
 			Sidedef.Fields.BeforeFieldsChange();
 
-			if(fitWidth) {
+			if(fitWidth) 
+			{
 				float scaleX = Texture.ScaledWidth / Sidedef.Line.Length;
 				UDMFTools.SetFloat(Sidedef.Fields, "scalex_mid", scaleX, 1.0f);
 				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_mid", -Sidedef.OffsetX, 0.0f);
 			}
 
-			if(fitHeight && Sidedef.Sector != null) {
+			if(fitHeight && Sidedef.Sector != null) 
+			{
 				float scaleY = Texture.ScaledHeight / (Sidedef.Sector.CeilHeight - Sidedef.Sector.FloorHeight);
 				UDMFTools.SetFloat(Sidedef.Fields, "scaley_mid", scaleY, 1.0f);
 
@@ -399,8 +427,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) {
-			selectNeighbours(Sidedef.MiddleTexture, select, withSameTexture, withSameHeight);
+		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) 
+		{
+			SelectNeighbours(Sidedef.MiddleTexture, select, withSameTexture, withSameHeight);
 		}
 		
 		#endregion

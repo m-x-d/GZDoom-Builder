@@ -75,7 +75,8 @@ float4 ps_sprite(PixelData pd) : COLOR
 	float4 c = tex2D(texture1sprite, pd.uv);
 	
 	// Modulate it by selection color
-	if(pd.color.a > 0){
+	if(pd.color.a > 0)
+	{
 		return float4((c.r + pd.color.r) / 2.0f, (c.g + pd.color.g) / 2.0f, (c.b + pd.color.b) / 2.0f, c.a * rendersettings.w * pd.color.a);
 	}
 
@@ -92,7 +93,8 @@ float4 ps_thing(PixelData pd) : COLOR
 }
 
 //mxd. Pretty darn simple pixel shader for wireframe rendering :)
-float4 ps_fill(PixelData pd) : COLOR {
+float4 ps_fill(PixelData pd) : COLOR 
+{
 	return fillColor;
 }
 

@@ -33,9 +33,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Render selection
 		public override void PlotSelection(IRenderer2D renderer, FindReplaceObject[] selection) 
 		{
-			foreach(FindReplaceObject o in selection) {
+			foreach(FindReplaceObject o in selection)
 				renderer.PlotLinedef(o.Sidedef.Line, General.Colors.Selection);
-			}
 		}
 
 		// Edit objects
