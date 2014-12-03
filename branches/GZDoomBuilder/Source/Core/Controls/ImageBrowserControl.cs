@@ -51,6 +51,8 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool updating;
 		private int keepselected;
 		private bool browseFlats; //mxd
+		private static bool uselongtexturenames = (General.Map != null && General.Map.Config.UseLongTextureNames); //mxd
+		private static bool showtexturesizes = (General.Settings != null && General.Settings.ShowTextureSizes); //mxd
 		
 		// All items
 		private readonly List<ImageBrowserItem> items;
@@ -60,7 +62,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 		//mxd
 		private static int mixMode;
-		private string longestTextureName = "";
 		
 		#endregion
 
@@ -69,6 +70,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool PreventSelection { get { return preventselection; } set { preventselection = value; } }
 		public bool HideInputBox { get { return splitter.Panel2Collapsed; } set { splitter.Panel2Collapsed = value; } }
 		public bool BrowseFlats { get { return browseFlats; } set { browseFlats = value; } } //mxd
+		public static bool ShowTextureSizes { get { return showtexturesizes; } } //mxd
 		public ListViewItem SelectedItem { get { if(list.SelectedItems.Count > 0) return list.SelectedItems[0]; else return null; } }
 		
 		#endregion
@@ -82,7 +84,7 @@ namespace CodeImp.DoomBuilder.Controls
 			InitializeComponent();
 			items = new List<ImageBrowserItem>();
 
-			//mxd.
+			//mxd
 			StepsList sizes = new StepsList { 4, 8, 16, 32, 48, 64, 96, 128, 196, 256, 512, 1024 };
 			filterWidth.StepValues = sizes;
 			filterHeight.StepValues = sizes;
@@ -103,7 +105,6 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				int itemwidth = General.Map.Data.Previews.MaxImageWidth + 26;
 				int itemheight = General.Map.Data.Previews.MaxImageHeight + 26;
-				if(General.Settings.ShowTextureSizes) itemheight += 12;
 				list.TileSize = new Size(itemwidth, itemheight);
 
 				//mxd
@@ -115,17 +116,36 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					labelMixMode.Visible = false;
 					cbMixMode.Visible = false;
-					label.Left = labelMixMode.Left;
-					objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left;
-					texturesizelabel.Left = objectname.Right + objectname.Margin.Right;
-					texturesize.Left = texturesizelabel.Right + texturesizelabel.Margin.Right;
+					
+					int offset = label.Left - labelMixMode.Left;
+					label.Left -= offset;
+					objectname.Left -= offset;
+					filterWidth.Left -= offset;
+					filterwidthlabel.Left -= offset;
+					filterHeight.Left -= offset;
+					filterheightlabel.Left -= offset;
+					showtexturesize.Left -= offset;
+					longtexturenames.Left -= offset;
+					
 					mixMode = 0;
 				}
+
+				//mxd. Use long texture names?
+				longtexturenames.Checked = (uselongtexturenames && General.Map.Config.UseLongTextureNames);
+				longtexturenames.Visible = General.Map.Config.UseLongTextureNames;
+			}
+			else
+			{
+				longtexturenames.Visible = false; //mxd
+				uselongtexturenames = false; //mxd
 			}
 
 			//mxd
 			if(!General.Settings.CapitalizeTextureNames)
 				objectname.CharacterCasing = CharacterCasing.Normal;
+
+			//mxd. Show texture sizes?
+			showtexturesize.Checked = showtexturesizes;
 		}
 
 		// This cleans everything up
@@ -167,8 +187,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// If all previews were loaded, stop this timer
 			if(allpreviewsloaded) refreshtimer.Stop();
-			
-			UpdateTextureSizeLabel();
 		}
 
 		#endregion
@@ -237,8 +255,6 @@ namespace CodeImp.DoomBuilder.Controls
 				// Raise event
 				if(SelectedItemChanged != null) SelectedItemChanged();
 			}
-
-			UpdateTextureSizeLabel();
 		}
 		
 		// Doublelicking an item
@@ -247,26 +263,26 @@ namespace CodeImp.DoomBuilder.Controls
 			if(!preventselection && (list.SelectedItems.Count > 0))
 				if(SelectedItemDoubleClicked != null) SelectedItemDoubleClicked();
 		}
-		
-		// Control is resized
-		private void ImageBrowserControl_Resize(object sender, EventArgs e)
-		{
-			UpdateTextureSizeLabel();
-		}
-
-		// This hides the texture size label
-		private void texturesizetimer_Tick(object sender, EventArgs e)
-		{
-			texturesizetimer.Stop();
-			texturesize.Visible = false;
-			texturesizelabel.Visible = false;
-		}
 
 		//mxd
 		private void cbMixMode_SelectedIndexChanged(object sender, EventArgs e) 
 		{
 			mixMode = cbMixMode.SelectedIndex;
 			RefillList(false);
+		}
+
+		//mxd
+		private void longtexturenames_CheckedChanged(object sender, EventArgs e)
+		{
+			uselongtexturenames = longtexturenames.Checked;
+			RefillList(false);
+		}
+
+		//mxd
+		private void showtexturesize_CheckedChanged(object sender, EventArgs e)
+		{
+			showtexturesizes = showtexturesize.Checked;
+			list.Invalidate();
 		}
 		
 		#endregion
@@ -325,8 +341,6 @@ namespace CodeImp.DoomBuilder.Controls
 				lvi.Selected = true;
 				lvi.EnsureVisible();
 			}
-
-			UpdateTextureSizeLabel();
 		}
 		
 		// This performs item sleection by keys
@@ -374,8 +388,6 @@ namespace CodeImp.DoomBuilder.Controls
 				// Make selection visible
 				if(list.SelectedItems.Count > 0) list.SelectedItems[0].EnsureVisible();
 			}
-			
-			UpdateTextureSizeLabel();
 		}
 		
 		// This selectes the first item
@@ -395,8 +407,6 @@ namespace CodeImp.DoomBuilder.Controls
 					lvi.EnsureVisible();
 				}
 			}
-
-			UpdateTextureSizeLabel();
 		}
 		
 		// This adds a group
@@ -433,20 +443,19 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		// This adds an item
-		public void Add(string text, ImageData image, object tag, ListViewGroup group)
+		public void Add(ImageData image, object tag, ListViewGroup group)
 		{
-			if(text.Length > longestTextureName.Length) longestTextureName = text; //mxd
-			ImageBrowserItem i = new ImageBrowserItem(text, image, tag);
+			ImageBrowserItem i = new ImageBrowserItem(image, tag, uselongtexturenames); //mxd
 			i.ListGroup = group;
 			i.Group = group;
+			i.ToolTipText = image.Name; //mxd
 			items.Add(i);
 		}
 		
 		// This adds an item
-		public void Add(string text, ImageData image, object tag, ListViewGroup group, string tooltiptext)
+		public void Add(ImageData image, object tag, ListViewGroup group, string tooltiptext)
 		{
-			if(text.Length > longestTextureName.Length) longestTextureName = text; //mxd
-			ImageBrowserItem i = new ImageBrowserItem(text, image, tag);
+			ImageBrowserItem i = new ImageBrowserItem(image, tag, uselongtexturenames); //mxd
 			i.ListGroup = group;
 			i.Group = group;
 			i.ToolTipText = tooltiptext;
@@ -472,14 +481,17 @@ namespace CodeImp.DoomBuilder.Controls
 			int h = filterHeight.GetResult(-1);
 			
 			// Go for all items
-			foreach(ImageBrowserItem i in items)
+			string prevname = string.Empty; //mxd
+			for(int i = items.Count - 1; i > -1; i--)
 			{
 				// Add item if valid
-				if(ValidateItem(i) && ValidateItemSize(i, w, h))
+				items[i].ShowFullName = uselongtexturenames; //mxd
+				if(ValidateItem(items[i], prevname) && ValidateItemSize(items[i], w, h)) 
 				{
-					i.Group = i.ListGroup;
-					i.Selected = false;
-					visibleitems.Add(i);
+					items[i].Group = items[i].ListGroup;
+					items[i].Selected = false;
+					visibleitems.Add(items[i]);
+					prevname = items[i].TextureName;
 				}
 			}
 			
@@ -513,14 +525,17 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Raise event
 			if((SelectedItemChanged != null) && !preventselection) SelectedItemChanged();
-			UpdateTextureSizeLabel();
 		}
 
 		// This validates an item
-		private bool ValidateItem(ImageBrowserItem i)
+		private bool ValidateItem(ImageBrowserItem i, string previtemname)
 		{
+			//mxd. Don't show duplicate items
+			if(i.TextureName == previtemname) return false; //mxd
+			
 			//mxd. mixMode: 0 = All, 1 = Textures, 2 = Flats, 3 = Based on BrowseFlats
-			if(!splitter.Panel2Collapsed) {
+			if(!splitter.Panel2Collapsed) 
+			{
 				if(mixMode == 1 && i.icon.IsFlat) return false;
 				if(mixMode == 2 && !i.icon.IsFlat) return false;
 				if(mixMode == 3 && (browseFlats != i.icon.IsFlat)) return false;
@@ -542,27 +557,6 @@ namespace CodeImp.DoomBuilder.Controls
 		public void FocusTextbox()
 		{
 			objectname.Focus();
-		}
-		
-		// This updates the texture size label
-		private void UpdateTextureSizeLabel()
-		{
-			if((list.SelectedItems.Count == 0) ||
-			   (splitter.Panel2.ClientSize.Width < (texturesize.Location.X + texturesize.Size.Width)))
-			{
-				texturesizetimer.Start();
-			}
-			else
-			{
-				texturesizetimer.Stop();
-				ImageBrowserItem lvi = (list.SelectedItems[0] as ImageBrowserItem);
-				if(lvi.icon.IsPreviewLoaded)
-					texturesize.Text = lvi.icon.Width + " x " + lvi.icon.Height;
-				else
-					texturesize.Text = "unknown";
-				texturesize.Visible = true;
-				texturesizelabel.Visible = true;
-			}
 		}
 		
 		#endregion

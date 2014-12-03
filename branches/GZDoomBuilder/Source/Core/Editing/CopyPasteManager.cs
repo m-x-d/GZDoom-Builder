@@ -230,7 +230,7 @@ namespace CodeImp.DoomBuilder.Editing
 						// Write data to stream
 						MemoryStream memstream = new MemoryStream();
 						ClipboardStreamWriter writer = new ClipboardStreamWriter(); //mxd
-						writer.Write(copyset, memstream, General.Map.Options.UseLongTextureNames);
+						writer.Write(copyset, memstream, General.Map.Config.UseLongTextureNames);
 
 						// Set on clipboard
 						Clipboard.SetData(CLIPBOARD_DATA_FORMAT, memstream);
@@ -295,8 +295,8 @@ namespace CodeImp.DoomBuilder.Editing
 							if(!(General.Map.FormatInterface is UniversalMapSetIO)) General.Map.Map.TranslateFromUDMF();
 
 							//mxd. Translate texture names if needed
-							if(reader.UseLongTextureNames != General.Map.Options.UseLongTextureNames)
-								General.Map.Map.TranslateTextureNames(General.Map.Options.UseLongTextureNames, true);
+							if(reader.UseLongTextureNames != General.Map.Config.UseLongTextureNames)
+								General.Map.Map.TranslateTextureNames(General.Map.Config.UseLongTextureNames, true);
 							
 							// Modify tags and actions if preferred
 							if(options.ChangeTags == PasteOptions.TAGS_REMOVE) Tools.RemoveMarkedTags();

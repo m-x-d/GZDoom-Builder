@@ -1166,8 +1166,7 @@ namespace CodeImp.DoomBuilder
 			openfile.Dispose();
 		}
 
-		//mxd
-		// This loads a different map from same wad file
+		//mxd. This loads a different map from same wad file without reloading resources
 		[BeginAction("openmapincurrentwad")]
 		internal static void OpenMapInCurrentWad() 
 		{

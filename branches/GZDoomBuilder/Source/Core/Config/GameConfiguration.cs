@@ -74,6 +74,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly string decorategames;
 		private readonly string skyflatname;
 		private readonly int maxtexturenamelength;
+		private readonly bool longtexturenames; //mxd
 		private readonly int leftboundary;
 		private readonly int rightboundary;
 		private readonly int topboundary;
@@ -178,6 +179,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string DecorateGames { get { return decorategames; } }
 		public string SkyFlatName { get { return skyflatname; } }
 		public int MaxTextureNameLength { get { return maxtexturenamelength; } }
+		public bool UseLongTextureNames { get { return longtexturenames; } } //mxd
 		public int LeftBoundary { get { return leftboundary; } }
 		public int RightBoundary { get { return rightboundary; } }
 		public int TopBoundary { get { return topboundary; } }
@@ -321,8 +323,8 @@ namespace CodeImp.DoomBuilder.Config
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
 
 			//mxd. Texture names length
-			bool uselongtexturenames = cfg.ReadSetting("longtexturenames", false);
-			maxtexturenamelength = (uselongtexturenames ? short.MaxValue : DataManager.CLASIC_IMAGE_NAME_LENGTH);
+			longtexturenames = cfg.ReadSetting("longtexturenames", false);
+			maxtexturenamelength = (longtexturenames ? short.MaxValue : DataManager.CLASIC_IMAGE_NAME_LENGTH);
 
 			// Flags have special (invariant culture) conversion
 			// because they are allowed to be written as integers in the configs

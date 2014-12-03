@@ -31,7 +31,7 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		#region ================== Constants
 
-		private const int MAX_DISPLAY_NAME_LENGTH = 16; //mxd
+		internal const int MAX_NAME_LENGTH = 14; //mxd
 
 		#endregion
 		
@@ -39,7 +39,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 		// Display image and text
 		public readonly ImageData icon;
-		private string displaytext;
+		private string imagesize; //mxd
+		private bool showfullname; //mxd
 		private static readonly StringFormat format = new StringFormat { Alignment = StringAlignment.Center }; //mxd
 		
 		// Group
@@ -54,25 +55,21 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public ListViewGroup ListGroup { get { return listgroup; } set { listgroup = value; } }
 		public bool IsPreviewLoaded { get { return imageloaded; } }
+		public bool ShowFullName { set { showfullname = value; UpdateName(); } }
+		public string TextureName { get { return showfullname ? icon.Name : icon.ShortName; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructors
-		public ImageBrowserItem(string text, ImageData icon, object tag)
+		public ImageBrowserItem(ImageData icon, object tag, bool showfullname)
 		{
 			// Initialize
-			this.Text = text;
-			if (text.Length > MAX_DISPLAY_NAME_LENGTH) text = text.Substring(0, MAX_DISPLAY_NAME_LENGTH); //mxd
-			this.displaytext = text;
-
-			if(General.Settings.ShowTextureSizes)
-				this.displaytext = text + "\n" + icon.ScaledWidth + " x " + icon.ScaledHeight;
-			else
-				this.displaytext = text;
 			this.icon = icon;
 			this.Tag = tag;
+			this.showfullname = showfullname; //mxd
+			UpdateName(); //mxd
 		}
 		
 		#endregion
@@ -82,10 +79,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// This checks if a redraw is needed
 		public bool CheckRedrawNeeded()
 		{
-			//mxd. Update texture size if needed
-			if(General.Settings.ShowTextureSizes && imageloaded != icon.IsPreviewLoaded)
-				displaytext = Text + "\n" + icon.ScaledWidth + " x " + icon.ScaledHeight;
-			
+			UpdateName(); //mxd. Update texture size if needed
 			return (icon.IsPreviewLoaded != imageloaded);
 		}
 		
@@ -105,7 +99,7 @@ namespace CodeImp.DoomBuilder.Controls
 			g.PixelOffsetMode = PixelOffsetMode.None;
 
 			// Determine coordinates
-			SizeF textsize = g.MeasureString(displaytext, this.ListView.Font, bounds.Width * 2);
+			SizeF textsize = g.MeasureString(Text, this.ListView.Font, bounds.Width * 2);
 			Rectangle imagerect = new Rectangle(bounds.Left + ((bounds.Width - General.Map.Data.Previews.MaxImageWidth) >> 1),
 				bounds.Top + ((bounds.Height - General.Map.Data.Previews.MaxImageHeight - (int)textsize.Height) >> 1),
 				General.Map.Data.Previews.MaxImageWidth, General.Map.Data.Previews.MaxImageHeight);
@@ -130,7 +124,22 @@ namespace CodeImp.DoomBuilder.Controls
 			// Draw!
 			g.FillRectangle(backcolor, bounds);
 			icon.DrawPreview(g, imagerect.Location);
-			g.DrawString(displaytext, this.ListView.Font, forecolor, textpos, format);
+			g.DrawString(Text, this.ListView.Font, forecolor, textpos, format);
+
+			//mxd. Draw size label?
+			if (ImageBrowserControl.ShowTextureSizes && !string.IsNullOrEmpty(imagesize))
+			{
+				// Setup
+				Font sizefont = new Font(this.ListView.Font.FontFamily, this.ListView.Font.SizeInPoints - 1);
+				textsize = g.MeasureString(imagesize, sizefont, bounds.Width * 2);
+				textpos = new PointF(bounds.Left + textsize.Width / 2, bounds.Top + 1);
+				imagerect = new Rectangle(bounds.Left + 1, bounds.Top + 1, (int)textsize.Width, (int)textsize.Height);
+				SolidBrush labelbg = new SolidBrush(Color.FromArgb(196, base.ListView.BackColor));
+
+				// Draw
+				g.FillRectangle(labelbg, imagerect);
+				g.DrawString(imagesize, sizefont, new SolidBrush(base.ListView.ForeColor), textpos, format);
+			}
 		}
 
 		// This brightens or darkens a color
@@ -151,6 +160,14 @@ namespace CodeImp.DoomBuilder.Controls
 		private static float Saturate(float v)
 		{
 			if(v < 0f) return 0f; else if(v > 1f) return 1f; else return v;
+		}
+
+		//mxd
+		private void UpdateName() 
+		{
+			Text = (showfullname ? icon.DisplayName : icon.ShortName);
+			if(General.Settings.ShowTextureSizes && icon.IsPreviewLoaded)
+				imagesize = icon.ScaledWidth + "x" + icon.ScaledHeight;
 		}
 
 		// Comparer

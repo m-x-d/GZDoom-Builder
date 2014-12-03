@@ -310,8 +310,8 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Load stuff
 			LoadPalette();
-			texcount = LoadTextures(texturesonly);
-			flatcount = LoadFlats(flatsonly);
+			texcount = LoadTextures(texturesonly, texturenamesshorttofull);
+			flatcount = LoadFlats(flatsonly, flatnamesshorttofull);
 			colormapcount = LoadColormaps(colormapsonly);
 			LoadSprites();
 			thingcount = LoadDecorateThings();
@@ -353,7 +353,8 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Mixed textures and flats?
-			if (General.Map.Config.MixTexturesFlats) {
+			if (General.Map.Config.MixTexturesFlats) 
+			{
 				// Add textures to flats
 				foreach(KeyValuePair<long, ImageData> t in texturesonly) 
 				{
@@ -364,7 +365,17 @@ namespace CodeImp.DoomBuilder.Data
 					}
 					else if(t.Value is HighResImage || t.Value is SimpleTextureImage) //mxd. Textures defined in TEXTURES or placed between TX_START and TX_END markers override "regular" flats in ZDoom
 					{
+						//TODO: check this!
 						flats[t.Key] = t.Value;
+					}
+				}
+
+				//mxd
+				foreach (KeyValuePair<long, long> t in texturenamesshorttofull)
+				{
+					if (!flatnamesshorttofull.ContainsKey(t.Key))
+					{
+						flatnamesshorttofull.Add(t.Key, t.Value);
 					}
 				}
 
@@ -375,6 +386,15 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						textures.Add(f.Key, f.Value);
 						texturenames.Add(f.Value.Name);
+					}
+				}
+
+				//mxd
+				foreach (KeyValuePair<long, long> t in flatnamesshorttofull)
+				{
+					if (!texturenamesshorttofull.ContainsKey(t.Key))
+					{
+						texturenamesshorttofull.Add(t.Key, t.Value);
 					}
 				}
 
@@ -389,10 +409,6 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Sort things
 			foreach(ThingCategory tc in thingcategories) tc.SortIfNeeded();
-
-			//mxd. Create texture name translation lists
-			texturenamesshorttofull = CreateShortTextureNamesCollection(textures);
-			flatnamesshorttofull = CreateShortTextureNamesCollection(flats);
 
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
@@ -425,36 +441,9 @@ namespace CodeImp.DoomBuilder.Data
 			// Output info
 			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + colormapcount + " colormaps, " + spritecount + " sprites, " + thingcount + " decorate things, " + modeldefEntries.Count + " model deinitions, " + gldefsEntries.Count + " dynamic light definitions");
 		}
-
-		//mxd
-		private Dictionary<long, long> CreateShortTextureNamesCollection(Dictionary<long, ImageData> images) 
-		{
-			Dictionary<long, long> names = new Dictionary<long, long>();
-
-			foreach(KeyValuePair<long, ImageData> pair in images) 
-			{
-				if(pair.Value.FullName.Length > CLASIC_IMAGE_NAME_LENGTH) 
-				{
-					string shortname = pair.Value.DisplayName.ToUpperInvariant();
-					if(shortname.Length > CLASIC_IMAGE_NAME_LENGTH) shortname = shortname.Substring(0, CLASIC_IMAGE_NAME_LENGTH);
-					long hash = MurmurHash2.Hash(shortname);
-
-					if(names.ContainsKey(hash)) 
-					{
-						names[hash] = pair.Value.LongName;
-					} 
-					else 
-					{
-						names.Add(hash, pair.Value.LongName);
-					}
-				}
-			}
-
-			return names;
-		}
 		
 		// This unloads all data
-		internal void Unload()
+		private void Unload()
 		{
 			// Stop background loader
 			StopBackgroundLoader();
@@ -725,13 +714,15 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd. This loads a model
-		internal bool ProcessModel(int type) {
+		internal bool ProcessModel(int type) 
+		{
 			if(modeldefEntries[type].LoadState != ModelLoadState.None) return true;
 
 			//create models
 			ModelReader.Load(modeldefEntries[type], containers, General.Map.Graphics.Device);
 
-			if(modeldefEntries[type].Model != null) {
+			if(modeldefEntries[type].Model != null) 
+			{
 				modeldefEntries[type].LoadState = ModelLoadState.Ready;
 				return true;
 			}
@@ -753,7 +744,8 @@ namespace CodeImp.DoomBuilder.Data
 				}
 
 				// Set used on all flats
-				foreach(KeyValuePair<long, ImageData> i in flats) {
+				foreach(KeyValuePair<long, ImageData> i in flats) 
+				{
 					i.Value.SetUsedInMap(usedimages.ContainsKey(i.Key));
 					if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
 				}
@@ -843,7 +835,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Textures
 
 		// This loads the textures
-		private int LoadTextures(Dictionary<long, ImageData> list)
+		private int LoadTextures(Dictionary<long, ImageData> list, Dictionary<long, long> nametranslation)
 		{
 			ICollection<ImageData> images;
 			PatchNames pnames = new PatchNames();
@@ -873,6 +865,20 @@ namespace CodeImp.DoomBuilder.Data
 						list.Add(img.LongName, img);
 						if(firsttexture == 0) firsttexture = img.LongName;
 						counter++;
+
+						//mxd. Also add as short name when texture name is longer than 8 chars
+						// Or remove when a wad image with short name overrides previously added 
+						// resource image with long name
+						if(img.HasLongName) 
+						{
+							long longshortname = Lump.MakeLongName(Path.GetFileNameWithoutExtension(img.Name), false);
+							nametranslation.Remove(longshortname);
+							nametranslation.Add(longshortname, img.LongName);
+						} 
+						else if (img is TextureImage && nametranslation.ContainsKey(img.LongName))
+						{
+							nametranslation.Remove(img.LongName);
+						}
 						
 						// Add to preview manager
 						previews.AddImage(img);
@@ -932,7 +938,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This checks if a given texture is known
 		public bool GetTextureExists(long longname)
 		{
-			return textures.ContainsKey(longname);
+			return textures.ContainsKey(longname) || texturenamesshorttofull.ContainsKey(longname);
 		}
 		
 		// This returns an image by string
@@ -947,11 +953,8 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData GetTextureImage(long longname)
 		{
 			// Does this texture exist?
-			if(textures.ContainsKey(longname))
-			{
-				// Return texture
-				return textures[longname];
-			}
+			if(texturenamesshorttofull.ContainsKey(longname)) return textures[texturenamesshorttofull[longname]]; //mxd
+			if(textures.ContainsKey(longname)) return textures[longname];
 
 			// Return null image
 			return unknownimage; //mxd
@@ -963,9 +966,16 @@ namespace CodeImp.DoomBuilder.Data
 			if (Path.GetFileNameWithoutExtension(name) == name && name.Length > CLASIC_IMAGE_NAME_LENGTH) 
 				name = name.Substring(0, CLASIC_IMAGE_NAME_LENGTH);
 			long hash = MurmurHash2.Hash(name.Trim().ToUpperInvariant());
-			if(textures.ContainsKey(hash)) return textures[hash].Name;
+
 			if(texturenamesshorttofull.ContainsKey(hash)) return textures[texturenamesshorttofull[hash]].Name;
+			if(textures.ContainsKey(hash)) return textures[hash].Name;
 			return name;
+		}
+
+		//mxd
+		internal long GetFullLongTextureName(long hash)
+		{
+			return (General.Map.Config.UseLongTextureNames && texturenamesshorttofull.ContainsKey(hash) ? texturenamesshorttofull[hash] : hash);
 		}
 		
 		#endregion
@@ -973,7 +983,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Flats
 
 		// This loads the flats
-		private int LoadFlats(Dictionary<long, ImageData> list)
+		private int LoadFlats(Dictionary<long, ImageData> list, Dictionary<long, long> nametranslation)
 		{
 			ICollection<ImageData> images;
 			int counter = 0;
@@ -992,6 +1002,20 @@ namespace CodeImp.DoomBuilder.Data
 						list.Remove(img.LongName);
 						list.Add(img.LongName, img);
 						counter++;
+
+						//mxd. Also add as short name when texture name is longer than 8 chars
+						// Or remove when a wad image with short name overrides previously added 
+						// resource image with long name
+						if (img.HasLongName)
+						{
+							long longshortname = Lump.MakeLongName(Path.GetFileNameWithoutExtension(img.Name), false);
+							nametranslation.Remove(longshortname);
+							nametranslation.Add(longshortname, img.LongName);
+						} 
+						else if(img is FlatImage && nametranslation.ContainsKey(img.LongName)) 
+						{
+							nametranslation.Remove(img.LongName);
+						}
 
 						// Add to preview manager
 						previews.AddImage(img);
@@ -1030,7 +1054,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This checks if a flat is known
 		public bool GetFlatExists(long longname)
 		{
-			return flats.ContainsKey(longname);
+			return flats.ContainsKey(longname) || flatnamesshorttofull.ContainsKey(longname);
 		}
 		
 		// This returns an image by string
@@ -1045,6 +1069,7 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData GetFlatImage(long longname)
 		{
 			// Does this flat exist?
+			if(flatnamesshorttofull.ContainsKey(longname)) return flats[flatnamesshorttofull[longname]]; //mxd
 			if(flats.ContainsKey(longname)) return flats[longname];
 			
 			// Return null image
@@ -1055,7 +1080,7 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData GetFlatImageKnown(long longname)
 		{
 			// Return flat
-			return flats[longname];
+			return flatnamesshorttofull.ContainsKey(longname) ? flats[flatnamesshorttofull[longname]] : flats[longname]; //mxd
 		}
 
 		//mxd. Gets full flat name by short flat name
@@ -1064,9 +1089,16 @@ namespace CodeImp.DoomBuilder.Data
 			if(Path.GetFileNameWithoutExtension(name) == name && name.Length > CLASIC_IMAGE_NAME_LENGTH)
 				name = name.Substring(0, CLASIC_IMAGE_NAME_LENGTH);
 			long hash = MurmurHash2.Hash(name.ToUpperInvariant());
-			if(flats.ContainsKey(hash)) return flats[hash].Name;
+
 			if(flatnamesshorttofull.ContainsKey(hash)) return flats[flatnamesshorttofull[hash]].Name;
+			if(flats.ContainsKey(hash)) return flats[hash].Name;
 			return name;
+		}
+
+		//mxd
+		internal long GetFullLongFlatName(long hash)
+		{
+			return (General.Map.Config.UseLongTextureNames && flatnamesshorttofull.ContainsKey(hash) ? flatnamesshorttofull[hash] : hash);
 		}
 		
 		#endregion
@@ -1124,8 +1156,8 @@ namespace CodeImp.DoomBuilder.Data
 						// Add to collection
 						sprites.Add(ti.SpriteLongName, image);
 					} 
-					else 
-					{ //mxd
+					else //mxd
+					{
 						General.ErrorLogger.Add(ErrorType.Error, "Missing sprite lump '" + ti.Sprite + "'. Forgot to include required resources?");
 					}
 				} 

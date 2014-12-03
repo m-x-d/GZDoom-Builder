@@ -276,10 +276,8 @@ namespace CodeImp.DoomBuilder.Actions
 		// This binds a delegate manually
 		internal void BindBeginDelegate(Assembly asm, ActionDelegate d, BeginActionAttribute a)
 		{
-			string actionname;
-
 			// Make proper name
-			actionname = a.GetFullActionName(asm);
+			string actionname = a.GetFullActionName(asm);
 
 			// Bind delegate to action
 			if(Exists(actionname))
@@ -291,10 +289,8 @@ namespace CodeImp.DoomBuilder.Actions
 		// This binds a delegate manually
 		internal void BindEndDelegate(Assembly asm, ActionDelegate d, EndActionAttribute a)
 		{
-			string actionname;
-
 			// Make proper name
-			actionname = a.GetFullActionName(asm);
+			string actionname = a.GetFullActionName(asm);
 
 			// Bind delegate to action
 			if(Exists(actionname))
@@ -371,10 +367,8 @@ namespace CodeImp.DoomBuilder.Actions
 		// This unbinds a delegate manually
 		internal void UnbindBeginDelegate(Assembly asm, ActionDelegate d, BeginActionAttribute a)
 		{
-			string actionname;
-
 			// Make proper name
-			actionname = a.GetFullActionName(asm);
+			string actionname = a.GetFullActionName(asm);
 
 			// Unbind delegate to action
 			actions[actionname].UnbindBegin(d);
@@ -383,10 +377,8 @@ namespace CodeImp.DoomBuilder.Actions
 		// This unbinds a delegate manually
 		internal void UnbindEndDelegate(Assembly asm, ActionDelegate d, EndActionAttribute a)
 		{
-			string actionname;
-
 			// Make proper name
-			actionname = a.GetFullActionName(asm);
+			string actionname = a.GetFullActionName(asm);
 
 			// Unbind delegate to action
 			actions[actionname].UnbindEnd(d);

@@ -109,38 +109,44 @@ namespace CodeImp.DoomBuilder.Windows
 				mapsettings = new Configuration(true);
 			
 			// Check strict patches box, check what game configuration is preferred
-			if (options != null) {
+			if (options != null) 
+			{
 				strictpatches.Checked = options.StrictPatches;
 				gameconfig = options.ConfigFile;
-			} else {
+			} 
+			else 
+			{
 				strictpatches.Checked = mapsettings.ReadSetting("strictpatches", false);
 				gameconfig = mapsettings.ReadSetting("gameconfig", "");
 			}
 
 			//mxd. Fill script compilers list
-			foreach(KeyValuePair<string, ScriptConfiguration> group in General.CompiledScriptConfigs) {
+			foreach(KeyValuePair<string, ScriptConfiguration> group in General.CompiledScriptConfigs) 
+			{
 				scriptcompiler.Items.Add(group.Value);
 			}
 
 			//mxd. Go for all enabled configurations
-			for(int i = 0; i < General.Configs.Count; i++) {
+			for(int i = 0; i < General.Configs.Count; i++) 
+			{
 				if(!General.Configs[i].Enabled) continue;
 				
 				// Add config name to list
 				index = config.Items.Add(General.Configs[i]);
 
-				if(General.Configs[i].Filename == gameconfig) {
-					// Select this item
-					config.SelectedIndex = index;
-				}
+				// Select this item
+				if(General.Configs[i].Filename == gameconfig) config.SelectedIndex = index;
 			}
 
 			//mxd. No dice? Try disabled ones
-			if(config.SelectedIndex == -1) {
-				for(int i = 0; i < General.Configs.Count; i++) {
+			if(config.SelectedIndex == -1) 
+			{
+				for(int i = 0; i < General.Configs.Count; i++) 
+				{
 					if(General.Configs[i].Enabled) continue;
 
-					if(General.Configs[i].Filename == gameconfig) {
+					if(General.Configs[i].Filename == gameconfig) 
+					{
 						//add and Select this item
 						config.SelectedIndex = config.Items.Add(General.Configs[i]);
 						break;
@@ -149,7 +155,8 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Still no configuration selected?
-			if(config.SelectedIndex == -1) {
+			if(config.SelectedIndex == -1) 
+			{
 				// Then go for all configurations to find a suitable one
 				for(int i = 0; i < General.Configs.Count; i++)
 				{
@@ -158,10 +165,13 @@ namespace CodeImp.DoomBuilder.Windows
 					{
 						//mxd. Already added?
 						index = config.Items.IndexOf(General.Configs[i]);
-						if (index != -1) {
+						if (index != -1) 
+						{
 							// Select this item
 							config.SelectedIndex = index;
-						} else {
+						} 
+						else 
+						{
 							// Add and select this item
 							config.SelectedIndex = config.Items.Add(General.Configs[i]);
 						}
@@ -186,9 +196,11 @@ namespace CodeImp.DoomBuilder.Windows
 			IDictionary maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
 
 			// Count how many required lumps we have to find
-			foreach(DictionaryEntry ml in maplumpnames) {
+			foreach(DictionaryEntry ml in maplumpnames) 
+			{
 				// Ignore the map header (it will not be found because the name is different)
-				if(ml.Key.ToString() != MapManager.CONFIG_MAP_HEADER) {
+				if(ml.Key.ToString() != MapManager.CONFIG_MAP_HEADER) 
+				{
 					// Read lump setting and count it
 					if(cfg.ReadSetting("maplumpnames." + ml.Key + ".required", false))
 						lumpsrequired++;
@@ -196,19 +208,23 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Go for all the lumps in the wad
-			for(scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++) {
+			for(scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++) 
+			{
 				// Make sure this lump is not part of the map.
-				if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name)) {
+				if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name)) 
+				{
 					// Reset check
 					lumpsfound = 0;
 					checkoffset = 1;
 
 					// Continue while still within bounds and lumps are still recognized
 					while(((scanindex + checkoffset) < wadfile.Lumps.Count) &&
-						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name)) {
+						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name)) 
+					{
 						lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
 						//mxd. Lump cannot present in current map format, fail this check
-						if(cfg.ReadSetting("maplumpnames." + lumpname + ".forbidden", false)) {
+						if(cfg.ReadSetting("maplumpnames." + lumpname + ".forbidden", false)) 
+						{
 							lumpsfound = -1;
 							break;
 						}
@@ -256,9 +272,11 @@ namespace CodeImp.DoomBuilder.Windows
 			IDictionary maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
 
 			// Count how many required lumps we have to find
-			foreach(DictionaryEntry ml in maplumpnames) {
+			foreach(DictionaryEntry ml in maplumpnames) 
+			{
 				// Ignore the map header (it will not be found because the name is different)
-				if(ml.Key.ToString() != MapManager.CONFIG_MAP_HEADER) {
+				if(ml.Key.ToString() != MapManager.CONFIG_MAP_HEADER) 
+				{
 					// Read lump setting and count it
 					if(cfg.ReadSetting("maplumpnames." + ml.Key + ".required", false))
 						lumpsrequired++;
@@ -266,19 +284,23 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Go for all the lumps in the wad
-			for(scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++) {
+			for(scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++) 
+			{
 				// Make sure this lump is not part of the map.
-				if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name)) {
+				if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name)) 
+				{
 					// Reset check
 					lumpsfound = 0;
 					checkoffset = 1;
 
 					// Continue while still within bounds and lumps are still recognized
 					while(((scanindex + checkoffset) < wadfile.Lumps.Count) &&
-						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name)) {
+						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name)) 
+					{
 						lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
 						//mxd. Lump cannot present in current map format, fail this check
-						if(cfg.ReadSetting("maplumpnames." + lumpname + ".forbidden", false)) {
+						if(cfg.ReadSetting("maplumpnames." + lumpname + ".forbidden", false)) 
+						{
 							lumpsfound = -1;
 							break;
 						}
@@ -304,9 +326,11 @@ namespace CodeImp.DoomBuilder.Windows
 			mapslist.Sort();
 
 			// Go for all items in the list
-			foreach(ListViewItem item in mapslist.Items) {
+			foreach(ListViewItem item in mapslist.Items) 
+			{
 				// Was this item previously selected?
-				if(item.Text == selectedname) {
+				if(item.Text == selectedname) 
+				{
 					// Select it again
 					item.Selected = true;
 					break;
@@ -324,10 +348,6 @@ namespace CodeImp.DoomBuilder.Windows
 				scriptcompilerlabel.Enabled = false;
 			}
 
-			//mxd. Long texture names
-			uselongtexturenames.Enabled = ci.SupportsLongTextureNames;
-			uselongtexturenames.Checked = (ci.SupportsLongTextureNames && options.UseLongTextureNames);
-
 			// Show configuration resources
 			datalocations.FixedResourceLocationList(ci.Resources);
 		}
@@ -343,15 +363,6 @@ namespace CodeImp.DoomBuilder.Windows
 				config.Focus();
 				return;
 			}
-
-			//mxd. Use long texture names?
-			if (uselongtexturenames.Enabled && !options.UseLongTextureNames && uselongtexturenames.Checked &&
-				MessageBox.Show(this, "Switching to long texture names can make the map incompatible with some map editors and game engines. Do you want to continue?",
-				Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No)
-			{
-				return;
-			}
-			options.UseLongTextureNames = uselongtexturenames.Checked;
 			
 			// Collect information
 			ConfigurationInfo configinfo = (config.SelectedItem as ConfigurationInfo); //mxd
@@ -487,9 +498,6 @@ namespace CodeImp.DoomBuilder.Windows
 					if(!string.IsNullOrEmpty(defaultscriptconfig) && General.CompiledScriptConfigs.ContainsKey(defaultscriptconfig))
 						scriptconfig = defaultscriptconfig;
 				}
-
-				//mxd. Long texture names
-				if(uselongtexturenames.Enabled) uselongtexturenames.Checked = options.UseLongTextureNames;
 			}
 
 			//mxd. Select proper script compiler

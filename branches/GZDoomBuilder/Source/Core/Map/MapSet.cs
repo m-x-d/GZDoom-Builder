@@ -261,7 +261,7 @@ namespace CodeImp.DoomBuilder.Map
 		// Static initializer
 		internal static void Initialize()
 		{
-			emptylongname = Lump.MakeLongName("-");
+			emptylongname = Lump.MakeLongName("-", false);
 			virtualsectorvalue = new UniValue((int)UniversalType.Integer, 0);
 		}
 
@@ -3234,7 +3234,7 @@ namespace CodeImp.DoomBuilder.Map
 					string ft = General.Map.Data.GetFullFlatName(s.FloorTexture);
 					if (ft != s.FloorTexture)
 					{
-						s.SetFloorTexture(ft);
+						s.SetFloorTexture(Lump.MakeLongName(ft));
 						changed = true;
 					}
 				}
@@ -3243,7 +3243,7 @@ namespace CodeImp.DoomBuilder.Map
 					string ct = General.Map.Data.GetFullFlatName(s.CeilTexture);
 					if (ct != s.CeilTexture)
 					{
-						s.SetCeilTexture(ct);
+						s.SetCeilTexture(Lump.MakeLongName(ct));
 						changed = true;
 					}
 				}
@@ -3256,7 +3256,7 @@ namespace CodeImp.DoomBuilder.Map
 					string ht = General.Map.Data.GetFullTextureName(s.HighTexture);
 					if (ht != s.HighTexture)
 					{
-						s.SetTextureHigh(ht);
+						s.SetTextureHigh(Lump.MakeLongName(ht));
 						changed = true;
 					}
 				}
@@ -3265,7 +3265,7 @@ namespace CodeImp.DoomBuilder.Map
 					string mt = General.Map.Data.GetFullTextureName(s.MiddleTexture);
 					if (mt != s.MiddleTexture)
 					{
-						s.SetTextureMid(mt);
+						s.SetTextureMid(Lump.MakeLongName(mt));
 						changed = true;
 					}
 				}
@@ -3274,7 +3274,7 @@ namespace CodeImp.DoomBuilder.Map
 					string lt = General.Map.Data.GetFullTextureName(s.LowTexture);
 					if (lt != s.LowTexture)
 					{
-						s.SetTextureLow(lt);
+						s.SetTextureLow(Lump.MakeLongName(lt));
 						changed = true;
 					}
 				}
@@ -3294,7 +3294,7 @@ namespace CodeImp.DoomBuilder.Map
 					string ft = GetShortTextureName(s.FloorTexture);
 					if (ft != s.FloorTexture)
 					{
-						s.SetFloorTexture(ft);
+						s.SetFloorTexture(Lump.MakeLongName(ft));
 						changed = true;
 					}
 				}
@@ -3303,7 +3303,7 @@ namespace CodeImp.DoomBuilder.Map
 					string ct = GetShortTextureName(s.CeilTexture);
 					if (ct != s.CeilTexture)
 					{
-						s.SetCeilTexture(ct);
+						s.SetCeilTexture(Lump.MakeLongName(ct));
 						changed = true;
 					}
 				}
@@ -3316,7 +3316,7 @@ namespace CodeImp.DoomBuilder.Map
 					string ht = GetShortTextureName(s.HighTexture);
 					if (ht != s.HighTexture)
 					{
-						s.SetTextureHigh(ht);
+						s.SetTextureHigh(Lump.MakeLongName(ht));
 						changed = true;
 					}
 				}
@@ -3325,7 +3325,7 @@ namespace CodeImp.DoomBuilder.Map
 					string mt = GetShortTextureName(s.MiddleTexture);
 					if (mt != s.MiddleTexture)
 					{
-						s.SetTextureMid(mt);
+						s.SetTextureMid(Lump.MakeLongName(mt));
 						changed = true;
 					}
 				}
@@ -3334,7 +3334,7 @@ namespace CodeImp.DoomBuilder.Map
 					string lt = GetShortTextureName(s.LowTexture);
 					if (lt != s.LowTexture)
 					{
-						s.SetTextureLow(lt);
+						s.SetTextureLow(Lump.MakeLongName(lt));
 						changed = true;
 					}
 				}

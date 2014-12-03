@@ -213,18 +213,23 @@ namespace CodeImp.DoomBuilder.Map
 			base.ReadWrite(s);
 
 			//mxd
-			if(s.IsWriting) {
+			if(s.IsWriting)
+			{
 				s.wInt(flags.Count);
 
-				foreach(KeyValuePair<string, bool> f in flags) {
+				foreach(KeyValuePair<string, bool> f in flags)
+				{
 					s.wString(f.Key);
 					s.wBool(f.Value);
 				}
-			} else {
+			}
+			else
+			{
 				int c; s.rInt(out c);
 
 				flags = new Dictionary<string, bool>(c, StringComparer.Ordinal);
-				for(int i = 0; i < c; i++) {
+				for(int i = 0; i < c; i++)
+				{
 					string t; s.rString(out t);
 					bool b; s.rBool(out b);
 					flags.Add(t, b);
@@ -456,16 +461,16 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Methods
 
 		// This checks and returns a flag without creating it
-		public bool IsFlagSet(string flagname) {
-			if(flags.ContainsKey(flagname))
-				return flags[flagname];
-			else
-				return false;
+		public bool IsFlagSet(string flagname)
+		{
+			return flags.ContainsKey(flagname) && flags[flagname];
 		}
 
 		// This sets a flag
-		public void SetFlag(string flagname, bool value) {
-			if(!flags.ContainsKey(flagname) || (IsFlagSet(flagname) != value)) {
+		public void SetFlag(string flagname, bool value) 
+		{
+			if(!flags.ContainsKey(flagname) || (IsFlagSet(flagname) != value)) 
+			{
 				BeforePropsChange();
 
 				flags[flagname] = value;
@@ -473,14 +478,15 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This returns a copy of the flags dictionary
-		public Dictionary<string, bool> GetFlags() {
+		public Dictionary<string, bool> GetFlags() 
+		{
 			return new Dictionary<string, bool>(flags);
 		}
 
 		// This clears all flags
-		public void ClearFlags() {
+		public void ClearFlags() 
+		{
 			BeforePropsChange();
-
 			flags.Clear();
 		}
 		
@@ -609,8 +615,8 @@ namespace CodeImp.DoomBuilder.Map
 			// Apply changes
 			this.floorheight = hfloor;
 			this.ceilheight = hceil;
-			SetFloorTexture(tfloor);
-			SetCeilTexture(tceil);
+			//SetFloorTexture(tfloor);
+			//SetCeilTexture(tceil);
 			this.effect = effect;
 			this.tag = tag;
 			this.flags = new Dictionary<string, bool>(flags); //mxd
@@ -619,6 +625,19 @@ namespace CodeImp.DoomBuilder.Map
 			this.floorslope = floorslope; //mxd
 			this.ceiloffset = ceiloffset; //mxd
 			this.ceilslope = ceilslope; //mxd
+
+			//mxd. Set ceil texture
+			if(string.IsNullOrEmpty(tceil)) tceil = "-";
+			ceiltexname = tceil;
+			longceiltexname = Lump.MakeLongName(ceiltexname);
+
+			//mxd. Set floor texture
+			if(string.IsNullOrEmpty(tfloor)) tfloor = "-"; //mxd
+			floortexname = tfloor;
+			longfloortexname = Lump.MakeLongName(tfloor);
+
+			//mxd. Map is changed
+			General.Map.IsChanged = true;
 			updateneeded = true;
 		}
 
@@ -629,7 +648,7 @@ namespace CodeImp.DoomBuilder.Map
 			
 			if(string.IsNullOrEmpty(name)) name = "-"; //mxd
 			floortexname = name;
-			longfloortexname = Lump.MakeLongName(name);
+			longfloortexname = General.Map.Data.GetFullLongFlatName(Lump.MakeLongName(name)); //mxd
 			updateneeded = true;
 			General.Map.IsChanged = true;
 		}
@@ -641,24 +660,44 @@ namespace CodeImp.DoomBuilder.Map
 			
 			if(string.IsNullOrEmpty(name)) name = "-"; //mxd
 			ceiltexname = name;
-			longceiltexname = Lump.MakeLongName(name);
+			longceiltexname = General.Map.Data.GetFullLongFlatName(Lump.MakeLongName(name)); //mxd
+			updateneeded = true;
+			General.Map.IsChanged = true;
+		}
+
+		//mxd. This sets texture lookup
+		internal void SetFloorTexture(long hash)
+		{
+			BeforePropsChange();
+
+			longfloortexname = hash;
+			updateneeded = true;
+			General.Map.IsChanged = true;
+		}
+
+		//mxd. This sets texture lookup
+		internal void SetCeilTexture(long hash) 
+		{
+			BeforePropsChange();
+
+			longceiltexname = hash;
 			updateneeded = true;
 			General.Map.IsChanged = true;
 		}
 
 		//mxd
-		public void UpdateFogColor() {
+		public void UpdateFogColor() 
+		{
 			useOutsideFog = General.Map.Data.MapInfo.HasOutsideFogColor && ceiltexname == General.Map.Config.SkyFlatName;
 
-			if(General.Map.UDMF && Fields.ContainsKey("fadecolor")) {
+			if(General.Map.UDMF && Fields.ContainsKey("fadecolor"))
 				fogColor = new Color4((int)Fields["fadecolor"].Value);
-			} else if(useOutsideFog) {
+			else if(useOutsideFog)
 				fogColor = General.Map.Data.MapInfo.OutsideFogColor;
-			} else if(General.Map.Data.MapInfo.HasFadeColor) {
+			else if(General.Map.Data.MapInfo.HasFadeColor)
 				fogColor = General.Map.Data.MapInfo.FadeColor;
-			} else {
+			else
 				fogColor = new Color4();
-			}
 
 			hasFogColor = fogColor.Red > 0 || fogColor.Green > 0 || fogColor.Blue > 0;
 		}

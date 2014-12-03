@@ -20,6 +20,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Data;
 using SlimDX;
 
 #endregion
@@ -37,6 +38,7 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		private Bitmap bmp;
 		private MouseButtons button;
+		private ImageData image; //mxd
 		private string previousImageName; //mxd
 		protected bool multipletextures; //mxd
 		protected bool usepreviews = true; //mxd
@@ -83,6 +85,8 @@ namespace CodeImp.DoomBuilder.Controls
 			preview.Height = this.ClientSize.Height - name.Height - 4;
 			name.Width = this.ClientSize.Width;
 			name.Top = this.ClientSize.Height - name.Height;
+			togglefullname.Left = preview.Right - togglefullname.Width - 1; //mxd
+			togglefullname.Top = preview.Bottom - togglefullname.Height - 1; //mxd
 		}
 		
 		// Layout change
@@ -148,6 +152,16 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			labelSize.Visible = !(!General.Settings.ShowTextureSizes || !this.Enabled || string.IsNullOrEmpty(labelSize.Text));
 		}
+
+		//mxd
+		private void togglefullname_Click(object sender, EventArgs e)
+		{
+			// Toggle between short and full name
+			name.Text = (name.Text == image.ShortName ? image.Name : image.ShortName);
+
+			// Update icon and tooltip
+			UpdateToggleImageNameButton(image);
+		}
 		
 		#endregion
 
@@ -199,6 +213,31 @@ namespace CodeImp.DoomBuilder.Controls
 
 		// This must show the image browser and return the selected texture name
 		protected abstract string BrowseImage(string imagename);
+
+		protected void UpdateToggleImageNameButton(ImageData image)
+		{
+			this.image = image;
+			
+			// Update visibility
+			if(!General.Map.Config.UseLongTextureNames || image == null || !image.HasLongName) 
+			{
+				togglefullname.Visible = false;
+				return;
+			}
+
+			// Update icon and tooltip
+			togglefullname.Visible = true;
+			if (image.ShortName == name.Text)
+			{
+				togglefullname.Image = Properties.Resources.Expand;
+				tooltip.SetToolTip(togglefullname, "Switch to full name");
+			}
+			else
+			{
+				togglefullname.Image = Properties.Resources.Collapse;
+				tooltip.SetToolTip(togglefullname, "Switch to short name");
+			}
+		}
 
 		// This determines the result value
 		public string GetResult(string original)

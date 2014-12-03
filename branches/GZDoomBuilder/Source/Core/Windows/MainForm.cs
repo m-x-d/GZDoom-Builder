@@ -1428,7 +1428,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd. Sometimes it's handeled by RenderTargetControl, not by MainForm leading to keys being "stuck"
-		private void display_OnKeyReleased(object sender, KeyEventArgs e) {
+		private void display_OnKeyReleased(object sender, KeyEventArgs e)
+		{
 			MainForm_KeyUp(sender, e);
 		}
 		

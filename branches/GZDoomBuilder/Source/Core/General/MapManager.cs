@@ -414,8 +414,8 @@ namespace CodeImp.DoomBuilder {
 			map.RemoveUnusedSectors(true);
 
 			//mxd. Translate to long or short texture names.
-			bool nameschanged = map.TranslateTextureNames(options.UseLongTextureNames, false);
-			grid.TranslateBackgroundName(options.UseLongTextureNames);
+			bool nameschanged = map.TranslateTextureNames(config.UseLongTextureNames, false);
+			grid.TranslateBackgroundName(config.UseLongTextureNames);
 
 			//mxd. Sector textures may've been changed 
 			if (nameschanged)
@@ -458,21 +458,6 @@ namespace CodeImp.DoomBuilder {
 		//mxd. This switches to another map in the same wad 
 		internal bool InitializeSwitchMap(MapOptions options)
 		{
-			bool uselongtexturenames = this.options.UseLongTextureNames;
-			
-			// Does not compute! (we don't reload resources, so it can potentially 
-			// lead to texture lookup FIALS if there are non-WAD resources)
-			if(uselongtexturenames != options.UseLongTextureNames &&
-				MessageBox.Show(General.MainWindow, 
-				"Texture names in the map you are opening will be translated to "
-				+ (uselongtexturenames ? "long" : "short") + " texture names."
-				+ (!uselongtexturenames ? " This may lead to texture and flat name conflicts." : "") 
-				+ " Do you want to continue?",
-				Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No)
-			{
-				return false;
-			}
-			
 			this.changed = false;
 			this.options = options;
 
@@ -535,15 +520,11 @@ namespace CodeImp.DoomBuilder {
 			ChangeMapSet(newmap);
 
 			//mxd. Translate texture names
-			bool nameschanged = map.TranslateTextureNames(uselongtexturenames, false);
-			grid.TranslateBackgroundName(uselongtexturenames);
+			map.TranslateTextureNames(config.UseLongTextureNames, false);
+			grid.TranslateBackgroundName(config.UseLongTextureNames);
 
 			//mxd. Sector textures may've been changed 
-			if (nameschanged)
-			{
-				data.UpdateUsedTextures();
-				General.Map.IsChanged = true;
-			}
+			data.UpdateUsedTextures();
 
 			//mxd. check script names
 			UpdateScriptNames();
@@ -1922,8 +1903,8 @@ namespace CodeImp.DoomBuilder {
 				UpdateScriptNames(); //mxd
 
 				//mxd. Translate texture names
-				bool nameschanged = map.TranslateTextureNames(options.UseLongTextureNames, false);
-				grid.TranslateBackgroundName(options.UseLongTextureNames);
+				bool nameschanged = map.TranslateTextureNames(config.UseLongTextureNames, false);
+				grid.TranslateBackgroundName(config.UseLongTextureNames);
 				
 				//mxd. Sector textures may've been changed 
 				if (nameschanged)

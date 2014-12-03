@@ -19,6 +19,7 @@
 using System;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -94,7 +95,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd: also, zdoom uses '/' as directory separator char.
 		private void SetName(string name, string filepathname)
 		{
-			SetName(name, filepathname, General.Map.Options.UseLongTextureNames);
+			SetName(name, filepathname, General.Map.Config.UseLongTextureNames);
 		}
 
 		private void SetName(string name, string filepathname, bool uselongtexturenames)
@@ -104,25 +105,38 @@ namespace CodeImp.DoomBuilder.Data
 			if(!uselongtexturenames)
 			{
 				this.name = Path.GetFileNameWithoutExtension(name.ToUpperInvariant());
-				if(this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+				if (this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+				{
 					this.name = this.name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+				}
 				this.virtualname = Path.Combine(Path.GetDirectoryName(name), this.name).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 				this.displayname = this.name;
-				this.longname = Lump.MakeLongName(this.name); //mxd
+				this.shortname = this.name;
 			}
 			else
 			{
 				this.name = name;
 				this.virtualname = name;
 				this.displayname = Path.GetFileNameWithoutExtension(name);
-				this.longname = Lump.MakeLongName(name);
+				this.shortname = this.displayname.ToUpperInvariant();
+				if (this.shortname.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+				{
+					this.shortname = this.shortname.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+				}
 				hasLongName = true;
 			}
 
+			this.longname = Lump.MakeLongName(this.name, uselongtexturenames); //mxd
 			this.fullname = filepathname;
+
 			if(General.Settings.CapitalizeTextureNames && !string.IsNullOrEmpty(this.displayname))
 			{
 				this.displayname = this.displayname.ToUpperInvariant();
+			}
+
+			if (this.displayname.Length > ImageBrowserItem.MAX_NAME_LENGTH)
+			{
+				this.displayname = this.displayname.Substring(0, ImageBrowserItem.MAX_NAME_LENGTH);
 			}
 		}
 

@@ -28,8 +28,8 @@ namespace CodeImp.DoomBuilder.IO
 	{
 		#region ================== Variables
 
-		private DirectoryFileEntry[] entries;
-		private Dictionary<string, DirectoryFileEntry> hashedentries;
+		private readonly DirectoryFileEntry[] entries;
+		private readonly Dictionary<string, DirectoryFileEntry> hashedentries;
 		
 		#endregion
 
@@ -46,6 +46,7 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			path = Path.GetFullPath(path);
 			string[] files = Directory.GetFiles(path, "*", subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+			Array.Sort(files); //mxd
 			entries = new DirectoryFileEntry[files.Length];
 			hashedentries = new Dictionary<string, DirectoryFileEntry>(files.Length, StringComparer.Ordinal);
 			for(int i = 0; i < files.Length; i++)
@@ -165,13 +166,16 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		//mxd. This returns a list of all files that are in the given path and which names starts with title
-		public List<string> GetAllFilesWhichTitleStartsWith(string path, string title) {
+		public List<string> GetAllFilesWhichTitleStartsWith(string path, string title) 
+		{
 			path = CorrectPath(path).ToLowerInvariant();
 			title = title.ToLowerInvariant();
 			List<string> files = new List<string>(entries.Length);
 			for (int i = 0; i < entries.Length; i++)
-				if ((entries[i].path == path) && (entries[i].filetitle.StartsWith(title)))
+			{
+				if ((entries[i].path == path) && (entries[i].filetitle.StartsWith(title))) 
 					files.Add(entries[i].filepathname);
+			}
 			return files;
 		}
 

@@ -1010,6 +1010,7 @@
     <None Include="Resources\Cursor.png" />
     <None Include="Resources\Brightness.png" />
     <None Include="Resources\Clear.png" />
+    <None Include="Resources\Collapse.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\GZDB2.ico" />
     <None Include="Resources\fog.png" />
@@ -1019,6 +1020,7 @@
     <None Include="Resources\Keyboard.png" />
     <None Include="Resources\ImageStack.png" />
     <None Include="Resources\FolderExplore.png" />
+    <None Include="Resources\Expand.png" />
     <Content Include="Resources\Light.png" />
     <None Include="Resources\Lightbulb.png" />
     <None Include="Resources\LightDisabled.png" />

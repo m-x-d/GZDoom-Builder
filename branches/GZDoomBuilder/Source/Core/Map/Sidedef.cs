@@ -169,19 +169,24 @@ namespace CodeImp.DoomBuilder.Map
 			base.ReadWrite(s);
 
 			//mxd
-			if(s.IsWriting) {
+			if(s.IsWriting) 
+			{
 				s.wInt(flags.Count);
 
-				foreach(KeyValuePair<string, bool> f in flags) {
+				foreach(KeyValuePair<string, bool> f in flags) 
+				{
 					s.wString(f.Key);
 					s.wBool(f.Value);
 				}
-			} else {
+			} 
+			else 
+			{
 				int c;
 				s.rInt(out c);
 
 				flags = new Dictionary<string, bool>(c, StringComparer.Ordinal);
-				for(int i = 0; i < c; i++) {
+				for(int i = 0; i < c; i++) 
+				{
 					string t;
 					s.rString(out t);
 					bool b;
@@ -302,7 +307,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This sets a flag
 		public void SetFlag(string flagname, bool value) 
 		{
-			if(!flags.ContainsKey(flagname) || (IsFlagSet(flagname) != value)) {
+			if(!flags.ContainsKey(flagname) || (IsFlagSet(flagname) != value)) 
+			{
 				BeforePropsChange();
 				flags[flagname] = value;
 			}
@@ -375,7 +381,8 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			// The middle texture can be removed regardless of any sector tag or linedef action
-			if(!MiddleRequired() && removemiddle) {
+			if(!MiddleRequired() && removemiddle) 
+			{
 				if(!changed) BeforePropsChange(); //mxd
 				this.texnamemid = "-";
 				this.longtexnamemid = MapSet.EmptyLongName;
@@ -565,9 +572,24 @@ namespace CodeImp.DoomBuilder.Map
 			this.offsetx = offsetx;
 			this.offsety = offsety;
 			this.flags = new Dictionary<string, bool>(flags); //mxd
-			SetTextureMid(tmid);
-			SetTextureLow(tlow);
-			SetTextureHigh(thigh);
+			//SetTextureMid(tmid);
+			//SetTextureLow(tlow);
+			//SetTextureHigh(thigh);
+
+			//mxd. Set mid texture
+			texnamemid = string.IsNullOrEmpty(tmid) ? "-" : tmid;
+			longtexnamemid = Lump.MakeLongName(tmid);
+
+			//mxd. Set low texture
+			texnamelow = string.IsNullOrEmpty(tlow) ? "-" : tlow;
+			longtexnamelow = Lump.MakeLongName(tlow);
+
+			//mxd. Set high texture
+			texnamehigh = string.IsNullOrEmpty(thigh) ? "-" : thigh;
+			longtexnamehigh = Lump.MakeLongName(texnamehigh);
+
+			//mxd. Map is changed
+			General.Map.IsChanged = true;
 		}
 
 		// This sets texture
@@ -575,9 +597,8 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			BeforePropsChange();
 			
-			if(string.IsNullOrEmpty(name)) name = "-"; //mxd
-			texnamehigh = name;
-			longtexnamehigh = Lump.MakeLongName(name);
+			texnamehigh = string.IsNullOrEmpty(name) ? "-" : name; //mxd
+			longtexnamehigh = General.Map.Data.GetFullLongTextureName(Lump.MakeLongName(name)); //mxd
 			General.Map.IsChanged = true;
 		}
 
@@ -586,9 +607,8 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			BeforePropsChange();
 			
-			if (string.IsNullOrEmpty(name)) name = "-"; //mxd
-			texnamemid = name;
-			longtexnamemid = Lump.MakeLongName(name);
+			texnamemid = string.IsNullOrEmpty(name) ? "-" : name; //mxd;
+			longtexnamemid = General.Map.Data.GetFullLongTextureName(Lump.MakeLongName(name)); //mxd
 			General.Map.IsChanged = true;
 		}
 
@@ -597,9 +617,35 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			BeforePropsChange();
 			
-			if(string.IsNullOrEmpty(name)) name = "-"; //mxd
-			texnamelow = name;
-			longtexnamelow = Lump.MakeLongName(name);
+			texnamelow = string.IsNullOrEmpty(name) ? "-" : name; //mxd;
+			longtexnamelow = General.Map.Data.GetFullLongTextureName(Lump.MakeLongName(name)); //mxd
+			General.Map.IsChanged = true;
+		}
+
+		//mxd. This sets texture lookup
+		public void SetTextureHigh(long hash) 
+		{
+			BeforePropsChange();
+
+			longtexnamehigh = hash;
+			General.Map.IsChanged = true;
+		}
+
+		//mxd. This sets texture lookup
+		public void SetTextureMid(long hash) 
+		{
+			BeforePropsChange();
+
+			longtexnamemid = hash;
+			General.Map.IsChanged = true;
+		}
+
+		//mxd. This sets texture lookup
+		public void SetTextureLow(long hash) 
+		{
+			BeforePropsChange();
+
+			longtexnamelow = hash;
 			General.Map.IsChanged = true;
 		}
 

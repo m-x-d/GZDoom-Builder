@@ -637,7 +637,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						img = General.Map.Data.WhiteTexture;
 					}
 				} 
-				else if(longimagename == Lump.MakeLongName("-")) //mxd
+				else if(longimagename == MapSet.EmptyLongName) //mxd
 				{
 					img = General.Map.Data.MissingTexture3D;
 				}

@@ -30,10 +30,10 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			System.Windows.Forms.Label label13;
 			System.Windows.Forms.Label label5;
-			System.Windows.Forms.Label label4;
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.Label label2;
-			System.Windows.Forms.Label label1;
+			this.labelTag = new System.Windows.Forms.Label();
+			this.labelEffect = new System.Windows.Forms.Label();
 			this.ceilingLightLabel = new System.Windows.Forms.Label();
 			this.ceilingScaleLabel = new System.Windows.Forms.Label();
 			this.ceilingAngleLabel = new System.Windows.Forms.Label();
@@ -58,12 +58,10 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceilingAngle = new System.Windows.Forms.Label();
 			this.ceilingOffset = new System.Windows.Forms.Label();
 			this.ceilingpanel = new System.Windows.Forms.GroupBox();
-			this.ceilingInfo = new System.Windows.Forms.Panel();
 			this.ceilingname = new System.Windows.Forms.Label();
 			this.ceilingtex = new System.Windows.Forms.Panel();
 			this.labelCeilTextureSize = new System.Windows.Forms.Label();
 			this.floorpanel = new System.Windows.Forms.GroupBox();
-			this.floorInfo = new System.Windows.Forms.Panel();
 			this.floorLight = new System.Windows.Forms.Label();
 			this.floorScale = new System.Windows.Forms.Label();
 			this.floorOffset = new System.Windows.Forms.Label();
@@ -76,16 +74,12 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flags = new System.Windows.Forms.ListView();
 			label13 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
-			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
-			label1 = new System.Windows.Forms.Label();
 			this.sectorinfo.SuspendLayout();
 			this.ceilingpanel.SuspendLayout();
-			this.ceilingInfo.SuspendLayout();
 			this.ceilingtex.SuspendLayout();
 			this.floorpanel.SuspendLayout();
-			this.floorInfo.SuspendLayout();
 			this.floortex.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.flagsPanel.SuspendLayout();
@@ -109,15 +103,6 @@ namespace CodeImp.DoomBuilder.Controls
 			label5.Text = "Height:";
 			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// label4
-			// 
-			label4.Location = new System.Drawing.Point(8, 79);
-			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(44, 14);
-			label4.TabIndex = 4;
-			label4.Text = "Tag:";
-			label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
 			// label3
 			// 
 			label3.Location = new System.Drawing.Point(8, 49);
@@ -136,18 +121,27 @@ namespace CodeImp.DoomBuilder.Controls
 			label2.Text = "Ceiling:";
 			label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// label1
+			// labelTag
 			// 
-			label1.Location = new System.Drawing.Point(8, 19);
-			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(44, 14);
-			label1.TabIndex = 0;
-			label1.Text = "Effect:";
-			label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.labelTag.Location = new System.Drawing.Point(8, 79);
+			this.labelTag.Name = "labelTag";
+			this.labelTag.Size = new System.Drawing.Size(44, 14);
+			this.labelTag.TabIndex = 4;
+			this.labelTag.Text = "Tag:";
+			this.labelTag.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// labelEffect
+			// 
+			this.labelEffect.Location = new System.Drawing.Point(8, 19);
+			this.labelEffect.Name = "labelEffect";
+			this.labelEffect.Size = new System.Drawing.Size(44, 14);
+			this.labelEffect.TabIndex = 0;
+			this.labelEffect.Text = "Effect:";
+			this.labelEffect.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// ceilingLightLabel
 			// 
-			this.ceilingLightLabel.Location = new System.Drawing.Point(3, 61);
+			this.ceilingLightLabel.Location = new System.Drawing.Point(77, 63);
 			this.ceilingLightLabel.Name = "ceilingLightLabel";
 			this.ceilingLightLabel.Size = new System.Drawing.Size(45, 14);
 			this.ceilingLightLabel.TabIndex = 27;
@@ -156,7 +150,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// ceilingScaleLabel
 			// 
-			this.ceilingScaleLabel.Location = new System.Drawing.Point(3, 43);
+			this.ceilingScaleLabel.Location = new System.Drawing.Point(77, 47);
 			this.ceilingScaleLabel.Name = "ceilingScaleLabel";
 			this.ceilingScaleLabel.Size = new System.Drawing.Size(45, 14);
 			this.ceilingScaleLabel.TabIndex = 26;
@@ -165,7 +159,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// ceilingAngleLabel
 			// 
-			this.ceilingAngleLabel.Location = new System.Drawing.Point(3, 25);
+			this.ceilingAngleLabel.Location = new System.Drawing.Point(77, 31);
 			this.ceilingAngleLabel.Name = "ceilingAngleLabel";
 			this.ceilingAngleLabel.Size = new System.Drawing.Size(45, 14);
 			this.ceilingAngleLabel.TabIndex = 24;
@@ -174,7 +168,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// ceilingOffsetLabel
 			// 
-			this.ceilingOffsetLabel.Location = new System.Drawing.Point(3, 7);
+			this.ceilingOffsetLabel.Location = new System.Drawing.Point(77, 15);
 			this.ceilingOffsetLabel.Name = "ceilingOffsetLabel";
 			this.ceilingOffsetLabel.Size = new System.Drawing.Size(45, 14);
 			this.ceilingOffsetLabel.TabIndex = 22;
@@ -183,7 +177,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// floorOffsetLabel
 			// 
-			this.floorOffsetLabel.Location = new System.Drawing.Point(3, 7);
+			this.floorOffsetLabel.Location = new System.Drawing.Point(77, 15);
 			this.floorOffsetLabel.Name = "floorOffsetLabel";
 			this.floorOffsetLabel.Size = new System.Drawing.Size(45, 14);
 			this.floorOffsetLabel.TabIndex = 22;
@@ -192,7 +186,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// floorLightLabel
 			// 
-			this.floorLightLabel.Location = new System.Drawing.Point(3, 61);
+			this.floorLightLabel.Location = new System.Drawing.Point(77, 63);
 			this.floorLightLabel.Name = "floorLightLabel";
 			this.floorLightLabel.Size = new System.Drawing.Size(45, 14);
 			this.floorLightLabel.TabIndex = 27;
@@ -201,7 +195,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// floorAngleLabel
 			// 
-			this.floorAngleLabel.Location = new System.Drawing.Point(3, 25);
+			this.floorAngleLabel.Location = new System.Drawing.Point(77, 31);
 			this.floorAngleLabel.Name = "floorAngleLabel";
 			this.floorAngleLabel.Size = new System.Drawing.Size(45, 14);
 			this.floorAngleLabel.TabIndex = 24;
@@ -210,7 +204,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// floorScaleLabel
 			// 
-			this.floorScaleLabel.Location = new System.Drawing.Point(3, 43);
+			this.floorScaleLabel.Location = new System.Drawing.Point(77, 47);
 			this.floorScaleLabel.Name = "floorScaleLabel";
 			this.floorScaleLabel.Size = new System.Drawing.Size(45, 14);
 			this.floorScaleLabel.TabIndex = 26;
@@ -230,11 +224,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.sectorinfo.Controls.Add(this.tag);
 			this.sectorinfo.Controls.Add(this.floor);
 			this.sectorinfo.Controls.Add(this.ceiling);
-			this.sectorinfo.Controls.Add(label4);
+			this.sectorinfo.Controls.Add(this.labelTag);
 			this.sectorinfo.Controls.Add(label3);
 			this.sectorinfo.Controls.Add(label2);
 			this.sectorinfo.Controls.Add(this.effect);
-			this.sectorinfo.Controls.Add(label1);
+			this.sectorinfo.Controls.Add(this.labelEffect);
 			this.sectorinfo.Location = new System.Drawing.Point(0, 0);
 			this.sectorinfo.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.sectorinfo.Name = "sectorinfo";
@@ -328,39 +322,50 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// ceilingLight
 			// 
-			this.ceilingLight.Location = new System.Drawing.Point(54, 61);
+			this.ceilingLight.AutoSize = true;
+			this.ceilingLight.Location = new System.Drawing.Point(124, 63);
 			this.ceilingLight.Name = "ceilingLight";
-			this.ceilingLight.Size = new System.Drawing.Size(60, 14);
+			this.ceilingLight.Size = new System.Drawing.Size(15, 14);
 			this.ceilingLight.TabIndex = 29;
-			this.ceilingLight.Text = "255 (abs.)";
+			this.ceilingLight.Text = "--";
 			// 
 			// ceilingScale
 			// 
-			this.ceilingScale.Location = new System.Drawing.Point(54, 43);
+			this.ceilingScale.AutoSize = true;
+			this.ceilingScale.Location = new System.Drawing.Point(124, 47);
 			this.ceilingScale.Name = "ceilingScale";
-			this.ceilingScale.Size = new System.Drawing.Size(60, 14);
+			this.ceilingScale.Size = new System.Drawing.Size(29, 14);
 			this.ceilingScale.TabIndex = 28;
-			this.ceilingScale.Text = "-1.0, -1.0";
+			this.ceilingScale.Text = "--, --";
 			// 
 			// ceilingAngle
 			// 
-			this.ceilingAngle.Location = new System.Drawing.Point(54, 25);
+			this.ceilingAngle.AutoSize = true;
+			this.ceilingAngle.Location = new System.Drawing.Point(124, 31);
 			this.ceilingAngle.Name = "ceilingAngle";
-			this.ceilingAngle.Size = new System.Drawing.Size(60, 14);
+			this.ceilingAngle.Size = new System.Drawing.Size(15, 14);
 			this.ceilingAngle.TabIndex = 25;
-			this.ceilingAngle.Text = "45";
+			this.ceilingAngle.Text = "--";
 			// 
 			// ceilingOffset
 			// 
-			this.ceilingOffset.Location = new System.Drawing.Point(54, 7);
+			this.ceilingOffset.AutoSize = true;
+			this.ceilingOffset.Location = new System.Drawing.Point(124, 15);
 			this.ceilingOffset.Name = "ceilingOffset";
-			this.ceilingOffset.Size = new System.Drawing.Size(60, 14);
+			this.ceilingOffset.Size = new System.Drawing.Size(29, 14);
 			this.ceilingOffset.TabIndex = 23;
-			this.ceilingOffset.Text = "-100, -100";
+			this.ceilingOffset.Text = "--, --";
 			// 
 			// ceilingpanel
 			// 
-			this.ceilingpanel.Controls.Add(this.ceilingInfo);
+			this.ceilingpanel.Controls.Add(this.ceilingOffsetLabel);
+			this.ceilingpanel.Controls.Add(this.ceilingOffset);
+			this.ceilingpanel.Controls.Add(this.ceilingLight);
+			this.ceilingpanel.Controls.Add(this.ceilingAngleLabel);
+			this.ceilingpanel.Controls.Add(this.ceilingAngle);
+			this.ceilingpanel.Controls.Add(this.ceilingScaleLabel);
+			this.ceilingpanel.Controls.Add(this.ceilingScale);
+			this.ceilingpanel.Controls.Add(this.ceilingLightLabel);
 			this.ceilingpanel.Controls.Add(this.ceilingname);
 			this.ceilingpanel.Controls.Add(this.ceilingtex);
 			this.ceilingpanel.Location = new System.Drawing.Point(506, 0);
@@ -371,29 +376,14 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceilingpanel.TabStop = false;
 			this.ceilingpanel.Text = " Ceiling ";
 			// 
-			// ceilingInfo
-			// 
-			this.ceilingInfo.Controls.Add(this.ceilingLight);
-			this.ceilingInfo.Controls.Add(this.ceilingOffsetLabel);
-			this.ceilingInfo.Controls.Add(this.ceilingScale);
-			this.ceilingInfo.Controls.Add(this.ceilingOffset);
-			this.ceilingInfo.Controls.Add(this.ceilingLightLabel);
-			this.ceilingInfo.Controls.Add(this.ceilingAngleLabel);
-			this.ceilingInfo.Controls.Add(this.ceilingScaleLabel);
-			this.ceilingInfo.Controls.Add(this.ceilingAngle);
-			this.ceilingInfo.Location = new System.Drawing.Point(80, 15);
-			this.ceilingInfo.Name = "ceilingInfo";
-			this.ceilingInfo.Size = new System.Drawing.Size(118, 80);
-			this.ceilingInfo.TabIndex = 2;
-			// 
 			// ceilingname
 			// 
-			this.ceilingname.Location = new System.Drawing.Point(8, 80);
+			this.ceilingname.AutoSize = true;
+			this.ceilingname.Location = new System.Drawing.Point(6, 81);
 			this.ceilingname.Name = "ceilingname";
-			this.ceilingname.Size = new System.Drawing.Size(68, 13);
+			this.ceilingname.Size = new System.Drawing.Size(68, 14);
 			this.ceilingname.TabIndex = 1;
 			this.ceilingname.Text = "BROWNHUG";
-			this.ceilingname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// ceilingtex
 			// 
@@ -401,9 +391,9 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceilingtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.ceilingtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.ceilingtex.Controls.Add(this.labelCeilTextureSize);
-			this.ceilingtex.Location = new System.Drawing.Point(8, 19);
+			this.ceilingtex.Location = new System.Drawing.Point(7, 14);
 			this.ceilingtex.Name = "ceilingtex";
-			this.ceilingtex.Size = new System.Drawing.Size(68, 60);
+			this.ceilingtex.Size = new System.Drawing.Size(64, 64);
 			this.ceilingtex.TabIndex = 0;
 			// 
 			// labelCeilTextureSize
@@ -412,7 +402,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.labelCeilTextureSize.BackColor = System.Drawing.Color.Black;
 			this.labelCeilTextureSize.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelCeilTextureSize.ForeColor = System.Drawing.Color.White;
-			this.labelCeilTextureSize.Location = new System.Drawing.Point(3, 1);
+			this.labelCeilTextureSize.Location = new System.Drawing.Point(1, 1);
 			this.labelCeilTextureSize.MaximumSize = new System.Drawing.Size(0, 13);
 			this.labelCeilTextureSize.Name = "labelCeilTextureSize";
 			this.labelCeilTextureSize.Size = new System.Drawing.Size(48, 13);
@@ -421,7 +411,14 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// floorpanel
 			// 
-			this.floorpanel.Controls.Add(this.floorInfo);
+			this.floorpanel.Controls.Add(this.floorLight);
+			this.floorpanel.Controls.Add(this.floorOffsetLabel);
+			this.floorpanel.Controls.Add(this.floorLightLabel);
+			this.floorpanel.Controls.Add(this.floorScale);
+			this.floorpanel.Controls.Add(this.floorOffset);
+			this.floorpanel.Controls.Add(this.floorAngleLabel);
+			this.floorpanel.Controls.Add(this.floorScaleLabel);
+			this.floorpanel.Controls.Add(this.floorAngle);
 			this.floorpanel.Controls.Add(this.floorname);
 			this.floorpanel.Controls.Add(this.floortex);
 			this.floorpanel.Location = new System.Drawing.Point(303, 0);
@@ -432,61 +429,50 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floorpanel.TabStop = false;
 			this.floorpanel.Text = " Floor ";
 			// 
-			// floorInfo
-			// 
-			this.floorInfo.Controls.Add(this.floorLight);
-			this.floorInfo.Controls.Add(this.floorOffsetLabel);
-			this.floorInfo.Controls.Add(this.floorScale);
-			this.floorInfo.Controls.Add(this.floorOffset);
-			this.floorInfo.Controls.Add(this.floorLightLabel);
-			this.floorInfo.Controls.Add(this.floorAngleLabel);
-			this.floorInfo.Controls.Add(this.floorScaleLabel);
-			this.floorInfo.Controls.Add(this.floorAngle);
-			this.floorInfo.Location = new System.Drawing.Point(80, 15);
-			this.floorInfo.Name = "floorInfo";
-			this.floorInfo.Size = new System.Drawing.Size(118, 80);
-			this.floorInfo.TabIndex = 30;
-			// 
 			// floorLight
 			// 
-			this.floorLight.Location = new System.Drawing.Point(54, 61);
+			this.floorLight.AutoSize = true;
+			this.floorLight.Location = new System.Drawing.Point(124, 63);
 			this.floorLight.Name = "floorLight";
-			this.floorLight.Size = new System.Drawing.Size(60, 14);
+			this.floorLight.Size = new System.Drawing.Size(15, 14);
 			this.floorLight.TabIndex = 29;
-			this.floorLight.Text = "255 (abs.)";
+			this.floorLight.Text = "--";
 			// 
 			// floorScale
 			// 
-			this.floorScale.Location = new System.Drawing.Point(54, 43);
+			this.floorScale.AutoSize = true;
+			this.floorScale.Location = new System.Drawing.Point(124, 47);
 			this.floorScale.Name = "floorScale";
-			this.floorScale.Size = new System.Drawing.Size(60, 14);
+			this.floorScale.Size = new System.Drawing.Size(29, 14);
 			this.floorScale.TabIndex = 28;
-			this.floorScale.Text = "-1.0, -1.0";
+			this.floorScale.Text = "--, --";
 			// 
 			// floorOffset
 			// 
-			this.floorOffset.Location = new System.Drawing.Point(54, 7);
+			this.floorOffset.AutoSize = true;
+			this.floorOffset.Location = new System.Drawing.Point(124, 15);
 			this.floorOffset.Name = "floorOffset";
-			this.floorOffset.Size = new System.Drawing.Size(60, 14);
+			this.floorOffset.Size = new System.Drawing.Size(29, 14);
 			this.floorOffset.TabIndex = 23;
-			this.floorOffset.Text = "-100, -100";
+			this.floorOffset.Text = "--, --";
 			// 
 			// floorAngle
 			// 
-			this.floorAngle.Location = new System.Drawing.Point(54, 25);
+			this.floorAngle.AutoSize = true;
+			this.floorAngle.Location = new System.Drawing.Point(124, 31);
 			this.floorAngle.Name = "floorAngle";
-			this.floorAngle.Size = new System.Drawing.Size(60, 14);
+			this.floorAngle.Size = new System.Drawing.Size(15, 14);
 			this.floorAngle.TabIndex = 25;
-			this.floorAngle.Text = "45";
+			this.floorAngle.Text = "--";
 			// 
 			// floorname
 			// 
-			this.floorname.Location = new System.Drawing.Point(8, 80);
+			this.floorname.AutoSize = true;
+			this.floorname.Location = new System.Drawing.Point(6, 81);
 			this.floorname.Name = "floorname";
-			this.floorname.Size = new System.Drawing.Size(68, 13);
+			this.floorname.Size = new System.Drawing.Size(68, 14);
 			this.floorname.TabIndex = 1;
 			this.floorname.Text = "BROWNHUG";
-			this.floorname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// floortex
 			// 
@@ -494,9 +480,9 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floortex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.floortex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.floortex.Controls.Add(this.labelFloorTextureSize);
-			this.floortex.Location = new System.Drawing.Point(8, 19);
+			this.floortex.Location = new System.Drawing.Point(7, 14);
 			this.floortex.Name = "floortex";
-			this.floortex.Size = new System.Drawing.Size(68, 60);
+			this.floortex.Size = new System.Drawing.Size(64, 64);
 			this.floortex.TabIndex = 0;
 			// 
 			// labelFloorTextureSize
@@ -505,7 +491,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.labelFloorTextureSize.BackColor = System.Drawing.Color.Black;
 			this.labelFloorTextureSize.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelFloorTextureSize.ForeColor = System.Drawing.Color.White;
-			this.labelFloorTextureSize.Location = new System.Drawing.Point(3, 1);
+			this.labelFloorTextureSize.Location = new System.Drawing.Point(1, 1);
 			this.labelFloorTextureSize.MaximumSize = new System.Drawing.Size(0, 13);
 			this.labelFloorTextureSize.Name = "labelFloorTextureSize";
 			this.labelFloorTextureSize.Size = new System.Drawing.Size(48, 13);
@@ -518,10 +504,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flowLayoutPanel1.Controls.Add(this.floorpanel);
 			this.flowLayoutPanel1.Controls.Add(this.ceilingpanel);
 			this.flowLayoutPanel1.Controls.Add(this.flagsPanel);
+			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-			this.flowLayoutPanel1.Size = new System.Drawing.Size(1090, 100);
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(1400, 100);
 			this.flowLayoutPanel1.TabIndex = 5;
 			this.flowLayoutPanel1.WrapContents = false;
 			// 
@@ -564,11 +551,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.sectorinfo.ResumeLayout(false);
 			this.sectorinfo.PerformLayout();
 			this.ceilingpanel.ResumeLayout(false);
-			this.ceilingInfo.ResumeLayout(false);
+			this.ceilingpanel.PerformLayout();
 			this.ceilingtex.ResumeLayout(false);
 			this.ceilingtex.PerformLayout();
 			this.floorpanel.ResumeLayout(false);
-			this.floorInfo.ResumeLayout(false);
+			this.floorpanel.PerformLayout();
 			this.floortex.ResumeLayout(false);
 			this.floortex.PerformLayout();
 			this.flowLayoutPanel1.ResumeLayout(false);
@@ -597,8 +584,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label ceilingAngle;
 		private System.Windows.Forms.Label ceilingOffset;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-		private System.Windows.Forms.Panel ceilingInfo;
-		private System.Windows.Forms.Panel floorInfo;
 		private System.Windows.Forms.Label floorLight;
 		private System.Windows.Forms.Label floorScale;
 		private System.Windows.Forms.Label floorOffset;
@@ -619,5 +604,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label labelLight;
 		private System.Windows.Forms.GroupBox flagsPanel;
 		private System.Windows.Forms.ListView flags;
+		private System.Windows.Forms.Label labelTag;
+		private System.Windows.Forms.Label labelEffect;
 	}
 }

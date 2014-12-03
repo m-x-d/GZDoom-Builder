@@ -130,6 +130,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Collapse {
+            get {
+                object obj = ResourceManager.GetObject("Collapse", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap ColorPick {
             get {
                 object obj = ResourceManager.GetObject("ColorPick", resourceCulture);
@@ -161,6 +168,13 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap ErrorLarge {
             get {
                 object obj = ResourceManager.GetObject("ErrorLarge", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Expand {
+            get {
+                object obj = ResourceManager.GetObject("Expand", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
