@@ -51,8 +51,8 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool updating;
 		private int keepselected;
 		private bool browseFlats; //mxd
-		private static bool uselongtexturenames = (General.Map != null && General.Map.Config.UseLongTextureNames); //mxd
-		private static bool showtexturesizes = (General.Settings != null && General.Settings.ShowTextureSizes); //mxd
+		private static bool uselongtexturenames; //mxd
+		private static bool showtexturesizes; //mxd
 		
 		// All items
 		private readonly List<ImageBrowserItem> items;
@@ -70,7 +70,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool PreventSelection { get { return preventselection; } set { preventselection = value; } }
 		public bool HideInputBox { get { return splitter.Panel2Collapsed; } set { splitter.Panel2Collapsed = value; } }
 		public bool BrowseFlats { get { return browseFlats; } set { browseFlats = value; } } //mxd
-		public static bool ShowTextureSizes { get { return showtexturesizes; } } //mxd
+		public static bool ShowTextureSizes { get { return showtexturesizes; } internal set { showtexturesizes = value; } } //mxd
+		public static bool UseLongTextureNames { get { return uselongtexturenames; } internal set { uselongtexturenames = value; } } //mxd
 		public ListViewItem SelectedItem { get { if(list.SelectedItems.Count > 0) return list.SelectedItems[0]; else return null; } }
 		
 		#endregion
