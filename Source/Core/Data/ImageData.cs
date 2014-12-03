@@ -50,8 +50,9 @@ namespace CodeImp.DoomBuilder.Data
 		protected bool worldpanning;
 		private bool usecolorcorrection;
 		protected string fullname; //mxd. name with path;
-		protected string virtualname; //mxd
-		protected string displayname; //mxd
+		protected string shortname; //mxd. Name in uppercase and clamped to DataManager.CLASIC_IMAGE_NAME_LENGTH
+		protected string virtualname; //mxd. Path of this name is used in TextureBrowserForm
+		protected string displayname; //mxd. Name to display in TextureBrowserForm
 		protected bool isFlat; //mxd. if false, it's a texture
 		protected bool hasLongName; //mxd. Texture name is longer than DataManager.CLASIC_IMAGE_NAME_LENGTH
 		protected bool hasPatchWithSameName; //mxd
@@ -84,11 +85,13 @@ namespace CodeImp.DoomBuilder.Data
 		
 		public string Name { get { return name; } }
 		public long LongName { get { return longname; } }
+		public string ShortName { get { return shortname; } } //mxd
 		public string FullName { get { return fullname; } } //mxd
 		public string VirtualName { get { return virtualname; } } //mxd
 		public string DisplayName { get { return displayname; } } //mxd
 		public bool IsFlat { get { return isFlat; } } //mxd
 		public bool HasPatchWithSameName { get { return hasPatchWithSameName; } } //mxd
+		internal bool HasLongName { get { return hasLongName; } } //mxd
 		public bool UseColorCorrection { get { return usecolorcorrection; } set { usecolorcorrection = value; } }
 		public Texture Texture { get { lock(this) { return texture; } } }
 		public bool IsPreviewLoaded { get { return (previewstate == ImageLoadState.Ready); } }
@@ -184,6 +187,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			this.name = name;
 			this.fullname = name; //mxd
+			this.shortname = name; //mxd
 			this.virtualname = name; //mxd
 			this.displayname = name; //mxd
 			this.longname = Lump.MakeLongName(name); //mxd

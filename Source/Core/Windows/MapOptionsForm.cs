@@ -43,8 +43,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public MapOptionsForm(MapOptions options, bool newmap)
 		{
 			this.newmap = newmap;
-			int index;
-			
+
 			// Initialize
 			InitializeComponent();
 
@@ -58,7 +57,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(!General.Configs[i].Enabled) continue;
 				
 				// Add config name to list
-				index = config.Items.Add(General.Configs[i]);
+				int index = config.Items.Add(General.Configs[i]);
 
 				//mxd. 
 				if(newmap && !string.IsNullOrEmpty(General.Settings.LastUsedConfigName) && General.Configs[i].Name == General.Settings.LastUsedConfigName) 
@@ -168,16 +167,6 @@ namespace CodeImp.DoomBuilder.Windows
 				levelname.Focus();
 				return;
 			}
-
-			//mxd. Long texture names
-			if(!newmap && !uselongtexturenames.Checked && options.UseLongTextureNames &&
-				MessageBox.Show(this, "Switching to short texture names may lead to texture and flat name conflicts. Do you want to continue?",
-				Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No) 
-			{
-				return;
-			}
-
-			options.UseLongTextureNames = uselongtexturenames.Checked;
 
 			// Collect information
 			ConfigurationInfo configinfo = config.SelectedItem as ConfigurationInfo; //mxd
@@ -322,10 +311,6 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					scriptcompiler.SelectedIndex = -1;
 				}
-
-				//mxd. Long texture names
-				uselongtexturenames.Enabled = ci.SupportsLongTextureNames;
-				uselongtexturenames.Checked = (ci.SupportsLongTextureNames && options.UseLongTextureNames);
 				
 				// Show resources
 				datalocations.FixedResourceLocationList(ci.Resources);

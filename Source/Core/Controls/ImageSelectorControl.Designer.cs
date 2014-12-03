@@ -32,10 +32,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.components = new System.ComponentModel.Container();
 			this.preview = new System.Windows.Forms.Panel();
 			this.labelSize = new System.Windows.Forms.Label();
-			this.imagebox = new CodeImp.DoomBuilder.Controls.ConfigurablePictureBox();
 			this.timer = new System.Windows.Forms.Timer(this.components);
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.togglefullname = new System.Windows.Forms.Button();
 			this.name = new CodeImp.DoomBuilder.Controls.AutoSelectTextbox();
+			this.imagebox = new CodeImp.DoomBuilder.Controls.ConfigurablePictureBox();
 			this.preview.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.imagebox)).BeginInit();
 			this.SuspendLayout();
@@ -45,6 +46,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.preview.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.preview.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.preview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.preview.Controls.Add(this.togglefullname);
 			this.preview.Controls.Add(this.labelSize);
 			this.preview.Controls.Add(this.imagebox);
 			this.preview.Location = new System.Drawing.Point(0, 0);
@@ -66,6 +68,33 @@ namespace CodeImp.DoomBuilder.Controls
 			this.labelSize.Text = "128x128";
 			this.labelSize.Visible = false;
 			// 
+			// timer
+			// 
+			this.timer.Tick += new System.EventHandler(this.timer_Tick);
+			// 
+			// togglefullname
+			// 
+			this.togglefullname.BackColor = System.Drawing.Color.Transparent;
+			this.togglefullname.Image = global::CodeImp.DoomBuilder.Properties.Resources.Collapse;
+			this.togglefullname.Location = new System.Drawing.Point(43, 35);
+			this.togglefullname.Name = "togglefullname";
+			this.togglefullname.Size = new System.Drawing.Size(20, 20);
+			this.togglefullname.TabIndex = 3;
+			this.togglefullname.UseVisualStyleBackColor = false;
+			this.togglefullname.Visible = false;
+			this.togglefullname.Click += new System.EventHandler(this.togglefullname_Click);
+			// 
+			// name
+			// 
+			this.name.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.name.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+			this.name.Location = new System.Drawing.Point(0, 64);
+			this.name.MaxLength = 8;
+			this.name.Name = "name";
+			this.name.Size = new System.Drawing.Size(68, 20);
+			this.name.TabIndex = 2;
+			this.name.TextChanged += new System.EventHandler(this.name_TextChanged);
+			// 
 			// imagebox
 			// 
 			this.imagebox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
@@ -85,21 +114,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.imagebox.Click += new System.EventHandler(this.preview_Click);
 			this.imagebox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.preview_MouseDown);
 			this.imagebox.MouseEnter += new System.EventHandler(this.preview_MouseEnter);
-			// 
-			// timer
-			// 
-			this.timer.Tick += new System.EventHandler(this.timer_Tick);
-			// 
-			// name
-			// 
-			this.name.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-			this.name.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-			this.name.Location = new System.Drawing.Point(0, 64);
-			this.name.MaxLength = 8;
-			this.name.Name = "name";
-			this.name.Size = new System.Drawing.Size(68, 20);
-			this.name.TabIndex = 2;
-			this.name.TextChanged += new System.EventHandler(this.name_TextChanged);
 			// 
 			// ImageSelectorControl
 			// 
@@ -128,6 +142,7 @@ namespace CodeImp.DoomBuilder.Controls
 		protected System.Windows.Forms.Timer timer;
 		private System.Windows.Forms.ToolTip tooltip;
 		private ConfigurablePictureBox imagebox;
+		private System.Windows.Forms.Button togglefullname;
 
 	}
 }

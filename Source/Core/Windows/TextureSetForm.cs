@@ -170,7 +170,7 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					bool ismatch = set.IsMatch(img);
 					if((ismatch && matchesbutton.Checked) || (!ismatch && nomatchesbutton.Checked))
-						matcheslist.Add(img.Name, img, img, null, tooltiptext);
+						matcheslist.Add(img, img, null, tooltiptext);
 				}
 				
 				// If not already mixed, add flats as well
@@ -181,7 +181,7 @@ namespace CodeImp.DoomBuilder.Windows
 					{
 						bool ismatch = set.IsMatch(img);
 						if((ismatch && matchesbutton.Checked) || (!ismatch && nomatchesbutton.Checked))
-							matcheslist.Add(img.Name, img, img, null, tooltiptext);
+							matcheslist.Add(img, img, null, tooltiptext);
 					}
 				}
 				

@@ -27,7 +27,7 @@ namespace CodeImp.DoomBuilder.Data
 	{
 		#region ================== Variables
 
-		private Bitmap loadbitmap;
+		private readonly Bitmap loadbitmap;
 		
 		#endregion
 		

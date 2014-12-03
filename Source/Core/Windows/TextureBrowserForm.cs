@@ -120,8 +120,9 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. Select the last one that was selected
 			string selectname = General.Settings.ReadSetting("browserwindow.textureset", "");
 			TreeNode match;
-			if (string.IsNullOrEmpty(selectname)) 
+			if(string.IsNullOrEmpty(selectname) || selectname == "-") 
 			{
+				// When texture name is empty, select "All" texture set
 				match = tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1];
 			} 
 			else 
@@ -356,7 +357,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(browser.SelectedItem != null)
 			{
 				ImageBrowserItem item = browser.SelectedItem as ImageBrowserItem;
-				selectedname = item.icon.Name;
+				selectedname = item.TextureName;
 				DialogResult = DialogResult.OK;
 			}
 			else
@@ -475,21 +476,21 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Add all available flats
 				foreach(ImageData img in set.Flats)
-					browser.Add(img.DisplayName, img, img, availgroup);
+					browser.Add(img, img, availgroup);
 
 				// Add all used flats
 				foreach(ImageData img in set.Flats)
-					if(img.UsedInMap) browser.Add(img.DisplayName, img, img, usedgroup);
+					if(img.UsedInMap) browser.Add(img, img, usedgroup);
 			}
 			else
 			{
 				// Add all available textures and mark the images for temporary loading
 				foreach (ImageData img in set.Textures)
-					browser.Add(img.DisplayName, img, img, availgroup);
+					browser.Add(img, img, availgroup);
 
 				// Add all used textures and mark the images for permanent loading
 				foreach (ImageData img in set.Textures)
-					if(img.UsedInMap) browser.Add(img.DisplayName, img, img, usedgroup);
+					if(img.UsedInMap) browser.Add(img, img, usedgroup);
 			}
 			
 			// Done adding

@@ -18,6 +18,7 @@
 
 using System;
 using System.IO;
+using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.IO;
 
 #endregion
@@ -67,27 +68,40 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd: filepathname is relative path to the image ("Textures\sometexture.png")
 		protected override void SetName(string filepathname) 
 		{
-			if(!General.Map.Options.UseLongTextureNames) 
+			if(!General.Map.Config.UseLongTextureNames) 
 			{
 				this.name = Path.GetFileNameWithoutExtension(filepathname.ToUpperInvariant());
-				if(this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+				if (this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+				{
 					this.name = this.name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+				}
 				this.displayname = this.name;
-				this.longname = Lump.MakeLongName(this.name); //mxd
+				this.shortname = this.name;
 			} 
 			else 
 			{
 				this.name = filepathname.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 				this.displayname = Path.GetFileNameWithoutExtension(name);
-				this.longname = Lump.MakeLongName(this.name);
+				this.shortname = this.displayname.ToUpperInvariant();
+				if (this.shortname.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+				{
+					this.shortname = this.shortname.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+				}
 				this.hasLongName = true;
 			}
 
+			this.longname = Lump.MakeLongName(this.name);
 			this.virtualname = filepathname.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 			this.fullname = filepathname;
+
 			if(General.Settings.CapitalizeTextureNames && !string.IsNullOrEmpty(this.displayname)) 
 			{
 				this.displayname = this.displayname.ToUpperInvariant();
+			}
+
+			if(this.displayname.Length > ImageBrowserItem.MAX_NAME_LENGTH) 
+			{
+				this.displayname = this.displayname.Substring(0, ImageBrowserItem.MAX_NAME_LENGTH);
 			}
 		}
 

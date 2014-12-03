@@ -610,10 +610,6 @@ namespace CodeImp.DoomBuilder.Data
 			string[] files = GetAllFiles(path, includesubdirs);
 			foreach(string f in files)
 			{
-				//mxd. Skip IMGZ files
-				string ext = Path.GetExtension(f);
-				if(!string.IsNullOrEmpty(ext) && ext.ToUpperInvariant() == ".IMGZ") continue;
-				
 				if(string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(f))) 
 				{
 					// Can't load image without name

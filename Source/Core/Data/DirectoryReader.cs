@@ -140,17 +140,19 @@ namespace CodeImp.DoomBuilder.Data
 			try
 			{
 				//mxd. Long names are absolute
-				if(General.Map.Options.UseLongTextureNames && !string.IsNullOrEmpty(Path.GetExtension(pname))) 
+				if (longname)
 				{
 					pname = pname.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 					return (FileExists(pname) ? LoadFile(pname) : null);
 				}
-				
-				// Find in textures directory
-				string path = Path.Combine(TEXTURES_DIR, Path.GetDirectoryName(pname));
-				string filename = FindFirstFile(path, Path.GetFileName(pname), true);
-				if(!string.IsNullOrEmpty(filename) && FileExists(filename))
-					return LoadFile(filename);
+				else
+				{
+					// Find in textures directory
+					string path = Path.Combine(TEXTURES_DIR, Path.GetDirectoryName(pname));
+					string filename = FindFirstFile(path, Path.GetFileName(pname), true);
+					if (!string.IsNullOrEmpty(filename) && FileExists(filename)) 
+						return LoadFile(filename);
+				}
 			}
 			catch(Exception e)
 			{
@@ -266,24 +268,30 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Voxels (mxd)
 
 		//mxd.  This finds and returns a voxel stream
-		public override Stream GetVoxelData(string name) {
+		public override Stream GetVoxelData(string name)
+		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Find in any of the wad files
-			for(int i = wads.Count - 1; i >= 0; i--) {
+			for(int i = wads.Count - 1; i >= 0; i--)
+			{
 				Stream voxel = wads[i].GetVoxelData(name);
 				if(voxel != null) return voxel;
 			}
 
-			try {
+			try
+			{
 				// Find in voxels directory
 				string path = Path.Combine(VOXELS_DIR, Path.GetDirectoryName(name));
 				string filename = FindFirstFile(path, Path.GetFileName(name), true);
-				if((filename != null) && FileExists(filename)) {
+				if((filename != null) && FileExists(filename))
+				{
 					return LoadFile(filename);
 				}
-			} catch(Exception e) {
+			}
+			catch(Exception e)
+			{
 				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading voxel '" + name + "' from directory: " + e.Message);
 			}
 

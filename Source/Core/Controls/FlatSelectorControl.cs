@@ -44,6 +44,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(string.IsNullOrEmpty(imagename))
 			{
 				DisplayImageSize(0, 0); //mxd
+				UpdateToggleImageNameButton(null); //mxd
 				
 				//mxd. Flat required?
 				return multipletextures ? Properties.Resources.ImageStack : Properties.Resources.MissingTexture;
@@ -51,6 +52,7 @@ namespace CodeImp.DoomBuilder.Controls
 			else if(imagename == "-") //mxd
 			{
 				DisplayImageSize(0, 0);
+				UpdateToggleImageNameButton(null); //mxd
 
 				// Flat required!
 				return Properties.Resources.MissingTexture;
@@ -58,6 +60,7 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				ImageData texture = General.Map.Data.GetFlatImage(imagename); //mxd
+				UpdateToggleImageNameButton(texture); //mxd
 
 				if(string.IsNullOrEmpty(texture.FullName) || texture is UnknownImage) DisplayImageSize(0, 0); //mxd
 				else DisplayImageSize(texture.ScaledWidth, texture.ScaledHeight); //mxd

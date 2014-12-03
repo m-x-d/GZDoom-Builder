@@ -40,6 +40,13 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			this.Opacity = 0; //mxd
 			
+			//mxd. And now, let's hope this doesn't horribly break anything...
+			if(!(this is MainForm))
+			{
+				this.KeyPreview = true;
+				this.KeyUp += OnKeyUp;
+			}
+			
 			// Create a timer that we need to show the form
 			formshowtimer = new Timer();
 			formshowtimer.Interval = 1;
@@ -73,11 +80,12 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
-		// Block this. MainForm overrides this, so it's only called from child DelayedForms (mxd).
-		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		//mxd. Special handling to call "save screenshot" actions from any form, 
+		//which inherits form DelayedForm and either doesn't override OnKeyUp, or calls base.OnKeyUp
+		private void OnKeyUp(object sender, KeyEventArgs e)
 		{
-			if(Form.ActiveForm == this) ProcessSaveScreenshotAction((int)keyData);
-			return false;
+			e.Handled = (Form.ActiveForm == this && ProcessSaveScreenshotAction((int)e.KeyData));
+			if(e.Handled) e.SuppressKeyPress = true;
 		}
 
 		// mxd. Handle screenshot saving from any form
@@ -97,14 +105,14 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		[BeginAction("savescreenshot", BaseAction = true)]
+		[EndAction("savescreenshot", BaseAction = true)]
 		internal void SaveScreenshot() 
 		{
 			if(Form.ActiveForm == this) General.MainWindow.SaveScreenshot(false);
 		}
 
 		//mxd
-		[BeginAction("saveeditareascreenshot", BaseAction = true)]
+		[EndAction("saveeditareascreenshot", BaseAction = true)]
 		internal void SaveEditAreaScreenshot() 
 		{
 			if(Form.ActiveForm == this) General.MainWindow.SaveScreenshot(true);

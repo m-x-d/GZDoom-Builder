@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.IO
 			// Make name
 			this.name = MakeNormalName(fixedname, WAD.ENCODING).ToUpperInvariant();
 			this.fixedname = MakeFixedName(name, WAD.ENCODING);
-			this.longname = MakeLongName(name);
+			this.longname = MakeLongName(name, false); //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -126,8 +126,14 @@ namespace CodeImp.DoomBuilder.IO
 		//mxd. This returns (hopefully) unique hash value for a texture name of any length
 		public static long MakeLongName(string name)
 		{
+			return MakeLongName(name, General.Map != null && General.Map.Config != null &&  General.Map.Config.UseLongTextureNames);
+		}
+
+		//mxd. This returns (hopefully) unique hash value for a texture name of any length
+		public static long MakeLongName(string name, bool uselongnames)
+		{
 			name = name.Trim().ToUpper();
-			if(name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH && General.Map != null && General.Map.Options != null && !General.Map.Options.UseLongTextureNames)
+			if(!uselongnames && name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
 			{
 				name = name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
 			}

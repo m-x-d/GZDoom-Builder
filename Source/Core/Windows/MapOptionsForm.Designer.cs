@@ -41,7 +41,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply = new System.Windows.Forms.Button();
 			this.cancel = new System.Windows.Forms.Button();
 			this.panelres = new System.Windows.Forms.GroupBox();
-			this.uselongtexturenames = new System.Windows.Forms.CheckBox();
 			this.strictpatches = new System.Windows.Forms.CheckBox();
 			this.datalocations = new CodeImp.DoomBuilder.Controls.ResourceListEditor();
 			label3 = new System.Windows.Forms.Label();
@@ -64,12 +63,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label2
 			// 
-			label2.Location = new System.Drawing.Point(13, 83);
+			label2.AutoSize = true;
+			label2.Location = new System.Drawing.Point(58, 83);
 			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(110, 14);
+			label2.Size = new System.Drawing.Size(65, 14);
 			label2.TabIndex = 7;
 			label2.Text = "Level name:";
-			label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label1
 			// 
@@ -77,7 +76,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(110, 14);
 			label1.TabIndex = 5;
-			label1.Text = "Game configuration:";
+			label1.Text = "Game Configuration:";
 			label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// panelsettings
@@ -125,7 +124,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptcompilerlabel.Name = "scriptcompilerlabel";
 			this.scriptcompilerlabel.Size = new System.Drawing.Size(110, 14);
 			this.scriptcompilerlabel.TabIndex = 11;
-			this.scriptcompilerlabel.Text = "Script type:";
+			this.scriptcompilerlabel.Text = "Script Type:";
 			this.scriptcompilerlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// levelname
@@ -153,7 +152,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label4
 			// 
 			label4.AutoSize = true;
-			label4.Location = new System.Drawing.Point(15, 210);
+			label4.Location = new System.Drawing.Point(15, 190);
 			label4.Name = "label4";
 			label4.Size = new System.Drawing.Size(312, 42);
 			label4.TabIndex = 17;
@@ -164,7 +163,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(297, 400);
+			this.apply.Location = new System.Drawing.Point(297, 378);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 2;
@@ -176,7 +175,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(179, 400);
+			this.cancel.Location = new System.Drawing.Point(179, 378);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 3;
@@ -188,26 +187,15 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.panelres.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.panelres.Controls.Add(this.uselongtexturenames);
 			this.panelres.Controls.Add(this.strictpatches);
 			this.panelres.Controls.Add(this.datalocations);
 			this.panelres.Controls.Add(label4);
 			this.panelres.Location = new System.Drawing.Point(12, 130);
 			this.panelres.Name = "panelres";
-			this.panelres.Size = new System.Drawing.Size(397, 260);
+			this.panelres.Size = new System.Drawing.Size(397, 240);
 			this.panelres.TabIndex = 1;
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Resources ";
-			// 
-			// uselongtexturenames
-			// 
-			this.uselongtexturenames.AutoSize = true;
-			this.uselongtexturenames.Location = new System.Drawing.Point(15, 51);
-			this.uselongtexturenames.Name = "uselongtexturenames";
-			this.uselongtexturenames.Size = new System.Drawing.Size(140, 18);
-			this.uselongtexturenames.TabIndex = 21;
-			this.uselongtexturenames.Text = "Use long texture names";
-			this.uselongtexturenames.UseVisualStyleBackColor = true;
 			// 
 			// strictpatches
 			// 
@@ -224,7 +212,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.datalocations.AllowDrop = true;
 			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
 			this.datalocations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.datalocations.Location = new System.Drawing.Point(15, 75);
+			this.datalocations.Location = new System.Drawing.Point(15, 57);
 			this.datalocations.Name = "datalocations";
 			this.datalocations.Size = new System.Drawing.Size(368, 130);
 			this.datalocations.TabIndex = 0;
@@ -235,7 +223,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(421, 433);
+			this.ClientSize = new System.Drawing.Size(421, 411);
 			this.Controls.Add(this.panelres);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
@@ -271,7 +259,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ComboBox scriptcompiler;
 		private System.Windows.Forms.Label scriptcompilerlabel;
 		private System.Windows.Forms.Label examplelabel;
-		private System.Windows.Forms.CheckBox uselongtexturenames;
 
 
 	}

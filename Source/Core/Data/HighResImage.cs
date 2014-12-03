@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
@@ -50,16 +51,8 @@ namespace CodeImp.DoomBuilder.Data
 			this.patches = new List<TexturePatch>(1);
 
 			//mxd
-			if (!General.Map.Options.UseLongTextureNames)
-			{
-				if(name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
-					name = name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
-				name = name.ToUpperInvariant();
-			}
-
 			SetName(name);
-			this.virtualname = "[TEXTURES]/" + this.name; //mxd
-			this.isFlat = isflat; //mxd
+			this.isFlat = isflat;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -68,6 +61,36 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 
 		#region ================== Methods
+
+		//mxd
+		protected override void SetName(string name) 
+		{
+			if(!General.Map.Config.UseLongTextureNames) 
+			{
+				if(name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+					name = name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+				name = name.ToUpperInvariant();
+			}
+			
+			base.SetName(name);
+
+			this.virtualname = "[TEXTURES]/" + this.name;
+			if(General.Settings.CapitalizeTextureNames && !string.IsNullOrEmpty(this.displayname)) 
+			{
+				this.displayname = this.displayname.ToUpperInvariant();
+			}
+
+			if(this.displayname.Length > ImageBrowserItem.MAX_NAME_LENGTH) 
+			{
+				this.displayname = this.displayname.Substring(0, ImageBrowserItem.MAX_NAME_LENGTH);
+			}
+
+			this.shortname = this.displayname.ToUpperInvariant();
+			if(this.shortname.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH) 
+			{
+				this.shortname = this.shortname.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+			}
+		}
 
 		// This adds a patch to the texture
 		public void AddPatch(TexturePatch patch)

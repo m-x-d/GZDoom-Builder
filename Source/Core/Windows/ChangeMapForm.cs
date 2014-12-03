@@ -17,13 +17,15 @@ namespace CodeImp.DoomBuilder.Windows
 
 		public MapOptions Options { get { return options; } }
 
-		public ChangeMapForm(string filepathname, MapOptions options) {
+		public ChangeMapForm(string filepathname, MapOptions options) 
+		{
 			InitializeComponent();
 			this.options = options;
 			this.filepathname = filepathname;
 		}
 
-		private void LoadSettings() {
+		private void LoadSettings() 
+		{
 			int scanindex, checkoffset;
 			int lumpsfound, lumpsrequired = 0;
 			string lumpname;
@@ -84,9 +86,11 @@ namespace CodeImp.DoomBuilder.Windows
 			IDictionary maplumpnames = ci.Configuration.ReadSetting("maplumpnames", new Hashtable());
 
 			// Count how many required lumps we have to find
-			foreach(DictionaryEntry ml in maplumpnames) {
+			foreach(DictionaryEntry ml in maplumpnames) 
+			{
 				// Ignore the map header (it will not be found because the name is different)
-				if(ml.Key.ToString() != MapManager.CONFIG_MAP_HEADER) {
+				if(ml.Key.ToString() != MapManager.CONFIG_MAP_HEADER) 
+				{
 					// Read lump setting and count it
 					if(ci.Configuration.ReadSetting("maplumpnames." + ml.Key + ".required", false))
 						lumpsrequired++;
@@ -94,16 +98,19 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Go for all the lumps in the wad
-			for(scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++) {
+			for(scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++) 
+			{
 				// Make sure this lump is not part of the map
-				if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name)) {
+				if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name)) 
+				{
 					// Reset check
 					lumpsfound = 0;
 					checkoffset = 1;
 
 					// Continue while still within bounds and lumps are still recognized
 					while(((scanindex + checkoffset) < wadfile.Lumps.Count) &&
-						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name)) {
+						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name)) 
+					{
 						// Count the lump when it is marked as required
 						lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
 						if(ci.Configuration.ReadSetting("maplumpnames." + lumpname + ".required", false))
@@ -128,9 +135,11 @@ namespace CodeImp.DoomBuilder.Windows
 			mapslist.Sort();
 
 			//select current map
-			foreach(ListViewItem item in mapslist.Items) {
+			foreach(ListViewItem item in mapslist.Items) 
+			{
 				// Was this item previously selected?
-				if(item.Text == options.LevelName) {
+				if(item.Text == options.LevelName) 
+				{
 					// Select it again
 					item.Selected = true;
 					break;
@@ -145,16 +154,19 @@ namespace CodeImp.DoomBuilder.Windows
 			Cursor.Current = Cursors.Default;
 		}
 
-		private void ChangeMapForm_Shown(object sender, EventArgs e){
+		private void ChangeMapForm_Shown(object sender, EventArgs e)
+		{
 			LoadSettings();
 		}
 
-		private void mapslist_DoubleClick(object sender, EventArgs e) {
+		private void mapslist_DoubleClick(object sender, EventArgs e) 
+		{
 			// Click OK
 			if(mapslist.SelectedItems.Count > 0) apply.PerformClick();
 		}
 
-		private void apply_Click(object sender, EventArgs e) {
+		private void apply_Click(object sender, EventArgs e) 
+		{
 			if (mapslist.SelectedItems.Count < 1)
 			{
 				General.ShowWarningMessage("Please select a map first!", MessageBoxButtons.OK);
@@ -166,16 +178,20 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
-			// Create new map options
-			options = new MapOptions(mapsettings, mapslist.SelectedItems[0].Text);
+			// Create new map options, pass settings which should stay unchanged
+			//TODO: are there other settings which should stay unchanged?..
+			MapOptions newoptions = new MapOptions(mapsettings, mapslist.SelectedItems[0].Text);
+			newoptions.ConfigFile = options.ConfigFile;
+			options = newoptions;
 			
 			// Hide window
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
 
-		private void cancel_Click(object sender, EventArgs e) {
-			// Just hide window
+		private void cancel_Click(object sender, EventArgs e) 
+		{
+			// Just hide the window
 			this.DialogResult = DialogResult.Cancel;
 			this.Close();
 		}

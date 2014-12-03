@@ -58,11 +58,6 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the image
 		protected override void LocalLoadImage()
 		{
-			IImageReader reader;
-			MemoryStream mem;
-			Stream patchdata;
-			byte[] membytes;
-
 			// Checks
 			if(this.IsImageLoaded) return;
 
@@ -70,18 +65,18 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Get the patch data stream
 				if(bitmap != null) bitmap.Dispose(); bitmap = null;
-				patchdata = General.Map.Data.GetTextureData(lumpname, hasLongName);
+				Stream patchdata = General.Map.Data.GetTextureData(lumpname, hasLongName);
 				if(patchdata != null)
 				{
 					// Copy patch data to memory
 					patchdata.Seek(0, SeekOrigin.Begin);
-					membytes = new byte[(int)patchdata.Length];
+					byte[] membytes = new byte[(int)patchdata.Length];
 					patchdata.Read(membytes, 0, (int)patchdata.Length);
-					mem = new MemoryStream(membytes);
+					MemoryStream mem = new MemoryStream(membytes);
 					mem.Seek(0, SeekOrigin.Begin);
 
 					// Get a reader for the data
-					reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMPICTURE, General.Map.Data.Palette);
+					IImageReader reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMPICTURE, General.Map.Data.Palette);
 					if(!(reader is UnknownImageReader))
 					{
 						// Load the image

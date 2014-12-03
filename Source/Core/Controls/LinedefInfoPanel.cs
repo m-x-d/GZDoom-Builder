@@ -18,7 +18,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
@@ -31,11 +33,9 @@ namespace CodeImp.DoomBuilder.Controls
 {
 	internal partial class LinedefInfoPanel : UserControl
 	{
-		private int hexenformatwidth;
-		private int doomformatwidth;
-		private List<UniversalFieldInfo> fieldInfos;
-		private int[] labelPositionsY = new[] { 39, 58, 77 }; //mxd
-		private const int defaultPanelWidth = 270; //mxd
+		private readonly int hexenformatwidth;
+		private readonly int doomformatwidth;
+		private readonly int[] labelPositionsY = new[] { 39, 58, 77 }; //mxd
 		
 		// Constructor
 		public LinedefInfoPanel()
@@ -46,17 +46,21 @@ namespace CodeImp.DoomBuilder.Controls
 			// Hide stuff when in Doom format
 			hexenformatwidth = infopanel.Width;
 			doomformatwidth = infopanel.Width - 190;
+
+			//mxd
+			labelTextureFrontTop.BackColor = Color.FromArgb(128, labelTextureFrontTop.BackColor);
+			labelTextureFrontMid.BackColor = Color.FromArgb(128, labelTextureFrontMid.BackColor);
+			labelTextureFrontBottom.BackColor = Color.FromArgb(128, labelTextureFrontBottom.BackColor);
+
+			labelTextureBackTop.BackColor = Color.FromArgb(128, labelTextureBackTop.BackColor);
+			labelTextureBackMid.BackColor = Color.FromArgb(128, labelTextureBackMid.BackColor);
+			labelTextureBackBottom.BackColor = Color.FromArgb(128, labelTextureBackBottom.BackColor);
 		}
 		
 		// This shows the info
 		public void ShowInfo(Linedef l)
 		{
-			bool upperunpegged, lowerunpegged;
 			string peggedness;
-
-			//mxd
-			if (General.Map.UDMF && fieldInfos == null) 
-				fieldInfos = General.Map.Config.SidedefFields;
 			
 			// Show/hide stuff depending on format
 			if(!General.Map.FormatInterface.HasActionArgs)
@@ -108,6 +112,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 				activation.Top = labelPositionsY[0];
 				activationlabel.Top = labelPositionsY[0];
+				activation.Enabled = (l.Activate != 0); //mxd
+				activationlabel.Enabled = (l.Activate != 0); //mxd
 				unpegged.Top = labelPositionsY[0];
 				peglabel.Top = labelPositionsY[0];
 
@@ -130,6 +136,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 				//set tag
 				tag.Text = l.Tag + (General.Map.Options.TagLabels.ContainsKey(l.Tag) ? " (" + General.Map.Options.TagLabels[l.Tag] + ")" : string.Empty);
+				tag.Enabled = (l.Tag != 0);
+				taglabel.Enabled = (l.Tag != 0);
 
 				length.Top = labelPositionsY[0];
 				lengthlabel.Top = labelPositionsY[0];
@@ -151,8 +159,8 @@ namespace CodeImp.DoomBuilder.Controls
 			LinedefActionInfo act = General.Map.Config.GetLinedefActionInfo(l.Action);
 			
 			// Determine peggedness
-			upperunpegged = l.IsFlagSet(General.Map.Config.UpperUnpeggedFlag);
-			lowerunpegged = l.IsFlagSet(General.Map.Config.LowerUnpeggedFlag);
+			bool upperunpegged = l.IsFlagSet(General.Map.Config.UpperUnpeggedFlag);
+			bool lowerunpegged = l.IsFlagSet(General.Map.Config.LowerUnpeggedFlag);
 			if(upperunpegged && lowerunpegged)
 				peggedness = "Upper & Lower";
 			else if(upperunpegged)
@@ -168,6 +176,8 @@ namespace CodeImp.DoomBuilder.Controls
 			length.Text = l.Length.ToString("0.##");
 			angle.Text = l.AngleDeg + "\u00B0";
 			unpegged.Text = peggedness;
+			action.Enabled = (act.Index != 0);
+			actionlabel.Enabled = (act.Index != 0);
 
 			//mxd
 			bool hasArg0Str = General.Map.UDMF && Array.IndexOf(GZGeneral.ACS_SPECIALS, l.Action) != -1 && l.Fields.ContainsKey("arg0str");
@@ -193,65 +203,61 @@ namespace CodeImp.DoomBuilder.Controls
 			if (hasArg0Str) 
 				arg1.Text = '"' + l.Fields["arg0str"].Value.ToString() + '"';
 			else 
-				setArgumentText(act.Args[0], arg1, l.Args[0]);
-			setArgumentText(act.Args[1], arg2, l.Args[1]);
-			setArgumentText(act.Args[2], arg3, l.Args[2]);
-			setArgumentText(act.Args[3], arg4, l.Args[3]);
-			setArgumentText(act.Args[4], arg5, l.Args[4]);
+				SetArgumentText(act.Args[0], arg1, l.Args[0]);
+			SetArgumentText(act.Args[1], arg2, l.Args[1]);
+			SetArgumentText(act.Args[2], arg3, l.Args[2]);
+			SetArgumentText(act.Args[3], arg4, l.Args[3]);
+			SetArgumentText(act.Args[4], arg5, l.Args[4]);
 
 			// Front side available?
 			if(l.Front != null)
 			{
-				int addedWidth = 0; //mxd
+				//mxd. Extended info shown?
+				bool hasTopFields = false;
+				bool hasMiddleFields = false;
+				bool hasBottomFields = false;
 				
 				// Show sidedef info
 				frontpanel.Visible = true; //mxd
-
 				frontpanel.Text = " Front Sidedef " + l.Front.Index;
-				frontsector.Text = " Sector " + l.Front.Sector.Index;
-				frontsector.Visible = true;
 				
 				//mxd
 				if(General.Map.UDMF) 
 				{
 					//light
 					frontoffsetlabel.Text = "Front light:";
-					setUDMFLight(l.Front, frontoffsetlabel, frontoffset);
+					SetUDMFLight(l.Front, frontoffsetlabel, frontoffset);
 
-					//global offset
-					frontpanel.Text += ". Offset: " + l.Front.OffsetX + ", " + l.Front.OffsetY;
-
-					bool hasTopFields = false;
-					bool hasMiddleFields = false;
-					bool hasBottomFields = false;
+					//global offset, sector index
+					frontpanel.Text += ". Offset " + l.Front.OffsetX + ", " + l.Front.OffsetY + ". Sector " + l.Front.Sector.Index + " ";
 					
 					//sidedef top
-					if(checkPairedUDMFFields(l.Front.Fields, "offsetx_top", "offsety_top", frontTopUDMFOffsetLabel, frontTopUDMFOffset))
-						hasTopFields = true;
-					if (checkPairedUDMFFields(l.Front.Fields, "scalex_top", "scaley_top", frontTopUDMFScaleLabel, frontTopUDMFScale))
-						hasTopFields = true;
+					hasTopFields =  SetPairedUDMFFieldsLabel(l.Front.Fields, "offsetx_top", "offsety_top", 0.0f, frontTopUDMFOffsetLabel, frontTopUDMFOffset);
+					hasTopFields |= SetPairedUDMFFieldsLabel(l.Front.Fields, "scalex_top", "scaley_top", 1.0f, frontTopUDMFScaleLabel, frontTopUDMFScale);
 
 					//sidedef middle
-					if (checkPairedUDMFFields(l.Front.Fields, "offsetx_mid", "offsety_mid", frontMidUDMFOffsetLabel, frontMidUDMFOffset))
-						hasMiddleFields = true;
-					if (checkPairedUDMFFields(l.Front.Fields, "scalex_mid", "scaley_mid", frontMidUDMFScaleLabel, frontMidUDMFScale))
-						hasMiddleFields = true;
+					hasMiddleFields =  SetPairedUDMFFieldsLabel(l.Front.Fields, "offsetx_mid", "offsety_mid", 0.0f, frontMidUDMFOffsetLabel, frontMidUDMFOffset);
+					hasMiddleFields |= SetPairedUDMFFieldsLabel(l.Front.Fields, "scalex_mid", "scaley_mid", 1.0f, frontMidUDMFScaleLabel, frontMidUDMFScale);
 
 					//sidedef bottom
-					if (checkPairedUDMFFields(l.Front.Fields, "offsetx_bottom", "offsety_bottom", frontBottomUDMFOffsetLabel, frontBottomUDMFOffset))
-						hasBottomFields = true;
-					if (checkPairedUDMFFields(l.Front.Fields, "scalex_bottom", "scaley_bottom", frontBottomUDMFScaleLabel, frontBottomUDMFScale))
-						hasBottomFields = true;
+					hasBottomFields =  SetPairedUDMFFieldsLabel(l.Front.Fields, "offsetx_bottom", "offsety_bottom", 0.0f, frontBottomUDMFOffsetLabel, frontBottomUDMFOffset);
+					hasBottomFields |= SetPairedUDMFFieldsLabel(l.Front.Fields, "scalex_bottom", "scaley_bottom", 1.0f, frontBottomUDMFScaleLabel, frontBottomUDMFScale);
 
 					//visibility
-					panelUDMFFrontTop.Visible = hasTopFields;
-					panelUDMFFrontMid.Visible = hasMiddleFields;
-					panelUDMFFrontBottom.Visible = hasBottomFields;
+					frontTopUDMFOffset.Visible = hasTopFields;
+					frontTopUDMFOffsetLabel.Visible = hasTopFields;
+					frontTopUDMFScale.Visible = hasTopFields;
+					frontTopUDMFScaleLabel.Visible = hasTopFields;
 
-					//size
-					if(hasTopFields) addedWidth = 64;
-					if(hasMiddleFields) addedWidth += 64;
-					if(hasBottomFields) addedWidth += 64;
+					frontMidUDMFOffset.Visible = hasMiddleFields;
+					frontMidUDMFOffsetLabel.Visible = hasMiddleFields;
+					frontMidUDMFScale.Visible = hasMiddleFields;
+					frontMidUDMFScaleLabel.Visible = hasMiddleFields;
+
+					frontBottomUDMFOffset.Visible = hasBottomFields;
+					frontBottomUDMFOffsetLabel.Visible = hasBottomFields;
+					frontBottomUDMFScale.Visible = hasBottomFields;
+					frontBottomUDMFScaleLabel.Visible = hasBottomFields;
 				} 
 				else 
 				{
@@ -260,22 +266,26 @@ namespace CodeImp.DoomBuilder.Controls
 					frontoffsetlabel.Enabled = true;
 					frontoffset.Enabled = true;
 
-					panelUDMFFrontTop.Visible = false;
-					panelUDMFFrontMid.Visible = false;
-					panelUDMFFrontBottom.Visible = false;
+					//mxd. Sector index
+					frontpanel.Text += ". Sector " + l.Front.Sector.Index + " ";
 				}
 
+				//mxd. Set texture names, update panel sizes
+				UpdateTexturePanel(panelFrontTop, l.Front.HighTexture, fronthighname, labelTextureFrontTop,
+					Math.Max(frontTopUDMFOffset.Right, frontTopUDMFScale.Right) + 4, fronthightex,
+					frontTopUDMFOffsetLabel.Left, hasTopFields, l.Front.HighRequired());
+
+				UpdateTexturePanel(panelFrontMid, l.Front.MiddleTexture, frontmidname, labelTextureFrontMid,
+					Math.Max(frontMidUDMFOffset.Right, frontMidUDMFScale.Right) + 4, frontmidtex,
+					frontMidUDMFOffsetLabel.Left, hasMiddleFields, l.Front.MiddleRequired());
+
+				UpdateTexturePanel(panelFrontLow, l.Front.LowTexture, frontlowname, labelTextureFrontBottom,
+					Math.Max(frontBottomUDMFOffset.Right, frontBottomUDMFScale.Right) + 4, frontlowtex,
+					frontBottomUDMFOffsetLabel.Left, hasBottomFields, l.Front.LowRequired());
+
 				//mxd. Resize panel
-				frontpanel.Width = defaultPanelWidth + addedWidth + 12;
-				flowLayoutPanelFront.Width = defaultPanelWidth + addedWidth;
-
-				// Show textures
-				DisplaySidedefTexture(fronthightex, fronthighname, labelTextureFrontTop, l.Front.HighTexture, l.Front.HighRequired());
-				DisplaySidedefTexture(frontmidtex, frontmidname, labelTextureFrontMid, l.Front.MiddleTexture, l.Front.MiddleRequired());
-				DisplaySidedefTexture(frontlowtex, frontlowname, labelTextureFrontBottom, l.Front.LowTexture, l.Front.LowRequired());
-
-				//mxd. Position label
-				frontsector.Left = frontpanel.Width - frontsector.Width - 12;
+				flowLayoutPanelFront.Width = panelFrontLow.Right;
+				frontpanel.Width = flowLayoutPanelFront.Width + flowLayoutPanelFront.Left * 2 - 4;
 			}
 			else
 			{
@@ -304,76 +314,80 @@ namespace CodeImp.DoomBuilder.Controls
 			// Back size available?
 			if(l.Back != null)
 			{
-				int addedWidth = 0; //mxd
+				//mxd. Extended info shown?
+				bool hasTopFields = false;
+				bool hasMiddleFields = false;
+				bool hasBottomFields = false;
 				
 				// Show sidedef info
 				backpanel.Visible = true; //mxd
 				backpanel.Text = " Back Sidedef " + l.Back.Index;
-				backsector.Text = " Sector " + l.Back.Sector.Index;
-				backsector.Visible = true;
 
 				//mxd
-				if(General.Map.UDMF) {
+				if(General.Map.UDMF) 
+				{
 					//light
 					backoffsetlabel.Text = "Back light:";
-					setUDMFLight(l.Back, backoffsetlabel, backoffset);
+					SetUDMFLight(l.Back, backoffsetlabel, backoffset);
 
-					//global offset
-					backpanel.Text += ". Offset: " + l.Back.OffsetX + ", " + l.Back.OffsetY;
-
-					bool hasTopFields = false;
-					bool hasMiddleFields = false;
-					bool hasBottomFields = false;
+					//global offset, sector index
+					backpanel.Text += ". Offset " + l.Back.OffsetX + ", " + l.Back.OffsetY + ". Sector " + l.Back.Sector.Index + " ";
 
 					//sidedef top
-					if (checkPairedUDMFFields(l.Back.Fields, "offsetx_top", "offsety_top", backTopUDMFOffsetLabel, backTopUDMFOffset))
-						hasTopFields = true;
-					if (checkPairedUDMFFields(l.Back.Fields, "scalex_top", "scaley_top", backTopUDMFScaleLabel, backTopUDMFScale))
-						hasTopFields = true;
+					hasTopFields =  SetPairedUDMFFieldsLabel(l.Back.Fields, "offsetx_top", "offsety_top", 0f, backTopUDMFOffsetLabel, backTopUDMFOffset);
+					hasTopFields |= SetPairedUDMFFieldsLabel(l.Back.Fields, "scalex_top", "scaley_top", 1.0f, backTopUDMFScaleLabel, backTopUDMFScale);
 
 					//sidedef middle
-					if (checkPairedUDMFFields(l.Back.Fields, "offsetx_mid", "offsety_mid", backMidUDMFOffsetLabel, backMidUDMFOffset))
-						hasMiddleFields = true;
-					if (checkPairedUDMFFields(l.Back.Fields, "scalex_mid", "scaley_mid", backMidUDMFScaleLabel, backMidUDMFScale))
-						hasMiddleFields = true;
+					hasMiddleFields =  SetPairedUDMFFieldsLabel(l.Back.Fields, "offsetx_mid", "offsety_mid", 0f, backMidUDMFOffsetLabel, backMidUDMFOffset);
+					hasMiddleFields |= SetPairedUDMFFieldsLabel(l.Back.Fields, "scalex_mid", "scaley_mid", 1.0f, backMidUDMFScaleLabel, backMidUDMFScale);
 
 					//sidedef bottom
-					if (checkPairedUDMFFields(l.Back.Fields, "offsetx_bottom", "offsety_bottom", backBottomUDMFOffsetLabel, backBottomUDMFOffset))
-						hasBottomFields = true;
-					if (checkPairedUDMFFields(l.Back.Fields, "scalex_bottom", "scaley_bottom", backBottomUDMFScaleLabel, backBottomUDMFScale))
-						hasBottomFields = true;
+					hasBottomFields =  SetPairedUDMFFieldsLabel(l.Back.Fields, "offsetx_bottom", "offsety_bottom", 0f, backBottomUDMFOffsetLabel, backBottomUDMFOffset);
+					hasBottomFields |= SetPairedUDMFFieldsLabel(l.Back.Fields, "scalex_bottom", "scaley_bottom", 1.0f, backBottomUDMFScaleLabel, backBottomUDMFScale);
 
 					//visibility
-					panelUDMFBackTop.Visible = hasTopFields;
-					panelUDMFBackMid.Visible = hasMiddleFields;
-					panelUDMFBackBottom.Visible = hasBottomFields;
+					backTopUDMFOffset.Visible = hasTopFields;
+					backTopUDMFOffsetLabel.Visible = hasTopFields;
+					backTopUDMFScale.Visible = hasTopFields;
+					backTopUDMFScaleLabel.Visible = hasTopFields;
 
-					//size
-					if(hasTopFields) addedWidth = 64;
-					if(hasMiddleFields) addedWidth += 64;
-					if(hasBottomFields) addedWidth += 64;
-				} else {
+					backMidUDMFOffset.Visible = hasMiddleFields;
+					backMidUDMFOffsetLabel.Visible = hasMiddleFields;
+					backMidUDMFScale.Visible = hasMiddleFields;
+					backMidUDMFScaleLabel.Visible = hasMiddleFields;
+
+					backBottomUDMFOffset.Visible = hasBottomFields;
+					backBottomUDMFOffsetLabel.Visible = hasBottomFields;
+					backBottomUDMFScale.Visible = hasBottomFields;
+					backBottomUDMFScaleLabel.Visible = hasBottomFields;
+				}
+				else
+				{
 					backoffsetlabel.Text = "Back offset:";
 					backoffset.Text = l.Back.OffsetX + ", " + l.Back.OffsetY;
 					backoffsetlabel.Enabled = true;
 					backoffset.Enabled = true;
 
-					panelUDMFBackTop.Visible = false;
-					panelUDMFBackMid.Visible = false;
-					panelUDMFBackBottom.Visible = false;
+					// Sector index
+					backpanel.Text += ". Sector " + l.Back.Sector.Index + " ";
 				}
 
+				//mxd. Set texture names, update panel sizes
+				UpdateTexturePanel(panelBackTop, l.Back.HighTexture, backhighname, labelTextureBackTop, 
+					Math.Max(backTopUDMFOffset.Right, backTopUDMFScale.Right) + 4, backhightex,
+					backTopUDMFOffsetLabel.Left, hasTopFields, l.Back.HighRequired());
+
+				UpdateTexturePanel(panelBackMid, l.Back.MiddleTexture, backmidname, labelTextureBackMid,
+					Math.Max(backMidUDMFOffset.Right, backMidUDMFScale.Right) + 4, backmidtex,
+					backMidUDMFOffsetLabel.Left, hasMiddleFields, l.Back.MiddleRequired());
+
+				UpdateTexturePanel(panelBackLow, l.Back.LowTexture, backlowname, labelTextureBackBottom,
+					Math.Max(backBottomUDMFOffset.Right, backBottomUDMFScale.Right) + 4, backlowtex,
+					backBottomUDMFOffsetLabel.Left, hasBottomFields, l.Back.LowRequired());
+
 				//mxd. Resize panel
-				backpanel.Width = defaultPanelWidth + addedWidth + 12;
-				flowLayoutPanelBack.Width = defaultPanelWidth + addedWidth;
-
-				// Show textures
-				DisplaySidedefTexture(backhightex, backhighname, labelTextureBackTop, l.Back.HighTexture, l.Back.HighRequired());
-				DisplaySidedefTexture(backmidtex, backmidname, labelTextureBackMid, l.Back.MiddleTexture, l.Back.MiddleRequired());
-				DisplaySidedefTexture(backlowtex, backlowname, labelTextureBackBottom, l.Back.LowTexture, l.Back.LowRequired());
-
-				//mxd. Position label
-				backsector.Left = backpanel.Width - backsector.Width - 12;
+				flowLayoutPanelBack.Width = panelBackLow.Right;
+				backpanel.Width = flowLayoutPanelBack.Width + flowLayoutPanelBack.Left * 2 - 4;
 			}
 			else
 			{
@@ -437,35 +451,54 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Update();
 		}
 
-		//mxd
-		private bool checkPairedUDMFFields(UniFields fields, string paramX, string paramY, Label label, Label value) 
+		private static void UpdateTexturePanel(Panel panel, string texturename, Label texturenamelabel, Label sizelabel, int maxlabelright, Panel image, int sizeref, bool extendedinfoshown, bool required)
 		{
-			float dx = getDefaultUDMFValue(paramX);
-			float dy = getDefaultUDMFValue(paramY);
-			float x = dx;
-			float y = dy;
+			// Set texture name
+			texturenamelabel.Text = texturename;
 
-			if(fields.ContainsKey(paramX))
-				x = (float)fields[paramX].Value;
-			if(fields.ContainsKey(paramY))
-				y = (float)fields[paramY].Value;
+			// And image
+			DisplayTextureImage(image, sizelabel, texturename, required);
+			
+			//Reposition texture name label?
+			if(texturenamelabel.Width < image.Width + 2)
+				texturenamelabel.Location = new Point(image.Location.X + (image.Width - texturenamelabel.Width) / 2, texturenamelabel.Location.Y);
+			else
+				texturenamelabel.Location = new Point(image.Location.X, texturenamelabel.Location.Y);
 
-			if(x != dx || y != dy) 
-			{
-				value.Text = String.Format("{0:0.##}", x) + ", " + String.Format("{0:0.##}", y);
-				value.Enabled = true;
-				label.Enabled = true;
-				return true;
-			}
-
-			value.Text = "--, --";
-			value.Enabled = false;
-			label.Enabled = false;
-			return false;
+			// Resize panel
+			if(!extendedinfoshown)
+				panel.Width = Math.Max(texturenamelabel.Right + image.Location.X + 1, sizeref);
+			else
+				panel.Width = Math.Max(texturenamelabel.Right, maxlabelright) + image.Location.X;
 		}
 
 		//mxd
-		private static void setUDMFLight(Sidedef sd, Label label, Label value) 
+		private static bool SetPairedUDMFFieldsLabel(UniFields fields, string paramX, string paramY, float defaultvalue, Label namelabel, Label valuelabel)
+		{
+			float x = UDMFTools.GetFloat(fields, paramX, defaultvalue);
+			float y = UDMFTools.GetFloat(fields, paramY, defaultvalue);
+
+			if(fields.ContainsKey(paramX)) x = (float)fields[paramX].Value;
+			if(fields.ContainsKey(paramY)) y = (float)fields[paramY].Value;
+
+			if(x != defaultvalue || y != defaultvalue)
+			{
+				valuelabel.Text = String.Format("{0:0.##}", x) + ", " + String.Format("{0:0.##}", y);
+				valuelabel.Enabled = true;
+				namelabel.Enabled = true;
+			}
+			else
+			{
+				valuelabel.Text = "--, --";
+				valuelabel.Enabled = false;
+				namelabel.Enabled = false;
+			}
+
+			return valuelabel.Enabled;
+		}
+
+		//mxd
+		private static void SetUDMFLight(Sidedef sd, Label label, Label value) 
 		{
 			if(sd.Fields.ContainsKey("light")) 
 			{
@@ -488,15 +521,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private float getDefaultUDMFValue(string valueName) 
-		{
-			foreach (UniversalFieldInfo fi in fieldInfos) 
-				if (fi.Name == valueName) return (float)fi.Default;
-			return 0;
-		}
-
-		//mxd
-		private static void setArgumentText(ArgumentInfo info, Label label, int value) 
+		private static void SetArgumentText(ArgumentInfo info, Label label, int value) 
 		{
 			TypeHandler th = General.Types.GetArgumentHandler(info);
 			th.SetValue(value);
@@ -527,7 +552,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This shows a sidedef texture in a panel
-		private static void DisplaySidedefTexture(Panel panel, Label namelabel, Label sizelabel, string name, bool required)
+		private static void DisplayTextureImage(Panel panel, Label sizelabel, string name, bool required)
 		{
 			// Check if name is a "none" texture
 			if((name.Length < 1) || (name == "-"))
@@ -539,16 +564,12 @@ namespace CodeImp.DoomBuilder.Controls
 					General.DisplayZoomedImage(panel, Properties.Resources.MissingTexture);
 				else
 					panel.BackgroundImage = null;
-
-				// Set texture name
-				namelabel.Text = "-";
 			}
 			else
 			{
 				//mxd
 				ImageData texture = General.Map.Data.GetTextureImage(name);
-				bool unknowntexture = texture is UnknownImage;
-				if(General.Settings.ShowTextureSizes && texture.ImageState == ImageLoadState.Ready && !unknowntexture) 
+				if(General.Settings.ShowTextureSizes && texture.ImageState == ImageLoadState.Ready && !(texture is UnknownImage)) 
 				{
 					sizelabel.Visible = true;
 					sizelabel.Text = texture.ScaledWidth + "x" + texture.ScaledHeight;
@@ -557,9 +578,6 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					sizelabel.Visible = false;
 				}
-
-				// Set texture name
-				namelabel.Text = (unknowntexture ? name : texture.DisplayName);
 				
 				// Set the image
 				General.DisplayZoomedImage(panel, texture.GetPreview());

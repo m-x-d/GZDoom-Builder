@@ -59,7 +59,6 @@ namespace CodeImp.DoomBuilder.Config
 		private Configuration config; //mxd
 		private bool enabled; //mxd
 		private bool changed; //mxd
-		private bool longtexturenames; //mxd
 
 		private List<EngineInfo> testEngines; //mxd
 		private int currentEngineIndex; //mxd
@@ -85,7 +84,6 @@ namespace CodeImp.DoomBuilder.Config
 		internal Configuration Configuration { get { return config; } } //mxd
 		public bool Enabled { get { return enabled; } internal set { enabled = value; } } //mxd
 		public bool Changed { get { return changed; } internal set { changed = value; } } //mxd
-		public bool SupportsLongTextureNames { get { return longtexturenames; } internal set { longtexturenames = value; } } //mxd
 
 		//mxd
 		public string TestProgramName { get { return testEngines[currentEngineIndex].TestProgramName; } internal set { testEngines[currentEngineIndex].TestProgramName = value; } }
@@ -118,7 +116,6 @@ namespace CodeImp.DoomBuilder.Config
 			// Load settings from game configuration
 			this.name = config.ReadSetting("game", "<unnamed game>");
 			this.defaultlumpname = config.ReadSetting("defaultlumpname", "");
-			this.longtexturenames = config.ReadSetting("longtexturenames", false); //mxd
 			
 			// Load settings from program configuration
 			this.nodebuildersave = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildersave", MISSING_NODEBUILDER);

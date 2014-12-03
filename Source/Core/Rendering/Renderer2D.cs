@@ -1161,7 +1161,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.Things2D.BeginPass(1);
 				float spriteShrink = General.Settings.SquareThings ? THING_SPRITE_SHRINK : THING_SPRITE_SHRINK * 2;
 
-				foreach(KeyValuePair<int, List<Thing>> group in thingsByType){
+				foreach(KeyValuePair<int, List<Thing>> group in thingsByType)
+				{
 					// Find thing information
 					ThingTypeInfo info = General.Map.Data.GetThingInfo(group.Key);
 
@@ -1170,7 +1171,8 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					ImageData sprite = General.Map.Data.GetSpriteImage(info.Sprite);
 					if (sprite == null) continue; 
-					if (!sprite.IsImageLoaded) {
+					if (!sprite.IsImageLoaded) 
+					{
 						sprite.SetUsedInMap(true);
 						continue;
 					}
@@ -1190,30 +1192,35 @@ namespace CodeImp.DoomBuilder.Rendering
 					float spriteWidth, spriteHeight;
 					float spriteScale = (group.Value[0].FixedSize && (scale > 1.0f)) ? 1.0f : scale;
 
-					if(sprite.Width > sprite.Height) {
+					if(sprite.Width > sprite.Height) 
+					{
 						spriteWidth = info.Radius * spriteScale - spriteShrink * spriteScale;
 						spriteHeight = spriteWidth * ((float)sprite.Height / sprite.Width);
 						if(spriteWidth < MINIMUM_SPRITE_RADIUS) continue; //don't render tiny little sprites
-
-					} else if(sprite.Width < sprite.Height) {
+					} 
+					else if(sprite.Width < sprite.Height) 
+					{
 						spriteHeight = info.Radius * spriteScale - spriteShrink * spriteScale;
 						spriteWidth = spriteHeight * ((float)sprite.Width / sprite.Height);
 						if(spriteHeight < MINIMUM_SPRITE_RADIUS) continue; //don't render tiny little sprites
-
-					} else {
+					} 
+					else 
+					{
 						spriteWidth = info.Radius * spriteScale - spriteShrink * spriteScale;
 						spriteHeight = spriteWidth;
 						if(spriteWidth < MINIMUM_SPRITE_RADIUS) continue; //don't render tiny little sprites
 					}
 
-					foreach(Thing t in group.Value) {
+					foreach(Thing t in group.Value) 
+					{
 						if(t.IsModel && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL || (General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected))) continue;
 						CreateThingSpriteVerts(thingsByPosition[t], spriteWidth, spriteHeight, ref verts, buffercount * 6, t.Selected ? selectionColor : 0xFFFFFF);
 						buffercount++;
 						totalcount++;
 
 						// Buffer filled?
-						if(buffercount == locksize) {
+						if(buffercount == locksize) 
+						{
 							// Write to buffer
 							stream = thingsvertices.Lock(0, locksize * 6 * FlatVertex.Stride, LockFlags.Discard);
 							stream.WriteRange(verts, 0, buffercount * 6);
@@ -1257,7 +1264,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				buffercount = 0;
 				totalcount = 0;
 
-				foreach (KeyValuePair<Thing, Vector2D> group in thingsByPosition) {
+				foreach (KeyValuePair<Thing, Vector2D> group in thingsByPosition) 
+				{
 					if(!group.Key.IsDirectional) continue;
 
 					CreateThingArrowVerts(group.Key, ref verts, group.Value, buffercount * 6);
@@ -1265,7 +1273,8 @@ namespace CodeImp.DoomBuilder.Rendering
 					totalcount++;
 
 					// Buffer filled?
-					if(buffercount == locksize) {
+					if(buffercount == locksize) 
+					{
 						// Write to buffer
 						stream = thingsvertices.Lock(0, locksize * 6 * FlatVertex.Stride, LockFlags.Discard);
 						stream.WriteRange(verts, 0, buffercount * 6);

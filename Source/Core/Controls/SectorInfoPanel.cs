@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Data;
@@ -29,14 +30,21 @@ namespace CodeImp.DoomBuilder.Controls
 {
 	internal partial class SectorInfoPanel : UserControl
 	{
-		private readonly int fullWidth; //mxd
+		private readonly List<Label> floorlabels;
+		private readonly List<Label> ceillabels;
 		
 		// Constructor
 		public SectorInfoPanel()
 		{
 			// Initialize
 			InitializeComponent();
-			fullWidth = floorpanel.Width; //mxd
+
+			//mxd
+			labelFloorTextureSize.BackColor = Color.FromArgb(128, labelFloorTextureSize.BackColor);
+			labelCeilTextureSize.BackColor = Color.FromArgb(128, labelCeilTextureSize.BackColor);
+
+			floorlabels = new List<Label> { floorAngle, floorLight, floorOffset, floorScale };
+			ceillabels = new List<Label> { ceilingAngle, ceilingLight, ceilingOffset, ceilingScale };
 		}
 
 		// This shows the info
@@ -55,34 +63,38 @@ namespace CodeImp.DoomBuilder.Controls
 			tag.Text = s.Tag + (General.Map.Options.TagLabels.ContainsKey(s.Tag) ? " (" + General.Map.Options.TagLabels[s.Tag] + ")" : string.Empty);
 			height.Text = sheight.ToString();
 			brightness.Text = s.Brightness.ToString();
+			floorname.Text = s.FloorTexture;
+			ceilingname.Text = s.CeilTexture;
 
-			//mxd. Texture info
+			//mxd
+			effect.Enabled = (s.Effect != 0);
+			labelEffect.Enabled = (s.Effect != 0);
+			tag.Enabled = (s.Tag != 0);
+			labelTag.Enabled = (s.Tag != 0);
+
+			//mxd. Texture size
 			if (s.LongFloorTexture == MapSet.EmptyLongName)
 			{
 				labelFloorTextureSize.Visible = false;
 				General.DisplayZoomedImage(floortex, Properties.Resources.MissingTexture);
-				floorname.Text = s.FloorTexture;
 			} 
 			else 
 			{
 				ImageData image = General.Map.Data.GetFlatImage(s.FloorTexture);
 				DisplayTextureSize(labelFloorTextureSize, image);
 				General.DisplayZoomedImage(floortex, image.GetPreview());
-				floorname.Text = (image is UnknownImage ? s.FloorTexture : image.DisplayName);
 			}
 
 			if (s.LongCeilTexture == MapSet.EmptyLongName) 
 			{
 				labelCeilTextureSize.Visible = false;
 				General.DisplayZoomedImage(ceilingtex, Properties.Resources.MissingTexture);
-				ceilingname.Text = s.CeilTexture;
 			} 
 			else 
 			{
 				ImageData image = General.Map.Data.GetFlatImage(s.CeilTexture);
 				DisplayTextureSize(labelCeilTextureSize, image); //mxd
 				General.DisplayZoomedImage(ceilingtex, image.GetPreview());
-				ceilingname.Text = (image is UnknownImage ? s.CeilTexture : image.DisplayName);
 			}
 
 			//mxd
@@ -105,7 +117,7 @@ namespace CodeImp.DoomBuilder.Controls
 					} 
 					else 
 					{
-						panelLightColor.BackColor = System.Drawing.SystemColors.Control;
+						panelLightColor.BackColor = SystemColors.Control;
 						labelLight.Enabled = false;
 					}
 
@@ -116,7 +128,7 @@ namespace CodeImp.DoomBuilder.Controls
 					} 
 					else 
 					{
-						panelFadeColor.BackColor = System.Drawing.SystemColors.Control;
+						panelFadeColor.BackColor = SystemColors.Control;
 						labelFade.Enabled = false;
 					}
 
@@ -245,7 +257,7 @@ namespace CodeImp.DoomBuilder.Controls
 					} 
 					else 
 					{
-						ceilingAngle.Text = "-";
+						ceilingAngle.Text = "--";
 						ceilingAngle.Enabled = false;
 						ceilingAngleLabel.Enabled = false;
 					}
@@ -259,7 +271,7 @@ namespace CodeImp.DoomBuilder.Controls
 					} 
 					else 
 					{
-						floorAngle.Text = "-";
+						floorAngle.Text = "--";
 						floorAngle.Enabled = false;
 						floorAngleLabel.Enabled = false;
 					}
@@ -286,7 +298,6 @@ namespace CodeImp.DoomBuilder.Controls
 					flags.Width = itemWidth * (int)Math.Ceiling(flags.Items.Count / 5.0f);
 					flagsPanel.Width = flags.Width + flags.Left * 2;
 				}
-
 			} 
 			else 
 			{
@@ -297,36 +308,41 @@ namespace CodeImp.DoomBuilder.Controls
 				flagsPanel.Visible = false;
 			}
 
-			//panels size
-			if(showExtededCeilingInfo) 
-			{
-				ceilingpanel.Width = fullWidth;
-				ceilingInfo.Visible = true;
-			} 
-			else 
-			{
-				ceilingInfo.Visible = false;
-				ceilingpanel.Width = 84;
-			}
-
-			if(showExtededFloorInfo) 
-			{
-				floorpanel.Width = fullWidth;
-				floorInfo.Visible = true;
-			} 
-			else 
-			{
-				floorInfo.Visible = false;
-				floorpanel.Width = 84;
-			}
-
+			//mxd. Resize panels
+			UpdateTexturePanel(ceilingpanel, ceilingname, ceillabels, ceilingtex, ceilingOffsetLabel.Location.X - 1, showExtededCeilingInfo);
+			UpdateTexturePanel(floorpanel, floorname, floorlabels, floortex, floorOffsetLabel.Location.X - 1, showExtededFloorInfo);
 
 			// Show the whole thing
 			this.Show();
 			this.Update();
 		}
 
-		private void DisplayTextureSize(Label label, ImageData texture) 
+		//mxd
+		private static void UpdateTexturePanel(GroupBox panel, Label texturename, List<Label> proplabels, Panel image, int sizeref, bool extendedinfoshown)
+		{
+			//Reposition texture name label?
+			if(texturename.Width < image.Width + 2) 
+				texturename.Location = new Point(image.Location.X + (image.Width - texturename.Width) / 2, texturename.Location.Y);
+			else 
+				texturename.Location = new Point(image.Location.X - 1, texturename.Location.Y);
+			
+			// Resize panel
+			if(!extendedinfoshown)
+				panel.Width = Math.Max(texturename.Right + image.Location.X - 1, sizeref);
+			else
+				panel.Width = Math.Max(texturename.Right, GetMaxRight(proplabels)) + image.Location.X;
+		}
+
+		//mxd
+		private static int GetMaxRight(IEnumerable<Label> labels)
+		{
+			int max = 0;
+			foreach (Label label in labels) if (label.Right > max) max = label.Right;
+			return max;
+		}
+
+		//mxd
+		private static void DisplayTextureSize(Label label, ImageData texture) 
 		{
 			if(General.Settings.ShowTextureSizes && texture.ImageState == ImageLoadState.Ready 
 				&& !string.IsNullOrEmpty(texture.Name) && !(texture is UnknownImage)) 
