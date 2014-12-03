@@ -142,6 +142,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// anglecontrol
 			// 
 			this.anglecontrol.Angle = 0;
+			this.anglecontrol.AngleOffset = 0;
 			this.anglecontrol.Location = new System.Drawing.Point(232, 52);
 			this.anglecontrol.Name = "anglecontrol";
 			this.anglecontrol.Size = new System.Drawing.Size(24, 24);
@@ -298,16 +299,16 @@ namespace CodeImp.DoomBuilder.Controls
 			this.spritepanel.Controls.Add(this.spritetex);
 			this.spritepanel.Location = new System.Drawing.Point(479, 0);
 			this.spritepanel.Name = "spritepanel";
-			this.spritepanel.Size = new System.Drawing.Size(107, 100);
+			this.spritepanel.Size = new System.Drawing.Size(86, 100);
 			this.spritepanel.TabIndex = 5;
 			this.spritepanel.TabStop = false;
 			this.spritepanel.Text = " Sprite ";
 			// 
 			// spritename
 			// 
-			this.spritename.Location = new System.Drawing.Point(11, 80);
+			this.spritename.Location = new System.Drawing.Point(7, 79);
 			this.spritename.Name = "spritename";
-			this.spritename.Size = new System.Drawing.Size(84, 13);
+			this.spritename.Size = new System.Drawing.Size(72, 13);
 			this.spritename.TabIndex = 1;
 			this.spritename.Text = "BROWNHUG";
 			this.spritename.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -317,15 +318,15 @@ namespace CodeImp.DoomBuilder.Controls
 			this.spritetex.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.spritetex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.spritetex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.spritetex.Location = new System.Drawing.Point(19, 19);
+			this.spritetex.Location = new System.Drawing.Point(12, 14);
 			this.spritetex.Name = "spritetex";
-			this.spritetex.Size = new System.Drawing.Size(68, 60);
+			this.spritetex.Size = new System.Drawing.Size(64, 64);
 			this.spritetex.TabIndex = 0;
 			// 
 			// flagsPanel
 			// 
 			this.flagsPanel.Controls.Add(this.flags);
-			this.flagsPanel.Location = new System.Drawing.Point(592, 0);
+			this.flagsPanel.Location = new System.Drawing.Point(571, 0);
 			this.flagsPanel.Name = "flagsPanel";
 			this.flagsPanel.Size = new System.Drawing.Size(568, 100);
 			this.flagsPanel.TabIndex = 6;
@@ -358,7 +359,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "ThingInfoPanel";
-			this.Size = new System.Drawing.Size(1190, 100);
+			this.Size = new System.Drawing.Size(1145, 100);
 			this.infopanel.ResumeLayout(false);
 			this.infopanel.PerformLayout();
 			this.spritepanel.ResumeLayout(false);
