@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Methods
 		
 		// This makes a prefab of the selection. Returns null when cancelled.
-		internal MemoryStream MakePrefab()
+		private static MemoryStream MakePrefab()
 		{
 			// Let the plugins know
 			if(General.Plugins.OnCopyBegin())
@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		// This pastes a prefab. Returns false when paste was cancelled.
-		internal void PastePrefab(Stream filedata, PasteOptions options)
+		private static void PastePrefab(Stream filedata, PasteOptions options)
 		{
 			// Create undo
 			General.MainWindow.DisplayStatus(StatusType.Action, "Inserted prefab.");
@@ -165,10 +165,13 @@ namespace CodeImp.DoomBuilder.Editing
 			MemoryStream memstream; //mxd
 			filedata.Seek(0, SeekOrigin.Begin);
 			
-			try {
+			try 
+			{
 				memstream = SharpCompressHelper.DecompressStream(filedata); //mxd
 				memstream.Seek(0, SeekOrigin.Begin);
-			}catch(Exception e){
+			}
+			catch(Exception e)
+			{
 				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while reading prefab from file: " + e.Message);
 				General.WriteLogLine(e.StackTrace);
 				General.ShowErrorMessage("Unable to load prefab. See log file for error details.", MessageBoxButtons.OK);
@@ -205,7 +208,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		// This performs the copy. Returns false when copy was cancelled.
-		private bool DoCopySelection(string desc)
+		private static bool DoCopySelection(string desc)
 		{
 			// Check if possible to copy/paste
 			if(General.Editing.Mode.Attributes.AllowCopyPaste)
@@ -254,7 +257,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		// This performs the paste. Returns false when paste was cancelled.
-		private bool DoPasteSelection(PasteOptions options)
+		private static void DoPasteSelection(PasteOptions options)
 		{
 			// Check if possible to copy/paste
 			if(General.Editing.Mode.Attributes.AllowCopyPaste)
@@ -320,25 +323,20 @@ namespace CodeImp.DoomBuilder.Editing
 								General.Editing.Mode.OnPasteEnd(options.Copy());
 								General.Plugins.OnPasteEnd(options);
 							}
-							return true;
+							return;
 						}
 					}
-					
-					// Aborted
-					return false;
 				}
 				else
 				{
 					// Nothing usefull on the clipboard
 					General.MessageBeep(MessageBeepType.Warning);
-					return false;
 				}
 			}
 			else
 			{
 				// Paste not allowed
 				General.MessageBeep(MessageBeepType.Warning);
-				return false;
 			}
 		}
 		

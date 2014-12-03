@@ -20,13 +20,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 
 		#endregion
 
-		public WavefrontSettingsForm(int sectorsCount) {
+		public WavefrontSettingsForm(int sectorsCount) 
+		{
 			InitializeComponent();
 
 			string name = Path.GetFileNameWithoutExtension(General.Map.FileTitle) + "_" + General.Map.Options.LevelName + ".obj";
-			if(string.IsNullOrEmpty(General.Map.FilePathName)) {
+			if(string.IsNullOrEmpty(General.Map.FilePathName)) 
+			{
 				saveFileDialog.FileName = name;
-			} else {
+			} 
+			else 
+			{
 				saveFileDialog.InitialDirectory = General.Map.FilePathName;
 				saveFileDialog.FileName = Path.GetDirectoryName(General.Map.FilePathName) + Path.DirectorySeparatorChar + name;
 				tbExportPath.Text = saveFileDialog.FileName;
@@ -42,19 +46,22 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 
 		#region ================== Events
 
-		private void browse_Click(object sender, EventArgs e) {
-			if(saveFileDialog.ShowDialog() == DialogResult.OK) {
+		private void browse_Click(object sender, EventArgs e) 
+		{
+			if(saveFileDialog.ShowDialog() == DialogResult.OK) 
 				tbExportPath.Text = saveFileDialog.FileName;
-			}
 		}
 
-		private void export_Click(object sender, EventArgs e) {
+		private void export_Click(object sender, EventArgs e) 
+		{
 			//check settings
-			if(nudScale.Value == 0) {
+			if(nudScale.Value == 0) 
+			{
 				MessageBox.Show("Scale should not be zero!");
 				return;
 			}
-			if(!Directory.Exists(Path.GetDirectoryName(tbExportPath.Text))) {
+			if(!Directory.Exists(Path.GetDirectoryName(tbExportPath.Text))) 
+			{
 				MessageBox.Show("Selected path does not exist!");
 				return;
 			}
@@ -68,7 +75,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.Close();
 		}
 
-		private void cancel_Click(object sender, EventArgs e) {
+		private void cancel_Click(object sender, EventArgs e) 
+		{
 			this.Close();
 		}
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
@@ -200,8 +201,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(points.Count == 1) 
 				{
-					updateReferencePoints(points[0], curp);
-					List<Vector2D[]> shapes = getShapes(start, end);
+					UpdateReferencePoints(points[0], curp);
+					List<Vector2D[]> shapes = GetShapes(start, end);
 
 					//render shape
 					foreach (Vector2D[] shape in shapes) 
@@ -285,8 +286,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				newpoint.pos -= gridoffset;
 				
 				// Create vertices for final shape.
-				updateReferencePoints(points[0], newpoint);
-				List<Vector2D[]> shapes = getShapes(start, end);
+				UpdateReferencePoints(points[0], newpoint);
+				List<Vector2D[]> shapes = GetShapes(start, end);
 
 				foreach (Vector2D[] shape in shapes) 
 				{
@@ -308,7 +309,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return true;
 		}
 
-		private List<Vector2D[]> getShapes(Vector2D s, Vector2D e) 
+		private List<Vector2D[]> GetShapes(Vector2D s, Vector2D e) 
 		{
 			//no shape
 			if(s == e) return new List<Vector2D[]>();
@@ -422,7 +423,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//update bottom-left and top-right points, which define drawing shape
-		private void updateReferencePoints(DrawnVertex p1, DrawnVertex p2) 
+		private void UpdateReferencePoints(DrawnVertex p1, DrawnVertex p2) 
 		{
 			if(!p1.pos.IsFinite() || !p2.pos.IsFinite()) return;
 			
@@ -457,7 +458,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Actions
 
 		[BeginAction("increasebevel")]
-		protected void increaseBevel()
+		protected void IncreaseBevel()
 		{
 			if(!gridlock && (points.Count < 2 || horizontalSlices < width - 2) && horizontalSlices - 1 < panel.MaxHorizontalSlices) 
 			{
@@ -468,7 +469,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("decreasebevel")]
-		protected void decreaseBevel()
+		protected void DecreaseBevel()
 		{
 			if(!gridlock && horizontalSlices > 1) 
 			{
@@ -479,7 +480,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("increasesubdivlevel")]
-		protected void increaseSubdivLevel()
+		protected void IncreaseSubdivLevel()
 		{
 			if(!gridlock && (points.Count < 2 || verticalSlices < height - 2) && verticalSlices - 1 < panel.MaxVerticalSlices) 
 			{
@@ -490,7 +491,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("decreasesubdivlevel")]
-		protected void decreaseSubdivLevel()
+		protected void DecreaseSubdivLevel()
 		{
 			if(!gridlock && verticalSlices > 1) 
 			{

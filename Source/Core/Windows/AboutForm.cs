@@ -48,7 +48,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void gzdbLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+		private void gzdbLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) 
+		{
 			General.OpenWebsite("http://forum.zdoom.org/viewtopic.php?f=3&t=32392");
 		}
 

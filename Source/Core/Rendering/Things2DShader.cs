@@ -116,7 +116,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		//mxd. Used to render models
 		public void SetTransformSettings(Matrix world)
 		{
-			if (manager.Enabled) {
+			if (manager.Enabled) 
+			{
 				Matrix view = manager.D3DDevice.Device.GetTransform(TransformState.View);
 				effect.SetValue(transformsettings, Matrix.Multiply(world, view));
 			}

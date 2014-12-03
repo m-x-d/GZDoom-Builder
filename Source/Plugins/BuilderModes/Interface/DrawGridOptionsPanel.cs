@@ -16,11 +16,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public int VerticalSlices { get { return (int)slicesV.Value; } set { blockEvents = true; slicesV.Value = value; blockEvents = false; } }
 		public int MaxVerticalSlices { get { return (int)slicesV.Maximum; } set { slicesV.Maximum = value; } }
 
-		public DrawGridOptionsPanel() {
+		public DrawGridOptionsPanel() 
+		{
 			InitializeComponent();
 		}
 
-		public void Register() {
+		public void Register() 
+		{
 			General.Interface.AddButton(sliceshlabel);
 			General.Interface.AddButton(slicesH);
 			General.Interface.AddButton(slicesvlabel);
@@ -31,7 +33,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(triangulate);
 		}
 
-		public void Unregister() {
+		public void Unregister() 
+		{
 			General.Interface.RemoveButton(triangulate);
 			General.Interface.RemoveButton(gridlock);
 			General.Interface.RemoveButton(cbseparator);
@@ -42,11 +45,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(sliceshlabel);
 		}
 
-		private void ValueChanged(object sender, EventArgs e) {
+		private void ValueChanged(object sender, EventArgs e) 
+		{
 			if(!blockEvents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 
-		private void gridlock_CheckedChanged(object sender, EventArgs e) {
+		private void gridlock_CheckedChanged(object sender, EventArgs e) 
+		{
 			slicesH.Enabled = !gridlock.Checked;
 			slicesV.Enabled = !gridlock.Checked;
 			if(!blockEvents && OnGridLockChanged != null) OnGridLockChanged(this, EventArgs.Empty);

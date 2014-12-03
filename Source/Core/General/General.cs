@@ -262,7 +262,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This loads and returns a game configuration
-		private static Configuration loadGameConfiguration(string filename)
+		private static Configuration LoadGameConfiguration(string filename)
 		{
 			// Make the full filepathname
 			string filepathname = Path.Combine(configspath, filename);
@@ -320,7 +320,7 @@ namespace CodeImp.DoomBuilder
 			foreach(string filepath in filenames)
 			{
 				// Check if it can be loaded
-				cfg = loadGameConfiguration(Path.GetFileName(filepath));
+				cfg = LoadGameConfiguration(Path.GetFileName(filepath));
 				if(cfg != null)
 				{
 					fullfilename = Path.GetFileName(filepath);
@@ -710,17 +710,19 @@ namespace CodeImp.DoomBuilder
 
 				//mxd. Check enabled game configuration
 				bool noneenabled = true;
-				for(int i = 0; i < configs.Count; i++) {
-					if(configs[i].Enabled) {
+				for(int i = 0; i < configs.Count; i++) 
+				{
+					if(configs[i].Enabled) 
+					{
 						noneenabled = false;
 						break;
 					}
 				}
 
-				if(noneenabled) {
-					if(MessageBox.Show("No game configurations are currently enabled.\nPlease enable at least one game configuration", "Warning", MessageBoxButtons.OK) == DialogResult.OK) {
+				if(noneenabled) 
+				{
+					if(MessageBox.Show("No game configurations are currently enabled.\nPlease enable at least one game configuration", "Warning", MessageBoxButtons.OK) == DialogResult.OK) 
 						mainwindow.ShowConfiguration();
-					}
 				}
 				
 				// Run application from the main window
@@ -1132,8 +1134,8 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("openmap")]
 		internal static void OpenMap()
 		{
-			//mxd
-			if(map != null && map.Launcher.GameEngineRunning) {
+			if(map != null && map.Launcher.GameEngineRunning) //mxd
+			{
 				ShowWarningMessage("Cannot open a map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
 				return;
 			}
@@ -1641,7 +1643,7 @@ namespace CodeImp.DoomBuilder
 #if DEBUG
 			// Output to consoles
 			Console.WriteLine(line);
-			DebugConsole.WriteLine(DebugMessageType.Log, line); //mxd
+			DebugConsole.WriteLine(DebugMessageType.LOG, line); //mxd
 #endif
 			// Write to log file
 			try { File.AppendAllText(logfile, line + Environment.NewLine); }
@@ -1654,7 +1656,7 @@ namespace CodeImp.DoomBuilder
 #if DEBUG
 			// Output to consoles
 			Console.Write(text);
-			DebugConsole.Write(DebugMessageType.Log, text);
+			DebugConsole.Write(DebugMessageType.LOG, text);
 #endif
 
 			// Write to log file

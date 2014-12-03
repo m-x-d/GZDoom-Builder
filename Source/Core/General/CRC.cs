@@ -84,9 +84,9 @@ namespace CodeImp.DoomBuilder
 		#region ================== Crc32
 		sealed class Crc32
 		{
-			const uint CrcSeed = 0xFFFFFFFF;
+			const uint CRC_SEED = 0xFFFFFFFF;
 
-			readonly static uint[] CrcTable = new uint[] {
+			readonly static uint[] CRC_TABLE = new uint[] {
 			0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419,
 			0x706AF48F, 0xE963A535, 0x9E6495A3, 0x0EDB8832, 0x79DCB8A4,
 			0xE0D5E91E, 0x97D2D988, 0x09B64C2B, 0x7EB17CBD, 0xE7B82D07,
@@ -139,11 +139,12 @@ namespace CodeImp.DoomBuilder
 			0xCDD70693, 0x54DE5729, 0x23D967BF, 0xB3667A2E, 0xC4614AB8,
 			0x5D681B02, 0x2A6F2B94, 0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B,
 			0x2D02EF8D
-		};
+			};
 
-			internal static uint ComputeCrc32(uint oldCrc, byte value) {
+			/*internal static uint ComputeCrc32(uint oldCrc, byte value) 
+			{
 				return (Crc32.CrcTable[(oldCrc ^ value) & 0xFF] ^ (oldCrc >> 8));
-			}
+			}*/
 
 			/// <summary>
 			/// The crc data checksum so far.
@@ -153,21 +154,12 @@ namespace CodeImp.DoomBuilder
 			/// <summary>
 			/// Returns the CRC32 data checksum computed so far.
 			/// </summary>
-			public long Value {
-				get {
-					return crc;
-				}
-				set {
-					crc = (uint)value;
-				}
-			}
+			public long Value { get { return crc; } set { crc = (uint)value; } }
 
 			/// <summary>
 			/// Resets the CRC32 data checksum as if no update was ever called.
 			/// </summary>
-			public void Reset() {
-				crc = 0;
-			}
+			public void Reset() { crc = 0; }
 
 			/// <summary>
 			/// Updates the checksum with the int bval.
@@ -175,10 +167,11 @@ namespace CodeImp.DoomBuilder
 			/// <param name = "value">
 			/// the byte is taken as the lower 8 bits of value
 			/// </param>
-			public void Update(int value) {
-				crc ^= CrcSeed;
-				crc = CrcTable[(crc ^ value) & 0xFF] ^ (crc >> 8);
-				crc ^= CrcSeed;
+			public void Update(int value) 
+			{
+				crc ^= CRC_SEED;
+				crc = CRC_TABLE[(crc ^ value) & 0xFF] ^ (crc >> 8);
+				crc ^= CRC_SEED;
 			}
 
 			/// <summary>
@@ -187,11 +180,9 @@ namespace CodeImp.DoomBuilder
 			/// <param name="buffer">
 			/// buffer an array of bytes
 			/// </param>
-			public void Update(byte[] buffer) {
-				if (buffer == null) {
-					throw new ArgumentNullException("buffer");
-				}
-
+			public void Update(byte[] buffer) 
+			{
+				if (buffer == null) throw new ArgumentNullException("buffer");
 				Update(buffer, 0, buffer.Length);
 			}
 
@@ -207,26 +198,20 @@ namespace CodeImp.DoomBuilder
 			/// <param name = "count">
 			/// The number of data bytes to update the CRC with.
 			/// </param>
-			public void Update(byte[] buffer, int offset, int count) {
-				if (buffer == null) {
-					throw new ArgumentNullException("buffer");
+			public void Update(byte[] buffer, int offset, int count) 
+			{
+				if (buffer == null) throw new ArgumentNullException("buffer");
+				if (count < 0) throw new ArgumentOutOfRangeException("count", "Count cannot be less than zero");
+				if (offset < 0 || offset + count > buffer.Length) throw new ArgumentOutOfRangeException("offset");
+
+				crc ^= CRC_SEED;
+
+				while (--count >= 0) 
+				{
+					crc = CRC_TABLE[(crc ^ buffer[offset++]) & 0xFF] ^ (crc >> 8);
 				}
 
-				if (count < 0) {
-					throw new ArgumentOutOfRangeException("count", "Count cannot be less than zero");
-				}
-
-				if (offset < 0 || offset + count > buffer.Length) {
-					throw new ArgumentOutOfRangeException("offset");
-				}
-
-				crc ^= CrcSeed;
-
-				while (--count >= 0) {
-					crc = CrcTable[(crc ^ buffer[offset++]) & 0xFF] ^ (crc >> 8);
-				}
-
-				crc ^= CrcSeed;
+				crc ^= CRC_SEED;
 			}
 		}
 		#endregion

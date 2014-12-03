@@ -5,10 +5,12 @@ using CodeImp.DoomBuilder.GZBuilder.Geometry;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Config;
 
-namespace CodeImp.DoomBuilder.GZBuilder.Data {
-	
-	public static class LinksCollector {
-		private struct ThingsCheckResult {
+namespace CodeImp.DoomBuilder.GZBuilder.Data 
+{
+	public static class LinksCollector 
+	{
+		private struct ThingsCheckResult 
+		{
 			public bool ProcessPathNodes;
 			public bool ProcessInterpolationPoints;
 			public bool ProcessThingsWithGoal;
@@ -16,27 +18,31 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			public bool ProcessActorMovers;
 		}
 		
-		public static List<Line3D> GetThingLinks(ICollection<VisualThing> visualThings) {
+		public static List<Line3D> GetThingLinks(ICollection<VisualThing> visualThings) 
+		{
 			List<Thing> things = new List<Thing>();
 			foreach (VisualThing vt in visualThings) things.Add(vt.Thing);
 
-			ThingsCheckResult result = checkThings(things);
+			ThingsCheckResult result = CheckThings(things);
 			if (result.ProcessPathNodes || result.ProcessInterpolationPoints || result.ProcessThingsWithGoal || result.ProcessCameras)
-				return getThingLinks(result, true);
+				return GetThingLinks(result, true);
 			return new List<Line3D>();
 		}
 		
-		public static List<Line3D> GetThingLinks(ICollection<Thing> things) {
-			ThingsCheckResult result = checkThings(things);
+		public static List<Line3D> GetThingLinks(ICollection<Thing> things) 
+		{
+			ThingsCheckResult result = CheckThings(things);
 			if (result.ProcessPathNodes || result.ProcessInterpolationPoints || result.ProcessThingsWithGoal || result.ProcessCameras)
-				return getThingLinks(result, false);
+				return GetThingLinks(result, false);
 			return new List<Line3D>();
 		}
 
-		private static ThingsCheckResult checkThings(ICollection<Thing> things) {
+		private static ThingsCheckResult CheckThings(ICollection<Thing> things) 
+		{
 			ThingsCheckResult result = new ThingsCheckResult();
 
-			foreach (Thing t in things) {
+			foreach (Thing t in things) 
+			{
 				if(t.Type == 9024) //zdoom path node
 					result.ProcessPathNodes = true;
 				else if(t.Type == 9070) //zdoom camera interpolation point
@@ -58,7 +64,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			return result;
 		}
 
-		private static List<Line3D> getThingLinks(ThingsCheckResult result, bool correctHeight) {
+		private static List<Line3D> GetThingLinks(ThingsCheckResult result, bool correctHeight) 
+		{
 			List<Line3D> lines = new List<Line3D>();
 			Dictionary<int, List<Thing>> pathNodes = new Dictionary<int, List<Thing>>();
 			Dictionary<int, List<Thing>> interpolationPoints = new Dictionary<int, List<Thing>>();
@@ -68,37 +75,36 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			Dictionary<int, List<Thing>> actorMoverTargets = new Dictionary<int, List<Thing>>();
 
 			//collect relevant things
-			foreach (Thing t in General.Map.Map.Things) {
-				if(result.ProcessPathNodes && t.Type == 9024) {
+			foreach (Thing t in General.Map.Map.Things) 
+			{
+				if(result.ProcessPathNodes && t.Type == 9024) 
+				{
 					if(!pathNodes.ContainsKey(t.Tag))
 						pathNodes[t.Tag] = new List<Thing>();
 					pathNodes[t.Tag].Add(t);
 				}
-				if(result.ProcessInterpolationPoints && t.Type == 9070) {
+				if(result.ProcessInterpolationPoints && t.Type == 9070) 
+				{
 					if(!interpolationPoints.ContainsKey(t.Tag))
 						interpolationPoints[t.Tag] = new List<Thing>();
 					interpolationPoints[t.Tag].Add(t);
 				}
-				if (result.ProcessThingsWithGoal && t.Action == 229 && t.Args[1] != 0) {
+				if (result.ProcessThingsWithGoal && t.Action == 229 && t.Args[1] != 0) 
 					thingsWithGoal.Add(t);
-				}
-				if (result.ProcessCameras && t.Type == 9072 && (t.Args[0] != 0 || t.Args[1] != 0)) {
+				if (result.ProcessCameras && t.Type == 9072 && (t.Args[0] != 0 || t.Args[1] != 0)) 
 					cameras.Add(t);
-				}
-				if(result.ProcessActorMovers && t.Type == 9074 && (t.Args[0] != 0 || t.Args[1] != 0) && t.Args[3] != 0) {
+				if(result.ProcessActorMovers && t.Type == 9074 && (t.Args[0] != 0 || t.Args[1] != 0) && t.Args[3] != 0) 
 					actorMovers.Add(t);
-				}
 			}
 
-			if(actorMovers.Count > 0) {
+			if(actorMovers.Count > 0) 
+			{
 				List<int> targetedTags = new List<int>();
-
-				foreach(Thing t in actorMovers) {
-					targetedTags.Add(t.Args[3]);
-				}
-
-				foreach(Thing t in General.Map.Map.Things) {
-					if(targetedTags.Contains(t.Tag)) {
+				foreach(Thing t in actorMovers) targetedTags.Add(t.Args[3]);
+				foreach(Thing t in General.Map.Map.Things) 
+				{
+					if(targetedTags.Contains(t.Tag)) 
+					{
 						if(!actorMoverTargets.ContainsKey(t.Tag))
 							actorMoverTargets[t.Tag] = new List<Thing>();
 						actorMoverTargets[t.Tag].Add(t);
@@ -109,18 +115,23 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			Vector3D start, end;
 
 			//process path nodes
-			if (result.ProcessPathNodes) {
-				foreach (KeyValuePair<int, List<Thing>> group in pathNodes) {
-					foreach(Thing t in group.Value) {
+			if (result.ProcessPathNodes) 
+			{
+				foreach (KeyValuePair<int, List<Thing>> group in pathNodes) 
+				{
+					foreach(Thing t in group.Value) 
+					{
 						if(t.Args[0] == 0) continue; //no goal
 						
-						if(pathNodes.ContainsKey(t.Args[0])) {
+						if(pathNodes.ContainsKey(t.Args[0])) 
+						{
 							start = t.Position;
-							if(correctHeight) start.z += getCorrectHeight(t);
+							if(correctHeight) start.z += GetCorrectHeight(t);
 
-							foreach(Thing tt in pathNodes[t.Args[0]]) {
+							foreach(Thing tt in pathNodes[t.Args[0]]) 
+							{
 								end = tt.Position;
-								if(correctHeight) end.z += getCorrectHeight(tt);
+								if(correctHeight) end.z += GetCorrectHeight(tt);
 								lines.Add(new Line3D(start, end));
 							}
 						}
@@ -129,16 +140,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			}
 
 			//process things with Thing_SetGoal
-			if (result.ProcessThingsWithGoal) {
-				foreach (Thing t in thingsWithGoal) {
-					if (pathNodes.ContainsKey(t.Args[1])) {
-						if (t.Args[0] == 0 || t.Args[0] == t.Tag) {
+			if (result.ProcessThingsWithGoal) 
+			{
+				foreach (Thing t in thingsWithGoal) 
+				{
+					if (pathNodes.ContainsKey(t.Args[1])) 
+					{
+						if (t.Args[0] == 0 || t.Args[0] == t.Tag) 
+						{
 							start = t.Position;
-							if (correctHeight) start.z += getCorrectHeight(t);
+							if (correctHeight) start.z += GetCorrectHeight(t);
 
-							foreach(Thing tt in pathNodes[t.Args[1]]) {
+							foreach(Thing tt in pathNodes[t.Args[1]]) 
+							{
 								end = tt.Position;
-								if(correctHeight) end.z += getCorrectHeight(tt);
+								if(correctHeight) end.z += GetCorrectHeight(tt);
 
 								lines.Add(new Line3D(start, end, Line3DType.ACTIVATOR));
 							}
@@ -148,19 +164,24 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			}
 
 			//process interpolation points
-			if (result.ProcessInterpolationPoints) {
-				foreach (KeyValuePair<int, List<Thing>> group in interpolationPoints) {
-					foreach(Thing t in group.Value) {
+			if (result.ProcessInterpolationPoints) 
+			{
+				foreach (KeyValuePair<int, List<Thing>> group in interpolationPoints) 
+				{
+					foreach(Thing t in group.Value) 
+					{
 						int targetTag = t.Args[3] + (t.Args[4] << 8);
 						if(targetTag == 0) continue; //no goal
 
-						if(interpolationPoints.ContainsKey(targetTag)) {
+						if(interpolationPoints.ContainsKey(targetTag)) 
+						{
 							start = t.Position;
-							if(correctHeight) start.z += getCorrectHeight(t);
+							if(correctHeight) start.z += GetCorrectHeight(t);
 
-							foreach(Thing tt in interpolationPoints[targetTag]) {
+							foreach(Thing tt in interpolationPoints[targetTag]) 
+							{
 								end = tt.Position;
-								if(correctHeight) end.z += getCorrectHeight(tt);
+								if(correctHeight) end.z += GetCorrectHeight(tt);
 								lines.Add(new Line3D(start, end));
 							}
 						}
@@ -169,18 +190,22 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			}
 
 			//process cameras
-			if (result.ProcessCameras) {
-				foreach (Thing t in cameras) {
+			if (result.ProcessCameras) 
+			{
+				foreach (Thing t in cameras) 
+				{
 					int targetTag = t.Args[0] + (t.Args[1] << 8);
 					if (targetTag == 0) continue; //no goal
 
-					if(interpolationPoints.ContainsKey(targetTag)) {
+					if(interpolationPoints.ContainsKey(targetTag)) 
+					{
 						start = t.Position;
-						if(correctHeight) start.z += getCorrectHeight(t);
+						if(correctHeight) start.z += GetCorrectHeight(t);
 
-						foreach(Thing tt in interpolationPoints[targetTag]) {
+						foreach(Thing tt in interpolationPoints[targetTag]) 
+						{
 							end = tt.Position;
-							if(correctHeight) end.z += getCorrectHeight(tt);
+							if(correctHeight) end.z += GetCorrectHeight(tt);
 							lines.Add(new Line3D(start, end, Line3DType.ACTIVATOR));
 						}
 					}
@@ -188,31 +213,37 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			}
 
 			//process actor movers
-			if(result.ProcessActorMovers) {
-				foreach(Thing t in actorMovers) {
+			if(result.ProcessActorMovers) 
+			{
+				foreach(Thing t in actorMovers) 
+				{
 					int targetTag = t.Args[0] + (t.Args[1] << 8);
 					if(targetTag == 0) continue; //no goal
 
 					//add interpolation point target
-					if(interpolationPoints.ContainsKey(targetTag)) {
+					if(interpolationPoints.ContainsKey(targetTag)) 
+					{
 						start = t.Position;
-						if(correctHeight) start.z += getCorrectHeight(t);
+						if(correctHeight) start.z += GetCorrectHeight(t);
 
-						foreach(Thing tt in interpolationPoints[targetTag]) {
+						foreach(Thing tt in interpolationPoints[targetTag]) 
+						{
 							end = tt.Position;
-							if(correctHeight) end.z += getCorrectHeight(tt);
+							if(correctHeight) end.z += GetCorrectHeight(tt);
 							lines.Add(new Line3D(start, end, Line3DType.ACTIVATOR));
 						}
 					}
 
 					//add thing-to-move target
-					if(actorMoverTargets.ContainsKey(t.Args[3])) {
+					if(actorMoverTargets.ContainsKey(t.Args[3])) 
+					{
 						start = t.Position;
-						if(correctHeight) start.z += getCorrectHeight(t);
+						if(correctHeight) start.z += GetCorrectHeight(t);
 
-						foreach(Thing tt in actorMoverTargets[t.Args[3]]) {
+						foreach(Thing tt in actorMoverTargets[t.Args[3]]) 
+						{
 							end = tt.Position;
-							if(correctHeight) end.z += getCorrectHeight(tt);
+							if(correctHeight) end.z += GetCorrectHeight(tt);
 							lines.Add(new Line3D(start, end, Line3DType.ACTIVATOR));
 						}
 					}
@@ -222,7 +253,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			return lines;
 		}
 
-		private static float getCorrectHeight(Thing thing) {
+		private static float GetCorrectHeight(Thing thing) 
+		{
 			ThingTypeInfo tti = General.Map.Data.GetThingInfo(thing.Type);
 			float height = tti.Height / 2f;
 			if (thing.Sector != null) height += thing.Sector.FloorHeight;

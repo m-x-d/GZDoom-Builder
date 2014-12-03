@@ -18,11 +18,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public int MaxSpikiness { get { return (int)spikiness.Maximum; } set { spikiness.Maximum = value; } }
 		public int MinSpikiness { get { return (int)spikiness.Minimum; } set { spikiness.Minimum = value; } }
 		
-		public DrawEllipseOptionsPanel() {
+		public DrawEllipseOptionsPanel() 
+		{
 			InitializeComponent();
 		}
 
-		public void Register() {
+		public void Register() 
+		{
 			spikiness.Value = aquityValue;
 			subdivs.Value = subdivsValue;
 			spikiness.ValueChanged += ValueChanged;
@@ -35,7 +37,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(reset);
 		}
 
-		public void Unregister() {
+		public void Unregister() 
+		{
 			General.Interface.RemoveButton(reset);
 			General.Interface.RemoveButton(spikiness);
 			General.Interface.RemoveButton(spikinesslabel);
@@ -43,13 +46,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(subdivslabel);
 		}
 
-		private void ValueChanged(object sender, EventArgs e) {
+		private void ValueChanged(object sender, EventArgs e) 
+		{
 			aquityValue = (int)spikiness.Value;
 			subdivsValue = (int)subdivs.Value;
 			if(!blockEvents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 
-		private void reset_Click(object sender, EventArgs e) {
+		private void reset_Click(object sender, EventArgs e) 
+		{
 			blockEvents = true;
 			spikiness.Value = 0;
 			blockEvents = false;

@@ -203,11 +203,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UpdateTitle(); //mxd
 				
 				// When no results found, show "no results" and disable the list
-				if(resultslist.Count == 0) {
+				if(resultslist.Count == 0) 
+				{
 					results.Items.Add(new ResultNoErrors());
 					results.Enabled = false;
 					exportresults.Enabled = false; //mxd
-				} else { 
+				} 
+				else 
+				{ 
 					exportresults.Enabled = true; //mxd
 					ClearSelectedResult(); //mxd
 				}
@@ -233,7 +236,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			blockmap.AddVerticesSet(General.Map.Map.Vertices); //mxd
 			
 			//mxd. Open the results panel
-			if (!resultspanel.Visible) {
+			if (!resultspanel.Visible) 
+			{
 				this.MinimumSize = new Size();
 				this.MaximumSize = new Size();
 				this.Size = initialsize;
@@ -490,10 +494,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-					if (r.Button1Click(false)) {
-						if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 1); //mxd
+					if (r.Button1Click(false)) 
+					{
+						if (cbApplyToAll.Checked) FixSimilarErrors(r.GetType(), 1); //mxd
 						StartChecking();
-					} else {
+					} 
+					else 
+					{
 						General.Interface.RedrawDisplay();
 					}
 				}
@@ -513,10 +520,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-					if (r.Button2Click(false)) {
-						if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 2); //mxd
+					if (r.Button2Click(false)) 
+					{
+						if (cbApplyToAll.Checked) FixSimilarErrors(r.GetType(), 2); //mxd
 						StartChecking();
-					} else {
+					} 
+					else 
+					{
 						General.Interface.RedrawDisplay();
 					}
 				}
@@ -536,10 +546,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-					if (r.Button3Click(false)) {
-						if (cbApplyToAll.Checked) fixSimilarErrors(r.GetType(), 3); //mxd
+					if (r.Button3Click(false)) 
+					{
+						if (cbApplyToAll.Checked) FixSimilarErrors(r.GetType(), 3); //mxd
 						StartChecking();
-					} else {
+					} 
+					else 
+					{
 						General.Interface.RedrawDisplay();
 					}
 				}
@@ -547,8 +560,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void fixSimilarErrors(Type type, int fixIndex) {
-			foreach (Object item in results.Items) {
+		private void FixSimilarErrors(Type type, int fixIndex) 
+		{
+			foreach (Object item in results.Items) 
+			{
 				if (item == results.SelectedItem) continue;
 				if (item.GetType() != type) continue;
 

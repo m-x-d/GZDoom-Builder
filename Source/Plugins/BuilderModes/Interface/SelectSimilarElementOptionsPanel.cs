@@ -25,11 +25,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private TabPage[] activeTabs;
 		private readonly Dictionary<CheckboxArrayControl, object> typecontrols;
 		
-		public SelectSimilarElementOptionsPanel() {
+		public SelectSimilarElementOptionsPanel() 
+		{
 			InitializeComponent();
 
 			//apply window size and location
-			if(!size.IsEmpty && !location.IsEmpty) {
+			if(!size.IsEmpty && !location.IsEmpty) 
+			{
 				this.StartPosition = FormStartPosition.Manual;
 				this.Size = size;
 				this.Location = location;
@@ -45,33 +47,47 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			};
 		}
 
-		public bool Setup(BaseClassicMode mode) {
+		public bool Setup(BaseClassicMode mode) 
+		{
 			this.mode = mode;
 
 			//which tabs should we display?
-			if(General.Editing.Mode is ThingsMode) {
+			if(General.Editing.Mode is ThingsMode) 
+			{
 				activeTabs = new[] {things};
-			} else if(General.Editing.Mode is VerticesMode) {
+			} 
+			else if(General.Editing.Mode is VerticesMode) 
+			{
 				activeTabs = new[] { vertices };
-			} else if(General.Editing.Mode is LinedefsMode) {
+			} 
+			else if(General.Editing.Mode is LinedefsMode) 
+			{
 				activeTabs = new[] { linedefs, sidedefs };
-			} else if(mode is SectorsMode) {
+			} 
+			else if(mode is SectorsMode) 
+			{
 				activeTabs = new[] { sectors };
-			} else {
+			} 
+			else 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action doesn't support current editing mode...");
 				return false;
 			}
 
 			//fill flags
-			foreach(TabPage page in activeTabs) {
+			foreach(TabPage page in activeTabs) 
+			{
 				CheckboxArrayControl curControl = page.Controls[0] as CheckboxArrayControl;
 				if(curControl == null) continue; //just a piece of boilerplate...
 
 				FieldInfo[] props = typecontrols[curControl].GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
 				string title = "<unknown flag>";
-				foreach(var prop in props) {
-					foreach(Attribute attr in Attribute.GetCustomAttributes(prop)) {
-						if(attr.GetType() == typeof(FieldDescription)) {
+				foreach(var prop in props) 
+				{
+					foreach(Attribute attr in Attribute.GetCustomAttributes(prop)) 
+					{
+						if(attr.GetType() == typeof(FieldDescription)) 
+						{
 							title = ((FieldDescription)attr).Description;
 							break;
 						}
@@ -91,79 +107,92 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return true;
 		}
 
-		private void SelectSimilarElementOptionsPanel_FormClosing(object sender, FormClosingEventArgs e) {
+		private void SelectSimilarElementOptionsPanel_FormClosing(object sender, FormClosingEventArgs e) 
+		{
 			size = this.Size;
 			location = this.Location;
 		}
 
-		private void enableall_Click(object sender, EventArgs e) {
+		private void enableall_Click(object sender, EventArgs e) 
+		{
 			CheckboxArrayControl curControl = tabControl.SelectedTab.Controls[0] as CheckboxArrayControl;
 			if(curControl == null) return; //just a piece of boilerplate...
 			bool enable = !curControl.Checkboxes[0].Checked;
 			foreach(var cb in curControl.Checkboxes) cb.Checked = enable;
 		}
 
-		private void cancel_Click(object sender, EventArgs e) {
+		private void cancel_Click(object sender, EventArgs e) 
+		{
 			this.Close();
 		}
 
-		private void apply_Click(object sender, EventArgs e) {
+		private void apply_Click(object sender, EventArgs e) 
+		{
 			//save flags states
-			foreach (TabPage page in activeTabs) {
+			foreach (TabPage page in activeTabs) 
+			{
 				CheckboxArrayControl curControl = page.Controls[0] as CheckboxArrayControl;
 				if(curControl == null) continue; //just a piece of boilerplate...
 
 				FieldInfo[] props = typecontrols[curControl].GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
 				var fields = new Dictionary<string, FieldInfo>(props.Length);
-				for(int i = 0; i < props.Length; i++) {
-					fields[props[i].Name] = props[i];
-				}
-
-				foreach(CheckBox cb in curControl.Checkboxes) {
-					fields[cb.Tag.ToString()].SetValue(typecontrols[curControl], cb.Checked);
-				}
+				for(int i = 0; i < props.Length; i++) fields[props[i].Name] = props[i];
+				foreach(CheckBox cb in curControl.Checkboxes) fields[cb.Tag.ToString()].SetValue(typecontrols[curControl], cb.Checked);
 			}
 
 			//perform selection
-			if(mode is ThingsMode) {
+			if(mode is ThingsMode) 
+			{
 				ICollection<Thing> selected = General.Map.Map.GetSelectedThings(true);
 				ICollection<Thing> unselected = General.Map.Map.GetSelectedThings(false);
 
-				foreach (Thing target in unselected) {
-					foreach (Thing source in selected) {
+				foreach (Thing target in unselected) 
+				{
+					foreach (Thing source in selected) 
+					{
 						if (PropertiesComparer.PropertiesMatch((ThingPropertiesCopySettings) typecontrols[thingflags], source, target))
 							mode.SelectMapElement(target);
 					}
 				}
 
-			} else if(mode is LinedefsMode) {
+			} 
+			else if(mode is LinedefsMode) 
+			{
 				ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
 				ICollection<Linedef> unselected = General.Map.Map.GetSelectedLinedefs(false);
 
-				foreach(Linedef target in unselected) {
-					foreach(Linedef source in selected) {
+				foreach(Linedef target in unselected) 
+				{
+					foreach(Linedef source in selected) 
+					{
 						if(PropertiesComparer.PropertiesMatch((LinedefPropertiesCopySettings)typecontrols[lineflags], (SidedefPropertiesCopySettings)typecontrols[sideflags], source, target))
 							mode.SelectMapElement(target);
 					}
 				}
-
-			} else if(mode is SectorsMode) {
+			} 
+			else if(mode is SectorsMode) 
+			{
 				ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
 				ICollection<Sector> unselected = General.Map.Map.GetSelectedSectors(false);
 
-				foreach(Sector target in unselected) {
-					foreach(Sector source in selected) {
+				foreach(Sector target in unselected) 
+				{
+					foreach(Sector source in selected) 
+					{
 						if(PropertiesComparer.PropertiesMatch((SectorPropertiesCopySettings)typecontrols[sectorflags], source, target))
 							mode.SelectMapElement(target);
 					}
 				}
-
-			} else if(mode is VerticesMode) {
+			} 
+			else if(mode is VerticesMode) 
+			{
 				ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
 				ICollection<Vertex> unselected = General.Map.Map.GetSelectedVertices(false);
 
-				foreach(Vertex target in unselected) {
-					foreach(Vertex source in selected) {
+				foreach(Vertex target in unselected) 
+				{
+					foreach(Vertex source in selected) 
+					{
 						if(PropertiesComparer.PropertiesMatch((VertexPropertiesCopySettings)typecontrols[vertexflags], source, target))
 							mode.SelectMapElement(target);
 					}

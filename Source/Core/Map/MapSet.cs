@@ -1428,9 +1428,11 @@ namespace CodeImp.DoomBuilder.Map
 			IDictionary grouplist = cfg.ReadSetting(SELECTION_GROUPS_PATH, new Hashtable());
 			IDictionary groupinfo;
 
-			foreach(DictionaryEntry mp in grouplist) {
+			foreach(DictionaryEntry mp in grouplist) 
+			{
 				// Item is a structure?
-				if(mp.Value is IDictionary) {
+				if(mp.Value is IDictionary) 
+				{
 					//get group number
 					int groupnum;
 					if(!int.TryParse(mp.Key as string, out groupnum)) continue;
@@ -1443,7 +1445,7 @@ namespace CodeImp.DoomBuilder.Map
 						string s = groupinfo["vertices"] as string;
 						if (!string.IsNullOrEmpty(s)) 
 						{
-							List<int> indices = getIndices(groupinfo["vertices"] as string);
+							List<int> indices = GetIndices(groupinfo["vertices"] as string);
 
 							foreach (int index in indices) 
 							{
@@ -1458,7 +1460,7 @@ namespace CodeImp.DoomBuilder.Map
 						string s = groupinfo["linedefs"] as string;
 						if(!string.IsNullOrEmpty(s)) 
 						{
-							List<int> indices = getIndices(groupinfo["linedefs"] as string);
+							List<int> indices = GetIndices(groupinfo["linedefs"] as string);
 
 							foreach(int index in indices) 
 							{
@@ -1473,7 +1475,7 @@ namespace CodeImp.DoomBuilder.Map
 						string s = groupinfo["sectors"] as string;
 						if(!string.IsNullOrEmpty(s)) 
 						{
-							List<int> indices = getIndices(groupinfo["sectors"] as string);
+							List<int> indices = GetIndices(groupinfo["sectors"] as string);
 
 							foreach(int index in indices) 
 							{
@@ -1488,7 +1490,7 @@ namespace CodeImp.DoomBuilder.Map
 						string s = groupinfo["things"] as string;
 						if(!string.IsNullOrEmpty(s)) 
 						{
-							List<int> indices = getIndices(groupinfo["things"] as string);
+							List<int> indices = GetIndices(groupinfo["things"] as string);
 
 							foreach(int index in indices) 
 							{
@@ -1502,7 +1504,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		//mxd
-		private List<int> getIndices(string input) 
+		private static List<int> GetIndices(string input) 
 		{
 			string[] parts = input.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
 			int index;
@@ -2369,26 +2371,32 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>This joins nearby vertices in the same collection </summary>
-		public static int JoinVertices(List<Vertex> set, float joindist) {
+		public static int JoinVertices(List<Vertex> set, float joindist) 
+		{
 			float joindist2 = joindist * joindist;
 			int joinsdone = 0;
 			bool joined;
 			Vertex v1, v2;
 
-			do {
+			do 
+			{
 				// No joins yet
 				joined = false;
 
 				// Go for all vertices in the first set
-				for(int i = 0; i < set.Count - 1; i++) {
-					for(int c = i + 1; c < set.Count; c++) {
+				for(int i = 0; i < set.Count - 1; i++) 
+				{
+					for(int c = i + 1; c < set.Count; c++) 
+					{
 						v1 = set[i];
 						v2 = set[c];
 
 						// Check if vertices are close enough
-						if (v1.DistanceToSq(v2.Position) <= joindist2) {
+						if (v1.DistanceToSq(v2.Position) <= joindist2) 
+						{
 							// Check if not the same vertex
-							if (v1.Index != v2.Index) {
+							if (v1.Index != v2.Index) 
+							{
 								// Move the second vertex to match the first
 								v2.Move(v1.Position);
 
@@ -2458,22 +2466,28 @@ namespace CodeImp.DoomBuilder.Map
 				// No split yet
 				splitted = false;
 
-				for(w = 0; w < bmWidth; w++) {
-					for(h = 0; h < bmHeight; h++) {
+				for(w = 0; w < bmWidth; w++) 
+				{
+					for(h = 0; h < bmHeight; h++) 
+					{
 						block = bmap[w, h];
 						if(block.Vertices.Count == 0 || block.Lines.Count == 0) continue;
 
 						// Go for all the lines
-						foreach(Linedef l in block.Lines) {
+						foreach(Linedef l in block.Lines) 
+						{
 							// Go for all the vertices
-							foreach(Vertex v in block.Vertices) {
+							foreach(Vertex v in block.Vertices) 
+							{
 								// Check if v is close enough to l for splitting
-								if(l.DistanceToSq(v.Position, true) <= splitdist2) {
+								if(l.DistanceToSq(v.Position, true) <= splitdist2) 
+								{
 									// Line is not already referencing v?
 									Vector2D deltastart = l.Start.Position - v.Position;
 									Vector2D deltaend = l.End.Position - v.Position;
 									if(((Math.Abs(deltastart.x) > 0.001f) || (Math.Abs(deltastart.y) > 0.001f)) &&
-									   ((Math.Abs(deltaend.x) > 0.001f) || (Math.Abs(deltaend.y) > 0.001f))) {
+									   ((Math.Abs(deltaend.x) > 0.001f) || (Math.Abs(deltaend.y) > 0.001f))) 
+									{
 										// Split line l with vertex v
 										Linedef nl = l.Split(v);
 										if(nl == null) return false;
@@ -2488,7 +2502,8 @@ namespace CodeImp.DoomBuilder.Map
 										nl.UpdateCache();
 
 										// Add both lines to changedlines
-										if(changedlines != null) {
+										if(changedlines != null) 
+										{
 											changedlines.Add(l);
 											changedlines.Add(nl);
 										}
@@ -2595,16 +2610,19 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>mxd. This finds the line closest to the specified position excluding given list of linedefs.</summary>
-		public Linedef NearestLinedef(Vector2D pos, List<Linedef> linesToExclude) {
+		public Linedef NearestLinedef(Vector2D pos, List<Linedef> linesToExclude) 
+		{
 			Linedef closest = null;
 			float distance = float.MaxValue;
 
 			// Go for all linedefs in selection
-			foreach(Linedef l in linedefs) {
+			foreach(Linedef l in linedefs) 
+			{
 				if(linesToExclude.Contains(l))	continue;
 				// Calculate distance and check if closer than previous find
 				float d = l.SafeDistanceToSq(pos, true);
-				if(d < distance) {
+				if(d < distance) 
+				{
 					// This one is closer
 					closest = l;
 					distance = d;
@@ -2664,18 +2682,21 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>mxd. This finds the thing closest to the specified thing.</summary>
-		public static Thing NearestThing(ICollection<Thing> selection, Thing thing) {
+		public static Thing NearestThing(ICollection<Thing> selection, Thing thing) 
+		{
 			Thing closest = null;
 			float distance = float.MaxValue;
 			float d;
 
 			// Go for all things in selection
-			foreach(Thing t in selection) {
+			foreach(Thing t in selection) 
+			{
 				if(t == thing) continue;
 
 				// Calculate distance and check if closer than previous find
 				d = t.DistanceToSq(thing.Position);
-				if(d < distance) {
+				if(d < distance) 
+				{
 					// This one is closer
 					closest = t;
 					distance = d;
@@ -2782,23 +2803,27 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			Dictionary<int, bool> usedtags = new Dictionary<int, bool>();
 
-			switch(elementType) {
+			switch(elementType) 
+			{
 				case UniversalType.ThingTag:
-					for(int i = 0; i < things.Length; i++) {
+					for(int i = 0; i < things.Length; i++) 
+					{
 						if(things[i].Tag > 0 && !usedtags.ContainsKey(things[i].Tag))
 							usedtags.Add(things[i].Tag, false);
 					}
 					break;
 
 				case UniversalType.LinedefTag:
-					for(int i = 0; i < linedefs.Length; i++) {
+					for(int i = 0; i < linedefs.Length; i++) 
+					{
 						if(linedefs[i].Tag > 0 && !usedtags.ContainsKey(linedefs[i].Tag))
 							usedtags.Add(linedefs[i].Tag, false);
 					}
 					break;
 
 				case UniversalType.SectorTag:
-					for(int i = 0; i < sectors.Length; i++) {
+					for(int i = 0; i < sectors.Length; i++) 
+					{
 						if(sectors[i].Tag > 0 && !usedtags.ContainsKey(sectors[i].Tag))
 							usedtags.Add(sectors[i].Tag, false);
 					}
@@ -3223,7 +3248,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		//mxd
-		private bool TranslateToLongTextureNames(IEnumerable<Sector> sectors, IEnumerable<Sidedef> sidedefs)
+		private static bool TranslateToLongTextureNames(IEnumerable<Sector> sectors, IEnumerable<Sidedef> sidedefs)
 		{
 			bool changed = false;
 			
@@ -3283,7 +3308,7 @@ namespace CodeImp.DoomBuilder.Map
 			return changed;
 		}
 
-		private bool TranslateToShortTextureNames(IEnumerable<Sector> sectors, IEnumerable<Sidedef> sidedefs)
+		private static bool TranslateToShortTextureNames(IEnumerable<Sector> sectors, IEnumerable<Sidedef> sidedefs)
 		{
 			bool changed = false;
 			

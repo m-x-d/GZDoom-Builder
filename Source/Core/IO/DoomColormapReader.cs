@@ -55,10 +55,8 @@ namespace CodeImp.DoomBuilder.IO
 		// This validates the data as doom flat
 		public bool Validate(Stream stream)
 		{
-			int remainder;
-			
 			// Check if the data can be divided by 256 (each palette is 256 bytes)
-			remainder = (int)stream.Length % 256;
+			int remainder = (int)stream.Length % 256;
 			if(remainder == 0)
 			{
 				// Success when not 0
@@ -83,13 +81,12 @@ namespace CodeImp.DoomBuilder.IO
 		public unsafe Bitmap ReadAsBitmap(Stream stream)
 		{
 			BitmapData bitmapdata;
-			PixelColorBlock pixeldata;
 			PixelColor* targetdata;
 			int width, height;
 			Bitmap bmp;
 
 			// Read pixel data
-			pixeldata = ReadAsPixelData(stream, out width, out height);
+			PixelColorBlock pixeldata = ReadAsPixelData(stream, out width, out height);
 			if(pixeldata != null)
 			{
 				try
@@ -126,20 +123,16 @@ namespace CodeImp.DoomBuilder.IO
 		// Throws exception on failure
 		public unsafe void DrawToPixelData(Stream stream, PixelColor* target, int targetwidth, int targetheight, int x, int y)
 		{
-			Bitmap bmp;
-			BitmapData bmpdata;
-			PixelColor* pixels;
 			int ox, oy, tx, ty;
-			int width, height;
 
 			// Get bitmap
-			bmp = ReadAsBitmap(stream);
-			width = bmp.Size.Width;
-			height = bmp.Size.Height;
+			Bitmap bmp = ReadAsBitmap(stream);
+			int width = bmp.Size.Width;
+			int height = bmp.Size.Height;
 
 			// Lock bitmap pixels
-			bmpdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-			pixels = (PixelColor*)bmpdata.Scan0.ToPointer();
+			BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+			PixelColor* pixels = (PixelColor*)bmpdata.Scan0.ToPointer();
 
 			// Go for all pixels in the original image
 			for(ox = 0; ox < width; ox++)
@@ -167,9 +160,6 @@ namespace CodeImp.DoomBuilder.IO
 		// Returns null on failure
 		private unsafe PixelColorBlock ReadAsPixelData(Stream stream, out int width, out int height)
 		{
-			PixelColorBlock pixeldata;
-			byte[] bytes;
-			
 			// Image will be 128x128
 			width = 128;
 			height = 128;
@@ -180,11 +170,11 @@ namespace CodeImp.DoomBuilder.IO
 #endif
 
 			// Allocate memory
-			pixeldata = new PixelColorBlock(width, height);
+			PixelColorBlock pixeldata = new PixelColorBlock(width, height);
 			pixeldata.Clear();
 
 			// Read flat bytes from stream
-			bytes = new byte[width * height];
+			byte[] bytes = new byte[width * height];
 			stream.Read(bytes, 0, width * height);
 
 			// Draw blocks using the palette

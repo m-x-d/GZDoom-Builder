@@ -104,14 +104,15 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		//mxd. Addeed to make compiler a bit more happy...
-		public override int GetHashCode() {
+		public override int GetHashCode() 
+		{
 			return base.GetHashCode();
 		}
 
 		//mxd. Addeed to make compiler a bit more happy...
-		public override bool Equals(object obj) {
+		public override bool Equals(object obj) 
+		{
 			if(object.Equals(obj, null)) return false;
-
 			LinedefSide other = (LinedefSide)obj;
 			return (this.line == other.line) && (this.front == other.front);
 		}

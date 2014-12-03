@@ -135,11 +135,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						argtext = "";
 
 						//if args were specified, then process them
-						if (args != null) {
+						if (args != null) 
+						{
 							argtext = " args: (";
 							for (int x = 0; x < args.Length; x++)
 							{
-								if (args[x] != 0 && args[x] != t.Args[x]) {
+								if (args[x] != 0 && args[x] != t.Args[x]) 
+								{
 									match = false;
 									break;
 								}

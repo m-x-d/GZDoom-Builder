@@ -406,7 +406,8 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Loading
 		
 		// This loads the map lumps
-		private void LoadMapLumps() {
+		private void LoadMapLumps() 
+		{
 			// Get map lumps list
 			IDictionary dic = cfg.ReadSetting("maplumpnames", new Hashtable());
 			foreach(DictionaryEntry de in dic)
@@ -418,7 +419,8 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// This loads the enumerations
-		private void LoadEnums() {
+		private void LoadEnums() 
+		{
 			// Get enums list
 			IDictionary dic = cfg.ReadSetting("enums", new Hashtable());
 			foreach(DictionaryEntry de in dic)
@@ -805,7 +807,8 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// Texture Sets
-		private void LoadTextureSets() {
+		private void LoadTextureSets() 
+		{
 			// Get sets
 			IDictionary dic = cfg.ReadSetting("texturesets", new Hashtable());
 			foreach(DictionaryEntry de in dic)
@@ -846,7 +849,8 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		//mxd
-		private void LoadStringDictionary(Dictionary<string, string> target, string settingname) {
+		private void LoadStringDictionary(Dictionary<string, string> target, string settingname) 
+		{
 			IDictionary dic = cfg.ReadSetting(settingname, new Hashtable());
 			foreach(DictionaryEntry de in dic)
 				target.Add(de.Key.ToString(), de.Value.ToString());

@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
@@ -85,7 +86,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!sd.IsFront) this.deltaxy = -this.deltaxy;
 
 			//mxd
-			if(mode.UseSelectionFromClassicMode && sd.Line.Selected) {
+			if(mode.UseSelectionFromClassicMode && sd.Line.Selected) 
+			{
 				this.selected = true;
 				mode.AddSelectedObject(this);
 			}
@@ -370,7 +372,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected float getRoundedTextureOffset(float oldValue, float offset, float scale, float textureSize) {
+		protected float GetRoundedTextureOffset(float oldValue, float offset, float scale, float textureSize) 
+		{
 			if(offset == 0f) return oldValue;
 			float scaledOffset = offset * scale;
 			float result = (float)Math.Round(oldValue + scaledOffset);
@@ -380,14 +383,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected void onTextureChanged() {
+		protected void OnTextureChanged() 
+		{
 			//check for 3d floors
-			if(Sidedef.Line.Action == 160) {
+			if(Sidedef.Line.Action == 160) 
+			{
 				int sectortag = Sidedef.Line.Args[0] + (Sidedef.Line.Args[4] << 8);
 				if(sectortag == 0) return;
 
-				foreach(Sector sector in General.Map.Map.Sectors) {
-					if(sector.Tag == sectortag) {
+				foreach(Sector sector in General.Map.Map.Sectors) 
+				{
+					if(sector.Tag == sectortag) 
+					{
 						BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sector);
 						vs.UpdateSectorGeometry(true);
 					}
@@ -397,7 +404,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected void selectNeighbours(string texture, bool select, bool withSameTexture, bool withSameHeight) 
+		protected void SelectNeighbours(string texture, bool select, bool withSameTexture, bool withSameHeight) 
 		{
 			if(Sidedef.Sector == null || (!withSameTexture && !withSameHeight)) return;
 
@@ -449,12 +456,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if (doublesided) 
 				{
 					BaseVisualSector s = mode.GetVisualSector(line.Front.Sector) as BaseVisualSector;
-					if (s != null) {
+					if (s != null)
+					{
 						extrasides.AddRange(s.GetSidedefParts(line.Front).middle3d.ToArray());
 					}
 
 					s = mode.GetVisualSector(line.Back.Sector) as BaseVisualSector;
-					if(s != null) {
+					if(s != null) 
+					{
 						extrasides.AddRange(s.GetSidedefParts(line.Back).middle3d.ToArray());
 					}
 				}
@@ -587,7 +596,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual bool IsSelected() {
+		public virtual bool IsSelected() 
+		{
 			return selected;
 		}
 		
@@ -707,8 +717,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual void OnResetLocalTextureOffset() {
-			if (!General.Map.UDMF) {
+		public virtual void OnResetLocalTextureOffset() 
+		{
+			if (!General.Map.UDMF) 
+			{
 				OnResetTextureOffset();
 				return;
 			}
@@ -942,7 +954,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			mode.CreateUndo("Change texture " + texture);
 			SetTexture(texture);
-			onTextureChanged();//mxd
+			OnTextureChanged();//mxd
 		}
 		
 		// Paste texture
@@ -953,7 +965,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode.CreateUndo("Paste texture '" + BuilderPlug.Me.CopiedTexture + "'");
 				mode.SetActionResult("Pasted texture '" + BuilderPlug.Me.CopiedTexture + "'.");
 				SetTexture(BuilderPlug.Me.CopiedTexture);
-				onTextureChanged();//mxd
+				OnTextureChanged();//mxd
 			}
 		}
 		
@@ -961,10 +973,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnPasteTextureOffsets()
 		{
 			mode.CreateUndo("Paste texture offsets");
-			if (General.Map.UDMF) {
+			if (General.Map.UDMF) 
+			{
 				SetTextureOffsetX(BuilderPlug.Me.CopiedOffsets.X);
 				SetTextureOffsetY(BuilderPlug.Me.CopiedOffsets.Y);
-			} else {
+			} 
+			else 
+			{
 				Sidedef.OffsetX = BuilderPlug.Me.CopiedOffsets.X;
 				Sidedef.OffsetY = BuilderPlug.Me.CopiedOffsets.Y;
 			}
@@ -1069,7 +1084,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				List<Linedef> linedefs = mode.GetSelectedLinedefs();
 				updateList = new List<BaseVisualSector>(); //mxd
-				foreach(Linedef l in linedefs) {
+				foreach(Linedef l in linedefs) 
+				{
 					if(l.Front != null && mode.VisualSectorExists(l.Front.Sector)) 
 						updateList.Add((BaseVisualSector)mode.GetVisualSector(l.Front.Sector));
 					if(l.Back != null && mode.VisualSectorExists(l.Back.Sector))
@@ -1108,9 +1124,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) {
-			foreach(BaseVisualSector vs in updateList)
-				vs.UpdateSectorGeometry(false);
+		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) 
+		{
+			foreach(BaseVisualSector vs in updateList) vs.UpdateSectorGeometry(false);
 		}
 		
 		// Mouse moves
@@ -1164,28 +1180,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((Math.Sign(dragdeltaz.x) < 0) || (Math.Sign(dragdeltaz.y) < 0) || (Math.Sign(dragdeltaz.z) < 0)) offsety = -offsety;
 			
 			// Apply offsets
-			if(General.Interface.CtrlState && General.Interface.ShiftState) { //mxd. Clamp to grid size?
+			if(General.Interface.CtrlState && General.Interface.ShiftState) 
+			{ 
+				//mxd. Clamp to grid size?
 				int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
 				int newoffsety = startoffsety + (int)Math.Round(offsety);
 				int dx = prevoffsetx - newoffsetx;
 				int dy = prevoffsety - newoffsety;
 
-				if(Math.Abs(dx) >= General.Map.Grid.GridSize) {
+				if(Math.Abs(dx) >= General.Map.Grid.GridSize) 
+				{
 					dx = General.Map.Grid.GridSize * Math.Sign(dx);
 					prevoffsetx = newoffsetx;
-				} else {
+				} 
+				else 
+				{
 					dx = 0;
 				}
 
-				if(Math.Abs(dy) >= General.Map.Grid.GridSize) {
+				if(Math.Abs(dy) >= General.Map.Grid.GridSize) 
+				{
 					dy = General.Map.Grid.GridSize * Math.Sign(dy);
 					prevoffsety = newoffsety;
-				} else {
+				} 
+				else 
+				{
 					dy = 0;
 				}
 
 				if(dx != 0 || dy != 0) mode.ApplyTextureOffsetChange(dx, dy);
-			} else { //mxd. Constraint to axis?
+			} 
+			else 
+			{ 
+				//mxd. Constraint to axis?
 				int newoffsetx = (General.Interface.CtrlState ? startoffsetx : startoffsetx - (int)Math.Round(offsetx)); //mxd
 				int newoffsety = (General.Interface.ShiftState ? startoffsety : startoffsety + (int)Math.Round(offsety)); //mxd
 				mode.ApplyTextureOffsetChange(prevoffsetx - newoffsetx, prevoffsety - newoffsety);
@@ -1239,12 +1266,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				undoticket = mode.CreateUndo("Change texture offsets");
 			
 			//mxd
-			if (General.Map.UDMF) {
+			if (General.Map.UDMF) 
+			{
 				// Apply UDMF offsets
 				MoveTextureOffset(new Point(-horizontal, -vertical));
 				Point p = GetTextureOffset();
 				mode.SetActionResult("Changed texture offsets to " + p.X + ", " + p.Y + ".");
-			} else {
+			} 
+			else 
+			{
 				//mxd. Apply classic offsets
 				Sidedef.OffsetX = (Sidedef.OffsetX - horizontal);
 				if (Texture != null) Sidedef.OffsetX %= Texture.Width;
@@ -1260,7 +1290,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual void OnChangeTextureScale(float incrementX, float incrementY) {
+		public virtual void OnChangeTextureScale(float incrementX, float incrementY) 
+		{
 			if(!General.Map.UDMF) return;
 
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
@@ -1269,7 +1300,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			string keyX;
 			string keyY;
 
-			switch(GeometryType) {
+			switch(GeometryType) 
+			{
 				case VisualGeometryType.WALL_UPPER:
 					keyX = "scalex_top";
 					keyY = "scaley_top";
@@ -1295,7 +1327,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			Sidedef.Fields.BeforeFieldsChange();
 
-			if(incrementX != 0) {
+			if(incrementX != 0) 
+			{
 				if(scaleX + incrementX == 0)
 					scaleX *= -1;
 				else
@@ -1303,7 +1336,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UDMFTools.SetFloat(Sidedef.Fields, keyX, scaleX, 1.0f);
 			}
 
-			if(incrementY != 0) {
+			if(incrementY != 0) 
+			{
 				if(scaleY + incrementY == 0)
 					scaleY *= -1;
 				else

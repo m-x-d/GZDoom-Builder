@@ -81,7 +81,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd
-			if(mode.UseSelectionFromClassicMode && t.Selected){
+			if(mode.UseSelectionFromClassicMode && t.Selected)
+			{
 				this.selected = true;
 				mode.AddSelectedObject(this);
 			}
@@ -97,11 +98,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			//mxd. Check thing size 
 			float infoRadius, infoHeight;
-			if((info.Radius < 0.1f) || (info.Height < 0.1f)) {
+			if((info.Radius < 0.1f) || (info.Height < 0.1f)) 
+			{
 				infoRadius = FIXED_RADIUS;
 				infoHeight = FIXED_RADIUS;
 				sizeless = true;
-			} else {
+			} 
+			else 
+			{
 				infoRadius = info.Radius;
 				infoHeight = info.Height;
 				sizeless = false;
@@ -154,7 +158,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
 
-					if(sizeless) { //mxd
+					if(sizeless) //mxd
+					{ 
 						float hh = height / 2;
 						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety - hh, sectorcolor, 0.0f, 1.0f);
 						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, hh + offsety, sectorcolor, 0.0f, 0.0f);
@@ -162,7 +167,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						verts[3] = verts[0];
 						verts[4] = verts[2];
 						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety - hh, sectorcolor, 1.0f, 1.0f);
-					} else {
+					} 
+					else 
+					{
 						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety, sectorcolor, 0.0f, 1.0f);
 						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, height + offsety, sectorcolor, 0.0f, 0.0f);
 						verts[2] = new WorldVertex(+radius + offsetx, 0.0f, height + offsety, sectorcolor, 1.0f, 0.0f);
@@ -196,7 +203,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector3D pos = Thing.Position;
 			if(Thing.Type == 9501)
 			{
-				if(Thing.Sector != null) { //mxd
+				if(Thing.Sector != null) //mxd
+				{ 
 					// This is a special thing that needs special positioning
 					SectorData sd = mode.GetSectorData(Thing.Sector);
 					pos.z = sd.Ceiling.sector.CeilHeight + Thing.Position.z;
@@ -204,7 +212,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else if(Thing.Type == 9500)
 			{
-				if(Thing.Sector != null) { //mxd
+				if(Thing.Sector != null) //mxd
+				{ 
 					// This is a special thing that needs special positioning
 					SectorData sd = mode.GetSectorData(Thing.Sector);
 					pos.z = sd.Floor.sector.FloorHeight + Thing.Position.z;
@@ -270,10 +279,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			cageradius2 = cageradius2 * cageradius2;
 			pos2d = pos;
 
-			if(sizeless) { //mxd
+			if(sizeless) //mxd
+			{ 
 				boxp1 = new Vector3D(pos.x - infoRadius, pos.y - infoRadius, pos.z - infoRadius/2);
 				boxp2 = new Vector3D(pos.x + infoRadius, pos.y + infoRadius, pos.z + infoRadius/2);
-			} else {
+			} 
+			else 
+			{
 				boxp1 = new Vector3D(pos.x - infoRadius, pos.y - infoRadius, pos.z);
 				boxp2 = new Vector3D(pos.x + infoRadius, pos.y + infoRadius, pos.z + infoHeight);
 			}
@@ -430,7 +442,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual bool IsSelected() {
+		public virtual bool IsSelected() 
+		{
 			return selected;
 		}
 		
@@ -483,7 +496,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Delete thing
-		public virtual void OnDelete() {
+		public virtual void OnDelete() 
+		{
 			mode.CreateUndo("Delete thing");
 			mode.SetActionResult("Deleted a thing.");
 
@@ -525,10 +539,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				List<Thing> things = mode.GetSelectedThings();
 				//mxd
 				updateList = new List<BaseVisualThing>();
-				foreach(Thing t in things) {
+				foreach(Thing t in things)
+				{
 					VisualThing vt = mode.GetVisualThing(t);
-					if(vt != null)
-						updateList.Add(vt as BaseVisualThing);
+					if(vt != null) updateList.Add(vt as BaseVisualThing);
 				}
 
 				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged;
@@ -543,9 +557,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) {
-			foreach(BaseVisualThing vt in updateList)
-				vt.Changed = true;
+		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) 
+		{
+			foreach(BaseVisualThing vt in updateList) vt.Changed = true;
 		}
 		
 		// Raise/lower thing
@@ -576,7 +590,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public void OnMove(Vector3D newPosition) {
+		public void OnMove(Vector3D newPosition) 
+		{
 			if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Move thing");
 			Thing.Move(newPosition);
@@ -584,8 +599,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Update what must be updated
 			ThingData td = mode.GetThingData(this.Thing);
-			foreach (KeyValuePair<Sector, bool> s in td.UpdateAlso) {
-				if (mode.VisualSectorExists(s.Key)) {
+			foreach (KeyValuePair<Sector, bool> s in td.UpdateAlso) 
+			{
+				if (mode.VisualSectorExists(s.Key)) 
+				{
 					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
 					vs.UpdateSectorGeometry(s.Value);
 				}
@@ -595,7 +612,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public void Rotate(int ammount) {
+		public void Rotate(int ammount) 
+		{
 			if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Rotate thing");
 			Thing.Rotate(ammount);

@@ -72,7 +72,8 @@ namespace CodeImp.DoomBuilder.Windows
 			notfortesting.Checked = res.notfortesting;
 
 			//mxd
-			if(!string.IsNullOrEmpty(startPath)) {
+			if(!string.IsNullOrEmpty(startPath)) 
+			{
 				string startDir = Path.GetDirectoryName(startPath);
 				if(Directory.Exists(startDir)) dirdialog.SelectedPath = startDir;
 			}

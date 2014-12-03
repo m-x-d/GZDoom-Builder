@@ -49,8 +49,7 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// The script edit control
 		protected readonly ScriptEditorControl editor;
-		//mxd
-		protected readonly ComboBox navigator;
+		protected readonly ComboBox navigator; //mxd
 
 		// Derived classes must set this!
 		protected ScriptConfiguration config;
@@ -198,7 +197,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// This changes the script configurations
 		public virtual void ChangeScriptConfig(ScriptConfiguration newconfig)
 		{
-			updateNavigator(); //mxd
+			UpdateNavigator(); //mxd
 		}
 
 		// Call this to set the tab title
@@ -307,21 +306,23 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		protected void updateNavigator() 
+		protected void UpdateNavigator() 
 		{
 			//mxd. known script type?
-			if (config.ScriptType != ScriptType.UNKNOWN) {
-				switch(config.ScriptType) {
+			if (config.ScriptType != ScriptType.UNKNOWN) 
+			{
+				switch(config.ScriptType) 
+				{
 					case ScriptType.ACS:
-						updateNavigatorAcs(new MemoryStream(editor.GetText()));
+						UpdateNavigatorAcs(new MemoryStream(editor.GetText()));
 						break;
 
 					case ScriptType.DECORATE:
-						updateNavigatorDecorate(new MemoryStream(editor.GetText()));
+						UpdateNavigatorDecorate(new MemoryStream(editor.GetText()));
 						break;
 
 					case ScriptType.MODELDEF:
-						updateNavigatorModeldef(new MemoryStream(editor.GetText()));
+						UpdateNavigatorModeldef(new MemoryStream(editor.GetText()));
 						break;
 
 					default:
@@ -329,14 +330,16 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 
 				navigator.Enabled = true;
-			}else{
+			}
+			else
+			{
 				navigator.Items.Clear();
 				navigator.Enabled = false;
 			}
 		}
 
 		//mxd
-		private void updateNavigatorDecorate(MemoryStream stream) 
+		private void UpdateNavigatorDecorate(MemoryStream stream) 
 		{
 			if (stream == null) return;
 
@@ -351,7 +354,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void updateNavigatorModeldef(MemoryStream stream) 
+		private void UpdateNavigatorModeldef(MemoryStream stream) 
 		{
 			if (stream == null) return;
 
@@ -366,7 +369,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void updateNavigatorAcs(MemoryStream stream) 
+		private void UpdateNavigatorAcs(MemoryStream stream) 
 		{
 			if (stream == null) return;
 			
@@ -386,7 +389,8 @@ namespace CodeImp.DoomBuilder.Controls
 		internal ScriptType VerifyScriptType() 
 		{
 			ScriptTypeParserSE parser = new ScriptTypeParserSE();
-			if (parser.Parse(new MemoryStream(editor.GetText()), config.Description)) {
+			if (parser.Parse(new MemoryStream(editor.GetText()), config.Description)) 
+			{
 				if (parser.ScriptType != ScriptType.UNKNOWN && config.ScriptType != parser.ScriptType)
 					return parser.ScriptType;
 			}
@@ -424,8 +428,10 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		protected void navigator_SelectedIndexChanged(object sender, EventArgs e) {
-			if (navigator.SelectedItem is ScriptItem) {
+		private void navigator_SelectedIndexChanged(object sender, EventArgs e) 
+		{
+			if (navigator.SelectedItem is ScriptItem) 
+			{
 				ScriptItem si = navigator.SelectedItem as ScriptItem;
 				editor.EnsureLineVisible(editor.LineFromPosition(si.SelectionStart));
 				editor.SelectionStart = si.SelectionStart;
@@ -438,8 +444,9 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		protected void navigator_DropDown(object sender, EventArgs e) {
-			if(editor.IsChanged) updateNavigator();
+		private void navigator_DropDown(object sender, EventArgs e) 
+		{
+			if(editor.IsChanged) UpdateNavigator();
 		}
 		
 		#endregion

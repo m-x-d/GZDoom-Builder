@@ -11,35 +11,39 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		private List<ScriptItem> actors;
 		public List<ScriptItem> Actors { get { return actors; } }
 
-		public DecorateParserSE() {
+		public DecorateParserSE() 
+		{
 			actors = new List<ScriptItem>();
 		}
 
-		public override bool Parse(Stream stream, string sourcefilename) {
+		public override bool Parse(Stream stream, string sourcefilename) 
+		{
 			base.Parse(stream, sourcefilename);
 
 			// Continue until at the end of the stream
-			while (SkipWhitespace(true)) {
+			while (SkipWhitespace(true)) 
+			{
 				string token = ReadToken();
 
-				if (!string.IsNullOrEmpty(token)) {
+				if (!string.IsNullOrEmpty(token)) 
+				{
 					token = token.ToLowerInvariant();
 
-					if (token == "actor") {
+					if (token == "actor") 
+					{
 						int startPos = (int)stream.Position - 6;
 						SkipWhitespace(true);
 
 						List<string> definition = new List<string>();
 
-						while ((token = ReadToken()) != "{") {
+						while ((token = ReadToken()) != "{") 
+						{
 							definition.Add(token);
 							SkipWhitespace(true);
 						}
 
 						string name = "";
-						foreach (string s in definition)
-							name += s + " ";
-
+						foreach (string s in definition) name += s + " ";
 						actors.Add(new ScriptItem(0, name.TrimEnd(), startPos, (int)stream.Position - 2));
 					}
 				}

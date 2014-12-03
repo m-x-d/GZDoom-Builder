@@ -128,19 +128,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			bool lockX = General.Interface.CtrlState && !General.Interface.ShiftState;
 			bool lockY = !General.Interface.CtrlState && General.Interface.ShiftState;
 
-			if(lockX || lockY) {
+			if(lockX || lockY) 
+			{
 				float camAngle = Angle2D.RadToDeg(General.Map.VisualCamera.AngleXY);
 				
-				if(camAngle > 315 || camAngle < 46) {
+				if(camAngle > 315 || camAngle < 46) 
+				{
 					if(lockX) offsetx = 0;
 					if(lockY) offsety = 0;
-				} else if(camAngle > 225) {
+				} 
+				else if(camAngle > 225) 
+				{
 					if(lockX) offsety = 0;
 					if(lockY) offsetx = 0;
-				} else if(camAngle > 135) {
+				} 
+				else if(camAngle > 135) 
+				{
 					if(lockX) offsetx = 0;
 					if(lockY) offsety = 0;
-				} else {
+				} 
+				else 
+				{
 					if(lockX) offsety = 0;
 					if(lockY) offsetx = 0;
 				}
@@ -160,28 +168,38 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			offsety = (int)Math.Round(v.y);
 
 			// Apply offsets
-			if(General.Interface.CtrlState && General.Interface.ShiftState) { //mxd. Clamp to grid size?
+			if(General.Interface.CtrlState && General.Interface.ShiftState) 
+			{ 
+				//mxd. Clamp to grid size?
 				int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
 				int newoffsety = startoffsety + (int)Math.Round(offsety);
 				int dx = prevoffsetx - newoffsetx;
 				int dy = prevoffsety - newoffsety;
 
-				if(Math.Abs(dx) >= General.Map.Grid.GridSize) {
+				if(Math.Abs(dx) >= General.Map.Grid.GridSize) 
+				{
 					dx = General.Map.Grid.GridSize * Math.Sign(dx);
 					prevoffsetx = newoffsetx;
-				} else {
+				} 
+				else 
+				{
 					dx = 0;
 				}
 
-				if(Math.Abs(dy) >= General.Map.Grid.GridSize) {
+				if(Math.Abs(dy) >= General.Map.Grid.GridSize) 
+				{
 					dy = General.Map.Grid.GridSize * Math.Sign(dy);
 					prevoffsety = newoffsety;
-				} else {
+				} 
+				else 
+				{
 					dy = 0;
 				}
 
 				if(dx != 0 || dy != 0) mode.ApplyFlatOffsetChange(dx, dy);
-			} else {
+			} 
+			else 
+			{
 				int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
 				int newoffsety = startoffsety + (int)Math.Round(offsety);
 				mode.ApplyFlatOffsetChange(prevoffsetx - newoffsetx, prevoffsety - newoffsety);
@@ -193,47 +211,59 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override Sector GetControlSector() {
+		public override Sector GetControlSector() 
+		{
 			return level.sector;
 		}
 
 		//mxd
-		protected void onTextureChanged() {
-			if(level.sector == this.Sector.Sector) {
+		protected void OnTextureChanged() 
+		{
+			if(level.sector == this.Sector.Sector) 
+			{
 				this.Setup();
 
 				//check for 3d floors
-				foreach(Sidedef s in level.sector.Sidedefs) {
-					if(s.Line.Action == 160 && s.Line.Front != null) {
+				foreach(Sidedef s in level.sector.Sidedefs) 
+				{
+					if(s.Line.Action == 160 && s.Line.Front != null) 
+					{
 						int sectortag = s.Line.Args[0] + (s.Line.Args[4] << 8);
-						foreach(Sector sector in General.Map.Map.Sectors) {
-							if(sector.Tag == sectortag) {
+						foreach(Sector sector in General.Map.Map.Sectors) 
+						{
+							if(sector.Tag == sectortag) 
+							{
 								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sector);
 								vs.UpdateSectorGeometry(false);
 							}
 						}
 					}
 				}
-			} else if(mode.VisualSectorExists(level.sector)) {
+			} 
+			else if(mode.VisualSectorExists(level.sector)) 
+			{
 				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
 				vs.UpdateSectorGeometry(false);
 			}
 		}
 
 		//mxd
-		public virtual bool IsSelected() {
+		public virtual bool IsSelected() 
+		{
 			return selected;
 		}
 
 		//mxd
-		protected void alignTextureToClosestLine(bool alignx, bool aligny) {
+		protected void AlignTextureToClosestLine(bool alignx, bool aligny) 
+		{
 			if(!(mode.HighlightedObject is BaseVisualSector)) return;
 			
 			//do we need to align this? (and also grab texture scale while we are at it)
 			float scaleX, scaleY;
 			bool isFloor = (geoType == VisualGeometryType.FLOOR);
 
-			if(mode.HighlightedTarget is VisualFloor) {
+			if(mode.HighlightedTarget is VisualFloor) 
+			{
 				VisualFloor target = mode.HighlightedTarget as VisualFloor;
 
 				//check texture
@@ -241,7 +271,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				scaleX = target.Sector.Sector.Fields.GetValue("xscalefloor", 1.0f);
 				scaleY = target.Sector.Sector.Fields.GetValue("yscalefloor", 1.0f);
-			} else {
+			} 
+			else 
+			{
 				VisualCeiling target = mode.HighlightedTarget as VisualCeiling;
 
 				//check texture
@@ -282,12 +314,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float distToEnd = Vector2D.Distance(hitpos, targetLine.End.Position);
 			Vector2D offset = (distToStart < distToEnd ? targetLine.Start.Position : targetLine.End.Position).GetRotated(Angle2D.DegToRad(sourceAngle));
 
-			if(alignx) {
+			if(alignx) 
+			{
 				if(Texture != null)	offset.x %= Texture.Width / scaleX;
 				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f);
 			}
 
-			if(aligny) {
+			if(aligny) 
+			{
 				if(Texture != null)	offset.y %= Texture.Height / scaleY;
 				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f);
 			}
@@ -297,21 +331,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected void alignTextureToSlopeLine(Linedef slopeSource, float slopeAngle, bool isFront, bool alignx, bool aligny) {
+		protected void AlignTextureToSlopeLine(Linedef slopeSource, float slopeAngle, bool isFront, bool alignx, bool aligny) 
+		{
 			bool isFloor = (geoType == VisualGeometryType.FLOOR);
-
 			Sector.Sector.Fields.BeforeFieldsChange();
-			
 			float sourceAngle = (float)Math.Round(General.ClampAngle(isFront ? -Angle2D.RadToDeg(slopeSource.Angle) + 90 : -Angle2D.RadToDeg(slopeSource.Angle) - 90), 1);
 
-			if(isFloor) {
+			if(isFloor) 
+			{
 				if((isFront && slopeSource.Front.Sector.FloorHeight > slopeSource.Back.Sector.FloorHeight) ||
-				  (!isFront && slopeSource.Front.Sector.FloorHeight < slopeSource.Back.Sector.FloorHeight)) {
+				  (!isFront && slopeSource.Front.Sector.FloorHeight < slopeSource.Back.Sector.FloorHeight)) 
+				{
 					sourceAngle = General.ClampAngle(sourceAngle + 180);
 				}
-			} else {
+			} 
+			else 
+			{
 				if((isFront && slopeSource.Front.Sector.CeilHeight < slopeSource.Back.Sector.CeilHeight) ||
-				  (!isFront && slopeSource.Front.Sector.CeilHeight > slopeSource.Back.Sector.CeilHeight)) {
+				  (!isFront && slopeSource.Front.Sector.CeilHeight > slopeSource.Back.Sector.CeilHeight)) 
+				{
 					sourceAngle = General.ClampAngle(sourceAngle + 180);
 				}
 			}
@@ -327,40 +365,53 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float scaleY;
 
 			//set scale
-			if(aligny) {
+			if(aligny) 
+			{
 				scaleY = (float)Math.Round(scaleX * (1 / (float)Math.Cos(slopeAngle)), 2);
 				UDMFTools.SetFloat(Sector.Sector.Fields, yScaleKey, scaleY, 1.0f);
-			} else {
+			} 
+			else 
+			{
 				scaleY = Sector.Sector.Fields.GetValue(yScaleKey, 1.0f);
 			}
 
 			//update texture offsets
 			Vector2D offset;
-
-			if(isFloor) {
+			if(isFloor) 
+			{
 				if((isFront && slopeSource.Front.Sector.FloorHeight < slopeSource.Back.Sector.FloorHeight) ||
-				  (!isFront && slopeSource.Front.Sector.FloorHeight > slopeSource.Back.Sector.FloorHeight)) {
+				  (!isFront && slopeSource.Front.Sector.FloorHeight > slopeSource.Back.Sector.FloorHeight)) 
+				{
 					offset = slopeSource.End.Position;
-				} else {
+				} 
+				else 
+				{
 					offset = slopeSource.Start.Position;
 				}
-			} else {
+			} 
+			else 
+			{
 				if((isFront && slopeSource.Front.Sector.CeilHeight > slopeSource.Back.Sector.CeilHeight) ||
-				  (!isFront && slopeSource.Front.Sector.CeilHeight < slopeSource.Back.Sector.CeilHeight)) {
+				  (!isFront && slopeSource.Front.Sector.CeilHeight < slopeSource.Back.Sector.CeilHeight)) 
+				{
 					offset = slopeSource.End.Position;
-				} else {
+				} 
+				else 
+				{
 					offset = slopeSource.Start.Position;
 				}
 			}
 
 			offset = offset.GetRotated(Angle2D.DegToRad(sourceAngle));
 
-			if(alignx) {
+			if(alignx) 
+			{
 				if(Texture != null)	offset.x %= Texture.Width / scaleX;
 				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f);
 			}
 
-			if(aligny) {
+			if(aligny) 
+			{
 				if(Texture != null)	offset.y %= Texture.Height / scaleY;
 				UDMFTools.SetFloat(Sector.Sector.Fields, (isFloor ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f);
 			}
@@ -471,7 +522,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Delete texture
-		public virtual void OnDelete() {
+		public virtual void OnDelete() 
+		{
 			// Remove texture
 			mode.CreateUndo("Delete texture");
 			mode.SetActionResult("Deleted a texture.");
@@ -569,7 +621,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Auto-align texture offsets
-		public virtual void OnTextureAlign(bool alignx, bool aligny) {
+		public virtual void OnTextureAlign(bool alignx, bool aligny) 
+		{
 			if(!General.Map.UDMF) return;
 
 			//create undo
@@ -585,8 +638,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<VisualGeometry> selection = mode.GetSelectedSurfaces();
 
 			//align textures on slopes
-			foreach(VisualGeometry vg in selection) {
-				if(vg.GeometryType == VisualGeometryType.FLOOR || vg.GeometryType == VisualGeometryType.CEILING) {
+			foreach(VisualGeometry vg in selection) 
+			{
+				if(vg.GeometryType == VisualGeometryType.FLOOR || vg.GeometryType == VisualGeometryType.CEILING) 
+				{
 					if(vg.GeometryType == VisualGeometryType.FLOOR)
 						((VisualFloor)vg).AlignTexture(alignx, aligny);
 					else
@@ -646,7 +701,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			mode.CreateUndo("Change flat '" + texture + "'");
 			SetTexture(texture);
-			onTextureChanged(); //mxd
+			OnTextureChanged(); //mxd
 		}
 		
 		// Copy texture
@@ -671,10 +726,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				List<Sector> sectors = mode.GetSelectedSectors();
 				updateList = new List<BaseVisualSector>();
 
-				foreach(Sector s in sectors) {
-					if(mode.VisualSectorExists(s)) {
+				foreach(Sector s in sectors) 
+				{
+					if(mode.VisualSectorExists(s)) 
 						updateList.Add((BaseVisualSector)mode.GetVisualSector(s));
-					}
 				}
 
 				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged; //mxd
@@ -689,9 +744,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) {
-			foreach(BaseVisualSector vs in updateList)
-				vs.UpdateSectorGeometry(true);
+		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) 
+		{
+			foreach(BaseVisualSector vs in updateList) vs.UpdateSectorGeometry(true);
 		}
 
 		// Sector height change
@@ -703,9 +758,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Rebuild sector
 			BaseVisualSector vs;
-			if(mode.VisualSectorExists(level.sector)) {
+			if(mode.VisualSectorExists(level.sector)) 
+			{
 				vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
-			} else {//mxd. Need this to apply changes to 3d-floor even if control sector doesn't exist as BaseVisualSector
+			} 
+			else 
+			{
+				//mxd. Need this to apply changes to 3d-floor even if control sector doesn't exist 
+				//as BaseVisualSector
 				vs = mode.CreateBaseVisualSector(level.sector);
 			}
 
@@ -736,7 +796,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(horizontal == 0 && vertical == 0) return; //mxd
 			
 			//mxd
-			if (!General.Map.UDMF) {
+			if (!General.Map.UDMF) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Floor/ceiling texture offsets cannot be changed in this map format!");
 				return;
 			}
@@ -745,25 +806,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				undoticket = mode.CreateUndo("Change texture offsets");
 
 			//mxd
-			if(doSurfaceAngleCorrection) {
+			if(doSurfaceAngleCorrection) 
+			{
 				Point p = new Point(horizontal, vertical);
 				float angle = Angle2D.RadToDeg(General.Map.VisualCamera.AngleXY);
-				if(GeometryType == VisualGeometryType.CEILING) {
+				if(GeometryType == VisualGeometryType.CEILING) 
 					angle += level.sector.Fields.GetValue("rotationceiling", 0f);
-				} else
+				else
 					angle += level.sector.Fields.GetValue("rotationfloor", 0f);
 
 				angle = General.ClampAngle(angle);
 
-				if(angle > 315 || angle < 46) {
-
-				} else if(angle > 225) {
+				if(angle > 315 || angle < 46) 
+				{
+					//already correct
+				} 
+				else if(angle > 225) 
+				{
 					vertical = p.X;
 					horizontal = -p.Y;
-				} else if(angle > 135) {
+				} 
+				else if(angle > 135) 
+				{
 					horizontal = -p.X;
 					vertical = -p.Y;
-				} else {
+				} 
+				else 
+				{
 					vertical = -p.X;
 					horizontal = p.Y;
 				}
@@ -774,7 +843,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Update sector geometry
 			Sector s = GetControlSector();
-			if(s.Index != Sector.Sector.Index) {
+			if(s.Index != Sector.Sector.Index) 
+			{
 				s.UpdateNeeded = true;
 				s.UpdateCache();
 				mode.GetSectorData(s).Update();
@@ -789,7 +859,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sector.Rebuild();
 		}
 
-		public virtual void OnChangeTextureRotation(float angle) {
+		public virtual void OnChangeTextureRotation(float angle) 
+		{
 			if(!General.Map.UDMF) return;
 
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
@@ -803,7 +874,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			s.Fields.BeforeFieldsChange();
 			UDMFTools.SetFloat(s.Fields, key, angle, 0.0f);
 
-			if(s.Index != Sector.Sector.Index) {
+			if(s.Index != Sector.Sector.Index) 
+			{
 				s.UpdateNeeded = true;
 				s.UpdateCache();
 				mode.GetSectorData(s).Update();
@@ -817,7 +889,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual void OnChangeTextureScale(float incrementX, float incrementY) {
+		public virtual void OnChangeTextureScale(float incrementX, float incrementY) 
+		{
 			if(!General.Map.UDMF) return;
 
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))

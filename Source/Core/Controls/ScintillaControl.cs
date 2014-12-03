@@ -2314,14 +2314,14 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ignoredkeys.Add((int)key + (int)modifier, (int)key + (int)modifier);
 		}
 
-		private void addShortcuts(Menu m)
+		private void AddShortcuts(Menu m)
 		{
 			foreach(MenuItem mi in m.MenuItems)
 			{
 				if(mi.Shortcut != Shortcut.None)
 					AddIgnoredKey(mi.Shortcut);
 				if(mi.MenuItems.Count > 0)
-					addShortcuts(mi);
+					AddShortcuts(mi);
 			}
 		}
 
@@ -2329,7 +2329,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if((parentForm != null) && (parentForm.Menu != null))
 			{
-				addShortcuts(parentForm.Menu);
+				AddShortcuts(parentForm.Menu);
 			}
 		}
 

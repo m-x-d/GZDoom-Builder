@@ -91,7 +91,7 @@
 			this.nudRed.Name = "nudRed";
 			this.nudRed.Size = new System.Drawing.Size(48, 20);
 			this.nudRed.TabIndex = 55;
-			this.nudRed.ValueChanged += new System.EventHandler(this.nudValueChanged);
+			this.nudRed.ValueChanged += new System.EventHandler(this.NudValueChanged);
 			// 
 			// pnlColor
 			// 
@@ -131,7 +131,7 @@
 			this.nudBlue.Name = "nudBlue";
 			this.nudBlue.Size = new System.Drawing.Size(48, 20);
 			this.nudBlue.TabIndex = 57;
-			this.nudBlue.ValueChanged += new System.EventHandler(this.nudValueChanged);
+			this.nudBlue.ValueChanged += new System.EventHandler(this.NudValueChanged);
 			// 
 			// nudGreen
 			// 
@@ -145,7 +145,7 @@
 			this.nudGreen.Name = "nudGreen";
 			this.nudGreen.Size = new System.Drawing.Size(48, 20);
 			this.nudGreen.TabIndex = 56;
-			this.nudGreen.ValueChanged += new System.EventHandler(this.nudValueChanged);
+			this.nudGreen.ValueChanged += new System.EventHandler(this.NudValueChanged);
 			// 
 			// Label2
 			// 
@@ -203,11 +203,11 @@
 			this.Name = "ColorPickerControl";
 			this.Size = new System.Drawing.Size(311, 183);
 			this.Load += new System.EventHandler(this.ColorPickerControl_Load);
-			this.MouseLeave += new System.EventHandler(this.onMouseUp);
-			this.Paint += new System.Windows.Forms.PaintEventHandler(this.onPaint);
-			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.handleMouse);
+			this.MouseLeave += new System.EventHandler(this.OnMouseUp);
+			this.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint);
+			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.HandleMouse);
 			this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ColorPickerControl_MouseDown);
-			this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.onMouseUp);
+			this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnMouseUp);
 			((System.ComponentModel.ISupportInitialize)(this.nudRed)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudBlue)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudGreen)).EndInit();

@@ -1,6 +1,7 @@
 ﻿#region ================== Namespaces
 
 using System;
+using System.Globalization;
 using System.Windows.Forms;
 
 #endregion
@@ -30,36 +31,44 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		#endregion
 
-		public PairedIntControl() {
+		public PairedIntControl() 
+		{
 			InitializeComponent();
 		}
 
-		public void SetValues(int val1, int val2, bool first) {
+		public void SetValues(int val1, int val2, bool first) 
+		{
 			blockUpdate = true;
 
-			if (first) {
-				value1.Text = val1.ToString();
-				value2.Text = val2.ToString();
-			} else {
-				if (!string.IsNullOrEmpty(value1.Text) && value1.Text != val1.ToString())
+			if (first) 
+			{
+				value1.Text = val1.ToString(CultureInfo.InvariantCulture);
+				value2.Text = val2.ToString(CultureInfo.InvariantCulture);
+			} 
+			else 
+			{
+				if (!string.IsNullOrEmpty(value1.Text) && value1.Text != val1.ToString(CultureInfo.InvariantCulture))
 					value1.Text = string.Empty;
 
-				if (!string.IsNullOrEmpty(value2.Text) && value2.Text != val2.ToString())
+				if (!string.IsNullOrEmpty(value2.Text) && value2.Text != val2.ToString(CultureInfo.InvariantCulture))
 					value2.Text = string.Empty;
 			}
 
 			blockUpdate = false;
 		}
 
-		public int GetValue1(int original) {
+		public int GetValue1(int original) 
+		{
 			return value1.GetResult(original);
 		}
 
-		public int GetValue2(int original) {
+		public int GetValue2(int original) 
+		{
 			return value2.GetResult(original);
 		}
 
-		private void checkValues() {
+		private void CheckValues() 
+		{
 			bool changed = string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text) 
 				|| value1.GetResult(defaultValue) != defaultValue || value2.GetResult(defaultValue) != defaultValue;
 			label.Enabled = changed;
@@ -68,14 +77,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			if(!blockUpdate && OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void bReset_Click(object sender, EventArgs e) {
-			value1.Text = defaultValue.ToString();
-			value2.Text = defaultValue.ToString();
-			checkValues();
+		private void bReset_Click(object sender, EventArgs e) 
+		{
+			value1.Text = defaultValue.ToString(CultureInfo.InvariantCulture);
+			value2.Text = defaultValue.ToString(CultureInfo.InvariantCulture);
+			CheckValues();
 		}
 
-		private void value1_WhenTextChanged(object sender, EventArgs e) {
-			checkValues();
+		private void value1_WhenTextChanged(object sender, EventArgs e) 
+		{
+			CheckValues();
 		}
 	}
 }

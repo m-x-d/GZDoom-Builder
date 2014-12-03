@@ -17,10 +17,11 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		public int Tag { get { return tag; } }
 		public int Action { get { return action; } }
 		public NodeInfoType Type { get { return type; } }
-		public string Comment { get { return getComment(); } set { setComment(value); } }
+		public string Comment { get { return GetComment(); } set { SetComment(value); } }
 
 		//constructor
-		public NodeInfo(Thing t) {
+		public NodeInfo(Thing t) 
+		{
 			type = NodeInfoType.THING;
 			index = t.Index;
 			action = t.Action;
@@ -29,14 +30,16 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			defaultName = (tti != null ? tti.Title : NodeInfoDefaultName.THING);
 		}
 
-		public NodeInfo(Sector s) {
+		public NodeInfo(Sector s) 
+		{
 			type = NodeInfoType.SECTOR;
 			index = s.Index;
 			action = s.Effect;
 			tag = s.Tag;
 		}
 
-		public NodeInfo(Linedef l) {
+		public NodeInfo(Linedef l) 
+		{
 			type = NodeInfoType.LINEDEF;
 			index = l.Index;
 			action = l.Action;
@@ -44,14 +47,17 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		}
 
 		//methods
-		private UniFields getFields() {
-			if (type == NodeInfoType.THING) {
+		private UniFields GetFields() 
+		{
+			if (type == NodeInfoType.THING) 
+			{
 				Thing t = General.Map.Map.GetThingByIndex(index);
 				if (t == null) return null;
 				return t.Fields;
 			}
 
-			if (type == NodeInfoType.SECTOR) {
+			if (type == NodeInfoType.SECTOR) 
+			{
 				Sector s = General.Map.Map.GetSectorByIndex(index);
 				if (s == null) return null;
 				return s.Fields;
@@ -63,11 +69,14 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		}
 
 //comment
-		private void setComment(string comment) {
-			UniFields fields = getFields();
+		private void SetComment(string comment) 
+		{
+			UniFields fields = GetFields();
 
-			if (comment.Length == 0) {
-				if (fields.ContainsKey("comment")) {
+			if (comment.Length == 0) 
+			{
+				if (fields.ContainsKey("comment")) 
+				{
 					General.Map.UndoRedo.CreateUndo("Remove comment");
 					fields.BeforeFieldsChange();
 					fields.Remove("comment");
@@ -85,64 +94,76 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				fields["comment"].Value = comment;
 		}
 
-		private string getComment() {
-			UniFields fields = getFields();
+		private string GetComment() 
+		{
+			UniFields fields = GetFields();
 			if (fields == null) return "";
 			if (!fields.ContainsKey("comment")) return "";
 			return fields["comment"].Value.ToString();
 		}
 
 //naming
-		public string GetName(ref string comment, string sortMode) {
-			if (type == NodeInfoType.THING) {
+		public string GetName(ref string comment, string sortMode) 
+		{
+			if (type == NodeInfoType.THING) 
+			{
 				Thing t = General.Map.Map.GetThingByIndex(index);
 				if (t == null) return "<invalid thing>";
-				return getThingName(t, ref comment, sortMode);
+				return GetThingName(t, ref comment, sortMode);
 			}
 
-			if (type == NodeInfoType.SECTOR) {
+			if (type == NodeInfoType.SECTOR) 
+			{
 				Sector s = General.Map.Map.GetSectorByIndex(index);
 				if (s == null) return "<invalid sector>";
-				return getSectorName(s, ref comment, sortMode);
+				return GetSectorName(s, ref comment, sortMode);
 			}
 
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
 			if (l == null) return "<invalid linedef>";
-			return getLinedefName(l, ref comment, sortMode);
+			return GetLinedefName(l, ref comment, sortMode);
 		}
 
-		private string getThingName(Thing t, ref string comment, string sortMode) {
+		private string GetThingName(Thing t, ref string comment, string sortMode) 
+		{
 			bool isDefaultName = true;
 			comment = "";
-			if (TagExplorer.UDMF && t.Fields.ContainsKey("comment")) {
+			if (TagExplorer.UDMF && t.Fields.ContainsKey("comment")) 
+			{
 				comment = t.Fields["comment"].Value.ToString();
 				isDefaultName = false;
 			}
-			return combineName(comment.Length == 0 ? defaultName : comment, t.Tag, t.Action, t.Index, sortMode, isDefaultName);
+			return CombineName(comment.Length == 0 ? defaultName : comment, t.Tag, t.Action, t.Index, sortMode, isDefaultName);
 		}
 
-		private static string getSectorName(Sector s, ref string comment, string sortMode) {
+		private static string GetSectorName(Sector s, ref string comment, string sortMode) 
+		{
 			bool isDefaultName = true;
 			comment = "";
-			if (TagExplorer.UDMF && s.Fields.ContainsKey("comment")) {
+			if (TagExplorer.UDMF && s.Fields.ContainsKey("comment")) 
+			{
 				comment = s.Fields["comment"].Value.ToString();
 				isDefaultName = false;
 			}
-			return combineName(comment.Length == 0 ? NodeInfoDefaultName.SECTOR : comment, s.Tag, s.Effect, s.Index, sortMode, isDefaultName);
+			return CombineName(comment.Length == 0 ? NodeInfoDefaultName.SECTOR : comment, s.Tag, s.Effect, s.Index, sortMode, isDefaultName);
 		}
 
-		private static string getLinedefName(Linedef l, ref string comment, string sortMode) {
+		private static string GetLinedefName(Linedef l, ref string comment, string sortMode) 
+		{
 			bool isDefaultName = true;
 			comment = "";
-			if (TagExplorer.UDMF && l.Fields.ContainsKey("comment")) {
+			if (TagExplorer.UDMF && l.Fields.ContainsKey("comment")) 
+			{
 				comment = l.Fields["comment"].Value.ToString();
 				isDefaultName = false;
 			}
-			return combineName(comment.Length == 0 ? NodeInfoDefaultName.LINEDEF : comment, l.Tag, l.Action, l.Index, sortMode, isDefaultName);
+			return CombineName(comment.Length == 0 ? NodeInfoDefaultName.LINEDEF : comment, l.Tag, l.Action, l.Index, sortMode, isDefaultName);
 		}
 
-		private static string combineName(string name, int tag, int action, int index, string sortMode, bool isDefaultName) {
-			switch (sortMode) {
+		private static string CombineName(string name, int tag, int action, int index, string sortMode, bool isDefaultName) 
+		{
+			switch (sortMode) 
+			{
 				case SortMode.SORT_BY_ACTION:
 					return (tag > 0 ? "Tag:" + tag + "; " : "") + name + (isDefaultName ? " " + index : "");
 

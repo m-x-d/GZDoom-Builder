@@ -545,9 +545,11 @@ namespace CodeImp.DoomBuilder.Map
 			Dictionary<Vertex, bool> processed = new Dictionary<Vertex, bool>(); //mxd
 
 			//mxd. This way bbox will be created even if triangulation failed (sector with 2 or less sidedefs and 2 vertices)
-			foreach (Sidedef s in sidedefs) {
+			foreach (Sidedef s in sidedefs) 
+			{
 				//start...
-				if (!processed.ContainsKey(s.Line.Start)) {
+				if (!processed.ContainsKey(s.Line.Start)) 
+				{
 					if (s.Line.Start.Position.x < left) left = s.Line.Start.Position.x;
 					if (s.Line.Start.Position.x > right) right = s.Line.Start.Position.x;
 					if (s.Line.Start.Position.y < top) top = s.Line.Start.Position.y;
@@ -556,7 +558,8 @@ namespace CodeImp.DoomBuilder.Map
 				}
 
 				//end...
-				if(!processed.ContainsKey(s.Line.End)) {
+				if(!processed.ContainsKey(s.Line.End)) 
+				{
 					if(s.Line.End.Position.x < left) left = s.Line.End.Position.x;
 					if(s.Line.End.Position.x > right) right = s.Line.End.Position.x;
 					if(s.Line.End.Position.y < top) top = s.Line.End.Position.y;

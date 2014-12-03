@@ -131,7 +131,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void OnUpdateMultiSelection() {
+		protected override void OnUpdateMultiSelection() 
+		{
 			base.OnUpdateMultiSelection();
 
 			if(General.Interface.CtrlState && General.Interface.ShiftState)
@@ -147,33 +148,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void OnUndoEnd() {
+		public override void OnUndoEnd() 
+		{
 			General.Map.Renderer2D.UpdateExtraFloorFlag();
 			base.OnUndoEnd();
 			UpdateSelectionInfo();
 		}
 
 		//mxd
-		public override void OnRedoEnd() {
+		public override void OnRedoEnd() 
+		{
 			General.Map.Renderer2D.UpdateExtraFloorFlag();
 			base.OnRedoEnd();
 			UpdateSelectionInfo();
 		}
 
 		//mxd
-		public override void OnMapTestEnd(bool testFromCurrentPosition) {
+		public override void OnMapTestEnd(bool testFromCurrentPosition) 
+		{
 			base.OnMapTestEnd(testFromCurrentPosition);
 			General.Interface.RedrawDisplay(); // Redraw display to hide changes :)
 		}
 
 		//mxd
-		public virtual void UpdateSelectionInfo() {
+		public virtual void UpdateSelectionInfo() 
+		{
 			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 		}
 
 		//mxd
-		protected void placeThingsAtPositions(List<Vector2D> positions) {
-			if (positions.Count < 1) {
+		protected void PlaceThingsAtPositions(List<Vector2D> positions) 
+		{
+			if (positions.Count < 1) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection of some description!");
 				return;
 			}
@@ -182,9 +189,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<Thing> things = new List<Thing>();
 
 			// Create things
-			foreach (Vector2D pos in positions) {
+			foreach (Vector2D pos in positions) 
+			{
 				Thing t = General.Map.Map.CreateThing();
-				if(t != null) {
+				if(t != null) 
+				{
 					General.Settings.ApplyDefaultThingSettings(t);
 					t.Move(pos);
 					t.UpdateConfiguration();
@@ -195,7 +204,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//Operation failed?..
-			if (things.Count < 1) {
+			if (things.Count < 1) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection of some description!");
 				General.Map.UndoRedo.WithdrawUndo();
 				return;
@@ -203,9 +213,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//Show realtime thing edit dialog
 			General.Interface.OnEditFormValuesChanged += thingEditForm_OnValuesChanged;
-			if (General.Interface.ShowEditThings(things) == DialogResult.Cancel) {
+			if (General.Interface.ShowEditThings(things) == DialogResult.Cancel) 
+			{
 				General.Map.UndoRedo.WithdrawUndo();
-			} else {
+			} 
+			else 
+			{
 				General.Interface.DisplayStatus(StatusType.Info, "Placed " + things.Count + " things.");
 			}
 			General.Interface.OnEditFormValuesChanged -= thingEditForm_OnValuesChanged;
@@ -216,7 +229,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Events (mxd)
 
 		//mxd
-		private void thingEditForm_OnValuesChanged(object sender, EventArgs e) {
+		private void thingEditForm_OnValuesChanged(object sender, EventArgs e) 
+		{
 			// Update things filter
 			General.Map.ThingsFilter.Update();
 
@@ -298,19 +312,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		[BeginAction("classicpaintselect")]
-		protected virtual void OnPaintSelectBegin() {
+		protected virtual void OnPaintSelectBegin() 
+		{
 			paintselectpressed = true;
 		}
 
 		//mxd
 		[EndAction("classicpaintselect")]
-		protected virtual void OnPaintSelectEnd() {
+		protected virtual void OnPaintSelectEnd() 
+		{
 			paintselectpressed = false;
 		}
 
 		//mxd
 		[BeginAction("togglehighlight")]
-		public void ToggleHighlight() {
+		public void ToggleHighlight() 
+		{
 			BuilderPlug.Me.UseHighlight = !BuilderPlug.Me.UseHighlight;
 			General.Interface.DisplayStatus(StatusType.Action, "Highlight is now " + (BuilderPlug.Me.UseHighlight ? "ON" : "OFF") + ".");
 
@@ -320,10 +337,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		[BeginAction("thingsselectinsectors")]
-		public void SelectThingsInSelectedSectors() {
+		public void SelectThingsInSelectedSectors() 
+		{
 			General.Map.Map.ConvertSelection(SelectionType.Sectors);
 
-			if(General.Map.Map.SelectedSectorsCount == 0) {
+			if(General.Map.Map.SelectedSectorsCount == 0) 
+			{
 				General.Interface.DisplayStatus(StatusType.Warning, "No Sectors are Selected!");
 				General.Map.Map.ConvertSelection(SelectionType.Linedefs);
 				return;
@@ -332,10 +351,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int selectedCount = 0;
 			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
 
-			foreach(Thing t in General.Map.Map.Things) {
+			foreach(Thing t in General.Map.Map.Things) 
+			{
 				t.DetermineSector();
 
-				if(!t.Selected && t.Sector != null && sectors.Contains(t.Sector)) {
+				if(!t.Selected && t.Sector != null && sectors.Contains(t.Sector)) 
+				{
 					t.Selected = true;
 					selectedCount++;
 				}

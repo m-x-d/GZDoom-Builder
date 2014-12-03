@@ -559,7 +559,8 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Changes
 
 		// This updates all properties
-		public void Update(int offsetx, int offsety, string thigh, string tmid, string tlow) {
+		public void Update(int offsetx, int offsety, string thigh, string tmid, string tlow) 
+		{
 			Update(offsetx, offsety, thigh, tmid, tlow, new Dictionary<string, bool>(StringComparer.Ordinal));
 		}
 
@@ -650,11 +651,13 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This sets udmf texture offset
-		public void SetUdmfTextureOffsetX(int offset) {
+		public void SetUdmfTextureOffsetX(int offset) 
+		{
 			this.Fields.BeforeFieldsChange();
 
 			//top
-			if(longtexnamehigh != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(texnamehigh)) {
+			if(longtexnamehigh != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(texnamehigh)) 
+			{
 				ImageData texture = General.Map.Data.GetFlatImage(texnamehigh);
 				float scaleTop = Fields.GetValue("scalex_top", 1.0f);
 
@@ -664,7 +667,8 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			//middle
-			if(longtexnamemid != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(texnamemid)) {
+			if(longtexnamemid != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(texnamemid)) 
+			{
 				ImageData texture = General.Map.Data.GetFlatImage(texnamemid);
 				float scaleMid = Fields.GetValue("scalex_mid", 1.0f);
 
@@ -674,7 +678,8 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			//bottom
-			if(longtexnamelow != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(texnamelow)) {
+			if(longtexnamelow != MapSet.EmptyLongName && General.Map.Data.GetFlatExists(texnamelow)) 
+			{
 				ImageData texture = General.Map.Data.GetFlatImage(texnamelow);
 				float scaleLow = Fields.GetValue("scalex_bottom", 1.0f);
 

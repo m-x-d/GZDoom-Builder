@@ -109,12 +109,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 				{
 					token = token.ToLowerInvariant();
 
-					switch (token) {
+					switch (token) 
+					{
 						case ":":
 							// The next token must be the class to inherit from
 							parser.SkipWhitespace(true);
 							inheritclass = parser.StripTokenQuotes(parser.ReadToken());
-							if(string.IsNullOrEmpty(inheritclass) || parser.IsSpecialToken(inheritclass)) {
+							if(string.IsNullOrEmpty(inheritclass) || parser.IsSpecialToken(inheritclass)) 
+							{
 								parser.ReportError("Expected class name to inherit from");
 								return;
 							}
@@ -127,7 +129,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 							// The next token must be the class to replace
 							parser.SkipWhitespace(true);
 							replaceclass = parser.StripTokenQuotes(parser.ReadToken());
-							if(string.IsNullOrEmpty(replaceclass) || parser.IsSpecialToken(replaceclass)) {
+							if(string.IsNullOrEmpty(replaceclass) || parser.IsSpecialToken(replaceclass)) 
+							{
 								parser.ReportError("Expected class name to replace");
 								return;
 							}
@@ -182,18 +185,22 @@ namespace CodeImp.DoomBuilder.ZDoom
 				string token = parser.ReadToken();
 				token = token.ToLowerInvariant();
 
-				switch (token) {
+				switch (token) 
+				{
 					case "+":
 					case "-":
 						// Next token is a flag (option) to set or remove
 						bool flagvalue = (token == "+");
 						parser.SkipWhitespace(true);
 						string flagname = parser.ReadToken();
-						if (!string.IsNullOrEmpty(flagname)) {
+						if (!string.IsNullOrEmpty(flagname)) 
+						{
 							// Add the flag with its value
 							flagname = flagname.ToLowerInvariant();
 							flags[flagname] = flagvalue;
-						} else {
+						} 
+						else 
+						{
 							parser.ReportError("Expected flag name");
 							return;
 						}
@@ -202,7 +209,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 					case "action":
 					case "native":
 						// We don't need this, ignore up to the first next ;
-						while (parser.SkipWhitespace(true)) {
+						while (parser.SkipWhitespace(true)) 
+						{
 							string t = parser.ReadToken();
 							if ((t == ";") || (t == null))
 								break;
@@ -215,36 +223,47 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 					case "states":
 						// Now parse actor states until we reach the end of the states structure
-						while (parser.SkipWhitespace(true)) {
+						while (parser.SkipWhitespace(true)) 
+						{
 							string statetoken = parser.ReadToken();
-							if (!string.IsNullOrEmpty(statetoken)) {
+							if (!string.IsNullOrEmpty(statetoken)) 
+							{
 								// Start of scope?
-								if (statetoken == "{") {
+								if (statetoken == "{") 
+								{
 									// This is fine
 								}
-									// End of scope?
-								else if (statetoken == "}") {
+								// End of scope?
+								else if (statetoken == "}") 
+								{
 									// Done with the states,
 									// break out of this parse loop
 									break;
 								}
-									// State label?
-								else if (statetoken == ":") {
-									if (!string.IsNullOrEmpty(previoustoken)) {
+								// State label?
+								else if (statetoken == ":") 
+								{
+									if (!string.IsNullOrEmpty(previoustoken)) 
+									{
 										// Parse actor state
 										StateStructure st = new StateStructure(this, parser);
-										if (parser.HasError)
-											return;
+										if (parser.HasError) return;
 										states[previoustoken.ToLowerInvariant()] = st;
-									} else {
+									} 
+									else 
+									{
 										parser.ReportError("Unexpected end of structure");
 										return;
 									}
-								} else {
+								} 
+								else 
+								{
 									// Keep token
 									previoustoken = statetoken;
 								}
-							} else {
+							}
+							else 
+							{
 								parser.ReportError("Unexpected end of structure");
 								return;
 							}
@@ -252,7 +271,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 						break;
 
 					case "var": //mxd
-						while (parser.SkipWhitespace(true)) {
+						while (parser.SkipWhitespace(true)) 
+						{
 							string t = parser.ReadToken();
 							if ((t == ";") || (t == null)) break;
 							if (t.StartsWith("user_") && !userVars.Contains(t))
@@ -301,9 +321,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 					case "game":
 						// Include all tokens on the same line
 						List<string> games = new List<string>();
-						while (parser.SkipWhitespace(false)) {
+						while (parser.SkipWhitespace(false)) 
+						{
 							string v = parser.ReadToken();
-							if (v == null) {
+							if (v == null) 
+							{
 								parser.ReportError("Unexpected end of structure");
 								return;
 							}
@@ -317,15 +339,20 @@ namespace CodeImp.DoomBuilder.ZDoom
 					// Property
 					default:
 						// Property begins with $? Then the whole line is a single value
-						if (token.StartsWith("$")) {
+						if (token.StartsWith("$")) 
+						{
 							// This is for editor-only properties such as $sprite and $category
 							props[token] = new List<string> { (parser.SkipWhitespace(false) ? parser.ReadLine() : "") };
-						} else {
+						} 
+						else 
+						{
 							// Next tokens up until the next newline are values
 							List<string> values = new List<string>();
-							while (parser.SkipWhitespace(false)) {
+							while (parser.SkipWhitespace(false)) 
+							{
 								string v = parser.ReadToken();
-								if (v == null) {
+								if (v == null) 
+								{
 									parser.ReportError("Unexpected end of structure");
 									return;
 								}
@@ -345,13 +372,16 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			//mxd. Check if baseclass is valid
-			if(inheritclass != "actor" && doomednum > -1 && baseclass == null) {
+			if(inheritclass != "actor" && doomednum > -1 && baseclass == null) 
+			{
 				//check if this class inherits from a class defined in game configuration
 				Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
 				inheritclass = inheritclass.ToLowerInvariant();
 
-				foreach(KeyValuePair<int, ThingTypeInfo> ti in things) {
-					if(ti.Value.ClassName == inheritclass) {
+				foreach(KeyValuePair<int, ThingTypeInfo> ti in things) 
+				{
+					if(ti.Value.ClassName == inheritclass) 
+					{
 						//states
 						if(states.Count == 0 && !string.IsNullOrEmpty(ti.Value.Sprite))
 							states.Add("spawn", new StateStructure(ti.Value.Sprite.Substring(0, 4)));
@@ -631,60 +661,64 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		//mxd. 
 		///TODO: rewrite this
-		public string FindSuitableVoxel(Dictionary<string, bool> voxels) {
+		public string FindSuitableVoxel(Dictionary<string, bool> voxels) 
+		{
 			string result = string.Empty;
 			
 			// Try the idle state
-			if(HasState("idle")) {
+			if(HasState("idle")) 
+			{
 				StateStructure s = GetState("idle");
 				string spritename = s.GetSprite(0);
-				if(!string.IsNullOrEmpty(spritename))
-					result = spritename;
+				if(!string.IsNullOrEmpty(spritename)) result = spritename;
 			}
 
 			// Try the see state
-			if(string.IsNullOrEmpty(result) && HasState("see")) {
+			if(string.IsNullOrEmpty(result) && HasState("see")) 
+			{
 				StateStructure s = GetState("see");
 				string spritename = s.GetSprite(0);
-				if(!string.IsNullOrEmpty(spritename))
-					result = spritename;
+				if(!string.IsNullOrEmpty(spritename)) result = spritename;
 			}
 
 			// Try the inactive state
-			if(string.IsNullOrEmpty(result) && HasState("inactive")) {
+			if(string.IsNullOrEmpty(result) && HasState("inactive")) 
+			{
 				StateStructure s = GetState("inactive");
 				string spritename = s.GetSprite(0);
-				if(!string.IsNullOrEmpty(spritename))
-					result = spritename;
+				if(!string.IsNullOrEmpty(spritename)) result = spritename;
 			}
 
 			// Try the spawn state
-			if(string.IsNullOrEmpty(result) && HasState("spawn")) {
+			if(string.IsNullOrEmpty(result) && HasState("spawn")) 
+			{
 				StateStructure s = GetState("spawn");
 				string spritename = s.GetSprite(0);
-				if(!string.IsNullOrEmpty(spritename))
-					result = spritename;
+				if(!string.IsNullOrEmpty(spritename)) result = spritename;
 			}
 
 			// Still no sprite found? then just pick the first we can find
-			if(string.IsNullOrEmpty(result)) {
+			if(string.IsNullOrEmpty(result)) 
+			{
 				Dictionary<string, StateStructure> list = GetAllStates();
-				foreach(StateStructure s in list.Values) {
+				foreach(StateStructure s in list.Values) 
+				{
 					string spritename = s.GetSprite(0);
-					if(!string.IsNullOrEmpty(spritename)) {
+					if(!string.IsNullOrEmpty(spritename)) 
+					{
 						result = spritename;
 						break;
 					}
 				}
 			}
 
-			if(!string.IsNullOrEmpty(result)) {
+			if(!string.IsNullOrEmpty(result)) 
+			{
 				if (voxels.ContainsKey(result)) return result;
 
 				// The sprite name may be incomplete. Find an existing sprite with direction.
-				foreach(string postfix in SPRITE_POSTFIXES) {
+				foreach(string postfix in SPRITE_POSTFIXES)
 					if(voxels.ContainsKey(result + postfix)) return result + postfix;
-				}
 			}
 
 

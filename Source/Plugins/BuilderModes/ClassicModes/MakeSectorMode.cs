@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
@@ -158,7 +159,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else if(BuilderPlug.Me.UseHighlight) //mxd
 				{
 					int color = General.Colors.Indication.WithAlpha(64).ToInt();
-					foreach(Sector s in associates.Keys){
+					foreach(Sector s in associates.Keys)
+					{
 						renderer.RenderHighlight(s.FlatVertices, color);
 					}
 				}
@@ -168,7 +170,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This highlights a new region
-		protected void Highlight(bool buttonspressed)
+		private void Highlight(bool buttonspressed)
 		{
 			LinedefSide newnearest;
 
@@ -539,10 +541,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
-		#endregion
-
-		#region ================== Actions
-
 		#endregion
 	}
 }

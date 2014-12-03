@@ -6,7 +6,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
 	internal static class SharpCompressHelper
 	{
-		internal static MemoryStream CompressStream(Stream stream) {
+		internal static MemoryStream CompressStream(Stream stream) 
+		{
 			byte[] arr = new byte[stream.Length];
 			stream.Read(arr, 0, (int)stream.Length);
 
@@ -19,7 +20,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			return ms;
 		}
 
-		internal static MemoryStream DecompressStream(Stream stream) {
+		internal static MemoryStream DecompressStream(Stream stream) 
+		{
 			BZip2Stream bzip = new BZip2Stream(stream, CompressionMode.Decompress, false);
 
 			byte[] buffer = new byte[16 * 1024];

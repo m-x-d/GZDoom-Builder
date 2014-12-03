@@ -184,27 +184,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Cut out pieces that overlap 3D floors in this sector
 				List<WallPolygon> polygons = new List<WallPolygon>(1);
 				polygons.Add(poly);
-				foreach(Effect3DFloor ef in sd.ExtraFloors) {
+				foreach(Effect3DFloor ef in sd.ExtraFloors) 
+				{
 					//mxd. Walls should be clipped by solid 3D floors
-					if(!ef.RenderInside && ef.Alpha == 255) {
+					if(!ef.RenderInside && ef.Alpha == 255) 
+					{
 						int num = polygons.Count;
-						for(int pi = 0; pi < num; pi++) {
+						for(int pi = 0; pi < num; pi++) 
+						{
 							// Split by floor plane of 3D floor
 							WallPolygon p = polygons[pi];
 							WallPolygon np = SplitPoly(ref p, ef.Ceiling.plane, true);
 
-							if(np.Count > 0) {
+							if(np.Count > 0) 
+							{
 								// Split part below floor by the ceiling plane of 3D floor
 								// and keep only the part below the ceiling (front)
 								SplitPoly(ref np, ef.Floor.plane, true);
 
-								if(p.Count == 0) {
+								if(p.Count == 0) 
+								{
 									polygons[pi] = np;
-								} else {
+								} 
+								else 
+								{
 									polygons[pi] = p;
 									polygons.Add(np);
 								}
-							} else {
+							} 
+							else 
+							{
 								polygons[pi] = p;
 							}
 						}
@@ -264,8 +273,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
 			float scalex = Sidedef.Fields.GetValue("scalex_mid", 1.0f);
 			float scaley = Sidedef.Fields.GetValue("scaley_mid", 1.0f);
-			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldx, xy.X, scalex, Texture.Width)); //mxd
-			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, getRoundedTextureOffset(oldy, xy.Y, scaley, Texture.Height)); //mxd
+			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldx, xy.X, scalex, Texture.Width)); //mxd
+			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldy, xy.Y, scaley, Texture.Height)); //mxd
 		}
 
 		protected override Point GetTextureOffset()
@@ -276,15 +285,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void ResetTextureScale() {
+		protected override void ResetTextureScale() 
+		{
 			Sidedef.Fields.BeforeFieldsChange();
 			if(Sidedef.Fields.ContainsKey("scalex_mid")) Sidedef.Fields.Remove("scalex_mid");
 			if(Sidedef.Fields.ContainsKey("scaley_mid")) Sidedef.Fields.Remove("scaley_mid");
 		}
 
 		//mxd
-		public override void OnChangeTargetBrightness(bool up) {
-			if(!General.Map.UDMF) {
+		public override void OnChangeTargetBrightness(bool up) 
+		{
+			if(!General.Map.UDMF) 
+			{
 				base.OnChangeTargetBrightness(up);
 				return;
 			}
@@ -314,7 +326,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void OnTextureFit(bool fitWidth, bool fitHeight) {
+		public override void OnTextureFit(bool fitWidth, bool fitHeight) 
+		{
 			if(!General.Map.UDMF) return;
 			if(string.IsNullOrEmpty(Sidedef.MiddleTexture) || Sidedef.MiddleTexture == "-" || !Texture.IsImageLoaded) return;
 
@@ -327,13 +340,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode.CreateUndo("Fit texture (" + s + ")", UndoGroup.TextureOffsetChange, Sector.Sector.FixedIndex);
 			Sidedef.Fields.BeforeFieldsChange();
 
-			if(fitWidth) {
+			if(fitWidth) 
+			{
 				float scaleX = Texture.ScaledWidth / Sidedef.Line.Length;
 				UDMFTools.SetFloat(Sidedef.Fields, "scalex_mid", scaleX, 1.0f);
 				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_mid", -Sidedef.OffsetX, 0.0f);
 			}
 
-			if(fitHeight && Sidedef.Sector != null){
+			if(fitHeight && Sidedef.Sector != null)
+			{
 				float scaleY = Texture.ScaledHeight / (Sidedef.Sector.CeilHeight - Sidedef.Sector.FloorHeight);
 				UDMFTools.SetFloat(Sidedef.Fields, "scaley_mid", scaleY, 1.0f);
 
@@ -345,8 +360,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) {
-			selectNeighbours(Sidedef.MiddleTexture, select, withSameTexture, withSameHeight);
+		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) 
+		{
+			SelectNeighbours(Sidedef.MiddleTexture, select, withSameTexture, withSameHeight);
 		}
 		
 		#endregion

@@ -1,19 +1,41 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Windows;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.TagExplorer
 {
+	#region ================== Structs
+
+	internal struct SortMode
+	{
+		public const string SORT_BY_INDEX = "By Index";
+		public const string SORT_BY_TAG = "By Tag";
+		public const string SORT_BY_ACTION = "By Action special";
+		public static readonly object[] SORT_MODES = new object[] { SORT_BY_INDEX, SORT_BY_TAG, SORT_BY_ACTION };
+	}
+
+	internal struct SelectedNode
+	{
+		public NodeInfoType Type;
+		public int Index;
+	}
+
+	#endregion
+	
 	public sealed partial class TagExplorer : UserControl
 	{
 		private const string DISPLAY_TAGS_AND_ACTIONS = "Tags and Action specials";
@@ -32,9 +54,12 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		private SelectedNode selection;
 
 		private static bool udmf;
-		internal static bool UDMF { get { return udmf; } } 
+		internal static bool UDMF { get { return udmf; } }
 
-		public TagExplorer() {
+		#region ================== Constructor / Disposer
+
+		public TagExplorer() 
+		{
 			InitializeComponent();
 
 			selection = new SelectedNode();
@@ -54,11 +79,14 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 			udmf = (General.Map.Config.FormatInterface == "UniversalMapSetIO");
 
-			if (udmf) {
+			if (udmf) 
+			{
 				cbCommentsOnly.Checked = General.Settings.ReadPluginSetting("commentsonly", false);
 				toolTip1.SetToolTip(tbSearch, "Enter text to find comment\r\nEnter # + tag number to show only specified tag. Example: #667\r\nEnter $ + effect number to show only specified effect. Example: $80");
 				toolTip1.SetToolTip(treeView, "Double-click item to edit item's comment\r\nRight-click item to open item's Properties");
-			} else {
+			} 
+			else 
+			{
 				cbCommentsOnly.Enabled = false;
 				toolTip1.SetToolTip(tbSearch, "Enter # + tag number to show only specified tag. Example: #667\r\nEnter $ + effect number to show only specified effect. Example: $80");
 				toolTip1.SetToolTip(treeView, "Right-click item to open item's Properties");
@@ -66,7 +94,8 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		}
 
 		// Disposer
-		protected override void Dispose(bool disposing) {
+		protected override void Dispose(bool disposing) 
+		{
 			General.Settings.WritePluginSetting("sortmode", cbSortMode.SelectedIndex);
 			General.Settings.WritePluginSetting("displaymode", cbDisplayMode.SelectedIndex);
 			General.Settings.WritePluginSetting("centeronselected", cbCenterOnSelected.Checked);
@@ -77,22 +106,30 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			base.Dispose(disposing);
 		}
 
-		public void Setup() {
+		#endregion
+
+		#region ================== Methods
+
+		public void Setup() 
+		{
 			if (this.ParentForm != null) this.ParentForm.Activated += ParentForm_Activated;
-			updateTree(true);
+			UpdateTree(true);
 		}
 
-		public void Terminate() {
+		public void Terminate() 
+		{
 			if (this.ParentForm != null) this.ParentForm.Activated -= ParentForm_Activated;
 		}
 
 		// This sets the timer to update the list very soon (because we'll have problems if we just call updateTree now)
-		public void UpdateTreeSoon() {
+		public void UpdateTreeSoon() 
+		{
 			updatetimer.Stop();
 			updatetimer.Start();
 		}
 
-		private void updateTree(bool focusDisplay) {
+		private void UpdateTree(bool focusDisplay) 
+		{
 			bool showTags = (currentDisplayMode == DISPLAY_TAGS || currentDisplayMode == DISPLAY_TAGS_AND_ACTIONS);
 			bool showActions = (currentDisplayMode == DISPLAY_ACTIONS || currentDisplayMode == DISPLAY_TAGS_AND_ACTIONS);
 			bool hasComment;
@@ -101,7 +138,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 			int filteredTag = -1;
 			int filteredAction = -1;
-			getSpecialValues(serachStr, ref filteredTag, ref filteredAction);
+			GetSpecialValues(serachStr, ref filteredTag, ref filteredAction);
 
 			if (!udmf || filteredTag != -1 || filteredAction != -1) serachStr = "";
 
@@ -113,25 +150,27 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			List<TreeNode> nodes = new List<TreeNode>();
 
 //add things
-			if(General.Map.FormatInterface.HasThingAction || General.Map.FormatInterface.HasThingTag) {
+			if(General.Map.FormatInterface.HasThingAction || General.Map.FormatInterface.HasThingTag) 
+			{
 				ICollection<Thing> things = General.Map.Map.Things;
 
-				if(!(things is MapElementCollection<Thing>)) { //don't want to enumerate when array is locked
-					foreach(Thing t in things) {
-						if((showTags && t.Tag != 0) || (showActions && t.Action > 0)) {
-							if(filteredTag != -1 && t.Tag != filteredTag)
-								continue;
-							if(filteredAction != -1 && t.Action != filteredAction)
-								continue;
+				if(!(things is MapElementCollection<Thing>)) //don't want to enumerate when array is locked
+				{ 
+					foreach(Thing t in things) 
+					{
+						if((showTags && t.Tag != 0) || (showActions && t.Action > 0)) 
+						{
+							if(filteredTag != -1 && t.Tag != filteredTag) continue;
+							if(filteredAction != -1 && t.Action != filteredAction) continue;
 
 							NodeInfo info = new NodeInfo(t);
 							string name = info.GetName(ref comment, currentSortMode);
 							hasComment = comment.Length > 0;
 
-							if(!hasComment && cbCommentsOnly.Checked)
-								continue;
+							if(!hasComment && cbCommentsOnly.Checked) continue;
 
-							if(!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
+							if(!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) 
+							{
 								TreeNode node = new TreeNode(name, 1, 1);
 								node.Tag = info;
 								if(hasComment) node.ForeColor = commentColor;
@@ -144,18 +183,22 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					}
 
 					//sort nodes
-					sort(ref nodes, currentSortMode);
+					Sort(ref nodes, currentSortMode);
 
 					//add "things" category
-					if(nodes.Count > 0) {
-						if(currentSortMode == SortMode.SORT_BY_ACTION) { //create action categories
+					if(nodes.Count > 0) 
+					{
+						if(currentSortMode == SortMode.SORT_BY_ACTION) //create action categories
+						{ 
 							Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
 							TreeNode noAction = new TreeNode("No Action", 0, 0);
 
-							foreach(TreeNode node in nodes) {
+							foreach(TreeNode node in nodes) 
+							{
 								NodeInfo nodeInfo = node.Tag as NodeInfo;
 
-								if(nodeInfo.Action == 0) {
+								if(nodeInfo.Action == 0) 
+								{
 									noAction.Nodes.Add(node);
 									continue;
 								}
@@ -172,23 +215,28 @@ namespace CodeImp.DoomBuilder.TagExplorer
 							categories.Values.CopyTo(catNodes, 0);
 
 							TreeNode category = new TreeNode(CAT_THINGS, 0, 0, catNodes);
-							if(noAction.Nodes.Count > 0)
-								category.Nodes.Add(noAction);
+							if(noAction.Nodes.Count > 0) category.Nodes.Add(noAction);
 
 							treeView.Nodes.Add(category);
 
-						} else if(currentSortMode == SortMode.SORT_BY_INDEX) { //create thing categories
+						} 
+						else if(currentSortMode == SortMode.SORT_BY_INDEX) //create thing categories
+						{ 
 							Dictionary<string, TreeNode> categories = new Dictionary<string, TreeNode>(StringComparer.Ordinal);
-							foreach(TreeNode node in nodes) {
+							foreach(TreeNode node in nodes) 
+							{
 								NodeInfo nodeInfo = node.Tag as NodeInfo;
 								ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(General.Map.Map.GetThingByIndex(nodeInfo.Index).Type);
 
-								if(tti != null) {
+								if(tti != null) 
+								{
 									if(!categories.ContainsKey(tti.Category.Title))
 										categories.Add(tti.Category.Title, new TreeNode(tti.Category.Title, 0, 0, new[] { node }));
 									else
 										categories[tti.Category.Title].Nodes.Add(node);
-								} else {
+								} 
+								else 
+								{
 									if(!categories.ContainsKey("UNKNOWN"))
 										categories.Add("UNKNOWN", new TreeNode("UNKNOWN", 0, 0, new[] { node }));
 									else
@@ -200,25 +248,32 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 							treeView.Nodes.Add(new TreeNode(CAT_THINGS, 0, 0, catNodes));
 
-						} else { //sort by tag
+						} 
+						else //sort by tag
+						{ 
 							Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
 							TreeNode noTag = new TreeNode("No Tag", 0, 0);
 
-							foreach(TreeNode node in nodes) {
+							foreach(TreeNode node in nodes) 
+							{
 								NodeInfo nodeInfo = node.Tag as NodeInfo;
 
-								if(nodeInfo.Tag == 0) {
+								if(nodeInfo.Tag == 0) 
+								{
 									noTag.Nodes.Add(node);
 									continue;
 								}
 
-								if(!categories.ContainsKey(nodeInfo.Tag)) {
+								if(!categories.ContainsKey(nodeInfo.Tag)) 
+								{
 									string title = "Tag " + nodeInfo.Tag;
 									if(General.Map.Options.TagLabels.ContainsKey(nodeInfo.Tag))
 										title += ": " + General.Map.Options.TagLabels[nodeInfo.Tag];
 
 									categories.Add(nodeInfo.Tag, new TreeNode(title, 0, 0, new TreeNode[] { node }));
-								} else {
+								} 
+								else 
+								{
 									categories[nodeInfo.Tag].Nodes.Add(node);
 								}
 							}
@@ -227,8 +282,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 							categories.Values.CopyTo(catNodes, 0);
 
 							TreeNode category = new TreeNode(CAT_THINGS, 0, 0, catNodes);
-							if(noTag.Nodes.Count > 0)
-								category.Nodes.Add(noTag);
+							if(noTag.Nodes.Count > 0) category.Nodes.Add(noTag);
 
 							treeView.Nodes.Add(category);
 						}
@@ -240,22 +294,23 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			nodes = new List<TreeNode>();
 			ICollection<Sector> sectors = General.Map.Map.Sectors;
 
-			if (!(sectors is MapElementCollection<Sector>)) { //don't want to enumerate when array is locked
-				foreach (Sector s in sectors) {
-					if ((showTags && s.Tag != 0) || (showActions && s.Effect > 0)) {
-						if (filteredTag != -1 && s.Tag != filteredTag)
-							continue;
-						if (filteredAction != -1 && s.Effect != filteredAction)
-							continue;
+			if (!(sectors is MapElementCollection<Sector>)) //don't want to enumerate when array is locked
+			{ 
+				foreach (Sector s in sectors) 
+				{
+					if ((showTags && s.Tag != 0) || (showActions && s.Effect > 0)) 
+					{
+						if (filteredTag != -1 && s.Tag != filteredTag) continue;
+						if (filteredAction != -1 && s.Effect != filteredAction) continue;
 
 						NodeInfo info = new NodeInfo(s);
 						string name = info.GetName(ref comment, currentSortMode);
 						hasComment = comment.Length > 0;
 
-						if (!hasComment && cbCommentsOnly.Checked)
-							continue;
+						if (!hasComment && cbCommentsOnly.Checked) continue;
 
-						if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
+						if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) 
+						{
 							TreeNode node = new TreeNode(name, 3, 3);
 							node.Tag = info;
 							if (hasComment) node.ForeColor = commentColor;
@@ -268,18 +323,22 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				}
 
 				//sort nodes
-				sort(ref nodes, currentSortMode);
+				Sort(ref nodes, currentSortMode);
 
 				//add category
-				if (nodes.Count > 0) {
-					if (currentSortMode == SortMode.SORT_BY_ACTION) {
+				if (nodes.Count > 0) 
+				{
+					if (currentSortMode == SortMode.SORT_BY_ACTION) 
+					{
 						Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
 						TreeNode noAction = new TreeNode("No Effect", 2, 2);
 
-						foreach (TreeNode node in nodes) {
+						foreach (TreeNode node in nodes) 
+						{
 							NodeInfo nodeInfo = node.Tag as NodeInfo;
 
-							if (nodeInfo.Action == 0) {
+							if (nodeInfo.Action == 0) 
+							{
 								noAction.Nodes.Add(node);
 								continue;
 							}
@@ -295,29 +354,35 @@ namespace CodeImp.DoomBuilder.TagExplorer
 						categories.Values.CopyTo(catNodes, 0);
 
 						TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catNodes);
-						if (noAction.Nodes.Count > 0)
-							category.Nodes.Add(noAction);
+						if (noAction.Nodes.Count > 0) category.Nodes.Add(noAction);
 
 						treeView.Nodes.Add(category);
-					} else if (currentSortMode == SortMode.SORT_BY_TAG) {
+					} 
+					else if (currentSortMode == SortMode.SORT_BY_TAG) 
+					{
 						Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
 						TreeNode noTag = new TreeNode("No Tag", 2, 2);
 
-						foreach (TreeNode node in nodes) {
+						foreach (TreeNode node in nodes) 
+						{
 							NodeInfo nodeInfo = node.Tag as NodeInfo;
 
-							if (nodeInfo.Tag == 0) {
+							if (nodeInfo.Tag == 0) 
+							{
 								noTag.Nodes.Add(node);
 								continue;
 							}
 
-							if(!categories.ContainsKey(nodeInfo.Tag)) {
+							if(!categories.ContainsKey(nodeInfo.Tag)) 
+							{
 								string title = "Tag " + nodeInfo.Tag;
 								if(General.Map.Options.TagLabels.ContainsKey(nodeInfo.Tag))
 									title += ": " + General.Map.Options.TagLabels[nodeInfo.Tag];
 
 								categories.Add(nodeInfo.Tag, new TreeNode(title, 2, 2, new TreeNode[] { node }));
-							} else {
+							} 
+							else 
+							{
 								categories[nodeInfo.Tag].Nodes.Add(node);
 							}
 						}
@@ -325,11 +390,12 @@ namespace CodeImp.DoomBuilder.TagExplorer
 						categories.Values.CopyTo(catNodes, 0);
 
 						TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catNodes);
-						if (noTag.Nodes.Count > 0)
-							category.Nodes.Add(noTag);
+						if (noTag.Nodes.Count > 0) category.Nodes.Add(noTag);
 
 						treeView.Nodes.Add(category);
-					} else {//just add them as they are
+					} 
+					else //just add them as they are
+					{
 						treeView.Nodes.Add(new TreeNode(CAT_SECTORS, 2, 2, nodes.ToArray()));
 					}
 				}
@@ -339,22 +405,23 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			nodes = new List<TreeNode>();
 			ICollection<Linedef> linedefs = General.Map.Map.Linedefs;
 
-			if (!(linedefs is MapElementCollection<Linedef>)) { //don't want to enumerate when array is locked
-				foreach (Linedef l in linedefs) {
-					if ((showTags && l.Tag != 0) || (showActions && l.Action > 0)) {
-						if (filteredTag != -1 && l.Tag != filteredTag)
-							continue;
-						if (filteredAction != -1 && l.Action != filteredAction)
-							continue;
+			if (!(linedefs is MapElementCollection<Linedef>)) //don't want to enumerate when array is locked
+			{ 
+				foreach (Linedef l in linedefs) 
+				{
+					if ((showTags && l.Tag != 0) || (showActions && l.Action > 0)) 
+					{
+						if (filteredTag != -1 && l.Tag != filteredTag) continue;
+						if (filteredAction != -1 && l.Action != filteredAction) continue;
 
 						NodeInfo info = new NodeInfo(l);
 						string name = info.GetName(ref comment, currentSortMode);
 						hasComment = comment.Length > 0;
 
-						if (!hasComment && cbCommentsOnly.Checked)
-							continue;
+						if (!hasComment && cbCommentsOnly.Checked) continue;
 
-						if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) {
+						if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) 
+						{
 							TreeNode node = new TreeNode(name, 5, 5);
 							node.Tag = info;
 							if (hasComment) node.ForeColor = commentColor;
@@ -367,18 +434,22 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				}
 
 				//sort nodes
-				sort(ref nodes, currentSortMode);
+				Sort(ref nodes, currentSortMode);
 
 				//add category
-				if (nodes.Count > 0) {
-					if (currentSortMode == SortMode.SORT_BY_ACTION) {
+				if (nodes.Count > 0) 
+				{
+					if (currentSortMode == SortMode.SORT_BY_ACTION) 
+					{
 						Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
 						TreeNode noAction = new TreeNode("No Action", 4, 4);
 
-						foreach (TreeNode node in nodes) {
+						foreach (TreeNode node in nodes) 
+						{
 							NodeInfo nodeInfo = node.Tag as NodeInfo;
 
-							if (nodeInfo.Action == 0) {
+							if (nodeInfo.Action == 0) 
+							{
 								noAction.Nodes.Add(node);
 								continue;
 							}
@@ -394,30 +465,36 @@ namespace CodeImp.DoomBuilder.TagExplorer
 						categories.Values.CopyTo(catNodes, 0);
 
 						TreeNode category = new TreeNode(CAT_LINEDEFS, 4, 4, catNodes);
-						if (noAction.Nodes.Count > 0)
-							category.Nodes.Add(noAction);
+						if (noAction.Nodes.Count > 0) category.Nodes.Add(noAction);
 
 						treeView.Nodes.Add(category);
 
-					} else if (currentSortMode == SortMode.SORT_BY_TAG) {
+					} 
+					else if (currentSortMode == SortMode.SORT_BY_TAG) 
+					{
 						Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
 						TreeNode noTag = new TreeNode("No Tag", 4, 4);
 
-						foreach (TreeNode node in nodes) {
+						foreach (TreeNode node in nodes) 
+						{
 							NodeInfo nodeInfo = node.Tag as NodeInfo;
 
-							if (nodeInfo.Tag == 0) {
+							if (nodeInfo.Tag == 0) 
+							{
 								noTag.Nodes.Add(node);
 								continue;
 							}
 
-							if(!categories.ContainsKey(nodeInfo.Tag)) {
+							if(!categories.ContainsKey(nodeInfo.Tag)) 
+							{
 								string title = "Tag " + nodeInfo.Tag;
 								if(General.Map.Options.TagLabels.ContainsKey(nodeInfo.Tag))
 									title += ": " + General.Map.Options.TagLabels[nodeInfo.Tag];
 
 								categories.Add(nodeInfo.Tag, new TreeNode(title, 4, 4, new TreeNode[] { node }));
-							} else {
+							} 
+							else 
+							{
 								categories[nodeInfo.Tag].Nodes.Add(node);
 							}
 						}
@@ -425,19 +502,19 @@ namespace CodeImp.DoomBuilder.TagExplorer
 						categories.Values.CopyTo(catNodes, 0);
 
 						TreeNode category = new TreeNode(CAT_LINEDEFS, 4, 4, catNodes);
-						if (noTag.Nodes.Count > 0)
-							category.Nodes.Add(noTag);
+						if (noTag.Nodes.Count > 0) category.Nodes.Add(noTag);
 
 						treeView.Nodes.Add(category);
-					} else { //just add them as they are
+					} 
+					else //just add them as they are
+					{ 
 						treeView.Nodes.Add(new TreeNode(CAT_LINEDEFS, 4, 4, nodes.ToArray()));
 					}
 				}
 			}
 
 			//expand top level nodes
-			foreach (TreeNode t in treeView.Nodes)
-				t.Expand();
+			foreach (TreeNode t in treeView.Nodes) t.Expand();
 
 			if (selectedNode != null)
 				treeView.SelectedNode = selectedNode;
@@ -454,28 +531,30 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		}
 
 //tag/action search
-		private void getSpecialValues(string serachStr, ref int filteredTag, ref int filteredAction) {
+		private static void GetSpecialValues(string serachStr, ref int filteredTag, ref int filteredAction) 
+		{
 			if (serachStr.Length == 0) return;
 
 			int pos = serachStr.IndexOf("#");
-			if (pos != -1)
-				filteredTag = readNumber(serachStr, pos+1);
+			if (pos != -1) filteredTag = ReadNumber(serachStr, pos+1);
 
 			pos = serachStr.IndexOf("$");
-			if (pos != -1)
-				filteredAction = readNumber(serachStr, pos+1);
+			if (pos != -1) filteredAction = ReadNumber(serachStr, pos+1);
 		}
 
-		private static int readNumber(string serachStr, int startPoition) {
+		private static int ReadNumber(string serachStr, int startPoition) 
+		{
 			string token = "";
 			int pos = startPoition;
 
-			while (pos < serachStr.Length && Configuration.NUMBERS.IndexOf(serachStr[pos]) != -1) {
+			while (pos < serachStr.Length && Configuration.NUMBERS.IndexOf(serachStr[pos]) != -1) 
+			{
 				token += serachStr[pos];
 				pos++;
 			}
 
-			if (token.Length > 0) {
+			if (token.Length > 0) 
+			{
 				int result;
 				if(int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out result))
 					return result;
@@ -484,17 +563,22 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			return -1;
 		}
 
-//sorting
-		private void sort(ref List<TreeNode> nodes, string sortMode) {
+		#endregion
+
+		#region ================== Sorting
+
+		private static void Sort(ref List<TreeNode> nodes, string sortMode) 
+		{
 			if(sortMode == SortMode.SORT_BY_ACTION)
-				nodes.Sort(sortByAction);
+				nodes.Sort(SortByAction);
 			else if (sortMode == SortMode.SORT_BY_TAG)
-				nodes.Sort(sortByTag);
+				nodes.Sort(SortByTag);
 			else
-				nodes.Sort(sortByIndex);
+				nodes.Sort(SortByIndex);
 		}
 
-		private static int sortByAction(TreeNode t1, TreeNode t2) {
+		private static int SortByAction(TreeNode t1, TreeNode t2) 
+		{
 			NodeInfo i1 = t1.Tag as NodeInfo;
 			NodeInfo i2 = t2.Tag as NodeInfo;
 
@@ -505,7 +589,8 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			return -1; //should be i1 < i2
 		}
 
-		private static int sortByTag(TreeNode t1, TreeNode t2) {
+		private static int SortByTag(TreeNode t1, TreeNode t2) 
+		{
 			NodeInfo i1 = t1.Tag as NodeInfo;
 			NodeInfo i2 = t2.Tag as NodeInfo;
 
@@ -516,7 +601,8 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			return -1; //should be i1 < i2
 		}
 
-		private static int sortByIndex(TreeNode t1, TreeNode t2) {
+		private static int SortByIndex(TreeNode t1, TreeNode t2) 
+		{
 			NodeInfo i1 = t1.Tag as NodeInfo;
 			NodeInfo i2 = t2.Tag as NodeInfo;
 
@@ -525,18 +611,24 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			return -1;
 		}
 
-//EVENTS
-		private void cbDisplayMode_SelectedIndexChanged(object sender, EventArgs e) {
+		#endregion
+
+		#region ================== Events
+
+		private void cbDisplayMode_SelectedIndexChanged(object sender, EventArgs e) 
+		{
 			currentDisplayMode = cbDisplayMode.SelectedItem.ToString();
-			updateTree(true);
+			UpdateTree(true);
 		}
 
-		private void cbSortMode_SelectedIndexChanged(object sender, EventArgs e) {
+		private void cbSortMode_SelectedIndexChanged(object sender, EventArgs e) 
+		{
 			currentSortMode = cbSortMode.SelectedItem.ToString();
-			updateTree(true);
+			UpdateTree(true);
 		}
 
-		private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
+		private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) 
+		{
 			NodeInfo info = e.Node.Tag as NodeInfo;
 			if (info == null) return;
 
@@ -544,10 +636,12 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			selection.Type = info.Type;
 			selection.Index = info.Index;
 
-			if (e.Button == MouseButtons.Right) { //open element properties
+			if (e.Button == MouseButtons.Right) //open element properties
+			{ 
 				bool updateDisplay = false;
 				
-				switch (info.Type) {
+				switch (info.Type) 
+				{
 					case NodeInfoType.THING:
 						Thing t = General.Map.Map.GetThingByIndex(info.Index);
 						updateDisplay = (t != null && General.Interface.ShowEditThings(new List<Thing>() { t }) == DialogResult.OK);
@@ -568,16 +662,20 @@ namespace CodeImp.DoomBuilder.TagExplorer
 						break;
 				}
 
-				if(updateDisplay) {
+				if(updateDisplay) 
+				{
 					// Update entire display
 					General.Map.Map.Update();
 					General.Interface.RedrawDisplay();
-					updateTree(true);
+					UpdateTree(true);
 				}
 
-			} else {
+			} 
+			else 
+			{
 				//select element?
-				if (cbSelectOnClick.Checked) {
+				if (cbSelectOnClick.Checked) 
+				{
 					// Leave any volatile mode
 					General.Editing.CancelVolatileMode();
 					General.Map.Map.ClearAllSelected();
@@ -608,21 +706,28 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				}
 
 				//focus on element?
-				if (cbCenterOnSelected.Checked) {
+				if (cbCenterOnSelected.Checked) 
+				{
 					List<Vector2D> points = new List<Vector2D>();
 					RectangleF area = MapSet.CreateEmptyArea();
 
-					if (info.Type == NodeInfoType.LINEDEF) {
+					if (info.Type == NodeInfoType.LINEDEF) 
+					{
 						Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
 						points.Add(l.Start.Position);
 						points.Add(l.End.Position);
-					} else if (info.Type == NodeInfoType.SECTOR) {
+					} 
+					else if (info.Type == NodeInfoType.SECTOR) 
+					{
 						Sector s = General.Map.Map.GetSectorByIndex(info.Index);
-						foreach (Sidedef sd in s.Sidedefs) {
+						foreach (Sidedef sd in s.Sidedefs) 
+						{
 							points.Add(sd.Line.Start.Position);
 							points.Add(sd.Line.End.Position);
 						}
-					} else if (info.Type == NodeInfoType.THING) {
+					} 
+					else if (info.Type == NodeInfoType.THING) 
+					{
 						Thing t = General.Map.Map.GetThingByIndex(info.Index);
 						Vector2D p = t.Position;
 						points.Add(p);
@@ -630,7 +735,9 @@ namespace CodeImp.DoomBuilder.TagExplorer
 						points.Add(p + new Vector2D(t.Size * 2.0f, -t.Size * 2.0f));
 						points.Add(p + new Vector2D(-t.Size * 2.0f, t.Size * 2.0f));
 						points.Add(p + new Vector2D(-t.Size * 2.0f, -t.Size * 2.0f));
-					} else {
+					} 
+					else 
+					{
 						General.Fail("Tag Explorer: unknown object type given to zoom in on!");
 					}
 
@@ -638,11 +745,14 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					foreach (Vector2D p in points) area = MapSet.IncreaseArea(area, p);
 
 					// Make the area square, using the largest side
-					if (area.Width > area.Height) {
+					if (area.Width > area.Height) 
+					{
 						float delta = area.Width - area.Height;
 						area.Y -= delta * 0.5f;
 						area.Height += delta;
-					} else {
+					} 
+					else 
+					{
 						float delta = area.Height - area.Width;
 						area.X -= delta * 0.5f;
 						area.Width += delta;
@@ -661,9 +771,11 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			}
 		}
 
-		private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
+		private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) 
+		{
 			//edit comment
-			if (udmf) {
+			if (udmf) 
+			{
 				NodeInfo info = e.Node.Tag as NodeInfo;
 				if (info == null) return;
 
@@ -674,14 +786,14 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		}
 
 		//we don't want to edit categories if we are in UDMF
-		private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
-			if (!udmf || !treeView.LabelEdit || e.Node.Tag == null) {
-				e.CancelEdit = true;
-			}
+		private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) 
+		{
+			if (!udmf || !treeView.LabelEdit || e.Node.Tag == null) e.CancelEdit = true;
 		}
 
 		//map should be in UDMF format, or we wouldn't be here
-		private void treeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
+		private void treeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e) 
+		{
 			NodeInfo info = e.Node.Tag as NodeInfo;
 			string comment = "";
 
@@ -697,28 +809,34 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		}
 
 		//It is called every time a dialog window closes.
-		private void ParentForm_Activated(object sender, EventArgs e){
+		private void ParentForm_Activated(object sender, EventArgs e)
+		{
 			UpdateTreeSoon();
 		}
 
-		private void btnClearSearch_Click(object sender, EventArgs e) {
+		private void btnClearSearch_Click(object sender, EventArgs e) 
+		{
 			tbSearch.Clear();
 		}
 
-		private void tbSearch_TextChanged(object sender, EventArgs e) {
-			if (tbSearch.Text.Length > 1 || tbSearch.Text.Length == 0) updateTree(false);
+		private void tbSearch_TextChanged(object sender, EventArgs e) 
+		{
+			if (tbSearch.Text.Length > 1 || tbSearch.Text.Length == 0) UpdateTree(false);
 		}
 
-		private void cbCommentsOnly_CheckedChanged(object sender, EventArgs e) {
-			updateTree(true);
+		private void cbCommentsOnly_CheckedChanged(object sender, EventArgs e) 
+		{
+			UpdateTree(true);
 		}
 
-		private void updatetimer_Tick(object sender, EventArgs e) {
+		private void updatetimer_Tick(object sender, EventArgs e) 
+		{
 			updatetimer.Stop();
-			updateTree(true);
+			UpdateTree(true);
 		}
 
-		private void bExportToFile_Click(object sender, EventArgs e) {
+		private void bExportToFile_Click(object sender, EventArgs e) 
+		{
 			if(treeView.Nodes == null || treeView.Nodes.Count == 0) return;
 
 			// Show save dialog
@@ -731,21 +849,24 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			StringBuilder sb = new StringBuilder();
 
 			//top level
-			foreach(TreeNode n in treeView.Nodes) {
+			foreach(TreeNode n in treeView.Nodes) 
+			{
 				if(n.Nodes.Count == 0) continue;
 
 				if(sb.Length > 0) sb.AppendLine(Environment.NewLine);
 				sb.AppendLine(n.Text.Replace(":", " (" +currentSortMode.ToLowerInvariant()+ "):"));
 
 				//second level
-				foreach(TreeNode cn in n.Nodes) {
+				foreach(TreeNode cn in n.Nodes) 
+				{
 					//third level
-					if(cn.Nodes.Count > 0) {
+					if(cn.Nodes.Count > 0) 
+					{
 						sb.AppendLine("  " + cn.Text + ":");
-
-						foreach(TreeNode ccn in cn.Nodes)
-							sb.AppendLine("    " + ccn.Text);
-					} else {
+						foreach(TreeNode ccn in cn.Nodes) sb.AppendLine("    " + ccn.Text);
+					} 
+					else 
+					{
 						sb.AppendLine("  " + cn.Text);
 					}
 				}
@@ -763,19 +884,8 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				General.Interface.DisplayStatus(StatusType.Info, "Failed to save tag info...");
 			}
 		}
+
+		#endregion
 	}
 
-	internal struct SortMode
-	{
-		public const string SORT_BY_INDEX = "By Index";
-		public const string SORT_BY_TAG = "By Tag";
-		public const string SORT_BY_ACTION = "By Action special";
-		public static readonly object[] SORT_MODES = new object[] { SORT_BY_INDEX, SORT_BY_TAG, SORT_BY_ACTION };
-	}
-
-	internal struct SelectedNode
-	{
-		public NodeInfoType Type;
-		public int Index;
-	}
 }

@@ -1,6 +1,7 @@
 ﻿#region ================== Namespaces
 
 using System;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 
@@ -65,7 +66,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. More rendering
-		public override void RenderOverlaySelection(IRenderer2D renderer) {
+		public override void RenderOverlaySelection(IRenderer2D renderer) 
+		{
 			if(!BuilderPlug.Me.UseHighlight) return;
 			renderer.RenderHighlight(sector.FlatVertices, General.Colors.Selection.WithAlpha(64).ToInt());
 		}

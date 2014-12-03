@@ -640,30 +640,39 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void OnDragEnter(object sender, DragEventArgs e) {
-			if(e.Data.GetDataPresent(DataFormats.FileDrop)) {
+		private void OnDragEnter(object sender, DragEventArgs e) 
+		{
+			if(e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
 				e.Effect = DragDropEffects.Copy;
-			} else {
+			} 
+			else 
+			{
 				e.Effect = DragDropEffects.None;
 			}
 		}
 
 		//mxd
-		private void OnDragDrop(object sender, DragEventArgs e) {
-			if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
+		private void OnDragDrop(object sender, DragEventArgs e) 
+		{
+			if (e.Data.GetDataPresent(DataFormats.FileDrop)) 
+			{
 				string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-				if (filePaths.Length != 1) {
+				if (filePaths.Length != 1) 
+				{
 					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open multiple files at once!");
 					return;
 				}
 
-				if (!File.Exists(filePaths[0])) {
+				if (!File.Exists(filePaths[0])) 
+				{
 					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open '" + filePaths[0] + "': file does not exist!");
 					return;
 				}
 
 				string ext = Path.GetExtension(filePaths[0]);
-				if(string.IsNullOrEmpty(ext) || ext.ToLower() != ".wad") {
+				if(string.IsNullOrEmpty(ext) || ext.ToLower() != ".wad") 
+				{
 					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open '" + filePaths[0] + "': only WAD files can be loaded this way!");
 					return;
 				}
@@ -748,15 +757,19 @@ namespace CodeImp.DoomBuilder.Windows
 				// When no particular information is to be displayed.
 				// The messages displayed depends on running background processes.
 				case StatusType.Ready:
-					if ((General.Map != null) && (General.Map.Data != null)) {
+					if ((General.Map != null) && (General.Map.Data != null)) 
+					{
 						newstatus.message = General.Map.Data.IsLoading ? STATUS_LOADING_TEXT : selectionInfo;
-					} else {
+					} 
+					else 
+					{
 						newstatus.message = STATUS_READY_TEXT;
 					}
 					break;
 
 				case StatusType.Selection: //mxd
-					if (statusresetter.Enabled) { //don't change the message right now if info or warning is displayed
+					if (statusresetter.Enabled) //don't change the message right now if info or warning is displayed
+					{ 
 						selectionInfo = (string.IsNullOrEmpty(newstatus.message) ? STATUS_NO_SELECTION_TEXT : newstatus.message);
 						return;
 					}
@@ -961,7 +974,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(General.Map == null) return;
 
-			General.Map.Grid.ShowGridSetup();
+			GridSetup.ShowGridSetup();
 		}
 		
 		#endregion
@@ -1679,7 +1692,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		public void AddModesButton(ToolStripItem button, string group) {
+		public void AddModesButton(ToolStripItem button, string group) 
+		{
 			// Set proper styling
 			button.Padding = new Padding(0, 1, 0, 1);
 			button.Margin = new Padding();
@@ -1698,8 +1712,10 @@ namespace CodeImp.DoomBuilder.Windows
 			button.VisibleChanged += buttonvisiblechangedhandler;
 
 			//find the separator we need
-			for(int i = 0; i < modestoolbar.Items.Count; i++) {
-				if(modestoolbar.Items[i] is ToolStripSeparator && modestoolbar.Items[i].Text == group) {
+			for(int i = 0; i < modestoolbar.Items.Count; i++) 
+			{
+				if(modestoolbar.Items[i] is ToolStripSeparator && modestoolbar.Items[i].Text == group) 
+				{
 					modestoolbar.Items.Insert(i + 1, button);
 					break;
 				}
@@ -1729,7 +1745,8 @@ namespace CodeImp.DoomBuilder.Windows
 				if(!(button is ToolStripSeparator)) button.VisibleChanged -= buttonvisiblechangedhandler;
 
 				//mxd. Remove button from toolbars
-				switch (buttoninfo.section) {
+				switch (buttoninfo.section) 
+				{
 					case ToolbarSection.Modes:
 						modestoolbar.Items.Remove(button);
 						break;
@@ -1999,7 +2016,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Toolbar context menu (mxd)
 
-		private void toolbarContextMenu_Opening(object sender, CancelEventArgs e) {
+		private void toolbarContextMenu_Opening(object sender, CancelEventArgs e) 
+		{
 			toggleFile.Image = General.Settings.ToolbarFile ? Resources.Check : null;
 			toggleScript.Image = General.Settings.ToolbarScript ? Resources.Check : null;
 			toggleUndo.Image = General.Settings.ToolbarUndo ? Resources.Check : null;
@@ -2012,19 +2030,23 @@ namespace CodeImp.DoomBuilder.Windows
 			toggleRendering.Image = General.Settings.GZToolbarGZDoom ? Resources.Check : null;
 		}
 
-		private void toolbarContextMenu_Closing(object sender, ToolStripDropDownClosingEventArgs e) {
+		private void toolbarContextMenu_Closing(object sender, ToolStripDropDownClosingEventArgs e) 
+		{
 			e.Cancel = toolbarContextMenuShiftPressed;
 		}
 
-		private void toolbarContextMenu_KeyDown(object sender, KeyEventArgs e) {
+		private void toolbarContextMenu_KeyDown(object sender, KeyEventArgs e) 
+		{
 			toolbarContextMenuShiftPressed = (e.KeyCode == Keys.ShiftKey);
 		}
 
-		private void toolbarContextMenu_KeyUp(object sender, KeyEventArgs e) {
+		private void toolbarContextMenu_KeyUp(object sender, KeyEventArgs e) 
+		{
 			toolbarContextMenuShiftPressed = (e.KeyCode != Keys.ShiftKey);
 		}
 
-		private void toggleFile_Click(object sender, EventArgs e) {
+		private void toggleFile_Click(object sender, EventArgs e) 
+		{
 			General.Settings.ToolbarFile = !General.Settings.ToolbarFile;
 			UpdateToolbar();
 
@@ -2032,7 +2054,8 @@ namespace CodeImp.DoomBuilder.Windows
 				toggleFile.Image = General.Settings.ToolbarFile ? Resources.Check : null;
 		}
 
-		private void toggleScript_Click(object sender, EventArgs e) {
+		private void toggleScript_Click(object sender, EventArgs e) 
+		{
 			General.Settings.ToolbarScript = !General.Settings.ToolbarScript;
 			UpdateToolbar();
 
@@ -2040,7 +2063,8 @@ namespace CodeImp.DoomBuilder.Windows
 				toggleScript.Image = General.Settings.ToolbarScript ? Resources.Check : null;
 		}
 
-		private void toggleUndo_Click(object sender, EventArgs e) {
+		private void toggleUndo_Click(object sender, EventArgs e) 
+		{
 			General.Settings.ToolbarUndo = !General.Settings.ToolbarUndo;
 			UpdateToolbar();
 
@@ -2048,7 +2072,8 @@ namespace CodeImp.DoomBuilder.Windows
 				toggleUndo.Image = General.Settings.ToolbarUndo ? Resources.Check : null;
 		}
 
-		private void toggleCopy_Click(object sender, EventArgs e) {
+		private void toggleCopy_Click(object sender, EventArgs e) 
+		{
 			General.Settings.ToolbarCopy = !General.Settings.ToolbarCopy;
 			UpdateToolbar();
 
@@ -2056,7 +2081,8 @@ namespace CodeImp.DoomBuilder.Windows
 				toggleCopy.Image = General.Settings.ToolbarCopy ? Resources.Check : null;
 		}
 
-		private void togglePrefabs_Click(object sender, EventArgs e) {
+		private void togglePrefabs_Click(object sender, EventArgs e) 
+		{
 			General.Settings.ToolbarPrefabs = !General.Settings.ToolbarPrefabs;
 			UpdateToolbar();
 
@@ -2064,7 +2090,8 @@ namespace CodeImp.DoomBuilder.Windows
 				togglePrefabs.Image = General.Settings.ToolbarPrefabs ? Resources.Check : null;
 		}
 
-		private void toggleFilter_Click(object sender, EventArgs e) {
+		private void toggleFilter_Click(object sender, EventArgs e) 
+		{
 			General.Settings.ToolbarFilter = !General.Settings.ToolbarFilter;
 			UpdateToolbar();
 
@@ -2072,7 +2099,8 @@ namespace CodeImp.DoomBuilder.Windows
 				toggleFilter.Image = General.Settings.ToolbarFilter ? Resources.Check : null;
 		}
 
-		private void toggleViewModes_Click(object sender, EventArgs e) {
+		private void toggleViewModes_Click(object sender, EventArgs e) 
+		{
 			General.Settings.ToolbarViewModes = !General.Settings.ToolbarViewModes;
 			UpdateToolbar();
 
@@ -2080,7 +2108,8 @@ namespace CodeImp.DoomBuilder.Windows
 				toggleViewModes.Image = General.Settings.ToolbarViewModes ? Resources.Check : null;
 		}
 
-		private void toggleGeometry_Click(object sender, EventArgs e) {
+		private void toggleGeometry_Click(object sender, EventArgs e) 
+		{
 			General.Settings.ToolbarGeometry = !General.Settings.ToolbarGeometry;
 			UpdateToolbar();
 
@@ -2088,7 +2117,8 @@ namespace CodeImp.DoomBuilder.Windows
 				toggleGeometry.Image = General.Settings.ToolbarGeometry ? Resources.Check : null;
 		}
 
-		private void toggleTesting_Click(object sender, EventArgs e) {
+		private void toggleTesting_Click(object sender, EventArgs e) 
+		{
 			General.Settings.ToolbarTesting = !General.Settings.ToolbarTesting;
 			UpdateToolbar();
 
@@ -2096,7 +2126,8 @@ namespace CodeImp.DoomBuilder.Windows
 				toggleTesting.Image = General.Settings.ToolbarTesting ? Resources.Check : null;
 		}
 
-		private void toggleRendering_Click(object sender, EventArgs e) {
+		private void toggleRendering_Click(object sender, EventArgs e) 
+		{
 			General.Settings.GZToolbarGZDoom = !General.Settings.GZToolbarGZDoom;
 			UpdateToolbar();
 
@@ -2150,15 +2181,18 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		public void AddModesMenu(ToolStripMenuItem menu, string group) {
+		public void AddModesMenu(ToolStripMenuItem menu, string group) 
+		{
 			// Fix tags to full action names
 			ToolStripItemCollection items = new ToolStripItemCollection(this.menumain, new ToolStripItem[0]);
 			items.Add(menu);
 			RenameTagsToFullActions(items, General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly()));
 			
 			//find the separator we need
-			for(int i = 0; i < menumode.DropDownItems.Count; i++) {
-				if(menumode.DropDownItems[i] is ToolStripSeparator && menumode.DropDownItems[i].Text == group) {
+			for(int i = 0; i < menumode.DropDownItems.Count; i++) 
+			{
+				if(menumode.DropDownItems[i] is ToolStripSeparator && menumode.DropDownItems[i].Text == group) 
+				{
 					menumode.DropDownItems.Insert(i + 1, menu);
 					break;
 				}
@@ -2345,7 +2379,8 @@ namespace CodeImp.DoomBuilder.Windows
 		internal void AddRecentFile(string filename)
 		{
 			//mxd. Recreate recent files list
-			if (recentitems.Length != General.Settings.MaxRecentFiles) {
+			if (recentitems.Length != General.Settings.MaxRecentFiles) 
+			{
 				foreach(ToolStripMenuItem item in recentitems)
 					menufile.DropDownItems.Remove(item);
 
@@ -2519,7 +2554,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//update "Select group" menu
 			selectGroup.DropDownItems.Clear();
-			foreach (GroupInfo gi in infos) {
+			foreach (GroupInfo gi in infos) 
+			{
 				if(gi.Empty) continue;
 				item = selectGroup.DropDownItems.Add(gi.ToString());
 				item.Tag = "builder_selectgroup" + gi.Index;
@@ -2528,7 +2564,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//update "Clear group" menu
 			clearGroup.DropDownItems.Clear();
-			foreach(GroupInfo gi in infos) {
+			foreach(GroupInfo gi in infos) 
+			{
 				if(gi.Empty) continue;
 				item = clearGroup.DropDownItems.Add(gi.ToString());
 				item.Tag = "builder_cleargroup" + gi.Index;
@@ -2559,7 +2596,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		[BeginAction("togglebrightness")]
-		internal void ToggleBrightness() {
+		internal void ToggleBrightness() 
+		{
 			Renderer.FullBrightness = !Renderer.FullBrightness;
 			buttonfullbrightness.Checked = Renderer.FullBrightness;
 			menufullbrightness.Checked = Renderer.FullBrightness;
@@ -2571,7 +2609,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		[BeginAction("toggleautoclearsidetextures")]
-		internal void ToggleAutoClearSideTextures() {
+		internal void ToggleAutoClearSideTextures() 
+		{
 			buttonautoclearsidetextures.Checked = !buttonautoclearsidetextures.Checked;
 			itemautoclearsidetextures.Checked = buttonautoclearsidetextures.Checked;
 			General.Settings.AutoClearSidedefTextures = buttonautoclearsidetextures.Checked;
@@ -2580,7 +2619,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd
 		[BeginAction("viewusedtags")]
-		internal void ViewUsedTags() {
+		internal void ViewUsedTags() 
+		{
 			TagStatisticsForm f = new TagStatisticsForm();
 			f.ShowDialog(this);
 		}
@@ -2680,7 +2720,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void itemShortcutReference_Click(object sender, EventArgs e) {
+		private void itemShortcutReference_Click(object sender, EventArgs e) 
+		{
 			const string columnLabels = "<tr><td width=\"240px;\"><strong>Action</strong></td><td width=\"120px;\"><div align=\"center\"><strong>Shortcut</strong></div></td><td width=\"120px;\"><div align=\"center\"><strong>Modifiers</strong></div></td><td><strong>Description</strong></td></tr>";
 			const string categoryPadding = "<tr><td colspan=\"4\"></td></tr>";
 			const string categoryStart = "<tr><td colspan=\"4\" bgcolor=\"#333333\"><strong style=\"color:#FFFFFF\">";
@@ -2690,7 +2731,8 @@ namespace CodeImp.DoomBuilder.Windows
 			Actions.Action[] actions = General.Actions.GetAllActions();
 			Dictionary<string, List<Actions.Action>> sortedActions = new Dictionary<string, List<Actions.Action>>(StringComparer.Ordinal);
 
-			foreach(Actions.Action action in actions) {
+			foreach(Actions.Action action in actions) 
+			{
 				if(!sortedActions.ContainsKey(action.Category))
 					sortedActions.Add(action.Category, new List<Actions.Action>());
 				sortedActions[action.Category].Add(action);
@@ -2713,7 +2755,8 @@ namespace CodeImp.DoomBuilder.Windows
 			List<string> catnames = new List<string>(sortedActions.Count);
 			int counter = 0;
 			int numActions = 0;
-			foreach(KeyValuePair<string, List<Actions.Action>> category in sortedActions) {
+			foreach(KeyValuePair<string, List<Actions.Action>> category in sortedActions) 
+			{
 				catnames.Add("<a href=\"#cat" + (counter++) + "\">" + General.Actions.Categories[category.Key] + "</a>");
 				numActions += category.Value.Count;
 			}
@@ -2724,7 +2767,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//add descriptions
 			counter = 0;
-			foreach(KeyValuePair<string, List<Actions.Action>> category in sortedActions) {
+			foreach(KeyValuePair<string, List<Actions.Action>> category in sortedActions) 
+			{
 				//add category title
 				html.AppendLine(categoryPadding);
 				html.AppendLine(categoryStart + "<a name=\"cat" + counter + "\" id=\"cat" + counter + "\"></a>" + General.Actions.Categories[category.Key] + categoryEnd);
@@ -2734,7 +2778,8 @@ namespace CodeImp.DoomBuilder.Windows
 				Dictionary<string, Actions.Action> actionsByTitle = new Dictionary<string, Actions.Action>(StringComparer.Ordinal);
 				List<string> actionTitles = new List<string>();
 
-				foreach(Actions.Action action in category.Value) {
+				foreach(Actions.Action action in category.Value) 
+				{
 					actionsByTitle.Add(action.Title, action);
 					actionTitles.Add(action.Title);
 				}
@@ -2742,7 +2787,8 @@ namespace CodeImp.DoomBuilder.Windows
 				actionTitles.Sort();
 
 				Actions.Action a;
-				foreach(string title in actionTitles) {
+				foreach(string title in actionTitles) 
+				{
 					a = actionsByTitle[title];
 					List<string> modifiers = new List<string>();
 
@@ -2765,15 +2811,20 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//write
 			string path;
-			try {
+			try 
+			{
 				path = Path.Combine(General.AppPath, fileName);
-				using(StreamWriter writer = File.CreateText(path)) {
+				using(StreamWriter writer = File.CreateText(path)) 
+				{
 					writer.Write(html.ToString());
 				}
-			} catch (Exception) {
+			} 
+			catch (Exception) 
+			{
 				//Configurtions path SHOULD be accessible and not read-only, right?
 				path = Path.Combine(General.SettingsPath, fileName);
-				using(StreamWriter writer = File.CreateText(path)) {
+				using(StreamWriter writer = File.CreateText(path)) 
+				{
 					writer.Write(html.ToString());
 				}
 			}
@@ -2973,9 +3024,12 @@ namespace CodeImp.DoomBuilder.Windows
 							Vector2D pos = ((ClassicMode) General.Editing.Mode).MouseMapPos;
 
 							//mouse inside the view?
-							if (pos.IsFinite()) {
+							if (pos.IsFinite()) 
+							{
 								info += "X:" + Math.Round(pos.x) + " Y:" + Math.Round(pos.y);
-							} else {
+							} 
+							else 
+							{
 								info += "X:" + Math.Round(General.Map.Renderer2D.TranslateX) + " Y:" + Math.Round(General.Map.Renderer2D.TranslateY);
 							}
 						} 
@@ -3134,7 +3188,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// This displays the current mode name
 		internal void DisplayModeName(string name)
 		{
-			if(lastinfoobject == null) {
+			if(lastinfoobject == null) 
+			{
 				labelcollapsedinfo.Text = name;
 				labelcollapsedinfo.Refresh();
 			}
@@ -3236,13 +3291,19 @@ namespace CodeImp.DoomBuilder.Windows
 			if(IsInfoPanelExpanded) linedefinfo.ShowInfo(l);
 
 			// Show info on collapsed label
-			if(General.Map.Config.LinedefActions.ContainsKey(l.Action)) {
+			if(General.Map.Config.LinedefActions.ContainsKey(l.Action)) 
+			{
 				LinedefActionInfo act = General.Map.Config.LinedefActions[l.Action];
 				labelcollapsedinfo.Text = act.ToString();
-			} else if(l.Action == 0)
+			} 
+			else if (l.Action == 0)
+			{
 				labelcollapsedinfo.Text = l.Action + " - None";
+			}
 			else
+			{
 				labelcollapsedinfo.Text = l.Action + " - Unknown";
+			}
 
 			labelcollapsedinfo.Refresh();
 
@@ -3251,8 +3312,10 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// Show vertex info
-		public void ShowVertexInfo(Vertex v) {
-			if (v.IsDisposed) {
+		public void ShowVertexInfo(Vertex v) 
+		{
+			if (v.IsDisposed) 
+			{
 				HideInfo();
 				return;
 			}
@@ -3277,8 +3340,10 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// Show sector info
-		public void ShowSectorInfo(Sector s) {
-			if (s.IsDisposed) {
+		public void ShowSectorInfo(Sector s) 
+		{
+			if (s.IsDisposed) 
+			{
 				HideInfo();
 				return;
 			}
@@ -3555,10 +3620,14 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd. Warnings panel
-		internal void SetWarningsCount(int count, bool blink) {
-			if(count > 0) {
+		internal void SetWarningsCount(int count, bool blink) 
+		{
+			if(count > 0) 
+			{
 				if (warnsLabel.Image != Resources.Warning) warnsLabel.Image = Resources.Warning;
-			} else {
+			} 
+			else 
+			{
 				warnsLabel.Image = Resources.WarningOff;
 				warnsLabel.BackColor = SystemColors.Control;
 			}
@@ -3566,28 +3635,35 @@ namespace CodeImp.DoomBuilder.Windows
 			warnsLabel.Text = count.ToString();
 			
 			//start annoying blinking!
-			if (blink) {
+			if (blink) 
+			{
 				if(!blinkTimer.Enabled) blinkTimer.Start();
-			} else {
+			} 
+			else 
+			{
 				blinkTimer.Stop();
 				warnsLabel.BackColor = SystemColors.Control;
 			}
 		}
 
 		//mxd. Bliks warnings indicator
-		private void blink() {
+		private void Blink() 
+		{
 			warnsLabel.BackColor = (warnsLabel.BackColor == Color.Red ? SystemColors.Control : Color.Red);
 		}
 
 		//mxd
-		private void warnsLabel_Click(object sender, EventArgs e) {
+		private void warnsLabel_Click(object sender, EventArgs e) 
+		{
 			ShowErrors();
 		}
 
 		//mxd
-		private void blinkTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-			try {
-				this.Invoke(new CallBlink(blink));
+		private void blinkTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) 
+		{
+			try 
+			{
+				this.Invoke(new CallBlink(Blink));
 			} catch(ObjectDisposedException) { } //la-la-la. We don't care.
 		}
 		

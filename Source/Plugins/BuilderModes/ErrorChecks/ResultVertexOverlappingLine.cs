@@ -85,10 +85,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//check that we don't have duplicate lines
 			List<Linedef> lines = new List<Linedef>(vertex.Linedefs);
 
-			for(int i = 0; i < lines.Count - 1; i++) {
-				for(int c = i + 1; c < lines.Count; c++) {
+			for(int i = 0; i < lines.Count - 1; i++) 
+			{
+				for(int c = i + 1; c < lines.Count; c++) 
+				{
 					if( (lines[i].Start == lines[c].Start && lines[i].End == lines[c].End) || 
-						(lines[i].Start == lines[c].End && lines[i].End == lines[c].Start)) {
+						(lines[i].Start == lines[c].End && lines[i].End == lines[c].Start)) 
+					{
 						lines[c].Join(lines[i]);
 					}
 				}

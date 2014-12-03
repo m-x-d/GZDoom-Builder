@@ -7,11 +7,9 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 		private bool blockEvents;
 		public event EventHandler<ColorPickerSliderEventArgs> OnValueChanged;
 
-		public int Value { 
-			get 
-			{ 
-				return (int)numericUpDown1.Value; 
-			}
+		public int Value 
+		{ 
+			get { return (int)numericUpDown1.Value; }
 			set 
 			{
 				blockEvents = true;
@@ -21,11 +19,9 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 		}
 
 		private bool showLimits;
-		public bool ShowLimits { 
-			get 
-			{ 
-				return showLimits; 
-			}
+		public bool ShowLimits 
+		{ 
+			get { return showLimits; }
 			set 
 			{
 				showLimits = value;
@@ -36,11 +32,13 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 
 		public string Label { set { label1.Text = value; } }
 		
-		public ColorPickerSlider() {
+		public ColorPickerSlider() 
+		{
 			InitializeComponent();
 		}
 
-		public void SetLimits(int tbMin, int tbMax, int nudMin, int nudMax) {
+		public void SetLimits(int tbMin, int tbMax, int nudMin, int nudMax) 
+		{
 			bool blockEventsStatus = blockEvents;
 			blockEvents = true;
 
@@ -59,19 +57,21 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 		}
 
 //events
-		private void trackBar1_ValueChanged(object sender, EventArgs e) {
+		private void trackBar1_ValueChanged(object sender, EventArgs e) 
+		{
 			numericUpDown1.Value = ((TrackBar)sender).Value;
 		}
 
-		private void numericUpDown1_ValueChanged(object sender, EventArgs e) {
+		private void numericUpDown1_ValueChanged(object sender, EventArgs e) 
+		{
 			bool blockEventsStatus = blockEvents;
 			
 			int val = (int)((NumericUpDown)sender).Value;
 
-			if (!blockEventsStatus) {
+			if (!blockEventsStatus) 
+			{
 				EventHandler<ColorPickerSliderEventArgs> handler = OnValueChanged;
-				if (handler != null)
-					handler(this, new ColorPickerSliderEventArgs(val));
+				if (handler != null) handler(this, new ColorPickerSliderEventArgs(val));
 			}
 
 			blockEvents = true;

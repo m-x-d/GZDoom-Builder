@@ -18,11 +18,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public int MaxSubdivisions { get { return (int)subdivs.Maximum; } set { subdivs.Maximum = value; } }
 		public int MinSubdivisions { get { return (int)subdivs.Minimum; } set { subdivs.Minimum = value; } }
 
-		public DrawRectangleOptionsPanel() {
+		public DrawRectangleOptionsPanel() 
+		{
 			InitializeComponent();
 		}
 
-		public void Register() {
+		public void Register() 
+		{
 			radius.Value = radiusValue;
 			subdivs.Value = subdivsValue;
 			radius.ValueChanged += ValueChanged;
@@ -35,7 +37,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(reset);
 		}
 
-		public void Unregister() {
+		public void Unregister() 
+		{
 			General.Interface.RemoveButton(reset);
 			General.Interface.RemoveButton(subdivs);
 			General.Interface.RemoveButton(subdivslabel);
@@ -43,13 +46,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(radiuslabel);
 		}
 
-		private void ValueChanged(object sender, EventArgs e) {
+		private void ValueChanged(object sender, EventArgs e) 
+		{
 			radiusValue = (int)radius.Value;
 			subdivsValue = (int)subdivs.Value;
 			if(!blockEvents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 
-		private void reset_Click(object sender, EventArgs e) {
+		private void reset_Click(object sender, EventArgs e) 
+		{
 			blockEvents = true;
 			radius.Value = 0;
 			blockEvents = false;

@@ -30,48 +30,58 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Methods
 
-		public override void SetupArgument(TypeHandlerAttribute attr, ArgumentInfo arginfo) {
+		public override void SetupArgument(TypeHandlerAttribute attr, ArgumentInfo arginfo) 
+		{
 			base.SetupArgument(attr, arginfo);
 
 			//mxd. We don't want to store this type
 			index = (int)UniversalType.Float;
 		}
 
-		public override void SetupField(TypeHandlerAttribute attr, UniversalFieldInfo fieldinfo) {
+		public override void SetupField(TypeHandlerAttribute attr, UniversalFieldInfo fieldinfo) 
+		{
 			base.SetupField(attr, fieldinfo);
 
 			//mxd. We don't want to store this type
 			index = (int)UniversalType.Float;
 		}
 
-		public override void SetValue(object value) {
+		public override void SetValue(object value) 
+		{
 			float result;
 
 			// Null?
-			if(value == null) {
+			if(value == null) 
+			{
 				this.value = 0.0f;
 			}
-				// Compatible type?
-			else if((value is int) || (value is float) || (value is bool)) {
+			// Compatible type?
+			else if((value is int) || (value is float) || (value is bool)) 
+			{
 				// Set directly
 				this.value = Convert.ToSingle(value);
-			} else {
+			} 
+			else 
+			{
 				// Try parsing as string
-				if(float.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture, out result)) {
+				if(float.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture, out result)) 
+				{
 					this.value = result;
-				} else {
+				} 
+				else 
+				{
 					//mxd. Try to parse value as random range
 					string[] parts = value.ToString().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-					if(parts.Length == 2) {
+					if(parts.Length == 2) 
+					{
 						if(float.TryParse(parts[0], NumberStyles.Float, CultureInfo.CurrentCulture, out min) &&
-						   float.TryParse(parts[1], NumberStyles.Float, CultureInfo.CurrentCulture, out max)) {
+						   float.TryParse(parts[1], NumberStyles.Float, CultureInfo.CurrentCulture, out max)) 
+						{
 							randomValue = (min != max);
 
-							if(min == max)
-								this.value = min;
-							else if(min > max)
-								General.Swap(ref min, ref max);
+							if(min == max) this.value = min;
+							else if(min > max) General.Swap(ref min, ref max);
 						}
 					}
 
@@ -80,19 +90,22 @@ namespace CodeImp.DoomBuilder.Types
 			}
 		}
 
-		public override object GetValue() {
+		public override object GetValue() 
+		{
 			if(randomValue)	return General.Random(min, max); //mxd
 			return this.value;
 		}
 
-		public override int GetIntValue() {
+		public override int GetIntValue() 
+		{
 			if(randomValue)	return (int)General.Random(min, max); //mxd
 			return (int)this.value;
 		}
 
-		public override string GetStringValue() {
-			if(randomValue) return General.Random(min, max).ToString(); //mxd
-			return this.value.ToString();
+		public override string GetStringValue() 
+		{
+			if(randomValue) return General.Random(min, max).ToString(CultureInfo.InvariantCulture); //mxd
+			return this.value.ToString(CultureInfo.InvariantCulture);
 		}
 
 		#endregion

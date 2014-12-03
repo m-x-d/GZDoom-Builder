@@ -319,12 +319,12 @@ namespace CodeImp.DoomBuilder.Data
 			LoadInternalSprites();
 
 			//mxd
-			loadMapInfo();
+			LoadMapInfo();
 			ModelReader.Init();
-			loadVoxels();
-			Dictionary<string, int> actorsByClass = createActorsByClassList();
-			loadModeldefs(actorsByClass);
-			loadGldefs(actorsByClass);
+			LoadVoxels();
+			Dictionary<string, int> actorsByClass = CreateActorsByClassList();
+			LoadModeldefs(actorsByClass);
+			LoadGldefs(actorsByClass);
 			foreach (Thing t in General.Map.Map.Things) t.UpdateCache();
 			General.MainWindow.DisplayReady();
 			
@@ -462,7 +462,8 @@ namespace CodeImp.DoomBuilder.Data
 			palette = null;
 
 			//mxd
-			if (modeldefEntries != null) {
+			if (modeldefEntries != null) 
+			{
 				foreach (KeyValuePair<int, ModelData> group in modeldefEntries) 
 					group.Value.Dispose();
 			}
@@ -1469,19 +1470,22 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== mxd. Modeldef, Voxeldef, Gldefs, Mapinfo
 
 		//mxd. This creates <Actor Class, Thing.Type> dictionary. Should be called after all DECORATE actors are parsed
-		private Dictionary<string, int> createActorsByClassList() {
+		private Dictionary<string, int> CreateActorsByClassList() 
+		{
 			Dictionary<string, int> actors = new Dictionary<string, int>(StringComparer.Ordinal);
 			Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
 
 			//read our new shiny ClassNames for default game things
-			foreach (KeyValuePair<int, ThingTypeInfo> ti in things) {
+			foreach (KeyValuePair<int, ThingTypeInfo> ti in things) 
+			{
 				if (ti.Value.ClassName != null)
 					actors.Add(ti.Value.ClassName, ti.Key);
 			}
 
 			//and for actors defined in DECORATE
 			ICollection<ActorStructure> ac = decorate.Actors;
-			foreach (ActorStructure actor in ac) {
+			foreach (ActorStructure actor in ac) 
+			{
 				string className = actor.ClassName.ToLower();
 				if (!actors.ContainsKey(className)) 
 					actors.Add(className, actor.DoomEdNum);
@@ -1494,22 +1498,25 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		public void ReloadModeldef() {
-			if (modeldefEntries != null) {
+		public void ReloadModeldef() 
+		{
+			if (modeldefEntries != null) 
+			{
 				foreach (KeyValuePair<int, ModelData> group in modeldefEntries)
 					group.Value.Dispose();
 			}
 
 			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading model definitions...");
-			loadModeldefs(createActorsByClassList());
+			LoadModeldefs(CreateActorsByClassList());
 
 			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading voxel definitions...");
-			loadVoxels();
+			LoadVoxels();
 
 			foreach(Thing t in General.Map.Map.Things) t.UpdateCache();
 
 			//rebuild geometry if in Visual mode
-			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
+			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") 
+			{
 				General.Editing.Mode.OnReloadResources();
 			}
 
@@ -1517,19 +1524,24 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		public void ReloadGldefs() {
+		public void ReloadGldefs() 
+		{
 			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading GLDEFS...");
 
-			try {
-				loadGldefs(createActorsByClassList());
-			} catch(ArgumentNullException) {
+			try 
+			{
+				LoadGldefs(CreateActorsByClassList());
+			} 
+			catch(ArgumentNullException) 
+			{
 				MessageBox.Show("GLDEFS reload failed. Try using 'Reload Resources' instead.\nCheck 'Errors and Warnings' window for more details.");
 				General.MainWindow.DisplayReady();
 				return;
 			}
 
 			//rebuild geometry if in Visual mode
-			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
+			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") 
+			{
 				General.Editing.Mode.OnReloadResources();
 			}
 
@@ -1537,19 +1549,24 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		public void ReloadMapInfo() {
+		public void ReloadMapInfo() 
+		{
 			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading (Z)MAPINFO...");
 
-			try {
-				loadMapInfo();
-			} catch (ArgumentNullException) {
+			try 
+			{
+				LoadMapInfo();
+			} 
+			catch (ArgumentNullException) 
+			{
 				MessageBox.Show("(Z)MAPINFO reload failed. Try using 'Reload Resources' instead.\nCheck 'Errors and Warnings' window for more details.");
 				General.MainWindow.DisplayReady();
 				return;
 			}
 
 			//rebuild geometry if in Visual mode
-			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") {
+			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") 
+			{
 				General.Editing.Mode.OnReloadResources();
 			}
 
@@ -1557,28 +1574,35 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd. This parses modeldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
-		private void loadModeldefs(Dictionary<string, int> actorsByClass) {
+		private void LoadModeldefs(Dictionary<string, int> actorsByClass) 
+		{
 			//if no actors defined in DECORATE or game config...
 			if (actorsByClass == null || actorsByClass.Count == 0) return;
 
 			Dictionary<string, ModelData> modelDefEntriesByName = new Dictionary<string, ModelData>(StringComparer.Ordinal);
 			ModeldefParser parser = new ModeldefParser();
 
-			foreach (DataReader dr in containers) {
+			foreach (DataReader dr in containers) 
+			{
 				currentreader = dr;
 
 				Dictionary<string, Stream> streams = dr.GetModeldefData();
-				foreach (KeyValuePair<string, Stream> group in streams) {
+				foreach (KeyValuePair<string, Stream> group in streams) 
+				{
 					// Parse the data
-					if(parser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key)) {
-						foreach(KeyValuePair<string, ModelData> g in parser.Entries) {
-							if (modelDefEntriesByName.ContainsKey(g.Key)) {
+					if(parser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key)) 
+					{
+						foreach(KeyValuePair<string, ModelData> g in parser.Entries) 
+						{
+							if (modelDefEntriesByName.ContainsKey(g.Key)) 
+							{
 								General.ErrorLogger.Add(ErrorType.Warning, "Model definition for actor '" + g.Key + "' is double-defined in '" + group.Key + "'");
 								modelDefEntriesByName[g.Key] = g.Value;
-							} else {
+							} 
+							else 
+							{
 								modelDefEntriesByName.Add(g.Key, g.Value);
 							}
-							
 						}
 					}
 				}
@@ -1586,7 +1610,8 @@ namespace CodeImp.DoomBuilder.Data
 
 			currentreader = null;
 
-			foreach (KeyValuePair<string, ModelData> e in modelDefEntriesByName) {
+			foreach (KeyValuePair<string, ModelData> e in modelDefEntriesByName) 
+			{
 				if (actorsByClass.ContainsKey(e.Key))
 					modeldefEntries[actorsByClass[e.Key]] = modelDefEntriesByName[e.Key];
 				else if(!invalidDecorateActors.Contains(e.Key))
@@ -1595,17 +1620,20 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		private void loadVoxels() {
+		private void LoadVoxels() 
+		{
 			//Get names of all voxel models, which can be used "as is"
 			Dictionary<string, bool> voxelNames = new Dictionary<string, bool>(StringComparer.Ordinal);
 			
-			foreach(DataReader dr in containers) {
+			foreach(DataReader dr in containers) 
+			{
 				currentreader = dr;
 
 				string[] result = dr.GetVoxelNames();
 				if(result == null) continue;
 
-				foreach(string s in result) {
+				foreach(string s in result) 
+				{
 					if(!voxelNames.ContainsKey(s)) voxelNames.Add(s, false);
 				}
 			}
@@ -1613,14 +1641,18 @@ namespace CodeImp.DoomBuilder.Data
 			Dictionary<string, List<int>> sprites = new Dictionary<string, List<int>>(StringComparer.Ordinal);
 
 			// Go for all things
-			foreach(ThingTypeInfo ti in thingtypes.Values) {
+			foreach(ThingTypeInfo ti in thingtypes.Values) 
+			{
 				// Valid sprite name?
 				string sprite;
 
-				if(ti.Sprite.Length == 0 || ti.Sprite.Length > CLASIC_IMAGE_NAME_LENGTH) {
+				if(ti.Sprite.Length == 0 || ti.Sprite.Length > CLASIC_IMAGE_NAME_LENGTH) 
+				{
 					if(ti.Actor == null) continue;
 					sprite = ti.Actor.FindSuitableVoxel(voxelNames);
-				} else {
+				} 
+				else 
+				{
 					sprite = ti.Sprite;
 				}
 
@@ -1633,17 +1665,20 @@ namespace CodeImp.DoomBuilder.Data
 			Dictionary<string, bool> processed = new Dictionary<string, bool>(StringComparer.Ordinal);
 
 			//parse VOXLEDEF
-			foreach(DataReader dr in containers) {
+			foreach(DataReader dr in containers) 
+			{
 				currentreader = dr;
 
 				KeyValuePair<string, Stream> group = dr.GetVoxeldefData();
-				if(group.Value != null && parser.Parse(group.Value, group.Key)) {
-					foreach(KeyValuePair<string, ModelData> entry in parser.Entries){
-						foreach(KeyValuePair<string, List<int>> sc in sprites) {
-							if (sc.Key.Contains(entry.Key)) {
-								foreach(int id in sc.Value) {
-									modeldefEntries[id] = entry.Value;
-								}
+				if(group.Value != null && parser.Parse(group.Value, group.Key)) 
+				{
+					foreach(KeyValuePair<string, ModelData> entry in parser.Entries)
+					{
+						foreach(KeyValuePair<string, List<int>> sc in sprites) 
+						{
+							if (sc.Key.Contains(entry.Key)) 
+							{
+								foreach(int id in sc.Value) modeldefEntries[id] = entry.Value;
 								processed.Add(entry.Key, false);
 							}
 						}
@@ -1654,32 +1689,34 @@ namespace CodeImp.DoomBuilder.Data
 			currentreader = null;
 
 			//get voxel models
-			foreach(KeyValuePair<string, bool> group in voxelNames) {
+			foreach(KeyValuePair<string, bool> group in voxelNames) 
+			{
 				if(processed.ContainsKey(group.Key)) continue;
-				foreach (KeyValuePair<string, List<int>> sc in sprites) {
-					if(sc.Key.Contains(group.Key)) {
+				foreach (KeyValuePair<string, List<int>> sc in sprites) 
+				{
+					if(sc.Key.Contains(group.Key)) 
+					{
 						//it's a model without a definition, and it corresponds to a sprite we can display, so let's add it
 						ModelData data = new ModelData { IsVoxel = true };
 						data.ModelNames.Add(group.Key);
 
-						foreach(int id in sprites[sc.Key]) {
-							modeldefEntries[id] = data;
-						}
+						foreach(int id in sprites[sc.Key]) modeldefEntries[id] = data;
 					}
 				}
 			}
 		}
 
 		//mxd. This parses gldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
-		private void loadGldefs(Dictionary<string, int> actorsByClass) {
+		private void LoadGldefs(Dictionary<string, int> actorsByClass) 
+		{
 			//if no actors defined in DECORATE or game config...
 			if (actorsByClass == null || actorsByClass.Count == 0) return;
 
-			GldefsParser parser = new GldefsParser();
-			parser.OnInclude = loadGldefsFromLocation;
+			GldefsParser parser = new GldefsParser { OnInclude = LoadGldefsFromLocation };
 
 			//load gldefs from resources
-			foreach (DataReader dr in containers) {
+			foreach (DataReader dr in containers) 
+			{
 				currentreader = dr;
 				Dictionary<string, Stream> streams = dr.GetGldefsData(General.Map.Config.GameType);
 
@@ -1688,31 +1725,37 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			//create gldefsEntries dictionary
-			foreach (KeyValuePair<string, string> e in parser.Objects) { //ClassName, Light name
+			foreach (KeyValuePair<string, string> e in parser.Objects) //ClassName, Light name
+			{ 
 				
 				//if we have decorate actor and light definition for given ClassName...
-				if (actorsByClass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) {
+				if (actorsByClass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) 
+				{
 					int thingType = actorsByClass[e.Key];
-					if (gldefsEntries.ContainsKey(thingType)) {
+					if (gldefsEntries.ContainsKey(thingType))
 						gldefsEntries[thingType] = parser.LightsByName[e.Value];
-					}else{
+					else
 						gldefsEntries.Add(thingType, parser.LightsByName[e.Value]);
-					}
-				} else if(!invalidDecorateActors.Contains(e.Key)) {
+				} 
+				else if(!invalidDecorateActors.Contains(e.Key)) 
+				{
 					General.ErrorLogger.Add(ErrorType.Warning, "Got GLDEFS light for class '" + e.Key + "', but haven't found such class in DECORATE");
 				}
 			}
 		}
 
 		//mxd. This loads (Z)MAPINFO
-		private void loadMapInfo() {
+		private void LoadMapInfo() 
+		{
 			MapinfoParser parser = new MapinfoParser();
 
-			foreach (DataReader dr in containers) {
+			foreach (DataReader dr in containers) 
+			{
 				currentreader = dr;
 
 				Dictionary<string, Stream> streams = dr.GetMapinfoData();
-				foreach (KeyValuePair<string, Stream> group in streams) {
+				foreach (KeyValuePair<string, Stream> group in streams) 
+				{
 					// Parse the data
 					parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), General.Map.Options.LevelName); 
 				}
@@ -1721,7 +1764,8 @@ namespace CodeImp.DoomBuilder.Data
 			mapInfo = parser.MapInfo ?? new MapInfo();
 		}
 
-		private void loadGldefsFromLocation(GldefsParser parser, string location) {
+		private void LoadGldefsFromLocation(GldefsParser parser, string location) 
+		{
 			Dictionary<string, Stream> streams = currentreader.GetGldefsData(location);
 
 			foreach (KeyValuePair<string, Stream> group in streams)
@@ -1729,11 +1773,10 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		internal MemoryStream LoadFile(string name) {
-			foreach (DataReader dr in containers) {
-				if (dr.FileExists(name))
-					return dr.LoadFile(name);
-			}
+		internal MemoryStream LoadFile(string name) 
+		{
+			foreach (DataReader dr in containers)
+				if (dr.FileExists(name)) return dr.LoadFile(name);
 			return null;
 		}
 

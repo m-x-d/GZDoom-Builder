@@ -91,7 +91,8 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		//mxd. This tests if given lines intersects
-		public static bool GetIntersection(Line2D line1, Line2D line2) {
+		public static bool GetIntersection(Line2D line1, Line2D line2) 
+		{
 			return GetIntersection(line1.v1, line1.v2, line2.v1.x, line2.v1.y, line2.v2.x, line2.v2.y);
 		}
 

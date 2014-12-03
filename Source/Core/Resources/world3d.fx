@@ -68,7 +68,8 @@ sampler2D texturesamp = sampler_state
 };
 
 // Vertex shader
-PixelData vs_main(VertexData vd) {
+PixelData vs_main(VertexData vd) 
+{
 	PixelData pd;
 	// Fill pixel data input
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
@@ -79,7 +80,8 @@ PixelData vs_main(VertexData vd) {
 }
 
 //mxd. same as vs_main, but uses vertexColor var instead of actual vertex color. used in models rendering
-PixelData vs_customvertexcolor(VertexData vd) {
+PixelData vs_customvertexcolor(VertexData vd) 
+{
 	PixelData pd;
 	// Fill pixel data input
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
@@ -90,7 +92,8 @@ PixelData vs_customvertexcolor(VertexData vd) {
 	return pd;
 }
 
-LitPixelData vs_customvertexcolor_fog(VertexData vd) {
+LitPixelData vs_customvertexcolor_fog(VertexData vd) 
+{
 	LitPixelData pd;
 	// Fill pixel data input
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
@@ -104,7 +107,8 @@ LitPixelData vs_customvertexcolor_fog(VertexData vd) {
 }
 
 //mxd. light pass vertex shader
-LitPixelData vs_lightpass(VertexData vd) {
+LitPixelData vs_lightpass(VertexData vd) 
+{
 	LitPixelData pd;
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
 	//pd.pos_w = mul(vd.pos, (float3x3)world);
@@ -161,7 +165,8 @@ float4 ps_fullbright_highlight(PixelData pd) : COLOR
 }
 
 //mxd. This adds fog color to current pixel color
-float4 getFogColor(LitPixelData pd, float4 color){
+float4 getFogColor(LitPixelData pd, float4 color)
+{
    float fogdist = max(16.0f, distance(pd.pos_w, cameraPos.xyz));
    float fogfactor = min(1.0f, fogdist / cameraPos.w);
    //float fogfactor = exp2(cameraPos.w * fogdist);
@@ -172,13 +177,15 @@ float4 getFogColor(LitPixelData pd, float4 color){
 
 //mxd. Shaders with fog calculation
 // Normal pixel shader
-float4 ps_main_fog(LitPixelData pd) : COLOR {
+float4 ps_main_fog(LitPixelData pd) : COLOR 
+{
 	float4 tcolor = tex2D(texturesamp, pd.uv);
 	return getFogColor(pd, tcolor * pd.color * modulatecolor);
 }
 
 // Normal pixel shader with highlight
-float4 ps_main_highlight_fog(LitPixelData pd) : COLOR {
+float4 ps_main_highlight_fog(LitPixelData pd) : COLOR 
+{
 	float4 tcolor = tex2D(texturesamp, pd.uv);
 	
 	// Blend texture color, vertex color and modulation color
@@ -188,12 +195,14 @@ float4 ps_main_highlight_fog(LitPixelData pd) : COLOR {
 }
 
 //mxd: used to draw bounding boxes
-float4 ps_constant_color(PixelData pd) : COLOR {
+float4 ps_constant_color(PixelData pd) : COLOR 
+{
 	return vertexColor;
 }
 
 //mxd. dynamic light pixel shader pass, dood!
-float4 ps_lightpass(LitPixelData pd) : COLOR {
+float4 ps_lightpass(LitPixelData pd) : COLOR 
+{
 	  //is face facing away from light source?
 	  if(dot(pd.normal, (lightPosAndRadius.xyz - pd.pos_w)) < -0.1f) // (lightPosAndRadius.xyz - pd.pos_w) == direction from light to current pixel
 		  clip(-1);
@@ -212,7 +221,8 @@ float4 ps_lightpass(LitPixelData pd) : COLOR {
 	  float4 lightColorMod = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	  lightColorMod.rgb = lightColor.rgb * max(lightPosAndRadius.w - dist, 0.0f) / lightPosAndRadius.w;
-	  if(lightColorMod.r > 0.0f || lightColorMod.g > 0.0f || lightColorMod.b > 0.0f){
+	  if(lightColorMod.r > 0.0f || lightColorMod.g > 0.0f || lightColorMod.b > 0.0f)
+	  {
 		  lightColorMod.rgb *= lightColor.a;
 		  if(lightColor.a > 0.4f) //Normal, vavoom or negative light
 			  return tcolor * lightColorMod;
@@ -223,34 +233,40 @@ float4 ps_lightpass(LitPixelData pd) : COLOR {
 }
 
 // Technique for shader model 2.0
-technique SM20 {
+technique SM20 
+{
 	// Normal
-	pass p0 {
+	pass p0 
+	{
 		VertexShader = compile vs_2_0 vs_main();
 		PixelShader = compile ps_2_0 ps_main();
 	}
 	
 	// Full brightness mode
-	pass p1 {
+	pass p1 
+	{
 		VertexShader = compile vs_2_0 vs_main();
 		PixelShader = compile ps_2_0 ps_fullbright();
 	}
 
 	// Normal with highlight
-	pass p2 {
+	pass p2 
+	{
 		VertexShader = compile vs_2_0 vs_main();
 		PixelShader = compile ps_2_0 ps_main_highlight();
 	}
 	
 	// Full brightness mode with highlight
-	pass p3 {
+	pass p3 
+	{
 		VertexShader = compile vs_2_0 vs_main();
 		PixelShader = compile ps_2_0 ps_fullbright_highlight();
 	}
 	
 	//mxd. same as p0-p3, but using vertexColor variable
 	// Normal
-	pass p4 {
+	pass p4 
+	{
 		VertexShader = compile vs_2_0 vs_customvertexcolor();
 		PixelShader = compile ps_2_0 ps_main();
 	}
@@ -258,7 +274,8 @@ technique SM20 {
 	pass p5 {} //mxd. need this only to maintain offset
 	
 	// Normal with highlight
-	pass p6 {
+	pass p6 
+	{
 		VertexShader = compile vs_2_0 vs_customvertexcolor();
 		PixelShader = compile ps_2_0 ps_main_highlight();
 	}
@@ -267,7 +284,8 @@ technique SM20 {
 	
 	//mxd. same as p0-p3, but with fog calculation
 	 // Normal
-	pass p8 {
+	pass p8 
+	{
 		VertexShader = compile vs_2_0 vs_lightpass();
 		PixelShader = compile ps_2_0 ps_main_fog();
 	}
@@ -275,7 +293,8 @@ technique SM20 {
 	pass p9 {} //mxd. need this only to maintain offset
 
 	// Normal with highlight
-	pass p10 {
+	pass p10 
+	{
 		VertexShader = compile vs_2_0 vs_lightpass();
 		PixelShader = compile ps_2_0 ps_main_highlight_fog();
 	}
@@ -284,7 +303,8 @@ technique SM20 {
 	
 	//mxd. same as p4-p7, but with fog calculation
 	// Normal
-	pass p12 {
+	pass p12 
+	{
 		VertexShader = compile vs_2_0 vs_customvertexcolor_fog();
 		PixelShader = compile ps_2_0 ps_main_fog();
 	}
@@ -292,7 +312,8 @@ technique SM20 {
 	pass p13 {} //mxd. need this only to maintain offset
 	
 	// Normal with highlight
-	pass p14 {
+	pass p14 
+	{
 		VertexShader = compile vs_2_0 vs_customvertexcolor_fog();
 		PixelShader = compile ps_2_0 ps_main_highlight_fog();
 	}
@@ -301,13 +322,15 @@ technique SM20 {
 	pass p15 {} //mxd. need this only to maintain offset
 	
 	//mxd. Just fills everything with vertexColor. Used in ThingCage rendering.
-	pass p16 {
+	pass p16 
+	{
 		VertexShader = compile vs_2_0 vs_customvertexcolor();
 		PixelShader  = compile ps_2_0 ps_constant_color();
 	}
 	
 	//mxd. Light pass
-	pass p17 {
+	pass p17 
+	{
 		VertexShader = compile vs_2_0 vs_lightpass();
 		PixelShader  = compile ps_2_0 ps_lightpass();
 		AlphaBlendEnable = true;

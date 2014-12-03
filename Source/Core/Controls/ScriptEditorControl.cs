@@ -664,15 +664,18 @@ namespace CodeImp.DoomBuilder.Controls
 			string spaces = new String(' ', General.Settings.ScriptTabWidth);
 			int entrypos = -1;
 			int entryline = -1;
-			string[] processedlines = processLineBreaks(lines);
+			string[] processedlines = ProcessLineBreaks(lines);
 
-			for (int i = 0; i < lines.Length; i++) {
+			for (int i = 0; i < lines.Length; i++) 
+			{
 				processedlines[i] = processedlines[i].Replace("\t", spaces);
 
 				//check if we have the [EP] marker
-				if (entrypos == -1) {
+				if (entrypos == -1) 
+				{
 					int pos = processedlines[i].IndexOf("[EP]");
-					if (pos != -1) {
+					if (pos != -1) 
+					{
 						entryline = curline + i;
 						entrypos = pos + numtabs;
 						processedlines[i] = processedlines[i].Remove(pos, 4);
@@ -687,7 +690,8 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.ReplaceSel(text);
 
 			//move the cursor if we had the [EP] marker
-			if (entrypos != -1) {
+			if (entrypos != -1) 
+			{
 				MoveToLine(entryline);
 				scriptedit.SelectionStart = scriptedit.PositionFromLine(entryline) + entrypos;
 				scriptedit.SelectionEnd = scriptedit.PositionFromLine(entryline) + entrypos;
@@ -695,19 +699,22 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd. This converts [LB] markers to line breaks if necessary
-		private static string[] processLineBreaks(string[] lines) 
+		private static string[] ProcessLineBreaks(string[] lines) 
 		{
 			List<string> result = new List<string>(lines.Length);
 			string[] separator = new[] { "[LB]" };
 
-			foreach(string line in lines) {
-				if(line.IndexOf(separator[0]) != -1) {
-					if(General.Settings.SnippetsAllmanStyle) {
+			foreach(string line in lines) 
+			{
+				if(line.IndexOf(separator[0]) != -1) 
+				{
+					if(General.Settings.SnippetsAllmanStyle)
 						result.AddRange(line.Split(separator, StringSplitOptions.RemoveEmptyEntries));
-					} else {
+					else
 						result.Add(line.Replace(separator[0], " "));
-					}
-				} else {
+				} 
+				else 
+				{
 					result.Add(line);
 				}
 			}
@@ -912,11 +919,10 @@ namespace CodeImp.DoomBuilder.Controls
 					int tippos;
 					int funcline = scriptedit.LineFromPosition(curfunctionstartpos);
 					int curline = scriptedit.LineFromPosition(scriptedit.CurrentPos);
-					if(curline > funcline) {
+					if(curline > funcline)
 						tippos = scriptedit.PositionFromLine(curline) + scriptedit.GetLineIndentation(curline); //scriptedit.PositionFromLine(curline) /*+ (curfunctionstartpos - scriptedit.PositionFromLine(funcline))*/;
-					} else {
+					else
 						tippos = curfunctionstartpos;
-					}
 					
 					// Show tip
 					scriptedit.CallTipShow(tippos, functiondef);

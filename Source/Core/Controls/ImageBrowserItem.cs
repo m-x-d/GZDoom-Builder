@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Variables
 
 		// Display image and text
-		public readonly ImageData icon;
+		public readonly ImageData Icon;
 		private string imagesize; //mxd
 		private bool showfullname; //mxd
 		private static readonly StringFormat format = new StringFormat { Alignment = StringAlignment.Center }; //mxd
@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public ListViewGroup ListGroup { get { return listgroup; } set { listgroup = value; } }
 		public bool IsPreviewLoaded { get { return imageloaded; } }
 		public bool ShowFullName { set { showfullname = value; UpdateName(); } }
-		public string TextureName { get { return showfullname ? icon.Name : icon.ShortName; } }
+		public string TextureName { get { return showfullname ? Icon.Name : Icon.ShortName; } }
 
 		#endregion
 
@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public ImageBrowserItem(ImageData icon, object tag, bool showfullname)
 		{
 			// Initialize
-			this.icon = icon;
+			this.Icon = icon;
 			this.Tag = tag;
 			this.showfullname = showfullname; //mxd
 			UpdateName(); //mxd
@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool CheckRedrawNeeded()
 		{
 			UpdateName(); //mxd. Update texture size if needed
-			return (icon.IsPreviewLoaded != imageloaded);
+			return (Icon.IsPreviewLoaded != imageloaded);
 		}
 		
 		// This draws the images
@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.Controls
 			Brush backcolor;
 
 			// Remember if the preview is loaded
-			imageloaded = icon.IsPreviewLoaded;
+			imageloaded = Icon.IsPreviewLoaded;
 
 			// Drawing settings
 			g.CompositingQuality = CompositingQuality.HighSpeed;
@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Draw!
 			g.FillRectangle(backcolor, bounds);
-			icon.DrawPreview(g, imagerect.Location);
+			Icon.DrawPreview(g, imagerect.Location);
 			g.DrawString(Text, this.ListView.Font, forecolor, textpos, format);
 
 			//mxd. Draw size label?
@@ -134,11 +134,11 @@ namespace CodeImp.DoomBuilder.Controls
 				textsize = g.MeasureString(imagesize, sizefont, bounds.Width * 2);
 				textpos = new PointF(bounds.Left + textsize.Width / 2, bounds.Top + 1);
 				imagerect = new Rectangle(bounds.Left + 1, bounds.Top + 1, (int)textsize.Width, (int)textsize.Height);
-				SolidBrush labelbg = new SolidBrush(Color.FromArgb(196, base.ListView.BackColor));
+				SolidBrush labelbg = new SolidBrush(Color.FromArgb(196, base.ListView.ForeColor));
 
 				// Draw
 				g.FillRectangle(labelbg, imagerect);
-				g.DrawString(imagesize, sizefont, new SolidBrush(base.ListView.ForeColor), textpos, format);
+				g.DrawString(imagesize, sizefont, new SolidBrush(base.ListView.BackColor), textpos, format);
 			}
 		}
 
@@ -165,9 +165,9 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private void UpdateName() 
 		{
-			Text = (showfullname ? icon.DisplayName : icon.ShortName);
-			if(General.Settings.ShowTextureSizes && icon.IsPreviewLoaded)
-				imagesize = icon.ScaledWidth + "x" + icon.ScaledHeight;
+			Text = (showfullname ? Icon.DisplayName : Icon.ShortName);
+			if(General.Settings.ShowTextureSizes && Icon.IsPreviewLoaded)
+				imagesize = Icon.ScaledWidth + "x" + Icon.ScaledHeight;
 		}
 
 		// Comparer

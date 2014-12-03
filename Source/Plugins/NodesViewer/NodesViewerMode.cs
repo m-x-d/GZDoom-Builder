@@ -198,20 +198,24 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		}
 
 		//mxd. This loads all data from the ZNODES lump
-		private bool LoadZNodes() {
+		private bool LoadZNodes() 
+		{
 			List<string> supportedFormats = new List<string> { "XNOD", "XGLN", "XGL2", "XGL3" };
-
-			using(MemoryStream stream = General.Map.GetLumpData("ZNODES")) {
+			using(MemoryStream stream = General.Map.GetLumpData("ZNODES")) 
+			{
 				//boilerplate...
-				if(stream.Length < 4) {
+				if(stream.Length < 4) 
+				{
 					MessageBox.Show("ZNODES lump is empty.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return false;
 				}
 
-				using(BinaryReader reader = new BinaryReader(stream)) {
+				using(BinaryReader reader = new BinaryReader(stream)) 
+				{
 					//read signature
 					nodesformat = new string(reader.ReadChars(4));
-					if(!supportedFormats.Contains(nodesformat)) {
+					if(!supportedFormats.Contains(nodesformat)) 
+					{
 						MessageBox.Show("'" + nodesformat + "' node format is not supported.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return false;
 					}
@@ -220,7 +224,8 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 					uint newVertsCount = reader.ReadUInt32();
 
 					//boilerplate...
-					if(vertsCount != General.Map.Map.Vertices.Count) {
+					if(vertsCount != General.Map.Map.Vertices.Count) 
+					{
 						MessageBox.Show("Error while reading ZNODES: vertices count in ZNODES lump (" + vertsCount + ") doesn't match with map's vertices count (" + General.Map.Map.Vertices.Count + ")!", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return false;
 					}
@@ -228,12 +233,11 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 					//add map vertices
 					verts = new Vector2D[vertsCount + newVertsCount];
 					int counter = 0;
-					foreach(Vertex v in General.Map.Map.Vertices) {
-						verts[counter++] = v.Position;
-					}
+					foreach(Vertex v in General.Map.Map.Vertices) verts[counter++] = v.Position;
 
 					//read extra vertices
-					for(int i = counter; i < counter + newVertsCount; i++) {
+					for(int i = counter; i < counter + newVertsCount; i++) 
+					{
 						verts[i].x = reader.ReadInt32() / 65536.0f;
 						verts[i].y = reader.ReadInt32() / 65536.0f;
 					}
@@ -243,7 +247,8 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 					ssectors = new Subsector[ssecCount];
 
 					int firstseg = 0;
-					for(int i = 0; i < ssectors.Length; i++) {
+					for(int i = 0; i < ssectors.Length; i++) 
+					{
 						ssectors[i].numsegs = (int)reader.ReadUInt32();
 						ssectors[i].firstseg = firstseg;
 						firstseg += ssectors[i].numsegs;
@@ -253,9 +258,11 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 					uint segsCount = reader.ReadUInt32();
 					segs = new Seg[segsCount];
 
-					switch(nodesformat) {
+					switch(nodesformat) 
+					{
 						case "XGLN":
-							for(int i = 0; i < segs.Length; i++) {
+							for(int i = 0; i < segs.Length; i++) 
+							{
 								segs[i].startvertex = (int)reader.ReadUInt32();
 								reader.BaseStream.Position += 4; //skip partner
 								segs[i].lineindex = reader.ReadUInt16();
@@ -265,7 +272,8 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 
 						case "XGL3":
 						case "XGL2":
-							for(int i = 0; i < segs.Length; i++) {
+							for(int i = 0; i < segs.Length; i++) 
+							{
 								segs[i].startvertex = (int)reader.ReadUInt32();
 								reader.BaseStream.Position += 4; //skip partner
 								uint lineindex = reader.ReadUInt32();
@@ -275,7 +283,8 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 							break;
 
 						case "XNOD":
-							for(int i = 0; i < segs.Length; i++) {
+							for(int i = 0; i < segs.Length; i++) 
+							{
 								segs[i].startvertex = (int)reader.ReadUInt32();
 								segs[i].endvertex = (int)reader.ReadUInt32();
 								segs[i].lineindex = reader.ReadUInt16();
@@ -285,20 +294,21 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 					}
 
 					//set second vertex, angle and reverse segs order
-					if(nodesformat == "XGLN" || nodesformat == "XGL2" || nodesformat == "XGL3") {
+					if(nodesformat == "XGLN" || nodesformat == "XGL2" || nodesformat == "XGL3") 
+					{
 						int index = 0;
-						foreach(Subsector ss in ssectors) {
+						foreach(Subsector ss in ssectors) 
+						{
 							//set the last vert
 							int lastseg = ss.firstseg + ss.numsegs - 1;
 							segs[lastseg].endvertex = segs[ss.firstseg].startvertex;
 
 							//set the rest
-							for(int i = ss.firstseg + 1; i <= lastseg; i++) {
-								segs[i - 1].endvertex = segs[i].startvertex;
-							}
+							for(int i = ss.firstseg + 1; i <= lastseg; i++) segs[i - 1].endvertex = segs[i].startvertex;
 
 							//set angle and subsector index
-							for (int i = ss.firstseg; i <= lastseg; i++) {
+							for (int i = ss.firstseg; i <= lastseg; i++) 
+							{
 								segs[i].angle = Vector2D.GetAngle(verts[segs[i].endvertex], verts[segs[i].startvertex]);
 								segs[i].ssector = index;
 							}
@@ -311,20 +321,25 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 					uint nodesCount = reader.ReadUInt32();
 
 					//boilerplate...
-					if(nodesCount < 1) {
+					if(nodesCount < 1) 
+					{
 						MessageBox.Show("The map has only one subsector.", "Why are you doing this, Stanley?..", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return false;
 					}
 
 					nodes = new Node[nodesCount];
 
-					for(int i = 0; i < nodes.Length; i++) {
-						if(nodesformat == "XGL3") {
+					for(int i = 0; i < nodes.Length; i++) 
+					{
+						if(nodesformat == "XGL3") 
+						{
 							nodes[i].linestart.x = reader.ReadInt32() / 65536.0f;
 							nodes[i].linestart.y = reader.ReadInt32() / 65536.0f;
 							nodes[i].linedelta.x = reader.ReadInt32() / 65536.0f;
 							nodes[i].linedelta.y = reader.ReadInt32() / 65536.0f;
-						} else {
+						} 
+						else 
+						{
 							nodes[i].linestart.x = reader.ReadInt16();
 							nodes[i].linestart.y = reader.ReadInt16();
 							nodes[i].linedelta.x = reader.ReadInt16();
@@ -630,7 +645,8 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		/// <summary>
 		/// This tests if the given coordinate is inside the specified subsector.
 		/// </summary>
-		private bool PointInSubsector(int index, Vector2D p) {
+		private bool PointInSubsector(int index, Vector2D p) 
+		{
 			if (ssectors[index].points.Length == 0) return false; //mxd
 			
 			// Subsectors are convex, so we can simply test if the point is on the front side of all lines.
@@ -770,32 +786,40 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			}
 
 			//mxd
-			if(haveZnodes) {
+			if(haveZnodes) 
+			{
 				General.Interface.DisplayStatus(StatusType.Busy, "Reading map nodes...");
-				if(!LoadZNodes()) {
+				if(!LoadZNodes()) 
+				{
 					General.Editing.CancelMode();
 					return;
 				}
-			} else {
-				if(!haveNodes) {
+			} 
+			else 
+			{
+				if(!haveNodes) 
+				{
 					MessageBox.Show("Unable to find the NODES lump. It may be that the nodes could not be built correctly.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					General.Editing.CancelMode();
 					return;
 				}
 
-				if(!haveSectors) {
+				if(!haveSectors) 
+				{
 					MessageBox.Show("Unable to find the SSECTORS lump. It may be that the nodes could not be built correctly.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					General.Editing.CancelMode();
 					return;
 				}
 
-				if(!haveSegs) {
+				if(!haveSegs) 
+				{
 					MessageBox.Show("Unable to find the SEGS lump. It may be that the nodes could not be built correctly.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					General.Editing.CancelMode();
 					return;
 				}
 
-				if(!haveVerts) {
+				if(!haveVerts) 
+				{
 					MessageBox.Show("Unable to find the VERTEXES lump. It may be that the nodes could not be built correctly.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					General.Editing.CancelMode();
 					return;
@@ -805,7 +829,8 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 				LoadClassicStructures();
 
 				//mxd. More boilerplate
-				if (nodes.Length < 1) {
+				if (nodes.Length < 1) 
+				{
 					MessageBox.Show("The map has only one subsector.", "Why are you doing this, Stanley?..", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					General.Editing.CancelMode();
 					return;

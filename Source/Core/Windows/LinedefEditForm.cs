@@ -361,7 +361,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			preventchanges = false;
 
-			updateScriptControls(); //mxd
+			UpdateScriptControls(); //mxd
 
 			//mxd. Set intial script-related values, if required
 			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
@@ -396,7 +396,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void updateScriptControls()
+		private void UpdateScriptControls()
 		{
 			scriptNumbers.Visible = (Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1);
 		}
@@ -614,7 +614,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			} 
 
-			if(!preventchanges) updateScriptControls(); //mxd
+			if(!preventchanges) UpdateScriptControls(); //mxd
 		}
 
 		// Browse Action clicked
@@ -640,7 +640,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Linedef realtime events (mxd)
 
-		private void flags_OnValueChanged(object sender, EventArgs e) {
+		private void flags_OnValueChanged(object sender, EventArgs e) 
+		{
 			if(preventchanges) return;
 			int i = 0;
 

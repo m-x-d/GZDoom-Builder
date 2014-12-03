@@ -36,7 +36,8 @@ namespace CodeImp.DoomBuilder.Actions
 
 		#region ================== Constructor
 
-		public HintsManager() {
+		public HintsManager() 
+		{
 			hints = new Dictionary<string, Dictionary<string, string>>(StringComparer.Ordinal);
 		}
 
@@ -46,39 +47,45 @@ namespace CodeImp.DoomBuilder.Actions
 
 		//Hints.cfg is dev-only stuff so bare minimum of boilerplate is present 
 		//(e.g. create your Hints.cfg exactly the way it's done in the main project). 
-		internal void LoadHints(Assembly asm) {
+		internal void LoadHints(Assembly asm) 
+		{
 			// Find a resource named Hints.cfg
 			string[] resnames = asm.GetManifestResourceNames();
 			string asmname = asm.GetName().Name.ToLowerInvariant() + "_";
 
-			foreach (string rn in resnames) {
+			foreach (string rn in resnames) 
+			{
 				// Found one?
-				if(rn.EndsWith(HINTS_RESOURCE, StringComparison.InvariantCultureIgnoreCase)) {
+				if(rn.EndsWith(HINTS_RESOURCE, StringComparison.InvariantCultureIgnoreCase)) 
+				{
 					string line;
 					string classname = string.Empty;
 					string groupname = string.Empty;
 					List<string> lines = new List<string>(2);
 					
 					// Get a stream from the resource
-					using(Stream data = asm.GetManifestResourceStream(rn)) {
-						using(StreamReader reader = new StreamReader(data, Encoding.ASCII)) {
-							while (!reader.EndOfStream) {
-								lines.Add(reader.ReadLine());
-							}
+					using(Stream data = asm.GetManifestResourceStream(rn)) 
+					{
+						using(StreamReader reader = new StreamReader(data, Encoding.ASCII)) 
+						{
+							while (!reader.EndOfStream) lines.Add(reader.ReadLine());
 						}
 					}
 
 					Dictionary<string, List<string>> group = new Dictionary<string, List<string>>(StringComparer.Ordinal);
 
-					foreach(string s in lines) {
+					foreach(string s in lines) 
+					{
 						line = s.Trim();
 						if(string.IsNullOrEmpty(line) || line.StartsWith("//"))
 							continue;
 
 						//class declaration?
-						if(line.StartsWith(CLASS_MARKER)) {
-							if(!string.IsNullOrEmpty(classname)) {
-								hints.Add(asmname + classname, processHints(group));
+						if(line.StartsWith(CLASS_MARKER)) 
+						{
+							if(!string.IsNullOrEmpty(classname)) 
+							{
+								hints.Add(asmname + classname, ProcessHints(group));
 							}
 
 							classname = line.Substring(6, line.Length - 6);
@@ -88,7 +95,8 @@ namespace CodeImp.DoomBuilder.Actions
 						}
 
 						//group declaration?
-						if(line.StartsWith(GROUP_MARKER)) {
+						if(line.StartsWith(GROUP_MARKER)) 
+						{
 							groupname = line.Substring(6, line.Length - 6);
 							group.Add(groupname, new List<string>());
 							continue;
@@ -99,7 +107,8 @@ namespace CodeImp.DoomBuilder.Actions
 
 						//replace action names with keys
 						int start = line.IndexOf("<k>");
-						while(start != -1) {
+						while(start != -1) 
+						{
 							int end = line.IndexOf("</k>");
 							string key = line.Substring(start + 3, end - start - 3);
 							line = line.Substring(0, start) + "{\\b " + Action.GetShortcutKeyDesc(key) + "}" + line.Substring(end + 4, line.Length - end - 4);
@@ -110,24 +119,28 @@ namespace CodeImp.DoomBuilder.Actions
 					}
 
 					//add the last class
-					hints.Add(asmname + classname, processHints(group));
+					hints.Add(asmname + classname, ProcessHints(group));
 					break;
 				}
 			}
 		}
 
-		private static Dictionary<string, string> processHints(Dictionary<string, List<string>> hintsgroup) {
+		private static Dictionary<string, string> ProcessHints(Dictionary<string, List<string>> hintsgroup) 
+		{
 			var result = new Dictionary<string, string>(StringComparer.Ordinal);
-			foreach(KeyValuePair<string, List<string>> group in hintsgroup) {
+			foreach(KeyValuePair<string, List<string>> group in hintsgroup) 
+			{
 				result.Add(group.Key, "{\\rtf1" + string.Join("\\par\\par ", group.Value.ToArray()) + "}");
 			}
 			return result;
 		}
 
-		public void ShowHints(Type type, string groupname) {
+		public void ShowHints(Type type, string groupname) 
+		{
 			string fullname = type.Assembly.GetName().Name.ToLowerInvariant() + "_" + type.Name;
 
-			if (!hints.ContainsKey(fullname) || !hints[fullname].ContainsKey(groupname)) {
+			if (!hints.ContainsKey(fullname) || !hints[fullname].ContainsKey(groupname)) 
+			{
 				General.Interface.ShowHints(DEFAULT_HINT);
 #if DEBUG
 				Console.WriteLine("WARNING: Unable to get hints for class '" + fullname + "', group '" + groupname + "'");
@@ -141,7 +154,8 @@ namespace CodeImp.DoomBuilder.Actions
 
 		#region ================== Utility
 
-		public static string GetRtfString(string text) {
+		public static string GetRtfString(string text) 
+		{
 			text = text.Replace("<b>", "{\\b ").Replace("</b>", "}").Replace("<br>", "\\par\\par ");
 			return "{\\rtf1" + text + "}";
 		}

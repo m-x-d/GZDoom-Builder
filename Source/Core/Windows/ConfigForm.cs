@@ -341,7 +341,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private void ApplyTestEngineNameChange() 
 		{
 			int index = (int)cbEngineSelector.Tag;
-			if(index != -1 && cbEngineSelector.Text != cbEngineSelector.Items[index].ToString()) {
+			if(index != -1 && cbEngineSelector.Text != cbEngineSelector.Items[index].ToString()) 
+			{
 				cbEngineSelector.Items[index] = cbEngineSelector.Text;
 				configinfo.TestProgramName = cbEngineSelector.Text;
 				configinfo.Changed = true; //mxd
@@ -358,7 +359,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(configinfo != null) ApplyTestEngineNameChange();
 
 			//mxd. Apply configuration items. They should be in the same order, riiiight?
-			for(int i = 0; i < listconfigs.Items.Count; i++) {
+			for(int i = 0; i < listconfigs.Items.Count; i++) 
+			{
 				// Get configuration item
 				ci = listconfigs.Items[i].Tag as ConfigurationInfo;
 				ci.Enabled = listconfigs.Items[i].Checked;
@@ -668,7 +670,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void btnNewEngine_Click(object sender, EventArgs e) {
+		private void btnNewEngine_Click(object sender, EventArgs e) 
+		{
 			EngineInfo newInfo = new EngineInfo();
 			newInfo.TestSkill = (int)Math.Ceiling(gameconfig.Skills.Count / 2f); //set Medium skill level
 			configinfo.TestEngines.Add(newInfo);
@@ -689,7 +692,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void btnRemoveEngine_Click(object sender, EventArgs e) {
+		private void btnRemoveEngine_Click(object sender, EventArgs e) 
+		{
 			//remove params
 			int index = cbEngineSelector.SelectedIndex;
 			cbEngineSelector.SelectedIndex = -1;
@@ -711,7 +715,8 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void cbEngineSelector_SelectedIndexChanged(object sender, EventArgs e) {
+		private void cbEngineSelector_SelectedIndexChanged(object sender, EventArgs e) 
+		{
 			if(cbEngineSelector.SelectedIndex == -1) return;
 			
 			//set new values
@@ -738,22 +743,23 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void cbEngineSelector_DropDown(object sender, EventArgs e) {
+		private void cbEngineSelector_DropDown(object sender, EventArgs e) 
+		{
 			ApplyTestEngineNameChange();
 		}
 
 		//mxd
-		private void colorsControl_PresetsChanged(object sender, EventArgs e) {
+		private void colorsControl_PresetsChanged(object sender, EventArgs e) 
+		{
 			if(configinfo == null) return;
 			configinfo.LinedefColorPresets = colorsControl.GetPresets();
 			configinfo.Changed = true; //mxd
 		}
 
 		//mxd
-		private void ConfigForm_Shown(object sender, EventArgs e) {
-			if (listconfigs.SelectedItems.Count > 0) {
-				listconfigs.SelectedItems[0].EnsureVisible();
-			}
+		private void ConfigForm_Shown(object sender, EventArgs e) 
+		{
+			if (listconfigs.SelectedItems.Count > 0) listconfigs.SelectedItems[0].EnsureVisible();
 		}
 
 		#region ============= Copy/Paste context menu (mxd)

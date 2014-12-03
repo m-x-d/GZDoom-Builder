@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}	
 		}
 
-		private string GetDescription(string group)
+		private static string GetDescription(string group)
 		{
 			switch(group) 
 			{

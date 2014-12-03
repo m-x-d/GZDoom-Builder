@@ -23,15 +23,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface {
 	
 	public partial class BridgeModeForm : DelayedForm {
 
-		internal int Subdivisions { 
-			get {
-				return (int)nudSubdivisions.Value;
-			}
-			set {
-				nudSubdivisions.Value = value;
-			}
-		}
-
+		internal int Subdivisions { get { return (int)nudSubdivisions.Value; } set { nudSubdivisions.Value = value; } }
 		internal string FloorAlignMode { get { return (string)cbFloorAlign.SelectedItem; } }
 		internal string CeilingAlignMode { get { return (string)cbCeilingAlign.SelectedItem; } }
 		internal string BrightnessMode { get { return (string)cbBrightness.SelectedItem; } }
@@ -44,7 +36,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface {
 		internal event EventHandler OnCancelClick;
 		internal event EventHandler OnFlipClick;
 		
-		public BridgeModeForm() {
+		public BridgeModeForm() 
+		{
 			InitializeComponent();
 
 			cbBrightness.Items.AddRange(BridgeInterpolationMode.BRIGHTNESS_INTERPOLATION_MODES);
@@ -60,47 +53,44 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface {
 		}
 
 //events
-		private void BezierPathForm_FormClosed(object sender, FormClosedEventArgs e) {
-			if (OnCancelClick != null)
-				OnCancelClick(this, EventArgs.Empty);
+		private void BezierPathForm_FormClosed(object sender, FormClosedEventArgs e) 
+		{
+			if (OnCancelClick != null) OnCancelClick(this, EventArgs.Empty);
 		}
 
-		private void buttonCancel_Click(object sender, EventArgs e) {
-			if (OnCancelClick != null)
-				OnCancelClick(this, EventArgs.Empty);
+		private void buttonCancel_Click(object sender, EventArgs e) 
+		{
+			if (OnCancelClick != null) OnCancelClick(this, EventArgs.Empty);
 		}
 
-		private void buttonOK_Click(object sender, EventArgs e) {
-			if (OnOkClick != null)
-				OnOkClick(this, EventArgs.Empty);
+		private void buttonOK_Click(object sender, EventArgs e) 
+		{
+			if (OnOkClick != null) OnOkClick(this, EventArgs.Empty);
 		}
 
-		private void nudSubdivisions_ValueChanged(object sender, EventArgs e) {
-			if (OnSubdivisionChanged != null)
-				OnSubdivisionChanged(this, EventArgs.Empty);
+		private void nudSubdivisions_ValueChanged(object sender, EventArgs e) 
+		{
+			if (OnSubdivisionChanged != null) OnSubdivisionChanged(this, EventArgs.Empty);
 		}
 
-		private void BezierPathForm_MouseEnter(object sender, EventArgs e) {
-			this.Focus();
-		}
-
-		private void BezierPathForm_MouseLeave(object sender, EventArgs e) {
+		private void BezierPathForm_MouseLeave(object sender, EventArgs e) 
+		{
 			General.Interface.FocusDisplay();
 		}
 
-		private void buttonFlip_Click(object sender, EventArgs e) {
-			if (OnFlipClick != null)
-				OnFlipClick(this, EventArgs.Empty);
+		private void buttonFlip_Click(object sender, EventArgs e) 
+		{
+			if (OnFlipClick != null) OnFlipClick(this, EventArgs.Empty);
 		}
 
-		private void cbCopy_CheckedChanged(object sender, EventArgs e) {
-			if (cbMirror.Checked && cbCopy.Checked)
-				cbMirror.Checked = false;
+		private void cbCopy_CheckedChanged(object sender, EventArgs e) 
+		{
+			if (cbMirror.Checked && cbCopy.Checked) cbMirror.Checked = false;
 		}
 
-		private void cbMirror_CheckStateChanged(object sender, EventArgs e) {
-			if (cbMirror.Checked && cbCopy.Checked)
-				cbCopy.Checked = false;
+		private void cbMirror_CheckStateChanged(object sender, EventArgs e) 
+		{
+			if (cbMirror.Checked && cbCopy.Checked) cbCopy.Checked = false;
 		}
 	}
 }

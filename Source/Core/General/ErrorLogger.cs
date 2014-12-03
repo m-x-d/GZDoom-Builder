@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder
 						erroradded = true;
 						prefix = "ERROR: ";
 #if DEBUG
-						DebugConsole.WriteLine(DebugMessageType.Error, message);
+						DebugConsole.WriteLine(DebugMessageType.ERROR, message);
 #endif
 						break;
 						
@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder
 						warningadded = true;
 						prefix = "WARNING: ";
 #if DEBUG
-						DebugConsole.WriteLine(DebugMessageType.Warning, message);
+						DebugConsole.WriteLine(DebugMessageType.WARNING, message);
 #endif
 						break;
 				}

@@ -482,7 +482,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Methods
 
 		// This makes the path prefix for the given assembly
-		private string GetPluginPathPrefix(Assembly asm)
+		private static string GetPluginPathPrefix(Assembly asm)
 		{
 			Plugin p = General.Plugins.FindPluginByAssembly(asm);
 			return GetPluginPathPrefix(p.Name);
@@ -557,7 +557,8 @@ namespace CodeImp.DoomBuilder.Config
 
 			//mxd. Set default arguments
 			ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(t.Type);
-			if (tti != null) {
+			if (tti != null) 
+			{
 				t.Args[0] = (int)tti.Args[0].DefaultValue;
 				t.Args[1] = (int)tti.Args[1].DefaultValue;
 				t.Args[2] = (int)tti.Args[2].DefaultValue;

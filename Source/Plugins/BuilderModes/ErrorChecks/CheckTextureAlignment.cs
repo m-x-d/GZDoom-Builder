@@ -295,7 +295,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
-		private float GetSidedefValue(Sidedef target, VisualGeometryType targetparttype, string key, float defaultvalue) 
+		private static float GetSidedefValue(Sidedef target, VisualGeometryType targetparttype, string key, float defaultvalue) 
 		{
 			switch (targetparttype)
 			{

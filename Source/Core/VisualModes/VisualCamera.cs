@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public Vector3D Target { get { return target; } }
 		public float AngleXY { get { return anglexy; } set { anglexy = value; } }
 		public float AngleZ { get { return anglez; } set { anglez = value; } }
-		public Sector Sector { get { return sector; } internal set { sector = value; updateGravity(); } } //mxd
+		public Sector Sector { get { return sector; } internal set { sector = value; UpdateGravity(); } } //mxd
 		public Vector3D MoveMultiplier { get { return movemultiplier; } set { movemultiplier = value; } }
 		public float Gravity { get { return gravity; } } //mxd
 		
@@ -148,8 +148,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if(modething != null)
 			{
 				int z = 0;
-				if(sector != null)
-					z = (int)position.z - sector.FloorHeight;
+				if(sector != null) z = (int)position.z - sector.FloorHeight;
 
 				// Position the thing to match camera
 				modething.Move((int)position.x, (int)position.y, z - THING_Z_OFFSET);
@@ -161,7 +160,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd
-		private void updateGravity() {
+		private void UpdateGravity() 
+		{
 			if(!udmf || sector == null) return;
 			gravity = sector.Fields.GetValue("gravity", 1.0f);
 		}

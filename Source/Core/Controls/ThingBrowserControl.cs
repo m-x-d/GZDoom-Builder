@@ -148,7 +148,7 @@ namespace CodeImp.DoomBuilder.Controls
 			return new List<TreeNode>(vn.Values);
 		}
 
-		private void GetValidNodes(TreeNode root, ref Dictionary<string, TreeNode> vn)
+		private static void GetValidNodes(TreeNode root, ref Dictionary<string, TreeNode> vn)
 		{
 			if (root.Nodes.Count == 0)
 			{

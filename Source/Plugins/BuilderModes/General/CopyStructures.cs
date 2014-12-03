@@ -31,7 +31,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		public string Description { get; private set; }
 
-		public FieldDescription(string description) {
+		public FieldDescription(string description) 
+		{
 			this.Description = description;
 		}
 	}
@@ -67,7 +68,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(CopySettings.ZCeiling) v.ZCeiling = zceiling; //mxd
 			if(CopySettings.ZFloor) v.ZFloor = zfloor; //mxd
-			if(CopySettings.Fields) {
+			if(CopySettings.Fields) 
+			{
 				v.Fields.BeforeFieldsChange();
 				v.Fields.Clear();
 				foreach (KeyValuePair<string, UniValue> uv in fields)
@@ -226,12 +228,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(CopySettings.LowerTexture) s.SetTextureLow(lowtexture);
 			if(CopySettings.OffsetX) s.OffsetX = offsetx;
 			if(CopySettings.OffsetY) s.OffsetY = offsety;
-			if(CopySettings.Flags) {
+			if(CopySettings.Flags) 
+			{
 				s.ClearFlags(); //mxd
 				foreach (KeyValuePair<string, bool> f in flags) //mxd
 					s.SetFlag(f.Key, f.Value);
 			}
-			if(CopySettings.Fields) {
+			if(CopySettings.Fields) 
+			{
 				s.Fields.BeforeFieldsChange();
 				s.Fields.Clear();
 				foreach (KeyValuePair<string, UniValue> v in fields)
@@ -289,11 +293,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		public void Apply(Linedef l)
 		{
-			if(CopySettings.SidedefProperties) {
+			if(CopySettings.SidedefProperties) 
+			{
 				if ((front != null) && (l.Front != null)) front.Apply(l.Front);
 				if ((back != null) && (l.Back != null)) back.Apply(l.Back);
 			}
-			if(CopySettings.Flags) {
+			if(CopySettings.Flags) 
+			{
 				l.ClearFlags();
 				foreach (KeyValuePair<string, bool> f in flags)
 					l.SetFlag(f.Key, f.Value);
@@ -301,11 +307,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(CopySettings.Activation) l.Activate = activate;
 			if(CopySettings.Tag) l.Tag = tag;
 			if(CopySettings.Action) l.Action = action;
-			if(CopySettings.Arguments) {
+			if(CopySettings.Arguments) 
+			{
 				for(int i = 0; i < l.Args.Length; i++)
 					l.Args[i] = args[i];
 			}
-			if(CopySettings.Fields) {
+			if(CopySettings.Fields) 
+			{
 				l.Fields.BeforeFieldsChange();
 				l.Fields.Clear();
 				foreach (KeyValuePair<string, UniValue> v in fields)
@@ -379,18 +387,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(CopySettings.Pitch) t.SetPitch(pitch);
 			if(CopySettings.Roll) t.SetRoll(roll);
 			if(CopySettings.Scale) t.SetScale(scalex, scaley);
-			if(CopySettings.Flags) {
+			if(CopySettings.Flags) 
+			{
 				t.ClearFlags();
 				foreach (KeyValuePair<string, bool> f in flags)
 					t.SetFlag(f.Key, f.Value);
 			}
 			if(CopySettings.Tag) t.Tag = tag;
 			if(CopySettings.Action) t.Action = action;
-			if(CopySettings.Arguments) {
+			if(CopySettings.Arguments) 
+			{
 				for(int i = 0; i < t.Args.Length; i++)
 					t.Args[i] = args[i];
 			}
-			if(CopySettings.Fields) {
+			if(CopySettings.Fields) 
+			{
 				t.Fields.BeforeFieldsChange();
 				t.Fields.Clear();
 				foreach (KeyValuePair<string, UniValue> v in fields)
@@ -405,7 +416,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region Vertex
 
-		public static bool PropertiesMatch(VertexPropertiesCopySettings flags, Vertex source, Vertex target) {
+		public static bool PropertiesMatch(VertexPropertiesCopySettings flags, Vertex source, Vertex target) 
+		{
 			if(flags.ZCeiling && source.ZCeiling != target.ZCeiling) return false;
 			if(flags.ZFloor && source.ZFloor != target.ZFloor) return false;
 			return !flags.Fields || UDMFTools.FieldsMatch(source.Fields, target.Fields);
@@ -415,7 +427,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region Sector
 
-		public static bool PropertiesMatch(SectorPropertiesCopySettings flags, Sector source, Sector target) {
+		public static bool PropertiesMatch(SectorPropertiesCopySettings flags, Sector source, Sector target) 
+		{
 			if(flags.FloorHeight && source.FloorHeight != target.FloorHeight) return false;
 			if(flags.CeilingHeight && source.CeilHeight != target.CeilHeight) return false;
 			if(flags.FloorTexture && source.FloorTexture != target.FloorTexture) return false;
@@ -431,17 +444,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region Linedef
 
-		public static bool PropertiesMatch(LinedefPropertiesCopySettings linedefflags, SidedefPropertiesCopySettings sideflags, Linedef source, Linedef target) {
+		public static bool PropertiesMatch(LinedefPropertiesCopySettings linedefflags, SidedefPropertiesCopySettings sideflags, Linedef source, Linedef target) 
+		{
 			if(linedefflags.Action && source.Action != target.Action) return false;
 			if(linedefflags.Activation && source.Activate != target.Activate) return false;
 			if(linedefflags.Tag && source.Tag != target.Tag) return false;
-			if(linedefflags.Arguments) {
-				for(int i = 0; i < source.Args.Length; i++) {
+			if(linedefflags.Arguments) 
+			{
+				for(int i = 0; i < source.Args.Length; i++)
 					if(source.Args[i] != target.Args[i]) return false;
-				}
 			}
 			if(linedefflags.Flags && !FlagsMatch(source.GetFlags(), target.GetFlags())) return false;
-			if(linedefflags.SidedefProperties) {
+			if(linedefflags.SidedefProperties) 
+			{
 				if ((source.Front == null && target.Front != null) || (source.Front != null && target.Front == null) ||
 					(source.Back == null && target.Back != null) || (source.Back != null && target.Back == null)) 
 					return false;
@@ -456,7 +471,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region Sidedef
 
-		public static bool PropertiesMatch(SidedefPropertiesCopySettings flags, Sidedef source, Sidedef target) {
+		public static bool PropertiesMatch(SidedefPropertiesCopySettings flags, Sidedef source, Sidedef target) 
+		{
 			if(flags.OffsetX && source.OffsetX != target.OffsetX) return false;
 			if(flags.OffsetY && source.OffsetY != target.OffsetY) return false;
 			if(flags.UpperTexture && source.HighTexture != target.HighTexture) return false;
@@ -470,14 +486,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region Thing
 
-		public static bool PropertiesMatch(ThingPropertiesCopySettings flags, Thing source, Thing target) {
+		public static bool PropertiesMatch(ThingPropertiesCopySettings flags, Thing source, Thing target) 
+		{
 			if(flags.Type && source.Type != target.Type) return false;
 			if(flags.Angle && source.AngleDoom != target.AngleDoom) return false;
 			if(flags.Action && source.Action != target.Action) return false;
-			if (flags.Arguments) {
-				for(int i = 0; i < source.Args.Length; i++) {
+			if (flags.Arguments) 
+			{
+				for(int i = 0; i < source.Args.Length; i++)
 					if (source.Args[i] != target.Args[i]) return false;
-				}
 			}
 			if(flags.Tag && source.Tag != target.Tag) return false;
 			if(flags.Pitch && source.Pitch != target.Pitch) return false;
@@ -490,11 +507,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#endregion
 
-		private static bool FlagsMatch(Dictionary<string, bool> flags1, Dictionary<string, bool> flags2) {
+		private static bool FlagsMatch(Dictionary<string, bool> flags1, Dictionary<string, bool> flags2) 
+		{
 			if (flags1.Count != flags2.Count) return false;
-			foreach (KeyValuePair<string, bool> group in flags1) {
+			foreach (KeyValuePair<string, bool> group in flags1)
 				if (!flags2.ContainsKey(group.Key) || flags2[group.Key] != flags1[group.Key]) return false;
-			}
 			return true;
 		}
 	}

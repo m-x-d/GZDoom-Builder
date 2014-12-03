@@ -142,7 +142,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 						t = parser.ReadToken();
 
 						//mxd. Because stuff like this is also valid: "Actor Oneliner { States { Spawn: WOOT A 1 A_FadeOut(0.1) Loop }}"
-						if(t == "}") {
+						if(t == "}") 
+						{
 							// Rewind so that this scope end can be read again
 							parser.DataStream.Seek(-1, SeekOrigin.Current);
 
@@ -157,7 +158,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd
-		internal StateStructure(string spriteName) {
+		internal StateStructure(string spriteName) 
+		{
 			this.gotostate = null;
 			this.sprites = new List<string>() { spriteName };
 		}

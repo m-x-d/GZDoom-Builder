@@ -146,15 +146,6 @@ namespace CodeImp.DoomBuilder.Geometry
 			return true;
 		}
 
-		//mxd
-		/*public bool IntersectPoint(Vector2D point) {
-			for (int i = 0; i < lines.Length; i++) {
-				if (lines[i].GetSideOfLine(point) < 0)
-					return false;
-			}
-			return true;
-		}*/
-
 		#endregion
 	}
 }

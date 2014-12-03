@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.Controls
 				editor.SetText(stream.ToArray());
 				editor.ClearUndoRedo();
 				//mxd
-				updateNavigator();
+				UpdateNavigator();
 			}
 			
 			// Done

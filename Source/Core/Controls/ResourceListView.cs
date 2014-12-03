@@ -121,7 +121,8 @@ namespace CodeImp.DoomBuilder.Controls
 			Point cp;
 
 			//mxd. Check if valid extenal data is present
-			if(e.Data.GetDataPresent(DataFormats.FileDrop)) {
+			if(e.Data.GetDataPresent(DataFormats.FileDrop)) 
+			{
 				e.Effect = DragDropEffects.Copy;
 				return;
 			}
@@ -218,7 +219,8 @@ namespace CodeImp.DoomBuilder.Controls
 			base.OnDragEnter(e);
 
 			//mxd. Check if valid extenal data is present
-			if(e.Data.GetDataPresent(DataFormats.FileDrop)) {
+			if(e.Data.GetDataPresent(DataFormats.FileDrop)) 
+			{
 				e.Effect = DragDropEffects.Copy;
 				return;
 			}

@@ -2,8 +2,10 @@
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 
-namespace CodeImp.DoomBuilder.GZBuilder.Data {
-	public sealed class ThingCopyData {
+namespace CodeImp.DoomBuilder.GZBuilder.Data 
+{
+	public sealed class ThingCopyData 
+	{
 		// Properties
 		private readonly int type;
 		private readonly Vector3D pos;
@@ -16,7 +18,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 
 		public Vector3D Position { get { return pos; } }
 		
-		public ThingCopyData(Thing t) {
+		public ThingCopyData(Thing t) 
+		{
 			type = t.Type;
 			angledoom = t.AngleDoom;
 			pos = t.Position;
@@ -27,7 +30,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			fields = new UniFields(t, t.Fields);
 		}
 
-		public void ApplyTo(Thing t) {
+		public void ApplyTo(Thing t) 
+		{
 			t.Type = type;
 			t.Rotate(angledoom);
 			t.Move(pos);
@@ -41,7 +45,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data {
 			for(int i = 0; i < args.Length; i++) 
 				t.Args[i] = args[i];
 
-			foreach (KeyValuePair<string, UniValue> group in fields) {
+			foreach (KeyValuePair<string, UniValue> group in fields) 
+			{
 				if (t.Fields.ContainsKey(group.Key))
 					t.Fields[group.Key] = group.Value;
 				else

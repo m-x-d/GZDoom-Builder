@@ -27,24 +27,32 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 		private static string currentColorTag = "lightcolor"; //lightcolor or fadecolor
 		private string mode;
 
-		public bool Setup(string editingModeName) {
+		public bool Setup(string editingModeName) 
+		{
 			mode = editingModeName;
 
-			if (mode == "SectorsMode") {
+			if (mode == "SectorsMode") 
+			{
 				selection = (List<Sector>)(General.Map.Map.GetSelectedSectors(true));
-			} else { //should be Visual mode
+			} 
+			else //should be Visual mode
+			{ 
 				selection = new List<Sector>();
 				VisualMode vm = (VisualMode)General.Editing.Mode;
 				visualSelection = vm.GetSelectedVisualSectors(false);
 				
-				if (visualSelection.Count > 0) {
+				if (visualSelection.Count > 0) 
+				{
 					foreach (VisualSector vs in visualSelection)
 						selection.Add(vs.Sector);
-				} else { //should be some sectors selected in 2d-mode...
+				} 
+				else //should be some sectors selected in 2d-mode...
+				{ 
 					visualSelection = new List<VisualSector>();
 					selection = (List<Sector>)(General.Map.Map.GetSelectedSectors(true));
 
-					foreach (Sector s in selection) {
+					foreach (Sector s in selection) 
+					{
 						if (vm.VisualSectorExists(s))
 							visualSelection.Add(vm.GetVisualSector(s));
 					}
@@ -55,15 +63,15 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 			string rest = selection.Count + " sector" + (selection.Count > 1 ? "s" : "");
 			General.Map.UndoRedo.CreateUndo("Edit color of " + rest);
 			
-			foreach (Sector s in selection)
-				s.Fields.BeforeFieldsChange();
+			foreach (Sector s in selection) s.Fields.BeforeFieldsChange();
 
 			//set colors
 			curSectorColor = selection[0].Fields.GetValue("lightcolor", DEFAULT_LIGHT_COLOR);
 			curFadeColor = selection[0].Fields.GetValue("fadecolor", DEFAULT_FADE_COLOR);
 
 			//check that all sectors in selection have "lightcolor" and "fadecolor" fields
-			for (int i = 0; i < selection.Count; i++) {
+			for (int i = 0; i < selection.Count; i++) 
+			{
 				if (!selection[i].Fields.ContainsKey("lightcolor"))
 					selection[i].Fields.Add("lightcolor", new UniValue(UniversalType.Color, curSectorColor));
 				
@@ -77,7 +85,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 			InitializeComponent();
 
 			colorPickerControl1.Initialize(Color.FromArgb(currentColorTag == "lightcolor" ? curSectorColor : curFadeColor));
-			colorPickerControl1.ColorChanged += colorPickerControl1_ColorChanged;
+			colorPickerControl1.OnColorChanged += OnColorPickerControl1OnColorChanged;
 			colorPickerControl1.OnOkPressed += colorPickerControl1_OnOkPressed;
 			colorPickerControl1.OnCancelPressed += colorPickerControl1_OnCancelPressed;
 
@@ -95,14 +103,17 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 			return true;
 		}
 
-		private void colorPickerControl1_OnCancelPressed(object sender, EventArgs e) {
+		private void colorPickerControl1_OnCancelPressed(object sender, EventArgs e) 
+		{
 			this.DialogResult = DialogResult.Cancel;
 			Close();
 		}
 
-		private void colorPickerControl1_OnOkPressed(object sender, EventArgs e) {
+		private void colorPickerControl1_OnOkPressed(object sender, EventArgs e) 
+		{
 			//check if values are default
-			foreach (Sector s in selection) {
+			foreach (Sector s in selection) 
+			{
 				if((int)s.Fields["lightcolor"].Value == DEFAULT_LIGHT_COLOR)
 					s.Fields.Remove("lightcolor");
 
@@ -114,30 +125,36 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 			Close();
 		}
 
-		private void SectorColorPicker_FormClosing(object sender, FormClosingEventArgs e) {
-			if(this.DialogResult == DialogResult.Cancel)
-				General.Map.UndoRedo.WithdrawUndo();
+		private void SectorColorPicker_FormClosing(object sender, FormClosingEventArgs e) 
+		{
+			if(this.DialogResult == DialogResult.Cancel) General.Map.UndoRedo.WithdrawUndo();
 		}
 
-		private void colorPickerControl1_ColorChanged(object sender, ColorChangedEventArgs e) {
-			foreach (Sector s in selection) {
+		private void OnColorPickerControl1OnColorChanged(object sender, ColorChangedEventArgs e) 
+		{
+			foreach (Sector s in selection) 
+			{
 				s.Fields[currentColorTag].Value = e.RGB.Red << 16 | e.RGB.Green << 8 | e.RGB.Blue;
 				s.UpdateNeeded = true;
 				s.UpdateCache();
 			}
 
 			//update display
-			if (mode == "SectorsMode") {
+			if (mode == "SectorsMode") 
+			{
 				General.Interface.RedrawDisplay();
-			} else { //should be visual mode
-				foreach (VisualSector vs in visualSelection)
-					vs.UpdateSectorData();
+			} 
+			else //should be visual mode
+			{ 
+				foreach (VisualSector vs in visualSelection) vs.UpdateSectorData();
 			}
 		}
 
-		private void rbColor_CheckedChanged(object sender, EventArgs e) {
+		private void rbColor_CheckedChanged(object sender, EventArgs e) 
+		{
 			RadioButton b = (RadioButton)sender;
-			if (b.Checked) {
+			if (b.Checked) 
+			{
 				currentColorTag = (string)b.Tag;
 
 				//update color picker
@@ -149,7 +166,8 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 			}
 		}
 
-		private void SectorColorPicker_HelpRequested(object sender, HelpEventArgs hlpevent) {
+		private void SectorColorPicker_HelpRequested(object sender, HelpEventArgs hlpevent) 
+		{
 			General.ShowHelp("gzdb/features/all_modes/colorpicker.html");
 			hlpevent.Handled = true;
 		}

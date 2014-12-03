@@ -49,8 +49,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					verts[index] = new Vector3D(v.Position.x, v.Position.y, data.Ceiling.plane.GetZ(v.Position));
 
 				//mxd. UDMF vertex offset overrides this effect
-				if(General.Map.UDMF) {
-					if((slopefloor && !float.IsNaN(v.ZFloor)) || !float.IsNaN(v.ZCeiling)) {
+				if(General.Map.UDMF) 
+				{
+					if((slopefloor && !float.IsNaN(v.ZFloor)) || !float.IsNaN(v.ZCeiling)) 
+					{
 						index++;
 						continue;
 					}

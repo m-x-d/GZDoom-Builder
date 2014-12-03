@@ -57,7 +57,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			geoType = VisualGeometryType.CEILING;
 
 			//mxd
-			if(mode.UseSelectionFromClassicMode && vs != null && vs.Sector.Selected && (General.Map.ViewMode == ViewMode.CeilingTextures || General.Map.ViewMode == ViewMode.Normal)) {
+			if(mode.UseSelectionFromClassicMode && vs != null && vs.Sector.Selected && (General.Map.ViewMode == ViewMode.CeilingTextures || General.Map.ViewMode == ViewMode.Normal)) 
+			{
 				this.selected = true;
 				mode.AddSelectedObject(this);
 			}
@@ -67,7 +68,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This builds the geometry. Returns false when no geometry created.
-		public override bool Setup(SectorLevel level, Effect3DFloor extrafloor) {
+		public override bool Setup(SectorLevel level, Effect3DFloor extrafloor) 
+		{
 			return Setup(level, extrafloor, innerSide);
 		}
 
@@ -88,17 +90,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 										  s.Fields.GetValue("yscaleceiling", 1.0f));
 			
 			//Load ceiling texture
-			if(s.LongCeilTexture != MapSet.EmptyLongName) {
+			if(s.LongCeilTexture != MapSet.EmptyLongName) 
+			{
 				base.Texture = General.Map.Data.GetFlatImage(s.LongCeilTexture);
-				if(base.Texture == null || base.Texture is UnknownImage) {
+				if(base.Texture == null || base.Texture is UnknownImage) 
+				{
 					base.Texture = General.Map.Data.UnknownTexture3D;
 					setuponloadedtexture = s.LongCeilTexture;
-				} else {
-					if(!base.Texture.IsImageLoaded) {
-						setuponloadedtexture = s.LongCeilTexture;
-					}
+				} 
+				else 
+				{
+					if(!base.Texture.IsImageLoaded) setuponloadedtexture = s.LongCeilTexture;
 				}
-			} else {
+			} 
+			else 
+			{
 				// Use missing texture
 				base.Texture = General.Map.Data.MissingTexture3D;
 				setuponloadedtexture = 0;
@@ -188,14 +194,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Texture scale change
-		protected override void ChangeTextureScale(float incrementX, float incrementY) {
+		protected override void ChangeTextureScale(float incrementX, float incrementY) 
+		{
 			Sector s = GetControlSector();
 			float scaleX = s.Fields.GetValue("xscaleceiling", 1.0f);
 			float scaleY = s.Fields.GetValue("yscaleceiling", 1.0f);
 
 			s.Fields.BeforeFieldsChange();
 
-			if(incrementX != 0) {
+			if(incrementX != 0) 
+			{
 				if(scaleX + incrementX == 0)
 					scaleX *= -1;
 				else
@@ -203,7 +211,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UDMFTools.SetFloat(s.Fields, "xscaleceiling", scaleX, 1.0f);
 			}
 
-			if(incrementY != 0) {
+			if(incrementY != 0) 
+			{
 				if(scaleY + incrementY == 0)
 					scaleY *= -1;
 				else
@@ -212,11 +221,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//update geometry
-			onTextureChanged();
+			OnTextureChanged();
 
 			s.UpdateNeeded = true;
 			s.UpdateCache();
-			if(s.Index != Sector.Sector.Index) {
+			if(s.Index != Sector.Sector.Index) 
+			{
 				Sector.Sector.UpdateNeeded = true;
 				Sector.Sector.UpdateCache();
 			}
@@ -225,17 +235,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void OnResetTextureOffset() {
+		public override void OnResetTextureOffset() 
+		{
 			if(!General.Map.UDMF) return;
 
 			mode.CreateUndo("Reset texture offsets");
 			mode.SetActionResult("Texture offsets reset.");
 			Sector.Sector.Fields.BeforeFieldsChange();
 
-			string[] keys = new string[] { "xpanningceiling", "ypanningceiling", "xscaleceiling", "yscaleceiling", "rotationceiling" };
+			string[] keys = new[] { "xpanningceiling", "ypanningceiling", "xscaleceiling", "yscaleceiling", "rotationceiling" };
 
-			foreach(string key in keys){
-				if(Sector.Sector.Fields.ContainsKey(key)) {
+			foreach(string key in keys)
+			{
+				if(Sector.Sector.Fields.ContainsKey(key)) 
+				{
 					Sector.Sector.Fields.Remove(key);
 					Sector.Sector.UpdateNeeded = true;
 				}
@@ -246,7 +259,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void OnResetLocalTextureOffset() {
+		public override void OnResetLocalTextureOffset() 
+		{
 			OnResetTextureOffset();
 		}
 
@@ -260,7 +274,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				SetTexture(BuilderPlug.Me.CopiedFlat);
 
 				//mxd. 3D floors may need updating...
-				onTextureChanged();
+				OnTextureChanged();
 			}
 		}
 
@@ -328,24 +342,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Sector brightness change
-		public override void OnChangeTargetBrightness(bool up) {
-			if (level != null && level.sector != Sector.Sector) {
+		public override void OnChangeTargetBrightness(bool up) 
+		{
+			if (level != null && level.sector != Sector.Sector) 
+			{
 				int index = -1;
-				for (int i = 0; i < Sector.ExtraCeilings.Count; i++) {
-					if (Sector.ExtraCeilings[i] == this) {
+				for (int i = 0; i < Sector.ExtraCeilings.Count; i++) 
+				{
+					if (Sector.ExtraCeilings[i] == this) 
+					{
 						index = i + 1;
 						break;
 					}
 				}
 
-				if (index > -1 && index < Sector.ExtraCeilings.Count) {
+				if (index > -1 && index < Sector.ExtraCeilings.Count)
 					((BaseVisualSector)mode.GetVisualSector(Sector.ExtraCeilings[index].level.sector)).Floor.OnChangeTargetBrightness(up);
-				} else {
+				else
 					base.OnChangeTargetBrightness(up);
-				}
-			} else {
+			} 
+			else 
+			{
 				//if a map is not in UDMF format, or this ceiling is part of 3D-floor...
-				if(!General.Map.UDMF || Sector.Sector != level.sector) {
+				if(!General.Map.UDMF || Sector.Sector != level.sector) 
+				{
 					base.OnChangeTargetBrightness(up);
 					return;
 				}
@@ -535,25 +555,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public void AlignTexture(bool alignx, bool aligny) {
+		public void AlignTexture(bool alignx, bool aligny) 
+		{
 			if(!General.Map.UDMF) return;
 
 			//is is a surface with line slope?
 			float slopeAngle = level.plane.Normal.GetAngleZ() - Angle2D.PIHALF;
 
-			if(slopeAngle == 0) {//it's a horizontal plane
-				alignTextureToClosestLine(alignx, aligny);
-			} else { //it can be a surface with line slope
+			if(slopeAngle == 0) //it's a horizontal plane
+			{
+				AlignTextureToClosestLine(alignx, aligny);
+			} 
+			else //it can be a surface with line slope
+			{ 
 				Linedef slopeSource = null;
 				bool isFront = false;
 
-				foreach(Sidedef side in Sector.Sector.Sidedefs) {
-					if(side.Line.Action == 181) {
-						if(side.Line.Args[1] == 1 && side.Line.Front != null && side.Line.Front == side) {
+				foreach(Sidedef side in Sector.Sector.Sidedefs) 
+				{
+					if(side.Line.Action == 181) 
+					{
+						if(side.Line.Args[1] == 1 && side.Line.Front != null && side.Line.Front == side) 
+						{
 							slopeSource = side.Line;
 							isFront = true;
 							break;
-						} else if(side.Line.Args[1] == 2 && side.Line.Back != null && side.Line.Back == side) {
+						} 
+						else if(side.Line.Args[1] == 2 && side.Line.Back != null && side.Line.Back == side) 
+						{
 							slopeSource = side.Line;
 							break;
 						}
@@ -561,9 +590,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				if(slopeSource != null && slopeSource.Front != null && slopeSource.Front.Sector != null && slopeSource.Back != null && slopeSource.Back.Sector != null)
-					alignTextureToSlopeLine(slopeSource, slopeAngle, isFront, alignx, aligny);
+					AlignTextureToSlopeLine(slopeSource, slopeAngle, isFront, alignx, aligny);
 				else
-					alignTextureToClosestLine(alignx, aligny);
+					AlignTextureToClosestLine(alignx, aligny);
 			}
 		}
 		

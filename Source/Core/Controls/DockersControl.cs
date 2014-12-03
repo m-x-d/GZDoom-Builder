@@ -257,10 +257,10 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd. This checks if given docker exists in this control
-		public bool Contains(Docker d) {
-			foreach (TabPage page in tabs.TabPages) {
+		public bool Contains(Docker d) 
+		{
+			foreach (TabPage page in tabs.TabPages) 
 				if ((page.Tag as Docker) == d) return true;
-			}
 			return false;
 		}
 		
@@ -440,13 +440,13 @@ namespace CodeImp.DoomBuilder.Controls
 				General.MainWindow.Update();
 				
 				// Raise event
-				if(UserResize != null)
-					UserResize(this, EventArgs.Empty);
+				if(UserResize != null) UserResize(this, EventArgs.Empty);
 			}
 		}
 
 		//mxd
-		private void buttonTogglePinning_Click(object sender, EventArgs e) {
+		private void buttonTogglePinning_Click(object sender, EventArgs e) 
+		{
 			General.Settings.CollapseDockers = !General.Settings.CollapseDockers;
 			General.MainWindow.SetupInterface();
 			buttonTogglePinning.Image = General.Settings.CollapseDockers ? Properties.Resources.Unpin : Properties.Resources.Pin;

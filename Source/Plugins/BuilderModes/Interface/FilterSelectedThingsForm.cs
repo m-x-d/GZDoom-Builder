@@ -16,39 +16,47 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private ICollection<Thing> selection;
 		private ThingsMode mode;
 
-		public FilterSelectedThingsForm(ICollection<Thing> selection, ThingsMode mode) {
+		public FilterSelectedThingsForm(ICollection<Thing> selection, ThingsMode mode) 
+		{
 			InitializeComponent();
 			this.mode = mode;
 
 			//apply window size and location
-			if(!size.IsEmpty && !location.IsEmpty) {
+			if(!size.IsEmpty && !location.IsEmpty) 
+			{
 				this.StartPosition = FormStartPosition.Manual;
 				this.Size = size;
 				this.Location = location;
 			}
 
-			setup(selection);
+			Setup(selection);
 		}
 
-		private void setup(ICollection<Thing> selection) {
+		private void Setup(ICollection<Thing> selection) 
+		{
 			this.selection = selection;
 
 			//get thing types
 			Dictionary<int, int> thingcounts = new Dictionary<int, int>();
 			Dictionary<int, string> thingtitles = new Dictionary<int, string>();
 
-			foreach(Thing t in selection) {
-				if (!thingcounts.ContainsKey(t.Type)) {
+			foreach(Thing t in selection) 
+			{
+				if (!thingcounts.ContainsKey(t.Type)) 
+				{
 					thingcounts.Add(t.Type, 1);
 					ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
 					thingtitles.Add(t.Type, ti.Title);
-				} else {
+				} 
+				else 
+				{
 					thingcounts[t.Type]++;
 				}
 			}
 
 			//add data
-			foreach(KeyValuePair<int, int> group in thingcounts) {
+			foreach(KeyValuePair<int, int> group in thingcounts) 
+			{
 				DataGridViewRow row = new DataGridViewRow();
 
 				row.Cells.Add(new DataGridViewTextBoxCell { Value = group.Key }); //type
@@ -61,20 +69,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			dataGridView.Sort(ThingType, ListSortDirection.Ascending);
 		}
 
-		private void apply_Click(object sender, EventArgs e) {
+		private void apply_Click(object sender, EventArgs e) 
+		{
 			//get selected types
 			List<int> selectedtypes = new List<int>();
 
-			foreach(DataGridViewRow row in dataGridView.Rows) {
+			foreach(DataGridViewRow row in dataGridView.Rows)
 				if (row.Selected) selectedtypes.Add((int)row.Cells[0].Value);
-			}
 
 			//apply selection
-			if (selectedtypes.Count > 0) {
-				foreach (Thing t in selection) {
-					if (!selectedtypes.Contains(t.Type)) {
-						t.Selected = false;
-					}
+			if (selectedtypes.Count > 0) 
+			{
+				foreach (Thing t in selection) 
+				{
+					if (!selectedtypes.Contains(t.Type)) t.Selected = false;
 				}
 
 				//update display
@@ -85,11 +93,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Close();
 		}
 
-		private void cancel_Click(object sender, EventArgs e) {
+		private void cancel_Click(object sender, EventArgs e) 
+		{
 			this.Close();
 		}
 
-		private void FilterSelectedThingsForm_FormClosing(object sender, FormClosingEventArgs e) {
+		private void FilterSelectedThingsForm_FormClosing(object sender, FormClosingEventArgs e) 
+		{
 			size = this.Size;
 			location = this.Location;
 		}

@@ -74,16 +74,19 @@ namespace CodeImp.DoomBuilder.Compilers
 
 			//xabis
 			// Copy includes from the resources into the compiler's folder, preserving relative pathing and naming
-			foreach (string include in General.Map.ScriptIncludes) {
+			foreach (string include in General.Map.ScriptIncludes) 
+			{
 				//grab the script text from the resources
 				MemoryStream s = General.Map.Data.LoadFile(include);
 				
-				if (s != null) {
+				if (s != null) 
+				{
 					//pull the pk3 or directory sub folder out if applicable
 					FileInfo fi = new FileInfo(Path.Combine(this.tempdir.FullName, include));
 
 					//do not allow files to be overwritten, either accidentally or maliciously
-					if (!fi.Exists) {
+					if (!fi.Exists) 
+					{
 						General.WriteLogLine("Copying script include: " + include);
 
 						//create the directory path as needed

@@ -706,10 +706,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// <param name="tn">TreeNode to check.</param>
 		/// <param name="e">MouseEventArgs.</param>
 		/// <returns>True is mouse was clicked inside the node bounds, false if it was clicked ouside the node bounds.</returns>
-		private bool IsClickOnNode(TreeNode tn, MouseEventArgs e)
+		private static bool IsClickOnNode(TreeNode tn, MouseEventArgs e)
 		{
-			if (tn == null)
-				return false;
+			if (tn == null) return false;
 
 			// GKM
 			// Determine the rightmost position we'll process clicks (so that the click has to be on the node's bounds, 
@@ -737,7 +736,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// <param name="child">Node to check.</param>
 		/// <param name="parent">Parent node.</param>
 		/// <returns>True if specified node is a direct or indirect child of parent node, false if not.</returns>
-		private bool IsChildOf(TreeNode child, TreeNode parent)
+		private static bool IsChildOf(TreeNode child, TreeNode parent)
 		{
 			bool blnChild = false;
 
@@ -821,7 +820,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// <param name="down">True to go down, false to go up.</param>
 		/// <param name="intNumber">Number of nodes to go down or up.</param>
 		/// <returns>Next node.</returns>
-		private TreeNode GetNextTreeNode(TreeNode start, bool down, int intNumber)
+		private static TreeNode GetNextTreeNode(TreeNode start, bool down, int intNumber)
 		{
 			int intCounter = 0;
 			TreeNode tnTemp = start;

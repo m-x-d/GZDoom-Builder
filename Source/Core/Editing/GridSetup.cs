@@ -269,7 +269,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Actions
 
 		// This shows the grid setup dialog
-		internal void ShowGridSetup()
+		internal static void ShowGridSetup()
 		{
 			// Show preferences dialog
 			GridSetupForm gridform = new GridSetupForm();

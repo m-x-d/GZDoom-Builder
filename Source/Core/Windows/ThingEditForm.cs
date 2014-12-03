@@ -84,12 +84,16 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
 			//mxd. Widow setup
-			if(location != Point.Empty) {
+			if(location != Point.Empty) 
+			{
 				this.StartPosition = FormStartPosition.Manual;
 				this.Location = location;
-				if(activeTab > 0 && activeTab < tabs.TabCount) {
+				if(activeTab > 0 && activeTab < tabs.TabCount) 
+				{
 					tabs.SelectTab(activeTab);
-				} else {
+				} 
+				else 
+				{
 					activeTab = 0;
 				}
 			}
@@ -103,9 +107,12 @@ namespace CodeImp.DoomBuilder.Windows
 			action.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
 
 			// Tag/Effects?
-			if(!General.Map.FormatInterface.HasThingAction && !General.Map.FormatInterface.HasThingTag){
+			if(!General.Map.FormatInterface.HasThingAction && !General.Map.FormatInterface.HasThingTag)
+			{
 				tabs.TabPages.Remove(tabeffects);
-			} else { //mxd. Setup script numbers
+			} 
+			else //mxd. Setup script numbers
+			{ 
 				scriptNumbers.Location = arg0.Location;
 
 				foreach(ScriptItem si in General.Map.NumberedScripts)
@@ -120,7 +127,8 @@ namespace CodeImp.DoomBuilder.Windows
 			cbAbsoluteHeight.Visible = General.Map.FormatInterface.HasThingHeight; //mxd
 
 			//mxd. Decimals allowed?
-			if(General.Map.FormatInterface.VertexDecimals > 0) {
+			if(General.Map.FormatInterface.VertexDecimals > 0) 
+			{
 				posX.AllowDecimal = true;
 				posY.AllowDecimal = true;
 				posZ.AllowDecimal = true;
@@ -177,7 +185,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Action/tags
 			action.Value = ft.Action;
-			if(General.Map.FormatInterface.HasThingTag) {//mxd
+			if(General.Map.FormatInterface.HasThingTag) //mxd
+			{
 				tagSelector.Setup(UniversalType.ThingTag); 
 				tagSelector.SetTag(ft.Tag);
 			}
@@ -222,9 +231,12 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd. Position
 				if(((int)t.Position.x).ToString() != posX.Text) posX.Text = "";
 				if(((int)t.Position.y).ToString() != posY.Text) posY.Text = "";
-				if (useAbsoluteHeight && t.Sector != null) {
+				if (useAbsoluteHeight && t.Sector != null) 
+				{
 					if(((int)t.Position.z + t.Sector.FloorHeight).ToString() != posZ.Text) posZ.Text = "";
-				} else if(((int)t.Position.z).ToString() != posZ.Text){
+				} 
+				else if(((int)t.Position.z).ToString() != posZ.Text)
+				{
 					posZ.Text = "";
 				}
 
@@ -247,33 +259,42 @@ namespace CodeImp.DoomBuilder.Windows
 			angle_WhenTextChanged(angle, EventArgs.Empty);
 			flags_OnValueChanged(flags, EventArgs.Empty);
 
-			updateScriptControls(); //mxd
+			UpdateScriptControls(); //mxd
 
 			//mxd. Set intial script-related values, if required
-			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) {
+			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
+			{
 				int a0 = arg0.GetResult(0);
-				if(a0 > 0) {
-					for(int i = 0; i < General.Map.NumberedScripts.Count; i++) {
-						if(General.Map.NumberedScripts[i].Index == a0) {
+				if(a0 > 0) 
+				{
+					for(int i = 0; i < General.Map.NumberedScripts.Count; i++) 
+					{
+						if(General.Map.NumberedScripts[i].Index == a0) 
+						{
 							scriptNumbers.SelectedIndex = i;
 							break;
 						}
 					}
 
-					if(scriptNumbers.SelectedIndex == -1) {
+					if(scriptNumbers.SelectedIndex == -1) 
+					{
 						scriptNumbers.Items.Add(new ScriptItem(a0, "Script " + a0));
 						scriptNumbers.SelectedIndex = scriptNumbers.Items.Count - 1;
 					}
-				} else {
+				} 
+				else 
+				{
 					scriptNumbers.Text = arg0.Text;
 				}
-			} else {
+			} 
+			else 
+			{
 				scriptNumbers.Text = "0";
 			}
 		}
 
 		//mxd
-		private void updateScriptControls() 
+		private void UpdateScriptControls() 
 		{
 			scriptNumbers.Visible = (Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1);
 		}
@@ -331,7 +352,7 @@ namespace CodeImp.DoomBuilder.Windows
 				arg4.SetDefaultValue();
 			}
 
-			if(!preventchanges) updateScriptControls(); //mxd
+			if(!preventchanges) UpdateScriptControls(); //mxd
 		}
 
 		// Browse Action clicked
@@ -347,7 +368,7 @@ namespace CodeImp.DoomBuilder.Windows
 			preventchanges = true;
 			anglecontrol.Angle = angle.GetResult(GZBuilder.Controls.AngleControl.NO_ANGLE);
 			preventchanges = false;
-			updateAngle(); //mxd
+			UpdateAngle(); //mxd
 		}
 
 		//mxd. Angle control clicked
@@ -355,7 +376,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(preventchanges) return;
 			angle.Text = anglecontrol.Angle.ToString();
-			updateAngle();
+			UpdateAngle();
 		}
 
 		// Apply clicked
@@ -367,7 +388,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.FormatInterface.HasThingTag) //mxd
 			{
 				tagSelector.ValidateTag();//mxd
-				if(((tagSelector.GetTag(0) < General.Map.FormatInterface.MinTag) || (tagSelector.GetTag(0) > General.Map.FormatInterface.MaxTag))) {
+				if(((tagSelector.GetTag(0) < General.Map.FormatInterface.MinTag) || (tagSelector.GetTag(0) > General.Map.FormatInterface.MaxTag))) 
+				{
 					General.ShowWarningMessage("Thing tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
 					return;
 				}
@@ -410,25 +432,31 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Action/tags
 				t.Tag = General.Clamp(tagSelector.GetSmartTag(t.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
-				if (!action.Empty) {
+				if (!action.Empty) 
+				{
 					t.Action = action.Value;
 
 					//mxd. Script number handling
-					if(hasAcs) {
-						if(!string.IsNullOrEmpty(scriptNumbers.Text)) {
+					if(hasAcs) 
+					{
+						if(!string.IsNullOrEmpty(scriptNumbers.Text)) 
+						{
 							if(scriptNumbers.SelectedItem != null)
 								t.Args[0] = ((ScriptItem)scriptNumbers.SelectedItem).Index;
 							else if(!int.TryParse(scriptNumbers.Text.Trim(), out t.Args[0]))
 								t.Args[0] = 0;
 
-							if(t.Fields.ContainsKey("arg0str"))
-								t.Fields.Remove("arg0str");
+							if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
 						}
-					} else {
+					} 
+					else 
+					{
 						t.Args[0] = arg0.GetResult(t.Args[0]);
 						if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
 					}
-				}else{
+				}
+				else
+				{
 					t.Args[0] = arg0.GetResult(t.Args[0]);
 				}
 
@@ -481,10 +509,12 @@ namespace CodeImp.DoomBuilder.Windows
 			if(useAbsoluteHeight && ft.Sector != null) z += ft.Sector.FloorHeight;
 			posZ.Text = z.ToString();
 
-			foreach(Thing t in things) {
+			foreach(Thing t in things) 
+			{
 				z = t.Position.z;
 				if(useAbsoluteHeight && t.Sector != null) z += t.Sector.FloorHeight;
-				if (posZ.Text != z.ToString()) {
+				if (posZ.Text != z.ToString()) 
+				{
 					posZ.Text = "";
 					break;
 				}
@@ -549,13 +579,17 @@ namespace CodeImp.DoomBuilder.Windows
 			if(preventchanges) return;
 			int i = 0;
 
-			if(string.IsNullOrEmpty(posZ.Text)) {
+			if(string.IsNullOrEmpty(posZ.Text)) 
+			{
 				// Restore values
 				foreach(Thing t in things)
 					t.Move(new Vector3D(t.Position.x, t.Position.y, thingProps[i++].Z));
-			} else { 
+			} 
+			else 
+			{ 
 				// Update values
-				foreach(Thing t in things) {
+				foreach(Thing t in things) 
+				{
 					float z = posZ.GetResultFloat(thingProps[i++].Z);
 					if(useAbsoluteHeight && !posZ.CheckIsRelative() && t.Sector != null)
 						z -= t.Sector.FloorHeight;
@@ -580,7 +614,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(((thingtype.GetResult(0) < General.Map.FormatInterface.MinThingType) || (thingtype.GetResult(0) > General.Map.FormatInterface.MaxThingType)))
 				return;
 
-			foreach(Thing t in things) {
+			foreach(Thing t in things) 
+			{
 				//Set type
 				t.Type = thingtype.GetResult(t.Type);
 
@@ -593,17 +628,20 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void updateAngle() 
+		private void UpdateAngle() 
 		{
 			if(preventchanges) return;
 			int i = 0;
 
 			//restore values
-			if(string.IsNullOrEmpty(angle.Text)) {
+			if(string.IsNullOrEmpty(angle.Text)) 
+			{
 				// Apply rotation
 				foreach(Thing t in things)
 					t.Rotate(thingProps[i++].AngleDoom);
-			} else { //update values
+			} 
+			else 
+			{ //update values
 				// Apply rotation
 				foreach(Thing t in things)
 					t.Rotate(angle.GetResult(thingProps[i++].AngleDoom));

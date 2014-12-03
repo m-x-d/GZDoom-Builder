@@ -439,7 +439,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// This takes an outer polygon and a set of inner polygons to start cutting on
-		private void MergeInnerPolys(EarClipPolygon p)
+		private static void MergeInnerPolys(EarClipPolygon p)
 		{
 			LinkedList<EarClipPolygon> todo = new LinkedList<EarClipPolygon>(p.Children);
 			LinkedListNode<EarClipVertex> start;
@@ -795,7 +795,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// This checks if a given ear is a valid (no intersections from reflex vertices)
-		private bool CheckValidEar(EarClipVertex[] t, LinkedList<EarClipVertex> reflexes)
+		private static bool CheckValidEar(EarClipVertex[] t, LinkedList<EarClipVertex> reflexes)
 		{
 			// Go for all reflex vertices
 			foreach(EarClipVertex rv in reflexes)

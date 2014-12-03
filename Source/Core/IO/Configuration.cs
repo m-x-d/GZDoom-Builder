@@ -845,16 +845,21 @@ namespace CodeImp.DoomBuilder.IO
 			string includefile = Path.GetDirectoryName(file) + Path.DirectorySeparatorChar + args[0];
 
 			//mxd. Caching
-			if(cfgcache.ContainsKey(includefile)) {
+			if(cfgcache.ContainsKey(includefile)) 
+			{
 				IDictionary cinc = cfgcache[includefile];
 				
 				// Check if a path is given
-				if((args.Count > 1) && !string.IsNullOrEmpty(args[1].ToString())) {
+				if((args.Count > 1) && !string.IsNullOrEmpty(args[1].ToString())) 
+				{
 					IDictionary def;
 					if(cs is ListDictionary) def = new ListDictionary(); else def = new Hashtable();
-					if(CheckSetting(cinc, args[1].ToString(), DEFAULT_SEPERATOR)) {
+					if(CheckSetting(cinc, args[1].ToString(), DEFAULT_SEPERATOR)) 
+					{
 						cinc = (IDictionary)ReadAnySetting(cinc, file, line, args[1].ToString(), def, DEFAULT_SEPERATOR);
-					} else {
+					} 
+					else 
+					{
 						RaiseError(file, line, "Include missing structure '" + args[1] + "' in file '" + includefile + "'");
 						return;
 					}
@@ -1155,7 +1160,7 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Writing
 
 		// This will create a data structure from the given object
-		private string OutputStructure(IDictionary cs, int level, string newline, bool whitespace)
+		private static string OutputStructure(IDictionary cs, int level, string newline, bool whitespace)
 		{
 			string leveltabs = "";
 			string spacing = "";

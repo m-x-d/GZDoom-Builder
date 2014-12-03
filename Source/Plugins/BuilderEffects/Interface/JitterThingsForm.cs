@@ -32,7 +32,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		private static bool allowNegativeScaleY;
 		private static bool uniformScale;
 
-		private struct ThingData {
+		private struct ThingData 
+		{
 			public Vector3D Position;
 			public int Angle;
 			public int Pitch;
@@ -55,7 +56,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		#region Constructor
 
-		public JitterThingsForm(string editingModeName) {
+		public JitterThingsForm(string editingModeName) 
+		{
 			this.editingModeName = editingModeName;
 			this.HelpRequested += JitterThingsForm_HelpRequested;
 
@@ -66,7 +68,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			bUpdateHeight.Enabled = General.Map.FormatInterface.HasThingHeight;
 
 			//disable pitch/roll/scale?
-			if (!General.Map.UDMF) {
+			if (!General.Map.UDMF) 
+			{
 				pitchAmmount.Enabled = false;
 				rollAmmount.Enabled = false;
 				bUpdatePitch.Enabled = false;
@@ -81,10 +84,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			//get selection
 			selection = new List<Thing>();
 
-			if(editingModeName == "BaseVisualMode") {
+			if(editingModeName == "BaseVisualMode") 
+			{
 				visualSelection = ((VisualMode)General.Editing.Mode).GetSelectedVisualThings(false);
 				foreach(VisualThing t in visualSelection) selection.Add(t.Thing);
-			} else {
+			} 
+			else 
+			{
 				ICollection<Thing> list = General.Map.Map.GetSelectedThings(true);
 				foreach(Thing t in list) selection.Add(t);
 			}
@@ -95,14 +101,18 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			//store intial properties
 			thingData = new List<ThingData>();
 
-			foreach(Thing t in selection){
+			foreach(Thing t in selection)
+			{
 				ThingData d = new ThingData();
 
 				Thing closest = MapSet.NearestThing(General.Map.Map.Things, t);
 
-				if(closest != null){
+				if(closest != null)
+				{
 					d.SafeDistance = (int)Math.Round(Vector2D.Distance(t.Position, closest.Position));
-				}else{
+				}
+				else
+				{
 					d.SafeDistance = 512;
 				}
 
@@ -115,7 +125,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				d.ScaleX = t.ScaleX;
 				d.ScaleY = t.ScaleY;
 
-				if(General.Map.FormatInterface.HasThingHeight) {
+				if(General.Map.FormatInterface.HasThingHeight) 
+				{
 					if(t.Sector == null) t.DetermineSector();
 					if(t.Sector == null) continue;
 
@@ -135,13 +146,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			General.Map.UndoRedo.CreateUndo("Randomize " + selection.Count + (selection.Count > 1 ? " things" : " thing"));
 
 			//update controls
-			updateOffsetAngles();
-			updateHeights();
-			updateRotationAngles();
-			updatePitchAngles();
-			updateRollAngles();
-			updateScaleX();
-			updateScaleY();
+			UpdateOffsetAngles();
+			UpdateHeights();
+			UpdateRotationAngles();
+			UpdatePitchAngles();
+			UpdateRollAngles();
+			UpdateScaleX();
+			UpdateScaleY();
 
 			//apply settings
 			cbRelativeScale.Checked = relativeScale;
@@ -175,17 +186,20 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		#region Apply logic
 
-		private void applyTranslation(int ammount) {
-			for(int i = 0; i < selection.Count; i++) {
+		private void ApplyTranslation(int ammount) 
+		{
+			for(int i = 0; i < selection.Count; i++) 
+			{
 				int curAmmount = ammount > thingData[i].SafeDistance ? thingData[i].SafeDistance : ammount;
 				selection[i].Move(new Vector2D(thingData[i].Position.x + (int)(Math.Sin(thingData[i].OffsetAngle) * curAmmount), thingData[i].Position.y + (int)(Math.Cos(thingData[i].OffsetAngle) * curAmmount)));
 				selection[i].DetermineSector();
 			}
 
-			updateGeometry();
+			UpdateGeometry();
 		}
 
-		private void applyRotation(int ammount) {
+		private void ApplyRotation(int ammount) 
+		{
 			for(int i = 0; i < selection.Count; i++)
 				selection[i].Rotate((int)((thingData[i].Angle + ammount * thingData[i].JitterRotation) % 360));
 
@@ -193,13 +207,18 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			if(editingModeName == "ThingsMode") General.Interface.RedrawDisplay();
 		}
 
-		private void applyPitch(int ammount) {
+		private void ApplyPitch(int ammount) 
+		{
 			int p;
 
-			for(int i = 0; i < selection.Count; i++) {
-				if (cbRelativePitch.Checked) {
+			for(int i = 0; i < selection.Count; i++) 
+			{
+				if (cbRelativePitch.Checked) 
+				{
 					p = (int)((thingData[i].Pitch + ammount * thingData[i].JitterPitch) % 360);
-				} else {
+				} 
+				else 
+				{
 					p = (int)((ammount * thingData[i].JitterPitch) % 360);
 				}
 				
@@ -210,13 +229,18 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			if(editingModeName == "ThingsMode") General.Interface.RedrawDisplay();
 		}
 
-		private void applyRoll(int ammount) {
+		private void ApplyRoll(int ammount) 
+		{
 			int r;
 
-			for (int i = 0; i < selection.Count; i++) {
-				if (cbRelativeRoll.Checked) {
+			for (int i = 0; i < selection.Count; i++) 
+			{
+				if (cbRelativeRoll.Checked) 
+				{
 					r = (int)((thingData[i].Roll + ammount * thingData[i].JitterRoll) % 360);
-				} else {
+				} 
+				else 
+				{
 					r = (int)((ammount * thingData[i].JitterRoll) % 360);
 				}
 
@@ -227,27 +251,34 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			if(editingModeName == "ThingsMode") General.Interface.RedrawDisplay();
 		}
 
-		private void applyHeight(int ammount) {
-			for(int i = 0; i < selection.Count; i++) {
+		private void ApplyHeight(int ammount) 
+		{
+			for(int i = 0; i < selection.Count; i++) 
+			{
 				int curAmmount = Math.Min(thingData[i].SectorHeight, Math.Max(0, thingData[i].ZOffset + ammount));
 				selection[i].Move(selection[i].Position.x, selection[i].Position.y, curAmmount * thingData[i].JitterHeight);
 			}
 
-			updateGeometry();
+			UpdateGeometry();
 		}
 
-		private void applyScale() {
-			if(cbUniformScale.Checked) {
-				applyScale((float)minScaleX.Value, (float)maxScaleX.Value, (float)minScaleX.Value, (float)maxScaleX.Value);
-			} else {
-				applyScale((float)minScaleX.Value, (float)maxScaleX.Value, (float)minScaleY.Value, (float)maxScaleY.Value);
+		private void ApplyScale() 
+		{
+			if(cbUniformScale.Checked) 
+			{
+				ApplyScale((float)minScaleX.Value, (float)maxScaleX.Value, (float)minScaleX.Value, (float)maxScaleX.Value);
+			} 
+			else 
+			{
+				ApplyScale((float)minScaleX.Value, (float)maxScaleX.Value, (float)minScaleY.Value, (float)maxScaleY.Value);
 			}
 
 			//update view
 			if(editingModeName == "ThingsMode") General.Interface.RedrawDisplay();
 		}
 
-		private void applyScale(float minX, float maxX, float minY, float maxY) {
+		private void ApplyScale(float minX, float maxX, float minY, float maxY) 
+		{
 			if(minX > maxX) General.Swap(ref minX, ref maxX);
 			if(minY > maxY) General.Swap(ref minY, ref maxY);
 
@@ -255,11 +286,15 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			float diffX = maxX - minX;
 			float diffY = maxY - minY;
 
-			for(int i = 0; i < selection.Count; i++) {
-				if (cbRelativeScale.Checked) {
+			for(int i = 0; i < selection.Count; i++) 
+			{
+				if (cbRelativeScale.Checked) 
+				{
 					sx = thingData[i].ScaleX + minX + diffX * thingData[i].JitterScaleX;
 					sy = thingData[i].ScaleY + minY + diffY * thingData[i].JitterScaleY;
-				} else {
+				} 
+				else 
+				{
 					sx = minX + diffX * thingData[i].JitterScaleX;
 					sy = minY + diffY * thingData[i].JitterScaleY;
 				}
@@ -272,77 +307,96 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		#region Update logic
 
-		private void updateGeometry() {
+		private void UpdateGeometry() 
+		{
 			// Update what must be updated
-			if(editingModeName == "BaseVisualMode") {
+			if(editingModeName == "BaseVisualMode") 
+			{
 				VisualMode vm = ((VisualMode)General.Editing.Mode);
 
-				for(int i = 0; i < selection.Count; i++) {
+				for(int i = 0; i < selection.Count; i++) 
+				{
 					visualSelection[i].SetPosition(new Vector3D(selection[i].Position.x, selection[i].Position.y, selection[i].Sector.FloorHeight + selection[i].Position.z));
 
 					if(vm.VisualSectorExists(visualSelection[i].Thing.Sector))
 						vm.GetVisualSector(visualSelection[i].Thing.Sector).UpdateSectorGeometry(true);
 				}
-			} else {
+			} 
+			else 
+			{
 				//update view
 				General.Interface.RedrawDisplay();
 			}
 		}
 
-		private void updateOffsetAngles() {
-			for(int i = 0; i < thingData.Count; i++) {
+		private void UpdateOffsetAngles() 
+		{
+			for(int i = 0; i < thingData.Count; i++) 
+			{
 				ThingData td = thingData[i];
 				td.OffsetAngle = General.Random(0, 359);
 				thingData[i] = td;
 			}
 		}
 
-		private void updateHeights() {
-			for(int i = 0; i < thingData.Count; i++) {
+		private void UpdateHeights() 
+		{
+			for(int i = 0; i < thingData.Count; i++) 
+			{
 				ThingData td = thingData[i];
 				td.JitterHeight = (General.Random(0, 100) / 100f);
 				thingData[i] = td;
 			}
 		}
 
-		private void updateRotationAngles() {
-			for(int i = 0; i < thingData.Count; i++) {
+		private void UpdateRotationAngles() 
+		{
+			for(int i = 0; i < thingData.Count; i++) 
+			{
 				ThingData td = thingData[i];
 				td.JitterRotation = (General.Random(-100, 100) / 100f);
 				thingData[i] = td;
 			}
 		}
 
-		private void updatePitchAngles() {
+		private void UpdatePitchAngles() 
+		{
 			int min = (cbNegativePitch.Checked ? -100 : 0);
-			for(int i = 0; i < thingData.Count; i++) {
+			for(int i = 0; i < thingData.Count; i++) 
+			{
 				ThingData td = thingData[i];
 				td.JitterPitch = (General.Random(min, 100) / 100f);
 				thingData[i] = td;
 			}
 		}
 
-		private void updateRollAngles() {
+		private void UpdateRollAngles() 
+		{
 			int min = (cbNegativeRoll.Checked ? -100 : 0);
-			for(int i = 0; i < thingData.Count; i++) {
+			for(int i = 0; i < thingData.Count; i++) 
+			{
 				ThingData td = thingData[i];
 				td.JitterRoll = (General.Random(min, 100) / 100f);
 				thingData[i] = td;
 			}
 		}
 
-		private void updateScaleX() {
+		private void UpdateScaleX() 
+		{
 			int min = (cbNegativeScaleX.Checked ? -100 : 0);
-			for(int i = 0; i < thingData.Count; i++) {
+			for(int i = 0; i < thingData.Count; i++) 
+			{
 				ThingData td = thingData[i];
 				td.JitterScaleX = (General.Random(min, 100) / 100f);
 				thingData[i] = td;
 			}
 		}
 
-		private void updateScaleY() {
+		private void UpdateScaleY() 
+		{
 			int min = (cbNegativeScaleY.Checked ? -100 : 0);
-			for(int i = 0; i < thingData.Count; i++) {
+			for(int i = 0; i < thingData.Count; i++) 
+			{
 				ThingData td = thingData[i];
 				td.JitterScaleY = (General.Random(min, 100) / 100f);
 				thingData[i] = td;
@@ -353,7 +407,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		#region Events
 
-		private void bApply_Click(object sender, EventArgs e) {
+		private void bApply_Click(object sender, EventArgs e) 
+		{
 			// Store settings
 			relativePitch = cbRelativePitch.Checked;
 			relativeRoll = cbRelativeRoll.Checked;
@@ -374,130 +429,155 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			Close();
 		}
 
-		private void bCancel_Click(object sender, EventArgs e) {
+		private void bCancel_Click(object sender, EventArgs e) 
+		{
 			this.DialogResult = DialogResult.Cancel;
 			Close();
 		}
 
-		private void JitterThingsForm_FormClosing(object sender, FormClosingEventArgs e) {
+		private void JitterThingsForm_FormClosing(object sender, FormClosingEventArgs e) 
+		{
 			if (this.DialogResult == DialogResult.Cancel)
 				General.Map.UndoRedo.WithdrawUndo(); //undo changes
 		}
 
-		private void positionJitterAmmount_OnValueChanged(object sender, EventArgs e) {
-			applyTranslation(positionJitterAmmount.Value);
+		private void positionJitterAmmount_OnValueChanged(object sender, EventArgs e) 
+		{
+			ApplyTranslation(positionJitterAmmount.Value);
 		}
 
-		private void rotationJitterAmmount_OnValueChanged(object sender, EventArgs e) {
-			applyRotation(rotationJitterAmmount.Value);
+		private void rotationJitterAmmount_OnValueChanged(object sender, EventArgs e) 
+		{
+			ApplyRotation(rotationJitterAmmount.Value);
 		}
 
-		private void heightJitterAmmount_OnValueChanging(object sender, EventArgs e) {
-			applyHeight(heightJitterAmmount.Value);
+		private void heightJitterAmmount_OnValueChanging(object sender, EventArgs e) 
+		{
+			ApplyHeight(heightJitterAmmount.Value);
 		}
 
-		private void pitchAmmount_OnValueChanging(object sender, EventArgs e) {
-			applyPitch(pitchAmmount.Value);
+		private void pitchAmmount_OnValueChanging(object sender, EventArgs e) 
+		{
+			ApplyPitch(pitchAmmount.Value);
 		}
 
-		private void rollAmmount_OnValueChanging(object sender, EventArgs e) {
-			applyRoll(rollAmmount.Value);
+		private void rollAmmount_OnValueChanging(object sender, EventArgs e) 
+		{
+			ApplyRoll(rollAmmount.Value);
 		}
 
-		private void minScaleX_ValueChanged(object sender, EventArgs e) {
-			applyScale();
+		private void minScaleX_ValueChanged(object sender, EventArgs e) 
+		{
+			ApplyScale();
 		}
 
-		private void minScaleY_ValueChanged(object sender, EventArgs e) {
-			applyScale();
+		private void minScaleY_ValueChanged(object sender, EventArgs e) 
+		{
+			ApplyScale();
 		}
 
 		#endregion
 
 		#region Buttons & checkboxes events
 
-		private void bUpdateTranslation_Click(object sender, EventArgs e) {
-			updateOffsetAngles();
-			applyTranslation(positionJitterAmmount.Value);
+		private void bUpdateTranslation_Click(object sender, EventArgs e) 
+		{
+			UpdateOffsetAngles();
+			ApplyTranslation(positionJitterAmmount.Value);
 		}
 
-		private void bUpdateHeight_Click(object sender, EventArgs e) {
-			updateHeights();
-			applyHeight(heightJitterAmmount.Value);
+		private void bUpdateHeight_Click(object sender, EventArgs e) 
+		{
+			UpdateHeights();
+			ApplyHeight(heightJitterAmmount.Value);
 		}
 
-		private void bUpdateAngle_Click(object sender, EventArgs e) {
-			updateRotationAngles();
-			applyRotation(rotationJitterAmmount.Value);
+		private void bUpdateAngle_Click(object sender, EventArgs e) 
+		{
+			UpdateRotationAngles();
+			ApplyRotation(rotationJitterAmmount.Value);
 		}
 
-		private void bUpdatePitch_Click(object sender, EventArgs e) {
-			updatePitchAngles();
-			applyPitch(pitchAmmount.Value);
+		private void bUpdatePitch_Click(object sender, EventArgs e) 
+		{
+			UpdatePitchAngles();
+			ApplyPitch(pitchAmmount.Value);
 		}
 
-		private void bUpdateRoll_Click(object sender, EventArgs e) {
-			updateRollAngles();
-			applyRoll(rollAmmount.Value);
+		private void bUpdateRoll_Click(object sender, EventArgs e) 
+		{
+			UpdateRollAngles();
+			ApplyRoll(rollAmmount.Value);
 		}
 
-		private void bUpdateScaleX_Click(object sender, EventArgs e) {
-			updateScaleX();
-			applyScale();
+		private void bUpdateScaleX_Click(object sender, EventArgs e) 
+		{
+			UpdateScaleX();
+			ApplyScale();
 		}
 
-		private void bUpdateScaleY_Click(object sender, EventArgs e) {
-			updateScaleY();
-			applyScale();
+		private void bUpdateScaleY_Click(object sender, EventArgs e) 
+		{
+			UpdateScaleY();
+			ApplyScale();
 		}
 
-		private void cbRelativePitch_CheckedChanged(object sender, EventArgs e) {
-			updatePitchAngles();
-			applyPitch(pitchAmmount.Value);
+		private void cbRelativePitch_CheckedChanged(object sender, EventArgs e) 
+		{
+			UpdatePitchAngles();
+			ApplyPitch(pitchAmmount.Value);
 		}
 
-		private void cbRelativeRoll_CheckedChanged(object sender, EventArgs e) {
-			updateRollAngles();
-			applyRoll(rollAmmount.Value);
+		private void cbRelativeRoll_CheckedChanged(object sender, EventArgs e) 
+		{
+			UpdateRollAngles();
+			ApplyRoll(rollAmmount.Value);
 		}
 
-		private void cbNegativePitch_CheckedChanged(object sender, EventArgs e) {
-			updatePitchAngles();
-			applyPitch(pitchAmmount.Value);
+		private void cbNegativePitch_CheckedChanged(object sender, EventArgs e) 
+		{
+			UpdatePitchAngles();
+			ApplyPitch(pitchAmmount.Value);
 		}
 
-		private void cbNegativeRoll_CheckedChanged(object sender, EventArgs e) {
-			updateRollAngles();
-			applyRoll(rollAmmount.Value);
+		private void cbNegativeRoll_CheckedChanged(object sender, EventArgs e) 
+		{
+			UpdateRollAngles();
+			ApplyRoll(rollAmmount.Value);
 		}
 
-		private void cbRelativeScale_CheckedChanged(object sender, EventArgs e) {
-			applyScale();
+		private void cbRelativeScale_CheckedChanged(object sender, EventArgs e) 
+		{
+			ApplyScale();
 		}
 
-		private void cbUniformScale_CheckedChanged(object sender, EventArgs e) {
+		private void cbUniformScale_CheckedChanged(object sender, EventArgs e) 
+		{
 			bUpdateScaleY.Enabled = !cbUniformScale.Checked;
 			minScaleY.Enabled = !cbUniformScale.Checked;
 			maxScaleY.Enabled = !cbUniformScale.Checked;
 			minScaleYLabel.Enabled = !cbUniformScale.Checked;
 			maxScaleYLabel.Enabled = !cbUniformScale.Checked;
-			applyScale();
+			ApplyScale();
 		}
 
-		private void cbNegativeScaleX_CheckedChanged(object sender, EventArgs e) {
-			updateScaleX();
-			applyScale();
+		private void cbNegativeScaleX_CheckedChanged(object sender, EventArgs e) 
+		{
+			UpdateScaleX();
+			ApplyScale();
 		}
 
-		private void cbNegativeScaleY_CheckedChanged(object sender, EventArgs e) {
-			updateScaleY();
-			applyScale();
+		private void cbNegativeScaleY_CheckedChanged(object sender, EventArgs e) 
+		{
+			UpdateScaleY();
+			ApplyScale();
 		}
 
 		#endregion
 
 		//HALP!
-		private void JitterThingsForm_HelpRequested(object sender, HelpEventArgs hlpevent) {
+		private void JitterThingsForm_HelpRequested(object sender, HelpEventArgs hlpevent) 
+		{
 			General.ShowHelp("gzdb/features/all_modes/jitter.html");
 			hlpevent.Handled = true;
 		}

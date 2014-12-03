@@ -16,36 +16,43 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
         private static Size size = Size.Empty;
         private static Point location = Point.Empty;
 
-        public ThingStatisticsForm() {
+        public ThingStatisticsForm() 
+		{
             InitializeComponent();
 
             //apply window size and location
-            if (!size.IsEmpty && !location.IsEmpty) {
+            if (!size.IsEmpty && !location.IsEmpty) 
+			{
                 this.StartPosition = FormStartPosition.Manual;
                 this.Size = size;
                 this.Location = location;
             }
 
-            setup();
+            Setup();
         }
 
-        private void setup() {
+        private void Setup() 
+		{
             Dictionary<int, int> thingcounts = new Dictionary<int, int>();
             Dictionary<int, string> thingtitles = new Dictionary<int, string>();
             Dictionary<int, string> thingclasses = new Dictionary<int, string>();
-            
             dataGridView.Rows.Clear();
 
-            foreach(ThingTypeInfo ti in General.Map.Data.ThingTypes) {
+            foreach(ThingTypeInfo ti in General.Map.Data.ThingTypes) 
+			{
                 thingcounts.Add(ti.Index, 0);
                 thingtitles.Add(ti.Index, ti.Title);
                 thingclasses.Add(ti.Index, ti.ClassName);
             }
 
-            foreach(Thing t in General.Map.Map.Things) {
-                if (thingcounts.ContainsKey(t.Type)) {
+            foreach(Thing t in General.Map.Map.Things) 
+			{
+                if (thingcounts.ContainsKey(t.Type)) 
+				{
                     thingcounts[t.Type]++;
-                } else {
+                } 
+				else 
+				{
                     thingcounts.Add(t.Type, 1);
                     thingtitles.Add(t.Type, "Unknown thing");
                     thingclasses.Add(t.Type, "-");
@@ -53,7 +60,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
             }
 
             //add rows
-            foreach (KeyValuePair<int, int> group in thingcounts) {
+            foreach (KeyValuePair<int, int> group in thingcounts) 
+			{
                 if (hideUnused.Checked && group.Value == 0) continue;
                 
                 DataGridViewRow row = new DataGridViewRow();
@@ -69,27 +77,31 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
             dataGridView.Sort(ThingType, ListSortDirection.Ascending);
         }
 
-        private static List<Thing> getThingsByType(int type) {
+        private static List<Thing> GetThingsByType(int type) 
+		{
             List<Thing> list = new List<Thing>();
-            foreach (Thing t in General.Map.Map.Things) {
+            foreach (Thing t in General.Map.Map.Things)
                 if (t.Type == type) list.Add(t);
-            }
 
             return list;
         }
 
-        private static void showSelection(List<Vector2D> points) {
+        private static void ShowSelection(List<Vector2D> points) 
+		{
             RectangleF area = MapSet.CreateEmptyArea();
 
             // Make a view area from the points
             foreach (Vector2D p in points) area = MapSet.IncreaseArea(area, p);
 
             // Make the area square, using the largest side
-            if (area.Width > area.Height) {
+            if (area.Width > area.Height) 
+			{
                 float delta = area.Width - area.Height;
                 area.Y -= delta * 0.5f;
                 area.Height += delta;
-            } else {
+            } 
+			else 
+			{
                 float delta = area.Height - area.Width;
                 area.X -= delta * 0.5f;
                 area.Width += delta;
@@ -99,19 +111,26 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
             area.Inflate(100f, 100f);
 
             // Zoom to area
-            ClassicMode editmode = (General.Editing.Mode as ClassicMode);
-            editmode.CenterOnArea(area, 0.6f);
+	        if (General.Editing.Mode is ClassicMode) 
+			{
+		        ClassicMode editmode = (General.Editing.Mode as ClassicMode);
+		        editmode.CenterOnArea(area, 0.6f);
+	        }
         }
 
-        private void dataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
+        private void dataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) 
+		{
             if (e.RowIndex == -1) return;
-			if (e.Button == MouseButtons.Left) { //select
-                List<Thing> list = getThingsByType((int)dataGridView.Rows[e.RowIndex].Cells[0].Value);
-                if (list.Count > 0) {
+			if (e.Button == MouseButtons.Left) //select
+			{ 
+                List<Thing> list = GetThingsByType((int)dataGridView.Rows[e.RowIndex].Cells[0].Value);
+                if (list.Count > 0) 
+				{
                     General.Map.Map.ClearSelectedThings();
 
                     List<Vector2D> points = new List<Vector2D>();
-                    foreach (Thing t in list) {
+                    foreach (Thing t in list) 
+					{
                         t.Selected = true;
 
                         Vector2D p = t.Position;
@@ -124,31 +143,35 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 
                     General.Map.Map.Update();
                     General.Editing.ChangeMode("ThingsMode");
-                    showSelection(points);
+                    ShowSelection(points);
                 }
-            } else if (e.Button == MouseButtons.Right) { //edit
-                List<Thing> list = getThingsByType((int)dataGridView.Rows[e.RowIndex].Cells[0].Value);
-                if (list.Count > 0) {
+            } 
+			else if (e.Button == MouseButtons.Right) //edit
+			{ 
+                List<Thing> list = GetThingsByType((int)dataGridView.Rows[e.RowIndex].Cells[0].Value);
+                if (list.Count > 0) 
+				{
                     General.MainWindow.ShowEditThings(list);
                     General.Map.Map.Update();
-                    setup();
+                    Setup();
                 }
             }
         }
 
         private void hideUnused_CheckedChanged(object sender, EventArgs e)
         {
-            setup();
+            Setup();
         }
 
-        private void apply_Click(object sender, EventArgs e) {
+        private void apply_Click(object sender, EventArgs e) 
+		{
             this.Close();
         }
 
-        private void ThingStatisticsForm_FormClosing(object sender, FormClosingEventArgs e) {
+        private void ThingStatisticsForm_FormClosing(object sender, FormClosingEventArgs e) 
+		{
             size = this.Size;
             location = this.Location;
         }
-
     }
 }

@@ -190,23 +190,23 @@ namespace CodeImp.DoomBuilder.IO
 				UniversalCollection c = collections[i];
 				int[] args = new int[Linedef.NUM_ARGS];
 				string where = "thing " + i;
-				float x = GetCollectionEntry<float>(c, "x", true, 0.0f, where);
-				float y = GetCollectionEntry<float>(c, "y", true, 0.0f, where);
-				float height = GetCollectionEntry<float>(c, "height", false, 0.0f, where);
-				int tag = GetCollectionEntry<int>(c, "id", false, 0, where);
-				int angledeg = GetCollectionEntry<int>(c, "angle", false, 0, where);
-				int pitch = GetCollectionEntry<int>(c, "pitch", false, 0, where); //mxd
-				int roll = GetCollectionEntry<int>(c, "roll", false, 0, where); //mxd
-				float scaleX = GetCollectionEntry<float>(c, "scalex", false, 1.0f, where); //mxd
-				float scaleY = GetCollectionEntry<float>(c, "scaley", false, 1.0f, where); //mxd
-				float scale = GetCollectionEntry<float>(c, "scale", false, 0f, where); //mxd
-				int type = GetCollectionEntry<int>(c, "type", true, 0, where);
-				int special = GetCollectionEntry<int>(c, "special", false, 0, where);
-				args[0] = GetCollectionEntry<int>(c, "arg0", false, 0, where);
-				args[1] = GetCollectionEntry<int>(c, "arg1", false, 0, where);
-				args[2] = GetCollectionEntry<int>(c, "arg2", false, 0, where);
-				args[3] = GetCollectionEntry<int>(c, "arg3", false, 0, where);
-				args[4] = GetCollectionEntry<int>(c, "arg4", false, 0, where);
+				float x = GetCollectionEntry(c, "x", true, 0.0f, where);
+				float y = GetCollectionEntry(c, "y", true, 0.0f, where);
+				float height = GetCollectionEntry(c, "height", false, 0.0f, where);
+				int tag = GetCollectionEntry(c, "id", false, 0, where);
+				int angledeg = GetCollectionEntry(c, "angle", false, 0, where);
+				int pitch = GetCollectionEntry(c, "pitch", false, 0, where); //mxd
+				int roll = GetCollectionEntry(c, "roll", false, 0, where); //mxd
+				float scaleX = GetCollectionEntry(c, "scalex", false, 1.0f, where); //mxd
+				float scaleY = GetCollectionEntry(c, "scaley", false, 1.0f, where); //mxd
+				float scale = GetCollectionEntry(c, "scale", false, 0f, where); //mxd
+				int type = GetCollectionEntry(c, "type", true, 0, where);
+				int special = GetCollectionEntry(c, "special", false, 0, where);
+				args[0] = GetCollectionEntry(c, "arg0", false, 0, where);
+				args[1] = GetCollectionEntry(c, "arg1", false, 0, where);
+				args[2] = GetCollectionEntry(c, "arg2", false, 0, where);
+				args[3] = GetCollectionEntry(c, "arg3", false, 0, where);
+				args[4] = GetCollectionEntry(c, "arg4", false, 0, where);
 
 				if (scale != 0) //mxd
 				{
@@ -217,11 +217,11 @@ namespace CodeImp.DoomBuilder.IO
 				// Flags
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				foreach(KeyValuePair<string, string> flag in General.Map.Config.ThingFlags)
-					stringflags[flag.Key] = GetCollectionEntry<bool>(c, flag.Key, false, false, where);
+					stringflags[flag.Key] = GetCollectionEntry(c, flag.Key, false, false, where);
 				foreach(FlagTranslation ft in General.Map.Config.ThingFlagsTranslation)
 				{
 					foreach(string field in ft.Fields)
-						stringflags[field] = GetCollectionEntry<bool>(c, field, false, false, where);
+						stringflags[field] = GetCollectionEntry(c, field, false, false, where);
 				}
 
 				// Create new item
@@ -252,37 +252,37 @@ namespace CodeImp.DoomBuilder.IO
 				UniversalCollection lc = linescolls[i];
 				int[] args = new int[Linedef.NUM_ARGS];
 				string where = "linedef " + i;
-				int v1 = GetCollectionEntry<int>(lc, "v1", true, 0, where);
-				int v2 = GetCollectionEntry<int>(lc, "v2", true, 0, where);
+				int v1 = GetCollectionEntry(lc, "v1", true, 0, where);
+				int v2 = GetCollectionEntry(lc, "v2", true, 0, where);
 
 				if (!vertexlink.ContainsKey(v1) || !vertexlink.ContainsKey(v2)) { //mxd
 					General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references one or more invalid vertices. Linedef has been removed.");
 					continue;
 				}
 
-				int tag = GetCollectionEntry<int>(lc, "id", false, 0, where);
-				int special = GetCollectionEntry<int>(lc, "special", false, 0, where);
-				args[0] = GetCollectionEntry<int>(lc, "arg0", false, 0, where);
-				args[1] = GetCollectionEntry<int>(lc, "arg1", false, 0, where);
-				args[2] = GetCollectionEntry<int>(lc, "arg2", false, 0, where);
-				args[3] = GetCollectionEntry<int>(lc, "arg3", false, 0, where);
-				args[4] = GetCollectionEntry<int>(lc, "arg4", false, 0, where);
-				int s1 = GetCollectionEntry<int>(lc, "sidefront", true, -1, where);
-				int s2 = GetCollectionEntry<int>(lc, "sideback", false, -1, where);
+				int tag = GetCollectionEntry(lc, "id", false, 0, where);
+				int special = GetCollectionEntry(lc, "special", false, 0, where);
+				args[0] = GetCollectionEntry(lc, "arg0", false, 0, where);
+				args[1] = GetCollectionEntry(lc, "arg1", false, 0, where);
+				args[2] = GetCollectionEntry(lc, "arg2", false, 0, where);
+				args[3] = GetCollectionEntry(lc, "arg3", false, 0, where);
+				args[4] = GetCollectionEntry(lc, "arg4", false, 0, where);
+				int s1 = GetCollectionEntry(lc, "sidefront", true, -1, where);
+				int s2 = GetCollectionEntry(lc, "sideback", false, -1, where);
 
 				// Flags
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				foreach(KeyValuePair<string, string> flag in General.Map.Config.LinedefFlags)
-					stringflags[flag.Key] = GetCollectionEntry<bool>(lc, flag.Key, false, false, where);
+					stringflags[flag.Key] = GetCollectionEntry(lc, flag.Key, false, false, where);
 				foreach(FlagTranslation ft in General.Map.Config.LinedefFlagsTranslation)
 				{
 					foreach(string field in ft.Fields)
-						stringflags[field] = GetCollectionEntry<bool>(lc, field, false, false, where);
+						stringflags[field] = GetCollectionEntry(lc, field, false, false, where);
 				}
 				
 				// Activations
 				foreach(LinedefActivateInfo activate in General.Map.Config.LinedefActivates)
-					stringflags[activate.Key] = GetCollectionEntry<bool>(lc, activate.Key, false, false, where);
+					stringflags[activate.Key] = GetCollectionEntry(lc, activate.Key, false, false, where);
 
 				// Check if not zero-length
 				if(Vector2D.ManhattanDistance(vertexlink[v1].Position, vertexlink[v2].Position) > 0.0001f) 
@@ -338,7 +338,7 @@ namespace CodeImp.DoomBuilder.IO
 			//mxd. Flags
 			Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 			foreach(KeyValuePair<string, string> flag in General.Map.Config.SidedefFlags)
-				stringflags[flag.Key] = GetCollectionEntry<bool>(sc, flag.Key, false, false, where);
+				stringflags[flag.Key] = GetCollectionEntry(sc, flag.Key, false, false, where);
 
 			// Create sidedef
 			if(sectorlink.ContainsKey(sector))
@@ -432,16 +432,16 @@ namespace CodeImp.DoomBuilder.IO
 				// Read fields
 				UniversalCollection c = collections[i];
 				string where = "vertex " + i;
-				float x = GetCollectionEntry<float>(c, "x", true, 0.0f, where);
-				float y = GetCollectionEntry<float>(c, "y", true, 0.0f, where);
+				float x = GetCollectionEntry(c, "x", true, 0.0f, where);
+				float y = GetCollectionEntry(c, "y", true, 0.0f, where);
 
 				// Create new item
 				Vertex v = map.CreateVertex(new Vector2D(x, y));
 				if(v != null)
 				{
 					//mxd. zoffsets
-					v.ZCeiling = GetCollectionEntry<float>(c, "zceiling", false, float.NaN, where); //mxd
-					v.ZFloor = GetCollectionEntry<float>(c, "zfloor", false, float.NaN, where); //mxd
+					v.ZCeiling = GetCollectionEntry(c, "zceiling", false, float.NaN, where); //mxd
+					v.ZFloor = GetCollectionEntry(c, "zfloor", false, float.NaN, where); //mxd
 					
 					// Custom fields
 					ReadCustomFields(c, v, "vertex");
@@ -464,16 +464,20 @@ namespace CodeImp.DoomBuilder.IO
 			foreach(UniversalEntry e in collection)
 			{
 				// mxd. Check if uifield
-				if(uifields.ContainsKey(elementname) && uifields[elementname].ContainsKey(e.Key)) {
+				if(uifields.ContainsKey(elementname) && uifields[elementname].ContainsKey(e.Key)) 
+				{
 					int type = (int)uifields[elementname][e.Key];
 
 					//mxd. Check type
 					object value = e.Value;
 
 					// Let's be kind and cast any int to a float if needed
-					if(type == (int)UniversalType.Float && e.Value is int) {
+					if(type == (int)UniversalType.Float && e.Value is int) 
+					{
 						value = (float)(int)e.Value;
-					} else if(!e.IsValidType(e.Value.GetType())) {
+					} 
+					else if(!e.IsValidType(e.Value.GetType())) 
+					{
 						General.ErrorLogger.Add(ErrorType.Warning, element + ": the value of entry '" + e.Key + "' is of incompatible type (expected " + e.GetType().Name + ", but got " + e.Value.GetType().Name + "). If you save the map, this value will be ignored.");
 						continue;
 					}
@@ -487,16 +491,21 @@ namespace CodeImp.DoomBuilder.IO
 					int type = (int)UniversalType.Integer;
 
 					//mxd. Try to find the type from configuration
-					if(setknowncustomtypes) {
+					if(setknowncustomtypes) 
+					{
 						type = General.Map.Config.ReadSetting("universalfields." + elementname + "." + e.Key + ".type", -1);
 
-						if(type != -1) {
+						if(type != -1) 
+						{
 							object value = e.Value;
 
 							// Let's be kind and cast any int to a float if needed
-							if(type == (int)UniversalType.Float && e.Value is int) {
+							if(type == (int)UniversalType.Float && e.Value is int) 
+							{
 								value = (float)(int)e.Value;
-							} else if(!e.IsValidType(e.Value.GetType())) {
+							} 
+							else if(!e.IsValidType(e.Value.GetType())) 
+							{
 								General.ErrorLogger.Add(ErrorType.Warning, element + ": the value of entry '" + e.Key + "' is of incompatible type (expected " + e.GetType().Name + ", but got " + e.Value.GetType().Name + "). If you save the map, this value will be ignored.");
 								continue;
 							}
@@ -520,7 +529,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This validates and returns an entry
-		private T GetCollectionEntry<T>(UniversalCollection c, string entryname, bool required, T defaultvalue, string where)
+		private static T GetCollectionEntry<T>(UniversalCollection c, string entryname, bool required, T defaultvalue, string where)
 		{
 			T result = default(T);
 			bool found = false;
@@ -568,12 +577,13 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This makes a list of all collections with the given name
-		private List<UniversalCollection> GetNamedCollections(UniversalCollection collection, string entryname)
+		private static List<UniversalCollection> GetNamedCollections(UniversalCollection collection, string entryname)
 		{
 			List<UniversalCollection> list = new List<UniversalCollection>();
 
 			// Make list
-			foreach (UniversalEntry e in collection) {
+			foreach (UniversalEntry e in collection) 
+			{
 				if (!(e.Value is UniversalCollection) || (e.Key != entryname)) continue; //mxd
 				list.Add(e.Value as UniversalCollection);
 			}

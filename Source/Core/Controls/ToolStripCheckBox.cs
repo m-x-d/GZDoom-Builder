@@ -15,18 +15,21 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public ToolStripCheckBox() : base(new CheckBox()) { }
 
-		protected override void OnSubscribeControlEvents(Control control) {
+		protected override void OnSubscribeControlEvents(Control control) 
+		{
 			base.OnSubscribeControlEvents(control);
 			cb = control as CheckBox;
 			cb.CheckedChanged += OnCheckedChanged;
 		}
 
-		protected override void OnUnsubscribeControlEvents(Control control) {
+		protected override void OnUnsubscribeControlEvents(Control control) 
+		{
 			base.OnUnsubscribeControlEvents(control);
 			cb.CheckedChanged -= OnCheckedChanged;
 		}
 
-		public void OnCheckedChanged(object sender, EventArgs e) {
+		private void OnCheckedChanged(object sender, EventArgs e) 
+		{
 			if(CheckedChanged != null) CheckedChanged(this, e);
 		}
 	}

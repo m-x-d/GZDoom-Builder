@@ -100,16 +100,22 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd. This calculates wall brightness level with doom-style shading
-		public int CalculateBrightness(int level, Sidedef sd) {
-			if(level < 253 && sd != null) {
+		public int CalculateBrightness(int level, Sidedef sd) 
+		{
+			if(level < 253 && sd != null) 
+			{
 				bool evenlighting = General.Map.Data.MapInfo.EvenLighting;
 				bool smoothlighting = General.Map.Data.MapInfo.SmoothLighting;
 
 				//check for possiburu UDMF overrides
-				if(General.Map.UDMF) {
-					if(sd.IsFlagSet("lightabsolute") && sd.Fields.ContainsKey("light")) {
+				if(General.Map.UDMF) 
+				{
+					if(sd.IsFlagSet("lightabsolute") && sd.Fields.ContainsKey("light")) 
+					{
 						evenlighting = true;
-					} else {
+					} 
+					else 
+					{
 						if(sd.IsFlagSet("nofakecontrast"))
 							evenlighting = true;
 						if(sd.IsFlagSet("smoothlighting"))
@@ -117,22 +123,29 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 				}
 
-				if(!evenlighting) {
+				if(!evenlighting) 
+				{
 					//all walls are shaded by their angle
-					if(smoothlighting) {
+					if(smoothlighting) 
+					{
 						float ammount = Math.Abs((float)Math.Sin(sd.Angle));
 						int hAmmount = (int)((1.0f - ammount) * General.Map.Data.MapInfo.HorizWallShade);
 						int vAmmount = (int)(ammount * General.Map.Data.MapInfo.VertWallShade);
 
 						level = General.Clamp(level - hAmmount - vAmmount, 0, 255);
 
-					} else { //only horizontal/verticel walls are shaded
+					} 
+					else //only horizontal/verticel walls are shaded
+					{ 
 						int angle = (int)Angle2D.RadToDeg(sd.Angle);
 						//horizontal wall
-						if(angle == 270 || angle == 90) {
+						if(angle == 270 || angle == 90) 
+						{
 							level = General.Clamp(level + General.Map.Data.MapInfo.HorizWallShade, 0, 255);
-							//vertical wall
-						} else if(angle == 0 || angle == 180) {
+						}
+						//vertical wall
+						else if(angle == 0 || angle == 180) 
+						{
 							level = General.Clamp(level + General.Map.Data.MapInfo.VertWallShade, 0, 255);
 						}
 					}

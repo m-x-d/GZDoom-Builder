@@ -45,7 +45,8 @@ namespace CodeImp.DoomBuilder.Types
 		#region ================== Methods
 
 		//mxd
-		public override void SetupArgument(TypeHandlerAttribute attr, ArgumentInfo arginfo) {
+		public override void SetupArgument(TypeHandlerAttribute attr, ArgumentInfo arginfo) 
+		{
 			defaultValue = (int)arginfo.DefaultValue;
 			base.SetupArgument(attr, arginfo);
 		}
@@ -84,7 +85,8 @@ namespace CodeImp.DoomBuilder.Types
 		}
 
 		//mxd
-		public override void SetDefaultValue() {
+		public override void SetDefaultValue() 
+		{
 			value = defaultValue;
 		}
 

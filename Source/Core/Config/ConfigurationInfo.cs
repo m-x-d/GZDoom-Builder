@@ -303,12 +303,13 @@ namespace CodeImp.DoomBuilder.Config
 		//mxd
 		private void SaveTestEngines() 
 		{
-			IDictionary resinfo, rlinfo;
+			IDictionary rlinfo;
 
 			// Fill structure
-			resinfo = new ListDictionary();
+			IDictionary resinfo = new ListDictionary();
 
-			for(int i = 0; i < testEngines.Count; i++) {
+			for(int i = 0; i < testEngines.Count; i++) 
+			{
 				rlinfo = new ListDictionary();
 				rlinfo.Add("testprogramname", testEngines[i].TestProgramName);
 				rlinfo.Add("testprogram", testEngines[i].TestProgram);
@@ -328,12 +329,13 @@ namespace CodeImp.DoomBuilder.Config
 		//mxd
 		private void SaveLinedefColorPresets() 
 		{
-			IDictionary resinfo, rlinfo;
+			IDictionary rlinfo;
 
 			// Fill structure
-			resinfo = new ListDictionary();
+			IDictionary resinfo = new ListDictionary();
 
-			for(int i = 0; i < linedefColorPresets.Length; i++) {
+			for(int i = 0; i < linedefColorPresets.Length; i++) 
+			{
 				rlinfo = new ListDictionary();
 				rlinfo.Add("name", linedefColorPresets[i].Name);
 				rlinfo.Add("color", linedefColorPresets[i].Color.ToInt());

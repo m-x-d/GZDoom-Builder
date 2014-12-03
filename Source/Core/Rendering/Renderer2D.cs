@@ -576,7 +576,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			if (t.Selected) return General.Colors.Selection;
 		   
 			//mxd. if thing is light, set it's color to light color:
-			if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Type) != -1){
+			if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Type) != -1)
+			{
 				if (t.Type == 1502) //vavoom light
 					return new PixelColor(255, 255, 255, 255);
 				if (t.Type == 1503) //vavoom colored light
@@ -601,7 +602,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(l.Selected) return General.Colors.Selection;
 
 			//mxd. Impassable lines
-			if(l.ImpassableFlag) {
+			if(l.ImpassableFlag) 
+			{
 				if(l.ColorPresetIndex != -1)
 					return General.Map.ConfigSettings.LinedefColorPresets[l.ColorPresetIndex].Color;
 				return General.Colors.Linedefs;
@@ -614,12 +616,15 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd. This collects indices of linedefs, which are parts of sectors with 3d floors
-		public void UpdateExtraFloorFlag() {
+		public void UpdateExtraFloorFlag() 
+		{
 			List<int> tagList = new List<int>();
 			
 			//find lines with 3d floor action and collect sector tags
-			foreach(Linedef l in General.Map.Map.Linedefs){
-				if(l.Action == 160) {
+			foreach(Linedef l in General.Map.Map.Linedefs)
+			{
+				if(l.Action == 160) 
+				{
 					int sectortag = (l.Args[1] & 8) != 0 ? l.Args[0] : l.Args[0] + (l.Args[4] << 8);
 					if(sectortag != 0) tagList.Add(sectortag);
 				}
@@ -629,12 +634,15 @@ namespace CodeImp.DoomBuilder.Rendering
 			int[] tags = tagList.ToArray();
 
 			//find lines, which are related to sectors with 3d floors, and collect their valuable indices
-			foreach(Linedef l in General.Map.Map.Linedefs) {
-				if(l.Front != null && l.Front.Sector != null && l.Front.Sector.Tag != 0 && Array.BinarySearch(tags, l.Front.Sector.Tag) > -1) {
+			foreach(Linedef l in General.Map.Map.Linedefs) 
+			{
+				if(l.Front != null && l.Front.Sector != null && l.Front.Sector.Tag != 0 && Array.BinarySearch(tags, l.Front.Sector.Tag) > -1) 
+				{
 					l.ExtraFloorFlag = true;
 					continue;
 				}
-				if(l.Back != null && l.Back.Sector != null && l.Back.Sector.Tag != 0 && Array.BinarySearch(tags, l.Back.Sector.Tag) > -1) {
+				if(l.Back != null && l.Back.Sector != null && l.Back.Sector.Tag != 0 && Array.BinarySearch(tags, l.Back.Sector.Tag) > -1) 
+				{
 					l.ExtraFloorFlag = true;
 					continue;
 				}
@@ -988,7 +996,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		private void CreateThingArrowVerts(Thing t, ref FlatVertex[] verts, Vector2D screenpos, int offset) {
+		private void CreateThingArrowVerts(Thing t, ref FlatVertex[] verts, Vector2D screenpos, int offset) 
+		{
 			// Determine size
 			float arrowsize = (t.FixedSize && (scale > 1.0f) ? (t.Size - THING_ARROW_SHRINK) * THING_ARROW_SIZE : (t.Size - THING_ARROW_SHRINK) * scale * THING_ARROW_SIZE);
 
@@ -1108,14 +1117,16 @@ namespace CodeImp.DoomBuilder.Rendering
 				foreach(Thing t in things)
 				{
 					//collect models
-					if (t.IsModel) {
+					if (t.IsModel) 
+					{
 						if(!modelsByType.ContainsKey(t.Type)) modelsByType.Add(t.Type, new List<Thing>());
 						modelsByType[t.Type].Add(t);
 					}
 					
 					// Create vertices
 					tc = fixedcolor ? c : DetermineThingColor(t);
-					if(CreateThingBoxVerts(t, ref verts, thingsByPosition, buffercount * 6, tc)) {
+					if(CreateThingBoxVerts(t, ref verts, thingsByPosition, buffercount * 6, tc)) 
+					{
 						buffercount++;
 
 						//mxd
@@ -1486,7 +1497,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		public void RenderHighlight(FlatVertex[] vertices, int color) {
+		public void RenderHighlight(FlatVertex[] vertices, int color) 
+		{
 			if(vertices.Length < 3) return;
 
 			// Set renderstates for rendering
@@ -1679,7 +1691,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		public void RenderArrow(Line3D line, PixelColor c) {
+		public void RenderArrow(Line3D line, PixelColor c) 
+		{
 			float scaler = 20f / scale;
 
 			RenderLine(line.v1, line.v2, 0.8f, c, true);
@@ -1690,7 +1703,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		public void PlotArrow(Line3D line, PixelColor c) {
+		public void PlotArrow(Line3D line, PixelColor c) 
+		{
 			float scaler = 16f / scale;
 
 			PlotLine(line.v1, line.v2, c);
@@ -1807,11 +1821,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			Vector2D v2 = l.End.Position.GetTransformed(translatex, translatey, scale, -scale);
 
 			// Draw line. mxd: added 3d-floor indication
-			if(l.ExtraFloorFlag && General.Settings.GZMarkExtraFloors) {
+			if(l.ExtraFloorFlag && General.Settings.GZMarkExtraFloors)
 				plotter.DrawLine3DFloor(v1, v2, ref c, General.Colors.ThreeDFloor);
-			} else {
+			else
 				plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, ref c);
-			}
 
 			// Calculate normal indicator
 			float mx = (v2.x - v1.x) * 0.5f;

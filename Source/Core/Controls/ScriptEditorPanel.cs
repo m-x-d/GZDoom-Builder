@@ -134,13 +134,13 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 			}
 
-			// Select the first tab
-			//if(tabs.TabPages.Count > 0) tabs.SelectedIndex = 0;
-
 			//mxd. Select "Scripts" tab, because that's what user will want 99% of time
-			if (tabs.TabPages.Count > 0) {
-				foreach (TabPage p in tabs.TabPages) {
-					if (p.Text == "SCRIPTS") {
+			if (tabs.TabPages.Count > 0) 
+			{
+				foreach (TabPage p in tabs.TabPages) 
+				{
+					if (p.Text == "SCRIPTS") 
+					{
 						tabs.SelectedTab = p;
 						break;
 					}
@@ -494,10 +494,10 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 
 				//mxd. Add snippets
-				if(t.Config.Snippets.Count > 0) {
-					foreach(KeyValuePair<string, string[]> group in t.Config.Snippets) {
+				if(t.Config.Snippets.Count > 0) 
+				{
+					foreach(KeyValuePair<string, string[]> group in t.Config.Snippets)
 						buttonsnippets.DropDownItems.Add(group.Key).Click += OnInsertSnippetClick;
-					}
 				}
 				
 				// Focus to script editor
@@ -530,9 +530,12 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				//mxd
 				ScriptType st = t.VerifyScriptType();
-				if (st != ScriptType.UNKNOWN) {
-					foreach (ScriptConfiguration cfg in scriptconfigs) {
-						if (cfg.ScriptType == st) {
+				if (st != ScriptType.UNKNOWN) 
+				{
+					foreach (ScriptConfiguration cfg in scriptconfigs) 
+					{
+						if (cfg.ScriptType == st) 
+						{
 							t.ChangeScriptConfig(cfg);
 							break;
 						}
@@ -540,8 +543,7 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 				
 				// Mark any errors this script may have
-				if(compilererrors != null)
-					t.MarkScriptErrors(compilererrors);
+				if(compilererrors != null) t.MarkScriptErrors(compilererrors);
 
 				// Add to tabs
 				tabs.TabPages.Add(t);
@@ -579,7 +581,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd. This launches keyword help website
-		public bool LaunchKeywordHelp() {
+		public bool LaunchKeywordHelp() 
+		{
 			// Get script
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			return t.LaunchKeywordHelp();

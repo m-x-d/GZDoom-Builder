@@ -52,7 +52,8 @@ namespace CodeImp.DoomBuilder.Windows
 			public readonly string FloorTexture;
 			public readonly string CeilTexture;
 
-			public SectorProperties(Sector s) {
+			public SectorProperties(Sector s) 
+			{
 				Brightness = s.Brightness;
 				FloorHeight = s.FloorHeight;
 				CeilHeight = s.CeilHeight;
@@ -72,7 +73,8 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
 			//mxd. Widow setup
-			if(location != Point.Empty) {
+			if(location != Point.Empty) 
+			{
 				this.StartPosition = FormStartPosition.Manual;
 				this.Location = location;
 			}
@@ -146,11 +148,13 @@ namespace CodeImp.DoomBuilder.Windows
 				// Floor/Ceiling
 				if(s.FloorHeight.ToString() != floorheight.Text) floorheight.Text = "";
 				if(s.CeilHeight.ToString() != ceilingheight.Text) ceilingheight.Text = "";
-				if (s.FloorTexture != floortex.TextureName) {
+				if (s.FloorTexture != floortex.TextureName) 
+				{
 					floortex.MultipleTextures = true; //mxd
 					floortex.TextureName = "";
 				}
-				if (s.CeilTexture != ceilingtex.TextureName) {
+				if (s.CeilTexture != ceilingtex.TextureName) 
+				{
 					ceilingtex.MultipleTextures = true; //mxd
 					ceilingtex.TextureName = "";
 				}
@@ -176,12 +180,16 @@ namespace CodeImp.DoomBuilder.Windows
 			int i = 0; //mxd
 			
 			// Check all selected sectors
-			foreach(Sector s in sectors) {
-				if(index == -1) {
+			foreach(Sector s in sectors) 
+			{
+				if(index == -1) 
+				{
 					// First sector in list
 					delta = s.CeilHeight - s.FloorHeight;
 					index = i; //mxd
-				} else if(delta != (s.CeilHeight - s.FloorHeight)) {
+				} 
+				else if(delta != (s.CeilHeight - s.FloorHeight)) 
+				{
 					// We can't show heights because the delta
 					// heights for the sectors is different
 					index = -1;
@@ -191,14 +199,17 @@ namespace CodeImp.DoomBuilder.Windows
 				i++;
 			}
 
-			if(index > -1) {
+			if(index > -1) 
+			{
 				int fh = floorheight.GetResult(sectorProps[index].FloorHeight); //mxd
 				int ch = ceilingheight.GetResult(sectorProps[index].CeilHeight); //mxd
 				int height = ch - fh;
 				sectorheight.Text = height.ToString();
 				sectorheight.Visible = true;
 				sectorheightlabel.Visible = true;
-			} else {
+			} 
+			else 
+			{
 				sectorheight.Visible = false;
 				sectorheightlabel.Visible = false;
 			}
@@ -211,7 +222,8 @@ namespace CodeImp.DoomBuilder.Windows
 			int offset = heightoffset.GetResult(0);
 
 			//restore values
-			if(string.IsNullOrEmpty(ceilingheight.Text)) {
+			if(string.IsNullOrEmpty(ceilingheight.Text)) 
+			{
 				foreach(Sector s in sectors)
 					s.CeilHeight = sectorProps[i++].CeilHeight + offset;
 
@@ -230,7 +242,8 @@ namespace CodeImp.DoomBuilder.Windows
 			int offset = heightoffset.GetResult(0);
 
 			//restore values
-			if(string.IsNullOrEmpty(floorheight.Text)) {
+			if(string.IsNullOrEmpty(floorheight.Text)) 
+			{
 				foreach(Sector s in sectors)
 					s.FloorHeight = sectorProps[i++].FloorHeight + offset;
 
@@ -252,20 +265,23 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. Apply "Static" properties
 			// Verify the tag
 			tagSelector.ValidateTag(); //mxd
-			if((tagSelector.GetTag(0) < General.Map.FormatInterface.MinTag) || (tagSelector.GetTag(0) > General.Map.FormatInterface.MaxTag)) {
+			if((tagSelector.GetTag(0) < General.Map.FormatInterface.MinTag) || (tagSelector.GetTag(0) > General.Map.FormatInterface.MaxTag)) 
+			{
 				General.ShowWarningMessage("Sector tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
 				return;
 			}
 
 			// Verify the effect
-			if((effect.Value < General.Map.FormatInterface.MinEffect) || (effect.Value > General.Map.FormatInterface.MaxEffect)) {
+			if((effect.Value < General.Map.FormatInterface.MinEffect) || (effect.Value > General.Map.FormatInterface.MaxEffect)) 
+			{
 				General.ShowWarningMessage("Sector effect must be between " + General.Map.FormatInterface.MinEffect + " and " + General.Map.FormatInterface.MaxEffect + ".", MessageBoxButtons.OK);
 				return;
 			}
 
 			// Go for all sectors
 			int tagoffset = 0; //mxd
-			foreach(Sector s in sectors) {
+			foreach(Sector s in sectors) 
+			{
 				// Effects
 				if(!effect.Empty) s.Effect = effect.Value;
 
@@ -299,12 +315,14 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void SectorEditForm_FormClosing(object sender, FormClosingEventArgs e) {
+		private void SectorEditForm_FormClosing(object sender, FormClosingEventArgs e) 
+		{
 			location = this.Location;
 		}
 
 		// Help
-		private void SectorEditForm_HelpRequested(object sender, HelpEventArgs hlpevent) {
+		private void SectorEditForm_HelpRequested(object sender, HelpEventArgs hlpevent) 
+		{
 			General.ShowHelp("w_sectoredit.html");
 			hlpevent.Handled = true;
 		}
@@ -350,19 +368,20 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void floortex_OnValueChanged(object sender, EventArgs e) {
+		private void floortex_OnValueChanged(object sender, EventArgs e) 
+		{
 			if(blockUpdate) return;
 
 			//restore values
-			if(string.IsNullOrEmpty(floortex.TextureName)) {
+			if(string.IsNullOrEmpty(floortex.TextureName)) 
+			{
 				int i = 0;
-
-				foreach(Sector s in sectors)
-					s.SetFloorTexture(sectorProps[i++].FloorTexture);
-			//update values
-			} else {
-				foreach(Sector s in sectors)
-					s.SetFloorTexture(floortex.GetResult(s.FloorTexture));
+				foreach(Sector s in sectors) s.SetFloorTexture(sectorProps[i++].FloorTexture);
+			
+			} 
+			else //update values
+			{
+				foreach(Sector s in sectors) s.SetFloorTexture(floortex.GetResult(s.FloorTexture));
 			}
 
 			// Update the used textures
@@ -372,19 +391,20 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void ceilingtex_OnValueChanged(object sender, EventArgs e) {
+		private void ceilingtex_OnValueChanged(object sender, EventArgs e) 
+		{
 			if(blockUpdate) return;
 
 			//restore values
-			if(string.IsNullOrEmpty(ceilingtex.TextureName)) {
+			if(string.IsNullOrEmpty(ceilingtex.TextureName)) 
+			{
 				int i = 0;
-
-				foreach(Sector s in sectors)
-					s.SetCeilTexture(sectorProps[i++].CeilTexture);
-			//update values
-			} else {
-				foreach(Sector s in sectors)
-					s.SetCeilTexture(ceilingtex.GetResult(s.CeilTexture));
+				foreach(Sector s in sectors) s.SetCeilTexture(sectorProps[i++].CeilTexture);
+			
+			} 
+			else //update values
+			{
+				foreach(Sector s in sectors) s.SetCeilTexture(ceilingtex.GetResult(s.CeilTexture));
 			}
 
 			// Update the used textures
@@ -394,16 +414,19 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void brightness_WhenTextChanged(object sender, EventArgs e) {
+		private void brightness_WhenTextChanged(object sender, EventArgs e) 
+		{
 			if(blockUpdate) return;
 			int i = 0;
 
 			//restore values
-			if(string.IsNullOrEmpty(brightness.Text)) {
-				foreach(Sector s in sectors)
-					s.Brightness = sectorProps[i++].Brightness;
-			//update values
-			} else {
+			if(string.IsNullOrEmpty(brightness.Text)) 
+			{
+				foreach(Sector s in sectors) s.Brightness = sectorProps[i++].Brightness;
+			
+			} 
+			else //update values
+			{
 				foreach(Sector s in sectors)
 					s.Brightness = General.Clamp(brightness.GetResult(sectorProps[i++].Brightness), General.Map.FormatInterface.MinBrightness, General.Map.FormatInterface.MaxBrightness);
 			}

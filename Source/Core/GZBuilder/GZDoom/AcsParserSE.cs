@@ -23,7 +23,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		internal List<ScriptItem> NumberedScripts { get { return numberedScripts; } }
 		internal List<ScriptItem> Functions { get { return functions; } }
 
-		internal AcsParserSE() {
+		internal AcsParserSE() 
+		{
 			namedScripts = new List<ScriptItem>();
 			numberedScripts = new List<ScriptItem>();
 			functions = new List<ScriptItem>();
@@ -31,15 +32,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			includes = new List<string>();
 		}
 
-		internal List<string> Includes {
+		internal List<string> Includes 
+		{
 			get { return includes; }
 		}
 
-		public override bool Parse(Stream stream, string sourcefilename) {
+		public override bool Parse(Stream stream, string sourcefilename) 
+		{
 			return Parse(stream, sourcefilename, false, false);
 		}
 
-		public bool Parse(Stream stream, string sourcefilename, bool processIncludes, bool isinclude) {
+		public bool Parse(Stream stream, string sourcefilename, bool processIncludes, bool isinclude) 
+		{
 			base.Parse(stream, sourcefilename);
 
 			//already parsed this?
@@ -53,19 +57,23 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			BinaryReader localreader = datareader;
 
 			// Continue until at the end of the stream
-			while (SkipWhitespace(true)) {
+			while (SkipWhitespace(true)) 
+			{
 				string token = ReadToken();
 
-				if (!string.IsNullOrEmpty(token)) {
+				if (!string.IsNullOrEmpty(token)) 
+				{
 					token = token.ToLowerInvariant();
 
-					if (token == "script") {
+					if (token == "script") 
+					{
 						int startPos = (int)stream.Position - 7;
 						SkipWhitespace(true);
 						token = ReadToken();
 
 						//is it named script?
-						if (token.IndexOf('"') != -1) {
+						if (token.IndexOf('"') != -1) 
+						{
 							//check if we have something like '"mycoolscript"(void)' as a token
 							if(token.LastIndexOf('"') != token.Length - 1)
 								token = token.Substring(0, token.LastIndexOf('"'));
@@ -73,16 +81,20 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							token = StripTokenQuotes(token);
 							ScriptItem i = new ScriptItem(0, token, startPos, (int)stream.Position-1);
 							namedScripts.Add(i);
-						} else { //should be numbered script
+						} 
+						else //should be numbered script
+						{ 
 							//check if we have something like "999(void)" as a token
 							if (token.Contains("(")) token = token.Substring(0, token.IndexOf("("));
 
 							int n;
-							if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) {
+							if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) 
+							{
 								int endPos = (int)stream.Position - 1;
 
 								//now find opening brace
-								do {
+								do 
+								{
 									SkipWhitespace(true);
 									token = ReadToken();
 								} while (token != "{");
@@ -90,9 +102,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								token = ReadLine();
 								string name = "";
 
-								if (token.Length > 0) {
+								if (token.Length > 0) 
+								{
 									int commentStart = token.IndexOf("//");
-									if (commentStart != -1) { //found comment
+									if (commentStart != -1) //found comment
+									{ 
 										commentStart += 2;
 										name = token.Substring(commentStart, token.Length - commentStart).Trim();
 									}
@@ -103,8 +117,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								numberedScripts.Add(i);
 							}
 						}
-
-					} else if(token == "function") {
+					} 
+					else if(token == "function") 
+					{
 						int startPos = (int)stream.Position - 9;
 						SkipWhitespace(true);
 						string funcname = ReadToken(); //read return type
@@ -112,16 +127,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						funcname += " " + ReadToken(); //read function name
 
 						//look for opening brace
-						if (!funcname.Contains("(")) {
+						if (!funcname.Contains("(")) 
+						{
 							SkipWhitespace(true);
 							funcname += " " + ReadToken();
-						} else {
+						} 
+						else 
+						{
 							funcname = funcname.Replace("(", " (");
 						}
 
 						//look for closing brace
-						if(!funcname.Contains(")")) {
-							do {
+						if(!funcname.Contains(")")) 
+						{
+							do 
+							{
 								SkipWhitespace(true);
 								token = ReadToken();
 								funcname += " " + token;
@@ -130,12 +150,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 						ScriptItem i = new ScriptItem(0, funcname, startPos, (int)stream.Position - 1);
 						functions.Add(i);
-
-					} else if (processIncludes && (token == "#include" || token == "#import")) {
+					} 
+					else if (processIncludes && (token == "#include" || token == "#import")) 
+					{
 						SkipWhitespace(true);
 						string includeLump = StripTokenQuotes(ReadToken()).ToLowerInvariant();
 
-						if (!string.IsNullOrEmpty(includeLump)) {
+						if (!string.IsNullOrEmpty(includeLump)) 
+						{
 							string includeName = Path.GetFileName(includeLump);
 
 							if (includeName == "zcommon.acs" || includeName == "common.acs" || includes.Contains(includeName))
@@ -148,7 +170,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							datastream = localstream;
 							datareader = localreader;
 							sourcename = localsourcename;
-						} else {
+						} 
+						else 
+						{
 							General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": got #include directive without include path!");
 						}
 					}

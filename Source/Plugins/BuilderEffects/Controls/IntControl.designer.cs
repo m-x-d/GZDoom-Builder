@@ -10,8 +10,10 @@
 		/// Освободить все используемые ресурсы.
 		/// </summary>
 		/// <param name="disposing">истинно, если управляемый ресурс должен быть удален; иначе ложно.</param>
-		protected override void Dispose(bool disposing) {
-			if (disposing && (components != null)) {
+		protected override void Dispose(bool disposing) 
+		{
+			if (disposing && (components != null)) 
+			{
 				components.Dispose();
 			}
 			base.Dispose(disposing);
@@ -23,7 +25,8 @@
 		/// Обязательный метод для поддержки конструктора - не изменяйте 
 		/// содержимое данного метода при помощи редактора кода.
 		/// </summary>
-		private void InitializeComponent() {
+		private void InitializeComponent() 
+		{
 			this.trackBar1 = new Dotnetrix.Controls.TrackBar();
 			this.label1 = new System.Windows.Forms.Label();
 			this.numericUpDown1 = new CodeImp.DoomBuilder.BuilderEffects.NumericUpDownEx();

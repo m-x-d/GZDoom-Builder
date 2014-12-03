@@ -273,13 +273,16 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			Point rb = TileForPoint(mapbounds.Right + Tile.TILE_SIZE, mapbounds.Bottom + Tile.TILE_SIZE);
 			Rectangle tilesrect = new Rectangle(lt.X, lt.Y, rb.X - lt.X, rb.Y - lt.Y);
 			NearestLineBlockmap blockmap = new NearestLineBlockmap(tilesrect);
-			for(int x = tilesrect.X; x <= tilesrect.Right; x += Tile.TILE_SIZE) {
-				for(int y = tilesrect.Y; y <= tilesrect.Bottom; y += Tile.TILE_SIZE) {
+			for(int x = tilesrect.X; x <= tilesrect.Right; x += Tile.TILE_SIZE) 
+			{
+				for(int y = tilesrect.Y; y <= tilesrect.Bottom; y += Tile.TILE_SIZE) 
+				{
 					// If the tile is obviously outside the map, don't create it
 					Vector2D pc = new Vector2D(x + (Tile.TILE_SIZE >> 1), y + (Tile.TILE_SIZE >> 1));
 					Linedef ld = MapSet.NearestLinedef(blockmap.GetBlockAt(pc).Lines, pc);
 					float distancesq = ld.DistanceToSq(pc, true);
-					if(distancesq > (Tile.TILE_SIZE * Tile.TILE_SIZE)) {
+					if(distancesq > (Tile.TILE_SIZE * Tile.TILE_SIZE)) 
+					{
 						float side = ld.SideOfLine(pc);
 						if((side > 0.0f) && (ld.Back == null))
 							continue;

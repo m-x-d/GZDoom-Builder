@@ -119,9 +119,8 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 
 				//mxd. Should be called only if script is compiled successfully
-				if (compiler.Errors.Length == 0 && config.ScriptType == ScriptType.ACS) {
+				if (compiler.Errors.Length == 0 && config.ScriptType == ScriptType.ACS)
 					General.Map.UpdateScriptNames();
-				}
 			}
 			
 			// Dispose compiler

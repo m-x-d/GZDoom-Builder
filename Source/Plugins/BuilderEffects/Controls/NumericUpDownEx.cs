@@ -308,28 +308,36 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		public override void DownButton()
 		{
 			CancelEventArgs e = new CancelEventArgs();
-			if (BeforeValueDecrement != null) {
+			if (BeforeValueDecrement != null) 
+			{
 				BeforeValueDecrement(this, e);
 			}
 			if (e.Cancel) return;
 
-			if (_wrapValue && Value - Increment < Minimum) {
+			if (_wrapValue && Value - Increment < Minimum) 
+			{
 				Value = Maximum;
-			} else {
+			} 
+			else 
+			{
 				base.DownButton();
 			}
 		}
 		public override void UpButton()
 		{
 			CancelEventArgs e = new CancelEventArgs();
-			if (BeforeValueIncrement != null) {
+			if (BeforeValueIncrement != null) 
+			{
 				BeforeValueIncrement(this, e);
 			}
 			if (e.Cancel) return;
 
-			if (_wrapValue && Value + Increment > Maximum) {
+			if (_wrapValue && Value + Increment > Maximum) 
+			{
 				Value = Minimum;
-			} else {
+			} 
+			else 
+			{
 				base.UpButton();
 			}
 		}

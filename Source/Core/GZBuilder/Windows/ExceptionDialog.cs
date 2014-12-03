@@ -1,7 +1,11 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Threading;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.GZBuilder.Windows
 {
@@ -10,33 +14,38 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 		private readonly bool cannotContinue;
 		private readonly string logPath;
 		
-		public ExceptionDialog(UnhandledExceptionEventArgs e) {
+		public ExceptionDialog(UnhandledExceptionEventArgs e) 
+		{
 			InitializeComponent();
 
 			logPath = Path.Combine(General.SettingsPath, @"GZCrash.txt");
 			Exception ex = (Exception)e.ExceptionObject;
 			errorDescription.Text = "Error in " + ex.Source + ":";
-			using(StreamWriter sw = File.CreateText(logPath)) {
-				sw.Write(getExceptionDescription(ex));
+			using(StreamWriter sw = File.CreateText(logPath)) 
+			{
+				sw.Write(GetExceptionDescription(ex));
 			}
 
 			errorMessage.Text = ex.Message + Environment.NewLine + ex.StackTrace;
 			cannotContinue = true;  //cannot recover from this...
 		}
 
-		public ExceptionDialog(ThreadExceptionEventArgs e) {
+		public ExceptionDialog(ThreadExceptionEventArgs e) 
+		{
 			InitializeComponent();
 
 			logPath = Path.Combine(General.SettingsPath, @"GZCrash.txt");
 			errorDescription.Text = "Error in " + e.Exception.Source + ":";
-			using(StreamWriter sw = File.CreateText(logPath)) {
-				sw.Write(getExceptionDescription(e.Exception));
+			using(StreamWriter sw = File.CreateText(logPath)) 
+			{
+				sw.Write(GetExceptionDescription(e.Exception));
 			}
 
 			errorMessage.Text = e.Exception.Message + Environment.NewLine + e.Exception.StackTrace;
 		}
 
-		public void Setup() {
+		public void Setup() 
+		{
 			bContinue.Enabled = !cannotContinue;
 
 			string[] titles = {
@@ -107,18 +116,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			this.Text = titles[new Random().Next(0, titles.Length - 1)];
 		}
 
-		private string getExceptionDescription(Exception ex) {
+		private static string GetExceptionDescription(Exception ex) 
+		{
 			//add to error logger
 			General.ErrorLogger.Add(ErrorType.Error, "**** " + ex.Source + ": " + ex.Message + " ****");
 
 			string message = "********EXCEPTION DETAILS********"
 							 + Environment.NewLine + ex.Source + ": " + ex.Message + Environment.NewLine + ex.StackTrace;
 
-			if(File.Exists(General.LogFile)) {
-				try {
+			if(File.Exists(General.LogFile)) 
+			{
+				try 
+				{
 					string[] lines = File.ReadAllLines(General.LogFile);
 					message += Environment.NewLine + Environment.NewLine + "***********ACTIONS LOG***********";
-					for(int i = lines.Length - 1; i > -1; i--)
+					for(int i = lines.Length - 1; i > -1; i--) 
 						message += Environment.NewLine + lines[i];
 				} catch(Exception) { }
 			}
@@ -126,28 +138,35 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			return message;
 		}
 
-		private void reportLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+		private void reportLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) 
+		{
 			if(!File.Exists(logPath)) return;
 			System.Diagnostics.Process.Start("explorer.exe", @"/select, " + logPath);
 			reportLink.LinkVisited = true;
 		}
 
-		private void threadLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-			try {
+		private void threadLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) 
+		{
+			try 
+			{
 				System.Diagnostics.Process.Start("http://forum.zdoom.org/viewtopic.php?f=3&t=32392&start=9999999");
-			} catch(Exception) {
+			} 
+			catch(Exception) 
+			{
 				MessageBox.Show("Unable to open URL...");
 			}
 			
 			threadLink.LinkVisited = true;
 		}
 
-		private void bContinue_Click(object sender, EventArgs e) {
+		private void bContinue_Click(object sender, EventArgs e) 
+		{
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
 
-		private void bToClipboard_Click(object sender, EventArgs e) {
+		private void bToClipboard_Click(object sender, EventArgs e) 
+		{
 			errorMessage.SelectAll();
 			errorMessage.Copy();
 			errorMessage.DeselectAll();

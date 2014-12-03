@@ -90,7 +90,8 @@ namespace CodeImp.DoomBuilder.Controls
 		private void combobox_Validating(object sender, CancelEventArgs e)
 		{
 			//mxd
-			if(gotTagArgument && combobox.SelectedItem != null) {
+			if(gotTagArgument && combobox.SelectedItem != null) 
+			{
 				typehandler.SetValue(((TagInfo)combobox.SelectedItem).Tag);
 				return;
 			}
@@ -200,7 +201,8 @@ namespace CodeImp.DoomBuilder.Controls
 				List<int> tags = new List<int>();
 				List<TagInfo> infos = new List<TagInfo>();
 
-				foreach(Thing t in General.Map.Map.Things) {
+				foreach(Thing t in General.Map.Map.Things) 
+				{
 					if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
 					tags.Add(t.Tag);
 				}
@@ -209,7 +211,8 @@ namespace CodeImp.DoomBuilder.Controls
 				tags.Sort();
 
 				//create tag infos
-				foreach(int tag in tags) {
+				foreach(int tag in tags) 
+				{
 					if(General.Map.Options.TagLabels.ContainsKey(tag)) //tag labels
 						infos.Add(new TagInfo(tag, General.Map.Options.TagLabels[tag]));
 					else
@@ -234,7 +237,8 @@ namespace CodeImp.DoomBuilder.Controls
 				List<int> tags = new List<int>();
 				List<TagInfo> infos = new List<TagInfo>();
 
-				foreach(Linedef t in General.Map.Map.Linedefs) {
+				foreach(Linedef t in General.Map.Map.Linedefs) 
+				{
 					if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
 					tags.Add(t.Tag);
 				}
@@ -243,7 +247,8 @@ namespace CodeImp.DoomBuilder.Controls
 				tags.Sort();
 
 				//create tag infos
-				foreach(int tag in tags) {
+				foreach(int tag in tags) 
+				{
 					if(General.Map.Options.TagLabels.ContainsKey(tag)) //tag labels
 						infos.Add(new TagInfo(tag, General.Map.Options.TagLabels[tag]));
 					else
@@ -268,7 +273,8 @@ namespace CodeImp.DoomBuilder.Controls
 				List<int> tags = new List<int>();
 				List<TagInfo> infos = new List<TagInfo>();
 
-				foreach(Sector t in General.Map.Map.Sectors) {
+				foreach(Sector t in General.Map.Map.Sectors) 
+				{
 					if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
 					tags.Add(t.Tag);
 				}
@@ -277,7 +283,8 @@ namespace CodeImp.DoomBuilder.Controls
 				tags.Sort();
 
 				//create tag infos
-				foreach(int tag in tags) {
+				foreach(int tag in tags) 
+				{
 					if(General.Map.Options.TagLabels.ContainsKey(tag)) //tag labels
 						infos.Add(new TagInfo(tag, General.Map.Options.TagLabels[tag]));
 					else
@@ -295,7 +302,8 @@ namespace CodeImp.DoomBuilder.Controls
 				combobox.DropDownWidth = Tools.GetDropDownWidth(combobox);
 			}
 			// Check if this supports enumerated options
-			else if(typehandler.IsEnumerable) {
+			else if(typehandler.IsEnumerable) 
+			{
 				// Show the combobox
 				gotTagArgument = false; //mxd
 				button.Visible = false;
@@ -324,10 +332,13 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			//mxd
-			if(gotTagArgument) {
+			if(gotTagArgument) 
+			{
 				combobox.AutoCompleteMode = AutoCompleteMode.Suggest;
 				combobox.AutoCompleteSource = AutoCompleteSource.ListItems;
-			} else {
+			} 
+			else 
+			{
 				combobox.AutoCompleteMode = AutoCompleteMode.None;
 				combobox.AutoCompleteSource = AutoCompleteSource.None;
 			}
@@ -344,11 +355,13 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			typehandler.SetValue(value);
 
-			if(gotTagArgument) { //mxd
-				foreach(object item in combobox.Items) {
+			if(gotTagArgument) //mxd
+			{ 
+				foreach(object item in combobox.Items) 
+				{
 					TagInfo info = (TagInfo)item;
-
-					if(info.Tag == value) {
+					if(info.Tag == value) 
+					{
 						combobox.SelectedItem = item;
 						return;
 					}
@@ -361,7 +374,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd. this sets default value
-		public void SetDefaultValue() {
+		public void SetDefaultValue() 
+		{
 			if(gotTagArgument) return; //default tag sounds a bit silly
 
 			typehandler.SetDefaultValue();
@@ -432,8 +446,11 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd. Very tricky way to close parent control by pressing ENTER or ESCAPE key when combobox.DropDownStyle == ComboBoxStyle.Simple
-		protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
-			if(this.ActiveControl == combobox && combobox.DropDownStyle == ComboBoxStyle.Simple && (keyData == Keys.Return || keyData == Keys.Escape)) {
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData) 
+		{
+			if(this.ActiveControl == combobox && combobox.DropDownStyle == ComboBoxStyle.Simple 
+				&& (keyData == Keys.Return || keyData == Keys.Escape)) 
+			{
 				combobox.DropDownStyle = ComboBoxStyle.DropDown;
 				return false;
 			}

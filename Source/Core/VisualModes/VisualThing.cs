@@ -198,7 +198,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd
-		internal void CalculateCameraDistance3D(Vector3 campos) {
+		internal void CalculateCameraDistance3D(Vector3 campos) 
+		{
 			cameraDistance3D = (int)Vector3.DistanceSquared(PositionV3, campos);
 		}
 		
@@ -249,12 +250,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 			position = Matrix.Translation(position_v3);
 
 			//mxd. update bounding box
-			if (thing.IsModel) {
-				updateBoundingBoxForModel();
-			} else if (lightType != DynamicLightType.NONE && lightRadius > thing.Size) {
-				updateBoundingBox(lightRadius, lightRadius * 2);
-			} else {
-				updateBoundingBox((int)thing.Size, thingHeight);
+			if (thing.IsModel) 
+			{
+				UpdateBoundingBoxForModel();
+			} 
+			else if (lightType != DynamicLightType.NONE && lightRadius > thing.Size) 
+			{
+				UpdateBoundingBox(lightRadius, lightRadius * 2);
+			} 
+			else 
+			{
+				UpdateBoundingBox((int)thing.Size, thingHeight);
 			}
 		}
 
@@ -279,7 +285,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 				geobuffer = null;
 
 				// Any vertics?
-				if (vertices.Length > 0) {
+				if (vertices.Length > 0) 
+				{
 					// Make a new buffer
 					geobuffer = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * vertices.Length,
 												 Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
@@ -292,7 +299,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 				}
 
 				//mxd. Check if thing is light
-				checkLightState();
+				CheckLightState();
 
 				// Done
 				updategeo = false;
@@ -300,26 +307,31 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd
-		protected void checkLightState() {
+		protected void CheckLightState() 
+		{
 			//mxd. Check if thing is light
 			int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
-			if (light_id != -1) {
+			if (light_id != -1) 
+			{
 				isGldefsLight = false;
 				lightInterval = -1;
-				updateLight(light_id);
-				updateBoundingBox(lightRadius, lightRadius * 2);
-
-				//check if we have light from GLDEFS
-			} else if (General.Map.Data.GldefsEntries.ContainsKey(thing.Type)) {
+				UpdateLight(light_id);
+				UpdateBoundingBox(lightRadius, lightRadius * 2);
+			}
+			//check if we have light from GLDEFS
+			else if (General.Map.Data.GldefsEntries.ContainsKey(thing.Type)) 
+			{
 				isGldefsLight = true;
-				updateGldefsLight();
-				updateBoundingBox(lightRadius, lightRadius * 2);
-			} else {
-				if (thing.IsModel) {
-					updateBoundingBoxForModel();
-				} else {
-					updateBoundingBox((int)thing.Size, thingHeight);
-				}
+				UpdateGldefsLight();
+				UpdateBoundingBox(lightRadius, lightRadius * 2);
+			} 
+			else 
+			{
+				if (thing.IsModel)
+					UpdateBoundingBoxForModel();
+				else
+					UpdateBoundingBox((int)thing.Size, thingHeight);
+
 				lightType = DynamicLightType.NONE;
 				lightRadius = -1;
 				lightPrimaryRadius = -1;
@@ -331,47 +343,58 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//used in ColorPicker to update light 
-		public void UpdateLight() {
+		public void UpdateLight() 
+		{
 			int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
-			if (light_id != -1) {
-				updateLight(light_id);
-				updateBoundingBox(lightRadius, lightRadius * 2);
+			if (light_id != -1) 
+			{
+				UpdateLight(light_id);
+				UpdateBoundingBox(lightRadius, lightRadius * 2);
 			}
 		}
 
 		//mxd update light info
-		private void updateLight(int light_id) {
+		private void UpdateLight(int lightId) 
+		{
 			float scaled_intensity = 255.0f / General.Settings.GZDynamicLightIntensity;
 
-			if (light_id < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) { //if it's gzdoom light
+			if (lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) //if it's gzdoom light
+			{ 
 				int n;
-				if (light_id < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) {
+				if (lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) 
+				{
 					n = 0;
 					lightRenderStyle = DynamicLightRenderStyle.NORMAL;
 					//lightColor.Alpha used in shader to perform some calculations based on light type
 					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[0] / scaled_intensity, thing.Args[1] / scaled_intensity, thing.Args[2] / scaled_intensity);
-				} else if (light_id < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) {
+				} 
+				else if (lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) 
+				{
 					n = 10;
 					lightRenderStyle = DynamicLightRenderStyle.ADDITIVE;
 					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[0] / scaled_intensity, thing.Args[1] / scaled_intensity, thing.Args[2] / scaled_intensity);
-				} else {
+				} 
+				else 
+				{
 					n = 20;
 					lightRenderStyle = DynamicLightRenderStyle.NEGATIVE;
 					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[0] / scaled_intensity, thing.Args[1] / scaled_intensity, thing.Args[2] / scaled_intensity);
 				}
 				lightType = (DynamicLightType)(thing.Type - 9800 - n);
 
-				if (lightType == DynamicLightType.SECTOR) {
+				if (lightType == DynamicLightType.SECTOR) 
+				{
 					int scaler = 1;
-					if (thing.Sector != null)
-						scaler = thing.Sector.Brightness / 4;
+					if (thing.Sector != null) scaler = thing.Sector.Brightness / 4;
 					lightPrimaryRadius = (thing.Args[3] * scaler) * General.Settings.GZDynamicLightRadius;
-				} else {
+				} 
+				else 
+				{
 					lightPrimaryRadius = (thing.Args[3] * 2) * General.Settings.GZDynamicLightRadius; //works... that.. way in GZDoom
-					if (lightType > 0)
-						lightSecondaryRadius = (thing.Args[4] * 2) * General.Settings.GZDynamicLightRadius;
+					if (lightType > 0) lightSecondaryRadius = (thing.Args[4] * 2) * General.Settings.GZDynamicLightRadius;
 				}
-			} else { //it's one of vavoom lights
+			} else //it's one of vavoom lights
+			{ 
 				lightRenderStyle = DynamicLightRenderStyle.VAVOOM;
 				lightType = (DynamicLightType)thing.Type;
 				if (lightType == DynamicLightType.VAVOOM_COLORED)
@@ -384,7 +407,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd
-		private void updateGldefsLight() {
+		private void UpdateGldefsLight() 
+		{
 			DynamicLightData light = General.Map.Data.GldefsEntries[thing.Type];
 			float intensity_mod = General.Settings.GZDynamicLightIntensity;
 			float scale_mod = General.Settings.GZDynamicLightRadius;
@@ -395,35 +419,43 @@ namespace CodeImp.DoomBuilder.VisualModes
 			lightOffset = light.Offset;
 			lightType = light.Type;
 
-			if (lightType == DynamicLightType.SECTOR) {
+			if (lightType == DynamicLightType.SECTOR) 
+			{
 				lightPrimaryRadius = light.Interval * thing.Sector.Brightness / 5;
-			} else {
+			} 
+			else 
+			{
 				lightPrimaryRadius = light.PrimaryRadius * scale_mod;
 				lightSecondaryRadius = light.SecondaryRadius * scale_mod;
 			}
 
 			lightInterval = light.Interval;
-			updateLightRadius(lightInterval);
+			UpdateLightRadius(lightInterval);
 		}
 
 		//mxd
-		public void UpdateLightRadius() {
-			updateLightRadius( (lightInterval != -1 ? lightInterval : thing.AngleDoom) );
+		public void UpdateLightRadius() 
+		{
+			UpdateLightRadius( (lightInterval != -1 ? lightInterval : thing.AngleDoom) );
 		}
 
 		//mxd
-		private void updateLightRadius(int interval) {
-			if (lightType == DynamicLightType.NONE) {
+		private void UpdateLightRadius(int interval) 
+		{
+			if (lightType == DynamicLightType.NONE) 
+			{
 				General.ErrorLogger.Add(ErrorType.Error, "Please check that thing is light before accessing it's PositionAndRadius! You can use lightType, which is -1 if thing isn't light");
 				return;
 			}
 
-			if (General.Settings.GZDrawLightsMode == LightRenderMode.ALL || Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, lightType) == -1) {
+			if (General.Settings.GZDrawLightsMode == LightRenderMode.ALL || Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, lightType) == -1) 
+			{
 				lightRadius = lightPrimaryRadius;
 				return;
 			}
 
-			if(interval == 0) {
+			if(interval == 0) 
+			{
 				lightRadius = 0;
 				return;
 			}
@@ -433,7 +465,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			float rMax = Math.Max(lightPrimaryRadius, lightSecondaryRadius);
 			float diff = rMax - rMin;
 
-			switch (lightType) {
+			switch (lightType) 
+			{
 				case DynamicLightType.PULSE:
 					lightDelta = ((float)Math.Sin(time / (interval * 4.0f)) + 1.0f) / 2.0f; //just playing by the eye here... in [0.0 ... 1.0] interval
 					lightRadius = rMin + diff * lightDelta;
@@ -441,7 +474,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 				case DynamicLightType.FLICKER: 
 					float fdelta = (float)Math.Sin(time / 0.1f); //just playing by the eye here...
-					if (Math.Sign(fdelta) != Math.Sign(lightDelta)) {
+					if (Math.Sign(fdelta) != Math.Sign(lightDelta)) 
+					{
 						lightDelta = fdelta;
 						lightRadius = (General.Random(0, 359) < interval ? rMax : rMin);
 					}
@@ -449,7 +483,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 				case DynamicLightType.RANDOM:
 					float rdelta = (float)Math.Sin(time / (interval * 9.0f)); //just playing by the eye here...
-					if (Math.Sign(rdelta) != Math.Sign(lightDelta)) {
+					if (Math.Sign(rdelta) != Math.Sign(lightDelta)) 
+					{
 						lightRadius = rMin + (General.Random(0, (int) (diff * 10))) / 10.0f;
 					}
 					lightDelta = rdelta;
@@ -458,17 +493,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd. update bounding box
-		public void UpdateBoundingBox() {
-			if (thing.IsModel) {
-				updateBoundingBoxForModel();
-			} else if (lightType != DynamicLightType.NONE && lightRadius > thing.Size) {
-				updateBoundingBox(lightRadius, lightRadius * 2);
-			} else {
-				updateBoundingBox((int)thing.Size, thingHeight);
-			}
+		public void UpdateBoundingBox() 
+		{
+			if (thing.IsModel)
+				UpdateBoundingBoxForModel();
+			else if (lightType != DynamicLightType.NONE && lightRadius > thing.Size)
+				UpdateBoundingBox(lightRadius, lightRadius * 2);
+			else
+				UpdateBoundingBox((int)thing.Size, thingHeight);
 		}
 
-		private void updateBoundingBox(float width, float height) {
+		private void UpdateBoundingBox(float width, float height) 
+		{
 			boundingBox = new Vector3[9];
 			boundingBox[0] = Center;
 			float h2 = height / 2.0f;
@@ -485,11 +521,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd. update bounding box from model bounding box
-		private void updateBoundingBoxForModel() {
+		private void UpdateBoundingBoxForModel() 
+		{
 			ModelData mde = General.Map.Data.ModeldefEntries[thing.Type];
 			int len = mde.Model.BoundingBox.Length;
 			boundingBox = new Vector3[len];
-			for (int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++) 
+			{
 				Vector3 v = mde.Model.BoundingBox[i];
 				boundingBox[i] = new Vector3(v.X + position_v3.X, v.Y + position_v3.Y, v.Z + position_v3.Z);
 			}    
