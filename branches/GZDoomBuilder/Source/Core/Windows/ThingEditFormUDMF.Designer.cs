@@ -33,9 +33,9 @@
 			this.thingtype = new CodeImp.DoomBuilder.Controls.ThingBrowserControl();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.roll = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.label2 = new System.Windows.Forms.Label();
+			this.labelroll = new System.Windows.Forms.Label();
 			this.pitch = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.labelpitch = new System.Windows.Forms.Label();
 			this.angle = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.labelAngle = new System.Windows.Forms.Label();
 			this.anglecontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
@@ -46,9 +46,9 @@
 			this.settingsgroup = new System.Windows.Forms.GroupBox();
 			this.missingflags = new System.Windows.Forms.PictureBox();
 			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
-			this.groupBox9 = new System.Windows.Forms.GroupBox();
+			this.grouproll = new System.Windows.Forms.GroupBox();
 			this.rollControl = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
-			this.groupBox8 = new System.Windows.Forms.GroupBox();
+			this.grouppitch = new System.Windows.Forms.GroupBox();
 			this.pitchControl = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -60,7 +60,7 @@
 			this.posZ = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.zlabel = new System.Windows.Forms.Label();
 			this.tabeffects = new System.Windows.Forms.TabPage();
-			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.groupbehaviour = new System.Windows.Forms.GroupBox();
 			this.conversationID = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.labelID = new System.Windows.Forms.Label();
 			this.health = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -68,13 +68,13 @@
 			this.score = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label9 = new System.Windows.Forms.Label();
 			this.gravity = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.grouprendering = new System.Windows.Forms.GroupBox();
 			this.scale = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFloatControl();
 			this.color = new CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl();
 			this.alpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.renderStyle = new System.Windows.Forms.ComboBox();
-			this.label3 = new System.Windows.Forms.Label();
+			this.labelrenderstyle = new System.Windows.Forms.Label();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
 			this.hexenpanel = new System.Windows.Forms.Panel();
 			this.scriptNumbers = new System.Windows.Forms.ComboBox();
@@ -108,13 +108,13 @@
 			this.tabproperties.SuspendLayout();
 			this.settingsgroup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.missingflags)).BeginInit();
-			this.groupBox9.SuspendLayout();
-			this.groupBox8.SuspendLayout();
+			this.grouproll.SuspendLayout();
+			this.grouppitch.SuspendLayout();
 			this.groupBox7.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.tabeffects.SuspendLayout();
-			this.groupBox6.SuspendLayout();
-			this.groupBox5.SuspendLayout();
+			this.groupbehaviour.SuspendLayout();
+			this.grouprendering.SuspendLayout();
 			this.actiongroup.SuspendLayout();
 			this.hexenpanel.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -151,9 +151,9 @@
 			// groupBox2
 			// 
 			this.groupBox2.Controls.Add(this.roll);
-			this.groupBox2.Controls.Add(this.label2);
+			this.groupBox2.Controls.Add(this.labelroll);
 			this.groupBox2.Controls.Add(this.pitch);
-			this.groupBox2.Controls.Add(this.label1);
+			this.groupBox2.Controls.Add(this.labelpitch);
 			this.groupBox2.Controls.Add(this.angle);
 			this.groupBox2.Controls.Add(this.labelAngle);
 			this.groupBox2.Location = new System.Drawing.Point(488, 298);
@@ -178,14 +178,14 @@
 			this.roll.TabIndex = 24;
 			this.roll.WhenTextChanged += new System.EventHandler(this.roll_WhenTextChanged);
 			// 
-			// label2
+			// labelroll
 			// 
-			this.label2.Location = new System.Drawing.Point(5, 71);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(44, 14);
-			this.label2.TabIndex = 23;
-			this.label2.Text = "Roll:";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.labelroll.Location = new System.Drawing.Point(5, 71);
+			this.labelroll.Name = "labelroll";
+			this.labelroll.Size = new System.Drawing.Size(44, 14);
+			this.labelroll.TabIndex = 23;
+			this.labelroll.Text = "Roll:";
+			this.labelroll.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// pitch
 			// 
@@ -202,14 +202,14 @@
 			this.pitch.TabIndex = 22;
 			this.pitch.WhenTextChanged += new System.EventHandler(this.pitch_WhenTextChanged);
 			// 
-			// label1
+			// labelpitch
 			// 
-			this.label1.Location = new System.Drawing.Point(5, 46);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(44, 14);
-			this.label1.TabIndex = 21;
-			this.label1.Text = "Pitch:";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.labelpitch.Location = new System.Drawing.Point(5, 46);
+			this.labelpitch.Name = "labelpitch";
+			this.labelpitch.Size = new System.Drawing.Size(44, 14);
+			this.labelpitch.TabIndex = 21;
+			this.labelpitch.Text = "Pitch:";
+			this.labelpitch.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// angle
 			// 
@@ -284,8 +284,8 @@
 			// tabproperties
 			// 
 			this.tabproperties.Controls.Add(this.settingsgroup);
-			this.tabproperties.Controls.Add(this.groupBox9);
-			this.tabproperties.Controls.Add(this.groupBox8);
+			this.tabproperties.Controls.Add(this.grouproll);
+			this.tabproperties.Controls.Add(this.grouppitch);
 			this.tabproperties.Controls.Add(this.groupBox7);
 			this.tabproperties.Controls.Add(this.groupBox4);
 			this.tabproperties.Controls.Add(this.groupBox2);
@@ -337,15 +337,15 @@
 			this.flags.VerticalSpacing = 1;
 			this.flags.OnValueChanged += new System.EventHandler(this.flags_OnValueChanged);
 			// 
-			// groupBox9
+			// grouproll
 			// 
-			this.groupBox9.Controls.Add(this.rollControl);
-			this.groupBox9.Location = new System.Drawing.Point(543, 16);
-			this.groupBox9.Name = "groupBox9";
-			this.groupBox9.Size = new System.Drawing.Size(78, 88);
-			this.groupBox9.TabIndex = 26;
-			this.groupBox9.TabStop = false;
-			this.groupBox9.Text = " Roll ";
+			this.grouproll.Controls.Add(this.rollControl);
+			this.grouproll.Location = new System.Drawing.Point(543, 16);
+			this.grouproll.Name = "grouproll";
+			this.grouproll.Size = new System.Drawing.Size(78, 88);
+			this.grouproll.TabIndex = 26;
+			this.grouproll.TabStop = false;
+			this.grouproll.Text = " Roll ";
 			// 
 			// rollControl
 			// 
@@ -357,15 +357,15 @@
 			this.rollControl.TabIndex = 20;
 			this.rollControl.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.rollControl_AngleChanged);
 			// 
-			// groupBox8
+			// grouppitch
 			// 
-			this.groupBox8.Controls.Add(this.pitchControl);
-			this.groupBox8.Location = new System.Drawing.Point(543, 110);
-			this.groupBox8.Name = "groupBox8";
-			this.groupBox8.Size = new System.Drawing.Size(78, 88);
-			this.groupBox8.TabIndex = 25;
-			this.groupBox8.TabStop = false;
-			this.groupBox8.Text = " Pitch ";
+			this.grouppitch.Controls.Add(this.pitchControl);
+			this.grouppitch.Location = new System.Drawing.Point(543, 110);
+			this.grouppitch.Name = "grouppitch";
+			this.grouppitch.Size = new System.Drawing.Size(78, 88);
+			this.grouppitch.TabIndex = 25;
+			this.grouppitch.TabStop = false;
+			this.grouppitch.Text = " Pitch ";
 			// 
 			// pitchControl
 			// 
@@ -488,8 +488,8 @@
 			// 
 			// tabeffects
 			// 
-			this.tabeffects.Controls.Add(this.groupBox6);
-			this.tabeffects.Controls.Add(this.groupBox5);
+			this.tabeffects.Controls.Add(this.groupbehaviour);
+			this.tabeffects.Controls.Add(this.grouprendering);
 			this.tabeffects.Controls.Add(this.actiongroup);
 			this.tabeffects.Controls.Add(this.groupBox3);
 			this.tabeffects.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -501,22 +501,22 @@
 			this.tabeffects.Text = "Tag / Action / Misc.";
 			this.tabeffects.UseVisualStyleBackColor = true;
 			// 
-			// groupBox6
+			// groupbehaviour
 			// 
-			this.groupBox6.Controls.Add(this.conversationID);
-			this.groupBox6.Controls.Add(this.labelID);
-			this.groupBox6.Controls.Add(this.health);
-			this.groupBox6.Controls.Add(this.label10);
-			this.groupBox6.Controls.Add(this.score);
-			this.groupBox6.Controls.Add(this.label9);
-			this.groupBox6.Controls.Add(this.gravity);
-			this.groupBox6.Controls.Add(this.labelGravity);
-			this.groupBox6.Location = new System.Drawing.Point(288, 238);
-			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(333, 158);
-			this.groupBox6.TabIndex = 23;
-			this.groupBox6.TabStop = false;
-			this.groupBox6.Text = " Behaviour ";
+			this.groupbehaviour.Controls.Add(this.conversationID);
+			this.groupbehaviour.Controls.Add(this.labelID);
+			this.groupbehaviour.Controls.Add(this.health);
+			this.groupbehaviour.Controls.Add(this.label10);
+			this.groupbehaviour.Controls.Add(this.score);
+			this.groupbehaviour.Controls.Add(this.label9);
+			this.groupbehaviour.Controls.Add(this.gravity);
+			this.groupbehaviour.Controls.Add(this.labelGravity);
+			this.groupbehaviour.Location = new System.Drawing.Point(288, 238);
+			this.groupbehaviour.Name = "groupbehaviour";
+			this.groupbehaviour.Size = new System.Drawing.Size(333, 158);
+			this.groupbehaviour.TabIndex = 23;
+			this.groupbehaviour.TabStop = false;
+			this.groupbehaviour.Text = " Behaviour ";
 			// 
 			// conversationID
 			// 
@@ -601,20 +601,20 @@
 			this.gravity.StepValues = null;
 			this.gravity.TabIndex = 19;
 			// 
-			// groupBox5
+			// grouprendering
 			// 
-			this.groupBox5.Controls.Add(this.scale);
-			this.groupBox5.Controls.Add(this.color);
-			this.groupBox5.Controls.Add(this.alpha);
-			this.groupBox5.Controls.Add(this.label8);
-			this.groupBox5.Controls.Add(this.renderStyle);
-			this.groupBox5.Controls.Add(this.label3);
-			this.groupBox5.Location = new System.Drawing.Point(6, 238);
-			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(276, 158);
-			this.groupBox5.TabIndex = 22;
-			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = " Rendering ";
+			this.grouprendering.Controls.Add(this.scale);
+			this.grouprendering.Controls.Add(this.color);
+			this.grouprendering.Controls.Add(this.alpha);
+			this.grouprendering.Controls.Add(this.label8);
+			this.grouprendering.Controls.Add(this.renderStyle);
+			this.grouprendering.Controls.Add(this.labelrenderstyle);
+			this.grouprendering.Location = new System.Drawing.Point(6, 238);
+			this.grouprendering.Name = "grouprendering";
+			this.grouprendering.Size = new System.Drawing.Size(276, 158);
+			this.grouprendering.TabIndex = 22;
+			this.grouprendering.TabStop = false;
+			this.grouprendering.Text = " Rendering ";
 			// 
 			// scale
 			// 
@@ -671,14 +671,14 @@
 			this.renderStyle.Size = new System.Drawing.Size(156, 22);
 			this.renderStyle.TabIndex = 24;
 			// 
-			// label3
+			// labelrenderstyle
 			// 
-			this.label3.Location = new System.Drawing.Point(3, 53);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(80, 14);
-			this.label3.TabIndex = 23;
-			this.label3.Text = "Render style:";
-			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.labelrenderstyle.Location = new System.Drawing.Point(3, 53);
+			this.labelrenderstyle.Name = "labelrenderstyle";
+			this.labelrenderstyle.Size = new System.Drawing.Size(80, 14);
+			this.labelrenderstyle.TabIndex = 23;
+			this.labelrenderstyle.Text = "Render style:";
+			this.labelrenderstyle.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// actiongroup
 			// 
@@ -963,7 +963,7 @@
 			// 
 			this.hintlabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.hintlabel.AutoSize = true;
-			this.hintlabel.Location = new System.Drawing.Point(28, 451);
+			this.hintlabel.Location = new System.Drawing.Point(24, 451);
 			this.hintlabel.Name = "hintlabel";
 			this.hintlabel.Size = new System.Drawing.Size(377, 14);
 			this.hintlabel.TabIndex = 4;
@@ -986,17 +986,17 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(655, 478);
-			this.Controls.Add(this.hintlabel);
 			this.Controls.Add(this.hint);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
+			this.Controls.Add(this.hintlabel);
 			this.Controls.Add(this.tabs);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ThingEditFormUDMF";
-			this.Opacity = 0;
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -1009,15 +1009,15 @@
 			this.tabproperties.ResumeLayout(false);
 			this.settingsgroup.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.missingflags)).EndInit();
-			this.groupBox9.ResumeLayout(false);
-			this.groupBox8.ResumeLayout(false);
+			this.grouproll.ResumeLayout(false);
+			this.grouppitch.ResumeLayout(false);
 			this.groupBox7.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
 			this.tabeffects.ResumeLayout(false);
-			this.groupBox6.ResumeLayout(false);
-			this.groupBox6.PerformLayout();
-			this.groupBox5.ResumeLayout(false);
+			this.groupbehaviour.ResumeLayout(false);
+			this.groupbehaviour.PerformLayout();
+			this.grouprendering.ResumeLayout(false);
 			this.actiongroup.ResumeLayout(false);
 			this.actiongroup.PerformLayout();
 			this.hexenpanel.ResumeLayout(false);
@@ -1078,15 +1078,15 @@
         private System.Windows.Forms.Label zlabel;
         private Controls.ButtonsNumericTextbox gravity;
         private Controls.ButtonsNumericTextbox roll;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label labelroll;
         private Controls.ButtonsNumericTextbox pitch;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Label labelpitch;
+        private System.Windows.Forms.GroupBox grouprendering;
         private Controls.ButtonsNumericTextbox alpha;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox renderStyle;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Label labelrenderstyle;
+        private System.Windows.Forms.GroupBox groupbehaviour;
         private Controls.ButtonsNumericTextbox health;
         private System.Windows.Forms.Label label10;
         private Controls.ButtonsNumericTextbox score;
@@ -1096,9 +1096,9 @@
         private Controls.CheckboxArrayControl flags;
         private Controls.ButtonsNumericTextbox conversationID;
         private System.Windows.Forms.Label labelID;
-        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.GroupBox grouproll;
         private GZBuilder.Controls.AngleControl rollControl;
-        private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.GroupBox grouppitch;
         private GZBuilder.Controls.AngleControl pitchControl;
         private System.Windows.Forms.GroupBox groupBox7;
         private GZBuilder.Controls.PairedFloatControl scale;

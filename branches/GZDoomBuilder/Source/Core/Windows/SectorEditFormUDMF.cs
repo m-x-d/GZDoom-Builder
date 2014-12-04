@@ -28,6 +28,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private Dictionary<Sector, SectorProperties> sectorprops; //mxd
 		private bool blockupdate; //mxd
 		private StepsList anglesteps; //mxd
+		private readonly string[] renderstyles; //mxd
 
 		//mxd. Persistent settings
 		private static bool linkCeilingScale;
@@ -176,8 +177,17 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill flags list
 			foreach(KeyValuePair<string, string> lf in General.Map.Config.SectorFlags)
 				flags.Add(lf.Value, lf.Key);
+			flags.Enabled = General.Map.Config.SectorFlags.Count > 0;
 
-			//mxd. Fill renderstyles
+			// Setup renderstyles
+			renderstyles = new string[General.Map.Config.SectorRenderStyles.Count];
+			General.Map.Config.SectorRenderStyles.Keys.CopyTo(renderstyles, 0);
+			floorRenderStyle.Enabled = (General.Map.Config.SectorRenderStyles.Count > 0);
+			labelfloorrenderstyle.Enabled = (General.Map.Config.SectorRenderStyles.Count > 0);
+			ceilRenderStyle.Enabled = (General.Map.Config.SectorRenderStyles.Count > 0);
+			labelceilrenderstyle.Enabled = (General.Map.Config.SectorRenderStyles.Count > 0);
+
+			// Fill renderstyles
 			foreach(KeyValuePair<string, string> lf in General.Map.Config.SectorRenderStyles) 
 			{
 				floorRenderStyle.Items.Add(lf.Value);
@@ -290,19 +300,8 @@ namespace CodeImp.DoomBuilder.Windows
 			floorAlpha.Text = General.Clamp(sc.Fields.GetValue("alphafloor", 1.0f), 0f, 1f).ToString();
 
 			//Render style
-			string[] rskeys = null;
-			if (General.Map.Config.SectorRenderStyles.Count > 0) 
-			{
-				rskeys = new string[General.Map.Config.SectorRenderStyles.Count];
-				General.Map.Config.SectorRenderStyles.Keys.CopyTo(rskeys, 0);
-				ceilRenderStyle.SelectedIndex = Array.IndexOf(rskeys, sc.Fields.GetValue("renderstyleceiling", "translucent"));
-				floorRenderStyle.SelectedIndex = Array.IndexOf(rskeys, sc.Fields.GetValue("renderstylefloor", "translucent"));
-			} 
-			else 
-			{
-				ceilRenderStyle.Enabled = false;
-				floorRenderStyle.Enabled = false;
-			}
+			ceilRenderStyle.SelectedIndex = Array.IndexOf(renderstyles, sc.Fields.GetValue("renderstyleceiling", "translucent"));
+			floorRenderStyle.SelectedIndex = Array.IndexOf(renderstyles, sc.Fields.GetValue("renderstylefloor", "translucent"));
 
 			//Misc
 			soundSequence.Text = sc.Fields.GetValue("soundsequence", string.Empty);
@@ -403,13 +402,10 @@ namespace CodeImp.DoomBuilder.Windows
 				if(s.Fields.GetValue("alphafloor", 1.0f).ToString() != floorAlpha.Text) floorAlpha.Text = "";
 
 				//Render style
-				if (rskeys != null) 
-				{
-					if (ceilRenderStyle.SelectedIndex > -1 && ceilRenderStyle.SelectedIndex != Array.IndexOf(rskeys, s.Fields.GetValue("renderstyleceiling", "translucent")))
-						ceilRenderStyle.SelectedIndex = -1;
-					if (floorRenderStyle.SelectedIndex > -1 && floorRenderStyle.SelectedIndex != Array.IndexOf(rskeys, s.Fields.GetValue("renderstylefloor", "translucent")))
-						floorRenderStyle.SelectedIndex = -1;
-				}
+				if(ceilRenderStyle.SelectedIndex > -1 && ceilRenderStyle.SelectedIndex != Array.IndexOf(renderstyles, s.Fields.GetValue("renderstyleceiling", "translucent")))
+					ceilRenderStyle.SelectedIndex = -1;
+				if(floorRenderStyle.SelectedIndex > -1 && floorRenderStyle.SelectedIndex != Array.IndexOf(renderstyles, s.Fields.GetValue("renderstylefloor", "translucent")))
+					floorRenderStyle.SelectedIndex = -1;
 
 				//Misc
 				if(s.Fields.GetValue("soundsequence", string.Empty) != soundSequence.Text) soundSequence.Text = "";

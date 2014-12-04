@@ -62,7 +62,7 @@
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.cbUseFloorLineAngles = new System.Windows.Forms.CheckBox();
 			this.floorAngleControl = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
-			this.label7 = new System.Windows.Forms.Label();
+			this.labelfloorrenderstyle = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
 			this.floorAlpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label11 = new System.Windows.Forms.Label();
@@ -77,7 +77,7 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.cbUseCeilLineAngles = new System.Windows.Forms.CheckBox();
 			this.ceilAngleControl = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
-			this.label3 = new System.Windows.Forms.Label();
+			this.labelceilrenderstyle = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.ceilAlpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label1 = new System.Windows.Forms.Label();
@@ -323,7 +323,7 @@
 			groupfloorceiling.Controls.Add(this.floorheight);
 			groupfloorceiling.Location = new System.Drawing.Point(7, 6);
 			groupfloorceiling.Name = "groupfloorceiling";
-			groupfloorceiling.Size = new System.Drawing.Size(242, 148);
+			groupfloorceiling.Size = new System.Drawing.Size(188, 148);
 			groupfloorceiling.TabIndex = 0;
 			groupfloorceiling.TabStop = false;
 			groupfloorceiling.Text = " Heights: ";
@@ -492,7 +492,7 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox2.Controls.Add(this.cbUseFloorLineAngles);
 			this.groupBox2.Controls.Add(this.floorAngleControl);
-			this.groupBox2.Controls.Add(this.label7);
+			this.groupBox2.Controls.Add(this.labelfloorrenderstyle);
 			this.groupBox2.Controls.Add(this.label10);
 			this.groupBox2.Controls.Add(this.floorAlpha);
 			this.groupBox2.Controls.Add(this.label11);
@@ -525,7 +525,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -360;
+			this.floorAngleControl.Angle = -450;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
@@ -533,15 +533,15 @@
 			this.floorAngleControl.TabIndex = 56;
 			this.floorAngleControl.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.floorAngleControl_AngleChanged);
 			// 
-			// label7
+			// labelfloorrenderstyle
 			// 
-			this.label7.Location = new System.Drawing.Point(24, 88);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(80, 14);
-			this.label7.TabIndex = 54;
-			this.label7.Tag = "";
-			this.label7.Text = "Render style:";
-			this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.labelfloorrenderstyle.Location = new System.Drawing.Point(24, 88);
+			this.labelfloorrenderstyle.Name = "labelfloorrenderstyle";
+			this.labelfloorrenderstyle.Size = new System.Drawing.Size(80, 14);
+			this.labelfloorrenderstyle.TabIndex = 54;
+			this.labelfloorrenderstyle.Tag = "";
+			this.labelfloorrenderstyle.Text = "Render style:";
+			this.labelfloorrenderstyle.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label10
 			// 
@@ -693,7 +693,7 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.cbUseCeilLineAngles);
 			this.groupBox1.Controls.Add(this.ceilAngleControl);
-			this.groupBox1.Controls.Add(this.label3);
+			this.groupBox1.Controls.Add(this.labelceilrenderstyle);
 			this.groupBox1.Controls.Add(this.label4);
 			this.groupBox1.Controls.Add(this.ceilAlpha);
 			this.groupBox1.Controls.Add(this.label1);
@@ -726,7 +726,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -360;
+			this.ceilAngleControl.Angle = -450;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
@@ -734,15 +734,15 @@
 			this.ceilAngleControl.TabIndex = 55;
 			this.ceilAngleControl.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.ceilAngleControl_AngleChanged);
 			// 
-			// label3
+			// labelceilrenderstyle
 			// 
-			this.label3.Location = new System.Drawing.Point(24, 88);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(80, 14);
-			this.label3.TabIndex = 54;
-			this.label3.Tag = "";
-			this.label3.Text = "Render style:";
-			this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.labelceilrenderstyle.Location = new System.Drawing.Point(24, 88);
+			this.labelceilrenderstyle.Name = "labelceilrenderstyle";
+			this.labelceilrenderstyle.Size = new System.Drawing.Size(80, 14);
+			this.labelceilrenderstyle.TabIndex = 54;
+			this.labelceilrenderstyle.Tag = "";
+			this.labelceilrenderstyle.Text = "Render style:";
+			this.labelceilrenderstyle.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label4
 			// 
@@ -1023,6 +1023,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SectorEditFormUDMF";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -1079,9 +1080,9 @@
 		private System.Windows.Forms.CheckBox ceilLightAbsolute;
 		private System.Windows.Forms.Label labelLightFront;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox ceilBrightness;
-		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label labelceilrenderstyle;
 		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label labelfloorrenderstyle;
 		private System.Windows.Forms.Label label10;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floorAlpha;
 		private System.Windows.Forms.Label label11;

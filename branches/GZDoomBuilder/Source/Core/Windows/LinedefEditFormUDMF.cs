@@ -176,6 +176,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill flags lists
 			foreach(KeyValuePair<string, string> lf in General.Map.Config.LinedefFlags)
 				flags.Add(lf.Value, lf.Key);
+			flags.Enabled = General.Map.Config.LinedefFlags.Count > 0;
 
 			//mxd
 			foreach(KeyValuePair<string, string> lf in General.Map.Config.SidedefFlags) 
@@ -183,6 +184,8 @@ namespace CodeImp.DoomBuilder.Windows
 				flagsFront.Add(lf.Value, lf.Key);
 				flagsBack.Add(lf.Value, lf.Key);
 			}
+			flagsFront.Enabled = General.Map.Config.SidedefFlags.Count > 0;
+			flagsBack.Enabled = General.Map.Config.SidedefFlags.Count > 0;
 
 			// Fill actions list
 			action.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
@@ -192,14 +195,16 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Fill keys list
 			keynumbers = new List<int>();
-			if (General.Map.Config.Enums.ContainsKey("keys")) 
+			if (General.Map.Config.Enums.ContainsKey("keys"))
 			{
-				foreach(EnumItem item in General.Map.Config.Enums["keys"]) 
+				foreach (EnumItem item in General.Map.Config.Enums["keys"])
 				{
 					keynumbers.Add(item.GetIntValue());
 					lockpick.Items.Add(item);
 				}
 			}
+			lockpick.Enabled = (keynumbers.Count > 0);
+			labellockpick.Enabled = (keynumbers.Count > 0);
 			
 			// Initialize image selectors
 			fronthigh.Initialize();
@@ -211,74 +216,41 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Setup script numbers
 			scriptNumbers.Location = arg0.Location;
-
-			foreach(ScriptItem si in General.Map.NumberedScripts)
-				scriptNumbers.Items.Add(si);
-
+			foreach(ScriptItem si in General.Map.NumberedScripts) scriptNumbers.Items.Add(si);
 			scriptNumbers.DropDownWidth = Tools.GetDropDownWidth(scriptNumbers);
 
-			if(General.Map.FormatInterface.HasCustomFields) //mxd
-			{ 
-				//mxd. Setup script names
-				scriptNames.Location = arg0.Location;
+			//mxd. Setup script names
+			scriptNames.Location = arg0.Location;
+			foreach(ScriptItem nsi in General.Map.NamedScripts) scriptNames.Items.Add(nsi);
+			scriptNames.DropDownWidth = Tools.GetDropDownWidth(scriptNames);
 
-				foreach(ScriptItem nsi in General.Map.NamedScripts)
-					scriptNames.Items.Add(nsi);
+			// Initialize custom fields editor
+			fieldslist.Setup("linedef");
 
-				scriptNames.DropDownWidth = Tools.GetDropDownWidth(scriptNames);
-				
-				// Initialize custom fields editor
-				fieldslist.Setup("linedef");
+			// Fill universal fields list
+			fieldslist.ListFixedFields(General.Map.Config.LinedefFields);
 
-				// Fill universal fields list
-				fieldslist.ListFixedFields(General.Map.Config.LinedefFields);
+			//initialize controls
+			frontUdmfControls = new List<PairedFieldsControl> { pfcFrontOffsetTop, pfcFrontOffsetMid, pfcFrontOffsetBottom, pfcFrontScaleTop, pfcFrontScaleMid, pfcFrontScaleBottom };
+			backUdmfControls = new List<PairedFieldsControl> { pfcBackOffsetTop, pfcBackOffsetMid, pfcBackOffsetBottom, pfcBackScaleTop, pfcBackScaleMid, pfcBackScaleBottom };
 
-				//initialize controls
-				frontUdmfControls = new List<PairedFieldsControl> { pfcFrontOffsetTop, pfcFrontOffsetMid, pfcFrontOffsetBottom, pfcFrontScaleTop, pfcFrontScaleMid, pfcFrontScaleBottom };
-				backUdmfControls = new List<PairedFieldsControl> { pfcBackOffsetTop, pfcBackOffsetMid, pfcBackOffsetBottom, pfcBackScaleTop, pfcBackScaleMid, pfcBackScaleBottom };
+			// Setup renderstyles
+			renderstyles = new string[General.Map.Config.LinedefRenderStyles.Count];
+			General.Map.Config.LinedefRenderStyles.Keys.CopyTo(renderstyles, 0);
+			renderStyle.Enabled = (General.Map.Config.LinedefRenderStyles.Count > 0);
+			labelrenderstyle.Enabled = (General.Map.Config.LinedefRenderStyles.Count > 0);
 
-				// Setup renderstyles
-				renderstyles = new string[General.Map.Config.LinedefRenderStyles.Count];
-				General.Map.Config.LinedefRenderStyles.Keys.CopyTo(renderstyles, 0);
-				renderStyle.Enabled = (General.Map.Config.LinedefRenderStyles.Count > 0);
+			// Fill renderstyles
+			foreach(KeyValuePair<string, string> lf in General.Map.Config.LinedefRenderStyles)
+				renderStyle.Items.Add(lf.Value);
 
-				// Fill renderstyles
-				foreach(KeyValuePair<string, string> lf in General.Map.Config.LinedefRenderStyles)
-					renderStyle.Items.Add(lf.Value);
-
-				//Restore value linking
-				pfcFrontScaleTop.LinkValues = linkFrontTopScale;
-				pfcFrontScaleMid.LinkValues = linkFrontMidScale;
-				pfcFrontScaleBottom.LinkValues = linkFrontBottomScale;
-				pfcBackScaleTop.LinkValues = linkBackTopScale;
-				pfcBackScaleMid.LinkValues = linkBackMidScale;
-				pfcBackScaleBottom.LinkValues = linkBackBottomScale;
-			} 
-			else 
-			{
-				//Hide unused controls
-				tabs.TabPages.Remove(tabcustom);
-
-				settingsGroup.Visible = false;
-				customfrontbutton.Visible = false;
-				custombackbutton.Visible = false;
-				labelLightFront.Visible = false;
-				lightFront.Visible = false;
-				cbLightAbsoluteFront.Visible = false;
-				labelLightBack.Visible = false;
-				lightBack.Visible = false;
-				cbLightAbsoluteBack.Visible = false;
-				frontflagsgroup.Enabled = false;
-				backflagsgroup.Enabled = false;
-				frontscalegroup.Enabled = false;
-				backscalegroup.Enabled = false;
-				pfcFrontOffsetTop.Enabled = false;
-				pfcFrontOffsetMid.Enabled = false;
-				pfcFrontOffsetBottom.Enabled = false;
-				pfcBackOffsetTop.Enabled = false;
-				pfcBackOffsetMid.Enabled = false;
-				pfcBackOffsetBottom.Enabled = false;
-			}
+			//Restore value linking
+			pfcFrontScaleTop.LinkValues = linkFrontTopScale;
+			pfcFrontScaleMid.LinkValues = linkFrontMidScale;
+			pfcFrontScaleBottom.LinkValues = linkFrontBottomScale;
+			pfcBackScaleTop.LinkValues = linkBackTopScale;
+			pfcBackScaleMid.LinkValues = linkBackMidScale;
+			pfcBackScaleBottom.LinkValues = linkBackBottomScale;
 		}
 
 		#endregion
@@ -318,20 +290,16 @@ namespace CodeImp.DoomBuilder.Windows
 				if(fl.Flags.ContainsKey(ai.Key)) c.Checked = fl.Flags[ai.Key];
 			}
 
-			//mxd. UDMF Settings
-			if(General.Map.FormatInterface.HasCustomFields) 
-			{
-				fieldslist.SetValues(fl.Fields, true); // Custom fields
-				renderStyle.SelectedIndex = Array.IndexOf(renderstyles, fl.Fields.GetValue("renderstyle", "translucent"));
-				alpha.Text = General.Clamp(fl.Fields.GetValue("alpha", 1.0f), 0f, 1f).ToString();
-				arg0str = fl.Fields.GetValue("arg0str", string.Empty);
-				haveArg0Str = !string.IsNullOrEmpty(arg0str);
+			fieldslist.SetValues(fl.Fields, true); // Custom fields
+			renderStyle.SelectedIndex = Array.IndexOf(renderstyles, fl.Fields.GetValue("renderstyle", "translucent"));
+			alpha.Text = General.Clamp(fl.Fields.GetValue("alpha", 1.0f), 0f, 1f).ToString();
+			arg0str = fl.Fields.GetValue("arg0str", string.Empty);
+			haveArg0Str = !string.IsNullOrEmpty(arg0str);
 
-				// Locknumber
-				int locknumber = fl.Fields.GetValue("locknumber", 0);
-				lockpick.SelectedIndex = keynumbers.IndexOf(locknumber);
-				if (lockpick.SelectedIndex == -1) lockpick.Text = locknumber.ToString();
-			}
+			// Locknumber
+			int locknumber = fl.Fields.GetValue("locknumber", 0);
+			lockpick.SelectedIndex = keynumbers.IndexOf(locknumber);
+			if(lockpick.SelectedIndex == -1) lockpick.Text = locknumber.ToString();
 
 			// Action/tags
 			action.Value = fl.Action;
@@ -363,20 +331,16 @@ namespace CodeImp.DoomBuilder.Windows
 				frontlow.Required = fl.Front.LowRequired();
 				frontsector.Text = fl.Front.Sector.Index.ToString();
 
-				//mxd
-				if(General.Map.FormatInterface.HasCustomFields) 
-				{
-					//front settings
-					foreach(PairedFieldsControl pfc in frontUdmfControls)
-						pfc.SetValuesFrom(fl.Front.Fields, true);
+				//flags
+				foreach(CheckBox c in flagsFront.Checkboxes)
+					if(fl.Front.Flags.ContainsKey(c.Tag.ToString())) c.Checked = fl.Front.Flags[c.Tag.ToString()];
 
-					lightFront.Text = UDMFTools.GetInteger(fl.Front.Fields, "light", 0).ToString();
-					cbLightAbsoluteFront.Checked = fl.Front.Fields.GetValue("lightabsolute", false);
-					
-					//flags
-					foreach(CheckBox c in flagsFront.Checkboxes)
-						if(fl.Front.Flags.ContainsKey(c.Tag.ToString())) c.Checked = fl.Front.Flags[c.Tag.ToString()];
-				}
+				//front settings
+				foreach(PairedFieldsControl pfc in frontUdmfControls)
+					pfc.SetValuesFrom(fl.Front.Fields, true);
+
+				lightFront.Text = UDMFTools.GetInteger(fl.Front.Fields, "light", 0).ToString();
+				cbLightAbsoluteFront.Checked = fl.Front.Fields.GetValue("lightabsolute", false);
 
 				frontTextureOffset.SetValues(fl.Front.OffsetX, fl.Front.OffsetY, true); //mxd
 			}
@@ -392,20 +356,16 @@ namespace CodeImp.DoomBuilder.Windows
 				backlow.Required = fl.Back.LowRequired();
 				backsector.Text = fl.Back.Sector.Index.ToString();
 
-				//mxd
-				if(General.Map.FormatInterface.HasCustomFields) 
-				{
-					//front settings
-					foreach(PairedFieldsControl pfc in backUdmfControls)
-						pfc.SetValuesFrom(fl.Back.Fields, true);
+				//flags
+				foreach(CheckBox c in flagsBack.Checkboxes)
+					if(fl.Back.Flags.ContainsKey(c.Tag.ToString())) c.Checked = fl.Back.Flags[c.Tag.ToString()];
 
-					lightBack.Text = UDMFTools.GetInteger(fl.Back.Fields, "light", 0).ToString();
-					cbLightAbsoluteBack.Checked = fl.Back.Fields.GetValue("lightabsolute", false);
+				//back settings
+				foreach(PairedFieldsControl pfc in backUdmfControls)
+					pfc.SetValuesFrom(fl.Back.Fields, true);
 
-					//flags
-					foreach(CheckBox c in flagsBack.Checkboxes)
-						if(fl.Back.Flags.ContainsKey(c.Tag.ToString()))	c.Checked = fl.Back.Flags[c.Tag.ToString()];
-				}
+				lightBack.Text = UDMFTools.GetInteger(fl.Back.Fields, "light", 0).ToString();
+				cbLightAbsoluteBack.Checked = fl.Back.Fields.GetValue("lightabsolute", false);
  
 				backTextureOffset.SetValues(fl.Back.OffsetX, fl.Back.OffsetY, true); //mxd
 			}
@@ -442,44 +402,43 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				//mxd. UDMF Settings
-				if(General.Map.FormatInterface.HasCustomFields) 
+
+				// Render style
+				if(renderStyle.SelectedIndex > -1 && renderStyle.SelectedIndex != Array.IndexOf(renderstyles, l.Fields.GetValue("renderstyle", "translucent")))
+					renderStyle.SelectedIndex = -1;
+
+				// Alpha
+				if(!string.IsNullOrEmpty(alpha.Text) && General.Clamp(alpha.GetResultFloat(1.0f), 0f, 1f) != l.Fields.GetValue("alpha", 1.0f))
+					alpha.Text = string.Empty;
+
+				// Locknumber
+				if(!string.IsNullOrEmpty(lockpick.Text)) 
 				{
-					if(renderstyles != null) 
+					if(lockpick.SelectedIndex == -1) 
 					{
-						if(renderStyle.SelectedIndex > -1 && renderStyle.SelectedIndex != Array.IndexOf(renderstyles, l.Fields.GetValue("renderstyle", "translucent")))
-							renderStyle.SelectedIndex = -1;
-					}
-
-					if(!string.IsNullOrEmpty(alpha.Text) && General.Clamp(alpha.GetResultFloat(1.0f), 0f, 1f) != l.Fields.GetValue("alpha", 1.0f))
-						alpha.Text = string.Empty;
-
-					if (!string.IsNullOrEmpty(lockpick.Text)) 
-					{
-						if (lockpick.SelectedIndex == -1) 
-						{
-							int locknumber;
-							if (int.TryParse(lockpick.Text, out locknumber) && locknumber != l.Fields.GetValue("locknumber", 0)) 
-							{
-								lockpick.SelectedIndex = -1;
-								lockpick.Text = string.Empty;
-							}
-						} 
-						else if(keynumbers[lockpick.SelectedIndex] != l.Fields.GetValue("locknumber", 0)) 
+						if(int.TryParse(lockpick.Text, out locknumber) && locknumber != l.Fields.GetValue("locknumber", 0)) 
 						{
 							lockpick.SelectedIndex = -1;
 							lockpick.Text = string.Empty;
 						}
-					}
-
-					if(arg0str != l.Fields.GetValue("arg0str", string.Empty)) 
+					} 
+					else if(keynumbers[lockpick.SelectedIndex] != l.Fields.GetValue("locknumber", 0)) 
 					{
-						haveArg0Str = true;
-						arg0str = string.Empty;
+						lockpick.SelectedIndex = -1;
+						lockpick.Text = string.Empty;
 					}
-
-					l.Fields.BeforeFieldsChange();
-					fieldslist.SetValues(l.Fields, false);
 				}
+
+				// arg0str
+				if(arg0str != l.Fields.GetValue("arg0str", string.Empty)) 
+				{
+					haveArg0Str = true;
+					arg0str = string.Empty;
+				}
+
+				// Custom fields
+				l.Fields.BeforeFieldsChange();
+				fieldslist.SetValues(l.Fields, false);
 
 				// Action/tags
 				if(l.Action != action.Value) action.Empty = true;
@@ -530,34 +489,31 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 					if(frontsector.Text != l.Front.Sector.Index.ToString()) frontsector.Text = string.Empty;
 
-					//mxd
-					if(General.Map.FormatInterface.HasCustomFields) 
+					//flags
+					foreach(CheckBox c in flagsFront.Checkboxes) 
 					{
-						foreach(PairedFieldsControl pfc in frontUdmfControls)
-							pfc.SetValuesFrom(l.Front.Fields, false);
+						if(c.CheckState == CheckState.Indeterminate) continue;
+						if(l.Front.IsFlagSet(c.Tag.ToString()) != c.Checked) 
+						{
+							c.ThreeState = true;
+							c.CheckState = CheckState.Indeterminate;
+						}
+					}
 
-						if(!string.IsNullOrEmpty(lightFront.Text)) 
-						{
-							int light = UDMFTools.GetInteger(l.Front.Fields, "light", 0);
-							if(light != lightFront.GetResult(light)) lightFront.Text = string.Empty;
-						}
-						
-						if(l.Front.Fields.GetValue("lightabsolute", false) != cbLightAbsoluteFront.Checked) 
-						{
-							cbLightAbsoluteFront.ThreeState = true;
-							cbLightAbsoluteFront.CheckState = CheckState.Indeterminate;
-						}
+					//mxd
+					foreach(PairedFieldsControl pfc in frontUdmfControls)
+						pfc.SetValuesFrom(l.Front.Fields, false);
 
-						//flags
-						foreach(CheckBox c in flagsFront.Checkboxes) 
-						{
-							if(c.CheckState == CheckState.Indeterminate) continue;
-							if(l.Front.IsFlagSet(c.Tag.ToString()) != c.Checked) 
-							{
-								c.ThreeState = true;
-								c.CheckState = CheckState.Indeterminate;
-							}
-						}
+					if(!string.IsNullOrEmpty(lightFront.Text)) 
+					{
+						int light = UDMFTools.GetInteger(l.Front.Fields, "light", 0);
+						if(light != lightFront.GetResult(light)) lightFront.Text = string.Empty;
+					}
+
+					if(l.Front.Fields.GetValue("lightabsolute", false) != cbLightAbsoluteFront.Checked) 
+					{
+						cbLightAbsoluteFront.ThreeState = true;
+						cbLightAbsoluteFront.CheckState = CheckState.Indeterminate;
 					}
 
 					l.Front.Fields.BeforeFieldsChange(); //mxd
@@ -588,34 +544,32 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 					if(backsector.Text != l.Back.Sector.Index.ToString()) backsector.Text = string.Empty;
 
-					//mxd
-					if(General.Map.FormatInterface.HasCustomFields) 
+					//flags
+					foreach(CheckBox c in flagsBack.Checkboxes) 
 					{
-						foreach(PairedFieldsControl pfc in backUdmfControls)
-							pfc.SetValuesFrom(l.Back.Fields, false);
-
-						if(!string.IsNullOrEmpty(lightBack.Text)) 
+						if(c.CheckState == CheckState.Indeterminate) continue;
+						if(l.Back.IsFlagSet(c.Tag.ToString()) != c.Checked) 
 						{
-							int light = UDMFTools.GetInteger(l.Back.Fields, "light", 0);
-							if(light != lightBack.GetResult(light)) lightBack.Text = string.Empty;
+							c.ThreeState = true;
+							c.CheckState = CheckState.Indeterminate;
 						}
+					}
 
-						if(l.Back.Fields.GetValue("lightabsolute", false) != cbLightAbsoluteBack.Checked) 
-						{
-							cbLightAbsoluteBack.ThreeState = true;
-							cbLightAbsoluteBack.CheckState = CheckState.Indeterminate;
-						}
+					//mxd
+					foreach(PairedFieldsControl pfc in backUdmfControls)
+						pfc.SetValuesFrom(l.Back.Fields, false);
 
-						//flags
-						foreach(CheckBox c in flagsBack.Checkboxes) 
-						{
-							if(c.CheckState == CheckState.Indeterminate) continue;
-							if(l.Back.IsFlagSet(c.Tag.ToString()) != c.Checked) 
-							{
-								c.ThreeState = true;
-								c.CheckState = CheckState.Indeterminate;
-							}
-						}
+					if(!string.IsNullOrEmpty(lightBack.Text)) 
+					{
+						int light = UDMFTools.GetInteger(l.Back.Fields, "light", 0);
+						if(light != lightBack.GetResult(light))
+							lightBack.Text = string.Empty;
+					}
+
+					if(l.Back.Fields.GetValue("lightabsolute", false) != cbLightAbsoluteBack.Checked) 
+					{
+						cbLightAbsoluteBack.ThreeState = true;
+						cbLightAbsoluteBack.CheckState = CheckState.Indeterminate;
 					}
 
 					l.Back.Fields.BeforeFieldsChange(); //mxd
@@ -883,11 +837,8 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				//mxd. UDMF Settings
-				if(General.Map.FormatInterface.HasCustomFields) 
-				{
-					fieldslist.Apply(l.Fields);
-					if(setlocknumber) UDMFTools.SetInteger(l.Fields, "locknumber", locknumber, 0);
-				}
+				fieldslist.Apply(l.Fields);
+				if(setlocknumber) UDMFTools.SetInteger(l.Fields, "locknumber", locknumber, 0);
 			}
 
 			//mxd. Store value linking

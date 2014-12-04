@@ -32,10 +32,10 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label11;
 			System.Windows.Forms.Label label12;
-			System.Windows.Forms.Label label7;
-			System.Windows.Forms.Label label14;
 			System.Windows.Forms.Label label6;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LinedefEditFormUDMF));
+			this.labelrenderstyle = new System.Windows.Forms.Label();
+			this.labellockpick = new System.Windows.Forms.Label();
 			this.labelLightFront = new System.Windows.Forms.Label();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabproperties = new System.Windows.Forms.TabPage();
-			this.settingsGroup = new System.Windows.Forms.GroupBox();
+			this.groupsettings = new System.Windows.Forms.GroupBox();
 			this.lockpick = new System.Windows.Forms.ComboBox();
 			this.alpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.renderStyle = new System.Windows.Forms.ComboBox();
@@ -121,15 +121,13 @@ namespace CodeImp.DoomBuilder.Windows
 			label2 = new System.Windows.Forms.Label();
 			label11 = new System.Windows.Forms.Label();
 			label12 = new System.Windows.Forms.Label();
-			label7 = new System.Windows.Forms.Label();
-			label14 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			this.actiongroup.SuspendLayout();
 			this.argspanel.SuspendLayout();
 			this.flagsgroup.SuspendLayout();
 			this.tabs.SuspendLayout();
 			this.tabproperties.SuspendLayout();
-			this.settingsGroup.SuspendLayout();
+			this.groupsettings.SuspendLayout();
 			this.activationGroup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.missingactivation)).BeginInit();
 			this.idgroup.SuspendLayout();
@@ -175,24 +173,6 @@ namespace CodeImp.DoomBuilder.Windows
 			label12.Text = "Sector Index:";
 			label12.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// label7
-			// 
-			label7.AutoSize = true;
-			label7.Location = new System.Drawing.Point(15, 24);
-			label7.Name = "label7";
-			label7.Size = new System.Drawing.Size(71, 14);
-			label7.TabIndex = 11;
-			label7.Text = "Render style:";
-			// 
-			// label14
-			// 
-			label14.AutoSize = true;
-			label14.Location = new System.Drawing.Point(330, 24);
-			label14.Name = "label14";
-			label14.Size = new System.Drawing.Size(72, 14);
-			label14.TabIndex = 15;
-			label14.Text = "Lock number:";
-			// 
 			// label6
 			// 
 			label6.AutoSize = true;
@@ -201,6 +181,24 @@ namespace CodeImp.DoomBuilder.Windows
 			label6.Size = new System.Drawing.Size(38, 14);
 			label6.TabIndex = 17;
 			label6.Text = "Alpha:";
+			// 
+			// labelrenderstyle
+			// 
+			this.labelrenderstyle.AutoSize = true;
+			this.labelrenderstyle.Location = new System.Drawing.Point(15, 24);
+			this.labelrenderstyle.Name = "labelrenderstyle";
+			this.labelrenderstyle.Size = new System.Drawing.Size(71, 14);
+			this.labelrenderstyle.TabIndex = 11;
+			this.labelrenderstyle.Text = "Render style:";
+			// 
+			// labellockpick
+			// 
+			this.labellockpick.AutoSize = true;
+			this.labellockpick.Location = new System.Drawing.Point(330, 24);
+			this.labellockpick.Name = "labellockpick";
+			this.labellockpick.Size = new System.Drawing.Size(72, 14);
+			this.labellockpick.TabIndex = 15;
+			this.labellockpick.Text = "Lock number:";
 			// 
 			// labelLightFront
 			// 
@@ -479,7 +477,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// tabproperties
 			// 
 			this.tabproperties.Controls.Add(this.flagsgroup);
-			this.tabproperties.Controls.Add(this.settingsGroup);
+			this.tabproperties.Controls.Add(this.groupsettings);
 			this.tabproperties.Controls.Add(this.actiongroup);
 			this.tabproperties.Controls.Add(this.activationGroup);
 			this.tabproperties.Controls.Add(this.idgroup);
@@ -492,22 +490,22 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabproperties.Text = " Properties ";
 			this.tabproperties.UseVisualStyleBackColor = true;
 			// 
-			// settingsGroup
+			// groupsettings
 			// 
-			this.settingsGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			this.groupsettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.settingsGroup.Controls.Add(this.lockpick);
-			this.settingsGroup.Controls.Add(this.alpha);
-			this.settingsGroup.Controls.Add(label6);
-			this.settingsGroup.Controls.Add(label14);
-			this.settingsGroup.Controls.Add(this.renderStyle);
-			this.settingsGroup.Controls.Add(label7);
-			this.settingsGroup.Location = new System.Drawing.Point(8, 195);
-			this.settingsGroup.Name = "settingsGroup";
-			this.settingsGroup.Size = new System.Drawing.Size(533, 52);
-			this.settingsGroup.TabIndex = 3;
-			this.settingsGroup.TabStop = false;
-			this.settingsGroup.Text = " Settings";
+			this.groupsettings.Controls.Add(this.lockpick);
+			this.groupsettings.Controls.Add(this.alpha);
+			this.groupsettings.Controls.Add(label6);
+			this.groupsettings.Controls.Add(this.labellockpick);
+			this.groupsettings.Controls.Add(this.renderStyle);
+			this.groupsettings.Controls.Add(this.labelrenderstyle);
+			this.groupsettings.Location = new System.Drawing.Point(8, 195);
+			this.groupsettings.Name = "groupsettings";
+			this.groupsettings.Size = new System.Drawing.Size(533, 52);
+			this.groupsettings.TabIndex = 3;
+			this.groupsettings.TabStop = false;
+			this.groupsettings.Text = " Settings";
 			// 
 			// lockpick
 			// 
@@ -1303,8 +1301,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flagsgroup.ResumeLayout(false);
 			this.tabs.ResumeLayout(false);
 			this.tabproperties.ResumeLayout(false);
-			this.settingsGroup.ResumeLayout(false);
-			this.settingsGroup.PerformLayout();
+			this.groupsettings.ResumeLayout(false);
+			this.groupsettings.PerformLayout();
 			this.activationGroup.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.missingactivation)).EndInit();
 			this.idgroup.ResumeLayout(false);
@@ -1387,7 +1385,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcBackOffsetBottom;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcBackOffsetMid;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcBackOffsetTop;
-		private System.Windows.Forms.GroupBox settingsGroup;
+		private System.Windows.Forms.GroupBox groupsettings;
 		private System.Windows.Forms.ComboBox renderStyle;
 		private System.Windows.Forms.Label labelLightFront;
 		private System.Windows.Forms.CheckBox cbLightAbsoluteBack;
@@ -1413,5 +1411,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.GroupBox frontscalegroup;
 		private System.Windows.Forms.GroupBox groupBox6;
 		private System.Windows.Forms.ImageList imagelist;
+		private System.Windows.Forms.Label labelrenderstyle;
+		private System.Windows.Forms.Label labellockpick;
 	}
 }

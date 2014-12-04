@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private string arg0str;
 		private bool haveArg0Str;
 		private List<ThingProperties> thingProps; //mxd
+		private readonly string[] renderstyles; //mxd
 
 		//mxd. Window setup stuff
 		private static Point location = Point.Empty;
@@ -111,35 +112,35 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill flags list
 			foreach(KeyValuePair<string, string> tf in General.Map.Config.ThingFlags)
 				flags.Add(tf.Value, tf.Key);
-
-			// Fill renderstyles
-			foreach(KeyValuePair<string, string> lf in General.Map.Config.ThingRenderStyles)
-				renderStyle.Items.Add(lf.Value);
+			flags.Enabled = (General.Map.Config.ThingFlags.Count > 0);
 
 			// Fill actions list
 			action.GeneralizedCategories = General.Map.Config.GenActionCategories;
 			action.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
 
-			if (General.Map.FormatInterface.HasCustomFields) 
-			{
-				// Initialize custom fields editor
-				fieldslist.Setup("thing");
+			// Setup renderstyles
+			renderstyles = new string[General.Map.Config.ThingRenderStyles.Count];
+			General.Map.Config.ThingRenderStyles.Keys.CopyTo(renderstyles, 0);
 
-				// Fill universal fields list
-				fieldslist.ListFixedFields(General.Map.Config.ThingFields);
-			}
+			// Fill renderstyles
+			foreach(KeyValuePair<string, string> lf in General.Map.Config.ThingRenderStyles)
+				renderStyle.Items.Add(lf.Value);
+			renderStyle.Enabled = (General.Map.Config.ThingRenderStyles.Count > 0);
+			labelrenderstyle.Enabled = (General.Map.Config.ThingRenderStyles.Count > 0);
+
+			// Initialize custom fields editor
+			fieldslist.Setup("thing");
+
+			// Fill universal fields list
+			fieldslist.ListFixedFields(General.Map.Config.ThingFields);
 
 			// Tag/Effects
 			scriptNames.Location = arg0.Location;
 			scriptNumbers.Location = arg0.Location;
-			cbArgStr.Visible = General.Map.FormatInterface.HasCustomFields;
 
-			foreach(ScriptItem nsi in General.Map.NamedScripts)
-				scriptNames.Items.Add(nsi);
-
-			foreach(ScriptItem si in General.Map.NumberedScripts)
-				scriptNumbers.Items.Add(si);
-
+			// Setup script names
+			foreach(ScriptItem nsi in General.Map.NamedScripts) scriptNames.Items.Add(nsi);
+			foreach(ScriptItem si in General.Map.NumberedScripts) scriptNumbers.Items.Add(si);
 			scriptNames.DropDownWidth = Tools.GetDropDownWidth(scriptNames);
 			scriptNumbers.DropDownWidth = Tools.GetDropDownWidth(scriptNumbers);
 
@@ -208,34 +209,19 @@ namespace CodeImp.DoomBuilder.Windows
 			posZ.ButtonStep = General.Map.Grid.GridSize;
 
 			// Custom fields
-			string[] rskeys = null;
-			if (General.Map.FormatInterface.HasCustomFields) 
-			{
-				fieldslist.SetValues(ft.Fields, true);
-				conversationID.Text = ft.Fields.GetValue("conversation", 0).ToString();
-				gravity.Text = ft.Fields.GetValue("gravity", 1.0f).ToString();
-				score.Text = ft.Fields.GetValue("score", 0).ToString();
-				health.Text = ft.Fields.GetValue("health", 1).ToString();
-				alpha.Text = ft.Fields.GetValue("alpha", 1.0f).ToString();
-				color.SetValueFrom(ft.Fields);
-				arg0str = ft.Fields.GetValue("arg0str", string.Empty);
-				haveArg0Str = !string.IsNullOrEmpty(arg0str);
-				scale.SetValues(ft.ScaleX, ft.ScaleY, true);
-				pitch.Text = ft.Pitch.ToString();
-				roll.Text = ft.Roll.ToString();
-
-				//Render style
-				if(General.Map.Config.ThingRenderStyles.Count > 0) 
-				{
-					rskeys = new string[General.Map.Config.ThingRenderStyles.Count];
-					General.Map.Config.ThingRenderStyles.Keys.CopyTo(rskeys, 0);
-					renderStyle.SelectedIndex = Array.IndexOf(rskeys, ft.Fields.GetValue("renderstyle", "normal"));
-				} 
-				else 
-				{
-					renderStyle.Enabled = false;
-				}
-			}
+			fieldslist.SetValues(ft.Fields, true);
+			conversationID.Text = ft.Fields.GetValue("conversation", 0).ToString();
+			gravity.Text = ft.Fields.GetValue("gravity", 1.0f).ToString();
+			score.Text = ft.Fields.GetValue("score", 0).ToString();
+			health.Text = ft.Fields.GetValue("health", 1).ToString();
+			alpha.Text = ft.Fields.GetValue("alpha", 1.0f).ToString();
+			color.SetValueFrom(ft.Fields);
+			arg0str = ft.Fields.GetValue("arg0str", string.Empty);
+			haveArg0Str = !string.IsNullOrEmpty(arg0str);
+			scale.SetValues(ft.ScaleX, ft.ScaleY, true);
+			pitch.Text = ft.Pitch.ToString();
+			roll.Text = ft.Roll.ToString();
+			renderStyle.SelectedIndex = Array.IndexOf(renderstyles, ft.Fields.GetValue("renderstyle", "normal"));
 
 			// Action/tags
 			action.Value = ft.Action;
@@ -299,44 +285,28 @@ namespace CodeImp.DoomBuilder.Windows
 				if(t.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
 
 				//mxd. Custom fields
-				if (General.Map.FormatInterface.HasCustomFields) 
+				t.Fields.BeforeFieldsChange(); //mxd
+				fieldslist.SetValues(t.Fields, false);
+				if (t.Fields.GetValue("conversation", 0).ToString() != conversationID.Text) conversationID.Text = "";
+				if (t.Fields.GetValue("gravity", 1.0f).ToString() != gravity.Text) gravity.Text = "";
+				if (t.Fields.GetValue("score", 0).ToString() != score.Text) score.Text = "";
+				if (t.Fields.GetValue("health", 1).ToString() != health.Text) health.Text = "";
+				if (t.Fields.GetValue("alpha", 1.0f).ToString() != alpha.Text) alpha.Text = "";
+
+				scale.SetValues(t.ScaleX, t.ScaleY, false);
+				color.SetValueFrom(t.Fields);
+
+				if (t.Pitch.ToString() != pitch.Text) pitch.Text = "";
+				if (t.Roll.ToString() != roll.Text) roll.Text = "";
+
+				//Render style
+				if(renderStyle.SelectedIndex > -1 && renderStyle.SelectedIndex != Array.IndexOf(renderstyles, t.Fields.GetValue("renderstyle", "normal")))
+					renderStyle.SelectedIndex = -1;
+
+				if (arg0str != t.Fields.GetValue("arg0str", string.Empty)) 
 				{
-					t.Fields.BeforeFieldsChange(); //mxd
-					fieldslist.SetValues(t.Fields, false);
-
-					if (t.Fields.GetValue("conversation", 0).ToString() != conversationID.Text)
-						conversationID.Text = "";
-
-					if (t.Fields.GetValue("gravity", 1.0f).ToString() != gravity.Text)
-						gravity.Text = "";
-
-					if (t.Fields.GetValue("score", 0).ToString() != score.Text)
-						score.Text = "";
-
-					if (t.Fields.GetValue("health", 1).ToString() != health.Text)
-						health.Text = "";
-
-					if (t.Fields.GetValue("alpha", 1.0f).ToString() != alpha.Text)
-						alpha.Text = "";
-
-					scale.SetValues(t.ScaleX, t.ScaleY, false);
-					color.SetValueFrom(t.Fields);
-
-					if (t.Pitch.ToString() != pitch.Text) pitch.Text = "";
-					if (t.Roll.ToString() != roll.Text) roll.Text = "";
-
-					//Render style
-					if(rskeys != null) 
-					{
-						if(renderStyle.SelectedIndex > -1 && renderStyle.SelectedIndex != Array.IndexOf(rskeys, t.Fields.GetValue("renderstyle", "normal")))
-							renderStyle.SelectedIndex = -1;
-					}
-
-					if (arg0str != t.Fields.GetValue("arg0str", string.Empty)) 
-					{
-						haveArg0Str = true;
-						arg0str = string.Empty;
-					}
+					haveArg0Str = true;
+					arg0str = string.Empty;
 				}
 
 				//mxd. Store initial properties
@@ -615,8 +585,7 @@ namespace CodeImp.DoomBuilder.Windows
 								else if(!int.TryParse(scriptNumbers.Text.Trim(), out t.Args[0]))
 									t.Args[0] = 0;
 
-								if(General.Map.FormatInterface.HasCustomFields && t.Fields.ContainsKey("arg0str")) 
-									t.Fields.Remove("arg0str");
+								if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
 							}
 						} 
 						else //apply arg0str
@@ -628,8 +597,7 @@ namespace CodeImp.DoomBuilder.Windows
 					else 
 					{
 						t.Args[0] = arg0.GetResult(t.Args[0]);
-						if(General.Map.FormatInterface.HasCustomFields && t.Fields.ContainsKey("arg0str"))
-							t.Fields.Remove("arg0str");
+						if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
 					}
 				} 
 				else 
@@ -643,24 +611,21 @@ namespace CodeImp.DoomBuilder.Windows
 				t.Args[4] = arg4.GetResult(t.Args[4]);
 
 				//mxd. Custom fields
-				if (General.Map.FormatInterface.HasCustomFields) 
-				{
-					fieldslist.Apply(t.Fields);
-					if (!string.IsNullOrEmpty(conversationID.Text))
-						UDMFTools.SetInteger(t.Fields, "conversation", conversationID.GetResult(t.Fields.GetValue("conversation", 0)), 0);
-					if (!string.IsNullOrEmpty(gravity.Text))
-						UDMFTools.SetFloat(t.Fields, "gravity", gravity.GetResultFloat(t.Fields.GetValue("gravity", 1.0f)), 1.0f);
-					if (!string.IsNullOrEmpty(health.Text))
-						UDMFTools.SetInteger(t.Fields, "health", health.GetResult(t.Fields.GetValue("health", 1)), 1);
-					if (!string.IsNullOrEmpty(score.Text))
-						UDMFTools.SetInteger(t.Fields, "score", score.GetResult(t.Fields.GetValue("score", 0)), 0);
-					if (!string.IsNullOrEmpty(alpha.Text))
-						UDMFTools.SetFloat(t.Fields, "alpha", alpha.GetResultFloat(t.Fields.GetValue("alpha", 1.0f)), 1.0f);
-					if (rskeys != null && renderStyle.SelectedIndex > -1)
-						UDMFTools.SetString(t.Fields, "renderstyle", rskeys[renderStyle.SelectedIndex], "normal");
+				fieldslist.Apply(t.Fields);
+				if (!string.IsNullOrEmpty(conversationID.Text))
+					UDMFTools.SetInteger(t.Fields, "conversation", conversationID.GetResult(t.Fields.GetValue("conversation", 0)), 0);
+				if (!string.IsNullOrEmpty(gravity.Text))
+					UDMFTools.SetFloat(t.Fields, "gravity", gravity.GetResultFloat(t.Fields.GetValue("gravity", 1.0f)), 1.0f);
+				if (!string.IsNullOrEmpty(health.Text))
+					UDMFTools.SetInteger(t.Fields, "health", health.GetResult(t.Fields.GetValue("health", 1)), 1);
+				if (!string.IsNullOrEmpty(score.Text))
+					UDMFTools.SetInteger(t.Fields, "score", score.GetResult(t.Fields.GetValue("score", 0)), 0);
+				if (!string.IsNullOrEmpty(alpha.Text))
+					UDMFTools.SetFloat(t.Fields, "alpha", alpha.GetResultFloat(t.Fields.GetValue("alpha", 1.0f)), 1.0f);
+				if (rskeys != null && renderStyle.SelectedIndex > -1)
+					UDMFTools.SetString(t.Fields, "renderstyle", rskeys[renderStyle.SelectedIndex], "normal");
 
-					color.ApplyTo(t.Fields, t.Fields.GetValue("fillcolor", 0));
-				}
+				color.ApplyTo(t.Fields, t.Fields.GetValue("fillcolor", 0));
 
 				// Update settings
 				t.UpdateConfiguration();
