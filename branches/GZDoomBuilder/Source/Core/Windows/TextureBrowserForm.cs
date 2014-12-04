@@ -447,7 +447,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Save ImageBrowserControl settings
 			General.Settings.WriteSetting("browserwindow.showtexturesizes", ImageBrowserControl.ShowTextureSizes);
-			General.Settings.WriteSetting("browserwindow.uselongtexturenames", ImageBrowserControl.UseLongTextureNames);
+			if(General.Map.Config.UseLongTextureNames) General.Settings.WriteSetting("browserwindow.uselongtexturenames", ImageBrowserControl.UseLongTextureNames);
 			
 			// Clean up
 			browser.CleanUp();

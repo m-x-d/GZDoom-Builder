@@ -237,16 +237,10 @@ namespace CodeImp.DoomBuilder.Windows
 				frontUdmfControls = new List<PairedFieldsControl> { pfcFrontOffsetTop, pfcFrontOffsetMid, pfcFrontOffsetBottom, pfcFrontScaleTop, pfcFrontScaleMid, pfcFrontScaleBottom };
 				backUdmfControls = new List<PairedFieldsControl> { pfcBackOffsetTop, pfcBackOffsetMid, pfcBackOffsetBottom, pfcBackScaleTop, pfcBackScaleMid, pfcBackScaleBottom };
 
-				// Store renderstyle keys?
-				if(General.Map.Config.LinedefRenderStyles.Count > 0) 
-				{
-					renderstyles = new string[General.Map.Config.LinedefRenderStyles.Count];
-					General.Map.Config.LinedefRenderStyles.Keys.CopyTo(renderstyles, 0);
-				} 
-				else 
-				{
-					renderStyle.Enabled = false;
-				}
+				// Setup renderstyles
+				renderstyles = new string[General.Map.Config.LinedefRenderStyles.Count];
+				General.Map.Config.LinedefRenderStyles.Keys.CopyTo(renderstyles, 0);
+				renderStyle.Enabled = (General.Map.Config.LinedefRenderStyles.Count > 0);
 
 				// Fill renderstyles
 				foreach(KeyValuePair<string, string> lf in General.Map.Config.LinedefRenderStyles)
