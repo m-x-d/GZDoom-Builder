@@ -25,7 +25,9 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			this.button = new System.Windows.Forms.Button();
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.SuspendLayout();
 			// 
 			// button
@@ -37,6 +39,7 @@
 			this.button.Name = "button";
 			this.button.Size = new System.Drawing.Size(28, 26);
 			this.button.TabIndex = 0;
+			this.tooltip.SetToolTip(this.button, "Open Action Reference");
 			this.button.UseVisualStyleBackColor = true;
 			this.button.Click += new System.EventHandler(this.button_Click);
 			// 
@@ -54,5 +57,6 @@
 		#endregion
 
 		private System.Windows.Forms.Button button;
+		private System.Windows.Forms.ToolTip tooltip;
 	}
 }
