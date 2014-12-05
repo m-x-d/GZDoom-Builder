@@ -420,7 +420,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browseaction.Name = "browseaction";
 			this.browseaction.Size = new System.Drawing.Size(28, 25);
 			this.browseaction.TabIndex = 1;
-			this.browseaction.Text = "Browse Action";
+			this.tooltip.SetToolTip(this.browseaction, "Browse Action");
 			this.browseaction.UseVisualStyleBackColor = true;
 			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
 			// 
