@@ -28,6 +28,7 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.Label label4;
@@ -41,6 +42,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
+			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			this.argspanel = new System.Windows.Forms.Panel();
 			this.scriptNumbers = new System.Windows.Forms.ComboBox();
 			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
@@ -76,7 +78,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backhigh = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.backTextureOffset = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
@@ -108,7 +110,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label3
 			// 
-			label3.Location = new System.Drawing.Point(252, 18);
+			label3.Location = new System.Drawing.Point(255, 18);
 			label3.Name = "label3";
 			label3.Size = new System.Drawing.Size(83, 16);
 			label3.TabIndex = 3;
@@ -117,7 +119,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label4
 			// 
-			label4.Location = new System.Drawing.Point(343, 18);
+			label4.Location = new System.Drawing.Point(346, 18);
 			label4.Name = "label4";
 			label4.Size = new System.Drawing.Size(83, 16);
 			label4.TabIndex = 4;
@@ -126,7 +128,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label5
 			// 
-			label5.Location = new System.Drawing.Point(434, 18);
+			label5.Location = new System.Drawing.Point(437, 18);
 			label5.Name = "label5";
 			label5.Size = new System.Drawing.Size(83, 16);
 			label5.TabIndex = 5;
@@ -226,6 +228,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.TabIndex = 1;
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
+			// 
+			// actionhelp
+			// 
+			this.actionhelp.Location = new System.Drawing.Point(497, 25);
+			this.actionhelp.Name = "actionhelp";
+			this.actionhelp.Size = new System.Drawing.Size(28, 25);
+			this.actionhelp.TabIndex = 11;
 			// 
 			// argspanel
 			// 
@@ -388,6 +397,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browseaction.Size = new System.Drawing.Size(28, 25);
 			this.browseaction.TabIndex = 1;
 			this.browseaction.Text = " ";
+			this.tooltip.SetToolTip(this.browseaction, "Browse Action");
 			this.browseaction.UseVisualStyleBackColor = true;
 			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
 			// 
@@ -486,7 +496,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// frontlow
 			// 
-			this.frontlow.Location = new System.Drawing.Point(434, 37);
+			this.frontlow.Location = new System.Drawing.Point(437, 37);
 			this.frontlow.MultipleTextures = false;
 			this.frontlow.Name = "frontlow";
 			this.frontlow.Required = false;
@@ -498,7 +508,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// frontmid
 			// 
-			this.frontmid.Location = new System.Drawing.Point(343, 37);
+			this.frontmid.Location = new System.Drawing.Point(346, 37);
 			this.frontmid.MultipleTextures = false;
 			this.frontmid.Name = "frontmid";
 			this.frontmid.Required = false;
@@ -510,7 +520,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// fronthigh
 			// 
-			this.fronthigh.Location = new System.Drawing.Point(252, 37);
+			this.fronthigh.Location = new System.Drawing.Point(255, 37);
 			this.fronthigh.MultipleTextures = false;
 			this.fronthigh.Name = "fronthigh";
 			this.fronthigh.Required = false;
@@ -641,13 +651,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panel1.Size = new System.Drawing.Size(553, 746);
 			this.panel1.TabIndex = 5;
 			// 
-			// actionhelp
-			// 
-			this.actionhelp.Location = new System.Drawing.Point(497, 25);
-			this.actionhelp.Name = "actionhelp";
-			this.actionhelp.Size = new System.Drawing.Size(28, 25);
-			this.actionhelp.TabIndex = 11;
-			// 
 			// LinedefEditForm
 			// 
 			this.AcceptButton = this.apply;
@@ -663,6 +666,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "LinedefEditForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -726,5 +730,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ComboBox scriptNumbers;
 		private System.Windows.Forms.Panel panel1;
 		private CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton actionhelp;
+		private System.Windows.Forms.ToolTip tooltip;
 	}
 }

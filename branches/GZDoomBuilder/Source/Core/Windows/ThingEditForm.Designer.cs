@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.tabeffects = new System.Windows.Forms.TabPage();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
+			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			this.hexenpanel = new System.Windows.Forms.Panel();
 			this.scriptNumbers = new System.Windows.Forms.ComboBox();
 			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
@@ -73,7 +74,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hint = new System.Windows.Forms.PictureBox();
 			this.hintlabel = new System.Windows.Forms.Label();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			groupBox2 = new System.Windows.Forms.GroupBox();
 			label7 = new System.Windows.Forms.Label();
@@ -375,6 +375,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
 			// 
+			// actionhelp
+			// 
+			this.actionhelp.Location = new System.Drawing.Point(592, 25);
+			this.actionhelp.Name = "actionhelp";
+			this.actionhelp.Size = new System.Drawing.Size(28, 25);
+			this.actionhelp.TabIndex = 14;
+			// 
 			// hexenpanel
 			// 
 			this.hexenpanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -519,6 +526,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browseaction.Size = new System.Drawing.Size(28, 25);
 			this.browseaction.TabIndex = 1;
 			this.browseaction.Text = " ";
+			this.tooltip.SetToolTip(this.browseaction, "Browse Action");
 			this.browseaction.UseVisualStyleBackColor = true;
 			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
 			// 
@@ -589,23 +597,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hintlabel.Size = new System.Drawing.Size(377, 14);
 			this.hintlabel.TabIndex = 4;
 			this.hintlabel.Text = "Select categories or several thing types to randomly assign them to selection";
-			// 
-			// tooltip
-			// 
-			this.tooltip.AutomaticDelay = 10;
-			this.tooltip.AutoPopDelay = 3000;
-			this.tooltip.InitialDelay = 10;
-			this.tooltip.IsBalloon = true;
-			this.tooltip.ReshowDelay = 100;
-			this.tooltip.UseAnimation = false;
-			this.tooltip.UseFading = false;
-			// 
-			// actionhelp
-			// 
-			this.actionhelp.Location = new System.Drawing.Point(592, 25);
-			this.actionhelp.Name = "actionhelp";
-			this.actionhelp.Size = new System.Drawing.Size(28, 25);
-			this.actionhelp.TabIndex = 14;
 			// 
 			// ThingEditForm
 			// 

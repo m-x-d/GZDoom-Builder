@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
+			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			this.argspanel = new System.Windows.Forms.Panel();
 			this.scriptNumbers = new System.Windows.Forms.ComboBox();
 			this.scriptNames = new System.Windows.Forms.ComboBox();
@@ -118,7 +119,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.imagelist = new System.Windows.Forms.ImageList(this.components);
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			label2 = new System.Windows.Forms.Label();
 			label11 = new System.Windows.Forms.Label();
 			label12 = new System.Windows.Forms.Label();
@@ -249,6 +249,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.TabIndex = 1;
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
+			// 
+			// actionhelp
+			// 
+			this.actionhelp.Location = new System.Drawing.Point(497, 25);
+			this.actionhelp.Name = "actionhelp";
+			this.actionhelp.Size = new System.Drawing.Size(28, 25);
+			this.actionhelp.TabIndex = 10;
 			// 
 			// argspanel
 			// 
@@ -413,7 +420,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browseaction.Name = "browseaction";
 			this.browseaction.Size = new System.Drawing.Size(28, 25);
 			this.browseaction.TabIndex = 1;
-			this.browseaction.Text = " ";
+			this.browseaction.Text = "Browse Action";
 			this.browseaction.UseVisualStyleBackColor = true;
 			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
 			// 
@@ -1264,23 +1271,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.imagelist.TransparentColor = System.Drawing.Color.Transparent;
 			this.imagelist.Images.SetKeyName(0, "Check.png");
 			this.imagelist.Images.SetKeyName(1, "SearchClear.png");
-			// 
-			// tooltip
-			// 
-			this.tooltip.AutomaticDelay = 10;
-			this.tooltip.AutoPopDelay = 3000;
-			this.tooltip.InitialDelay = 10;
-			this.tooltip.IsBalloon = true;
-			this.tooltip.ReshowDelay = 100;
-			this.tooltip.UseAnimation = false;
-			this.tooltip.UseFading = false;
-			// 
-			// actionhelp
-			// 
-			this.actionhelp.Location = new System.Drawing.Point(497, 25);
-			this.actionhelp.Name = "actionhelp";
-			this.actionhelp.Size = new System.Drawing.Size(28, 25);
-			this.actionhelp.TabIndex = 10;
 			// 
 			// LinedefEditFormUDMF
 			// 

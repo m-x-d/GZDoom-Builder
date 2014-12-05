@@ -437,21 +437,29 @@ namespace CodeImp.DoomBuilder.Windows
 			arg3.Setup(arginfo[3]);
 			arg4.Setup(arginfo[4]);
 
-			// Zero all arguments when linedef action 0 (normal) is chosen
-			if(!preventchanges && (showaction == 0)) 
+			if(!preventchanges) 
 			{
-				//mxd
-				arg0.SetDefaultValue();
-				arg1.SetDefaultValue();
-				arg2.SetDefaultValue();
-				arg3.SetDefaultValue();
-				arg4.SetDefaultValue();
-			}
+				// mxd. Apply action's or thing's default arguments
+				if(showaction != 0 || thinginfo != null) 
+				{
+					arg0.SetDefaultValue();
+					arg1.SetDefaultValue();
+					arg2.SetDefaultValue();
+					arg3.SetDefaultValue();
+					arg4.SetDefaultValue();
+				} 
+				else //or set them to 0
+				{
+					arg0.SetValue(0);
+					arg1.SetValue(0);
+					arg2.SetValue(0);
+					arg3.SetValue(0);
+					arg4.SetValue(0);
+				}
 
-			if(!preventchanges)
-			{
-				UpdateScriptControls(); //mxd
-				actionhelp.UpdateAction(showaction); //mxd
+				//mxd. Update what must be updated
+				UpdateScriptControls();
+				actionhelp.UpdateAction(showaction);
 			}
 		}
 

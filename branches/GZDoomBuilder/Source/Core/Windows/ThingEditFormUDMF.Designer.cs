@@ -76,6 +76,7 @@
 			this.renderStyle = new System.Windows.Forms.ComboBox();
 			this.labelrenderstyle = new System.Windows.Forms.Label();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
+			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			this.hexenpanel = new System.Windows.Forms.Panel();
 			this.scriptNumbers = new System.Windows.Forms.ComboBox();
 			this.scriptNames = new System.Windows.Forms.ComboBox();
@@ -101,7 +102,6 @@
 			this.hint = new System.Windows.Forms.PictureBox();
 			this.hintlabel = new System.Windows.Forms.Label();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabs.SuspendLayout();
@@ -697,6 +697,13 @@
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
 			// 
+			// actionhelp
+			// 
+			this.actionhelp.Location = new System.Drawing.Point(581, 24);
+			this.actionhelp.Name = "actionhelp";
+			this.actionhelp.Size = new System.Drawing.Size(28, 26);
+			this.actionhelp.TabIndex = 14;
+			// 
 			// hexenpanel
 			// 
 			this.hexenpanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -744,7 +751,7 @@
 			// 
 			// cbArgStr
 			// 
-			this.cbArgStr.Location = new System.Drawing.Point(14, 3);
+			this.cbArgStr.Location = new System.Drawing.Point(14, 1);
 			this.cbArgStr.Name = "cbArgStr";
 			this.cbArgStr.Size = new System.Drawing.Size(63, 40);
 			this.cbArgStr.TabIndex = 21;
@@ -763,7 +770,7 @@
 			// arg1
 			// 
 			this.arg1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg1.Location = new System.Drawing.Point(172, 37);
+			this.arg1.Location = new System.Drawing.Point(172, 36);
 			this.arg1.Name = "arg1";
 			this.arg1.Size = new System.Drawing.Size(127, 24);
 			this.arg1.TabIndex = 1;
@@ -771,7 +778,7 @@
 			// arg0
 			// 
 			this.arg0.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg0.Location = new System.Drawing.Point(172, 11);
+			this.arg0.Location = new System.Drawing.Point(172, 9);
 			this.arg0.Name = "arg0";
 			this.arg0.Size = new System.Drawing.Size(127, 24);
 			this.arg0.TabIndex = 0;
@@ -779,7 +786,7 @@
 			// arg3
 			// 
 			this.arg3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg3.Location = new System.Drawing.Point(473, 11);
+			this.arg3.Location = new System.Drawing.Point(473, 9);
 			this.arg3.Name = "arg3";
 			this.arg3.Size = new System.Drawing.Size(127, 24);
 			this.arg3.TabIndex = 3;
@@ -787,14 +794,14 @@
 			// arg4
 			// 
 			this.arg4.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg4.Location = new System.Drawing.Point(473, 37);
+			this.arg4.Location = new System.Drawing.Point(473, 36);
 			this.arg4.Name = "arg4";
 			this.arg4.Size = new System.Drawing.Size(127, 24);
 			this.arg4.TabIndex = 4;
 			// 
 			// arg1label
 			// 
-			this.arg1label.Location = new System.Drawing.Point(-13, 42);
+			this.arg1label.Location = new System.Drawing.Point(-13, 41);
 			this.arg1label.Name = "arg1label";
 			this.arg1label.Size = new System.Drawing.Size(179, 14);
 			this.arg1label.TabIndex = 14;
@@ -804,7 +811,7 @@
 			// 
 			// arg0label
 			// 
-			this.arg0label.Location = new System.Drawing.Point(-13, 16);
+			this.arg0label.Location = new System.Drawing.Point(-13, 14);
 			this.arg0label.Name = "arg0label";
 			this.arg0label.Size = new System.Drawing.Size(179, 14);
 			this.arg0label.TabIndex = 12;
@@ -814,7 +821,7 @@
 			// 
 			// arg3label
 			// 
-			this.arg3label.Location = new System.Drawing.Point(288, 16);
+			this.arg3label.Location = new System.Drawing.Point(288, 14);
 			this.arg3label.Name = "arg3label";
 			this.arg3label.Size = new System.Drawing.Size(179, 14);
 			this.arg3label.TabIndex = 20;
@@ -834,7 +841,7 @@
 			// 
 			// arg4label
 			// 
-			this.arg4label.Location = new System.Drawing.Point(288, 42);
+			this.arg4label.Location = new System.Drawing.Point(288, 41);
 			this.arg4label.Name = "arg4label";
 			this.arg4label.Size = new System.Drawing.Size(179, 14);
 			this.arg4label.TabIndex = 16;
@@ -864,6 +871,7 @@
 			this.browseaction.Size = new System.Drawing.Size(28, 26);
 			this.browseaction.TabIndex = 1;
 			this.browseaction.Text = " ";
+			this.tooltip.SetToolTip(this.browseaction, "Browse Action");
 			this.browseaction.UseVisualStyleBackColor = true;
 			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
 			// 
@@ -958,23 +966,6 @@
 			this.hintlabel.Size = new System.Drawing.Size(377, 14);
 			this.hintlabel.TabIndex = 4;
 			this.hintlabel.Text = "Select categories or several thing types to randomly assign them to selection";
-			// 
-			// tooltip
-			// 
-			this.tooltip.AutomaticDelay = 10;
-			this.tooltip.AutoPopDelay = 3000;
-			this.tooltip.InitialDelay = 10;
-			this.tooltip.IsBalloon = true;
-			this.tooltip.ReshowDelay = 100;
-			this.tooltip.UseAnimation = false;
-			this.tooltip.UseFading = false;
-			// 
-			// actionhelp
-			// 
-			this.actionhelp.Location = new System.Drawing.Point(581, 24);
-			this.actionhelp.Name = "actionhelp";
-			this.actionhelp.Size = new System.Drawing.Size(28, 26);
-			this.actionhelp.TabIndex = 14;
 			// 
 			// ThingEditFormUDMF
 			// 

@@ -919,10 +919,10 @@ namespace CodeImp.DoomBuilder.Windows
 			arg3.Setup(General.Map.Config.LinedefActions[showaction].Args[3]);
 			arg4.Setup(General.Map.Config.LinedefActions[showaction].Args[4]);
 
-			// mxd. Apply action's default arguments 
 			if(!preventchanges) 
 			{
-				if(showaction != 0 && General.Map.Config.LinedefActions.ContainsKey(showaction)) 
+				// mxd. Apply action's default arguments 
+				if(showaction != 0) 
 				{
 					arg0.SetDefaultValue();
 					arg1.SetDefaultValue();
@@ -938,11 +938,8 @@ namespace CodeImp.DoomBuilder.Windows
 					arg3.SetValue(0);
 					arg4.SetValue(0);
 				}
-			} 
 
-			//mxd
-			if(!preventchanges)
-			{
+				//mxd. Update what must be updated
 				UpdateScriptControls();
 				CheckActivationFlagsRequired();
 				actionhelp.UpdateAction(showaction);
