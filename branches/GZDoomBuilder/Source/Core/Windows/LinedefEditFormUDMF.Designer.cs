@@ -118,6 +118,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.imagelist = new System.Windows.Forms.ImageList(this.components);
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			label2 = new System.Windows.Forms.Label();
 			label11 = new System.Windows.Forms.Label();
 			label12 = new System.Windows.Forms.Label();
@@ -237,6 +238,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.actiongroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.actiongroup.Controls.Add(this.actionhelp);
 			this.actiongroup.Controls.Add(this.argspanel);
 			this.actiongroup.Controls.Add(label2);
 			this.actiongroup.Controls.Add(this.action);
@@ -399,7 +401,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.action.GeneralizedOptions = null;
 			this.action.Location = new System.Drawing.Point(62, 27);
 			this.action.Name = "action";
-			this.action.Size = new System.Drawing.Size(428, 21);
+			this.action.Size = new System.Drawing.Size(402, 21);
 			this.action.TabIndex = 0;
 			this.action.Value = 402;
 			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
@@ -407,7 +409,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// browseaction
 			// 
 			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
-			this.browseaction.Location = new System.Drawing.Point(496, 25);
+			this.browseaction.Location = new System.Drawing.Point(467, 25);
 			this.browseaction.Name = "browseaction";
 			this.browseaction.Size = new System.Drawing.Size(28, 25);
 			this.browseaction.TabIndex = 1;
@@ -1273,6 +1275,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tooltip.UseAnimation = false;
 			this.tooltip.UseFading = false;
 			// 
+			// actionhelp
+			// 
+			this.actionhelp.Location = new System.Drawing.Point(497, 25);
+			this.actionhelp.Name = "actionhelp";
+			this.actionhelp.Size = new System.Drawing.Size(28, 25);
+			this.actionhelp.TabIndex = 10;
+			// 
 			// LinedefEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
@@ -1288,7 +1297,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "LinedefEditFormUDMF";
-			this.Opacity = 0;
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -1413,5 +1422,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ImageList imagelist;
 		private System.Windows.Forms.Label labelrenderstyle;
 		private System.Windows.Forms.Label labellockpick;
+		private CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton actionhelp;
 	}
 }

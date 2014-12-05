@@ -92,7 +92,6 @@
 			this.arg4label = new System.Windows.Forms.Label();
 			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.browseaction = new System.Windows.Forms.Button();
-			this.doompanel = new System.Windows.Forms.Panel();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
 			this.tabcustom = new System.Windows.Forms.TabPage();
@@ -102,6 +101,7 @@
 			this.hint = new System.Windows.Forms.PictureBox();
 			this.hintlabel = new System.Windows.Forms.Label();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabs.SuspendLayout();
@@ -247,7 +247,7 @@
 			// 
 			// labelGravity
 			// 
-			this.labelGravity.Location = new System.Drawing.Point(42, 21);
+			this.labelGravity.Location = new System.Drawing.Point(52, 28);
 			this.labelGravity.Name = "labelGravity";
 			this.labelGravity.Size = new System.Drawing.Size(50, 14);
 			this.labelGravity.TabIndex = 18;
@@ -526,7 +526,7 @@
 			this.conversationID.ButtonStep = 1;
 			this.conversationID.ButtonStepFloat = 1F;
 			this.conversationID.ButtonStepsWrapAround = false;
-			this.conversationID.Location = new System.Drawing.Point(98, 112);
+			this.conversationID.Location = new System.Drawing.Point(108, 119);
 			this.conversationID.Name = "conversationID";
 			this.conversationID.Size = new System.Drawing.Size(72, 24);
 			this.conversationID.StepValues = null;
@@ -535,7 +535,7 @@
 			// labelID
 			// 
 			this.labelID.AutoSize = true;
-			this.labelID.Location = new System.Drawing.Point(6, 117);
+			this.labelID.Location = new System.Drawing.Point(16, 124);
 			this.labelID.Name = "labelID";
 			this.labelID.Size = new System.Drawing.Size(86, 14);
 			this.labelID.TabIndex = 25;
@@ -549,7 +549,7 @@
 			this.health.ButtonStep = 8;
 			this.health.ButtonStepFloat = 0.1F;
 			this.health.ButtonStepsWrapAround = false;
-			this.health.Location = new System.Drawing.Point(98, 80);
+			this.health.Location = new System.Drawing.Point(108, 87);
 			this.health.Name = "health";
 			this.health.Size = new System.Drawing.Size(72, 24);
 			this.health.StepValues = null;
@@ -557,7 +557,7 @@
 			// 
 			// label10
 			// 
-			this.label10.Location = new System.Drawing.Point(42, 85);
+			this.label10.Location = new System.Drawing.Point(52, 92);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(50, 14);
 			this.label10.TabIndex = 22;
@@ -572,7 +572,7 @@
 			this.score.ButtonStep = 8;
 			this.score.ButtonStepFloat = 0.1F;
 			this.score.ButtonStepsWrapAround = false;
-			this.score.Location = new System.Drawing.Point(98, 48);
+			this.score.Location = new System.Drawing.Point(108, 55);
 			this.score.Name = "score";
 			this.score.Size = new System.Drawing.Size(72, 24);
 			this.score.StepValues = null;
@@ -580,7 +580,7 @@
 			// 
 			// label9
 			// 
-			this.label9.Location = new System.Drawing.Point(42, 53);
+			this.label9.Location = new System.Drawing.Point(52, 60);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(50, 14);
 			this.label9.TabIndex = 20;
@@ -595,7 +595,7 @@
 			this.gravity.ButtonStep = 8;
 			this.gravity.ButtonStepFloat = 0.1F;
 			this.gravity.ButtonStepsWrapAround = false;
-			this.gravity.Location = new System.Drawing.Point(98, 16);
+			this.gravity.Location = new System.Drawing.Point(108, 23);
 			this.gravity.Name = "gravity";
 			this.gravity.Size = new System.Drawing.Size(72, 24);
 			this.gravity.StepValues = null;
@@ -622,7 +622,7 @@
 			this.scale.DefaultValue = 1F;
 			this.scale.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.scale.Label = "Scale:";
-			this.scale.Location = new System.Drawing.Point(3, 17);
+			this.scale.Location = new System.Drawing.Point(5, 24);
 			this.scale.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.scale.Name = "scale";
 			this.scale.Size = new System.Drawing.Size(268, 26);
@@ -634,7 +634,7 @@
 			this.color.DefaultValue = 0;
 			this.color.Field = "fillcolor";
 			this.color.Label = "Color:";
-			this.color.Location = new System.Drawing.Point(42, 108);
+			this.color.Location = new System.Drawing.Point(44, 115);
 			this.color.Name = "color";
 			this.color.Size = new System.Drawing.Size(207, 31);
 			this.color.TabIndex = 30;
@@ -647,7 +647,7 @@
 			this.alpha.ButtonStep = 8;
 			this.alpha.ButtonStepFloat = 0.1F;
 			this.alpha.ButtonStepsWrapAround = false;
-			this.alpha.Location = new System.Drawing.Point(89, 78);
+			this.alpha.Location = new System.Drawing.Point(91, 85);
 			this.alpha.Name = "alpha";
 			this.alpha.Size = new System.Drawing.Size(72, 24);
 			this.alpha.StepValues = null;
@@ -655,7 +655,7 @@
 			// 
 			// label8
 			// 
-			this.label8.Location = new System.Drawing.Point(3, 83);
+			this.label8.Location = new System.Drawing.Point(5, 90);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(80, 14);
 			this.label8.TabIndex = 25;
@@ -666,14 +666,14 @@
 			// 
 			this.renderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.renderStyle.FormattingEnabled = true;
-			this.renderStyle.Location = new System.Drawing.Point(89, 50);
+			this.renderStyle.Location = new System.Drawing.Point(91, 57);
 			this.renderStyle.Name = "renderStyle";
 			this.renderStyle.Size = new System.Drawing.Size(156, 22);
 			this.renderStyle.TabIndex = 24;
 			// 
 			// labelrenderstyle
 			// 
-			this.labelrenderstyle.Location = new System.Drawing.Point(3, 53);
+			this.labelrenderstyle.Location = new System.Drawing.Point(5, 60);
 			this.labelrenderstyle.Name = "labelrenderstyle";
 			this.labelrenderstyle.Size = new System.Drawing.Size(80, 14);
 			this.labelrenderstyle.TabIndex = 23;
@@ -685,11 +685,11 @@
 			this.actiongroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.actiongroup.Controls.Add(this.actionhelp);
 			this.actiongroup.Controls.Add(this.hexenpanel);
 			this.actiongroup.Controls.Add(this.label7);
 			this.actiongroup.Controls.Add(this.action);
 			this.actiongroup.Controls.Add(this.browseaction);
-			this.actiongroup.Controls.Add(this.doompanel);
 			this.actiongroup.Location = new System.Drawing.Point(6, 78);
 			this.actiongroup.Name = "actiongroup";
 			this.actiongroup.Size = new System.Drawing.Size(615, 154);
@@ -851,7 +851,7 @@
 			this.action.GeneralizedOptions = null;
 			this.action.Location = new System.Drawing.Point(62, 27);
 			this.action.Name = "action";
-			this.action.Size = new System.Drawing.Size(513, 21);
+			this.action.Size = new System.Drawing.Size(485, 21);
 			this.action.TabIndex = 0;
 			this.action.Value = 402;
 			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
@@ -859,23 +859,13 @@
 			// browseaction
 			// 
 			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
-			this.browseaction.Location = new System.Drawing.Point(581, 24);
+			this.browseaction.Location = new System.Drawing.Point(551, 24);
 			this.browseaction.Name = "browseaction";
 			this.browseaction.Size = new System.Drawing.Size(28, 26);
 			this.browseaction.TabIndex = 1;
 			this.browseaction.Text = " ";
 			this.browseaction.UseVisualStyleBackColor = true;
 			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
-			// 
-			// doompanel
-			// 
-			this.doompanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.doompanel.Location = new System.Drawing.Point(6, 54);
-			this.doompanel.Name = "doompanel";
-			this.doompanel.Size = new System.Drawing.Size(603, 94);
-			this.doompanel.TabIndex = 12;
 			// 
 			// groupBox3
 			// 
@@ -979,6 +969,13 @@
 			this.tooltip.UseAnimation = false;
 			this.tooltip.UseFading = false;
 			// 
+			// actionhelp
+			// 
+			this.actionhelp.Location = new System.Drawing.Point(581, 24);
+			this.actionhelp.Name = "actionhelp";
+			this.actionhelp.Size = new System.Drawing.Size(28, 26);
+			this.actionhelp.TabIndex = 14;
+			// 
 			// ThingEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
@@ -1047,7 +1044,6 @@
 		private System.Windows.Forms.Label arg4label;
 		private CodeImp.DoomBuilder.Controls.ActionSelectorControl action;
 		private System.Windows.Forms.Button browseaction;
-		private System.Windows.Forms.Panel doompanel;
 		private CodeImp.DoomBuilder.Controls.FieldsEditorControl fieldslist;
 		private CodeImp.DoomBuilder.Controls.ArgumentBox arg2;
 		private CodeImp.DoomBuilder.Controls.ArgumentBox arg1;
@@ -1104,5 +1100,6 @@
         private GZBuilder.Controls.PairedFloatControl scale;
 		private System.Windows.Forms.PictureBox missingflags;
 		private System.Windows.Forms.ToolTip tooltip;
+		private CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton actionhelp;
 	}
 }

@@ -39,14 +39,17 @@ namespace CodeImp.DoomBuilder.Controls
 			this.positionlabel = new System.Windows.Forms.Label();
 			this.thingimages = new System.Windows.Forms.ImageList(this.components);
 			this.infopanel = new System.Windows.Forms.Panel();
-			this.spritetex = new System.Windows.Forms.Panel();
+			this.spritepanel = new System.Windows.Forms.Panel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.tbFilter = new System.Windows.Forms.TextBox();
 			this.bClear = new System.Windows.Forms.Button();
 			this.updatetimer = new System.Windows.Forms.Timer(this.components);
 			this.typelist = new CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview();
+			this.spritetex = new CodeImp.DoomBuilder.Controls.ConfigurablePictureBox();
 			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.infopanel.SuspendLayout();
+			this.spritepanel.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.spritetex)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// sizecaption
@@ -141,7 +144,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.infopanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.infopanel.Controls.Add(this.spritetex);
+			this.infopanel.Controls.Add(this.spritepanel);
 			this.infopanel.Controls.Add(this.sizelabel);
 			this.infopanel.Controls.Add(this.typecaption);
 			this.infopanel.Controls.Add(this.sizecaption);
@@ -155,17 +158,17 @@ namespace CodeImp.DoomBuilder.Controls
 			this.infopanel.Size = new System.Drawing.Size(304, 74);
 			this.infopanel.TabIndex = 18;
 			// 
-			// spritetex
+			// spritepanel
 			// 
-			this.spritetex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.spritetex.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.spritetex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-			this.spritetex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.spritetex.Location = new System.Drawing.Point(235, 2);
-			this.spritetex.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
-			this.spritetex.Name = "spritetex";
-			this.spritetex.Size = new System.Drawing.Size(70, 70);
-			this.spritetex.TabIndex = 23;
+			this.spritepanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.spritepanel.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.spritepanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.spritepanel.Controls.Add(this.spritetex);
+			this.spritepanel.Location = new System.Drawing.Point(235, 2);
+			this.spritepanel.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+			this.spritepanel.Name = "spritepanel";
+			this.spritepanel.Size = new System.Drawing.Size(70, 70);
+			this.spritepanel.TabIndex = 23;
 			// 
 			// label1
 			// 
@@ -218,6 +221,21 @@ namespace CodeImp.DoomBuilder.Controls
 			this.typelist.MouseEnter += new System.EventHandler(this.typelist_MouseEnter);
 			this.typelist.SelectionsChanged += new System.EventHandler(this.typelist_SelectionsChanged);
 			// 
+			// spritetex
+			// 
+			this.spritetex.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.Default;
+			this.spritetex.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.spritetex.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+			this.spritetex.Location = new System.Drawing.Point(0, 0);
+			this.spritetex.Name = "spritetex";
+			this.spritetex.PageUnit = System.Drawing.GraphicsUnit.Pixel;
+			this.spritetex.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
+			this.spritetex.Size = new System.Drawing.Size(66, 66);
+			this.spritetex.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.spritetex.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
+			this.spritetex.TabIndex = 0;
+			this.spritetex.TabStop = false;
+			// 
 			// typeid
 			// 
 			this.typeid.AllowDecimal = false;
@@ -244,6 +262,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Size = new System.Drawing.Size(304, 320);
 			this.infopanel.ResumeLayout(false);
 			this.infopanel.PerformLayout();
+			this.spritepanel.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.spritetex)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -265,7 +285,8 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.TextBox tbFilter;
 		private System.Windows.Forms.Button bClear;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview typelist;
-		private System.Windows.Forms.Panel spritetex;
+		private System.Windows.Forms.Panel spritepanel;
 		private System.Windows.Forms.Timer updatetimer;
+		private ConfigurablePictureBox spritetex;
 	}
 }

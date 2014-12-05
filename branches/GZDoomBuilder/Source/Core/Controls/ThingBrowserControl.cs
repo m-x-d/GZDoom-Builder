@@ -170,14 +170,14 @@ namespace CodeImp.DoomBuilder.Controls
 				if(thinginfo.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) &&
 				   (thinginfo.Sprite.Length > DataManager.INTERNAL_PREFIX.Length)) 
 				{
-					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetBitmap());
+					spritetex.Image = General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetBitmap();
 					return;
 				} 
 
 				if((thinginfo.Sprite.Length < 9) && (thinginfo.Sprite.Length > 0))
 				{
 					ImageData sprite = General.Map.Data.GetSpriteImage(thinginfo.Sprite);
-					General.DisplayZoomedImage(spritetex, sprite.GetPreview());
+					spritetex.Image = sprite.GetPreview();
 					if(!sprite.IsPreviewLoaded) updatetimer.Start();
 					return;
 				}
