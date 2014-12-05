@@ -73,6 +73,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hint = new System.Windows.Forms.PictureBox();
 			this.hintlabel = new System.Windows.Forms.Label();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			groupBox2 = new System.Windows.Forms.GroupBox();
 			label7 = new System.Windows.Forms.Label();
@@ -361,6 +362,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.actiongroup.Controls.Add(this.actionhelp);
 			this.actiongroup.Controls.Add(this.hexenpanel);
 			this.actiongroup.Controls.Add(label7);
 			this.actiongroup.Controls.Add(this.action);
@@ -504,7 +506,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.action.GeneralizedOptions = null;
 			this.action.Location = new System.Drawing.Point(62, 27);
 			this.action.Name = "action";
-			this.action.Size = new System.Drawing.Size(524, 21);
+			this.action.Size = new System.Drawing.Size(497, 21);
 			this.action.TabIndex = 0;
 			this.action.Value = 402;
 			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
@@ -512,7 +514,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// browseaction
 			// 
 			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
-			this.browseaction.Location = new System.Drawing.Point(592, 25);
+			this.browseaction.Location = new System.Drawing.Point(562, 25);
 			this.browseaction.Name = "browseaction";
 			this.browseaction.Size = new System.Drawing.Size(28, 25);
 			this.browseaction.TabIndex = 1;
@@ -598,6 +600,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tooltip.UseAnimation = false;
 			this.tooltip.UseFading = false;
 			// 
+			// actionhelp
+			// 
+			this.actionhelp.Location = new System.Drawing.Point(592, 25);
+			this.actionhelp.Name = "actionhelp";
+			this.actionhelp.Size = new System.Drawing.Size(28, 25);
+			this.actionhelp.TabIndex = 14;
+			// 
 			// ThingEditForm
 			// 
 			this.AcceptButton = this.apply;
@@ -615,6 +624,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ThingEditForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -684,5 +694,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.PictureBox missingflags;
 		private System.Windows.Forms.ToolTip tooltip;
 		private System.Windows.Forms.GroupBox groupBox4;
+		private CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton actionhelp;
 	}
 }

@@ -30,6 +30,8 @@ namespace CodeImp.DoomBuilder.Controls
 {
 	internal partial class SectorInfoPanel : UserControl
 	{
+		private readonly List<Label> floorinfolabels;
+		private readonly List<Label> ceilinfolabels;
 		private readonly List<Label> floorlabels;
 		private readonly List<Label> ceillabels;
 		
@@ -43,8 +45,10 @@ namespace CodeImp.DoomBuilder.Controls
 			labelFloorTextureSize.BackColor = Color.FromArgb(128, labelFloorTextureSize.BackColor);
 			labelCeilTextureSize.BackColor = Color.FromArgb(128, labelCeilTextureSize.BackColor);
 
-			floorlabels = new List<Label> { floorAngle, floorLight, floorOffset, floorScale };
-			ceillabels = new List<Label> { ceilingAngle, ceilingLight, ceilingOffset, ceilingScale };
+			floorinfolabels = new List<Label> { floorAngle, floorLight, floorOffset, floorScale };
+			ceilinfolabels = new List<Label> { ceilingAngle, ceilingLight, ceilingOffset, ceilingScale };
+			floorlabels = new List<Label> { floorAngleLabel, floorLightLabel, floorOffsetLabel, floorScaleLabel };
+			ceillabels = new List<Label> { ceilingAngleLabel, ceilingLightLabel, ceilingOffsetLabel, ceilingScaleLabel };
 		}
 
 		// This shows the info
@@ -298,6 +302,12 @@ namespace CodeImp.DoomBuilder.Controls
 					flags.Width = itemWidth * (int)Math.Ceiling(flags.Items.Count / 5.0f);
 					flagsPanel.Width = flags.Width + flags.Left * 2;
 				}
+
+				//mxd. Toggle visibility
+				foreach(Label label in floorinfolabels) label.Visible = showExtededFloorInfo;
+				foreach(Label label in floorlabels) label.Visible = showExtededFloorInfo;
+				foreach(Label label in ceilinfolabels) label.Visible = showExtededCeilingInfo;
+				foreach(Label label in ceillabels) label.Visible = showExtededCeilingInfo;
 			} 
 			else 
 			{
@@ -309,8 +319,8 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			//mxd. Resize panels
-			UpdateTexturePanel(ceilingpanel, ceilingname, ceillabels, ceilingtex, ceilingOffsetLabel.Location.X - 1, showExtededCeilingInfo);
-			UpdateTexturePanel(floorpanel, floorname, floorlabels, floortex, floorOffsetLabel.Location.X - 1, showExtededFloorInfo);
+			UpdateTexturePanel(ceilingpanel, ceilingname, ceilinfolabels, ceilingtex, ceilingOffsetLabel.Location.X - 1, showExtededCeilingInfo);
+			UpdateTexturePanel(floorpanel, floorname, floorinfolabels, floortex, floorOffsetLabel.Location.X - 1, showExtededFloorInfo);
 
 			// Show the whole thing
 			this.Show();

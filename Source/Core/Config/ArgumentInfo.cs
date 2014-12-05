@@ -33,12 +33,11 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Variables
 
-		private string title;
-		private bool used;
-		private int type;
-		private EnumList enumlist;
-		//mxd
-		private object defaultValue;
+		private readonly string title;
+		private readonly bool used;
+		private readonly int type;
+		private readonly EnumList enumlist;
+		private readonly object defaultvalue; //mxd
 
 		#endregion
 
@@ -48,8 +47,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool Used { get { return used; } }
 		public int Type { get { return type; } }
 		public EnumList Enum { get { return enumlist; } }
-		//mxd
-		public object DefaultValue { get { return defaultValue; } }
+		public object DefaultValue { get { return defaultvalue; } } //mxd
 
 		#endregion
 
@@ -63,16 +61,14 @@ namespace CodeImp.DoomBuilder.Config
 			this.used = cfg.SettingExists(argspath + ".arg" + istr);
 			this.title = cfg.ReadSetting(argspath + ".arg" + istr + ".title", "Argument " + (argindex + 1));
 			this.type = cfg.ReadSetting(argspath + ".arg" + istr + ".type", 0);
-
-			//mxd
-			this.defaultValue = cfg.ReadSetting(argspath + ".arg" + istr + ".default", 0);
+			this.defaultvalue = cfg.ReadSetting(argspath + ".arg" + istr + ".default", 0); //mxd
 
 			// Determine enum type
 			IDictionary argdic = cfg.ReadSetting(argspath + ".arg" + istr, new Hashtable());
-			if(argdic.Contains("enum"))
+			if (argdic.Contains("enum"))
 			{
 				// Enum fully specified?
-				if(argdic["enum"] is IDictionary)
+				if (argdic["enum"] is IDictionary)
 				{
 					// Create anonymous enum
 					this.enumlist = new EnumList(argdic["enum"] as IDictionary);
@@ -80,7 +76,7 @@ namespace CodeImp.DoomBuilder.Config
 				else
 				{
 					// Check if referenced enum exists
-					if((argdic["enum"].ToString().Length > 0) && enums.ContainsKey(argdic["enum"].ToString()))
+					if ((argdic["enum"].ToString().Length > 0) && enums.ContainsKey(argdic["enum"].ToString()))
 					{
 						// Get the enum list
 						this.enumlist = enums[argdic["enum"].ToString()];
@@ -91,6 +87,8 @@ namespace CodeImp.DoomBuilder.Config
 					}
 				}
 			}
+			
+			if (this.enumlist == null) this.enumlist = new EnumList(); //mxd
 		}
 
 		// Constructor for unknown argument info
@@ -101,8 +99,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.title = "Argument " + (argindex + 1);
 			this.type = 0;
 			this.enumlist = new EnumList();
-			//mxd
-			this.defaultValue = 0;
+			this.defaultvalue = 0; //mxd
 		}
 
 		#endregion

@@ -260,6 +260,7 @@ namespace CodeImp.DoomBuilder.Windows
 			flags_OnValueChanged(flags, EventArgs.Empty);
 
 			UpdateScriptControls(); //mxd
+			actionhelp.UpdateAction(action.GetValue()); //mxd
 
 			//mxd. Set intial script-related values, if required
 			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
@@ -352,7 +353,11 @@ namespace CodeImp.DoomBuilder.Windows
 				arg4.SetDefaultValue();
 			}
 
-			if(!preventchanges) UpdateScriptControls(); //mxd
+			if(!preventchanges)
+			{
+				UpdateScriptControls(); //mxd
+				actionhelp.UpdateAction(showaction); //mxd
+			}
 		}
 
 		// Browse Action clicked

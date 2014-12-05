@@ -63,19 +63,20 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
 			this.frontside = new System.Windows.Forms.CheckBox();
 			this.frontgroup = new System.Windows.Forms.GroupBox();
-			this.frontTextureOffset = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl();
 			this.frontsector = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.frontlow = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.frontmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.fronthigh = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
+			this.frontTextureOffset = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl();
 			this.backside = new System.Windows.Forms.CheckBox();
 			this.backgroup = new System.Windows.Forms.GroupBox();
-			this.backTextureOffset = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl();
 			this.backsector = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.backlow = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.backmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.backhigh = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
+			this.backTextureOffset = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
@@ -213,6 +214,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.actiongroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.actiongroup.Controls.Add(this.actionhelp);
 			this.actiongroup.Controls.Add(this.argspanel);
 			this.actiongroup.Controls.Add(this.hexenpanel);
 			this.actiongroup.Controls.Add(label2);
@@ -373,7 +375,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.action.GeneralizedOptions = null;
 			this.action.Location = new System.Drawing.Point(62, 27);
 			this.action.Name = "action";
-			this.action.Size = new System.Drawing.Size(428, 21);
+			this.action.Size = new System.Drawing.Size(402, 21);
 			this.action.TabIndex = 0;
 			this.action.Value = 402;
 			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
@@ -381,7 +383,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// browseaction
 			// 
 			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
-			this.browseaction.Location = new System.Drawing.Point(496, 25);
+			this.browseaction.Location = new System.Drawing.Point(467, 25);
 			this.browseaction.Name = "browseaction";
 			this.browseaction.Size = new System.Drawing.Size(28, 25);
 			this.browseaction.TabIndex = 1;
@@ -468,17 +470,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.TabStop = false;
 			this.frontgroup.Text = "     ";
 			// 
-			// frontTextureOffset
-			// 
-			this.frontTextureOffset.ButtonStep = 16;
-			this.frontTextureOffset.DefaultValue = 0;
-			this.frontTextureOffset.Label = "Texture Offset:";
-			this.frontTextureOffset.Location = new System.Drawing.Point(3, 65);
-			this.frontTextureOffset.Name = "frontTextureOffset";
-			this.frontTextureOffset.Size = new System.Drawing.Size(268, 26);
-			this.frontTextureOffset.TabIndex = 41;
-			this.frontTextureOffset.OnValuesChanged += new System.EventHandler(this.frontTextureOffset_OnValuesChanged);
-			// 
 			// frontsector
 			// 
 			this.frontsector.AllowDecimal = false;
@@ -502,6 +493,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontlow.Size = new System.Drawing.Size(83, 112);
 			this.frontlow.TabIndex = 6;
 			this.frontlow.TextureName = "";
+			this.frontlow.UsePreviews = true;
 			this.frontlow.OnValueChanged += new System.EventHandler(this.frontlow_OnValueChanged);
 			// 
 			// frontmid
@@ -513,6 +505,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontmid.Size = new System.Drawing.Size(83, 112);
 			this.frontmid.TabIndex = 5;
 			this.frontmid.TextureName = "";
+			this.frontmid.UsePreviews = true;
 			this.frontmid.OnValueChanged += new System.EventHandler(this.frontmid_OnValueChanged);
 			// 
 			// fronthigh
@@ -524,7 +517,19 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fronthigh.Size = new System.Drawing.Size(83, 112);
 			this.fronthigh.TabIndex = 4;
 			this.fronthigh.TextureName = "";
+			this.fronthigh.UsePreviews = true;
 			this.fronthigh.OnValueChanged += new System.EventHandler(this.fronthigh_OnValueChanged);
+			// 
+			// frontTextureOffset
+			// 
+			this.frontTextureOffset.ButtonStep = 16;
+			this.frontTextureOffset.DefaultValue = 0;
+			this.frontTextureOffset.Label = "Texture Offset:";
+			this.frontTextureOffset.Location = new System.Drawing.Point(3, 65);
+			this.frontTextureOffset.Name = "frontTextureOffset";
+			this.frontTextureOffset.Size = new System.Drawing.Size(268, 26);
+			this.frontTextureOffset.TabIndex = 41;
+			this.frontTextureOffset.OnValuesChanged += new System.EventHandler(this.frontTextureOffset_OnValuesChanged);
 			// 
 			// backside
 			// 
@@ -559,17 +564,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backgroup.TabStop = false;
 			this.backgroup.Text = "     ";
 			// 
-			// backTextureOffset
-			// 
-			this.backTextureOffset.ButtonStep = 16;
-			this.backTextureOffset.DefaultValue = 0;
-			this.backTextureOffset.Label = "Texture Offset:";
-			this.backTextureOffset.Location = new System.Drawing.Point(3, 65);
-			this.backTextureOffset.Name = "backTextureOffset";
-			this.backTextureOffset.Size = new System.Drawing.Size(268, 28);
-			this.backTextureOffset.TabIndex = 42;
-			this.backTextureOffset.OnValuesChanged += new System.EventHandler(this.backTextureOffset_OnValuesChanged);
-			// 
 			// backsector
 			// 
 			this.backsector.AllowDecimal = false;
@@ -593,6 +587,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backlow.Size = new System.Drawing.Size(83, 112);
 			this.backlow.TabIndex = 6;
 			this.backlow.TextureName = "";
+			this.backlow.UsePreviews = true;
 			this.backlow.OnValueChanged += new System.EventHandler(this.backlow_OnValueChanged);
 			// 
 			// backmid
@@ -604,6 +599,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backmid.Size = new System.Drawing.Size(83, 112);
 			this.backmid.TabIndex = 5;
 			this.backmid.TextureName = "";
+			this.backmid.UsePreviews = true;
 			this.backmid.OnValueChanged += new System.EventHandler(this.backmid_OnValueChanged);
 			// 
 			// backhigh
@@ -615,7 +611,19 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backhigh.Size = new System.Drawing.Size(83, 112);
 			this.backhigh.TabIndex = 4;
 			this.backhigh.TextureName = "";
+			this.backhigh.UsePreviews = true;
 			this.backhigh.OnValueChanged += new System.EventHandler(this.backhigh_OnValueChanged);
+			// 
+			// backTextureOffset
+			// 
+			this.backTextureOffset.ButtonStep = 16;
+			this.backTextureOffset.DefaultValue = 0;
+			this.backTextureOffset.Label = "Texture Offset:";
+			this.backTextureOffset.Location = new System.Drawing.Point(3, 65);
+			this.backTextureOffset.Name = "backTextureOffset";
+			this.backTextureOffset.Size = new System.Drawing.Size(268, 28);
+			this.backTextureOffset.TabIndex = 42;
+			this.backTextureOffset.OnValuesChanged += new System.EventHandler(this.backTextureOffset_OnValuesChanged);
 			// 
 			// panel1
 			// 
@@ -632,6 +640,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(553, 746);
 			this.panel1.TabIndex = 5;
+			// 
+			// actionhelp
+			// 
+			this.actionhelp.Location = new System.Drawing.Point(497, 25);
+			this.actionhelp.Name = "actionhelp";
+			this.actionhelp.Size = new System.Drawing.Size(28, 25);
+			this.actionhelp.TabIndex = 11;
 			// 
 			// LinedefEditForm
 			// 
@@ -710,5 +725,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl backTextureOffset;
 		private System.Windows.Forms.ComboBox scriptNumbers;
 		private System.Windows.Forms.Panel panel1;
+		private CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton actionhelp;
 	}
 }

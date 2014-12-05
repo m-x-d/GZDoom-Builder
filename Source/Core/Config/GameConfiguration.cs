@@ -80,6 +80,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly int topboundary;
 		private readonly int bottomboundary;
 		private readonly bool doomlightlevels;
+		private readonly string actionspecialhelp; //mxd
 		
 		// Skills
 		private readonly List<SkillInfo> skills;
@@ -185,7 +186,8 @@ namespace CodeImp.DoomBuilder.Config
 		public int TopBoundary { get { return topboundary; } }
 		public int BottomBoundary { get { return bottomboundary; } }
 		public bool DoomLightLevels { get { return doomlightlevels; } }
-		
+		public string ActionSpecialHelp { get { return actionspecialhelp; } } //mxd
+
 		// Skills
 		public List<SkillInfo> Skills { get { return skills; } }
 		
@@ -319,6 +321,7 @@ namespace CodeImp.DoomBuilder.Config
 			topboundary = cfg.ReadSetting("topboundary", 32767);
 			bottomboundary = cfg.ReadSetting("bottomboundary", -32768);
 			doomlightlevels = cfg.ReadSetting("doomlightlevels", true);
+			actionspecialhelp = cfg.ReadSetting("actionspecialhelp", string.Empty); //mxd
 			defaultLinedefActivation = cfg.ReadSetting("defaultlinedefactivation", ""); //mxd
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
 

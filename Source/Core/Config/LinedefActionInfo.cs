@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly string category;
 		private readonly string name;
 		private readonly string title;
+		private readonly string id; //mxd. wiki-compatible name 
 		private readonly ArgumentInfo[] args;
 		private readonly bool isgeneralized;
 		private readonly bool isknown;
@@ -54,6 +55,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string Category { get { return category; } }
 		public string Name { get { return name; } }
 		public string Title { get { return title; } }
+		public string Id { get { return id; } } //mxd
 		public bool IsGeneralized { get { return isgeneralized; } }
 		public bool IsKnown { get { return isknown; } }
 		public bool IsNull { get { return (index == 0); } }
@@ -78,6 +80,7 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Read settings
 			this.name = cfg.ReadSetting(actionsetting + ".title", "Unnamed");
+			this.id = cfg.ReadSetting(actionsetting + ".id", string.Empty); //mxd
 			this.prefix = cfg.ReadSetting(actionsetting + ".prefix", "");
 			this.requiresactivation = cfg.ReadSetting(actionsetting + ".requiresactivation", true); //mxd
 			this.title = this.prefix + " " + this.name;

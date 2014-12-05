@@ -592,6 +592,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			UpdateScriptControls(); //mxd
 			CheckActivationFlagsRequired(); //mxd
+			actionhelp.UpdateAction(action.GetValue()); //mxd
 
 			//mxd. Set intial script-related values, if required
 			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
@@ -944,6 +945,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				UpdateScriptControls();
 				CheckActivationFlagsRequired();
+				actionhelp.UpdateAction(showaction);
 			}
 		}
 

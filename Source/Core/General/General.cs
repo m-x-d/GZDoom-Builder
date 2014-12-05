@@ -2091,15 +2091,6 @@ namespace CodeImp.DoomBuilder
 
 		#endregion
 
-		/*
-		[BeginAction("testaction")]
-		internal static void TestAction()
-		{
-			ScriptEditorForm t = new ScriptEditorForm();
-			t.ShowDialog(mainwindow);
-			t.Dispose();
-		}
-		*/
 	}
 }
 
