@@ -865,6 +865,7 @@
     <Compile Include="Rendering\SurfaceEntryCollection.cs" />
     <Compile Include="Rendering\SurfaceManager.cs" />
     <Compile Include="Rendering\SurfaceUpdate.cs" />
+    <Compile Include="Types\AngleByteHandler.cs" />
     <Compile Include="Types\RandomFloatHandler.cs" />
     <Compile Include="Types\RandomIntegerHandler.cs" />
     <Compile Include="Types\ThingClassHandler.cs" />

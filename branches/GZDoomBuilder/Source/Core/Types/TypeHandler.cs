@@ -148,7 +148,7 @@ namespace CodeImp.DoomBuilder.Types
 		// This must returns an enum list when IsEnumerable is true
 		public virtual EnumList GetEnumList()
 		{
-			return null;
+			return new EnumList(); //mxd
 		}
 		
 		// String representation

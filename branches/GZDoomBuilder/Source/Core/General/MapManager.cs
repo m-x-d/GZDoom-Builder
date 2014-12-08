@@ -418,11 +418,7 @@ namespace CodeImp.DoomBuilder {
 			grid.TranslateBackgroundName(config.UseLongTextureNames);
 
 			//mxd. Sector textures may've been changed 
-			if (nameschanged)
-			{
-				data.UpdateUsedTextures();
-				General.Map.IsChanged = true;
-			}
+			if (nameschanged) data.UpdateUsedTextures();
 
 			// Update structures
 			options.ApplyGridSettings();
@@ -1940,11 +1936,7 @@ namespace CodeImp.DoomBuilder {
 				grid.TranslateBackgroundName(config.UseLongTextureNames);
 				
 				//mxd. Sector textures may've been changed 
-				if (nameschanged)
-				{
-					data.UpdateUsedTextures();
-					General.Map.IsChanged = true;
-				}
+				if (nameschanged) data.UpdateUsedTextures();
 
 				// Done
 				General.MainWindow.DisplayReady();

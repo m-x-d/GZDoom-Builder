@@ -30,8 +30,8 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Variables
 
-		private string value;
-		private string title;
+		private readonly string value;
+		private readonly string title;
 
 		#endregion
 
@@ -66,10 +66,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int GetIntValue()
 		{
 			int result;
-			if(int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out result))
-				return result;
-			else
-				return 0;
+			return int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out result) ? result : 0;
 		}
 		
 		#endregion

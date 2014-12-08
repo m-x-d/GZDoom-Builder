@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Controls
 			effect.Text = effectinfo;
 			ceiling.Text = s.CeilHeight.ToString();
 			floor.Text = s.FloorHeight.ToString();
-			tag.Text = s.Tag + (General.Map.Options.TagLabels.ContainsKey(s.Tag) ? " (" + General.Map.Options.TagLabels[s.Tag] + ")" : string.Empty);
+			tag.Text = s.Tag + (General.Map.Options.TagLabels.ContainsKey(s.Tag) ? " - " + General.Map.Options.TagLabels[s.Tag] : string.Empty);
 			height.Text = sheight.ToString();
 			brightness.Text = s.Brightness.ToString();
 			floorname.Text = s.FloorTexture;

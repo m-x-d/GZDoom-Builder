@@ -35,7 +35,6 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		private readonly int hexenformatwidth;
 		private readonly int doomformatwidth;
-		private readonly int[] labelPositionsY = new[] { 39, 58, 77 }; //mxd
 		
 		// Constructor
 		public LinedefInfoPanel()
@@ -110,22 +109,8 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 				}
 
-				activation.Top = labelPositionsY[0];
-				activationlabel.Top = labelPositionsY[0];
 				activation.Enabled = (l.Activate != 0); //mxd
 				activationlabel.Enabled = (l.Activate != 0); //mxd
-				unpegged.Top = labelPositionsY[0];
-				peglabel.Top = labelPositionsY[0];
-
-				length.Top = labelPositionsY[1];
-				lengthlabel.Top = labelPositionsY[1];
-				frontoffset.Top = labelPositionsY[1];
-				frontoffsetlabel.Top = labelPositionsY[1];
-
-				angle.Top = labelPositionsY[2];
-				anglelabel.Top = labelPositionsY[2];
-				backoffset.Top = labelPositionsY[2];
-				backoffsetlabel.Top = labelPositionsY[2];
 			} 
 			else 
 			{
@@ -135,24 +120,9 @@ namespace CodeImp.DoomBuilder.Controls
 				tag.Visible = true;
 
 				//set tag
-				tag.Text = l.Tag + (General.Map.Options.TagLabels.ContainsKey(l.Tag) ? " (" + General.Map.Options.TagLabels[l.Tag] + ")" : string.Empty);
+				tag.Text = l.Tag + (General.Map.Options.TagLabels.ContainsKey(l.Tag) ? " - " + General.Map.Options.TagLabels[l.Tag] : string.Empty);
 				tag.Enabled = (l.Tag != 0);
 				taglabel.Enabled = (l.Tag != 0);
-
-				length.Top = labelPositionsY[0];
-				lengthlabel.Top = labelPositionsY[0];
-				unpegged.Top = labelPositionsY[0];
-				peglabel.Top = labelPositionsY[0];
-
-				angle.Top = labelPositionsY[1];
-				anglelabel.Top = labelPositionsY[1];
-				frontoffset.Top = labelPositionsY[1];
-				frontoffsetlabel.Top = labelPositionsY[1];
-
-				tag.Top = labelPositionsY[2];
-				taglabel.Top = labelPositionsY[2];
-				backoffset.Top = labelPositionsY[2];
-				backoffsetlabel.Top = labelPositionsY[2];
 			}
 			
 			// Get line action information
@@ -176,6 +146,8 @@ namespace CodeImp.DoomBuilder.Controls
 			length.Text = l.Length.ToString("0.##");
 			angle.Text = l.AngleDeg + "\u00B0";
 			unpegged.Text = peggedness;
+			unpegged.Enabled = (peggedness != "None"); //mxd
+			peglabel.Enabled = (peggedness != "None"); //mxd
 			action.Enabled = (act.Index != 0);
 			actionlabel.Enabled = (act.Index != 0);
 
@@ -262,9 +234,18 @@ namespace CodeImp.DoomBuilder.Controls
 				else 
 				{
 					frontoffsetlabel.Text = "Front offset:";
-					frontoffset.Text = l.Front.OffsetX + ", " + l.Front.OffsetY;
-					frontoffsetlabel.Enabled = true;
-					frontoffset.Enabled = true;
+					if (l.Front.OffsetX != 0 || l.Front.OffsetY != 0)
+					{
+						frontoffset.Text = l.Front.OffsetX + ", " + l.Front.OffsetY;
+						frontoffsetlabel.Enabled = true;
+						frontoffset.Enabled = true;
+					}
+					else
+					{
+						frontoffset.Text = "--, --";
+						frontoffsetlabel.Enabled = false;
+						frontoffset.Enabled = false;
+					}
 
 					//mxd. Sector index
 					frontpanel.Text += ". Sector " + l.Front.Sector.Index + " ";
@@ -364,9 +345,18 @@ namespace CodeImp.DoomBuilder.Controls
 				else
 				{
 					backoffsetlabel.Text = "Back offset:";
-					backoffset.Text = l.Back.OffsetX + ", " + l.Back.OffsetY;
-					backoffsetlabel.Enabled = true;
-					backoffset.Enabled = true;
+					if (l.Back.OffsetX != 0 || l.Back.OffsetY != 0)
+					{
+						backoffset.Text = l.Back.OffsetX + ", " + l.Back.OffsetY;
+						backoffsetlabel.Enabled = true;
+						backoffset.Enabled = true;
+					}
+					else
+					{
+						backoffset.Text = "--, --";
+						backoffsetlabel.Enabled = false;
+						backoffset.Enabled = false;
+					}
 
 					// Sector index
 					backpanel.Text += ". Sector " + l.Back.Sector.Index + " ";
@@ -526,11 +516,6 @@ namespace CodeImp.DoomBuilder.Controls
 			TypeHandler th = General.Types.GetArgumentHandler(info);
 			th.SetValue(value);
 			label.Text = th.GetStringValue();
-
-			if(value < 1 || !General.Map.Options.TagLabels.ContainsKey(value)) return;
-
-			if(th is ThingTagHandler || th is LinedefTagHandler || th is SectorTagHandler) 
-				label.Text += " (" + General.Map.Options.TagLabels[value] + ")";
 		}
 
 		// When visible changed

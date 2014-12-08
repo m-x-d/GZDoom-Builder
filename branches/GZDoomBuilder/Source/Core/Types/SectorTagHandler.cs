@@ -16,6 +16,12 @@
 
 #region ================== Namespaces
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Map;
+
 #endregion
 
 namespace CodeImp.DoomBuilder.Types
@@ -23,5 +29,185 @@ namespace CodeImp.DoomBuilder.Types
 	[TypeHandler(UniversalType.SectorTag, "Sector Tag", true)]
 	internal class SectorTagHandler : IntegerHandler
 	{
+		#region ================== Variables
+
+		private EnumList list;
+		private EnumItem value;
+		private EnumItem defaultvalue;
+
+		#endregion
+
+		#region ================== Properties
+
+		public override bool IsEnumerable { get { return true; } }
+
+		#endregion
+
+		#region ================== Setup
+
+		// When set up for an argument
+		public override void SetupArgument(TypeHandlerAttribute attr, ArgumentInfo arginfo) 
+		{
+			defaultvalue = new EnumItem("0", "0: No Tag");
+			base.SetupArgument(attr, arginfo);
+
+			// Create enum list reference
+			list = CreateTagList();
+
+			// Add default value
+			list.Insert(0, defaultvalue);
+		}
+
+		// When set up for a universal field
+		public override void SetupField(TypeHandlerAttribute attr, UniversalFieldInfo fieldinfo) 
+		{
+			base.SetupField(attr, fieldinfo);
+
+			// Create enum list reference
+			list = CreateTagList();
+		}
+
+		//mxd
+		protected virtual EnumList CreateTagList() 
+		{
+			//collect tags
+			List<int> tags = new List<int>();
+			EnumList taglist = new EnumList();
+
+			foreach(Sector t in General.Map.Map.Sectors) 
+			{
+				if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
+				tags.Add(t.Tag);
+			}
+
+			//now sort them
+			tags.Sort();
+
+			//create enum items
+			foreach(int tag in tags) 
+			{
+				if(General.Map.Options.TagLabels.ContainsKey(tag)) //tag labels
+					taglist.Add(new EnumItem(tag.ToString(), tag + ": " + General.Map.Options.TagLabels[tag]));
+				else
+					taglist.Add(new EnumItem(tag.ToString(), tag.ToString()));
+			}
+
+			return taglist;
+		}
+
+		#endregion
+
+		#region ================== Methods
+
+		public override void SetValue(object value) 
+		{
+			this.value = null;
+
+			// Input null?
+			if(value == null) 
+			{
+				this.value = new EnumItem("0", "0: No Tag");
+			} 
+			else 
+			{
+				// Compatible type?
+				if((value is int) || (value is float) || (value is bool)) 
+				{
+					int intvalue = Convert.ToInt32(value);
+
+					// First try to match the value against the enum values
+					foreach(EnumItem item in list) 
+					{
+						// Matching value?
+						if(item.GetIntValue() == intvalue) 
+						{
+							// Set this value
+							this.value = item;
+						}
+					}
+				}
+
+				// No match found yet?
+				if(this.value == null) 
+				{
+					// First try to match the value against the enum values
+					foreach(EnumItem item in list) 
+					{
+						// Matching value?
+						if(item.Value == value.ToString()) 
+						{
+							// Set this value
+							this.value = item;
+						}
+					}
+				}
+
+				// No match found yet?
+				if(this.value == null) 
+				{
+					// Try to match against the titles
+					foreach(EnumItem item in list) 
+					{
+						// Matching value?
+						if(item.Title.ToLowerInvariant() == value.ToString().ToLowerInvariant()) 
+						{
+							// Set this value
+							this.value = item;
+						}
+					}
+				}
+
+				// Still no match found?
+				if(this.value == null) 
+				{
+					// Make a dummy value
+					this.value = new EnumItem(value.ToString(), value.ToString());
+					this.value = new EnumItem(this.value.GetIntValue().ToString(CultureInfo.InvariantCulture), value.ToString());
+				}
+			}
+		}
+
+		//mxd
+		public override void SetDefaultValue() 
+		{
+			value = defaultvalue;
+		}
+
+		public override object GetValue() 
+		{
+			return GetIntValue();
+		}
+
+		public override int GetIntValue() 
+		{
+			if(this.value != null) 
+			{
+				// Parse the value to integer
+				int result;
+				return (int.TryParse(this.value.Value, NumberStyles.Integer, 
+					CultureInfo.InvariantCulture, out result) ? result : 0);
+			} 
+			return 0;
+		}
+
+		public override string GetStringValue() 
+		{
+			return (this.value != null ? this.value.Title : "0: No Tag");
+		}
+
+		// This returns an enum list
+		public override EnumList GetEnumList() 
+		{
+			return list;
+		}
+
+		// This returns the type to display for fixed fields
+		// Must be a custom usable type
+		public override TypeHandlerAttribute GetDisplayType() 
+		{
+			return General.Types.GetAttribute((int)UniversalType.Integer);
+		}
+
+		#endregion
 	}
 }

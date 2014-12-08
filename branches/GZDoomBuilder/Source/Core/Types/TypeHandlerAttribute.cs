@@ -30,10 +30,10 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
-		private int index;
-		private string name;
+		private readonly int index;
+		private readonly string name;
 		private Type type;
-		private bool customusable;
+		private readonly bool customusable;
 		
 		#endregion
 
