@@ -68,9 +68,8 @@ namespace CodeImp.DoomBuilder.Controls
 			infopanel.Width = (hasArgs ? hexenformatwidth : doomformatwidth);
 
 			//mxd
-			bool hasAction = General.Map.FormatInterface.HasThingAction;
-			action.Visible = hasAction;
-			labelaction.Visible = hasAction;
+			action.Visible = General.Map.FormatInterface.HasThingAction;
+			labelaction.Visible = General.Map.FormatInterface.HasThingAction;
 
 			// Move panel
 			spritepanel.Left = infopanel.Left + infopanel.Width + infopanel.Margin.Right + spritepanel.Margin.Left;
@@ -125,7 +124,7 @@ namespace CodeImp.DoomBuilder.Controls
 			type.Text = t.Type + " - " + ti.Title;
 			action.Text = actioninfo;
 			position.Text = t.Position.x + ", " + t.Position.y + ", " + zinfo;
-			tag.Text = t.Tag + (General.Map.Options.TagLabels.ContainsKey(t.Tag) ? " (" + General.Map.Options.TagLabels[t.Tag] + ")" : string.Empty);
+			tag.Text = t.Tag + (General.Map.Options.TagLabels.ContainsKey(t.Tag) ? " - " + General.Map.Options.TagLabels[t.Tag] : string.Empty);
 			angle.Text = t.AngleDoom + "\u00B0";
 			anglecontrol.Angle = t.AngleDoom;
 			anglecontrol.Left = angle.Right + 1;
@@ -217,13 +216,6 @@ namespace CodeImp.DoomBuilder.Controls
 			TypeHandler th = General.Types.GetArgumentHandler(info);
 			th.SetValue(value);
 			label.Text = th.GetStringValue();
-
-			if(value < 1 || !General.Map.Options.TagLabels.ContainsKey(value)) return;
-
-			if (th is ThingTagHandler || th is LinedefTagHandler || th is SectorTagHandler) 
-			{
-				label.Text += " (" + General.Map.Options.TagLabels[value] + ")";
-			}
 		}
 
 		// When visible changed

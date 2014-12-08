@@ -72,10 +72,22 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
+		public int GetWidth() 
+		{
+			if(columns < 1 || checkboxes.Count < 1) return 0;
+			int maxwidth = 0;
+			foreach (CheckBox cb in checkboxes)
+			{
+				if (cb.Width > maxwidth) maxwidth = cb.Width;
+			}
+
+			return maxwidth * columns;
+		}
+
+		//mxd
 		public int GetHeight() 
 		{
-			if(columns < 1)	return 0;
-			if(checkboxes.Count < 1) return 0;
+			if(columns < 1 || checkboxes.Count < 1)	return 0;
 			int col = (int)Math.Ceiling(checkboxes.Count / (float)columns);
 			return col * checkboxes[0].Height + (col * spacingY + spacingY);
 		}
@@ -88,8 +100,7 @@ namespace CodeImp.DoomBuilder.Controls
 			int col = 0;
 			
 			// Checks
-			if(columns < 1) return;
-			if(checkboxes.Count < 1) return;
+			if(columns < 1 || checkboxes.Count < 1) return;
 			
 			// Calculate column width
 			int columnwidth = this.ClientSize.Width / columns;

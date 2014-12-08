@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
-		private int value;
+		protected int value;
 
 		#endregion
 

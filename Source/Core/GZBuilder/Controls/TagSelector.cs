@@ -18,7 +18,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		public TagInfo(int tag, string label) 
 		{
-			Label = (string.IsNullOrEmpty(label) ? tag.ToString() : tag + " (" + label + ")");
+			Label = (string.IsNullOrEmpty(label) ? tag.ToString() : tag + " - " + label);
 			Tag = tag;
 		}
 

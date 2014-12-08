@@ -214,11 +214,11 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// activation
 			// 
-			this.activation.AutoEllipsis = true;
+			this.activation.AutoSize = true;
 			this.activation.BackColor = System.Drawing.Color.Transparent;
 			this.activation.Location = new System.Drawing.Point(66, 34);
 			this.activation.Name = "activation";
-			this.activation.Size = new System.Drawing.Size(205, 14);
+			this.activation.Size = new System.Drawing.Size(168, 14);
 			this.activation.TabIndex = 31;
 			this.activation.Text = "0 - When player does a barrel roll";
 			this.activation.UseMnemonic = false;
@@ -417,11 +417,11 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// action
 			// 
-			this.action.AutoEllipsis = true;
+			this.action.AutoSize = true;
 			this.action.BackColor = System.Drawing.Color.Transparent;
 			this.action.Location = new System.Drawing.Point(66, 19);
 			this.action.Name = "action";
-			this.action.Size = new System.Drawing.Size(205, 14);
+			this.action.Size = new System.Drawing.Size(190, 14);
 			this.action.TabIndex = 1;
 			this.action.Text = "0 - Big Door that goes Wobbly Wobbly";
 			this.action.UseMnemonic = false;

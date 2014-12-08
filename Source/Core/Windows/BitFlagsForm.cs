@@ -30,7 +30,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private bool setup;
 		private int value;
-		private readonly int initialFlagsHeight; //mxd
 		
 		#endregion
 
@@ -47,9 +46,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Initialize
 			InitializeComponent();
-
-			//mxd
-			initialFlagsHeight = options.Height;
 		}
 
 		#endregion
@@ -122,12 +118,14 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			setup = true;
 			this.value = value;
+			int optionsheight = options.Height;
 			
 			// Make a checkbox for each item
 			foreach(EnumItem item in flags)
 			{
 				// Make the checkbox
-				CheckBox box = options.Add(item.Title, item.GetIntValue());
+				int flag = item.GetIntValue(); //mxd
+				CheckBox box = options.Add(flag + ": " + item.Title, item.GetIntValue());
 				
 				// Bind checking event
 				box.CheckedChanged += box_CheckedChanged;
@@ -154,8 +152,10 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
-			//mxd
-			this.Height -= initialFlagsHeight - options.GetHeight();
+			//mxd. Update window size
+			this.Height -= (optionsheight - options.GetHeight());
+			int targetwidth = options.GetWidth();
+			if(targetwidth > options.Width) this.Width += (targetwidth - options.Width);
 
 			setup = false;
 		}

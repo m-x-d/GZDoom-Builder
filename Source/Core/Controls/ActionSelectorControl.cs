@@ -280,7 +280,7 @@ namespace CodeImp.DoomBuilder.Controls
 				list.SelectedIndex--;
 				list_SelectionChangeCommitted(list, EventArgs.Empty);
 			}
-			else if (e.Delta > 0 && list.SelectedIndex < list.Items.Count)
+			else if (e.Delta > 0 && list.SelectedIndex < list.Items.Count - 1)
 			{
 				list.SelectedIndex++;
 				list_SelectionChangeCommitted(list, EventArgs.Empty);

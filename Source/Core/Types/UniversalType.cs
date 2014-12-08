@@ -20,7 +20,7 @@
 
 namespace CodeImp.DoomBuilder.Types
 {
-	public enum UniversalType : int
+	public enum UniversalType
 	{
 		Integer = 0,
 		Float = 1,
@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.Types
 		ThingType = 18,
 		ThingClass = 19,
 		RandomInteger = 20, //mxd
-		RandomFloat = 21 //mxd
+		RandomFloat = 21, //mxd
+		AngleByte = 22, //mxd
 	}
 }
