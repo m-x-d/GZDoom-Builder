@@ -1353,12 +1353,12 @@ namespace CodeImp.DoomBuilder.Rendering
 							{
 								float sx = t.ScaleX * t.ActorScale.Width;
 								float sy = t.ScaleY * t.ActorScale.Height;
-								Matrix modelcale = Matrix.Scaling(sx, sx, sy);
-								Matrix rotation = Matrix.RotationY(-(t.RollRad - General.Map.Data.ModeldefEntries[t.Type].RollOffset))
+								Matrix modelcale = Matrix.Scaling(sx, sx, sy) * General.Map.Data.ModeldefEntries[t.Type].Scale;
+								Matrix rotation = Matrix.RotationY(-(t.RollRad + General.Map.Data.ModeldefEntries[t.Type].RollOffset))
 										* Matrix.RotationX(-(t.PitchRad + General.Map.Data.ModeldefEntries[t.Type].PitchOffset))
-										* Matrix.RotationZ(t.Angle);
+										* Matrix.RotationZ(t.Angle + General.Map.Data.ModeldefEntries[t.Type].AngleOffset);
 								Matrix position = Matrix.Translation(screenpos.x, screenpos.y, 0.0f);
-								Matrix world = modelcale * rotation * viewscale * position;
+								Matrix world = rotation * modelcale * viewscale * position;
 
 								graphics.Shaders.Things2D.SetTransformSettings(world);
 								graphics.Shaders.Things2D.ApplySettings();

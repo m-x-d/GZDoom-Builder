@@ -15,7 +15,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		private ModelLoadState loadstate;
 		public ModelLoadState LoadState { get { return loadstate; } internal set { loadstate = value; } }
 
-		internal Vector3 Scale;
+		internal Matrix Scale;
 		internal float zOffset;
 
 		internal float AngleOffset; //in radians
@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		{
 			ModelNames = new List<string>();
 			TextureNames = new List<string>();
-			Scale = new Vector3(1, 1, 1);
+			Scale = Matrix.Identity;
 		}
 
 		internal void Dispose() 

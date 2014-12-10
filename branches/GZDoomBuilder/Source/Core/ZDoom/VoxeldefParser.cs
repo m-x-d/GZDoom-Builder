@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 										General.ErrorLogger.Add(ErrorType.Error, "Error in " + sourcefilename + " at line " + GetCurrentLineNumber() + ": expected Scale value, but got '" + token + "'");
 									}
 
-									data.Scale = new Vector3(scale, scale, scale);
+									data.Scale = Matrix.Scaling(scale, scale, scale);
 								}
 								prevToken = token.ToUpperInvariant();
 							}

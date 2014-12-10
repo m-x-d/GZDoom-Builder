@@ -383,10 +383,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			if (start + ofsNormal != br.BaseStream.Position)
 				br.BaseStream.Position = start + ofsNormal;
 
-			//rotation angles
-			float angleOfsetCos = (float)Math.Cos(mde.AngleOffset);
-			float angleOfsetSin = (float)Math.Sin(mde.AngleOffset);
-
 			for (int i = vertexOffset; i < vertexOffset + numVerts; i++) 
 			{
 				WorldVertex v = vertList[i];
@@ -395,23 +391,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				v.y = -(float)br.ReadInt16() / 64;
 				v.x = (float)br.ReadInt16() / 64;
 				v.z = (float)br.ReadInt16() / 64;
-
-				//rotate it
-				if (mde.AngleOffset != 0) 
-				{
-					float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
-					float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
-					v.y = ry;
-					v.x = rx;
-				}
-
-				//scale it
-				v.y *= mde.Scale.X;
-				v.x *= mde.Scale.Y;
-				v.z *= mde.Scale.Z;
-
-				//add zOffset
-				v.z += mde.zOffset;
 
 				//bounding box
 				BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, v);
@@ -533,10 +512,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 				s.Position += 16; //frame name
 
-				//rotation angles
-				float angle = mde.AngleOffset - Angle2D.PIHALF; // subtract 90 degrees to get correct rotation
-				float angleOfsetCos = (float)Math.Cos(angle);
-				float angleOfsetSin = (float)Math.Sin(angle);
+				// Prepare to fix rotation angle
+				float angleOfsetCos = (float)Math.Cos(-Angle2D.PIHALF);
+				float angleOfsetSin = (float)Math.Sin(-Angle2D.PIHALF);
 
 				//verts
 				for (int i = 0; i < num_verts; i++) 
@@ -547,22 +525,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					v.y = (br.ReadByte() * scale.Y + translate.Y);
 					v.z = (br.ReadByte() * scale.Z + translate.Z);
 
-					//rotate it
-					if (angle != 0) 
-					{
-						float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
-						float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
-						v.y = ry;
-						v.x = rx;
-					}
-
-					//scale it
-					v.x *= mde.Scale.X;
-					v.y *= mde.Scale.Y;
-					v.z *= mde.Scale.Z;
-
-					//add zOffset
-					v.z += mde.zOffset;
+					// Fix rotation angle
+					float rx = angleOfsetCos * v.x - angleOfsetSin * v.y;
+					float ry = angleOfsetSin * v.x + angleOfsetCos * v.y;
+					v.y = ry;
+					v.x = rx;
 
 					vertList.Add(v);
 					s.Position += 1; //vertex normal
@@ -720,7 +687,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 								if((flags & 16) != 0) 
 								{
-									AddFace(verts, new Vector3D(x, y, ztop), new Vector3D(x + 1, y, ztop), new Vector3D(x, y + 1, ztop), new Vector3D(x + 1, y + 1, ztop), pivot, colorIndices[0], mde.AngleOffset, mde.Scale.X);
+									AddFace(verts, new Vector3D(x, y, ztop), new Vector3D(x + 1, y, ztop), new Vector3D(x, y + 1, ztop), new Vector3D(x + 1, y + 1, ztop), pivot, colorIndices[0]);
 								}
 
 								int z = ztop;
@@ -732,19 +699,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 									if((flags & 1) != 0) 
 									{
-										AddFace(verts, new Vector3D(x, y, z), new Vector3D(x, y + 1, z), new Vector3D(x, y, z + c), new Vector3D(x, y + 1, z + c), pivot, colorIndices[cstart], mde.AngleOffset, mde.Scale.X);
+										AddFace(verts, new Vector3D(x, y, z), new Vector3D(x, y + 1, z), new Vector3D(x, y, z + c), new Vector3D(x, y + 1, z + c), pivot, colorIndices[cstart]);
 									}
 									if((flags & 2) != 0) 
 									{
-										AddFace(verts, new Vector3D(x + 1, y + 1, z), new Vector3D(x + 1, y, z), new Vector3D(x + 1, y + 1, z + c), new Vector3D(x + 1, y, z + c), pivot, colorIndices[cstart], mde.AngleOffset, mde.Scale.X);
+										AddFace(verts, new Vector3D(x + 1, y + 1, z), new Vector3D(x + 1, y, z), new Vector3D(x + 1, y + 1, z + c), new Vector3D(x + 1, y, z + c), pivot, colorIndices[cstart]);
 									}
 									if((flags & 4) != 0) 
 									{
-										AddFace(verts, new Vector3D(x + 1, y, z), new Vector3D(x, y, z), new Vector3D(x + 1, y, z + c), new Vector3D(x, y, z + c), pivot, colorIndices[cstart], mde.AngleOffset, mde.Scale.X);
+										AddFace(verts, new Vector3D(x + 1, y, z), new Vector3D(x, y, z), new Vector3D(x + 1, y, z + c), new Vector3D(x, y, z + c), pivot, colorIndices[cstart]);
 									}
 									if((flags & 8) != 0) 
 									{
-										AddFace(verts, new Vector3D(x, y + 1, z), new Vector3D(x + 1, y + 1, z), new Vector3D(x, y + 1, z + c), new Vector3D(x + 1, y + 1, z + c), pivot, colorIndices[cstart], mde.AngleOffset, mde.Scale.X);
+										AddFace(verts, new Vector3D(x, y + 1, z), new Vector3D(x + 1, y + 1, z), new Vector3D(x, y + 1, z + c), new Vector3D(x + 1, y + 1, z + c), pivot, colorIndices[cstart]);
 									}
 
 									if(c == 0) c++;
@@ -755,7 +722,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 								if((flags & 32) != 0) 
 								{
 									z = ztop + zleng - 1;
-									AddFace(verts, new Vector3D(x + 1, y, z + 1), new Vector3D(x, y, z + 1), new Vector3D(x + 1, y + 1, z + 1), new Vector3D(x, y + 1, z + 1), pivot, colorIndices[zleng - 1], mde.AngleOffset, mde.Scale.X);
+									AddFace(verts, new Vector3D(x + 1, y, z + 1), new Vector3D(x, y, z + 1), new Vector3D(x + 1, y + 1, z + 1), new Vector3D(x, y + 1, z + 1), pivot, colorIndices[zleng - 1]);
 								}
 							}
 						}
@@ -767,12 +734,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 			//create bounding box
 			BoundingBoxSizes bbs = new BoundingBoxSizes();
-			bbs.MinX = (short)((xsize / 2 - pivot.x) * mde.Scale.X);
-			bbs.MaxX = (short)((xsize / 2 + pivot.x) * mde.Scale.X);
-			bbs.MinZ = (short)((zsize / 2 - pivot.z) * mde.Scale.X);
-			bbs.MaxZ = (short)((zsize / 2 + pivot.z) * mde.Scale.X);
-			bbs.MinY = (short)((ysize / 2 - pivot.y) * mde.Scale.X);
-			bbs.MaxY = (short)((ysize / 2 + pivot.y) * mde.Scale.X);
+			bbs.MinX = (short)((xsize / 2 - pivot.x) * mde.Scale.M11); //That should be scale x
+			bbs.MaxX = (short)((xsize / 2 + pivot.x) * mde.Scale.M11);
+			bbs.MinZ = (short)((zsize / 2 - pivot.z) * mde.Scale.M11);
+			bbs.MaxZ = (short)((zsize / 2 + pivot.z) * mde.Scale.M11);
+			bbs.MinY = (short)((ysize / 2 - pivot.y) * mde.Scale.M11);
+			bbs.MaxY = (short)((ysize / 2 + pivot.y) * mde.Scale.M11);
 
 			mde.Model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
 
@@ -814,7 +781,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 		}
 
 		// Shameless GZDoom rip-off
-		private static void AddFace(List<WorldVertex> verts, Vector3D v1, Vector3D v2, Vector3D v3, Vector3D v4, Vector3D pivot, int colorIndex, float angle, float scale) 
+		private static void AddFace(List<WorldVertex> verts, Vector3D v1, Vector3D v2, Vector3D v3, Vector3D v4, Vector3D pivot, int colorIndex) 
 		{
 			float pu0 = (colorIndex % 16) / 16f;
 			float pu1 = pu0 + 0.0001f;
@@ -827,7 +794,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			wv1.z = -v1.z + pivot.z;
 			wv1.u = pu0;
 			wv1.v = pv0;
-			wv1 = TransformVertex(wv1, angle, scale);
 			verts.Add(wv1);
 
 			WorldVertex wv2 = new WorldVertex();
@@ -836,7 +802,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			wv2.z = -v2.z + pivot.z;
 			wv2.u = pu1;
 			wv2.v = pv1;
-			wv2 = TransformVertex(wv2, angle, scale);
 			verts.Add(wv2);
 
 			WorldVertex wv4 = new WorldVertex();
@@ -845,7 +810,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			wv4.z = -v4.z + pivot.z;
 			wv4.u = pu0;
 			wv4.v = pv0;
-			wv4 = TransformVertex(wv4, angle, scale);
 			verts.Add(wv4);
 
 			WorldVertex wv3 = new WorldVertex();
@@ -854,34 +818,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			wv3.z = -v3.z + pivot.z;
 			wv3.u = pu1;
 			wv3.v = pv1;
-			wv3 = TransformVertex(wv3, angle, scale);
 			verts.Add(wv3);
 
 			verts.Add(wv1);
 			verts.Add(wv4);
-		}
-
-		private static WorldVertex TransformVertex(WorldVertex v, float angle, float scale) 
-		{
-			if (angle != 0) 
-			{
-				float angleOfsetCos = (float) Math.Cos(angle);
-				float angleOfsetSin = (float) Math.Sin(angle);
-
-				float rx1 = angleOfsetCos * v.x - angleOfsetSin * v.y;
-				float ry1 = angleOfsetSin * v.x + angleOfsetCos * v.y;
-				v.y = ry1;
-				v.x = rx1;
-			}
-
-			if (scale != 1.0f) 
-			{
-				v.x *= scale;
-				v.y *= scale;
-				v.z *= scale;
-			}
-
-			return v;
 		}
 
 		private unsafe static Bitmap CreateVoxelTexture(PixelColor[] palette) 

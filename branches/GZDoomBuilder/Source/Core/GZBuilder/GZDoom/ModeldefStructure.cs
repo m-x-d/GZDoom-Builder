@@ -381,7 +381,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 			//classname is set in ModeldefParser
 			ModelData mde = new ModelData();
-			mde.Scale = scale;
+			mde.Scale = Matrix.Scaling(scale);
 			mde.zOffset = zOffset;
 			mde.AngleOffset = Angle2D.DegToRad(angleOffset);
 			mde.RollOffset = Angle2D.DegToRad(rollOffset);
