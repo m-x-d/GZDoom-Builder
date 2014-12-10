@@ -1122,11 +1122,13 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Create the matrix for positioning / rotation
 					float sx = t.Thing.ScaleX * t.Thing.ActorScale.Width;
 					float sy = t.Thing.ScaleY * t.Thing.ActorScale.Height * viewstretch;
-					Matrix rotation = Matrix.RotationY(-(t.Thing.RollRad - General.Map.Data.ModeldefEntries[t.Thing.Type].RollOffset))
+					Matrix modelcale = Matrix.Scaling(sx, sx, sy) * General.Map.Data.ModeldefEntries[t.Thing.Type].Scale;
+					Matrix rotation = Matrix.RotationY(-(t.Thing.RollRad + General.Map.Data.ModeldefEntries[t.Thing.Type].RollOffset))
 						* Matrix.RotationX(-(t.Thing.PitchRad + General.Map.Data.ModeldefEntries[t.Thing.Type].PitchOffset))
-						* Matrix.RotationZ(t.Thing.Angle);
+						* Matrix.RotationZ(t.Thing.Angle + General.Map.Data.ModeldefEntries[t.Thing.Type].AngleOffset);
+					Matrix position = t.Position * Matrix.Translation(new Vector3(0, 0, General.Map.Data.ModeldefEntries[t.Thing.Type].zOffset * t.Thing.ScaleY));
 
-					world = Matrix.Scaling(sx, sx, sy) * rotation * t.Position;
+					world = rotation * modelcale * position;
 					ApplyMatrices3D();
 
 					//mxd. set variables for fog rendering

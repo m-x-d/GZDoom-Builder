@@ -245,8 +245,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public void SetPosition(Vector3D pos)
 		{
 			pos2d = new Vector2D(pos);
-			//mxd
-			position_v3 = D3DDevice.V3(pos);
+			position_v3 = D3DDevice.V3(pos); //mxd
 			position = Matrix.Translation(position_v3);
 
 			//mxd. update bounding box
