@@ -25,6 +25,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		private readonly static char[] space = { ' ' };
 		private const string slash = "/";
+		internal const int VERTEX_HEIGHT_THING_TYPE = 1504;
 
 		#endregion
 
@@ -72,12 +73,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		public override void OnEngage() 
 		{
-			if(!General.Map.UDMF) 
-			{
-				General.Interface.DisplayStatus(StatusType.Warning, "Terrain importer works only in UDMF map format!");
-				OnCancel();
-			}
-
 			base.OnEngage();
 			General.Map.Map.ClearAllSelected();
 
@@ -104,7 +99,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			int maxZ = int.MinValue;
 
 			// Read .obj, create and select sectors 
-			if(!ReadGeometry(form.FilePath, form.ObjScale, form.UpAxis, verts, faces, ref minZ, ref maxZ) || !CreateGeometry(verts, faces, minZ, maxZ + (maxZ - minZ)/2)) 
+			if(!ReadGeometry(form.FilePath, form.ObjScale, form.UpAxis, verts, faces, ref minZ, ref maxZ) || !CreateGeometry(verts, faces, maxZ + (maxZ - minZ)/2)) 
 			{
 				// Fial!
 				Cursor.Current = Cursors.Default;
@@ -114,8 +109,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			}
 			
 			// Update caches
+			General.Map.Map.SnapAllToAccuracy();
+			General.Map.Map.UpdateConfiguration();
 			General.Map.Map.Update();
 			General.Map.IsChanged = true;
+
+			// Update things filter so that it includes added things
+			if(form.UseVertexHeights && !General.Map.UDMF) General.Map.ThingsFilter.Update();
 
 			// Done
 			Cursor.Current = Cursors.Default;
@@ -137,29 +137,80 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		#region ================== Geometry creation
 
-		private static bool CreateGeometry(List<Vector3D> verts, List<Face> faces, int minZ, int maxZ) 
+		private bool CreateGeometry(List<Vector3D> verts, List<Face> faces, int maxZ) 
 		{
+			MapSet map = General.Map.Map;
+			
+			// Capacity checks
+			int totalverts = map.Vertices.Count + verts.Count;
+			int totalsides = map.Sidedefs.Count + faces.Count * 6;
+			int totallines = map.Linedefs.Count + faces.Count * 3;
+			int totalsectors = map.Sectors.Count + faces.Count;
+			int totalthings = 0;
+			if(form.UseVertexHeights && !General.Map.UDMF) 
+			{
+				// We'll use vertex height things in non-udmf maps, if such things are defined in Game Configuration
+				totalthings = map.Things.Count + verts.Count;
+			}
+
+			if(totalverts > General.Map.FormatInterface.MaxVertices) 
+			{
+				MessageBox.Show("Cannot import the model: resulting vertex count (" + totalverts 
+					+ ") is larger than map format's maximum (" + General.Map.FormatInterface.MaxVertices + ")!", 
+					"Terrain Importer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
+			if(totalsides > General.Map.FormatInterface.MaxSidedefs) 
+			{
+				MessageBox.Show("Cannot import the model: resulting sidedefs count (" + totalsides 
+					+ ") is larger than map format's maximum (" + General.Map.FormatInterface.MaxSidedefs + ")!", 
+					"Terrain Importer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
+			if(totallines > General.Map.FormatInterface.MaxLinedefs) 
+			{
+				MessageBox.Show("Cannot import the model: resulting sidedefs count (" + totallines 
+					+ ") is larger than map format's maximum (" + General.Map.FormatInterface.MaxLinedefs + ")!", 
+					"Terrain Importer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
+			if(totalsectors > General.Map.FormatInterface.MaxSectors) 
+			{
+				MessageBox.Show("Cannot import the model: resulting sidedefs count (" + totalsectors 
+					+ ") is larger than map format's maximum (" + General.Map.FormatInterface.MaxSectors + ")!", 
+					"Terrain Importer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
+			if(totalthings > General.Map.FormatInterface.MaxThings) 
+			{
+				MessageBox.Show("Cannot import the model: resulting things count (" + totalthings
+					+ ") is larger than map format's maximum (" + General.Map.FormatInterface.MaxThings + ")!",
+					"Terrain Importer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
+			
 			//make undo
 			General.Map.UndoRedo.CreateUndo("Import Terrain");
 
 			//prepare mapset
 			List<Linedef> newlines = new List<Linedef>();
-			MapSet map = General.Map.Map;
 			map.BeginAddRemove();
-			map.SetCapacity(map.Vertices.Count + verts.Count, map.Linedefs.Count + faces.Count * 3, map.Sidedefs.Count + faces.Count * 3, map.Sectors.Count + faces.Count, 0);
+			map.SetCapacity(totalverts, totallines, totalsides, totalsectors, totalthings);
 
 			//terrain has many faces... let's create them
 			Dictionary<Vector3D, Vertex> newverts = new Dictionary<Vector3D, Vertex>();
 			foreach(Face face in faces)
 			{
+				// Create sector
 				Sector s = map.CreateSector();
 				s.Selected = true;
-				s.FloorHeight = minZ;
+				s.FloorHeight = (int)Math.Round((face.V1.z + face.V2.z + face.V3.z) / 3);
 				s.CeilHeight = maxZ;
 				s.Brightness = General.Settings.DefaultBrightness; //todo: allow user to change this
 				s.SetCeilTexture(General.Map.Config.SkyFlatName);
 				s.SetFloorTexture(General.Map.Options.DefaultFloorTexture); //todo: allow user to change this
 
+				// And linedefs
 				Linedef newline = GetLine(newverts, s, face.V1, face.V2);
 				if(newline != null) newlines.Add(newline);
 
@@ -172,6 +223,19 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				s.UpdateCache();
 			}
 
+			// Add slope things
+			if(form.UseVertexHeights && !General.Map.UDMF) 
+			{
+				foreach (Vector3D pos in newverts.Keys) 
+				{
+					Thing t = map.CreateThing();
+					General.Settings.ApplyDefaultThingSettings(t);
+					t.Type = VERTEX_HEIGHT_THING_TYPE;
+					t.Move(pos);
+					t.Selected = true;
+				}
+			}
+
 			//update new lines
 			foreach(Linedef l in newlines) l.ApplySidedFlags();
 
@@ -179,7 +243,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			return true;
 		}
 
-		private static Linedef GetLine(Dictionary<Vector3D, Vertex> verts, Sector sector, Vector3D v1, Vector3D v2) 
+		private Linedef GetLine(Dictionary<Vector3D, Vertex> verts, Sector sector, Vector3D v1, Vector3D v2) 
 		{
 			Linedef line = null;
 
@@ -198,31 +262,33 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			}
 
 			//create a new line?
+			Sidedef side;
 			if(line == null) 
 			{
 				line = General.Map.Map.CreateLinedef(start, end);
 
 				//create front sidedef and attach sector to it
-				General.Map.Map.CreateSidedef(line, true, sector);
+				side = General.Map.Map.CreateSidedef(line, true, sector);
 			} 
 			else 
 			{
 				//create back sidedef and attach sector to it
-				General.Map.Map.CreateSidedef(line, false, sector);
+				side = General.Map.Map.CreateSidedef(line, false, sector);
 			}
 
+			if(!form.UseVertexHeights) side.SetTextureLow(General.Map.Options.DefaultWallTexture);
 			line.Selected = true;
 			return line;
 		}
 
-		private static Vertex GetVertex(Dictionary<Vector3D, Vertex> verts, Vector3D pos) 
+		private Vertex GetVertex(Dictionary<Vector3D, Vertex> verts, Vector3D pos) 
 		{
 			//already there?
 			if(verts.ContainsKey(pos)) return verts[pos];
 			
 			//make a new one
 			Vertex v = General.Map.Map.CreateVertex(pos);
-			v.ZFloor = pos.z;
+			if(form.UseVertexHeights) v.ZFloor = pos.z;
 			verts.Add(pos, v);
 			return v;
 		}

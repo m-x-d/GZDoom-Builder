@@ -14,6 +14,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		#region ================== Variables
 
 		private ImportObjAsTerrainMode.UpAxis axis;
+		private bool slopessupported;
 
 		#endregion
 
@@ -22,6 +23,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		internal string FilePath { get { return tbImportPath.Text.Trim(); } }
 		internal ImportObjAsTerrainMode.UpAxis UpAxis { get { return axis; } }
 		internal float ObjScale { get { return (float)nudScale.Value; } }
+		internal bool UseVertexHeights { get { return slopessupported && cbusevertexheight.Checked; } }
 
 		//todo: floor/ceiling textures? height offsets? ceiling extra height?
 
@@ -34,6 +36,11 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			//restore settings
 			axis = (ImportObjAsTerrainMode.UpAxis)General.Settings.ReadPluginSetting("objexportupaxis", 0);
 			nudScale.Value = (decimal)General.Settings.ReadPluginSetting("objexportscale", 1.0f);
+			slopessupported = (General.Map.UDMF || General.Map.Data.GetThingInfoEx(ImportObjAsTerrainMode.VERTEX_HEIGHT_THING_TYPE) != null);
+			if(slopessupported) 
+				cbusevertexheight.Checked = General.Settings.ReadPluginSetting("objusevertexheights", true);
+			else 
+				cbusevertexheight.Enabled = false;
 
 			switch(axis) 
 			{
@@ -69,6 +76,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			//save settings
 			General.Settings.WritePluginSetting("objexportupaxis", (int)axis);
 			General.Settings.WritePluginSetting("objexportscale", (float)nudScale.Value);
+			if(slopessupported) General.Settings.WritePluginSetting("objusevertexheights", cbusevertexheight.Checked);
 
 			this.DialogResult = DialogResult.OK;
 			this.Close();

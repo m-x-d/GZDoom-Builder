@@ -230,10 +230,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(Thing.Sector != null)
 				{
 					SectorData sd = mode.GetSectorData(Thing.Sector);
-					if(Thing.Position.z > 0)
+					pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
+					/*if(Thing.Position.z > 0)
 						pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
 					else
-						pos.z = Thing.Sector.CeilHeight - info.Height; //mxd. was [pos.z = Thing.Sector.CeilHeight;]
+						pos.z = Thing.Sector.CeilHeight - info.Height;*/
 				}
 
 				pos.z -= Thing.Position.z;
@@ -252,10 +253,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(Thing.Sector != null)
 				{
 					SectorData sd = mode.GetSectorData(Thing.Sector);
-					if(Thing.Position.z == 0)
+					pos.z = sd.Floor.plane.GetZ(Thing.Position);
+					/*if(Thing.Position.z == 0)
 						pos.z = sd.Floor.plane.GetZ(Thing.Position);
 					else
-						pos.z = Thing.Sector.FloorHeight;
+						pos.z = Thing.Sector.FloorHeight;*/
 				}
 
 				pos.z += Thing.Position.z;
