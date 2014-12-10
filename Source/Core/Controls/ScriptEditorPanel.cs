@@ -906,7 +906,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private void searchbox_TextChanged(object sender, EventArgs e)
 		{
-			bool success = ActiveTab.FindNext(GetQuickSearchOptions(), true);
+			bool success = (searchbox.Text.Length > 0 && ActiveTab.FindNext(GetQuickSearchOptions(), true));
 			searchbox.BackColor = ((success || searchbox.Text.Length == 0) ? SystemColors.Window : Color.MistyRose);
 			searchnext.Enabled = success;
 			searchprev.Enabled = success;
