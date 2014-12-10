@@ -30,7 +30,6 @@
 			this.cancel = new System.Windows.Forms.Button();
 			this.import = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
-			this.browse = new System.Windows.Forms.Button();
 			this.tbImportPath = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.axisx = new System.Windows.Forms.RadioButton();
@@ -38,6 +37,8 @@
 			this.axisz = new System.Windows.Forms.RadioButton();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.cbusevertexheight = new System.Windows.Forms.CheckBox();
+			this.browse = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.nudScale)).BeginInit();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
@@ -78,7 +79,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(279, 82);
+			this.cancel.Location = new System.Drawing.Point(226, 82);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(75, 23);
 			this.cancel.TabIndex = 14;
@@ -89,7 +90,7 @@
 			// import
 			// 
 			this.import.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.import.Location = new System.Drawing.Point(360, 82);
+			this.import.Location = new System.Drawing.Point(307, 82);
 			this.import.Name = "import";
 			this.import.Size = new System.Drawing.Size(75, 23);
 			this.import.TabIndex = 13;
@@ -105,16 +106,6 @@
 			this.label1.Size = new System.Drawing.Size(32, 13);
 			this.label1.TabIndex = 12;
 			this.label1.Text = "Path:";
-			// 
-			// browse
-			// 
-			this.browse.Location = new System.Drawing.Point(360, 10);
-			this.browse.Name = "browse";
-			this.browse.Size = new System.Drawing.Size(75, 23);
-			this.browse.TabIndex = 11;
-			this.browse.Text = "Browse...";
-			this.browse.UseVisualStyleBackColor = true;
-			this.browse.Click += new System.EventHandler(this.browse_Click);
 			// 
 			// tbImportPath
 			// 
@@ -182,13 +173,34 @@
 			this.openFileDialog.Filter = "Wavefront obj files|*.obj";
 			this.openFileDialog.Title = "Choose .obj file to import:";
 			// 
+			// cbusevertexheight
+			// 
+			this.cbusevertexheight.AutoSize = true;
+			this.cbusevertexheight.Location = new System.Drawing.Point(55, 64);
+			this.cbusevertexheight.Name = "cbusevertexheight";
+			this.cbusevertexheight.Size = new System.Drawing.Size(95, 17);
+			this.cbusevertexheight.TabIndex = 22;
+			this.cbusevertexheight.Text = "Sloped Terrian";
+			this.cbusevertexheight.UseVisualStyleBackColor = true;
+			// 
+			// browse
+			// 
+			this.browse.Image = global::CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.Folder;
+			this.browse.Location = new System.Drawing.Point(360, 10);
+			this.browse.Name = "browse";
+			this.browse.Size = new System.Drawing.Size(28, 23);
+			this.browse.TabIndex = 11;
+			this.browse.UseVisualStyleBackColor = true;
+			this.browse.Click += new System.EventHandler(this.browse_Click);
+			// 
 			// ObjImportSettingsForm
 			// 
 			this.AcceptButton = this.import;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(447, 109);
+			this.ClientSize = new System.Drawing.Size(394, 109);
+			this.Controls.Add(this.cbusevertexheight);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
@@ -202,6 +214,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ObjImportSettingsForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Import Wavefront .obj";
@@ -228,5 +241,6 @@
 		private System.Windows.Forms.RadioButton axisz;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
+		private System.Windows.Forms.CheckBox cbusevertexheight;
 	}
 }

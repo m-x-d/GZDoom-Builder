@@ -541,8 +541,6 @@ namespace CodeImp.DoomBuilder
 		[STAThread]
 		internal static void Main(string[] args)
 		{
-			Uri localpath;
-			
 			// Determine states
 			#if DEBUG
 				debugbuild = true;
@@ -571,7 +569,7 @@ namespace CodeImp.DoomBuilder
 			thisasm = Assembly.GetExecutingAssembly();
 			
 			// Find application path
-			localpath = new Uri(Path.GetDirectoryName(thisasm.GetName().CodeBase));
+			Uri localpath = new Uri(Path.GetDirectoryName(thisasm.GetName().CodeBase));
 			apppath = Uri.UnescapeDataString(localpath.AbsolutePath);
 			
 			// Setup directories

@@ -2999,7 +2999,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//create path
 			string date = DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss.fff");
-			string revision = "R" + General.ThisAssembly.GetName().Version.MinorRevision;
+			string revision = (General.DebugBuild ? "DEVBUILD" : "R" + General.ThisAssembly.GetName().Version.MinorRevision);
 			string path = Path.Combine(folder, name + date + " [" + revision + "].jpg");
 
 			//save image

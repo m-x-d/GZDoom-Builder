@@ -150,6 +150,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 			//mxd. Show hints for this mode
 			General.Hints.ShowHints(this.GetType(), HintsManager.GENERAL);
+
+			//mxd. Display new mode name
+			General.Interface.HideInfo();
 		}
 
 		// Mode disengages
