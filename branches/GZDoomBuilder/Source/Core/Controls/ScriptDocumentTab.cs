@@ -300,17 +300,20 @@ namespace CodeImp.DoomBuilder.Controls
 		// Find previous result (mxd)
 		public bool FindPrevious(FindReplaceOptions options) 
 		{
+			bool wrapped = false;
 			byte[] data = editor.GetText();
 			string text = Encoding.GetEncoding(config.CodePage).GetString(data);
 			StringComparison mode = options.CaseSensitive ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase;
-			int endpos = Math.Min(editor.SelectionStart, editor.SelectionEnd);
-			int initialendpos = endpos;
-			int searchlength = endpos;
-			bool wrapped = false;
+			int endpos = Math.Min(editor.SelectionStart, editor.SelectionEnd) - 1;
+			if(endpos < 0)
+			{
+				endpos = text.Length - 1;
+				wrapped = true;
+			}
 
 			while(true) 
 			{
-				int result = text.LastIndexOf(options.FindText, endpos, searchlength, mode);
+				int result = text.LastIndexOf(options.FindText, endpos, mode);
 				if(result > -1) 
 				{
 					// Check to see if it is the whole word
@@ -321,7 +324,6 @@ namespace CodeImp.DoomBuilder.Controls
 						if(foundword.Length != options.FindText.Length) 
 						{
 							endpos = result - 1;
-							searchlength = endpos;
 							result = -1;
 						}
 					}
@@ -341,8 +343,7 @@ namespace CodeImp.DoomBuilder.Controls
 					// If we haven't tried from the end, try from the end now
 					if(!wrapped) 
 					{
-						endpos = text.Length - 1;
-						searchlength = endpos - initialendpos;
+						endpos = Math.Max(0, text.Length - 2);
 						wrapped = true;
 					} 
 					else 
