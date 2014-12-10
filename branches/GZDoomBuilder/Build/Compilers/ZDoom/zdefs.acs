@@ -289,6 +289,8 @@
 #define APROP_ViewHeight	39
 #define APROP_AttackZOffset	40
 #define APROP_StencilColor	41
+#define APROP_Friction		42
+#define APROP_DamageMultiplier	43
 
 // Render Styles ------------------------------------------------------------
 
@@ -743,6 +745,7 @@
 #DEFINE	AAPTR_PLAYER8 0x2000
 
 #DEFINE AAPTR_FRIENDPLAYER 0x4000
+#DEFINE AAPTR_GET_LINETARGET 0x8000
 
 // Actor pointer operation flags
 
@@ -867,6 +870,9 @@
 #define T_HIGHJUMP				188
 #define T_HASTE					189
 
+// Zandronum database additions ---------------------------------------------
+#define DB_ORDER_ASC			0
+#define DB_ORDER_DESC			1
 
 // Events when you have input grabbed
 
@@ -1008,3 +1014,31 @@
 #define MF_NOLIFTDROP       0x20000000
 #define MF_STEALTH          0x40000000
 #define MF_ICECORPSE        0x80000000
+
+// Linedef flags
+#define ML_BLOCKING            0x00000001
+#define ML_BLOCKMONSTERS       0x00000002
+#define ML_TWOSIDED            0x00000004
+#define ML_DONTPEGTOP          0x00000008
+#define ML_DONTPEGBOTTOM       0x00000010
+#define ML_SECRET              0x00000020
+#define ML_SOUNDBLOCK          0x00000040
+#define ML_DONTDRAW            0x00000080
+#define ML_MAPPED              0x00000100
+#define ML_REPEAT_SPECIAL      0x00000200
+#define ML_ADDTRANS            0x00000400
+#define ML_MONSTERSCANACTIVATE 0x00002000
+#define ML_BLOCK_PLAYERS       0x00004000
+#define ML_BLOCKEVERYTHING     0x00008000
+#define ML_ZONEBOUNDARY        0x00010000
+#define ML_RAILING             0x00020000
+#define ML_BLOCK_FLOATERS      0x00040000
+#define ML_CLIP_MIDTEX         0x00080000
+#define ML_WRAP_MIDTEX         0x00100000
+#define ML_3DMIDTEX            0x00200000
+#define ML_CHECKSWITCHRANGE    0x00400000
+#define ML_FIRSTSIDEONLY       0x00800000
+#define ML_BLOCKPROJECTILE     0x01000000
+#define ML_BLOCKUSE            0x02000000
+#define ML_BLOCKSIGHT          0x04000000
+#define ML_BLOCKHITSCAN        0x08000000
