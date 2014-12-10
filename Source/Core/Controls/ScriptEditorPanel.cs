@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Config;
@@ -44,6 +45,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// Find/Replace
 		private ScriptFindReplaceForm findreplaceform;
 		private FindReplaceOptions findoptions;
+
+		// Quick search bar settings (mxd)
+		private static bool matchwholeword;
+		private static bool matchcase;
 		
 		#endregion
 		
@@ -147,6 +152,11 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 				if (tabs.SelectedIndex == -1) tabs.SelectedIndex = 0;
 			}
+
+			//mxd. Apply quick search settings
+			searchmatchcase.Checked = matchcase;
+			searchwholeword.Checked = matchwholeword;
+			searchbox_TextChanged(this, EventArgs.Empty);
 			
 			// If the map has remembered any compile errors, then show them
 			ShowErrors(General.Map.Errors);
@@ -198,6 +208,30 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 			}
 			else
+			{
+				General.MessageBeep(MessageBeepType.Default);
+			}
+		}
+
+		// Find Previous
+		public void FindPrevious(FindReplaceOptions options) 
+		{
+			// Save the options
+			findoptions = options;
+			FindPrevious();
+		}
+
+		// Find Previous with saved options (mxd)
+		public void FindPrevious() 
+		{
+			if(!string.IsNullOrEmpty(findoptions.FindText) && (ActiveTab != null)) 
+			{
+				if (!ActiveTab.FindPrevious(findoptions))
+				{
+					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't find any occurence of \"" + findoptions.FindText + "\".");
+				}
+			} 
+			else 
 			{
 				General.MessageBeep(MessageBeepType.Default);
 			}
@@ -595,6 +629,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// Called when the window that contains this panel closes
 		public void OnClose()
 		{
+			//mxd. Store quick search settings
+			matchcase = searchmatchcase.Checked;
+			matchwholeword = searchwholeword.Checked;
+			
 			// Close the sub windows now
 			if(findreplaceform != null) findreplaceform.Dispose();
 		}
@@ -853,5 +891,38 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		#endregion
+
+		#region ================== Quick Search (mxd)
+
+		private FindReplaceOptions GetQuickSearchOptions()
+		{
+			return new FindReplaceOptions 
+			{
+				CaseSensitive = searchmatchcase.Checked,
+				WholeWord = searchwholeword.Checked,
+				FindText = searchbox.Text
+			};
+		}
+
+		private void searchbox_TextChanged(object sender, EventArgs e)
+		{
+			bool success = ActiveTab.FindNext(GetQuickSearchOptions(), true);
+			searchbox.BackColor = ((success || searchbox.Text.Length == 0) ? SystemColors.Window : Color.MistyRose);
+			searchnext.Enabled = success;
+			searchprev.Enabled = success;
+		}
+
+		private void searchnext_Click(object sender, EventArgs e)
+		{
+			ActiveTab.FindNext(GetQuickSearchOptions());
+		}
+
+		private void searchprev_Click(object sender, EventArgs e) 
+		{
+			ActiveTab.FindPrevious(GetQuickSearchOptions());
+		}
+
+		#endregion
+		
 	}
 }

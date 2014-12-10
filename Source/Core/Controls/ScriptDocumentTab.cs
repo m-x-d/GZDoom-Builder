@@ -112,6 +112,7 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.OnOpenScriptBrowser += panel.OpenBrowseScript;
 			editor.OnOpenFindAndReplace += panel.OpenFindAndReplace;
 			editor.OnFindNext += panel.FindNext;
+			editor.OnFindPrevious += panel.FindPrevious; //mxd
 		}
 		
 		// Disposer
@@ -122,6 +123,7 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.OnOpenScriptBrowser -= panel.OpenBrowseScript;
 			editor.OnOpenFindAndReplace -= panel.OpenFindAndReplace;
 			editor.OnFindNext -= panel.FindNext;
+			editor.OnFindPrevious -= panel.FindPrevious; //mxd
 			
 			base.Dispose(disposing);
 		}
@@ -235,14 +237,20 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			editor.Paste();
 		}
+
+		// Find next result (mxd)
+		public bool FindNext(FindReplaceOptions options)
+		{
+			return FindNext(options, false);
+		}
 		
 		// Find next result
-		public bool FindNext(FindReplaceOptions options)
+		public bool FindNext(FindReplaceOptions options, bool useselectionstart)
 		{
 			byte[] data = editor.GetText();
 			string text = Encoding.GetEncoding(config.CodePage).GetString(data);
 			StringComparison mode = options.CaseSensitive ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase;
-			int startpos = Math.Max(editor.SelectionStart, editor.SelectionEnd);
+			int startpos = (useselectionstart ? Math.Min(editor.SelectionStart, editor.SelectionEnd) : Math.Max(editor.SelectionStart, editor.SelectionEnd)); //mxd
 			bool wrapped = false;
 			
 			while(true)
@@ -281,6 +289,63 @@ namespace CodeImp.DoomBuilder.Controls
 						wrapped = true;
 					}
 					else
+					{
+						// Can't find it
+						return false;
+					}
+				}
+			}
+		}
+
+		// Find previous result (mxd)
+		public bool FindPrevious(FindReplaceOptions options) 
+		{
+			byte[] data = editor.GetText();
+			string text = Encoding.GetEncoding(config.CodePage).GetString(data);
+			StringComparison mode = options.CaseSensitive ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase;
+			int endpos = Math.Min(editor.SelectionStart, editor.SelectionEnd);
+			int initialendpos = endpos;
+			int searchlength = endpos;
+			bool wrapped = false;
+
+			while(true) 
+			{
+				int result = text.LastIndexOf(options.FindText, endpos, searchlength, mode);
+				if(result > -1) 
+				{
+					// Check to see if it is the whole word
+					if(options.WholeWord) 
+					{
+						// Veryfy that we have found a whole word
+						string foundword = editor.GetWordAt(result + 1);
+						if(foundword.Length != options.FindText.Length) 
+						{
+							endpos = result - 1;
+							searchlength = endpos;
+							result = -1;
+						}
+					}
+
+					// Still ok?
+					if(result > -1) 
+					{
+						// Select the result
+						editor.SelectionStart = result;
+						editor.SelectionEnd = result + options.FindText.Length;
+						editor.EnsureLineVisible(editor.LineFromPosition(editor.SelectionEnd));
+						return true;
+					}
+				} 
+				else 
+				{
+					// If we haven't tried from the end, try from the end now
+					if(!wrapped) 
+					{
+						endpos = text.Length - 1;
+						searchlength = endpos - initialendpos;
+						wrapped = true;
+					} 
+					else 
 					{
 						// Can't find it
 						return false;

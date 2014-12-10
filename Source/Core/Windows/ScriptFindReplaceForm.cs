@@ -90,6 +90,12 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			General.Map.ScriptEditor.Editor.FindNext(MakeOptions());
 		}
+
+		// Find Previous (mxd)
+		private void findpreviousbutton_Click(object sender, EventArgs e) 
+		{
+			General.Map.ScriptEditor.Editor.FindPrevious(MakeOptions());
+		}
 		
 		// Replace
 		private void replacebutton_Click(object sender, EventArgs e)
