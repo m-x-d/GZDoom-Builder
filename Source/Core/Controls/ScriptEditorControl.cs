@@ -827,10 +827,11 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			//mxd. Tab to expand code snippet
+			// Do it only when the text cursor is at the end of a keyword.
 			else if(e.KeyCode == Keys.Tab) 
 			{
 				string curword = GetCurrentWord().ToLowerInvariant();
-				if (scriptconfig.Snippets.ContainsKey(curword)) 
+				if(scriptconfig.Snippets.ContainsKey(curword) && scriptedit.CurrentPos == scriptedit.WordEndPosition(scriptedit.CurrentPos, true))
 				{
 					InsertSnippet(scriptconfig.Snippets[curword]);
 					e.Handled = true;

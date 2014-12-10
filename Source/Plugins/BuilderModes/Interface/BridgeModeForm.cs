@@ -3,9 +3,10 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.BuilderModes.ClassicModes;
 using CodeImp.DoomBuilder.Windows;
 
-namespace CodeImp.DoomBuilder.BuilderModes.Interface {
-
-	internal struct BridgeInterpolationMode {
+namespace CodeImp.DoomBuilder.BuilderModes.Interface 
+{
+	internal struct BridgeInterpolationMode 
+	{
 		public const string BRIGHTNESS_HIGHEST = "Use highest";
 		public const string BRIGHTNESS_LOWEST = "Use lowest";
 
@@ -16,13 +17,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface {
 		public const string OUT_SINE = "EaseOutSine interpolation";
 		public const string IN_OUT_SINE = "EaseInOutSine interpolation";
 
-		public static string[] CEILING_INTERPOLATION_MODES = { LINEAR, HIGHEST, IN_SINE, OUT_SINE, IN_OUT_SINE/*, IN_OUT_CUBIC, OUT_IN_CUBIC*/ };
-		public static string[] FLOOR_INTERPOLATION_MODES = { LINEAR, LOWEST, IN_SINE, OUT_SINE, IN_OUT_SINE/*, IN_OUT_CUBIC, OUT_IN_CUBIC*/ };
-		public static string[] BRIGHTNESS_INTERPOLATION_MODES = { LINEAR, BRIGHTNESS_HIGHEST, BRIGHTNESS_LOWEST };
+		public static readonly string[] CEILING_INTERPOLATION_MODES = { LINEAR, HIGHEST, IN_SINE, OUT_SINE, IN_OUT_SINE/*, IN_OUT_CUBIC, OUT_IN_CUBIC*/ };
+		public static readonly string[] FLOOR_INTERPOLATION_MODES = { LINEAR, LOWEST, IN_SINE, OUT_SINE, IN_OUT_SINE/*, IN_OUT_CUBIC, OUT_IN_CUBIC*/ };
+		public static readonly string[] BRIGHTNESS_INTERPOLATION_MODES = { LINEAR, BRIGHTNESS_HIGHEST, BRIGHTNESS_LOWEST };
 	}
 	
-	public partial class BridgeModeForm : DelayedForm {
-
+	public partial class BridgeModeForm : DelayedForm 
+	{
 		internal int Subdivisions { get { return (int)nudSubdivisions.Value; } set { nudSubdivisions.Value = value; } }
 		internal string FloorAlignMode { get { return (string)cbFloorAlign.SelectedItem; } }
 		internal string CeilingAlignMode { get { return (string)cbCeilingAlign.SelectedItem; } }
