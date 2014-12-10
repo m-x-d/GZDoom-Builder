@@ -648,6 +648,34 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap SearchMatch {
+            get {
+                object obj = ResourceManager.GetObject("SearchMatch", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap SearchMatchCase {
+            get {
+                object obj = ResourceManager.GetObject("SearchMatchCase", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap SearchNext {
+            get {
+                object obj = ResourceManager.GetObject("SearchNext", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap SearchPrev {
+            get {
+                object obj = ResourceManager.GetObject("SearchPrev", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap SlimDX_small {
             get {
                 object obj = ResourceManager.GetObject("SlimDX_small", resourceCulture);

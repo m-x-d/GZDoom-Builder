@@ -38,6 +38,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.replaceallbutton = new System.Windows.Forms.Button();
 			this.closebutton = new System.Windows.Forms.Button();
 			this.replacebutton = new System.Windows.Forms.Button();
+			this.findpreviousbutton = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -59,7 +60,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// casesensitive
 			// 
 			this.casesensitive.AutoSize = true;
-			this.casesensitive.Location = new System.Drawing.Point(93, 84);
+			this.casesensitive.Location = new System.Drawing.Point(93, 81);
 			this.casesensitive.Name = "casesensitive";
 			this.casesensitive.Size = new System.Drawing.Size(97, 18);
 			this.casesensitive.TabIndex = 2;
@@ -69,7 +70,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// wordonly
 			// 
 			this.wordonly.AutoSize = true;
-			this.wordonly.Location = new System.Drawing.Point(93, 108);
+			this.wordonly.Location = new System.Drawing.Point(93, 105);
 			this.wordonly.Name = "wordonly";
 			this.wordonly.Size = new System.Drawing.Size(108, 18);
 			this.wordonly.TabIndex = 3;
@@ -94,10 +95,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// findnextbutton
 			// 
-			this.findnextbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.findnextbutton.Location = new System.Drawing.Point(257, 18);
+			this.findnextbutton.Location = new System.Drawing.Point(251, 17);
 			this.findnextbutton.Name = "findnextbutton";
-			this.findnextbutton.Size = new System.Drawing.Size(98, 25);
+			this.findnextbutton.Size = new System.Drawing.Size(80, 25);
 			this.findnextbutton.TabIndex = 4;
 			this.findnextbutton.Text = "Find Next";
 			this.findnextbutton.UseVisualStyleBackColor = true;
@@ -105,37 +105,45 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// replaceallbutton
 			// 
-			this.replaceallbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.replaceallbutton.Location = new System.Drawing.Point(257, 80);
+			this.replaceallbutton.Location = new System.Drawing.Point(337, 48);
 			this.replaceallbutton.Name = "replaceallbutton";
-			this.replaceallbutton.Size = new System.Drawing.Size(98, 25);
-			this.replaceallbutton.TabIndex = 6;
+			this.replaceallbutton.Size = new System.Drawing.Size(86, 25);
+			this.replaceallbutton.TabIndex = 7;
 			this.replaceallbutton.Text = "Replace All";
 			this.replaceallbutton.UseVisualStyleBackColor = true;
 			this.replaceallbutton.Click += new System.EventHandler(this.replaceallbutton_Click);
 			// 
 			// closebutton
 			// 
-			this.closebutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.closebutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.closebutton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.closebutton.Location = new System.Drawing.Point(257, 127);
+			this.closebutton.Location = new System.Drawing.Point(325, 96);
 			this.closebutton.Name = "closebutton";
 			this.closebutton.Size = new System.Drawing.Size(98, 25);
-			this.closebutton.TabIndex = 7;
+			this.closebutton.TabIndex = 8;
 			this.closebutton.Text = "Close";
 			this.closebutton.UseVisualStyleBackColor = true;
 			this.closebutton.Click += new System.EventHandler(this.closebutton_Click);
 			// 
 			// replacebutton
 			// 
-			this.replacebutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.replacebutton.Location = new System.Drawing.Point(257, 49);
+			this.replacebutton.Location = new System.Drawing.Point(251, 48);
 			this.replacebutton.Name = "replacebutton";
-			this.replacebutton.Size = new System.Drawing.Size(98, 25);
-			this.replacebutton.TabIndex = 5;
+			this.replacebutton.Size = new System.Drawing.Size(80, 25);
+			this.replacebutton.TabIndex = 6;
 			this.replacebutton.Text = "Replace";
 			this.replacebutton.UseVisualStyleBackColor = true;
 			this.replacebutton.Click += new System.EventHandler(this.replacebutton_Click);
+			// 
+			// findpreviousbutton
+			// 
+			this.findpreviousbutton.Location = new System.Drawing.Point(337, 17);
+			this.findpreviousbutton.Name = "findpreviousbutton";
+			this.findpreviousbutton.Size = new System.Drawing.Size(86, 25);
+			this.findpreviousbutton.TabIndex = 5;
+			this.findpreviousbutton.Text = "Find Previous";
+			this.findpreviousbutton.UseVisualStyleBackColor = true;
+			this.findpreviousbutton.Click += new System.EventHandler(this.findpreviousbutton_Click);
 			// 
 			// ScriptFindReplaceForm
 			// 
@@ -143,7 +151,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.closebutton;
-			this.ClientSize = new System.Drawing.Size(367, 163);
+			this.ClientSize = new System.Drawing.Size(436, 127);
+			this.Controls.Add(this.findpreviousbutton);
 			this.Controls.Add(this.replacebutton);
 			this.Controls.Add(this.closebutton);
 			this.Controls.Add(this.replaceallbutton);
@@ -159,6 +168,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ScriptFindReplaceForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Find and Replace";
@@ -180,5 +190,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button replaceallbutton;
 		private System.Windows.Forms.Button closebutton;
 		private System.Windows.Forms.Button replacebutton;
+		private System.Windows.Forms.Button findpreviousbutton;
 	}
 }

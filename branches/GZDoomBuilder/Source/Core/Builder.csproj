@@ -1044,6 +1044,10 @@
     <Content Include="Resources\Model.png" />
     <None Include="Resources\ModelDisabled.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\SearchPrev.png" />
+    <None Include="Resources\SearchNext.png" />
+    <None Include="Resources\SearchMatchCase.png" />
+    <None Include="Resources\SearchMatch.png" />
     <None Include="Resources\WordWrap.png" />
     <None Include="Resources\ThingCategory.png" />
     <None Include="Resources\ScreenshotActiveWindow.png" />

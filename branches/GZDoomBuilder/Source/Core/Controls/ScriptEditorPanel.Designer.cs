@@ -51,6 +51,12 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttonclose = new System.Windows.Forms.ToolStripButton();
 			this.buttonkeywordhelp = new System.Windows.Forms.ToolStripButton();
 			this.buttonsearch = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.searchbox = new System.Windows.Forms.ToolStripTextBox();
+			this.searchprev = new System.Windows.Forms.ToolStripButton();
+			this.searchnext = new System.Windows.Forms.ToolStripButton();
+			this.searchmatchcase = new System.Windows.Forms.ToolStripButton();
+			this.searchwholeword = new System.Windows.Forms.ToolStripButton();
 			this.openfile = new System.Windows.Forms.OpenFileDialog();
 			this.savefile = new System.Windows.Forms.SaveFileDialog();
 			this.splitter = new System.Windows.Forms.SplitContainer();
@@ -105,7 +111,13 @@ namespace CodeImp.DoomBuilder.Controls
             this.buttoncompile,
             this.buttonclose,
             this.buttonkeywordhelp,
-            this.buttonsearch});
+            this.buttonsearch,
+            this.toolStripSeparator5,
+            this.searchbox,
+            this.searchprev,
+            this.searchnext,
+            this.searchmatchcase,
+            this.searchwholeword});
 			this.toolbar.Location = new System.Drawing.Point(0, 0);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(726, 25);
@@ -295,6 +307,61 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttonsearch.Text = "Open Find and Replace Window";
 			this.buttonsearch.Click += new System.EventHandler(this.buttonsearch_Click);
 			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+			// 
+			// searchbox
+			// 
+			this.searchbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.searchbox.Name = "searchbox";
+			this.searchbox.Size = new System.Drawing.Size(100, 25);
+			this.searchbox.TextChanged += new System.EventHandler(this.searchbox_TextChanged);
+			// 
+			// searchprev
+			// 
+			this.searchprev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.searchprev.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchPrev;
+			this.searchprev.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.searchprev.Name = "searchprev";
+			this.searchprev.Size = new System.Drawing.Size(23, 22);
+			this.searchprev.ToolTipText = "Previous Match";
+			this.searchprev.Click += new System.EventHandler(this.searchprev_Click);
+			// 
+			// searchnext
+			// 
+			this.searchnext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.searchnext.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchNext;
+			this.searchnext.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.searchnext.Name = "searchnext";
+			this.searchnext.Size = new System.Drawing.Size(23, 22);
+			this.searchnext.ToolTipText = "Next Match";
+			this.searchnext.Click += new System.EventHandler(this.searchnext_Click);
+			// 
+			// searchmatchcase
+			// 
+			this.searchmatchcase.CheckOnClick = true;
+			this.searchmatchcase.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.searchmatchcase.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchMatchCase;
+			this.searchmatchcase.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.searchmatchcase.Name = "searchmatchcase";
+			this.searchmatchcase.Size = new System.Drawing.Size(23, 22);
+			this.searchmatchcase.ToolTipText = "Match Case";
+			this.searchmatchcase.Click += new System.EventHandler(this.searchbox_TextChanged);
+			// 
+			// searchwholeword
+			// 
+			this.searchwholeword.CheckOnClick = true;
+			this.searchwholeword.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.searchwholeword.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchMatch;
+			this.searchwholeword.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.searchwholeword.Name = "searchwholeword";
+			this.searchwholeword.Size = new System.Drawing.Size(23, 22);
+			this.searchwholeword.ToolTipText = "Match Whole Word";
+			this.searchwholeword.Click += new System.EventHandler(this.searchbox_TextChanged);
+			// 
 			// openfile
 			// 
 			this.openfile.Title = "Open Script";
@@ -436,5 +503,11 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ToolStripButton buttonsearch;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripDropDownButton buttonsnippets;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+		private System.Windows.Forms.ToolStripTextBox searchbox;
+		private System.Windows.Forms.ToolStripButton searchnext;
+		private System.Windows.Forms.ToolStripButton searchprev;
+		private System.Windows.Forms.ToolStripButton searchmatchcase;
+		private System.Windows.Forms.ToolStripButton searchwholeword;
 	}
 }

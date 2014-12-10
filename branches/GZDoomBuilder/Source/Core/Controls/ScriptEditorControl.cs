@@ -58,11 +58,13 @@ namespace CodeImp.DoomBuilder.Controls
 		public delegate void OpenScriptBrowserDelegate();
 		public delegate void OpenFindReplaceDelegate();
 		public delegate void FindNextDelegate();
+		public delegate void FindPreviousDelegate(); //mxd
 
 		public event ExplicitSaveTabDelegate OnExplicitSaveTab;
 		public event OpenScriptBrowserDelegate OnOpenScriptBrowser;
 		public event OpenFindReplaceDelegate OnOpenFindAndReplace;
 		public event FindNextDelegate OnFindNext;
+		public event FindPreviousDelegate OnFindPrevious; //mxd
 
 		#endregion
 
@@ -784,10 +786,10 @@ namespace CodeImp.DoomBuilder.Controls
 				e.Handled = true;
 			}
 
-			// F2 for Keyword Help
+			// F2 for Find Previous (mxd)
 			else if((e.KeyCode == Keys.F2) && (e.Modifiers == Keys.None))
 			{
-				LaunchKeywordHelp();
+				if(OnFindPrevious != null) OnFindPrevious();
 				e.Handled = true;
 			}
 

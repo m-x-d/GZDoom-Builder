@@ -142,8 +142,8 @@
   <data name="ColorPick" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ColorPick.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ArrowDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ArrowDown.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SearchMatchCase" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SearchMatchCase.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="File" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\NewMap.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -201,6 +201,9 @@
   </data>
   <data name="ThingStatistics" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ThingStatistics.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Expand.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Redo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Redo.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -265,6 +268,9 @@
   <data name="Cursor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Cursor.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Grid2_arrowup" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Grid2_arrowup.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Reset" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Reset.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -276,6 +282,9 @@
   </data>
   <data name="Status1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Status1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ArrowDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ArrowDown.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="PasteSpecial" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PasteSpecial.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -295,14 +304,14 @@
   <data name="Brightness" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Brightness.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="WordWrap" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\WordWrap.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="fog" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fog.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="InfoLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\InfoLine.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Status10" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Status10.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="MissingTexture" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MissingTexture.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -331,6 +340,9 @@
   <data name="Model_selected" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Model_selected.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Collapse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Collapse.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="NewScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\NewScript.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -340,8 +352,8 @@
   <data name="Unlink" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Unlink.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ScriptKeyword" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ScriptKeyword.xpm;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Status10" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Status10.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Properties" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Properties.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -352,14 +364,14 @@
   <data name="ClearTextures" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ClearTextures.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Status2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Status2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Prefab" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Prefab.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ImageStack" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ImageStack.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SearchMatch" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SearchMatch.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Hourglass" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Hourglass.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -373,8 +385,11 @@
   <data name="Status12" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Status12.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Light_animate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Light_animate.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SearchNext" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SearchNext.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Status2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Status2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Link" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Link.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -400,14 +415,17 @@
   <data name="ViewTextureFloor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ViewTextureFloor.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Grid2_arrowup" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Grid2_arrowup.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Light_animate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Light_animate.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Pin" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Pin.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ViewNormal" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ViewNormal.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ScriptKeyword" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ScriptKeyword.xpm;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="MissingThing" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MissingThing.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -451,13 +469,7 @@
   <data name="Check" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Check.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="WordWrap" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\WordWrap.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Collapse" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Collapse.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Expand.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SearchPrev" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SearchPrev.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
