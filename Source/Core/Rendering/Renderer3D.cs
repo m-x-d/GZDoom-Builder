@@ -1122,13 +1122,18 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Create the matrix for positioning / rotation
 					float sx = t.Thing.ScaleX * t.Thing.ActorScale.Width;
 					float sy = t.Thing.ScaleY * t.Thing.ActorScale.Height * viewstretch;
-					Matrix modelcale = Matrix.Scaling(sx, sx, sy) * General.Map.Data.ModeldefEntries[t.Thing.Type].Scale;
+
+					Matrix modelscale = Matrix.Scaling(sx, sx, sy);
+					Matrix mdescale = General.Map.Data.ModeldefEntries[t.Thing.Type].Scale;
+
 					Matrix rotation = Matrix.RotationY(-(t.Thing.RollRad + General.Map.Data.ModeldefEntries[t.Thing.Type].RollOffset))
 						* Matrix.RotationX(-(t.Thing.PitchRad + General.Map.Data.ModeldefEntries[t.Thing.Type].PitchOffset))
 						* Matrix.RotationZ(t.Thing.Angle + General.Map.Data.ModeldefEntries[t.Thing.Type].AngleOffset);
-					Matrix position = t.Position * Matrix.Translation(new Vector3(0, 0, General.Map.Data.ModeldefEntries[t.Thing.Type].zOffset * t.Thing.ScaleY));
+					
+					Vector2D offset2d = General.Map.Data.ModeldefEntries[t.Thing.Type].OffsetXY.GetScaled(t.Thing.ScaleX).GetRotated(t.Thing.Angle);
+					Matrix position = Matrix.Translation(offset2d.x, offset2d.y, General.Map.Data.ModeldefEntries[t.Thing.Type].OffsetZ * t.Thing.ScaleY) * t.Position;
 
-					world = rotation * modelcale * position;
+					world = mdescale * rotation * modelscale * position;
 					ApplyMatrices3D();
 
 					//mxd. set variables for fog rendering

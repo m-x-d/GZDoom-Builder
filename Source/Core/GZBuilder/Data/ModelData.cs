@@ -1,36 +1,55 @@
-﻿using System.Collections.Generic;
+﻿#region ================== Namespaces
+
+using System.Collections.Generic;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.GZBuilder.MD3;
 using SlimDX;
 using SlimDX.Direct3D9;
-using CodeImp.DoomBuilder.GZBuilder.MD3;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
 	internal sealed class ModelData
 	{
+		#region ================== Variables
+
+		private ModelLoadState loadstate;
+
+		#endregion
+
+		#region ================== Properties
+
 		internal List<string> ModelNames;
 		internal List<string> TextureNames;
 
 		internal GZModel Model;
 
-		private ModelLoadState loadstate;
-		public ModelLoadState LoadState { get { return loadstate; } internal set { loadstate = value; } }
-
 		internal Matrix Scale;
-		internal float zOffset;
+		internal Vector2D OffsetXY;
+		internal float OffsetZ;
 
 		internal float AngleOffset; //in radians
 		internal float PitchOffset; //in radians
 		internal float RollOffset; //in radians
 		internal bool OverridePalette; //used for voxel models only
-		internal bool IsVoxel;
 		internal bool InheritActorPitch;
 		internal bool InheritActorRoll;
+
+		internal bool IsVoxel;
+
+		public ModelLoadState LoadState { get { return loadstate; } internal set { loadstate = value; } }
+
+		#endregion
+
+		#region ================== Constructor / Disposer
 
 		internal ModelData() 
 		{
 			ModelNames = new List<string>();
 			TextureNames = new List<string>();
 			Scale = Matrix.Identity;
+			OffsetXY = new Vector2D();
 		}
 
 		internal void Dispose() 
@@ -42,5 +61,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				loadstate = ModelLoadState.None;
 			}
 		}
+
+		#endregion
 	}
 }

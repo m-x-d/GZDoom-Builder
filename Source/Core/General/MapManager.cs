@@ -1784,6 +1784,10 @@ namespace CodeImp.DoomBuilder {
 			// Set this to false so we can see if errors are added
 			General.ErrorLogger.IsErrorAdded = false;
 
+#if DEBUG 
+			DebugConsole.Clear();
+#endif
+
 			ReloadResources();
 
 			if (General.ErrorLogger.IsErrorAdded)

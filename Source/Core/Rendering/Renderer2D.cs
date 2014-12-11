@@ -1339,7 +1339,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						foreach(Thing t in group.Value) 
 						{
 							if(General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && !t.Selected) continue;
-							Vector2D screenpos = ((Vector2D)t.Position).GetTransformed(translatex, translatey, scale, -scale);
+							Vector2D screenpos = ((Vector2D)t.Position + General.Map.Data.ModeldefEntries[t.Type].OffsetXY.GetScaled(t.ScaleX).GetRotated(t.Angle)).GetTransformed(translatex, translatey, scale, -scale);
 							float modelScale = scale * t.ActorScale.Width * t.ScaleX;
 
 							//should we render this model?
@@ -1353,12 +1353,14 @@ namespace CodeImp.DoomBuilder.Rendering
 							{
 								float sx = t.ScaleX * t.ActorScale.Width;
 								float sy = t.ScaleY * t.ActorScale.Height;
-								Matrix modelcale = Matrix.Scaling(sx, sx, sy) * General.Map.Data.ModeldefEntries[t.Type].Scale;
+								
+								Matrix modelscale = Matrix.Scaling(sx, sx, sy);
+								Matrix mdescale = General.Map.Data.ModeldefEntries[t.Type].Scale;
 								Matrix rotation = Matrix.RotationY(-(t.RollRad + General.Map.Data.ModeldefEntries[t.Type].RollOffset))
 										* Matrix.RotationX(-(t.PitchRad + General.Map.Data.ModeldefEntries[t.Type].PitchOffset))
 										* Matrix.RotationZ(t.Angle + General.Map.Data.ModeldefEntries[t.Type].AngleOffset);
 								Matrix position = Matrix.Translation(screenpos.x, screenpos.y, 0.0f);
-								Matrix world = rotation * modelcale * viewscale * position;
+								Matrix world = mdescale * rotation * modelscale * viewscale * position;
 
 								graphics.Shaders.Things2D.SetTransformSettings(world);
 								graphics.Shaders.Things2D.ApplySettings();
