@@ -21,7 +21,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			string[] modelNames = new string[4];
 			string path = "";
 			Vector3 scale = new Vector3(1, 1, 1);
-			float zOffset = 0;
+			Vector3 offset = new Vector3();
 			float angleOffset = 0;
 			float pitchOffset = 0;
 			float rollOffset = 0;
@@ -155,34 +155,62 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 						case "scale":
 							parser.SkipWhitespace(true);
-
 							token = parser.StripTokenQuotes(parser.ReadToken());
 							if(!parser.ReadSignedFloat(token, ref scale.X)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected scale X value, but got '" + token + "'");
+								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Scale X value, but got '" + token + "'");
 								gotErrors = true;
 								break;
 							}
 
 							parser.SkipWhitespace(true);
-
 							token = parser.StripTokenQuotes(parser.ReadToken());
 							if(!parser.ReadSignedFloat(token, ref scale.Y)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected scale Y value, but got '" + token + "'");
+								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Scale Y value, but got '" + token + "'");
 								gotErrors = true;
 								break;
 							}
 
 							parser.SkipWhitespace(true);
-
 							token = parser.StripTokenQuotes(parser.ReadToken());
 							if(!parser.ReadSignedFloat(token, ref scale.Z)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected scale Z value, but got '" + token + "'");
+								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Scale Z value, but got '" + token + "'");
+								gotErrors = true;
+							}
+							break;
+
+						case "offset":
+							parser.SkipWhitespace(true);
+							token = parser.StripTokenQuotes(parser.ReadToken());
+							if(!parser.ReadSignedFloat(token, ref offset.X)) 
+							{
+								// Not numeric!
+								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Offset X value, but got '" + token + "'");
+								gotErrors = true;
+								break;
+							}
+
+							parser.SkipWhitespace(true);
+							token = parser.StripTokenQuotes(parser.ReadToken());
+							if(!parser.ReadSignedFloat(token, ref offset.Y)) 
+							{
+								// Not numeric!
+								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Offset Y value, but got '" + token + "'");
+								gotErrors = true;
+								break;
+							}
+
+							parser.SkipWhitespace(true);
+							token = parser.StripTokenQuotes(parser.ReadToken());
+							if(!parser.ReadSignedFloat(token, ref offset.Z)) 
+							{
+								// Not numeric!
+								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Offset Z value, but got '" + token + "'");
 								gotErrors = true;
 							}
 							break;
@@ -191,7 +219,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							parser.SkipWhitespace(true);
 
 							token = parser.StripTokenQuotes(parser.ReadToken());
-							if(!parser.ReadSignedFloat(token, ref zOffset)) 
+							if(!parser.ReadSignedFloat(token, ref offset.Z)) 
 							{
 								// Not numeric!
 								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected ZOffset value, but got '" + token + "'");
@@ -382,7 +410,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			//classname is set in ModeldefParser
 			ModelData mde = new ModelData();
 			mde.Scale = Matrix.Scaling(scale);
-			mde.zOffset = zOffset;
+			mde.OffsetXY = new Vector2D(offset.Y, -offset.X); // Things are complicated in GZDoom...
+			mde.OffsetZ = offset.Z;
 			mde.AngleOffset = Angle2D.DegToRad(angleOffset);
 			mde.RollOffset = Angle2D.DegToRad(rollOffset);
 			mde.PitchOffset = Angle2D.DegToRad(pitchOffset);
