@@ -120,10 +120,10 @@ namespace CodeImp.DoomBuilder.Windows
 			label5.AutoSize = true;
 			label5.Location = new System.Drawing.Point(12, 272);
 			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(312, 28);
+			label5.Size = new System.Drawing.Size(312, 42);
 			label5.TabIndex = 19;
 			label5.Text = "Drag && drop resources to add them.\r\nDrag items to change order (lower items over" +
-				"ride higher items).";
+				"ride higher items).\r\nUse the context menu to cut, copy, paste or remove items.";
 			// 
 			// label6
 			// 
@@ -135,7 +135,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label6.Size = new System.Drawing.Size(457, 37);
 			label6.TabIndex = 21;
 			label6.Text = "These are the resources that will be loaded when this configuration is chosen for" +
-				" editing. Usually you add your IWAD (like doom.wad or doom2.wad) here.";
+				" editing. Usually you add your IWAD (like DOOM.WAD or DOOM2.WAD) here.";
 			// 
 			// label3
 			// 
@@ -816,9 +816,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hintlabel.AutoSize = true;
 			this.hintlabel.Location = new System.Drawing.Point(30, 384);
 			this.hintlabel.Name = "hintlabel";
-			this.hintlabel.Size = new System.Drawing.Size(265, 14);
+			this.hintlabel.Size = new System.Drawing.Size(283, 14);
 			this.hintlabel.TabIndex = 6;
-			this.hintlabel.Text = "Use context menu to copy-paste game configurations";
+			this.hintlabel.Text = "Use the context menu to copy-paste game configurations";
 			// 
 			// hint
 			// 
@@ -859,6 +859,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ConfigForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

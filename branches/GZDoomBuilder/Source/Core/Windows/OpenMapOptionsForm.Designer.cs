@@ -32,6 +32,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label3;
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OpenMapOptionsForm));
 			this.panelres = new System.Windows.Forms.GroupBox();
 			this.strictpatches = new System.Windows.Forms.CheckBox();
 			this.datalocations = new CodeImp.DoomBuilder.Controls.ResourceListEditor();
@@ -73,13 +74,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// label3
 			// 
 			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(14, 191);
+			label3.Location = new System.Drawing.Point(14, 177);
 			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(312, 42);
+			label3.Size = new System.Drawing.Size(312, 56);
 			label3.TabIndex = 17;
-			label3.Text = "Drag && drop resources to add them.\r\nDrag items to change order (lower items over" +
-				"ride higher items).\r\nGrayed items are loaded according to the game configuration" +
-				".";
+			label3.Text = resources.GetString("label3.Text");
 			// 
 			// panelres
 			// 
@@ -98,7 +97,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// strictpatches
 			// 
 			this.strictpatches.AutoSize = true;
-			this.strictpatches.Location = new System.Drawing.Point(14, 27);
+			this.strictpatches.Location = new System.Drawing.Point(14, 21);
 			this.strictpatches.Name = "strictpatches";
 			this.strictpatches.Size = new System.Drawing.Size(351, 18);
 			this.strictpatches.TabIndex = 19;
@@ -110,7 +109,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.datalocations.AllowDrop = true;
 			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
 			this.datalocations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.datalocations.Location = new System.Drawing.Point(14, 58);
+			this.datalocations.Location = new System.Drawing.Point(14, 44);
 			this.datalocations.Name = "datalocations";
 			this.datalocations.Size = new System.Drawing.Size(368, 127);
 			this.datalocations.TabIndex = 0;
@@ -215,7 +214,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "OpenMapOptionsForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

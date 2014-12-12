@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -42,6 +43,12 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Variables
 
 		private Point dialogoffset = new Point(40, 20);
+		private DataLocationList copiedresources; //mxd
+		private int copyactionkey;
+		private int cutactionkey;
+		private int pasteactionkey;
+		private int pastespecialactionkey;
+		private int deleteactionkey;
 
 		#endregion
 
@@ -59,9 +66,27 @@ namespace CodeImp.DoomBuilder.Controls
 			// Initialize
 			InitializeComponent();
 			ResizeColumnHeader();
+			
+			if (General.Actions != null)
+			{
+				// Get key shortcuts (mxd)
+				copyactionkey = General.Actions.GetActionByName("builder_copyselection").ShortcutKey;
+				cutactionkey = General.Actions.GetActionByName("builder_cutselection").ShortcutKey;
+				pasteactionkey = General.Actions.GetActionByName("builder_pasteselection").ShortcutKey;
+				pastespecialactionkey = General.Actions.GetActionByName("builder_pasteselectionspecial").ShortcutKey;
+				deleteactionkey = General.Actions.GetActionByName("builder_deleteitem").ShortcutKey;
+
+				// Set displayed shortcuts (mxd)
+				copyresources.ShortcutKeyDisplayString = Actions.Action.GetShortcutKeyDesc(copyactionkey);
+				cutresources.ShortcutKeyDisplayString = Actions.Action.GetShortcutKeyDesc(cutactionkey);
+				pasteresources.ShortcutKeyDisplayString = Actions.Action.GetShortcutKeyDesc(pasteactionkey);
+				replaceresources.ShortcutKeyDisplayString = Actions.Action.GetShortcutKeyDesc(pastespecialactionkey);
+				removeresources.ShortcutKeyDisplayString = Actions.Action.GetShortcutKeyDesc(deleteactionkey);
+			}
 
 			// Start with a clear list
 			resourceitems.Items.Clear();
+			copiedresources = new DataLocationList(); //mxd
 		}
 
 		#endregion
@@ -158,14 +183,14 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This adds a normal item
-		public void AddResourceLocation(DataLocation rl)
+		/*public void AddResourceLocation(DataLocation rl)
 		{
 			// Add it
 			AddItem(rl);
 
 			// Raise content changed event
 			if(OnContentChanged != null) OnContentChanged();
-		}
+		}*/
 
 		// This adds a normal item
 		private void AddItem(DataLocation rl)
@@ -187,7 +212,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		internal void DropItem(IDataObject data) 
+		private void DropItem(IDataObject data) 
 		{
 			if(!data.GetDataPresent(DataFormats.FileDrop)) return;
 
@@ -258,7 +283,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private void editresource_Click(object sender, EventArgs e)
 		{
 			// Anything selected?
-			if(resourceitems.SelectedItems.Count > 0)
+			if(resourceitems.SelectedItems.Count == 1)
 			{
 				// Get selected item
 				ListViewItem selecteditem = resourceitems.SelectedItems[0];
@@ -297,16 +322,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// Remove resource
 		private void deleteresource_Click(object sender, EventArgs e)
 		{
-			// Anything selected?
-			if(resourceitems.SelectedItems.Count > 0)
-			{
-				// Remove it
-				resourceitems.Items.Remove(resourceitems.SelectedItems[0]);
-				ResizeColumnHeader();
-
-				// Raise content changed event
-				if(OnContentChanged != null) OnContentChanged();
-			}
+			DeleteSelectedResources(); //mxd
 		}
 		
 		// Item selected
@@ -328,7 +344,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(resourceitems.SelectedItems.Count > 0)
 			{
 				// Enable buttons
-				editresource.Enabled = true;
+				editresource.Enabled = (resourceitems.SelectedItems.Count == 1);
 				deleteresource.Enabled = true;
 			}
 			else
@@ -387,6 +403,183 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Resize column header
 			ResizeColumnHeader();
+		}
+
+		#endregion
+
+		#region ================== Copy / Paste (mxd)
+
+		private void CopySelectedResources()
+		{
+			// Don't do stupid things
+			if(resourceitems.SelectedItems.Count == 0) return;
+
+			copiedresources.Clear();
+			foreach(ListViewItem item in resourceitems.SelectedItems) 
+			{
+				if(item.Tag is DataLocation) copiedresources.Add((DataLocation)item.Tag);
+			}
+
+			// Display notification
+			General.Interface.DisplayStatus(StatusType.Info, copiedresources.Count + " Resource" + (copiedresources.Count > 1 ? "s" : "") + " Copied to Clipboard");
+		}
+
+		private void PasteResources()
+		{
+			// Don't do stupid things
+			if(copiedresources.Count == 0) return;
+
+			Dictionary<string, ListViewItem> curlocations = GetLocationNames();
+			int pastedcount = 0;
+			foreach(DataLocation dl in copiedresources) 
+			{
+				if(curlocations.ContainsKey(dl.location)) continue;
+				AddItem(dl);
+				pastedcount++;
+			}
+
+			if(pastedcount > 0) 
+			{
+				ResizeColumnHeader();
+
+				// Display notification
+				General.Interface.DisplayStatus(StatusType.Info, pastedcount + " Resource" + (pastedcount > 1 ? "s" : "") + " Pasted");
+
+				// Raise content changed event
+				if(OnContentChanged != null) OnContentChanged();
+			}
+		}
+
+		private void ReplaceResources()
+		{
+			// Don't do stupid things
+			if(copiedresources.Count == 0) return;
+
+			int pastedcount = 0;
+
+			// Delete non-fixed resources
+			for(int i = resourceitems.Items.Count - 1; i > -1; i--) 
+			{
+				if(resourceitems.Items[i].ForeColor != SystemColors.WindowText) break;
+				resourceitems.Items.Remove(resourceitems.Items[i]);
+				pastedcount++;
+			}
+
+			// Paste new resources
+			Dictionary<string, ListViewItem> curlocations = GetLocationNames();
+			foreach(DataLocation dl in copiedresources) 
+			{
+				if(curlocations.ContainsKey(dl.location)) continue;
+				AddItem(dl);
+				pastedcount++;
+			}
+
+			if(pastedcount > 0) 
+			{
+				ResizeColumnHeader();
+
+				// Display notification
+				General.Interface.DisplayStatus(StatusType.Info, pastedcount + " Resource" + (pastedcount > 1 ? "s" : "") + " Replaced");
+
+				// Raise content changed event
+				if(OnContentChanged != null) OnContentChanged();
+			}
+		}
+
+		private void DeleteSelectedResources()
+		{
+			// Don't do stupid things
+			if(resourceitems.SelectedItems.Count == 0) return;
+
+			// Remove them (mxd)
+			foreach(ListViewItem item in resourceitems.SelectedItems) 
+			{
+				// Remove item unless fixed
+				if(item.ForeColor == SystemColors.WindowText) resourceitems.Items.Remove(item);
+			}
+
+			ResizeColumnHeader();
+
+			// Raise content changed event
+			if(OnContentChanged != null) OnContentChanged();
+		}
+
+		private Dictionary<string, ListViewItem> GetLocationNames() 
+		{
+			Dictionary<string, ListViewItem> dict = new Dictionary<string, ListViewItem>(resourceitems.Items.Count);
+			foreach(ListViewItem item in resourceitems.Items) 
+			{
+				if(!(item.Tag is DataLocation)) continue;
+				DataLocation dl = (DataLocation)item.Tag;
+				dict.Add(dl.location, item);
+			}
+
+			return dict;
+		}
+
+		#endregion
+
+		#region ================== Copy / Paste Events (mxd)
+
+		private void copyresources_Click(object sender, EventArgs e)
+		{
+			CopySelectedResources();
+		}
+
+		private void cutresources_Click(object sender, EventArgs e) 
+		{
+			CopySelectedResources();
+			DeleteSelectedResources();
+		}
+
+		private void pasteresources_Click(object sender, EventArgs e)
+		{
+			PasteResources();
+		}
+
+		private void replaceresources_Click(object sender, EventArgs e)
+		{
+			ReplaceResources();
+		}
+
+		private void removeresources_Click(object sender, EventArgs e) 
+		{
+			DeleteSelectedResources();
+		}
+
+		// Update menu buttons
+		private void copypastemenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) 
+		{
+			pasteresources.Enabled = copiedresources.Count > 0;
+			replaceresources.Enabled = copiedresources.Count > 0;
+
+			// Can we copy current resource(s)?
+			for(int i = resourceitems.SelectedItems.Count - 1; i >= 0; i--) 
+			{
+				// This item is not fixed
+				if(resourceitems.SelectedItems[i].ForeColor == SystemColors.WindowText) 
+				{
+					copyresources.Enabled = true;
+					return;
+				}
+			}
+
+			copyresources.Enabled = false;
+		}
+
+		private void resourceitems_KeyUp(object sender, KeyEventArgs e) 
+		{
+			if(sender != resourceitems) return;
+
+			if((int)e.KeyData == copyactionkey) CopySelectedResources();
+			else if((int)e.KeyData == pasteactionkey) PasteResources();
+			else if((int)e.KeyData == pastespecialactionkey) ReplaceResources();
+			else if((int)e.KeyData == deleteactionkey) DeleteSelectedResources();
+			else if((int)e.KeyData == cutactionkey)
+			{
+				CopySelectedResources();
+				DeleteSelectedResources();
+			}
 		}
 
 		#endregion

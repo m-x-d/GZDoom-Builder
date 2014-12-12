@@ -32,9 +32,9 @@ namespace CodeImp.DoomBuilder.Controls
 			System.Windows.Forms.SplitContainer buttonsbar2;
 			System.Windows.Forms.SplitContainer buttonsbar1;
 			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
-			"C:\\Windows\\Doom\\Doom2.wad"}, 3, System.Drawing.SystemColors.GrayText, System.Drawing.SystemColors.Window, null);
+            "C:\\Windows\\Doom\\Doom2.wad"}, 3, System.Drawing.SystemColors.GrayText, System.Drawing.SystemColors.Window, null);
 			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
-			"C:\\My\\Little\\Textures\\"}, 2, System.Drawing.SystemColors.GrayText, System.Drawing.SystemColors.Window, null);
+            "C:\\My\\Little\\Textures\\"}, 2, System.Drawing.SystemColors.GrayText, System.Drawing.SystemColors.Window, null);
 			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("C:\\My\\Little\\Pony.wad", 1);
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ResourceListEditor));
 			this.editresource = new System.Windows.Forms.Button();
@@ -43,6 +43,14 @@ namespace CodeImp.DoomBuilder.Controls
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.resourceitems = new CodeImp.DoomBuilder.Controls.ResourceListView();
 			this.column = new System.Windows.Forms.ColumnHeader();
+			this.copypastemenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.copyresources = new System.Windows.Forms.ToolStripMenuItem();
+			this.cutresources = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.pasteresources = new System.Windows.Forms.ToolStripMenuItem();
+			this.replaceresources = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.removeresources = new System.Windows.Forms.ToolStripMenuItem();
 			this.images = new System.Windows.Forms.ImageList(this.components);
 			buttonsbar2 = new System.Windows.Forms.SplitContainer();
 			buttonsbar1 = new System.Windows.Forms.SplitContainer();
@@ -55,6 +63,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
+			this.copypastemenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// buttonsbar2
@@ -153,17 +162,17 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.resourceitems.AllowDrop = true;
 			this.resourceitems.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.column});
+            this.column});
+			this.resourceitems.ContextMenuStrip = this.copypastemenu;
 			this.resourceitems.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.resourceitems.FullRowSelect = true;
 			this.resourceitems.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.resourceitems.HideSelection = false;
 			this.resourceitems.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-			listViewItem1,
-			listViewItem2,
-			listViewItem3});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3});
 			this.resourceitems.Location = new System.Drawing.Point(0, 0);
-			this.resourceitems.MultiSelect = false;
 			this.resourceitems.Name = "resourceitems";
 			this.resourceitems.ShowGroups = false;
 			this.resourceitems.ShowItemToolTips = true;
@@ -177,12 +186,77 @@ namespace CodeImp.DoomBuilder.Controls
 			this.resourceitems.DoubleClick += new System.EventHandler(this.resourceitems_DoubleClick);
 			this.resourceitems.DragDrop += new System.Windows.Forms.DragEventHandler(this.resourceitems_DragDrop);
 			this.resourceitems.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.resourceitems_ItemSelectionChanged);
+			this.resourceitems.KeyUp += new System.Windows.Forms.KeyEventHandler(this.resourceitems_KeyUp);
 			this.resourceitems.DragOver += new System.Windows.Forms.DragEventHandler(this.resourceitems_DragOver);
 			// 
 			// column
 			// 
 			this.column.Text = "Resource location";
 			this.column.Width = 200;
+			// 
+			// copypastemenu
+			// 
+			this.copypastemenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyresources,
+            this.cutresources,
+            this.toolStripSeparator1,
+            this.pasteresources,
+            this.replaceresources,
+            this.toolStripSeparator2,
+            this.removeresources});
+			this.copypastemenu.Name = "copypastemenu";
+			this.copypastemenu.Size = new System.Drawing.Size(153, 148);
+			this.copypastemenu.Opening += new System.ComponentModel.CancelEventHandler(this.copypastemenu_Opening);
+			// 
+			// copyresources
+			// 
+			this.copyresources.Image = global::CodeImp.DoomBuilder.Properties.Resources.Copy;
+			this.copyresources.Name = "copyresources";
+			this.copyresources.Size = new System.Drawing.Size(152, 22);
+			this.copyresources.Text = "Copy";
+			this.copyresources.Click += new System.EventHandler(this.copyresources_Click);
+			// 
+			// cutresources
+			// 
+			this.cutresources.Image = global::CodeImp.DoomBuilder.Properties.Resources.Cut;
+			this.cutresources.Name = "cutresources";
+			this.cutresources.Size = new System.Drawing.Size(152, 22);
+			this.cutresources.Text = "Cut";
+			this.cutresources.Click += new System.EventHandler(this.cutresources_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+			// 
+			// pasteresources
+			// 
+			this.pasteresources.Image = global::CodeImp.DoomBuilder.Properties.Resources.Paste;
+			this.pasteresources.Name = "pasteresources";
+			this.pasteresources.Size = new System.Drawing.Size(152, 22);
+			this.pasteresources.Text = "Paste";
+			this.pasteresources.Click += new System.EventHandler(this.pasteresources_Click);
+			// 
+			// replaceresources
+			// 
+			this.replaceresources.Image = global::CodeImp.DoomBuilder.Properties.Resources.Replace;
+			this.replaceresources.Name = "replaceresources";
+			this.replaceresources.Size = new System.Drawing.Size(152, 22);
+			this.replaceresources.Text = "Replace";
+			this.replaceresources.Click += new System.EventHandler(this.replaceresources_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+			// 
+			// removeresources
+			// 
+			this.removeresources.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchClear;
+			this.removeresources.Name = "removeresources";
+			this.removeresources.Size = new System.Drawing.Size(152, 22);
+			this.removeresources.Text = "Remove";
+			this.removeresources.Click += new System.EventHandler(this.removeresources_Click);
 			// 
 			// images
 			// 
@@ -213,6 +287,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			this.splitContainer1.ResumeLayout(false);
+			this.copypastemenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -226,5 +301,13 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ColumnHeader column;
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.ImageList images;
+		private System.Windows.Forms.ContextMenuStrip copypastemenu;
+		private System.Windows.Forms.ToolStripMenuItem copyresources;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem pasteresources;
+		private System.Windows.Forms.ToolStripMenuItem replaceresources;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripMenuItem removeresources;
+		private System.Windows.Forms.ToolStripMenuItem cutresources;
 	}
 }

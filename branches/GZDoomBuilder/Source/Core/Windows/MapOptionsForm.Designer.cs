@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.GroupBox panelsettings;
 			System.Windows.Forms.Label label4;
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MapOptionsForm));
 			this.examplelabel = new System.Windows.Forms.Label();
 			this.scriptcompiler = new System.Windows.Forms.ComboBox();
 			this.scriptcompilerlabel = new System.Windows.Forms.Label();
@@ -152,13 +153,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// label4
 			// 
 			label4.AutoSize = true;
-			label4.Location = new System.Drawing.Point(15, 190);
+			label4.Location = new System.Drawing.Point(14, 177);
 			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(312, 42);
+			label4.Size = new System.Drawing.Size(312, 56);
 			label4.TabIndex = 17;
-			label4.Text = "Drag && drop resources to add them.\r\nDrag items to change order (lower items over" +
-				"ride higher items).\r\nGrayed items are loaded according to the game configuration" +
-				".";
+			label4.Text = resources.GetString("label4.Text");
 			// 
 			// apply
 			// 
@@ -200,7 +199,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// strictpatches
 			// 
 			this.strictpatches.AutoSize = true;
-			this.strictpatches.Location = new System.Drawing.Point(15, 27);
+			this.strictpatches.Location = new System.Drawing.Point(14, 21);
 			this.strictpatches.Name = "strictpatches";
 			this.strictpatches.Size = new System.Drawing.Size(351, 18);
 			this.strictpatches.TabIndex = 20;
@@ -212,7 +211,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.datalocations.AllowDrop = true;
 			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
 			this.datalocations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.datalocations.Location = new System.Drawing.Point(15, 57);
+			this.datalocations.Location = new System.Drawing.Point(14, 44);
 			this.datalocations.Name = "datalocations";
 			this.datalocations.Size = new System.Drawing.Size(368, 130);
 			this.datalocations.TabIndex = 0;

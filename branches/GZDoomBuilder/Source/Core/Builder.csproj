@@ -1044,6 +1044,7 @@
     <Content Include="Resources\Model.png" />
     <None Include="Resources\ModelDisabled.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\Replace.png" />
     <None Include="Resources\SearchPrev.png" />
     <None Include="Resources\SearchNext.png" />
     <None Include="Resources\SearchMatchCase.png" />
