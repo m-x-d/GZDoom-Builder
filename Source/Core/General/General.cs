@@ -737,7 +737,7 @@ namespace CodeImp.DoomBuilder
 		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
 			// Check if SlimDX failed loading
-			if(args.Name.Contains("SlimDX")) AskDownloadDirectX();
+			if(args.Name.Contains("SlimDX")) AskDownloadSlimDX();
 
 			// Return null
 			return null;
@@ -752,13 +752,33 @@ namespace CodeImp.DoomBuilder
 			CancelAutoMapLoad();
 			
 			// Ask the user to download DirectX
-			if(MessageBox.Show("This application requires the latest version of Microsoft DirectX installed on your computer." + Environment.NewLine +
-				"Do you want to install and/or update Microsoft DirectX now?", "DirectX Error", System.Windows.Forms.MessageBoxButtons.YesNo,
+			if(MessageBox.Show("This application requires the latest version of Microsoft DirectX 9.0 installed on your computer." + Environment.NewLine +
+				"Do you want to install and/or update Microsoft DirectX now?", "DirectX Error", MessageBoxButtons.YesNo,
 				MessageBoxIcon.Exclamation) == DialogResult.Yes)
 			{
-				// Open DX web setup
-				//System.Diagnostics.Process.Start("http://www.microsoft.com/downloads/details.aspx?FamilyId=2DA43D38-DB71-4C1B-BC6A-9B6652CD92A3").WaitForExit(1000);
-				Process.Start(Path.Combine(setuppath, "dxwebsetup.exe")).WaitForExit(1000);
+				// Go to DirectX End-User Runtime Web Installer page (mxd)
+				OpenWebsite("http://www.microsoft.com/en-us/download/details.aspx?id=35");
+			}
+
+			// End program here
+			Terminate(false);
+		}
+
+		// This asks the user to download SlimDX (mxd)
+		private static void AskDownloadSlimDX() 
+		{
+			// Cancel loading map from command-line parameters, if any.
+			// This causes problems, because when the window is shown, the map will
+			// be loaded and SlimDX is initialized (which we seem to be missing)
+			CancelAutoMapLoad();
+
+			// Ask the user to download SlimDX
+			if(MessageBox.Show("This application requires the latest version of SlimDX for .NET 2.0 installed on your computer." + Environment.NewLine +
+				"Do you want to install SlimDX now?", "SlimDX Error", MessageBoxButtons.YesNo,
+				MessageBoxIcon.Exclamation) == DialogResult.Yes) 
+			{
+				// Go to SlimDX download page
+				OpenWebsite("http://slimdx.org/download.php");
 			}
 
 			// End program here

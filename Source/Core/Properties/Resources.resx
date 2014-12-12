@@ -118,9 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Zoom" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Zoom.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Clear" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Clear.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -129,6 +126,9 @@
   </data>
   <data name="ArrowUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ArrowUp.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ClearTextures" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ClearTextures.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Keyboard" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Keyboard.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -181,6 +181,12 @@
   <data name="Splash3_small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Splash3_small.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="TagStatistics" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TagStatistics.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Model" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Model.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Screenshot" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Screenshot.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -190,8 +196,8 @@
   <data name="ScriptHelp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ScriptHelp.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="KnownTextureSet" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\KnownTextureSet.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Light_animate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Light_animate.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Splash3_trans" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Splash3_trans.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -205,23 +211,17 @@
   <data name="Expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Expand.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Redo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Redo.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Unpin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Unpin.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Grid2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Grid2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ViewBrightness" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ViewBrightness.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Status0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Status0.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Model" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Model.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Zoom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Zoom.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="mergegeometry" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\mergegeometry.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ScriptSnippet" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ScriptSnippet.xpm;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="List_Images" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\List_Images.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -268,9 +268,6 @@
   <data name="Cursor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Cursor.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Grid2_arrowup" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Grid2_arrowup.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Reset" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Reset.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -279,9 +276,6 @@
   </data>
   <data name="treeview" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\treeview.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Status1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Status1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ArrowDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ArrowDown.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -319,9 +313,6 @@
   <data name="ErrorLarge" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ErrorLarge.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Lightbulb" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Lightbulb.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="MCrash" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MCrash.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -336,6 +327,9 @@
   </data>
   <data name="PuzzlePiece" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PuzzlePiece.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SearchPrev" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SearchPrev.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Model_selected" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Model_selected.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -355,14 +349,17 @@
   <data name="Status10" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Status10.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Properties" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Properties.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Status0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Status0.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ScreenshotActiveWindow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ScreenshotActiveWindow.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Script2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Script2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ClearTextures" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ClearTextures.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Redo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Redo.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Prefab" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Prefab.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -391,14 +388,20 @@
   <data name="Status2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Status2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Add" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Add.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Link" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Link.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="TagStatistics" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\TagStatistics.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Light" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Light.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Add" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Add.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ScriptSnippet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ScriptSnippet.xpm;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Properties" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Properties.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Test" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Test.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -406,8 +409,11 @@
   <data name="Undo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Undo.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Unpin" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Unpin.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SlimDX_small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SlimDX_small.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="KnownTextureSet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\KnownTextureSet.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Angle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Angle.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -415,8 +421,8 @@
   <data name="ViewTextureFloor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ViewTextureFloor.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Light_animate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Light_animate.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Grid2_arrowup" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Grid2_arrowup.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Pin" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Pin.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -427,20 +433,17 @@
   <data name="ScriptKeyword" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ScriptKeyword.xpm;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="MissingThing" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\MissingThing.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Monster3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Monster3.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Copy.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ViewBrightness" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ViewBrightness.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Grid2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Grid2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Light" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Light.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Lightbulb" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Lightbulb.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Help" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Help.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -448,14 +451,14 @@
   <data name="OpenScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\OpenScript.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SlimDX_small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SlimDX_small.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="MissingThing" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MissingThing.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Status11" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Status11.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ScreenshotActiveWindow" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ScreenshotActiveWindow.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Status1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Status1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="WarningLarge" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\WarningLarge.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -469,7 +472,7 @@
   <data name="Check" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Check.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SearchPrev" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SearchPrev.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Replace" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Replace.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
