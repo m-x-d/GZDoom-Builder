@@ -217,8 +217,11 @@ namespace CodeImp.DoomBuilder.Controls
 			if(!data.GetDataPresent(DataFormats.FileDrop)) return;
 
 			string[] paths = (string[])data.GetData(DataFormats.FileDrop);
+			Dictionary<string, bool> curlocations = GetLocationNames();
 			foreach(string path in paths) 
 			{
+				if(curlocations.ContainsKey(path)) continue;
+
 				if(File.Exists(path)) 
 				{
 					string ext = Path.GetExtension(path);
@@ -429,7 +432,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Don't do stupid things
 			if(copiedresources.Count == 0) return;
 
-			Dictionary<string, ListViewItem> curlocations = GetLocationNames();
+			Dictionary<string, bool> curlocations = GetLocationNames();
 			int pastedcount = 0;
 			foreach(DataLocation dl in copiedresources) 
 			{
@@ -466,7 +469,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Paste new resources
-			Dictionary<string, ListViewItem> curlocations = GetLocationNames();
+			Dictionary<string, bool> curlocations = GetLocationNames();
 			foreach(DataLocation dl in copiedresources) 
 			{
 				if(curlocations.ContainsKey(dl.location)) continue;
@@ -504,14 +507,14 @@ namespace CodeImp.DoomBuilder.Controls
 			if(OnContentChanged != null) OnContentChanged();
 		}
 
-		private Dictionary<string, ListViewItem> GetLocationNames() 
+		private Dictionary<string, bool> GetLocationNames() 
 		{
-			Dictionary<string, ListViewItem> dict = new Dictionary<string, ListViewItem>(resourceitems.Items.Count);
+			Dictionary<string, bool> dict = new Dictionary<string, bool>(resourceitems.Items.Count);
 			foreach(ListViewItem item in resourceitems.Items) 
 			{
 				if(!(item.Tag is DataLocation)) continue;
 				DataLocation dl = (DataLocation)item.Tag;
-				dict.Add(dl.location, item);
+				if(!dict.ContainsKey(dl.location)) dict.Add(dl.location, false);
 			}
 
 			return dict;
