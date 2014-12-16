@@ -171,6 +171,14 @@ namespace CodeImp.DoomBuilder.Windows
 			// Collect information
 			ConfigurationInfo configinfo = config.SelectedItem as ConfigurationInfo; //mxd
 			DataLocationList locations = datalocations.GetResources();
+
+			// Resources are valid? (mxd)
+			if(!datalocations.ResourcesAreValid()) 
+			{
+				MessageBox.Show(this, "Cannot " + (newmap ? "create map" : "change map settings") + ": at least one resource doesn't exist!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				datalocations.Focus();
+				return;
+			}
 			
 			// When making a new map, check if we should warn the user for missing resources
 			if(newmap)
@@ -264,6 +272,9 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 			}
+
+			//mxd. Use long texture names?
+			if(longtexturenames.Enabled) General.Settings.WriteSetting("browserwindow.uselongtexturenames", longtexturenames.Checked);
 			
 			// Hide window
 			this.DialogResult = DialogResult.OK;
@@ -282,39 +293,42 @@ namespace CodeImp.DoomBuilder.Windows
 		private void config_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			// Anything selected?
-			if(config.SelectedIndex > -1)
-			{
-				// Get the info
-				ConfigurationInfo ci = config.SelectedItem as ConfigurationInfo;
-
-				// No lump name in the name field?
-				if (levelname.Text.Trim().Length == 0 || levelname.Text.Trim() == previousdefaultmaplumpname) 
-				{
-					// Get default lump name from configuration
-					levelname.Text = ci.DefaultLumpName;
-					examplelabel.Text = ci.DefaultLumpName; //mxd
-				}
-
-				//mxd
-				bool enablescriptcompiler = !string.IsNullOrEmpty(ci.DefaultScriptCompiler);
-				scriptcompiler.Enabled = enablescriptcompiler;
-				scriptcompilerlabel.Enabled = enablescriptcompiler;
-				previousdefaultmaplumpname = ci.DefaultLumpName;
-
-				//mxd. Select default script compiler for this game configuration
-				if (scriptcompiler.Enabled) 
-				{
-					if (General.CompiledScriptConfigs.ContainsKey(ci.DefaultScriptCompiler))
-						scriptcompiler.SelectedItem = General.CompiledScriptConfigs[ci.DefaultScriptCompiler];
-				} 
-				else 
-				{
-					scriptcompiler.SelectedIndex = -1;
-				}
+			if(config.SelectedIndex < 0) return;
 				
-				// Show resources
-				datalocations.FixedResourceLocationList(ci.Resources);
+			// Get the info
+			ConfigurationInfo ci = config.SelectedItem as ConfigurationInfo;
+
+			// No lump name in the name field?
+			if(levelname.Text.Trim().Length == 0 || levelname.Text.Trim() == previousdefaultmaplumpname) 
+			{
+				// Get default lump name from configuration
+				levelname.Text = ci.DefaultLumpName;
+				examplelabel.Text = ci.DefaultLumpName; //mxd
 			}
+
+			//mxd
+			bool enablescriptcompiler = !string.IsNullOrEmpty(ci.DefaultScriptCompiler);
+			scriptcompiler.Enabled = enablescriptcompiler;
+			scriptcompilerlabel.Enabled = enablescriptcompiler;
+			previousdefaultmaplumpname = ci.DefaultLumpName;
+
+			//mxd. Select default script compiler for this game configuration
+			if(scriptcompiler.Enabled) 
+			{
+				if(General.CompiledScriptConfigs.ContainsKey(ci.DefaultScriptCompiler))
+					scriptcompiler.SelectedItem = General.CompiledScriptConfigs[ci.DefaultScriptCompiler];
+			} 
+			else 
+			{
+				scriptcompiler.SelectedIndex = -1;
+			}
+
+			// Show resources
+			datalocations.FixedResourceLocationList(ci.Resources);
+
+			// Update long texture names checkbox (mxd)
+			longtexturenames.Enabled = ci.Configuration.ReadSetting("longtexturenames", false);
+			longtexturenames.Checked = longtexturenames.Enabled && General.Settings.ReadSetting("browserwindow.uselongtexturenames", false);
 		}
 
 		// When keys are pressed in the level name field

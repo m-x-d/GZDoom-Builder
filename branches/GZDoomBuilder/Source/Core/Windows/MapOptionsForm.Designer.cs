@@ -44,6 +44,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres = new System.Windows.Forms.GroupBox();
 			this.strictpatches = new System.Windows.Forms.CheckBox();
 			this.datalocations = new CodeImp.DoomBuilder.Controls.ResourceListEditor();
+			this.longtexturenames = new System.Windows.Forms.CheckBox();
 			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
@@ -153,7 +154,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label4
 			// 
 			label4.AutoSize = true;
-			label4.Location = new System.Drawing.Point(14, 177);
+			label4.Location = new System.Drawing.Point(14, 204);
 			label4.Name = "label4";
 			label4.Size = new System.Drawing.Size(312, 56);
 			label4.TabIndex = 17;
@@ -162,7 +163,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(297, 378);
+			this.apply.Location = new System.Drawing.Point(297, 405);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 2;
@@ -174,7 +175,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(179, 378);
+			this.cancel.Location = new System.Drawing.Point(179, 405);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 3;
@@ -186,12 +187,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.panelres.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panelres.Controls.Add(this.longtexturenames);
 			this.panelres.Controls.Add(this.strictpatches);
 			this.panelres.Controls.Add(this.datalocations);
 			this.panelres.Controls.Add(label4);
 			this.panelres.Location = new System.Drawing.Point(12, 130);
 			this.panelres.Name = "panelres";
-			this.panelres.Size = new System.Drawing.Size(397, 240);
+			this.panelres.Size = new System.Drawing.Size(397, 269);
 			this.panelres.TabIndex = 1;
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Resources ";
@@ -211,10 +213,20 @@ namespace CodeImp.DoomBuilder.Windows
 			this.datalocations.AllowDrop = true;
 			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
 			this.datalocations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.datalocations.Location = new System.Drawing.Point(14, 44);
+			this.datalocations.Location = new System.Drawing.Point(14, 71);
 			this.datalocations.Name = "datalocations";
 			this.datalocations.Size = new System.Drawing.Size(368, 130);
 			this.datalocations.TabIndex = 0;
+			// 
+			// longtexturenames
+			// 
+			this.longtexturenames.AutoSize = true;
+			this.longtexturenames.Location = new System.Drawing.Point(14, 45);
+			this.longtexturenames.Name = "longtexturenames";
+			this.longtexturenames.Size = new System.Drawing.Size(140, 18);
+			this.longtexturenames.TabIndex = 21;
+			this.longtexturenames.Text = "Use long texture names";
+			this.longtexturenames.UseVisualStyleBackColor = true;
 			// 
 			// MapOptionsForm
 			// 
@@ -222,7 +234,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(421, 411);
+			this.ClientSize = new System.Drawing.Size(421, 438);
 			this.Controls.Add(this.panelres);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
@@ -232,7 +244,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "MapOptionsForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -258,6 +269,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ComboBox scriptcompiler;
 		private System.Windows.Forms.Label scriptcompilerlabel;
 		private System.Windows.Forms.Label examplelabel;
+		private System.Windows.Forms.CheckBox longtexturenames;
 
 
 	}

@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.Controls
 			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("C:\\My\\Little\\Pony.wad", 1);
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ResourceListEditor));
 			this.editresource = new System.Windows.Forms.Button();
-			this.deleteresource = new System.Windows.Forms.Button();
+			this.deleteresources = new System.Windows.Forms.Button();
 			this.addresource = new System.Windows.Forms.Button();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.resourceitems = new CodeImp.DoomBuilder.Controls.ResourceListView();
@@ -79,7 +79,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// buttonsbar2.Panel2
 			// 
-			buttonsbar2.Panel2.Controls.Add(this.deleteresource);
+			buttonsbar2.Panel2.Controls.Add(this.deleteresources);
 			buttonsbar2.Size = new System.Drawing.Size(228, 24);
 			buttonsbar2.SplitterDistance = 136;
 			buttonsbar2.TabIndex = 0;
@@ -98,15 +98,15 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// deleteresource
 			// 
-			this.deleteresource.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.deleteresource.Enabled = false;
-			this.deleteresource.Location = new System.Drawing.Point(0, 0);
-			this.deleteresource.Name = "deleteresource";
-			this.deleteresource.Size = new System.Drawing.Size(88, 24);
-			this.deleteresource.TabIndex = 0;
-			this.deleteresource.Text = "Remove";
-			this.deleteresource.UseVisualStyleBackColor = true;
-			this.deleteresource.Click += new System.EventHandler(this.deleteresource_Click);
+			this.deleteresources.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.deleteresources.Enabled = false;
+			this.deleteresources.Location = new System.Drawing.Point(0, 0);
+			this.deleteresources.Name = "deleteresources";
+			this.deleteresources.Size = new System.Drawing.Size(88, 24);
+			this.deleteresources.TabIndex = 0;
+			this.deleteresources.Text = "Remove";
+			this.deleteresources.UseVisualStyleBackColor = true;
+			this.deleteresources.Click += new System.EventHandler(this.deleteresources_Click);
 			// 
 			// buttonsbar1
 			// 
@@ -294,7 +294,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#endregion
 
-		private System.Windows.Forms.Button deleteresource;
+		private System.Windows.Forms.Button deleteresources;
 		private System.Windows.Forms.Button editresource;
 		private System.Windows.Forms.Button addresource;
 		private CodeImp.DoomBuilder.Controls.ResourceListView resourceitems;

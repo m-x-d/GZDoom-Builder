@@ -18,13 +18,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Config;
+using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.GZBuilder.Data;
-using System.Drawing;
 
 #endregion
 
@@ -353,6 +354,24 @@ namespace CodeImp.DoomBuilder.Windows
 		private void apply_Click(object sender, EventArgs e)
 		{
 			ConfigurationInfo ci;
+
+			//mxd. Check resources
+			for (int i = 0; i < listconfigs.Items.Count; i++)
+			{
+				// Get configuration item
+				ci = listconfigs.Items[i].Tag as ConfigurationInfo;
+				foreach (DataLocation location in ci.Resources)
+				{
+					if (!ResourceListEditor.LocationValid(location))
+					{
+						MessageBox.Show(this, "At least one resource doesn't exist in '" + ci.Name + "' game configuration!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+						tabs.SelectedTab = tabresources;
+						listconfigs.Focus();
+						listconfigs.Items[i].Selected = true;
+						return;
+					}
+				}
+			}
 
 			//mxd. Apply changes of current test engine name, if there are any
 			//TODO: move engine selector stuff into separate component!
