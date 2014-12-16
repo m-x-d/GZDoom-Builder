@@ -43,12 +43,12 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Variables
 
 		private Point dialogoffset = new Point(40, 20);
-		private DataLocationList copiedresources; //mxd
-		private int copyactionkey;
-		private int cutactionkey;
-		private int pasteactionkey;
-		private int pastespecialactionkey;
-		private int deleteactionkey;
+		private readonly DataLocationList copiedresources; //mxd
+		private readonly int copyactionkey;
+		private readonly int cutactionkey;
+		private readonly int pasteactionkey;
+		private readonly int pastespecialactionkey;
+		private readonly int deleteactionkey;
 
 		#endregion
 
@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Go for all items
 			for(int i = resourceitems.Items.Count - 1; i >= 0; i--)
 			{
-				// Remove item if fixed
+				// Remove item if not fixed
 				if(resourceitems.Items[i].ForeColor != SystemColors.WindowText)
 					resourceitems.Items.RemoveAt(i);
 			}
@@ -143,6 +143,9 @@ namespace CodeImp.DoomBuilder.Controls
 
 				// Set disabled
 				resourceitems.Items[0].ForeColor = SystemColors.GrayText;
+
+				// Validate path (mxd)
+				resourceitems.Items[0].BackColor = (LocationValid(list[i]) ? resourceitems.BackColor : Color.MistyRose);
 			}
 
 			// Done
@@ -207,6 +210,9 @@ namespace CodeImp.DoomBuilder.Controls
 			// Set normal color
 			resourceitems.Items[index].ForeColor = SystemColors.WindowText;
 
+			// Validate path (mxd)
+			resourceitems.Items[index].BackColor = (LocationValid(rl) ? resourceitems.BackColor : Color.MistyRose);
+
 			// Done
 			resourceitems.EndUpdate();
 		}
@@ -241,6 +247,23 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					AddItem(new DataLocation(DataLocation.RESOURCE_DIRECTORY, path, false, false, false));
 				}
+			}
+		}
+
+		//mxd
+		internal static bool LocationValid(DataLocation location)
+		{
+			switch(location.type) 
+			{
+				case DataLocation.RESOURCE_DIRECTORY:
+					return Directory.Exists(location.location);
+
+				case DataLocation.RESOURCE_WAD:
+				case DataLocation.RESOURCE_PK3:
+					return File.Exists(location.location);
+
+				default:
+					throw new NotImplementedException("ResourceListEditor.FixedResourceLocationList: got unknown location type: " + location.type);
 			}
 		}
 		
@@ -323,7 +346,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// Remove resource
-		private void deleteresource_Click(object sender, EventArgs e)
+		private void deleteresources_Click(object sender, EventArgs e)
 		{
 			DeleteSelectedResources(); //mxd
 		}
@@ -348,13 +371,13 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Enable buttons
 				editresource.Enabled = (resourceitems.SelectedItems.Count == 1);
-				deleteresource.Enabled = true;
+				deleteresources.Enabled = true;
 			}
 			else
 			{
 				// Disable buttons
 				editresource.Enabled = false;
-				deleteresource.Enabled = false;
+				deleteresources.Enabled = false;
 			}
 		}
 
@@ -383,6 +406,16 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Return result
 			return list;
+		}
+
+		//mxd
+		public bool ResourcesAreValid()
+		{
+			foreach(ListViewItem item in resourceitems.Items)
+			{
+				if (!LocationValid((DataLocation) item.Tag)) return false;
+			}
+			return true;
 		}
 
 		// Item dragged
@@ -550,24 +583,14 @@ namespace CodeImp.DoomBuilder.Controls
 			DeleteSelectedResources();
 		}
 
-		// Update menu buttons
-		private void copypastemenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) 
+		// Update copy/paste menu buttons
+		private void copypastemenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			copyresources.Enabled = resourceitems.SelectedItems.Count > 0;
+			cutresources.Enabled = resourceitems.SelectedItems.Count > 0;
 			pasteresources.Enabled = copiedresources.Count > 0;
 			replaceresources.Enabled = copiedresources.Count > 0;
-
-			// Can we copy current resource(s)?
-			for(int i = resourceitems.SelectedItems.Count - 1; i >= 0; i--) 
-			{
-				// This item is not fixed
-				if(resourceitems.SelectedItems[i].ForeColor == SystemColors.WindowText) 
-				{
-					copyresources.Enabled = true;
-					return;
-				}
-			}
-
-			copyresources.Enabled = false;
+			removeresources.Enabled = resourceitems.SelectedItems.Count > 0;
 		}
 
 		private void resourceitems_KeyUp(object sender, KeyEventArgs e) 

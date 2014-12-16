@@ -350,6 +350,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Show configuration resources
 			datalocations.FixedResourceLocationList(ci.Resources);
+
+			// Update long texture names checkbox (mxd)
+			longtexturenames.Enabled = cfg.ReadSetting("longtexturenames", false);
+			longtexturenames.Checked = longtexturenames.Enabled && General.Settings.ReadSetting("browserwindow.uselongtexturenames", false);
 		}
 		
 		// OK clicked
@@ -367,6 +371,14 @@ namespace CodeImp.DoomBuilder.Windows
 			// Collect information
 			ConfigurationInfo configinfo = (config.SelectedItem as ConfigurationInfo); //mxd
 			DataLocationList locations = datalocations.GetResources();
+
+			// Resources are valid? (mxd)
+			if (!datalocations.ResourcesAreValid())
+			{
+				MessageBox.Show(this, "Cannot open map: at least one resource doesn't exist!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				datalocations.Focus();
+				return;
+			}
 			
 			// No map selected?
 			if(mapslist.SelectedItems.Count == 0)
@@ -409,6 +421,9 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 			}
+
+			//mxd. Use long texture names?
+			if (longtexturenames.Enabled) General.Settings.WriteSetting("browserwindow.uselongtexturenames", longtexturenames.Checked);
 
 			// Hide window
 			wadfile.Dispose();
