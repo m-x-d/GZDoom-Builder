@@ -36,10 +36,9 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public event EventHandler OnValueChanged; //mxd
 		
-		private Bitmap bmp;
 		private MouseButtons button;
 		private ImageData image; //mxd
-		private string previousImageName; //mxd
+		private string previousimagename; //mxd
 		protected bool multipletextures; //mxd
 		protected bool usepreviews = true; //mxd
 		
@@ -179,12 +178,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private void ShowPreview(Image image)
 		{
 			// Dispose old image
-			imagebox.BackgroundImage = null;
-			if(bmp != null)
-			{
-				bmp.Dispose();
-				bmp = null;
-			}
+			imagebox.Image = null;
 			
 			if(image != null)
 			{
@@ -194,9 +188,9 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			//mxd. Dispatch event
-			if(OnValueChanged != null && previousImageName != name.Text) 
+			if(OnValueChanged != null && previousimagename != name.Text) 
 			{
-				previousImageName = name.Text;
+				previousimagename = name.Text;
 				OnValueChanged(this, EventArgs.Empty);
 			}
 		}
