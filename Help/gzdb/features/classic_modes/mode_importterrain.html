@@ -23,12 +23,16 @@
       <b>Action category:</b> Tools.<br />
       <b>Default key:</b> none.</p>
     <p><strong>Usage:</strong><br />
-      Create a terrain model in your favorite 3d modeling app (<a href="http://www.blender.org/">Blender</a>, <a href="http://www.earthsculptor.com/">Earth Sculptor</a> or any other, which can save a model to Wavefront .obj format)<br />
-      Use <strong>File -&gt; Import -&gt; Wavefront .obj as Terrain</strong> action to import it as sectors. Each polygon in your model will be transformed into sector.</p>
+      Create a terrain model in your favorite 3d modeling app (<a href="http://www.blender.org/">Blender</a>, <a href="http://www.earthsculptor.com/">Earth Sculptor</a> or any other, which can save or export a model to Wavefront .obj format)<br />
+      Use <strong>File -&gt; Import -&gt; Wavefront .obj as Terrain</strong> action to import it as sectors. Each polygon in your model will be transformed into a sector.</p>
+      <strong>Settings:</strong><img style="float:right" src="import_terrain_settings.jpg"/><br />
+      <em>Scale:</em> self explanatory. The default is 1.0.<br />
+      <em>Up axis:</em> should be the same as vertical axis in the 3d modeling app used to create a terrain model.<br />
+      <em>Sloped terrain:</em>      when enabled, the mode will generate sloped terrain using floor vertex height offsets (&quot;ZFloor&quot;) in UDMF or Vertex slope floor (1504) things. Regardless of this setting, the mode will also set each new sector's floor height to the averaged height of a polygon it was created from.<br />
+      <br />
       <strong>Limitations:</strong><br />
       The model should be triangulated.<br />
       Polygons should not overlap each other when viewed from the top.<br />
-      <strong>UDMF only</strong>, because the mode uses vertex height offsets to create sloped floors (&quot;zfloor&quot; vertex field).
       <p><img src="terrain1.jpg" alt="" width="842" height="722" /></p>
     <p><img src="terrain2.jpg" alt="" width="842" height="632" /></p>
 </div>

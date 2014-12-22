@@ -54,7 +54,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public VisualFloor(BaseVisualMode mode, VisualSector vs) : base(mode, vs)
 		{
 			//mxd
-			geoType = VisualGeometryType.FLOOR;
+			geometrytype = VisualGeometryType.FLOOR;
+			partname = "floor";
 
 			//mxd
 			if(mode.UseSelectionFromClassicMode && vs != null && vs.Sector.Selected 
@@ -243,7 +244,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode.SetActionResult("Texture offsets reset.");
 			Sector.Sector.Fields.BeforeFieldsChange();
 
-			string[] keys = new string[] { "xpanningfloor", "ypanningfloor", "xscalefloor", "yscalefloor", "rotationfloor" };
+			string[] keys = new[] { "xpanningfloor", "ypanningfloor", "xscalefloor", "yscalefloor", "rotationfloor" };
 
 			foreach(string key in keys) 
 			{

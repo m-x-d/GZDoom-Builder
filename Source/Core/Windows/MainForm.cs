@@ -508,10 +508,14 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Position window from configuration settings
 			this.SuspendLayout();
-			this.Location = new Point(General.Settings.ReadSetting("mainwindow.positionx", this.Location.X),
-									  General.Settings.ReadSetting("mainwindow.positiony", this.Location.Y));
 			this.Size = new Size(General.Settings.ReadSetting("mainwindow.sizewidth", this.Size.Width),
 								 General.Settings.ReadSetting("mainwindow.sizeheight", this.Size.Height));
+			this.Location = new Point(General.Clamp(General.Settings.ReadSetting("mainwindow.positionx", this.Location.X), 
+													SystemInformation.VirtualScreen.Left - this.Size.Width + 128,
+													SystemInformation.VirtualScreen.Right - 128),
+									  General.Clamp(General.Settings.ReadSetting("mainwindow.positiony", this.Location.Y),
+													SystemInformation.VirtualScreen.Top,
+													SystemInformation.VirtualScreen.Bottom - 128));
 			this.WindowState = (FormWindowState)General.Settings.ReadSetting("mainwindow.windowstate", (int)FormWindowState.Maximized);
 			this.ResumeLayout(true);
 			

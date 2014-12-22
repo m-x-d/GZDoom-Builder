@@ -42,7 +42,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float PROJ_NEAR_PLANE = 1f;
 		private const float CROSSHAIR_SCALE = 0.06f;
 		private const float FOG_RANGE = 0.9f;
-		private const float INVERTED_VERTICAL_STRETCH = 1.0f / 1.2f;
+		internal const float GZDOOM_VERTICAL_VIEW_STRETCH = 1.2f;
+		internal const float GZDOOM_INVERTED_VERTICAL_VIEW_STRETCH = 1.0f / GZDOOM_VERTICAL_VIEW_STRETCH;
 		
 		#endregion
 
@@ -55,7 +56,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Matrix worldviewproj;
 		private Matrix view2d;
 		private Matrix world;
-		private float viewstretch; //mxd
 		private Vector3D cameraposition;
 		private int shaderpass;
 		
@@ -257,7 +257,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		internal void CreateProjection()
 		{
 			// Calculate aspect
-			float screenheight = General.Map.Graphics.RenderTarget.ClientSize.Height * (General.Settings.GZStretchView ? INVERTED_VERTICAL_STRETCH : 1.0f); //mxd
+			float screenheight = General.Map.Graphics.RenderTarget.ClientSize.Height * (General.Settings.GZStretchView ? GZDOOM_INVERTED_VERTICAL_VIEW_STRETCH : 1.0f); //mxd
 			float aspect = General.Map.Graphics.RenderTarget.ClientSize.Width / screenheight;
 			
 			// The DirectX PerspectiveFovRH matrix method calculates the scaling in X and Y as follows:
@@ -272,9 +272,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Make the projection matrix
 			projection = Matrix.PerspectiveFovRH(fovy, aspect, PROJ_NEAR_PLANE, General.Settings.ViewDistance);
-
-			// Update the view stretch scaler (mxd)
-			viewstretch = (General.Settings.GZStretchView ? INVERTED_VERTICAL_STRETCH : 1.0f);
 
 			// Apply matrices
 			ApplyMatrices3D();
@@ -1121,19 +1118,12 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					// Create the matrix for positioning / rotation
 					float sx = t.Thing.ScaleX * t.Thing.ActorScale.Width;
-					float sy = t.Thing.ScaleY * t.Thing.ActorScale.Height * viewstretch;
+					float sy = t.Thing.ScaleY * t.Thing.ActorScale.Height;
 
 					Matrix modelscale = Matrix.Scaling(sx, sx, sy);
-					Matrix mdescale = General.Map.Data.ModeldefEntries[t.Thing.Type].Scale;
+					Matrix modelrotation = Matrix.RotationY(-t.Thing.RollRad) * Matrix.RotationX(-t.Thing.PitchRad) * Matrix.RotationZ(t.Thing.Angle);
 
-					Matrix rotation = Matrix.RotationY(-(t.Thing.RollRad + General.Map.Data.ModeldefEntries[t.Thing.Type].RollOffset))
-						* Matrix.RotationX(-(t.Thing.PitchRad + General.Map.Data.ModeldefEntries[t.Thing.Type].PitchOffset))
-						* Matrix.RotationZ(t.Thing.Angle + General.Map.Data.ModeldefEntries[t.Thing.Type].AngleOffset);
-					
-					Vector2D offset2d = General.Map.Data.ModeldefEntries[t.Thing.Type].OffsetXY.GetScaled(t.Thing.ScaleX).GetRotated(t.Thing.Angle);
-					Matrix position = Matrix.Translation(offset2d.x, offset2d.y, General.Map.Data.ModeldefEntries[t.Thing.Type].OffsetZ * t.Thing.ScaleY) * t.Position;
-
-					world = mdescale * rotation * modelscale * position;
+					world = General.Map.Data.ModeldefEntries[t.Thing.Type].Transform * modelrotation * modelscale * t.Position;
 					ApplyMatrices3D();
 
 					//mxd. set variables for fog rendering

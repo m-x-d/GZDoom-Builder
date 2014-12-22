@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.IO;
 
 #endregion
 
@@ -70,6 +71,27 @@ namespace CodeImp.DoomBuilder.Data
 		public bool Equals(DataLocation other)
 		{
 			return (this.CompareTo(other) == 0);
+		}
+
+		//mxd
+		public bool IsValid()
+		{
+			switch(type) 
+			{
+				case RESOURCE_DIRECTORY:
+					if(!Directory.Exists(location)) return false;
+					break;
+
+				case RESOURCE_WAD:
+				case RESOURCE_PK3:
+					if(!File.Exists(location)) return false;
+					break;
+
+				default:
+					throw new NotImplementedException("ResourceListEditor.FixedResourceLocationList: got unknown location type: " + type);
+			}
+
+			return true;
 		}
 	}
 }

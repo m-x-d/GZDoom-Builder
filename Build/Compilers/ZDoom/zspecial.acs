@@ -329,6 +329,8 @@ special
 	-83:PickActor(5,8),
 	-84:IsPointerEqual(2,4),
 	-85:CanRaiseActor(1),
+	-86:SetActorTeleFog(3),
+	-87:SwapActorTeleFog(1),
 	
 	// Zandronum's
 	-100:ResetMap(0),

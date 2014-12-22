@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.Controls
 				resourceitems.Items[0].ForeColor = SystemColors.GrayText;
 
 				// Validate path (mxd)
-				resourceitems.Items[0].BackColor = (LocationValid(list[i]) ? resourceitems.BackColor : Color.MistyRose);
+				resourceitems.Items[0].BackColor = (list[i].IsValid() ? resourceitems.BackColor : Color.MistyRose);
 			}
 
 			// Done
@@ -211,7 +211,7 @@ namespace CodeImp.DoomBuilder.Controls
 			resourceitems.Items[index].ForeColor = SystemColors.WindowText;
 
 			// Validate path (mxd)
-			resourceitems.Items[index].BackColor = (LocationValid(rl) ? resourceitems.BackColor : Color.MistyRose);
+			resourceitems.Items[index].BackColor = (rl.IsValid() ? resourceitems.BackColor : Color.MistyRose);
 
 			// Done
 			resourceitems.EndUpdate();
@@ -247,23 +247,6 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					AddItem(new DataLocation(DataLocation.RESOURCE_DIRECTORY, path, false, false, false));
 				}
-			}
-		}
-
-		//mxd
-		internal static bool LocationValid(DataLocation location)
-		{
-			switch(location.type) 
-			{
-				case DataLocation.RESOURCE_DIRECTORY:
-					return Directory.Exists(location.location);
-
-				case DataLocation.RESOURCE_WAD:
-				case DataLocation.RESOURCE_PK3:
-					return File.Exists(location.location);
-
-				default:
-					throw new NotImplementedException("ResourceListEditor.FixedResourceLocationList: got unknown location type: " + location.type);
 			}
 		}
 		
@@ -413,7 +396,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			foreach(ListViewItem item in resourceitems.Items)
 			{
-				if (!LocationValid((DataLocation) item.Tag)) return false;
+				if (!((DataLocation)item.Tag).IsValid()) return false;
 			}
 			return true;
 		}

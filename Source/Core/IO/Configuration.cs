@@ -839,6 +839,7 @@ namespace CodeImp.DoomBuilder.IO
 			if(args.Count < 1) RaiseError(file, line, ERROR_INVALID_ARGS);
 			if(!(args[0] is string)) RaiseError(file, line, ERROR_INVALID_ARGS + " Expected a string for argument 1.");
 			if((args.Count > 1) && !(args[1] is string)) RaiseError(file, line, ERROR_INVALID_ARGS + " Expected a string for argument 2.");
+			if(args[0].ToString().ToUpperInvariant() == Path.GetFileName(file).ToUpperInvariant()) RaiseError(file, line, " A file cannot call include() on itself."); //mxd
 			if(cpErrorResult) return;
 			
 			// Determine the full path of the file to include

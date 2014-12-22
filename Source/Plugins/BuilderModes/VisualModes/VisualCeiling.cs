@@ -54,7 +54,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public VisualCeiling(BaseVisualMode mode, VisualSector vs) : base(mode, vs)
 		{
 			//mxd
-			geoType = VisualGeometryType.CEILING;
+			geometrytype = VisualGeometryType.CEILING;
+			partname = "ceiling";
 
 			//mxd
 			if(mode.UseSelectionFromClassicMode && vs != null && vs.Sector.Selected && (General.Map.ViewMode == ViewMode.CeilingTextures || General.Map.ViewMode == ViewMode.Normal)) 

@@ -113,8 +113,8 @@ namespace CodeImp.DoomBuilder.Compilers
 			}
 
 			//mxd
-			string outErr = process.StandardError.ReadToEnd();
-			string outMsg = process.StandardOutput.ReadToEnd();
+			string outErr = process.StandardError.ReadToEnd().Trim().Replace("\b", "");
+			string outMsg = process.StandardOutput.ReadToEnd().Trim().Replace("\b", "");
 			
 			// Wait for compiler to complete
 			process.WaitForExit();

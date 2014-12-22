@@ -686,6 +686,7 @@ namespace CodeImp.DoomBuilder {
 
 			// Determine original map name
 			origmapname = (options.PreviousName != "" && purpose != SavePurpose.IntoFile) ? options.PreviousName : options.CurrentName;
+			string origwadfile = string.Empty; //mxd
 
 			try 
 			{
@@ -736,7 +737,7 @@ namespace CodeImp.DoomBuilder {
 				if (File.Exists(newfilepathname)) 
 				{
 					// Move the target file aside
-					string origwadfile = newfilepathname + ".temp";
+					origwadfile = newfilepathname + ".temp";
 					File.Move(newfilepathname, origwadfile);
 
 					// Open original file
@@ -772,6 +773,7 @@ namespace CodeImp.DoomBuilder {
 			catch (IOException) 
 			{
 				General.ShowErrorMessage("IO Error while writing target file: " + newfilepathname + ". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
+				if(!string.IsNullOrEmpty(origwadfile) && File.Exists(origwadfile)) File.Delete(origwadfile); //mxd. Clean-up
 				data.Resume();
 				General.WriteLogLine("Map saving failed");
 				return false;
@@ -779,6 +781,7 @@ namespace CodeImp.DoomBuilder {
 			catch (UnauthorizedAccessException) 
 			{
 				General.ShowErrorMessage("Error while accessing target file: " + newfilepathname + ". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
+				if(!string.IsNullOrEmpty(origwadfile) && File.Exists(origwadfile)) File.Delete(origwadfile); //mxd. Clean-up
 				data.Resume();
 				General.WriteLogLine("Map saving failed");
 				return false;
@@ -923,6 +926,9 @@ namespace CodeImp.DoomBuilder {
 				// Determine source file
 				string sourcefile = (filepathname.Length > 0 ? filepathname : tempwad.Filename);
 
+				//mxd.
+				RemoveUnneededLumps(tempwad, TEMP_MAP_HEADER, true);
+
 				// Copy lumps to buildwad
 				General.WriteLogLine("Copying map lumps to temporary build file...");
 				CopyLumpsByType(tempwad, TEMP_MAP_HEADER, buildwad, BUILD_MAP_HEADER, true, false, false, true);
@@ -976,7 +982,7 @@ namespace CodeImp.DoomBuilder {
 						//mxd. collect errors
 						string compilererrors = "";
 						foreach (CompilerError e in compiler.Errors)
-							compilererrors += "Error: " + Environment.NewLine + e.description;
+							compilererrors += Environment.NewLine + e.description;
 
 						// Nodebuilder did not build the lumps!
 						if (failaswarning)
@@ -993,7 +999,7 @@ namespace CodeImp.DoomBuilder {
 					//collect errors
 					string compilererrors = "";
 					foreach (CompilerError e in compiler.Errors)
-						compilererrors += "Error: " + Environment.NewLine + e.description;
+						compilererrors += Environment.NewLine + e.description;
 
 					// Nodebuilder did not build the lumps!
 					General.ShowErrorMessage("Unable to build the nodes: The nodebuilder failed to build the expected data structures" + (compiler.Errors.Length > 0 ? ":" + Environment.NewLine + compilererrors : "."), MessageBoxButtons.OK);
@@ -1023,10 +1029,14 @@ namespace CodeImp.DoomBuilder {
 				foreach (KeyValuePair<string, MapLumpInfo> group in config.MapLumps) 
 				{
 					// Check if this lump should exist
-					if (group.Value.NodeBuild && !group.Value.AllowEmpty) 
+					if(group.Value.NodeBuild && !group.Value.AllowEmpty && group.Value.Required) 
 					{
+						//mxd
+						string lumpname = group.Key;
+						if (lumpname.Contains(CONFIG_MAP_HEADER)) lumpname = lumpname.Replace(CONFIG_MAP_HEADER, mapheader);
+						
 						// Find the lump in the source
-						if(wad.FindLump(group.Key, srcindex, srcindex + config.MapLumps.Count + 2) == null) 
+						if(wad.FindLump(lumpname, srcindex, srcindex + config.MapLumps.Count + 2) == null) 
 						{
 							// Missing a lump!
 							lumpscomplete = false;
@@ -1103,7 +1113,7 @@ namespace CodeImp.DoomBuilder {
 				if(group.Value.Required) 
 				{
 					// Get the lump name
-					string lumpname = (group.Key == CONFIG_MAP_HEADER ? mapname : group.Key);
+					string lumpname = (group.Key.Contains(CONFIG_MAP_HEADER) ? group.Key.Replace(CONFIG_MAP_HEADER, mapname) : group.Key); //mxd
 
 					// Check if the lump is missing at the target
 					int targetindex = FindSpecificLump(target, lumpname, headerindex, mapname, config.MapLumps);
@@ -1127,15 +1137,16 @@ namespace CodeImp.DoomBuilder {
 		}
 
 		//mxd. This is called on tempwad, which should only have the current map inside it.
-		private void RemoveUnneededLumps(WAD target, string mapname) 
+		private void RemoveUnneededLumps(WAD target, string mapname, bool glnodesonly) 
 		{
 			//Get the list of lumps required by current map format
 			List<string> requiredLumps = new List<string>();
 			foreach(KeyValuePair<string, MapLumpInfo> group in config.MapLumps) 
 			{
-				if(group.Value.NodeBuild) continue; //this lump well be recreated by a nodebuilder when saving the map 
-													//(or it won't be if the new map format doesn't require this lump, 
-													//so it will just stay there, possibly messing things up)
+				//this lump well be recreated by a nodebuilder when saving the map 
+				//(or it won't be if the new map format or nodebuilder doesn't require / build this lump, 
+				//so it will just stay there, possibly messing things up)
+				if(group.Value.NodeBuild && (!glnodesonly || group.Key.ToUpperInvariant().StartsWith("GL_"))) continue; 
 
 				string lumpname = group.Key;
 				if(lumpname == CONFIG_MAP_HEADER) lumpname = mapname;
@@ -1158,10 +1169,17 @@ namespace CodeImp.DoomBuilder {
 			foreach (Lump srclump in source.Lumps)
 			{
 				// Check if we should stop skipping lumps here
-				if (skipping && !mapconfig.MapLumps.ContainsKey(srclump.Name)) 
+				if (skipping) 
 				{
-					// Stop skipping
-					skipping = false;
+					//mxd
+					string srclumpname = srclump.Name;
+					if (srclumpname.Contains(sourcemapname)) srclumpname = srclumpname.Replace(sourcemapname, CONFIG_MAP_HEADER);
+
+					if (!mapconfig.MapLumps.ContainsKey(srclumpname)) 
+					{
+						// Stop skipping
+						skipping = false;
+					}
 				}
 
 				// Check if we should start skipping lumps here
@@ -1211,8 +1229,8 @@ namespace CodeImp.DoomBuilder {
 					   (group.Value.NodeBuild && copynodebuild) || ((group.Value.Script != null || group.Value.ScriptBuild) && copyscript)) 
 					{
 						// Get the lump name
-						string srclumpname = (group.Key == CONFIG_MAP_HEADER ? sourcemapname : group.Key);
-						string tgtlumpname = (group.Key == CONFIG_MAP_HEADER ? targetmapname : group.Key);
+						string srclumpname = (group.Key.Contains(CONFIG_MAP_HEADER) ? group.Key.Replace(CONFIG_MAP_HEADER, sourcemapname) : group.Key); //mxd
+						string tgtlumpname = (group.Key.Contains(CONFIG_MAP_HEADER) ? group.Key.Replace(CONFIG_MAP_HEADER, targetmapname) : group.Key); //mxd
 
 						// Find the lump in the source
 						int sourceindex = FindSpecificLump(source, srclumpname, srcheaderindex, sourcemapname, config.MapLumps);
@@ -1249,7 +1267,7 @@ namespace CodeImp.DoomBuilder {
 
 		// This finds a lump within the range of known lump names
 		// Returns -1 when the lump cannot be found
-		internal static int FindSpecificLump(WAD source, string lumpname, int mapheaderindex, string mapheadername, Dictionary<string, MapLumpInfo> maplumps) 
+		private static int FindSpecificLump(WAD source, string lumpname, int mapheaderindex, string mapheadername, Dictionary<string, MapLumpInfo> maplumps) 
 		{
 			// Use the configured map lump names to find the specific lump within range,
 			// because when an unknown lump is met, this search must stop.
@@ -1261,8 +1279,10 @@ namespace CodeImp.DoomBuilder {
 				if ((mapheaderindex + i) < source.Lumps.Count) 
 				{
 					// Check if this is a known lump name
-					if (maplumps.ContainsKey(source.Lumps[mapheaderindex + i].Name) ||
-					   (maplumps.ContainsKey(CONFIG_MAP_HEADER) && (source.Lumps[mapheaderindex + i].Name == mapheadername))) 
+					string srclumpname = source.Lumps[mapheaderindex + i].Name; //mxd
+					if (srclumpname.Contains(mapheadername)) srclumpname = srclumpname.Replace(mapheadername, CONFIG_MAP_HEADER);
+
+					if (maplumps.ContainsKey(srclumpname)) //mxd
 					{
 						// Is this the lump we are looking for?
 						if (source.Lumps[mapheaderindex + i].Name == lumpname) 
@@ -1897,7 +1917,7 @@ namespace CodeImp.DoomBuilder {
 
 				//mxd. Some lumps may've become unneeded during map format conversion. 
 				if(oldFormatInterface != config.FormatInterface)
-					RemoveUnneededLumps(tempwad, TEMP_MAP_HEADER);
+					RemoveUnneededLumps(tempwad, TEMP_MAP_HEADER, false);
 
 				// Create required lumps if they don't exist yet
 				CreateRequiredLumps(tempwad, TEMP_MAP_HEADER);

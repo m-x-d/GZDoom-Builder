@@ -64,8 +64,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 					} 
 					else if(token == "{") //read the settings
 					{
-						ModelData data = new ModelData();
-						data.IsVoxel = true;
+						ModelData mde = new ModelData();
+						mde.IsVoxel = true;
+						float scale = 1.0f;
+						float angleoffset = 0;
 
 						while(SkipWhitespace(true)) 
 						{
@@ -79,17 +81,18 @@ namespace CodeImp.DoomBuilder.ZDoom
 								{ 
 									if(!string.IsNullOrEmpty(modelName) && spriteNames.Count > 0) 
 									{
-										data.ModelNames.Add(modelName);
+										mde.ModelNames.Add(modelName);
+										mde.SetTransform(Matrix.RotationZ(Angle2D.DegToRad(angleoffset)), Matrix.Identity, new Vector3(scale));
 
 										foreach(string s in spriteNames)
 										{
 											if(entries.ContainsKey(s)) //TODO: is this a proper behaviour? 
 											{ 
-												entries[s] = data;
+												entries[s] = mde;
 											} 
 											else 
 											{
-												entries.Add(s, data);
+												entries.Add(s, mde);
 											}
 										}
 
@@ -103,7 +106,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 								} 
 								else if(token == "overridepalette") 
 								{
-									data.OverridePalette = true;
+									mde.OverridePalette = true;
 								} 
 								else if(token == "angleoffset") 
 								{
@@ -116,15 +119,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 										break;
 									}
 
-									float angleOffset = 0; //90?
 									token = StripTokenQuotes(ReadToken());
-									if(!ReadSignedFloat(token, ref angleOffset)) 
+									if(!ReadSignedFloat(token, ref angleoffset)) 
 									{
 										// Not numeric!
 										General.ErrorLogger.Add(ErrorType.Error, "Error in " + sourcefilename + " at line " + GetCurrentLineNumber() + ": expected AngleOffset value, but got '" + token + "'");
 									}
-									data.AngleOffset = Angle2D.DegToRad(angleOffset);
-
 								} 
 								else if(token == "scale") 
 								{
@@ -137,15 +137,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 										break;
 									}
 
-									float scale = 1.0f;
 									token = StripTokenQuotes(ReadToken());
 									if(!ReadSignedFloat(token, ref scale)) 
 									{
 										// Not numeric!
 										General.ErrorLogger.Add(ErrorType.Error, "Error in " + sourcefilename + " at line " + GetCurrentLineNumber() + ": expected Scale value, but got '" + token + "'");
 									}
-
-									data.Scale = Matrix.Scaling(scale, scale, scale);
 								}
 								prevToken = token.ToUpperInvariant();
 							}

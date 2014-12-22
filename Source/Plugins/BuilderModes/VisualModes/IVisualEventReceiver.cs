@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		void OnCopyProperties();
 		void OnPasteProperties();
 		void OnTextureAlign(bool alignx, bool aligny);
-		void OnTextureFit(bool fitWidth, bool fitHeight); //mxd
+		void OnTextureFit(FitTextureOptions options); //mxd
 		void OnTextureFloodfill();
 		void OnToggleUpperUnpegged();
 		void OnToggleLowerUnpegged();

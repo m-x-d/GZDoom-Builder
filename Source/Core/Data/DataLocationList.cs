@@ -16,9 +16,11 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using CodeImp.DoomBuilder.IO;
 using System.Collections.Specialized;
 
@@ -106,6 +108,13 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Write to config
 			cfg.WriteSetting(path, resinfo);
+		}
+
+		//mxd
+		public bool IsValid()
+		{
+			foreach (DataLocation location in this) if (!location.IsValid()) return false;
+			return true;
 		}
 		
 		#endregion
