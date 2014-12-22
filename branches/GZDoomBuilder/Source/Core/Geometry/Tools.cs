@@ -27,6 +27,7 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
+using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
@@ -1799,6 +1800,26 @@ namespace CodeImp.DoomBuilder.Geometry
 				   ((sd.LongMiddleTexture == texturelongname) && (sd.MiddleRequired() || sd.LongMiddleTexture != MapSet.EmptyLongName)) ;
 		}
 
+		//mxd. This converts offsetY from/to "normalized" offset for given wall part
+		public static float GetSidedefOffsetY(Sidedef side, VisualGeometryType part, float offset, float scaleY, bool fromNormalized)
+		{
+			switch (part)
+			{
+				case VisualGeometryType.WALL_UPPER:
+					return GetSidedefTopOffsetY(side, offset, scaleY, fromNormalized);
+				
+				case VisualGeometryType.WALL_MIDDLE:
+				case VisualGeometryType.WALL_MIDDLE_3D:
+					return GetSidedefMiddleOffsetY(side, offset, scaleY, fromNormalized);
+
+				case VisualGeometryType.WALL_LOWER:
+					return GetSidedefBottomOffsetY(side, offset, scaleY, fromNormalized);
+
+				default:
+					throw new NotSupportedException("Tools.GetSidedefOffsetY: '" + part + "' geometry type is not supported!");
+			}
+		}
+
 		//mxd. This converts offsetY from/to "normalized" offset for given upper wall
 		public static float GetSidedefTopOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) 
 		{
@@ -1806,7 +1827,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				return offset;
 
 			//if we don't have UpperUnpegged flag, normalize offset
-			float surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.CeilHeight) * scaleY;
+			float surfaceHeight = side.GetHighHeight() * scaleY;
 
 			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
 			return (float)Math.Round(offset - surfaceHeight);
@@ -1815,13 +1836,38 @@ namespace CodeImp.DoomBuilder.Geometry
 		//mxd. This converts offsetY from/to "normalized" offset for given middle wall
 		public static float GetSidedefMiddleOffsetY(Sidedef side, float offset, float scaleY, bool fromNormalized) 
 		{
-			if(!side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag) || side.Sector == null)
-				return offset;
+			if(side.Sector == null) return offset;
 
-			// If we have LowerUnpegged flag, normalize offset
-			// Absolute value is used because ceiling height of vavoom-type 3d floors 
-			// is lower than floor height
-			float surfaceHeight = (Math.Abs(side.Sector.CeilHeight - side.Sector.FloorHeight)) * scaleY;
+			// Normalize offset
+			float surfaceHeight;
+			if(side.Other != null && side.Other.Sector != null)
+			{
+				if(side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag)) 
+				{
+					// Double-sided with LowerUnpeggedFlag set
+					surfaceHeight = (side.Sector.CeilHeight - Math.Max(side.Sector.FloorHeight, side.Other.Sector.FloorHeight)) * scaleY;
+				} 
+				else 
+				{
+					// Double-sided without LowerUnpeggedFlag
+					surfaceHeight = Math.Abs(side.Sector.CeilHeight - side.Other.Sector.CeilHeight) * scaleY;
+				}
+			}
+			else
+			{
+				if(side.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
+				{
+					// Single-sided with LowerUnpeggedFlag set
+					// Absolute value is used because ceiling height of vavoom-type 3d floors 
+					// is lower than floor height
+					surfaceHeight = (Math.Abs(side.Sector.CeilHeight - side.Sector.FloorHeight)) * scaleY;
+				}
+				else
+				{
+					// Single-sided without LowerUnpeggedFlag
+					return offset;
+				}
+			}
 
 			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
 			return (float)Math.Round(offset - surfaceHeight);

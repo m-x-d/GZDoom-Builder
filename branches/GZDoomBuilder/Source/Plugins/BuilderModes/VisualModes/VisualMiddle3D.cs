@@ -52,7 +52,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public VisualMiddle3D(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
 			//mxd
-			geoType = VisualGeometryType.WALL_MIDDLE_3D;
+			geometrytype = VisualGeometryType.WALL_MIDDLE_3D;
+			partname = "mid";
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

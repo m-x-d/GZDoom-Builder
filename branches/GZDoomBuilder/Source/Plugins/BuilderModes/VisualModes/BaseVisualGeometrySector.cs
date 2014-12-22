@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
 
 		// This swaps triangles so that the plane faces the other way
-		protected void SwapTriangleVertices(WorldVertex[] verts)
+		protected static void SwapTriangleVertices(WorldVertex[] verts)
 		{
 			// Swap some vertices to flip all triangles
 			for(int i = 0; i < verts.Length; i += 3)
@@ -260,7 +260,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			//do we need to align this? (and also grab texture scale while we are at it)
 			float scaleX, scaleY;
-			bool isFloor = (geoType == VisualGeometryType.FLOOR);
+			bool isFloor = (geometrytype == VisualGeometryType.FLOOR);
 
 			if(mode.HighlightedTarget is VisualFloor) 
 			{
@@ -333,7 +333,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		protected void AlignTextureToSlopeLine(Linedef slopeSource, float slopeAngle, bool isFront, bool alignx, bool aligny) 
 		{
-			bool isFloor = (geoType == VisualGeometryType.FLOOR);
+			bool isFloor = (geometrytype == VisualGeometryType.FLOOR);
 			Sector.Sector.Fields.BeforeFieldsChange();
 			float sourceAngle = (float)Math.Round(General.ClampAngle(isFront ? -Angle2D.RadToDeg(slopeSource.Angle) + 90 : -Angle2D.RadToDeg(slopeSource.Angle) - 90), 1);
 
@@ -426,7 +426,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Unused
 		public virtual void OnEditBegin() { }
-		public virtual void OnTextureFit(bool fitWidth, bool fitHeight) { } //mxd
+		public virtual void OnTextureFit(FitTextureOptions options) { } //mxd
 		public virtual void OnToggleUpperUnpegged() { }
 		public virtual void OnToggleLowerUnpegged() { }
 		public virtual void OnResetTextureOffset() { }

@@ -18,16 +18,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
-using System.Drawing;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
-		protected BaseVisualMode mode;
+		protected readonly BaseVisualMode mode;
 
 		protected Plane top;
 		protected Plane bottom;
@@ -236,7 +236,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// This splits a polygon with a plane and returns the other part as a new polygon
 		// The polygon is expected to be convex and clockwise
-		protected WallPolygon SplitPoly(ref WallPolygon poly, Plane p, bool keepfront)
+		protected static WallPolygon SplitPoly(ref WallPolygon poly, Plane p, bool keepfront)
 		{
 			const float NEAR_ZERO = 0.01f;
 			WallPolygon front = new WallPolygon(poly.Count);
@@ -312,7 +312,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		
 		// This crops a polygon with a plane and keeps only a certain part of the polygon
-		protected void CropPoly(ref WallPolygon poly, Plane p, bool keepfront)
+		protected static void CropPoly(ref WallPolygon poly, Plane p, bool keepfront)
 		{
 			const float NEAR_ZERO = 0.01f;
 			float sideswitch = keepfront ? 1 : -1;
@@ -372,7 +372,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected float GetRoundedTextureOffset(float oldValue, float offset, float scale, float textureSize) 
+		protected static float GetRoundedTextureOffset(float oldValue, float offset, float scale, float textureSize) 
 		{
 			if(offset == 0f) return oldValue;
 			float scaledOffset = offset * scale;
@@ -383,7 +383,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected void OnTextureChanged() 
+		private void OnTextureChanged() 
 		{
 			//check for 3d floors
 			if(Sidedef.Line.Action == 160) 
@@ -400,7 +400,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 			}
-				
 		}
 
 		//mxd
@@ -408,7 +407,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(Sidedef.Sector == null || (!withSameTexture && !withSameHeight)) return;
 
-			Rectangle rect = BuilderModesTools.GetSidedefPartSize(this, geoType);
+			Rectangle rect = BuilderModesTools.GetSidedefPartSize(this);
 			if(rect.Height == 0) return;
 
 			if(select && !selected) 
@@ -477,8 +476,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							&& line.Front.HighRequired()
 							&& BuilderModesTools.GetSidedefPartSize(line.Front, VisualGeometryType.WALL_UPPER).IntersectsWith(rect));
 						
-						addFrontMiddle = (line.Front.MiddleTexture == texture 
-							&& line.Front.MiddleRequired() 
+						addFrontMiddle = (line.Front.MiddleTexture == texture
+							&& (line.Front.MiddleRequired() || line.Back != null)
 							&& line.Front.GetMiddleHeight() > 0
 							&& BuilderModesTools.GetSidedefPartSize(line.Front, VisualGeometryType.WALL_MIDDLE).IntersectsWith(rect));
 						
@@ -495,7 +494,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							&& BuilderModesTools.GetSidedefPartSize(line.Back, VisualGeometryType.WALL_UPPER).IntersectsWith(rect));
 						
 						addBackMiddle = (line.Back.MiddleTexture == texture 
-							&& line.Back.MiddleRequired() 
+							&& (line.Back.MiddleRequired() || line.Front != null)
 							&& line.Back.GetMiddleHeight() > 0
 							&& BuilderModesTools.GetSidedefPartSize(line.Back, VisualGeometryType.WALL_MIDDLE).IntersectsWith(rect));
 
@@ -600,6 +599,96 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			return selected;
 		}
+
+		//mxd
+		protected void FitTexture(FitTextureOptions options)
+		{
+			// Create undo name
+			string s;
+			if(options.FitWidth && options.FitHeight) s = "width and height";
+			else if(options.FitWidth) s = "width";
+			else s = "height";
+
+			//create undo
+			mode.CreateUndo("Fit texture (" + s + ")", UndoGroup.TextureOffsetChange, Sector.Sector.FixedIndex);
+			Sidedef.Fields.BeforeFieldsChange();
+
+			// Fit width
+			if(options.FitWidth) 
+			{
+				float scalex, offsetx;
+
+				if(options.FitAcrossSurfaces) 
+				{
+					scalex = Texture.ScaledWidth / (Sidedef.Line.Length * (options.GlobalBounds.Width / Sidedef.Line.Length)) * options.HorizontalRepeat;
+					offsetx = (float)Math.Round((options.Bounds.X * scalex - Sidedef.OffsetX) % Texture.Width, General.Map.FormatInterface.VertexDecimals);
+				} 
+				else 
+				{
+					scalex = Texture.ScaledWidth / Sidedef.Line.Length * options.HorizontalRepeat;
+					offsetx = -Sidedef.OffsetX;
+				}
+
+				UDMFTools.SetFloat(Sidedef.Fields, "scalex_" + partname, (float)Math.Round(scalex, General.Map.FormatInterface.VertexDecimals), 1.0f);
+				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_" + partname, offsetx, 0.0f);
+			} 
+			else 
+			{
+				// Restore initial offsets
+				UDMFTools.SetFloat(Sidedef.Fields, "scalex_" + partname, options.InitialScaleX, 1.0f);
+				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_" + partname, options.InitialOffsetX, 0.0f);
+			}
+
+			// Fit height
+			if(options.FitHeight) 
+			{
+				if(Sidedef.Sector != null) 
+				{
+					float scaley, offsety;
+
+					if(options.FitAcrossSurfaces) 
+					{
+						scaley = Texture.ScaledHeight / (options.Bounds.Height * ((float)options.GlobalBounds.Height / options.Bounds.Height)) * options.VerticalRepeat;
+
+						if(this is VisualLower) // Special cases, special cases...
+						{ 
+							offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, -Sidedef.OffsetY, scaley, true) % Texture.Height;
+						}
+						else if(this is VisualMiddleDouble)
+						{
+							if (Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
+							{
+								//offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, options.Bounds.Y * scaley - Sidedef.OffsetY, scaley, true) - (options.Bounds.Height + Sidedef.GetHighHeight()) * scaley;
+								offsety = (options.Bounds.Y - /*options.Bounds.Height -*/ Sidedef.GetHighHeight()) * scaley - Sidedef.OffsetY;
+								//offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, offsety, scaley, true);
+							}
+							else
+							{
+								offsety = options.Bounds.Y * scaley - Sidedef.OffsetY;
+							}
+						}
+						else
+						{
+							offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, options.Bounds.Y * scaley - Sidedef.OffsetY, scaley, true) % Texture.Height;
+						}
+					} 
+					else 
+					{
+						scaley = Texture.ScaledHeight / options.Bounds.Height * options.VerticalRepeat;
+						offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, -Sidedef.OffsetY, scaley, true) % Texture.Height;
+					}
+
+					UDMFTools.SetFloat(Sidedef.Fields, "scaley_" + partname, (float)Math.Round(scaley, General.Map.FormatInterface.VertexDecimals), 1.0f);
+					UDMFTools.SetFloat(Sidedef.Fields, "offsety_" + partname, (float)Math.Round(offsety, General.Map.FormatInterface.VertexDecimals), 0.0f);
+				}
+			} 
+			else 
+			{
+				// Restore initial offsets
+				UDMFTools.SetFloat(Sidedef.Fields, "scaley_" + partname, options.InitialScaleY, 1.0f);
+				UDMFTools.SetFloat(Sidedef.Fields, "offsety_" + partname, options.InitialOffsetY, 0.0f);
+			}
+		}
 		
 		#endregion
 
@@ -615,7 +704,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected abstract void MoveTextureOffset(Point xy);
 		protected abstract Point GetTextureOffset();
 		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
-		public virtual void OnTextureFit(bool fitWidth, bool fitHeight) { } //mxd
+		public virtual void OnTextureFit(FitTextureOptions options) { } //mxd
 		
 		// Insert middle texture
 		public virtual void OnInsert()
@@ -1178,6 +1267,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float offsety = dragdeltaz.GetLength();
 			if((Math.Sign(dragdeltaxy.x) < 0) || (Math.Sign(dragdeltaxy.y) < 0) || (Math.Sign(dragdeltaxy.z) < 0)) offsetx = -offsetx;
 			if((Math.Sign(dragdeltaz.x) < 0) || (Math.Sign(dragdeltaz.y) < 0) || (Math.Sign(dragdeltaz.z) < 0)) offsety = -offsety;
+
+			//mxd. Modify by surface scale?
+			if (General.Map.UDMF)
+			{
+				float sx = UDMFTools.GetFloat(Sidedef.Fields, "scalex_" + partname, 1.0f);
+				float sy = UDMFTools.GetFloat(Sidedef.Fields, "scaley_" + partname, 1.0f);
+				if (Math.Abs(sx) < 1) offsetx *= sx;
+				if (Math.Abs(sy) < 1) offsety *= sy;
+			}
 			
 			// Apply offsets
 			if(General.Interface.CtrlState && General.Interface.ShiftState) 
@@ -1226,7 +1324,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Sector brightness change
 		public virtual void OnChangeTargetBrightness(bool up)
 		{
-			if(!Sector.Changed)
+			//mxd. Change UDMF wall light?
+			if (General.Map.UDMF)
+			{
+				int light = Sidedef.Fields.GetValue("light", 0);
+				bool absolute = Sidedef.Fields.GetValue("lightabsolute", false);
+				int newLight;
+
+				if(up)
+					newLight = General.Map.Config.BrightnessLevels.GetNextHigher(light, absolute);
+				else
+					newLight = General.Map.Config.BrightnessLevels.GetNextLower(light, absolute);
+
+				if(newLight == light) return;
+
+				//create undo
+				mode.CreateUndo("Change wall brightness", UndoGroup.SurfaceBrightnessChange, Sector.Sector.FixedIndex);
+				Sidedef.Fields.BeforeFieldsChange();
+
+				//apply changes
+				Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, newLight);
+				mode.SetActionResult("Changed wall brightness to " + newLight + ".");
+				Sector.Sector.UpdateCache();
+
+				//rebuild sector
+				Sector.UpdateSectorGeometry(false);
+			}
+			else if(!Sector.Changed)
 			{
 				// Change brightness
 				mode.CreateUndo("Change sector brightness", UndoGroup.SectorBrightnessChange, Sector.Sector.FixedIndex);
@@ -1279,7 +1403,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Sidedef.OffsetX = (Sidedef.OffsetX - horizontal);
 				if (Texture != null) Sidedef.OffsetX %= Texture.Width;
 				Sidedef.OffsetY = (Sidedef.OffsetY - vertical);
-				if(geoType != VisualGeometryType.WALL_MIDDLE && Texture != null) Sidedef.OffsetY %= Texture.Height;
+				if(geometrytype != VisualGeometryType.WALL_MIDDLE && Texture != null) Sidedef.OffsetY %= Texture.Height;
 
 				mode.SetActionResult("Changed texture offsets to " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
 			}

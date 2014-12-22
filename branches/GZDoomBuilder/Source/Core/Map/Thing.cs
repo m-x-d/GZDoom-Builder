@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Properties
 
 		public MapSet Map { get { return map; } }
-		public int Type { get { return type; } set { BeforePropsChange(); type = value; /*UpdateCache();*/ } } //mxd
+		public int Type { get { return type; } set { BeforePropsChange(); type = value; } } //mxd
 		public Vector3D Position { get { return pos; } }
 		public float ScaleX { get { return scaleX; } } //mxd. This is UDMF property, not actual scale!
 		public float ScaleY { get { return scaleY; } } //mxd. This is UDMF property, not actual scale!
@@ -431,7 +431,7 @@ namespace CodeImp.DoomBuilder.Map
 			BeforePropsChange();
 
 			pitch = p;
-			pitchrad = ((isModel && General.Map.Data.ModeldefEntries[type].InheritActorRoll) ? Angle2D.DegToRad(pitch) : 0);
+			pitchrad = ((isModel && General.Map.Data.ModeldefEntries[type].InheritActorPitch) ? Angle2D.DegToRad(pitch) : 0);
 
 			if (type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;
@@ -444,7 +444,6 @@ namespace CodeImp.DoomBuilder.Map
 
 			roll = r;
 			rollrad = ((isModel && General.Map.Data.ModeldefEntries[type].InheritActorRoll) ? Angle2D.DegToRad(roll) : 0);
-			//rotation = Matrix.RotationYawPitchRoll(rollrad, pitchrad, anglerad); //mxd
 
 			if (type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;

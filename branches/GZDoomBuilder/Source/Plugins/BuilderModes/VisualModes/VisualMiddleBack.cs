@@ -29,7 +29,8 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 			: base(mode, vs, s)
 		{
 			//mxd
-			geoType = VisualGeometryType.WALL_MIDDLE;
+			geometrytype = VisualGeometryType.WALL_MIDDLE;
+			partname = "mid";
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -343,39 +344,6 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 			float oldx = Sidedef.Fields.GetValue("offsetx_mid", 0.0f);
 			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
 			return new Point((int)oldx, (int)oldy);
-		}
-
-		//mxd
-		public override void OnChangeTargetBrightness(bool up) 
-		{
-			if(!General.Map.UDMF) 
-			{
-				base.OnChangeTargetBrightness(up);
-				return;
-			}
-
-			int light = Sidedef.Fields.GetValue("light", 0);
-			bool absolute = Sidedef.Fields.GetValue("lightabsolute", false);
-			int newLight;
-
-			if(up)
-				newLight = General.Map.Config.BrightnessLevels.GetNextHigher(light, absolute);
-			else
-				newLight = General.Map.Config.BrightnessLevels.GetNextLower(light, absolute);
-
-			if(newLight == light) return;
-
-			//create undo
-			mode.CreateUndo("Change middle wall brightness", UndoGroup.SurfaceBrightnessChange, Sector.Sector.FixedIndex);
-			Sidedef.Fields.BeforeFieldsChange();
-
-			//apply changes
-			Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, newLight);
-			mode.SetActionResult("Changed middle wall brightness to " + newLight + ".");
-			Sector.Sector.UpdateCache();
-
-			//rebuild sector
-			Sector.UpdateSectorGeometry(false);
 		}
 
 		//mxd

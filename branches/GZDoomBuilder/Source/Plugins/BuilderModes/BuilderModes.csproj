@@ -326,6 +326,12 @@
     <Compile Include="Interface\FilterSelectedThingsForm.Designer.cs">
       <DependentUpon>FilterSelectedThingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\FitTexturesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\FitTexturesForm.Designer.cs">
+      <DependentUpon>FitTexturesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\PastePropertiesOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -503,6 +509,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Interface\FilterSelectedThingsForm.resx">
       <DependentUpon>FilterSelectedThingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\FitTexturesForm.resx">
+      <DependentUpon>FitTexturesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\PastePropertiesOptionsForm.resx">
       <DependentUpon>PastePropertiesOptionsForm.cs</DependentUpon>

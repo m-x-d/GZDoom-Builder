@@ -51,7 +51,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public VisualLower(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
 			//mxd
-			geoType = VisualGeometryType.WALL_LOWER;
+			geometrytype = VisualGeometryType.WALL_LOWER;
+			partname = "bottom";
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -302,69 +303,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void OnChangeTargetBrightness(bool up) 
-		{
-			if(!General.Map.UDMF) 
-			{
-				base.OnChangeTargetBrightness(up);
-				return;
-			}
-
-			int light = Sidedef.Fields.GetValue("light", 0);
-			bool absolute = Sidedef.Fields.GetValue("lightabsolute", false);
-			int newLight;
-
-			if(up)
-				newLight = General.Map.Config.BrightnessLevels.GetNextHigher(light, absolute);
-			else
-				newLight = General.Map.Config.BrightnessLevels.GetNextLower(light, absolute);
-
-			if(newLight == light) return;
-
-			//create undo
-			mode.CreateUndo("Change lower wall brightness", UndoGroup.SurfaceBrightnessChange, Sector.Sector.FixedIndex);
-			Sidedef.Fields.BeforeFieldsChange();
-
-			//apply changes
-			Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, newLight);
-			mode.SetActionResult("Changed lower wall brightness to " + newLight + ".");
-			Sector.Sector.UpdateCache();
-
-			//rebuild sector
-			Sector.UpdateSectorGeometry(false);
-		}
-
-		//mxd
-		public override void OnTextureFit(bool fitWidth, bool fitHeight) 
+		public override void OnTextureFit(FitTextureOptions options) 
 		{
 			if(!General.Map.UDMF) return;
 			if(!Sidedef.LowRequired() || string.IsNullOrEmpty(Sidedef.LowTexture) || Sidedef.LowTexture == "-" || !Texture.IsImageLoaded) return;
-
-			string s;
-			if(fitWidth && fitHeight) s = "width and height";
-			else if(fitWidth) s = "width";
-			else s = "height";
-
-			//create undo
-			mode.CreateUndo("Fit texture (" + s + ")", UndoGroup.TextureOffsetChange, Sector.Sector.FixedIndex);
-			Sidedef.Fields.BeforeFieldsChange();
-
-			if(fitWidth) 
-			{
-				float scaleX = Texture.ScaledWidth / Sidedef.Line.Length;
-				UDMFTools.SetFloat(Sidedef.Fields, "scalex_bottom", scaleX, 1.0f);
-				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_bottom", -Sidedef.OffsetX, 0.0f);
-			}
-
-			if(fitHeight && Sidedef.Sector != null && Sidedef.Other.Sector != null) 
-			{
-				float scaleY = (float)Texture.Height / (Sidedef.Other.Sector.FloorHeight - Sidedef.Sector.FloorHeight);
-				UDMFTools.SetFloat(Sidedef.Fields, "scaley_bottom", scaleY, 1.0f);
-
-				float offsetY = Tools.GetSidedefBottomOffsetY(Sidedef, -Sidedef.OffsetY, scaleY, true) % Texture.Height;
-				UDMFTools.SetFloat(Sidedef.Fields, "offsety_bottom", offsetY, 0.0f);
-			}
-
+			FitTexture(options);
 			Setup();
 		}
 

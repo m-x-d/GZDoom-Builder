@@ -1,8 +1,8 @@
 ﻿#region ================== Namespaces
 
 using System.Collections.Generic;
-using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.MD3;
+using CodeImp.DoomBuilder.Rendering;
 using SlimDX;
 using SlimDX.Direct3D9;
 
@@ -15,6 +15,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		#region ================== Variables
 
 		private ModelLoadState loadstate;
+		private Vector3 scale;
+		private Matrix transform;
+		private Matrix transformstretched;
 
 		#endregion
 
@@ -25,14 +28,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		internal GZModel Model;
 
-		internal Matrix Scale;
-		internal Vector2D OffsetXY;
-		internal float OffsetZ;
-
-		internal float AngleOffset; //in radians
-		internal float PitchOffset; //in radians
-		internal float RollOffset; //in radians
-		internal bool OverridePalette; //used for voxel models only
+		internal Vector3 Scale { get { return scale; } }
+		internal Matrix Transform { get { return (General.Settings.GZStretchView ? transformstretched : transform); } }
+		internal bool OverridePalette; //used for voxel models only 
 		internal bool InheritActorPitch;
 		internal bool InheritActorRoll;
 
@@ -48,8 +46,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		{
 			ModelNames = new List<string>();
 			TextureNames = new List<string>();
-			Scale = Matrix.Identity;
-			OffsetXY = new Vector2D();
+			transform = Matrix.Identity;
+			transformstretched = Matrix.Identity;
 		}
 
 		internal void Dispose() 
@@ -60,6 +58,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				foreach (Texture t in Model.Textures) t.Dispose();
 				loadstate = ModelLoadState.None;
 			}
+		}
+
+		internal void SetTransform(Matrix rotation, Matrix offset, Vector3 scale)
+		{
+			this.scale = scale;
+			this.transform = Matrix.Scaling(scale) * rotation * offset;
+			this.transformstretched = Matrix.Scaling(scale.X, scale.Y, scale.Z * Renderer3D.GZDOOM_INVERTED_VERTICAL_VIEW_STRETCH) * rotation * offset;
 		}
 
 		#endregion

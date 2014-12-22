@@ -734,12 +734,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 			//create bounding box
 			BoundingBoxSizes bbs = new BoundingBoxSizes();
-			bbs.MinX = (short)((xsize / 2 - pivot.x) * mde.Scale.M11); //That should be scale x
-			bbs.MaxX = (short)((xsize / 2 + pivot.x) * mde.Scale.M11);
-			bbs.MinZ = (short)((zsize / 2 - pivot.z) * mde.Scale.M11);
-			bbs.MaxZ = (short)((zsize / 2 + pivot.z) * mde.Scale.M11);
-			bbs.MinY = (short)((ysize / 2 - pivot.y) * mde.Scale.M11);
-			bbs.MaxY = (short)((ysize / 2 + pivot.y) * mde.Scale.M11);
+			bbs.MinX = (short)((xsize / 2f - pivot.x) * mde.Scale.X);
+			bbs.MaxX = (short)((xsize / 2f + pivot.x) * mde.Scale.X);
+			bbs.MinZ = (short)((zsize / 2f - pivot.z) * mde.Scale.Z);
+			bbs.MaxZ = (short)((zsize / 2f + pivot.z) * mde.Scale.Z);
+			bbs.MinY = (short)((ysize / 2f - pivot.y) * mde.Scale.Y);
+			bbs.MaxY = (short)((ysize / 2f + pivot.y) * mde.Scale.Y);
 
 			mde.Model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
 

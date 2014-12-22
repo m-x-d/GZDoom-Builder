@@ -51,7 +51,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public VisualUpper(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
 			//mxd
-			geoType = VisualGeometryType.WALL_UPPER;
+			geometrytype = VisualGeometryType.WALL_UPPER;
+			partname = "top";
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -293,69 +294,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void OnChangeTargetBrightness(bool up) 
-		{
-			if(!General.Map.UDMF) 
-			{
-				base.OnChangeTargetBrightness(up);
-				return;
-			}
-
-			int light = Sidedef.Fields.GetValue("light", 0);
-			bool absolute = Sidedef.Fields.GetValue("lightabsolute", false);
-			int newLight;
-
-			if(up)
-				newLight = General.Map.Config.BrightnessLevels.GetNextHigher(light, absolute);
-			else
-				newLight = General.Map.Config.BrightnessLevels.GetNextLower(light, absolute);
-
-			if(newLight == light) return;
-
-			//create undo
-			mode.CreateUndo("Change upper wall brightness", UndoGroup.SurfaceBrightnessChange, Sector.Sector.FixedIndex);
-			Sidedef.Fields.BeforeFieldsChange();
-
-			//apply changes
-			Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, newLight);
-			mode.SetActionResult("Changed upper wall brightness to " + newLight + ".");
-			Sector.Sector.UpdateCache();
-
-			//rebuild sector
-			Sector.UpdateSectorGeometry(false);
-		}
-
-		//mxd
-		public override void OnTextureFit(bool fitWidth, bool fitHeight) 
+		public override void OnTextureFit(FitTextureOptions options) 
 		{
 			if(!General.Map.UDMF) return;
 			if(!Sidedef.HighRequired() || string.IsNullOrEmpty(Sidedef.HighTexture) || Sidedef.HighTexture == "-" || !Texture.IsImageLoaded) return;
-
-			string s;
-			if(fitWidth && fitHeight) s = "width and height";
-			else if(fitWidth) s = "width";
-			else s = "height";
-
-			//create undo
-			mode.CreateUndo("Fit texture (" + s + ")", UndoGroup.TextureOffsetChange, Sector.Sector.FixedIndex);
-			Sidedef.Fields.BeforeFieldsChange();
-
-			if(fitWidth) 
-			{
-				float scaleX = Texture.ScaledWidth / Sidedef.Line.Length;
-				UDMFTools.SetFloat(Sidedef.Fields, "scalex_top", scaleX, 1.0f);
-				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_top", -Sidedef.OffsetX, 0.0f);
-			}
-
-			if(fitHeight && Sidedef.Sector != null && Sidedef.Other.Sector != null) 
-			{
-				float scaleY = (float)Texture.Height / (Sidedef.Sector.CeilHeight - Sidedef.Other.Sector.CeilHeight);
-				UDMFTools.SetFloat(Sidedef.Fields, "scaley_top", scaleY, 1.0f);
-
-				float offsetY = Tools.GetSidedefTopOffsetY(Sidedef, -Sidedef.OffsetY, scaleY, true) % Texture.Height;
-				UDMFTools.SetFloat(Sidedef.Fields, "offsety_top", offsetY, 0.0f);
-			}
-
+			FitTexture(options);
 			Setup();
 		}
 

@@ -25,12 +25,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	internal struct VisualSidedefParts
 	{
 		// Members
-		public VisualUpper upper;
-		public VisualLower lower;
-		public VisualMiddleDouble middledouble;
-		public VisualMiddleSingle middlesingle;
-		public List<VisualMiddle3D> middle3d;
-		public List<VisualMiddleBack> middleback;//mxd
+		public readonly VisualUpper upper;
+		public readonly VisualLower lower;
+		public readonly VisualMiddleDouble middledouble;
+		public readonly VisualMiddleSingle middlesingle;
+		public readonly List<VisualMiddle3D> middle3d;
+		public readonly List<VisualMiddleBack> middleback;//mxd
 		
 		// Constructor
 		public VisualSidedefParts(VisualUpper u, VisualLower l, VisualMiddleDouble m, List<VisualMiddle3D> e, List<VisualMiddleBack> eb)
@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.middledouble = m;
 			this.middlesingle = null;
 			this.middle3d = e;
-			this.middleback = eb;//mxd
+			this.middleback = eb; //mxd
 		}
 		
 		// Constructor
@@ -63,13 +63,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(upper != null) upper.Setup();
 			if(middle3d != null)
 			{
-				foreach(VisualMiddle3D m in middle3d)
-					m.Setup();
+				foreach(VisualMiddle3D m in middle3d) m.Setup();
 			}
 			if(middleback != null) 
 			{
-				foreach(VisualMiddleBack m in middleback)
-					m.Setup();
+				foreach(VisualMiddleBack m in middleback) m.Setup();
 			}
 		}
 
@@ -82,13 +80,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(upper != null) upper.Selected = false;
 			if(middle3d != null) 
 			{
-				foreach(VisualMiddle3D m in middle3d)
-					m.Selected = false;
+				foreach(VisualMiddle3D m in middle3d) m.Selected = false;
 			}
 			if(middleback != null) 
 			{
-				foreach(VisualMiddleBack m in middleback)
-					m.Selected = false;
+				foreach(VisualMiddleBack m in middleback) m.Selected = false;
 			}
 		}
 	}

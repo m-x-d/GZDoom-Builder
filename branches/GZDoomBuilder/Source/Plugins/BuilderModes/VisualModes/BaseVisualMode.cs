@@ -294,8 +294,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			selectionchanged = false;
 			
-			if(singleselection)
-				ClearSelection();
+			if(singleselection) ClearSelection();
 			
 			UpdateChangedObjects();
 			ShowTargetInfo();
@@ -2115,11 +2114,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(BaseVisualThing vt in things) 
 				{
 					if(vt.Thing.Sector == null) continue;
-					ThingTypeInfo ti = General.Map.Data.GetThingInfo(vt.Thing.Type);
-					int zvalue = (int)(vt.Thing.Sector.FloorHeight + vt.Thing.Position.z);
 
-					if(zvalue != vt.Thing.Sector.CeilHeight - ti.Height)
-						vt.OnChangeTargetHeight((int)(vt.Thing.Sector.CeilHeight - ti.Height) - zvalue);
+					if (vt.Info.Hangs)
+					{
+						vt.OnMove(new Vector3D(vt.Thing.Position, 0));
+					}
+					else
+					{
+						vt.OnMove(new Vector3D(vt.Thing.Position, vt.Thing.Sector.CeilHeight - vt.Info.Height));
+					}
 				}
 			}
 
@@ -2327,8 +2330,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(vt.Thing.Sector == null) continue;
 					
-					if(vt.Thing.Position.z != 0)
-						vt.OnChangeTargetHeight((int)-vt.Thing.Position.z);
+					if (vt.Info.Hangs)
+					{
+						vt.OnMove(new Vector3D(vt.Thing.Position, vt.Thing.Sector.CeilHeight - vt.Thing.Sector.FloorHeight - vt.Info.Height));
+					} 
+					else
+					{
+						vt.OnMove(new Vector3D(vt.Thing.Position, 0));
+					}
 				}
 			}
 
@@ -2770,31 +2779,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		[BeginAction("visualfittextures")]
-		public void TextureFit() 
+		private void FitTextures() 
 		{
 			PreAction(UndoGroup.None);
+			
+			// Get selection
 			List<IVisualEventReceiver> objs = GetSelectedObjects(false, true, false, false);
-			foreach(IVisualEventReceiver i in objs) i.OnTextureFit(true, true);
-			PostAction();
-		}
+			List<BaseVisualGeometrySidedef> sides = new List<BaseVisualGeometrySidedef>();
+			foreach(IVisualEventReceiver side in objs) 
+			{
+				if(side is BaseVisualGeometrySidedef) sides.Add(side as BaseVisualGeometrySidedef);
+			}
 
-		//mxd
-		[BeginAction("visualfittexturesx")]
-		public void TextureFitX() 
-		{
-			PreAction(UndoGroup.None);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(false, true, false, false);
-			foreach(IVisualEventReceiver i in objs) i.OnTextureFit(true, false);
-			PostAction();
-		}
+			if(sides.Count == 0)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Fit Textures action requires selected sidedefs.");
+				return;
+			}
 
-		//mxd
-		[BeginAction("visualfittexturesy")]
-		public void TextureFitY() 
-		{
-			PreAction(UndoGroup.None);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(false, true, false, false);
-			foreach(IVisualEventReceiver i in objs) i.OnTextureFit(false, true);
+			// Show form
+			FitTexturesForm form = new FitTexturesForm();
+			form.Setup(sides);
+
+			// Undo changes?
+			if(form.ShowDialog((Form)General.Interface) == DialogResult.Cancel)
+				General.Map.UndoRedo.WithdrawUndo();
+
 			PostAction();
 		}
 
@@ -3698,15 +3708,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							} 
 							else 
 							{
-								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY, true);
+								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height;
 
-								//mxd. Clamp offset if this part is middle single or wrapped middle double 
-								if(j.sidedef.Other == null || j.sidedef.IsFlagSet("wrapmidtex") || j.sidedef.Line.IsFlagSet("wrapmidtex")) 
+								if(j.sidedef.Other != null && !j.sidedef.IsFlagSet("wrapmidtex") && !j.sidedef.Line.IsFlagSet("wrapmidtex"))
 								{
-									offset %= texture.Height;
+									//mxd. This should be doublesided non-wrapped line. Find the nearset aligned position
+									float curoffset = UDMFTools.GetFloat(j.sidedef.Fields, "offsety_mid");
+									offset += texture.Height * (int)Math.Round((curoffset - offset) / texture.Height);
+
+									// Make sure the surface stays between floor and ceiling
+									if (offset < -texture.Height)
+									{
+										offset += texture.Height;
+									} 
+									else if(offset + texture.Height > j.sidedef.GetMiddleHeight())
+									{
+										offset -= texture.Height;
+									}
 								}
 
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset);//mxd
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset); //mxd
 							}
 						}
 					}
