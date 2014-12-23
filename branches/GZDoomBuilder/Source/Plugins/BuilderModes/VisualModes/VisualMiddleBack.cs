@@ -74,35 +74,35 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 			SectorData sd = mode.GetSectorData(Sidedef.Other.Sector);
 
 			//mxd. which texture we must use?
-			long textureLong = 0;
+			long longtexture = 0;
 			if ((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0) 
 			{
 				if (Sidedef.Other.LongHighTexture != MapSet.EmptyLongName)
-					textureLong = Sidedef.Other.LongHighTexture;
+					longtexture = Sidedef.Other.LongHighTexture;
 			} 
 			else if ((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0) 
 			{
 				if(Sidedef.Other.LongLowTexture != MapSet.EmptyLongName)
-					textureLong = Sidedef.Other.LongLowTexture;
+					longtexture = Sidedef.Other.LongLowTexture;
 			} 
 			else if ((sourceside.LongMiddleTexture != MapSet.EmptyLongName)) 
 			{
-				textureLong = sourceside.LongMiddleTexture;
+				longtexture = sourceside.LongMiddleTexture;
 			}
 
 			// Texture given?
-			if (textureLong != 0) 
+			if (longtexture != 0) 
 			{
 				// Load texture
-				base.Texture = General.Map.Data.GetTextureImage(textureLong);
+				base.Texture = General.Map.Data.GetTextureImage(longtexture);
 				if(base.Texture == null || base.Texture is UnknownImage) 
 				{
 					base.Texture = General.Map.Data.UnknownTexture3D;
-					setuponloadedtexture = textureLong;
+					setuponloadedtexture = longtexture;
 				} 
 				else if (!base.Texture.IsImageLoaded) 
 				{
-					setuponloadedtexture = textureLong;
+					setuponloadedtexture = longtexture;
 				}
 			} 
 			else 

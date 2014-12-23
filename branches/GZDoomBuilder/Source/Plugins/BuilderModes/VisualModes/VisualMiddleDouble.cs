@@ -196,16 +196,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!repeatmidtex) 
 			{
 				// First determine the visible portion of the texture
-				float textop, texbottom;
+				float textop;
 
 				// Determine top portion height
 				if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
-					textop = geobottom + tof.y + tsz.y;
+					textop = geobottom + tof.y + Math.Abs(tsz.y);
 				else
 					textop = geotop + tof.y;
 
 				// Calculate bottom portion height
-				texbottom = textop - tsz.y;
+				float texbottom = textop - Math.Abs(tsz.y);
 
 				// Create crop planes (we also need these for intersection testing)
 				topclipplane = new Plane(new Vector3D(0, 0, -1), textop);

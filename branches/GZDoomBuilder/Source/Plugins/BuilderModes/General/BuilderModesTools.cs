@@ -19,6 +19,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		internal readonly Vector2D Start;
 		internal readonly Vector2D End;
 		internal Rectangle Bounds;
+		internal Rectangle GlobalBounds;
 		internal readonly Dictionary<SortedVisualSide, bool> NextSides;
 		internal readonly Dictionary<SortedVisualSide, bool> PreviousSides;
 		internal readonly int Index;
@@ -86,6 +87,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		internal void OnTextureFit(FitTextureOptions options)
 		{
 			options.Bounds = Bounds;
+			options.GlobalBounds = GlobalBounds;
 			options.InitialOffsetX = OffsetX;
 			options.InitialOffsetY = OffsetY;
 			options.InitialScaleX = ScaleX;
@@ -195,7 +197,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Connect sides
 			foreach (KeyValuePair<long, List<BaseVisualGeometrySidedef>> pair in sidesbytexture)
 			{
+				// Create strips
 				IEnumerable<SortedVisualSide> group = ConnectSides(pair.Value);
+
+				// Calculate global bounds...
+				int minx = int.MaxValue;
+				int maxx = int.MinValue;
+				int miny = int.MaxValue;
+				int maxy = int.MinValue;
+
+				foreach(SortedVisualSide side in group) 
+				{
+					if(side.Bounds.X < minx) minx = side.Bounds.X;
+					if(side.Bounds.X + side.Bounds.Width > maxx) maxx = side.Bounds.X + side.Bounds.Width;
+					if(side.Bounds.Y < miny) miny = side.Bounds.Y;
+					if(side.Bounds.Y + side.Bounds.Height > maxy) maxy = side.Bounds.Y + side.Bounds.Height;
+				}
+
+				Rectangle bounds = new Rectangle(minx, miny, maxx - minx, maxy - miny);
+
+				// Normalize Y-offset
+				int offsety = bounds.Y;
+				bounds.Y = 0;
+
+				// Apply changes
+				foreach(SortedVisualSide side in group)
+				{
+					side.Bounds.Y -= offsety;
+					side.GlobalBounds = bounds;
+				}
+
+				// Add to result
 				result.AddRange(group);
 			}
 
