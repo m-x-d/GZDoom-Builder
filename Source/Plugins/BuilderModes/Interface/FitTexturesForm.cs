@@ -38,6 +38,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private static Point location = Point.Empty;
 		private bool blockupdate;
+		private int prevhorizrepeat;
+		private int prevvertrepeat;
 
 		// Settings
 		private static int horizontalrepeat = 1;
@@ -48,7 +50,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//Surface stuff
 		private List<SortedVisualSide> strips;
-		private Rectangle bounds;
 
 		#endregion
 
@@ -83,26 +84,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return;
 			}
 
-			// Create bounds
-			int minx = int.MaxValue;
-			int maxx = int.MinValue;
-			int miny = int.MaxValue;
-			int maxy = int.MinValue;
-
-			foreach(SortedVisualSide side in strips) 
-			{
-				if(side.Bounds.X < minx) minx = side.Bounds.X;
-				if(side.Bounds.X + side.Bounds.Width > maxx) maxx = side.Bounds.X + side.Bounds.Width;
-				if(side.Bounds.Y < miny) miny = side.Bounds.Y;
-				if(side.Bounds.Y + side.Bounds.Height > maxy) maxy = side.Bounds.Y + side.Bounds.Height;
-			}
-
-			bounds = new Rectangle(minx, miny, maxx-minx, maxy-miny);
-
-			// Normalize Y-offset
-			foreach (SortedVisualSide side in strips) side.Bounds.Y -= bounds.Y;
-			bounds.Y = 0;
-
 #if DEBUG
 			//debug
 			DrawDebugUV();
@@ -113,6 +94,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			horizrepeat.Value = horizontalrepeat;
 			vertrepeat.Value = verticalrepeat;
+			prevhorizrepeat = horizontalrepeat;
+			prevvertrepeat = verticalrepeat;
 			cbfitconnected.Checked = fitacrosssurfaces;
 			cbfitwidth.Checked = fitwidth;
 			cbfitheight.Checked = fitheight;
@@ -129,7 +112,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Apply changes
 			FitTextureOptions options = new FitTextureOptions
 			                            {
-				                            GlobalBounds = bounds, 
 											FitAcrossSurfaces = cbfitconnected.Checked,
 											FitWidth = cbfitwidth.Checked,
 											FitHeight = cbfitheight.Checked,
@@ -177,17 +159,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private void resethoriz_Click(object sender, EventArgs e)
 		{
+			prevhorizrepeat = 1;
 			horizrepeat.Value = 1;
 		}
 
 		private void resetvert_Click(object sender, EventArgs e)
 		{
+			prevvertrepeat = 1;
 			vertrepeat.Value = 1;
 		}
 
-		private void repeat_ValueChanged(object sender, EventArgs e) 
+		private void horizrepeat_ValueChanged(object sender, EventArgs e) 
 		{
 			if(blockupdate) return;
+
+			if (horizrepeat.Value == 0)
+			{
+				horizrepeat.Value = prevhorizrepeat > 0 ? -1 : 1;
+				return;
+			}
+
+			prevhorizrepeat = (int)horizrepeat.Value;
+			UpdateChanges();
+		}
+
+		private void vertrepeat_ValueChanged(object sender, EventArgs e) 
+		{
+			if(blockupdate) return;
+
+			if(vertrepeat.Value == 0) 
+			{
+				vertrepeat.Value = prevvertrepeat > 0 ? -1 : 1;
+				return;
+			}
+
+			prevvertrepeat = (int)vertrepeat.Value;
 			UpdateChanges();
 		}
 
@@ -225,42 +231,55 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void DrawDebugUV()
 		{
 			const int margin = 20;
-			
-			//find bounds
-			int minx = int.MaxValue;
-			int maxx = int.MinValue;
-			int miny = int.MaxValue;
-			int maxy = int.MinValue;
 
-			foreach(SortedVisualSide side in strips) 
+			//sort by texture...
+			Dictionary<long, List<SortedVisualSide>> sortedstrips = new Dictionary<long, List<SortedVisualSide>>();
+			foreach(SortedVisualSide side in strips)
 			{
-				if(side.Bounds.X < minx) minx = side.Bounds.X;
-				if(side.Bounds.X + side.Bounds.Width > maxx) maxx = side.Bounds.X + side.Bounds.Width;
-				if(side.Bounds.Y < miny) miny = side.Bounds.Y;
-				if(side.Bounds.Y + side.Bounds.Height > maxy) maxy = side.Bounds.Y + side.Bounds.Height;
+				if(!sortedstrips.ContainsKey(side.Side.Texture.LongName))
+					sortedstrips.Add(side.Side.Texture.LongName, new List<SortedVisualSide>());
+
+				sortedstrips[side.Side.Texture.LongName].Add(side);
 			}
 
-			Bitmap bmp = new Bitmap(maxx - minx + margin * 2, maxy - miny + margin * 2);
-
-			using(Graphics g = Graphics.FromImage(bmp))
+			foreach (KeyValuePair<long, List<SortedVisualSide>> pair in sortedstrips)
 			{
-				int i = 0;
-				
-				foreach(SortedVisualSide side in strips)
+				//find bounds
+				int minx = int.MaxValue;
+				int maxx = int.MinValue;
+				int miny = int.MaxValue;
+				int maxy = int.MinValue;
+
+				foreach(SortedVisualSide side in pair.Value) 
 				{
-					Color c = General.Colors.BrightColors[General.Random(0, General.Colors.BrightColors.Length - 1)].ToColor();
-					Pen p = new Pen(c);
-					Brush b = new SolidBrush(c);
-					
-					int x = side.Bounds.X - minx + margin;
-					int y = side.Bounds.Y - miny + margin;
-					
-					g.DrawRectangle(p, x, y, side.Bounds.Width, side.Bounds.Height);
-					g.DrawString(i++ + ": line " + side.Side.Sidedef.Line.Index + "; x:" + side.Bounds.X + " y:" + side.Bounds.Y, this.Font, b, x + 2, y + 2);
+					if(side.Bounds.X < minx) minx = side.Bounds.X;
+					if(side.Bounds.X + side.Bounds.Width > maxx) maxx = side.Bounds.X + side.Bounds.Width;
+					if(side.Bounds.Y < miny) miny = side.Bounds.Y;
+					if(side.Bounds.Y + side.Bounds.Height > maxy) maxy = side.Bounds.Y + side.Bounds.Height;
 				}
-			}
 
-			bmp.Save("testuv.png", ImageFormat.Png);
+				Bitmap bmp = new Bitmap(maxx - minx + margin * 2, maxy - miny + margin * 2);
+
+				using(Graphics g = Graphics.FromImage(bmp)) 
+				{
+					int i = 0;
+
+					foreach(SortedVisualSide side in pair.Value) 
+					{
+						Color c = General.Colors.BrightColors[General.Random(0, General.Colors.BrightColors.Length - 1)].ToColor();
+						Pen p = new Pen(c);
+						Brush b = new SolidBrush(c);
+
+						int x = side.Bounds.X - minx + margin;
+						int y = side.Bounds.Y - miny + margin;
+
+						g.DrawRectangle(p, x, y, side.Bounds.Width, side.Bounds.Height);
+						g.DrawString(i++ + ": line " + side.Side.Sidedef.Line.Index + "; x:" + side.Bounds.X + " y:" + side.Bounds.Y, this.Font, b, x + 2, y + 2);
+					}
+				}
+
+				bmp.Save("testuv_" + pair.Value[0].Side.Texture.ShortName + ".png", ImageFormat.Png);
+			}
 
 			General.Interface.DisplayStatus(StatusType.Info, "Saved test image!");
 		}

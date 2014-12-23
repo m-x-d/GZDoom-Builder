@@ -658,9 +658,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							if (Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
 							{
-								//offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, options.Bounds.Y * scaley - Sidedef.OffsetY, scaley, true) - (options.Bounds.Height + Sidedef.GetHighHeight()) * scaley;
-								offsety = (options.Bounds.Y - /*options.Bounds.Height -*/ Sidedef.GetHighHeight()) * scaley - Sidedef.OffsetY;
-								//offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, offsety, scaley, true);
+								offsety = (options.Bounds.Y - Sidedef.GetHighHeight() - Sidedef.GetLowHeight()) * scaley - Sidedef.OffsetY;
 							}
 							else
 							{

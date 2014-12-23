@@ -27,11 +27,11 @@
 		private void InitializeComponent() {
 			this.labelhorizrepeat = new System.Windows.Forms.Label();
 			this.repeatgroup = new System.Windows.Forms.GroupBox();
-			this.labelvertrepeat = new System.Windows.Forms.Label();
-			this.horizrepeat = new System.Windows.Forms.NumericUpDown();
-			this.vertrepeat = new System.Windows.Forms.NumericUpDown();
-			this.resethoriz = new System.Windows.Forms.Button();
 			this.resetvert = new System.Windows.Forms.Button();
+			this.resethoriz = new System.Windows.Forms.Button();
+			this.vertrepeat = new System.Windows.Forms.NumericUpDown();
+			this.horizrepeat = new System.Windows.Forms.NumericUpDown();
+			this.labelvertrepeat = new System.Windows.Forms.Label();
 			this.cbfitwidth = new System.Windows.Forms.CheckBox();
 			this.accept = new System.Windows.Forms.Button();
 			this.cancel = new System.Windows.Forms.Button();
@@ -39,8 +39,8 @@
 			this.cbfitconnected = new System.Windows.Forms.CheckBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.repeatgroup.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.horizrepeat)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.vertrepeat)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.horizrepeat)).BeginInit();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -68,60 +68,15 @@
 			this.repeatgroup.TabStop = false;
 			this.repeatgroup.Text = " Texture Repeating ";
 			// 
-			// labelvertrepeat
+			// resetvert
 			// 
-			this.labelvertrepeat.AutoSize = true;
-			this.labelvertrepeat.Location = new System.Drawing.Point(33, 52);
-			this.labelvertrepeat.Name = "labelvertrepeat";
-			this.labelvertrepeat.Size = new System.Drawing.Size(45, 13);
-			this.labelvertrepeat.TabIndex = 1;
-			this.labelvertrepeat.Text = "Vertical:";
-			// 
-			// horizrepeat
-			// 
-			this.horizrepeat.Location = new System.Drawing.Point(84, 22);
-			this.horizrepeat.Maximum = new decimal(new int[] {
-            512,
-            0,
-            0,
-            0});
-			this.horizrepeat.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.horizrepeat.Name = "horizrepeat";
-			this.horizrepeat.Size = new System.Drawing.Size(60, 20);
-			this.horizrepeat.TabIndex = 2;
-			this.horizrepeat.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.horizrepeat.ValueChanged += new System.EventHandler(this.repeat_ValueChanged);
-			// 
-			// vertrepeat
-			// 
-			this.vertrepeat.Location = new System.Drawing.Point(84, 48);
-			this.vertrepeat.Maximum = new decimal(new int[] {
-            512,
-            0,
-            0,
-            0});
-			this.vertrepeat.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.vertrepeat.Name = "vertrepeat";
-			this.vertrepeat.Size = new System.Drawing.Size(60, 20);
-			this.vertrepeat.TabIndex = 3;
-			this.vertrepeat.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.vertrepeat.ValueChanged += new System.EventHandler(this.repeat_ValueChanged);
+			this.resetvert.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Reset;
+			this.resetvert.Location = new System.Drawing.Point(150, 46);
+			this.resetvert.Name = "resetvert";
+			this.resetvert.Size = new System.Drawing.Size(24, 24);
+			this.resetvert.TabIndex = 5;
+			this.resetvert.UseVisualStyleBackColor = true;
+			this.resetvert.Click += new System.EventHandler(this.resetvert_Click);
 			// 
 			// resethoriz
 			// 
@@ -133,15 +88,60 @@
 			this.resethoriz.UseVisualStyleBackColor = true;
 			this.resethoriz.Click += new System.EventHandler(this.resethoriz_Click);
 			// 
-			// resetvert
+			// vertrepeat
 			// 
-			this.resetvert.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Reset;
-			this.resetvert.Location = new System.Drawing.Point(150, 46);
-			this.resetvert.Name = "resetvert";
-			this.resetvert.Size = new System.Drawing.Size(24, 24);
-			this.resetvert.TabIndex = 5;
-			this.resetvert.UseVisualStyleBackColor = true;
-			this.resetvert.Click += new System.EventHandler(this.resetvert_Click);
+			this.vertrepeat.Location = new System.Drawing.Point(84, 48);
+			this.vertrepeat.Maximum = new decimal(new int[] {
+            512,
+            0,
+            0,
+            0});
+			this.vertrepeat.Minimum = new decimal(new int[] {
+            512,
+            0,
+            0,
+            -2147483648});
+			this.vertrepeat.Name = "vertrepeat";
+			this.vertrepeat.Size = new System.Drawing.Size(60, 20);
+			this.vertrepeat.TabIndex = 3;
+			this.vertrepeat.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.vertrepeat.ValueChanged += new System.EventHandler(this.vertrepeat_ValueChanged);
+			// 
+			// horizrepeat
+			// 
+			this.horizrepeat.Location = new System.Drawing.Point(84, 22);
+			this.horizrepeat.Maximum = new decimal(new int[] {
+            512,
+            0,
+            0,
+            0});
+			this.horizrepeat.Minimum = new decimal(new int[] {
+            512,
+            0,
+            0,
+            -2147483648});
+			this.horizrepeat.Name = "horizrepeat";
+			this.horizrepeat.Size = new System.Drawing.Size(60, 20);
+			this.horizrepeat.TabIndex = 2;
+			this.horizrepeat.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.horizrepeat.ValueChanged += new System.EventHandler(this.horizrepeat_ValueChanged);
+			// 
+			// labelvertrepeat
+			// 
+			this.labelvertrepeat.AutoSize = true;
+			this.labelvertrepeat.Location = new System.Drawing.Point(33, 52);
+			this.labelvertrepeat.Name = "labelvertrepeat";
+			this.labelvertrepeat.Size = new System.Drawing.Size(45, 13);
+			this.labelvertrepeat.TabIndex = 1;
+			this.labelvertrepeat.Text = "Vertical:";
 			// 
 			// cbfitwidth
 			// 
@@ -196,7 +196,6 @@
 			this.cbfitconnected.TabIndex = 9;
 			this.cbfitconnected.Text = "Fit across connected surfaces";
 			this.cbfitconnected.UseVisualStyleBackColor = true;
-			this.cbfitconnected.CheckedChanged += new System.EventHandler(this.repeat_ValueChanged);
 			// 
 			// groupBox2
 			// 
@@ -223,6 +222,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "FitTexturesForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -230,8 +230,8 @@
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FitTexturesForm_FormClosing);
 			this.repeatgroup.ResumeLayout(false);
 			this.repeatgroup.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.horizrepeat)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.vertrepeat)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.horizrepeat)).EndInit();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
