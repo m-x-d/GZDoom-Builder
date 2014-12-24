@@ -110,21 +110,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				string side = sd.IsFront ? "front" : "back";
 				
-				if(set.IsMatch(sd.HighTexture))
+				if(set.IsMatch(sd.HighTexture) && (value != "-" || sd.HighRequired()))
 				{
 					// Replace and add to list
 					if(replace) sd.SetTextureHigh(replacewith);
 					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.Index + " (" + side + ", high)" + (isregex ? " - " + sd.HighTexture : null)));
 				}
 				
-				if(set.IsMatch(sd.MiddleTexture))
+				if(set.IsMatch(sd.MiddleTexture) && (value != "-" || sd.MiddleRequired()))
 				{
 					// Replace and add to list
 					if(replace) sd.SetTextureMid(replacewith);
 					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.Index + " (" + side + ", middle)" + (isregex ? " - " + sd.MiddleTexture : null)));
 				}
 				
-				if(set.IsMatch(sd.LowTexture))
+				if(set.IsMatch(sd.LowTexture) && (value != "-" || sd.LowRequired()))
 				{
 					// Replace and add to list
 					if(replace) sd.SetTextureLow(replacewith);

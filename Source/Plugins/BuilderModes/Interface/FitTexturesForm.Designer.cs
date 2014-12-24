@@ -46,12 +46,12 @@
 			// 
 			// labelhorizrepeat
 			// 
-			this.labelhorizrepeat.AutoSize = true;
-			this.labelhorizrepeat.Location = new System.Drawing.Point(23, 26);
+			this.labelhorizrepeat.Location = new System.Drawing.Point(14, 24);
 			this.labelhorizrepeat.Name = "labelhorizrepeat";
-			this.labelhorizrepeat.Size = new System.Drawing.Size(57, 13);
+			this.labelhorizrepeat.Size = new System.Drawing.Size(64, 13);
 			this.labelhorizrepeat.TabIndex = 0;
 			this.labelhorizrepeat.Text = "Horizontal:";
+			this.labelhorizrepeat.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// repeatgroup
 			// 
@@ -136,12 +136,12 @@
 			// 
 			// labelvertrepeat
 			// 
-			this.labelvertrepeat.AutoSize = true;
-			this.labelvertrepeat.Location = new System.Drawing.Point(33, 52);
+			this.labelvertrepeat.Location = new System.Drawing.Point(15, 50);
 			this.labelvertrepeat.Name = "labelvertrepeat";
-			this.labelvertrepeat.Size = new System.Drawing.Size(45, 13);
+			this.labelvertrepeat.Size = new System.Drawing.Size(64, 13);
 			this.labelvertrepeat.TabIndex = 1;
 			this.labelvertrepeat.Text = "Vertical:";
+			this.labelvertrepeat.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// cbfitwidth
 			// 
@@ -229,7 +229,6 @@
 			this.Text = "Fit Textures";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FitTexturesForm_FormClosing);
 			this.repeatgroup.ResumeLayout(false);
-			this.repeatgroup.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.vertrepeat)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.horizrepeat)).EndInit();
 			this.groupBox2.ResumeLayout(false);
