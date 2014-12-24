@@ -386,7 +386,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd. Angle control clicked
-		private void anglecontrol_AngleChanged() 
+		private void anglecontrol_AngleChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
 			angle.Text = anglecontrol.Angle.ToString();

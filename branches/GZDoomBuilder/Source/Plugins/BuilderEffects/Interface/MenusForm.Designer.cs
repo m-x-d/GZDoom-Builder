@@ -76,7 +76,7 @@
 			// 
 			this.jitterItem.Image = global::CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.Jitter;
 			this.jitterItem.Name = "jitterItem";
-			this.jitterItem.Size = new System.Drawing.Size(152, 22);
+			this.jitterItem.Size = new System.Drawing.Size(133, 22);
 			this.jitterItem.Tag = "applyjitter";
 			this.jitterItem.Text = "Randomize";
 			this.jitterItem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -104,8 +104,8 @@
 			// 
 			// MenusForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.ClientSize = new System.Drawing.Size(452, 129);
 			this.Controls.Add(this.toolStrip);
 			this.Controls.Add(this.menuStrip);

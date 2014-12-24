@@ -729,12 +729,12 @@ namespace CodeImp.DoomBuilder.Windows
 			fieldslist.Focus();
 		}
 
-		private void ceilAngleControl_AngleChanged() 
+		private void ceilAngleControl_AngleChanged(object sender, EventArgs e) 
 		{
 			ceilRotation.Text = (General.ClampAngle(360 - ceilAngleControl.Angle)).ToString();
 		}
 
-		private void floorAngleControl_AngleChanged() 
+		private void floorAngleControl_AngleChanged(object sender, EventArgs e) 
 		{
 			floorRotation.Text = (General.ClampAngle(360 - floorAngleControl.Angle)).ToString();
 		}

@@ -243,7 +243,7 @@
 			this.anglecontrol.Name = "anglecontrol";
 			this.anglecontrol.Size = new System.Drawing.Size(64, 64);
 			this.anglecontrol.TabIndex = 20;
-			this.anglecontrol.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.anglecontrol_AngleChanged);
+			this.anglecontrol.AngleChanged += new System.EventHandler(this.anglecontrol_AngleChanged);
 			// 
 			// labelGravity
 			// 
@@ -355,7 +355,7 @@
 			this.rollControl.Name = "rollControl";
 			this.rollControl.Size = new System.Drawing.Size(64, 64);
 			this.rollControl.TabIndex = 20;
-			this.rollControl.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.rollControl_AngleChanged);
+			this.rollControl.AngleChanged += new System.EventHandler(this.rollControl_AngleChanged);
 			// 
 			// grouppitch
 			// 
@@ -375,7 +375,7 @@
 			this.pitchControl.Name = "pitchControl";
 			this.pitchControl.Size = new System.Drawing.Size(64, 64);
 			this.pitchControl.TabIndex = 20;
-			this.pitchControl.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.pitchControl_AngleChanged);
+			this.pitchControl.AngleChanged += new System.EventHandler(this.pitchControl_AngleChanged);
 			// 
 			// groupBox7
 			// 

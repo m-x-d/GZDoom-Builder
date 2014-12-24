@@ -84,10 +84,10 @@
 			this.nudRed.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.nudRed.Location = new System.Drawing.Point(49, 4);
 			this.nudRed.Maximum = new decimal(new int[] {
-			255,
-			0,
-			0,
-			0});
+            255,
+            0,
+            0,
+            0});
 			this.nudRed.Name = "nudRed";
 			this.nudRed.Size = new System.Drawing.Size(48, 20);
 			this.nudRed.TabIndex = 55;
@@ -124,10 +124,10 @@
 			this.nudBlue.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.nudBlue.Location = new System.Drawing.Point(49, 50);
 			this.nudBlue.Maximum = new decimal(new int[] {
-			255,
-			0,
-			0,
-			0});
+            255,
+            0,
+            0,
+            0});
 			this.nudBlue.Name = "nudBlue";
 			this.nudBlue.Size = new System.Drawing.Size(48, 20);
 			this.nudBlue.TabIndex = 57;
@@ -138,10 +138,10 @@
 			this.nudGreen.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.nudGreen.Location = new System.Drawing.Point(49, 27);
 			this.nudGreen.Maximum = new decimal(new int[] {
-			255,
-			0,
-			0,
-			0});
+            255,
+            0,
+            0,
+            0});
 			this.nudGreen.Name = "nudGreen";
 			this.nudGreen.Size = new System.Drawing.Size(48, 20);
 			this.nudGreen.TabIndex = 56;
@@ -191,8 +191,8 @@
 			// 
 			// ColorPickerControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.cbColorInfo);
 			this.Controls.Add(this.pRGB);
 			this.Controls.Add(this.tbFloatVals);

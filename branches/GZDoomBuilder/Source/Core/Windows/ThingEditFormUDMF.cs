@@ -480,7 +480,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd. Angle control clicked
-		private void anglecontrol_AngleChanged() 
+		private void anglecontrol_AngleChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
 			angle.Text = anglecontrol.Angle.ToString();
@@ -497,7 +497,7 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdatePitch();
 		}
 
-		private void pitchControl_AngleChanged() 
+		private void pitchControl_AngleChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
 			pitch.Text = (General.ClampAngle(pitchControl.Angle - 90)).ToString();
@@ -514,7 +514,7 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateRoll();
 		}
 
-		private void rollControl_AngleChanged() 
+		private void rollControl_AngleChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
 			roll.Text = (General.ClampAngle(rollControl.Angle - 90)).ToString();

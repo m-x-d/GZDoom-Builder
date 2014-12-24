@@ -34,8 +34,8 @@
 			// 
 			// AngleControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Name = "AngleControl";
 			this.Size = new System.Drawing.Size(40, 40);
 			this.toolTip.SetToolTip(this, "Left-click (and drag) to set angle snapped to 45-degree increment.\r\nRight-click (" +

@@ -531,7 +531,7 @@
 			this.floorAngleControl.Name = "floorAngleControl";
 			this.floorAngleControl.Size = new System.Drawing.Size(44, 44);
 			this.floorAngleControl.TabIndex = 56;
-			this.floorAngleControl.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.floorAngleControl_AngleChanged);
+			this.floorAngleControl.AngleChanged += new System.EventHandler(this.floorAngleControl_AngleChanged);
 			// 
 			// labelfloorrenderstyle
 			// 
@@ -732,7 +732,7 @@
 			this.ceilAngleControl.Name = "ceilAngleControl";
 			this.ceilAngleControl.Size = new System.Drawing.Size(44, 44);
 			this.ceilAngleControl.TabIndex = 55;
-			this.ceilAngleControl.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.ceilAngleControl_AngleChanged);
+			this.ceilAngleControl.AngleChanged += new System.EventHandler(this.ceilAngleControl_AngleChanged);
 			// 
 			// labelceilrenderstyle
 			// 

@@ -179,7 +179,7 @@ namespace CodeImp.DoomBuilder.Controls
 			blockUpdate = false;
 		}
 
-		private void rotationcontrol_AngleChanged() 
+		private void rotationcontrol_AngleChanged(object sender, EventArgs e) 
 		{
 			if(blockUpdate) return;
 			blockUpdate = true;

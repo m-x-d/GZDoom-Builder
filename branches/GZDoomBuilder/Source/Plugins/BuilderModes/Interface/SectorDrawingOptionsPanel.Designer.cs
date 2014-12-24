@@ -51,6 +51,7 @@
 			this.top = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.fillall = new System.Windows.Forms.Button();
 			this.filllower = new System.Windows.Forms.Button();
 			this.fillmiddle = new System.Windows.Forms.Button();
 			this.fillupper = new System.Windows.Forms.Button();
@@ -62,9 +63,8 @@
 			this.clearupper = new System.Windows.Forms.Button();
 			this.clearfloor = new System.Windows.Forms.Button();
 			this.clearceiling = new System.Windows.Forms.Button();
-			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.fillall = new System.Windows.Forms.Button();
 			this.clearall = new System.Windows.Forms.Button();
+			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -90,19 +90,23 @@
 			// ceiling
 			// 
 			this.ceiling.Location = new System.Drawing.Point(6, 41);
+			this.ceiling.MultipleTextures = false;
 			this.ceiling.Name = "ceiling";
 			this.ceiling.Size = new System.Drawing.Size(68, 90);
 			this.ceiling.TabIndex = 30;
 			this.ceiling.TextureName = "";
+			this.ceiling.UsePreviews = true;
 			this.ceiling.OnValueChanged += new System.EventHandler(this.ceiling_OnValueChanged);
 			// 
 			// floor
 			// 
 			this.floor.Location = new System.Drawing.Point(87, 41);
+			this.floor.MultipleTextures = false;
 			this.floor.Name = "floor";
 			this.floor.Size = new System.Drawing.Size(68, 90);
 			this.floor.TabIndex = 29;
 			this.floor.TextureName = "";
+			this.floor.UsePreviews = true;
 			this.floor.OnValueChanged += new System.EventHandler(this.floor_OnValueChanged);
 			// 
 			// cbOverrideFloorTexture
@@ -182,6 +186,7 @@
 			this.brightness.AllowRelative = false;
 			this.brightness.ButtonStep = 16;
 			this.brightness.ButtonStepFloat = 1F;
+			this.brightness.ButtonStepsWrapAround = false;
 			this.brightness.Location = new System.Drawing.Point(105, 78);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(72, 24);
@@ -196,6 +201,7 @@
 			this.floorHeight.AllowRelative = false;
 			this.floorHeight.ButtonStep = 16;
 			this.floorHeight.ButtonStepFloat = 1F;
+			this.floorHeight.ButtonStepsWrapAround = false;
 			this.floorHeight.Location = new System.Drawing.Point(105, 48);
 			this.floorHeight.Name = "floorHeight";
 			this.floorHeight.Size = new System.Drawing.Size(72, 24);
@@ -232,6 +238,7 @@
 			this.ceilHeight.AllowRelative = false;
 			this.ceilHeight.ButtonStep = 16;
 			this.ceilHeight.ButtonStepFloat = 1F;
+			this.ceilHeight.ButtonStepsWrapAround = false;
 			this.ceilHeight.Location = new System.Drawing.Point(105, 18);
 			this.ceilHeight.Name = "ceilHeight";
 			this.ceilHeight.Size = new System.Drawing.Size(72, 24);
@@ -264,11 +271,13 @@
 			// bottom
 			// 
 			this.bottom.Location = new System.Drawing.Point(168, 41);
+			this.bottom.MultipleTextures = false;
 			this.bottom.Name = "bottom";
 			this.bottom.Required = false;
 			this.bottom.Size = new System.Drawing.Size(68, 90);
 			this.bottom.TabIndex = 25;
 			this.bottom.TextureName = "";
+			this.bottom.UsePreviews = true;
 			this.bottom.OnValueChanged += new System.EventHandler(this.bottom_OnValueChanged);
 			// 
 			// cbOverrideTopTexture
@@ -285,21 +294,25 @@
 			// middle
 			// 
 			this.middle.Location = new System.Drawing.Point(87, 41);
+			this.middle.MultipleTextures = false;
 			this.middle.Name = "middle";
 			this.middle.Required = false;
 			this.middle.Size = new System.Drawing.Size(68, 90);
 			this.middle.TabIndex = 24;
 			this.middle.TextureName = "";
+			this.middle.UsePreviews = true;
 			this.middle.OnValueChanged += new System.EventHandler(this.middle_OnValueChanged);
 			// 
 			// top
 			// 
 			this.top.Location = new System.Drawing.Point(6, 41);
+			this.top.MultipleTextures = false;
 			this.top.Name = "top";
 			this.top.Required = false;
 			this.top.Size = new System.Drawing.Size(68, 90);
 			this.top.TabIndex = 23;
 			this.top.TextureName = "";
+			this.top.UsePreviews = true;
 			this.top.OnValueChanged += new System.EventHandler(this.top_OnValueChanged);
 			// 
 			// groupBox3
@@ -335,6 +348,17 @@
 			this.groupBox4.TabIndex = 30;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Fill Selection with Textures:";
+			// 
+			// fillall
+			// 
+			this.fillall.Location = new System.Drawing.Point(6, 19);
+			this.fillall.Name = "fillall";
+			this.fillall.Size = new System.Drawing.Size(32, 23);
+			this.fillall.TabIndex = 5;
+			this.fillall.Text = "All";
+			this.toolTip1.SetToolTip(this.fillall, "Replace all textures with currently enabled overrides");
+			this.fillall.UseVisualStyleBackColor = true;
+			this.fillall.Click += new System.EventHandler(this.fillall_Click);
 			// 
 			// filllower
 			// 
@@ -447,6 +471,17 @@
 			this.clearceiling.UseVisualStyleBackColor = true;
 			this.clearceiling.Click += new System.EventHandler(this.clearceiling_Click);
 			// 
+			// clearall
+			// 
+			this.clearall.Location = new System.Drawing.Point(6, 19);
+			this.clearall.Name = "clearall";
+			this.clearall.Size = new System.Drawing.Size(32, 23);
+			this.clearall.TabIndex = 6;
+			this.clearall.Text = "All";
+			this.toolTip1.SetToolTip(this.clearall, "Remove all textures from selected map elements");
+			this.clearall.UseVisualStyleBackColor = true;
+			this.clearall.Click += new System.EventHandler(this.clearall_Click);
+			// 
 			// groupBox5
 			// 
 			this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -464,32 +499,10 @@
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Remove Textures form Selection:";
 			// 
-			// fillall
-			// 
-			this.fillall.Location = new System.Drawing.Point(6, 19);
-			this.fillall.Name = "fillall";
-			this.fillall.Size = new System.Drawing.Size(32, 23);
-			this.fillall.TabIndex = 5;
-			this.fillall.Text = "All";
-			this.toolTip1.SetToolTip(this.fillall, "Replace all textures with currently enabled overrides");
-			this.fillall.UseVisualStyleBackColor = true;
-			this.fillall.Click += new System.EventHandler(this.fillall_Click);
-			// 
-			// clearall
-			// 
-			this.clearall.Location = new System.Drawing.Point(6, 19);
-			this.clearall.Name = "clearall";
-			this.clearall.Size = new System.Drawing.Size(32, 23);
-			this.clearall.TabIndex = 6;
-			this.clearall.Text = "All";
-			this.toolTip1.SetToolTip(this.clearall, "Remove all textures from selected map elements");
-			this.clearall.UseVisualStyleBackColor = true;
-			this.clearall.Click += new System.EventHandler(this.clearall_Click);
-			// 
 			// SectorDrawingOptionsPanel
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);

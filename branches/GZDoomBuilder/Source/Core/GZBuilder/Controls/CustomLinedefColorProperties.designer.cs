@@ -30,18 +30,18 @@
 		{
 			this.gbLineColor = new System.Windows.Forms.GroupBox();
 			this.labelErrors = new System.Windows.Forms.Label();
+			this.lineColor = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.tcLineSettings = new System.Windows.Forms.TabControl();
 			this.tabFlags = new System.Windows.Forms.TabPage();
 			this.flags = new System.Windows.Forms.CheckedListBox();
 			this.cbUseFlags = new System.Windows.Forms.CheckBox();
 			this.tabAction = new System.Windows.Forms.TabPage();
+			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.cbUseAction = new System.Windows.Forms.CheckBox();
 			this.tabActivation = new System.Windows.Forms.TabPage();
 			this.activation = new System.Windows.Forms.ComboBox();
 			this.cbUseActivation = new System.Windows.Forms.CheckBox();
 			this.udmfactivates = new System.Windows.Forms.CheckedListBox();
-			this.lineColor = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.gbLineColor.SuspendLayout();
 			this.tcLineSettings.SuspendLayout();
 			this.tabFlags.SuspendLayout();
@@ -71,6 +71,19 @@
 			this.labelErrors.TabIndex = 1;
 			this.labelErrors.Text = "Teh Error occured!";
 			this.labelErrors.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// lineColor
+			// 
+			this.lineColor.BackColor = System.Drawing.Color.Transparent;
+			this.lineColor.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lineColor.Label = "Linedef color:";
+			this.lineColor.Location = new System.Drawing.Point(6, 13);
+			this.lineColor.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.lineColor.MinimumSize = new System.Drawing.Size(100, 23);
+			this.lineColor.Name = "lineColor";
+			this.lineColor.Size = new System.Drawing.Size(132, 23);
+			this.lineColor.TabIndex = 0;
+			this.lineColor.ColorChanged += new System.EventHandler(this.lineColor_ColorChanged);
 			// 
 			// tcLineSettings
 			// 
@@ -138,6 +151,22 @@
 			this.tabAction.Text = "Action";
 			this.tabAction.UseVisualStyleBackColor = true;
 			// 
+			// action
+			// 
+			this.action.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.action.BackColor = System.Drawing.Color.Transparent;
+			this.action.Cursor = System.Windows.Forms.Cursors.Default;
+			this.action.Empty = false;
+			this.action.GeneralizedCategories = null;
+			this.action.GeneralizedOptions = null;
+			this.action.Location = new System.Drawing.Point(6, 30);
+			this.action.Name = "action";
+			this.action.Size = new System.Drawing.Size(309, 21);
+			this.action.TabIndex = 6;
+			this.action.Value = 0;
+			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
+			// 
 			// cbUseAction
 			// 
 			this.cbUseAction.AutoSize = true;
@@ -200,38 +229,10 @@
 			this.udmfactivates.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.flags_ItemCheck);
 			this.udmfactivates.SelectedValueChanged += new System.EventHandler(this.udmfactivates_SelectedValueChanged);
 			// 
-			// lineColor
-			// 
-			this.lineColor.BackColor = System.Drawing.Color.Transparent;
-			this.lineColor.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lineColor.Label = "Linedef color:";
-			this.lineColor.Location = new System.Drawing.Point(6, 13);
-			this.lineColor.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.lineColor.MinimumSize = new System.Drawing.Size(100, 23);
-			this.lineColor.Name = "lineColor";
-			this.lineColor.Size = new System.Drawing.Size(132, 23);
-			this.lineColor.TabIndex = 0;
-			this.lineColor.ColorChanged += new System.EventHandler(this.lineColor_ColorChanged);
-			// 
-			// action
-			// 
-			this.action.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.action.BackColor = System.Drawing.Color.Transparent;
-			this.action.Cursor = System.Windows.Forms.Cursors.Default;
-			this.action.Empty = false;
-			this.action.GeneralizedCategories = null;
-			this.action.Location = new System.Drawing.Point(6, 30);
-			this.action.Name = "action";
-			this.action.Size = new System.Drawing.Size(309, 21);
-			this.action.TabIndex = 6;
-			this.action.Value = 0;
-			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
-			// 
 			// CustomLinedefColorProperties
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.gbLineColor);
 			this.Controls.Add(this.tcLineSettings);
 			this.Name = "CustomLinedefColorProperties";

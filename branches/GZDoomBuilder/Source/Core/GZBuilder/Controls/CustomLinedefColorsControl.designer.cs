@@ -32,10 +32,10 @@
 			this.bMoveUp = new System.Windows.Forms.Button();
 			this.bMoveDown = new System.Windows.Forms.Button();
 			this.bRemovePreset = new System.Windows.Forms.Button();
+			this.lbColorPresets = new CodeImp.DoomBuilder.GZBuilder.Controls.IconListBox();
 			this.tbNewPresetName = new System.Windows.Forms.TextBox();
 			this.bAddPreset = new System.Windows.Forms.Button();
 			this.colorProperties = new CodeImp.DoomBuilder.GZBuilder.Controls.CustomLinedefColorProperties();
-			this.lbColorPresets = new CodeImp.DoomBuilder.GZBuilder.Controls.IconListBox();
 			this.gbPresets.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -92,6 +92,20 @@
 			this.bRemovePreset.UseVisualStyleBackColor = true;
 			this.bRemovePreset.Click += new System.EventHandler(this.bRemovePreset_Click);
 			// 
+			// lbColorPresets
+			// 
+			this.lbColorPresets.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.lbColorPresets.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+			this.lbColorPresets.FormattingEnabled = true;
+			this.lbColorPresets.HorizontalScrollbar = true;
+			this.lbColorPresets.Location = new System.Drawing.Point(6, 73);
+			this.lbColorPresets.Name = "lbColorPresets";
+			this.lbColorPresets.Size = new System.Drawing.Size(133, 173);
+			this.lbColorPresets.TabIndex = 4;
+			this.lbColorPresets.SelectedIndexChanged += new System.EventHandler(this.lbColorPresets_SelectedIndexChanged);
+			// 
 			// tbNewPresetName
 			// 
 			this.tbNewPresetName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -129,24 +143,10 @@
 			this.colorProperties.Size = new System.Drawing.Size(270, 250);
 			this.colorProperties.TabIndex = 3;
 			// 
-			// lbColorPresets
-			// 
-			this.lbColorPresets.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.lbColorPresets.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-			this.lbColorPresets.FormattingEnabled = true;
-			this.lbColorPresets.HorizontalScrollbar = true;
-			this.lbColorPresets.Location = new System.Drawing.Point(6, 73);
-			this.lbColorPresets.Name = "lbColorPresets";
-			this.lbColorPresets.Size = new System.Drawing.Size(133, 173);
-			this.lbColorPresets.TabIndex = 4;
-			this.lbColorPresets.SelectedIndexChanged += new System.EventHandler(this.lbColorPresets_SelectedIndexChanged);
-			// 
 			// CustomLinedefColorsControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.colorProperties);
 			this.Controls.Add(this.gbPresets);
 			this.Name = "CustomLinedefColorsControl";
