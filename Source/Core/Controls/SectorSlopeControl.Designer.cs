@@ -123,7 +123,7 @@
 			this.rotationcontrol.Name = "rotationcontrol";
 			this.rotationcontrol.Size = new System.Drawing.Size(44, 44);
 			this.rotationcontrol.TabIndex = 56;
-			this.rotationcontrol.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.rotationcontrol_AngleChanged);
+			this.rotationcontrol.AngleChanged += new System.EventHandler(this.rotationcontrol_AngleChanged);
 			// 
 			// slopeangle
 			// 

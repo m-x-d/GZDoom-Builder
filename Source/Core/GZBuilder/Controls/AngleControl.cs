@@ -40,8 +40,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		#region Properties
 
-		public delegate void AngleChangedDelegate();
-		public event AngleChangedDelegate AngleChanged;
+		public event EventHandler AngleChanged;
 
 		public int Angle { get { return (angle == NO_ANGLE ? NO_ANGLE : angle - angleoffset); } set { angle = (value == NO_ANGLE ? NO_ANGLE : value + angleoffset); this.Refresh(); } }
 		public int AngleOffset { get { return angleoffset; } set { angleoffset = value; this.Refresh(); } }
@@ -175,7 +174,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			if(thisAngle != angle) 
 			{
 				angle = thisAngle;
-				if(!this.DesignMode && AngleChanged != null) AngleChanged(); //Raise event
+				if(!this.DesignMode && AngleChanged != null) AngleChanged(this, EventArgs.Empty); //Raise event
 				this.Refresh();
 			}
 		}
@@ -195,7 +194,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 				if(thisAngle != angle) 
 				{
 					angle = thisAngle;
-					if(!this.DesignMode && AngleChanged != null) AngleChanged(); //Raise event
+					if(!this.DesignMode && AngleChanged != null) AngleChanged(this, EventArgs.Empty); //Raise event
 					this.Refresh();
 				}
 			}

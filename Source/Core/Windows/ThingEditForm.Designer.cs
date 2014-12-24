@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.anglecontrol.Name = "anglecontrol";
 			this.anglecontrol.Size = new System.Drawing.Size(88, 88);
 			this.anglecontrol.TabIndex = 20;
-			this.anglecontrol.AngleChanged += new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl.AngleChangedDelegate(this.anglecontrol_AngleChanged);
+			this.anglecontrol.AngleChanged += new System.EventHandler(this.anglecontrol_AngleChanged);
 			// 
 			// cbRandomAngle
 			// 
