@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label3;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OpenMapOptionsForm));
 			this.panelres = new System.Windows.Forms.GroupBox();
+			this.longtexturenames = new System.Windows.Forms.CheckBox();
 			this.strictpatches = new System.Windows.Forms.CheckBox();
 			this.datalocations = new CodeImp.DoomBuilder.Controls.ResourceListEditor();
 			this.apply = new System.Windows.Forms.Button();
@@ -42,7 +43,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.mapslist = new System.Windows.Forms.ListView();
 			this.scriptcompiler = new System.Windows.Forms.ComboBox();
 			this.scriptcompilerlabel = new System.Windows.Forms.Label();
-			this.longtexturenames = new System.Windows.Forms.CheckBox();
 			columnHeader1 = new System.Windows.Forms.ColumnHeader();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
@@ -65,12 +65,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label2
 			// 
+			label2.AutoSize = true;
 			label2.Location = new System.Drawing.Point(12, 89);
 			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(396, 30);
+			label2.Size = new System.Drawing.Size(372, 28);
 			label2.TabIndex = 16;
-			label2.Text = "With the above selected configuration, the maps shown below were found in the cho" +
-				"sen WAD file. Please select the map to load for editing.";
+			label2.Text = "With the above selected configuration, the maps shown below were found \r\nin the c" +
+				"hosen WAD file. Please select the map to load for editing.";
 			// 
 			// label3
 			// 
@@ -95,6 +96,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres.TabIndex = 2;
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Resources ";
+			// 
+			// longtexturenames
+			// 
+			this.longtexturenames.AutoSize = true;
+			this.longtexturenames.Location = new System.Drawing.Point(14, 45);
+			this.longtexturenames.Name = "longtexturenames";
+			this.longtexturenames.Size = new System.Drawing.Size(140, 18);
+			this.longtexturenames.TabIndex = 20;
+			this.longtexturenames.Text = "Use long texture names";
+			this.longtexturenames.UseVisualStyleBackColor = true;
 			// 
 			// strictpatches
 			// 
@@ -195,16 +206,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptcompilerlabel.Text = "Script Type:";
 			this.scriptcompilerlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// longtexturenames
-			// 
-			this.longtexturenames.AutoSize = true;
-			this.longtexturenames.Location = new System.Drawing.Point(14, 45);
-			this.longtexturenames.Name = "longtexturenames";
-			this.longtexturenames.Size = new System.Drawing.Size(140, 18);
-			this.longtexturenames.TabIndex = 20;
-			this.longtexturenames.Text = "Use long texture names";
-			this.longtexturenames.UseVisualStyleBackColor = true;
-			// 
 			// OpenMapOptionsForm
 			// 
 			this.AcceptButton = this.apply;
@@ -236,6 +237,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres.ResumeLayout(false);
 			this.panelres.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 

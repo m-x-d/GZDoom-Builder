@@ -75,8 +75,8 @@ namespace CodeImp.DoomBuilder.Data
 
 					MemoryStream s = new MemoryStream();
 					reader.WriteEntryTo(s);
-					sevenzipentries.Add(reader.Entry.FilePath.ToLowerInvariant(), s.ToArray());
-					fileentries.Add(new DirectoryFileEntry(reader.Entry.FilePath));
+					sevenzipentries.Add(reader.Entry.Key.ToLowerInvariant(), s.ToArray());
+					fileentries.Add(new DirectoryFileEntry(reader.Entry.Key));
 				}
 
 				archive.Dispose();
@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(IArchiveEntry entry in archive.Entries) 
 				{
 					if(entry.IsDirectory) continue;
-					fileentries.Add(new DirectoryFileEntry(entry.FilePath));
+					fileentries.Add(new DirectoryFileEntry(entry.Key));
 				}
 			}
 
@@ -428,7 +428,7 @@ namespace CodeImp.DoomBuilder.Data
 					if (entry.IsDirectory) continue;
 					
 					// Is this the entry we are looking for?
-					if(string.Compare(entry.FilePath, fn, true) == 0)
+					if(string.Compare(entry.Key, fn, true) == 0)
 					{
 						filedata = new MemoryStream();
 						entry.WriteTo(filedata);
