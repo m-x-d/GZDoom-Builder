@@ -224,8 +224,7 @@ namespace CodeImp.DoomBuilder.Map
 			for(int i = 0; i < NUM_ARGS; i++) s.rwInt(ref args[i]);
 
 			//mxd
-			if(!s.IsWriting)
-				UpdateColorPreset();
+			if(!s.IsWriting) UpdateColorPreset();
 		}
 
 		// This sets new start vertex
@@ -396,7 +395,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This translates the flags and activations into UDMF fields
-		internal void TranslateToUDMF()
+		internal void TranslateToUDMF(Type previousmapformatinterfacetype)
 		{
 			// First make a single integer with all bits from activation and flags
 			int bits = activate;
@@ -432,8 +431,60 @@ namespace CodeImp.DoomBuilder.Map
 				}
 			}
 
+			//mxd. Hexen -> UDMF action translation. Hardcoded for now...
+			if(previousmapformatinterfacetype == typeof(HexenMapSetIO)) 
+			{
+				switch (Action) 
+				{
+					case 121: //Line_SetIdentification
+						//Convert arg0 to tag
+						tag = args[0] + args[4] * 256;
+
+						//Convert arg1 to flags
+						ConvertArgToFlags(1);
+
+						//clear action and arguments
+						action = 0;
+						for (int i = 0; i < args.Length; i++) args[i] = 0;
+						break;
+
+					case 208: //TranslucentLine
+						//Convert arg0 to tag
+						tag = args[0];
+
+						//Convert arg3 to flags
+						ConvertArgToFlags(3);
+						break;
+
+					case 1: ConvertArgToTag(3, true); break; //Polyobj_StartLine
+					case 5: ConvertArgToTag(4, true); break; //Polyobj_ExplicitLine
+					case 181: ConvertArgToTag(2, true); break; //Plane_Align
+					case 215: ConvertArgToTag(0, true); break; //Teleport_Line
+					case 222: ConvertArgToTag(0, false); break; //Scroll_Texture_Model
+
+					case 160: //Sector_3DFloor
+						// Convert to UDMF
+						if ((args[1] & 8) == 8) // arg4 is LineID?
+						{
+							tag = args[4];
+							args[1] &= ~8; // Unset flag
+						}
+						else // It's sector's HiTag then
+						{
+							args[0] += args[4] * 256;
+						}
+
+						// Clear arg
+						args[4] = 0;
+						break;
+				}
+			}
+
 			//mxd. Update cached flags
 			impassableflag = IsFlagSet(General.Map.Config.ImpassableFlag);
+
+			// Update color preset
+			UpdateColorPreset();
 		}
 		
 		// This translates UDMF fields back into the normal flags and activations
@@ -511,8 +562,150 @@ namespace CodeImp.DoomBuilder.Map
 				if(foundactivation) break;
 			}
 
+			//mxd. UDMF -> Hexen action translation. Hardcoded for now...
+			if (General.Map.FormatInterface is HexenMapSetIO)
+			{
+				switch (action)
+				{
+					case 208: //TranslucentLine
+						//Convert tag to arg0
+						if (tag > 255)
+						{
+							General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID because it's greater than 255.");
+						}
+						else
+						{
+							args[0] = tag;
+						}
+
+						//Convert flags to arg3
+						ConvertFlagsToArg(oldfields, 3);
+						break;
+
+					case 1: ConvertTagToArg(3); break; //Polyobj_StartLine
+					case 5: ConvertTagToArg(4); break; //Polyobj_ExplicitLine
+					case 181: ConvertTagToArg(2); break; //Plane_Align
+					case 215: ConvertTagToArg(0); break; //Teleport_Line
+					case 222: ConvertTagToArg(0); break; //Scroll_Texture_Model
+
+					case 160: //Sector_3DFloor
+						if (args[0] > 255) // Split sector tag?
+						{
+							int hitag = args[0] / 256;
+							int lotag = args[0] - hitag;
+
+							args[0] = lotag;
+							args[4] = hitag;
+
+							if (tag > 0)
+							{
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID, because target sector tag (arg0) is greater than 255.");
+							}
+						}
+						else if(tag > 0) // Convert to LineID?
+						{
+							if (tag > 255)
+							{
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID, because linedef tag is greater than 255.");
+							}
+							else
+							{
+								args[4] = tag;
+								args[1] &= 8; // Add "Use arg4 as LineId" flag
+							}
+						}
+
+						break;
+
+					default: // Convert tag to Line_SetIdentification?
+						if (tag != 0)
+						{
+							if (action != 0)
+							{
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID, because linedef already has an action.");
+							}
+							else // Convert to Line_SetIdentification
+							{
+								int hiid = tag / 256;
+								int loid = tag - hiid;
+
+								action = 121;
+								args[0] = loid;
+								args[4] = hiid;
+								ConvertFlagsToArg(oldfields, 1);
+							}
+						}
+						break;
+				}
+
+				// Clear tag
+				tag = 0;
+			}
+
 			//mxd. Update cached flags
 			impassableflag = IsFlagSet(General.Map.Config.ImpassableFlag);
+
+			// Update color preset
+			UpdateColorPreset();
+		}
+
+		//mxd
+		private void ConvertArgToTag(int argnum, bool cleararg) 
+		{
+			// Convert arg to tag
+			tag = args[argnum];
+
+			// Clear obsolete arg
+			if(cleararg) args[argnum] = 0;
+		}
+
+		//mxd
+		private void ConvertTagToArg(int argnum) 
+		{
+			if (tag > 255)
+			{
+				General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID because it's greater than 255.");
+			}
+			else
+			{
+				args[argnum] = tag;
+			}
+		}
+
+		//mxd
+		private void ConvertArgToFlags(int argnum) 
+		{
+			if(args[argnum] == 0) return;
+
+			// Convert to flags
+			if((args[argnum] & 1) == 1) flags["zoneboundary"] = true;
+			if((args[argnum] & 2) == 2) flags["jumpover"] = true;
+			if((args[argnum] & 4) == 4) flags["blockfloaters"] = true;
+			if((args[argnum] & 8) == 8) flags["clipmidtex"] = true;
+			if((args[argnum] & 16) == 16) flags["wrapmidtex"] = true;
+			if((args[argnum] & 32) == 32) flags["midtex3d"] = true;
+			if((args[argnum] & 64) == 64) flags["checkswitchrange"] = true;
+			if((args[argnum] & 128) == 128) flags["firstsideonly"] = true;
+
+			// Clear obsolete arg
+			args[argnum] = 0;
+		}
+
+		//mxd
+		private void ConvertFlagsToArg(Dictionary<string, bool> oldflags, int argnum)
+		{
+			int bits = 0;
+			if(oldflags.ContainsKey("zoneboundary") && oldflags["zoneboundary"]) bits &= 1;
+			if(oldflags.ContainsKey("jumpover") && oldflags["jumpover"]) bits &= 2;
+			if(oldflags.ContainsKey("blockfloaters") && oldflags["blockfloaters"]) bits &= 4;
+			if(oldflags.ContainsKey("clipmidtex") && oldflags["clipmidtex"]) bits &= 8;
+			if(oldflags.ContainsKey("wrapmidtex") && oldflags["wrapmidtex"]) bits &= 16;
+			if(oldflags.ContainsKey("midtex3d") && oldflags["midtex3d"]) bits &= 32;
+			if(oldflags.ContainsKey("checkswitchrange") && oldflags["checkswitchrange"]) bits &= 64;
+			if(oldflags.ContainsKey("firstsideonly") && oldflags["firstsideonly"]) bits &= 128;
+			
+			// Set arg
+			args[argnum] = bits;
 		}
 
 		// Selected
@@ -537,8 +730,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This checks and returns a flag without creating it
 		public bool IsFlagSet(string flagname)
 		{
-			if(flags.ContainsKey(flagname)) return flags[flagname];
-			return false;
+			return flags.ContainsKey(flagname) && flags[flagname];
 		}
 
 		// This sets a flag
