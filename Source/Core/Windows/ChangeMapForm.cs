@@ -167,14 +167,27 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void apply_Click(object sender, EventArgs e) 
 		{
-			if (mapslist.SelectedItems.Count < 1)
+			// No map selected?
+			if (mapslist.SelectedItems.Count == 0)
 			{
-				General.ShowWarningMessage("Please select a map first!", MessageBoxButtons.OK);
+				MessageBox.Show(this, "Please select a map to load for editing.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				mapslist.Focus();
 				return;
 			}
+
+			// Current map is already loaded
 			if (mapslist.SelectedItems[0].Text == options.LevelName)
 			{
-				General.ShowWarningMessage("Map '" + options.LevelName + "' is already loaded!", MessageBoxButtons.OK);
+				MessageBox.Show(this, "Map '" + options.LevelName + "' is already loaded.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				mapslist.Focus();
+				return;
+			}
+
+			// Just NO...
+			if(mapslist.SelectedItems[0].Text.ToUpperInvariant() == "MAP") 
+			{
+				MessageBox.Show(this, "A map with this name cannot be loaded. Please rename the map and try again.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				mapslist.Focus();
 				return;
 			}
 
