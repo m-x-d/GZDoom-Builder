@@ -168,6 +168,15 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
+			//mxd. Level name will fuck things up horribly?
+			if(levelname.Text.ToUpperInvariant() == "MAP") 
+			{
+				// Enter a level name!
+				MessageBox.Show(this, "Please choose a different level name.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				levelname.Focus();
+				return;
+			}
+
 			// Collect information
 			ConfigurationInfo configinfo = config.SelectedItem as ConfigurationInfo; //mxd
 			DataLocationList locations = datalocations.GetResources();
