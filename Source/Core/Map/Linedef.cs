@@ -569,9 +569,9 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					case 208: //TranslucentLine
 						//Convert tag to arg0
-						if (tag > 255)
+						if(tag < General.Map.FormatInterface.MinArgument || tag > General.Map.FormatInterface.MaxArgument)
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID because it's greater than 255.");
+							General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
 						}
 						else
 						{
@@ -589,7 +589,7 @@ namespace CodeImp.DoomBuilder.Map
 					case 222: ConvertTagToArg(0); break; //Scroll_Texture_Model
 
 					case 160: //Sector_3DFloor
-						if (args[0] > 255) // Split sector tag?
+						if(args[0] > General.Map.FormatInterface.MaxArgument) // Split sector tag?
 						{
 							int hitag = args[0] / 256;
 							int lotag = args[0] - hitag;
@@ -597,28 +597,31 @@ namespace CodeImp.DoomBuilder.Map
 							args[0] = lotag;
 							args[4] = hitag;
 
-							if (tag > 0)
+							if (tag != 0)
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID, because target sector tag (arg0) is greater than 255.");
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID, because target sector tag (arg0) is greater than " + General.Map.FormatInterface.MaxArgument + ".");
 							}
 						}
-						else if(tag > 0) // Convert to LineID?
+						else if(args[0] < General.Map.FormatInterface.MinArgument) 
 						{
-							if (tag > 255)
+							General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert arg0 (" + args[0] + "), because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
+						} 
+						else if(tag > General.Map.FormatInterface.MinArgument) // Convert to LineID?
+						{
+							if(tag > General.Map.FormatInterface.MaxArgument)
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID, because linedef tag is greater than 255.");
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID, because linedef tag is greater than " + General.Map.FormatInterface.MaxArgument + ".");
 							}
 							else
 							{
 								args[4] = tag;
-								args[1] &= 8; // Add "Use arg4 as LineId" flag
+								args[1] |= 8; // Add "Use arg4 as LineID" flag
 							}
 						}
-
 						break;
 
 					default: // Convert tag to Line_SetIdentification?
-						if (tag != 0)
+						if(tag > General.Map.FormatInterface.MinArgument)
 						{
 							if (action != 0)
 							{
@@ -634,6 +637,10 @@ namespace CodeImp.DoomBuilder.Map
 								args[4] = hiid;
 								ConvertFlagsToArg(oldfields, 1);
 							}
+						} 
+						else if(tag < General.Map.FormatInterface.MinArgument) 
+						{
+							General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID, because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
 						}
 						break;
 				}
@@ -662,9 +669,9 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd
 		private void ConvertTagToArg(int argnum) 
 		{
-			if (tag > 255)
+			if(tag < General.Map.FormatInterface.MinArgument || tag > General.Map.FormatInterface.MaxArgument)
 			{
-				General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID because it's greater than 255.");
+				General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
 			}
 			else
 			{
