@@ -3214,9 +3214,9 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This converts flags and activations to UDMF fields
-		internal void TranslateToUDMF()
+		internal void TranslateToUDMF(Type previousmapformatinterfacetype)
 		{
-			foreach(Linedef l in linedefs) l.TranslateToUDMF();
+			foreach(Linedef l in linedefs) l.TranslateToUDMF(previousmapformatinterfacetype);
 			foreach(Thing t in things) t.TranslateToUDMF();
 		}
 

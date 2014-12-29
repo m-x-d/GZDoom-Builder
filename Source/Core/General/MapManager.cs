@@ -37,8 +37,10 @@ using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
-namespace CodeImp.DoomBuilder {
-	public sealed class MapManager {
+namespace CodeImp.DoomBuilder 
+{
+	public sealed class MapManager 
+	{
 		#region ================== Constants
 
 		// Map header name in temporary file
@@ -1906,7 +1908,7 @@ namespace CodeImp.DoomBuilder {
 				// Load new game configuration
 				General.WriteLogLine("Loading game configuration '" + options.ConfigFile + "'...");
 				configinfo = General.GetConfigurationInfo(options.ConfigFile);
-				string oldFormatInterface = config.FormatInterface; //mxd
+				Type oldiotype = io.GetType(); //mxd
 				config = new GameConfiguration(configinfo.Configuration); //mxd
 				configinfo.ApplyDefaults(config);
 				General.Editing.UpdateCurrentEditModes();
@@ -1916,7 +1918,7 @@ namespace CodeImp.DoomBuilder {
 				io = MapSetIO.Create(config.FormatInterface, tempwad, this);
 
 				//mxd. Some lumps may've become unneeded during map format conversion. 
-				if(oldFormatInterface != config.FormatInterface)
+				if(oldiotype != io.GetType())
 					RemoveUnneededLumps(tempwad, TEMP_MAP_HEADER, false);
 
 				// Create required lumps if they don't exist yet
@@ -1926,17 +1928,17 @@ namespace CodeImp.DoomBuilder {
 				General.Plugins.MapReconfigure();
 
 				//mxd. Update linedef color presets and flags if required
-				if(oldFormatInterface == "UniversalMapSetIO" && config.FormatInterface != "UniversalMapSetIO") 
+				if(oldiotype == typeof(UniversalMapSetIO) && !(io is UniversalMapSetIO)) 
 				{
 					foreach(Linedef l in General.Map.Map.Linedefs) l.TranslateFromUDMF();
 					foreach(Thing t in General.Map.Map.Things) t.TranslateFromUDMF();
 				} 
-				else if(oldFormatInterface != "UniversalMapSetIO" && config.FormatInterface == "UniversalMapSetIO") 
+				else if(oldiotype != typeof(UniversalMapSetIO) && io is UniversalMapSetIO) 
 				{
-					foreach(Linedef l in General.Map.Map.Linedefs) l.TranslateToUDMF();
+					foreach(Linedef l in General.Map.Map.Linedefs) l.TranslateToUDMF(oldiotype);
 					foreach(Thing t in General.Map.Map.Things) t.TranslateToUDMF();
 				} 
-				else if(oldFormatInterface != "DoomMapSetIO" && config.FormatInterface == "DoomMapSetIO") 
+				else if(oldiotype != typeof(DoomMapSetIO) && io is DoomMapSetIO) 
 				{ 
 					//drop all arguments
 					foreach (Linedef l in General.Map.Map.Linedefs) 

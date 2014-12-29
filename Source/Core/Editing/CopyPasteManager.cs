@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.Editing
 					MapSet copyset = General.Map.Map.CloneMarked();
 					
 					// Convert flags and activations to UDMF fields, if needed
-					if(!(General.Map.FormatInterface is UniversalMapSetIO)) copyset.TranslateToUDMF();
+					if(!(General.Map.FormatInterface is UniversalMapSetIO)) copyset.TranslateToUDMF(General.Map.FormatInterface.GetType());
 
 					// Write data to stream
 					MemoryStream memstream = new MemoryStream();
@@ -228,7 +228,7 @@ namespace CodeImp.DoomBuilder.Editing
 						MapSet copyset = General.Map.Map.CloneMarked();
 
 						// Convert flags and activations to UDMF fields, if needed
-						if(!(General.Map.FormatInterface is UniversalMapSetIO)) copyset.TranslateToUDMF();
+						if(!(General.Map.FormatInterface is UniversalMapSetIO)) copyset.TranslateToUDMF(General.Map.FormatInterface.GetType());
 
 						// Write data to stream
 						MemoryStream memstream = new MemoryStream();
