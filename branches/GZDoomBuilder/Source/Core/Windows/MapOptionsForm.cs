@@ -171,7 +171,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. Level name will fuck things up horribly?
 			if(levelname.Text.ToUpperInvariant() == "MAP") 
 			{
-				// Enter a level name!
+				// Enter a different level name!
 				MessageBox.Show(this, "Please choose a different level name.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				levelname.Focus();
 				return;
