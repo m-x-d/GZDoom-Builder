@@ -388,6 +388,15 @@ namespace CodeImp.DoomBuilder.Windows
 				mapslist.Focus();
 				return;
 			}
+
+			//mxd. We cant't deal with this... We just can't... 
+			if(mapslist.SelectedItems[0].Text.ToUpperInvariant() == "MAP") 
+			{
+				// Choose a map!
+				MessageBox.Show(this, "A map with this name cannot be loaded. Please rename the map and try again.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				mapslist.Focus();
+				return;
+			}
 			
 			// Check if we should warn the user for missing resources
 			if((wadfile.Type != WAD.TYPE_IWAD) && (locations.Count == 0) && (configinfo.Resources.Count == 0))
