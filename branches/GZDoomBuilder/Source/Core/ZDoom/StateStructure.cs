@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Constants
 		
 		// Some odd thing in ZDoom
-		private const string IGNORE_SPRITE = "TNT1A0";
+		internal const string IGNORE_SPRITE = "TNT1A0";
 		
 		#endregion
 
