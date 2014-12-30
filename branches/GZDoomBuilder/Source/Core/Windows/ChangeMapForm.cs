@@ -184,9 +184,9 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Just NO...
-			if(mapslist.SelectedItems[0].Text.ToUpperInvariant() == "MAP") 
+			if(!General.Map.ConfigSettings.ValidateMapName(mapslist.SelectedItems[0].Text.ToUpperInvariant())) 
 			{
-				MessageBox.Show(this, "A map with this name cannot be loaded. Please rename the map and try again.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				MessageBox.Show(this, "Selected map name conflicts with a lump name defined for current map format.\nPlease rename the map and try again.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				mapslist.Focus();
 				return;
 			}
