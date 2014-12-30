@@ -524,6 +524,23 @@ namespace CodeImp.DoomBuilder.Config
 			foreach(ThingsFilter f in source.thingsfilters) thingsfilters.Add(new ThingsFilter(f));
 			editmodes = new Dictionary<string, bool>(source.editmodes);
 		}
+
+		//mxd. This checks if given map name can cause problems
+		internal bool ValidateMapName(string name)
+		{
+			// Get the map lump names
+			IDictionary maplumpnames = config.ReadSetting("maplumpnames", new Hashtable());
+
+			// Check if given map name overlaps with maplumpnames defined for this game configuration
+			foreach(DictionaryEntry ml in maplumpnames) 
+			{
+				// Ignore the map header (it will not be found because the name is different)
+				string lumpname = ml.Key.ToString().ToUpperInvariant();
+				if(lumpname.Contains(name)) return false;
+			}
+
+			return true;
+		}
 		
 		#endregion
 	}

@@ -569,7 +569,7 @@ namespace CodeImp.DoomBuilder
 			thisasm = Assembly.GetExecutingAssembly();
 			
 			// Find application path
-			Uri localpath = new Uri(Path.GetDirectoryName(thisasm.GetName().CodeBase));
+			Uri localpath = new Uri(Path.GetDirectoryName(thisasm.GetName().CodeBase) + Path.DirectorySeparatorChar);
 			apppath = Uri.UnescapeDataString(localpath.AbsolutePath);
 			
 			// Setup directories
@@ -753,7 +753,7 @@ namespace CodeImp.DoomBuilder
 			
 			// Ask the user to download DirectX
 			if(MessageBox.Show("This application requires the latest version of Microsoft DirectX 9.0 installed on your computer." + Environment.NewLine +
-				"Do you want to install and/or update Microsoft DirectX now?", "DirectX Error", MessageBoxButtons.YesNo,
+				"Do you want to install and/or update Microsoft DirectX 9.0 now?", "DirectX Error", MessageBoxButtons.YesNo,
 				MessageBoxIcon.Exclamation) == DialogResult.Yes)
 			{
 				// Go to DirectX End-User Runtime Web Installer page (mxd)
