@@ -20,11 +20,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using CodeImp.DoomBuilder.Controls;
-using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.IO;
 using System.IO;
-using CodeImp.DoomBuilder.ZDoom;
+using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -140,9 +139,6 @@ namespace CodeImp.DoomBuilder.Data
 					// Go for all patches
 					foreach(TexturePatch p in patches)
 					{
-						//mxd. Skip TNT1A0?
-						if(p.lumpname == StateStructure.IGNORE_SPRITE) continue;
-						
 						// Get the patch data stream
 						Stream patchdata = General.Map.Data.GetPatchData(p.lumpname, p.haslongname);
 
