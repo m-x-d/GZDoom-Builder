@@ -176,6 +176,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 						PatchStructure pt = new PatchStructure(parser);
 						if (parser.HasError) break;
 
+						//mxd. Let's ignore TNT1A0
+						if(pt.Name == StateStructure.IGNORE_SPRITE) break;
+
 						// Add the patch
 						patches.Add(pt);
 						break;
