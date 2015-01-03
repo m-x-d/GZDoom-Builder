@@ -374,7 +374,11 @@ namespace CodeImp.DoomBuilder.Windows
 			else
 			{
 				// Show normal caption
+#if DEBUG
+				this.Text = Application.ProductName + " - DEVBUILD";
+#else
 				this.Text = Application.ProductName + " v" + Application.ProductVersion;
+#endif
 			}
 
 			// Update the status bar

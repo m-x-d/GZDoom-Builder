@@ -27,9 +27,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 	{
 		#region ================== Constants
 		
-		// Some odd thing in ZDoom
-		internal const string IGNORE_SPRITE = "TNT1A0";
-		
 		#endregion
 
 		#region ================== Variables
@@ -97,7 +94,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 				else
 				{
 					// First part of the sprite name
-					if(token == null)
+					if(string.IsNullOrEmpty(token))
+					{
+						parser.ReportError("Unexpected end of structure");
+						return;
+					}
+
+					//mxd. First part of the sprite name can be quoted
+					token = parser.StripTokenQuotes(token);
+					if(string.IsNullOrEmpty(token)) 
 					{
 						parser.ReportError("Unexpected end of structure");
 						return;
@@ -107,6 +112,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 					parser.SkipWhitespace(true);
 					string spriteframes = parser.ReadToken();
 					if(spriteframes == null)
+					{
+						parser.ReportError("Unexpected end of structure");
+						return;
+					}
+
+					//mxd. Frames can be quoted
+					spriteframes = parser.StripTokenQuotes(spriteframes);
+					if(spriteframes == null) 
 					{
 						parser.ReportError("Unexpected end of structure");
 						return;
@@ -129,8 +142,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 						string spritename = token + spriteframes[0];
 						spritename = spritename.ToUpperInvariant();
 						
-						// Ignore some odd ZDoom thing
-						if(!IGNORE_SPRITE.StartsWith(spritename))
+						// Ignore some odd ZDoom things
+						if (!spritename.StartsWith("TNT1") && !spritename.StartsWith("----") && !spritename.Contains("#")) 
 							sprites.Add(spritename);
 					}
 					
@@ -158,10 +171,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd
-		internal StateStructure(string spriteName) 
+		internal StateStructure(string spritename) 
 		{
 			this.gotostate = null;
-			this.sprites = new List<string>() { spriteName };
+			this.sprites = new List<string> { spritename };
 		}
 
 		#endregion

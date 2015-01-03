@@ -1573,7 +1573,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.sightsdontshow.Name = "sightsdontshow";
 			this.sightsdontshow.Size = new System.Drawing.Size(237, 22);
 			this.sightsdontshow.Tag = 0;
-			this.sightsdontshow.Text = "No dynamic lights";
+			this.sightsdontshow.Text = "Don't show dynamic lights";
 			this.sightsdontshow.Click += new System.EventHandler(this.ChangeLightRenderingMode);
 			// 
 			// lightsshow
@@ -1629,7 +1629,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modelsshowselection.Name = "modelsshowselection";
 			this.modelsshowselection.Size = new System.Drawing.Size(245, 22);
 			this.modelsshowselection.Tag = 1;
-			this.modelsshowselection.Text = "Show models for selected things";
+			this.modelsshowselection.Text = "Show models for selected things only";
 			this.modelsshowselection.Click += new System.EventHandler(this.ChangeModelRenderingMode);
 			// 
 			// modelsshowall
@@ -1639,7 +1639,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modelsshowall.Name = "modelsshowall";
 			this.modelsshowall.Size = new System.Drawing.Size(245, 22);
 			this.modelsshowall.Tag = 2;
-			this.modelsshowall.Text = "Show all models";
+			this.modelsshowall.Text = "Always show models";
 			this.modelsshowall.Click += new System.EventHandler(this.ChangeModelRenderingMode);
 			// 
 			// buttontogglefog

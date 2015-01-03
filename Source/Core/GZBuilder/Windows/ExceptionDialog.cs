@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 								  "I'm sorry... :(",
 								  "This is a horrbble day for you, and of course, the world",
 								  "Abort, Retry, Fail?",
-								  "You are making progress. I'm afraid that's something I cannot allow to happen",
+								  "You are making progress. I'm afraid that's something I can't allow to happen",
 								  "You are making progress. That's not OK",
 								  "No errors found, restarting computer",
 								  "Does Not Compute!",
@@ -112,6 +112,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 								  "Good. It's boring here anyway.",
 								  "Shameful display!",
 								  "It's CRASHENING!",
+								  "W-W-W-WIPEOUT!",
+								  "EVERYTHING IS LOST!",
 							  };
 			this.Text = titles[new Random().Next(0, titles.Length - 1)];
 		}

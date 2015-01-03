@@ -569,8 +569,9 @@ namespace CodeImp.DoomBuilder
 			thisasm = Assembly.GetExecutingAssembly();
 			
 			// Find application path
-			Uri localpath = new Uri(Path.GetDirectoryName(thisasm.GetName().CodeBase) + Path.DirectorySeparatorChar);
-			apppath = Uri.UnescapeDataString(localpath.AbsolutePath);
+			//Uri localpath = new Uri(Path.GetDirectoryName(thisasm.GetName().CodeBase));
+			//apppath = Uri.UnescapeDataString(localpath.AbsolutePath);
+			apppath = Path.GetDirectoryName(Application.ExecutablePath); //mxd. What was the point of using Uri here (other than to prevent lauching from a shared folder)?
 			
 			// Setup directories
 			temppath = Path.GetTempPath();

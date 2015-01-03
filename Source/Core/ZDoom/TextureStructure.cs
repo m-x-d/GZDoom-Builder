@@ -28,6 +28,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 	{
 		#region ================== Constants
 
+		// Some odd thing in ZDoom
+		private const string IGNORE_SPRITE = "TNT1A0";
+
 		#endregion
 
 		#region ================== Variables
@@ -177,7 +180,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						if (parser.HasError) break;
 
 						//mxd. Let's ignore TNT1A0
-						if(pt.Name == StateStructure.IGNORE_SPRITE) break;
+						if(pt.Name == IGNORE_SPRITE) break;
 
 						// Add the patch
 						patches.Add(pt);
