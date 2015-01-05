@@ -27,12 +27,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private bool linkValues;
 		private bool blockUpdate;
 		private readonly int bResetOffsetX;
+		private bool changed;
 
 		#endregion
 
 		#region ================== Properties
 
-		public string Label { get { return label.Text; } set { label.Text = value; } }
+		public bool NonDefaultValue { get { return changed; } }
 		public float DefaultValue { get { return defaultValue; } set { defaultValue = value; } }
 		public string Field1 { get { return field1; } set { field1 = value; } }
 		public string Field2 { get { return field2; } set { field2 = value; } }
@@ -107,9 +108,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		private void CheckValues() 
 		{
-			bool changed = string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text)
+			changed = string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text)
 				|| value1.GetResultFloat(defaultValue) != defaultValue || value2.GetResultFloat(defaultValue) != defaultValue;
-			label.Enabled = changed;
 			bReset.Visible = changed;
 
 			if(!blockUpdate && OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);

@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label2.AutoSize = true;
 			label2.Location = new System.Drawing.Point(12, 89);
 			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(372, 28);
+			label2.Size = new System.Drawing.Size(360, 26);
 			label2.TabIndex = 16;
 			label2.Text = "With the above selected configuration, the maps shown below were found \r\nin the c" +
 				"hosen WAD file. Please select the map to load for editing.";
@@ -76,9 +76,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// label3
 			// 
 			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(14, 204);
+			label3.Location = new System.Drawing.Point(14, 207);
 			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(312, 56);
+			label3.Size = new System.Drawing.Size(299, 52);
 			label3.TabIndex = 17;
 			label3.Text = resources.GetString("label3.Text");
 			// 
@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.longtexturenames.AutoSize = true;
 			this.longtexturenames.Location = new System.Drawing.Point(14, 45);
 			this.longtexturenames.Name = "longtexturenames";
-			this.longtexturenames.Size = new System.Drawing.Size(140, 18);
+			this.longtexturenames.Size = new System.Drawing.Size(137, 17);
 			this.longtexturenames.TabIndex = 20;
 			this.longtexturenames.Text = "Use long texture names";
 			this.longtexturenames.UseVisualStyleBackColor = true;
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.strictpatches.AutoSize = true;
 			this.strictpatches.Location = new System.Drawing.Point(14, 21);
 			this.strictpatches.Name = "strictpatches";
-			this.strictpatches.Size = new System.Drawing.Size(351, 18);
+			this.strictpatches.Size = new System.Drawing.Size(349, 17);
 			this.strictpatches.TabIndex = 19;
 			this.strictpatches.Text = "Strictly load patches between P_START and P_END only for this file";
 			this.strictpatches.UseVisualStyleBackColor = true;
@@ -121,7 +121,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.datalocations.AllowDrop = true;
 			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
-			this.datalocations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.datalocations.Location = new System.Drawing.Point(14, 71);
 			this.datalocations.Name = "datalocations";
 			this.datalocations.Size = new System.Drawing.Size(368, 127);
@@ -158,7 +157,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.config.IntegralHeight = false;
 			this.config.Location = new System.Drawing.Point(141, 21);
 			this.config.Name = "config";
-			this.config.Size = new System.Drawing.Size(267, 22);
+			this.config.Size = new System.Drawing.Size(267, 21);
 			this.config.TabIndex = 0;
 			this.config.SelectedIndexChanged += new System.EventHandler(this.config_SelectedIndexChanged);
 			// 
@@ -193,7 +192,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptcompiler.IntegralHeight = false;
 			this.scriptcompiler.Location = new System.Drawing.Point(141, 49);
 			this.scriptcompiler.Name = "scriptcompiler";
-			this.scriptcompiler.Size = new System.Drawing.Size(267, 22);
+			this.scriptcompiler.Size = new System.Drawing.Size(267, 21);
 			this.scriptcompiler.TabIndex = 17;
 			// 
 			// scriptcompilerlabel
@@ -222,7 +221,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.panelres);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;

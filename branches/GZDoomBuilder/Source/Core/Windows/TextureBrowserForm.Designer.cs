@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(681, 597);
+			this.cancel.Location = new System.Drawing.Point(572, 411);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(98, 25);
 			this.cancel.TabIndex = 3;
@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(783, 597);
+			this.apply.Location = new System.Drawing.Point(674, 411);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(98, 25);
 			this.apply.TabIndex = 2;
@@ -79,14 +79,14 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tvTextureSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tvTextureSets.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tvTextureSets.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.tvTextureSets.HideSelection = false;
 			this.tvTextureSets.ImageIndex = 0;
 			this.tvTextureSets.ImageList = this.smallimages;
-			this.tvTextureSets.Location = new System.Drawing.Point(681, 12);
+			this.tvTextureSets.Location = new System.Drawing.Point(572, 12);
 			this.tvTextureSets.Name = "tvTextureSets";
 			this.tvTextureSets.SelectedImageIndex = 0;
-			this.tvTextureSets.Size = new System.Drawing.Size(200, 576);
+			this.tvTextureSets.Size = new System.Drawing.Size(200, 390);
 			this.tvTextureSets.TabIndex = 4;
 			this.tvTextureSets.TabStop = false;
 			this.tvTextureSets.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tvTextureSets_KeyUp);
@@ -98,12 +98,11 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.browser.BrowseFlats = false;
-			this.browser.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browser.HideInputBox = false;
 			this.browser.Location = new System.Drawing.Point(12, 12);
 			this.browser.Name = "browser";
 			this.browser.PreventSelection = false;
-			this.browser.Size = new System.Drawing.Size(663, 610);
+			this.browser.Size = new System.Drawing.Size(554, 424);
 			this.browser.TabIndex = 1;
 			this.browser.TabStop = false;
 			this.browser.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.browser_SelectedItemDoubleClicked);
@@ -115,12 +114,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(893, 628);
+			this.ClientSize = new System.Drawing.Size(784, 442);
 			this.Controls.Add(this.tvTextureSets);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.browser);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MinimizeBox = false;
 			this.Name = "TextureBrowserForm";
 			this.Opacity = 1;

@@ -18,12 +18,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
         private float defaultValue;
         private bool blockUpdate;
         private bool linkValues;
+		private bool changed;
 
         #endregion
 
         #region ================== Properties
 
-        public string Label { get { return label.Text; } set { label.Text = value; } }
+		public bool NonDefaultValue { get { return changed; } }
         public float DefaultValue { get { return defaultValue; } set { defaultValue = value; } }
         public float ButtonStep { get { return value1.ButtonStepFloat; } set { value1.ButtonStepFloat = value; value2.ButtonStepFloat = value; } }
 
@@ -69,9 +70,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
         private void CheckValues()
         {
-            bool changed = (string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text)
+            changed = (string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text)
                 || value1.GetResultFloat(defaultValue) != defaultValue || value2.GetResultFloat(defaultValue) != defaultValue);
-            label.Enabled = changed;
             bReset.Visible = changed;
 
             if (!blockUpdate && OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);

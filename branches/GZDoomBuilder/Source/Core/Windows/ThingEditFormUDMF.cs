@@ -333,6 +333,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			UpdateScriptControls(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
+			labelScale.Enabled = scale.NonDefaultValue; //mxd
 
 			//mxd. Set intial script-related values, if required
 			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
@@ -800,6 +801,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
+			labelScale.Enabled = scale.NonDefaultValue;
 			if (OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 

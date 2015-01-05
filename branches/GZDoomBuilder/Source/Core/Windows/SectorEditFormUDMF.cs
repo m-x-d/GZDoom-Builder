@@ -447,6 +447,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show sector height
 			UpdateSectorHeight();
 
+			//mxd. Update some labels
+			labelCeilOffsets.Enabled = ceilOffsets.NonDefaultValue;
+			labelCeilScale.Enabled = ceilScale.NonDefaultValue;
+			labelFloorOffsets.Enabled = floorOffsets.NonDefaultValue;
+			labelFloorScale.Enabled = floorScale.NonDefaultValue;
+
 			//mxd. Angle steps
 			anglesteps.Sort();
 			if(useCeilLineAngles) ceilRotation.StepValues = anglesteps;
@@ -961,6 +967,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
+			labelCeilOffsets.Enabled = ceilOffsets.NonDefaultValue;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -975,6 +982,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
+			labelFloorOffsets.Enabled = floorOffsets.NonDefaultValue;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -989,6 +997,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
+			labelCeilScale.Enabled = ceilScale.NonDefaultValue;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1003,6 +1012,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
+			labelFloorScale.Enabled = floorScale.NonDefaultValue;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 

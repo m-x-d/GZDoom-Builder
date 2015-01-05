@@ -39,6 +39,8 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label11;
 			System.Windows.Forms.Label label12;
 			System.Windows.Forms.Label activationlabel;
+			this.labelFrontTextureOffset = new System.Windows.Forms.Label();
+			this.labelBackTextureOffset = new System.Windows.Forms.Label();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
@@ -104,7 +106,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label2.AutoSize = true;
 			label2.Location = new System.Drawing.Point(15, 30);
 			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(41, 14);
+			label2.Size = new System.Drawing.Size(40, 13);
 			label2.TabIndex = 9;
 			label2.Text = "Action:";
 			// 
@@ -164,7 +166,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label11
 			// 
-			label11.Location = new System.Drawing.Point(8, 42);
+			label11.Location = new System.Drawing.Point(6, 40);
 			label11.Name = "label11";
 			label11.Size = new System.Drawing.Size(80, 14);
 			label11.TabIndex = 13;
@@ -173,7 +175,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label12
 			// 
-			label12.Location = new System.Drawing.Point(8, 42);
+			label12.Location = new System.Drawing.Point(6, 40);
 			label12.Name = "label12";
 			label12.Size = new System.Drawing.Size(80, 14);
 			label12.TabIndex = 16;
@@ -185,9 +187,27 @@ namespace CodeImp.DoomBuilder.Windows
 			activationlabel.AutoSize = true;
 			activationlabel.Location = new System.Drawing.Point(6, 17);
 			activationlabel.Name = "activationlabel";
-			activationlabel.Size = new System.Drawing.Size(44, 14);
+			activationlabel.Size = new System.Drawing.Size(43, 13);
 			activationlabel.TabIndex = 10;
 			activationlabel.Text = "Trigger:";
+			// 
+			// labelFrontTextureOffset
+			// 
+			this.labelFrontTextureOffset.Location = new System.Drawing.Point(6, 70);
+			this.labelFrontTextureOffset.Name = "labelFrontTextureOffset";
+			this.labelFrontTextureOffset.Size = new System.Drawing.Size(80, 14);
+			this.labelFrontTextureOffset.TabIndex = 42;
+			this.labelFrontTextureOffset.Text = "Texture Offset:";
+			this.labelFrontTextureOffset.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// labelBackTextureOffset
+			// 
+			this.labelBackTextureOffset.Location = new System.Drawing.Point(6, 70);
+			this.labelBackTextureOffset.Name = "labelBackTextureOffset";
+			this.labelBackTextureOffset.Size = new System.Drawing.Size(80, 14);
+			this.labelBackTextureOffset.TabIndex = 43;
+			this.labelBackTextureOffset.Text = "Texture Offset:";
+			this.labelBackTextureOffset.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// cancel
 			// 
@@ -263,12 +283,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptNumbers.FormattingEnabled = true;
 			this.scriptNumbers.Location = new System.Drawing.Point(398, 57);
 			this.scriptNumbers.Name = "scriptNumbers";
-			this.scriptNumbers.Size = new System.Drawing.Size(120, 22);
+			this.scriptNumbers.Size = new System.Drawing.Size(120, 21);
 			this.scriptNumbers.TabIndex = 39;
 			// 
 			// arg2
 			// 
-			this.arg2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg2.Location = new System.Drawing.Point(153, 55);
 			this.arg2.Name = "arg2";
 			this.arg2.Size = new System.Drawing.Size(120, 24);
@@ -276,7 +295,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// arg1
 			// 
-			this.arg1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg1.Location = new System.Drawing.Point(153, 29);
 			this.arg1.Name = "arg1";
 			this.arg1.Size = new System.Drawing.Size(120, 24);
@@ -284,7 +302,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// arg0
 			// 
-			this.arg0.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg0.Location = new System.Drawing.Point(153, 3);
 			this.arg0.Name = "arg0";
 			this.arg0.Size = new System.Drawing.Size(120, 24);
@@ -292,7 +309,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// arg3
 			// 
-			this.arg3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg3.Location = new System.Drawing.Point(398, 3);
 			this.arg3.Name = "arg3";
 			this.arg3.Size = new System.Drawing.Size(120, 24);
@@ -300,7 +316,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// arg4
 			// 
-			this.arg4.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg4.Location = new System.Drawing.Point(398, 29);
 			this.arg4.Name = "arg4";
 			this.arg4.Size = new System.Drawing.Size(120, 24);
@@ -372,7 +387,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.activation.FormattingEnabled = true;
 			this.activation.Location = new System.Drawing.Point(56, 13);
 			this.activation.Name = "activation";
-			this.activation.Size = new System.Drawing.Size(463, 22);
+			this.activation.Size = new System.Drawing.Size(463, 21);
 			this.activation.TabIndex = 0;
 			// 
 			// action
@@ -451,7 +466,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontside.AutoSize = true;
 			this.frontside.Location = new System.Drawing.Point(11, -2);
 			this.frontside.Name = "frontside";
-			this.frontside.Size = new System.Drawing.Size(75, 18);
+			this.frontside.Size = new System.Drawing.Size(74, 17);
 			this.frontside.TabIndex = 0;
 			this.frontside.Text = "Front Side";
 			this.frontside.UseVisualStyleBackColor = true;
@@ -461,6 +476,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.frontgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.frontgroup.Controls.Add(this.labelFrontTextureOffset);
 			this.frontgroup.Controls.Add(this.frontside);
 			this.frontgroup.Controls.Add(this.frontsector);
 			this.frontgroup.Controls.Add(label11);
@@ -533,10 +549,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.frontTextureOffset.ButtonStep = 16;
 			this.frontTextureOffset.DefaultValue = 0;
-			this.frontTextureOffset.Label = "Texture Offset:";
-			this.frontTextureOffset.Location = new System.Drawing.Point(3, 65);
+			this.frontTextureOffset.Location = new System.Drawing.Point(87, 65);
 			this.frontTextureOffset.Name = "frontTextureOffset";
-			this.frontTextureOffset.Size = new System.Drawing.Size(268, 26);
+			this.frontTextureOffset.Size = new System.Drawing.Size(186, 26);
 			this.frontTextureOffset.TabIndex = 41;
 			this.frontTextureOffset.OnValuesChanged += new System.EventHandler(this.frontTextureOffset_OnValuesChanged);
 			// 
@@ -545,7 +560,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backside.AutoSize = true;
 			this.backside.Location = new System.Drawing.Point(11, -2);
 			this.backside.Name = "backside";
-			this.backside.Size = new System.Drawing.Size(74, 18);
+			this.backside.Size = new System.Drawing.Size(75, 17);
 			this.backside.TabIndex = 0;
 			this.backside.Text = "Back Side";
 			this.backside.UseVisualStyleBackColor = true;
@@ -555,6 +570,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.backgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.backgroup.Controls.Add(this.labelBackTextureOffset);
 			this.backgroup.Controls.Add(this.backside);
 			this.backgroup.Controls.Add(this.backsector);
 			this.backgroup.Controls.Add(label12);
@@ -627,10 +643,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.backTextureOffset.ButtonStep = 16;
 			this.backTextureOffset.DefaultValue = 0;
-			this.backTextureOffset.Label = "Texture Offset:";
-			this.backTextureOffset.Location = new System.Drawing.Point(3, 65);
+			this.backTextureOffset.Location = new System.Drawing.Point(87, 65);
 			this.backTextureOffset.Name = "backTextureOffset";
-			this.backTextureOffset.Size = new System.Drawing.Size(268, 28);
+			this.backTextureOffset.Size = new System.Drawing.Size(186, 26);
 			this.backTextureOffset.TabIndex = 42;
 			this.backTextureOffset.OnValuesChanged += new System.EventHandler(this.backTextureOffset_OnValuesChanged);
 			// 
@@ -659,7 +674,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.panel);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -729,5 +743,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Panel panel;
 		private CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton actionhelp;
 		private System.Windows.Forms.ToolTip tooltip;
+		private System.Windows.Forms.Label labelFrontTextureOffset;
+		private System.Windows.Forms.Label labelBackTextureOffset;
 	}
 }
