@@ -60,6 +60,8 @@
 			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.tabSurfaces = new System.Windows.Forms.TabPage();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.labelFloorOffsets = new System.Windows.Forms.Label();
+			this.labelFloorScale = new System.Windows.Forms.Label();
 			this.cbUseFloorLineAngles = new System.Windows.Forms.CheckBox();
 			this.floorAngleControl = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			this.labelfloorrenderstyle = new System.Windows.Forms.Label();
@@ -75,6 +77,8 @@
 			this.floorOffsets = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.floortex = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.labelCeilOffsets = new System.Windows.Forms.Label();
+			this.labelCeilScale = new System.Windows.Forms.Label();
 			this.cbUseCeilLineAngles = new System.Windows.Forms.CheckBox();
 			this.ceilAngleControl = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			this.labelceilrenderstyle = new System.Windows.Forms.Label();
@@ -135,7 +139,7 @@
 			groupaction.Size = new System.Drawing.Size(490, 71);
 			groupaction.TabIndex = 2;
 			groupaction.TabStop = false;
-			groupaction.Text = " Identification: ";
+			groupaction.Text = " Identification ";
 			// 
 			// tagSelector
 			// 
@@ -166,7 +170,7 @@
 			groupeffect.Size = new System.Drawing.Size(490, 175);
 			groupeffect.TabIndex = 1;
 			groupeffect.TabStop = false;
-			groupeffect.Text = " Effects: ";
+			groupeffect.Text = " Effects ";
 			// 
 			// fadeColor
 			// 
@@ -224,7 +228,7 @@
 			label14.AutoSize = true;
 			label14.Location = new System.Drawing.Point(27, 58);
 			label14.Name = "label14";
-			label14.Size = new System.Drawing.Size(92, 14);
+			label14.Size = new System.Drawing.Size(91, 13);
 			label14.TabIndex = 3;
 			label14.Text = "Sound sequence:";
 			// 
@@ -233,7 +237,7 @@
 			label9.AutoSize = true;
 			label9.Location = new System.Drawing.Point(57, 89);
 			label9.Name = "label9";
-			label9.Size = new System.Drawing.Size(62, 14);
+			label9.Size = new System.Drawing.Size(59, 13);
 			label9.TabIndex = 2;
 			label9.Text = "Brightness:";
 			// 
@@ -305,7 +309,7 @@
 			label8.AutoSize = true;
 			label8.Location = new System.Drawing.Point(17, 31);
 			label8.Name = "label8";
-			label8.Size = new System.Drawing.Size(45, 14);
+			label8.Size = new System.Drawing.Size(45, 13);
 			label8.TabIndex = 0;
 			label8.Text = "Special:";
 			// 
@@ -326,11 +330,11 @@
 			groupfloorceiling.Size = new System.Drawing.Size(188, 148);
 			groupfloorceiling.TabIndex = 0;
 			groupfloorceiling.TabStop = false;
-			groupfloorceiling.Text = " Heights: ";
+			groupfloorceiling.Text = " Heights ";
 			// 
 			// label15
 			// 
-			label15.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			label15.ForeColor = System.Drawing.SystemColors.HotTrack;
 			label15.Location = new System.Drawing.Point(9, 84);
 			label15.Name = "label15";
@@ -402,7 +406,7 @@
 			this.sectorheight.AutoSize = true;
 			this.sectorheight.Location = new System.Drawing.Point(90, 114);
 			this.sectorheight.Name = "sectorheight";
-			this.sectorheight.Size = new System.Drawing.Size(13, 14);
+			this.sectorheight.Size = new System.Drawing.Size(13, 13);
 			this.sectorheight.TabIndex = 21;
 			this.sectorheight.Text = "0";
 			// 
@@ -430,13 +434,13 @@
 			this.tabs.Controls.Add(this.tabSurfaces);
 			this.tabs.Controls.Add(this.tabslopes);
 			this.tabs.Controls.Add(this.tabcustom);
-			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.tabs.Location = new System.Drawing.Point(10, 10);
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
 			this.tabs.Name = "tabs";
+			this.tabs.Padding = new System.Drawing.Point(24, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(511, 445);
-			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 1;
 			// 
 			// tabproperties
@@ -445,11 +449,11 @@
 			this.tabproperties.Controls.Add(groupaction);
 			this.tabproperties.Controls.Add(groupeffect);
 			this.tabproperties.Controls.Add(groupfloorceiling);
-			this.tabproperties.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabproperties.Location = new System.Drawing.Point(4, 23);
+			this.tabproperties.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabproperties.Location = new System.Drawing.Point(4, 22);
 			this.tabproperties.Name = "tabproperties";
 			this.tabproperties.Padding = new System.Windows.Forms.Padding(3);
-			this.tabproperties.Size = new System.Drawing.Size(503, 418);
+			this.tabproperties.Size = new System.Drawing.Size(503, 419);
 			this.tabproperties.TabIndex = 0;
 			this.tabproperties.Text = "Properties";
 			this.tabproperties.UseVisualStyleBackColor = true;
@@ -462,7 +466,7 @@
 			this.groupBox3.Size = new System.Drawing.Size(296, 148);
 			this.groupBox3.TabIndex = 3;
 			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = " Flags: ";
+			this.groupBox3.Text = " Flags ";
 			// 
 			// flags
 			// 
@@ -478,10 +482,10 @@
 			// 
 			this.tabSurfaces.Controls.Add(this.groupBox2);
 			this.tabSurfaces.Controls.Add(this.groupBox1);
-			this.tabSurfaces.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabSurfaces.Location = new System.Drawing.Point(4, 23);
+			this.tabSurfaces.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabSurfaces.Location = new System.Drawing.Point(4, 22);
 			this.tabSurfaces.Name = "tabSurfaces";
-			this.tabSurfaces.Size = new System.Drawing.Size(503, 418);
+			this.tabSurfaces.Size = new System.Drawing.Size(503, 419);
 			this.tabSurfaces.TabIndex = 2;
 			this.tabSurfaces.Text = "Surfaces";
 			this.tabSurfaces.UseVisualStyleBackColor = true;
@@ -490,6 +494,8 @@
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.labelFloorOffsets);
+			this.groupBox2.Controls.Add(this.labelFloorScale);
 			this.groupBox2.Controls.Add(this.cbUseFloorLineAngles);
 			this.groupBox2.Controls.Add(this.floorAngleControl);
 			this.groupBox2.Controls.Add(this.labelfloorrenderstyle);
@@ -509,14 +515,34 @@
 			this.groupBox2.Size = new System.Drawing.Size(497, 203);
 			this.groupBox2.TabIndex = 55;
 			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = " Floor: ";
+			this.groupBox2.Text = " Floor ";
+			// 
+			// labelFloorOffsets
+			// 
+			this.labelFloorOffsets.Location = new System.Drawing.Point(6, 27);
+			this.labelFloorOffsets.Name = "labelFloorOffsets";
+			this.labelFloorOffsets.Size = new System.Drawing.Size(98, 14);
+			this.labelFloorOffsets.TabIndex = 59;
+			this.labelFloorOffsets.Tag = "";
+			this.labelFloorOffsets.Text = "Texture Offsets:";
+			this.labelFloorOffsets.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// labelFloorScale
+			// 
+			this.labelFloorScale.Location = new System.Drawing.Point(9, 59);
+			this.labelFloorScale.Name = "labelFloorScale";
+			this.labelFloorScale.Size = new System.Drawing.Size(95, 14);
+			this.labelFloorScale.TabIndex = 58;
+			this.labelFloorScale.Tag = "";
+			this.labelFloorScale.Text = "Texture Scale:";
+			this.labelFloorScale.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// cbUseFloorLineAngles
 			// 
 			this.cbUseFloorLineAngles.AutoSize = true;
 			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(181, 147);
 			this.cbUseFloorLineAngles.Name = "cbUseFloorLineAngles";
-			this.cbUseFloorLineAngles.Size = new System.Drawing.Size(115, 18);
+			this.cbUseFloorLineAngles.Size = new System.Drawing.Size(113, 17);
 			this.cbUseFloorLineAngles.TabIndex = 57;
 			this.cbUseFloorLineAngles.Tag = "";
 			this.cbUseFloorLineAngles.Text = "Use linedef angles";
@@ -525,7 +551,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -450;
+			this.floorAngleControl.Angle = -720;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
@@ -599,7 +625,7 @@
 			this.floorLightAbsolute.AutoSize = true;
 			this.floorLightAbsolute.Location = new System.Drawing.Point(181, 117);
 			this.floorLightAbsolute.Name = "floorLightAbsolute";
-			this.floorLightAbsolute.Size = new System.Drawing.Size(69, 18);
+			this.floorLightAbsolute.Size = new System.Drawing.Size(67, 17);
 			this.floorLightAbsolute.TabIndex = 49;
 			this.floorLightAbsolute.Text = "Absolute";
 			this.floorLightAbsolute.UseVisualStyleBackColor = true;
@@ -637,7 +663,7 @@
 			this.floorRenderStyle.FormattingEnabled = true;
 			this.floorRenderStyle.Location = new System.Drawing.Point(113, 85);
 			this.floorRenderStyle.Name = "floorRenderStyle";
-			this.floorRenderStyle.Size = new System.Drawing.Size(130, 22);
+			this.floorRenderStyle.Size = new System.Drawing.Size(130, 21);
 			this.floorRenderStyle.TabIndex = 46;
 			// 
 			// floorScale
@@ -649,12 +675,10 @@
 			this.floorScale.DefaultValue = 1F;
 			this.floorScale.Field1 = "xscalefloor";
 			this.floorScale.Field2 = "yscalefloor";
-			this.floorScale.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.floorScale.Label = "Texture Scale:";
 			this.floorScale.LinkValues = false;
-			this.floorScale.Location = new System.Drawing.Point(18, 51);
+			this.floorScale.Location = new System.Drawing.Point(110, 53);
 			this.floorScale.Name = "floorScale";
-			this.floorScale.Size = new System.Drawing.Size(276, 28);
+			this.floorScale.Size = new System.Drawing.Size(186, 26);
 			this.floorScale.TabIndex = 17;
 			this.floorScale.OnValuesChanged += new System.EventHandler(this.floorScale_OnValuesChanged);
 			// 
@@ -667,12 +691,10 @@
 			this.floorOffsets.DefaultValue = 0F;
 			this.floorOffsets.Field1 = "xpanningfloor";
 			this.floorOffsets.Field2 = "ypanningfloor";
-			this.floorOffsets.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.floorOffsets.Label = "Texture Offsets:";
 			this.floorOffsets.LinkValues = false;
-			this.floorOffsets.Location = new System.Drawing.Point(18, 19);
+			this.floorOffsets.Location = new System.Drawing.Point(110, 21);
 			this.floorOffsets.Name = "floorOffsets";
-			this.floorOffsets.Size = new System.Drawing.Size(276, 26);
+			this.floorOffsets.Size = new System.Drawing.Size(186, 26);
 			this.floorOffsets.TabIndex = 16;
 			this.floorOffsets.OnValuesChanged += new System.EventHandler(this.floorOffsets_OnValuesChanged);
 			// 
@@ -691,6 +713,8 @@
 			// 
 			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.labelCeilOffsets);
+			this.groupBox1.Controls.Add(this.labelCeilScale);
 			this.groupBox1.Controls.Add(this.cbUseCeilLineAngles);
 			this.groupBox1.Controls.Add(this.ceilAngleControl);
 			this.groupBox1.Controls.Add(this.labelceilrenderstyle);
@@ -710,14 +734,34 @@
 			this.groupBox1.Size = new System.Drawing.Size(497, 203);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = " Ceiling: ";
+			this.groupBox1.Text = " Ceiling ";
+			// 
+			// labelCeilOffsets
+			// 
+			this.labelCeilOffsets.Location = new System.Drawing.Point(6, 27);
+			this.labelCeilOffsets.Name = "labelCeilOffsets";
+			this.labelCeilOffsets.Size = new System.Drawing.Size(98, 14);
+			this.labelCeilOffsets.TabIndex = 61;
+			this.labelCeilOffsets.Tag = "";
+			this.labelCeilOffsets.Text = "Texture Offsets:";
+			this.labelCeilOffsets.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// labelCeilScale
+			// 
+			this.labelCeilScale.Location = new System.Drawing.Point(9, 59);
+			this.labelCeilScale.Name = "labelCeilScale";
+			this.labelCeilScale.Size = new System.Drawing.Size(95, 14);
+			this.labelCeilScale.TabIndex = 60;
+			this.labelCeilScale.Tag = "";
+			this.labelCeilScale.Text = "Texture Scale:";
+			this.labelCeilScale.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// cbUseCeilLineAngles
 			// 
 			this.cbUseCeilLineAngles.AutoSize = true;
 			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(181, 147);
 			this.cbUseCeilLineAngles.Name = "cbUseCeilLineAngles";
-			this.cbUseCeilLineAngles.Size = new System.Drawing.Size(115, 18);
+			this.cbUseCeilLineAngles.Size = new System.Drawing.Size(113, 17);
 			this.cbUseCeilLineAngles.TabIndex = 56;
 			this.cbUseCeilLineAngles.Tag = "";
 			this.cbUseCeilLineAngles.Text = "Use linedef angles";
@@ -726,7 +770,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -450;
+			this.ceilAngleControl.Angle = -720;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
@@ -800,7 +844,7 @@
 			this.ceilLightAbsolute.AutoSize = true;
 			this.ceilLightAbsolute.Location = new System.Drawing.Point(181, 117);
 			this.ceilLightAbsolute.Name = "ceilLightAbsolute";
-			this.ceilLightAbsolute.Size = new System.Drawing.Size(69, 18);
+			this.ceilLightAbsolute.Size = new System.Drawing.Size(67, 17);
 			this.ceilLightAbsolute.TabIndex = 49;
 			this.ceilLightAbsolute.Tag = "";
 			this.ceilLightAbsolute.Text = "Absolute";
@@ -839,7 +883,7 @@
 			this.ceilRenderStyle.FormattingEnabled = true;
 			this.ceilRenderStyle.Location = new System.Drawing.Point(113, 85);
 			this.ceilRenderStyle.Name = "ceilRenderStyle";
-			this.ceilRenderStyle.Size = new System.Drawing.Size(130, 22);
+			this.ceilRenderStyle.Size = new System.Drawing.Size(130, 21);
 			this.ceilRenderStyle.TabIndex = 46;
 			// 
 			// ceilScale
@@ -851,12 +895,10 @@
 			this.ceilScale.DefaultValue = 1F;
 			this.ceilScale.Field1 = "xscaleceiling";
 			this.ceilScale.Field2 = "yscaleceiling";
-			this.ceilScale.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.ceilScale.Label = "Texture Scale:";
 			this.ceilScale.LinkValues = false;
-			this.ceilScale.Location = new System.Drawing.Point(18, 51);
+			this.ceilScale.Location = new System.Drawing.Point(110, 53);
 			this.ceilScale.Name = "ceilScale";
-			this.ceilScale.Size = new System.Drawing.Size(276, 28);
+			this.ceilScale.Size = new System.Drawing.Size(186, 26);
 			this.ceilScale.TabIndex = 17;
 			this.ceilScale.OnValuesChanged += new System.EventHandler(this.ceilScale_OnValuesChanged);
 			// 
@@ -869,12 +911,10 @@
 			this.ceilOffsets.DefaultValue = 0F;
 			this.ceilOffsets.Field1 = "xpanningceiling";
 			this.ceilOffsets.Field2 = "ypanningceiling";
-			this.ceilOffsets.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.ceilOffsets.Label = "Texture Offsets:";
 			this.ceilOffsets.LinkValues = false;
-			this.ceilOffsets.Location = new System.Drawing.Point(18, 19);
+			this.ceilOffsets.Location = new System.Drawing.Point(110, 21);
 			this.ceilOffsets.Name = "ceilOffsets";
-			this.ceilOffsets.Size = new System.Drawing.Size(276, 26);
+			this.ceilOffsets.Size = new System.Drawing.Size(186, 26);
 			this.ceilOffsets.TabIndex = 16;
 			this.ceilOffsets.OnValuesChanged += new System.EventHandler(this.ceilOffsets_OnValuesChanged);
 			// 
@@ -893,10 +933,10 @@
 			// 
 			this.tabslopes.Controls.Add(this.groupBox5);
 			this.tabslopes.Controls.Add(this.groupBox4);
-			this.tabslopes.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabslopes.Location = new System.Drawing.Point(4, 23);
+			this.tabslopes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabslopes.Location = new System.Drawing.Point(4, 22);
 			this.tabslopes.Name = "tabslopes";
-			this.tabslopes.Size = new System.Drawing.Size(503, 418);
+			this.tabslopes.Size = new System.Drawing.Size(503, 419);
 			this.tabslopes.TabIndex = 3;
 			this.tabslopes.Text = "Slopes";
 			this.tabslopes.UseVisualStyleBackColor = true;
@@ -909,7 +949,7 @@
 			this.groupBox5.Size = new System.Drawing.Size(497, 203);
 			this.groupBox5.TabIndex = 1;
 			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = " Floor: ";
+			this.groupBox5.Text = " Floor ";
 			// 
 			// floorslopecontrol
 			// 
@@ -931,7 +971,7 @@
 			this.groupBox4.Size = new System.Drawing.Size(497, 203);
 			this.groupBox4.TabIndex = 0;
 			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = " Ceiling: ";
+			this.groupBox4.Text = " Ceiling ";
 			// 
 			// ceilingslopecontrol
 			// 
@@ -948,11 +988,11 @@
 			// tabcustom
 			// 
 			this.tabcustom.Controls.Add(this.fieldslist);
-			this.tabcustom.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabcustom.Location = new System.Drawing.Point(4, 23);
+			this.tabcustom.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabcustom.Location = new System.Drawing.Point(4, 22);
 			this.tabcustom.Name = "tabcustom";
 			this.tabcustom.Padding = new System.Windows.Forms.Padding(3);
-			this.tabcustom.Size = new System.Drawing.Size(503, 418);
+			this.tabcustom.Size = new System.Drawing.Size(503, 419);
 			this.tabcustom.TabIndex = 1;
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;
@@ -966,13 +1006,12 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.fieldslist.AutoInsertUserPrefix = true;
 			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.fieldslist.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.fieldslist.Location = new System.Drawing.Point(11, 11);
 			this.fieldslist.Margin = new System.Windows.Forms.Padding(8);
 			this.fieldslist.Name = "fieldslist";
 			this.fieldslist.PropertyColumnVisible = true;
 			this.fieldslist.PropertyColumnWidth = 150;
-			this.fieldslist.Size = new System.Drawing.Size(481, 397);
+			this.fieldslist.Size = new System.Drawing.Size(481, 398);
 			this.fieldslist.TabIndex = 1;
 			this.fieldslist.TypeColumnVisible = true;
 			this.fieldslist.TypeColumnWidth = 100;
@@ -1018,7 +1057,6 @@
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -1112,5 +1150,9 @@
 		private CodeImp.DoomBuilder.Controls.SectorSlopeControl ceilingslopecontrol;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox heightoffset;
 		private System.Windows.Forms.ToolTip tooltip;
+		private System.Windows.Forms.Label labelFloorOffsets;
+		private System.Windows.Forms.Label labelFloorScale;
+		private System.Windows.Forms.Label labelCeilOffsets;
+		private System.Windows.Forms.Label labelCeilScale;
 	}
 }

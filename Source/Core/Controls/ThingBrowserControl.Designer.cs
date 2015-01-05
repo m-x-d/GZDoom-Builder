@@ -142,8 +142,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// infopanel
 			// 
-			this.infopanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.infopanel.Controls.Add(this.spritepanel);
 			this.infopanel.Controls.Add(this.sizelabel);
 			this.infopanel.Controls.Add(this.typecaption);
@@ -160,7 +158,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// spritepanel
 			// 
-			this.spritepanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.spritepanel.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.spritepanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.spritepanel.Controls.Add(this.spritetex);
@@ -203,9 +200,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// typelist
 			// 
-			this.typelist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.typelist.HideSelection = false;
 			this.typelist.ImageIndex = 0;
 			this.typelist.ImageList = this.thingimages;
@@ -260,6 +254,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Controls.Add(this.infopanel);
 			this.Name = "ThingBrowserControl";
 			this.Size = new System.Drawing.Size(304, 320);
+			this.Resize += new System.EventHandler(this.ThingBrowserControl_Resize);
 			this.infopanel.ResumeLayout(false);
 			this.infopanel.PerformLayout();
 			this.spritepanel.ResumeLayout(false);

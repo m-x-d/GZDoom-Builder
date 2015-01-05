@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox2.Controls.Add(this.option0label);
 			groupBox2.Location = new System.Drawing.Point(6, 6);
 			groupBox2.Name = "groupBox2";
-			groupBox2.Size = new System.Drawing.Size(379, 397);
+			groupBox2.Size = new System.Drawing.Size(379, 398);
 			groupBox2.TabIndex = 1;
 			groupBox2.TabStop = false;
 			groupBox2.Text = " Options ";
@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option7.FormattingEnabled = true;
 			this.option7.Location = new System.Drawing.Point(118, 280);
 			this.option7.Name = "option7";
-			this.option7.Size = new System.Drawing.Size(199, 22);
+			this.option7.Size = new System.Drawing.Size(199, 21);
 			this.option7.TabIndex = 7;
 			this.option7.Visible = false;
 			// 
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option6.FormattingEnabled = true;
 			this.option6.Location = new System.Drawing.Point(118, 244);
 			this.option6.Name = "option6";
-			this.option6.Size = new System.Drawing.Size(199, 22);
+			this.option6.Size = new System.Drawing.Size(199, 21);
 			this.option6.TabIndex = 6;
 			this.option6.Visible = false;
 			// 
@@ -139,7 +139,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option5.FormattingEnabled = true;
 			this.option5.Location = new System.Drawing.Point(118, 208);
 			this.option5.Name = "option5";
-			this.option5.Size = new System.Drawing.Size(199, 22);
+			this.option5.Size = new System.Drawing.Size(199, 21);
 			this.option5.TabIndex = 5;
 			this.option5.Visible = false;
 			// 
@@ -159,7 +159,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option4.FormattingEnabled = true;
 			this.option4.Location = new System.Drawing.Point(118, 172);
 			this.option4.Name = "option4";
-			this.option4.Size = new System.Drawing.Size(199, 22);
+			this.option4.Size = new System.Drawing.Size(199, 21);
 			this.option4.TabIndex = 4;
 			this.option4.Visible = false;
 			// 
@@ -179,7 +179,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option3.FormattingEnabled = true;
 			this.option3.Location = new System.Drawing.Point(118, 136);
 			this.option3.Name = "option3";
-			this.option3.Size = new System.Drawing.Size(199, 22);
+			this.option3.Size = new System.Drawing.Size(199, 21);
 			this.option3.TabIndex = 3;
 			this.option3.Visible = false;
 			// 
@@ -199,7 +199,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option2.FormattingEnabled = true;
 			this.option2.Location = new System.Drawing.Point(118, 100);
 			this.option2.Name = "option2";
-			this.option2.Size = new System.Drawing.Size(199, 22);
+			this.option2.Size = new System.Drawing.Size(199, 21);
 			this.option2.TabIndex = 2;
 			this.option2.Visible = false;
 			// 
@@ -219,7 +219,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option1.FormattingEnabled = true;
 			this.option1.Location = new System.Drawing.Point(118, 64);
 			this.option1.Name = "option1";
-			this.option1.Size = new System.Drawing.Size(199, 22);
+			this.option1.Size = new System.Drawing.Size(199, 21);
 			this.option1.TabIndex = 1;
 			this.option1.Visible = false;
 			// 
@@ -239,7 +239,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option0.FormattingEnabled = true;
 			this.option0.Location = new System.Drawing.Point(118, 28);
 			this.option0.Name = "option0";
-			this.option0.Size = new System.Drawing.Size(199, 22);
+			this.option0.Size = new System.Drawing.Size(199, 21);
 			this.option0.TabIndex = 0;
 			this.option0.Visible = false;
 			// 
@@ -283,25 +283,24 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabs.Controls.Add(this.tabeffects);
 			this.tabs.Controls.Add(this.tabgeneralized);
-			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabs.ItemSize = new System.Drawing.Size(150, 19);
+			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.tabs.Location = new System.Drawing.Point(10, 10);
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
 			this.tabs.Name = "tabs";
+			this.tabs.Padding = new System.Drawing.Point(24, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(399, 436);
-			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 0;
 			// 
 			// tabeffects
 			// 
 			this.tabeffects.Controls.Add(this.filterPanel);
 			this.tabeffects.Controls.Add(this.effects);
-			this.tabeffects.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabeffects.Location = new System.Drawing.Point(4, 23);
+			this.tabeffects.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabeffects.Location = new System.Drawing.Point(4, 22);
 			this.tabeffects.Name = "tabeffects";
 			this.tabeffects.Padding = new System.Windows.Forms.Padding(3);
-			this.tabeffects.Size = new System.Drawing.Size(391, 409);
+			this.tabeffects.Size = new System.Drawing.Size(391, 410);
 			this.tabeffects.TabIndex = 0;
 			this.tabeffects.Text = "Predefined Effects";
 			this.tabeffects.UseVisualStyleBackColor = true;
@@ -339,7 +338,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelFilter.AutoSize = true;
 			this.labelFilter.Location = new System.Drawing.Point(8, 8);
 			this.labelFilter.Name = "labelFilter";
-			this.labelFilter.Size = new System.Drawing.Size(33, 14);
+			this.labelFilter.Size = new System.Drawing.Size(32, 13);
 			this.labelFilter.TabIndex = 29;
 			this.labelFilter.Text = "Filter:";
 			// 
@@ -373,11 +372,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// tabgeneralized
 			// 
 			this.tabgeneralized.Controls.Add(groupBox2);
-			this.tabgeneralized.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabgeneralized.Location = new System.Drawing.Point(4, 23);
+			this.tabgeneralized.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabgeneralized.Location = new System.Drawing.Point(4, 22);
 			this.tabgeneralized.Name = "tabgeneralized";
 			this.tabgeneralized.Padding = new System.Windows.Forms.Padding(3);
-			this.tabgeneralized.Size = new System.Drawing.Size(391, 409);
+			this.tabgeneralized.Size = new System.Drawing.Size(391, 410);
 			this.tabgeneralized.TabIndex = 1;
 			this.tabgeneralized.Text = "Generalized Effects";
 			this.tabgeneralized.UseVisualStyleBackColor = true;
@@ -392,7 +391,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.tabs);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;

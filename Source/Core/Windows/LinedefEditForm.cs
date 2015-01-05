@@ -370,6 +370,16 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateScriptControls(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
 
+			//mxd. Update some labels
+			if(frontside.CheckState != CheckState.Unchecked) 
+			{
+				labelFrontTextureOffset.Enabled = frontTextureOffset.NonDefaultValue;
+			}
+			if(backside.CheckState != CheckState.Unchecked) 
+			{
+				labelBackTextureOffset.Enabled = backTextureOffset.NonDefaultValue;
+			}
+
 			//mxd. Set intial script-related values, if required
 			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
 			{
@@ -880,6 +890,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
+			labelFrontTextureOffset.Enabled = frontTextureOffset.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -909,6 +920,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			
 			General.Map.IsChanged = true;
+			labelBackTextureOffset.Enabled = backTextureOffset.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 

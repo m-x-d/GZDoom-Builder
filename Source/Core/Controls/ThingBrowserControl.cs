@@ -386,6 +386,16 @@ namespace CodeImp.DoomBuilder.Controls
 
 			typelist.ResumeLayout();
 		}
+
+		//mxd. Because anchor-based alignment fails when using high-Dpi settings...
+		private void ThingBrowserControl_Resize(object sender, EventArgs e)
+		{
+			infopanel.Top = this.Height - infopanel.Height;
+			infopanel.Width = this.Width;
+			spritepanel.Left = infopanel.Width - spritepanel.Width;
+			typelist.Height = infopanel.Top - typelist.Top;
+			typelist.Width = this.Width;
+		}
 		
 		#endregion
 	}

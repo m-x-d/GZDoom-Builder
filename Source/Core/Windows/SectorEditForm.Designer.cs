@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label8.AutoSize = true;
 			label8.Location = new System.Drawing.Point(12, 31);
 			label8.Name = "label8";
-			label8.Size = new System.Drawing.Size(45, 14);
+			label8.Size = new System.Drawing.Size(45, 13);
 			label8.TabIndex = 0;
 			label8.Text = "Special:";
 			// 
@@ -180,7 +180,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label7
 			// 
-			label7.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			label7.ForeColor = System.Drawing.SystemColors.HotTrack;
 			label7.Location = new System.Drawing.Point(16, 100);
 			label7.Name = "label7";
@@ -285,7 +285,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.sectorheight.AutoSize = true;
 			this.sectorheight.Location = new System.Drawing.Point(100, 130);
 			this.sectorheight.Name = "sectorheight";
-			this.sectorheight.Size = new System.Drawing.Size(13, 14);
+			this.sectorheight.Size = new System.Drawing.Size(13, 13);
 			this.sectorheight.TabIndex = 21;
 			this.sectorheight.Text = "0";
 			// 
@@ -294,9 +294,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floortex.Location = new System.Drawing.Point(196, 35);
 			this.floortex.MultipleTextures = false;
 			this.floortex.Name = "floortex";
-			this.floortex.Size = new System.Drawing.Size(114, 105);
+			this.floortex.Size = new System.Drawing.Size(114, 138);
 			this.floortex.TabIndex = 2;
 			this.floortex.TextureName = "";
+			this.floortex.UsePreviews = true;
 			this.floortex.OnValueChanged += new System.EventHandler(this.floortex_OnValueChanged);
 			// 
 			// floorheight
@@ -319,9 +320,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingtex.Location = new System.Drawing.Point(316, 35);
 			this.ceilingtex.MultipleTextures = false;
 			this.ceilingtex.Name = "ceilingtex";
-			this.ceilingtex.Size = new System.Drawing.Size(114, 105);
+			this.ceilingtex.Size = new System.Drawing.Size(114, 138);
 			this.ceilingtex.TabIndex = 3;
 			this.ceilingtex.TextureName = "";
+			this.ceilingtex.UsePreviews = true;
 			this.ceilingtex.OnValueChanged += new System.EventHandler(this.ceilingtex_OnValueChanged);
 			// 
 			// cancel
@@ -355,6 +357,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flatSelectorControl2.Size = new System.Drawing.Size(83, 105);
 			this.flatSelectorControl2.TabIndex = 13;
 			this.flatSelectorControl2.TextureName = "";
+			this.flatSelectorControl2.UsePreviews = true;
 			// 
 			// flatSelectorControl1
 			// 
@@ -364,6 +367,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flatSelectorControl1.Size = new System.Drawing.Size(83, 105);
 			this.flatSelectorControl1.TabIndex = 12;
 			this.flatSelectorControl1.TextureName = "";
+			this.flatSelectorControl1.UsePreviews = true;
 			// 
 			// panel1
 			// 
@@ -392,12 +396,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SectorEditForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

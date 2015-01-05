@@ -61,11 +61,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// tabproperties
 			// 
 			tabproperties.Controls.Add(this.groupposition);
-			tabproperties.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			tabproperties.Location = new System.Drawing.Point(4, 23);
+			tabproperties.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			tabproperties.Location = new System.Drawing.Point(4, 22);
 			tabproperties.Name = "tabproperties";
 			tabproperties.Padding = new System.Windows.Forms.Padding(3);
-			tabproperties.Size = new System.Drawing.Size(428, 206);
+			tabproperties.Size = new System.Drawing.Size(428, 207);
 			tabproperties.TabIndex = 0;
 			tabproperties.Text = "Properties";
 			tabproperties.UseVisualStyleBackColor = true;
@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupposition.Controls.Add(label6);
 			this.groupposition.Location = new System.Drawing.Point(7, 6);
 			this.groupposition.Name = "groupposition";
-			this.groupposition.Size = new System.Drawing.Size(415, 194);
+			this.groupposition.Size = new System.Drawing.Size(415, 195);
 			this.groupposition.TabIndex = 0;
 			this.groupposition.TabStop = false;
 			this.groupposition.Text = " Position ";
@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelHeightControls.Controls.Add(label3);
 			this.panelHeightControls.Location = new System.Drawing.Point(48, 73);
 			this.panelHeightControls.Name = "panelHeightControls";
-			this.panelHeightControls.Size = new System.Drawing.Size(361, 100);
+			this.panelHeightControls.Size = new System.Drawing.Size(361, 116);
 			this.panelHeightControls.TabIndex = 30;
 			// 
 			// clearZFloor
@@ -155,18 +155,18 @@ namespace CodeImp.DoomBuilder.Windows
 			label2.AutoSize = true;
 			label2.Location = new System.Drawing.Point(71, 37);
 			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(110, 14);
+			label2.Size = new System.Drawing.Size(111, 13);
 			label2.TabIndex = 26;
-			label2.Text = "Absolute floor height:";
+			label2.Text = "Absolute Floor Height:";
 			// 
 			// label3
 			// 
 			label3.AutoSize = true;
 			label3.Location = new System.Drawing.Point(63, 5);
 			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(118, 14);
+			label3.Size = new System.Drawing.Size(119, 13);
 			label3.TabIndex = 27;
-			label3.Text = "Absolute ceiling height:";
+			label3.Text = "Absolute Ceiling Height:";
 			// 
 			// positiony
 			// 
@@ -203,7 +203,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label1.AutoSize = true;
 			label1.Location = new System.Drawing.Point(212, 39);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(17, 14);
+			label1.Size = new System.Drawing.Size(17, 13);
 			label1.TabIndex = 23;
 			label1.Text = "Y:";
 			// 
@@ -212,7 +212,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label6.AutoSize = true;
 			label6.Location = new System.Drawing.Point(45, 39);
 			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(17, 14);
+			label6.Size = new System.Drawing.Size(17, 13);
 			label6.TabIndex = 21;
 			label6.Text = "X:";
 			// 
@@ -223,23 +223,23 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabs.Controls.Add(tabproperties);
 			this.tabs.Controls.Add(this.tabcustom);
-			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.Location = new System.Drawing.Point(10, 10);
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
 			this.tabs.Name = "tabs";
+			this.tabs.Padding = new System.Drawing.Point(24, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(436, 233);
-			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 0;
 			// 
 			// tabcustom
 			// 
 			this.tabcustom.Controls.Add(this.fieldslist);
-			this.tabcustom.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabcustom.Location = new System.Drawing.Point(4, 23);
+			this.tabcustom.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabcustom.Location = new System.Drawing.Point(4, 22);
 			this.tabcustom.Name = "tabcustom";
 			this.tabcustom.Padding = new System.Windows.Forms.Padding(3);
-			this.tabcustom.Size = new System.Drawing.Size(428, 206);
+			this.tabcustom.Size = new System.Drawing.Size(428, 207);
 			this.tabcustom.TabIndex = 1;
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;
@@ -259,7 +259,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.Name = "fieldslist";
 			this.fieldslist.PropertyColumnVisible = true;
 			this.fieldslist.PropertyColumnWidth = 150;
-			this.fieldslist.Size = new System.Drawing.Size(406, 187);
+			this.fieldslist.Size = new System.Drawing.Size(406, 188);
 			this.fieldslist.TabIndex = 2;
 			this.fieldslist.TypeColumnVisible = true;
 			this.fieldslist.TypeColumnWidth = 100;
@@ -298,12 +298,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "VertexEditForm";
-			this.Opacity = 0;
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

@@ -69,6 +69,7 @@
 			this.label9 = new System.Windows.Forms.Label();
 			this.gravity = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.grouprendering = new System.Windows.Forms.GroupBox();
+			this.labelScale = new System.Windows.Forms.Label();
 			this.scale = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFloatControl();
 			this.color = new CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl();
 			this.alpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -124,8 +125,6 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
 			this.groupBox1.Controls.Add(this.thingtype);
 			this.groupBox1.Location = new System.Drawing.Point(6, 6);
 			this.groupBox1.Name = "groupBox1";
@@ -136,9 +135,6 @@
 			// 
 			// thingtype
 			// 
-			this.thingtype.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.thingtype.Location = new System.Drawing.Point(9, 13);
 			this.thingtype.Margin = new System.Windows.Forms.Padding(6);
 			this.thingtype.Name = "thingtype";
@@ -247,7 +243,7 @@
 			// 
 			// labelGravity
 			// 
-			this.labelGravity.Location = new System.Drawing.Point(52, 28);
+			this.labelGravity.Location = new System.Drawing.Point(52, 27);
 			this.labelGravity.Name = "labelGravity";
 			this.labelGravity.Size = new System.Drawing.Size(50, 14);
 			this.labelGravity.TabIndex = 18;
@@ -259,7 +255,7 @@
 			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(15, 30);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(41, 14);
+			this.label7.Size = new System.Drawing.Size(40, 13);
 			this.label7.TabIndex = 9;
 			this.label7.Text = "Action:";
 			// 
@@ -271,14 +267,14 @@
 			this.tabs.Controls.Add(this.tabproperties);
 			this.tabs.Controls.Add(this.tabeffects);
 			this.tabs.Controls.Add(this.tabcustom);
-			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.ItemSize = new System.Drawing.Size(120, 19);
 			this.tabs.Location = new System.Drawing.Point(10, 10);
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
 			this.tabs.Name = "tabs";
+			this.tabs.Padding = new System.Drawing.Point(24, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(635, 429);
-			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 0;
 			// 
 			// tabproperties
@@ -290,7 +286,7 @@
 			this.tabproperties.Controls.Add(this.groupBox4);
 			this.tabproperties.Controls.Add(this.groupBox2);
 			this.tabproperties.Controls.Add(this.groupBox1);
-			this.tabproperties.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabproperties.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabproperties.Location = new System.Drawing.Point(4, 23);
 			this.tabproperties.Name = "tabproperties";
 			this.tabproperties.Padding = new System.Windows.Forms.Padding(3);
@@ -408,7 +404,7 @@
 			this.cbAbsoluteHeight.AutoSize = true;
 			this.cbAbsoluteHeight.Location = new System.Drawing.Point(139, 70);
 			this.cbAbsoluteHeight.Name = "cbAbsoluteHeight";
-			this.cbAbsoluteHeight.Size = new System.Drawing.Size(69, 18);
+			this.cbAbsoluteHeight.Size = new System.Drawing.Size(67, 17);
 			this.cbAbsoluteHeight.TabIndex = 16;
 			this.cbAbsoluteHeight.Text = "Absolute";
 			this.cbAbsoluteHeight.UseVisualStyleBackColor = true;
@@ -492,7 +488,7 @@
 			this.tabeffects.Controls.Add(this.grouprendering);
 			this.tabeffects.Controls.Add(this.actiongroup);
 			this.tabeffects.Controls.Add(this.groupBox3);
-			this.tabeffects.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabeffects.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabeffects.Location = new System.Drawing.Point(4, 23);
 			this.tabeffects.Name = "tabeffects";
 			this.tabeffects.Padding = new System.Windows.Forms.Padding(3);
@@ -537,7 +533,7 @@
 			this.labelID.AutoSize = true;
 			this.labelID.Location = new System.Drawing.Point(16, 124);
 			this.labelID.Name = "labelID";
-			this.labelID.Size = new System.Drawing.Size(86, 14);
+			this.labelID.Size = new System.Drawing.Size(86, 13);
 			this.labelID.TabIndex = 25;
 			this.labelID.Text = "Conversation ID:";
 			// 
@@ -557,7 +553,7 @@
 			// 
 			// label10
 			// 
-			this.label10.Location = new System.Drawing.Point(52, 92);
+			this.label10.Location = new System.Drawing.Point(52, 91);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(50, 14);
 			this.label10.TabIndex = 22;
@@ -580,7 +576,7 @@
 			// 
 			// label9
 			// 
-			this.label9.Location = new System.Drawing.Point(52, 60);
+			this.label9.Location = new System.Drawing.Point(52, 59);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(50, 14);
 			this.label9.TabIndex = 20;
@@ -603,6 +599,7 @@
 			// 
 			// grouprendering
 			// 
+			this.grouprendering.Controls.Add(this.labelScale);
 			this.grouprendering.Controls.Add(this.scale);
 			this.grouprendering.Controls.Add(this.color);
 			this.grouprendering.Controls.Add(this.alpha);
@@ -616,16 +613,23 @@
 			this.grouprendering.TabStop = false;
 			this.grouprendering.Text = " Rendering ";
 			// 
+			// labelScale
+			// 
+			this.labelScale.Location = new System.Drawing.Point(5, 27);
+			this.labelScale.Name = "labelScale";
+			this.labelScale.Size = new System.Drawing.Size(80, 14);
+			this.labelScale.TabIndex = 32;
+			this.labelScale.Text = "Scale:";
+			this.labelScale.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
 			// scale
 			// 
 			this.scale.ButtonStep = 0.1F;
 			this.scale.DefaultValue = 1F;
-			this.scale.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.scale.Label = "Scale:";
-			this.scale.Location = new System.Drawing.Point(5, 24);
+			this.scale.Location = new System.Drawing.Point(89, 22);
 			this.scale.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.scale.Name = "scale";
-			this.scale.Size = new System.Drawing.Size(268, 26);
+			this.scale.Size = new System.Drawing.Size(186, 26);
 			this.scale.TabIndex = 31;
 			this.scale.OnValuesChanged += new System.EventHandler(this.scale_OnValuesChanged);
 			// 
@@ -668,12 +672,12 @@
 			this.renderStyle.FormattingEnabled = true;
 			this.renderStyle.Location = new System.Drawing.Point(91, 57);
 			this.renderStyle.Name = "renderStyle";
-			this.renderStyle.Size = new System.Drawing.Size(156, 22);
+			this.renderStyle.Size = new System.Drawing.Size(156, 21);
 			this.renderStyle.TabIndex = 24;
 			// 
 			// labelrenderstyle
 			// 
-			this.labelrenderstyle.Location = new System.Drawing.Point(5, 60);
+			this.labelrenderstyle.Location = new System.Drawing.Point(5, 59);
 			this.labelrenderstyle.Name = "labelrenderstyle";
 			this.labelrenderstyle.Size = new System.Drawing.Size(80, 14);
 			this.labelrenderstyle.TabIndex = 23;
@@ -735,7 +739,7 @@
 			this.scriptNumbers.FormattingEnabled = true;
 			this.scriptNumbers.Location = new System.Drawing.Point(435, 63);
 			this.scriptNumbers.Name = "scriptNumbers";
-			this.scriptNumbers.Size = new System.Drawing.Size(127, 22);
+			this.scriptNumbers.Size = new System.Drawing.Size(127, 21);
 			this.scriptNumbers.TabIndex = 23;
 			// 
 			// scriptNames
@@ -746,7 +750,7 @@
 			this.scriptNames.FormattingEnabled = true;
 			this.scriptNames.Location = new System.Drawing.Point(305, 63);
 			this.scriptNames.Name = "scriptNames";
-			this.scriptNames.Size = new System.Drawing.Size(127, 22);
+			this.scriptNames.Size = new System.Drawing.Size(127, 21);
 			this.scriptNames.TabIndex = 22;
 			// 
 			// cbArgStr
@@ -761,7 +765,6 @@
 			// 
 			// arg2
 			// 
-			this.arg2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg2.Location = new System.Drawing.Point(172, 63);
 			this.arg2.Name = "arg2";
 			this.arg2.Size = new System.Drawing.Size(127, 24);
@@ -769,7 +772,6 @@
 			// 
 			// arg1
 			// 
-			this.arg1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg1.Location = new System.Drawing.Point(172, 36);
 			this.arg1.Name = "arg1";
 			this.arg1.Size = new System.Drawing.Size(127, 24);
@@ -777,7 +779,6 @@
 			// 
 			// arg0
 			// 
-			this.arg0.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg0.Location = new System.Drawing.Point(172, 9);
 			this.arg0.Name = "arg0";
 			this.arg0.Size = new System.Drawing.Size(127, 24);
@@ -785,7 +786,6 @@
 			// 
 			// arg3
 			// 
-			this.arg3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg3.Location = new System.Drawing.Point(473, 9);
 			this.arg3.Name = "arg3";
 			this.arg3.Size = new System.Drawing.Size(127, 24);
@@ -793,7 +793,6 @@
 			// 
 			// arg4
 			// 
-			this.arg4.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg4.Location = new System.Drawing.Point(473, 36);
 			this.arg4.Name = "arg4";
 			this.arg4.Size = new System.Drawing.Size(127, 24);
@@ -895,7 +894,7 @@
 			// tabcustom
 			// 
 			this.tabcustom.Controls.Add(this.fieldslist);
-			this.tabcustom.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabcustom.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabcustom.Location = new System.Drawing.Point(4, 23);
 			this.tabcustom.Name = "tabcustom";
 			this.tabcustom.Size = new System.Drawing.Size(627, 402);
@@ -912,7 +911,6 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.fieldslist.AutoInsertUserPrefix = true;
 			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.fieldslist.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.fieldslist.Location = new System.Drawing.Point(8, 9);
 			this.fieldslist.Margin = new System.Windows.Forms.Padding(8, 9, 8, 9);
 			this.fieldslist.Name = "fieldslist";
@@ -963,7 +961,7 @@
 			this.hintlabel.AutoSize = true;
 			this.hintlabel.Location = new System.Drawing.Point(24, 451);
 			this.hintlabel.Name = "hintlabel";
-			this.hintlabel.Size = new System.Drawing.Size(377, 14);
+			this.hintlabel.Size = new System.Drawing.Size(365, 13);
 			this.hintlabel.TabIndex = 4;
 			this.hintlabel.Text = "Select categories or several thing types to randomly assign them to selection";
 			// 
@@ -979,7 +977,6 @@
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.hintlabel);
 			this.Controls.Add(this.tabs);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -1092,5 +1089,6 @@
 		private System.Windows.Forms.PictureBox missingflags;
 		private System.Windows.Forms.ToolTip tooltip;
 		private CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton actionhelp;
+		private System.Windows.Forms.Label labelScale;
 	}
 }

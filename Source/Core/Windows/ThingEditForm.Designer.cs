@@ -139,7 +139,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbAbsoluteHeight.AutoSize = true;
 			this.cbAbsoluteHeight.Location = new System.Drawing.Point(139, 70);
 			this.cbAbsoluteHeight.Name = "cbAbsoluteHeight";
-			this.cbAbsoluteHeight.Size = new System.Drawing.Size(69, 18);
+			this.cbAbsoluteHeight.Size = new System.Drawing.Size(67, 17);
 			this.cbAbsoluteHeight.TabIndex = 16;
 			this.cbAbsoluteHeight.Text = "Absolute";
 			this.cbAbsoluteHeight.UseVisualStyleBackColor = true;
@@ -222,7 +222,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label7.AutoSize = true;
 			label7.Location = new System.Drawing.Point(15, 30);
 			label7.Name = "label7";
-			label7.Size = new System.Drawing.Size(41, 14);
+			label7.Size = new System.Drawing.Size(40, 13);
 			label7.TabIndex = 9;
 			label7.Text = "Action:";
 			// 
@@ -241,7 +241,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbRandomAngle.AutoSize = true;
 			this.cbRandomAngle.Location = new System.Drawing.Point(15, 140);
 			this.cbRandomAngle.Name = "cbRandomAngle";
-			this.cbRandomAngle.Size = new System.Drawing.Size(94, 18);
+			this.cbRandomAngle.Size = new System.Drawing.Size(95, 17);
 			this.cbRandomAngle.TabIndex = 17;
 			this.cbRandomAngle.Text = "Random angle";
 			this.cbRandomAngle.UseVisualStyleBackColor = true;
@@ -269,13 +269,13 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabs.Controls.Add(this.tabproperties);
 			this.tabs.Controls.Add(this.tabeffects);
-			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.Location = new System.Drawing.Point(10, 10);
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
 			this.tabs.Name = "tabs";
+			this.tabs.Padding = new System.Drawing.Point(24, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(660, 412);
-			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 0;
 			// 
 			// tabproperties
@@ -284,7 +284,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabproperties.Controls.Add(groupBox2);
 			this.tabproperties.Controls.Add(this.settingsgroup);
 			this.tabproperties.Controls.Add(groupBox1);
-			this.tabproperties.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabproperties.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabproperties.Location = new System.Drawing.Point(4, 23);
 			this.tabproperties.Name = "tabproperties";
 			this.tabproperties.Padding = new System.Windows.Forms.Padding(3);
@@ -348,11 +348,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tabeffects.Controls.Add(this.actiongroup);
 			this.tabeffects.Controls.Add(this.groupBox3);
-			this.tabeffects.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabeffects.Location = new System.Drawing.Point(4, 23);
+			this.tabeffects.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabeffects.Location = new System.Drawing.Point(4, 22);
 			this.tabeffects.Name = "tabeffects";
 			this.tabeffects.Padding = new System.Windows.Forms.Padding(3);
-			this.tabeffects.Size = new System.Drawing.Size(652, 385);
+			this.tabeffects.Size = new System.Drawing.Size(652, 386);
 			this.tabeffects.TabIndex = 1;
 			this.tabeffects.Text = "Tag / Action";
 			this.tabeffects.UseVisualStyleBackColor = true;
@@ -370,7 +370,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.Controls.Add(this.doompanel);
 			this.actiongroup.Location = new System.Drawing.Point(9, 81);
 			this.actiongroup.Name = "actiongroup";
-			this.actiongroup.Size = new System.Drawing.Size(634, 300);
+			this.actiongroup.Size = new System.Drawing.Size(634, 301);
 			this.actiongroup.TabIndex = 22;
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
@@ -400,7 +400,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hexenpanel.Controls.Add(this.arg4label);
 			this.hexenpanel.Location = new System.Drawing.Point(6, 53);
 			this.hexenpanel.Name = "hexenpanel";
-			this.hexenpanel.Size = new System.Drawing.Size(616, 234);
+			this.hexenpanel.Size = new System.Drawing.Size(616, 235);
 			this.hexenpanel.TabIndex = 13;
 			// 
 			// scriptNumbers
@@ -411,12 +411,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptNumbers.FormattingEnabled = true;
 			this.scriptNumbers.Location = new System.Drawing.Point(179, 93);
 			this.scriptNumbers.Name = "scriptNumbers";
-			this.scriptNumbers.Size = new System.Drawing.Size(127, 22);
+			this.scriptNumbers.Size = new System.Drawing.Size(127, 21);
 			this.scriptNumbers.TabIndex = 23;
 			// 
 			// arg2
 			// 
-			this.arg2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg2.Location = new System.Drawing.Point(179, 63);
 			this.arg2.Name = "arg2";
 			this.arg2.Size = new System.Drawing.Size(127, 24);
@@ -424,7 +423,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// arg1
 			// 
-			this.arg1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg1.Location = new System.Drawing.Point(179, 37);
 			this.arg1.Name = "arg1";
 			this.arg1.Size = new System.Drawing.Size(127, 24);
@@ -432,7 +430,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// arg0
 			// 
-			this.arg0.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg0.Location = new System.Drawing.Point(179, 11);
 			this.arg0.Name = "arg0";
 			this.arg0.Size = new System.Drawing.Size(127, 24);
@@ -440,7 +437,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// arg3
 			// 
-			this.arg3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg3.Location = new System.Drawing.Point(487, 11);
 			this.arg3.Name = "arg3";
 			this.arg3.Size = new System.Drawing.Size(127, 24);
@@ -448,7 +444,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// arg4
 			// 
-			this.arg4.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.arg4.Location = new System.Drawing.Point(487, 37);
 			this.arg4.Name = "arg4";
 			this.arg4.Size = new System.Drawing.Size(127, 24);
@@ -537,7 +532,7 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.doompanel.Location = new System.Drawing.Point(6, 54);
 			this.doompanel.Name = "doompanel";
-			this.doompanel.Size = new System.Drawing.Size(616, 234);
+			this.doompanel.Size = new System.Drawing.Size(616, 235);
 			this.doompanel.TabIndex = 12;
 			// 
 			// groupBox3
@@ -594,7 +589,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hintlabel.AutoSize = true;
 			this.hintlabel.Location = new System.Drawing.Point(28, 434);
 			this.hintlabel.Name = "hintlabel";
-			this.hintlabel.Size = new System.Drawing.Size(377, 14);
+			this.hintlabel.Size = new System.Drawing.Size(365, 13);
 			this.hintlabel.TabIndex = 4;
 			this.hintlabel.Text = "Select categories or several thing types to randomly assign them to selection";
 			// 
@@ -610,7 +605,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
