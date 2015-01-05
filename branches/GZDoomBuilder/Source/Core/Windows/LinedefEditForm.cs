@@ -147,19 +147,25 @@ namespace CodeImp.DoomBuilder.Windows
 				actiongroup.Height = argspanel.Top + argspanel.Margin.Top; //mxd
 			}
 			
-			// Tag?
-			int addedheight = this.ClientRectangle.Height - panel1.Height + panel1.Top + panel1.Margin.Top + panel1.Margin.Bottom;
+			// Arrange or hide Identification panel
 			if(General.Map.FormatInterface.HasLinedefTag)
 			{
 				// Match position after the action group
 				idgroup.Top = actiongroup.Bottom + actiongroup.Margin.Bottom + idgroup.Margin.Top;
-				this.Height = idgroup.Bottom + idgroup.Margin.Bottom * 2 + addedheight;
+				panel.Height = idgroup.Bottom + idgroup.Margin.Bottom * 2;
 			}
 			else
 			{
 				idgroup.Visible = false;
-				this.Height = actiongroup.Bottom + actiongroup.Margin.Bottom * 3 + addedheight;
+				panel.Height = actiongroup.Bottom + actiongroup.Margin.Bottom * 2;
 			}
+
+			// Arrange Apply/Cancel buttons
+			apply.Top = panel.Bottom + panel.Margin.Bottom + apply.Margin.Top;
+			cancel.Top = apply.Top;
+
+			// Update window height
+			this.Height = apply.Bottom + apply.Margin.Bottom * 2 + (this.Height - this.ClientRectangle.Height) + 1;
 		}
 
 		#endregion

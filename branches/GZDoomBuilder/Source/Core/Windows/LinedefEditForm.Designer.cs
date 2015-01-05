@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.backhigh = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.backTextureOffset = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl();
-			this.panel1 = new System.Windows.Forms.Panel();
+			this.panel = new System.Windows.Forms.Panel();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.idgroup.SuspendLayout();
 			this.frontgroup.SuspendLayout();
 			this.backgroup.SuspendLayout();
-			this.panel1.SuspendLayout();
+			this.panel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label2
@@ -191,7 +191,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// cancel
 			// 
-			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.cancel.Location = new System.Drawing.Point(335, 764);
 			this.cancel.Name = "cancel";
@@ -203,7 +203,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// apply
 			// 
-			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.apply.Location = new System.Drawing.Point(453, 764);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
@@ -372,7 +372,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.activation.FormattingEnabled = true;
 			this.activation.Location = new System.Drawing.Point(56, 13);
 			this.activation.Name = "activation";
-			this.activation.Size = new System.Drawing.Size(428, 22);
+			this.activation.Size = new System.Drawing.Size(463, 22);
 			this.activation.TabIndex = 0;
 			// 
 			// action
@@ -433,7 +433,6 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.idgroup.Controls.Add(this.tagSelector);
 			this.idgroup.Location = new System.Drawing.Point(6, 658);
-			this.idgroup.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
 			this.idgroup.Name = "idgroup";
 			this.idgroup.Size = new System.Drawing.Size(541, 58);
 			this.idgroup.TabIndex = 2;
@@ -444,7 +443,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tagSelector.Location = new System.Drawing.Point(19, 19);
 			this.tagSelector.Name = "tagSelector";
-			this.tagSelector.Size = new System.Drawing.Size(444, 34);
+			this.tagSelector.Size = new System.Drawing.Size(445, 34);
 			this.tagSelector.TabIndex = 0;
 			// 
 			// frontside
@@ -635,21 +634,20 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backTextureOffset.TabIndex = 42;
 			this.backTextureOffset.OnValuesChanged += new System.EventHandler(this.backTextureOffset_OnValuesChanged);
 			// 
-			// panel1
+			// panel
 			// 
-			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
+			this.panel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.panel1.BackColor = System.Drawing.SystemColors.Window;
-			this.panel1.Controls.Add(this.frontgroup);
-			this.panel1.Controls.Add(this.backgroup);
-			this.panel1.Controls.Add(this.flagsgroup);
-			this.panel1.Controls.Add(this.actiongroup);
-			this.panel1.Controls.Add(this.idgroup);
-			this.panel1.Location = new System.Drawing.Point(12, 12);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(553, 746);
-			this.panel1.TabIndex = 5;
+			this.panel.BackColor = System.Drawing.SystemColors.Window;
+			this.panel.Controls.Add(this.frontgroup);
+			this.panel.Controls.Add(this.backgroup);
+			this.panel.Controls.Add(this.flagsgroup);
+			this.panel.Controls.Add(this.actiongroup);
+			this.panel.Controls.Add(this.idgroup);
+			this.panel.Location = new System.Drawing.Point(12, 12);
+			this.panel.Name = "panel";
+			this.panel.Size = new System.Drawing.Size(553, 746);
+			this.panel.TabIndex = 5;
 			// 
 			// LinedefEditForm
 			// 
@@ -660,7 +658,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ClientSize = new System.Drawing.Size(577, 796);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
-			this.Controls.Add(this.panel1);
+			this.Controls.Add(this.panel);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
@@ -684,7 +682,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.PerformLayout();
 			this.backgroup.ResumeLayout(false);
 			this.backgroup.PerformLayout();
-			this.panel1.ResumeLayout(false);
+			this.panel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -728,7 +726,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl frontTextureOffset;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl backTextureOffset;
 		private System.Windows.Forms.ComboBox scriptNumbers;
-		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.Panel panel;
 		private CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton actionhelp;
 		private System.Windows.Forms.ToolTip tooltip;
 	}
