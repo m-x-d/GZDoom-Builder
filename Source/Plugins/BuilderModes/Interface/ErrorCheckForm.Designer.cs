@@ -93,7 +93,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.results.FormattingEnabled = true;
 			this.results.HorizontalScrollbar = true;
 			this.results.IntegralHeight = false;
-			this.results.ItemHeight = 14;
 			this.results.Location = new System.Drawing.Point(10, 34);
 			this.results.Margin = new System.Windows.Forms.Padding(1);
 			this.results.Name = "results";
@@ -183,9 +182,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.cbApplyToAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.cbApplyToAll.AutoSize = true;
-			this.cbApplyToAll.Location = new System.Drawing.Point(12, 416);
+			this.cbApplyToAll.Location = new System.Drawing.Point(12, 417);
 			this.cbApplyToAll.Name = "cbApplyToAll";
-			this.cbApplyToAll.Size = new System.Drawing.Size(169, 18);
+			this.cbApplyToAll.Size = new System.Drawing.Size(160, 17);
 			this.cbApplyToAll.TabIndex = 6;
 			this.cbApplyToAll.Text = "Apply to all errors of this type";
 			this.cbApplyToAll.UseVisualStyleBackColor = true;
@@ -312,7 +311,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.toggleall.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.toggleall.Location = new System.Drawing.Point(10, 12);
 			this.toggleall.Name = "toggleall";
-			this.toggleall.Size = new System.Drawing.Size(70, 18);
+			this.toggleall.Size = new System.Drawing.Size(72, 17);
 			this.toggleall.TabIndex = 5;
 			this.toggleall.Text = "Toggle all";
 			this.toggleall.UseVisualStyleBackColor = true;
@@ -331,12 +330,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Controls.Add(this.resultspanel);
 			this.Controls.Add(this.buttoncheck);
 			this.Controls.Add(this.checks);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ErrorCheckForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

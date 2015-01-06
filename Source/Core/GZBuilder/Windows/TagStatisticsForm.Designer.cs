@@ -62,7 +62,7 @@
 			this.dataGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
 			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
 			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-			dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
 			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
 			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -94,7 +94,7 @@
 			this.TagColumn.HeaderText = "Tag";
 			this.TagColumn.Name = "TagColumn";
 			this.TagColumn.ReadOnly = true;
-			this.TagColumn.Width = 49;
+			this.TagColumn.Width = 51;
 			// 
 			// Label
 			// 
@@ -113,7 +113,7 @@
 			this.Sectors.Name = "Sectors";
 			this.Sectors.ReadOnly = true;
 			this.Sectors.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-			this.Sectors.Width = 70;
+			this.Sectors.Width = 68;
 			// 
 			// Linedefs
 			// 
@@ -124,7 +124,7 @@
 			this.Linedefs.Name = "Linedefs";
 			this.Linedefs.ReadOnly = true;
 			this.Linedefs.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-			this.Linedefs.Width = 74;
+			this.Linedefs.Width = 72;
 			// 
 			// Things
 			// 
@@ -184,11 +184,11 @@
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.hint);
 			this.Controls.Add(this.dataGridView);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(120, 80);
 			this.Name = "TagStatisticsForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Tag statistics";

@@ -206,7 +206,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Link clicked
 		private void link_Click(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			General.OpenWebsite((sender as LinkLabel).Text);
+			General.OpenWebsite("http://www.zdoom.org/wiki/Using_ZIPs_as_WAD_replacement");
 		}
 
 		// Help

@@ -120,7 +120,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label5.AutoSize = true;
 			label5.Location = new System.Drawing.Point(12, 272);
 			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(312, 42);
+			label5.Size = new System.Drawing.Size(299, 39);
 			label5.TabIndex = 19;
 			label5.Text = "Drag && drop resources to add them.\r\nDrag items to change order (lower items over" +
 				"ride higher items).\r\nUse the context menu to cut, copy, paste or remove items.";
@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label2.AutoSize = true;
 			label2.Location = new System.Drawing.Point(12, 86);
 			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(149, 14);
+			label2.Size = new System.Drawing.Size(144, 13);
 			label2.TabIndex = 24;
 			label2.Text = "Configuration for saving map:";
 			// 
@@ -162,7 +162,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label7.AutoSize = true;
 			label7.Location = new System.Drawing.Point(35, 125);
 			label7.Name = "label7";
-			label7.Size = new System.Drawing.Size(126, 14);
+			label7.Size = new System.Drawing.Size(121, 13);
 			label7.TabIndex = 26;
 			label7.Text = "Configuration for testing:";
 			// 
@@ -183,7 +183,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label1.AutoSize = true;
 			label1.Location = new System.Drawing.Point(15, 89);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(63, 14);
+			label1.Size = new System.Drawing.Size(62, 13);
 			label1.TabIndex = 24;
 			label1.Text = "Application:";
 			// 
@@ -192,7 +192,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label8.AutoSize = true;
 			label8.Location = new System.Drawing.Point(21, 119);
 			label8.Name = "label8";
-			label8.Size = new System.Drawing.Size(57, 14);
+			label8.Size = new System.Drawing.Size(58, 13);
 			label8.TabIndex = 34;
 			label8.Text = "Skill Level:";
 			// 
@@ -223,11 +223,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelparameters
 			// 
 			this.labelparameters.AutoSize = true;
-			this.labelparameters.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelparameters.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelparameters.ForeColor = System.Drawing.SystemColors.HotTrack;
 			this.labelparameters.Location = new System.Drawing.Point(16, 169);
 			this.labelparameters.Name = "labelparameters";
-			this.labelparameters.Size = new System.Drawing.Size(65, 14);
+			this.labelparameters.Size = new System.Drawing.Size(63, 13);
 			this.labelparameters.TabIndex = 27;
 			this.labelparameters.Text = "Parameters:";
 			this.tooltip.SetToolTip(this.labelparameters, resources.GetString("labelparameters.ToolTip"));
@@ -267,7 +267,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Controls.Add(this.tabmodes);
 			this.tabs.Controls.Add(this.tabcustomcolors);
 			this.tabs.Enabled = false;
-			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.ItemSize = new System.Drawing.Size(64, 20);
 			this.tabs.Location = new System.Drawing.Point(277, 12);
 			this.tabs.Name = "tabs";
@@ -281,7 +281,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabresources.Controls.Add(label6);
 			this.tabresources.Controls.Add(this.configdata);
 			this.tabresources.Controls.Add(label5);
-			this.tabresources.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabresources.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabresources.Location = new System.Drawing.Point(4, 24);
 			this.tabresources.Name = "tabresources";
 			this.tabresources.Padding = new System.Windows.Forms.Padding(6);
@@ -293,14 +293,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// configdata
 			// 
 			this.configdata.AllowDrop = true;
-			this.configdata.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.configdata.DialogOffset = new System.Drawing.Point(-120, 10);
-			this.configdata.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.configdata.Location = new System.Drawing.Point(15, 55);
 			this.configdata.Name = "configdata";
-			this.configdata.Size = new System.Drawing.Size(445, 204);
+			this.configdata.Size = new System.Drawing.Size(467, 204);
 			this.configdata.TabIndex = 0;
 			this.configdata.OnContentChanged += new CodeImp.DoomBuilder.Controls.ResourceListEditor.ContentChanged(this.resourcelocations_OnContentChanged);
 			// 
@@ -311,7 +307,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabnodebuilder.Controls.Add(label2);
 			this.tabnodebuilder.Controls.Add(this.nodebuildersave);
 			this.tabnodebuilder.Controls.Add(label3);
-			this.tabnodebuilder.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabnodebuilder.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabnodebuilder.Location = new System.Drawing.Point(4, 24);
 			this.tabnodebuilder.Name = "tabnodebuilder";
 			this.tabnodebuilder.Padding = new System.Windows.Forms.Padding(6);
@@ -328,7 +324,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.nodebuildertest.FormattingEnabled = true;
 			this.nodebuildertest.Location = new System.Drawing.Point(167, 122);
 			this.nodebuildertest.Name = "nodebuildertest";
-			this.nodebuildertest.Size = new System.Drawing.Size(313, 22);
+			this.nodebuildertest.Size = new System.Drawing.Size(313, 21);
 			this.nodebuildertest.Sorted = true;
 			this.nodebuildertest.TabIndex = 1;
 			this.nodebuildertest.SelectedIndexChanged += new System.EventHandler(this.nodebuildertest_SelectedIndexChanged);
@@ -341,7 +337,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.nodebuildersave.FormattingEnabled = true;
 			this.nodebuildersave.Location = new System.Drawing.Point(167, 83);
 			this.nodebuildersave.Name = "nodebuildersave";
-			this.nodebuildersave.Size = new System.Drawing.Size(313, 22);
+			this.nodebuildersave.Size = new System.Drawing.Size(313, 21);
 			this.nodebuildersave.Sorted = true;
 			this.nodebuildersave.TabIndex = 0;
 			this.nodebuildersave.SelectedIndexChanged += new System.EventHandler(this.nodebuildersave_SelectedIndexChanged);
@@ -365,7 +361,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabtesting.Controls.Add(this.testapplication);
 			this.tabtesting.Controls.Add(label1);
 			this.tabtesting.Controls.Add(label9);
-			this.tabtesting.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabtesting.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabtesting.Location = new System.Drawing.Point(4, 24);
 			this.tabtesting.Name = "tabtesting";
 			this.tabtesting.Padding = new System.Windows.Forms.Padding(6);
@@ -399,7 +395,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbEngineSelector.FormattingEnabled = true;
 			this.cbEngineSelector.Location = new System.Drawing.Point(87, 53);
 			this.cbEngineSelector.Name = "cbEngineSelector";
-			this.cbEngineSelector.Size = new System.Drawing.Size(340, 22);
+			this.cbEngineSelector.Size = new System.Drawing.Size(340, 21);
 			this.cbEngineSelector.TabIndex = 38;
 			this.cbEngineSelector.SelectedIndexChanged += new System.EventHandler(this.cbEngineSelector_SelectedIndexChanged);
 			this.cbEngineSelector.DropDown += new System.EventHandler(this.cbEngineSelector_DropDown);
@@ -409,7 +405,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label13.AutoSize = true;
 			this.label13.Location = new System.Drawing.Point(36, 56);
 			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(42, 14);
+			this.label13.Size = new System.Drawing.Size(43, 13);
 			this.label13.TabIndex = 37;
 			this.label13.Text = "Engine:";
 			// 
@@ -418,7 +414,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.shortpaths.AutoSize = true;
 			this.shortpaths.Location = new System.Drawing.Point(87, 217);
 			this.shortpaths.Name = "shortpaths";
-			this.shortpaths.Size = new System.Drawing.Size(276, 18);
+			this.shortpaths.Size = new System.Drawing.Size(269, 17);
 			this.shortpaths.TabIndex = 5;
 			this.shortpaths.Text = "Use short paths and file names (MSDOS 8.3 format)";
 			this.shortpaths.UseVisualStyleBackColor = true;
@@ -430,7 +426,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.customparameters.AutoSize = true;
 			this.customparameters.Location = new System.Drawing.Point(87, 146);
 			this.customparameters.Name = "customparameters";
-			this.customparameters.Size = new System.Drawing.Size(134, 18);
+			this.customparameters.Size = new System.Drawing.Size(129, 17);
 			this.customparameters.TabIndex = 3;
 			this.customparameters.Text = "Customize parameters";
 			this.customparameters.UseVisualStyleBackColor = true;
@@ -453,11 +449,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// browsetestprogram
 			// 
 			this.browsetestprogram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.browsetestprogram.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browsetestprogram.Image = global::CodeImp.DoomBuilder.Properties.Resources.Folder;
 			this.browsetestprogram.Location = new System.Drawing.Point(459, 84);
 			this.browsetestprogram.Name = "browsetestprogram";
-			this.browsetestprogram.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsetestprogram.Size = new System.Drawing.Size(30, 24);
 			this.browsetestprogram.TabIndex = 1;
 			this.browsetestprogram.Text = " ";
@@ -491,7 +485,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelresult.AutoSize = true;
 			this.labelresult.Location = new System.Drawing.Point(38, 244);
 			this.labelresult.Name = "labelresult";
-			this.labelresult.Size = new System.Drawing.Size(40, 14);
+			this.labelresult.Size = new System.Drawing.Size(40, 13);
 			this.labelresult.TabIndex = 30;
 			this.labelresult.Text = "Result:";
 			this.labelresult.Visible = false;
@@ -529,7 +523,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabtextures.Controls.Add(this.removetextureset);
 			this.tabtextures.Controls.Add(this.addtextureset);
 			this.tabtextures.Controls.Add(label4);
-			this.tabtextures.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabtextures.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabtextures.Location = new System.Drawing.Point(4, 24);
 			this.tabtextures.Name = "tabtextures";
 			this.tabtextures.Size = new System.Drawing.Size(498, 330);
@@ -638,7 +632,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabmodes.Controls.Add(this.label11);
 			this.tabmodes.Controls.Add(this.listmodes);
 			this.tabmodes.Controls.Add(label10);
-			this.tabmodes.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabmodes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabmodes.Location = new System.Drawing.Point(4, 24);
 			this.tabmodes.Name = "tabmodes";
 			this.tabmodes.Size = new System.Drawing.Size(498, 330);
@@ -650,9 +644,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.startmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.startmode.FormattingEnabled = true;
-			this.startmode.Location = new System.Drawing.Point(239, 288);
+			this.startmode.Location = new System.Drawing.Point(215, 288);
 			this.startmode.Name = "startmode";
-			this.startmode.Size = new System.Drawing.Size(218, 22);
+			this.startmode.Size = new System.Drawing.Size(267, 21);
 			this.startmode.TabIndex = 27;
 			this.startmode.SelectedIndexChanged += new System.EventHandler(this.startmode_SelectedIndexChanged);
 			// 
@@ -661,7 +655,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label11.AutoSize = true;
 			this.label11.Location = new System.Drawing.Point(12, 291);
 			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(199, 14);
+			this.label11.Size = new System.Drawing.Size(197, 13);
 			this.label11.TabIndex = 26;
 			this.label11.Text = "When opening a map, start in this mode:";
 			// 
@@ -700,6 +694,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// tabcustomcolors
 			// 
 			this.tabcustomcolors.Controls.Add(this.colorsControl);
+			this.tabcustomcolors.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabcustomcolors.Location = new System.Drawing.Point(4, 24);
 			this.tabcustomcolors.Name = "tabcustomcolors";
 			this.tabcustomcolors.Padding = new System.Windows.Forms.Padding(3);
@@ -710,10 +705,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// colorsControl
 			// 
-			this.colorsControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.colorsControl.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorsControl.Location = new System.Drawing.Point(6, 6);
 			this.colorsControl.Name = "colorsControl";
 			this.colorsControl.Size = new System.Drawing.Size(486, 318);
@@ -816,7 +807,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hintlabel.AutoSize = true;
 			this.hintlabel.Location = new System.Drawing.Point(30, 384);
 			this.hintlabel.Name = "hintlabel";
-			this.hintlabel.Size = new System.Drawing.Size(283, 14);
+			this.hintlabel.Size = new System.Drawing.Size(276, 13);
 			this.hintlabel.TabIndex = 6;
 			this.hintlabel.Text = "Use the context menu to copy-paste game configurations";
 			// 
@@ -854,7 +845,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.tabs);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;

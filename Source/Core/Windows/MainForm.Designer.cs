@@ -224,11 +224,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelcollapsedinfo = new System.Windows.Forms.Label();
 			this.modename = new System.Windows.Forms.Label();
 			this.buttontoggleinfo = new System.Windows.Forms.Button();
+			this.console = new CodeImp.DoomBuilder.DebugConsole();
 			this.vertexinfo = new CodeImp.DoomBuilder.Controls.VertexInfoPanel();
 			this.linedefinfo = new CodeImp.DoomBuilder.Controls.LinedefInfoPanel();
 			this.thinginfo = new CodeImp.DoomBuilder.Controls.ThingInfoPanel();
 			this.sectorinfo = new CodeImp.DoomBuilder.Controls.SectorInfoPanel();
-			this.console = new CodeImp.DoomBuilder.DebugConsole();
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new RenderTargetControl();
 			this.processor = new System.Windows.Forms.Timer(this.components);
@@ -292,13 +292,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.seperatorfileopen.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.seperatorfileopen.Name = "seperatorfileopen";
-			this.seperatorfileopen.Size = new System.Drawing.Size(220, 6);
+			this.seperatorfileopen.Size = new System.Drawing.Size(222, 6);
 			// 
 			// seperatorfilerecent
 			// 
 			this.seperatorfilerecent.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.seperatorfilerecent.Name = "seperatorfilerecent";
-			this.seperatorfilerecent.Size = new System.Drawing.Size(220, 6);
+			this.seperatorfilerecent.Size = new System.Drawing.Size(222, 6);
 			// 
 			// seperatoreditgrid
 			// 
@@ -394,7 +394,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemnewmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.File;
 			this.itemnewmap.Name = "itemnewmap";
 			this.itemnewmap.ShortcutKeyDisplayString = "";
-			this.itemnewmap.Size = new System.Drawing.Size(223, 22);
+			this.itemnewmap.Size = new System.Drawing.Size(225, 22);
 			this.itemnewmap.Tag = "builder_newmap";
 			this.itemnewmap.Text = "&New Map";
 			this.itemnewmap.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -403,7 +403,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.itemopenmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.OpenMap;
 			this.itemopenmap.Name = "itemopenmap";
-			this.itemopenmap.Size = new System.Drawing.Size(223, 22);
+			this.itemopenmap.Size = new System.Drawing.Size(225, 22);
 			this.itemopenmap.Tag = "builder_openmap";
 			this.itemopenmap.Text = "&Open Map...";
 			this.itemopenmap.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -411,7 +411,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// itemopenmapincurwad
 			// 
 			this.itemopenmapincurwad.Name = "itemopenmapincurwad";
-			this.itemopenmapincurwad.Size = new System.Drawing.Size(223, 22);
+			this.itemopenmapincurwad.Size = new System.Drawing.Size(225, 22);
 			this.itemopenmapincurwad.Tag = "builder_openmapincurrentwad";
 			this.itemopenmapincurwad.Text = "Open Map in Current &WAD...";
 			this.itemopenmapincurwad.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -419,7 +419,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// itemclosemap
 			// 
 			this.itemclosemap.Name = "itemclosemap";
-			this.itemclosemap.Size = new System.Drawing.Size(223, 22);
+			this.itemclosemap.Size = new System.Drawing.Size(225, 22);
 			this.itemclosemap.Tag = "builder_closemap";
 			this.itemclosemap.Text = "&Close Map";
 			this.itemclosemap.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -428,7 +428,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.itemsavemap.Image = global::CodeImp.DoomBuilder.Properties.Resources.SaveMap;
 			this.itemsavemap.Name = "itemsavemap";
-			this.itemsavemap.Size = new System.Drawing.Size(223, 22);
+			this.itemsavemap.Size = new System.Drawing.Size(225, 22);
 			this.itemsavemap.Tag = "builder_savemap";
 			this.itemsavemap.Text = "&Save Map";
 			this.itemsavemap.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -436,7 +436,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// itemsavemapas
 			// 
 			this.itemsavemapas.Name = "itemsavemapas";
-			this.itemsavemapas.Size = new System.Drawing.Size(223, 22);
+			this.itemsavemapas.Size = new System.Drawing.Size(225, 22);
 			this.itemsavemapas.Tag = "builder_savemapas";
 			this.itemsavemapas.Text = "Save Map &As...";
 			this.itemsavemapas.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -444,7 +444,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// itemsavemapinto
 			// 
 			this.itemsavemapinto.Name = "itemsavemapinto";
-			this.itemsavemapinto.Size = new System.Drawing.Size(223, 22);
+			this.itemsavemapinto.Size = new System.Drawing.Size(225, 22);
 			this.itemsavemapinto.Tag = "builder_savemapinto";
 			this.itemsavemapinto.Text = "Save Map &Into...";
 			this.itemsavemapinto.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -453,36 +453,36 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.seperatorfilesave.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.seperatorfilesave.Name = "seperatorfilesave";
-			this.seperatorfilesave.Size = new System.Drawing.Size(220, 6);
+			this.seperatorfilesave.Size = new System.Drawing.Size(222, 6);
 			// 
 			// itemimport
 			// 
 			this.itemimport.Name = "itemimport";
-			this.itemimport.Size = new System.Drawing.Size(223, 22);
+			this.itemimport.Size = new System.Drawing.Size(225, 22);
 			this.itemimport.Text = "Import";
 			// 
 			// itemexport
 			// 
 			this.itemexport.Name = "itemexport";
-			this.itemexport.Size = new System.Drawing.Size(223, 22);
+			this.itemexport.Size = new System.Drawing.Size(225, 22);
 			this.itemexport.Text = "Export";
 			// 
 			// separatorio
 			// 
 			this.separatorio.Name = "separatorio";
-			this.separatorio.Size = new System.Drawing.Size(220, 6);
+			this.separatorio.Size = new System.Drawing.Size(222, 6);
 			// 
 			// itemnorecent
 			// 
 			this.itemnorecent.Enabled = false;
 			this.itemnorecent.Name = "itemnorecent";
-			this.itemnorecent.Size = new System.Drawing.Size(223, 22);
+			this.itemnorecent.Size = new System.Drawing.Size(225, 22);
 			this.itemnorecent.Text = "No recently opened files";
 			// 
 			// itemexit
 			// 
 			this.itemexit.Name = "itemexit";
-			this.itemexit.Size = new System.Drawing.Size(223, 22);
+			this.itemexit.Size = new System.Drawing.Size(225, 22);
 			this.itemexit.Text = "E&xit";
 			this.itemexit.Click += new System.EventHandler(this.itemexit_Click);
 			// 
@@ -1573,7 +1573,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.sightsdontshow.Name = "sightsdontshow";
 			this.sightsdontshow.Size = new System.Drawing.Size(237, 22);
 			this.sightsdontshow.Tag = 0;
-			this.sightsdontshow.Text = "Don't show dynamic lights";
+			this.sightsdontshow.Text = "Don\'t show dynamic lights";
 			this.sightsdontshow.Click += new System.EventHandler(this.ChangeLightRenderingMode);
 			// 
 			// lightsshow
@@ -1617,7 +1617,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modelsdontshow.CheckOnClick = true;
 			this.modelsdontshow.Image = global::CodeImp.DoomBuilder.Properties.Resources.ModelDisabled;
 			this.modelsdontshow.Name = "modelsdontshow";
-			this.modelsdontshow.Size = new System.Drawing.Size(245, 22);
+			this.modelsdontshow.Size = new System.Drawing.Size(271, 22);
 			this.modelsdontshow.Tag = 0;
 			this.modelsdontshow.Text = "Don\'t show models";
 			this.modelsdontshow.Click += new System.EventHandler(this.ChangeModelRenderingMode);
@@ -1627,7 +1627,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modelsshowselection.CheckOnClick = true;
 			this.modelsshowselection.Image = global::CodeImp.DoomBuilder.Properties.Resources.Model_selected;
 			this.modelsshowselection.Name = "modelsshowselection";
-			this.modelsshowselection.Size = new System.Drawing.Size(245, 22);
+			this.modelsshowselection.Size = new System.Drawing.Size(271, 22);
 			this.modelsshowselection.Tag = 1;
 			this.modelsshowselection.Text = "Show models for selected things only";
 			this.modelsshowselection.Click += new System.EventHandler(this.ChangeModelRenderingMode);
@@ -1637,7 +1637,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modelsshowall.CheckOnClick = true;
 			this.modelsshowall.Image = global::CodeImp.DoomBuilder.Properties.Resources.Model;
 			this.modelsshowall.Name = "modelsshowall";
-			this.modelsshowall.Size = new System.Drawing.Size(245, 22);
+			this.modelsshowall.Size = new System.Drawing.Size(271, 22);
 			this.modelsshowall.Tag = 2;
 			this.modelsshowall.Text = "Always show models";
 			this.modelsshowall.Click += new System.EventHandler(this.ChangeModelRenderingMode);
@@ -2024,7 +2024,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// statistics
 			// 
 			this.statistics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.statistics.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.statistics.ForeColor = System.Drawing.SystemColors.GrayText;
 			this.statistics.Location = new System.Drawing.Point(869, 2);
 			this.statistics.Name = "statistics";
@@ -2083,9 +2082,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontoggleinfo.Click += new System.EventHandler(this.InvokeTaggedAction);
 			this.buttontoggleinfo.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttontoggleinfo_MouseUp);
 			// 
+			// console
+			// 
+			this.console.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.console.Location = new System.Drawing.Point(3, 3);
+			this.console.Name = "console";
+			this.console.Size = new System.Drawing.Size(851, 98);
+			this.console.TabIndex = 10;
+			// 
 			// vertexinfo
 			// 
-			this.vertexinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.vertexinfo.Location = new System.Drawing.Point(0, 0);
 			this.vertexinfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.vertexinfo.MinimumSize = new System.Drawing.Size(100, 100);
@@ -2096,7 +2104,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// linedefinfo
 			// 
-			this.linedefinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.linedefinfo.Location = new System.Drawing.Point(3, 3);
 			this.linedefinfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.linedefinfo.MinimumSize = new System.Drawing.Size(100, 100);
@@ -2107,7 +2114,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// thinginfo
 			// 
-			this.thinginfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.thinginfo.Location = new System.Drawing.Point(3, 3);
 			this.thinginfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.thinginfo.MinimumSize = new System.Drawing.Size(100, 100);
@@ -2118,7 +2124,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// sectorinfo
 			// 
-			this.sectorinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.sectorinfo.Location = new System.Drawing.Point(3, 3);
 			this.sectorinfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.sectorinfo.MinimumSize = new System.Drawing.Size(100, 100);
@@ -2126,16 +2131,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.sectorinfo.Size = new System.Drawing.Size(1090, 100);
 			this.sectorinfo.TabIndex = 2;
 			this.sectorinfo.Visible = false;
-			// 
-			// console
-			// 
-			this.console.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.console.Location = new System.Drawing.Point(3, 3);
-			this.console.Name = "console";
-			this.console.Size = new System.Drawing.Size(851, 98);
-			this.console.TabIndex = 10;
 			// 
 			// redrawtimer
 			// 
@@ -2198,7 +2193,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// dockerspanel
 			// 
-			this.dockerspanel.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.dockerspanel.Location = new System.Drawing.Point(62, 67);
 			this.dockerspanel.Name = "dockerspanel";
 			this.dockerspanel.Size = new System.Drawing.Size(236, 467);
@@ -2246,9 +2240,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.flowLayoutPanel);
 			this.Controls.Add(this.panelinfo);
 			this.Controls.Add(this.statusbar);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.KeyPreview = true;
 			this.MainMenuStrip = this.menumain;
 			this.Name = "MainForm";
 			this.Opacity = 1;

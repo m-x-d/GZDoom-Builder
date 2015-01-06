@@ -218,7 +218,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.activation.BackColor = System.Drawing.Color.Transparent;
 			this.activation.Location = new System.Drawing.Point(66, 34);
 			this.activation.Name = "activation";
-			this.activation.Size = new System.Drawing.Size(168, 14);
+			this.activation.Size = new System.Drawing.Size(162, 13);
 			this.activation.TabIndex = 31;
 			this.activation.Text = "0 - When player does a barrel roll";
 			this.activation.UseMnemonic = false;
@@ -228,7 +228,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.unpegged.AutoSize = true;
 			this.unpegged.Location = new System.Drawing.Point(180, 49);
 			this.unpegged.Name = "unpegged";
-			this.unpegged.Size = new System.Drawing.Size(32, 14);
+			this.unpegged.Size = new System.Drawing.Size(33, 13);
 			this.unpegged.TabIndex = 29;
 			this.unpegged.Text = "None";
 			this.unpegged.UseMnemonic = false;
@@ -238,7 +238,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.peglabel.AutoSize = true;
 			this.peglabel.Location = new System.Drawing.Point(118, 49);
 			this.peglabel.Name = "peglabel";
-			this.peglabel.Size = new System.Drawing.Size(59, 14);
+			this.peglabel.Size = new System.Drawing.Size(60, 13);
 			this.peglabel.TabIndex = 28;
 			this.peglabel.Text = "Unpegged:";
 			// 
@@ -347,7 +347,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backoffset.AutoSize = true;
 			this.backoffset.Location = new System.Drawing.Point(180, 79);
 			this.backoffset.Name = "backoffset";
-			this.backoffset.Size = new System.Drawing.Size(49, 14);
+			this.backoffset.Size = new System.Drawing.Size(49, 13);
 			this.backoffset.TabIndex = 17;
 			this.backoffset.Text = "100, 100";
 			// 
@@ -375,7 +375,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontoffset.AutoSize = true;
 			this.frontoffset.Location = new System.Drawing.Point(180, 64);
 			this.frontoffset.Name = "frontoffset";
-			this.frontoffset.Size = new System.Drawing.Size(49, 14);
+			this.frontoffset.Size = new System.Drawing.Size(49, 13);
 			this.frontoffset.TabIndex = 11;
 			this.frontoffset.Text = "100, 100";
 			// 
@@ -393,7 +393,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.tag.AutoSize = true;
 			this.tag.Location = new System.Drawing.Point(66, 79);
 			this.tag.Name = "tag";
-			this.tag.Size = new System.Drawing.Size(13, 14);
+			this.tag.Size = new System.Drawing.Size(13, 13);
 			this.tag.TabIndex = 7;
 			this.tag.Text = "0";
 			// 
@@ -402,7 +402,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.angle.AutoSize = true;
 			this.angle.Location = new System.Drawing.Point(66, 64);
 			this.angle.Name = "angle";
-			this.angle.Size = new System.Drawing.Size(25, 14);
+			this.angle.Size = new System.Drawing.Size(25, 13);
 			this.angle.TabIndex = 6;
 			this.angle.Text = "360";
 			// 
@@ -411,7 +411,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.length.AutoSize = true;
 			this.length.Location = new System.Drawing.Point(66, 49);
 			this.length.Name = "length";
-			this.length.Size = new System.Drawing.Size(31, 14);
+			this.length.Size = new System.Drawing.Size(31, 13);
 			this.length.TabIndex = 5;
 			this.length.Text = "1024";
 			// 
@@ -421,7 +421,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.action.BackColor = System.Drawing.Color.Transparent;
 			this.action.Location = new System.Drawing.Point(66, 19);
 			this.action.Name = "action";
-			this.action.Size = new System.Drawing.Size(190, 14);
+			this.action.Size = new System.Drawing.Size(188, 13);
 			this.action.TabIndex = 1;
 			this.action.Text = "0 - Big Door that goes Wobbly Wobbly";
 			this.action.UseMnemonic = false;
@@ -477,7 +477,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontTopUDMFOffset.AutoSize = true;
 			this.frontTopUDMFOffset.Location = new System.Drawing.Point(118, 2);
 			this.frontTopUDMFOffset.Name = "frontTopUDMFOffset";
-			this.frontTopUDMFOffset.Size = new System.Drawing.Size(29, 14);
+			this.frontTopUDMFOffset.Size = new System.Drawing.Size(25, 13);
 			this.frontTopUDMFOffset.TabIndex = 9;
 			this.frontTopUDMFOffset.Text = "--, --";
 			// 
@@ -495,7 +495,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontTopUDMFScale.AutoSize = true;
 			this.frontTopUDMFScale.Location = new System.Drawing.Point(118, 20);
 			this.frontTopUDMFScale.Name = "frontTopUDMFScale";
-			this.frontTopUDMFScale.Size = new System.Drawing.Size(29, 14);
+			this.frontTopUDMFScale.Size = new System.Drawing.Size(25, 13);
 			this.frontTopUDMFScale.TabIndex = 10;
 			this.frontTopUDMFScale.Text = "--, --";
 			// 
@@ -514,7 +514,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.labelTextureFrontTop.AutoSize = true;
 			this.labelTextureFrontTop.BackColor = System.Drawing.Color.Black;
-			this.labelTextureFrontTop.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelTextureFrontTop.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelTextureFrontTop.ForeColor = System.Drawing.Color.White;
 			this.labelTextureFrontTop.Location = new System.Drawing.Point(1, 1);
 			this.labelTextureFrontTop.MaximumSize = new System.Drawing.Size(0, 13);
@@ -529,7 +529,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fronthighname.BackColor = System.Drawing.SystemColors.Control;
 			this.fronthighname.Location = new System.Drawing.Point(3, 64);
 			this.fronthighname.Name = "fronthighname";
-			this.fronthighname.Size = new System.Drawing.Size(68, 14);
+			this.fronthighname.Size = new System.Drawing.Size(73, 13);
 			this.fronthighname.TabIndex = 1;
 			this.fronthighname.Text = "BROWNHUG";
 			this.fronthighname.UseMnemonic = false;
@@ -562,7 +562,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontMidUDMFOffset.AutoSize = true;
 			this.frontMidUDMFOffset.Location = new System.Drawing.Point(118, 3);
 			this.frontMidUDMFOffset.Name = "frontMidUDMFOffset";
-			this.frontMidUDMFOffset.Size = new System.Drawing.Size(29, 14);
+			this.frontMidUDMFOffset.Size = new System.Drawing.Size(25, 13);
 			this.frontMidUDMFOffset.TabIndex = 9;
 			this.frontMidUDMFOffset.Text = "--, --";
 			// 
@@ -580,7 +580,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontMidUDMFScale.AutoSize = true;
 			this.frontMidUDMFScale.Location = new System.Drawing.Point(118, 20);
 			this.frontMidUDMFScale.Name = "frontMidUDMFScale";
-			this.frontMidUDMFScale.Size = new System.Drawing.Size(29, 14);
+			this.frontMidUDMFScale.Size = new System.Drawing.Size(25, 13);
 			this.frontMidUDMFScale.TabIndex = 10;
 			this.frontMidUDMFScale.Text = "--, --";
 			// 
@@ -599,7 +599,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.labelTextureFrontMid.AutoSize = true;
 			this.labelTextureFrontMid.BackColor = System.Drawing.Color.Black;
-			this.labelTextureFrontMid.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelTextureFrontMid.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelTextureFrontMid.ForeColor = System.Drawing.Color.White;
 			this.labelTextureFrontMid.Location = new System.Drawing.Point(1, 1);
 			this.labelTextureFrontMid.MaximumSize = new System.Drawing.Size(0, 13);
@@ -614,7 +614,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontmidname.BackColor = System.Drawing.SystemColors.Control;
 			this.frontmidname.Location = new System.Drawing.Point(3, 64);
 			this.frontmidname.Name = "frontmidname";
-			this.frontmidname.Size = new System.Drawing.Size(68, 14);
+			this.frontmidname.Size = new System.Drawing.Size(73, 13);
 			this.frontmidname.TabIndex = 3;
 			this.frontmidname.Text = "BROWNHUG";
 			this.frontmidname.UseMnemonic = false;
@@ -647,7 +647,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontBottomUDMFOffset.AutoSize = true;
 			this.frontBottomUDMFOffset.Location = new System.Drawing.Point(118, 3);
 			this.frontBottomUDMFOffset.Name = "frontBottomUDMFOffset";
-			this.frontBottomUDMFOffset.Size = new System.Drawing.Size(29, 14);
+			this.frontBottomUDMFOffset.Size = new System.Drawing.Size(25, 13);
 			this.frontBottomUDMFOffset.TabIndex = 9;
 			this.frontBottomUDMFOffset.Text = "--, --";
 			// 
@@ -665,7 +665,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontBottomUDMFScale.AutoSize = true;
 			this.frontBottomUDMFScale.Location = new System.Drawing.Point(118, 20);
 			this.frontBottomUDMFScale.Name = "frontBottomUDMFScale";
-			this.frontBottomUDMFScale.Size = new System.Drawing.Size(29, 14);
+			this.frontBottomUDMFScale.Size = new System.Drawing.Size(25, 13);
 			this.frontBottomUDMFScale.TabIndex = 10;
 			this.frontBottomUDMFScale.Text = "--, --";
 			// 
@@ -684,7 +684,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.labelTextureFrontBottom.AutoSize = true;
 			this.labelTextureFrontBottom.BackColor = System.Drawing.Color.Black;
-			this.labelTextureFrontBottom.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelTextureFrontBottom.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelTextureFrontBottom.ForeColor = System.Drawing.Color.White;
 			this.labelTextureFrontBottom.Location = new System.Drawing.Point(1, 1);
 			this.labelTextureFrontBottom.MaximumSize = new System.Drawing.Size(0, 13);
@@ -699,7 +699,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontlowname.BackColor = System.Drawing.SystemColors.Control;
 			this.frontlowname.Location = new System.Drawing.Point(3, 64);
 			this.frontlowname.Name = "frontlowname";
-			this.frontlowname.Size = new System.Drawing.Size(68, 14);
+			this.frontlowname.Size = new System.Drawing.Size(73, 13);
 			this.frontlowname.TabIndex = 5;
 			this.frontlowname.Text = "BROWNHUG";
 			this.frontlowname.UseMnemonic = false;
@@ -755,7 +755,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backTopUDMFOffset.AutoSize = true;
 			this.backTopUDMFOffset.Location = new System.Drawing.Point(118, 3);
 			this.backTopUDMFOffset.Name = "backTopUDMFOffset";
-			this.backTopUDMFOffset.Size = new System.Drawing.Size(29, 14);
+			this.backTopUDMFOffset.Size = new System.Drawing.Size(25, 13);
 			this.backTopUDMFOffset.TabIndex = 9;
 			this.backTopUDMFOffset.Text = "--, --";
 			// 
@@ -773,7 +773,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backTopUDMFScale.AutoSize = true;
 			this.backTopUDMFScale.Location = new System.Drawing.Point(118, 20);
 			this.backTopUDMFScale.Name = "backTopUDMFScale";
-			this.backTopUDMFScale.Size = new System.Drawing.Size(29, 14);
+			this.backTopUDMFScale.Size = new System.Drawing.Size(25, 13);
 			this.backTopUDMFScale.TabIndex = 10;
 			this.backTopUDMFScale.Text = "--, --";
 			// 
@@ -792,7 +792,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.labelTextureBackTop.AutoSize = true;
 			this.labelTextureBackTop.BackColor = System.Drawing.Color.Black;
-			this.labelTextureBackTop.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelTextureBackTop.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelTextureBackTop.ForeColor = System.Drawing.Color.White;
 			this.labelTextureBackTop.Location = new System.Drawing.Point(1, 1);
 			this.labelTextureBackTop.MaximumSize = new System.Drawing.Size(0, 13);
@@ -807,7 +807,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backhighname.BackColor = System.Drawing.SystemColors.Control;
 			this.backhighname.Location = new System.Drawing.Point(3, 64);
 			this.backhighname.Name = "backhighname";
-			this.backhighname.Size = new System.Drawing.Size(68, 14);
+			this.backhighname.Size = new System.Drawing.Size(73, 13);
 			this.backhighname.TabIndex = 1;
 			this.backhighname.Text = "BROWNHUG";
 			this.backhighname.UseMnemonic = false;
@@ -840,7 +840,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backMidUDMFOffset.AutoSize = true;
 			this.backMidUDMFOffset.Location = new System.Drawing.Point(118, 3);
 			this.backMidUDMFOffset.Name = "backMidUDMFOffset";
-			this.backMidUDMFOffset.Size = new System.Drawing.Size(29, 14);
+			this.backMidUDMFOffset.Size = new System.Drawing.Size(25, 13);
 			this.backMidUDMFOffset.TabIndex = 9;
 			this.backMidUDMFOffset.Text = "--, --";
 			// 
@@ -858,7 +858,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backMidUDMFScale.AutoSize = true;
 			this.backMidUDMFScale.Location = new System.Drawing.Point(118, 20);
 			this.backMidUDMFScale.Name = "backMidUDMFScale";
-			this.backMidUDMFScale.Size = new System.Drawing.Size(29, 14);
+			this.backMidUDMFScale.Size = new System.Drawing.Size(25, 13);
 			this.backMidUDMFScale.TabIndex = 10;
 			this.backMidUDMFScale.Text = "--, --";
 			// 
@@ -877,7 +877,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.labelTextureBackMid.AutoSize = true;
 			this.labelTextureBackMid.BackColor = System.Drawing.Color.Black;
-			this.labelTextureBackMid.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelTextureBackMid.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelTextureBackMid.ForeColor = System.Drawing.Color.White;
 			this.labelTextureBackMid.Location = new System.Drawing.Point(1, 1);
 			this.labelTextureBackMid.MaximumSize = new System.Drawing.Size(0, 13);
@@ -892,7 +892,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backmidname.BackColor = System.Drawing.SystemColors.Control;
 			this.backmidname.Location = new System.Drawing.Point(3, 64);
 			this.backmidname.Name = "backmidname";
-			this.backmidname.Size = new System.Drawing.Size(68, 14);
+			this.backmidname.Size = new System.Drawing.Size(73, 13);
 			this.backmidname.TabIndex = 3;
 			this.backmidname.Text = "BROWNHUG";
 			this.backmidname.UseMnemonic = false;
@@ -925,7 +925,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backBottomUDMFOffset.AutoSize = true;
 			this.backBottomUDMFOffset.Location = new System.Drawing.Point(118, 3);
 			this.backBottomUDMFOffset.Name = "backBottomUDMFOffset";
-			this.backBottomUDMFOffset.Size = new System.Drawing.Size(29, 14);
+			this.backBottomUDMFOffset.Size = new System.Drawing.Size(25, 13);
 			this.backBottomUDMFOffset.TabIndex = 9;
 			this.backBottomUDMFOffset.Text = "--, --";
 			// 
@@ -943,7 +943,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backBottomUDMFScale.AutoSize = true;
 			this.backBottomUDMFScale.Location = new System.Drawing.Point(118, 20);
 			this.backBottomUDMFScale.Name = "backBottomUDMFScale";
-			this.backBottomUDMFScale.Size = new System.Drawing.Size(29, 14);
+			this.backBottomUDMFScale.Size = new System.Drawing.Size(25, 13);
 			this.backBottomUDMFScale.TabIndex = 10;
 			this.backBottomUDMFScale.Text = "--, --";
 			// 
@@ -962,7 +962,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.labelTextureBackBottom.AutoSize = true;
 			this.labelTextureBackBottom.BackColor = System.Drawing.Color.Black;
-			this.labelTextureBackBottom.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelTextureBackBottom.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelTextureBackBottom.ForeColor = System.Drawing.Color.White;
 			this.labelTextureBackBottom.Location = new System.Drawing.Point(1, 1);
 			this.labelTextureBackBottom.MaximumSize = new System.Drawing.Size(0, 13);
@@ -977,7 +977,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backlowname.BackColor = System.Drawing.SystemColors.Control;
 			this.backlowname.Location = new System.Drawing.Point(3, 64);
 			this.backlowname.Name = "backlowname";
-			this.backlowname.Size = new System.Drawing.Size(68, 14);
+			this.backlowname.Size = new System.Drawing.Size(73, 13);
 			this.backlowname.TabIndex = 5;
 			this.backlowname.Text = "BROWNHUG";
 			this.backlowname.UseMnemonic = false;
@@ -1028,7 +1028,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.flowLayoutPanel1);
 			this.DoubleBuffered = true;
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "LinedefInfoPanel";

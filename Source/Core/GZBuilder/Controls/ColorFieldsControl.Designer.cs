@@ -47,7 +47,6 @@
 			// cpColor
 			// 
 			this.cpColor.BackColor = System.Drawing.Color.Transparent;
-			this.cpColor.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.cpColor.Label = "Light:";
 			this.cpColor.Location = new System.Drawing.Point(3, 3);
 			this.cpColor.MaximumSize = new System.Drawing.Size(10000, 23);

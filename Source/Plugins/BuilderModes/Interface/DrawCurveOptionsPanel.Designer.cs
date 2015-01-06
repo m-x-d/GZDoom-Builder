@@ -93,7 +93,6 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.toolstrip);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.Name = "DrawCurveOptionsPanel";
 			this.Size = new System.Drawing.Size(249, 60);
 			this.toolstrip.ResumeLayout(false);

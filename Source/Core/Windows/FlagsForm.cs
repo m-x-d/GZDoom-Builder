@@ -8,7 +8,6 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		#region ================== Variables
 
-		//private bool setup;
 		private string value;
 		private IDictionary<string, string> flagdefs;
 
@@ -56,8 +55,6 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 			}
-
-			//setup = false;
 		}
 
 		// This shows the dialog
@@ -74,10 +71,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#endregion
 
-		private void LinedefFlagsForm_Load(object sender, EventArgs e)
-		{
-
-		}
 
 		private void apply_Click(object sender, EventArgs e)
 		{

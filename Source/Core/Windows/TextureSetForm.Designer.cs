@@ -101,7 +101,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(28, 65);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(175, 14);
+			this.label3.Size = new System.Drawing.Size(170, 13);
 			this.label3.TabIndex = 4;
 			this.label3.Text = "? = matches exactly one character";
 			// 
@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(28, 83);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(185, 14);
+			this.label4.Size = new System.Drawing.Size(177, 13);
 			this.label4.TabIndex = 5;
 			this.label4.Text = "* = matches zero or more characters";
 			// 
@@ -230,7 +230,6 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.matcheslist.BrowseFlats = false;
-			this.matcheslist.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.matcheslist.HideInputBox = true;
 			this.matcheslist.Location = new System.Drawing.Point(18, 55);
 			this.matcheslist.Name = "matcheslist";
@@ -281,12 +280,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.groupBox1);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TextureSetForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

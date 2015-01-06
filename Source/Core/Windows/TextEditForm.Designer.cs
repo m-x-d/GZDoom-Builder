@@ -87,12 +87,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.textbox);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TextEditForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

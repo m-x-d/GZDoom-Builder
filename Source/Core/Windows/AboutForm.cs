@@ -32,7 +32,11 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
 			// Show version
-			version.Text = Application.ProductName + " v" + Application.ProductVersion + (General.DebugBuild ? " (debug)" : "");
+#if DEBUG
+			version.Text = Application.ProductName + " [DEVBUILD]";
+#else
+			version.Text = Application.ProductName + " v" + Application.ProductVersion;
+#endif
 		}
 
 		// Launch Doom Builder website

@@ -71,19 +71,17 @@
 			this.cbDisplayMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.cbDisplayMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cbDisplayMode.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.cbDisplayMode.Location = new System.Drawing.Point(57, 13);
 			this.cbDisplayMode.Name = "cbDisplayMode";
-			this.cbDisplayMode.Size = new System.Drawing.Size(203, 22);
+			this.cbDisplayMode.Size = new System.Drawing.Size(203, 21);
 			this.cbDisplayMode.TabIndex = 2;
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.label1.Location = new System.Drawing.Point(12, 16);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(39, 14);
+			this.label1.Size = new System.Drawing.Size(37, 13);
 			this.label1.TabIndex = 3;
 			this.label1.Text = "Show:";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -93,19 +91,17 @@
 			this.cbSortMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.cbSortMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cbSortMode.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.cbSortMode.Location = new System.Drawing.Point(57, 40);
 			this.cbSortMode.Name = "cbSortMode";
-			this.cbSortMode.Size = new System.Drawing.Size(203, 22);
+			this.cbSortMode.Size = new System.Drawing.Size(203, 21);
 			this.cbSortMode.TabIndex = 4;
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.label2.Location = new System.Drawing.Point(21, 43);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(30, 14);
+			this.label2.Size = new System.Drawing.Size(29, 13);
 			this.label2.TabIndex = 5;
 			this.label2.Text = "Sort:";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -115,7 +111,7 @@
 			this.cbCenterOnSelected.AutoSize = true;
 			this.cbCenterOnSelected.Location = new System.Drawing.Point(12, 94);
 			this.cbCenterOnSelected.Name = "cbCenterOnSelected";
-			this.cbCenterOnSelected.Size = new System.Drawing.Size(207, 18);
+			this.cbCenterOnSelected.Size = new System.Drawing.Size(203, 17);
 			this.cbCenterOnSelected.TabIndex = 6;
 			this.cbCenterOnSelected.Text = "Center view on selected map element";
 			this.cbCenterOnSelected.UseVisualStyleBackColor = true;
@@ -145,7 +141,7 @@
 			this.cbCommentsOnly.AutoSize = true;
 			this.cbCommentsOnly.Location = new System.Drawing.Point(12, 140);
 			this.cbCommentsOnly.Name = "cbCommentsOnly";
-			this.cbCommentsOnly.Size = new System.Drawing.Size(184, 18);
+			this.cbCommentsOnly.Size = new System.Drawing.Size(181, 17);
 			this.cbCommentsOnly.TabIndex = 11;
 			this.cbCommentsOnly.Text = "Hide elements without comments";
 			this.cbCommentsOnly.UseVisualStyleBackColor = true;
@@ -156,7 +152,7 @@
 			this.cbSelectOnClick.AutoSize = true;
 			this.cbSelectOnClick.Location = new System.Drawing.Point(12, 117);
 			this.cbSelectOnClick.Name = "cbSelectOnClick";
-			this.cbSelectOnClick.Size = new System.Drawing.Size(95, 18);
+			this.cbSelectOnClick.Size = new System.Drawing.Size(96, 17);
 			this.cbSelectOnClick.TabIndex = 10;
 			this.cbSelectOnClick.Text = "Select on click";
 			this.cbSelectOnClick.UseVisualStyleBackColor = true;
@@ -164,10 +160,9 @@
 			// labelSearch
 			// 
 			this.labelSearch.AutoSize = true;
-			this.labelSearch.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.labelSearch.Location = new System.Drawing.Point(18, 71);
 			this.labelSearch.Name = "labelSearch";
-			this.labelSearch.Size = new System.Drawing.Size(33, 14);
+			this.labelSearch.Size = new System.Drawing.Size(32, 13);
 			this.labelSearch.TabIndex = 9;
 			this.labelSearch.Text = "Filter:";
 			this.labelSearch.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -175,7 +170,6 @@
 			// btnClearSearch
 			// 
 			this.btnClearSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnClearSearch.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.btnClearSearch.Image = global::CodeImp.DoomBuilder.TagExplorer.Properties.Resources.SearchClear;
 			this.btnClearSearch.Location = new System.Drawing.Point(236, 65);
 			this.btnClearSearch.Name = "btnClearSearch";
@@ -226,7 +220,6 @@
 			this.Controls.Add(this.bExportToFile);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.treeView);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.Name = "TagExplorer";
 			this.Size = new System.Drawing.Size(272, 430);
 			this.groupBox1.ResumeLayout(false);

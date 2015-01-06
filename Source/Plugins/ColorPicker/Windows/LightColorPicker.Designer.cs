@@ -42,7 +42,7 @@
 			this.cbRelativeMode.AutoSize = true;
 			this.cbRelativeMode.Location = new System.Drawing.Point(14, 209);
 			this.cbRelativeMode.Name = "cbRelativeMode";
-			this.cbRelativeMode.Size = new System.Drawing.Size(93, 18);
+			this.cbRelativeMode.Size = new System.Drawing.Size(95, 17);
 			this.cbRelativeMode.TabIndex = 5;
 			this.cbRelativeMode.Text = "Relative Mode";
 			this.cbRelativeMode.UseVisualStyleBackColor = true;
@@ -84,12 +84,10 @@
 			this.Controls.Add(this.colorPickerSlider1);
 			this.Controls.Add(this.cbRelativeMode);
 			this.Controls.Add(this.colorPickerControl1);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "LightColorPicker";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

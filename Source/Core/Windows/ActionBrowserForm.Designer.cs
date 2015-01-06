@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label1.AutoSize = true;
 			label1.Location = new System.Drawing.Point(27, 4);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(60, 14);
+			label1.Size = new System.Drawing.Size(58, 13);
 			label1.TabIndex = 21;
 			label1.Text = "S = Switch";
 			// 
@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label2.AutoSize = true;
 			label2.Location = new System.Drawing.Point(140, 4);
 			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(77, 14);
+			label2.Size = new System.Drawing.Size(79, 13);
 			label2.TabIndex = 22;
 			label2.Text = "W = Walk over";
 			// 
@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label3.AutoSize = true;
 			label3.Location = new System.Drawing.Point(269, 4);
 			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(63, 14);
+			label3.Size = new System.Drawing.Size(61, 13);
 			label3.TabIndex = 23;
 			label3.Text = "G = Gunfire";
 			// 
@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label4.AutoSize = true;
 			label4.Location = new System.Drawing.Point(27, 20);
 			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(49, 14);
+			label4.Size = new System.Drawing.Size(50, 13);
 			label4.TabIndex = 24;
 			label4.Text = "D = Door";
 			// 
@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label5.AutoSize = true;
 			label5.Location = new System.Drawing.Point(140, 20);
 			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(80, 14);
+			label5.Size = new System.Drawing.Size(82, 13);
 			label5.TabIndex = 25;
 			label5.Text = "R = Repeatable";
 			// 
@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label6.AutoSize = true;
 			label6.Location = new System.Drawing.Point(269, 20);
 			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(74, 14);
+			label6.Size = new System.Drawing.Size(73, 13);
 			label6.TabIndex = 26;
 			label6.Text = "1 = Once only";
 			// 
@@ -156,7 +156,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.category.FormattingEnabled = true;
 			this.category.Location = new System.Drawing.Point(118, 25);
 			this.category.Name = "category";
-			this.category.Size = new System.Drawing.Size(199, 22);
+			this.category.Size = new System.Drawing.Size(199, 21);
 			this.category.TabIndex = 0;
 			this.category.SelectedIndexChanged += new System.EventHandler(this.category_SelectedIndexChanged);
 			// 
@@ -165,7 +165,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label7.AutoSize = true;
 			label7.Location = new System.Drawing.Point(58, 28);
 			label7.Name = "label7";
-			label7.Size = new System.Drawing.Size(54, 14);
+			label7.Size = new System.Drawing.Size(52, 13);
 			label7.TabIndex = 0;
 			label7.Text = "Category:";
 			// 
@@ -203,7 +203,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option7.FormattingEnabled = true;
 			this.option7.Location = new System.Drawing.Point(118, 280);
 			this.option7.Name = "option7";
-			this.option7.Size = new System.Drawing.Size(199, 22);
+			this.option7.Size = new System.Drawing.Size(199, 21);
 			this.option7.TabIndex = 7;
 			this.option7.Visible = false;
 			// 
@@ -223,7 +223,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option6.FormattingEnabled = true;
 			this.option6.Location = new System.Drawing.Point(118, 244);
 			this.option6.Name = "option6";
-			this.option6.Size = new System.Drawing.Size(199, 22);
+			this.option6.Size = new System.Drawing.Size(199, 21);
 			this.option6.TabIndex = 6;
 			this.option6.Visible = false;
 			// 
@@ -243,7 +243,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option5.FormattingEnabled = true;
 			this.option5.Location = new System.Drawing.Point(118, 208);
 			this.option5.Name = "option5";
-			this.option5.Size = new System.Drawing.Size(199, 22);
+			this.option5.Size = new System.Drawing.Size(199, 21);
 			this.option5.TabIndex = 5;
 			this.option5.Visible = false;
 			// 
@@ -263,7 +263,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option4.FormattingEnabled = true;
 			this.option4.Location = new System.Drawing.Point(118, 172);
 			this.option4.Name = "option4";
-			this.option4.Size = new System.Drawing.Size(199, 22);
+			this.option4.Size = new System.Drawing.Size(199, 21);
 			this.option4.TabIndex = 4;
 			this.option4.Visible = false;
 			// 
@@ -283,7 +283,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option3.FormattingEnabled = true;
 			this.option3.Location = new System.Drawing.Point(118, 136);
 			this.option3.Name = "option3";
-			this.option3.Size = new System.Drawing.Size(199, 22);
+			this.option3.Size = new System.Drawing.Size(199, 21);
 			this.option3.TabIndex = 3;
 			this.option3.Visible = false;
 			// 
@@ -303,7 +303,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option2.FormattingEnabled = true;
 			this.option2.Location = new System.Drawing.Point(118, 100);
 			this.option2.Name = "option2";
-			this.option2.Size = new System.Drawing.Size(199, 22);
+			this.option2.Size = new System.Drawing.Size(199, 21);
 			this.option2.TabIndex = 2;
 			this.option2.Visible = false;
 			// 
@@ -323,7 +323,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option1.FormattingEnabled = true;
 			this.option1.Location = new System.Drawing.Point(118, 64);
 			this.option1.Name = "option1";
-			this.option1.Size = new System.Drawing.Size(199, 22);
+			this.option1.Size = new System.Drawing.Size(199, 21);
 			this.option1.TabIndex = 1;
 			this.option1.Visible = false;
 			// 
@@ -343,7 +343,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option0.FormattingEnabled = true;
 			this.option0.Location = new System.Drawing.Point(118, 28);
 			this.option0.Name = "option0";
-			this.option0.Size = new System.Drawing.Size(199, 22);
+			this.option0.Size = new System.Drawing.Size(199, 21);
 			this.option0.TabIndex = 0;
 			this.option0.Visible = false;
 			// 
@@ -399,14 +399,14 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabs.Controls.Add(this.tabactions);
 			this.tabs.Controls.Add(this.tabgeneralized);
-			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.ItemSize = new System.Drawing.Size(150, 19);
 			this.tabs.Location = new System.Drawing.Point(10, 10);
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
 			this.tabs.Name = "tabs";
+			this.tabs.Padding = new System.Drawing.Point(24, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(399, 436);
-			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 0;
 			// 
 			// tabactions
@@ -414,7 +414,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabactions.Controls.Add(this.filterPanel);
 			this.tabactions.Controls.Add(this.actions);
 			this.tabactions.Controls.Add(this.prefixespanel);
-			this.tabactions.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabactions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabactions.Location = new System.Drawing.Point(4, 23);
 			this.tabactions.Name = "tabactions";
 			this.tabactions.Padding = new System.Windows.Forms.Padding(3);
@@ -456,7 +456,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelFilter.AutoSize = true;
 			this.labelFilter.Location = new System.Drawing.Point(8, 8);
 			this.labelFilter.Name = "labelFilter";
-			this.labelFilter.Size = new System.Drawing.Size(33, 14);
+			this.labelFilter.Size = new System.Drawing.Size(32, 13);
 			this.labelFilter.TabIndex = 29;
 			this.labelFilter.Text = "Filter:";
 			// 
@@ -477,7 +477,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tabgeneralized.Controls.Add(groupBox2);
 			this.tabgeneralized.Controls.Add(groupBox1);
-			this.tabgeneralized.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabgeneralized.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabgeneralized.Location = new System.Drawing.Point(4, 23);
 			this.tabgeneralized.Name = "tabgeneralized";
 			this.tabgeneralized.Padding = new System.Windows.Forms.Padding(3);
@@ -496,12 +496,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.tabs);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ActionBrowserForm";
-			this.Opacity = 0;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Action";

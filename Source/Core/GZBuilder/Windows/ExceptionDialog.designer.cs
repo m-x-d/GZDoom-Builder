@@ -84,6 +84,7 @@
 			// 
 			this.reportLink.AutoSize = true;
 			this.reportLink.LinkArea = new System.Windows.Forms.LinkArea(53, 4);
+			this.reportLink.LinkColor = System.Drawing.SystemColors.HotTrack;
 			this.reportLink.Location = new System.Drawing.Point(77, 157);
 			this.reportLink.Name = "reportLink";
 			this.reportLink.Size = new System.Drawing.Size(286, 17);
@@ -97,6 +98,7 @@
 			// 
 			this.threadLink.AutoSize = true;
 			this.threadLink.LinkArea = new System.Windows.Forms.LinkArea(101, 28);
+			this.threadLink.LinkColor = System.Drawing.SystemColors.HotTrack;
 			this.threadLink.Location = new System.Drawing.Point(77, 178);
 			this.threadLink.Name = "threadLink";
 			this.threadLink.Size = new System.Drawing.Size(349, 30);

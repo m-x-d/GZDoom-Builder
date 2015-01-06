@@ -31,7 +31,6 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.PictureBox pictureBox1;
 			System.Windows.Forms.PictureBox pictureBox3;
-			System.Windows.Forms.Label label2;
 			this.close = new System.Windows.Forms.Button();
 			this.builderlink = new System.Windows.Forms.LinkLabel();
 			this.pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -46,7 +45,6 @@ namespace CodeImp.DoomBuilder.Windows
 			label1 = new System.Windows.Forms.Label();
 			pictureBox1 = new System.Windows.Forms.PictureBox();
 			pictureBox3 = new System.Windows.Forms.PictureBox();
-			label2 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(pictureBox3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -87,17 +85,6 @@ namespace CodeImp.DoomBuilder.Windows
 			pictureBox3.TabIndex = 12;
 			pictureBox3.TabStop = false;
 			// 
-			// label2
-			// 
-			label2.BackColor = System.Drawing.Color.White;
-			label2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			label2.Location = new System.Drawing.Point(11, 143);
-			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(366, 32);
-			label2.TabIndex = 14;
-			label2.Text = "GZDoom Builder is designed and programmed by MaxED.\r\nGZDoom Builder uses game con" +
-				"figurations based on ones created by Gez.";
-			// 
 			// close
 			// 
 			this.close.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -113,15 +100,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.builderlink.ActiveLinkColor = System.Drawing.Color.Firebrick;
 			this.builderlink.AutoSize = true;
-			this.builderlink.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-			this.builderlink.LinkColor = System.Drawing.Color.Firebrick;
+			this.builderlink.LinkColor = System.Drawing.SystemColors.HotTrack;
 			this.builderlink.Location = new System.Drawing.Point(8, 156);
 			this.builderlink.Name = "builderlink";
-			this.builderlink.Size = new System.Drawing.Size(119, 14);
+			this.builderlink.Size = new System.Drawing.Size(114, 13);
 			this.builderlink.TabIndex = 3;
 			this.builderlink.TabStop = true;
 			this.builderlink.Text = "www.doombuilder.com";
-			this.builderlink.VisitedLinkColor = System.Drawing.Color.Firebrick;
 			this.builderlink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.builderlink_LinkClicked);
 			// 
 			// pictureBox2
@@ -138,23 +123,23 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.codeimplink.ActiveLinkColor = System.Drawing.Color.Firebrick;
 			this.codeimplink.AutoSize = true;
-			this.codeimplink.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-			this.codeimplink.LinkColor = System.Drawing.Color.Firebrick;
+			this.codeimplink.LinkColor = System.Drawing.SystemColors.HotTrack;
 			this.codeimplink.Location = new System.Drawing.Point(8, 176);
 			this.codeimplink.Name = "codeimplink";
-			this.codeimplink.Size = new System.Drawing.Size(102, 14);
+			this.codeimplink.Size = new System.Drawing.Size(97, 13);
 			this.codeimplink.TabIndex = 4;
 			this.codeimplink.TabStop = true;
 			this.codeimplink.Text = "www.codeimp.com";
-			this.codeimplink.VisitedLinkColor = System.Drawing.Color.Firebrick;
 			this.codeimplink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.codeimplink_LinkClicked);
 			// 
 			// tabControl1
 			// 
 			this.tabControl1.Controls.Add(this.tabPage1);
 			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.tabControl1.Location = new System.Drawing.Point(12, 12);
 			this.tabControl1.Name = "tabControl1";
+			this.tabControl1.Padding = new System.Drawing.Point(24, 3);
 			this.tabControl1.SelectedIndex = 0;
 			this.tabControl1.Size = new System.Drawing.Size(391, 227);
 			this.tabControl1.TabIndex = 11;
@@ -162,15 +147,15 @@ namespace CodeImp.DoomBuilder.Windows
 			// tabPage1
 			// 
 			this.tabPage1.Controls.Add(pictureBox3);
-			this.tabPage1.Controls.Add(label2);
 			this.tabPage1.Controls.Add(this.pictureBox4);
 			this.tabPage1.Controls.Add(this.gzdbLink);
 			this.tabPage1.Controls.Add(this.copyversion);
 			this.tabPage1.Controls.Add(this.version);
-			this.tabPage1.Location = new System.Drawing.Point(4, 23);
+			this.tabPage1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(383, 200);
+			this.tabPage1.Size = new System.Drawing.Size(383, 201);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "About GZDoom Builder";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -187,17 +172,17 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// gzdbLink
 			// 
-			this.gzdbLink.ActiveLinkColor = System.Drawing.Color.Firebrick;
 			this.gzdbLink.AutoSize = true;
-			this.gzdbLink.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-			this.gzdbLink.LinkColor = System.Drawing.Color.Firebrick;
-			this.gzdbLink.Location = new System.Drawing.Point(8, 175);
+			this.gzdbLink.LinkArea = new System.Windows.Forms.LinkArea(110, 152);
+			this.gzdbLink.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.gzdbLink.Location = new System.Drawing.Point(11, 136);
 			this.gzdbLink.Name = "gzdbLink";
-			this.gzdbLink.Size = new System.Drawing.Size(143, 14);
+			this.gzdbLink.Size = new System.Drawing.Size(309, 42);
 			this.gzdbLink.TabIndex = 15;
 			this.gzdbLink.TabStop = true;
-			this.gzdbLink.Text = "Official thread at ZDoom.org";
-			this.gzdbLink.VisitedLinkColor = System.Drawing.Color.Firebrick;
+			this.gzdbLink.Text = "GZDoom Builder is designed and programmed by MaxED.\r\nGZDoom Builder uses game con" +
+				"figurations created by Gez.\r\nOfficial thread at ZDoom.org";
+			this.gzdbLink.UseCompatibleTextRendering = true;
 			this.gzdbLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.gzdbLink_LinkClicked);
 			// 
 			// copyversion
@@ -216,7 +201,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.version.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			this.version.Location = new System.Drawing.Point(11, 102);
 			this.version.Name = "version";
-			this.version.Size = new System.Drawing.Size(153, 14);
+			this.version.Size = new System.Drawing.Size(150, 13);
 			this.version.TabIndex = 11;
 			this.version.Text = "GZDoom Builder some version";
 			// 
@@ -227,10 +212,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabPage2.Controls.Add(label1);
 			this.tabPage2.Controls.Add(this.pictureBox2);
 			this.tabPage2.Controls.Add(this.builderlink);
-			this.tabPage2.Location = new System.Drawing.Point(4, 23);
+			this.tabPage2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(383, 200);
+			this.tabPage2.Size = new System.Drawing.Size(383, 201);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "About Doom Builder";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -244,12 +230,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ClientSize = new System.Drawing.Size(413, 277);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.close);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "AboutForm";
-			this.Opacity = 0;
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

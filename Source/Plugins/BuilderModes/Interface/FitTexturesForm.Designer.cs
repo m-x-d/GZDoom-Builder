@@ -148,7 +148,7 @@
 			this.cbfitwidth.AutoSize = true;
 			this.cbfitwidth.Location = new System.Drawing.Point(10, 19);
 			this.cbfitwidth.Name = "cbfitwidth";
-			this.cbfitwidth.Size = new System.Drawing.Size(67, 18);
+			this.cbfitwidth.Size = new System.Drawing.Size(65, 17);
 			this.cbfitwidth.TabIndex = 2;
 			this.cbfitwidth.Text = "Fit width";
 			this.cbfitwidth.UseVisualStyleBackColor = true;
@@ -181,7 +181,7 @@
 			this.cbfitheight.AutoSize = true;
 			this.cbfitheight.Location = new System.Drawing.Point(10, 42);
 			this.cbfitheight.Name = "cbfitheight";
-			this.cbfitheight.Size = new System.Drawing.Size(69, 18);
+			this.cbfitheight.Size = new System.Drawing.Size(69, 17);
 			this.cbfitheight.TabIndex = 8;
 			this.cbfitheight.Text = "Fit height";
 			this.cbfitheight.UseVisualStyleBackColor = true;
@@ -192,7 +192,7 @@
 			this.cbfitconnected.AutoSize = true;
 			this.cbfitconnected.Location = new System.Drawing.Point(10, 65);
 			this.cbfitconnected.Name = "cbfitconnected";
-			this.cbfitconnected.Size = new System.Drawing.Size(175, 18);
+			this.cbfitconnected.Size = new System.Drawing.Size(168, 17);
 			this.cbfitconnected.TabIndex = 9;
 			this.cbfitconnected.Text = "Fit across connected surfaces";
 			this.cbfitconnected.UseVisualStyleBackColor = true;
@@ -219,7 +219,6 @@
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.accept);
 			this.Controls.Add(this.repeatgroup);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "FitTexturesForm";

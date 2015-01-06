@@ -102,10 +102,10 @@
 			// sectors
 			// 
 			this.sectors.Controls.Add(this.sectorflags);
-			this.sectors.Location = new System.Drawing.Point(4, 23);
+			this.sectors.Location = new System.Drawing.Point(4, 22);
 			this.sectors.Name = "sectors";
 			this.sectors.Padding = new System.Windows.Forms.Padding(3);
-			this.sectors.Size = new System.Drawing.Size(258, 100);
+			this.sectors.Size = new System.Drawing.Size(258, 101);
 			this.sectors.TabIndex = 0;
 			this.sectors.Text = "Sectors";
 			this.sectors.UseVisualStyleBackColor = true;
@@ -117,7 +117,7 @@
 			this.sectorflags.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sectorflags.Location = new System.Drawing.Point(3, 3);
 			this.sectorflags.Name = "sectorflags";
-			this.sectorflags.Size = new System.Drawing.Size(252, 94);
+			this.sectorflags.Size = new System.Drawing.Size(252, 95);
 			this.sectorflags.TabIndex = 3;
 			this.sectorflags.VerticalSpacing = 1;
 			// 
@@ -220,11 +220,11 @@
 			this.Controls.Add(this.enableall);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.cancel);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SelectSimilarElementOptionsPanel";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Selection Options";

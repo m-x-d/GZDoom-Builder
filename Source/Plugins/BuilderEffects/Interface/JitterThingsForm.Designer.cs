@@ -107,7 +107,6 @@
 			this.positionJitterAmmount.AllowNegative = false;
 			this.positionJitterAmmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.positionJitterAmmount.ExtendedLimits = true;
-			this.positionJitterAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.positionJitterAmmount.Label = "Position:";
 			this.positionJitterAmmount.Location = new System.Drawing.Point(-25, 19);
 			this.positionJitterAmmount.Maximum = 100;
@@ -134,7 +133,6 @@
 			this.rotationJitterAmmount.AllowNegative = false;
 			this.rotationJitterAmmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.rotationJitterAmmount.ExtendedLimits = false;
-			this.rotationJitterAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.rotationJitterAmmount.Label = "Angle:";
 			this.rotationJitterAmmount.Location = new System.Drawing.Point(-25, 19);
 			this.rotationJitterAmmount.Maximum = 359;
@@ -150,7 +148,6 @@
 			this.heightJitterAmmount.AllowNegative = false;
 			this.heightJitterAmmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.heightJitterAmmount.ExtendedLimits = false;
-			this.heightJitterAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.heightJitterAmmount.Label = "Height:";
 			this.heightJitterAmmount.Location = new System.Drawing.Point(-25, 47);
 			this.heightJitterAmmount.Maximum = 100;
@@ -177,7 +174,6 @@
 			this.pitchAmmount.AllowNegative = false;
 			this.pitchAmmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.pitchAmmount.ExtendedLimits = false;
-			this.pitchAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.pitchAmmount.Label = "Pitch:";
 			this.pitchAmmount.Location = new System.Drawing.Point(-25, 47);
 			this.pitchAmmount.Maximum = 359;
@@ -193,7 +189,6 @@
 			this.rollAmmount.AllowNegative = false;
 			this.rollAmmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.rollAmmount.ExtendedLimits = false;
-			this.rollAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.rollAmmount.Label = "Roll:";
 			this.rollAmmount.Location = new System.Drawing.Point(-25, 77);
 			this.rollAmmount.Maximum = 359;
@@ -267,7 +262,7 @@
 			this.cbNegativeRoll.AutoSize = true;
 			this.cbNegativeRoll.Location = new System.Drawing.Point(150, 134);
 			this.cbNegativeRoll.Name = "cbNegativeRoll";
-			this.cbNegativeRoll.Size = new System.Drawing.Size(106, 18);
+			this.cbNegativeRoll.Size = new System.Drawing.Size(105, 17);
 			this.cbNegativeRoll.TabIndex = 20;
 			this.cbNegativeRoll.Text = "Use negative roll";
 			this.toolTip.SetToolTip(this.cbNegativeRoll, "When checked, 50% of the time \r\nnegative roll will be used");
@@ -278,7 +273,7 @@
 			this.cbNegativePitch.AutoSize = true;
 			this.cbNegativePitch.Location = new System.Drawing.Point(150, 110);
 			this.cbNegativePitch.Name = "cbNegativePitch";
-			this.cbNegativePitch.Size = new System.Drawing.Size(115, 18);
+			this.cbNegativePitch.Size = new System.Drawing.Size(115, 17);
 			this.cbNegativePitch.TabIndex = 19;
 			this.cbNegativePitch.Text = "Use negative pitch";
 			this.toolTip.SetToolTip(this.cbNegativePitch, "When checked, 50% of the time \r\nnegative pitch will be used.");
@@ -289,7 +284,7 @@
 			this.cbRelativeRoll.AutoSize = true;
 			this.cbRelativeRoll.Location = new System.Drawing.Point(9, 134);
 			this.cbRelativeRoll.Name = "cbRelativeRoll";
-			this.cbRelativeRoll.Size = new System.Drawing.Size(119, 18);
+			this.cbRelativeRoll.Size = new System.Drawing.Size(119, 17);
 			this.cbRelativeRoll.TabIndex = 18;
 			this.cbRelativeRoll.Text = "Relative to initial roll";
 			this.cbRelativeRoll.UseVisualStyleBackColor = true;
@@ -299,7 +294,7 @@
 			this.cbRelativePitch.AutoSize = true;
 			this.cbRelativePitch.Location = new System.Drawing.Point(9, 110);
 			this.cbRelativePitch.Name = "cbRelativePitch";
-			this.cbRelativePitch.Size = new System.Drawing.Size(128, 18);
+			this.cbRelativePitch.Size = new System.Drawing.Size(129, 17);
 			this.cbRelativePitch.TabIndex = 17;
 			this.cbRelativePitch.Text = "Relative to initial pitch";
 			this.cbRelativePitch.UseVisualStyleBackColor = true;
@@ -334,7 +329,7 @@
 			this.cbNegativeScaleY.AutoSize = true;
 			this.cbNegativeScaleY.Location = new System.Drawing.Point(150, 102);
 			this.cbNegativeScaleY.Name = "cbNegativeScaleY";
-			this.cbNegativeScaleY.Size = new System.Drawing.Size(121, 18);
+			this.cbNegativeScaleY.Size = new System.Drawing.Size(121, 17);
 			this.cbNegativeScaleY.TabIndex = 25;
 			this.cbNegativeScaleY.Text = "Use negative height";
 			this.toolTip.SetToolTip(this.cbNegativeScaleY, "When checked, height scale will be picked from\r\n[-max .. -min] - [min .. max] ran" +
@@ -346,7 +341,7 @@
 			this.cbNegativeScaleX.AutoSize = true;
 			this.cbNegativeScaleX.Location = new System.Drawing.Point(150, 78);
 			this.cbNegativeScaleX.Name = "cbNegativeScaleX";
-			this.cbNegativeScaleX.Size = new System.Drawing.Size(119, 18);
+			this.cbNegativeScaleX.Size = new System.Drawing.Size(117, 17);
 			this.cbNegativeScaleX.TabIndex = 24;
 			this.cbNegativeScaleX.Text = "Use negative width";
 			this.toolTip.SetToolTip(this.cbNegativeScaleX, "When checked, width scale will be picked from\r\n[-max .. -min] - [min .. max] rang" +
@@ -358,7 +353,7 @@
 			this.cbUniformScale.AutoSize = true;
 			this.cbUniformScale.Location = new System.Drawing.Point(9, 102);
 			this.cbUniformScale.Name = "cbUniformScale";
-			this.cbUniformScale.Size = new System.Drawing.Size(136, 18);
+			this.cbUniformScale.Size = new System.Drawing.Size(134, 17);
 			this.cbUniformScale.TabIndex = 23;
 			this.cbUniformScale.Text = "Same width and height";
 			this.cbUniformScale.UseVisualStyleBackColor = true;
@@ -368,7 +363,7 @@
 			this.cbRelativeScale.AutoSize = true;
 			this.cbRelativeScale.Location = new System.Drawing.Point(9, 78);
 			this.cbRelativeScale.Name = "cbRelativeScale";
-			this.cbRelativeScale.Size = new System.Drawing.Size(131, 18);
+			this.cbRelativeScale.Size = new System.Drawing.Size(131, 17);
 			this.cbRelativeScale.TabIndex = 13;
 			this.cbRelativeScale.Text = "Relative to initial scale";
 			this.cbRelativeScale.UseVisualStyleBackColor = true;
@@ -390,7 +385,7 @@
 			this.maxScaleYLabel.AutoSize = true;
 			this.maxScaleYLabel.Location = new System.Drawing.Point(147, 51);
 			this.maxScaleYLabel.Name = "maxScaleYLabel";
-			this.maxScaleYLabel.Size = new System.Drawing.Size(33, 14);
+			this.maxScaleYLabel.Size = new System.Drawing.Size(32, 13);
 			this.maxScaleYLabel.TabIndex = 21;
 			this.maxScaleYLabel.Text = "max.:";
 			// 
@@ -425,7 +420,7 @@
 			this.minScaleYLabel.AutoSize = true;
 			this.minScaleYLabel.Location = new System.Drawing.Point(16, 51);
 			this.minScaleYLabel.Name = "minScaleYLabel";
-			this.minScaleYLabel.Size = new System.Drawing.Size(62, 14);
+			this.minScaleYLabel.Size = new System.Drawing.Size(63, 13);
 			this.minScaleYLabel.TabIndex = 19;
 			this.minScaleYLabel.Text = "Height min.:";
 			// 
@@ -471,7 +466,7 @@
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(147, 25);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(33, 14);
+			this.label3.Size = new System.Drawing.Size(32, 13);
 			this.label3.TabIndex = 4;
 			this.label3.Text = "max.:";
 			// 
@@ -506,7 +501,7 @@
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(19, 25);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(59, 14);
+			this.label2.Size = new System.Drawing.Size(60, 13);
 			this.label2.TabIndex = 2;
 			this.label2.Text = "Width min.:";
 			// 
@@ -545,11 +540,11 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.bCancel);
 			this.Controls.Add(this.bApply);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "JitterThingsForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

@@ -37,7 +37,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.angle.BackColor = System.Drawing.SystemColors.Control;
 			this.angle.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.angle.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.angle.Location = new System.Drawing.Point(12, 12);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(84, 84);
@@ -75,12 +74,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.angle);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "AngleForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			this.clickselects.AutoSize = true;
 			this.clickselects.Location = new System.Drawing.Point(15, 57);
 			this.clickselects.Name = "clickselects";
-			this.clickselects.Size = new System.Drawing.Size(95, 18);
+			this.clickselects.Size = new System.Drawing.Size(96, 17);
 			this.clickselects.TabIndex = 1;
 			this.clickselects.Text = "Select on click";
 			this.clickselects.UseVisualStyleBackColor = true;
@@ -69,7 +69,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			this.filtermode.AutoSize = true;
 			this.filtermode.Location = new System.Drawing.Point(15, 25);
 			this.filtermode.Name = "filtermode";
-			this.filtermode.Size = new System.Drawing.Size(173, 18);
+			this.filtermode.Size = new System.Drawing.Size(168, 17);
 			this.filtermode.TabIndex = 0;
 			this.filtermode.Text = "Comments from this mode only";
 			this.filtermode.UseVisualStyleBackColor = true;
@@ -147,13 +147,13 @@ namespace CodeImp.DoomBuilder.CommentsPanel
             this.toolStripMenuItem2,
             this.removecommentsitem});
 			this.contextmenu.Name = "contextMenuStrip1";
-			this.contextmenu.Size = new System.Drawing.Size(173, 116);
+			this.contextmenu.Size = new System.Drawing.Size(175, 116);
 			this.contextmenu.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.contextmenu_Closed);
 			// 
 			// editobjectitem
 			// 
 			this.editobjectitem.Name = "editobjectitem";
-			this.editobjectitem.Size = new System.Drawing.Size(172, 22);
+			this.editobjectitem.Size = new System.Drawing.Size(174, 22);
 			this.editobjectitem.Text = "Edit Objects";
 			this.editobjectitem.Click += new System.EventHandler(this.editobjectitem_Click);
 			// 
@@ -161,19 +161,19 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			// 
 			this.toolStripMenuItem1.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(169, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(171, 6);
 			// 
 			// selectitem
 			// 
 			this.selectitem.Name = "selectitem";
-			this.selectitem.Size = new System.Drawing.Size(172, 22);
+			this.selectitem.Size = new System.Drawing.Size(174, 22);
 			this.selectitem.Text = "Select";
 			this.selectitem.Click += new System.EventHandler(this.selectitem_Click);
 			// 
 			// selectadditiveitem
 			// 
 			this.selectadditiveitem.Name = "selectadditiveitem";
-			this.selectadditiveitem.Size = new System.Drawing.Size(172, 22);
+			this.selectadditiveitem.Size = new System.Drawing.Size(174, 22);
 			this.selectadditiveitem.Text = "Select Additive";
 			this.selectadditiveitem.Click += new System.EventHandler(this.selectadditiveitem_Click);
 			// 
@@ -181,12 +181,12 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			// 
 			this.toolStripMenuItem2.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(169, 6);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(171, 6);
 			// 
 			// removecommentsitem
 			// 
 			this.removecommentsitem.Name = "removecommentsitem";
-			this.removecommentsitem.Size = new System.Drawing.Size(172, 22);
+			this.removecommentsitem.Size = new System.Drawing.Size(174, 22);
 			this.removecommentsitem.Text = "Remove Comment";
 			this.removecommentsitem.Click += new System.EventHandler(this.removecommentsitem_Click);
 			// 
@@ -236,7 +236,6 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			this.Controls.Add(this.addcommentgroup);
 			this.Controls.Add(this.grid);
 			this.Controls.Add(this.optionsgroup);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "CommentsDocker";
 			this.Size = new System.Drawing.Size(250, 657);
 			this.optionsgroup.ResumeLayout(false);

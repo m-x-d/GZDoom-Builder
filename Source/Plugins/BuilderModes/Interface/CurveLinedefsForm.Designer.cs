@@ -49,27 +49,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(12, 15);
+			label1.Location = new System.Drawing.Point(24, 15);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(50, 14);
+			label1.Size = new System.Drawing.Size(48, 13);
 			label1.TabIndex = 0;
 			label1.Text = "Vertices:";
 			// 
 			// distancelabel
 			// 
 			this.distancelabel.AutoSize = true;
-			this.distancelabel.Location = new System.Drawing.Point(11, 47);
+			this.distancelabel.Location = new System.Drawing.Point(20, 47);
 			this.distancelabel.Name = "distancelabel";
-			this.distancelabel.Size = new System.Drawing.Size(52, 14);
+			this.distancelabel.Size = new System.Drawing.Size(52, 13);
 			this.distancelabel.TabIndex = 1;
 			this.distancelabel.Text = "Distance:";
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(25, 79);
+			this.label3.Location = new System.Drawing.Point(35, 79);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(38, 14);
+			this.label3.Size = new System.Drawing.Size(37, 13);
 			this.label3.TabIndex = 2;
 			this.label3.Text = "Angle:";
 			// 
@@ -78,6 +78,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.vertices.AllowDecimal = false;
 			this.vertices.AllowNegative = false;
 			this.vertices.AllowRelative = false;
+			this.vertices.ForeColor = System.Drawing.SystemColors.WindowText;
 			this.vertices.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.vertices.Location = new System.Drawing.Point(78, 12);
 			this.vertices.Name = "vertices";
@@ -92,6 +93,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.distance.AllowDecimal = false;
 			this.distance.AllowNegative = false;
 			this.distance.AllowRelative = false;
+			this.distance.ForeColor = System.Drawing.SystemColors.WindowText;
 			this.distance.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.distance.Location = new System.Drawing.Point(78, 44);
 			this.distance.Name = "distance";
@@ -106,6 +108,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.angle.AllowDecimal = false;
 			this.angle.AllowNegative = false;
 			this.angle.AllowRelative = false;
+			this.angle.ForeColor = System.Drawing.SystemColors.WindowText;
 			this.angle.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.angle.Location = new System.Drawing.Point(78, 76);
 			this.angle.Name = "angle";
@@ -181,7 +184,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.circular.AutoSize = true;
 			this.circular.Location = new System.Drawing.Point(22, 108);
 			this.circular.Name = "circular";
-			this.circular.Size = new System.Drawing.Size(122, 18);
+			this.circular.Size = new System.Drawing.Size(118, 17);
 			this.circular.TabIndex = 6;
 			this.circular.Text = "Fixed circular curve";
 			this.circular.UseVisualStyleBackColor = true;
@@ -192,7 +195,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.backwards.AutoSize = true;
 			this.backwards.Location = new System.Drawing.Point(22, 132);
 			this.backwards.Name = "backwards";
-			this.backwards.Size = new System.Drawing.Size(113, 18);
+			this.backwards.Size = new System.Drawing.Size(109, 17);
 			this.backwards.TabIndex = 7;
 			this.backwards.Text = "Curve backwards";
 			this.backwards.UseVisualStyleBackColor = true;
@@ -218,12 +221,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.distancelabel);
 			this.Controls.Add(label1);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "CurveLinedefsForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

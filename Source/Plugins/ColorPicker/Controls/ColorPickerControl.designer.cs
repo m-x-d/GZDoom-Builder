@@ -46,7 +46,7 @@
 			// 
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-			this.btnCancel.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.btnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.btnCancel.Location = new System.Drawing.Point(214, 44);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(94, 42);
@@ -59,7 +59,7 @@
 			this.btnOK.BackColor = System.Drawing.SystemColors.Control;
 			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.btnOK.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-			this.btnOK.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.btnOK.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.btnOK.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.btnOK.Location = new System.Drawing.Point(214, 3);
 			this.btnOK.Name = "btnOK";
@@ -71,7 +71,6 @@
 			// 
 			// Label3
 			// 
-			this.Label3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Label3.Location = new System.Drawing.Point(3, 48);
 			this.Label3.Name = "Label3";
 			this.Label3.Size = new System.Drawing.Size(40, 23);
@@ -81,7 +80,6 @@
 			// 
 			// nudRed
 			// 
-			this.nudRed.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.nudRed.Location = new System.Drawing.Point(49, 4);
 			this.nudRed.Maximum = new decimal(new int[] {
             255,
@@ -103,7 +101,6 @@
 			// 
 			// Label1
 			// 
-			this.Label1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Label1.Location = new System.Drawing.Point(3, 2);
 			this.Label1.Name = "Label1";
 			this.Label1.Size = new System.Drawing.Size(40, 23);
@@ -121,7 +118,6 @@
 			// 
 			// nudBlue
 			// 
-			this.nudBlue.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.nudBlue.Location = new System.Drawing.Point(49, 50);
 			this.nudBlue.Maximum = new decimal(new int[] {
             255,
@@ -135,7 +131,6 @@
 			// 
 			// nudGreen
 			// 
-			this.nudGreen.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.nudGreen.Location = new System.Drawing.Point(49, 27);
 			this.nudGreen.Maximum = new decimal(new int[] {
             255,
@@ -149,7 +144,6 @@
 			// 
 			// Label2
 			// 
-			this.Label2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Label2.Location = new System.Drawing.Point(3, 25);
 			this.Label2.Name = "Label2";
 			this.Label2.Size = new System.Drawing.Size(40, 23);

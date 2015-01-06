@@ -85,9 +85,9 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.skipdoubletags.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.skipdoubletags.AutoSize = true;
 			this.skipdoubletags.BackColor = System.Drawing.SystemColors.Info;
-			this.skipdoubletags.Location = new System.Drawing.Point(63, 118);
+			this.skipdoubletags.Location = new System.Drawing.Point(63, 119);
 			this.skipdoubletags.Name = "skipdoubletags";
-			this.skipdoubletags.Size = new System.Drawing.Size(161, 18);
+			this.skipdoubletags.Size = new System.Drawing.Size(157, 17);
 			this.skipdoubletags.TabIndex = 5;
 			this.skipdoubletags.Text = "Skip over already used tags";
 			this.skipdoubletags.UseVisualStyleBackColor = false;
@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.endtaglabel.AutoSize = true;
 			this.endtaglabel.Location = new System.Drawing.Point(250, 17);
 			this.endtaglabel.Name = "endtaglabel";
-			this.endtaglabel.Size = new System.Drawing.Size(13, 14);
+			this.endtaglabel.Size = new System.Drawing.Size(13, 13);
 			this.endtaglabel.TabIndex = 10;
 			this.endtaglabel.Text = "0";
 			// 
@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(189, 17);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(48, 14);
+			this.label4.Size = new System.Drawing.Size(51, 13);
 			this.label4.TabIndex = 9;
 			this.label4.Text = "End Tag:";
 			// 
@@ -178,7 +178,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.relativemode.AutoSize = true;
 			this.relativemode.Location = new System.Drawing.Point(76, 72);
 			this.relativemode.Name = "relativemode";
-			this.relativemode.Size = new System.Drawing.Size(140, 18);
+			this.relativemode.Size = new System.Drawing.Size(138, 17);
 			this.relativemode.TabIndex = 13;
 			this.relativemode.Text = "Relative to existing tags";
 			this.relativemode.UseVisualStyleBackColor = false;
@@ -216,12 +216,10 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.Controls.Add(this.rangestart);
 			this.Controls.Add(this.outoftagswarning);
 			this.Controls.Add(this.bglabel);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TagRangeForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

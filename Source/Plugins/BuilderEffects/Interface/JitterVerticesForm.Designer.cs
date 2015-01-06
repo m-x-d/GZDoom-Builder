@@ -70,7 +70,6 @@
 			this.positionJitterAmmount.AllowNegative = false;
 			this.positionJitterAmmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.positionJitterAmmount.ExtendedLimits = true;
-			this.positionJitterAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.positionJitterAmmount.Label = "Position:";
 			this.positionJitterAmmount.Location = new System.Drawing.Point(2, 12);
 			this.positionJitterAmmount.Maximum = 100;
@@ -92,11 +91,11 @@
 			this.Controls.Add(this.bUpdateTranslation);
 			this.Controls.Add(this.bCancel);
 			this.Controls.Add(this.bApply);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "JitterVerticesForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
