@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.editresource.UseVisualStyleBackColor = true;
 			this.editresource.Click += new System.EventHandler(this.editresource_Click);
 			// 
-			// deleteresource
+			// deleteresources
 			// 
 			this.deleteresources.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.deleteresources.Enabled = false;
@@ -205,14 +205,14 @@ namespace CodeImp.DoomBuilder.Controls
             this.toolStripSeparator2,
             this.removeresources});
 			this.copypastemenu.Name = "copypastemenu";
-			this.copypastemenu.Size = new System.Drawing.Size(153, 148);
+			this.copypastemenu.Size = new System.Drawing.Size(118, 126);
 			this.copypastemenu.Opening += new System.ComponentModel.CancelEventHandler(this.copypastemenu_Opening);
 			// 
 			// copyresources
 			// 
 			this.copyresources.Image = global::CodeImp.DoomBuilder.Properties.Resources.Copy;
 			this.copyresources.Name = "copyresources";
-			this.copyresources.Size = new System.Drawing.Size(152, 22);
+			this.copyresources.Size = new System.Drawing.Size(117, 22);
 			this.copyresources.Text = "Copy";
 			this.copyresources.Click += new System.EventHandler(this.copyresources_Click);
 			// 
@@ -220,20 +220,20 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.cutresources.Image = global::CodeImp.DoomBuilder.Properties.Resources.Cut;
 			this.cutresources.Name = "cutresources";
-			this.cutresources.Size = new System.Drawing.Size(152, 22);
+			this.cutresources.Size = new System.Drawing.Size(117, 22);
 			this.cutresources.Text = "Cut";
 			this.cutresources.Click += new System.EventHandler(this.cutresources_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(114, 6);
 			// 
 			// pasteresources
 			// 
 			this.pasteresources.Image = global::CodeImp.DoomBuilder.Properties.Resources.Paste;
 			this.pasteresources.Name = "pasteresources";
-			this.pasteresources.Size = new System.Drawing.Size(152, 22);
+			this.pasteresources.Size = new System.Drawing.Size(117, 22);
 			this.pasteresources.Text = "Paste";
 			this.pasteresources.Click += new System.EventHandler(this.pasteresources_Click);
 			// 
@@ -241,20 +241,20 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.replaceresources.Image = global::CodeImp.DoomBuilder.Properties.Resources.Replace;
 			this.replaceresources.Name = "replaceresources";
-			this.replaceresources.Size = new System.Drawing.Size(152, 22);
+			this.replaceresources.Size = new System.Drawing.Size(117, 22);
 			this.replaceresources.Text = "Replace";
 			this.replaceresources.Click += new System.EventHandler(this.replaceresources_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(114, 6);
 			// 
 			// removeresources
 			// 
 			this.removeresources.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchClear;
 			this.removeresources.Name = "removeresources";
-			this.removeresources.Size = new System.Drawing.Size(152, 22);
+			this.removeresources.Size = new System.Drawing.Size(117, 22);
 			this.removeresources.Text = "Remove";
 			this.removeresources.Click += new System.EventHandler(this.removeresources_Click);
 			// 
@@ -275,7 +275,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.splitContainer1);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "ResourceListEditor";
 			this.Size = new System.Drawing.Size(350, 166);
 			buttonsbar2.Panel1.ResumeLayout(false);

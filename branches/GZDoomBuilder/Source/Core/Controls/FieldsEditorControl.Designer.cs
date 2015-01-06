@@ -29,10 +29,10 @@ namespace CodeImp.DoomBuilder.Controls
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.fieldslist = new System.Windows.Forms.DataGridView();
 			this.fieldname = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.fieldtype = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -54,17 +54,17 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fieldslist.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
 			this.fieldslist.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.fieldslist.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-			this.fieldname,
-			this.fieldtype,
-			this.fieldvalue});
-			dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-			dataGridViewCellStyle24.BackColor = System.Drawing.SystemColors.Window;
-			dataGridViewCellStyle24.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			dataGridViewCellStyle24.ForeColor = System.Drawing.SystemColors.WindowText;
-			dataGridViewCellStyle24.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			dataGridViewCellStyle24.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-			dataGridViewCellStyle24.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-			this.fieldslist.DefaultCellStyle = dataGridViewCellStyle24;
+            this.fieldname,
+            this.fieldtype,
+            this.fieldvalue});
+			dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+			dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+			dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+			dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+			dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+			this.fieldslist.DefaultCellStyle = dataGridViewCellStyle4;
 			this.fieldslist.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
 			this.fieldslist.Location = new System.Drawing.Point(0, 0);
 			this.fieldslist.MultiSelect = false;
@@ -91,12 +91,12 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// fieldname
 			// 
-			dataGridViewCellStyle21.BackColor = System.Drawing.SystemColors.Window;
-			dataGridViewCellStyle21.ForeColor = System.Drawing.SystemColors.WindowText;
-			dataGridViewCellStyle21.NullValue = null;
-			dataGridViewCellStyle21.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			dataGridViewCellStyle21.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-			this.fieldname.DefaultCellStyle = dataGridViewCellStyle21;
+			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+			dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+			dataGridViewCellStyle1.NullValue = null;
+			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+			this.fieldname.DefaultCellStyle = dataGridViewCellStyle1;
 			this.fieldname.Frozen = true;
 			this.fieldname.HeaderText = "Property";
 			this.fieldname.Name = "fieldname";
@@ -105,11 +105,11 @@ namespace CodeImp.DoomBuilder.Controls
 			// fieldtype
 			// 
 			this.fieldtype.AutoComplete = false;
-			dataGridViewCellStyle22.BackColor = System.Drawing.SystemColors.Window;
-			dataGridViewCellStyle22.ForeColor = System.Drawing.SystemColors.WindowText;
-			dataGridViewCellStyle22.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			dataGridViewCellStyle22.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-			this.fieldtype.DefaultCellStyle = dataGridViewCellStyle22;
+			dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+			dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+			dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+			this.fieldtype.DefaultCellStyle = dataGridViewCellStyle2;
 			this.fieldtype.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.Nothing;
 			this.fieldtype.HeaderText = "Type";
 			this.fieldtype.Name = "fieldtype";
@@ -119,11 +119,11 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// fieldvalue
 			// 
-			dataGridViewCellStyle23.BackColor = System.Drawing.SystemColors.Window;
-			dataGridViewCellStyle23.ForeColor = System.Drawing.SystemColors.WindowText;
-			dataGridViewCellStyle23.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			dataGridViewCellStyle23.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-			this.fieldvalue.DefaultCellStyle = dataGridViewCellStyle23;
+			dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+			dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+			dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+			this.fieldvalue.DefaultCellStyle = dataGridViewCellStyle3;
 			this.fieldvalue.HeaderText = "Value";
 			this.fieldvalue.Name = "fieldvalue";
 			this.fieldvalue.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -137,7 +137,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// browsebutton
 			// 
 			this.browsebutton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-			this.browsebutton.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browsebutton.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
 			this.browsebutton.Location = new System.Drawing.Point(343, 75);
 			this.browsebutton.Name = "browsebutton";
@@ -150,10 +149,10 @@ namespace CodeImp.DoomBuilder.Controls
 			// enumscombo
 			// 
 			this.enumscombo.FormattingEnabled = true;
-			this.enumscombo.ItemHeight = 14;
+			this.enumscombo.ItemHeight = 13;
 			this.enumscombo.Location = new System.Drawing.Point(295, 121);
 			this.enumscombo.Name = "enumscombo";
-			this.enumscombo.Size = new System.Drawing.Size(128, 22);
+			this.enumscombo.Size = new System.Drawing.Size(128, 21);
 			this.enumscombo.TabIndex = 3;
 			this.enumscombo.Validating += new System.ComponentModel.CancelEventHandler(this.enumscombo_Validating);
 			// 
@@ -164,7 +163,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Controls.Add(this.enumscombo);
 			this.Controls.Add(this.browsebutton);
 			this.Controls.Add(this.fieldslist);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "FieldsEditorControl";
 			this.Size = new System.Drawing.Size(474, 286);
 			this.Layout += new System.Windows.Forms.LayoutEventHandler(this.FieldsEditorControl_Layout);

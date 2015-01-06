@@ -69,7 +69,7 @@ namespace CodeImp.DoomBuilder.Controls
 			label5.AutoSize = true;
 			label5.Location = new System.Drawing.Point(165, 58);
 			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(38, 14);
+			label5.Size = new System.Drawing.Size(37, 13);
 			label5.TabIndex = 8;
 			label5.Text = "Angle:";
 			// 
@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder.Controls
 			label4.AutoSize = true;
 			label4.Location = new System.Drawing.Point(30, 77);
 			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(27, 14);
+			label4.Size = new System.Drawing.Size(29, 13);
 			label4.TabIndex = 4;
 			label4.Text = "Tag:";
 			// 
@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Controls
 			label3.AutoSize = true;
 			label3.Location = new System.Drawing.Point(11, 58);
 			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(47, 14);
+			label3.Size = new System.Drawing.Size(47, 13);
 			label3.TabIndex = 3;
 			label3.Text = "Position:";
 			// 
@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.Controls
 			label1.AutoSize = true;
 			label1.Location = new System.Drawing.Point(24, 19);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(33, 14);
+			label1.Size = new System.Drawing.Size(34, 13);
 			label1.TabIndex = 0;
 			label1.Text = "Type:";
 			// 
@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.labelaction.AutoSize = true;
 			this.labelaction.Location = new System.Drawing.Point(17, 39);
 			this.labelaction.Name = "labelaction";
-			this.labelaction.Size = new System.Drawing.Size(41, 14);
+			this.labelaction.Size = new System.Drawing.Size(40, 13);
 			this.labelaction.TabIndex = 2;
 			this.labelaction.Text = "Action:";
 			// 
@@ -253,7 +253,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.angle.AutoSize = true;
 			this.angle.Location = new System.Drawing.Point(206, 58);
 			this.angle.Name = "angle";
-			this.angle.Size = new System.Drawing.Size(25, 14);
+			this.angle.Size = new System.Drawing.Size(25, 13);
 			this.angle.TabIndex = 11;
 			this.angle.Text = "270";
 			// 
@@ -262,7 +262,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.tag.AutoSize = true;
 			this.tag.Location = new System.Drawing.Point(61, 77);
 			this.tag.Name = "tag";
-			this.tag.Size = new System.Drawing.Size(13, 14);
+			this.tag.Size = new System.Drawing.Size(13, 13);
 			this.tag.TabIndex = 7;
 			this.tag.Text = "0";
 			// 
@@ -271,7 +271,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.position.AutoSize = true;
 			this.position.Location = new System.Drawing.Point(61, 58);
 			this.position.Name = "position";
-			this.position.Size = new System.Drawing.Size(91, 14);
+			this.position.Size = new System.Drawing.Size(91, 13);
 			this.position.TabIndex = 6;
 			this.position.Text = "1024, 1024, 1024";
 			// 
@@ -289,7 +289,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.type.AutoSize = true;
 			this.type.Location = new System.Drawing.Point(61, 19);
 			this.type.Name = "type";
-			this.type.Size = new System.Drawing.Size(99, 14);
+			this.type.Size = new System.Drawing.Size(96, 13);
 			this.type.TabIndex = 1;
 			this.type.Text = "0 - Big Brown Pimp";
 			// 
@@ -355,7 +355,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Controls.Add(this.flagsPanel);
 			this.Controls.Add(this.spritepanel);
 			this.Controls.Add(this.infopanel);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "ThingInfoPanel";

@@ -74,7 +74,7 @@
 			this.labelMaximum.AutoSize = true;
 			this.labelMaximum.Location = new System.Drawing.Point(237, 5);
 			this.labelMaximum.Name = "labelMaximum";
-			this.labelMaximum.Size = new System.Drawing.Size(25, 14);
+			this.labelMaximum.Size = new System.Drawing.Size(25, 13);
 			this.labelMaximum.TabIndex = 9;
 			this.labelMaximum.Text = "512";
 			// 
@@ -86,7 +86,6 @@
 			this.Controls.Add(this.numericUpDown1);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.trackBar1);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "IntControl";
 			this.Size = new System.Drawing.Size(266, 24);
 			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();

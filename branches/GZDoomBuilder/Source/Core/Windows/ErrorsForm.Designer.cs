@@ -29,7 +29,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.copyselected = new System.Windows.Forms.Button();
 			this.clearlist = new System.Windows.Forms.Button();
 			this.close = new System.Windows.Forms.Button();
@@ -85,9 +85,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.checkshow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkshow.AutoSize = true;
-			this.checkshow.Location = new System.Drawing.Point(301, 420);
+			this.checkshow.Location = new System.Drawing.Point(301, 421);
 			this.checkshow.Name = "checkshow";
-			this.checkshow.Size = new System.Drawing.Size(213, 18);
+			this.checkshow.Size = new System.Drawing.Size(199, 17);
 			this.checkshow.TabIndex = 3;
 			this.checkshow.Text = "Show this window when errors occur";
 			this.checkshow.UseVisualStyleBackColor = true;
@@ -110,16 +110,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.grid.ColumnHeadersVisible = false;
 			this.grid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-			this.iconcolumn,
-			this.textcolumn});
+            this.iconcolumn,
+            this.textcolumn});
 			this.grid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
 			this.grid.Location = new System.Drawing.Point(12, 12);
 			this.grid.Name = "grid";
 			this.grid.ReadOnly = true;
 			this.grid.RowHeadersVisible = false;
-			dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
-			dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(2, 4, 2, 5);
-			this.grid.RowsDefaultCellStyle = dataGridViewCellStyle2;
+			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
+			dataGridViewCellStyle1.Padding = new System.Windows.Forms.Padding(2, 4, 2, 5);
+			this.grid.RowsDefaultCellStyle = dataGridViewCellStyle1;
 			this.grid.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
 			this.grid.ShowCellErrors = false;
@@ -158,12 +158,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.clearlist);
 			this.Controls.Add(this.copyselected);
 			this.Controls.Add(this.grid);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(680, 300);
 			this.Name = "ErrorsForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

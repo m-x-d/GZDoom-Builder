@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			label1.AutoSize = true;
 			label1.Location = new System.Drawing.Point(25, 15);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(69, 14);
+			label1.Size = new System.Drawing.Size(67, 13);
 			label1.TabIndex = 0;
 			label1.Text = "Search type:";
 			// 
@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			label2.AutoSize = true;
 			label2.Location = new System.Drawing.Point(36, 51);
 			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(58, 14);
+			label2.Size = new System.Drawing.Size(56, 13);
 			label2.TabIndex = 2;
 			label2.Text = "Find what:";
 			// 
@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.replacelabel.AutoSize = true;
 			this.replacelabel.Location = new System.Drawing.Point(12, 28);
 			this.replacelabel.Name = "replacelabel";
-			this.replacelabel.Size = new System.Drawing.Size(73, 14);
+			this.replacelabel.Size = new System.Drawing.Size(72, 13);
 			this.replacelabel.TabIndex = 6;
 			this.replacelabel.Text = "Replace with:";
 			// 
@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.searchtypes.FormattingEnabled = true;
 			this.searchtypes.Location = new System.Drawing.Point(100, 12);
 			this.searchtypes.Name = "searchtypes";
-			this.searchtypes.Size = new System.Drawing.Size(139, 22);
+			this.searchtypes.Size = new System.Drawing.Size(139, 21);
 			this.searchtypes.Sorted = true;
 			this.searchtypes.TabIndex = 0;
 			this.searchtypes.SelectedIndexChanged += new System.EventHandler(this.searchtypes_SelectedIndexChanged);
@@ -100,7 +100,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// browsefind
 			// 
-			this.browsefind.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browsefind.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.treeview;
 			this.browsefind.Location = new System.Drawing.Point(212, 46);
 			this.browsefind.Name = "browsefind";
@@ -114,14 +113,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.withinselection.AutoSize = true;
 			this.withinselection.Location = new System.Drawing.Point(100, 75);
 			this.withinselection.Name = "withinselection";
-			this.withinselection.Size = new System.Drawing.Size(139, 18);
+			this.withinselection.Size = new System.Drawing.Size(137, 17);
 			this.withinselection.TabIndex = 3;
 			this.withinselection.Text = "Within current selection";
 			this.withinselection.UseVisualStyleBackColor = true;
 			// 
 			// browsereplace
 			// 
-			this.browsereplace.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browsereplace.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.treeview;
 			this.browsereplace.Location = new System.Drawing.Point(203, 23);
 			this.browsereplace.Name = "browsereplace";
@@ -182,7 +180,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultscount.AutoSize = true;
 			this.resultscount.Location = new System.Drawing.Point(8, 11);
 			this.resultscount.Name = "resultscount";
-			this.resultscount.Size = new System.Drawing.Size(158, 14);
+			this.resultscount.Size = new System.Drawing.Size(156, 13);
 			this.resultscount.TabIndex = 10;
 			this.resultscount.Text = "1000 items have been replaced";
 			// 
@@ -238,7 +236,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.doreplace.AutoSize = true;
 			this.doreplace.Location = new System.Drawing.Point(24, 105);
 			this.doreplace.Name = "doreplace";
-			this.doreplace.Size = new System.Drawing.Size(65, 18);
+			this.doreplace.Size = new System.Drawing.Size(66, 17);
 			this.doreplace.TabIndex = 4;
 			this.doreplace.Text = "Replace";
 			this.doreplace.UseVisualStyleBackColor = true;
@@ -262,13 +260,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Controls.Add(this.searchtypes);
 			this.Controls.Add(label1);
 			this.Controls.Add(this.resultspanel);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "FindReplaceForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

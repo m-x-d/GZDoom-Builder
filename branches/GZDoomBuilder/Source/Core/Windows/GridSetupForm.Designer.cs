@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label1.AutoSize = true;
 			label1.Location = new System.Drawing.Point(25, 31);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(115, 14);
+			label1.Size = new System.Drawing.Size(110, 13);
 			label1.TabIndex = 0;
 			label1.Text = "Grid size in mappixels:";
 			// 
@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backscale.Enabled = false;
 			this.backscale.Location = new System.Drawing.Point(30, 217);
 			this.backscale.Name = "backscale";
-			this.backscale.Size = new System.Drawing.Size(88, 14);
+			this.backscale.Size = new System.Drawing.Size(87, 13);
 			this.backscale.TabIndex = 9;
 			this.backscale.Text = "Scale in percent:";
 			// 
@@ -197,7 +197,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.showbackground.AutoSize = true;
 			this.showbackground.Location = new System.Drawing.Point(28, 29);
 			this.showbackground.Name = "showbackground";
-			this.showbackground.Size = new System.Drawing.Size(146, 18);
+			this.showbackground.Size = new System.Drawing.Size(144, 17);
 			this.showbackground.TabIndex = 0;
 			this.showbackground.Text = "Show background image";
 			this.showbackground.UseVisualStyleBackColor = true;
@@ -209,7 +209,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backoffset.Enabled = false;
 			this.backoffset.Location = new System.Drawing.Point(15, 178);
 			this.backoffset.Name = "backoffset";
-			this.backoffset.Size = new System.Drawing.Size(103, 14);
+			this.backoffset.Size = new System.Drawing.Size(98, 13);
 			this.backoffset.TabIndex = 4;
 			this.backoffset.Text = "Offset in mappixels:";
 			// 
@@ -285,12 +285,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.apply);
 			this.Controls.Add(groupBox2);
 			this.Controls.Add(groupBox1);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "GridSetupForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

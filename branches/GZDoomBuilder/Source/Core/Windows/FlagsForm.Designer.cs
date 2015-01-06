@@ -94,11 +94,11 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "FlagsForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Flags";
-			this.Load += new System.EventHandler(this.LinedefFlagsForm_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.ResumeLayout(false);
 

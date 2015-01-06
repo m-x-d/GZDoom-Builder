@@ -48,7 +48,7 @@
 			this.rbFadeColor.AutoSize = true;
 			this.rbFadeColor.Location = new System.Drawing.Point(7, 41);
 			this.rbFadeColor.Name = "rbFadeColor";
-			this.rbFadeColor.Size = new System.Drawing.Size(76, 18);
+			this.rbFadeColor.Size = new System.Drawing.Size(75, 17);
 			this.rbFadeColor.TabIndex = 1;
 			this.rbFadeColor.Tag = "fadecolor";
 			this.rbFadeColor.Text = "Fade color";
@@ -60,7 +60,7 @@
 			this.rbSectorColor.Checked = true;
 			this.rbSectorColor.Location = new System.Drawing.Point(7, 20);
 			this.rbSectorColor.Name = "rbSectorColor";
-			this.rbSectorColor.Size = new System.Drawing.Size(84, 18);
+			this.rbSectorColor.Size = new System.Drawing.Size(82, 17);
 			this.rbSectorColor.TabIndex = 0;
 			this.rbSectorColor.TabStop = true;
 			this.rbSectorColor.Tag = "lightcolor";
@@ -82,12 +82,10 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.colorPickerControl1);
 			this.DoubleBuffered = true;
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SectorColorPicker";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

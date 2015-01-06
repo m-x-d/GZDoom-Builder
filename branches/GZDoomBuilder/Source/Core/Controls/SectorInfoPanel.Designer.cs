@@ -316,7 +316,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.effect.AutoSize = true;
 			this.effect.Location = new System.Drawing.Point(55, 19);
 			this.effect.Name = "effect";
-			this.effect.Size = new System.Drawing.Size(123, 14);
+			this.effect.Size = new System.Drawing.Size(123, 13);
 			this.effect.TabIndex = 1;
 			this.effect.Text = "0 - Whacky Pool of Fluid";
 			// 
@@ -325,7 +325,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceilingLight.AutoSize = true;
 			this.ceilingLight.Location = new System.Drawing.Point(124, 63);
 			this.ceilingLight.Name = "ceilingLight";
-			this.ceilingLight.Size = new System.Drawing.Size(15, 14);
+			this.ceilingLight.Size = new System.Drawing.Size(13, 13);
 			this.ceilingLight.TabIndex = 29;
 			this.ceilingLight.Text = "--";
 			// 
@@ -334,7 +334,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceilingScale.AutoSize = true;
 			this.ceilingScale.Location = new System.Drawing.Point(124, 47);
 			this.ceilingScale.Name = "ceilingScale";
-			this.ceilingScale.Size = new System.Drawing.Size(29, 14);
+			this.ceilingScale.Size = new System.Drawing.Size(25, 13);
 			this.ceilingScale.TabIndex = 28;
 			this.ceilingScale.Text = "--, --";
 			// 
@@ -343,7 +343,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceilingAngle.AutoSize = true;
 			this.ceilingAngle.Location = new System.Drawing.Point(124, 31);
 			this.ceilingAngle.Name = "ceilingAngle";
-			this.ceilingAngle.Size = new System.Drawing.Size(15, 14);
+			this.ceilingAngle.Size = new System.Drawing.Size(13, 13);
 			this.ceilingAngle.TabIndex = 25;
 			this.ceilingAngle.Text = "--";
 			// 
@@ -352,7 +352,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceilingOffset.AutoSize = true;
 			this.ceilingOffset.Location = new System.Drawing.Point(124, 15);
 			this.ceilingOffset.Name = "ceilingOffset";
-			this.ceilingOffset.Size = new System.Drawing.Size(29, 14);
+			this.ceilingOffset.Size = new System.Drawing.Size(25, 13);
 			this.ceilingOffset.TabIndex = 23;
 			this.ceilingOffset.Text = "--, --";
 			// 
@@ -381,7 +381,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceilingname.AutoSize = true;
 			this.ceilingname.Location = new System.Drawing.Point(6, 81);
 			this.ceilingname.Name = "ceilingname";
-			this.ceilingname.Size = new System.Drawing.Size(68, 14);
+			this.ceilingname.Size = new System.Drawing.Size(73, 13);
 			this.ceilingname.TabIndex = 1;
 			this.ceilingname.Text = "BROWNHUG";
 			// 
@@ -400,7 +400,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.labelCeilTextureSize.AutoSize = true;
 			this.labelCeilTextureSize.BackColor = System.Drawing.Color.Black;
-			this.labelCeilTextureSize.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelCeilTextureSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelCeilTextureSize.ForeColor = System.Drawing.Color.White;
 			this.labelCeilTextureSize.Location = new System.Drawing.Point(1, 1);
 			this.labelCeilTextureSize.MaximumSize = new System.Drawing.Size(0, 13);
@@ -434,7 +434,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floorLight.AutoSize = true;
 			this.floorLight.Location = new System.Drawing.Point(124, 63);
 			this.floorLight.Name = "floorLight";
-			this.floorLight.Size = new System.Drawing.Size(15, 14);
+			this.floorLight.Size = new System.Drawing.Size(13, 13);
 			this.floorLight.TabIndex = 29;
 			this.floorLight.Text = "--";
 			// 
@@ -443,7 +443,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floorScale.AutoSize = true;
 			this.floorScale.Location = new System.Drawing.Point(124, 47);
 			this.floorScale.Name = "floorScale";
-			this.floorScale.Size = new System.Drawing.Size(29, 14);
+			this.floorScale.Size = new System.Drawing.Size(25, 13);
 			this.floorScale.TabIndex = 28;
 			this.floorScale.Text = "--, --";
 			// 
@@ -452,7 +452,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floorOffset.AutoSize = true;
 			this.floorOffset.Location = new System.Drawing.Point(124, 15);
 			this.floorOffset.Name = "floorOffset";
-			this.floorOffset.Size = new System.Drawing.Size(29, 14);
+			this.floorOffset.Size = new System.Drawing.Size(25, 13);
 			this.floorOffset.TabIndex = 23;
 			this.floorOffset.Text = "--, --";
 			// 
@@ -461,7 +461,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floorAngle.AutoSize = true;
 			this.floorAngle.Location = new System.Drawing.Point(124, 31);
 			this.floorAngle.Name = "floorAngle";
-			this.floorAngle.Size = new System.Drawing.Size(15, 14);
+			this.floorAngle.Size = new System.Drawing.Size(13, 13);
 			this.floorAngle.TabIndex = 25;
 			this.floorAngle.Text = "--";
 			// 
@@ -470,7 +470,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floorname.AutoSize = true;
 			this.floorname.Location = new System.Drawing.Point(6, 81);
 			this.floorname.Name = "floorname";
-			this.floorname.Size = new System.Drawing.Size(68, 14);
+			this.floorname.Size = new System.Drawing.Size(73, 13);
 			this.floorname.TabIndex = 1;
 			this.floorname.Text = "BROWNHUG";
 			// 
@@ -489,7 +489,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.labelFloorTextureSize.AutoSize = true;
 			this.labelFloorTextureSize.BackColor = System.Drawing.Color.Black;
-			this.labelFloorTextureSize.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelFloorTextureSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelFloorTextureSize.ForeColor = System.Drawing.Color.White;
 			this.labelFloorTextureSize.Location = new System.Drawing.Point(1, 1);
 			this.labelFloorTextureSize.MaximumSize = new System.Drawing.Size(0, 13);
@@ -543,7 +543,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.flowLayoutPanel1);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "SectorInfoPanel";

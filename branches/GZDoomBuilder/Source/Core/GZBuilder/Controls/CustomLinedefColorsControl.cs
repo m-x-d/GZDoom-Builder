@@ -254,5 +254,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 				e.IsInputKey = true;
 			}
 		}
+
+		//mxd. Because anchor-based alignment fails when using high-Dpi settings...
+		private void CustomLinedefColorsControl_Resize(object sender, EventArgs e)
+		{
+			gbPresets.Height = this.Height - gbPresets.Top - gbPresets.Margin.Bottom;
+			lbColorPresets.Height = gbPresets.Height - lbColorPresets.Top - lbColorPresets.Margin.Bottom;
+			colorProperties.Height = gbPresets.Height;
+			colorProperties.Width = this.Width - colorProperties.Left - colorProperties.Margin.Right;
+		}
 	}
 }

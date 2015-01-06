@@ -30,18 +30,18 @@
 		{
 			this.gbLineColor = new System.Windows.Forms.GroupBox();
 			this.labelErrors = new System.Windows.Forms.Label();
-			this.lineColor = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.tcLineSettings = new System.Windows.Forms.TabControl();
 			this.tabFlags = new System.Windows.Forms.TabPage();
 			this.flags = new System.Windows.Forms.CheckedListBox();
 			this.cbUseFlags = new System.Windows.Forms.CheckBox();
 			this.tabAction = new System.Windows.Forms.TabPage();
-			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.cbUseAction = new System.Windows.Forms.CheckBox();
 			this.tabActivation = new System.Windows.Forms.TabPage();
 			this.activation = new System.Windows.Forms.ComboBox();
 			this.cbUseActivation = new System.Windows.Forms.CheckBox();
 			this.udmfactivates = new System.Windows.Forms.CheckedListBox();
+			this.lineColor = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.gbLineColor.SuspendLayout();
 			this.tcLineSettings.SuspendLayout();
 			this.tabFlags.SuspendLayout();
@@ -51,8 +51,6 @@
 			// 
 			// gbLineColor
 			// 
-			this.gbLineColor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.gbLineColor.Controls.Add(this.labelErrors);
 			this.gbLineColor.Controls.Add(this.lineColor);
 			this.gbLineColor.Location = new System.Drawing.Point(3, 3);
@@ -72,30 +70,15 @@
 			this.labelErrors.Text = "Teh Error occured!";
 			this.labelErrors.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// lineColor
-			// 
-			this.lineColor.BackColor = System.Drawing.Color.Transparent;
-			this.lineColor.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lineColor.Label = "Linedef color:";
-			this.lineColor.Location = new System.Drawing.Point(6, 13);
-			this.lineColor.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.lineColor.MinimumSize = new System.Drawing.Size(100, 23);
-			this.lineColor.Name = "lineColor";
-			this.lineColor.Size = new System.Drawing.Size(132, 23);
-			this.lineColor.TabIndex = 0;
-			this.lineColor.ColorChanged += new System.EventHandler(this.lineColor_ColorChanged);
-			// 
 			// tcLineSettings
 			// 
-			this.tcLineSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tcLineSettings.Controls.Add(this.tabFlags);
 			this.tcLineSettings.Controls.Add(this.tabAction);
 			this.tcLineSettings.Controls.Add(this.tabActivation);
-			this.tcLineSettings.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.tcLineSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.tcLineSettings.Location = new System.Drawing.Point(3, 50);
 			this.tcLineSettings.Name = "tcLineSettings";
+			this.tcLineSettings.Padding = new System.Drawing.Point(24, 3);
 			this.tcLineSettings.SelectedIndex = 0;
 			this.tcLineSettings.Size = new System.Drawing.Size(329, 264);
 			this.tcLineSettings.TabIndex = 12;
@@ -104,10 +87,11 @@
 			// 
 			this.tabFlags.Controls.Add(this.flags);
 			this.tabFlags.Controls.Add(this.cbUseFlags);
-			this.tabFlags.Location = new System.Drawing.Point(4, 23);
+			this.tabFlags.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.tabFlags.Location = new System.Drawing.Point(4, 22);
 			this.tabFlags.Name = "tabFlags";
 			this.tabFlags.Padding = new System.Windows.Forms.Padding(3);
-			this.tabFlags.Size = new System.Drawing.Size(321, 237);
+			this.tabFlags.Size = new System.Drawing.Size(321, 238);
 			this.tabFlags.TabIndex = 0;
 			this.tabFlags.Text = "Flags";
 			this.tabFlags.UseVisualStyleBackColor = true;
@@ -132,7 +116,7 @@
 			this.cbUseFlags.AutoSize = true;
 			this.cbUseFlags.Location = new System.Drawing.Point(6, 6);
 			this.cbUseFlags.Name = "cbUseFlags";
-			this.cbUseFlags.Size = new System.Drawing.Size(72, 18);
+			this.cbUseFlags.Size = new System.Drawing.Size(70, 17);
 			this.cbUseFlags.TabIndex = 4;
 			this.cbUseFlags.Text = "Use flags";
 			this.cbUseFlags.UseVisualStyleBackColor = true;
@@ -142,38 +126,21 @@
 			// 
 			this.tabAction.Controls.Add(this.action);
 			this.tabAction.Controls.Add(this.cbUseAction);
-			this.tabAction.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.tabAction.Location = new System.Drawing.Point(4, 23);
+			this.tabAction.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.tabAction.Location = new System.Drawing.Point(4, 22);
 			this.tabAction.Name = "tabAction";
 			this.tabAction.Padding = new System.Windows.Forms.Padding(3);
-			this.tabAction.Size = new System.Drawing.Size(321, 237);
+			this.tabAction.Size = new System.Drawing.Size(321, 238);
 			this.tabAction.TabIndex = 1;
 			this.tabAction.Text = "Action";
 			this.tabAction.UseVisualStyleBackColor = true;
 			// 
-			// action
-			// 
-			this.action.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.action.BackColor = System.Drawing.Color.Transparent;
-			this.action.Cursor = System.Windows.Forms.Cursors.Default;
-			this.action.Empty = false;
-			this.action.GeneralizedCategories = null;
-			this.action.GeneralizedOptions = null;
-			this.action.Location = new System.Drawing.Point(6, 30);
-			this.action.Name = "action";
-			this.action.Size = new System.Drawing.Size(309, 21);
-			this.action.TabIndex = 6;
-			this.action.Value = 0;
-			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
-			// 
 			// cbUseAction
 			// 
 			this.cbUseAction.AutoSize = true;
-			this.cbUseAction.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.cbUseAction.Location = new System.Drawing.Point(6, 6);
 			this.cbUseAction.Name = "cbUseAction";
-			this.cbUseAction.Size = new System.Drawing.Size(78, 18);
+			this.cbUseAction.Size = new System.Drawing.Size(78, 17);
 			this.cbUseAction.TabIndex = 4;
 			this.cbUseAction.Text = "Use Action";
 			this.cbUseAction.UseVisualStyleBackColor = true;
@@ -184,9 +151,10 @@
 			this.tabActivation.Controls.Add(this.activation);
 			this.tabActivation.Controls.Add(this.cbUseActivation);
 			this.tabActivation.Controls.Add(this.udmfactivates);
-			this.tabActivation.Location = new System.Drawing.Point(4, 23);
+			this.tabActivation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.tabActivation.Location = new System.Drawing.Point(4, 22);
 			this.tabActivation.Name = "tabActivation";
-			this.tabActivation.Size = new System.Drawing.Size(321, 237);
+			this.tabActivation.Size = new System.Drawing.Size(321, 238);
 			this.tabActivation.TabIndex = 2;
 			this.tabActivation.Text = "Activation type";
 			this.tabActivation.UseVisualStyleBackColor = true;
@@ -199,7 +167,7 @@
 			this.activation.FormattingEnabled = true;
 			this.activation.Location = new System.Drawing.Point(3, 30);
 			this.activation.Name = "activation";
-			this.activation.Size = new System.Drawing.Size(315, 22);
+			this.activation.Size = new System.Drawing.Size(315, 21);
 			this.activation.TabIndex = 0;
 			this.activation.SelectedIndexChanged += new System.EventHandler(this.activation_SelectedIndexChanged);
 			// 
@@ -208,7 +176,7 @@
 			this.cbUseActivation.AutoSize = true;
 			this.cbUseActivation.Location = new System.Drawing.Point(6, 6);
 			this.cbUseActivation.Name = "cbUseActivation";
-			this.cbUseActivation.Size = new System.Drawing.Size(94, 18);
+			this.cbUseActivation.Size = new System.Drawing.Size(94, 17);
 			this.cbUseActivation.TabIndex = 4;
 			this.cbUseActivation.Text = "Use activation";
 			this.cbUseActivation.UseVisualStyleBackColor = true;
@@ -229,6 +197,34 @@
 			this.udmfactivates.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.flags_ItemCheck);
 			this.udmfactivates.SelectedValueChanged += new System.EventHandler(this.udmfactivates_SelectedValueChanged);
 			// 
+			// lineColor
+			// 
+			this.lineColor.BackColor = System.Drawing.Color.Transparent;
+			this.lineColor.Label = "Linedef color:";
+			this.lineColor.Location = new System.Drawing.Point(6, 13);
+			this.lineColor.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.lineColor.MinimumSize = new System.Drawing.Size(100, 23);
+			this.lineColor.Name = "lineColor";
+			this.lineColor.Size = new System.Drawing.Size(132, 23);
+			this.lineColor.TabIndex = 0;
+			this.lineColor.ColorChanged += new System.EventHandler(this.lineColor_ColorChanged);
+			// 
+			// action
+			// 
+			this.action.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.action.BackColor = System.Drawing.Color.Transparent;
+			this.action.Cursor = System.Windows.Forms.Cursors.Default;
+			this.action.Empty = false;
+			this.action.GeneralizedCategories = null;
+			this.action.GeneralizedOptions = null;
+			this.action.Location = new System.Drawing.Point(6, 30);
+			this.action.Name = "action";
+			this.action.Size = new System.Drawing.Size(309, 21);
+			this.action.TabIndex = 6;
+			this.action.Value = 0;
+			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
+			// 
 			// CustomLinedefColorProperties
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -237,6 +233,7 @@
 			this.Controls.Add(this.tcLineSettings);
 			this.Name = "CustomLinedefColorProperties";
 			this.Size = new System.Drawing.Size(337, 319);
+			this.Resize += new System.EventHandler(this.CustomLinedefColorProperties_Resize);
 			this.gbLineColor.ResumeLayout(false);
 			this.tcLineSettings.ResumeLayout(false);
 			this.tabFlags.ResumeLayout(false);

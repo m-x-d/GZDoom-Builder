@@ -50,10 +50,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.doortexture.Size = new System.Drawing.Size(83, 105);
 			this.doortexture.TabIndex = 0;
 			this.doortexture.TextureName = "";
+			this.doortexture.UsePreviews = true;
 			// 
 			// label1
 			// 
-			this.label1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.label1.Location = new System.Drawing.Point(12, 10);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(83, 21);
@@ -63,7 +64,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			// 
 			// label2
 			// 
-			this.label2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.label2.Location = new System.Drawing.Point(190, 10);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(83, 21);
@@ -79,6 +80,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.ceilingtexture.Size = new System.Drawing.Size(83, 105);
 			this.ceilingtexture.TabIndex = 1;
 			this.ceilingtexture.TextureName = "";
+			this.ceilingtexture.UsePreviews = true;
 			// 
 			// floortexture
 			// 
@@ -88,10 +90,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.floortexture.Size = new System.Drawing.Size(83, 105);
 			this.floortexture.TabIndex = 2;
 			this.floortexture.TextureName = "";
+			this.floortexture.UsePreviews = true;
 			// 
 			// label3
 			// 
-			this.label3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.label3.Location = new System.Drawing.Point(279, 10);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(83, 21);
@@ -127,7 +130,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.resetoffsets.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.resetoffsets.Location = new System.Drawing.Point(12, 140);
 			this.resetoffsets.Name = "resetoffsets";
-			this.resetoffsets.Size = new System.Drawing.Size(129, 18);
+			this.resetoffsets.Size = new System.Drawing.Size(123, 17);
 			this.resetoffsets.TabIndex = 5;
 			this.resetoffsets.Text = "Reset texture offsets";
 			this.resetoffsets.UseVisualStyleBackColor = true;
@@ -141,10 +144,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.tracktexture.Size = new System.Drawing.Size(83, 105);
 			this.tracktexture.TabIndex = 6;
 			this.tracktexture.TextureName = "";
+			this.tracktexture.UsePreviews = true;
 			// 
 			// label4
 			// 
-			this.label4.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.label4.Location = new System.Drawing.Point(101, 10);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(83, 21);
@@ -170,12 +174,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.doortexture);
 			this.Controls.Add(this.label1);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "MakeDoorForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

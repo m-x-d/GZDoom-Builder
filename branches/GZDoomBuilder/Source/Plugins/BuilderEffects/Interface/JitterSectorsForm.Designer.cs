@@ -133,6 +133,7 @@
 			this.textureUpper.Size = new System.Drawing.Size(83, 112);
 			this.textureUpper.TabIndex = 2;
 			this.textureUpper.TextureName = "";
+			this.textureUpper.UsePreviews = true;
 			this.textureUpper.OnValueChanged += new System.EventHandler(this.textureUpper_OnValueChanged);
 			// 
 			// cbPegTop
@@ -140,7 +141,7 @@
 			this.cbPegTop.AutoSize = true;
 			this.cbPegTop.Location = new System.Drawing.Point(6, 19);
 			this.cbPegTop.Name = "cbPegTop";
-			this.cbPegTop.Size = new System.Drawing.Size(107, 18);
+			this.cbPegTop.Size = new System.Drawing.Size(108, 17);
 			this.cbPegTop.TabIndex = 26;
 			this.cbPegTop.Text = "Upper Unpegged";
 			this.cbPegTop.UseVisualStyleBackColor = true;
@@ -155,6 +156,7 @@
 			this.textureLower.Size = new System.Drawing.Size(83, 112);
 			this.textureLower.TabIndex = 4;
 			this.textureLower.TextureName = "";
+			this.textureLower.UsePreviews = true;
 			this.textureLower.OnValueChanged += new System.EventHandler(this.textureLower_OnValueChanged);
 			// 
 			// cbPegBottom
@@ -162,7 +164,7 @@
 			this.cbPegBottom.AutoSize = true;
 			this.cbPegBottom.Location = new System.Drawing.Point(6, 19);
 			this.cbPegBottom.Name = "cbPegBottom";
-			this.cbPegBottom.Size = new System.Drawing.Size(110, 18);
+			this.cbPegBottom.Size = new System.Drawing.Size(108, 17);
 			this.cbPegBottom.TabIndex = 28;
 			this.cbPegBottom.Text = "Lower Unpegged";
 			this.cbPegBottom.UseVisualStyleBackColor = true;
@@ -178,7 +180,7 @@
             "Pick upper texture"});
 			this.cbUpperTexStyle.Location = new System.Drawing.Point(6, 43);
 			this.cbUpperTexStyle.Name = "cbUpperTexStyle";
-			this.cbUpperTexStyle.Size = new System.Drawing.Size(171, 22);
+			this.cbUpperTexStyle.Size = new System.Drawing.Size(171, 21);
 			this.cbUpperTexStyle.TabIndex = 26;
 			this.cbUpperTexStyle.SelectedIndexChanged += new System.EventHandler(this.cbUpperTexStyle_SelectedIndexChanged);
 			// 
@@ -192,7 +194,7 @@
             "Pick lower texture"});
 			this.cbLowerTexStyle.Location = new System.Drawing.Point(181, 43);
 			this.cbLowerTexStyle.Name = "cbLowerTexStyle";
-			this.cbLowerTexStyle.Size = new System.Drawing.Size(171, 22);
+			this.cbLowerTexStyle.Size = new System.Drawing.Size(171, 21);
 			this.cbLowerTexStyle.TabIndex = 27;
 			this.cbLowerTexStyle.SelectedIndexChanged += new System.EventHandler(this.cbLowerTexStyle_SelectedIndexChanged);
 			// 
@@ -212,7 +214,7 @@
 			this.cbKeepExistingTextures.AutoSize = true;
 			this.cbKeepExistingTextures.Location = new System.Drawing.Point(8, 19);
 			this.cbKeepExistingTextures.Name = "cbKeepExistingTextures";
-			this.cbKeepExistingTextures.Size = new System.Drawing.Size(211, 18);
+			this.cbKeepExistingTextures.Size = new System.Drawing.Size(205, 17);
 			this.cbKeepExistingTextures.TabIndex = 30;
 			this.cbKeepExistingTextures.Text = "Don\'t change existing sidedef textures";
 			this.cbKeepExistingTextures.UseVisualStyleBackColor = true;
@@ -222,7 +224,6 @@
 			// 
 			this.positionJitterAmmount.AllowNegative = false;
 			this.positionJitterAmmount.ExtendedLimits = true;
-			this.positionJitterAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.positionJitterAmmount.Label = "Position:";
 			this.positionJitterAmmount.Location = new System.Drawing.Point(6, 19);
 			this.positionJitterAmmount.Maximum = 100;
@@ -237,7 +238,6 @@
 			// 
 			this.floorHeightAmmount.AllowNegative = false;
 			this.floorHeightAmmount.ExtendedLimits = false;
-			this.floorHeightAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.floorHeightAmmount.Label = "Floor height:";
 			this.floorHeightAmmount.Location = new System.Drawing.Point(6, 19);
 			this.floorHeightAmmount.Maximum = 100;
@@ -252,7 +252,6 @@
 			// 
 			this.ceilingHeightAmmount.AllowNegative = false;
 			this.ceilingHeightAmmount.ExtendedLimits = false;
-			this.ceilingHeightAmmount.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.ceilingHeightAmmount.Label = "Height:";
 			this.ceilingHeightAmmount.Location = new System.Drawing.Point(6, 19);
 			this.ceilingHeightAmmount.Maximum = 100;
@@ -268,7 +267,7 @@
 			this.cbUseFloorVertexHeights.AutoSize = true;
 			this.cbUseFloorVertexHeights.Location = new System.Drawing.Point(102, 75);
 			this.cbUseFloorVertexHeights.Name = "cbUseFloorVertexHeights";
-			this.cbUseFloorVertexHeights.Size = new System.Drawing.Size(117, 18);
+			this.cbUseFloorVertexHeights.Size = new System.Drawing.Size(114, 17);
 			this.cbUseFloorVertexHeights.TabIndex = 31;
 			this.cbUseFloorVertexHeights.Text = "Use vertex heights";
 			this.cbUseFloorVertexHeights.UseVisualStyleBackColor = true;
@@ -279,7 +278,7 @@
 			this.cbUseCeilingVertexHeights.AutoSize = true;
 			this.cbUseCeilingVertexHeights.Location = new System.Drawing.Point(102, 75);
 			this.cbUseCeilingVertexHeights.Name = "cbUseCeilingVertexHeights";
-			this.cbUseCeilingVertexHeights.Size = new System.Drawing.Size(117, 18);
+			this.cbUseCeilingVertexHeights.Size = new System.Drawing.Size(114, 17);
 			this.cbUseCeilingVertexHeights.TabIndex = 32;
 			this.cbUseCeilingVertexHeights.Text = "Use vertex heights";
 			this.cbUseCeilingVertexHeights.UseVisualStyleBackColor = true;
@@ -290,7 +289,7 @@
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(26, 51);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(70, 14);
+			this.label1.Size = new System.Drawing.Size(67, 13);
 			this.label1.TabIndex = 33;
 			this.label1.Text = "Offset mode:";
 			// 
@@ -304,7 +303,7 @@
             "Raise only"});
 			this.ceiloffsetmode.Location = new System.Drawing.Point(102, 47);
 			this.ceiloffsetmode.Name = "ceiloffsetmode";
-			this.ceiloffsetmode.Size = new System.Drawing.Size(112, 22);
+			this.ceiloffsetmode.Size = new System.Drawing.Size(112, 21);
 			this.ceiloffsetmode.TabIndex = 34;
 			this.ceiloffsetmode.SelectedIndexChanged += new System.EventHandler(this.ceiloffsetmode_SelectedIndexChanged);
 			// 
@@ -318,7 +317,7 @@
             "Lower only"});
 			this.flooroffsetmode.Location = new System.Drawing.Point(102, 47);
 			this.flooroffsetmode.Name = "flooroffsetmode";
-			this.flooroffsetmode.Size = new System.Drawing.Size(112, 22);
+			this.flooroffsetmode.Size = new System.Drawing.Size(112, 21);
 			this.flooroffsetmode.TabIndex = 36;
 			this.flooroffsetmode.SelectedIndexChanged += new System.EventHandler(this.flooroffsetmode_SelectedIndexChanged);
 			// 
@@ -327,7 +326,7 @@
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(26, 51);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(70, 14);
+			this.label2.Size = new System.Drawing.Size(67, 13);
 			this.label2.TabIndex = 35;
 			this.label2.Text = "Offset mode:";
 			// 
@@ -397,12 +396,10 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.bCancel);
 			this.Controls.Add(this.bApply);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "JitterSectorsForm";
-			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.labelMixMode.AutoSize = true;
 			this.labelMixMode.Location = new System.Drawing.Point(3, 9);
 			this.labelMixMode.Name = "labelMixMode";
-			this.labelMixMode.Size = new System.Drawing.Size(39, 14);
+			this.labelMixMode.Size = new System.Drawing.Size(37, 13);
 			this.labelMixMode.TabIndex = 0;
 			this.labelMixMode.Text = "Show:";
 			// 
@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.label.AutoSize = true;
 			this.label.Location = new System.Drawing.Point(131, 9);
 			this.label.Name = "label";
-			this.label.Size = new System.Drawing.Size(33, 14);
+			this.label.Size = new System.Drawing.Size(32, 13);
 			this.label.TabIndex = 0;
 			this.label.Text = "Filter:";
 			// 
@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// list
 			// 
 			this.list.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.list.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.list.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.list.HideSelection = false;
 			this.list.Location = new System.Drawing.Point(0, 0);
 			this.list.MultiSelect = false;
@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.showtexturesize.AutoSize = true;
 			this.showtexturesize.Location = new System.Drawing.Point(470, 9);
 			this.showtexturesize.Name = "showtexturesize";
-			this.showtexturesize.Size = new System.Drawing.Size(109, 18);
+			this.showtexturesize.Size = new System.Drawing.Size(105, 17);
 			this.showtexturesize.TabIndex = 0;
 			this.showtexturesize.Text = "Show image size";
 			this.showtexturesize.UseVisualStyleBackColor = true;
@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.longtexturenames.AutoSize = true;
 			this.longtexturenames.Location = new System.Drawing.Point(585, 9);
 			this.longtexturenames.Name = "longtexturenames";
-			this.longtexturenames.Size = new System.Drawing.Size(122, 18);
+			this.longtexturenames.Size = new System.Drawing.Size(119, 17);
 			this.longtexturenames.TabIndex = 0;
 			this.longtexturenames.Text = "Long texture names";
 			this.longtexturenames.UseVisualStyleBackColor = true;
@@ -144,7 +144,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filterheightlabel.AutoSize = true;
 			this.filterheightlabel.Location = new System.Drawing.Point(367, 9);
 			this.filterheightlabel.Name = "filterheightlabel";
-			this.filterheightlabel.Size = new System.Drawing.Size(40, 14);
+			this.filterheightlabel.Size = new System.Drawing.Size(41, 13);
 			this.filterheightlabel.TabIndex = 0;
 			this.filterheightlabel.Text = "Height:";
 			// 
@@ -169,7 +169,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filterwidthlabel.AutoSize = true;
 			this.filterwidthlabel.Location = new System.Drawing.Point(268, 9);
 			this.filterwidthlabel.Name = "filterwidthlabel";
-			this.filterwidthlabel.Size = new System.Drawing.Size(37, 14);
+			this.filterwidthlabel.Size = new System.Drawing.Size(38, 13);
 			this.filterwidthlabel.TabIndex = 0;
 			this.filterwidthlabel.Text = "Width:";
 			// 
@@ -201,7 +201,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.cbMixMode.Location = new System.Drawing.Point(43, 5);
 			this.cbMixMode.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.cbMixMode.Name = "cbMixMode";
-			this.cbMixMode.Size = new System.Drawing.Size(80, 22);
+			this.cbMixMode.Size = new System.Drawing.Size(80, 21);
 			this.cbMixMode.TabIndex = 0;
 			this.cbMixMode.TabStop = false;
 			this.cbMixMode.SelectedIndexChanged += new System.EventHandler(this.cbMixMode_SelectedIndexChanged);
@@ -228,7 +228,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.splitter);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "ImageBrowserControl";
 			this.Size = new System.Drawing.Size(840, 346);
 			this.splitter.Panel1.ResumeLayout(false);

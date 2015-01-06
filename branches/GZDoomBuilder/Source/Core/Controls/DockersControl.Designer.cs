@@ -64,7 +64,7 @@
 			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.ItemSize = new System.Drawing.Size(100, 26);
 			this.tabs.Location = new System.Drawing.Point(0, 0);
 			this.tabs.Margin = new System.Windows.Forms.Padding(0);
@@ -89,7 +89,6 @@
 			this.Controls.Add(this.buttonTogglePinning);
 			this.Controls.Add(this.splitter);
 			this.Controls.Add(this.tabs);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "DockersControl";
 			this.Size = new System.Drawing.Size(308, 541);
 			this.MouseLeave += new System.EventHandler(this.RaiseMouseContainerLeave);

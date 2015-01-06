@@ -60,7 +60,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.button.Image = global::CodeImp.DoomBuilder.Properties.Resources.ColorPick;
 			this.button.Location = new System.Drawing.Point(322, 0);
 			this.button.Name = "button";
-			this.button.Padding = new System.Windows.Forms.Padding(0, 0, 2, 3);
 			this.button.Size = new System.Drawing.Size(26, 23);
 			this.button.TabIndex = 2;
 			this.button.UseVisualStyleBackColor = false;
@@ -81,7 +80,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Controls.Add(this.button);
 			this.Controls.Add(this.panel);
 			this.Controls.Add(this.label);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.MinimumSize = new System.Drawing.Size(100, 23);
 			this.Name = "ColorControl";

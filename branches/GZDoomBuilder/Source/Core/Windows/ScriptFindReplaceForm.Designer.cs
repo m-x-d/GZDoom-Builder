@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(29, 23);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(58, 14);
+			this.label1.Size = new System.Drawing.Size(56, 13);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Find what:";
 			// 
@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.casesensitive.AutoSize = true;
 			this.casesensitive.Location = new System.Drawing.Point(93, 81);
 			this.casesensitive.Name = "casesensitive";
-			this.casesensitive.Size = new System.Drawing.Size(97, 18);
+			this.casesensitive.Size = new System.Drawing.Size(94, 17);
 			this.casesensitive.TabIndex = 2;
 			this.casesensitive.Text = "Case sensitive";
 			this.casesensitive.UseVisualStyleBackColor = true;
@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.wordonly.AutoSize = true;
 			this.wordonly.Location = new System.Drawing.Point(93, 105);
 			this.wordonly.Name = "wordonly";
-			this.wordonly.Size = new System.Drawing.Size(108, 18);
+			this.wordonly.Size = new System.Drawing.Size(105, 17);
 			this.wordonly.TabIndex = 3;
 			this.wordonly.Text = "Whole word only";
 			this.wordonly.UseVisualStyleBackColor = true;
@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(14, 54);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(73, 14);
+			this.label2.Size = new System.Drawing.Size(72, 13);
 			this.label2.TabIndex = 6;
 			this.label2.Text = "Replace with:";
 			// 
@@ -163,7 +163,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.casesensitive);
 			this.Controls.Add(this.findtext);
 			this.Controls.Add(this.label1);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;

@@ -253,7 +253,6 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.fieldslist.AutoInsertUserPrefix = true;
 			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.fieldslist.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.fieldslist.Location = new System.Drawing.Point(11, 11);
 			this.fieldslist.Margin = new System.Windows.Forms.Padding(8);
 			this.fieldslist.Name = "fieldslist";

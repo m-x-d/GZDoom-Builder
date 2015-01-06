@@ -69,7 +69,7 @@
 			this.dataGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
 			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
 			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-			dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
 			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
 			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -100,7 +100,7 @@
 			this.ThingType.HeaderText = "Type";
 			this.ThingType.Name = "ThingType";
 			this.ThingType.ReadOnly = true;
-			this.ThingType.Width = 55;
+			this.ThingType.Width = 56;
 			// 
 			// ThingTitle
 			// 
@@ -120,7 +120,7 @@
 			this.ThingClassName.Name = "ThingClassName";
 			this.ThingClassName.ReadOnly = true;
 			this.ThingClassName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-			this.ThingClassName.Width = 89;
+			this.ThingClassName.Width = 88;
 			// 
 			// ThingCount
 			// 
@@ -137,9 +137,9 @@
 			// 
 			this.hideUnused.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.hideUnused.AutoSize = true;
-			this.hideUnused.Location = new System.Drawing.Point(13, 322);
+			this.hideUnused.Location = new System.Drawing.Point(13, 323);
 			this.hideUnused.Name = "hideUnused";
-			this.hideUnused.Size = new System.Drawing.Size(122, 18);
+			this.hideUnused.Size = new System.Drawing.Size(123, 17);
 			this.hideUnused.TabIndex = 8;
 			this.hideUnused.Text = "Hide Unused Things";
 			this.hideUnused.UseVisualStyleBackColor = true;
@@ -154,10 +154,10 @@
 			this.Controls.Add(this.hideUnused);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.dataGridView);
-			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
 			this.MinimizeBox = false;
 			this.Name = "ThingStatisticsForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Thing statistics";
