@@ -297,7 +297,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			fix1.Visible = false;
 			fix2.Visible = false;
 			fix3.Visible = false;
-			cbApplyToAll.Visible = false;//mxd
+			cbApplyToAll.Visible = false; //mxd
 		}
 		
 		// This runs in a seperate thread to manage the checking threads
@@ -460,10 +460,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				fix1.Text = r.Button1Text;
 				fix2.Text = r.Button2Text;
 				fix3.Text = r.Button3Text;
-				fix1.Visible = (r.Buttons >= 1);
-				fix2.Visible = (r.Buttons >= 2);
-				fix3.Visible = (r.Buttons >= 3);
-				cbApplyToAll.Visible = true;//mxd
+				fix1.Visible = (r.Buttons > 0);
+				fix2.Visible = (r.Buttons > 1);
+				fix3.Visible = (r.Buttons > 2);
+				cbApplyToAll.Visible = (r.Buttons > 0); //mxd
 				r.ZoomToObject();
 			}
 			else
@@ -569,9 +569,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				ErrorResult r = item as ErrorResult;
 
-				if (fixIndex == 1) r.Button1Click(true);
-				else if(fixIndex == 2) r.Button2Click(true);
-				else if(fixIndex == 3) r.Button3Click(true);
+				if (fixIndex == 1 && !r.Button1Click(true)) break;
+				if (fixIndex == 2 && !r.Button2Click(true)) break;
+				if (fixIndex == 3 && !r.Button3Click(true)) break;
 			}
 		}
 

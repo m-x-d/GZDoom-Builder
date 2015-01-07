@@ -31,14 +31,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		private readonly Sidedef side;
 		private readonly SidedefPart part;
+		private static string imagename = "-"; //mxd
 		
 		#endregion
 		
 		#region ================== Properties
 
-		public override int Buttons { get { return 2; } }
+		public override int Buttons { get { return 3; } }
 		public override string Button1Text { get { return "Remove Texture"; } }
 		public override string Button2Text { get { return "Add Default Texture"; } }
+		public override string Button3Text { get { return "Browse Texture"; } } //mxd
 		
 		#endregion
 		
@@ -52,7 +54,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.part = part;
 			this.viewobjects.Add(sd);
 			this.hidden = sd.IgnoredErrorChecks.Contains(this.GetType()); //mxd
-			this.description = "This sidedef uses an unknown texture. This could be the result of missing resources, or a mistyped texture name. Click the 'Remove Texture' button to remove the texture or click on 'Add Default Texture' to use a known texture instead.";
+			imagename = "-"; //mxd
+			this.description = "This sidedef uses an unknown texture. This could be the result of missing resources, or a mistyped texture name.";
 		}
 		
 		#endregion
@@ -122,6 +125,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				case SidedefPart.Lower: side.SetTextureLow(General.Map.Options.DefaultBottomTexture); break;
 			}
 			
+			General.Map.Map.Update();
+			return true;
+		}
+
+		//mxd. Fix by picking a texture
+		public override bool Button3Click(bool batchMode) 
+		{
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Unknown texture correction");
+			if(imagename == "-") imagename = General.Interface.BrowseTexture(General.Interface, imagename);
+			if(imagename == "-") return false;
+
+			switch(part) 
+			{
+				case SidedefPart.Upper: side.SetTextureHigh(imagename); break;
+				case SidedefPart.Middle: side.SetTextureMid(imagename); break;
+				case SidedefPart.Lower: side.SetTextureLow(imagename); break;
+			}
+
 			General.Map.Map.Update();
 			return true;
 		}
