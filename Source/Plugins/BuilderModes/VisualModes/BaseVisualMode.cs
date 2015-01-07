@@ -1576,6 +1576,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return objs;
 		}
 
+		//mxd
+		internal List<IVisualEventReceiver> RemoveDuplicateSidedefs(List<IVisualEventReceiver> objs) 
+		{
+			Dictionary<Sidedef, bool> processed = new Dictionary<Sidedef, bool>();
+			List<IVisualEventReceiver> result = new List<IVisualEventReceiver>();
+
+			foreach(IVisualEventReceiver obj in objs)
+			{
+				if (!(obj is BaseVisualGeometrySidedef))
+				{
+					result.Add(obj);
+				}
+				else 
+				{
+					Sidedef side = (obj as BaseVisualGeometrySidedef).Sidedef;
+
+					if (!processed.ContainsKey(side))
+					{
+						processed.Add(side, false);
+						result.Add(obj);
+					}
+				}
+			}
+
+			return result;
+		}
+
 		// This returns all selected sectors, no doubles
 		public List<Sector> GetSelectedSectors()
 		{
@@ -2515,6 +2542,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
 			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-1, 0, true);
 			PostAction();
 		}
@@ -2524,6 +2552,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
 			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(1, 0, true);
 			PostAction();
 		}
@@ -2533,6 +2562,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
 			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -1, true);
 			PostAction();
 		}
@@ -2542,6 +2572,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
 			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 1, true);
 			PostAction();
 		}
@@ -2551,6 +2582,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
 			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-General.Map.Grid.GridSize, 0, true);
 			PostAction();
 		}
@@ -2560,6 +2592,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
 			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(General.Map.Grid.GridSize, 0, true);
 			PostAction();
 		}
@@ -2569,6 +2602,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
 			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -General.Map.Grid.GridSize, true);
 			PostAction();
 		}
@@ -2578,6 +2612,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
 			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, General.Map.Grid.GridSize, true);
 			PostAction();
 		}
