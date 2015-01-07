@@ -31,13 +31,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private readonly Sidedef side;
 		private readonly SidedefPart part;
+		private static string imagename = "-"; //mxd
 
 		#endregion
 
 		#region ================== Properties
 
-		public override int Buttons { get { return 1; } }
+		public override int Buttons { get { return 2; } }
 		public override string Button1Text { get { return "Add Default Texture"; } }
+		public override string Button2Text { get { return "Browse Texture"; } } //mxd
 
 		#endregion
 
@@ -51,7 +53,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.part = part;
 			this.viewobjects.Add(sd);
 			this.hidden = sd.IgnoredErrorChecks.Contains(this.GetType()); //mxd
-			this.description = "This sidedef is missing a texture where it is required and could cause a 'Hall Of Mirrors' visual problem in the map. Click the 'Add Default Texture' button to add a texture to the line.";
+			imagename = "-"; //mxd
+			this.description = "This sidedef is missing a texture where it is required and could cause a 'Hall Of Mirrors' visual problem in the map.";
 		}
 
 		#endregion
@@ -106,6 +109,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				case SidedefPart.Upper: side.SetTextureHigh(General.Map.Options.DefaultTopTexture); break;
 				case SidedefPart.Middle: side.SetTextureMid(General.Map.Options.DefaultWallTexture); break;
 				case SidedefPart.Lower: side.SetTextureLow(General.Map.Options.DefaultBottomTexture); break;
+			}
+
+			General.Map.Map.Update();
+			return true;
+		}
+
+		//mxd. Fix by picking a texture
+		public override bool Button2Click(bool batchMode) 
+		{
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Missing texture correction");
+			if(imagename == "-") imagename = General.Interface.BrowseTexture(General.Interface, imagename);
+			if(imagename == "-") return false;
+
+			switch(part) 
+			{
+				case SidedefPart.Upper: side.SetTextureHigh(imagename); break;
+				case SidedefPart.Middle: side.SetTextureMid(imagename); break;
+				case SidedefPart.Lower: side.SetTextureLow(imagename); break;
 			}
 
 			General.Map.Map.Update();

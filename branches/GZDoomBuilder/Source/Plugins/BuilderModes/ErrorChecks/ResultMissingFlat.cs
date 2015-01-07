@@ -15,13 +15,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		private readonly Sector sector;
 		private readonly bool ceiling;
+		private static string imagename = "-"; //mxd
 		
 		#endregion
 		
 		#region ================== Properties
 
-		public override int Buttons { get { return 1; } }
+		public override int Buttons { get { return 2; } }
 		public override string Button1Text { get { return "Add Default Flat"; } }
+		public override string Button2Text { get { return "Browse Flat"; } } //mxd
 		
 		#endregion
 		
@@ -35,9 +37,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.ceiling = ceiling;
 			this.viewobjects.Add(s);
 			this.hidden = s.IgnoredErrorChecks.Contains(this.GetType()); //mxd
+			imagename = "-"; //mxd
 			
 			string objname = ceiling ? "ceiling" : "floor";
-			this.description = "This sector's " + objname + " is missing a flat where it is required and could cause a 'Hall Of Mirrors' visual problem in the map. Click the 'Add Default Flat' button to add a flat to the sector.";
+			this.description = "This sector's " + objname + " is missing a flat where it is required and could cause a 'Hall Of Mirrors' visual problem in the map.";
 		}
 		
 		#endregion
@@ -84,6 +87,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				sector.SetFloorTexture(General.Map.Options.DefaultFloorTexture);
 			
 			General.Map.Map.Update();
+			General.Map.Data.UpdateUsedTextures();
+			return true;
+		}
+
+		//mxd. Fix by picking a flat
+		public override bool Button2Click(bool batchMode) 
+		{
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Missing flat correction");
+			if(imagename == "-") imagename = General.Interface.BrowseFlat(General.Interface, imagename);
+			if(imagename == "-") return false;
+
+			if(ceiling) sector.SetCeilTexture(imagename);
+			else sector.SetFloorTexture(imagename);
+
+			General.Map.Map.Update();
+			General.Map.Data.UpdateUsedTextures();
 			return true;
 		}
 		
