@@ -477,7 +477,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							&& BuilderModesTools.GetSidedefPartSize(line.Front, VisualGeometryType.WALL_UPPER).IntersectsWith(rect));
 						
 						addFrontMiddle = (line.Front.MiddleTexture == texture
-							&& (line.Front.MiddleRequired() || line.Back != null)
+							&& (line.Front.MiddleRequired() || (line.Back != null && texture != "-"))
 							&& line.Front.GetMiddleHeight() > 0
 							&& BuilderModesTools.GetSidedefPartSize(line.Front, VisualGeometryType.WALL_MIDDLE).IntersectsWith(rect));
 						
@@ -493,8 +493,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							&& line.Back.HighRequired()
 							&& BuilderModesTools.GetSidedefPartSize(line.Back, VisualGeometryType.WALL_UPPER).IntersectsWith(rect));
 						
-						addBackMiddle = (line.Back.MiddleTexture == texture 
-							&& (line.Back.MiddleRequired() || line.Front != null)
+						addBackMiddle = (line.Back.MiddleTexture == texture
+							&& (line.Back.MiddleRequired() || (line.Front != null && texture != "-"))
 							&& line.Back.GetMiddleHeight() > 0
 							&& BuilderModesTools.GetSidedefPartSize(line.Back, VisualGeometryType.WALL_MIDDLE).IntersectsWith(rect));
 
