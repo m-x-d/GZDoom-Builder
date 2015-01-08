@@ -82,6 +82,21 @@ namespace CodeImp.DoomBuilder.ZDoom
 					// Done here
 					return;
 				}
+				//mxd. Start of inner scope?
+				else if (token == "{")
+				{
+					int bracelevel = 1;
+					while(token != null && bracelevel > 0)
+					{
+						parser.SkipWhitespace(false);
+						token = parser.ReadToken();
+						switch (token)
+						{
+							case "{": bracelevel++; break;
+							case "}": bracelevel--; break;
+						}
+					}
+				}
 				// End of scope?
 				else if(token == "}")
 				{
@@ -154,8 +169,18 @@ namespace CodeImp.DoomBuilder.ZDoom
 						parser.SkipWhitespace(false);
 						t = parser.ReadToken();
 
+						//mxd. Inner scope start. Step back and reparse using parent loop
+						if(t == "{")
+						{
+							// Rewind so that this scope end can be read again
+							parser.DataStream.Seek(-1, SeekOrigin.Current);
+
+							// Break out of this loop
+							break;
+						}
+						
 						//mxd. Because stuff like this is also valid: "Actor Oneliner { States { Spawn: WOOT A 1 A_FadeOut(0.1) Loop }}"
-						if(t == "}") 
+						if(t == "}")
 						{
 							// Rewind so that this scope end can be read again
 							parser.DataStream.Seek(-1, SeekOrigin.Current);
