@@ -3156,7 +3156,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(IsInfoPanelExpanded)
 			{
 				panelinfo.Height = buttontoggleinfo.Height + buttontoggleinfo.Top;
-				buttontoggleinfo.Text = "5";	// Arrow up
+				buttontoggleinfo.Image = Resources.InfoPanelExpand; //mxd
 				if(linedefinfo.Visible) linedefinfo.Hide();
 				if(vertexinfo.Visible) vertexinfo.Hide();
 				if(sectorinfo.Visible) sectorinfo.Hide();
@@ -3172,7 +3172,7 @@ namespace CodeImp.DoomBuilder.Windows
 			else
 			{
 				panelinfo.Height = heightpanel1.Height;
-				buttontoggleinfo.Text = "6";	// Arrow down
+				buttontoggleinfo.Image = Resources.InfoPanelCollapse; //mxd
 				labelcollapsedinfo.Visible = false;
 				itemtoggleinfo.Checked = true;
 				if(lastinfoobject is Vertex) ShowVertexInfo(lastinfoobject as Vertex);

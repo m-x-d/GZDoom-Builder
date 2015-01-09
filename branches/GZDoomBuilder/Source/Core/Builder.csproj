@@ -1033,6 +1033,10 @@
     <None Include="Resources\ImageStack.png" />
     <None Include="Resources\FolderExplore.png" />
     <None Include="Resources\Expand.png" />
+    <None Include="Resources\DockerCollapse.png" />
+    <None Include="Resources\DockerExpand.png" />
+    <None Include="Resources\InfoPanelCollapse.png" />
+    <None Include="Resources\InfoPanelExpand.png" />
     <Content Include="Resources\Light.png" />
     <None Include="Resources\Lightbulb.png" />
     <None Include="Resources\LightDisabled.png" />
@@ -1052,7 +1056,6 @@
     <None Include="Resources\SearchMatchCase.png" />
     <None Include="Resources\SearchMatch.png" />
     <None Include="Resources\WordWrap.png" />
-    <None Include="Resources\ThingCategory.png" />
     <None Include="Resources\ScreenshotActiveWindow.png" />
     <None Include="Resources\Screenshot.png" />
     <None Include="Resources\PuzzlePiece.png" />

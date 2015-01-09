@@ -2044,7 +2044,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelcollapsedinfo
 			// 
 			this.labelcollapsedinfo.AutoSize = true;
-			this.labelcollapsedinfo.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelcollapsedinfo.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelcollapsedinfo.Location = new System.Drawing.Point(2, 2);
 			this.labelcollapsedinfo.Name = "labelcollapsedinfo";
 			this.labelcollapsedinfo.Size = new System.Drawing.Size(137, 13);
@@ -2061,7 +2061,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modename.Name = "modename";
 			this.modename.Size = new System.Drawing.Size(244, 59);
 			this.modename.TabIndex = 8;
-			this.modename.Text = "Vertices";
+			this.modename.Text = "Hi. I missed you.";
 			this.modename.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.modename.UseMnemonic = false;
 			this.modename.Visible = false;
@@ -2070,14 +2070,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.buttontoggleinfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttontoggleinfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-			this.buttontoggleinfo.Font = new System.Drawing.Font("Marlett", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
+			this.buttontoggleinfo.Image = global::CodeImp.DoomBuilder.Properties.Resources.InfoPanelCollapse;
 			this.buttontoggleinfo.Location = new System.Drawing.Point(988, 1);
 			this.buttontoggleinfo.Name = "buttontoggleinfo";
 			this.buttontoggleinfo.Size = new System.Drawing.Size(22, 19);
 			this.buttontoggleinfo.TabIndex = 5;
 			this.buttontoggleinfo.TabStop = false;
 			this.buttontoggleinfo.Tag = "builder_toggleinfopanel";
-			this.buttontoggleinfo.Text = "6";
 			this.buttontoggleinfo.UseVisualStyleBackColor = true;
 			this.buttontoggleinfo.Click += new System.EventHandler(this.InvokeTaggedAction);
 			this.buttontoggleinfo.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttontoggleinfo_MouseUp);

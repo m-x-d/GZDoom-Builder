@@ -37,14 +37,7 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		private Bitmap tabsimage;
 		private int highlighttab;
-		private int tabsOffsetTop; //mxd
 		
-		#endregion
-
-		#region ================== Properties
-
-		public int TabsOffsetTop { get { return tabsOffsetTop; } internal set { tabsOffsetTop = value; } } //mxd
-
 		#endregion
 
 		#region ================== Constructor
@@ -125,9 +118,6 @@ namespace CodeImp.DoomBuilder.Controls
 					VisualStyleRenderer renderer;
 					Rectangle tr = this.GetTabRect(i);
 
-					//mxd. A cheap way to display pin button without rewriting this sodding control from scratch...
-					if(i == 0) tr.Height -= tabsOffsetTop;
-					
 					// Tab selected?
 					if(i == this.SelectedIndex)
 					{
@@ -142,8 +132,7 @@ namespace CodeImp.DoomBuilder.Controls
 							renderer = new VisualStyleRenderer(VisualStyleElement.Tab.TabItem.Normal);
 						
 						// Draw tab
-						int ox = (this.Alignment == TabAlignment.Left ? tabsOffsetTop : 0); //mxd
-						Rectangle r = new Rectangle(posoffset + ox + 2, 2, tr.Height, tr.Width - 2);
+						Rectangle r = new Rectangle(posoffset + 2, 2, tr.Height, tr.Width - 2);
 						renderer.DrawBackground(g, r);
 						g.DrawString(this.TabPages[i].Text, this.Font, SystemBrushes.ControlText, new RectangleF(r.Location, r.Size), drawformat);
 					}
@@ -156,8 +145,6 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					VisualStyleRenderer renderer = new VisualStyleRenderer(VisualStyleElement.Tab.TabItem.Pressed);
 					Rectangle tr = this.GetTabRect(this.SelectedIndex);
-					if(this.SelectedIndex == 0) tr.Height -= tabsOffsetTop; //mxd
-					if(this.Alignment == TabAlignment.Left)	selectedposoffset += tabsOffsetTop; //mxd
 					Rectangle r = new Rectangle(selectedposoffset, 0, tr.Height + 4, tr.Width);
 					renderer.DrawBackground(g, r);
 					g.DrawString(this.TabPages[this.SelectedIndex].Text, this.Font, SystemBrushes.ControlText, new RectangleF(r.X, r.Y, r.Width, r.Height - 2), drawformat);

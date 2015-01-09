@@ -166,8 +166,8 @@
   <data name="Filter" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Filter.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="GZDB2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\GZDB2.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Replace" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Replace.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Grid4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Grid4.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -196,8 +196,8 @@
   <data name="ScriptHelp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ScriptHelp.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Light_animate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Light_animate.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Search" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Search.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Splash3_trans" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Splash3_trans.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -213,6 +213,12 @@
   </data>
   <data name="Unpin" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Unpin.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Grid2_arrowup" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Grid2_arrowup.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Status0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Status0.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ViewBrightness" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ViewBrightness.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -316,6 +322,9 @@
   <data name="MCrash" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MCrash.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="DockerExpand" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DockerExpand.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ModelDisabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ModelDisabled.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -349,8 +358,8 @@
   <data name="Status10" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Status10.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Status0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Status0.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Properties" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Properties.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ScreenshotActiveWindow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ScreenshotActiveWindow.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -388,9 +397,6 @@
   <data name="Status2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Status2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Add" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Add.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Link" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Link.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -400,8 +406,8 @@
   <data name="ScriptSnippet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ScriptSnippet.xpm;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Properties" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Properties.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Add" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Add.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Test" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Test.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -421,8 +427,8 @@
   <data name="ViewTextureFloor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ViewTextureFloor.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Grid2_arrowup" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Grid2_arrowup.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Light_animate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Light_animate.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Pin" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Pin.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -435,6 +441,9 @@
   </data>
   <data name="Monster3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Monster3.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DockerCollapse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DockerCollapse.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Copy.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -463,8 +472,8 @@
   <data name="WarningLarge" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\WarningLarge.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Search" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Search.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="GZDB2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GZDB2.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Text" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Text.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -472,7 +481,10 @@
   <data name="Check" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Check.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Replace" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Replace.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="InfoPanelCollapse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\InfoPanelCollapse.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="InfoPanelExpand" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\InfoPanelExpand.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

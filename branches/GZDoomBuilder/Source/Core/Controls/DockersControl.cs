@@ -88,10 +88,6 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			InitializeComponent();
 			expandedwidth = (int)(this.Width * (this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width));
-			tabs.TabsOffsetTop = buttonTogglePinning.Bottom + 2; //mxd
-
-			if(General.Settings != null)
-				buttonTogglePinning.Image = General.Settings.CollapseDockers ? Properties.Resources.Unpin : Properties.Resources.Pin; //mxd
 		}
 		
 		#endregion
@@ -106,10 +102,8 @@ namespace CodeImp.DoomBuilder.Controls
 			while(c is IContainerControl)
 			{
 				IContainerControl cc = (c as IContainerControl);
-				if(cc.ActiveControl != null)
-					c = cc.ActiveControl;
-				else
-					break;
+				if(cc.ActiveControl != null) c = cc.ActiveControl;
+				else break;
 			}
 			
 			return c;
@@ -118,27 +112,25 @@ namespace CodeImp.DoomBuilder.Controls
 		// This sets up the controls for left or right alignment
 		public void Setup(bool right)
 		{
+			int voffset = pinbutton.Bottom + pinbutton.Margin.Bottom; //mxd
 			rightalign = right;
 			if(rightalign)
 			{
 				splitter.Dock = DockStyle.Left;
 				tabs.Alignment = TabAlignment.Right;
-				tabs.Location = new Point(0, 0);
-				buttonTogglePinning.Location = new Point(this.ClientRectangle.Width - buttonTogglePinning.Width - 2, buttonTogglePinning.Top); //mxd
-				buttonTogglePinning.Anchor = AnchorStyles.Right | AnchorStyles.Top; //mxd
-				tabs.Size = new Size(this.ClientRectangle.Width + 2, this.ClientRectangle.Height);
+				tabs.Location = new Point(0, voffset);
+				tabs.Size = new Size(this.ClientRectangle.Width + 2, this.ClientRectangle.Height - voffset);
 			}
 			else
 			{
 				splitter.Dock = DockStyle.Right;
 				tabs.Alignment = TabAlignment.Left;
-				tabs.Location = new Point(-2, 0);
-				buttonTogglePinning.Location = new Point(2, buttonTogglePinning.Top); //mxd
-				buttonTogglePinning.Anchor = AnchorStyles.Left | AnchorStyles.Top; //mxd
-				tabs.Size = new Size(this.ClientRectangle.Width + 2, this.ClientRectangle.Height);
+				tabs.Location = new Point(-2, voffset);
+				tabs.Size = new Size(this.ClientRectangle.Width + 2, this.ClientRectangle.Height - voffset);
 			}
 			
 			tabs.SendToBack();
+			UpdatePinIcon(); //mxd
 		}
 		
 		// This collapses the docker
@@ -336,6 +328,15 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(KeyValuePair<string, TabPage> p in pages)
 				tabs.TabPages.Add(p.Value);
 		}
+
+		//mxd
+		private void UpdatePinIcon() 
+		{
+			if(tabs.Alignment == TabAlignment.Left)
+				pinbutton.Image = (General.Settings.CollapseDockers ? Properties.Resources.DockerCollapse : Properties.Resources.DockerExpand);
+			else
+				pinbutton.Image = (General.Settings.CollapseDockers ? Properties.Resources.DockerExpand : Properties.Resources.DockerCollapse);
+		}
 		
 		#endregion
 		
@@ -445,11 +446,17 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void buttonTogglePinning_Click(object sender, EventArgs e) 
+		private void pinbutton_Click(object sender, EventArgs e)
 		{
 			General.Settings.CollapseDockers = !General.Settings.CollapseDockers;
 			General.MainWindow.SetupInterface();
-			buttonTogglePinning.Image = General.Settings.CollapseDockers ? Properties.Resources.Unpin : Properties.Resources.Pin;
+			UpdatePinIcon();
+		}
+
+		//mxd
+		private void DockersControl_Resize(object sender, EventArgs e)
+		{
+			pinbutton.Width = this.Width - pinbutton.Margin.Left - pinbutton.Margin.Right;
 		}
 		
 		#endregion
