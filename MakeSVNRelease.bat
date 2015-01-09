@@ -139,7 +139,7 @@ ECHO.
 ECHO Packing release...
 ECHO.
 IF EXIST "SVN_Build\*.7z" DEL /F /Q "SVN_Build\*.7z" > NUL
-"%SEVENZIPDIR%\7z" a .\SVN_Build\gzdb.7z .\Build\* -xr!*.pdb -x!Setup
+"%SEVENZIPDIR%\7z" a .\SVN_Build\gzdb.7z .\Build\* -xr!*.pdb -xr!*.xml -x!Setup
 IF %ERRORLEVEL% NEQ 0 GOTO PACKFAIL
 IF NOT EXIST .\SVN_Build\gzdb.7z GOTO FILEFAIL
 

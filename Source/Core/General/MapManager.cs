@@ -239,6 +239,10 @@ namespace CodeImp.DoomBuilder
 		// Initializes for a new map
 		internal bool InitializeNewMap(MapOptions options) 
 		{
+#if DEBUG
+			DebugConsole.Clear();
+#endif
+			
 			// Apply settings
 			this.filetitle = "unnamed.wad";
 			this.filepathname = "";
@@ -327,6 +331,10 @@ namespace CodeImp.DoomBuilder
 		{
 			WAD mapwad;
 			string tempfile;
+
+#if DEBUG
+			DebugConsole.Clear();
+#endif
 
 			// Apply settings
 			this.filetitle = Path.GetFileName(filepathname);
@@ -456,6 +464,10 @@ namespace CodeImp.DoomBuilder
 		//mxd. This switches to another map in the same wad 
 		internal bool InitializeSwitchMap(MapOptions options)
 		{
+#if DEBUG
+			DebugConsole.Clear();
+#endif
+			
 			this.changed = false;
 			this.options = options;
 
