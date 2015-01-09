@@ -439,6 +439,10 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			{
 				Split s;
 				Seg sg = segs[ssectors[ss].firstseg + i];
+
+				//mxd. Sanity check, because some segs in Doom maps refer to non-existing verts.  
+				if(sg.startvertex > verts.Length - 1 || sg.endvertex > verts.Length - 1) continue;
+
 				s.pos = verts[sg.startvertex];
 				s.delta = verts[sg.endvertex] - verts[sg.startvertex];
 				CropPolygon(poly, s);
