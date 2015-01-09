@@ -32,7 +32,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Variables
 
-		private bool blockUpdate;
+		private bool preventchanges;
 		
 		// Slope values
 		private float anglexy;
@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Properties
 
 		public StepsList StepValues { set { sloperotation.StepValues = value; } }
-		public bool UseLineAngles { get { return cbuselineangles.Checked; } set { blockUpdate = true; cbuselineangles.Checked = value; blockUpdate = false; } }
+		public bool UseLineAngles { get { return cbuselineangles.Checked; } set { preventchanges = true; cbuselineangles.Checked = value; preventchanges = false; } }
 
 		internal SlopePivotMode PivotMode 
 		{
@@ -54,9 +54,9 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			set 
 			{
-				blockUpdate = true;
+				preventchanges = true;
 				pivotmodeselector.SelectedIndex = (int)value;
-				blockUpdate = false;
+				preventchanges = false;
 			}
 		}
 
@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public void UpdateControls() 
 		{
-			blockUpdate = true;
+			preventchanges = true;
 
 			if(float.IsNaN(anglexy)) 
 			{
@@ -153,14 +153,14 @@ namespace CodeImp.DoomBuilder.Controls
 
 			slopeoffset.Text = (float.IsNaN(offset) ? "" : offset.ToString());
 
-			blockUpdate = false;
+			preventchanges = false;
 		}
 
 		public void UpdateOffset() 
 		{
-			blockUpdate = true;
+			preventchanges = true;
 			slopeoffset.Text = (float.IsNaN(offset) ? "" : offset.ToString());
-			blockUpdate = false;
+			preventchanges = false;
 		}
 
 		#endregion
@@ -169,50 +169,50 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private void sloperotation_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate) return;
-			blockUpdate = true;
+			if(preventchanges) return;
+			preventchanges = true;
 
 			anglexy = General.ClampAngle(sloperotation.GetResultFloat(float.NaN));
 			rotationcontrol.Angle = (float.IsNaN(anglexy) ? GZBuilder.Controls.AngleControl.NO_ANGLE : (int)Math.Round(anglexy + 90));
 
 			if(OnAnglesChanged != null) OnAnglesChanged(this, EventArgs.Empty);
-			blockUpdate = false;
+			preventchanges = false;
 		}
 
 		private void rotationcontrol_AngleChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate) return;
-			blockUpdate = true;
+			if(preventchanges) return;
+			preventchanges = true;
 
 			anglexy = General.ClampAngle(rotationcontrol.Angle - 90);
 			sloperotation.Text = anglexy.ToString();
 
 			if(OnAnglesChanged != null) OnAnglesChanged(this, EventArgs.Empty);
-			blockUpdate = false;
+			preventchanges = false;
 		}
 
 		private void slopeangle_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate) return;
-			blockUpdate = true;
+			if(preventchanges) return;
+			preventchanges = true;
 
 			anglez = General.Clamp((int)Math.Round(slopeangle.GetResultFloat(0f)), angletrackbar.Minimum, angletrackbar.Maximum);
 			angletrackbar.Value = (int)anglez;
 
 			if(OnAnglesChanged != null) OnAnglesChanged(this, EventArgs.Empty);
-			blockUpdate = false;
+			preventchanges = false;
 		}
 
 		private void angletrackbar_ValueChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate) return;
-			blockUpdate = true;
+			if(preventchanges) return;
+			preventchanges = true;
 
 			slopeangle.Text = angletrackbar.Value.ToString();
 			anglez = angletrackbar.Value;
 
 			if(OnAnglesChanged != null) OnAnglesChanged(this, EventArgs.Empty);
-			blockUpdate = false;
+			preventchanges = false;
 		}
 
 		private void slopeoffset_WhenTextChanged(object sender, EventArgs e) 
@@ -223,7 +223,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private void reset_Click(object sender, EventArgs e) 
 		{
-			blockUpdate = true;
+			preventchanges = true;
 
 			sloperotation.Text = "0";
 			rotationcontrol.Angle = 90;
@@ -235,19 +235,19 @@ namespace CodeImp.DoomBuilder.Controls
 			offset = 0f;
 
 			if(OnResetClicked != null) OnResetClicked(this, EventArgs.Empty);
-			blockUpdate = false;
+			preventchanges = false;
 		}
 
 		private void pivotmodeselector_SelectedIndexChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate) return;
+			if(preventchanges) return;
 			if(OnPivotModeChanged != null) OnPivotModeChanged(this, EventArgs.Empty);
 		}
 
 		private void cbuselineangles_CheckedChanged(object sender, EventArgs e) 
 		{
 			sloperotation.ButtonStepsWrapAround = cbuselineangles.Checked;
-			if(blockUpdate) return;
+			if(preventchanges) return;
 			if(OnUseLineAnglesChanged != null) OnUseLineAnglesChanged(this, EventArgs.Empty);
 		}
 

@@ -102,12 +102,26 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		/// <summary>
 		/// This loads all nodes structures data from the lumps
 		/// </summary>
-		private void LoadClassicStructures()
+		private bool LoadClassicStructures()
 		{
 			// Load the nodes structure
 			MemoryStream nodesstream = General.Map.GetLumpData("NODES");
-			BinaryReader nodesreader = new BinaryReader(nodesstream);
 			int numnodes = (int)nodesstream.Length / 28;
+
+			//mxd. More boilerplate
+			if(numnodes < 1) 
+			{
+				// Close readers
+				nodesstream.Close();
+				nodesstream.Dispose();
+				
+				// Cancel mode
+				MessageBox.Show("The map has only one subsector. Please add more sectors, then try running this mode again.", "Why are you doing this, Stanley?..", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				General.Editing.CancelMode();
+				return false;
+			}
+
+			BinaryReader nodesreader = new BinaryReader(nodesstream);
 			nodes = new Node[numnodes];
 			for(int i = 0; i < nodes.Length; i++)
 			{
@@ -195,6 +209,8 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 					segs[sg].ssector = i;
 				}
 			}
+
+			return true;
 		}
 
 		//mxd. This loads all data from the ZNODES lump
@@ -776,17 +792,24 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 				return;
 			}
 
-			//mxd. No need to check for these twice
+			//mxd
 			bool haveNodes = General.Map.LumpExists("NODES");
 			bool haveZnodes = General.Map.LumpExists("ZNODES");
 			bool haveSectors = General.Map.LumpExists("SSECTORS");
 			bool haveSegs = General.Map.LumpExists("SEGS");
 			bool haveVerts = General.Map.LumpExists("VERTEXES");
 
-			if(General.Map.IsChanged || !haveNodes || !haveSectors || !haveSegs || !haveVerts || !haveZnodes)
+			if(General.Map.IsChanged || !(haveZnodes || (haveNodes || haveSectors || haveSegs || haveVerts)))
 			{
 				// We need to build the nodes!
 				BuildNodes();
+
+				//mxd. Update nodes availability
+				haveNodes = General.Map.LumpExists("NODES");
+				haveZnodes = General.Map.LumpExists("ZNODES");
+				haveSectors = General.Map.LumpExists("SSECTORS");
+				haveSegs = General.Map.LumpExists("SEGS");
+				haveVerts = General.Map.LumpExists("VERTEXES");
 			}
 
 			//mxd
@@ -795,6 +818,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 				General.Interface.DisplayStatus(StatusType.Busy, "Reading map nodes...");
 				if(!LoadZNodes()) 
 				{
+					General.Interface.DisplayStatus(StatusType.Warning, "Failed to read map nodes.");
 					General.Editing.CancelMode();
 					return;
 				}
@@ -830,12 +854,9 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 				}
 
 				General.Interface.DisplayStatus(StatusType.Busy, "Reading map nodes...");
-				LoadClassicStructures();
-
-				//mxd. More boilerplate
-				if (nodes.Length < 1) 
+				if(!LoadClassicStructures())
 				{
-					MessageBox.Show("The map has only one subsector.", "Why are you doing this, Stanley?..", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					General.Interface.DisplayStatus(StatusType.Warning, "Failed to read map nodes.");
 					General.Editing.CancelMode();
 					return;
 				}

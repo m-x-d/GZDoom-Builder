@@ -464,7 +464,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// frontside
 			// 
 			this.frontside.AutoSize = true;
-			this.frontside.Location = new System.Drawing.Point(11, -2);
+			this.frontside.Location = new System.Drawing.Point(17, 4);
 			this.frontside.Name = "frontside";
 			this.frontside.Size = new System.Drawing.Size(74, 17);
 			this.frontside.TabIndex = 0;
@@ -477,7 +477,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.frontgroup.Controls.Add(this.labelFrontTextureOffset);
-			this.frontgroup.Controls.Add(this.frontside);
 			this.frontgroup.Controls.Add(this.frontsector);
 			this.frontgroup.Controls.Add(label11);
 			this.frontgroup.Controls.Add(this.frontlow);
@@ -558,7 +557,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// backside
 			// 
 			this.backside.AutoSize = true;
-			this.backside.Location = new System.Drawing.Point(11, -2);
+			this.backside.Location = new System.Drawing.Point(17, 170);
 			this.backside.Name = "backside";
 			this.backside.Size = new System.Drawing.Size(75, 17);
 			this.backside.TabIndex = 0;
@@ -571,7 +570,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.backgroup.Controls.Add(this.labelBackTextureOffset);
-			this.backgroup.Controls.Add(this.backside);
 			this.backgroup.Controls.Add(this.backsector);
 			this.backgroup.Controls.Add(label12);
 			this.backgroup.Controls.Add(this.backlow);
@@ -654,6 +652,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.panel.BackColor = System.Drawing.SystemColors.Window;
+			this.panel.Controls.Add(this.backside);
+			this.panel.Controls.Add(this.frontside);
 			this.panel.Controls.Add(this.frontgroup);
 			this.panel.Controls.Add(this.backgroup);
 			this.panel.Controls.Add(this.flagsgroup);
@@ -693,10 +693,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flagsgroup.ResumeLayout(false);
 			this.idgroup.ResumeLayout(false);
 			this.frontgroup.ResumeLayout(false);
-			this.frontgroup.PerformLayout();
 			this.backgroup.ResumeLayout(false);
-			this.backgroup.PerformLayout();
 			this.panel.ResumeLayout(false);
+			this.panel.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
