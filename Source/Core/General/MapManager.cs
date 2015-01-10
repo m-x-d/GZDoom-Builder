@@ -2010,38 +2010,85 @@ namespace CodeImp.DoomBuilder
 
 		//mxd
 		[BeginAction("snapvertstogrid")]
-		public void SnapVerticesToGrid() 
+		private void SnapSelectedMapElementsToGrid() 
 		{
+			// Get selected elements
 			ICollection<Vertex> verts = map.GetSelectedVertices(true);
+			ICollection<Linedef> lines = map.GetSelectedLinedefs(true); // Sector lines are auto-selected when a sector is selected
+			ICollection<Thing> things = map.GetSelectedThings(true);
 
-			//snap vertices?
-			if (verts.Count > 0) 
+			// Get vertices from selection
+			Dictionary<int, Vertex> vertstosnap = new Dictionary<int, Vertex>(verts.Count);
+			foreach(Vertex v in verts) vertstosnap.Add(v.Index, v);
+			foreach(Linedef l in lines)
 			{
-				SnapVertices(verts);
+				if(!vertstosnap.ContainsKey(l.Start.Index)) vertstosnap.Add(l.Start.Index, l.Start);
+				if(!vertstosnap.ContainsKey(l.End.Index)) vertstosnap.Add(l.End.Index, l.End);
+			}
+
+			// Anything to snap?
+			if (vertstosnap.Count == 0 && things.Count == 0) 
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Select any map element first!");
 				return;
 			}
 
-			//snap things?..
-			ICollection<Thing> things = map.GetSelectedThings(true);
-			if(things.Count == 0) 
+			// Make undo
+			undoredo.CreateUndo("Snap map elements to grid");
+
+			// Do the snapping
+			Cursor.Current = Cursors.AppStarting;
+
+			// Snap vertices?
+			int snappedverts = (vertstosnap.Count > 0 ? SnapVertices(vertstosnap.Values) : 0);
+
+			// Snap things?..
+			int snappedthings = (things.Count > 0 ? SnapThings(things) : 0);
+
+			// Assemble status message
+			List<string> message = new List<string>();
+			if(snappedverts > 0) message.Add(snappedverts + " vertices");
+			if(snappedthings > 0) message.Add(snappedthings + " things");
+
+			// Map changed?
+			if (message.Count > 0) 
 			{
-				General.Interface.DisplayStatus(StatusType.Warning, "Select any map element first!");
-			} 
+				// Display status
+				General.Interface.DisplayStatus(StatusType.Info, "Snapped " + string.Join(" and ", message.ToArray()));
+
+				// Warn the user
+				if(snappedverts > 0) 
+				{
+					MessageBox.Show("Snapped " + snappedverts + " vertices to grid." + Environment.NewLine +
+					                "It's a good idea to run Map Analysis Mode now.");
+				}
+
+				// Invoke clear selection to update sector highlight overlay
+				General.Actions.InvokeAction("builder_clearselection");
+
+				// Update cached values
+				General.Map.Map.Update();
+
+				// Map is changed
+				General.Map.IsChanged = true;
+			}
 			else 
 			{
-				SnapThings(things);
+				// Display status
+				General.Interface.DisplayStatus(StatusType.Info, "Selected map elements were already on the grid.");
+
+				// Withdraw undo
+				undoredo.WithdrawUndo();
 			}
+
+			// Done
+			General.Interface.RedrawDisplay();
+			Cursor.Current = Cursors.Default;
 		}
 
 		//mxd
-		private void SnapVertices(ICollection<Vertex> verts) 
+		private int SnapVertices(IEnumerable<Vertex> verts)
 		{
-			//we are terribly busy...
-			Cursor.Current = Cursors.AppStarting;
-
-			// Make undo for the snapping
-			undoredo.CreateUndo("Snap vertices");
-
 			int snappedCount = 0;
 			List<Vertex> movedVerts = new List<Vertex>();
 			List<Linedef> movedLines = new List<Linedef>();
@@ -2136,32 +2183,12 @@ namespace CodeImp.DoomBuilder
 				}
 			}
 
-			//display status
-			General.Interface.DisplayStatus(StatusType.Info, "Snapped " + snappedCount + " vertices.");
-			MessageBox.Show("Snapped " + snappedCount + " vertices." + Environment.NewLine + "It's a good idea to run Map Analysis Mode now.");
-
-			//done
-			if(snappedCount > 0) 
-			{
-				// Update cached values
-				General.Map.Map.Update();
-				// Map is changed
-				General.Map.IsChanged = true;
-			}
-
-			General.Interface.RedrawDisplay();
-			Cursor.Current = Cursors.Default;
+			return snappedCount;
 		}
 
 		//mxd
-		private static void SnapThings(IEnumerable<Thing> things) 
+		private static int SnapThings(IEnumerable<Thing> things)
 		{
-			//we are terribly busy...
-			Cursor.Current = Cursors.AppStarting;
-
-			// Make undo for the snapping
-			General.Map.UndoRedo.CreateUndo("Snap things");
-
 			int snappedCount = 0;
 
 			//snap them all!
@@ -2172,21 +2199,7 @@ namespace CodeImp.DoomBuilder
 				if(t.Position.x != pos.x || t.Position.y != pos.y) snappedCount++;
 			}
 
-			//display status
-			General.Interface.DisplayStatus(StatusType.Info, "Snapped " + snappedCount + " things.");
-
-			//done
-			if(snappedCount > 0) 
-			{
-				// Update cached values
-				General.Map.Map.Update();
-				// Map is changed
-				General.Map.IsChanged = true;
-			}
-
-			//done, I said!
-			General.Interface.RedrawDisplay();
-			Cursor.Current = Cursors.Default;
+			return snappedCount;
 		}
 
 		#endregion
