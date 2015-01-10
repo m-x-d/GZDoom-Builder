@@ -194,10 +194,5 @@ namespace CodeImp.DoomBuilder.Windows
 		/// This selected the previously selected docker in the side panel.
 		/// </summary>
 		void SelectPreviousDocker();
-
-		/// <summary>
-		/// This updates statistics panel, which shows total number of map elements (mxd).
-		/// </summary>
-		void UpdateStatistics();
 	}
 }

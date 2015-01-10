@@ -3,17 +3,17 @@
 
 [Setup]
 AppName=GZDoom Builder
-AppVerName=GZDoom Builder 1.XX
-AppPublisher=CodeImp
-AppPublisherURL=http://www.codeimp.com/
-AppSupportURL=http://www.doombuilder.com/
-AppUpdatesURL=http://www.doombuilder.com/
+AppVerName=GZDoom Builder 1.15
+AppPublisher=MaxED
+AppPublisherURL=http://forum.zdoom.org/memberlist.php?mode=viewprofile&u=7012
+AppSupportURL=http://forum.zdoom.org/viewtopic.php?f=3&t=32392
+AppUpdatesURL=http://forum.zdoom.org/viewtopic.php?f=3&t=32392
 DefaultDirName={pf}\GZDoom Builder
 DefaultGroupName=GZDoom Builder
 AllowNoIcons=true
 InfoBeforeFile=..\Setup\disclaimer.txt
 OutputDir=..\Release
-OutputBaseFilename=builder2_setup
+OutputBaseFilename=GZDoom Builder Setup
 Compression=lzma/ultra64
 SolidCompression=true
 SourceDir=..\Build
@@ -35,7 +35,6 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 
 [Files]
 Source: Setup\dotnetfx35setup.exe; DestDir: {tmp}; Flags: dontcopy
-Source: Setup\slimdx.msi; DestDir: {tmp}; Flags: dontcopy
 Source: Builder.exe; DestDir: {app}; Flags: ignoreversion
 Source: GZBuilder.cfg; DestDir: {app}; Flags: ignoreversion
 Source: Refmanual.chm; DestDir: {app}; Flags: ignoreversion
@@ -47,17 +46,14 @@ Source: SlimDX.dll; DestDir: {app}; Flags: ignoreversion
 Source: GPL.txt; DestDir: {app}; Flags: ignoreversion
 Source: Compilers\*; DestDir: {app}\Compilers; Flags: ignoreversion recursesubdirs
 Source: Configurations\*; DestDir: {app}\Configurations; Flags: ignoreversion recursesubdirs
-Source: Gldefs\*; DestDir: {app}\Gldefs; Flags: ignoreversion recursesubdirs
 Source: Scripting\*; DestDir: {app}\Scripting; Flags: ignoreversion recursesubdirs
+Source: Snippets\*; DestDir: {app}\Snippets; Flags: ignoreversion recursesubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: Plugins\BuilderModes.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\BuilderEffects.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\ColorPicker.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\CommentsPanel.dll; DestDir: {app}\Plugins; Flags: ignoreversion
-Source: Plugins\CopyPasteSectorProps.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\NodesViewer.dll; DestDir: {app}\Plugins; Flags: ignoreversion
-Source: Plugins\StairSectorBuilder.dll; DestDir: {app}\Plugins; Flags: ignoreversion
-Source: Plugins\Statistics.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\TagExplorer.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\TagRange.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\VisplaneExplorer.dll; DestDir: {app}\Plugins; Flags: ignoreversion
@@ -65,80 +61,125 @@ Source: Plugins\Loadorder.cfg; DestDir: {app}\Plugins; Flags: ignoreversion only
 Source: Sprites\*; DestDir: {app}\Sprites; Flags: ignoreversion recursesubdirs
 
 [Icons]
-Name: {group}\Doom Builder; Filename: {app}\Builder.exe
-Name: {group}\{cm:UninstallProgram,Doom Builder}; Filename: {uninstallexe}
+Name: {group}\GZDoom Builder; Filename: {app}\Builder.exe
+Name: {group}\{cm:UninstallProgram,GZDoom Builder}; Filename: {uninstallexe}
 Name: {commondesktop}\GZDoom Builder; Filename: {app}\Builder.exe; Tasks: desktopicon
 
-[Run]
-
 [UninstallDelete]
-//Name: {localappdata}\Doom Builder; Type: filesandordirs
 Name: {app}; Type: filesandordirs
+
 [InstallDelete]
 Name: {app}\Builder.pdb; Type: files
+Name: {app}\Builder.xml; Type: files
+
 [Registry]
 Root: HKLM; Subkey: SOFTWARE\CodeImp\GZDoom Builder\; ValueType: string; ValueName: Location; ValueData: {app}; Flags: uninsdeletevalue
+
 [Messages]
 ReadyLabel2a=Continue to begin with the installation, or click Back if you want to review or change any settings.
+
 [Code]
 // Global variables
 var
 	page_info_net: TOutputMsgWizardPage;
 	page_info_netfailed: TOutputMsgWizardPage;
 	page_setup_net: TOutputProgressWizardPage;
-	page_setup_components: TOutputProgressWizardPage;
-	componentsinstalled: Boolean;
+  page_info_dx: TOutputMsgWizardPage;
+	page_info_dxfailed: TOutputMsgWizardPage;
+	page_setup_dx: TOutputProgressWizardPage;
 	restartneeded: Boolean;
 	netinstallfailed: Boolean;
 	netisinstalled: Boolean;
+  dxinstallfailed: Boolean;
+	dxisinstalled: Boolean;
 
-procedure CheckNetIsInstalled();
+// Prerequisites checks
+function CheckNetIsInstalled(): Boolean;
 begin
-	netisinstalled := RegKeyExists(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5') or
+	Result := RegKeyExists(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5') or
 					  RegKeyExists(HKLM, 'SOFTWARE\Wow6432Node\Microsoft\NET Framework Setup\NDP\v3.5');
+end;
+
+function CheckDXVersion(): Boolean;
+var
+  MajorVer, MinorVer: Integer;
+  StartPos: Integer;
+  TempStr, VerStr: string;
+begin
+  if (RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\DirectX', 'Version', VerStr)) then begin
+    (* Extract major version *)
+    StartPos := Pos('.', VerStr);
+    MajorVer := StrToInt(Copy(VerStr, 1, StartPos - 1));
+    (* Remove major version and decimal point that follows *)
+    TempStr := Copy(VerStr, StartPos + 1, MaxInt);
+    (* Find next decimal point *)
+    StartPos := Pos('.', TempStr); 
+    (* Extract minor version *)
+    MinorVer := StrToInt(Copy(TempStr, 1, StartPos - 1));
+
+    Result := (MajorVer > 4) or ((MajorVer = 4) and (MinorVer >= 9));
+  end
+  else begin
+    Result := false;
+  end;
 end;
 
 // When the wizard initializes
 procedure InitializeWizard();
 begin
 	restartneeded := false;
-	componentsinstalled := false;
 	netinstallfailed := false;
-	CheckNetIsInstalled();
+	netisinstalled := CheckNetIsInstalled();
+  dxinstallfailed := false;
+	dxisinstalled := CheckDXVersion();
 
+  // Create .NET Framework pages
 	page_info_net := CreateOutputMsgPage(wpPreparing,
-		'Installing Microsoft .NET Framework', '',
+		'Installing Microsoft .NET Framework 3.5', '',
 		'Setup has detected that your system is missing the required version of the Microsoft .NET Framework. ' +
-		'Setup will now download and install or update your Microsoft .NET Framework. This requires an internet connection ' +
-		'and may take several minutes to complete.' + #10 + #10 +
+		'Setup will now install or update your Microsoft .NET Framework. This may take several minutes to complete.' + #10 + #10 +
 		'WARNING: The installer will download the Microsoft .NET Framework from the internet, but the progress bar will not ' +
 		'go forward until the download is complete. You may send Microsoft an angry letter about that.' + #10 + #10 +
 		'Click Install to begin.');
 
 	page_info_netfailed := CreateOutputMsgPage(page_info_net.ID,
-		'Installing Microsoft .NET Framework', '',
-		'Setup could not install the Microsoft .NET Framework. Make sure you have an internet connection ' +
-		'and click Back to try again.' + #10 + #10 +
+		'Installing Microsoft .NET Framework  3.5', '',
+		'Setup could not install the Microsoft .NET Framework  3.5.' + #10 + #10 +
 		'Click Back to try again, or Cancel to exit Setup.');
 
-	page_setup_net := CreateOutputProgressPage('Installing Microsoft .NET Framework', 'Setup is installing Microsoft .NET Framework, please wait.....');
-	page_setup_components := CreateOutputProgressPage('Installing Components', 'Setup is installing required components. This may take a few minutes......');
+	page_setup_net := CreateOutputProgressPage('Installing Microsoft .NET Framework 3.5', 'Setup is installing Microsoft .NET Framework 3.5, please wait.....');
+
+  // Create DirectX pages
+  page_info_dx := CreateOutputMsgPage(wpPreparing,
+		'Installing DirectX 9.0', '',
+		'Setup has detected that your system is missing the required version of the DirectX. ' +
+		'Setup will now install or update your DirectX. This may take several minutes to complete.' + #10 + #10 +
+		'WARNING: The installer will download DirectX from the internet, but the progress bar will not ' +
+		'go forward until the download is complete. You may send Microsoft an angry letter about that.' + #10 + #10 +
+		'Click Install to begin.');
+
+	page_info_dxfailed := CreateOutputMsgPage(page_info_net.ID,
+		'Installing DirectX 9.0', '',
+		'Setup could not install DirectX 9.0.' + #10 + #10 +
+		'Click Back to try again, or Cancel to exit Setup.');
+
+	page_setup_dx := CreateOutputProgressPage('Installing DirectX 9.0', 'Setup is installing DirectX 9.0, please wait.....');
 end;
-
-
 
 // This is called to check if a page must be skipped
 function ShouldSkipPage(PageID: Integer): Boolean;
 begin
-	// Skip the .NET page?
-	if(PageID = page_info_net.ID) then
+	if(PageID = page_info_net.ID) then // Skip .NET pages?
 		Result := netisinstalled
 	else if(PageID = page_info_netfailed.ID) then
 		Result := (not netinstallfailed) and netisinstalled
+  else if(PageID = page_info_dx.ID) then // Skip DX pages?
+		Result := dxisinstalled
+	else if(PageID = page_info_dxfailed.ID) then
+		Result := (not dxinstallfailed) and dxisinstalled
 	else
 		Result := false;
 end;
-
 
 // This is called to determine if we need to restart
 function NeedRestart(): Boolean;
@@ -146,34 +187,17 @@ begin
 	Result := restartneeded;
 end;
 
-
 // This is called when the current page changes
 procedure CurPageChanged(CurPageID: Integer);
-var
-	errorcode: Integer;
 begin
-	if(CurPageID = wpReady) then
-	begin
-		if(netisinstalled = false) then
-			WizardForm.NextButton.Caption := 'Next >';
+	if(CurPageID = wpReady) then begin
+		if(netisinstalled = false) or (dxisinstalled = false) then
+			WizardForm.NextButton.Caption := 'Next';
 	end
-	else if(CurPageID = wpFinished) then
-	begin
-		if(componentsinstalled = false) then
-		begin
-			page_setup_components.Show;
-			ExtractTemporaryFile('slimdx.msi');
-			ShellExec('open', 'msiexec', ExpandConstant('/passive /i "{tmp}\slimdx.msi"'), '', SW_SHOW, ewWaitUntilTerminated, errorcode);
-			componentsinstalled := true;
-			page_setup_components.Hide;
-		end
-	end
-	else if(CurPageID = page_info_net.ID) then
-	begin
+	else if(CurPageID = page_info_net.ID) or (CurPageID = page_info_dx.ID) then begin
 		WizardForm.NextButton.Caption := 'Install';
 	end
-	else if(CurPageID = page_info_netfailed.ID) then
-	begin
+	else if(CurPageID = page_info_netfailed.ID) or (CurPageID = page_info_dxfailed.ID) then begin
 		WizardForm.NextButton.Visible := true;
 		WizardForm.NextButton.Enabled := false;
 		WizardForm.BackButton.Visible := true;
@@ -183,7 +207,6 @@ begin
 	end;
 end;
 
-
 // This is called when the Next button is clicked
 function NextButtonClick(CurPage: Integer): Boolean;
 var
@@ -192,13 +215,11 @@ var
 begin
 
 	// Next pressed on .NET info page?
-	if(CurPage = page_info_net.ID) then
-	begin
+	if(CurPage = page_info_net.ID) then begin
 		// Show progress page and run setup
 		page_setup_net.Show;
 		try
 		begin
-
 			netinstallfailed := false;
 			ExtractTemporaryFile('dotnetfx35setup.exe');
 			// We copy the file to the real temp directory so that it isn't removed when Setup is closed.
@@ -208,56 +229,60 @@ begin
 			FileCopy(ExpandConstant('{tmp}\dotnetfx35setup.exe'), tempfile, false);
 			Exec(tempfile, '/qb /norestart', '', SW_SHOW, ewWaitUntilTerminated, errorcode);
 
-			if((errorcode = 1641) or (errorcode = 3010)) then
-			begin
+			if((errorcode = 1641) or (errorcode = 3010)) then begin
 				// Success, but restart needed!
 				restartneeded := true;
 			end
-			else if(errorcode <> 0) then
-			begin
+			else if(errorcode <> 0) then begin
 				netinstallfailed := true;
 			end;
 
-			CheckNetIsInstalled();
+			netisinstalled := CheckNetIsInstalled();
 		end
 		finally
 			page_setup_net.Hide;
 		end;
-	end
+  end
+  // Next pressed on DX info page?
+  else if(CurPage = page_info_dx.ID) then begin
+     // Show progress page and run setup
+		page_setup_dx.Show;
+		try
+		begin
+			dxinstallfailed := false;
+			ExtractTemporaryFile('dxwebsetup.exe');
+			// We copy the file to the real temp directory so that it isn't removed when Setup is closed.
+			// Judging from the return codes, this installer may want to run again after a reboot.
+			// See the return codes here: http://support.microsoft.com/kb/177430
+			tempfile := RemoveBackslash(GetTempDir()) + '\dxwebsetup.exe';
+			FileCopy(ExpandConstant('{tmp}\dxwebsetup.exe'), tempfile, false);
+			Exec(tempfile, '/silent', '', SW_SHOW, ewWaitUntilTerminated, errorcode);
+
+			if(errorcode = 1) then begin
+				// Success, but restart needed!
+				restartneeded := true;
+			end
+			else if(errorcode <> 0) then begin
+				dxinstallfailed := true;
+			end;
+
+			dxisinstalled := CheckDXVersion();
+		end
+		finally
+			page_setup_dx.Hide;
+		end;
+	end;
 
 	Result := True;
 end;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//Remove configs?
+procedure DeinitializeUninstall();
+begin
+  if MsgBox('Delete program configuration files?', mbConfirmation, MB_YESNO) = IDYES then
+  begin
+     DeleteFile(ExpandConstant('{localappdata}\Doom Builder\GZBuilder.cfg'));
+     DeleteFile(ExpandConstant('{localappdata}\Doom Builder\GZBuilder.log'));
+     DeleteFile(ExpandConstant('{localappdata}\Doom Builder\GZCrash.txt'));
+  end;
+end;
