@@ -144,9 +144,6 @@
     <EmbeddedResource Include="Resources\SectorsMode.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\WAuthor.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Interface\CurveLinedefsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>CurveLinedefsForm.cs</DependentUpon>
@@ -441,9 +438,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\BridgeMode.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\SnapVerts.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\DrawEllipseMode.png" />

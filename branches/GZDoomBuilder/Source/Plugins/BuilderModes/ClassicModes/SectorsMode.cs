@@ -520,6 +520,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						sd.Line.Selected = front | back;
 					}
 
+					//mxd. Also (de)select things?
+					if (General.Interface.AltState) 
+					{
+						foreach(Thing t in General.Map.ThingsFilter.VisibleThings) 
+						{
+							t.DetermineSector();
+							if(t.Sector != s) continue;
+							t.Selected = s.Selected;
+						}
+					}
+
 					if(update) 
 					{
 						UpdateOverlay();
@@ -779,6 +790,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					UpdateOverlaySurfaces(); //mxd
 					UpdateOverlay();
 					renderer.Present();
+
+					//mxd. Thing selection state may've changed
+					if(General.Interface.AltState) General.Interface.RedrawDisplay();
 				} 
 				else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedSectorsCount > 0) //mxd
 				{

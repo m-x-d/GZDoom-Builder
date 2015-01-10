@@ -25,7 +25,7 @@ namespace CodeImp.DoomBuilder.Controls
 			linedefscount.ForeColor = (General.Map.Map.Linedefs.Count > General.Map.FormatInterface.MaxLinedefs ? Color.Red : SystemColors.GrayText);
 			sidedefscount.ForeColor = (General.Map.Map.Sidedefs.Count > General.Map.FormatInterface.MaxSidedefs ? Color.Red : SystemColors.GrayText);
 			sectorscount.ForeColor = (General.Map.Map.Sectors.Count > General.Map.FormatInterface.MaxSectors ? Color.Red : SystemColors.GrayText);
-			thingscount.ForeColor = (General.Map.Map.Things.Count > 2 /*General.Map.FormatInterface.MaxThings*/ ? Color.Red : SystemColors.GrayText);
+			thingscount.ForeColor = (General.Map.Map.Things.Count > General.Map.FormatInterface.MaxThings ? Color.Red : SystemColors.GrayText);
 
 			verticeslabel.ForeColor = verticescount.ForeColor;
 			linedefslabel.ForeColor = linedefscount.ForeColor;
