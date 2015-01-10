@@ -52,7 +52,7 @@ CALL "setenv.bat"
 DEL /F /Q "setenv.bat"
 
 ECHO.
-ECHO Compiling Doom Builder core...
+ECHO Compiling GZDoom Builder core...
 ECHO.
 IF EXIST "Build\Builder.exe" DEL /F /Q "Build\Builder.exe" > NUL
 msbuild "Source\Core\Builder.csproj" /t:Rebuild /p:Configuration=Release /p:Platform=x86 /v:minimal

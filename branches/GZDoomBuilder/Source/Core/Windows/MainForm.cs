@@ -1021,6 +1021,7 @@ namespace CodeImp.DoomBuilder.Windows
 				General.Plugins.OnEditRedrawDisplayBegin();
 				General.Editing.Mode.OnRedrawDisplay();
 				General.Plugins.OnEditRedrawDisplayEnd();
+				statistics.UpdateStatistics(); //mxd
 			}
 			else
 			{
@@ -3270,12 +3271,6 @@ namespace CodeImp.DoomBuilder.Windows
 		internal void RemoveHintsDocker() 
 		{
 			dockerspanel.Remove(hintsDocker);
-		}
-
-		//mxd
-		public void UpdateStatistics() 
-		{
-			statistics.UpdateStatistics();
 		}
 		
 		// Show linedef info
