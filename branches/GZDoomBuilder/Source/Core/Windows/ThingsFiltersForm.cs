@@ -123,6 +123,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update stuff
 			General.Map.ChangeThingFilter(new NullThingsFilter());
 			General.MainWindow.UpdateThingsFilters();
+			General.Map.ConfigSettings.Changed = true;
 			
 			// Close
 			this.DialogResult = DialogResult.OK;

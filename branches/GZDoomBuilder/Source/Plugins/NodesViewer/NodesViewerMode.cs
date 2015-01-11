@@ -108,15 +108,11 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			MemoryStream nodesstream = General.Map.GetLumpData("NODES");
 			int numnodes = (int)nodesstream.Length / 28;
 
-			//mxd. More boilerplate
-			if(numnodes < 1) 
+			//mxd. Boilerplate!
+			if(numnodes < 1)
 			{
-				// Close readers
-				nodesstream.Close();
-				nodesstream.Dispose();
-				
 				// Cancel mode
-				MessageBox.Show("The map has only one subsector. Please add more sectors, then try running this mode again.", "Why are you doing this, Stanley?..", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("The map has only one subsector. Please add more sectors, then try running this mode again.", "THY NODETH ARETH BROKH!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				General.Editing.CancelMode();
 				return false;
 			}
@@ -158,6 +154,16 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			MemoryStream segsstream = General.Map.GetLumpData("SEGS");
 			BinaryReader segsreader = new BinaryReader(segsstream);
 			int numsegs = (int)segsstream.Length / 12;
+
+			//mxd. Boilerplate!
+			if(numsegs < 1) 
+			{
+				// Cancel mode
+				MessageBox.Show("The map has empty SEGS lump. Please rebuild the nodes, then try running this mode again.", "THY SEGS HATH SINNETH!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				General.Editing.CancelMode();
+				return false;
+			}
+
 			segs = new Seg[numsegs];
 			for(int i = 0; i < segs.Length; i++)
 			{
@@ -176,6 +182,16 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			MemoryStream vertsstream = General.Map.GetLumpData("VERTEXES");
 			BinaryReader vertsreader = new BinaryReader(vertsstream);
 			int numverts = (int)vertsstream.Length / 4;
+
+			//mxd. Boilerplate!
+			if(numverts < 1) 
+			{
+				// Cancel mode
+				MessageBox.Show("The map has empty VERTEXES lump. Please rebuild the nodes, then try running this mode again.", "THY VERTEXES ARETH FOUL!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				General.Editing.CancelMode();
+				return false;
+			}
+
 			verts = new Vector2D[numverts];
 			for(int i = 0; i < verts.Length; i++)
 			{
@@ -190,6 +206,16 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			MemoryStream ssecstream = General.Map.GetLumpData("SSECTORS");
 			BinaryReader ssecreader = new BinaryReader(ssecstream);
 			int numssec = (int)ssecstream.Length / 4;
+
+			//mxd. Boilerplate!
+			if(numssec < 1) 
+			{
+				// Cancel mode
+				MessageBox.Show("The map has empty SSECTORS lump. Please rebuild the nodes, then try running this mode again.", "THY SSECTORS ARETH HERETYSH!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				General.Editing.CancelMode();
+				return false;
+			}
+
 			ssectors = new Subsector[numssec];
 			for(int i = 0; i < ssectors.Length; i++)
 			{

@@ -343,7 +343,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flags.Name = "flags";
 			this.flags.Scrollable = false;
 			this.flags.ShowGroups = false;
-			this.flags.Size = new System.Drawing.Size(556, 100);
+			this.flags.Size = new System.Drawing.Size(556, 73);
 			this.flags.TabIndex = 0;
 			this.flags.UseCompatibleStateImageBehavior = false;
 			this.flags.View = System.Windows.Forms.View.List;

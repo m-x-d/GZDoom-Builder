@@ -23,7 +23,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public override int Buttons { get { return 2; } }
 		public override string Button1Text { get { return "Add Default Flat"; } }
-		public override string Button2Text { get { return "Browse Flat"; } } //mxd
+		public override string Button2Text { get { return "Browse Flat..."; } } //mxd
 		
 		#endregion
 		

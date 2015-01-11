@@ -273,20 +273,20 @@ namespace CodeImp.DoomBuilder.IO
 				//mxd. Slopes
 				if (s.FloorSlope.GetLengthSq() > 0) 
 				{
-					coll.Add("floorplane_a", Math.Round(s.FloorSlope.x, 3));
-					coll.Add("floorplane_b", Math.Round(s.FloorSlope.y, 3));
-					coll.Add("floorplane_c", Math.Round(s.FloorSlope.z, 3));
-					coll.Add("floorplane_d", 
-						(float.IsNaN(s.FloorSlopeOffset) ? 0f : Math.Round(s.FloorSlopeOffset, 3)));
+					coll.Add("floorplane_a", Math.Round(s.FloorSlope.x, Sector.SLOPE_DECIMALS));
+					coll.Add("floorplane_b", Math.Round(s.FloorSlope.y, Sector.SLOPE_DECIMALS));
+					coll.Add("floorplane_c", Math.Round(s.FloorSlope.z, Sector.SLOPE_DECIMALS));
+					coll.Add("floorplane_d",
+						(float.IsNaN(s.FloorSlopeOffset) ? 0f : Math.Round(s.FloorSlopeOffset, Sector.SLOPE_DECIMALS)));
 				}
 
 				if (s.CeilSlope.GetLengthSq() > 0) 
 				{
-					coll.Add("ceilingplane_a", Math.Round(s.CeilSlope.x, 3));
-					coll.Add("ceilingplane_b", Math.Round(s.CeilSlope.y, 3));
-					coll.Add("ceilingplane_c", Math.Round(s.CeilSlope.z, 3));
-					coll.Add("ceilingplane_d", 
-						(float.IsNaN(s.CeilSlopeOffset) ? 0f : Math.Round(s.CeilSlopeOffset, 3)));
+					coll.Add("ceilingplane_a", Math.Round(s.CeilSlope.x, Sector.SLOPE_DECIMALS));
+					coll.Add("ceilingplane_b", Math.Round(s.CeilSlope.y, Sector.SLOPE_DECIMALS));
+					coll.Add("ceilingplane_c", Math.Round(s.CeilSlope.z, Sector.SLOPE_DECIMALS));
+					coll.Add("ceilingplane_d",
+						(float.IsNaN(s.CeilSlopeOffset) ? 0f : Math.Round(s.CeilSlopeOffset, Sector.SLOPE_DECIMALS)));
 				}
 
 				//mxd. Flags

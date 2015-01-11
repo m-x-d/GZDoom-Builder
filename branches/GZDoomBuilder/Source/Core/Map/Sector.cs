@@ -33,6 +33,8 @@ namespace CodeImp.DoomBuilder.Map
 	{
 		#region ================== Constants
 
+		internal const int SLOPE_DECIMALS = 7;
+
 		#endregion
 
 		#region ================== Variables
