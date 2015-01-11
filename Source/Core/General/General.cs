@@ -1123,6 +1123,11 @@ namespace CodeImp.DoomBuilder
 				
 				// Clear errors
 				errorlogger.Clear();
+
+				//mxd. Clear Console
+#if DEBUG
+				DebugConsole.Clear();
+#endif
 				
 				// Show splash logo on display
 				mainwindow.ShowSplashDisplay();
