@@ -23,6 +23,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		internal readonly Dictionary<SortedVisualSide, bool> NextSides;
 		internal readonly Dictionary<SortedVisualSide, bool> PreviousSides;
 		internal readonly int Index;
+		internal int GroupIndex = -1;
 		private static int index;
 
 		//Initial texture coordinates
@@ -198,49 +199,54 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach (KeyValuePair<long, List<BaseVisualGeometrySidedef>> pair in sidesbytexture)
 			{
 				// Create strips
-				IEnumerable<SortedVisualSide> group = ConnectSides(pair.Value);
+				Dictionary<int, List<SortedVisualSide>> strips = ConnectSides(pair.Value);
 
 				// Calculate global bounds...
-				int minx = int.MaxValue;
-				int maxx = int.MinValue;
-				int miny = int.MaxValue;
-				int maxy = int.MinValue;
-
-				foreach(SortedVisualSide side in group) 
+				foreach(List<SortedVisualSide> group in strips.Values) 
 				{
-					if(side.Bounds.X < minx) minx = side.Bounds.X;
-					if(side.Bounds.X + side.Bounds.Width > maxx) maxx = side.Bounds.X + side.Bounds.Width;
-					if(side.Bounds.Y < miny) miny = side.Bounds.Y;
-					if(side.Bounds.Y + side.Bounds.Height > maxy) maxy = side.Bounds.Y + side.Bounds.Height;
+					int minx = int.MaxValue;
+					int maxx = int.MinValue;
+					int miny = int.MaxValue;
+					int maxy = int.MinValue;
+
+					foreach(SortedVisualSide side in group) 
+					{
+						if(side.Bounds.X < minx) minx = side.Bounds.X;
+						if(side.Bounds.X + side.Bounds.Width > maxx) maxx = side.Bounds.X + side.Bounds.Width;
+						if(side.Bounds.Y < miny) miny = side.Bounds.Y;
+						if(side.Bounds.Y + side.Bounds.Height > maxy) maxy = side.Bounds.Y + side.Bounds.Height;
+					}
+
+					Rectangle bounds = new Rectangle(minx, miny, maxx - minx, maxy - miny);
+
+					// Normalize Y-offset
+					int offsety = bounds.Y;
+					bounds.Y = 0;
+
+					// Apply changes
+					foreach(SortedVisualSide side in group) 
+					{
+						side.Bounds.Y -= offsety;
+						side.GlobalBounds = bounds;
+					}
+
+					// Add to result
+					result.AddRange(group);
 				}
-
-				Rectangle bounds = new Rectangle(minx, miny, maxx - minx, maxy - miny);
-
-				// Normalize Y-offset
-				int offsety = bounds.Y;
-				bounds.Y = 0;
-
-				// Apply changes
-				foreach(SortedVisualSide side in group)
-				{
-					side.Bounds.Y -= offsety;
-					side.GlobalBounds = bounds;
-				}
-
-				// Add to result
-				result.AddRange(group);
 			}
 
 			return result;
 		}
 
-		// Connect sides, left to right 
+		// Connect sides, left to right and sort them into connected groups
 		// NextSides - sides connected to the right (Start) vertex, 
 		// PreviousSides - sides connected to the left (End) vertex
-		private static IEnumerable<SortedVisualSide> ConnectSides(List<BaseVisualGeometrySidedef> allsides)
+		private static Dictionary<int, List<SortedVisualSide>> ConnectSides(List<BaseVisualGeometrySidedef> allsides)
 		{
-			List<SortedVisualSide> result = new List<SortedVisualSide>();
+			Dictionary<int, List<SortedVisualSide>> result = new Dictionary<int, List<SortedVisualSide>>();
 			List<SortedVisualSide> sides = new List<SortedVisualSide>(allsides.Count);
+			int groupindex = 0;
+
 			foreach (BaseVisualGeometrySidedef side in allsides)
 			{
 				sides.Add(new SortedVisualSide(side));
@@ -248,6 +254,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			foreach(SortedVisualSide curside in sides)
 			{
+				if(curside.GroupIndex == -1) curside.GroupIndex = groupindex++;
+				
 				// Find sides connected to the end of curside
 				foreach(SortedVisualSide nextside in sides) 
 				{
@@ -255,8 +263,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(nextside.Start == curside.End && nextside.End != curside.Start) 
 					{
 						// Add both ways
-						if(!nextside.PreviousSides.ContainsKey(curside)) nextside.PreviousSides.Add(curside, false);
-						if(!curside.NextSides.ContainsKey(nextside)) curside.NextSides.Add(nextside, false);
+						if(!nextside.PreviousSides.ContainsKey(curside)) 
+						{
+							nextside.PreviousSides.Add(curside, false);
+							nextside.GroupIndex = curside.GroupIndex;
+						}
+						if(!curside.NextSides.ContainsKey(nextside)) 
+						{
+							curside.NextSides.Add(nextside, false);
+							nextside.GroupIndex = curside.GroupIndex;
+						}
 					}
 				}
 
@@ -267,27 +283,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(prevside.End == curside.Start && prevside.Start != curside.End) 
 					{
 						// Add both ways
-						if(!prevside.NextSides.ContainsKey(curside)) prevside.NextSides.Add(curside, false);
-						if(!curside.PreviousSides.ContainsKey(prevside)) curside.PreviousSides.Add(prevside, false);
+						if(!prevside.NextSides.ContainsKey(curside)) 
+						{
+							prevside.NextSides.Add(curside, false);
+							prevside.GroupIndex = curside.GroupIndex;
+						}
+						if(!curside.PreviousSides.ContainsKey(prevside)) 
+						{
+							curside.PreviousSides.Add(prevside, false);
+							prevside.GroupIndex = curside.GroupIndex;
+						}
 					}
 				}
 
-				result.Add(curside);
+				// Add to collection
+				if(!result.ContainsKey(curside.GroupIndex)) result.Add(curside.GroupIndex, new List<SortedVisualSide>());
+				result[curside.GroupIndex].Add(curside);
 			}
 
 			// Try to find the left-most side
-			SortedVisualSide start = result[0];
-			foreach (SortedVisualSide side in result)
+			foreach(KeyValuePair<int, List<SortedVisualSide>> pair in result) 
 			{
-				if (side.PreviousSides.Count == 0)
+				SortedVisualSide start = pair.Value[0];
+				foreach(SortedVisualSide side in pair.Value) 
 				{
-					start = side;
-					break;
+					if(side.PreviousSides.Count == 0) {
+						start = side;
+						break;
+					}
 				}
-			}
 
-			// Set horizontal offsets...
-			ApplyHorizontalOffset(start, null, true, new Dictionary<int, bool>());
+				// Set horizontal offsets...
+				ApplyHorizontalOffset(start, null, true, new Dictionary<int, bool>());
+			}
 
 			return result;
 		}
