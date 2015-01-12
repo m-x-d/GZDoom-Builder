@@ -152,7 +152,7 @@
 			this.cbfitwidth.TabIndex = 2;
 			this.cbfitwidth.Text = "Fit width";
 			this.cbfitwidth.UseVisualStyleBackColor = true;
-			this.cbfitwidth.CheckedChanged += new System.EventHandler(this.cbfitwidth_CheckedChanged);
+			this.cbfitwidth.CheckedChanged += new System.EventHandler(this.cb_CheckedChanged);
 			// 
 			// accept
 			// 
@@ -185,7 +185,7 @@
 			this.cbfitheight.TabIndex = 8;
 			this.cbfitheight.Text = "Fit height";
 			this.cbfitheight.UseVisualStyleBackColor = true;
-			this.cbfitheight.CheckedChanged += new System.EventHandler(this.cbfitheight_CheckedChanged);
+			this.cbfitheight.CheckedChanged += new System.EventHandler(this.cb_CheckedChanged);
 			// 
 			// cbfitconnected
 			// 
@@ -196,6 +196,7 @@
 			this.cbfitconnected.TabIndex = 9;
 			this.cbfitconnected.Text = "Fit across connected surfaces";
 			this.cbfitconnected.UseVisualStyleBackColor = true;
+			this.cbfitconnected.CheckedChanged += new System.EventHandler(this.cb_CheckedChanged);
 			// 
 			// groupBox2
 			// 

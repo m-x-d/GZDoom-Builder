@@ -209,14 +209,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Close();
 		}
 
-		private void cbfitwidth_CheckedChanged(object sender, EventArgs e) 
-		{
-			if(blockupdate) return;
-			UpdateRepeatGroup();
-			UpdateChanges();
-		}
-
-		private void cbfitheight_CheckedChanged(object sender, EventArgs e) 
+		private void cb_CheckedChanged(object sender, EventArgs e) 
 		{
 			if(blockupdate) return;
 			UpdateRepeatGroup();
