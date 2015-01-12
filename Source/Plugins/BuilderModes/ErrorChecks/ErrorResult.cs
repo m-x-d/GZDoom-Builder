@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Call this to zoom in on the given selection
-		public void ZoomToObject()
+		public RectangleF GetZoomArea()
 		{
 			List<Vector2D> points = new List<Vector2D>();
 			RectangleF area = MapSet.CreateEmptyArea();
@@ -175,9 +175,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Add padding
 			area.Inflate(100f, 100f);
 			
-			// Zoom to area
-			ClassicMode editmode = (General.Editing.Mode as ClassicMode);
-			editmode.CenterOnArea(area, 0.6f);
+			// Return area
+			return area;
 		}
 
 		internal abstract void Hide(bool hide); //mxd. Marks map elements of this result as hidden in ErrorCheckForm

@@ -142,6 +142,9 @@
   <data name="HideAll" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\HideAll.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="PasteProperties" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\PasteProperties.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="DrawGridMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DrawGridMode.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -205,9 +208,6 @@
   <data name="Reset" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Reset.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="PasteProperties" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\PasteProperties.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Show" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Show.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -226,6 +226,9 @@
   <data name="FlipSelectionH" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\FlipSelectionH.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Folder.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Angle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Angle.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -241,7 +244,7 @@
   <data name="FilterThings" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\FilterThings.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Folder.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Show3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Show3.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

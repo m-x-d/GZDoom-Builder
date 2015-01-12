@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -119,7 +120,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnRedrawDisplay()
 		{
 			// Get the selection
-			ErrorResult selection = BuilderPlug.Me.ErrorCheckForm.SelectedResult;
+			List<ErrorResult> selection = BuilderPlug.Me.ErrorCheckForm.SelectedResults; //mxd
 			
 			renderer.RedrawSurface();
 			
@@ -128,7 +129,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
-				if(selection != null) selection.PlotSelection(renderer);
+				foreach (ErrorResult result in selection) result.PlotSelection(renderer); //mxd
 				renderer.Finish();
 			}
 			
@@ -136,14 +137,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartThings(true))
 			{
 				renderer.RenderThingSet(General.Map.Map.Things, 1.0f);
-				if(selection != null) selection.RenderThingsSelection(renderer);
+				foreach(ErrorResult result in selection) result.RenderThingsSelection(renderer); //mxd
 				renderer.Finish();
 			}
 			
 			// Render overlay
 			if(renderer.StartOverlay(true))
 			{
-				if(selection != null) selection.RenderOverlaySelection(renderer);
+				foreach(ErrorResult result in selection) result.RenderOverlaySelection(renderer); //mxd
 				renderer.Finish();
 			}
 			

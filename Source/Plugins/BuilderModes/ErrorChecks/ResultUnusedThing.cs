@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Rendering
 		public override void  RenderOverlaySelection(IRenderer2D renderer) 
 		{
-			renderer.RenderThing(thing, renderer.DetermineThingColor(thing), 1.0f);
+			renderer.RenderThing(thing, General.Colors.Selection, 1.0f);
 		}
 		
 		// This removes the thing
