@@ -21,12 +21,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
 using System.Reflection;
 using System.Globalization;
 using System.Threading;
-using System.IO;
 
 #endregion
 
@@ -51,9 +51,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private volatile bool running;
 		private Thread checksthread;
 		private BlockMap<BlockEntry> blockmap;
-		private static bool applyToAll; //mxd
 		private Size initialsize; //mxd
-		private static int exportmode; //mxd
 		private List<ErrorResult> resultslist; //mxd 
 		private List<Type> hiddentresulttypes; //mxd 
 		
@@ -61,7 +59,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 		
-		public ErrorResult SelectedResult { get { return results.SelectedItem as ErrorResult; } }
+		public List<ErrorResult> SelectedResults { 
+			get 
+			{
+				List<ErrorResult> selection = new List<ErrorResult>();
+				foreach (Object ro in results.SelectedItems)
+				{
+					ErrorResult result = ro as ErrorResult;
+					if(result == null) continue;
+					selection.Add(result);
+				}
+				return selection;
+			} 
+		}
 		public BlockMap<BlockEntry> BlockMap { get { return blockmap; } }
 		
 		#endregion
@@ -102,9 +112,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Move controls according to the height of the checkers box
 			checks.PerformLayout();
 			buttoncheck.Top = checks.Bottom + 14;
-			exportresults.Top = checks.Bottom + 14; //mxd
 			resultspanel.Top = buttoncheck.Bottom + 14;
-			cbApplyToAll.Checked = applyToAll; //mxd
 			this.Text = "Map Analysis"; //mxd
 
 			// Position at left-top of owner
@@ -115,10 +123,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Size = new Size(initialsize.Width, this.Height - this.ClientSize.Height + resultspanel.Top);
 			this.MinimumSize = this.Size; //mxd
 			this.MaximumSize = this.Size; //mxd
-
-			//mxd. Restore export mode
-			exportresults.CurrentMenuStripItem = exportmode;
-			exportresults.Enabled = false;
 			
 			// Show window
 			base.Show(owner);
@@ -207,11 +211,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					results.Items.Add(new ResultNoErrors());
 					results.Enabled = false;
-					exportresults.Enabled = false; //mxd
 				} 
 				else 
 				{ 
-					exportresults.Enabled = true; //mxd
 					ClearSelectedResult(); //mxd
 				}
 			}
@@ -223,8 +225,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(running) return;
 			
 			Cursor.Current = Cursors.WaitCursor;
-
-			exportresults.Enabled = false; //mxd
 			
 			// Make blockmap
 			RectangleF area = MapSet.CreateArea(General.Map.Map.Vertices);
@@ -288,16 +288,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This clears the selected result
 		private void ClearSelectedResult()
 		{
-			results.SelectedIndex = -1;
+			results.SelectedItems.Clear(); //mxd
 			if (results.Items.Count == 0 && resultslist.Count > 0) //mxd
 				resultinfo.Text = "All results are hidden. Use context menu to show them.";
-			else 
-				resultinfo.Text = "Select a result from the list to see more information.\r\nRight-click on a result to show context menu.";
+			else
+				resultinfo.Text = "Select a result from the list to see more information.\r\nHold 'Ctrl' to select several results.\r\nHold 'Shift' to select a range of results.\r\nRight-click on a result to show context menu.";
 			resultinfo.Enabled = false;
 			fix1.Visible = false;
 			fix2.Visible = false;
 			fix3.Visible = false;
-			cbApplyToAll.Visible = false; //mxd
 		}
 		
 		// This runs in a seperate thread to manage the checking threads
@@ -395,11 +394,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 			
-			// Dispose all checkers
-			checkers = null;
-			
 			// Done
 			StopChecking();
+		}
+
+		//mxd
+		private Dictionary<Type, bool> GetSelectedTypes()
+		{
+			Dictionary<Type, bool> selectedtypes = new Dictionary<Type, bool>();
+			foreach(var ro in results.SelectedItems)
+			{
+				ErrorResult r = ro as ErrorResult;
+				if(r == null) continue;
+				Type t = r.GetType();
+				if(!selectedtypes.ContainsKey(t)) selectedtypes.Add(t, false);
+			}
+
+			return selectedtypes;
 		}
 		
 		#endregion
@@ -409,10 +420,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Window closing
 		private void ErrorCheckForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			//mxd. Store persistent settings
-			exportmode = exportresults.CurrentMenuStripItem;
-			applyToAll = cbApplyToAll.Checked;
-
 			//mxd. Clear results 
 			resultslist.Clear();
 			results.Items.Clear();
@@ -452,19 +459,66 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void results_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			// Anything selected?
-			if(results.SelectedIndex >= 0)
+			if(results.SelectedItems.Count > 0)
 			{
-				ErrorResult r = (results.SelectedItem as ErrorResult);
-				resultinfo.Text = r.Description;
-				resultinfo.Enabled = true;
-				fix1.Text = r.Button1Text;
-				fix2.Text = r.Button2Text;
-				fix3.Text = r.Button3Text;
-				fix1.Visible = (r.Buttons > 0);
-				fix2.Visible = (r.Buttons > 1);
-				fix3.Visible = (r.Buttons > 2);
-				cbApplyToAll.Visible = (r.Buttons > 0); //mxd
-				r.ZoomToObject();
+				ErrorResult firstresult = (results.SelectedItems[0] as ErrorResult);
+				if(firstresult == null)
+				{
+					ClearSelectedResult();
+				}
+				else
+				{
+					bool sametype = true;
+					List<ErrorResult> validresults = new List<ErrorResult>();
+
+					// Selected results have the same fixes?
+					foreach (var ri in results.SelectedItems)
+					{
+						ErrorResult result = ri as ErrorResult;
+						if(result == null) continue;
+						validresults.Add(result);
+
+						if(result.Buttons != firstresult.Buttons || result.Button1Text != firstresult.Button1Text
+							|| result.Button2Text != firstresult.Button2Text || result.Button3Text != firstresult.Button3Text)
+						{
+							sametype = false;
+							break;
+						}
+					}
+
+					resultinfo.Enabled = true;
+
+					if(sametype)
+					{
+						resultinfo.Text = firstresult.Description;
+						fix1.Text = firstresult.Button1Text;
+						fix2.Text = firstresult.Button2Text;
+						fix3.Text = firstresult.Button3Text;
+						fix1.Visible = (firstresult.Buttons > 0);
+						fix2.Visible = (firstresult.Buttons > 1);
+						fix3.Visible = (firstresult.Buttons > 2);
+					}
+					else
+					{
+						resultinfo.Text = "Several types of map analysis results are selected. To display fixes, make sure that only a single result type is selected.";
+						fix1.Visible = false;
+						fix2.Visible = false;
+						fix3.Visible = false;
+					}
+
+					// Zoom to area
+					if(validresults.Count > 0)
+					{
+						RectangleF zoomarea = validresults[0].GetZoomArea();
+						foreach (ErrorResult result in validresults)
+						{
+							zoomarea = RectangleF.Union(zoomarea, result.GetZoomArea());
+						}
+
+						ClassicMode editmode = (General.Editing.Mode as ClassicMode);
+						editmode.CenterOnArea(zoomarea, 0.6f);
+					}
+				}
 			}
 			else
 			{
@@ -473,19 +527,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			General.Interface.RedrawDisplay();
 		}
-
-		//mxd
-		private void results_MouseDown(object sender, MouseEventArgs e) 
-		{
-			int index = results.IndexFromPoint(e.Location);
-			if(index != results.SelectedIndex) results.SelectedIndex = index;
-		}
 		
 		// First button
 		private void fix1_Click(object sender, EventArgs e)
 		{
 			// Anything selected?
-			if(results.SelectedIndex >= 0)
+			if(results.SelectedItems.Count > 0)
 			{
 				if(running)
 				{
@@ -496,7 +543,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ErrorResult r = (results.SelectedItem as ErrorResult);
 					if (r.Button1Click(false)) 
 					{
-						if (cbApplyToAll.Checked) FixSimilarErrors(r.GetType(), 1); //mxd
+						if(results.SelectedItems.Count > 1) FixSimilarErrors(r.GetType(), 1); //mxd
 						StartChecking();
 					} 
 					else 
@@ -522,7 +569,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ErrorResult r = (results.SelectedItem as ErrorResult);
 					if (r.Button2Click(false)) 
 					{
-						if (cbApplyToAll.Checked) FixSimilarErrors(r.GetType(), 2); //mxd
+						if(results.SelectedItems.Count > 1) FixSimilarErrors(r.GetType(), 2); //mxd
 						StartChecking();
 					} 
 					else 
@@ -548,7 +595,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ErrorResult r = (results.SelectedItem as ErrorResult);
 					if (r.Button3Click(false)) 
 					{
-						if (cbApplyToAll.Checked) FixSimilarErrors(r.GetType(), 3); //mxd
+						if(results.SelectedItems.Count > 1) FixSimilarErrors(r.GetType(), 3); //mxd
 						StartChecking();
 					} 
 					else 
@@ -562,7 +609,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void FixSimilarErrors(Type type, int fixIndex) 
 		{
-			foreach (Object item in results.Items) 
+			foreach (Object item in results.SelectedItems) 
 			{
 				if (item == results.SelectedItem) continue;
 				if (item.GetType() != type) continue;
@@ -573,44 +620,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if (fixIndex == 2 && !r.Button2Click(true)) break;
 				if (fixIndex == 3 && !r.Button3Click(true)) break;
 			}
-		}
-
-		//mxd
-		private void exporttofile_Click(object sender, EventArgs e) 
-		{
-			// Show save dialog
-			string path = Path.GetDirectoryName(General.Map.FilePathName);
-			saveFileDialog.InitialDirectory = path;
-			saveFileDialog.FileName = Path.GetFileNameWithoutExtension(General.Map.FileTitle) + "_errors.txt";
-			if(saveFileDialog.ShowDialog(this) == DialogResult.Cancel) return;
-			
-			// Get results
-			StringBuilder sb = new StringBuilder();
-			foreach(ErrorResult result in results.Items) sb.AppendLine(result.ToString());
-
-			// Save to file
-			try 
-			{
-				using(StreamWriter sw = File.CreateText(saveFileDialog.FileName)) sw.Write(sb.ToString());
-				General.Interface.DisplayStatus(StatusType.Info, "Analysis results saved to '" + path + "'");
-			} 
-			catch(Exception) 
-			{
-				General.Interface.DisplayStatus(StatusType.Info, "Failed to save analysis results... Make sure map path is not write-protected.");
-			}
-		}
-
-		//mxd
-		private void copytoclipboard_Click(object sender, EventArgs e) 
-		{
-			// Get results
-			StringBuilder sb = new StringBuilder();
-			foreach(ErrorResult result in results.Items) sb.AppendLine(result.ToString());
-
-			// Set on clipboard
-			Clipboard.SetText(sb.ToString());
-
-			General.Interface.DisplayStatus(StatusType.Info, "Analysis results copied to clipboard.");
 		}
 
 		//mxd
@@ -631,8 +640,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void resultcontextmenustrip_Opening(object sender, System.ComponentModel.CancelEventArgs e) 
 		{
 			//disable or enable stuff
-			bool haveresult = resultslist.Count > 0 && results.SelectedIndex > -1;
+			bool haveresult = resultslist.Count > 0 && results.SelectedItems.Count > 0;
 			resultshowall.Enabled = (resultslist.Count > 0 && resultslist.Count > results.Items.Count);
+			resultselectcurrenttype.Enabled = haveresult;
 			resultcopytoclipboard.Enabled = haveresult;
 			resulthidecurrent.Enabled = haveresult;
 			resulthidecurrenttype.Enabled = haveresult;
@@ -656,10 +666,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private void resulthidecurrent_Click(object sender, EventArgs e) 
 		{
-			ErrorResult r = results.SelectedItem as ErrorResult;
-			if(r == null) return;
-			r.Hide(true);
-			results.Items.Remove(r);
+			// Collect results to hide
+			List<ErrorResult> tohide = new List<ErrorResult>();
+			foreach(var ro in results.SelectedItems)
+			{
+				ErrorResult r = ro as ErrorResult;
+				if(r == null) return;
+				r.Hide(true);
+				tohide.Add(r);
+			}
+			
+			// Remove from the list
+			foreach (ErrorResult r in tohide) results.Items.Remove(r);
 
 			// Do the obvious
 			UpdateTitle();
@@ -668,16 +686,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private void resulthidecurrenttype_Click(object sender, EventArgs e)
 		{
-			ErrorResult r = results.SelectedItem as ErrorResult;
-			if(r == null) return;
-			Type resulttype = r.GetType();
+			Dictionary<Type, bool> tohide = GetSelectedTypes();
 			List<ErrorResult> filtered = new List<ErrorResult>();
-			hiddentresulttypes.Add(resulttype);
+			hiddentresulttypes.AddRange(tohide.Keys);
 
 			// Apply filtering
 			foreach(ErrorResult result in results.Items)
 			{
-				if (result.GetType() != resulttype) filtered.Add(result);
+				if(!tohide.ContainsKey(result.GetType())) filtered.Add(result);
 			}
 
 			// Replace items
@@ -691,9 +707,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private void resultshowonlycurrent_Click(object sender, EventArgs e) 
 		{
-			ErrorResult r = results.SelectedItem as ErrorResult;
-			if(r == null) return;
-			Type resulttype = r.GetType();
+			Dictionary<Type, bool> toshow = GetSelectedTypes();
 			List<ErrorResult> filtered = new List<ErrorResult>();
 			hiddentresulttypes.Clear();
 
@@ -701,7 +715,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(ErrorResult result in results.Items)
 			{
 				Type curresulttype = result.GetType();
-				if (curresulttype != resulttype)
+				if (!toshow.ContainsKey(curresulttype))
 				{
 					hiddentresulttypes.Add(curresulttype);
 				}
@@ -720,19 +734,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ClearSelectedResult();
 		}
 
-		private void resultcopytoclipboard_Click(object sender, EventArgs e) 
+		private void resultcopytoclipboard_Click(object sender, EventArgs e)
 		{
-			ErrorResult r = results.SelectedItem as ErrorResult;
-			if(r == null) return;
-			Clipboard.SetText(r.ToString());
-			General.Interface.DisplayStatus(StatusType.Info, "Analysis result copied to clipboard.");
+			// Get results
+			StringBuilder sb = new StringBuilder();
+			foreach(ErrorResult result in results.SelectedItems) sb.AppendLine(result.ToString());
+
+			// Set on clipboard
+			Clipboard.SetText(sb.ToString());
+
+			// Inform the user
+			General.Interface.DisplayStatus(StatusType.Info, "Analysis results copied to clipboard.");
 		}
 
 		private void results_KeyUp(object sender, KeyEventArgs e) 
 		{
+			// Copy descriptions to clipboard?
 			if (e.Control && e.KeyCode == Keys.C)
 			{
 				resultcopytoclipboard_Click(sender, EventArgs.Empty);
+			} 
+			// Select all?
+			else if(e.Control && e.KeyCode == Keys.A)
+			{
+				results.SelectedItems.Clear();
+				for(int i = 0; i < results.Items.Count; i++) results.SelectedItems.Add(results.Items[i]);
+			}
+		}
+
+		private void resultselectcurrenttype_Click(object sender, EventArgs e)
+		{
+			Dictionary<Type, bool> toselect = GetSelectedTypes();
+			results.SelectedItems.Clear();
+
+			for(int i = 0; i < results.Items.Count; i++) 
+			{
+				if(toselect.ContainsKey(results.Items[i].GetType())) results.SelectedItems.Add(results.Items[i]);
 			}
 		}
 

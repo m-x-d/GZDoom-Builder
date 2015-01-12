@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Rendering
 		public override void RenderOverlaySelection(IRenderer2D renderer)
 		{
-			renderer.RenderThing(thing, renderer.DetermineThingColor(thing), 0.8f);
+			renderer.RenderThing(thing, General.Colors.Selection, 0.8f);
 		}
 
 		// mxd. More rencering

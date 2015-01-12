@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string RequiredGroup { get { return requiredgroup; } internal set { requiredgroup = value; } } //mxd
 		public string IgnoredGroup { get { return ignoredgroup; } internal set { ignoredgroup = value; } } //mxd
 		public string RequiredFlag { get { return requiredflag; } internal set { requiredflag = value; } } //mxd
+		public bool IgnoreGroupWhenUnset { get { return ingnorethisgroupwhenunset; } } //mxd
 
 		#endregion
 
