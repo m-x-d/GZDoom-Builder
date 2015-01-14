@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("GZDoom Builder")]
-[assembly: AssemblyDescription("GZDoom map editor")]
+[assembly: AssemblyDescription("ZDoom, GZDoom and Zandronum map editor")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CodeImp, MaxED")]
 [assembly: AssemblyProduct("GZDoom Builder")]
-[assembly: AssemblyCopyright("Copyright © 2007, 2014")]
+[assembly: AssemblyCopyright("Copyright © 2007, 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
