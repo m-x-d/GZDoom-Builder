@@ -65,6 +65,9 @@
 			this.clearceiling = new System.Windows.Forms.Button();
 			this.clearall = new System.Windows.Forms.Button();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.getsidetexturesfromselection = new System.Windows.Forms.Button();
+			this.getheightandbrightnessfromselection = new System.Windows.Forms.Button();
+			this.getsectortexturesfromselection = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -76,13 +79,14 @@
 			// 
 			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.getsectortexturesfromselection);
 			this.groupBox1.Controls.Add(this.ceiling);
 			this.groupBox1.Controls.Add(this.floor);
 			this.groupBox1.Controls.Add(this.cbOverrideFloorTexture);
 			this.groupBox1.Controls.Add(this.cbOverrideCeilingTexture);
 			this.groupBox1.Location = new System.Drawing.Point(3, 3);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(243, 137);
+			this.groupBox1.Size = new System.Drawing.Size(243, 166);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Sector texture overrides:";
@@ -135,6 +139,7 @@
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.getheightandbrightnessfromselection);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.label14);
 			this.groupBox2.Controls.Add(this.cbBrightness);
@@ -143,9 +148,9 @@
 			this.groupBox2.Controls.Add(this.cbCeilHeight);
 			this.groupBox2.Controls.Add(this.cbFloorHeight);
 			this.groupBox2.Controls.Add(this.ceilHeight);
-			this.groupBox2.Location = new System.Drawing.Point(3, 397);
+			this.groupBox2.Location = new System.Drawing.Point(3, 347);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(243, 118);
+			this.groupBox2.Size = new System.Drawing.Size(243, 138);
 			this.groupBox2.TabIndex = 21;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Geometry overrides:";
@@ -319,15 +324,16 @@
 			// 
 			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox3.Controls.Add(this.getsidetexturesfromselection);
 			this.groupBox3.Controls.Add(this.cbOverrideBottomTexture);
 			this.groupBox3.Controls.Add(this.top);
 			this.groupBox3.Controls.Add(this.cbOverrideMiddleTexture);
 			this.groupBox3.Controls.Add(this.middle);
 			this.groupBox3.Controls.Add(this.bottom);
 			this.groupBox3.Controls.Add(this.cbOverrideTopTexture);
-			this.groupBox3.Location = new System.Drawing.Point(3, 146);
+			this.groupBox3.Location = new System.Drawing.Point(3, 175);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(243, 137);
+			this.groupBox3.Size = new System.Drawing.Size(243, 166);
 			this.groupBox3.TabIndex = 29;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Sidedef texture overrides:";
@@ -342,7 +348,7 @@
 			this.groupBox4.Controls.Add(this.fillupper);
 			this.groupBox4.Controls.Add(this.fillfloor);
 			this.groupBox4.Controls.Add(this.fillceiling);
-			this.groupBox4.Location = new System.Drawing.Point(3, 289);
+			this.groupBox4.Location = new System.Drawing.Point(3, 491);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(243, 48);
 			this.groupBox4.TabIndex = 30;
@@ -492,12 +498,42 @@
 			this.groupBox5.Controls.Add(this.clearupper);
 			this.groupBox5.Controls.Add(this.clearfloor);
 			this.groupBox5.Controls.Add(this.clearceiling);
-			this.groupBox5.Location = new System.Drawing.Point(3, 343);
+			this.groupBox5.Location = new System.Drawing.Point(3, 545);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(243, 48);
 			this.groupBox5.TabIndex = 31;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Remove Textures form Selection:";
+			// 
+			// getsidetexturesfromselection
+			// 
+			this.getsidetexturesfromselection.Location = new System.Drawing.Point(6, 137);
+			this.getsidetexturesfromselection.Name = "getsidetexturesfromselection";
+			this.getsidetexturesfromselection.Size = new System.Drawing.Size(230, 23);
+			this.getsidetexturesfromselection.TabIndex = 31;
+			this.getsidetexturesfromselection.Text = "Get From Selection";
+			this.getsidetexturesfromselection.UseVisualStyleBackColor = true;
+			this.getsidetexturesfromselection.Click += new System.EventHandler(this.getsidetexturesfromselection_Click);
+			// 
+			// getheightandbrightnessfromselection
+			// 
+			this.getheightandbrightnessfromselection.Location = new System.Drawing.Point(6, 108);
+			this.getheightandbrightnessfromselection.Name = "getheightandbrightnessfromselection";
+			this.getheightandbrightnessfromselection.Size = new System.Drawing.Size(230, 23);
+			this.getheightandbrightnessfromselection.TabIndex = 32;
+			this.getheightandbrightnessfromselection.Text = "Get From Selection";
+			this.getheightandbrightnessfromselection.UseVisualStyleBackColor = true;
+			this.getheightandbrightnessfromselection.Click += new System.EventHandler(this.getheightandbrightnessfromselection_Click);
+			// 
+			// getsectortexturesfromselection
+			// 
+			this.getsectortexturesfromselection.Location = new System.Drawing.Point(6, 137);
+			this.getsectortexturesfromselection.Name = "getsectortexturesfromselection";
+			this.getsectortexturesfromselection.Size = new System.Drawing.Size(230, 23);
+			this.getsectortexturesfromselection.TabIndex = 32;
+			this.getsectortexturesfromselection.Text = "Get From Selection";
+			this.getsectortexturesfromselection.UseVisualStyleBackColor = true;
+			this.getsectortexturesfromselection.Click += new System.EventHandler(this.getsectortexturesfromselection_Click);
 			// 
 			// SectorDrawingOptionsPanel
 			// 
@@ -560,5 +596,8 @@
 		private CodeImp.DoomBuilder.Controls.FlatSelectorControl ceiling;
 		private System.Windows.Forms.Button fillall;
 		private System.Windows.Forms.Button clearall;
+		private System.Windows.Forms.Button getheightandbrightnessfromselection;
+		private System.Windows.Forms.Button getsidetexturesfromselection;
+		private System.Windows.Forms.Button getsectortexturesfromselection;
 	}
 }

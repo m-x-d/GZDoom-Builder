@@ -4,6 +4,7 @@ using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -39,6 +40,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			cbFloorHeight.Checked = General.Map.Options.OverrideFloorHeight;
 			cbBrightness.Checked = General.Map.Options.OverrideBrightness;
 
+			getsectortexturesfromselection.Enabled = (cbOverrideCeilingTexture.Checked || cbOverrideFloorTexture.Checked);
+			getsidetexturesfromselection.Enabled = (cbOverrideTopTexture.Checked || cbOverrideMiddleTexture.Checked || cbOverrideBottomTexture.Checked);
+			getheightandbrightnessfromselection.Enabled = (cbCeilHeight.Checked || cbFloorHeight.Checked || cbBrightness.Checked);
+
 			ceiling.Enabled = cbOverrideCeilingTexture.Checked;
 			floor.Enabled = cbOverrideFloorTexture.Checked;
 			top.Enabled = cbOverrideTopTexture.Checked;
@@ -57,6 +62,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 		{
 			ceiling.Enabled = cbOverrideCeilingTexture.Checked;
 			General.Map.Options.OverrideCeilingTexture = cbOverrideCeilingTexture.Checked;
+
+			getsectortexturesfromselection.Enabled = (cbOverrideCeilingTexture.Checked || cbOverrideFloorTexture.Checked);
 		}
 
 		private void cbOverrideFloorTexture_CheckedChanged(object sender, EventArgs e) 
@@ -69,36 +76,48 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 		{
 			top.Enabled = cbOverrideTopTexture.Checked;
 			General.Map.Options.OverrideTopTexture = cbOverrideTopTexture.Checked;
+
+			getsidetexturesfromselection.Enabled = (cbOverrideTopTexture.Checked || cbOverrideMiddleTexture.Checked || cbOverrideBottomTexture.Checked);
 		}
 
 		private void cbOverrideMiddleTexture_CheckedChanged(object sender, EventArgs e) 
 		{
 			middle.Enabled = cbOverrideMiddleTexture.Checked;
 			General.Map.Options.OverrideMiddleTexture = cbOverrideMiddleTexture.Checked;
+
+			getsidetexturesfromselection.Enabled = (cbOverrideTopTexture.Checked || cbOverrideMiddleTexture.Checked || cbOverrideBottomTexture.Checked);
 		}
 
 		private void cbOverrideBottomTexture_CheckedChanged(object sender, EventArgs e) 
 		{
 			bottom.Enabled = cbOverrideBottomTexture.Checked;
 			General.Map.Options.OverrideBottomTexture = cbOverrideBottomTexture.Checked;
+
+			getsidetexturesfromselection.Enabled = (cbOverrideTopTexture.Checked || cbOverrideMiddleTexture.Checked || cbOverrideBottomTexture.Checked);
 		}
 
 		private void cbCeilHeight_CheckedChanged(object sender, EventArgs e) 
 		{
 			ceilHeight.Enabled = cbCeilHeight.Checked;
 			General.Map.Options.OverrideCeilingHeight = cbCeilHeight.Checked;
+
+			getheightandbrightnessfromselection.Enabled = (cbCeilHeight.Checked || cbFloorHeight.Checked || cbBrightness.Checked);
 		}
 
 		private void cbFloorHeight_CheckedChanged(object sender, EventArgs e) 
 		{
 			floorHeight.Enabled = cbFloorHeight.Checked;
 			General.Map.Options.OverrideFloorHeight = cbFloorHeight.Checked;
+
+			getheightandbrightnessfromselection.Enabled = (cbCeilHeight.Checked || cbFloorHeight.Checked || cbBrightness.Checked);
 		}
 
 		private void cbBrightness_CheckedChanged(object sender, EventArgs e) 
 		{
 			brightness.Enabled = cbBrightness.Checked;
 			General.Map.Options.OverrideBrightness = cbBrightness.Checked;
+
+			getheightandbrightnessfromselection.Enabled = (cbCeilHeight.Checked || cbFloorHeight.Checked || cbBrightness.Checked);
 		}
 
 		#endregion
@@ -478,6 +497,66 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			// Update entire display
 			General.Map.Map.Update();
 			General.Interface.RedrawDisplay();
+		}
+
+		#endregion
+
+		#region ================== Get Properties from Selection Events
+
+		private void getsectortexturesfromselection_Click(object sender, EventArgs e) 
+		{
+			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
+			if(sectors.Count == 0) 
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selected sector");
+				return;
+			}
+
+			Sector s = General.GetByIndex(sectors, 0);
+			if(cbOverrideCeilingTexture.Checked) ceiling.TextureName = s.CeilTexture;
+			if(cbOverrideFloorTexture.Checked) floor.TextureName = s.FloorTexture;
+		}
+
+		private void getsidetexturesfromselection_Click(object sender, EventArgs e)
+		{
+			ICollection<Linedef> lines = General.Map.Map.GetSelectedLinedefs(true);
+			if(lines.Count == 0) 
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selected linedef");
+				return;
+			}
+
+			Sidedef s = null;
+			foreach (Linedef l in lines)
+			{
+				s = (l.Front ?? l.Back);
+				if(s.MiddleTexture != "-" || s.HighTexture != "-" || s.LowTexture != "-") break;
+			}
+
+			if(s == null)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Selection doesn't contain suitable sidedefs");
+				return;
+			}
+
+			if(cbOverrideTopTexture.Checked) top.TextureName = s.HighTexture;
+			if(cbOverrideMiddleTexture.Checked) middle.TextureName = s.MiddleTexture;
+			if(cbOverrideBottomTexture.Checked) bottom.TextureName = s.LowTexture;
+		}
+
+		private void getheightandbrightnessfromselection_Click(object sender, EventArgs e) 
+		{
+			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
+			if(sectors.Count == 0) 
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selected sector");
+				return;
+			}
+
+			Sector s = General.GetByIndex(sectors, 0);
+			if(cbCeilHeight.Checked) ceilHeight.Text = s.CeilHeight.ToString();
+			if(cbFloorHeight.Checked) floorHeight.Text = s.FloorHeight.ToString();
+			if(cbBrightness.Checked) brightness.Text = s.Brightness.ToString();
 		}
 
 		#endregion

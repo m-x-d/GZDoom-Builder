@@ -826,7 +826,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tooltip.AutomaticDelay = 0;
 			this.tooltip.AutoPopDelay = 30000;
 			this.tooltip.InitialDelay = 10;
-			this.tooltip.IsBalloon = true;
 			this.tooltip.ReshowDelay = 100;
 			this.tooltip.ToolTipTitle = "Supported Placeholders:";
 			this.tooltip.UseAnimation = false;
