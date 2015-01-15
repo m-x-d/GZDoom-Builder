@@ -842,7 +842,6 @@ namespace CodeImp.DoomBuilder.Data
 			PatchNames pnames = new PatchNames();
 			PatchNames newpnames;
 			int counter = 0;
-			long firsttexture = 0;
 
 			// Go for all opened containers
 			foreach(DataReader dr in containers)
@@ -864,7 +863,6 @@ namespace CodeImp.DoomBuilder.Data
 						// Add or replace in textures list
 						list.Remove(img.LongName);
 						list.Add(img.LongName, img);
-						if(firsttexture == 0) firsttexture = img.LongName;
 						counter++;
 
 						//mxd. Also add as short name when texture name is longer than 8 chars
@@ -886,10 +884,6 @@ namespace CodeImp.DoomBuilder.Data
 					}
 				}
 			}
-			
-			// The first texture cannot be used, because in the game engine it
-			// has index 0 which means "no texture", so remove it from the list.
-			list.Remove(firsttexture);
 			
 			// Output info
 			return counter;
