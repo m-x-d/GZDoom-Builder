@@ -348,13 +348,15 @@ namespace CodeImp.DoomBuilder.Data
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			List<ImageData> images = new List<ImageData>();
-			int lumpindex;
-			Lump lump;
 			float defaultscale = General.Map.Config.DefaultTextureScale; //mxd
 
 			// Load two sets of textures, if available
-			lump = file.FindLump("TEXTURE1");
-			if(lump != null) LoadTextureSet("TEXTURE1", lump.Stream, ref images, pnames);
+			Lump lump = file.FindLump("TEXTURE1");
+			if(lump != null) 
+			{
+				LoadTextureSet("TEXTURE1", lump.Stream, ref images, pnames);
+				if(images.Count > 0) images.RemoveAt(0); //mxd. The first TEXTURE1 texture cannot be used. Let's remove it here
+			}
 			lump = file.FindLump("TEXTURE2");
 			if(lump != null) LoadTextureSet("TEXTURE2", lump.Stream, ref images, pnames);
 			
@@ -382,7 +384,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// Load TEXTURES lump file
-			lumpindex = file.FindLumpIndex("TEXTURES");
+			int lumpindex = file.FindLumpIndex("TEXTURES");
 			while(lumpindex > -1)
 			{
 				MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
@@ -394,8 +396,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// Add images to the container-specific texture set
-			foreach(ImageData img in images)
-				textureset.AddTexture(img);
+			foreach(ImageData img in images) textureset.AddTexture(img);
 
 			// Return result
 			return images;
