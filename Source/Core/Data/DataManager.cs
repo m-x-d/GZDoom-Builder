@@ -926,8 +926,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This checks if a given texture is known
 		public bool GetTextureExists(string name)
 		{
-			long longname = Lump.MakeLongName(name);
-			return textures.ContainsKey(longname);
+			return GetTextureExists(Lump.MakeLongName(name)); //mxd
 		}
 		
 		// This checks if a given texture is known
@@ -1042,8 +1041,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This checks if a flat is known
 		public bool GetFlatExists(string name)
 		{
-			long longname = Lump.MakeLongName(name);
-			return flats.ContainsKey(longname);
+			return GetFlatExists(Lump.MakeLongName(name)); //mxd
 		}
 
 		// This checks if a flat is known
