@@ -8,26 +8,26 @@ namespace CodeImp.DoomBuilder.Geometry
 	{
 		public enum Mode
 		{
-			Linear,
-			EaseInOutSine,
-			EaseInSine,
-			EaseOutSine,
+			LINEAR,
+			EASE_IN_OUT_SINE,
+			EASE_IN_SINE,
+			EASE_OUT_SINE,
 		}
-		
-		public static int Interpolate(int val1, int val2, float delta, Mode mode)
+
+		public static int Interpolate(float val1, float val2, float delta, Mode mode)
 		{
 			switch (mode)
 			{
-				case Mode.Linear: return Linear(val1, val2, delta);
-				case Mode.EaseInSine: return EaseInSine(val1, val2, delta);
-				case Mode.EaseOutSine: return EaseOutSine(val1, val2, delta);
-				case Mode.EaseInOutSine: return EaseInOutSine(val1, val2, delta);
+				case Mode.LINEAR: return Linear(val1, val2, delta);
+				case Mode.EASE_IN_SINE: return EaseInSine(val1, val2, delta);
+				case Mode.EASE_OUT_SINE: return EaseOutSine(val1, val2, delta);
+				case Mode.EASE_IN_OUT_SINE: return EaseInOutSine(val1, val2, delta);
 				default: throw new NotImplementedException("InterpolationTools.Interpolate: '" + mode + "' mode is not supported!");
 			}
 		}
 		
 		//Based on Robert Penner's original easing equations (http://www.robertpenner.com/easing/)
-		public static int Linear(int val1, int val2, float delta)
+		public static int Linear(float val1, float val2, float delta)
 		{
 			return (int)(delta * val2 + (1.0f - delta) * val1);
 		}
@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		/**
 		 * Easing equation function for a sinusoidal (sin(t)) easing in: accelerating from zero velocity.
 		 */
-		public static int EaseInSine(int val1, int val2, float delta) 
+		public static int EaseInSine(float val1, float val2, float delta) 
 		{
 			float f_val1 = val1;
 			float f_val2 = val2 - f_val1;
@@ -45,31 +45,17 @@ namespace CodeImp.DoomBuilder.Geometry
 		/**
 		 * Easing equation function for a sinusoidal (sin(t)) easing out: decelerating from zero velocity.
 		 */
-		public static int EaseOutSine(int val1, int val2, float delta) 
+		public static int EaseOutSine(float val1, float val2, float delta) 
 		{
-			float f_val1 = val1;
-			float f_val2 = val2;
-			return (int)((f_val2 - f_val1) * Math.Sin(delta * Angle2D.PIHALF) + f_val1);
+			return (int)((val2 - val1) * Math.Sin(delta * Angle2D.PIHALF) + val1);
 		}
 
 		/**
 		 * Easing equation function for a sinusoidal (sin(t)) easing in/out: acceleration until halfway, then deceleration.
 		 */
-		public static int EaseInOutSine(int val1, int val2, float delta) 
+		public static int EaseInOutSine(float val1, float val2, float delta)
 		{
-			float f_val1, f_val2;
-			if(val1 > val2)
-			{
-				f_val1 = val2;
-				f_val2 = val1;
-				delta = 1.0f - delta;
-			} 
-			else 
-			{
-				f_val1 = val1;
-				f_val2 = val2;
-			}
-			return (int)(-f_val2 / 2.0f * (Math.Cos(Angle2D.PI * delta) - 1.0f) + f_val1);
+			return (int)Math.Round(-(val2 - val1) / 2 * (float)(Math.Cos(Math.PI * delta) - 1) + val1);
 		}
 	}
 }

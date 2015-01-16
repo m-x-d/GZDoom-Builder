@@ -1751,6 +1751,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								UDMFTools.SetInteger(s.Fields, lightKey, (int) b - s.Brightness, 0);
 							}
 
+							s.UpdateNeeded = true;
 							index++;
 						}
 					} 
