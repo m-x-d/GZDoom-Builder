@@ -763,6 +763,7 @@
     <Compile Include="General\MurmurHash2.cs" />
     <Compile Include="General\SavePurpose.cs" />
     <Compile Include="Geometry\CurveTools.cs" />
+    <Compile Include="Geometry\InterpolationTools.cs" />
     <Compile Include="GZBuilder\Controls\AngleControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

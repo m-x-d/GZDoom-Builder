@@ -637,10 +637,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ViewSelectionEffects);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeDoor); //mxd
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors2); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
-			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.BrightnessGradientMode); //mxd
+			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.GradientModeMenu); //mxd
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.GradientInterpolationMenu); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientFloors);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientCeilings);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors3); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.DragThingsInSelectedSectors); //mxd
 			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.TextureOffsetLock, ToolbarSection.Geometry); //mxd
@@ -672,10 +675,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionEffects);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeDoor); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors2); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
-			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.BrightnessGradientMode); //mxd
+			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.GradientModeMenu); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.GradientInterpolationMenu); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientFloors);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientCeilings);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors3); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.DragThingsInSelectedSectors); //mxd
 			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
@@ -1691,118 +1697,85 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Sector end = General.GetByIndex(orderedselection, orderedselection.Count - 1);
 
 				//mxd. Use UDMF light?
-				string mode = (string)BuilderPlug.Me.MenusForm.BrightnessGradientMode.SelectedItem;
-				if(General.Map.UDMF && (mode == MenusForm.BrightnessGradientModes.Ceilings || mode == MenusForm.BrightnessGradientModes.Floors)) 
+				string mode = (string)BuilderPlug.Me.MenusForm.GradientModeMenu.SelectedItem;
+				InterpolationTools.Mode interpolationmode = (InterpolationTools.Mode) BuilderPlug.Me.MenusForm.GradientInterpolationMenu.SelectedIndex;
+				if(General.Map.UDMF) 
 				{
-					string lightKey;
-					string lightAbsKey;
-					float startbrightness, endbrightness;
-
-					if(mode == MenusForm.BrightnessGradientModes.Ceilings) 
+					if(mode == MenusForm.BrightnessGradientModes.Ceilings || mode == MenusForm.BrightnessGradientModes.Floors) 
 					{
-						lightKey = "lightceiling";
-						lightAbsKey = "lightceilingabsolute";
-					} 
-					else //should be floors...
-					{ 
-						lightKey = "lightfloor";
-						lightAbsKey = "lightfloorabsolute";
-					}
+						string lightKey;
+						string lightAbsKey;
+						int startbrightness, endbrightness;
 
-					//get total brightness of start sector
-					if(start.Fields.GetValue(lightAbsKey, false)) 
-						startbrightness = start.Fields.GetValue(lightKey, 0);
-					else 
-						startbrightness = Math.Min(255, Math.Max(0, (float)start.Brightness + start.Fields.GetValue(lightKey, 0)));
-
-					//get total brightness of end sector
-					if(end.Fields.GetValue(lightAbsKey, false)) 
-						endbrightness = end.Fields.GetValue(lightKey, 0);
-					else
-						endbrightness = Math.Min(255, Math.Max(0, (float)end.Brightness + end.Fields.GetValue(lightKey, 0)));
-
-					float delta = endbrightness - startbrightness;
-
-					// Go for all sectors in between first and last
-					int index = 0;
-					foreach(Sector s in orderedselection) 
-					{
-						s.Fields.BeforeFieldsChange();
-						float u = index / (float)(orderedselection.Count - 1);
-						float b = startbrightness + delta * u;
-
-						//absolute flag set?
-						if(s.Fields.GetValue(lightAbsKey, false)) 
+						if(mode == MenusForm.BrightnessGradientModes.Ceilings) 
 						{
-							if(s.Fields.ContainsKey(lightKey))
-								s.Fields[lightKey].Value = (int)b;
-							else
-								s.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b));
-						} 
-						else 
+							lightKey = "lightceiling";
+							lightAbsKey = "lightceilingabsolute";
+						}
+						else //should be floors...
 						{
-							UDMFTools.SetInteger(s.Fields, lightKey, (int)b - s.Brightness, 0);
+							lightKey = "lightfloor";
+							lightAbsKey = "lightfloorabsolute";
 						}
 
-						index++;
-					}
-				
-				}
-				//mxd. Use UDMF light/fade color?
-				else if(General.Map.UDMF && (mode == MenusForm.BrightnessGradientModes.Fade || mode == MenusForm.BrightnessGradientModes.Light)) 
-				{
-					string key;
-					int defaultValue = 0;
+						//get total brightness of start sector
+						if(start.Fields.GetValue(lightAbsKey, false))
+							startbrightness = start.Fields.GetValue(lightKey, 0);
+						else
+							startbrightness = Math.Min(255, Math.Max(0, start.Brightness + start.Fields.GetValue(lightKey, 0)));
 
-					if(mode == MenusForm.BrightnessGradientModes.Light) 
-					{
-						key = "lightcolor";
-						defaultValue = 0xFFFFFF;
-					} 
-					else 
-					{
-						key = "fadecolor";
-					}
-
-					if(!start.Fields.ContainsKey(key) && !end.Fields.ContainsKey(key)) 
-					{
-						General.Interface.DisplayStatus(StatusType.Warning, "First or last sector must have " + key + "!");
-					} 
-					else 
-					{
-						Color startColor = PixelColor.FromInt(start.Fields.GetValue(key, defaultValue)).ToColor();
-						Color endColor = PixelColor.FromInt(end.Fields.GetValue(key, defaultValue)).ToColor();
-						int dr = endColor.R - startColor.R;
-						int dg = endColor.G - startColor.G;
-						int db = endColor.B - startColor.B;
+						//get total brightness of end sector
+						if(end.Fields.GetValue(lightAbsKey, false))
+							endbrightness = end.Fields.GetValue(lightKey, 0);
+						else
+							endbrightness = Math.Min(255, Math.Max(0, end.Brightness + end.Fields.GetValue(lightKey, 0)));
 
 						// Go for all sectors in between first and last
 						int index = 0;
 						foreach(Sector s in orderedselection) 
 						{
 							s.Fields.BeforeFieldsChange();
-							float u = index / (float)(orderedselection.Count - 1);
-							Color c = Color.FromArgb(0, General.Clamp((int)(startColor.R + dr * u), 0, 255), General.Clamp((int)(startColor.G + dg * u), 0, 255), General.Clamp((int)(startColor.B + db * u), 0, 255));
-							
-							UDMFTools.SetInteger(s.Fields, key, c.ToArgb(), defaultValue);
-							s.UpdateNeeded = true;
+							float u = index / (float) (orderedselection.Count - 1);
+							float b = InterpolationTools.Interpolate(startbrightness, endbrightness, u, interpolationmode);
+
+							//absolute flag set?
+							if(s.Fields.GetValue(lightAbsKey, false)) 
+							{
+								if(s.Fields.ContainsKey(lightKey))
+									s.Fields[lightKey].Value = (int) b;
+								else
+									s.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int) b));
+							}
+							else 
+							{
+								UDMFTools.SetInteger(s.Fields, lightKey, (int) b - s.Brightness, 0);
+							}
+
 							index++;
 						}
+					} 
+					else if(mode == MenusForm.BrightnessGradientModes.Fade) 
+					{
+						ApplyColorGradient(orderedselection, start, end, interpolationmode, "fadecolor", 0);
+					} 
+					else if(mode == MenusForm.BrightnessGradientModes.Light) 
+					{
+						ApplyColorGradient(orderedselection, start, end, interpolationmode, "lightcolor", 0xFFFFFF);
+					} 
+					else if(mode == MenusForm.BrightnessGradientModes.LightAndFade) 
+					{
+						ApplyColorGradient(orderedselection, start, end, interpolationmode, "fadecolor", 0);
+						ApplyColorGradient(orderedselection, start, end, interpolationmode, "lightcolor", 0xFFFFFF);
 					}
-				} 
+				}
 				else 
 				{
-					float startbrightness = start.Brightness;
-					float endbrightness = end.Brightness;
-					float delta = endbrightness - startbrightness;
-
 					// Go for all sectors in between first and last
 					int index = 0;
 					foreach(Sector s in orderedselection) 
 					{
 						float u = index / (float)(orderedselection.Count - 1);
-						float b = startbrightness + delta * u;
-						s.Brightness = (int)b;
+						s.Brightness = InterpolationTools.Interpolate(start.Brightness, end.Brightness, u, interpolationmode); //mxd
 						index++;
 					}
 				}
@@ -1821,6 +1794,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
+		//mxd
+		private void ApplyColorGradient(ICollection<Sector> orderedselection, Sector start, Sector end, InterpolationTools.Mode interpolationmode, string key, int defaultvalue) 
+		{
+			if(!start.Fields.ContainsKey(key) && !end.Fields.ContainsKey(key)) 
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "First or last selected sector must have the '" + key + "' property!");
+			} 
+			else 
+			{
+				Color startColor = PixelColor.FromInt(start.Fields.GetValue(key, defaultvalue)).ToColor();
+				Color endColor = PixelColor.FromInt(end.Fields.GetValue(key, defaultvalue)).ToColor();
+
+				// Go for all sectors in between first and last
+				int index = 0;
+				foreach(Sector s in orderedselection) 
+				{
+					s.Fields.BeforeFieldsChange();
+					float u = index / (float)(orderedselection.Count - 1);
+					Color c = Color.FromArgb(0, General.Clamp(InterpolationTools.Interpolate(startColor.R, endColor.R, u, interpolationmode), 0, 255),
+												General.Clamp(InterpolationTools.Interpolate(startColor.G, endColor.G, u, interpolationmode), 0, 255),
+												General.Clamp(InterpolationTools.Interpolate(startColor.B, endColor.B, u, interpolationmode), 0, 255));
+
+					UDMFTools.SetInteger(s.Fields, key, c.ToArgb(), defaultvalue);
+					s.UpdateNeeded = true;
+					index++;
+				}
+			}
+		}
+
 		// Make gradient floors
 		[BeginAction("gradientfloors")]
 		public void MakeGradientFloors()
@@ -1833,17 +1835,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Action, "Created gradient floor heights over selected sectors.");
 				General.Map.UndoRedo.CreateUndo("Gradient floor heights");
 
-				float startlevel = General.GetByIndex(orderedselection, 0).FloorHeight;
-				float endlevel = General.GetByIndex(orderedselection, orderedselection.Count - 1).FloorHeight;
-				float delta = endlevel - startlevel;
+				int startlevel = General.GetByIndex(orderedselection, 0).FloorHeight;
+				int endlevel = General.GetByIndex(orderedselection, orderedselection.Count - 1).FloorHeight;
+				InterpolationTools.Mode interpolationmode = (InterpolationTools.Mode)BuilderPlug.Me.MenusForm.GradientInterpolationMenu.SelectedIndex; //mxd
 
 				// Go for all sectors in between first and last
 				int index = 0;
 				foreach(Sector s in orderedselection) 
 				{
 					float u = index / (float)(orderedselection.Count - 1);
-					float b = startlevel + delta * u;
-					s.FloorHeight = (int)b;
+					s.FloorHeight = InterpolationTools.Interpolate(startlevel, endlevel, u, interpolationmode); //mxd
 					index++;
 				}
 
@@ -1869,17 +1870,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Action, "Created gradient ceiling heights over selected sectors.");
 				General.Map.UndoRedo.CreateUndo("Gradient ceiling heights");
 
-				float startlevel = General.GetByIndex(orderedselection, 0).CeilHeight;
-				float endlevel = General.GetByIndex(orderedselection, orderedselection.Count - 1).CeilHeight;
-				float delta = endlevel - startlevel;
+				int startlevel = General.GetByIndex(orderedselection, 0).CeilHeight;
+				int endlevel = General.GetByIndex(orderedselection, orderedselection.Count - 1).CeilHeight;
+				InterpolationTools.Mode interpolationmode = (InterpolationTools.Mode)BuilderPlug.Me.MenusForm.GradientInterpolationMenu.SelectedIndex; //mxd
 
 				// Go for all sectors in between first and last
 				int index = 0;
 				foreach(Sector s in orderedselection) 
 				{
 					float u = (float)index / (orderedselection.Count - 1);
-					float b = startlevel + delta * u;
-					s.CeilHeight = (int)b;
+					s.CeilHeight = InterpolationTools.Interpolate(startlevel, endlevel, u, interpolationmode);
 					index++;
 				}
 

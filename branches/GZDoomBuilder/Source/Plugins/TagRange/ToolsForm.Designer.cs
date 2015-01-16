@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			// 
 			// seperator1
 			// 
-			this.seperator1.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.seperator1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
 			this.seperator1.Name = "seperator1";
 			this.seperator1.Size = new System.Drawing.Size(6, 25);
 			// 
@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			// 
 			// seperator2
 			// 
-			this.seperator2.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.seperator2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
 			this.seperator2.Name = "seperator2";
 			this.seperator2.Size = new System.Drawing.Size(6, 25);
 			// 

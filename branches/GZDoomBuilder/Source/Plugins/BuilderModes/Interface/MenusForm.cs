@@ -41,11 +41,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public struct BrightnessGradientModes
 		{
-			public static string Sectors = "Sectors";
-			public static string Light = "Light";
-			public static string Fade = "Fade";
-			public static string Floors = "Floors";
-			public static string Ceilings = "Ceilings";
+			public const string Sectors = "Sectors";
+			public const string Light = "Light";
+			public const string Fade = "Fade";
+			public const string LightAndFade = "Light and Fade";
+			public const string Floors = "Floors";
+			public const string Ceilings = "Ceilings";
+		}
+
+		//mxd
+		private struct GradientInterpolationModes
+		{
+			public const string Linear = "Linear";
+			public const string EaseInOutSine = "EaseInOutSine";
+			public const string EaseInSine = "EaseInSine";
+			public const string EaseOutSine = "EaseOutSine";
 		}
 
 		#endregion
@@ -57,6 +67,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ToolStripButton ViewSelectionNumbers { get { return buttonselectionnumbers; } }
 		public ToolStripButton ViewSelectionEffects { get { return buttonselectioneffects; } }
 		public ToolStripSeparator SeparatorSectors1 { get { return separatorsectors1; } }
+		public ToolStripSeparator SeparatorSectors2 { get { return separatorsectors2; } } //mxd
+		public ToolStripSeparator SeparatorSectors3 { get { return separatorsectors3; } } //mxd
 		public ToolStripButton MakeGradientBrightness { get { return buttonbrightnessgradient; } }
 		public ToolStripButton MakeGradientFloors { get { return buttonfloorgradient; } }
 		public ToolStripButton MakeGradientCeilings { get { return buttonceilinggradient; } }
@@ -67,7 +79,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ToolStripButton PasteProperties { get { return buttonpasteproperties; } }
 		public ToolStripButton PastePropertiesOptions { get { return buttonpastepropertiesoptions; } } //mxd
 		public ToolStripSeparator SeparatorCopyPaste { get { return seperatorcopypaste; } }
-		public ToolStripComboBox BrightnessGradientMode { get { return brightnessGradientMode; } } //mxd
+		public ToolStripComboBox GradientModeMenu { get { return gradientModeMenu; } } //mxd
+		public ToolStripComboBox GradientInterpolationMenu { get { return gradientInterpolationMenu; } } //mxd
 		public ToolStripButton MarqueSelectTouching { get { return buttonMarqueSelectTouching; } } //mxd
 		public ToolStripButton AlignThingsToWall { get { return buttonAlignThingsToWall; } } //mxd
 		public ToolStripButton TextureOffsetLock { get { return buttonTextureOffsetLock; } } //mxd
@@ -89,8 +102,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			buttonselectioneffects.Checked = BuilderPlug.Me.ViewSelectionEffects; //mxd
 
 			//mxd
-			brightnessGradientMode.Items.AddRange(new[] { BrightnessGradientModes.Sectors, BrightnessGradientModes.Light, BrightnessGradientModes.Fade, BrightnessGradientModes.Ceilings, BrightnessGradientModes.Floors });
-			brightnessGradientMode.SelectedIndex = 0;
+			gradientModeMenu.Items.AddRange(new[] { BrightnessGradientModes.Sectors, BrightnessGradientModes.Light, BrightnessGradientModes.Fade, BrightnessGradientModes.LightAndFade, BrightnessGradientModes.Ceilings, BrightnessGradientModes.Floors });
+			gradientModeMenu.SelectedIndex = 0;
+			gradientInterpolationMenu.Items.AddRange(new[] { GradientInterpolationModes.Linear, GradientInterpolationModes.EaseInOutSine, GradientInterpolationModes.EaseInSine, GradientInterpolationModes.EaseOutSine });
+			gradientInterpolationMenu.SelectedIndex = 0;
 			
 			// List all menus
 			menus = new ToolStripItem[menustrip.Items.Count];

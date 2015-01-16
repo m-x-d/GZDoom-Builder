@@ -88,7 +88,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonflipselectionh = new System.Windows.Forms.ToolStripButton();
 			this.buttonflipselectionv = new System.Windows.Forms.ToolStripButton();
 			this.buttoncurvelinedefs = new System.Windows.Forms.ToolStripButton();
-			this.brightnessGradientMode = new System.Windows.Forms.ToolStripComboBox();
+			this.gradientModeMenu = new System.Windows.Forms.ToolStripComboBox();
+			this.gradientInterpolationMenu = new System.Windows.Forms.ToolStripComboBox();
 			this.buttonMarqueSelectTouching = new System.Windows.Forms.ToolStripButton();
 			this.buttonDragThingsInSelectedSectors = new System.Windows.Forms.ToolStripButton();
 			this.buttonAlignThingsToWall = new System.Windows.Forms.ToolStripButton();
@@ -97,6 +98,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fileMenuStrip = new System.Windows.Forms.MenuStrip();
 			this.exportStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
+			this.separatorsectors2 = new System.Windows.Forms.ToolStripSeparator();
+			this.separatorsectors3 = new System.Windows.Forms.ToolStripSeparator();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.fileMenuStrip.SuspendLayout();
@@ -111,7 +114,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.vertsmenu});
 			this.menustrip.Location = new System.Drawing.Point(0, 24);
 			this.menustrip.Name = "menustrip";
-			this.menustrip.Size = new System.Drawing.Size(588, 24);
+			this.menustrip.Size = new System.Drawing.Size(694, 24);
 			this.menustrip.TabIndex = 0;
 			this.menustrip.Text = "menustrip";
 			// 
@@ -482,7 +485,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.globalstrip.Location = new System.Drawing.Point(0, 48);
 			this.globalstrip.Name = "globalstrip";
-			this.globalstrip.Size = new System.Drawing.Size(588, 25);
+			this.globalstrip.Size = new System.Drawing.Size(694, 25);
 			this.globalstrip.TabIndex = 1;
 			this.globalstrip.Text = "toolstrip";
 			// 
@@ -496,21 +499,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.buttonselectionnumbers,
             this.buttonselectioneffects,
             this.separatorsectors1,
+            this.buttonMakeDoor,
+            this.separatorsectors2,
             this.buttonbrightnessgradient,
             this.buttonfloorgradient,
             this.buttonceilinggradient,
             this.buttonflipselectionh,
             this.buttonflipselectionv,
             this.buttoncurvelinedefs,
-            this.brightnessGradientMode,
+            this.gradientModeMenu,
+            this.gradientInterpolationMenu,
+            this.separatorsectors3,
             this.buttonMarqueSelectTouching,
             this.buttonDragThingsInSelectedSectors,
             this.buttonAlignThingsToWall,
-            this.buttonTextureOffsetLock,
-            this.buttonMakeDoor});
+            this.buttonTextureOffsetLock});
 			this.manualstrip.Location = new System.Drawing.Point(0, 73);
 			this.manualstrip.Name = "manualstrip";
-			this.manualstrip.Size = new System.Drawing.Size(588, 25);
+			this.manualstrip.Size = new System.Drawing.Size(694, 25);
 			this.manualstrip.TabIndex = 2;
 			this.manualstrip.Text = "toolStrip1";
 			// 
@@ -648,13 +654,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttoncurvelinedefs.Text = "Curve Linedefs";
 			this.buttoncurvelinedefs.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// brightnessGradientMode
+			// gradientModeMenu
 			// 
-			this.brightnessGradientMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.brightnessGradientMode.Name = "brightnessGradientMode";
-			this.brightnessGradientMode.Size = new System.Drawing.Size(75, 25);
-			this.brightnessGradientMode.ToolTipText = "Brightness Gradient affects:";
-			this.brightnessGradientMode.DropDownClosed += new System.EventHandler(this.brightnessGradientMode_DropDownClosed);
+			this.gradientModeMenu.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.gradientModeMenu.Name = "gradientModeMenu";
+			this.gradientModeMenu.Size = new System.Drawing.Size(108, 25);
+			this.gradientModeMenu.ToolTipText = "Brightness Gradient Target";
+			this.gradientModeMenu.DropDownClosed += new System.EventHandler(this.brightnessGradientMode_DropDownClosed);
+			// 
+			// gradientInterpolationMenu
+			// 
+			this.gradientInterpolationMenu.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.gradientInterpolationMenu.Name = "gradientInterpolationMenu";
+			this.gradientInterpolationMenu.Size = new System.Drawing.Size(108, 25);
+			this.gradientInterpolationMenu.ToolTipText = "Brightness and Height Gradient Interpolation Mode";
 			// 
 			// buttonMarqueSelectTouching
 			// 
@@ -722,7 +735,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.exportStripMenuItem});
 			this.fileMenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.fileMenuStrip.Name = "fileMenuStrip";
-			this.fileMenuStrip.Size = new System.Drawing.Size(588, 24);
+			this.fileMenuStrip.Size = new System.Drawing.Size(694, 24);
 			this.fileMenuStrip.TabIndex = 3;
 			this.fileMenuStrip.Text = "menuStrip1";
 			// 
@@ -742,11 +755,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.toolStripMenuItem5.Text = "Selection to Wavefront .obj...";
 			this.toolStripMenuItem5.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// separatorsectors2
+			// 
+			this.separatorsectors2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.separatorsectors2.Name = "separatorsectors2";
+			this.separatorsectors2.Size = new System.Drawing.Size(6, 25);
+			// 
+			// separatorsectors3
+			// 
+			this.separatorsectors3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.separatorsectors3.Name = "separatorsectors3";
+			this.separatorsectors3.Size = new System.Drawing.Size(6, 25);
+			// 
 			// MenusForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.ClientSize = new System.Drawing.Size(588, 100);
+			this.ClientSize = new System.Drawing.Size(694, 100);
 			this.Controls.Add(this.manualstrip);
 			this.Controls.Add(this.globalstrip);
 			this.Controls.Add(this.menustrip);
@@ -800,7 +825,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripButton buttoncopyproperties;
 		private System.Windows.Forms.ToolStripButton buttonpasteproperties;
 		private System.Windows.Forms.ToolStripSeparator seperatorcopypaste;
-		private System.Windows.Forms.ToolStripComboBox brightnessGradientMode;
+		private System.Windows.Forms.ToolStripComboBox gradientModeMenu;
 		private System.Windows.Forms.ToolStripButton buttonMarqueSelectTouching;
 		private System.Windows.Forms.ToolStripMenuItem thingsmenu;
 		private System.Windows.Forms.ToolStripMenuItem alignToWallItem;
@@ -841,5 +866,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripMenuItem flipsectorlinedefsitem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripButton buttonDragThingsInSelectedSectors;
+		private System.Windows.Forms.ToolStripComboBox gradientInterpolationMenu;
+		private System.Windows.Forms.ToolStripSeparator separatorsectors2;
+		private System.Windows.Forms.ToolStripSeparator separatorsectors3;
 	}
 }

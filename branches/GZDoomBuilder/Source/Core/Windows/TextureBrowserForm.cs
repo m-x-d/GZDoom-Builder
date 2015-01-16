@@ -39,51 +39,51 @@ namespace CodeImp.DoomBuilder.Windows
 		private readonly ListViewGroup availgroup;
 		private TreeNode selectedset; //mxd
 		private string selecttextureonfill;
-		private readonly bool browseFlats;
+		private readonly bool browseflats; //mxd
 		
 		// Properties
 		public string SelectedName { get { return selectedname; } }
 		
 		// Constructor
-		public TextureBrowserForm(string selecttexture, bool browseFlats)
+		public TextureBrowserForm(string selecttexture, bool browseflats)
 		{
 			Cursor.Current = Cursors.WaitCursor;
 			TreeNode item; //mxd
 			long longname = Lump.MakeLongName(selecttexture ?? "");
-			longname = (browseFlats ? General.Map.Data.GetFullLongFlatName(longname) : General.Map.Data.GetFullLongTextureName(longname)); //mxd
+			longname = (browseflats ? General.Map.Data.GetFullLongFlatName(longname) : General.Map.Data.GetFullLongTextureName(longname)); //mxd
 			int count; //mxd
 			selectedset = null; //mxd
-			this.browseFlats = browseFlats;
+			this.browseflats = browseflats; //mxd
 			
 			// Initialize
 			InitializeComponent();
 
 			//mxd. Set title
-			string imgType = (browseFlats ? "flats" : "textures");
-			this.Text = "Browse " + imgType;
+			string imagetype = (browseflats ? "flats" : "textures");
+			this.Text = "Browse " + imagetype;
 
 			// Setup texture browser
 			ImageBrowserControl.ShowTextureSizes = General.Settings.ReadSetting("browserwindow.showtexturesizes", General.Settings.ShowTextureSizes);
 			ImageBrowserControl.UseLongTextureNames = General.Map.Config.UseLongTextureNames && General.Settings.ReadSetting("browserwindow.uselongtexturenames", true);
-			browser.BrowseFlats = browseFlats;
+			browser.BrowseFlats = browseflats;
 			browser.ApplySettings();
 			
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
 
-			tvTextureSets.BeginUpdate();//mxd
+			tvTextureSets.BeginUpdate(); //mxd
 
 			// Texture to select when list is filled
 			selecttextureonfill = selecttexture;
 
 			// Make groups
-			usedgroup = browser.AddGroup("Used " + imgType + ":");
-			availgroup = browser.AddGroup("Available " + imgType + ":");
+			usedgroup = browser.AddGroup("Used " + imagetype + ":");
+			availgroup = browser.AddGroup("Available " + imagetype + ":");
 
 			//mxd. Fill texture sets list with normal texture sets
 			foreach(IFilledTextureSet ts in General.Map.Data.TextureSets) 
 			{
-				count = (browseFlats ? ts.Flats.Count : ts.Textures.Count);
+				count = (browseflats ? ts.Flats.Count : ts.Textures.Count);
 				if((count == 0 && !General.Map.Config.MixTexturesFlats) || (ts.Flats.Count == 0 && ts.Textures.Count == 0)) 
 					continue;
 
@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. Add container-specific texture sets
 			foreach(ResourceTextureSet ts in General.Map.Data.ResourceTextureSets)
 			{
-				count = (browseFlats ? ts.Flats.Count : ts.Textures.Count);
+				count = (browseflats ? ts.Flats.Count : ts.Textures.Count);
 				if((count == 0 && !General.Map.Config.MixTexturesFlats) || (ts.Flats.Count == 0 && ts.Textures.Count == 0))
 					continue;
 
@@ -113,20 +113,20 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
-			//mxd. Add All textures set
-			count = (browseFlats ? General.Map.Data.AllTextureSet.Flats.Count : General.Map.Data.AllTextureSet.Textures.Count);
+			//mxd. Add "All" texture set
+			count = (browseflats ? General.Map.Data.AllTextureSet.Flats.Count : General.Map.Data.AllTextureSet.Textures.Count);
 			item = tvTextureSets.Nodes.Add(General.Map.Data.AllTextureSet.Name + " [" + count + "]");
 			item.Name = General.Map.Data.AllTextureSet.Name;
 			item.Tag = General.Map.Data.AllTextureSet;
 			item.ImageIndex = 1;
 			item.SelectedImageIndex = item.ImageIndex;
 
-			//mxd. Select the last one that was selected
+			//mxd. Get the previously selected texture set
 			string selectname = General.Settings.ReadSetting("browserwindow.textureset", "");
 			TreeNode match;
+			// When texture name is empty, select "All" texture set
 			if(string.IsNullOrEmpty(selectname) || selectname == "-") 
 			{
-				// When texture name is empty, select "All" texture set
 				match = tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1];
 			} 
 			else 
@@ -157,11 +157,11 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
-			//mxd. Texture still now found? Then just select the last used set
+			//mxd. Texture still not found? Then just select the last used set
 			if (selectedset == null && match != null)
 				selectedset = match;
 
-			//mxd. Select found node or "All" node, if none were found
+			//mxd. Select the found set or "All", if none were found
 			if (tvTextureSets.Nodes.Count > 0)
 			{
 				if (selectedset == null) selectedset = tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1];
@@ -219,7 +219,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//then - in current node
 			IFilledTextureSet set = (node.Tag as IFilledTextureSet);
 
-			if (browseFlats)
+			if (browseflats)
 			{
 				foreach(ImageData img in set.Flats)
 					if(img.LongName == longname) return node;
@@ -260,7 +260,7 @@ namespace CodeImp.DoomBuilder.Windows
 			char[] separator = new[] { Path.AltDirectorySeparatorChar };
 			
 			ImageData[] images;
-			if (browseFlats)
+			if (browseflats)
 			{
 				images = new ImageData[set.Flats.Count];
 				set.Flats.CopyTo(images, 0);
@@ -342,7 +342,7 @@ namespace CodeImp.DoomBuilder.Windows
 			} 
 			else
 			{
-				node.Text += " [" + (browseFlats ? ts.Flats.Count : ts.Textures.Count) + "]";
+				node.Text += " [" + (browseflats ? ts.Flats.Count : ts.Textures.Count) + "]";
 			}
 
 			foreach (TreeNode child in node.Nodes) SetItemsCount(child);
@@ -479,7 +479,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Start adding
 			browser.BeginAdding(false);
 
-			if (browseFlats) 
+			if (browseflats) 
 			{
 				// Add all available flats
 				foreach(ImageData img in set.Flats)
