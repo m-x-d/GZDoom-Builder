@@ -33,6 +33,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private static int verticalSlices = 3;
 		private static bool triangulate;
 		private static bool gridlock;
+		private static InterpolationTools.Mode horizontalinterpolation = InterpolationTools.Mode.LINEAR;
+		private static InterpolationTools.Mode verticalinterpolation = InterpolationTools.Mode.LINEAR;
 
 		private readonly List<DrawnVertex[]> gridpoints;
 		private HintLabel hintLabel;
@@ -77,6 +79,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			panel.LockToGrid = gridlock;
 			panel.HorizontalSlices = horizontalSlices - 1;
 			panel.VerticalSlices = verticalSlices - 1;
+			panel.HorizontalInterpolationMode = horizontalinterpolation;
+			panel.VerticalInterpolationMode = verticalinterpolation;
 			panel.Register();
 		}
 
@@ -151,6 +155,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			triangulate = panel.Triangulate;
 			horizontalSlices = panel.HorizontalSlices + 1;
 			verticalSlices = panel.VerticalSlices + 1;
+			horizontalinterpolation = panel.HorizontalInterpolationMode;
+			verticalinterpolation = panel.VerticalInterpolationMode;
 			Update();
 		}
 
@@ -356,9 +362,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return new List<Vector2D[]> {new[] {s, e}};
 			}
 
-			float rectWidth = Math.Max(1, (slicesH > 0 ? (float)width / slicesH : width));
-			float rectHeight = Math.Max(1, (slicesV > 0 ? (float)height / slicesV : height));
-
 			//create shape
 			List<Vector2D> rect = new List<Vector2D> { s, new Vector2D((int)s.x, (int)e.y), e, new Vector2D((int)e.x, (int)s.y), s };
 			if(!gridlock && slicesH == 1 && slicesV == 1) 
@@ -374,7 +377,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				for(int h = 0; h < slicesV; h++) 
 				{
-					blocks[w, h] = RectangleF.FromLTRB((int)Math.Round(s.x + rectWidth * w), (int)Math.Round(s.y + rectHeight * h), (int)Math.Round(s.x + rectWidth * (w + 1)), (int)Math.Round(s.y + rectHeight * (h + 1)));
+					float left = InterpolationTools.Interpolate(s.x, e.x, (float)w / slicesH, horizontalinterpolation);
+					float top = InterpolationTools.Interpolate(s.y, e.y, (float)h / slicesV, verticalinterpolation);
+					float right = InterpolationTools.Interpolate(s.x, e.x, (w + 1.0f) / slicesH, horizontalinterpolation);
+					float bottom = InterpolationTools.Interpolate(s.y, e.y, (h + 1.0f)/ slicesV, verticalinterpolation);
+					blocks[w, h] = RectangleF.FromLTRB(left, top, right, bottom);
 				}
 			}
 
@@ -399,7 +406,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//triangulate?
 			if (triangulate) 
 			{
-				bool startflip = ((int)Math.Round(((s.x + e.y) / General.Map.Grid.GridSize) % 2) == 0 /*|| (int)Math.Round((e.y / General.Map.Grid.GridSize) % 2) == 0*/);
+				bool startflip = ((int)Math.Round(((s.x + e.y) / General.Map.Grid.GridSize) % 2) == 0);
 				bool flip = startflip;
 
 				for(int w = 0; w < slicesH; w++) 

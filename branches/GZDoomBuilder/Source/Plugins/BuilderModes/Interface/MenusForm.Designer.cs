@@ -82,6 +82,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonselectionnumbers = new System.Windows.Forms.ToolStripButton();
 			this.buttonselectioneffects = new System.Windows.Forms.ToolStripButton();
 			this.separatorsectors1 = new System.Windows.Forms.ToolStripSeparator();
+			this.buttonMakeDoor = new System.Windows.Forms.ToolStripButton();
+			this.separatorsectors2 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonbrightnessgradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonfloorgradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonceilinggradient = new System.Windows.Forms.ToolStripButton();
@@ -90,16 +92,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttoncurvelinedefs = new System.Windows.Forms.ToolStripButton();
 			this.gradientModeMenu = new System.Windows.Forms.ToolStripComboBox();
 			this.gradientInterpolationMenu = new System.Windows.Forms.ToolStripComboBox();
+			this.separatorsectors3 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonMarqueSelectTouching = new System.Windows.Forms.ToolStripButton();
 			this.buttonDragThingsInSelectedSectors = new System.Windows.Forms.ToolStripButton();
 			this.buttonAlignThingsToWall = new System.Windows.Forms.ToolStripButton();
 			this.buttonTextureOffsetLock = new System.Windows.Forms.ToolStripButton();
-			this.buttonMakeDoor = new System.Windows.Forms.ToolStripButton();
 			this.fileMenuStrip = new System.Windows.Forms.MenuStrip();
 			this.exportStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
-			this.separatorsectors2 = new System.Windows.Forms.ToolStripSeparator();
-			this.separatorsectors3 = new System.Windows.Forms.ToolStripSeparator();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.fileMenuStrip.SuspendLayout();
@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.vertsmenu});
 			this.menustrip.Location = new System.Drawing.Point(0, 24);
 			this.menustrip.Name = "menustrip";
-			this.menustrip.Size = new System.Drawing.Size(694, 24);
+			this.menustrip.Size = new System.Drawing.Size(794, 24);
 			this.menustrip.TabIndex = 0;
 			this.menustrip.Text = "menustrip";
 			// 
@@ -485,7 +485,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.globalstrip.Location = new System.Drawing.Point(0, 48);
 			this.globalstrip.Name = "globalstrip";
-			this.globalstrip.Size = new System.Drawing.Size(694, 25);
+			this.globalstrip.Size = new System.Drawing.Size(794, 25);
 			this.globalstrip.TabIndex = 1;
 			this.globalstrip.Text = "toolstrip";
 			// 
@@ -516,7 +516,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.buttonTextureOffsetLock});
 			this.manualstrip.Location = new System.Drawing.Point(0, 73);
 			this.manualstrip.Name = "manualstrip";
-			this.manualstrip.Size = new System.Drawing.Size(694, 25);
+			this.manualstrip.Size = new System.Drawing.Size(794, 25);
 			this.manualstrip.TabIndex = 2;
 			this.manualstrip.Text = "toolStrip1";
 			// 
@@ -586,6 +586,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.separatorsectors1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
 			this.separatorsectors1.Name = "separatorsectors1";
 			this.separatorsectors1.Size = new System.Drawing.Size(6, 25);
+			// 
+			// buttonMakeDoor
+			// 
+			this.buttonMakeDoor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonMakeDoor.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Door;
+			this.buttonMakeDoor.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonMakeDoor.Name = "buttonMakeDoor";
+			this.buttonMakeDoor.Size = new System.Drawing.Size(23, 22);
+			this.buttonMakeDoor.Tag = "makedoor";
+			this.buttonMakeDoor.Text = "Make Door From Selection";
+			this.buttonMakeDoor.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// separatorsectors2
+			// 
+			this.separatorsectors2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.separatorsectors2.Name = "separatorsectors2";
+			this.separatorsectors2.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttonbrightnessgradient
 			// 
@@ -658,9 +675,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.gradientModeMenu.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.gradientModeMenu.Name = "gradientModeMenu";
-			this.gradientModeMenu.Size = new System.Drawing.Size(108, 25);
+			this.gradientModeMenu.Size = new System.Drawing.Size(144, 25);
 			this.gradientModeMenu.ToolTipText = "Brightness Gradient Target";
-			this.gradientModeMenu.DropDownClosed += new System.EventHandler(this.brightnessGradientMode_DropDownClosed);
+			this.gradientModeMenu.DropDownClosed += new System.EventHandler(this.gradientMode_DropDownClosed);
 			// 
 			// gradientInterpolationMenu
 			// 
@@ -668,6 +685,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.gradientInterpolationMenu.Name = "gradientInterpolationMenu";
 			this.gradientInterpolationMenu.Size = new System.Drawing.Size(108, 25);
 			this.gradientInterpolationMenu.ToolTipText = "Brightness and Height Gradient Interpolation Mode";
+			this.gradientInterpolationMenu.DropDownClosed += new System.EventHandler(this.gradientMode_DropDownClosed);
+			// 
+			// separatorsectors3
+			// 
+			this.separatorsectors3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.separatorsectors3.Name = "separatorsectors3";
+			this.separatorsectors3.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttonMarqueSelectTouching
 			// 
@@ -713,21 +737,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonTextureOffsetLock.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.TextureLock;
 			this.buttonTextureOffsetLock.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonTextureOffsetLock.Name = "buttonTextureOffsetLock";
-			this.buttonTextureOffsetLock.Size = new System.Drawing.Size(23, 22);
+			this.buttonTextureOffsetLock.Size = new System.Drawing.Size(23, 20);
 			this.buttonTextureOffsetLock.ToolTipText = "Pin Texture Offsets.\r\nWhen enabled, keeps floor and ceiling texture offsets\r\ncons" +
 				"tant while sector is dragged";
 			this.buttonTextureOffsetLock.Click += new System.EventHandler(this.buttonTextureOffsetLock_Click);
-			// 
-			// buttonMakeDoor
-			// 
-			this.buttonMakeDoor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonMakeDoor.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Door;
-			this.buttonMakeDoor.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttonMakeDoor.Name = "buttonMakeDoor";
-			this.buttonMakeDoor.Size = new System.Drawing.Size(23, 22);
-			this.buttonMakeDoor.Tag = "makedoor";
-			this.buttonMakeDoor.Text = "Make Door From Selection";
-			this.buttonMakeDoor.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// fileMenuStrip
 			// 
@@ -735,7 +748,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.exportStripMenuItem});
 			this.fileMenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.fileMenuStrip.Name = "fileMenuStrip";
-			this.fileMenuStrip.Size = new System.Drawing.Size(694, 24);
+			this.fileMenuStrip.Size = new System.Drawing.Size(794, 24);
 			this.fileMenuStrip.TabIndex = 3;
 			this.fileMenuStrip.Text = "menuStrip1";
 			// 
@@ -755,23 +768,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.toolStripMenuItem5.Text = "Selection to Wavefront .obj...";
 			this.toolStripMenuItem5.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// separatorsectors2
-			// 
-			this.separatorsectors2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.separatorsectors2.Name = "separatorsectors2";
-			this.separatorsectors2.Size = new System.Drawing.Size(6, 25);
-			// 
-			// separatorsectors3
-			// 
-			this.separatorsectors3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.separatorsectors3.Name = "separatorsectors3";
-			this.separatorsectors3.Size = new System.Drawing.Size(6, 25);
-			// 
 			// MenusForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.ClientSize = new System.Drawing.Size(694, 100);
+			this.ClientSize = new System.Drawing.Size(794, 100);
 			this.Controls.Add(this.manualstrip);
 			this.Controls.Add(this.globalstrip);
 			this.Controls.Add(this.menustrip);

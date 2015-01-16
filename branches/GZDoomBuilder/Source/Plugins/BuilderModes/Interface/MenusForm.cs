@@ -41,16 +41,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public struct BrightnessGradientModes
 		{
-			public const string Sectors = "Sectors";
-			public const string Light = "Light";
-			public const string Fade = "Fade";
-			public const string LightAndFade = "Light and Fade";
-			public const string Floors = "Floors";
-			public const string Ceilings = "Ceilings";
+			public const string Sectors = "Sector Brightness";
+			public const string Light = "Light Color";
+			public const string Fade = "Fade Color";
+			public const string LightAndFade = "Light and Fade Colors";
+			public const string Floors = "Floor Brightness";
+			public const string Ceilings = "Ceiling Brightness";
 		}
 
 		//mxd
-		private struct GradientInterpolationModes
+		internal struct GradientInterpolationModes
 		{
 			public const string Linear = "Linear";
 			public const string EaseInOutSine = "EaseInOutSine";
@@ -241,7 +241,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void brightnessGradientMode_DropDownClosed(object sender, EventArgs e) 
+		private void gradientMode_DropDownClosed(object sender, EventArgs e) 
 		{
 			General.Interface.FocusDisplay();
 		}

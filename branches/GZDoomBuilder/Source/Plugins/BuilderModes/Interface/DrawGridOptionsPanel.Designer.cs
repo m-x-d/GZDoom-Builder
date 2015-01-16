@@ -34,7 +34,12 @@
 			this.slicesvlabel = new System.Windows.Forms.ToolStripLabel();
 			this.slicesV = new CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown();
 			this.reset = new System.Windows.Forms.ToolStripButton();
-			this.cbseparator = new System.Windows.Forms.ToolStripSeparator();
+			this.cbseparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.interphlabel = new System.Windows.Forms.ToolStripLabel();
+			this.interphmode = new System.Windows.Forms.ToolStripComboBox();
+			this.interpvlabel = new System.Windows.Forms.ToolStripLabel();
+			this.interpvmode = new System.Windows.Forms.ToolStripComboBox();
+			this.cbseparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.gridlock = new CodeImp.DoomBuilder.Controls.ToolStripCheckBox();
 			this.triangulate = new CodeImp.DoomBuilder.Controls.ToolStripCheckBox();
 			this.toolStrip1.SuspendLayout();
@@ -48,12 +53,17 @@
             this.slicesvlabel,
             this.slicesV,
             this.reset,
-            this.cbseparator,
+            this.cbseparator1,
+            this.interphlabel,
+            this.interphmode,
+            this.interpvlabel,
+            this.interpvmode,
+            this.cbseparator2,
             this.gridlock,
             this.triangulate});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(619, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(1000, 25);
 			this.toolStrip1.TabIndex = 8;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -61,8 +71,8 @@
 			// 
 			this.sliceshlabel.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Gear;
 			this.sliceshlabel.Name = "sliceshlabel";
-			this.sliceshlabel.Size = new System.Drawing.Size(113, 22);
-			this.sliceshlabel.Text = "Horizontal Slices:";
+			this.sliceshlabel.Size = new System.Drawing.Size(89, 22);
+			this.sliceshlabel.Text = "Horiz. Slices:";
 			// 
 			// slicesH
 			// 
@@ -79,7 +89,7 @@
             0,
             0});
 			this.slicesH.Name = "slicesH";
-			this.slicesH.Size = new System.Drawing.Size(56, 20);
+			this.slicesH.Size = new System.Drawing.Size(46, 20);
 			this.slicesH.Text = "0";
 			this.slicesH.Value = new decimal(new int[] {
             0,
@@ -91,8 +101,8 @@
 			// slicesvlabel
 			// 
 			this.slicesvlabel.Name = "slicesvlabel";
-			this.slicesvlabel.Size = new System.Drawing.Size(81, 22);
-			this.slicesvlabel.Text = "Vertical Slices:";
+			this.slicesvlabel.Size = new System.Drawing.Size(66, 22);
+			this.slicesvlabel.Text = "Vert. Slices:";
 			// 
 			// slicesV
 			// 
@@ -109,7 +119,7 @@
             0,
             0});
 			this.slicesV.Name = "slicesV";
-			this.slicesV.Size = new System.Drawing.Size(56, 20);
+			this.slicesV.Size = new System.Drawing.Size(46, 20);
 			this.slicesV.Text = "0";
 			this.slicesV.Value = new decimal(new int[] {
             0,
@@ -127,10 +137,43 @@
 			this.reset.Size = new System.Drawing.Size(23, 22);
 			this.reset.Text = "Reset";
 			// 
-			// cbseparator
+			// cbseparator1
 			// 
-			this.cbseparator.Name = "cbseparator";
-			this.cbseparator.Size = new System.Drawing.Size(6, 25);
+			this.cbseparator1.Name = "cbseparator1";
+			this.cbseparator1.Size = new System.Drawing.Size(6, 25);
+			// 
+			// interphlabel
+			// 
+			this.interphlabel.Name = "interphlabel";
+			this.interphlabel.Size = new System.Drawing.Size(78, 22);
+			this.interphlabel.Text = "Horiz. Interp.:";
+			// 
+			// interphmode
+			// 
+			this.interphmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.interphmode.Name = "interphmode";
+			this.interphmode.Size = new System.Drawing.Size(108, 25);
+			this.interphmode.SelectedIndexChanged += new System.EventHandler(this.ValueChanged);
+			this.interphmode.DropDownClosed += new System.EventHandler(this.interpmode_DropDownClosed);
+			// 
+			// interpvlabel
+			// 
+			this.interpvlabel.Name = "interpvlabel";
+			this.interpvlabel.Size = new System.Drawing.Size(71, 22);
+			this.interpvlabel.Text = "Vert. Interp.:";
+			// 
+			// interpvmode
+			// 
+			this.interpvmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.interpvmode.Name = "interpvmode";
+			this.interpvmode.Size = new System.Drawing.Size(108, 25);
+			this.interpvmode.SelectedIndexChanged += new System.EventHandler(this.ValueChanged);
+			this.interpvmode.DropDownClosed += new System.EventHandler(this.interpmode_DropDownClosed);
+			// 
+			// cbseparator2
+			// 
+			this.cbseparator2.Name = "cbseparator2";
+			this.cbseparator2.Size = new System.Drawing.Size(6, 25);
 			// 
 			// gridlock
 			// 
@@ -156,7 +199,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.toolStrip1);
 			this.Name = "DrawGridOptionsPanel";
-			this.Size = new System.Drawing.Size(619, 60);
+			this.Size = new System.Drawing.Size(1000, 60);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.ResumeLayout(false);
@@ -172,8 +215,13 @@
 		private System.Windows.Forms.ToolStripLabel slicesvlabel;
 		private CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown slicesV;
 		private System.Windows.Forms.ToolStripButton reset;
-		private System.Windows.Forms.ToolStripSeparator cbseparator;
+		private System.Windows.Forms.ToolStripSeparator cbseparator1;
 		private CodeImp.DoomBuilder.Controls.ToolStripCheckBox gridlock;
 		private CodeImp.DoomBuilder.Controls.ToolStripCheckBox triangulate;
+		private System.Windows.Forms.ToolStripSeparator cbseparator2;
+		private System.Windows.Forms.ToolStripLabel interpvlabel;
+		private System.Windows.Forms.ToolStripComboBox interpvmode;
+		private System.Windows.Forms.ToolStripLabel interphlabel;
+		private System.Windows.Forms.ToolStripComboBox interphmode;
 	}
 }
