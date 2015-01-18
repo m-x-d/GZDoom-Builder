@@ -52,7 +52,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.type = new System.Windows.Forms.Label();
 			this.spritepanel = new System.Windows.Forms.GroupBox();
 			this.spritename = new System.Windows.Forms.Label();
-			this.spritetex = new System.Windows.Forms.Panel();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.spritetex = new CodeImp.DoomBuilder.Controls.ConfigurablePictureBox();
 			this.flagsPanel = new System.Windows.Forms.GroupBox();
 			this.flags = new System.Windows.Forms.ListView();
 			label5 = new System.Windows.Forms.Label();
@@ -61,6 +62,8 @@ namespace CodeImp.DoomBuilder.Controls
 			label1 = new System.Windows.Forms.Label();
 			this.infopanel.SuspendLayout();
 			this.spritepanel.SuspendLayout();
+			this.panel1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.spritetex)).BeginInit();
 			this.flagsPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -296,7 +299,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// spritepanel
 			// 
 			this.spritepanel.Controls.Add(this.spritename);
-			this.spritepanel.Controls.Add(this.spritetex);
+			this.spritepanel.Controls.Add(this.panel1);
 			this.spritepanel.Location = new System.Drawing.Point(479, 0);
 			this.spritepanel.Name = "spritepanel";
 			this.spritepanel.Size = new System.Drawing.Size(86, 100);
@@ -313,15 +316,31 @@ namespace CodeImp.DoomBuilder.Controls
 			this.spritename.Text = "BROWNHUG";
 			this.spritename.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
+			// panel1
+			// 
+			this.panel1.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(this.spritetex);
+			this.panel1.Location = new System.Drawing.Point(12, 14);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(64, 64);
+			this.panel1.TabIndex = 0;
+			// 
 			// spritetex
 			// 
-			this.spritetex.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.spritetex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-			this.spritetex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.spritetex.Location = new System.Drawing.Point(12, 14);
+			this.spritetex.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.Default;
+			this.spritetex.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.spritetex.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+			this.spritetex.Location = new System.Drawing.Point(0, 0);
 			this.spritetex.Name = "spritetex";
-			this.spritetex.Size = new System.Drawing.Size(64, 64);
+			this.spritetex.PageUnit = System.Drawing.GraphicsUnit.Pixel;
+			this.spritetex.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
+			this.spritetex.Size = new System.Drawing.Size(60, 60);
+			this.spritetex.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.spritetex.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
 			this.spritetex.TabIndex = 0;
+			this.spritetex.TabStop = false;
 			// 
 			// flagsPanel
 			// 
@@ -362,6 +381,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.infopanel.ResumeLayout(false);
 			this.infopanel.PerformLayout();
 			this.spritepanel.ResumeLayout(false);
+			this.panel1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.spritetex)).EndInit();
 			this.flagsPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -371,7 +392,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private System.Windows.Forms.GroupBox spritepanel;
 		private System.Windows.Forms.Label spritename;
-		private System.Windows.Forms.Panel spritetex;
+		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Label angle;
 		private System.Windows.Forms.Label tag;
 		private System.Windows.Forms.Label position;
@@ -392,6 +413,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ListView flags;
 		private System.Windows.Forms.Label labelaction;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl anglecontrol;
+		private ConfigurablePictureBox spritetex;
 
 	}
 }

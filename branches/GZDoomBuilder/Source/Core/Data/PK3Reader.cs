@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			if (enable && archive == null)
 			{
-				archive = ArchiveFactory.Open(location.location, Options.KeepStreamsOpen);
+				archive = ArchiveFactory.Open(location.location, (bathmode ? Options.KeepStreamsOpen : Options.None));
 			} 
 			else if(!enable && !bathmode && archive != null)
 			{
