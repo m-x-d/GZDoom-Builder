@@ -133,17 +133,17 @@ namespace CodeImp.DoomBuilder.Controls
 			if(ti.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) && (ti.Sprite.Length > DataManager.INTERNAL_PREFIX.Length))
 			{
 				spritename.Text = "";
-				General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(ti.Sprite).GetBitmap());
+				spritetex.Image = General.Map.Data.GetSpriteImage(ti.Sprite).GetBitmap();
 			}
 			else if((ti.Sprite.Length <= 8) && (ti.Sprite.Length > 0))
 			{
 				spritename.Text = ti.Sprite;
-				General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(ti.Sprite).GetPreview());
+				spritetex.Image = General.Map.Data.GetSpriteImage(ti.Sprite).GetPreview();
 			}
 			else
 			{
 				spritename.Text = "";
-				spritetex.BackgroundImage = null;
+				spritetex.Image = null;
 			}
 			
 
@@ -224,7 +224,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Hiding panels
 			if(!this.Visible)
 			{
-				spritetex.BackgroundImage = null;
+				spritetex.Image = null;
 			}
 
 			// Call base
