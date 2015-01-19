@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.IsBufferedDraw = true;
 			scriptedit.IsCaretLineVisible = false;
 			scriptedit.IsHScrollBar = true;
-			scriptedit.IndentationGuides = (int)ScriptIdentGuides.None;
+			scriptedit.IndentationGuides = (int)ScriptIdentGuides.Real;
 			scriptedit.IsMouseDownCaptures = true;
 			scriptedit.IsTabIndents = true;
 			scriptedit.IsUndoCollection = true;
@@ -377,6 +377,12 @@ namespace CodeImp.DoomBuilder.Controls
 				StringBuilder constantslist = new StringBuilder("");
 				foreach(string c in scriptconfig.Constants)
 				{
+					if(autocompletelist.ContainsKey(c.ToUpperInvariant())) //mxd. This happens when there's a keyword and a constant with the same name...
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Constant '" + c + "' is double-defined in '" + scriptconfig.Description + "' script configuration!");
+						continue;
+					}
+					
 					if(constantslist.Length > 0) constantslist.Append(" ");
 					constantslist.Append(c);
 					autocompletelist.Add(c.ToUpperInvariant(), c + "?" + imageindex);
