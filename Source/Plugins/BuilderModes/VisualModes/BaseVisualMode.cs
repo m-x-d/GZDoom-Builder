@@ -3527,7 +3527,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Wrap the value within the width of the texture (to prevent ridiculous values)
 					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
-					if(texture.IsImageLoaded) 
+					if(texture.IsImageLoaded && Tools.SidedefTextureMatch(j.sidedef, texture.LongName)) 
 					{
 						if(alignx) j.sidedef.OffsetX %= texture.Width;
 						if(aligny) j.sidedef.OffsetY %= texture.Height;
@@ -3553,7 +3553,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Wrap the value within the width of the texture (to prevent ridiculous values)
 					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
-					if(texture.IsImageLoaded) 
+					if(texture.IsImageLoaded && Tools.SidedefTextureMatch(j.sidedef, texture.LongName)) 
 					{
 						if(alignx) j.sidedef.OffsetX %= texture.Width;
 						if(aligny) j.sidedef.OffsetY %= texture.Height;
@@ -3676,9 +3676,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Get the align job to do
 				SidedefAlignJob j = todo.Pop();
 
-				bool matchtop = (!j.sidedef.Marked && (j.sidedef.LongHighTexture == texture.LongName) && j.sidedef.HighRequired());
-				bool matchbottom = (!j.sidedef.Marked && (j.sidedef.LongLowTexture == texture.LongName) && j.sidedef.LowRequired());
-				bool matchmid = ((j.controlSide.LongMiddleTexture == texture.LongName) && (j.controlSide.MiddleRequired() || j.controlSide.LongMiddleTexture != MapSet.EmptyLongName)); //mxd
+				bool matchtop = (!j.sidedef.Marked && (!singleselection || j.sidedef.LongHighTexture == texture.LongName) && j.sidedef.HighRequired());
+				bool matchbottom = (!j.sidedef.Marked && (!singleselection || j.sidedef.LongLowTexture == texture.LongName) && j.sidedef.LowRequired());
+				bool matchmid = ((!singleselection || j.controlSide.LongMiddleTexture == texture.LongName) && (j.controlSide.MiddleRequired() || j.controlSide.LongMiddleTexture != MapSet.EmptyLongName)); //mxd
 
 				//mxd. If there's a selection, check if matched part is actually selected
 				if(checkSelectedSidedefParts && !singleselection) 
@@ -3715,9 +3715,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset -= j.sidedef.OffsetX;
 
 						if(matchtop)
-							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % texture.Width);
+							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Width); //texture.Width
 						if(matchbottom)
-							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset % texture.Width);
+							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Width);
 						if(matchmid) 
 						{
 							if(j.sidedef.Index != j.controlSide.Index) //mxd. if it's a part of 3d-floor 
@@ -3726,7 +3726,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								offset -= j.controlSide.Fields.GetValue("offsetx_mid", 0.0f);
 							}
 
-							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset % texture.Width);
+							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Width);
 						}
 					}
 
@@ -3737,9 +3737,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset = (float)Math.Round(offset); //mxd
 						
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY, true) % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Height); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY, true) % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Height); //mxd
 						if(matchmid) 
 						{
 							//mxd. Side is part of a 3D floor?
@@ -3747,26 +3747,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								offset -= j.controlSide.OffsetY;
 								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % texture.Height);
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Height);
 							} 
-							else 
+							else
 							{
-								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height;
+								ImageData midtex = General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture);
+								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % midtex.Height;
 
 								if(j.sidedef.Other != null && !j.sidedef.IsFlagSet("wrapmidtex") && !j.sidedef.Line.IsFlagSet("wrapmidtex"))
 								{
 									//mxd. This should be doublesided non-wrapped line. Find the nearset aligned position
 									float curoffset = UDMFTools.GetFloat(j.sidedef.Fields, "offsety_mid");
-									offset += texture.Height * (int)Math.Round((curoffset - offset) / texture.Height);
+									offset += midtex.Height * (int)Math.Round((curoffset - offset) / midtex.Height);
 
 									// Make sure the surface stays between floor and ceiling
-									if (offset < -texture.Height)
+									if(offset < -midtex.Height)
 									{
-										offset += texture.Height;
+										offset += midtex.Height;
 									} 
-									else if(offset + texture.Height > j.sidedef.GetMiddleHeight())
+									else if(offset + midtex.Height > j.sidedef.GetMiddleHeight())
 									{
-										offset -= texture.Height;
+										offset -= midtex.Height;
 									}
 								}
 
@@ -3799,9 +3800,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset -= j.sidedef.OffsetX;
 
 						if(matchtop)
-							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % texture.Width);
+							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Width);
 						if(matchbottom)
-							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset % texture.Width);
+							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Width);
 						if(matchmid) 
 						{
 							if(j.sidedef.Index != j.controlSide.Index) //mxd
@@ -3810,7 +3811,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								offset -= j.controlSide.Fields.GetValue("offsetx_mid", 0.0f);
 							}
 
-							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset % texture.Width);
+							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Width);
 						}
 					}
 					if(aligny) 
@@ -3820,9 +3821,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset = (float)Math.Round(offset); //mxd
 
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY, true) % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Height); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY, true) % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Height); //mxd
 						if(matchmid) 
 						{
 							//mxd. Side is part of a 3D floor?
@@ -3830,11 +3831,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								offset -= j.controlSide.OffsetY;
 								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % texture.Height); //mxd
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Height); //mxd
 							} 
 							else 
 							{
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % texture.Height); //mxd
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Height); //mxd
 							}
 						}
 					}
@@ -3866,11 +3867,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if((ld.Start == v) && (side1 != null) && !side1.Marked) 
 				{
-					List<Sidedef> controlSides = GetControlSides(side1, udmf);//mxd
+					List<Sidedef> controlSides = GetControlSides(side1, udmf); //mxd
 
 					foreach(Sidedef s in controlSides) 
 					{
-						if(Tools.SidedefTextureMatch(s, texturelongname)) 
+						if(!singleselection || Tools.SidedefTextureMatch(s, texturelongname)) 
 						{
 							SidedefAlignJob nj = new SidedefAlignJob();
 							nj.forward = forward;
@@ -3884,11 +3885,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				} 
 				else if((ld.End == v) && (side2 != null) && !side2.Marked) 
 				{
-					List<Sidedef> controlSides = GetControlSides(side2, udmf);//mxd
+					List<Sidedef> controlSides = GetControlSides(side2, udmf); //mxd
 
 					foreach(Sidedef s in controlSides) 
 					{
-						if(Tools.SidedefTextureMatch(s, texturelongname)) 
+						if(!singleselection || Tools.SidedefTextureMatch(s, texturelongname)) 
 						{
 							SidedefAlignJob nj = new SidedefAlignJob();
 							nj.forward = forward;
