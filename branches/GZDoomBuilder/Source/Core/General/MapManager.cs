@@ -1815,6 +1815,9 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("reloadresources")]
 		internal void DoReloadResource() 
 		{
+			//mxd. Get rid of old errors
+			General.ErrorLogger.Clear();
+			
 			// Set this to false so we can see if errors are added
 			General.ErrorLogger.IsErrorAdded = false;
 

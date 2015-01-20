@@ -67,7 +67,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// List of unstable lines
 		protected ICollection<Linedef> unstablelines;
-		protected List<float> unstableLinesInitialLengths; //mxd
 		
 		// List of unselected lines
 		protected ICollection<Linedef> snaptolines;
@@ -167,12 +166,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Make list of unstable lines only
 			// These will have their length displayed during the drag
 			unstablelines = MapSet.UnstableLinedefsFromVertices(selectedverts);
-
-			//mxd. Keep original lenghs for further reference
-			unstableLinesInitialLengths = new List<float>(unstablelines.Count);
-
-			foreach (Linedef l in unstablelines)
-				unstableLinesInitialLengths.Add(l.Length);
 
 			//mxd. Collect selected sectors
 			if(General.Map.UDMF) 
