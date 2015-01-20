@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Drawing.Drawing2D;
 
 #endregion
@@ -145,7 +144,7 @@ namespace CodeImp.DoomBuilder.Data
 				Graphics g = Graphics.FromImage(preview);
 				g.PageUnit = GraphicsUnit.Pixel;
 				//g.CompositingQuality = CompositingQuality.HighQuality; //mxd
-				g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				g.InterpolationMode = InterpolationMode.NearestNeighbor;
 				//g.SmoothingMode = SmoothingMode.HighQuality; //mxd
 				g.PixelOffsetMode = PixelOffsetMode.None;
 				//g.Clear(Color.Transparent); //mxd
@@ -255,7 +254,7 @@ namespace CodeImp.DoomBuilder.Data
 
 
 		#if DEBUG
-		internal void DumpAtlases()
+		/*internal void DumpAtlases()
 		{
 			lock(images)
 			{
@@ -269,7 +268,7 @@ namespace CodeImp.DoomBuilder.Data
 					}
 				}
 			}
-		}
+		}*/
 		#endif
 		
 		#endregion

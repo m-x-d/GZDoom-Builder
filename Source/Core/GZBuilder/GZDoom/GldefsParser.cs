@@ -6,8 +6,10 @@ using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
 
-namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
-	public sealed class GldefsParser : ZDTextParser {
+namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
+{
+	public sealed class GldefsParser : ZDTextParser
+	{
 
 		public delegate void IncludeDelegate(GldefsParser parser, string includefile);
 		public IncludeDelegate OnInclude;
@@ -510,6 +512,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 			}
 
 			return objects.Count > 0;
+		}
+
+		internal void ClearIncludesList() 
+		{
+			parsedLumps.Clear();
 		}
 	}
 }

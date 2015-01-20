@@ -460,17 +460,16 @@ namespace CodeImp.DoomBuilder.Data
 					// Make a copy
 					return General.Map.Data.Previews.GetPreviewCopy(previewindex);
 				}
+				
 				// Loading failed?
-				else if(loadfailed)
+				if(loadfailed)
 				{
 					// Return error bitmap
 					return Properties.Resources.Failed;
 				}
-				else
-				{
-					// Return loading bitmap
-					return Properties.Resources.Hourglass;
-				}
+
+				// Return loading bitmap
+				return Properties.Resources.Hourglass;
 			}
 		}
 		
