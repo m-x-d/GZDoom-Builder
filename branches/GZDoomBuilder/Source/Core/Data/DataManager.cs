@@ -1710,6 +1710,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach (DataReader dr in containers) 
 			{
 				currentreader = dr;
+				parser.ClearIncludesList();
 				Dictionary<string, Stream> streams = dr.GetGldefsData(General.Map.Config.GameType);
 
 				foreach (KeyValuePair<string, Stream> group in streams)

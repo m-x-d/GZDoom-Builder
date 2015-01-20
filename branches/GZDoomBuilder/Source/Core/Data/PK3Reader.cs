@@ -78,9 +78,6 @@ namespace CodeImp.DoomBuilder.Data
 					sevenzipentries.Add(reader.Entry.Key.ToLowerInvariant(), s.ToArray());
 					fileentries.Add(new DirectoryFileEntry(reader.Entry.Key));
 				}
-
-				archive.Dispose();
-				archive = null;
 			} 
 			else 
 			{
@@ -90,6 +87,10 @@ namespace CodeImp.DoomBuilder.Data
 					fileentries.Add(new DirectoryFileEntry(entry.Key));
 				}
 			}
+
+			// Get rid of archive
+			archive.Dispose();
+			archive = null;
 
 			// Make files list
 			files = new DirectoryFilesList(fileentries);
@@ -128,7 +129,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			if (enable && archive == null)
 			{
-				archive = ArchiveFactory.Open(location.location, (bathmode ? Options.KeepStreamsOpen : Options.None));
+				archive = ArchiveFactory.Open(location.location);
 			} 
 			else if(!enable && !bathmode && archive != null)
 			{
