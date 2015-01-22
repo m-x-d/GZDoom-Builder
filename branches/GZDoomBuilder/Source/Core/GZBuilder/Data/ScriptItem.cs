@@ -4,22 +4,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
 	internal sealed class ScriptItem : Object 
 	{
-		private string name;
-		private int index;
-		private int selectionStart;
-		private int selectionEnd;
+		private readonly string name;
+		private readonly int index;
+		private readonly int cursorPosition;
 
 		internal string Name { get { return name; } }
 		internal int Index { get { return index; } }
-		internal int SelectionStart { get { return selectionStart; } }
-		internal int SelectionEnd { get { return selectionEnd; } }
+		internal int CursorPosition { get { return cursorPosition; } }
 
-		internal ScriptItem(int index, string name, int selectionStart, int selectionEnd) 
+		internal ScriptItem(int index, string name, int cursorPosition) 
 		{
 			this.name = name;
 			this.index = index;
-			this.selectionStart = selectionStart;
-			this.selectionEnd = selectionEnd;
+			this.cursorPosition = cursorPosition;
 		}
 
 		internal ScriptItem(int index, string name) 

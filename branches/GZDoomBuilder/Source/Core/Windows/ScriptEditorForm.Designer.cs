@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.KeyPreview = true;
 			this.Name = "ScriptEditorForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-			this.Text = "GZDoom Builder Script Editor";
+			this.Text = "Script Editor";
 			this.Load += new System.EventHandler(this.ScriptEditorForm_Load);
 			this.Shown += new System.EventHandler(this.ScriptEditorForm_Shown);
 			this.Move += new System.EventHandler(this.ScriptEditorForm_Move);

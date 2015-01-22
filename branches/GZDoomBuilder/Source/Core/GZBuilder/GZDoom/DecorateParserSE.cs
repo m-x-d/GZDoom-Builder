@@ -31,8 +31,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 					if (token == "actor") 
 					{
-						int startPos = (int)stream.Position - 6;
 						SkipWhitespace(true);
+						int startPos = (int)stream.Position;
 
 						List<string> definition = new List<string>();
 
@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 						string name = "";
 						foreach (string s in definition) name += s + " ";
-						actors.Add(new ScriptItem(0, name.TrimEnd(), startPos, (int)stream.Position - 2));
+						actors.Add(new ScriptItem(0, name.TrimEnd(), startPos));
 					}
 				}
 			}

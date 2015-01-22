@@ -91,7 +91,6 @@ namespace CodeImp.DoomBuilder.Controls
 			navigator.Name = "navigator";
 			navigator.TabStop = true;
 			navigator.TabIndex = 0;
-			navigator.Enabled = false;
 			navigator.DropDown += navigator_DropDown;
 			navigator.SelectedIndexChanged += navigator_SelectedIndexChanged;
 			this.Controls.Add(navigator);
@@ -374,33 +373,23 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		protected void UpdateNavigator() 
 		{
-			//mxd. known script type?
-			if (config.ScriptType != ScriptType.UNKNOWN) 
+			switch(config.ScriptType)
 			{
-				switch(config.ScriptType) 
-				{
-					case ScriptType.ACS:
-						UpdateNavigatorAcs(new MemoryStream(editor.GetText()));
-						break;
+				case ScriptType.ACS:
+					UpdateNavigatorAcs(new MemoryStream(editor.GetText()));
+					break;
 
-					case ScriptType.DECORATE:
-						UpdateNavigatorDecorate(new MemoryStream(editor.GetText()));
-						break;
+				case ScriptType.DECORATE:
+					UpdateNavigatorDecorate(new MemoryStream(editor.GetText()));
+					break;
 
-					case ScriptType.MODELDEF:
-						UpdateNavigatorModeldef(new MemoryStream(editor.GetText()));
-						break;
+				case ScriptType.MODELDEF:
+					UpdateNavigatorModeldef(new MemoryStream(editor.GetText()));
+					break;
 
-					default:
-						throw new NotImplementedException("Script type " + config.ScriptType + " navigator support is not implemented!");
-				}
-
-				navigator.Enabled = true;
-			}
-			else
-			{
-				navigator.Items.Clear();
-				navigator.Enabled = false;
+				default: // Unsupported script type. Just clear the items
+					navigator.Items.Clear();
+					break;
 			}
 		}
 
@@ -499,9 +488,9 @@ namespace CodeImp.DoomBuilder.Controls
 			if (navigator.SelectedItem is ScriptItem) 
 			{
 				ScriptItem si = navigator.SelectedItem as ScriptItem;
-				editor.EnsureLineVisible(editor.LineFromPosition(si.SelectionStart));
-				editor.SelectionStart = si.SelectionStart;
-				editor.SelectionEnd = si.SelectionEnd;
+				editor.EnsureLineVisible(editor.LineFromPosition(si.CursorPosition));
+				editor.SelectionStart = si.CursorPosition;
+				editor.SelectionEnd = si.CursorPosition;
 				
 				// Focus to the editor!
 				editor.Focus();

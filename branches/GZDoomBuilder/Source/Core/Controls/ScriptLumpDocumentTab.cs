@@ -73,8 +73,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				editor.SetText(stream.ToArray());
 				editor.ClearUndoRedo();
-				//mxd
-				UpdateNavigator();
+				UpdateNavigator(); //mxd
 			}
 			
 			// Done
@@ -96,9 +95,9 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 				success = General.Map.CompileLump(lumpname, true);
 
-			//mxd
-			if (success && config.ScriptType == ScriptType.ACS)
-				General.Map.UpdateScriptNames();
+			//mxd. Update script names cache and script navigator
+			if(success && config.ScriptType == ScriptType.ACS) General.Map.UpdateScriptNames();
+			UpdateNavigator();
 
 			// Feed errors to panel
 			panel.ShowErrors(General.Map.Errors);

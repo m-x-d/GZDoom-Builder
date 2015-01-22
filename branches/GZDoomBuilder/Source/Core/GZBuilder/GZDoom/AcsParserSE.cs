@@ -67,19 +67,20 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 					if (token == "script") 
 					{
-						int startPos = (int)stream.Position - 7;
 						SkipWhitespace(true);
+						int startPos = (int)stream.Position;
 						token = ReadToken();
 
 						//is it named script?
 						if (token.IndexOf('"') != -1) 
 						{
+							startPos += 1;
 							//check if we have something like '"mycoolscript"(void)' as a token
 							if(token.LastIndexOf('"') != token.Length - 1)
 								token = token.Substring(0, token.LastIndexOf('"'));
 
 							token = StripTokenQuotes(token);
-							ScriptItem i = new ScriptItem(0, token, startPos, (int)stream.Position-1);
+							ScriptItem i = new ScriptItem(0, token, startPos);
 							namedScripts.Add(i);
 						} 
 						else //should be numbered script
@@ -90,8 +91,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							int n;
 							if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) 
 							{
-								int endPos = (int)stream.Position - 1;
-
 								//now find opening brace
 								do 
 								{
@@ -113,15 +112,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								}
 
 								name = (name.Length > 0 ? name + " [" + n + "]" : "Script " + n);
-								ScriptItem i = new ScriptItem(n, name, startPos, endPos);
+								ScriptItem i = new ScriptItem(n, name, startPos);
 								numberedScripts.Add(i);
 							}
 						}
 					} 
 					else if(token == "function") 
 					{
-						int startPos = (int)stream.Position - 9;
 						SkipWhitespace(true);
+						int startPos = (int) stream.Position;
 						string funcname = ReadToken(); //read return type
 						SkipWhitespace(true);
 						funcname += " " + ReadToken(); //read function name
@@ -148,7 +147,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							} while(!token.Contains(")"));
 						}
 
-						ScriptItem i = new ScriptItem(0, funcname, startPos, (int)stream.Position - 1);
+						ScriptItem i = new ScriptItem(0, funcname, startPos);
 						functions.Add(i);
 					} 
 					else if (processIncludes && (token == "#include" || token == "#import")) 
