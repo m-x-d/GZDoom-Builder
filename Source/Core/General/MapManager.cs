@@ -1710,29 +1710,20 @@ namespace CodeImp.DoomBuilder
 					MemoryStream stream = GetLumpData(maplumpinfo.Name);
 					if (stream != null) 
 					{
+						// Get script names
 						AcsParserSE parser = new AcsParserSE();
 						parser.OnInclude = UpdateScriptsFromLocation;
 						parser.Parse(stream, "SCRIPTS", true, false);
 
-						if(parser.NamedScripts.Count > 0 && (FormatInterface is DoomMapSetIO || FormatInterface is HexenMapSetIO)) 
-						{
-							List<string> names = new List<string>();
-							foreach(ScriptItem item in parser.NamedScripts)
-								names.Add("'" + item.Name + "'");
-							General.ErrorLogger.Add(ErrorType.Warning, "Current map format doesn't support named scripts! Following scripts will not work:" + string.Join(", ", names.ToArray()));
-						} 
-						else 
-						{
-							namedScripts.AddRange(parser.NamedScripts);
-						}
-
+						// Add them to arrays
+						namedScripts.AddRange(parser.NamedScripts);
 						numberedScripts.AddRange(parser.NumberedScripts);
 						scriptincludes.AddRange(parser.Includes);
 					}
 				}
 			}
 
-			//sort
+			// Sort script names
 			namedScripts.Sort(ScriptItem.SortByName);
 			numberedScripts.Sort(ScriptItem.SortByIndex);
 		}

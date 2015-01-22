@@ -402,9 +402,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 			DecorateParserSE parser = new DecorateParserSE();
 			parser.Parse(stream, "DECORATE");
-
-			if (parser.Actors.Count == 0) return; 
-
 			navigator.Items.AddRange(parser.Actors.ToArray());
 		}
 
@@ -417,9 +414,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 			ModeldefParserSE parser = new ModeldefParserSE();
 			parser.Parse(stream, "MODELDEF");
-
-			if (parser.Models.Count == 0) return;
-
 			navigator.Items.AddRange(parser.Models.ToArray());
 		}
 
@@ -432,10 +426,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			AcsParserSE parser = new AcsParserSE();
 			parser.Parse(stream, "ACS");
-
-			if (parser.NamedScripts.Count == 0 && parser.NumberedScripts.Count == 0 && parser.Functions.Count == 0) return;
-
-			if(General.Map.UDMF) navigator.Items.AddRange(parser.NamedScripts.ToArray());
+			navigator.Items.AddRange(parser.NamedScripts.ToArray());
 			navigator.Items.AddRange(parser.NumberedScripts.ToArray());
 			navigator.Items.AddRange(parser.Functions.ToArray());
 		}
