@@ -35,15 +35,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 					if(token == "MODEL")
 					{
-						int startPos = (int)stream.Position - 6;
 						SkipWhitespace(true);
+						int startPos = (int)stream.Position;
 						string modelName = ReadToken();
 						SkipWhitespace(true);
 						token = ReadToken(); //this should be "{"
 
 						if (token == "{") 
 						{
-							ScriptItem i = new ScriptItem(0, modelName, startPos, (int)stream.Position - 2);
+							ScriptItem i = new ScriptItem(0, modelName, startPos);
 							models.Add(i);
 						}
 					}

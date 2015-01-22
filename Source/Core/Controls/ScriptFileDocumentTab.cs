@@ -118,9 +118,10 @@ namespace CodeImp.DoomBuilder.Controls
 					errors.Add(newerr);
 				}
 
-				//mxd. Should be called only if script is compiled successfully
+				//mxd. Should be called only if current script is compiled successfully
 				if (compiler.Errors.Length == 0 && config.ScriptType == ScriptType.ACS)
 					General.Map.UpdateScriptNames();
+				UpdateNavigator();
 			}
 			
 			// Dispose compiler
