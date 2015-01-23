@@ -623,33 +623,30 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 			else
 			{
-				if(General.Map.Data.GetFlatExists(longimagename))
-				{
-					img = General.Map.Data.GetFlatImageKnown(longimagename);
-					
-					// Is the texture loaded?
-					if(img.IsImageLoaded && !img.LoadFailed)
-					{
-						if(img.Texture == null) img.CreateTexture();
-					}
-					else
-					{
-						img = General.Map.Data.WhiteTexture;
-					}
-				} 
-				else if(longimagename == MapSet.EmptyLongName) //mxd
+				if(longimagename == MapSet.EmptyLongName) 
 				{
 					img = General.Map.Data.MissingTexture3D;
 				}
-				else
+				else 
 				{
-					img = General.Map.Data.UnknownTexture3D;
+					img = General.Map.Data.GetFlatImage(longimagename);
+
+					if(!(img is UnknownImage)) 
+					{
+						if(img.IsImageLoaded && !img.LoadFailed) 
+						{
+							if(img.Texture == null) img.CreateTexture();
+						}
+						else 
+						{
+							img = General.Map.Data.WhiteTexture;
+						}
+					}
 				}
 			}
 			
 			// Store by texture
-			if(!surfaces.ContainsKey(img))
-				surfaces.Add(img, new List<SurfaceEntry>());
+			if(!surfaces.ContainsKey(img)) surfaces.Add(img, new List<SurfaceEntry>());
 			surfaces[img].Add(entry);
 		}
 		
