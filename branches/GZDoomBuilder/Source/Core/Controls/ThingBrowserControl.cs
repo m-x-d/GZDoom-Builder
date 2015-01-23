@@ -186,11 +186,11 @@ namespace CodeImp.DoomBuilder.Controls
 			//Show Mixed Things icon?
 			if(validnodes.Count > 1)
 			{
-				spritetex.BackgroundImage = Properties.Resources.MixedThings;
+				spritetex.Image = Properties.Resources.MixedThings;
 				return;
 			}
 
-			spritetex.BackgroundImage = null;
+			spritetex.Image = null;
 		}
 
 		#endregion
