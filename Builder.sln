@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagRange", "Source\Plugins\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisplaneExplorer", "Source\Plugins\VisplaneExplorer\VisplaneExplorer.csproj", "{CF670175-7099-4090-A330-EE25C7230139}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundPropagation", "Source\Plugins\SoundPropagationMode\SoundPropagation.csproj", "{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -139,6 +141,20 @@ Global
 		{CF670175-7099-4090-A330-EE25C7230139}.Release|Win32.ActiveCfg = Release|x86
 		{CF670175-7099-4090-A330-EE25C7230139}.Release|x86.ActiveCfg = Release|x86
 		{CF670175-7099-4090-A330-EE25C7230139}.Release|x86.Build.0 = Release|x86
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Debug|Win32.ActiveCfg = Debug|x86
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Debug|x86.ActiveCfg = Debug|x86
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Debug|x86.Build.0 = Debug|x86
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Release|Mixed Platforms.Build.0 = Release|x86
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Release|Win32.ActiveCfg = Release|x86
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Release|x86.ActiveCfg = Release|x86
+		{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
