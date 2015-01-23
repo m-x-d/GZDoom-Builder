@@ -106,6 +106,14 @@ IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
 IF NOT EXIST "Build\Plugins\NodesViewer.dll" GOTO FILEFAIL
 
 ECHO.
+ECHO Compiling Sound Propagation Mode plugin...
+ECHO.
+IF EXIST "Build\Plugins\SoundPropagationMode.dll" DEL /F /Q "Build\Plugins\SoundPropagationMode.dll" > NUL
+msbuild "Source\Plugins\SoundPropagationMode\SoundPropagation.csproj" /t:Rebuild /p:Configuration=Release /p:Platform=x86 /v:minimal
+IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
+IF NOT EXIST "Build\Plugins\SoundPropagationMode.dll" GOTO FILEFAIL
+
+ECHO.
 ECHO Compiling Tag Explorer plugin...
 ECHO.
 IF EXIST "Build\Plugins\TagExplorer.dll" DEL /F /Q "Build\Plugins\TagExplorer.dll" > NUL

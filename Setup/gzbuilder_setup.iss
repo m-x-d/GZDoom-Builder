@@ -54,6 +54,7 @@ Source: Plugins\BuilderEffects.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\ColorPicker.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\CommentsPanel.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\NodesViewer.dll; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Plugins\SoundPropagationMode.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\TagExplorer.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\TagRange.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\VisplaneExplorer.dll; DestDir: {app}\Plugins; Flags: ignoreversion
