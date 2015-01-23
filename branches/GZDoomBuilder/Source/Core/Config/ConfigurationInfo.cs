@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.Config
 			//mxd. read test engines
 			testEngines = new List<EngineInfo>();
 			IDictionary list = General.Settings.ReadSetting("configurations." + settingskey + ".engines", new ListDictionary());
-			currentEngineIndex = General.Settings.ReadSetting("configurations." + settingskey + ".currentengineindex", 0);
+			currentEngineIndex = Math.Max(0, General.Settings.ReadSetting("configurations." + settingskey + ".currentengineindex", 0));
 			
 			//no engine list found? use old engine properties
 			if (list.Count == 0) 
@@ -408,7 +408,7 @@ namespace CodeImp.DoomBuilder.Config
 			//mxd
 			this.testEngines = new List<EngineInfo>();
 			foreach (EngineInfo info in ci.testEngines) testEngines.Add(new EngineInfo(info));
-			if (this.currentEngineIndex >= testEngines.Count) this.currentEngineIndex = testEngines.Count - 1;
+			if(this.currentEngineIndex >= testEngines.Count) this.currentEngineIndex = Math.Max(0, testEngines.Count - 1);
 			this.linedefColorPresets = new LinedefColorPreset[ci.linedefColorPresets.Length];
 			for(int i = 0; i < ci.linedefColorPresets.Length; i++)
 				this.linedefColorPresets[i] = new LinedefColorPreset(ci.linedefColorPresets[i]);
@@ -486,7 +486,7 @@ namespace CodeImp.DoomBuilder.Config
 			currentEngineIndex = source.currentEngineIndex;
 			testEngines = new List<EngineInfo>();
 			foreach(EngineInfo info in source.testEngines) testEngines.Add(new EngineInfo(info));
-			if(currentEngineIndex >= testEngines.Count) currentEngineIndex = testEngines.Count - 1;
+			if(currentEngineIndex >= testEngines.Count) currentEngineIndex = Math.Max(0, testEngines.Count - 1);
 			changed = true;
 		}
 
@@ -511,7 +511,7 @@ namespace CodeImp.DoomBuilder.Config
 			testEngines = new List<EngineInfo>();
 			foreach(EngineInfo info in source.testEngines)
 				testEngines.Add(new EngineInfo(info)); 
-			if(currentEngineIndex >= testEngines.Count) currentEngineIndex = testEngines.Count - 1;
+			if(currentEngineIndex >= testEngines.Count) currentEngineIndex = Math.Max(0, testEngines.Count - 1);
 			linedefColorPresets = new LinedefColorPreset[source.linedefColorPresets.Length];
 			for(int i = 0; i < source.linedefColorPresets.Length; i++)
 				linedefColorPresets[i] = new LinedefColorPreset(source.linedefColorPresets[i]);
