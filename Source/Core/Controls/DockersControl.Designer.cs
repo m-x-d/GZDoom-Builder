@@ -50,7 +50,6 @@
 			// 
 			// tabs
 			// 
-			this.tabs.Alignment = System.Windows.Forms.TabAlignment.Right;
 			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
@@ -58,7 +57,6 @@
 			this.tabs.ItemSize = new System.Drawing.Size(100, 26);
 			this.tabs.Location = new System.Drawing.Point(0, 18);
 			this.tabs.Margin = new System.Windows.Forms.Padding(0);
-			this.tabs.Multiline = true;
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(10, 5);
 			this.tabs.SelectedIndex = 0;
