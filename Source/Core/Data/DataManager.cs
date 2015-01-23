@@ -947,6 +947,7 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData GetTextureImage(long longname)
 		{
 			// Does this texture exist?
+			if(textures.ContainsKey(longname) && textures[longname] is HighResImage) return textures[longname]; //TEXTURES textures should still override regular ones...
 			if(texturenamesshorttofull.ContainsKey(longname)) return textures[texturenamesshorttofull[longname]]; //mxd
 			if(textures.ContainsKey(longname)) return textures[longname];
 
@@ -961,6 +962,7 @@ namespace CodeImp.DoomBuilder.Data
 				name = name.Substring(0, CLASIC_IMAGE_NAME_LENGTH);
 			long hash = MurmurHash2.Hash(name.Trim().ToUpperInvariant());
 
+			if(textures.ContainsKey(hash) && textures[hash] is HighResImage) return textures[hash].Name; //TEXTURES textures should still override regular ones...
 			if(texturenamesshorttofull.ContainsKey(hash)) return textures[texturenamesshorttofull[hash]].Name;
 			if(textures.ContainsKey(hash)) return textures[hash].Name;
 			return name;
@@ -969,6 +971,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		internal long GetFullLongTextureName(long hash)
 		{
+			if(textures.ContainsKey(hash) && textures[hash] is HighResImage) return hash; //TEXTURES textures should still override regular ones...
 			return (General.Map.Config.UseLongTextureNames && texturenamesshorttofull.ContainsKey(hash) ? texturenamesshorttofull[hash] : hash);
 		}
 		
@@ -1062,6 +1065,7 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData GetFlatImage(long longname)
 		{
 			// Does this flat exist?
+			if(flats.ContainsKey(longname) && flats[longname] is HighResImage) return flats[longname]; //TEXTURES flats should still override regular ones...
 			if(flatnamesshorttofull.ContainsKey(longname)) return flats[flatnamesshorttofull[longname]]; //mxd
 			if(flats.ContainsKey(longname)) return flats[longname];
 			
@@ -1070,11 +1074,11 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This returns an image by long and doesn't check if it exists
-		public ImageData GetFlatImageKnown(long longname)
+		/*public ImageData GetFlatImageKnown(long longname)
 		{
 			// Return flat
 			return flatnamesshorttofull.ContainsKey(longname) ? flats[flatnamesshorttofull[longname]] : flats[longname]; //mxd
-		}
+		}*/
 
 		//mxd. Gets full flat name by short flat name
 		public string GetFullFlatName(string name)
@@ -1083,6 +1087,7 @@ namespace CodeImp.DoomBuilder.Data
 				name = name.Substring(0, CLASIC_IMAGE_NAME_LENGTH);
 			long hash = MurmurHash2.Hash(name.ToUpperInvariant());
 
+			if(flats.ContainsKey(hash) && flats[hash] is HighResImage) return flats[hash].Name; //TEXTURES flats should still override regular ones...
 			if(flatnamesshorttofull.ContainsKey(hash)) return flats[flatnamesshorttofull[hash]].Name;
 			if(flats.ContainsKey(hash)) return flats[hash].Name;
 			return name;
@@ -1091,6 +1096,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		internal long GetFullLongFlatName(long hash)
 		{
+			if(flats.ContainsKey(hash) && flats[hash] is HighResImage) return hash; //TEXTURES flats should still override regular ones...
 			return (General.Map.Config.UseLongTextureNames && flatnamesshorttofull.ContainsKey(hash) ? flatnamesshorttofull[hash] : hash);
 		}
 		
@@ -1191,8 +1197,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(!string.IsNullOrEmpty(pname))
 			{
 				long longname = Lump.MakeLongName(pname);
-				if(sprites.ContainsKey(longname))
-					return true;
+				if(sprites.ContainsKey(longname)) return true;
 				
 				// Go for all opened containers
 				for(int i = containers.Count - 1; i >= 0; i--)
