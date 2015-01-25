@@ -2739,7 +2739,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>This finds the thing closest to the specified position.</summary>
-		public static Thing NearestThingSquareRange(ICollection<Thing> selection, Vector2D pos, float maxrange, int type)
+		public static Thing NearestThingSquareRange(ICollection<Thing> selection, Vector2D pos, float maxrange)
 		{
 			RectangleF range = RectangleF.FromLTRB(pos.x - maxrange, pos.y - maxrange, pos.x + maxrange, pos.y + maxrange);
 			Thing closest = null;
@@ -2749,9 +2749,6 @@ namespace CodeImp.DoomBuilder.Map
 			// Go for all things in selection
 			foreach(Thing t in selection)
 			{
-				//mxd. Required type?
-				if(type != 0 && t.Type != type) continue;
-				
 				px = t.Position.x;
 				py = t.Position.y;
 
@@ -3082,10 +3079,7 @@ namespace CodeImp.DoomBuilder.Map
 		public Vertex NearestVertexSquareRange(Vector2D pos, float maxrange) { return MapSet.NearestVertexSquareRange(vertices, pos, maxrange); }
 
 		/// <summary>This finds the thing closest to the specified position.</summary>
-		public Thing NearestThingSquareRange(Vector2D pos, float maxrange) { return MapSet.NearestThingSquareRange(things, pos, maxrange, 0); }
-
-		/// <summary>This finds the thing closest to the specified position.</summary>
-		public static Thing NearestThingSquareRange(ICollection<Thing> selection, Vector2D pos, float maxrange) { return MapSet.NearestThingSquareRange(selection, pos, maxrange, 0); }
+		public Thing NearestThingSquareRange(Vector2D pos, float maxrange) { return MapSet.NearestThingSquareRange(things, pos, maxrange); }
 
 		/// <summary>This finds the closest unselected linedef that is not connected to the given vertex.</summary>
 		public Linedef NearestUnselectedUnreferencedLinedef(Vector2D pos, float maxrange, Vertex v, out float distance)
