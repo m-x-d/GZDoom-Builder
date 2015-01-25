@@ -394,9 +394,9 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				}
 
 				//mxd. Find the nearest thing within default highlight range
-				if(highlightedline == null)
+				if(highlightedline == null && highlightedsoundenvironment != null)
 				{
-					Thing t = MapSet.NearestThingSquareRange(General.Map.ThingsFilter.VisibleThings, mousemappos, 10 / renderer.Scale, 9048);
+					Thing t = MapSet.NearestThingSquareRange(highlightedsoundenvironment.Things, mousemappos, 10 / renderer.Scale);
 					if(highlightedthing != t)
 					{
 						highlightedthing = t;

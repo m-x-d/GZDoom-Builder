@@ -106,6 +106,7 @@
 			this.Name = "ReverbsPickerForm";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Choose a Sound Environment";
 			this.groupBox1.ResumeLayout(false);
 			this.ResumeLayout(false);
