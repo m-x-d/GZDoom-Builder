@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 	[EditMode(DisplayName = "Sound Environment Mode",
 			  SwitchAction = "soundenvironmentmode",		// Action name used to switch to this mode
 			  ButtonImage = "ZDoomSoundEnvironment.png",	// Image resource name for the button
-			  ButtonOrder = int.MinValue + 501,	// Position of the button (lower is more to the left)
+			  ButtonOrder = int.MinValue + 502,	// Position of the button (lower is more to the left)
 			  ButtonGroup = "000_editing",
 			  UseByDefault = true,
 			  SafeStartMode = false,
@@ -48,6 +48,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		private Sector highlighted;
 		private SoundEnvironment highlightedsoundenvironment;
 		private Linedef highlightedline; //mxd
+		private Thing highlightedthing; //mxd
 
 		// Interface
 		private SoundEnvironmentPanel panel;
@@ -56,7 +57,6 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		private BackgroundWorker worker;
 
 		#endregion
-
 
 		#region ================== Properties
 
@@ -200,6 +200,27 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			General.Interface.RedrawDisplay();
 		}
 
+		//mxd. Show Reverb selector dialog
+		protected override void OnEditEnd()
+		{
+			if(highlightedthing != null)
+			{
+				ReverbsPickerForm form = new ReverbsPickerForm(highlightedthing);
+				if(form.ShowDialog((Form)General.Interface) == DialogResult.OK)
+				{
+					// Make undo
+					General.Map.UndoRedo.CreateUndo("Change Sound Environment Settings");
+
+					// Apply changes
+					form.ApplyTo(highlightedthing);
+
+					// Update
+					UpdateData();
+					General.Interface.RedrawDisplay();
+				}
+			}
+		}
+
 		private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 			General.Interface.DisplayStatus(StatusType.Ready, "Finished updating sound environments");
@@ -283,6 +304,9 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					}
 				}
 
+				//mxd. Render highlighted thing
+				if(highlightedthing != null) renderer.RenderThing(highlightedthing, General.Colors.Selection, 1.0f);
+
 				renderer.Finish();
 			}
 
@@ -362,11 +386,31 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				}
 
 				//mxd. Set as highlighted
+				bool redrawrequired = false;
 				if(highlightedline != l) 
 				{
 					highlightedline = l;
-					General.Interface.RedrawDisplay();
+					redrawrequired = true;
 				}
+
+				//mxd. Find the nearest thing within default highlight range
+				if(highlightedline == null)
+				{
+					Thing t = MapSet.NearestThingSquareRange(General.Map.ThingsFilter.VisibleThings, mousemappos, 10 / renderer.Scale, 9048);
+					if(highlightedthing != t)
+					{
+						highlightedthing = t;
+						redrawrequired = true;
+					}
+				} 
+				else if(highlightedthing != null)
+				{
+					highlightedthing = null;
+					redrawrequired = true;
+				}
+
+				//mxd. Redraw display?
+				if(redrawrequired) General.Interface.RedrawDisplay();
 			}
 		}
 

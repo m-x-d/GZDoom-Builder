@@ -68,6 +68,7 @@ namespace CodeImp.DoomBuilder.Data
 		private Dictionary<int, ModelData> modeldefEntries; //Thing.Type, Model entry
 		private Dictionary<int, DynamicLightData> gldefsEntries; //Thing.Type, Light entry
 		private MapInfo mapInfo; //mapinfo
+		private Dictionary<string, KeyValuePair<int, int>> reverbs; //<name, <arg1, arg2> 
 		
 		// Background loading
 		private Queue<ImageData> imageque;
@@ -112,6 +113,7 @@ namespace CodeImp.DoomBuilder.Data
 		internal Dictionary<int, ModelData> ModeldefEntries { get { return modeldefEntries; } }
 		internal Dictionary<int, DynamicLightData> GldefsEntries { get { return gldefsEntries; } }
 		internal MapInfo MapInfo { get { return mapInfo; } }
+		public Dictionary<string, KeyValuePair<int, int>> Reverbs { get { return reverbs; } }
 
 		public Playpal Palette { get { return palette; } }
 		public PreviewManager Previews { get { return previews; } }
@@ -156,6 +158,7 @@ namespace CodeImp.DoomBuilder.Data
 			//mxd.
 			modeldefEntries = new Dictionary<int, ModelData>();
 			gldefsEntries = new Dictionary<int, DynamicLightData>();
+			reverbs = new Dictionary<string, KeyValuePair<int, int>>();
 
 			// Load special images
 			missingtexture3d = new ResourceImage("CodeImp.DoomBuilder.Resources.MissingTexture3D.png");
@@ -318,8 +321,9 @@ namespace CodeImp.DoomBuilder.Data
 			spritecount = LoadThingSprites();
 			LoadInternalSprites();
 
-			//mxd
+			//mxd. Load more stuff
 			LoadMapInfo();
+			LoadReverbs();
 			ModelReader.Init();
 			LoadVoxels();
 			Dictionary<string, int> actorsByClass = CreateActorsByClassList();
@@ -1768,6 +1772,27 @@ namespace CodeImp.DoomBuilder.Data
 
 			foreach (KeyValuePair<string, Stream> group in streams)
 				parser.Parse(group.Value, group.Key);
+		}
+
+		//mxd. This loads REVERBS
+		private void LoadReverbs() 
+		{
+			ReverbsParser parser = new ReverbsParser();
+			reverbs.Clear();
+			
+			foreach(DataReader dr in containers) 
+			{
+				currentreader = dr;
+				Dictionary<string, Stream> streams = dr.GetReverbsData();
+				foreach(KeyValuePair<string, Stream> group in streams) 
+				{
+					// Parse the data
+					parser.Parse(group.Value, group.Key);
+				}
+			}
+
+			currentreader = null;
+			reverbs = parser.GetReverbs();
 		}
 
 		//mxd

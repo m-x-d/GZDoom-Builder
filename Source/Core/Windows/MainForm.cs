@@ -1785,27 +1785,36 @@ namespace CodeImp.DoomBuilder.Windows
 		// This hides redundant separators
 		internal void UpdateSeparators()
 		{
-			UpdateToolStripSeparators(toolbar.Items);
-			UpdateToolStripSeparators(menumode.DropDownItems);
+			UpdateToolStripSeparators(toolbar.Items, false);
+			UpdateToolStripSeparators(menumode.DropDownItems, true);
 
 			//mxd
-			UpdateToolStripSeparators(modestoolbar.Items);
-			UpdateToolStripSeparators(modecontrolsloolbar.Items);
+			UpdateToolStripSeparators(modestoolbar.Items, true);
+			UpdateToolStripSeparators(modecontrolsloolbar.Items, true);
 		}
 		
-		// This hides redundant separators (mxd)
-		private static void UpdateToolStripSeparators(ToolStripItemCollection items)
+		// This hides redundant separators
+		private static void UpdateToolStripSeparators(ToolStripItemCollection items, bool defaultvisible)
 		{
 			ToolStripItem pvi = null;
-			foreach(ToolStripItem i in items)
+			foreach(ToolStripItem i in items) 
 			{
-				if (i is ToolStripSeparator)
+				bool separatorvisible = false;
+
+				// This is a seperator?
+				if(i is ToolStripSeparator) 
 				{
-					i.Visible = !(pvi == null || (!pvi.Visible || pvi is ToolStripSeparator));
+					// Make visible when previous item was not a seperator
+					separatorvisible = !(pvi is ToolStripSeparator) && (pvi != null);
+					i.Visible = separatorvisible;
 				}
 
-				pvi = i;
+				// Keep as previous visible item
+				if(i.Visible || separatorvisible || (defaultvisible && !(i is ToolStripSeparator))) pvi = i;
 			}
+
+			// Hide last item if it is a seperator
+			if(pvi is ToolStripSeparator) pvi.Visible = false;
 		}
 		
 		// This enables or disables all editing mode items and toolbar buttons

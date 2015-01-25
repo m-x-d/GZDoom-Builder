@@ -131,8 +131,8 @@
 			// ColorConfiguration
 			// 
 			this.AcceptButton = this.okbutton;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancelbutton;
 			this.ClientSize = new System.Drawing.Size(196, 223);
 			this.Controls.Add(this.resetcolors);
@@ -147,9 +147,10 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ColorConfiguration";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Color configuration";
+			this.Text = "Color Configuration";
 			this.ResumeLayout(false);
 
 		}
