@@ -924,6 +924,17 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
+		public override Dictionary<string, Stream> GetReverbsData() 
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			Dictionary<string, Stream> result = new Dictionary<string, Stream>();
+			Lump lump = file.FindLump("REVERBS");
+			if(lump != null) result.Add(Path.Combine(location.location, "REVERBS"), lump.Stream);
+			return result;
+		}
+
+		//mxd
 		internal override MemoryStream LoadFile(string name) 
 		{
 			Lump l = file.FindLump(name);

@@ -10,6 +10,12 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 {
 	public class SoundEnvironment
 	{
+		#region ================== Constants
+
+		public const string DEFAULT_NAME = "Unknown sound environment"; //mxd
+
+		#endregion
+
 		#region ================== Properties
 
 		public List<Sector> Sectors { get; private set; }
@@ -17,6 +23,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		public List<Linedef> Linedefs { get; set; }
 		public PixelColor Color { get; set; }
 		public int ID { get; set; }
+		public string Name { get; set; } //mxd
 
 		#endregion
 
@@ -27,6 +34,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			Linedefs = new List<Linedef>();
 			Color = General.Colors.Background;
 			ID = -1;
+			Name = DEFAULT_NAME; //mxd
 		}
 	}
 }

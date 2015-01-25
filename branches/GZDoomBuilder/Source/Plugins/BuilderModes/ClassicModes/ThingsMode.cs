@@ -501,7 +501,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Update entire display
 						General.Interface.RedrawDisplay();
 					}
-				} else if(highlighted != null) 
+				} 
+				else if(highlighted != null) 
 				{
 					highlighted = null;
 					Highlight(null);

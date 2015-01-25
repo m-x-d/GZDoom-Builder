@@ -145,11 +145,10 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				MemoryStream stream = LoadFile(foundfile);
 
-				if(stream.Length > 767) {//mxd
+				if(stream.Length > 767) //mxd
 					palette = new Playpal(stream);
-				} else {
+				else
 					General.ErrorLogger.Add(ErrorType.Warning, "Warning: invalid palette '"+foundfile+"'");
-				}
 				stream.Dispose();
 			}
 			
@@ -595,6 +594,35 @@ namespace CodeImp.DoomBuilder.Data
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 			Stream s = LoadFile(location);
 			if (s != null) streams.Add(location, s);
+			return streams;
+		}
+
+		#endregion
+
+		#region ================== Reverbs
+
+		public override Dictionary<string, Stream> GetReverbsData() 
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+
+			// Get from wads first
+			//TODO: is this the correct order?..
+			foreach(WADReader wr in wads) 
+			{
+				Dictionary<string, Stream> wadstreams = wr.GetReverbsData();
+				foreach(KeyValuePair<string, Stream> pair in wadstreams) streams.Add(pair.Key, pair.Value);
+			}
+
+			// Then from our own files
+			string foundfile = FindFirstFile("reverbs", false);
+			if((foundfile != null) && FileExists(foundfile)) 
+			{
+				streams.Add(foundfile, LoadFile(foundfile));
+			}
+
 			return streams;
 		}
 

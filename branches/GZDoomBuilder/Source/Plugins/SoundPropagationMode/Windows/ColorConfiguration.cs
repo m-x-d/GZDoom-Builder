@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Windows.Forms;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.SoundPropagationMode
 {
-	public partial class ColorConfiguration : Form
+	public partial class ColorConfiguration : DelayedForm
 	{
 		public ColorConfiguration()
 		{

@@ -631,7 +631,11 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					img = General.Map.Data.GetFlatImage(longimagename);
 
-					if(!(img is UnknownImage)) 
+					if(img is UnknownImage)
+					{
+						img = General.Map.Data.UnknownTexture3D;
+					}
+					else
 					{
 						if(img.IsImageLoaded && !img.LoadFailed) 
 						{

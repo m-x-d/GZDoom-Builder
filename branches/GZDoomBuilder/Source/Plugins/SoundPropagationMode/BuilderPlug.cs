@@ -91,7 +91,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		public static BuilderPlug Me { get { return me; } }
 
       	// This plugin relies on some functionality that wasn't there in older versions
-		public override int MinimumRevision { get { return 1885; } }
+		public override int MinimumRevision { get { return 2201; } }
 
 		// This event is called when the plugin is initialized
 		public override void OnInitialize()
@@ -318,6 +318,39 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				environment.Things = environment.Things.OrderBy(o => o.Index).ToList();
 				environment.Linedefs = environment.Linedefs.OrderBy(o => o.Index).ToList();
 
+				//mxd. Find the first non-dormant thing
+				Thing activeenv = null;
+				foreach(Thing t in environment.Things) 
+				{
+					if(!ThingDormant(t)) 
+					{
+						activeenv = t;
+						break;
+					}
+				}
+
+				//mxd. Update environment name
+				if(activeenv != null) 
+				{
+					foreach(KeyValuePair<string, KeyValuePair<int, int>> group in General.Map.Data.Reverbs) 
+					{
+						if(group.Value.Key == activeenv.Args[0] && group.Value.Value == activeenv.Args[1]) 
+						{
+							environment.Name = group.Key + " (" + activeenv.Args[0] + " " + activeenv.Args[1] + ")                                        ";
+							break;
+						}
+					}
+
+					//mxd. No suitable name found?..
+					if(environment.Name == SoundEnvironment.DEFAULT_NAME)
+					{
+						environment.Name += " (" + activeenv.Args[0] + " " + activeenv.Args[1] + ")";
+					}
+				}
+
+				//mxd. Still no suitable name?..
+				if(environment.Name == SoundEnvironment.DEFAULT_NAME) environment.Name += " " + environment.ID;
+
 				lock (soundenvironments)
 				{
 					soundenvironments.Add(environment);
@@ -374,6 +407,18 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			// In Hexen format the line must have action 121 (Line_SetIdentification) and bit 1 of
 			// the second argument set (see http://zdoom.org/wiki/Line_SetIdentification)
 			return (linedef.Action == 121 && (linedef.Args[1] & 1) == 1); //mxd. Fancier this way :)
+		}
+
+		//mxd
+		internal static bool ThingDormant(Thing thing) 
+		{
+			return thing.IsFlagSet(General.Map.UDMF ? "dormant" : "14");
+		}
+
+		//mxd
+		internal static void SetThingDormant(Thing thing, bool dormant) 
+		{
+			thing.SetFlag(General.Map.UDMF ? "dormant" : "14", dormant);
 		}
 	}
 }

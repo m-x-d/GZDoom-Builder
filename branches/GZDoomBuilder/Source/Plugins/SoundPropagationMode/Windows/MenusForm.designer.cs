@@ -46,7 +46,7 @@
 			// colorconfiguration
 			// 
 			this.colorconfiguration.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.colorconfiguration.Image = global::SoundPropagationMode.Properties.Resources.ColorManagement;
+			this.colorconfiguration.Image = global::CodeImp.DoomBuilder.SoundPropagationMode.Properties.Resources.ColorManagement;
 			this.colorconfiguration.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.colorconfiguration.Name = "colorconfiguration";
 			this.colorconfiguration.Size = new System.Drawing.Size(23, 22);
@@ -56,8 +56,8 @@
 			// 
 			// MenusForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.ClientSize = new System.Drawing.Size(284, 262);
 			this.Controls.Add(this.toolStrip1);
 			this.Name = "MenusForm";

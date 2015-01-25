@@ -18,13 +18,14 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			InitializeComponent();
 
 			soundenvironments.ImageList = new ImageList();
-			soundenvironments.ImageList.Images.Add(global::SoundPropagationMode.Properties.Resources.Status0);
-			soundenvironments.ImageList.Images.Add(global::SoundPropagationMode.Properties.Resources.Warning);
+			soundenvironments.ImageList.Images.Add(Properties.Resources.Status0);
+			soundenvironments.ImageList.Images.Add(Properties.Resources.Warning);
 		}
 
-		public void AddSoundEnvironment(SoundEnvironment se)
+		public void AddSoundEnvironment(SoundEnvironment se) 
 		{
-			TreeNode topnode = new TreeNode("Sound environment " + se.ID);
+			TreeNode topnode = new TreeNode(se.Name);
+			topnode.Tag = se; //mxd
 			TreeNode thingsnode = new TreeNode("Things (" + se.Things.Count + ")");
 			TreeNode linedefsnode = new TreeNode("Linedefs (" + se.Linedefs.Count + ")");
 			int notdormant = 0;
@@ -37,7 +38,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				thingnode.Tag = t;
 				thingsnode.Nodes.Add(thingnode);
 
-				if(!ThingDormant(t))
+				if(!BuilderPlug.ThingDormant(t))
 				{
 					notdormant++;
 				}
@@ -56,7 +57,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 				foreach (TreeNode tn in thingsnode.Nodes)
 				{
-					if (!ThingDormant((Thing)tn.Tag))
+					if (!BuilderPlug.ThingDormant((Thing)tn.Tag))
 					{
 						tn.ImageIndex = 1;
 						tn.SelectedImageIndex = 1;
@@ -110,16 +111,11 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 			// Sound environments will no be added in consecutive order, so we'll have to find
 			// out where in the tree to add the node
-			Regex seid = new Regex(@"\d+$");
 			int insertionplace = 0;
 
 			foreach (TreeNode tn in soundenvironments.Nodes)
 			{
-				Match match = seid.Match(tn.Text);
-				int num = int.Parse(match.Value);
-
-				if (se.ID < num) break;
-
+				if(se.ID < ((SoundEnvironment)tn.Tag).ID) break;
 				insertionplace++;
 			}
 
@@ -132,7 +128,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 			foreach (TreeNode tn in soundenvironments.Nodes)
 			{
-				if (se != null && tn.Text == "Sound environment " + se.ID)
+				if(se != null && tn.Text == se.Name)
 				{
 					if (tn.NodeFont == null || tn.NodeFont.Style != FontStyle.Bold)
 					{
@@ -148,11 +144,6 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			}
 
 			soundenvironments.EndUpdate();
-		}
-
-		private static bool ThingDormant(Thing thing)
-		{
-			return thing.IsFlagSet(General.Map.UDMF ? "dormant" : "14");
 		}
 
 		private static bool IsClickOnText(TreeView treeView, TreeNode node, Point location)
