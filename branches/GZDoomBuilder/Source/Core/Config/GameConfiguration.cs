@@ -607,8 +607,12 @@ namespace CodeImp.DoomBuilder.Config
 				linedefactivates.Add(new LinedefActivateInfo(de.Key.ToString(), de.Value.ToString()));
 			}
 
-			// Sort the list
-			linedefactivates.Sort();
+			//mxd. Sort only when activations are numeric
+			MapSetIO io = MapSetIO.Create(formatinterface);
+			if(io.HasNumericLinedefActivations)
+			{
+				linedefactivates.Sort();
+			}
 		}
 
 		// Linedef generalized actions

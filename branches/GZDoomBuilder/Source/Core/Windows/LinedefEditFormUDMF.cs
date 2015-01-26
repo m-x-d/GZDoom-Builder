@@ -216,12 +216,12 @@ namespace CodeImp.DoomBuilder.Windows
 			backlow.Initialize();
 
 			//mxd. Setup script numbers
-			scriptNumbers.Location = arg0.Location;
+			scriptNumbers.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
 			foreach(ScriptItem si in General.Map.NumberedScripts) scriptNumbers.Items.Add(si);
 			scriptNumbers.DropDownWidth = Tools.GetDropDownWidth(scriptNumbers);
 
 			//mxd. Setup script names
-			scriptNames.Location = arg0.Location;
+			scriptNames.Location = scriptNumbers.Location;
 			foreach(ScriptItem nsi in General.Map.NamedScripts) scriptNames.Items.Add(nsi);
 			scriptNames.DropDownWidth = Tools.GetDropDownWidth(scriptNames);
 
@@ -693,6 +693,8 @@ namespace CodeImp.DoomBuilder.Windows
 				scriptNumbers.Visible = false;
 				cbArgStr.Checked = false;
 			}
+
+			arg0.Visible = (!scriptNames.Visible && !scriptNumbers.Visible);
 		}
 
 		//mxd

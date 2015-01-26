@@ -137,8 +137,8 @@ namespace CodeImp.DoomBuilder.Windows
 			fieldslist.ListFixedFields(General.Map.Config.ThingFields);
 
 			// Tag/Effects
-			scriptNames.Location = arg0.Location;
-			scriptNumbers.Location = arg0.Location;
+			scriptNumbers.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
+			scriptNames.Location = scriptNumbers.Location;
 
 			// Setup script names
 			foreach(ScriptItem nsi in General.Map.NamedScripts) scriptNames.Items.Add(nsi);
@@ -402,6 +402,8 @@ namespace CodeImp.DoomBuilder.Windows
 				scriptNumbers.Visible = false;
 				cbArgStr.Checked = false;
 			}
+
+			arg0.Visible = (!scriptNames.Visible && !scriptNumbers.Visible);
 		}
 
 		#endregion
