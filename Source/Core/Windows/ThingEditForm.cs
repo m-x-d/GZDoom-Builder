@@ -47,9 +47,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private ICollection<Thing> things;
 		private ThingTypeInfo thinginfo;
 		private bool preventchanges;
-		//mxd
-		private static bool useAbsoluteHeight;
-		private List<ThingProperties> thingProps; //mxd
+		private bool preventmapchange; //mxd
+		private bool undocreated; //mxd
+		private static bool useAbsoluteHeight; //mxd
+		private List<ThingProperties> thingprops; //mxd
 
 		//mxd. Window setup stuff
 		private static Point location = Point.Empty;
@@ -149,11 +150,6 @@ namespace CodeImp.DoomBuilder.Windows
 			hint.Visible = things.Count > 1; //mxd
 			hintlabel.Visible = things.Count > 1; //mxd
 			thingtype.UseMultiSelection = things.Count > 1; //mxd
-
-			//mxd. Make undo
-			string undodesc = "thing";
-			if(things.Count > 1) undodesc = things.Count + " things";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 			
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first thing properties
@@ -200,7 +196,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Now go for all lines and change the options when a setting is different
 			////////////////////////////////////////////////////////////////////////
 
-			thingProps = new List<ThingProperties>();
+			thingprops = new List<ThingProperties>();
 
 			// Go for all things
 			foreach(Thing t in things)
@@ -250,14 +246,16 @@ namespace CodeImp.DoomBuilder.Windows
 				if(t.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
 
 				//mxd. Store initial properties
-				thingProps.Add(new ThingProperties(t));
+				thingprops.Add(new ThingProperties(t));
 			}
 
 			preventchanges = false;
 
 			//mxd. Trigger updates manually...
+			preventmapchange = true;
 			angle_WhenTextChanged(angle, EventArgs.Empty);
 			flags_OnValueChanged(flags, EventArgs.Empty);
+			preventmapchange = false;
 
 			UpdateScriptControls(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
@@ -292,6 +290,16 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				scriptNumbers.Text = "0";
 			}
+		}
+
+		//mxd
+		private void MakeUndo() 
+		{
+			if(undocreated) return;
+			undocreated = true;
+
+			//mxd. Make undo
+			General.Map.UndoRedo.CreateUndo("Edit " + (things.Count > 1 ? things.Count + " things" : "thing"));
 		}
 
 		//mxd
@@ -345,6 +353,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			if(!preventchanges)
 			{
+				MakeUndo();
+				
 				// mxd. Apply action's or thing's default arguments
 				if (showaction != 0 || thinginfo != null) 
 				{
@@ -382,7 +392,7 @@ namespace CodeImp.DoomBuilder.Windows
 			preventchanges = true;
 			anglecontrol.Angle = angle.GetResult(GZBuilder.Controls.AngleControl.NO_ANGLE);
 			preventchanges = false;
-			UpdateAngle(); //mxd
+			if(!preventmapchange) ApplyAngleChange(); //mxd
 		}
 
 		//mxd. Angle control clicked
@@ -390,12 +400,14 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(preventchanges) return;
 			angle.Text = anglecontrol.Angle.ToString();
-			UpdateAngle();
+			if(!preventmapchange) ApplyAngleChange();
 		}
 
 		// Apply clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
+			MakeUndo();
+			
 			List<string> defaultflags = new List<string>();
 
 			// Verify the tag
@@ -500,8 +512,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Cancel clicked
 		private void cancel_Click(object sender, EventArgs e)
 		{
-			//mxd. perform undo
-			General.Map.UndoRedo.WithdrawUndo();
+			//mxd. Perform undo?
+			if(undocreated) General.Map.UndoRedo.WithdrawUndo();
 			
 			// Be gone
 			this.DialogResult = DialogResult.Cancel;
@@ -512,6 +524,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cbAbsoluteHeight_CheckedChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
+
 			useAbsoluteHeight = cbAbsoluteHeight.Checked;
 			zlabel.Text = (useAbsoluteHeight ? "Abs. Z:" : "Z:");
 			
@@ -565,11 +579,12 @@ namespace CodeImp.DoomBuilder.Windows
 		private void posX_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			// Update values
 			foreach(Thing t in things)
-				t.Move(new Vector2D(posX.GetResultFloat(thingProps[i++].X), t.Position.y));
+				t.Move(new Vector2D(posX.GetResultFloat(thingprops[i++].X), t.Position.y));
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
@@ -578,11 +593,12 @@ namespace CodeImp.DoomBuilder.Windows
 		private void posY_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			// Update values
 			foreach(Thing t in things)
-				t.Move(new Vector2D(t.Position.x, posY.GetResultFloat(thingProps[i++].Y)));
+				t.Move(new Vector2D(t.Position.x, posY.GetResultFloat(thingprops[i++].Y)));
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
@@ -591,20 +607,21 @@ namespace CodeImp.DoomBuilder.Windows
 		private void posZ_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			if(string.IsNullOrEmpty(posZ.Text)) 
 			{
 				// Restore values
 				foreach(Thing t in things)
-					t.Move(new Vector3D(t.Position.x, t.Position.y, thingProps[i++].Z));
+					t.Move(new Vector3D(t.Position.x, t.Position.y, thingprops[i++].Z));
 			} 
 			else 
 			{ 
 				// Update values
 				foreach(Thing t in things) 
 				{
-					float z = posZ.GetResultFloat(thingProps[i++].Z);
+					float z = posZ.GetResultFloat(thingprops[i++].Z);
 					if(useAbsoluteHeight && !posZ.CheckIsRelative() && t.Sector != null)
 						z -= t.Sector.FloorHeight;
 					t.Move(new Vector3D(t.Position.x, t.Position.y, z));
@@ -625,6 +642,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Update things
 			if(preventchanges) return;
+			MakeUndo(); //mxd
+
 			if(((thingtype.GetResult(0) < General.Map.FormatInterface.MinThingType) || (thingtype.GetResult(0) > General.Map.FormatInterface.MaxThingType)))
 				return;
 
@@ -642,9 +661,10 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void UpdateAngle() 
+		private void ApplyAngleChange() 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			//restore values
@@ -652,13 +672,13 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Apply rotation
 				foreach(Thing t in things)
-					t.Rotate(thingProps[i++].AngleDoom);
-			} 
-			else 
-			{ //update values
+					t.Rotate(thingprops[i++].AngleDoom);
+			}
+			else //update values
+			{ 
 				// Apply rotation
 				foreach(Thing t in things)
-					t.Rotate(angle.GetResult(thingProps[i++].AngleDoom));
+					t.Rotate(angle.GetResult(thingprops[i++].AngleDoom));
 			}
 
 			General.Map.IsChanged = true;

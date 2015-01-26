@@ -44,8 +44,9 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Variables
 
 		private ICollection<Vertex> vertices;
-		private bool blockUpdate; //mxd
-		private List<VertexProperties> vertexProps; //mxd
+		private bool preventchanges; //mxd
+		private bool undocreated; //mxd
+		private List<VertexProperties> vertexprops; //mxd
 
 		//mxd. Window setup stuff
 		private static Point location = Point.Empty;
@@ -53,10 +54,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private struct VertexProperties //mxd
 		{
-			public float X;
-			public float Y;
-			public float ZCeiling;
-			public float ZFloor;
+			public readonly float X;
+			public readonly float Y;
+			public readonly float ZCeiling;
+			public readonly float ZFloor;
 
 			public VertexProperties(Vertex v) 
 			{
@@ -124,17 +125,12 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets up the form to edit the given vertices
 		public void Setup(ICollection<Vertex> vertices, bool allowPositionChange)
 		{
-			blockUpdate = true; //mxd
+			preventchanges = true; //mxd
 			
 			// Keep this list
 			this.vertices = vertices;
 			if(vertices.Count > 1) this.Text = "Edit Vertices (" + vertices.Count + ")";
-			vertexProps = new List<VertexProperties>(); //mxd
-
-			//mxd. Make undo
-			string undodesc = "vertex";
-			if(vertices.Count > 1) undodesc = vertices.Count + " vertices";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
+			vertexprops = new List<VertexProperties>(); //mxd
 
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first vertex properties
@@ -167,13 +163,13 @@ namespace CodeImp.DoomBuilder.Windows
 				if(positiony.Text != v.Position.y.ToString()) positiony.Text = "";
 
 				// Custom fields
-				if(General.Map.FormatInterface.HasCustomFields) { //mxd
-					v.Fields.BeforeFieldsChange();//mxd
+				if(General.Map.FormatInterface.HasCustomFields) 
+				{
 					fieldslist.SetValues(v.Fields, false);
 				}
 
 				//mxd. Store initial properties
-				vertexProps.Add(new VertexProperties(v));
+				vertexprops.Add(new VertexProperties(v));
 			}
 
 			//mxd. Height offsets
@@ -192,7 +188,22 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
-			blockUpdate = false; //mxd
+			preventchanges = false; //mxd
+		}
+
+		//mxd
+		private void MakeUndo()
+		{
+			if(undocreated) return;
+			undocreated = true;
+
+			//mxd. Make undo
+			General.Map.UndoRedo.CreateUndo("Edit " + (vertices.Count > 1 ? vertices.Count + " vertices" : "vertex"));
+
+			if(General.Map.FormatInterface.HasCustomFields)
+			{
+				foreach(Vertex v in vertices) v.Fields.BeforeFieldsChange();
+			}
 		}
 		
 		#endregion
@@ -201,19 +212,20 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void positionx_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate) return;
+			if(preventchanges) return;
+			MakeUndo();
 			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(positionx.Text)) 
 			{
 				// Apply position
-				foreach(Vertex v in vertices) v.Move(new Vector2D(vertexProps[i++].X, v.Position.y));
+				foreach(Vertex v in vertices) v.Move(new Vector2D(vertexprops[i++].X, v.Position.y));
 			} 
 			else //update values
 			{ 
 				// Verify the coordinates
-				float px = positionx.GetResultFloat(vertexProps[i].X);
+				float px = positionx.GetResultFloat(vertexprops[i].X);
 				if(px < General.Map.FormatInterface.MinCoordinate) 
 				{
 					positionx.Text = General.Map.FormatInterface.MinCoordinate.ToString();
@@ -236,19 +248,20 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void positiony_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate) return;
+			if(preventchanges) return;
+			MakeUndo();
 			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(positiony.Text)) 
 			{
 				// Apply position
-				foreach(Vertex v in vertices) v.Move(new Vector2D(v.Position.x, vertexProps[i++].Y));
+				foreach(Vertex v in vertices) v.Move(new Vector2D(v.Position.x, vertexprops[i++].Y));
 			} 
 			else //update values
 			{ 
 				// Verify the coordinates
-				float py = positiony.GetResultFloat(vertexProps[i].Y);
+				float py = positiony.GetResultFloat(vertexprops[i].Y);
 				if(py < General.Map.FormatInterface.MinCoordinate) 
 				{
 					positiony.Text = General.Map.FormatInterface.MinCoordinate.ToString();
@@ -271,13 +284,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void zceiling_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate) return;
+			if(preventchanges) return;
+			MakeUndo();
 			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(zceiling.Text)) 
 			{
-				foreach(Vertex v in vertices) v.ZCeiling = vertexProps[i++].ZCeiling;
+				foreach(Vertex v in vertices) v.ZCeiling = vertexprops[i++].ZCeiling;
 
 			} 
 			else if(zceiling.Text == CLEAR_VALUE) //clear values
@@ -288,7 +302,7 @@ namespace CodeImp.DoomBuilder.Windows
 			else //update values
 			{ 
 				foreach(Vertex v in vertices)
-					v.ZCeiling = zceiling.GetResultFloat(vertexProps[i++].ZCeiling);
+					v.ZCeiling = zceiling.GetResultFloat(vertexprops[i++].ZCeiling);
 			}
 
 			General.Map.IsChanged = true;
@@ -297,14 +311,15 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void zfloor_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate) return;
+			if(preventchanges) return;
+			MakeUndo();
 			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(zfloor.Text)) 
 			{
 				foreach(Vertex v in vertices)
-					v.ZFloor = vertexProps[i++].ZFloor;
+					v.ZFloor = vertexprops[i++].ZFloor;
 			
 			} 
 			else if(zfloor.Text == CLEAR_VALUE) //clear values
@@ -314,7 +329,7 @@ namespace CodeImp.DoomBuilder.Windows
 			else //update values
 			{ 
 				foreach(Vertex v in vertices)
-					v.ZFloor = zfloor.GetResultFloat(vertexProps[i++].ZFloor);
+					v.ZFloor = zfloor.GetResultFloat(vertexprops[i++].ZFloor);
 			}
 
 			General.Map.IsChanged = true;
@@ -340,7 +355,10 @@ namespace CodeImp.DoomBuilder.Windows
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
-			//apply custom fields
+			//mxd. Make undo if required
+			MakeUndo();
+			
+			// Apply custom fields
 			if(General.Map.FormatInterface.HasCustomFields) 
 			{
 				foreach(Vertex v in vertices) fieldslist.Apply(v.Fields); //mxd
@@ -357,8 +375,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Cancel clicked
 		private void cancel_Click(object sender, EventArgs e)
 		{
-			//mxd. perform undo
-			General.Map.UndoRedo.WithdrawUndo();
+			//mxd. Perform undo if required
+			if(undocreated) General.Map.UndoRedo.WithdrawUndo();
 			
 			// And close
 			this.DialogResult = DialogResult.Cancel;

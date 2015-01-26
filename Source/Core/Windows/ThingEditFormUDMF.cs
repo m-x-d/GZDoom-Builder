@@ -48,10 +48,12 @@ namespace CodeImp.DoomBuilder.Windows
 		private ICollection<Thing> things;
 		private ThingTypeInfo thinginfo;
 		private bool preventchanges;
+		private bool preventmapchange; //mxd
+		private bool undocreated; //mxd
 		private static bool useAbsoluteHeight;
 		private string arg0str;
 		private bool haveArg0Str;
-		private List<ThingProperties> thingProps; //mxd
+		private List<ThingProperties> thingprops; //mxd
 		private readonly string[] renderstyles; //mxd
 
 		//mxd. Window setup stuff
@@ -173,11 +175,6 @@ namespace CodeImp.DoomBuilder.Windows
 			hintlabel.Visible = things.Count > 1; //mxd
 			thingtype.UseMultiSelection = things.Count > 1; //mxd
 
-			//mxd. Make undo
-			string undodesc = "thing";
-			if(things.Count > 1) undodesc = things.Count + " things";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
-
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first thing properties
 			////////////////////////////////////////////////////////////////////////
@@ -237,7 +234,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Now go for all lines and change the options when a setting is different
 			////////////////////////////////////////////////////////////////////////
 
-			thingProps = new List<ThingProperties>();
+			thingprops = new List<ThingProperties>();
 
 			// Go for all things
 			foreach(Thing t in things) 
@@ -285,7 +282,6 @@ namespace CodeImp.DoomBuilder.Windows
 				if(t.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
 
 				//mxd. Custom fields
-				t.Fields.BeforeFieldsChange(); //mxd
 				fieldslist.SetValues(t.Fields, false);
 				if (t.Fields.GetValue("conversation", 0).ToString() != conversationID.Text) conversationID.Text = "";
 				if (t.Fields.GetValue("gravity", 1.0f).ToString() != gravity.Text) gravity.Text = "";
@@ -310,7 +306,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				//mxd. Store initial properties
-				thingProps.Add(new ThingProperties(t));
+				thingprops.Add(new ThingProperties(t));
 
 				//mxd. add user vars
 				/*if(info != null && info.Actor != null && info.Actor.UserVars.Count > 0) 
@@ -326,10 +322,12 @@ namespace CodeImp.DoomBuilder.Windows
 			preventchanges = false;
 
 			//mxd. Trigger updates manually...
+			preventmapchange = true;
 			angle_WhenTextChanged(angle, EventArgs.Empty);
 			pitch_WhenTextChanged(pitch, EventArgs.Empty);
 			roll_WhenTextChanged(roll, EventArgs.Empty);
 			flags_OnValueChanged(flags, EventArgs.Empty);
+			preventmapchange = false;
 
 			UpdateScriptControls(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
@@ -373,6 +371,17 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				scriptNumbers.Text = "0";
 			}
+		}
+
+		//mxd
+		private void MakeUndo() 
+		{
+			if(undocreated) return;
+			undocreated = true;
+
+			//mxd. Make undo
+			General.Map.UndoRedo.CreateUndo("Edit " + (things.Count > 1 ? things.Count + " things" : "thing"));
+			foreach(Thing t in things) t.Fields.BeforeFieldsChange();
 		}
 
 		//mxd
@@ -440,6 +449,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			if(!preventchanges) 
 			{
+				MakeUndo(); //mxd
+				
 				// mxd. Apply action's or thing's default arguments
 				if(showaction != 0 || thinginfo != null) 
 				{
@@ -477,7 +488,7 @@ namespace CodeImp.DoomBuilder.Windows
 			preventchanges = true;
 			anglecontrol.Angle = angle.GetResult(GZBuilder.Controls.AngleControl.NO_ANGLE);
 			preventchanges = false;
-			UpdateAngle(); //mxd
+			if(!preventmapchange) ApplyAngleChange(); //mxd
 		}
 
 		//mxd. Angle control clicked
@@ -485,7 +496,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(preventchanges) return;
 			angle.Text = anglecontrol.Angle.ToString();
-			UpdateAngle();
+			if(!preventmapchange) ApplyAngleChange();
 		}
 
 		private void pitch_WhenTextChanged(object sender, EventArgs e) 
@@ -495,14 +506,14 @@ namespace CodeImp.DoomBuilder.Windows
 			preventchanges = true;
 			pitchControl.Angle = (p == GZBuilder.Controls.AngleControl.NO_ANGLE ? p : p + 90);
 			preventchanges = false;
-			UpdatePitch();
+			if(!preventmapchange) ApplyPitchChange();
 		}
 
 		private void pitchControl_AngleChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
 			pitch.Text = (General.ClampAngle(pitchControl.Angle - 90)).ToString();
-			UpdatePitch();
+			if(!preventmapchange) ApplyPitchChange();
 		}
 
 		private void roll_WhenTextChanged(object sender, EventArgs e) 
@@ -512,19 +523,22 @@ namespace CodeImp.DoomBuilder.Windows
 			preventchanges = true;
 			rollControl.Angle = (r == GZBuilder.Controls.AngleControl.NO_ANGLE ? r : r + 90);
 			preventchanges = false;
-			UpdateRoll();
+			if(!preventmapchange) ApplyRollChange();
 		}
 
 		private void rollControl_AngleChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
 			roll.Text = (General.ClampAngle(rollControl.Angle - 90)).ToString();
-			UpdateRoll();
+			if(!preventmapchange) ApplyRollChange();
 		}
 
 		// Apply clicked
 		private void apply_Click(object sender, EventArgs e) 
 		{
+			// Make Undo
+			MakeUndo(); //mxd
+			
 			List<string> defaultflags = new List<string>();
 
 			// Verify the tag
@@ -664,8 +678,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Cancel clicked
 		private void cancel_Click(object sender, EventArgs e) 
 		{
-			//mxd. perform undo
-			General.Map.UndoRedo.WithdrawUndo();
+			//mxd. Perform undo?
+			if(undocreated) General.Map.UndoRedo.WithdrawUndo();
 
 			// Be gone
 			this.DialogResult = DialogResult.Cancel;
@@ -685,6 +699,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cbAbsoluteHeight_CheckedChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
+
 			useAbsoluteHeight = cbAbsoluteHeight.Checked;
 			zlabel.Text = useAbsoluteHeight ? "Abs. Z:" : "Z:";
 
@@ -737,11 +753,12 @@ namespace CodeImp.DoomBuilder.Windows
 		private void posX_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			// Update values
 			foreach(Thing t in things)
-				t.Move(new Vector2D(posX.GetResultFloat(thingProps[i++].X), t.Position.y));
+				t.Move(new Vector2D(posX.GetResultFloat(thingprops[i++].X), t.Position.y));
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
@@ -750,11 +767,12 @@ namespace CodeImp.DoomBuilder.Windows
 		private void posY_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			// Update values
 			foreach(Thing t in things)
-				t.Move(new Vector2D(t.Position.x, posY.GetResultFloat(thingProps[i++].Y)));
+				t.Move(new Vector2D(t.Position.x, posY.GetResultFloat(thingprops[i++].Y)));
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
@@ -763,20 +781,21 @@ namespace CodeImp.DoomBuilder.Windows
 		private void posZ_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			if(string.IsNullOrEmpty(posZ.Text)) 
 			{
 				// Restore values
 				foreach(Thing t in things)
-					t.Move(new Vector3D(t.Position.x, t.Position.y, thingProps[i++].Z));
+					t.Move(new Vector3D(t.Position.x, t.Position.y, thingprops[i++].Z));
 			} 
 			else 
 			{
 				// Update values
 				foreach(Thing t in things) 
 				{
-					float z = posZ.GetResultFloat(thingProps[i++].Z);
+					float z = posZ.GetResultFloat(thingprops[i++].Z);
 					if(useAbsoluteHeight && !posZ.CheckIsRelative() && t.Sector != null)
 						z -= t.Sector.FloorHeight;
 					t.Move(new Vector3D(t.Position.x, t.Position.y, z));
@@ -789,13 +808,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void scale_OnValuesChanged(object sender, EventArgs e) 
 		{
-			if (preventchanges) return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach (Thing t in things)
 			{
-				float sx = scale.GetValue1(thingProps[i].ScaleX);
-				float sy = scale.GetValue2(thingProps[i].ScaleY);
+				float sx = scale.GetValue1(thingprops[i].ScaleX);
+				float sy = scale.GetValue2(thingprops[i].ScaleY);
 				t.SetScale((sx == 0 ? 1.0f : sx), (sy == 0 ? 1.0f : sy));
 				i++;
 			}
@@ -819,6 +839,8 @@ namespace CodeImp.DoomBuilder.Windows
 					|| (thingtype.GetResult(0) > General.Map.FormatInterface.MaxThingType))
 				return;
 
+			MakeUndo(); //mxd
+
 			foreach(Thing t in things) 
 			{
 				//Set type
@@ -833,61 +855,64 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void UpdateAngle() 
+		private void ApplyAngleChange() 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(angle.Text)) 
 			{
-				foreach(Thing t in things) t.Rotate(thingProps[i++].AngleDoom);
+				foreach(Thing t in things) t.Rotate(thingprops[i++].AngleDoom);
 			} 
 			else //update values
 			{
 				foreach(Thing t in things)
-					t.Rotate(angle.GetResult(thingProps[i++].AngleDoom));
+					t.Rotate(angle.GetResult(thingprops[i++].AngleDoom));
 			}
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
-		private void UpdatePitch() 
+		private void ApplyPitchChange() 
 		{
-			if (preventchanges) return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			//restore values
 			if (string.IsNullOrEmpty(pitch.Text)) 
 			{
-				foreach (Thing t in things) t.SetPitch(thingProps[i++].Pitch);
+				foreach (Thing t in things) t.SetPitch(thingprops[i++].Pitch);
 			} 
 			else //update values
 			{ 
 				foreach (Thing t in things)
-					t.SetPitch(pitch.GetResult(thingProps[i++].Pitch));
+					t.SetPitch(pitch.GetResult(thingprops[i++].Pitch));
 			}
 
 			General.Map.IsChanged = true;
-			if (OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		//mxd
-		private void UpdateRoll() 
+		private void ApplyRollChange() 
 		{
-			if (preventchanges) return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			//restore values
 			if (string.IsNullOrEmpty(roll.Text)) 
 			{
-				foreach (Thing t in things) t.SetRoll(thingProps[i++].Roll);
+				foreach (Thing t in things) t.SetRoll(thingprops[i++].Roll);
 			} 
 			else //update values
 			{ 
 				foreach (Thing t in things)
-					t.SetRoll(roll.GetResult(thingProps[i++].Roll));
+					t.SetRoll(roll.GetResult(thingprops[i++].Roll));
 			}
 
 			General.Map.IsChanged = true;
