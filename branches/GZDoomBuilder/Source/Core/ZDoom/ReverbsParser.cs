@@ -10,12 +10,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private readonly List<string> names;
 		private readonly List<int> firstargs;
 		private readonly List<int> secondargs;
+		private readonly List<int> combinedargs;
 
 		public ReverbsParser() 
 		{
 			names = new List<string>();
 			firstargs = new List<int>();
 			secondargs = new List<int>();
+			combinedargs = new List<int>();
 		}
 		
 		public override bool Parse(Stream stream, string sourcefilename)
@@ -69,19 +71,30 @@ namespace CodeImp.DoomBuilder.ZDoom
 							break;
 						}
 
-						// Add to collections
-						if(names.Contains(name))
+						int combined = arg1 * 1000000 + arg2 * 1000;
+						int combinedindex = combinedargs.IndexOf(combined);
+						if(combinedindex != -1)
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "'" + name + "' Sound environment is double-defined in '" + sourcefilename + "'!");
-							int index = names.IndexOf(name);
-							firstargs[index] = arg1;
-							secondargs[index] = arg2;
+							General.ErrorLogger.Add(ErrorType.Warning, "'" + names[combinedindex] + "' and '" + name + "' sound environments share the same ID (" + arg1 + " " + arg2 + ")!");
 						}
 						else
 						{
-							names.Add(name);
-							firstargs.Add(arg1);
-							secondargs.Add(arg2);
+							combinedargs.Add(combined);
+							
+							// Add to collections
+							if(names.Contains(name)) 
+							{
+								General.ErrorLogger.Add(ErrorType.Warning, "'" + name + "' sound environment is double-defined in '" + sourcefilename + "'!");
+								int index = names.IndexOf(name);
+								firstargs[index] = arg1;
+								secondargs[index] = arg2;
+							} 
+							else 
+							{
+								names.Add(name);
+								firstargs.Add(arg1);
+								secondargs.Add(arg2);
+							}
 						}
 					}
 				}
