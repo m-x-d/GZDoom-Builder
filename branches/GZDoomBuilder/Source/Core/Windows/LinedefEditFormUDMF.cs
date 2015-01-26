@@ -48,8 +48,9 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Variables
 
 		private ICollection<Linedef> lines;
-		private List<LinedefProperties> linedefProps; //mxd
+		private List<LinedefProperties> linedefprops; //mxd
 		private bool preventchanges;
+		private bool undocreated; //mxd
 		private string arg0str; //mxd
 		private bool haveArg0Str; //mxd
 		private readonly string[] renderstyles; //mxd
@@ -265,12 +266,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Keep this list
 			this.lines = lines;
 			if(lines.Count > 1) this.Text = "Edit Linedefs (" + lines.Count + ")";
-			linedefProps = new List<LinedefProperties>();
-
-			//mxd. Make undo
-			string undodesc = "linedef";
-			if(lines.Count > 1)	undodesc = lines.Count + " linedefs";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
+			linedefprops = new List<LinedefProperties>();
 			
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first linedef properties
@@ -437,7 +433,6 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				// Custom fields
-				l.Fields.BeforeFieldsChange();
 				fieldslist.SetValues(l.Fields, false);
 
 				// Action/tags
@@ -516,7 +511,6 @@ namespace CodeImp.DoomBuilder.Windows
 						cbLightAbsoluteFront.CheckState = CheckState.Indeterminate;
 					}
 
-					l.Front.Fields.BeforeFieldsChange(); //mxd
 					frontTextureOffset.SetValues(l.Front.OffsetX, l.Front.OffsetY, false); //mxd
 				}
 
@@ -572,12 +566,11 @@ namespace CodeImp.DoomBuilder.Windows
 						cbLightAbsoluteBack.CheckState = CheckState.Indeterminate;
 					}
 
-					l.Back.Fields.BeforeFieldsChange(); //mxd
 					backTextureOffset.SetValues(l.Back.OffsetX, l.Back.OffsetY, false); //mxd
 				}
 
 				//mxd
-				linedefProps.Add(new LinedefProperties(l));
+				linedefprops.Add(new LinedefProperties(l));
 			}
 			
 			// Refresh controls so that they show their image
@@ -663,6 +656,26 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
+		private void MakeUndo() 
+		{
+			if(undocreated) return;
+			undocreated = true;
+
+			//mxd. Make undo
+			General.Map.UndoRedo.CreateUndo("Edit " + (lines.Count > 1 ? lines.Count + " linedefs" : "linedef"));
+
+			if(General.Map.FormatInterface.HasCustomFields) 
+			{
+				foreach (Linedef l in lines)
+				{
+					l.Fields.BeforeFieldsChange();
+					if(l.Front != null) l.Front.Fields.BeforeFieldsChange();
+					if(l.Back != null) l.Back.Fields.BeforeFieldsChange();
+				}
+			}
+		}
+
+		//mxd
 		private void UpdateScriptControls() 
 		{
 			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
@@ -737,6 +750,8 @@ namespace CodeImp.DoomBuilder.Windows
 				General.ShowWarningMessage("Linedef action must be between " + General.Map.FormatInterface.MinAction + " and " + General.Map.FormatInterface.MaxAction + ".", MessageBoxButtons.OK);
 				return;
 			}
+
+			MakeUndo();
 
 			//mxd
 			bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
@@ -892,7 +907,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cancel_Click(object sender, EventArgs e)
 		{
 			//mxd. Let's pretend nothing of this really happened...
-			General.Map.UndoRedo.WithdrawUndo();
+			if(undocreated) General.Map.UndoRedo.WithdrawUndo();
 			
 			// Be gone
 			this.DialogResult = DialogResult.Cancel;
@@ -949,6 +964,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			if(!preventchanges) 
 			{
+				MakeUndo(); //mxd
+				
 				// mxd. Apply action's default arguments 
 				if(showaction != 0) 
 				{
@@ -1016,6 +1033,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cbRenderStyle_SelectedIndexChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//update values
 			foreach(Linedef l in lines)
@@ -1028,13 +1046,14 @@ namespace CodeImp.DoomBuilder.Windows
 		private void alpha_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(alpha.Text)) 
 			{
 				foreach(Linedef l in lines) 
-					UDMFTools.SetFloat(l.Fields, "alpha", linedefProps[i++].Alpha, 1.0f);
+					UDMFTools.SetFloat(l.Fields, "alpha", linedefprops[i++].Alpha, 1.0f);
 			} 
 			else //update values
 			{
@@ -1052,6 +1071,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void flags_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
@@ -1063,8 +1083,8 @@ namespace CodeImp.DoomBuilder.Windows
 						l.SetFlag(c.Tag.ToString(), true);
 					else if(c.CheckState == CheckState.Unchecked)
 						l.SetFlag(c.Tag.ToString(), false);
-					else if(linedefProps[i].Flags.ContainsKey(c.Tag.ToString()))
-						l.SetFlag(c.Tag.ToString(), linedefProps[i].Flags[c.Tag.ToString()]);
+					else if(linedefprops[i].Flags.ContainsKey(c.Tag.ToString()))
+						l.SetFlag(c.Tag.ToString(), linedefprops[i].Flags[c.Tag.ToString()]);
 					else //linedefs created in the editor have empty Flags by default
 						l.SetFlag(c.Tag.ToString(), false);
 				}
@@ -1218,6 +1238,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void fronthigh_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(fronthigh.TextureName)) 
@@ -1226,7 +1247,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				foreach(Linedef l in lines) 
 				{
-					if(l.Front != null) l.Front.SetTextureHigh(linedefProps[i].Front != null ? linedefProps[i].Front.TextureTop : "-");
+					if(l.Front != null) l.Front.SetTextureHigh(linedefprops[i].Front != null ? linedefprops[i].Front.TextureTop : "-");
 					i++;
 				}
 			} 
@@ -1246,6 +1267,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void frontmid_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(frontmid.TextureName)) 
@@ -1254,7 +1276,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				foreach(Linedef l in lines) 
 				{
-					if(l.Front != null) l.Front.SetTextureMid(linedefProps[i].Front != null ? linedefProps[i].Front.TextureMid : "-");
+					if(l.Front != null) l.Front.SetTextureMid(linedefprops[i].Front != null ? linedefprops[i].Front.TextureMid : "-");
 					i++;
 				}
 			} 
@@ -1274,6 +1296,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void frontlow_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(frontlow.TextureName)) 
@@ -1282,7 +1305,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				foreach(Linedef l in lines) 
 				{
-					if(l.Front != null) l.Front.SetTextureLow(linedefProps[i].Front != null ? linedefProps[i].Front.TextureLow : "-");
+					if(l.Front != null) l.Front.SetTextureLow(linedefprops[i].Front != null ? linedefprops[i].Front.TextureLow : "-");
 					i++;
 				}
 			} 
@@ -1302,6 +1325,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void backhigh_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(backhigh.TextureName)) 
@@ -1310,7 +1334,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				foreach(Linedef l in lines) 
 				{
-					if(l.Back != null) l.Back.SetTextureHigh(linedefProps[i].Back != null ? linedefProps[i].Back.TextureTop : "-");
+					if(l.Back != null) l.Back.SetTextureHigh(linedefprops[i].Back != null ? linedefprops[i].Back.TextureTop : "-");
 					i++;
 				}
 			} 
@@ -1330,6 +1354,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void backmid_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(backmid.TextureName)) 
@@ -1338,7 +1363,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				foreach(Linedef l in lines) 
 				{
-					if(l.Back != null) l.Back.SetTextureMid(linedefProps[i].Back != null ? linedefProps[i].Back.TextureMid : "-");
+					if(l.Back != null) l.Back.SetTextureMid(linedefprops[i].Back != null ? linedefprops[i].Back.TextureMid : "-");
 					i++;
 				}
 			} 
@@ -1358,6 +1383,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void backlow_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(backlow.TextureName)) 
@@ -1366,7 +1392,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				foreach(Linedef l in lines) 
 				{
-					if(l.Back != null) l.Back.SetTextureLow(linedefProps[i].Back != null ? linedefProps[i].Back.TextureLow : "-");
+					if(l.Back != null) l.Back.SetTextureLow(linedefprops[i].Back != null ? linedefprops[i].Back.TextureLow : "-");
 					i++;
 				}
 			} 
@@ -1390,6 +1416,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void lightFront_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			//restore values
@@ -1398,7 +1425,7 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(Linedef l in lines) 
 				{
 					if(l.Front != null)
-						UDMFTools.SetInteger(l.Front.Fields, "light", (linedefProps[i].Front != null ? linedefProps[i].Front.Brightness : 0), 0);
+						UDMFTools.SetInteger(l.Front.Fields, "light", (linedefprops[i].Front != null ? linedefprops[i].Front.Brightness : 0), 0);
 					i++;
 				}
 			} 
@@ -1418,7 +1445,7 @@ namespace CodeImp.DoomBuilder.Windows
 							absolute = true;
 						}
 
-						int value = General.Clamp(lightFront.GetResult((linedefProps[i].Front != null ? linedefProps[i].Front.Brightness : 0)), (absolute ? 0 : -255), 255);
+						int value = General.Clamp(lightFront.GetResult((linedefprops[i].Front != null ? linedefprops[i].Front.Brightness : 0)), (absolute ? 0 : -255), 255);
 						UDMFTools.SetInteger(l.Front.Fields, "light", value, 0);
 					}
 					i++;
@@ -1432,6 +1459,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void lightBack_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			//restore values
@@ -1440,7 +1468,7 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(Linedef l in lines) 
 				{
 					if(l.Back != null)
-						UDMFTools.SetInteger(l.Back.Fields, "light", (linedefProps[i].Back != null ? linedefProps[i].Back.Brightness : 0), 0);
+						UDMFTools.SetInteger(l.Back.Fields, "light", (linedefprops[i].Back != null ? linedefprops[i].Back.Brightness : 0), 0);
 					i++;
 				}
 			} 
@@ -1460,7 +1488,7 @@ namespace CodeImp.DoomBuilder.Windows
 							absolute = true;
 						}
 
-						int value = General.Clamp(lightBack.GetResult((linedefProps[i].Back != null ? linedefProps[i].Back.Brightness : 0)), (absolute ? 0 : -255), 255);
+						int value = General.Clamp(lightBack.GetResult((linedefprops[i].Back != null ? linedefprops[i].Back.Brightness : 0)), (absolute ? 0 : -255), 255);
 						UDMFTools.SetInteger(l.Back.Fields, "light", value, 0);
 					}
 					i++;
@@ -1474,6 +1502,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cbLightAbsoluteFront_CheckedChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			if(cbLightAbsoluteFront.Checked) 
 			{
@@ -1491,7 +1520,7 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					if(l.Front != null) 
 					{
-						if(linedefProps[i].Front != null && linedefProps[i].Front.AbsoluteBrightness) 
+						if(linedefprops[i].Front != null && linedefprops[i].Front.AbsoluteBrightness) 
 						{
 							l.Front.Fields["lightabsolute"] = new UniValue(UniversalType.Boolean, true);
 						} 
@@ -1519,6 +1548,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cbLightAbsoluteBack_CheckedChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			if(cbLightAbsoluteBack.Checked) 
 			{
@@ -1536,7 +1566,7 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					if(l.Back != null) 
 					{
-						if(linedefProps[i].Back != null && linedefProps[i].Back.AbsoluteBrightness) 
+						if(linedefprops[i].Back != null && linedefprops[i].Back.AbsoluteBrightness) 
 						{
 							l.Back.Fields["lightabsolute"] = new UniValue(UniversalType.Boolean, true);
 						} 
@@ -1568,17 +1598,17 @@ namespace CodeImp.DoomBuilder.Windows
 		private void frontTextureOffset_OnValuesChanged(object sender, EventArgs e)
 		{
 			if(preventchanges) return;
-
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Front != null) 
 				{
-					if(linedefProps[i].Front != null) 
+					if(linedefprops[i].Front != null) 
 					{
-						l.Front.OffsetX = frontTextureOffset.GetValue1(linedefProps[i].Front.OffsetX);
-						l.Front.OffsetY = frontTextureOffset.GetValue2(linedefProps[i].Front.OffsetY);
+						l.Front.OffsetX = frontTextureOffset.GetValue1(linedefprops[i].Front.OffsetX);
+						l.Front.OffsetY = frontTextureOffset.GetValue2(linedefprops[i].Front.OffsetY);
 					} 
 					else 
 					{
@@ -1598,17 +1628,17 @@ namespace CodeImp.DoomBuilder.Windows
 		private void backTextureOffset_OnValuesChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Back != null) 
 				{
-					if(linedefProps[i].Back != null) 
+					if(linedefprops[i].Back != null) 
 					{
-						l.Back.OffsetX = backTextureOffset.GetValue1(linedefProps[i].Back.OffsetX);
-						l.Back.OffsetY = backTextureOffset.GetValue2(linedefProps[i].Back.OffsetY);
+						l.Back.OffsetX = backTextureOffset.GetValue1(linedefprops[i].Back.OffsetX);
+						l.Back.OffsetY = backTextureOffset.GetValue2(linedefprops[i].Back.OffsetY);
 					} 
 					else 
 					{
@@ -1632,14 +1662,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pfcFrontOffsetTop_OnValuesChanged(object sender, EventArgs e)
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Front != null) 
 				{
-					float oldX = linedefProps[i].Front != null ? linedefProps[i].Front.OffsetTopX : 0f;
-					float oldY = linedefProps[i].Front != null ? linedefProps[i].Front.OffsetTopY : 0f;
+					float oldX = linedefprops[i].Front != null ? linedefprops[i].Front.OffsetTopX : 0f;
+					float oldY = linedefprops[i].Front != null ? linedefprops[i].Front.OffsetTopY : 0f;
 					pfcFrontOffsetTop.ApplyTo(l.Front.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
 				}
 				i++;
@@ -1653,14 +1684,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pfcFrontOffsetMid_OnValuesChanged(object sender, EventArgs e)
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Front != null) 
 				{
-					float oldX = linedefProps[i].Front != null ? linedefProps[i].Front.OffsetMidX : 0f;
-					float oldY = linedefProps[i].Front != null ? linedefProps[i].Front.OffsetMidY : 0f;
+					float oldX = linedefprops[i].Front != null ? linedefprops[i].Front.OffsetMidX : 0f;
+					float oldY = linedefprops[i].Front != null ? linedefprops[i].Front.OffsetMidY : 0f;
 					pfcFrontOffsetMid.ApplyTo(l.Front.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
 				}
 
@@ -1675,14 +1707,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pfcFrontOffsetBottom_OnValuesChanged(object sender, EventArgs e)
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Front != null) 
 				{
-					float oldX = linedefProps[i].Front != null ? linedefProps[i].Front.OffsetBottomX : 0f;
-					float oldY = linedefProps[i].Front != null ? linedefProps[i].Front.OffsetBottomY : 0f;
+					float oldX = linedefprops[i].Front != null ? linedefprops[i].Front.OffsetBottomX : 0f;
+					float oldY = linedefprops[i].Front != null ? linedefprops[i].Front.OffsetBottomY : 0f;
 					pfcFrontOffsetBottom.ApplyTo(l.Front.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
 				}
 
@@ -1697,14 +1730,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pfcBackOffsetTop_OnValuesChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Back != null) 
 				{
-					float oldX = linedefProps[i].Back != null ? linedefProps[i].Back.OffsetTopX : 0f;
-					float oldY = linedefProps[i].Back != null ? linedefProps[i].Back.OffsetTopY : 0f;
+					float oldX = linedefprops[i].Back != null ? linedefprops[i].Back.OffsetTopX : 0f;
+					float oldY = linedefprops[i].Back != null ? linedefprops[i].Back.OffsetTopY : 0f;
 					pfcBackOffsetTop.ApplyTo(l.Back.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
 				}
 
@@ -1719,14 +1753,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pfcBackOffsetMid_OnValuesChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Back != null) 
 				{
-					float oldX = linedefProps[i].Back != null ? linedefProps[i].Back.OffsetMidX : 0f;
-					float oldY = linedefProps[i].Back != null ? linedefProps[i].Back.OffsetMidY : 0f;
+					float oldX = linedefprops[i].Back != null ? linedefprops[i].Back.OffsetMidX : 0f;
+					float oldY = linedefprops[i].Back != null ? linedefprops[i].Back.OffsetMidY : 0f;
 					pfcBackOffsetMid.ApplyTo(l.Back.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
 				}
 
@@ -1741,14 +1776,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pfcBackOffsetBottom_OnValuesChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Back != null) 
 				{
-					float oldX = linedefProps[i].Back != null ? linedefProps[i].Back.OffsetBottomX : 0f;
-					float oldY = linedefProps[i].Back != null ? linedefProps[i].Back.OffsetBottomY : 0f;
+					float oldX = linedefprops[i].Back != null ? linedefprops[i].Back.OffsetBottomX : 0f;
+					float oldY = linedefprops[i].Back != null ? linedefprops[i].Back.OffsetBottomY : 0f;
 					pfcBackOffsetBottom.ApplyTo(l.Back.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
 				}
 
@@ -1767,14 +1803,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pfcFrontScaleTop_OnValuesChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Front != null) 
 				{
-					float oldX = linedefProps[i].Front != null ? linedefProps[i].Front.ScaleTopX : 1.0f;
-					float oldY = linedefProps[i].Front != null ? linedefProps[i].Front.ScaleTopY : 1.0f;
+					float oldX = linedefprops[i].Front != null ? linedefprops[i].Front.ScaleTopX : 1.0f;
+					float oldY = linedefprops[i].Front != null ? linedefprops[i].Front.ScaleTopY : 1.0f;
 					pfcFrontScaleTop.ApplyTo(l.Front.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
 				}
 
@@ -1789,14 +1826,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pfcFrontScaleMid_OnValuesChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Front != null) 
 				{
-					float oldX = linedefProps[i].Front != null ? linedefProps[i].Front.ScaleMidX : 1.0f;
-					float oldY = linedefProps[i].Front != null ? linedefProps[i].Front.ScaleMidY : 1.0f;
+					float oldX = linedefprops[i].Front != null ? linedefprops[i].Front.ScaleMidX : 1.0f;
+					float oldY = linedefprops[i].Front != null ? linedefprops[i].Front.ScaleMidY : 1.0f;
 					pfcFrontScaleMid.ApplyTo(l.Front.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
 				}
 
@@ -1811,14 +1849,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pfcFrontScaleBottom_OnValuesChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Front != null) 
 				{
-					float oldX = linedefProps[i].Front != null ? linedefProps[i].Front.ScaleBottomX : 1.0f;
-					float oldY = linedefProps[i].Front != null ? linedefProps[i].Front.ScaleBottomY : 1.0f;
+					float oldX = linedefprops[i].Front != null ? linedefprops[i].Front.ScaleBottomX : 1.0f;
+					float oldY = linedefprops[i].Front != null ? linedefprops[i].Front.ScaleBottomY : 1.0f;
 					pfcFrontScaleBottom.ApplyTo(l.Front.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
 				}
 
@@ -1833,14 +1872,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pfcBackScaleTop_OnValuesChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Back != null) 
 				{
-					float oldX = linedefProps[i].Back != null ? linedefProps[i].Back.ScaleTopX : 1.0f;
-					float oldY = linedefProps[i].Back != null ? linedefProps[i].Back.ScaleTopY : 1.0f;
+					float oldX = linedefprops[i].Back != null ? linedefprops[i].Back.ScaleTopX : 1.0f;
+					float oldY = linedefprops[i].Back != null ? linedefprops[i].Back.ScaleTopY : 1.0f;
 					pfcBackScaleTop.ApplyTo(l.Back.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
 				}
 
@@ -1855,14 +1895,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pfcBackScaleMid_OnValuesChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Back != null) 
 				{
-					float oldX = linedefProps[i].Back != null ? linedefProps[i].Back.ScaleMidX : 1.0f;
-					float oldY = linedefProps[i].Back != null ? linedefProps[i].Back.ScaleMidY : 1.0f;
+					float oldX = linedefprops[i].Back != null ? linedefprops[i].Back.ScaleMidX : 1.0f;
+					float oldY = linedefprops[i].Back != null ? linedefprops[i].Back.ScaleMidY : 1.0f;
 					pfcBackScaleMid.ApplyTo(l.Back.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
 				}
 
@@ -1877,14 +1918,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pfcBackScaleBottom_OnValuesChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Back != null) 
 				{
-					float oldX = linedefProps[i].Back != null ? linedefProps[i].Back.ScaleBottomX : 1.0f;
-					float oldY = linedefProps[i].Back != null ? linedefProps[i].Back.ScaleBottomY : 1.0f;
+					float oldX = linedefprops[i].Back != null ? linedefprops[i].Back.ScaleBottomX : 1.0f;
+					float oldY = linedefprops[i].Back != null ? linedefprops[i].Back.ScaleBottomY : 1.0f;
 					pfcBackScaleBottom.ApplyTo(l.Back.Fields, General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset, oldX, oldY);
 				}
 
@@ -1903,6 +1945,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void flagsFront_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
@@ -1916,8 +1959,8 @@ namespace CodeImp.DoomBuilder.Windows
 						l.Front.SetFlag(c.Tag.ToString(), true);
 					else if(c.CheckState == CheckState.Unchecked)
 						l.Front.SetFlag(c.Tag.ToString(), false);
-					else if(linedefProps[i].Front.Flags.ContainsKey(c.Tag.ToString()))
-						l.Front.SetFlag(c.Tag.ToString(), linedefProps[i].Front.Flags[c.Tag.ToString()]);
+					else if(linedefprops[i].Front.Flags.ContainsKey(c.Tag.ToString()))
+						l.Front.SetFlag(c.Tag.ToString(), linedefprops[i].Front.Flags[c.Tag.ToString()]);
 					else //linedefs created in the editor have empty Flags by default
 						l.Front.SetFlag(c.Tag.ToString(), false);
 				}
@@ -1932,6 +1975,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void flagsBack_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
@@ -1945,8 +1989,8 @@ namespace CodeImp.DoomBuilder.Windows
 						l.Back.SetFlag(c.Tag.ToString(), true);
 					else if(c.CheckState == CheckState.Unchecked)
 						l.Back.SetFlag(c.Tag.ToString(), false);
-					else if(linedefProps[i].Back.Flags.ContainsKey(c.Tag.ToString()))
-						l.Back.SetFlag(c.Tag.ToString(), linedefProps[i].Back.Flags[c.Tag.ToString()]);
+					else if(linedefprops[i].Back.Flags.ContainsKey(c.Tag.ToString()))
+						l.Back.SetFlag(c.Tag.ToString(), linedefprops[i].Back.Flags[c.Tag.ToString()]);
 					else //linedefs created in the editor have empty Flags by default
 						l.Back.SetFlag(c.Tag.ToString(), false);
 				}

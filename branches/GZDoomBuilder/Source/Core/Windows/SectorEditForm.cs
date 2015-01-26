@@ -38,8 +38,9 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Variables
 
 		private ICollection<Sector> sectors;
-		private List<SectorProperties> sectorProps; //mxd
-		private bool blockUpdate; //mxd
+		private List<SectorProperties> sectorprops; //mxd
+		private bool preventchanges; //mxd
+		private bool undocreated; //mxd
 
 		//mxd. Window setup stuff
 		private static Point location = Point.Empty;
@@ -98,17 +99,12 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets up the form to edit the given sectors
 		public void Setup(ICollection<Sector> sectors)
 		{
-			blockUpdate = true; //mxd
+			preventchanges = true; //mxd
 
 			// Keep this list
 			this.sectors = sectors;
 			if(sectors.Count > 1) this.Text = "Edit Sectors (" + sectors.Count + ")";
-			sectorProps = new List<SectorProperties>(); //mxd
-
-			//mxd. Make undo
-			string undodesc = "sector";
-			if(sectors.Count > 1) undodesc = sectors.Count + " sectors";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
+			sectorprops = new List<SectorProperties>(); //mxd
 
 			//mxd. Set default height offset
 			heightoffset.Text = "0";
@@ -163,13 +159,23 @@ namespace CodeImp.DoomBuilder.Windows
 				if(s.Tag != sc.Tag)	tagSelector.ClearTag(); //mxd
 
 				//mxd. Store initial properties
-				sectorProps.Add(new SectorProperties(s));
+				sectorprops.Add(new SectorProperties(s));
 			}
 
 			// Show sector height
 			UpdateSectorHeight();
 
-			blockUpdate = false; //mxd
+			preventchanges = false; //mxd
+		}
+
+		//mxd
+		private void MakeUndo() 
+		{
+			if(undocreated) return;
+			undocreated = true;
+
+			//mxd. Make undo
+			General.Map.UndoRedo.CreateUndo("Edit " + (sectors.Count > 1 ? sectors.Count + " sectors" : "sector"));
 		}
 
 		// This updates the sector height field
@@ -201,8 +207,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			if(index > -1) 
 			{
-				int fh = floorheight.GetResult(sectorProps[index].FloorHeight); //mxd
-				int ch = ceilingheight.GetResult(sectorProps[index].CeilHeight); //mxd
+				int fh = floorheight.GetResult(sectorprops[index].FloorHeight); //mxd
+				int ch = ceilingheight.GetResult(sectorprops[index].CeilHeight); //mxd
 				int height = ch - fh;
 				sectorheight.Text = height.ToString();
 				sectorheight.Visible = true;
@@ -225,13 +231,13 @@ namespace CodeImp.DoomBuilder.Windows
 			if(string.IsNullOrEmpty(ceilingheight.Text)) 
 			{
 				foreach(Sector s in sectors)
-					s.CeilHeight = sectorProps[i++].CeilHeight + offset;
+					s.CeilHeight = sectorprops[i++].CeilHeight + offset;
 
 			} 
 			else //update values
 			{
 				foreach(Sector s in sectors)
-					s.CeilHeight = ceilingheight.GetResult(sectorProps[i++].CeilHeight) + offset;
+					s.CeilHeight = ceilingheight.GetResult(sectorprops[i++].CeilHeight) + offset;
 			}
 		}
 
@@ -245,13 +251,13 @@ namespace CodeImp.DoomBuilder.Windows
 			if(string.IsNullOrEmpty(floorheight.Text)) 
 			{
 				foreach(Sector s in sectors)
-					s.FloorHeight = sectorProps[i++].FloorHeight + offset;
+					s.FloorHeight = sectorprops[i++].FloorHeight + offset;
 
 			} 
 			else //update values
 			{
 				foreach(Sector s in sectors)
-					s.FloorHeight = floorheight.GetResult(sectorProps[i++].FloorHeight) + offset;
+					s.FloorHeight = floorheight.GetResult(sectorprops[i++].FloorHeight) + offset;
 			}
 		}
 
@@ -278,6 +284,8 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
+			MakeUndo(); //mxd
+
 			// Go for all sectors
 			int tagoffset = 0; //mxd
 			foreach(Sector s in sectors) 
@@ -300,7 +308,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cancel_Click(object sender, EventArgs e)
 		{
 			//mxd. perform undo
-			General.Map.UndoRedo.WithdrawUndo();
+			if(undocreated) General.Map.UndoRedo.WithdrawUndo();
 			
 			// And be gone
 			this.DialogResult = DialogResult.Cancel;
@@ -334,7 +342,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Ceiling height changes
 		private void ceilingheight_TextChanged(object sender, EventArgs e)
 		{
-			if(blockUpdate) return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			UpdateCeilingHeight();
 			UpdateSectorHeight();
@@ -346,7 +355,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Floor height changes
 		private void floorheight_TextChanged(object sender, EventArgs e)
 		{
-			if(blockUpdate) return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			UpdateFloorHeight();
 			UpdateSectorHeight();
@@ -358,7 +368,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Height offset changes
 		private void heightoffset_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate) return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			UpdateFloorHeight();
 			UpdateCeilingHeight();
@@ -370,13 +381,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void floortex_OnValueChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate) return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(floortex.TextureName)) 
 			{
 				int i = 0;
-				foreach(Sector s in sectors) s.SetFloorTexture(sectorProps[i++].FloorTexture);
+				foreach(Sector s in sectors) s.SetFloorTexture(sectorprops[i++].FloorTexture);
 			
 			} 
 			else //update values
@@ -393,13 +405,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void ceilingtex_OnValueChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate) return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(ceilingtex.TextureName)) 
 			{
 				int i = 0;
-				foreach(Sector s in sectors) s.SetCeilTexture(sectorProps[i++].CeilTexture);
+				foreach(Sector s in sectors) s.SetCeilTexture(sectorprops[i++].CeilTexture);
 			
 			} 
 			else //update values
@@ -416,19 +429,20 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void brightness_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate) return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			//restore values
 			if(string.IsNullOrEmpty(brightness.Text)) 
 			{
-				foreach(Sector s in sectors) s.Brightness = sectorProps[i++].Brightness;
+				foreach(Sector s in sectors) s.Brightness = sectorprops[i++].Brightness;
 			
 			} 
 			else //update values
 			{
 				foreach(Sector s in sectors)
-					s.Brightness = General.Clamp(brightness.GetResult(sectorProps[i++].Brightness), General.Map.FormatInterface.MinBrightness, General.Map.FormatInterface.MaxBrightness);
+					s.Brightness = General.Clamp(brightness.GetResult(sectorprops[i++].Brightness), General.Map.FormatInterface.MinBrightness, General.Map.FormatInterface.MaxBrightness);
 			}
 
 			General.Map.IsChanged = true;

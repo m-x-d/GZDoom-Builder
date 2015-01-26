@@ -26,7 +26,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private ICollection<Sector> sectors;
 		private Dictionary<Sector, SectorProperties> sectorprops; //mxd
-		private bool blockupdate; //mxd
+		private bool preventchanges; //mxd
+		private bool undocreated; //mxd
 		private StepsList anglesteps; //mxd
 		private readonly string[] renderstyles; //mxd
 
@@ -232,17 +233,12 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets up the form to edit the given sectors
 		public void Setup(ICollection<Sector> sectors) 
 		{
-			blockupdate = true; //mxd
+			preventchanges = true; //mxd
 
 			// Keep this list
 			this.sectors = sectors;
 			if(sectors.Count > 1) this.Text = "Edit Sectors (" + sectors.Count + ")";
 			sectorprops = new Dictionary<Sector, SectorProperties>(sectors.Count); //mxd
-
-			//mxd. Make undo
-			string undodesc = "sector";
-			if(sectors.Count > 1) undodesc = sectors.Count + " sectors";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 
 			//mxd. Set default height offset
 			heightoffset.Text = "0";
@@ -424,7 +420,6 @@ namespace CodeImp.DoomBuilder.Windows
 				if(s.Tag != sc.Tag) tagSelector.ClearTag(); //mxd
 
 				// Custom fields
-				s.Fields.BeforeFieldsChange(); //mxd
 				fieldslist.SetValues(s.Fields, false);
 
 				//mxd. Angle steps
@@ -460,7 +455,18 @@ namespace CodeImp.DoomBuilder.Windows
 			if(useCeilSlopeLineAngles) ceilingslopecontrol.StepValues = anglesteps;
 			if(useFloorSlopeLineAngles) floorslopecontrol.StepValues = anglesteps;
 
-			blockupdate = false; //mxd
+			preventchanges = false; //mxd
+		}
+
+		//mxd
+		private void MakeUndo() 
+		{
+			if(undocreated) return;
+			undocreated = true;
+
+			//mxd. Make undo
+			General.Map.UndoRedo.CreateUndo("Edit " + (sectors.Count > 1 ? sectors.Count + " sectors" : "sector"));
+			foreach(Sector s in sectors) s.Fields.BeforeFieldsChange();
 		}
 
 		// mxd
@@ -611,6 +617,8 @@ namespace CodeImp.DoomBuilder.Windows
 				General.Map.Config.SectorRenderStyles.Keys.CopyTo(rskeys, 0);
 			}
 
+			MakeUndo(); //mxd
+
 			// Go for all sectors
 			int tagoffset = 0; //mxd
 			foreach(Sector s in sectors) 
@@ -705,7 +713,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cancel_Click(object sender, EventArgs e) 
 		{
 			//mxd. Let's pretend nothing of this really happened...
-			General.Map.UndoRedo.WithdrawUndo();
+			if(undocreated) General.Map.UndoRedo.WithdrawUndo();
 			
 			// Be gone
 			this.DialogResult = DialogResult.Cancel;
@@ -763,7 +771,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void ceilingheight_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges)	return;
+			MakeUndo(); //mxd
 
 			UpdateCeilingHeight();
 			UpdateSectorHeight();
@@ -774,7 +783,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void floorheight_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges)	return;
+			MakeUndo(); //mxd
 
 			UpdateFloorHeight();
 			UpdateSectorHeight();
@@ -785,7 +795,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void heightoffset_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate) return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			UpdateFloorHeight();
 			UpdateCeilingHeight();
@@ -797,7 +808,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void brightness_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges)	return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(brightness.Text)) 
@@ -818,7 +830,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void ceilingtex_OnValueChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges)	return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(ceilingtex.TextureName)) 
@@ -842,7 +855,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void floortex_OnValueChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges)	return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(floortex.TextureName)) 
@@ -866,7 +880,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void floorRotation_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges)	return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(floorRotation.Text))
@@ -896,7 +911,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void ceilRotation_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(ceilRotation.Text))
@@ -926,7 +942,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void lightColor_OnValueChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			foreach(Sector s in sectors) 
 			{
@@ -940,7 +957,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void fadeColor_OnValueChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			foreach(Sector s in sectors) 
 			{
@@ -958,7 +976,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void ceilOffsets_OnValuesChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			foreach(Sector s in sectors) 
 			{
@@ -973,7 +992,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void floorOffsets_OnValuesChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			foreach(Sector s in sectors) 
 			{
@@ -988,7 +1008,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void ceilScale_OnValuesChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			foreach(Sector s in sectors) 
 			{
@@ -1003,7 +1024,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void floorScale_OnValuesChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			foreach(Sector s in sectors) 
 			{
@@ -1018,7 +1040,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void ceilBrightness_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(ceilBrightness.Text)) 
@@ -1055,7 +1078,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void floorBrightness_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(floorBrightness.Text)) 
@@ -1092,7 +1116,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void ceilLightAbsolute_CheckedChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			if(ceilLightAbsolute.Checked) 
 			{
@@ -1136,7 +1161,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void floorLightAbsolute_CheckedChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate)	return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			if(floorLightAbsolute.Checked)
 			{
@@ -1287,7 +1313,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void ceilingslopecontrol_OnAnglesChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate) return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 			float anglexy, anglez;
 
 			//Set or restore values
@@ -1312,7 +1339,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void floorslopecontrol_OnAnglesChanged(object sender, EventArgs e) 
 		{
-			if(blockupdate) return;
+			if(preventchanges) return;
+			MakeUndo(); //mxd
 			float anglexy, anglez;
 
 			//Set or restore values
@@ -1338,6 +1366,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Update displayed ceiling offset value
 		private void ceilingslopecontrol_OnPivotModeChanged(object sender, EventArgs e) 
 		{
+			MakeUndo(); //mxd
 			bool first = true;
 			foreach (Sector s in sectors)
 			{
@@ -1349,6 +1378,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Update displayed floor offset value
 		private void floorslopecontrol_OnPivotModeChanged(object sender, EventArgs e) 
 		{
+			MakeUndo(); //mxd
 			bool first = true;
 			foreach (Sector s in sectors)
 			{
@@ -1359,6 +1389,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void ceilingslopecontrol_OnResetClicked(object sender, EventArgs e) 
 		{
+			MakeUndo(); //mxd
 			ceilingslopecontrol.SetOffset(General.GetByIndex(sectors, 0).CeilHeight, true);
 			
 			foreach(Sector s in sectors) 
@@ -1378,6 +1409,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void floorslopecontrol_OnResetClicked(object sender, EventArgs e) 
 		{
+			MakeUndo(); //mxd
 			floorslopecontrol.SetOffset(General.GetByIndex(sectors, 0).FloorHeight, true);
 			
 			foreach(Sector s in sectors) 

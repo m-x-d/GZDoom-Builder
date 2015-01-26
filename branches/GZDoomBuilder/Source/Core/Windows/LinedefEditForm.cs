@@ -46,8 +46,9 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Variables
 
 		private ICollection<Linedef> lines;
-		private List<LinedefProperties> linedefProps; //mxd
+		private List<LinedefProperties> linedefprops; //mxd
 		private bool preventchanges;
+		private bool undocreated; //mxd
 
 		//mxd. Window setup stuff
 		private static Point location = Point.Empty;
@@ -180,12 +181,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Keep this list
 			this.lines = lines;
 			if(lines.Count > 1) this.Text = "Edit Linedefs (" + lines.Count + ")";
-			linedefProps = new List<LinedefProperties>();
-
-			//mxd. Make undo
-			string undodesc = "linedef";
-			if(lines.Count > 1)	undodesc = lines.Count + " linedefs";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
+			linedefprops = new List<LinedefProperties>();
 			
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first linedef properties
@@ -354,7 +350,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				//mxd
-				linedefProps.Add(new LinedefProperties(l));
+				linedefprops.Add(new LinedefProperties(l));
 			}
 			
 			// Refresh controls so that they show their image
@@ -413,6 +409,16 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
+		private void MakeUndo() 
+		{
+			if(undocreated) return;
+			undocreated = true;
+
+			//mxd. Make undo
+			General.Map.UndoRedo.CreateUndo("Edit " + (lines.Count > 1 ? lines.Count + " linedefs" : "linedef"));
+		}
+
+		//mxd
 		private void UpdateScriptControls()
 		{
 			scriptNumbers.Visible = (Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1);
@@ -445,6 +451,8 @@ namespace CodeImp.DoomBuilder.Windows
 				General.ShowWarningMessage("Linedef action must be between " + General.Map.FormatInterface.MinAction + " and " + General.Map.FormatInterface.MaxAction + ".", MessageBoxButtons.OK);
 				return;
 			}
+
+			MakeUndo(); //mxd
 
 			//mxd
 			bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
@@ -557,7 +565,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cancel_Click(object sender, EventArgs e)
 		{
 			//mxd. Let's pretend nothing of this really happened...
-			General.Map.UndoRedo.WithdrawUndo();
+			if(undocreated) General.Map.UndoRedo.WithdrawUndo();
 			
 			// Be gone
 			this.DialogResult = DialogResult.Cancel;
@@ -612,6 +620,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			if(!preventchanges) 
 			{
+				MakeUndo(); //mxd
+				
 				// mxd. Apply action's default arguments 
 				if(showaction != 0) 
 				{
@@ -662,6 +672,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void flags_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
@@ -673,8 +684,8 @@ namespace CodeImp.DoomBuilder.Windows
 						l.SetFlag(c.Tag.ToString(), true);
 					else if(c.CheckState == CheckState.Unchecked)
 						l.SetFlag(c.Tag.ToString(), false);
-					else if(linedefProps[i].Flags.ContainsKey(c.Tag.ToString()))
-						l.SetFlag(c.Tag.ToString(), linedefProps[i].Flags[c.Tag.ToString()]);
+					else if(linedefprops[i].Flags.ContainsKey(c.Tag.ToString()))
+						l.SetFlag(c.Tag.ToString(), linedefprops[i].Flags[c.Tag.ToString()]);
 					else //linedefs created in the editor have empty Flags by default
 						l.SetFlag(c.Tag.ToString(), false);
 				}
@@ -693,6 +704,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void fronthigh_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(fronthigh.TextureName)) 
@@ -701,7 +713,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				foreach(Linedef l in lines) 
 				{
-					if(l.Front != null) l.Front.SetTextureHigh(linedefProps[i].Front != null ? linedefProps[i].Front.TextureTop : "-");
+					if(l.Front != null) l.Front.SetTextureHigh(linedefprops[i].Front != null ? linedefprops[i].Front.TextureTop : "-");
 					i++;
 				}
 			
@@ -722,6 +734,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void frontmid_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(frontmid.TextureName)) 
@@ -730,7 +743,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				foreach(Linedef l in lines) 
 				{
-					if(l.Front != null) l.Front.SetTextureMid(linedefProps[i].Front != null ? linedefProps[i].Front.TextureMid : "-");
+					if(l.Front != null) l.Front.SetTextureMid(linedefprops[i].Front != null ? linedefprops[i].Front.TextureMid : "-");
 					i++;
 				}
 			
@@ -751,6 +764,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void frontlow_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(frontlow.TextureName)) 
@@ -759,7 +773,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				foreach(Linedef l in lines) 
 				{
-					if(l.Front != null) l.Front.SetTextureLow(linedefProps[i].Front != null ? linedefProps[i].Front.TextureLow : "-");
+					if(l.Front != null) l.Front.SetTextureLow(linedefprops[i].Front != null ? linedefprops[i].Front.TextureLow : "-");
 					i++;
 				}
 			
@@ -780,6 +794,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void backhigh_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(backhigh.TextureName)) 
@@ -788,7 +803,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				foreach(Linedef l in lines) 
 				{
-					if(l.Back != null) l.Back.SetTextureHigh(linedefProps[i].Back != null ? linedefProps[i].Back.TextureTop : "-");
+					if(l.Back != null) l.Back.SetTextureHigh(linedefprops[i].Back != null ? linedefprops[i].Back.TextureTop : "-");
 					i++;
 				}
 			
@@ -809,6 +824,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void backmid_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(backmid.TextureName)) 
@@ -817,7 +833,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				foreach(Linedef l in lines) 
 				{
-					if(l.Back != null) l.Back.SetTextureMid(linedefProps[i].Back != null ? linedefProps[i].Back.TextureMid : "-");
+					if(l.Back != null) l.Back.SetTextureMid(linedefprops[i].Back != null ? linedefprops[i].Back.TextureMid : "-");
 					i++;
 				}
 			
@@ -838,6 +854,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void backlow_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
 
 			//restore values
 			if(string.IsNullOrEmpty(backlow.TextureName)) 
@@ -846,7 +863,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				foreach(Linedef l in lines) 
 				{
-					if(l.Back != null) l.Back.SetTextureLow(linedefProps[i].Back != null ? linedefProps[i].Back.TextureLow : "-");
+					if(l.Back != null) l.Back.SetTextureLow(linedefprops[i].Back != null ? linedefprops[i].Back.TextureLow : "-");
 					i++;
 				}
 			
@@ -867,17 +884,17 @@ namespace CodeImp.DoomBuilder.Windows
 		private void frontTextureOffset_OnValuesChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Front != null) 
 				{
-					if(linedefProps[i].Front != null) 
+					if(linedefprops[i].Front != null) 
 					{
-						l.Front.OffsetX = frontTextureOffset.GetValue1(linedefProps[i].Front.OffsetX);
-						l.Front.OffsetY = frontTextureOffset.GetValue2(linedefProps[i].Front.OffsetY);
+						l.Front.OffsetX = frontTextureOffset.GetValue1(linedefprops[i].Front.OffsetX);
+						l.Front.OffsetY = frontTextureOffset.GetValue2(linedefprops[i].Front.OffsetY);
 					} 
 					else 
 					{
@@ -897,17 +914,17 @@ namespace CodeImp.DoomBuilder.Windows
 		private void backTextureOffset_OnValuesChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-
+			MakeUndo(); //mxd
 			int i = 0;
 
 			foreach(Linedef l in lines) 
 			{
 				if(l.Back != null) 
 				{
-					if(linedefProps[i].Back != null) 
+					if(linedefprops[i].Back != null) 
 					{
-						l.Back.OffsetX = backTextureOffset.GetValue1(linedefProps[i].Back.OffsetX);
-						l.Back.OffsetY = backTextureOffset.GetValue2(linedefProps[i].Back.OffsetY);
+						l.Back.OffsetX = backTextureOffset.GetValue1(linedefprops[i].Back.OffsetX);
+						l.Back.OffsetY = backTextureOffset.GetValue2(linedefprops[i].Back.OffsetY);
 					} 
 					else
 					{
