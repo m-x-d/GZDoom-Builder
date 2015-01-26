@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Windows
 			backlow.Initialize();
 
 			//mxd. Setup script numbers
-			scriptNumbers.Location = arg0.Location;
+			scriptNumbers.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
 
 			foreach(ScriptItem si in General.Map.NumberedScripts)
 				scriptNumbers.Items.Add(si);
@@ -422,6 +422,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void UpdateScriptControls()
 		{
 			scriptNumbers.Visible = (Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1);
+			arg0.Visible = !scriptNumbers.Visible;
 		}
 
 		#endregion
