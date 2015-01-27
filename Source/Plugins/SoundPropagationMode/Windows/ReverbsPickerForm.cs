@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.SoundPropagationMode
 {
-	public partial class ReverbsPickerForm : Form
+	public partial class ReverbsPickerForm : DelayedForm
 	{
 		private struct ReverbListItem
 		{

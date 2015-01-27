@@ -196,8 +196,10 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		protected void DisplayImageSize(float width, float height) 
+		protected void DisplayImageSize(float width, float height)
 		{
+			width = Math.Abs(width);
+			height = Math.Abs(height);
 			labelSize.Text = (width > 0 && height > 0) ? width + "x" + height : string.Empty;
 			ImageSelectorControl_EnabledChanged(this, EventArgs.Empty);
 		}

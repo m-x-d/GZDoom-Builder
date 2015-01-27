@@ -1472,20 +1472,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Apply texture offsets
 		public void ApplyTextureOffsetChange(int dx, int dy)
 		{
-			Dictionary<Sidedef, int> donesides = new Dictionary<Sidedef, int>(selectedobjects.Count);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(false, true, false, false);
-			foreach(IVisualEventReceiver i in objs) 
+			
+			//mxd. Because Upper/Middle/Lower textures offsets should be threated separately in UDMF
+			if(General.Map.UDMF)
 			{
-				BaseVisualGeometrySidedef vs = i as BaseVisualGeometrySidedef; //mxd
-
-				if(i is BaseVisualGeometrySidedef) 
+				Dictionary<BaseVisualGeometrySidedef, bool> donesides = new Dictionary<BaseVisualGeometrySidedef, bool>(selectedobjects.Count);
+				foreach(IVisualEventReceiver i in objs) 
 				{
-					if(!donesides.ContainsKey(vs.Sidedef))
+					if(!(i is BaseVisualGeometrySidedef)) continue;
+					BaseVisualGeometrySidedef vs = i as BaseVisualGeometrySidedef; //mxd
+					if(!donesides.ContainsKey(vs)) 
 					{
 						//mxd. added scaling by texture scale
 						if(vs.Texture.UsedInMap) //mxd. Otherwise it's MissingTexture3D and we probably don't want to drag that
 							vs.OnChangeTextureOffset((int)(dx / vs.Texture.Scale.x), (int)(dy / vs.Texture.Scale.y), false);
-						donesides.Add((i as BaseVisualGeometrySidedef).Sidedef, 0);
+
+						donesides.Add(vs, false);
+					}
+				}
+			}
+			else
+			{
+				Dictionary<Sidedef, bool> donesides = new Dictionary<Sidedef, bool>(selectedobjects.Count);
+				foreach(IVisualEventReceiver i in objs) 
+				{
+					if(!(i is BaseVisualGeometrySidedef)) continue;
+					BaseVisualGeometrySidedef vs = i as BaseVisualGeometrySidedef; //mxd
+					if(!donesides.ContainsKey(vs.Sidedef)) 
+					{
+						//mxd. added scaling by texture scale
+						if(vs.Texture.UsedInMap) //mxd. Otherwise it's MissingTexture3D and we probably don't want to drag that
+							vs.OnChangeTextureOffset((int)(dx / vs.Texture.Scale.x), (int)(dy / vs.Texture.Scale.y), false);
+
+						donesides.Add(vs.Sidedef, false);
 					}
 				}
 			}
@@ -3629,10 +3649,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			switch(start.GeometryType) 
 			{
 				case VisualGeometryType.WALL_UPPER:
-					ystartalign += Tools.GetSidedefTopOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_top", 0.0f), first.scaleY, false);//mxd
+					ystartalign += Tools.GetSidedefTopOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_top", 0.0f), first.scaleY / scaley, false);//mxd
 					break;
 				case VisualGeometryType.WALL_MIDDLE:
-					ystartalign += Tools.GetSidedefMiddleOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_mid", 0.0f), first.scaleY, false);//mxd
+					ystartalign += Tools.GetSidedefMiddleOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_mid", 0.0f), first.scaleY / scaley, false);//mxd
 					break;
 				case VisualGeometryType.WALL_MIDDLE_3D: //mxd. 3d-floors are not affected by Lower/Upper unpegged flags
 					ystartalign += first.controlSide.OffsetY - (start.Sidedef.Sector.CeilHeight - first.ceilingHeight);
@@ -3640,7 +3660,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ystartalign += first.controlSide.Fields.GetValue("offsety_mid", 0.0f);
 					break;
 				case VisualGeometryType.WALL_LOWER:
-					ystartalign += Tools.GetSidedefBottomOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_bottom", 0.0f), first.scaleY, false);//mxd
+					ystartalign += Tools.GetSidedefBottomOffsetY(start.Sidedef, start.Sidedef.Fields.GetValue("offsety_bottom", 0.0f), first.scaleY / scaley, false);//mxd
 					break;
 			}
 
@@ -3715,7 +3735,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset -= j.sidedef.OffsetX;
 
 						if(matchtop)
-							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Width); //texture.Width
+							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Width);
 						if(matchbottom)
 							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Width);
 						if(matchmid) 
@@ -3737,9 +3757,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset = (float)Math.Round(offset); //mxd
 						
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY, true) % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Height); //mxd
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Height); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY, true) % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Height); //mxd
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Height); //mxd
 						if(matchmid) 
 						{
 							//mxd. Side is part of a 3D floor?
@@ -3752,7 +3772,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							else
 							{
 								ImageData midtex = General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture);
-								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % midtex.Height;
+								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % midtex.Height;
 
 								if(j.sidedef.Other != null && !j.sidedef.IsFlagSet("wrapmidtex") && !j.sidedef.Line.IsFlagSet("wrapmidtex"))
 								{
@@ -3821,9 +3841,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset = (float)Math.Round(offset); //mxd
 
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY, true) % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Height); //mxd
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Height); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY, true) % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Height); //mxd
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Height); //mxd
 						if(matchmid) 
 						{
 							//mxd. Side is part of a 3D floor?
@@ -3835,7 +3855,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							} 
 							else 
 							{
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY, true) % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Height); //mxd
+								ImageData midtex = General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture);
+								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % midtex.Height;
+
+								if(j.sidedef.Other != null && !j.sidedef.IsFlagSet("wrapmidtex") && !j.sidedef.Line.IsFlagSet("wrapmidtex")) 
+								{
+									//mxd. This should be doublesided non-wrapped line. Find the nearset aligned position
+									float curoffset = UDMFTools.GetFloat(j.sidedef.Fields, "offsety_mid");
+									offset += midtex.Height * (int)Math.Round((curoffset - offset) / midtex.Height);
+
+									// Make sure the surface stays between floor and ceiling
+									if(offset < -midtex.Height) 
+									{
+										offset += midtex.Height;
+									} 
+									else if(offset + midtex.Height > j.sidedef.GetMiddleHeight()) 
+									{
+										offset -= midtex.Height;
+									}
+								}
+
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset);
 							}
 						}
 					}

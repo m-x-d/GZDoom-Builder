@@ -557,7 +557,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(General.Settings.ShowTextureSizes && texture.ImageState == ImageLoadState.Ready && !(texture is UnknownImage)) 
 				{
 					sizelabel.Visible = true;
-					sizelabel.Text = texture.ScaledWidth + "x" + texture.ScaledHeight;
+					sizelabel.Text = Math.Abs(texture.ScaledWidth) + "x" + Math.Abs(texture.ScaledHeight);
 				} 
 				else 
 				{
