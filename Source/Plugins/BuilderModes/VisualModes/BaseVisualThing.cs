@@ -460,7 +460,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnMouseMove(MouseEventArgs e) { }
 		public virtual void OnChangeTargetBrightness(bool up) { }
 		public virtual void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection) { }
-		public virtual void OnChangeTextureScale(float incrementX, float incrementY) { } //mxd
 		public virtual void OnSelectTexture() { }
 		public virtual void OnCopyTexture() { }
 		public virtual void OnPasteTexture() { }
@@ -590,6 +589,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				this.Changed = true;
 			}
+		}
+
+		//mxd
+		public virtual void OnChangeScale(float incrementX, float incrementY)
+		{
+			if(!General.Map.UDMF) return;
+			
+			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+				undoticket = mode.CreateUndo("Change thing scale");
+
+			float sx = Thing.ScaleX;
+			float sy = Thing.ScaleY;
+			if(incrementX != 0) 
+			{
+				if(sx - incrementX == 0) sx *= -1;
+				else sx -= incrementX;
+			}
+
+			if(incrementY != 0) 
+			{
+				if(sy + incrementY == 0) sy *= -1;
+				else sy += incrementY;
+			}
+
+			Thing.SetScale((float)Math.Round(sx, 3), (float)Math.Round(sy, 3));
+			mode.SetActionResult("Changed thing scale to " + Thing.ScaleX + ", " + Thing.ScaleY + ".");
+
+			// Update what must be updated
+			this.Changed = true;
 		}
 
 		//mxd

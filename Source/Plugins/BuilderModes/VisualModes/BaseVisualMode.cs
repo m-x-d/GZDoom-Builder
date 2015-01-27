@@ -2646,42 +2646,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		[BeginAction("scaletextureupx")]
+		[BeginAction("scaleupx")]
 		public void ScaleTextureUpX() 
 		{
 			PreAction(UndoGroup.TextureScaleChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(-0.1f, 0);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(-0.1f, 0);
 			PostAction();
 		}
 
 		//mxd
-		[BeginAction("scaletexturedownx")]
+		[BeginAction("scaledownx")]
 		public void ScaleTextureDownX() 
 		{
 			PreAction(UndoGroup.TextureScaleChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(0.1f, 0);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(0.1f, 0);
 			PostAction();
 		}
 
 		//mxd
-		[BeginAction("scaletextureupy")]
+		[BeginAction("scaleupy")]
 		public void ScaleTextureUpY() 
 		{
 			PreAction(UndoGroup.TextureScaleChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(0, 0.1f);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(0, 0.1f);
 			PostAction();
 		}
 
 		//mxd
-		[BeginAction("scaletexturedowny")]
+		[BeginAction("scaledowny")]
 		public void ScaleTextureDownY() 
 		{
 			PreAction(UndoGroup.TextureScaleChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureScale(0, -0.1f);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(0, -0.1f);
 			PostAction();
 		}
 

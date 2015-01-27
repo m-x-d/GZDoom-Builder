@@ -231,7 +231,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnMouseMove(MouseEventArgs e) { }
 		public virtual void OnChangeTargetBrightness(bool up) { }
 		public virtual void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection) { }
-		public virtual void OnChangeTextureScale(float incrementX, float incrementY) { }
+		public virtual void OnChangeScale(float incrementX, float incrementY) { }
 		public virtual void OnSelectTexture() { }
 		public virtual void OnCopyTexture() { }
 		public virtual void OnPasteTexture() { }
