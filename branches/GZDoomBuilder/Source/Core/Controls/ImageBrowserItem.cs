@@ -167,7 +167,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			Text = (showfullname ? Icon.DisplayName : Icon.ShortName);
 			if(General.Settings.ShowTextureSizes && Icon.IsPreviewLoaded)
-				imagesize = Icon.ScaledWidth + "x" + Icon.ScaledHeight;
+				imagesize = Math.Abs(Icon.ScaledWidth) + "x" + Math.Abs(Icon.ScaledHeight);
 		}
 
 		// Comparer

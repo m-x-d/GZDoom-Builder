@@ -358,7 +358,7 @@ namespace CodeImp.DoomBuilder.Controls
 				&& !string.IsNullOrEmpty(texture.Name) && !(texture is UnknownImage)) 
 			{
 				label.Visible = true;
-				label.Text = texture.ScaledWidth + "x" + texture.ScaledHeight;
+				label.Text = Math.Abs(texture.ScaledWidth) + "x" + Math.Abs(texture.ScaledHeight);
 			} 
 			else 
 			{
