@@ -360,7 +360,17 @@ namespace CodeImp.DoomBuilder.ZDoom
 								if (v == "}") return; //mxd
 								if (v != ",") values.Add(v);
 							}
-							props[token] = values;
+
+							//mxd. Translate scale to xscale and yscale
+							if(token == "scale")
+							{
+								props["xscale"] = values;
+								props["yscale"] = values;
+							}
+							else
+							{
+								props[token] = values;
+							}
 						}
 						break;
 				}
@@ -479,6 +489,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public int GetPropertyValueInt(string propname, int valueindex)
 		{
 			string str = GetPropertyValueString(propname, valueindex);
+
+			//mxd. It can be negative...
+			if(str == "-" && props.Count > valueindex + 1) 
+				str += GetPropertyValueString(propname, valueindex + 1);
 			
 			int intvalue;
 			if(int.TryParse(str, NumberStyles.Integer, CultureInfo.InvariantCulture, out intvalue))
@@ -492,7 +506,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public float GetPropertyValueFloat(string propname, int valueindex)
 		{
 			string str = GetPropertyValueString(propname, valueindex);
-			
+
+			//mxd. It can be negative...
+			if(str == "-" && props.Count > valueindex + 1)
+				str += GetPropertyValueString(propname, valueindex + 1);
+
 			float fvalue;
 			if(float.TryParse(str, NumberStyles.Float, CultureInfo.InvariantCulture, out fvalue))
 				return fvalue;

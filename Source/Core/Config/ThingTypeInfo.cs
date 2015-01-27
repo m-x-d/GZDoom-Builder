@@ -301,20 +301,12 @@ namespace CodeImp.DoomBuilder.Config
 			else
 				this.spritelongname = long.MaxValue;
 			
-			// Set sprite scale
-			if(actor.HasPropertyWithValue("scale"))
-			{
-				float scale = actor.GetPropertyValueFloat("scale", 0);
-				this.spritescale = new SizeF(scale, scale);
-			}
-			else
-			{
-				if(actor.HasPropertyWithValue("xscale"))
-					this.spritescale.Width = actor.GetPropertyValueFloat("xscale", 0);
-				
-				if(actor.HasPropertyWithValue("yscale"))
-					this.spritescale.Height = actor.GetPropertyValueFloat("yscale", 0);
-			}
+			// Set sprite scale (mxd. Scale is translated to xscale and yscale in ActorStructure)
+			if(actor.HasPropertyWithValue("xscale"))
+				this.spritescale.Width = actor.GetPropertyValueFloat("xscale", 0);
+			
+			if(actor.HasPropertyWithValue("yscale"))
+				this.spritescale.Height = actor.GetPropertyValueFloat("yscale", 0);
 			
 			// Size
 			if(actor.HasPropertyWithValue("radius")) radius = actor.GetPropertyValueInt("radius", 0);
@@ -322,8 +314,8 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
-			if(this.spritescale.Width <= 0.0f) this.spritescale.Width = 1.0f;
-			if(this.spritescale.Height <= 0.0f) this.spritescale.Height = 1.0f;
+			if(this.spritescale.Width == 0.0f) this.spritescale.Width = 1.0f;
+			if(this.spritescale.Height == 0.0f) this.spritescale.Height = 1.0f;
 			
 			// Options
 			hangs = actor.GetFlagValue("spawnceiling", hangs);
