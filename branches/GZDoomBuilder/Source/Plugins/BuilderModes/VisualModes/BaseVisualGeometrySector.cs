@@ -889,7 +889,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual void OnChangeTextureScale(float incrementX, float incrementY) 
+		public virtual void OnChangeScale(float incrementX, float incrementY) 
 		{
 			if(!General.Map.UDMF) return;
 

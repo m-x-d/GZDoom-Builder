@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		void OnChangeTargetHeight(int amount);
 		void OnChangeTargetBrightness(bool up);
 		void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection);
-		void OnChangeTextureScale(float incrementX, float incrementY); //mxd
+		void OnChangeScale(float incrementX, float incrementY); //mxd
 		void OnResetTextureOffset();
 		void OnResetLocalTextureOffset(); //mxd. This should reset upper/middle/lower offsets (UDMF only)
 		void OnSelectTexture();
