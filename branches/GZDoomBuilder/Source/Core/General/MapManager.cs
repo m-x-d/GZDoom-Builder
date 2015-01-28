@@ -1565,9 +1565,15 @@ namespace CodeImp.DoomBuilder
 		// Returns true when our code worked properly (even when the compiler returned errors)
 		internal bool CompileLump(string lumpname, bool clearerrors) 
 		{
+			//mxd. Boilerplate
+			if(!config.MapLumps.ContainsKey(lumpname))
+			{
+				General.ShowErrorMessage("Unable to compile lump '" + lumpname + "'. This lump is not defined in the current game configuration.", MessageBoxButtons.OK);
+				return false;
+			}
+			
 			string inputfile;
 			Compiler compiler;
-			byte[] filedata;
 			string reallumpname = lumpname;
 
 			//mxd. Does lump require compiling?
@@ -1656,6 +1662,8 @@ namespace CodeImp.DoomBuilder
 						if(!string.IsNullOrEmpty(scriptconfig.ResultLump)) 
 						{
 							// Do that now then
+							byte[] filedata;
+
 							try 
 							{
 								filedata = File.ReadAllBytes(outputfile);
