@@ -97,6 +97,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			prevhorizrepeat = horizontalrepeat;
 			prevvertrepeat = verticalrepeat;
 			cbfitconnected.Checked = fitacrosssurfaces;
+			cbfitconnected.Enabled = (strips.Count > 1);
 			cbfitwidth.Checked = fitwidth;
 			cbfitheight.Checked = fitheight;
 			UpdateRepeatGroup();
@@ -112,7 +113,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Apply changes
 			FitTextureOptions options = new FitTextureOptions
 			                            {
-											FitAcrossSurfaces = cbfitconnected.Checked,
+											FitAcrossSurfaces = (cbfitconnected.Enabled && cbfitconnected.Checked),
 											FitWidth = cbfitwidth.Checked,
 											FitHeight = cbfitheight.Checked,
 											HorizontalRepeat = (int)horizrepeat.Value,

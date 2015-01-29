@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
@@ -12,14 +10,19 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 	public partial class SoundEnvironmentPanel : UserControl
 	{
 		public BufferedTreeView SoundEnvironments { get { return soundenvironments; } set { soundenvironments = value; } }
+		private readonly int warningiconindex; //mxd
 
 		public SoundEnvironmentPanel()
 		{
 			InitializeComponent();
 
 			soundenvironments.ImageList = new ImageList();
-			soundenvironments.ImageList.Images.Add(Properties.Resources.Status0);
+			foreach(Bitmap icon in BuilderPlug.Me.DistinctIcons)
+			{
+				soundenvironments.ImageList.Images.Add(icon);
+			}
 			soundenvironments.ImageList.Images.Add(Properties.Resources.Warning);
+			warningiconindex = soundenvironments.ImageList.Images.Count - 1; //mxd
 		}
 
 		public void AddSoundEnvironment(SoundEnvironment se) 
@@ -29,13 +32,21 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			TreeNode thingsnode = new TreeNode("Things (" + se.Things.Count + ")");
 			TreeNode linedefsnode = new TreeNode("Linedefs (" + se.Linedefs.Count + ")");
 			int notdormant = 0;
-			int topindex = 0;
+			int iconindex = BuilderPlug.Me.DistinctColors.IndexOf(se.Color); //mxd
+			int topindex = iconindex; //mxd
+
+			thingsnode.ImageIndex = iconindex; //mxd
+			thingsnode.SelectedImageIndex = iconindex; //mxd
+			linedefsnode.ImageIndex = iconindex; //mxd
+			linedefsnode.SelectedImageIndex = iconindex; //mxd
 
 			// Add things
 			foreach (Thing t in se.Things)
 			{
 				TreeNode thingnode = new TreeNode("Thing " + t.Index);
 				thingnode.Tag = t;
+				thingnode.ImageIndex = iconindex; //mxd
+				thingnode.SelectedImageIndex = iconindex; //mxd
 				thingsnode.Nodes.Add(thingnode);
 
 				if(!BuilderPlug.ThingDormant(t))
@@ -51,16 +62,16 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			// Set the icon to warning sign and add the tooltip when there are more than 1 non-dormant things
 			if (notdormant > 1)
 			{
-				thingsnode.ImageIndex = 1;
-				thingsnode.SelectedImageIndex = 1;
-				topindex = 1;
+				thingsnode.ImageIndex = warningiconindex;
+				thingsnode.SelectedImageIndex = warningiconindex;
+				topindex = warningiconindex;
 
 				foreach (TreeNode tn in thingsnode.Nodes)
 				{
 					if (!BuilderPlug.ThingDormant((Thing)tn.Tag))
 					{
-						tn.ImageIndex = 1;
-						tn.SelectedImageIndex = 1;
+						tn.ImageIndex = warningiconindex;
+						tn.SelectedImageIndex = warningiconindex;
 						tn.ToolTipText = "More than one thing in this\nsound environment is set to be\nactive. Set all but one thing\nto dormant.";
 					}
 				}
@@ -71,8 +82,9 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			{
 				bool showwarning = false;
 				TreeNode linedefnode = new TreeNode("Linedef " + ld.Index);
-
 				linedefnode.Tag = ld;
+				linedefnode.ImageIndex = iconindex; //mxd
+				linedefnode.SelectedImageIndex = iconindex; //mxd
 
 				if (ld.Back == null)
 				{
@@ -87,13 +99,13 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 				if (showwarning)
 				{
-					linedefnode.ImageIndex = 1;
-					linedefnode.SelectedImageIndex = 1;
+					linedefnode.ImageIndex = warningiconindex;
+					linedefnode.SelectedImageIndex = warningiconindex;
 
-					linedefsnode.ImageIndex = 1;
-					linedefsnode.SelectedImageIndex = 1;
+					linedefsnode.ImageIndex = warningiconindex;
+					linedefsnode.SelectedImageIndex = warningiconindex;
 
-					topindex = 1;
+					topindex = warningiconindex;
 				}
 
 				linedefsnode.Nodes.Add(linedefnode);
@@ -103,10 +115,8 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			topnode.Nodes.Add(linedefsnode);
 
 			topnode.Tag = se;
-
 			topnode.ImageIndex = topindex;
 			topnode.SelectedImageIndex = topindex;
-
 			topnode.Expand();
 
 			// Sound environments will no be added in consecutive order, so we'll have to find
@@ -128,7 +138,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 			foreach (TreeNode tn in soundenvironments.Nodes)
 			{
-				if(se != null && tn.Text == se.Name)
+				if(se != null && ((SoundEnvironment)tn.Tag).ID == se.ID)
 				{
 					if (tn.NodeFont == null || tn.NodeFont.Style != FontStyle.Bold)
 					{
