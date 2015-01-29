@@ -1697,10 +1697,10 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This clears all compiler errors
-		internal void ClearCompilerErrors() 
+		/*internal void ClearCompilerErrors() 
 		{
 			errors.Clear();
-		}
+		}*/
 
 		//mxd
 		internal void UpdateScriptNames() 
