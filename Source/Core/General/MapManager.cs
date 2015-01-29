@@ -1580,6 +1580,13 @@ namespace CodeImp.DoomBuilder
 			ScriptConfiguration scriptconfig;
 			if(config.MapLumps[lumpname].ScriptBuild) 
 			{
+				//mxd. More boilderplate
+				if(!General.CompiledScriptConfigs.ContainsKey(General.Map.Options.ScriptCompiler))
+				{
+					General.ShowErrorMessage("Unable to compile lump '" + lumpname + "'. Unable to find required script compiler configuration ('" + General.Map.Options.ScriptCompiler + "').", MessageBoxButtons.OK);
+					return false;
+				}
+				
 				scriptconfig = General.CompiledScriptConfigs[General.Map.Options.ScriptCompiler];
 			} 
 			else 
