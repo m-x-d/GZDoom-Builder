@@ -1699,7 +1699,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Use UDMF light?
 				string mode = (string)BuilderPlug.Me.MenusForm.GradientModeMenu.SelectedItem;
 				InterpolationTools.Mode interpolationmode = (InterpolationTools.Mode) BuilderPlug.Me.MenusForm.GradientInterpolationMenu.SelectedIndex;
-				if(General.Map.UDMF) 
+				if(General.Map.UDMF && mode != MenusForm.BrightnessGradientModes.Sectors) 
 				{
 					if(mode == MenusForm.BrightnessGradientModes.Ceilings || mode == MenusForm.BrightnessGradientModes.Floors) 
 					{
