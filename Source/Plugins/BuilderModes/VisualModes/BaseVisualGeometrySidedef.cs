@@ -652,7 +652,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						if(this is VisualLower) // Special cases, special cases...
 						{ 
-							offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, -Sidedef.OffsetY, scaley, true) % Texture.Height;
+							offsety = GetLowerOffsetY(scaley);
 						}
 						else if(this is VisualMiddleDouble)
 						{
@@ -673,7 +673,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					else 
 					{
 						scaley = Texture.ScaledHeight / options.Bounds.Height * options.VerticalRepeat;
-						offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, -Sidedef.OffsetY, scaley, true) % Texture.Height;
+
+						if(this is VisualLower) // Special cases, special cases...
+							offsety = GetLowerOffsetY(scaley);
+						else
+							offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, -Sidedef.OffsetY, scaley, true) % Texture.Height;
 					}
 
 					UDMFTools.SetFloat(Sidedef.Fields, "scaley_" + partname, (float)Math.Round(scaley, General.Map.FormatInterface.VertexDecimals), 1.0f);
@@ -686,6 +690,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UDMFTools.SetFloat(Sidedef.Fields, "scaley_" + partname, options.InitialScaleY, 1.0f);
 				UDMFTools.SetFloat(Sidedef.Fields, "offsety_" + partname, options.InitialOffsetY, 0.0f);
 			}
+		}
+
+		//mxd. Oh so special cases...
+		private float GetLowerOffsetY(float scaley) 
+		{
+			if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
+				return ((-Sidedef.OffsetY - Sidedef.GetMiddleHeight() - Sidedef.GetHighHeight()) * scaley) % Texture.Height;
+			return (-Sidedef.OffsetY * scaley) % Texture.Height;
 		}
 		
 		#endregion

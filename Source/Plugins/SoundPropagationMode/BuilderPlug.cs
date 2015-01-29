@@ -18,14 +18,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.ComponentModel;
-using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Geometry;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Linq;
+using System.Runtime.InteropServices;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Plugins;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -41,6 +43,12 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 	//
 	public class BuilderPlug : Plug
 	{
+		#region ================== Constants
+
+		internal const int SOUND_ENVIROMNEMT_THING_TYPE = 9048; //mxd
+
+		#endregion
+
 		#region ================== Variables
 
 		// Interface
@@ -54,6 +62,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		private PixelColor nosoundcolor;
 
 		private List<PixelColor> distinctcolors;
+		private List<Bitmap> distincticons; //mxd 
 		private List<SoundEnvironment> soundenvironments;
 		private List<Linedef> blockinglinedefs;
 		private FlatVertex[] overlayGeometry;
@@ -66,6 +75,8 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 		// Interface
 		public MenusForm MenusForm { get { return menusform; } }
+		internal List<Bitmap> DistinctIcons { get { return distincticons; } } //mxd
+		internal List<PixelColor> DistinctColors { get { return distinctcolors; } } //mxd
 
 		// Colors
 		public PixelColor HighlightColor { get { return highlightcolor; } set { highlightcolor = value; } }
@@ -106,20 +117,38 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 			distinctcolors = new List<PixelColor> 
 			{
-				PixelColor.FromColor(Color.Blue), 
-				PixelColor.FromColor(Color.Orange), 
-				PixelColor.FromColor(Color.ForestGreen), 
-				PixelColor.FromColor(Color.Sienna), 
-				PixelColor.FromColor(Color.LightPink), 
-				PixelColor.FromColor(Color.Purple),
-				PixelColor.FromColor(Color.Cyan), 
-				PixelColor.FromColor(Color.LawnGreen), 
-				PixelColor.FromColor(Color.PaleGoldenrod), 
-				PixelColor.FromColor(Color.Red), 
-				PixelColor.FromColor(Color.Yellow), 
-				PixelColor.FromColor(Color.LightSkyBlue), 
-				PixelColor.FromColor(Color.Magenta)
+				PixelColor.FromInt(0x84d5a4),
+				PixelColor.FromInt(0xc059cb),
+				PixelColor.FromInt(0xd0533d),
+				PixelColor.FromInt(0x415354),
+				PixelColor.FromInt(0xcea953),
+				PixelColor.FromInt(0x91d44b),
+				PixelColor.FromInt(0xcd5b89),
+				PixelColor.FromInt(0xa8b6c0),
+				PixelColor.FromInt(0x797ecb),
+				PixelColor.FromInt(0x567539),
+				PixelColor.FromInt(0x72422f),
+				PixelColor.FromInt(0x5d3762),
+				PixelColor.FromInt(0xffed6f),
+				PixelColor.FromInt(0xccebc5),
+				PixelColor.FromInt(0xbc80bd),
+				PixelColor.FromInt(0xd9d9d9),
+				PixelColor.FromInt(0xfccde5),
+				PixelColor.FromInt(0x80b1d3),
+				PixelColor.FromInt(0xfdb462),
+				PixelColor.FromInt(0xb3de69),
+				PixelColor.FromInt(0xfb8072),
+				PixelColor.FromInt(0xbebada),
+				PixelColor.FromInt(0xffffb3),
+				PixelColor.FromInt(0x8dd3c7),
 			};
+
+			//mxd. Create coloured icons
+			distincticons = new List<Bitmap>(distinctcolors.Count);
+			foreach(PixelColor color in distinctcolors)
+			{
+				distincticons.Add(MakeTintedImage(Properties.Resources.Status0, color));
+			}
 
 			soundenvironments = new List<SoundEnvironment>();
 			blockinglinedefs = new List<Linedef>();
@@ -392,7 +421,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			foreach (Thing thing in General.Map.Map.Things)
 			{
 				// SoundEnvironment thing, see http://zdoom.org/wiki/Classes:SoundEnvironment
-				if (thing.Type != 9048) continue;
+				if (thing.Type != SOUND_ENVIROMNEMT_THING_TYPE) continue;
 				if (thing.Sector == null) thing.DetermineSector();
 				if (thing.Sector != null && sectors.Contains(thing.Sector)) things.Add(thing);
 			}
@@ -419,6 +448,43 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		internal static void SetThingDormant(Thing thing, bool dormant) 
 		{
 			thing.SetFlag(General.Map.UDMF ? "dormant" : "14", dormant);
+		}
+
+		//mxd. Based on http://www.getcodesamples.com/src/792A0BB0/6CD40E7B 
+		private static Bitmap MakeTintedImage(Bitmap source, PixelColor tint) 
+		{
+			BitmapData sourcedata = source.LockBits(new Rectangle(0, 0, source.Width, source.Height),
+									ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+			byte[] pixelBuffer = new byte[sourcedata.Stride * sourcedata.Height];
+			Marshal.Copy(sourcedata.Scan0, pixelBuffer, 0, pixelBuffer.Length);
+			source.UnlockBits(sourcedata);
+
+			//Translate tint color to 0.0-1.0 range
+			float redtint = tint.r / 256.0f;
+			float greentint = tint.g / 256.0f; 
+			float bluetint = tint.b / 256.0f;
+			float red, green, blue;
+
+			for(int k = 0; k + 4 < pixelBuffer.Length; k += 4) 
+			{
+				blue = 60 + pixelBuffer[k] * bluetint;
+				green = 60 + pixelBuffer[k + 1] * greentint;
+				red = 60 + pixelBuffer[k + 2] * redtint;
+
+				pixelBuffer[k] = (byte)Math.Min(255, blue);
+				pixelBuffer[k + 1] = (byte)Math.Min(255, green);
+				pixelBuffer[k + 2] = (byte)Math.Min(255, red);
+			}
+
+			Bitmap result = new Bitmap(source.Width, source.Height);
+			BitmapData resultdata = result.LockBits(new Rectangle(0, 0, result.Width, result.Height),
+									ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+			Marshal.Copy(pixelBuffer, 0, resultdata.Scan0, pixelBuffer.Length);
+			result.UnlockBits(resultdata);
+
+			return result;
 		}
 	}
 }

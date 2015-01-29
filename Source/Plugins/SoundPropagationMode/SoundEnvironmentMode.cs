@@ -21,6 +21,7 @@ using System;
 using System.Windows.Forms;
 using System.ComponentModel;
 using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -200,13 +201,13 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			General.Interface.RedrawDisplay();
 		}
 
-		//mxd. Show Reverb selector dialog
+		//mxd. Show Reverb selector dialog or add a new sound environment thing
 		protected override void OnEditEnd()
 		{
 			if(highlightedthing != null)
 			{
 				ReverbsPickerForm form = new ReverbsPickerForm(highlightedthing);
-				if(form.ShowDialog((Form)General.Interface) == DialogResult.OK)
+				if(form.ShowDialog((Form) General.Interface) == DialogResult.OK)
 				{
 					// Make undo
 					General.Map.UndoRedo.CreateUndo("Change Sound Environment Settings");
@@ -218,6 +219,10 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					UpdateData();
 					General.Interface.RedrawDisplay();
 				}
+			}
+			else
+			{
+				InsertThing();
 			}
 		}
 
@@ -435,6 +440,128 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			{
 				General.Interface.RedrawDisplay();
 			}
+		}
+
+		// This creates a new thing at the mouse position
+		[BeginAction("insertitem", BaseAction = true)]
+		public virtual void InsertThing() 
+		{
+			// Mouse in window?
+			if(mouseinside) 
+			{
+				// Insert new thing
+				General.Map.UndoRedo.CreateUndo("Insert sound environment thing");
+				Thing t = InsertThing(mousemappos);
+
+				if(t == null) 
+				{
+					General.Map.UndoRedo.WithdrawUndo();
+					return;
+				}
+
+				// Add to current sound environment
+				if(highlightedsoundenvironment != null) 
+				{
+					lock(highlightedsoundenvironment) 
+					{
+						highlightedsoundenvironment.Things.Add(t);
+					}
+				}
+
+				// Edit the thing
+				highlightedthing = t;
+				General.Interface.RedrawDisplay(); // Redraw screen
+				OnEditEnd();
+
+				General.Interface.DisplayStatus(StatusType.Action, "Inserted a new sound environment thing.");
+
+				// Update things filter
+				General.Map.ThingsFilter.Update();
+
+				// Update sound environments
+				UpdateData();
+
+				// Redraw screen again
+				General.Interface.RedrawDisplay();
+			}
+		}
+
+		// This creates a new thing
+		private static Thing InsertThing(Vector2D pos) 
+		{
+			if(pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
+				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary) 
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to insert thing: outside of map boundaries.");
+				return null;
+			}
+
+			// Create thing
+			Thing t = General.Map.Map.CreateThing();
+			if(t != null) 
+			{
+				General.Settings.ApplyDefaultThingSettings(t);
+				t.Type = BuilderPlug.SOUND_ENVIROMNEMT_THING_TYPE;
+				t.Move(pos);
+				t.UpdateConfiguration();
+
+				// Update things filter so that it includes this thing
+				General.Map.ThingsFilter.Update();
+
+				// Snap to grid enabled?
+				if(General.Interface.SnapToGrid) 
+				{
+					// Snap to grid
+					t.SnapToGrid();
+				} 
+				else 
+				{
+					// Snap to map format accuracy
+					t.SnapToAccuracy();
+				}
+			}
+
+			return t;
+		}
+
+		[BeginAction("deleteitem", BaseAction = true)]
+		public void DeleteItem() 
+		{
+			// Anything to do?
+			if(highlightedthing == null) return;
+
+			// Make undo
+			General.Map.UndoRedo.CreateUndo("Delete sound environment thing");
+			General.Interface.DisplayStatus(StatusType.Action, "Deleted a sound environment thing.");
+
+			// Remove from current sound environment
+			if(highlightedsoundenvironment != null && highlightedsoundenvironment.Things.Contains(highlightedthing))
+			{
+				lock(highlightedsoundenvironment)
+				{
+					highlightedsoundenvironment.Things.Remove(highlightedthing);
+				}
+			}
+
+			// Dispose highlighted thing
+			General.Map.Map.BeginAddRemove();
+			highlightedthing.Dispose();
+			highlightedthing = null;
+			General.Map.Map.EndAddRemove();
+
+			// Update cache values
+			General.Map.IsChanged = true;
+			General.Map.ThingsFilter.Update();
+
+			// Invoke a new mousemove so that the highlighted item updates
+			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);
+			OnMouseMove(e);
+
+			// Update sound environments
+			UpdateData();
+
+			// Redraw screen
+			General.Interface.RedrawDisplay();
 		}
 
 		#endregion
