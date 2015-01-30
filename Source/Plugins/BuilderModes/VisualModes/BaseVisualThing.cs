@@ -231,13 +231,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(Thing.Sector != null)
 				{
 					SectorData sd = mode.GetSectorData(Thing.Sector);
-					pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
+					float maxz = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
+					pos.z = maxz;
 
 					if(Thing.Position.z > 0) pos.z -= Thing.Position.z;
 
 					// Check if below floor
 					float minz = sd.Floor.plane.GetZ(Thing.Position);
-					if(pos.z < minz) pos.z = minz;
+					if(pos.z < minz) pos.z = Math.Min(minz, maxz);
 				}
 			}
 			else
@@ -246,13 +247,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(Thing.Sector != null)
 				{
 					SectorData sd = mode.GetSectorData(Thing.Sector);
-					pos.z = sd.Floor.plane.GetZ(Thing.Position);
+					float minz = sd.Floor.plane.GetZ(Thing.Position);
+					pos.z = minz;
 
 					if(Thing.Position.z > 0) pos.z += Thing.Position.z;
 
 					// Check if above ceiling
 					float maxz = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
-					if(pos.z > maxz) pos.z = maxz;
+					if(pos.z > maxz) pos.z = Math.Max(minz, maxz);
 				}
 			}
 			
