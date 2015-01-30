@@ -232,20 +232,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					SectorData sd = mode.GetSectorData(Thing.Sector);
 					pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
-					/*if(Thing.Position.z > 0)
-						pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
-					else
-						pos.z = Thing.Sector.CeilHeight - info.Height;*/
-				}
 
-				pos.z -= Thing.Position.z;
+					if(Thing.Position.z > 0) pos.z -= Thing.Position.z;
 
-				// Check if below floor
-				if((Thing.Sector != null) && (pos.z < Thing.Sector.FloorHeight))
-				{
-					// Put thing on the floor
-					SectorData sd = mode.GetSectorData(Thing.Sector);
-					pos.z = sd.Floor.plane.GetZ(Thing.Position);
+					// Check if below floor
+					float minz = sd.Floor.plane.GetZ(Thing.Position);
+					if(pos.z < minz) pos.z = minz;
 				}
 			}
 			else
@@ -255,20 +247,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					SectorData sd = mode.GetSectorData(Thing.Sector);
 					pos.z = sd.Floor.plane.GetZ(Thing.Position);
-					/*if(Thing.Position.z == 0)
-						pos.z = sd.Floor.plane.GetZ(Thing.Position);
-					else
-						pos.z = Thing.Sector.FloorHeight;*/
-				}
 
-				pos.z += Thing.Position.z;
+					if(Thing.Position.z > 0) pos.z += Thing.Position.z;
 
-				// Check if above ceiling
-				if((Thing.Sector != null) && ((pos.z + info.Height) > Thing.Sector.CeilHeight))
-				{
-					// Put thing against ceiling
-					SectorData sd = mode.GetSectorData(Thing.Sector);
-					pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
+					// Check if above ceiling
+					float maxz = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
+					if(pos.z > maxz) pos.z = maxz;
 				}
 			}
 			
