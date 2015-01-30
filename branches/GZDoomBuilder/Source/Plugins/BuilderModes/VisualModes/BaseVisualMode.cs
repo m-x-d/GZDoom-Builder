@@ -2166,7 +2166,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(vt.Thing.Sector == null) continue;
 
-					if (vt.Info.Hangs)
+					if(vt.Info.AbsoluteZ)
+					{
+						SectorData sd = GetSectorData(vt.Thing.Sector);
+						vt.OnMove(new Vector3D(vt.Thing.Position, sd.Ceiling.plane.GetZ(vt.Thing.Position) - vt.Info.Height));
+					}
+					else if(vt.Info.Hangs)
 					{
 						vt.OnMove(new Vector3D(vt.Thing.Position, 0));
 					}
@@ -2385,7 +2390,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(vt.Thing.Sector == null) continue;
 					
-					if (vt.Info.Hangs)
+					if(vt.Info.AbsoluteZ)
+					{
+						SectorData sd = GetSectorData(vt.Thing.Sector);
+						vt.OnMove(new Vector3D(vt.Thing.Position, sd.Floor.plane.GetZ(vt.Thing.Position)));
+					}
+					else if(vt.Info.Hangs)
 					{
 						vt.OnMove(new Vector3D(vt.Thing.Position, vt.Thing.Sector.CeilHeight - vt.Thing.Sector.FloorHeight - vt.Info.Height));
 					} 
