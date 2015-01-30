@@ -2172,7 +2172,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 					else
 					{
-						vt.OnMove(new Vector3D(vt.Thing.Position, vt.Thing.Sector.CeilHeight - vt.Info.Height));
+						vt.OnMove(new Vector3D(vt.Thing.Position, vt.Thing.Sector.CeilHeight - vt.Thing.Sector.FloorHeight - vt.Info.Height));
 					}
 				}
 			}
