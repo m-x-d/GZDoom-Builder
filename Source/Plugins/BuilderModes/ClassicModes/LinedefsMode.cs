@@ -1486,6 +1486,71 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(form.Setup(this)) form.ShowDialog();
 		}
 
+		//mxd
+		[BeginAction("applylightfogflag")]
+		private void ApplyLightFogFlag() 
+		{
+			if(!General.Map.UDMF)return;
+
+			// Make list of selected linedefs
+			ICollection<Linedef> lines = General.Map.Map.GetSelectedLinedefs(true);
+
+			if(lines.Count == 0) 
+			{
+				if(highlighted != null && !highlighted.IsDisposed) 
+				{
+					lines.Add(highlighted);
+				} 
+				else 
+				{
+					General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection of some description!");
+					return;
+				}
+			}
+
+			// Make undo
+			General.Map.UndoRedo.CreateUndo("Apply 'lightfog' flag");
+
+			// Apply the flag
+			int addedcout = 0;
+			int removedcount = 0;
+			foreach(Linedef l in lines)
+			{
+				if(l.Front != null) ToggleLightFogFlag(l.Front, ref addedcout, ref removedcount);
+				if(l.Back != null) ToggleLightFogFlag(l.Back, ref addedcout, ref removedcount);
+			}
+
+			// Display info
+			General.Interface.DisplayStatus(StatusType.Action, "Added 'lightfog' flag to " + addedcout + " sidedefs, removed it from " + removedcount + " sidedefs.");
+		}
+
+		//mxd
+		private void ToggleLightFogFlag(Sidedef side, ref int addedcout, ref int removedcount) 
+		{
+			//Side requires the flag?
+			if(!side.Fields.ContainsKey("light") || side.Sector == null) return;
+			if(General.Map.Data.MapInfo.HasFadeColor ||
+			   (General.Map.Data.MapInfo.HasOutsideFogColor && side.Sector.CeilTexture == General.Map.Config.SkyFlatName) ||
+			   side.Sector.Fields.ContainsKey("fade"))
+			{
+				//Set the flag
+				if(!side.IsFlagSet("lightfog"))
+				{
+					side.SetFlag("lightfog", true);
+					addedcout++;
+				}
+			}
+			else
+			{
+				//Unset the flag
+				if(side.IsFlagSet("lightfog")) 
+				{
+					side.SetFlag("lightfog", false);
+					removedcount++;
+				}
+			}
+		}
+
 		#endregion
 	}
 }

@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		internal Dictionary<int, ModelData> ModeldefEntries { get { return modeldefEntries; } }
 		internal Dictionary<int, DynamicLightData> GldefsEntries { get { return gldefsEntries; } }
-		internal MapInfo MapInfo { get { return mapInfo; } }
+		public MapInfo MapInfo { get { return mapInfo; } }
 		public Dictionary<string, KeyValuePair<int, int>> Reverbs { get { return reverbs; } }
 
 		public Playpal Palette { get { return palette; } }
