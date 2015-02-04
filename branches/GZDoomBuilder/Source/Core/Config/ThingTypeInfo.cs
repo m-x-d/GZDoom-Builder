@@ -45,28 +45,26 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Variables
 
 		// Properties
-		private int index;
+		private readonly int index;
 		private string title;
 		private string sprite;
 		private ActorStructure actor;
+		private readonly string classname; //mxd
 		private long spritelongname;
 		private int color;
-		private bool arrow;
+		private readonly bool arrow;
 		private float radius;
 		private float height;
 		private bool hangs;
 		private int blocking;
 		private int errorcheck;
-		private bool fixedsize;
-		private bool fixedrotation; //mxd
-		private ThingCategory category;
-		private ArgumentInfo[] args;
-		private bool isknown;
-		private bool absolutez;
+		private readonly bool fixedsize;
+		private readonly bool fixedrotation; //mxd
+		private readonly ThingCategory category;
+		private readonly ArgumentInfo[] args;
+		private readonly bool isknown;
+		private readonly bool absolutez;
 		private SizeF spritescale;
-
-		//mxd
-		private string classname;
 		
 		#endregion
 
@@ -284,9 +282,16 @@ namespace CodeImp.DoomBuilder.Config
 				color = (ci == 0 || ci > 19 ? 18 : ci) ;
 			}
 
+			//mxd. Custom argument titles?
+			for(int i = 0; i < args.Length; i++)
+			{
+				if(!actor.HasPropertyWithValue("$arg" + i)) continue;
+				string argtitle = actor.GetPropertyAllValues("$arg" + i);
+				args[i] = new ArgumentInfo(i, ZDTextParser.StripQuotes(argtitle));
+			}
+
 			// Remove doublequotes from title
-			if((title.Length > 2) && title.StartsWith("\"") && title.EndsWith("\""))
-				title = title.Substring(1, title.Length - 2);
+			title = ZDTextParser.StripQuotes(title); //mxd
 			
 			// Set sprite
 			string suitablesprite = actor.FindSuitableSprite();

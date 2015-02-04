@@ -91,10 +91,19 @@ namespace CodeImp.DoomBuilder.Config
 			if (this.enumlist == null) this.enumlist = new EnumList(); //mxd
 		}
 
+		//mxd. Constructor for an argument info defined in DECORATE
+		internal ArgumentInfo(int argindex, string title) 
+		{
+			this.used = true;
+			this.title = title;
+			this.type = 0;
+			this.enumlist = new EnumList();
+			this.defaultvalue = 0;
+		}
+
 		// Constructor for unknown argument info
 		internal ArgumentInfo(int argindex)
 		{
-			// Read
 			this.used = false;
 			this.title = "Argument " + (argindex + 1);
 			this.type = 0;
