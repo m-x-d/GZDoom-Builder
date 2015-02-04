@@ -99,13 +99,13 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 		
 		// This returns true if the given character is whitespace
-		protected internal bool IsWhitespace(char c)
+		private bool IsWhitespace(char c)
 		{
 			return (whitespace.IndexOf(c) > -1);
 		}
 
 		// This returns true if the given character is a special token
-		protected internal bool IsSpecialToken(char c)
+		private bool IsSpecialToken(char c)
 		{
 			return (specialtokens.IndexOf(c) > -1);
 		}
@@ -116,9 +116,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(s.Length > 0) return (specialtokens.IndexOf(s[0]) > -1);
 			return false;
 		}
+
+		//mxd. This removes beginning and ending quotes from a token
+		protected internal string StripTokenQuotes(string token) 
+		{
+			return StripQuotes(token);
+		}
 		
 		// This removes beginning and ending quotes from a token
-		protected internal string StripTokenQuotes(string token)
+		internal static string StripQuotes(string token)
 		{
 			// Remove first character, if it is a quote
 			if(!string.IsNullOrEmpty(token) && (token[0] == '"'))
