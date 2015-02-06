@@ -494,7 +494,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				int light = (int)sd.Fields["light"].Value;
 				
-				if (sd.Fields.ContainsKey("lightabsolute") && Boolean.Parse(sd.Fields["lightabsolute"].Value.ToString()))
+				if (sd.Fields.GetValue("lightabsolute", false))
 					value.Text = light + " (abs.)";
 				else
 					value.Text = light + " (" + Math.Min(255, Math.Max(0, (light + sd.Sector.Brightness))) + ")";

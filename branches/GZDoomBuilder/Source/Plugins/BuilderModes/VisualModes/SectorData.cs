@@ -276,13 +276,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				lightlevels.Sort(0, lightlevels.Count, comparer); //mxd. Was lightlevels.Sort(1, lightlevels.Count - 2, comparer); 
 			}
 
+			//mxd. 3d floors can be above the real ceiling, so let's find it first... 
+			int startindex = lightlevels.Count - 2;
+			for(int i = lightlevels.Count - 2; i >= 0; i--)
+			{
+				if(lightlevels[i].type == SectorLevelType.Ceiling && lightlevels[i].sector.Index == sector.Index)
+				{
+					startindex = i;
+					break;
+				}
+			}
+
 			// Now that we know the levels in this sector (and in the right order) we
 			// can determine the lighting in between and on the levels.
 			// Start from the absolute ceiling and go down to 'cast' the lighting
-			for(int i = lightlevels.Count - 2; i >= 0; i--)
+			for(int i = startindex; i >= 0; i--)
 			{
 				SectorLevel l = lightlevels[i];
 				SectorLevel pl = lightlevels[i + 1];
+
+				//mxd. If the real floor has "lightfloor" value and the 3d floor above it doesn't cast down light, use real floor's brightness
+				if(General.Map.UDMF && l == floor && lightlevels.Count > 2 && !pl.transferbrightness && l.sector.Fields.ContainsKey("lightfloor"))
+				{
+					int light = l.sector.Fields.GetValue("lightfloor", pl.brightnessbelow);
+					pl.brightnessbelow = (l.sector.Fields.GetValue("lightfloorabsolute", false) ? light : l.sector.Brightness + light);
+				}
 				
 				// Set color when no color is specified, or when a 3D floor is placed above the absolute floor
 				if((l.color == 0) || ((l == floor) && (lightlevels.Count > 2)))
@@ -292,11 +310,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					l.color = floorcolor.WithAlpha(255).ToInt();
 				}
 				
-				if(l.colorbelow.a == 0)
-					l.colorbelow = pl.colorbelow;
-				
-				if(l.brightnessbelow == -1)
-					l.brightnessbelow = pl.brightnessbelow;
+				if(l.colorbelow.a == 0) l.colorbelow = pl.colorbelow;
+				if(l.brightnessbelow == -1) l.brightnessbelow = pl.brightnessbelow;
 			}
 
 			floorchanged = false;

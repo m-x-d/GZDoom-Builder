@@ -372,7 +372,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		protected void GetLightValue(out int lightvalue, out bool lightabsolute)
 		{
-			lightabsolute = Sidedef.IsFlagSet("lightabsolute");
+			lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
 			bool affectedbyfog = General.Map.Data.MapInfo.HasFadeColor || (Sector.Sector.CeilTexture == General.Map.Config.SkyFlatName && General.Map.Data.MapInfo.HasOutsideFogColor) || Sector.Sector.Fields.ContainsKey("fadecolor");
 			bool ignorelight = affectedbyfog && !Sidedef.IsFlagSet("lightfog") && !lightabsolute;
 			lightvalue = ignorelight ? 0 : Sidedef.Fields.GetValue("light", 0); //mxd

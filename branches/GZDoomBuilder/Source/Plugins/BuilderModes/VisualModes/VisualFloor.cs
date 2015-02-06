@@ -105,7 +105,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if (!base.Texture.IsImageLoaded)
 						setuponloadedtexture = s.LongFloorTexture;
 				}
-			} else {
+			}
+			else
+			{
 				// Use missing texture
 				base.Texture = General.Map.Data.MissingTexture3D;
 				setuponloadedtexture = 0;

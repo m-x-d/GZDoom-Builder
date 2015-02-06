@@ -142,6 +142,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				floor.colorbelow = PixelColor.FromInt(0);
 				ceiling.color = 0;
 				ceiling.brightnessbelow = -1;
+				ceiling.transferbrightness = false; //mxd
 				ceiling.colorbelow = PixelColor.FromInt(0);
 			}
 		}
