@@ -83,10 +83,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 				value1.Text = newValue1;
 				value2.Text = newValue2;
 			} 
-			else 
+			else
 			{
-				value1.Text = ((!string.IsNullOrEmpty(value1.Text) && value1.Text != newValue1) ? string.Empty : newValue1);
-				value2.Text = ((!string.IsNullOrEmpty(value2.Text) && value2.Text != newValue2) ? string.Empty : newValue2);
+				if(!string.IsNullOrEmpty(value1.Text)) value1.Text = (value1.Text != newValue1 ? string.Empty : newValue1);
+				if(!string.IsNullOrEmpty(value2.Text)) value2.Text = (value2.Text != newValue2 ? string.Empty : newValue2);
 			}
 			CheckValues();
 

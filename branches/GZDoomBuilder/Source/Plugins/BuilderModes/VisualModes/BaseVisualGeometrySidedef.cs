@@ -121,9 +121,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// From UDMF field
 				string field = Sidedef.Line.Fields.GetValue("renderstyle", "translucent");
 				alpha = (byte)(Sidedef.Line.Fields.GetValue("alpha", 1.0f) * 255.0f);
-				if(alpha == 255 && Sidedef.Line.IsFlagSet("transparent")) { //mxd
-					alpha = 64;
-				}
+				if(alpha == 255 && Sidedef.Line.IsFlagSet("transparent")) alpha = 64; //mxd
 
 				if(field == "add")
 					this.RenderPass = RenderPass.Additive;
@@ -157,12 +155,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		
 		// This creates vertices from a wall polygon and applies lighting
-		protected List<WorldVertex> CreatePolygonVertices(WallPolygon poly, TexturePlane tp, SectorData sd, int lightvalue, bool lightabsolute)
+		/*protected List<WorldVertex> CreatePolygonVertices(WallPolygon poly, TexturePlane tp, SectorData sd, int lightvalue, bool lightabsolute)
 		{
 			List<WallPolygon> polylist = new List<WallPolygon>(1);
 			polylist.Add(poly);
 			return CreatePolygonVertices(polylist, tp, sd, lightvalue, lightabsolute);
-		}
+		}*/
 
 		// This creates vertices from a wall polygon and applies lighting
 		protected List<WorldVertex> CreatePolygonVertices(List<WallPolygon> poly, TexturePlane tp, SectorData sd, int lightvalue, bool lightabsolute)
@@ -369,6 +367,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			poly = newp;
+		}
+
+		//mxd
+		protected void GetLightValue(out int lightvalue, out bool lightabsolute)
+		{
+			lightabsolute = Sidedef.IsFlagSet("lightabsolute");
+			bool affectedbyfog = General.Map.Data.MapInfo.HasFadeColor || (Sector.Sector.CeilTexture == General.Map.Config.SkyFlatName && General.Map.Data.MapInfo.HasOutsideFogColor) || Sector.Sector.Fields.ContainsKey("fadecolor");
+			bool ignorelight = affectedbyfog && !Sidedef.IsFlagSet("lightfog") && !lightabsolute;
+			lightvalue = ignorelight ? 0 : Sidedef.Fields.GetValue("light", 0); //mxd
+			if(ignorelight) lightabsolute = false;
 		}
 
 		//mxd
