@@ -74,10 +74,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector2D vl, vr;
 
 			//mxd. lightfog flag support
-			bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
-			bool ignoreUDMFLight = (!Sidedef.Fields.GetValue("lightfog", false) || !lightabsolute) && Sector.Sector.Fields.ContainsKey("fadecolor");
-			int lightvalue = ignoreUDMFLight ? 0 : Sidedef.Fields.GetValue("light", 0); //mxd
-			if (ignoreUDMFLight) lightabsolute = false;
+			int lightvalue;
+			bool lightabsolute;
+			GetLightValue(out lightvalue, out lightabsolute);
 			
 			Vector2D tscale = new Vector2D(Sidedef.Fields.GetValue("scalex_mid", 1.0f),
 										   Sidedef.Fields.GetValue("scaley_mid", 1.0f));

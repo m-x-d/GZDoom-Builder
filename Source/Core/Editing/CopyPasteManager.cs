@@ -297,9 +297,8 @@ namespace CodeImp.DoomBuilder.Editing
 							// Convert UDMF fields back to flags and activations, if needed
 							if(!(General.Map.FormatInterface is UniversalMapSetIO)) General.Map.Map.TranslateFromUDMF();
 
-							//mxd. Translate texture names if needed
-							if(reader.UseLongTextureNames != General.Map.Config.UseLongTextureNames)
-								General.Map.Map.TranslateTextureNames(General.Map.Config.UseLongTextureNames, true);
+							//mxd. Translate texture names
+							General.Map.Map.TranslateTextureNames(General.Map.Config.UseLongTextureNames, true);
 							
 							// Modify tags and actions if preferred
 							if(options.ChangeTags == PasteOptions.TAGS_REMOVE) Tools.RemoveMarkedTags();
