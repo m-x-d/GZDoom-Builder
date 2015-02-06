@@ -773,7 +773,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Thing t in selectedthings)
 			{
 				if(!fixedrotationthingtypes.Contains(t.Type)) //mxd. Polyobject Anchors, I hate you!
-					t.Rotate(Angle2D.Normalized(newthingangle[index++]));
+					t.Rotate(Angle2D.Normalized(newthingangle[index]));
+				index++;
 			}
 			
 			UpdatePanel();

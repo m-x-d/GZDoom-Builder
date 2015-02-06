@@ -30,6 +30,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// When this is 0, it takes the color from the sector above
 		public int brightnessbelow;
 		public PixelColor colorbelow;
+		public bool transferbrightness; //mxd
 		
 		// Constructor
 		public SectorLevel(Sector s, SectorLevelType type)
@@ -37,6 +38,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.type = type;
 			this.sector = s;
 			this.alpha = 255;
+			this.transferbrightness = true; //mxd
 		}
 		
 		// Copy constructor
@@ -55,6 +57,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			target.color = this.color;
 			target.brightnessbelow = this.brightnessbelow;
 			target.colorbelow = this.colorbelow;
+			target.transferbrightness = this.transferbrightness; //mxd
 		}
 	}
 }
