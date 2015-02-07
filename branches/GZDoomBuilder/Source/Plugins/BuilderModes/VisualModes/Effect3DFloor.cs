@@ -25,10 +25,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool vavoomtype;
 
 		//mxd. Translucent 3d-floor?
-		private bool renderInside;
+		private bool renderinside;
 
 		//mxd. Ignore Bottom Height?
-		private bool ignoreBottomHeight;
+		private bool ignorebottomheight;
 
 		// Properties
 		public int Alpha { get { return alpha; } }
@@ -36,8 +36,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public SectorLevel Ceiling { get { return ceiling; } }
 		public Linedef Linedef { get { return linedef; } }
 		public bool VavoomType { get { return vavoomtype; } }
-		public bool RenderInside { get { return renderInside; } } //mxd
-		public bool IgnoreBottomHeight { get { return ignoreBottomHeight; } } //mxd
+		public bool RenderInside { get { return renderinside; } } //mxd
+		public bool IgnoreBottomHeight { get { return ignorebottomheight; } } //mxd
 
 		//mxd. 3D-Floor Flags
 		[Flags]
@@ -100,7 +100,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// For non-vavoom types, we must switch the level types
-			if((linedef.Args[1] & 0x03) != 0)
+			if(linedef.Args[1] != (int)FloorTypes.VavoomStyle)
 			{
 				vavoomtype = false;
 				alpha = linedef.Args[3];
@@ -112,8 +112,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ceiling.plane = sd.Floor.plane.GetInverted();
 
 				//mxd. check for Swimmable/RenderInside setting
-				renderInside = ((linedef.Args[1] & (int)FloorTypes.Swimmable) != 0) || ((linedef.Args[1] & (int)FloorTypes.RenderInside) != 0);
-				ignoreBottomHeight = ((linedef.Args[2] & (int)Flags.IgnoreBottomHeight) != 0);
+				renderinside = ( (((linedef.Args[1] & (int)FloorTypes.Swimmable) == (int)FloorTypes.Swimmable) && (linedef.Args[1] & (int)FloorTypes.NonSolid) != (int)FloorTypes.NonSolid) )
+							|| ((linedef.Args[1] & (int)FloorTypes.RenderInside) == (int)FloorTypes.RenderInside);
+				ignorebottomheight = ((linedef.Args[2] & (int)Flags.IgnoreBottomHeight) == (int)Flags.IgnoreBottomHeight);
 
 				// A 3D floor's color is always that of the sector it is placed in
 				floor.color = 0;
@@ -136,7 +137,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ceiling.alpha = alpha;
 			
 			// Do not adjust light? (works only for non-vavoom types)
-			if(!vavoomtype && ( ((linedef.Args[2] & (int)Flags.DisableLighting) != 0) || (((linedef.Args[2] & (int)Flags.RestrictLighting) != 0)) )) //mxd
+			if(!vavoomtype && (((linedef.Args[2] & (int)Flags.DisableLighting) == (int)Flags.DisableLighting) || (((linedef.Args[2] & (int)Flags.RestrictLighting) == (int)Flags.RestrictLighting)))) //mxd
 			{
 				floor.brightnessbelow = -1;
 				floor.colorbelow = PixelColor.FromInt(0);

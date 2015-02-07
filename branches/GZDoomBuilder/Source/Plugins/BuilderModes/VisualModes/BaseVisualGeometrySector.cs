@@ -530,7 +530,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SetTexture("-");
 
 			// Update
-			Sector.Changed = true;
+			if(mode.VisualSectorExists(level.sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+				vs.UpdateSectorGeometry(true);
+			}
 		}
 		
 		// Processing

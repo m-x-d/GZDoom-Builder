@@ -760,7 +760,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SetTexture("-");
 
 			// Update
-			Sector.Changed = true;
+			Sector.UpdateSectorGeometry(true);
 		}
 		
 		// Processing
