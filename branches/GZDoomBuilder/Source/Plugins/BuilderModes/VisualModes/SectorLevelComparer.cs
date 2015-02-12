@@ -23,7 +23,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Comparer
 		public int Compare(SectorLevel x, SectorLevel y)
 		{
-			return Math.Sign(x.plane.GetZ(center) - y.plane.GetZ(center));
+			return (x == y ? 0 : Math.Sign(x.plane.GetZ(center) - y.plane.GetZ(center))); //mxd. Added equality check
 		}
 	}
 }

@@ -170,28 +170,40 @@ namespace CodeImp.DoomBuilder.VisualModes
 			//mxd. Synch camera position to cursor position or center of the screen in 2d-mode
 			if(General.Settings.GZSynchCameras) 
 			{
-				//if position is inside sector - adjust camera.z accordingly
-				Sector sector = General.Map.Map.GetSectorByCoordinates(initialcameraposition, blockmap);
-
+				//If initial position is inside or nearby a sector - adjust camera.z accordingly
 				float posz = General.Map.VisualCamera.Position.z;
-				if(sector != null) 
+				Sector nearestsector = General.Map.Map.GetSectorByCoordinates(initialcameraposition, blockmap);
+
+				if(nearestsector == null)
 				{
-					int sectorHeight = sector.CeilHeight - sector.FloorHeight;
-					if(General.Map.VisualCamera.Position.z < sector.FloorHeight + 41) 
+					Linedef nearestline = MapSet.NearestLinedef(General.Map.Map.Linedefs, initialcameraposition);
+					if(nearestline != null) 
 					{
-						if(sectorHeight < 41)
-							posz = sector.FloorHeight + sectorHeight / 2;
-						else
-							posz = sector.FloorHeight + 41; // same as in doom
-					} 
-					else if(General.Map.VisualCamera.Position.z > sector.CeilHeight) 
-					{
-						if(sectorHeight < 41)
-							posz = sector.FloorHeight + sectorHeight / 2;
-						else
-							posz = sector.CeilHeight - 4;
+						float side = nearestline.SideOfLine(initialcameraposition);
+						Sidedef nearestside = (side < 0.0f ? nearestline.Front : nearestline.Back) ?? (side < 0.0f ? nearestline.Back : nearestline.Front);
+						if(nearestside != null) nearestsector = nearestside.Sector;
 					}
 				}
+
+				if(nearestsector != null) 
+				{
+					int sectorheight = nearestsector.CeilHeight - nearestsector.FloorHeight;
+					if(General.Map.VisualCamera.Position.z < nearestsector.FloorHeight + 41) 
+					{
+						if(sectorheight < 41)
+							posz = nearestsector.FloorHeight + sectorheight / 2;
+						else
+							posz = nearestsector.FloorHeight + 41; // same as in doom
+					} 
+					else if(General.Map.VisualCamera.Position.z > nearestsector.CeilHeight) 
+					{
+						if(sectorheight < 41)
+							posz = nearestsector.FloorHeight + sectorheight / 2;
+						else
+							posz = nearestsector.CeilHeight - 4;
+					}
+				}
+
 				General.Map.VisualCamera.Position = new Vector3D(initialcameraposition.x, initialcameraposition.y, posz);
 			} 
 			else 

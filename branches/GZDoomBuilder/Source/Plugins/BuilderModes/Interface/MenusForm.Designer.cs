@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.curvelinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
 			this.splitlinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
-			this.alignLinedefsItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.aligntexturesitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alignFloorToFrontItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alignFloorToBackItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alignCeilingToFrontItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,6 +100,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fileMenuStrip = new System.Windows.Forms.MenuStrip();
 			this.exportStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
+			this.updatelightfogitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.fileMenuStrip.SuspendLayout();
@@ -133,7 +134,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.curvelinedefsitem,
             this.toolStripMenuItem3,
             this.splitlinedefsitem,
-            this.alignLinedefsItem,
+            this.updatelightfogitem,
+            this.aligntexturesitem,
             this.toolStripSeparator5,
             this.selectSimilarLinesItem});
 			this.linedefsmenu.Name = "linedefsmenu";
@@ -225,16 +227,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.splitlinedefsitem.Text = "S&plit Linedefs";
 			this.splitlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// alignLinedefsItem
+			// aligntexturesitem
 			// 
-			this.alignLinedefsItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.aligntexturesitem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.alignFloorToFrontItem,
             this.alignFloorToBackItem,
             this.alignCeilingToFrontItem,
             this.alignCeilingToBackItem});
-			this.alignLinedefsItem.Name = "alignLinedefsItem";
-			this.alignLinedefsItem.Size = new System.Drawing.Size(245, 22);
-			this.alignLinedefsItem.Text = "&Align Textures";
+			this.aligntexturesitem.Name = "aligntexturesitem";
+			this.aligntexturesitem.Size = new System.Drawing.Size(245, 22);
+			this.aligntexturesitem.Text = "&Align Textures";
 			// 
 			// alignFloorToFrontItem
 			// 
@@ -737,7 +739,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonTextureOffsetLock.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.TextureLock;
 			this.buttonTextureOffsetLock.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonTextureOffsetLock.Name = "buttonTextureOffsetLock";
-			this.buttonTextureOffsetLock.Size = new System.Drawing.Size(23, 20);
+			this.buttonTextureOffsetLock.Size = new System.Drawing.Size(23, 22);
 			this.buttonTextureOffsetLock.ToolTipText = "Pin Texture Offsets.\r\nWhen enabled, keeps floor and ceiling texture offsets\r\ncons" +
 				"tant while sector is dragged";
 			this.buttonTextureOffsetLock.Click += new System.EventHandler(this.buttonTextureOffsetLock_Click);
@@ -767,6 +769,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.toolStripMenuItem5.Tag = "exporttoobj";
 			this.toolStripMenuItem5.Text = "Selection to Wavefront .obj...";
 			this.toolStripMenuItem5.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// updatelightfogitem
+			// 
+			this.updatelightfogitem.Name = "updatelightfogitem";
+			this.updatelightfogitem.Size = new System.Drawing.Size(245, 22);
+			this.updatelightfogitem.Tag = "applylightfogflag";
+			this.updatelightfogitem.Text = "&Update \'lightfog\' flag";
 			// 
 			// MenusForm
 			// 
@@ -834,7 +843,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripMenuItem pointAtCursorItem;
 		private System.Windows.Forms.ToolStripButton buttonTextureOffsetLock;
 		private System.Windows.Forms.ToolStripMenuItem selectInSectorsItem;
-		private System.Windows.Forms.ToolStripMenuItem alignLinedefsItem;
+		private System.Windows.Forms.ToolStripMenuItem aligntexturesitem;
 		private System.Windows.Forms.ToolStripMenuItem alignFloorToFrontItem;
 		private System.Windows.Forms.ToolStripMenuItem alignFloorToBackItem;
 		private System.Windows.Forms.ToolStripMenuItem alignCeilingToFrontItem;
@@ -870,5 +879,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripComboBox gradientInterpolationMenu;
 		private System.Windows.Forms.ToolStripSeparator separatorsectors2;
 		private System.Windows.Forms.ToolStripSeparator separatorsectors3;
+		private System.Windows.Forms.ToolStripMenuItem updatelightfogitem;
 	}
 }

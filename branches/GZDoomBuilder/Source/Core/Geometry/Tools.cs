@@ -496,7 +496,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 			}
 			
-			// Use default settings from neares linedef, if settings have been found yet
+			// Use default settings from the nearest linedef, if settings have not been found yet
+			Sector nearestsector = null; //mxd
 			if( (nearbylines != null) && (alllines.Count > 0) && (!foundsidedefaults || (sourcesector == null)) )
 			{
 				Vector2D testpoint = alllines[0].Line.GetSidePoint(alllines[0].Front);
@@ -511,6 +512,16 @@ namespace CodeImp.DoomBuilder.Geometry
 						if(sourcesector == null) sourcesector = defaultside.Sector;
 						TakeSidedefSettings(ref sourceside, defaultside);
 					}
+					else
+					{
+						//mxd. Any side is better than no side (but we'll want only basic settings from that)...
+						defaultside = (side < 0.0f ? nearest.Back : nearest.Front);
+						if(defaultside != null)
+						{
+							TakeSidedefSettings(ref sourceside, defaultside);
+							nearestsector = defaultside.Sector;
+						}
+					}
 				}
 			}
 			
@@ -522,21 +533,34 @@ namespace CodeImp.DoomBuilder.Geometry
 			{
 				// Copy properties from source to new sector
 				sourcesector.CopyPropertiesTo(newsector);
-
-				//mxd. Apply overrides
-				if(useOverrides) 
-				{
-					if (General.Map.Options.OverrideCeilingTexture) newsector.SetCeilTexture(General.Map.Options.DefaultCeilingTexture);
-					if (General.Map.Options.OverrideFloorTexture) newsector.SetFloorTexture(General.Map.Options.DefaultFloorTexture);
-					if (General.Map.Options.OverrideCeilingHeight) newsector.CeilHeight = General.Map.Options.CustomCeilingHeight;
-					if (General.Map.Options.OverrideFloorHeight) newsector.FloorHeight = General.Map.Options.CustomFloorHeight;
-					if (General.Map.Options.OverrideBrightness) newsector.Brightness = General.Map.Options.CustomBrightness;
-				}
+			}
+			else if(nearestsector != null)
+			{
+				//mxd. Apply basic properties from the nearest sector
+				newsector.SetFloorTexture(nearestsector.FloorTexture);
+				newsector.SetCeilTexture(nearestsector.CeilTexture);
+				newsector.FloorHeight = nearestsector.FloorHeight;
+				newsector.CeilHeight = nearestsector.CeilHeight;
+				newsector.Brightness = nearestsector.Brightness;
 			}
 			else
 			{
 				// No source sector, apply default sector properties
-				ApplyDefaultsToSector(newsector);
+				newsector.SetFloorTexture(General.Map.Options.DefaultFloorTexture);
+				newsector.SetCeilTexture(General.Map.Options.DefaultCeilingTexture);
+				newsector.FloorHeight = General.Settings.DefaultFloorHeight;
+				newsector.CeilHeight = General.Settings.DefaultCeilingHeight;
+				newsector.Brightness = General.Settings.DefaultBrightness;
+			}
+
+			//mxd. Apply overrides?
+			if(useOverrides) 
+			{
+				if(General.Map.Options.OverrideCeilingTexture) newsector.SetCeilTexture(General.Map.Options.DefaultCeilingTexture);
+				if(General.Map.Options.OverrideFloorTexture) newsector.SetFloorTexture(General.Map.Options.DefaultFloorTexture);
+				if(General.Map.Options.OverrideCeilingHeight) newsector.CeilHeight = General.Map.Options.CustomCeilingHeight;
+				if(General.Map.Options.OverrideFloorHeight) newsector.FloorHeight = General.Map.Options.CustomFloorHeight;
+				if(General.Map.Options.OverrideBrightness) newsector.Brightness = General.Map.Options.CustomBrightness;
 			}
 
 			// Go for all sides to make sidedefs
@@ -710,16 +734,6 @@ namespace CodeImp.DoomBuilder.Geometry
 			if(sd.HighRequired() && sd.LongHighTexture == MapSet.EmptyLongName) sd.SetTextureHigh(defaults.newtexhigh); //mxd
 			if(sd.MiddleRequired() && sd.LongMiddleTexture == MapSet.EmptyLongName) sd.SetTextureMid(defaults.newtexmid); //mxd
 			if(sd.LowRequired() && sd.LongLowTexture == MapSet.EmptyLongName) sd.SetTextureLow(defaults.newtexlow); //mxd
-		}
-
-		// This applies defaults to a sector
-		private static void ApplyDefaultsToSector(Sector s)
-		{
-			s.SetFloorTexture(General.Map.Options.DefaultFloorTexture);
-			s.SetCeilTexture(General.Map.Options.DefaultCeilingTexture);
-			s.FloorHeight = (General.Map.Options.OverrideFloorHeight ? General.Map.Options.CustomFloorHeight : General.Settings.DefaultFloorHeight);
-			s.CeilHeight = (General.Map.Options.OverrideCeilingHeight ? General.Map.Options.CustomCeilingHeight : General.Settings.DefaultCeilingHeight);
-			s.Brightness = (General.Map.Options.OverrideBrightness ? General.Map.Options.CustomBrightness : General.Settings.DefaultBrightness);
 		}
 
 		//mxd. This applies overrides to a sidedef
@@ -2164,6 +2178,51 @@ namespace CodeImp.DoomBuilder.Geometry
 					}
 				}
 			}
+		}
+
+		#endregion
+
+		#region ================== Sidedefs (mxd)
+
+		/// <summary>Updates the 'lightfog' UDMF flag to display sidedef brightness on fogged walls. Returns 1 if flag was added, -1 if it was removed, 0 if flag wasn't changed</summary>
+		public static int UpdateLightFogFlag(Sidedef side) 
+		{
+			//Side requires the flag?
+			if(side.Sector == null) return 0;
+			if(!side.Fields.ContainsKey("light")) 
+			{
+				//Unset the flag
+				if(side.IsFlagSet("lightfog")) 
+				{
+					side.SetFlag("lightfog", false);
+					return -1;
+				}
+				return 0;
+			}
+
+			//Update the flag
+			if(General.Map.Data.MapInfo.HasFadeColor ||
+			   (General.Map.Data.MapInfo.HasOutsideFogColor && side.Sector.CeilTexture == General.Map.Config.SkyFlatName) ||
+			   side.Sector.Fields.ContainsKey("fadecolor")) 
+			{
+				//Set the flag
+				if(!side.IsFlagSet("lightfog")) 
+				{
+					side.SetFlag("lightfog", true);
+					return 1;
+				}
+			} 
+			else 
+			{
+				//Unset the flag
+				if(side.IsFlagSet("lightfog")) 
+				{
+					side.SetFlag("lightfog", false);
+					return -1;
+				}
+			}
+
+			return 0;
 		}
 
 		#endregion

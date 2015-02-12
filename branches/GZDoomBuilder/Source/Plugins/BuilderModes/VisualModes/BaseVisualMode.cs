@@ -101,6 +101,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			public Sidedef sidedef;
 
 			public float offsetx;
+			public float scaleX; //mxd
 			public float scaleY; //mxd
 
 			private Sidedef controlside; //mxd
@@ -2435,32 +2436,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//get target brightness
-			int targetBrightness;
+			int targetbrightness;
 			if(highlighted is VisualFloor) 
 			{
 				VisualFloor v = highlighted as VisualFloor;
-				targetBrightness = v.Level.sector.Fields.GetValue("lightfloor", 0);
+				targetbrightness = v.Level.sector.Fields.GetValue("lightfloor", 0);
 				if (!v.Level.sector.Fields.GetValue("lightfloorabsolute", false)) 
 				{
-					targetBrightness += v.Level.sector.Brightness;
+					targetbrightness += v.Level.sector.Brightness;
 				}
 			} 
 			else if(highlighted is VisualCeiling) 
 			{
 				VisualCeiling v = highlighted as VisualCeiling;
-				targetBrightness = v.Level.sector.Fields.GetValue("lightceiling", 0);
+				targetbrightness = v.Level.sector.Fields.GetValue("lightceiling", 0);
 				if(!v.Level.sector.Fields.GetValue("lightceilingabsolute", false)) 
 				{
-					targetBrightness += v.Level.sector.Brightness;
+					targetbrightness += v.Level.sector.Brightness;
 				}
 			} 
 			else if(highlighted is VisualUpper || highlighted is VisualMiddleSingle || highlighted is VisualMiddleDouble || highlighted is VisualLower) 
 			{
 				BaseVisualGeometrySidedef v = highlighted as BaseVisualGeometrySidedef;
-				targetBrightness = v.Sidedef.Fields.GetValue("light", 0);
+				targetbrightness = v.Sidedef.Fields.GetValue("light", 0);
 				if(!v.Sidedef.Fields.GetValue("lightabsolute", false)) 
 				{
-					targetBrightness += v.Sidedef.Sector.Brightness;
+					targetbrightness += v.Sidedef.Sector.Brightness;
 				}
 			} 
 			else if(highlighted is VisualMiddle3D) 
@@ -2472,10 +2473,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Interface.DisplayStatus(StatusType.Warning, "Highlight a surface, to which you want to match the brightness.");
 					return;
 				}
-				targetBrightness = sd.Fields.GetValue("light", 0);
+				targetbrightness = sd.Fields.GetValue("light", 0);
 				if(!sd.Fields.GetValue("lightabsolute", false)) 
 				{
-					targetBrightness += sd.Sector.Brightness;
+					targetbrightness += sd.Sector.Brightness;
 				}
 
 			} 
@@ -2487,7 +2488,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//make undo
 			CreateUndo("Match Brightness");
-			targetBrightness = General.Clamp(targetBrightness, 0, 255);
+			targetbrightness = General.Clamp(targetbrightness, 0, 255);
 
 			//apply new brightness
 			foreach (IVisualEventReceiver obj in selectedobjects) 
@@ -2502,11 +2503,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					if (v.Level.sector.Fields.GetValue("lightfloorabsolute", false)) 
 					{
-						v.Level.sector.Fields["lightfloor"] = new UniValue(UniversalType.Integer, targetBrightness);
+						UDMFTools.SetInteger(v.Level.sector.Fields, "lightfloor", targetbrightness, 0);
 					} 
 					else 
 					{
-						v.Level.sector.Fields["lightfloor"] = new UniValue(UniversalType.Integer, targetBrightness - v.Level.sector.Brightness);
+						v.Level.sector.Fields["lightfloor"] = new UniValue(UniversalType.Integer, targetbrightness - v.Level.sector.Brightness);
 					}
 
 					v.Sector.UpdateSectorGeometry(false);
@@ -2519,11 +2520,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					if(v.Level.sector.Fields.GetValue("lightceilingabsolute", false)) 
 					{
-						v.Level.sector.Fields["lightceiling"] = new UniValue(UniversalType.Integer, targetBrightness);
+						UDMFTools.SetInteger(v.Level.sector.Fields, "lightceiling", targetbrightness, 0);
 					} 
 					else 
 					{
-						v.Level.sector.Fields["lightceiling"] = new UniValue(UniversalType.Integer, targetBrightness - v.Level.sector.Brightness);
+						v.Level.sector.Fields["lightceiling"] = new UniValue(UniversalType.Integer, targetbrightness - v.Level.sector.Brightness);
 					}
 
 					v.Sector.UpdateSectorGeometry(false);
@@ -2536,16 +2537,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					if (v.Sidedef.Fields.GetValue("lightabsolute", false)) 
 					{
-						v.Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, targetBrightness);
+						UDMFTools.SetInteger(v.Sidedef.Fields, "light", targetbrightness, 0);
 					} 
 					else 
 					{
-						v.Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, targetBrightness - v.Sidedef.Sector.Brightness);
+						v.Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, targetbrightness - v.Sidedef.Sector.Brightness);
 					}
+
+					//Update 'lightfog' flag
+					Tools.UpdateLightFogFlag(v.Sidedef);
 				}
 			}
 
-			//done
+			//Done
 			General.Interface.DisplayStatus(StatusType.Action, "Matched brightness for " + selectedobjects.Count + " surfaces.");
 			Interface_OnSectorEditFormValuesChanged(this, EventArgs.Empty);
 		}
@@ -3498,7 +3502,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		internal void AutoAlignTextures(BaseVisualGeometrySidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks, bool checkSelectedSidedefParts) 
 		{
 			if(General.Map.UDMF)
-				AutoAlignTexturesUdmf(start, texture, alignx, aligny, resetsidemarks, checkSelectedSidedefParts);
+				AutoAlignTexturesUDMF(start, texture, alignx, aligny, resetsidemarks, checkSelectedSidedefParts);
 			else
 				AutoAlignTextures(start, texture, alignx, aligny, resetsidemarks);
 		}
@@ -3606,7 +3610,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
 		// Setting resetsidemarks to false is usefull to align only within a specific selection
 		// (set the marked property to true for the sidedefs outside the selection)
-		private void AutoAlignTexturesUdmf(BaseVisualGeometrySidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks, bool checkSelectedSidedefParts) 
+		private void AutoAlignTexturesUDMF(BaseVisualGeometrySidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks, bool checkSelectedSidedefParts) 
 		{
 			// Mark all sidedefs false (they will be marked true when the texture is aligned)
 			if(resetsidemarks) General.Map.Map.ClearMarkedSidedefs(false);
@@ -3639,17 +3643,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 			
-			//mxd. scaleY
+			//mxd. Scale
 			switch(start.GeometryType) 
 			{
 				case VisualGeometryType.WALL_UPPER:
+					first.scaleX = start.Sidedef.Fields.GetValue("scalex_top", 1.0f);
 					first.scaleY = start.Sidedef.Fields.GetValue("scaley_top", 1.0f);
 					break;
 				case VisualGeometryType.WALL_MIDDLE:
 				case VisualGeometryType.WALL_MIDDLE_3D:
+					first.scaleX = first.controlSide.Fields.GetValue("scalex_mid", 1.0f);
 					first.scaleY = first.controlSide.Fields.GetValue("scaley_mid", 1.0f);
 					break;
 				case VisualGeometryType.WALL_LOWER:
+					first.scaleX = start.Sidedef.Fields.GetValue("scalex_bottom", 1.0f);
 					first.scaleY = start.Sidedef.Fields.GetValue("scaley_bottom", 1.0f);
 					break;
 			}
@@ -3701,7 +3708,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Vertex v;
 				float forwardoffset;
 				float backwardoffset;
-				float offsetscalex = 1.0f;
 
 				// Get the align job to do
 				SidedefAlignJob j = todo.Pop();
@@ -3720,21 +3726,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				if(!matchbottom && !matchtop && !matchmid) continue; //mxd
-
-				if(matchtop)
-					offsetscalex = j.sidedef.Fields.GetValue("scalex_top", 1.0f);
-				else if(matchbottom)
-					offsetscalex = j.sidedef.Fields.GetValue("scalex_bottom", 1.0f);
-				else if(matchmid)
-					offsetscalex = j.controlSide.Fields.GetValue("scalex_mid", 1.0f);
 				
 				j.sidedef.Fields.BeforeFieldsChange();
 				j.controlSide.Fields.BeforeFieldsChange(); //mxd
 				
-				//mxd. Apply scaleY
-				if(matchtop) UDMFTools.SetFloat(j.sidedef.Fields, "scaley_top", j.scaleY, 1.0f);
-				if(matchmid) UDMFTools.SetFloat(j.controlSide.Fields, "scaley_mid", j.scaleY, 1.0f);
-				if(matchbottom)	UDMFTools.SetFloat(j.sidedef.Fields, "scaley_bottom", j.scaleY, 1.0f);
+				//mxd. Apply Scale
+				if(matchtop)
+				{
+					UDMFTools.SetFloat(j.sidedef.Fields, "scalex_top", first.scaleX, 1.0f);
+					UDMFTools.SetFloat(j.sidedef.Fields, "scaley_top", j.scaleY, 1.0f);
+				}
+				if(matchmid)
+				{
+					UDMFTools.SetFloat(j.controlSide.Fields, "scalex_mid", first.scaleX, 1.0f);
+					UDMFTools.SetFloat(j.controlSide.Fields, "scaley_mid", j.scaleY, 1.0f);
+				}
+				if(matchbottom)
+				{
+					UDMFTools.SetFloat(j.sidedef.Fields, "scalex_bottom", first.scaleX, 1.0f);
+					UDMFTools.SetFloat(j.sidedef.Fields, "scaley_bottom", j.scaleY, 1.0f);
+				}
 
 				if(j.forward) 
 				{
@@ -3806,7 +3817,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 
-					forwardoffset = j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex * offsetscalex);
+					forwardoffset = j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex * first.scaleX);
 					backwardoffset = j.offsetx;
 
 					// Done this sidedef
@@ -3826,7 +3837,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Apply alignment
 					if(alignx) 
 					{
-						float offset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex * offsetscalex);
+						float offset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex * first.scaleX);
 						offset -= j.sidedef.OffsetX;
 
 						if(matchtop)
@@ -3890,7 +3901,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 					forwardoffset = j.offsetx;
-					backwardoffset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex * offsetscalex);
+					backwardoffset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex * first.scaleX);
 
 					// Done this sidedef
 					j.sidedef.Marked = true;
