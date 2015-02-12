@@ -1347,22 +1347,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				int light = Sidedef.Fields.GetValue("light", 0);
 				bool absolute = Sidedef.Fields.GetValue("lightabsolute", false);
-				int newLight;
+				int newlight;
 
 				if(up)
-					newLight = General.Map.Config.BrightnessLevels.GetNextHigher(light, absolute);
+					newlight = General.Map.Config.BrightnessLevels.GetNextHigher(light, absolute);
 				else
-					newLight = General.Map.Config.BrightnessLevels.GetNextLower(light, absolute);
+					newlight = General.Map.Config.BrightnessLevels.GetNextLower(light, absolute);
 
-				if(newLight == light) return;
+				if(newlight == light) return;
 
 				//create undo
 				mode.CreateUndo("Change wall brightness", UndoGroup.SurfaceBrightnessChange, Sector.Sector.FixedIndex);
 				Sidedef.Fields.BeforeFieldsChange();
 
 				//apply changes
-				Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, newLight);
-				mode.SetActionResult("Changed wall brightness to " + newLight + ".");
+				UDMFTools.SetInteger(Sidedef.Fields, "light", newlight, (absolute ? int.MinValue : 0));
+				Tools.UpdateLightFogFlag(Sidedef);
+				mode.SetActionResult("Changed wall brightness to " + newlight + ".");
 				Sector.Sector.UpdateCache();
 
 				//rebuild sector

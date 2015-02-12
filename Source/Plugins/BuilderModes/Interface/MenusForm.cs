@@ -237,7 +237,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void linedefsmenu_DropDownOpening(object sender, EventArgs e) 
 		{
-			alignLinedefsItem.Enabled = General.Map.UDMF;
+			aligntexturesitem.Enabled = General.Map.UDMF;
+			updatelightfogitem.Enabled = General.Map.UDMF;
 		}
 
 		//mxd

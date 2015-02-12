@@ -1516,39 +1516,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int removedcount = 0;
 			foreach(Linedef l in lines)
 			{
-				if(l.Front != null) ToggleLightFogFlag(l.Front, ref addedcout, ref removedcount);
-				if(l.Back != null) ToggleLightFogFlag(l.Back, ref addedcout, ref removedcount);
+				if(l.Front != null)
+				{
+					int result = Tools.UpdateLightFogFlag(l.Front);
+					switch(result)
+					{
+						case 1: addedcout++; break;
+						case -1: removedcount++; break;
+					}
+				}
+				if(l.Back != null)
+				{
+					int result = Tools.UpdateLightFogFlag(l.Back);
+					switch(result) 
+					{
+						case 1: addedcout++; break;
+						case -1: removedcount++; break;
+					}
+				}
 			}
 
 			// Display info
 			General.Interface.DisplayStatus(StatusType.Action, "Added 'lightfog' flag to " + addedcout + " sidedefs, removed it from " + removedcount + " sidedefs.");
-		}
-
-		//mxd
-		private void ToggleLightFogFlag(Sidedef side, ref int addedcout, ref int removedcount) 
-		{
-			//Side requires the flag?
-			if(!side.Fields.ContainsKey("light") || side.Sector == null) return;
-			if(General.Map.Data.MapInfo.HasFadeColor ||
-			   (General.Map.Data.MapInfo.HasOutsideFogColor && side.Sector.CeilTexture == General.Map.Config.SkyFlatName) ||
-			   side.Sector.Fields.ContainsKey("fade"))
-			{
-				//Set the flag
-				if(!side.IsFlagSet("lightfog"))
-				{
-					side.SetFlag("lightfog", true);
-					addedcout++;
-				}
-			}
-			else
-			{
-				//Unset the flag
-				if(side.IsFlagSet("lightfog")) 
-				{
-					side.SetFlag("lightfog", false);
-					removedcount++;
-				}
-			}
 		}
 
 		#endregion
