@@ -42,6 +42,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.curvelinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
 			this.splitlinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.updatelightfogitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aligntexturesitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alignFloorToFrontItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alignFloorToBackItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,7 +101,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fileMenuStrip = new System.Windows.Forms.MenuStrip();
 			this.exportStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
-			this.updatelightfogitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.fileMenuStrip.SuspendLayout();
@@ -226,6 +226,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.splitlinedefsitem.Tag = "splitlinedefs";
 			this.splitlinedefsitem.Text = "S&plit Linedefs";
 			this.splitlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// updatelightfogitem
+			// 
+			this.updatelightfogitem.Name = "updatelightfogitem";
+			this.updatelightfogitem.Size = new System.Drawing.Size(245, 22);
+			this.updatelightfogitem.Tag = "applylightfogflag";
+			this.updatelightfogitem.Text = "&Update \'lightfog\' flag";
+			this.updatelightfogitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// aligntexturesitem
 			// 
@@ -769,13 +777,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.toolStripMenuItem5.Tag = "exporttoobj";
 			this.toolStripMenuItem5.Text = "Selection to Wavefront .obj...";
 			this.toolStripMenuItem5.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// updatelightfogitem
-			// 
-			this.updatelightfogitem.Name = "updatelightfogitem";
-			this.updatelightfogitem.Size = new System.Drawing.Size(245, 22);
-			this.updatelightfogitem.Tag = "applylightfogflag";
-			this.updatelightfogitem.Text = "&Update \'lightfog\' flag";
 			// 
 			// MenusForm
 			// 
