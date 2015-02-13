@@ -1650,6 +1650,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.Map.ClearSelectedLinedefs();
 				General.Map.IsChanged = true;
 
+				//mxd. Clear selection info
+				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
+
+				//mxd. Update
+				UpdateOverlaySurfaces();
+				UpdateEffectLabels();
+
 				// Redraw display
 				General.Interface.RedrawDisplay();
 			}
@@ -1674,6 +1681,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.Map.ClearSelectedSectors();
 				General.Map.Map.ClearSelectedLinedefs();
 				General.Map.IsChanged = true;
+
+				//mxd. Clear selection info
+				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
+				
+				//mxd. Update
+				UpdateOverlaySurfaces();
+				UpdateEffectLabels();
 
 				// Redraw display
 				General.Interface.RedrawDisplay();
