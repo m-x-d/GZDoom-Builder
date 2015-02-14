@@ -22,6 +22,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#endregion
 
+		#region ================== Constants
+
+		private const string NO_SOUND_SEQUENCE = "None"; //mxd
+
+		#endregion
+
 		#region ================== Variables
 
 		private ICollection<Sector> sectors;
@@ -300,7 +306,7 @@ namespace CodeImp.DoomBuilder.Windows
 			floorRenderStyle.SelectedIndex = Array.IndexOf(renderstyles, sc.Fields.GetValue("renderstylefloor", "translucent"));
 
 			//Misc
-			soundSequence.Text = sc.Fields.GetValue("soundsequence", string.Empty);
+			soundsequence.Text = sc.Fields.GetValue("soundsequence", NO_SOUND_SEQUENCE);
 			gravity.Text = sc.Fields.GetValue("gravity", 1.0f).ToString();
 			desaturation.Text = General.Clamp(sc.Fields.GetValue("desaturation", 0.0f), 0f, 1f).ToString();
 
@@ -404,7 +410,7 @@ namespace CodeImp.DoomBuilder.Windows
 					floorRenderStyle.SelectedIndex = -1;
 
 				//Misc
-				if(s.Fields.GetValue("soundsequence", string.Empty) != soundSequence.Text) soundSequence.Text = "";
+				if(s.Fields.GetValue("soundsequence", NO_SOUND_SEQUENCE) != soundsequence.Text) soundsequence.Text = "";
 				if(s.Fields.GetValue("gravity", 1.0f).ToString() != gravity.Text) gravity.Text = "";
 				if(s.Fields.GetValue("desaturation", 0.0f).ToString() != desaturation.Text) desaturation.Text = "";
 
@@ -667,11 +673,11 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				// Misc
-				if(soundSequence.Text != "")
-					s.Fields["soundsequence"] = new UniValue(UniversalType.String, soundSequence.Text);
-				if(gravity.Text != "") 
+				if(!string.IsNullOrEmpty(soundsequence.Text))
+					UDMFTools.SetString(s.Fields, "soundsequence", soundsequence.Text, NO_SOUND_SEQUENCE);
+				if(!string.IsNullOrEmpty(gravity.Text)) 
 					UDMFTools.SetFloat(s.Fields, "gravity", gravity.GetResultFloat(s.Fields.GetValue("gravity", 1.0f)), 1.0f);
-				if(desaturation.Text != "") 
+				if(!string.IsNullOrEmpty(desaturation.Text)) 
 				{
 					float val = General.Clamp(desaturation.GetResultFloat(s.Fields.GetValue("desaturation", 0f)), 0f, 1f);
 					UDMFTools.SetFloat(s.Fields, "desaturation", val, 0f);
@@ -763,6 +769,22 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			floorRotation.ButtonStepsWrapAround = cbUseFloorLineAngles.Checked;
 			floorRotation.StepValues = (cbUseFloorLineAngles.Checked ? anglesteps : null);
+		}
+
+		private void resetsoundsequence_Click(object sender, EventArgs e) 
+		{
+			soundsequence.Text = NO_SOUND_SEQUENCE;
+		}
+
+		private void soundsequence_TextChanged(object sender, EventArgs e) 
+		{
+			soundsequence.ForeColor = (soundsequence.Text == NO_SOUND_SEQUENCE ? SystemColors.GrayText : SystemColors.WindowText);
+			resetsoundsequence.Enabled = (soundsequence.Text != NO_SOUND_SEQUENCE);
+		}
+
+		private void soundsequence_MouseDown(object sender, MouseEventArgs e) 
+		{
+			if(soundsequence.Text == NO_SOUND_SEQUENCE) soundsequence.SelectAll();
 		}
 
 		#endregion
