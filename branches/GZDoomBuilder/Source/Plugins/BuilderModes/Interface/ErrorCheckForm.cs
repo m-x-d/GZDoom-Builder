@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Size initialsize; //mxd
 		private List<ErrorResult> resultslist; //mxd 
 		private List<Type> hiddentresulttypes; //mxd 
+		private bool bathselectioninprogress; //mxd
 		
 		#endregion
 
@@ -183,8 +184,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void UpdateTitle()
 		{
 			int hiddencount = resultslist.Count - results.Items.Count;
-			this.Text = "Map Analysis [" + resultslist.Count + " results"
-				+ (hiddencount > 0 ? ", " + hiddencount + " are hidden]" : "]"); //mxd
+			string title = "Map Analysis [" + resultslist.Count + " results";
+			if(hiddencount > 0) title += hiddencount + " hidden";
+			title += ", " + results.SelectedItems.Count + " selected";
+			this.Text = title + @"]";
 		}
 		
 		// This stops checking (only called from the checking management thread)
@@ -204,13 +207,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				running = false;
 				blockmap.Dispose();
 				blockmap = null;
-				UpdateTitle(); //mxd
 				
 				// When no results found, show "no results" and disable the list
 				if(resultslist.Count == 0) 
 				{
 					results.Items.Add(new ResultNoErrors());
 					results.Enabled = false;
+					UpdateTitle(); //mxd
 				} 
 				else 
 				{ 
@@ -297,6 +300,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			fix1.Visible = false;
 			fix2.Visible = false;
 			fix3.Visible = false;
+
+			UpdateTitle(); //mxd
 		}
 		
 		// This runs in a seperate thread to manage the checking threads
@@ -458,6 +463,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Results selection changed
 		private void results_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			//mxd
+			if(bathselectioninprogress) return;
+			
 			// Anything selected?
 			if(results.SelectedItems.Count > 0)
 			{
@@ -519,6 +527,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						editmode.CenterOnArea(zoomarea, 0.6f);
 					}
 				}
+
+				UpdateTitle(); //mxd
 			}
 			else
 			{
@@ -660,7 +670,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			hiddentresulttypes.Clear();
 
 			// Do the obvious
-			UpdateTitle();
 			ClearSelectedResult();
 		}
 
@@ -677,10 +686,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Remove from the list
+			results.BeginUpdate();
 			foreach (ErrorResult r in tohide) results.Items.Remove(r);
+			results.EndUpdate();
 
 			// Do the obvious
-			UpdateTitle();
 			ClearSelectedResult();
 		}
 
@@ -701,7 +711,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			results.Items.AddRange(filtered.ToArray());
 
 			// Do the obvious
-			UpdateTitle();
 			ClearSelectedResult();
 		}
 
@@ -730,7 +739,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			results.Items.AddRange(filtered.ToArray());
 
 			// Do the obvious
-			UpdateTitle();
 			ClearSelectedResult();
 		}
 
@@ -758,7 +766,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else if(e.Control && e.KeyCode == Keys.A)
 			{
 				results.SelectedItems.Clear();
+
+				bathselectioninprogress = true; //mxd
+				results.BeginUpdate(); //mxd
 				for(int i = 0; i < results.Items.Count; i++) results.SelectedItems.Add(results.Items[i]);
+				results.EndUpdate(); //mxd
+				bathselectioninprogress = false; //mxd
+
+				results_SelectedIndexChanged(this, EventArgs.Empty); //trigger update manually
 			}
 		}
 
@@ -767,10 +782,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Dictionary<Type, bool> toselect = GetSelectedTypes();
 			results.SelectedItems.Clear();
 
+			bathselectioninprogress = true; //mxd
+			results.BeginUpdate(); //mxd
+
 			for(int i = 0; i < results.Items.Count; i++) 
 			{
 				if(toselect.ContainsKey(results.Items[i].GetType())) results.SelectedItems.Add(results.Items[i]);
 			}
+
+			results.EndUpdate(); //mxd
+			bathselectioninprogress = false; //mxd
+
+			results_SelectedIndexChanged(this, EventArgs.Empty); //trigger update manually
 		}
 
 		#endregion
