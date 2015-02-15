@@ -157,7 +157,7 @@
 			// accept
 			// 
 			this.accept.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.accept.Location = new System.Drawing.Point(106, 194);
+			this.accept.Location = new System.Drawing.Point(12, 194);
 			this.accept.Name = "accept";
 			this.accept.Size = new System.Drawing.Size(88, 24);
 			this.accept.TabIndex = 6;
@@ -168,7 +168,7 @@
 			// cancel
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.cancel.Location = new System.Drawing.Point(12, 194);
+			this.cancel.Location = new System.Drawing.Point(106, 194);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(88, 24);
 			this.cancel.TabIndex = 7;

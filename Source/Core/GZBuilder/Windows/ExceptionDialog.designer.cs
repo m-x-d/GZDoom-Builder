@@ -43,7 +43,7 @@
 			// 
 			this.bQuit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.bQuit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.bQuit.Location = new System.Drawing.Point(456, 195);
+			this.bQuit.Location = new System.Drawing.Point(537, 195);
 			this.bQuit.Name = "bQuit";
 			this.bQuit.Size = new System.Drawing.Size(75, 23);
 			this.bQuit.TabIndex = 0;
@@ -53,7 +53,7 @@
 			// bContinue
 			// 
 			this.bContinue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.bContinue.Location = new System.Drawing.Point(537, 195);
+			this.bContinue.Location = new System.Drawing.Point(456, 195);
 			this.bContinue.Name = "bContinue";
 			this.bContinue.Size = new System.Drawing.Size(75, 23);
 			this.bContinue.TabIndex = 1;

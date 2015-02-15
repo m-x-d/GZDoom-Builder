@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(604, 511);
+			this.apply.Location = new System.Drawing.Point(493, 511);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(105, 25);
 			this.apply.TabIndex = 3;
@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(493, 511);
+			this.cancel.Location = new System.Drawing.Point(604, 511);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(105, 25);
 			this.cancel.TabIndex = 4;
@@ -284,6 +284,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TextureSetForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

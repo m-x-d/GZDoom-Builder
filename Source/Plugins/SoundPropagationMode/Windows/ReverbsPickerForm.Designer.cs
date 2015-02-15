@@ -59,7 +59,7 @@
 			// accept
 			// 
 			this.accept.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.accept.Location = new System.Drawing.Point(111, 394);
+			this.accept.Location = new System.Drawing.Point(14, 394);
 			this.accept.Name = "accept";
 			this.accept.Size = new System.Drawing.Size(91, 23);
 			this.accept.TabIndex = 0;
@@ -71,7 +71,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(14, 394);
+			this.cancel.Location = new System.Drawing.Point(111, 394);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(91, 23);
 			this.cancel.TabIndex = 1;
