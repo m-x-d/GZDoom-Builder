@@ -79,7 +79,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(226, 82);
+			this.cancel.Location = new System.Drawing.Point(307, 82);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(75, 23);
 			this.cancel.TabIndex = 14;
@@ -90,7 +90,7 @@
 			// import
 			// 
 			this.import.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.import.Location = new System.Drawing.Point(307, 82);
+			this.import.Location = new System.Drawing.Point(226, 82);
 			this.import.Name = "import";
 			this.import.Size = new System.Drawing.Size(75, 23);
 			this.import.TabIndex = 13;

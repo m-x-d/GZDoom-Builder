@@ -70,7 +70,7 @@
 			// export
 			// 
 			this.export.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.export.Location = new System.Drawing.Point(360, 84);
+			this.export.Location = new System.Drawing.Point(279, 84);
 			this.export.Name = "export";
 			this.export.Size = new System.Drawing.Size(75, 23);
 			this.export.TabIndex = 4;
@@ -82,7 +82,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(279, 84);
+			this.cancel.Location = new System.Drawing.Point(360, 84);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(75, 23);
 			this.cancel.TabIndex = 5;

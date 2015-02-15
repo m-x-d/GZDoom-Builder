@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			// okbutton
 			// 
 			this.okbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.okbutton.Location = new System.Drawing.Point(186, 151);
+			this.okbutton.Location = new System.Drawing.Point(81, 151);
 			this.okbutton.Name = "okbutton";
 			this.okbutton.Size = new System.Drawing.Size(99, 26);
 			this.okbutton.TabIndex = 6;
@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			// 
 			this.cancelbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.cancelbutton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelbutton.Location = new System.Drawing.Point(81, 151);
+			this.cancelbutton.Location = new System.Drawing.Point(186, 151);
 			this.cancelbutton.Name = "cancelbutton";
 			this.cancelbutton.Size = new System.Drawing.Size(99, 26);
 			this.cancelbutton.TabIndex = 7;

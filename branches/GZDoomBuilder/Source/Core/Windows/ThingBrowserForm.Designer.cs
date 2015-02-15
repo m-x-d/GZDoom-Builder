@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(173, 403);
+			this.cancel.Location = new System.Drawing.Point(291, 403);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 27);
 			this.cancel.TabIndex = 2;
@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(291, 403);
+			this.apply.Location = new System.Drawing.Point(173, 403);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 27);
 			this.apply.TabIndex = 1;

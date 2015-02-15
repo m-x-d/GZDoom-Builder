@@ -72,7 +72,7 @@
 			// bApply
 			// 
 			this.bApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.bApply.Location = new System.Drawing.Point(216, 399);
+			this.bApply.Location = new System.Drawing.Point(135, 399);
 			this.bApply.Name = "bApply";
 			this.bApply.Size = new System.Drawing.Size(75, 23);
 			this.bApply.TabIndex = 0;
@@ -83,7 +83,7 @@
 			// bCancel
 			// 
 			this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.bCancel.Location = new System.Drawing.Point(135, 399);
+			this.bCancel.Location = new System.Drawing.Point(216, 399);
 			this.bCancel.Name = "bCancel";
 			this.bCancel.Size = new System.Drawing.Size(75, 23);
 			this.bCancel.TabIndex = 1;

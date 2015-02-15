@@ -36,7 +36,7 @@
 			// paste
 			// 
 			this.paste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.paste.Location = new System.Drawing.Point(260, 214);
+			this.paste.Location = new System.Drawing.Point(142, 214);
 			this.paste.Name = "paste";
 			this.paste.Size = new System.Drawing.Size(112, 25);
 			this.paste.TabIndex = 3;
@@ -48,7 +48,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(142, 214);
+			this.cancel.Location = new System.Drawing.Point(260, 214);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 4;
