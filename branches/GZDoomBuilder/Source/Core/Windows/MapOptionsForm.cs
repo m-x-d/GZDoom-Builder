@@ -283,7 +283,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			//mxd. Use long texture names?
-			if(longtexturenames.Enabled) General.Settings.WriteSetting("browserwindow.uselongtexturenames", longtexturenames.Checked);
+			if(longtexturenames.Enabled) options.UseLongTextureNames = longtexturenames.Checked;
 			
 			// Hide window
 			this.DialogResult = DialogResult.OK;
@@ -337,7 +337,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Update long texture names checkbox (mxd)
 			longtexturenames.Enabled = ci.Configuration.ReadSetting("longtexturenames", false);
-			longtexturenames.Checked = longtexturenames.Enabled && General.Settings.ReadSetting("browserwindow.uselongtexturenames", false);
+			longtexturenames.Checked = longtexturenames.Enabled && options.UseLongTextureNames;
 		}
 
 		// When keys are pressed in the level name field

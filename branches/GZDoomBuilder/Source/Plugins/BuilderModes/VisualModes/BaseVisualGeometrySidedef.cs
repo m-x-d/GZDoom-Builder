@@ -946,7 +946,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(BuilderPlug.Me.CopiedTexture != null)
 			{
 				string oldtexture = GetTextureName();
-				long oldtexturelong = Lump.MakeLongName(oldtexture);
+				long oldtexturelong = Lump.MakeLongName(General.Map.Data.GetFullTextureName(oldtexture)); //mxd
 				string newtexture = BuilderPlug.Me.CopiedTexture;
 				if(newtexture != oldtexture)
 				{
@@ -974,7 +974,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 						
 						// Do the alignment
-						Tools.FloodfillTextures(this.Sidedef, oldtexturelong, newtextureimage, false);
+						Tools.FloodfillTextures(this.Sidedef, oldtexturelong, newtexture, false);
 
 						// Get the changed sidedefs
 						List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);
@@ -1100,9 +1100,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Copy texture
 		public virtual void OnCopyTexture()
 		{
-			BuilderPlug.Me.CopiedTexture = GetTextureName();
-			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedFlat = GetTextureName();
-			mode.SetActionResult("Copied texture '" + GetTextureName() + "'.");
+			if(Texture == null) return; //mxd
+			string texturename = (!General.Map.Options.UseLongTextureNames ? Texture.ShortName : GetTextureName()); //mxd
+			BuilderPlug.Me.CopiedTexture = texturename;
+			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedFlat = texturename;
+			mode.SetActionResult("Copied texture '" + texturename + "'.");
 		}
 		
 		// Copy texture offsets

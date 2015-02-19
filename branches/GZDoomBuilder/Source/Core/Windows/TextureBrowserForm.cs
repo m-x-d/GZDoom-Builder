@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Setup texture browser
 			ImageBrowserControl.ShowTextureSizes = General.Settings.ReadSetting("browserwindow.showtexturesizes", General.Settings.ShowTextureSizes);
-			ImageBrowserControl.UseLongTextureNames = General.Map.Config.UseLongTextureNames && General.Settings.ReadSetting("browserwindow.uselongtexturenames", true);
+			ImageBrowserControl.UseLongTextureNames = General.Map.Options.UseLongTextureNames;
 			browser.BrowseFlats = browseflats;
 			browser.ApplySettings();
 			
@@ -447,7 +447,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Save ImageBrowserControl settings
 			General.Settings.WriteSetting("browserwindow.showtexturesizes", ImageBrowserControl.ShowTextureSizes);
-			if(General.Map.Config.UseLongTextureNames) General.Settings.WriteSetting("browserwindow.uselongtexturenames", ImageBrowserControl.UseLongTextureNames);
+			if(General.Map.Config.UseLongTextureNames) General.Map.Options.UseLongTextureNames = ImageBrowserControl.UseLongTextureNames;
 			
 			// Clean up
 			browser.CleanUp();

@@ -79,6 +79,9 @@ namespace CodeImp.DoomBuilder.Map
 		private bool overridefloorheight;
 		private bool overrideceilheight;
 		private bool overridebrightness;
+
+		//mxd.
+		private bool uselongtexturenames;
 		
 		#endregion
 
@@ -130,6 +133,9 @@ namespace CodeImp.DoomBuilder.Map
 		public bool OverrideCeilingHeight { get { return overrideceilheight; } set { overrideceilheight = value; } }
 		public bool OverrideBrightness { get { return overridebrightness; } set { overridebrightness = value; } }
 
+		//mxd
+		public bool UseLongTextureNames { get { return uselongtexturenames; } set { uselongtexturenames = value; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -154,7 +160,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Constructor to load from Doom Builder Map Settings Configuration
-		internal MapOptions(Configuration cfg, string mapname)
+		internal MapOptions(Configuration cfg, string mapname, bool longtexturenamessupported)
 		{
 			IDictionary resinfo;
 			DataLocation res;
@@ -212,6 +218,9 @@ namespace CodeImp.DoomBuilder.Map
 			overridefloorheight = this.mapconfig.ReadSetting("overridefloorheight", false);
 			overrideceilheight = this.mapconfig.ReadSetting("overrideceilheight", false);
 			overridebrightness = this.mapconfig.ReadSetting("overridebrightness", false);
+
+			//mxd
+			uselongtexturenames = longtexturenamessupported && this.mapconfig.ReadSetting("uselongtexturenames", false);
 
 			// Resources
 			IDictionary reslist = this.mapconfig.ReadSetting("resources", new Hashtable());
@@ -333,6 +342,9 @@ namespace CodeImp.DoomBuilder.Map
 			mapconfig.WriteSetting("overridefloorheight", overridefloorheight);
 			mapconfig.WriteSetting("overrideceilheight", overrideceilheight);
 			mapconfig.WriteSetting("overridebrightness", overridebrightness);
+
+			//mxd
+			mapconfig.WriteSetting("uselongtexturenames", uselongtexturenames);
 
 			//mxd. Write script compiler
 			if(!string.IsNullOrEmpty(scriptcompiler))
