@@ -298,7 +298,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label25.Size = new System.Drawing.Size(87, 13);
 			this.label25.TabIndex = 47;
 			this.label25.Text = "Max. recent files:";
-			this.toolTip1.SetToolTip(this.label25, "Controls how many recent files \r\nare shown in th File menu. ");
+			this.toolTip1.SetToolTip(this.label25, "Controls how many recent files \r\nare shown in the \"File\" menu.");
 			// 
 			// vertexScaleLabel
 			// 
