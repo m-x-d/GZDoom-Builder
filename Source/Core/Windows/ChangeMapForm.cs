@@ -193,7 +193,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Create new map options, pass settings which should stay unchanged
 			//TODO: are there other settings which should stay unchanged?..
-			MapOptions newoptions = new MapOptions(mapsettings, mapslist.SelectedItems[0].Text);
+			MapOptions newoptions = new MapOptions(mapsettings, mapslist.SelectedItems[0].Text, options.UseLongTextureNames);
 			newoptions.ConfigFile = options.ConfigFile;
 			options = newoptions;
 			

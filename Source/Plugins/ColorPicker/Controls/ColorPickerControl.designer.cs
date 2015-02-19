@@ -1,4 +1,6 @@
-﻿namespace CodeImp.DoomBuilder.ColorPicker.Controls {
+﻿using CodeImp.DoomBuilder.Controls;
+
+namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 	partial class ColorPickerControl {
 		/// <summary> 
 		/// Требуется переменная конструктора.
@@ -33,7 +35,7 @@
 			this.nudBlue = new System.Windows.Forms.NumericUpDown();
 			this.nudGreen = new System.Windows.Forms.NumericUpDown();
 			this.Label2 = new System.Windows.Forms.Label();
-			this.tbFloatVals = new System.Windows.Forms.TextBox();
+			this.tbFloatVals = new CodeImp.DoomBuilder.Controls.AutoSelectTextbox();
 			this.pRGB = new System.Windows.Forms.Panel();
 			this.cbColorInfo = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudRed)).BeginInit();
@@ -197,9 +199,9 @@
 			this.Name = "ColorPickerControl";
 			this.Size = new System.Drawing.Size(311, 183);
 			this.Load += new System.EventHandler(this.ColorPickerControl_Load);
-			this.MouseLeave += new System.EventHandler(this.OnMouseUp);
+			this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint);
-			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.HandleMouse);
+			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
 			this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ColorPickerControl_MouseDown);
 			this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnMouseUp);
 			((System.ComponentModel.ISupportInitialize)(this.nudRed)).EndInit();
@@ -223,7 +225,7 @@
 		internal System.Windows.Forms.NumericUpDown nudBlue;
 		internal System.Windows.Forms.NumericUpDown nudGreen;
 		internal System.Windows.Forms.Label Label2;
-		private System.Windows.Forms.TextBox tbFloatVals;
+		private CodeImp.DoomBuilder.Controls.AutoSelectTextbox tbFloatVals;
 		private System.Windows.Forms.Panel pRGB;
 		private System.Windows.Forms.ComboBox cbColorInfo;
 	}

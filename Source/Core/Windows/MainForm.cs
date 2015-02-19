@@ -473,8 +473,23 @@ namespace CodeImp.DoomBuilder.Windows
 					else
 						mapsettings = new Configuration(true);
 
+					//mxd. Get proper configuration file
+					bool longtexturenamessupported = false;
+					string configfile = General.AutoLoadConfig;
+					if(string.IsNullOrEmpty(configfile)) configfile = mapsettings.ReadSetting("gameconfig", "");
+					if(configfile.Trim().Length == 0)
+					{
+						showdialog = true;
+					}
+					else
+					{
+						//TODO: test this!
+						Configuration gamecfg = new Configuration(configfile);
+						longtexturenamessupported = gamecfg.ReadSetting("longtexturenames", false);
+					}
+
 					// Set map name and other options
-					options = new MapOptions(mapsettings, General.AutoLoadMap);
+					options = new MapOptions(mapsettings, General.AutoLoadMap, longtexturenamessupported);
 
 					// Set resource data locations
 					options.CopyResources(General.AutoLoadResources);
@@ -483,9 +498,7 @@ namespace CodeImp.DoomBuilder.Windows
 					options.StrictPatches = General.AutoLoadStrictPatches;
 					
 					// Set configuration file (constructor already does this, but we want this info from the cmd args if possible)
-					options.ConfigFile = General.AutoLoadConfig;
-					if(options.ConfigFile == null) options.ConfigFile = mapsettings.ReadSetting("gameconfig", "");
-					if(options.ConfigFile.Trim().Length == 0) showdialog = true;
+					options.ConfigFile = configfile;
 				}
 				else
 				{

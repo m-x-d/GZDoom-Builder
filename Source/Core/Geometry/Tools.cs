@@ -1665,7 +1665,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// When resetsectormarks is set to true, all sectors will first be marked false (not aligned).
 		// Setting resetsectormarks to false is usefull to fill only within a specific selection
 		// (set the marked property to true for the sectors outside the selection)
-		public static void FloodfillFlats(Sector start, bool fillceilings, long originalflat, ImageData fillflat, bool resetsectormarks)
+		public static void FloodfillFlats(Sector start, bool fillceilings, long originalflat, string fillflat, bool resetsectormarks)
 		{
 			Stack<Sector> todo = new Stack<Sector>(50);
 
@@ -1686,10 +1686,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				Sector s = todo.Pop();
 				
 				// Apply new flat
-				if(fillceilings)
-					s.SetCeilTexture(fillflat.Name);
-				else
-					s.SetFloorTexture(fillflat.Name);
+				if(fillceilings) s.SetCeilTexture(fillflat);
+				else s.SetFloorTexture(fillflat);
 				s.Marked = true;
 				
 				// Go for all sidedefs to add neighbouring sectors
@@ -1720,7 +1718,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
 		// Setting resetsidemarks to false is usefull to fill only within a specific selection
 		// (set the marked property to true for the sidedefs outside the selection)
-		public static void FloodfillTextures(Sidedef start, long originaltexture, ImageData filltexture, bool resetsidemarks)
+		public static void FloodfillTextures(Sidedef start, long originaltexture, string filltexture, bool resetsidemarks)
 		{
 			Stack<SidedefFillJob> todo = new Stack<SidedefFillJob>(50);
 
@@ -1743,10 +1741,11 @@ namespace CodeImp.DoomBuilder.Geometry
 				SidedefFillJob j = todo.Pop();
 
 				// Apply texturing
-				if(j.sidedef.HighRequired() && j.sidedef.LongHighTexture == originaltexture) j.sidedef.SetTextureHigh(filltexture.Name);
+				if(j.sidedef.HighRequired() && j.sidedef.LongHighTexture == originaltexture) j.sidedef.SetTextureHigh(filltexture);
 				if((j.sidedef.LongMiddleTexture != MapSet.EmptyLongName || j.sidedef.MiddleRequired()) &&
-				   (j.sidedef.LongMiddleTexture == originaltexture)) j.sidedef.SetTextureMid(filltexture.Name);
-				if(j.sidedef.LowRequired() && j.sidedef.LongLowTexture == originaltexture) j.sidedef.SetTextureLow(filltexture.Name);
+				   (j.sidedef.LongMiddleTexture == originaltexture)) j.sidedef.SetTextureMid(filltexture);
+				if(j.sidedef.LowRequired() && j.sidedef.LongLowTexture == originaltexture) j.sidedef.SetTextureLow(filltexture);
+				
 				j.sidedef.Marked = true;
 				
 				if(j.forward)

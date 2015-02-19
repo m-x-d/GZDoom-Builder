@@ -561,7 +561,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(BuilderPlug.Me.CopiedFlat != null)
 			{
 				string oldtexture = GetTextureName();
-				long oldtexturelong = Lump.MakeLongName(oldtexture);
+				long oldtexturelong = Lump.MakeLongName(General.Map.Data.GetFullFlatName(oldtexture)); //mxd
 				string newtexture = BuilderPlug.Me.CopiedFlat;
 				if(newtexture != oldtexture)
 				{
@@ -599,7 +599,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 						
 						// Do the fill
-						Tools.FloodfillFlats(this.Sector.Sector, fillceilings, oldtexturelong, newtextureimage, false);
+						Tools.FloodfillFlats(this.Sector.Sector, fillceilings, oldtexturelong, newtexture, false);
 
 						// Get the changed sectors
 						List<Sector> changes = General.Map.Map.GetMarkedSectors(true);
@@ -711,9 +711,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Copy texture
 		public virtual void OnCopyTexture()
 		{
-			BuilderPlug.Me.CopiedFlat = GetTextureName();
-			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedTexture = GetTextureName();
-			mode.SetActionResult("Copied flat '" + GetTextureName() + "'.");
+			if(Texture == null) return; //mxd
+			string texturename = (!General.Map.Options.UseLongTextureNames ? Texture.ShortName : GetTextureName()); //mxd
+			BuilderPlug.Me.CopiedFlat = texturename;
+			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedTexture = texturename;
+			mode.SetActionResult("Copied flat '" + texturename + "'.");
 		}
 		
 		public virtual void OnPasteTexture() { }

@@ -95,12 +95,9 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls
 					break;
 
 				case COLOR_INFO_HEX:
-					string r = RGB.Red.ToString("X");
-					if (r.Length == 1) r = "0" + r;
-					string g = RGB.Green.ToString("X");
-					if (g.Length == 1) g = "0" + g;
-					string b = RGB.Blue.ToString("X");
-					if (b.Length == 1) b = "0" + b;
+					string r = RGB.Red.ToString("X02");
+					string g = RGB.Green.ToString("X02");
+					string b = RGB.Blue.ToString("X02");
 
 					isInUpdate = true;
 					tbFloatVals.Text = r + g + b;
@@ -108,12 +105,9 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls
 					break;
 
 				case COLOR_INFO_FLOAT:
-					string r2 = ((float)Math.Round(RGB.Red / 255f, 2)).ToString();
-					if (r2.Length == 1) r2 += ".0";
-					string g2 = ((float)Math.Round(RGB.Green / 255f, 2)).ToString();
-					if (g2.Length == 1) g2 += ".0";
-					string b2 = ((float)Math.Round(RGB.Blue / 255f, 2)).ToString();
-					if (b2.Length == 1) b2 += ".0";
+					string r2 = ((float)Math.Round(RGB.Red / 255f, 2)).ToString("F02", CultureInfo.InvariantCulture);
+					string g2 = ((float)Math.Round(RGB.Green / 255f, 2)).ToString("F02", CultureInfo.InvariantCulture);
+					string b2 = ((float)Math.Round(RGB.Blue / 255f, 2)).ToString("F02", CultureInfo.InvariantCulture);
 
 					isInUpdate = true;
 					tbFloatVals.Text = r2 + " " + g2 + " " + b2;
@@ -181,16 +175,6 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls
 			UpdateCancelButton(RGB);
 		}
 
-		private void ColorPickerControl_MouseDown(object sender, MouseEventArgs e) 
-		{
-			if (e.Button == MouseButtons.Left) 
-			{
-				changeType = ChangeStyle.MouseMove;
-				selectedPoint = new Point(e.X, e.Y);
-				this.Invalidate();
-			}
-		}
-
 		private void ColorChanged(object sender, ColorChangedEventArgs e) 
 		{
 			SetRGB(e.RGB);
@@ -211,7 +195,17 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls
 			}
 		}
 
-		private void HandleMouse(object sender, MouseEventArgs e) 
+		private void ColorPickerControl_MouseDown(object sender, MouseEventArgs e) 
+		{
+			if(e.Button == MouseButtons.Left) 
+			{
+				changeType = ChangeStyle.MouseMove;
+				selectedPoint = new Point(e.X, e.Y);
+				this.Invalidate();
+			}
+		}
+
+		private void OnMouseMove(object sender, MouseEventArgs e) 
 		{
 			if (e.Button == MouseButtons.Left) 
 			{
@@ -227,10 +221,11 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls
 			changeType = ChangeStyle.None;
 		}
 
-		private void OnMouseUp(object sender, EventArgs e) 
+		private void OnMouseLeave(object sender, EventArgs e) 
 		{
 			colorWheel.SetMouseUp();
 			changeType = ChangeStyle.None;
+			selectedPoint = Point.Empty;
 		}
 
 		private void btnOK_Click(object sender, EventArgs e) 

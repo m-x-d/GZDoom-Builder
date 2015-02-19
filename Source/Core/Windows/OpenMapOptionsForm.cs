@@ -353,7 +353,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Update long texture names checkbox (mxd)
 			longtexturenames.Enabled = cfg.ReadSetting("longtexturenames", false);
-			longtexturenames.Checked = longtexturenames.Enabled && General.Settings.ReadSetting("browserwindow.uselongtexturenames", false);
+			longtexturenames.Checked = longtexturenames.Enabled && options.UseLongTextureNames;
 		}
 		
 		// OK clicked
@@ -432,7 +432,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			//mxd. Use long texture names?
-			if (longtexturenames.Enabled) General.Settings.WriteSetting("browserwindow.uselongtexturenames", longtexturenames.Checked);
+			if(longtexturenames.Enabled) options.UseLongTextureNames = longtexturenames.Checked;
 
 			// Hide window
 			wadfile.Dispose();
@@ -498,7 +498,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Get the map name
 				selectedmapname = mapslist.SelectedItems[0].Text;
-				options = new MapOptions(mapsettings, selectedmapname);
+				options = new MapOptions(mapsettings, selectedmapname, longtexturenames.Enabled);
 				
 				// Get locations from previous selected map settings
 				locations = new DataLocationList(mapsettings, "maps." + selectedmapname + ".resources");
