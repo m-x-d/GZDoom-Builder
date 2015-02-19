@@ -200,7 +200,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						{
 							blendStyle = TexturePathBlendStyle.Blend;
 							// Rewind so this structure can be read again
-							parser.DataStream.Seek(-token.Length - 1, SeekOrigin.Current);
+							parser.DataStream.Seek(-token.Length, SeekOrigin.Current);
 						}
 						break;
 
