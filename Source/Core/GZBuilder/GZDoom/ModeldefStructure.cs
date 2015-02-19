@@ -412,9 +412,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			mde.InheritActorPitch = inheritactorpitch;
 			mde.InheritActorRoll = inheritactorroll;
 			Matrix moffset = Matrix.Translation(offset.Y, -offset.X, offset.Z); // Things are complicated in GZDoom...
-			Matrix mrotation = Matrix.RotationY(inheritactorroll ? -Angle2D.DegToRad(rollOffset) : 0)
-						 * Matrix.RotationX(inheritactorpitch ? -Angle2D.DegToRad(pitchOffset) : 0)
-						 * Matrix.RotationZ(Angle2D.DegToRad(angleOffset));
+			Matrix mrotation = Matrix.RotationY(-Angle2D.DegToRad(rollOffset)) * Matrix.RotationX(-Angle2D.DegToRad(pitchOffset)) * Matrix.RotationZ(Angle2D.DegToRad(angleOffset));
 			mde.SetTransform(mrotation, moffset, scale);
 
 			for(int i = 0; i < modelNames.Length; i++) 
