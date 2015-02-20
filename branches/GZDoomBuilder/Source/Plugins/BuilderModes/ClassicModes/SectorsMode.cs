@@ -1810,7 +1810,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void ApplyColorGradient(ICollection<Sector> orderedselection, Sector start, Sector end, InterpolationTools.Mode interpolationmode, string key, int defaultvalue) 
+		private static void ApplyColorGradient(ICollection<Sector> orderedselection, Sector start, Sector end, InterpolationTools.Mode interpolationmode, string key, int defaultvalue) 
 		{
 			if(!start.Fields.ContainsKey(key) && !end.Fields.ContainsKey(key)) 
 			{
@@ -1818,21 +1818,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			} 
 			else 
 			{
-				Color startColor = PixelColor.FromInt(start.Fields.GetValue(key, defaultvalue)).ToColor();
-				Color endColor = PixelColor.FromInt(end.Fields.GetValue(key, defaultvalue)).ToColor();
+				Color startColor, endColor;
+				if(key == "fadecolor")
+				{
+					startColor = Tools.GetSectorFadeColor(start);
+					endColor = Tools.GetSectorFadeColor(end);
+				}
+				else
+				{
+					startColor = PixelColor.FromInt(start.Fields.GetValue(key, defaultvalue)).ToColor();
+					endColor = PixelColor.FromInt(end.Fields.GetValue(key, defaultvalue)).ToColor();
+				}
 
 				// Go for all sectors in between first and last
 				int index = 0;
 				foreach(Sector s in orderedselection) 
 				{
-					s.Fields.BeforeFieldsChange();
-					float u = index / (float)(orderedselection.Count - 1);
-					Color c = Color.FromArgb(0, General.Clamp(InterpolationTools.Interpolate(startColor.R, endColor.R, u, interpolationmode), 0, 255),
-												General.Clamp(InterpolationTools.Interpolate(startColor.G, endColor.G, u, interpolationmode), 0, 255),
-												General.Clamp(InterpolationTools.Interpolate(startColor.B, endColor.B, u, interpolationmode), 0, 255));
+					if(index > 0 && index < orderedselection.Count - 1)
+					{
+						s.Fields.BeforeFieldsChange();
+						float u = index / (float) (orderedselection.Count - 1);
+						Color c = Color.FromArgb(0, General.Clamp(InterpolationTools.Interpolate(startColor.R, endColor.R, u, interpolationmode), 0, 255),
+						                         General.Clamp(InterpolationTools.Interpolate(startColor.G, endColor.G, u, interpolationmode), 0, 255),
+						                         General.Clamp(InterpolationTools.Interpolate(startColor.B, endColor.B, u, interpolationmode), 0, 255));
 
-					UDMFTools.SetInteger(s.Fields, key, c.ToArgb(), defaultvalue);
-					s.UpdateNeeded = true;
+						UDMFTools.SetInteger(s.Fields, key, c.ToArgb(), defaultvalue);
+						s.UpdateNeeded = true;
+					}
 					index++;
 				}
 			}

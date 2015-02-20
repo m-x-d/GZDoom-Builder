@@ -2258,6 +2258,19 @@ namespace CodeImp.DoomBuilder.Geometry
 			return maxWidth > 0 ? maxWidth : 1;
 		}
 
+		//mxd
+		public static Color GetSectorFadeColor(Sector s)
+		{
+			if(s.Fields.ContainsKey("fadecolor")) return PixelColor.FromInt(s.Fields.GetValue("fadecolor", 0)).ToColor();
+			if(General.Map.Data.MapInfo.HasOutsideFogColor && s.CeilTexture == General.Map.Config.SkyFlatName)
+			{
+				return General.Map.Data.MapInfo.OutsideFogColor.ToColor();
+			}
+ 
+			if(General.Map.Data.MapInfo.HasFadeColor) return General.Map.Data.MapInfo.FadeColor.ToColor();
+			return Color.Black;
+		}
+
 		#endregion
 	}
 }

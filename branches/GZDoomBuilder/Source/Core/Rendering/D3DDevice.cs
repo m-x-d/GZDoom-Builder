@@ -389,11 +389,11 @@ namespace CodeImp.DoomBuilder.Rendering
 				backbuffer = null;
 				depthbuffer = null;
 
-				// Make present parameters
-				PresentParameters displaypp = CreatePresentParameters(adapter);
-
 				try
 				{
+					// Make present parameters
+					PresentParameters displaypp = CreatePresentParameters(adapter);
+					
 					// Reset the device
 					device.Reset(displaypp);
 				}
