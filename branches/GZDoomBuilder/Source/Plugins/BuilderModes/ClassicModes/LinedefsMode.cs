@@ -304,7 +304,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste);
-			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);//mxd
+			if(General.Map.UDMF) //mxd
+			{
+				General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
+				General.Interface.AddButton(BuilderPlug.Me.MenusForm.GradientInterpolationMenu);
+			}
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CurveLinedefs);
 			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.TextureOffsetLock, ToolbarSection.Geometry); //mxd
@@ -324,7 +328,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste);
-			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);//mxd
+			if(General.Map.UDMF) //mxd
+			{
+				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
+				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.GradientInterpolationMenu);
+			}
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CurveLinedefs);
 			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
@@ -1267,126 +1275,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ICollection<Linedef> orderedselection = General.Map.Map.GetSelectedLinedefs(true);
 			if(orderedselection.Count > 2) 
 			{
-				General.Interface.DisplayStatus(StatusType.Action, "Created gradient brightness over selected linedefs.");
-				General.Map.UndoRedo.CreateUndo("Linedefs gradient brightness");
-
+				// Gather values
 				Linedef start = General.GetByIndex(orderedselection, 0);
 				Linedef end = General.GetByIndex(orderedselection, orderedselection.Count - 1);
 
-				const string lightKey = "light";
-				const string lightAbsKey = "lightabsolute";
-				float startbrightness = float.NaN;
-				float endbrightness = float.NaN;
+				float startbrightness = GetLinedefBrighness(start);
+				float endbrightness = GetLinedefBrighness(end);
 
-				//get total brightness of start sidedef(s)
-				if(start.Front != null) 
+				if(float.IsNaN(startbrightness))
 				{
-					if(start.Front.Fields.GetValue(lightAbsKey, false)) 
-					{
-						startbrightness = start.Front.Fields.GetValue(lightKey, 0);
-					} 
-					else 
-					{
-						startbrightness = Math.Min(255, Math.Max(0, (float)start.Front.Sector.Brightness + start.Front.Fields.GetValue(lightKey, 0)));
-					}
+					General.Interface.DisplayStatus(StatusType.Warning, "Start linedef doesn't have visible parts!");
+					return;
 				}
 
-				if(start.Back != null) 
+				if(float.IsNaN(endbrightness)) 
 				{
-					float b;
-
-					if(start.Back.Fields.GetValue(lightAbsKey, false)) 
-					{
-						b = start.Back.Fields.GetValue(lightKey, 0);
-					} 
-					else 
-					{
-						b = Math.Min(255, Math.Max(0, (float)start.Back.Sector.Brightness + start.Back.Fields.GetValue(lightKey, 0)));
-					}
-
-					startbrightness = (float.IsNaN(startbrightness) ? b : (startbrightness + b) / 2);
+					General.Interface.DisplayStatus(StatusType.Warning, "End linedef doesn't have visible parts!");
+					return;
 				}
 
-				//get total brightness of end sidedef(s)
-				if(end.Front != null) 
-				{
-					if(end.Front.Fields.GetValue(lightAbsKey, false)) 
-					{
-						endbrightness = end.Front.Fields.GetValue(lightKey, 0);
-					} 
-					else 
-					{
-						endbrightness = Math.Min(255, Math.Max(0, (float)end.Front.Sector.Brightness + end.Front.Fields.GetValue(lightKey, 0)));
-					}
-				}
+				//Make undo
+				General.Interface.DisplayStatus(StatusType.Action, "Created gradient brightness over selected linedefs.");
+				General.Map.UndoRedo.CreateUndo("Linedefs gradient brightness");
 
-				if(end.Back != null) 
-				{
-					float b;
-
-					if(end.Back.Fields.GetValue(lightAbsKey, false)) 
-					{
-						b = end.Back.Fields.GetValue(lightKey, 0);
-					} 
-					else 
-					{
-						b = Math.Min(255, Math.Max(0, (float)end.Back.Sector.Brightness + end.Back.Fields.GetValue(lightKey, 0)));
-					}
-
-					endbrightness = (float.IsNaN(endbrightness) ? b : (endbrightness + b) / 2);
-				}
-
-				float delta = endbrightness - startbrightness;
-
-				// Go for all sectors in between first and last
+				// Apply changes
+				InterpolationTools.Mode interpolationmode = (InterpolationTools.Mode)BuilderPlug.Me.MenusForm.GradientInterpolationMenu.SelectedIndex;
 				int index = 0;
+
+				// Go for all lines in between first and last
 				foreach(Linedef l in orderedselection) 
 				{
 					float u = index / (float)(orderedselection.Count - 1);
-					float b = startbrightness + delta * u;
-
-					if(l.Front != null) 
-					{
-						l.Front.Fields.BeforeFieldsChange();
-
-						//absolute flag set?
-						if(l.Front.Fields.GetValue(lightAbsKey, false)) 
-						{
-							if(l.Front.Fields.ContainsKey(lightKey))
-								l.Front.Fields[lightKey].Value = (int)b;
-							else
-								l.Front.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b));
-						} 
-						else 
-						{
-							if(l.Front.Fields.ContainsKey(lightKey))
-								l.Front.Fields[lightKey].Value = (int)b - l.Front.Sector.Brightness;
-							else
-								l.Front.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b - l.Front.Sector.Brightness));
-						}
-					}
-
-					if(l.Back != null) 
-					{
-						l.Back.Fields.BeforeFieldsChange();
-
-						//absolute flag set?
-						if(l.Back.Fields.GetValue(lightAbsKey, false)) 
-						{
-							if(l.Back.Fields.ContainsKey(lightKey))
-								l.Back.Fields[lightKey].Value = (int)b;
-							else
-								l.Back.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b));
-						} 
-						else 
-						{
-							if(l.Back.Fields.ContainsKey(lightKey))
-								l.Back.Fields[lightKey].Value = (int)b - l.Back.Sector.Brightness;
-							else
-								l.Back.Fields.Add(lightKey, new UniValue(UniversalType.Integer, (int)b - l.Back.Sector.Brightness));
-						}
-					}
-
+					int b = InterpolationTools.Interpolate(startbrightness, endbrightness, u, interpolationmode);
+					if(SidedefHasVisibleParts(l.Front)) ApplySidedefBrighness(l.Front, b);
+					if(SidedefHasVisibleParts(l.Back)) ApplySidedefBrighness(l.Back, b);
 					index++;
 				}
 
@@ -1400,6 +1322,44 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Select at least 3 linedefs first!");
 			}
+		}
+
+		//mxd. gradientbrightness utility
+		private static bool SidedefHasVisibleParts(Sidedef side) 
+		{
+			if(side == null || side.Sector == null) return false;
+			return side.HighRequired() || side.LowRequired() || (side.MiddleRequired() || (side.Other != null && side.MiddleTexture != "-"));
+		}
+
+		//mxd. gradientbrightness utility
+		private static float GetLinedefBrighness(Linedef line) 
+		{
+			float frontbrightness = (SidedefHasVisibleParts(line.Front) ? GetSidedefBrighness(line.Front) : float.NaN);
+			float backbrightness = (SidedefHasVisibleParts(line.Back) ? GetSidedefBrighness(line.Back) : float.NaN);
+
+			if(float.IsNaN(frontbrightness) && float.IsNaN(backbrightness)) return float.NaN;
+			if(float.IsNaN(frontbrightness)) return backbrightness;
+			if(float.IsNaN(backbrightness)) return frontbrightness;
+			return (frontbrightness + backbrightness) / 2;
+		}
+
+		//mxd. gradientbrightness utility
+		private static float GetSidedefBrighness(Sidedef side) 
+		{
+			if(side.Fields.GetValue("lightabsolute", false)) return side.Fields.GetValue("light", 0);
+			return Math.Min(255, Math.Max(0, (float)side.Sector.Brightness + side.Fields.GetValue("light", 0)));
+		}
+
+		//mxd. gradientbrightness utility
+		private static void ApplySidedefBrighness(Sidedef side, int brightness) 
+		{
+			side.Fields.BeforeFieldsChange();
+
+			//absolute flag set?
+			if(side.Fields.GetValue("lightabsolute", false))
+				side.Fields["light"].Value = brightness;
+			else
+				UDMFTools.SetInteger(side.Fields, "light", brightness - side.Sector.Brightness, 0);
 		}
 
 		[BeginAction("placethings")] //mxd
