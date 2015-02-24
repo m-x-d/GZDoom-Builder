@@ -46,9 +46,9 @@
 			// bApply
 			// 
 			this.bApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bApply.Location = new System.Drawing.Point(141, 45);
+			this.bApply.Location = new System.Drawing.Point(121, 45);
 			this.bApply.Name = "bApply";
-			this.bApply.Size = new System.Drawing.Size(75, 23);
+			this.bApply.Size = new System.Drawing.Size(95, 23);
 			this.bApply.TabIndex = 6;
 			this.bApply.Text = "Apply";
 			this.bApply.UseVisualStyleBackColor = true;
