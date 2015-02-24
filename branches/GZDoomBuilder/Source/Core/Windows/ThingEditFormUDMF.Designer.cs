@@ -79,8 +79,8 @@
 			this.actiongroup = new System.Windows.Forms.GroupBox();
 			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			this.hexenpanel = new System.Windows.Forms.Panel();
-			this.scriptNumbers = new System.Windows.Forms.ComboBox();
-			this.scriptNames = new System.Windows.Forms.ComboBox();
+			this.scriptNumbers = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
+			this.scriptNames = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
 			this.cbArgStr = new System.Windows.Forms.CheckBox();
 			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
@@ -1041,10 +1041,10 @@
 		private CodeImp.DoomBuilder.Controls.ThingBrowserControl thingtype;
         private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox angle;
 		private System.Windows.Forms.CheckBox cbArgStr;
-        private System.Windows.Forms.ComboBox scriptNames;
+		private CodeImp.DoomBuilder.Controls.ColoredComboBox scriptNames;
 		private System.Windows.Forms.Label labelAngle;
         private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
-        private System.Windows.Forms.ComboBox scriptNumbers;
+		private CodeImp.DoomBuilder.Controls.ColoredComboBox scriptNumbers;
 		private System.Windows.Forms.Label labelGravity;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl anglecontrol;
 		private System.Windows.Forms.PictureBox hint;

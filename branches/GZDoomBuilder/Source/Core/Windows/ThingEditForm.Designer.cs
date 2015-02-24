@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup = new System.Windows.Forms.GroupBox();
 			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			this.hexenpanel = new System.Windows.Forms.Panel();
-			this.scriptNumbers = new System.Windows.Forms.ComboBox();
+			this.scriptNumbers = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
 			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
@@ -672,7 +672,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox cbAbsoluteHeight;
 		private System.Windows.Forms.CheckBox cbRandomAngle;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
-		private System.Windows.Forms.ComboBox scriptNumbers;
+		private CodeImp.DoomBuilder.Controls.ColoredComboBox scriptNumbers;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl anglecontrol;
 		private System.Windows.Forms.PictureBox hint;
 		private System.Windows.Forms.Label hintlabel;

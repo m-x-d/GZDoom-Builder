@@ -691,6 +691,9 @@
       <DependentUpon>ActionSpecialHelpButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ButtonsNumericTextboxDesigner.cs" />
+    <Compile Include="Controls\ColoredComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\DebugConsole.cs">
       <SubType>UserControl</SubType>
     </Compile>
