@@ -29,7 +29,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		//Based on Robert Penner's original easing equations (http://www.robertpenner.com/easing/)
 		public static int Linear(float val1, float val2, float delta)
 		{
-			return (int)(delta * val2 + (1.0f - delta) * val1);
+			return (int)Math.Round(delta * val2 + (1.0f - delta) * val1);
 		}
 		
 		/**
@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			float f_val1 = val1;
 			float f_val2 = val2 - f_val1;
-			return (int)(-f_val2 * Math.Cos(delta * Angle2D.PIHALF) + f_val2 + f_val1);
+			return (int)Math.Round(-f_val2 * Math.Cos(delta * Angle2D.PIHALF) + f_val2 + f_val1);
 		}
 
 		/**
@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		 */
 		public static int EaseOutSine(float val1, float val2, float delta) 
 		{
-			return (int)((val2 - val1) * Math.Sin(delta * Angle2D.PIHALF) + val1);
+			return (int)Math.Round((val2 - val1) * Math.Sin(delta * Angle2D.PIHALF) + val1);
 		}
 
 		/**
