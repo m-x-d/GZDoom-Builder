@@ -387,8 +387,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Sector.Sector.Fields.BeforeFieldsChange();
 
 				//apply changes
-				Sector.Sector.Fields["lightceiling"] = new UniValue(UniversalType.Integer, newLight);
+				UDMFTools.SetInteger(Sector.Sector.Fields, "lightceiling", newLight, (absolute ? int.MinValue : 0));
 				mode.SetActionResult("Changed ceiling brightness to " + newLight + ".");
+				Sector.Sector.UpdateNeeded = true;
 				Sector.Sector.UpdateCache();
 
 				//rebuild sector

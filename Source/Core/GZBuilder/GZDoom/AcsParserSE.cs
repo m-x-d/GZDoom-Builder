@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								token = token.Substring(0, token.LastIndexOf('"'));
 
 							token = StripTokenQuotes(token);
-							ScriptItem i = new ScriptItem(0, token, startPos);
+							ScriptItem i = new ScriptItem(0, token, startPos, isinclude);
 							namedScripts.Add(i);
 						} 
 						else //should be numbered script
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								}
 
 								name = (name.Length > 0 ? name + " [" + n + "]" : "Script " + n);
-								ScriptItem i = new ScriptItem(n, name, startPos);
+								ScriptItem i = new ScriptItem(n, name, startPos, isinclude);
 								numberedScripts.Add(i);
 							}
 						}
@@ -147,7 +147,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							} while(!token.Contains(")"));
 						}
 
-						ScriptItem i = new ScriptItem(0, funcname, startPos);
+						ScriptItem i = new ScriptItem(0, funcname, startPos, isinclude);
 						functions.Add(i);
 					} 
 					else if (processIncludes && (token == "#include" || token == "#import")) 

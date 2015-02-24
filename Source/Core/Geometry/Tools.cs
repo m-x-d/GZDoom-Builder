@@ -2255,7 +2255,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				temp = TextRenderer.MeasureText(obj.ToString(), cb.Font).Width;
 				if(temp > maxWidth) maxWidth = temp;
 			}
-			return maxWidth > 0 ? maxWidth : 1;
+			return maxWidth > 0 ? maxWidth + 6 : 1;
 		}
 
 		//mxd

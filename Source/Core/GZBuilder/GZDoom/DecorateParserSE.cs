@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 						string name = "";
 						foreach (string s in definition) name += s + " ";
-						actors.Add(new ScriptItem(0, name.TrimEnd(), startPos));
+						actors.Add(new ScriptItem(0, name.TrimEnd(), startPos, false));
 					}
 				}
 			}

@@ -2503,11 +2503,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					if (v.Level.sector.Fields.GetValue("lightfloorabsolute", false)) 
 					{
-						UDMFTools.SetInteger(v.Level.sector.Fields, "lightfloor", targetbrightness, 0);
+						v.Level.sector.Fields["lightfloor"] = new UniValue(UniversalType.Integer, targetbrightness);
 					} 
 					else 
 					{
-						v.Level.sector.Fields["lightfloor"] = new UniValue(UniversalType.Integer, targetbrightness - v.Level.sector.Brightness);
+						UDMFTools.SetInteger(v.Level.sector.Fields, "lightfloor", targetbrightness - v.Level.sector.Brightness, 0);
 					}
 
 					v.Sector.UpdateSectorGeometry(false);
@@ -2517,14 +2517,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					VisualCeiling v = obj as VisualCeiling;
 					v.Level.sector.Fields.BeforeFieldsChange();
 					v.Sector.Changed = true;
+					v.Sector.Sector.UpdateNeeded = true;
 
 					if(v.Level.sector.Fields.GetValue("lightceilingabsolute", false)) 
 					{
-						UDMFTools.SetInteger(v.Level.sector.Fields, "lightceiling", targetbrightness, 0);
+						v.Level.sector.Fields["lightceiling"] = new UniValue(UniversalType.Integer, targetbrightness);
 					} 
 					else 
 					{
-						v.Level.sector.Fields["lightceiling"] = new UniValue(UniversalType.Integer, targetbrightness - v.Level.sector.Brightness);
+						UDMFTools.SetInteger(v.Level.sector.Fields, "lightceiling", targetbrightness - v.Level.sector.Brightness, 0);
 					}
 
 					v.Sector.UpdateSectorGeometry(false);
@@ -2537,11 +2538,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					if (v.Sidedef.Fields.GetValue("lightabsolute", false)) 
 					{
-						UDMFTools.SetInteger(v.Sidedef.Fields, "light", targetbrightness, 0);
+						v.Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, targetbrightness);
 					} 
 					else 
 					{
-						v.Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, targetbrightness - v.Sidedef.Sector.Brightness);
+						UDMFTools.SetInteger(v.Sidedef.Fields, "light", targetbrightness - v.Sidedef.Sector.Brightness, 0);
 					}
 
 					//Update 'lightfog' flag

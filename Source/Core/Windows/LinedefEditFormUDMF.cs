@@ -26,7 +26,8 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
-using CodeImp.DoomBuilder.GZBuilder.Controls; //mxd
+using CodeImp.DoomBuilder.GZBuilder.Controls;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -217,12 +218,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Setup script numbers
 			scriptNumbers.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
-			foreach(ScriptItem si in General.Map.NumberedScripts) scriptNumbers.Items.Add(si);
+			foreach (ScriptItem si in General.Map.NumberedScripts)
+				scriptNumbers.Items.Add(new ColoredComboBoxItem(si, si.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
 			scriptNumbers.DropDownWidth = Tools.GetDropDownWidth(scriptNumbers);
 
 			//mxd. Setup script names
 			scriptNames.Location = scriptNumbers.Location;
-			foreach(ScriptItem nsi in General.Map.NamedScripts) scriptNames.Items.Add(nsi);
+			foreach (ScriptItem nsi in General.Map.NamedScripts)
+				scriptNames.Items.Add(new ColoredComboBoxItem(nsi, nsi.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
 			scriptNames.DropDownWidth = Tools.GetDropDownWidth(scriptNames);
 
 			// Initialize custom fields editor
@@ -636,16 +639,11 @@ namespace CodeImp.DoomBuilder.Windows
 								break;
 							}
 						}
-
-						if(scriptNumbers.SelectedIndex == -1) 
-						{
-							scriptNumbers.Items.Add(new ScriptItem(a0, "Script " + a0));
-							scriptNumbers.SelectedIndex = scriptNumbers.Items.Count - 1;
-						}
 					} 
-					else 
+
+					if(scriptNumbers.SelectedIndex == -1)
 					{
-						scriptNumbers.Text = arg0.Text;
+						scriptNumbers.Text = a0.ToString();
 					}
 				}
 			} 
@@ -799,7 +797,7 @@ namespace CodeImp.DoomBuilder.Windows
 							if(!string.IsNullOrEmpty(scriptNumbers.Text)) 
 							{
 								if(scriptNumbers.SelectedItem != null)
-									l.Args[0] = ((ScriptItem)scriptNumbers.SelectedItem).Index;
+									l.Args[0] = ((ScriptItem)((ColoredComboBoxItem)scriptNumbers.SelectedItem).Value).Index;
 								else if(!int.TryParse(scriptNumbers.Text.Trim(), out l.Args[0]))
 									l.Args[0] = 0;
 

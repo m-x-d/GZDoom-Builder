@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Config;
@@ -141,8 +142,10 @@ namespace CodeImp.DoomBuilder.Windows
 			scriptNames.Location = scriptNumbers.Location;
 
 			// Setup script names
-			foreach(ScriptItem nsi in General.Map.NamedScripts) scriptNames.Items.Add(nsi);
-			foreach(ScriptItem si in General.Map.NumberedScripts) scriptNumbers.Items.Add(si);
+			foreach(ScriptItem nsi in General.Map.NamedScripts)
+				scriptNames.Items.Add(new ColoredComboBoxItem(nsi, nsi.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
+			foreach(ScriptItem si in General.Map.NumberedScripts)
+				scriptNumbers.Items.Add(new ColoredComboBoxItem(si, si.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
 			scriptNames.DropDownWidth = Tools.GetDropDownWidth(scriptNames);
 			scriptNumbers.DropDownWidth = Tools.GetDropDownWidth(scriptNumbers);
 
@@ -354,16 +357,11 @@ namespace CodeImp.DoomBuilder.Windows
 								break;
 							}
 						}
-
-						if(scriptNumbers.SelectedIndex == -1) 
-						{
-							scriptNumbers.Items.Add(new ScriptItem(a0, "Script " + a0));
-							scriptNumbers.SelectedIndex = scriptNumbers.Items.Count - 1;
-						}
 					} 
-					else 
+
+					if(scriptNumbers.SelectedIndex == -1) 
 					{
-						scriptNumbers.Text = arg0.Text;
+						scriptNumbers.Text = a0.ToString();
 					}
 				}
 			} 
@@ -611,7 +609,7 @@ namespace CodeImp.DoomBuilder.Windows
 							if(!string.IsNullOrEmpty(scriptNumbers.Text)) 
 							{
 								if(scriptNumbers.SelectedItem != null)
-									t.Args[0] = ((ScriptItem)scriptNumbers.SelectedItem).Index;
+									t.Args[0] = ((ScriptItem)((ColoredComboBoxItem)scriptNumbers.SelectedItem).Value).Index;
 								else if(!int.TryParse(scriptNumbers.Text.Trim(), out t.Args[0]))
 									t.Args[0] = 0;
 

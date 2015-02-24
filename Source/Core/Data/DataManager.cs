@@ -1798,6 +1798,9 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		internal MemoryStream LoadFile(string name) 
 		{
+			//relative path?
+			if(name.StartsWith("..\\")) name = name.Replace("..\\", "");
+			
 			foreach (DataReader dr in containers)
 				if (dr.FileExists(name)) return dr.LoadFile(name);
 			return null;

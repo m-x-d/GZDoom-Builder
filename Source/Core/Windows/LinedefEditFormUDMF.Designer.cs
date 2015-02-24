@@ -42,8 +42,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup = new System.Windows.Forms.GroupBox();
 			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			this.argspanel = new System.Windows.Forms.Panel();
-			this.scriptNumbers = new System.Windows.Forms.ComboBox();
-			this.scriptNames = new System.Windows.Forms.ComboBox();
+			this.scriptNumbers = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
+			this.scriptNames = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
 			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
@@ -1503,7 +1503,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox frontsector;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backsector;
 		private System.Windows.Forms.CheckBox cbArgStr;
-		private System.Windows.Forms.ComboBox scriptNames;
+		private CodeImp.DoomBuilder.Controls.ColoredComboBox scriptNames;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox lightFront;
 		private System.Windows.Forms.CheckBox cbLightAbsoluteFront;
@@ -1530,7 +1530,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl backTextureOffset;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flagsFront;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flagsBack;
-		private System.Windows.Forms.ComboBox scriptNumbers;
+		private CodeImp.DoomBuilder.Controls.ColoredComboBox scriptNumbers;
 		private System.Windows.Forms.GroupBox activationGroup;
 		private System.Windows.Forms.PictureBox missingactivation;
 		private System.Windows.Forms.ToolTip tooltip;
