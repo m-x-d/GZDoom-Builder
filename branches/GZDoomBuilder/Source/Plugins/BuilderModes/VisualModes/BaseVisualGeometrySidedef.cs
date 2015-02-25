@@ -173,19 +173,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				SectorLevel l = sd.LightLevels[i];
 
-				if((l != sd.Floor) && (l != sd.Ceiling) && (l.type != SectorLevelType.Floor))
+				if((l != sd.Floor) && (l != sd.Ceiling) && (l.type != SectorLevelType.Floor || l.alpha < 255))
 				{
 					// Go for all polygons
 					int num = polygons.Count;
+					Plane plane = (l.type == SectorLevelType.Ceiling ? l.plane : l.plane.GetInverted()); //mxd
+					
 					for(int pi = 0; pi < num; pi++)
 					{
 						// Split by plane
 						WallPolygon p = polygons[pi];
-						WallPolygon np = SplitPoly(ref p, l.plane, false);
+						WallPolygon np = SplitPoly(ref p, plane, false);
 						if(np.Count > 0)
 						{
-							// Determine color
-							int lightlevel = lightabsolute ? lightvalue : l.brightnessbelow + lightvalue;
+							//mxd. Determine color
+							int lightlevel;
+
+							if(l.disablelighting) //sidedef part is not affected by 3d floor brightness 
+							{
+								lightlevel = lightabsolute ? lightvalue : l.brightnessbelow + lightvalue;
+							} 
+							else if(l.restrictlighting || (l.type == SectorLevelType.Floor && l.alpha < 255)) //only happens to a sidedef part inside of a non-opaque 3d floor.
+							{
+								lightlevel = l.sector.Brightness;
+							}
+							else // "Regular" 3d floor transfers brightness below it ignoring sidedef's brightness.
+							{
+								lightlevel = l.brightnessbelow;
+							}
+
 							PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef)); //mxd
 							PixelColor wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
 							np.color = wallcolor.WithAlpha(255).ToInt();

@@ -459,7 +459,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(pickedgeo is BaseVisualGeometrySidedef)
 					{
 						BaseVisualGeometrySidedef pickedsidedef = (pickedgeo as BaseVisualGeometrySidedef);
-						General.Interface.ShowLinedefInfo(pickedsidedef.GetControlLinedef()); //mxd
+						General.Interface.ShowLinedefInfo(pickedsidedef.GetControlLinedef(), pickedsidedef.Sidedef); //mxd
 					}
 					// Sector?
 					else if(pickedgeo is BaseVisualGeometrySector)

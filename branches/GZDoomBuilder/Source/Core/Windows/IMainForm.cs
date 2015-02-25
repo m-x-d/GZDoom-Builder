@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Windows
 		DialogResult ShowEditSectors(ICollection<Sector> sectors);
 		DialogResult ShowEditThings(ICollection<Thing> things);
 		void ShowLinedefInfo(Linedef l);
+		void ShowLinedefInfo(Linedef l, Sidedef highlightside); //mxd
 		void ShowSectorInfo(Sector s);
 		void ShowThingInfo(Thing t);
 		void ShowVertexInfo(Vertex v);
