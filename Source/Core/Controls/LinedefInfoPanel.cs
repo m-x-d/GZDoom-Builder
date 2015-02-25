@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		// This shows the info
-		public void ShowInfo(Linedef l)
+		public void ShowInfo(Linedef l, Sidedef highlightside)
 		{
 			string peggedness;
 			
@@ -188,6 +188,10 @@ namespace CodeImp.DoomBuilder.Controls
 				bool hasTopFields = false;
 				bool hasMiddleFields = false;
 				bool hasBottomFields = false;
+
+				//mxd. Highlight this side?
+				bool highlight = (l.Front == highlightside);
+				frontpanel.ForeColor = (highlight ? SystemColors.HotTrack : SystemColors.WindowText); //mxd
 				
 				// Show sidedef info
 				frontpanel.Visible = true; //mxd
@@ -198,22 +202,22 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					//light
 					frontoffsetlabel.Text = "Front light:";
-					SetUDMFLight(l.Front, frontoffsetlabel, frontoffset);
+					SetUDMFLight(l.Front, frontoffsetlabel, frontoffset, highlight);
 
 					//global offset, sector index
 					frontpanel.Text += ". Offset " + l.Front.OffsetX + ", " + l.Front.OffsetY + ". Sector " + l.Front.Sector.Index + " ";
 					
 					//sidedef top
-					hasTopFields =  SetPairedUDMFFieldsLabel(l.Front.Fields, "offsetx_top", "offsety_top", 0.0f, frontTopUDMFOffsetLabel, frontTopUDMFOffset);
-					hasTopFields |= SetPairedUDMFFieldsLabel(l.Front.Fields, "scalex_top", "scaley_top", 1.0f, frontTopUDMFScaleLabel, frontTopUDMFScale);
+					hasTopFields = SetPairedUDMFFieldsLabel(l.Front.Fields, "offsetx_top", "offsety_top", 0.0f, frontTopUDMFOffsetLabel, frontTopUDMFOffset, highlight);
+					hasTopFields |= SetPairedUDMFFieldsLabel(l.Front.Fields, "scalex_top", "scaley_top", 1.0f, frontTopUDMFScaleLabel, frontTopUDMFScale, highlight);
 
 					//sidedef middle
-					hasMiddleFields =  SetPairedUDMFFieldsLabel(l.Front.Fields, "offsetx_mid", "offsety_mid", 0.0f, frontMidUDMFOffsetLabel, frontMidUDMFOffset);
-					hasMiddleFields |= SetPairedUDMFFieldsLabel(l.Front.Fields, "scalex_mid", "scaley_mid", 1.0f, frontMidUDMFScaleLabel, frontMidUDMFScale);
+					hasMiddleFields = SetPairedUDMFFieldsLabel(l.Front.Fields, "offsetx_mid", "offsety_mid", 0.0f, frontMidUDMFOffsetLabel, frontMidUDMFOffset, highlight);
+					hasMiddleFields |= SetPairedUDMFFieldsLabel(l.Front.Fields, "scalex_mid", "scaley_mid", 1.0f, frontMidUDMFScaleLabel, frontMidUDMFScale, highlight);
 
 					//sidedef bottom
-					hasBottomFields =  SetPairedUDMFFieldsLabel(l.Front.Fields, "offsetx_bottom", "offsety_bottom", 0.0f, frontBottomUDMFOffsetLabel, frontBottomUDMFOffset);
-					hasBottomFields |= SetPairedUDMFFieldsLabel(l.Front.Fields, "scalex_bottom", "scaley_bottom", 1.0f, frontBottomUDMFScaleLabel, frontBottomUDMFScale);
+					hasBottomFields = SetPairedUDMFFieldsLabel(l.Front.Fields, "offsetx_bottom", "offsety_bottom", 0.0f, frontBottomUDMFOffsetLabel, frontBottomUDMFOffset, highlight);
+					hasBottomFields |= SetPairedUDMFFieldsLabel(l.Front.Fields, "scalex_bottom", "scaley_bottom", 1.0f, frontBottomUDMFScaleLabel, frontBottomUDMFScale, highlight);
 
 					//visibility
 					frontTopUDMFOffset.Visible = hasTopFields;
@@ -299,7 +303,11 @@ namespace CodeImp.DoomBuilder.Controls
 				bool hasTopFields = false;
 				bool hasMiddleFields = false;
 				bool hasBottomFields = false;
-				
+
+				//mxd. Highlight this side?
+				bool highlight = l.Back == highlightside;
+				backpanel.ForeColor = (highlight ? SystemColors.HotTrack : SystemColors.WindowText); //mxd
+
 				// Show sidedef info
 				backpanel.Visible = true; //mxd
 				backpanel.Text = " Back Sidedef " + l.Back.Index;
@@ -309,22 +317,22 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					//light
 					backoffsetlabel.Text = "Back light:";
-					SetUDMFLight(l.Back, backoffsetlabel, backoffset);
+					SetUDMFLight(l.Back, backoffsetlabel, backoffset, highlight);
 
 					//global offset, sector index
 					backpanel.Text += ". Offset " + l.Back.OffsetX + ", " + l.Back.OffsetY + ". Sector " + l.Back.Sector.Index + " ";
 
 					//sidedef top
-					hasTopFields =  SetPairedUDMFFieldsLabel(l.Back.Fields, "offsetx_top", "offsety_top", 0f, backTopUDMFOffsetLabel, backTopUDMFOffset);
-					hasTopFields |= SetPairedUDMFFieldsLabel(l.Back.Fields, "scalex_top", "scaley_top", 1.0f, backTopUDMFScaleLabel, backTopUDMFScale);
+					hasTopFields = SetPairedUDMFFieldsLabel(l.Back.Fields, "offsetx_top", "offsety_top", 0f, backTopUDMFOffsetLabel, backTopUDMFOffset, highlight);
+					hasTopFields |= SetPairedUDMFFieldsLabel(l.Back.Fields, "scalex_top", "scaley_top", 1.0f, backTopUDMFScaleLabel, backTopUDMFScale, highlight);
 
 					//sidedef middle
-					hasMiddleFields =  SetPairedUDMFFieldsLabel(l.Back.Fields, "offsetx_mid", "offsety_mid", 0f, backMidUDMFOffsetLabel, backMidUDMFOffset);
-					hasMiddleFields |= SetPairedUDMFFieldsLabel(l.Back.Fields, "scalex_mid", "scaley_mid", 1.0f, backMidUDMFScaleLabel, backMidUDMFScale);
+					hasMiddleFields = SetPairedUDMFFieldsLabel(l.Back.Fields, "offsetx_mid", "offsety_mid", 0f, backMidUDMFOffsetLabel, backMidUDMFOffset, highlight);
+					hasMiddleFields |= SetPairedUDMFFieldsLabel(l.Back.Fields, "scalex_mid", "scaley_mid", 1.0f, backMidUDMFScaleLabel, backMidUDMFScale, highlight);
 
 					//sidedef bottom
-					hasBottomFields =  SetPairedUDMFFieldsLabel(l.Back.Fields, "offsetx_bottom", "offsety_bottom", 0f, backBottomUDMFOffsetLabel, backBottomUDMFOffset);
-					hasBottomFields |= SetPairedUDMFFieldsLabel(l.Back.Fields, "scalex_bottom", "scaley_bottom", 1.0f, backBottomUDMFScaleLabel, backBottomUDMFScale);
+					hasBottomFields = SetPairedUDMFFieldsLabel(l.Back.Fields, "offsetx_bottom", "offsety_bottom", 0f, backBottomUDMFOffsetLabel, backBottomUDMFOffset, highlight);
+					hasBottomFields |= SetPairedUDMFFieldsLabel(l.Back.Fields, "scalex_bottom", "scaley_bottom", 1.0f, backBottomUDMFScaleLabel, backBottomUDMFScale, highlight);
 
 					//visibility
 					backTopUDMFOffset.Visible = hasTopFields;
@@ -463,7 +471,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private static bool SetPairedUDMFFieldsLabel(UniFields fields, string paramX, string paramY, float defaultvalue, Label namelabel, Label valuelabel)
+		private static bool SetPairedUDMFFieldsLabel(UniFields fields, string paramX, string paramY, float defaultvalue, Label namelabel, Label valuelabel, bool highlight)
 		{
 			float x = UDMFTools.GetFloat(fields, paramX, defaultvalue);
 			float y = UDMFTools.GetFloat(fields, paramY, defaultvalue);
@@ -476,19 +484,19 @@ namespace CodeImp.DoomBuilder.Controls
 				valuelabel.Text = String.Format("{0:0.##}", x) + ", " + String.Format("{0:0.##}", y);
 				valuelabel.Enabled = true;
 				namelabel.Enabled = true;
+				return true;
 			}
 			else
 			{
 				valuelabel.Text = "--, --";
-				valuelabel.Enabled = false;
-				namelabel.Enabled = false;
+				valuelabel.Enabled = highlight;
+				namelabel.Enabled = highlight;
+				return false;
 			}
-
-			return valuelabel.Enabled;
 		}
 
 		//mxd
-		private static void SetUDMFLight(Sidedef sd, Label label, Label value) 
+		private static void SetUDMFLight(Sidedef sd, Label label, Label value, bool highlight) 
 		{
 			if(sd.Fields.ContainsKey("light")) 
 			{
@@ -504,10 +512,13 @@ namespace CodeImp.DoomBuilder.Controls
 			} 
 			else 
 			{
-				value.Text = "--";
-				label.Enabled = false;
-				value.Enabled = false;
+				value.Text = "-- (" + sd.Sector.Brightness + ")";
+				label.Enabled = highlight;
+				value.Enabled = highlight;
 			}
+
+			label.ForeColor = (highlight ? SystemColors.HotTrack : SystemColors.WindowText);
+			value.ForeColor = label.ForeColor;
 		}
 
 		//mxd

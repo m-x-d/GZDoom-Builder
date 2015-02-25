@@ -3294,9 +3294,15 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			dockerspanel.Remove(hintsDocker);
 		}
+
+		//mxd. Show linedef info
+		public void ShowLinedefInfo(Linedef l) 
+		{
+			ShowLinedefInfo(l, null);
+		}
 		
-		// Show linedef info
-		public void ShowLinedefInfo(Linedef l)
+		//mxd. Show linedef info and highlight given sidedef
+		public void ShowLinedefInfo(Linedef l, Sidedef highlightside)
 		{
 			if(l.IsDisposed)
 			{
@@ -3313,7 +3319,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
 			if(thinginfo.Visible) thinginfo.Hide();
-			if(IsInfoPanelExpanded) linedefinfo.ShowInfo(l);
+			if(IsInfoPanelExpanded) linedefinfo.ShowInfo(l, highlightside);
 
 			// Show info on collapsed label
 			if(General.Map.Config.LinedefActions.ContainsKey(l.Action)) 

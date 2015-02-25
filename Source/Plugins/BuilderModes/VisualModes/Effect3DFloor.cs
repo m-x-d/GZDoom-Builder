@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. 3D-Floor Flags
 		[Flags]
-		public enum Flags : int
+		public enum Flags
 		{
 			None = 0,
 			DisableLighting = 1,
@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. 3D-Floor Types
 		[Flags]
-		public enum FloorTypes : int
+		public enum FloorTypes
 		{
 			VavoomStyle = 0,
 			Solid = 1,
@@ -137,14 +137,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ceiling.alpha = alpha;
 			
 			// Do not adjust light? (works only for non-vavoom types)
-			if(!vavoomtype && (((linedef.Args[2] & (int)Flags.DisableLighting) == (int)Flags.DisableLighting) || (((linedef.Args[2] & (int)Flags.RestrictLighting) == (int)Flags.RestrictLighting)))) //mxd
+			if(!vavoomtype)
 			{
-				floor.brightnessbelow = -1;
-				floor.colorbelow = PixelColor.FromInt(0);
-				ceiling.color = 0;
-				ceiling.brightnessbelow = -1;
-				ceiling.transferbrightness = false; //mxd
-				ceiling.colorbelow = PixelColor.FromInt(0);
+				bool disablelighting = ((linedef.Args[2] & (int) Flags.DisableLighting) == (int) Flags.DisableLighting); //mxd
+				bool restrictlighting = alpha < 255 && ((linedef.Args[2] & (int) Flags.RestrictLighting) == (int) Flags.RestrictLighting); //mxd
+
+				if(disablelighting || restrictlighting)
+				{
+					floor.brightnessbelow = -1;
+					floor.restrictlighting = restrictlighting; //mxd
+					floor.disablelighting = disablelighting; //mxd
+					floor.colorbelow = PixelColor.FromInt(0);
+					ceiling.color = 0;
+					ceiling.brightnessbelow = -1;
+					ceiling.disablelighting = true; //mxd
+					ceiling.colorbelow = PixelColor.FromInt(0);
+				}
 			}
 		}
 	}

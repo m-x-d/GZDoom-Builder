@@ -296,7 +296,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				SectorLevel pl = lightlevels[i + 1];
 
 				//mxd. If the real floor has "lightfloor" value and the 3d floor above it doesn't cast down light, use real floor's brightness
-				if(General.Map.UDMF && l == floor && lightlevels.Count > 2 && !pl.transferbrightness && l.sector.Fields.ContainsKey("lightfloor"))
+				if(General.Map.UDMF && l == floor && lightlevels.Count > 2 && (pl.disablelighting || pl.restrictlighting) && l.sector.Fields.ContainsKey("lightfloor"))
 				{
 					int light = l.sector.Fields.GetValue("lightfloor", pl.brightnessbelow);
 					pl.brightnessbelow = (l.sector.Fields.GetValue("lightfloorabsolute", false) ? light : l.sector.Brightness + light);
