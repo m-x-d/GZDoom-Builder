@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Go for all polygons
 					int num = polygons.Count;
-					Plane plane = (l.type == SectorLevelType.Ceiling ? l.plane : l.plane.GetInverted()); //mxd
+					Plane plane = (l.type == SectorLevelType.Floor ? l.plane.GetInverted() : l.plane); //mxd
 					
 					for(int pi = 0; pi < num; pi++)
 					{

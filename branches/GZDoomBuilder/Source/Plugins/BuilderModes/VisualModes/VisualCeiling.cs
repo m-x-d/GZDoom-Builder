@@ -117,14 +117,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 				texscale = new Vector2D(1.0f / 64.0f, 1.0f / 64.0f);
 
+			//mxd. Sky is always bright
+			int color;
+			if(s.CeilTexture == General.Map.Config.SkyFlatName)
+				color = -1; // That's white. With alpha. Not very impressive, eh?
+			else
+				color = (int)((level.color | General.Clamp(level.alpha, 0, 255) << 24) & 0xffffffff); // Byte offset shinanigans! Yay!
+
 			// Make vertices
 			ReadOnlyCollection<Vector2D> triverts = base.Sector.Sector.Triangles.Vertices;
 			WorldVertex[] verts = new WorldVertex[triverts.Count];
 			for(int i = 0; i < triverts.Count; i++)
 			{
 				// Color shading
-				PixelColor c = PixelColor.FromInt(level.color);
-				verts[i].c = c.WithAlpha((byte)General.Clamp(level.alpha, 0, 255)).ToInt();
+				verts[i].c = color; //mxd
 				
 				// Vertex coordinates
 				verts[i].x = triverts[i].x;
