@@ -35,6 +35,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.labelaction = new System.Windows.Forms.Label();
 			this.infopanel = new System.Windows.Forms.GroupBox();
 			this.anglecontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
+			this.classname = new System.Windows.Forms.Label();
+			this.labelclass = new System.Windows.Forms.Label();
 			this.arg5 = new System.Windows.Forms.Label();
 			this.arglbl5 = new System.Windows.Forms.Label();
 			this.arglbl4 = new System.Windows.Forms.Label();
@@ -70,7 +72,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// label5
 			// 
 			label5.AutoSize = true;
-			label5.Location = new System.Drawing.Point(165, 58);
+			label5.Location = new System.Drawing.Point(165, 64);
 			label5.Name = "label5";
 			label5.Size = new System.Drawing.Size(37, 13);
 			label5.TabIndex = 8;
@@ -79,7 +81,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// label4
 			// 
 			label4.AutoSize = true;
-			label4.Location = new System.Drawing.Point(30, 77);
+			label4.Location = new System.Drawing.Point(30, 79);
 			label4.Name = "label4";
 			label4.Size = new System.Drawing.Size(29, 13);
 			label4.TabIndex = 4;
@@ -88,7 +90,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// label3
 			// 
 			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(11, 58);
+			label3.Location = new System.Drawing.Point(11, 64);
 			label3.Name = "label3";
 			label3.Size = new System.Drawing.Size(47, 13);
 			label3.TabIndex = 3;
@@ -106,7 +108,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// labelaction
 			// 
 			this.labelaction.AutoSize = true;
-			this.labelaction.Location = new System.Drawing.Point(17, 39);
+			this.labelaction.Location = new System.Drawing.Point(18, 49);
 			this.labelaction.Name = "labelaction";
 			this.labelaction.Size = new System.Drawing.Size(40, 13);
 			this.labelaction.TabIndex = 2;
@@ -115,6 +117,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// infopanel
 			// 
 			this.infopanel.Controls.Add(this.anglecontrol);
+			this.infopanel.Controls.Add(this.classname);
+			this.infopanel.Controls.Add(this.labelclass);
 			this.infopanel.Controls.Add(this.arg5);
 			this.infopanel.Controls.Add(this.arglbl5);
 			this.infopanel.Controls.Add(this.arglbl4);
@@ -146,10 +150,28 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.anglecontrol.Angle = 0;
 			this.anglecontrol.AngleOffset = 0;
-			this.anglecontrol.Location = new System.Drawing.Point(232, 52);
+			this.anglecontrol.Location = new System.Drawing.Point(235, 58);
 			this.anglecontrol.Name = "anglecontrol";
 			this.anglecontrol.Size = new System.Drawing.Size(24, 24);
 			this.anglecontrol.TabIndex = 38;
+			// 
+			// classname
+			// 
+			this.classname.AutoEllipsis = true;
+			this.classname.Location = new System.Drawing.Point(61, 34);
+			this.classname.Name = "classname";
+			this.classname.Size = new System.Drawing.Size(210, 14);
+			this.classname.TabIndex = 40;
+			this.classname.Text = "CrazyFlyingShotgunSpawner";
+			// 
+			// labelclass
+			// 
+			this.labelclass.AutoSize = true;
+			this.labelclass.Location = new System.Drawing.Point(23, 34);
+			this.labelclass.Name = "labelclass";
+			this.labelclass.Size = new System.Drawing.Size(35, 13);
+			this.labelclass.TabIndex = 39;
+			this.labelclass.Text = "Class:";
 			// 
 			// arg5
 			// 
@@ -254,7 +276,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// angle
 			// 
 			this.angle.AutoSize = true;
-			this.angle.Location = new System.Drawing.Point(206, 58);
+			this.angle.Location = new System.Drawing.Point(206, 64);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(25, 13);
 			this.angle.TabIndex = 11;
@@ -263,7 +285,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// tag
 			// 
 			this.tag.AutoSize = true;
-			this.tag.Location = new System.Drawing.Point(61, 77);
+			this.tag.Location = new System.Drawing.Point(61, 79);
 			this.tag.Name = "tag";
 			this.tag.Size = new System.Drawing.Size(13, 13);
 			this.tag.TabIndex = 7;
@@ -272,7 +294,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// position
 			// 
 			this.position.AutoSize = true;
-			this.position.Location = new System.Drawing.Point(61, 58);
+			this.position.Location = new System.Drawing.Point(61, 64);
 			this.position.Name = "position";
 			this.position.Size = new System.Drawing.Size(91, 13);
 			this.position.TabIndex = 6;
@@ -281,7 +303,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// action
 			// 
 			this.action.AutoEllipsis = true;
-			this.action.Location = new System.Drawing.Point(61, 39);
+			this.action.Location = new System.Drawing.Point(61, 49);
 			this.action.Name = "action";
 			this.action.Size = new System.Drawing.Size(210, 14);
 			this.action.TabIndex = 5;
@@ -414,6 +436,8 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label labelaction;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl anglecontrol;
 		private ConfigurablePictureBox spritetex;
+		private System.Windows.Forms.Label classname;
+		private System.Windows.Forms.Label labelclass;
 
 	}
 }

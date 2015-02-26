@@ -123,6 +123,9 @@ namespace CodeImp.DoomBuilder.Controls
 			infopanel.Text = " Thing " + t.Index + " ";
 			type.Text = t.Type + " - " + ti.Title;
 			action.Text = actioninfo;
+			labelclass.Enabled = !string.IsNullOrEmpty(ti.ClassName); //mxd
+			classname.Enabled = labelclass.Enabled; //mxd
+			classname.Text = (!string.IsNullOrEmpty(ti.ClassName) ? ti.ClassName : "--"); //mxd
 			position.Text = t.Position.x + ", " + t.Position.y + ", " + zinfo;
 			tag.Text = t.Tag + (General.Map.Options.TagLabels.ContainsKey(t.Tag) ? " - " + General.Map.Options.TagLabels[t.Tag] : string.Empty);
 			angle.Text = t.AngleDoom + "\u00B0";
