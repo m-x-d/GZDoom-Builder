@@ -41,8 +41,8 @@ namespace CodeImp.DoomBuilder.Types
 				tags.Add(t.Tag);
 			}
 
-			//now sort them
-			tags.Sort();
+			//now sort them in descending order
+			tags.Sort((a, b) => -1 * a.CompareTo(b));
 
 			//create enum items
 			foreach(int tag in tags) 

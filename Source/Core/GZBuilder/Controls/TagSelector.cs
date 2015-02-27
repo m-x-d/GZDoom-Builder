@@ -86,8 +86,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 				}
 			}
 
-			//now sort them
-			tags.Sort();
+			//now sort them in descending order
+			tags.Sort((a, b) => -1 * a.CompareTo(b));
 
 			//create tag infos
 			foreach(int tag in tags)
