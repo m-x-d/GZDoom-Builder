@@ -32,6 +32,9 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.thingtype = new CodeImp.DoomBuilder.Controls.ThingBrowserControl();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.cbrandomroll = new System.Windows.Forms.CheckBox();
+			this.cbrandompitch = new System.Windows.Forms.CheckBox();
+			this.cbrandomangle = new System.Windows.Forms.CheckBox();
 			this.roll = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.labelroll = new System.Windows.Forms.Label();
 			this.pitch = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -50,7 +53,7 @@
 			this.rollControl = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
 			this.grouppitch = new System.Windows.Forms.GroupBox();
 			this.pitchControl = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
-			this.groupBox7 = new System.Windows.Forms.GroupBox();
+			this.groupangle = new System.Windows.Forms.GroupBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.cbAbsoluteHeight = new System.Windows.Forms.CheckBox();
 			this.label4 = new System.Windows.Forms.Label();
@@ -111,7 +114,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.missingflags)).BeginInit();
 			this.grouproll.SuspendLayout();
 			this.grouppitch.SuspendLayout();
-			this.groupBox7.SuspendLayout();
+			this.groupangle.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.tabeffects.SuspendLayout();
 			this.groupbehaviour.SuspendLayout();
@@ -128,7 +131,7 @@
 			this.groupBox1.Controls.Add(this.thingtype);
 			this.groupBox1.Location = new System.Drawing.Point(6, 6);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(250, 390);
+			this.groupBox1.Size = new System.Drawing.Size(230, 390);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Thing ";
@@ -138,7 +141,7 @@
 			this.thingtype.Location = new System.Drawing.Point(9, 13);
 			this.thingtype.Margin = new System.Windows.Forms.Padding(6);
 			this.thingtype.Name = "thingtype";
-			this.thingtype.Size = new System.Drawing.Size(232, 374);
+			this.thingtype.Size = new System.Drawing.Size(212, 374);
 			this.thingtype.TabIndex = 0;
 			this.thingtype.UseMultiSelection = true;
 			this.thingtype.OnTypeDoubleClicked += new CodeImp.DoomBuilder.Controls.ThingBrowserControl.TypeDoubleClickDeletegate(this.thingtype_OnTypeDoubleClicked);
@@ -146,18 +149,54 @@
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.cbrandomroll);
+			this.groupBox2.Controls.Add(this.cbrandompitch);
+			this.groupBox2.Controls.Add(this.cbrandomangle);
 			this.groupBox2.Controls.Add(this.roll);
 			this.groupBox2.Controls.Add(this.labelroll);
 			this.groupBox2.Controls.Add(this.pitch);
 			this.groupBox2.Controls.Add(this.labelpitch);
 			this.groupBox2.Controls.Add(this.angle);
 			this.groupBox2.Controls.Add(this.labelAngle);
-			this.groupBox2.Location = new System.Drawing.Point(488, 298);
+			this.groupBox2.Location = new System.Drawing.Point(428, 298);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(133, 98);
+			this.groupBox2.Size = new System.Drawing.Size(193, 98);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Rotation ";
+			// 
+			// cbrandomroll
+			// 
+			this.cbrandomroll.AutoSize = true;
+			this.cbrandomroll.Location = new System.Drawing.Point(120, 71);
+			this.cbrandomroll.Name = "cbrandomroll";
+			this.cbrandomroll.Size = new System.Drawing.Size(66, 17);
+			this.cbrandomroll.TabIndex = 26;
+			this.cbrandomroll.Text = "Random";
+			this.cbrandomroll.UseVisualStyleBackColor = true;
+			this.cbrandomroll.CheckedChanged += new System.EventHandler(this.cbrandomroll_CheckedChanged);
+			// 
+			// cbrandompitch
+			// 
+			this.cbrandompitch.AutoSize = true;
+			this.cbrandompitch.Location = new System.Drawing.Point(120, 46);
+			this.cbrandompitch.Name = "cbrandompitch";
+			this.cbrandompitch.Size = new System.Drawing.Size(66, 17);
+			this.cbrandompitch.TabIndex = 25;
+			this.cbrandompitch.Text = "Random";
+			this.cbrandompitch.UseVisualStyleBackColor = true;
+			this.cbrandompitch.CheckedChanged += new System.EventHandler(this.cbrandompitch_CheckedChanged);
+			// 
+			// cbrandomangle
+			// 
+			this.cbrandomangle.AutoSize = true;
+			this.cbrandomangle.Location = new System.Drawing.Point(120, 21);
+			this.cbrandomangle.Name = "cbrandomangle";
+			this.cbrandomangle.Size = new System.Drawing.Size(66, 17);
+			this.cbrandomangle.TabIndex = 17;
+			this.cbrandomangle.Text = "Random";
+			this.cbrandomangle.UseVisualStyleBackColor = true;
+			this.cbrandomangle.CheckedChanged += new System.EventHandler(this.cbrandomangle_CheckedChanged);
 			// 
 			// roll
 			// 
@@ -169,7 +208,7 @@
 			this.roll.ButtonStepsWrapAround = false;
 			this.roll.Location = new System.Drawing.Point(55, 66);
 			this.roll.Name = "roll";
-			this.roll.Size = new System.Drawing.Size(71, 24);
+			this.roll.Size = new System.Drawing.Size(60, 24);
 			this.roll.StepValues = null;
 			this.roll.TabIndex = 24;
 			this.roll.WhenTextChanged += new System.EventHandler(this.roll_WhenTextChanged);
@@ -193,7 +232,7 @@
 			this.pitch.ButtonStepsWrapAround = false;
 			this.pitch.Location = new System.Drawing.Point(55, 41);
 			this.pitch.Name = "pitch";
-			this.pitch.Size = new System.Drawing.Size(71, 24);
+			this.pitch.Size = new System.Drawing.Size(60, 24);
 			this.pitch.StepValues = null;
 			this.pitch.TabIndex = 22;
 			this.pitch.WhenTextChanged += new System.EventHandler(this.pitch_WhenTextChanged);
@@ -217,7 +256,7 @@
 			this.angle.ButtonStepsWrapAround = false;
 			this.angle.Location = new System.Drawing.Point(55, 16);
 			this.angle.Name = "angle";
-			this.angle.Size = new System.Drawing.Size(71, 24);
+			this.angle.Size = new System.Drawing.Size(60, 24);
 			this.angle.StepValues = null;
 			this.angle.TabIndex = 10;
 			this.angle.WhenTextChanged += new System.EventHandler(this.angle_WhenTextChanged);
@@ -282,7 +321,7 @@
 			this.tabproperties.Controls.Add(this.settingsgroup);
 			this.tabproperties.Controls.Add(this.grouproll);
 			this.tabproperties.Controls.Add(this.grouppitch);
-			this.tabproperties.Controls.Add(this.groupBox7);
+			this.tabproperties.Controls.Add(this.groupangle);
 			this.tabproperties.Controls.Add(this.groupBox4);
 			this.tabproperties.Controls.Add(this.groupBox2);
 			this.tabproperties.Controls.Add(this.groupBox1);
@@ -301,9 +340,9 @@
 						| System.Windows.Forms.AnchorStyles.Left)));
 			this.settingsgroup.Controls.Add(this.missingflags);
 			this.settingsgroup.Controls.Add(this.flags);
-			this.settingsgroup.Location = new System.Drawing.Point(262, 6);
+			this.settingsgroup.Location = new System.Drawing.Point(242, 6);
 			this.settingsgroup.Name = "settingsgroup";
-			this.settingsgroup.Size = new System.Drawing.Size(275, 286);
+			this.settingsgroup.Size = new System.Drawing.Size(295, 286);
 			this.settingsgroup.TabIndex = 23;
 			this.settingsgroup.TabStop = false;
 			this.settingsgroup.Text = " Flags ";
@@ -328,7 +367,7 @@
 			this.flags.Columns = 2;
 			this.flags.Location = new System.Drawing.Point(6, 19);
 			this.flags.Name = "flags";
-			this.flags.Size = new System.Drawing.Size(263, 260);
+			this.flags.Size = new System.Drawing.Size(283, 260);
 			this.flags.TabIndex = 0;
 			this.flags.VerticalSpacing = 1;
 			this.flags.OnValueChanged += new System.EventHandler(this.flags_OnValueChanged);
@@ -373,15 +412,15 @@
 			this.pitchControl.TabIndex = 20;
 			this.pitchControl.AngleChanged += new System.EventHandler(this.pitchControl_AngleChanged);
 			// 
-			// groupBox7
+			// groupangle
 			// 
-			this.groupBox7.Controls.Add(this.anglecontrol);
-			this.groupBox7.Location = new System.Drawing.Point(543, 204);
-			this.groupBox7.Name = "groupBox7";
-			this.groupBox7.Size = new System.Drawing.Size(78, 88);
-			this.groupBox7.TabIndex = 24;
-			this.groupBox7.TabStop = false;
-			this.groupBox7.Text = " Angle";
+			this.groupangle.Controls.Add(this.anglecontrol);
+			this.groupangle.Location = new System.Drawing.Point(543, 204);
+			this.groupangle.Name = "groupangle";
+			this.groupangle.Size = new System.Drawing.Size(78, 88);
+			this.groupangle.TabIndex = 24;
+			this.groupangle.TabStop = false;
+			this.groupangle.Text = " Angle";
 			// 
 			// groupBox4
 			// 
@@ -392,9 +431,9 @@
 			this.groupBox4.Controls.Add(this.posY);
 			this.groupBox4.Controls.Add(this.posZ);
 			this.groupBox4.Controls.Add(this.zlabel);
-			this.groupBox4.Location = new System.Drawing.Point(262, 298);
+			this.groupBox4.Location = new System.Drawing.Point(242, 298);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(220, 98);
+			this.groupBox4.Size = new System.Drawing.Size(180, 98);
 			this.groupBox4.TabIndex = 21;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Position";
@@ -402,7 +441,7 @@
 			// cbAbsoluteHeight
 			// 
 			this.cbAbsoluteHeight.AutoSize = true;
-			this.cbAbsoluteHeight.Location = new System.Drawing.Point(139, 70);
+			this.cbAbsoluteHeight.Location = new System.Drawing.Point(109, 71);
 			this.cbAbsoluteHeight.Name = "cbAbsoluteHeight";
 			this.cbAbsoluteHeight.Size = new System.Drawing.Size(67, 17);
 			this.cbAbsoluteHeight.TabIndex = 16;
@@ -412,18 +451,18 @@
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(5, 21);
+			this.label4.Location = new System.Drawing.Point(4, 21);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(50, 14);
+			this.label4.Size = new System.Drawing.Size(22, 14);
 			this.label4.TabIndex = 15;
 			this.label4.Text = "X:";
 			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(5, 46);
+			this.label5.Location = new System.Drawing.Point(4, 46);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(50, 14);
+			this.label5.Size = new System.Drawing.Size(22, 14);
 			this.label5.TabIndex = 14;
 			this.label5.Text = "Y:";
 			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -436,7 +475,7 @@
 			this.posX.ButtonStep = 8;
 			this.posX.ButtonStepFloat = 1F;
 			this.posX.ButtonStepsWrapAround = false;
-			this.posX.Location = new System.Drawing.Point(61, 16);
+			this.posX.Location = new System.Drawing.Point(32, 16);
 			this.posX.Name = "posX";
 			this.posX.Size = new System.Drawing.Size(72, 24);
 			this.posX.StepValues = null;
@@ -451,7 +490,7 @@
 			this.posY.ButtonStep = 8;
 			this.posY.ButtonStepFloat = 1F;
 			this.posY.ButtonStepsWrapAround = false;
-			this.posY.Location = new System.Drawing.Point(61, 41);
+			this.posY.Location = new System.Drawing.Point(32, 41);
 			this.posY.Name = "posY";
 			this.posY.Size = new System.Drawing.Size(72, 24);
 			this.posY.StepValues = null;
@@ -466,7 +505,7 @@
 			this.posZ.ButtonStep = 8;
 			this.posZ.ButtonStepFloat = 1F;
 			this.posZ.ButtonStepsWrapAround = false;
-			this.posZ.Location = new System.Drawing.Point(61, 66);
+			this.posZ.Location = new System.Drawing.Point(32, 66);
 			this.posZ.Name = "posZ";
 			this.posZ.Size = new System.Drawing.Size(72, 24);
 			this.posZ.StepValues = null;
@@ -475,11 +514,11 @@
 			// 
 			// zlabel
 			// 
-			this.zlabel.Location = new System.Drawing.Point(5, 71);
+			this.zlabel.Location = new System.Drawing.Point(4, 71);
 			this.zlabel.Name = "zlabel";
-			this.zlabel.Size = new System.Drawing.Size(50, 14);
+			this.zlabel.Size = new System.Drawing.Size(22, 14);
 			this.zlabel.TabIndex = 9;
-			this.zlabel.Text = "Abs. Z:";
+			this.zlabel.Text = "Z:";
 			this.zlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// tabeffects
@@ -494,7 +533,7 @@
 			this.tabeffects.Padding = new System.Windows.Forms.Padding(3);
 			this.tabeffects.Size = new System.Drawing.Size(627, 402);
 			this.tabeffects.TabIndex = 1;
-			this.tabeffects.Text = "Tag / Action / Misc.";
+			this.tabeffects.Text = "Action / Tag / Misc.";
 			this.tabeffects.UseVisualStyleBackColor = true;
 			// 
 			// groupbehaviour
@@ -507,7 +546,7 @@
 			this.groupbehaviour.Controls.Add(this.label9);
 			this.groupbehaviour.Controls.Add(this.gravity);
 			this.groupbehaviour.Controls.Add(this.labelGravity);
-			this.groupbehaviour.Location = new System.Drawing.Point(288, 238);
+			this.groupbehaviour.Location = new System.Drawing.Point(285, 6);
 			this.groupbehaviour.Name = "groupbehaviour";
 			this.groupbehaviour.Size = new System.Drawing.Size(333, 158);
 			this.groupbehaviour.TabIndex = 23;
@@ -606,7 +645,7 @@
 			this.grouprendering.Controls.Add(this.label8);
 			this.grouprendering.Controls.Add(this.renderStyle);
 			this.grouprendering.Controls.Add(this.labelrenderstyle);
-			this.grouprendering.Location = new System.Drawing.Point(6, 238);
+			this.grouprendering.Location = new System.Drawing.Point(3, 6);
 			this.grouprendering.Name = "grouprendering";
 			this.grouprendering.Size = new System.Drawing.Size(276, 158);
 			this.grouprendering.TabIndex = 22;
@@ -694,7 +733,7 @@
 			this.actiongroup.Controls.Add(this.label7);
 			this.actiongroup.Controls.Add(this.action);
 			this.actiongroup.Controls.Add(this.browseaction);
-			this.actiongroup.Location = new System.Drawing.Point(6, 78);
+			this.actiongroup.Location = new System.Drawing.Point(3, 170);
 			this.actiongroup.Name = "actiongroup";
 			this.actiongroup.Size = new System.Drawing.Size(615, 154);
 			this.actiongroup.TabIndex = 22;
@@ -736,6 +775,7 @@
 			this.scriptNumbers.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
 			this.scriptNumbers.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
 			this.scriptNumbers.BackColor = System.Drawing.Color.LemonChiffon;
+			this.scriptNumbers.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.scriptNumbers.FormattingEnabled = true;
 			this.scriptNumbers.Location = new System.Drawing.Point(435, 63);
 			this.scriptNumbers.Name = "scriptNumbers";
@@ -747,6 +787,7 @@
 			this.scriptNames.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
 			this.scriptNames.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
 			this.scriptNames.BackColor = System.Drawing.Color.Honeydew;
+			this.scriptNames.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.scriptNames.FormattingEnabled = true;
 			this.scriptNames.Location = new System.Drawing.Point(305, 63);
 			this.scriptNames.Name = "scriptNames";
@@ -877,7 +918,7 @@
 			// groupBox3
 			// 
 			this.groupBox3.Controls.Add(this.tagSelector);
-			this.groupBox3.Location = new System.Drawing.Point(6, 6);
+			this.groupBox3.Location = new System.Drawing.Point(3, 330);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(615, 66);
 			this.groupBox3.TabIndex = 0;
@@ -990,13 +1031,14 @@
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ThingEditForm_HelpRequested);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
 			this.tabs.ResumeLayout(false);
 			this.tabproperties.ResumeLayout(false);
 			this.settingsgroup.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.missingflags)).EndInit();
 			this.grouproll.ResumeLayout(false);
 			this.grouppitch.ResumeLayout(false);
-			this.groupBox7.ResumeLayout(false);
+			this.groupangle.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
 			this.tabeffects.ResumeLayout(false);
@@ -1084,11 +1126,14 @@
         private GZBuilder.Controls.AngleControl rollControl;
         private System.Windows.Forms.GroupBox grouppitch;
         private GZBuilder.Controls.AngleControl pitchControl;
-        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.GroupBox groupangle;
         private GZBuilder.Controls.PairedFloatControl scale;
 		private System.Windows.Forms.PictureBox missingflags;
 		private System.Windows.Forms.ToolTip tooltip;
 		private CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton actionhelp;
 		private System.Windows.Forms.Label labelScale;
+		private System.Windows.Forms.CheckBox cbrandomangle;
+		private System.Windows.Forms.CheckBox cbrandomroll;
+		private System.Windows.Forms.CheckBox cbrandompitch;
 	}
 }
