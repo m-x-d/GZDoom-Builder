@@ -581,6 +581,11 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(Thing t in things) 
 			{
 				// Coordination
+				//mxd. Randomize rotations?
+				if(cbrandomangle.Checked) t.Rotate(General.Random(0, 359));
+				if(cbrandompitch.Checked) t.SetPitch(General.Random(0, 359));
+				if(cbrandomroll.Checked) t.SetRoll(General.Random(0, 359));
+
 				//mxd. Check position
 				float px = General.Clamp(t.Position.x, General.Map.Config.LeftBoundary, General.Map.Config.RightBoundary);
 				float py = General.Clamp(t.Position.y, General.Map.Config.BottomBoundary, General.Map.Config.TopBoundary);
@@ -936,6 +941,24 @@ namespace CodeImp.DoomBuilder.Windows
 			//everything is OK
 			missingflags.Visible = false;
 			settingsgroup.ForeColor = SystemColors.ControlText;
+		}
+
+		private void cbrandomangle_CheckedChanged(object sender, EventArgs e)
+		{
+			angle.Enabled = !cbrandomangle.Checked;
+			groupangle.Enabled = !cbrandomangle.Checked;
+		}
+
+		private void cbrandompitch_CheckedChanged(object sender, EventArgs e)
+		{
+			pitch.Enabled = !cbrandompitch.Checked;
+			grouppitch.Enabled = !cbrandompitch.Checked;
+		}
+
+		private void cbrandomroll_CheckedChanged(object sender, EventArgs e)
+		{
+			roll.Enabled = !cbrandomroll.Checked;
+			grouproll.Enabled = !cbrandomroll.Checked;
 		}
 
 		#endregion

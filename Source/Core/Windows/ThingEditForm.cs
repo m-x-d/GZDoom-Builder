@@ -55,7 +55,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd. Window setup stuff
 		private static Point location = Point.Empty;
-		private static int activeTab;
 
 		private struct ThingProperties //mxd
 		{
@@ -90,14 +89,6 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				this.StartPosition = FormStartPosition.Manual;
 				this.Location = location;
-				if(activeTab > 0 && activeTab < tabs.TabCount) 
-				{
-					tabs.SelectTab(activeTab);
-				} 
-				else 
-				{
-					activeTab = 0;
-				}
 			}
 			
 			// Fill flags list
@@ -109,11 +100,10 @@ namespace CodeImp.DoomBuilder.Windows
 			action.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
 
 			// Tag/Effects?
-			if(!General.Map.FormatInterface.HasThingAction && !General.Map.FormatInterface.HasThingTag)
-			{
-				tabs.TabPages.Remove(tabeffects);
-			} 
-			else //mxd. Setup script numbers
+			actiongroup.Visible = General.Map.FormatInterface.HasThingAction;
+			idgroup.Visible = General.Map.FormatInterface.HasThingTag;
+
+			if(General.Map.FormatInterface.HasThingAction && General.Map.FormatInterface.HasThingTag) //mxd. Setup script numbers
 			{
 				scriptNumbers.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
 
@@ -135,6 +125,27 @@ namespace CodeImp.DoomBuilder.Windows
 				posY.AllowDecimal = true;
 				posZ.AllowDecimal = true;
 			}
+
+			//mxd. Arrange inteface
+			int targetheight;
+			if(General.Map.FormatInterface.HasThingAction)
+				targetheight = actiongroup.Bottom + actiongroup.Margin.Bottom;
+			else
+				targetheight = typegroup.Bottom + typegroup.Margin.Bottom * 2;
+
+			if(General.Map.FormatInterface.HasThingTag)
+			{
+				idgroup.Top = targetheight;
+				targetheight = idgroup.Bottom + idgroup.Margin.Bottom * 2;
+			}
+
+			panel.Height = targetheight;
+
+			//mxd. Arrange Apply/Cancel buttons
+			applypanel.Top = panel.Bottom + panel.Margin.Bottom * 2;
+
+			//mxd. Update window height
+			this.Height = applypanel.Bottom + applypanel.Margin.Bottom + (this.Height - this.ClientRectangle.Height) + 1;
 			
 			// Setup types list
 			thingtype.Setup();
@@ -559,7 +570,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private void ThingEditForm_FormClosing(object sender, FormClosingEventArgs e) 
 		{
 			location = this.Location;
-			activeTab = tabs.SelectedIndex;
 		}
 
 		// Help

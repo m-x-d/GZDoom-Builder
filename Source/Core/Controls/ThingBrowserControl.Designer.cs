@@ -40,13 +40,13 @@ namespace CodeImp.DoomBuilder.Controls
 			this.thingimages = new System.Windows.Forms.ImageList(this.components);
 			this.infopanel = new System.Windows.Forms.Panel();
 			this.spritepanel = new System.Windows.Forms.Panel();
+			this.spritetex = new CodeImp.DoomBuilder.Controls.ConfigurablePictureBox();
+			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.tbFilter = new System.Windows.Forms.TextBox();
 			this.bClear = new System.Windows.Forms.Button();
 			this.updatetimer = new System.Windows.Forms.Timer(this.components);
 			this.typelist = new CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview();
-			this.spritetex = new CodeImp.DoomBuilder.Controls.ConfigurablePictureBox();
-			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.infopanel.SuspendLayout();
 			this.spritepanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.spritetex)).BeginInit();
@@ -167,54 +167,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.spritepanel.Size = new System.Drawing.Size(70, 70);
 			this.spritepanel.TabIndex = 23;
 			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(3, 6);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(32, 13);
-			this.label1.TabIndex = 19;
-			this.label1.Text = "Filter:";
-			// 
-			// tbFilter
-			// 
-			this.tbFilter.Location = new System.Drawing.Point(42, 3);
-			this.tbFilter.Name = "tbFilter";
-			this.tbFilter.Size = new System.Drawing.Size(155, 20);
-			this.tbFilter.TabIndex = 20;
-			this.tbFilter.TextChanged += new System.EventHandler(this.tbFilter_TextChanged);
-			// 
-			// bClear
-			// 
-			this.bClear.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchClear;
-			this.bClear.Location = new System.Drawing.Point(201, 1);
-			this.bClear.Name = "bClear";
-			this.bClear.Size = new System.Drawing.Size(24, 23);
-			this.bClear.TabIndex = 21;
-			this.bClear.UseVisualStyleBackColor = true;
-			this.bClear.Click += new System.EventHandler(this.bClear_Click);
-			// 
-			// updatetimer
-			// 
-			this.updatetimer.Tick += new System.EventHandler(this.updatetimer_Tick);
-			// 
-			// typelist
-			// 
-			this.typelist.HideSelection = false;
-			this.typelist.ImageIndex = 0;
-			this.typelist.ImageList = this.thingimages;
-			this.typelist.Location = new System.Drawing.Point(0, 28);
-			this.typelist.Margin = new System.Windows.Forms.Padding(8, 8, 9, 8);
-			this.typelist.Name = "typelist";
-			this.typelist.SelectedImageIndex = 0;
-			this.typelist.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			this.typelist.SelectionMode = CodeImp.DoomBuilder.GZBuilder.Controls.TreeViewSelectionMode.SingleSelect;
-			this.typelist.Size = new System.Drawing.Size(304, 216);
-			this.typelist.TabIndex = 22;
-			this.typelist.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.typelist_MouseDoubleClick);
-			this.typelist.MouseEnter += new System.EventHandler(this.typelist_MouseEnter);
-			this.typelist.SelectionsChanged += new System.EventHandler(this.typelist_SelectionsChanged);
-			// 
 			// spritetex
 			// 
 			this.spritetex.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.Default;
@@ -242,6 +194,57 @@ namespace CodeImp.DoomBuilder.Controls
 			this.typeid.Size = new System.Drawing.Size(68, 20);
 			this.typeid.TabIndex = 1;
 			this.typeid.TextChanged += new System.EventHandler(this.typeid_TextChanged);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(3, 6);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(32, 13);
+			this.label1.TabIndex = 19;
+			this.label1.Text = "Filter:";
+			// 
+			// tbFilter
+			// 
+			this.tbFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.tbFilter.Location = new System.Drawing.Point(42, 3);
+			this.tbFilter.Name = "tbFilter";
+			this.tbFilter.Size = new System.Drawing.Size(232, 20);
+			this.tbFilter.TabIndex = 20;
+			this.tbFilter.TextChanged += new System.EventHandler(this.tbFilter_TextChanged);
+			// 
+			// bClear
+			// 
+			this.bClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.bClear.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchClear;
+			this.bClear.Location = new System.Drawing.Point(277, 1);
+			this.bClear.Name = "bClear";
+			this.bClear.Size = new System.Drawing.Size(24, 23);
+			this.bClear.TabIndex = 21;
+			this.bClear.UseVisualStyleBackColor = true;
+			this.bClear.Click += new System.EventHandler(this.bClear_Click);
+			// 
+			// updatetimer
+			// 
+			this.updatetimer.Tick += new System.EventHandler(this.updatetimer_Tick);
+			// 
+			// typelist
+			// 
+			this.typelist.HideSelection = false;
+			this.typelist.ImageIndex = 0;
+			this.typelist.ImageList = this.thingimages;
+			this.typelist.Location = new System.Drawing.Point(0, 28);
+			this.typelist.Margin = new System.Windows.Forms.Padding(8, 8, 9, 8);
+			this.typelist.Name = "typelist";
+			this.typelist.SelectedImageIndex = 0;
+			this.typelist.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			this.typelist.SelectionMode = CodeImp.DoomBuilder.GZBuilder.Controls.TreeViewSelectionMode.SingleSelect;
+			this.typelist.Size = new System.Drawing.Size(304, 216);
+			this.typelist.TabIndex = 22;
+			this.typelist.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.typelist_MouseDoubleClick);
+			this.typelist.MouseEnter += new System.EventHandler(this.typelist_MouseEnter);
+			this.typelist.SelectionsChanged += new System.EventHandler(this.typelist_SelectionsChanged);
 			// 
 			// ThingBrowserControl
 			// 
