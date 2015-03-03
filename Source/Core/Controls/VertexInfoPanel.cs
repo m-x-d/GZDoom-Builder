@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System.Globalization;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 
@@ -37,14 +38,14 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Vertex info
 			vertexinfo.Text = " Vertex " + v.Index + " ";
-			position.Text = v.Position.x.ToString("0.##") + ", " + v.Position.y.ToString("0.##");
+			position.Text = v.Position.x.ToString(CultureInfo.InvariantCulture) + ", " + v.Position.y.ToString(CultureInfo.InvariantCulture);
 			
 			//mxd. Height offsets
 			if(General.Map.UDMF) 
 			{
 				if(!float.IsNaN(v.ZCeiling)) 
 				{
-					zceiling.Text = v.ZCeiling.ToString("0.##");
+					zceiling.Text = v.ZCeiling.ToString(CultureInfo.InvariantCulture);
 					zceiling.Enabled = true;
 					labelCeilingOffset.Enabled = true;
 				} 
@@ -55,7 +56,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 				if(!float.IsNaN(v.ZFloor)) 
 				{
-					zfloor.Text = v.ZFloor.ToString("0.##");
+					zfloor.Text = v.ZFloor.ToString(CultureInfo.InvariantCulture);
 					zfloor.Enabled = true;
 					labelFloorOffset.Enabled = true;
 				} 

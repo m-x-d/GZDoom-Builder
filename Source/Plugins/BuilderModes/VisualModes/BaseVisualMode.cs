@@ -2666,7 +2666,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureScaleChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(-0.1f, 0);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(-1, 0);
 			PostAction();
 		}
 
@@ -2676,7 +2676,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureScaleChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(0.1f, 0);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(1, 0);
 			PostAction();
 		}
 
@@ -2686,7 +2686,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureScaleChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(0, 0.1f);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(0, 1);
 			PostAction();
 		}
 
@@ -2696,7 +2696,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureScaleChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(0, -0.1f);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(0, -1);
 			PostAction();
 		}
 

@@ -18,6 +18,7 @@
 
 using System;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Data;
@@ -188,7 +189,7 @@ namespace CodeImp.DoomBuilder.Controls
 						showExtededCeilingInfo = true;
 						ceilingOffset.Enabled = true;
 						ceilingOffsetLabel.Enabled = true;
-						ceilingOffset.Text = String.Format("{0:0.##}", panX) + ", " + String.Format("{0:0.##}", panY);
+						ceilingOffset.Text = panX.ToString(CultureInfo.InvariantCulture) + ", " + panY.ToString(CultureInfo.InvariantCulture);
 					} 
 					else 
 					{
@@ -206,7 +207,7 @@ namespace CodeImp.DoomBuilder.Controls
 						showExtededFloorInfo = true;
 						floorOffset.Enabled = true;
 						floorOffsetLabel.Enabled = true;
-						floorOffset.Text = String.Format("{0:0.##}", panX) + ", " + String.Format("{0:0.##}", panY);
+						floorOffset.Text = panX.ToString(CultureInfo.InvariantCulture) + ", " + panY.ToString(CultureInfo.InvariantCulture);
 					} 
 					else 
 					{
@@ -216,7 +217,7 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 
 					//ceiling scale
-					float scaleX = s.Fields.GetValue("xscaleceiling", 1.0f);//1.0f;
+					float scaleX = s.Fields.GetValue("xscaleceiling", 1.0f);
 					float scaleY = s.Fields.GetValue("yscaleceiling", 1.0f);
 
 					if(scaleX != 1.0f || scaleY != 1.0f) 
@@ -224,7 +225,7 @@ namespace CodeImp.DoomBuilder.Controls
 						showExtededCeilingInfo = true;
 						ceilingScale.Enabled = true;
 						ceilingScaleLabel.Enabled = true;
-						ceilingScale.Text = String.Format("{0:0.##}", scaleX) + ", " + String.Format("{0:0.##}", scaleY);
+						ceilingScale.Text = scaleX.ToString(CultureInfo.InvariantCulture) + ", " + scaleY.ToString(CultureInfo.InvariantCulture);
 					} 
 					else 
 					{
@@ -242,7 +243,7 @@ namespace CodeImp.DoomBuilder.Controls
 						showExtededFloorInfo = true;
 						floorScale.Enabled = true;
 						floorScaleLabel.Enabled = true;
-						floorScale.Text = String.Format("{0:0.##}", scaleX) + ", " + String.Format("{0:0.##}", scaleY);
+						floorScale.Text = scaleX.ToString(CultureInfo.InvariantCulture) + ", " + scaleY.ToString(CultureInfo.InvariantCulture);
 					} 
 					else 
 					{
