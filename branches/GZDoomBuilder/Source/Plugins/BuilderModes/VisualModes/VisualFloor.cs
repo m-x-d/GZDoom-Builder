@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Globalization;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
@@ -203,7 +204,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Texture scale change
-		protected override void ChangeTextureScale(float incrementX, float incrementY) 
+		protected override void ChangeTextureScale(int incrementX, int incrementY) 
 		{
 			Sector s = GetControlSector();
 			float scaleX = s.Fields.GetValue("xscalefloor", 1.0f);
@@ -213,19 +214,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(incrementX != 0) 
 			{
-				if(scaleX + incrementX == 0)
-					scaleX *= -1;
-				else
-					scaleX += incrementX;
+				float pix = (int)Math.Round(Texture.Width * scaleX) + incrementX;
+				float newscaleX = (float)Math.Round(pix / Texture.Width, 3);
+				scaleX = (newscaleX == 0 ? scaleX * -1 : newscaleX);
 				UDMFTools.SetFloat(s.Fields, "xscalefloor", scaleX, 1.0f);
 			}
 
 			if(incrementY != 0)
 			{
-				if(scaleY + incrementY == 0)
-					scaleY *= -1;
-				else
-					scaleY += incrementY;
+				float pix = (int)Math.Round(Texture.Height * scaleY) + incrementY;
+				float newscaleY = (float)Math.Round(pix / Texture.Height, 3);
+				scaleY = (newscaleY == 0 ? scaleY * -1 : newscaleY);
 				UDMFTools.SetFloat(s.Fields, "yscalefloor", scaleY, 1.0f);
 			}
 
@@ -240,7 +239,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Sector.Sector.UpdateCache();
 			}
 
-			mode.SetActionResult("Floor scale changed to " + scaleX + ", " + scaleY);
+			mode.SetActionResult("Floor scale changed to " + scaleX.ToString("F03", CultureInfo.InvariantCulture) + ", " + scaleY.ToString("F03", CultureInfo.InvariantCulture) + " (" + (int)Math.Round(Texture.Width / scaleX) + " x " + (int)Math.Round(Texture.Height / scaleY) + ").");
 		}
 
 		//mxd

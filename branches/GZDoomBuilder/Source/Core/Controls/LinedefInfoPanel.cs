@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Map;
@@ -481,7 +482,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			if(x != defaultvalue || y != defaultvalue)
 			{
-				valuelabel.Text = String.Format("{0:0.##}", x) + ", " + String.Format("{0:0.##}", y);
+				valuelabel.Text = x.ToString(CultureInfo.InvariantCulture) + ", " + y.ToString(CultureInfo.InvariantCulture);
 				valuelabel.Enabled = true;
 				namelabel.Enabled = true;
 				return true;

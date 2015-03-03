@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// This changes the height
 		protected abstract void ChangeHeight(int amount);
-		protected abstract void ChangeTextureScale(float incrementX, float incrementY); //mxd
+		protected abstract void ChangeTextureScale(int incrementX, int incrementY); //mxd
 		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
 
 		// This swaps triangles so that the plane faces the other way
@@ -895,9 +895,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual void OnChangeScale(float incrementX, float incrementY) 
+		public virtual void OnChangeScale(int incrementX, int incrementY) 
 		{
-			if(!General.Map.UDMF) return;
+			if(!General.Map.UDMF || !Texture.IsImageLoaded) return;
 
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Change texture scale");

@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Globalization;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Map;
@@ -94,7 +95,6 @@ namespace CodeImp.DoomBuilder.Controls
 			if(ti.AbsoluteZ)
 			{
 				zvalue = t.Position.z;
-				zinfo = zvalue.ToString();
 			}
 			else
 			{
@@ -104,20 +104,18 @@ namespace CodeImp.DoomBuilder.Controls
 					if(ti.Hangs)
 					{
 						zvalue = t.Sector.CeilHeight - t.Position.z - ti.Height; //mxd
-						zinfo = zvalue.ToString();
 					}
 					else
 					{
 						zvalue = t.Sector.FloorHeight + t.Position.z;
-						zinfo = zvalue.ToString();
 					}
 				}
 				else
 				{
 					zvalue = t.Position.z;
-					if(zvalue >= 0.0f) zinfo = "+" + zvalue; else zinfo = zvalue.ToString();
 				}
 			}
+			zinfo = zvalue.ToString(CultureInfo.InvariantCulture); //mxd
 
 			// Thing info
 			infopanel.Text = " Thing " + t.Index + " ";
@@ -126,7 +124,7 @@ namespace CodeImp.DoomBuilder.Controls
 			labelclass.Enabled = !string.IsNullOrEmpty(ti.ClassName); //mxd
 			classname.Enabled = labelclass.Enabled; //mxd
 			classname.Text = (!string.IsNullOrEmpty(ti.ClassName) ? ti.ClassName : "--"); //mxd
-			position.Text = t.Position.x + ", " + t.Position.y + ", " + zinfo;
+			position.Text = t.Position.x.ToString(CultureInfo.InvariantCulture) + ", " + t.Position.y.ToString(CultureInfo.InvariantCulture) + ", " + zinfo;
 			tag.Text = t.Tag + (General.Map.Options.TagLabels.ContainsKey(t.Tag) ? " - " + General.Map.Options.TagLabels[t.Tag] : string.Empty);
 			angle.Text = t.AngleDoom + "\u00B0";
 			anglecontrol.Angle = t.AngleDoom;

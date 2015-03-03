@@ -28,6 +28,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
+using System.Globalization;
 
 #endregion
 
@@ -1451,9 +1452,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual void OnChangeScale(float incrementX, float incrementY) 
+		public virtual void OnChangeScale(int incrementX, int incrementY) 
 		{
-			if(!General.Map.UDMF) return;
+			if(!General.Map.UDMF || !Texture.IsImageLoaded) return;
 
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Change wall scale");
@@ -1488,27 +1489,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			Sidedef.Fields.BeforeFieldsChange();
 
-			if(incrementX != 0) 
+			if(incrementX != 0)
 			{
-				if(scaleX + incrementX == 0)
-					scaleX *= -1;
-				else
-					scaleX += incrementX;
+				float pix = (int)Math.Round(Texture.Width * scaleX) + incrementX;
+				float newscaleX = (float)Math.Round(pix / Texture.Width, 3);
+				scaleX = (newscaleX == 0 ? scaleX * -1 : newscaleX);
 				UDMFTools.SetFloat(Sidedef.Fields, keyX, scaleX, 1.0f);
 			}
 
 			if(incrementY != 0) 
 			{
-				if(scaleY + incrementY == 0)
-					scaleY *= -1;
-				else
-					scaleY += incrementY;
+				float pix = (int)Math.Round(Texture.Height * scaleY) + incrementY;
+				float newscaleY = (float)Math.Round(pix / Texture.Height, 3);
+				scaleY = (newscaleY == 0 ? scaleY * -1 : newscaleY);
 				UDMFTools.SetFloat(Sidedef.Fields, keyY, scaleY, 1.0f);
 			}
 
 			//update geometry
 			Setup();
-			mode.SetActionResult("Wall scale changed to " + scaleX + ", " + scaleY);
+			mode.SetActionResult("Wall scale changed to " + scaleX.ToString("F03", CultureInfo.InvariantCulture) + ", " + scaleY.ToString("F03", CultureInfo.InvariantCulture) + " (" + (int)Math.Round(Texture.Width / scaleX) + " x " + (int)Math.Round(Texture.Height / scaleY) + ").");
 		}
 
 		#endregion

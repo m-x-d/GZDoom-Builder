@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.vertexinfo.Controls.Add(label1);
 			this.vertexinfo.Location = new System.Drawing.Point(0, 0);
 			this.vertexinfo.Name = "vertexinfo";
-			this.vertexinfo.Size = new System.Drawing.Size(163, 100);
+			this.vertexinfo.Size = new System.Drawing.Size(200, 100);
 			this.vertexinfo.TabIndex = 0;
 			this.vertexinfo.TabStop = false;
 			this.vertexinfo.Text = " Vertex ";
@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// labelCeilingOffset
 			// 
 			this.labelCeilingOffset.AutoSize = true;
-			this.labelCeilingOffset.Location = new System.Drawing.Point(7, 3);
+			this.labelCeilingOffset.Location = new System.Drawing.Point(5, 3);
 			this.labelCeilingOffset.Name = "labelCeilingOffset";
 			this.labelCeilingOffset.Size = new System.Drawing.Size(70, 13);
 			this.labelCeilingOffset.TabIndex = 4;
@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// labelFloorOffset
 			// 
 			this.labelFloorOffset.AutoSize = true;
-			this.labelFloorOffset.Location = new System.Drawing.Point(14, 26);
+			this.labelFloorOffset.Location = new System.Drawing.Point(12, 26);
 			this.labelFloorOffset.Name = "labelFloorOffset";
 			this.labelFloorOffset.Size = new System.Drawing.Size(62, 13);
 			this.labelFloorOffset.TabIndex = 5;
