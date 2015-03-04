@@ -486,6 +486,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": got #include directive with missing or incorrect path: '" + includeLump + "'");
 						}
 					} 
+					else if(token == "$gzdb_skip") //mxd
+					{
+						break;
+					}
 					else 
 					{
 						// Unknown structure!
