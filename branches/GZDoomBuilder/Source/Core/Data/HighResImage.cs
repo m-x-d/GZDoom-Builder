@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public HighResImage(string name, int width, int height, float scalex, float scaley, bool worldpanning, bool isflat)
+		public HighResImage(string name, string virtualpath, int width, int height, float scalex, float scaley, bool worldpanning, bool isflat)
 		{
 			// Initialize
 			this.width = width;
@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			//mxd
 			SetName(name);
+			this.virtualname = "[TEXTURES]/" + (!string.IsNullOrEmpty(virtualpath) ? virtualpath + "/" : "") + this.name;
 			this.isFlat = isflat;
 			
 			// We have no destructor
@@ -74,7 +75,6 @@ namespace CodeImp.DoomBuilder.Data
 			
 			base.SetName(name);
 
-			this.virtualname = "[TEXTURES]/" + this.name;
 			if(General.Settings.CapitalizeTextureNames && !string.IsNullOrEmpty(this.displayname)) 
 			{
 				this.displayname = this.displayname.ToUpperInvariant();

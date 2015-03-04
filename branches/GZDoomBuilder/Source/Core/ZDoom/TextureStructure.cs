@@ -36,20 +36,21 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Variables
 
 		// Declaration
-		private string typename;
-		private string name;
-		private int width;
-		private int height;
+		private readonly string typename;
+		private readonly string name;
+		private readonly string virtualpath; //mxd
+		private readonly int width;
+		private readonly int height;
 		
 		// Properties
-		private float xscale;
-		private float yscale;
-		private int xoffset;
-		private int yoffset;
-		private bool worldpanning;
+		private readonly float xscale;
+		private readonly float yscale;
+		private readonly int xoffset;
+		private readonly int yoffset;
+		private readonly bool worldpanning;
 		
 		// Patches
-		private List<PatchStructure> patches;
+		private readonly List<PatchStructure> patches;
 		
 		#endregion
 
@@ -71,10 +72,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal TextureStructure(TexturesParser parser, string typename)
+		internal TextureStructure(TexturesParser parser, string typename, string virtualpath)
 		{
 			// Initialize
 			this.typename = typename;
+			this.virtualpath = virtualpath;
 			patches = new List<PatchStructure>(4);
 			xscale = 0.0f;
 			yscale = 0.0f;
@@ -85,6 +87,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// First token is the class name
 			parser.SkipWhitespace(true);
 			name = parser.StripTokenQuotes(parser.ReadToken());
+
+			//mxd. It can also be "optional" keyword.
+			if(name.ToLowerInvariant() == "optional")
+			{
+				parser.SkipWhitespace(true);
+				name = parser.StripTokenQuotes(parser.ReadToken());
+			}
+
 			if(string.IsNullOrEmpty(name))
 			{
 				parser.ReportError("Expected texture or sprite name");
@@ -270,7 +280,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(yscale == 0.0f) scaley = defaultscale; else scaley = 1f / yscale;
 
 			// Make texture
-			HighResImage tex = new HighResImage(name, width, height, scalex, scaley, worldpanning, typename == "flat");
+			HighResImage tex = new HighResImage(name, virtualpath, width, height, scalex, scaley, worldpanning, typename == "flat");
 
 			// Add patches
 			foreach(PatchStructure p in patches)

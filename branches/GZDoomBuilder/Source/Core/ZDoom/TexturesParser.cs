@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private readonly Dictionary<string, TextureStructure> textures;
 		private readonly Dictionary<string, TextureStructure> flats;
 		private readonly Dictionary<string, TextureStructure> sprites;
+		private readonly char[] pathtrimchars = new[] {'_', '.', ' ', '-'}; //mxd
 
 		#endregion
 		
@@ -75,6 +76,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public override bool Parse(Stream stream, string sourcefilename)
 		{
 			base.Parse(stream, sourcefilename);
+
+			//mxd. Make vitrual path from filename
+			string virtualpath = sourcefilename.Substring(8).TrimStart(pathtrimchars);
+			if(virtualpath.ToLowerInvariant() == "txt") virtualpath = string.Empty;
 			
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true))
@@ -87,7 +92,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					if(objdeclaration == "texture")
 					{
 						// Read texture structure
-						TextureStructure tx = new TextureStructure(this, "texture");
+						TextureStructure tx = new TextureStructure(this, "texture", virtualpath);
 						if(this.HasError) break;
 
 						// if a limit for the texture name length is set make sure that it's not exceeded
@@ -105,7 +110,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					else if(objdeclaration == "sprite")
 					{
 						// Read sprite structure
-						TextureStructure tx = new TextureStructure(this, "sprite");
+						TextureStructure tx = new TextureStructure(this, "sprite", virtualpath);
 						if(this.HasError) break;
 
 						// if a limit for the sprite name length is set make sure that it's not exceeded
@@ -122,7 +127,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					else if(objdeclaration == "walltexture")
 					{
 						// Read walltexture structure
-						TextureStructure tx = new TextureStructure(this, "walltexture");
+						TextureStructure tx = new TextureStructure(this, "walltexture", virtualpath);
 						if(this.HasError) break;
 
 						// if a limit for the walltexture name length is set make sure that it's not exceeded
@@ -140,7 +145,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					else if(objdeclaration == "flat")
 					{
 						// Read flat structure
-						TextureStructure tx = new TextureStructure(this, "flat");
+						TextureStructure tx = new TextureStructure(this, "flat", virtualpath);
 						if(this.HasError) break;
 
 						// if a limit for the flat name length is set make sure that it's not exceeded
@@ -154,6 +159,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 							if(!flats.ContainsKey(tx.Name) || (flats[tx.Name].TypeName != "texture"))
 								flats[tx.Name] = tx;
 						}
+					}
+					else if(objdeclaration == "$gzdb_skip") //mxd
+					{
+						break;
 					}
 					else
 					{
