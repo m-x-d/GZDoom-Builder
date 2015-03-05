@@ -57,9 +57,14 @@
 	  <li>18 - Light Brown (default);</li>
 	  <li>19 - Orange;</li>
 	</ul>
+     
+	  Additionaly, you can use the following special comments in the global block:<br /><br />  
+	  <strong>//$GZDB_SKIP</strong><br />
+	  DECORATE parser will stop parsing a file after encountering this comment. This can be used to speedup the parsing process by skipping files, which don't contain placeable actor definitions.<br />
+	  <br />
 	  
-	  <strong>Example:</strong><br />
-	  Note: It is a good idea to include the Doom Editor Number after the actor definition if you want it to show in Doom Builder, even if it is replacing a standard Doom actor. 
+	  <strong>Note:</strong> It is a good idea to include the Doom Editor Number after the actor definition if you want it to show in Doom Builder, even if it is replacing a standard Doom actor.<br /> <br /> 
+      <strong>Example:</strong><br /> 
 	  <pre>
 Actor ChexShield : ResistanceRune replaces ResistanceRune 5104
 {
@@ -80,6 +85,13 @@ Actor ChexShield : ResistanceRune replaces ResistanceRune 5104
       ARMX A 1
       Loop
   }
+}
+
+//$GZDB_SKIP
+actor SuperGiantImpBall : DoomImpBall
+{
+  Scale 8.0
+  Damage 30
 }
 </pre>
 	</p>

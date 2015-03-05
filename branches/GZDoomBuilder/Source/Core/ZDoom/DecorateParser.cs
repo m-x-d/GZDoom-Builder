@@ -169,6 +169,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 							if((t == ";") || (t == null)) break;
 						}
 					}
+					else if(objdeclaration == "$gzdb_skip") //mxd
+					{
+						break;
+					}
 					else
 					{
 						// Unknown structure!
