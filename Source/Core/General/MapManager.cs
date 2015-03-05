@@ -1918,7 +1918,7 @@ namespace CodeImp.DoomBuilder
 			if (optionsform.ShowDialog(General.MainWindow) == DialogResult.OK) 
 			{
 				// Update interface
-				General.MainWindow.UpdateInterface();
+				//General.MainWindow.UpdateInterface();
 
 				// Stop data manager
 				data.Dispose();
