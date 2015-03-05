@@ -1389,7 +1389,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// buttonthingsfilter
 			// 
 			this.buttonthingsfilter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonthingsfilter.Enabled = false;
 			this.buttonthingsfilter.Image = global::CodeImp.DoomBuilder.Properties.Resources.Filter;
 			this.buttonthingsfilter.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonthingsfilter.Name = "buttonthingsfilter";
@@ -1401,7 +1400,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// thingfilters
 			// 
 			this.thingfilters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.thingfilters.Enabled = false;
 			this.thingfilters.Items.AddRange(new object[] {
             "(none)",
             "(custom)",
@@ -2138,7 +2136,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// display
 			// 
-			this.display.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.display.BackColor = System.Drawing.SystemColors.ControlDarkDark;
 			this.display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.display.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.display.CausesValidation = false;
@@ -2187,8 +2185,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modestoolbar.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.modestoolbar.Size = new System.Drawing.Size(30, 515);
 			this.modestoolbar.TabIndex = 8;
-			this.modestoolbar.Text = "toolStrip1";
-			this.modestoolbar.Visible = false;
+			this.modestoolbar.Text = "Editing Modes";
 			// 
 			// dockerspanel
 			// 

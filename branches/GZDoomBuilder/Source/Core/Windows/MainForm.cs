@@ -209,7 +209,7 @@ namespace CodeImp.DoomBuilder.Windows
 			pluginbuttons = new List<PluginToolbarButton>();
 			editmodeitems = new List<ToolStripItem>();
 			labelcollapsedinfo.Text = "";
-			display.Dock = DockStyle.Fill;			
+			display.Dock = DockStyle.Fill;
 			
 			// Fetch pointer
 			windowptr = base.Handle;
@@ -309,7 +309,7 @@ namespace CodeImp.DoomBuilder.Windows
 		internal void SetupInterface()
 		{
 			// Setup docker
-			if(General.Settings.DockersPosition != 2)
+			if(General.Settings.DockersPosition != 2 && General.Map != null)
 			{
 				LockUpdate();
 				dockerspanel.Visible = true;
@@ -329,10 +329,12 @@ namespace CodeImp.DoomBuilder.Windows
 					dockersspace.Width = General.Settings.DockersWidth;
 
 				// Setup docker
+				int targetindex = this.Controls.IndexOf(display) + 1; //mxd
 				if(General.Settings.DockersPosition == 0)
 				{
 					modestoolbar.Dock = DockStyle.Right; //mxd
 					dockersspace.Dock = DockStyle.Left;
+					AdjustDockersSpace(targetindex); //mxd
 					dockerspanel.Setup(false);
 					dockerspanel.Location = dockersspace.Location;
 					dockerspanel.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom;
@@ -341,6 +343,7 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					modestoolbar.Dock = DockStyle.Left; //mxd
 					dockersspace.Dock = DockStyle.Right;
+					AdjustDockersSpace(targetindex); //mxd
 					dockerspanel.Setup(true);
 					dockerspanel.Location = new Point(dockersspace.Right - General.Settings.DockersWidth, dockersspace.Top);
 					dockerspanel.Anchor = AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
@@ -350,15 +353,24 @@ namespace CodeImp.DoomBuilder.Windows
 				dockerspanel.Height = dockersspace.Height;
 				dockerspanel.BringToFront();
 
-				if(General.Settings.CollapseDockers)
-					dockerspanel.Collapse();
-				
+				if(General.Settings.CollapseDockers) dockerspanel.Collapse();
+
 				UnlockUpdate();
 			}
 			else
 			{
 				dockerspanel.Visible = false;
 				dockersspace.Visible = false;
+				modestoolbar.Dock = DockStyle.Left; //mxd
+			}
+		}
+
+		//mxd. dockersspace display index gets messed up while re-docking. This fixes it...
+		private void AdjustDockersSpace(int targetindex)
+		{
+			while(this.Controls.IndexOf(dockersspace) != targetindex)
+			{
+				this.Controls.SetChildIndex(dockersspace, targetindex);
 			}
 		}
 		
@@ -559,7 +571,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			windowactive = true;
 
-			UpdateInterface();
+			//UpdateInterface();
 			ResumeExclusiveMouseInput();
 			ReleaseAllKeys();
 			FocusDisplay();
@@ -1836,45 +1848,47 @@ namespace CodeImp.DoomBuilder.Windows
 			preventupdateseperators = true;
 			
 			// Show/hide items based on preferences
+			bool maploaded = General.Map != null; //mxd
 			buttonnewmap.Visible = General.Settings.ToolbarFile;
 			buttonopenmap.Visible = General.Settings.ToolbarFile;
 			buttonsavemap.Visible = General.Settings.ToolbarFile;
-			buttonscripteditor.Visible = General.Settings.ToolbarScript;
-			buttonundo.Visible = General.Settings.ToolbarUndo;
-			buttonredo.Visible = General.Settings.ToolbarUndo;
-			buttoncut.Visible = General.Settings.ToolbarCopy;
-			buttoncopy.Visible = General.Settings.ToolbarCopy;
-			buttonpaste.Visible = General.Settings.ToolbarCopy;
-			buttoninsertprefabfile.Visible = General.Settings.ToolbarPrefabs;
-			buttoninsertpreviousprefab.Visible = General.Settings.ToolbarPrefabs;
-			buttonthingsfilter.Visible = General.Settings.ToolbarFilter;
-			thingfilters.Visible = General.Settings.ToolbarFilter;
-			separatorfilters.Visible = General.Settings.ToolbarViewModes; //mxd
-			buttonfullbrightness.Visible = General.Settings.ToolbarViewModes; //mxd
-			separatorfullbrightness.Visible = General.Settings.ToolbarViewModes; //mxd
-			buttonviewbrightness.Visible = General.Settings.ToolbarViewModes;
-			buttonviewceilings.Visible = General.Settings.ToolbarViewModes;
-			buttonviewfloors.Visible = General.Settings.ToolbarViewModes;
-			buttonviewnormal.Visible = General.Settings.ToolbarViewModes;
-			buttonsnaptogrid.Visible = General.Settings.ToolbarGeometry;
-			buttonautomerge.Visible = General.Settings.ToolbarGeometry;
-			buttonautoclearsidetextures.Visible = General.Settings.ToolbarGeometry; //mxd
-			buttontest.Visible = General.Settings.ToolbarTesting;
+			buttonscripteditor.Visible = General.Settings.ToolbarScript && maploaded;
+			buttonundo.Visible = General.Settings.ToolbarUndo && maploaded;
+			buttonredo.Visible = General.Settings.ToolbarUndo && maploaded;
+			buttoncut.Visible = General.Settings.ToolbarCopy && maploaded;
+			buttoncopy.Visible = General.Settings.ToolbarCopy && maploaded;
+			buttonpaste.Visible = General.Settings.ToolbarCopy && maploaded;
+			buttoninsertprefabfile.Visible = General.Settings.ToolbarPrefabs && maploaded;
+			buttoninsertpreviousprefab.Visible = General.Settings.ToolbarPrefabs && maploaded;
+			buttonthingsfilter.Visible = General.Settings.ToolbarFilter && maploaded;
+			thingfilters.Visible = General.Settings.ToolbarFilter && maploaded;
+			separatorfilters.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
+			buttonfullbrightness.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
+			separatorfullbrightness.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
+			buttonviewbrightness.Visible = General.Settings.ToolbarViewModes && maploaded;
+			buttonviewceilings.Visible = General.Settings.ToolbarViewModes && maploaded;
+			buttonviewfloors.Visible = General.Settings.ToolbarViewModes && maploaded;
+			buttonviewnormal.Visible = General.Settings.ToolbarViewModes && maploaded;
+			buttonsnaptogrid.Visible = General.Settings.ToolbarGeometry && maploaded;
+			buttonautomerge.Visible = General.Settings.ToolbarGeometry && maploaded;
+			buttonautoclearsidetextures.Visible = General.Settings.ToolbarGeometry && maploaded; //mxd
+			buttontest.Visible = General.Settings.ToolbarTesting && maploaded;
 
 			//mxd
-			modelrendermode.Visible = General.Settings.GZToolbarGZDoom;
-			dynamiclightmode.Visible = General.Settings.GZToolbarGZDoom;
-			buttontogglefx.Visible = General.Settings.GZToolbarGZDoom;
-			buttontogglefog.Visible = General.Settings.GZToolbarGZDoom;
-			buttontoggleeventlines.Visible = General.Settings.GZToolbarGZDoom;
-			buttontogglevisualvertices.Visible = General.Settings.GZToolbarGZDoom;
-			separatorgzmodes.Visible = General.Settings.GZToolbarGZDoom;
+			modelrendermode.Visible = General.Settings.GZToolbarGZDoom && maploaded;
+			dynamiclightmode.Visible = General.Settings.GZToolbarGZDoom && maploaded;
+			buttontogglefx.Visible = General.Settings.GZToolbarGZDoom && maploaded;
+			buttontogglefog.Visible = General.Settings.GZToolbarGZDoom && maploaded;
+			buttontoggleeventlines.Visible = General.Settings.GZToolbarGZDoom && maploaded;
+			buttontogglevisualvertices.Visible = General.Settings.GZToolbarGZDoom && maploaded;
+			separatorgzmodes.Visible = General.Settings.GZToolbarGZDoom && maploaded;
 
 			// Enable/disable all edit mode items
-			foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
+			//foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
 
 			//mxd. Show/hide additional panels
 			modestoolbar.Visible = (General.Map != null);
+			panelinfo.Visible = (General.Map != null);
 			modecontrolsloolbar.Visible = (General.Map != null && modecontrolsloolbar.Items.Count > 0);
 			
 			//mxd. modestoolbar index in Controls gets messed up when it's invisible. This fixes it. TODO: find why this happens in the first place
@@ -2047,8 +2061,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Toolbar context menu (mxd)
 
-		private void toolbarContextMenu_Opening(object sender, CancelEventArgs e) 
+		private void toolbarContextMenu_Opening(object sender, CancelEventArgs e)
 		{
+			if(General.Map == null)
+			{
+				e.Cancel = true;
+				return;
+			}
+
 			toggleFile.Image = General.Settings.ToolbarFile ? Resources.Check : null;
 			toggleScript.Image = General.Settings.ToolbarScript ? Resources.Check : null;
 			toggleUndo.Image = General.Settings.ToolbarUndo ? Resources.Check : null;
@@ -2347,7 +2367,6 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonnewmap.Enabled = itemnewmap.Enabled;
 			buttonopenmap.Enabled = itemopenmap.Enabled;
 			buttonsavemap.Enabled = itemsavemap.Enabled;
-			buttontest.Enabled = itemtestmap.Enabled;
 		}
 
 		// This sets the recent files from configuration
@@ -2507,7 +2526,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void UpdateEditMenu()
 		{
 			// No edit menu when no map open
-			//menuedit.Visible = (General.Map != null);
+			menuedit.Visible = (General.Map != null);
 			
 			// Enable/disable items
 			itemundo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextUndo != null);
@@ -2516,20 +2535,7 @@ namespace CodeImp.DoomBuilder.Windows
 			itemcopy.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
 			itempaste.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
 			itempastespecial.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
-			itemmapoptions.Enabled = (General.Map != null);
-			itemsnaptogrid.Enabled = (General.Map != null);
-			itemautomerge.Enabled = (General.Map != null);
-			itemautoclearsidetextures.Enabled = (General.Map != null); //mxd
 			itemautoclearsidetextures.Checked = General.Settings.AutoClearSidedefTextures; //mxd
-			itemdosnaptogrid.Enabled = (General.Map != null); //mxd
-			itemgridsetup.Enabled = (General.Map != null);
-			itemgridinc.Enabled = (General.Map != null);
-			itemgriddec.Enabled = (General.Map != null);
-			itemviewusedtags.Enabled = (General.Map != null); //mxd
-			itemviewthingtypes.Enabled = (General.Map != null); //mxd
-			addToGroup.Enabled = (General.Map != null); //mxd
-			selectGroup.Enabled = (General.Map != null); //mxd
-			clearGroup.Enabled = (General.Map != null); //mxd
 
 			// Determine undo description
 			if(itemundo.Enabled)
@@ -2548,9 +2554,6 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonredo.Enabled = itemredo.Enabled;
 			buttonundo.ToolTipText = itemundo.Text;
 			buttonredo.ToolTipText = itemredo.Text;
-			buttonsnaptogrid.Enabled = (General.Map != null);
-			buttonautomerge.Enabled = (General.Map != null);
-			buttonautoclearsidetextures.Enabled = (General.Map != null); //mxd
 			buttonautoclearsidetextures.Checked = itemautoclearsidetextures.Checked; //mxd
 			buttoncut.Enabled = itemcut.Enabled;
 			buttoncopy.Enabled = itemcopy.Enabled;
@@ -2678,6 +2681,7 @@ namespace CodeImp.DoomBuilder.Windows
 			menuzoom.Enabled = (General.Map != null);
 			menugotocoords.Enabled = (General.Map != null); //mxd
 			menufullbrightness.Enabled = (General.Map != null); //mxd
+			itemtoggleinfo.Enabled = (General.Map != null); //mxd
 			itemtoggleinfo.Checked = IsInfoPanelExpanded;
 			
 			// View mode items
@@ -2699,12 +2703,6 @@ namespace CodeImp.DoomBuilder.Windows
 					viewmodesitems[i].Checked = (i == (int)General.Map.CRenderer2D.ViewMode);
 				}
 			}
-			
-			// Toolbar icons
-			thingfilters.Enabled = (General.Map != null);
-			buttonthingsfilter.Enabled = (General.Map != null);
-			buttonscripteditor.Enabled = (General.Map != null);
-			buttonfullbrightness.Enabled = (General.Map != null); //mxd
 		}
 
 		#endregion
@@ -2730,10 +2728,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// About clicked
 		private void itemhelpabout_Click(object sender, EventArgs e)
 		{
-			AboutForm aboutform;
-			
 			// Show about dialog
-			aboutform = new AboutForm();
+			AboutForm aboutform = new AboutForm();
 			aboutform.ShowDialog(this);
 		}
 
