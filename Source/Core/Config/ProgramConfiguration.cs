@@ -91,6 +91,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool toolbarfile;
 		private float filteranisotropy;
 		private bool showtexturesizes;
+		private bool locatetexturegroup; //mxd
 		private SplitLineBehavior splitlinebehavior;	//mxd
 
 		//mxd
@@ -175,6 +176,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool ToolbarFile { get { return toolbarfile; } internal set { toolbarfile = value; } }
 		public float FilterAnisotropy { get { return filteranisotropy; } internal set { filteranisotropy = value; } }
 		public bool ShowTextureSizes { get { return showtexturesizes; } internal set { showtexturesizes = value; } }
+		public bool LocateTextureGroup { get { return locatetexturegroup; } internal set { locatetexturegroup = value; } } //mxd
 		public SplitLineBehavior SplitLineBehavior { get { return splitlinebehavior; } set { splitlinebehavior = value; } } //mxd
 
 		//mxd 
@@ -282,6 +284,7 @@ namespace CodeImp.DoomBuilder.Config
 				toolbarfile = cfg.ReadSetting("toolbarfile", true);
 				filteranisotropy = cfg.ReadSetting("filteranisotropy", 8.0f);
 				showtexturesizes = cfg.ReadSetting("showtexturesizes", true);
+				locatetexturegroup = cfg.ReadSetting("locatetexturegroup", true); //mxd
 				splitlinebehavior = (SplitLineBehavior) General.Clamp(cfg.ReadSetting("splitlinebehavior", 0), 0, 3); //mxd
 
 				//mxd 
@@ -371,6 +374,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("toolbarfile", toolbarfile);
 			cfg.WriteSetting("filteranisotropy", filteranisotropy);
 			cfg.WriteSetting("showtexturesizes", showtexturesizes);
+			cfg.WriteSetting("locatetexturegroup", locatetexturegroup); //mxd
 			cfg.WriteSetting("splitlinebehavior", (int)splitlinebehavior); //mxd
 
 			//mxd

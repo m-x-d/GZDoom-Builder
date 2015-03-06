@@ -450,6 +450,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnEditEnd();
 		}
 
+		//mxd. Otherwise event lines won't be drawn after panning finishes.
+		protected override void EndViewPan()
+		{
+			base.EndViewPan();
+			if(General.Settings.GZShowEventLines) General.Interface.RedrawDisplay(); 
+		}
+
 		//mxd
 		private void thingEditForm_OnValuesChanged(object sender, EventArgs e) 
 		{

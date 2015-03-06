@@ -16,6 +16,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			public bool ProcessThingsWithGoal;
 			public bool ProcessCameras;
 			public bool ProcessActorMovers;
+			public bool ProcessPolyobjects;
 		}
 		
 		public static List<Line3D> GetThingLinks(ICollection<VisualThing> visualThings) 
@@ -32,7 +33,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		public static List<Line3D> GetThingLinks(ICollection<Thing> things) 
 		{
 			ThingsCheckResult result = CheckThings(things);
-			if (result.ProcessPathNodes || result.ProcessInterpolationPoints || result.ProcessThingsWithGoal || result.ProcessCameras)
+			if (result.ProcessPathNodes || result.ProcessInterpolationPoints || result.ProcessThingsWithGoal || result.ProcessCameras || result.ProcessPolyobjects)
 				return GetThingLinks(result, false);
 			return new List<Line3D>();
 		}
@@ -47,6 +48,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 					result.ProcessPathNodes = true;
 				else if(t.Type == 9070) //zdoom camera interpolation point
 					result.ProcessInterpolationPoints = true;
+				else if(t.Type > 9299 && t.Type < 9304) //polyobjects
+					result.ProcessPolyobjects = true;
 				else if(t.Action == 229 && t.Args[1] != 0) //Thing_SetGoal
 					result.ProcessThingsWithGoal = true;
 				else if(t.Type == 9072 && (t.Args[0] != 0 || t.Args[1] != 0)) //camera with a path
@@ -55,12 +58,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 					result.ProcessActorMovers = true;
 			}
 
-			if(result.ProcessActorMovers || result.ProcessCameras)
-				result.ProcessInterpolationPoints = true;
-
-			if(result.ProcessThingsWithGoal)
-				result.ProcessPathNodes = true;
-
+			if(result.ProcessActorMovers || result.ProcessCameras) result.ProcessInterpolationPoints = true;
+			if(result.ProcessThingsWithGoal) result.ProcessPathNodes = true;
 			return result;
 		}
 
@@ -73,6 +72,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			List<Thing> cameras = new List<Thing>();
 			List<Thing> actorMovers = new List<Thing>();
 			Dictionary<int, List<Thing>> actorMoverTargets = new Dictionary<int, List<Thing>>();
+			Dictionary<int, List<Thing>> polyobjectAnchors = new Dictionary<int, List<Thing>>(); //angle, list of PolyobjectAnchor things (9300)
+			Dictionary<int, List<Thing>> polyobjectStartSpots = new Dictionary<int, List<Thing>>(); //angle, list of PolyobjectStartSpot things (9301-9303)
 
 			//collect relevant things
 			foreach (Thing t in General.Map.Map.Things) 
@@ -83,18 +84,38 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 						pathNodes[t.Tag] = new List<Thing>();
 					pathNodes[t.Tag].Add(t);
 				}
+
 				if(result.ProcessInterpolationPoints && t.Type == 9070) 
 				{
 					if(!interpolationPoints.ContainsKey(t.Tag))
 						interpolationPoints[t.Tag] = new List<Thing>();
 					interpolationPoints[t.Tag].Add(t);
 				}
+
 				if (result.ProcessThingsWithGoal && t.Action == 229 && t.Args[1] != 0) 
 					thingsWithGoal.Add(t);
+
 				if (result.ProcessCameras && t.Type == 9072 && (t.Args[0] != 0 || t.Args[1] != 0)) 
 					cameras.Add(t);
+
 				if(result.ProcessActorMovers && t.Type == 9074 && (t.Args[0] != 0 || t.Args[1] != 0) && t.Args[3] != 0) 
 					actorMovers.Add(t);
+
+				if(result.ProcessPolyobjects)
+				{
+					if(t.Type == 9300)
+					{
+						if(!polyobjectAnchors.ContainsKey(t.AngleDoom))
+							polyobjectAnchors[t.AngleDoom] = new List<Thing>();
+						polyobjectAnchors[t.AngleDoom].Add(t);
+					}
+					else if(t.Type > 9300 && t.Type < 9304)
+					{
+						if(!polyobjectStartSpots.ContainsKey(t.AngleDoom))
+							polyobjectStartSpots[t.AngleDoom] = new List<Thing>();
+						polyobjectStartSpots[t.AngleDoom].Add(t);
+					}
+				}
 			}
 
 			if(actorMovers.Count > 0) 
@@ -244,6 +265,24 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 						{
 							end = tt.Position;
 							if(correctHeight) end.z += GetCorrectHeight(tt);
+							lines.Add(new Line3D(start, end, Line3DType.ACTIVATOR));
+						}
+					}
+				}
+			}
+
+			//process polyobjects
+			if(result.ProcessPolyobjects)
+			{
+				foreach(KeyValuePair<int, List<Thing>> group in polyobjectAnchors)
+				{
+					if(!polyobjectStartSpots.ContainsKey(group.Key)) continue;
+					foreach(Thing anchor in group.Value)
+					{
+						start = anchor.Position;
+						foreach(Thing startspot in polyobjectStartSpots[group.Key]) 
+						{
+							end = startspot.Position;
 							lines.Add(new Line3D(start, end, Line3DType.ACTIVATOR));
 						}
 					}

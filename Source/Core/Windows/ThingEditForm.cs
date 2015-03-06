@@ -178,7 +178,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Coordination
 			angle.Text = ft.AngleDoom.ToString();
-			zlabel.Text = useAbsoluteHeight ? "Abs. Z:" : "Z:"; //mxd
+			zlabel.Text = useAbsoluteHeight ? "Z:" : "Height:"; //mxd
 			cbAbsoluteHeight.Checked = useAbsoluteHeight; //mxd
 
 			//mxd
@@ -535,7 +535,7 @@ namespace CodeImp.DoomBuilder.Windows
 			MakeUndo(); //mxd
 
 			useAbsoluteHeight = cbAbsoluteHeight.Checked;
-			zlabel.Text = (useAbsoluteHeight ? "Abs. Z:" : "Z:");
+			zlabel.Text = (useAbsoluteHeight ? "Z:" : "Height:");
 			
 			preventchanges = true;
 			
