@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label20;
 			System.Windows.Forms.Label label21;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreferencesForm));
+			this.locatetexturegroup = new System.Windows.Forms.CheckBox();
 			this.recentFiles = new Dotnetrix.Controls.TrackBar();
 			this.labelRecentFiles = new System.Windows.Forms.Label();
 			this.label25 = new System.Windows.Forms.Label();
@@ -241,6 +242,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox1
 			// 
+			groupBox1.Controls.Add(this.locatetexturegroup);
 			groupBox1.Controls.Add(this.recentFiles);
 			groupBox1.Controls.Add(this.labelRecentFiles);
 			groupBox1.Controls.Add(this.label25);
@@ -267,6 +269,18 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1.TabIndex = 0;
 			groupBox1.TabStop = false;
 			groupBox1.Text = " Options ";
+			// 
+			// locatetexturegroup
+			// 
+			this.locatetexturegroup.AutoSize = true;
+			this.locatetexturegroup.Location = new System.Drawing.Point(32, 329);
+			this.locatetexturegroup.Name = "locatetexturegroup";
+			this.locatetexturegroup.Size = new System.Drawing.Size(267, 17);
+			this.locatetexturegroup.TabIndex = 49;
+			this.locatetexturegroup.Text = "Select texture group when opening image browsers";
+			this.toolTip1.SetToolTip(this.locatetexturegroup, "When enabled, the group current texture belongs to\r\nwill be selected when opening" +
+					" image browsers.\r\nWhen disabled, \"All\" texture group will be selected.");
+			this.locatetexturegroup.UseVisualStyleBackColor = true;
 			// 
 			// recentFiles
 			// 
@@ -334,7 +348,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbSynchCameras
 			// 
 			this.cbSynchCameras.AutoSize = true;
-			this.cbSynchCameras.Location = new System.Drawing.Point(32, 343);
+			this.cbSynchCameras.Location = new System.Drawing.Point(32, 349);
 			this.cbSynchCameras.Name = "cbSynchCameras";
 			this.cbSynchCameras.Size = new System.Drawing.Size(260, 17);
 			this.cbSynchCameras.TabIndex = 42;
@@ -344,7 +358,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// showtexturesizes
 			// 
 			this.showtexturesizes.AutoSize = true;
-			this.showtexturesizes.Location = new System.Drawing.Point(32, 319);
+			this.showtexturesizes.Location = new System.Drawing.Point(32, 309);
 			this.showtexturesizes.Name = "showtexturesizes";
 			this.showtexturesizes.Size = new System.Drawing.Size(208, 17);
 			this.showtexturesizes.TabIndex = 41;
@@ -354,7 +368,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// scriptontop
 			// 
 			this.scriptontop.AutoSize = true;
-			this.scriptontop.Location = new System.Drawing.Point(32, 295);
+			this.scriptontop.Location = new System.Drawing.Point(32, 289);
 			this.scriptontop.Name = "scriptontop";
 			this.scriptontop.Size = new System.Drawing.Size(227, 17);
 			this.scriptontop.TabIndex = 40;
@@ -2056,5 +2070,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private Dotnetrix.Controls.TrackBar vertexScale3D;
 		private System.Windows.Forms.Label vertexScale3DLabel;
 		private System.Windows.Forms.Label label26;
+		private System.Windows.Forms.CheckBox locatetexturegroup;
 	}
 }

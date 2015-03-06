@@ -121,45 +121,49 @@ namespace CodeImp.DoomBuilder.Windows
 			item.ImageIndex = 1;
 			item.SelectedImageIndex = item.ImageIndex;
 
-			//mxd. Get the previously selected texture set
-			string selectname = General.Settings.ReadSetting("browserwindow.textureset", "");
-			TreeNode match;
-			// When texture name is empty, select "All" texture set
-			if(string.IsNullOrEmpty(selectname) || selectname == "-") 
+			//mxd. Should we bother finding the correct texture set?
+			if(General.Settings.LocateTextureGroup)
 			{
-				match = tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1];
-			} 
-			else 
-			{
-				match = FindNodeByName(tvTextureSets.Nodes, selectname);
-			}
+				//mxd. Get the previously selected texture set
+				string selectname = General.Settings.ReadSetting("browserwindow.textureset", "");
+				TreeNode match;
 
-			if (match != null) 
-			{
-				IFilledTextureSet set = (match.Tag as IFilledTextureSet);
-				foreach (ImageData img in set.Textures) 
+				// When texture name is empty, select "All" texture set
+				if(string.IsNullOrEmpty(selectname) || selectname == "-")
 				{
-					if (img.LongName == longname) 
+					match = tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1];
+				}
+				else
+				{
+					match = FindNodeByName(tvTextureSets.Nodes, selectname);
+				}
+
+				if(match != null)
+				{
+					IFilledTextureSet set = (match.Tag as IFilledTextureSet);
+					foreach(ImageData img in set.Textures)
 					{
-						selectedset = match;
-						break;
+						if(img.LongName == longname)
+						{
+							selectedset = match;
+							break;
+						}
 					}
 				}
-			}
 
-			//mxd. If the selected texture was not found in the last-selected set, try finding it in the other sets
-			if (selectedset == null && selecttexture != "-") 
-			{
-				foreach (TreeNode n in tvTextureSets.Nodes) 
+				//mxd. If the selected texture was not found in the last-selected set, try finding it in the other sets
+				if(selectedset == null && selecttexture != "-")
 				{
-					selectedset = FindTextureByLongName(n, longname);
-					if (selectedset != null) break;
+					foreach(TreeNode n in tvTextureSets.Nodes)
+					{
+						selectedset = FindTextureByLongName(n, longname);
+						if(selectedset != null) break;
+					}
 				}
-			}
 
-			//mxd. Texture still not found? Then just select the last used set
-			if (selectedset == null && match != null)
-				selectedset = match;
+				//mxd. Texture still not found? Then just select the last used set
+				if(selectedset == null && match != null) selectedset = match;
+			}
 
 			//mxd. Select the found set or "All", if none were found
 			if (tvTextureSets.Nodes.Count > 0)
