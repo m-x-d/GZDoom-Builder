@@ -169,7 +169,9 @@ namespace CodeImp.DoomBuilder.Windows
 			if (tvTextureSets.Nodes.Count > 0)
 			{
 				if (selectedset == null) selectedset = tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1];
-				tvTextureSets.SelectedNode = selectedset;
+				tvTextureSets.SelectedNodes.Clear();
+				tvTextureSets.SelectedNodes.Add(selectedset);
+				selectedset.EnsureVisible();
 			}
 
 			tvTextureSets.EndUpdate();//mxd
@@ -184,6 +186,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Size = new Size(General.Settings.ReadSetting("browserwindow.sizewidth", this.Size.Width),
 								 General.Settings.ReadSetting("browserwindow.sizeheight", this.Size.Height));
 			this.WindowState = (FormWindowState)General.Settings.ReadSetting("browserwindow.windowstate", (int)FormWindowState.Normal);
+
+			//mxd. Set SplitterDistance
+			int splitterdistance = splitContainer.Width - General.Settings.ReadSetting("browserwindow.splitterdistance", 203);
+			if(splitterdistance < splitContainer.Panel1MinSize || splitterdistance > splitContainer.Width - splitContainer.Panel2MinSize)
+				splitterdistance = splitContainer.Width - splitContainer.Width / 4;
+			splitContainer.SplitterDistance = splitterdistance;
 			
 			//mxd
 			if (this.WindowState == FormWindowState.Normal) 
@@ -444,10 +452,11 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.WriteSetting("browserwindow.sizewidth", lastsize.Width);
 			General.Settings.WriteSetting("browserwindow.sizeheight", lastsize.Height);
 			General.Settings.WriteSetting("browserwindow.windowstate", windowstate);
+			General.Settings.WriteSetting("browserwindow.splitterdistance", splitContainer.Width - splitContainer.SplitterDistance); //mxd
 
-			//mxd. Save last selected texture set
-			if(this.DialogResult == DialogResult.OK && tvTextureSets.SelectedNode != null)
-				General.Settings.WriteSetting("browserwindow.textureset", tvTextureSets.SelectedNode.Name);
+			//mxd. Save last selected texture set, if it's not "All" (it will be selected anyway if search for initial texture set fails)
+			if(this.DialogResult == DialogResult.OK && tvTextureSets.SelectedNodes.Count > 0 && !(tvTextureSets.SelectedNodes[0].Tag is AllTextureSet))
+				General.Settings.WriteSetting("browserwindow.textureset", tvTextureSets.SelectedNodes[0].Name);
 
 			//mxd. Save ImageBrowserControl settings
 			General.Settings.WriteSetting("browserwindow.showtexturesizes", ImageBrowserControl.ShowTextureSizes);
@@ -541,9 +550,9 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void tvTextureSets_KeyUp(object sender, KeyEventArgs e) 
 		{
-			if(tvTextureSets.SelectedNode != selectedset) 
+			if(tvTextureSets.SelectedNodes.Count > 0 && tvTextureSets.SelectedNodes[0] != selectedset) 
 			{
-				selectedset = tvTextureSets.SelectedNode;
+				selectedset = tvTextureSets.SelectedNodes[0];
 				FillImagesList();
 			}
 		}
