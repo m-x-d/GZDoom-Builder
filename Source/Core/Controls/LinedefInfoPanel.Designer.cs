@@ -445,7 +445,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flowLayoutPanelFront.Location = new System.Drawing.Point(6, 14);
 			this.flowLayoutPanelFront.Margin = new System.Windows.Forms.Padding(0);
 			this.flowLayoutPanelFront.Name = "flowLayoutPanelFront";
-			this.flowLayoutPanelFront.Size = new System.Drawing.Size(484, 80);
+			this.flowLayoutPanelFront.Size = new System.Drawing.Size(484, 82);
 			this.flowLayoutPanelFront.TabIndex = 13;
 			this.flowLayoutPanelFront.WrapContents = false;
 			// 
@@ -460,7 +460,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.panelFrontTop.Location = new System.Drawing.Point(0, 0);
 			this.panelFrontTop.Margin = new System.Windows.Forms.Padding(0);
 			this.panelFrontTop.Name = "panelFrontTop";
-			this.panelFrontTop.Size = new System.Drawing.Size(160, 79);
+			this.panelFrontTop.Size = new System.Drawing.Size(160, 82);
 			this.panelFrontTop.TabIndex = 5;
 			// 
 			// frontTopUDMFOffsetLabel
@@ -527,7 +527,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.fronthighname.AutoSize = true;
 			this.fronthighname.BackColor = System.Drawing.SystemColors.Control;
-			this.fronthighname.Location = new System.Drawing.Point(3, 64);
+			this.fronthighname.Location = new System.Drawing.Point(3, 67);
 			this.fronthighname.Name = "fronthighname";
 			this.fronthighname.Size = new System.Drawing.Size(73, 13);
 			this.fronthighname.TabIndex = 1;
@@ -545,7 +545,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.panelFrontMid.Location = new System.Drawing.Point(160, 0);
 			this.panelFrontMid.Margin = new System.Windows.Forms.Padding(0);
 			this.panelFrontMid.Name = "panelFrontMid";
-			this.panelFrontMid.Size = new System.Drawing.Size(160, 79);
+			this.panelFrontMid.Size = new System.Drawing.Size(160, 82);
 			this.panelFrontMid.TabIndex = 7;
 			// 
 			// frontMidUDMFOffsetLabel
@@ -612,7 +612,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.frontmidname.AutoSize = true;
 			this.frontmidname.BackColor = System.Drawing.SystemColors.Control;
-			this.frontmidname.Location = new System.Drawing.Point(3, 64);
+			this.frontmidname.Location = new System.Drawing.Point(3, 67);
 			this.frontmidname.Name = "frontmidname";
 			this.frontmidname.Size = new System.Drawing.Size(73, 13);
 			this.frontmidname.TabIndex = 3;
@@ -630,7 +630,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.panelFrontLow.Location = new System.Drawing.Point(320, 0);
 			this.panelFrontLow.Margin = new System.Windows.Forms.Padding(0);
 			this.panelFrontLow.Name = "panelFrontLow";
-			this.panelFrontLow.Size = new System.Drawing.Size(160, 78);
+			this.panelFrontLow.Size = new System.Drawing.Size(160, 82);
 			this.panelFrontLow.TabIndex = 12;
 			// 
 			// frontBottomUDMFOffsetLabel
@@ -697,7 +697,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.frontlowname.AutoSize = true;
 			this.frontlowname.BackColor = System.Drawing.SystemColors.Control;
-			this.frontlowname.Location = new System.Drawing.Point(3, 64);
+			this.frontlowname.Location = new System.Drawing.Point(3, 67);
 			this.frontlowname.Name = "frontlowname";
 			this.frontlowname.Size = new System.Drawing.Size(73, 13);
 			this.frontlowname.TabIndex = 5;
@@ -723,7 +723,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flowLayoutPanelBack.Controls.Add(this.panelBackLow);
 			this.flowLayoutPanelBack.Location = new System.Drawing.Point(6, 14);
 			this.flowLayoutPanelBack.Name = "flowLayoutPanelBack";
-			this.flowLayoutPanelBack.Size = new System.Drawing.Size(484, 80);
+			this.flowLayoutPanelBack.Size = new System.Drawing.Size(484, 82);
 			this.flowLayoutPanelBack.TabIndex = 4;
 			this.flowLayoutPanelBack.WrapContents = false;
 			// 
@@ -738,7 +738,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.panelBackTop.Location = new System.Drawing.Point(0, 0);
 			this.panelBackTop.Margin = new System.Windows.Forms.Padding(0);
 			this.panelBackTop.Name = "panelBackTop";
-			this.panelBackTop.Size = new System.Drawing.Size(160, 78);
+			this.panelBackTop.Size = new System.Drawing.Size(160, 82);
 			this.panelBackTop.TabIndex = 5;
 			// 
 			// backTopUDMFOffsetLabel
@@ -805,7 +805,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.backhighname.AutoSize = true;
 			this.backhighname.BackColor = System.Drawing.SystemColors.Control;
-			this.backhighname.Location = new System.Drawing.Point(3, 64);
+			this.backhighname.Location = new System.Drawing.Point(3, 67);
 			this.backhighname.Name = "backhighname";
 			this.backhighname.Size = new System.Drawing.Size(73, 13);
 			this.backhighname.TabIndex = 1;
@@ -823,7 +823,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.panelBackMid.Location = new System.Drawing.Point(160, 0);
 			this.panelBackMid.Margin = new System.Windows.Forms.Padding(0);
 			this.panelBackMid.Name = "panelBackMid";
-			this.panelBackMid.Size = new System.Drawing.Size(160, 78);
+			this.panelBackMid.Size = new System.Drawing.Size(160, 82);
 			this.panelBackMid.TabIndex = 7;
 			// 
 			// backMidUDMFOffsetLabel
@@ -890,7 +890,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.backmidname.AutoSize = true;
 			this.backmidname.BackColor = System.Drawing.SystemColors.Control;
-			this.backmidname.Location = new System.Drawing.Point(3, 64);
+			this.backmidname.Location = new System.Drawing.Point(3, 67);
 			this.backmidname.Name = "backmidname";
 			this.backmidname.Size = new System.Drawing.Size(73, 13);
 			this.backmidname.TabIndex = 3;
@@ -908,7 +908,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.panelBackLow.Location = new System.Drawing.Point(320, 0);
 			this.panelBackLow.Margin = new System.Windows.Forms.Padding(0);
 			this.panelBackLow.Name = "panelBackLow";
-			this.panelBackLow.Size = new System.Drawing.Size(160, 78);
+			this.panelBackLow.Size = new System.Drawing.Size(160, 82);
 			this.panelBackLow.TabIndex = 12;
 			// 
 			// backBottomUDMFOffsetLabel
@@ -975,7 +975,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.backlowname.AutoSize = true;
 			this.backlowname.BackColor = System.Drawing.SystemColors.Control;
-			this.backlowname.Location = new System.Drawing.Point(3, 64);
+			this.backlowname.Location = new System.Drawing.Point(3, 67);
 			this.backlowname.Name = "backlowname";
 			this.backlowname.Size = new System.Drawing.Size(73, 13);
 			this.backlowname.TabIndex = 5;
