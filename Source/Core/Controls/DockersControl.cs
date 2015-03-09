@@ -237,7 +237,7 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 					
 					// Take down that page
-					if(page == tabs.SelectedTab) SelectPrevious();
+					if(page == tabs.SelectedTab || tabs.SelectedTab == null) SelectPrevious();
 					page.Controls.Clear();
 					tabs.TabPages.Remove(page);
 					return true;
@@ -265,7 +265,8 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					if(iscollapsed)
 					{
-						previousselected = currentselected;
+						if(!string.IsNullOrEmpty(currentselected)) previousselected = currentselected; //mxd
+						currentselected = d.FullName; //mxd
 						expandedtab = index;
 					}
 					else
@@ -283,6 +284,12 @@ namespace CodeImp.DoomBuilder.Controls
 		// This selectes the previous docker
 		public void SelectPrevious()
 		{
+			//mxd. First one is better than nothing
+			if(string.IsNullOrEmpty(previousselected) && tabs.TabPages.Count > 0)
+			{
+				previousselected = (tabs.TabPages[0].Tag as Docker).FullName;
+			}
+			
 			if(!string.IsNullOrEmpty(previousselected))
 			{
 				int index = 0;
@@ -292,7 +299,7 @@ namespace CodeImp.DoomBuilder.Controls
 					{
 						if(iscollapsed)
 						{
-							previousselected = currentselected;
+							currentselected = previousselected;
 							expandedtab = index;
 						}
 						else
@@ -366,7 +373,8 @@ namespace CodeImp.DoomBuilder.Controls
 			if(!controlledselection)
 			{
 				// Keep track of previous selected tab
-				previousselected = currentselected;
+				if(!string.IsNullOrEmpty(currentselected)) previousselected = currentselected;
+
 				if(tabs.SelectedTab != null)
 				{
 					Docker d = (tabs.SelectedTab.Tag as Docker);
