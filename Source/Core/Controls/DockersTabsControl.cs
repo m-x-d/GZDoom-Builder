@@ -193,14 +193,13 @@ namespace CodeImp.DoomBuilder.Controls
 		// Redrawing needed
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			Point p;
-
 			if(VisualStyleInformation.IsSupportedByOS && VisualStyleInformation.IsEnabledByUser)
 			{
 				RedrawTabs();
 				
 				e.Graphics.Clear(SystemColors.Control);
-				
+
+				Point p;
 				if(this.Alignment == TabAlignment.Left)
 				{
 					p = new Point(0, 0);
@@ -275,8 +274,7 @@ namespace CodeImp.DoomBuilder.Controls
 				// Only absorb the key press when no focused on an input control, otherwise
 				// the input controls may not receive certain keys such as delete and arrow keys
 				DockersControl docker = (this.Parent as DockersControl);
-				if(!docker.IsFocused)
-					ke.Handled = true;
+				if(!docker.IsFocused) ke.Handled = true;
 			}
 		}
 		
@@ -288,8 +286,7 @@ namespace CodeImp.DoomBuilder.Controls
 				// Only absorb the key press when no focused on an input control, otherwise
 				// the input controls may not receive certain keys such as delete and arrow keys
 				DockersControl docker = (this.Parent as DockersControl);
-				if(!docker.IsFocused)
-					e.Handled = true;
+				if(!docker.IsFocused) e.Handled = true;
 			}
 		}
 		
