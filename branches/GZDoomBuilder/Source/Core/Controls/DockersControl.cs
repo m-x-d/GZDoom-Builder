@@ -119,16 +119,15 @@ namespace CodeImp.DoomBuilder.Controls
 				splitter.Dock = DockStyle.Left;
 				tabs.Alignment = TabAlignment.Right;
 				tabs.Location = new Point(0, voffset);
-				tabs.Size = new Size(this.ClientRectangle.Width + 2, this.ClientRectangle.Height - voffset);
 			}
 			else
 			{
 				splitter.Dock = DockStyle.Right;
 				tabs.Alignment = TabAlignment.Left;
 				tabs.Location = new Point(-2, voffset);
-				tabs.Size = new Size(this.ClientRectangle.Width + 2, this.ClientRectangle.Height - voffset);
 			}
-			
+
+			tabs.Size = new Size(this.ClientRectangle.Width + 2, this.ClientRectangle.Height - voffset);
 			tabs.SendToBack();
 			UpdatePinIcon(); //mxd
 		}

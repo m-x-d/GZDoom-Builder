@@ -1125,7 +1125,7 @@ namespace CodeImp.DoomBuilder.Map
 					{
 						foreach(Sector s in General.Map.Map.Sectors)
 						{
-							if(s.Marked || s.Selected)
+							if(s.Selected || (s.Marked && s.Sidedefs.Count > 0))
 							{
 								s.Selected = true;
 								foreach(Sidedef sd in s.Sidedefs)
@@ -1137,7 +1137,7 @@ namespace CodeImp.DoomBuilder.Map
 					{
 						foreach(Sector s in General.Map.Map.Sectors)
 						{
-							if(s.Marked)
+							if(s.Marked && s.Sidedefs.Count > 0)
 							{
 								s.Selected = true;
 								foreach(Sidedef sd in s.Sidedefs)
