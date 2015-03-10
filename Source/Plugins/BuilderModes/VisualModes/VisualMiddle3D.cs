@@ -385,6 +385,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			SelectNeighbours(extrafloor.Linedef.Front.MiddleTexture, select, withSameTexture, withSameHeight);
 		}
+
+		//mxd
+		public override void OnTextureFit(FitTextureOptions options) 
+		{
+			if(!General.Map.UDMF) return;
+			if(string.IsNullOrEmpty(extrafloor.Linedef.Front.MiddleTexture) || extrafloor.Linedef.Front.MiddleTexture == "-" || !Texture.IsImageLoaded) return;
+			FitTexture(options);
+			Setup();
+
+			// Update the model sector to update all 3d floors
+			mode.GetVisualSector(extrafloor.Linedef.Front.Sector).UpdateSectorGeometry(false);
+		}
 		
 		#endregion
 	}

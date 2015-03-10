@@ -24,6 +24,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//Initial texture coordinats
 		public float InitialOffsetX;
 		public float InitialOffsetY;
+		public float ControlSideOffsetX;
+		public float ControlSideOffsetY;
 		public float InitialScaleX;
 		public float InitialScaleY;
 	}
@@ -70,7 +72,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
-		public void Setup(IEnumerable<BaseVisualGeometrySidedef> sides)
+		public bool Setup(IEnumerable<BaseVisualGeometrySidedef> sides)
 		{
 			// Get shapes
 			strips = BuilderModesTools.SortVisualSides(sides);
@@ -81,7 +83,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Warning, "Failed to setup sidedef chains...");
 				this.DialogResult = DialogResult.Cancel;
 				this.Close();
-				return;
+				return false;
 			}
 
 #if DEBUG
@@ -106,6 +108,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//trigger update
 			UpdateChanges();
+
+			return true;
 		}
 
 		private void UpdateChanges()

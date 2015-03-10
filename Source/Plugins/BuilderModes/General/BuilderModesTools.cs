@@ -29,6 +29,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//Initial texture coordinates
 		private readonly float OffsetX;
 		private readonly float OffsetY;
+		private readonly float ControlSideOffsetX;
+		private readonly float ControlSideOffsetY;
 		private readonly float ScaleX;
 		private readonly float ScaleY;
 
@@ -67,8 +69,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				case VisualGeometryType.WALL_MIDDLE_3D:
 					Sidedef cs = side.GetControlLinedef().Front;
-					OffsetX = UDMFTools.GetFloat(cs.Fields, "offsetx_mid");
-					OffsetY = UDMFTools.GetFloat(cs.Fields, "offsety_mid");
+					ControlSideOffsetX = cs.OffsetX + UDMFTools.GetFloat(cs.Fields, "offsetx_mid");
+					OffsetX = UDMFTools.GetFloat(side.Sidedef.Fields, "offsetx_mid");
+					ControlSideOffsetY = cs.OffsetY + UDMFTools.GetFloat(cs.Fields, "offsety_mid");
+					OffsetY = UDMFTools.GetFloat(side.Sidedef.Fields, "offsety_mid");
 					ScaleX = UDMFTools.GetFloat(cs.Fields, "scalex_mid", 1.0f);
 					ScaleY = UDMFTools.GetFloat(cs.Fields, "scaley_mid", 1.0f);
 					break;
@@ -91,6 +95,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			options.GlobalBounds = GlobalBounds;
 			options.InitialOffsetX = OffsetX;
 			options.InitialOffsetY = OffsetY;
+			options.ControlSideOffsetX = ControlSideOffsetX;
+			options.ControlSideOffsetY = ControlSideOffsetY;
 			options.InitialScaleX = ScaleX;
 			options.InitialScaleY = ScaleY;
 
@@ -185,8 +191,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach (BaseVisualGeometrySidedef side in tosort)
 			{
 				long texturelong;
-				if (side is VisualLower) texturelong = side.Sidedef.LongLowTexture;
-				else if (side is VisualUpper) texturelong = side.Sidedef.LongHighTexture;
+				if(side is VisualLower) texturelong = side.Sidedef.LongLowTexture;
+				else if(side is VisualUpper) texturelong = side.Sidedef.LongHighTexture;
+				else if(side is VisualMiddle3D) texturelong = side.GetControlLinedef().Front.LongMiddleTexture;
 				else texturelong = side.Sidedef.LongMiddleTexture;
 
 				if(texturelong == MapSet.EmptyLongName) continue; //not interested...

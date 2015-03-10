@@ -364,8 +364,8 @@ special
 	-125:GetDBEntries(1),
 	
 	// ZDaemon's
-	-19260:GetTeamScore(1),
-	-19261:SetTeamScore(2),
+	-19620:GetTeamScore(1),
+	-19621:SetTeamScore(2),
 	
 	-100000:__EndOfList__(10);
 	

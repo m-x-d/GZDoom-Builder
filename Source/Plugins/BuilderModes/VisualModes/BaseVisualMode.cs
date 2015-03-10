@@ -2877,10 +2877,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Show form
 			FitTexturesForm form = new FitTexturesForm();
-			form.Setup(sides);
 
 			// Undo changes?
-			if(form.ShowDialog((Form)General.Interface) == DialogResult.Cancel)
+			if(form.Setup(sides) && form.ShowDialog((Form)General.Interface) == DialogResult.Cancel)
 				General.Map.UndoRedo.WithdrawUndo();
 
 			PostAction();
