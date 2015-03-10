@@ -634,9 +634,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else if(options.FitWidth) s = "width";
 			else s = "height";
 
-			//create undo
+			// Create undo
 			mode.CreateUndo("Fit texture (" + s + ")", UndoGroup.TextureOffsetChange, Sector.Sector.FixedIndex);
 			Sidedef.Fields.BeforeFieldsChange();
+			
+			// Get proper control side...
+			Linedef controlline = GetControlLinedef();
+			Sidedef controlside;
+			if(controlline != Sidedef.Line)
+			{
+				controlside = controlline.Front;
+				controlside.Fields.BeforeFieldsChange();
+			}
+			else
+			{
+				controlside = Sidedef;
+			}
 
 			// Fit width
 			if(options.FitWidth) 
@@ -646,21 +659,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(options.FitAcrossSurfaces) 
 				{
 					scalex = Texture.ScaledWidth / (Sidedef.Line.Length * (options.GlobalBounds.Width / Sidedef.Line.Length)) * options.HorizontalRepeat;
-					offsetx = (float)Math.Round((options.Bounds.X * scalex - Sidedef.OffsetX) % Texture.Width, General.Map.FormatInterface.VertexDecimals);
+					offsetx = (float)Math.Round((options.Bounds.X * scalex - Sidedef.OffsetX - options.ControlSideOffsetX) % Texture.Width, General.Map.FormatInterface.VertexDecimals);
 				} 
 				else 
 				{
 					scalex = Texture.ScaledWidth / Sidedef.Line.Length * options.HorizontalRepeat;
-					offsetx = -Sidedef.OffsetX;
+					offsetx = -Sidedef.OffsetX - options.ControlSideOffsetX;
 				}
 
-				UDMFTools.SetFloat(Sidedef.Fields, "scalex_" + partname, (float)Math.Round(scalex, General.Map.FormatInterface.VertexDecimals), 1.0f);
+				UDMFTools.SetFloat(controlside.Fields, "scalex_" + partname, (float)Math.Round(scalex, General.Map.FormatInterface.VertexDecimals), 1.0f);
 				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_" + partname, offsetx, 0.0f);
 			} 
 			else 
 			{
 				// Restore initial offsets
-				UDMFTools.SetFloat(Sidedef.Fields, "scalex_" + partname, options.InitialScaleX, 1.0f);
+				UDMFTools.SetFloat(controlside.Fields, "scalex_" + partname, options.InitialScaleX, 1.0f);
 				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_" + partname, options.InitialOffsetX, 0.0f);
 			}
 
@@ -692,7 +705,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 						else
 						{
-							offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, options.Bounds.Y * scaley - Sidedef.OffsetY, scaley, true) % Texture.Height;
+							offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, options.Bounds.Y * scaley - Sidedef.OffsetY - options.ControlSideOffsetY, scaley, true) % Texture.Height;
 						}
 					} 
 					else 
@@ -702,17 +715,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(this is VisualLower) // Special cases, special cases...
 							offsety = GetLowerOffsetY(scaley);
 						else
-							offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, -Sidedef.OffsetY, scaley, true) % Texture.Height;
+							offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, -Sidedef.OffsetY - options.ControlSideOffsetY, scaley, true) % Texture.Height;
 					}
 
-					UDMFTools.SetFloat(Sidedef.Fields, "scaley_" + partname, (float)Math.Round(scaley, General.Map.FormatInterface.VertexDecimals), 1.0f);
+					UDMFTools.SetFloat(controlside.Fields, "scaley_" + partname, (float)Math.Round(scaley, General.Map.FormatInterface.VertexDecimals), 1.0f);
 					UDMFTools.SetFloat(Sidedef.Fields, "offsety_" + partname, (float)Math.Round(offsety, General.Map.FormatInterface.VertexDecimals), 0.0f);
 				}
 			} 
 			else 
 			{
 				// Restore initial offsets
-				UDMFTools.SetFloat(Sidedef.Fields, "scaley_" + partname, options.InitialScaleY, 1.0f);
+				UDMFTools.SetFloat(controlside.Fields, "scaley_" + partname, options.InitialScaleY, 1.0f);
 				UDMFTools.SetFloat(Sidedef.Fields, "offsety_" + partname, options.InitialOffsetY, 0.0f);
 			}
 		}
