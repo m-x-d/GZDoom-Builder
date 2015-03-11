@@ -453,7 +453,7 @@ namespace CodeImp.DoomBuilder
 			General.Settings.SetDefaultThingFlags(config.DefaultThingFlags);
 
 			// Center map in screen
-			if (General.Editing.Mode is ClassicMode) (General.Editing.Mode as ClassicMode).CenterInScreen();
+			//if (General.Editing.Mode is ClassicMode) (General.Editing.Mode as ClassicMode).CenterInScreen();
 
 			// Success
 			this.changed = false;

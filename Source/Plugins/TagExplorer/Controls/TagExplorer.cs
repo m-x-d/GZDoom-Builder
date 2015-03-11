@@ -24,7 +24,8 @@ namespace CodeImp.DoomBuilder.TagExplorer
 	{
 		public const string SORT_BY_INDEX = "By Index";
 		public const string SORT_BY_TAG = "By Tag";
-		public const string SORT_BY_ACTION = "By Action special";
+		public const string SORT_BY_ACTION = "By Action Special";
+		public const string SORT_BY_POLYOBJ_NUMBER = "By Polyobject Number";
 		public static readonly object[] SORT_MODES = new object[] { SORT_BY_INDEX, SORT_BY_TAG, SORT_BY_ACTION };
 	}
 
@@ -38,10 +39,11 @@ namespace CodeImp.DoomBuilder.TagExplorer
 	
 	public sealed partial class TagExplorer : UserControl
 	{
-		private const string DISPLAY_TAGS_AND_ACTIONS = "Tags and Action specials";
+		private const string DISPLAY_TAGS_AND_ACTIONS = "Tags and Action Specials";
 		private const string DISPLAY_TAGS = "Tags";
-		private const string DISPLAY_ACTIONS = "Action specials";
-		private readonly object[] DISPLAY_MODES = new object[] { DISPLAY_TAGS_AND_ACTIONS, DISPLAY_TAGS, DISPLAY_ACTIONS };
+		private const string DISPLAY_ACTIONS = "Action Specials";
+		private const string DISPLAY_POLYOBJECTS = "Polyobjects";
+		private readonly object[] DISPLAY_MODES = new object[] { DISPLAY_TAGS_AND_ACTIONS, DISPLAY_TAGS, DISPLAY_ACTIONS, DISPLAY_POLYOBJECTS };
 		
 		private string currentDisplayMode;
 		private string currentSortMode;
@@ -52,6 +54,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 		private readonly Color commentColor = Color.DarkMagenta;
 		private SelectedNode selection;
+		private readonly string nodetooltip;
 
 		private static bool udmf;
 		internal static bool UDMF { get { return udmf; } }
@@ -79,17 +82,22 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 			udmf = (General.Map.Config.FormatInterface == "UniversalMapSetIO");
 
+			string searchhint = "Enter '#' + tag number to show only specified tag. Example: #667" + Environment.NewLine
+				+ "Enter '$' + effect number to show only specified effect. Example: $80" + Environment.NewLine
+			    + "Enter '^' + polyobject number to filter by polyobject number. Example: ^22" + Environment.NewLine
+			    + "Several wildcards can be combined.";
+
 			if (udmf) 
 			{
 				cbCommentsOnly.Checked = General.Settings.ReadPluginSetting("commentsonly", false);
-				toolTip1.SetToolTip(tbSearch, "Enter text to find comment\r\nEnter # + tag number to show only specified tag. Example: #667\r\nEnter $ + effect number to show only specified effect. Example: $80");
-				toolTip1.SetToolTip(treeView, "Double-click item to edit item's comment\r\nRight-click item to open item's Properties");
+				toolTip1.SetToolTip(labelSearch, "Enter text to find comment" + Environment.NewLine + searchhint);
+				nodetooltip = "Double-click item to edit item's comment\r\nRight-click item to open item's Properties";
 			} 
 			else 
 			{
 				cbCommentsOnly.Enabled = false;
-				toolTip1.SetToolTip(tbSearch, "Enter # + tag number to show only specified tag. Example: #667\r\nEnter $ + effect number to show only specified effect. Example: $80");
-				toolTip1.SetToolTip(treeView, "Right-click item to open item's Properties");
+				toolTip1.SetToolTip(labelSearch, searchhint);
+				nodetooltip = "Right-click item to open item's Properties";
 			}
 		}
 
@@ -136,11 +144,13 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			string comment = "";
 			string serachStr = tbSearch.Text.ToLowerInvariant();
 
-			int filteredTag = -1;
-			int filteredAction = -1;
-			GetSpecialValues(serachStr, ref filteredTag, ref filteredAction);
+			List<int> filteredtags = new List<int>();
+			List<int> filteredactions = new List<int>();
+			List<int> filteredpolyobjects = new List<int>();
+			GetSpecialValues(serachStr, ref filteredtags, ref filteredactions, ref filteredpolyobjects);
 
-			if (!udmf || filteredTag != -1 || filteredAction != -1) serachStr = "";
+			if(!udmf || filteredtags.Count > 0 || filteredactions.Count > 0 || filteredpolyobjects.Count > 0)
+				serachStr = "";
 
 			TreeNode selectedNode = null;
 
@@ -160,10 +170,12 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					{
 						if((showTags && t.Tag != 0) || (showActions && t.Action > 0)) 
 						{
-							if(filteredTag != -1 && t.Tag != filteredTag) continue;
-							if(filteredAction != -1 && t.Action != filteredAction) continue;
+							if(filteredtags.Count > 0 && !filteredtags.Contains(t.Tag)) continue;
+							if(filteredactions.Count > 0 && !filteredactions.Contains(t.Action)) continue;
 
 							NodeInfo info = new NodeInfo(t);
+							if(filteredpolyobjects.Count > 0 && !filteredpolyobjects.Contains(info.PolyobjectNumber)) continue;
+
 							string name = info.GetName(ref comment, currentSortMode);
 							hasComment = comment.Length > 0;
 
@@ -171,13 +183,22 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 							if(!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) 
 							{
-								TreeNode node = new TreeNode(name, 1, 1);
-								node.Tag = info;
+								TreeNode node = new TreeNode(name, 1, 1) { Tag = info, ToolTipText = nodetooltip };
 								if(hasComment) node.ForeColor = commentColor;
 								nodes.Add(node);
 
 								if(info.Index == selection.Index && info.Type == selection.Type)
 									selectedNode = node;
+							}
+						}
+						else if(currentDisplayMode == DISPLAY_POLYOBJECTS)
+						{
+							NodeInfo info = new NodeInfo(t);
+							if(info.PolyobjectNumber != int.MinValue && (filteredpolyobjects.Count == 0 || filteredpolyobjects.Contains(info.PolyobjectNumber)))
+							{
+								string name = info.GetName(ref comment, SortMode.SORT_BY_POLYOBJ_NUMBER);
+								TreeNode node = new TreeNode(name, 1, 1) { Tag = info, ToolTipText = nodetooltip };
+								nodes.Add(node);
 							}
 						}
 					}
@@ -188,103 +209,115 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					//add "things" category
 					if(nodes.Count > 0) 
 					{
-						if(currentSortMode == SortMode.SORT_BY_ACTION) //create action categories
-						{ 
-							Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
-							TreeNode noAction = new TreeNode("No Action", 0, 0);
+						switch(currentSortMode)
+						{
+							case SortMode.SORT_BY_ACTION:
+							{ 
+								Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+								TreeNode noAction = new TreeNode("No Action", 0, 0);
 
-							foreach(TreeNode node in nodes) 
-							{
-								NodeInfo nodeInfo = node.Tag as NodeInfo;
-
-								if(nodeInfo.Action == 0) 
+								foreach(TreeNode node in nodes) 
 								{
-									noAction.Nodes.Add(node);
-									continue;
+									NodeInfo nodeInfo = node.Tag as NodeInfo;
+
+									if(nodeInfo.Action == 0) 
+									{
+										noAction.Nodes.Add(node);
+										continue;
+									}
+
+									LinedefActionInfo lai = General.Map.Config.GetLinedefActionInfo(nodeInfo.Action);
+
+									if(!categories.ContainsKey(lai.Index))
+										categories.Add(lai.Index, new TreeNode(lai.Index + " - " + lai.Name, 0, 0, new[] { node }));
+									else
+										categories[lai.Index].Nodes.Add(node);
 								}
 
-								LinedefActionInfo lai = General.Map.Config.GetLinedefActionInfo(nodeInfo.Action);
+								TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+								categories.Values.CopyTo(catNodes, 0);
 
-								if(!categories.ContainsKey(lai.Index))
-									categories.Add(lai.Index, new TreeNode(lai.Index + " - " + lai.Name, 0, 0, new TreeNode[] { node }));
+								TreeNode category = new TreeNode(CAT_THINGS, 0, 0, catNodes);
+								if(noAction.Nodes.Count > 0) category.Nodes.Add(noAction);
+
+								treeView.Nodes.Add(category);
+
+							}
+							break;
+
+							case SortMode.SORT_BY_INDEX:
+							{
+								if(currentDisplayMode == DISPLAY_POLYOBJECTS)
+								{
+									TreeNode category = new TreeNode(CAT_THINGS, 0, 0);
+									category.Nodes.AddRange(nodes.ToArray());
+									treeView.Nodes.Add(category);
+								}
 								else
-									categories[lai.Index].Nodes.Add(node);
-							}
-
-							TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-							categories.Values.CopyTo(catNodes, 0);
-
-							TreeNode category = new TreeNode(CAT_THINGS, 0, 0, catNodes);
-							if(noAction.Nodes.Count > 0) category.Nodes.Add(noAction);
-
-							treeView.Nodes.Add(category);
-
-						} 
-						else if(currentSortMode == SortMode.SORT_BY_INDEX) //create thing categories
-						{ 
-							Dictionary<string, TreeNode> categories = new Dictionary<string, TreeNode>(StringComparer.Ordinal);
-							foreach(TreeNode node in nodes) 
-							{
-								NodeInfo nodeInfo = node.Tag as NodeInfo;
-								ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(General.Map.Map.GetThingByIndex(nodeInfo.Index).Type);
-
-								if(tti != null) 
 								{
-									if(!categories.ContainsKey(tti.Category.Title))
-										categories.Add(tti.Category.Title, new TreeNode(tti.Category.Title, 0, 0, new[] { node }));
-									else
-										categories[tti.Category.Title].Nodes.Add(node);
-								} 
-								else 
-								{
-									if(!categories.ContainsKey("UNKNOWN"))
-										categories.Add("UNKNOWN", new TreeNode("UNKNOWN", 0, 0, new[] { node }));
-									else
-										categories["UNKNOWN"].Nodes.Add(node);
+									Dictionary<string, TreeNode> categories = new Dictionary<string, TreeNode>(StringComparer.Ordinal);
+									foreach (TreeNode node in nodes)
+									{
+										NodeInfo nodeInfo = node.Tag as NodeInfo;
+										ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(General.Map.Map.GetThingByIndex(nodeInfo.Index).Type);
+
+										if(tti != null)
+										{
+											if(!categories.ContainsKey(tti.Category.Title)) categories.Add(tti.Category.Title, new TreeNode(tti.Category.Title, 0, 0, new[] {node}));
+											else categories[tti.Category.Title].Nodes.Add(node);
+										}
+										else
+										{
+											if(!categories.ContainsKey("UNKNOWN")) categories.Add("UNKNOWN", new TreeNode("UNKNOWN", 0, 0, new[] {node}));
+											else categories["UNKNOWN"].Nodes.Add(node);
+										}
+									}
+									TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+									categories.Values.CopyTo(catNodes, 0);
+
+									treeView.Nodes.Add(new TreeNode(CAT_THINGS, 0, 0, catNodes));
 								}
 							}
-							TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-							categories.Values.CopyTo(catNodes, 0);
+							break;
 
-							treeView.Nodes.Add(new TreeNode(CAT_THINGS, 0, 0, catNodes));
+							case SortMode.SORT_BY_TAG:
+							{ 
+								Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+								TreeNode noTag = new TreeNode("No Tag", 0, 0);
 
-						} 
-						else //sort by tag
-						{ 
-							Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
-							TreeNode noTag = new TreeNode("No Tag", 0, 0);
-
-							foreach(TreeNode node in nodes) 
-							{
-								NodeInfo nodeInfo = node.Tag as NodeInfo;
-
-								if(nodeInfo.Tag == 0) 
+								foreach(TreeNode node in nodes) 
 								{
-									noTag.Nodes.Add(node);
-									continue;
+									NodeInfo nodeInfo = node.Tag as NodeInfo;
+
+									if(nodeInfo.Tag == 0) 
+									{
+										noTag.Nodes.Add(node);
+										continue;
+									}
+
+									if(!categories.ContainsKey(nodeInfo.Tag)) 
+									{
+										string title = "Tag " + nodeInfo.Tag;
+										if(General.Map.Options.TagLabels.ContainsKey(nodeInfo.Tag))
+											title += ": " + General.Map.Options.TagLabels[nodeInfo.Tag];
+
+										categories.Add(nodeInfo.Tag, new TreeNode(title, 0, 0, new[] { node }));
+									} 
+									else 
+									{
+										categories[nodeInfo.Tag].Nodes.Add(node);
+									}
 								}
 
-								if(!categories.ContainsKey(nodeInfo.Tag)) 
-								{
-									string title = "Tag " + nodeInfo.Tag;
-									if(General.Map.Options.TagLabels.ContainsKey(nodeInfo.Tag))
-										title += ": " + General.Map.Options.TagLabels[nodeInfo.Tag];
+								TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+								categories.Values.CopyTo(catNodes, 0);
 
-									categories.Add(nodeInfo.Tag, new TreeNode(title, 0, 0, new TreeNode[] { node }));
-								} 
-								else 
-								{
-									categories[nodeInfo.Tag].Nodes.Add(node);
-								}
+								TreeNode category = new TreeNode(CAT_THINGS, 0, 0, catNodes);
+								if(noTag.Nodes.Count > 0) category.Nodes.Add(noTag);
+
+								treeView.Nodes.Add(category);
 							}
-
-							TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-							categories.Values.CopyTo(catNodes, 0);
-
-							TreeNode category = new TreeNode(CAT_THINGS, 0, 0, catNodes);
-							if(noTag.Nodes.Count > 0) category.Nodes.Add(noTag);
-
-							treeView.Nodes.Add(category);
+							break;
 						}
 					}
 				}
@@ -294,14 +327,14 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			nodes = new List<TreeNode>();
 			ICollection<Sector> sectors = General.Map.Map.Sectors;
 
-			if (!(sectors is MapElementCollection<Sector>)) //don't want to enumerate when array is locked
+			if (currentDisplayMode != DISPLAY_POLYOBJECTS && !(sectors is MapElementCollection<Sector>)) //don't want to enumerate when array is locked
 			{ 
 				foreach (Sector s in sectors) 
 				{
 					if ((showTags && s.Tag != 0) || (showActions && s.Effect > 0)) 
 					{
-						if (filteredTag != -1 && s.Tag != filteredTag) continue;
-						if (filteredAction != -1 && s.Effect != filteredAction) continue;
+						if(filteredtags.Count > 0 && !filteredtags.Contains(s.Tag)) continue;
+						if(filteredactions.Count > 0 && !filteredactions.Contains(s.Effect)) continue;
 
 						NodeInfo info = new NodeInfo(s);
 						string name = info.GetName(ref comment, currentSortMode);
@@ -311,8 +344,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 						if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) 
 						{
-							TreeNode node = new TreeNode(name, 3, 3);
-							node.Tag = info;
+							TreeNode node = new TreeNode(name, 3, 3) { Tag = info, ToolTipText = nodetooltip };
 							if (hasComment) node.ForeColor = commentColor;
 							nodes.Add(node);
 
@@ -328,75 +360,81 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				//add category
 				if (nodes.Count > 0) 
 				{
-					if (currentSortMode == SortMode.SORT_BY_ACTION) 
+					switch(currentSortMode)
 					{
-						Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
-						TreeNode noAction = new TreeNode("No Effect", 2, 2);
-
-						foreach (TreeNode node in nodes) 
+						case SortMode.SORT_BY_ACTION:
 						{
-							NodeInfo nodeInfo = node.Tag as NodeInfo;
+							Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+							TreeNode noAction = new TreeNode("No Effect", 2, 2);
 
-							if (nodeInfo.Action == 0) 
+							foreach (TreeNode node in nodes) 
 							{
-								noAction.Nodes.Add(node);
-								continue;
+								NodeInfo nodeInfo = node.Tag as NodeInfo;
+
+								if (nodeInfo.Action == 0) 
+								{
+									noAction.Nodes.Add(node);
+									continue;
+								}
+
+								SectorEffectInfo sei = General.Map.Config.GetSectorEffectInfo(nodeInfo.Action);
+
+								if (!categories.ContainsKey(sei.Index))
+									categories.Add(sei.Index, new TreeNode(sei.Index + " - " + sei.Title, 2, 2, new[] { node }));
+								else
+									categories[sei.Index].Nodes.Add(node);
 							}
+							TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+							categories.Values.CopyTo(catNodes, 0);
 
-							SectorEffectInfo sei = General.Map.Config.GetSectorEffectInfo(nodeInfo.Action);
+							TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catNodes);
+							if (noAction.Nodes.Count > 0) category.Nodes.Add(noAction);
 
-							if (!categories.ContainsKey(sei.Index))
-								categories.Add(sei.Index, new TreeNode(sei.Index + " - " + sei.Title, 2, 2, new TreeNode[] { node }));
-							else
-								categories[sei.Index].Nodes.Add(node);
+							treeView.Nodes.Add(category);
 						}
-						TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-						categories.Values.CopyTo(catNodes, 0);
+						break;
 
-						TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catNodes);
-						if (noAction.Nodes.Count > 0) category.Nodes.Add(noAction);
-
-						treeView.Nodes.Add(category);
-					} 
-					else if (currentSortMode == SortMode.SORT_BY_TAG) 
-					{
-						Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
-						TreeNode noTag = new TreeNode("No Tag", 2, 2);
-
-						foreach (TreeNode node in nodes) 
+						case SortMode.SORT_BY_TAG:
 						{
-							NodeInfo nodeInfo = node.Tag as NodeInfo;
+							Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+							TreeNode noTag = new TreeNode("No Tag", 2, 2);
 
-							if (nodeInfo.Tag == 0) 
+							foreach (TreeNode node in nodes) 
 							{
-								noTag.Nodes.Add(node);
-								continue;
+								NodeInfo nodeInfo = node.Tag as NodeInfo;
+
+								if (nodeInfo.Tag == 0) 
+								{
+									noTag.Nodes.Add(node);
+									continue;
+								}
+
+								if(!categories.ContainsKey(nodeInfo.Tag)) 
+								{
+									string title = "Tag " + nodeInfo.Tag;
+									if(General.Map.Options.TagLabels.ContainsKey(nodeInfo.Tag))
+										title += ": " + General.Map.Options.TagLabels[nodeInfo.Tag];
+
+									categories.Add(nodeInfo.Tag, new TreeNode(title, 2, 2, new[] { node }));
+								} 
+								else 
+								{
+									categories[nodeInfo.Tag].Nodes.Add(node);
+								}
 							}
+							TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+							categories.Values.CopyTo(catNodes, 0);
 
-							if(!categories.ContainsKey(nodeInfo.Tag)) 
-							{
-								string title = "Tag " + nodeInfo.Tag;
-								if(General.Map.Options.TagLabels.ContainsKey(nodeInfo.Tag))
-									title += ": " + General.Map.Options.TagLabels[nodeInfo.Tag];
+							TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catNodes);
+							if (noTag.Nodes.Count > 0) category.Nodes.Add(noTag);
 
-								categories.Add(nodeInfo.Tag, new TreeNode(title, 2, 2, new TreeNode[] { node }));
-							} 
-							else 
-							{
-								categories[nodeInfo.Tag].Nodes.Add(node);
-							}
+							treeView.Nodes.Add(category);
 						}
-						TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-						categories.Values.CopyTo(catNodes, 0);
+						break;
 
-						TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catNodes);
-						if (noTag.Nodes.Count > 0) category.Nodes.Add(noTag);
-
-						treeView.Nodes.Add(category);
-					} 
-					else //just add them as they are
-					{
-						treeView.Nodes.Add(new TreeNode(CAT_SECTORS, 2, 2, nodes.ToArray()));
+						default:
+							treeView.Nodes.Add(new TreeNode(CAT_SECTORS, 2, 2, nodes.ToArray()));
+							break;
 					}
 				}
 			}
@@ -411,10 +449,13 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				{
 					if ((showTags && l.Tag != 0) || (showActions && l.Action > 0)) 
 					{
-						if (filteredTag != -1 && l.Tag != filteredTag) continue;
-						if (filteredAction != -1 && l.Action != filteredAction) continue;
+						if(filteredtags.Count > 0 && !filteredtags.Contains(l.Tag)) continue;
+						if(filteredactions.Count > 0 && !filteredactions.Contains(l.Action)) continue;
 
 						NodeInfo info = new NodeInfo(l);
+						if(filteredpolyobjects.Count > 0 && !filteredpolyobjects.Contains(info.PolyobjectNumber))
+							continue;
+
 						string name = info.GetName(ref comment, currentSortMode);
 						hasComment = comment.Length > 0;
 
@@ -422,13 +463,22 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 						if (!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) 
 						{
-							TreeNode node = new TreeNode(name, 5, 5);
-							node.Tag = info;
+							TreeNode node = new TreeNode(name, 5, 5) { Tag = info, ToolTipText = nodetooltip };
 							if (hasComment) node.ForeColor = commentColor;
 							nodes.Add(node);
 
 							if (info.Index == selection.Index && info.Type == selection.Type)
 								selectedNode = node;
+						}
+					} 
+					else if(currentDisplayMode == DISPLAY_POLYOBJECTS) 
+					{
+						NodeInfo info = new NodeInfo(l);
+						if(info.PolyobjectNumber != int.MinValue && (filteredpolyobjects.Count == 0 || filteredpolyobjects.Contains(info.PolyobjectNumber))) 
+						{
+							string name = info.GetName(ref comment, SortMode.SORT_BY_POLYOBJ_NUMBER);
+							TreeNode node = new TreeNode(name, 1, 1) { Tag = info, ToolTipText = nodetooltip };
+							nodes.Add(node);
 						}
 					}
 				}
@@ -439,76 +489,79 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				//add category
 				if (nodes.Count > 0) 
 				{
-					if (currentSortMode == SortMode.SORT_BY_ACTION) 
+					switch(currentSortMode)
 					{
-						Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
-						TreeNode noAction = new TreeNode("No Action", 4, 4);
-
-						foreach (TreeNode node in nodes) 
+						case SortMode.SORT_BY_ACTION:
 						{
-							NodeInfo nodeInfo = node.Tag as NodeInfo;
+							Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+							TreeNode noAction = new TreeNode("No Action", 4, 4);
 
-							if (nodeInfo.Action == 0) 
+							foreach (TreeNode node in nodes)
 							{
-								noAction.Nodes.Add(node);
-								continue;
+								NodeInfo nodeInfo = node.Tag as NodeInfo;
+
+								if(nodeInfo.Action == 0)
+								{
+									noAction.Nodes.Add(node);
+									continue;
+								}
+
+								LinedefActionInfo lai = General.Map.Config.GetLinedefActionInfo(nodeInfo.Action);
+
+								if(!categories.ContainsKey(lai.Index)) categories.Add(lai.Index, new TreeNode(lai.Index + " - " + lai.Name, 4, 4, new[] { node }));
+								else categories[lai.Index].Nodes.Add(node);
 							}
+							TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+							categories.Values.CopyTo(catNodes, 0);
 
-							LinedefActionInfo lai = General.Map.Config.GetLinedefActionInfo(nodeInfo.Action);
+							TreeNode category = new TreeNode(CAT_LINEDEFS, 4, 4, catNodes);
+							if(noAction.Nodes.Count > 0) category.Nodes.Add(noAction);
 
-							if (!categories.ContainsKey(lai.Index))
-								categories.Add(lai.Index, new TreeNode(lai.Index + " - " + lai.Name, 4, 4, new TreeNode[] { node }));
-							else
-								categories[lai.Index].Nodes.Add(node);
+							treeView.Nodes.Add(category);
 						}
-						TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-						categories.Values.CopyTo(catNodes, 0);
+						break;
 
-						TreeNode category = new TreeNode(CAT_LINEDEFS, 4, 4, catNodes);
-						if (noAction.Nodes.Count > 0) category.Nodes.Add(noAction);
-
-						treeView.Nodes.Add(category);
-
-					} 
-					else if (currentSortMode == SortMode.SORT_BY_TAG) 
-					{
-						Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
-						TreeNode noTag = new TreeNode("No Tag", 4, 4);
-
-						foreach (TreeNode node in nodes) 
+						case SortMode.SORT_BY_TAG:
 						{
-							NodeInfo nodeInfo = node.Tag as NodeInfo;
+							Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
+							TreeNode noTag = new TreeNode("No Tag", 4, 4);
 
-							if (nodeInfo.Tag == 0) 
+							foreach (TreeNode node in nodes) 
 							{
-								noTag.Nodes.Add(node);
-								continue;
+								NodeInfo nodeInfo = node.Tag as NodeInfo;
+
+								if (nodeInfo.Tag == 0) 
+								{
+									noTag.Nodes.Add(node);
+									continue;
+								}
+
+								if(!categories.ContainsKey(nodeInfo.Tag)) 
+								{
+									string title = "Tag " + nodeInfo.Tag;
+									if(General.Map.Options.TagLabels.ContainsKey(nodeInfo.Tag))
+										title += ": " + General.Map.Options.TagLabels[nodeInfo.Tag];
+
+									categories.Add(nodeInfo.Tag, new TreeNode(title, 4, 4, new[] { node }));
+								} 
+								else 
+								{
+									categories[nodeInfo.Tag].Nodes.Add(node);
+								}
 							}
+							TreeNode[] catNodes = new TreeNode[categories.Values.Count];
+							categories.Values.CopyTo(catNodes, 0);
 
-							if(!categories.ContainsKey(nodeInfo.Tag)) 
-							{
-								string title = "Tag " + nodeInfo.Tag;
-								if(General.Map.Options.TagLabels.ContainsKey(nodeInfo.Tag))
-									title += ": " + General.Map.Options.TagLabels[nodeInfo.Tag];
+							TreeNode category = new TreeNode(CAT_LINEDEFS, 4, 4, catNodes);
+							if (noTag.Nodes.Count > 0) category.Nodes.Add(noTag);
 
-								categories.Add(nodeInfo.Tag, new TreeNode(title, 4, 4, new TreeNode[] { node }));
-							} 
-							else 
-							{
-								categories[nodeInfo.Tag].Nodes.Add(node);
-							}
+							treeView.Nodes.Add(category);
 						}
-						TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-						categories.Values.CopyTo(catNodes, 0);
+						break;
 
-						TreeNode category = new TreeNode(CAT_LINEDEFS, 4, 4, catNodes);
-						if (noTag.Nodes.Count > 0) category.Nodes.Add(noTag);
-
-						treeView.Nodes.Add(category);
-					} 
-					else //just add them as they are
-					{ 
-						treeView.Nodes.Add(new TreeNode(CAT_LINEDEFS, 4, 4, nodes.ToArray()));
+						default:
+							treeView.Nodes.Add(new TreeNode(CAT_LINEDEFS, 4, 4, nodes.ToArray()));
+							break;
 					}
 				}
 			}
@@ -531,25 +584,40 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		}
 
 //tag/action search
-		private static void GetSpecialValues(string serachStr, ref int filteredTag, ref int filteredAction) 
+		private static void GetSpecialValues(string serachstr, ref List<int> filteredtags, ref List<int> filteredactions, ref List<int> filteredpolyobjects) 
 		{
-			if (serachStr.Length == 0) return;
+			if (serachstr.Length == 0) return;
 
-			int pos = serachStr.IndexOf("#");
-			if (pos != -1) filteredTag = ReadNumber(serachStr, pos+1);
+			string[] tags = serachstr.Split(new[]{ '#' });
+			foreach (string tagstr in tags)
+			{
+				int tag = ReadNumber(tagstr);
+				if(tag != int.MinValue) filteredtags.Add(tag);
+			}
 
-			pos = serachStr.IndexOf("$");
-			if (pos != -1) filteredAction = ReadNumber(serachStr, pos+1);
+			string[] actions = serachstr.Split(new[] { '$' });
+			foreach(string actionstr in actions) 
+			{
+				int action = ReadNumber(actionstr);
+				if(action != int.MinValue) filteredactions.Add(action);
+			}
+
+			string[] ponums = serachstr.Split(new[] { '^' });
+			foreach(string postr in ponums) 
+			{
+				int ponum = ReadNumber(postr);
+				if(ponum != int.MinValue) filteredpolyobjects.Add(ponum);
+			}
 		}
 
-		private static int ReadNumber(string serachStr, int startPoition) 
+		private static int ReadNumber(string str) 
 		{
 			string token = "";
-			int pos = startPoition;
+			int pos = 0;
 
-			while (pos < serachStr.Length && Configuration.NUMBERS.IndexOf(serachStr[pos]) != -1) 
+			while (pos < str.Length && Configuration.NUMBERS.IndexOf(str[pos]) != -1) 
 			{
-				token += serachStr[pos];
+				token += str[pos];
 				pos++;
 			}
 
@@ -560,21 +628,35 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					return result;
 			}
 
-			return -1;
+			return int.MinValue;
 		}
 
 		#endregion
 
 		#region ================== Sorting
 
-		private static void Sort(ref List<TreeNode> nodes, string sortMode) 
+		private void Sort(ref List<TreeNode> nodes, string sortMode)
 		{
-			if(sortMode == SortMode.SORT_BY_ACTION)
-				nodes.Sort(SortByAction);
-			else if (sortMode == SortMode.SORT_BY_TAG)
-				nodes.Sort(SortByTag);
-			else
-				nodes.Sort(SortByIndex);
+			switch (sortMode)
+			{
+				case SortMode.SORT_BY_ACTION:
+					nodes.Sort(SortByAction);
+					break;
+
+				case SortMode.SORT_BY_TAG:
+					nodes.Sort(SortByTag);
+					break;
+
+				case SortMode.SORT_BY_INDEX:
+					if(currentDisplayMode == DISPLAY_POLYOBJECTS) 
+						nodes.Sort(SortByPolyobjectNumber);
+					else
+						nodes.Sort(SortByIndex);
+					break;
+
+				default:
+					throw new NotImplementedException("Tag Explorer: Sort mode '" + sortMode + "' is not implemented!");
+			}
 		}
 
 		private static int SortByAction(TreeNode t1, TreeNode t2) 
@@ -582,7 +664,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			NodeInfo i1 = t1.Tag as NodeInfo;
 			NodeInfo i2 = t2.Tag as NodeInfo;
 
-			if (i1.Action == i2.Action) return 0;
+			if (i1.Action == i2.Action) return SortByTag(t1, t2);
 			if (i1.Action == 0) return 1; //push items with no action to the end of the list
 			if (i2.Action == 0) return -1; //push items with no action to the end of the list
 			if (i1.Action > i2.Action) return 1;
@@ -594,7 +676,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			NodeInfo i1 = t1.Tag as NodeInfo;
 			NodeInfo i2 = t2.Tag as NodeInfo;
 
-			if (i1.Tag == i2.Tag) return 0;
+			if(i1.Tag == i2.Tag) return SortByIndex(t1, t2);
 			if (i1.Tag == 0) return 1; //push items with no tag to the end of the list
 			if (i2.Tag == 0) return -1; //push items with no tag to the end of the list
 			if (i1.Tag > i2.Tag) return 1;
@@ -608,6 +690,17 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 			if (i1.Index > i2.Index) return 1;
 			if (i1.Index == i2.Index) return 0;
+			return -1;
+		}
+
+		private static int SortByPolyobjectNumber(TreeNode t1, TreeNode t2) 
+		{
+			NodeInfo i1 = t1.Tag as NodeInfo;
+			NodeInfo i2 = t2.Tag as NodeInfo;
+
+			if(i1.PolyobjectNumber > i2.PolyobjectNumber) return 1;
+			if(i1.PolyobjectNumber == i2.PolyobjectNumber)
+				return String.CompareOrdinal(i1.DefaultName, i2.DefaultName);
 			return -1;
 		}
 
@@ -774,7 +867,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) 
 		{
 			//edit comment
-			if (udmf) 
+			if (udmf && currentDisplayMode != DISPLAY_POLYOBJECTS) 
 			{
 				NodeInfo info = e.Node.Tag as NodeInfo;
 				if (info == null) return;
@@ -854,7 +947,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				if(n.Nodes.Count == 0) continue;
 
 				if(sb.Length > 0) sb.AppendLine(Environment.NewLine);
-				sb.AppendLine(n.Text.Replace(":", " (" +currentSortMode.ToLowerInvariant()+ "):"));
+				sb.AppendLine(n.Text.Replace(":", " (" + currentSortMode.ToLowerInvariant() + "):"));
 
 				//second level
 				foreach(TreeNode cn in n.Nodes) 
@@ -887,5 +980,4 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 		#endregion
 	}
-
 }
