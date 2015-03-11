@@ -6,16 +6,19 @@ namespace CodeImp.DoomBuilder.TagExplorer
 {
 	internal sealed class NodeInfo
 	{
-		private NodeInfoType type;
+		private readonly NodeInfoType type;
 
-		private int index;
-		private int action;
-		private int tag;
-		private string defaultName;
+		private readonly int index;
+		private readonly int action;
+		private readonly int tag;
+		private readonly int polyobjnumber;
+		private readonly string defaultName;
 
 		public int Index { get { return index; } }
 		public int Tag { get { return tag; } }
+		public int PolyobjectNumber { get { return polyobjnumber; } }
 		public int Action { get { return action; } }
+		public string DefaultName { get { return defaultName; } }
 		public NodeInfoType Type { get { return type; } }
 		public string Comment { get { return GetComment(); } set { SetComment(value); } }
 
@@ -26,8 +29,9 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			index = t.Index;
 			action = t.Action;
 			tag = t.Tag;
+			polyobjnumber = ((t.Type > 9299 && t.Type < 9304) ? t.AngleDoom : int.MinValue);
 			ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(t.Type);
-			defaultName = (tti != null ? tti.Title : NodeInfoDefaultName.THING);
+			defaultName = (tti != null ? tti.Title : "Thing");
 		}
 
 		public NodeInfo(Sector s) 
@@ -36,6 +40,15 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			index = s.Index;
 			action = s.Effect;
 			tag = s.Tag;
+			
+			if(General.Map.Config.SectorEffects.ContainsKey(action))
+			{
+				defaultName = General.Map.Config.SectorEffects[action].Title;
+			}
+			else
+			{
+				defaultName = "Sector";
+			}
 		}
 
 		public NodeInfo(Linedef l) 
@@ -44,6 +57,16 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			index = l.Index;
 			action = l.Action;
 			tag = l.Tag;
+			polyobjnumber = ((l.Action > 0 && l.Action < 9) ? l.Args[0] : int.MinValue);
+			
+			if(General.Map.Config.LinedefActions.ContainsKey(l.Action))
+			{
+				defaultName = General.Map.Config.LinedefActions[l.Action].Title;
+			}
+			else
+			{
+				defaultName = "Linedef";
+			}
 		}
 
 		//methods
@@ -52,20 +75,17 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			if (type == NodeInfoType.THING) 
 			{
 				Thing t = General.Map.Map.GetThingByIndex(index);
-				if (t == null) return null;
-				return t.Fields;
+				return (t == null ? null : t.Fields);
 			}
 
 			if (type == NodeInfoType.SECTOR) 
 			{
 				Sector s = General.Map.Map.GetSectorByIndex(index);
-				if (s == null) return null;
-				return s.Fields;
+				return (s == null ? null : s.Fields);
 			}
 
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
-			if (l == null) return null;
-			return l.Fields;
+			return (l == null ? null : l.Fields);
 		}
 
 //comment
@@ -124,54 +144,42 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			return GetLinedefName(l, ref comment, sortMode);
 		}
 
-		private string GetThingName(Thing t, ref string comment, string sortMode) 
+		private string GetThingName(Thing t, ref string comment, string sortmode) 
 		{
-			bool isDefaultName = true;
-			comment = "";
-			if (TagExplorer.UDMF && t.Fields.ContainsKey("comment")) 
-			{
-				comment = t.Fields["comment"].Value.ToString();
-				isDefaultName = false;
-			}
-			return CombineName(comment.Length == 0 ? defaultName : comment, t.Tag, t.Action, t.Index, sortMode, isDefaultName);
+			comment = ((TagExplorer.UDMF && t.Fields.ContainsKey("comment")) ? t.Fields["comment"].Value.ToString() : string.Empty);
+			return CombineName(comment, sortmode);
 		}
 
-		private static string GetSectorName(Sector s, ref string comment, string sortMode) 
+		private string GetSectorName(Sector s, ref string comment, string sortmode) 
 		{
-			bool isDefaultName = true;
-			comment = "";
-			if (TagExplorer.UDMF && s.Fields.ContainsKey("comment")) 
-			{
-				comment = s.Fields["comment"].Value.ToString();
-				isDefaultName = false;
-			}
-			return CombineName(comment.Length == 0 ? NodeInfoDefaultName.SECTOR : comment, s.Tag, s.Effect, s.Index, sortMode, isDefaultName);
+			comment = ((TagExplorer.UDMF && s.Fields.ContainsKey("comment")) ? s.Fields["comment"].Value.ToString() : string.Empty);
+			return CombineName(comment, sortmode);
 		}
 
-		private static string GetLinedefName(Linedef l, ref string comment, string sortMode) 
+		private string GetLinedefName(Linedef l, ref string comment, string sortmode) 
 		{
-			bool isDefaultName = true;
-			comment = "";
-			if (TagExplorer.UDMF && l.Fields.ContainsKey("comment")) 
-			{
-				comment = l.Fields["comment"].Value.ToString();
-				isDefaultName = false;
-			}
-			return CombineName(comment.Length == 0 ? NodeInfoDefaultName.LINEDEF : comment, l.Tag, l.Action, l.Index, sortMode, isDefaultName);
+			if(polyobjnumber != int.MinValue) return CombineName(string.Empty, sortmode);
+			comment = ((TagExplorer.UDMF && l.Fields.ContainsKey("comment")) ? l.Fields["comment"].Value.ToString() : string.Empty);
+			return CombineName(comment, sortmode);
 		}
 
-		private static string CombineName(string name, int tag, int action, int index, string sortMode, bool isDefaultName) 
+		private string CombineName(string comment, string sortmode)
 		{
-			switch (sortMode) 
+			string name = (!string.IsNullOrEmpty(comment) ? comment : defaultName);
+
+			switch(sortmode) 
 			{
-				case SortMode.SORT_BY_ACTION:
-					return (tag > 0 ? "Tag:" + tag + "; " : "") + name + (isDefaultName ? " " + index : "");
+				case SortMode.SORT_BY_ACTION: //action name is already shown as category name, so we'll show tag here
+					return (tag > 0 ? "Tag " + tag + ": " : "") + name + ", Index " + index;
 
 				case SortMode.SORT_BY_INDEX:
-					return index + (tag > 0 ? ": Tag:" + tag + "; " : ": ") + (action > 0 ? "Action:" + action + "; " : "") + name;
+					return index + ": " + name + (tag > 0 ? ", Tag " + tag : "") + (action > 0 ? ", Action " + action : "");
 
-				case SortMode.SORT_BY_TAG:
-					return (action > 0 ? "Action:" + action + "; " : "") + name + (isDefaultName ? " " + index : "");
+				case SortMode.SORT_BY_TAG: //tag is already shown as category name, so we'll show action here
+					return (action > 0 ? "Action " + action + ": " : "") + name + ", Index " + index;
+
+				case SortMode.SORT_BY_POLYOBJ_NUMBER:
+					return "PO " + polyobjnumber + ": " + defaultName + ", Index " + index;
 
 				default:
 					return name;
@@ -185,12 +193,4 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		SECTOR,
 		LINEDEF
 	}
-
-	internal struct NodeInfoDefaultName
-	{
-		public const string THING = "Thing";
-		public const string SECTOR = "Sector";
-		public const string LINEDEF = "Linedef";
-	}
-
 }
