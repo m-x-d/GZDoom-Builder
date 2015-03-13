@@ -68,12 +68,12 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			selection = new SelectedNode();
 
 			cbDisplayMode.Items.AddRange(DISPLAY_MODES);
-			cbDisplayMode.SelectedIndex = General.Settings.ReadPluginSetting("displaymode", 0);
+			cbDisplayMode.SelectedIndex = General.Clamp(General.Settings.ReadPluginSetting("displaymode", 0), 0, DISPLAY_MODES.Length - 1);
 			cbDisplayMode.SelectedIndexChanged += cbDisplayMode_SelectedIndexChanged;
 			currentDisplayMode = cbDisplayMode.SelectedItem.ToString();
 
 			cbSortMode.Items.AddRange(SortMode.SORT_MODES);
-			cbSortMode.SelectedIndex = General.Settings.ReadPluginSetting("sortmode", 0);
+			cbSortMode.SelectedIndex = General.Clamp(General.Settings.ReadPluginSetting("sortmode", 0), 0, SortMode.SORT_MODES.Length - 1);
 			cbSortMode.SelectedIndexChanged += cbSortMode_SelectedIndexChanged;
 			currentSortMode = cbSortMode.SelectedItem.ToString();
 

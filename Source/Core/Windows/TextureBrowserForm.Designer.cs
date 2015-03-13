@@ -35,17 +35,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.smallimages = new System.Windows.Forms.ImageList(this.components);
 			this.tvTextureSets = new CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview();
 			this.browser = new CodeImp.DoomBuilder.Controls.ImageBrowserControl();
-			this.splitContainer = new System.Windows.Forms.SplitContainer();
-			this.splitContainer.Panel1.SuspendLayout();
-			this.splitContainer.Panel2.SuspendLayout();
-			this.splitContainer.SuspendLayout();
+			this.splitter = new CodeImp.DoomBuilder.Controls.CollapsibleSplitter();
+			this.panel = new System.Windows.Forms.Panel();
+			this.panel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cancel
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(674, 411);
+			this.cancel.Location = new System.Drawing.Point(683, 411);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(98, 25);
 			this.cancel.TabIndex = 3;
@@ -57,7 +56,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(572, 411);
+			this.apply.Location = new System.Drawing.Point(581, 411);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(98, 25);
 			this.apply.TabIndex = 2;
@@ -88,13 +87,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tvTextureSets.HideSelection = false;
 			this.tvTextureSets.ImageIndex = 0;
 			this.tvTextureSets.ImageList = this.smallimages;
-			this.tvTextureSets.Location = new System.Drawing.Point(0, 0);
-			this.tvTextureSets.Margin = new System.Windows.Forms.Padding(0);
+			this.tvTextureSets.Location = new System.Drawing.Point(0, 3);
 			this.tvTextureSets.Name = "tvTextureSets";
 			this.tvTextureSets.SelectedImageIndex = 0;
 			this.tvTextureSets.SelectionBackColor = System.Drawing.SystemColors.Highlight;
 			this.tvTextureSets.SelectionMode = CodeImp.DoomBuilder.GZBuilder.Controls.TreeViewSelectionMode.SingleSelect;
-			this.tvTextureSets.Size = new System.Drawing.Size(199, 390);
+			this.tvTextureSets.Size = new System.Drawing.Size(199, 402);
 			this.tvTextureSets.TabIndex = 4;
 			this.tvTextureSets.TabStop = false;
 			this.tvTextureSets.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tvTextureSets_KeyUp);
@@ -106,33 +104,42 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browser.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.browser.HideInputBox = false;
 			this.browser.Location = new System.Drawing.Point(0, 0);
+			this.browser.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
 			this.browser.Name = "browser";
+			this.browser.Padding = new System.Windows.Forms.Padding(3, 3, 0, 3);
 			this.browser.PreventSelection = false;
-			this.browser.Size = new System.Drawing.Size(557, 424);
+			this.browser.Size = new System.Drawing.Size(574, 442);
 			this.browser.TabIndex = 1;
 			this.browser.TabStop = false;
 			this.browser.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.browser_SelectedItemDoubleClicked);
 			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
 			// 
-			// splitContainer
+			// splitter
 			// 
-			this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-			this.splitContainer.Location = new System.Drawing.Point(12, 12);
-			this.splitContainer.Name = "splitContainer";
+			this.splitter.AnimationDelay = 20;
+			this.splitter.AnimationStep = 20;
+			this.splitter.BorderStyle3D = System.Windows.Forms.Border3DStyle.Flat;
+			this.splitter.ControlToHide = this.panel;
+			this.splitter.Dock = System.Windows.Forms.DockStyle.Right;
+			this.splitter.ExpandParentForm = false;
+			this.splitter.Location = new System.Drawing.Point(574, 0);
+			this.splitter.Margin = new System.Windows.Forms.Padding(0);
+			this.splitter.MinSize = 100;
+			this.splitter.Name = "collapsibleSplitter1";
+			this.splitter.TabIndex = 5;
+			this.splitter.TabStop = false;
+			this.splitter.UseAnimations = false;
+			this.splitter.VisualStyle = CodeImp.DoomBuilder.Controls.VisualStyles.DoubleDots;
+			this.splitter.CollapsedChanged += new System.EventHandler(this.splitter_CollapsedChanged);
 			// 
-			// splitContainer.Panel1
+			// panel
 			// 
-			this.splitContainer.Panel1.Controls.Add(this.browser);
-			// 
-			// splitContainer.Panel2
-			// 
-			this.splitContainer.Panel2.Controls.Add(this.tvTextureSets);
-			this.splitContainer.Size = new System.Drawing.Size(760, 424);
-			this.splitContainer.SplitterDistance = 557;
-			this.splitContainer.TabIndex = 5;
+			this.panel.Controls.Add(this.tvTextureSets);
+			this.panel.Dock = System.Windows.Forms.DockStyle.Right;
+			this.panel.Location = new System.Drawing.Point(582, 0);
+			this.panel.Name = "panel";
+			this.panel.Size = new System.Drawing.Size(202, 442);
+			this.panel.TabIndex = 6;
 			// 
 			// TextureBrowserForm
 			// 
@@ -141,9 +148,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(784, 442);
-			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
-			this.Controls.Add(this.splitContainer);
+			this.Controls.Add(this.cancel);
+			this.Controls.Add(this.browser);
+			this.Controls.Add(this.splitter);
+			this.Controls.Add(this.panel);
 			this.MinimizeBox = false;
 			this.Name = "TextureBrowserForm";
 			this.Opacity = 1;
@@ -158,9 +167,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TextureBrowserForm_FormClosing);
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.TextureBrowserForm_HelpRequested);
 			this.ResizeEnd += new System.EventHandler(this.TextureBrowserForm_ResizeEnd);
-			this.splitContainer.Panel1.ResumeLayout(false);
-			this.splitContainer.Panel2.ResumeLayout(false);
-			this.splitContainer.ResumeLayout(false);
+			this.panel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -172,6 +179,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button apply;
 		private System.Windows.Forms.ImageList smallimages;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview tvTextureSets;
-		private System.Windows.Forms.SplitContainer splitContainer;
+		private CodeImp.DoomBuilder.Controls.CollapsibleSplitter splitter;
+		private System.Windows.Forms.Panel panel;
 	}
 }

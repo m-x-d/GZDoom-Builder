@@ -186,12 +186,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Size = new Size(General.Settings.ReadSetting("browserwindow.sizewidth", this.Size.Width),
 								 General.Settings.ReadSetting("browserwindow.sizeheight", this.Size.Height));
 			this.WindowState = (FormWindowState)General.Settings.ReadSetting("browserwindow.windowstate", (int)FormWindowState.Normal);
-
-			//mxd. Set SplitterDistance
-			int splitterdistance = splitContainer.Width - General.Settings.ReadSetting("browserwindow.splitterdistance", 203);
-			if(splitterdistance < splitContainer.Panel1MinSize || splitterdistance > splitContainer.Width - splitContainer.Panel2MinSize)
-				splitterdistance = splitContainer.Width - splitContainer.Width / 4;
-			splitContainer.SplitterDistance = splitterdistance;
 			
 			//mxd
 			if (this.WindowState == FormWindowState.Normal) 
@@ -208,6 +202,10 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			this.ResumeLayout(true);
+
+			//mxd. Set splitter position and state (doesn't work when layout is suspended)
+			splitter.SplitPosition = Math.Min(General.Settings.ReadSetting("browserwindow.splitterdistance", 203), this.ClientRectangle.Width - 16);
+			if(General.Settings.ReadSetting("browserwindow.splittercollapsed", false)) splitter.IsCollapsed = true;
 		}
 
 		//mxd
@@ -421,6 +419,9 @@ namespace CodeImp.DoomBuilder.Windows
 				lastposition = this.Location;
 				lastsize = this.Size;
 			}
+
+			//mxd. SplitDistance out of bounds?
+			splitter_CollapsedChanged(splitter, EventArgs.Empty);
 		}
 
 		// Moved
@@ -452,7 +453,8 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.WriteSetting("browserwindow.sizewidth", lastsize.Width);
 			General.Settings.WriteSetting("browserwindow.sizeheight", lastsize.Height);
 			General.Settings.WriteSetting("browserwindow.windowstate", windowstate);
-			General.Settings.WriteSetting("browserwindow.splitterdistance", splitContainer.Width - splitContainer.SplitterDistance); //mxd
+			if(!splitter.IsCollapsed) General.Settings.WriteSetting("browserwindow.splitterdistance", splitter.SplitPosition); //mxd
+			General.Settings.WriteSetting("browserwindow.splittercollapsed", splitter.IsCollapsed); //mxd
 
 			//mxd. Save last selected texture set, if it's not "All" (it will be selected anyway if search for initial texture set fails)
 			if(this.DialogResult == DialogResult.OK && tvTextureSets.SelectedNodes.Count > 0 && !(tvTextureSets.SelectedNodes[0].Tag is AllTextureSet))
@@ -555,6 +557,13 @@ namespace CodeImp.DoomBuilder.Windows
 				selectedset = tvTextureSets.SelectedNodes[0];
 				FillImagesList();
 			}
+		}
+
+		//mxd. SplitDistance out of bounds?
+		private void splitter_CollapsedChanged(object sender, EventArgs e) 
+		{
+			if(!splitter.IsCollapsed && splitter.SplitPosition > this.ClientRectangle.Width - 16)
+				splitter.SplitPosition = this.ClientRectangle.Width - 16;
 		}
 	}
 }
