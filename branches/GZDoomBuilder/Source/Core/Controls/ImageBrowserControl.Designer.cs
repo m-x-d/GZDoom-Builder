@@ -124,6 +124,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.showtexturesize.Name = "showtexturesize";
 			this.showtexturesize.Size = new System.Drawing.Size(105, 17);
 			this.showtexturesize.TabIndex = 0;
+			this.showtexturesize.TabStop = false;
 			this.showtexturesize.Text = "Show image size";
 			this.showtexturesize.UseVisualStyleBackColor = true;
 			this.showtexturesize.CheckedChanged += new System.EventHandler(this.showtexturesize_CheckedChanged);
