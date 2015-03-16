@@ -303,6 +303,7 @@ namespace CodeImp.DoomBuilder.Controls
 					if(n == selected) continue;
 					if(n.Text == selected.Text) 
 					{
+						if(list.IsGroupCollapsed(n.Group)) list.SetGroupCollapsed(n.Group, false);
 						n.Selected = true;
 						n.Focused = true;
 						n.EnsureVisible();
@@ -416,6 +417,20 @@ namespace CodeImp.DoomBuilder.Controls
 			ListViewGroup grp = new ListViewGroup(name);
 			list.Groups.Add(grp);
 			return grp;
+		}
+
+		//mxd
+		public bool IsGroupCollapsed(ListViewGroup group)
+		{
+			if(!list.Groups.Contains(group)) return false;
+			return list.IsGroupCollapsed(group);
+		}
+
+		//mxd. This enables group collapsability and optionally collapses it
+		public void SetGroupCollapsed(ListViewGroup group, bool collapse)
+		{
+			if(!list.Groups.Contains(group)) return;
+			list.SetGroupCollapsed(group, collapse);
 		}
 		
 		// This begins adding items
