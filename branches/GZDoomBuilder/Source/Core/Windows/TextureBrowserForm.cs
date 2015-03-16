@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private readonly ListViewGroup availgroup;
 		private TreeNode selectedset; //mxd
 		private string selecttextureonfill;
+		private readonly bool usedgroupcollapsed; //mxd
 		private readonly bool browseflats; //mxd
 		
 		// Properties
@@ -79,6 +80,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Make groups
 			usedgroup = browser.AddGroup("Used " + imagetype + ":");
 			availgroup = browser.AddGroup("Available " + imagetype + ":");
+
+			//mxd. Make "Used" group collapsible
+			usedgroupcollapsed = General.Settings.ReadSetting("browserwindow.usedgroupcollapsed", false);
+			browser.SetGroupCollapsed(usedgroup, usedgroupcollapsed);
 
 			//mxd. Fill texture sets list with normal texture sets
 			foreach(IFilledTextureSet ts in General.Map.Data.TextureSets) 
@@ -455,6 +460,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.WriteSetting("browserwindow.windowstate", windowstate);
 			if(!splitter.IsCollapsed) General.Settings.WriteSetting("browserwindow.splitterdistance", splitter.SplitPosition); //mxd
 			General.Settings.WriteSetting("browserwindow.splittercollapsed", splitter.IsCollapsed); //mxd
+			General.Settings.WriteSetting("browserwindow.usedgroupcollapsed", browser.IsGroupCollapsed(usedgroup)); //mxd
 
 			//mxd. Save last selected texture set, if it's not "All" (it will be selected anyway if search for initial texture set fails)
 			if(this.DialogResult == DialogResult.OK && tvTextureSets.SelectedNodes.Count > 0 && !(tvTextureSets.SelectedNodes[0].Tag is AllTextureSet))
@@ -534,7 +540,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Select texture
 			if(!string.IsNullOrEmpty(selecttextureonfill))
 			{
-				browser.SelectItem(selecttextureonfill, usedgroup);
+				browser.SelectItem(selecttextureonfill, (usedgroupcollapsed ? availgroup : usedgroup)); //mxd. availgroup/usedgroup switch.
 				selecttextureonfill = null;
 			}
 
