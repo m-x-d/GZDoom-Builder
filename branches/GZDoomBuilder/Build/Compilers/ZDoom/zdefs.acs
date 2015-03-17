@@ -691,6 +691,9 @@
 #define CHAN_VOICE				2
 #define CHAN_ITEM				3
 #define CHAN_BODY				4
+#define CHAN_5					5
+#define CHAN_6					6
+#define CHAN_7					7
 
 // Modifier flags for PlaySound
 
@@ -1042,3 +1045,10 @@
 #define ML_BLOCKUSE            0x02000000
 #define ML_BLOCKSIGHT          0x04000000
 #define ML_BLOCKHITSCAN        0x08000000
+
+#define QF_RELATIVE		1
+#define QF_SCALEDOWN		1 << 1
+#define QF_SCALEUP		1 << 2
+#define QF_MAX			1 << 3
+#define QF_FULLINTENSITY	1 << 4
+#define QF_WAVE			1 << 5
