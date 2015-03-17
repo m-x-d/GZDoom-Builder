@@ -339,6 +339,14 @@
 				<param name="Local" value="gzdb\features\classic_modes\mode_drawgrid.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Sound Propagation Mode">
+				<param name="Local" value="gzdb\features\classic_modes\mode_soundpropagation.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Sound Environment Mode">
+				<param name="Local" value="gzdb\features\classic_modes\mode_soundenvironment.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Randomize mode">
 				<param name="Local" value="gzdb\features\all_modes\jitter.html">
 				</OBJECT>
@@ -364,7 +372,7 @@
 					<param name="Local" value="gzdb\features\things_mode\multiple_thing_types.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="&quot;Point Thing to cursor&quot; action">
+					<param name="Name" value="&quot;Point Thing to Cursor&quot; action">
 					<param name="Local" value="gzdb\features\things_mode\pointthing.html">
 					</OBJECT>
 			</UL>
@@ -428,14 +436,6 @@
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="TEXTURES support">
 			<param name="Local" value="gzdb\textures.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="New settings in program's Preferences">
-			<param name="Local" value="gzdb\preferences.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="New settings in game configurations">
-			<param name="Local" value="gzdb\gamecfg_settings.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Frequently asked questions">

@@ -329,6 +329,11 @@ namespace CodeImp.DoomBuilder.Controls
 				blockinglabel.Text = "-";
 			}
 
+			//mxd. Update help link
+			classname.Enabled = (thinginfo != null && !string.IsNullOrEmpty(thinginfo.ClassName) && !string.IsNullOrEmpty(General.Map.Config.ThingClassHelp));
+			classname.Text = (thinginfo != null && !string.IsNullOrEmpty(thinginfo.ClassName)) ? thinginfo.ClassName : "--";
+			labelclassname.Enabled = classname.Enabled;
+
 			// Update icon (mxd)
 			UpdateThingSprite();
 
@@ -395,6 +400,12 @@ namespace CodeImp.DoomBuilder.Controls
 			spritepanel.Left = infopanel.Width - spritepanel.Width;
 			typelist.Height = infopanel.Top - typelist.Top;
 			typelist.Width = this.Width;
+		}
+
+		//mxd. If it's clickable, all data is valid.
+		private void classname_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) 
+		{
+			General.OpenWebsite(General.Map.Config.ThingClassHelp.Replace("%K", thinginfo.ClassName));
 		}
 		
 		#endregion

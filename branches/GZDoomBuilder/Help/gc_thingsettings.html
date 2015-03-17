@@ -18,7 +18,11 @@
 	
 	<div id="contents">
 	<p>
-		<b class="fat">defaultthingflags</b> (structure)<br />
+		<span class="big">General settings:</span><br /><br />
+        <b class="fat">thingclasshelp</b> (string) - <span class="red">GZDB only</span>.<br />
+        URL to to open when thing class name is clicked in the Thing Edit form.<br />
+        <br />
+<b class="fat">defaultthingflags</b> (structure)<br />
 		This defines what the default flags should be first the first new thing when inserted. In map formats that use numeric thing flags, the settings in this structure should be the numeric flags to set. In map formats that use named flags, the settings must be the names of the flags to set. The value of the settings is optional and is ignored by Doom Builder.<br />
 		<br />
 		Example for numeric flags:
@@ -44,8 +48,30 @@ defaultthingflags
 }
 </pre>
 		<br />
-
-		
+<span class="big">Thing definitions:</span><br />
+<br />
+<b class="fat">default</b> (integer) - <span class="red">GZDB only</span>.<br />	
+Sets the default value for a Thing or Linedef argument definition.<br />
+<strong>Example:</strong>
+<pre>9038
+{
+    title = "ColorSetter";
+    arg0
+    {
+        title = "Red";
+        <span class="blue">default = 255;</span>
+    }
+}</pre>
+<br />
+<b class="fat">class</b> (string) - <span class="red">GZDB only</span>.<br />	
+Sets  DECORATE class name, which corresponds to this thing. Used internally to attach models and dynamic lights to given thing and when looking for an actor class to inherit from in DECORATE parser.<br />
+<strong>Example:</strong>
+<pre>3001
+{
+    title = "Imp";
+    sprite = "TROOA2A8";
+    <span class="blue">class = "DoomImp";</span>
+}</pre>
 	</p>
 	</div>
 </body>

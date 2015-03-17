@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	
+	<title>Sound Propagation Mode</title>
+	
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" type="text/css" href="../../../default.css" media="screen" title="Default" />
+</head>
+<body>
+
+	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="keyword" value="Template">
+	</object>
+	
+	<div id="gz_title">
+	  <h1>Sound Environment Mode</h1>
+	</div>
+	
+	<div id="contents">
+	<p>
+<span class="fat">This mode is based on <a href="http://forum.zdoom.org/viewtopic.php?f=3&amp;t=47464">Sound Propagation Mode Plugin</a> by Boris Iwansky (<a href="https://github.com/biwa/soundpropagationmode">https://github.com/biwa/soundpropagationmode</a>).</span><br>
+<br>
+<b>Action category:</b> Modes.<br>
+<b>Default key:</b> none.<br><br>
+This mode shows the sound environments in ZDoom maps (both Hexen format and UDMF). The gray areas do not belong to a sound environment.<br><br>
+
+The mode also supplies a docker that supplies information about the sound environments. It will display the sound environments, the SoundEnvironment things belonging to them and also the lines that are limit the sound environments. Clicking on the sound environments, things or lines in the list will center the map view on those objects.
+<br><br>
+<span class="bold">User interaction:</span>
+<ul>
+      <li>Click on double-sided linedefs to toggle &quot;Sound Zone Boundary&quot; flag.</li>
+      <li>Right-click to insert a SoundEnvironment thing.</li>
+      <li>Right-click on a SoundEnvironment thing to choose a Sound Environment.</li>
+      <li>Highlight a SoundEnvironment thing and press &quot;Delete&quot; key to remove it.</li>
+</ul>
+
+This mode can also help you find problems (i.e. behavior that you probably that you probably did not intend). If there are any problems with a sound environment a warning sign will displayed in the list at the affected thing or line (the icon will bubble up the tree to make it easier to find when the whole list is collapsed).
+<br>
+<br>
+<span class="bold">Following problems are detected:</span>
+<ul>
+   <li>One-sided lines that are set to be a sound zone boundary.</li>
+   <li>Two-sided lines that are set to be a sound zone boundary, but the sectors on both sides belong to the same sound environment.</li>
+   <li> Multiple non-dormant SoundEnivornment things.</li>
+</ul>
+
+<br>
+Note that the latter two can be caused by sound environments unintentionally bleeding into other sectors (i.e. not correctly sealed sound environments).
+</div>
+</body>

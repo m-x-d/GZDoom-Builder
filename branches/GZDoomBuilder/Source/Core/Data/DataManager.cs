@@ -1479,17 +1479,16 @@ namespace CodeImp.DoomBuilder.Data
 			//read our new shiny ClassNames for default game things
 			foreach (KeyValuePair<int, ThingTypeInfo> ti in things) 
 			{
-				if (ti.Value.ClassName != null)
-					actors.Add(ti.Value.ClassName, ti.Key);
+				if (!string.IsNullOrEmpty(ti.Value.ClassName))
+					actors.Add(ti.Value.ClassName.ToLowerInvariant(), ti.Key);
 			}
 
 			//and for actors defined in DECORATE
 			ICollection<ActorStructure> ac = decorate.Actors;
 			foreach (ActorStructure actor in ac) 
 			{
-				string className = actor.ClassName.ToLower();
-				if (!actors.ContainsKey(className)) 
-					actors.Add(className, actor.DoomEdNum);
+				string classname = actor.ClassName.ToLowerInvariant();
+				if (!actors.ContainsKey(classname)) actors.Add(classname, actor.DoomEdNum);
 			}
 
 			if (actors.Count == 0) 

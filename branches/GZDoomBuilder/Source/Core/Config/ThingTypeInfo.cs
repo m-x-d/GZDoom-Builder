@@ -156,9 +156,7 @@ namespace CodeImp.DoomBuilder.Config
 
 			//mxd
 			string s_class = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".class", String.Empty);
-			if (s_class != String.Empty) //I actually want to keep null value there if no such property exists...
-				this.classname = s_class.ToLower();
-			
+			if(s_class != String.Empty) this.classname = s_class; //I actually want to keep null value there if no such property exists...
 			
 			// Read the args
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)
@@ -166,6 +164,7 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Safety
 			if(this.radius < 4f) this.radius = 16f;
+			if(this.hangs && this.absolutez) this.hangs = false; //mxd
 			
 			// Make long name for sprite lookup
 			if(this.sprite.Length <= 8)
@@ -207,6 +206,7 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
+			if(this.hangs && this.absolutez) this.hangs = false; //mxd
 			
 			// Make long name for sprite lookup
 			if(this.sprite.Length <= 8)
@@ -246,6 +246,7 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
+			if(this.hangs && this.absolutez) this.hangs = false; //mxd
 			
 			// Apply settings from actor
 			ModifyByDecorateActor(actor);

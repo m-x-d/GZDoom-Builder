@@ -159,3 +159,22 @@ a img
 	font-size: 1.1em;
 }
 
+.red
+{
+	color: #990000;
+	font-weight: bold;
+}
+
+.blue
+{
+	color: #0066FF;
+	font-weight: bold;
+}
+
+.big
+{
+  color: #515151;
+	font-size: large;
+	font-weight: bold;
+}
+
