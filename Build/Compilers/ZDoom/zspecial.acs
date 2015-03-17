@@ -334,7 +334,8 @@ special
 	-88:SetActorRoll(2),
 	-89:ChangeActorRoll(2,3),
 	-90:GetActorRoll(1),
-	
+	-91:QuakeEx(8,12),
+
 	// Zandronum's
 	-100:ResetMap(0),
 	-101:PlayerIsSpectator(1),

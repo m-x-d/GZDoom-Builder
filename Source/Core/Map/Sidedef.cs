@@ -365,7 +365,8 @@ namespace CodeImp.DoomBuilder.Map
 
 				if(!LowRequired())
 				{
-					if(!changed) { //mxd
+					if(!changed) //mxd
+					{
 						BeforePropsChange();
 						changed = true;
 					}
@@ -398,6 +399,44 @@ namespace CodeImp.DoomBuilder.Map
 			// Doublesided?
 			if(Other != null)
 			{
+				//mxd. Check sloped ceilings...
+				if(General.Map.UDMF && this.sector != Other.Sector) 
+				{
+					float thisstartz = this.sector.CeilHeight;
+					float thisendz = this.sector.CeilHeight;
+					float otherstartz = Other.sector.CeilHeight;
+					float otherendz = Other.sector.CeilHeight;
+
+					// Check if this side is affected by UDMF slope (it overrides vertex heights, riiiiiight?..) TODO: check this!
+					if(this.sector.CeilSlope.GetLengthSq() > 0) 
+					{
+						Plane ceil = new Plane(this.sector.CeilSlope, this.sector.CeilSlopeOffset);
+						thisstartz = ceil.GetZ(this.Line.Start.Position);
+						thisendz = ceil.GetZ(this.Line.End.Position);
+					} 
+					else if(this.sector.Sidedefs.Count == 3) // Check vertex heights on this side
+					{
+						if(!float.IsNaN(this.Line.Start.ZCeiling)) thisstartz = this.Line.Start.ZCeiling;
+						if(!float.IsNaN(this.Line.End.ZCeiling)) thisendz = this.Line.End.ZCeiling;
+					}
+
+					// Check if other side is affected by UDMF slope (it overrides vertex heights, riiiiiight?..) TODO: check this!
+					if(Other.sector.CeilSlope.GetLengthSq() > 0) 
+					{
+						Plane ceil = new Plane(Other.sector.CeilSlope, Other.sector.CeilSlopeOffset);
+						otherstartz = ceil.GetZ(this.Line.Start.Position);
+						otherendz = ceil.GetZ(this.Line.End.Position);
+					} 
+					else if(Other.sector.Sidedefs.Count == 3) // Check other line's vertex heights
+					{
+						if(!float.IsNaN(this.Line.Start.ZCeiling)) otherstartz = this.Line.Start.ZCeiling;
+						if(!float.IsNaN(this.Line.End.ZCeiling)) otherendz = this.Line.End.ZCeiling;
+					}
+
+					// Texture is required when our start or end vertex is higher than on the other side.
+					if(thisstartz > otherstartz || thisendz > otherendz) return true;
+				}
+				
 				// Texture is required when ceiling of other side is lower
 				return (Other.sector.CeilHeight < this.sector.CeilHeight);
 			}
@@ -422,6 +461,44 @@ namespace CodeImp.DoomBuilder.Map
 			// Doublesided?
 			if(Other != null)
 			{
+				//mxd. Check sloped floors...
+				if(General.Map.UDMF && this.sector != Other.Sector)
+				{
+					float thisstartz = this.sector.FloorHeight;
+					float thisendz = this.sector.FloorHeight;
+					float otherstartz = Other.sector.FloorHeight;
+					float otherendz = Other.sector.FloorHeight;
+
+					// Check if this side is affected by UDMF slope (it overrides vertex heights, riiiiiight?..) TODO: check this!
+					if(this.sector.FloorSlope.GetLengthSq() > 0) 
+					{
+						Plane floor = new Plane(this.sector.FloorSlope, this.sector.FloorSlopeOffset);
+						thisstartz = floor.GetZ(this.Line.Start.Position);
+						thisendz = floor.GetZ(this.Line.End.Position);
+					} 
+					else if(this.sector.Sidedefs.Count == 3) // Check vertex heights on this side
+					{
+						if(!float.IsNaN(this.Line.Start.ZFloor)) thisstartz = this.Line.Start.ZFloor;
+						if(!float.IsNaN(this.Line.End.ZFloor)) thisendz = this.Line.End.ZFloor;
+					}
+					
+					// Check if other side is affected by UDMF slope (it overrides vertex heights, riiiiiight?..) TODO: check this!
+					if(Other.sector.FloorSlope.GetLengthSq() > 0)
+					{
+						Plane floor = new Plane(Other.sector.FloorSlope, Other.sector.FloorSlopeOffset);
+						otherstartz = floor.GetZ(this.Line.Start.Position);
+						otherendz = floor.GetZ(this.Line.End.Position);
+					}
+					else if(Other.sector.Sidedefs.Count == 3) // Check other line's vertex heights
+					{
+						if(!float.IsNaN(this.Line.Start.ZFloor)) otherstartz = this.Line.Start.ZFloor;
+						if(!float.IsNaN(this.Line.End.ZFloor)) otherendz = this.Line.End.ZFloor;
+					}
+
+					// Texture is required when our start or end vertex is lower than on the other side.
+					if(thisstartz < otherstartz || thisendz < otherendz) return true;
+				}
+
 				// Texture is required when floor of other side is higher
 				return (Other.sector.FloorHeight > this.sector.FloorHeight);
 			}
