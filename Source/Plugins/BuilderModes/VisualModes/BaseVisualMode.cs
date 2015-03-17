@@ -2160,26 +2160,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			//and things. Just align them to ceiling
+			// Change things heights. Align to higher 3d floor or actual ceiling.
 			if(General.Map.FormatInterface.HasThingHeight) 
 			{
 				foreach(BaseVisualThing vt in things) 
 				{
 					if(vt.Thing.Sector == null) continue;
-
-					if(vt.Info.AbsoluteZ)
-					{
-						SectorData sd = GetSectorData(vt.Thing.Sector);
-						vt.OnMove(new Vector3D(vt.Thing.Position, sd.Ceiling.plane.GetZ(vt.Thing.Position) - vt.Info.Height));
-					}
-					else if(vt.Info.Hangs)
-					{
-						vt.OnMove(new Vector3D(vt.Thing.Position, 0));
-					}
-					else
-					{
-						vt.OnMove(new Vector3D(vt.Thing.Position, vt.Thing.Sector.CeilHeight - vt.Thing.Sector.FloorHeight - vt.Info.Height));
-					}
+					SectorData sd = GetSectorData(vt.Thing.Sector);
+					vt.OnMove(new Vector3D(vt.Thing.Position, BuilderModesTools.GetHigherThingZ(sd, vt.Thing.Position, vt.Info.Height, vt.Info.AbsoluteZ, vt.Info.Hangs)));
 				}
 			}
 
@@ -2384,26 +2372,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			//process things. Just drop them to ground
+			// Change things height. Drop to lower 3d floor or to actual sector's floor.
 			if(General.Map.FormatInterface.HasThingHeight)
 			{
 				foreach(BaseVisualThing vt in things) 
 				{
 					if(vt.Thing.Sector == null) continue;
-					
-					if(vt.Info.AbsoluteZ)
-					{
-						SectorData sd = GetSectorData(vt.Thing.Sector);
-						vt.OnMove(new Vector3D(vt.Thing.Position, sd.Floor.plane.GetZ(vt.Thing.Position)));
-					}
-					else if(vt.Info.Hangs)
-					{
-						vt.OnMove(new Vector3D(vt.Thing.Position, vt.Thing.Sector.CeilHeight - vt.Thing.Sector.FloorHeight - vt.Info.Height));
-					} 
-					else
-					{
-						vt.OnMove(new Vector3D(vt.Thing.Position, 0));
-					}
+					SectorData sd = GetSectorData(vt.Thing.Sector);
+					vt.OnMove(new Vector3D(vt.Thing.Position, BuilderModesTools.GetLowerThingZ(sd, vt.Thing.Position, vt.Info.Height, vt.Info.AbsoluteZ, vt.Info.Hangs)));
 				}
 			}
 

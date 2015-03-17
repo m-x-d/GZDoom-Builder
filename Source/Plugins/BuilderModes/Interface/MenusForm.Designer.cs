@@ -441,7 +441,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.pointAtCursorItem.Name = "pointAtCursorItem";
 			this.pointAtCursorItem.Size = new System.Drawing.Size(245, 22);
 			this.pointAtCursorItem.Tag = "thinglookatcursor";
-			this.pointAtCursorItem.Text = "&Point at Cursor";
+			this.pointAtCursorItem.Text = "&Point to Cursor";
 			this.pointAtCursorItem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStripSeparator6

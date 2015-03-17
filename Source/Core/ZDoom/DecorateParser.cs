@@ -239,10 +239,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		internal ActorStructure GetArchivedActorByName(string name)
 		{
 			name = name.ToLowerInvariant();
-			if(archivedactors.ContainsKey(name))
-				return archivedactors[name];
-			else
-				return null;
+			return (archivedactors.ContainsKey(name) ? archivedactors[name] : null);
 		}
 		
 		#endregion

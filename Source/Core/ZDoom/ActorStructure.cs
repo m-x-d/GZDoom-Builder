@@ -37,21 +37,21 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Variables
 		
 		// Declaration
-		private string classname;
-		private string inheritclass;
-		private string replaceclass;
-		private int doomednum = -1;
+		private readonly string classname;
+		private readonly string inheritclass;
+		private readonly string replaceclass;
+		private readonly int doomednum = -1;
 		
 		// Inheriting
 		private ActorStructure baseclass;
-		private bool skipsuper;
+		private readonly bool skipsuper;
 		
 		// Flags
 		private Dictionary<string, bool> flags;
 		
 		// Properties
 		private Dictionary<string, List<string>> props;
-		private List<string> userVars; //mxd
+		private readonly List<string> userVars; //mxd
 		
 		// States
 		private Dictionary<string, StateStructure> states;
@@ -382,15 +382,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			//mxd. Check if baseclass is valid
-			if(inheritclass != "actor" && doomednum > -1 && baseclass == null) 
+			if(inheritclass.ToLowerInvariant() != "actor" && doomednum > -1 && baseclass == null) 
 			{
 				//check if this class inherits from a class defined in game configuration
 				Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
-				inheritclass = inheritclass.ToLowerInvariant();
+				string inheritclasscheck = inheritclass.ToLowerInvariant();
 
 				foreach(KeyValuePair<int, ThingTypeInfo> ti in things) 
 				{
-					if(ti.Value.ClassName == inheritclass) 
+					if(!string.IsNullOrEmpty(ti.Value.ClassName) && ti.Value.ClassName.ToLowerInvariant() == inheritclasscheck) 
 					{
 						//states
 						if(states.Count == 0 && !string.IsNullOrEmpty(ti.Value.Sprite))

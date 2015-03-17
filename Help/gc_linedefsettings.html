@@ -18,7 +18,8 @@
 	
 	<div id="contents">
 	<p>
-		<b class="fat">generalizedlinedefs</b> (boolean)<br />
+	  <span class="big">General settings:</span><br /><br />
+    <b class="fat">generalizedlinedefs</b> (boolean)<br />
 		Set to <b>true</b> to support generalized linedef actions. This makes the <b>gen_linedeftypes</b> structure mandatory. Default value is <b>false</b>.<br />
 		<br />
 		<b class="fat">linedefflags</b> (structure)<br />
@@ -95,8 +96,30 @@ linedefflagstranslation
 </pre>
 		<br />
 
-
-		
+<span class="big">Linedef definitions:</span><br /><br />
+<b class="fat">default</b> (integer) - <span class="red">GZDB only</span>.<br />	
+Sets the default value for a Thing or Linedef argument definition.<br />
+<strong>Example:</strong>
+<pre>9038
+{
+    title = "ColorSetter";
+    arg0
+    {
+        title = "Red";
+        <span class="blue">default = 255;</span>
+    }
+}</pre>
+<br />
+<b class="fat">requiresactivation</b> (boolean) - <span class="red">GZDB only</span>.<br />	
+this linedef action requires activation flag(s). When this property is set to true, a warning will be shown when a user selects this linedef action and no activation flags are set.<br />	 
+The default value is <strong>true</strong>.<br /> 
+<strong>Example:</strong>
+<pre>1
+{
+    title = "Polyobj Start Line";
+    <span class="blue">requiresactivation = false;</span>
+} 
+</pre>	
 	</p>
 	</div>
 </body>

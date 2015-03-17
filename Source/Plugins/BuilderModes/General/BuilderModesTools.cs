@@ -7,11 +7,14 @@ using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.VisualModes;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
+	#region ================== Structs
+
 	// A struct, which contains information about visual sides connected to start and end of given visual side
 	internal class SortedVisualSide
 	{
@@ -103,7 +106,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Side.OnTextureFit(options);
 		}
 	}
-	
+
+	#endregion
+
 	internal static class BuilderModesTools
 	{
 		#region ================== Sidedef
@@ -355,6 +360,96 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(!processed.ContainsKey(pair.Key.Index)) 
 					ApplyHorizontalOffset(pair.Key, side, false, processed);
+			}
+		}
+
+		#endregion
+
+		#region ================== Things
+
+		internal static float GetHigherThingZ(SectorData sd, Vector3D pos, float thingheight, bool absolute, bool hangs) 
+		{
+			if(absolute && hangs)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Sorry, can't have both 'absolute' and 'hangs' flags...");
+				return pos.z;
+			}
+			
+			float fz = (absolute ? 0 : sd.Floor.plane.GetZ(pos));
+			float cz = sd.Ceiling.plane.GetZ(pos);
+			
+			if(hangs)
+			{
+				// Transform to floor-aligned position
+				Vector3D floorpos = new Vector3D(pos, (cz - fz) - pos.z - thingheight);
+				
+				// Unlike sd.ExtraFloors, these are sorted by height
+				foreach (SectorLevel level in sd.LightLevels)
+				{
+					if(level.type == SectorLevelType.Light) continue; // Skip lights
+					float z = level.plane.GetZ(floorpos) - fz;
+					if(level.type == SectorLevelType.Ceiling) z -= thingheight;
+					if(z > floorpos.z) return cz - fz - z - thingheight; // Transform back to ceiling-aligned position
+				}
+
+				return 0; // Align to real ceiling
+			}
+			else
+			{
+				// Unlike sd.ExtraFloors, these are sorted by height
+				foreach(SectorLevel level in sd.LightLevels) 
+				{
+					if(level.type == SectorLevelType.Light) continue; // Skip lights
+					float z = level.plane.GetZ(pos) - fz;
+					if(level.type == SectorLevelType.Ceiling) z -= thingheight;
+					if(z > pos.z) return z;
+				}
+
+				return cz - fz - thingheight; // Align to real ceiling
+			}
+		}
+
+		internal static float GetLowerThingZ(SectorData sd, Vector3D pos, float thingheight, bool absolute, bool hangs) 
+		{
+			if(absolute && hangs)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Sorry, can't have both 'absolute' and 'hangs' flags...");
+				return pos.z;
+			}
+
+			float fz = (absolute ? 0 : sd.Floor.plane.GetZ(pos));
+			float cz = sd.Ceiling.plane.GetZ(pos);
+
+			if(hangs) 
+			{
+				// Transform to floor-aligned position
+				Vector3D floorpos = new Vector3D(pos, (cz - fz) - pos.z - thingheight);
+
+				// Unlike sd.ExtraFloors, these are sorted by height
+				for(int i = sd.LightLevels.Count - 1; i > -1; i--)
+				{
+					SectorLevel level = sd.LightLevels[i];
+					if(level.type == SectorLevelType.Light) continue; // Skip lights
+					float z = level.plane.GetZ(floorpos) - fz;
+					if(level.type == SectorLevelType.Ceiling) z -= thingheight;
+					if(z < floorpos.z) return cz - fz - z - thingheight; // Transform back to ceiling-aligned position
+				}
+
+				return cz - fz - thingheight; // Align to real floor
+			} 
+			else 
+			{
+				// Unlike sd.ExtraFloors, these are sorted by height
+				for(int i = sd.LightLevels.Count - 1; i > -1; i--)
+				{
+					SectorLevel level = sd.LightLevels[i];
+					if(level.type == SectorLevelType.Light) continue; // Skip lights
+					float z = level.plane.GetZ(pos) - fz;
+					if(level.type == SectorLevelType.Ceiling) z -= thingheight;
+					if(z < pos.z) return z;
+				}
+
+				return (absolute ? sd.Floor.plane.GetZ(pos) : 0); // Align to real floor
 			}
 		}
 
