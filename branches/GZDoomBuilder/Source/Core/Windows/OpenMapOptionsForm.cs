@@ -180,6 +180,14 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 			
+			//mxd. Bail out if still no dice...
+			if(config.SelectedIndex == -1)
+			{
+				this.Visible = false;
+				General.ShowWarningMessage("Unable to find maps using any game configuration.\nDoes this wad contain any maps at all?..", MessageBoxButtons.OK);
+				cancel_Click(this, EventArgs.Empty);
+			}
+
 			// Done
 			Cursor.Current = Cursors.Default;
 		}
@@ -353,7 +361,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Update long texture names checkbox (mxd)
 			longtexturenames.Enabled = cfg.ReadSetting("longtexturenames", false);
-			longtexturenames.Checked = longtexturenames.Enabled && options.UseLongTextureNames;
+			longtexturenames.Checked = (longtexturenames.Enabled && options != null && options.UseLongTextureNames);
 		}
 		
 		// OK clicked
