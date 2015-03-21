@@ -111,11 +111,8 @@ namespace CodeImp.DoomBuilder.Windows
 				item.ImageIndex = 2 + ts.Location.type;
 				item.SelectedImageIndex = item.ImageIndex;
 
-				if (ts.Location.type != DataLocation.RESOURCE_WAD) 
-				{
-					CreateNodes(item);
-					item.Expand();
-				}
+				CreateNodes(item);
+				item.Expand();
 			}
 
 			//mxd. Add "All" texture set
@@ -293,7 +290,7 @@ namespace CodeImp.DoomBuilder.Windows
 				TreeNode curNode = root;
 
 				if (parts.Length == 1) continue;
-				int localindex = parts[0] == "[TEXTURES]" ? 7 : imageIndex;
+				int localindex = (parts[0] == "[TEXTURES]" ? 7 : imageIndex);
 
 				for (int i = 0; i < parts.Length - 1; i++) 
 				{
