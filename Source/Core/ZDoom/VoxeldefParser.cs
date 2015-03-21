@@ -36,19 +36,13 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 					if(token == ",") //previous token was a sprite name
 					{ 
-						if(!string.IsNullOrEmpty(prevToken)) 
-						{
-							if(!spriteNames.Contains(prevToken)) spriteNames.Add(prevToken);
-						}
+						if(!string.IsNullOrEmpty(prevToken) && !spriteNames.Contains(prevToken)) spriteNames.Add(prevToken);
 						prevToken = token.ToUpperInvariant();
 
 					} 
 					else if(token == "=") //next token should be a voxel model name
 					{ 
-						if(!string.IsNullOrEmpty(prevToken)) 
-						{
-							if(!spriteNames.Contains(prevToken)) spriteNames.Add(prevToken);
-						}
+						if(!string.IsNullOrEmpty(prevToken) && !spriteNames.Contains(prevToken)) spriteNames.Add(prevToken);
 
 						SkipWhitespace(true);
 						token = ReadToken();

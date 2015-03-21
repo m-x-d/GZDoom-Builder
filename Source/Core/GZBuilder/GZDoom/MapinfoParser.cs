@@ -41,22 +41,22 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 		//returns true if parsing is finished
 		private bool ParseBlock(string token, string mapName) 
 		{
-			string curBlockName;
 			if (token == "map" || token == "defaultmap" || token == "adddefaultmap") 
 			{
-				curBlockName = token;
-				if (token == "map") //check map name
-				{ 
-					//get map name
-					SkipWhitespace(true);
-					token = ReadToken().ToLowerInvariant();
-
-					if (token != mapName) return false; //not finished, search for next "map", "defaultmap" or "adddefaultmap" block
-				} 
-				else if (token == "defaultmap") 
+				string curBlockName = token;
+				switch(token)
 				{
-					//reset MapInfo
-					mapInfo = new MapInfo();
+					case "map":
+						//get map name
+						SkipWhitespace(true);
+						token = ReadToken().ToLowerInvariant();
+						if (token != mapName) return false; //not finished, search for next "map", "defaultmap" or "adddefaultmap" block
+						break;
+
+					case "defaultmap":
+						//reset MapInfo
+						mapInfo = new MapInfo();
+						break;
 				}
 
 				//search for required keys
