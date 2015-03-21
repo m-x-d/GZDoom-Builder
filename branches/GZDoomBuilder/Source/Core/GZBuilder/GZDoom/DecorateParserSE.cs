@@ -8,7 +8,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 {
 	internal sealed class DecorateParserSE : ZDTextParser
 	{
-		private List<ScriptItem> actors;
+		private readonly List<ScriptItem> actors;
 		public List<ScriptItem> Actors { get { return actors; } }
 
 		public DecorateParserSE() 
@@ -36,11 +36,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 						List<string> definition = new List<string>();
 
-						while ((token = ReadToken()) != "{") 
+						do
 						{
+							token = ReadToken();
+							if(string.IsNullOrEmpty(token) || token == "{") break;
 							definition.Add(token);
-							SkipWhitespace(true);
-						}
+						} while(SkipWhitespace(true));
 
 						string name = "";
 						foreach (string s in definition) name += s + " ";

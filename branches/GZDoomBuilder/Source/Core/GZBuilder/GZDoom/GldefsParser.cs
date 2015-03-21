@@ -14,13 +14,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		public delegate void IncludeDelegate(GldefsParser parser, string includefile);
 		public IncludeDelegate OnInclude;
 
-		private Dictionary<string, DynamicLightData> lightsByName; //LightName, light definition
-		private Dictionary<string, string> objects; //ClassName, LightName
+		private readonly Dictionary<string, DynamicLightData> lightsByName; //LightName, light definition
+		private readonly Dictionary<string, string> objects; //ClassName, LightName
 
 		public Dictionary<string, DynamicLightData> LightsByName { get { return lightsByName; } }
 		public Dictionary<string, string> Objects { get { return objects; } }
 
-		private List<string> parsedLumps;
+		private readonly List<string> parsedLumps;
 
 		private struct GldefsLightType 
 		{
@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			public const string FLICKER2 = "flickerlight2";
 			public const string SECTOR = "sectorlight";
 
-			public static Dictionary<string, DynamicLightType> GLDEFS_TO_GZDOOM_LIGHT_TYPE = new Dictionary<string, DynamicLightType>(StringComparer.Ordinal) { { POINT, DynamicLightType.NORMAL }, { PULSE, DynamicLightType.PULSE }, { FLICKER, DynamicLightType.FLICKER }, { FLICKER2, DynamicLightType.RANDOM }, { SECTOR, DynamicLightType.SECTOR } };
+			public static readonly Dictionary<string, DynamicLightType> GLDEFS_TO_GZDOOM_LIGHT_TYPE = new Dictionary<string, DynamicLightType>(StringComparer.Ordinal) { { POINT, DynamicLightType.NORMAL }, { PULSE, DynamicLightType.PULSE }, { FLICKER, DynamicLightType.FLICKER }, { FLICKER2, DynamicLightType.RANDOM }, { SECTOR, DynamicLightType.SECTOR } };
 		}
 
 		public GldefsParser() 

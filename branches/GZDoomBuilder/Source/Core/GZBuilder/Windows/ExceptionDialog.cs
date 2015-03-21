@@ -114,6 +114,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 								  "It's CRASHENING!",
 								  "W-W-W-WIPEOUT!",
 								  "EVERYTHING IS LOST!",
+                                  "Your empty is full!",
+                                  "Let's see how far this infinite loop goes...",
 							  };
 			this.Text = titles[new Random().Next(0, titles.Length - 1)];
 		}

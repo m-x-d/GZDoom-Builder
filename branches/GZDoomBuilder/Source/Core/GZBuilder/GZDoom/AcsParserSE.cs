@@ -94,14 +94,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								//now find opening brace
 								do 
 								{
-									SkipWhitespace(true);
+									if(!SkipWhitespace(true)) break;
 									token = ReadToken();
-								} while (token != "{");
+								} while (!string.IsNullOrEmpty(token) && token != "{");
 
 								token = ReadLine();
 								string name = "";
 
-								if (token.Length > 0) 
+								if (!string.IsNullOrEmpty(token))
 								{
 									int commentStart = token.IndexOf("//");
 									if (commentStart != -1) //found comment
@@ -141,10 +141,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						{
 							do 
 							{
-								SkipWhitespace(true);
+								if(!SkipWhitespace(true)) break;
 								token = ReadToken();
 								funcname += " " + token;
-							} while(!token.Contains(")"));
+							} while(!string.IsNullOrEmpty(token) && !token.Contains(")"));
 						}
 
 						ScriptItem i = new ScriptItem(0, funcname, startPos, isinclude);
