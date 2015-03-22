@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Initialize
 			SetName(name);
+			virtualname = "[Colormaps]/" + this.name; //mxd
 
 			// We have no destructor
 			GC.SuppressFinalize(this);

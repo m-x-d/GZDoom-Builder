@@ -298,7 +298,7 @@ namespace CodeImp.DoomBuilder.Controls
 				ListViewItem selected = list.SelectedItems[0];
 
 				//mxd
-				foreach(ListViewItem n in visibleitems) 
+				foreach(ImageBrowserItem n in visibleitems) 
 				{
 					if(n == selected) continue;
 					if(n.Text == selected.Text) 
@@ -497,17 +497,17 @@ namespace CodeImp.DoomBuilder.Controls
 			int h = filterHeight.GetResult(-1);
 			
 			// Go for all items
-			string prevname = string.Empty; //mxd
+			ImageBrowserItem previtem = null; //mxd
 			for(int i = items.Count - 1; i > -1; i--)
 			{
 				// Add item if valid
 				items[i].ShowFullName = uselongtexturenames; //mxd
-				if(ValidateItem(items[i], prevname) && ValidateItemSize(items[i], w, h)) 
+				if(ValidateItem(items[i], previtem) && ValidateItemSize(items[i], w, h)) 
 				{
 					items[i].Group = items[i].ListGroup;
 					items[i].Selected = false;
 					visibleitems.Add(items[i]);
-					prevname = items[i].TextureName;
+					previtem = items[i];
 				}
 			}
 			
@@ -544,20 +544,20 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This validates an item
-		private bool ValidateItem(ImageBrowserItem i, string previtemname)
+		private bool ValidateItem(ImageBrowserItem item, ImageBrowserItem previtem)
 		{
 			//mxd. Don't show duplicate items
-			if(i.TextureName == previtemname) return false; //mxd
+			if(previtem != null && item.TextureName == previtem.TextureName && item.Group == previtem.Group) return false; //mxd
 			
 			//mxd. mixMode: 0 = All, 1 = Textures, 2 = Flats, 3 = Based on BrowseFlats
 			if(!splitter.Panel2Collapsed) 
 			{
-				if(mixMode == 1 && i.Icon.IsFlat) return false;
-				if(mixMode == 2 && !i.Icon.IsFlat) return false;
-				if(mixMode == 3 && (browseFlats != i.Icon.IsFlat)) return false;
+				if(mixMode == 1 && item.Icon.IsFlat) return false;
+				if(mixMode == 2 && !item.Icon.IsFlat) return false;
+				if(mixMode == 3 && (browseFlats != item.Icon.IsFlat)) return false;
 			}
 
-			return i.Text.ToUpperInvariant().Contains(objectname.Text.ToUpperInvariant());
+			return item.Text.ToUpperInvariant().Contains(objectname.Text.ToUpperInvariant());
 		}
 
 		//mxd. This validates an item's texture size

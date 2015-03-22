@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Initialize
 			SetName(name);
+			virtualname = "[Flats]/" + this.name; //mxd
 			isFlat = true; //mxd
 			
 			// We have no destructor

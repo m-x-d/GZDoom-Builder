@@ -488,7 +488,7 @@ namespace CodeImp.DoomBuilder.Data
 					if(texname.Length > 0)
 					{
 						// Make the image object
-						image = new TextureImage(Lump.MakeNormalName(namebytes, WAD.ENCODING),
+						image = new TextureImage(sourcename, Lump.MakeNormalName(namebytes, WAD.ENCODING),
 												 width, height, scalex, scaley);
 					}
 					else
