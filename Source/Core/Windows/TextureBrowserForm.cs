@@ -268,7 +268,7 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
-			int imageIndex = set.Location.type + 4;
+			int imageIndex = set.Location.type + 5;
 			char[] separator = new[] { Path.AltDirectorySeparatorChar };
 			
 			ImageData[] images;
@@ -290,7 +290,7 @@ namespace CodeImp.DoomBuilder.Windows
 				TreeNode curNode = root;
 
 				if (parts.Length == 1) continue;
-				int localindex = (parts[0] == "[TEXTURES]" ? 7 : imageIndex);
+				int localindex = (parts[0] == "[TEXTURES]" ? 8 : imageIndex);
 
 				for (int i = 0; i < parts.Length - 1; i++) 
 				{

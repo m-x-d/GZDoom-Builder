@@ -46,6 +46,7 @@ namespace CodeImp.DoomBuilder.Data
 			this.scale.y = scaley;
 			this.lumpname = lumpname;
 			SetName(name);
+			virtualname = "[Textures]/" + this.name; //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

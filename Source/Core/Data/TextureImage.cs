@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public TextureImage(string name, int width, int height, float scalex, float scaley)
+		public TextureImage(string group, string name, int width, int height, float scalex, float scaley)
 		{
 			// Initialize
 			this.width = width;
@@ -48,6 +48,7 @@ namespace CodeImp.DoomBuilder.Data
 			this.scale.y = scaley;
 			this.patches = new List<TexturePatch>();
 			SetName(name);
+			virtualname = "[" + group + "]/" + this.name; //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
