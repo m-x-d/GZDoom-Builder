@@ -200,9 +200,7 @@ namespace CodeImp.DoomBuilder.Controls
 			flagsPanel.Visible = (flags.Items.Count > 0);
 			if(flags.Items.Count > 0) 
 			{
-				int itemWidth = flags.Items[0].GetBounds(ItemBoundsPortion.Entire).Width;
-				if(itemWidth == 0) itemWidth = 96;
-				flags.Width = itemWidth * (int)Math.Ceiling(flags.Items.Count / 5.0f);
+				flags.Width = flags.GetItemRect(0).Width * (int)Math.Ceiling(flags.Items.Count / 5.0f);
 				flagsPanel.Width = flags.Width + flags.Left * 2;
 			}
 
