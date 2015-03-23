@@ -2083,7 +2083,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void toolbarContextMenu_Closing(object sender, ToolStripDropDownClosingEventArgs e) 
 		{
-			e.Cancel = toolbarContextMenuShiftPressed;
+			e.Cancel = (e.CloseReason == ToolStripDropDownCloseReason.ItemClicked && toolbarContextMenuShiftPressed);
 		}
 
 		private void toolbarContextMenu_KeyDown(object sender, KeyEventArgs e) 

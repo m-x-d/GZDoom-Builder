@@ -1056,7 +1056,23 @@ namespace CodeImp.DoomBuilder
 					
 					// Create map manager with given options
 					map = new MapManager();
-					if(!map.InitializeNewMap(newoptions))
+					if(map.InitializeNewMap(newoptions))
+					{
+						settings.FindDefaultDrawSettings(); //mxd
+
+						// Let the plugins know
+						plugins.OnMapNewEnd();
+
+						// All done
+						mainwindow.SetupInterface();
+						mainwindow.RedrawDisplay();
+						mainwindow.UpdateThingsFilters();
+						mainwindow.UpdateInterface();
+						mainwindow.AddHintsDocker(); //mxd
+						mainwindow.UpdateGZDoomPanel(); //mxd
+						mainwindow.HideInfo(); //mxd
+					}
+					else
 					{
 						// Unable to create map manager
 						map.Dispose();
@@ -1065,20 +1081,6 @@ namespace CodeImp.DoomBuilder
 						// Show splash logo on display
 						mainwindow.ShowSplashDisplay();
 					}
-
-					settings.FindDefaultDrawSettings(); //mxd
-
-					// Let the plugins know
-					plugins.OnMapNewEnd();
-
-					// All done
-					mainwindow.SetupInterface();
-					mainwindow.RedrawDisplay();
-					mainwindow.UpdateThingsFilters();
-					mainwindow.UpdateInterface();
-					mainwindow.AddHintsDocker(); //mxd
-					mainwindow.UpdateGZDoomPanel(); //mxd
-					mainwindow.HideInfo(); //mxd
 
 					if(errorlogger.IsErrorAdded)
 					{

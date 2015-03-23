@@ -1,6 +1,7 @@
 ﻿#region ================== Namespaces
 
 using System;
+using System.Globalization;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
@@ -40,6 +41,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public bool AllowDecimal { get { return value1.AllowDecimal; } set { value1.AllowDecimal = value; value2.AllowDecimal = value; } }
 		public int ButtonStep { get { return value1.ButtonStep; } set { value1.ButtonStep = value; value2.ButtonStep = value; } }
 		public float ButtonStepFloat { get { return value1.ButtonStepFloat; } set { value1.ButtonStepFloat = value; value2.ButtonStepFloat = value; } }
+		public float ButtonStepBig { get { return value1.ButtonStepBig; } set { value1.ButtonStepBig = value; value2.ButtonStepBig = value; } }
+		public float ButtonStepSmall { get { return value1.ButtonStepSmall; } set { value1.ButtonStepSmall = value; value2.ButtonStepSmall = value; } }
+		public bool ButtonStepsUseModifierKeys { get { return value1.ButtonStepsUseModifierKeys; } set { value1.ButtonStepsUseModifierKeys = value; value2.ButtonStepsUseModifierKeys = value; } }
 		public bool AllowValueLinking { get { return allowValueLinking; } set { allowValueLinking = value; UpdateButtons(); } }
 		public bool LinkValues { get { return linkValues; } set { linkValues = value; UpdateButtons(); } }
 
@@ -66,16 +70,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			if(AllowDecimal) 
 			{
-				float val1 = UDMFTools.GetFloat(fields, field1, defaultValue);
-				newValue1 = (val1 == Math.Round(val1) ? val1.ToString("0.0") : val1.ToString());
-
-				float val2 = UDMFTools.GetFloat(fields, field2, defaultValue);
-				newValue2 = (val2 == Math.Round(val2) ? val2.ToString("0.0") : val2.ToString());
+				newValue1 = ((float)Math.Round(UDMFTools.GetFloat(fields, field1, defaultValue), 2)).ToString();
+				newValue2 = ((float)Math.Round(UDMFTools.GetFloat(fields, field2, defaultValue), 2)).ToString();
 			} 
 			else 
 			{
-				newValue1 = UDMFTools.GetFloat(fields, field1, defaultValue).ToString();
-				newValue2 = UDMFTools.GetFloat(fields, field2, defaultValue).ToString();
+				newValue1 = ((float)Math.Round(UDMFTools.GetFloat(fields, field1, defaultValue))).ToString();
+				newValue2 = ((float)Math.Round(UDMFTools.GetFloat(fields, field2, defaultValue))).ToString();
 			}
 
 			if(first) 
@@ -142,9 +143,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		private void bReset_Click(object sender, EventArgs e) 
 		{
-			string newValue = value1.AllowDecimal ? String.Format("{0:0.0}", defaultValue) : defaultValue.ToString();
-			value1.Text = newValue;
-			value2.Text = newValue;
+			value1.Text = defaultValue.ToString(CultureInfo.CurrentCulture);
+			value2.Text = defaultValue.ToString(CultureInfo.CurrentCulture);
 			CheckValues();
 		}
 
