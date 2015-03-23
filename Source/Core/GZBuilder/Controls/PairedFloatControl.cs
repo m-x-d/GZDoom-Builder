@@ -27,6 +27,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public bool NonDefaultValue { get { return changed; } }
         public float DefaultValue { get { return defaultValue; } set { defaultValue = value; } }
         public float ButtonStep { get { return value1.ButtonStepFloat; } set { value1.ButtonStepFloat = value; value2.ButtonStepFloat = value; } }
+		public float ButtonStepBig { get { return value1.ButtonStepBig; } set { value1.ButtonStepBig = value; value2.ButtonStepBig = value; } }
+		public float ButtonStepSmall { get { return value1.ButtonStepSmall; } set { value1.ButtonStepSmall = value; value2.ButtonStepSmall = value; } }
+		public bool ButtonStepsUseModifierKeys { get { return value1.ButtonStepsUseModifierKeys; } set { value1.ButtonStepsUseModifierKeys = value; value2.ButtonStepsUseModifierKeys = value; } }
 
         #endregion
         
@@ -41,15 +44,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
             if (first) 
 			{
-                value1.Text = val1.ToString(CultureInfo.InvariantCulture);
-                value2.Text = val2.ToString(CultureInfo.InvariantCulture);
+                value1.Text = val1.ToString(CultureInfo.CurrentCulture);
+				value2.Text = val2.ToString(CultureInfo.CurrentCulture);
             } 
 			else 
 			{
-                if (!string.IsNullOrEmpty(value1.Text) && value1.Text != val1.ToString(CultureInfo.InvariantCulture))
+				if(!string.IsNullOrEmpty(value1.Text) && value1.Text != val1.ToString(CultureInfo.CurrentCulture))
                     value1.Text = string.Empty;
 
-                if (!string.IsNullOrEmpty(value2.Text) && value2.Text != val2.ToString(CultureInfo.InvariantCulture))
+				if(!string.IsNullOrEmpty(value2.Text) && value2.Text != val2.ToString(CultureInfo.CurrentCulture))
                     value2.Text = string.Empty;
             }
 
@@ -79,7 +82,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
         private void bReset_Click(object sender, EventArgs e)
         {
-            string newValue = String.Format("{0:0.0}", defaultValue);
+	        string newValue = defaultValue.ToString(CultureInfo.CurrentCulture);
             value1.Text = newValue;
             value2.Text = newValue;
             CheckValues();

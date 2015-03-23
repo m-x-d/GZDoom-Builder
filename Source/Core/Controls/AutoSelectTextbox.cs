@@ -79,6 +79,14 @@ namespace CodeImp.DoomBuilder.Controls
 			base.OnKeyDown(e);
 			eventcount++;
 		}
+
+		//mxd
+		new public bool Focus()
+		{
+			bool result = base.Focus();
+			this.Select(0, 0);
+			return result;
+		}
 		
 		#endregion
 	}
