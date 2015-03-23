@@ -1387,19 +1387,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("makedoor")]
 		public void MakeDoor()
 		{
-			// Highlighted item not selected?
-			if((highlighted != null) && !highlighted.Selected)
-			{
-				// Make this the only selection
-				General.Map.Map.ClearSelectedSectors();
-				General.Map.Map.ClearSelectedLinedefs();
-				SelectSector(highlighted, true, false);
-				UpdateOverlaySurfaces();//mxd
-				General.Interface.RedrawDisplay();
-			}
-			
 			// Anything selected?
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
+			
+			//mxd. Should we use highlighted item?
+			if(orderedselection.Count == 0 && highlighted != null)
+			{
+				orderedselection.Add(highlighted);
+			}
+			
 			if(orderedselection.Count > 0)
 			{
 				if(doortex == "-") doortex = General.Map.Config.MakeDoorDoor; //mxd
@@ -1514,13 +1510,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 					
 					// When a single sector was selected, deselect it now
-					if(orderedselection.Count == 1)
-					{
-						orderedselection.Clear();
-						General.Map.Map.ClearSelectedSectors();
-						General.Map.Map.ClearSelectedLinedefs();
-						UpdateOverlaySurfaces();//mxd
-					}
+					if(orderedselection.Count == 1) ClearSelection(); //mxd
+
+					General.Map.Data.UpdateUsedTextures(); //mxd
 				}
 				
 				// Done
@@ -1529,7 +1521,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else //mxd
 			{
-				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection!");
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 			}
 		}
 		
