@@ -213,7 +213,10 @@
 			this.brightness.AllowNegative = false;
 			this.brightness.AllowRelative = true;
 			this.brightness.ButtonStep = 8;
+			this.brightness.ButtonStepBig = 16F;
 			this.brightness.ButtonStepFloat = 1F;
+			this.brightness.ButtonStepSmall = 1F;
+			this.brightness.ButtonStepsUseModifierKeys = true;
 			this.brightness.ButtonStepsWrapAround = false;
 			this.brightness.Location = new System.Drawing.Point(125, 84);
 			this.brightness.Name = "brightness";
@@ -228,7 +231,10 @@
 			this.desaturation.AllowNegative = false;
 			this.desaturation.AllowRelative = false;
 			this.desaturation.ButtonStep = 1;
+			this.desaturation.ButtonStepBig = 0.25F;
 			this.desaturation.ButtonStepFloat = 0.1F;
+			this.desaturation.ButtonStepSmall = 0.01F;
+			this.desaturation.ButtonStepsUseModifierKeys = true;
 			this.desaturation.ButtonStepsWrapAround = false;
 			this.desaturation.Location = new System.Drawing.Point(125, 142);
 			this.desaturation.Name = "desaturation";
@@ -278,7 +284,10 @@
 			this.gravity.AllowNegative = true;
 			this.gravity.AllowRelative = true;
 			this.gravity.ButtonStep = 1;
+			this.gravity.ButtonStepBig = 1F;
 			this.gravity.ButtonStepFloat = 0.1F;
+			this.gravity.ButtonStepSmall = 0.01F;
+			this.gravity.ButtonStepsUseModifierKeys = true;
 			this.gravity.ButtonStepsWrapAround = false;
 			this.gravity.Location = new System.Drawing.Point(125, 112);
 			this.gravity.Name = "gravity";
@@ -383,7 +392,10 @@
 			this.heightoffset.AllowNegative = true;
 			this.heightoffset.AllowRelative = false;
 			this.heightoffset.ButtonStep = 8;
+			this.heightoffset.ButtonStepBig = 16F;
 			this.heightoffset.ButtonStepFloat = 1F;
+			this.heightoffset.ButtonStepSmall = 1F;
+			this.heightoffset.ButtonStepsUseModifierKeys = true;
 			this.heightoffset.ButtonStepsWrapAround = false;
 			this.heightoffset.Location = new System.Drawing.Point(89, 79);
 			this.heightoffset.Name = "heightoffset";
@@ -398,7 +410,10 @@
 			this.ceilingheight.AllowNegative = true;
 			this.ceilingheight.AllowRelative = true;
 			this.ceilingheight.ButtonStep = 8;
+			this.ceilingheight.ButtonStepBig = 16F;
 			this.ceilingheight.ButtonStepFloat = 1F;
+			this.ceilingheight.ButtonStepSmall = 1F;
+			this.ceilingheight.ButtonStepsUseModifierKeys = true;
 			this.ceilingheight.ButtonStepsWrapAround = false;
 			this.ceilingheight.Location = new System.Drawing.Point(89, 19);
 			this.ceilingheight.Name = "ceilingheight";
@@ -431,7 +446,10 @@
 			this.floorheight.AllowNegative = true;
 			this.floorheight.AllowRelative = true;
 			this.floorheight.ButtonStep = 8;
+			this.floorheight.ButtonStepBig = 16F;
 			this.floorheight.ButtonStepFloat = 1F;
+			this.floorheight.ButtonStepSmall = 1F;
+			this.floorheight.ButtonStepsUseModifierKeys = true;
 			this.floorheight.ButtonStepsWrapAround = false;
 			this.floorheight.Location = new System.Drawing.Point(89, 49);
 			this.floorheight.Name = "floorheight";
@@ -566,7 +584,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = 0;
+			this.floorAngleControl.Angle = -270;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
@@ -600,7 +618,10 @@
 			this.floorAlpha.AllowNegative = false;
 			this.floorAlpha.AllowRelative = false;
 			this.floorAlpha.ButtonStep = 1;
+			this.floorAlpha.ButtonStepBig = 0.25F;
 			this.floorAlpha.ButtonStepFloat = 0.1F;
+			this.floorAlpha.ButtonStepSmall = 0.01F;
+			this.floorAlpha.ButtonStepsUseModifierKeys = true;
 			this.floorAlpha.ButtonStepsWrapAround = false;
 			this.floorAlpha.Location = new System.Drawing.Point(113, 173);
 			this.floorAlpha.Name = "floorAlpha";
@@ -625,7 +646,10 @@
 			this.floorRotation.AllowNegative = true;
 			this.floorRotation.AllowRelative = true;
 			this.floorRotation.ButtonStep = 5;
+			this.floorRotation.ButtonStepBig = 15F;
 			this.floorRotation.ButtonStepFloat = 1F;
+			this.floorRotation.ButtonStepSmall = 0.1F;
+			this.floorRotation.ButtonStepsUseModifierKeys = true;
 			this.floorRotation.ButtonStepsWrapAround = false;
 			this.floorRotation.Location = new System.Drawing.Point(113, 143);
 			this.floorRotation.Name = "floorRotation";
@@ -662,7 +686,10 @@
 			this.floorBrightness.AllowNegative = true;
 			this.floorBrightness.AllowRelative = true;
 			this.floorBrightness.ButtonStep = 16;
+			this.floorBrightness.ButtonStepBig = 32F;
 			this.floorBrightness.ButtonStepFloat = 1F;
+			this.floorBrightness.ButtonStepSmall = 1F;
+			this.floorBrightness.ButtonStepsUseModifierKeys = true;
 			this.floorBrightness.ButtonStepsWrapAround = false;
 			this.floorBrightness.Location = new System.Drawing.Point(113, 113);
 			this.floorBrightness.Name = "floorBrightness";
@@ -686,7 +713,10 @@
 			this.floorScale.AllowDecimal = true;
 			this.floorScale.AllowValueLinking = true;
 			this.floorScale.ButtonStep = 1;
+			this.floorScale.ButtonStepBig = 1F;
 			this.floorScale.ButtonStepFloat = 0.1F;
+			this.floorScale.ButtonStepSmall = 0.01F;
+			this.floorScale.ButtonStepsUseModifierKeys = true;
 			this.floorScale.DefaultValue = 1F;
 			this.floorScale.Field1 = "xscalefloor";
 			this.floorScale.Field2 = "yscalefloor";
@@ -702,7 +732,10 @@
 			this.floorOffsets.AllowDecimal = true;
 			this.floorOffsets.AllowValueLinking = false;
 			this.floorOffsets.ButtonStep = 1;
+			this.floorOffsets.ButtonStepBig = 32F;
 			this.floorOffsets.ButtonStepFloat = 16F;
+			this.floorOffsets.ButtonStepSmall = 1F;
+			this.floorOffsets.ButtonStepsUseModifierKeys = true;
 			this.floorOffsets.DefaultValue = 0F;
 			this.floorOffsets.Field1 = "xpanningfloor";
 			this.floorOffsets.Field2 = "ypanningfloor";
@@ -785,7 +818,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = 0;
+			this.ceilAngleControl.Angle = -270;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
@@ -819,7 +852,10 @@
 			this.ceilAlpha.AllowNegative = false;
 			this.ceilAlpha.AllowRelative = false;
 			this.ceilAlpha.ButtonStep = 1;
+			this.ceilAlpha.ButtonStepBig = 0.25F;
 			this.ceilAlpha.ButtonStepFloat = 0.1F;
+			this.ceilAlpha.ButtonStepSmall = 0.01F;
+			this.ceilAlpha.ButtonStepsUseModifierKeys = true;
 			this.ceilAlpha.ButtonStepsWrapAround = false;
 			this.ceilAlpha.Location = new System.Drawing.Point(113, 173);
 			this.ceilAlpha.Name = "ceilAlpha";
@@ -844,8 +880,11 @@
 			this.ceilRotation.AllowNegative = true;
 			this.ceilRotation.AllowRelative = true;
 			this.ceilRotation.ButtonStep = 5;
+			this.ceilRotation.ButtonStepBig = 15F;
 			this.ceilRotation.ButtonStepFloat = 1F;
-			this.ceilRotation.ButtonStepsWrapAround = false;
+			this.ceilRotation.ButtonStepSmall = 0.1F;
+			this.ceilRotation.ButtonStepsUseModifierKeys = true;
+			this.ceilRotation.ButtonStepsWrapAround = true;
 			this.ceilRotation.Location = new System.Drawing.Point(113, 143);
 			this.ceilRotation.Name = "ceilRotation";
 			this.ceilRotation.Size = new System.Drawing.Size(62, 24);
@@ -882,7 +921,10 @@
 			this.ceilBrightness.AllowNegative = true;
 			this.ceilBrightness.AllowRelative = true;
 			this.ceilBrightness.ButtonStep = 16;
+			this.ceilBrightness.ButtonStepBig = 32F;
 			this.ceilBrightness.ButtonStepFloat = 1F;
+			this.ceilBrightness.ButtonStepSmall = 1F;
+			this.ceilBrightness.ButtonStepsUseModifierKeys = true;
 			this.ceilBrightness.ButtonStepsWrapAround = false;
 			this.ceilBrightness.Location = new System.Drawing.Point(113, 113);
 			this.ceilBrightness.Name = "ceilBrightness";
@@ -906,7 +948,10 @@
 			this.ceilScale.AllowDecimal = true;
 			this.ceilScale.AllowValueLinking = true;
 			this.ceilScale.ButtonStep = 1;
+			this.ceilScale.ButtonStepBig = 1F;
 			this.ceilScale.ButtonStepFloat = 0.1F;
+			this.ceilScale.ButtonStepSmall = 0.01F;
+			this.ceilScale.ButtonStepsUseModifierKeys = true;
 			this.ceilScale.DefaultValue = 1F;
 			this.ceilScale.Field1 = "xscaleceiling";
 			this.ceilScale.Field2 = "yscaleceiling";
@@ -922,7 +967,10 @@
 			this.ceilOffsets.AllowDecimal = true;
 			this.ceilOffsets.AllowValueLinking = false;
 			this.ceilOffsets.ButtonStep = 1;
+			this.ceilOffsets.ButtonStepBig = 32F;
 			this.ceilOffsets.ButtonStepFloat = 16F;
+			this.ceilOffsets.ButtonStepSmall = 1F;
+			this.ceilOffsets.ButtonStepsUseModifierKeys = true;
 			this.ceilOffsets.DefaultValue = 0F;
 			this.ceilOffsets.Field1 = "xpanningceiling";
 			this.ceilOffsets.Field2 = "ypanningceiling";

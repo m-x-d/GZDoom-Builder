@@ -280,6 +280,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptNumbers.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
 			this.scriptNumbers.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
 			this.scriptNumbers.BackColor = System.Drawing.Color.LemonChiffon;
+			this.scriptNumbers.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.scriptNumbers.FormattingEnabled = true;
 			this.scriptNumbers.Location = new System.Drawing.Point(398, 57);
 			this.scriptNumbers.Name = "scriptNumbers";
@@ -500,7 +501,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontsector.AllowNegative = false;
 			this.frontsector.AllowRelative = false;
 			this.frontsector.ButtonStep = 1;
+			this.frontsector.ButtonStepBig = 10F;
 			this.frontsector.ButtonStepFloat = 1F;
+			this.frontsector.ButtonStepSmall = 0.1F;
+			this.frontsector.ButtonStepsUseModifierKeys = false;
 			this.frontsector.ButtonStepsWrapAround = false;
 			this.frontsector.Location = new System.Drawing.Point(90, 35);
 			this.frontsector.Name = "frontsector";
@@ -547,6 +551,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// frontTextureOffset
 			// 
 			this.frontTextureOffset.ButtonStep = 16;
+			this.frontTextureOffset.ButtonStepBig = 32F;
+			this.frontTextureOffset.ButtonStepSmall = 1F;
+			this.frontTextureOffset.ButtonStepsUseModifierKeys = true;
 			this.frontTextureOffset.DefaultValue = 0;
 			this.frontTextureOffset.Location = new System.Drawing.Point(87, 65);
 			this.frontTextureOffset.Name = "frontTextureOffset";
@@ -593,7 +600,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backsector.AllowNegative = false;
 			this.backsector.AllowRelative = false;
 			this.backsector.ButtonStep = 1;
+			this.backsector.ButtonStepBig = 10F;
 			this.backsector.ButtonStepFloat = 1F;
+			this.backsector.ButtonStepSmall = 0.1F;
+			this.backsector.ButtonStepsUseModifierKeys = false;
 			this.backsector.ButtonStepsWrapAround = false;
 			this.backsector.Location = new System.Drawing.Point(90, 35);
 			this.backsector.Name = "backsector";
@@ -640,6 +650,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// backTextureOffset
 			// 
 			this.backTextureOffset.ButtonStep = 16;
+			this.backTextureOffset.ButtonStepBig = 32F;
+			this.backTextureOffset.ButtonStepSmall = 1F;
+			this.backTextureOffset.ButtonStepsUseModifierKeys = true;
 			this.backTextureOffset.DefaultValue = 0;
 			this.backTextureOffset.Location = new System.Drawing.Point(87, 65);
 			this.backTextureOffset.Name = "backTextureOffset";

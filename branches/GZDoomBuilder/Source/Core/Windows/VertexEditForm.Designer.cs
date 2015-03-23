@@ -125,8 +125,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.zceiling.AllowDecimal = false;
 			this.zceiling.AllowNegative = true;
 			this.zceiling.AllowRelative = true;
-			this.zceiling.ButtonStep = 1;
+			this.zceiling.ButtonStep = 8;
+			this.zceiling.ButtonStepBig = 16F;
 			this.zceiling.ButtonStepFloat = 1F;
+			this.zceiling.ButtonStepSmall = 1F;
+			this.zceiling.ButtonStepsUseModifierKeys = true;
 			this.zceiling.ButtonStepsWrapAround = false;
 			this.zceiling.Location = new System.Drawing.Point(188, 0);
 			this.zceiling.Name = "zceiling";
@@ -140,8 +143,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.zfloor.AllowDecimal = false;
 			this.zfloor.AllowNegative = true;
 			this.zfloor.AllowRelative = true;
-			this.zfloor.ButtonStep = 1;
+			this.zfloor.ButtonStep = 8;
+			this.zfloor.ButtonStepBig = 16F;
 			this.zfloor.ButtonStepFloat = 1F;
+			this.zfloor.ButtonStepSmall = 1F;
+			this.zfloor.ButtonStepsUseModifierKeys = true;
 			this.zfloor.ButtonStepsWrapAround = false;
 			this.zfloor.Location = new System.Drawing.Point(188, 32);
 			this.zfloor.Name = "zfloor";
@@ -174,7 +180,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.positiony.AllowNegative = true;
 			this.positiony.AllowRelative = true;
 			this.positiony.ButtonStep = 1;
+			this.positiony.ButtonStepBig = 8F;
 			this.positiony.ButtonStepFloat = 1F;
+			this.positiony.ButtonStepSmall = 1F;
+			this.positiony.ButtonStepsUseModifierKeys = true;
 			this.positiony.ButtonStepsWrapAround = false;
 			this.positiony.Location = new System.Drawing.Point(236, 34);
 			this.positiony.Name = "positiony";
@@ -189,7 +198,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.positionx.AllowNegative = true;
 			this.positionx.AllowRelative = true;
 			this.positionx.ButtonStep = 1;
+			this.positionx.ButtonStepBig = 8F;
 			this.positionx.ButtonStepFloat = 1F;
+			this.positionx.ButtonStepSmall = 1F;
+			this.positionx.ButtonStepsUseModifierKeys = true;
 			this.positionx.ButtonStepsWrapAround = false;
 			this.positionx.Location = new System.Drawing.Point(68, 34);
 			this.positionx.Name = "positionx";

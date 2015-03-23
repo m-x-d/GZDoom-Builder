@@ -214,7 +214,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.heightoffset.AllowNegative = true;
 			this.heightoffset.AllowRelative = false;
 			this.heightoffset.ButtonStep = 8;
+			this.heightoffset.ButtonStepBig = 16F;
 			this.heightoffset.ButtonStepFloat = 1F;
+			this.heightoffset.ButtonStepSmall = 1F;
+			this.heightoffset.ButtonStepsUseModifierKeys = true;
 			this.heightoffset.ButtonStepsWrapAround = false;
 			this.heightoffset.Location = new System.Drawing.Point(99, 95);
 			this.heightoffset.Name = "heightoffset";
@@ -229,7 +232,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.brightness.AllowNegative = true;
 			this.brightness.AllowRelative = true;
 			this.brightness.ButtonStep = 8;
+			this.brightness.ButtonStepBig = 16F;
 			this.brightness.ButtonStepFloat = 1F;
+			this.brightness.ButtonStepSmall = 1F;
+			this.brightness.ButtonStepsUseModifierKeys = true;
 			this.brightness.ButtonStepsWrapAround = false;
 			this.brightness.Location = new System.Drawing.Point(99, 154);
 			this.brightness.Name = "brightness";
@@ -244,7 +250,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingheight.AllowNegative = true;
 			this.ceilingheight.AllowRelative = true;
 			this.ceilingheight.ButtonStep = 8;
+			this.ceilingheight.ButtonStepBig = 16F;
 			this.ceilingheight.ButtonStepFloat = 1F;
+			this.ceilingheight.ButtonStepSmall = 1F;
+			this.ceilingheight.ButtonStepsUseModifierKeys = true;
 			this.ceilingheight.ButtonStepsWrapAround = false;
 			this.ceilingheight.Location = new System.Drawing.Point(99, 35);
 			this.ceilingheight.Name = "ceilingheight";
@@ -306,7 +315,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floorheight.AllowNegative = true;
 			this.floorheight.AllowRelative = true;
 			this.floorheight.ButtonStep = 8;
+			this.floorheight.ButtonStepBig = 16F;
 			this.floorheight.ButtonStepFloat = 1F;
+			this.floorheight.ButtonStepSmall = 1F;
+			this.floorheight.ButtonStepsUseModifierKeys = true;
 			this.floorheight.ButtonStepsWrapAround = false;
 			this.floorheight.Location = new System.Drawing.Point(99, 65);
 			this.floorheight.Name = "floorheight";
