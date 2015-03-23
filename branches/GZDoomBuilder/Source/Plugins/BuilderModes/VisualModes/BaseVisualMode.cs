@@ -465,7 +465,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					else if(pickedgeo is BaseVisualGeometrySector)
 					{
 						BaseVisualGeometrySector pickedsector = (pickedgeo as BaseVisualGeometrySector);
-						General.Interface.ShowSectorInfo(pickedsector.Level.sector);
+						bool isceiling = (pickedsector is VisualCeiling); //mxd
+						General.Interface.ShowSectorInfo(pickedsector.Level.sector, isceiling, !isceiling);
 					}
 					else
 					{

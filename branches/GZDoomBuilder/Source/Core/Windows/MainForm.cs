@@ -3366,8 +3366,14 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Plugins.OnHighlightVertex(v);
 		}
 
-		// Show sector info
+		//mxd. Show sector info
 		public void ShowSectorInfo(Sector s) 
+		{
+			ShowSectorInfo(s, false, false);
+		}
+
+		// Show sector info
+		public void ShowSectorInfo(Sector s, bool highlightceiling, bool highlightfloor) 
 		{
 			if (s.IsDisposed) 
 			{
@@ -3384,7 +3390,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if (linedefinfo.Visible) linedefinfo.Hide();
 			if (vertexinfo.Visible) vertexinfo.Hide();
 			if (thinginfo.Visible) thinginfo.Hide();
-			if(IsInfoPanelExpanded) sectorinfo.ShowInfo(s);
+			if(IsInfoPanelExpanded) sectorinfo.ShowInfo(s, highlightceiling, highlightfloor); //mxd
 
 			// Show info on collapsed label
 			if(General.Map.Config.SectorEffects.ContainsKey(s.Effect))
@@ -3479,7 +3485,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Show sector edit dialog
 			VertexEditForm f = new VertexEditForm();
+			DisableProcessing(); //mxd
 			f.Setup(vertices, allowPositionChange);
+			EnableProcessing(); //mxd
 			f.OnValuesChanged += EditForm_OnValuesChanged;
 			editformopen = true; //mxd
 			DialogResult result = f.ShowDialog(this);
@@ -3498,7 +3506,9 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.UDMF) //mxd
 			{
 				LinedefEditFormUDMF f = new LinedefEditFormUDMF();
+				DisableProcessing(); //mxd
 				f.Setup(lines);
+				EnableProcessing(); //mxd
 				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd
 				result = f.ShowDialog(this);
@@ -3508,7 +3518,9 @@ namespace CodeImp.DoomBuilder.Windows
 			else
 			{
 				LinedefEditForm f = new LinedefEditForm();
+				DisableProcessing(); //mxd
 				f.Setup(lines);
+				EnableProcessing(); //mxd
 				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd
 				result = f.ShowDialog(this);
@@ -3528,7 +3540,9 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.UDMF) //mxd
 			{ 
 				SectorEditFormUDMF f = new SectorEditFormUDMF();
+				DisableProcessing(); //mxd
 				f.Setup(sectors);
+				EnableProcessing(); //mxd
 				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd
 				result = f.ShowDialog(this);
@@ -3538,7 +3552,9 @@ namespace CodeImp.DoomBuilder.Windows
 			else
 			{
 				SectorEditForm f = new SectorEditForm();
+				DisableProcessing(); //mxd
 				f.Setup(sectors);
+				EnableProcessing(); //mxd
 				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd
 				result = f.ShowDialog(this);
@@ -3558,7 +3574,9 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.UDMF) 
 			{
 				ThingEditFormUDMF f = new ThingEditFormUDMF();
+				DisableProcessing(); //mxd
 				f.Setup(things);
+				EnableProcessing(); //mxd
 				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd
 				result = f.ShowDialog(this);
@@ -3568,7 +3586,9 @@ namespace CodeImp.DoomBuilder.Windows
 			else 
 			{
 				ThingEditForm f = new ThingEditForm();
+				DisableProcessing(); //mxd
 				f.Setup(things);
+				EnableProcessing(); //mxd
 				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd
 				result = f.ShowDialog(this);
