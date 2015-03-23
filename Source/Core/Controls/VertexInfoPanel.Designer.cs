@@ -32,9 +32,9 @@ namespace CodeImp.DoomBuilder.Controls
 			this.vertexinfo = new System.Windows.Forms.GroupBox();
 			this.panelOffsets = new System.Windows.Forms.Panel();
 			this.zfloor = new System.Windows.Forms.Label();
-			this.labelCeilingOffset = new System.Windows.Forms.Label();
+			this.labelzceiling = new System.Windows.Forms.Label();
 			this.zceiling = new System.Windows.Forms.Label();
-			this.labelFloorOffset = new System.Windows.Forms.Label();
+			this.labelzfloor = new System.Windows.Forms.Label();
 			this.position = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
 			this.vertexinfo.SuspendLayout();
@@ -65,9 +65,9 @@ namespace CodeImp.DoomBuilder.Controls
 			// panelOffsets
 			// 
 			this.panelOffsets.Controls.Add(this.zfloor);
-			this.panelOffsets.Controls.Add(this.labelCeilingOffset);
+			this.panelOffsets.Controls.Add(this.labelzceiling);
 			this.panelOffsets.Controls.Add(this.zceiling);
-			this.panelOffsets.Controls.Add(this.labelFloorOffset);
+			this.panelOffsets.Controls.Add(this.labelzfloor);
 			this.panelOffsets.Location = new System.Drawing.Point(6, 49);
 			this.panelOffsets.Name = "panelOffsets";
 			this.panelOffsets.Size = new System.Drawing.Size(151, 46);
@@ -82,14 +82,14 @@ namespace CodeImp.DoomBuilder.Controls
 			this.zfloor.TabIndex = 7;
 			this.zfloor.Text = "-512";
 			// 
-			// labelCeilingOffset
+			// labelzceiling
 			// 
-			this.labelCeilingOffset.AutoSize = true;
-			this.labelCeilingOffset.Location = new System.Drawing.Point(5, 3);
-			this.labelCeilingOffset.Name = "labelCeilingOffset";
-			this.labelCeilingOffset.Size = new System.Drawing.Size(70, 13);
-			this.labelCeilingOffset.TabIndex = 4;
-			this.labelCeilingOffset.Text = "Ceiling offset:";
+			this.labelzceiling.AutoSize = true;
+			this.labelzceiling.Location = new System.Drawing.Point(5, 3);
+			this.labelzceiling.Name = "labelzceiling";
+			this.labelzceiling.Size = new System.Drawing.Size(70, 13);
+			this.labelzceiling.TabIndex = 4;
+			this.labelzceiling.Text = "Ceiling offset:";
 			// 
 			// zceiling
 			// 
@@ -100,14 +100,14 @@ namespace CodeImp.DoomBuilder.Controls
 			this.zceiling.TabIndex = 6;
 			this.zceiling.Text = "-512";
 			// 
-			// labelFloorOffset
+			// labelzfloor
 			// 
-			this.labelFloorOffset.AutoSize = true;
-			this.labelFloorOffset.Location = new System.Drawing.Point(12, 26);
-			this.labelFloorOffset.Name = "labelFloorOffset";
-			this.labelFloorOffset.Size = new System.Drawing.Size(62, 13);
-			this.labelFloorOffset.TabIndex = 5;
-			this.labelFloorOffset.Text = "Floor offset:";
+			this.labelzfloor.AutoSize = true;
+			this.labelzfloor.Location = new System.Drawing.Point(12, 26);
+			this.labelzfloor.Name = "labelzfloor";
+			this.labelzfloor.Size = new System.Drawing.Size(62, 13);
+			this.labelzfloor.TabIndex = 5;
+			this.labelzfloor.Text = "Floor offset:";
 			// 
 			// position
 			// 
@@ -142,8 +142,8 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label zfloor;
 		private System.Windows.Forms.Label zceiling;
 		private System.Windows.Forms.Panel panelOffsets;
-		private System.Windows.Forms.Label labelCeilingOffset;
-		private System.Windows.Forms.Label labelFloorOffset;
+		private System.Windows.Forms.Label labelzceiling;
+		private System.Windows.Forms.Label labelzfloor;
 
 	}
 }

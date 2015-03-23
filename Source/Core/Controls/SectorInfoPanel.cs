@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This shows the info
-		public void ShowInfo(Sector s)
+		public void ShowInfo(Sector s, bool highlightceiling, bool highlightfloor)
 		{
 			int sheight = s.CeilHeight - s.FloorHeight;
 
@@ -320,6 +320,18 @@ namespace CodeImp.DoomBuilder.Controls
 			//mxd. Resize panels
 			UpdateTexturePanel(ceilingpanel, ceilingname, ceilinfolabels, ceilingtex, ceilingOffsetLabel.Location.X - 1, showExtededCeilingInfo);
 			UpdateTexturePanel(floorpanel, floorname, floorinfolabels, floortex, floorOffsetLabel.Location.X - 1, showExtededFloorInfo);
+
+			//mxd. Highlight ceiling or floor?
+			Color floorhighlightcolor = (highlightfloor ? SystemColors.HotTrack : SystemColors.WindowText);
+			Color ceilinghighlightcolor = (highlightceiling ? SystemColors.HotTrack : SystemColors.WindowText);
+			
+			floorpanel.ForeColor = floorhighlightcolor;
+			floor.ForeColor = floorhighlightcolor;
+			labelfloor.ForeColor = floorhighlightcolor;
+
+			ceilingpanel.ForeColor = ceilinghighlightcolor;
+			ceiling.ForeColor = ceilinghighlightcolor;
+			labelceiling.ForeColor = ceilinghighlightcolor;
 
 			// Show the whole thing
 			this.Show();

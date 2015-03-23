@@ -49,6 +49,8 @@ namespace CodeImp.DoomBuilder.Windows
 		public TextureBrowserForm(string selecttexture, bool browseflats)
 		{
 			Cursor.Current = Cursors.WaitCursor;
+			General.Interface.DisableProcessing(); //mxd
+
 			TreeNode item; //mxd
 			long longname = Lump.MakeLongName(selecttexture ?? "");
 			longname = (browseflats ? General.Map.Data.GetFullLongFlatName(longname) : General.Map.Data.GetFullLongTextureName(longname)); //mxd
@@ -397,6 +399,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void TextureBrowserForm_Activated(object sender, EventArgs e)
 		{
 			Cursor.Current = Cursors.Default;
+			General.Interface.EnableProcessing(); //mxd
 		}
 
 		// Loading

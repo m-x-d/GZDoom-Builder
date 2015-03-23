@@ -41,34 +41,20 @@ namespace CodeImp.DoomBuilder.Controls
 			position.Text = v.Position.x.ToString(CultureInfo.InvariantCulture) + ", " + v.Position.y.ToString(CultureInfo.InvariantCulture);
 			
 			//mxd. Height offsets
-			if(General.Map.UDMF) 
+			if(General.Map.UDMF)
 			{
-				if(!float.IsNaN(v.ZCeiling)) 
-				{
-					zceiling.Text = v.ZCeiling.ToString(CultureInfo.InvariantCulture);
-					zceiling.Enabled = true;
-					labelCeilingOffset.Enabled = true;
-				} 
-				else 
-				{
-					zceiling.Text = "--";
-				}
+				bool haveoffset = !float.IsNaN(v.ZCeiling);
+				zceiling.Text = (haveoffset ? v.ZCeiling.ToString(CultureInfo.InvariantCulture) : "--");
+				zceiling.Enabled = haveoffset;
+				labelzceiling.Enabled = haveoffset;
 
-				if(!float.IsNaN(v.ZFloor)) 
-				{
-					zfloor.Text = v.ZFloor.ToString(CultureInfo.InvariantCulture);
-					zfloor.Enabled = true;
-					labelFloorOffset.Enabled = true;
-				} 
-				else 
-				{
-					zfloor.Text = "--";
-				}
-
-				panelOffsets.Visible = true;
-			} else {
-				panelOffsets.Visible = false;
+				haveoffset = !float.IsNaN(v.ZFloor);
+				zfloor.Text = (haveoffset ? v.ZFloor.ToString(CultureInfo.InvariantCulture) : "--");
+				zfloor.Enabled = haveoffset;
+				labelzfloor.Enabled = haveoffset;
 			}
+
+			panelOffsets.Visible = General.Map.UDMF;
 
 			// Show the whole thing
 			this.Show();

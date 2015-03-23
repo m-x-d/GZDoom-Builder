@@ -30,8 +30,8 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			System.Windows.Forms.Label label13;
 			System.Windows.Forms.Label label5;
-			System.Windows.Forms.Label label3;
-			System.Windows.Forms.Label label2;
+			this.labelfloor = new System.Windows.Forms.Label();
+			this.labelceiling = new System.Windows.Forms.Label();
 			this.labelTag = new System.Windows.Forms.Label();
 			this.labelEffect = new System.Windows.Forms.Label();
 			this.ceilingLightLabel = new System.Windows.Forms.Label();
@@ -74,8 +74,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flags = new System.Windows.Forms.ListView();
 			label13 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
-			label3 = new System.Windows.Forms.Label();
-			label2 = new System.Windows.Forms.Label();
 			this.sectorinfo.SuspendLayout();
 			this.ceilingpanel.SuspendLayout();
 			this.ceilingtex.SuspendLayout();
@@ -103,23 +101,23 @@ namespace CodeImp.DoomBuilder.Controls
 			label5.Text = "Height:";
 			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// label3
+			// labelfloor
 			// 
-			label3.Location = new System.Drawing.Point(8, 49);
-			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(44, 14);
-			label3.TabIndex = 3;
-			label3.Text = "Floor:";
-			label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.labelfloor.Location = new System.Drawing.Point(8, 49);
+			this.labelfloor.Name = "labelfloor";
+			this.labelfloor.Size = new System.Drawing.Size(44, 14);
+			this.labelfloor.TabIndex = 3;
+			this.labelfloor.Text = "Floor:";
+			this.labelfloor.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// label2
+			// labelceiling
 			// 
-			label2.Location = new System.Drawing.Point(8, 34);
-			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(44, 14);
-			label2.TabIndex = 2;
-			label2.Text = "Ceiling:";
-			label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.labelceiling.Location = new System.Drawing.Point(8, 34);
+			this.labelceiling.Name = "labelceiling";
+			this.labelceiling.Size = new System.Drawing.Size(44, 14);
+			this.labelceiling.TabIndex = 2;
+			this.labelceiling.Text = "Ceiling:";
+			this.labelceiling.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// labelTag
 			// 
@@ -225,8 +223,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.sectorinfo.Controls.Add(this.floor);
 			this.sectorinfo.Controls.Add(this.ceiling);
 			this.sectorinfo.Controls.Add(this.labelTag);
-			this.sectorinfo.Controls.Add(label3);
-			this.sectorinfo.Controls.Add(label2);
+			this.sectorinfo.Controls.Add(this.labelfloor);
+			this.sectorinfo.Controls.Add(this.labelceiling);
 			this.sectorinfo.Controls.Add(this.effect);
 			this.sectorinfo.Controls.Add(this.labelEffect);
 			this.sectorinfo.Location = new System.Drawing.Point(0, 0);
@@ -605,5 +603,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ListView flags;
 		private System.Windows.Forms.Label labelTag;
 		private System.Windows.Forms.Label labelEffect;
+		private System.Windows.Forms.Label labelfloor;
+		private System.Windows.Forms.Label labelceiling;
 	}
 }

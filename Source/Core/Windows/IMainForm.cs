@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.Windows
 		void ShowLinedefInfo(Linedef l);
 		void ShowLinedefInfo(Linedef l, Sidedef highlightside); //mxd
 		void ShowSectorInfo(Sector s);
+		void ShowSectorInfo(Sector s, bool highlightceiling, bool highlightfloor); //mxd
 		void ShowThingInfo(Thing t);
 		void ShowVertexInfo(Vertex v);
 		void HideInfo();

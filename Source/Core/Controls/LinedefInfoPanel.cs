@@ -244,6 +244,9 @@ namespace CodeImp.DoomBuilder.Controls
 						frontoffset.Text = l.Front.OffsetX + ", " + l.Front.OffsetY;
 						frontoffsetlabel.Enabled = true;
 						frontoffset.Enabled = true;
+
+						frontoffset.ForeColor = (highlight ? SystemColors.HotTrack : SystemColors.WindowText);
+						frontoffsetlabel.ForeColor = frontoffset.ForeColor;
 					}
 					else
 					{
@@ -359,6 +362,9 @@ namespace CodeImp.DoomBuilder.Controls
 						backoffset.Text = l.Back.OffsetX + ", " + l.Back.OffsetY;
 						backoffsetlabel.Enabled = true;
 						backoffset.Enabled = true;
+
+						backoffset.ForeColor = (highlight ? SystemColors.HotTrack : SystemColors.WindowText);
+						backoffsetlabel.ForeColor = backoffset.ForeColor;
 					}
 					else
 					{
