@@ -296,6 +296,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptNumbers.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
 			this.scriptNumbers.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
 			this.scriptNumbers.BackColor = System.Drawing.Color.LemonChiffon;
+			this.scriptNumbers.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.scriptNumbers.FormattingEnabled = true;
 			this.scriptNumbers.Location = new System.Drawing.Point(407, 57);
 			this.scriptNumbers.Name = "scriptNumbers";
@@ -307,6 +308,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptNames.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
 			this.scriptNames.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
 			this.scriptNames.BackColor = System.Drawing.Color.Honeydew;
+			this.scriptNames.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.scriptNames.FormattingEnabled = true;
 			this.scriptNames.Location = new System.Drawing.Point(283, 57);
 			this.scriptNames.Name = "scriptNames";
@@ -539,7 +541,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.alpha.AllowNegative = false;
 			this.alpha.AllowRelative = false;
 			this.alpha.ButtonStep = 1;
+			this.alpha.ButtonStepBig = 0.25F;
 			this.alpha.ButtonStepFloat = 0.1F;
+			this.alpha.ButtonStepSmall = 0.01F;
+			this.alpha.ButtonStepsUseModifierKeys = true;
 			this.alpha.ButtonStepsWrapAround = false;
 			this.alpha.Location = new System.Drawing.Point(243, 19);
 			this.alpha.Name = "alpha";
@@ -720,7 +725,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pfcFrontScaleTop.AllowDecimal = true;
 			this.pfcFrontScaleTop.AllowValueLinking = true;
 			this.pfcFrontScaleTop.ButtonStep = 1;
+			this.pfcFrontScaleTop.ButtonStepBig = 1F;
 			this.pfcFrontScaleTop.ButtonStepFloat = 0.1F;
+			this.pfcFrontScaleTop.ButtonStepSmall = 0.01F;
+			this.pfcFrontScaleTop.ButtonStepsUseModifierKeys = true;
 			this.pfcFrontScaleTop.DefaultValue = 1F;
 			this.pfcFrontScaleTop.Field1 = "scalex_top";
 			this.pfcFrontScaleTop.Field2 = "scaley_top";
@@ -736,7 +744,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pfcFrontScaleBottom.AllowDecimal = true;
 			this.pfcFrontScaleBottom.AllowValueLinking = true;
 			this.pfcFrontScaleBottom.ButtonStep = 1;
+			this.pfcFrontScaleBottom.ButtonStepBig = 1F;
 			this.pfcFrontScaleBottom.ButtonStepFloat = 0.1F;
+			this.pfcFrontScaleBottom.ButtonStepSmall = 0.01F;
+			this.pfcFrontScaleBottom.ButtonStepsUseModifierKeys = true;
 			this.pfcFrontScaleBottom.DefaultValue = 1F;
 			this.pfcFrontScaleBottom.Field1 = "scalex_bottom";
 			this.pfcFrontScaleBottom.Field2 = "scaley_bottom";
@@ -752,7 +763,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pfcFrontScaleMid.AllowDecimal = true;
 			this.pfcFrontScaleMid.AllowValueLinking = true;
 			this.pfcFrontScaleMid.ButtonStep = 1;
+			this.pfcFrontScaleMid.ButtonStepBig = 1F;
 			this.pfcFrontScaleMid.ButtonStepFloat = 0.1F;
+			this.pfcFrontScaleMid.ButtonStepSmall = 0.01F;
+			this.pfcFrontScaleMid.ButtonStepsUseModifierKeys = true;
 			this.pfcFrontScaleMid.DefaultValue = 1F;
 			this.pfcFrontScaleMid.Field1 = "scalex_mid";
 			this.pfcFrontScaleMid.Field2 = "scaley_mid";
@@ -802,7 +816,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// frontTextureOffset
 			// 
-			this.frontTextureOffset.ButtonStep = 16;
+			this.frontTextureOffset.ButtonStep = 1;
+			this.frontTextureOffset.ButtonStepBig = 16F;
+			this.frontTextureOffset.ButtonStepSmall = 0.1F;
+			this.frontTextureOffset.ButtonStepsUseModifierKeys = true;
 			this.frontTextureOffset.DefaultValue = 0;
 			this.frontTextureOffset.Location = new System.Drawing.Point(96, 17);
 			this.frontTextureOffset.Name = "frontTextureOffset";
@@ -825,7 +842,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pfcFrontOffsetTop.AllowDecimal = true;
 			this.pfcFrontOffsetTop.AllowValueLinking = false;
 			this.pfcFrontOffsetTop.ButtonStep = 1;
-			this.pfcFrontOffsetTop.ButtonStepFloat = 16F;
+			this.pfcFrontOffsetTop.ButtonStepBig = 16F;
+			this.pfcFrontOffsetTop.ButtonStepFloat = 1F;
+			this.pfcFrontOffsetTop.ButtonStepSmall = 0.1F;
+			this.pfcFrontOffsetTop.ButtonStepsUseModifierKeys = true;
 			this.pfcFrontOffsetTop.DefaultValue = 0F;
 			this.pfcFrontOffsetTop.Field1 = "offsetx_top";
 			this.pfcFrontOffsetTop.Field2 = "offsety_top";
@@ -851,7 +871,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pfcFrontOffsetMid.AllowDecimal = true;
 			this.pfcFrontOffsetMid.AllowValueLinking = false;
 			this.pfcFrontOffsetMid.ButtonStep = 1;
-			this.pfcFrontOffsetMid.ButtonStepFloat = 16F;
+			this.pfcFrontOffsetMid.ButtonStepBig = 16F;
+			this.pfcFrontOffsetMid.ButtonStepFloat = 1F;
+			this.pfcFrontOffsetMid.ButtonStepSmall = 0.1F;
+			this.pfcFrontOffsetMid.ButtonStepsUseModifierKeys = true;
 			this.pfcFrontOffsetMid.DefaultValue = 0F;
 			this.pfcFrontOffsetMid.Field1 = "offsetx_mid";
 			this.pfcFrontOffsetMid.Field2 = "offsety_mid";
@@ -867,7 +890,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pfcFrontOffsetBottom.AllowDecimal = true;
 			this.pfcFrontOffsetBottom.AllowValueLinking = false;
 			this.pfcFrontOffsetBottom.ButtonStep = 1;
-			this.pfcFrontOffsetBottom.ButtonStepFloat = 16F;
+			this.pfcFrontOffsetBottom.ButtonStepBig = 16F;
+			this.pfcFrontOffsetBottom.ButtonStepFloat = 1F;
+			this.pfcFrontOffsetBottom.ButtonStepSmall = 0.1F;
+			this.pfcFrontOffsetBottom.ButtonStepsUseModifierKeys = true;
 			this.pfcFrontOffsetBottom.DefaultValue = 0F;
 			this.pfcFrontOffsetBottom.Field1 = "offsetx_bottom";
 			this.pfcFrontOffsetBottom.Field2 = "offsety_bottom";
@@ -898,7 +924,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontsector.AllowNegative = false;
 			this.frontsector.AllowRelative = false;
 			this.frontsector.ButtonStep = 1;
+			this.frontsector.ButtonStepBig = 10F;
 			this.frontsector.ButtonStepFloat = 1F;
+			this.frontsector.ButtonStepSmall = 0.1F;
+			this.frontsector.ButtonStepsUseModifierKeys = false;
 			this.frontsector.ButtonStepsWrapAround = false;
 			this.frontsector.Location = new System.Drawing.Point(96, 19);
 			this.frontsector.Name = "frontsector";
@@ -922,7 +951,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.lightFront.AllowNegative = true;
 			this.lightFront.AllowRelative = true;
 			this.lightFront.ButtonStep = 16;
+			this.lightFront.ButtonStepBig = 32F;
 			this.lightFront.ButtonStepFloat = 1F;
+			this.lightFront.ButtonStepSmall = 1F;
+			this.lightFront.ButtonStepsUseModifierKeys = true;
 			this.lightFront.ButtonStepsWrapAround = false;
 			this.lightFront.Location = new System.Drawing.Point(96, 49);
 			this.lightFront.Name = "lightFront";
@@ -1045,7 +1077,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backsector.AllowNegative = false;
 			this.backsector.AllowRelative = false;
 			this.backsector.ButtonStep = 1;
+			this.backsector.ButtonStepBig = 10F;
 			this.backsector.ButtonStepFloat = 1F;
+			this.backsector.ButtonStepSmall = 0.1F;
+			this.backsector.ButtonStepsUseModifierKeys = false;
 			this.backsector.ButtonStepsWrapAround = false;
 			this.backsector.Location = new System.Drawing.Point(96, 19);
 			this.backsector.Name = "backsector";
@@ -1068,8 +1103,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.lightBack.AllowDecimal = false;
 			this.lightBack.AllowNegative = true;
 			this.lightBack.AllowRelative = true;
-			this.lightBack.ButtonStep = 16;
+			this.lightBack.ButtonStep = 1;
+			this.lightBack.ButtonStepBig = 16F;
 			this.lightBack.ButtonStepFloat = 1F;
+			this.lightBack.ButtonStepSmall = 1F;
+			this.lightBack.ButtonStepsUseModifierKeys = true;
 			this.lightBack.ButtonStepsWrapAround = false;
 			this.lightBack.Location = new System.Drawing.Point(96, 49);
 			this.lightBack.Name = "lightBack";
@@ -1175,7 +1213,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pfcBackScaleTop.AllowDecimal = true;
 			this.pfcBackScaleTop.AllowValueLinking = true;
 			this.pfcBackScaleTop.ButtonStep = 1;
+			this.pfcBackScaleTop.ButtonStepBig = 1F;
 			this.pfcBackScaleTop.ButtonStepFloat = 0.1F;
+			this.pfcBackScaleTop.ButtonStepSmall = 0.01F;
+			this.pfcBackScaleTop.ButtonStepsUseModifierKeys = true;
 			this.pfcBackScaleTop.DefaultValue = 1F;
 			this.pfcBackScaleTop.Field1 = "scalex_top";
 			this.pfcBackScaleTop.Field2 = "scaley_top";
@@ -1191,7 +1232,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pfcBackScaleBottom.AllowDecimal = true;
 			this.pfcBackScaleBottom.AllowValueLinking = true;
 			this.pfcBackScaleBottom.ButtonStep = 1;
+			this.pfcBackScaleBottom.ButtonStepBig = 1F;
 			this.pfcBackScaleBottom.ButtonStepFloat = 0.1F;
+			this.pfcBackScaleBottom.ButtonStepSmall = 0.01F;
+			this.pfcBackScaleBottom.ButtonStepsUseModifierKeys = true;
 			this.pfcBackScaleBottom.DefaultValue = 1F;
 			this.pfcBackScaleBottom.Field1 = "scalex_bottom";
 			this.pfcBackScaleBottom.Field2 = "scaley_bottom";
@@ -1207,7 +1251,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pfcBackScaleMid.AllowDecimal = true;
 			this.pfcBackScaleMid.AllowValueLinking = true;
 			this.pfcBackScaleMid.ButtonStep = 1;
+			this.pfcBackScaleMid.ButtonStepBig = 1F;
 			this.pfcBackScaleMid.ButtonStepFloat = 0.1F;
+			this.pfcBackScaleMid.ButtonStepSmall = 0.01F;
+			this.pfcBackScaleMid.ButtonStepsUseModifierKeys = true;
 			this.pfcBackScaleMid.DefaultValue = 1F;
 			this.pfcBackScaleMid.Field1 = "scalex_mid";
 			this.pfcBackScaleMid.Field2 = "scaley_mid";
@@ -1280,7 +1327,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pfcBackOffsetTop.AllowDecimal = true;
 			this.pfcBackOffsetTop.AllowValueLinking = false;
 			this.pfcBackOffsetTop.ButtonStep = 1;
-			this.pfcBackOffsetTop.ButtonStepFloat = 16F;
+			this.pfcBackOffsetTop.ButtonStepBig = 16F;
+			this.pfcBackOffsetTop.ButtonStepFloat = 1F;
+			this.pfcBackOffsetTop.ButtonStepSmall = 0.1F;
+			this.pfcBackOffsetTop.ButtonStepsUseModifierKeys = true;
 			this.pfcBackOffsetTop.DefaultValue = 0F;
 			this.pfcBackOffsetTop.Field1 = "offsetx_top";
 			this.pfcBackOffsetTop.Field2 = "offsety_top";
@@ -1296,7 +1346,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pfcBackOffsetMid.AllowDecimal = true;
 			this.pfcBackOffsetMid.AllowValueLinking = false;
 			this.pfcBackOffsetMid.ButtonStep = 1;
-			this.pfcBackOffsetMid.ButtonStepFloat = 16F;
+			this.pfcBackOffsetMid.ButtonStepBig = 16F;
+			this.pfcBackOffsetMid.ButtonStepFloat = 1F;
+			this.pfcBackOffsetMid.ButtonStepSmall = 0.1F;
+			this.pfcBackOffsetMid.ButtonStepsUseModifierKeys = true;
 			this.pfcBackOffsetMid.DefaultValue = 0F;
 			this.pfcBackOffsetMid.Field1 = "offsetx_mid";
 			this.pfcBackOffsetMid.Field2 = "offsety_mid";
@@ -1312,7 +1365,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pfcBackOffsetBottom.AllowDecimal = true;
 			this.pfcBackOffsetBottom.AllowValueLinking = false;
 			this.pfcBackOffsetBottom.ButtonStep = 1;
-			this.pfcBackOffsetBottom.ButtonStepFloat = 16F;
+			this.pfcBackOffsetBottom.ButtonStepBig = 16F;
+			this.pfcBackOffsetBottom.ButtonStepFloat = 1F;
+			this.pfcBackOffsetBottom.ButtonStepSmall = 0.1F;
+			this.pfcBackOffsetBottom.ButtonStepsUseModifierKeys = true;
 			this.pfcBackOffsetBottom.DefaultValue = 0F;
 			this.pfcBackOffsetBottom.Field1 = "offsetx_bottom";
 			this.pfcBackOffsetBottom.Field2 = "offsety_bottom";
@@ -1325,7 +1381,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// backTextureOffset
 			// 
-			this.backTextureOffset.ButtonStep = 16;
+			this.backTextureOffset.ButtonStep = 1;
+			this.backTextureOffset.ButtonStepBig = 16F;
+			this.backTextureOffset.ButtonStepSmall = 0.1F;
+			this.backTextureOffset.ButtonStepsUseModifierKeys = true;
 			this.backTextureOffset.DefaultValue = 0;
 			this.backTextureOffset.Location = new System.Drawing.Point(96, 17);
 			this.backTextureOffset.Name = "backTextureOffset";

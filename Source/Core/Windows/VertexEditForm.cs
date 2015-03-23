@@ -111,6 +111,10 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				positionx.AllowDecimal = true;
 				positiony.AllowDecimal = true;
+				positionx.ButtonStepSmall = 0.1f;
+				positiony.ButtonStepSmall = 0.1f;
+				positionx.UpdateButtonsTooltip();
+				positiony.UpdateButtonsTooltip();
 
 				//mxd
 				zceiling.AllowDecimal = true;

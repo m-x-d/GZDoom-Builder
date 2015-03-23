@@ -203,8 +203,11 @@
 			this.roll.AllowDecimal = false;
 			this.roll.AllowNegative = false;
 			this.roll.AllowRelative = true;
-			this.roll.ButtonStep = 1;
+			this.roll.ButtonStep = 5;
+			this.roll.ButtonStepBig = 15F;
 			this.roll.ButtonStepFloat = 1F;
+			this.roll.ButtonStepSmall = 1F;
+			this.roll.ButtonStepsUseModifierKeys = true;
 			this.roll.ButtonStepsWrapAround = false;
 			this.roll.Location = new System.Drawing.Point(55, 66);
 			this.roll.Name = "roll";
@@ -227,8 +230,11 @@
 			this.pitch.AllowDecimal = false;
 			this.pitch.AllowNegative = false;
 			this.pitch.AllowRelative = true;
-			this.pitch.ButtonStep = 1;
+			this.pitch.ButtonStep = 5;
+			this.pitch.ButtonStepBig = 15F;
 			this.pitch.ButtonStepFloat = 1F;
+			this.pitch.ButtonStepSmall = 1F;
+			this.pitch.ButtonStepsUseModifierKeys = true;
 			this.pitch.ButtonStepsWrapAround = false;
 			this.pitch.Location = new System.Drawing.Point(55, 41);
 			this.pitch.Name = "pitch";
@@ -251,8 +257,11 @@
 			this.angle.AllowDecimal = false;
 			this.angle.AllowNegative = true;
 			this.angle.AllowRelative = true;
-			this.angle.ButtonStep = 1;
+			this.angle.ButtonStep = 5;
+			this.angle.ButtonStepBig = 15F;
 			this.angle.ButtonStepFloat = 1F;
+			this.angle.ButtonStepSmall = 1F;
+			this.angle.ButtonStepsUseModifierKeys = true;
 			this.angle.ButtonStepsWrapAround = false;
 			this.angle.Location = new System.Drawing.Point(55, 16);
 			this.angle.Name = "angle";
@@ -473,7 +482,10 @@
 			this.posX.AllowNegative = true;
 			this.posX.AllowRelative = true;
 			this.posX.ButtonStep = 8;
+			this.posX.ButtonStepBig = 8F;
 			this.posX.ButtonStepFloat = 1F;
+			this.posX.ButtonStepSmall = 0.1F;
+			this.posX.ButtonStepsUseModifierKeys = true;
 			this.posX.ButtonStepsWrapAround = false;
 			this.posX.Location = new System.Drawing.Point(32, 16);
 			this.posX.Name = "posX";
@@ -488,7 +500,10 @@
 			this.posY.AllowNegative = true;
 			this.posY.AllowRelative = true;
 			this.posY.ButtonStep = 8;
+			this.posY.ButtonStepBig = 8F;
 			this.posY.ButtonStepFloat = 1F;
+			this.posY.ButtonStepSmall = 0.1F;
+			this.posY.ButtonStepsUseModifierKeys = true;
 			this.posY.ButtonStepsWrapAround = false;
 			this.posY.Location = new System.Drawing.Point(32, 41);
 			this.posY.Name = "posY";
@@ -503,7 +518,10 @@
 			this.posZ.AllowNegative = true;
 			this.posZ.AllowRelative = true;
 			this.posZ.ButtonStep = 8;
+			this.posZ.ButtonStepBig = 8F;
 			this.posZ.ButtonStepFloat = 1F;
+			this.posZ.ButtonStepSmall = 0.1F;
+			this.posZ.ButtonStepsUseModifierKeys = true;
 			this.posZ.ButtonStepsWrapAround = false;
 			this.posZ.Location = new System.Drawing.Point(32, 66);
 			this.posZ.Name = "posZ";
@@ -559,7 +577,10 @@
 			this.conversationID.AllowNegative = false;
 			this.conversationID.AllowRelative = false;
 			this.conversationID.ButtonStep = 1;
+			this.conversationID.ButtonStepBig = 8F;
 			this.conversationID.ButtonStepFloat = 1F;
+			this.conversationID.ButtonStepSmall = 1F;
+			this.conversationID.ButtonStepsUseModifierKeys = false;
 			this.conversationID.ButtonStepsWrapAround = false;
 			this.conversationID.Location = new System.Drawing.Point(108, 119);
 			this.conversationID.Name = "conversationID";
@@ -582,7 +603,10 @@
 			this.health.AllowNegative = true;
 			this.health.AllowRelative = false;
 			this.health.ButtonStep = 8;
+			this.health.ButtonStepBig = 16F;
 			this.health.ButtonStepFloat = 0.1F;
+			this.health.ButtonStepSmall = 1F;
+			this.health.ButtonStepsUseModifierKeys = true;
 			this.health.ButtonStepsWrapAround = false;
 			this.health.Location = new System.Drawing.Point(108, 87);
 			this.health.Name = "health";
@@ -605,7 +629,10 @@
 			this.score.AllowNegative = false;
 			this.score.AllowRelative = false;
 			this.score.ButtonStep = 8;
+			this.score.ButtonStepBig = 16F;
 			this.score.ButtonStepFloat = 0.1F;
+			this.score.ButtonStepSmall = 1F;
+			this.score.ButtonStepsUseModifierKeys = true;
 			this.score.ButtonStepsWrapAround = false;
 			this.score.Location = new System.Drawing.Point(108, 55);
 			this.score.Name = "score";
@@ -628,7 +655,10 @@
 			this.gravity.AllowNegative = true;
 			this.gravity.AllowRelative = false;
 			this.gravity.ButtonStep = 8;
+			this.gravity.ButtonStepBig = 0.25F;
 			this.gravity.ButtonStepFloat = 0.1F;
+			this.gravity.ButtonStepSmall = 0.01F;
+			this.gravity.ButtonStepsUseModifierKeys = true;
 			this.gravity.ButtonStepsWrapAround = false;
 			this.gravity.Location = new System.Drawing.Point(108, 23);
 			this.gravity.Name = "gravity";
@@ -664,6 +694,9 @@
 			// scale
 			// 
 			this.scale.ButtonStep = 0.1F;
+			this.scale.ButtonStepBig = 0.25F;
+			this.scale.ButtonStepSmall = 0.01F;
+			this.scale.ButtonStepsUseModifierKeys = true;
 			this.scale.DefaultValue = 1F;
 			this.scale.Location = new System.Drawing.Point(89, 22);
 			this.scale.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
@@ -688,7 +721,10 @@
 			this.alpha.AllowNegative = true;
 			this.alpha.AllowRelative = false;
 			this.alpha.ButtonStep = 8;
+			this.alpha.ButtonStepBig = 0.25F;
 			this.alpha.ButtonStepFloat = 0.1F;
+			this.alpha.ButtonStepSmall = 0.01F;
+			this.alpha.ButtonStepsUseModifierKeys = true;
 			this.alpha.ButtonStepsWrapAround = false;
 			this.alpha.Location = new System.Drawing.Point(91, 85);
 			this.alpha.Name = "alpha";

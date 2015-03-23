@@ -29,6 +29,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public bool NonDefaultValue { get { return changed; } }
 		public int DefaultValue { get { return defaultValue; } set { defaultValue = value; } }
 		public int ButtonStep { get { return value1.ButtonStep; } set { value1.ButtonStep = value; value2.ButtonStep = value; } }
+		public float ButtonStepBig { get { return value1.ButtonStepBig; } set { value1.ButtonStepBig = value; value2.ButtonStepBig = value; } }
+		public float ButtonStepSmall { get { return value1.ButtonStepSmall; } set { value1.ButtonStepSmall = value; value2.ButtonStepSmall = value; } }
+		public bool ButtonStepsUseModifierKeys { get { return value1.ButtonStepsUseModifierKeys; } set { value1.ButtonStepsUseModifierKeys = value; value2.ButtonStepsUseModifierKeys = value; } }
 
 		#endregion
 

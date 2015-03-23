@@ -131,7 +131,10 @@
 			this.slopeangle.AllowNegative = true;
 			this.slopeangle.AllowRelative = true;
 			this.slopeangle.ButtonStep = 1;
+			this.slopeangle.ButtonStepBig = 5F;
 			this.slopeangle.ButtonStepFloat = 1F;
+			this.slopeangle.ButtonStepSmall = 0.1F;
+			this.slopeangle.ButtonStepsUseModifierKeys = true;
 			this.slopeangle.ButtonStepsWrapAround = false;
 			this.slopeangle.Location = new System.Drawing.Point(85, 78);
 			this.slopeangle.Name = "slopeangle";
@@ -146,7 +149,10 @@
 			this.sloperotation.AllowNegative = true;
 			this.sloperotation.AllowRelative = true;
 			this.sloperotation.ButtonStep = 1;
+			this.sloperotation.ButtonStepBig = 5F;
 			this.sloperotation.ButtonStepFloat = 1F;
+			this.sloperotation.ButtonStepSmall = 0.1F;
+			this.sloperotation.ButtonStepsUseModifierKeys = true;
 			this.sloperotation.ButtonStepsWrapAround = false;
 			this.sloperotation.Location = new System.Drawing.Point(85, 48);
 			this.sloperotation.Name = "sloperotation";
@@ -161,7 +167,10 @@
 			this.slopeoffset.AllowNegative = true;
 			this.slopeoffset.AllowRelative = true;
 			this.slopeoffset.ButtonStep = 1;
+			this.slopeoffset.ButtonStepBig = 16F;
 			this.slopeoffset.ButtonStepFloat = 8F;
+			this.slopeoffset.ButtonStepSmall = 1F;
+			this.slopeoffset.ButtonStepsUseModifierKeys = true;
 			this.slopeoffset.ButtonStepsWrapAround = false;
 			this.slopeoffset.Location = new System.Drawing.Point(85, 108);
 			this.slopeoffset.Name = "slopeoffset";
