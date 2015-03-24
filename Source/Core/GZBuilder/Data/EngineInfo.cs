@@ -7,7 +7,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 	{
 		public const string DEFAULT_ENGINE_NAME = "Engine with no name";
 		
-		public string TestProgramName;
+		private string testprogramname;
+		public string TestProgramName { get { return testprogramname; } set { testprogramname = value; CheckProgramName(); } }
 		public string TestProgram;
 		public string TestParameters;
 		public bool CustomParameters;
@@ -16,12 +17,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		public EngineInfo() 
 		{
-			TestProgramName = DEFAULT_ENGINE_NAME;
+			testprogramname = DEFAULT_ENGINE_NAME;
 		}
 
 		public EngineInfo(EngineInfo other) 
 		{
-			TestProgramName = other.TestProgramName;
+			testprogramname = other.TestProgramName;
 			TestProgram = other.TestProgram;
 			TestParameters = other.TestParameters;
 			CustomParameters = other.CustomParameters;
@@ -29,12 +30,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			TestShortPaths = other.TestShortPaths;
 		}
 
-		public void CheckProgramName(bool forced) 
+		private void CheckProgramName() 
 		{
-			if ((forced || TestProgramName == DEFAULT_ENGINE_NAME) && !String.IsNullOrEmpty(TestProgram)) 
+			if(testprogramname == DEFAULT_ENGINE_NAME && !String.IsNullOrEmpty(TestProgram)) 
 			{
-				//get engine name from folder name
-				TestProgramName = Path.GetFileNameWithoutExtension(TestProgram);
+				//get engine name from path
+				testprogramname = Path.GetFileNameWithoutExtension(TestProgram);
 			}
 		}
 	}

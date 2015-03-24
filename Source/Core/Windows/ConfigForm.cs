@@ -302,15 +302,25 @@ namespace CodeImp.DoomBuilder.Windows
 		// Test application changed
 		private void testapplication_TextChanged(object sender, EventArgs e)
 		{
-			// Leave when no configuration selected
-			if(configinfo == null) return;
+			// Leave during setup or when no configuration is selected
+			if(preventchanges || configinfo == null) return;
 
 			// Apply to selected configuration
 			configinfo.TestProgram = testapplication.Text;
 			
-			//mxd. Update engine name if needed
-			configinfo.TestEngines[configinfo.CurrentEngineIndex].CheckProgramName(false);
-			cbEngineSelector.Items[cbEngineSelector.SelectedIndex] = configinfo.TestProgramName;
+			//mxd. User entered engine name before picking the engine?
+			if(cbEngineSelector.SelectedIndex == -1)
+			{
+				ApplyTestEngineNameChange();
+			}
+			else
+			{
+				// Update engine name
+				configinfo.TestProgramName = Path.GetFileNameWithoutExtension(configinfo.TestProgram);
+				cbEngineSelector.Items[cbEngineSelector.SelectedIndex] = configinfo.TestProgramName;
+			}
+
+			configinfo.Changed = true;
 		}
 
 		// Test parameters changed
@@ -418,10 +428,6 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Apply
 				testapplication.Text = testprogramdialog.FileName;
-
-				//mxd. Update engine name
-				configinfo.TestEngines[configinfo.CurrentEngineIndex].CheckProgramName(true);
-				configinfo.Changed = true;
 			}
 		}
 
@@ -688,6 +694,8 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void btnNewEngine_Click(object sender, EventArgs e) 
 		{
+			preventchanges = true;
+			
 			EngineInfo newInfo = new EngineInfo();
 			newInfo.TestSkill = (int)Math.Ceiling(gameconfig.Skills.Count / 2f); //set Medium skill level
 			configinfo.TestEngines.Add(newInfo);
@@ -705,11 +713,15 @@ namespace CodeImp.DoomBuilder.Windows
 			cbEngineSelector.SelectedIndex = configinfo.TestEngines.Count - 1;
 			
 			btnRemoveEngine.Enabled = true;
+
+			preventchanges = false;
 		}
 
 		//mxd
 		private void btnRemoveEngine_Click(object sender, EventArgs e) 
 		{
+			preventchanges = true;
+			
 			//remove params
 			int index = cbEngineSelector.SelectedIndex;
 			cbEngineSelector.SelectedIndex = -1;
@@ -728,6 +740,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			if (configinfo.TestEngines.Count < 2)
 				btnRemoveEngine.Enabled = false;
+
+			preventchanges = false;
 		}
 
 		//mxd
