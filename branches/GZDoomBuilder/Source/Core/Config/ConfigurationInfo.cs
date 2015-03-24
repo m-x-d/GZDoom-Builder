@@ -137,7 +137,6 @@ namespace CodeImp.DoomBuilder.Config
 				EngineInfo info = new EngineInfo();
 				info.TestProgram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
 				info.TestProgramName = General.Settings.ReadSetting("configurations." + settingskey + ".testprogramname", EngineInfo.DEFAULT_ENGINE_NAME);
-				info.CheckProgramName(false);
 				info.TestParameters = General.Settings.ReadSetting("configurations." + settingskey + ".testparameters", "");
 				info.TestShortPaths = General.Settings.ReadSetting("configurations." + settingskey + ".testshortpaths", false);
 				info.CustomParameters = General.Settings.ReadSetting("configurations." + settingskey + ".customparameters", false);
@@ -154,7 +153,6 @@ namespace CodeImp.DoomBuilder.Config
 					EngineInfo info = new EngineInfo();
 					info.TestProgram = General.Settings.ReadSetting(path + ".testprogram", "");
 					info.TestProgramName = General.Settings.ReadSetting(path + ".testprogramname", EngineInfo.DEFAULT_ENGINE_NAME);
-					info.CheckProgramName(false);
 					info.TestParameters = General.Settings.ReadSetting(path + ".testparameters", "");
 					info.TestShortPaths = General.Settings.ReadSetting(path + ".testshortpaths", false);
 					info.CustomParameters = General.Settings.ReadSetting(path + ".customparameters", false);
