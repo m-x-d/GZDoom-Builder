@@ -240,6 +240,13 @@ namespace CodeImp.DoomBuilder.Controls
 				e.SuppressKeyPress = true;
 			}
 		}
+
+		//mxd
+		protected override bool ProcessTabKey(bool forward)
+		{
+			GoToNextSameTexture();
+			return false;
+		}
 		
 		// Selection changed
 		private void list_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)

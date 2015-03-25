@@ -136,6 +136,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.longtexturenames.Name = "longtexturenames";
 			this.longtexturenames.Size = new System.Drawing.Size(119, 17);
 			this.longtexturenames.TabIndex = 0;
+			this.longtexturenames.TabStop = false;
 			this.longtexturenames.Text = "Long texture names";
 			this.longtexturenames.UseVisualStyleBackColor = true;
 			this.longtexturenames.CheckedChanged += new System.EventHandler(this.longtexturenames_CheckedChanged);
@@ -155,7 +156,10 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filterHeight.AllowNegative = false;
 			this.filterHeight.AllowRelative = false;
 			this.filterHeight.ButtonStep = 1;
+			this.filterHeight.ButtonStepBig = 10F;
 			this.filterHeight.ButtonStepFloat = 1F;
+			this.filterHeight.ButtonStepSmall = 0.1F;
+			this.filterHeight.ButtonStepsUseModifierKeys = false;
 			this.filterHeight.ButtonStepsWrapAround = false;
 			this.filterHeight.Location = new System.Drawing.Point(410, 4);
 			this.filterHeight.Name = "filterHeight";
@@ -180,7 +184,10 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filterWidth.AllowNegative = false;
 			this.filterWidth.AllowRelative = false;
 			this.filterWidth.ButtonStep = 1;
+			this.filterWidth.ButtonStepBig = 10F;
 			this.filterWidth.ButtonStepFloat = 1F;
+			this.filterWidth.ButtonStepSmall = 0.1F;
+			this.filterWidth.ButtonStepsUseModifierKeys = false;
 			this.filterWidth.ButtonStepsWrapAround = false;
 			this.filterWidth.Location = new System.Drawing.Point(308, 4);
 			this.filterWidth.Name = "filterWidth";
