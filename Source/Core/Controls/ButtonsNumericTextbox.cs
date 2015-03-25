@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private void buttons_MouseEnter(object sender, EventArgs e) 
 		{
-			textbox.Focus();
+			if(usemodifierkeys) textbox.Focus();
 		}
 
 		// Mouse wheel used
