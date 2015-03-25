@@ -691,7 +691,7 @@
       <DependentUpon>ActionSpecialHelpButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ButtonsNumericTextboxDesigner.cs" />
-    <Compile Include="Controls\CollapsibleSplitter.cs">
+    <Compile Include="Controls\CollapsibleSplitContainer.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ColoredComboBox.cs">

@@ -208,8 +208,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ResumeLayout(true);
 
 			//mxd. Set splitter position and state (doesn't work when layout is suspended)
-			splitter.SplitPosition = Math.Min(General.Settings.ReadSetting("browserwindow.splitterdistance", 203), this.ClientRectangle.Width - 16);
 			if(General.Settings.ReadSetting("browserwindow.splittercollapsed", false)) splitter.IsCollapsed = true;
+			splitter.SplitPosition = General.Settings.ReadSetting("browserwindow.splitterdistance", 210);
 		}
 
 		//mxd
@@ -424,9 +424,6 @@ namespace CodeImp.DoomBuilder.Windows
 				lastposition = this.Location;
 				lastsize = this.Size;
 			}
-
-			//mxd. SplitDistance out of bounds?
-			splitter_CollapsedChanged(splitter, EventArgs.Empty);
 		}
 
 		// Moved
@@ -458,7 +455,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.WriteSetting("browserwindow.sizewidth", lastsize.Width);
 			General.Settings.WriteSetting("browserwindow.sizeheight", lastsize.Height);
 			General.Settings.WriteSetting("browserwindow.windowstate", windowstate);
-			if(!splitter.IsCollapsed) General.Settings.WriteSetting("browserwindow.splitterdistance", splitter.SplitPosition); //mxd
+			General.Settings.WriteSetting("browserwindow.splitterdistance", splitter.SplitPosition); //mxd
 			General.Settings.WriteSetting("browserwindow.splittercollapsed", splitter.IsCollapsed); //mxd
 			General.Settings.WriteSetting("browserwindow.usedgroupcollapsed", browser.IsGroupCollapsed(usedgroup)); //mxd
 
@@ -563,13 +560,6 @@ namespace CodeImp.DoomBuilder.Windows
 				selectedset = tvTextureSets.SelectedNodes[0];
 				FillImagesList();
 			}
-		}
-
-		//mxd. SplitDistance out of bounds?
-		private void splitter_CollapsedChanged(object sender, EventArgs e) 
-		{
-			if(!splitter.IsCollapsed && splitter.SplitPosition > this.ClientRectangle.Width - 16)
-				splitter.SplitPosition = this.ClientRectangle.Width - 16;
 		}
 	}
 }
