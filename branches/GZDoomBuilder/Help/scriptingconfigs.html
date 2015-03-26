@@ -1,24 +1,109 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	
-	<title>About Scripting Configurations</title>
-	
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-	<link rel="stylesheet" type="text/css" href="default.css" media="screen" title="Default" />
+<title>About Scripting Configurations</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="default.css" media="screen" title="Default" />
 </head>
 <body>
-	
-	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-	<param name="keyword" value="Configurations">
-	<param name="keyword" value="Scripting Configurations">
-	</object>
-	
-	<div id="title"><h1>About Scripting Configurations</h1></div>
-	
-	<div id="contents">
-	<p>
-		B
-	</p>
-	</div>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="keyword" value="Configurations">
+  <param name="keyword" value="Scripting Configurations">
+</object>
+<div id="title">
+  <h1>About Scripting Configurations</h1>
+</div>
+<div id="contents">
+  <p>Scripting configurations are used to provide code highlighting and code completion in the <a href="w_scripteditor.html">Script Editor</a>.<br />
+    Scripting configurations are loaded from *.cfg files placed in the "Scripting" directory.</p>
+  <h2>Script compiler settings:</h2>
+  <br />
+  <b class="fat">compiler</b> (string)<br />
+  The name of the <a href="scriptingconfigs.html">script compiler</a> to use.<br />
+  <br />
+  <b class="fat">parameters</b> (string)<br />
+  Command line paramterets to pass to the <a href="scriptingconfigs.html">script compiler</a>. 
+  Following wildcards are supported:
+  <ul style="list-style-type:none;">
+    <li>"%FI" - input file path.</li>
+    <li>"%FO" - output file path.</li>
+    <li>"%FS" - source file.</li>
+    <li>"%PT" - temporary directory path.</li>
+    <li>"%PS" - source path.</li>
+  </ul>
+  <b class="fat">resultlump</b> (string)<br />
+  The name of the lump compilation resuld should be stored in.<br />
+  <br />
+  <br />
+  <h2>Script Editor settings:</h2>
+  <br />
+  <b class="fat">description</b> (string)<br />
+  Script type name shown in the <a href="w_scripteditor.html">Script Editor's</a> &quot;New File&quot; drop-down.<br />
+  <br />
+  <b class="fat">codepage</b> (integer)<br />
+  The code page  Scintilla Control will use.<br />
+  <br />
+  <b class="fat">extensions</b> (string)<br />
+  Comma-separated list of file extensions associated with this configuration.<br />
+  <br />
+  <b class="fat">casesensitive</b> (boolean)<br />
+  Is the script type case sensitive? Default value is <strong>true</strong>.<br />
+  <br />
+  <b class="fat">insertcase</b> (int)<br />
+  0 - Normal, 1 - Lowercase, 2 - Uppercase. Defaullt value is <strong>0</strong>.<br />
+  <br />
+  <b class="fat">lexer</b> (integer)<br />
+  Specifies a lexer type Scintilla Control will use.<br />
+  Possible values are: 1 - Plain text; 3 - CPP-style, case-sensitive; 6 - Perl-style; 18 - Pascal-style; 35 - CPP-style, case-insensitive.<br />
+  <br />
+  <b class="fat">functionopen</b> (string)<br />
+  A character used as a function's opening brace.<br />
+  <br />
+  <b class="fat">functionclose</b> (string)<br />
+A character used as a function's closing brace.  <br />
+  <br />
+  <b class="fat">argumentdelimiter</b> (string)<br />
+A character used as a function arguments delimiter.  <br />
+  <br />
+  <b class="fat">terminator</b> (string)<br />
+A character used as an expression terminator.  <br />
+  <br />
+  <b class="fat">keywordhelp</b> (string) - <span class="red">GZDB only</span>.<br />
+  An URL used to display keyword help. &quot;%K&quot; placeholder will be replaced with the word text cursor is position in when calling keyword help (F1).<br />
+  <br />
+  <b class="fat">snippetsdir</b> (string) - <span class="red">GZDB only</span>.<br />
+  Directory name inside of the &quot;Snippets&quot; directory, which holds snippets for current script configuration.<br />
+  <br />
+  <b class="fat">scripttype</b> (integer) - <span class="red">GZDB only</span>.<br />
+  Marks current script configuration as one of script types, recognized by GZDB. Possible values are: 1 - ACC; 2 - MODELDEF; 3 - DECORATE. Default value is <strong>0</strong> (unknown script).<br />
+  <h2>"keywords" block:</h2>
+  <br />
+  Defines a list of keywords to highlight and show code completion 
+  for. Each keyword is defined as
+  <pre>Keyword = "Keyword description";</pre>
+  "Keyword" is a word used in a script, "Keyword description" provides additional information about a keyword, like function arguments or hints about what function or it's parameters do.
+  <p><strong>Example:</strong>
+  <pre>
+keywords
+{
+	CanRaiseActor = "bool CanRaiseActor(int tid)\nChecks to see if the actor or actors with the specified tid are viable for resurrection.\nIf tid is 0, the check is done on the activator of the script.";
+}
+</pre>
+  </p>
+  <h2>"constants" block:</h2>
+  <br />
+  Defines a list of constants to highlight and show code completion for.
+  <p><strong>Example:</strong>
+  <pre>
+constants
+{
+	AAPTR_DEFAULT;
+	AAPTR_FRIENDPLAYER;
+	AAPTR_GET_LINETARGET;
+	AAPTR_MASTER;
+	AAPTR_NULL;
+}
+</pre>
+  </p>
+</div>
 </body>

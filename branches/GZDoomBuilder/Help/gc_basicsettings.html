@@ -48,19 +48,19 @@
 		The default value is <b>false</b>.<br />
 		<br />
 		<b class="fat">defaultsavecompiler</b> (string)<br />
-		Name of the Nodebuilder Compiler Configuration structure to use as the default settings for the compiler that is used when saving the map. The user can still change this in the <a href="w_gameconfigurations.html">Game Configurations window</a>.<br />
+	  Name of the <a href="scriptingconfigs.html">Nodebuilder Compiler Configuration structure</a> to use as the default settings for the compiler that is used when saving the map. The user can still change this in the <a href="w_gameconfigurations.html">Game Configurations window</a>.<br />
 		<br />
 		<b class="fat">defaulttestcompiler</b> (string)<br />
-		Name of the Nodebuilder Compiler Configuration structure to use as the default settings for the compiler that is used when testing the map. The user can still change this in the <a href="w_gameconfigurations.html">Game Configurations window</a>.<br />
+	  Name of the <a href="scriptingconfigs.html">Nodebuilder Compiler Configuration structure</a> to use as the default settings for the compiler that is used when testing the map. The user can still change this in the <a href="w_gameconfigurations.html">Game Configurations window</a>.<br />
 		<br />
         <b class="fat">defaultscriptcompiler</b> (string) - <span class="red">GZDB only</span>.<br />
-		Name of the Script Compiler Configuration file to use as the default settings for the script compiler that is used when compiling map scripts. The user can still change this in the <a href="w_mapoptions.html">Map Options window</a>.<br />
+	  Name of the <a href="scriptingconfigs.html">Script Compiler Configuration file</a> to use as the default settings for the script compiler that is used when compiling map scripts. The user can still change this in the <a href="w_mapoptions.html">Map Options window</a>.<br />
 		<br />
 		<b class="fat">skills</b> (structure)<br />
 		This defines the skill options the user has available with this game engine/project. The settings in this structure are expected to be numbers with string values (the descriptive name for the skill level).<br />
 		<br />
-		Example:
-<pre>
+		<strong>Example:</strong>
+	<pre>
 skills
 {
 	1 = "I'm too young to die";
@@ -74,10 +74,7 @@ skills
 		<b class="fat">linetagindicatesectors</b> (boolean)<br />
 		When <b>true</b>, Doom Builder will highlight sectors associated with the same tag number when a line is highlighted. This is only really useful for Doom format maps, because Hexen format and UDMF format has no single tag on linedefs (in those formats, the arguments of the linedef's action can be tags, which also works to highlight sectors).<br />The default is <b>false</b>.<br />
 		<br />
-		<b class="fat">soundlinedefflag</b> (integer or string)<br />
-		This lets Doom Builder know the <a href="gc_linedefflags.html">linedef flag</a> that indicates where sound should be blocked. Doom Builder uses this to give the line a special color and plugins can use this information to perform operations related to blocking sound lines. For map formats that use numeric flags (Doom and Hexen) this must be an integer specifying the flag value of the Block Sound flag. For map formats that use named flags (UDMF), this must be a string indicating the name of the Block Sound flag.<br />
-		<br />
-		<b class="fat">singlesidedflag</b> (integer or string)<br />
+	  <b class="fat">singlesidedflag</b> (integer or string)<br />
 		This lets Doom Builder know the <a href="gc_linedefflags.html">linedef flag</a> that indicates a line with only one side. Doom Builder will set this flag value on a linedef when it changes a line to become single sided and removes the flag from a linedef when it becomes double sided. Plugins can also use this information to perform operations on linedefs. For map formats that use numeric flags (Doom and Hexen) this must be an integer flag value. For map formats that use named flags (UDMF), this must be a string indicating the name of the flag.<br />
 		<br />
 		<b class="fat">doublesidedflag</b> (integer or string)<br />
@@ -88,6 +85,9 @@ skills
 		<br />
 		<b class="fat">makedoortrack</b> (string)<br />
 		Name of a texture to use on the walls when making a door.<br />
+        <br />
+		<b class="fat">makedoordoor</b> (string) - <span class="red">GZDB only</span>.<br />
+		Name of a texture to use as the door texture when making a door.<br />
 		<br />
 		<b class="fat">makedooraction</b> (integer)<br />
 		Linedef action number to put on the lines when making a door.<br />

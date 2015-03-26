@@ -27,7 +27,8 @@ using CodeImp.DoomBuilder.IO;
 namespace CodeImp.DoomBuilder.Config
 {
 	//mxd
-	internal enum ScriptType {
+	internal enum ScriptType
+	{
 		UNKNOWN = 0,
 		ACS = 1,
 		MODELDEF = 2,
