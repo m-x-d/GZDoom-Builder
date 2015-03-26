@@ -63,8 +63,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		internal void SetTransform(Matrix rotation, Matrix offset, Vector3 scale)
 		{
 			this.scale = scale;
-			this.transform = Matrix.Scaling(scale) * rotation * offset;
-			this.transformstretched = Matrix.Scaling(scale.X, scale.Y, scale.Z * Renderer3D.GZDOOM_INVERTED_VERTICAL_VIEW_STRETCH) * rotation * offset;
+			this.transform = rotation * Matrix.Scaling(scale) * offset;
+			this.transformstretched = rotation * Matrix.Scaling(scale.X, scale.Y, scale.Z * Renderer3D.GZDOOM_INVERTED_VERTICAL_VIEW_STRETCH) * offset;
 		}
 
 		#endregion

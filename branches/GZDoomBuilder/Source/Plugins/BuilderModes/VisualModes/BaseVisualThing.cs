@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		private ThingTypeInfo info;
 		private bool isloaded;
+		private bool nointeraction; //mxd
 		private ImageData sprite;
 		private float cageradius2;
 		private Vector2D pos2d;
@@ -74,6 +75,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Find thing information
 			info = General.Map.Data.GetThingInfo(Thing.Type);
+
+			//mxd. When true, the thing can be moved below floor/above ceiling
+			nointeraction = (info.Actor != null && info.Actor.GetFlagValue("nointeraction", false));
 
 			// Find sprite texture
 			if(info.Sprite.Length > 0)
@@ -122,6 +126,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					SectorData sd = mode.GetSectorData(Thing.Sector);
 					SectorLevel level = sd.GetLevelAbove(new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + Thing.Sector.FloorHeight));
+					if(nointeraction && level == null && sd.LightLevels.Count > 0) level = sd.LightLevels[sd.LightLevels.Count - 1]; //mxd. Use the light level of the highest surface when a thing is above highest sector level.
 					if(level != null)
 					{
 						// Use sector brightness for color shading
@@ -235,11 +240,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float maxz = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
 					pos.z = maxz;
 
-					if(Thing.Position.z > 0) pos.z -= Thing.Position.z;
+					if(Thing.Position.z > 0 || nointeraction) pos.z -= Thing.Position.z;
 
 					// Check if below floor
-					float minz = sd.Floor.plane.GetZ(Thing.Position);
-					if(pos.z < minz) pos.z = Math.Min(minz, maxz);
+					if(!nointeraction)
+					{
+						float minz = sd.Floor.plane.GetZ(Thing.Position);
+						if(pos.z < minz) pos.z = Math.Min(minz, maxz);
+					}
 				}
 			}
 			else
@@ -251,11 +259,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float minz = sd.Floor.plane.GetZ(Thing.Position);
 					pos.z = minz;
 
-					if(Thing.Position.z > 0) pos.z += Thing.Position.z;
+					if(Thing.Position.z > 0 || nointeraction) pos.z += Thing.Position.z;
 
 					// Check if above ceiling
-					float maxz = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
-					if(pos.z > maxz) pos.z = Math.Max(minz, maxz);
+					if(!nointeraction)
+					{
+						float maxz = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
+						if(pos.z > maxz) pos.z = Math.Max(minz, maxz);
+					}
 				}
 			}
 			
@@ -309,6 +320,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Find thing information
 			info = General.Map.Data.GetThingInfo(Thing.Type);
+
+			//mxd. When true, the thing can be moved below floor/above ceiling
+			nointeraction = (info.Actor != null && info.Actor.GetFlagValue("nointeraction", false));
 
 			// Find sprite texture
 			if(info.Sprite.Length > 0)
