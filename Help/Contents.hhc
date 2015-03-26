@@ -201,6 +201,10 @@
 				<param name="Local" value="gc_linedefsettings.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Sidedef Settings">
+				<param name="Local" value="gc_sidedefsettings.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Things Settings">
 				<param name="Local" value="gc_thingsettings.html">
 				</OBJECT>

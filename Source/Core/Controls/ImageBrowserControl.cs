@@ -231,16 +231,6 @@ namespace CodeImp.DoomBuilder.Controls
 			objectname_TextChanged(sender, e);
 		}
 
-		// Key pressed in list
-		private void list_KeyDown(object sender, KeyEventArgs e)
-		{
-			if(e.KeyData == Keys.Tab)
-			{
-				GoToNextSameTexture();
-				e.SuppressKeyPress = true;
-			}
-		}
-
 		//mxd
 		protected override bool ProcessTabKey(bool forward)
 		{

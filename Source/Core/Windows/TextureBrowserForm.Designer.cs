@@ -146,7 +146,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.splitter.Panel2MinSize = 100;
 			this.splitter.Size = new System.Drawing.Size(784, 442);
 			this.splitter.SplitterDistance = 573;
-			this.splitter.SplitterWidth = 8;
 			this.splitter.TabIndex = 0;
 			this.splitter.TabStop = false;
 			// 

@@ -244,7 +244,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttonsnippets.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonsnippets.Name = "buttonsnippets";
 			this.buttonsnippets.Size = new System.Drawing.Size(29, 22);
-			this.buttonsnippets.Text = "Intert a Code Snippet";
+			this.buttonsnippets.Text = "Insert a Code Snippet";
 			// 
 			// toolStripSeparator4
 			// 

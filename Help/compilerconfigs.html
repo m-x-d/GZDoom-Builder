@@ -1,24 +1,87 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	
-	<title>About Compiler Configurations</title>
-	
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-	<link rel="stylesheet" type="text/css" href="default.css" media="screen" title="Default" />
+<title>About Compiler Configurations</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="default.css" media="screen" title="Default" />
 </head>
 <body>
-	
-	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-	<param name="keyword" value="Configurations">
-	<param name="keyword" value="Compiler Configurations">
-	</object>
-	
-	<div id="title"><h1>About Compiler Configurations</h1></div>
-	
-	<div id="contents">
-	<p>
-		B
-	</p>
-	</div>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="keyword" value="Configurations">
+  <param name="keyword" value="Compiler Configurations">
+</object>
+<div id="title">
+  <h1>About Compiler Configurations</h1>
+</div>
+<div id="contents">
+  <p>Compiler configurations are required to use script compilers and nodebuilders from the editor.<br />
+    Compiler configurations are loaded from *.cfg files placed in the "Compilers" directory or it's subdirectories.</p>
+  <h2>Script compiler configurations:</h2>
+  Typical script compiler configuration consists from a single block:
+  </p>
+  <h3>"Compilers" block:</h3>
+  Defines what files a compiler uses.
+  The setting named "program" defines what .exe to run.
+  The "interface" setting defines what interal interface to use for processing and error feedback (currenttly the only valid value is "AccCompiler"). All others are the required files (the setting names do not matter).
+  </p>
+  <p><strong>Example:</strong>
+  <pre>
+compilers
+{
+	zdoom_acc
+	{
+		interface = "AccCompiler";
+		program = "acc.exe";
+		zcommon = "zcommon.acs";
+		zdefs = "zdefs.acs";
+		zspecial = "zspecial.acs";
+		zwvars = "zwvars.acs";
+	}
+}
+</pre>
+  </p>
+  <h2>Nodebuilder configurations:</h2>
+  Typical nodebuilder configuration consists from two blocks:
+  </p>
+  <h3>"Compilers" block:</h3>
+  Defines what files a compiler uses.<br />
+  The setting named "program" defines what .exe to run.<br />
+  The "interface" setting defines what interal interface to use for processing and error feedback (currenttly the only valid value is "NodesCompiler").
+  </p>
+  <p><strong>Example:</strong>
+  <pre>
+compilers
+{
+	zdbsp
+	{
+		interface = "NodesCompiler";
+		program = "zdbsp.exe";
+	}
+}
+</pre>
+  </p>
+  <h3>"Nodebuilders" block:</h3>
+  Defines various presets for the nodebuilder defined in "compilers" block (you can then pick which ones of these to use in the <a href="w_gameconfigurations.html">Game Configurations Window</a>). <strong>NOTE:</strong> Nodebuilder configuration key names defined here must be unique for all nodebuilders!
+  It's recommended to start the key name with the name of the compiler, followed by underscore and a specific name. The &quot;compiler&quot; setting must refer to an existing compiler, but it does not have to be a compiler defined in the same configuration file.<br />
+  <br />
+  "<strong>parameters</strong>" setting supports the following wildcards:
+  <ul style="list-style-type:none;">
+    <li>"%FI" - input file path.</li>
+    <li>"%FO" - output file path.</li>
+  </ul>
+  <strong>Example:</strong>
+  <pre>
+nodebuilders
+{
+	zdbsp_normal
+	{
+		title = "ZDBSP - Normal (no reject)"; // name to display in the Game Configurations Window
+		compiler = "zdbsp"; // must match a nodebuilder block name defined in a "compiler" block
+		parameters = "-c -o%FO %FI"; // command line parameters
+	}
+}
+</pre>
+  </p>
+</div>
 </body>
+
