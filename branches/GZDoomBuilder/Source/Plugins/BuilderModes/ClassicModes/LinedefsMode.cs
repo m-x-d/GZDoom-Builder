@@ -1360,6 +1360,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				side.Fields["light"].Value = brightness;
 			else
 				UDMFTools.SetInteger(side.Fields, "light", brightness - side.Sector.Brightness, 0);
+
+			//apply lightfog flag?
+			if(General.Map.UDMF) Tools.UpdateLightFogFlag(side);
 		}
 
 		[BeginAction("placethings")] //mxd
