@@ -60,8 +60,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SetPosition(pos);
 
 			float radius = DEFAULT_SIZE * General.Settings.GZVertexScale3D;
-			boxp1 = new Vector3D(pos.x - radius, pos.y - radius, pos.z - radius);
-			boxp2 = new Vector3D(pos.x + radius, pos.y + radius, pos.z + radius);
+			boxp1 = new Vector3D(pos.x - radius, pos.y - radius, (ceilingVertex ? pos.z - radius : pos.z));
+			boxp2 = new Vector3D(pos.x + radius, pos.y + radius, (ceilingVertex ? pos.z : pos.z + radius));
 
 			changed = false;
 		}
