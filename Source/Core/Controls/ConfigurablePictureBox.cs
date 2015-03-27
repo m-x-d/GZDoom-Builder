@@ -10,6 +10,12 @@ namespace CodeImp.DoomBuilder.Controls
 {
 	public class ConfigurablePictureBox : PictureBox
 	{
+		#region ================== Constants
+
+		private const int BORDER_SIZE = 4;
+
+		#endregion
+
 		#region ================== Variables
 
 		private InterpolationMode interpolationmode = InterpolationMode.NearestNeighbor;
@@ -17,6 +23,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private CompositingQuality compositingquality = CompositingQuality.Default;
 		private PixelOffsetMode pixeloffsetmode = PixelOffsetMode.None;
 		private GraphicsUnit pageunit = GraphicsUnit.Pixel;
+		private readonly Color highlight = Color.FromArgb(196, SystemColors.Highlight);
 
 		#endregion
 
@@ -27,6 +34,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public CompositingQuality CompositingQuality { get { return compositingquality; } set { compositingquality = value; } }
 		public PixelOffsetMode PixelOffsetMode { get { return pixeloffsetmode; } set { pixeloffsetmode = value; } }
 		public GraphicsUnit PageUnit { get { return pageunit; } set { pageunit = value; } }
+		public bool Highlighted { get; set; }
 
 		#endregion
 
@@ -40,6 +48,15 @@ namespace CodeImp.DoomBuilder.Controls
 			pe.Graphics.PageUnit = PageUnit;
 			pe.Graphics.PixelOffsetMode = PixelOffsetMode;
 			base.OnPaint(pe);
+
+			if(Highlighted)
+			{
+				ControlPaint.DrawBorder(pe.Graphics, DisplayRectangle,
+								  highlight, BORDER_SIZE, ButtonBorderStyle.Solid,
+								  highlight, BORDER_SIZE, ButtonBorderStyle.Solid,
+								  highlight, BORDER_SIZE, ButtonBorderStyle.Solid,
+								  highlight, BORDER_SIZE, ButtonBorderStyle.Solid);
+			}
 		}
 
 		#endregion
