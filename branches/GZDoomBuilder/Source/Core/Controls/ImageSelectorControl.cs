@@ -132,12 +132,14 @@ namespace CodeImp.DoomBuilder.Controls
 		private void preview_MouseLeave(object sender, EventArgs e)
 		{
 			imagebox.BackColor = SystemColors.AppWorkspace;
+			imagebox.Highlighted = false;
 		}
 		
 		// Mouse enters
 		private void preview_MouseEnter(object sender, EventArgs e)
 		{
 			imagebox.BackColor = SystemColors.Highlight;
+			imagebox.Highlighted = true;
 		}
 
 		//mxd
