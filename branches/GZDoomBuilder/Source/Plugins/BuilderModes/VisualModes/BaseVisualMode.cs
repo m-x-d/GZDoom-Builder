@@ -2638,12 +2638,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
+		[BeginAction("scaleup")]
+		public void ScaleTextureUp() 
+		{
+			PreAction(UndoGroup.TextureScaleChange);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(1, 1);
+			PostAction();
+		}
+
+		//mxd
+		[BeginAction("scaledown")]
+		public void ScaleTextureDown() 
+		{
+			PreAction(UndoGroup.TextureScaleChange);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(-1, -1);
+			PostAction();
+		}
+
+		//mxd
 		[BeginAction("scaleupx")]
 		public void ScaleTextureUpX() 
 		{
 			PreAction(UndoGroup.TextureScaleChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(-1, 0);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(1, 0);
 			PostAction();
 		}
 
@@ -2653,7 +2673,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.TextureScaleChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(1, 0);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(-1, 0);
 			PostAction();
 		}
 
@@ -2898,7 +2918,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ResetTexture()
 		{
 			PreAction(UndoGroup.None);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
 			foreach(IVisualEventReceiver i in objs) i.OnResetTextureOffset();
 			PostAction();
 		}
@@ -2907,7 +2927,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ResetLocalOffsets() 
 		{
 			PreAction(UndoGroup.None);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
 			foreach(IVisualEventReceiver i in objs) i.OnResetLocalTextureOffset();
 			PostAction();
 		}
@@ -3089,14 +3109,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PostAction();
 		}
 
-		//mxd. rotate clockwise
+		//mxd. Rotate clockwise
 		[BeginAction("rotateclockwise")]
 		public void RotateCW() 
 		{
 			RotateThingsAndTextures(5);
 		}
 
-		//mxd. rotate counterclockwise
+		//mxd. Rotate counterclockwise
 		[BeginAction("rotatecounterclockwise")]
 		public void RotateCCW() 
 		{
@@ -3106,7 +3126,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void RotateThingsAndTextures(int increment) 
 		{
-			PreAction(UndoGroup.ThingRotate);
+			PreAction(UndoGroup.ThingAngleChange);
 
 			List<IVisualEventReceiver> selection = GetSelectedObjects(true, false, true, false);
 			if(selection.Count == 0) return;
@@ -3116,7 +3136,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(obj is BaseVisualThing) 
 				{
 					BaseVisualThing t = obj as BaseVisualThing;
-					t.Rotate(General.ClampAngle(t.Thing.AngleDoom + increment));
+					t.SetAngle(General.ClampAngle(t.Thing.AngleDoom + increment));
 				}
 				else if(obj is VisualFloor) 
 				{
@@ -3128,6 +3148,70 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					VisualCeiling vc = obj as VisualCeiling;
 					vc.OnChangeTextureRotation(General.ClampAngle(vc.GetControlSector().Fields.GetValue("rotationceiling", 0.0f) + increment));
 				}
+			}
+
+			PostAction();
+		}
+
+		//mxd. Change pitch clockwise
+		[BeginAction("pitchclockwise")]
+		public void PitchCW() 
+		{
+			ChangeThingsPitch(-5);
+		}
+
+		//mxd. Change pitch counterclockwise
+		[BeginAction("pitchcounterclockwise")]
+		public void PitchCCW() 
+		{
+			ChangeThingsPitch(5);
+		}
+
+		//mxd
+		private void ChangeThingsPitch(int increment) 
+		{
+			PreAction(UndoGroup.ThingPitchChange);
+
+			List<IVisualEventReceiver> selection = GetSelectedObjects(false, false, true, false);
+			if(selection.Count == 0) return;
+
+			foreach(IVisualEventReceiver obj in selection) 
+			{
+				if(!(obj is BaseVisualThing))  continue;
+				BaseVisualThing t = obj as BaseVisualThing;
+				t.SetPitch(General.ClampAngle(t.Thing.Pitch + increment));
+			}
+
+			PostAction();
+		}
+
+		//mxd. Change pitch clockwise
+		[BeginAction("rollclockwise")]
+		public void RollCW() 
+		{
+			ChangeThingsRoll(-5);
+		}
+
+		//mxd. Change pitch counterclockwise
+		[BeginAction("rollcounterclockwise")]
+		public void RollCCW() 
+		{
+			ChangeThingsRoll(5);
+		}
+
+		//mxd
+		private void ChangeThingsRoll(int increment) 
+		{
+			PreAction(UndoGroup.ThingRollChange);
+
+			List<IVisualEventReceiver> selection = GetSelectedObjects(false, false, true, false);
+			if(selection.Count == 0) return;
+
+			foreach(IVisualEventReceiver obj in selection) 
+			{
+				if(!(obj is BaseVisualThing)) continue;
+				BaseVisualThing t = obj as BaseVisualThing;
+				t.SetRoll(General.ClampAngle(t.Thing.Roll + increment));
 			}
 
 			PostAction();

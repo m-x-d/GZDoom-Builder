@@ -201,7 +201,7 @@
 			// roll
 			// 
 			this.roll.AllowDecimal = false;
-			this.roll.AllowNegative = false;
+			this.roll.AllowNegative = true;
 			this.roll.AllowRelative = true;
 			this.roll.ButtonStep = 5;
 			this.roll.ButtonStepBig = 15F;
@@ -228,7 +228,7 @@
 			// pitch
 			// 
 			this.pitch.AllowDecimal = false;
-			this.pitch.AllowNegative = false;
+			this.pitch.AllowNegative = true;
 			this.pitch.AllowRelative = true;
 			this.pitch.ButtonStep = 5;
 			this.pitch.ButtonStepBig = 15F;

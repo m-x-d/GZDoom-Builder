@@ -91,11 +91,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.Rendering
 
 			//arrow
 			WorldVertex a0 = new WorldVertex(); //start
-			WorldVertex a1 = new WorldVertex(1.5f, 0.0f, 0.0f); //end
-			WorldVertex a2 = new WorldVertex(1.1f, 0.2f, 0.2f);
-			WorldVertex a3 = new WorldVertex(1.1f, -0.2f, 0.2f);
-			WorldVertex a4 = new WorldVertex(1.1f, 0.2f, -0.2f);
-			WorldVertex a5 = new WorldVertex(1.1f, -0.2f, -0.2f);
+			WorldVertex a1 = new WorldVertex( 0.0f, -1.5f,  0.0f); //end
+			WorldVertex a2 = new WorldVertex( 0.2f, -1.1f,  0.2f);
+			WorldVertex a3 = new WorldVertex(-0.2f, -1.1f,  0.2f);
+			WorldVertex a4 = new WorldVertex( 0.2f, -1.1f, -0.2f);
+			WorldVertex a5 = new WorldVertex(-0.2f, -1.1f, -0.2f);
 
 			WorldVertex[] arrowVerts = new WorldVertex[] {a0, a1,
 														  a1, a2,

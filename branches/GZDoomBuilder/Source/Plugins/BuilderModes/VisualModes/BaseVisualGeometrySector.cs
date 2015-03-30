@@ -419,6 +419,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//update geometry
 			Sector.UpdateSectorGeometry(false);
 		}
+
+		//mxd
+		protected void ClearFields(IEnumerable<string> keys, string undodescription, string resultdescription) 
+		{
+			if(!General.Map.UDMF) return;
+
+			mode.CreateUndo(undodescription);
+			mode.SetActionResult(resultdescription);
+			Sector.Sector.Fields.BeforeFieldsChange();
+
+			foreach(string key in keys) 
+			{
+				if(Sector.Sector.Fields.ContainsKey(key)) 
+				{
+					Sector.Sector.Fields.Remove(key);
+					Sector.Sector.UpdateNeeded = true;
+				}
+			}
+
+			if(Sector.Sector.UpdateNeeded) Sector.UpdateSectorGeometry(false);
+		}
 		
 		#endregion
 
