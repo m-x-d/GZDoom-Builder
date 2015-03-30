@@ -196,6 +196,8 @@ namespace CodeImp.DoomBuilder.Windows
 		public string ActiveDockerTabName { get { return dockerspanel.IsCollpased ? "None" : dockerspanel.SelectedTabName; } }
 		public bool IsActiveWindow { get { return windowactive; } }
 		public StatusInfo Status { get { return status; } }
+		public static Size ScaledIconSize = new Size(16, 16); //mxd
+		public static SizeF DPIScaler = new SizeF(1.0f, 1.0f); //mxd
 		
 		#endregion
 
@@ -204,8 +206,31 @@ namespace CodeImp.DoomBuilder.Windows
 		// Constructor
 		internal MainForm()
 		{
+			//mxd. Set DPI-aware icon size
+			using(Graphics g = this.CreateGraphics()) 
+			{
+				DPIScaler = new SizeF(g.DpiX / 96, g.DpiY / 96);
+
+				if(DPIScaler.Width != 1.0f || DPIScaler.Height != 1.0f)
+				{
+					ScaledIconSize.Width = (int)Math.Round(ScaledIconSize.Width * DPIScaler.Width);
+					ScaledIconSize.Height = (int)Math.Round(ScaledIconSize.Height * DPIScaler.Height);
+				}
+			}
+			
 			// Setup controls
 			InitializeComponent();
+
+			//mxd. Resize status labels
+			if(DPIScaler.Width != 1.0f)
+			{
+				gridlabel.Width = (int)Math.Round(gridlabel.Width * DPIScaler.Width);
+				zoomlabel.Width = (int)Math.Round(zoomlabel.Width * DPIScaler.Width);
+				xposlabel.Width = (int)Math.Round(xposlabel.Width * DPIScaler.Width);
+				yposlabel.Width = (int)Math.Round(yposlabel.Width * DPIScaler.Width);
+				warnsLabel.Width = (int)Math.Round(warnsLabel.Width * DPIScaler.Width);
+			}
+
 			pluginbuttons = new List<PluginToolbarButton>();
 			editmodeitems = new List<ToolStripItem>();
 			labelcollapsedinfo.Text = "";

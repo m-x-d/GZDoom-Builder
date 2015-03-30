@@ -365,6 +365,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.menumain.Location = new System.Drawing.Point(0, 0);
 			this.menumain.Name = "menumain";
 			this.menumain.Size = new System.Drawing.Size(328, 24);
+			this.menumain.ImageScalingSize = MainForm.ScaledIconSize;
 			this.menumain.TabIndex = 0;
 			// 
 			// menufile
@@ -1129,6 +1130,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar
 			// 
 			this.toolbar.AutoSize = false;
+			this.toolbar.ImageScalingSize = MainForm.ScaledIconSize;
 			this.toolbar.ContextMenuStrip = this.toolbarContextMenu;
 			this.toolbar.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1191,6 +1193,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.toggleRendering});
 			this.toolbarContextMenu.Name = "toolbarContextMenu";
 			this.toolbarContextMenu.Size = new System.Drawing.Size(174, 224);
+			this.toolbarContextMenu.ImageScalingSize = MainForm.ScaledIconSize;
 			this.toolbarContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.toolbarContextMenu_Opening);
 			this.toolbarContextMenu.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.toolbarContextMenu_Closing);
 			// 
@@ -1723,6 +1726,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statusbar.Name = "statusbar";
 			this.statusbar.ShowItemToolTips = true;
 			this.statusbar.Size = new System.Drawing.Size(1012, 23);
+			this.statusbar.ImageScalingSize = MainForm.ScaledIconSize;
 			this.statusbar.TabIndex = 2;
 			// 
 			// statuslabel
@@ -2179,6 +2183,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// modestoolbar
 			// 
 			this.modestoolbar.AutoSize = false;
+			this.modestoolbar.ImageScalingSize = MainForm.ScaledIconSize;
 			this.modestoolbar.Dock = System.Windows.Forms.DockStyle.Left;
 			this.modestoolbar.Location = new System.Drawing.Point(0, 49);
 			this.modestoolbar.Name = "modestoolbar";
@@ -2219,6 +2224,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modecontrolsloolbar.Location = new System.Drawing.Point(328, 0);
 			this.modecontrolsloolbar.Name = "modecontrolsloolbar";
 			this.modecontrolsloolbar.Size = new System.Drawing.Size(43, 24);
+			this.modecontrolsloolbar.ImageScalingSize = MainForm.ScaledIconSize;
 			this.modecontrolsloolbar.TabIndex = 1;
 			this.modecontrolsloolbar.Text = "toolStrip1";
 			this.modecontrolsloolbar.Visible = false;
@@ -2460,7 +2466,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private ToolStripMenuItem itemimport;
 		private ToolStripMenuItem itemexport;
 		private ToolStripSeparator separatorio;
-        private ToolStripMenuItem itemviewthingtypes;
+		private ToolStripMenuItem itemviewthingtypes;
 		private StatisticsControl statistics;
 		private ToolStripSplitButton dynamiclightmode;
 		private ToolStripMenuItem sightsdontshow;
