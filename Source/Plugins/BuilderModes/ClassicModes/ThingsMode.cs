@@ -1045,12 +1045,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Make undo
 			if(selected.Count > 1) 
 			{
-				General.Map.UndoRedo.CreateUndo("Rotate " + selected.Count + " things", this, UndoGroup.ThingRotate, CreateSelectionCRC(selected));
+				General.Map.UndoRedo.CreateUndo("Rotate " + selected.Count + " things", this, UndoGroup.ThingAngleChange, CreateSelectionCRC(selected));
 				General.Interface.DisplayStatus(StatusType.Action, "Rotated " + selected.Count + " things.");
 			} 
 			else 
 			{
-				General.Map.UndoRedo.CreateUndo("Rotate thing", this, UndoGroup.ThingRotate, CreateSelectionCRC(selected));
+				General.Map.UndoRedo.CreateUndo("Rotate thing", this, UndoGroup.ThingAngleChange, CreateSelectionCRC(selected));
 				General.Interface.DisplayStatus(StatusType.Action, "Rotated a thing.");
 			}
 

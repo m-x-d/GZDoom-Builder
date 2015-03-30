@@ -621,7 +621,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					{
 						world = Matrix.Multiply(arrowScaler, t.Position * Matrix.Translation(0.0f, 0.0f, t.CageScales.M33 / 2));
 					}
-					Matrix rot = Matrix.RotationZ(t.Thing.Angle - Angle2D.PI / 2);
+					Matrix rot = Matrix.RotationY(-t.Thing.RollRad) * Matrix.RotationX(-t.Thing.PitchRad) * Matrix.RotationZ(t.Thing.Angle);
 					world = Matrix.Multiply(rot, world);
 					ApplyMatrices3D();
 

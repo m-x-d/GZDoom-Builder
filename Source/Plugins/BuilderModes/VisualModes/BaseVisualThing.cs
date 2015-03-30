@@ -469,8 +469,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnTextureAlign(bool alignx, bool aligny) { }
 		public virtual void OnToggleUpperUnpegged() { }
 		public virtual void OnToggleLowerUnpegged() { }
-		public virtual void OnResetTextureOffset() { }
-		public virtual void OnResetLocalTextureOffset() { } //mxd
 		public virtual void OnProcess(float deltatime) { }
 		public virtual void OnTextureFloodfill() { }
 		public virtual void OnInsert() { }
@@ -564,6 +562,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			foreach(BaseVisualThing vt in updateList) vt.Changed = true;
 		}
+
+		//mxd
+		public virtual void OnResetTextureOffset() 
+		{
+			mode.CreateUndo("Reset thing scale");
+			mode.SetActionResult("Thing scale reset.");
+
+			Thing.SetScale(1.0f, 1.0f);
+
+			// Update what must be updated
+			this.Changed = true;
+		}
+
+		//mxd
+		public virtual void OnResetLocalTextureOffset() 
+		{
+			mode.CreateUndo("Reset thing scale, pitch and roll");
+			mode.SetActionResult("Thing scale, pitch and roll reset.");
+
+			Thing.SetScale(1.0f, 1.0f);
+			Thing.SetPitch(0);
+			Thing.SetRoll(0);
+
+			// Update what must be updated
+			this.Changed = true;
+		}
 		
 		// Raise/lower thing
 		public virtual void OnChangeTargetHeight(int amount)
@@ -647,12 +671,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public void Rotate(int ammount) 
+		public void SetAngle(int newangle)
 		{
 			if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
-				undoticket = mode.CreateUndo("Rotate thing");
-			Thing.Rotate(ammount);
-			mode.SetActionResult("Changed thing rotation to " + Thing.AngleDoom + ".");
+				undoticket = mode.CreateUndo("Change thing angle");
+			Thing.Rotate(newangle);
+			mode.SetActionResult("Changed thing angle to " + Thing.AngleDoom + ".");
+			this.Changed = true;
+		}
+
+		//mxd
+		public void SetPitch(int newpitch)
+		{
+			if(!General.Map.UDMF) return;
+			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+				undoticket = mode.CreateUndo("Change thing pitch");
+			Thing.SetPitch(newpitch);
+			mode.SetActionResult("Changed thing pitch to " + Thing.Pitch + ".");
+			this.Changed = true;
+		}
+
+		//mxd
+		public void SetRoll(int newroll)
+		{
+			if(!General.Map.UDMF) return;
+			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+				undoticket = mode.CreateUndo("Change thing roll");
+			Thing.SetRoll(newroll);
+			mode.SetActionResult("Changed thing roll to " + Thing.Roll + ".");
 			this.Changed = true;
 		}
 		

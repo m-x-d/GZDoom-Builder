@@ -418,19 +418,19 @@ namespace CodeImp.DoomBuilder.Map
 			BeforePropsChange();
 			
 			// Change angle
-			this.anglerad = Angle2D.DoomToReal(newangle);
-			this.angledoom = newangle;
+			anglerad = Angle2D.DoomToReal(newangle);
+			angledoom = newangle;
 			
 			if(type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;
 		}
 
 		//mxd
-		public void SetPitch(int p)
+		public void SetPitch(int newpitch)
 		{
 			BeforePropsChange();
 
-			pitch = p;
+			pitch = General.ClampAngle(newpitch);
 			pitchrad = ((isModel && General.Map.Data.ModeldefEntries[type].InheritActorPitch) ? Angle2D.DegToRad(pitch) : 0);
 
 			if (type != General.Map.Config.Start3DModeThingType)
@@ -438,11 +438,11 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		//mxd
-		public void SetRoll(int r)
+		public void SetRoll(int newroll)
 		{
 			BeforePropsChange();
 
-			roll = r;
+			roll = General.ClampAngle(newroll);
 			rollrad = ((isModel && General.Map.Data.ModeldefEntries[type].InheritActorRoll) ? Angle2D.DegToRad(roll) : 0);
 
 			if (type != General.Map.Config.Start3DModeThingType)

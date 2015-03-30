@@ -214,7 +214,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(incrementX != 0) 
 			{
-				float pix = (int)Math.Round(Texture.Width * scaleX) + incrementX;
+				float pix = (int)Math.Round(Texture.Width * scaleX) - incrementX;
 				float newscaleX = (float)Math.Round(pix / Texture.Width, 3);
 				scaleX = (newscaleX == 0 ? scaleX * -1 : newscaleX);
 				UDMFTools.SetFloat(s.Fields, "xscalefloor", scaleX, 1.0f);
@@ -222,7 +222,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(incrementY != 0)
 			{
-				float pix = (int)Math.Round(Texture.Height * scaleY) + incrementY;
+				float pix = (int)Math.Round(Texture.Height * scaleY) - incrementY;
 				float newscaleY = (float)Math.Round(pix / Texture.Height, 3);
 				scaleY = (newscaleY == 0 ? scaleY * -1 : newscaleY);
 				UDMFTools.SetFloat(s.Fields, "yscalefloor", scaleY, 1.0f);
@@ -245,31 +245,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public override void OnResetTextureOffset() 
 		{
-			if(!General.Map.UDMF) return;
-
-			mode.CreateUndo("Reset texture offsets");
-			mode.SetActionResult("Texture offsets reset.");
-			Sector.Sector.Fields.BeforeFieldsChange();
-
-			string[] keys = new[] { "xpanningfloor", "ypanningfloor", "xscalefloor", "yscalefloor", "rotationfloor" };
-
-			foreach(string key in keys) 
-			{
-				if(Sector.Sector.Fields.ContainsKey(key)) 
-				{
-					Sector.Sector.Fields.Remove(key);
-					Sector.Sector.UpdateNeeded = true;
-				}
-			}
-
-			if(Sector.Sector.UpdateNeeded)
-				Sector.UpdateSectorGeometry(false);
+			ClearFields(new[] { "xpanningfloor", "ypanningfloor" }, "Reset texture offsets", "Texture offsets reset.");
 		}
 
 		//mxd
 		public override void OnResetLocalTextureOffset() 
 		{
-			OnResetTextureOffset();
+			ClearFields(new[] { "xpanningfloor", "ypanningfloor", "xscalefloor", "yscalefloor", "rotationfloor", "lightfloor", "lightfloorabsolute" },
+				"Reset texture offsets, scale, rotation and brightness", "Texture offsets, scale, rotation and brightness reset.");
 		}
 		
 		// Paste texture

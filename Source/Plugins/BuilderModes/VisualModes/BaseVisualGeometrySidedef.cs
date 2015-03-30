@@ -862,13 +862,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return;
 			}
 
-			mode.CreateUndo("Reset local texture offsets");
-			mode.SetActionResult("Local texture offsets reset.");
+			mode.CreateUndo("Reset local texture offsets, scale and brightness");
+			mode.SetActionResult("Local texture offsets, scale and brightness reset.");
 
-			// Apply offsets
+			// Reset texture offsets
 			SetTextureOffsetX(0);
 			SetTextureOffsetY(0);
+
+			// Scale
 			ResetTextureScale();
+
+			// And brightness
+			if(Sidedef.Fields.ContainsKey("light")) Sidedef.Fields.Remove("light");
+			if(Sidedef.Fields.ContainsKey("lightabsolute")) Sidedef.Fields.Remove("lightabsolute");
 
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
@@ -1504,7 +1510,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(incrementX != 0)
 			{
-				float pix = (int)Math.Round(Texture.Width * scaleX) + incrementX;
+				float pix = (int)Math.Round(Texture.Width * scaleX) - incrementX;
 				float newscaleX = (float)Math.Round(pix / Texture.Width, 3);
 				scaleX = (newscaleX == 0 ? scaleX * -1 : newscaleX);
 				UDMFTools.SetFloat(Sidedef.Fields, keyX, scaleX, 1.0f);
@@ -1512,7 +1518,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(incrementY != 0) 
 			{
-				float pix = (int)Math.Round(Texture.Height * scaleY) + incrementY;
+				float pix = (int)Math.Round(Texture.Height * scaleY) - incrementY;
 				float newscaleY = (float)Math.Round(pix / Texture.Height, 3);
 				scaleY = (newscaleY == 0 ? scaleY * -1 : newscaleY);
 				UDMFTools.SetFloat(Sidedef.Fields, keyY, scaleY, 1.0f);
