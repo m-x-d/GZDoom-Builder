@@ -65,6 +65,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly bool isknown;
 		private readonly bool absolutez;
 		private SizeF spritescale;
+		private readonly bool locksprite; //mxd
 		
 		#endregion
 
@@ -121,6 +122,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			this.isknown = false;
 			this.absolutez = false;
+			this.locksprite = false; //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -153,6 +155,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.absolutez = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".absolutez", cat.AbsoluteZ);
 			float sscale = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".spritescale", cat.SpriteScale);
 			this.spritescale = new SizeF(sscale, sscale);
+			this.locksprite = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".locksprite", false); //mxd
 
 			//mxd
 			string s_class = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".class", String.Empty);
@@ -179,8 +182,6 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor
 		public ThingTypeInfo(ThingCategory cat, int index, string title)
 		{
-			//string key = index.ToString(CultureInfo.InvariantCulture);
-
 			// Initialize
 			this.index = index;
 			this.category = cat;
@@ -203,6 +204,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedrotation = cat.FixedRotation; //mxd
 			this.absolutez = cat.AbsoluteZ;
 			this.spritescale = new SizeF(cat.SpriteScale, cat.SpriteScale);
+			this.locksprite = false;
 
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
@@ -295,7 +297,7 @@ namespace CodeImp.DoomBuilder.Config
 			title = ZDTextParser.StripQuotes(title); //mxd
 			
 			// Set sprite
-			string suitablesprite = actor.FindSuitableSprite();
+			string suitablesprite = (locksprite ? string.Empty : actor.FindSuitableSprite()); //mxd
 			if(!string.IsNullOrEmpty(suitablesprite)) 
 				sprite = suitablesprite;
 			else if(string.IsNullOrEmpty(sprite))//mxd
