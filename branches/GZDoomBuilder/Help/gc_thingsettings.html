@@ -19,7 +19,7 @@
   <p> <span class="big">General settings:</span><br />
     <br />
     <b class="fat">thingclasshelp</b> (string) - <span class="red">GZDB only</span>.<br />
-    URL to to open when thing class name is clicked in the Thing Edit form.<br />
+    The URL to  open when thing class name is clicked in the Thing Edit form.<br />
     <br />
     <b class="fat">defaultthingflags</b> (structure)<br />
     This defines what the default flags should be first the first new thing when inserted. In map formats that use numeric thing flags, the settings in this structure should be the numeric flags to set. In map formats that use named flags, the settings must be the names of the flags to set. The value of the settings is optional and is ignored by Doom Builder.<br />
@@ -67,11 +67,105 @@ thingrenderstyles
 }
 </pre>
   <br />
+  <span class="big">Thing Category definitions:</span><br />
+  These settings can be used inside of thing category definitions.<br />
+  <br />
+  <b class="fat">sorted</b> (integer) [0 .. 1]<br />
+  When set to 1, items in this category will be sorted by title.<br />
+  <br />
+  <span class="big">Thing and Thing Category definitions:</span><br />
+  These settings can be used inside of both thing category and thing definitions.<br />
+  <br />
+  <b class="fat">color</b> (integer) [0 .. 19]<br />
+  Sets the color used by things in this category.<br />
+  Possible values are:
+  <ul>
+    <li>&nbsp;&nbsp;0 - <span style="color:#696969">&#9608;</span> Dark Gray;</li>
+    <li>&nbsp;&nbsp;1 - <span style="color:#4169E1">&#9608;</span> Blue;</li>
+    <li>&nbsp;&nbsp;2 - <span style="color:#228B22">&#9608;</span> Green;</li>
+    <li>&nbsp;&nbsp;3 - <span style="color:#20B2AA">&#9608;</span> Cyan;</li>
+    <li>&nbsp;&nbsp;4 - <span style="color:#B22222">&#9608;</span> Red;</li>
+    <li>&nbsp;&nbsp;5 - <span style="color:#9400D3">&#9608;</span> Magenta;</li>
+    <li>&nbsp;&nbsp;6 - <span style="color:#B8860B">&#9608;</span> Brown;</li>
+    <li>&nbsp;&nbsp;7 - <span style="color:#C0C0C0">&#9608;</span> Gray;</li>
+    <li>&nbsp;&nbsp;8 - <span style="color:#808080">&#9608;</span> Light Gray;</li>
+    <li>&nbsp;&nbsp;9 - <span style="color:#00BFFF">&#9608;</span> Light Blue;</li>
+    <li>10 - <span style="color:#32CD32">&#9608;</span> Light Green;</li>
+    <li>11 - <span style="color:#AFEEEE">&#9608;</span> Light Cyan;</li>
+    <li>12 - <span style="color:#FF6347">&#9608;</span> Light Red;</li>
+    <li>13 - <span style="color:#EE82EE">&#9608;</span> Light Magenta;</li>
+    <li>14 - <span style="color:#FFFF00">&#9608;</span> Yellow;</li>
+    <li>15 - <span style="color:#F5F5F5">&#9608;</span> White;</li>
+    <li>16 - <span style="color:#FFB6C1">&#9608;</span> Pink;</li>
+    <li>17 - <span style="color:#FF8C00">&#9608;</span> Light Orange;</li>
+    <li>18 - <span style="color:#BDB76B">&#9608;</span> Light Brown (default);</li>
+    <li>19 - <span style="color:#DAA520">&#9608;</span> Orange;</li>
+  </ul>
+  <p><b class="fat">arrow</b> (integer) [0 .. 1]<br />
+    When set to 1, thing angle will be shown as an arrow in Classic and Visual modes.<br />
+    <br />
+    <b class="fat">title</b> (string)<br />
+    Sets the title of this category or thing.<br />
+    <br />
+    <b class="fat">sprite</b> (string)<br />
+    Sets the sprite graphic to use when rendering this thing or things in this category. This should be fully qualified sprite name without file extension, like &quot;CPOSA2&quot;.<br />
+    You can also use  images from the"Sprites" directory by prefixing an image name without extension with &quot;internal:&quot;, like so: &quot;internal:Actor&quot;.<br />
+    <br />
+    <b class="fat">title</b> (string)<br />
+    When set to 1, thing angle will be shown as an arrow in Classic and Visual modes.<br />
+    <br />
+    <b class="fat">width</b> (integer)<br />
+    Sets the width to use when rendering  things in Classic and Visual modes.<br />
+    Default value is <strong>10</strong>.<br />
+    <br />
+    <b class="fat">height</b> (integer)<br />
+    Sets the height to use when rendering  things in Classic and Visual modes.<br />
+    Default value is <strong>20</strong>.<br />
+    <br />
+    <b class="fat">hangs</b> (integer) [0 .. 1]<br />
+    When set to 1, the thing will be aligned to ceiling instead of floor in Visual mode.<br />
+    <br />
+    <b class="fat">blocking</b> (integer) [0 .. 2]<br />
+    Sets thing blocking mode. This value is used when checking for stuck things.<br />
+    Possible values are:
+  <ul>
+    <li>0 - No blocking.</li>
+    <li>1 - Completely blocking.</li>
+    <li>2 - True-Height.</li>
+  </ul>
+  <b class="fat">error</b> (integer) [0 .. 2]<br />
+  Sets the stuck things error checking mode to use on this thing. <br />
+  Possible values are:
+  <ul>
+    <li>0 - Don't check this thing.</li>
+    <li>1 - Check if the thing is outside of map geometry.</li>
+    <li>2 - Check if the thing is outside of map geometry or stuck in another thing.</li>
+  </ul>
+  Default value is<strong> 1</strong>.<br />
+  <br />
+  <b class="fat">fixedsize</b> (boolean)<br />
+  When set to true, thing will be rendered as sizeless in Classic and Visual modes.<br />
+  <br />
+  <b class="fat">fixedrotation</b> (boolean) - <span class="red">GZDB only</span>.<br />
+  When set to true, thing's angle won't be changed when rotating things using Edit Selection mode.<br />
+  <br />
+  <b class="fat">absolutez</b> (boolean)<br />
+  When set to true, thing's vertical position will be used as an absolute value instead of distance from floor/ceiling in Visual mode.<br />
+  <br />
+  <b class="fat">spritescale</b> (decimal)<br />
+  Can be used to modify the rendered sprite scale in Visual mode.<br />
+  Default value is<strong> &quot;1.0&quot;</strong>.<br />
+  <br />
   <span class="big">Thing definitions:</span><br />
+  These settings can be used inside of thing definitions.<br />
+  <br />
+  <b class="fat">locksprite</b> (boolean) - <span class="red">GZDB only</span>.<br />
+  When set to true, the sprite set in the Game Configuration will be used even if a DECORATE actor definition of this thing contains a different sprite.<br />
   <br />
   <b class="fat">default</b> (integer) - <span class="red">GZDB only</span>.<br />
   Sets the default value for a Thing or Linedef argument definition.<br />
   <strong>Example:</strong>
+  </p>
   <pre>9038
 {
     title = "ColorSetter";
