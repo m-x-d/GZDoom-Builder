@@ -1,27 +1,27 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	
-	<title>GZDoom Builder features</title>
-	
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-	<link rel="stylesheet" type="text/css" href="../../../default.css" media="screen" title="Default" />
+<title>GZDoom Builder features</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="../../../default.css" media="screen" title="Default" />
 </head>
 <body>
-	
-	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-	<param name="keyword" value="Template">
-	</object>
-	
-	<div id="gz_title">
-	  <h1>New custom filed types</h1>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="keyword" value="Custom Fields">
+</object>
+<div id="gz_title">
+  <h1>New Custom Field types</h1>
 </div>
-	
 <div id="contents">
-  <p>Two new custom field types are now avaliable in the &quot;Custom&quot; tabs of the Edit forms: &quot;Integer (Random)&quot; and &quot;Decimal (Random)&quot;. To use them, change the UDMF field type to &quot;Integer (Random)&quot; or &quot;Decimal (Random)&quot; and enter a value as 'min max'.</p>
-  <p><strong>Example:</strong><br /> 
+	<p><b class="fat">Byte Angle</b><br />
+    Allows to easily set a <a href="http://zdoom.org/wiki/Definitions#Byte_angles">byte angle</a>.<br />
+  <p><b class="fat">Integer (random)</b><br />
+    Randomly picks an integer value between provided minimum and maximum value. To use it, change the UDMF field type to &quot;Integer (Random)&quot; and enter a value as 'min max'.<br />
+    <strong>Technical notice:</strong> this field type is considered &quot;virtual&quot;, because it cannot be saved in a map, so it will be converted to &quot;Integer&quot; type after clicking OK in an Edit form.<br />
+    <strong>Example:</strong><br />
     Here, the field 'user_test' will be added to all selected map elements, and in all of them this field will have a random value from 1 to 123:</p>
-  <p><img src="randomint.jpg" alt="" width="329" height="56" /></p>
-  <p><strong>Technical notice:</strong> These field types are sort of &quot;virtual&quot;, because they cannot be saved in a map, so these types will be converted to &quot;regular&quot; Integer/Decimal after you click OK in the Edit form.</p>
+  <p><img src="randomint.jpg" alt="" width="329" height="56" /></p><br />
+  <p><b class="fat">Decimal (random)</b><br />
+    Same as "Integer (Random)", but for decimal values.<br />
 </div>
 </body>
