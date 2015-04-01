@@ -366,7 +366,8 @@
 			label15.TabIndex = 27;
 			label15.Text = "Height offset:";
 			label15.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(label15, "Changes floor and ceiling\r\nheight by given value.");
+			this.tooltip.SetToolTip(label15, "Changes floor and ceiling height by given value.\r\nUse \"++\" to raise by sector hei" +
+					"ght.\r\nUse \"--\" to lower by sector height.");
 			// 
 			// label6
 			// 
@@ -390,7 +391,7 @@
 			// 
 			this.heightoffset.AllowDecimal = false;
 			this.heightoffset.AllowNegative = true;
-			this.heightoffset.AllowRelative = false;
+			this.heightoffset.AllowRelative = true;
 			this.heightoffset.ButtonStep = 8;
 			this.heightoffset.ButtonStepBig = 16F;
 			this.heightoffset.ButtonStepFloat = 1F;
@@ -584,7 +585,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -270;
+			this.floorAngleControl.Angle = -360;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
@@ -818,7 +819,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -270;
+			this.ceilAngleControl.Angle = -360;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";

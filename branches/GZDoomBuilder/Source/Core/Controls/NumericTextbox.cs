@@ -175,6 +175,14 @@ namespace CodeImp.DoomBuilder.Controls
 		// Validate contents
 		protected override void OnValidating(CancelEventArgs e)
 		{
+			//mxd. We may want "++" and "--" on their own...
+			if(allowrelative && (this.Text == "++" || this.Text == "--"))
+			{
+				// Call base and bail out
+				base.OnValidating(e);
+				return;
+			}
+			
 			// Strip prefixes
 			string textpart = this.Text.Replace("+", "").Replace("*", "").Replace("/", ""); //mxd
 			if(!allownegative) textpart = textpart.Replace("-", "");

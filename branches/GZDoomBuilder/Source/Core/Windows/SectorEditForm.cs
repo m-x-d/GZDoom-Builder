@@ -225,19 +225,33 @@ namespace CodeImp.DoomBuilder.Windows
 		private void UpdateCeilingHeight() 
 		{
 			int i = 0;
-			int offset = heightoffset.GetResult(0);
+			int offset;
 
-			//restore values
-			if(string.IsNullOrEmpty(ceilingheight.Text)) 
+			if(heightoffset.Text == "++" || heightoffset.Text == "--") // Raise or lower by sector height
 			{
-				foreach(Sector s in sectors)
-					s.CeilHeight = sectorprops[i++].CeilHeight + offset;
-
+				int sign = (heightoffset.Text == "++" ? 1 : -1);
+				foreach (Sector s in sectors)
+				{
+					offset = sectorprops[i].CeilHeight - sectorprops[i].FloorHeight;
+					s.CeilHeight += offset * sign;
+					i++;
+				}
 			} 
-			else //update values
+			else
 			{
-				foreach(Sector s in sectors)
-					s.CeilHeight = ceilingheight.GetResult(sectorprops[i++].CeilHeight) + offset;
+				offset = heightoffset.GetResult(0);
+
+				//restore values
+				if(string.IsNullOrEmpty(ceilingheight.Text)) 
+				{
+					foreach(Sector s in sectors)
+						s.CeilHeight = sectorprops[i++].CeilHeight + offset;
+				} 
+				else //update values
+				{
+					foreach(Sector s in sectors)
+						s.CeilHeight = ceilingheight.GetResult(sectorprops[i++].CeilHeight) + offset;
+				}
 			}
 		}
 
@@ -245,19 +259,34 @@ namespace CodeImp.DoomBuilder.Windows
 		private void UpdateFloorHeight() 
 		{
 			int i = 0;
-			int offset = heightoffset.GetResult(0);
+			int offset;
 
-			//restore values
-			if(string.IsNullOrEmpty(floorheight.Text)) 
+			if(heightoffset.Text == "++" || heightoffset.Text == "--")
 			{
-				foreach(Sector s in sectors)
-					s.FloorHeight = sectorprops[i++].FloorHeight + offset;
-
-			} 
-			else //update values
+				// Raise or lower by sector height
+				int sign = (heightoffset.Text == "++" ? 1 : -1);
+				foreach (Sector s in sectors)
+				{
+					offset = sectorprops[i].CeilHeight - sectorprops[i].FloorHeight;
+					s.FloorHeight += offset * sign;
+					i++;
+				}
+			}
+			else
 			{
-				foreach(Sector s in sectors)
-					s.FloorHeight = floorheight.GetResult(sectorprops[i++].FloorHeight) + offset;
+				offset = heightoffset.GetResult(0);
+				
+				//restore values
+				if(string.IsNullOrEmpty(floorheight.Text))
+				{
+					foreach (Sector s in sectors)
+						s.FloorHeight = sectorprops[i++].FloorHeight + offset;
+				}
+				else //update values
+				{
+					foreach (Sector s in sectors)
+						s.FloorHeight = floorheight.GetResult(sectorprops[i++].FloorHeight) + offset;
+				}
 			}
 		}
 

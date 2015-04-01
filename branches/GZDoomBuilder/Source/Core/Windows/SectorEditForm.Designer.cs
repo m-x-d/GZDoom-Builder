@@ -188,7 +188,8 @@ namespace CodeImp.DoomBuilder.Windows
 			label7.TabIndex = 25;
 			label7.Text = "Height offset:";
 			label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(label7, "Changes floor and ceiling\r\nheight by given value.");
+			this.tooltip.SetToolTip(label7, "Changes floor and ceiling height by given value.\r\nUse \"++\" to raise by sector hei" +
+					"ght.\r\nUse \"--\" to lower by sector height.");
 			// 
 			// label5
 			// 
@@ -212,7 +213,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.heightoffset.AllowDecimal = false;
 			this.heightoffset.AllowNegative = true;
-			this.heightoffset.AllowRelative = false;
+			this.heightoffset.AllowRelative = true;
 			this.heightoffset.ButtonStep = 8;
 			this.heightoffset.ButtonStepBig = 16F;
 			this.heightoffset.ButtonStepFloat = 1F;

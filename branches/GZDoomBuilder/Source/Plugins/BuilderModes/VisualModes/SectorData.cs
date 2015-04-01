@@ -107,6 +107,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			alleffects.Add(e);
 		}
 
+		//mxd. Transfer Floor Brightness effect
+		public void AddEffectTransferFloorBrightness(Linedef sourcelinedef) 
+		{
+			EffectTransferFloorBrightness e = new EffectTransferFloorBrightness(this, sourcelinedef);
+			alleffects.Add(e);
+		}
+
+		//mxd. Transfer Floor Brightness effect
+		public void AddEffectTransferCeilingBrightness(Linedef sourcelinedef) 
+		{
+			EffectTransferCeilingBrightness e = new EffectTransferCeilingBrightness(this, sourcelinedef);
+			alleffects.Add(e);
+		}
+
 		// Line slope effect
 		public void AddEffectLineSlope(Linedef sourcelinedef)
 		{
@@ -290,10 +304,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Now that we know the levels in this sector (and in the right order) we
 			// can determine the lighting in between and on the levels.
 			// Start from the absolute ceiling and go down to 'cast' the lighting
+			SectorLevel stored = ceiling; //mxd
 			for(int i = startindex; i >= 0; i--)
 			{
 				SectorLevel l = lightlevels[i];
 				SectorLevel pl = lightlevels[i + 1];
+
+				if(l.lighttype == LightLevelType.TYPE1) stored = pl; //mxd
 
 				//mxd. If the real floor has "lightfloor" value and the 3d floor above it doesn't cast down light, use real floor's brightness
 				if(General.Map.UDMF && l == floor && lightlevels.Count > 2 && (pl.disablelighting || pl.restrictlighting) && l.sector.Fields.ContainsKey("lightfloor"))
@@ -303,13 +320,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				
 				// Set color when no color is specified, or when a 3D floor is placed above the absolute floor
-				if((l.color == 0) || ((l == floor) && (lightlevels.Count > 2)))
+				//mxd. Or when lightlevel is above a floor/ceiling level
+				bool uselightlevellight = ((l.type != SectorLevelType.Light) && pl != null && pl.type == SectorLevelType.Light); //mxd
+				if((l.color == 0) || ((l == floor) && (lightlevels.Count > 2)) || uselightlevellight)
 				{
 					PixelColor floorbrightness = PixelColor.FromInt(mode.CalculateBrightness(pl.brightnessbelow));
 					PixelColor floorcolor = PixelColor.Modulate(pl.colorbelow, floorbrightness);
 					l.color = floorcolor.WithAlpha(255).ToInt();
+
+					if(uselightlevellight) l.brightnessbelow = pl.brightnessbelow;
 				}
-				
+				//mxd. Bottom TYPE1 border requires special handling...
+				else if(l.lighttype == LightLevelType.TYPE1_BOTTOM)
+				{
+					//Use brightness and color from previous light level when it's between TYPE1 and TYPE1_BOTTOM levels
+					if(pl.type == SectorLevelType.Light && pl.lighttype != LightLevelType.TYPE1)
+					{
+						l.brightnessbelow = pl.brightnessbelow;
+						l.colorbelow = pl.colorbelow;
+					}
+					//Use brightness and color from the light level above TYPE1 level
+					else if(stored.type == SectorLevelType.Light)
+					{
+						l.brightnessbelow = stored.brightnessbelow;
+						l.colorbelow = stored.colorbelow;
+					}
+					// Otherwise light values from the real ceiling are used 
+				}
+
 				if(l.colorbelow.a == 0) l.colorbelow = pl.colorbelow;
 				if(l.brightnessbelow == -1) l.brightnessbelow = pl.brightnessbelow;
 			}
@@ -336,6 +374,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 			
+			return found;
+		}
+
+		//mxd. This returns the level above the given point or the level given point is located on
+		public SectorLevel GetLevelAboveOrAt(Vector3D pos)
+		{
+			SectorLevel found = null;
+			float dist = float.MaxValue;
+
+			foreach(SectorLevel l in lightlevels) 
+			{
+				float d = l.plane.GetZ(pos) - pos.z;
+				if((d >= 0.0f) && (d < dist)) 
+				{
+					dist = d;
+					found = l;
+				}
+			}
+
 			return found;
 		}
 

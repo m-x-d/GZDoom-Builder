@@ -6,7 +6,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	internal abstract class SectorEffect
 	{
-		protected SectorData data;
+		protected readonly SectorData data;
 		
 		// Constructor
 		protected SectorEffect(SectorData data)

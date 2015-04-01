@@ -168,11 +168,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			List<WallPolygon> polygons = new List<WallPolygon>(poly);
 			List<WorldVertex> verts = new List<WorldVertex>();
+			SectorLevel prevlight = null; //mxd
 
 			// Go for all levels to build geometry
 			for(int i = sd.LightLevels.Count - 1; i >= 0; i--)
 			{
 				SectorLevel l = sd.LightLevels[i];
+
+				//mxd. Skip current light level when it's between TYPE1 and TYPE1_BOTTOM
+				if(prevlight != null 
+					&& prevlight.type == SectorLevelType.Light && l.type == SectorLevelType.Light 
+					&& (prevlight.lighttype == LightLevelType.TYPE1 && l.lighttype != LightLevelType.TYPE1_BOTTOM)) 
+					continue;
+
+				if(l.type == SectorLevelType.Light) prevlight = l;
 
 				if((l != sd.Floor) && (l != sd.Ceiling) && (l.type != SectorLevelType.Floor || l.alpha < 255))
 				{

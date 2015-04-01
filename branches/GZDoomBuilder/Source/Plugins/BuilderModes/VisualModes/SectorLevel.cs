@@ -13,6 +13,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Type of level
 		public SectorLevelType type;
 
+		//mxd. Type of extralight
+		public LightLevelType lighttype = LightLevelType.UNKNOWN;  
+
 		// Sector where this level originates from
 		public Sector sector;
 		
@@ -52,6 +55,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			target.sector = this.sector;
 			target.type = this.type;
+			target.lighttype = this.lighttype; //mxd
 			target.plane = this.plane;
 			target.alpha = this.alpha;
 			target.color = this.color;

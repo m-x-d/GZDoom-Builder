@@ -903,8 +903,8 @@ namespace CodeImp.DoomBuilder.Rendering
 								{
 									wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
 									graphics.Shaders.World3D.VertexColor = t.LightColor;
-									//mxd. check if Thing is affected by dynamic lights and set color accordingly
-								} 
+								}
+								//mxd. check if Thing is affected by dynamic lights and set color accordingly
 								else if (General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && thingsWithLight.Count > 0) 
 								{
 									Color4 litColor = GetLitColorForThing(t);
